@@ -766,14 +766,14 @@ show_help(void)
 	{0, "                  C,V : Rotate cave one step (anti)clockwise", FLAG_ALWAYS},
 	{0, "                  ',/ : Higher/Lower viewpoint", FLAG_ALWAYS},
 	{0, "                  ],[ : Zoom In/Out", FLAG_ALWAYS},
-	{0, "                  U,D : View [U]p/[D]own", FLAG_ALWAYS},
-	{0, "              N,S,E,W : View [N]orth/[S]outh/[E]ast/[W]est", FLAG_ALWAYS},
+	{0, "                  U,D : Set view to [U]p/[D]own", FLAG_ALWAYS},
+	{0, "              N,S,E,W : Set view to [N]orth/[S]outh/[E]ast/[W]est", FLAG_ALWAYS},
 	{0, "               Delete : Default scale, rotation rate, etc", FLAG_ALWAYS},
 	{0, "                  P,L : [P]lan/e[L]evation", FLAG_ALWAYS},
       /*  "                    I : [I]nput values", */
       /*  "                  3,# : Toggle [3]D goggles view", */
-	{0, "    Cursor Left,Right : Cave [Left]/[Right] (on screen)", FLAG_ALWAYS},
-	{0, "       Cursor Up,Down : Cave [Up]/[Down] (on screen)", FLAG_ALWAYS},
+	{0, "    Cursor Left,Right : Pan survey [Left]/[Right] (on screen)", FLAG_ALWAYS},
+	{0, "       Cursor Up,Down : Pan survey [Up]/[Down] (on screen)", FLAG_ALWAYS},
       /*  "    Sft Copy + Letter : Store view in store <Letter>", */
       /*  "        Copy + Letter : Recall view in store <Letter>", */
 	{0, "               Ctrl-N : Toggle display of station [N]ames", FLAG_ALWAYS},
