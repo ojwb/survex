@@ -10,6 +10,7 @@ fi
 ../cvs2cl/cvs2cl.pl || exit 1
 test -f Makefile && make distclean || exit 1
 make distcheck || exit 1
+make dos_doc_zip || exit 1
 #env STRIP=echo EXTEXE=.exe CC=dos-gcc LDFLAGS=-s CAVEROT=caverot.exe \
 # CRLIB=-lalleg CROBJX=dosrot.o ./configure --with-x=no
 #PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
