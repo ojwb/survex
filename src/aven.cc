@@ -152,7 +152,9 @@ bool Aven::OnInit()
 #endif
 
     m_Frame->Show(true);
-
+#ifdef _WIN32
+    m_Frame->SetFocus();
+#endif
     return true;
 }
 
