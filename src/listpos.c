@@ -120,7 +120,7 @@ node_stat(prefix *p)
       }
       cOrder[order]++;
       if (p->fSuspectTypo) {
-	 warning(/*Station refered to just once, with an explicit prefix - typo?*/70,
+	 warning(/*Station `%s' referred to just once, with an explicit prefix - typo?*/70,
 		 sprint_prefix(p));
       }
    }

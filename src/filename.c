@@ -39,8 +39,8 @@ safe_fopen(const char *fnm, const char *mode)
 
    f = fopen(fnm, mode);
    if (!f) fatalerror(mode[0] == 'w' ?
-		      /*Failed to open output file*/47 :
-		      /*Couldn't open data file*/24, fnm);
+		      /*Failed to open output file '%s'*/47 :
+		      /*Couldn't open data file '%s'*/24, fnm);
    return f;
 }
 

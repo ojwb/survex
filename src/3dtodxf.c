@@ -229,7 +229,7 @@ main(int argc, char **argv)
        case img_BAD:
 #ifndef STANDALONE
          img_close(pimg);
-         fatalerror(/*bad 3d file*/106, fnm3D);
+         fatalerror(/*Bad 3d image file '%s'*/106, fnm3D);
 #else
          printf("Bad .3d image file\n");
          exit(1);
@@ -245,7 +245,7 @@ main(int argc, char **argv)
 #endif
 #ifndef STANDALONE
 	    img_close(pimg);
-	    fatalerror(/*bad 3d file*/106, fnm3D);
+	    fatalerror(/*Bad 3d image file '%s'*/106, fnm3D);
 #else
 	    printf("Bad .3d image file\n");
 	    exit(1);

@@ -59,7 +59,7 @@ typedef double real; /* so we can change the precision used easily */
 # define UNFIXED_VAL HUGE_VAL /* if p[0]==UNFIXED_VAL, station is unfixed */
 #endif
 
-#define NOT_YET fatalerror(99)
+#define NOT_YET fatalerror(/*Not yet implemented! Please let the authors know if you badly need this feature*/99)
 
 #define SPECIAL_EOL       0x001
 #define SPECIAL_BLANK     0x002

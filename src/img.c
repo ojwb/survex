@@ -116,9 +116,14 @@ getline(char *buf, size_t len, FILE *fh)
 static char szTmp[lenSzTmp];
 
 #ifndef STANDALONE
-static enum { IMG_NONE = 0, IMG_FILENOTFOUND = 24,
-   IMG_OUTOFMEMORY = 38, IMG_DIRECTORY = 44, IMG_CANTOPENOUT = 47,
-   IMG_BADFORMAT = 106 } img_errno = IMG_NONE;
+static enum {
+   IMG_NONE = 0,
+   IMG_FILENOTFOUND = /*Couldn't open data file '%s'*/24,
+   IMG_OUTOFMEMORY  = /*Out of memory %.0s*/38,
+   IMG_DIRECTORY    = /*Filename '%s' refers to directory*/44,
+   IMG_CANTOPENOUT  = /*Failed to open output file '%s'*/47,
+   IMG_BADFORMAT    = /*Bad 3d image file '%s'*/106
+} img_errno = IMG_NONE;
 #else
 static img_errcode img_errno = IMG_NONE;
 #endif

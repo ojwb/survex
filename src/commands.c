@@ -1009,7 +1009,7 @@ calibrate(void)
 static void
 set_default(void)
 {
-   compile_warning(/**default is deprecated - use *calibrate/data/style/units with default argument instead*/20);
+   compile_warning(/**default is deprecated - use *calibrate/data/style/units with argument DEFAULT instead*/20);
    get_token(); 
    if (EQ("CALIBRATE")) {
       default_calib(pcs);

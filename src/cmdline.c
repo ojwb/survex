@@ -29,6 +29,13 @@
 #include "cmdline.h"
 #include "filename.h"
 
+#if 0
+#include "message.h"
+#define SYNTAX msg(/*Syntax*/49)
+#else
+#define SYNTAX "syntax"
+#endif
+
 /* It might be useful to be able to disable all long options on small
  * platforms like pre-386 DOS and perhaps some PDAs...
  */
@@ -141,7 +148,7 @@ cmdline_version(void)
 void
 cmdline_syntax(void)
 {  
-   printf("\nSyntax: %s", argv0);
+   printf("\n%s: %s", SYNTAX, argv0);
    if (help->opt) fputs(" [OPTION]...", stdout);
    if (args_msg) {
       putchar(' ');

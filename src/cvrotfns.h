@@ -17,61 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
-1993.08.02 split from caverot.h
-1993.08.13 added #include "whichos.h"
-           standardised header
-1993.08.14 tidied after debugging sesh with MF
-1993.08.15 DOS -> MSDOS
-1993.08.16 added y_stretch to allow aspect ratio correction
-1993.08.20 put in code to set y_stretch for all DOS modes (needs testing)
-1993.09.23 (W) added missing extern float y_stretch
-           (W) added required cast to atexit in DOS init_graphics
-1993.10.26 fettled back in "lost" changes to caverot.h:
->>1993.06.13 towards animation by palette switching (MS DOS)
->>           added USE_VGAHI
-1993.11.04 changed error routines
-1993.11.05 changed error numbers so we can use same error list as survex
-1993.11.30 changed error(81,...) to fatal(81,...)
-1993.12.07 X_size -> xcMac, Y_size -> ycMac
-1994.01.17 hacking for msc
-1994.01.19 ditto
-1994.02.06 tidy up msc hacks for release
-1994.03.19 fast line code for Arc needs 256 colour mode for now
-1994.03.22 fettling for fast line draw ARM code
-1994.03.24 fettled for labels
-1994.03.28 killed Norcroft warning
-1994.04.07 added do_translate for RISC OS
-1994.04.10 started to add Atari ST support
-1994.04.13 moved cleardevice and outtextxy macros to dosrot.h
-1994.04.14 RISC OS outtextxy will now cope with '%' in string
-1994.06.20 made more variables static
-1994.06.21 added extra arg to fatal calls
-1994.08.11 added prototype for outtextxy under RISC OS
-1994.09.11 RISC OS version now does 3 bank animation
-           fast line draw now for 1bpp modes
-1995.03.17 DJGPP/GRX stuff started
-1995.03.20 [xy]cMacOS no longer static
-1995.03.21 added text_xy
-1995.03.23 [xy]cMacOS static again
-           removed RISC OS outtextxy
-1995.03.24 added missing const for GRX stuff
-1995.04.20 grx.h -> grx20.h (Csaba renamed it)
-1995.10.10 __GO32__ -> __DJGPP__ ; removed path from grx20.h include
-1995.11.22 started to add GRX mouse support
-1996.01.20 Added JLIB support
-1996.01.21 added exit_graphics
-1996.01.28 GRX now calls GrBitBltNCFS
-1996.02.13 fixed RISC OS close_graphics to exit_graphics
-1996.04.04 added dummy beep() for MSDOS ; introduced NOP
-1996.04.09 fixed some dos_gcc warnings
-1997.01.30 JLIB hacks
-           added mouse support for GRX and JLIB
-           downcased header names
-1997.02.01 Mostly converted RISC OS code to use OSLib
-1997.02.02 RISC OS fixes
-*/
-
 /* number of screen banks to use for RISC OS */
 #define nBanks 3
 

@@ -77,7 +77,7 @@ const char *szAppNameCopy = "anonymous program";
 static void
 outofmem(OSSIZE_T size)
 {
-   fatalerror(1/*Out of memory (couldn't find %lu bytes).*/, (unsigned long)size);
+   fatalerror(/*Out of memory (couldn't find %lu bytes).*/1, (unsigned long)size);
 }
 
 #ifdef TOMBSTONES
@@ -218,16 +218,16 @@ init_signals(void)
    }
 
    switch (sigReceived) {
-   case SIGABRT: en=90; break;
-   case SIGFPE:  en=91; break;
-   case SIGILL:  en=92; break;
-   case SIGINT:  en=93; break;
-   case SIGSEGV: en=94; break;
-   case SIGTERM: en=95; break;
+   case SIGABRT: en = /*Abnormal termination*/90; break;
+   case SIGFPE:  en = /*Arithmetic error*/91; break;
+   case SIGILL:  en = /*Illegal instruction*/92; break;
+   case SIGINT:  en = /*Interrupt received*/93; break;
+   case SIGSEGV: en = /*Bad memory access*/94; break;
+   case SIGTERM: en = /*Termination requested*/95; break;
 # ifdef SIGSTAK
-   case SIGSTAK: en=96; break;
+   case SIGSTAK: en = /*Stack overflow*/96; break;
 # endif
-   default:      en=97; break;
+   default:      en = /*Unknown signal received*/97; break;
    }
    fputsnl(msg(en), STDERR);
 #if 0

@@ -202,6 +202,7 @@ it: 11 Individuato un errore nel programma! Per favore comunicatelo agli autori
 # FIXME check fr de pt ca es it (c.f. old12 at end of file)
 en: 12 Unknown command `%s'
 fr: 12 Commande inconnue `%s'
+#de: message 30 used to translate this as "Unbekannter Befehl"...
 de: 12 Unbekanntes Kommando `%s'
 pt: 12 Comando desconhecido `%s'
 ca: 12 Comandament desconegut `%s'
@@ -302,13 +303,7 @@ it: 24 Non riesco ad aprire il file dei dati '%s'
 #XXX28
 # FIXME TRANSLATE fr de pt ca es it
 en: 29 Reentering an existing prefix level is deprecated (previously entered at %s:%lu)
-en: 30 Unknown command
-fr: 30 Commande inconnue
-de: 30 Unbekannter Befehl
-pt: 30 Comando desconhecido
-ca: 30 Comandament desconegut
-es: 30 Comando desconocido
-it: 30 Comando sconosciuto
+#XXX30
 # 31 c.f. 10, 32 FIXME TRANSLATE fr de pt ca es it
 en: 31 Found `%s', expecting `PLUMBS'
 fr: 31 On attendait `PLUMBS'
@@ -441,13 +436,14 @@ pt: 47 N&atilde;o foi poss&iacute;vel abrir arquivo de sa&iacute;da '%s'
 ca: 47 No s'ha pogut obrir el fitxer de sortida '%s'
 es: 47 No se pudo abrir el fichero de salida '%s'
 it: 47 Non riesco ad aprire il file di uscita '%s'
-en: 48 Failed to close output file
-fr: 48 N'a pas r&eacute;ussi &agrave; fermer le fichier de sortie
-de: 48 Konnte Ausgabedatei nicht schlie&szlig;en
-pt: 48 N&atilde;o foi poss&iacute;vel fechar arquivo de sa&iacute;da
-ca: 48 No s'ha pogut tancar el fitxer de sortida
-es: 48 No se pudo cerrar el fichero de salida
-it: 48 Non riesco a chiudere il file d'uscita
+#48 not used
+#en: 48 Failed to close output file
+#fr: 48 N'a pas r&eacute;ussi &agrave; fermer le fichier de sortie
+#de: 48 Konnte Ausgabedatei nicht schlie&szlig;en
+#pt: 48 N&atilde;o foi poss&iacute;vel fechar arquivo de sa&iacute;da
+#ca: 48 No s'ha pogut tancar el fitxer de sortida
+#es: 48 No se pudo cerrar el fichero de salida
+#it: 48 Non riesco a chiudere il file d'uscita
 en: 49 Syntax
 fr: 49 Syntaxe
 de: 49 Syntax
@@ -595,13 +591,13 @@ es: 65 STYLE `%s' incorrecto
 it: 65 STYLE `%s' scorretto
 #XXX66
 # complains about a situation like trying to define two from stations per leg
-en: 67 Duplicate datum '%s'
-fr: 67 Donn&eacute;es dupliqu&eacute;es '%s'
-de: 67 Me&szlig;wert mehrfach angegeben '%s'
-pt: 67 Dado duplicado '%s'
-ca: 67 Dada duplicada '%s'
-es: 67 Dato duplicado '%s'
-it: 67 Dati duplicati '%s'
+en: 67 Duplicate datum `%s'
+fr: 67 Donn&eacute;es dupliqu&eacute;es `%s'
+de: 67 Me&szlig;wert mehrfach angegeben `%s'
+pt: 67 Dado duplicado `%s'
+ca: 67 Dada duplicada `%s'
+es: 67 Dato duplicado `%s'
+it: 67 Dati duplicati `%s'
 # complain about a reading of the "Phreakometer dripstance" which survex knows nothing about
 # GN(3): that was a good one eh?  (pat pat)  ;-)  ok it fits now.
 en: 68 Unknown datum
@@ -619,7 +615,7 @@ ca: 69 Manca &quot;
 es: 69 Falta &quot;
 it: 69 Manca &quot;
 # FIXME: TRANSLATE: fr de pt ca es it
-en: 70 Station `%s' refered to just once, with an explicit prefix - typo?
+en: 70 Station `%s' referred to just once, with an explicit prefix - typo?
 en: 71 The following survey stations are not attached to a fixed point:
 fr: 71 Les stations topo suivantes ne sont pas attach&eacute;s &agrave; des points fixes:
 de: 71 Die folgenden Vermessungspunkte haben keine festen Koordinaten:
@@ -627,13 +623,13 @@ pt: 71 As seguintes bases n&atilde;o est&atilde;o conectadas a uma base posicion
 ca: 71 Les seg&uuml;ents estacions no s&oacute;n conectades a un punt fixe:
 es: 71 Las siguientes estaciones no est&aacute;n conectadas a un punto fijo:
 it: 71 Le seguenti stazioni non sono connesse ad un punto fisso:
-en: 72 "Survey has no fixed points. Therefore I've fixed %s at (0,0,0)"
-fr: 72 "La topo n'a pas de points fixes. Par cons&eacute;quent j'ai fix&eacute; %s &agrave; (0,0,0)"
-de: 72 "Vermessung hat keine Festpunkte. %s wurde als Nullpunkt (0,0,0) gew&auml;hlt"
-pt: 72 "Topografia sem bases posicionadas. Assim %s foi posicionada em (0,0,0)"
-ca: 72 "La topografia no te punts fixats. Tanmateix he fixat %s a (0,0,0)"
-es: 72 "La topografia no tiene puntos fijados. De todos modos he fijado %s en (0,0,0)"
-it: 72 "La topografia non ha punti fissi. Quindi %s &eacute; stata fissata a (0,0,0)"
+en: 72 Survey has no fixed points. Therefore I've fixed %s at (0,0,0)
+fr: 72 La topo n'a pas de points fixes. Par cons&eacute;quent j'ai fix&eacute; %s &agrave; (0,0,0)
+de: 72 Vermessung hat keine Festpunkte. %s wurde als Nullpunkt (0,0,0) gew&auml;hlt
+pt: 72 Topografia sem bases posicionadas. Assim %s foi posicionada em (0,0,0)
+ca: 72 La topografia no te punts fixats. Tanmateix he fixat %s a (0,0,0)
+es: 72 La topografia no tiene puntos fijados. De todos modos he fijado %s en (0,0,0)
+it: 72 La topografia non ha punti fissi. Quindi %s &eacute; stata fissata a (0,0,0)
 # fixed station that is not part of any traverse
 en: 73 Unused fixed point `%s'
 fr: 73 Point fixe non utilis&eacute; `%s'
@@ -887,13 +883,13 @@ it:102 Vista in direzione %05.1f
 #ca:103 Sintaxi: caverot <fitxer imatge>
 #es:103 Sintaxis: caverot <fichero imagen>
 #it:103 Sintassi: caverot <nome file 3d>
-en:104 Attempting to read in 3d image file
-fr:104 Essai de lire un fichier image 3d
-de:104 Versuch, 3D-Bilddatei zu lesen
-pt:104 Tentando ler arquivo de imagem 3d
-ca:104 Intentant de llegir un fitxer d'imatge 3d
-es:104 Intentando leer un fichero de imagen 3d
-it:104 Tentativo di lettura nel file immagine 3d
+#en:104 Attempting to read in 3d image file
+#fr:104 Essai de lire un fichier image 3d
+#de:104 Versuch, 3D-Bilddatei zu lesen
+#pt:104 Tentando ler arquivo de imagem 3d
+#ca:104 Intentant de llegir un fitxer d'imatge 3d
+#es:104 Intentando leer un fichero de imagen 3d
+#it:104 Tentativo di lettura nel file immagine 3d
 en:105 Reading in data - please wait...
 fr:105 Lecture de donn&eacute;es - attendez S.V.P. ...
 de:105 Daten werden eingelesen - bitte warten...
@@ -927,61 +923,7 @@ ca:108 Data i hora no disponibles.
 es:108 Fecha y hora no disponibles.
 it:108 Data e ora non disponibili.
 #ital:108 Data e ora mancanti.
-# Could we have a Bavarian version too: `Gr&uuml;&szlig; Gott' (for all times
-# of the day), and for the Swiss: `Gr&uuml;ezi'...   ;-)
-# 109 is used 12 midnight -> 12 noon
-en:109 Good morning
-fr:109 Bonjour
-de:109 Guten Morgen
-pt:109 Bom dia
-ca:109 Bon dia
-es:109 Buenos dias
-it:109 Buon giorno
-# 110 is used 12 noon -> 6pm
-en:110 Good afternoon
-fr:110 Bonjour
-de:110 Guten Tag
-pt:110 Boa tarde
-ca:110 Bona tarda
-es:110 Buenas tardes
-it:110 Buona sera
-# 111 is used 6pm -> 10pm
-en:111 Good evening
-fr:111 Bonsoir
-de:111 Guten Abend
-pt:111 Boa noite
-ca:111 Bona nit
-es:111 Buenas noches
-it:111 Buona sera
-#ital:111 Buona notte
-# 112 is used 10pm -> midnight, if the time can't be found, or if compiled with NO_NICEHELLO
-en:112 Hello
-en-us:112 Howdy
-fr:112 Salut
-de:112 Hallo
-ca:112 Hola
-es:112 Hola
-# And for the Austrians: `Servus'
-pt:112 Ol&aacute;
-it:112 Ciao
-# "hello" ", welcome to..." "SURVEX vX.YZ"
-# GN(3): ooops, where did that capital-W come from?  And the preposition is
-# unsuitable in this context.
-en:113 , welcome to...
-fr:113 , bienvenu dans...
-#germ:113 , Willkommen zu...
-de:113 , willkommen bei...
-pt:113 , bem-vindo ao...
-ca:113 , benvinguts a...
-es:113 , bienvenidos a...
-it:113 , benvenuto in...
-en:114 Version
-fr:114 Version
-de:114 Version
-pt:114 Vers&atilde;o
-ca:114 Versi&oacute;
-es:114 Versi&oacute;n
-it:114 Versione
+# XXX 109,110,111,112,113,114
 en:115 North
 fr:115 Nord
 de:115 Norden
@@ -1015,16 +957,7 @@ pt:118 Perfil
 ca:118 Al&ccedil;at
 es:118 Alzado
 it:118 profilo
-# 119 not used from 0.90 alpha5 onwards
-en:119 SCALE     %.0f:%.0f
-fr:119 &Eacute;CHELLE   %.0f:%.0f
-#fren:119 ECHELLE   %.0f:%.0f
-de:119 Ma&szlig;stab   %.0f:%.0f
-#germ:119 MASSSTAB  %.0f:%.0f
-pt:119 ESCALA    %.0f:%.0f
-ca:119 ESCALA    %.0f:%.0f
-es:119 ESCALA    %.0f:%.0f
-it:119 SCALA     %.0f:%.0f
+#XXX119
 en:120 Calculating statistics
 fr:120 Calcul des statistiques
 de:120 Statistik wird berechnet
@@ -1237,26 +1170,7 @@ pt:149 "Extens&atilde;o Leste-Oeste = %4.2fm (de "
 ca:149 "Extensi&oacute; Est-Oest = %4.2fm (des de "
 es:149 "Extensi&oacute;n Este-Oeste = %4.2fm (desde "
 it:149 "Estensione Est-Ovest = %4.2fm (da "
-# 150 not used from 0.90 alpha5 onwards
-# This is used on printouts of plan views, and gives the bearing up the page
-# (so if North is across the page, 270 is "UP PAGE"
-en:150 UP PAGE   %03d%s
-fr:150 EN HAUT DE PAGE %03d%s
-de:150 OBEN      %03d%s
-pt:150 TOPO DA P&Aacute;GINA %03d%s
-ca:150 A DALT LA PAGINA %03d%s
-es:150 ARRIBA LA PAGINA %03d%s
-it:150 ALTO DELLA PAGINA %03d%s
-# 151 not used from 0.90 alpha5 onwards
-# This is used on printouts of elevations
-# It gives the bearing we're looking in the direction of
-en:151 VIEW      %03d%s
-fr:151 VUE       %03d%s
-de:151 ANSICHT   %03d%s
-pt:151 VISTA     %03d%s
-ca:151 VISTA     %03d%s
-es:151 VISTA     %03d%s
-it:151 VISTA     %03d%s
+#XXX 150, 151
 # As in "printer driver"
 en:152 " Driver"
 fr:152 " pilote"
@@ -1265,14 +1179,7 @@ pt:152 " Driver"
 ca:152 " Driver"
 es:152 " Driver"
 it:152 " Driver"
-# 153 not used from 0.90 alpha5 onwards
-en:153 Scale (%.0f%s)
-fr:153 &Eacute;chelle (%.0f%s)
-de:153 Ma&szlig;stab (%.0f%s)
-pt:153 Escala (%.0f%s)
-ca:153 Escala (%.0f%s)
-es:153 Escala (%.0f%s)
-it:153 Scala (%.0f%s)
+#XXX 153
 en:154 Scale
 fr:154 &Eacute;chelle
 de:154 Ma&szlig;stab
@@ -1295,15 +1202,15 @@ ca:156 Sortint.
 es:156 Saliendo.
 it:156 Fine.
 #XXX157
-en:158 "Plan or Elevation"
-en-us:158 "Plan or Elevation (profile)"
-fr:158 "Plan ou Elevation"
-#germ:158 "Plan oder Aufri&szlig;"
-de:158 "Grundri&szlig; oder Aufri&szlig;"
-pt:158 "Planta or Eleva&ccedil;&atilde;o"
-ca:158 "Planta o Al&ccedil;at"
-es:158 "Planta o Alzado"
-it:158 "Pianta o profilo"
+en:158 Plan or Elevation
+en-us:158 Plan or Elevation (profile)
+fr:158 Plan ou Elevation
+#germ:158 Plan oder Aufri&szlig;
+de:158 Grundri&szlig; oder Aufri&szlig;
+pt:158 Planta or Eleva&ccedil;&atilde;o
+ca:158 Planta o Al&ccedil;at
+es:158 Planta o Alzado
+it:158 Pianta o profilo
 # cf 51
 en:159 "Bearing up page (degrees): "
 fr:159 "Azimut haut de page (degr&eacute;s): "
@@ -1505,13 +1412,7 @@ pt:184 eleva&ccedil;&atilde;o
 ca:184 al&ccedil;at
 es:184 alzado
 it:184 profilo
-en:190 Floating Point Emulator not loaded.
-fr:190 L'&eacute;mulateur de virgule flotante n'est pas charg&eacute;.
-de:190 Gleitkomma-Emulator nicht geladen.
-pt:190 Emulador de ponto flutuante n&atilde;o carregado.
-ca:190 Emulador de punt flotant no carregat.
-es:190 Emulador de punto flotante no cargado.
-it:190 Emulatore di coprocessore matematico non caricato.
+# XXX185-190
 # 191 is followed by the version number of this file,
 # which should (basically) be the same as that of the program
 en:191 Need message file with version
@@ -1850,6 +1751,13 @@ it:197 " a %4.2fm)"
 #ca: 12 Comandament desconegut en fitxer de dades - l&iacute;nia ignorada
 #es: 12 Comando desconocido en fichero de datos - l&iacute;nea ignorada
 #it: 12 Comando sconosciuto nel file dei dati - linea ignorata
+#en: 30 Unknown command
+#fr: 30 Commande inconnue
+#de: 30 Unbekannter Befehl
+#pt: 30 Comando desconhecido
+#ca: 30 Comandament desconegut
+#es: 30 Comando desconocido
+#it: 30 Comando sconosciuto
 #en:122 Processing data file '%s'
 #fr:122 Traitement du fichier de donn&eacute;es '%s'
 #de:122 Datendatei '%s' wird bearbeitet
@@ -1857,3 +1765,103 @@ it:197 " a %4.2fm)"
 #ca:122 Processant fitxer de dades '%s'
 #es:122 Procesando fichero de datos '%s'
 #it:122 Sto trattando il file di dati '%s'
+#en:190 Floating Point Emulator not loaded.
+#fr:190 L'&eacute;mulateur de virgule flotante n'est pas charg&eacute;.
+#de:190 Gleitkomma-Emulator nicht geladen.
+#pt:190 Emulador de ponto flutuante n&atilde;o carregado.
+#ca:190 Emulador de punt flotant no carregat.
+#es:190 Emulador de punto flotante no cargado.
+#it:190 Emulatore di coprocessore matematico non caricato.
+# 150 not used from 0.90 alpha5 onwards
+# This is used on printouts of plan views, and gives the bearing up the page
+# (so if North is across the page, 270 is "UP PAGE"
+#en:150 UP PAGE   %03d%s
+#fr:150 EN HAUT DE PAGE %03d%s
+#de:150 OBEN      %03d%s
+#pt:150 TOPO DA P&Aacute;GINA %03d%s
+#ca:150 A DALT LA PAGINA %03d%s
+#es:150 ARRIBA LA PAGINA %03d%s
+#it:150 ALTO DELLA PAGINA %03d%s
+# 151 not used from 0.90 alpha5 onwards
+# This is used on printouts of elevations
+# It gives the bearing we're looking in the direction of
+#en:151 VIEW      %03d%s
+#fr:151 VUE       %03d%s
+#de:151 ANSICHT   %03d%s
+#pt:151 VISTA     %03d%s
+#ca:151 VISTA     %03d%s
+#es:151 VISTA     %03d%s
+#it:151 VISTA     %03d%s
+# 153 not used from 0.90 alpha5 onwards
+#en:153 Scale (%.0f%s)
+#fr:153 &Eacute;chelle (%.0f%s)
+#de:153 Ma&szlig;stab (%.0f%s)
+#pt:153 Escala (%.0f%s)
+#ca:153 Escala (%.0f%s)
+#es:153 Escala (%.0f%s)
+#it:153 Scala (%.0f%s)
+# 119 not used from 0.90 alpha5 onwards
+#en:119 SCALE     %.0f:%.0f
+#fr:119 &Eacute;CHELLE   %.0f:%.0f
+#fren:119 ECHELLE   %.0f:%.0f
+#de:119 Ma&szlig;stab   %.0f:%.0f
+#germ:119 MASSSTAB  %.0f:%.0f
+#pt:119 ESCALA    %.0f:%.0f
+#ca:119 ESCALA    %.0f:%.0f
+#es:119 ESCALA    %.0f:%.0f
+#it:119 SCALA     %.0f:%.0f
+# Could we have a Bavarian version too: `Gr&uuml;&szlig; Gott' (for all times
+# of the day), and for the Swiss: `Gr&uuml;ezi'...   ;-)
+# 109 is used 12 midnight -> 12 noon
+#en:109 Good morning
+#fr:109 Bonjour
+#de:109 Guten Morgen
+#pt:109 Bom dia
+#ca:109 Bon dia
+#es:109 Buenos dias
+#it:109 Buon giorno
+# 110 is used 12 noon -> 6pm
+#en:110 Good afternoon
+#fr:110 Bonjour
+#de:110 Guten Tag
+#pt:110 Boa tarde
+#ca:110 Bona tarda
+#es:110 Buenas tardes
+#it:110 Buona sera
+# 111 is used 6pm -> 10pm
+#en:111 Good evening
+#fr:111 Bonsoir
+#de:111 Guten Abend
+#pt:111 Boa noite
+#ca:111 Bona nit
+#es:111 Buenas noches
+#it:111 Buona sera
+#ital:111 Buona notte
+# 112 is used 10pm -> midnight, if the time can't be found, or if compiled with NO_NICEHELLO
+#en:112 Hello
+#en-us:112 Howdy
+#fr:112 Salut
+#de:112 Hallo
+#ca:112 Hola
+#es:112 Hola
+# And for the Austrians: `Servus'
+#pt:112 Ol&aacute;
+#it:112 Ciao
+# "hello" ", welcome to..." "SURVEX vX.YZ"
+# GN(3): ooops, where did that capital-W come from?  And the preposition is
+# unsuitable in this context.
+#en:113 , welcome to...
+#fr:113 , bienvenu dans...
+#germ:113 , Willkommen zu...
+#de:113 , willkommen bei...
+#pt:113 , bem-vindo ao...
+#ca:113 , benvinguts a...
+#es:113 , bienvenidos a...
+#it:113 , benvenuto in...
+#en:114 Version
+#fr:114 Version
+#de:114 Version
+#pt:114 Vers&atilde;o
+#ca:114 Versi&oacute;
+#es:114 Versi&oacute;n
+#it:114 Versione
