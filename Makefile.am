@@ -8,7 +8,7 @@ extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
 extra_text = BUGS AUTHORS COPYING NEWS TODO ChangeLog HACKING
 
-base_progs = cavern printdm printps printpcl printhpgl diffpos extend survex
+base_progs = 3dtodxf cavern printdm printps printpcl printhpgl diffpos extend survex
 
 dostxt :
 	$(RM) -rf dostxt_tmp	
