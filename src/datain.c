@@ -1530,6 +1530,12 @@ data_normal(void)
 		nextch();
 		while (ch >= 'A' && ch <= 'Z') {
 		   compass_dat_flags |= BIT(ch - 'A');
+		   /* FIXME: we currently understand X (exclude data)
+		    * but should also handle at least some of:
+		    * L exclude from length
+		    * P no plot
+		    * C no adjustment
+		    */
 		   nextch();
 		}
 		if (ch == '#') {
