@@ -493,7 +493,7 @@ replace_travs(void)
 		  eTotTheo = hTotTheo + vTotTheo;
 #endif
 #ifdef BLUNDER_DETECTION
-		  memcpy(&err, &e, sizeof(d));
+		  memcpy(&err, &e, sizeof(delta));
 		  do_blunder = (eTot > eTotTheo);
 		  fputs("\ntraverse ", fhErrStat);
 		  fprint_prefix(fhErrStat, stn1->name);
@@ -580,7 +580,7 @@ replace_travs(void)
 #ifdef BLUNDER_DETECTION
       delta err;
       int do_blunder;
-      memcpy(&err, &e, sizeof(d));
+      memcpy(&err, &e, sizeof(delta));
       do_blunder = (eTot > eTotTheo);
       if (fhErrStat && !fArtic) {
 	 fputs("\ntraverse ", fhErrStat);
