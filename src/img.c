@@ -1149,7 +1149,13 @@ skip_to_N:
 		  img_errno = IMG_OUTOFMEMORY;
 		  return img_BAD;
 	       }
-	       while (line[len] > 32) ++len;
+	       while (line[len] > 32) {
+		  /* change dots to spaces.  spaces aren't legal in compass
+		   * station names, while dots are the survey level separator
+		   * in Survex */
+		  if (line[len] == '.') line[len] = ' ';
+		  ++len;
+	       }
 	       if (pimg->label_len == 0) pimg->pending = -1;
 	       if (!check_label_space(pimg, len + 1)) {
 		  osfree(line);
