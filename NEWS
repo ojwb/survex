@@ -21,18 +21,19 @@
 * (MacOS X version): fixed not to try to build aven if wxWindows isn't
   installed.
 
-* cad3d: Fixed -e and -r options to not crash (the long versions have always worked).
+* cad3d: fixed -e and -r options to not crash (the long versions have always
+  worked).
 
 * Fixed standard graphics for "Note", "Warning", etc in the PostScript manual.
 
 * Documentation updated.
 
-* (Unix version): Fixed svxedit man page which previously contained xcaverot
+* (Unix version): fixed svxedit man page which previously contained xcaverot
   documentation!
 
 * test suite: check that cavern doesn't report "nan" or "NaN" for any values.
 
-* (Unix version): Fixed configure --enable-defaultlang=XX to work.
+* (Unix version): fixed configure --enable-defaultlang=XX to work.
 
 * (Unix version): fixed configure code to turn on lots of GCC warnings and fixed
   most of them.
