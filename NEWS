@@ -1,3 +1,6 @@
+* (Unix version): aven: various bugs fixed, 3d file specified on command line
+  now loaded.
+
 * (Unix version): aven: leaving "about" box no longer causes segfault;
   toggle status bar now works; N/S/E/W selects view rather than moving
   cave; window close now works; now have ticks on appropriate menu

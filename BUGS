@@ -5,8 +5,6 @@ Bugs in wxaven:
 
 some shortcuts are missing (space/return/arrowkeys/'/slash/[/]/delete)
 
-doesn't load files from command line
-
 sometimes stops responding
 
 "nasty bodge in event handling code (I'll explain later)"
@@ -16,6 +14,6 @@ From: Mark
 
 wxaven:
 terrible slowness during rotation
-about box layout is crap (awful with motif version); close button doesn't work
+about box layout is crap (awful with motif version); Close button doesn't work
 probs with building on win32
 indicators still need coding
