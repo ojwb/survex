@@ -1185,7 +1185,7 @@ Double GfxCore::GridXToScreen(Double x, Double y, Double z)
     y += m_Params.translation.y;
     z += m_Params.translation.z;
 
-    return (XToScreen(x, y, z) * m_Params.scale) + m_XSize/2;
+    return (XToScreen(x, y, z) * m_Params.scale) + m_XCentre;
 }
 
 Double GfxCore::GridYToScreen(Double x, Double y, Double z)
@@ -1194,7 +1194,7 @@ Double GfxCore::GridYToScreen(Double x, Double y, Double z)
     y += m_Params.translation.y;
     z += m_Params.translation.z;
 
-    return m_YSize/2 - ((ZToScreen(x, y, z) * m_Params.scale));
+    return m_YCentre - ((ZToScreen(x, y, z) * m_Params.scale));
 }
 
 void GfxCore::DrawGrid()
@@ -1534,15 +1534,19 @@ void GfxCore::NattyDrawNames()
 			      modelview_matrix, projection_matrix,
 			      viewport, &x, &y, &z);
 #else
-	wxCoord x = (int)GridXToScreen((*label)->x, (*label)->y, (*label)->z);
-	wxCoord y = (int)GridYToScreen((*label)->x, (*label)->y, (*label)->z)
+	Double x = GridXToScreen((*label)->x, (*label)->y, (*label)->z);
+	Double y = GridYToScreen((*label)->x, (*label)->y, (*label)->z)
 	    + CROSS_SIZE - FONT_SIZE;
 #endif
 
 	wxString str = (*label)->GetText();
 
-	int ix = int(x) / quantise;
-	int iy = int(y) / quantise;
+	Double t = GridXToScreen(0, 0, 0);
+	t -= floor(t / quantise) * quantise;
+	int ix = int(x - t) / quantise;
+	t = GridYToScreen(0, 0, 0);
+	t -= floor(t / quantise) * quantise;
+	int iy = int(y - t) / quantise;
 
 	bool reject = true;
 
@@ -1562,7 +1566,7 @@ void GfxCore::NattyDrawNames()
 		    glutBitmapCharacter(LABEL_FONT, (int) (str[pos]));
 		}
 #else
-		m_DrawDC.DrawText(str, x, y);
+		m_DrawDC.DrawText(str, (wxCoord)x, (wxCoord)y);
 #endif
 
 		int ymin = (iy >= 2) ? iy - 2 : iy;
