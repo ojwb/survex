@@ -3,6 +3,8 @@
  * Copyright (C) 1991-1995,1997 Olly Betts
  */
 
+/*#define BLUNDER_DETECTION 1*/
+
 /*
 This source file is in pretty bad need of tidying up, and probably needs
 splitting up, as it's rather slow to recompile.
@@ -236,8 +238,8 @@ extern void solve_network( void /*node *stnlist*/ ) {
     stnFirst=stn;
   ASSERT2(stnFirst,"no stations left in net!");
   stn=stnFirst;
-  sprintf(szOut,msg(72),sprint_prefix(stn->name));
-  out_info(szOut);
+  sprintf(out_buf,msg(72),sprint_prefix(stn->name));
+  out_info(out_buf);
   POS(stn,0)=(real)0.0;
   POS(stn,1)=(real)0.0;
   POS(stn,2)=(real)0.0;
@@ -1082,11 +1084,11 @@ printf( " v=( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
 
    if (tot <= expected_error) {
       if (!output) {
-	 fprint_prefix( stdout, stn1->name );
-	 fputs( "->", stdout );
-	 fprint_prefix( stdout, stn2->name );
+	 fprint_prefix( fhErrStat, stn1->name );
+	 fputs( "->", fhErrStat );
+	 fprint_prefix( fhErrStat, stn2->name );
       }
-      printf( " L: %.2f", tot );
+      fprintf( fhErrStat, " L: %.2f", tot );
       output = 1;
    }
 
@@ -1098,11 +1100,11 @@ printf( " v=( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
       tot = sqrd(cx*s) + sqrd(cy*s) + sqrd(e[2]);
       if (tot <= expected_error) {
 	 if (!output) {
-	    fprint_prefix( stdout, stn1->name );
-	    fputs( "->", stdout );
-	    fprint_prefix( stdout, stn2->name );
+	    fprint_prefix( fhErrStat, stn1->name );
+	    fputs( "->", fhErrStat );
+	    fprint_prefix( fhErrStat, stn2->name );
 	 }
-	 printf( " B: %.2f", tot );
+	 fprintf( fhErrStat, " B: %.2f", tot );
 	 output = 1;
       }
    }
@@ -1119,16 +1121,16 @@ printf( " v=( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
          tot = sqrd(cx - s*nx) + sqrd(cy - s*ny) + sqrd(cz - s*cz);
 	 if (tot <= expected_error) {
 	    if (!output) {
-	       fprint_prefix( stdout, stn1->name );
-	       fputs( "->", stdout );
-	       fprint_prefix( stdout, stn2->name );
+	       fprint_prefix( fhErrStat, stn1->name );
+	       fputs( "->", fhErrStat );
+	       fprint_prefix( fhErrStat, stn2->name );
 	    }
-	    printf( " G: %.2f", tot );
+	    fprintf( fhErrStat, " G: %.2f", tot );
 	    output = 1;
 	 }
       }
    }
-   if (output) putnl();
+   if (output) fputnl(fhErrStat);
 }
 #endif
 
@@ -1171,8 +1173,8 @@ static void replace_travs( void ) {
 #else
   fnmImg3D=AddExt(fnmInput,EXT_SVX_3D);
 #endif
-  sprintf(szOut,msg(121),fnmImg3D);
-  out_current_action(szOut); /* writing .3d file */
+  sprintf(out_buf,msg(121),fnmImg3D);
+  out_current_action(out_buf); /* writing .3d file */
   pimgOut=img_open_write( fnmImg3D, szSurveyTitle, !pcs->fAscii );
   if (pimgOut==NULL)
    fatal( img_error(), wr, fnmImg3D, 0 );
@@ -1273,12 +1275,17 @@ static void replace_travs( void ) {
      int do_blunder;
      memcpy( &err, &e, sizeof(d) );
      do_blunder = (eTot > eTotTheo);
-     fputs("\ntraverse ",stdout);
-     fprint_prefix( stdout, stn1->name );
-     fputs( "->", stdout );
-     fprint_prefix( stdout, stn2->name );
-     printf(" e=(%.2f,%.2f,%.2f) mag^2=%.2f %s\n", e[0], e[1], e[2], eTot,
-	    (do_blunder?"suspect:":"OK"));
+#if 0
+     fputs("\ntraverse ", fhErrStat);
+     fprint_prefix(fhErrStat, stn1->name);
+     fputs("->", fhErrStat);
+     fprint_prefix(fhErrStat, stn2->name);
+     fprintf(fhErrStat, " e=(%.2f,%.2f,%.2f) mag^2=%.2f %s\n",
+	     e[0], e[1], e[2], eTot, (do_blunder?"suspect:":"OK"));
+#else
+     fprintf(fhErrStat, "For next traverse e=(%.2f,%.2f,%.2f) mag^2=%.2f %s\n",
+	     e[0], e[1], e[2], eTot, (do_blunder?"suspect:":"OK"));
+#endif
 #endif
      while (fTrue) {
 	fEquate = fTrue;
