@@ -309,7 +309,7 @@ data_file(const char *pth, const char *fnm)
 #ifdef HAVE_SETJMP
    /* errors in nested functions can longjmp here */
    if (setjmp(file.jbSkipLine)) {
-      /* do nothing special */
+      process_eol();
    }
 #endif
 
@@ -343,7 +343,6 @@ data_file(const char *pth, const char *fnm)
    if (pcs->begin_lineno) {
       error_in_file(file.filename, pcs->begin_lineno,
 		    /*BEGIN with no matching END in this file*/23);
-      skipline();
       /* Implicitly close any unclosed BEGINs from this file */
       do {
 	 settings *pcsParent = pcs->next;
