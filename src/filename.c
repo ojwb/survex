@@ -1,5 +1,5 @@
 /* OS dependent filename manipulation routines
- * Copyright (c) Olly Betts 1998-2001
+ * Copyright (c) Olly Betts 1998-2002
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -362,7 +362,7 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
       if (fh == NULL) {
 	 f_changed = 0;
 	 for (p = fnm_trans; *p ; p++)
-	    if (isupper(*p)) {
+	    if (isupper((unsigned char)*p)) {
 	       *p = tolower(*p);
 	       f_changed = 1;
 	    }

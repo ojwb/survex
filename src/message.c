@@ -333,7 +333,7 @@ default_charset(void)
 	 size_t cnt;
 
 	 for (cnt = 0; cnt < name_len; ++cnt)
-	    if (isalpha(chset[cnt])) {
+	    if (isalpha((unsigned char)chset[cnt])) {
 	       only_digit = 0;
 	       break;
 	    }
@@ -347,7 +347,8 @@ default_charset(void)
 	       iso:
 	       if (strncmp(chset, "8859", 4) == 0) {
 		  chset += 4;
-		  while (chset < p && *chset && !isdigit(*chset)) chset++;
+		  while (chset < p && *chset && !isdigit((unsigned char)*chset))
+		     chset++;
 		  switch (atoi(chset)) {
 		   case 1: return CHARSET_ISO_8859_1;
 		   case 2: return CHARSET_ISO_8859_2;
@@ -360,7 +361,8 @@ default_charset(void)
 	  case 'u':
 	    if (tolower(chset[1]) == 't' && tolower(chset[2]) == 'f') {
 	       chset += 3;
-	       while (chset < p && *chset && !isdigit(*chset)) chset++;
+	       while (chset < p && *chset && !isdigit((unsigned char)*chset))
+		  chset++;
 	       switch (atoi(chset)) {
 		case 8: return CHARSET_UTF8;
 		default: return CHARSET_USASCII;
@@ -473,7 +475,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x163: v = '\xfe'; break;
 	    case 0x2d9: v = '\xff'; break;
 	 }
-	 if (v = 0) break;
+	 if (v == 0) break;
 	 value = v;
       }
       *p = value;
@@ -611,7 +613,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x0163: v = '\xfe'; break;
 	    case 0x02d9: v = '\xff'; break;
 	 }
-	 if (v = 0) break;
+	 if (v == 0) break;
 	 value = v;
       }
       *p = value;

@@ -506,7 +506,7 @@ next_page(int *pstate, char **q, int pageLim)
       (*pstate)++;
       ASSERT(*p == '-');
       p++;
-      while (isspace(*p)) p++;
+      while (isspace((unsigned char)*p)) p++;
       if (sscanf(p, "%u%n", &page, &c) > 0) {
 	 p += c;
       } else {
@@ -519,7 +519,7 @@ next_page(int *pstate, char **q, int pageLim)
       return page;
    }
 
-   while (isspace(*p) || *p == ',') p++;
+   while (isspace((unsigned char)*p) || *p == ',') p++;
 
    if (!*p) return 0; /* done */
 
@@ -530,7 +530,7 @@ next_page(int *pstate, char **q, int pageLim)
    }
    if (sscanf(p, "%u%n", &page, &c) > 0) {
       p += c;
-      while (isspace(*p)) p++;
+      while (isspace((unsigned char)*p)) p++;
       *q = p;
       if (0 < page && page <= pageLim) {
 	 if (*p == '-') *pstate = page; /* range with start */
@@ -552,7 +552,7 @@ read_scale(const char *s)
 
    val = strtod(s, &p);
    if (val > 0 && p != s) {
-      while (isspace(*p)) p++;
+      while (isspace((unsigned char)*p)) p++;
       if (*p == '\0') {
 	 /* accept "<number>" as meaning "1:<number>" if number > 1
 	  * or "<number>:1" is number < 1 - so all these are the same scale:
@@ -574,7 +574,7 @@ read_scale(const char *s)
 	 optarg = p + 1;
 	 val2 = strtod(optarg, &p);
 	 if (val2 > 0 && p != optarg) {
-	    while (isspace(*p)) p++;
+	    while (isspace((unsigned char)*p)) p++;
 	    if (*p == '\0') {
 	       N_Scale = val;
 	       D_Scale = val2;
@@ -1011,7 +1011,7 @@ main(int argc, char **argv)
 	 }
 
 	 p = szTmp;
-	 while (isspace(*p)) p++;
+	 while (isspace((unsigned char)*p)) p++;
 	 szPages = osstrdup(p);
 	 if (*szPages) {
 	    pages = page = state = 0;
@@ -1335,25 +1335,27 @@ as_int(const char *v, char *p, int min_val, int max_val)
    return (int)val;
 }
 
-#define hex(C) (isdigit(C) ? ((C) - '0') : (tolower((C)) - 'a' + 10))
+/* Converts '0'-'9' to 0-9, 'A'-'F' to 10-15 and 'a'-'f' to 10-15.
+ * Undefined on other values */
+#define CHAR2HEX(C) (((C)+((C)>64?9:0))&15)
+
 unsigned long
 as_colour(const char *v, char *p)
 {
    unsigned long val = 0xffffffff;
-   char *pEnd;
    if (!p) setting_missing(v);
    switch (tolower(*p)) {
       case '#': {
 	 char *q = p + 1;
-	 while (isxdigit(*q)) q++;
+	 while (isxdigit((unsigned char)*q)) q++;
 	 if (q - p == 4) {
-	    val = hex(p[1]) * 0x110000;
-	    val |= hex(p[2]) * 0x1100;
-	    val |= hex(p[3]) * 0x11;
+	    val = CHAR2HEX(p[1]) * 0x110000;
+	    val |= CHAR2HEX(p[2]) * 0x1100;
+	    val |= CHAR2HEX(p[3]) * 0x11;
 	 } else if (q - p == 7) {
-	    val = ((hex(p[1]) << 4) | hex(p[2])) << 16;
-	    val |= ((hex(p[3]) << 4) | hex(p[4])) << 8;
-	    val |= (hex(p[5]) << 4) | hex(p[6]);
+	    val = ((CHAR2HEX(p[1]) << 4) | CHAR2HEX(p[2])) << 16;
+	    val |= ((CHAR2HEX(p[3]) << 4) | CHAR2HEX(p[4])) << 8;
+	    val |= (CHAR2HEX(p[5]) << 4) | CHAR2HEX(p[6]);
 	 }
 	 break;
       }
@@ -1426,10 +1428,6 @@ as_double(const char *v, char *p, double min_val, double max_val)
    return val;
 }
 
-/* Converts '0'-'9' to 0-9, 'A'-'F' to 10-15 and 'a'-'f' to 10-15.
- * Undefined on other values */
-#define CHAR2HEX(C) (((C)+((C)>64?9:0))&15)
-
 /*
 Codes:
 \\ -> '\'
@@ -1462,7 +1460,8 @@ as_escstring(const char *v, char *s)
 	     case '\\': /* literal "\" */
 	       break;
 	     case 'x': /* hex digits */
-	       if (isxdigit(*p) && isxdigit(p[1])) {
+	       if (isxdigit((unsigned char)*p) &&
+		   isxdigit((unsigned char)p[1])) {
 		  if (pass) c = (CHAR2HEX(*p) << 4) | CHAR2HEX(p[1]);
 		  p += 2;
 		  break;

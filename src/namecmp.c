@@ -1,6 +1,6 @@
 /* namecmp.c */
 /* Ordering function for station names */
-/* Copyright (C) 1991-2001 Olly Betts
+/* Copyright (C) 1991-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,12 +46,12 @@ name_cmp(const char *a, const char *b)
 	 sa = a;
 	 while (*sa == '0') sa++;
 	 ea = sa;
-	 while (isdigit(*ea)) ea++;
+	 while (isdigit((unsigned char)*ea)) ea++;
 
 	 sb = b;
 	 while (*sb == '0') sb++;
 	 eb = sb;
-	 while (isdigit(*eb)) eb++;
+	 while (isdigit((unsigned char)*eb)) eb++;
 
 	 /* shorter sorts first */
 	 res = (ea - sa) - (eb - sb);

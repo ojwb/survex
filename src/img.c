@@ -378,7 +378,6 @@ plt_file:
    }
 
    if (has_ext(fnm, len, EXT_XYZ)) {
-      long fpos;
       char *line;
 xyz_file:
       line = getline_alloc(pimg->fh);
@@ -1075,7 +1074,6 @@ img_read_item(img *pimg, img_point *p)
 
       pimg->label_buf[0] = '\0';
       while (!feof(pimg->fh)) {
-	 char *b;
 	 if (!fgets(pimg->label_buf + off, pimg->buf_len - off, pimg->fh)) {
 	    img_errno = IMG_READERROR;
 	    return img_BAD;
