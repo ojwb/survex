@@ -119,6 +119,7 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Entrances = false;
     m_FixedPts = false;
     m_ExportedPts = false;
+    m_Grid = false;
 
     // Create pens and brushes for drawing.
     m_Pens.black.SetColour(0, 0, 0);
@@ -564,6 +565,12 @@ void GfxCore::RedrawOffscreen()
     m_DrawDC.DrawRectangle(0, 0, m_XSize, m_YSize);
 
     if (m_PlotData) {
+        bool grid_first = (m_TiltAngle >= 0.0);
+
+	if (m_Grid && grid_first) {
+	    DrawGrid();
+	}
+
         // Draw underground legs.
         if (m_Legs) {
 	    for (int band = 0; band < m_Bands; band++) {
@@ -648,6 +655,10 @@ void GfxCore::RedrawOffscreen()
 	    }
 	}
 
+	if (m_Grid && !grid_first) {
+	    DrawGrid();
+	}
+
 	// Draw station names.
 	if (m_Names) {
 	    DrawNames();
@@ -716,6 +727,69 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     }
 
     dc.EndDrawing();
+}
+
+double GfxCore::GridXToScreen(double x, double y, double z)
+{
+    x += m_Params.translation.x;
+    y += m_Params.translation.y;
+    z += m_Params.translation.z;
+
+    return (XToScreen(x, y, z) * m_Params.scale) + m_Params.display_shift.x + m_XSize/2;
+}
+
+double GfxCore::GridYToScreen(double x, double y, double z)
+{
+    x += m_Params.translation.x;
+    y += m_Params.translation.y;
+    z += m_Params.translation.z;
+
+    return m_YSize/2 - ((ZToScreen(x, y, z) * m_Params.scale) + m_Params.display_shift.y);
+}
+
+void GfxCore::DrawGrid()
+{
+    // Draw the grid.
+
+    m_DrawDC.SetPen(m_Pens.red);
+
+    // Calculate the extent of the survey, in metres across the screen plane.
+    double m_across_screen = double(m_XSize / m_Params.scale);
+    // Calculate the length of the scale bar in metres.
+    //--move this elsewhere
+    double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
+    double t = m_across_screen * 0.75 / size_snap;
+    if (t >= 5.0) {
+        size_snap *= 5.0;
+    }
+    else if (t >= 2.0) {
+        size_snap *= 2.0;
+    }
+
+    double grid_size = size_snap / 10.0;
+    double edge = grid_size * 2.0;
+    double grid_z = -m_Parent->GetZExtent()/2.0 - grid_size;
+    double left = -m_Parent->GetXExtent()/2.0 - edge;
+    double right = m_Parent->GetXExtent()/2.0 + edge;
+    double bottom = -m_Parent->GetYExtent()/2.0 - edge;
+    double top = m_Parent->GetYExtent()/2.0 + edge;
+    int count_x = (int) ceil((right - left) / grid_size);
+    int count_y = (int) ceil((top - bottom) / grid_size);
+    double actual_right = left + count_x*grid_size;
+    double actual_top = bottom + count_y*grid_size;
+
+    for (int xc = 0; xc <= count_x; xc++) {
+        double x = left + xc*grid_size;
+        m_DrawDC.DrawLine((int) GridXToScreen(x, bottom, grid_z), (int) GridYToScreen(x, bottom, grid_z),
+			  (int) GridXToScreen(x, actual_top, grid_z), (int) GridYToScreen(x, actual_top, grid_z));
+    }
+
+    for (int yc = 0; yc <= count_y; yc++) {
+        double y = bottom + yc*grid_size;
+        m_DrawDC.DrawLine((int) GridXToScreen(left, y, grid_z), (int) GridYToScreen(left, y, grid_z),
+			  (int) GridXToScreen(actual_right, y, grid_z),
+			  (int) GridYToScreen(actual_right, y, grid_z));
+    }
 }
 
 wxCoord GfxCore::GetClinoOffset()
@@ -1828,6 +1902,7 @@ void GfxCore::DefaultParameters()
     m_Entrances = false;
     m_FixedPts = false;
     m_ExportedPts = false;
+    m_Grid = false;
 }
 
 void GfxCore::Defaults()
@@ -2184,4 +2259,16 @@ void GfxCore::OnShowExportedPtsUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_PlotData && (m_Parent->GetNumExportedPts() > 0));
     cmd.Check(m_ExportedPts);
+}
+
+void GfxCore::OnViewGrid(wxCommandEvent&)
+{
+    m_Grid = !m_Grid;
+    m_RedrawOffscreen = true;
+    Refresh(false);
+}
+
+void GfxCore::OnViewGridUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData);
 }

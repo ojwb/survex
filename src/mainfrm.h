@@ -72,6 +72,7 @@ enum {
     menu_VIEW_DEPTH_BAR,
     menu_VIEW_SCALE_BAR,
     menu_VIEW_STATUS_BAR,
+    menu_VIEW_GRID,
     menu_CTL_REVERSE,
     menu_HELP_ABOUT
 };
@@ -114,6 +115,8 @@ class MainFrm : public wxFrame {
     double m_XExt;
     double m_YExt;
     double m_ZExt;
+    double m_XMin;
+    double m_YMin;
     double m_ZMin;
     int m_NumLegs;
     int m_NumPoints;
@@ -188,6 +191,7 @@ public:
     void OnToggleScalebarUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleScalebarUpdate(event); }
     void OnToggleDepthbarUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleDepthbarUpdate(event); }
     void OnViewCompassUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnViewCompassUpdate(event); }
+    void OnViewGridUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnViewGridUpdate(event); }
     void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnViewClinoUpdate(event); }
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotationUpdate(event); }
 
@@ -227,12 +231,15 @@ public:
     void OnToggleDepthbar(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnToggleDepthbar(event); }
     void OnViewCompass(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewCompass(event); }
     void OnViewClino(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewClino(event); }
+    void OnViewGrid(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewGrid(event); }
     void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotation(event); }
     // end of horrible bodges
 
     double GetXExtent() { return m_XExt; }
     double GetYExtent() { return m_YExt; }
     double GetZExtent() { return m_ZExt; }
+    double GetXMin()    { return m_XMin; }
+    double GetYMin()    { return m_YMin; }
     double GetZMin()    { return m_ZMin; }
 
     int GetNumLegs()   { return m_NumLegs; }

@@ -75,6 +75,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SURFACE_DASHED, MainFrm::OnShowSurfaceDashed)
     EVT_MENU(menu_VIEW_COMPASS, MainFrm::OnViewCompass)
     EVT_MENU(menu_VIEW_CLINO, MainFrm::OnViewClino)
+    EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
     EVT_MENU(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbar)
     EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
@@ -116,6 +117,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_CLINO, MainFrm::OnViewClinoUpdate)
     EVT_UPDATE_UI(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
     EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
+    EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
 END_EVENT_TABLE()
 
@@ -180,6 +182,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxMenu* viewmenu = new wxMenu;
     viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "Toggle display of survey station names", true);
     viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "Toggle display of crosses at survey stations", true);
+    viewmenu->Append(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297), "unused", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*Underground Survey @Legs##Ctrl+L*/272), "Toggle display of survey legs", true);
     viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*Sur@face Survey Legs##Ctrl+F*/291), "unused", true);
@@ -406,6 +409,10 @@ bool MainFrm::LoadData(const wxString& file)
 	m_XExt = xmax - xmin;
 	m_YExt = ymax - ymin;
 	m_ZExt = zmax - m_ZMin;
+
+	//--temporary bodge
+	m_XMin = xmin;
+	m_YMin = ymin;
 
 	// Sort out depth colouring boundaries (before centering dataset!)
 	SortIntoDepthBands(points);

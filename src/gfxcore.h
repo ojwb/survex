@@ -158,6 +158,7 @@ class GfxCore : public wxWindow {
     bool m_ExportedPts;
     // wxCursor m_StdCursor;
     // wxCursor m_ScaleRotateCursor;
+    bool m_Grid;
 
     struct pens {
         wxPen black;
@@ -201,6 +202,9 @@ class GfxCore : public wxWindow {
 		     z*m_RotationMatrix.get(2, 2));
     }
 
+    double GridXToScreen(double x, double y, double z);
+    double GridYToScreen(double x, double y, double z);
+
     wxCoord GetClinoOffset();
     wxPoint CompassPtToScreen(double x, double y, double z);
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
@@ -215,6 +219,7 @@ class GfxCore : public wxWindow {
     void DrawDepthbar();
     void DrawCompass();
     void Draw2dIndicators();
+    void DrawGrid();
 
     wxPoint IndicatorCompassToScreenPan(int angle);
     wxPoint IndicatorCompassToScreenElev(int angle);
@@ -281,6 +286,7 @@ public:
     void OnToggleDepthbar(wxCommandEvent&);
     void OnViewCompass(wxCommandEvent&);
     void OnViewClino(wxCommandEvent&);
+    void OnViewGrid(wxCommandEvent&);
     void OnReverseDirectionOfRotation(wxCommandEvent&);
     void OnShowEntrances(wxCommandEvent&);
     void OnShowFixedPts(wxCommandEvent&);
@@ -331,6 +337,7 @@ public:
     void OnToggleDepthbarUpdate(wxUpdateUIEvent&);
     void OnViewCompassUpdate(wxUpdateUIEvent&);
     void OnViewClinoUpdate(wxUpdateUIEvent&);
+    void OnViewGridUpdate(wxUpdateUIEvent&);
     void OnShowEntrancesUpdate(wxUpdateUIEvent&);
     void OnShowExportedPtsUpdate(wxUpdateUIEvent&);
     void OnShowFixedPtsUpdate(wxUpdateUIEvent&);
