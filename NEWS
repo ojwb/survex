@@ -14,6 +14,8 @@
 
 * Only printer drivers were being linked with @LIBOBJS@ - fixed.
 
+* src/miniam.pl: Fixed handling of @LIBOBJS@
+
 Changes in 0.92-prerelease3:
 
 * xcaverot: made switching between plan and elevation work more smoothly
