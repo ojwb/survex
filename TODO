@@ -183,3 +183,5 @@ caverot: on RISC OS now fall back to using 2 or even just one screen
 bank if we can't find a mode where we can create 3 banks [FIXME: need
 to test this works]
 
+.ico files for pos, err, and inf?
+
