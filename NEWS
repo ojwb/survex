@@ -17,6 +17,8 @@ Changes in 1.0.4:
 
 * img routines: img_rewind() now returns a value indicating success/failure.
 
+* improvements to .plt file reading.
+
 * (MacOS X version): aven: aven now builds on MacOS X - we just need to sort
   out packaging now...
 

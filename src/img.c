@@ -170,11 +170,10 @@ getline_alloc(FILE *fh)
       ch = getc(fh);
    }
    if (ch == '\n' || ch == '\r') {
-      /* remove any further eol chars (for DOS text files) */
-      do {
-	 ch = getc(fh);
-      } while (ch == '\n' || ch == '\r');
-      ungetc(ch, fh); /* we don't want it, so put it back */
+      int otherone = ch ^ ('\n' ^ '\r');
+      ch = getc(fh);
+      /* if it's not the other eol character, put it back */
+      if (ch != otherone) ungetc(ch, fh);
    }
    buf[i++] = '\0';
    return buf;
@@ -247,6 +246,7 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->flags = 0;
 
    /* for version 3 we use label_buf to store the prefix for reuse */
+   /* for version -2, 0 value indicates we haven't entered a survey yet */
    pimg->label_len = 0;
 
    pimg->survey = NULL;
@@ -302,66 +302,65 @@ img_open_survey(const char *fnm, const char *survey)
    if (len > LITLEN(EXT_PLT) + 1 &&
        fnm[len - LITLEN(EXT_PLT) - 1] == FNM_SEP_EXT &&
        my_strcasecmp(fnm + len - LITLEN(EXT_PLT), EXT_PLT) == 0) {
-      char *line = NULL;
+      long fpos;
 
       pimg->version = -2;
+      pimg->start = 0;
       if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
       if (!pimg->datestamp) {
 	 img_errno = IMG_OUTOFMEMORY;
 	 goto error;
       }
-      do {
-	 do {
-	    osfree(line);
-	    line = getline_alloc(pimg->fh);
-	    if (!line) {
-	       img_errno = IMG_OUTOFMEMORY;
-	       goto error;
-	    }
-	    if (line[0] == '\x1a') {
-	       osfree(line);
-	       pimg->pending = img_STOP + 4;
+      while (1) {
+	 int ch = getc(pimg->fh);
+	 switch (ch) {
+	  case '\x1a':
+	    fseek(pimg->fh, -1, SEEK_CUR);
+	    /* FALL THRU */
+	  case EOF:
+	    pimg->start = ftell(pimg->fh);
+	    return pimg;
+	  case 'N': {
+	    char *line, *q;
+	    fpos = ftell(pimg->fh) - 1;
+	    if (!pimg->survey) {
+	       /* FIXME : if there's only one survey in the file, it'd be nice
+		* to use its description as the title here...
+		*/
+	       pimg->start = fpos;
 	       return pimg;
 	    }
-	    if (feof(pimg->fh)) {
+	    line = getline_alloc(pimg->fh);
+	    while (line[len] > 32) ++len;
+	    if (pimg->survey_len != len ||
+		memcmp(line, pimg->survey, len) != 0) {
 	       osfree(line);
-	       img_errno = IMG_BADFORMAT;
-	       goto error;
+	       continue;
 	    }
-	 } while (line[0] != 'N');
-
-	 len = 1;
-	 while (line[len] > 32) ++len;
-      } while (pimg->survey && (pimg->survey_len != len - 1 ||
-	       memcmp(line + 1, pimg->survey, pimg->survey_len) != 0));
-
-      if (!check_label_space(pimg, len)) {
-	 img_errno = IMG_OUTOFMEMORY;
-	 goto error;
-      }
-
-      --len;
-      pimg->label_len = len;
-      pimg->label = pimg->label_buf;
-      memcpy(pimg->label, line + 1, len);
-      pimg->label[len] = '\0';
-      if (pimg->survey) {
-	 char *q = strchr(line + len, 'C');
-	 if (q && q[1]) {
-	    osfree(pimg->title);
-	    pimg->title = osstrdup(q + 1);
-	 } else if (!pimg->title) {
-	    pimg->title = osstrdup(pimg->label);
+	    q = strchr(line + len, 'C');
+	    if (q && q[1]) {
+		osfree(pimg->title);
+		pimg->title = osstrdup(q + 1);
+	    } else if (!pimg->title) {
+		pimg->title = osstrdup(pimg->label);
+	    }
+	    osfree(line);
+	    if (!pimg->title) {
+		img_errno = IMG_OUTOFMEMORY;
+		goto error;
+	    }
+	    if (!pimg->start) pimg->start = fpos;
+	    return pimg;
+	  }
+	  case 'M': case 'D':
+	    pimg->start = ftell(pimg->fh) - 1;
+	    break;
 	 }
-	 if (!pimg->title) {
-	    img_errno = IMG_OUTOFMEMORY;
-	    goto error;
+	 while (ch != '\n' && ch != '\r') {
+	    ch = getc(pimg->fh);
 	 }
       }
-      osfree(line);
-      pimg->start = 0;
-      return pimg;
    }
 
    if (fread(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
@@ -435,11 +434,12 @@ img_rewind(img *pimg)
    /* [version -1] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
     * [version 3] not in the middle of turning a LINE into a MOVE */
-   pimg->pending = 0; /* FIXME: consider rewind on .plt with survey matching nothing ... */
+   pimg->pending = 0;
 
    img_errno = IMG_NONE;
 
    /* for version 3 we use label_buf to store the prefix for reuse */
+   /* for version -2, 0 value indicates we haven't entered a survey yet */
    pimg->label_len = 0;
    return 1;
 }
@@ -964,8 +964,11 @@ img_read_item(img *pimg, img_point *p)
       return img_LABEL;
    } else {
       /* version -2: Compass .plt file */
-      if (pimg->pending) {
-	 /* pending MOVE or LINE or STOP */
+      if (pimg->pending > 0) {
+	 /* -1 signals we've entered the first survey we want to
+	  * read, and need to fudge lots if the first action is 'D'...
+	  */
+	 /* pending MOVE or LINE */
 	 int r = pimg->pending - 4;
 	 pimg->pending = 0;
 	 pimg->flags = 0;
@@ -974,14 +977,48 @@ img_read_item(img *pimg, img_point *p)
       }
 
       while (1) {
-	 char *line = getline_alloc(pimg->fh);
+	 char *line;
 	 char *q;
 	 size_t len = 0;
+	 int ch = getc(pimg->fh);
 
-	 switch (line[0]) {
-	    case 'M': case 'D':
+	 switch (ch) {
+	    case '\x1a': case EOF: /* Don't insist on ^Z at end of file */
+	       return img_STOP;
+	    case 'N':
+	       line = getline_alloc(pimg->fh);
+	       while (line[len] > 32) ++len;
+	       if (pimg->survey && pimg->label_len == 0)
+		  pimg->pending = -1;
+	       if (!check_label_space(pimg, len + 1)) {
+		  osfree(line);
+		  img_errno = IMG_OUTOFMEMORY;
+		  return img_BAD;
+	       }
+	       pimg->label_len = len;
+	       pimg->label = pimg->label_buf;
+	       memcpy(pimg->label, line, len);
+	       pimg->label[len] = '\0';
+	       osfree(line);
+	       break;
+	    case 'M': case 'D': {
 	       /* Move or Draw */
-	       if (sscanf(line + 1, "%lf %lf %lf", &p->x, &p->y, &p->z) != 3) {
+	       long fpos = -1;
+	       if (pimg->label_len == 0) {
+		  /* We're only holding onto this line in case the first line
+		   * of the 'N' is a 'D', so reprocess this line as an 'X'
+		   * to skip it for now...
+		   */
+		  ungetc('X', pimg->fh);
+		  break;
+	       }
+	       if (ch == 'D' && pimg->pending == -1) {
+		  fpos = ftell(pimg->fh) - 1;
+		  fseek(pimg->fh, pimg->start, SEEK_SET);
+		  ch = getc(pimg->fh);
+	       }
+	       line = getline_alloc(pimg->fh);
+	       if (sscanf(line, "%lf %lf %lf", &p->x, &p->y, &p->z) != 3) {
 		  osfree(line);
 		  if (ferror(pimg->fh)) {
 		     img_errno = IMG_READERROR;
@@ -1008,51 +1045,27 @@ img_read_item(img *pimg, img_point *p)
 	       pimg->label = pimg->label_buf;
 	       pimg->label[pimg->label_len] = '.';
 	       memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
-	       pimg->pending = (line[0] == 'M' ? img_MOVE : img_LINE) + 4;
+	       pimg->pending = (ch ? img_MOVE : img_LINE) + 4;
 	       osfree(line);
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
+	       if (fpos != -1) fseek(pimg->fh, fpos, SEEK_SET);
 	       return img_LABEL;
+	    }
 	    case 'X': case 'F': case 'S':
 	       /* bounding boX (marks end of survey), Feature survey, or
 		* new Section - skip to next survey */
-	       do {
+	       if (pimg->survey) return img_STOP;
+	       while (1) {
 		  do {
-		     osfree(line);
-		     line = getline_alloc(pimg->fh);
-		     if (!line) {
-			img_errno = IMG_OUTOFMEMORY;
-			return img_BAD;
-		     }
-		     if (line[0] == '\x1a') {
-			osfree(line);
-			return img_STOP;
-		     }
-		     if (feof(pimg->fh)) {
-			osfree(line);
-			img_errno = IMG_BADFORMAT;
-			return img_BAD;
-		     }
-		  } while (line[0] != 'N');
-
-		  len = 1;
-		  while (line[len] > 32) ++len;
-	       } while (pimg->survey && (pimg->survey_len != len - 1 ||
-			memcmp(line + 1, pimg->survey, pimg->survey_len) != 0));
-
-	       if (!check_label_space(pimg, len)) {
-		  img_errno = IMG_OUTOFMEMORY;
-		  return img_BAD;
+		     ch = getc(pimg->fh);
+		  } while (ch != '\n' && ch != '\r');
+		  ch = getc(pimg->fh);
+		  if (ch == 'N') break;
+		  if (ch == '\x1a' || ch == EOF) return img_STOP;
 	       }
-	       --len;
-	       pimg->label_len = len;
-	       pimg->label = pimg->label_buf;
-	       memcpy(pimg->label, line + 1, len);
-	       pimg->label[len] = '\0';
-
-	       osfree(line);
+	       ungetc('N', pimg->fh);
 	       break;
 	    default:
-	       osfree(line);
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	 }
