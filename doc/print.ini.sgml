@@ -12,7 +12,7 @@
 <refsect1><title>Description</title>
 
 <Para>
-The print.ini file serves as a repository for printer descriptions for
+The print.ini file contains printer descriptions for
 the Survex printer drivers.
 </Para>
 
@@ -88,17 +88,15 @@ and bj (for driving Canon BJ printers).
 <Para>
 In the unlikely event that you need to change the printer control
 codes, here is a quick overview of the format: printable characters
-are literal, except for backslash.  A backslash
-<!-- stupid docbook-to-man can't cope with \...
-'\'
-indicates that the following character is to be interpreted as a
-control code.  So \[ means send the value 27 decimal (1B hex,
-also called 'ESC' for Escape). If the backslash is followed by a small
-x and two hex digits - e.g \x0c, then that means send the code 0C hex
-(12 decimal, also called 'FF' for FormFeed).
--->
-followed by an 'x' followed by two hex digits represents the character
-with that hex value.  A double backslash means a literal backslash.
+are literal, except for backslash.  A backslash '\'
+indicates that the following character or characters are to be
+interpreted as a control code, as follows:
+\ followed by an 'x' followed by two hex digits
+represents the character with that hex value;
+a double backslash means a literal backslash;
+\0 is nul (0); \t is tab (9); \n is newline (10);
+\r is return (13); \[ is escape (27); \? is delete (127);
+\A - \Z are (1) to (26).
 </Para>
 
 <Para>

@@ -34,7 +34,11 @@ level sump fudge:
 nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in height across the sump
 *end
 
-``Quick start'' section - lead people through entering and processing
+``Quick start'' section
+
+- install (by OS): unpacking, configuration (language, where support files live)
+
+- lead people through entering and processing
 a sample survey.  Take examples from surveying books and real surveys.
 
 
@@ -103,8 +107,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-07-26 14:19:03 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.111 2003-07-26 14:19:03 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-09-06 18:29:02 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.112 2003-09-06 18:29:02 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
