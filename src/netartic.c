@@ -78,18 +78,13 @@ iter:
 #endif
    for (i = 0; i <= 2 && stn->leg[i]; i++) {
       if (i != back) {
-	 long c = stn->leg[i]->l.to->colour;
+	 node *to = stn->leg[i]->l.to;
+	 long c = to->colour;
       
 	 if (c < 0) {
 	    /* we've found a fixed point */
 	    c = -c;
-	    stn->leg[i]->l.to->colour = c;
-	    /* move it onto the normal stnlist - FIXME: we can avoid this
-	     * step by removing the need to remove stn from a list - store
-	     * a dummy node in the list head, then just reknit in the add_
-	     * routine... */
-	    remove_stn_from_list(&fixedlist, stn);
-	    add_stn_to_list(&stnlist, stn);
+	    to->colour = c;
 	 }
 	 
 	 if (c && c < min) min = c;
@@ -292,6 +287,7 @@ articulate(void)
 #ifdef DEBUG_ARTIC
 	   printf("Component:\n");
 #endif
+	   ASSERT(comp->artic);
 	   for (art = comp->artic; art; art = art->next) {
 #ifdef DEBUG_ARTIC
 	      printf("  Articulation (%p):\n", art->stnlist);
