@@ -91,6 +91,8 @@ endif
 # If we're building aven on MacOS X, we need to bind resources to aven after
 # we build it.  Use aven-rez as a timestamp file to track whether we've
 # bound resources.
+# The MacOS X install program doesn't copy the resource fork (clever eh?) so
+# we reapply the resources after installing too...
 if AVEN
 if MACOSX
 AVEN_REZ = aven-rez
@@ -98,6 +100,9 @@ AVEN_REZ = aven-rez
 aven-rez: aven
 	`@WXCONFIG@ --rezflags` aven
 	touch aven-rez
+
+install-exec-hook:
+	`@WXCONFIG@ --rezflags` $(bindir)/aven
 else !MACOSX
 AVEN_REZ =
 endif !MACOSX

@@ -13,6 +13,9 @@
 
 * Fixed standard graphics for "Note", "Warning", etc in the PostScript manual.
 
+* (MacOS X version): aven: the keyboard and mouse now work!  It turns out that
+  we must apply resources *after* installing.
+
 * (MacOS X version): fixed not to try to build aven if wxWindows isn't
   installed.
 

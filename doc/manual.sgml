@@ -107,8 +107,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-09-06 18:40:23 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.113 2003-09-06 18:40:23 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-09-15 00:46:02 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.114 2003-09-15 00:46:02 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -130,8 +130,8 @@ manual.
 <Para>&survexsuite; is a multi-platform open-source cave surveying
 package.
 currently runs on &unix;, Microsoft Windows 95/NT and
-successors, &msdos;, and Acorn &riscos; machines.
-We're working on a version for MacOS X, and investigating support for various
+successors, MacOS X, &msdos;, and Acorn &riscos; machines.
+We're investigating support for various
 palmtop devices.
 </Para>
 
@@ -3586,8 +3586,9 @@ the printer drivers and other utility programs being pulled in
 and integrated into the menus.</Para>
 
 <Para>Aven is built on &wxwindows;, which means that can easily support
-Unix and Microsoft Windows.  Mac support is close to complete (at least
-for OS X).  Support for &msdos; is possible if there's sufficient interest.
+Unix, Microsoft Windows, and MacOS X.  MacOS 9 support is possible, but
+requires somebody with MacOS 9 and a compiler to build it with.
+Support for &msdos; is possible if there's sufficient interest.
 Support for &riscos; is unlikely unless someone very enthusiastic steps
 forward to do the porting work.</Para>
 
