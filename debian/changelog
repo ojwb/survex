@@ -12,6 +12,9 @@ survex (1.0.2) unstable; urgency=low
 
   * Updated ca and es internationalisations.
 
+  * img library enhanced to allow Compass .plt files to be read as if they
+    were .3d files.
+
  -- Wookey <wookey@survex.com>  Sun, 17 Mar 2002 12:42:44 +0000
 
 survex (1.0.1) unstable; urgency=low
