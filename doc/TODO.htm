@@ -211,7 +211,17 @@ bar.2 moved by (-0.02, -0.05, 0.03)
 
 <li>v4 .3d format?
 
-<li>MacOS X packaging
+<li>MacOS X packaging - make Aven.app a bundle - structure like so:
+<pre>
+	Aven.app/
+		Contents/
+			MacOS/
+				Aven
+		Info.plist
+		Resources/
+</pre>
+
+And we need to set Aven.app's bundle bit.
 
 <li>look at solution by QR factorisation in matrix.c more
 
