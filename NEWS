@@ -29,6 +29,9 @@
 * (Unix version) configure auto-probe for wxWindows updated to cope
   with wxWindows version 2.2.8 (still works with older versions too).
 
+* Diving and cylpolar styles now accept dz (change in depth) rather than
+  requiring absolute depths and taking the difference.
+
 Changes in 0.99-prerelease5:
 
 * aven: improved initial sizing of window; "Toggle rotation" toolbar

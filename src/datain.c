@@ -911,6 +911,10 @@ data_diving(void)
 	  frdepth = todepth;
 	  todepth = read_numeric(fFalse);
 	  break;
+       case Dz:
+	  frdepth = 0;
+	  todepth = read_numeric(fFalse);
+	  break;
        case Ignore: skipword(); break;
        case IgnoreAllAndNewLine:
 	 skipline();
@@ -1220,6 +1224,10 @@ data_cylpolar(void)
        case ToDepth: todepth = read_numeric(fFalse); break;
        case Depth:
 	  frdepth = todepth;
+	  todepth = read_numeric(fFalse);
+	  break;
+       case Dz:
+	  frdepth = 0;
 	  todepth = read_numeric(fFalse);
 	  break;
        case Ignore: skipword(); break;

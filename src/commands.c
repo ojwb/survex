@@ -893,10 +893,10 @@ cmd_data(void)
       BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir)
 	 | BIT(FrCount) | BIT(ToCount) | BIT(Count) | BIT(Comp) | BIT(Clino),
       BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) | BIT(Tape) | BIT(Comp)
-	 | BIT(FrDepth) | BIT(ToDepth) | BIT(Depth),
+	 | BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(Dz),
       BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dx) | BIT(Dy) | BIT(Dz),
       BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) | BIT(Tape) | BIT(Comp)
-	 | BIT(FrDepth) | BIT(ToDepth) | BIT(Depth),
+	 | BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(Dz),
       BIT(Fr) | BIT(To) | BIT(Station)
    };
 
@@ -1032,10 +1032,15 @@ cmd_data(void)
 	       if (TSTBIT(mUsed, Count)) fBad = fTrue;
 	       break;
 	     case Depth:
-	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth))) fBad = fTrue;
+	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(Dz)))
+		  fBad = fTrue;
 	       break;
 	     case FrDepth: case ToDepth:
-	       if (TSTBIT(mUsed, Depth)) fBad = fTrue;
+	       if (mUsed & (BIT(Depth) | BIT(Dz))) fBad = fTrue;
+	       break;
+	     case Dz:
+	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(Depth)))
+		  fBad = fTrue;
 	       break;
 	     case Newline:
 	       if (mUsed & ~m_multi) {
@@ -1076,14 +1081,22 @@ cmd_data(void)
 
    /* printf("mUsed = 0x%x\n", mUsed); */
 
-   if (mUsed & (BIT(Fr) | BIT(To))) mUsed |= BIT(Station);
-   else if (TSTBIT(mUsed, Station)) mUsed |= BIT(Fr) | BIT(To);
+   if (mUsed & (BIT(Fr) | BIT(To)))
+      mUsed |= BIT(Station);
+   else if (TSTBIT(mUsed, Station))
+      mUsed |= BIT(Fr) | BIT(To);
 
-   if (mUsed & (BIT(FrDepth) | BIT(ToDepth))) mUsed |= BIT(Depth);
-   else if (TSTBIT(mUsed, Depth)) mUsed |= BIT(FrDepth) | BIT(ToDepth);
+   if (mUsed & (BIT(FrDepth) | BIT(ToDepth)))
+      mUsed |= BIT(Depth) | BIT(Dz);
+   else if (TSTBIT(mUsed, Depth))
+      mUsed |= BIT(FrDepth) | BIT(ToDepth) | BIT(Dz);
+   else if (TSTBIT(mUsed, Dz) && TSTBIT(m, Depth))
+      mUsed |= BIT(FrDepth) | BIT(ToDepth) | BIT(Depth);
 
-   if (mUsed & (BIT(FrCount) | BIT(ToCount))) mUsed |= BIT(Count);
-   else if (TSTBIT(mUsed, Count)) mUsed |= BIT(FrCount) | BIT(ToCount);
+   if (mUsed & (BIT(FrCount) | BIT(ToCount)))
+      mUsed |= BIT(Count);
+   else if (TSTBIT(mUsed, Count))
+      mUsed |= BIT(FrCount) | BIT(ToCount);
 
    /* printf("mUsed = 0x%x, opt = 0x%x, mask = 0x%x\n", mUsed,
 	  mask_optional[style], mask[style]); */

@@ -92,8 +92,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-11-08 19:25:30 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.71 2001-11-08 19:25:30 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-11-09 11:16:40 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.72 2001-11-09 11:16:40 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1240,7 +1240,7 @@ NORMAL FROM TO LENGTH <!--[BACK]-->BEARING <!--[BACK]-->GRADIENT
 </Para>
 
 <Para>
-DIVING FROM TO LENGTH <!--[BACK]-->BEARING FROMDEPTH TODEPTH
+DIVING FROM TO LENGTH <!--[BACK]-->BEARING FROMDEPTH TODEPTH DZ
 </Para>
 
 <Para>
@@ -1259,7 +1259,7 @@ TOPOFIL FROM TO FROMCOUNT TOCOUNT <!--[BACK]-->BEARING <!--[BACK]-->GRADIENT
 </Para>
 
 <Para>
-CYLPOLAR FROM TO TAPE <!--[BACK]-->BEARING FROMDEPTH TODEPTH
+CYLPOLAR FROM TO TAPE <!--[BACK]-->BEARING FROMDEPTH TODEPTH DZ
 </Para>
 
 <Para>
