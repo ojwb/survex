@@ -56,8 +56,8 @@ nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in hei
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-06-10 17:42:43 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.28 2001-06-10 17:42:43 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-06-12 23:39:37 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.29 2001-06-12 23:39:37 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -2510,9 +2510,8 @@ these values.
 </Para>
 
 <Para>
-Note that a similar effect can be achieved by using the -N command
-line option to stop clino corrections being applied to -90 and
-+90 clino readings.
+Note that a similar effect can be achieved by using the "*infer plumbs" command
+to stop clino corrections being applied to -90 and +90 clino readings.
 </Para>
 
 <Para>
@@ -2531,6 +2530,18 @@ the compass reading in the usual way
 (U,D may be used instead of UP,DOWN (not case sensitive), or +V
 and -V).
 </Para>
+
+<Para>
+Legs surveyed across the surface of a static body of water where no
+clino reading is taken (since the surface of the water can be assumed
+to be flat) can be indicated by using LEVEL in place of a clino reading.
+This prevents the clino correction being applied.
+</Para>
+
+<programlisting>
+1 2 11.37 190 -12
+3 2  7.36 017 LEVEL
+3 4  1.62 091 LEVEL</programlisting>
 
 </Sect2>
 
