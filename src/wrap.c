@@ -93,7 +93,7 @@ static void fatal(char *en, void (*fn)( char * ), char*szArg) {
   exit(EXIT_FAILURE);
 }
 
-extern void *xmalloc(size_t size) {
+static void *xmalloc(size_t size) {
    void *p = malloc(size);
    if (!p) fatal("Out of memory!", NULL, NULL);
    return p;
@@ -290,7 +290,7 @@ static void process_command_line(int argc, char **argv) {
 
   *szSurveyTitle='\0';
 
-  if (argc<2) 
+  if (argc<2)
     fatal("No arguments given", NULL, NULL);
 
   for (j = 0; ++j < argc; ) process_command(argv[j], "");
@@ -618,7 +618,7 @@ main(int argc, char **argv) {
    fputs("; This file was automatically generated from a pre-0.90 survex command line\n"
 	 "; Process this file using the command line:\n"
 	 ";", fout);
-   
+
    i = 0;
    while (args[i]) {
       /* may need to quote arguments, but for now just quote arguments with
@@ -630,14 +630,14 @@ main(int argc, char **argv) {
       i++;
    }
    fputs("\n\n", fout);
-   
+
    while (head) {
       fputs(head->line, fout);
       head = head->next;
    }
 
    fclose(fout);
-   
+
 #ifdef HAVE_EXECV
    return execvp(args[0], args);
 #else
@@ -648,7 +648,7 @@ main(int argc, char **argv) {
       i++;
    }
    cmd = xmalloc(len);
-   
+
    p = cmd;
    strcpy(p, args[0]);
    i = 1;
@@ -657,7 +657,7 @@ main(int argc, char **argv) {
       sprintf(p, " \"%s\"", args[i]);
       i++;
    }
-   return system(cmd);      
+   return system(cmd);
 #endif
 #if 0
    /* printf("return from execv = %d, errno = %d\n", res, errno); */
