@@ -36,7 +36,8 @@
 #include "message.h"
 #endif
 
-#define TEXT_HEIGHT	0.6	
+/* default values - can be overridden with --htext and --msize respectively */
+#define TEXT_HEIGHT	0.6
 #define MARKER_SIZE	0.8
 
 int main( int argc, char *argv[] ) {
@@ -106,14 +107,14 @@ int main( int argc, char *argv[] ) {
 	 break;
        case 't': /* Text height */
 	 text_height = strtod(optarg,NULL);  /* FIXME check for trailing garbage... */
-#ifdef DEBUG
-	printf("Text Height: '%s' input, converted to %6.2f\n", optarg, text_height);
+#ifdef DEBUG_3DTODXF
+	 printf("Text Height: '%s' input, converted to %6.2f\n", optarg, text_height);
 #endif
 	 break;
        case 'm': /* Marker size */
 	 marker_size = strtod(optarg,NULL);
-#ifdef DEBUG
-	printf("Marker Size: '%s', converted to %6.2f\n", optarg, marker_size);
+#ifdef DEBUG_3DTODXF
+	 printf("Marker Size: '%s', converted to %6.2f\n", optarg, marker_size);
 #endif
 	 break;
        default:
@@ -142,7 +143,7 @@ int main( int argc, char *argv[] ) {
       exit(1);
    }
 
-#ifdef STANDALONE /* create these messages in msessages.txt ? */
+#ifdef DEBUG_3DTODXF
    printf("3d file title `%s'\n",szTitle);
    printf("Creation time `%s'\n",szDateStamp);
 #endif 
@@ -153,12 +154,12 @@ int main( int argc, char *argv[] ) {
       item=img_read_datum( pimg, szName, &x, &y, &z );
       switch (item) {
        case img_LINE:
-         if (x < min_x) min_x = x1;
-	 if (x > max_x) max_x = x1;
-         if (y < min_y) min_y = y1;
-	 if (y > max_y) max_y = y1;
-	 if (z < min_z) min_z = z1;
-	 if (z > max_z) max_z = z1;
+         if (x1 < min_x) min_x = x1;
+	 if (x1 > max_x) max_x = x1;
+         if (y1 < min_y) min_y = y1;
+	 if (y1 > max_y) max_y = y1;
+	 if (z1 < min_z) min_z = z1;
+	 if (z1 > max_z) max_z = z1;
          if (x < min_x) min_x = x;
          if (x > max_x) max_x = x;
          if (y < min_y) min_y = y;
@@ -290,7 +291,9 @@ int main( int argc, char *argv[] ) {
 #endif
          break;
        default:
-         printf("other info tag (code %d) ignored\n",item); /* <<<<< cerate message in messages.txt ? */
+#ifdef DEBUG_3DTODXF
+         printf("other info tag (code %d) ignored\n",item);
+#endif
       }
    } while (item!=img_STOP);
    img_close(pimg);
