@@ -381,6 +381,7 @@ class GfxCore : public wxWindow {
     wxString FormatLength(Double, bool scalebar = true);
 
     void SetScale(Double scale);
+    void SetScaleInitial(Double scale);
     void RedrawOffscreen();
     void TryToFreeArrays();
     void FirstShow();
