@@ -1,3 +1,10 @@
+* aven: Changed File->Exit to File->Quit.
+
+* Removed some unused messages from the message files.
+
+* (Unix version): Fixed SRPMs to build on RedHat 9 and Fedora Core 1 (patch
+  from John Pybus).
+
 Changes in 1.0.28:
 
 * Fixed 3d file reading code to fix incorrect unpacking of compressed station
