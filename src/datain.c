@@ -980,7 +980,7 @@ data_normal(void)
        case Comp:
 	  comp = read_numeric_or_omit();
 	  break;
-       case Clino: 
+       case Clino:
 	  clin = read_numeric(fTrue);
 	  if (clin == HUGE_REAL) {
 	     clin = handle_plumb(&fPlumbed);

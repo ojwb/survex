@@ -374,7 +374,7 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    xpPageWidth--;
    ypPageDepth = ypPageDepth - (int)(10 * *pscY);
    DeleteDC(psd.hDC);
-   
+
    dn = GlobalLock(psd.hDevNames);
    if (dn) {
       char *p = osstrdup((char *)dn + dn->wDeviceOffset);

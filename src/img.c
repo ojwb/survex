@@ -285,7 +285,7 @@ img_open_survey(const char *fnm, const char *survey)
       pimg->start = 0;
       return pimg;
    }
-   
+
    if (len > LITLEN(EXT_PLT) + 1 &&
        fnm[len - LITLEN(EXT_PLT) - 1] == FNM_SEP_EXT &&
        my_strcasecmp(fnm + len - LITLEN(EXT_PLT), EXT_PLT) == 0) {
@@ -323,7 +323,7 @@ img_open_survey(const char *fnm, const char *survey)
       } while (pimg->survey && (pimg->survey_len != len - 1 ||
 	       memcmp(line + 1, pimg->survey, pimg->survey_len) != 0));
 
-      if (len > pimg->buf_len) { 
+      if (len > pimg->buf_len) {
 	 char *b = xosrealloc(pimg->label_buf, len);
 	 if (!b) {
 	    img_errno = IMG_OUTOFMEMORY;
@@ -338,7 +338,7 @@ img_open_survey(const char *fnm, const char *survey)
       memcpy(pimg->label, line + 1, len);
       pimg->label[len] = '\0';
       if (pimg->survey) {
-	 char *q = strchr(line + len, 'C'); 
+	 char *q = strchr(line + len, 'C');
 	 if (q && q[1]) {
 	    osfree(pimg->title);
 	    pimg->title = osstrdup(q + 1);
@@ -994,7 +994,7 @@ img_read_item(img *pimg, img_point *p)
 	       q = strchr(line, 'S');
 	       if (!q) {
 		  osfree(line);
-		  img_errno = IMG_BADFORMAT; 
+		  img_errno = IMG_BADFORMAT;
 		  return img_BAD;
 	       }
 	       ++q;
@@ -1002,7 +1002,7 @@ img_read_item(img *pimg, img_point *p)
 	       while (q[len] > ' ') ++len;
 	       q[len] = '\0';
 	       len += 2; /* '.' and '\0' */
-	       if (pimg->label_len + len > pimg->buf_len) { 
+	       if (pimg->label_len + len > pimg->buf_len) {
 	    	  char *b = xosrealloc(pimg->label_buf, pimg->label_len + len);
 		  if (!b) {
 		     img_errno = IMG_OUTOFMEMORY;

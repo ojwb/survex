@@ -83,7 +83,7 @@ main(int argc, char **argv)
    if (!pimg) fatalerror(img_error(), fnm);
    printf("TITLE \"%s\"\n", pimg->title);
    printf("DATE \"%s\"\n", pimg->datestamp);
-   printf("VERSION %d\n", pimg->version);   
+   printf("VERSION %d\n", pimg->version);
    printf("--\n");
 
    do {

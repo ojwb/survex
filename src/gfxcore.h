@@ -584,7 +584,7 @@ public:
 	
     void OnToggleDegrees();
     void OnToggleDegreesUpdate(wxUpdateUIEvent& cmd);
-    
+
 private:
     DECLARE_EVENT_TABLE()
 };

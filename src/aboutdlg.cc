@@ -66,14 +66,14 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 	    dc.GetTextExtent(l.substr(0, a), &w, &h);
 	    if (w <= 380) break;
 	    do { --a; } while (a > 1 && l[a] != ' ');
-	} 
+	}
 
 	if (!licence_str.empty()) licence_str += '\n';
 	licence_str += l.substr(0, a);
 	if (a < l.length() && l[a] == ' ') ++a;
 	l = l.substr(a);
     } while (!l.empty());
-    
+
     wxStaticText* licence = new wxStaticText(this, 506, licence_str);
     wxButton* close = new wxButton(this, wxID_OK, wxString(msg(/*Close*/204)));
     close->SetDefault();

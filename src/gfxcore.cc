@@ -1598,7 +1598,7 @@ void GfxCore::Draw2dIndicators()
 	    str = wxString::Format("%03d", int(m_PanAngle * 180.0 / M_PI));
 	} else {
 	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / M_PI));
-	}	    
+	}	
 	m_DrawDC.GetTextExtent(str, &w, &h);
 	m_DrawDC.DrawText(str, pan_centre_x + width / 2 - w, height);
 	str = wxString(msg(/*Facing*/203));
@@ -1612,7 +1612,7 @@ void GfxCore::Draw2dIndicators()
 	    angle = int(-m_TiltAngle * 180.0 / M_PI);
 	} else {
 	    angle = int(-m_TiltAngle * 200.0 / M_PI);
-	}	    
+	}	
 	str = angle ? wxString::Format("%+03d", angle) : wxString("00");
 	m_DrawDC.GetTextExtent(str, &w, &h);
 	m_DrawDC.DrawText(str, elev_centre_x + width / 2 - w, height);
@@ -1982,7 +1982,7 @@ void GfxCore::DrawScalebar()
 	    multiplier *= 5280.0;
 	}
     }
-    
+
     // Calculate the length of the scale bar.
     Double size_snap = pow(10.0, floor(log10(0.75 * across_screen)));
     Double t = across_screen * 0.75 / size_snap;
@@ -3273,7 +3273,7 @@ void GfxCore::OnIndicatorsUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnToggleMetric()
 {
     m_Metric = !m_Metric;
-    Refresh();    
+    Refresh();
 }
 
 void GfxCore::OnToggleMetricUpdate(wxUpdateUIEvent& cmd)
@@ -3285,7 +3285,7 @@ void GfxCore::OnToggleMetricUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnToggleDegrees()
 {
     m_Degrees = !m_Degrees;
-    Refresh();    
+    Refresh();
 }
 
 void GfxCore::OnToggleDegreesUpdate(wxUpdateUIEvent& cmd)

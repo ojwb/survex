@@ -395,10 +395,10 @@ public:
 
     void OnToggleMetric(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnToggleMetric(); }
     void OnToggleDegrees(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnToggleDegrees(); }
-    
+
     void OnToggleMetricUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleMetricUpdate(event); }
     void OnToggleDegreesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleDegreesUpdate(event); }
-    
+
     void OnViewSidePanelUpdate(wxUpdateUIEvent& event);
     void OnViewSidePanel(wxCommandEvent& event);
     void ToggleSidePanel();

@@ -308,7 +308,7 @@ set_name(img_point p, const char *s)
       char data[sizeof(int) * 3];
       int x[3];
    } u;
-   
+
    u.x[0] = p.x * 100;
    u.x[1] = p.y * 100;
    u.x[2] = p.z * 100;
@@ -339,7 +339,7 @@ find_name(const img_point *p)
       int x[3];
    } u;
    ASSERT(p);
-   
+
    u.x[0] = p->x * 100;
    u.x[1] = p->y * 100;
    u.x[2] = p->z * 100;
@@ -378,7 +378,7 @@ plt_label(img_point p, const char *s)
       fprintf(stderr, "PLT format can't cope with spaces in station names\n");
       exit(1);
    }
-   set_name(p, s); 
+   set_name(p, s);
 }
 
 static void
