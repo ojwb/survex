@@ -109,6 +109,7 @@
 1996.02.20 solve_matrix() should take void parameter, not empty list
 1996.04.03 fixed a warning
 1998.03.04 covariances - current just a warning that they aren't supported here
+1998.04.06 tidied up in preparation for a real covariance implementation
 */
 
 #include "debug.h"
@@ -143,7 +144,7 @@ static void sor( real FAR *M, real *B );
               /* +(Y>X?0*printf("row<col (line %d)\n",__LINE__):0) */
 /*#define M_(X,Y) ((real Huge *)M)[((((OSSIZE_T)(Y))*((Y)+1))>>1)+(X) ]*/
 
-static int    find_stn_in_tab( node *stn );
+static int find_stn_in_tab( node *stn );
 static int add_stn_to_tab( node *stn );
 static void build_matrix(long n, prefix **stn_tab);
 
@@ -163,537 +164,496 @@ typedef struct LIV { struct LIV *next; ulong min; uchar dirn; } liv;
  */
 
 static ulong visit( node *stn ) {
-  ulong min;
-  int i;
-  liv *livTos=NULL, *livTmp;
+   ulong min;
+   int i;
+   liv *livTos = NULL, *livTmp;
 iter:
-  colour++;
-  stn->colour=colour;
-  min=colour;
-  for( i=0 ; i<=2 ; i++ ) {
-    if (stn->leg[i]) {
-      if (stn->leg[i]->l.to->colour==0) {
-        livTmp=osnew(liv);
-        livTmp->next=livTos;
-        livTos=livTmp;
-        livTos->min=min;
-        livTos->dirn=reverse_leg(stn->leg[i]);
-        stn=stn->leg[i]->l.to;
-        goto iter;
+   colour++;
+   stn->colour = colour;
+   min = colour;
+   for ( i = 0 ; i <= 2 ; i++ ) {
+      if (stn->leg[i]) {
+	 if (stn->leg[i]->l.to->colour == 0) {
+	    livTmp = osnew(liv);
+	    livTmp->next = livTos;
+	    livTos = livTmp;
+	    livTos->min = min;
+	    livTos->dirn = reverse_leg(stn->leg[i]);
+	    stn = stn->leg[i]->l.to;
+	    goto iter;
 uniter:
-        i=reverse_leg(stn->leg[livTos->dirn]);
-        stn=stn->leg[livTos->dirn]->l.to;
-        if (!(min<livTos->min)) {
-          if (min>=stn->colour)
-            stn->fArtic=fTrue;
-          min=livTos->min;
-        }
-        livTmp=livTos;
-        livTos=livTos->next;
-        osfree(livTmp);
-      } else {
-        if ( stn->leg[i]->l.to->colour < min )
-          min=stn->leg[i]->l.to->colour;
+	    i = reverse_leg(stn->leg[livTos->dirn]);
+	    stn = stn->leg[livTos->dirn]->l.to;
+	    if (!(min < livTos->min)) {
+	       if (min >= stn->colour)
+		  stn->fArtic = fTrue;
+	       min = livTos->min;
+	    }
+	    livTmp = livTos;
+	    livTos = livTos->next;
+	    osfree(livTmp);
+	 } else {
+	    if ( stn->leg[i]->l.to->colour < min )
+ 	       min = stn->leg[i]->l.to->colour;
+	 }
       }
-    }
-  }
-  if (livTos)
-    goto uniter;
-  return min;
+   }
+   if (livTos) goto uniter;
+   return min;
 }
 
 static void visit_count( node *stn, ulong max ) {
-  int i;
-  int sp=0;
-  node *stn2;
-  uchar *j_s;
-  stn->status=statFixed;
-  if (fixed(stn))
-    return;
-  add_stn_to_tab(stn);
-  if (stn->fArtic)
-    return;
-  j_s=(uchar*)osmalloc((OSSIZE_T)max);
+   int i;
+   int sp = 0;
+   node *stn2;
+   uchar *j_s;
+   stn->status = statFixed;
+   if (fixed(stn)) return;
+   add_stn_to_tab(stn);
+   if (stn->fArtic) return;
+   j_s = (uchar*)osmalloc((OSSIZE_T)max);
 iter:
-  for( i=0 ; i<=2 ; i++ ) {
-    if (stn->leg[i]) {
-      stn2=stn->leg[i]->l.to;
-      if (fixed(stn2)) {
-        stn2->status=statFixed;
-      } else if (stn2->status!=statFixed) {
-        add_stn_to_tab(stn2);
-        stn2->status=statFixed;
-        if (!stn2->fArtic) {
-          ASSERT2(sp<max,"dirn stack too small in visit_count");
-          j_s[sp]=reverse_leg(stn->leg[i]);
-          sp++;
-          stn=stn2;
-          goto iter;
+   for ( i = 0 ; i <= 2 ; i++ ) {
+      if (stn->leg[i]) {
+	 stn2 = stn->leg[i]->l.to;
+	 if (fixed(stn2)) {
+	    stn2->status = statFixed;
+	 } else if (stn2->status != statFixed) {
+	    add_stn_to_tab(stn2);
+	    stn2->status = statFixed;
+	    if (!stn2->fArtic) {
+	       ASSERT2(sp<max,"dirn stack too small in visit_count");
+	       j_s[sp] = reverse_leg(stn->leg[i]);
+	       sp++;
+	       stn = stn2;
+	       goto iter;
 uniter:
-          sp--;
-          i=reverse_leg(stn->leg[j_s[sp]]);
-          stn=stn->leg[j_s[sp]]->l.to;
-        }
+	       sp--;
+	       i = reverse_leg(stn->leg[j_s[sp]]);
+	       stn = stn->leg[j_s[sp]]->l.to;
+	    }
+	 }
       }
-    }
-  }
-  if (sp>0)
-    goto uniter;
-  osfree(j_s);
-  return;
+   }
+   if (sp > 0) goto uniter;
+   osfree(j_s);
+   return;
 }
 
 extern void solve_matrix(void) {
-  node *stn, *stnStart;
-  int c,i;
+   node *stn, *stnStart;
+   int c,i;
 #ifdef DEBUG_ARTIC
-  ulong cFixed;
+   ulong cFixed;
 #endif
-  stn_tab=NULL; /* so we can just osfree it */
-  /* find articulation points and components */
-  cComponents=0;
-  colour=1;
-  stnStart=NULL;
-  FOR_EACH_STN(stn) {
-    stn->fArtic=fFalse;
-    if (fixed(stn)) {
-      stnStart=stn;
-      stn->colour=colour++;
-    } else {
-      stn->colour=0;
-    }
-  }
-  ASSERT2(stnStart,"no fixed points!");
+   stn_tab = NULL; /* so we can just osfree it */
+   /* find articulation points and components */
+   cComponents = 0;
+   colour = 1;
+   stnStart = NULL;
+   FOR_EACH_STN(stn) {
+      stn->fArtic = fFalse;
+      if (fixed(stn)) {
+	 stnStart = stn;
+	 stn->colour = colour++;
+      } else {
+	 stn->colour = 0;
+      }
+   }
+   ASSERT2(stnStart,"no fixed points!");
 #ifdef DEBUG_ARTIC
-  cFixed=colour-1;
+   cFixed = colour - 1;
 #endif
-   for(;;) {
-    int cColouredNeighbours=0,cNeighbours=0;
-    stn=stnStart;
+   for (;;) {
+      int cColouredNeighbours = 0, cNeighbours = 0;
+      stn = stnStart;
     /* see if this is a fresh component */
-    if (stn->status!=statFixed)
-      cComponents++;
-    for( i=0 ; i<=2 ; i++ ) {
-      if (stn->leg[i]) {
-        cNeighbours++;
-        if (stn->leg[i]->l.to->colour) {
-          cColouredNeighbours++;
-          stn->leg[i]->l.to->status=statFixed;
-        }
+      if (stn->status != statFixed)
+	cComponents++;
+      for ( i = 0 ; i <= 2 ; i++ ) {
+	 if (stn->leg[i]) {
+	    cNeighbours++;
+	    if (stn->leg[i]->l.to->colour) {
+	       cColouredNeighbours++;
+	       stn->leg[i]->l.to->status = statFixed;
+	    }
+	 }
       }
-    }
 #ifdef DEBUG_ARTIC
-    print_prefix(stn->name);
-    printf(" [%p] is root of component %ld\n",stn,cComponents);
-    dump_node(stn);
-    printf(" and colour = %d/%d\n",stn->colour,cFixed);
-#endif
-#ifdef DEBUG_ARTIC
-    if (cNeighbours==0) {
-      printf("0-node\n");
-    }
-#endif
-    if (cColouredNeighbours!=cNeighbours) {
-/*    stn->colour=colour; */
-      c=0;
-      for( i=0 ; i<=2 ; i++ ) {
-        if (stn->leg[i]) {
-          if (stn->leg[i]->l.to->colour==0) {
-            ulong colBefore=colour;
-            c++;
-            visit(stn->leg[i]->l.to);
-            n=colour-colBefore;
-#ifdef DEBUG_ARTIC
-            printf("visited %lu nodes\n",n);
-#endif
-            if (n==0)
-              continue;
-            if (0) {
-#if 0
-            if (n==1) {
-              /* special case for n==1 for speed !HACK! */
-              osfree(stn_tab);
- /* we just need n to be a reasonable estimate >= the number of stations
-  * left after reduction. If memory is plentiful, we can be crass.
-  */
-              stn_tab=osmalloc(n*ossizeof(prefix*));
-              /* Solve chunk of net from stn in dirn i up to stations
-               * with fArtic set or fixed() true.
-               * Then solve stations up to next set of fArtic points,
-               * and repeat until all this bit done.
-               */
-              {
-                node *stn2;
-                stn->status=statFixed;
-                stn2=stn->leg[i]->l.to;
-more0:
-                n_stn_tab=0;
-                visit_count(stn2,n);
-
-                printf("visit_count returned okay n_stn_tab=%d\n",n_stn_tab);
-
-                build_matrix(n_stn_tab,stn_tab);
-                FOR_EACH_STN(stn2) {
-                  if (stn2->fArtic && fixed(stn2)) {
-                    int d;
-                    for ( d=0 ; d<=2 ; d++ ) {
-                      if (USED(stn2,d)) {
-                        node *stn3=stn2->leg[d]->l.to;
-                        if (!fixed(stn3)) {
-                          stn2=stn3;
-                          printf("more !!! ");
-                          print_prefix(stn3->name);
-                          putnl();
-                          goto more0;
-                        }
-                      }
-                    }
-                    printf("unartic -- ");
-                    print_prefix(stn2->name);
-                    putnl();
-                    stn2->fArtic=fFalse;
-                  }
-                }
-              }
-#endif
-            } else {
-              osfree(stn_tab);
- /* we just need n to be a reasonable estimate >= the number of stations
-  * left after reduction. If memory is plentiful, we can be crass.
-  */
-              stn_tab=osmalloc((OSSIZE_T)(n*ossizeof(prefix*)));
-              /* Solve chunk of net from stn in dirn i up to stations
-               * with fArtic set or fixed() true.
-               * Then solve stations up to next set of fArtic points,
-               * and repeat until all this bit done.
-               */
-              {
-                node *stn2;
-                stn->status=statFixed;
-                stn2=stn->leg[i]->l.to;
-more:
-                n_stn_tab=0;
-                visit_count(stn2,n);
-#ifdef DEBUG_ARTIC
-                printf("visit_count returned okay\n");
-#endif
-                build_matrix(n_stn_tab,stn_tab);
-                FOR_EACH_STN(stn2) {
-                  if (stn2->fArtic && fixed(stn2)) {
-                    int d;
-                    for ( d=0 ; d<=2 ; d++ ) {
-                      if (USED(stn2,d)) {
-                        node *stn3=stn2->leg[d]->l.to;
-                        if (!fixed(stn3)) {
-                          stn2=stn3;
-                          goto more;
-                        }
-                      }
-                    }
-                    stn2->fArtic=fFalse;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      /* Special case to check if start station is an articulation point
-       * which it is iff we have to colour from it in more than one dirn
-       */
-      if (c>1)
-        stn->fArtic=fTrue;
-#if 0
-      FOR_EACH_STN(stn) {
-        printf("%ld - ",stn->colour);
-        print_prefix(stn->name);
-        putnl();
-      }
-#endif
-    }
-    if (stnStart->colour==1) {
-#ifdef DEBUG_ARTIC
-      printf("%ld components\n",cComponents);
-#endif
-      break;
-    }
-    for( stn=stnlist ; stn->colour!=stnStart->colour-1 ; stn=stn->next ) {
-      ASSERT2(stn,"ran out of coloured fixed points");
-    }
-    stnStart=stn;
-  }
-  osfree(stn_tab);
-#if 0
-  FOR_EACH_STN(stn) { /* high-light unfixed bits */
-    if (stn->status && !fixed(stn)) {
-      printf("UNFIXED (status %d) [%p]\n",stn->status,stn);
       print_prefix(stn->name);
-    }
-  }
+      printf(" [%p] is root of component %ld\n", stn, cComponents);
+      dump_node(stn);
+      printf(" and colour = %d/%d\n", stn->colour, cFixed);
+#endif
+#ifdef DEBUG_ARTIC
+      if (cNeighbours == 0) printf("0-node\n");
+#endif
+      if (cColouredNeighbours != cNeighbours) {
+/*    stn->colour=colour; */
+	 c = 0;
+	 for ( i = 0 ; i <= 2 ; i++ ) {
+	    if (stn->leg[i]) {
+	       if (stn->leg[i]->l.to->colour == 0) {
+		  ulong colBefore = colour;
+		  node *stn2;
+		  
+		  c++;
+		  visit(stn->leg[i]->l.to);
+		  n = colour-colBefore;
+#ifdef DEBUG_ARTIC
+		  printf("visited %lu nodes\n", n);
+#endif
+		  if (n == 0) continue;
+		  /* !HACK! special case for n==1? */
+		  osfree(stn_tab);
+
+		  /* we just need n to be a reasonable estimate >= the number
+		   * of stations left after reduction. If memory is
+		   * plentiful, we can be crass.
+		   */
+		  stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(prefix*)));
+
+		  /* Solve chunk of net from stn in dirn i up to stations
+                   * with fArtic set or fixed() true. Then solve stations
+                   * up to next set of fArtic points, and repeat until all
+                   * this bit done.
+		   */
+		  stn->status = statFixed;
+		  stn2 = stn->leg[i]->l.to;
+more:
+		  n_stn_tab = 0;
+		  visit_count( stn2, n );
+#ifdef DEBUG_ARTIC
+		  printf("visit_count returned okay\n");
+#endif
+		  build_matrix(n_stn_tab, stn_tab);
+		  FOR_EACH_STN(stn2) {
+		     if (stn2->fArtic && fixed(stn2)) {
+			int d;
+			for ( d = 0 ; d <= 2 ; d++ ) {
+			   if (USED(stn2, d)) {
+			      node *stn3 = stn2->leg[d]->l.to;
+			      if (!fixed(stn3)) {
+				 stn2 = stn3;
+				 goto more;
+			      }
+			   }
+			}
+			stn2->fArtic = fFalse;
+		     }
+		  }
+	       }
+            }
+	 }
+	 /* Special case to check if start station is an articulation point
+	  * which it is iff we have to colour from it in more than one dirn
+	  */
+	 if (c > 1) stn->fArtic = fTrue;
+#if 0
+	 FOR_EACH_STN(stn) {
+	    printf("%ld - ", stn->colour);
+	    print_prefix(stn->name);
+	    putnl();
+	 }
+#endif
+      }
+      if (stnStart->colour == 1) {
+#ifdef DEBUG_ARTIC
+	 printf("%ld components\n",cComponents);
+#endif
+	 break;
+      }
+      for ( stn = stnlist ; stn->colour != stnStart->colour-1 ; stn = stn->next ) {
+	 ASSERT2(stn,"ran out of coloured fixed points");
+      }
+      stnStart = stn;
+   }
+   osfree(stn_tab);
+#if 0
+   FOR_EACH_STN(stn) { /* high-light unfixed bits */
+      if (stn->status && !fixed(stn)) {
+	 printf("UNFIXED (status %d) [%p]\n", stn->status, stn);
+	 print_prefix(stn->name);
+      }
+   }
 #endif
 }
 
 static void build_matrix(long n, prefix **stn_tab) {
-  real FAR *M;
-  real *B;
-  node *stn;
-  int  row,col;
-  int  d;
-  real e,a;
+   real FAR *M;
+   real *B;
+   node *stn;
+   int  row, col;
+   int  d;
+   real e, a;
+
 #ifdef DEBUG_ARTIC
-  printf("# stations %lu\n",n);
-  {
-    int m;
-    for( m=0 ; m<n ; m++ ) {
-      print_prefix(stn_tab[m]);
-      putnl();
-    }
-  }
-#endif
-  if (n==0) {
-    out_info(msg(74)); /* no matrix */
-    return;
-  }
-  /* release any unused entries in stn_tab (warning: n==0 is bad news) */
-/*  stn_tab=osrealloc(stn_tab,n*ossizeof(prefix*)); */
-  /* (OSSIZE_T) cast may be needed if n>=181 */
-  M=osmalloc((OSSIZE_T)((((OSSIZE_T)n*(n+1))>>1))*ossizeof(real));
-  B=osmalloc((OSSIZE_T)(n*ossizeof(real)));
-
-  out_info("");
-  if (n==1)
-    out_info(msg(78));
-  else {
-    sprintf(szOut,msg(75),n);
-    out_info(szOut);
-  }
-
-  for(d=2;d>=0;d--) {
-    sprintf(szOut,msg(76),(char)('x'+d));
-    out_current_action(szOut);
-    /* Initialise M and B to zero */
-    for( row=n-1 ; row>=0 ; row-- ) {
-      B[row]=(real)0.0;
-      for( col=row ; col>=0 ; col-- )
-        M(row,col)=(real)0.0; /* might be best to zero "linearly" */
-    }
-    /* Construct matrix - Go thru' stn list & add all forward legs to M */
-    /* (so each leg goes on exactly once) */
-    FOR_EACH_STN( stn ) {
-#if DEBUG_MATRIX_BUILD
-     print_prefix(stn->name);
-     printf(" status? %d, used: %d artic %d colour %d\n",stn->status,
-      ( !!stn->leg[2])<<2 | !!stn->leg[1]<<1 | !!stn->leg[0], stn->fArtic, stn->colour );
-     {
-      int dirn;
-      for(dirn=0;dirn<=2;dirn++)
-       if (USED(stn,dirn)) {
-        printf("Leg %d, vx=%f, reverse=%d, to ",dirn, stn->leg[dirn]->v[0],
-               stn->leg[dirn]->l.reverse);
-        print_prefix(stn->leg[dirn]->l.to->name);putnl();
-       }
-      putnl();
-     }
-#endif /* DEBUG_MATRIX_BUILD */
-     if (stn->status==statFixed) {
-      int f,t;
-      int dirn;
-/*      print_prefix(stn->name); putnl(); */
-      if (fixed(stn)) {
-       for( dirn=2 ; dirn>=0 ; dirn-- )
-        if ( USED(stn,dirn) && data_here(stn->leg[dirn]) ) {
-#if DEBUG_MATRIX_BUILD
-         print_prefix(stn->name); printf(" - ");
-         print_prefix(stn->leg[dirn]->l.to->name); putnl();
-#endif /* DEBUG_MATRIX_BUILD */
-         if (!(fixed(stn->leg[dirn]->l.to)) &&
-             stn->leg[dirn]->l.to->status==statFixed) {
-          t=find_stn_in_tab(stn->leg[dirn]->l.to);
-#ifdef NO_COVARIANCES
-          e=stn->leg[dirn]->v[d];
-#else
-	  ASSERT2(0,"fix covariances code!");
-          e=stn->leg[dirn]->v[d][d]; /* !HACK! covariances */
-#endif
-          if (e!=(real)0.0) /* not an equate */ {
-           e=((real)1.0)/e;
-           a=e*stn->leg[dirn]->d[d];
-           M(t,t)+=e;
-           B[t]+=e*POS(stn,d)+a;
-#if DEBUG_MATRIX_BUILD
-           printf("--- Dealing with stn fixed at %lf\n",POS(stn,d));
-#endif /* DEBUG_MATRIX_BUILD */
-          }
-         }
-        }
-      } else {
-       f=find_stn_in_tab(stn);
-       for( dirn=2 ; dirn >= 0 ; dirn-- )
-        if ( USED(stn,dirn) && data_here(stn->leg[dirn]) ) {
-#ifdef NO_COVARIANCES
-         e=stn->leg[dirn]->v[d];
-#else
-	 ASSERT2(0,"fix covariances code!");
-         e=stn->leg[dirn]->v[d][d]; /* !HACK! covariances */
-#endif
-         if (fixed(stn->leg[dirn]->l.to)) {
-          if (e!=(real)0.0) /* Ignore equated nodes */ {
-           e=((real)1.0)/e;
-           a=e*stn->leg[dirn]->d[d];
-           M(f,f)+=e;
-           B[f]+=e*POS(stn->leg[dirn]->l.to,d)-a;
-          }
-         } else {
-          if (stn->leg[dirn]->l.to->status==statFixed) {
-           t=find_stn_in_tab(stn->leg[dirn]->l.to);
-#if DEBUG_MATRIX
-           printf("Leg %d to %d, var %f, delta %f\n",f,t,e,stn->leg[dirn]->d[d]);
-#endif
-           if (e!=(real)0.0 && t!=f) /* Ignore equated nodes & lollipops */ {
-            e=((real)1.0)/e;
-            a=e*stn->leg[(dirn)]->d[d];
-            M(f,f)+=e; B[f]-=a;
-            M(t,t)+=e; B[t]+=a;
-            if (f<t) M(t,f)-=e; else M(f,t)-=e;
-           }
-          }
-         }
-        }
+   printf("# stations %lu\n",n);
+   if (n) {
+      int m;
+      for ( m = 0 ; m < n ; m++ ) {
+	 print_prefix(stn_tab[m]);
+	 putnl();
       }
-     }
-    }
+   }
+#endif
+
+   if (n == 0) {
+      out_info(msg(74)); /* no matrix */
+      return;
+   }
+   /* release any unused entries in stn_tab (warning: n==0 is bad news) */
+   /*  stn_tab=osrealloc(stn_tab,n*ossizeof(prefix*)); */
+   /* (OSSIZE_T) cast may be needed if n>=181 */
+   M = osmalloc((OSSIZE_T)((((OSSIZE_T)n*(n+1))>>1))*ossizeof(real));
+   B = osmalloc((OSSIZE_T)(n*ossizeof(real)));
+
+   out_info("");
+   if (n == 1)
+      out_info(msg(78));
+   else {
+      sprintf(szOut, msg(75), n);
+      out_info(szOut);
+   }
+
+   for (d = 2; d >= 0; d-- ) {
+      sprintf( szOut, msg(76), (char)('x'+d) );
+      out_current_action(szOut);
+      /* Initialise M and B to zero */
+      /* might be best to zero "linearly" (!HACK!) */
+      for ( row = n-1 ; row >= 0 ; row-- ) {
+	 B[row] = (real)0.0;
+	 for ( col = row ; col >= 0 ; col-- ) M(row,col) = (real)0.0;
+      }
+
+      /* Construct matrix - Go thru' stn list & add all forward legs to M */
+      /* (so each leg goes on exactly once) */
+      FOR_EACH_STN( stn ) {
+#if DEBUG_MATRIX_BUILD
+	 int dirn;
+
+	 print_prefix(stn->name);
+	 printf(" status? %d, used: %d artic %d colour %d\n",stn->status,
+		(!!stn->leg[2])<<2 | (!!stn->leg[1])<<1 | (!!stn->leg[0]),
+		stn->fArtic, stn->colour );
+	      
+	 for ( dirn = 0; dirn <= 2; dirn++ )
+ 	    if (USED(stn,dirn)) {
+	       printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
+		      stn->leg[dirn]->v[0], stn->leg[dirn]->l.reverse );
+	       print_prefix(stn->leg[dirn]->l.to->name);
+	       putnl();
+	    }
+	 putnl();
+#endif /* DEBUG_MATRIX_BUILD */
+	 if (stn->status == statFixed) {
+	    int f, t;
+	    int dirn;
+/*          print_prefix(stn->name); putnl(); */
+	    if (fixed(stn)) {
+	       for ( dirn = 2 ; dirn >= 0 ; dirn-- )
+		 if ( USED(stn,dirn) && data_here(stn->leg[dirn]) ) {
+#if DEBUG_MATRIX_BUILD
+		    print_prefix(stn->name);
+		    printf(" - ");
+		    print_prefix(stn->leg[dirn]->l.to->name);
+		    putnl();
+#endif /* DEBUG_MATRIX_BUILD */
+		    if (!(fixed(stn->leg[dirn]->l.to)) &&
+			stn->leg[dirn]->l.to->status == statFixed) {
+		       t = find_stn_in_tab(stn->leg[dirn]->l.to);
+#ifdef NO_COVARIANCES
+		       e = stn->leg[dirn]->v[d];
+#else
+		       ASSERT2(0,"fix covariances code!");
+		       e = stn->leg[dirn]->v[d][d]; /* !HACK! covariances */
+#endif
+		       if (e != (real)0.0) {
+			  /* not an equate */
+			  e = ((real)1.0) / e;
+			  a = e * stn->leg[dirn]->d[d];
+			  M(t,t) += e;
+			  B[t] += e * POS(stn,d) + a;
+#if DEBUG_MATRIX_BUILD
+			  printf("--- Dealing with stn fixed at %lf\n",
+				 POS(stn,d));
+#endif /* DEBUG_MATRIX_BUILD */
+		       }
+		    }
+		 }
+	    } else {
+	       f = find_stn_in_tab(stn);
+	       for ( dirn = 2 ; dirn >= 0 ; dirn-- )
+		  if ( USED(stn,dirn) && data_here(stn->leg[dirn]) ) {
+#ifdef NO_COVARIANCES
+		     e = stn->leg[dirn]->v[d];
+#else
+		     ASSERT2(0,"fix covariances code!");
+		     e = stn->leg[dirn]->v[d][d]; /* !HACK! covariances */
+#endif
+		     if (fixed(stn->leg[dirn]->l.to)) {
+			/* Ignore equated nodes */
+			if (e != (real)0.0) {
+			   e = ((real)1.0) / e;
+			   a = e * stn->leg[dirn]->d[d];
+			   M(f,f) += e;
+			   B[f] += e * POS(stn->leg[dirn]->l.to,d) - a;
+			}
+		     } else {
+			if (stn->leg[dirn]->l.to->status == statFixed) {
+			   t = find_stn_in_tab(stn->leg[dirn]->l.to);
+#if DEBUG_MATRIX
+			   printf("Leg %d to %d, var %f, delta %f\n", f, t, e, 
+				  stn->leg[dirn]->d[d]);
+#endif
+			   if (e != (real)0.0 && t != f) {
+			      /* Ignore equated nodes & lollipops */
+			      e = ((real)1.0) / e;
+			      a = e * stn->leg[(dirn)]->d[d];
+			      M(f,f) += e;
+			      B[f] -= a;
+			      M(t,t) += e;
+			      B[t] += a;
+			      if (f < t) M(t,f) -= e; else M(f,t) -= e;
+			   }
+			}
+		     }
+		  }
+	    }
+	 }
+      }
 
 #if PRINT_MATRICES
-    print_matrix( M,B ); /* 'ave a look! */
+      print_matrix( M, B ); /* 'ave a look! */
 #endif
 
 #ifdef SOR
-    if (optimize & 4) /* defined in network.c, set in commline.c */
-     sor(M,B);
-    else
+      if (optimize & 4) /* defined in network.c, set in commline.c */
+	 sor(M,B);
+      else
 #endif
-     choleski(M,B);
+	 choleski(M,B);
 
-    {
-     int m;
-     for( m=n-1 ; m>=0 ; m-- )
-      stn_tab[m]->pos->p[d]=B[m];
+      {
+	   int m;
+	   for ( m = n - 1 ; m >= 0 ; m-- ) stn_tab[m]->pos->p[d] = B[m];
 #if EXPLICIT_FIXED_FLAG
 /* broken code? !HACK! */
-     for( m=n-1 ; m>=0 ; m-- )
-      fix(stn_tab[m]->stn);
+	 for( m = n - 1 ; m >= 0 ; m-- ) fix(stn_tab[m]->stn);
 #endif
-    }
-  }
-  osfree(B);
-  osfree(M);
+      }
+   }
+   osfree(B);
+   osfree(M);
 }
 
 static int find_stn_in_tab( node *stn ) {
- int i=0;
- pos *pos;
- pos=stn->name->pos;
- while (stn_tab[i]->pos!=pos)
-  if (++i==n_stn_tab) {
+   int i = 0;
+   pos *pos;
+
+   pos = stn->name->pos;
+   while (stn_tab[i]->pos != pos)
+      if (++i == n_stn_tab) {
 #if DEBUG_INVALID
-   fputs("Station ",stderr); fprint_prefix(stderr,stn->name);
-   fputs(" not in table\n\n",stderr);
-   for( i=0 ; i<n_stn_tab ; i++ )
-    { fprintf(stderr,"%3d: ",i); fprint_prefix(stderr,stn_tab[i]); fputnl(stderr); }
+	 fputs("Station ",stderr); fprint_prefix(stderr,stn->name);
+	 fputs(" not in table\n\n",stderr);
+	 for ( i = 0 ; i < n_stn_tab ; i++ ) {
+	    fprintf(stderr,"%3d: ",i); fprint_prefix(stderr,stn_tab[i]);
+	    fputnl(stderr);
+	 }
 #endif
 #if 0
-   print_prefix(stn->name);
-   printf(" status? %d, used: %d artic %d colour %d\n",stn->status,
-    ( !!stn->leg[2])<<2 | !!stn->leg[1]<<1 | !!stn->leg[0], stn->fArtic, stn->colour );
+	 print_prefix(stn->name);
+	 printf(" status? %d, used: %d artic %d colour %d\n", stn->status,
+		(!!stn->leg[2])<<2 | (!!stn->leg[1])<<1 | (!!stn->leg[0]),
+		stn->fArtic, stn->colour );
 #endif
-   fatal(11,NULL,NULL,0);
-  }
- return i;
+	 fatal(11, NULL, NULL, 0);
+      }
+   return i;
 }
 
 static int add_stn_to_tab( node *stn ) {
-  int i;
-  pos *pos;
-  pos=stn->name->pos;
-  for( i=0 ; i<n_stn_tab ; i++ ) {
-    if (stn_tab[i]->pos==pos)
-      return i;
-  }
-  stn_tab[n_stn_tab++]=stn->name;
-  return i;
+   int i;
+   pos *pos;
+
+   pos = stn->name->pos;
+   for ( i = 0 ; i < n_stn_tab ; i++ ) {
+      if (stn_tab[i]->pos == pos) return i;
+   }
+   stn_tab[n_stn_tab++] = stn->name;
+   return i;
 }
 
 /* Solve MX=B for X by Choleski factorisation */
 /* Note M must be symmetric positive definite */
 /* routine is entitled to scribble on M and B if it wishes */
 static void choleski( real FAR *M, real *B ) {
- int i,j,k;
- long n=n_stn_tab;
- real V;
+   int i, j, k;
+   long n = n_stn_tab;
+   real V;
 #ifndef NO_PERCENTAGE
- ulong flopsTot, flops=0, temp=0;
+   ulong flopsTot, flops = 0, temp = 0;
 #define do_percent(N) BLK(flops+=(N);out_set_percentage((int)((100.0*flops)/flopsTot));)
 #endif
 
  /* calc as double so we don't overflow a ulong with intermediate results */
- flopsTot = (ulong)(n*(2.0*n*n+9.0*n-5.0)/6.0);
+   flopsTot = (ulong)(n * (2.0 * n * n + 9.0 * n - 5.0) / 6.0);
  /* 3*n*(n-1)/2 + n*(n-1)*(n-2)/3 + n*(n-1)/2 + n + n*(n-1)/2; */
 /* n*(9*n-5 + 2*n*n )/6 ; */
 
- for( j=1 ; j<n ; j++ ) {
-  for( i=0 ; i<j ; i++ ) {
-   V=(real)0.0;
-   for( k=0 ; k<i ; k++ )
-    V+=M(i,k)*M(j,k)*M(k,k);
-   M(j,i) = ( M(j,i)-V ) / M(i,i);
-  }
-  V=(real)0.0;
-  for( k=0 ; k<j ; k++ )
-   V-=M(j,k)*M(j,k)*M(k,k);
-  M(j,j)+=V; /* may be best to add M() last for numerical reasons too */
+   for ( j = 1 ; j < n ; j++ ) {
+      for ( i = 0 ; i < j ; i++ ) {
+	 V = (real)0.0;
+	 for ( k = 0 ; k < i ; k++ )
+	    V += M(i,k) * M(j,k) * M(k,k);
+	 M(j,i) = ( M(j,i) - V ) / M(i,i);
+      }
+      V = (real)0.0;
+      for ( k = 0 ; k < j ; k++ )
+	 V -= M(j,k) * M(j,k) * M(k,k);
+      M(j,j) += V; /* may be best to add M() last for numerical reasons too */
 #ifndef NO_PERCENTAGE
-  if (fPercent) {
-   temp+=((ulong)j+j)+1ul; /* avoid multiplies */
-   do_percent(temp);
-  }
+      if (fPercent) {
+	 temp += ((ulong)j + j) + 1ul; /* avoid multiplies */
+	 do_percent(temp);
+      }
 #endif
- }
+   }
 
- /* Multiply x by L inverse */
- for( i=0 ; i<n-1 ; i++ ) {
-  for( j=i+1 ; j<n ; j++ )
-   B[j]-=M(j,i)*B[i];
- }
+   /* Multiply x by L inverse */
+   for ( i = 0 ; i < n - 1 ; i++ ) {
+      for ( j = i + 1 ; j < n ; j++ )
+	 B[j] -= M(j,i) * B[i];
+   }
 
 #ifndef NO_PERCENTAGE
- if (fPercent) {
-  temp=(ulong)n*(n-1ul)/2ul; /* needed again lower down */
-  do_percent(temp);
- }
+   if (fPercent) {
+      temp = (ulong)n * (n - 1ul) / 2ul; /* needed again lower down */
+      do_percent(temp);
+   }
 #endif
 
- /* Multiply x by D inverse */
- for( i=0 ; i<n ; i++ )
-  B[i]/=M(i,i);
+   /* Multiply x by D inverse */
+   for ( i = 0 ; i < n ; i++ )
+      B[i] /= M(i,i);
 
 #ifndef NO_PERCENTAGE
- if (fPercent)
-  do_percent((ulong)n);
+   if (fPercent) do_percent((ulong)n);
 #endif
 
  /* Multiply x by (L transpose) inverse */
- for( i=n-1 ; i>0 ; i-- ) {
-  for( j=i-1 ; j>=0 ; j-- )
-   B[j]-=M(i,j)*B[i];
- }
+   for( i = n - 1 ; i > 0 ; i-- ) {
+      for( j = i - 1 ; j >= 0 ; j-- )
+  	 B[j] -= M(i,j) * B[i];
+   }
 
 #ifndef NO_PERCENTAGE
- if (fPercent)
-  do_percent(temp);
+   if (fPercent) do_percent(temp);
 # undef do_percent
 #endif
 
-/* printf("\n%ld/%ld\n\n",flops,flopsTot); */
+   /* printf("\n%ld/%ld\n\n",flops,flopsTot); */
 }
 
 #ifdef SOR
@@ -702,90 +662,85 @@ static void choleski( real FAR *M, real *B ) {
 
 /* Solve MX=B for X by SOR of Gauss-Siedel */
 /* routine is entitled to scribble on M and B if it wishes */
-static void sor( real FAR *M, real *B )
- {
- real t,x,delta,threshold,t2;
- int row,col;
- real *X;
- long it=0;
+static void sor( real FAR *M, real *B ) {
+   real t, x, delta, threshold, t2;
+   int row, col;
+   real *X;
+   long it = 0;
 
- X=osmalloc(n*ossizeof(real));
+   X = osmalloc(n*ossizeof(real));
 
- threshold=0.00001;
+   threshold = 0.00001;
 
 printf("reciprocating diagonal\n");
 
  /* munge diagonal so we can multiply rather than divide */
- for ( row=n-1 ; row>=0 ; row-- )
-  {
-  M(row,row) = 1/M(row,row);
-  X[row]=0.0;
-  }
+   for ( row = n - 1 ; row >= 0 ; row-- ) {
+      M(row,row) = 1 / M(row,row);
+      X[row] = 0.0;
+   }
 
 printf("starting iteration\n");
 
- do {
-  it++;/*printf("*");*/
-  t=0.0;
-  for( row=0 ; row<n ; row++ )
-   {
-   x=B[row];
-   for( col=0 ; col<row ; col++ )
-    x-=M(row,col)*X[col];
-   for( col++ ; col<n ; col++ )
-    x-=M(col,row)*X[col];
-   x*=M(row,row);
-   delta=(x-X[row])*SOR_factor;
-   X[row] += delta;
-   t2=fabs(delta);
-   if (t2>t) t=t2;
-   }
-  } while (t>=threshold && it<100000);
+   do {
+      /*printf("*");*/
+      it++;
+      t = 0.0;
+      for ( row = 0 ; row < n ; row++ ) {
+	 x = B[row];
+	 for ( col = 0 ; col < row ; col++ )
+ 	    x -= M(row,col) * X[col];
+	 for ( col++ ; col < n ; col++ )
+	    x -= M(col,row) * X[col];
+	 x *= M(row,row);
+	 delta = (x - X[row]) * SOR_factor;
+	 X[row] += delta;
+	 t2 = fabs(delta);
+	 if (t2 > t) t = t2;
+      }
+   } while (t >= threshold && it < 100000);
 
- if (t>=threshold)
-  {
-  fprintf(stderr,"*not* converged after %ld iterations\n",it);
-  BUG("iteration stinks");
-  }
+   if (t >= threshold) {
+      fprintf(stderr, "*not* converged after %ld iterations\n", it);
+      BUG("iteration stinks");
+   }
 
 printf("%ld iterations\n",it);
 
 #if 0
- putnl();
- for ( row=n-1 ; row>=0 ; row-- )
-  {
-  t=0.0;
-  for ( col=0 ; col<row ; col++ )
-   t+=M(row,col)*X[col];
-  t+=X[row]/M(row,row);
-  for ( col=row+1 ; col<n ; col++ )
-   t+=M(col,row)*X[col];
-  printf("[ %lf %lf ]\n",t,B[row]);
-  }
+   putnl();
+   for ( row = n - 1 ; row >= 0 ; row-- ) {
+      t = 0.0;
+      for ( col = 0 ; col < row ; col++ )
+ 	 t += M(row,col) * X[col];
+      t += X[row] / M(row,row);
+      for ( col = row + 1 ; col < n ; col++ )
+	 t += M(col,row) * X[col];
+      printf("[ %lf %lf ]\n", t, B[row]);
+   }
 #endif
 
- for ( row=n-1 ; row>=0 ; row-- )
-  B[row]=X[row];
+   for ( row = n - 1 ; row >= 0 ; row-- )
+      B[row] = X[row];
 
- osfree(X);
+   osfree(X);
 printf("\ndone\n");
 
- }
+}
 #endif
 
 #if PRINT_MATRICES
 static void print_matrix( real FAR *M, real *B ) {
- int row,col;
- int n=n_stn_tab;
- printf("Matrix, M and vector, B:\n");
- for( row=0 ; row<n ; row++ ) {
-  for( col=0 ; col<=row ; col++ )
-   printf("%6.2f\t",M(row,col));
-  for( ; col<=n ; col++ )
-   printf(" \t");
-  printf("\t%6.2f\n",B[row]);
- }
- putnl();
- return;
+   int row, col;
+   int n = n_stn_tab;
+   printf("Matrix, M and vector, B:\n");
+   for ( row = 0 ; row < n ; row++ ) {
+      for ( col = 0 ; col <= row ; col++ )
+	 printf("%6.2f\t", M(row,col));
+      for( ; col <= n ; col++ ) printf(" \t");
+      printf("\t%6.2f\n", B[row]);
+   }
+   putnl();
+   return;
 }
 #endif
