@@ -234,9 +234,7 @@ init_signals(void)
 static int
 default_charset(void)
 {
-#ifdef ISO8859_1
-   return CHARSET_ISO_8859_1;
-#elif (OS==RISCOS)
+#if (OS==RISCOS)
    /* RISCOS 3.1 and above CHARSET_RISCOS31 (ISO_8859_1 + extras in 128-159)
     * RISCOS < 3.1 is ISO_8859_1 */
  
@@ -252,7 +250,8 @@ default_charset(void)
 #elif (OS==MSDOS)
    return CHARSET_DOSCP850;
 #else
-   return CHARSET_ISO_8859_1; /* FIXME: Look at env var CHARSET ? */
+   /* FIXME: assume ISO_8859_1 for now */
+   return CHARSET_ISO_8859_1;
 #endif
 }
 
@@ -499,10 +498,9 @@ msg_init(const char *argv0)
 #ifdef HAVE_SIGNAL
    init_signals();
 #endif
-   /* This code *should* be completely bomb-proof even if strcpy
-    * generates a signal
-    */
-   szAppNameCopy = argv0; /* FIXME... */
+   /* Point to argv0 itself so we get the app name correct if osstrdup()
+    * generates a signal */
+   szAppNameCopy = argv0;
    szAppNameCopy = osstrdup(argv0);
 
    /* Look for env. var. "SURVEXHOME" or the like */
@@ -574,7 +572,6 @@ v_report(int severity, const char *fnm, int line, int en, va_list ap)
    vfprintf(STDERR, msg(en), ap);
    fputnl(STDERR);
 
-   /* FIXME: allow "warnings are errors" and/or "errors are fatal" */
    switch (severity) {
     case 0:
       msg_warnings++;
