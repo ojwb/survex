@@ -15,7 +15,8 @@ hdr_files = ca.h de.h de_CH.h de_DE.h en.h en_US.h\
 
 EXTRA_DIST = bcra3.svx bcra5.svx messages.txt default.txt bold.txt print.ini\
  named-entities.txt makefont.pl makemsgs.pl checkshortcut.pl\
- $(msg_files) default.bit bold.bit $(hdr_files) survex.mime survex.keys.in
+ $(msg_files) default.bit bold.bit $(hdr_files) survex.mime survex.keys.in\
+ INSTALL.OSX
 
 MAINTAINERCLEANFILES = $(msg_files) $(hdr_files) default.bit bold.bit\
  *.todo
