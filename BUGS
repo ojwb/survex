@@ -85,3 +85,9 @@ From: Mark Shinwell
 - slow response of toolbar highlighting during constant rotation
 - redraw errors after obscuration by other windows
 
+Date: 10 Feb 2000
+From: Leandro Dybal Bertoni <leandro@dybal.eti.br>
+
+[Problems with network reduction giving very different answers between
+0.91 and 0.92p3]
+
