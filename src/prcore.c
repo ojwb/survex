@@ -705,7 +705,7 @@ main(int argc, char **argv)
       *pfh++ = fh;
       *pfh = NULL;
       pr->Init(fh_list, pth_cfg, output_fnm, &scX, &scY);
-      for (pfh = fh_list; *pfh; pfh++) fclose(*pfh);
+      for (pfh = fh_list; *pfh; pfh++) (void)fclose(*pfh);
    }
 
    if (fInteractive) {

@@ -299,7 +299,7 @@ parse_pos_file(const char *fnm, const char *survey,
 	 tree_func(buf + pfx_len, &pt);
       }
    }
-   fclose(fh);
+   (void)fclose(fh);
 
    osfree(buf);
    osfree(pfx);

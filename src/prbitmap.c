@@ -173,7 +173,7 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
    }
 
    osfree(fnm);
-   fclose(fh);
+   (void)fclose(fh);
 }
 
 static void

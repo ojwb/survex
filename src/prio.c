@@ -97,8 +97,8 @@ prio_close(void)
 extern void
 prio_putc(int ch)
 {
-   /* fputc() returns EOF on write error */
-   if (fputc(ch, fhPrn) == EOF) fatalerror(87);
+   /* putc() returns EOF on write error */
+   if (putc(ch, fhPrn) == EOF) fatalerror(87);
 }
 
 extern void

@@ -481,13 +481,13 @@ command_file(const char *pth, const char *fnm)
   }
   free(fnmUsed); /* not needed now */
 
-  ch=fgetc(fh);
+  ch = getc(fh);
   while (ch!=EOF) {
     fQuoted=fFalse;
     i=0;
     if (ch=='\"') {
       fQuoted=fTrue;
-      ch=fgetc(fh);
+      ch = getc(fh);
     }
     while ( (ch!=EOF) && (ch!=COMMAND_FILE_COMMENT_CHAR) ) {
       if (isspace(ch) || (ch==CR))
@@ -503,22 +503,22 @@ command_file(const char *pth, const char *fnm)
         ch=COMMAND_FILE_COMMENT_CHAR; /* skips to end of line */
         break;
       }
-      ch=fgetc(fh);
+      ch = getc(fh);
     }
     if (ch==COMMAND_FILE_COMMENT_CHAR) { /* NB fiddle above if modifying */
       while ((ch!=LF) && (ch!=CR) && (ch!=EOF))
-        ch=fgetc(fh);
+        ch = getc(fh);
     }
     /* skip character if not EOF */
     if (ch!=EOF)
-      ch=fgetc(fh);
+      ch = getc(fh);
     if (i>0) {
       cmdbuf[i]='\0';
       process_command(cmdbuf, path);
     }
   }
   if (ferror(fh) || fclose(fh) == EOF) {
-     fatal("Couldn't close command file", wr, fnm);
+     fatal("Error reading command file", wr, fnm);
   }
 /* checkmode(skipopt,fnm); */
   free(path);
@@ -690,7 +690,10 @@ main(int argc, char **argv)
          head = head->next;
       }
 
-      fclose(fout);
+      if (ferror(fout) || fclose(fout) == EOF) {
+	 (void)remove(MYTMP);
+	 fatal("Error writing temporary file", wr, MYTMP);
+      }
    }
 
 #ifdef HAVE_EXECV
