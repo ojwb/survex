@@ -89,6 +89,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 #ifdef AVENPRES
     EVT_MENU(menu_FILE_OPEN_PRES, MainFrm::OnOpenPres)
 #endif
+    EVT_MENU(menu_FILE_PREFERENCES, MainFrm::OnFilePreferences)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
 
@@ -265,7 +266,7 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
-    m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0)
+    m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0), m_PrefsDlg(NULL)
 {
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
@@ -320,6 +321,7 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
+    filemenu->Append(menu_FILE_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*E@xit*/221));
 
@@ -1033,6 +1035,11 @@ void MainFrm::OnOpen(wxCommandEvent&)
     }
 }
 
+void MainFrm::OnFilePreferences(wxCommandEvent&)
+{
+    m_PrefsDlg = new PrefsDlg(this);
+    m_PrefsDlg->Show(true);
+}
 
 void MainFrm::OnQuit(wxCommandEvent&)
 {

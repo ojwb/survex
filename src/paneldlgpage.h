@@ -1,9 +1,9 @@
 //
-//  aven.h
+//  paneldlgpage.h
 //
-//  Main class for Aven.
+//  One page in a panel dialog.
 //
-//  Copyright (C) 2001, Mark R. Shinwell.
+//  Copyright (C) 2002 Mark R. Shinwell
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,40 +20,20 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef aven_h
-#define aven_h
-
-#include <stdarg.h>
-
-extern
-#ifdef __cplusplus
- "C"
-#endif
-void aven_v_report(int severity, const char *fnm, int line, int en,
-		   va_list ap);
-
-#ifdef __cplusplus
+#ifndef paneldlgpage_h
+#define paneldlgpage_h
 
 #include "wx.h"
 
-class MainFrm;
-
-class Aven : public wxApp {
-    MainFrm* m_Frame;
-    wxBitmap m_AboutBitmap;
+class PanelDlgPage : public wxPanel {
 
 public:
-    Aven();
-
-    virtual bool OnInit();
-
-    void ReportError(const wxString&);
-    wxBitmap& GetAboutBitmap() { return m_AboutBitmap; }
-    const wxBitmap LoadPreferencesIcon(const wxString& icon) const;
+    PanelDlgPage(wxWindow* parent, wxWindowID id);
+    virtual ~PanelDlgPage();
+    
+    virtual const wxString GetName() = 0;
+    virtual const wxBitmap GetIcon() = 0;
 };
 
-DECLARE_APP(Aven)
-
 #endif
 
-#endif

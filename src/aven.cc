@@ -184,3 +184,16 @@ aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
    m += s;
    wxGetApp().ReportError(m);
 }
+
+const wxBitmap Aven::LoadPreferencesIcon(const wxString& icon) const
+{
+    // Load an icon for use in the preferences dialog.
+    
+    const wxString path = wxString(msg_cfgpth()) +
+                          wxCONFIG_PATH_SEPARATOR + wxString("icons") + wxCONFIG_PATH_SEPARATOR +
+                          wxString(icon) + wxString("prefs.png");
+    const wxBitmap bitmap(path, wxBITMAP_TYPE_PNG);
+
+    return bitmap;
+}
+

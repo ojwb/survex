@@ -31,6 +31,7 @@
 #include "aventreectrl.h"
 #include "img.h"
 #include "guicontrol.h"
+#include "prefsdlg.h"
 
 #include <list>
 #if 0 // if you turn this back on, reenable the check in configure.in too
@@ -58,6 +59,7 @@ extern const int NUM_DEPTH_COLOURS;
 enum {
     menu_FILE_OPEN = 1000,
     menu_FILE_OPEN_PRES,
+    menu_FILE_PREFERENCES,
     menu_FILE_QUIT,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
@@ -202,6 +204,7 @@ class MainFrm : public wxFrame {
     wxCheckBox* m_RegexpCheckBox;
     wxString m_File;
     int separator; // character separating survey levels (often '.')
+    PrefsDlg* m_PrefsDlg;
 #ifdef AVENPRES
     FILE* m_PresFP;
     bool m_PresLoaded;
@@ -242,6 +245,7 @@ public:
     void OnHide(wxCommandEvent& event);
 
     void OnOpen(wxCommandEvent& event);
+    void OnFilePreferences(wxCommandEvent& event);
     void OnFileOpenTerrain(wxCommandEvent& event);
 #ifdef AVENPRES
     void OnOpenPres(wxCommandEvent& event);
