@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1549,7 +1549,6 @@ data_normal(void)
        case Newline:
 	  if (fr != NULL) {
 	     int r;
-	     printf("fTopofil %d %.2f %.2f\n", fTopofil, VAL(ToCount), VAL(FrCount));
 	     if (fTopofil)
 		VAL(Tape) = VAL(ToCount) - VAL(FrCount);
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
