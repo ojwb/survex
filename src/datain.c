@@ -354,12 +354,12 @@ data_file(const char *pth, const char *fnm)
 
    pcs->begin_lineno = begin_lineno_store;
 
-   if (ferror(file.fh) || (fclose(file.fh) == EOF))
+   if (ferror(file.fh))
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 
-   file = file_store;
+   (void)fclose(file.fh);
 
-   /* set_current_fnm(""); not correct if filenames are nested */
+   file = file_store;
 
    /* don't free this - it may be pointed to by prefix.file */
    /* osfree(file.filename); */
