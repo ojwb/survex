@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -825,7 +825,9 @@ msg_init(char * const *argv)
    p = getenv("SURVEXHOME");
    if (p && *p) {
       pth_cfg_files = osstrdup(p);
-#if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
+      
+   /* MacOSX version can be installed anywhere, so use argv[0] */
+#if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE) && !defined(__APPLE__)
    } else {
       /* under Unix, we compile in the configured path */
       pth_cfg_files = DATADIR "/" PACKAGE;
