@@ -112,7 +112,7 @@ main(int argc, char **argv)
 	 break;
        case img_BAD:
 	 img_close(pimg);
-	 exit(EXIT_FAILURE); /* FIXME report errors! */
+	 fatalerror(/*Bad 3d image file `%s'*/106, fnm);
       }
    } while (result != img_STOP);
 
@@ -141,15 +141,16 @@ main(int argc, char **argv)
 	 /* FALLTHRU */
        case img_BAD:
 	 img_close(pimg);
-	 exit(EXIT_FAILURE); /* FIXME report errors! */
+	 fatalerror(/*Bad 3d image file `%s'*/106, fnm);
       }
    } while (result != img_STOP);
 
-   img_close(pimg);
-
    if (c_stns != c_labels || p != p_end) {
-      exit(EXIT_FAILURE); /* FIXME report errors! */
+      img_close(pimg);
+      fatalerror(/*Bad 3d image file `%s'*/106, fnm);
    }
+
+   img_close(pimg);
 
    qsort(stns, c_stns, sizeof(station), cmp_station);
 

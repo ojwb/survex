@@ -227,7 +227,7 @@ main(int argc, char **argv)
 	    break;
 	  case img_BAD:
 	    img_close(pimg);
-	    exit(1);
+	    fatalerror(/*Bad 3d image file `%s'*/106, fnm1);
 	 }
       } while (result != img_STOP);
       
@@ -243,11 +243,10 @@ main(int argc, char **argv)
 	 if (fscanf(fh, "(%lf,%lf,%lf ) ", &pt.x, &pt.y, &pt.z) != 3) {
 	    int ch;
 	    if (feof(fh)) break;
-	    printf("Skipping first\n");
+	    printf("Skipping first\n"); /* FIXME: print the line */
 	    do {
 	       ch = getc(fh);
 	    } while (ch != EOF && ch != '\n');
-	    /* FIXME */
 	    continue;
 	 }
 	 buf[0] = '\0';
@@ -288,7 +287,7 @@ main(int argc, char **argv)
 	    break;
 	  case img_BAD:
 	    img_close(pimg);
-	    exit(1);
+	    fatalerror(/*Bad 3d image file `%s'*/106, fnm2);
 	 }
       } while (result != img_STOP);
       
@@ -304,7 +303,7 @@ main(int argc, char **argv)
 	 if (fscanf(fh, "(%lf,%lf,%lf ) ", &pt.x, &pt.y, &pt.z) != 3) {
 	    int ch;
 	    if (feof(fh)) break;
-	    printf("Skipping second\n");
+	    printf("Skipping second\n"); /* FIXME: print the line */
 	    do {
 	       ch = getc(fh);
 	    } while (ch != EOF && ch != '\n');
