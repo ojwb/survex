@@ -38,6 +38,19 @@ AC_DEFINE_UNQUOTED(COMMAVERSION, $COMMAVERSION,
                    [Version number of package (comma-separated)])
 AC_SUBST(COMMAVERSION)
 
+DEFAULTLANG=en
+AC_ARG_ENABLE(defaultlang,
+[  --enable-defaultlang=LANG Set the default language for messages to LANG],
+[case "${enableval}" in
+ yes|no) # until we support Norwegian...
+  AC_MSG_ERROR([configure: Syntax: configure --enable-defaultlang=LANGUAGE]) ;;
+esac
+DEFAULTLANG="${enableval}"
+AC_DEFINE(DEFAULTLANG, [${enableval}], [Default language for messages])
+]
+)
+AC_SUBST(DEFAULTLANG)
+    
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CPP
@@ -147,19 +160,6 @@ else
   fi
 fi
 
-DEFAULTLANG=en
-AC_ARG_ENABLE(defaultlang,
-[  --enable-defaultlang=LANG Set the default language for messages to LANG],
-[case "${enableval}" in
- yes|no)
-  AC_MSG_ERROR([configure: Syntax: configure --enable-defaultlang=LANGUAGE]) ;;
-esac
-DEFAULTLANG="${enableval}"
-AC_DEFINE(DEFAULTLANG, [${enableval}], [Default language for messages])
-]
-)
-AC_SUBST(DEFAULTLANG)
-    
 AM_CONDITIONAL(WIN32, [test $mswindows = yes])
 
 if test -n "$AVEN"; then

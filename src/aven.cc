@@ -57,7 +57,8 @@ bool Aven::OnInit()
     // that wxWindows knows...  FIXME if it's possible
 
     const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
-    /* also cs da fi nl ru sv zh which survex doesn't (yet) support */
+    // also cs da fi nl ru sv zh which survex doesn't (yet) support
+    // NB keep this like in step with survex.iss.in and src/Makefile.am
     switch (lang[0]) {
       case 'e':
         if (lang[1] != 's') lang = NULL;

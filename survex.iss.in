@@ -30,6 +30,11 @@ Source: "*.ico"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}\icons"
 Source: "manual\*.*"; DestDir: "{app}\manual"
+; NB keep this like in step with src/aven.cc and src/Makefile.am
+Source: "de\wxstd.mo"; DestDir: "{app}\de"
+Source: "es\wxstd.mo"; DestDir: "{app}\es"
+Source: "fr\wxstd.mo"; DestDir: "{app}\fr"
+Source: "it\wxstd.mo"; DestDir: "{app}\it"
 
 [Icons]
 Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"

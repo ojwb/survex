@@ -163,6 +163,11 @@ mingw_iss :
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
+	: # NB keep this like in step with src/aven.cc and survex.iss.in
+	for a in de es fr it; do\
+	 mkdir iss_tmp/$$a;\
+	 cp /usr/share/locale/$$a/LC_MESSAGES/wxstd.mo iss_tmp/$$a;\
+	done
 	-killall Xvfb
 	(Xvfb :9 -screen 0 64x32x8 &)
 	DISPLAY=:9 wine "c:/Program Files/Inno Setup 2/ISCC.exe" iss_tmp/survex.iss

@@ -8,6 +8,9 @@
   impossible to enter in search box, or not being recognised in survey
   pane.
 
+* (MS Windows version): aven: wxWindows messages files were missing.  We
+  now include them for languages which Survex also supports.
+
 * (MS DOS version): caverot: Shift and/or Ctrl + Arrow keys now works.
 
 * aven: Close button in About box is now always right in the bottom right
