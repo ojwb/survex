@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003 Mark R. Shinwell
-//  Copyright (C) 2003 Olly Betts
+//  Copyright (C) 2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -143,7 +143,7 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     // Constructor.
 
     m_Quadric = NULL;
-    m_Rotation.setFromEulerAngles(0.0, 0.0, 0.0);
+    m_Rotation.setFromSphericalPolars(0.0, 0.0, 0.0);
     m_Scale = 0.0;
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
     m_VolumeDiameter = 1.0;
@@ -196,7 +196,7 @@ void GLACanvas::FirstShow()
 void GLACanvas::Clear()
 {
     // Clear the canvas.
-    
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     CHECK_GL_ERROR("Clear", "glClear");
 }
