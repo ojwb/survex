@@ -228,7 +228,7 @@ main(int argc, char **argv)
       printline(fh, fh_out);
       printline(fh, fh_out);
       printline(fh, fh_out);
-      putc('\n', fh);
+      putc('\n', fh_out);
       if (howmany && --howmany == 0) break;
    } while (next);
 

@@ -267,14 +267,18 @@ main(int argc, char **argv)
    }
 
    if (fLog) {
-      char *p;
       char *fnm;
-      fnm = baseleaf_from_fnm(argv[optind]);
-      p = add_ext(fnm, "log");
-      osfree(fnm);
-      fnm = use_path(fnm_output_base, p);
-      osfree(p);
-
+      if (fnm_output_base_is_dir) {
+	 char *p;
+	 fnm = baseleaf_from_fnm(argv[optind]);
+	 p = use_path(fnm_output_base, fnm);
+	 osfree(fnm);
+	 fnm = add_ext(p, "log");
+	 osfree(p);
+      } else {
+	 fnm = add_ext(fnm_output_base, "log");
+      }
+      
       if (!freopen(fnm, "w", stdout))
 	 fatalerror(/*Failed to open output file `%s'*/47, fnm);
 
