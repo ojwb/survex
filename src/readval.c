@@ -77,6 +77,32 @@
 #include "datain.h"
 #include "osalloc.h"
 
+#if 1
+# define ident_cmp strcmp
+#else
+/* We ideally want a collating order when "10" sorts before "2"
+ * (and "10a" sorts between "10" and "11").
+ * So we want an compare which is reflexive, transitive, and
+ * anti-symmetric.  We also want "001" and "1" to not be equal...
+ */
+/* FIXME: badly flawed - 001 and 1 are regarded as the same for example */
+/* ident_cmp returns -ve for <, 0 for =, +ve for > (like strcmp) */     
+int ident_cmp(const char *a, const char *b) {
+   if (isdigit(a[0])) {
+      int i, j;
+      if (!isdigit(b[0])) return -1;
+      /*FIXME check errno, etc in case out of range*/
+      i = strtoul(a, &a, 10);
+      i -= strtoul(b, &b, 10);
+      if (i) return i;
+      }
+   } else if (isdigit(b[0])) {
+      return 1;
+   }
+   return strcmp(a,b);
+}
+#endif
+
 /* Dinky macro to handle any case forcing needed */
 #define docase(X) (pcs->Case==OFF?(X):(pcs->Case==UPPER?toupper(X):tolower(X)))
 
@@ -130,7 +156,7 @@ extern prefix *read_prefix( bool fOmit ) {
 
     name[i++]='\0';
     name = osrealloc( name, i );
-
+     
     back_ptr=ptr;
     ptr=ptr->down;
     if (ptr==NULL) { /* Special case first time around at each level */
@@ -144,8 +170,8 @@ extern prefix *read_prefix( bool fOmit ) {
       back_ptr->down=ptr;
     } else {
       prefix *ptrPrev=NULL;
-      int cmp=1; /* result of strncmp ( -ve for <, 0 for =, +ve for > ) */
-      while ((ptr!=NULL) && (cmp=strcmp(ptr->ident,name))<0) {
+      int cmp = 1; /* result of ident_cmp ( -ve for <, 0 for =, +ve for > ) */
+      while ((ptr!=NULL) && (cmp = ident_cmp(ptr->ident, name))<0) {
         ptrPrev=ptr;
         ptr=ptr->right;
       }
