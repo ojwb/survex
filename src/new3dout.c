@@ -228,8 +228,8 @@ save3d(twig *sticky)
 		 length, offset);
 #endif
 	if (fabs(length) < 0.01) {
-	  err = 0; /*what is the error for a leg with zero length?
-	  	      *Phil -  he say none. */
+	  err = 0; /* What is the error for a leg with zero length?
+	  	    * Phil -  he say none. */
 	} else {
 	  err = 10000.0 * offset / length;
 	}
@@ -333,7 +333,7 @@ cave_close(img *pimg)
       put32((INT32_T)statcount, pimg->fh);
       fclose(pimg->fh);
    }
-   /* FIXME: don't understand this comment:
+   /* FIXME: don't understand this comment - suspect it's out of date - Olly
     * memory leak, but it doesn't like this for some reason */
    osfree(pimg);
 }
