@@ -1,6 +1,9 @@
 * Covariance matrices are symmetric - now only store 6 of the 9 entries.
   Typically uses 10% less memory and is 15% faster.
 
+* caverot: adjust to speed of machine/size on initial draw, rather than
+  on first input from user.
+
 Changes in 0.97-prerelease7:
 
 * Messages relating to command line options are now translatable.

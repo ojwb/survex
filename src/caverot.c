@@ -80,6 +80,8 @@ void swap_screen(bool);        /* swap displayed screen and drawing screen */
 /* translate all points */
 static void translate_data(coord Xchange, coord Ychange, coord Zchange);
 
+static double lap_timer(bool want_time);
+
 /***************************************************************************/
 
 /* global variables */
@@ -111,8 +113,6 @@ static bool fSLegs = fFalse;   /* Draw surface legs? */
 static bool fStns = fFalse;  /* Draw crosses at stns? */
 static bool fAll = fFalse;  /* Draw all during movement? */
 static bool fRevSense = fFalse; /* Movements relate to cave/observer */
-/* FIXME: actually set fSlowMachine */
-static bool fSlowMachine = fFalse; /* Controls slick tilt, etc */
 static bool fRevRot = fFalse; /* auto-rotate backwards */
 static float elev;             /* angle of elevation of viewpoint */
 static float nStepsize;        /* stepsize for movements */
@@ -331,6 +331,8 @@ main(int argc, char **argv)
 	szPlan = msgPerm(/*Plan, %05.1f up screen*/101);
 	szElev = msgPerm(/*View towards %05.1f*/102);
 
+	lap_timer(fFalse);
+	
 	while (fTrue) {
 	   char sz[80];
 
@@ -433,37 +435,47 @@ demo_step(void)
    struct {
    };
 } */
-static int dt;
+
+static double
+lap_timer(bool want_time)
+{
+   double lap_time = 0.0;
+   static clock_t new_time = 0;
+   clock_t old_time = new_time;
+   /* no point using anything better than clock() on DOS at least */
+   new_time = clock();
+   if (want_time) {
+      static int dt = (int)(new_time - old_time);
+      /* better to be paranoid */
+      if (dt < 1) dt = 1;
+      lap_time = (double)dt * / CLOCKS_PER_SEC;
+      if (lap_time > 60.0) {
+	 cvrotgfx_beep(); /* FIXME: do something more sensible */
+	 lap_time = 60.0;
+      }
+   }
+   return lap_time;
+}
 
 bool
 process_key(void) /* and mouse! */
 {
    float nStep, Accel;
    int iKeycode;
-   static bool fChanged = fFalse;
+   static bool fChanged = fTrue; /* Want to time initial draw */
    double s = SIND(degView), c = COSD(degView);
    static int autotilt = 0;
    static float autotilttarget;
-   static clock_t new_time = 0;
-   clock_t old_time;
-   static float tsc = 1.0f; /* sane starting value */
+   static double tsc = 1.0; /* sane starting value */
 #ifdef ANIMATE
    static clock_t last_animate = 0;
 #endif
 
-   /* FIXME: use timer with better resolution than clock() ? */
-   old_time = new_time;
-   new_time = clock();
    if (fChanged) {
-      dt = (int)(new_time - old_time);
-      /* better to be paranoid */
-      if (dt < 1) dt = 1;
-      tsc = (float)dt * (10.0f / CLOCKS_PER_SEC);
-      if (tsc > 1000.0f) {
-	 cvrotgfx_beep(); /* FIXME: do something more sensible */
-	 tsc = 1000.0f;
-      }
       fChanged = fFalse;
+      tsc = lap_timer(fTrue) * 10.0;
+   } else {
+      lap_timer(fFalse);
    }
 
 #ifdef ANIMATE
@@ -544,16 +556,12 @@ process_key(void) /* and mouse! */
 	    break;
 	  case 'P':
 	    if (elev != 90.0f) {
-	       if (fSlowMachine)
-		  elev = 90.0f;
-	       else {
 /*fprintf(stderr, "P:tsc = %f\n", tsc);fflush(stderr);*/
-		  autotilt = (int)ceil(90.0 / ceil(9.0 / tsc));
+	       autotilt = (int)ceil(90.0 / ceil(9.0 / tsc));
 /*fprintf(stderr,"P:autotilt = %d\n",autotilt);fflush(stderr);*/
-		  if (autotilt > 16) {
-		     autotilt = 0;
-		     elev = 90.0f;
-		  }
+	       if (autotilt > 16) {
+		  autotilt = 0;
+		  elev = 90.0f;
 	       }
 	       autotilttarget = 90.0f;
 	       fChanged = fTrue;
@@ -561,17 +569,14 @@ process_key(void) /* and mouse! */
 	    break;
 	  case 'L':
 	    if (elev!=0.0f) {
-	       if (fSlowMachine)
-		  elev = 0.0f;
-	       else {
 /*fprintf(stderr,"L:tsc = %f\n",tsc);fflush(stderr);*/
-		  autotilt = (int)ceil(90.0 / ceil(9.0 / tsc));
+	       autotilt = (int)ceil(90.0 / ceil(9.0 / tsc));
 /*fprintf(stderr,"L:autotilt = %d\n",autotilt);fflush(stderr);*/
-		  if (autotilt > 16) {
-		     elev = 0.0f;
-		     autotilt = 0;
-		  } else if (elev > 0.0f)
-		     autotilt = -autotilt;
+	       if (autotilt > 16) {
+		  elev = 0.0f;
+		  autotilt = 0;
+	       } else if (elev > 0.0f) {
+		  autotilt = -autotilt;
 	       }
 	       autotilttarget = 0.0f;
 	       fChanged = fTrue;
@@ -829,8 +834,6 @@ translate_data(coord Xchange, coord Ychange, coord Zchange)
 
 /**************************************************************************/
 
-static char *cmdline_load_files(int argc, char **argv);
-
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
    CVROTGFX_LONGOPTS
@@ -852,7 +855,7 @@ static struct help_msg help[] = {
 static void
 parse_command(int argc, char **argv)
 {
-   char *p;
+   int c;
    int col_idx = 0;
 
    cmdline_set_syntax_message("3D_FILE...", NULL); /* TRANSLATE */
@@ -876,30 +879,23 @@ parse_command(int argc, char **argv)
    putnl();
    puts(msg(/*Reading in data - please wait...*/105));
 
-   p = cmdline_load_files(argc - optind, argv + optind);
-   if (p) {
-      printf(msg(/*Bad 3d image file `%s'*/106), p);
-      putnl();
-      exit(1);
-   }
-}
+   argc -= optind;
+   argv += optind;
 
-/* process the tail end of the command line */
-/* (i.e. the bit which just lists one or more files to load */
-static char *
-cmdline_load_files(int argc, char **argv)
-{
-   int c;
+   /* process the tail end of the command line which lists file(s) to load */
    ppLegs = osmalloc((argc + 1) * sizeof(point Huge *));
    ppSLegs = osmalloc((argc + 1) * sizeof(point Huge *));
    ppStns = osmalloc((argc + 1) * sizeof(point Huge *));
 
    /* load data into memory */
-   for (c = 0; c < argc; c++)
-      if (!load_data(argv[c], ppLegs + c, ppSLegs + c, ppStns + c))
-	 return argv[c];
+   for (c = 0; c < argc; c++) {
+      if (!load_data(argv[c], ppLegs + c, ppSLegs + c, ppStns + c)) {
+	 printf(msg(/*Bad 3d image file `%s'*/106), argv[c]);
+	 putnl();
+	 exit(1);
+      }
+   }
 
    ppLegs[argc] = ppSLegs[argc] = ppStns[argc] = NULL;
-
-   return NULL;
 }
+
