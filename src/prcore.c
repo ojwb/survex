@@ -67,7 +67,7 @@ static bool fShots = fTrue;
 static bool fSurface = fFalse;
 static bool fSkipBlank = fFalse;
 
-bool fBorder = fTrue, fCutlines = fTrue;
+bool fBorder = fTrue, fCutlines = fTrue, fRaw = fFalse;
 bool fBlankPage = fFalse;
 
 static img *pimg;
@@ -604,6 +604,7 @@ main(int argc, char **argv)
       {"crosses", no_argument, 0, 'c'},
       {"no-border", no_argument, 0, 'B'},
       {"no-cutlines", no_argument, 0, 'C'},
+      {"raw", no_argument, 0, 'r'},
       {"no-legs", no_argument, 0, 'l'},
       {"surface", no_argument, 0, 'S'},
       {"skip-blanks", no_argument, 0, 'k'},
@@ -614,7 +615,7 @@ main(int argc, char **argv)
       {0, 0, 0, 0}
    };
 
-#define short_opts "epb:t:s:ncBlSko:C"
+#define short_opts "epb:t:s:ncBlSko:Cr"
 
    /* TRANSLATE */
    static struct help_msg help[] = {
@@ -629,23 +630,24 @@ main(int argc, char **argv)
       {HLP_ENCODELONG(7),       "display crosses at stations"},
       {HLP_ENCODELONG(8),       "turn off page border"},
       {HLP_ENCODELONG(9),       "turn off dashed lines on internal page edges"},
-      {HLP_ENCODELONG(10),      "turn off display of survey legs"},
-      {HLP_ENCODELONG(11),      "turn on display of surface survey legs"},
-      {HLP_ENCODELONG(12),      "don't output blank pages"},
-      {HLP_ENCODELONG(13),      "set output file"},
-      {HLP_ENCODELONG(14),      "print out calibration page"},
+      {HLP_ENCODELONG(10),      "turn off infobox and page footer"},
+      {HLP_ENCODELONG(11),      "turn off display of survey legs"},
+      {HLP_ENCODELONG(12),      "turn on display of surface survey legs"},
+      {HLP_ENCODELONG(13),      "don't output blank pages"},
+      {HLP_ENCODELONG(14),      "set output file"},
+      {HLP_ENCODELONG(15),      "print out calibration page"},
       {0, 0}
    };
 
    msg_init(argv);
 
-   ASSERT(help[13].opt == HLP_ENCODELONG(13));
    ASSERT(help[14].opt == HLP_ENCODELONG(14));
-   ASSERT(help[15].opt == 0);
+   ASSERT(help[15].opt == HLP_ENCODELONG(15));
+   ASSERT(help[16].opt == 0);
    ASSERT(!(pr->flags & PR_FLAG_CALIBRATE && pr->flags & PR_FLAG_NOFILEOUTPUT));
 
-   if (pr->flags & PR_FLAG_NOFILEOUTPUT) help[13] = help[15];
-   if (!(pr->flags & PR_FLAG_CALIBRATE)) help[14] = help[15];
+   if (pr->flags & PR_FLAG_NOFILEOUTPUT) help[14] = help[16];
+   if (!(pr->flags & PR_FLAG_CALIBRATE)) help[15] = help[16];
 
    fnm = NULL;
 
@@ -668,6 +670,9 @@ main(int argc, char **argv)
 	 break;
        case 'C': /* Cutlines */
 	 fCutlines = 0;
+	 break;
+       case 'r': /* Raw */
+	 fRaw = 1;
 	 break;
        case 'S': /* Surface */
 	 fSurface = 1;
@@ -1068,7 +1073,7 @@ main(int argc, char **argv)
 	 if (pr->NewPage)
 	    pr->NewPage((int)page, pass, pagesX, pagesY);
 
-	 if ((int)page == (pagesY - 1) * pagesX + 1) {
+	 if (!fRaw && (int)page == (pagesY - 1) * pagesX + 1) {
 	    if (pr->SetFont) pr->SetFont(PR_FONT_DEFAULT);
 	    draw_info_box(N_Scale, D_Scale);
 	 }
@@ -1129,8 +1134,12 @@ main(int argc, char **argv)
 	    if (fBlankPage) break;
 	 } else {
 	    if (pr->ShowPage) {
-	       sprintf(szTmp, msg167, title, (int)page, pagesX * pagesY,
-		       datestamp);
+	       if (fRaw) {
+		  *szTmp = '\0';
+	       } else {
+		  sprintf(szTmp, msg167, title, (int)page, pagesX * pagesY,
+			  datestamp);
+	       }
 	       pr->ShowPage(szTmp);
 	    }
 	 }

@@ -384,7 +384,9 @@ ps_Pre(int pagesToPrint, const char *title)
    struct passwd *ent;
 #endif
 
-   prio_print("%!PS-Adobe-1.0\n"); /* PS file w/ document structuring */
+   /* PS file w/ EPS document structuring */
+   /* FIXME: prio_print("%!PS-Adobe-3.0 EPSF-3.0\n"); */
+   prio_print("%!PS-Adobe-1.0\n");
 
    prio_print("%%Title: ");
    prio_print(title);
@@ -407,6 +409,7 @@ ps_Pre(int pagesToPrint, const char *title)
       prio_putc('\n');
    }
 
+   /* FIXME: bounding box is too big when border is turned off... */
    prio_printf("%%%%BoundingBox: 0 0 %ld %ld\n",
 	       xpPageWidth + (long)(2.0 * MarginLeft * POINTS_PER_MM),
 	       ypPageDepth + (long)((10.0 + 2.0 * MarginBottom) * POINTS_PER_MM));
