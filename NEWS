@@ -1,10 +1,9 @@
+Changes in 1.0.27:
+
 * cad3d: DXF output now puts surface legs, stations, and labels in separate
   layers.
 
 * (Unix version): distribute desc-svxedit.txt.
-
-debian: 
-The default gcc/g++ is now c102 so remove code to explicitly use GCC 3.2.
 
 Changes in 1.0.26:
 

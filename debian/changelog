@@ -1,3 +1,12 @@
+survex (1.0.27) unstable; urgency=low
+
+  * cad3d: DXF output now puts surface legs, stations, and labels in separate
+    layers.
+  * debian/control,debian/rules: The default gcc/g++ is now c102 so removed
+    code to explicitly use GCC 3.2.
+
+ -- Wookey <wookey@survex.com>  Wed, 07 Jan 2004 03:27:58 +0000
+
 survex (1.0.26) unstable; urgency=low
 
   * Standards-Version: 3.6.1 (no changes).
