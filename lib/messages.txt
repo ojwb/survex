@@ -166,13 +166,14 @@ pt:  8 Campo n&atilde;o pode ser omitido
 ca:  8 Camp que no es pot ometre
 es:  8 Campo que no puede ser omitido
 it:  8 Questo campo non pu&oacute; essere omesso
-en:  9 Expecting numeric field
-fr:  9 On attendait une valeur num&eacute;rique
-de:  9 Zahl erwartet
-pt:  9 Valor num&eacute;rico esperado
-ca:  9 S'espera un camp numeric
-es:  9 Se espera un campo num&eacute;rico
-it:  9 Questo campo &eacute; numerico
+#en:  9 Expecting numeric field
+#fr:  9 On attendait une valeur num&eacute;rique
+#de:  9 Zahl erwartet
+#pt:  9 Valor num&eacute;rico esperado
+#ca:  9 S'espera un camp numeric
+#es:  9 Se espera un campo num&eacute;rico
+#it:  9 Questo campo &eacute; numerico
+en:  9 Expecting numeric field, found `%s'
 # 10 c.f. 31, 32, 131
 en: 10 Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'
 fr: 10 Vous avez &eacute;crit `%s'; on attendait `PRESERVE', `TOUPPER', ou `TOLOWER'
@@ -209,14 +210,15 @@ ca: 13 Estaci&oacute; `%s' igualada a ella mateixa
 es: 13 Estacio&acute;n `%s' igualada a si misma
 it: 13 Stazione `%s' uguagliata a se stessa
 # c.f. 21 and 59
-en: 14 Compass reading may not be omitted here
-fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici
-de-de,de-ch: 14 Kompassablesung darf nicht weggelassen werden
-de:     14 Kompa&szlig;ablesung darf nicht weggelassen werden
-pt: 14 Azimute n&atilde;o pode ser omitido aqui
-ca: 14 La lectura de la br&uacute;ixola no es pot ometre aqu&iacute;
-es: 14 La lectura de la br&uacute;jula no se puede omitir aqu&iacute;
-it: 14 La lettura della bussola non pu&oacute; essere omessa qui
+# was en: 14 Compass reading may not be omitted here
+#fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici
+#de-de,de-ch: 14 Kompassablesung darf nicht weggelassen werden
+#de:     14 Kompa&szlig;ablesung darf nicht weggelassen werden
+#pt: 14 Azimute n&atilde;o pode ser omitido aqui
+#ca: 14 La lectura de la br&uacute;ixola no es pot ometre aqu&iacute;
+#es: 14 La lectura de la br&uacute;jula no se puede omitir aqu&iacute;
+#it: 14 La lettura della bussola non pu&oacute; essere omessa qui
+en: 14 Compass reading may not be omitted except on plumbed legs
 en: 15 End of line not blank
 fr: 15 Fin de ligne non vide
 de: 15 Ende der Zeile ist nicht leer
@@ -599,13 +601,7 @@ de-de,de-ch: 57 *EXPORT muss unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
 de:     57 *EXPORT mu&szlig; unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
 pt: 57 *EXPORT deve estar logo ap&oacute;s um `*BEGIN <TOPO>'
 it: 57 *EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'
-en: 58 in this line:
-fr: 58 dans cette ligne:
-de: 58 in dieser Zeile:
-pt: 58 na linha:
-ca: 58 en aquesta l&iacute;nia:
-es: 58 en esta l&iacute;nea:
-it: 58 in questa linea:
+#XXX 58
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
 fr: 59 Lecture de compas suspecte
@@ -1715,12 +1711,12 @@ pt:197 " a %4.2fm)"
 ca:197 " a %4.2fm)"
 es:197 " en %4.2fm)"
 it:197 " a %4.2fm)"
-# TRANSLATE
-en:198 Expecting date
-fr:198 On attendait une date
-de:198 Datum erwartet
-pt:198 Esperando data
-# TRANSLATE
+# Old versions
+#en:198 Expecting date
+#fr:198 On attendait une date
+#de:198 Datum erwartet
+#pt:198 Esperando data
+en:198 Expecting date, found `%s'
 en:199 Only load the sub-survey with prefix
 fr:199 Ne charge que la partie de topo avec le prefixe
 de:199 Nur Teilvermessung mit Pr&auml;fix laden

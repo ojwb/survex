@@ -35,6 +35,7 @@
 #include "datain.h"
 #include "commands.h"
 #include "out.h"
+#include "str.h"
 
 #define EPSILON (REAL_EPSILON * 1000)
 
@@ -53,8 +54,6 @@ parse file /* = { NULL, NULL, 0, fFalse, NULL } */ ;
 bool f_export_ok;
 
 static filepos fpLineStart;
-
-static void showline(const char *dummy, int n);
 
 void
 get_pos(filepos *fp)
@@ -118,6 +117,22 @@ compile_error(int en, ...)
 }
 
 void
+compile_error_token(int en)
+{
+   char *p = NULL;
+   static int len;
+   s_zero(&p);
+   skipblanks();
+   while (!isBlank(ch) && !isEol(ch)) {
+      s_catchar(&p, &len, ch);
+      nextch();
+   }
+   compile_error(en, p);
+   osfree(p);
+   skipline();
+}
+
+void
 compile_warning(int en, ...)
 {
    va_list ap;
@@ -159,88 +174,9 @@ skipblanks(void)
 }
 
 extern void
-showandskipline(const char *dummy, int n)
-{
-   showline(dummy, n);
-   skipline();
-   puts(msg(/*Ignoring entire line*/84));
-}
-
-extern void
 skipline(void)
 {
    while (!isEol(ch)) nextch();
-}
-
-/* display current line, marking n chars (n == INT_MAX => to end of line)
- * if n < 0 count backwards instead of forwards
- *
- * fpLineStart
- * v
- * 12  13   7.5& 120 -34
- *              ^get_pos()
- */
-static void
-showline(const char *dummy, int n)
-{
-   char sz[256];
-   int i, o, c;
-   int state;
-   filepos fp;
-   long cur;
-
-   dummy = dummy; /* suppress warning */
-
-   get_pos(&fp);
-   cur = fp.offset;
-
-   if (n < 0) {
-      n = -n;
-      cur -= n;
-   }
-   o = (int)(cur - fpLineStart.offset - 1);
-
-   set_pos(&fpLineStart);
-
-   nextch();
-   i = 0;
-   state = 0;
-   c = o;
-   /* FIXME: cope with really long lines */
-   while (i < 255 && !isEol(ch)) {
-      c--;
-      if (c < 0) {
-	 c = n; /* correct thing to do first time, harmless otherwise */
-	 state++;
-      }
-      /* turn tabs into a single space for simplicity */
-      if (ch == '\t') ch=' ';
-      if (ch < ' ' || ch == 127) {
-	 /* ctrl char other than tab */
-	 sz[i++] = '^';
-	 sz[i++] = ch < ' ' ? ch + 64 : '?';
-	 /* and adjust o or n to take account of extra character */
-	 switch (state) {
-	  case 0: o++; break;
-	  case 1: if (n < INT_MAX) n++; break;
-	  default: break;
-	 }
-      } else
-	 sz[i++]=ch;
-      nextch();
-   }
-   sz[i] = '\0';
-   puts(msg(/*in this line:*/58));
-   puts(sz);
-   n = min(n, i - o); /* cope with n==INT_MAX, or indeed just too big */
-   if (n) {
-      memset(sz, ' ', o);
-      memset(sz + o, '^', n);
-      sz[o + n] = '\0';
-      puts(sz);
-   }
-
-   set_pos(&fp);
 }
 
 #ifndef NO_PERCENTAGE
@@ -542,9 +478,9 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
    } else {
       /* clino */
       real L2, cosG, LcosG, cosG2, sinB, cosB, dx2, dy2, dz2, v, V;
-      if (fNoComp) {
-	 compile_error(/*Compass reading may not be omitted here*/14);
-	 showandskipline(NULL, 0);
+      if (fNoComp) {	 
+	 compile_error(/*Compass reading may not be omitted except on plumbed legs*/14);
+	 skipline();
 	 return 0;
       }
       if (tape == (real)0.0) {
@@ -734,12 +670,11 @@ data_normal(void)
 	  if (clin == HUGE_REAL) {
 	     clin = handle_plumb(&fPlumbed);
 	     if (clin != HUGE_REAL) break;
-	     compile_error(/*Expecting numeric field*/9);
-	     showandskipline(NULL, 1);
+	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
 	     process_eol();
 	     return 0;
 	  }
-	  /* we've got a real clino reading, so set clear the flag */
+	  /* we've got a real clino reading, so clear the flag */
 	  fNoClino = fFalse;
 	  break;
        }

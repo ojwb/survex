@@ -1,6 +1,8 @@
 * cavern: more intelligent and less verbose reporting of errors in nested
   included files (inspired by GCC 3.0).
 
+* cavern: improved reporting of syntax errors in survey data.
+
 Changes in 0.99-prerelease5:
 
 * aven: improved initial sizing of window; "Toggle rotation" toolbar

@@ -305,9 +305,8 @@ read_numeric(bool fOmit)
    if (isOmit(ch_old)) {
       compile_error(/*Field may not be omitted*/8);
    } else {
-      compile_error(/*Expecting numeric field*/9);
+      compile_error_token(/*Expecting numeric field, found `%s'*/9);
    }
-   showandskipline(NULL, 1);
    LONGJMP(file.jbSkipLine);
    return 0.0; /* for brain-fried compilers */
 }
@@ -319,8 +318,7 @@ read_numeric_or_omit(void)
    real v = read_numeric(fTrue);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
-	 compile_error(/*Expecting numeric field*/9);
-	 showandskipline(NULL, 1);
+	 compile_error_token(/*Expecting numeric field, found `%s'*/9);
 	 LONGJMP(file.jbSkipLine);
 	 return 0.0; /* for brain-fried compilers */
       }
@@ -335,8 +333,7 @@ read_uint_internal(int errmsg)
 {
    unsigned int n = 0;
    if (!isdigit(ch)) {
-      compile_error(errmsg);
-      showandskipline(NULL, 1);
+      compile_error_token(errmsg);
       LONGJMP(file.jbSkipLine);
    }
    while (isdigit(ch)) {
@@ -350,7 +347,7 @@ extern unsigned int
 read_uint(void)
 {
    skipblanks();
-   return read_uint_internal(/*Expecting numeric field*/9);
+   return read_uint_internal(/*Expecting numeric field, found `%s'*/9);
 }
 
 extern void
@@ -399,13 +396,13 @@ read_date(void)
    int y = 0, m = 0, d = 0;
 
    skipblanks();
-   y = read_uint_internal(/*Expecting date*/198);
+   y = read_uint_internal(/*Expecting date, found `%s'*/198);
    if (ch == '.') {
       nextch();
-      m = read_uint_internal(/*Expecting date*/198);
+      m = read_uint_internal(/*Expecting date, found `%s'*/198);
       if (ch == '.') {
 	 nextch();
-	 d = read_uint_internal(/*Expecting date*/198);
+	 d = read_uint_internal(/*Expecting date, found `%s'*/198);
       }
    }
 }

@@ -55,7 +55,6 @@ void skipblanks(void);
 void data_file(const char *pth, const char *fnm);
 
 void skipline(void);
-void showandskipline(const char *dummy, int n);
 
 /* style functions */
 int data_normal(void);
@@ -67,3 +66,5 @@ int data_ignore(void);
 
 void compile_warning(int en, ...);
 void compile_error(int en, ...);
+
+void compile_error_token(int en);

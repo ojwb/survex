@@ -524,3 +524,10 @@
 #ca:104 Intentant de llegir un fitxer d'imatge 3d
 #es:104 Intentando leer un fichero de imagen 3d
 #it:104 Tentativo di lettura nel file immagine 3d
+#en: 58 in this line:
+#fr: 58 dans cette ligne:
+#de: 58 in dieser Zeile:
+#pt: 58 na linha:
+#ca: 58 en aquesta l&iacute;nia:
+#es: 58 en esta l&iacute;nea:
+#it: 58 in questa linea:
