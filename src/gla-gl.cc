@@ -557,7 +557,7 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
     GLdouble X, Y, Z;
     if (!gluProject(x, y, z, modelview_matrix, projection_matrix, viewport,
 		    &X, &Y, &Z)) return;
-    printf("%.3f %s\n", Z, str.c_str());
+    // Only draw text which is in front of the viewer.
     if (Z > 0) DrawIndicatorText((int)X, (int)Y, str);
 #else
     glRasterPos3d(x, y, z);
