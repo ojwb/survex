@@ -545,16 +545,22 @@ msg_init(const char *argv0)
 extern const char *
 msg(int en)
 {
-   static const char *szBadEn = "???";
-
+   /* NB can't use ASSERT here! */
+   static char badbuf[256];
    if (!msg_array) {
-      if (en != 1) return szBadEn;
+      if (en != 1)  {
+	 sprintf(badbuf, "Message %d requested before msg_array initialised\n", en);
+	 return badbuf;
+      }
       /* this should be the only message which can be requested before
        * the message file is opened and read... */
       return "Out of memory (couldn't find %ul bytes).\n";
    }
 
-   if (en < 0 || en >= num_msgs) return szBadEn;
+   if (en < 0 || en >= num_msgs) {
+      sprintf(badbuf, "Message %d out of range\n", en);
+      return badbuf;
+   }
 
    return msg_array[en];
 }

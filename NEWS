@@ -1,3 +1,9 @@
+* (MSDOS and MS Windows versions): fixed bug in message file handling
+  introduced in 0.96-prerelease 1 - symptoms: messages incorrectly looked
+  for in current directory, or just printing "???" and exiting.
+
+Changes in 0.96-prerelease4:
+
 * cavern (RISC OS version): "is this a directory" test would never say
   "yes".
 
