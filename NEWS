@@ -84,6 +84,8 @@
 
 * (UNIX version): man pages now have "Survex <version number>" on them.
 
+* xcaverot: report more detailed error when .3d file can't be loaded.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

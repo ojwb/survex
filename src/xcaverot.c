@@ -381,6 +381,7 @@ process_load(GC mygc)
 
       if (load_file(string, NULL, 1)) break;
 
+/*    sprintf(string, img_error(), string);*/
       strcpy(string, "File not found or not a Survex image file");
       XClearWindow(mydisplay, enter_window);
       XDrawString(mydisplay, enter_window, enter_gc,
@@ -1237,9 +1238,7 @@ main(int argc, char **argv)
    /* load file(s) */
    while (argv[optind]) {
       if (!load_file(argv[optind], survey, 0)) {
-	 printf("File `%s' not found or not a Survex image file\n",
-		argv[optind]);
-	 exit(1);
+	 fatalerror(img_error(), argv[optind]);
       }
       optind++;
    }
