@@ -226,7 +226,10 @@ void GfxCore::Initialise()
 	}
 
         case lock_Y:
-  	    // elevation looking along Y axis: this is the default orientation.
+  	    // elevation looking along Y axis
+ 	    m_Params.rotation.setFromEulerAngles(0.0, 0.0, 0.0);
+	    m_RotationMatrix = m_Params.rotation.asMatrix();
+	    m_TiltAngle = 0.0;
  	    m_IndicatorsOff = true;
 	    break;
 
@@ -234,22 +237,12 @@ void GfxCore::Initialise()
         case lock_XZ: // linear survey parallel to Y axis
         case lock_YZ: // linear survey parallel to X axis
 	{
-	    // flat survey (zero height range) => go into plan view.
-	    Quaternion q;
-	    m_TiltAngle = M_PI / 2.0;
-	    q.setFromEulerAngles(m_TiltAngle, 0.0, 0.0);
-
-	    m_Params.rotation = q * m_Params.rotation;
-	    m_RotationMatrix = m_Params.rotation.asMatrix();
-
+	    // flat survey (zero height range) => go into plan view (default orientation).
 	    m_Clino = false;
-	
-	    //	    m_DepthbarOff = true;
 	    break;
 	}
 
         case lock_POINT:
-
   	    m_DepthbarOff = true;
 	    m_ScalebarOff = true;
 	    m_IndicatorsOff = true;
@@ -1599,7 +1592,10 @@ void GfxCore::OnDefaults(wxCommandEvent&)
 
 void GfxCore::DefaultParameters()
 {
-    m_Params.rotation.setFromEulerAngles(0.0, 0.0, 0.0);
+    m_TiltAngle = M_PI / 2.0;
+    m_PanAngle = 0.0;
+
+    m_Params.rotation.setFromEulerAngles(m_TiltAngle, 0.0, m_PanAngle);
     m_RotationMatrix = m_Params.rotation.asMatrix();
 
     m_Params.translation.x = 0.0;
@@ -1610,11 +1606,8 @@ void GfxCore::DefaultParameters()
     m_Params.display_shift.y = 0;
 
     m_ScaleCrossesOnly = false;
-
     m_FreeRotMode = false;
-    m_TiltAngle = 0.0;
-    m_PanAngle = 0.0;
-    m_RotationStep = (double) M_PI / 180.0f;
+    m_RotationStep = M_PI / 180.0;
     m_Rotating = false;
     m_SwitchingToPlan = false;
     m_SwitchingToElevation = false;
