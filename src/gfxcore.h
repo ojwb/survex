@@ -27,6 +27,7 @@
 #include <float.h>
 
 #include "quaternion.h"
+#include "guicontrol.h"
 #include "wx.h"
 #include <utility>
 #include <list>
@@ -121,17 +122,6 @@ class GfxCore : public wxWindow {
     bool m_AntiAlias;
 #endif
 
-    enum LockFlags {
-	lock_NONE = 0,
-	lock_X = 1,
-	lock_Y = 2,
-	lock_Z = 4,
-	lock_POINT = lock_X | lock_Y | lock_Z,
-	lock_XZ = lock_X | lock_Z,
-	lock_YZ = lock_Y | lock_Z,
-	lock_XY = lock_X | lock_Y
-    };
-
     struct PlotData {
 	Point *vertices;
 	Point *surface_vertices;
@@ -170,18 +160,13 @@ class GfxCore : public wxWindow {
     list<pair<PresData, Quaternion> > m_Presentation;
     list<pair<PresData, Quaternion> >::iterator m_PresIterator;
 #endif
+    GUIControl* m_Control;
     double m_MaxExtent; // twice the maximum of the {x,y,z}-extents, in survey coordinates.
     char *m_LabelGrid;
     bool m_RotationOK;
     LockFlags m_Lock;
     Matrix4 m_RotationMatrix;
-    bool m_DraggingLeft;
-    bool m_DraggingMiddle;
-    bool m_DraggingRight;
     MainFrm* m_Parent;
-    wxPoint m_DragStart;
-    wxPoint m_DragRealStart;
-    wxPoint m_DragLast;
     wxBitmap* m_OffscreenBitmap;
     wxMemoryDC m_DrawDC;
     bool m_DoneFirstShow;
@@ -195,7 +180,6 @@ class GfxCore : public wxWindow {
     bool m_Rotating;
     Double m_RotationStep;
     int m_SwitchingTo;
-    bool m_ReverseControls;
     bool m_Crosses;
     bool m_Legs;
     bool m_Names;
@@ -211,7 +195,6 @@ class GfxCore : public wxWindow {
     int m_YCentre;
     PlotData* m_PlotData;
     bool m_InitialisePending;
-    enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV, drag_SCALE } m_LastDrag;
     bool m_MouseOutsideCompass;
     bool m_MouseOutsideElev;
     bool m_UndergroundLegs;
@@ -320,14 +303,11 @@ class GfxCore : public wxWindow {
 	return GridYToScreen(p.x, p.y, p.z);
     }
 
-    void CheckHitTestGrid(wxPoint& point, bool centre);
-
     wxCoord GetClinoOffset();
     wxPoint CompassPtToScreen(Double x, Double y, Double z);
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
-    void SetScale(Double scale);
     void SetScaleInitial(Double scale);
     void DrawBand(int num_polylines, const int *num_segs, const Point *vertices,
 		  Double m_00, Double m_01, Double m_02,
@@ -345,31 +325,28 @@ class GfxCore : public wxWindow {
     wxPoint IndicatorCompassToScreenPan(int angle);
     wxPoint IndicatorCompassToScreenElev(int angle);
 
-    void HandleScaleRotate(bool, wxPoint);
-    void HandleTilt(wxPoint);
-    void HandleTranslate(wxPoint);
-
-    void TranslateCave(int dx, int dy);
-    void TiltCave(Double tilt_angle);
-    void TurnCave(Double angle);
-    void TurnCaveTo(Double angle);
-
     void DrawNames();
     void NattyDrawNames();
     void SimpleDrawNames();
 
-    void Defaults();
     void DefaultParameters();
 
     void Repaint();
 
     void CreateHitTestGrid();
 
+    wxCoord GetCompassXPosition();
+    wxCoord GetClinoXPosition();
+    wxCoord GetIndicatorYPosition();
+    wxCoord GetIndicatorRadius();
+
+    void ToggleFlag(bool* flag);
+
 public:
     bool m_Degrees;
     bool m_Metric;
 
-    GfxCore(MainFrm* parent, wxWindow* parent_window);
+    GfxCore(MainFrm* parent, wxWindow* parent_window, GUIControl* control);
     ~GfxCore();
 
     void Initialise();
@@ -388,6 +365,11 @@ public:
 
     void CentreOn(Double x, Double y, Double z);
 
+    void TranslateCave(int dx, int dy);
+    void TiltCave(Double tilt_angle);
+    void TurnCave(Double angle);
+    void TurnCaveTo(Double angle);
+
 #ifdef AVENPRES
     void RecordPres(FILE* fp);
     void LoadPres(FILE* fp);
@@ -401,119 +383,123 @@ public:
     void PresGoto(PresData& d, Quaternion& q);
 #endif
 
-    void OnDefaults();
-    void OnPlan();
-    void OnElevation();
-    void OnDisplayOverlappingNames();
-    void OnShowCrosses();
-    void OnShowStationNames();
-    void OnShowSurveyLegs();
-    void OnShowSurface();
-    void OnShowSurfaceDepth();
-    void OnShowSurfaceDashed();
-    void OnMoveEast();
-    void OnMoveNorth();
-    void OnMoveSouth();
-    void OnMoveWest();
-    void OnStartRotation();
-    void OnToggleRotation();
-    void OnStopRotation();
-    void OnReverseControls();
-    void OnSlowDown(bool accel = false);
-    void OnSpeedUp(bool accel = false);
-    void OnStepOnceAnticlockwise(bool accel = false);
-    void OnStepOnceClockwise(bool accel = false);
-    void OnHigherViewpoint(bool accel = false);
-    void OnLowerViewpoint(bool accel = false);
-    void OnShiftDisplayDown(bool accel = false);
-    void OnShiftDisplayLeft(bool accel = false);
-    void OnShiftDisplayRight(bool accel = false);
-    void OnShiftDisplayUp(bool accel = false);
-    void OnZoomIn(bool accel = false);
-    void OnZoomOut(bool accel = false);
-    void OnToggleScalebar();
-    void OnToggleDepthbar();
-    void OnViewCompass();
-    void OnViewClino();
-    void OnViewGrid();
-    void OnReverseDirectionOfRotation();
-    void OnShowEntrances();
-    void OnShowFixedPts();
-    void OnShowExportedPts();
+    void OnPaint(wxPaintEvent&);
+    void OnSize(wxSizeEvent& event);
+    void OnIdle(wxIdleEvent &event);
+
+    void OnMouseMove(wxMouseEvent& event) { m_Control->OnMouseMove(event); }
+    void OnLButtonDown(wxMouseEvent& event) { m_Control->OnLButtonDown(event); }
+    void OnLButtonUp(wxMouseEvent& event) { m_Control->OnLButtonUp(event); }
+    void OnMButtonDown(wxMouseEvent& event) { m_Control->OnMButtonDown(event); }
+    void OnMButtonUp(wxMouseEvent& event) { m_Control->OnMButtonUp(event); }
+    void OnRButtonDown(wxMouseEvent& event) { m_Control->OnRButtonDown(event); }
+    void OnRButtonUp(wxMouseEvent& event) { m_Control->OnRButtonUp(event); }
+    void OnKeyPress(wxKeyEvent &event) { m_Control->OnKeyPress(event); }
+
 #ifdef AVENGL
     void OnAntiAlias();
     void OnSolidSurface();
 #endif
-    void OnCancelDistLine();
-
-    void OnPaint(wxPaintEvent&);
-    void OnMouseMove(wxMouseEvent& event);
-    void OnLButtonDown(wxMouseEvent& event);
-    void OnLButtonUp(wxMouseEvent& event);
-    void OnMButtonDown(wxMouseEvent& event);
-    void OnMButtonUp(wxMouseEvent& event);
-    void OnRButtonDown(wxMouseEvent& event);
-    void OnRButtonUp(wxMouseEvent& event);
-    void OnSize(wxSizeEvent& event);
-    void OnIdle(wxIdleEvent& event);
     bool Animate(wxIdleEvent *idle_event = NULL);
-
-    void OnKeyPress(wxKeyEvent &e);
-
-    void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent&);
-    void OnShowCrossesUpdate(wxUpdateUIEvent&);
-    void OnShowStationNamesUpdate(wxUpdateUIEvent&);
-    void OnShowSurveyLegsUpdate(wxUpdateUIEvent&);
-    void OnShowSurfaceUpdate(wxUpdateUIEvent&);
-    void OnShowSurfaceDepthUpdate(wxUpdateUIEvent&);
-    void OnShowSurfaceDashedUpdate(wxUpdateUIEvent&);
-    void OnMoveEastUpdate(wxUpdateUIEvent&);
-    void OnMoveNorthUpdate(wxUpdateUIEvent&);
-    void OnMoveSouthUpdate(wxUpdateUIEvent&);
-    void OnMoveWestUpdate(wxUpdateUIEvent&);
-    void OnStartRotationUpdate(wxUpdateUIEvent&);
-    void OnToggleRotationUpdate(wxUpdateUIEvent&);
-    void OnStopRotationUpdate(wxUpdateUIEvent&);
-    void OnReverseControlsUpdate(wxUpdateUIEvent&);
-    void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent&);
-    void OnSlowDownUpdate(wxUpdateUIEvent&);
-    void OnSpeedUpUpdate(wxUpdateUIEvent&);
-    void OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent&);
-    void OnStepOnceClockwiseUpdate(wxUpdateUIEvent&);
-    void OnDefaultsUpdate(wxUpdateUIEvent&);
-    void OnElevationUpdate(wxUpdateUIEvent&);
-    void OnHigherViewpointUpdate(wxUpdateUIEvent&);
-    void OnLowerViewpointUpdate(wxUpdateUIEvent&);
-    void OnPlanUpdate(wxUpdateUIEvent&);
-    void OnShiftDisplayDownUpdate(wxUpdateUIEvent&);
-    void OnShiftDisplayLeftUpdate(wxUpdateUIEvent&);
-    void OnShiftDisplayRightUpdate(wxUpdateUIEvent&);
-    void OnShiftDisplayUpUpdate(wxUpdateUIEvent&);
-    void OnZoomInUpdate(wxUpdateUIEvent&);
-    void OnZoomOutUpdate(wxUpdateUIEvent&);
-    void OnToggleScalebarUpdate(wxUpdateUIEvent&);
-    void OnToggleDepthbarUpdate(wxUpdateUIEvent&);
-    void OnViewCompassUpdate(wxUpdateUIEvent&);
-    void OnViewClinoUpdate(wxUpdateUIEvent&);
-    void OnViewGridUpdate(wxUpdateUIEvent&);
-    void OnShowEntrancesUpdate(wxUpdateUIEvent&);
-    void OnShowExportedPtsUpdate(wxUpdateUIEvent&);
-    void OnShowFixedPtsUpdate(wxUpdateUIEvent&);
 #ifdef AVENGL
     void OnAntiAliasUpdate(wxUpdateUIEvent&);
     void OnSolidSurfaceUpdate(wxUpdateUIEvent&);
 #endif
-    void OnIndicatorsUpdate(wxUpdateUIEvent&);
-    void OnCancelDistLineUpdate(wxUpdateUIEvent&);
 
-    void OnToggleMetric();
-    void OnToggleMetricUpdate(wxUpdateUIEvent& cmd);
-	
-    void OnToggleDegrees();
-    void OnToggleDegreesUpdate(wxUpdateUIEvent& cmd);
+    void SetCoords(wxPoint);
+
+    bool ShowingCompass();
+    bool ShowingClino();
+    
+    bool PointWithinCompass(wxPoint point);
+    bool PointWithinClino(wxPoint point);
+    bool PointWithinScaleBar(wxPoint point);
+    
+    void SetCompassFromPoint(wxPoint point);
+    void SetClinoFromPoint(wxPoint point);
+    void SetScaleBarFromOffset(wxCoord dx);
+    
+    void RedrawIndicators();
+    
+    void StartRotation();
+    void ToggleRotation();
+    void StopRotation();
+    bool CanRotate();
+    void ReverseRotation();
+    void RotateSlower(bool accel);
+    void RotateFaster(bool accel);
+    
+    void SwitchToElevation();
+    void SwitchToPlan();
+    bool ChangingOrientation();
+    
+    bool ShowingPlan();
+    bool ShowingElevation();
+    bool ShowingMeasuringLine();
+
+    bool CanRaiseViewpoint();
+    bool CanLowerViewpoint();
+
+    LockFlags GetLock() { return m_Lock; }
+    bool IsRotating() { return m_Rotating; }
+    bool HasData() { return m_PlotData != NULL; }
+
+    double GetScale() { return m_Params.scale; }
+    void SetScale(Double scale);
+    
+    bool ShowingStationNames() { return m_Names; }
+    bool ShowingOverlappingNames() { return m_OverlappingNames; }
+    bool ShowingCrosses() { return m_Crosses; }
+
+    bool HasUndergroundLegs() { return m_UndergroundLegs; }
+    bool HasSurfaceLegs() { return m_SurfaceLegs; }
+
+    bool ShowingUndergroundLegs() { return m_Legs; }
+    bool ShowingSurfaceLegs() { return m_Surface; }
+    bool ShowingSurfaceDepth() { return m_SurfaceDepth; }
+    bool ShowingSurfaceDashed() { return m_SurfaceDashed; }
+
+    bool ShowingDepthBar() { return m_Depthbar; }
+    bool ShowingScaleBar() { return m_Scalebar; }
+
+    bool ShowingEntrances() { return m_Entrances; }
+    bool ShowingFixedPts() { return m_FixedPts; }
+    bool ShowingExportedPts() { return m_ExportedPts; }
+
+    int GetNumEntrances();
+    int GetNumFixedPts();
+    int GetNumExportedPts();
+
+    void ToggleUndergroundLegs() { ToggleFlag(&m_Legs); }
+    void ToggleSurfaceLegs() { ToggleFlag(&m_Surface); }
+    void ToggleCompass() { ToggleFlag(&m_Compass); }
+    void ToggleClino() { ToggleFlag(&m_Clino); }
+    void ToggleScaleBar() { ToggleFlag(&m_Scalebar); }
+    void ToggleEntrances() { ToggleFlag(&m_Entrances); }
+    void ToggleFixedPts() { ToggleFlag(&m_FixedPts); }
+    void ToggleExportedPts() { ToggleFlag(&m_ExportedPts); }
+    void ToggleGrid() { ToggleFlag(&m_Grid); }
+    void ToggleCrosses() { ToggleFlag(&m_Crosses); }
+    void ToggleStationNames() { ToggleFlag(&m_Names); }
+    void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
+    void ToggleDepthBar() { ToggleFlag(&m_Depthbar); }
+    void ToggleSurfaceDepth() { ToggleFlag(&m_SurfaceDepth); }
+    void ToggleSurfaceDashed() { ToggleFlag(&m_SurfaceDashed); }
+    void ToggleMetric() { ToggleFlag(&m_Metric); }
+    void ToggleDegrees() { ToggleFlag(&m_Degrees); }
+
+    bool GetMetric() { return m_Metric; }
+    bool GetDegrees() { return m_Degrees; }
+    
+    void CheckHitTestGrid(wxPoint& point, bool centre);
+
+    void ClearTreeSelection();
+
+    void Defaults();
 
 private:
     DECLARE_EVENT_TABLE()
 };
 
 #endif
+

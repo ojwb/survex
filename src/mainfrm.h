@@ -3,7 +3,7 @@
 //
 //  Main frame handling for Aven.
 //
-//  Copyright (C) 2000-2001, Mark R. Shinwell.
+//  Copyright (C) 2000-2002 Mark R. Shinwell
 //  Copyright (C) 2001-2002 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -30,9 +30,10 @@
 #include "message.h"
 #include "aventreectrl.h"
 #include "img.h"
+#include "guicontrol.h"
 
 #include <list>
-#if 0 // if you turn this back on, reenabled the check in configure.in too
+#if 0 // if you turn this back on, reenable the check in configure.in too
 #ifdef HAVE_EXT_HASH_MAP
 #include <ext/hash_map>
 #elif defined HAVE_HASH_MAP
@@ -186,6 +187,7 @@ class MainFrm : public wxFrame {
     int m_NumCrosses;
     int m_NumExtraLegs;
     GfxCore* m_Gfx;
+    GUIControl* m_Control;
     wxPen* m_Pens;
     wxBrush* m_Brushes;
     int m_NumEntrances;
@@ -303,104 +305,105 @@ public:
     void OnSetFocus(wxFocusEvent &e) { if (m_Gfx) m_Gfx->SetFocus(); }
 
     // temporary bodges until event handling problem is sorted out:
-    void OnDefaultsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnDefaultsUpdate(event); }
-    void OnPlanUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnPlanUpdate(event); }
-    void OnElevationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnElevationUpdate(event); }
-    void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnDisplayOverlappingNamesUpdate(event); }
-    void OnShowCrossesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowCrossesUpdate(event); }
-    void OnShowEntrancesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowEntrancesUpdate(event); }
-    void OnShowFixedPtsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowFixedPtsUpdate(event); }
-    void OnShowExportedPtsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowExportedPtsUpdate(event); }
-    void OnShowStationNamesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowStationNamesUpdate(event); }
-    void OnShowSurveyLegsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowSurveyLegsUpdate(event); }
-    void OnShowSurfaceUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceUpdate(event); }
-    void OnShowSurfaceDepthUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceDepthUpdate(event); }
-    void OnShowSurfaceDashedUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceDashedUpdate(event); }
-    void OnMoveEastUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnMoveEastUpdate(event); }
-    void OnMoveNorthUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnMoveNorthUpdate(event); }
-    void OnMoveSouthUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnMoveSouthUpdate(event); }
-    void OnMoveWestUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnMoveWestUpdate(event); }
-    void OnStartRotationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnStartRotationUpdate(event); }
-    void OnToggleRotationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleRotationUpdate(event); }
-    void OnStopRotationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnStopRotationUpdate(event); }
-    void OnReverseControlsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnReverseControlsUpdate(event); }
-    void OnSlowDownUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnSlowDownUpdate(event); }
-    void OnSpeedUpUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnSpeedUpUpdate(event); }
-    void OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnStepOnceAnticlockwiseUpdate(event); }
-    void OnStepOnceClockwiseUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnStepOnceClockwiseUpdate(event); }
-    void OnHigherViewpointUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnHigherViewpointUpdate(event); }
-    void OnLowerViewpointUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnLowerViewpointUpdate(event); }
-    void OnShiftDisplayDownUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShiftDisplayDownUpdate(event); }
-    void OnShiftDisplayLeftUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShiftDisplayLeftUpdate(event); }
-    void OnShiftDisplayRightUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShiftDisplayRightUpdate(event); }
-    void OnShiftDisplayUpUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShiftDisplayUpUpdate(event); }
-    void OnZoomInUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnZoomInUpdate(event); }
-    void OnZoomOutUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnZoomOutUpdate(event); }
-    void OnToggleScalebarUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleScalebarUpdate(event); }
-    void OnToggleDepthbarUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleDepthbarUpdate(event); }
-    void OnViewCompassUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnViewCompassUpdate(event); }
-    void OnViewGridUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnViewGridUpdate(event); }
-    void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnViewClinoUpdate(event); }
-    void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotationUpdate(event); }
-    void OnCancelDistLineUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnCancelDistLineUpdate(event); }
+    void OnDefaultsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnDefaultsUpdate(event); }
+    void OnPlanUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnPlanUpdate(event); }
+    void OnElevationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnElevationUpdate(event); }
+    void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnDisplayOverlappingNamesUpdate(event); }
+    void OnShowCrossesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowCrossesUpdate(event); }
+    void OnShowEntrancesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowEntrancesUpdate(event); }
+    void OnShowFixedPtsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowFixedPtsUpdate(event); }
+    void OnShowExportedPtsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowExportedPtsUpdate(event); }
+    void OnShowStationNamesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowStationNamesUpdate(event); }
+    void OnShowSurveyLegsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurveyLegsUpdate(event); }
+    void OnShowSurfaceUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurfaceUpdate(event); }
+    void OnShowSurfaceDepthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurfaceDepthUpdate(event); }
+    void OnShowSurfaceDashedUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurfaceDashedUpdate(event); }
+    void OnMoveEastUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveEastUpdate(event); }
+    void OnMoveNorthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveNorthUpdate(event); }
+    void OnMoveSouthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveSouthUpdate(event); }
+    void OnMoveWestUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveWestUpdate(event); }
+    void OnStartRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnStartRotationUpdate(event); }
+    void OnToggleRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleRotationUpdate(event); }
+    void OnStopRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnStopRotationUpdate(event); }
+    void OnReverseControlsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnReverseControlsUpdate(event); }
+    void OnSlowDownUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnSlowDownUpdate(event); }
+    void OnSpeedUpUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnSpeedUpUpdate(event); }
+    void OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnStepOnceAnticlockwiseUpdate(event); }
+    void OnStepOnceClockwiseUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnStepOnceClockwiseUpdate(event); }
+    void OnHigherViewpointUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnHigherViewpointUpdate(event); }
+    void OnLowerViewpointUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnLowerViewpointUpdate(event); }
+    void OnShiftDisplayDownUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShiftDisplayDownUpdate(event); }
+    void OnShiftDisplayLeftUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShiftDisplayLeftUpdate(event); }
+    void OnShiftDisplayRightUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShiftDisplayRightUpdate(event); }
+    void OnShiftDisplayUpUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShiftDisplayUpUpdate(event); }
+    void OnZoomInUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnZoomInUpdate(event); }
+    void OnZoomOutUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnZoomOutUpdate(event); }
+    void OnToggleScalebarUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleScalebarUpdate(event); }
+    void OnToggleDepthbarUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleDepthbarUpdate(event); }
+    void OnViewCompassUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewCompassUpdate(event); }
+    void OnViewGridUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewGridUpdate(event); }
+    void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewClinoUpdate(event); }
+    void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnReverseDirectionOfRotationUpdate(event); }
+    void OnCancelDistLineUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnCancelDistLineUpdate(event); }
 #ifdef AVENGL
     void OnAntiAliasUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnAntiAliasUpdate(event); }
     void OnSolidSurfaceUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnSolidSurfaceUpdate(event); }
 #endif
-    void OnIndicatorsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnIndicatorsUpdate(event); }
+    void OnIndicatorsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnIndicatorsUpdate(event); }
 
-    void OnDefaults(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnDefaults(); }
-    void OnPlan(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnPlan(); }
-    void OnElevation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnElevation(); }
-    void OnDisplayOverlappingNames(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnDisplayOverlappingNames(); }
-    void OnShowCrosses(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowCrosses(); }
-    void OnShowEntrances(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowEntrances(); }
-    void OnShowFixedPts(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowFixedPts(); }
-    void OnShowExportedPts(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowExportedPts(); }
-    void OnShowStationNames(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowStationNames(); }
-    void OnShowSurveyLegs(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowSurveyLegs(); }
-    void OnShowSurface(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowSurface(); }
-    void OnShowSurfaceDepth(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceDepth(); }
-    void OnShowSurfaceDashed(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceDashed(); }
-    void OnMoveEast(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnMoveEast(); }
-    void OnMoveNorth(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnMoveNorth(); }
-    void OnMoveSouth(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnMoveSouth(); }
-    void OnMoveWest(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnMoveWest(); }
-    void OnStartRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnStartRotation(); }
-    void OnToggleRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnToggleRotation(); }
-    void OnStopRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnStopRotation(); }
-    void OnReverseControls(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnReverseControls(); }
-    void OnSlowDown(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnSlowDown(); }
-    void OnSpeedUp(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnSpeedUp(); }
-    void OnStepOnceAnticlockwise(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnStepOnceAnticlockwise(); }
-    void OnStepOnceClockwise(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnStepOnceClockwise(); }
-    void OnHigherViewpoint(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnHigherViewpoint(); }
-    void OnLowerViewpoint(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnLowerViewpoint(); }
-    void OnShiftDisplayDown(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShiftDisplayDown(); }
-    void OnShiftDisplayLeft(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShiftDisplayLeft(); }
-    void OnShiftDisplayRight(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShiftDisplayRight(); }
-    void OnShiftDisplayUp(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShiftDisplayUp(); }
-    void OnZoomIn(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnZoomIn(); }
-    void OnZoomOut(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnZoomOut(); }
-    void OnToggleScalebar(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnToggleScalebar(); }
-    void OnToggleDepthbar(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnToggleDepthbar(); }
-    void OnViewCompass(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewCompass(); }
-    void OnViewClino(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewClino(); }
-    void OnViewGrid(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewGrid(); }
-    void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotation(); }
-    void OnCancelDistLine(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnCancelDistLine(); }
+    void OnDefaults(wxCommandEvent& event) { if (m_Control) m_Control->OnDefaults(); }
+    void OnPlan(wxCommandEvent& event) { if (m_Control) m_Control->OnPlan(); }
+    void OnElevation(wxCommandEvent& event) { if (m_Control) m_Control->OnElevation(); }
+    void OnDisplayOverlappingNames(wxCommandEvent& event) { if (m_Control) m_Control->OnDisplayOverlappingNames(); }
+    void OnShowCrosses(wxCommandEvent& event) { if (m_Control) m_Control->OnShowCrosses(); }
+    void OnShowEntrances(wxCommandEvent& event) { if (m_Control) m_Control->OnShowEntrances(); }
+    void OnShowFixedPts(wxCommandEvent& event) { if (m_Control) m_Control->OnShowFixedPts(); }
+    void OnShowExportedPts(wxCommandEvent& event) { if (m_Control) m_Control->OnShowExportedPts(); }
+    void OnShowStationNames(wxCommandEvent& event) { if (m_Control) m_Control->OnShowStationNames(); }
+    void OnShowSurveyLegs(wxCommandEvent& event) { if (m_Control) m_Control->OnShowSurveyLegs(); }
+    void OnShowSurface(wxCommandEvent& event) { if (m_Control) m_Control->OnShowSurface(); }
+    void OnShowSurfaceDepth(wxCommandEvent& event) { if (m_Control) m_Control->OnShowSurfaceDepth(); }
+    void OnShowSurfaceDashed(wxCommandEvent& event) { if (m_Control) m_Control->OnShowSurfaceDashed(); }
+    void OnMoveEast(wxCommandEvent& event) { if (m_Control) m_Control->OnMoveEast(); }
+    void OnMoveNorth(wxCommandEvent& event) { if (m_Control) m_Control->OnMoveNorth(); }
+    void OnMoveSouth(wxCommandEvent& event) { if (m_Control) m_Control->OnMoveSouth(); }
+    void OnMoveWest(wxCommandEvent& event) { if (m_Control) m_Control->OnMoveWest(); }
+    void OnStartRotation(wxCommandEvent& event) { if (m_Control) m_Control->OnStartRotation(); }
+    void OnToggleRotation(wxCommandEvent& event) { if (m_Control) m_Control->OnToggleRotation(); }
+    void OnStopRotation(wxCommandEvent& event) { if (m_Control) m_Control->OnStopRotation(); }
+    void OnReverseControls(wxCommandEvent& event) { if (m_Control) m_Control->OnReverseControls(); }
+    void OnSlowDown(wxCommandEvent& event) { if (m_Control) m_Control->OnSlowDown(); }
+    void OnSpeedUp(wxCommandEvent& event) { if (m_Control) m_Control->OnSpeedUp(); }
+    void OnStepOnceAnticlockwise(wxCommandEvent& event) { if (m_Control) m_Control->OnStepOnceAnticlockwise(); }
+    void OnStepOnceClockwise(wxCommandEvent& event) { if (m_Control) m_Control->OnStepOnceClockwise(); }
+    void OnHigherViewpoint(wxCommandEvent& event) { if (m_Control) m_Control->OnHigherViewpoint(); }
+    void OnLowerViewpoint(wxCommandEvent& event) { if (m_Control) m_Control->OnLowerViewpoint(); }
+    void OnShiftDisplayDown(wxCommandEvent& event) { if (m_Control) m_Control->OnShiftDisplayDown(); }
+    void OnShiftDisplayLeft(wxCommandEvent& event) { if (m_Control) m_Control->OnShiftDisplayLeft(); }
+    void OnShiftDisplayRight(wxCommandEvent& event) { if (m_Control) m_Control->OnShiftDisplayRight(); }
+    void OnShiftDisplayUp(wxCommandEvent& event) { if (m_Control) m_Control->OnShiftDisplayUp(); }
+    void OnZoomIn(wxCommandEvent& event) { if (m_Control) m_Control->OnZoomIn(); }
+    void OnZoomOut(wxCommandEvent& event) { if (m_Control) m_Control->OnZoomOut(); }
+    void OnToggleScalebar(wxCommandEvent& event) { if (m_Control) m_Control->OnToggleScalebar(); }
+    void OnToggleDepthbar(wxCommandEvent& event) { if (m_Control) m_Control->OnToggleDepthbar(); }
+    void OnViewCompass(wxCommandEvent& event) { if (m_Control) m_Control->OnViewCompass(); }
+    void OnViewClino(wxCommandEvent& event) { if (m_Control) m_Control->OnViewClino(); }
+    void OnViewGrid(wxCommandEvent& event) { if (m_Control) m_Control->OnViewGrid(); }
+    void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Control) m_Control->OnReverseDirectionOfRotation(); }
+    void OnCancelDistLine(wxCommandEvent& event) { if (m_Control) m_Control->OnCancelDistLine(); }
 #ifdef AVENGL
-    void OnAntiAlias(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnAntiAlias(); }
-    void OnSolidSurface(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnSolidSurface(); }
+    void OnAntiAlias(wxCommandEvent&) { if (m_Control) m_Control->OnAntiAlias(); }
+    void OnSolidSurface(wxCommandEvent&) { if (m_Control) m_Control->OnSolidSurface(); }
 #endif
+
+    void OnToggleMetric(wxCommandEvent&) { if (m_Control) m_Control->OnToggleMetric(); }
+    void OnToggleDegrees(wxCommandEvent&) { if (m_Control) m_Control->OnToggleDegrees(); }
+
+    void OnToggleMetricUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleMetricUpdate(event); }
+    void OnToggleDegreesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleDegreesUpdate(event); }
+
     // end of horrible bodges
-
-    void OnToggleMetric(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnToggleMetric(); }
-    void OnToggleDegrees(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnToggleDegrees(); }
-
-    void OnToggleMetricUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleMetricUpdate(event); }
-    void OnToggleDegreesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleDegreesUpdate(event); }
-
+    
     void OnViewSidePanelUpdate(wxUpdateUIEvent& event);
     void OnViewSidePanel(wxCommandEvent& event);
     void ToggleSidePanel();

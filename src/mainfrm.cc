@@ -3,7 +3,7 @@
 //
 //  Main frame handling for Aven.
 //
-//  Copyright (C) 2000-2001, Mark R. Shinwell.
+//  Copyright (C) 2000-2002 Mark R. Shinwell
 //  Copyright (C) 2001-2002 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -580,7 +580,9 @@ void MainFrm::CreateSidePanel()
 //    panel_sizer->Fit(m_Panel);
 //    panel_sizer->SetSizeHints(m_Panel);
 
-    m_Gfx = new GfxCore(this, m_Splitter);
+    m_Control = new GUIControl();
+    m_Gfx = new GfxCore(this, m_Splitter, m_Control);
+    m_Control->SetView(m_Gfx);
 
     m_Splitter->Initialize(m_Gfx);
 }
