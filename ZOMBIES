@@ -43,12 +43,6 @@ earlier)]
 cures the problem.  PWJ suggests the graphics card might be the problem.
 No confirmation of fix from Bill]
 
-Date: 04 Mar 1999
-From: Olly
-
-Currently rpm isn't relocatable (since path to support files is compiled
-in).  Can we fix this?  Does anyone care?  [No, nobody cares!]
-
 Date: Fri, 08 Dec 2000
 From: Olly
 
