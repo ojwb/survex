@@ -90,10 +90,10 @@ iter:
 #ifdef DEBUG_ARTIC
    printf("visit: stn [%p] ", stn);
    print_prefix(stn->name);
-   printf(" set to colour %ld -> min ", colour);
+   printf(" set to colour %ld -> min\n", colour);
 #endif
    for (i = 0; i <= 2 && stn->leg[i]; i++) {
-      if (i != back) {	    
+      if (i != back) {
 	 node *to = stn->leg[i]->l.to;
 	 long col = to->colour;
 	 if (col == 0) {
@@ -106,8 +106,9 @@ iter:
 uniter:
 	    ASSERT(tos > 0);
 	    --tos;
-	    i = reverse_leg_dirn(stn->leg[dirn_stack[tos]]);
-	    stn2 = stn->leg[dirn_stack[tos]]->l.to;
+	    back = dirn_stack[tos];
+	    i = reverse_leg_dirn(stn->leg[back]);
+	    stn2 = stn->leg[back]->l.to;
 	    if (min_stack[tos] < min_colour) min_colour = min_stack[tos];
 
 #ifdef DEBUG_ARTIC
@@ -377,82 +378,6 @@ articulate(void)
       exit(EXIT_FAILURE);
    }
    
-   {
-      component *comp;
-      articulation *art;
-
-      /* reverse component list
-       * not quite sure why this is needed, but it is */
-      component *rev = NULL;
-      comp = component_list;
-      while (comp) {
-	 component *tmp = comp->next;
-	 comp->next = rev;
-	 rev = comp;
-	 comp = tmp;
-      }
-      component_list = rev;
-#ifdef DEBUG_ARTIC
-      printf("\nDump of %d components:\n", cComponents);
-#endif
-      for (comp = component_list; comp; comp = comp->next) {
-	 node *list = NULL, *listend = NULL;
-#ifdef DEBUG_ARTIC
-	 printf("Component:\n");
-#endif
-	 ASSERT(comp->artic);
-	 for (art = comp->artic; art; art = art->next) {
-#ifdef DEBUG_ARTIC
-	    printf("  Articulation (%p):\n", art->stnlist);
-#endif
-	    ASSERT(art->stnlist);
-	    if (listend) {
-	       listend->next = art->stnlist;
-	       art->stnlist->prev = listend;
- 	    } else {
-	       list = art->stnlist;
-	    }
- 
-	    FOR_EACH_STN(stn, art->stnlist) {
-#ifdef DEBUG_ARTIC
-	       printf("    %d %p (", stn->colour, stn);
-	       print_prefix(stn->name);
-	       printf(")\n");
-#endif
-	       listend = stn;
- 	    }
- 	 }
-#ifdef DEBUG_ARTIC
-	 putnl();
-	 FOR_EACH_STN(stn, list) {
-	    printf("MX: %c %p (", fixed(stn)?'*':' ', stn);
-	    print_prefix(stn->name);
-	    printf(")\n");
-	 }
-#endif
-	 solve_matrix(list);
-#ifdef DEBUG_ARTIC
-	 putnl();
-	 FOR_EACH_STN(stn, list) {
-	    printf("%c %p (", fixed(stn)?'*':' ', stn);
-	    print_prefix(stn->name);
-	    printf(")\n");
-	 }
-#endif
-	 listend->next = stnlist;
-	 if (stnlist) stnlist->prev = listend;
-	 stnlist = list;
-      }
-#ifdef DEBUG_ARTIC
-      printf("done articulating\n");
-#endif
-   }
-
-#ifdef DEBUG_ARTIC
-   FOR_EACH_STN(stn, stnlist) {
-      ASSERT(fixed(stn));
-   }
-#endif
 #if 1 /*def DEBUG_ARTIC*/
    /* test articulation */
    FOR_EACH_STN(stn, stnlist) {
@@ -547,6 +472,83 @@ articulate(void)
 	    f = 1;
 	 }
       }
+   }
+#endif
+
+   {
+      component *comp;
+      articulation *art;
+
+      /* reverse component list
+       * not quite sure why this is needed, but it is */
+      component *rev = NULL;
+      comp = component_list;
+      while (comp) {
+	 component *tmp = comp->next;
+	 comp->next = rev;
+	 rev = comp;
+	 comp = tmp;
+      }
+      component_list = rev;
+#ifdef DEBUG_ARTIC
+      printf("\nDump of %d components:\n", cComponents);
+#endif
+      for (comp = component_list; comp; comp = comp->next) {
+	 node *list = NULL, *listend = NULL;
+#ifdef DEBUG_ARTIC
+	 printf("Component:\n");
+#endif
+	 ASSERT(comp->artic);
+	 for (art = comp->artic; art; art = art->next) {
+#ifdef DEBUG_ARTIC
+	    printf("  Articulation (%p):\n", art->stnlist);
+#endif
+	    ASSERT(art->stnlist);
+	    if (listend) {
+	       listend->next = art->stnlist;
+	       art->stnlist->prev = listend;
+ 	    } else {
+	       list = art->stnlist;
+	    }
+ 
+	    FOR_EACH_STN(stn, art->stnlist) {
+#ifdef DEBUG_ARTIC
+	       printf("    %d %p (", stn->colour, stn);
+	       print_prefix(stn->name);
+	       printf(")\n");
+#endif
+	       listend = stn;
+ 	    }
+ 	 }
+#ifdef DEBUG_ARTIC
+	 putnl();
+	 FOR_EACH_STN(stn, list) {
+	    printf("MX: %c %p (", fixed(stn)?'*':' ', stn);
+	    print_prefix(stn->name);
+	    printf(")\n");
+	 }
+#endif
+	 solve_matrix(list);
+#ifdef DEBUG_ARTIC
+	 putnl();
+	 FOR_EACH_STN(stn, list) {
+	    printf("%c %p (", fixed(stn)?'*':' ', stn);
+	    print_prefix(stn->name);
+	    printf(")\n");
+	 }
+#endif
+	 listend->next = stnlist;
+	 if (stnlist) stnlist->prev = listend;
+	 stnlist = list;
+      }
+#ifdef DEBUG_ARTIC
+      printf("done articulating\n");
+#endif
+   }
+
+#ifdef DEBUG_ARTIC
+   FOR_EACH_STN(stn, stnlist) {
+      ASSERT(fixed(stn));
    }
 #endif
 }
