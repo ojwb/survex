@@ -6,6 +6,7 @@ AC_INIT(src/caverot.c)
 AM_INIT_AUTOMAKE(survex, 0.92)
 AM_CONFIG_HEADER(config.h)
 
+dnl keep this on two lines like this - miniam.pl relies on this
 AC_DEFINE(COPYRIGHT_MSG,
 "Copyright (C) 1990-1999 Olly Betts", [Copyright Message])
 

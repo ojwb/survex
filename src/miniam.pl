@@ -7,19 +7,39 @@ my $configure_in = shift @ARGV;
 
 my (%repl, $max_leaf_len, $use_rsp);
 
+my $package = '';
 my $version = '';
+my $copyright = '';
 if (open C, "<$configure_in") {
    while (<C>) {
-      next unless /^AM_INIT_AUTOMAKE\([^,]*,\s*([\d.]+)\)/;
-      $version = $1;
-      last;
+      if (/^AM_INIT_AUTOMAKE\(\s*([^,]+?)\s*,\s*([\d.]+)\)/) {
+         $package = $1;
+	 $version = $2;
+      } elsif (/^AC_DEFINE\(COPYRIGHT_MSG,/) {
+         $_ = <C>;
+	 ($copyright) = /(".*")/;
+      }
    }
    close C;
    eval "&init_$os";
 }
 
-$@ = 1 if $version eq '';
-die "Syntax: $0 <platform> <configure.in>\nSupported platforms: borlandc riscos\n" if $@;
+my $configh = shift @ARGV;
+$@ = 1 if $version eq '' || $copyright eq '' || !defined $configh;
+die "Syntax: $0 <platform> <configure.in> <config.h>\nSupported platforms: borlandc riscos\n" if $@;
+
+open IN, "<$configh.in" or die $!;
+open OUT, ">$configh.tmp" or die $!;
+while (<IN>) {
+   s/\@VERSION\@/$version/go;
+   s/\@PACKAGE\@/$package/go;
+   s/\@COPYRIGHT\@/$copyright/go;
+   print OUT;
+}
+close IN;
+close OUT;
+unlink $configh;
+rename "$configh.tmp", $configh or die $!;
 
 my %var = ();
 
@@ -139,7 +159,7 @@ sub init_riscos {
       'LIBOBJS' => 'strcasecmp.o',
       'CRLIB' => '',
       'CROBJX' => 'armrot.o',
-      'CFLAGS' => '-DVERSION='.$version.' -DHAVE_CONFIG_H -IC:,@ -throwback -ffahp -fussy',
+      'CFLAGS' => '-DHAVE_CONFIG_H -IC:,@ -throwback -ffahp -fussy',
       'LDFLAGS' => '',
       'LIBS' => 'C:OSLib.o.OSLib',
       'CC' => 'cc',
@@ -158,7 +178,7 @@ sub init_borlandc {
       'LIBOBJS' => '',
       'CRLIB' => 'graphics.lib mouse.lib',
       'CROBJX' => 'dosrot.obj',
-      'CFLAGS' => '-DVERSION='.$version.' -DHAVE_CONFIG_H -DHAVE_FAR_POINTERS -I. -ml -d -O1 -Ogmpvl -X',
+      'CFLAGS' => '-DHAVE_CONFIG_H -DHAVE_FAR_POINTERS -I. -ml -d -O1 -Ogmpvl -X',
       'LDFLAGS' => '',
       'LIBS' => '',
       'CC' => 'bcc',

@@ -1,4 +1,4 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* config.h.in.  Process with miniam.pl to produce config.h */
 
 /* Define to empty if the keyword does not work.  */
 /* #undef const */
@@ -32,7 +32,7 @@
 #define X_DISPLAY_MISSING
 
 /* copyright message */
-#define COPYRIGHT_MSG "Copyright (C) 1990-1999 Olly Betts"
+#define COPYRIGHT_MSG @COPYRIGHT@
 
 /* strcasecmp define for systems which call it something else */
 #undef strcasecmp
@@ -74,5 +74,8 @@
 #undef HAVE_LIBM
 
 /* Name of package */
-#define PACKAGE "survex"
+#define PACKAGE "@PACKAGE@"
+
+/* Version number of package */
+#define VERSION "@VERSION@"
 

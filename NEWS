@@ -47,6 +47,9 @@
 
 * Cured superfluous copy of svxdocs in doc/svxdocs in source distribution
 
+* RISC OS and BorlandC builds now track copyright message and version
+  number automatically
+
 Changes in 0.91:
 
 * Fixed problem with message files with accented characters

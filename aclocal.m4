@@ -1,4 +1,4 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4
+dnl aclocal.m4 generated automatically by aclocal 1.4a
 
 dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
@@ -24,7 +24,7 @@ dnl    AC_DEFINE_DIR(DATADIR, datadir)
 dnl
 dnl    AC_DEFINE_DIR(PROG_PATH, bindir, [Location of installed binaries])
 dnl
-dnl @version $Id: aclocal.m4,v 1.3 2000-01-09 17:20:23 olly Exp $
+dnl @version $Id: aclocal.m4,v 1.4 2000-01-09 22:13:05 olly Exp $
 dnl @author Alexandre Oliva <oliva@lsd.ic.unicamp.br>
 
 AC_DEFUN(AC_DEFINE_DIR, [
@@ -49,6 +49,8 @@ dnl AM_INIT_AUTOMAKE(package,version, [no-define])
 
 AC_DEFUN(AM_INIT_AUTOMAKE,
 [AC_REQUIRE([AC_PROG_INSTALL])
+dnl We require 2.13 because we rely on SHELL being computed by configure.
+AC_PREREQ([2.13])
 PACKAGE=[$1]
 AC_SUBST(PACKAGE)
 VERSION=[$2]
@@ -69,6 +71,26 @@ AM_MISSING_PROG(AUTOCONF, autoconf, $missing_dir)
 AM_MISSING_PROG(AUTOMAKE, automake, $missing_dir)
 AM_MISSING_PROG(AUTOHEADER, autoheader, $missing_dir)
 AM_MISSING_PROG(MAKEINFO, makeinfo, $missing_dir)
+dnl Set install_sh for make dist
+install_sh="$missing_dir/install-sh"
+test -f "$install_sh" || install_sh="$missing_dir/install.sh"
+AC_SUBST(install_sh)
+dnl We check for tar when the user configures the end package.
+dnl This is sad, since we only need this for "dist".  However,
+dnl there's no other good way to do it.  We prefer GNU tar if
+dnl we can find it.  If we can't find a tar, it doesn't really matter.
+AC_CHECK_PROGS(AMTAR, gnutar gtar tar)
+dnl We need awk for the "check" target.  The system "awk" is bad on
+dnl some platforms.
+AC_REQUIRE([AC_PROG_AWK])
+AMTARFLAGS=
+if test -n "$AMTAR"; then
+  if $SHELL -c "$AMTAR --version" > /dev/null 2>&1; then
+    dnl We have GNU tar.
+    AMTARFLAGS=o
+  fi
+fi
+AC_SUBST(AMTARFLAGS)
 AC_REQUIRE([AC_PROG_MAKE_SET])])
 
 #
