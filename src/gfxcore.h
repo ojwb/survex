@@ -60,7 +60,7 @@ class GfxCore : public wxWindow {
         int* num_segs;
     };
 
-    bool* m_LabelGrid;
+    LabelFlags* m_LabelGrid;
     Matrix4 m_RotationMatrix;
     bool m_DraggingLeft;
     bool m_DraggingMiddle;
@@ -81,7 +81,6 @@ class GfxCore : public wxWindow {
     bool m_Rotating;
     float m_RotationStep;
     bool m_ReverseControls;
-    //UINT m_Timer;
     bool m_SwitchingToPlan;
     bool m_SwitchingToElevation;
     bool m_ScaleCrossesOnly;
@@ -89,7 +88,7 @@ class GfxCore : public wxWindow {
     bool m_Legs;
     bool m_Names;
     bool m_Scalebar;
-    //CFont m_Font;
+    wxFont m_Font;
     bool m_Depthbar;
     bool m_OverlappingNames;
     bool m_LabelCacheNotInvalidated;
@@ -140,7 +139,10 @@ class GfxCore : public wxWindow {
     void RedrawOffscreen();
     void TryToFreeArrays();
     void FirstShow();
-    void Defaults();
+
+    void DrawScalebar();
+    void DrawDepthbar();
+    void DrawCompass();
 
     void HandleScaleRotate(bool, wxPoint);
     void HandleTilt(wxPoint);
@@ -149,24 +151,54 @@ class GfxCore : public wxWindow {
     void TiltCave(double tilt_angle);
     void TurnCave(double angle);
     
-    void Plan();
-    void Elevation();
-
     void StartTimer();
     void StopTimer();
     
-    //void DrawScalebar();
-    //void DrawDepthbar();
-    //void DrawNames();
-    //void NattyDrawNames();
-    //void SimpleDrawNames();
-    //void DrawCompass();
+    void DrawNames();
+    void NattyDrawNames();
+    void SimpleDrawNames();
+
+    void Defaults();
+    void Plan();
+    void Elevation();
 
 public:
     GfxCore(MainFrm* parent);
     ~GfxCore();
 
     void Initialise();
+
+    void OnDefaults(wxCommandEvent&);
+    void OnPlan(wxCommandEvent&);
+    void OnElevation(wxCommandEvent&);
+    void OnDisplayOverlappingNames(wxCommandEvent&);
+    void OnShowCrosses(wxCommandEvent&);
+    void OnShowStationNames(wxCommandEvent&);
+    void OnShowSurveyLegs(wxCommandEvent&);
+    void OnMoveEast(wxCommandEvent&);
+    void OnMoveNorth(wxCommandEvent&);
+    void OnMoveSouth(wxCommandEvent&);
+    void OnMoveWest(wxCommandEvent&);
+    void OnStartRotation(wxCommandEvent&);
+    void OnStopRotation(wxCommandEvent&);
+    void OnOriginalCaverotMouse(wxCommandEvent&);
+    void OnReverseControls(wxCommandEvent&);
+    void OnSlowDown(wxCommandEvent&);
+    void OnSpeedUp(wxCommandEvent&);
+    void OnStepOnceAnticlockwise(wxCommandEvent&);
+    void OnStepOnceClockwise(wxCommandEvent&);
+    void OnHigherViewpoint(wxCommandEvent&);
+    void OnLowerViewpoint(wxCommandEvent&);
+    void OnShiftDisplayDown(wxCommandEvent&);
+    void OnShiftDisplayLeft(wxCommandEvent&);
+    void OnShiftDisplayRight(wxCommandEvent&);
+    void OnShiftDisplayUp(wxCommandEvent&);
+    void OnZoomIn(wxCommandEvent&);
+    void OnZoomOut(wxCommandEvent&);
+    void OnToggleScalebar(wxCommandEvent&);
+    void OnToggleDepthbar(wxCommandEvent&);
+    void OnViewCompass(wxCommandEvent&);
+    void OnReverseDirectionOfRotation(wxCommandEvent&);
 
     void OnPaint(wxPaintEvent&);
     void OnMouseMove(wxMouseEvent& event);
@@ -179,8 +211,40 @@ public:
     void OnSize(wxSizeEvent& event);
     void OnTimer(wxTimerEvent& event);
 
+    void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent&);
+    void OnShowCrossesUpdate(wxUpdateUIEvent&);
+    void OnShowStationNamesUpdate(wxUpdateUIEvent&);
+    void OnShowSurveyLegsUpdate(wxUpdateUIEvent&);
+    void OnMoveEastUpdate(wxUpdateUIEvent&);
+    void OnMoveNorthUpdate(wxUpdateUIEvent&);
+    void OnMoveSouthUpdate(wxUpdateUIEvent&);
+    void OnMoveWestUpdate(wxUpdateUIEvent&);
+    void OnStartRotationUpdate(wxUpdateUIEvent&);
+    void OnStopRotationUpdate(wxUpdateUIEvent&);
+    void OnOriginalCaverotMouseUpdate(wxUpdateUIEvent&);
+    void OnReverseControlsUpdate(wxUpdateUIEvent&);
+    void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent&);
+    void OnSlowDownUpdate(wxUpdateUIEvent&);
+    void OnSpeedUpUpdate(wxUpdateUIEvent&);
+    void OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent&);
+    void OnStepOnceClockwiseUpdate(wxUpdateUIEvent&);
+    void OnDefaultsUpdate(wxUpdateUIEvent&);
+    void OnElevationUpdate(wxUpdateUIEvent&);
+    void OnHigherViewpointUpdate(wxUpdateUIEvent&);
+    void OnLowerViewpointUpdate(wxUpdateUIEvent&);
+    void OnPlanUpdate(wxUpdateUIEvent&);
+    void OnShiftDisplayDownUpdate(wxUpdateUIEvent&);
+    void OnShiftDisplayLeftUpdate(wxUpdateUIEvent&);
+    void OnShiftDisplayRightUpdate(wxUpdateUIEvent&);
+    void OnShiftDisplayUpUpdate(wxUpdateUIEvent&);
+    void OnZoomInUpdate(wxUpdateUIEvent&);
+    void OnZoomOutUpdate(wxUpdateUIEvent&);
+    void OnToggleScalebarUpdate(wxUpdateUIEvent&);
+    void OnToggleDepthbarUpdate(wxUpdateUIEvent&);
+    void OnViewCompassUpdate(wxUpdateUIEvent&);
+
 private:
-    DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -26,10 +26,10 @@
 #include <math.h>
 
 #define MAX(a, b)    (((a) > (b)) ? (a) : (b))
-#define TEXT_COLOUR  RGB(0, 255, 40)
-#define LABEL_COLOUR RGB(160, 255, 0)
+#define TEXT_COLOUR  wxColour(0, 255, 40)
+#define LABEL_COLOUR wxColour(160, 255, 0)
 
-static const int FONT_SIZE = 14;
+static const int FONT_SIZE = 10;
 static const int CROSS_SIZE = 5;
 static const float COMPASS_SIZE = 24.0f;
 static const long COMPASS_OFFSET_X = 60;
@@ -51,7 +51,8 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent) :
-    wxWindow(parent, -1), m_Timer(this, TIMER_ID)
+    wxWindow(parent, 100), m_Timer(this, TIMER_ID),
+    m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, false, "Helvetica")
 {
     m_DraggingLeft = false;
     m_DraggingMiddle = false;
@@ -87,11 +88,6 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Brushes.black.SetColour(0, 0, 0);
     m_Brushes.white.SetColour(255, 255, 255);
     m_Brushes.grey.SetColour(100, 100, 100);
-/*
-    // Create the font used on the display.
-    m_Font.CreateFont(FONT_SIZE, 0, 0, 0, FW_NORMAL, false, false, 0, ANSI_CHARSET,
-		      OUT_DEFAULT_PRECIS, CLIP_CHARACTER_PRECIS, DEFAULT_QUALITY,
-		      FF_MODERN, "Arial");*/
 }
 
 GfxCore::~GfxCore()
@@ -143,14 +139,14 @@ void GfxCore::Initialise()
     m_LabelsLastPlotted = new LabelFlags[m_Parent->GetNumCrosses()];
     m_LabelCacheNotInvalidated = false;
 
+    // Scale the survey to a reasonable initial size.
+    m_InitialScale = double(m_XSize) / (double(MAX(m_Parent->GetXExtent(),
+						   m_Parent->GetYExtent())) * 1.1);
+
     for (int band = 0; band < m_Bands; band++) {
         m_PlotData[band].vertices = new wxPoint[m_Parent->GetNumPoints()];
 	m_PlotData[band].num_segs = new int[m_Parent->GetNumLegs()];
     }
-
-    // Scale the survey to a reasonable initial size.
-    m_InitialScale = double(m_XSize) / (double(MAX(m_Parent->GetXExtent(),
-						   m_Parent->GetYExtent())) * 1.1);
 
     // Apply default settings and redraw.
     Defaults();
@@ -167,7 +163,9 @@ void GfxCore::FirstShow()
     m_OffscreenBitmap.Create(m_XSize, m_YSize);
 
     m_DrawDC.SelectObject(m_OffscreenBitmap);
-    //	m_DrawDC.SelectObject(&m_Font);
+
+    // Set the font.
+    m_DrawDC.SetFont(m_Font);
 
     m_DoneFirstShow = true;
 
@@ -302,7 +300,7 @@ void GfxCore::RedrawOffscreen()
         if (m_Legs) {
 	    for (int band = 0; band < m_Bands; band++) {
 	        m_DrawDC.SetPen(m_Parent->GetPen(band));
-		int* num_segs = m_PlotData[band].num_segs;
+		int* num_segs = m_PlotData[band].num_segs; //-- sort out the polyline stuff!!
 		wxPoint* vertices = m_PlotData[band].vertices;
 		for (int polyline = 0; polyline < m_Polylines[band]; polyline++) {
 		    m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre, m_YCentre);
@@ -311,18 +309,22 @@ void GfxCore::RedrawOffscreen()
 	    }
 	}
 
-#if 0
+
 	// Draw crosses.
 	if (m_Crosses) {
-	    m_DrawDC.SelectObject(m_Pens.turquoise);
-	    m_DrawDC.PolyPolyline(m_CrossData.vertices, m_CrossData.num_segs,
-				  m_Parent->GetNumCrosses() * 2);
+	    m_DrawDC.SetPen(m_Pens.turquoise);
+	    int* num_segs = m_CrossData.num_segs; //-- sort out the polyline stuff!!
+	    wxPoint* vertices = m_CrossData.vertices;
+	    for (int polyline = 0; polyline < m_Parent->GetNumCrosses() * 2; polyline++) {
+	        m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre, m_YCentre);
+		vertices += *num_segs++;
+	    }
 	}
 
 	// Draw station names.
 	if (m_Names) {
 	    DrawNames();
-	    m_LabelCacheNotRefreshd = false;
+	    m_LabelCacheNotInvalidated = false;
 	}
 
 	// Draw scalebar.
@@ -339,7 +341,6 @@ void GfxCore::RedrawOffscreen()
 	if (m_Compass) {
 	    DrawCompass();
 	}
-#endif
     }
 
     m_DrawDC.EndDrawing();
@@ -383,245 +384,243 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     dc.EndDrawing();
 }
 
-#if 0
-POINT GfxCore::CompassPtToScreen(float x, float y, float z)
+wxPoint GfxCore::CompassPtToScreen(float x, float y, float z)
 {
-	POINT pt;
-	pt.x = long(-XToScreen(x, y, z)) + m_XSize/2 - COMPASS_OFFSET_X;
-	pt.y = long(ZToScreen(x, y, z)) + m_YSize/2 - COMPASS_OFFSET_Y;
-	return pt;
+    return wxPoint(long(-XToScreen(x, y, z)) + m_XSize/2 - COMPASS_OFFSET_X + m_XCentre,
+	  	   long(ZToScreen(x, y, z)) + m_YSize/2 - COMPASS_OFFSET_Y + m_YCentre);
 }
 
 void GfxCore::DrawCompass()
 {
-	// Draw the compass.
+    // Draw the compass.
 
-	POINT pt[12];
-	const DWORD count[] = { 2, 3, 2, 2, 3 };
-	pt[0] = CompassPtToScreen(0.0, 0.0, -COMPASS_SIZE);
-	pt[1] = CompassPtToScreen(0.0, 0.0, COMPASS_SIZE);
-	pt[2] = CompassPtToScreen(-COMPASS_SIZE / 3.0f, 0.0, -COMPASS_SIZE * 2.0f / 3.0f);
-	pt[3] = pt[0];
-	pt[4] = CompassPtToScreen(COMPASS_SIZE / 3.0f, 0.0, -COMPASS_SIZE * 2.0f / 3.0f);
+    wxPoint pt[3];
 
-	pt[5] = CompassPtToScreen(-COMPASS_SIZE, 0.0, 0.0);
-	pt[6] = CompassPtToScreen(COMPASS_SIZE, 0.0, 0.0);
-	pt[7] = CompassPtToScreen(0.0, -COMPASS_SIZE, 0.0);
-	pt[8] = CompassPtToScreen(0.0, COMPASS_SIZE, 0.0);
-	pt[9] = CompassPtToScreen(-COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
-	pt[10] = pt[7];
-	pt[11] = CompassPtToScreen(COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
+    m_DrawDC.SetPen(m_Pens.turquoise);
+    m_DrawDC.DrawLine(CompassPtToScreen(0.0, 0.0, -COMPASS_SIZE),
+		      CompassPtToScreen(0.0, 0.0, COMPASS_SIZE));
 
-	m_DrawDC.SelectObject(m_Pens.turquoise);
-	m_DrawDC.PolyPolyline(pt, count, 2);
+    pt[0] = CompassPtToScreen(-COMPASS_SIZE / 3.0f, 0.0, -COMPASS_SIZE * 2.0f / 3.0f);
+    pt[1] = CompassPtToScreen(0.0, 0.0, -COMPASS_SIZE);
+    pt[2] = CompassPtToScreen(COMPASS_SIZE / 3.0f, 0.0, -COMPASS_SIZE * 2.0f / 3.0f);
+    m_DrawDC.DrawLines(3, pt);
 
-	m_DrawDC.SelectObject(m_Pens.green);
-	m_DrawDC.PolyPolyline(&pt[5], &count[2], 3);
+    m_DrawDC.DrawLine(CompassPtToScreen(-COMPASS_SIZE, 0.0, 0.0),
+		      CompassPtToScreen(COMPASS_SIZE, 0.0, 0.0));
 
-	if (!m_FreeRotMode) {
-		m_DrawDC.SetBkColor(RGB(0, 0, 0));
-		m_DrawDC.SetTextColor(TEXT_COLOUR);
+    m_DrawDC.SetPen(m_Pens.green);
+    m_DrawDC.DrawLine(CompassPtToScreen(0.0, -COMPASS_SIZE, 0.0),
+		      CompassPtToScreen(0.0, COMPASS_SIZE, 0.0));
 
-		CString str;
-		str.Format("Hdg %03d", int(m_PanAngle * 180.0 / M_PI));
-		m_DrawDC.TextOut(int(m_XSize/2 - COMPASS_OFFSET_X - COMPASS_SIZE*3),
-			             int(m_YSize/2 - COMPASS_OFFSET_Y - FONT_SIZE*1.5), str);
+    pt[0] = CompassPtToScreen(-COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
+    pt[1] = CompassPtToScreen(0.0, -COMPASS_SIZE, 0.0);
+    pt[2] = CompassPtToScreen(COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
+    m_DrawDC.DrawLines(3, pt);
 
-		str.Format("Elev %03d", int(m_TiltAngle * 180.0 / M_PI));
-		m_DrawDC.TextOut(int(m_XSize/2 - COMPASS_OFFSET_X - COMPASS_SIZE*3),
-			             int(m_YSize/2 - COMPASS_OFFSET_Y + FONT_SIZE/2.0), str);
-	}
+    if (!m_FreeRotMode) {
+        m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
+	m_DrawDC.SetTextForeground(TEXT_COLOUR);
+
+	wxString str = wxString::Format("Hdg %03d", int(m_PanAngle * 180.0 / M_PI));
+	m_DrawDC.DrawText(str, m_XCentre + int(m_XSize/2 - COMPASS_OFFSET_X - COMPASS_SIZE*3),
+			  m_YCentre + int(m_YSize/2 - COMPASS_OFFSET_Y - FONT_SIZE*1.5));
+
+	str = wxString::Format("Elev %03d", int(m_TiltAngle * 180.0 / M_PI));
+	m_DrawDC.DrawText(str, m_XCentre + int(m_XSize/2 - COMPASS_OFFSET_X - COMPASS_SIZE*3),
+			  m_YCentre + int(m_YSize/2 - COMPASS_OFFSET_Y + FONT_SIZE/2.0));
+    }
 }
 
 void GfxCore::DrawNames()
 {
-	// Draw station names.
+    // Draw station names.
 
-	m_DrawDC.SetBkColor(RGB(0, 0, 0));
-	m_DrawDC.SetTextColor(LABEL_COLOUR);
+    m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
+    m_DrawDC.SetTextForeground(LABEL_COLOUR);
 
-	if (m_OverlappingNames || m_LabelCacheNotRefreshd) {
-		SimpleDrawNames();
-		// Draw names on bits of the survey which weren't visible when
-		// the label cache was last generated (happens after a translation...)
-		if (m_LabelCacheNotRefreshd) {
-			NattyDrawNames();
-		}
+    if (m_OverlappingNames || m_LabelCacheNotInvalidated) {
+        SimpleDrawNames();
+	// Draw names on bits of the survey which weren't visible when
+	// the label cache was last generated (happens after a translation...)
+	if (m_LabelCacheNotInvalidated) {
+	    NattyDrawNames();
 	}
-	else {
-		NattyDrawNames();
-	}
+    }
+    else {
+        NattyDrawNames();
+    }
 }
 
 void GfxCore::NattyDrawNames()
 {
-	// Draw station names, without overlapping.
+    // Draw station names, without overlapping.
 
-	const int dv = 2;
-	const int quantise = FONT_SIZE / dv;
-	const int quantised_x = m_XSize / quantise;
-	const int quantised_y = m_YSize / quantise;
-	const size_t buffer_size = quantised_x * quantised_y;
-	if (!m_LabelCacheNotRefreshd) {
-		if (m_LabelGrid) {
-			delete[] m_LabelGrid;
-		}
-		m_LabelGrid = new BOOL[buffer_size];
-		memset((void*) m_LabelGrid, 0, buffer_size * sizeof(LabelFlags));
+    const int dv = 2;
+    const int quantise = FONT_SIZE / dv;
+    const int quantised_x = m_XSize / quantise;
+    const int quantised_y = m_YSize / quantise;
+    const size_t buffer_size = quantised_x * quantised_y;
+    if (!m_LabelCacheNotInvalidated) {
+        if (m_LabelGrid) {
+	    delete[] m_LabelGrid;
 	}
+	m_LabelGrid = new LabelFlags[buffer_size];
+	memset((void*) m_LabelGrid, 0, buffer_size * sizeof(LabelFlags));
+    }
 
-	CString* label = m_Labels;
-	LabelFlags* last_plot = m_LabelsLastPlotted;
-	POINT* pt = m_CrossData.vertices;
-	for (int name = 0; name < m_Parent->GetNumCrosses(); name++) {
-		// *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
-		// the actual station.
+    wxString* label = m_Labels;
+    LabelFlags* last_plot = m_LabelsLastPlotted;
+    wxPoint* pt = m_CrossData.vertices;
+    for (int name = 0; name < m_Parent->GetNumCrosses(); name++) {
+        // *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
+        // the actual station.
 
-		long x = pt->x + m_XSize/2;
-		long y = pt->y + CROSS_SIZE - FONT_SIZE + m_YSize/2;
+        long x = pt->x + m_XSize/2;
+	long y = pt->y + CROSS_SIZE - FONT_SIZE + m_YSize/2;
 
-		// We may have labels in the cache which are still going to be in the
-		// same place: in this case we only consider labels here which are in
-		// just about the region of screen exposed since the last label cache generation,
-		// and were not plotted last time, together with labels which were in
-		// this category last time around but didn't end up plotted (possibly because
-		// the newly exposed region was too small, as happens during a drag).
+	// We may have labels in the cache which are still going to be in the
+	// same place: in this case we only consider labels here which are in
+	// just about the region of screen exposed since the last label cache generation,
+	// and were not plotted last time, together with labels which were in
+	// this category last time around but didn't end up plotted (possibly because
+	// the newly exposed region was too small, as happens during a drag).
 #ifdef _DEBUG
-		if (m_LabelCacheNotRefreshd) {
-			ASSERT(m_LabelCacheExtend.bottom >= m_LabelCacheExtend.top);
-			ASSERT(m_LabelCacheExtend.right >= m_LabelCacheExtend.left);
-		}
+	if (m_LabelCacheNotInvalidated) {
+	    assert(m_LabelCacheExtend.bottom >= m_LabelCacheExtend.top);
+	    assert(m_LabelCacheExtend.right >= m_LabelCacheExtend.left);
+	}
 #endif
-
-		if ((m_LabelCacheNotRefreshd && x >= m_LabelCacheExtend.left &&
-			 x <= m_LabelCacheExtend.right && y >= m_LabelCacheExtend.top &&
-			 y <= m_LabelCacheExtend.bottom && *last_plot == label_NOT_PLOTTED) ||
-			(m_LabelCacheNotRefreshd && *last_plot == label_CHECK_AGAIN) ||
-			!m_LabelCacheNotRefreshd) {
+	
+	if ((m_LabelCacheNotInvalidated && x >= m_LabelCacheExtend.GetLeft() &&
+	     x <= m_LabelCacheExtend.GetRight() && y >= m_LabelCacheExtend.GetTop() &&
+	     y <= m_LabelCacheExtend.GetBottom() && *last_plot == label_NOT_PLOTTED) ||
+	    (m_LabelCacheNotInvalidated && *last_plot == label_CHECK_AGAIN) ||
+	    !m_LabelCacheNotInvalidated) {
 		
-			CString str = *label;
+	    wxString str = *label;
 
 #ifdef _DEBUG
-			if (m_LabelCacheNotRefreshd && *last_plot == label_CHECK_AGAIN) {
-				TRACE("Label " + str + " being checked again.\n");
-			}
+	    if (m_LabelCacheNotInvalidated && *last_plot == label_CHECK_AGAIN) {
+	        TRACE("Label " + str + " being checked again.\n");
+	    }
 #endif
 
-			int ix = int(x) / quantise;
-			int iy = int(y) / quantise;
-			int ixshift = m_LabelCacheNotRefreshd ? int(m_LabelShift.x / quantise) : 0;
-	//		if (ix + ixshift >= quantised_x) {
+	    int ix = int(x) / quantise;
+	    int iy = int(y) / quantise;
+	    int ixshift = m_LabelCacheNotInvalidated ? int(m_LabelShift.x / quantise) : 0;
+	    //		if (ix + ixshift >= quantised_x) {
 	//			ixshift = 
-			int iyshift = m_LabelCacheNotRefreshd ? int(m_LabelShift.y / quantise) : 0;
+	    int iyshift = m_LabelCacheNotInvalidated ? int(m_LabelShift.y / quantise) : 0;
 
-			if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
-				BOOL* test = &m_LabelGrid[ix + ixshift + (iy + iyshift)*quantised_x];
-				int len = str.GetLength()*dv + 1;
-				BOOL reject = (ix + len >= quantised_x);
-				int i = 0;
-				while (!reject && i++ < len) {
-					reject = *test++;
-				}
+	    if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
+	          LabelFlags* test = &m_LabelGrid[ix + ixshift + (iy + iyshift)*quantised_x];
+		  int len = str.Length()*dv + 1;
+		  bool reject = (ix + len >= quantised_x);
+		  int i = 0;
+		  while (!reject && i++ < len) {
+		      reject = *test++;
+		  }
 
-				if (!reject) {
-					m_DrawDC.TextOut(x - m_XSize/2, y - m_YSize/2, str);
-					int ymin = (iy >= 2) ? iy - 2 : iy;
-					int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
-					for (int y0 = ymin; y0 <= ymax; y0++) {
-						memset((void*) &m_LabelGrid[ix + y0*quantised_x], true,
-							   sizeof(LabelFlags) * len);
-					}
-				}
-
-				if (reject) {
-					*last_plot++ = m_LabelCacheNotRefreshd ? label_CHECK_AGAIN :
-					                                            label_NOT_PLOTTED;
-				}
-				else {
-					*last_plot++ = label_PLOTTED;
-				}
-			}
-			else {
-				*last_plot++ = m_LabelCacheNotRefreshd ? label_CHECK_AGAIN :
-				                                            label_NOT_PLOTTED;
-			}
-		}
-		else {
-			if (m_LabelCacheNotRefreshd && x >= m_LabelCacheExtend.left - 50 &&
-			    x <= m_LabelCacheExtend.right + 50 && y >= m_LabelCacheExtend.top - 50 &&
-			    y <= m_LabelCacheExtend.bottom + 50) {
-				*last_plot++ = label_CHECK_AGAIN;
-			}
-			else {
-				last_plot++; // leave the cache alone
-			}
-		}
-
-		label++;
-		pt += 4;
+		  if (!reject) {
+		      m_DrawDC.DrawText(str, x, y);
+		      int ymin = (iy >= 2) ? iy - 2 : iy;
+		      int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
+		      for (int y0 = ymin; y0 <= ymax; y0++) {
+			memset((void*) &m_LabelGrid[ix + y0*quantised_x], true,
+			       sizeof(LabelFlags) * len);
+		      }
+		  }
+		  
+		  if (reject) {
+		      *last_plot++ = m_LabelCacheNotInvalidated ? label_CHECK_AGAIN :
+			                                          label_NOT_PLOTTED;
+		  }
+		  else {
+		      *last_plot++ = label_PLOTTED;
+		  }
+	    }
+	    else {
+	        *last_plot++ = m_LabelCacheNotInvalidated ? label_CHECK_AGAIN :
+		                                            label_NOT_PLOTTED;
+	    }
 	}
+	else {
+	    if (m_LabelCacheNotInvalidated && x >= m_LabelCacheExtend.GetLeft() - 50 &&
+		x <= m_LabelCacheExtend.GetRight() + 50 &&
+		y >= m_LabelCacheExtend.GetTop() - 50 &&
+		y <= m_LabelCacheExtend.GetBottom() + 50) {
+	      *last_plot++ = label_CHECK_AGAIN;
+	    }
+	    else {
+	        last_plot++; // leave the cache alone
+	    }
+	}
+
+	label++;
+	pt += 4;
+    }
 }
 
 void GfxCore::SimpleDrawNames()
 {
-	// Draw station names, possibly overlapping; or use previously-cached info
-	// from NattyDrawNames() to draw names known not to overlap.
+    // Draw station names, possibly overlapping; or use previously-cached info
+    // from NattyDrawNames() to draw names known not to overlap.
 
-	CString* label = m_Labels;
-	POINT* pt = m_CrossData.vertices;
-	LabelFlags* last_plot = m_LabelsLastPlotted;
-	for (int name = 0; name < m_Parent->GetNumCrosses(); name++) {
-		// *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
-		// the actual station.
+    wxString* label = m_Labels;
+    wxPoint* pt = m_CrossData.vertices;
+    LabelFlags* last_plot = m_LabelsLastPlotted;
+    for (int name = 0; name < m_Parent->GetNumCrosses(); name++) {
+        // *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
+        // the actual station.
 
-		if ((m_LabelCacheNotRefreshd && *last_plot == label_PLOTTED) ||
-			 !m_LabelCacheNotRefreshd) {
-			m_DrawDC.TextOut(pt->x, pt->y + CROSS_SIZE - FONT_SIZE, *label);
-		}
-
-		last_plot++;
-		label++;
-		pt += 4;
+        if ((m_LabelCacheNotInvalidated && *last_plot == label_PLOTTED) ||
+	    !m_LabelCacheNotInvalidated) {
+	    m_DrawDC.DrawText(*label, pt->x + m_XCentre,
+			      pt->y + m_YCentre + CROSS_SIZE - FONT_SIZE);
 	}
+	
+	last_plot++;
+	label++;
+	pt += 4;
+    }
 }
 
 void GfxCore::DrawDepthbar()
 {
-	// Draw the depthbar.
+    // Draw the depthbar.
 
-	m_DrawDC.SetBkColor(RGB(0, 0, 0));
-	m_DrawDC.SetTextColor(TEXT_COLOUR);
+    m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
+    m_DrawDC.SetTextForeground(TEXT_COLOUR);
 
-	int width = 20;
-	int height = 16;
-	int x_min = m_XSize/2 - width - 50;
-	int y = -m_YSize/2 + (height*m_Bands) + 15;
+    int width = 20;
+    int height = 16;
+    int x_min = m_XSize/2 - width - 50;
+    int y = -m_YSize/2 + (height*m_Bands) + 15;
 
-	for (int band = 0; band <= m_Bands; band++) {
-		if (band < m_Bands) {
-			m_DrawDC.SelectObject(m_Parent->GetPen(band));
-			m_DrawDC.FillRect(CRect(x_min, y - height, x_min + width, y),
-							  m_Parent->GetBrush(band));
-		}
-
-		float z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / m_Bands);
-		CString str;
-		str.Format("%.0fm", z);
-		m_DrawDC.TextOut(x_min + width + 5, y - (FONT_SIZE / 2), str);
-
-		y -= height;
+    for (int band = 0; band <= m_Bands; band++) {
+        if (band < m_Bands) {
+	    m_DrawDC.SetPen(m_Parent->GetPen(band));
+	    m_DrawDC.SetBrush(m_Parent->GetBrush(band));
+	    m_DrawDC.DrawRectangle(m_XCentre + x_min, m_YCentre + y - height, width, height);
 	}
+
+	float z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / m_Bands);
+	wxString str = wxString::Format("%.0fm", z);
+	m_DrawDC.DrawText(str, m_XCentre + x_min + width + 5, m_YCentre + y - (FONT_SIZE / 2));
+
+	y -= height;
+    }
 }
 
 void GfxCore::DrawScalebar()
 {
-	// Draw the scalebar.
+    // Draw the scalebar.
 
-	// Calculate the extent of the survey, in metres across the screen plane.
+    // Calculate the extent of the survey, in metres across the screen plane.
     float m_across_screen = float(m_XSize / m_Params.scale);
-	// The scalebar will represent this distance:
+    // The scalebar will represent this distance:
     float size_snap = (float) pow(10.0, int(log10(m_across_screen * 0.94)));
-	// Actual size of the thing in pixels:
+    // Actual size of the thing in pixels:
     int size = int(size_snap * m_Params.scale);
     
     // Draw it...
@@ -630,50 +629,51 @@ void GfxCore::DrawScalebar()
     int end_y = m_YSize/2 - 15 - height;
     int interval = size / 10;
 
-    BOOL solid = true;
+    bool solid = true;
     for (int ix = 0; ix < 10; ix++) {
         int x = end_x - size + int(ix * ((float) size / 10.0));
         
-		m_DrawDC.SelectObject(solid ? m_Pens.grey : m_Pens.white);
-        m_DrawDC.FillRect(CRect(x, end_y, x + interval + 2, end_y + height),
-			              solid ? &m_Brushes.grey : &m_Brushes.white);
-
+	m_DrawDC.SetPen(solid ? m_Pens.grey : m_Pens.white);
+	m_DrawDC.SetBrush(solid ? m_Brushes.grey : m_Brushes.white);
+        m_DrawDC.DrawRectangle(m_XCentre + x, m_YCentre + end_y, interval + 2, height);
+	
         solid = !solid;
     }
 
-	// Add labels.
-	float dv = size_snap * 100.0f;
-	CString str;
-	CString str2;
-	if (dv < 1.0) {
-		str = "0mm";
-		if (dv < 0.001) {
-			str2.Format("%.02fmm", dv * 10.0);
-		}
-		else {
-			str2.Format("%.fmm", dv * 10.0);
-		}
-	}
-	else if (dv < 100.0) {
-		str = "0cm";
-		str2.Format("%.02fcm", dv);
-	}
-	else if (dv < 100000.0) {
-		str = "0m";
-		str2.Format("%.02fm", dv / 100.0);
+    // Add labels.
+    float dv = size_snap * 100.0f;
+    wxString str;
+    wxString str2;
+    if (dv < 1.0) {
+        str = "0mm";
+	if (dv < 0.001) {
+	    str2 = wxString::Format("%.02fmm", dv * 10.0);
 	}
 	else {
-		str = "0km";
-		str2.Format("%.02fkm", dv / 100000.0);
+	    str2 = wxString::Format("%.fmm", dv * 10.0);
 	}
+    }
+    else if (dv < 100.0) {
+        str = "0cm";
+	str2 = wxString::Format("%.02fcm", dv);
+    }
+    else if (dv < 100000.0) {
+        str = "0m";
+	str2 = wxString::Format("%.02fm", dv / 100.0);
+    }
+    else {
+        str = "0km";
+        str2 = wxString::Format("%.02fkm", dv / 100000.0);
+    }
 
-	m_DrawDC.SetBkColor(RGB(0, 0, 0));
-	m_DrawDC.SetTextColor(TEXT_COLOUR);
-	m_DrawDC.TextOut(end_x - size, end_y - FONT_SIZE - 4, str);
-	CSize text_size = m_DrawDC.GetTextExtent(str2);
-	m_DrawDC.TextOut(end_x - text_size.cx, end_y - FONT_SIZE - 4, str2);
+    m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
+    m_DrawDC.SetTextForeground(TEXT_COLOUR);
+    m_DrawDC.DrawText(str, m_XCentre + end_x - size, m_YCentre + end_y - FONT_SIZE - 4);
+
+    int text_width, text_height;
+    m_DrawDC.GetTextExtent(str2, &text_width, &text_height);
+    m_DrawDC.DrawText(str2, m_XCentre + end_x - text_width, m_YCentre + end_y - FONT_SIZE - 4);
 }
-#endif
 
 //
 //  Mouse event handling methods
@@ -879,7 +879,7 @@ void GfxCore::HandleTranslate(wxPoint point)
     m_Params.translation.z += cz;
 
     if (!m_OverlappingNames) {
-        //		m_LabelCacheNotRefreshd = true;//--fixme
+        //		m_LabelCacheNotInvalidated = true;//--fixme
         m_LabelShift.x = dx;
 	m_LabelShift.y = dy;
 	//	m_LabelCacheExtend.left = (dx < 0) ? m_XSize + dx : 0;
@@ -935,116 +935,113 @@ void GfxCore::OnSize(wxSizeEvent& event)
     }
 }
 
-#if 0
-
-void GfxCore::DisplayOverlappingNames() 
+void GfxCore::OnDisplayOverlappingNames(wxCommandEvent&)
 {
-	m_OverlappingNames = !m_OverlappingNames;
-	SetScale(m_Params.scale);
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_OverlappingNames = !m_OverlappingNames;
+    SetScale(m_Params.scale);
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::OnUpdateDisplayOverlappingNamesUpdate(CCmdUI* cmd) 
+void GfxCore::OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && m_Names);
-	cmd->SetCheck(m_OverlappingNames);
+    cmd.Enable(m_PlotData != NULL && m_Names);
+    cmd.Check(m_OverlappingNames);
 }
 
-void GfxCore::ShowCrosses() 
+void GfxCore::OnShowCrosses(wxCommandEvent&)
 {
-	m_Crosses = !m_Crosses;
-	m_RedrawOffscreen = true;
-	m_ScaleCrossesOnly = true;
-	SetScale(m_Params.scale);
-	Refresh(false);
+    m_Crosses = !m_Crosses;
+    m_RedrawOffscreen = true;
+    m_ScaleCrossesOnly = true;
+    SetScale(m_Params.scale);
+    Refresh(false);
 }
 
-void GfxCore::ShowCrossesUpdate(CCmdUI* cmd) 
+void GfxCore::OnShowCrossesUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
-	cmd->SetCheck(m_Crosses);
+    cmd.Enable(m_PlotData != NULL);
+    cmd.Check(m_Crosses);
 }
 
-void GfxCore::ShowStationNames() 
+void GfxCore::OnShowStationNames(wxCommandEvent&)
 {
-	m_Names = !m_Names;
-	SetScale(m_Params.scale);
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Names = !m_Names;
+    SetScale(m_Params.scale);
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ShowStationNamesUpdate(CCmdUI* cmd) 
+void GfxCore::OnShowStationNamesUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
-	cmd->SetCheck(m_Names);
+    cmd.Enable(m_PlotData != NULL);
+    cmd.Check(m_Names);
 }
 
-void GfxCore::ShowSurveyLegs() 
+void GfxCore::OnShowSurveyLegs(wxCommandEvent&) 
 {
-	m_Legs = !m_Legs;
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Legs = !m_Legs;
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ShowSurveyLegsUpdate(CCmdUI* cmd) 
+void GfxCore::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
-	cmd->SetCheck(m_Legs);
+    cmd.Enable(m_PlotData != NULL);
+    cmd.Check(m_Legs);
 }
 
-void GfxCore::MoveEast() 
+void GfxCore::OnMoveEast(wxCommandEvent&) 
 {
-	m_Params.translation.x += m_Parent->GetXExtent() / 100.0f;
-	m_RedrawOffscreen = true;
-	SetScale(m_Params.scale);
-	Refresh(false);
+    m_Params.translation.x += m_Parent->GetXExtent() / 100.0f;
+    m_RedrawOffscreen = true;
+    SetScale(m_Params.scale);
+    Refresh(false);
 }
 
-void GfxCore::MoveEastUpdate(CCmdUI* cmd) 
+void GfxCore::OnMoveEastUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::MoveNorth() 
+void GfxCore::OnMoveNorth(wxCommandEvent&) 
 {
-	m_Params.translation.y += m_Parent->GetYExtent() / 100.0f;
-	m_RedrawOffscreen = true;
-	SetScale(m_Params.scale);
-	Refresh(false);
+    m_Params.translation.y += m_Parent->GetYExtent() / 100.0f;
+    m_RedrawOffscreen = true;
+    SetScale(m_Params.scale);
+    Refresh(false);
 }
 
-void GfxCore::MoveNorthUpdate(CCmdUI* cmd) 
+void GfxCore::OnMoveNorthUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::MoveSouth() 
+void GfxCore::OnMoveSouth(wxCommandEvent&) 
 {
-	m_Params.translation.y -= m_Parent->GetYExtent() / 100.0f;
-	m_RedrawOffscreen = true;
-	SetScale(m_Params.scale);
-	Refresh(false);
+    m_Params.translation.y -= m_Parent->GetYExtent() / 100.0f;
+    m_RedrawOffscreen = true;
+    SetScale(m_Params.scale);
+    Refresh(false);
 }
 
-void GfxCore::MoveSouthUpdate(CCmdUI* cmd) 
+void GfxCore::OnMoveSouthUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::MoveWest() 
+void GfxCore::OnMoveWest(wxCommandEvent&)
 {
-	m_Params.translation.x -= m_Parent->GetXExtent() / 100.0f;
-	m_RedrawOffscreen = true;
-	SetScale(m_Params.scale);
-	Refresh(false);
+    m_Params.translation.x -= m_Parent->GetXExtent() / 100.0f;
+    m_RedrawOffscreen = true;
+    SetScale(m_Params.scale);
+    Refresh(false);
 }
 
-void GfxCore::MoveWestUpdate(CCmdUI* cmd) 
+void GfxCore::OnMoveWestUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
-#endif
 
 void GfxCore::StartTimer()
 {
@@ -1056,111 +1053,115 @@ void GfxCore::StopTimer()
     m_Timer.Stop();
 }
 
-#if 0
-void GfxCore::StartRotation() 
+void GfxCore::OnStartRotation(wxCommandEvent&) 
 {
     StartTimer();
     m_Rotating = true;
 }
 
-void GfxCore::StartRotationUpdate(CCmdUI* cmd) 
+void GfxCore::OnStartRotationUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating);
 }
 
-void GfxCore::StopRotation() 
+void GfxCore::OnStopRotation(wxCommandEvent&) 
 {
-	if (!m_SwitchingToElevation && !m_SwitchingToPlan) {
-		StopTimer();
-	}
+    if (!m_SwitchingToElevation && !m_SwitchingToPlan) {
+        StopTimer();
+    }
 
-	m_Rotating = false;
+    m_Rotating = false;
 }
 
-void GfxCore::StopRotationUpdate(CCmdUI* cmd) 
+void GfxCore::OnStopRotationUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && !m_FreeRotMode && m_Rotating);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Rotating);
 }
 
-void GfxCore::OriginalCaverotMouse() 
+void GfxCore::OnOriginalCaverotMouse(wxCommandEvent&)
 {
-	m_CaverotMouse = !m_CaverotMouse;
+    m_CaverotMouse = !m_CaverotMouse;
 }
 
-void GfxCore::OnUpdateOriginalCaverotMouseUpdate(CCmdUI* cmd) 
+void GfxCore::OnOriginalCaverotMouseUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && !m_FreeRotMode);
-	cmd->SetCheck(m_CaverotMouse);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode);
+    cmd.Check(m_CaverotMouse);
 }
 
-void GfxCore::ReverseControls() 
+void GfxCore::OnReverseControls(wxCommandEvent&) 
 {
-	m_ReverseControls = !m_ReverseControls;
+    m_ReverseControls = !m_ReverseControls;
 }
 
-void GfxCore::ReverseControlsUpdate(CCmdUI* cmd) 
+void GfxCore::OnReverseControlsUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && !m_FreeRotMode);
-	cmd->SetCheck(m_ReverseControls);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode);
+    cmd.Check(m_ReverseControls);
 }
 
-void GfxCore::ReverseDirectionOfRotation() 
+void GfxCore::OnReverseDirectionOfRotation(wxCommandEvent&)
 {
-	m_RotationStep = -m_RotationStep;
+    m_RotationStep = -m_RotationStep;
 }
 
-void GfxCore::ReverseDirectionOfRotationUpdate(CCmdUI* cmd) 
+void GfxCore::OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && m_Rotating);
+    cmd.Enable(m_PlotData != NULL && m_Rotating);
 }
 
-void GfxCore::SlowDown() 
+void GfxCore::OnSlowDown(wxCommandEvent&) 
 {
-	m_RotationStep /= 1.2f;
-	if (m_RotationStep < M_PI/2000.0f) {
-		m_RotationStep = (float) M_PI/2000.0f;
-	}
+    m_RotationStep /= 1.2f;
+    if (m_RotationStep < M_PI/2000.0f) {
+        m_RotationStep = (float) M_PI/2000.0f;
+    }
 }
 
-void GfxCore::SlowDownUpdate(CCmdUI* cmd) 
+void GfxCore::OnSlowDownUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && m_Rotating);
+    cmd.Enable(m_PlotData != NULL && m_Rotating);
 }
 
-void GfxCore::SpeedUp() 
+void GfxCore::OnSpeedUp(wxCommandEvent&) 
 {
-	m_RotationStep *= 1.2f;
-	if (m_RotationStep > M_PI/8.0f) {
-		m_RotationStep = (float) M_PI/8.0f;
-	}
+    m_RotationStep *= 1.2f;
+    if (m_RotationStep > M_PI/8.0f) {
+        m_RotationStep = (float) M_PI/8.0f;
+    }
 }
 
-void GfxCore::SpeedUpUpdate(CCmdUI* cmd) 
+void GfxCore::OnSpeedUpUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && m_Rotating);
+    cmd.Enable(m_PlotData != NULL && m_Rotating);
 }
 
-void GfxCore::StepOnceAnticlockwise() 
+void GfxCore::OnStepOnceAnticlockwise(wxCommandEvent&) 
 {
-	TurnCave(M_PI / 18.0);
+    TurnCave(M_PI / 18.0);
 }
 
-void GfxCore::StepOnceAnticlockwiseUpdate(CCmdUI* cmd) 
+void GfxCore::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating);
 }
 
-void GfxCore::StepOnceClockwise() 
+void GfxCore::OnStepOnceClockwise(wxCommandEvent&) 
 {
-	TurnCave(-M_PI / 18.0);
+    TurnCave(-M_PI / 18.0);
 }
 
-void GfxCore::StepOnceClockwiseUpdate(CCmdUI* cmd) 
+void GfxCore::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating);
 }
-#endif
-void GfxCore::Defaults() 
+
+void GfxCore::OnDefaults(wxCommandEvent&) 
+{
+    Defaults();
+}
+
+void GfxCore::Defaults()
 {
     // Restore default scale, rotation and translation parameters.
 
@@ -1191,12 +1192,17 @@ void GfxCore::Defaults()
     m_RedrawOffscreen = true;
     Refresh(false);
 }
-#if 0
-void GfxCore::DefaultsUpdate(CCmdUI* cmd) 
+
+void GfxCore::OnDefaultsUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
-#endif
+
+void GfxCore::OnElevation(wxCommandEvent&)
+{
+    Elevation();
+}
+
 void GfxCore::Elevation() 
 {
     // Switch to elevation view.
@@ -1204,37 +1210,42 @@ void GfxCore::Elevation()
     m_SwitchingToElevation = true;
     StartTimer();
 }
-#if 0
-void GfxCore::ElevationUpdate(CCmdUI* cmd) 
+
+void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && !m_FreeRotMode && !m_SwitchingToPlan &&
-		        !m_SwitchingToElevation);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_SwitchingToPlan &&
+		!m_SwitchingToElevation);
 }
 
-void GfxCore::HigherViewpoint() 
+void GfxCore::OnHigherViewpoint(wxCommandEvent&) 
 {
-	// Raise the viewpoint.
+    // Raise the viewpoint.
 
-	TiltCave(M_PI / 18.0);
+    TiltCave(M_PI / 18.0);
 }
 
-void GfxCore::HigherViewpointUpdate(CCmdUI* cmd) 
+void GfxCore::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && !m_FreeRotMode && m_TiltAngle < M_PI / 2.0);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_TiltAngle < M_PI / 2.0);
 }
 
-void GfxCore::LowerViewpoint() 
+void GfxCore::OnLowerViewpoint(wxCommandEvent&) 
 {
-	// Lower the viewpoint.
+    // Lower the viewpoint.
 
-	TiltCave(-M_PI / 18.0);
+    TiltCave(-M_PI / 18.0);
 }
 
-void GfxCore::LowerViewpointUpdate(CCmdUI* cmd) 
+void GfxCore::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && !m_FreeRotMode && m_TiltAngle > -M_PI / 2.0);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_TiltAngle > -M_PI / 2.0);
 }
-#endif
+
+void GfxCore::OnPlan(wxCommandEvent&)
+{
+    Plan();
+}
+
 void GfxCore::Plan() 
 {
     // Switch to plan view.
@@ -1242,95 +1253,95 @@ void GfxCore::Plan()
     m_SwitchingToPlan = true;
     StartTimer();
 }
-#if 0
-void GfxCore::PlanUpdate(CCmdUI* cmd) 
+
+void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL && !m_FreeRotMode && !m_SwitchingToElevation &&
-		        !m_SwitchingToPlan);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_SwitchingToElevation &&
+		!m_SwitchingToPlan);
 }
 
-void GfxCore::ShiftDisplayDown() 
+void GfxCore::OnShiftDisplayDown(wxCommandEvent&) 
 {
-	m_Params.display_shift.y += DISPLAY_SHIFT;
-	SetScale(m_Params.scale);
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Params.display_shift.y += DISPLAY_SHIFT;
+    SetScale(m_Params.scale);
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ShiftDisplayDownUpdate(CCmdUI* cmd)
+void GfxCore::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::ShiftDisplayLeft() 
+void GfxCore::OnShiftDisplayLeft(wxCommandEvent&) 
 {
-	m_Params.display_shift.x -= DISPLAY_SHIFT;
-	SetScale(m_Params.scale);
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Params.display_shift.x -= DISPLAY_SHIFT;
+    SetScale(m_Params.scale);
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ShiftDisplayLeftUpdate(CCmdUI* cmd)
+void GfxCore::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::ShiftDisplayRight() 
+void GfxCore::OnShiftDisplayRight(wxCommandEvent&) 
 {
-	m_Params.display_shift.x += DISPLAY_SHIFT;
-	SetScale(m_Params.scale);
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Params.display_shift.x += DISPLAY_SHIFT;
+    SetScale(m_Params.scale);
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ShiftDisplayRightUpdate(CCmdUI* cmd) 
+void GfxCore::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::ShiftDisplayUp() 
+void GfxCore::OnShiftDisplayUp(wxCommandEvent&) 
 {
-	m_Params.display_shift.y -= DISPLAY_SHIFT;
-	SetScale(m_Params.scale);
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Params.display_shift.y -= DISPLAY_SHIFT;
+    SetScale(m_Params.scale);
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ShiftDisplayUpUpdate(CCmdUI* cmd) 
+void GfxCore::OnShiftDisplayUpUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::ZoomIn() 
+void GfxCore::OnZoomIn(wxCommandEvent&) 
 {
-	// Increase the scale.
+    // Increase the scale.
 
-	m_Params.scale *= 1.06f;
-	SetScale(m_Params.scale);
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Params.scale *= 1.06f;
+    SetScale(m_Params.scale);
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ZoomInUpdate(CCmdUI* cmd) 
+void GfxCore::OnZoomInUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::ZoomOut() 
+void GfxCore::OnZoomOut(wxCommandEvent&) 
 {
-	// Decrease the scale.
+    // Decrease the scale.
 
-	m_Params.scale /= 1.06f;
-	SetScale(m_Params.scale);
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Params.scale /= 1.06f;
+    SetScale(m_Params.scale);
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ZoomOutUpdate(CCmdUI* cmd) 
+void GfxCore::OnZoomOutUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL);
 }
-#endif
+
 void GfxCore::OnTimer(wxTimerEvent& event)
 {
     // Handle a timer event.
@@ -1388,43 +1399,42 @@ void GfxCore::OnTimer(wxTimerEvent& event)
 	}
     }
 }
-#if 0
-void GfxCore::ToggleScalebar() 
+
+void GfxCore::OnToggleScalebar(wxCommandEvent&) 
 {
-	m_Scalebar = !m_Scalebar;
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Scalebar = !m_Scalebar;
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ToggleScalebarUpdate(CCmdUI* cmd) 
+void GfxCore::OnToggleScalebarUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
-	cmd->SetCheck(m_Scalebar);
+    cmd.Enable(m_PlotData != NULL);
+    cmd.Check(m_Scalebar);
 }
 
-void GfxCore::ToggleDepthbar() 
+void GfxCore::OnToggleDepthbar(wxCommandEvent&) 
 {
-	m_Depthbar = !m_Depthbar;
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Depthbar = !m_Depthbar;
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ToggleDepthbarUpdate(CCmdUI* cmd) 
+void GfxCore::OnToggleDepthbarUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
-	cmd->SetCheck(m_Depthbar);
+    cmd.Enable(m_PlotData != NULL);
+    cmd.Check(m_Depthbar);
 }
 
-void GfxCore::ViewCompass() 
+void GfxCore::OnViewCompass(wxCommandEvent&) 
 {
-	m_Compass = !m_Compass;
-	m_RedrawOffscreen = true;
-	Refresh(false);
+    m_Compass = !m_Compass;
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }
 
-void GfxCore::ViewCompassUpdate(CCmdUI* cmd) 
+void GfxCore::OnViewCompassUpdate(wxUpdateUIEvent& cmd) 
 {
-	cmd->Enable(m_PlotData != NULL);
-	cmd->SetCheck(m_Compass);
+    cmd.Enable(m_PlotData != NULL);
+    cmd.Check(m_Compass);
 }
-#endif

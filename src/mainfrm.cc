@@ -35,72 +35,209 @@ static const float BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
+
+    EVT_PAINT(MainFrm::OnPaint)
+
+    EVT_MENU(menu_ROTATION_START, MainFrm::OnStartRotation)
+    EVT_MENU(menu_ROTATION_STOP, MainFrm::OnStopRotation)
+    EVT_MENU(menu_ROTATION_SPEED_UP, MainFrm::OnSpeedUp)
+    EVT_MENU(menu_ROTATION_SLOW_DOWN, MainFrm::OnSlowDown)
+    EVT_MENU(menu_ROTATION_REVERSE, MainFrm::OnReverseDirectionOfRotation)
+    EVT_MENU(menu_ROTATION_STEP_CCW, MainFrm::OnStepOnceAnticlockwise)
+    EVT_MENU(menu_ROTATION_STEP_CW, MainFrm::OnStepOnceClockwise)
+    EVT_MENU(menu_ORIENT_MOVE_NORTH, MainFrm::OnMoveNorth)
+    EVT_MENU(menu_ORIENT_MOVE_EAST, MainFrm::OnMoveEast)
+    EVT_MENU(menu_ORIENT_MOVE_SOUTH, MainFrm::OnMoveSouth)
+    EVT_MENU(menu_ORIENT_MOVE_WEST, MainFrm::OnMoveWest)
+    EVT_MENU(menu_ORIENT_SHIFT_LEFT, MainFrm::OnShiftDisplayLeft)
+    EVT_MENU(menu_ORIENT_SHIFT_RIGHT, MainFrm::OnShiftDisplayRight)
+    EVT_MENU(menu_ORIENT_SHIFT_UP, MainFrm::OnShiftDisplayUp)
+    EVT_MENU(menu_ORIENT_SHIFT_DOWN, MainFrm::OnShiftDisplayDown)
+    EVT_MENU(menu_ORIENT_PLAN, MainFrm::OnPlan)
+    EVT_MENU(menu_ORIENT_ELEVATION, MainFrm::OnElevation)
+    EVT_MENU(menu_ORIENT_HIGHER_VP, MainFrm::OnHigherViewpoint)
+    EVT_MENU(menu_ORIENT_LOWER_VP, MainFrm::OnLowerViewpoint)
+    EVT_MENU(menu_ORIENT_ZOOM_IN, MainFrm::OnZoomIn)
+    EVT_MENU(menu_ORIENT_ZOOM_OUT, MainFrm::OnZoomOut)
+    EVT_MENU(menu_ORIENT_DEFAULTS, MainFrm::OnDefaults)
+    EVT_MENU(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegs)
+    EVT_MENU(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrosses)
+    EVT_MENU(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNames)
+    EVT_MENU(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNames)
+    EVT_MENU(menu_VIEW_COMPASS, MainFrm::OnViewCompass)
+    EVT_MENU(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbar)
+    EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
+//    EVT_MENU(menu_VIEW_STATUS_BAR, MainFrm::)
+    EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
+    EVT_MENU(menu_CTL_CAVEROT_MID, MainFrm::OnOriginalCaverotMouse)
+//    EVT_MENU(menu_HELP_ABOUT, MainFrm::)
+
+    EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_STOP, MainFrm::OnStopRotationUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_SPEED_UP, MainFrm::OnSpeedUpUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_SLOW_DOWN, MainFrm::OnSlowDownUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_REVERSE, MainFrm::OnReverseDirectionOfRotationUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_STEP_CCW, MainFrm::OnStepOnceAnticlockwiseUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_STEP_CW, MainFrm::OnStepOnceClockwiseUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_MOVE_NORTH, MainFrm::OnMoveNorthUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_MOVE_EAST, MainFrm::OnMoveEastUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_MOVE_SOUTH, MainFrm::OnMoveSouthUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_MOVE_WEST, MainFrm::OnMoveWestUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_SHIFT_LEFT, MainFrm::OnShiftDisplayLeftUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_SHIFT_RIGHT, MainFrm::OnShiftDisplayRightUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_SHIFT_UP, MainFrm::OnShiftDisplayUpUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_SHIFT_DOWN, MainFrm::OnShiftDisplayDownUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_PLAN, MainFrm::OnPlanUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_ELEVATION, MainFrm::OnElevationUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_HIGHER_VP, MainFrm::OnHigherViewpointUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_LOWER_VP, MainFrm::OnLowerViewpointUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_ZOOM_IN, MainFrm::OnZoomInUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_ZOOM_OUT, MainFrm::OnZoomOutUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_DEFAULTS, MainFrm::OnDefaultsUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegsUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrossesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNamesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNamesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_COMPASS, MainFrm::OnViewCompassUpdate)
+    EVT_UPDATE_UI(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
+//    EVT_UPDATE_UI(menu_VIEW_STATUS_BAR, MainFrm::Update)
+    EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
+    EVT_UPDATE_UI(menu_CTL_CAVEROT_MID, MainFrm::OnOriginalCaverotMouseUpdate)
 END_EVENT_TABLE()
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
-    wxFrame(NULL, -1, title, pos, size)
+    wxFrame(NULL, 101, title, pos, size), m_Gfx(NULL)
 {
     m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS];
     m_Pens = new wxPen[NUM_DEPTH_COLOURS];
+    m_Brushes = new wxBrush[NUM_DEPTH_COLOURS];
     for (int pen = 0; pen < NUM_DEPTH_COLOURS; pen++) {
 	m_Pens[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
+	m_Brushes[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
     }
 
     wxMenu* filemenu = new wxMenu;
-    filemenu->Append(menu_FILE_OPEN, "&Open...\tCtrl+O", "");
+    filemenu->Append(menu_FILE_OPEN, "&Open...\tCtrl+O", "Open a Survex 3D file for viewing");
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_QUIT, "&Exit", "Quits Aven");
+    filemenu->Append(menu_FILE_QUIT, "&Exit", "Quit Aven");
 
     wxMenu* rotmenu = new wxMenu;
-    rotmenu->Append(menu_ROTATION_START, "&Start Rotation\tReturn", "");
-    rotmenu->Append(menu_ROTATION_STOP, "S&top Rotation\tSpace", "");
+    rotmenu->Append(menu_ROTATION_START, "&Start Rotation\tReturn",
+		    "Start the survey rotating");
+    rotmenu->Append(menu_ROTATION_STOP, "S&top Rotation\tSpace",
+		    "Stop the survey rotating");
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_SPEED_UP, "Speed &Up\tZ", "");
-    rotmenu->Append(menu_ROTATION_SLOW_DOWN, "S&low Down\tX", "");
+    rotmenu->Append(menu_ROTATION_SPEED_UP, "Speed &Up\tZ", "Speed up rotation of the survey");
+    rotmenu->Append(menu_ROTATION_SLOW_DOWN, "S&low Down\tX",
+		    "Slow down rotation of the survey");
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_REVERSE, "&Reverse Direction\tR", "");
+    rotmenu->Append(menu_ROTATION_REVERSE, "&Reverse Direction\tR",
+		    "Reverse the direction of rotation");
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_STEP_CCW, "Step Once &Anticlockwise\tC", "");
-    rotmenu->Append(menu_ROTATION_STEP_CW, "Step Once &Clockwise\tV", "");
+    rotmenu->Append(menu_ROTATION_STEP_CCW, "Step Once &Anticlockwise\tC",
+		    "Rotate the cave one step anticlockwise");
+    rotmenu->Append(menu_ROTATION_STEP_CW, "Step Once &Clockwise\tV",
+		    "Rotate the cave one step clockwise");
 
     wxMenu* orientmenu = new wxMenu;
-    orientmenu->Append(menu_ORIENT_MOVE_NORTH, "Move &North\tN", "");
-    orientmenu->Append(menu_ORIENT_MOVE_EAST, "Move &East\tE", "");
-    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, "Move S&outh\tS", "");
-    orientmenu->Append(menu_ORIENT_MOVE_WEST, "Move &West\tW", "");
+    orientmenu->Append(menu_ORIENT_MOVE_NORTH, "Move &North\tN", "Move the survey northwards");
+    orientmenu->Append(menu_ORIENT_MOVE_EAST, "Move &East\tE", "Move the survey eastwards");
+    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, "Move S&outh\tS", "Move the survey southwards");
+    orientmenu->Append(menu_ORIENT_MOVE_WEST, "Move &West\tW", "Move the survey westwards");
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, "Shift Survey &Left\tLeft Arrow", "");
-    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, "Shift Survey &Right\tRight Arrow", "");
-    orientmenu->Append(menu_ORIENT_SHIFT_UP, "Shift Survey &Up\tUp Arrow", "");
-    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, "Shift Survey &Down\tDown Arrow", "");
+    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, "Shift Survey &Left\tLeft Arrow",
+		       "Shift the survey to the left");
+    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, "Shift Survey &Right\tRight Arrow",
+		       "Shift the survey to the right");
+    orientmenu->Append(menu_ORIENT_SHIFT_UP, "Shift Survey &Up\tUp Arrow",
+		       "Shift the survey upwards");
+    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, "Shift Survey &Down\tDown Arrow",
+		       "Shift the survey downwards");
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_PLAN, "&Plan View\tP", "");
-    orientmenu->Append(menu_ORIENT_ELEVATION, "Ele&vation View\tL", "");
+    orientmenu->Append(menu_ORIENT_PLAN, "&Plan View\tP", "Switch to plan view");
+    orientmenu->Append(menu_ORIENT_ELEVATION, "Ele&vation View\tL", "Switch to elevation view");
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_HIGHER_VP, "&Higher Viewpoint\t'", "");
-    orientmenu->Append(menu_ORIENT_LOWER_VP, "Lo&wer Viewpoint\t/", "");
+    orientmenu->Append(menu_ORIENT_HIGHER_VP, "&Higher Viewpoint\t'",
+		       "Raise the angle of viewing");
+    orientmenu->Append(menu_ORIENT_LOWER_VP, "Lo&wer Viewpoint\t/",
+		       "Lower the angle of viewing");
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_ZOOM_IN, "&Zoom In\t]", "");
-    orientmenu->Append(menu_ORIENT_ZOOM_OUT, "Zoo&m Out\t[", "");
+    orientmenu->Append(menu_ORIENT_ZOOM_IN, "&Zoom In\t]", "Zoom further into the survey");
+    orientmenu->Append(menu_ORIENT_ZOOM_OUT, "Zoo&m Out\t[",
+		       "Zoom further out from the survey");
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_DEFAULTS, "Restore De&fault Settings\tDelete", "");
+    orientmenu->Append(menu_ORIENT_DEFAULTS, "Restore De&fault Settings\tDelete",
+		       "Restore default settings for zoom, scale and rotation");
+
+    wxMenu* viewmenu = new wxMenu;
+    viewmenu->Append(menu_VIEW_SHOW_NAMES, "Show Station &Names\tCtrl+N",
+		     "Toggle display of survey station names");
+    viewmenu->Append(menu_VIEW_SHOW_CROSSES, "Show &Crosses\tCtrl+X",
+		     "Toggle display of crosses at survey stations");
+    viewmenu->Append(menu_VIEW_SHOW_LEGS, "Show Survey &Legs\tCtrl+L",
+		     "Toggle display of survey legs");
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, "Show &Overlapping Names\tO",
+		     "Display all station names, whether or not they overlap");
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_COMPASS, "Co&mpass", "Toggle the display of the compass");
+    viewmenu->Append(menu_VIEW_DEPTH_BAR, "&Depth Bar", "Toggle the display of the depth bar");
+    viewmenu->Append(menu_VIEW_SCALE_BAR, "Sc&ale Bar", "Toggle the display of the scale bar");
+    viewmenu->Append(menu_VIEW_STATUS_BAR, "&Status Bar",
+		     "Toggle the display of the status bar");
+
+    wxMenu* ctlmenu = new wxMenu;
+    ctlmenu->Append(menu_CTL_REVERSE, "&Reverse Sense\tCtrl+R",
+		    "Reverse the sense of the orientation controls");
+    ctlmenu->Append(menu_CTL_CAVEROT_MID, "Caverot-Style &Middle Button",
+		    "Cause the middle button to toggle between plan and elevation");
+
+    wxMenu* helpmenu = new wxMenu;
+    helpmenu->Append(menu_HELP_ABOUT, "&About Aven...",
+		"Display program information, version number, copyright and licence agreement");
 
     wxMenuBar* menubar = new wxMenuBar;
     menubar->Append(filemenu, "&File");
     menubar->Append(rotmenu, "&Rotation");
     menubar->Append(orientmenu, "&Orientation");
+    menubar->Append(viewmenu, "&View");
+    menubar->Append(ctlmenu, "&Controls");
+    menubar->Append(helpmenu, "&Help");
     SetMenuBar(menubar);
 
     CreateStatusBar(2);
     SetStatusText("Ready");
-
-    m_Gfx = new GfxCore(this);
 }
 
 MainFrm::~MainFrm()
 {
     ClearPointLists();
     delete[] m_Points;
+}
+#if 0
+bool MainFrm::ProcessEvent(wxEvent& event)
+{
+    bool result = false;
+
+    // Dispatch certain command events down to the child drawing area window.
+    if (m_Gfx && event.IsCommandEvent() && event.GetId() >= menu_ROTATION_START &&
+        event.GetId() <= menu_CTL_CAVEROT_MID) {
+	result = m_Gfx->ProcessEvent(event);
+    }
+
+    if (!result) { // child didn't process event
+        return wxEvtHandler::ProcessEvent(event);
+    }
+
+    return true;
+}
+#endif
+void MainFrm::OnPaint(wxPaintEvent&) //-- sort this out!
+{
+    if (!m_Gfx) {
+        m_Gfx = new GfxCore(this);
+    }
 }
 
 int MainFrm::GetNumDepthBands()
@@ -112,6 +249,12 @@ wxPen MainFrm::GetPen(int band)
 {
     assert(band >= 0 && band < NUM_DEPTH_COLOURS);
     return m_Pens[band];
+}
+
+wxBrush MainFrm::GetBrush(int band)
+{
+    assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+    return m_Brushes[band];
 }
 
 void MainFrm::ClearPointLists()
