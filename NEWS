@@ -1,3 +1,6 @@
+* Documentation: include 3d v3 file format description on MS Windows, MS DOS,
+  and RISC OS too; include PNG graphics for manual on MS Windows.
+
 Changes in 1.0.22:
 
 * aven: Fixed handling of extended elevations (and other flat surveys) -

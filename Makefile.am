@@ -117,6 +117,7 @@ mingw_iss :
 	cp doc/manual/*.htm iss_tmp/manual
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
+	cp doc/manual/*.png iss_tmp/manual
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
 	: # NB keep next line in step with survex.iss.in
 	for a in cs de es fr it; do\
