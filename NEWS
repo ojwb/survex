@@ -1,3 +1,57 @@
+Changes in 1.0.32:
+
+* aven: Fixed font sizes in "Print Preview" and printouts.
+
+* aven: In the print setup dialog, replaced "Orientation" radio buttons with
+  "Plan" and "Elevation" buttons.
+
+* aven: Fixed info box on printouts of elevations, tilted views, and
+  extend elevations.
+
+* aven: Added "fit on one page" option, and make it the default.
+
+* aven: Reorder "Cancel", "Preview", "Print" buttons and make "Print" the
+  default button.
+
+* aven: Read settings back from the print dialog when the "Print" button is
+  pressed (was only done for "Preview" previously).
+
+* aven: Sorted out the initial size of the "Print Preview" window.
+
+* aven: Fixed the window manager's close button on the "Print Preview" window
+  - previously this was being ignored.
+
+* aven: Sorted out initial survey scaling when loading a survey at startup.
+
+* aven: Fixed the measuring line to work better when the survey tree is
+  manipulated with keys.  Tweaked redrawing of the measuring line to be a
+  smidgen more efficient.  Fixed the blob and ring size which were one
+  pixel too small on Windows.
+
+* aven: Added "System Information:" section to the "About" dialog to hold
+  information useful when reporting bugs.  Currently it contains the wxWindows
+  version, OS version, and colour depth information.
+
+* aven: Changed the "About" dialog's "Close" button to be "OK" for consistency
+  with pretty much every other application.
+
+* aven: Added "File->Export as..." which integrates cad3d's functionality
+  within aven.
+
+* aven: Updated a few icons.
+
+* cad3d: Added SVG export support from John Pybus
+
+* (Unix version): Fixed to allow compilation with GCC 3.4
+
+* (MS Windows version): Upgrade to using innosetup 4 for the installer
+  (we were using innosetup 2).  This results in a much smaller download
+  and the installer now translates itself into the currently set language.
+  The installer will no longer work on Windows NT 3.51, but I seriously
+  doubt anyone is still using that...
+
+* Updates to German translation.
+
 Changes in 1.0.31:
 
 * (MS Windows version): Fixed problems with the new printing code by building
