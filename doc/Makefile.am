@@ -39,7 +39,7 @@ MAINTAINERCLEANFILES = @DOCS_OTHER@ $(other_mans)\
  ChngeLog.htm NEWS.htm OLDNEWS.htm
 
 pkgdoc_DATA = index.htm GPL.htm TODO.htm ChngeLog.htm\
- NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm @DOCS_OTHER@
+ NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm 3dformat.htm @DOCS_OTHER@
 
 man_MANS = survex.1 $(other_mans)
 

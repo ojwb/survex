@@ -21,6 +21,9 @@ Changes in 1.0.21:
   1.0.17 (or maybe 1.0.16) - fixed.  You wouldn't notice this if you installed
   over an previous version.
 
+* Documentation: really added details of the 3d file format (version 3) -
+  it only got added to the source code before.
+
 Changes in 1.0.20:
 
 * aven: update display when "Metric" or "Degrees" is toggled.
