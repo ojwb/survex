@@ -440,14 +440,14 @@ void GfxCore::SetScaleInitial(Double scale)
                 last_was_move = false;
             }
             else {
-                    first_point = false;
-                    last_was_move = true;
+		first_point = false;
+		last_was_move = true;
 
-                    // Save the current coordinates for the next time around
-                    // the loop.
-                    x = pti->GetX();
-                    y = pti->GetY();
-                    z = pti->GetZ();
+		// Save the current coordinates for the next time around
+		// the loop.
+		x = pti->GetX();
+		y = pti->GetY();
+		z = pti->GetZ();
 	    }
         }
 
@@ -979,8 +979,7 @@ void GfxCore::NattyDrawNames()
 
 void GfxCore::SimpleDrawNames()
 {
-    // Draw station names, possibly overlapping; or use previously-cached info
-    // from NattyDrawNames() to draw names known not to overlap.
+    // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     while (label != m_Parent->GetLabelsEnd()) {
         DrawText((*label)->x, (*label)->y, (*label)->z, (*label)->GetText());
@@ -2115,6 +2114,7 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
                             sqrd(vertices_start->z - pt_v.getZ())) / 4;
             }
 */
+	    double z_pitch_adjust = 0.0;
             if (segment == 0) {
                 // first segment
         
@@ -2128,13 +2128,13 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
   		right = leg_v * up_v;
 		if (right.magnitude() == 0) {
 		    right = last_right;
+		    // obtain a second vector in the LRUD plane, perpendicular
+		    // to the first
+		    up = right * leg_v;
 		} else {
 		    last_right = right;
+		    up = up_v;
 		}
-
-		// obtain a second vector in the LRUD plane, perpendicular to
-		// the first
-                up = right * leg_v;
             }
             else if (segment == length - 1) {
                 // last segment
@@ -2147,7 +2147,9 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 		if (right.magnitude() == 0) {
 		    // Twist alignment by minimum angle required to align
 		    // NSEW (need to do this so pitch orientations match across
-		    // depth bands)
+		    // depth bands - FIXME better to produce all these x-sections
+		    // at load time and to handle this when legs are split across
+		    // bands)
 		    Vector3 a(last_right.getX(),
 			      last_right.getY(),
 			      0.0);
@@ -2166,13 +2168,13 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 			    right = Vector3(0.0, -1.0, 0.0);
 			}
 		    }
+		    // obtain a second vector in the LRUD plane, perpendicular
+		    // to the first
+		    up = right * leg_v;
 		} else {
 		    last_right = right;
+		    up = up_v;
 		}
-                
-		// obtain a second vector in the LRUD plane, perpendicular to
-		// the first
-                up = right * leg_v;
             }
             else {
                 // intermediate segment
@@ -2194,15 +2196,38 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 		right = r1 + r2;
 		if (right.magnitude() == 0) {
 		    right = last_right;
+		    up = right * leg1_v;
 		} else {
+		    if (r1.magnitude() == 0) {
+			Vector3 n = leg1_v;
+			n.normalise();
+			z_pitch_adjust = n.getZ();
+			up = Vector3(0, 0, leg1_v.getZ());
+			up = right * up;
+#if 0
+			// FIXME: total bodge for particular case - want to permute
+			// vertices to minimise the tortional "stress" - perhaps even
+			// using triangles instead of rectangles...
+			swap(v1_prev,v3_prev);
+			swap(v2_prev,v4_prev);
+#endif
+		    } else if (r2.magnitude() == 0) {
+			Vector3 n = leg2_v;
+			n.normalise();
+			z_pitch_adjust = n.getZ();
+			up = Vector3(0, 0, leg2_v.getZ());
+			up = right * up;
+		    } else {
+			up = up_v;
+		    }
 		    last_right = right;
 		}
-		up = right * leg1_v;
             }
 
 	    // scale the vectors in the LRUD plane appropriately
 	    right.normalise();
 	    up.normalise();
+	    if (z_pitch_adjust != 0) up = up + Vector3(0, 0, z_pitch_adjust);
 	    right *= size;
 	    up *= size;
 
