@@ -1,6 +1,8 @@
+* Updates to the Catalan and Spanish translations.
+
 Changes in 1.0.1:
 
-* (MS Windows version): printwin: fixed sizes of cross and page alignmenti
+* (MS Windows version): printwin: fixed sizes of cross and page alignment
   ticks.
 
 * Updates to the Portuguese and Italian translations.
