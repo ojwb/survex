@@ -20,6 +20,8 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 <li>aven: possible mysterious problem with [ and ] not zooming to screen centre
 - not reproducible, probably fixed or just Ol's fevered imagination...
 
+<li>img.c: eliminate duplicate img_LABELs when reading .PLT files.
+
 </ul>
 
 <H2>Aven</H2>
@@ -57,6 +59,8 @@ little can be seen for part of each rotation)
 window or the info panel).
 
 <li>Highlight a whole survey by clicking on it in the tree...
+
+<li>aven for MSDOS?
 
 </ul>
 
@@ -107,7 +111,9 @@ cave with *export to one without...
 
 <li>Find a solution to Thilo's "." problem.
 
-<li>Backsights
+<li>LRUD?
+
+<li>Backsights and multiple readings
 
 </ul>
 
@@ -168,6 +174,45 @@ leafnames of the *include-d files, comma-separated):
 ...
 *end mycave
 </pre>
+
+<li>make img more modular (convert to C++?)
+
+<li>.plt and .xyz in test suite?
+
+<li>img.c: test routines in test suite?
+
+<li>resolve issues importing .plt from cad3d into Carto.  Seems to work fine on
+Linux - Martin reports problems on Microsoft Windows (so much for write once,
+run anywhere).
+
+<li>install file associations for .PLT and .XYZ (check: if we install a
+non-default right button menu action, does it become default if there are no
+others?)
+
+<li>add support for .KST?  Gary says documentation is out of date, and recent
+releases of winkarst have broken .KST export/import...
+
+<li>resolve documentation/examples mismatch for station based .XYZ files and
+implement reading of legs from them.
+
+<li>diffpos: compare connectivity (i.e legs as well as stations) - e.g.
+
+<pre>
+foo.1 moved by (0.02, 0.10, -0.06)
+leg between foo.1 and bar.2 removed
+...
+bar.2 moved by (-0.02, -0.05, 0.03)
+</pre>
+
+<li>improve .plt export to include all the N, Z, etc stuff...
+
+<li>tidy up documentation of v3 .3d format and put into manual appendix
+
+<li>v4 .3d format?
+
+<li>MacOS X packaging
+
+<li>look at solution by QR factorisation in matrix.c more
 </ul>
 
 </BODY></HTML>
