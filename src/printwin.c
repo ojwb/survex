@@ -64,7 +64,7 @@ static void win_ShowPage(const char *szPageDetails);
 static void win_Quit(void);
 
 device printer = {
-   PR_FLAG_NOFILEOUTPUT|PR_FLAG_NOINI,
+   PR_FLAG_NOFILEOUTPUT, /* |PR_FLAG_NOINI - now read fontsize from ini file */
    win_Name,
    win_Init,
    win_Charset,
