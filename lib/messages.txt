@@ -1920,6 +1920,9 @@ pt-br:218 Lista de p&aacute;ginas a imprimir com problemas: `%s'
 it:218 Lista di pagine da stampare `%s' errata
 #
 en:219 Reading `%s' duplicates previous reading(s)
+# de has the reverse singular/plural arrangement :)
+# (i.e., singular has the final -n, plural doesn't)
+de:219 Eintrag `%s' wiederholt fr&uuml;here(n)
 #
 # back to aven...
 #
@@ -1951,10 +1954,14 @@ en:224 Interleaved readings, but no NEWLINE
 de:224 Abwechselnde Eintr&auml;ge, aber kein NEWLINE
 # caused by e.g. "*data diving station newline depth tape compass"
 en:225 Reading `%s' must occur before NEWLINE
+de:225     Eintrag `%s' mu&szlig; vor NEWLINE kommen
+de-de,de-ch:225 Eintrag `%s' muss vor NEWLINE kommen
 # e.g. "*data normal from to tape newline compass clino"
 en:226 NEWLINE can only be preceded by STATION, DEPTH, and COUNT
+de:226 Vor NEWLINE kann nur STATION, DEPTH oder COUNT stehen
 #
 en:227 Can't calibrate angular and length quantities together
+de:227 Winkel und L&auml;ngen k&ouml;nnen nicht gleichzeitig kalibriert werden
 # XXX228,229
 #
 # The accelerators must be different within this group
@@ -2216,11 +2223,11 @@ de-de,de-ch:291 Messz&uuml;ge Ober@fl&auml;che##Ctrl+F
 de:          291 Me&szlig;z&uuml;ge Ober@fl&auml;che##Ctrl+F
 pt:291 Visadas de Super@f&iacute;cie##Ctrl+F
 it:291 Battute topografia di Super@ficie##Ctrl+F
-# TRANSLATE fr de "Depth Colours" -> "Altitude Colouring"
+# TRANSLATE fr "Depth Colours" -> "Altitude Colouring"
 en:292 Altitude Colo@uring on Surface Surveys
 en-us:292 Altit@ude Coloring on Surface Surveys
 fr:292 C@ouleur par profondeur pour les topos de surface
-de:292 Tiefen-F@arben auf Oberfl&auml;chendarstellungen
+de:292 H&ouml;hen-F@arben auf Oberfl&auml;chendarstellungen
 pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
 it:292 Rappresentazione delle @Quote mediante colori
 #
