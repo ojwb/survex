@@ -28,11 +28,12 @@
 #include <string.h>
 
 #include "cmdline.h"
-#include "message.h"
-#include "osalloc.h"
-#include "img.h"
 #include "filelist.h"
+#include "filename.h"
+#include "img.h"
+#include "message.h"
 #include "namecmp.h"
+#include "osalloc.h"
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
