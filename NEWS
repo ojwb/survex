@@ -1,12 +1,78 @@
-* output files now go in currrent directory rather than the same directory
-  where the first .svx file is found.  You can set a different directory using
-  the "--output" command line option, which can point to a directory or a fileI think a better plan is to put them in the
+* Caverot help screen incorrectly documented tilt as '/' and ':' - actually
+  it's on '/' and ''' (single quote)
+
+* Caverot assumed shift-singlequote is '@' which is true on UK keyboards but
+  not on US keyboards.  Quick fix: check both '@' and '"' for now.
+
+* "printps -b" now reports "option requires an argument" (used to segfault)
+
+* Updated printer driver command line options in manual
+
+* Fixed shift key to accelerate movements in allegro version of caverot
+
+* Cleaned up network reduction code and split into netskel.c and network.c
+
+* Removed svxmacro.c
+
+* Disabled articulation point code (for now - there's a bug)
+
+* If a datafile isn't found, cavern will now try a lowercase version before
+  giving up (so on Unix you can now process a DOS dataset by unpacking with
+  "unzip -L" to force filenames of unpacked files to lower case).
+
+* Covariance code now working and enabled by default
+
+* Fixed a couple of bugs in diffpos, and it now exits with status 1 if
+  differences were reported
+
+* Added some tests for cavern and diffpos - more to follow
+
+Changes in 0.91:
+
+* Fixed problem with message files with accented characters
+
+* Fixed RISC OS specific problem if SURVEXLANG was set
+
+* Fixed xcaverot to centre and scale cave on startup
+
+* Removed superfluous containing directory for RISC OS documentation
+
+Changes in 0.90:
+
+* MSDOS caverot mode-picker now reappears if an invalid mode is chosen
+  (caverot used to unhelpfully exit in this case).
+
+* Fixed cursor keys and delete in MSDOS caverot
+
+* corrected 2 C++ comments in xrot.h
+
+* fixed en_us.msg to en-us.msg in lib/Makefile.am
+
+* text files in DOS/Win32 zips now have ".txt" extension and DOS end-of-lines
+
+* Leandro Dybal Bertoni has made major improvements to 3dtodxf's DXF output
+
+* Right and Middle mouse button functions were swapped under RISC OS
+
+* pre-386 caverot wasn't erasing screen between redraws
+
+* HTML version of documentation now has a table of contents (with hyperlinks)
+
+Changes in 0.90 beta3:
+
+* output files now go in current directory rather than the same directory
+  where the first .svx file is found.  You can set a different directory
+  using the "--output" command line option, which can point to a directory
+  or a file.
 
 * "*truncate off" rather than "*truncate 0"
 
 * added wrapper to convert survex invocation into cavern invocation
 
 * hto filters moved into separate subdirectory of source distribution
+
+* fixed bug which included stations with 4 or more connections in the .3d
+  file several times
 
 * added "miniam.pl" which generates makefiles for BorlandC and RISC OS
 
