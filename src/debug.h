@@ -3,8 +3,10 @@
  * Copyright (C) 1993-1996 Olly Betts
  */
 
+/*#define DEBUG_INVALID 1*/
+
 #ifndef DEBUG_H
-# define DEBUG_H
+#define DEBUG_H
 #include "useful.h"
 
 /* turn periodic calls to validate() checks on/off */
@@ -23,7 +25,7 @@
 #endif
 
 /* macro to turn on|off extra info given for fatal(5,...) (bug in proggy) */
-#if DEBUG_INVALID
+#ifdef DEBUG_INVALID
 # define DEBUG_XTRA(X) X
 #else
 # define DEBUG_XTRA(X)
