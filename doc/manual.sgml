@@ -46,8 +46,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 1999-05-17 21:20:31 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.7 1999-05-17 21:20:31 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 1999-05-17 21:32:50 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.8 1999-05-17 21:32:50 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -663,7 +663,7 @@ fast machine you can't follow the change percentages.-->
 
 <!-- FIXME: gcc format error messages -->
 
-<Sect1><Title>CAVEROT</Title>
+<Sect1><Title>Caverot</Title>
 
 <Para>Caverot reads the <filename/.3d/ image files and displays the
 results on screen, letting you control the view to understand the
@@ -2062,7 +2062,7 @@ specification appendix
 
 </Sect1>
 
-<Sect1><Title>Contents of .SVX files: How do I?</Title>
+<Sect1><Title>Contents of .svx files: How do I?</Title>
 
 <Para>
 Here is some example &survexsuite; data (a very small cave numbered 1623/163):
@@ -2682,6 +2682,8 @@ name of the file in which the error was encountered.
 
 <Sect1><Title>Mailing List</Title>
 
+<!-- FIXME: rewrite this -->
+
 <Para>We have both email and paper mailing lists for &survexsuite;, to
 keep users informed of new versions, etc.  This is available free by e-mail,
 or by post for a small charge (to cover photocopying, disks, and postage).
@@ -2691,7 +2693,7 @@ not receive automatic updates and information.
 
 </Sect1>
 
-<Sect1><Title>ERROR MESSAGES</Title>
+<Sect1><Title>Error Messages</Title>
 
 <Para>There are a number of error messages that you may get when processing
 data.  Most of these are self explanatory, and will be caused by typing
@@ -2737,7 +2739,7 @@ will appear soon.
 <Para>
 We now have a Java-based package for full solid-modelling of caves.
 This allows editable cross-section to be entered around the skeleton
-and joined to make a complete VRML model viewable with a suitable
+and joined to make a complete <Acronym/VRML/ model viewable with a suitable
 browser. This will be integrated with &survexsuite; soon.
 </Para>
 
@@ -2752,7 +2754,7 @@ too distant future, and will be the next major step in making
 <sect2><title>Later</title>
 
 <Para>
-Some development of a general GUI-based version has already taken
+Some development of a general <Acronym/GUI/-based version has already taken
 place and eventually a graphical front-end will be included to
 make the programs much easier to use.  A working prototype has
 been written for the Archimedes desktop, and this will be ported
@@ -2769,15 +2771,15 @@ Major thanks are due to the following people (sadly this isn't a very
 complete list):
 </Para>
 
-<Para>
-Mark Fearon, Bill Purvis and Andy Waddinton for spotting and solving
-minor problems in previous releases, and to Bill Purvis and Devon
-Bowem for their work on xcaverot.  Iain Miller also deserves a
-mention for letting us play with his very interconnected survey
-data from <Acronym/OFD/.  Andy Holtsbery kindly fixed a few problems with
-xcaverot due to changes in other files. Also &cucc; for a great
-deal of testing in Austria over the last 6 years.
-</Para>
+<Para>Mark Fearon, Bill Purvis, and Andy Waddinton for spotting and solving
+minor problems in previous releases, and to Bill Purvis, Devon Bowen, and
+John Pybus for their work on xcaverot.  Iain Miller also deserves a mention
+for letting us play with his very interconnected survey data from
+<Acronym/OFD/.  Andy Holtsbery kindly fixed a few problems with xcaverot due
+to changes in other files. Also &cucc; for a great deal of testing in
+Austria over the last 6 years.</Para>
+<!-- FIXME: reorganise the above and mention more people (Martin Heller,
+John Halleck, Sean and Patrick, Leandro, ...) -->
 
 <Para>
 We must thank these people for their work on the Translations:
