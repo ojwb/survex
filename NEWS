@@ -1,5 +1,7 @@
 Changes in 1.0.8:
 
+* Slovak translation added; updated German, Catalan, and Spanish translations.
+
 * aven: reduced memory usage and increased speed and responsiveness.
 
 * aven: rate of rotation and switching between plan and elevation now adjusted
@@ -22,6 +24,14 @@ Changes in 1.0.8:
 
 * aven: the measuring line moves much more smoothly now - it only redraws the
   area of the window affected by it moving.
+
+* aven: resolved annoying limit on zooming in on large surveys.  This was a
+  crude way of preventing random lines due to overflow in the windowing system.
+  Aven now clips lines itself at high zoom levels, and limits zoom in to
+  approximately 1mm/pixel.
+
+* aven: zoom in/out with keyboard wasn't subject to any limits - now restricted
+  to sane values as with zoom in/out with the mouse.
 
 * print*: added --raw switch to turn of info box, scale bar, and page footer.
   This can be useful if you want to import the output into another application.
@@ -56,15 +66,13 @@ Changes in 1.0.8:
 * cavern: removed the ill-thought-out and never implemented LENGTHOUTPUT
   and ANGLEOUTPUT quantities.
 
-* Slovak translation added; updated de, ca, es.
-
 * ChangeLog now only includes entries since the previous release (the full file
   is 220K or so, and of interest to very few people).  MSDOS and MS Windows
   versions now comfortably fit on a 1.44M floppy once again.
 
-* Test suite now checks that programs will run with "--help" and "--version".
-  This should avoid problems such as that which broke the printer drivers in
-  1.0.4-1.0.6.
+* Test suite now checks that all programs will run successfully with "--help"
+  and with "--version".  This should avoid problems such as that which broke
+  the printer drivers in 1.0.4-1.0.6.
 
 Changes in 1.0.7:
 

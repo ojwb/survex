@@ -276,6 +276,8 @@ class GfxCore : public wxWindow {
 
     wxStopWatch timer;
     long drawtime;
+    
+    bool clipping;
 
 #ifndef AVENGL
     wxPen* m_Pens;
@@ -348,6 +350,9 @@ class GfxCore : public wxWindow {
 
     void SetScale(Double scale);
     void SetScaleInitial(Double scale);
+    void DrawBand(int num_polylines, const int *num_segs, const Point *vertices,
+		  Double m_00, Double m_01, Double m_02,
+		  Double m_20, Double m_21, Double m_22);
     void RedrawOffscreen();
     void TryToFreeArrays();
     void FirstShow();

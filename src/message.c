@@ -1094,6 +1094,9 @@ msg_init(char * const *argv)
 	       else
 		  msg_lang = "pt";
 	       break;
+	     case LANG_SLOVAK:
+	       msg_lang = "sk";
+	       break;
 	     case LANG_SPANISH:
 	       msg_lang = "es";
 	       break;
@@ -1316,6 +1319,11 @@ msg_init(char * const *argv)
 		     case 351: /* Portugal */
 			 msg_lang = "pt";
 			 break;
+		     case 42: /* Czechoslovakia / Tjekia / Slovakia (not supported by DR DOS 5.0) */
+		     case 421: /* Czech Republic / Tjekia (PC DOS 7+) */
+		     case 422: /* Slovakia (reported as 421 due to a bug in COUNTRY.SYS) */
+			 msg_lang = "sk";
+			 break;
 #if 0
 		     case 7: /* Russia */
 		     case 20: /* Egypt */
@@ -1325,7 +1333,6 @@ msg_init(char * const *argv)
 		     case 36: /* Hungary (not supported by DR DOS 5.0) */
 		     case 38: /* Yugoslavia (not supported by DR DOS 5.0) -- obsolete */
 		     case 40: /* Romania */
-		     case 42: /* Czechoslovakia / Tjekia / Slovakia (not supported by DR DOS 5.0) */
 		     case 45: /* Denmark */
 		     case 46: /* Sweden */
 		     case 47: /* Norway */
@@ -1384,8 +1391,6 @@ msg_init(char * const *argv)
 		     case 387: /* Bosnia-Herzegovina (Latin) */
 		     case 388: /* Bosnia-Herzegovina (Cyrillic) (PC DOS 7+) (reported as 381 due to a bug in PC DOS COUNTRY.SYS) */
 		     case 389: /* FYR Macedonia */
-		     case 421: /* Czech Republic / Tjekia (PC DOS 7+) */
-		     case 422: /* Slovakia (reported as 421 due to a bug in COUNTRY.SYS) */
 		     case 597: /* Suriname (nl) */
 		     case 599: /* Netherland Antilles (nl) */
 		     case 666: /* Russia??? (PTS-DOS 6.51 KEYB) */

@@ -372,6 +372,12 @@ data_file(const char *pth, const char *fnm)
 }
 
 static real
+mod2pi(real a)
+{
+   return a - floor(a / (2 * M_PI)) * (2 * M_PI);
+}
+
+static real
 handle_plumb(clino_type *p_ctype)
 {
    typedef enum {
@@ -425,6 +431,81 @@ handle_plumb(clino_type *p_ctype)
    return HUGE_REAL;
 }
 
+static void
+warn_readings_differ(int msg, real diff)
+{
+   char buf[64];
+   char *p;
+   sprintf(buf, "%.2f", deg(fabs(diff)));
+   p = strchr(buf, '.');
+   if (p) {
+      char *z = p;
+      while (*++p) {
+	 if (*p != '0') z = p + 1;
+      }
+      if (*z) *z = '\0';
+   }
+   compile_warning(msg, buf);
+}
+
+static bool
+handle_comp_units(real *p_comp, real *p_backcomp)
+{
+   bool fNoComp = fTrue;
+   if (*p_comp != HUGE_REAL) {
+      fNoComp = fFalse;
+      *p_comp *= pcs->units[Q_BEARING];
+      if (*p_comp < (real)0.0 || *p_comp - M_PI * 2.0 > EPSILON) {
+	 compile_warning(/*Suspicious compass reading*/59);
+	 *p_comp = mod2pi(*p_comp);
+      }
+   }
+   if (*p_backcomp != HUGE_REAL) {
+      fNoComp = fFalse;
+      *p_backcomp *= pcs->units[Q_BACKBEARING];
+      if (*p_backcomp < (real)0.0 || *p_backcomp - M_PI * 2.0 > EPSILON) {
+	 /* FIXME: different message for BackComp? */
+	 compile_warning(/*Suspicious compass reading*/59);
+	 *p_backcomp = mod2pi(*p_backcomp);
+      }
+   }
+   return fNoComp;
+}
+
+static real
+handle_compass(real *p_var, real comp, real backcomp)
+{
+   real var = var(Q_BEARING);
+   if (comp != HUGE_REAL) {
+      comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+      comp -= pcs->z[Q_DECLINATION];
+   }
+   if (backcomp != HUGE_REAL) {
+      backcomp = (backcomp - pcs->z[Q_BACKBEARING])
+	      * pcs->sc[Q_BACKBEARING];
+      backcomp -= pcs->z[Q_DECLINATION];
+      backcomp -= M_PI;
+      if (comp != HUGE_REAL) {
+	 real diff = comp - backcomp;
+	 real adj = fabs(diff) > M_PI ? M_PI : 0;
+	 diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
+	 if (sqrd(diff / 3.0) > var + var(Q_BACKBEARING)) {
+	    /* fore and back readings differ by more than 3 sds */
+	    warn_readings_differ(/*Compass reading and back compass reading disagree by %s degrees*/325, diff);
+	 }
+	 comp = (comp / var + backcomp / var(Q_BACKBEARING));
+	 var = (var + var(Q_BACKBEARING)) / 4;
+	 comp *= var;
+	 comp += adj;
+      } else {
+	 comp = backcomp;
+	 var = var(Q_BACKBEARING);
+      }
+   }
+   *p_var = var;
+   return comp;
+}
+
 static int
 process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	       real backcomp, real backclin,
@@ -444,22 +525,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       compile_warning(/*Negative adjusted tape reading*/79);
    }
 
-   fNoComp = fTrue;
-   if (comp != HUGE_REAL) {
-      fNoComp = fFalse;
-      comp *= pcs->units[Q_BEARING];
-      if (comp < (real)0.0 || comp - M_PI * 2.0 > EPSILON) {
-	 compile_warning(/*Suspicious compass reading*/59);
-      }
-   }
-   if (backcomp != HUGE_REAL) {
-      fNoComp = fFalse;
-      backcomp *= pcs->units[Q_BACKBEARING];
-      if (backcomp < (real)0.0 || backcomp - M_PI * 2.0 > EPSILON) {
-	 /* FIXME: different message for BackComp? */
-	 compile_warning(/*Suspicious compass reading*/59);
-      }
-   }
+   fNoComp = handle_comp_units(&comp, &backcomp);
 
    if (ctype == CLINO_READING) {
       real diff_from_abs90;
@@ -536,44 +602,10 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 #endif
       } else {
 	 real sinGcosG;
-	 real var_comp = var(Q_BEARING);
 	 /* take into account variance in LEVEL case */
 	 real var_clin = var(Q_LEVEL);
-	 if (comp != HUGE_REAL) {
-	    comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
-	    comp -= pcs->z[Q_DECLINATION];
-	 }
-	 if (backcomp != HUGE_REAL) {
-	    backcomp = (backcomp - pcs->z[Q_BACKBEARING])
-		    * pcs->sc[Q_BACKBEARING];
-	    backcomp -= pcs->z[Q_DECLINATION];
-	    backcomp -= M_PI;
-	    if (comp != HUGE_REAL) {
-	       real diff = comp - backcomp;
-	       diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
-	       if (sqrd(diff / 3.0) > var_comp + var(Q_BACKBEARING)) {
-		  /* fore and back readings differ by more than 3 sds */
-		  char buf[64];
-		  char *p;
-		  sprintf(buf, "%.2f", deg(fabs(diff)));
-		  p = strchr(buf, '.');
-		  if (p) {
-		     char *z = p;
-		     while (*++p) {
-			if (*p != '0') z = p + 1;
-		     }
-		     if (*z) *z = '\0';
-		  }
-		  compile_warning(/*Compass reading and back compass reading disagree by %s degrees*/325, buf);
-	       }
-	       comp = (comp / var_comp + backcomp / var(Q_BACKBEARING));
-	       var_comp = (var_comp + var(Q_BACKBEARING)) / 4;
-	       comp *= var_comp;
-	    } else {
-	       comp = backcomp;
-	       var_comp = var(Q_BACKBEARING);
-	    }
-	 }
+	 real var_comp;
+	 comp = handle_compass(&var_comp, comp, backcomp);
 	 /* ctype != CLINO_READING is LEVEL case */
 	 if (ctype == CLINO_READING) {
 	    clin = (clin - pcs->z[Q_GRADIENT]) * pcs->sc[Q_GRADIENT];
@@ -586,18 +618,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	       if (sqrd((clin + backclin) / 3.0) >
 		     var_clin + var(Q_BACKGRADIENT)) {
 		  /* fore and back readings differ by more than 3 sds */
-		  char buf[64];
-		  char *p;
-		  sprintf(buf, "%.2f", deg(fabs(clin + backclin)));
-		  p = strchr(buf, '.');
-		  if (p) {
-		     char *z = p;
-		     while (*++p) {
-			if (*p != '0') z = p + 1;
-		     }
-		     if (*z) *z = '\0';
-		  }
-		  compile_warning(/*Clino reading and back clino reading disagree by %s degrees*/326, buf);
+		  warn_readings_differ(/*Clino reading and back clino reading disagree by %s degrees*/326, clin + backclin);
 	       }
 	       clin = (clin / var_clin - backclin / var(Q_BACKGRADIENT));
 	       var_clin = (var_clin + var(Q_BACKGRADIENT)) / 4;
@@ -714,19 +735,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp, real backcomp,
    real cxy = 0, cyz = 0, czx = 0;
 #endif
 
-   if (comp != HUGE_REAL) {
-      comp *= pcs->units[Q_BEARING];
-      if (comp < (real)0.0 || comp - M_PI * 2.0 > EPSILON) {
-	 compile_warning(/*Suspicious compass reading*/59);
-      }
-   }
-   if (backcomp != HUGE_REAL) {
-      backcomp *= pcs->units[Q_BACKBEARING];
-      if (backcomp < (real)0.0 || backcomp - M_PI * 2.0 > EPSILON) {
-	 /* FIXME: different message for BackComp? */
-	 compile_warning(/*Suspicious compass reading*/59);
-      }
-   }
+   handle_comp_units(&comp, &backcomp);
 
    /* depth gauge readings increase upwards with default calibration */
    if (fDepthChange) {
@@ -761,33 +770,8 @@ process_diving(prefix *fr, prefix *to, real tape, real comp, real backcomp,
 			      / (var(Q_LENGTH) + var(Q_DEPTH));
    } else {
       real L2, sinB, cosB, dz2, D2;
-      real var_comp = var(Q_BEARING);
-      if (comp != HUGE_REAL) {
-	 comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
-	 comp -= pcs->z[Q_DECLINATION];
-      }
-      if (backcomp != HUGE_REAL) {
-	 backcomp = (backcomp - pcs->z[Q_BACKBEARING]) * pcs->sc[Q_BACKBEARING];
-	 backcomp -= pcs->z[Q_DECLINATION];
-	 backcomp -= M_PI;
-      }
-      if (comp != HUGE_REAL) {
-	 if (backcomp != HUGE_REAL) {
-	    real diff = comp - backcomp;
-	    diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
-	    if (sqrd(diff / 3.0) > var_comp + var(Q_BACKBEARING)) {
-	       /* fore and back readings differ by more than 3 sds */
-	       /* FIXME: complain */
-	    }
-	    comp = (comp / var_comp + backcomp / var(Q_BACKBEARING));
-	    var_comp = (var_comp + var(Q_BACKBEARING)) / 4;
-	    comp *= var_comp;
-	 }
-      } else {
-	 comp = backcomp;
-	 var_comp = var(Q_BACKBEARING);
-      }
-	    
+      real var_comp;
+      comp = handle_compass(&var_comp, comp, backcomp);
       sinB = sin(comp);
       cosB = cos(comp);
       L2 = tape * tape;
@@ -971,19 +955,7 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp, real backcomp,
    real cxy = 0;
 #endif
 
-   if (comp != HUGE_REAL) {
-      comp *= pcs->units[Q_BEARING];
-      if (comp < (real)0.0 || comp - M_PI * 2.0 > EPSILON) {
-	 compile_warning(/*Suspicious compass reading*/59);
-      }
-   }
-   if (backcomp != HUGE_REAL) {
-      backcomp *= pcs->units[Q_BACKBEARING];
-      if (backcomp < (real)0.0 || backcomp - M_PI * 2.0 > EPSILON) {
-	 /* FIXME: different message for BackComp? */
-	 compile_warning(/*Suspicious compass reading*/59);
-      }
-   }
+   handle_comp_units(&comp, &backcomp);
 
    /* depth gauge readings increase upwards with default calibration */
    if (fDepthChange) {
@@ -1005,33 +977,8 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp, real backcomp,
       vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
    } else {
       real sinB, cosB;
-      real var_comp = var(Q_BEARING);
-      if (comp != HUGE_REAL) {
-	 comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
-	 comp -= pcs->z[Q_DECLINATION];
-      }
-      if (backcomp != HUGE_REAL) {
-	 backcomp = (backcomp - pcs->z[Q_BACKBEARING]) * pcs->sc[Q_BACKBEARING];
-	 backcomp -= pcs->z[Q_DECLINATION];
-	 backcomp -= M_PI;
-      }
-      if (comp != HUGE_REAL) {
-	 if (backcomp != HUGE_REAL) {
-	    real diff = comp - backcomp;
-	    diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
-	    if (sqrd(diff / 3.0) > var_comp + var(Q_BACKBEARING)) {
-	       /* fore and back readings differ by more than 3 sds */
-	       /* FIXME: complain */
-	    }
-	    comp = (comp / var_comp + backcomp / var(Q_BACKBEARING));
-	    var_comp = (var_comp + var(Q_BACKBEARING)) / 4;
-	    comp *= var_comp;
-	 }
-      } else {
-	 comp = backcomp;
-	 var_comp = var(Q_BACKBEARING);
-      }
-
+      real var_comp;
+      comp = handle_compass(&var_comp, comp, backcomp);
       sinB = sin(comp);
       cosB = cos(comp);
 

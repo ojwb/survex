@@ -161,6 +161,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
 #ifdef AVENPRES
     m_DoingPresStep = -1;
 #endif
+    clipping = false;
 
 #ifdef AVENGL
     m_AntiAlias = false;
@@ -396,21 +397,11 @@ void GfxCore::FirstShow()
 
 void GfxCore::SetScaleInitial(Double scale)
 {
-    // Fill the plot data arrays with screen coordinates, scaling the survey
-    // to a particular absolute scale.
-
-    m_Params.scale = scale;
+    SetScale(scale);
 
 #ifdef AVENGL
     DrawGrid();
 #endif
-
-    Double m_00 = m_RotationMatrix.get(0, 0) * scale;
-    Double m_01 = m_RotationMatrix.get(0, 1) * scale;
-    Double m_02 = m_RotationMatrix.get(0, 2) * scale;
-    Double m_20 = m_RotationMatrix.get(2, 0) * scale;
-    Double m_21 = m_RotationMatrix.get(2, 1) * scale;
-    Double m_22 = m_RotationMatrix.get(2, 2) * scale;
 
     if (true) {
 	// Invalidate hit-test grid.
@@ -663,11 +654,13 @@ void GfxCore::SetScale(Double scale)
     // Fill the plot data arrays with screen coordinates, scaling the survey
     // to a particular absolute scale.
 
+    clipping = false;
     if (scale < m_InitialScale / 20) {
 	scale = m_InitialScale / 20;
     } else {
+	if (scale > 1000.0) scale = 1000.0;
 	Double max_scale = 32767.0 / MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent());
-	if (scale > max_scale) scale = max_scale;
+	if (scale > max_scale) clipping = true;
     }
 
     m_Params.scale = scale;
@@ -676,6 +669,160 @@ void GfxCore::SetScale(Double scale)
 //
 //  Repainting methods
 //
+
+void
+GfxCore::DrawBand(int num_polylines, const int *num_segs, const Point *vertices,
+		  Double m_00, Double m_01, Double m_02,
+		  Double m_20, Double m_21, Double m_22)
+{
+    if (clipping) {
+	while (num_polylines--) {
+	    double X = vertices->x + m_Params.translation.x;
+	    double Y = vertices->y + m_Params.translation.y;
+	    double Z = vertices->z + m_Params.translation.z;
+	    ++vertices;
+
+	    int x = int(X * m_00 + Y * m_01 + Z * m_02) + m_XCentre;
+	    int y = -int(X * m_20 + Y * m_21 + Z * m_22) + m_YCentre;
+#define U 1
+#define D 2
+#define L 4
+#define R 8
+	    int mask = 0;
+	    if (x < 0)
+		mask = L;
+	    else if (x > m_XSize)
+		mask = R;
+
+	    if (y < 0)
+		mask |= D;
+	    else if (y > m_YSize)
+		mask |= U;
+
+	    for (size_t n = *num_segs; n > 1; --n) {
+		X = vertices->x + m_Params.translation.x;
+		Y = vertices->y + m_Params.translation.y;
+		Z = vertices->z + m_Params.translation.z;
+		++vertices;
+
+		int x2 = x;
+		int y2 = y;
+		int mask2 = mask;
+
+		x = int(X * m_00 + Y * m_01 + Z * m_02) + m_XCentre;
+		y = -int(X * m_20 + Y * m_21 + Z * m_22) + m_YCentre;
+
+		mask = 0;
+		if (x < 0)
+		    mask = L;
+		else if (x > m_XSize)
+		    mask = R;
+
+		if (y < 0)
+		    mask |= D;
+		else if (y > m_YSize)
+		    mask |= U;
+
+		// See if whole line is above, left, right, or below
+		// screen.
+		if (mask & mask2) continue;
+		//printf("(%d,%d) - (%d,%d)\n", x, y, x2, y2);
+
+		int a = x, b = y;
+		int c = x2, d = y2;
+
+		// Actually need to clip line to screen...
+		if (mask & U) {
+		    b = m_YSize;
+		    a = ((x - x2) * b + x2 * y - x * y2) / (y - y2);
+		} else if (mask & D) {
+		    b = 0;
+		    a = (x2 * y - x * y2) / (y - y2);
+		}
+
+		//printf("(%d,%d) -\n", a, b);
+		if (a < 0 || a > m_XSize) {
+		    if (!(mask & (L|R))) continue;
+		    if (mask & L) {
+			a = 0;
+			b = (x * y2 - x2 * y) / (x - x2);
+		    } else if (mask & R) {
+			a = m_XSize;
+			b = ((y - y2) * a + x * y2 - x2 * y) / (x - x2);
+		    }
+		    //printf("(%d,%d) -\n", a, b);
+		    if (b < 0 || b > m_YSize) continue;
+		}
+
+		if (mask2 & U) {
+		    d = m_YSize;
+		    c = ((x - x2) * d + x2 * y - x * y2) / (y - y2);
+		} else if (mask2 & D) {
+		    d = 0;
+		    c = (x2 * y - x * y2) / (y - y2);
+		}
+
+		//printf(" - (%d,%d)\n", c, d);
+		if (c < 0 || c > m_XSize) {
+		    if (!(mask2 & (L|R))) continue;
+		    if (mask2 & L) {
+			c = 0;
+			d = (x * y2 - x2 * y) / (x - x2);
+		    } else if (mask2 & R) {
+			c = m_XSize;
+			d = ((y - y2) * c + x * y2 - x2 * y) / (x - x2);
+		    }
+		    //printf(" - (%d,%d)\n", c, d);
+		    if (d < 0 || d > m_YSize) continue;
+		}
+#undef U
+#undef D
+#undef L
+#undef R
+		m_DrawDC.DrawLine(a, b, c, d);
+	    }
+	    ++num_segs;
+	}
+    } else {
+#define MAX_SEGS 64 // Longest run in all.3d is 44 segments - set dynamically?
+	wxPoint tmp[MAX_SEGS];
+	while (num_polylines--) {
+	    double X = vertices->x + m_Params.translation.x;
+	    double Y = vertices->y + m_Params.translation.y;
+	    double Z = vertices->z + m_Params.translation.z;
+	    ++vertices;
+
+	    int x = int(X * m_00 + Y * m_01 + Z * m_02);
+	    int y = -int(X * m_20 + Y * m_21 + Z * m_22);
+	    tmp[0].x = x;
+	    tmp[0].y = y;
+	    size_t count = 1;
+	    size_t n = *num_segs;
+	    while (1) {
+		X = vertices->x + m_Params.translation.x;
+		Y = vertices->y + m_Params.translation.y;
+		Z = vertices->z + m_Params.translation.z;
+		++vertices;
+
+		x = int(X * m_00 + Y * m_01 + Z * m_02);
+		y = -int(X * m_20 + Y * m_21 + Z * m_22);
+		tmp[count].x = x;
+		tmp[count].y = y;
+		++count;
+		--n;
+		if (count == MAX_SEGS || n == 1) {
+		    m_DrawDC.DrawLines(count, tmp, m_XCentre, m_YCentre);
+		    if (n == 1) break;
+		    // printf("had to split traverse with %d segs\n", *num_segs);
+		    tmp[0].x = x;
+		    tmp[0].y = y;
+		    count = 1;
+		}
+	    }
+	    ++num_segs;
+	}
+    }
+}
 
 void GfxCore::RedrawOffscreen()
 {
@@ -689,15 +836,15 @@ void GfxCore::RedrawOffscreen()
 	wxPoint( 2, -1),
 	wxPoint(-2, -1),
 	wxPoint(-1, -2),
-	wxPoint( 2, -2) // (1, -2) for non-wxGTK (probably)
+	wxPoint( 2, -2) // (1, -2) for any platform which draws the last dot
     };
     static wxPoint cross1[2] = {
 	wxPoint(-CROSS_SIZE, -CROSS_SIZE),
-	wxPoint(CROSS_SIZE + 1, CROSS_SIZE + 1) // FIXME: + 1 for wxGTK
+	wxPoint(CROSS_SIZE + 1, CROSS_SIZE + 1) // remove +1 if last dot drawn
     };
     static wxPoint cross2[2] = {
 	wxPoint(-CROSS_SIZE, CROSS_SIZE),
-	wxPoint(CROSS_SIZE + 1, -CROSS_SIZE - 1) // FIXME: +/- 1 for wxGTK
+	wxPoint(CROSS_SIZE + 1, -CROSS_SIZE - 1) // remove +/-1 if last dot
     };
     // Redraw the offscreen bitmap.
     if (false) {
@@ -806,50 +953,14 @@ void GfxCore::RedrawOffscreen()
 		inc = -1;
 	    }
 
-#define MAX_SEGS 64 // Longest run in all.3d is 44 segments - set dynamically?
-	    wxPoint tmp[MAX_SEGS];
 	    for (int band = start; band != end; band += inc) {
 		m_DrawDC.SetPen(m_Parent->GetPen(band));
-		int* num_segs = m_PlotData[band].num_segs; //-- sort out the polyline stuff!!
-		Point* vertices = m_PlotData[band].vertices;
-		for (int polyline = 0; polyline < m_Polylines[band]; polyline++) {
-		    double X = vertices->x + m_Params.translation.x;
-		    double Y = vertices->y + m_Params.translation.y;
-		    double Z = vertices->z + m_Params.translation.z;
-		    ++vertices;
-
-		    int x = int(X * m_00 + Y * m_01 + Z * m_02);
-		    int y = -int(X * m_20 + Y * m_21 + Z * m_22);
-		    tmp[0].x = x;
-		    tmp[0].y = y;
-		    size_t count = 1;
-		    size_t n = *num_segs;
-		    while (1) {
-			X = vertices->x + m_Params.translation.x;
-			Y = vertices->y + m_Params.translation.y;
-			Z = vertices->z + m_Params.translation.z;
-			++vertices;
-
-			x = int(X * m_00 + Y * m_01 + Z * m_02);
-			y = -int(X * m_20 + Y * m_21 + Z * m_22);
-			tmp[count].x = x;
-			tmp[count].y = y;
-			++count;
-			--n;
-			if (count == MAX_SEGS || n == 1) {
-			    m_DrawDC.DrawLines(count, tmp, m_XCentre, m_YCentre);
-			    if (n == 1) break;
-			    // printf("had to split traverse with %d segs\n", *num_segs);
-			    tmp[0].x = x;
-			    tmp[0].y = y;
-			    count = 1;
-			}
-		    }
-		    ++num_segs;
-		}
+		DrawBand(m_Polylines[band], m_PlotData[band].num_segs,
+			 m_PlotData[band].vertices,
+			 m_00, m_01, m_02, m_20, m_21, m_22);
 	    }
 	}
-
+	    
 	// Draw surface legs.
 	if (m_Surface) {
 	    int start;
@@ -877,23 +988,16 @@ void GfxCore::RedrawOffscreen()
 #endif
 		}
 		m_DrawDC.SetPen(pen);
-
-#if 0 // FIXME
-		int* num_segs = m_PlotData[band].surface_num_segs; //-- sort out the polyline stuff!!
-		wxPoint* vertices = m_PlotData[band].surface_vertices;
-		for (int polyline = 0; polyline < m_SurfacePolylines[band]; polyline++) {
-		    m_DrawDC.DrawLines(*num_segs, vertices,
-			m_XCentre, m_YCentre);
-		    vertices += *num_segs++;
-		}
+		DrawBand(m_SurfacePolylines[band],
+			 m_PlotData[band].surface_num_segs,
+			 m_PlotData[band].surface_vertices,
+			 m_00, m_01, m_02, m_20, m_21, m_22);
 		if (m_SurfaceDashed) {
 		    pen.SetStyle(wxSOLID);
 		}
-#endif
 	    }
 	}
 
-	
 	// Draw crosses.
 	if (m_Crosses) {
 	    SetColour(col_TURQUOISE);
@@ -904,12 +1008,14 @@ void GfxCore::RedrawOffscreen()
 		Double xp = pt->x + m_Params.translation.x;
 		Double yp = pt->y + m_Params.translation.y;
 		Double zp = pt->z + m_Params.translation.z;
-		int x = int(xp * m_00 + yp * m_01 + zp * m_02);
-		x += m_XCentre;
-		int y = -int(xp * m_20 + yp * m_21 + zp * m_22);
-		y += m_YCentre;
-		m_DrawDC.DrawLines(2, cross1, x, y);
-		m_DrawDC.DrawLines(2, cross2, x, y);
+		int x = int(xp * m_00 + yp * m_01 + zp * m_02) + m_XCentre;
+		if (x >= -CROSS_SIZE && x < m_XSize + CROSS_SIZE) {
+		    int y = -int(xp * m_20 + yp * m_21 + zp * m_22) + m_YCentre;
+		    if (y >= -CROSS_SIZE && y < m_YSize + CROSS_SIZE) {
+			m_DrawDC.DrawLines(2, cross1, x, y);
+			m_DrawDC.DrawLines(2, cross2, x, y);
+		    }
+		}
 		++pt;
 	    }
 	}
@@ -1149,24 +1255,24 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	&& !(m_TerrainLoaded && floor_alt > -DBL_MAX && floor_alt <= HEAVEN)
 #endif
 	) {
-	long here_x = LONG_MAX, here_y;
+	int here_x = INT_MAX, here_y;
 	// Draw "here" and "there".
 	if (m_here.x != DBL_MAX) {
 	    dc.SetPen(*wxWHITE_PEN);
 	    dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	    here_x = (long)GridXToScreen(m_here);
-	    here_y = (long)GridYToScreen(m_here);
+	    here_x = (int)GridXToScreen(m_here);
+	    here_y = (int)GridYToScreen(m_here);
 	    dc.DrawEllipse(here_x - HIGHLIGHTED_PT_SIZE * 2,
 			   here_y - HIGHLIGHTED_PT_SIZE * 2,
 			   HIGHLIGHTED_PT_SIZE * 4,
 			   HIGHLIGHTED_PT_SIZE * 4);
 	}
 	if (m_there.x != DBL_MAX) {
-	    if (here_x == LONG_MAX) dc.SetPen(*wxWHITE_PEN);
+	    if (here_x == INT_MAX) dc.SetPen(*wxWHITE_PEN);
 	    dc.SetBrush(*wxWHITE_BRUSH);
-	    long there_x = (long)GridXToScreen(m_there);
-	    long there_y = (long)GridYToScreen(m_there);
-	    if (here_x != LONG_MAX) {
+	    int there_x = (int)GridXToScreen(m_there);
+	    int there_y = (int)GridYToScreen(m_there);
+	    if (here_x != INT_MAX) {
 		dc.DrawLine(here_x, here_y, there_x, there_y);
 	    }
 	    dc.DrawEllipse(there_x - HIGHLIGHTED_PT_SIZE,
@@ -2679,7 +2785,7 @@ void GfxCore::OnZoomIn(bool accel)
     // Increase the scale.
 
     //--GL fixes needed
-    m_Params.scale *= accel ? 1.1236 : 1.06;
+    SetScale(m_Params.scale * (accel ? 1.1236 : 1.06));
     m_RedrawOffscreen = true;
     Refresh(false);
 }
@@ -2693,7 +2799,7 @@ void GfxCore::OnZoomOut(bool accel)
 {
     // Decrease the scale.
 
-    m_Params.scale /= accel ? 1.1236 : 1.06;
+    SetScale(m_Params.scale / (accel ? 1.1236 : 1.06));
     m_RedrawOffscreen = true;
     Refresh(false);
 }
