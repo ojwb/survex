@@ -57,7 +57,8 @@ class GfxCore : public wxWindow {
     struct {
         // OpenGL display lists.
         GLint survey; // all underground data
-        GLint surface; // all surface data
+        GLint surface; // all surface data in uniform colour
+        GLint surface_depth; // all surface data in depth bands
     } m_Lists;
 
     bool m_AntiAlias;

@@ -355,24 +355,31 @@ void GfxCore::SetScale(Double scale)
 
     if (!m_ScaleCrossesOnly && !m_ScaleHighlightedPtsOnly) {
 #ifdef AVENGL
-        // With OpenGL we have to make two passes, as OpenGL lists are immutable and
-        // we need the surface and underground data in different lists.
-        for (int pass = 0; pass < 2; pass++) { // 1st pass -> u/g data; 2nd pass -> surface data
+        // With OpenGL we have to make three passes, as OpenGL lists are immutable and
+        // we need the surface and underground data in different lists.  The third pass is
+        // so we get different lists for surface data split into depth bands, and not split like that.
+        // This isn't a problem as this routine is only called once in the OpenGL version and it
+        // contains very little in the way of calculations for this version.
+        for (int pass = 0; pass < 3; pass++) { // 1st pass -> u/g data; 2nd pass -> surface (uniform);
+	                                       // 3rd pass -> surface (w/depth colouring)
 	    //--should delete any old GL list. (only a prob on reinit I think)
 	    if (pass == 0) {
 	        m_Lists.survey = glGenLists(1);
 		glNewList(m_Lists.survey, GL_COMPILE);
 	    }
-	    else {
+	    else if (pass == 1) {
 	        m_Lists.surface = glGenLists(1);
 		glNewList(m_Lists.surface, GL_COMPILE);
+	    }
+	    else {
+	        m_Lists.surface_depth = glGenLists(1);
+		glNewList(m_Lists.surface_depth, GL_COMPILE);
 	    }
 #endif
         for (int band = 0; band < m_Bands; band++) {
 #ifdef AVENGL
 	    Double r, g, b;
-	    //GL: sort out depth colouring on/off (needs another disp list)
-	    if (pass == 0) {
+	    if (pass == 0 || pass == 2) {
 	        m_Parent->GetColour(band, r, g, b);
 		glColor3d(r, g, b);
 	    }
@@ -429,7 +436,7 @@ void GfxCore::SetScale(Double scale)
 		        // Start a new polyline if we're switching underground/surface state
 		        // or if the previous point was a move.
 #ifdef AVENGL
-			if ((current_polyline_is_surface && pass == 1) ||
+			if ((current_polyline_is_surface && pass > 0) ||
 			    (!current_polyline_is_surface && pass == 0)) {
 			    line_open = true;
 			    glBegin(GL_LINE_STRIP);
@@ -464,7 +471,7 @@ void GfxCore::SetScale(Double scale)
 		    }
 
 #ifdef AVENGL
-		    if ((current_polyline_is_surface && pass == 1) ||
+		    if ((current_polyline_is_surface && pass > 0) ||
 			(!current_polyline_is_surface && pass == 0)) {
 		        assert(line_open);
 			glVertex3d(x, y, z);
@@ -815,7 +822,9 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	        glLineStipple(1, 0xaaaa);
 		glEnable(GL_LINE_STIPPLE);
 	    }
-	    glCallList(m_Lists.surface);
+	   
+	    glCallList(m_SurfaceDepth ? m_Lists.surface_depth : m_Lists.surface);
+
 	    if (m_SurfaceDashed) {
 	        glDisable(GL_LINE_STIPPLE);
 	    }
