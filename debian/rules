@@ -17,10 +17,6 @@ export DH_COMPAT=1
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
-build: build-stamp
-build-stamp:
-	dh_testdir
-
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 CFLAGS += -O0
 else
@@ -29,6 +25,10 @@ endif
 ifneq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 STRIP=/bin/echo
 endif
+
+build: build-stamp
+build-stamp:
+	dh_testdir
 
 	# need to use GCC 3.2 to link against wxgtk-2.4
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex CFLAGS=$(CFLAGS) STRIP=$(STRIP) CC=gcc-3.2 CXX=g++-3.2
