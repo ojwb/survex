@@ -1,6 +1,6 @@
-* Updated Portuguese and German translations.
+Changes in 0.97-prerelease4:
 
-* aven: Suppress warning box when starting with English messages.
+* Updated Portuguese and German translations.
 
 * aven: Accents now work in display; suppress warning box if wxWindows
   dialogs aren't translated into the requested language.
