@@ -1255,7 +1255,7 @@ void GfxCore::DefaultParameters()
     m_Surface = false;
     m_SurfaceDepth = false;
     m_SurfaceDashed = true;
-    m_RotationStep = M_PI / 6.0;
+    m_RotationStep = M_PI / 400.0; // FIXME temp bodge (was 6.0)
     m_Rotating = false;
     m_SwitchingTo = 0;
     m_Entrances = false;
@@ -1291,7 +1291,7 @@ bool GfxCore::Animate(wxIdleEvent*)
 
     // When rotating...
     if (m_Rotating) {
-        TurnCave(m_RotationStep * t);
+        TurnCave(m_RotationStep /* FIXME * t */);
     }
 
     if (m_SwitchingTo == PLAN) {
@@ -1735,9 +1735,9 @@ void GfxCore::RotateSlower(bool accel)
     // Decrease the speed of rotation, optionally by an increased amount.
 
     m_RotationStep /= accel ? 1.44 : 1.2;
-    if (m_RotationStep < M_PI / 180.0) {
+/* FIXME    if (m_RotationStep < M_PI / 180.0) {
         m_RotationStep = (Double) M_PI / 180.0;
-    }
+    } */
 }
 
 void GfxCore::RotateFaster(bool accel)
@@ -1745,9 +1745,9 @@ void GfxCore::RotateFaster(bool accel)
     // Increase the speed of rotation, optionally by an increased amount.
 
     m_RotationStep *= accel ? 1.44 : 1.2;
-    if (m_RotationStep > 2.5 * M_PI) {
+/*    if (m_RotationStep > 2.5 * M_PI) {
         m_RotationStep = (Double) 2.5 * M_PI;
-    }
+    }*/
 }
 
 void GfxCore::SwitchToElevation()
@@ -2079,7 +2079,7 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 
         if (!m_Tubes) continue;
 
-        Double size = 2;
+        Double size = 1;
         
         Vector3 v1_prev, v2_prev, v3_prev, v4_prev;
         Vector3 prev_pt_v;
@@ -2093,7 +2093,17 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
             Double z0 = vertices_start->z;
             Vector3 pt_v(x0, y0, z0);
             vertices_start++;
-
+/*
+            if (segment != 0) {
+                size = sqrt(sqrd(prev_pt_v.getX() - x0) +
+                            sqrd(prev_pt_v.getY() - y0) +
+                            sqrd(prev_pt_v.getZ() - z0)) / 4;
+            } else {
+                size = sqrt(sqrd(vertices_start->x - x0) +
+                            sqrd(vertices_start->y - y0) +
+                            sqrd(vertices_start->z - z0)) / 4;
+            }
+*/
             if (segment == 0) {
                 // first segment
         
@@ -2168,35 +2178,32 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 	    v4 = pt_v - right - up;
 
             if (segment > 0) {
-                SetColour(m_Pens[1], true);
-                SetPolygonColour(m_Pens[11], false);
                 BeginQuadrilaterals();
+
+                SetColour(pen, true, 1.0);
                 PlaceVertex(v1.getX(), v1.getY(), v1.getZ());
                 PlaceVertex(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ());
                 PlaceVertex(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ());
                 PlaceVertex(v2.getX(), v2.getY(), v2.getZ());
 
-                SetColour(m_Pens[2], true);
+                SetColour(pen, true, 0.25);
                 PlaceVertex(v4.getX(), v4.getY(), v4.getZ());
                 PlaceVertex(v3.getX(), v3.getY(), v3.getZ());
                 PlaceVertex(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ());
                 PlaceVertex(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ());
-                EndQuadrilaterals();
 
-                SetColour(m_Pens[3], true);
-                BeginQuadrilaterals();
+                SetColour(pen, true, 0.5);
                 PlaceVertex(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ());
                 PlaceVertex(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ());
                 PlaceVertex(v3.getX(), v3.getY(), v3.getZ());
                 PlaceVertex(v2.getX(), v2.getY(), v2.getZ());
-                EndQuadrilaterals();
 
-                SetColour(m_Pens[4], true);
-                BeginQuadrilaterals();
+                SetColour(pen, true, 0.75);
                 PlaceVertex(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ());
                 PlaceVertex(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ());
                 PlaceVertex(v1.getX(), v1.getY(), v1.getZ());
                 PlaceVertex(v4.getX(), v4.getY(), v4.getZ());
+                
                 EndQuadrilaterals();
             }
 
@@ -2205,18 +2212,6 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
             v2_prev = v2;
             v3_prev = v3;
             v4_prev = v4;
-
-/*            SetColour(m_Pens[1], true);
-            BeginQuadrilaterals();
-            PlaceVertex(v1.getX(), v1.getY(), v1.getZ());
-            PlaceVertex(v2.getX(), v2.getY(), v2.getZ());
-            PlaceVertex(v3.getX(), v3.getY(), v3.getZ());
-            PlaceVertex(v4.getX(), v4.getY(), v4.getZ());
-            DrawText(v1.getX(), v1.getY(), v1.getZ(), "1");
-            DrawText(v2.getX(), v2.getY(), v2.getZ(), "2");
-            DrawText(v3.getX(), v3.getY(), v3.getZ(), "3");
-            DrawText(v4.getX(), v4.getY(), v4.getZ(), "4");*/
-            EndQuadrilaterals();
         }
     }
 }

@@ -48,7 +48,7 @@ while (my $l = <>) {
        $prev = $1;
    }
 }
-print "static const unsigned char REDS[]   = {$outputr};\n";
-print "static const unsigned char GREENS[] = {$outputg};\n";
-print "static const unsigned char BLUES[]  = {$outputb};\n";
+print "static const unsigned char REDS[]   = {$outputr, 230};\n";
+print "static const unsigned char GREENS[] = {$outputg, 230};\n";
+print "static const unsigned char BLUES[]  = {$outputb, 230};\n";
 

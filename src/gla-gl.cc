@@ -48,22 +48,22 @@ void GLAPen::SetAlpha(double alpha)
     m_Alpha = alpha;
 }
 
-double GLAPen::GetRed()
+double GLAPen::GetRed() const
 {
     return m_Red;
 }
 
-double GLAPen::GetGreen()
+double GLAPen::GetGreen() const
 {
     return m_Green;
 }
 
-double GLAPen::GetBlue()
+double GLAPen::GetBlue() const
 {
     return m_Blue;
 }
 
-double GLAPen::GetAlpha()
+double GLAPen::GetAlpha() const
 {
     return m_Alpha;
 }
@@ -178,9 +178,7 @@ void GLACanvas::StartDrawing()
     
     SetCurrent();
     SetViewportAndProjection();
-
-    glEnable(GL_DEPTH_TEST);
-  //  glEnable(GL_LIGHTING);
+    
     glEnable(GL_COLOR_MATERIAL);
     glShadeModel(GL_SMOOTH);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -263,15 +261,15 @@ void GLACanvas::SetBackgroundColour(float red, float green, float blue)
     glClearColor(red, green, blue, 1.0);
 }
 
-void GLACanvas::SetColour(GLAPen& pen, bool set_transparency)
+void GLACanvas::SetColour(const GLAPen& pen, bool set_transparency, double rgb_scale)
 {
     // Set the colour for subsequent operations.
    
     if (set_transparency) {
-        glColor4f(pen.GetRed(), pen.GetGreen(), pen.GetBlue(), pen.GetAlpha());
+        glColor4f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale, pen.GetBlue() * rgb_scale, pen.GetAlpha());
     }
     else {
-        glColor3f(pen.GetRed(), pen.GetGreen(), pen.GetBlue());
+        glColor3f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale, pen.GetBlue() * rgb_scale);
     }
 }
 

@@ -54,10 +54,10 @@ public:
     void SetColour(double red, double green, double blue); // arguments in range 0 to 1.0
     void SetAlpha(double alpha);
 
-    double GetRed();
-    double GetGreen();
-    double GetBlue();
-    double GetAlpha();
+    double GetRed() const;
+    double GetGreen() const;
+    double GetBlue() const;
+    double GetAlpha() const;
 };
 
 #ifdef AVENGL
@@ -109,7 +109,7 @@ public:
     void DrawList(glaList l);
     
     void SetBackgroundColour(float red, float green, float blue);
-    void SetColour(GLAPen& pen, bool set_transparency = false);
+    void SetColour(const GLAPen& pen, bool set_transparency = false, double rgb_scale = 1.0);
     void SetPolygonColour(GLAPen& pen, bool front, bool set_transparency = false);
    
     void DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str);
