@@ -82,6 +82,12 @@
 /* Define if you have the m library (-lm).  */
 #undef HAVE_LIBM
 
+/* Use far in various declarations and definitions. */
+#define HAVE_FAR_POINTERS 1
+
+/* Use img routines in a hosted way (i.e. they can use other survex code). */
+#define IMG_HOSTED 1
+
 /* Name of package */
 #define PACKAGE "@PACKAGE@"
 

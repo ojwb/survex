@@ -175,7 +175,8 @@ sub init_borlandc {
       'LIBOBJS' => '',
       'CRLIB' => 'graphics.lib mouse.lib',
       'CROBJX' => 'dosrot.obj',
-      'CFLAGS' => '-DHAVE_CONFIG_H -DHAVE_FAR_POINTERS -DIMG_HOSTED -I. -ml -d -O1 -Ogmpvl -X',
+      # don't add much to CFLAGS or the command line will get too long for DOS
+      'CFLAGS' => '-DHAVE_CONFIG_H -I. -ml -d -O1 -Ogmpvl -X',
       'LDFLAGS' => '',
       'LIBS' => '',
       'CC' => 'bcc',
