@@ -2,7 +2,7 @@
 //  quaternion.h
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
-//  Copyright (C) 2002,2003 Olly Betts
+//  Copyright (C) 2002,2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -27,9 +27,6 @@
 #include "aventypes.h"
 
 #include <math.h>
-#ifdef AVENPRES
-#include <stdio.h>
-#endif
 
 class Quaternion {
     Double w;
@@ -45,18 +42,6 @@ public:
     }
 
     ~Quaternion() {}
-
-#ifdef AVENPRES
-    void Save(FILE* fp) const { //--Pres: FIXME: error handling
-	fwrite(&w, sizeof(Double), 1, fp);
-	v.Save(fp);
-    }
-
-    void Load(FILE* fp) { //--Pres: FIXME: error handling
-	fread(&w, sizeof(Double), 1, fp);
-	v.Load(fp);
-    }
-#endif
 
     Double magnitude() const {
 	Double mv = v.magnitude();

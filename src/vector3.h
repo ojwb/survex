@@ -4,7 +4,7 @@
 //  C++ class for 3-element vectors
 //
 //  Copyright (C) 2000-2002, Mark R. Shinwell.
-//  Copyright (C) 2002-2003 Olly Betts
+//  Copyright (C) 2002-2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@
 #ifndef Vector3_h
 #define Vector3_h
 
-#include <stdio.h>
 #include <math.h>
 
 class Vector3 {
@@ -36,20 +35,6 @@ public:
     Vector3();
     Vector3(double, double, double);
     ~Vector3();
-
-#ifdef AVENPRES
-    void Save(FILE* fp) const { //--Pres: FIXME
-	fwrite(&x, sizeof(double), 1, fp);
-	fwrite(&y, sizeof(double), 1, fp);
-	fwrite(&z, sizeof(double), 1, fp);
-    }
-
-    void Load(FILE* fp) { //--Pres: FIXME
-	fread(&x, sizeof(double), 1, fp);
-	fread(&y, sizeof(double), 1, fp);
-	fread(&z, sizeof(double), 1, fp);
-    }
-#endif
 
     double getX() const { return x; }
     double getY() const { return y; }
