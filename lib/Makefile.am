@@ -9,8 +9,7 @@ msg_files = ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg\
 
 EXTRA_DIST = bcra3.svx bcra5.svx messages.txt pfont.txt print.ini\
  named-entities.txt makefont.pl makemsgs.pl $(msg_files) pfont.bit\
- aven-about.png ca.h de.h de_CH.h de_DE.h en.h en_US.h es.h fr.h\
- it.h pt.h
+ ca.h de.h de_CH.h de_DE.h en.h en_US.h es.h fr.h it.h pt.h
 
 MAINTAINERCLEANFILES = $(msgs_files) pfont.bit
 
