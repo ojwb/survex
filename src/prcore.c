@@ -109,6 +109,14 @@
 1996.04.03 as_escstring() now reports syntax errors it spots
 1996.07.12 fixed bug in as_escstring (skipped too much/little)
 1997.01.19 minor tweaks
+1997.01.20 added code to work out scale to fit on given page layout
+           trimmed 2 superfluous elements from powers[] and si_mods[]
+           added command line options to allow non-interactive use
+1997.01.22 added code for separate printer charset(s)
+1997.01.23 fettled charset code more
+           fixed /0 error when .3d file is 0 width and/or height
+1998.03.21 fixed up to compile cleanly on Linux
+           expiry code turned off
 */
 
 /* !HACK! ought to provide more explanation when reporting errors in print.ini */
@@ -151,7 +159,7 @@ typedef struct LI {
 } li;
 
 static li *pliHead,**ppliEnd=&pliHead;
-static bool fPlan;
+static bool fPlan = fTrue;
 static bool fTilt;
 
 static bool fLabels   = fFalse;
@@ -171,7 +179,7 @@ static device *pr=&printer;
 #define lenSzDateStamp 40
 static char  szTitle[256],szDateStamp[lenSzDateStamp];
 
-static int   rot,tilt;
+static int   rot = 0, tilt = 0;
 static float xMin, xMax, yMin, yMax;
 
 static float COS,SIN;
@@ -189,12 +197,35 @@ float PaperWidth, PaperDepth;
 /* MaxLength mm long. The scaling in use is 1:scale */
 static void draw_scale_bar( double x, double y, double MaxLength, double scale );
 
+#define DEF_RATIO (1.0/(double)default_scale)
+/* return a scale which will make it fit in the desired size */
+static float PickAScale( int x, int y ) {
+   double Sc_x, Sc_y;
+#if 0
+   double E;
+#endif
+   /*    pagesY = ceil((image_dy+61.0)/PaperDepth)
+    * so (image_dy+61.0)/PaperDepth <= pagesY < (image_dy+61.0)/PaperDepth+1
+    * so image_dy <= pagesY*PaperDepth-61 < image_dy+PaperDepth
+    * and Sc = image_dy / (yMax-yMin)
+    * so Sc <= (pagesY*PaperDepth-61)/(yMax-yMin) < Sc+PaperDepth/(yMax-yMin)
+    */
+   Sc_x = (PaperWidth>0.0 && xMax>xMin) ? (x*PaperWidth-19.0f)/(xMax-xMin) : DEF_RATIO;
+   Sc_y = (PaperDepth>0.0 && yMax>yMin) ? (y*PaperDepth-61.0f)/(yMax-yMin) : DEF_RATIO;
+   Sc_x = min( Sc_x, Sc_y )*0.99; /* shrink by 1% so we don't cock up */
+#if 0 /* this picks a nice (in some sense) ratio, but is too stingy */
+   E = pow( 10.0, floor( log10(Sc_x) ) );
+   Sc_x = floor( Sc_x / E ) * E;
+#endif
+   return Sc_x;
+}
+
 static void PagesRequired( float Sc ) {
    float image_dx, image_dy;
    float image_centre_x, image_centre_y;
    float paper_centre_x,paper_centre_y;
 
-   image_dx= (xMax-xMin)*Sc;
+   image_dx = (xMax-xMin)*Sc;
    if (PaperWidth>0.0)
       pagesX=(int)ceil((image_dx+19.0)/PaperWidth);
    else { /* paperwidth not fixed (eg window or roll printer/plotter) */
@@ -205,7 +236,7 @@ static void PagesRequired( float Sc ) {
    image_centre_x=Sc*(xMax+xMin)/2;
    xOrg=paper_centre_x-image_centre_x;
 
-   image_dy= (yMax-yMin)*Sc;
+   image_dy = (yMax-yMin)*Sc;
    if (PaperDepth>0.0)
       pagesY=(int)ceil((image_dy+61.0)/PaperDepth);
    else { /* paperdepth not fixed (eg window or roll printer/plotter) */
@@ -304,11 +335,11 @@ static void draw_scale_bar( double x, double y, double MaxLength,
    int    E, Step, n, l, c;
    char   szUnits[3], szTmp[256];
    static signed char powers[] = {
-      12,9,9,9,6,6,6,3,2,2,0,0,0,-3,-3,-3,-6,-6,-6,-9,-9,-9
+      12,9,9,9,6,6,6,3,2,2,0,0,0,-3,-3,-3,-6,-6,-6,-9,
    };
    static char si_mods[sizeof(powers)] = {
       'p','n','n','n','u','u','u','m','c','c','\0','\0','\0',
-      'k','k','k','M','M','M','G','G','G'
+      'k','k','k','M','M','M','G'
    };
 
    /* Limit to 20cm to stop people with A0 plotters complaining */
@@ -528,10 +559,10 @@ static int next_page( int *pstate, char **q, int pageLim ) {
 
 int main( int argc, sz argv[] ) {
    bool fOk;
-   float N_Scale, D_Scale, Sc;
+   float N_Scale = 1, D_Scale = 500, Sc = 0;
    unsigned int page,pages;
    sz fnm;
-   sz pthMe;
+   const char *pthMe;
    int j;
    int cPasses, pass;
    unsigned int cPagesPrinted;
@@ -539,6 +570,9 @@ int main( int argc, sz argv[] ) {
    char *p;
    char *szPages=NULL;
    int pageLim;
+   bool fInteractive = fTrue;
+   const char *msg166, *msg167;
+   int old_charset;
 
    pthMe=ReadErrorFile("Printer driver","SURVEXHOME","SURVEXLANG",argv[0],
                        MESSAGE_FILE);
@@ -549,19 +583,73 @@ int main( int argc, sz argv[] ) {
           "\n  (C) Copyright Olly Betts 1993-"THIS_YEAR"\n\n",
           szDesc,msg(152));
 
-#include "expire.h"
+/*#include "expire.h"*/
 
    fnm=NULL;
-   for (j=1;j<argc;j++) {
+   for ( j=1; j<argc; j++ ) {
       char ch;
-      p=argv[j];
+      p = argv[j];
       ch = *p;
       /* if first char of argument is a switch char, then set options */
-      if (strchr(SWITCH_SYMBOLS,ch)!=NULL) {
+      if (strchr(SWITCH_SYMBOLS,ch) != NULL) {
          char chOpt;
          bool fOpt=fTrue;
          p++;
          chOpt = toupper(*p);
+
+/*printf("chOpt = %c\n",chOpt);*/
+
+         if (strchr(SWITCH_SYMBOLS,chOpt) != NULL) {
+            p++;
+/*printf("*p = %c\n",*p);*/
+            switch (*p) {
+               case 'e':
+                 if ( streq( p, "elevation" ) || streq( p, "elev" ) ) {
+                    fPlan = fFalse;
+                    fInteractive = fFalse;
+/*printf("fInteractive = %d\n",fInteractive);*/
+                    break;
+                 }
+                 goto err;
+               case 'p':
+                 if ( streq( p, "plan" ) ) {
+                    fPlan = fTrue;
+                    fInteractive = fFalse;
+                    break;
+                 }
+                 goto err;
+               case 'b':
+                 if ( streq( p, "bearing" ) && argv[j+1] ) {
+                    j++;
+                    rot = atoi(argv[j]);
+                    fInteractive = fFalse;
+                    break;
+                 }
+                 goto err;
+               case 't':
+                 if ( streq( p, "tilt" ) && argv[j+1] ) {
+                    j++;
+                    tilt = atoi(argv[j]);
+                    fInteractive = fFalse;
+                    break;
+                 }
+                 goto err;
+               case 's':
+                 if ( streq( p, "scale" ) && argv[j+1] ) {
+                    j++;
+		    if (sscanf( argv[j], "%f:%f", &N_Scale, &D_Scale )==2) {
+		       fInteractive = fFalse;
+		       break;
+		    }
+                 }
+                 goto err;
+               default:
+               err:
+                 fatal(82,wr,argv[j],0); /* bad command line options */
+            }
+            continue;
+         }
+
          if (chOpt=='!') {
             fOpt=fFalse;
             p++;
@@ -583,10 +671,12 @@ int main( int argc, sz argv[] ) {
          }
       } else {
          /* if not an option then assume a filename */
-         fnm=argv[j]; break;
+         if (fnm) fatal(82,wr,argv[j],0);
+         fnm=argv[j];
       }
    }
 
+/*printf("fInteractive = %d\n",fInteractive);*/
 /*   printf("%s\n",fnm); */
 
    if (fnm==NULL) {
@@ -612,50 +702,71 @@ int main( int argc, sz argv[] ) {
       free(fnm);
    }
 
-   {
+   if (fInteractive) {
       char szReplies[3];
       szReplies[0]=*msg(183); /* plan */
       szReplies[1]=*msg(184); /* elevation */
       szReplies[2]='\0';
       /* "Plan or Elevation (pe) : " */
-      printf("%s ",msg(158));
-      fPlan=( getanswer(szReplies) !=1 ); /* elevation */
+      printf( "%s ", msg(158) );
+      fPlan=( getanswer(szReplies) != 1 ); /* elevation */
    }
 
-   do {
-      printf(msg( fPlan ? 159:160));
-      fgets(szTmp,sizeof(szTmp),stdin);
-   } while (!(*szTmp<32) && sscanf( szTmp, "%d", &rot )<1);
-   if (*szTmp<32) {
-      /* if just return, default view to North up page/looking North */
-      rot=0;
-      printf("%d\n",rot);
+   if (fInteractive) {
+      do {
+         printf( msg( fPlan ? 159:160) );
+         fgets( szTmp, sizeof(szTmp), stdin );
+      } while (!(*szTmp<32) && sscanf( szTmp, "%d", &rot )<1);
+      if (*szTmp<32) {
+         /* if just return, default view to North up page/looking North */
+         rot=0;
+         printf("%d\n",rot);
+      }
    }
    SIN=(float)sin(rad(rot));
    COS=(float)cos(rad(rot));
 
    if (!fPlan) {
-      do {
-         printf(msg(161));
-      	 fgets(szTmp,sizeof(szTmp),stdin);
-      } while (!(*szTmp<32) && sscanf( szTmp, "%d", &tilt )<1);
-      if (*szTmp<32) {
-         /* if just return, default to no tilt */
-         tilt=0;
-         printf("%d\n",tilt);
+      if (fInteractive) {
+         do {
+            printf(msg(161));
+            fgets(szTmp,sizeof(szTmp),stdin);
+         } while (!(*szTmp<32) && sscanf( szTmp, "%d", &tilt )<1);
+         if (*szTmp<32) {
+            /* if just return, default to no tilt */
+            tilt=0;
+            printf("%d\n",tilt);
+         }
       }
       fTilt=(tilt!=0);
       SINT=(float)sin(rad(tilt));
       COST=(float)cos(rad(tilt));
    }
 
-   putnl();
-   puts(msg(105));
+   if (fInteractive) {
+      putnl();
+      puts(msg(105));
+   }
    ReadInData();
 
    img_close(pimg);
 
-   do {
+   {
+      float x;
+      x = 1000.0/PickAScale(1,1);
+      printf("Scale to fit to 1 page = 1:%f\n",x);
+      if (N_Scale==0.0) {
+         N_Scale = 1;
+         D_Scale = x;
+         Sc = N_Scale*1000/D_Scale;
+         PagesRequired(Sc);
+      } else if (!fInteractive) {
+         Sc = N_Scale*1000/D_Scale;
+         PagesRequired(Sc);
+      }
+   }
+
+   if (fInteractive) { do {
       putnl();
       printf(msg(162),default_scale);
       fgets(szTmp,sizeof(szTmp),stdin);
@@ -666,10 +777,10 @@ int main( int argc, sz argv[] ) {
       putnl();
       printf(msg(163),N_Scale,D_Scale);
       putnl();
-      Sc=N_Scale*1000/D_Scale;
+      Sc = N_Scale*1000/D_Scale;
       PagesRequired(Sc);
       fOk=DescribeLayout( pagesX, pagesY );
-   } while (!fOk);
+   } while (!fOk); }
 
    pageLim=pagesX*pagesY;
    if (pageLim==1) {
@@ -679,7 +790,10 @@ int main( int argc, sz argv[] ) {
       do {
          fOk=fTrue;
          printf(msg(164));
-         fgets(szTmp,sizeof(szTmp),stdin);
+         if (fInteractive)
+            fgets( szTmp, sizeof(szTmp), stdin );
+         else
+            *szTmp = '\0'; /* default to all if non-interactive */
          for( p=szTmp; isspace(*p) ; p++ )
             {}
          szPages=osstrdup(p);
@@ -752,6 +866,10 @@ int main( int argc, sz argv[] ) {
    cPasses=(pr->Pre?pr->Pre(pages):1);
 
    puts(msg(165));
+   msg166 = msgPerm(166); /* note down so we can switch to printer charset */
+   select_charset( 0 /*CHARSET_USASCII*/ ); /* !HACK! could do better and find out what charset actually is */
+   msg167 = msgPerm(167); /* used in printer's native charset in footer */
+   old_charset = select_charset( 1 /*CHARSET_ISO8859_1*/ ); /* !HACK! */
    cPagesPrinted=0;
    for( page=0, state=0, p=szPages ; ; ) {
       if (pageLim==1) {
@@ -772,7 +890,7 @@ int main( int argc, sz argv[] ) {
       cPagesPrinted++;
       if (pages>1) {
          putchar('\r');
-         printf(msg(166),(int)cPagesPrinted,pages);
+         printf( msg166, (int)cPagesPrinted, pages );
       }
       /* don't skip the page with the info box on */
       if (fSkipBlank && (int)page!=(pagesY-1)*pagesX+1)
@@ -822,16 +940,13 @@ int main( int argc, sz argv[] ) {
             }
          } else {
             if (pr->ShowPage) {
-               sprintf(szTmp, msg(167), szTitle, (int)page, pagesX*pagesY,
+               sprintf(szTmp, msg167, szTitle, (int)page, pagesX*pagesY,
                        szDateStamp );
                pr->ShowPage(szTmp);
             }
          }
       }
    }
-   putnl();
-   putnl();
-   puts(msg(144));
 
    if (pr->Post)
       pr->Post();
@@ -839,6 +954,10 @@ int main( int argc, sz argv[] ) {
    if (pr->Quit)
       pr->Quit();
 
+   select_charset(old_charset);
+   putnl();
+   putnl();
+   puts(msg(144));
    return error_summary();
 }
 
@@ -943,7 +1062,7 @@ float as_float( char *p, float min_val, float max_val ) {
 
 /*
 Codes:
-\\ -> \
+\\ -> '\'
 \xXX -> char with hex value XX
 \0, \n, \r, \t -> nul (0), newline (10), return (13), tab (9)
 \[ -> Esc (27)
