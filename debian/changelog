@@ -1,6 +1,6 @@
 survex (0.99.5) unstable; urgency=low
 
-  * New release
+  * New release (fixes #116511)
 
  -- Wookey <wookey@survex.com>  Mon, 22 Oct 2001 12:16:02 +0100
 
