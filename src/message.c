@@ -340,7 +340,10 @@ parse_msg_file(int charset_code)
    fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
 #endif
    
-   if (!lang || !*lang) lang = DEFAULTLANG;
+   if (!lang || !*lang) {
+      lang = getenv("LANG");
+      if (!lang || !*lang) lang = DEFAULTLANG;
+   }
 #ifdef DEBUG
    fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
 #endif
