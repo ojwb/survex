@@ -1024,7 +1024,12 @@ msg_init(char * const *argv)
 
    if (argv[0]) {
 #if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
-      char *pth = path_from_fnm(argv[0]);
+      bool free_pth = fFalse;
+      char *pth = getenv("srcdir");
+      if (!pth || !pth[0]) {
+	 pth = path_from_fnm(argv[0]);
+	 free_pth = fTrue;
+      }
       if (pth[0]) {
 	 /* If we're run with an explicit path, check if "../lib" from
 	  * the program's path is a directory, and if so look there for
@@ -1039,7 +1044,7 @@ msg_init(char * const *argv)
 	    osfree(p);
 	 }
       }
-      osfree(pth);
+      if (free_pth) osfree(pth);
 #else
       /* Get the path to the support files from argv[0] */
       pth_cfg_files = path_from_fnm(argv[0]);
