@@ -296,7 +296,7 @@ static void
 plt_header(void)
 {
    size_t i;
-   htab = osmalloc(0x2000 * sizeof(point*));
+   htab = osmalloc(0x2000 * ossizeof(point *));
    for (i = 0; i < 0x2000; ++i) htab[i] = NULL;
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
