@@ -87,7 +87,7 @@ debian : dist
 	mkdir deb
 	cd deb && tar zxvf ../${PACKAGE}-${VERSION}.tar.gz
 	cp -a debian deb/${PACKAGE}-${VERSION}
-	echo "${PACKAGE} (${VERSION}) unstable; urgency=low" > ${debcl}
+	echo "${PACKAGE} (${VERSION}.${RELEASE}) unstable; urgency=low" > ${debcl}
 	echo "" >> ${debcl}
 	echo "  * Dummy changelog - see ChangeLog and NEWS." >> ${debcl}
 	echo "" >> ${debcl}
