@@ -143,7 +143,7 @@ djgpp_zip : dostxt
 	zip -j -l $(djgpp_zip_name) djgpp_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
-mingw : all mingw_zip
+mingw : all mingw_iss
 
 mingwexes :
 	test -d mingw_exes || mkdir mingw_exes
