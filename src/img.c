@@ -194,6 +194,19 @@ img_error(void)
 }
 #endif
 
+static bool
+check_label_space(img *pimg, size_t len)
+{
+   if (len > pimg->buf_len) {
+      char *b = xosrealloc(pimg->label_buf, len);
+      if (!b) return fFalse;
+      pimg->label = (pimg->label - pimg->label_buf) + b;
+      pimg->label_buf = b;
+      pimg->buf_len = len;
+   }
+   return fTrue;
+}
+
 img *
 img_open_survey(const char *fnm, const char *survey)
 {
@@ -323,15 +336,11 @@ img_open_survey(const char *fnm, const char *survey)
       } while (pimg->survey && (pimg->survey_len != len - 1 ||
 	       memcmp(line + 1, pimg->survey, pimg->survey_len) != 0));
 
-      if (len > pimg->buf_len) {
-	 char *b = xosrealloc(pimg->label_buf, len);
-	 if (!b) {
-	    img_errno = IMG_OUTOFMEMORY;
-	    goto error;
-	 }
-	 pimg->label_buf = b;
-	 pimg->buf_len = len;
+      if (!check_label_space(pimg, len)) {
+	 img_errno = IMG_OUTOFMEMORY;
+	 goto error;
       }
+
       --len;
       pimg->label_len = len;
       pimg->label = pimg->label_buf;
@@ -609,18 +618,12 @@ img_read_item(img *pimg, img_point *p)
 	    }
 	 }
 
-	 q = pimg->label_buf + pimg->label_len;
 	 pimg->label_len += len;
-	 if (pimg->label_len >= pimg->buf_len) {
-	    char *b = xosrealloc(pimg->label_buf, pimg->label_len + 1);
-	    if (!b) {
-	       img_errno = IMG_OUTOFMEMORY;
-	       return img_BAD;
-	    }
-	    q = (q - pimg->label_buf) + b;
-	    pimg->label = pimg->label_buf = b;
-	    pimg->buf_len = pimg->label_len + 1;
+	 if (!check_label_space(pimg, pimg->label_len + 1)) {
+	    img_errno = IMG_OUTOFMEMORY;
+	    return img_BAD;
 	 }
+	 q = pimg->label_buf + pimg->label_len;
 	 if (len && fread(q, len, 1, pimg->fh) != 1) {
 	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
@@ -761,14 +764,9 @@ img_read_item(img *pimg, img_point *p)
 
 	 /* Ignore empty labels in some .3d files (caused by a bug) */
 	 if (len == 0) goto again;
-	 if (len >= (long)pimg->buf_len) {
-	    char *b = xosrealloc(pimg->label_buf, len + 1);
-	    if (!b) {
-	       img_errno = IMG_OUTOFMEMORY;
-	       return img_BAD;
-	    }
-	    pimg->label = pimg->label_buf = b;
-	    pimg->buf_len = len + 1;
+	 if (!check_label_space(pimg, len + 1)) {
+	    img_errno = IMG_OUTOFMEMORY;
+	    return img_BAD;
 	 }
 	 if (fread(pimg->label_buf, len, 1, pimg->fh) != 1) {
 	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
@@ -878,14 +876,10 @@ img_read_item(img *pimg, img_point *p)
 		  return img_BAD;
 	       }
 	       if (off == pimg->buf_len) {
-		  char *b;
-		  b = xosrealloc(pimg->label_buf, pimg->buf_len * 2);
-		  if (!b) {
+		  if (!check_label_space(pimg, pimg->buf_len * 2)) {
 		     img_errno = IMG_OUTOFMEMORY;
 		     return img_BAD;
 		  }
-		  pimg->label_buf = b;
-		  pimg->buf_len *= 2;
 	       }
 	       pimg->label_buf[off++] = ch;
 	       ch = getc(pimg->fh);
@@ -951,13 +945,10 @@ img_read_item(img *pimg, img_point *p)
 	    pimg->label_buf[off - 1] = '\0';
 	    break;
 	 }
-	 b = xosrealloc(pimg->label_buf, pimg->buf_len * 2);
-	 if (!b) {
+	 if (!check_label_space(pimg, pimg->buf_len * 2)) {
 	    img_errno = IMG_OUTOFMEMORY;
 	    return img_BAD;
 	 }
-	 pimg->label_buf = b;
-	 pimg->buf_len *= 2;
       }
 
       pimg->label = pimg->label_buf;
@@ -1010,14 +1001,9 @@ img_read_item(img *pimg, img_point *p)
 	       while (q[len] > ' ') ++len;
 	       q[len] = '\0';
 	       len += 2; /* '.' and '\0' */
-	       if (pimg->label_len + len > pimg->buf_len) {
-	    	  char *b = xosrealloc(pimg->label_buf, pimg->label_len + len);
-		  if (!b) {
-		     img_errno = IMG_OUTOFMEMORY;
-		     return img_BAD;
-		  }
-		  pimg->label_buf = b;
-		  pimg->buf_len = pimg->label_len + len;
+	       if (!check_label_space(pimg, pimg->label_len + len)) {
+		  img_errno = IMG_OUTOFMEMORY;
+		  return img_BAD;
 	       }
 	       pimg->label = pimg->label_buf;
 	       pimg->label[pimg->label_len] = '.';
@@ -1053,14 +1039,9 @@ img_read_item(img *pimg, img_point *p)
 	       } while (pimg->survey && (pimg->survey_len != len - 1 ||
 			memcmp(line + 1, pimg->survey, pimg->survey_len) != 0));
 
-	       if (len > pimg->buf_len) {
-		  char *b = xosrealloc(pimg->label_buf, len);
-		  if (!b) {
-		     img_errno = IMG_OUTOFMEMORY;
-		     return img_BAD;
-		  }
-		  pimg->label_buf = b;
-		  pimg->buf_len = len;
+	       if (!check_label_space(pimg, len)) {
+		  img_errno = IMG_OUTOFMEMORY;
+		  return img_BAD;
 	       }
 	       --len;
 	       pimg->label_len = len;
@@ -1129,12 +1110,8 @@ write_v3label(img *pimg, int opt, const char *s)
 
    n += len;
    pimg->label_len = n;
-   if (n >= pimg->buf_len) {
-      char *p = xosrealloc(pimg->label_buf, n + 1);
-      if (!p) return 0; /* FIXME: distinguish out of memory... */
-      pimg->label_buf = p;
-      pimg->buf_len = n + 1;
-   }
+   if (!check_label_space(pimg, n + 1))
+      return 0; /* FIXME: distinguish out of memory... */
    memcpy(pimg->label_buf + len, s + len, n - len + 1);
 
    return !ferror(pimg->fh);
