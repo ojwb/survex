@@ -55,7 +55,7 @@ static void sor(real FAR *M, real *B);
 
 static int find_stn_in_tab(node *stn);
 static int add_stn_to_tab(node *stn);
-static void build_matrix(long n, prefix **stn_tab);
+static void build_matrix(node *list, long n, prefix **stn_tab);
 
 static long n_stn_tab;
 
@@ -63,11 +63,11 @@ static prefix **stn_tab; /* FIXME: use pos ** instead */
 static long n;
 
 extern void
-solve_matrix(void)
+solve_matrix(node *list)
 {
    node *stn;
    n = 0;
-   FOR_EACH_STN(stn, stnlist) {
+   FOR_EACH_STN(stn, list) {
       if (!fixed(stn)) n++;
    }
    if (n == 0) return;
@@ -78,11 +78,11 @@ solve_matrix(void)
     */
    stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(prefix*)));
    
-   FOR_EACH_STN(stn, stnlist) {
+   FOR_EACH_STN(stn, list) {
       if (!fixed(stn)) add_stn_to_tab(stn);
    }
 
-   build_matrix(n_stn_tab, stn_tab);
+   build_matrix(list, n_stn_tab, stn_tab);
 }
 
 #ifdef NO_COVARIANCES
@@ -102,7 +102,7 @@ solve_matrix(void)
 #endif
 
 static void
-build_matrix(long n, prefix **stn_tab)
+build_matrix(node *list, long n, prefix **stn_tab)
 {
 #ifdef NO_COVARIANCES
    real FAR *M;
@@ -166,7 +166,7 @@ build_matrix(long n, prefix **stn_tab)
 
       /* Construct matrix - Go thru' stn list & add all forward legs to M */
       /* (so each leg goes on exactly once) */
-      FOR_EACH_STN(stn, stnlist) {
+      FOR_EACH_STN(stn, list) {
 #if DEBUG_MATRIX_BUILD
 	 int dirn;
 
@@ -319,7 +319,7 @@ build_matrix(long n, prefix **stn_tab)
 	 }
 #if EXPLICIT_FIXED_FLAG
 /* broken code? !HACK! */
-	 for(m = n - 1; m >= 0; m--) fix(stn_tab[m]->stn);
+	 for (m = n - 1; m >= 0; m--) fix(stn_tab[m]->stn);
 #endif
       }
    }
@@ -400,7 +400,7 @@ choleski(
     * diagonal pre-inverted to use later
     * This saves us O(n^2) matrix inversions
     */
-   var I[n]; /* FIXME must be dynamically allocated of course... */
+   var I[n]; /* FIXME: must be dynamically allocated of course... */
    if (!invert_var(&I[0], &M(0,0))) BUG("Can't invert matrix diagonal");
 #endif
 

@@ -3,4 +3,4 @@
  * Copyright (C) 1993,1994 Olly Betts
  */
 
-extern void solve_matrix(void);
+extern void solve_matrix(node *list);
