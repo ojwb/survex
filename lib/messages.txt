@@ -630,8 +630,9 @@ it: 62 La distanza &eacute; minore del dislivello
 # FIXME: addition of style name: ca es
 en: 63 Reading `%s' not allowed in data style `%s'
 fr: 63 Donn&eacute;e `%s' pas permise pour le style de donn&eacute;es `%s'
-de-de,de-ch: 63 Diese Messgr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
-de:     63 Diese Me&szlig;gr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
+de-de:   63 Diese Messgr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
+de-ch:        63 Diese Messgr&ouml;sse `%s' ist bei Datenformat `%s' nicht erlaubt
+de: 63 Diese Me&szlig;gr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
 pt: 63 Campo `%s' n&atilde;o &eacute; permitido em tipo de visada `%s'
 ca: 63 Dada `%s' no permesa en aquest STYLE `%s'
 es: 63 Dato `%s' no permitido en este STYLE `%s'
@@ -679,8 +680,9 @@ fr: 67 Donn&eacute;es dupliqu&eacute;es `%s'
 # to "Me&szlig;gr&ouml;&szlig;e")  apply to the German term as well --
 # a from station of a leg isn't a "Me&szlig;gr&ouml;&szlig;e" either
 # by any stretch of the imagination.
-de-de,de-ch: 67 Messgr&ouml;&szlig;e `%s' mehrfach angegeben
-de:     67 Me&szlig;gr&ouml;&szlig;e `%s' mehrfach angegeben
+de-de:   67 Messgr&ouml;&szlig;e `%s' mehrfach angegeben
+de-ch:        67 Messgr&ouml;sse `%s' mehrfach angegeben
+de: 67 Me&szlig;gr&ouml;&szlig;e `%s' mehrfach angegeben
 pt: 67 Campo `%s' duplicado
 ca: 67 Dada duplicada `%s'
 es: 67 Dato duplicado `%s'
@@ -695,7 +697,7 @@ es: 68 FLAG `%s' desconocido
 it: 68 FLAG `%s' sconosciuto
 en: 69 Missing &quot;
 fr: 69 &quot; manquant
-de: 69 &quot; uml;fehlt
+de: 69 &quot; fehlt
 pt: 69 Falta &quot;
 ca: 69 Manca &quot;
 es: 69 Falta &quot;
@@ -782,10 +784,10 @@ pt: 81 Erro inicializando placa de v&iacute;deo
 ca: 81 Error a l'inicialitzar la placa gr&agrave;fica
 es: 81 Error al inicializar la placa gr&aacute;fica
 it: 81 Errore d'inizializzazione della scheda grafica
-# TRANSLATE fr de ca es it
+# TRANSLATE fr ca es it
 en: 82 Parameter `%s' has invalid value `%s' in printer configuration file
 fr: 82 Param&egrave;tres `%s' has invalid value `%s' dans le fichier de configuration de l'imprimante
-de: 82 Parameter `%s' has invalid value `%s' in der Druckerkonfigurationsdatei
+de: 82 Parameter `%s' hat ung&uuml;ltigen Wert `%s' in der Druckerkonfigurationsdatei
 pt: 82 Par&acirc;metro `%s' tem valor inválido `%s' em arquivo de configura&ccedil;&atilde;o de impressora
 ca: 82 Par&agrave;metres `%s' has invalid value `%s' al fitxer de configuraci&oacute; de l'impresora
 es: 82 Par&aacute;metros `%s' has invalid value `%s' en el fichero de configuraci&oacute;n de la impresora
@@ -813,10 +815,10 @@ pt: 84 Ignorando toda a linha
 ca: 84 Ignorant tota la l&iacute;nia
 es: 84 Ignorando toda la l&iacute;nea
 it: 84 Intera linea ignorata
-# TRANSLATE fr de ca es it (I've made a stab)
+# TRANSLATE fr ca es it (I've made a stab)
 en: 85 Parameter `%s' missing in printer configuration file
 fr: 85 Param&egrave;tres `%s' manquant dans le fichier de configuration de l'imprimante
-de: 85 Parameter `%s' &uuml;fehlt in der Druckerkonfigurationsdatei
+de: 85 Parameter `%s' fehlt in der Druckerkonfigurationsdatei
 pt: 85 Falta parâmetro `%s' em arquivo de configura&ccedil;&atilde;o de impressora
 ca: 85 Par&agrave;metres `%s' manca al fitxer de configuraci&oacute; de l'impresora
 es: 85 Par&aacute;metros `%s' falta en el fichero de configuraci&oacute;n de la impresora
@@ -1571,21 +1573,23 @@ pt:200 Este programa &eacute; um software de livre distribui&ccedil;&atilde;o, q
 es:200 Este programa es software libre. Puede redistribuirlo y/o modificarlo bajo los t&eacute;rminos de la Licencia P&uacute;blica General de GNU seg&uacute;n es publicada por la Free Software Foundation, bien de la versi&oacute; 2 de dicha Licencia o bien (seg&uacute;n su elecci&oacute;n) de cualquier versi&oacute;n posterior.
 it:200 Questo programma &egrave; software libero; &egrave; lecito redistribuirlo o modificarlo secondo i termini della Licenza Pubblica Generica GNU come &egrave; pubblicata dalla Free Software Foundation; o la versione 2 della licenza o (a propria scelta) una versione successiva.
 #
-# TRANSLATE check fr de ca es it
+# TRANSLATE check fr ca es it
 en:201 Display command line options
 fr:201 Affiche les options de la ligne de commande
-de:201 Befehlszeilenparameter anzeigen
+de:201 Befehlszeilenoptionen anzeigen
 pt:201 Mostrar op&ccedil;&otilde;es de linha de comando
 ca:201 Mostra les opcions de la l&iacute;nia de comanda
 es:201 Mostrar opciones en l&iacute;nea de comandos
 it:201 Mostra le opzioni della riga di comando
 #
-# TRANSLATE fr de ca es it
+# TRANSLATE fr ca es it
 en:202 No survey data in 3d file `%s'
+de:202 Keine Vermessungsdaten in 3D-Datei `%s'
 pt:202 Não há dados de topografia no arquivo 3d '%s'
 #
-# TRANSLATE fr de ca es it
+# TRANSLATE fr ca es it
 en:203 Facing
+de:203 In Richtung
 pt:203 Olhando para
 #
 en:204 Close
@@ -1600,7 +1604,7 @@ it:204 Chiudi
 # for the title of the About box (c.f. 290)
 en:205 About %s
 fr:205 A propos %s
-de:205 Informationen &uuml;ber %s
+de:205 &Uuml;ber %s
 pt:205 Acerca de %s
 pt-br:205 Sobre %s
 ca:205 A prop&ograve;sit de %s
@@ -1614,13 +1618,14 @@ it:205 Informazioni su %s
 # The string "##" separates the menu text and any accelerator key.
 #
 # File->Open dialog:
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr pt ca es it
 en:206 Select a 3d file to view
+de:206 3D-Datei zur Ansicht w&auml;hlen
 #
-# TRANSLATE ca check fr de pt (pt-br is ok) es it
+# TRANSLATE ca check fr pt (pt-br is ok) es it
 en:207 Survex 3d files
 fr:207 Fichiers de Survex 3d
-de:207 Survex 3d Dateien
+de:207 Survex 3D-Dateien
 pt:207 Ficheiros de Survex 3d
 pt-br:207 Arquivos 3d do Survex
 # es: or "Ficheros Survex 3d"?
@@ -1638,8 +1643,9 @@ es:208 Todos los archivos
 it:208 Tutti i file
 #
 # in the about box (summarising the purpose of aven)
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr pt ca es it
 en:209 Visualisation of Survex 3D files
+de:209 Visualisierung von Survex 3D-Dateien
 #
 # Aven menu titles.  An '@' goes before the letter of any accelerator key.
 # The accelerators must be different within this group
@@ -1654,7 +1660,7 @@ it:210 @File
 #
 en:211 @Rotation
 fr:211 @Rotation
-de:211 @Drehung
+de:211 @Rotieren
 pt:211 @Rota&ccedil;&atilde;o
 ca:211 @Rotaci&oacute;
 es:211 @Rotaci&oacute;n
@@ -1662,7 +1668,7 @@ it:211 @Rotazione
 #
 en:212 @Orientation
 fr:212 @Orientation
-de:212 @Ausrichtung
+de:212 @Orientierung
 pt:212 @Orienta&ccedil;&atilde;o
 ca:212 @Orientaci&oacute;
 es:212 @Orientaci&oacute;n
@@ -1670,7 +1676,7 @@ it:212 @Orientazione
 #
 en:213 @View
 fr:213 @Vue
-de:213 A@nsicht
+de:213 @Ansehen
 pt:213 @Vista
 pt-br:213 @Visualisar
 ca:213 @Veure
@@ -1720,43 +1726,56 @@ en:231 S@top Rotation##Space
 pt-br:231 @Parar Rotação##Space
 #
 en:232 Speed @Up##Z
+de:232 @Schneller##Z
 pt-br:232 @Aumentar Velocidade##Z
 #
 en:233 Slow @Down##X
+de:233 @Langsamer##X
 pt-br:233 @Diminuir Velocidade##X
 #
 en:234 @Reverse Direction##R
+de:234 @Andere Richtung##R
 pt-br:234 @Reverter Sentido##R
 #
 en:235 Step Once @Anticlockwise##C
+de:235 Schritt im @Gegenuhrzeigersinn##C
 pt-br:235 Um Passo @Horário##C
 #
 en:236 Step Once @Clockwise##V
+de:236 Schritt im @Uhrzeigersinn##V
 pt-br:236 Um Passo A@ntihorário##V
 #
 # The accelerators must be different within this group
 en:240 View @North##N
+de:240 Nach @Norden##N
 pt-br:240 Olhar para @Norte##N
 #
 en:241 View @East##E
+de:241 Nach @Osten##O
 pt-br:241 Olhar para @Leste##E
 #
 en:242 View @South##S
+de:242 Nach @S&uuml;den##S
 pt-br:242 Olhar para @Sul##S
 #
 en:243 View @West##W
+de:243 Nach @Westen##W
 pt-br:243 Olhar para @Oeste##W
 #
 en:244 Shift Survey @Left##Left Arrow
+de:244 Verschieben nach @links##Left Arrow
 pt-br:244 Mover para @Esquerda##Left Arrow
 #
 en:245 Shift Survey @Right##Right Arrow
+de:245 Verschieben nach @rechts##Right Arrow
 pt-br:245 Mover para @Direita##Right Arrow
 #
 en:246 Shift Survey @Up##Up Arrow
+de:246 Verschieben hin@auf##Up Arrow
 pt-br:246 Mover para @Cima##Up Arrow
 #
 en:247 Shift Survey @Down##Down Arrow
+de:247 Verschieben hin@unter##Down Arrow
 pt-br:247 Mover para @Baixo##Down Arrow
 #
 # c.f. 117
@@ -1780,18 +1799,21 @@ ca:249 @Al&ccedil;at##L
 es:249 @Alzado##L
 it:249 Pro@filo##L
 #
-# TRANSLATE fr de ca es it
+# TRANSLATE fr ca es it
 en:250 @Higher Viewpoint##'
+de:250 @H&ouml;herer Standort##'
 pt-br:250 Observador Mais @@Alto##'
 #
-# TRANSLATE fr de ca es it
+# TRANSLATE fr ca es it
 en:251 Lo@wer Viewpoint##/
+de:251 Nie@drigerer Standort##/
 pt-br:251 Observador Mais @Baixo##/
 #
 en:252 @Zoom In##]
 # fr: or "Agrandir"
 fr:252 @Zoom Avant##]
 de:252 Ver@gr&ouml;&szlig;ern##]
+de-ch:252 Ver@gr&ouml;ssern##]
 # pt or "Ampliar"
 pt:252 @Aumentar##]
 pt-br:252 A@proximar##]
@@ -1816,7 +1838,7 @@ it:253 Zoo@m indietro##]
 #
 en:254 Restore De@fault Settings##Delete
 fr:254 Restaurer les @valeurs par d&eacute;faut##Delete
-de:254 @Standard wiederherstellen##Delete
+de:254 @Voreinstellungen wiederherstellen##Delete
 pt:254 @Usar valores pr&eacute;-definidos##Delete
 pt-br:254 Restaurar @padr&otilde;es##Delete
 ca:254 Restableix els @predeterminats##Delete
@@ -1836,13 +1858,13 @@ it:270 @Nomes di stazione##Ctrl+N
 #
 # TRANSLATE fr
 en:271 @Crosses##Ctrl+X
-de:271 @Kreuze##Ctrl+X
+de:271 Kreu@ze##Ctrl+X
 pt-br:271 @Marcas de base##Ctrl+X
 ca:271 @Creus##Ctrl+X
 es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
 #
-# TRANSLATE CHECK fr de ca es it
+# TRANSLATE CHECK fr ca es it
 en:272 Survey @Legs##Ctrl+L
 en-us:272 @Shots##Ctrl+L
 fr:272 @Vis&eacute;es##Ctrl+L
@@ -1852,8 +1874,9 @@ ca:272 @Tirades##Ctrl+L
 es:272 @Tiradas##Ctrl+L
 it:272 @Battute##Ctrl+L
 #
-# TRANSLATE fr de ca es it
+# TRANSLATE fr ca es it
 en:273 @Overlapping Names##O
+de:273 &Uuml;ber@lappende Namen##O
 pt-br:273 Nomes @Sobrepostos##O
 #
 en:274 Co@mpass
@@ -1865,36 +1888,42 @@ ca:274 @Br&uacute;ixola
 es:274 @Br&uacute;jula
 it:274 @Bussola
 #
-# TRANSLATE de
 en:275 Cl@inometer
 fr:275 Cl@ino
+de:275 @Neigungsmesser
 pt-br:275 Cl@inômetro
 ca:275 Cl@ino
 es:275 Cl@ino
 it:275 Cl@inometro
 #
-# TRANSLATE fr de ca es it
+# TRANSLATE fr ca es it
 en:276 @Depth Bar
+de:276    @Vertikalma&szlig;stab
+de-ch:276 @Vertikalmassstab
 pt-br:276 Barra de @Profundidade
 #
-# TRANSLATE fr de ca es it
+# TRANSLATE fr ca es it
 en:277 Sc@ale Bar
+de:277 @Ma&szlig;stab
+de-ch:277 @Massstab
 pt-br:277 Barra de @Escala
 #
 # The accelerators must be different within this group
-# TRANSLATE fr de ca es it
+# TRANSLATE fr ca es it
 en:280 @Reverse Sense##Ctrl+R
+de:280 Richtung @umkehren##Ctrl+R
 pt-br:280 @Inverter Sentido##Ctrl+R
 #
-# TRANSLATE fr de ca es it
+# TRANSLATE fr ca es it
 en:281 Caverot-Style @Middle Button
+de:281 Caverot-artiger @mittlerer Mausknopf
 pt-br:281 Botão do @Meio no Estilo do Caverot
 #
 # The accelerators must be different within this group
 # c.f. 205
 en:290 @About...
 fr:290 @A propos...
-de:290 @Info...
+de:290 &Uuml;@ber...
 pt:290 @Acerca de...
 pt-br:290 @Sobre...
 ca:290 @A prop&ograve;sit de...
