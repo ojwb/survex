@@ -40,21 +40,12 @@ init_map(unsigned int w, unsigned int h)
    y_mid = h / 2u;
    width = w / 4u;
    height = h / 4u;
-   map = osmalloc(height * ossizeof(void*));
+   map = xosmalloc(height * ossizeof(void*));
    if (!map) return 0;
-#ifdef __TURBOC__
-   /* under 16 bit MSDOS compilers, allocate each line separately to avoid
-    * problems if we exceed the segment size */
-   for (i = 0; i < height; i++) {
-      map[i] = osmalloc(width);
-      if (!map[i]) {
-         while (--i >= 0) osfree(map[i]);
-         osfree(map);
-         return 0;
-      }
-   }
-#else
-   /* otherwise allocate in one block so we can zero with one memset() */
+   /* Under 16 bit MSDOS compilers, this limits us to resolutions with a
+    * product strictly less than 1024*1024 - but Borland's BGI doesn't
+    * support any resolution this high so it's not a problem.
+   /* Allocate in one block so we can zero with one memset() */
    map[0] = osmalloc(width * height);
    if (!map[0]) {
       osfree(map);
@@ -63,19 +54,13 @@ init_map(unsigned int w, unsigned int h)
    for (i = 1; i < height; i++) {
       map[i] = map[i - 1] + width;
    }
-#endif
    return 1;
 }
 
 void
 clear_map(void)
 {
-#ifdef __TURBOC__
-   int i;
-   for (i = 0; i < height; i++) memset(map[i], 0, width);
-#else
-   memset(map[0], 0, width * height);
-#endif
+   if (map) memset(map[0], 0, width * height);       
 }
 
 #if (OS==RISCOS)
@@ -88,7 +73,7 @@ clear_map(void)
 int
 fancy_label(const char *label, int x, int y)
 {
-   if (!fAllNames) {
+   if (map && !fAllNames) {
       unsigned int X, Y; /* use unsigned so we can test for <0 for free */
       int len, l, m;
       X = (unsigned)(x + x_mid) / 4u;
@@ -96,7 +81,7 @@ fancy_label(const char *label, int x, int y)
       Y = (unsigned)(y + y_mid) / 4u;
       if (Y >= height) return 0;
       len = (strlen(label) * 2) + 1;
-      if (X + len >= width) len = width - X; /* or 'return' to right clip */
+      if (X + len > width) len = width - X; /* or 'return' to right clip */
       for (l = len - 1; l >= 0; l--)
 	 if (map[Y][X + l]) return 0;
       l = Y - 2;

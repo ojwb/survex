@@ -207,11 +207,11 @@ main(int argc, char **argv)
    cvrotgfx_init();
 
    /* display help screen to give user something to read while we do scaling */
+   /* FIXME: show_help waits for a keypress! */
    show_help();
 
    if (!init_map(xcMac, ycMac)) {
-      cvrotgfx_final();
-      exit(EXIT_FAILURE);
+      /* FIXME: warn that overlapping labels are disabled */
    }
 
    {

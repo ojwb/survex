@@ -56,6 +56,9 @@ Changes in 0.96:
 * xcaverot: cursor keys now move the 3D centre of rotation rather than just
   the position of the survey in the window.
 
+* caverot: if memory is really tight, disable non-overlapping labels rather
+  than dying with an error.
+
 Changes in 0.96-prerelease4:
 
 * cavern (RISC OS version): "is this a directory" test would never say
