@@ -108,14 +108,14 @@ maintainer-clean-local:
 # bumped
 
 manual: $(manual_sources) custom.dsl survex.ent ../config.h
-	@sgmltools@ --backend=html --dsssl-spec='custom.dsl#html' \
+	@sgmltools@ --backend=html --dsssl-spec='$(srcdir)/custom.dsl#html' \
 		$(srcdir)/manual.sgml
-	cp caution.png note.png manual
+	cp $(srcdir)/caution.png $(srcdir)/note.png manual
 
 # this rule is not used by the build system - it's for "manual" use (ho ho)
 manual.html: $(manual_sources) custom.dsl survex.ent ../config.h
-	@sgmltools@ --backend=onehtml --dsssl-spec='custom.dsl#onehtml' \
-		$(srcdir)/manual.sgml
+	@sgmltools@ --backend=onehtml \
+	   --dsssl-spec='$(srcdir)/custom.dsl#onehtml' $(srcdir)/manual.sgml
 
 manual.rtf: $(manual_sources) survex.ent ../config.h
 	@sgmltools@ --backend=rtf $(srcdir)/manual.sgml
