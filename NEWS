@@ -1,3 +1,5 @@
+* cad3d: write dummy passage dimensions to .plt files to avoid Compass bug.
+
 Changes in 1.0.10:
 
 * (MS Windows version): aven: fixed assert failure upon turning on station
