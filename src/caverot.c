@@ -599,7 +599,7 @@ show_help(void)
 {
    /* help text stored as static array of strings, and printed as graphics
     *  to the screen */
-   /* FIXME TRANSLATE */
+   /* FIXME: TRANSLATE */
    static flagged_msg help_msgs[] = {
 	{"                  Z,X : Faster/Slower rotation", FLAG_ALWAYS},
 	{"                    R : [R]everse direction of rotation", FLAG_ALWAYS},
