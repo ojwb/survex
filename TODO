@@ -185,7 +185,8 @@ From: Olly
 xcaverot missing:, ^A (lazy redraw during drags), ^R (reverse sense of
 controls), escape vs q...
 
-switch_to_(plan|elevation) in xcaverot should animate.
+switch_to_(plan|elevation) in xcaverot should animate but code is just
+broken.
 
 ?try using labels.c in xcaverot to see if XRegions are better or not?
 
@@ -287,4 +288,35 @@ check line numbers with interleaved data (seem to be one too low).
 
 cylpolar style? Dr, Comp, Dz; back bearings? cope with any combination
 of readings which gives enough info ???
+
+Maybe station lists should know how long they are?
+
+What about a better collating order for stations?  But rather than
+doing this in cavern, it's probably better to do it as a sort before
+presentation...  Here's a first stab at some code:
+/* We ideally want a collating order where "2" sorts before "10"
+ * (and "10a" sorts between "10" and "11").
+ * So we want an compare cmp(A,B) s.t.
+ * 1) cmp(A,A) = 0
+ * 2) cmp(A,B) < 0 iff cmp(B,A) > 0
+ * 3) cmp(A,B) > 0 and cmp(B,C) > 0 => cmp(A,C) > 0
+ * 4) cmp(A,B) = 0 iff strcmp(A,B) = 0 (e.g. "001" and "1" are not equal)
+ */
+/* FIXME: is this ordering OK? */
+/* Would also be nice if "xxx2" sorted before "xxx10"... */
+int
+ident_cmp(const char *a, const char *b)
+{
+   if (isdigit(a[0])) {
+      int i;
+      if (!isdigit(b[0])) return -1;
+      /* FIXME: check errno, etc in case out of range */
+      i = strtoul(a, NULL, 10);
+      i -= strtoul(b, NULL, 10);
+      if (i) return i;
+   } else if (isdigit(b[0])) {
+      return 1;
+   }
+   return strcmp(a,b);
+}
 

@@ -110,7 +110,19 @@ pt:  2 Para processar estes dados &eacute; necess&acute;ria a vers&atilde;o %s (
 ca:  2 Per processar aquestes dades topogr&agrave;fiques es requereix la versi&oacute; %s de Survex (o superior).
 es:  2 Para procesar estos datos topogr&aacute;ficos se requiere la versi&oacute;n %s de Survex (o superior).
 it:  2 Questi dati di topografia possono essere trattati da Survex versione %s o superiore.
-#XXX3
+# Used with message 5 like so:
+#
+# In file included from area.svx:12,
+#                  from cave.svx:3:
+# passage.svx:17: <some error or warning>
+# TRANSLATE: check fr de pt ca es it
+en:  3 "from "
+fr:  3 "depuis "
+de:  3 "von "
+pt:  3 "em "
+ca:  3 "des de "
+es:  3 "desde "
+it:  3 "da "
 # indicates a warning message e.g. "spoon.svx:12: warning: *prefix is deprecated"
 en:  4 warning
 fr:  4 avertissement
@@ -312,6 +324,7 @@ pt: 26 Base `%s' n&atilde;o exportada da topo `%s'
 # FIXME: TRANSLATE fr de pt ca es it
 en: 27 `%s' can't be both a station and a survey
 # FIXME: TRANSLATE fr de pt ca es it
+# c.f. 89
 en: 28 Expecting station name
 # FIXME: perhaps use "survey" instead of "prefix level"?
 # FIXME: TRANSLATE check amended message fr ca es
@@ -808,7 +821,7 @@ fr: 84 84 Ignore toute la ligne
 # GN(2): Not _quite_ satisfactory. (1) This is anthropomorphizing again, (2) the
 # grammar is ambiguous --- it could be read as an imperative, `please do
 # ignore the entire line'.  Unfortunately the alternatives that come to
-# mind are worse.  Cf no. 89 below, same problem.
+# mind are worse.  Cf no. old89 below, same problem.
 # GN(3): ho-how.  Right, here's something better.
 de: 84 Gesamte Zeile wird ignoriert
 pt: 84 Ignorando toda a linha
@@ -849,16 +862,9 @@ pt: 88 Erro no formato do arquivo de fontes `%s'
 ca: 88 Error en el format del fitxer de fonts `%s'
 es: 88 Error en el formato del fichero de fuentes `%s'
 it: 88 Errore nel formato del file dei caratteri `%s'
-#XXX 89
-# cf no. 84.
-#en: 89 Ignoring rest of line
-#fr: 89 Ignore le restant de la ligne
-##germ: 89 Ignoriere den Rest der Zeile
-#de: 89 Rest der Zeile wird ignoriert
-#pt: 89 Ignorando o resto da linha
-#ca: 89 Ingnorant la resta de la l&iacute;nia
-#es: 89 Ignorando el resto de la l&iacute;nea
-#it: 89 Resto della linea ignorato
+# FIXME: TRANSLATE fr de pt ca es it
+# c.f. 28
+en: 89 Expecting survey name
 # Program will exit shortly after printing this
 en: 90 Abnormal termination
 fr: 90 Terminaison anormale
@@ -2565,3 +2571,12 @@ it:1004 Memoria insufficiente (ci vorrebbero altri %lu bytes).
 #en:281 Caverot-Style @Middle Button
 #de:281 Caverot-artiger @mittlerer Mausknopf
 #pt-br:281 Bot&atilde;o do @Meio no Estilo do Caverot
+# old89 cf no. 84.
+#en: 89 Ignoring rest of line
+#fr: 89 Ignore le restant de la ligne
+##germ: 89 Ignoriere den Rest der Zeile
+#de: 89 Rest der Zeile wird ignoriert
+#pt: 89 Ignorando o resto da linha
+#ca: 89 Ingnorant la resta de la l&iacute;nia
+#es: 89 Ignorando el resto de la l&iacute;nea
+#it: 89 Resto della linea ignorato

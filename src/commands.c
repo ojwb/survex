@@ -444,7 +444,7 @@ cmd_prefix(void)
     * deprecated and then that ROOT is...
     */
    compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
-   tag = read_prefix_survey(fFalse);
+   tag = read_prefix_survey(fFalse, fTrue);
    pcs->Prefix = tag;
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
@@ -471,7 +471,7 @@ cmd_begin(void)
    pcsNew->next = pcs;
    pcs = pcsNew;
 
-   tag = read_prefix_survey(fTrue);
+   tag = read_prefix_survey(fTrue, fTrue);
    pcs->tag = tag;
    if (tag) {
       pcs->Prefix = tag;
@@ -530,7 +530,8 @@ cmd_end(void)
    free_settings(pcs);
    pcs = pcsParent;
 
-   tag = read_prefix_survey(fTrue); /* need to read using root *before* BEGIN */
+   /* note need to read using root *before* BEGIN */
+   tag = read_prefix_survey(fTrue, fTrue);
    if (tag != tagBegin) {
       if (tag) {
 	 if (!tagBegin) {
@@ -551,7 +552,7 @@ static void
 cmd_entrance(void)
 {
    /* FIXME: what about stations created by *entrance? */
-   prefix *pfx = read_prefix_stn(fFalse);
+   prefix *pfx = read_prefix_stn(fFalse, fFalse);
    pfx->sflags |= BIT(SFLAGS_ENTRANCE);
 }
 
@@ -565,7 +566,7 @@ cmd_fix(void)
    bool fRef = 0;
    long fp;
 
-   fix_name = read_prefix_stn(fFalse);
+   fix_name = read_prefix_stn(fFalse, fTrue);
    fix_name->sflags |= BIT(SFLAGS_FIXED);
 
    fp = ftell(file.fh);
@@ -753,12 +754,12 @@ cmd_equate(void)
    prefix *name1, *name2;
    bool fOnlyOneStn = fTrue; /* to trap eg *equate entrance.6 */
 
-   name1 = read_prefix_stn_check_implicit(fFalse);
+   name1 = read_prefix_stn_check_implicit(fFalse, fTrue);
    stn1 = StnFromPfx(name1);
    while (fTrue) {
       stn2 = stn1;
       name2 = name1;
-      name1 = read_prefix_stn_check_implicit(fTrue);
+      name1 = read_prefix_stn_check_implicit(fTrue, fTrue);
       if (name1 == NULL) {
 	 if (fOnlyOneStn) {
 	    compile_error(/*Only one station in equate list*/33);
@@ -820,12 +821,38 @@ cmd_equate(void)
 }
 
 static void
+report_missing_export(prefix *pfx, int depth)
+{
+   const char *filename_store = file.filename;
+   unsigned int line_store = file.line;
+   prefix *survey = pfx;
+   char *s;
+   int i;
+   for (i = depth + 1; i; i--) {
+      survey = survey->up;
+      ASSERT(survey);
+   }
+   s = osstrdup(sprint_prefix(survey));
+   if (survey->filename) {
+      file.filename = survey->filename;
+      file.line = survey->line;
+   }
+   compile_error(/*Station `%s' not exported from survey `%s'*/26,
+		 sprint_prefix(pfx), s);
+   if (survey->filename) {
+      file.filename = filename_store;
+      file.line = line_store;
+   }
+   osfree(s);
+}
+
+static void
 cmd_export(void)
 {
    prefix *pfx;
 
    fExportUsed = fTrue;
-   pfx = read_prefix_stn(fFalse);
+   pfx = read_prefix_stn(fFalse, fFalse);
    do {
       int depth = 0;
       {
@@ -834,76 +861,29 @@ cmd_export(void)
 	    depth++;
 	    p = p->up;
 	 }
-	 if (p == NULL) {
-	    /* FIXME: something like: *export \foo */
-	    NOT_YET;
-	 }
+	 /* Something like: *export \foo, but we've excluded use of root */
+	 ASSERT(p);
       }
-      if (depth == 0) {
-         /* FIXME: *export \ or similarly bogus shit */
-         NOT_YET;
-      }
+      /* *export \ or similar bogus stuff */
+      ASSERT(depth);
 #if 0
       printf("C min %d max %d depth %d pfx %s\n",
 	     pfx->min_export, pfx->max_export, depth, sprint_prefix(pfx));
 #endif
       if (pfx->min_export == 0) {
          /* not encountered *export for this name before */
-         if (pfx->max_export > depth) {
-	    const char *filename_store = file.filename;
-	    unsigned int line_store = file.line;
-	    prefix *survey = pfx;
-	    char *s;
-	    int i;
-	    for (i = depth + 1; i; i--) {
-	       survey = survey->up;
-	       ASSERT(survey);
-	    }
-	    s = osstrdup(sprint_prefix(survey));
-	    if (survey->filename) {
-	       file.filename = survey->filename;
-	       file.line = survey->line;
-	    }
-	    compile_error(/*Station `%s' not exported from survey `%s'*/26,
-			  sprint_prefix(pfx), s);
-	    if (survey->filename) {
-	       file.filename = filename_store;
-	       file.line = line_store;
-	    }
-	    osfree(s);
-         }
+         if (pfx->max_export > depth) report_missing_export(pfx, depth);
          pfx->min_export = pfx->max_export = depth;
       } else {
          if (pfx->min_export - 1 > depth) {
-	    /* FIXME: refactor to reuse code above */
-	    const char *filename_store = file.filename;
-	    unsigned int line_store = file.line;
-	    prefix *survey = pfx;
-	    char *s;
-	    int i;
-	    for (i = depth + 1; i; i--) {
-	       survey = survey->up;
-	       ASSERT(survey);
-	    }
-	    s = osstrdup(sprint_prefix(survey));
-	    if (survey->filename) {
-	       file.filename = survey->filename;
-	       file.line = survey->line;
-	    }
-	    compile_error(/*Station `%s' not exported from survey `%s'*/26,
-			  sprint_prefix(pfx), s);
-	    if (survey->filename) {
-	       file.filename = filename_store;
-	       file.line = line_store;
-	    }
-	    osfree(s);
+	    report_missing_export(pfx, depth);
          } else if (pfx->min_export - 1 < depth) {
 	    compile_error(/*Station `%s' already exported*/66,
 			  sprint_prefix(pfx));
          }
          pfx->min_export = depth;
       }
-      pfx = read_prefix_stn(fTrue);
+      pfx = read_prefix_stn(fTrue, fFalse);
    } while (pfx);
 }
 

@@ -40,35 +40,7 @@
 #endif
 
 /* ident_cmp returns -ve for <, 0 for =, +ve for > (like strcmp) */
-#if 1
 # define ident_cmp strcmp
-#else
-/* We ideally want a collating order where "2" sorts before "10"
- * (and "10a" sorts between "10" and "11").
- * So we want an compare cmp(A,B) s.t.
- * 1) cmp(A,A) = 0
- * 2) cmp(A,B) < 0 iff cmp(B,A) > 0
- * 3) cmp(A,B) > 0 and cmp(B,C) > 0 => cmp(A,C) > 0
- * 4) cmp(A,B) = 0 iff strcmp(A,B) = 0 (e.g. "001" and "1" are not equal)
- */
-/* FIXME: is this ordering OK? */
-/* Would also be nice if "xxx2" sorted before "xxx10"... */
-int
-ident_cmp(const char *a, const char *b)
-{
-   if (isdigit(a[0])) {
-      int i;
-      if (!isdigit(b[0])) return -1;
-      /* FIXME: check errno, etc in case out of range */
-      i = strtoul(a, NULL, 10);
-      i -= strtoul(b, NULL, 10);
-      if (i) return i;
-   } else if (isdigit(b[0])) {
-      return 1;
-   }
-   return strcmp(a,b);
-}
-#endif
 
 /* Dinky macro to handle any case forcing needed */
 #define docase(X) (pcs->Case == OFF ? (X) :\
@@ -76,7 +48,7 @@ ident_cmp(const char *a, const char *b)
 
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
 static prefix *
-read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
+read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 {
    prefix *back_ptr, *ptr;
    char *name;
@@ -88,6 +60,11 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 
    skipblanks();
    if (isRoot(ch)) {
+      if (!fAllowRoot) {
+	 compile_error(/*ROOT is deprecated*/25);
+	 skipline();
+	 LONGJMP(file.jbSkipLine);	 
+      }
       compile_warning(/*ROOT is deprecated*/25);
       nextch();
       ptr = root;
@@ -126,10 +103,12 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 	 osfree(name);
 	 if (!fOmit) {
 	    if (isEol(ch)) {
-	       /* FIXME: if (fSurvey) { ... "survey name" not "station name" ? */
-	       compile_error(/*Expecting station name*/28);
+	       if (fSurvey) {
+		  compile_error(/*Expecting survey name*/89);
+	       } else {
+		  compile_error(/*Expecting station name*/28);
+	       }
 	    } else {
-	       /* FIXME: if (fSurvey) { ... "survey name" not "station name" ? */
 	       compile_error(/*Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
 	    }
 	    skipline();
@@ -257,24 +236,24 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
 extern prefix *
-read_prefix_survey(bool fOmit)
+read_prefix_survey(bool fOmit, bool fAllowRoot)
 {
-   return read_prefix_(fOmit, fTrue, fFalse);
+   return read_prefix_(fOmit, fTrue, fFalse, fAllowRoot);
 }
 
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
 extern prefix *
-read_prefix_stn(bool fOmit)
+read_prefix_stn(bool fOmit, bool fAllowRoot)
 {
-   return read_prefix_(fOmit, fFalse, fFalse);
+   return read_prefix_(fOmit, fFalse, fFalse, fAllowRoot);
 }
 
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
 /* Same as read_prefix_stn but implicit checks are made */
 extern prefix *
-read_prefix_stn_check_implicit(bool fOmit)
+read_prefix_stn_check_implicit(bool fOmit, bool fAllowRoot)
 {
-   return read_prefix_(fOmit, fFalse, fTrue);
+   return read_prefix_(fOmit, fFalse, fTrue, fAllowRoot);
 }
 
 /* if numeric expr is omitted: if fOmit return HUGE_REAL, else longjmp */

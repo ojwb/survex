@@ -690,22 +690,21 @@ replace_subnets(void)
          osfree(stn4->leg[dirn4]);
 	 stn4->leg[dirn4] = ptrRed->join2;
       } else if (IS_DELTASTAR(ptrRed)) {
-         linkfor *leg2;
          node *stnZ;
          node *stn[3];
          int dirn[3];
-         linkfor *leg[3];
+         linkfor *legs[3];
          int i;
-         linkfor *legX;
+         linkfor *leg;
 
-         leg[0] = ptrRed->join1;
-         leg[1] = ptrRed->join2;
-         leg[2] = ptrRed->join3;
+         legs[0] = ptrRed->join1;
+         legs[1] = ptrRed->join2;
+         legs[2] = ptrRed->join3;
 
          /* work out ends as we don't bother stacking them */
-         legX = reverse_leg(leg[0]);
-         stn[0] = legX->l.to;
-         dirn[0] = reverse_leg_dirn(legX);
+         leg = reverse_leg(legs[0]);
+         stn[0] = leg->l.to;
+         dirn[0] = reverse_leg_dirn(leg);
          stnZ = stn[0]->leg[dirn[0]]->l.to;
          stn[1] = stnZ->leg[1]->l.to;
 	 dirn[1] = reverse_leg_dirn(stnZ->leg[1]);
@@ -722,27 +721,25 @@ replace_subnets(void)
                        "bad sub-network for D*");
             }
             for (i = 0; i < 3; i++) {
-               linkfor *leg1 = copy_link(leg[i]); /* FIXME: why copy? */
-               leg2 = stn[i]->leg[dirn[i]];
-               stn2 = leg[i]->l.to;
-               adddd(&POSD(stn2), &POSD(stn[i]), &leg1->d);
-               if (!fZeros(&leg2->v)) {
+               leg = stn[i]->leg[dirn[i]];
+               stn2 = legs[i]->l.to;
+               adddd(&POSD(stn2), &POSD(stn[i]), &legs[i]->d);
+               if (!fZeros(&leg->v)) {
 		  delta e, tmp;
                   subdd(&e, &POSD(stnZ), &POSD(stn[i]));
-                  subdd(&e, &e, &leg2->d);
-                  divds(&tmp, &e, &leg2->v);
-                  mulsd(&e, &leg1->v, &tmp);
+                  subdd(&e, &e, &leg->d);
+                  divds(&tmp, &e, &leg->v);
+                  mulsd(&e, &legs[i]->v, &tmp);
 		  adddd(&POSD(stn2), &POSD(stn2), &e);
                }
                fix(stn2);
 	       add_stn_to_list(&stnlist, stn2);
-               osfree(leg1);
-               osfree(leg2);
-               stn[i]->leg[dirn[i]] = leg[i];
+               osfree(leg);
+               stn[i]->leg[dirn[i]] = legs[i];
 	       /* transfer the articulation status of the radial legs */
 	       if (stnZ->leg[i]->l.reverse & FLAG_ARTICULATION) {
-		  leg[i]->l.reverse |= FLAG_ARTICULATION;
-		  reverse_leg(leg[i])->l.reverse |= FLAG_ARTICULATION;
+		  legs[i]->l.reverse |= FLAG_ARTICULATION;
+		  reverse_leg(legs[i])->l.reverse |= FLAG_ARTICULATION;
 	       }
                osfree(stnZ->leg[i]);
                stnZ->leg[i] = NULL;
@@ -758,11 +755,11 @@ replace_subnets(void)
             }
             for (i = 0; i < 3; i++) {
 /*print_prefix(stn[i]->name);putnl();*/
-               leg2 = stn[i]->leg[dirn[i]];
-               stn2 = leg[i]->l.to;
+               leg = stn[i]->leg[dirn[i]];
+               stn2 = legs[i]->l.to;
 	       add_stn_to_list(&stnlist, stn2);
-               osfree(leg2);
-               stn[i]->leg[dirn[i]] = leg[i];
+               osfree(leg);
+               stn[i]->leg[dirn[i]] = legs[i];
                osfree(stnZ->leg[i]);
                /* stnZ->leg[i] = NULL; */
             }

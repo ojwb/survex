@@ -64,12 +64,14 @@ error_list_parent_files(void)
 {
    if (file.parent) {
       parse *p = file.parent;
-      fprintf(STDERR, msg(/*In file included from */5));
+      const char *m = msg(/*In file included from */5);
+      size_t len = strlen(m);
+      fprintf(STDERR, m);
+      m = msg(/*from */3);
       while (p) {
 	 fprintf(STDERR, "%s:%d", p->filename, p->line);
 	 p = p->parent;
-	 /* FIXME: number of spaces here should probably vary with language (ick) */
-	 if (p) fprintf(STDERR, ",\n                      ");
+	 if (p) fprintf(STDERR, ",\n%*s", len, m);
       }
       fprintf(STDERR, ":\n");
    }
@@ -639,16 +641,16 @@ data_normal(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr = read_prefix_stn(fFalse);
+	  fr = read_prefix_stn(fFalse, fTrue);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to = read_prefix_stn(fFalse);
+	  to = read_prefix_stn(fFalse, fTrue);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Station:
 	  fr = to;
-	  to = read_prefix_stn(fFalse);
+	  to = read_prefix_stn(fFalse, fFalse);
 	  first_stn = To;
 	  break;
        case Count:
@@ -851,16 +853,16 @@ data_diving(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	 fr = read_prefix_stn(fFalse);
+	 fr = read_prefix_stn(fFalse, fTrue);
 	 if (first_stn == End) first_stn = Fr;
 	 break;
        case To:
-	 to = read_prefix_stn(fFalse);
+	 to = read_prefix_stn(fFalse, fTrue);
 	 if (first_stn == End) first_stn = To;
 	 break;
        case Station:
 	 fr = to;
-	 to = read_prefix_stn(fFalse);
+	 to = read_prefix_stn(fFalse, fFalse);
 	 first_stn = To;
 	 break;
        case Tape: tape = read_numeric(fFalse); break;
@@ -978,16 +980,16 @@ data_cartesian(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr = read_prefix_stn(fFalse);
+	  fr = read_prefix_stn(fFalse, fTrue);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to = read_prefix_stn(fFalse);
+	  to = read_prefix_stn(fFalse, fTrue);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Station:
 	  fr = to;
-	  to = read_prefix_stn(fFalse);
+	  to = read_prefix_stn(fFalse, fFalse);
 	  first_stn = To;
 	  break;
        case Dx: dx = read_numeric(fFalse); break;
@@ -1087,16 +1089,16 @@ data_nosurvey(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr = read_prefix_stn(fFalse);
+	  fr = read_prefix_stn(fFalse, fTrue);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to = read_prefix_stn(fFalse);
+	  to = read_prefix_stn(fFalse, fTrue);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Station:
 	  fr = to;
-	  to = read_prefix_stn(fFalse);
+	  to = read_prefix_stn(fFalse, fFalse);
 	  first_stn = To;
 	  break;
        case Ignore:

@@ -59,27 +59,27 @@ static node *artlist;
 
 static node *fixedlist;
 
-/* list item visit */
-/* FIXME: we shouldn't malloc each and every LIV separately! */
-typedef struct LIV {
-   struct LIV *next;
-   unsigned char dirn;
-} liv;
+static long colour;
 
 /* The goto iter/uniter avoids using recursion which could lead to stack
- * overflow.  Instead we use a linked list which will probably use
- * much less memory on most compilers.
+ * overflow.  Instead we use one byte of memory per iteration in a malloc-ed
+ * block which will probably use an awful lot less memory on most platforms.
  */
 
-static long colour;
+/* This is the number of station in stnlist which is a ceiling on how
+ * deep visit will recur */
+static unsigned long cMaxVisits;
+
+static unsigned char *visit_dirn_stack = NULL;
 
 static unsigned long
 visit(node *stn, int back)
-{
+{   
    long min_colour;
    int i;
    node *stn2;
-   liv *livTos = NULL;
+   unsigned char *tos = visit_dirn_stack;
+   ASSERT(tos);
 #ifdef DEBUG_ARTIC
    printf("visit(%p, %d) called\n", stn, back);
 #endif
@@ -118,17 +118,15 @@ iter:
 #endif
    for (i = 0; i <= 2 && stn->leg[i]; i++) {
       if (stn->leg[i]->l.to->colour == 0) {
-	 {
-	     liv *livTmp = osnew(liv);
-	     livTmp->next = livTos;
-	     livTos = livTmp;
-	 }
-	 livTos->dirn = back = reverse_leg_dirn(stn->leg[i]);
+	 ASSERT(tos < visit_dirn_stack + cMaxVisits);
+	 *tos++ = back = reverse_leg_dirn(stn->leg[i]);
 	 stn = stn->leg[i]->l.to;
 	 goto iter;
 uniter:
-	 i = reverse_leg_dirn(stn->leg[livTos->dirn]);
-	 stn2 = stn->leg[livTos->dirn]->l.to;
+	 ASSERT(tos > visit_dirn_stack);
+	 --tos;
+	 i = reverse_leg_dirn(stn->leg[*tos]);
+	 stn2 = stn->leg[*tos]->l.to;
 
 #ifdef DEBUG_ARTIC
 	 printf("unwind: stn [%p] ", stn2);
@@ -161,7 +159,7 @@ uniter:
 	     *                stn2 stn
 	     */
 	    /* flag leg as an articulation for loop error reporting */
-	    stn->leg[livTos->dirn]->l.reverse |= FLAG_ARTICULATION;
+	    stn->leg[*tos]->l.reverse |= FLAG_ARTICULATION;
 	    stn2->leg[i]->l.reverse |= FLAG_ARTICULATION;
 	     
 	    /* start new articulation */
@@ -180,15 +178,10 @@ uniter:
 #endif
 	 }
 
-	 {
-	     liv *livTmp = livTos;
-	     livTos = livTos->next;
-	     osfree(livTmp);
-	 }
 	 stn = stn2;
       }
    }
-   if (livTos) goto uniter;
+   if (tos > visit_dirn_stack) goto uniter;
 
 #ifdef DEBUG_ARTIC
    printf("Putting stn ");
@@ -215,7 +208,9 @@ articulate(void)
    /* find articulation points and components */
    colour = 0;
    stnStart = NULL;
+   cMaxVisits = 0;
    FOR_EACH_STN(stn, stnlist) {
+      cMaxVisits++;
       if (fixed(stn)) {
 	 colour++;
 	 stn->colour = -colour;
@@ -230,6 +225,8 @@ articulate(void)
 	 stn->colour = 0;
       }
    }
+   visit_dirn_stack = osmalloc(cMaxVisits);
+
    stnStart = fixedlist;
    ASSERT2(stnStart,"no fixed points!");
    cFixed = colour;
@@ -308,7 +305,7 @@ articulate(void)
 	    }
 	 }
       }
-	  
+
       if (c) {
 #ifdef DEBUG_ARTIC
 	 print_prefix(stn->name);
@@ -437,6 +434,9 @@ articulate(void)
       printf("done articulating\n");
 #endif
    }
+
+   osfree(visit_dirn_stack);
+   visit_dirn_stack = NULL;
 
 #ifdef DEBUG_ARTIC
    /* highlight unfixed bits */
