@@ -462,6 +462,7 @@ cmd_prefix(void)
    }
    tag = read_prefix_survey(fFalse, fTrue);
    pcs->Prefix = tag;
+   check_reentry(tag);
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
       limb = get_twig(tag);
@@ -472,7 +473,6 @@ cmd_prefix(void)
       }
    }
 #endif
-   check_reentry(tag);
 }
 
 static void
@@ -493,18 +493,18 @@ cmd_begin(void)
       pcs->Prefix = tag;
       check_reentry(tag);
       f_export_ok = fTrue;
-   }
 
 #ifdef NEW3DFORMAT
-   if (fUseNewFormat) {
-      limb = get_twig(pcs->Prefix);
-      if (limb->up->sourceval < 5) {
-       	 osfree(limb->up->source);
-       	 limb->up->sourceval = 5;
-       	 limb->up->source = osstrdup(file.filename);
+      if (fUseNewFormat) {
+	 limb = get_twig(pcs->Prefix);
+	 if (limb->up->sourceval < 2) {
+	    osfree(limb->up->source);
+	    limb->up->sourceval = 2;
+	    limb->up->source = osstrdup(file.filename);
+	 }
       }
-   }
 #endif
+   }
 }
 
 extern void
