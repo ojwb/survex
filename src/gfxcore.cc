@@ -182,7 +182,6 @@ void GfxCore::Initialise()
     TryToFreeArrays();
 
     GetSize(&m_XSize, &m_YSize);
-    printf("size is %d, %d\n", m_XSize, m_YSize);
 
     m_Bands = m_Parent->GetNumDepthBands(); // last band is surface data
     m_PlotData = new PlotData[m_Bands];
