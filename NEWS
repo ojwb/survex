@@ -1,3 +1,5 @@
+* cavern: fixed 3dx output so it actually works with Chasm once more.
+
 Changes in 1.0.20:
 
 * aven: update display when "Metric" or "Degrees" is toggled.
