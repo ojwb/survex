@@ -47,6 +47,8 @@ while (<>) {
       next;
    }
 
+   $langs =~ tr/-/_/;
+
    if ($msg =~ /[\0-\x1f\x7f-\xff]/) {
       print STDERR "Warning: literal character in message $msgno\n";
    }
@@ -58,7 +60,7 @@ while (<>) {
 }
 
 my $lang;
-my @langs = sort grep ! /-\*$/, keys %msgs;
+my @langs = sort grep ! /_\*$/, keys %msgs;
 
 my $num_msgs = -1;
 foreach $lang (@langs) {
@@ -67,13 +69,15 @@ foreach $lang (@langs) {
 }
 
 foreach $lang (@langs) {
-   open OUT, ">$lang.msg" or die $!;
+   my $fnm = $lang;
+   $fnm =~ s/(_.*)$/\U$1/;
+   open OUT, ">$fnm.msg" or die $!;
    
    my $aref = $msgs{$lang};
  
    my $parentaref;
    my $mainlang = $lang;
-   $parentaref = $msgs{$mainlang} if $mainlang =~ s/-.*$//;
+   $parentaref = $msgs{$mainlang} if $mainlang =~ s/_.*$//;
 
    print OUT $magic or die $!;
    print OUT pack("CCn", $major, $minor, $num_msgs) or die $!;
@@ -88,7 +92,8 @@ foreach $lang (@langs) {
 	 if (!defined $msg) {
 	    $msg = ${$msgs{'en'}}[$n];
 	    if (defined $msg && $msg ne '') {
-	       print STDERR "Warning: message $n not in language $lang\n";
+	       # don't report if we have a parent (as the omission will be reported there)
+	       print STDERR "Warning: message $n not in language $lang\n" unless defined $parentaref;
 	    } else {
 	       $msg = '';
 	    }

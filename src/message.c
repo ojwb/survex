@@ -206,8 +206,6 @@ init_signals(void)
       signal(SIGILL,  report_sig); /* illegal function image eg illegal instruction */
       signal(SIGSEGV, report_sig); /* illegal storage access eg access outside memory limits */
 #endif
-      signal(SIGINT,  report_sig); /* interactive attention eg interrupt */
-      signal(SIGTERM, report_sig); /* termination request sent to program */
 # ifdef SIGSTAK /* only on RISC OS AFAIK */
       signal(SIGSTAK, report_sig); /* stack overflow */
 # endif
@@ -218,9 +216,7 @@ init_signals(void)
       case SIGABRT: en = /*Abnormal termination*/90; break;
       case SIGFPE:  en = /*Arithmetic error*/91; break;
       case SIGILL:  en = /*Illegal instruction*/92; break;
-      case SIGINT:  en = /*Interrupt received*/93; break;
       case SIGSEGV: en = /*Bad memory access*/94; break;
-      case SIGTERM: en = /*Termination requested*/95; break;
 # ifdef SIGSTAK
       case SIGSTAK: en = /*Stack overflow*/96; break;
 # endif
@@ -244,9 +240,8 @@ init_signals(void)
 # endif
    }
 #endif
-   /* Any signals apart from SIGINT and SIGTERM suggest a bug */
-   if (sigReceived != SIGINT && sigReceived != SIGTERM)
-      fatalerror(/*Bug in program detected! Please report this to the authors*/11);
+   /* Any of the signals we catch indicates a bug */
+   fatalerror(/*Bug in program detected! Please report this to the authors*/11);
 
    exit(EXIT_FAILURE);
 }
@@ -333,6 +328,7 @@ static int num_msgs = 0;
 static char **msg_array = NULL;
 
 const char *msg_lang = NULL;
+const char *msg_lang2 = NULL;
 
 static void
 parse_msg_file(int charset_code)
@@ -365,7 +361,7 @@ parse_msg_file(int charset_code)
    if (strcasecmp(msg_lang, "engi") == 0) {
       msg_lang = "en";
    } else if (strcasecmp(msg_lang, "engu") == 0) {
-      msg_lang = "en-us";
+      msg_lang = "en_US";
    } else if (strcasecmp(msg_lang, "fren") == 0) {
       msg_lang = "fr";
    } else if (strcasecmp(msg_lang, "germ") == 0) {
@@ -388,36 +384,29 @@ parse_msg_file(int charset_code)
    /* On Mandrake LANG defaults to C */
    if (strcmp(msg_lang, "C") == 0) msg_lang = "en";
 
-   if (strchr(msg_lang, '_')) {
+   /* Convert en-us to en_US, etc */
+   if (strchr(msg_lang, '-')) {
       char *lang = osstrdup(msg_lang);
-      /* On RedHat 6.1 Linux, LANG defaults to en_US */
-      char *under = strchr(lang, '_');
-      *under++ = '-';
-      while (*under) {
-	 *under = tolower(*under);
-	 under++;
+      char *dash = strchr(lang, '-');
+      *dash++ = '_';
+      while (*dash) {
+	 *dash = toupper(*dash);
+	 dash++;
       }
       msg_lang = lang;
    }
 
+   if (strchr(msg_lang, '_')) {
+      char *under;
+      msg_lang2 = osstrdup(msg_lang);
+      under = strchr(msg_lang2, '_');
+      *under = '\0';
+   }
+
 #ifdef LC_MESSAGES
    /* try to setlocale() appropriately too */
-   if (strchr(msg_lang, '-')) {
-      char *lang = osstrdup(msg_lang);
-      char *dash = strchr(lang, '-');
-      char *q = dash;
-      *q++ = '_';
-      while (*q) {
-	 *q = toupper(*q);
-	 q++;
-      }
-      if (!setlocale(LC_MESSAGES, lang)) {
-	 *dash = '\0';
-	 setlocale(LC_MESSAGES, lang);
-      }
-      osfree(lang);
-   } else {
-      setlocale(LC_MESSAGES, msg_lang);
+   if (!setlocale(LC_MESSAGES, msg_lang)) {
+      if (msg_lang2) setlocale(LC_MESSAGES, msg_lang2);
    }
 #endif
    

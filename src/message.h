@@ -49,6 +49,7 @@ extern int msg_warnings; /* keep track of how many warnings we've given */
 extern int msg_errors;   /* and how many (non-fatal) errors */
 
 extern const char *msg_lang;
+extern const char *msg_lang2;
 
 void msg_init(const char *argv0);
 

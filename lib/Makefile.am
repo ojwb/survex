@@ -2,7 +2,7 @@
 
 # Makefile for survex support files
 
-msg_files = ca.msg de.msg de-ch.msg de-de.msg en.msg en-us.msg\
+msg_files = ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg\
 es.msg fr.msg it.msg pt.msg
 
 EXTRA_DIST = bcra3.svx bcra5.svx messages.txt pfont.txt print.ini\
@@ -15,7 +15,7 @@ pkgdata_DATA = pfont.bit print.ini bcra3.svx bcra5.svx $(msg_files)\
  aven-about.png
 
 # does $(msgs_files) here work?
-ca.msg de.msg de-ch.msg de-de.msg en.msg en-us.msg\
+ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg\
  es.msg fr.msg it.msg pt.msg: messages.txt makemsgs.pl
 	perl makemsgs.pl messages.txt
 

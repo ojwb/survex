@@ -26,6 +26,7 @@
 #include "message.h"
 
 #include <assert.h>
+#include <locale.h>
 #include <signal.h>
 
 #include <wx/image.h>
@@ -42,7 +43,13 @@ Aven::Aven() :
 bool Aven::OnInit()
 {
     msg_init(argv[0]);
-    signal(SIGINT, SIG_DFL); // I want to be able to press Ctrl+C!!
+
+    static wxLocale wx_locale;
+    if (!wx_locale.Init(msg_lang, msg_lang, msg_lang, TRUE, TRUE)) {
+	if (msg_lang2) {
+	    wx_locale.Init(msg_lang2, msg_lang2, msg_lang2, TRUE, TRUE);
+	}
+    }
 
     static wxCmdLineEntryDesc cmdline[] = {
         { wxCMD_LINE_OPTION, "h", "help", msgPerm(/*Display command line options*/201) },

@@ -204,6 +204,7 @@ pt: 13 Base igualada a ela mesma
 ca: 13 Estaci&oacute; igualada a ella mateixa
 es: 13 Estacio&acute;n igualada a si misma
 it: 13 Stazione uguagliata a se stessa
+# c.f. 21 and 59
 en: 14 Compass reading may not be omitted here
 fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici
 de-de,de-ch: 14 Kompassablesung darf nicht weggelassen werden
@@ -878,17 +879,7 @@ pt: 92 Instru&ccedil;&atilde;o ilegal
 ca: 92 Instrucci&oacute; il.legal
 es: 92 Instrucci&oacute;n ilegal
 it: 92 Istruzione illegale
-# Ctrl-C or Ctrl-Break or something like that
-en: 93 Interrupt received
-fr: 93 Interruption re&ccedil;ue
-de: 93 Unterbrechung erhalten
-# You can say `Interrupt erhalten'.  There are some very strange
-# words in computer users' German...
-pt: 93 Interrup&ccedil;&atilde;o recebida
-ca: 93 Interrupci&oacute; rebuda
-es: 93 Interrupci&oacute;n recibida
-it: 93 Esecuzione interrotta
-#ital: 93 Interruzione ricevuta
+# XXX93
 en: 94 Bad memory access
 fr: 94 Mauvais acc&eacute;s m&eacute;moire
 de: 94 Fehler beim Speicherzugriff
@@ -896,19 +887,7 @@ pt: 94 Erro de acesso &agrave; mem&oacute;ria
 ca: 94 Acc&egrave;s a mem&ograve;ria dolent
 es: 94 Acceso a memoria err&oacute;neo
 it: 94 Accesso alla memoria errato
-# Something like Unix has kill-ed your process
-en: 95 Termination requested
-fr: 95 Terminaison demand&eacute;e
-#germ: 95 Programmende gem&auml;&szlig; Befehl
-de: 95 Signal zum Beenden erhalten
-# GN(3): This should be appropriate under UNIces or similar; under Doze or
-# Windoze, users would hit some nasty buttons anyway, not leaving survex a
-# chance to comment on the fact...
-pt: 95 Finaliza&ccedil;&atilde;o solicitada
-ca: 95 Finalitzaci&oacute; sol.licitada
-es: 95 Terminaci&oacute;n solicitada
-it: 95 Esecuzione interrotta su richiesta
-#ital: 95 Terminazione richiesta
+# XXX95
 en: 96 Stack overflow
 fr: 96 D&eacute;bordement de pile
 de: 96 Stack-&Uuml;berlauf
@@ -1700,8 +1679,26 @@ en:244 Shift Survey @Left##Left Arrow
 en:245 Shift Survey @Right##Right Arrow
 en:246 Shift Survey @Up##Up Arrow
 en:247 Shift Survey @Down##Down Arrow
+# c.f. 117
 en:248 @Plan View##P
-en:249 Ele@vation View##L
+fr:248 Vue en @plan##P
+de:248    @Grundri&szlig;##P
+de-ch:248 @Grundriss##P
+pt:248 @Planta##P
+ca:248 @Planta##P
+es:248 @Planta##P
+it:248 @Pianta##P
+# c.f. 118
+en:249 Ele@vation##L
+en-us:249 Pro@file##L
+fr:249 El&eacute;@vation##L
+de:249    @Aufri&szlig;##L
+de-ch:249 @Aufriss##L
+pt:249 Per@fil##L
+ca:249 @Al&ccedil;at##L
+es:249 @Alzado##L
+it:249 Pro@filo##L
+#
 en:250 @Higher Viewpoint##'
 en:251 Lo@wer Viewpoint##/
 en:252 @Zoom In##]
@@ -1710,11 +1707,30 @@ en:254 Restore De@fault Settings##Delete
 #
 # The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
+# TRANSLATE fr de pt
 en:271 @Crosses##Ctrl+X
+ca:271 @Creus##Ctrl+X
+es:271 @Cruces##Ctrl+X
+it:271 @Croci##Ctrl+X
+#
 en:272 Survey @Legs##Ctrl+L
+en-us:272 @Shots##Ctrl+L
 en:273 @Overlapping Names##O
+# TRANSLATE pt
 en:274 Co@mpass
+fr:274 Co@mpas
+de-de,de-ch:274 @Kompass
+de:         274 @Kompa&szlig;
+ca:274 @Br&uacute;ixola
+es:274 @Br&uacute;jula
+it:274 @Bussola
+# TRANSLATE de pt
 en:275 Cl@inometer
+fr:275 Cl@ino
+ca:275 Cl@ino
+es:275 Cl@ino
+it:271 Cl@inometro
+#
 en:276 @Depth Bar
 en:277 Sc@ale Bar
 #
@@ -2190,3 +2206,27 @@ it:290 @Informazioni su...
 #de: 28 Station `%s' nicht mit *EXPORT exportiert
 #pt: 28 Base `%s' n&atilde;o foi exportada em nenhum n&iacute;vel
 #it: 28 Stazione `%s' non esportata con *EXPORT
+## Ctrl-C or Ctrl-Break or something like that
+#en: 93 Interrupt received
+#fr: 93 Interruption re&ccedil;ue
+#de: 93 Unterbrechung erhalten
+## You can say `Interrupt erhalten'.  There are some very strange
+## words in computer users' German...
+#pt: 93 Interrup&ccedil;&atilde;o recebida
+#ca: 93 Interrupci&oacute; rebuda
+#es: 93 Interrupci&oacute;n recibida
+#it: 93 Esecuzione interrotta
+##ital: 93 Interruzione ricevuta
+#Something like Unix has kill-ed your process
+#en: 95 Termination requested
+#fr: 95 Terminaison demand&eacute;e
+##germ: 95 Programmende gem&auml;&szlig; Befehl
+#de: 95 Signal zum Beenden erhalten
+## GN(3): This should be appropriate under UNIces or similar; under Doze or
+## Windoze, users would hit some nasty buttons anyway, not leaving survex a
+## chance to comment on the fact...
+#pt: 95 Finaliza&ccedil;&atilde;o solicitada
+#ca: 95 Finalitzaci&oacute; sol.licitada
+#es: 95 Terminaci&oacute;n solicitada
+#it: 95 Esecuzione interrotta su richiesta
+##ital: 95 Terminazione richiesta
