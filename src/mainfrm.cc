@@ -1146,9 +1146,9 @@ void MainFrm::OnClose(wxCloseEvent&)
 
 void MainFrm::OnAbout(wxCommandEvent&)
 {
-    wxDialog* dlg = new AboutDlg(this);
-    dlg->Centre();
-    dlg->ShowModal();
+    AboutDlg dlg(this);
+    dlg.Centre();
+    dlg.ShowModal();
 }
 
 void MainFrm::GetColour(int band, Double& r, Double& g, Double& b) const

@@ -1,3 +1,5 @@
+* aven: Fixed memory leak when showing the "About" dialog.
+
 Changes in 1.0.29:
 
 * cad3d: Fixed problem with DXF files which stopped them loading with some
