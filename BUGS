@@ -44,6 +44,7 @@ From: Bill Nasby <bnasby@island.net>
 [Running caverot] my screen "freezes" with no image, and I'm forced to
 restart the computer to get the screen back. [win95, 0.90 alpha (5 or
 earlier)]
+
 (Maybe an allegro problem - I've upgraded to allegro 3.1 to see if that
 cures the problem).  PWJ suggests the graphics card might be the problem.
 
@@ -59,12 +60,12 @@ From: Mark Shinwell
 
 [Aven known bugs]
 
-- closing window doesn't work
+closing window doesn't work
 
-- slow response of toolbar highlighting during constant rotation
-  (XFree86 v4 fixes this) 
+slow response of toolbar highlighting during constant rotation
+(XFree86 v4 fixes this)
 
-- not all Xcaverot keys implemented 
+not all Xcaverot keys implemented 
 
-- heading indicator not working -- soon to be fixed
+heading indicator not working -- soon to be fixed
 	  

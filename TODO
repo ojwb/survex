@@ -1,6 +1,10 @@
-* allow valid range for an instrument to be specified...
+From: anon
 
-* cave length...
+allow valid range for an instrument to be specified...
+
+From: anon
+
+cave length...
 
 Date: Tue, 17 Feb 98 18:10:51 GMT
 From: Andy Waddington <Survex@pennine.demon.co.uk>
@@ -22,10 +26,7 @@ a particular fixed point is not necessarily intended to be used.
 Date: 13 Dec 1998
 From: Olly
 
-Tidy up:
-message.c
-xcaverot.c
-cave.c
+Tidy up: message.c, xcaverot.c, cave.c
 
 Date: 15 Dec 1998
 From: Olly
