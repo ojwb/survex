@@ -94,6 +94,8 @@
 
 * 3dtopos: minor improvements to sort order.
 
+* cavern: --new-format renamed to --chasm-format.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

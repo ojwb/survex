@@ -111,7 +111,7 @@ static const struct option long_opts[] = {
    {"warnings-are-errors", no_argument, 0, 'w'},
    {"log", no_argument, 0, 1},
 #ifdef NEW3DFORMAT
-   {"new-format", no_argument, 0, 'x'},
+   {"chasm-format", no_argument, 0, 'x'},
 #endif
 #if (OS==WIN32)
    {"pause", no_argument, 0, 2},
@@ -133,9 +133,9 @@ static struct help_msg help[] = {
    {HLP_ENCODELONG(0),          "display percentage progress"},
    {HLP_ENCODELONG(2),          "set location for output files"},
    {HLP_ENCODELONG(3),          "only show brief summary (-qq for errors only)"},
-   {HLP_ENCODELONG(4),          "do not create .inf or .err files"},
+   {HLP_ENCODELONG(4),          "do not create .err file"},
    {HLP_ENCODELONG(5),          "turn warnings into errors"},
-   {HLP_ENCODELONG(6),          "log output to .log file; don't create .inf file"},
+   {HLP_ENCODELONG(6),          "log output to .log file"},
 #ifdef NEW3DFORMAT
    {HLP_ENCODELONG(7),          "output data in chasm's 3dx format"},
 #endif
