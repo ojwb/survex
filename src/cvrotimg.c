@@ -236,6 +236,8 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
    if (p != p_end) return fFalse;
    if (c_leg != c_legs) return fFalse;
    legs[c_leg]._.action = stop;
+   if (c_sleg != c_slegs) return fFalse;
+   slegs[c_sleg]._.action = stop;
    if (c_stn != c_stns) return fFalse;
    stns[c_stn]._.str = NULL;
 

@@ -45,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-03-29 23:17:13 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.21 2001-03-29 23:17:13 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-03-30 00:19:51 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.22 2001-03-30 00:19:51 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -195,7 +195,6 @@ Win32s installed, but we've not tried this).</Para>
 
 <Para>There's also a GUI caverot replacement called aven, and a Survex
 printer driver (printwin) which uses the Windows printer system.</Para>
-</Sect3>
 
 <Para>This version of survex comes with an installation wizard, so you
 just need to run the downloaded package and follow the steps.
@@ -215,6 +214,7 @@ open->aven {default}
 extend->extend
 print->printwin
 -->
+</Sect3>
 
 <Sect3><Title>Windows 3.1 and &msdos; (Intel 80386 or newer CPU)</Title>
 
@@ -1798,8 +1798,6 @@ resort, it will try a lower case version of the filename (so if you
 use Unix and someone sends you a DOS/Windows dataset with mismatched
 case, unzip it with "unzip -L" and unix cavern will process it).
 </Para></ListItem>
-
-</ListItem>
 
 </ItemizedList>
 

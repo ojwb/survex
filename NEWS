@@ -18,6 +18,9 @@
 
 * Documentation brought more up-to-date.
 
+* caverot/xcaverot: fix missing end of list marker for surface data
+  which typically resulted in a few extra bogus surface legs appearing.
+
 Changes in 0.97-prerelease1:
 
 * extend: fixed bug which result in bogus output (added regression test);
