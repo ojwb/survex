@@ -3,6 +3,9 @@ Changes in 1.0.33:
 * aven,printwin: Fixed bug which would sometimes pick one too few pages
   vertically resulting in the survey escaping off the top of the topmost
   pages.
+ 
+* aven: Changed the toner-wasting, hard-to-measure-exactly alternately filled
+  scale bar to a simple line with ticks.
 
 * aven: SVG export fixes: second and subsequent exports had bogus extra "</g>";
   Fixed to invert all Y coordinates, not just some; Fixed tags for layers.

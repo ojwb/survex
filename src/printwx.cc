@@ -657,19 +657,21 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
    long X = long(x * m_layout->scX);
    long X2 = long((x + n * d) * m_layout->scX);
 
-   /* Draw top and bottom sides of scale bar */
-   MoveTo(X, Y2);
-   DrawTo(X2, Y2);
+   /* Draw top of scale bar */
+   MoveTo(X2, Y2);
+   DrawTo(X, Y2);
+#if 0
    DrawTo(X2, Y);
    DrawTo(X, Y);
    MOVEMM(x + n * d, y); DRAWMM(x, y);
+#endif
    /* Draw divisions and label them */
    for (c = 0; c <= n; c++) {
       SetColour(PR_COLOUR_FRAME);
       X = long((x + c * d) * m_layout->scX);
       MoveTo(X, Y);
       DrawTo(X, Y2);
-#if 1
+#if 0 // Don't waste toner!
       /* Draw a "zebra crossing" scale bar. */
       if (c < n && (c & 1) == 0) {
 	  X2 = long((x + (c + 1) * d) * m_layout->scX);
