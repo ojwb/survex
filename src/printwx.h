@@ -68,6 +68,7 @@ protected:
 	void LayoutToUI();
 	void UIToLayout();
 	void RecalcBounds();
+	double pick_scale(int x, int y);
  public:
 	svxPrintDlg(MainFrm* parent, const wxString & filename,
 		    const wxString & title, const wxString & datestamp,
