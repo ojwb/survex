@@ -158,6 +158,8 @@ typedef struct Prefix {
     * that the user has cocked up the prefix in some way.
     */
    uchar fSuspectTypo;
+   /* non-zero for a survey; zero for a station */
+   uchar fSurvey;
 #ifdef NEW3DFORMAT
    twig *twig_link;
 #endif

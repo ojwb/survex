@@ -148,6 +148,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 	 ptr->filename = NULL;
 	 ptr->min_export = ptr->max_export = 0;
 	 ptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
+	 ptr->fSurvey = fTrue;
 	 back_ptr->down = ptr;
 	 fNew = fTrue;
 #ifdef NEW3DFORMAT
@@ -178,6 +179,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 	    newptr->filename = NULL;
   	    newptr->min_export = newptr->max_export = 0;
 	    newptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
+	    newptr->fSurvey = fTrue;
 	    ptr = newptr;
 	    fNew = fTrue;
 #ifdef NEW3DFORMAT
@@ -192,11 +194,15 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
    } while (isSep(ch));
    /* don't warn about a station that is refered to twice */
    if (!fNew) ptr->fSuspectTypo = fFalse;
-
-   /* check that the same name isn't being used for a survey and a station */
-   if (!fNew && (fSurvey ? ptr->stn != NULL : ptr->down != NULL)) {
-      compile_error(/*`%s' can't be both a station and a survey*/27,
-		    sprint_prefix(ptr));
+   
+   if (fNew) {
+      ptr->fSurvey = fSurvey;
+   } else {
+      /* check that the same name isn't being used for a survey and station */
+      if (fSurvey ^ ptr->fSurvey) {
+	 compile_error(/*`%s' can't be both a station and a survey*/27,
+		       sprint_prefix(ptr));
+      }
    }
 
    /* check the export level */

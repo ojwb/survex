@@ -165,6 +165,7 @@ main(int argc, char **argv)
    root->ident = "\\";
    root->min_export = root->max_export = 0;
    root->fSuspectTypo = fFalse;
+   root->fSurvey = fTrue;
 
    nosurveyhead = NULL;
 
