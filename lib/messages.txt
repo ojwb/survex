@@ -2953,7 +2953,12 @@ ca:324 Re@iniciar
 es:324 Rei@niciar
 it:324 Ri@parte
 sk:324 @Re&scaron;tart
-# XXX325 326 327
+# Two more cavern messages:
+en:325 Compass reading and back compass reading disagree by %s degrees
+#
+en:326 Clino reading and back clino reading disagree by %s degrees
+# Back to aven once more:
+# XXX 327
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
 de:328 Kein Treffer gefunden.
@@ -2962,7 +2967,7 @@ ca:328 Recerca infroctuosa.
 es:328 B&uacute;squeda infroctuosa.
 it:328 Nessun elemento trovato.
 sk:328 Ne&uacute;spe&scaron;n&eacute; h&lcaron;adanie.
-#
+
 en:329 Open @Terrain...
 fr:329 Ouverture d'un @Terrain...
 de:329 Gel&auml;nde@modell &ouml;ffnen...

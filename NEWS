@@ -31,8 +31,7 @@ Changes in 1.0.8:
 * printpcl/printdm: Added new .ini setting "font_bitmap" which allows the user
   to choose between alternative fonts.  Current we supply "default" and "bold".
 
-* cavern: added support for BackCompass and BackClino (FIXME: working, but
-  not finished).
+* cavern: added support for BackCompass and BackClino.
 
 * cavern: fixed handling of omitted clino readings when OMIT is *set to be
   different from MINUS and PLUS (new test omitclino).

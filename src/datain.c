@@ -493,7 +493,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
    if (ctype == CLINO_PLUMB || backctype == CLINO_PLUMB) {
       /* plumbed */
       if (!fNoComp) {
-	 /* FIXME: Different message for BackCompass */
+	 /* FIXME: Different message for BackComp? */
 	 compile_warning(/*Compass reading given on plumbed leg*/21);
       }
 
@@ -553,7 +553,18 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	       diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
 	       if (sqrd(diff / 3.0) > var_comp + var(Q_BACKBEARING)) {
 		  /* fore and back readings differ by more than 3 sds */
-		  /* FIXME: complain */
+		  char buf[64];
+		  char *p;
+		  sprintf(buf, "%.2f", deg(fabs(diff)));
+		  p = strchr(buf, '.');
+		  if (p) {
+		     char *z = p;
+		     while (*++p) {
+			if (*p != '0') z = p + 1;
+		     }
+		     if (*z) *z = '\0';
+		  }
+		  compile_warning(/*Compass reading and back compass reading disagree by %s degrees*/325, buf);
 	       }
 	       comp = (comp / var_comp + backcomp / var(Q_BACKBEARING));
 	       var_comp = (var_comp + var(Q_BACKBEARING)) / 4;
@@ -575,7 +586,18 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	       if (sqrd((clin + backclin) / 3.0) >
 		     var_clin + var(Q_BACKGRADIENT)) {
 		  /* fore and back readings differ by more than 3 sds */
-		  /* FIXME: complain */
+		  char buf[64];
+		  char *p;
+		  sprintf(buf, "%.2f", deg(fabs(clin + backclin)));
+		  p = strchr(buf, '.');
+		  if (p) {
+		     char *z = p;
+		     while (*++p) {
+			if (*p != '0') z = p + 1;
+		     }
+		     if (*z) *z = '\0';
+		  }
+		  compile_warning(/*Clino reading and back clino reading disagree by %s degrees*/326, buf);
 	       }
 	       clin = (clin / var_clin - backclin / var(Q_BACKGRADIENT));
 	       var_clin = (var_clin + var(Q_BACKGRADIENT)) / 4;
