@@ -2357,8 +2357,9 @@ pt:335 Altura
 ca:335 Altitut 
 es:335 Altitud 
 it:335 Quota
-# TRANSLATE fr de pt ca es it
+#
 en:336 You may only view one 3d file at a time.
+#
 en:337 Side P@anel
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
