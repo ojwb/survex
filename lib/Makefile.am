@@ -7,6 +7,8 @@ msgs_files = ca.msg de.msg en-us.msg en.msg es.msg fr.msg it.msg
 EXTRA_DIST = bcra3.svx bcra5.svx messages.txt pfont.txt print.ini\
  named-entities.txt makefont.pl makemsgs.pl $(msgs_files) pfont.bit
 
+MAINTAINERCLEANFILES = $(msgs_files) pfont.bit
+
 pkgdata_DATA = pfont.bit print.ini bcra3.svx bcra5.svx $(msgs_files)
 
 ca.msg de.msg en_us.msg en.msg es.msg fr.msg it.msg: messages.txt makemsgs.pl
