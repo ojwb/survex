@@ -16,7 +16,7 @@ INCLUDES = -DIMG_HOSTED
 PRINT = printdm printps printpcl printhpgl
 
 # printxbm and dump3d are test programs
-EXTRA_PROGRAMS = caverot xcaverot printwin aven printxbm dump3d
+EXTRA_PROGRAMS = caverot xcaverot printwin aven avengl printxbm dump3d
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern $(PRINT) diffpos extend survex cad3d sorterr \
  3dtopos @CAVEROT@ @AVEN@ @PRINTWIN@
