@@ -37,8 +37,6 @@ controls; shift-ed keys in xcaverot should move faster...
 
 switch_to_(plan|elevation) in xcaverot should animate.
 
-Merge in Mark's new version of aven (which uses wxwindows)
-
 caverot: by default put crosses on those points with no legs attached
 
 caverot: click on station to centre; type in station to centre
@@ -139,8 +137,6 @@ From: Olly
 
 cavern: auto declination? NEW_STYLE?
 
-Sort out Leandro's sketch output stuff in cad3d
-
 update translations
 
 chase up zombies
@@ -148,4 +144,8 @@ chase up zombies
 resolve entries in TODO; resolve FIXMEs in code
 
 test diving data with compass omitted (plumbed)
+
+use "highest" title?
+
+img_point structure?
 

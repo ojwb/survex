@@ -62,6 +62,8 @@ Changes in 0.97-prerelease1:
 
 * 3dtodxf: renamed to cad3d since it can now produce DXF or sketch format.
 
+* aven: rewritten to use wxwindows.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling
