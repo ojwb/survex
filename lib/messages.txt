@@ -1652,7 +1652,10 @@ pt:197 " a %4.2fm)"
 ca:197 " a %4.2fm)"
 es:197 " en %4.2fm)"
 it:197 " a %4.2fm)"
-# XXX 198 199
+# TRANSLATE
+en:198 Expecting date
+#
+# XXX 199
 #
 #  Messages for Aven
 #
