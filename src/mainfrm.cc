@@ -585,6 +585,7 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* presmenu = new wxMenu;
     presmenu->Append(menu_PRES_NEW, "&New");
+    // FIXME : wxGTK seems to copy the accelerator from File->Open (!?!)
     presmenu->Append(menu_PRES_OPEN, "&Open...");
     presmenu->Append(menu_PRES_SAVE, "&Save");
     presmenu->Append(menu_PRES_SAVE_AS, "Save &As...");
