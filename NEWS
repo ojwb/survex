@@ -1,5 +1,7 @@
 Changes in 1.0.8:
 
+* aven: reduced memory usage and increased speed and responsiveness.
+
 * aven: rate of rotation and switching between plan and elevation now adjusted
   to the speed of redraw, so aven behaves in a similar way independent of the
   speed of the computer or size of the survey.

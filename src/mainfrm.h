@@ -128,7 +128,6 @@ class PointInfo {
     Double x, y, z;
     bool isLine; // false => move, true => draw line
     bool isSurface;
-    wxPoint* dest;
 
 public:
     Double GetX() const { return x; }
@@ -136,9 +135,6 @@ public:
     Double GetZ() const { return z; }
     bool IsLine() const { return isLine; }
     bool IsSurface() const { return isSurface; }
-
-    void SetDestination(wxPoint* p) { dest = p; }
-    wxPoint* GetDestination() const { return dest; }
 };
 
 class LabelInfo {

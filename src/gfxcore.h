@@ -42,21 +42,6 @@ using std::list;
 class MainFrm;
 class PointInfo;
 
-#define SCALE_ALL 0
-#define SCALE_NAMES 1
-#define SCALE_CROSSES 2
-#define SCALE_LEGS 3
-#define SCALE_SPECIALPTS 4
-#define SCALE_HIGHLIGHTEDPTS 5
-
-#ifdef AVENGL
-struct Double3 {
-    Double x;
-    Double y;
-    Double z;
-};
-#endif
-
 struct ColourTriple {
     // RGB triple: values are from 0-255 inclusive for each component.
     int r;
@@ -83,15 +68,12 @@ enum AvenColour {
     col_LAST // must be the last entry here
 };
 
-class SpecialPoint {
+class Point {
     friend class GfxCore;
-
     Double x, y, z;
-    AvenColour colour;
-    int size;
-#ifndef AVENGL
-    int screen_x, screen_y;
-#endif
+public:
+    Point() {}
+    Point(Double x_, Double y_, Double z_) : x(x_), y(y_), z(z_) {}
 };
 
 class LabelInfo;
@@ -112,9 +94,7 @@ class GfxCore : public wxWindow {
 	    Double z;
 	} translation;
 	struct {
-	    int x;
-	    int y;
-	    int z;
+	    int x, y;
 	} display_shift;
     } m_Params;
 
@@ -124,7 +104,7 @@ class GfxCore : public wxWindow {
 	    Double x, y, z;
 	} translation;
 	struct {
-	    int x, y, z;
+	    int x, y;
 	} display_shift;
 	Double scale;
 	Double pan_angle;
@@ -172,22 +152,11 @@ class GfxCore : public wxWindow {
 	lock_XY = lock_X | lock_Y
     };
 
-    struct {
-#ifdef AVENGL
-	// For the OpenGL version we store the real (x, y, z) coordinates of
-	// each station.
-	Double3* vertices;
-#else
-	// For the non-OpenGL version we store the screen coordinates of
-	// each station after the transformation has been applied.
-	wxPoint* vertices;
-#endif
-	int* num_segs;
-    } m_CrossData;
+    Point* m_CrossData;
 
     struct PlotData {
-	wxPoint* vertices;
-	wxPoint* surface_vertices;
+	Point *vertices;
+	Point *surface_vertices;
 	int* num_segs;
 	int* surface_num_segs;
     };
@@ -201,8 +170,7 @@ class GfxCore : public wxWindow {
     } m_ScaleBar;
 
     struct HighlightedPt {
-	int x;
-	int y;
+	LabelInfo *label;
 	HighlightFlags flags;
     };
 
@@ -230,7 +198,7 @@ class GfxCore : public wxWindow {
 	LabelInfo* label;
     };
 
-    list<SpecialPoint> m_SpecialPoints;
+    list<Point> m_SpecialPoints;
 #ifdef AVENPRES
     list<pair<PresData, Quaternion> > m_Presentation;
     list<pair<PresData, Quaternion> >::iterator m_PresIterator;
@@ -300,7 +268,6 @@ class GfxCore : public wxWindow {
     list<GridPointInfo>* m_PointGrid;
     bool m_HitTestGridValid;
     bool m_TerrainLoaded;
-    list<PointInfo> m_PointCache;
 
 #ifdef AVENPRES
     Double m_DoingPresStep;
@@ -315,9 +282,7 @@ class GfxCore : public wxWindow {
 	    Double z;
 	} translation;
 	struct {
-	    int x;
-	    int y;
-	    int z;
+	    int x, y;
 	} display_shift;
     };
 
@@ -401,8 +366,8 @@ class GfxCore : public wxWindow {
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
-    void SetScale(Double scale, int what = SCALE_ALL);
-    void SetScaleInitial(Double scale, int what = SCALE_ALL);
+    void SetScale(Double scale);
+    void SetScaleInitial(Double scale);
     void RedrawOffscreen();
     void TryToFreeArrays();
     void FirstShow();
