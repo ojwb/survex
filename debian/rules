@@ -2,7 +2,7 @@
 # Based on sample debian/rules that uses debhelper.
 # GPL copyright 1997 to 1999 by Joey Hess.
 # Copyright (C) 2001 Wookey
-# Copyright (C) 2001 Olly Betts
+# Copyright (C) 2001,2002 Olly Betts
 #
 # This is a multibinary package. You to build any of the binary packages
 # independently, via binary-<package> targets.
@@ -22,7 +22,14 @@ build-stamp:
 
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex
 	$(MAKE)
-
+ifeq	($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
+	echo ".$(DEB_HOST_GNU_TYPE).$(DEB_BUILD_GNU_TYPE)."
+	: # Run make check but don't abort if it fails for now - we've only
+	: # just enabled this so if it fails on any platform, the currently
+	: # accepted build is equally broken.  Remove the '-' once we verified
+	: # that make check passes on all platforms.
+	-$(MAKE) check
+endif
 	touch build-stamp
 
 clean:
