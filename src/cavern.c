@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2001 Olly Betts
+ * Copyright (C) 1991-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -446,12 +446,15 @@ do_stats(void)
 	  totvert);
    putnl();
 
-   do_range(2, /*Vertical range = %4.2fm (from */135,
-	    /* at %4.2fm to */136, /* at %4.2fm)*/137);
-   do_range(1, /*North-South range = %4.2fm (from */148,
-	    /* at %4.2fm to */196, /* at %4.2fm)*/197);
-   do_range(0, /*East-West range = %4.2fm (from */149,
-	    /* at %4.2fm to */196, /* at %4.2fm)*/197);
+   /* If there's no underground survey, we've no ranges */
+   if (pfxHi[0]) {
+      do_range(2, /*Vertical range = %4.2fm (from */135,
+	       /* at %4.2fm to */136, /* at %4.2fm)*/137);
+      do_range(1, /*North-South range = %4.2fm (from */148,
+	       /* at %4.2fm to */196, /* at %4.2fm)*/197);
+      do_range(0, /*East-West range = %4.2fm (from */149,
+	       /* at %4.2fm to */196, /* at %4.2fm)*/197);
+   }
 
    print_node_stats();
    /* Also, could give:
