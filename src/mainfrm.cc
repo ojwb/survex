@@ -1432,9 +1432,9 @@ void MainFrm::OnClose(wxCloseEvent&)
 void MainFrm::OnAbout(wxCommandEvent&)
 {
     AvenAllowOnTop ontop(this);
-    wxDialog* dlg = new AboutDlg(this);
-    dlg->Centre();
-    dlg->ShowModal();
+    AboutDlg dlg(this);
+    dlg.Centre();
+    dlg.ShowModal();
 }
 
 void MainFrm::ClearTreeSelection()
