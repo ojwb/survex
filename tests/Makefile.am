@@ -61,4 +61,5 @@ cmd_fix_bad.svx\
 cmd_sd.svx cmd_sd_bad.svx\
 cmd_set.svx cmd_set_bad.svx\
 unusedstation.svx exportnakedbegin.svx\
+oldestyle.svx\
 pos.pos v0.3d v1.3d v2.3d v3.3d
