@@ -17,15 +17,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* majority of new file interface... */
 #include <config.h>
+#include "new3dout.h"
+
+#ifdef NEW3DFORMAT
+
+/* majority of new file interface... */
 #include "math.h"
 
-#include "new3dout.h"
-#ifdef NEW3DFORMAT
 twig *rhizome, *limb;
 char *firstfilename, *startingdir;
 int fUseNewFormat = 0;
+
+static enum {
+   IMG_NONE = 0,
+   IMG_FILENOTFOUND = /*Couldn't open data file `%s'*/24,
+   IMG_OUTOFMEMORY  = /*Out of memory %.0s*/38,
+   IMG_DIRECTORY    = /*Filename `%s' refers to directory*/44,
+   IMG_CANTOPENOUT  = /*Failed to open output file `%s'*/47,
+   IMG_BADFORMAT    = /*Bad 3d image file `%s'*/106
+} img_errno = IMG_NONE;
 
 /* put counted string */
 static int
@@ -97,18 +108,21 @@ cave_write_stn(node *nod)
 static void
 cave_write_pos(pos *pid, prefix *pre)
 {
-  unsigned char length;
-  unsigned char ltag;
-  const char *tag;
   if (pid->id == 0) {
+    const char *tag;
+    unsigned int len;
     pid->id = (INT32_T)statcount;
     tag = pre->ident;
-    ltag = strlen(tag);
-    length = ltag + 12 + 4 + 1;
-    /* FIXME: assumes that length of name is a single byte */
-    /* ltag for station name, 12 for data, 4 for id, 1 for length of name */
+    len = cslen(tag) + 12 + 4;
+    /* storage station name, 12 for data, 4 for id */
     putc(STATION_3D, pimgOut->fh);
-    putc(length, pimgOut->fh);
+    if (len == 0 || len > 255) {
+       if (putc(0, pimgOut->fh) == EOF) return EOF;
+       put32((INT32_T)len, pimgOut->fh);
+       if (ferror(pimgOut->fh)) return EOF;
+    } else {
+       if (putc((unsigned char)len, pimgOut->fh) == EOF) return EOF;
+    }
     put32((INT32_T)statcount, pimgOut->fh); /* station ID */
     put32((INT32_T)(pid->p[0] * 100.0), pimgOut->fh); /* X in cm */
     put32((INT32_T)(pid->p[1] * 100.0), pimgOut->fh); /* Y */
@@ -128,20 +142,20 @@ cave_open_write(const char *fnm, const char *title)
 {
    img *pimg;
    if (fDirectory(fnm)) {
-     /*      img_errno = IMG_DIRECTORY;*/
+      img_errno = IMG_DIRECTORY;
       return NULL;
    }
 
    pimg = (img *)xosmalloc(ossizeof(img));
    if (pimg == NULL) {
-     /* img_errno = IMG_OUTOFMEMORY; */
+      img_errno = IMG_OUTOFMEMORY;
       return NULL;
    }
 
    pimg->fh = fopen(fnm, "wb");
    if (!pimg->fh) {
       osfree(pimg);
-      /* img_errno = IMG_CANTOPENOUT; */
+      img_errno = IMG_CANTOPENOUT;
       return NULL;
    }
    fputs("SVX3d", pimg->fh);
@@ -155,9 +169,7 @@ cave_open_write(const char *fnm, const char *title)
 int
 cave_error(void)
 {
-   /* FIXME: */
-   printf("A cave error has occured. Hmmm\n");
-   return 0;
+   return img_errno;
 }
 
 void
@@ -372,4 +384,5 @@ get_twig(prefix *pre)
    }
    return NULL;
 }
+
 #endif

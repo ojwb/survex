@@ -17,12 +17,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef NEW3DOUT_H
+# define NEW3DOUT_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include "cavern.h"
-#include "img.h"
-#include "3ddefs.h"
 
 #ifdef NEW3DFORMAT
+   
+#include "img.h"
+#include "3ddefs.h"
 
 extern char *startingdir, *firstfilename;
 
@@ -43,4 +51,10 @@ void create_twig(prefix *pre, const char *fname);
 /* returns the active twig of a prefix */
 twig *get_twig(prefix *pre);
 
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+   
 #endif
