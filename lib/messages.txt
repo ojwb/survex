@@ -1974,13 +1974,13 @@ ca:300 %s: l'opci&oacute; `%s' &eacute;s amb&iacute;gua&#10;
 es:300 %s: la opci&oacute;n `%s' es ambigua&#10;
 it:300 %s: l'opzione `%s' &egrave; ambigua&#10;
 #
-en:301 %s: option `-W `%s' is ambiguous&#10;
-fr:301 %s: l'option `-W `%s' est ambig&uuml;e&#10;
-de:301 %s: Die Option `-W `%s' ist nicht eindeutig&#10;
-pt,pt-br:301 %s: op&ccedil;&atilde;o `-W `%s' &eacute; amb&iacute;gua&#10;
-ca:301 %s: l'opci&oacute; `-W `%s' &eacute;s amb&iacute;gua&#10;
-es:301 %s: la opci&oacute;n `-W `%s' es ambigua&#10;
-it:301 %s: l'opzione `-W `%s' &egrave; ambigua&#10;
+en:301 %s: option `-W %s' is ambiguous&#10;
+fr:301 %s: l'option `-W %s' est ambig&uuml;e&#10;
+de:301 %s: Die Option `-W %s' ist nicht eindeutig&#10;
+pt,pt-br:301 %s: op&ccedil;&atilde;o `-W %s' &eacute; amb&iacute;gua&#10;
+ca:301 %s: l'opci&oacute; `-W %s' &eacute;s amb&iacute;gua&#10;
+es:301 %s: la opci&oacute;n `-W %s' es ambigua&#10;
+it:301 %s: l'opzione `-W %s' &egrave; ambigua&#10;
 #
 en:302 %s: option `%c%s' doesn't allow an argument&#10;
 fr:302 %s: l'option `%c%s' n'a pas d'argument&#10;
@@ -2000,14 +2000,14 @@ ca:303 %s: l'opci&oacute; `--%s' no accepta arguments&#10;
 es:303 %s: la opci&oacute;n `--%s' no permite argumento&#10;
 it:303 %s: l'opzione `--%s' non permette un argomento&#10;
 #
-en:304 %s: option `-W `%s' doesn't allow an argument&#10;
-fr:304 %s: l'option `-W `%s' n'a pas d'argument&#10;
-de:304 %s: Die Option `-W `%s' erlaubt kein Argmuent&#10;
-pt:304 %s: op&ccedil;&atilde;o `-W `%s' n&atilde;o recebe nenhum argumento&#10;
-pt-br:304 %s: op&ccedil;&atilde;o `-W `%s' n&atilde;o permite argumentos&#10;
-ca:304 %s: l'opci&oacute; `-W `%s' no accepta arguments&#10;
-es:304 %s: la opci&oacute;n `-W `%s' no permite argumento&#10;
-it:304 %s: l'opzione `-W `%s' non permette un argomento&#10;
+en:304 %s: option `-W %s' doesn't allow an argument&#10;
+fr:304 %s: l'option `-W %s' n'a pas d'argument&#10;
+de:304 %s: Die Option `-W %s' erlaubt kein Argmuent&#10;
+pt:304 %s: op&ccedil;&atilde;o `-W %s' n&atilde;o recebe nenhum argumento&#10;
+pt-br:304 %s: op&ccedil;&atilde;o `-W %s' n&atilde;o permite argumentos&#10;
+ca:304 %s: l'opci&oacute; `-W %s' no accepta arguments&#10;
+es:304 %s: la opci&oacute;n `-W %s' no permite argumento&#10;
+it:304 %s: l'opzione `-W %s' non permette un argomento&#10;
 #
 en:305 %s: option `%s' requires an argument&#10;
 fr:305 %s: l'option `%s' requiert un argument&#10;
