@@ -35,6 +35,10 @@
 * Renamed truncate function in commands.c to avoid clash with library
   truncate function on FreeBSD
 
+* Warn that *prefix and *default are deprecated
+
+* Fixed obscure problems when configure is rerun with a different prefix
+
 Changes in 0.91:
 
 * Fixed problem with message files with accented characters

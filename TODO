@@ -24,7 +24,7 @@ From: Olly
 
 Tidy up:
 message.c
-xcaverot.c (get latest from JP first...)
+xcaverot.c
 cave.c
 
 Date: 15 Dec 1998
@@ -89,4 +89,9 @@ From: Olly
 
 RISC OS caverot should probably fall back to using 2 or even just one screen
 bank if it can't find a mode where 3 works.
+
+Date: 13 Sep 1999
+From: Olly
+
+Need to catch *begin with no *end
 
