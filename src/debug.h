@@ -1,4 +1,4 @@
-/* > debug.h
+/* debug.h
  * SURVEX debugging info control macros
  * Copyright (C) 1993-1996,2001 Olly Betts
  *
@@ -38,26 +38,19 @@
 # define DEBUG_INVALID 0
 #endif
 
-/* macro to turn on|off extra info given for fatal(5,...) (bug in proggy) */
-#ifdef DEBUG_INVALID
-# define DEBUG_XTRA(X) X
-#else
-# define DEBUG_XTRA(X)
-#endif
-
 /* macro to report detected bug */
-#define BUG(M) BLK(DEBUG_XTRA(fputsnl(__FILE__":"STRING(__LINE__)": "M, STDERR);) fatalerror(11);)
+#ifdef DEBUG_INVALID
+# define BUG(M) BLK(fputsnl(__FILE__":"STRING(__LINE__)": "M, STDERR);\
+ fatalerror(/*Bug in program detected! Please report this to the authors*/11);)
+#else
+# define BUG(M) fatalerror(/*Bug in program detected! Please report this to the authors*/11)
+#endif
 
 /* assert macro, which calls BUG() if it fails */
 #define ASSERT(E) if (E) {} else BUG("assert("#E") failed")
 
 /* assert macro, which calls BUG() if it fails */
 #define ASSERT2(E, M) if (E) {} else BUG("assert("#E") failed - "M)
-
-/* error.c */
-
-/* show amounts of memory allocated, etc */
-#define DEBUG_MALLOC 0
 
 /* datain.c */
 
@@ -68,8 +61,6 @@
 
 /* network.c */
 
-/* send error statistics to stdout instead of to a file (for debugging) */
-#define ERRSTATS_TO_STDOUT 0
 /* print info generally useful for debugging */
 #define PRINT_NETBITS 0
 /* puts '+' for legs 'inside' big (>3) nodes */
@@ -77,21 +68,11 @@
 
 /* matrix.c */
 
-/* print the station table built during matrix construction */
-#define PRINT_STN_TAB 0
 /* print out the matrices */
 #define PRINT_MATRICES 0
-/* display the status of all nodes */
-#define DEBUG_DISPLAY_STATUS 0
-/* display info on all the stations */
-#define DEBUG_DISPLAY_STN_INFO 0
 /* display info about where we are in algorithm */
 #define DEBUG_MATRIX 0
 /* print out bumf as matrix is built from network */
 #define DEBUG_MATRIX_BUILD 0
 
-/* cavern.c */
-
-/* display lots of info as statistics are calculated */
-#define DEBUG_STATS 0
 #endif
