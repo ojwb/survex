@@ -262,9 +262,8 @@ class GfxCore : public wxWindow {
     Double m_PanAngle;
     bool m_Rotating;
     Double m_RotationStep;
+    int m_SwitchingTo;
     bool m_ReverseControls;
-    bool m_SwitchingToPlan;
-    bool m_SwitchingToElevation;
     bool m_Crosses;
     bool m_Legs;
     bool m_Names;

@@ -39,6 +39,10 @@
 #define TEXT_COLOUR  wxColour(0, 255, 40)
 #define LABEL_COLOUR wxColour(160, 255, 0)
 
+// Values for m_SwitchingTo
+#define PLAN 1
+#define ELEVATION 2
+
 #ifdef AVENGL
 static void* LABEL_FONT = GLUT_BITMAP_HELVETICA_10;
 static const Double SURFACE_ALPHA = 0.6;
@@ -148,8 +152,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_ReverseControls = false;
     m_LabelGrid = NULL;
     m_Rotating = false;
-    m_SwitchingToPlan = false;
-    m_SwitchingToElevation = false;
+    m_SwitchingTo = 0;
     m_Entrances = false;
     m_FixedPts = false;
     m_ExportedPts = false;
@@ -1056,7 +1059,7 @@ void GfxCore::RedrawOffscreen()
 	}
 
 
-	if (!m_Rotating && !m_SwitchingToPlan && !m_SwitchingToElevation
+	if (!m_Rotating && !m_SwitchingTo
 #ifdef AVENPRES
 	    && !(m_DoingPresStep >= 0 && m_DoingPresStep <= 100)
 #endif
@@ -2336,7 +2339,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	m_Parent->ClearCoords();
     }
 
-    if (!m_SwitchingToPlan && !m_SwitchingToElevation) {
+    if (!m_SwitchingTo) {
 	if (m_DraggingLeft) {
 	  if (!m_FreeRotMode) {
 	      wxCoord x0 = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
@@ -2720,8 +2723,7 @@ void GfxCore::DefaultParameters()
     m_FreeRotMode = false;
     m_RotationStep = M_PI / 6.0;
     m_Rotating = false;
-    m_SwitchingToPlan = false;
-    m_SwitchingToElevation = false;
+    m_SwitchingTo = 0;
     m_Entrances = false;
     m_FixedPts = false;
     m_ExportedPts = false;
@@ -2748,14 +2750,13 @@ void GfxCore::OnElevation()
     // Switch to elevation view.
 
     timer.Start(drawtime);
-    m_SwitchingToElevation = true;
-    m_SwitchingToPlan = false;
+    m_SwitchingTo = ELEVATION;
 }
 
 void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_SwitchingToPlan &&
-		!m_SwitchingToElevation && m_Lock == lock_NONE && m_TiltAngle != 0.0);
+    cmd.Enable(m_PlotData != NULL && !m_SwitchingTo &&
+	       m_Lock == lock_NONE && m_TiltAngle != 0.0);
 }
 
 void GfxCore::OnHigherViewpoint(bool accel)
@@ -2789,14 +2790,13 @@ void GfxCore::OnPlan()
     // Switch to plan view.
 
     timer.Start(drawtime);
-    m_SwitchingToPlan = true;
-    m_SwitchingToElevation = false;
+    m_SwitchingTo = PLAN;
 }
 
 void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_SwitchingToElevation &&
-		!m_SwitchingToPlan && m_Lock == lock_NONE && m_TiltAngle != M_PI_2);
+    cmd.Enable(m_PlotData != NULL && !m_SwitchingTo &&
+	       m_Lock == lock_NONE && m_TiltAngle != M_PI_2);
 }
 
 void GfxCore::OnShiftDisplayDown(bool accel)
@@ -2895,16 +2895,16 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 	TurnCave(m_RotationStep * t);
     }
     // When switching to plan view...
-    if (m_SwitchingToPlan) {
+    if (m_SwitchingTo == PLAN) {
 	if (m_TiltAngle == M_PI_2) {
-	    m_SwitchingToPlan = false;
+	    m_SwitchingTo = 0;
 	}
 	TiltCave(M_PI_2 * t);
     }
     // When switching to elevation view...
-    if (m_SwitchingToElevation) {
+    if (m_SwitchingTo == ELEVATION) {
 	if (m_TiltAngle == 0.0) {
-	    m_SwitchingToElevation = false;
+	    m_SwitchingTo= 0;
 	}
 	else if (m_TiltAngle < 0.0) {
 	    if (m_TiltAngle > (-M_PI_2 * t)) {
@@ -2914,7 +2914,7 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 		TiltCave(M_PI_2 * t);
 	    }
 	    if (m_TiltAngle >= 0.0) {
-		m_SwitchingToElevation = false;
+		m_SwitchingTo = 0;
 	    }
 	}
 	else {
@@ -2926,7 +2926,7 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 	    }
 
 	    if (m_TiltAngle <= 0.0) {
-		m_SwitchingToElevation = false;
+		m_SwitchingTo = 0;
 	    }
 	}
     }
