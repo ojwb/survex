@@ -1,8 +1,11 @@
 survex (1.0.14) unstable; urgency=low
 
   * Improved handling of Compass PLT files and CMAP xyz files.
+  * aven: when picking non-overlapping labels, show a slight preference to
+    shorter labels with the aim of displaying more labels.
   * aven: fixed hard to notice problem which could cause the cave to appear
     tilted sideways after a lot of manipulation.
+  * cavern: Modest speed improvement (0.5% for sample dataset).
   * cavern: fixed a rarely sighted bug which caused erroneous error about some
     stations not being attached to a fixed point.
   * cavern: fixed clino readings and DIRECTION to work in interleaved data.
@@ -15,7 +18,7 @@ survex (1.0.14) unstable; urgency=low
     once again.  Added regression test for this.
   * Updated documentation.
 
- -- Wookey <wookey@survex.com>  Mon, 09 Sep 2002 17:55:23 +0100
+ -- Wookey <wookey@survex.com>  Sat, 14 Sep 2002 15:26:23 +0100
 
 survex (1.0.13) unstable; urgency=low
 
