@@ -219,8 +219,11 @@ dump_node(node *stn)
 	  stn, stn->name, stn->status, fixed(stn) ? "" : "un");
 
    for (d = 0; d <= 2; d++) {
-      if (stn->leg[d])
-	 printf("  leg %d -> stn [%p]\n", d, stn->leg[d]->l.to);
+      if (stn->leg[d]) {
+	 printf("  leg %d -> stn [%p] ", d, stn->leg[d]->l.to);
+	 print_prefix(stn->leg[d]->l.to->name);
+	 printf("\n");
+      }
    }
 }
 
@@ -237,17 +240,6 @@ extern void
 dump_network(void)
 {
    node *stn;
-   int d;
    printf("Nodes with status!=statRemvd\n");
-   FOR_EACH_STN(stn) {
-      if (stn->status) {
-	 printf("stn [%p] name (%p) status %d %sfixed\n",
-		stn, stn->name, stn->status, fixed(stn) ? "": "un");
-
-	 for (d = 0; d <= 2; d++) {
-	    if (stn->leg[d])
-	       printf("  leg %d -> stn [%p]\n", d, stn->leg[d]->l.to);
-	 }
-      }
-   }
+   FOR_EACH_STN(stn) if (stn->status) dump_node(stn);
 }
