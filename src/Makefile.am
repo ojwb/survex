@@ -81,7 +81,7 @@ riscos/makefile: Makefile.am $(top_srcdir)/hto/Makefile.am miniam.pl
 
 ### Define customising flags here (eg -DNO_MOUSE_SUPPORT, -DISO8859_1)
 ## at start of command line
-#UFLG = -DDEBUG_INVALID -DNO_COVARIANCES
+#UFLG = -DDEBUG_INVALID
 ## at end of command line when linking
 #ULFLG =
 ##ULFLG = C:Asylum.o.AsylumLib
