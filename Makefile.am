@@ -4,6 +4,9 @@ EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES
 
 SUBDIRS = hto src lib doc tests
 
+# seem to need this for "make distclean" to recurse?!?
+DIST_SUBDIRS = $(SUBDIRS)
+
 extra_bin = lib/*.msg lib/pfont.bit
 extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
