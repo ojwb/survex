@@ -1,4 +1,0 @@
-*fix 1 reference 0 1 2
-*fix 2 reference 1 2 3 1.0
-*fix 3 reference 2 3 4 1.0 2.0
-*fix 4 reference 3 4 5 1.0 2.0 3.0

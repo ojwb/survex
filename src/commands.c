@@ -274,10 +274,8 @@ match_units(void)
 	{"YARDS",         UNITS_YARDS },
 	{NULL,            UNITS_NULL }
    };
-   long fp = get_pos();
    int units = match_tok(utab, TABSIZE(utab));
    if (units == UNITS_NULL) {
-      set_pos(fp);
       compile_error(/*Unknown units `%s'*/35, buffer);
    } else if (units == UNITS_PERCENT) {
       NOT_YET;
@@ -550,25 +548,28 @@ cmd_fix(void)
    static node *stnOmitAlready = NULL;
    real x, y, z;
    bool fRef = 0;
-   long fp;
+   filepos fp;
 
    fix_name = read_prefix_stn(fFalse, fTrue);
    fix_name->sflags |= BIT(SFLAGS_FIXED);
 
-   fp = get_pos();
+   get_pos(&fp);
    get_token();
-   if (strcmp(ucbuffer, "REFERENCE") != 0) {
-      if (*ucbuffer) set_pos(fp);
-   } else {
+   if (strcmp(ucbuffer, "REFERENCE") == 0) {
       fRef = 1;
+   } else {
+      if (*ucbuffer) set_pos(&fp);
    }
+
    x = read_numeric(fTrue);
    if (x == HUGE_REAL) {
       if (stnOmitAlready) {
-	 if (fix_name != stnOmitAlready->name)
+	 if (fix_name != stnOmitAlready->name) {
 	    compile_error(/*More than one FIX command with no coordinates*/56);
-	 else
+	    skipline();
+	 } else {
 	    compile_warning(/*Same station fixed twice with no coordinates*/61);
+	 }
 	 return;
       }
       stn = StnFromPfx(fix_name);
@@ -582,6 +583,7 @@ cmd_fix(void)
       sdx = read_numeric(fTrue);
       if (sdx != HUGE_REAL) {
 	 real sdy, sdz;
+	 real cxy = 0, cyz = 0, czx = 0;
 	 sdy = read_numeric(fTrue);
 	 if (sdy == HUGE_REAL) {
 	    /* only one variance given */
@@ -592,8 +594,14 @@ cmd_fix(void)
 	       /* two variances given - horizontal & vertical */
 	       sdz = sdy;
 	       sdy = sdx;
+	    } else {
+	       cxy = read_numeric(fTrue);
+	       if (cxy != HUGE_REAL) {
+		  /* covariances given */
+		  cyz = read_numeric(fFalse);
+		  czx = read_numeric(fFalse);
+	       }
 	    }
-	    /* FIXCOV: covariances... ? */
 	 }
 	 stn = StnFromPfx(fix_name);
 	 if (!fixed(stn)) {
@@ -616,7 +624,7 @@ cmd_fix(void)
 	    addfakeleg(fixpt, stn, 0, 0, 0,
 		       sdx * sdx, sdy * sdy, sdz * sdz
 #ifndef NO_COVARIANCES
-		       , 0, 0, 0
+		       , cxy, cyz, czx
 #endif
 		       );
 	    /* suppress "unused fixed point" warnings for this station */
@@ -897,14 +905,13 @@ cmd_data(void)
 
    style_name = osstrdup(buffer);
    do {      
-      long fp = get_pos();
-      int save_ch = ch;
+      filepos fp;
+      get_pos(&fp);
       get_token();
       d = match_tok(dtab, TABSIZE(dtab));
       /* only token allowed after IGNOREALL is NEWLINE */
       if (k && new_order[k - 1] == IgnoreAll && d != Newline) {
-	 set_pos(fp);
-	 ch = save_ch;
+	 set_pos(&fp);
 	 break;
       }
       /* Note: an unknown token is reported as trailing garbage */
@@ -1041,7 +1048,7 @@ cmd_units(void)
    int units, quantity;
    unsigned long qmask, m; /* mask with bit x set to indicate quantity x specified */
    real factor;
-   long fp;
+   filepos fp;
 
    qmask = get_qlist();
    if (!qmask) return;
@@ -1050,7 +1057,7 @@ cmd_units(void)
       return;
    }
 
-   fp = get_pos();
+   get_pos(&fp);
    /* If factor given then read units else units in buffer already */
    factor = read_numeric(fTrue);
    if (factor == HUGE_REAL) {
@@ -1059,7 +1066,7 @@ cmd_units(void)
    } else {
       /* eg check for stuff like: *UNITS LENGTH BOLLOX 3.5 METRES */
       if (*buffer != '\0') {
-	 set_pos(fp);
+	 set_pos(&fp);
 	 compile_error(/*Unknown quantity `%s'*/34, buffer);
 	 skipline();
 	 return;
@@ -1305,10 +1312,13 @@ static void
 cmd_truncate(void)
 {
    unsigned int truncate_at = 0; /* default is no truncation */
-   long fp = get_pos();
+   filepos fp;
+
+   get_pos(&fp);
+
    get_token();
    if (strcmp(ucbuffer, "OFF") != 0) {
-      if (*ucbuffer) set_pos(fp);
+      if (*ucbuffer) set_pos(&fp);
       truncate_at = read_uint();
    }
    /* for backward compatibility, "*truncate 0" means "*truncate off" */
@@ -1320,11 +1330,10 @@ cmd_require(void)
 {
    static char version[] = VERSION;
    char *p = version;
-   long fp;
-   char ch_old;
+   filepos fp;
+
    skipblanks();
-   ch_old = ch;
-   fp = get_pos();
+   get_pos(&fp);
    while (1) {
       unsigned int have, want;
       have = (unsigned int)strtoul(p, &p, 10);
@@ -1333,12 +1342,14 @@ cmd_require(void)
       if (have < want) {
 	 size_t i, len;
 	 char *v;
+	 filepos fp_tmp;
+
 	 /* find end of version number */
 	 while (isdigit(ch) || ch == '.') nextch();
-	 len = (size_t)(get_pos() - fp);
+	 get_pos(&fp_tmp);
+	 len = (size_t)(fp_tmp.offset - fp.offset);
 	 v = osmalloc(len + 1);
-	 set_pos(fp);
-	 ch = ch_old;
+	 set_pos(&fp);
 	 for (i = 0; i < len; i++) {
 	    v[i] = ch;
 	    nextch();

@@ -52,24 +52,25 @@ parse file /* = { NULL, NULL, 0, NULL } */ ;
 
 bool f_export_ok;
 
-static long fpLineStart;
+static filepos fpLineStart;
 
 static void showline(const char *dummy, int n);
 
 void
-set_pos(long offset)
+get_pos(filepos *fp)
 {
-   if (fseek(file.fh, offset, SEEK_SET) == -1)
+   fp->ch = ch;
+   fp->offset = ftell(file.fh);
+   if (fp->offset == -1)
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 }
 
-long
-get_pos(void)
+void
+set_pos(const filepos *fp)
 {
-   long result = ftell(file.fh);
-   if (result == -1)
+   ch = fp->ch;
+   if (fseek(file.fh, fp->offset, SEEK_SET) == -1)
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
-   return result;
 }
 
 static void
@@ -176,18 +177,21 @@ showline(const char *dummy, int n)
    char sz[256];
    int i, o, c;
    int state;
-   long fpCur;
+   filepos fp;
+   long cur;
+
    dummy = dummy; /* suppress warning */
 
-   fpCur = get_pos();
+   get_pos(&fp);
+   cur = fp.offset;
 
    if (n < 0) {
       n = -n;
-      fpCur -= n;
+      cur -= n;
    }
-   o = (int)(fpCur - fpLineStart - 1);
+   o = (int)(cur - fpLineStart.offset - 1);
 
-   set_pos(fpLineStart);
+   set_pos(&fpLineStart);
 
    nextch();
    i = 0;
@@ -227,7 +231,7 @@ showline(const char *dummy, int n)
       puts(sz);
    }
 
-   set_pos(fpCur);
+   set_pos(&fp);
 }
 
 #ifndef NO_PERCENTAGE
@@ -238,11 +242,12 @@ static void
 process_bol(void)
 {
    /* Note start of line for error reporting */
-   fpLineStart = get_pos();
+   get_pos(&fpLineStart);
 
 #ifndef NO_PERCENTAGE
    /* print %age of file done */
-   if (filelen > 0) printf("%d%%\r", (int)(100 * fpLineStart / filelen));
+   if (filelen > 0)
+      printf("%d%%\r", (int)(100 * fpLineStart.offset / filelen));
 #endif
 
    nextch();
@@ -327,7 +332,11 @@ data_file(const char *pth, const char *fnm)
     * However, under ANSI fseek( ..., SEEK_END) may not be supported */
    filelen = 0;
    if (fPercent) {
-      if (fseek(file.fh, 0l, SEEK_END) == 0) filelen = get_pos();
+      if (fseek(file.fh, 0l, SEEK_END) == 0) {
+	 filepos fp;
+	 get_pos(&fp);
+	 filelen = fp.offset;
+      }
       rewind(file.fh); /* reset file ptr to start & clear any error state */
    }
 #endif
@@ -411,14 +420,15 @@ handle_plumb(bool *pfPlumbed)
 
    skipblanks();
    if (isalpha(ch)) {
-      long fp = get_pos();
+      filepos fp;
+      get_pos(&fp);
       get_token();
       tok = match_tok(clino_tab, TABSIZE(clino_tab));
       if (tok != CLINO_NULL) {
 	 *pfPlumbed = fTrue;
 	 return clinos[tok];
       }
-      set_pos(fp);
+      set_pos(&fp);
    } else if (isSign(ch)) {
       int chOld = ch;
       nextch();
@@ -1027,7 +1037,7 @@ process_cartesian(prefix *fr, prefix *to, real dx, real dy, real dz,
 
    addlegbyname(fr, to, fToFirst, dx, dy, dz, var(Q_DX), var(Q_DY), var(Q_DZ)
 #ifndef NO_COVARIANCES
-		, 0, 0, 0 /* FIXCOV: need covariances */
+		, 0, 0, 0
 #endif
 		);
 

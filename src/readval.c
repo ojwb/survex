@@ -263,12 +263,12 @@ read_numeric(bool fOmit)
 {
    bool fPositive, fDigits = fFalse;
    real n = (real)0.0;
-   long int fp;
-   int chOld;
+   filepos fp;
+   int ch_old;
 
    skipblanks();
-   fp = get_pos();
-   chOld = ch;
+   get_pos(&fp);
+   ch_old = ch;
    fPositive = !isMinus(ch);
    if (isSign(ch)) nextch();
 
@@ -294,12 +294,11 @@ read_numeric(bool fOmit)
 
    /* didn't read a valid number.  If it's optional, reset filepos & return */
    if (fOmit) {
-      set_pos(fp);
-      ch = chOld;
+      set_pos(&fp);
       return HUGE_REAL;
    }
 
-   if (isOmit(chOld)) {
+   if (isOmit(ch_old)) {
       compile_error(/*Field may not be omitted*/8);
    } else {
       compile_error(/*Expecting numeric field*/9);

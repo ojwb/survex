@@ -39,8 +39,14 @@ extern parse file;
 extern bool f_export_ok;
 
 #define nextch() (ch = getc(file.fh))
-void set_pos(long offset);
-long get_pos(void);
+
+typedef struct {
+   long offset;
+   int ch;
+} filepos;
+
+void get_pos(filepos *fp);
+void set_pos(const filepos *fp);
 
 void skipblanks(void);
 

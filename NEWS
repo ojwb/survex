@@ -16,6 +16,11 @@
 * cavern: added error checks for "*flags" (with no arguments) and
   "*flags not".
 
+* cavern: you can now specify optional covariances to *FIX.
+
+* cavern: parser fixed to recover from errors as intended in a few
+  situations where it was failing to.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

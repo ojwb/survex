@@ -186,3 +186,5 @@ to test this works]
 
 print to an image file (use gd?)
 
+Allow covariances to be specified in cartesian style?
+
