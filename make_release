@@ -64,7 +64,7 @@ if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
-(
+SAVE_PATH="$PATH"
 # for building on mrs30
 if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
    PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
@@ -88,8 +88,8 @@ if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
-)
-(
+PATH="$SAVE_PATH"
+SAVE_PATH="$PATH"
 if test -d /usr/local/cross-tools/i386-mingw32msvc/bin ; then
    # binaries from http://www.devolution.com/~slouken/SDL/Xmingw32/
    PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
@@ -119,4 +119,8 @@ if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
-)
+PATH="$SAVE_PATH"
+CC=
+CXX=
+
+
