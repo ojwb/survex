@@ -659,7 +659,8 @@ process_key(void) /* and mouse! */
 #define FLAG_NOMOUSE 16
 
 typedef struct {
-   const char *msg;
+   int mesg_no;
+   const char *mesg;
    int flags;
 } flagged_msg;
 
@@ -670,40 +671,40 @@ show_help(void)
     *  to the screen */
    /* TRANSLATE */
    static flagged_msg help_msgs[] = {
-	{"                  Z,X : Faster/Slower rotation", FLAG_ALWAYS},
-	{"                    R : [R]everse direction of rotation", FLAG_ALWAYS},
-	{"          Enter,Space : Start/Stop auto-rotation", FLAG_ALWAYS},
-	{"                  C,V : Rotate cave one step clockwise/anti", FLAG_ALWAYS},
-	{"                  ',/ : Higher/Lower viewpoint", FLAG_ALWAYS},
-	{"                  ],[ : Zoom In/Out", FLAG_ALWAYS},
-	{"                  U,D : View [U]p/[D]own", FLAG_ALWAYS},
-	{"              N,S,E,W : View [N]orth/[S]outh/[E]ast/[W]est", FLAG_ALWAYS},
-	{"               Delete : Default scale, rotation rate, etc", FLAG_ALWAYS},
-	{"                  P,L : [P]lan/e[L]evation", FLAG_ALWAYS},
+	{0, "                  Z,X : Faster/Slower rotation", FLAG_ALWAYS},
+	{0, "                    R : [R]everse direction of rotation", FLAG_ALWAYS},
+	{0, "          Enter,Space : Start/Stop auto-rotation", FLAG_ALWAYS},
+	{0, "                  C,V : Rotate cave one step clockwise/anti", FLAG_ALWAYS},
+	{0, "                  ',/ : Higher/Lower viewpoint", FLAG_ALWAYS},
+	{0, "                  ],[ : Zoom In/Out", FLAG_ALWAYS},
+	{0, "                  U,D : View [U]p/[D]own", FLAG_ALWAYS},
+	{0, "              N,S,E,W : View [N]orth/[S]outh/[E]ast/[W]est", FLAG_ALWAYS},
+	{0, "               Delete : Default scale, rotation rate, etc", FLAG_ALWAYS},
+	{0, "                  P,L : [P]lan/e[L]evation", FLAG_ALWAYS},
       /*  "                    I : [I]nput values", */
       /*  "                  3,# : Toggle [3]D goggles view", */
-	{"    Cursor Left,Right : Cave [Left]/[Right] (on screen)", FLAG_ALWAYS},
-	{"       Cursor Up,Down : Cave [Up]/[Down] (on screen)", FLAG_ALWAYS},
+	{0, "    Cursor Left,Right : Cave [Left]/[Right] (on screen)", FLAG_ALWAYS},
+	{0, "       Cursor Up,Down : Cave [Up]/[Down] (on screen)", FLAG_ALWAYS},
       /*  "    Sft Copy + Letter : Store view in store <Letter>", */
       /*  "        Copy + Letter : Recall view in store <Letter>", */
-	{"               Ctrl-N : Toggle display of station [N]ames", FLAG_ALWAYS},
-	{"               Ctrl-X : Toggle display of crosses ([X]s) at stations", FLAG_ALWAYS},
-	{"               Ctrl-L : Toggle display of survey [L]egs", FLAG_ALWAYS},
-	{"               Ctrl-A : Toggle display of [A]ll/skeleton when moving", FLAG_ALWAYS},
-	{"                    O : Toggle display of non-overlapping/all names", FLAG_ALWAYS},
-	{"               Ctrl-R : Reverse sense of controls", FLAG_ALWAYS},
-	{"               ESCAPE : Quit program", FLAG_ALWAYS},
-	{"             Shift accelerates all movement keys", FLAG_ALWAYS},
-	{"", FLAG_ALWAYS},
-	{"                    H : [H]elp screen (this!)", FLAG_ALWAYS},
-	{"", FLAG_ALWAYS},
-	{"Mouse controls:  LEFT : left/right rotates, up/down zooms", FLAG_MOUSE},
-	{"               MIDDLE : up/down tilts", FLAG_MOUSE3},
-	{"                RIGHT : mouse moves cave", FLAG_MOUSE2},
-	{msgPerm(/*"No mouse detected"*/100), FLAG_NOMOUSE},
-	{"", FLAG_ALWAYS},
-	{"              PRESS  ANY  KEY  TO  CONTINUE", FLAG_ALWAYS},
-	{NULL, 0}
+	{0, "               Ctrl-N : Toggle display of station [N]ames", FLAG_ALWAYS},
+	{0, "               Ctrl-X : Toggle display of crosses ([X]s) at stations", FLAG_ALWAYS},
+	{0, "               Ctrl-L : Toggle display of survey [L]egs", FLAG_ALWAYS},
+	{0, "               Ctrl-A : Toggle display of [A]ll/skeleton when moving", FLAG_ALWAYS},
+	{0, "                    O : Toggle display of non-overlapping/all names", FLAG_ALWAYS},
+	{0, "               Ctrl-R : Reverse sense of controls", FLAG_ALWAYS},
+	{0, "               ESCAPE : Quit program", FLAG_ALWAYS},
+	{0, "             Shift accelerates all movement keys", FLAG_ALWAYS},
+	{0, NULL, FLAG_ALWAYS},
+	{0, "                    H : [H]elp screen (this!)", FLAG_ALWAYS},
+	{0, NULL, FLAG_ALWAYS},
+	{0, "Mouse controls:  LEFT : left/right rotates, up/down zooms", FLAG_MOUSE},
+	{0, "               MIDDLE : up/down tilts", FLAG_MOUSE3},
+	{0, "                RIGHT : mouse moves cave", FLAG_MOUSE2},
+	{/*"No mouse detected"*/100, NULL, FLAG_NOMOUSE},
+	{0, NULL, FLAG_ALWAYS},
+	{0, "              PRESS  ANY  KEY  TO  CONTINUE", FLAG_ALWAYS},
+	{0, NULL, 0}
    };
    int i, flags, y;
 
@@ -718,9 +719,14 @@ show_help(void)
    set_tcolour(colHelp);
 
    y = 0;
-   for (i = 0; help_msgs[i].msg; i++) {
+   for (i = 0; help_msgs[i].flags; i++) {
       if (help_msgs[i].flags & flags) {
-	 text_xy(4, 2 + y, help_msgs[i].msg);
+	 char *p;
+	 if (help_msgs[i].mesg_no)
+	    p = msg(help_msgs[i].mesg_no);
+	 else
+	    p = help_msgs[i].mesg;
+	 if (p) text_xy(4, 2 + y, p);
 	 y++;
       }
    }
