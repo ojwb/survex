@@ -51,16 +51,16 @@ extern void check_var(const var *v) {
    for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) {
 	 char buf[32];
-	 sprintf(buf, "%6.3f", (*v)[i][j]);
+	 sprintf(buf, "%6.3f", V(i, j));
 	 if (strstr(buf, "NaN")) printf("*** NaN!!!\n"), bad = 1, ok = 1;
-	 if ((*v)[i][j] != 0.0) ok = 1;
+	 if (V(i, j) != 0.0) ok = 1;
       }
    }
    if (!ok) return; /* ignore all-zero matrices */
 
    for (i = 0; i < 3; i++) {
-      det += (*v)[i][0] * ((*v)[(i + 1) % 3][1] * (*v)[(i + 2) % 3][2] -
-			   (*v)[(i + 1) % 3][2] * (*v)[(i + 2) % 3][1]);
+      det += V(i, 0) * (V((i + 1) % 3, 1) * V((i + 2) % 3, 2) -
+			V((i + 1) % 3, 2) * V((i + 2) % 3, 1));
    }
 
    if (fabs(det) < THRESHOLD)
@@ -171,7 +171,7 @@ copy_link(linkfor *leg)
  * in the reverse of leg2, if leg2 doesn't hold data
  */
 extern linkfor *
-addto_link(linkfor *leg, linkfor *leg2)
+addto_link(linkfor *leg, const linkfor *leg2)
 {
    if (data_here(leg2)) {
       adddd(&leg->d, &leg->d, &leg2->d);
@@ -553,6 +553,7 @@ invert_var(var *inv, const var *v)
    return 1;
 }
 #else
+#define V(A,B) ((*v)[A][B])
 extern int
 invert_var(var *inv, const var *v)
 {
@@ -563,8 +564,8 @@ invert_var(var *inv, const var *v)
 
    check_var(v);
    for (i = 0; i < 3; i++) {
-      det += (*v)[i][0] * ((*v)[(i + 1) % 3][1] * (*v)[(i + 2) % 3][2] -
-			   (*v)[(i + 1) % 3][2] * (*v)[(i + 2) % 3][1]);
+      det += V(i, 0) * (V((i + 1) % 3, 1) * V((i + 2) % 3, 2) -
+			V((i + 1) % 3, 2) * V((i + 2) % 3, 1));
    }
 
    if (fabs(det) < THRESHOLD) {

@@ -20,7 +20,7 @@
 extern node *StnFromPfx(prefix *name);
 
 extern linkfor *copy_link(linkfor *leg);
-extern linkfor *addto_link(linkfor *leg, linkfor *leg2);
+extern linkfor *addto_link(linkfor *leg, const linkfor *leg2);
 
 extern char freeleg(node **stnptr);
 
