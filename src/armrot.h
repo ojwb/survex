@@ -1,6 +1,6 @@
 /* > armrot.h
  * Caverot plot & translate headers for RISCOS - armrot.s contains ARM code
- * Copyright (C) 1993,1994,1995 Olly Betts
+ * Copyright (C) 1993,1994,1995,1997 Olly Betts
  */
 
 /*
@@ -12,6 +12,7 @@
 1994.03.30 moved arc specific stuff from caverot.h to here
 1994.09.23 sliding point implemented
 1995.01.24 removed CROSS
+1997.05.29 STOP changed from -1 to 0
 */
 
 #define Y_UP 1 /* Arc has Y increasing up screen */
@@ -40,6 +41,6 @@ typedef int coord;  /* type of data used once data is read in */
 #define SHIFT_QUOTE   '\"'
 #define SHIFT_3       0x9C
 
-#define MOVE  4   /* OS_Plot,4,x,y moves to (x,y) */
-#define DRAW  5   /* OS_Plot,5,x,y draws to (x,y) */
-#define STOP (-1) /* 'cos -ve plot options are undefined */
+#define MOVE 4 /* OS_Plot,4,x,y moves to (x,y) */
+#define DRAW 5 /* OS_Plot,5,x,y draws to (x,y) */
+#define STOP 0
