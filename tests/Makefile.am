@@ -28,4 +28,4 @@ extend.svx extendx.3d\
 revcomplist.svx\
 exporterr1.svx exporterr2.svx exporterr3.svx exporterr4.svx exporterr5.svx\
 hanging_cpt.svx\
-self_loop.svx self_eq_loop.svx
+self_loop.svx self_eq_loop.svx badinc.svx badinc2.svx
