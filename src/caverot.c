@@ -572,6 +572,7 @@ process_key(void) /* and mouse! */
 	    }
 	    break;
 	  case 'P':
+	    /* FIXME: if tilting already, a second press should jump to plan/elev */
 	    if (elev != 90.0) {
 /*fprintf(stderr, "P:tsc = %f\n", tsc);fflush(stderr);*/
 	       autotilt = (int)ceil(90.0 / ceil(9.0 / tsc));
