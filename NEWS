@@ -5,6 +5,8 @@ Changes in 1.0.3:
 * print*: added "Printing to `XXX'..." message to say where output is being
   written.
 
+* Minor corrections to Catalan translation.
+
 Changes in 1.0.2:
 
 * printdm/printpcl/printwin: take notice of font_size_labels setting in

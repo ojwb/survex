@@ -1767,7 +1767,7 @@ en:195 ( Easting, Northing, Altitude )
 fr:195 ( X (Est), Y (Nord), Altitude )
 de:195 ( Rechtsw.,Hochwert, H&ouml;he     )
 pt:195 ( Leste,   Norte,    Altura   )
-ca:195 ( Est X  , Nord Y  , Altitut Z)
+ca:195 ( Est X  , Nord Y  , Altitud Z)
 es:195 ( Este X , Norte Y , Altitud Z)
 it:195 ( Est (X), Nord (Y), Quota  Z )
 # for many translations, 196/197 will be the same as 136/137
@@ -2000,7 +2000,7 @@ en:221 E@xit
 fr:221 @Quitter
 de:221 @Beenden
 pt:221 @Sair
-ca:221 Ei@xir
+ca:221 @Sortir
 es:221 @Salir
 it:221 @Esci
 # back to cavern
@@ -2231,7 +2231,7 @@ de:253 Ver@kleinern##[
 # pt or "Reduzir"
 pt:253 @Diminuir##[
 pt-br:253 Afas@tar##[
-ca:253 @Reduir##[
+ca:253 @Redueix##[
 es:253 @Reducir##[
 # it: or "Riduci"
 it:253 Zoo@m indietro##[
@@ -2659,14 +2659,14 @@ it:330 Superficie So@lida
 en:331 %d found
 de:331 %d gefunden
 pt-br:331 %d bases encontradas
-ca:331 %d trovades
+ca:331 %d trobades
 es:331 %d encontradas
 it:331 %d trovate
 # "Find stations" button label
 en:332 Find
 de:332 Suchen
 pt-br:332 Procurar
-ca:332 Trova
+ca:332 Troba
 es:332 Encuentra
 it:332 Trova
 # "Hide stations" button label
@@ -2688,7 +2688,7 @@ en:335 Altitude
 fr:335 Altitude
 de:335 H&ouml;he    
 pt:335 Altura  
-ca:335 Altitut 
+ca:335 Altitud 
 es:335 Altitud 
 it:335 Quota
 # error if you try to drag multiple files to the aven window
