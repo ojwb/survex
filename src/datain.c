@@ -454,8 +454,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
    }
    if (backcomp != HUGE_REAL) {
       fNoComp = fFalse;
-      /* FIXME: different units for BackComp? */
-      backcomp *= pcs->units[Q_BEARING];
+      backcomp *= pcs->units[Q_BACKBEARING];
       if (backcomp < (real)0.0 || backcomp - M_PI * 2.0 > EPSILON) {
 	 /* FIXME: different message for BackComp? */
 	 compile_warning(/*Suspicious compass reading*/59);
@@ -475,8 +474,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 
    if (backctype == CLINO_READING) {
       real diff_from_abs90;
-      /* FIXME: different units for BackClino? */
-      backclin *= pcs->units[Q_GRADIENT];
+      backclin *= pcs->units[Q_BACKGRADIENT];
       diff_from_abs90 = fabs(backclin) - M_PI_2;
       if (diff_from_abs90 > EPSILON) {
 	 /* FIXME: different message for BackClino? */
@@ -487,8 +485,9 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
    }
 
    if (ctype != CLINO_OMIT && backctype != CLINO_OMIT && ctype != backctype) {
-      /* Bad combinations */
-      compile_error(21/*FIXME*/);
+      compile_error(/*Clino and BackClino readings must be of the same type*/84);
+      skipline();
+      return 0;
    }
 
    if (ctype == CLINO_PLUMB || backctype == CLINO_PLUMB) {
@@ -501,7 +500,10 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       dx = dy = (real)0.0;
       if (ctype != CLINO_OMIT) {
 	 if (backctype != CLINO_OMIT && (clin > 0) == (backclin > 0)) {
-	    compile_error(/*FIXME*/21);
+	    /* We've got two UPs or two DOWNs - FIXME: not ideal message */
+	    compile_error(/*Clino and BackClino readings must be of the same type*/84);
+	    skipline();
+	    return 0;
 	 }
 	 dz = (clin > (real)0.0) ? tape : -tape;
       } else {
@@ -542,19 +544,23 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	    comp -= pcs->z[Q_DECLINATION];
 	 }
 	 if (backcomp != HUGE_REAL) {
-	    /* FIXME: different calibration? */
-	    backcomp = (backcomp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+	    backcomp = (backcomp - pcs->z[Q_BACKBEARING])
+		    * pcs->sc[Q_BACKBEARING];
 	    backcomp -= pcs->z[Q_DECLINATION];
+	    backcomp -= M_PI;
 	    if (comp != HUGE_REAL) {
-	       /* FIXME: complain if fabs(comp - backcomp + M_PI) (mod (M_PI*2))
-		* is too large */
-	       /* FIXME: weighted averages if variances can be different */
-	       comp = (comp + backcomp - M_PI) / 2.0;
-	       var_comp /= 2;
+	       real diff = comp - backcomp;
+	       diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
+	       if (sqrd(diff / 3.0) > var_comp + var(Q_BACKBEARING)) {
+		  /* fore and back readings differ by more than 3 sds */
+		  /* FIXME: complain */
+	       }
+	       comp = (comp / var_comp + backcomp / var(Q_BACKBEARING));
+	       var_comp = (var_comp + var(Q_BACKBEARING)) / 4;
+	       comp *= var_comp;
 	    } else {
-	       /* FIXME: if variances can be different
-		* set var_comp to back variance */
-	       comp = backcomp - M_PI;
+	       comp = backcomp;
+	       var_comp = var(Q_BACKBEARING);
 	    }
 	 }
 	 /* ctype != CLINO_READING is LEVEL case */
@@ -562,18 +568,21 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	    clin = (clin - pcs->z[Q_GRADIENT]) * pcs->sc[Q_GRADIENT];
 	    var_clin = var(Q_GRADIENT);
 	 }
-	 /* FIXME: Separate units and calib for BackClino? */
 	 if (backctype == CLINO_READING) {
-	    backclin = (backclin - pcs->z[Q_GRADIENT]) * pcs->sc[Q_GRADIENT];
+	    backclin = (backclin - pcs->z[Q_BACKGRADIENT])
+	       * pcs->sc[Q_BACKGRADIENT];
 	    if (ctype == CLINO_READING) {
-	       /* FIXME: complain if fabs(clin + backclin) is too large */
-	       /* FIXME: weighted averages if variances can be different */
-	       clin = (clin - backclin) / 2;
-	       var_clin /= 2;
+	       if (sqrd((clin + backclin) / 3.0) >
+		     var_clin + var(Q_BACKGRADIENT)) {
+		  /* fore and back readings differ by more than 3 sds */
+		  /* FIXME: complain */
+	       }
+	       clin = (clin / var_clin - backclin / var(Q_BACKGRADIENT));
+	       var_clin = (var_clin + var(Q_BACKGRADIENT)) / 4;
+	       clin *= var_clin;
 	    } else {
 	       clin = -backclin;
-	       /* FIXME: if backclin var can differ... */
-	       var_clin = var(Q_GRADIENT);
+	       var_clin = var(Q_BACKGRADIENT);
 	    }
 	 }
 
@@ -690,8 +699,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp, real backcomp,
       }
    }
    if (backcomp != HUGE_REAL) {
-      /* FIXME: different units for BackComp? */
-      backcomp *= pcs->units[Q_BEARING];
+      backcomp *= pcs->units[Q_BACKBEARING];
       if (backcomp < (real)0.0 || backcomp - M_PI * 2.0 > EPSILON) {
 	 /* FIXME: different message for BackComp? */
 	 compile_warning(/*Suspicious compass reading*/59);
@@ -737,17 +745,25 @@ process_diving(prefix *fr, prefix *to, real tape, real comp, real backcomp,
 	 comp -= pcs->z[Q_DECLINATION];
       }
       if (backcomp != HUGE_REAL) {
-	 /* FIXME: back units/calib/etc */
-	 backcomp = (backcomp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+	 backcomp = (backcomp - pcs->z[Q_BACKBEARING]) * pcs->sc[Q_BACKBEARING];
 	 backcomp -= pcs->z[Q_DECLINATION];
+	 backcomp -= M_PI;
       }
       if (comp != HUGE_REAL) {
 	 if (backcomp != HUGE_REAL) {
-	    comp = (comp + backcomp) / 2;
-	    var_comp = var_comp / 2;
+	    real diff = comp - backcomp;
+	    diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
+	    if (sqrd(diff / 3.0) > var_comp + var(Q_BACKBEARING)) {
+	       /* fore and back readings differ by more than 3 sds */
+	       /* FIXME: complain */
+	    }
+	    comp = (comp / var_comp + backcomp / var(Q_BACKBEARING));
+	    var_comp = (var_comp + var(Q_BACKBEARING)) / 4;
+	    comp *= var_comp;
 	 }
       } else {
 	 comp = backcomp;
+	 var_comp = var(Q_BACKBEARING);
       }
 	    
       sinB = sin(comp);
@@ -940,8 +956,7 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp, real backcomp,
       }
    }
    if (backcomp != HUGE_REAL) {
-      /* FIXME: different units for BackComp? */
-      backcomp *= pcs->units[Q_BEARING];
+      backcomp *= pcs->units[Q_BACKBEARING];
       if (backcomp < (real)0.0 || backcomp - M_PI * 2.0 > EPSILON) {
 	 /* FIXME: different message for BackComp? */
 	 compile_warning(/*Suspicious compass reading*/59);
@@ -974,17 +989,25 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp, real backcomp,
 	 comp -= pcs->z[Q_DECLINATION];
       }
       if (backcomp != HUGE_REAL) {
-	 /* FIXME: back units/calib/etc */
-	 backcomp = (backcomp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+	 backcomp = (backcomp - pcs->z[Q_BACKBEARING]) * pcs->sc[Q_BACKBEARING];
 	 backcomp -= pcs->z[Q_DECLINATION];
+	 backcomp -= M_PI;
       }
       if (comp != HUGE_REAL) {
 	 if (backcomp != HUGE_REAL) {
-	    comp = (comp + backcomp) / 2;
-	    var_comp = var_comp / 2;
+	    real diff = comp - backcomp;
+	    diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
+	    if (sqrd(diff / 3.0) > var_comp + var(Q_BACKBEARING)) {
+	       /* fore and back readings differ by more than 3 sds */
+	       /* FIXME: complain */
+	    }
+	    comp = (comp / var_comp + backcomp / var(Q_BACKBEARING));
+	    var_comp = (var_comp + var(Q_BACKBEARING)) / 4;
+	    comp *= var_comp;
 	 }
       } else {
 	 comp = backcomp;
+	 var_comp = var(Q_BACKBEARING);
       }
 
       sinB = sin(comp);
@@ -1039,7 +1062,7 @@ data_normal(void)
    prefix *fr = NULL, *to = NULL;
    reading first_stn = End;
 
-   real tape = 0, comp = 0, backcomp = 0, frcount = 0, tocount = 0;
+   real tape = 0, comp = HUGE_VAL, backcomp = HUGE_VAL, frcount = 0, tocount = 0;
    real clin, backclin;
    real frdepth = 0, todepth = 0;
 
@@ -1125,8 +1148,6 @@ data_normal(void)
        case BackClino:
 	  backclin = read_numeric(fTrue);
 	  if (backclin == HUGE_REAL) {
-	     /* FIXME: how should special readings for Clino and BackClino
-	      * interact? */
 	     backclin = handle_plumb(&backctype);
 	     if (backclin != HUGE_REAL) break;
 	     compile_error_token(/*Expecting numeric field, found `%s'*/9);

@@ -86,10 +86,9 @@ extern bool fExportUsed;
 /* Types */
 
 typedef enum {
-   Q_NULL = -1, Q_DEFAULT, Q_LENGTH, Q_DEPTH,
-   Q_DX, Q_DY, Q_DZ, Q_LENGTHOUTPUT,
-   Q_COUNT, Q_BEARING, Q_ANGLEOUTPUT,
-   Q_GRADIENT, Q_DECLINATION, Q_POS, Q_PLUMB, Q_LEVEL, Q_MAC
+   Q_NULL = -1, Q_DEFAULT, Q_LENGTH, Q_DEPTH, Q_DX, Q_DY, Q_DZ, Q_COUNT, Q_POS,
+   Q_BEARING, Q_BACKBEARING, Q_GRADIENT, Q_BACKGRADIENT, Q_DECLINATION,
+   Q_PLUMB, Q_LEVEL, Q_MAC
 } q_quantity;
 
 /* unsigned long to cope with 16-bit int-s */
@@ -100,10 +99,10 @@ typedef enum {
 
 /* masks for quantities which are length and angles respectively */
 #define LEN_QMASK (BIT(Q_LENGTH) | BIT(Q_DEPTH) |\
-   BIT(Q_DX) | BIT(Q_DY) | BIT(Q_DZ) | BIT(Q_POS) |\
-   BIT(Q_COUNT) | BIT(Q_LENGTHOUTPUT))
-#define ANG_QMASK (BIT(Q_BEARING) | BIT(Q_GRADIENT) | BIT(Q_PLUMB) |\
-   BIT(Q_LEVEL) | BIT(Q_DECLINATION) | BIT(Q_ANGLEOUTPUT))
+   BIT(Q_DX) | BIT(Q_DY) | BIT(Q_DZ) | BIT(Q_POS) | BIT(Q_COUNT))
+#define ANG_QMASK (BIT(Q_BEARING) | BIT(Q_BACKBEARING) |\
+   BIT(Q_GRADIENT) | BIT(Q_BACKGRADIENT) | BIT(Q_PLUMB) | BIT(Q_LEVEL) |\
+   BIT(Q_DECLINATION))
 
 /* if you add/change the order, check factor_tab in commands.c */
 typedef enum {
@@ -120,7 +119,7 @@ typedef enum {
    /* underground, but through rock (e.g. radiolocation).  Want to hide from
     * plots by default (so not cave) but don't want to include in surface
     * triangulation nets (so not surface) */
-   FLAGS_SKELETAL
+   FLAGS_SKELETAL /* FIXME */
 #endif
 } flags;
 

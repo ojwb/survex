@@ -92,8 +92,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-04-17 13:34:34 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.91 2002-04-17 13:34:34 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-05-09 12:52:46 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.92 2002-05-09 12:52:46 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1399,12 +1399,14 @@ performed with a Topofil instead of a tape.
 
 <VarListEntry><Term>NORMAL</Term>
 <listitem><Para>The usual tape/compass/clino centreline survey.
-For non-interleaved data the allowed readings are: FROM TO TAPE COMPASS CLINO;
-for interleaved data the allowed readings are: STATION TAPE COMPASS CLINO.
-The CLINO reading is not required - if it's not given, the vertical standard
-deviation is taken to be proportional to the tape measurement.  Alternatively,
-individual clino readings can be given as OMIT (default "-") which allows
-for data where only some clino readings are missing.
+For non-interleaved data the allowed readings are:
+FROM TO TAPE COMPASS CLINO BACKCOMPASS BACKCLINO;
+for interleaved data the allowed readings are:
+STATION DIRECTION TAPE COMPASS CLINO BACKCOMPASS BACKCLINO.
+The CLINO/BACKCLINO reading is not required - if it's not given, the vertical
+standard deviation is taken to be proportional to the tape measurement.
+Alternatively, individual clino readings can be given as OMIT (default "-")
+which allows for data where only some clino readings are missing.
 E.g.:
 
 <programlisting>
@@ -1433,9 +1435,20 @@ E.g.:
 <VarListEntry><Term>DIVING</Term>
 <listitem><Para>
 An underwater survey where the vertical information is from a diver's pressure
-gauge.  The vertical change can be given as 2 readings (FROMDEPTH/TODEPTH) or a single reading at each station in interleaved data (DEPTH) or as a change for
-each leg (DEPTHCHANGE).  This style could also conceivably be also used above
-water with an altimeter.
+gauge.  This style can also be also used for an above water where the alititude
+is measured with an altimeter.  DEPTH is defined as the altitude (Z) so
+increases upwards by default.  So for a diver's depth guage, you'll need to
+use *CALIBRATE with a negative scale factor (e.g. *calibrate depth 0 -1).
+</Para>
+
+<Para>For non-interleaved data the allowed readings are:
+FROM TO TAPE COMPASS BACKCOMPASS FROMDEPTH TODEPTH DEPTHCHANGE (the vertical
+can be given as readings at each station, (FROMDEPTH/TODEPTH) or as a change
+along the leg (DEPTHCHANGE)).</Para>
+
+<Para>For interleaved data the allowed readings are:
+STATION DIRECTION TAPE COMPASS BACKCOMPASS DEPTH DEPTHCHANGE.
+(the vertical change can be given as a reading at the station (DEPTH) or as a change along the leg (DEPTHCHANGE)).
 
 <programlisting>
 *data diving from to tape compass fromdepth todepth
@@ -1450,7 +1463,8 @@ water with an altimeter.
 <programlisting>
 *data diving from to tape compass depthchange
 1 2 14.7 250 -1.7</programlisting>
-</Para></listitem>
+</Para>
+</listitem>
 </VarListEntry>
 
 <VarListEntry><Term>CARTESIAN</Term>
@@ -1481,7 +1495,7 @@ Cartesian data are relative to <emphasis>true</emphasis> North not
 
 <VarListEntry><Term>CYLPOLAR</Term>
 <listitem><Para>
-A CYLPOLAR style survey is similar to a diving survey, except that the tape
+A CYLPOLAR style survey is very similar to a diving survey, except that the tape
 is always measured horizontally rather than along the slope of the leg.
 
 <programlisting>
@@ -1533,12 +1547,6 @@ there is line of sight between the pairs of stations.
 <Para>
 IGNORE skips a field (it may be used any number of times),
 and IGNOREALL may be used last to ignore the rest of the data line.
-</Para>
-
-<Para>
-DEPTH for diving data and cylpolar data increases upwards by default
-(so it is actually altitude).  You can use *CALIBRATE with a negative
-scale factor of -1.0 to alter this if you wish.
 </Para>
 
 <Para>
@@ -1902,9 +1910,9 @@ disagree, you can always use one of the other methods!
 <listitem>
 <Para>
 *fix fixes the position of &lt;station&gt; at the given coordinates.
-If the position is omitted it defaults to (0,0,0) which allows
+If the position is omitted it defaults to (0,0,0). <!-- which allows
 sub-sections of a large survey to be easily processed separately.
-<!-- FIXME - don't want to encourage people to do this really -->
+ FIXME - don't want to encourage people to do this really -->
 The standard errors default to zero (fix station exactly). cavern will complain
 if you attempt to fix the same survey station twice.
 </Para>
@@ -2713,7 +2721,7 @@ versions removed this rather archaic restriction).
 *units tape metres</programlisting>
 
 <programlisting>
-*units compass clino grads</programlisting>
+*units compass backcompass clino backclino grads</programlisting>
 
 <programlisting>
 *units dx dy dz 1000 metres ; data given as kilometres</programlisting>
@@ -2742,32 +2750,21 @@ the instrument or the measurement.
 
 <!-- FIXME: are these correct?
   and dx,dy,dz -> easting/northing/altitude in preference -->
-<Para>TAPE, LENGTH, COUNTER, COUNT, DEPTH, dX, dY, dZ, <!-- FIXME: X,Y,Z,-->
-<!--LENGTHOUTPUT--> in YARDS|FEET|METRIC|METRES|METERS
+<Para>TAPE, LENGTH, COUNTER, COUNT, DEPTH, dX, dY, dZ <!-- FIXME: , X,Y,Z,-->
+in YARDS|FEET|METRIC|METRES|METERS
 </Para>
 
 <!-- FIXME
 <Para>[Percentage gradient not yet implemented]
 </Para>
-
-<Para>[LENGTHOUTPUT and ANGLEOUTPUT not yet implemented]
-</Para>
-
-<Para>LENGTHOUTPUT determines the units in which cavern displays
-lengths and positions. Similarly, ANGLEOUTPUT determines the units of
-any angles output.
-</Para>
-
-<Para>The units used are those last set. (The units of any output are
-displayed with it).
-</Para>
 -->
 
-<Para>CLINO, GRADIENT in DEG|DEGREES|GRADS|MILS<!--|PERCENT|PERCENTAGE-->
+<Para>CLINO, BACKCLINO, GRADIENT, BACKGRADIENT
+in DEG|DEGREES|GRADS|MILS<!--|PERCENT|PERCENTAGE-->
 </Para>
 
-<Para>COMPASS, DECLINATION, BEARING, <!--ANGLEOUTPUT--> in
-DEG|DEGREES|GRADS|MILS|MINUTES
+<Para>COMPASS, BACKCOMPASS, BEARING, BACKBEARING, DECLINATION
+in DEG|DEGREES|GRADS|MILS|MINUTES
 </Para>
 
 <Para>(360 degrees = 400 grads (also known as Mils))

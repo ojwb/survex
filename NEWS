@@ -42,11 +42,17 @@ Changes in 1.0.8:
 
 * cavern: *infer plumbs wasn't inferring -90 to be DOWN - fixed.
 
+* cavern: fixed a bogus warning for any station which was only used in a line
+  of data which was rejected because of an error.
+
+* cavern: removed the ill-thought-out and never implemented LENGTHOUTPUT
+  and ANGLEOUTPUT quantities.
+
 * Slovak translation added; updated de, ca, es.
 
 * ChangeLog now only includes entries since the previous release (the full file
   is 220K or so, and of interest to very few people).  MSDOS and MS Windows
-  versions now comfortably fit on a 1.44M floppy.
+  versions now comfortably fit on a 1.44M floppy once again.
 
 * Test suite now checks that programs will run with "--help" and "--version".
   This should avoid problems such as that which broke the printer drivers in

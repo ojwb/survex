@@ -929,7 +929,10 @@ ca: 83 Escala per a encaixar en 1 p&agrave;gina
 es: 83 Escala para encajar en 1 p&aacute;gina
 it: 83 Scala per rientrare in una pagina
 sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku 
-# XXX 84
+# In data with backsights, the user has tried to give a plumb for the
+# foresight and a clino reading for the backsight, or something similar.
+en: 84 Clino and BackClino readings must be of the same type
+#
 en: 85 Parameter `%s' missing in printer configuration file
 fr: 85 Param&egrave;tres `%s' manquant dans le fichier de configuration de l'imprimante
 de: 85 Parameter `%s' fehlt in der Druckerkonfigurationsdatei

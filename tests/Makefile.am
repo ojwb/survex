@@ -69,4 +69,5 @@ infereqtopofil.svx infereqtopofil.pos\
 3sdfixbug.svx 3sdfixbug.pos\
 extend2names.svx extend2namesx.3d\
 omitclino.svx omitclino.pos\
-back.svx back.pos
+back.svx back.pos\
+notentranceorexport.svx

@@ -1,6 +1,6 @@
 /* listpos.c
  * SURVEX Cave surveying software: stuff to do with stn position output
- * Copyright (C) 1991-2001 Olly Betts
+ * Copyright (C) 1991-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,11 +70,13 @@ static void
 node_stat(prefix *p)
 {
    if (!p->pos) {
-      if (!TSTBIT(p->sflags, SFLAGS_SURVEY)) {
-	 /* p doesn't have an associated position, but isn't a survey.
-	  * This means it was referred to in "*entrance" and/or "*export"
-	  * but not elsewhere.
-	  */
+      if (TSTBIT(p->sflags, SFLAGS_ENTRANCE) || p->min_export) {
+	  /* p was referred to in "*entrance" and/or "*export"
+	   * but not elsewhere (otherwise it would have a position).
+	   * p could also be a survey (SFLAGS_SURVEY) or be mentioned as
+	   * a station, but only in a line of data which was rejected because
+	   * of an error.
+	   */
 	  warning(/*Station `%s' referred to by *entrance or *export but never used*/190,
 		  sprint_prefix(p));
       }

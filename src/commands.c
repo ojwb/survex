@@ -45,6 +45,8 @@ default_grade(settings *s)
    s->Var[Q_DX] = s->Var[Q_DY] = s->Var[Q_DZ] = (real)sqrd(0.10);
    s->Var[Q_BEARING] = (real)sqrd(rad(1.0));
    s->Var[Q_GRADIENT] = (real)sqrd(rad(1.0));
+   s->Var[Q_BACKBEARING] = (real)sqrd(rad(1.0));
+   s->Var[Q_BACKGRADIENT] = (real)sqrd(rad(1.0));
    /* SD of plumbed legs (0.25 degrees?) */
    s->Var[Q_PLUMB] = (real)sqrd(rad(0.25));
    /* SD of level legs (0.25 degrees?) */
@@ -288,7 +290,10 @@ get_qlist(unsigned long mask_bad)
 {
    static sztok qtab[] = {
 	{"ALTITUDE",	 Q_DZ },
-	{"ANGLEOUTPUT",  Q_ANGLEOUTPUT },
+	{"BACKBEARING",  Q_BACKBEARING },
+	{"BACKCLINO",    Q_BACKGRADIENT },    /* alternative name */
+	{"BACKCOMPASS",  Q_BACKBEARING },     /* alternative name */
+	{"BACKGRADIENT", Q_BACKGRADIENT },
 	{"BEARING",      Q_BEARING },
 	{"CLINO",        Q_GRADIENT },    /* alternative name */
 	{"COMPASS",      Q_BEARING },     /* alternative name */
@@ -303,7 +308,6 @@ get_qlist(unsigned long mask_bad)
 	{"EASTING",      Q_DX },
 	{"GRADIENT",     Q_GRADIENT },
 	{"LENGTH",       Q_LENGTH },
-	{"LENGTHOUTPUT", Q_LENGTHOUTPUT },
 	{"LEVEL",        Q_LEVEL},
 	{"NORTHING",     Q_DY },
 	{"PLUMB",        Q_PLUMB},
@@ -1213,9 +1217,6 @@ cmd_units(void)
       compile_error(/*Invalid units `%s' for quantity*/37, buffer);
       return;
    }
-   if (qmask & (BIT(Q_LENGTHOUTPUT) | BIT(Q_ANGLEOUTPUT)) ) {
-      NOT_YET;
-   }
    for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1)
       if (qmask & m) pcs->units[quantity] = factor;
 }
@@ -1227,8 +1228,7 @@ cmd_calibrate(void)
    unsigned long qmask, m;
    int quantity;
 
-   qmask = get_qlist(BIT(Q_DEFAULT)|BIT(Q_POS)|BIT(Q_LENGTHOUTPUT)|
-		BIT(Q_ANGLEOUTPUT)|BIT(Q_PLUMB)|BIT(Q_LEVEL));
+   qmask = get_qlist(BIT(Q_DEFAULT)|BIT(Q_POS)|BIT(Q_PLUMB)|BIT(Q_LEVEL));
    if (!qmask) return; /* error already reported */
 
    if (qmask == BIT(Q_DEFAULT)) {
@@ -1340,7 +1340,7 @@ cmd_sd(void)
    int units;
    unsigned long qmask, m;
    int quantity;
-   qmask = get_qlist(BIT(Q_ANGLEOUTPUT)|BIT(Q_LENGTHOUTPUT)|BIT(Q_DECLINATION));
+   qmask = get_qlist(BIT(Q_DECLINATION));
    if (!qmask) return; /* no quantities found - error already reported */
 
    if (qmask == BIT(Q_DEFAULT)) {
