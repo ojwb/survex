@@ -3,8 +3,8 @@
 //
 //  Main frame handling for Aven.
 //
-//  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2002 Olly Betts
+//  Copyright (C) 2000-2003 Mark R. Shinwell
+//  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -240,7 +240,7 @@ public:
     ~MainFrm();
 
     void OnMRUFile(wxCommandEvent& event);
-    void OpenFile(const wxString& file, wxString survey = "", bool delay = false);
+    void OpenFile(const wxString& file, wxString survey = "");
 #ifdef AVENPRES
     void OnOpenPresUpdate(wxUpdateUIEvent& event);
 #endif

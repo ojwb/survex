@@ -3,7 +3,7 @@
 //
 //  OpenGL implementation for the GLA abstraction layer.
 //
-//  Copyright (C) 2002 Mark R. Shinwell.
+//  Copyright (C) 2002-2003 Mark R. Shinwell
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
     } \
     while (0)
 #else
-#define CHECK_GL_ERROR(f, m)
+#define CHECK_GL_ERROR(f, m) do {} while (0)
 #endif
 
 //
@@ -139,15 +139,15 @@ void GLACanvas::FirstShow()
     }
  
     glShadeModel(GL_FLAT);
-    CHECK_GL_ERROR("StartDrawing", "glShadeModel");
+    CHECK_GL_ERROR("FirstShow", "glShadeModel");
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    CHECK_GL_ERROR("StartDrawing", "glPolygonMode");
+    CHECK_GL_ERROR("FirstShow", "glPolygonMode");
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    CHECK_GL_ERROR("StartDrawing", "glColorMaterial GL_FRONT");
+    CHECK_GL_ERROR("FirstShow", "glColorMaterial GL_FRONT");
     glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
-    CHECK_GL_ERROR("StartDrawing", "glColorMaterial GL_BACK");
+    CHECK_GL_ERROR("FirstShow", "glColorMaterial GL_BACK");
     glEnable(GL_DEPTH_TEST);
-    CHECK_GL_ERROR("StartDrawing", "glEnable GL_DEPTH_TEST");
+    CHECK_GL_ERROR("FirstShow", "glEnable GL_DEPTH_TEST");
 }
 
 void GLACanvas::Clear()
@@ -246,6 +246,10 @@ void GLACanvas::SetViewportAndProjection()
 	    m_Volume.bottom / aspect, m_Volume.top / aspect,
             m_Volume.front * 3.0 * m_Scale, m_Volume.back * 3.0 * m_Scale);
     CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
+
+    // Save viewport info.
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    CHECK_GL_ERROR("SetViewportAndProjection", "glGetIntegerv");
 }
 
 void GLACanvas::StartDrawing()
@@ -273,7 +277,7 @@ void GLACanvas::EnableSmoothPolygons()
                                  m_Volume.top / aspect - 5.0,
                                  m_Volume.front * 3.0 * m_Scale + 5.0,
                                  0.0 };
- 
+    
   //  glMaterialfv(GL_FRONT, GL_AMBIENT, diffuseMaterial);
 //    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 //    glMaterialf(GL_FRONT, GL_SHININESS, 10.0);
@@ -320,6 +324,12 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
     glTranslated(m_Translation.x, m_Translation.y, m_Translation.z);
     CHECK_GL_ERROR("SetDataTransform", "glTranslated");
+
+    // Save matrices.
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
+    CHECK_GL_ERROR("SetDataTransform", "glGetDoublev");
+    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+    CHECK_GL_ERROR("SetDataTransform", "glGetDoublev (2)");
 }
 
 void GLACanvas::SetIndicatorTransform()
@@ -443,7 +453,7 @@ void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool set_transparency)
 void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str)
 {
     // Draw a text string on the current buffer in the current font.
- 
+
     glRasterPos3d(x, y, z);
     CHECK_GL_ERROR("DrawText", "glRasterPos3d");
     
@@ -511,6 +521,20 @@ void GLACanvas::BeginTriangles()
 void GLACanvas::EndTriangles()
 {
     // Finish drawing of a set of triangles.
+
+    glEnd();
+}
+
+void GLACanvas::BeginTriangleStrip()
+{
+    // Commence drawing of a triangle strip.
+
+    glBegin(GL_TRIANGLE_STRIP);
+}
+
+void GLACanvas::EndTriangleStrip()
+{
+    // Finish drawing of a triangle strip.
 
     glEnd();
 }

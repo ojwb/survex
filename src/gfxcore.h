@@ -3,8 +3,8 @@
 //
 //  Core drawing code for Aven.
 //
-//  Copyright (C) 2000-2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2002 Olly Betts
+//  Copyright (C) 2000-2001 Mark R. Shinwell.
+//  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -141,7 +141,6 @@ class GfxCore : public GLACanvas {
     int* surface_num_segs;
 
     bool m_HaveData;
-    bool m_InitialisePending;
     bool m_MouseOutsideCompass;
     bool m_MouseOutsideElev;
     bool m_Surface;
@@ -239,7 +238,6 @@ public:
     ~GfxCore();
 
     void Initialise();
-    void InitialiseOnNextResize() { m_InitialisePending = true; }
     void InitialiseTerrain();
 
     void ForceRefresh();

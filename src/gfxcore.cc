@@ -3,8 +3,8 @@
 //
 //  Core drawing code for Aven.
 //
-//  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2002 Olly Betts
+//  Copyright (C) 2000-2003 Mark R. Shinwell
+//  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -62,7 +62,8 @@ static const int INDICATOR_GAP = 2;
 static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
-static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X + INDICATOR_BOX_SIZE + INDICATOR_GAP;
+static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
+                                  INDICATOR_BOX_SIZE + INDICATOR_GAP;
 static const int DEPTH_BAR_OFFSET_X = 16;
 static const int DEPTH_BAR_EXTRA_LEFT_MARGIN = 2;
 static const int DEPTH_BAR_BLOCK_WIDTH = 20;
@@ -98,6 +99,9 @@ static const int NAME_COLOUR_INDEX = 7;
 
 #define HITTEST_SIZE 20
 
+// vector for lighting angle
+static const Vector3 light(.577, .577, .577);
+
 #ifdef AVENGL
 BEGIN_EVENT_TABLE(GfxCore, wxGLCanvas)
 #else
@@ -120,7 +124,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     GLACanvas(parent_win, 100, wxDefaultPosition, wxSize(640, 480)),
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
            wxFONTENCODING_ISO8859_1),
-    m_InitialisePending(false), m_HaveData(false)
+    m_HaveData(false)
 {
     m_Control = control;
     m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
@@ -165,7 +169,9 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     int num_colours = (int) col_LAST;
     m_Pens = new GLAPen[num_colours];
     for (int col = 0; col < num_colours; col++) {
-        m_Pens[col].SetColour(COLOURS[col].r / 255.0, COLOURS[col].g / 255.0, COLOURS[col].b / 255.0);
+        m_Pens[col].SetColour(COLOURS[col].r / 255.0,
+                              COLOURS[col].g / 255.0,
+                              COLOURS[col].b / 255.0);
     }
 
     // Initialise grid for hit testing.
@@ -205,10 +211,6 @@ void GfxCore::Initialise()
     // Initialise the view from the parent holding the survey data.
 
     TryToFreeArrays();
-
-    if (!m_InitialisePending) {
-        GetSize(&m_XSize, &m_YSize);
-    }
 
     m_DoneFirstShow = false;
 
@@ -254,7 +256,9 @@ void GfxCore::Initialise()
         }
 
         case lock_Y:
-        case lock_XY: // survey is linearface and parallel to the Z axis => display in elevation.
+        case lock_XY: // survey is linearface and parallel to the Z axis =>
+                      // display in elevation.
+
             // elevation looking along Y axis (North)
             m_Params.rotation.setFromEulerAngles(0.0, 0.0, 0.0);
             m_RotationOK = false;
@@ -264,7 +268,8 @@ void GfxCore::Initialise()
         case lock_XZ: // linearface survey parallel to Y axis
         case lock_YZ: // linearface survey parallel to X axis
         {
-            // flat survey (zero height range) => go into plan view (default orientation).
+            // flat survey (zero height range) =>
+            // go into plan view (default orientation).
             break;
         }
 
@@ -296,11 +301,13 @@ void GfxCore::Initialise()
             break;
             
         case lock_X:
-            m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(), Double(m_XSize) / m_Parent->GetYExtent());
+            m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
+                             Double(m_XSize) / m_Parent->GetYExtent());
             break;
             
         case lock_Y:
-            m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(), Double(m_XSize) / m_Parent->GetXExtent());
+            m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
+                             Double(m_XSize) / m_Parent->GetXExtent());
             break;
             
         default:
@@ -311,23 +318,28 @@ void GfxCore::Initialise()
 
     SetScaleInitial(m_InitialScale);
 
-    double extent = MAX3(m_Parent->GetXExtent(),
-		         m_Parent->GetYExtent(),
-			 m_Parent->GetZExtent()) / 2.0;
-    SetVolumeCoordinates(-extent, extent, -extent, extent, -extent, extent);
-
     m_HaveData = true;
 }
 
 void GfxCore::FirstShow()
 {
     GLACanvas::FirstShow();
+
     SetBackgroundColour(0.0, 0.0, 0.0);
+	
+    // Set viewing volume coordinates.
+    double extent = MAX3(m_Parent->GetXExtent(),
+		         m_Parent->GetYExtent(),
+			 m_Parent->GetZExtent()) / 2.0;
+    SetVolumeCoordinates(-extent, extent, -extent, extent, -extent, extent);
 
     // Update our record of the client area size and centre.
     GetClientSize(&m_XSize, &m_YSize);
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
+
+    // Set the scale correctly.
+    SetScale(m_Params.scale);
 
     m_DoneFirstShow = true;
 }
@@ -338,7 +350,7 @@ void GfxCore::FirstShow()
 
 void GfxCore::SetScaleInitial(Double scale)
 {
-    GfxCore::SetScale(scale);
+    m_Params.scale = scale;
 
     Point* pt = vertices;
     assert(pt);
@@ -369,7 +381,9 @@ void GfxCore::SetScaleInitial(Double scale)
 	    // We have a leg.
 
 	    assert(!first_point); // The first point must always be a move.
-	    bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
+	    bool changing_ug_state =
+                (current_polyline_is_surface != pti->IsSurface());
+
 	    // Record new underground/surface state.
 	    current_polyline_is_surface = pti->IsSurface();
 
@@ -444,7 +458,8 @@ void GfxCore::SetScale(Double scale)
         scale = m_InitialScale / 20;
     } else {
         if (scale > 1000.0) scale = 1000.0;
-        Double max_scale = 32767.0 / MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent());
+        Double max_scale =
+            32767.0 / MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent());
         if (scale > max_scale) clipping = true;
     }
 
@@ -452,7 +467,7 @@ void GfxCore::SetScale(Double scale)
     m_HitTestGridValid = false;
 
     GLACanvas::SetScale(scale);
-    
+
     UpdateIndicators();
     UpdateBlobs();
 }
@@ -498,27 +513,19 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     // Redraw the window.
     
     wxPaintDC dc(this);
-    // SetCurrent();
-
-    // Make sure we're initialised.
-    if (m_InitialisePending) {
-        Initialise();
-        m_InitialisePending = false;
-    }
-
-    bool first_time = false;
-    if (!m_DoneFirstShow) {
-        FirstShow();
-        first_time = true;
-    }
 
     assert(GetContext());
 
     StartDrawing();
 
     // Clear the background.
-    SetBackgroundColour(0.0, 0.0, 0.0);
     Clear();
+
+    // Make sure we're initialised.
+    bool first_time = !m_DoneFirstShow;
+    if (first_time) {
+        FirstShow();
+    }
 
     if (m_HaveData) {
         // Set up model transformation matrix.
@@ -767,6 +774,7 @@ void GfxCore::Draw2dIndicators()
         EndLines();
     }
 
+
     // Ticks
     bool white = false;
     /* FIXME m_Control->DraggingMouseOutsideCompass();
@@ -786,7 +794,7 @@ void GfxCore::Draw2dIndicators()
             else {
                 SetAvenColour(white ? col_WHITE : col_LIGHT_GREY_2);
             }
-            DrawTick(pan_centre_x, centre_y, angle);
+            DrawTick((int) pan_centre_x, (int) centre_y, angle);
         }
     }
 
@@ -800,7 +808,7 @@ void GfxCore::Draw2dIndicators()
             else {
                 SetAvenColour(white ? col_WHITE : col_LIGHT_GREY_2);
             }
-            DrawTick(elev_centre_x, centre_y, angle);
+            DrawTick((int) elev_centre_x, (int) centre_y, angle);
         }
     }
 
@@ -915,7 +923,7 @@ void GfxCore::NattyDrawNames()
 {
     // Draw station names, without overlapping.
     // FIXME: copied to OnSize()
-    
+   
     const int dv = 2;
     const int quantise = int(GetFontSize() / dv);
     const int quantised_x = m_XSize / quantise;
@@ -1033,6 +1041,7 @@ void GfxCore::DrawDepthbar()
         }
 
         SetColour(m_Pens[TEXT_COLOUR]);
+
         DrawIndicatorText(x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
                           y - (FONT_SIZE / 2) - 1, strs[band]);
 
@@ -2114,13 +2123,11 @@ static void IntersectLineWithPlane(Double x0, Double y0, Double z0,
     assert(z1 - z0 != 0.0);
 
     Double t = (z - z0) / (z1 - z0);
-    assert(0.0 <= t && t <= 1.0);
+//    assert(0.0 <= t && t <= 1.0);		FIXME: rounding problems!
 
     x = x0 + t * (x1 - x0);
     y = y0 + t * (y1 - y0);
 }
-
-static const Vector3 light(.577, .577, .577);
 
 void GfxCore::SplitLineAcrossBands(int band, int band2,
 				   const Vector3 &p, const Vector3 &p2,
@@ -2213,6 +2220,7 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
 	
 	if (depth_colour) {
 	    PlaceVertexWithColour(vertices->x, vertices->y, vertices->z, 1.0);
+
 	    int band = GetDepthColour(vertices->z);
 	    ++vertices;
 

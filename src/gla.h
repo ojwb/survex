@@ -73,6 +73,12 @@ class GLACanvas : public wxWindow {
     int m_Vertices;
 #endif
 
+#ifdef AVENGL
+    GLdouble modelview_matrix[16];
+    GLdouble projection_matrix[16];
+    GLint viewport[4];
+#endif
+
     // Viewing volume extents:
     struct {
         Double left;
@@ -98,9 +104,7 @@ class GLACanvas : public wxWindow {
     bool m_SphereCreated;
     GLuint m_SphereList;
     GLUquadric* m_Quadric;
-
-    void SetViewportAndProjection();
-
+    
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
     ~GLACanvas();
@@ -116,6 +120,7 @@ public:
     void SetDataTransform();
     void SetIndicatorTransform();
     void SetQuaternion(Quaternion& q);
+    void SetViewportAndProjection();
     
     glaList CreateList(GfxCore*, void (GfxCore::*generator)());
     void DeleteList(glaList l);
@@ -134,6 +139,8 @@ public:
     void EndQuadrilaterals();
     void BeginLines();
     void EndLines();
+    void BeginTriangleStrip();
+    void EndTriangleStrip();
     void BeginTriangles();
     void EndTriangles();
     void BeginPolyline();

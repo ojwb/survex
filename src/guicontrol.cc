@@ -81,7 +81,47 @@ void GUIControl::HandleTranslate(wxPoint point)
     m_DragStart = point;
 }
 
-void GUIControl::HandleScaleRotate(bool control, wxPoint point)
+void GUIControl::HandleScale(wxPoint point)
+{
+    // Handle a mouse movement during scale mode.
+
+    int dx = point.x - m_DragStart.x;
+    int dy = point.y - m_DragStart.y;
+
+    if (m_ReverseControls) {
+	dx = -dx;
+	dy = -dy;
+    }
+
+    m_View->SetScale(m_View->GetScale() * pow(1.06, 0.08 * dy));
+    m_View->ForceRefresh();
+
+    m_DragStart = point;
+}
+
+void GUIControl::HandleTiltRotate(wxPoint point)
+{
+    // Handle a mouse movement during tilt/rotate mode.
+
+    int dx = point.x - m_DragStart.x;
+    int dy = point.y - m_DragStart.y;
+
+    if (m_ReverseControls) {
+	dx = -dx;
+	dy = -dy;
+    }
+
+    // left/right => rotate, up/down => tilt
+    m_View->TurnCave(m_View->CanRotate() ?
+                     (Double(dx) * (M_PI / -500.0)) : 0.0);
+    m_View->TiltCave(Double(-dy) * M_PI / 1000.0);
+
+    m_View->ForceRefresh();
+
+    m_DragStart = point;
+}
+
+void GUIControl::HandleScaleRotate(wxPoint point)
 {
     // Handle a mouse movement during scale/rotate mode.
     int dx = point.x - m_DragStart.x;
@@ -97,12 +137,7 @@ void GUIControl::HandleScaleRotate(bool control, wxPoint point)
     // left/right => rotate, up/down => scale
     m_View->TurnCave(pan_angle);
 
-    if (control) {
-	// For now...
-	m_View->TiltCave(Double(-dy) * M_PI / 500.0);
-    } else {
-	m_View->SetScale(m_View->GetScale() * pow(1.06, 0.08 * dy));
-    }
+    m_View->SetScale(m_View->GetScale() * pow(1.06, 0.08 * dy));
 
 #ifdef AVENGL
     //glDeleteLists(m_Lists.grid, 1);
@@ -188,16 +223,27 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 		m_View->SetClinoFromPoint(point);
 	    }
 	    else if (m_LastDrag == drag_SCALE) {
-		// FIXME: check why there was a check here for x being inside the window
+		// FIXME: check why there was a check here for x being inside
+		// the window
 	        m_View->SetScaleBarFromOffset(point.x - m_DragLast.x);
 	    }
 	    else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
 		m_LastDrag = drag_MAIN;
-		HandleScaleRotate(event.ControlDown(), point);
+                if (event.ShiftDown()) {
+		    HandleScaleRotate(point);
+                }
+                else {
+		    HandleTiltRotate(point);
+                }
 	    }
 	}
 	else if (m_DraggingMiddle) {
-	    HandleTilt(point);
+            if (event.ShiftDown()) {
+	        HandleTilt(point);
+            }
+            else {
+		HandleScale(point);
+            }
 	}
 	else if (m_DraggingRight) {
 	    if ((m_LastDrag == drag_NONE && m_View->PointWithinScaleBar(point)) || m_LastDrag == drag_SCALE) {
@@ -248,7 +294,7 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 	    m_View->CheckHitTestGrid(m_DragStart, true);
 	}
 
-	m_View->RedrawIndicators();
+//	m_View->RedrawIndicators();
 	m_View->ReleaseMouse();
 
 	m_LastDrag = drag_NONE;
@@ -266,7 +312,7 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
 	m_DraggingMiddle = true;
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
 
-        const wxCursor CURSOR(wxCURSOR_SIZENS);
+        const wxCursor CURSOR(wxCURSOR_MAGNIFIER);
         m_View->SetCursor(CURSOR);
 	m_View->CaptureMouse();
     }

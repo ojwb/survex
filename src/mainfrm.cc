@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2002 Olly Betts
+//  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -1039,7 +1039,7 @@ void MainFrm::OnMRUFile(wxCommandEvent& event)
     if (!f.empty()) OpenFile(f);
 }
 
-void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
+void MainFrm::OpenFile(const wxString& file, wxString survey)
 {
     wxBusyCursor hourglass;
 
@@ -1060,12 +1060,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	m_history.Save(*b);
 	b->Flush();
 
-	if (delay) {
-	    m_Gfx->InitialiseOnNextResize();
-	}
-	else {
-	    m_Gfx->Initialise();
-	}
+	m_Gfx->Initialise();
 
 #if 0
 	m_Notebook->Show(true);

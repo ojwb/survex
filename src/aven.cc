@@ -3,8 +3,8 @@
 //
 //  Main class for Aven.
 //
-//  Copyright (C) 2001-2002, Mark R. Shinwell.
-//  Copyright (C) 2002, Olly Betts
+//  Copyright (C) 2001-2002 Mark R. Shinwell.
+//  Copyright (C) 2002-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -150,20 +150,14 @@ bool Aven::OnInit()
     // Create the main window.
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(our_width, our_height));
 
-#ifdef _WIN32
-    const bool delay = false;
-#else
-    const bool delay = true;
-#endif
-
 #ifndef USE_WXCMDLINE
     if (argv[optind]) {
-	m_Frame->OpenFile(wxString(argv[optind]), survey, delay);
+	m_Frame->OpenFile(wxString(argv[optind]), survey);
     }
 #else
     if (cli.GetParamCount() == 1) {
 	wxString file = cli.GetParam(0);
-	m_Frame->OpenFile(file, survey, delay);
+	m_Frame->OpenFile(file, survey);
     }
 #endif
 

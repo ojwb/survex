@@ -44,9 +44,11 @@ class GUIControl {
 
     bool m_ReverseControls;
 
-    void HandleScaleRotate(bool, wxPoint);
+    void HandleScaleRotate(wxPoint);
     void HandleTilt(wxPoint);
     void HandleTranslate(wxPoint);
+    void HandleScale(wxPoint);
+    void HandleTiltRotate(wxPoint);
     
     void HandCursor();
     void RestoreCursor();
