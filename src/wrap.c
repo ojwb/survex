@@ -7,6 +7,10 @@
  * not going to invest a lot of time in it...
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
@@ -16,15 +20,17 @@
 #include "filelist.h"
 #include "osdepend.h"
 
-/* RISC OS (and maybe old DOS compilers) don't support exec*() */
-/*#if (OS==RISCOS) || (OS==MSDOS && !defined(__DJGPP__))*/
+/* RISC OS doesn't have exec*(), but system is close */
+#define HAVE_EXECV 1
 #if (OS==RISCOS)
-# define NO_EXECV
-#elsif (OS==WIN32)
+# undef HAVE_EXECV
+#elif (OS==WIN32) || (OS==MSDOS)
 # include <process.h>
 #else
 # include <unistd.h>
 #endif
+
+static char *output_to = NULL;
 
 static int fPercent = -1, fAscii = 0;
 
@@ -53,7 +59,7 @@ static void wr(char *msg) {
 
 static void errdisp(char *msg, void (*fn)( char * ), char*szArg, char *type ) {
   putc('\n', STDERR);
-  fprintf( STDERR, "%s from survex:", type);
+  fprintf( STDERR, "%s from survex: ", type);
   fprintf( STDERR, "%s\n", msg );
   if (fn) (fn)(szArg);
 }
@@ -77,11 +83,32 @@ static void fatal(char *en, void (*fn)( char * ), char*szArg) {
   exit(EXIT_FAILURE);
 }
 
-/* FIXME: check return value */
 static void *xmalloc(size_t size) {
    void *p = malloc(size);
    if (!p) fatal("Out of memory!", NULL, NULL);
    return p;
+}
+
+typedef struct list {
+   const char *line;
+   struct list *next;
+} list;
+
+static list *head = NULL, *tail = NULL;
+
+static void
+add_to_list(const char *s)
+{
+   list *x;
+   x = xmalloc(sizeof(list));
+   x->line = s;
+   x->next = NULL;
+   if (!tail) {
+      head = tail = x;
+   } else {
+      tail->next = x;
+      tail = x;
+   }
 }
 
 /* Make fnm from pth and lf, inserting an FNM_SEP_LEV if appropriate */
@@ -232,8 +259,6 @@ PthFromFnm(const char *fnm)
    return pth;
 }
 
-static FILE *fout;
-
 typedef enum {COMMAND,COMMAND_FILENAME,SVX_FILE,TITLE} Mode;
 
 static void process_command( char * string, char * pth );
@@ -242,8 +267,8 @@ static void checkmode(Mode mode,void (*fn)( char * ),char * szArg);
 static void skipopt( char * sz );
 
 #define TITLE_LEN 80
-char szSurveyTitle[TITLE_LEN];
-int fExplicitTitle=fFalse;
+static char szSurveyTitle[TITLE_LEN];
+
 static Mode mode;
 
 static void process_command_line(int argc, char **argv) {
@@ -261,14 +286,31 @@ static void process_command_line(int argc, char **argv) {
   checkmode(mode,skipopt,NULL);
 }
 
+static void
+include(const char *fnm)
+{
+   char *p;
+   p = xmalloc(strlen(fnm) + 13);
+   sprintf(p, "*include \"%s\"\n", fnm);
+   add_to_list(p);
+}
+
 static char *datafile(char *fnm,char *pth) {
    /* if no pth treat fnm as absolute */
    if (pth != NULL && *pth != '\0' && !fAbsoluteFnm(fnm)) {
       fnm = UsePth(pth, fnm);
-      fprintf(fout, "*include \"%s\"\n", fnm);
-      free(fnm);
+      include(fnm);
+      if (!output_to) {
+	 output_to = fnm;
+      } else {
+	 free(fnm);
+      }
    } else {
-      fprintf(fout, "*include \"%s\"\n", fnm);
+      include(fnm);
+      if (!output_to) {
+	 output_to = xmalloc(strlen(fnm) + 1);
+	 strcpy(output_to, fnm);
+      }
    }
    return "";
 }
@@ -301,15 +343,15 @@ static char *process_command_mode( char *string, char *pth ) {
           chOpt=*sz++;
           switch (toupper(chOpt)) {
 	   case 'U':
-	     fprintf(fout, "*case toupper\n");
+             add_to_list("*case toupper\n");
 	     break;
 	   case 'L':
-	     fprintf(fout, "*case tolower\n");
+             add_to_list("*case tolower\n");
 	     break;
 	   default: error("Expected U or L", skipopt, string);
           }
         } else {
-	  fprintf(fout, "*case preserve\n");
+	  add_to_list("*case preserve\n");
 	}
         break;
       case 'D': /* Data File (so fnames can begin with '-' or '/' */
@@ -319,7 +361,10 @@ static char *process_command_mode( char *string, char *pth ) {
         mode=COMMAND_FILENAME;
         break;
       case 'N': /* NinetyToUp */
-        fprintf(fout, "*infer plumbs %s\n", (fSwitch ? "on" : "off"));
+        if (fSwitch)
+	  add_to_list("*infer plumbs on\n");
+        else
+	  add_to_list("*infer plumbs off\n");
         break;
       case 'P': /* Percentage */
         fPercent = fSwitch;
@@ -335,6 +380,7 @@ static char *process_command_mode( char *string, char *pth ) {
         break;
       case 'U': /* Unique */
         if (fSwitch) {
+	  char *p;
           int ln=0;
           ch=*(sz++); /* if we have no digits, ln=0 & error is given */
           while (isdigit(ch)) {
@@ -343,10 +389,11 @@ static char *process_command_mode( char *string, char *pth ) {
           }
           sz--;
 	  if (ln < 1) error("Syntax: -U<uniqueness> where uniqueness > 0",skipopt,string);
-	  fprintf(fout, "*truncate %d\n", ln);
+	  p = xmalloc(32);
+	  sprintf(p, "*truncate %d\n", ln);
+	  add_to_list(p);
         } else {
-	  /* FIXME: change once "*truncate off" is implemented */
-	  fprintf(fout, "*truncate 0\n");
+	  add_to_list("*truncate off\n");
 	}
         break;
       default:
@@ -355,10 +402,10 @@ static char *process_command_mode( char *string, char *pth ) {
   } else {
     switch (ch) {
       case '(': /* Push settings */
-        fprintf(fout, "*begin\n");
+        add_to_list("*begin\n");
         break;
       case ')': /* Pull settings */
-        fprintf(fout, "*end\n");
+        add_to_list("*end\n");
         break;
       case '@': /* command line extension (same as -f) */
         mode=COMMAND_FILENAME;
@@ -388,11 +435,16 @@ static void process_command( char * string, char * pth ) {
         command_file( pth, sz );
         sz="";
         break;
-      case TITLE: /* Survey title */
-        fprintf(fout, "*title \"%s\"\n", sz);
-        sz+=strlen(sz); /* advance past it */
-        mode=COMMAND;
-        break;
+      case TITLE: {
+	 /* Survey title */
+	 char *p;
+	 p = xmalloc(strlen(sz) + 11);
+	 sprintf(p, "*title \"%s\"\n", sz);
+	 add_to_list(p);
+	 sz+=strlen(sz); /* advance past it */
+	 mode=COMMAND;
+	 break;
+      }
     }
   }
 }
@@ -414,7 +466,10 @@ static void command_file( char * pth, char * fnm ) {
     return;
   }
   pth=PthFromFnm(fnmUsed);
-/*  UsingDataFile( fnmUsed );*/
+  if (!output_to) {
+     output_to = xmalloc(strlen(fnmUsed) + 1);
+     strcpy(output_to, fnmUsed);
+  }
   free(fnmUsed); /* not needed now */
 
   byte=fgetc(fh);
@@ -485,34 +540,96 @@ static void skipopt(char * sz) {
    puts("Skipping bad command line option");
 }
 
-#define MYTMP "__xxxtmp.svx"
+#if (OS==RISCOS)
+#define MYTMP "__svxtmp"
+#else
+#define MYTMP "__svxtmp.svx"
+#endif
 
 int main(int argc, char **argv) {
-   char *args[5];
+   char *args[7];
    int i;
-   int res;
-   
+   FILE *fout;
+#ifndef HAVE_EXECV
+   char *cmd, *p;
+   size_t len;
+#endif   
+
    fout = fopen(MYTMP, "w");
    if (!fout) {
       fatal("Couldn't open temporary file:", wr, MYTMP);
       exit(1);
    }
 
+   puts("Hello, welcome to...");
+   puts("  ______   __   __   ______    __   __   _______  ___   ___");
+   puts(" / ____|| | || | || |  __ \\\\  | || | || |  ____|| \\ \\\\ / //");
+   puts("( ((___   | || | || | ||_) )) | || | || | ||__     \\ \\/ //");
+   puts(" \\___ \\\\  | || | || |  _  //   \\ \\/ //  |  __||     >  <<");
+   puts(" ____) )) | ||_| || | ||\\ \\\\    \\  //   | ||____   / /\\ \\\\");
+   puts("|_____//   \\____//  |_|| \\_||    \\//    |______|| /_// \\_\\\\");
+   putchar('\n');
+
    process_command_line(argc, argv);
 
-   fclose(fout);
+   args[0] = UsePth(PthFromFnm(argv[0]), "cavern");
 
-   args[0] = "cavern";
    i = 1;
    /* ick: honour -P or -!P if specified, else use new default on no %ages */
    if (fPercent == 1) args[i++] = "--percentage";
    if (fAscii) args[i++] = "--ascii";
+   if (output_to) {
+      args[i++] = "--output";
+      args[i++] = output_to;
+   }
    args[i++] = MYTMP;
-   args[i] = '\0';
+   args[i] = NULL;
 
-#ifndef NO_EXECV
-   res = execvp("cavern", args);
+   fputs("; This file was automatically generated from a pre-0.90 survex command line\n"
+	 "; Process this file using the command line:\n"
+	 ";", fout);
+   
+   i = 0;
+   while (args[i]) {
+      /* may need to quote arguments, but for now just quote arguments with
+       * spaces and let the user sort out anything else */
+      if (strchr(args[i], ' '))
+	 fprintf(fout, " \"%s\"", args[i]);
+      else
+	 fprintf(fout, " %s", args[i]);
+      i++;
+   }
+   fputs("\n\n", fout);
+   
+   while (head) {
+      fputs(head->line, fout);
+      head = head->next;
+   }
+
+   fclose(fout);
+   
+#ifdef HAVE_EXECV
+   return execvp(args[0], args);
+#else
+   len = 1;
+   i = 0;
+   while (args[i]) {
+      len += strlen(args[i]) + 3;
+      i++;
+   }
+   cmd = xmalloc(len);
+   
+   p = cmd;
+   strcpy(p, args[0]);
+   i = 1;
+   while (args[i]) {
+      p += strlen(p);
+      sprintf(p, " \"%s\"", args[i]);
+      i++;
+   }
+   return system(cmd);      
 #endif
+#if 0
    /* printf("return from execv = %d, errno = %d\n", res, errno); */
    fputs(args[0], stdout);
    i = 1;
@@ -522,4 +639,5 @@ int main(int argc, char **argv) {
    }
    putchar('\n');
    return 0;
+#endif
 }
