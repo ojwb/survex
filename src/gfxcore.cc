@@ -1374,7 +1374,8 @@ void GfxCore::SetCoords(wxPoint point)
     ReverseTransform(point.x, m_YSize - point.y, &cx, &cy, &cz);
 
     if (m_TiltAngle == M_PI_2) {
-	m_Parent->SetCoords(cx + m_Parent->GetXOffset(), cy + m_Parent->GetYOffset());
+	m_Parent->SetCoords(cx + m_Parent->GetXOffset(),
+			    cy + m_Parent->GetYOffset());
     } else if (m_TiltAngle == 0.0) {
 	m_Parent->SetAltitude(cz + m_Parent->GetZOffset());
     } else {
