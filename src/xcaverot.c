@@ -392,6 +392,7 @@ process_load(GC mygc)
 static void
 process_plan(GC mygc)
 {
+   mygc = mygc; /* suppress compiler warning */
    if (plan_elev == PLAN) {
       switch_to_elevation();
    } else {
@@ -402,6 +403,7 @@ process_plan(GC mygc)
 static void
 process_rot(GC mygc)
 {
+   mygc = mygc; /* suppress compiler warning */
    rot = !rot;
    gettimeofday(&lastframe, NULL);
 }
@@ -409,6 +411,7 @@ process_rot(GC mygc)
 static void
 process_step(GC mygc)
 {
+   mygc = mygc; /* suppress compiler warning */
    view_angle += rot_speed / 5;
    update_rotation();
 }
@@ -455,12 +458,14 @@ draw_scalebar(int changedscale, GC scale_gc)
 static void
 process_zoom(GC mygc)
 {
+   mygc = mygc; /* suppress compiler warning */
    scale *= zoomfactor;
 }
 
 static void
 process_mooz(GC mygc)
 {
+   mygc = mygc; /* suppress compiler warning */
    scale /= zoomfactor;
 }
 
@@ -529,6 +534,7 @@ process_select(GC mygc)
 static void
 process_quit(GC mygc)
 {
+   mygc = mygc; /* suppress compiler warning */
    done = 1;
 }
 
@@ -654,15 +660,15 @@ toscreen_y(point * p)
 static void
 add_to_segment_cache(point **pp, int f_surface)
 {
-   coord x1, y1;
-   x1 = y1 = 0;	/* avoid compiler warning */
+   coord X1, Y1;
+   X1 = Y1 = 0;	/* avoid compiler warning */
    for ( ; *pp; pp++) {
       point *p;
       for (p = *pp; p->_.action != STOP; p++) {
 	 switch (p->_.action) {
 	  case MOVE:
-	    x1 = toscreen_x(p);
-	    y1 = toscreen_y(p);
+	    X1 = toscreen_x(p);
+	    Y1 = toscreen_y(p);
 	    break;
 	    
 	  case DRAW: {
@@ -686,10 +692,10 @@ add_to_segment_cache(point **pp, int f_surface)
 	       XSegment *segment = &(group->segments[group->num_segments++]);
 
 	       /* observe the order of the following lines before modifying */
-	       segment->x1 = x1;
-	       segment->y1 = y1;
-	       segment->x2 = x1 = toscreen_x(p);
-	       segment->y2 = y1 = toscreen_y(p);
+	       segment->x1 = X1;
+	       segment->y1 = Y1;
+	       segment->x2 = X1 = toscreen_x(p);
+	       segment->y2 = Y1 = toscreen_y(p);
 	    } else {
 	       fprintf(stderr, "ignoring some legs for now rather than overflowing fixed segment buffer\n");
 	    }
@@ -752,10 +758,10 @@ find_station(int x, int y)
    for (pp = ppStns; *pp; pp++) {
       for (p = *pp; p->_.str != NULL; p++) {
 	 int d;
-	 int x1 = toscreen_x(p);
-	 int y1 = toscreen_y(p);
+	 int X1 = toscreen_x(p);
+	 int Y1 = toscreen_y(p);
 
-	 d = distance_metric(x1 - x, y1 - y);
+	 d = distance_metric(X1 - x, Y1 - y);
 	 if (d < d_min) {
 	    d_min = d;
 	    q = p;
@@ -813,12 +819,12 @@ redraw_image_dbe(Window window, GC gc)
 {
    /* Draw the cave into a window (strictly, the second buffer). */
 
-   coord x1, y1, x2, y2;
+   coord X1, Y1, X2, Y2;
 
    char temp[32];
    int group;
 
-   x1 = y1 = 0;	/* avoid compiler warning */
+   X1 = Y1 = 0;	/* avoid compiler warning */
 
    if (ppStns == NULL && ppLegs == NULL && ppSLegs == NULL) return;
 
@@ -836,28 +842,28 @@ redraw_image_dbe(Window window, GC gc)
       for (pp = ppStns; *pp; pp++) {
 	 point *p;
 	 for (p = *pp; p->_.str != NULL; p++) {
-	    x2 = toscreen_x(p);
-	    y2 = toscreen_y(p);
+	    X2 = toscreen_x(p);
+	    Y2 = toscreen_y(p);
 	    if (crossing) {
 #if 0 /* + crosses */
-	       XDrawLine(mydisplay, window, gcs[lab_col_ind], x2 - CROSSLENGTH, y2, x2 + CROSSLENGTH, y2);
-	       XDrawLine(mydisplay, window, gcs[lab_col_ind], x2, y2 - CROSSLENGTH, x2, y2 + CROSSLENGTH);
+	       XDrawLine(mydisplay, window, gcs[lab_col_ind], X2 - CROSSLENGTH, Y2, X2 + CROSSLENGTH, Y2);
+	       XDrawLine(mydisplay, window, gcs[lab_col_ind], X2, Y2 - CROSSLENGTH, X2, Y2 + CROSSLENGTH);
 #else /* x crosses */
 	       XDrawLine(mydisplay, window, gcs[lab_col_ind],
-			 x2 - CROSSLENGTH, y2 - CROSSLENGTH,
-			 x2 + CROSSLENGTH, y2 + CROSSLENGTH);
+			 X2 - CROSSLENGTH, Y2 - CROSSLENGTH,
+			 X2 + CROSSLENGTH, Y2 + CROSSLENGTH);
 	       XDrawLine(mydisplay, window, gcs[lab_col_ind],
-			 x2 + CROSSLENGTH, y2 - CROSSLENGTH,
-			 x2 - CROSSLENGTH, y2 + CROSSLENGTH);
+			 X2 + CROSSLENGTH, Y2 - CROSSLENGTH,
+			 X2 - CROSSLENGTH, Y2 + CROSSLENGTH);
 #endif
 	    }
 
 	    if (labelling) {
 	       char *q = p->_.str;
 	       draw_label(window, gcs[lab_col_ind],
-			  x2, y2 + slashheight, q, strlen(q));
-	       /* XDrawString(mydisplay,window,gcs[lab_col_ind],x2,y2+slashheight, q, strlen(q)); */
-	       /* XDrawString(mydisplay,window,gcs[p->survey],x2+10,y2, q, strlen(q)); */
+			  X2, Y2 + slashheight, q, strlen(q));
+	       /* XDrawString(mydisplay,window,gcs[lab_col_ind],X2,Y2+slashheight, q, strlen(q)); */
+	       /* XDrawString(mydisplay,window,gcs[p->survey],X2+10,Y2, q, strlen(q)); */
 	    }
 	 }
       }
