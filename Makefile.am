@@ -24,6 +24,9 @@ base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
 AUTHORS: doc/AUTHORS.htm
 	w3m -dump doc/AUTHORS.htm > AUTHORS
 
+HACKING: doc/HACKING.htm
+	w3m -dump doc/HACKING.htm > HACKING
+
 TODO: doc/TODO.htm
 	w3m -dump doc/TODO.htm > TODO
 

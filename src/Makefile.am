@@ -53,11 +53,11 @@ endif
 
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN -O2
-aven_LDFLAGS = -lrx
+aven_LDFLAGS = @LIBRX@
 
 avengl_CFLAGS = @WXGL_CFLAGS@ -DAVEN
 avengl_CXXFLAGS = @WXGL_CFLAGS@ -DAVEN -O2
-avengl_LDFLAGS = -lrx
+avengl_LDFLAGS = @LIBRX@
 
 PRSRC = prcore.c prio.c useful.c img.c $(COMMONSRC)
  

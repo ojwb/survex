@@ -5,8 +5,10 @@ dnl CFLAGS=-DDEFAULTLANG=fr to build with French as the default language.
 dnl Need autoconf 2.13 or later for 3 argument version of AC_DEFINE
 AC_PREREQ(2.13)
 AC_INIT(src/cavern.c)
+
 AM_INIT_AUTOMAKE(survex, 0.99)
 RELEASE=3
+
 AC_SUBST(RELEASE)
 AM_CONFIG_HEADER(config.h)
 
@@ -61,14 +63,6 @@ AC_PROG_MAKE_SET
 AC_EXEEXT
 AC_OBJEXT
 
-TXTEXT=
-CHANGELOG=ChangeLog
-case "$EXEEXT" in
-.[Ee][Xx][Ee]) TXTEXT=.txt ; CHANGELOG=Changes.txt ;;
-esac
-AC_SUBST(TXTEXT)
-AC_SUBST(CHANGELOG)
-
 if test -n "$MINGW32$CYGWIN" ; then
 dnl assume mingw32 or cygwin means littleendian (may not be true for NT
 dnl on non-intel platforms but ISTR m$ have scrapped that)
@@ -99,6 +93,11 @@ fi
 AC_CHECK_PROGS(STRIP, strip, echo "not stripping ")
 
 AC_CHECK_LIB(m, sqrt)
+
+dnl On Linux, regexp routines are included in recent version of libc
+LIBRX=
+AC_CHECK_LIB(rx, re_compile_pattern, LIBRX=-lrx)
+AC_SUBST(LIBRX)
 
 AC_PATH_XTRA
 
