@@ -1,4 +1,8 @@
 #!/bin/sh
+
+# allow us to run tests standalone more easily
+if test "x$srcdir" = "x" ; then srcdir=. ; fi
+
 for file in delatend addatend ; do
   echo $file
   rm -f diffpos.tmp

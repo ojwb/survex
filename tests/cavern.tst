@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# allow us to run tests standalone more easily
+if test "x$srcdir" = "x" ; then srcdir=. ; fi
+
 for file in oneleg midpoint noose cross ; do
   echo $file
   rm -f ./tmp.*
