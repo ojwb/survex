@@ -48,7 +48,7 @@
 # error Operating System not known
 #endif
 
-extern float scDefault;
+extern double scDefault;
 
 extern bool fAllNames;
 

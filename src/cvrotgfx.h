@@ -21,6 +21,7 @@
 #define SVX_CVROTGFX_H 1
 
 #include "whichos.h"
+#include "ostypes.h"
 
 extern int mouse_buttons;
 
@@ -197,7 +198,7 @@ void cvrotgfx_lineto(int X, int Y);
 # include "oslib/os.h"
 # include "oslib/osbyte.h"
 # include "oslib/osword.h"
-# define bool BOOL
+# define bool SVXBOOL
 
 void outtextxy(int x, int y, const char *str);
 void text_xy(int x, int y, const char *str);

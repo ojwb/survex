@@ -1113,7 +1113,6 @@ as_escstring(char *s)
 {
    char *p, *q;
    char c;
-   char *t;
    static const char *escFr = "[nrt?0"; /* 0 is last so maps to the implicit \0 */
    static const char *escTo = "\x1b\n\r\t\?";
    bool fSyntax = fFalse;
@@ -1137,8 +1136,8 @@ as_escstring(char *s)
 	  case '\0': /* trailing \ is meaningless */
 	    fSyntax = 1;
 	    break;
-	  default:
-	    t = strchr(escFr, c);
+	  default: {
+	    const char *t = strchr(escFr, c);
 	    if (t) {
 	       c = escTo[t - escFr];
 	       break;
@@ -1150,6 +1149,7 @@ as_escstring(char *s)
 	    }
 	    /* otherwise don't do anything to c (?) */
 	    break;
+	  }
 	 }
       }
       *q++ = c;

@@ -445,8 +445,8 @@ main(int argc, char **argv)
    }
 
    /* Get drawing corners */
-   min_x = min_y = min_z = FLT_MAX;
-   max_x = max_y = max_z = -FLT_MAX;
+   min_x = min_y = min_z = HUGE_VAL;
+   max_x = max_y = max_z = -HUGE_VAL;
    do {
       item = img_read_item(pimg, szName, &p);
 

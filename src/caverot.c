@@ -83,8 +83,8 @@ Hungarian style types:
 static float degView;          /* current direction of view (degrees) */
 static float degViewStep;      /* current size of change in view direction */
 static float degStereoSep;     /* half the stereo separation of 3d view */
-float scDefault;        /* scale to show whole survey on screen */
-static float sc;               /* current scale */
+double scDefault;        /* scale to show whole survey on screen */
+static double sc;               /* current scale */
 static float ZoomFactor;       /* zoom in/out factor */
 static bool fRotating;        /* flag indicating auto-rotation */
 static bool fNames = fFalse;  /* Draw station names? */

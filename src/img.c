@@ -288,7 +288,7 @@ img_read_item(img *pimg, char *sz, img_point *p)
 	 break;
        default:
 	 if (!(opt & 0x80)) return img_BAD;
-	 pimg->flags = opt & 0x7f;
+	 pimg->flags = (int)opt & 0x7f;
 	 result = img_LINE;
 	 break;
       }

@@ -196,7 +196,7 @@ read_string(char **pstr, int *plen)
 }
 
 static char *buffer = NULL;
-static size_t buf_len;
+static int buf_len;
 
 static char *ucbuffer = NULL;
 
@@ -770,7 +770,7 @@ cmd_equate(void)
 	    if (fixed(stn2)) {
 	       /* both are fixed, but let them off iff their coordinates match */
 	       char *s = osstrdup(sprint_prefix(name1));
-	       int d;	       
+	       int d;
 	       for (d = 2; d >= 0; d--) {
 		  if (name1->pos->p[d] != name2->pos->p[d]) {
 		     compile_error(/*Tried to equate two non-equal fixed stations: `%s' and `%s'*/52,

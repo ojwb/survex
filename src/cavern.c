@@ -41,7 +41,9 @@
 #include "validate.h"
 
 #ifdef NEW3DFORMAT
+#if OS != RISCOS && OS != MSDOS
 #include <unistd.h> /* for getcwd() */
+#endif
 
 #include "new3dout.h"
 #ifndef MAXPATHLEN
