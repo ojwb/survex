@@ -14,13 +14,6 @@ keypress and these work in the program as expected from the code. I
 didn't know this as xcaverot -help etc didn't tell me what keys are
 currently looked at.
 
-Date: Mon, 22 Feb 1999 08:58:53 GMT
-From: <jep@redestb.es> Josep Guarro
-
-When I use caverot if I set the language to another one different than
-english, the screen doesn't print well the words with accents.
-[Need accent support from Allegro, which is under development - Olly]
-
 Date: 25 Jan 2000
 From: Mark Shinwell
 
