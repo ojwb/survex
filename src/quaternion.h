@@ -58,7 +58,11 @@ public:
 
     Double magnitude() const {
 	Double mv = v.magnitude();
+#ifdef HAVE_HYPOT
+	return hypot(mv, w);
+#else
 	return sqrt(mv*mv + w*w);
+#endif	
     }
 
     void normalise() {

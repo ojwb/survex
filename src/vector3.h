@@ -25,6 +25,7 @@
 #define Vector3_h
 
 #include <stdio.h>
+#include <math.h>
 
 class Vector3 {
     double x; //--FIXME
