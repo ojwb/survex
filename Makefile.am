@@ -176,7 +176,7 @@ mingw_iss : dostxt mingwexes
 	cp dostxt_tmp/*.txt $(extra_txt) survex.iss doc/docindex.htm iss_tmp
 	# convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
-	cp mingw_extras/*.ico lib/aven-about.png iss_tmp
+	cp mingw_extras/*.ico lib/icons/*.png iss_tmp
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual
 	# convert LF to CR+LF
