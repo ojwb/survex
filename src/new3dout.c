@@ -105,36 +105,37 @@ cave_write_stn(node *nod)
     nod = nod; /* avoid compiler warnings */
 }
 
-static void
+static int
 cave_write_pos(pos *pid, prefix *pre)
 {
-  if (pid->id == 0) {
-    const char *tag;
-    unsigned int len;
-    pid->id = (INT32_T)statcount;
-    tag = pre->ident;
-    len = cslen(tag) + 12 + 4;
-    /* storage station name, 12 for data, 4 for id */
-    putc(STATION_3D, pimgOut->fh);
-    if (len == 0 || len > 255) {
-       if (putc(0, pimgOut->fh) == EOF) return EOF;
-       put32((INT32_T)len, pimgOut->fh);
-       if (ferror(pimgOut->fh)) return EOF;
-    } else {
-       if (putc((unsigned char)len, pimgOut->fh) == EOF) return EOF;
-    }
-    put32((INT32_T)statcount, pimgOut->fh); /* station ID */
-    put32((INT32_T)(pid->p[0] * 100.0), pimgOut->fh); /* X in cm */
-    put32((INT32_T)(pid->p[1] * 100.0), pimgOut->fh); /* Y */
-    put32((INT32_T)(pid->p[2] * 100.0), pimgOut->fh); /* Z */
-    fputcs(tag, pimgOut->fh);
-    statcount++;
-  } else {
-    /* we've already put this in the file, so just a link is needed */
-    putc(STATLINK_3D, pimgOut->fh);
-    putc(0x04, pimgOut->fh);
-    put32((INT32_T)pid->id, pimgOut->fh);
-  }
+   if (pid->id == 0) {
+      const char *tag;
+      unsigned int len;
+      pid->id = (INT32_T)statcount;
+      tag = pre->ident;
+      len = cslen(tag) + 12 + 4;
+      /* storage station name, 12 for data, 4 for id */
+      putc(STATION_3D, pimgOut->fh);
+      if (len == 0 || len > 255) {
+	 if (putc(0, pimgOut->fh) == EOF) return EOF;
+	 put32((INT32_T)len, pimgOut->fh);
+	 if (ferror(pimgOut->fh)) return EOF;
+      } else {
+	 if (putc((unsigned char)len, pimgOut->fh) == EOF) return EOF;
+      }
+      put32((INT32_T)statcount, pimgOut->fh); /* station ID */
+      put32((INT32_T)(pid->p[0] * 100.0), pimgOut->fh); /* X in cm */
+      put32((INT32_T)(pid->p[1] * 100.0), pimgOut->fh); /* Y */
+      put32((INT32_T)(pid->p[2] * 100.0), pimgOut->fh); /* Z */
+      fputcs(tag, pimgOut->fh);
+      statcount++;
+   } else {
+      /* we've already put this in the file, so just a link is needed */
+      putc(STATLINK_3D, pimgOut->fh);
+      putc(0x04, pimgOut->fh);
+      put32((INT32_T)pid->id, pimgOut->fh);
+   }
+   return 0;
 }
 
 img *
