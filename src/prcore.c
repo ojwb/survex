@@ -563,6 +563,7 @@ main(int argc, char **argv)
    bool fInteractive = fTrue;
    const char *msg166, *msg167;
    int old_charset;
+   char *output_fnm = NULL;
 
    /* TRANSLATE */
    static const struct option long_opts[] = {
@@ -581,12 +582,13 @@ main(int argc, char **argv)
       {"no-legs", no_argument, 0, 'l'},
       {"surface", no_argument, 0, 'S'},
       {"skip-blanks", no_argument, 0, 'k'},
+      {"output", required_argument, 0, 'o'},
       {"help", no_argument, 0, HLP_HELP},
       {"version", no_argument, 0, HLP_VERSION},
       {0, 0, 0, 0}
    };
 
-#define short_opts "epb:t:s:ncBlSk"
+#define short_opts "epb:t:s:ncBlSko:"
 
    /* TRANSLATE */
    static struct help_msg help[] = {
@@ -602,6 +604,7 @@ main(int argc, char **argv)
       {HLP_ENCODELONG(8),       "turn off display of survey legs"},
       {HLP_ENCODELONG(9),       "turn on display of surface survey legs"},
       {HLP_ENCODELONG(10),      "don't output blank pages"},
+      {HLP_ENCODELONG(11),      "set output file"},
       {0, 0}
    };
 
@@ -655,6 +658,9 @@ main(int argc, char **argv)
 	 }
 	 fInteractive = fFalse;
 	 break;
+       case 'o':
+	 output_fnm = optarg;
+	 break;
       }
    }
 
@@ -706,7 +712,7 @@ main(int argc, char **argv)
       if (!fh) fatalerror(/*Couldn't open data file `%s'*/24, print_ini);
       *pfh++ = fh;
       *pfh = NULL;
-      pr->Init(fh_list, pth_cfg, &scX, &scY);
+      pr->Init(fh_list, pth_cfg, output_fnm, &scX, &scY);
       for (pfh = fh_list; *pfh; pfh++) fclose(*pfh);
    }
 

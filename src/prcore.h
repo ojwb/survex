@@ -32,9 +32,11 @@ typedef struct {
 
 typedef struct {
    const char * (*Name)(void); /* returns "Widgetware printer" or whatever */
-   /* A NULL fn ptr is Ok for Init, Alloc, NewPage, ShowPage, Free, Quit */
-   /* if Alloc==NULL, it "returns" 1 */
-   void (*Init)(FILE **fh_list, const char *pth, float *pscX, float *pscY);
+   /* A NULL fn ptr is Ok for Init, Charset, Pre, NewPage, ShowPage,
+    & Post, Quit */
+   /* if Pre==NULL, it "returns" 1 */
+   void (*Init)(FILE **fh_list, const char *pth, const char *out_fnm,
+		float *pscX, float *pscY);
    int  (*Charset)(void);
    int  (*Pre)(int pagesToPrint, const char *title);
    void (*NewPage)(int pg, int pass, int pagesX, int pagesY);
@@ -58,5 +60,3 @@ int as_bool(const char *v, char *p);
 float as_float(const char *v, char *p, float min_val, float max_val);
 int as_escstring(const char *v, char *s);
 char *as_string(const char *v, char *p);
-
-char **prcore_read_ini(char *section, char **vars);

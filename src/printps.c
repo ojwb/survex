@@ -60,7 +60,8 @@
 static const char *hpgl_Name(void);
 static int hpgl_Pre(int pagesToPrint, const char *title);
 static void hpgl_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void hpgl_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
+static void hpgl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+		      float *pscX, float *pscY);
 static void hpgl_MoveTo(long x, long y);
 static void hpgl_DrawTo(long x, long y);
 static void hpgl_DrawCross(long x, long y);
@@ -107,7 +108,8 @@ static const char *fontname, *fontname_labels;
 static const char *ps_Name(void);
 static int ps_Pre(int pagesToPrint, const char *title);
 static void ps_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
+static void ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+		    float *pscX, float *pscY);
 static int CharsetLatin1(void);
 static void ps_MoveTo(long x, long y);
 static void ps_DrawTo(long x, long y);
@@ -557,12 +559,14 @@ ps_ShowPage(const char *szPageDetails)
 /* Initialise HPGL/PS printer routines */
 static void
 #ifdef HPGL
-hpgl_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
+hpgl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+	  float *pscX, float *pscY)
 #else
-ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
+ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+	float *pscX, float *pscY)
 #endif
 {
-   char *fnmPrn;
+   char *fnm_prn;
    static const char *vars[] = {
       "like",
       "output",
@@ -604,10 +608,12 @@ ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
    vals = ini_read_hier(fh_list, "ps", vars);
 #endif
 
-   if (vals[2])
-      fnmPrn = vals[2];
+   if (out_fnm)
+      fnm_prn = osstrdup(out_fnm);
+   else if (vals[2])
+      fnm_prn = vals[2];
    else
-      fnmPrn = as_string(vars[1], vals[1]);
+      fnm_prn = as_string(vars[1], vals[1]);
 
 #ifdef HPGL
    PaperWidth = as_float(vars[3], vals[3], 1, FLT_MAX);
@@ -649,8 +655,8 @@ ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
    ypPageDepth = (long)(POINTS_PER_MM * PaperDepth);
 #endif
 
-   prio_open(fnmPrn);
-   osfree(fnmPrn);
+   prio_open(fnm_prn);
+   osfree(fnm_prn);
 }
 
 #ifndef HPGL

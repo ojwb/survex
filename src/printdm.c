@@ -53,7 +53,8 @@ static int CharsetLatin1(void);
 #ifdef XBM
 static const char *xbm_Name(void);
 static void xbm_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void xbm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
+static void xbm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+		     float *pscX, float *pscY);
 static void xbm_ShowPage(const char *szPageDetails);
 
 static int xbm_page_no = 0;
@@ -82,7 +83,8 @@ static bool fPCLVTab = fTrue;
 
 static const char *pcl_Name(void);
 static void pcl_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void pcl_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
+static void pcl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+		     float *pscX, float *pscY);
 static void pcl_ShowPage(const char *szPageDetails);
 
 /*device pcl = {*/
@@ -108,7 +110,8 @@ static bool fIBM = fFalse;
 
 static const char *dm_Name(void);
 static void dm_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
+static void dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+		    float *pscX, float *pscY);
 static void dm_ShowPage(const char *szPageDetails);
 
 /*device dm = {*/
@@ -399,14 +402,17 @@ dm_ShowPage(const char *szPageDetails)
 /* Initialise DM/PCL printer routines */
 static void
 #ifdef XBM
-xbm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
+xbm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+	 float *pscX, float *pscY)
 #elif defined(PCL)
-pcl_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
+pcl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+	 float *pscX, float *pscY)
 #else
-dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
+dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+	float *pscX, float *pscY)
 #endif
 {
-   char *fnmPrn;
+   char *fnm_prn;
    static const char *vars[] = {
       "like",
       "output",
@@ -459,10 +465,12 @@ dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 /*   vals = ini_read_hier(fh_list, "bj", vars);*/
 #endif
 
-   if (vals[2])
-      fnmPrn = vals[2];
+   if (out_fnm)
+      fnm_prn = osstrdup(out_fnm);
+   else if (vals[2])
+      fnm_prn = vals[2];
    else
-      fnmPrn = as_string(vars[1], vals[1]);
+      fnm_prn = as_string(vars[1], vals[1]);
 
 #ifdef XBM
    xpPageWidth = as_int(vars[3], vals[3], 1, INT_MAX);
@@ -533,8 +541,8 @@ dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 	       (int)((*pscY) * MM_PER_INCH));
    }
 #endif
-   prio_open(fnmPrn);
-   osfree(fnmPrn);
+   prio_open(fnm_prn);
+   osfree(fnm_prn);
 }
 
 #if defined(PCL) || defined(XBM)

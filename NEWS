@@ -7,11 +7,14 @@
 * Further tweaks to charset handling - look at LC_* as well as LANG;
   Check GUI codepage under MS Windows.
 
-* Allow *copyright/*date/*instrument/*team/*title between *begin and
-  *export.
+* cavern: Allow *copyright/*date/*instrument/*team/*title between
+  *begin and *export.
 
-* Fixed typo which prevented *instrument from being recognised as a
-  valid command.
+* cavern: Fixed typo which prevented *instrument from being recognised
+  as a valid command.
+
+* print*: Added --output command line option to override the output
+  setting in the .ini file.
 
 * Minor documentation updates.
 
