@@ -602,6 +602,7 @@ equate_list(void)
 static void
 data(void)
 {
+   /* FIXME: also BackComp, BackClino, Dx, Dy, Dz, FrCount, ToCount, Dr */
    static sztok dtab[] = {
 #ifdef SVX_MULTILINEDATA
 	{"BACK",         Back },
@@ -623,11 +624,6 @@ data(void)
 	{"TODEPTH",      ToDepth },
 	{NULL,           End }
    };
-#if 0
-   typedef enum { End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
-      FrDepth, ToDepth, dx, dy, dz, FrCount, ToCount, dr,
-      Ignore, IgnoreAll } datum;
-#endif
 
    static style fn[] = {data_normal, data_diving};
 

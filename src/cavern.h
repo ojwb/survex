@@ -100,7 +100,7 @@ typedef enum { UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS,
 
 /* enumeration of field types */
 typedef enum { End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
-   FrDepth, ToDepth, dx, dy, dz, FrCount, ToCount, dr,
+   FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount, Dr,
 #ifdef SVX_MULTILINEDATA
    Next, Back,
 #endif
