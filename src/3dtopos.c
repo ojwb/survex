@@ -90,7 +90,7 @@ main(int argc, char **argv)
    if (argv[optind]) {
       fnm_out = argv[optind];
    } else {
-      char *base = base_from_fnm(fnm);
+      char *base = baseleaf_from_fnm(fnm);
       fnm_out = add_ext(base, EXT_SVX_POS);
       osfree(base);
    }
@@ -120,7 +120,8 @@ main(int argc, char **argv)
       }
    } while (result != img_STOP);
 
-   stns = osmalloc(ossizeof(station) * c_labels);
+   /* + 1 to allow for reading coordinates of legs after the last label */
+   stns = osmalloc(ossizeof(station) * (c_labels + 1));
    p = osmalloc(c_totlabel);
    p_end = p + c_totlabel;
    
@@ -137,8 +138,8 @@ main(int argc, char **argv)
 	    OSSIZE_T len = strlen(pimg->label) + 1;
 	    if (p + len <= p_end) {
 	       memcpy(p, pimg->label, len);
-	       p += len;
 	       stns[c_stns++].name = p;
+	       p += len;
 	       break;
 	    }
 	 }

@@ -17,6 +17,9 @@
 
 * Minor documentation updates.
 
+* 3dtopos: Fixed bug which resulted in station names and coordinates
+  getting mismatched; output now defaults to current directory.
+
 Changes in 0.98-prerelease4:
 
 * diffpos: list added and deleted stations in sorted order; better
