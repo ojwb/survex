@@ -1065,6 +1065,7 @@ msg_init(char * const *argv)
 	    }
 #endif
 	 }
+	 osfree(p);
       }
       if (free_pth) osfree(pth);
 #elif (OS==WIN32)
