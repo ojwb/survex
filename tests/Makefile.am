@@ -14,6 +14,7 @@ bug0.svx bug0.pos\
 bug1.svx bug1.pos\
 bug2.svx bug2.pos\
 bug3.svx bug3.pos\
+calibrate_tape.svx calibrate_tape.pos\
 delatenda.pos delatendb.pos delatend.out\
 addatenda.pos addatendb.pos addatend.out\
 begin_no_end.svx end_no_begin.svx end_no_begin_nest.svx
