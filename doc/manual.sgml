@@ -19,7 +19,7 @@ section on "design philosophy"
 
 <Article Status="draft" id=index>
  <ArtHeader>
-  <Title>&survexsuite; 0.95 Documentation</Title>
+  <Title>&survexsuite; 0.97 Documentation</Title>
   <AuthorGroup>
    <Author>
     <FirstName/Olly/
@@ -45,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-03-28 23:02:37 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.19 2001-03-28 23:02:37 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-03-29 21:52:12 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.20 2001-03-29 21:52:12 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -64,21 +64,24 @@ ZIPfile</a>
 
 <Sect1><Title>Introduction</Title>
 
-<Para>&survexsuite; is a multi-platform open-source cave surveying package.
-It currently runs on &unix;, Windows 95/98/NT, &msdos;, and Acorn &riscos;
-machines.  Windows 3.1 users can use the &msdos; version, or may be able to
-run Windows 95/98/NT version with Win32s installed (though we've not tried
-this).</Para>
+<Para>&survexsuite; is a multi-platform open-source cave surveying
+package.  It currently runs on &unix;, Microsoft Windows 95/98/NT/2000/ME,
+&msdos;, and Acorn &riscos; machines.  Windows 3.1 users can use the
+&msdos; version, or may be able to run Windows 95/98/NT version with
+Win32s installed (though we've not tried this).</Para>
 
 <Para>Porting to other platforms should be fairly easy.  The graphics
-code in caverot will be most work - the rest only requires an ANSI C
-compiler plus a few details about the format of filenames and the
-like.  If you are interested in support for any other machine contact
-us and we will try to help.</Para>
+code in caverot would be the most work - the rest only requires an ANSI C
+compiler plus a few details about the format of filenames and the like.
+If you are interested in support for any other machine contact us and we
+will try to help.</Para>
 
+<!-- with the windows installer, windows printer driver, and aven we
+     do now have a GUI of sorts, so this next paragraph could be kinder
+     on ourselves... -->
 <Para>&survexsuite; has been designed to be a powerful and useful
 survey-production tool. This focus on facilities and structure means that
-less attention has so far been given to the user interface so it does not
+less attention has so far been given to the user interface, so it does not
 yet have nice menus, on-line help etc. - you will have to read the
 instructions first! Version 2.0 will have windows and menus.</Para>
 
@@ -118,26 +121,31 @@ url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
 <Sect2><Title>Other Documentation</Title>
 
 <Para>
-NEWS / NEWS.txt - this file contains a list of changes of interest to
+NEWS or NEWS.txt - this file contains a list of changes of interest to
 &survexsuite; users, broken down by version number.  When upgrading, it's
 wise to check this file for information on what has change since the version
 you were previously using.
 </Para>
 
 <Para>
-BUGS / BUGS.txt - a list of known bugs.
+BUGS or BUGS.txt - a list of known bugs.
 </Para>
 
 <Para>
-TODO / TODO.txt - changes and enhancements that need doing.
+TODO or TODO.txt - changes and enhancements that need doing.
 </Para>
 
 <Para>
-ChangeLog / CHANGES.txt - this is a much more detailed list of changes.
+ChangeLog or CHANGES.txt - this is a much more detailed list of changes.
 It's aimed at developers rather than end users.
 </Para>
 
-<!-- FIXME: other text files... -->
+<!-- FIXME: INSTALL no longer relevant and so no longer inclued on win32 thanks to installer -->
+<Para>
+INSTALL or INSTALL.txt - instructions for building and installing &survexsuite;.
+</Para>
+
+<!-- FIXME: any other text files? -->
 
 </Sect2>
 
@@ -151,7 +159,7 @@ install it.</Para>
 
 <Sect2><Title>Obtaining &survexsuite;</Title>
 
-<Para>The latest version is available from the &survexsuite; website
+<Para>The latest version is available from the &survexsuite; website:
 <ulink url="&survexwebsite;">&survexwebsite;</ulink>. If you do not
 have internet access or would prefer to get a copy by post, we are
 also happy to send out up-to-date copies on receipt of a formatted
@@ -170,20 +178,23 @@ is unpack the sources, then simply type <command>./configure</command>
 followed by <command>make</command> to build the programs and then
 <command>make install</command> to install them.</Para>
 
-<Para>We also supply a pre-compiled version for x86 Linux machines in RPM
-format.</Para>
+<Para>We also supply a pre-compiled version for x86 Linux machines (ELF
+format, using glibc) in RPM format (suitable for Redhat, Mandrake, and
+various other distributions) and debian foramt (suitable for Debian
+and Debian-derived distributions).</Para>
 
 </Sect3>
 
-<Sect3><Title>Windows 95, Windows 98 and Windows NT</Title>
+<!-- FIXME: rather a long list now... -->
+<Sect3><Title>Microsoft Windows 95/98/NT/2000/ME</Title>
 
 <Para>The &msdos; version works under Windows, but there is now a
-native Win32 console version which will run on Windows 95, Windows 98,
-Windows NT (it may also work under Windows 3.1 with Win32s installed,
-but we've not tried this).</Para>
+native Win32 console version which will run on all modern desktop
+versions of Microsoft windows (it may also work under Windows 3.1 with
+Win32s installed, but we've not tried this).</Para>
 
-<Para>Caverot has not been ported yet, so we're currently including
-the DOS version of caverot with the Win32 distribution.</Para>
+<Para>There's also a GUI caverot replacement called aven, and a Survex
+printer driver (printwin) which uses the Windows printer system.</Para>
 </Sect3>
 
 <Sect3><Title>Windows 3.1 and &msdos; (Intel 80386 or newer CPU)</Title>
@@ -203,12 +214,12 @@ if it's needed.</Para>
 
 <Sect3><Title>&msdos; (Intel 80286 or earlier CPU)</Title>
 
-<Para>We also supply a version suitable for use on pre-386
-machines. You might wonder why - the reason is that many surveying
-projects have little or no budget and can acquire such machines for
-free. This version is suitable for caves up to medium size - a few
-thousand stations which typically equates to a few kilometres of
-survey.  A very loopy cave may need more memory.
+<Para>We also supply a version suitable for use on pre-386 machines. You
+might wonder why - the reason is that many surveying projects have little
+or no budget and can acquire such machines for free. This version is
+suitable for caves up to medium size - a few thousand stations - which
+typically equates to a few kilometres of survey.  A very loopy cave may
+need more memory.
 </Para>
 
 <Para>This version is compiled with <Application/Borland C++/.  As a
@@ -256,7 +267,8 @@ program from that so below are general comments on the basic concepts of
 &survexsuite; and typical ways of using the program.</Para>
 -->
 
-<Para>&survexsuite; is currently command-based. There are three sections:
+<Para>&survexsuite; is, currently, used almost completely from the
+command line. There are three main sections:
 </Para>
 
 <ItemizedList>
@@ -284,42 +296,30 @@ use Windows as the shell.
 
 <Para>Also supplied are a few useful utilities:</Para>
 
-<VariableList>
+<ItemizedList>
 
-<VarListEntry><Term>diffpos</Term>
+<ListItem><Para> diffpos: compares two <filename/.pos/ files. It was
+originally written as a debugging aid, but you may find it useful.  It
+will tell you about stations which are in one file but not the other, and
+you can specify a tolerance by which each station's position is allowed
+to vary.  </Para></ListItem>
 
-<listitem><Para>compares two <filename/.pos/ files. It was originally written as
-a debugging aid, but you may find it useful.  It will tell you about
-stations which are in one file but not the other, and you can specify
-a tolerance by which each station's position is allowed to vary.
-</Para></listitem>
-
-</VarListEntry>
-
-<VarListEntry><Term>extend</Term>
-
-<listitem><Para>simplistic Extended Elevation processor. It takes a
-<filename/.3d/ file and squashes it flat. It starts with the highest
-station in the survey on the left, folding each leg out individually
-to the right, and breaking loops arbitrarily (usually at
+<ListItem><Para> extend: simplistic Extended Elevation processor. It
+takes a <filename/.3d/ file and squashes it flat. It starts with the
+highest deadend station in the survey (or the highest station if there
+are no deadends) which is put on the left, then folds each leg out
+individually to the right, breaking loops arbitrarily (usually at
 junctions). This suffices for simple caves, and sections of cave. Some
-more control will be added in due course.
-</Para></listitem>
+more control will be added in due course.  </Para></ListItem>
 
-</VarListEntry>
+<ListItem><Para> hto2svx and svx2hto: translate
+<filename/.svx/ files to and from Doug
+Dotson's &hto; format for survey data transfer.  Bill Purvis wrote these
+using Doug Dotson's &hto; library routines. They are now somewhat out of
+date and may not work too well. &hto; never really took off but we
+include these in case they are of use to someone.  </Para></ListItem>
 
-<VarListEntry><Term>svx2hto, hto2svx</Term>
-
-<listitem><Para>translate <filename/.svx/ files to and from Doug Dotson's &hto;
-format for survey data transfer.  Bill Purvis wrote these using Doug
-Dotson's &hto; library routines. They are now somewhat out of date and
-may not work too well. &hto; never really took off but we include
-these in case they are of use to someone.
-</Para></listitem>
-
-</VarListEntry>
-
-</VariableList>
+</ItemizedList>
 
 </Sect1>
 
@@ -332,7 +332,7 @@ these in case they are of use to someone.
 
 <!-- FIXME: bad style -->
 
-<Sect2><Title>Language</Title>
+<Sect2><Title>Language: SURVEXLANG</Title>
 
 <Para>The language used for messages in &survexsuite; can be specified using
 the <systemitem>SURVEXLANG</systemitem> environment variable. If this is not
@@ -384,19 +384,19 @@ change the value to the code for the language you want.</Para></ListItem>
 </Sect2>
 <!-- FIXME: more translations? OS messages and startup may still be in
 English -->
-<Sect2><Title>Telling &survexsuite; where to find its support files</Title>
+<Sect2><Title>Support File Directory: SURVEXHOME</Title>
 
-<!-- Following not true for Unix - location of lib is compiled in, but
- can be overridden still -->
-<Para>&survexsuite; needs various support files, which by default it looks
-for in the directory where the executables are.  It is possible under some
-operating systems (this is not a problem with &msdos;) for &survexsuite; not
-to be able to work out where the executable is in some cases. To get around
-this problem, you can define an environmental variable
-<SystemItem/SURVEXHOME/ to be a directory to look for support files in. This
-can also be used if you would rather install the support files elsewhere.
+<Para>&survexsuite; needs various support files.  Under some
+operating systems (notably &unix;) the path to the support files needs
+to be built into the programs, but this causes a problem if the
+support files need to be installed elsewhere for some reason and the
+programs can't be rebuilt. To get around this problem, you can
+define an environmental variable <SystemItem/SURVEXHOME/ to point to a
+directory in which to look for support files.
 </Para>
 
+<Para>This mechanism is sometimes useful on other operating
+systems.</Para>
 
 <Para>E.g. for &msdos;, put <SystemItem>SET SURVEXHOME=C:\SURVEX</SystemItem> in
 your AUTOEXEC.BAT file
@@ -407,11 +407,18 @@ your AUTOEXEC.BAT file
 ADFS::4.$.&survexsuite;.!Survex</SystemItem> into your Boot <filename/!Run/
 or <filename/!DeskTop/ (assuming <filename>ADFS::4.$.Survex.!Survex</filename>
 contains the &survexsuite; executables).
-</Para>
-
-<Para>If you ensure that !Survex is seen by the filer with a line like
+If you ensure that !Survex is seen by the filer with a line like
 <SystemItem>Filer_Boot ADFS::4.$.Survex.!Survex</SystemItem> then the above
 should not be necessary.
+</Para>
+
+<Para>Under unix, use "setenv SURVEXHOME /home/user/survex-0.96" (csh)
+or "export SURVEXHOME; SURVEXHOME=/home/user/survex-0.96" (sh).  This
+is essential when installing a prebuilt survex in other than the
+default location; entirely likely when you're not installing it with
+root privileges.  If you're building survex yourself, you be more
+sensible to configure survex with "./configure
+--prefix=/home/user/survex".
 </Para>
 
 </Sect2>
@@ -453,7 +460,8 @@ treat options as case sensitive while others don't.
 <Para>A file specified on the command line of any of the &survexsuite; suite
 of programs will be looked for as specified.  If it is not found, then the
 program will try adding the default extension (if appropriate) and try
-again.
+again.  Under Unix, data files will also be searched for both as
+specified and as an all-lower-case filename.
 </Para>
 
 </Sect2>
@@ -466,14 +474,13 @@ again.
 <Para>Cavern is the data processing engine of the suite.
 </Para>
 
-<!-- FIXME: markup -->
-<Para>Syntax for simple use: cavern &lt;survey data file&gt;
+<Para>Syntax for simple use: <command/cavern &lt;survey data file&gt;/
 </Para>
 
 <Para>Cavern reads in text files containing the survey data
-(<filename/.svx/) and outputs four data files: <filename/.3d/,
-<filename/.pos/, <filename/.err/ and <filename/.inf/ - explained
-below.</Para>
+(<filename/.svx/) and outputs four data files, with the following
+extensions, further explained below: <filename/.3d/,
+<filename/.pos/, <filename/.err/ and <filename/.inf/</Para>
 
 <Sect2><Title>Cavern Output</Title>
 
@@ -601,7 +608,7 @@ remember, while the short form is quicker to type.  Options are often
 available in both forms.
 </Para>
 
-<Sect4><Title><command/cavern -a/ - output ASCII <filename/.3d/ file</Title>
+<Sect4><Title><command/cavern -a/ : output ASCII <filename/.3d/ file</Title>
 
 <Para>The <filename/.3d/ image file produced will be in ASCII
 format (the default is binary, since the files are smaller and faster to
@@ -609,10 +616,11 @@ read and write). ASCII format files are readable by humans, so this is
 useful if you want to plot by hand for example.  The replacement for the
 <filename/.3d/ file format will not support an ASCII variant - instead we
 will include a utility to display it as ASCII.</Para>
+<!-- FIXME: .3d version 2 doesn't support -a -->
 
 </Sect4>
 
-<Sect4><Title><command/cavern --percentage//<command/cavern -p/ - Display percentage progress</Title>
+<Sect4><Title><command/cavern --percentage//<command/cavern -p/ : Display percentage progress</Title>
 
 <Para>You can get cavern to display the percentage progress through the
 current file.  As of &survexsuite; 0.90 this is disabled by default, but you
@@ -683,7 +691,7 @@ plan scaled to fit on the screen, with no labels or station
 crosses. The view can be moved, rotated, zoomed, tilted, or set
 spinning.  This should be fast enough to be almost instant with all
 but big caves on slow hardware. Pressing <keycap/H/ at any point will
-give you the help again.  <keycap/Escape/ lets you out.
+give you the help again.  <keycap/Escape/ exits the program.
 </Para>
 
 </Sect2>
@@ -1097,7 +1105,7 @@ specific tasks.</Para>
 
 <Sect2><Title>Extend</Title>
 
-<Para>Syntax: extend &lt;input imagefile&gt; [&lt;output imagefile&gt;]
+<Para>Syntax: <command/extend &lt;input imagefile&gt; [&lt;output imagefile&gt;]/
 </Para>
 
 <Para>This program generates Extended Elevations from <filename/.3d/
@@ -1120,7 +1128,7 @@ useful within its limitations.
 
 <Sect2><Title>DiffPos</Title>
 
-<Para>Syntax: diffpos &lt;posfile1&gt; &lt;posfile2&gt; [&lt;threshold&gt;]
+<Para>Syntax: <command/diffpos &lt;posfile1&gt; &lt;posfile2&gt; [&lt;threshold&gt;]/
 </Para>
 
 <Para>This utility compares the contents of the two specified position
@@ -1140,7 +1148,7 @@ format.
 </Para>
 
 <Para>
-SYNTAX: SVX2HTO &lt;datafile&gt;
+Syntax: <command/SVX2HTO &lt;datafile&gt;/
 </Para>
 
 <Para>
@@ -1158,6 +1166,8 @@ let us know.
 
 <Sect2><Title>SpeleoGen</Title>
 
+<!-- FIXME: needs syntax? think it's a GUI app actually -->
+
 <Para>This replaces the earlier 3D2DXF converter. It is a Windows
 (3.1/95/NT) utility which reads in &survexsuite; <filename/.3d/ data,
 LRUD passage wall data (in <filename/.cav/ format) and surface
@@ -1173,17 +1183,18 @@ packages.
 <Sect1><Title>&survexsuite; data files</Title>
 <?dbhtml filename="datafile.htm">
 
-<Para>Survey data is entered in the form of text files. You can use
-any text editor you like for this. The data format is very flexible;
-you can enter data in any order you like, the ordering of tape,
-compass, clino (for example) is specifiable so that you can enter it
-just as it is in the survey notes, thus reducing the opportunity for
-error.  Also all the important characters are user-definable so the
-separators can be spaces and tabs (the default), or commas (e.g.  when
-exporting from a spreadsheet). The decimal point can be a slash (for
-clarity), a comma (for Europeans), or anything else you care to
-choose. This flexibility means that it should be possible to read in
-data from almost any sort of data file.
+<Para>Survey data is entered in the form of text files. You can use any
+text editor you like for this, so long as it has the capability of
+writing a plain ASCII text file. The data format is very flexible; you
+can enter data in any order you like, the ordering of tape, compass,
+clino (for example) is specifiable so that you can enter it just as it is
+in the survey notes, thus reducing the opportunity for error.  Also all
+the important characters are user-definable so the separators can be
+spaces and tabs (the default), or commas (e.g.  when exporting from a
+spreadsheet). The decimal point can be a slash (for clarity), a comma
+(for Europeans), or anything else you care to choose. This flexibility
+means that it should be possible to read in data from almost any sort of
+data file.
 </Para>
 
 <Para>&survexsuite; places no restrictions on you in terms of the ordering
@@ -1194,7 +1205,7 @@ station name twice.
 </Para>
 
 <Para>The usual form is to have one file which lists all the others
-that are included (<filename/161.svx/ in the example data). Then
+that are included (e.g., <filename/161.svx/ in the example data). Then
 <command/cavern 161/ will process all your data. To just process a
 section use the filename for that section, e.g. <command/cavern dtime/
 will process the dreamtime file/section of Kaninchenh&ouml;hle.  To
@@ -1203,7 +1214,7 @@ will 'invent' a fixed point and print a warning message to this
 effect.
 </Para>
 
-<Para>It is up to you what data you put in what files but it obviously
+<Para>It is up to you what data you put in which files but it obviously
 makes sense to put related survey data in the same file.  You
 can have one file per trip, or per area of the cave, or just one
 file for the whole cave if you like.
@@ -1251,7 +1262,7 @@ various elements.
 </Para>
 
 <Para>
-So all these are valid: +47, 23, -22, +4.5, 1.3, -0.7, +.15, .4,
+All of these, for example, are valid: +47, 23, -22, +4.5, 1.3, -0.7, +.15, .4,
 -.05
 </Para>
 
@@ -1259,8 +1270,8 @@ So all these are valid: +47, 23, -22, +4.5, 1.3, -0.7, +.15, .4,
 
 <Sect2><Title>Accuracy</Title>
 
-<Para>Accuracy assessments may be provided or defaulted for all survey
-legs. These determine the distribution of loop closure errors over the
+<Para>Accuracy assessments may be provided or defaulted for any survey
+leg. These determine the distribution of loop closure errors over the
 legs in the loop. See *SD for more information.
 </Para>
 
@@ -1291,7 +1302,7 @@ I will have to do some sums...
 <Sect2><Title>cavern Commands</Title>
 
 <Para>Commands in <filename/.svx/ files are introduced by an asterisk
-(by default - this can be changed using the set command).
+(by default - this can be changed using the <command/set/ command).
 </Para>
 
 <!--
@@ -2231,12 +2242,12 @@ do not need to specify this specially.
 </Para>
 
 <Para>
-&survexsuite; places few restrictions on station naming, so you can number
-the stations as they were in the original survey notes.  Although
-not apparent from this example, there is no requirement for each
-leg to connect to an existing station.  &survexsuite; can accept data
-in any order, and will check for connectedness once all the data
-has been read in.
+&survexsuite; places few restrictions on station naming (see "Survey
+Station Names" in the previous section), so you can number the stations
+as they were in the original survey notes.  Although not apparent from
+this example, there is no requirement for each leg to connect to an
+existing station.  &survexsuite; can accept data in any order, and will
+check for connectedness once all the data has been read in.
 </Para>
 
 <Para>
@@ -2271,8 +2282,8 @@ number, and enter the data like so:
 In this case, the stations will be named 163.1, 163.2, etc.
 </Para>
 
-<Para>We have a convention with the Austria data that the entrance survey
-station of a cave is named P&lt;cave number&gt;, so P163 in this case. We
+<Para>We have a convention with the CUCC Austria data that the entrance survey
+station of a cave is named P&lt;cave number&gt;, P163 in this case. We
 can accomplish this like so:
 </Para>
 
@@ -2463,7 +2474,7 @@ measurements and legs are believed to be okay:
 
 </Sect2>
 
-<Sect2><Title>Put in a radiolocation</Title>
+<Sect2><Title>Enter Radiolocation Data</Title>
 
 <Para>This is done by using the *SD command to indicate that the 'leg'
 between two points in unusual. For a radiolocation you have an
@@ -2501,7 +2512,9 @@ that the following data is of this type.
 
 <Sect2><Title>Enter Theodolite data</Title>
 
-<Para>Theodolite data is not yet explicitly catered for. You will need
+<!-- FIXME: we do now have a data style more suited to theodolite,
+  though we don't do turned angles -->
+<Para>Theodolite data is not yet explicitly catered to. You will need
 to convert it into equivalent compass and tape legs, or some
 other accepted format to process it. Note that if there is no
 vertical info in your theodolite data then you should use the
@@ -2739,7 +2752,8 @@ understand, then send it to us, and we will see what can be done.
 <Para>We have an Excel 5 macro for converting The Lotus 123 spreadsheets
 used by the German survey software Cad F&uuml;r H&ouml;hlen into
 &survexsuite; data files. Other converters may also come to be available.
-These will normally be on the &survexsuite; Web pages.
+These will normally be available via the
+<ulink url="&survexwebsite;">&survexsuite; Web pages</ulink>.
 </Para>
 
 </Sect3>
@@ -2816,10 +2830,10 @@ name of the file in which the error was encountered.
 <!-- FIXME: rewrite this -->
 
 <Para>We have both email and paper mailing lists for &survexsuite;, to
-keep users informed of new versions, etc.  This is available free by e-mail,
-or by post for a small charge (to cover photocopying, disks, and postage).
-See the file MAILLIST.TXT for more details. If you do not register, you will
-not receive automatic updates and information.
+keep users informed of new versions and so forth.  This is available free
+by e-mail, or by post for a small charge (to cover photocopying, disks,
+and postage).  See the file MAILLIST.TXT for more details. If you do not
+register, you will not receive automatic updates and information.
 </Para>
 
 </Sect1>

@@ -16,6 +16,8 @@
 * cavern: fixed *case (correct args are PRESERVE/TOUPPER/TOLOWER) and
   upper/lower were swapped.
 
+* Documentation brought more up-to-date.
+
 Changes in 0.97-prerelease1:
 
 * extend: fixed bug which result in bogus output (added regression test);
