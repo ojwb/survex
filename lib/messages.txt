@@ -2090,6 +2090,22 @@ ca:310 %s: l'opci&oacute; no &eacute;s v&agrave;lida -- %c&#10;
 es:310 %s: opci&oacute;n inv&aacute;lida -- %c&#10;
 it:310 %s: opzione non valida -- %c&#10;
 #
+# TRANSLATE en-us fr de pt pt-br ca es it
+en:311 @Create...
+en:312 @Go
+en:313 @Record Position
+en:314 @Finish and Save
+en:315 @Erase Last Position
+en:316 Er@ase All Positions
+en:317 @Presentation
+en:318 Go @Back
+en:319 Select an output filename
+en:320 Aven presentations
+en:321 Open @Presentation...
+en:322 Select a presentation to open
+en:323 ] - Recording Presentation
+en:324 Res@tart
+#
 # "don't extract" messages - these are compiled into the programs
 #
 en:1000 Can't open message file `%s' using path `%s'
