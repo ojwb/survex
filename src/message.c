@@ -333,79 +333,39 @@ parse_msg_file(int charset_code)
    int i;
    unsigned len;
    unsigned char *p;
+   char *fnm, *s;
 
 #ifdef DEBUG
    fprintf(stderr, "parse_msg_file(%d)\n", charset_code);
 #endif
 
-   msg_lang = getenv("SURVEXLANG");
-#ifdef DEBUG
-   fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
-#endif
+   fnm = osstrdup(msg_lang);
+   /* trim off charset from stuff like "de_DE.iso8859_1" */
+   s = strchr(fnm, '.');
+   if (s) *s = '\0';
 
-   if (!msg_lang || !*msg_lang) {
-      msg_lang = getenv("LANG");
-      if (!msg_lang || !*msg_lang) msg_lang = DEFAULTLANG;
-   }
-#ifdef DEBUG
-   fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
-#endif
-
-   /* On Mandrake LANG defaults to C */
-   if (strcmp(msg_lang, "C") == 0) msg_lang = "en";
-
-   /* Convert en-us to en_US, etc */
-   if (strchr(msg_lang, '-')) {
-      char *lang = osstrdup(msg_lang);
-      char *dash = strchr(lang, '-');
-      *dash++ = '_';
-      while (*dash) {
-	 *dash = toupper(*dash);
-	 dash++;
-      }
-      msg_lang = lang;
-   }
-
-   if (strchr(msg_lang, '_')) {
-      char *under;
-      msg_lang2 = osstrdup(msg_lang);
-      under = strchr(msg_lang2, '_');
-      *under = '\0';
-   }
-
-#ifdef LC_MESSAGES
-   /* try to setlocale() appropriately too */
-   if (!setlocale(LC_MESSAGES, msg_lang)) {
-      if (msg_lang2) setlocale(LC_MESSAGES, msg_lang2);
-   }
-#endif
-   
-   fh = fopenWithPthAndExt(pth_cfg_files, msg_lang, EXT_SVX_MSG, "rb", NULL);
+   fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
 
    if (!fh) {
       /* e.g. if 'en-COCKNEY' is unknown, see if we know 'en' */
-      if (strlen(msg_lang) > 3 && msg_lang[2] == '-') {
-	 char lang_generic[3];
-         lang_generic[0] = msg_lang[0];
-         lang_generic[1] = msg_lang[1];
-	 lang_generic[2] = '\0';
-	 fh = fopenWithPthAndExt(pth_cfg_files, lang_generic, EXT_SVX_MSG,
-				 "rb", NULL);
-	 if (fh) msg_lang = osstrdup(lang_generic);
+      if (strlen(fnm) > 3 && fnm[2] == '-') {
+	 fnm[2] = '\0';
+	 fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
+	 if (!fh) fnm[2] = '-'; /* for error reporting */
       }
    }
 
    if (!fh) {
       /* no point extracting this error as it won't get used if file opens */
       fprintf(STDERR, "Can't open message file `%s' using path `%s'\n",
-	      msg_lang, pth_cfg_files);
+	      fnm, pth_cfg_files);
       exit(EXIT_FAILURE);
    }
 
    if (fread(header, 1, 20, fh) < 20 ||
        memcmp(header, "Svx\nMsg\r\n\xfe\xff", 12) != 0) {
       /* no point extracting this error as it won't get used if file opens */
-      fprintf(STDERR, "Problem with message file `%s'\n", msg_lang);
+      fprintf(STDERR, "Problem with message file `%s'\n", fnm);
       exit(EXIT_FAILURE);
    }
 
@@ -429,9 +389,9 @@ parse_msg_file(int charset_code)
    fclose(fh);
 
 #ifdef DEBUG
-   fprintf(stderr, "msg_lang = `%s', num_msgs = %d, len = %d\n", msg_lang,
-           num_msgs, len);
+   fprintf(stderr, "fnm = `%s', num_msgs = %d, len = %d\n", fnm, num_msgs, len);
 #endif
+   osfree(fnm);
 
    msg_array = osmalloc(sizeof(char *) * num_msgs);
 
@@ -517,6 +477,48 @@ msg_init(const char *argv0)
       pth_cfg_files = path_from_fnm(argv0);
 #endif
    }
+
+   msg_lang = getenv("SURVEXLANG");
+#ifdef DEBUG
+   fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
+#endif
+
+   if (!msg_lang || !*msg_lang) {
+      msg_lang = getenv("LANG");
+      if (!msg_lang || !*msg_lang) msg_lang = DEFAULTLANG;
+   }
+#ifdef DEBUG
+   fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
+#endif
+
+   /* On Mandrake LANG defaults to C */
+   if (strcmp(msg_lang, "C") == 0) msg_lang = "en";
+
+   msg_lang = osstrdup(msg_lang);
+
+   /* Convert en-us to en_US, etc */
+   p = strchr(msg_lang, '-');
+   if (p) {
+      *p++ = '_';
+      while (*p) {
+	 *p = toupper(*p);
+	 p++;
+      }
+   }
+
+   p = strchr(msg_lang, '_');
+   if (p) {
+      *p = '\0';
+      msg_lang2 = osstrdup(msg_lang);
+      *p = '_';
+   }
+
+#ifdef LC_MESSAGES
+   /* try to setlocale() appropriately too */
+   if (!setlocale(LC_MESSAGES, msg_lang)) {
+      if (msg_lang2) setlocale(LC_MESSAGES, msg_lang2);
+   }
+#endif
 
    select_charset(default_charset());
 }

@@ -46,9 +46,12 @@ bool Aven::OnInit()
 
     static wxLocale wx_locale;    
     if (!wx_locale.Init(msg_lang, msg_lang, msg_lang, FALSE, TRUE)) {
-       if (msg_lang2)
+       if (msg_lang2) {
 	  wx_locale.Init(msg_lang2, msg_lang2, msg_lang2, FALSE, TRUE);
+       }
     }
+    // Add the catalog like this to avoid getting a warning box from
+    // wxWindows if wxstd isn't translated to the requested language
     if (wx_locale.IsOk()) wx_locale.AddCatalog("wxstd");
 
     static wxCmdLineEntryDesc cmdline[] = {

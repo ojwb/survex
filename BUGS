@@ -33,9 +33,6 @@ From: Olly
 
 wxaven:
 
-- Accents in compass and clinometer labels don't display right - need
-to fix font encoding. [quick fixed by using wxROMAN in place of wxSWISS]
-
 - Accents in menus were working but suddenly stopped - I think this
 happened when I upgraded debian and a new libgtk package got
 installed...

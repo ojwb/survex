@@ -77,9 +77,9 @@ END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent) :
     wxWindow(parent, 100),
-    // FIXME: we'd prefer wxSWISS to wxROMAIN but that gives a font with
-    // greek encoding - needs resolving, but looks like a wxWindows shortcoming
-    m_Font(FONT_SIZE, wxROMAN, wxNORMAL, wxNORMAL), m_Timer(this, TIMER_ID),
+    m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
+	   wxFONTENCODING_ISO8859_1),
+    m_Timer(this, TIMER_ID),
     m_InitialisePending(false)
 {
     m_LastDrag = drag_NONE;
