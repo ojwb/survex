@@ -62,7 +62,7 @@ bool process_key(void);        /* read & process keyboard and mouse input */
 void swap_screen(bool);        /* swap displayed screen and drawing screen */
 
 /* translate all points */
-void translate_data(coord Xchange, coord Ychange, coord Zchange);
+static void translate_data(coord Xchange, coord Ychange, coord Zchange);
 
 /***************************************************************************/
 
@@ -231,9 +231,9 @@ main(int argc, char **argv)
    {
       int c;
       point lower, upper;
-       
+
       reset_limits(&lower, &upper);
-      
+
       for (c = 0; ppLegs[c]; c++) {
 	 update_limits(&lower, &upper, ppLegs[c], ppStns[c]);
 	 update_limits(&lower, &upper, ppSLegs[c], NULL);
@@ -734,7 +734,7 @@ show_help(void)
    y = 0;
    for (i = 0; help_msgs[i].flags; i++) {
       if (help_msgs[i].flags & flags) {
-	 char *p;
+	 const char *p;
 	 if (help_msgs[i].mesg_no)
 	    p = msg(help_msgs[i].mesg_no);
 	 else

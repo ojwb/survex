@@ -52,6 +52,10 @@ static jmp_buf jmpbufSignal;
 #include <windows.h>
 #endif
 
+#if (OS==RISCOS)
+#include "oslib/wimpreadsy.h"
+#endif
+
 /* This is the name of the default language.  Add -DDEFAULTLANG to CFLAGS
  * e.g. with `CFLAGS="-DDEFAULTLANG=fr" ./configure'
  */
@@ -241,7 +245,7 @@ default_charset(void)
 #if (OS==RISCOS)
    /* RISCOS 3.1 and above CHARSET_RISCOS31 (ISO_8859_1 + extras in 128-159)
     * RISCOS < 3.1 is ISO_8859_1 */
- 
+   int version;
    if (xwimpreadsysinfo_version(&version) != NULL) {
       /* RISC OS 2 or some error (don't care which) */
       return CHARSET_ISO_8859_1;
@@ -249,7 +253,7 @@ default_charset(void)
 
    /* oddly wimp_VERSION_RO3 is RISC OS 3.1 */
    if (version < wimp_VERSION_RO3) return CHARSET_ISO_8859_1;
-      
+
    return CHARSET_RISCOS31;
 #elif (OS==MSDOS)
    return CHARSET_DOSCP850;
@@ -380,7 +384,7 @@ parse_msg_file(int charset_code)
    p = osmalloc(len);
    if (fread(p, 1, len, fh) < len)
       fatalerror(/*Message file truncated?*/1003);
-   
+
    fclose(fh);
 
 #ifdef DEBUG
@@ -627,7 +631,7 @@ v_report(int severity, const char *fnm, int line, int en, va_list ap)
    extern void aven_v_report(int severity, const char *fnm, int line, int en,
 			     va_list ap);
    aven_v_report(severity, fnm, line, en, ap);
-#else         
+#else
    if (fnm) {
       fputs(fnm, STDERR);
       if (line) fprintf(STDERR, ":%d", line);
