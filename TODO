@@ -102,7 +102,7 @@ Date: Wed, 18 Jul 20001
 From: Olly
 
 Rather than forming a linked list of components, solve each as it is
-identified?
+identified?  Beware of issues like those that revcomplist test checks.
 
 Don't split other traverses at articulating traverses when reporting error
 stats.
