@@ -44,25 +44,260 @@
 
 #define GRID_SPACING	100
 
+typedef struct {
+   float x, y, z;
+} point;
+
+static FILE *fh;
+
+/* bounds */
+static double min_x, min_y, min_z, max_x, max_y, max_z;
+
+static double text_height; /* for station labels */
+static double marker_size; /* for station markers */
+static double grid; /* grid spacing (or 0 for no grid) */
+
+static void
+dxf_header(void)
+{
+   fprintf(fh, "0\nSECTION\n");
+   fprintf(fh, "2\nHEADER\n");
+   fprintf(fh, "9\n$EXTMIN\n"); /* lower left corner of drawing */
+   fprintf(fh, "10\n%#-.6f\n", min_x); /* x */
+   fprintf(fh, "20\n%#-.6f\n", min_y); /* y */
+   fprintf(fh, "30\n%#-.6f\n", min_z); /* min z */
+   fprintf(fh, "9\n$EXTMAX\n"); /* upper right corner of drawing */
+   fprintf(fh, "10\n%#-.6f\n", max_x); /* x */
+   fprintf(fh, "20\n%#-.6f\n", max_y); /* y */
+   fprintf(fh, "30\n%#-.6f\n", max_z); /* max z */
+   fprintf(fh, "9\n$PDMODE\n70\n3\n"); /* marker style as CROSS */
+   fprintf(fh, "9\n$PDSIZE\n40\n%6.2f\n", marker_size); /* marker size */
+   fprintf(fh, "0\nENDSEC\n");
+
+   fprintf(fh, "0\nSECTION\n");
+   fprintf(fh, "2\nTABLES\n");
+   fprintf(fh, "0\nTABLE\n");
+   fprintf(fh, "2\nLAYER\n");
+   fprintf(fh, "70\n10\n"); /* max # off layers in this DXF file : 10 */
+   /* First Layer: CentreLine */
+   fprintf(fh, "0\nLAYER\n2\nCentreLine\n");
+   fprintf(fh, "70\n64\n"); /* shows layer is referenced by entities */
+   fprintf(fh, "62\n5\n"); /* color: kept the same used by SpeleoGen */
+   fprintf(fh, "6\nCONTINUOUS\n"); /* linetype */
+   /* Next Layer: Stations */
+   fprintf(fh, "0\nLAYER\n2\nStations\n");
+   fprintf(fh, "70\n64\n"); /* shows layer is referenced by entities */
+   fprintf(fh, "62\n7\n"); /* color: kept the same used by SpeleoGen */
+   fprintf(fh, "6\nCONTINUOUS\n"); /* linetype */
+   /* Next Layer: Labels */
+   fprintf(fh, "0\nLAYER\n2\nLabels\n");
+   fprintf(fh, "70\n64\n"); /* shows layer is referenced by entities */
+   fprintf(fh, "62\n7\n"); /* color: kept the same used by SpeleoGen */
+   fprintf(fh, "6\nCONTINUOUS\n"); /* linetype */
+   if (grid > 0) {
+      /* Next Layer: Grid */
+      fprintf(fh, "0\nLAYER\n2\nGrid\n");
+      fprintf(fh, "70\n64\n"); /* shows layer is referenced by entities */
+      fprintf(fh, "62\n7\n"); /* color: kept the same used by SpeleoGen */
+      fprintf(fh, "6\nCONTINUOUS\n"); /* linetype */
+   }
+   fprintf(fh, "0\nENDTAB\n");
+   fprintf(fh, "0\nENDSEC\n");
+
+   fprintf(fh, "0\nSECTION\n");
+   fprintf(fh, "2\nENTITIES\n");
+
+   if (grid > 0) {
+      double x, y;
+      x = floor(min_x / grid) * grid + grid;
+      y = floor(min_y / grid) * grid + grid;
+#ifdef DEBUG_3DTODXF
+      printf("x_min: %f  y_min: %f\n", x, y);
+#endif
+      while (x < max_x) {
+	 /* horizontal line */
+         fprintf(fh, "0\nLINE\n");
+         fprintf(fh, "8\nGrid\n"); /* Layer */
+         fprintf(fh, "10\n%6.2f\n", x);
+         fprintf(fh, "20\n%6.2f\n", min_y);
+         fprintf(fh, "30\n0\n");
+         fprintf(fh, "11\n%6.2f\n", x);
+         fprintf(fh, "21\n%6.2f\n", max_y);
+         fprintf(fh, "31\n0\n");
+	 x += grid;
+      }
+      while (y < max_y) {
+         /* vertical line */
+         fprintf(fh, "0\nLINE\n");
+         fprintf(fh, "8\nGrid\n"); /* Layer */
+         fprintf(fh, "10\n%6.2f\n", min_x);
+         fprintf(fh, "20\n%6.2f\n", y);
+         fprintf(fh, "30\n0\n");
+         fprintf(fh, "11\n%6.2f\n", max_x);
+         fprintf(fh, "21\n%6.2f\n", y);
+         fprintf(fh, "31\n0\n");
+	 y += grid;
+      }
+   }
+}
+
+static void
+dxf_start_pass(int layer)
+{
+}
+
+static void
+dxf_move(point p)
+{
+}
+
+static void
+dxf_line(point p1, point p)
+{
+   fprintf(fh, "0\nLINE\n");
+   fprintf(fh, "8\nCentreLine\n"); /* Layer */
+   fprintf(fh, "10\n%6.2f\n", p1.x);
+   fprintf(fh, "20\n%6.2f\n", p1.y);
+   fprintf(fh, "30\n%6.2f\n", p1.z);
+   fprintf(fh, "11\n%6.2f\n", p.x);
+   fprintf(fh, "21\n%6.2f\n", p.y);
+   fprintf(fh, "31\n%6.2f\n", p.z);
+}
+
+static void
+dxf_label(point p, const char *s)
+{
+   /* write station label to dxf file */
+   fprintf(fh, "0\nTEXT\n");
+   fprintf(fh, "8\nLabels\n"); /* Layer */
+   fprintf(fh, "10\n%6.2f\n", p.x);
+   fprintf(fh, "20\n%6.2f\n", p.y);
+   fprintf(fh, "30\n%6.2f\n", p.z);
+   fprintf(fh, "40\n%6.2f\n", text_height);
+   fprintf(fh, "1\n%s\n", s);
+}
+
+static void
+dxf_cross(point p)
+{
+   /* write station marker to dxf file */
+   fprintf(fh, "0\nPOINT\n");
+   fprintf(fh, "8\nStations\n"); /* Layer */
+   fprintf(fh, "10\n%6.2f\n", p.x);
+   fprintf(fh, "20\n%6.2f\n", p.y);
+   fprintf(fh, "30\n%6.2f\n", p.z);
+}
+
+static void
+dxf_footer(void)
+{
+   fprintf(fh, "000\nENDSEC\n");
+   fprintf(fh, "000\nEOF\n");
+}
+
+static void
+sketch_header(void)
+{
+   fprintf(fh, "##Sketch 1 2\n"); /* Sketch file version */
+   fprintf(fh, "document()\n");
+   fprintf(fh, "layout((%.3f,%.3f),0)\n", max_x - min_x, max_y - min_y);
+}
+
+static const char *layer_names[] = {
+   NULL,
+   "Legs",
+   "Stations",
+   NULL,
+   "Labels"
+};
+
+static void
+sketch_start_pass(int layer)
+{
+   fprintf(fh, "layer('%s',1,1,0,0,(0,0,0))\n", layer_names[layer]);
+}
+
+static void
+sketch_move(point p)
+{
+   fprintf(fh, "b()\n");
+   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x, p.y, 0.0);
+}
+
+static void
+sketch_line(point p1, point p)
+{
+   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x, p.y, 0.0);
+}
+
+static void
+sketch_label(point p, const char *s)
+{
+   fprintf(fh, "fp((0,0,0))\n");
+   fprintf(fh, "le()\n");
+   fprintf(fh, "Fn('Times-Roman')\n");
+   fprintf(fh, "Fs(5)\n");
+   fprintf(fh, "txt('");
+   while (*s) {
+      int ch = *s++;
+      if (ch == '\'' || ch == '\\') putc('\\', fh);
+      putc(ch, fh);
+   }
+   fprintf(fh, "',(%.3f,%.3f))\n", p.x, p.y);
+}
+
+static void
+sketch_cross(point p)
+{
+   fprintf(fh, "b()\n");
+   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
+	   p.x - MARKER_SIZE, p.y - MARKER_SIZE, 0.0);
+   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
+	   p.x + MARKER_SIZE, p.y + MARKER_SIZE, 0.0);
+   fprintf(fh, "bn()\n");
+   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
+	   p.x + MARKER_SIZE, p.y - MARKER_SIZE, 0.0);
+   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
+	   p.x - MARKER_SIZE, p.y + MARKER_SIZE, 0.0);
+}
+
+static void
+sketch_footer(void)
+{
+   fprintf(fh, "guidelayer('Guide Lines',1,0,0,1,(0,0,1))\n");
+   fprintf(fh, "grid((0,0,20,20),0,(0,0,1),'Grid')\n");
+}
+
+#define LEGS 1
+#define STNS 2
+#define LABELS 4
+static int dxf_passes[] = { LEGS|STNS|LABELS, 0 };
+static int sketch_passes[] = { LEGS, STNS, LABELS, 0 };
+
 int
 main(int argc, char **argv)
 {
    char szTitle[256], szDateStamp[256], szName[256];
-   char *fnm3D, *fnmDXF;
+   char *fnm_3d, *fnm_out;
    unsigned char labels, crosses, legs;
    img *pimg;
-   FILE *fh;
    int item;
    int fSeenMove = 0;
-   float x, y, z;
-   double x1, y1, z1;
-   double min_x, min_y, min_z, max_x, max_y, max_z; /* for HEADER section */
-   double text_height; /* for station labels */
-   double marker_size; /* for station markers */
-   double grid; /* grid spacing (or 0 for no grid) */
+   point p, p1;
    int elevation = 0;
    double elev_angle = 0;
    double s = 0, c = 0;
+   const char *ext;
+   enum { FMT_DXF, FMT_SKETCH } format;
+   int *pass;
+
+   void (*header)(void);
+   void (*start_pass)(int);
+   void (*move)(point);
+   void (*line)(point, point);
+   void (*label)(point, const char *);
+   void (*cross)(point);
+   void (*footer)(void);
 
    /* TRANSLATE */
    static const struct option long_opts[] = {
@@ -76,6 +311,8 @@ main(int argc, char **argv)
 	{"elevation", required_argument, 0, 'e'},
 	{"htext", required_argument, 0, 't'},
 	{"msize", required_argument, 0, 'm'},
+        {"dxf", no_argument, 0, 'D'},
+        {"sketch", no_argument, 0, 'S'},
 	{"help", no_argument, 0, HLP_HELP},
 	{"version", no_argument, 0, HLP_VERSION},
 	{0,0,0,0}
@@ -92,6 +329,8 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(4), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
 	{HLP_ENCODELONG(5), "station marker size (default: "STRING(MARKER_SIZE)")"},
 	{HLP_ENCODELONG(6), "produce an elevation view"},
+	{HLP_ENCODELONG(7), "produce DXF output"},
+	{HLP_ENCODELONG(8), "produce sketch output"},
 	{0,0}
    };
 
@@ -104,6 +343,7 @@ main(int argc, char **argv)
    grid = 0;
    text_height = TEXT_HEIGHT;
    marker_size = MARKER_SIZE;
+   format = FMT_DXF;
 
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
    while (1) {
@@ -141,6 +381,12 @@ main(int argc, char **argv)
 	 printf("Marker Size: `%s', converted to %6.2f\n", optarg, marker_size);
 #endif
 	 break;
+       case 'D':
+	 format = FMT_DXF;
+	 break;
+       case 'S':
+	 format = FMT_SKETCH;
+	 break;
 #ifdef DEBUG_3DTODXF
        default:
 	 printf("Internal Error: 'getopt' returned '%c' %d\n", opt, opt);
@@ -148,23 +394,50 @@ main(int argc, char **argv)
       }
    }
 
-   fnm3D = argv[optind++];
+   switch (format) {
+    case FMT_DXF:
+      header = dxf_header;
+      start_pass = dxf_start_pass;
+      move = dxf_move;
+      line = dxf_line;
+      label = dxf_label;
+      cross = dxf_cross;
+      footer = dxf_footer;
+      ext = "dxf";
+      pass = dxf_passes;
+      break;
+    case FMT_SKETCH:
+      header = sketch_header;
+      start_pass = sketch_start_pass;
+      move = sketch_move;
+      line = sketch_line;
+      label = sketch_label;
+      cross = sketch_cross;
+      footer = sketch_footer;
+      ext = "sk";
+      pass = sketch_passes;
+      break;
+    default:
+      exit(1);
+   }
+
+   fnm_3d = argv[optind++];
    if (argv[optind]) {
-      fnmDXF = argv[optind];
+      fnm_out = argv[optind];
    } else {
-      char *base = base_from_fnm(fnm3D);
-      fnmDXF = add_ext(base, "dxf");
+      char *base = base_from_fnm(fnm_3d);
+      fnm_out = add_ext(base, ext);
       osfree(base);
    }
 
-   pimg = img_open(fnm3D, szTitle, szDateStamp);
-   if (!pimg) fatalerror(img_error(), fnm3D);
+   pimg = img_open(fnm_3d, szTitle, szDateStamp);
+   if (!pimg) fatalerror(img_error(), fnm_3d);
 
-   fh = safe_fopen(fnmDXF, "w");
+   fh = safe_fopen(fnm_out, "w");
 
 #ifdef DEBUG_3DTODXF
-   printf("3d file title `%s'\n",szTitle);
-   printf("Creation time `%s'\n",szDateStamp);
+   printf("3d file title `%s'\n", szTitle);
+   printf("Creation time `%s'\n", szDateStamp);
 #endif
 
    if (elevation) {
@@ -176,28 +449,27 @@ main(int argc, char **argv)
    min_x = min_y = min_z = FLT_MAX;
    max_x = max_y = max_z = -FLT_MAX;
    do {
-      item = img_read_datum(pimg, szName, &x, &y, &z);
+      item = img_read_datum(pimg, szName, &p.x, &p.y, &p.z);
 
       if (elevation) {
-	  double xnew = x * c - y * s;
-	  double znew = - x * s - y * c;
-	  y = z;
-	  z = znew;
-	  x = xnew;
+	  double xnew = p.x * c - p.y * s;
+	  double znew = - p.x * s - p.y * c;
+	  p.y = p.z;
+	  p.z = znew;
+	  p.x = xnew;
       }
 
       switch (item) {
        case img_MOVE: case img_LINE: case img_LABEL:
-         if (x < min_x) min_x = x;
-         if (x > max_x) max_x = x;
-         if (y < min_y) min_y = y;
-         if (y > max_y) max_y = y;
-         if (z < min_z) min_z = z;
-         if (z > max_z) max_z = z;
+         if (p.x < min_x) min_x = p.x;
+         if (p.x > max_x) max_x = p.x;
+         if (p.y < min_y) min_y = p.y;
+         if (p.y > max_y) max_y = p.y;
+         if (p.z < min_z) min_z = p.z;
+         if (p.z > max_z) max_z = p.z;
          break;
       }
    } while (item != img_STOP);
-   img_close(pimg);
 
    if (grid > 0) {
       min_x -= grid / 2;
@@ -212,246 +484,86 @@ main(int argc, char **argv)
       max_x = max_y = max_z = 0;
    }
 
-   pimg = img_open(fnm3D, szTitle, szDateStamp);
-
    /* Header */
-#ifdef DXF
-   fprintf(fh,"0\nSECTION\n");
-   fprintf(fh,"2\nHEADER\n");
-   fprintf(fh,"9\n$EXTMIN\n"); /* lower left corner of drawing */
-   fprintf(fh,"10\n%#-.6f\n", min_x); /* x */
-   fprintf(fh,"20\n%#-.6f\n", min_y); /* y */
-   fprintf(fh,"30\n%#-.6f\n", min_z); /* min z */
-   fprintf(fh,"9\n$EXTMAX\n"); /* upper right corner of drawing */
-   fprintf(fh,"10\n%#-.6f\n", max_x); /* x */
-   fprintf(fh,"20\n%#-.6f\n", max_y); /* y */
-   fprintf(fh,"30\n%#-.6f\n", max_z); /* max z */
-   fprintf(fh,"9\n$PDMODE\n70\n3\n"); /* marker style as CROSS */
-   fprintf(fh,"9\n$PDSIZE\n40\n%6.2f\n", marker_size); /* marker size */
-   fprintf(fh,"0\nENDSEC\n");
+   header();
 
-   fprintf(fh,"0\nSECTION\n");
-   fprintf(fh,"2\nTABLES\n");
-   fprintf(fh,"0\nTABLE\n");
-   fprintf(fh,"2\nLAYER\n");
-   fprintf(fh,"70\n10\n"); /* max # off layers in this DXF file : 10 */
-   /* First Layer: CentreLine */
-   fprintf(fh,"0\nLAYER\n2\nCentreLine\n");
-   fprintf(fh,"70\n64\n"); /* shows layer is referenced by entities */
-   fprintf(fh,"62\n5\n"); /* color: kept the same used by SpeleoGen */
-   fprintf(fh,"6\nCONTINUOUS\n"); /* linetype */
-   /* Next Layer: Stations */
-   fprintf(fh,"0\nLAYER\n2\nStations\n");
-   fprintf(fh,"70\n64\n"); /* shows layer is referenced by entities */
-   fprintf(fh,"62\n7\n"); /* color: kept the same used by SpeleoGen */
-   fprintf(fh,"6\nCONTINUOUS\n"); /* linetype */
-   /* Next Layer: Labels */
-   fprintf(fh,"0\nLAYER\n2\nLabels\n");
-   fprintf(fh,"70\n64\n"); /* shows layer is referenced by entities */
-   fprintf(fh,"62\n7\n"); /* color: kept the same used by SpeleoGen */
-   fprintf(fh,"6\nCONTINUOUS\n"); /* linetype */
-   if (grid > 0) {
-      /* Next Layer: Grid */
-      fprintf(fh,"0\nLAYER\n2\nGrid\n");
-      fprintf(fh,"70\n64\n"); /* shows layer is referenced by entities */
-      fprintf(fh,"62\n7\n"); /* color: kept the same used by SpeleoGen */
-      fprintf(fh,"6\nCONTINUOUS\n"); /* linetype */
-   }
-   fprintf(fh,"0\nENDTAB\n");
-   fprintf(fh,"0\nENDSEC\n");
+   p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
 
-   fprintf(fh,"0\nSECTION\n");
-   fprintf(fh,"2\nENTITIES\n");
+   while (*pass) {
+      if (((*pass & LEGS) && legs) || 
+	  ((*pass & STNS) && crosses) ||
+	  ((*pass & LABELS) && labels)) {
+	 img_rewind(pimg);
+	 start_pass(*pass);
+	 do {
+	    item = img_read_datum(pimg, szName, &p.x, &p.y, &p.z);
 
-   if (grid > 0) {
-      x1 = floor(min_x / grid) * grid + grid;
-      y1 = floor(min_y / grid) * grid + grid;
+	    if (format == FMT_SKETCH) {
+	       p.x -= min_x;
+	       p.y -= min_y;
+	       p.z -= min_z;
+	    }
+
+	    if (elevation) {
+	       double xnew = p.x * c - p.y * s;
+	       double znew = - p.x * s - p.y * c;
+	       p.y = p.z;
+	       p.z = znew;
+	       p.x = xnew;
+	    }
+
+	    switch (item) {
+	     case img_BAD:
+	       img_close(pimg);
+	       fatalerror(/*Bad 3d image file `%s'*/106, fnm_3d);
+	       break;
+	     case img_LINE:
 #ifdef DEBUG_3DTODXF
-      printf("x_min: %d  y_min: %d\n", (int)x1, (int)y1);
+	       printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
 #endif
-      while (x1 < max_x) {
-	 /* horizontal line */
-         fprintf(fh,"0\nLINE\n");
-         fprintf(fh,"8\nGrid\n"); /* Layer */
-         fprintf(fh,"10\n%6.2f\n",x1);
-         fprintf(fh,"20\n%6.2f\n",min_y);
-         fprintf(fh,"30\n0\n");
-         fprintf(fh,"11\n%6.2f\n",x1);
-         fprintf(fh,"21\n%6.2f\n",max_y);
-         fprintf(fh,"31\n0\n");
-	 x1 += grid;
-      }
-      while (y1 < max_y) {
-         /* vertical line */
-         fprintf(fh,"0\nLINE\n");
-         fprintf(fh,"8\nGrid\n"); /* Layer */
-         fprintf(fh,"10\n%6.2f\n",min_x);
-         fprintf(fh,"20\n%6.2f\n",y1);
-         fprintf(fh,"30\n0\n");
-         fprintf(fh,"11\n%6.2f\n",max_x);
-         fprintf(fh,"21\n%6.2f\n",y1);
-         fprintf(fh,"31\n0\n");
-	 y1 += grid;
-      }
-   }
-#else
-   fprintf(fh, "##Sketch 1 2\n"); /* Sketch file version */
-   fprintf(fh, "document()\n");
-   fprintf(fh, "layout((%.3f,%.3f),0)\n", max_x - min_x, max_y - min_y);
-#endif
-
-   x1 = y1 = z1 = 0; /* avoid compiler warning */
-
-#ifndef DXF
-   {
-      int layer;
-      const char *layer_names[] = { "Legs", "Stations", "Labels" };
-      for (layer = 0; layer < 3; layer++) {
-	 fprintf(fh, "layer('%s',1,1,0,0,(0,0,0))\n", layer_names[layer]);
-#endif
-   do {
-      item = img_read_datum(pimg, szName, &x, &y, &z);
-
-#ifndef DXF
-      x -= min_x;
-      y -= min_y;
-      z -= min_z;
-#endif
-      if (elevation) {
-	  double xnew = x * c - y * s;
-	  double znew = - x * s - y * c;
-	  y = z;
-	  z = znew;
-	  x = xnew;
-      }
-
-      switch (item) {
-       case img_BAD:
-         img_close(pimg);
-         fatalerror(/*Bad 3d image file `%s'*/106, fnm3D);
-	 break;
-       case img_LINE:
+	       if (!fSeenMove) {
 #ifdef DEBUG_3DTODXF
-         printf("line to %9.2f %9.2f %9.2f\n",x,y,z);
+		  printf("Something is wrong -- img_LINE before any img_MOVE!\n"); /* <<<<<<< create message in messages.txt ? */
 #endif
-         if (!fSeenMove) {
-#ifdef DEBUG_3DTODXF
-            printf("Something is wrong -- img_LINE before any img_MOVE!\n"); /* <<<<<<< create message in messages.txt ? */
-#endif
-	    img_close(pimg);
-	    fatalerror(/*Bad 3d image file `%s'*/106, fnm3D);
-         }
-	 if (legs) {
-#ifdef DXF
-            fprintf(fh,"0\nLINE\n");
-            fprintf(fh,"8\nCentreLine\n"); /* Layer */
-            fprintf(fh,"10\n%6.2f\n",x1);
-            fprintf(fh,"20\n%6.2f\n",y1);
-            fprintf(fh,"30\n%6.2f\n",z1);
-            fprintf(fh,"11\n%6.2f\n",x);
-            fprintf(fh,"21\n%6.2f\n",y);
-            fprintf(fh,"31\n%6.2f\n",z);
-#else
-	    if (layer == 0) fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", x, y, 0.0);
-#endif
-	 }
-         x1=x; y1=y; z1=z;
-         break;
-       case img_MOVE:
-#ifdef DEBUG_3DTODXF
-         printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
-#endif
-#ifndef DXF
-	 if (layer == 0) {
-	    fprintf(fh, "b()\n");
-	    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", x, y, 0.0);
-	 }
-#endif
-         fSeenMove = 1;
-         x1=x; y1=y; z1=z;
-         break;
-#ifdef DEBUG_3DTODXF
-       case img_CROSS:
-         printf("cross at %9.2f %9.2f %9.2f\n",x,y,z);
-         break;
-#endif
-       case img_LABEL:
-#ifdef DEBUG_3DTODXF
-	 printf("label `%s' at %9.2f %9.2f %9.2f\n",szName,x,y,z);
-#endif
-	 if (labels) {
-#ifdef DXF
-	    /* write station labels to dxf file */
-            fprintf(fh,"0\nTEXT\n");
-            fprintf(fh,"8\nLabels\n"); /* Layer */
-            fprintf(fh,"10\n%6.2f\n",x);
-            fprintf(fh,"20\n%6.2f\n",y);
-            fprintf(fh,"30\n%6.2f\n",z);
-            fprintf(fh,"40\n%6.2f\n", text_height);
-            fprintf(fh,"1\n%s\n",szName);
-#else
-	    if (layer == 2) {
-	       char *s = szName;
-	       fprintf(fh, "fp((0,0,0))\n");
-	       fprintf(fh, "le()\n");
-	       fprintf(fh, "Fn('Times-Roman')\n");
-	       fprintf(fh, "Fs(5)\n");
-	       fprintf(fh, "txt('");
-	       while (*s) {
-		  int ch = *s++;
-		  if (ch == '\'' || ch == '\\') putc('\\', fh);
-		  putc(ch, fh);
+		  img_close(pimg);
+		  fatalerror(/*Bad 3d image file `%s'*/106, fnm_3d);
 	       }
-	       fprintf(fh, "',(%.3f,%.3f))\n", x, y);
-	    }
-#endif
-	 }
-         if (crosses) {
-#ifdef DXF
-	    /* write station markers to dxf file */
-            fprintf(fh,"0\nPOINT\n");
-            fprintf(fh,"8\nStations\n"); /* Layer */
-            fprintf(fh,"10\n%6.2f\n",x);
-            fprintf(fh,"20\n%6.2f\n",y);
-            fprintf(fh,"30\n%6.2f\n",z);
-#else
-	    if (layer == 1) {
-	       fprintf(fh, "b()\n");
-	       fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-		       x - MARKER_SIZE, y - MARKER_SIZE, 0.0);
-	       fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-		       x + MARKER_SIZE, y + MARKER_SIZE, 0.0);
-	       fprintf(fh, "bn()\n");
-	       fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-		       x + MARKER_SIZE, y - MARKER_SIZE, 0.0);
-	       fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-		       x - MARKER_SIZE, y + MARKER_SIZE, 0.0);
-	    }
-#endif
-         }
-         break;
+	       if ((*pass & LEGS) && legs) line(p1, p);
+	       p1 = p;
+	       break;
+	     case img_MOVE:
 #ifdef DEBUG_3DTODXF
-       case img_STOP:
-         printf("stop\n");
-         break;
-       default:
-         printf("other info tag (code %d) ignored\n",item);
+	       printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
 #endif
-      }
-   } while (item != img_STOP);
-#ifndef DXF
-	  img_rewind(pimg);
+	       if ((*pass & LEGS) && legs) move(p);
+	       fSeenMove = 1;
+	       p1 = p;
+	       break;
+#ifdef DEBUG_3DTODXF
+	     case img_CROSS:
+	       printf("cross at %9.2f %9.2f %9.2f\n",x,y,z);
+	       break;
+#endif
+	     case img_LABEL:
+#ifdef DEBUG_3DTODXF
+	       printf("label `%s' at %9.2f %9.2f %9.2f\n",szName,x,y,z);
+#endif
+	       if ((*pass & LABELS) && labels) label(p, szName);
+	       if ((*pass & STNS) && crosses) cross(p);
+	       break;
+#ifdef DEBUG_3DTODXF
+	     case img_STOP:
+	       printf("stop\n");
+	       break;
+	     default:
+	       printf("other info tag (code %d) ignored\n",item);
+#endif
+	    }
+	 } while (item != img_STOP);
       }
    }
-#endif
    img_close(pimg);
-#ifdef DXF
-   fprintf(fh,"000\nENDSEC\n");
-   fprintf(fh,"000\nEOF\n");
-#else
-   fprintf(fh, "guidelayer('Guide Lines',1,0,0,1,(0,0,1))\n");
-   fprintf(fh, "grid((0,0,20,20),0,(0,0,1),'Grid')\n");
-#endif
+   footer();
    fclose(fh);
    return 0;
 }

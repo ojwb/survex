@@ -6,7 +6,7 @@ pkgdocdir = $(prefix)/doc/@PACKAGE@
 # FIXME: this is almost duplicated in ../Makefile.am
 doclist = svxdocs.rtf svxdocs.txt svxdocs.ps # svxdocs.html
 
-other_mans = 3dtodxf.1 cavern.1 diffpos.1 extend.1 hto2svx.1 \
+other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 hto2svx.1 \
  printdm.1 printhpgl.1 printpcl.1 printps.1 svx2hto.1 @EXTRA_MANS@
 
 #can produce man page syntax summary from --help something like

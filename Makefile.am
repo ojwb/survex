@@ -12,7 +12,7 @@ extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
 extra_text = BUGS AUTHORS COPYING NEWS TODO ChangeLog HACKING OLDNEWS ZOMBIES
 
-base_progs = 3dtodxf cavern printdm printps printpcl printhpgl diffpos extend survex
+base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos extend survex
 
 spec = ${PACKAGE}-${VERSION}.spec
 
