@@ -113,7 +113,7 @@ solve_network(void /*node *stnlist*/)
    validate(); dump_network();
    remove_subnets();
    validate(); dump_network();
-   solve_matrix();
+   solve_matrix(stnlist);
    validate(); dump_network();
    replace_subnets();
    validate(); dump_network();
