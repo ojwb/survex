@@ -28,7 +28,7 @@
 #define RETURN_KEY     13   /* key definitions */
 #define ESCAPE_KEY     27
 #define DELETE_KEY    127
-#define COPYEND_KEY   135
+#define END_KEY       135   /* marked COPY on older Acorn machines */
 #define CURSOR_LEFT   136
 #define CURSOR_RIGHT  137
 #define CURSOR_DOWN   138

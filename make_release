@@ -40,6 +40,10 @@ if test x"$release" = xyes ; then
       exit 1
    fi
 fi
+if ! make alien_src_zip ; then
+   echo make alien_src_zip failed
+   exit 1
+fi
 if ! make distclean ; then
    echo make distclean failed
    exit 1
@@ -53,19 +57,19 @@ if ! make ; then
    echo djgpp make failed
    exit 1
 fi
-if test x"$release" = xyes ; then
+#if test x"$release" = xyes ; then
    if ! make djgpp_zip ; then
       echo djgpp make djgpp_zip failed
       exit 1
    fi
-fi
+#fi
 if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
 PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
 if ! env ac_cv_c_bigendian=no LDFLAGS=-s CAVEROT=caverot.exe \
- CRLIB="-mwindows -lalleg_s -lddraw -lmingwthrd -ldxguid -ldsound -ldinput -lwinmm -lole32" \
+ CRLIB="-mwindows -mconsole -lalleg_s -lddraw -lmingwthrd -ldxguid -ldsound -ldinput -lwinmm -lole32" \
  CROBJX=dosrot.o CFLAGS=-DALLEGRO_STATICLINK ./configure --with-x=no ; then
    echo mingw configure failed
    exit 1
@@ -74,12 +78,12 @@ if ! make ; then
    echo mingw make failed
    exit 1
 fi
-if test x"$release" = xyes ; then
+#if test x"$release" = xyes ; then
    if ! make mingw_zip ; then
       echo mingw make mingw_zip failed
       exit 1
    fi
-fi
+#fi
 if ! make distclean ; then
    echo make distclean failed
    exit 1

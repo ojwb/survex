@@ -175,6 +175,10 @@ int
 main(int argc, char **argv)
 {
    enum { LEGS, STNS, LABS, DONE } item = LEGS;
+#if (OS==WIN32)
+   /* workaround for bug in win32 allegro - should be fixed in WIP 3.9.34 */
+   argv[argc] = NULL;
+#endif
 
    set_codes(MOVE, DRAW, STOP);
 
@@ -201,12 +205,11 @@ main(int argc, char **argv)
 
    /* initialise graphics h/ware & s/ware */
    cvrotgfx_init();
-   init_map();
 
    /* display help screen to give user something to read while we do scaling */
-/*   cleardevice();*/
-/*   swap_screen(fTrue);*/
    show_help();
+
+   init_map();
 
    /* can't do this until after we've initialised the graphics */
    scDefault = scale_to_screen(ppLegs, ppStns, xcMac, ycMac, y_stretch);
@@ -237,10 +240,11 @@ main(int argc, char **argv)
    set_defaults();
 
      {
-	bool fRedraw = fTrue;
 	const char *szPlan;
 	const char *szElev;
 
+	fRedraw = fTrue;
+	 
 	szPlan = msgPerm(/*Plan, %05.1f up screen*/101);
 	szElev = msgPerm(/*View towards %05.1f*/102);
 
@@ -248,8 +252,9 @@ main(int argc, char **argv)
 	   char sz[80];
 
 	   if (fRedraw) {
+	      fRedraw = fFalse;
 	      while (degView >= 360) degView -= 360;
-	      while (degView <0) degView += 360;
+	      while (degView < 0) degView += 360;
 	      clear_map();
 	      cvrotgfx_pre_main_draw();
 	      if (f3D) {
@@ -309,9 +314,9 @@ main(int argc, char **argv)
 	   }
 
 	   /* if (fDemo)
-	    * fRedraw = demo_step();
+	    * if (demo_step()) fRedraw = fTrue;
 	    * else */
-	   fRedraw = process_key();
+	   if (process_key()) fRedraw = fTrue;
 	}
      }
 }
@@ -350,7 +355,7 @@ process_key(void) /* and mouse! */
 {
    float nStep, Accel;
    int iKeycode;
-   static bool fRedraw = fFalse;
+   static bool fChanged = fFalse;
    double s = SIND(degView), c = COSD(degView);
    static int autotilt = 0;
    static float autotilttarget;
@@ -363,7 +368,7 @@ process_key(void) /* and mouse! */
 
    old_time = new_time;
    new_time = clock();
-   if (fRedraw) {
+   if (fChanged) {
       dt = (int)(new_time - old_time);
       /* better to be paranoid */
       if (dt < 1) dt = 1;
@@ -372,7 +377,7 @@ process_key(void) /* and mouse! */
 	 cvrotgfx_beep(); /* FIXME: do something more sensible */
 	 tsc = 1000.0f;
       }
-      fRedraw = fFalse;
+      fChanged = fFalse;
    }
 
 #ifdef ANIMATE
@@ -386,7 +391,7 @@ process_key(void) /* and mouse! */
       else
          last_animate += CLOCKS_PER_SEC / ANIMATE_FPS;
 
-      fRedraw = fTrue;
+      fChanged = fTrue;
    }
 #endif
 
@@ -416,8 +421,8 @@ process_key(void) /* and mouse! */
 /*        case '3': case SHIFT_3:    f3D = !f3D; break; */
 	  case 'Z': if (degViewStep < 45) degViewStep *= 1.2f; break;
 	  case 'X': degViewStep /= 1.2f; break;
-	  case 'C': degView -= degViewStep * Accel; fRedraw = fTrue; break;
-	  case 'V': degView += degViewStep * Accel; fRedraw = fTrue; break;
+	  case 'C': degView -= degViewStep * Accel; fChanged = fTrue; break;
+	  case 'V': degView += degViewStep * Accel; fChanged = fTrue; break;
 	  case 'R': degViewStep = -degViewStep; break;
 	  case ' ':            fRotating = fFalse; break;
 	  case RETURN_KEY:     fRotating = fTrue; break;
@@ -433,7 +438,7 @@ process_key(void) /* and mouse! */
 	    if (elev > -90.0f) {
 	       elev -= degViewStep*Accel;
 	       if (elev < -90.0f) elev = -90.0f;
-	       fRedraw = fTrue;
+	       fChanged = fTrue;
 	    }
 	    break;
 	  case '/': case '?':
@@ -442,7 +447,7 @@ process_key(void) /* and mouse! */
 	    if (elev < 90.0f) {
 	       elev += degViewStep * Accel;
 	       if (elev > 90.0f) elev = 90.0f;
-	       fRedraw = fTrue;
+	       fChanged = fTrue;
 	    }
 	    break;
 	  case 'P':
@@ -459,7 +464,7 @@ process_key(void) /* and mouse! */
 		  }
 	       }
 	       autotilttarget = 90.0f;
-	       fRedraw = fTrue;
+	       fChanged = fTrue;
 	    }
 	    break;
 	  case 'L':
@@ -477,7 +482,7 @@ process_key(void) /* and mouse! */
 		     autotilt = -autotilt;
 	       }
 	       autotilttarget = 0.0f;
-	       fRedraw = fTrue;
+	       fChanged = fTrue;
 	    }
 	    break;
 	 }
@@ -485,41 +490,41 @@ process_key(void) /* and mouse! */
       switch (iKeycode) {
        case ']': case '}':
          sc = fRevSense ? sc / ZoomFactor : sc * ZoomFactor;
-         fRedraw = fTrue; break;
+         fChanged = fTrue; break;
        case '[': case '{':
          sc = fRevSense ? sc * ZoomFactor : sc / ZoomFactor;
-         fRedraw = fTrue; break;
-       case 'U': translate_data(0, 0, (coord)nStep); fRedraw = fTrue; break;
-       case 'D': translate_data(0, 0, (coord)-nStep); fRedraw = fTrue; break;
-       case 'N': translate_data(0, (coord)nStep, 0); fRedraw = fTrue; break;
-       case 'S': translate_data(0, (coord)-nStep, 0); fRedraw = fTrue; break;
-       case 'E': translate_data((coord)nStep, 0, 0); fRedraw = fTrue; break;
-       case 'W': translate_data((coord)-nStep, 0, 0); fRedraw = fTrue; break;
-       case DELETE_KEY:  set_defaults(); fRedraw = fTrue; break;
-       case 'O':   fAllNames = !fAllNames; fRedraw = fNames; break;
-/*       case 'I':   get_view_details(); fRedraw=fTrue; break; */
+         fChanged = fTrue; break;
+       case 'U': translate_data(0, 0, (coord)nStep); fChanged = fTrue; break;
+       case 'D': translate_data(0, 0, (coord)-nStep); fChanged = fTrue; break;
+       case 'N': translate_data(0, (coord)nStep, 0); fChanged = fTrue; break;
+       case 'S': translate_data(0, (coord)-nStep, 0); fChanged = fTrue; break;
+       case 'E': translate_data((coord)nStep, 0, 0); fChanged = fTrue; break;
+       case 'W': translate_data((coord)-nStep, 0, 0); fChanged = fTrue; break;
+       case DELETE_KEY:  set_defaults(); fChanged = fTrue; break;
+       case 'O':   fAllNames = !fAllNames; fChanged = fNames; break;
+/*       case 'I':   get_view_details(); fChanged=fTrue; break; */
        case CURSOR_UP:
          if (elev == 90.0f)
             translate_data((coord)(nStep * s), (coord)(nStep * c), 0);
          else
             translate_data(0, 0, (coord)nStep);
-         fRedraw = fTrue; break;
+         fChanged = fTrue; break;
        case CURSOR_DOWN:
          if (elev == 90.0f)
             translate_data(-(coord)(nStep * s), -(coord)(nStep * c), 0);
          else
             translate_data(0, 0, (coord)-nStep);
-         fRedraw = fTrue; break;
+         fChanged = fTrue; break;
        case CURSOR_LEFT:
          translate_data(-(coord)(nStep * c), (coord)(nStep * s), 0);
-         fRedraw = fTrue; break;
+         fChanged = fTrue; break;
        case CURSOR_RIGHT:
          translate_data((coord)(nStep * c), -(coord)(nStep * s), 0);
-         fRedraw = fTrue; break;
+         fChanged = fTrue; break;
        case 'H': {
 	  clock_t start_time;
 	  start_time = clock();
-	  fRedraw = fTrue;
+	  fChanged = fTrue;
 	  show_help();
 	  new_time += (clock() - start_time); /* ignore time user spends viewing help */
 	  /* cruder: new_time = clock(); */
@@ -528,11 +533,11 @@ process_key(void) /* and mouse! */
        case ('A' - '@'):
          fAll = !fAll; break; /* no need to redraw */
        case ('N' - '@'):
-         fRedraw = fTrue; fNames = !fNames; break;
+         fChanged = fTrue; fNames = !fNames; break;
        case ('X' - '@'):
-         fRedraw = fTrue; fStns = !fStns; break;
+         fChanged = fTrue; fStns = !fStns; break;
        case ('L' - '@'):
-         fRedraw = fTrue; fLegs = !fLegs; break;
+         fChanged = fTrue; fLegs = !fLegs; break;
        case ('R' - '@'):
          fRevSense = !fRevSense; break;
        case ESCAPE_KEY:
@@ -555,7 +560,7 @@ process_key(void) /* and mouse! */
             sc *= (float)pow(LITTLE_MAGNIFY_FACTOR, -0.08 * dy);
             if (locked == 0 || locked == 3) degView -= dx * 0.16f;
          }
-         fRedraw = fTrue;
+         fChanged = fTrue;
       }
       if (buttons & CVROTGFX_RBUT) {
          nStep *= 0.025f;
@@ -566,18 +571,18 @@ process_key(void) /* and mouse! */
             translate_data((coord)(nStep * (double)dx * c),
                            -(coord)(nStep * (double)dx * s),
 			   (coord)(nStep * dy));
-         fRedraw = fTrue;
+         fChanged = fTrue;
       }
       if (locked == 0 && (buttons & CVROTGFX_MBUT) && !fOldMBut) {
          elev = (elev == 90.0f) ? 0.0f : 90.0f;
-         fRedraw = fTrue;
+         fChanged = fTrue;
       }
       fOldMBut = ((buttons & CVROTGFX_MBUT) > 0);
    }
 
    if (autotilt) {
       elev += (float)autotilt;
-      fRedraw = fTrue;
+      fChanged = fTrue;
       if (autotilt > 0) {
          if (elev >= autotilttarget) {
             elev = autotilttarget;
@@ -594,10 +599,10 @@ process_key(void) /* and mouse! */
    /* rotate by current stepsize */
    if (fRotating) {
       degView += degViewStep*tsc;
-      fRedraw = fTrue; /* and force a redraw */
+      fChanged = fTrue; /* and force a redraw */
    }
 
-   return (fRedraw);
+   return fChanged;
 }
 
 /***************************************************************************/
@@ -669,7 +674,6 @@ show_help(void)
    if (mouse_buttons >= 3) flags |= FLAG_MOUSE3;
    
    /* display help text over currently displayed image */
-   /* swap_screen(fFalse);*/ /* write to the displayed image */
    cvrotgfx_pre_supp_draw();
    set_tcolour(colHelp);
 
@@ -689,7 +693,6 @@ show_help(void)
    do {
       if (mouse_buttons > 0) cvrotgfx_read_mouse(&i, &i, &buttons);
    } while (cvrotgfx_get_key() < 0 && !buttons);
-   /* swap_screen(fTrue); */
 }
 
 /***************************************************************************/
@@ -737,7 +740,7 @@ parse_command(int argc, char **argv)
    char *p;
    int col_idx = 0;
 
-   cmdline_set_syntax_message("[OPTIONS...] 3D_FILE...", NULL);
+   cmdline_set_syntax_message("3D_FILE...", NULL);
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
    while (1) {
       int opt = cmdline_getopt();

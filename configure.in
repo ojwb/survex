@@ -79,11 +79,12 @@ if test x"$AVEN" = xno ; then
 else
   if test -n "$CXX" ; then
     if test x$no_x != xyes; then
-      AM_PATH_GTKMM(1.0.0,AVEN=aven,AC_MSG_WARN([GTK-- not found (is gtkmm-config in path?) : not building aven]))
+dnl   AM_PATH_GTKMM(1.2.0,AVEN=aven;AC_MSG_RESULT(building aven),AC_MSG_WARN([GTK-- 1.2 not found (is gtkmm-config in path?) : not building aven]))
+      AM_PATH_GTKMM(1.0.0,AVEN=aven;AC_MSG_RESULT(building aven),
+	AC_MSG_WARN([GTK-- not found (is gtkmm-config in path?) : not building aven]))
       AC_SUBST(GTKMM_VERSION)
       AC_SUBST(GTKMM_LIBS)
       AC_SUBST(GTKMM_CFLAGS)
-      AC_MSG_RESULT(building aven)
     fi
   fi
 fi

@@ -25,6 +25,7 @@ survex_SOURCES = wrap.c osdepend.c
 
 aven_SOURCES = aven.cc cvrotimg.c img.c useful.c osdepend.c filename.c\
  message.c
+#aven_LDADD = @LIBOBJS@ @GTKMM_LIBS@
 aven_LDADD = @LIBOBJS@ @GTKMM_LIBS@ -lgnomemm
 aven_CFLAGS = @GTKMM_CFLAGS@
 aven_CXXFLAGS = @GTKMM_CFLAGS@

@@ -199,11 +199,16 @@ cvrotgfx_read_mouse(int *pdx, int *pdy, int *pbut)
 /*****************************************************************************/
 
 int cvrotgfx_mode_picker = 0;
+#if (OS==WIN32)
+int cvrotgfx_window = 0;
+#endif
 # if 0
 int driver = GFX_AUTODETECT;
 int drx = 800;
 int dry = 600;
 # endif
+
+volatile bool fRedraw = fTrue;
 
 /* Set up graphics screen/window and initialise any state needed */
 int
@@ -257,6 +262,10 @@ cvrotgfx_init(void)
 	 cvrotgfx_read_mouse(&dummy, &dummy, &dummy);
       }
    }
+
+   void force_redraw(void) {
+      fRedraw = fTrue;
+   }
     
    char *p, *q;
 
@@ -276,12 +285,20 @@ cvrotgfx_init(void)
       printf("%s\n", allegro_error);
       exit(1);
    }
-   
+
+   set_window_title("caverot"); /* FIXME: include the filename(s) */
+
    if (!cvrotgfx_mode_picker) {
 #if (OS==WIN32)
-      res = set_gfx_mode(GFX_DIRECTX, 800, 600, 0, 0);
-/*      res = set_gfx_mode(GFX_GDI, 800, 600, 0, 0);*/
-/*      res = set_gfx_mode(GFX_DIRECTX_WIN, 800, 600, 0, 0);*/
+      if (cvrotgfx_window) {
+	  /* FIXME: this doesn't work (tested on NT4) */
+	  res = set_gfx_mode(GFX_DIRECTX_OVL, 640, 480, 0, 0);
+	  if (res) res = set_gfx_mode(GFX_DIRECTX_WIN, 640, 480, 0, 0);
+	  if (res) res = set_gfx_mode(GFX_GDI, 640, 480, 0, 0);
+      } else {
+	  res = set_gfx_mode(GFX_DIRECTX, 800, 600, 0, 0);
+	  if (res) res = set_gfx_mode(GFX_DIRECTX_SOFT, 800, 600, 0, 0);
+      }
 #else
 #if (OS==UNIX)
       set_color_depth(16);
@@ -358,6 +375,10 @@ cvrotgfx_init(void)
    }
 /*   set_mouse_range(INT_MIN, INT_MIN, INT_MAX, INT_MAX); */
    select_charset(CHARSET_UTF8);
+
+   if (get_display_switch_mode() == SWITCH_AMNESIA)
+      set_display_switch_callback(SWITCH_IN, force_redraw);
+
 #elif defined(__DJGPP__)
    const GrVideoMode *mode;
 /*	    GrSetMode(GR_width_height_color_graphics, x, y, c);
@@ -612,8 +633,10 @@ cvrotgfx_get_key(void)
    clear_keybuf();
 #if 0
 {FILE *fh = fopen("key.log", "a");
+if (fh) {
 fprintf(fh, "%04x\n", keycode);
 fclose(fh);
+}
 }
 #endif
    /* check for cursor keys/delete/end - these give enhanced DOS key codes (+ 0x100) */
@@ -674,18 +697,6 @@ static int mode_on_entry;
 
 static int xcMacOS, ycMacOS; /* limits for OS_Plot */
 static int eigX, eigY;
-
-/* Called just after message file is read in to allow graphics library */
-/* specific command line switches to be processed */
-/* You should modify argv and *pargc to remove any switches you process */
-int
-cvrotgfx_parse_cmdline(int *pargc, char **argv)
-{
-   /* avoid compiler warnings */
-   pargc = pargc;
-   argv = argv;
-   return 1;
-}
 
 int
 cvrotgfx_init(void)

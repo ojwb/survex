@@ -59,7 +59,7 @@ main(int argc, char **argv)
    FILE *fh;
    int item;
    int fSeenMove = 0;
-   double x, y, z;
+   float x, y, z;
    double x1, y1, z1;
    double min_x, min_y, min_z, max_x, max_y, max_z; /* for HEADER section */
    double text_height; /* for station labels */

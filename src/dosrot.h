@@ -19,18 +19,29 @@
 
 #define FIXED_PT_POS     16 /* position of fixed decimal point in word */
 
-#define RED_3D           (9)  /* colours for 3d view effect */
-#define GREEN_3D         (8)
-#define BLUE_3D          (6)
+#define RED_3D           9  /* colours for 3d view effect */
+#define GREEN_3D         8
+#define BLUE_3D          6
 
-#define RETURN_KEY      (13)  /* key definitions */
-#define ESCAPE_KEY      (27)
-#define DELETE_KEY   (0x153)  /* enhanced DOS key codes (+ 0x100) */
-#define COPYEND_KEY  (0x14f)  /* to distinguish them from normal key codes */
-#define CURSOR_LEFT  (0x14b)
-#define CURSOR_RIGHT (0x14d)
-#define CURSOR_DOWN  (0x150)
-#define CURSOR_UP    (0x148)
+#define RETURN_KEY      13  /* key definitions */
+#define ESCAPE_KEY      27
+
+#ifdef ALLEGRO
+# define DELETE_KEY   (0x100 | KEY_DEL)
+# define END_KEY      (0x100 | KEY_END)
+# define CURSOR_LEFT  (0x100 | KEY_LEFT)
+# define CURSOR_RIGHT (0x100 | KEY_RIGHT)
+# define CURSOR_DOWN  (0x100 | KEY_DOWN)
+# define CURSOR_UP    (0x100 | KEY_UP)
+#else
+/* enhanced DOS key codes (+ 0x100 to distinguish them from normal key codes) */
+# define DELETE_KEY   0x153
+# define END_KEY      0x14f
+# define CURSOR_LEFT  0x14b
+# define CURSOR_RIGHT 0x14d
+# define CURSOR_DOWN  0x150
+# define CURSOR_UP    0x148
+#endif
 
 #ifdef NO_FUNC_PTRS
 

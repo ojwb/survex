@@ -1,3 +1,8 @@
+* cavern: "is this a directory" test on RISC OS would never say "yes".
+
+* caverot: cursor keys and delete had stopped working in MSDOS caverot
+  (due to changes in allegro graphics library) - fixed.
+
 Changes in 0.96-prerelease3:
 
 * caverot: DirectX version for Microsoft Windows.

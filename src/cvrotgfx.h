@@ -20,13 +20,15 @@
 #ifndef SVX_CVROTGFX_H
 #define SVX_CVROTGFX_H 1
 
-/* FIXME: sort out _cvrotgfx_textcol/_cvrotgfx_drawcol ugliness */
-
 #include "whichos.h"
 
 extern int mouse_buttons;
 
 extern int colText, colHelp;
+
+extern int _cvrotgfx_textcol, _cvrotgfx_drawcol;
+
+extern volatile bool fRedraw;
 
 #ifdef __DJGPP__
 # define ALLEGRO 1
@@ -69,8 +71,8 @@ extern BITMAP *BitMap, *BitMapDraw;
  extern int _cvrotgfx_textcol;\
  textout(BitMapDraw, font, (char *)(S), (X), (Y), _cvrotgfx_textcol);)
 # endif
-# define set_tcolour(X) BLK(extern int _cvrotgfx_textcol; _cvrotgfx_textcol = (X);)
-# define set_gcolour(X) BLK(extern int _cvrotgfx_drawcol; _cvrotgfx_drawcol = (X);)
+# define set_tcolour(X) _cvrotgfx_textcol = (X)
+# define set_gcolour(X) _cvrotgfx_drawcol = (X)
 # define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, (char *)(S))
 
 /* # define shift_pressed() (key[KEY_LSHIFT] || key[KEY_RSHIFT]) alternative... */
@@ -174,8 +176,8 @@ extern void cvrotgfx_lineto(int X, int Y);
  extern int _cvrotgfx_textcol;\
  textout(BitMapDraw, font, (char *)(S), (X), (Y), _cvrotgfx_textcol);)
 #  endif
-#  define set_tcolour(X) BLK(extern int _cvrotgfx_textcol; _cvrotgfx_textcol = (X);)
-#  define set_gcolour(X) BLK(extern int _cvrotgfx_drawcol; _cvrotgfx_drawcol = (X);)
+#  define set_tcolour(X) _cvrotgfx_textcol = (X)
+#  define set_gcolour(X) _cvrotgfx_drawcol = (X)
 #  define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, S)
 # elif defined(__DJGPP__)
 #  define outtextxy(X, Y, S) GrTextXY((X), (Y), (S), 15, 0) /* FIXME 15 and 0 are colours */
@@ -212,10 +214,11 @@ extern void text_xy(int x, int y, const char *str);
 
 #elif (OS==WIN32)
 
+/* mingw + Allegro */
 # define ALLEGRO 1
 
-/* mingw + Allegro */
 # include "allegro.h"
+/* int __stdcall AllocConsole(void); */
 extern BITMAP *BitMap, *BitMapDraw;
 
 # define cvrotgfx_beep() NOP /*sound(256)*/ /* 256 is frequency */
@@ -232,8 +235,8 @@ extern void cvrotgfx_lineto(int X, int Y);
  extern int _cvrotgfx_textcol;\
  textout(BitMapDraw, font, (char *)(S), (X), (Y), _cvrotgfx_textcol);)
 # endif
-# define set_tcolour(X) BLK(extern int _cvrotgfx_textcol; _cvrotgfx_textcol = (X);)
-# define set_gcolour(X) BLK(extern int _cvrotgfx_drawcol; _cvrotgfx_drawcol = (X);)
+# define set_tcolour(X) _cvrotgfx_textcol = (X)
+# define set_gcolour(X) _cvrotgfx_drawcol = (X)
 # define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, S)
 
 # undef  Y_UP /* PC has increasing Y down screen */
@@ -248,13 +251,27 @@ extern void cvrotgfx_lineto(int X, int Y);
 
 #ifdef ALLEGRO
 extern int cvrotgfx_mode_picker;
+extern int cvrotgfx_window;
 
+#if (OS!=WIN32)
 #define CVROTGFX_LONGOPTS \
-   {"mode-picker", no_argument, &cvrotgfx_mode_picker, '0'},
+   {"mode-picker", no_argument, &cvrotgfx_mode_picker, 1},
+#else
+#define CVROTGFX_LONGOPTS \
+   {"window", no_argument, &cvrotgfx_window, 1},\
+   {"mode-picker", no_argument, &cvrotgfx_mode_picker, 1},
+/* FIXME: values don't get set! */
+#endif
 
 /*				<-- */
+#if (OS!=WIN32)
 #define CVROTGFX_HELP(N) \
-   {HLP_ENCODELONG((N)),        "bring up screen mode chooser dialog"},
+   {HLP_ENCODELONG((N)),	"bring up screen mode chooser dialog"},
+#else
+#define CVROTGFX_HELP(N) \
+   {HLP_ENCODELONG((N)),	"run caverot in a window (default: full-screen)"},\
+   {HLP_ENCODELONG((N)+1),	"bring up screen mode chooser dialog"},
+#endif
 #endif
 
 #ifndef CVROTGFX_LONGOPTS
