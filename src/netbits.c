@@ -25,7 +25,9 @@
 # define DEBUG_INVALID 1
 #endif
 
+#ifdef CHASM3DX
 #include <stddef.h> /* for offsetof */
+#endif
 
 #include "debug.h"
 #include "cavern.h"

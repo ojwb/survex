@@ -27,7 +27,9 @@
 # include <config.h>
 #endif
 
+#ifdef CHASM3DX
 #include <stddef.h> /* for offsetof */
+#endif
 
 #include "validate.h"
 #include "debug.h"
