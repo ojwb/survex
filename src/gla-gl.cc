@@ -433,6 +433,8 @@ void GLACanvas::SetDataTransform()
 
     if (m_AntiAlias) {
 	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     } else {
 	glDisable(GL_LINE_SMOOTH);
     }
@@ -465,6 +467,7 @@ void GLACanvas::SetIndicatorTransform()
     CHECK_GL_ERROR("SetIndicatorTransform", "gluOrtho2D");
 
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glAlphaFunc(GL_GREATER, 0.5f);

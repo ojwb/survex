@@ -339,15 +339,16 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	timer.Start(); // reset timer
 
 	if (m_Legs || m_Tubes) {
-	    // Draw the underground legs.
-	    SetColour(col_GREEN);
-	    DrawList(m_Lists.underground_legs);
-
 	    if (m_Tubes) {
 		EnableSmoothPolygons();
 		DrawList(m_Lists.tubes);
 		DisableSmoothPolygons();
 	    }
+
+	    // Draw the underground legs (draw them last so that anti-aliasing
+	    // works over polygons.
+	    SetColour(col_GREEN);
+	    DrawList(m_Lists.underground_legs);
 	}
 
 	if (m_Surface) {
