@@ -113,10 +113,10 @@ public:
 	: wxDialog(parent, 500, wxString("Edit Waypoint"))
     {
 	easting = new wxTextCtrl(this, 601, wxString::Format("%.3f", p.x));
-	northing = new wxTextCtrl(this, 602, wxString::Format("%.3f", p.y)); 
+	northing = new wxTextCtrl(this, 602, wxString::Format("%.3f", p.y));
 	altitude = new wxTextCtrl(this, 603, wxString::Format("%.3f", p.z));
 	angle = new wxTextCtrl(this, 604, wxString::Format("%.3f", p.angle));
-	tilt_angle = new wxTextCtrl(this, 605, wxString::Format("%.3f", p.tilt_angle)); 
+	tilt_angle = new wxTextCtrl(this, 605, wxString::Format("%.3f", p.tilt_angle));
 	scale = new wxTextCtrl(this, 606, wxString::Format("%.3f", p.scale));
 	if (p.time > 0.0) {
 	    time = new wxTextCtrl(this, 607, wxString::Format("%.3f", p.time));
@@ -171,7 +171,7 @@ public:
 
 	vert->Fit(this);
 	vert->SetSizeHints(this);
-    } 
+    }
     PresentationMark GetMark() const {
 	double x, y, z, a, t, s, T;
 	x = atof(easting->GetValue().c_str());
@@ -403,7 +403,11 @@ class AvenPresList : public wxListCtrl {
 		item = 0;
 	    } else if (which == MARK_NEXT) {
 		++item;
+	    } else if (which == MARK_PREV) {
+		--item;
 	    }
+	    if (item == -1 || item == (long)entries.size())
+		return PresentationMark();
 	    if (item != current_item) {
 		// Move the focus
 		if (current_item != -1) {
@@ -413,7 +417,6 @@ class AvenPresList : public wxListCtrl {
 		wxListCtrl::SetItemState(item, wxLIST_STATE_FOCUSED,
 					 wxLIST_STATE_FOCUSED);
 	    }
-	    if (item == (long)entries.size()) return PresentationMark();
 	    return entries[item];
 	}
 
@@ -454,7 +457,14 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_PRES_SAVE, MainFrm::OnPresSave)
     EVT_MENU(menu_PRES_SAVE_AS, MainFrm::OnPresSaveAs)
     EVT_MENU(menu_PRES_MARK, MainFrm::OnPresMark)
-    EVT_MENU(menu_PRES_RUN, MainFrm::OnPresRun)
+    EVT_MENU(menu_PRES_FREWIND, MainFrm::OnPresFRewind)
+    EVT_MENU(menu_PRES_REWIND, MainFrm::OnPresRewind)
+    EVT_MENU(menu_PRES_REVERSE, MainFrm::OnPresReverse)
+    EVT_MENU(menu_PRES_PLAY, MainFrm::OnPresPlay)
+    EVT_MENU(menu_PRES_FF, MainFrm::OnPresFF)
+    EVT_MENU(menu_PRES_FFF, MainFrm::OnPresFFF)
+    EVT_MENU(menu_PRES_PAUSE, MainFrm::OnPresPause)
+    EVT_MENU(menu_PRES_STOP, MainFrm::OnPresStop)
     EVT_MENU(menu_PRES_EXPORT_MOVIE, MainFrm::OnPresExportMovie)
 
     EVT_UPDATE_UI(menu_PRES_NEW, MainFrm::OnPresNewUpdate)
@@ -462,7 +472,14 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_PRES_SAVE, MainFrm::OnPresSaveUpdate)
     EVT_UPDATE_UI(menu_PRES_SAVE_AS, MainFrm::OnPresSaveAsUpdate)
     EVT_UPDATE_UI(menu_PRES_MARK, MainFrm::OnPresMarkUpdate)
-    EVT_UPDATE_UI(menu_PRES_RUN, MainFrm::OnPresRunUpdate)
+    EVT_UPDATE_UI(menu_PRES_FREWIND, MainFrm::OnPresFRewindUpdate)
+    EVT_UPDATE_UI(menu_PRES_REWIND, MainFrm::OnPresRewindUpdate)
+    EVT_UPDATE_UI(menu_PRES_REVERSE, MainFrm::OnPresReverseUpdate)
+    EVT_UPDATE_UI(menu_PRES_PLAY, MainFrm::OnPresPlayUpdate)
+    EVT_UPDATE_UI(menu_PRES_FF, MainFrm::OnPresFFUpdate)
+    EVT_UPDATE_UI(menu_PRES_FFF, MainFrm::OnPresFFFUpdate)
+    EVT_UPDATE_UI(menu_PRES_PAUSE, MainFrm::OnPresPauseUpdate)
+    EVT_UPDATE_UI(menu_PRES_STOP, MainFrm::OnPresStopUpdate)
     EVT_UPDATE_UI(menu_PRES_EXPORT_MOVIE, MainFrm::OnPresExportMovieUpdate)
 
     EVT_CLOSE(MainFrm::OnClose)
@@ -726,7 +743,7 @@ void MainFrm::CreateMenuBar()
     presmenu->Append(menu_PRES_SAVE_AS, GetTabMsg(/*Save Presentation @As...*/314));
     presmenu->AppendSeparator();
     presmenu->Append(menu_PRES_MARK, GetTabMsg(/*@Mark*/315));
-    presmenu->Append(menu_PRES_RUN, GetTabMsg(/*@Play*/316));
+    presmenu->Append(menu_PRES_PLAY, GetTabMsg(/*@Play*/316));
     presmenu->Append(menu_PRES_EXPORT_MOVIE, GetTabMsg(/*@Export as Movie...*/317));
 
     wxMenu* viewmenu = new wxMenu;
@@ -838,6 +855,16 @@ void MainFrm::CreateToolBar()
     toolbar->AddTool(menu_VIEW_SHOW_TUBES, TOOLBAR_BITMAP("tubes.png"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show passage tubes");
 #endif
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_PRES_FREWIND, TOOLBAR_BITMAP("pres-frew.png"), wxNullBitmap, true, -1, -1, NULL, "Very Fast Rewind");
+    toolbar->AddTool(menu_PRES_REWIND, TOOLBAR_BITMAP("pres-rew.png"), wxNullBitmap, true, -1, -1, NULL, "Fast Rewind");
+    toolbar->AddTool(menu_PRES_REVERSE, TOOLBAR_BITMAP("pres-go-back.png"), wxNullBitmap, true, -1, -1, NULL, "Play Backwards");
+    toolbar->AddTool(menu_PRES_PAUSE, TOOLBAR_BITMAP("pres-pause.png"), wxNullBitmap, true, -1, -1, NULL, "Pause");
+    toolbar->AddTool(menu_PRES_PLAY, TOOLBAR_BITMAP("pres-go.png"), wxNullBitmap, true, -1, -1, NULL, "Play");
+    toolbar->AddTool(menu_PRES_FF, TOOLBAR_BITMAP("pres-ff.png"), wxNullBitmap, true, -1, -1, NULL, "Fast Forward");
+    toolbar->AddTool(menu_PRES_FFF, TOOLBAR_BITMAP("pres-fff.png"), wxNullBitmap, true, -1, -1, NULL, "Very Fast Forward");
+    toolbar->AddTool(menu_PRES_STOP, TOOLBAR_BITMAP("pres-stop.png"), wxNullBitmap, false, -1, -1, NULL, "Stop");
+
 
     toolbar->AddSeparator();
     m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, "", wxDefaultPosition,
@@ -1681,9 +1708,44 @@ void MainFrm::OnPresMark(wxCommandEvent&)
     m_PresList->AddMark();
 }
 
-void MainFrm::OnPresRun(wxCommandEvent&)
+void MainFrm::OnPresFRewind(wxCommandEvent&)
 {
-    m_Gfx->PlayPres();
+    m_Gfx->PlayPres(-100);
+}
+
+void MainFrm::OnPresRewind(wxCommandEvent&)
+{
+    m_Gfx->PlayPres(-10);
+}
+
+void MainFrm::OnPresReverse(wxCommandEvent&)
+{
+    m_Gfx->PlayPres(-1);
+}
+
+void MainFrm::OnPresPlay(wxCommandEvent&)
+{
+    m_Gfx->PlayPres(1);
+}
+
+void MainFrm::OnPresFF(wxCommandEvent&)
+{
+    m_Gfx->PlayPres(10);
+}
+
+void MainFrm::OnPresFFF(wxCommandEvent&)
+{
+    m_Gfx->PlayPres(100);
+}
+
+void MainFrm::OnPresPause(wxCommandEvent&)
+{
+    m_Gfx->PlayPres(0);
+}
+
+void MainFrm::OnPresStop(wxCommandEvent&)
+{
+    m_Gfx->PlayPres(0, false);
 }
 
 void MainFrm::OnPresExportMovie(wxCommandEvent&)
@@ -1739,9 +1801,52 @@ void MainFrm::OnPresMarkUpdate(wxUpdateUIEvent& event)
     event.Enable(!m_File.empty());
 }
 
-void MainFrm::OnPresRunUpdate(wxUpdateUIEvent& event)
+void MainFrm::OnPresFRewindUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_Gfx && m_Gfx->GetPresentationMode());
+    event.Check(m_Gfx && m_Gfx->GetPresentationSpeed() < -10);
+}
+
+void MainFrm::OnPresRewindUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_Gfx && m_Gfx->GetPresentationMode());
+    event.Check(m_Gfx && m_Gfx->GetPresentationSpeed() == -10);
+}
+
+void MainFrm::OnPresReverseUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_Gfx && m_Gfx->GetPresentationMode());
+    event.Check(m_Gfx && m_Gfx->GetPresentationSpeed() == -1);
+}
+
+void MainFrm::OnPresPlayUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(!m_PresList->Empty());
+    event.Check(m_Gfx && m_Gfx->GetPresentationMode() &&
+		m_Gfx->GetPresentationSpeed() == 1);
+}
+
+void MainFrm::OnPresFFUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_Gfx && m_Gfx->GetPresentationMode());
+    event.Check(m_Gfx && m_Gfx->GetPresentationSpeed() == 10);
+}
+
+void MainFrm::OnPresFFFUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_Gfx && m_Gfx->GetPresentationMode());
+    event.Check(m_Gfx && m_Gfx->GetPresentationSpeed() > 10);
+}
+
+void MainFrm::OnPresPauseUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_Gfx && m_Gfx->GetPresentationMode());
+    event.Check(m_Gfx && m_Gfx->GetPresentationSpeed() == 0);
+}
+
+void MainFrm::OnPresStopUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_Gfx && m_Gfx->GetPresentationMode());
 }
 
 void MainFrm::OnPresExportMovieUpdate(wxUpdateUIEvent& event)

@@ -151,8 +151,11 @@ class GfxCore : public GLACanvas {
 
 #define PLAYING 1
     int presentation_mode; // for now, 0 => off, PLAYING => continuous play
+    bool pres_reverse;
+    double pres_speed;
     PresentationMark next_mark;
     double next_mark_time;
+    double this_mark_total;
 
     MovieMaker * mpeg;
 
@@ -386,7 +389,9 @@ public:
 
     PresentationMark GetView() const;
     void SetView(const PresentationMark & p);
-    void PlayPres();
+    void PlayPres(double speed, bool change_speed = true);
+    int GetPresentationMode() const { return presentation_mode; }
+    double GetPresentationSpeed() const { return pres_speed; }
 
     void SetColourBy(int colour_by);
     bool ExportMovie(const wxString & fnm);

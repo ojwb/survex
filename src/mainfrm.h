@@ -53,6 +53,7 @@ using namespace std;
 
 #define MARK_FIRST 1
 #define MARK_NEXT 2
+#define MARK_PREV 3
 
 enum {
     menu_FILE_OPEN = 1000,
@@ -64,8 +65,15 @@ enum {
     menu_PRES_SAVE,
     menu_PRES_SAVE_AS,
     menu_PRES_MARK,
-    menu_PRES_RUN,
     menu_PRES_EXPORT_MOVIE,
+    menu_PRES_FREWIND,
+    menu_PRES_REWIND,
+    menu_PRES_REVERSE,
+    menu_PRES_PLAY,
+    menu_PRES_FF,
+    menu_PRES_FFF,
+    menu_PRES_PAUSE,
+    menu_PRES_STOP,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
     menu_ROTATION_TOGGLE,
@@ -240,7 +248,14 @@ public:
     void OnPresSaveUpdate(wxUpdateUIEvent& event);
     void OnPresSaveAsUpdate(wxUpdateUIEvent& event);
     void OnPresMarkUpdate(wxUpdateUIEvent& event);
-    void OnPresRunUpdate(wxUpdateUIEvent& event);
+    void OnPresFRewindUpdate(wxUpdateUIEvent& event);
+    void OnPresRewindUpdate(wxUpdateUIEvent& event);
+    void OnPresReverseUpdate(wxUpdateUIEvent& event);
+    void OnPresPlayUpdate(wxUpdateUIEvent& event);
+    void OnPresFFUpdate(wxUpdateUIEvent& event);
+    void OnPresFFFUpdate(wxUpdateUIEvent& event);
+    void OnPresPauseUpdate(wxUpdateUIEvent& event);
+    void OnPresStopUpdate(wxUpdateUIEvent& event);
     void OnPresExportMovieUpdate(wxUpdateUIEvent& event);
     //void OnFileOpenTerrainUpdate(wxUpdateUIEvent& event);
 
@@ -258,7 +273,14 @@ public:
     void OnPresSave(wxCommandEvent& event);
     void OnPresSaveAs(wxCommandEvent& event);
     void OnPresMark(wxCommandEvent& event);
-    void OnPresRun(wxCommandEvent& event);
+    void OnPresFRewind(wxCommandEvent& event);
+    void OnPresRewind(wxCommandEvent& event);
+    void OnPresReverse(wxCommandEvent& event);
+    void OnPresPlay(wxCommandEvent& event);
+    void OnPresFF(wxCommandEvent& event);
+    void OnPresFFF(wxCommandEvent& event);
+    void OnPresPause(wxCommandEvent& event);
+    void OnPresStop(wxCommandEvent& event);
     void OnPresExportMovie(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
 

@@ -1151,15 +1151,20 @@ bool GfxCore::Animate()
 	last_t = t;
     }
 
-    if (presentation_mode == PLAYING) {
+    if (presentation_mode == PLAYING && pres_speed != 0.0) {
+	t *= fabs(pres_speed);
 	while (t >= next_mark_time) {
 	    t -= next_mark_time;
-	    SetView(next_mark);
+	    this_mark_total = 0;
 	    PresentationMark prev_mark = next_mark;
 	    if (prev_mark.angle < 0) prev_mark.angle += 360.0;
 	    else if (prev_mark.angle >= 360.0) prev_mark.angle -= 360.0;
-	    next_mark = m_Parent->GetPresMark(MARK_NEXT);
+	    if (pres_reverse)
+		next_mark = m_Parent->GetPresMark(MARK_PREV);
+	    else
+		next_mark = m_Parent->GetPresMark(MARK_NEXT);
 	    if (!next_mark.is_valid()) {
+		SetView(prev_mark);
 		presentation_mode = 0;
 		if (mpeg) {
 		    delete mpeg;
@@ -1168,8 +1173,9 @@ bool GfxCore::Animate()
 		break;
 	    }
 
-	    if (next_mark.time > 0) {
-		next_mark_time = next_mark.time;
+	    double tmp = (pres_reverse ? prev_mark.time : next_mark.time);
+	    if (tmp > 0) {
+		next_mark_time = tmp;
 	    } else {
 		double d = sqrt(sqrd(next_mark.x - prev_mark.x) +
 				sqrd(next_mark.y - prev_mark.y) +
@@ -1196,7 +1202,7 @@ bool GfxCore::Animate()
 		// was: next_mark_time = max(max(d, s / 2), max(a, ta) / 60);
 		//printf("*** %.6f from (\nd: %.6f\ns: %.6f\na: %.6f\nt: %.6f )\n",
 		//       next_mark_time, d/100, s/2, a/60, ta/60);
-		if (next_mark.time < 0) next_mark_time *= -next_mark.time;
+		if (tmp < 0) next_mark_time *= -tmp;
 	    }
 	}
 
@@ -1221,6 +1227,7 @@ bool GfxCore::Animate()
 	    here.tilt_angle = q * here.tilt_angle + p * next_mark.tilt_angle;
 	    here.scale = exp(q * log(here.scale) + p * log(next_mark.scale));
 	    SetView(here);
+	    this_mark_total += t;
 	    next_mark_time -= t;
 	}
     }
@@ -2511,11 +2518,33 @@ void GfxCore::SetView(const PresentationMark & p)
     ForceRefresh();
 }
 
-void GfxCore::PlayPres() {
-    presentation_mode = PLAYING;
-    next_mark = m_Parent->GetPresMark(MARK_FIRST);
-    SetView(next_mark);
-    next_mark_time = 0; // There already!
+void GfxCore::PlayPres(double speed, bool change_speed) {
+    if (!change_speed || presentation_mode == 0) {
+	if (speed == 0.0) {
+	    presentation_mode = 0;
+	    return;
+	}
+	presentation_mode = PLAYING;
+	next_mark = m_Parent->GetPresMark(MARK_FIRST);
+	SetView(next_mark);
+	next_mark_time = 0; // There already!
+	this_mark_total = 0;
+	pres_reverse = (speed < 0);
+    }
+
+    if (speed != 0.0) {
+	bool new_pres_reverse = (speed < 0);
+	if (new_pres_reverse != pres_reverse) {
+	    pres_reverse = new_pres_reverse;
+	    if (pres_reverse) {
+		next_mark = m_Parent->GetPresMark(MARK_PREV);
+	    } else {
+		next_mark = m_Parent->GetPresMark(MARK_NEXT);
+	    }
+	    swap(this_mark_total, next_mark_time);
+	}
+    }
+    pres_speed = speed;
 }
 
 void GfxCore::SetColourBy(int colour_by) {
@@ -2565,6 +2594,6 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 	return false;
     }
 
-    PlayPres();
+    PlayPres(1, false);
     return true;
 }
