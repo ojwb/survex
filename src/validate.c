@@ -128,7 +128,13 @@ validate_station_list(void)
    node *stn, *stn2;
    int d, d2;
 
+   ASSERT(!stnlist || !stnlist->prev);
    FOR_EACH_STN(stn, stnlist) {
+#if 0
+      printf("V [%p]<-[%p]->[%p] ", stn->prev, stn, stn->next); print_prefix(stn->name); putnl();
+#endif
+      ASSERT(stn->prev == NULL || stn->prev->next == stn);
+      ASSERT(stn->next == NULL || stn->next->prev == stn);
       for (d = 0; d <= 2; d++) {
 	 if (stn->leg[d]) {
 	    stn2 = stn->leg[d]->l.to;
