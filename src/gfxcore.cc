@@ -120,7 +120,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     GLACanvas(parent_win, 100, wxDefaultPosition, wxSize(640, 480)),
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
            wxFONTENCODING_ISO8859_1),
-    m_InitialisePending(false)
+    m_InitialisePending(false), m_HaveData(false)
 {
     m_Control = control;
     m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
@@ -129,7 +129,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Parent = parent;
     m_RotationOK = true;
     m_DoneFirstShow = false;
-    m_PlotData = NULL;
     m_RedrawOffscreen = false;
     m_Crosses = false;
     m_Legs = true;
@@ -180,19 +179,14 @@ void GfxCore::TryToFreeArrays()
 {
     // Free up any memory allocated for arrays.
 
-    if (m_PlotData) {
-	DELETE_ARRAY(m_PlotData->vertices);
-	DELETE_ARRAY(m_PlotData->num_segs);
-	DELETE_ARRAY(m_PlotData->surface_vertices);
-	DELETE_ARRAY(m_PlotData->surface_num_segs);
+    if (vertices) DELETE_ARRAY(vertices);
+    if (num_segs) DELETE_ARRAY(num_segs);
+    if (surface_vertices) DELETE_ARRAY(surface_vertices);
+    if (surface_num_segs) DELETE_ARRAY(surface_num_segs);
 
-        delete m_PlotData;
-        m_PlotData = NULL;
-
-        if (m_LabelGrid) {
-            DELETE_ARRAY(m_LabelGrid);
-            m_LabelGrid = NULL;
-        }
+    if (m_LabelGrid) {
+	DELETE_ARRAY(m_LabelGrid);
+	m_LabelGrid = NULL;
     }
 }
 
@@ -214,11 +208,10 @@ void GfxCore::Initialise()
 
     m_Bands = m_Parent->GetNumDepthBands();
     
-    m_PlotData = new PlotData;
-    m_PlotData->vertices = new Point[m_Parent->GetNumPoints()];
-    m_PlotData->num_segs = new int[m_Parent->GetNumLegs()];
-    m_PlotData->surface_vertices = new Point[m_Parent->GetNumPoints()];
-    m_PlotData->surface_num_segs = new int[m_Parent->GetNumLegs()];
+    vertices = new Point[m_Parent->GetNumPoints()];
+    num_segs = new int[m_Parent->GetNumLegs()];
+    surface_vertices = new Point[m_Parent->GetNumPoints()];
+    surface_num_segs = new int[m_Parent->GetNumLegs()];
 
     m_Tubes = false;
 
@@ -313,6 +306,13 @@ void GfxCore::Initialise()
     m_InitialScale *= .85;
 
     SetScaleInitial(m_InitialScale);
+
+    double extent = MAX3(m_Parent->GetXExtent(),
+		         m_Parent->GetYExtent(),
+			 m_Parent->GetZExtent()) / 2.0;
+    SetVolumeCoordinates(-extent, extent, -extent, extent, -extent, extent);
+
+    m_HaveData = true;
 }
 
 void GfxCore::FirstShow()
@@ -322,15 +322,12 @@ void GfxCore::FirstShow()
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
 
-    if (m_PlotData) {
+    if (m_HaveData) {
         m_Lists.underground_legs = CreateList(this, &GfxCore::GenerateDisplayList);
         m_Lists.surface_legs = CreateList(this, &GfxCore::GenerateDisplayListSurface);
         m_Lists.names = CreateList(this, &GfxCore::DrawNames);
         m_Lists.indicators = CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
         //m_Lists.blobs = CreateList(this, &GfxCore::GenerateBlobsDisplayList);
-        
-        double extent = MAX3(m_Parent->GetXExtent(), m_Parent->GetYExtent(), m_Parent->GetZExtent()) / 2.0;
-        SetVolumeCoordinates(-extent, extent, -extent, extent, -extent, extent);
     }
 
     m_DoneFirstShow = true;
@@ -344,14 +341,13 @@ void GfxCore::SetScaleInitial(Double scale)
 {
     GfxCore::SetScale(scale);
 
-    assert(m_PlotData);
-    Point* pt = m_PlotData->vertices;
+    Point* pt = vertices;
     assert(pt);
-    int* count = m_PlotData->num_segs;
+    int* count = num_segs;
     assert(count);
-    Point* spt = m_PlotData->surface_vertices;
+    Point* spt = surface_vertices;
     assert(spt);
-    int* scount = m_PlotData->surface_num_segs;
+    int* scount = surface_num_segs;
     assert(scount);
     count--;
     scount--;
@@ -511,7 +507,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     // Clear the background.
     Clear();
 
-    if (m_PlotData) {
+    if (m_HaveData) {
         // Set up model transformation matrix.
         SetDataTransform();
 
@@ -1861,9 +1857,9 @@ void GfxCore::ForceRefresh()
 
 void GfxCore::GenerateDisplayListSurface()
 {
-    assert(m_PlotData);
+    assert(m_HaveData);
     DrawPolylines(m_SurfaceDepth, false, m_SurfacePolylines,
-	          m_PlotData->surface_num_segs, m_PlotData->surface_vertices);
+	          surface_num_segs, surface_vertices);
 }
 
 void GfxCore::GenerateDisplayList()
@@ -1896,7 +1892,7 @@ void GfxCore::GenerateDisplayList()
     // Invalidate hit-test grid.
     m_HitTestGridValid = false;
 
-    if (m_PlotData) {
+    if (m_HaveData) {
         bool grid_first = (m_TiltAngle >= 0.0);
 
         if (m_Grid && grid_first) {
@@ -1905,8 +1901,7 @@ void GfxCore::GenerateDisplayList()
 
         // Draw underground legs.
         if (m_Legs) {
-	    DrawPolylines(true, m_Tubes, m_Polylines,
-			  m_PlotData->num_segs, m_PlotData->vertices); 
+	    DrawPolylines(true, m_Tubes, m_Polylines, num_segs, vertices); 
         }
     }
     
