@@ -1205,16 +1205,17 @@ void MainFrm::OnMRUFile(wxCommandEvent& event)
 void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 {
     wxBusyCursor hourglass;
-    if (wxIsAbsolutePath(file)) {
-	m_history.AddFileToHistory(file);
-    } else {
-	wxString abs = wxGetCwd() + wxString(FNM_SEP_LEV) + file;
-	m_history.AddFileToHistory(abs);
-    }
-    wxConfigBase *b = wxConfigBase::Get();
-    m_history.Save(*b);
-    b->Flush();
     if (LoadData(file, survey)) {
+	if (wxIsAbsolutePath(file)) {
+	    m_history.AddFileToHistory(file);
+	} else {
+	    wxString abs = wxGetCwd() + wxString(FNM_SEP_LEV) + file;
+	    m_history.AddFileToHistory(abs);
+	}
+	wxConfigBase *b = wxConfigBase::Get();
+	m_history.Save(*b);
+	b->Flush();
+
 	if (delay) {
 	    m_Gfx->InitialiseOnNextResize();
 	}
