@@ -122,7 +122,7 @@ default_translate(settings *s)
 #endif
 }
 
-static void
+void
 default_units(settings *s)
 {
    int quantity;
@@ -135,7 +135,7 @@ default_units(settings *s)
    s->f_clino_percent = s->f_backclino_percent = fFalse;
 }
 
-static void
+void
 default_calib(settings *s)
 {
    int quantity;

@@ -20,6 +20,9 @@
 void handle_command(void);
 void default_all(settings *s);
 
+void default_units(settings *s);
+void default_calib(settings *s);
+
 void free_settings(settings *p);
 
 extern char *buffer;

@@ -370,11 +370,14 @@ data_file(const char *pth, const char *fnm)
       pcsNew->begin_lineno = 0;
       pcsNew->next = pcs;
       pcs = pcsNew;
+      default_units(pcs);
+      default_calib(pcs);
 
+      pcs->style = STYLE_NORMAL;
       pcs->ordering = compass_order;
       pcs->units[Q_LENGTH] = METRES_PER_FOOT;
       t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
-      
+
       t[EOF] = SPECIAL_EOL;
       memset(t, 0, sizeof(short) * 33);
       for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
@@ -390,6 +393,7 @@ data_file(const char *pth, const char *fnm)
       t['+'] |= SPECIAL_PLUS;
       pcs->Translate = t;
       pcs->Case = OFF;
+      pcs->Truncate = INT_MAX;
       pcs->infer = 7; /* FIXME: BIT(EQUATES)|BIT(EXPORTS)|BIT(PLUMBS); */
    } else if (fmt == FMT_MAK) {
       short *t;
@@ -420,6 +424,7 @@ data_file(const char *pth, const char *fnm)
       t['+'] |= SPECIAL_PLUS;
       pcs->Translate = t;
       pcs->Case = OFF;
+      pcs->Truncate = INT_MAX;
    }
 
 #ifdef HAVE_SETJMP_H
@@ -474,8 +479,8 @@ data_file(const char *pth, const char *fnm)
 	 }
 	 if (strcmp(buffer, "CORRECTIONS") == 0) {
 	     nextch(); /* : */
-	     pcs->z[Q_BEARING] = -read_numeric(fFalse, NULL);
-	     pcs->z[Q_GRADIENT] = -read_numeric(fFalse, NULL);
+	     pcs->z[Q_BEARING] = -rad(read_numeric(fFalse, NULL));
+	     pcs->z[Q_GRADIENT] = -rad(read_numeric(fFalse, NULL));
 	     pcs->z[Q_LENGTH] = -read_numeric(fFalse, NULL);
 	 } else {
 	     pcs->z[Q_BEARING] = 0;
@@ -871,7 +876,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	 if (ctype == CTYPE_PLUMB ||
 	     (ctype == CTYPE_INFERPLUMB && VAL(Comp) != 0.0) ||
 	     backctype == CTYPE_PLUMB ||
-	     (ctype == CTYPE_INFERPLUMB && VAL(BackComp) != 0.0)) {
+	     (backctype == CTYPE_INFERPLUMB && VAL(BackComp) != 0.0)) {
 	    /* FIXME: Different message for BackComp? */
 	    compile_warning(/*Compass reading given on plumbed leg*/21);
 	 }
