@@ -58,9 +58,6 @@ extern const int NUM_DEPTH_COLOURS;
 enum {
     menu_FILE_OPEN = 1000,
     menu_FILE_OPEN_PRES,
-#ifdef AVENGL
-    menu_FILE_OPEN_TERRAIN,
-#endif
     menu_FILE_QUIT,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
@@ -103,12 +100,9 @@ enum {
     menu_VIEW_STATUS_BAR,
     menu_VIEW_GRID,
     menu_VIEW_SIDE_PANEL,
-#ifdef AVENGL
-    menu_VIEW_ANTIALIAS,
-    menu_VIEW_SOLID_SURFACE,
-#endif
     menu_VIEW_METRIC,
     menu_VIEW_DEGREES,
+    menu_VIEW_SHOW_TUBES,
     menu_PRES_CREATE,
     menu_PRES_GO,
     menu_PRES_GO_BACK,
@@ -188,7 +182,7 @@ class MainFrm : public wxFrame {
     int m_NumExtraLegs;
     GfxCore* m_Gfx;
     GUIControl* m_Control;
-    wxPen* m_Pens;
+    GLAPen* m_Pens;
     wxBrush* m_Brushes;
     int m_NumEntrances;
     int m_NumFixedPts;
@@ -219,28 +213,10 @@ class MainFrm : public wxFrame {
 	Double x, y, z;
     } m_Offsets;
 
-#ifdef AVENGL
-    struct {
-	Double xmin, xmax;
-	Double ymin, ymax;
-	Double zmin, zmax;
-    } m_TerrainExtents;
-
-    struct {
-	int x, y;
-    } m_TerrainSize;
-
-    Double* m_TerrainGrid;
-#endif
-
     void SetTreeItemColour(LabelInfo* label);
     void FillTree();
     void ClearPointLists();
     bool LoadData(const wxString& file, wxString prefix = "");
-#ifdef AVENGL
-    bool LoadTerrain(const wxString& file);
-    void OpenTerrain(const wxString& file);
-#endif
     void SortIntoDepthBands(list<PointInfo*>& points);
     void IntersectLineWithPlane(Double x0, Double y0, Double z0,
 				Double x1, Double y1, Double z1,
@@ -345,10 +321,6 @@ public:
     void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewClinoUpdate(event); }
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnReverseDirectionOfRotationUpdate(event); }
     void OnCancelDistLineUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnCancelDistLineUpdate(event); }
-#ifdef AVENGL
-    void OnAntiAliasUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnAntiAliasUpdate(event); }
-    void OnSolidSurfaceUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnSolidSurfaceUpdate(event); }
-#endif
     void OnIndicatorsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnIndicatorsUpdate(event); }
 
     void OnDefaults(wxCommandEvent& event) { if (m_Control) m_Control->OnDefaults(); }
@@ -391,16 +363,14 @@ public:
     void OnViewGrid(wxCommandEvent& event) { if (m_Control) m_Control->OnViewGrid(); }
     void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Control) m_Control->OnReverseDirectionOfRotation(); }
     void OnCancelDistLine(wxCommandEvent& event) { if (m_Control) m_Control->OnCancelDistLine(); }
-#ifdef AVENGL
-    void OnAntiAlias(wxCommandEvent&) { if (m_Control) m_Control->OnAntiAlias(); }
-    void OnSolidSurface(wxCommandEvent&) { if (m_Control) m_Control->OnSolidSurface(); }
-#endif
 
     void OnToggleMetric(wxCommandEvent&) { if (m_Control) m_Control->OnToggleMetric(); }
     void OnToggleDegrees(wxCommandEvent&) { if (m_Control) m_Control->OnToggleDegrees(); }
+    void OnToggleTubes(wxCommandEvent&) { if (m_Control) m_Control->OnToggleTubes(); }
 
     void OnToggleMetricUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleMetricUpdate(event); }
     void OnToggleDegreesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleDegreesUpdate(event); }
+    void OnToggleTubesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleTubesUpdate(event); }
 
     // end of horrible bodges
     
@@ -417,41 +387,13 @@ public:
     Double GetZMin() const { return m_ZMin; }
     Double GetZMax() const { return m_ZMin + m_ZExt; }
 
-#ifdef AVENGL
-    int GetTerrainXSize() const { return m_TerrainSize.x; }
-    int GetTerrainYSize() const { return m_TerrainSize.y; }
-
-    Double GetTerrainMinX() const { return m_TerrainExtents.xmin; }
-    Double GetTerrainMaxX() const { return m_TerrainExtents.xmax; }
-    Double GetTerrainMinY() const { return m_TerrainExtents.ymin; }
-    Double GetTerrainMaxY() const { return m_TerrainExtents.ymax; }
-    Double GetTerrainMinZ() const { return m_TerrainExtents.zmin; }
-    Double GetTerrainMaxZ() const { return m_TerrainExtents.zmax; }
-
-    Double GetTerrainXSquareSize() const {
-	return (m_TerrainExtents.xmax - m_TerrainExtents.xmin)
-		/ m_TerrainSize.x;
-    }
-    Double GetTerrainYSquareSize() const {
-	return (m_TerrainExtents.ymax - m_TerrainExtents.ymin)
-		/ m_TerrainSize.y;
-    }
-
-    Double GetTerrainHeight(int x, int y) const {
-	assert(x >= 0 && x < m_TerrainSize.x);
-	assert(y >= 0 && y < m_TerrainSize.y);
-
-	return m_TerrainGrid[x + m_TerrainSize.x * y];
-    }
-#endif
-
     int GetNumLegs() const { return m_NumLegs; }
     int GetNumPoints() const { return m_NumPoints; }
     int GetNumCrosses() const { return m_NumCrosses; }
 
     int GetNumDepthBands() const { return NUM_DEPTH_COLOURS; }
 
-    wxPen GetPen(int band) const {
+    GLAPen& GetPen(int band) const {
 	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
 	return m_Pens[band];
     }
@@ -463,7 +405,7 @@ public:
 
     void GetColour(int band, Double& r, Double& g, Double& b) const;
 
-    wxPen GetSurfacePen() const { return m_Pens[NUM_DEPTH_COLOURS]; }
+    GLAPen& GetSurfacePen() const { return m_Pens[NUM_DEPTH_COLOURS]; }
 
     void SelectTreeItem(LabelInfo* label);
     void ClearTreeSelection();

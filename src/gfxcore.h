@@ -29,14 +29,9 @@
 #include "quaternion.h"
 #include "guicontrol.h"
 #include "wx.h"
+#include "gla.h"
 #include <utility>
 #include <list>
-#ifdef AVENGL
-#ifndef wxUSE_GLCANVAS
-#define wxUSE_GLCANVAS
-#endif
-#include <wx/glcanvas.h>
-#endif
 
 using std::list;
 
@@ -80,11 +75,7 @@ class LabelInfo;
 
 extern const ColourTriple COLOURS[]; // defined in gfxcore.cc
 
-#ifdef AVENGL
-class GfxCore : public wxGLCanvas {
-#else
-class GfxCore : public wxWindow {
-#endif
+class GfxCore : public GLACanvas {
     struct params {
 	Quaternion rotation;
 	Double scale;
@@ -95,36 +86,9 @@ class GfxCore : public wxWindow {
 	} translation;
     } m_Params;
 
-#ifdef AVENPRES
-    struct PresData {
-	struct {
-	    Double x, y, z;
-	} translation;
-	Double scale;
-	Double pan_angle;
-	Double tilt_angle;
-	bool solid_surface;
-    };
-#endif
-
-#ifdef AVENGL
-    struct {
-	// OpenGL display lists.
-	GLint survey; // all underground data
-	GLint surface; // all surface data in uniform colour
-	GLint surface_depth; // all surface data in depth bands
-	GLint grid; // the grid
-	GLint terrain; // surface terrain
-	GLint flat_terrain; // flat surface terrain - used for drape effect
-	GLint map; // map overlay
-    } m_Lists;
-
-    bool m_AntiAlias;
-#endif
-
     struct PlotData {
-	Point *vertices;
-	Point *surface_vertices;
+	Point* vertices;
+	Point* surface_vertices;
 	int* num_segs;
 	int* surface_num_segs;
     };
@@ -137,38 +101,19 @@ class GfxCore : public wxWindow {
 	int drag_start_offset_y;
     } m_ScaleBar;
 
-#ifdef AVENGL
     struct {
-	// Viewing volume parameters: these are all negative!
-	Double left;
-	Double bottom;
-	Double nearface;
-    } m_Volume;
+        glaList underground_legs;
+        glaList surface_legs;
+        glaList names;
+        glaList indicators;
+    } m_Lists;
 
-    struct {
-	GLuint surface;
-	GLuint map;
-    } m_Textures;
-
-    bool m_SolidSurface;
-
-    Double floor_alt;
-    bool terrain_rising;
-#endif
-
-#ifdef AVENPRES
-    list<pair<PresData, Quaternion> > m_Presentation;
-    list<pair<PresData, Quaternion> >::iterator m_PresIterator;
-#endif
     GUIControl* m_Control;
     double m_MaxExtent; // twice the maximum of the {x,y,z}-extents, in survey coordinates.
-    char *m_LabelGrid;
+    char* m_LabelGrid;
     bool m_RotationOK;
     LockFlags m_Lock;
-    Matrix4 m_RotationMatrix;
     MainFrm* m_Parent;
-    wxBitmap* m_OffscreenBitmap;
-    wxMemoryDC m_DrawDC;
     bool m_DoneFirstShow;
     bool m_RedrawOffscreen;
     int* m_Polylines;
@@ -189,6 +134,7 @@ class GfxCore : public wxWindow {
     bool m_OverlappingNames;
     bool m_Compass;
     bool m_Clino;
+    bool m_Tubes;
     int m_XSize;
     int m_YSize;
     int m_XCentre;
@@ -207,31 +153,11 @@ class GfxCore : public wxWindow {
     bool m_ExportedPts;
     bool m_Grid;
 
+    bool m_Degrees;
+    bool m_Metric;
+
     list<LabelInfo*> *m_PointGrid;
     bool m_HitTestGridValid;
-#ifdef AVENGL
-    bool m_TerrainLoaded;
-#endif
-
-#ifdef AVENPRES
-    Double m_DoingPresStep;
-    struct step_params {
-	Double pan_angle;
-	Double tilt_angle;
-	Quaternion rotation;
-	Double scale;
-	struct {
-	    Double x;
-	    Double y;
-	    Double z;
-	} translation;
-    };
-
-    struct {
-	step_params from;
-	step_params to;
-    } m_PresStep;
-#endif
 
     Point m_here, m_there;
 
@@ -240,60 +166,18 @@ class GfxCore : public wxWindow {
     
     bool clipping;
 
-#ifndef AVENGL
-    wxPen* m_Pens;
-    wxBrush* m_Brushes;
-#endif
+    GLAPen* m_Pens;
 
-    void SetColour(AvenColour col, bool background = false /* true => foreground */) {
+    void SetAvenColour(AvenColour col, bool background = false /* true => foreground */) {
 	assert(col >= (AvenColour) 0 && col < col_LAST);
-#ifdef AVENGL
-	glColor3f(GLfloat(COLOURS[col].r) / 256.0,
-		  GLfloat(COLOURS[col].g) / 256.0,
-		  GLfloat(COLOURS[col].b) / 256.0);
-#else
-	if (background) {
-	    assert(m_Brushes[col].Ok());
-	    m_DrawDC.SetBrush(m_Brushes[col]);
-	}
-	else {
-	    assert(m_Pens[col].Ok());
-	    m_DrawDC.SetPen(m_Pens[col]);
-	}
-#endif
+	SetColour(m_Pens[col]); // FIXME background stuff
     }
 
-#ifdef AVENGL
-    void SetGLProjection();
-    void SetModellingTransformation();
-    void ClearBackgroundAndBuffers();
-    void SetGLAntiAliasing();
-    void CheckGLError(const wxString& where);
-    void SetTerrainColour(Double);
-    void LoadTexture(const wxString& file, GLuint* texture);
-    void RenderMap();
-    void SetSolidSurface(bool);
-    void RenderTerrain(Double floor_alt);
-#endif
+    void UpdateNames();
+    void UpdateLegs();
+    void UpdateQuaternion();
+    void UpdateIndicators();
 
-    Double XToScreen(Double x, Double y, Double z) {
-	return Double(x * m_RotationMatrix.get(0, 0) +
-		      y * m_RotationMatrix.get(0, 1) +
-		      z * m_RotationMatrix.get(0, 2));
-    }
-
-    Double YToScreen(Double x, Double y, Double z) {
-	return Double(x * m_RotationMatrix.get(1, 0) +
-		      y * m_RotationMatrix.get(1, 1) +
-		      z * m_RotationMatrix.get(1, 2));
-    }
-
-    Double ZToScreen(Double x, Double y, Double z) {
-	return Double(x * m_RotationMatrix.get(2, 0) +
-		      y * m_RotationMatrix.get(2, 1) +
-		      z * m_RotationMatrix.get(2, 2));
-    }
-    
     Double GridXToScreen(Double x, Double y, Double z);
     Double GridYToScreen(Double x, Double y, Double z);
     Double GridXToScreen(const Point &p) {
@@ -303,16 +187,19 @@ class GfxCore : public wxWindow {
 	return GridYToScreen(p.x, p.y, p.z);
     }
 
-    wxCoord GetClinoOffset();
+    glaCoord GetClinoOffset();
     wxPoint CompassPtToScreen(Double x, Double y, Double z);
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
+    void DrawPolylines(const GLAPen&, int num_polylines, const int *num_points, const Point *vertices);
+
     void SetScaleInitial(Double scale);
-    void DrawBand(int num_polylines, const int *num_segs, const Point *vertices,
-		  Double m_00, Double m_01, Double m_02,
-		  Double m_20, Double m_21, Double m_22);
-    void RedrawOffscreen();
+
+    void GenerateDisplayList();
+    void GenerateDisplayListSurface();
+    void GenerateIndicatorDisplayList();
+
     void TryToFreeArrays();
     void FirstShow();
 
@@ -322,8 +209,8 @@ class GfxCore : public wxWindow {
     void Draw2dIndicators();
     void DrawGrid();
 
-    wxPoint IndicatorCompassToScreenPan(int angle);
-    wxPoint IndicatorCompassToScreenElev(int angle);
+    GLAPoint IndicatorCompassToScreenPan(int angle);
+    GLAPoint IndicatorCompassToScreenElev(int angle);
 
     void DrawNames();
     void NattyDrawNames();
@@ -336,16 +223,13 @@ class GfxCore : public wxWindow {
     void CreateHitTestGrid();
 
     wxCoord GetCompassXPosition();
-    wxCoord GetClinoXPosition();
+    glaCoord GetClinoXPosition();
     wxCoord GetIndicatorYPosition();
     wxCoord GetIndicatorRadius();
 
     void ToggleFlag(bool* flag);
 
 public:
-    bool m_Degrees;
-    bool m_Metric;
-
     GfxCore(MainFrm* parent, wxWindow* parent_window, GUIControl* control);
     ~GfxCore();
 
@@ -355,8 +239,7 @@ public:
 
     void ForceRefresh();
 
-    void RefreshLine(const Point &a1, const Point &b1,
-		     const Point &a2, const Point &b2);
+    void RefreshLine(const Point& a1, const Point& b1, const Point& a2, const Point& b2);
  
     void SetHere();
     void SetHere(Double x, Double y, Double z);
@@ -369,19 +252,6 @@ public:
     void TiltCave(Double tilt_angle);
     void TurnCave(Double angle);
     void TurnCaveTo(Double angle);
-
-#ifdef AVENPRES
-    void RecordPres(FILE* fp);
-    void LoadPres(FILE* fp);
-    void PresGo();
-    void PresGoBack();
-    void RestartPres();
-
-    bool AtStartOfPres();
-    bool AtEndOfPres();
-
-    void PresGoto(PresData& d, Quaternion& q);
-#endif
 
     void OnPaint(wxPaintEvent&);
     void OnSize(wxSizeEvent& event);
@@ -396,15 +266,7 @@ public:
     void OnRButtonUp(wxMouseEvent& event) { m_Control->OnRButtonUp(event); }
     void OnKeyPress(wxKeyEvent &event) { m_Control->OnKeyPress(event); }
 
-#ifdef AVENGL
-    void OnAntiAlias();
-    void OnSolidSurface();
-#endif
-    bool Animate(wxIdleEvent *idle_event = NULL);
-#ifdef AVENGL
-    void OnAntiAliasUpdate(wxUpdateUIEvent&);
-    void OnSolidSurfaceUpdate(wxUpdateUIEvent&);
-#endif
+    bool Animate(wxIdleEvent* idle_event = NULL);
 
     void SetCoords(wxPoint);
 
@@ -480,22 +342,26 @@ public:
     void ToggleExportedPts() { ToggleFlag(&m_ExportedPts); }
     void ToggleGrid() { ToggleFlag(&m_Grid); }
     void ToggleCrosses() { ToggleFlag(&m_Crosses); }
-    void ToggleStationNames() { ToggleFlag(&m_Names); }
+    void ToggleStationNames() { ToggleFlag(&m_Names); UpdateNames(); ForceRefresh(); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
     void ToggleDepthBar() { ToggleFlag(&m_Depthbar); }
     void ToggleSurfaceDepth() { ToggleFlag(&m_SurfaceDepth); }
     void ToggleSurfaceDashed() { ToggleFlag(&m_SurfaceDashed); }
     void ToggleMetric() { ToggleFlag(&m_Metric); }
     void ToggleDegrees() { ToggleFlag(&m_Degrees); }
+    void ToggleTubes() { ToggleFlag(&m_Tubes); UpdateLegs(); ForceRefresh(); }
 
     bool GetMetric() { return m_Metric; }
     bool GetDegrees() { return m_Degrees; }
+    bool GetTubes() { return m_Tubes; }
     
     void CheckHitTestGrid(wxPoint& point, bool centre);
 
     void ClearTreeSelection();
 
     void Defaults();
+
+    void DragFinished();
 
 private:
     DECLARE_EVENT_TABLE()

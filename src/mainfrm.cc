@@ -161,9 +161,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_METRIC, MainFrm::OnToggleMetric)
     EVT_MENU(menu_VIEW_DEGREES, MainFrm::OnToggleDegrees)
 #ifdef AVENGL
-    EVT_MENU(menu_FILE_OPEN_TERRAIN, MainFrm::OnFileOpenTerrain)
-    EVT_MENU(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAlias)
-    EVT_MENU(menu_VIEW_SOLID_SURFACE, MainFrm::OnSolidSurface)
+    EVT_MENU(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubes)
 #endif
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
@@ -209,20 +207,19 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_VIEW_INDICATORS, MainFrm::OnIndicatorsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SIDE_PANEL, MainFrm::OnViewSidePanelUpdate)
-#ifdef AVENGL
-    EVT_UPDATE_UI(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAliasUpdate)
-    EVT_UPDATE_UI(menu_VIEW_SOLID_SURFACE, MainFrm::OnSolidSurfaceUpdate)
-#endif
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
     EVT_UPDATE_UI(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLineUpdate)
     EVT_UPDATE_UI(menu_VIEW_METRIC, MainFrm::OnToggleMetricUpdate)
     EVT_UPDATE_UI(menu_VIEW_DEGREES, MainFrm::OnToggleDegreesUpdate)
+#ifdef AVENGL
+    EVT_UPDATE_UI(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubesUpdate)
+#endif
 END_EVENT_TABLE()
 
 class LabelCmp {
 public:
     bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
-	return name_cmp(pt1->GetText(), pt2->GetText()) < 0;
+	return name_cmp(pt1->GetText(), pt2->GetText(), '.') < 0;
     }
 };
 
@@ -233,7 +230,7 @@ public:
 	if (n) return n > 0;
 	wxString l1 = pt1->GetText().AfterLast('.');
 	wxString l2 = pt2->GetText().AfterLast('.');
-	return name_cmp(l1, l2) < 0;
+	return name_cmp(l1, l2, '.') < 0;
     }
 };
 
@@ -308,10 +305,11 @@ MainFrm::~MainFrm()
 void MainFrm::InitialisePensAndBrushes()
 {
     m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS + 1];
-    m_Pens = new wxPen[NUM_DEPTH_COLOURS + 1];
+    m_Pens = new GLAPen[NUM_DEPTH_COLOURS + 1];
     m_Brushes = new wxBrush[NUM_DEPTH_COLOURS + 1];
     for (int pen = 0; pen < NUM_DEPTH_COLOURS + 1; ++pen) {
-	m_Pens[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
+	m_Pens[pen].SetColour(REDS[pen] / 255.0, GREENS[pen] / 255.0, BLUES[pen] / 255.0);
+        m_Pens[pen].SetAlpha(1.0);
 	m_Brushes[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
     }
 }
@@ -322,12 +320,6 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
-#ifdef AVENPRES
-    filemenu->Append(menu_FILE_OPEN_PRES, GetTabMsg(/*Open @Presentation...*/321));
-#endif
-#ifdef AVENGL
-    filemenu->Append(menu_FILE_OPEN_TERRAIN, GetTabMsg(/*Open @Terrain...*/329));
-#endif
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*E@xit*/221));
 
@@ -370,6 +362,9 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* viewmenu = new wxMenu;
     viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "", true);
+#ifdef AVENGL
+    viewmenu->Append(menu_VIEW_SHOW_TUBES, GetTabMsg(/*Passage @Tubes*/504), "", true);
+#endif
     viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "", true);
     viewmenu->Append(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297), "", true);
     viewmenu->AppendSeparator();
@@ -384,28 +379,7 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295), "", true);
     viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296), "", true);
-#ifdef AVENGL
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*Smoo@thed Survey Legs*/298), "", true);
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*Solid Su@rface*/330), "", true);
-#endif
-
-#ifdef AVENPRES
-    wxMenu* presmenu = new wxMenu;
-    presmenu->Append(menu_PRES_CREATE, GetTabMsg(/*@Create...*/311));
-    presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_GO, GetTabMsg(/*@Go*/312));
-    presmenu->Append(menu_PRES_GO_BACK, GetTabMsg(/*Go @Back*/318));
-    presmenu->Append(menu_PRES_RESTART, GetTabMsg(/*Res@tart*/324));
-    presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_RECORD, GetTabMsg(/*@Record Position*/313));
-    presmenu->Append(menu_PRES_FINISH, GetTabMsg(/*@Finish and Save*/314));
-    presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_ERASE, GetTabMsg(/*@Erase Last Position*/315));
-    presmenu->Append(menu_PRES_ERASE_ALL, GetTabMsg(/*Er@ase All Positions*/316));
-#endif
-
+            
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "", true);
     ctlmenu->AppendSeparator();
@@ -476,26 +450,10 @@ void MainFrm::CreateToolBar()
 		     -1, -1, NULL, "Show underground surveys");
     toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs.png"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show surface surveys");
-    toolbar->AddSeparator();
 #ifdef AVENGL
-    toolbar->AddTool(menu_VIEW_SOLID_SURFACE, TOOLBAR_BITMAP("solid-surface.png"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show solid surface");
     toolbar->AddSeparator();
-#endif
-
-#ifdef AVENPRES
-    toolbar->AddTool(menu_PRES_CREATE, TOOLBAR_BITMAP("pres-create.png"),
-		     "Create a new presentation");
-    toolbar->AddTool(menu_PRES_RECORD, TOOLBAR_BITMAP("pres-record.png"),
-		     "Record a presentation step");
-    toolbar->AddTool(menu_PRES_FINISH, TOOLBAR_BITMAP("pres-finish.png"),
-		     "Finish this presentation and save it to disk");
-    toolbar->AddSeparator();
-    toolbar->AddTool(menu_PRES_RESTART, TOOLBAR_BITMAP("pres-restart.png"),
-		     "Go to the start of the presentation");
-    toolbar->AddTool(menu_PRES_GO_BACK, TOOLBAR_BITMAP("pres-go-back.png"),
-		     "Go back one presentation step");
-    toolbar->AddTool(menu_PRES_GO, TOOLBAR_BITMAP("pres-go.png"), "Go forwards one presentation step");
+    toolbar->AddTool(menu_VIEW_SHOW_TUBES, TOOLBAR_BITMAP("tubes.png"), wxNullBitmap, true,
+                     -1, -1, NULL, "Show passage tubes");
 #endif
 
 #if 0 // FIXME: maybe...
@@ -826,102 +784,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     return true;
 }
 
-#ifdef AVENGL
-bool MainFrm::LoadTerrain(const wxString& file)
-{
-    // Load terrain data from a 3D file (temporary bodge).
-
-    img* survey = img_open_survey(file, "");
-    if (!survey) {
-	wxString m = wxString::Format(msg(img_error()), file.c_str());
-	wxGetApp().ReportError(m);
-	return false;
-    }
-
-    //--FIXME: need to be specified properly
-    m_TerrainSize.x = 40;
-    m_TerrainSize.y = 40;
-
-    m_TerrainExtents.xmin = DBL_MAX;
-    m_TerrainExtents.xmax = -DBL_MAX;
-    m_TerrainExtents.ymin = DBL_MAX;
-    m_TerrainExtents.ymax = -DBL_MAX;
-    m_TerrainExtents.zmin = DBL_MAX;
-    m_TerrainExtents.zmax = -DBL_MAX;
-
-    m_TerrainGrid = new Double[m_TerrainSize.x * m_TerrainSize.y];
-
-    int result;
-    do {
-	img_point pt;
-	result = img_read_item(survey, &pt);
-	switch (result) {
-	    case img_MOVE:
-	    case img_LINE:
-	    {
-		// Update survey extents.
-		if (pt.x < m_TerrainExtents.xmin) m_TerrainExtents.xmin = pt.x;
-		if (pt.x > m_TerrainExtents.xmax) m_TerrainExtents.xmax = pt.x;
-		if (pt.y < m_TerrainExtents.ymin) m_TerrainExtents.ymin = pt.y;
-		if (pt.y > m_TerrainExtents.ymax) m_TerrainExtents.ymax = pt.y;
-		if (pt.z < m_TerrainExtents.zmin) m_TerrainExtents.zmin = pt.z;
-		if (pt.z > m_TerrainExtents.zmax) m_TerrainExtents.zmax = pt.z;
-
-		break;
-	    }
-
-	    case img_BAD:
-		assert(0);
-		break;
-
-	    default:
-		break;
-	}
-    } while (result != img_STOP);
-
-    img_rewind(survey);
-
-    Double xext = m_TerrainExtents.xmax - m_TerrainExtents.xmin;
-    Double yext = m_TerrainExtents.ymax - m_TerrainExtents.ymin;
-
-    do {
-	img_point pt;
-	result = img_read_item(survey, &pt);
-	switch (result) {
-	    case img_LABEL:
-	    {
-		int x = int(floor(0.5 + ((pt.x - m_TerrainExtents.xmin) * (m_TerrainSize.x - 2) / xext)));
-		int y = int(floor(0.5 + ((pt.y - m_TerrainExtents.ymin) * (m_TerrainSize.y - 1) / yext)));
-
-		m_TerrainGrid[x + m_TerrainSize.x * y] = pt.z - m_Offsets.z;
-
-		break;
-	    }
-
-	    case img_BAD:
-		assert(0);
-		break;
-
-	    default:
-		break;
-	}
-    } while (result != img_STOP);
-
-    for (int i = 0; i < m_TerrainSize.y; i++)
-	m_TerrainGrid[m_TerrainSize.x-1 + m_TerrainSize.y*i] =
-	    m_TerrainGrid[m_TerrainSize.x-2 + m_TerrainSize.y*i];
-
-    img_close(survey);
-
-    m_TerrainExtents.xmin -= m_Offsets.x;
-    m_TerrainExtents.xmax -= m_Offsets.x;
-    m_TerrainExtents.ymin -= m_Offsets.y;
-    m_TerrainExtents.ymax -= m_Offsets.y;
-
-    return true;
-}
-#endif
-
 void MainFrm::FillTree()
 {
     // Fill the tree of stations and prefixes.
@@ -1224,7 +1086,6 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	    m_Gfx->Initialise();
 	}
 
-#ifndef AVENGL
 	m_Panel->Show(true);
 	int x;
 	int y;
@@ -1239,20 +1100,10 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	m_Splitter->SplitVertically(m_Panel, m_Gfx, x);
 
 	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
-#endif
+
 	m_Gfx->SetFocus();
     }
 }
-
-#ifdef AVENGL
-void MainFrm::OpenTerrain(const wxString& file)
-{
-    wxBusyCursor hourglass;
-    if (LoadTerrain(file)) {
-	m_Gfx->InitialiseTerrain();
-    }
-}
-#endif
 
 //
 //  UI event handlers
@@ -1301,23 +1152,6 @@ void MainFrm::OnOpen(wxCommandEvent&)
     }
 }
 
-#ifdef AVENGL
-void MainFrm::OnFileOpenTerrain(wxCommandEvent&)
-{
-#ifdef __WXMOTIF__
-    wxFileDialog dlg (this, wxString(msg(/*Select a terrain file to view*/228)), "", "",
-		      "*.3d", wxOPEN);
-#else
-    wxFileDialog dlg (this, wxString(msg(/*Select a terrain file to view*/228)), "", "",
-		      wxString::Format("%s|*.3d|%s|*.*",
-				       msg(/*Terrain files*/229),
-				       msg(/*All files*/208)), wxOPEN);
-#endif
-    if (dlg.ShowModal() == wxID_OK) {
-	OpenTerrain(dlg.GetPath());
-    }
-}
-#endif
 
 void MainFrm::OnQuit(wxCommandEvent&)
 {
@@ -1358,7 +1192,7 @@ void MainFrm::ClearCoords()
 void MainFrm::SetCoords(Double x, Double y)
 {
     wxString str;
-    if (m_Gfx->m_Metric) {
+    if (m_Gfx->GetMetric()) {
 	str.Printf(msg(/*  %d E, %d N*/338), int(x), int(y));
     } else {
 	str.Printf(msg(/*  %d E, %d N*/338),
@@ -1370,7 +1204,7 @@ void MainFrm::SetCoords(Double x, Double y)
 void MainFrm::SetAltitude(Double z)
 {
     wxString str;
-    if (m_Gfx->m_Metric) {
+    if (m_Gfx->GetMetric()) {
 	str.Printf("  %s %dm", msg(/*Altitude*/335),                                               int(z));
     } else {
 	str.Printf("  %s %dft", msg(/*Altitude*/335),
@@ -1384,7 +1218,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
     assert(m_Gfx);
 	
     wxString str;
-    if (m_Gfx->m_Metric) {
+    if (m_Gfx->GetMetric()) {
 	str.Printf(msg(/*  %d E, %d N*/338),
 		   int(label->x + m_Offsets.x),
 		   int(label->y + m_Offsets.y));
@@ -1396,7 +1230,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
     m_StnCoords->SetLabel(str);
     m_StnName->SetLabel(label->text);
 
-    if (m_Gfx->m_Metric) {
+    if (m_Gfx->GetMetric()) {
 	str.Printf("  %s %dm", msg(/*Altitude*/335),
 		   int(label->z + m_Offsets.z));
     } else {
@@ -1433,7 +1267,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 
 	    str.Printf(msg(/*From %s*/339), label2->text.c_str());
 	    m_Dist1->SetLabel(str);
-	    if (m_Gfx->m_Metric) {
+	    if (m_Gfx->GetMetric()) {
 		str.Printf(msg(/*  H %d%s, V %d%s*/340),
 			   int(d_horiz), "m",
 			   int(dz), "m");
@@ -1444,13 +1278,13 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	    }
 	    m_Dist2->SetLabel(str);
 	    wxString brg_unit;
-	    if (m_Gfx->m_Degrees) {
+	    if (m_Gfx->GetDegrees()) {
 		brg_unit = msg(/*&deg;*/344);
 	    } else {
 		brg *= 400.0 / 360.0;
 		brg_unit = msg(/*grad*/345);
 	    }
-	    if (m_Gfx->m_Metric) {
+	    if (m_Gfx->GetMetric()) {
 		str.Printf(msg(/*  Dist %d%s, Brg %03d%s*/341),
 			   int(dr), "m", int(brg), brg_unit.c_str());
 	    } else {

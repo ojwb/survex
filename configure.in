@@ -215,8 +215,8 @@ if test -n "$AVEN"; then
 	   AC_SUBST(WXGL_CFLAGS)
 	   WXGL_CXXFLAGS="-DAVENGL $WX_CXXFLAGS"
 	   AC_SUBST(WXGL_CXXFLAGS)
-           AC_MSG_RESULT("enabling OpenGL functionality for Aven")
-	   AVEN="$AVEN avengl";;
+           AC_MSG_RESULT(enabling OpenGL functionality for Aven)
+	   AVEN="avengl";;
       no) ;;
       *) AC_MSG_ERROR(bad value $enableval for --enable-opengl) ;;
     esac])

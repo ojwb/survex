@@ -58,7 +58,7 @@ aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc \
  guicontrol.cc
 
-avengl_SOURCES = $(aven_SOURCES)
+avengl_SOURCES = $(aven_SOURCES) gla-gl.cc
 
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
 
@@ -78,8 +78,8 @@ endif
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CXXFLAGS@ -DAVEN
 
-avengl_CFLAGS = @WXGL_CFLAGS@ -DAVEN
-avengl_CXXFLAGS = @WXGL_CXXFLAGS@ -DAVEN
+avengl_CFLAGS = @WXGL_CFLAGS@ -DAVENGL
+avengl_CXXFLAGS = @WXGL_CXXFLAGS@ -DAVENGL
 avengl_LDFLAGS = @LIBRX@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
