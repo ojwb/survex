@@ -63,8 +63,7 @@
 static long
 get32(FILE *fh)
 {
-   long w;
-   w = getc(fh);
+   long w = getc(fh);
    w |= (long)getc(fh) << 8l;
    w |= (long)getc(fh) << 16l;
    w |= (long)getc(fh) << 24l;
@@ -94,7 +93,9 @@ static enum {
    IMG_OUTOFMEMORY  = /*Out of memory %.0s*/38,
    IMG_DIRECTORY    = /*Filename `%s' refers to directory*/44,
    IMG_CANTOPENOUT  = /*Failed to open output file `%s'*/47,
-   IMG_BADFORMAT    = /*Bad 3d image file `%s'*/106
+   IMG_BADFORMAT    = /*Bad 3d image file `%s'*/106,
+   IMG_READERROR    = /*Error reading from file `%s'*/109,
+   IMG_WRITEERROR   = /*Error writing to file `%s'*/110
 } img_errno = IMG_NONE;
 #else
 static img_errcode img_errno = IMG_NONE;
@@ -300,7 +301,23 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    pimg->label_buf[0] = '\0';
    pimg->label_len = 0;
 
+   /* Don't check for write errors now - let img_close() report them... */
    return pimg;
+}
+
+static int
+read_coord(FILE *fh, img_point *pt)
+{
+   ASSERT(fh);
+   ASSERT(pt);
+   pt->x = get32(fh) / 100.0;
+   pt->y = get32(fh) / 100.0;
+   pt->z = get32(fh) / 100.0;
+   if (ferror(fh) || feof(fh)) {
+      img_errno = feof(fh) ? IMG_BADFORMAT : IMG_READERROR;
+      return 0;
+   }       
+   return 1;
 }
 
 int
@@ -320,6 +337,10 @@ img_read_item(img *pimg, img_point *p)
       }
       again3: /* label to goto if we get a prefix */
       opt = getc(pimg->fh);
+      if (opt == EOF) {
+	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	 return img_BAD;
+      }
       switch (opt >> 6) {
        case 0:
 	 if (opt == 0) {
@@ -363,14 +384,28 @@ img_read_item(img *pimg, img_point *p)
 	 goto again3;
        case 1: case 2: {
 	 char *q;
-	 size_t len;
-
-	 len = getc(pimg->fh);
+	 long len = getc(pimg->fh);
+	 if (len == EOF) {
+	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	    return img_BAD;
+	 }
 	 if (len == 0xfe) {
 	    len += get16(pimg->fh);
+	    if (feof(pimg->fh)) {
+	       img_errno = IMG_BADFORMAT;
+	       return img_BAD;
+	    }
+	    if (ferror(pimg->fh)) {
+	       img_errno = IMG_READERROR;
+	       return img_BAD;
+	    }
 	 } else if (len == 0xff) {
 	    len = get32(pimg->fh);
-	    if (len < 0xfe + 0xffff) {
+	    if (ferror(pimg->fh)) {
+	       img_errno = IMG_READERROR;
+	       return img_BAD;
+	    }
+	    if (feof(pimg->fh) || len < 0xfe + 0xffff) {
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	    }
@@ -387,7 +422,7 @@ img_read_item(img *pimg, img_point *p)
 	    pimg->buf_len = pimg->label_len + 1;
 	 }
 	 if (len && fread(q, len, 1, pimg->fh) != 1) {
-	    img_errno = IMG_BADFORMAT;
+	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
 	 q[len] = '\0';
@@ -400,9 +435,7 @@ img_read_item(img *pimg, img_point *p)
 	    if (result == img_LINE) {
 	       if (strncmp(pimg->survey, s, l) != 0 ||
 		   !(s[l] == '.' || s[l] == '\0')) {
-		  pimg->mv.x = get32(pimg->fh) / 100.0;
-		  pimg->mv.y = get32(pimg->fh) / 100.0;
-		  pimg->mv.z = get32(pimg->fh) / 100.0;
+		  if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;		     
 		  pimg->pending = 15;
 	          goto again3;
 	       }
@@ -419,9 +452,7 @@ img_read_item(img *pimg, img_point *p)
 
 	 if (result == img_LINE && pimg->pending) {
 	    *p = pimg->mv;
-	    pimg->mv.x = get32(pimg->fh) / 100.0;
-	    pimg->mv.y = get32(pimg->fh) / 100.0;
-	    pimg->mv.z = get32(pimg->fh) / 100.0;
+	    if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
 	    pimg->pending = opt;
 	    return img_MOVE;
 	 }
@@ -432,17 +463,16 @@ img_read_item(img *pimg, img_point *p)
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
       }
-      p->x = get32(pimg->fh) / 100.0;
-      p->y = get32(pimg->fh) / 100.0;
-      p->z = get32(pimg->fh) / 100.0;
+      if (!read_coord(pimg->fh, p)) return img_BAD;
       pimg->pending = 0;
       return result;
    } else if (pimg->version > 0) {
       static long opt_lookahead = 0;
-      static double x = 0.0, y = 0.0, z = 0.0;
+      static img_point pt = { 0.0, 0.0, 0.0 };
       long opt;
       again: /* label to goto if we get a cross */
       pimg->label[0] = '\0';
+
       if (pimg->version == 1) {
 	 if (opt_lookahead) {
 	    opt = opt_lookahead;
@@ -453,13 +483,25 @@ img_read_item(img *pimg, img_point *p)
       } else {
          opt = getc(pimg->fh);
       }
+
+      if (feof(pimg->fh)) {
+	 img_errno = IMG_BADFORMAT;
+	 return img_BAD;
+      }
+      if (ferror(pimg->fh)) {
+	 img_errno = IMG_READERROR;
+	 return img_BAD;
+      }
+
       switch (opt) {
        case -1: case 0:
 	 return img_STOP; /* end of data marker */
        case 1:
-	 (void)get32(pimg->fh);
-	 (void)get32(pimg->fh);
-	 (void)get32(pimg->fh);
+	 /* skip coordinates */
+	 if (fseek(pimg->fh, 12, SEEK_CUR) == -1) {
+	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	    return img_BAD;
+	 }
 	 goto again;
        case 2: case 3: {
 	 char *q;
@@ -467,11 +509,19 @@ img_read_item(img *pimg, img_point *p)
 	 result = img_LABEL;
 	 ch = getc(pimg->fh);
 	 if (ch == EOF) {
-	    img_errno = IMG_BADFORMAT;
+	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
 	 if (ch != '\\') ungetc(ch, pimg->fh);
 	 fgets(pimg->label_buf, 257, pimg->fh);
+         if (feof(pimg->fh)) {
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
+         if (ferror(pimg->fh)) {
+	    img_errno = IMG_READERROR;
+	    return img_BAD;
+	 }
 	 q = pimg->label_buf + strlen(pimg->label_buf) - 1;
 	 if (*q != '\n') {
 	    img_errno = IMG_BADFORMAT;
@@ -485,13 +535,25 @@ img_read_item(img *pimg, img_point *p)
 	 break;
        }
        case 6: case 7: {
-	 size_t len;
+	 long len;
 	 result = img_LABEL;
+
 	 if (opt == 7)
 	    pimg->flags = getc(pimg->fh);
 	 else
 	    pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
+
 	 len = get32(pimg->fh);
+
+	 if (feof(pimg->fh)) {
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
+	 if (ferror(pimg->fh)) {
+	    img_errno = IMG_READERROR;
+	    return img_BAD;
+	 }
+
 	 /* Ignore empty labels in some .3d files (caused by a bug) */
 	 if (len == 0) goto again;
 	 if (len >= pimg->buf_len) {
@@ -503,7 +565,7 @@ img_read_item(img *pimg, img_point *p)
 	    pimg->buf_len = len + 1;
 	 }
 	 if (fread(pimg->label_buf, len, 1, pimg->fh) != 1) {
-	    img_errno = IMG_BADFORMAT;
+	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
 	 break;
@@ -525,7 +587,7 @@ img_read_item(img *pimg, img_point *p)
 	    pimg->flags = (int)opt & 0x3f;
 	    result = img_LABEL;
 	    if (!fgets(pimg->label_buf, 257, pimg->fh)) {
-	       img_errno = IMG_BADFORMAT;
+	       img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	       return img_BAD;
 	    }
 	    q = pimg->label_buf + strlen(pimg->label_buf) - 1;
@@ -546,9 +608,8 @@ img_read_item(img *pimg, img_point *p)
 	 }
 	 break;
       }
-      x = get32(pimg->fh) / 100.0;
-      y = get32(pimg->fh) / 100.0;
-      z = get32(pimg->fh) / 100.0;
+
+      if (!read_coord(pimg->fh, &pt)) return img_BAD;
 
       if (result == img_LABEL && pimg->survey_len) {
 	 if (strncmp(pimg->label_buf, pimg->survey, pimg->survey_len + 1) != 0)
@@ -557,13 +618,21 @@ img_read_item(img *pimg, img_point *p)
       }
 
       done:
-      p->x = x;
-      p->y = y;
-      p->z = z;
+      *p = pt;
 
       if (result == img_MOVE && pimg->version == 1) {
 	 /* peek at next code and see if it's an old-style label */
 	 opt_lookahead = get32(pimg->fh);
+
+	 if (feof(pimg->fh)) {
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
+	 if (ferror(pimg->fh)) {
+	    img_errno = IMG_READERROR;
+	    return img_BAD;
+	 }
+
 	 if (opt_lookahead == 2) return img_read_item(pimg, p);
       }
 
@@ -588,7 +657,7 @@ img_read_item(img *pimg, img_point *p)
 	    result = img_MOVE;
 	 } else if (strcmp(tmpbuf, "cross") == 0) {
 	    if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) {
-	       img_errno = IMG_BADFORMAT;
+	       img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	       return img_BAD;
 	    }
 	    goto ascii_again;
@@ -596,12 +665,20 @@ img_read_item(img *pimg, img_point *p)
 	    int ch;
 	    ch = getc(pimg->fh);
 	    if (ch == EOF) {
-	       img_errno = IMG_BADFORMAT;
+	       img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	       return img_BAD;
 	    }
-	    if (ch != '\\') ungetc(ch, pimg->fh);
-	    if (fscanf(pimg->fh, "%256s", pimg->label_buf) < 1 ||
-		strlen(pimg->label_buf) == 256) {
+	    if (ch != '\\') {
+	       if (ungetc(ch, pimg->fh) == EOF) {
+		  img_errno = IMG_READERROR;
+		  return img_BAD;
+	       }
+	    }
+	    if (fscanf(pimg->fh, "%256s", pimg->label_buf) < 1) {
+	       img_errno = ferror(pimg->fh) ? IMG_READERROR : IMG_BADFORMAT;
+	       return img_BAD;
+	    }
+	    if (strlen(pimg->label_buf) == 256) {
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	    }
@@ -613,7 +690,7 @@ img_read_item(img *pimg, img_point *p)
       }
 
       if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) {
-	 img_errno = IMG_BADFORMAT;
+	 img_errno = ferror(pimg->fh) ? IMG_READERROR : IMG_BADFORMAT;
 	 return img_BAD;
       }
 
@@ -628,7 +705,7 @@ img_read_item(img *pimg, img_point *p)
    }
 }
 
-static void
+static int
 write_v3label(img *pimg, int opt, const char *s)
 {
    size_t len, n, dot;
@@ -680,20 +757,13 @@ write_v3label(img *pimg, int opt, const char *s)
    pimg->label_len = n;
    if (n >= pimg->buf_len) {
       char *p = xosrealloc(pimg->label_buf, n + 1);
-      if (p) {
-	 pimg->label_buf = p;
-	 pimg->buf_len = n + 1;
-      } else {
-	 /* can't store this station, so just reset to no prefix */
-	 if (pimg->label_len) {
-	    /* can't here... putc(0, pimg->fh); */
-	    abort();
-	    pimg->label_buf[0] = '\0';
-	    pimg->label_len = 0;
-	 }
-      }
+      if (!p) return 0; /* FIXME: distinguish out of memory... */
+      pimg->label_buf = p;
+      pimg->buf_len = n + 1;
    }
    memcpy(pimg->label_buf + len, s + len, n - len + 1);
+
+   return !ferror(pimg->fh);
 }
 
 void
@@ -776,9 +846,10 @@ img_write_item(img *pimg, int code, int flags, const char *s,
    }
 }
 
-void
+int
 img_close(img *pimg)
 {
+   int result = 1;
    if (pimg) {
       if (pimg->fh) {
 	 if (pimg->fRead) {
@@ -798,9 +869,12 @@ img_close(img *pimg)
 	       break;
 	    }
 	 }
-	 fclose(pimg->fh);
+	 if (ferror(pimg->fh)) result = 0;
+	 if (fclose(pimg->fh)) result = 0;
+	 img_errno = pimg->fRead ? IMG_READERROR : IMG_WRITEERROR;
       }
       osfree(pimg->label_buf);
       osfree(pimg);
    }
+   return result;
 }

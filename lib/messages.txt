@@ -1013,7 +1013,11 @@ ca:108 Data i hora no disponibles.
 es:108 Fecha y hora no disponibles.
 it:108 Data e ora non disponibili.
 #ital:108 Data e ora mancanti.
-# XXX 109,110,111,112,113,114
+# TRANSLATE
+en:109 Error reading from file `%s'
+# TRANSLATE
+en:110 Error writing to file `%s'
+# XXX 111,112,113,114
 en:115 North
 fr:115 Nord
 de:115 Norden

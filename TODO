@@ -113,7 +113,7 @@ extract --help messages for translation.
 Date: Mon, 25 Jun 2001
 From: Olly
 
-check return values from fgets(), fread(), etc in img.c and elsewhere.
+check return values from fgets(), fread(), etc (done img.c).
 
 Date: Wed, 04 Jul 2001
 From: Olly

@@ -106,7 +106,8 @@ img *img_open_survey(const char *fnm, char *title_buf, char *date_buf,
  * fBinary == 0 for ASCII .3d file
  *         != 0 for binary .3d file
  * NB only the original .3d file format has an ASCII variant
- * Returns pointer to an img struct or NULL
+ * Returns pointer to an img struct or NULL for error (check img_error()
+ * for details)
  */
 # ifdef IMG_HOSTED
 img *img_open_write(const char *fnm, char *title_buf, bool fBinary);
@@ -141,14 +142,17 @@ void img_rewind(img *pimg);
 /* Close a .3d file
  * pimg is a pointer to an img struct returned by img_open() or
  *   img_open_write()
+ * Returns: non-zero for success, zero for error (check img_error() for
+ *   details)
  */
-void img_close(img *pimg);
+int img_close(img *pimg);
 
 /* Codes returned by img_error */
 # ifndef IMG_HOSTED
 typedef enum {
    IMG_NONE = 0, IMG_FILENOTFOUND, IMG_OUTOFMEMORY,
-   IMG_CANTOPENOUT, IMG_BADFORMAT, IMG_DIRECTORY
+   IMG_CANTOPENOUT, IMG_BADFORMAT, IMG_DIRECTORY,
+   IMG_READERROR, IMG_WRITEERROR
 } img_errcode;
 
 /* Read the error code
