@@ -268,8 +268,7 @@ alien_src_zip :
 	cd alien_tmp && ../zip-magic -N -r ../$(alien_src_zip_name) *
 	$(RM) -rf alien_tmp
 
-# FIXME: this is almost duplicated in doc/Makefile.am
-SVXDOCS = svxdocs svxdocs/*.htm svxdocs.rtf svxdocs.txt svxdocs.ps
+SVXDOCS = svxdocs svxdocs/*.htm @DOCS_OTHER@
 
 dos_doc_zip_name = svxdoc-doswin-@VERSION@.zip
 dos_doc_exe_name = svxdoc-doswin-@VERSION@.exe

@@ -2,9 +2,7 @@
 
 pkgdocdir = $(prefix)/doc/@PACKAGE@
 
-# FIXME: need to sort out an "all in one" HTML version
-# FIXME: this is almost duplicated in ../Makefile.am
-doclist = svxdocs.rtf svxdocs.txt svxdocs.ps # svxdocs.html
+doclist = @DOCS_OTHER@
 
 other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 hto2svx.1 \
  printdm.1 printhpgl.1 printpcl.1 printps.1 svx2hto.1 @EXTRA_MANS@

@@ -255,6 +255,10 @@ AC_ARG_ENABLE(profiling,
   *) AC_MSG_ERROR(bad value ${enableval} for --enable-profiling) ;;
 esac])
 
+DOCS_OTHER=svxdocs.rtf svxdocs.txt svxdocs.ps
+# svxdocs.html
+AC_SUBST(DOCS_OTHER)
+
 AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile hto/Makefile
