@@ -377,7 +377,6 @@ void GfxCore::SetScaleInitial(Double scale)
         bool last_was_move = true;
         bool current_polyline_is_surface = false;
         
-        PointInfo* prev_pti = NULL;
         while (pos != end) {
             PointInfo* pti = *pos++;
 
@@ -421,11 +420,9 @@ void GfxCore::SetScaleInitial(Double scale)
                 // Add the leg onto the current polyline.
                 Point** dest = &(current_polyline_is_surface ? spt : pt);
 
-                (*dest)->x = pti->GetX();
-                (*dest)->y = pti->GetY();
-                (*dest)->z = pti->GetZ();
-
-                prev_pti = pti;
+                (*dest)->x = x = pti->GetX();
+                (*dest)->y = y = pti->GetY();
+                (*dest)->z = z = pti->GetZ();
 
                 // Advance the relevant coordinate pointer to the next
                 // position.
@@ -450,9 +447,7 @@ void GfxCore::SetScaleInitial(Double scale)
                     x = pti->GetX();
                     y = pti->GetY();
                     z = pti->GetZ();
-
-                    prev_pti = pti;
-            }
+	    }
         }
 
         if (!m_UndergroundLegs) {
@@ -1479,7 +1474,10 @@ void GfxCore::CreateHitTestGrid()
         LabelInfo *label = *pos++;
 
         if (!((m_Surface && label->IsSurface()) ||
-              (m_Legs && label->IsUnderground()))) {
+	      (m_Legs && label->IsUnderground()) ||
+	      (!label->IsSurface() && !label->IsUnderground()))) {
+	    // if this station isn't to be displayed, skip to the next
+	    // (last case is for stns with no legs attached)
             continue;
         }
 
@@ -1489,19 +1487,9 @@ void GfxCore::CreateHitTestGrid()
         int cy = (int)GridYToScreen(label->GetX(), label->GetY(), label->GetZ());
         if (cy < 0 || cy >= m_YSize) continue;
 
-<<<<<<< gfxcore.cc
         // On-screen, so add to hit-test grid...
         int grid_x = (cx * (HITTEST_SIZE - 1)) / m_XSize;
         int grid_y = (cy * (HITTEST_SIZE - 1)) / m_YSize;
-=======
-	if (!((m_Surface && label->IsSurface()) ||
-	      (m_Legs && label->IsUnderground()) ||
-	      (!label->IsSurface() && !label->IsUnderground()))) {
-	    // if this station isn't to be displayed, skip to the next
-	    // (last case is for stns with no legs attached)
-	    continue;
-	}
->>>>>>> 1.165.2.2
 
         m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(label);
     }
@@ -2050,8 +2038,8 @@ void GfxCore::GenerateDisplayList()
                 enum AvenColour col;
                 enum {BLOB, CROSS} shape = BLOB;
 
-                if (!((label->IsSurface() && m_Surface) ||
-                      (label->IsUnderground() && m_Legs) ||
+                if (!((m_Surface && label->IsSurface()) ||
+                      (m_Legs && label->IsUnderground()) ||
                       (!label->IsSurface() && !label->IsUnderground()))) {
                     // if this station isn't to be displayed, skip to the next
                     // (last case is for stns with no legs attached)
