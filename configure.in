@@ -230,7 +230,7 @@ dnl    AC_ARG_ENABLE(opengl,
 dnl    [  --enable-opengl Build OpenGL-enabled version of Aven],
 dnl    [case "$enableval" in
 dnl      yes)
-	   WXGL_LIBS="`$WXCONFIG --libs` `$WXCONFIG --gl-libs` -lglut"
+	   WXGL_LIBS="`$WXCONFIG --libs` -lglut `$WXCONFIG --gl-libs`"
 	   AC_SUBST(WXGL_LIBS)
 	   WXGL_CFLAGS="-DAVENGL $WX_CFLAGS"
 	   AC_SUBST(WXGL_CFLAGS)
