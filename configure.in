@@ -70,7 +70,7 @@ AC_DEFINE(DEFAULTLANG, [${enableval}], [Default language for messages])
 AC_SUBST(DEFAULTLANG)
     
 AC_ARG_ENABLE(testprogs,
-[],dnl  --enable-docdir=DIR Set directory for installing documentation to DIR],
+[  --enable-testprogs Enable building of various test harness programs],
 [case "${enableval}" in
  yes) TESTPROGS="dump3d printxbm" ;;
  no) TESTPROGS= ;;
