@@ -1,6 +1,6 @@
 /* printps.c & prnthpgl.c */
 /* Device dependent part of Survex Postscript printer/HPGL plotter driver */
-/* Copyright (C) 1993-2002 Olly Betts
+/* Copyright (C) 1993-2003 Olly Betts
  *
  * Postscript font remapping code based on code from a2ps
  * Copyright (C) 1995-1999 Akim Demaille, Miguel Santana
@@ -352,7 +352,7 @@ ps_WriteString(const char *s)
    } else {
       int fs = (current_font_code == 'F' ? fontsize : fontsize_labels);
       if ((y_t + 3 * fs / 4 > clip.y_min && y_t - fs / 4 < clip.y_max) ||
-	  (x_t < clip.x_max && x_t + strlen(s) * fs > clip.x_min)) {
+	  (x_t < clip.x_max && x_t + (int)strlen(s) * fs > clip.x_min)) {
 	 fBlankPage = fFalse;
       }
    }
@@ -596,9 +596,9 @@ ps_Pre(int pagesToPrint, const char *title)
    /* C<digit> changes colour */
    /* FIXME: read from ini */
    {
-      int i;
+      size_t i;
       for (i = 0; i < sizeof(colour) / sizeof(colour[0]); ++i) {
-	 prio_printf("/C%d {stroke %.3f %.3f %.3f setrgbcolor} def\n", i,
+	 prio_printf("/C%u {stroke %.3f %.3f %.3f setrgbcolor} def\n", i,
 		     (double)(colour[i] & 0xff0000) / 0xff0000,
 		     (double)(colour[i] & 0xff00) / 0xff00,
 		     (double)(colour[i] & 0xff) / 0xff);
@@ -803,7 +803,7 @@ ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    fontsize_labels = fontsize;
    if (vals[11]) fontsize_labels = as_int(vars[11], vals[11], 1, INT_MAX);
    {
-      int i;
+      size_t i;
       for (i = 0; i < sizeof(colour) / sizeof(colour[0]); ++i) {
 	 if (vals[12 + i]) colour[i] = as_colour(vars[12 + i], vals[12 + i]);
       }
@@ -939,7 +939,7 @@ hpgl_WriteString(const char *s)
    } else {
 #define CHAR_SIZE (6 * HPGL_UNITS_PER_MM) /* Guesstimate of character size */
       if ((y_t + CHAR_SIZE > clip.y_min && y_t < clip.y_max) ||
-	  (x_t < clip.x_max && x_t + strlen(s) * CHAR_SIZE > clip.x_min)) {
+	  (x_t < clip.x_max && x_t + (int)strlen(s) * CHAR_SIZE > clip.x_min)) {
 	 fBlankPage = fFalse;
       }
    }

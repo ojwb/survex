@@ -41,12 +41,12 @@ struct option {
    int *flag;
    int val;
 };
-#endif
 
 extern char *optarg;
 extern int optind;
 extern int opterr;
 extern int optopt;
+#endif
 
 struct help_msg {
    int opt;
