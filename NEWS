@@ -1,3 +1,19 @@
+* 3dtodxf's DXF output can be opened by AutoCAD 13, 14 and 2000, as
+  well as ArcView 3.x. Adobe Illustrator 8.0, and CorelDraw 8.
+  [checked by Mike Yocum]
+
+* HTML documentation now has meaningful filenames (no more "x532.htm")
+
+* RISC OS documentation zip file now has correct filetype for
+  Postscript version of docs
+
+* RISC OS binary distribution now includes !CLIcon GUI front end
+
+* Changed naming scheme for .zip archives to be more consistent
+
+* Added OLDNEWS with details of user-visible changes in much older
+  versions
+
 Changes in 0.92-prerelease6:
 
 * Windows and MSDOS builds were missing 3dtodxf.exe
@@ -303,18 +319,40 @@ Changes in 0.81:
 
 * survex: Network reduction bug fixed (fix carried back from 0.90 development)
 
-Changes between prerelease3 and 0.80:
-
-* Set version to 0.80 (since this is a release candidate)
+Changes in 0.80:
 
 * Added ChangeLog
 
 * DOS binary distribution now includes files: BUGS NEWS TODO ChangeLog
 
-* caverot: Fixed 32-bit DOS keyboard and mouse initialisation problems
-
-* Cross-compiler build for DOS now has stripped .exe files once more, and so
-  is rather smaller
+* Cross-compiler build for DOS now has strips debugging information
+  from .exe files once more, so they are rather smaller
 
 * Sources now include configure.in for those wanting to do major development
   work
+
+* Unix versions now build use GNU autoconf - to build just unpack, run
+  "./configure" then "make"
+
+* Messages file now represents accents like in HTML (e.g. &eacute;
+  for é)
+
+* caverot: fixed up standard DOS (allegro) version to work much
+  better.  In particular, it will now try to choose a video mode for
+  itself (use --mode-picker at the end of the command line to get the
+  mode picker), and keyboard and mouse initialisation problems are
+  cured
+
+* survex: You can now use DOS or UNIX style filenames (/ or \ for
+  directory separator) on any platform and they will be translated to
+  the native format for your OS.  This makes datasets much more
+  portable.
+
+* survex: "Unique" option changed to "Truncate" and now truncates
+  names if set
+
+* Removed artificial limit on survey station name length (was 12
+  characters per prefix component)
+
+* Many other minor changes
+

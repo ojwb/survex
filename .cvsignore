@@ -15,7 +15,8 @@ src*_*.zip
 stamp-h
 stamp-h.in
 survex-*.tar.gz
-svx-bcdos-*.zip
-svx-dos-*.zip
-svx-nt-*.zip
-svx-riscos-*.zip
+survex-win32-*.zip
+survex-dos-*.zip
+survex-riscos-*.zip
+svxdoc-doswin-*.zip
+svxdoc-riscos-*.zip
