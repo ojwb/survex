@@ -426,7 +426,6 @@ read_in_data(void)
       switch (result) {
        case img_BAD:
 	 return 0;
-         /* break; */
        case img_LINE:
 	 /* if we're plotting surface legs or this isn't a surface leg */
          if (fSurface || !(pimg->flags & img_FLAG_SURFACE)) {
@@ -447,7 +446,7 @@ read_in_data(void)
 	    stack(img_LABEL, pimg->label, &p);
          break;
       }
-   } while (result != img_BAD && result != img_STOP);
+   } while (result != img_STOP);
 
    *ppliEnd = NULL;
    return 1;
