@@ -4,12 +4,22 @@ Changes in 1.0.12:
 
 * sorterr: fixed to work with more than 1024 traverses.
 
-* (Unix version): xcaverot: automatically switch on PDA mode if the screen is
-  narrower than 640 pixels.
-
 * Fixed handling of iso-8859-2 character set and MS Windows code page 1250
   (both cover Eastern European languages).
  
+* (MS Windows Version): install file associations for Compass .plt and .plf
+  files and for CMAP .xyz files.  Also install the file icon for .plt and
+  .plf files in case Compass isn't installed (thanks to Larry Fish for
+  permission to include the icon).
+
+* (Unix version): running an installed program with an explicit path works
+  again.
+
+* (Unix version): xcaverot: automatically switch on PDA mode if the screen is
+  narrower than 640 pixels.
+
+* (Unix version): minor portability improvements.
+
 * Updates to Portuguese translation - all translations are now up-to-date.
 
 Changes in 1.0.11:
