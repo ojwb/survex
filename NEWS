@@ -9,6 +9,9 @@ Changes in 1.0.10:
 * cavern: fixed bogus warning triggered by "*begin abc.def" (I'm not sure
   that this should be valid, but the warning given wasn't appropriate).
 
+* Fixed scaling problem when reading PLT file (feet->metres conversion
+  factor was being applied backwards!)
+
 * Fixed potential problem when reading or writing a 3d file which couldn't
   be opened.
 

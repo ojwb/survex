@@ -1205,9 +1205,9 @@ skip_to_N:
 		  }
 		  return img_BAD;
 	       }
-	       p->x /= METRES_PER_FOOT;
-	       p->y /= METRES_PER_FOOT;
-	       p->z /= METRES_PER_FOOT;
+	       p->x *= METRES_PER_FOOT;
+	       p->y *= METRES_PER_FOOT;
+	       p->z *= METRES_PER_FOOT;
 	       q = strchr(line, 'S');
 	       if (!q) {
 		  osfree(line);
