@@ -86,7 +86,7 @@
 #ifndef VERSION_H /* include once only */
 #define VERSION_H
 
-#define VERSION "0.80"
+#define VERSION "0.81"
 
 /* MESSAGE_VERSION_MIN <= msg(0) <= VERSION */
 /* change MESSAGE_VERSION_MIN to be the current setting of VERSION when a

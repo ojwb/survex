@@ -11,7 +11,7 @@
 */
 
 #include "debug.h"
-#include "survex.h"
+#include "cavein.h"
 
 extern bool (validate)( void );
 extern void (dump_node)(node *stn);

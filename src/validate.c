@@ -33,7 +33,7 @@
 1996.04.15 moved comment-out check_fixed() here
 */
 
-#include "survex.h"
+#include "cavein.h"
 #include "filename.h"
 #include "message.h"
 #include "netbits.h"

@@ -5,7 +5,7 @@
  */
 
 /*
-1993.05.02 split from "survex.h"
+1993.05.02 split from "cavein.h"
 1993.06.04 FALSE -> fFalse
 1993.07.12 slight mod to unfixed_2_node()
 1993.07.16 changed shape() to use a shifted constant rather than a table
@@ -31,7 +31,7 @@
 1996.04.15 SPECIAL_POINT -> SPECIAL_DECIMAL
 */
 
-#include "survex.h"
+#include "cavein.h"
 /* NB defines macro versions */
 
 # define fFixed(S) ((S)->name->pos->fFixed)
