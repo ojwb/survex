@@ -15,6 +15,17 @@
 FIXME todo:
 mark-up of Windows Windows NT etc?
 section on "design philosophy"
+
+level sump fudge:
+
+*begin
+*data cartesian from to dx dy dz
+*sd dx dy 100 metres
+*sd dz 0.001 metres
+; upstream - downstream
+nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in height across the sump
+*end
+
 -->
 
 <Article Status="draft" id=index>
@@ -45,8 +56,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-05-04 01:00:59 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.27 2001-05-04 01:00:59 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-06-10 17:42:43 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.28 2001-06-10 17:42:43 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -202,7 +213,9 @@ versions of Microsoft windows (it may also work under Windows 3.1 with
 Win32s installed, but we've not tried this).</Para>
 
 <Para>There's also a GUI caverot replacement called aven, and a Survex
-printer driver (printwin) which uses the Windows printer system.</Para>
+printer driver (printwin) which uses the Windows printer system.
+<!-- FIXME: recommend printps of Unix (or just Linux)??? -->
+</Para>
 
 <Para>This version of survex comes with an installation wizard, so you
 just need to run the downloaded package and follow the steps.
@@ -309,8 +322,9 @@ files), as well as generating other useful info in other files.
 <ListItem><Para>caverot: cave viewer for visualising <filename/.3d/ files.
 </Para></ListItem>
 
-<ListItem><Para>printdm, printpcl, printps, prnthpgl: print processed
-data to scale.
+<ListItem><Para>printdm, printpcl, printps, prnthpgl, printwin: print processed
+data to scale.  printwin is only available on Microsoft Windows and uses the Windows printer
+driver systems - this is the recommended way to print on Windows.
 </Para></ListItem>
 
 </ItemizedList>
