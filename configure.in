@@ -246,6 +246,14 @@ dnl Not using hash_map at present...
 dnl    AC_LANG(C++)
 dnl    AC_CHECK_HEADERS(ext/hash_map hash_map, break)
 dnl    AC_LANG(C)
+
+    dnl Check for ffmpeg
+    MOVIE_LIBS=
+    AC_CHECK_LIB(avcodec, avcodec_init,
+      [AC_CHECK_LIB(avformat, av_register_all,
+	[AC_CHECK_HEADERS([avformat.h],
+	  [MOVIE_LIBS="-lavformat -lavcodec"])], [], [-lavcodec $WXGL_LIBS])])
+    AC_SUBST(MOVIE_LIBS)
   fi
 fi
 

@@ -79,7 +79,7 @@ editwrap_LDFLAGS = -mwindows
 
 if WIN32
 #aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
-aven_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
+aven_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@ @MOVIE_LIBS@
 
 svxeditrc.o: $(srcdir)/svxedit.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
@@ -91,7 +91,7 @@ avenrc.o: $(srcdir)/aven.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o $$pwd/avenrc.o aven.rc
 else
 #aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
-aven_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@ libavformat.a libavcodec.a
+aven_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@ @MOVIE_LIBS@
 endif
 
 # If we're building aven on MacOS X, we need to bind resources to aven after
@@ -134,7 +134,7 @@ MOSTLYCLEANFILES = $(AVEN_REZ)
 #aven_LDFLAGS = @WX_LDFLAGS@
 
 aven_CFLAGS = @WXGL_CFLAGS@ $(AM_CFLAGS) -DAVEN
-aven_CXXFLAGS = @WXGL_CXXFLAGS@ $(AM_CXXFLAGS) -I$(srcdir)/ffmpeginc -DHAVE_AVFORMAT_H
+aven_CXXFLAGS = @WXGL_CXXFLAGS@ $(AM_CXXFLAGS)
 aven_LDFLAGS = @WX_LDFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
