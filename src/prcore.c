@@ -914,7 +914,7 @@ drawticks(border clip, int tsize, int x, int y)
       if (fDotBorders) {
          i = (clip.x_max - clip.x_min) -
              (tsize + ((clip.x_max - clip.x_min - tsize * 2L) % s) / 2);
-         for( ; i > tsize; i -= s) {
+         for ( ; i > tsize; i -= s) {
             pr->MoveTo(clip.x_max - (i + o), clip.y_max);
             pr->DrawTo(clip.x_max - (i - o), clip.y_max);
          }
@@ -927,7 +927,7 @@ drawticks(border clip, int tsize, int x, int y)
       if (fDotBorders) {
          i = (clip.y_max - clip.y_min) -
              (tsize + ((clip.y_max - clip.y_min - tsize * 2L) % s) / 2);
-         for( ; i > tsize; i -= s) {
+         for ( ; i > tsize; i -= s) {
             pr->MoveTo(clip.x_max, clip.y_min + (i + o));
             pr->DrawTo(clip.x_max, clip.y_min + (i - o));
          }
@@ -940,7 +940,7 @@ drawticks(border clip, int tsize, int x, int y)
       if (fDotBorders) {
          i = (clip.x_max - clip.x_min) -
              (tsize + ((clip.x_max - clip.x_min - tsize * 2L) % s) / 2);
-         for( ; i > tsize; i -= s) {
+         for ( ; i > tsize; i -= s) {
             pr->MoveTo(clip.x_min + (i + o), clip.y_min);
             pr->DrawTo(clip.x_min + (i - o), clip.y_min);
          }
