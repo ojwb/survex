@@ -1,3 +1,15 @@
+survex (1.0.30) unstable; urgency=low
+
+  * aven: Added printing directly from Aven!
+  * aven: Fixed memory leak when showing the "About" dialog.
+  * cavern: Equates are no longer considered when deciding which stations are
+    flagged as surface and underground.
+  * Romanian translation mostly completed.
+  * Minor packaging tweaks (added website URL and changed package descriptions
+    to start with a lowercase letter as suggested by packaging guidelines).
+
+ -- Wookey <wookey@survex.com>  Sat, 29 May 2004 23:01:13 +0100
+
 survex (1.0.29) unstable; urgency=low
 
   * cad3d: Fixed problem with DXF files which stopped them loading with some

@@ -1,3 +1,5 @@
+Changes in 1.0.30:
+
 * aven: Added printing directly from Aven!
 
 * aven: Fixed memory leak when showing the "About" dialog.
@@ -8,6 +10,8 @@
   flagged as surface and underground.
 
 * Romanian translation mostly completed.
+
+* (Unix version): Debian: Minor packaging tweaks.
 
 Changes in 1.0.29:
 
