@@ -1053,8 +1053,8 @@ msg_init(char * const *argv)
       DWORD len = GetModuleFileName(NULL, NULL, 0) + 1;
       if (len) {
 	 char *buf = osmalloc(len);
-	 GetModuleFileName(NULL, buf, len);
 	 char *modname = buf;
+	 GetModuleFileName(NULL, buf, len);
 	 /* Strange Win32 nastiness - strip prefix "\\?\" if present */
 	 if (strncmp(modname, "\\\\?\\", 4) == 0) modname += 4;
 	 pth_cfg_files = path_from_fnm(p);
