@@ -29,6 +29,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "cmdline.h"
+
 #define sqrd(X) ((X)*(X))
 
 /* macro to just convert argument to a string */
@@ -45,27 +47,41 @@
 static int diff_pos(FILE *fh1, FILE *fh2, double threshold);
 static int read_line(FILE *fh, double *px, double *py, double *pz, char *id);
 
+static const struct option long_opts[] = {
+   /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+   {"help", no_argument, 0, HLP_HELP},
+   {"version", no_argument, 0, HLP_VERSION},
+   {0, 0, 0, 0}
+};
+
+#define short_opts ""
+
+static struct help_msg help[] = {
+/*				<-- */
+   {0, 0}
+};
+
 int
-main(int argc, char *argv[])
+main(int argc, char **argv)
 {
    double threshold = DFLT_MAX_THRESHOLD;
    char *fnm1, *fnm2;
    FILE *fh1, *fh2;
-   if (argc != 3) {
-      char *p;
-      if (argc == 4) threshold = strtod(argv[3], &p);
-      if (argc != 4 || *p) {
-	 /* FIXME put these in the messages file */
-         /* complain if not 4 args, or threshold didn't parse cleanly */
-         printf("Syntax: %s <pos file> <pos file> [<threshold>]\n", argv[0]);
-         printf(" where <threshold> is the max. permitted change along "
-                "any axis in metres\n"
-	        " (default <threshold> is "STRING(DFLT_MAX_THRESHOLD)"m)\n");
-         exit(1);
-      }
+
+   cmdline_set_syntax_message("POS_FILE POS_FILE [THRESHOLD]",
+			      "THRESHOLD is the max. ignorable change along "
+			      "any axis in metres (default "
+			      STRING(DFLT_MAX_THRESHOLD)")");
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 2, 3);
+   while (cmdline_getopt() != EOF) {
+      /* do nothing */
    }
-   fnm1 = argv[1];
-   fnm2 = argv[2];
+   fnm1 = argv[optind++];
+   fnm2 = argv[optind++];
+   if (argv[optind]) {
+      optarg = argv[optind];
+      threshold = cmdline_double_arg();
+   }
    fh1 = fopen(fnm1, "rb");
    if (!fh1) {
       printf("Can't open file '%s'\n", fnm1);

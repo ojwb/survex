@@ -69,6 +69,7 @@ static const struct option *longopts;
 static int *longind;
 static const struct help_msg *help;
 static int min_args, max_args;
+static const char *args_msg = NULL, *extra_msg = NULL;
 
 static const char *argv0 = NULL;
 
@@ -122,7 +123,11 @@ cmdline_help(void)
    /* FIXME: translate */
    puts("      --help\t\t\tdisplay this help and exit\n"
 	"      --version\t\t\toutput version information and exit");
- 
+
+   if (extra_msg) {
+      putnl();
+      puts(extra_msg);
+   }
    exit(0);
 }
 
@@ -135,7 +140,13 @@ cmdline_version(void)
 void
 cmdline_syntax(void)
 {  
-   printf("\nSyntax: %s [OPTION]...", argv0);
+   printf("\nSyntax: %s", argv0);
+   if (help->opt) fputs(" [OPTION]...", stdout);
+   if (args_msg) {
+      putchar(' ');
+      puts(args_msg);
+      return;
+   }
    if (min_args) {
       int i = min_args;
       while (i--) fputs(" FILE", stdout);
@@ -147,6 +158,13 @@ cmdline_syntax(void)
    /* FIXME: not quite right - "..." means an indefinite number */
    if (max_args > min_args) fputs("...", stdout);
    putnl();
+}
+
+void
+cmdline_set_syntax_message(const char *args, const char *extra)
+{
+   args_msg = args;
+   extra_msg = extra;
 }
 
 int
@@ -162,20 +180,20 @@ cmdline_int_arg(void)
    if (errno == ERANGE) {
       fprintf(stderr, "%s: numeric argument `%s' out of range\n", argv0, optarg);
       cmdline_syntax();
-      exit(0);
+      exit(1);
    } else if (*optarg == '\0' || *endptr != '\0') {
       fprintf(stderr, "%s: argument `%s' not an integer\n", argv0, optarg);
       cmdline_syntax();
-      exit(0);
+      exit(1);
    }
    
    return result;
 }
 
-float
-cmdline_float_arg(void)
+double
+cmdline_double_arg(void)
 {
-   float result;
+   double result;
    char *endptr;
    
    errno = 0;
@@ -185,14 +203,26 @@ cmdline_float_arg(void)
    if (errno == ERANGE) {
       fprintf(stderr, "%s: numeric argument `%s' out of range\n", argv0, optarg);
       cmdline_syntax();
-      exit(0);
+      exit(1);
    } else if (*optarg == '\0' || *endptr != '\0') {
       fprintf(stderr, "%s: argument `%s' not a number\n", argv0, optarg);
       cmdline_syntax();
-      exit(0);
+      exit(1);
    }
    
    return result;
+}
+
+float
+cmdline_float_arg(void)
+{    
+   double result = cmdline_double_arg();
+   if (fabs(result) > FLT_MAX) {
+      fprintf(stderr, "%s: numeric argument `%s' out of range\n", argv0, optarg);
+      cmdline_syntax();
+      exit(1);
+   }
+   return (float)result;
 }
 
 void
@@ -242,7 +272,7 @@ cmdline_getopt(void)
       cmdline_syntax();
       /* FIXME: translate */
       fprintf(stderr, "Try `%s --help' for more information.\n", argv0);
-      exit(0);
+      exit(1);
     case HLP_VERSION: /* --version */
       cmdline_version();
       exit(0);

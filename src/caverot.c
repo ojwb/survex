@@ -181,7 +181,7 @@ main(int argc, char **argv)
 
 /*#include "expire.h"*/
 
-   /* !HACK! check return value */ cvrotgfx_parse_cmdline( &argc, argv );
+   /* !HACK! check return value */ cvrotgfx_parse_cmdline(&argc, argv);
    parse_command(argc, argv);
 
    /* these aren't in set_defaults() 'cos we don't want DELETE to reset them */
@@ -708,37 +708,48 @@ translate_data(coord Xchange, coord Ychange, coord Zchange)
 
 static char *cmdline_load_files(int argc, char **argv);
 
+static const struct option long_opts[] = {
+   /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+   {"help", no_argument, 0, HLP_HELP},
+   {"version", no_argument, 0, HLP_VERSION},
+   {0, 0, 0, 0}
+};
+
+#define short_opts "c:"
+
+/* TRANSLATE: FIXME extract help messages to message file */
+static struct help_msg help[] = {
+/*				<-- */
+   {'c',                        "set display colours"},
+   {0, 0}
+};
+
 static void
 parse_command(int argc, char **argv)
 {
-   char *p;
-
-   /* skip argv[0] */
-   argv++;
-   argc--;
-   if (argv[0] && argv[0][0] == '-' && argv[0][1] == 'c') {
-      char *p;
-      int i;
-      p = argv[0] + 2;
-      i = 0;
-      while (*p && i < (sizeof(acolDraw) / sizeof(acolDraw[0]))) {
-	 acolDraw[i++] = (unsigned char)strtol(p, &p, 0);
-	 if (*p != ',') break;
-	 p++;
+   int col_idx = 0;
+   cmdline_set_syntax_message("[OPTIONS...] 3D_FILE...", NULL);
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
+   while (1) {
+      int opt = cmdline_getopt();
+      if (opt == EOF) break;
+      switch (opt) {
+       case 'c': {
+	  char *p = optarg;
+	  while (*p && col_idx < (sizeof(acolDraw) / sizeof(acolDraw[0]))) {
+	     acolDraw[col_idx++] = (unsigned char)strtol(p, &p, 0);
+	     if (*p != ',') break;
+	     p++;
+	  }
+	  break;	   
+       }
       }
-      argv++;
-      argc--;
-   }
-
-   if (argc == 0) {
-      puts(msgPerm(/*Syntax: caverot <image file>*/103));
-      fatalerror(/*Bad command line parameters*/82);
    }
 
    putnl();
    puts(msg(/*Reading in data - please wait...*/105));
    
-   p = cmdline_load_files(argc, argv);
+   p = cmdline_load_files(argc - optind, argv + optind);
    if (p) {
       printf(/*Bad 3d image file '%s'*/msg(106), p);
       putnl();

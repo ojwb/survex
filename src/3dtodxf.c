@@ -3,7 +3,7 @@
 /* Converts a .3d file to a DXF file */
 /* Also useful as an example of how to use the img code in your own programs */
 
-/* Copyright (C) 1994,1995 Olly Betts
+/* Copyright (C) 1994,1995,2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,13 +116,13 @@ main(int argc, char **argv)
 	 legs = 0;
 	 break;
        case 't': /* Text height */
-	 text_height = cmdline_float_arg();
+	 text_height = cmdline_double_arg();
 #ifdef DEBUG_3DTODXF
 	 printf("Text Height: '%s' input, converted to %6.2f\n", optarg, text_height);
 #endif
 	 break;
        case 'm': /* Marker size */
-	 marker_size = cmdline_float_arg();
+	 marker_size = cmdline_double_arg();
 #ifdef DEBUG_3DTODXF
 	 printf("Marker Size: '%s', converted to %6.2f\n", optarg, marker_size);
 #endif

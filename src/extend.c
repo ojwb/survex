@@ -1,6 +1,6 @@
 /* > extend.c
  * Produce an extended elevation
- * Copyright (C) 1995,1996,1997,1998,2000 Olly Betts
+ * Copyright (C) 1995-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <string.h>
 #include <assert.h>
 
+#include "cmdline.h"
 #include "useful.h"
 #include "filename.h"
 #include "message.h"
@@ -93,10 +94,24 @@ add_label(point *p, const char *label)
    p->label = osstrdup(label);
 }
 
+static const struct option long_opts[] = {
+   /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+   {"help", no_argument, 0, HLP_HELP},
+   {"version", no_argument, 0, HLP_VERSION},
+   {0, 0, 0, 0}
+};
+
+#define short_opts ""
+
+static struct help_msg help[] = {
+/*				<-- */
+   {0, 0}
+};
+
 int
 main(int argc, char **argv)
 {
-   const char *fnmData = argv[1], *fnmOutput;
+   const char *fnmData, *fnmOutput;
    char szDesc[256];
    float x, y, z;
    char sz[256];
@@ -106,12 +121,17 @@ main(int argc, char **argv)
 
    msg_init(argv[0]);
 
-   if (argc < 2 || argc > 3) {
-      fprintf(stderr, "Syntax: extend <input .3d file> [<output .3d file>]\n");
-      exit(1);
+   cmdline_set_syntax_message("INPUT_3D_FILE [OUTPUT_3D_FILE]", NULL);
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
+   while (cmdline_getopt() != EOF) {
+      /* do nothing */
    }
-
-   fnmOutput = (argc == 2 ? add_ext("extend", EXT_SVX_3D) : argv[2]);
+   fnmData = argv[optind++];
+   if (argv[optind]) {
+      fnmOutput = argv[optind];
+   } else {
+      fnmOutput = add_ext("extend", EXT_SVX_3D);
+   }
 
    /* try to open image file, and check it has correct header */
    pimg = img_open(fnmData, szDesc, NULL);

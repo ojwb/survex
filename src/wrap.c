@@ -560,14 +560,31 @@ static void skipopt(char * sz) {
 #define MYTMP "__svxtmp.svx"
 #endif
 
-int main(int argc, char **argv) {
+int
+main(int argc, char **argv) {
    char *args[7];
    int i;
    FILE *fout;
 #ifndef HAVE_EXECV
    char *cmd, *p;
    size_t len;
-#endif   
+#endif
+
+   if (argv[1]) {
+       if (strcmp(argv[1], "--version") == 0) {
+	   puts(PACKAGE" "VERSION);
+	   exit(0);
+       }
+
+       if (strcmp(argv[1], "--help") == 0) {
+	   printf(PACKAGE" "VERSION"\n\n"
+"Syntax: %s [OPTION]... FILE...\n\n"
+"This is a compatibility wrapper to help users convert from survex to cavern.\n"
+"You should run cavern in preference - this wrapper will be removed at some\n"
+"future date.\n", argv[0]);
+	   exit(0);
+       }
+   }
 
    fout = fopen(MYTMP, "w");
    if (!fout) {

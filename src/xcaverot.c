@@ -89,6 +89,7 @@
 
 #include <X11/extensions/Xdbe.h>	/* for double buffering support */
 
+#include "cmdline.h"
 #include "useful.h"
 #include "img.h"
 #include "filename.h"
@@ -1318,6 +1319,20 @@ set_defaults(void)
    yoff = a.height / 2;
 }
 
+static const struct option long_opts[] = {
+   /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+   {"help", no_argument, 0, HLP_HELP},
+   {"version", no_argument, 0, HLP_VERSION},
+   {0, 0, 0, 0}
+};
+
+#define short_opts ""
+
+static struct help_msg help[] = {
+/*				<-- */
+   {0, 0}
+};
+
 int
 main(int argc, char **argv)
 {
@@ -1347,10 +1362,10 @@ main(int argc, char **argv)
 
    msg_init(argv[0]);
 
-   /* check command line argument(s) */
-   if (argc != 2) {
-      fprintf(stderr, "Syntax: %s <.3d file>\n", argv[0]);
-      return 1;
+   cmdline_set_syntax_message("3D_FILE", NULL);
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 1);
+   while (cmdline_getopt() != EOF) {
+      /* do nothing */
    }
 
    /* set up display and foreground/background */
@@ -1496,23 +1511,12 @@ main(int argc, char **argv)
    ycMac = attr.height;
 
    /* load file */
-   load_file(argv[1]);
-   title = malloc(strlen(hello) + strlen(argv[1]) + 7);
+   load_file(argv[optind]);
+   title = malloc(strlen(hello) + strlen(argv[optind]) + 7);
    if (!title)
       exit(1);	// FIXME
-   sprintf(title, "%s - [%s]", hello, argv[1]);
-   argc--;
-   argv++;
-#if 0
-   /* try to open file if we've been given one */
-   if (argv[1] && argv[1][0] != '\0' && argv[1][0] != '-') {
-      /* if it loaded okay then discard the command line argument */
-      if (load_file(argv[1])) {
-	 argc--;
-	 argv++;
-      }
-   }
-#endif
+   sprintf(title, "%s - [%s]", hello, argv[optind]);
+   optind++;
 
 #if 0	/* FIXME: JPNP code */
    /* set scale to fit cave in screen */
@@ -1528,7 +1532,7 @@ main(int argc, char **argv)
 
    /* print program name at the top */
    XSetStandardProperties(mydisplay, mywindow, title, title,
-			  None, argv, argc, &myhint);
+			  None, argv + optind, argc - optind, &myhint);
 
    /* set up foreground/backgrounds and set up colors */
    mygc = XCreateGC(mydisplay, mywindow, 0, 0);

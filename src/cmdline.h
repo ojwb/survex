@@ -1,6 +1,6 @@
 /* > cmdline.h
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998, 1999 Olly Betts
+ * Copyright (C) 1998-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,17 @@ struct help_msg {
 void cmdline_init(int argc_, char *const *argv_, const char *shortopts_,
 		  const struct option *longopts_, int *longind_,
 		  const struct help_msg *help_,
-		  int min_args_, int max_args_);		  
+		  int min_args_, int max_args_);
+/* if args not NULL, use instead of auto-generated FILE args */
+/* if extra not NULL, display as extra blurb at end */
+void cmdline_set_syntax_message(const char *args, const char *extra);
 int cmdline_getopt(void);
 void cmdline_help(void);
 void cmdline_version(void);
 void cmdline_syntax(void);
 int cmdline_int_arg(void);
 float cmdline_float_arg(void);
+double cmdline_double_arg(void);
 
 #define HLP_ENCODELONG(N) (-(N + 1))
 #define HLP_DECODELONG(N) (-(N + 1))

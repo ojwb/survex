@@ -39,18 +39,19 @@ printhpgl_SOURCES = prhpgl.c $(PRSRC)
 
 ROTSRC = cvrotimg.c img.c useful.c osdepend.c filename.c message.c
 
-caverot_SOURCES = caverot.c $(ROTSRC) rotplot.c labels.c cvrotgfx.c
+caverot_SOURCES = caverot.c cmdline.c $(ROTSRC) rotplot.c labels.c cvrotgfx.c
 EXTRA_caverot_SOURCES = dosrot.c
 caverot_LDADD = @LIBOBJS@ @CROBJX@ @CRLIB@
 caverot_DEPENDENCIES = @CROBJX@
 
-xcaverot_SOURCES = xcaverot.c $(ROTSRC)
+xcaverot_SOURCES = xcaverot.c cmdline.c $(ROTSRC)
 xcaverot_CFLAGS = @X_CFLAGS@
 xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
 # next line is actually superfluous to automake (but riscos/bc hack needs it)
-diffpos_SOURCES = diffpos.c
-extend_SOURCES = extend.c message.c filename.c useful.c img.c osdepend.c
+diffpos_SOURCES = diffpos.c cmdline.c
+extend_SOURCES = extend.c message.c filename.c useful.c img.c osdepend.c\
+ cmdline.c
 
 3dtodxf_SOURCES = 3dtodxf.c message.c getopt.c getopt1.c img.c filename.c\
  useful.c osdepend.c cmdline.c
