@@ -1,0 +1,176 @@
+; h.swinames
+;
+; This header file for GETting from assembler source defines OS SWI names
+;
+;**************************************************************************
+;
+; SWI names are exported in two forms :
+; 1)  with OS_  'OS_DoThingToOtherThing'  as N
+; 2)  with XOS_ 'XOS_DoThingToOtherThing' as N + Auto_Error_SWI_bit
+;
+
+Auto_Error_SWI_bit_number * 17
+Auto_Error_SWI_bit * 1 :SHL: Auto_Error_SWI_bit_number
+
+;
+; The following macro defines the SWI names using the '*' directive and the
+; '#' directive to increment the SWI number
+;
+
+        GBLS    SWIClass
+        MACRO
+        AddSWI  $SWIName,$value
+  [     "$value" = ""
+$SWIClass._$SWIName # 1
+  |
+$SWIClass._$SWIName * $value
+  ]
+X$SWIClass._$SWIName * $SWIClass._$SWIName + Auto_Error_SWI_bit
+        MEND
+
+;
+; Now for the SWI name table - using the '^' directive to build a table
+; of SWI numbers
+;
+
+SWIClass SETS   "OS"
+
+        ^       0                       ; Base for RISC OS SWIs
+        AddSWI  WriteC                  ; &00
+        AddSWI  WriteS                  ; &01
+        AddSWI  Write0                  ; &02
+        AddSWI  NewLine                 ; &03
+        AddSWI  ReadC                   ; &04
+        AddSWI  CLI                     ; &05
+        AddSWI  Byte                    ; &06
+        AddSWI  Word                    ; &07
+        AddSWI  File                    ; &08
+        AddSWI  Args                    ; &09
+        AddSWI  BGet                    ; &0A
+        AddSWI  BPut                    ; &0B
+        AddSWI  GBPB                    ; &0C
+        AddSWI  Find                    ; &0D
+        AddSWI  ReadLine                ; &0E
+        AddSWI  Control                 ; &0F
+        AddSWI  GetEnv                  ; &10
+        AddSWI  Exit                    ; &11
+        AddSWI  SetEnv                  ; &12
+        AddSWI  IntOn                   ; &13
+        AddSWI  IntOff                  ; &14
+        AddSWI  CallBack                ; &15
+        AddSWI  EnterOS                 ; &16
+        AddSWI  BreakPt                 ; &17
+        AddSWI  BreakCtrl               ; &18
+        AddSWI  UnusedSWI               ; &19
+        AddSWI  UpdateMEMC              ; &1A
+        AddSWI  SetCallBack             ; &1B
+        AddSWI  Mouse                   ; &1C
+
+        AddSWI  Heap                    ; &1D
+        AddSWI  Module                  ; &1E
+        AddSWI  Claim                   ; &1F
+        AddSWI  Release                 ; &20
+        AddSWI  ReadUnsigned            ; &21
+        AddSWI  GenerateEvent           ; &22
+        AddSWI  ReadVarVal              ; &23
+        AddSWI  SetVarVal               ; &24
+        AddSWI  GSInit                  ; &25
+        AddSWI  GSRead                  ; &26
+        AddSWI  GSTrans                 ; &27
+        AddSWI  BinaryToDecimal         ; &28
+        AddSWI  FSControl               ; &29
+        AddSWI  ChangeDynamicArea       ; &2A
+        AddSWI  GenerateError           ; &2B
+        AddSWI  ReadEscapeState         ; &2C
+        AddSWI  EvaluateExpression      ; &2D
+        AddSWI  SpriteOp                ; &2E
+        AddSWI  ReadPalette             ; &2F
+        AddSWI  ServiceCall             ; &30
+        AddSWI  ReadVduVariables        ; &31
+        AddSWI  ReadPoint               ; &32
+        AddSWI  UpCall                  ; &33
+        AddSWI  CallAVector             ; &34
+        AddSWI  ReadModeVariable        ; &35
+        AddSWI  RemoveCursors           ; &36
+        AddSWI  RestoreCursors          ; &37
+        AddSWI  SWINumberToString       ; &38
+        AddSWI  SWINumberFromString     ; &39
+        AddSWI  ValidateAddress         ; &3A
+        AddSWI  CallAfter               ; &3B
+        AddSWI  CallEvery               ; &3C
+        AddSWI  RemoveTickerEvent       ; &3D
+        AddSWI  InstallKeyHandler       ; &3E
+        AddSWI  CheckModeValid          ; &3F
+        AddSWI  ChangeEnvironment       ; &40
+        AddSWI  ClaimScreenMemory       ; &41
+        AddSWI  ReadMonotonicTime       ; &42
+        AddSWI  SubstituteArgs          ; &43
+        AddSWI  PrettyPrint             ; &44
+        AddSWI  Plot                    ; &45
+        AddSWI  WriteN                  ; &46
+        AddSWI  AddToVector             ; &47
+        AddSWI  WriteEnv                ; &48
+        AddSWI  ReadArgs                ; &49
+        AddSWI  ReadRAMFsLimits         ; &4A
+        AddSWI  ClaimDeviceVector       ; &4B
+        AddSWI  ReleaseDeviceVector     ; &4C
+        AddSWI  DelinkApplication       ; &4D
+        AddSWI  RelinkApplication       ; &4E
+        AddSWI  HeapSort                ; &4F
+        AddSWI  ExitAndDie              ; &50
+        AddSWI  ReadMemMapInfo          ; &51
+        AddSWI  ReadMemMapEntries       ; &52
+        AddSWI  SetMemMapEntries        ; &53
+        AddSWI  AddCallBack             ; &54
+        AddSWI  ReadDefaultHandler      ; &55
+        AddSWI  SetECFOrigin            ; &56
+        AddSWI  SerialOp                ; &57
+        AddSWI  ReadSysInfo             ; &58
+        AddSWI  Confirm                 ; &59
+        AddSWI  ChangedBox              ; &5A
+        AddSWI  CRC                     ; &5B
+        AddSWI  ReadDynamicArea         ; &5C
+        AddSWI  PrintChar               ; &5D
+        AddSWI  ChangeRedirection       ; &5E
+        AddSWI  RemoveCallBack          ; &5F
+        AddSWI  FindMemMapEntries       ; &60
+        AddSWI  ReadDefaultVector       ; &61
+
+        ^       &C0
+        AddSWI  ConvertStandardDateAndTime ; &C0
+        AddSWI  ConvertDateAndTime         ; &C1
+
+        ^       &D0
+        AddSWI  ConvertHex1             ; &D0
+        AddSWI  ConvertHex2             ; &D1
+        AddSWI  ConvertHex4             ; &D2
+        AddSWI  ConvertHex6             ; &D3
+        AddSWI  ConvertHex8             ; &D4
+        AddSWI  ConvertCardinal1        ; &D5
+        AddSWI  ConvertCardinal2        ; &D6
+        AddSWI  ConvertCardinal3        ; &D7
+        AddSWI  ConvertCardinal4        ; &D8
+        AddSWI  ConvertInteger1         ; &D9
+        AddSWI  ConvertInteger2         ; &DA
+        AddSWI  ConvertInteger3         ; &DB
+        AddSWI  ConvertInteger4         ; &DC
+        AddSWI  ConvertBinary1          ; &DD
+        AddSWI  ConvertBinary2          ; &DE
+        AddSWI  ConvertBinary3          ; &DF
+        AddSWI  ConvertBinary4          ; &E0
+        AddSWI  ConvertSpacedCardinal1  ; &E1
+        AddSWI  ConvertSpacedCardinal2  ; &E2
+        AddSWI  ConvertSpacedCardinal3  ; &E3
+        AddSWI  ConvertSpacedCardinal4  ; &E4
+        AddSWI  ConvertSpacedInteger1   ; &E5
+        AddSWI  ConvertSpacedInteger2   ; &E6
+        AddSWI  ConvertSpacedInteger3   ; &E7
+        AddSWI  ConvertSpacedInteger4   ; &E8
+        AddSWI  ConvertFixedNetStation  ; &E9
+        AddSWI  ConvertNetStation       ; &EA
+        AddSWI  ConvertFixedFileSize    ; &EB
+        AddSWI  ConvertFileSize         ; &EC
+
+        AddSWI  WriteI, &100
+
+        END
