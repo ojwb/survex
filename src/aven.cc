@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2002-2003 Olly Betts
+//  Copyright (C) 2002-2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -84,53 +84,46 @@ bool Aven::OnInit()
     setlocale(LC_NUMERIC, "C");
 
     wxString survey;
+    bool print_and_exit = false;
 
-    /* Want --version and a decent --help output, which cmdline does for us */
-#ifndef USE_WXCMDLINE
+    /* Want --version and a decent --help output, which cmdline does for us.
+     * wxCmdLine is much less good.
+     */
     static const struct option long_opts[] = {
 	/* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
 	{"survey", required_argument, 0, 's'},
+	{"print", no_argument, 0, 'p'},
 	{"help", no_argument, 0, HLP_HELP},
 	{"version", no_argument, 0, HLP_VERSION},
 	{0, 0, 0, 0}
     };
 
-#define short_opts "s:"
+#define short_opts "s:p"
 
     static struct help_msg help[] = {
 	/*			     <-- */
 	{HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
+	{HLP_ENCODELONG(1),          "print and exit (requires a 3d file)"},
 	{0, 0}
     };
 
     cmdline_set_syntax_message("[3d file]", NULL);
     cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
-    while (1) {
+    while (true) {
 	int opt = cmdline_getopt();
 	if (opt == EOF) break;
 	if (opt == 's') {
 	    survey = optarg;
 	}
+	if (opt == 'p') {
+	    print_and_exit = true;
+	}
     }
-#else
-    static wxCmdLineEntryDesc cmdline[] = {
-	// FIXME - if this code is ever reenabled, check this is correct, and also handle it below...
-	{ wxCMD_LINE_OPTION, "s", "survey", "only load the sub-survey with this prefix", wxCMD_LINE_VAL_STRING},
-	{ wxCMD_LINE_OPTION, "h", "help", msgPerm(/*display this help and exit*/150) },
-	{ wxCMD_LINE_PARAM,  NULL, NULL, msgPerm(/*3d file*/119), wxCMD_LINE_VAL_STRING,
-	  wxCMD_LINE_PARAM_OPTIONAL },
-	{ wxCMD_LINE_NONE }
-    };
 
-    wxCmdLineParser cli(cmdline, argc, argv);
-    int c = cli.Parse();
-    if (c != 0 || cli.Found("h")) {
-	// write in two goes to avoid msg() overwriting its buffer on 2nd call
-	fprintf(stderr, "%s: %s ", msg(/*Syntax*/49), argv[0]);
-	fprintf(stderr, "[%s]\n", msg(/*3d file*/119));
-	exit(c > 0 ? 1 /* syntax error */ : 0 /* --help */);
+    if (print_and_exit && !argv[optind]) {
+	cmdline_syntax(); // FIXME : not a helpful error...
+	exit(1);
     }
-#endif
 
     wxImage::AddHandler(new wxPNGHandler);
 
@@ -156,16 +149,16 @@ bool Aven::OnInit()
     const bool delay = true;
 #endif
 
-#ifndef USE_WXCMDLINE
     if (argv[optind]) {
 	m_Frame->OpenFile(wxString(argv[optind]), survey, delay);
     }
-#else
-    if (cli.GetParamCount() == 1) {
-	wxString file = cli.GetParam(0);
-	m_Frame->OpenFile(file, survey, delay);
+
+    if (print_and_exit) {
+	wxCommandEvent dummy;
+	m_Frame->OnPrint(dummy);
+	m_Frame->OnQuit(dummy);
+	return true;
     }
-#endif
 
     m_Frame->Show(true);
 #ifdef _WIN32
