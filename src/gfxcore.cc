@@ -215,6 +215,8 @@ void GfxCore::Initialise()
 
     GetSize(&m_XSize, &m_YSize);
 
+    m_SpecialPoints.clear();
+
     m_Bands = m_Parent->GetNumDepthBands(); // last band is surface data
     m_PlotData = new PlotData[m_Bands];
     m_Polylines = new int[m_Bands];
@@ -240,8 +242,6 @@ void GfxCore::Initialise()
 
     m_UndergroundLegs = false;
     m_SurfaceLegs = false;
-
-    m_SpecialPtOn = false;
 
     m_DoingPresStep = -1; //--Pres: FIXME: delete old lists
 
@@ -389,7 +389,7 @@ void GfxCore::SetScale(Double scale)
     DrawGrid();
 #endif
 
-    if (!m_ScaleCrossesOnly && !m_ScaleHighlightedPtsOnly) {
+    if (!m_ScaleCrossesOnly && !m_ScaleHighlightedPtsOnly && !m_ScaleSpecialPtsOnly) {
 #ifdef AVENGL
         // With OpenGL we have to make three passes, as OpenGL lists are immutable and
         // we need the surface and underground data in different lists.  The third pass is
@@ -578,7 +578,7 @@ void GfxCore::SetScale(Double scale)
 	}
     }
 
-    if (m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) {
+    if ((m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) && !m_ScaleSpecialPtsOnly) {
         // Construct polylines for crosses, sort out station names and deal with highlighted points.
 
         m_NumHighlightedPts = 0;
@@ -674,6 +674,22 @@ void GfxCore::SetScale(Double scale)
     }
     m_ScaleHighlightedPtsOnly = false;
     m_ScaleCrossesOnly = false;
+
+#ifndef AVENGL
+    list<SpecialPoint>::iterator sp_iter = m_SpecialPoints.begin();
+    while (sp_iter != m_SpecialPoints.end()) {
+        SpecialPoint& p = *sp_iter++;
+
+	Double xp = p.x + m_Params.translation.x;
+	Double yp = p.y + m_Params.translation.y;
+	Double zp = p.z + m_Params.translation.z;
+
+	p.screen_x = (long) (XToScreen(xp, yp, zp) * scale) + m_Params.display_shift.x;
+	p.screen_y = -(long) (ZToScreen(xp, yp, zp) * scale) + m_Params.display_shift.y;
+    }
+#endif
+
+    m_ScaleSpecialPtsOnly = false;
 }
 
 //
@@ -832,19 +848,15 @@ void GfxCore::RedrawOffscreen()
 	    m_LabelCacheNotInvalidated = false;
 	}
 
-	// Draw any special point.
-	if (m_SpecialPtOn) {
-	    Double xp = m_SpecialPt.x + m_Params.translation.x;
-	    Double yp = m_SpecialPt.y + m_Params.translation.y;
-	    Double zp = m_SpecialPt.z + m_Params.translation.z;
-
-	    SetColour(col_WHITE);
-	    SetColour(col_WHITE, true);
-	    m_DrawDC.DrawEllipse((long) (XToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.x +
-				   m_XCentre - HIGHLIGHTED_PT_SIZE * 2,
-				 -(long) (ZToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.y +
-				   m_YCentre - HIGHLIGHTED_PT_SIZE * 2,
-				 HIGHLIGHTED_PT_SIZE * 4, HIGHLIGHTED_PT_SIZE * 4);
+	// Draw any special points.
+	list<SpecialPoint>::iterator sp_iter = m_SpecialPoints.begin();
+	while (sp_iter != m_SpecialPoints.end()) {
+	    SpecialPoint p = *sp_iter++;
+	    SetColour(p.colour);
+	    SetColour(p.colour, true);
+	    m_DrawDC.DrawEllipse((long) p.screen_x + m_XCentre - HIGHLIGHTED_PT_SIZE * p.size,
+				 (long) p.screen_y + m_YCentre - HIGHLIGHTED_PT_SIZE * p.size,
+				 HIGHLIGHTED_PT_SIZE * p.size * 2, HIGHLIGHTED_PT_SIZE * p.size * 2);
 	}
 
 	// Draw scalebar.
@@ -2825,23 +2837,6 @@ void GfxCore::SetGLAntiAliasing()
 
 #endif
 
-void GfxCore::SetSpecialPt(Double x, Double y, Double z)
-{
-    m_SpecialPtOn = true;
-    m_SpecialPt.x = x;
-    m_SpecialPt.y = y;
-    m_SpecialPt.z = z;
-    m_RedrawOffscreen = true;
-    Refresh(false);
-}
-
-void GfxCore::ClearSpecialPt()
-{
-    m_SpecialPtOn = false;
-    m_RedrawOffscreen = true;
-    Refresh(false);
-}
-
 void GfxCore::CentreOn(Double x, Double y, Double z)
 {
     m_Params.translation.x = -x;
@@ -2851,6 +2846,10 @@ void GfxCore::CentreOn(Double x, Double y, Double z)
     m_RedrawOffscreen = true;
     Refresh(false);
 }
+
+//
+//  Presentations
+//
 
 void GfxCore::RecordPres(FILE* fp)
 {
@@ -2944,4 +2943,49 @@ bool GfxCore::AtStartOfPres()
 bool GfxCore::AtEndOfPres()
 {
    return (m_PresIterator == m_Presentation.end());
+}
+
+//
+//  Handling of special highlighted points
+//
+
+void GfxCore::ClearSpecialPoints()
+{
+    // Clear all special points and redraw the display.
+
+    m_SpecialPoints.clear();
+    DisplaySpecialPoints();
+}
+
+void GfxCore::DeleteSpecialPoint(list<SpecialPoint>::iterator pos)
+{
+    // Delete an individual special point and redraw the display.
+
+    m_SpecialPoints.erase(pos);
+    DisplaySpecialPoints();
+}
+
+list<SpecialPoint>::iterator GfxCore::AddSpecialPoint(Double x, Double y, Double z, AvenColour colour,
+						      int size)
+{
+    // Add a new special point.
+
+    SpecialPoint p;
+    p.x = x;
+    p.y = y;
+    p.z = z;
+    p.colour = colour;
+    p.size = size;
+    m_SpecialPoints.push_back(p);
+
+    return --(m_SpecialPoints.end());
+}
+
+void GfxCore::DisplaySpecialPoints()
+{
+    // Ensure any newly-added special points are displayed.
+
+    SetScale(m_Params.scale);
+    m_RedrawOffscreen = true;
+    Refresh(false);
 }

@@ -70,6 +70,17 @@ enum AvenColour {
     col_LAST // must be the last entry here
 };
 
+class SpecialPoint {
+    friend class GfxCore;
+
+    Double x, y, z;
+    AvenColour colour;
+    int size;
+#ifndef AVENGL
+    int screen_x, screen_y;
+#endif
+};
+
 extern const ColourTriple COLOURS[]; // defined in gfxcore.cc
 
 #ifdef AVENGL
@@ -182,6 +193,7 @@ class GfxCore : public wxWindow {
     } m_Volume;
 #endif
 
+    list<SpecialPoint> m_SpecialPoints;
     list<pair<PresData, Quaternion> > m_Presentation;
     list<pair<PresData, Quaternion> >::iterator m_PresIterator;
     double m_MaxExtent; // twice the maximum of the {x,y,z}-extents, in survey coordinates.
@@ -278,7 +290,7 @@ class GfxCore : public wxWindow {
         Double x, y, z;
     } m_SpecialPt;
 
-    bool m_SpecialPtOn;
+    bool m_ScaleSpecialPtsOnly;
 
 #ifndef AVENGL
     wxPen* m_Pens;
@@ -380,8 +392,11 @@ public:
     void Initialise();
     void InitialiseOnNextResize() { m_InitialisePending = true; }
 
-    void SetSpecialPt(Double x, Double y, Double z);
-    void ClearSpecialPt();
+    void ClearSpecialPoints();
+    void DeleteSpecialPoint(list<SpecialPoint>::iterator pos);
+    list<SpecialPoint>::iterator AddSpecialPoint(Double x, Double y, Double z, AvenColour colour = col_YELLOW,
+						 int magnification = 2);
+    void DisplaySpecialPoints();
 
     void CentreOn(Double x, Double y, Double z);
 

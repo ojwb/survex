@@ -99,7 +99,9 @@ enum {
     menu_PRES_ERASE,
     menu_PRES_ERASE_ALL,
     menu_CTL_REVERSE,
-    menu_HELP_ABOUT
+    menu_HELP_ABOUT,
+    button_FIND,
+    button_HIDE
 };
 
 class PointInfo {
@@ -176,10 +178,13 @@ class MainFrm : public wxFrame {
     wxStaticText* m_Dist1;
     wxStaticText* m_Dist2;
     wxStaticText* m_Dist3;
+    wxCheckBox* m_RegexpCheckBox;
     FILE* m_PresFP;
     wxString m_File;
     bool m_PresLoaded;
     bool m_Recording;
+    bool m_HighlightedPtValid;
+    list<SpecialPoint>::iterator m_HighlightedPt;
 
     struct {
         Double x, y, z;
@@ -207,6 +212,9 @@ public:
 
     void OpenFile(const wxString& file, wxString survey = "", bool delay = true);
     void OnOpenPresUpdate(wxUpdateUIEvent& event);
+
+    void OnFind(wxCommandEvent& event);
+    void OnHide(wxCommandEvent& event);
 
     void OnOpen(wxCommandEvent& event);
     void OnOpenPres(wxCommandEvent& event);

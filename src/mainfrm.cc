@@ -31,6 +31,7 @@
 #include <wx/confbase.h>
 #include <float.h>
 #include <stack>
+#include <regex.h>
 
 const int NUM_DEPTH_COLOURS = 13;
 
@@ -42,6 +43,9 @@ static const unsigned char GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 2
 static const unsigned char BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0, 230};
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
+    EVT_BUTTON(button_FIND, MainFrm::OnFind)
+    EVT_BUTTON(button_HIDE, MainFrm::OnHide)
+
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
     EVT_MENU(menu_FILE_OPEN_PRES, MainFrm::OnOpenPres)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
@@ -354,13 +358,14 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     m_FindPanel = new wxPanel(m_Panel);
     m_Panel->Show(false);
 
-    m_FindButton = new wxButton(m_FindPanel, -1, "Find");
+    m_FindButton = new wxButton(m_FindPanel, button_FIND, "Find");
     m_FindButton->SetDefault();
     m_FindPanel->SetDefaultItem(m_FindButton);
-    m_HideButton = new wxButton(m_FindPanel, -1, "Hide");
+    m_HideButton = new wxButton(m_FindPanel, button_HIDE, "Hide");
+    m_RegexpCheckBox = new wxCheckBox(m_FindPanel, -1, "Regular expression");
     m_Coords = new wxStaticText(m_FindPanel, -1, "");
     m_StnCoords = new wxStaticText(m_FindPanel, -1, "");
-    m_MousePtr = new wxStaticText(m_FindPanel, -1, "Mouse coordinates");
+    //  m_MousePtr = new wxStaticText(m_FindPanel, -1, "Mouse coordinates");
     m_StnName = new wxStaticText(m_FindPanel, -1, "");
     m_StnAlt = new wxStaticText(m_FindPanel, -1, "");
     m_Dist1 = new wxStaticText(m_FindPanel, -1, "");
@@ -374,8 +379,9 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     m_FindSizer = new wxBoxSizer(wxVERTICAL);
     m_FindSizer->Add(m_FindBox = new wxTextCtrl(m_FindPanel, -1, ""), 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(m_FindButtonSizer, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_RegexpCheckBox, 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_MousePtr, 0, wxALL | wxEXPAND, 2);
+    //   m_FindSizer->Add(m_MousePtr, 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(m_Coords, 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(m_StnName, 0, wxALL | wxEXPAND, 2);
@@ -411,6 +417,9 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     m_PresLoaded = false;
     m_Recording = false;
+
+    // Set regular expression syntax.
+    re_set_syntax(RE_SYNTAX_POSIX_EXTENDED);
 }
 
 MainFrm::~MainFrm()
@@ -907,6 +916,8 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	int y;
 	GetSize(&x, &y);
 	m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 4);
+
+	m_HighlightedPtValid = false;
     }
     SetCursor(*wxSTANDARD_CURSOR);
 }
@@ -964,7 +975,7 @@ void MainFrm::ClearCoords()
 void MainFrm::SetCoords(Double x, Double y)
 {
     wxString str;
-    str.Printf("   %d N, %d E", (int) y, (int) x);
+    str.Printf("At: %d N, %d E", (int) y, (int) x);
     m_Coords->SetLabel(str);
 }
 
@@ -980,7 +991,13 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
 	m_StnName->SetLabel(label->text);
 	str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
 	m_StnAlt->SetLabel(str);
-	m_Gfx->SetSpecialPt(label->x, label->y, label->z);
+	if (m_HighlightedPtValid) {
+	    m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
+	    m_HighlightedPtValid = false;
+	}
+	m_HighlightedPt = m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_WHITE);
+	m_Gfx->DisplaySpecialPoints();
+	m_HighlightedPtValid = true;
 
 	wxTreeItemData* sel_wx;
 	bool sel = m_Tree->GetSelectionData(&sel_wx);
@@ -1020,7 +1037,10 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
         m_StnName->SetLabel("");
         m_StnCoords->SetLabel("");
 	m_StnAlt->SetLabel("");
-	m_Gfx->ClearSpecialPt();
+	if (m_HighlightedPtValid) {
+	    m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
+	    m_HighlightedPtValid = false;
+	}
 	m_Dist1->SetLabel("");
 	m_Dist2->SetLabel("");
 	m_Dist3->SetLabel("");
@@ -1183,4 +1203,73 @@ void MainFrm::OnPresEraseUpdate(wxUpdateUIEvent& event)
 void MainFrm::OnPresEraseAllUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(m_PresLoaded && m_Recording); //--Pres: FIXME
+}
+
+void MainFrm::OnFind(wxCommandEvent& event)
+{
+    wxString str = m_FindBox->GetValue();
+    re_pattern_buffer buffer;
+    if (m_RegexpCheckBox->GetValue()) {
+        buffer.translate = NULL;
+	buffer.fastmap = new char[256];
+	buffer.allocated = 0;
+	buffer.buffer = NULL;
+	buffer.can_be_null = 0;
+	buffer.no_sub = 0;
+
+	const char* error = re_compile_pattern(str.c_str(), str.Length(), &buffer);
+    
+	if (error) {
+	    wxGetApp().ReportError("Regular expression compilation (stage 1) failed.");
+	    return;
+	}
+
+	if (re_compile_fastmap(&buffer) != 0) {
+	    wxGetApp().ReportError("Regular expression compilation (stage 2) failed.");
+	    return;
+	}
+    }
+
+    m_Gfx->ClearSpecialPoints();
+
+    list<LabelInfo*>::iterator pos = m_Labels.begin();
+
+    while (pos != m_Labels.end()) {
+        LabelInfo* label = *pos++;
+	
+	if (m_RegexpCheckBox->GetValue()) {
+	    re_registers regs;
+	    int ret = re_search(&buffer, label->text.c_str(), label->text.Length(), 0, label->text.Length(),
+				NULL);
+
+	    switch (ret) {
+	        case -2:
+		    wxGetApp().ReportError("Regular expression search failed.");
+		    return;
+
+	        case -1:
+	            break;
+
+	        default:
+	            m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_YELLOW, 1);
+	            break;
+	    }
+
+	    delete[] buffer.fastmap;
+	}
+	else {
+	    if (label->text.Contains(str)) {
+	        m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_YELLOW, 1);
+	    }
+	}
+    }
+
+    m_Gfx->DisplaySpecialPoints();
+}
+
+void MainFrm::OnHide(wxCommandEvent& event)
+{
+    // Hide any search result highlights.
+
+    m_Gfx->ClearSpecialPoints();
 }

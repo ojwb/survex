@@ -43,7 +43,7 @@ avenrc.o: aven.rc
 	i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $@ $<
 
 else
-aven_LDADD = @LIBOBJS@ @WX_LIBS@
+aven_LDADD = @LIBOBJS@ @WX_LIBS@ -lrx
 endif
 
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
