@@ -1116,7 +1116,7 @@ msg_init(char * const *argv)
 		     case 60: /* Malaysia */
 		     case 62: /* Indonesia / East Timor */
 		     case 65: /* Singapore */
-		     case 66: /* Thailand (or Taiwan???) */
+		     case 66: /* Thailand (or Taiwan??? ) */
 		     case 81: /* Japan (DR DOS 5.0, MS-DOS 5.0+) */
 		     case 82: /* South Korea (DR DOS 5.0) */
 		     case 84: /* Vietnam */
@@ -1173,7 +1173,7 @@ msg_init(char * const *argv)
 		     case 599: /* Netherland Antilles (nl) */
 		     case 666: /* Russia??? (PTS-DOS 6.51 KEYB) */
 		     case 667: /* Poland??? (PTS-DOS 6.51 KEYB) */
-		     case 668: /* Poland??? (Slavic???) (PTS-DOS 6.51 KEYB) */
+		     case 668: /* Poland??? (Slavic??? ) (PTS-DOS 6.51 KEYB) */
 		     case 688: /* Tuvalu */
 		     case 690: /* Tokealu */
 		     case 711: /* ??? (currency = EA$, code pages 437,737,850,852,855,857) */
