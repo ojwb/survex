@@ -1,3 +1,5 @@
+Changes in 0.99-prerelease6:
+
 * aven: fixed bogus lines caused by coordinate wrap-around; fixed
   problem in repeated zoom with [ or ]; tweaked layout and auto-sizing
   of left panel; station search now case insensitive; regexp search

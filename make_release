@@ -46,9 +46,16 @@ if ! ./configure ; then
    echo configure failed
    exit 1
 fi
-if ! make distcheck ; then
-   echo make distcheck failed
-   exit 1
+if test x"$rel" = xyes ; then
+   if ! make distcheck ; then
+      echo make distcheck failed
+      exit 1
+   fi
+else
+   if ! make dist ; then
+      echo make dist failed
+      exit 1
+   fi
 fi
 if test x"$rel" = xyes && expr "$mk" : '.*\<rpm\>' || test x"$mk" = xrpm ; then
    if rpm --version > /dev/null 2> /dev/null ; then
