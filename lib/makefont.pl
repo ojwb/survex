@@ -5,7 +5,7 @@ use strict;
 use integer;
 
 # Magic identifier (12 bytes)
-my $magic = "Svx\n\Fnt\r\n\xfe\xff\0";
+my $magic = "Svx\nFnt\r\n\xfe\xff\0";
 # Designed to be corrupted by ASCII ftp, top bit stripping (or
 # being used for parity).  Contains a zero byte so more likely
 # to be flagged as data (e.g. by perl's "-B" test).
