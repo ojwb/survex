@@ -86,7 +86,7 @@ static void
 tree_init(void)
 {
    size_t i;
-   htab = osmalloc(0x2000 * sizeof(int));
+   htab = osmalloc(0x2000 * ossizeof(station *));
    for (i = 0; i < 0x2000; i++) htab[i] = NULL;
 }
 
