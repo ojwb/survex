@@ -1,7 +1,6 @@
 * Improved handling of Compass PLT files and CMAP xyz files - no longer change
   dots to spaces in survey and station names - instead use a space as the
   separator between survey name and station name.
-  FIXME: don't have sample PLT or XYZ files here - check this works.
 
 * aven: fixed hard to notice problem which could cause the cave to appear
   tilted sideways after a lot of manipulation.
@@ -15,6 +14,12 @@
   DIRECTION reading.
 
 * cavern: fixed "singular matrix" error when very low SDs were specified.
+
+* print*: if the --raw is used, the survey can now use the space this would
+  have taken up.
+
+* Reading of ASCII 3d files now copes with MSDOS/MS Windows line endings
+  once again.  Added regression test for this.
 
 * Updated documentation.
 
