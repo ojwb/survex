@@ -750,21 +750,6 @@ err_stat(int cLegsTrav, double lenTrav,
    }
 }
 
-#if 0
-static void
-deletenode(node *stn)
-{
-   /* release any legs attached - reverse legs will be released since any */
-   /* attached nodes aren't attached to fixed points */
-   int d;
-   for (d = 0; d <= 2; d++) osfree(stn->leg[d]); /* ignored if NULL */
-   /* could delete prefix now... but this (slight) fudge is easier... */
-   stn->name->stn=NULL;
-   /* and release node itself */
-   osfree(stn);
-}
-#endif
-
 static void
 replace_trailing_travs(void)
 {
