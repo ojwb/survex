@@ -1394,15 +1394,13 @@ void GfxCore::SetCoords(wxPoint point)
     Double cx, cy, cz;
 
     SetDataTransform();
-    ReverseTransform(point.x, point.y, &cx, &cy, &cz);
+    ReverseTransform(point.x, m_YSize - point.y, &cx, &cy, &cz);
 
     if (m_TiltAngle == M_PI_2) {
-	m_Parent->SetCoords(cx + m_Parent->GetXOffset(), -cy + m_Parent->GetYOffset());
-    }
-    else if (m_TiltAngle == 0.0) {
-	m_Parent->SetAltitude(-cz + m_Parent->GetZOffset());
-    }
-    else {
+	m_Parent->SetCoords(cx + m_Parent->GetXOffset(), cy + m_Parent->GetYOffset());
+    } else if (m_TiltAngle == 0.0) {
+	m_Parent->SetAltitude(cz + m_Parent->GetZOffset());
+    } else {
 	m_Parent->ClearCoords();
     }
 }
