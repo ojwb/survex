@@ -60,13 +60,6 @@ static jmp_buf jmpbufSignal;
 #include "oslib/wimpreadsy.h"
 #endif
 
-/* This is the name of the default language.  Add -DDEFAULTLANG to CFLAGS
- * e.g. with `CFLAGS="-DDEFAULTLANG=fr" ./configure'
- */
-#ifndef DEFAULTLANG
-# define DEFAULTLANG en
-#endif
-
 /* For funcs which want to be immune from messing around with different
  * calling conventions */
 #ifndef CDECL
@@ -580,9 +573,24 @@ parse_msgs(int n, unsigned char *p, int charset_code) {
    return msgs;
 }
 
+/* This is the name of the default language.  Add -DDEFAULTLANG to CFLAGS
+ * e.g. with `CFLAGS="-DDEFAULTLANG=fr" ./configure'
+ */
+#ifdef DEFAULTLANG
 /* No point extracting these errors as they won't get used if file opens */
-#define HDR(D) "../lib/"STRING(D)".h"
-#include HDR(DEFAULTLANG)
+/* FIXME: this works on gcc but not some other compilers (e.g. norcroft),
+ * and also ../lib/fr.h, etc don't go into srcN_NN.zip */
+# define HDR(D) "../lib/"STRING(D)".h"
+# include HDR(DEFAULTLANG)
+#else
+#define N_DONTEXTRACTMSGS 5
+static unsigned char dontextractmsgs[] =
+   "Can't open message file `%s' using path `%s'\0"/*1000*/
+   "Problem with message file `%s'\0"/*1001*/
+   "I don't understand this message file version\0"/*1002*/
+   "Message file truncated?\0"/*1003*/
+   "Out of memory (couldn't find %lu bytes).\0"/*1004*/;
+#endif
 
 static char **dontextract = NULL;
 
