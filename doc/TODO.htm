@@ -107,8 +107,17 @@ and then the prefix of a leg == prefix of each end...?
 
 <li>LRUD?
 
-<li>multiple readings
-
+<li>multiple readings - perhaps like so:
+<pre>
+*data from to tape {compass} {clino}
+1 2 10.23 {000 001} -02
+2 3 10.16 {017 019 018} {+06 +05}
+3 4 11.98 007 +03
+</pre>
+Not sure about the need to declare a reading to be repeatable.
+Also, should we add "*set bra {", "*set ket }" or similar?  Or is *set sort
+of deprecated?  Implement as extension to number format?  Then we can easily
+allow any suitable numeric value to be repeated...
 </ul>
 
 <H2>Internationalisation</H2>

@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2001 Olly Betts
+ * Copyright (C) 1991-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,8 +61,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 #ifndef NO_DEPRECATED
    if (isRoot(ch)) {
       if (!fAllowRoot) {
-	 compile_error(/*ROOT is deprecated*/25);
-	 skipline();
+	 compile_error_skip(/*ROOT is deprecated*/25);
 	 LONGJMP(file.jbSkipLine);
       }
       if (root_depr_count < 5) {
@@ -111,14 +110,13 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 if (!fOmit) {
 	    if (isEol(ch)) {
 	       if (fSurvey) {
-		  compile_error(/*Expecting survey name*/89);
+		  compile_error_skip(/*Expecting survey name*/89);
 	       } else {
-		  compile_error(/*Expecting station name*/28);
+		  compile_error_skip(/*Expecting station name*/28);
 	       }
 	    } else {
-	       compile_error(/*Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
+	       compile_error_skip(/*Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
 	    }
-	    skipline();
 	    LONGJMP(file.jbSkipLine);
 	 }
 	 return (prefix *)NULL;
@@ -367,8 +365,7 @@ read_string(char **pstr, int *plen)
       nextch();
       while (1) {
 	 if (isEol(ch)) {
-	    compile_error(/*Missing &quot;*/69);
-	    skipline();
+	    compile_error_skip(/*Missing &quot;*/69);
 	    return;
 	 }
 
@@ -381,8 +378,7 @@ read_string(char **pstr, int *plen)
       while (1) {
 	 if (isEol(ch) || isComm(ch)) {
 	    if (!*pstr || !(*pstr)[0]) {
-	       compile_error(/*Expecting string field*/121);
-	       skipline();
+	       compile_error_skip(/*Expecting string field*/121);
 	    }
 	    return;
 	 }

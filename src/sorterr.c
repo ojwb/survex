@@ -1,6 +1,6 @@
 /* sorterr.c */
 /* Sort a survex .err file */
-/* Copyright (C) 2001 Olly Betts
+/* Copyright (C) 2001,2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include "cmdline.h"
+#include "filename.h"
 #include "message.h"
 #include "osalloc.h"
 #include "whichos.h"

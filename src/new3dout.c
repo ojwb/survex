@@ -1,6 +1,7 @@
 /* new3dout.c
  * .3dx writing routines
  * Copyright (C) 2000, 2001 Phil Underwood
+ * Copyright (C) 2001, 2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@
 
 #include "3ddefs.h"
 #include "debug.h"
+#include "filename.h"
 
 twig *rhizome, *limb;
 char *firstfilename, *startingdir;

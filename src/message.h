@@ -26,18 +26,12 @@ extern "C" {
 
 #include <stdarg.h>
 
-#include <config.h>
-
 #include "cmdline.h"
 #include "useful.h"
 #include "osdepend.h"
 #include "osalloc.h"
 
 #define STDERR stdout
-
-#ifdef RISCOS_LEAKFIND
-# include "Mnemosyne.mnemosyn.h"
-#endif
 
 #define CHARSET_BAD        -1
 #define CHARSET_USASCII     0

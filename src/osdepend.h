@@ -36,9 +36,7 @@ typedef unsigned char byte;
 
 # if (OS==RISCOS)
 
-/*#  include "kernel.h"*/
 #  include "oslib/os.h"
-#  include "oslib/fpemulator.h"
 
 /* Take over screen (clear text window/default colours/cls) */
 #  define init_screen() BLK(xos_writec(26); xos_writec(20); xos_cls();)

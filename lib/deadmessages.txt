@@ -574,3 +574,41 @@ ca:503 Ignorant:
 es:503 Ignorando:
 it:503 Ignorando:
 sk:503 Ignorovan&eacute;:
+#
+en: 48 Failed to close output file
+fr: 48 N'a pas r&eacute;ussi &agrave; fermer le fichier de sortie
+de: 48 Konnte Ausgabedatei nicht schlie&szlig;en
+de-ch: 48 Konnte Ausgabedatei nicht schliessen
+pt: 48 N&atilde;o foi poss&iacute;vel fechar arquivo de sa&iacute;da
+ca: 48 No s'ha pogut tancar el fitxer de sortida
+es: 48 No se pudo cerrar el archivo de salida
+it: 48 Non riesco a chiudere il file d'uscita
+sk: 48 nie je pou&zcaron;it&eacute;
+#
+# 77 not used at present, but likely to be useful
+# engi: 77 " not fixed"
+# engu: 77 " not fixed"
+# fren: 77 " non d&eacute;finis"
+# germ: 77 " nicht angegeben"
+# port: 77 " n&atilde;o posicionada(s)"
+# cata: 77 " no fixat"
+# span: 77 " no fijado"
+# ital: 77 " non fissato"
+#
+en: 99 Not yet implemented! Please let the authors know if you badly need this feature
+fr: 99 Pas encore implement&eacute;! Faites savoir aux auteurs si vous avez vraiment besoin de cette fonctionnalit&eacute; S.V.P.
+de: 99 Dies ist noch nicht implementiert. Wenn Sie es wirklich brauchen, sollten Sie die Autoren informieren
+pt: 99 N&atilde;o implementado ainda! Por favor, avise os autores caso voc&ecirc; realmente precise desta fun&ccedil;&atilde;o
+ca: 99 Encara no implementat! Si us plau, feu saber als autors si realment necessiteu aquesta funci&oacute;
+es: 99 Todavia no implementado! Por favor, comunique a los autores si realmente necesita esta funci&oacute;n
+it: 99 Non ancora implementato! Per favore comunicate agli autori se avete necessit&aacute; di questa funzione
+sk: 99 Zatia&lcaron; neimplementovan&eacute;! Pros&iacute;me, pokia&lcaron; t&uacute;to funkciu bezpodmiene&ccaron;ne potrebujete, dajte na vedomie autorom
+#
+en:201 Display command line options
+fr:201 Affiche les options de la ligne de commande
+de:201 Befehlszeilenoptionen anzeigen
+pt:201 Mostrar op&ccedil;&otilde;es de linha de comando
+ca:201 Mostra les opcions de la l&iacute;nia de comandaments
+es:201 Mostrar opciones en l&iacute;nea de comandos
+it:201 Mostra le opzioni della riga di comando
+sk:201 Zobrazi&tcaron; mo&zcaron;nosti pr&iacute;kazov&eacute;ho riadku

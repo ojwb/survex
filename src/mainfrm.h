@@ -137,9 +137,19 @@ public:
     bool IsSurface() const { return isSurface; }
 };
 
+#define LFLAG_SURFACE		img_SFLAG_SURFACE
+#define LFLAG_UNDERGROUND	img_SFLAG_UNDERGROUND
+#define LFLAG_EXPORTED		img_SFLAG_EXPORTED
+#define LFLAG_FIXED		img_SFLAG_FIXED
+#define LFLAG_ENTRANCE		0x100
+#define LFLAG_HIGHLIGHTED	0x200
+
+class LabelPlotCmp;
+
 class LabelInfo {
     friend class MainFrm;
     friend class GfxCore;
+    friend class LabelPlotCmp;
     Double x, y, z;
     wxString text;
     int flags;
@@ -152,11 +162,12 @@ public:
 
     wxString GetText() const { return text; }
 
-    bool IsEntrance() const { return flags & img_SFLAG_ENTRANCE; }
-    bool IsFixedPt() const { return flags & img_SFLAG_FIXED; }
-    bool IsExportedPt() const { return flags & img_SFLAG_EXPORTED; }
-    bool IsUnderground() const { return flags & img_SFLAG_UNDERGROUND; }
-    bool IsSurface() const { return flags & img_SFLAG_SURFACE; }
+    bool IsEntrance() const { return flags & LFLAG_ENTRANCE; }
+    bool IsFixedPt() const { return flags & LFLAG_FIXED; }
+    bool IsExportedPt() const { return flags & LFLAG_EXPORTED; }
+    bool IsUnderground() const { return flags & LFLAG_UNDERGROUND; }
+    bool IsSurface() const { return flags & LFLAG_SURFACE; }
+    bool IsHighLighted() const { return flags & LFLAG_HIGHLIGHTED; }
 };
 
 class MainFrm : public wxFrame {
@@ -483,17 +494,25 @@ public:
 	return m_Points[band].begin();
     }
 
-    list<LabelInfo*>::const_iterator GetLabels() const {
-	return m_Labels.begin();
-    }
-
     list<PointInfo*>::const_iterator GetPointsEnd(int band) const {
 	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
 	return m_Points[band].end();
     }
 
+    list<LabelInfo*>::const_iterator GetLabels() const {
+	return m_Labels.begin();
+    }
+
     list<LabelInfo*>::const_iterator GetLabelsEnd() const {
 	return m_Labels.end();
+    }
+
+    list<LabelInfo*>::const_reverse_iterator GetRevLabels() const {
+	return m_Labels.rbegin();
+    }
+
+    list<LabelInfo*>::const_reverse_iterator GetRevLabelsEnd() const {
+	return m_Labels.rend();
     }
 
     void ShowInfo(LabelInfo *label);

@@ -39,15 +39,11 @@
 
 #define EPSILON (REAL_EPSILON * 1000)
 
-#define MAX_KEYWORD_LEN 16
-
-#define PRINT_COMMENT 0
-
 #define var(I) (pcs->Var[(I)])
 
 int ch;
 
-typedef enum {CLINO_OMIT, CLINO_READING, CLINO_PLUMB, CLINO_HORIZ} clino_type;
+typedef enum {CTYPE_OMIT, CTYPE_READING, CTYPE_PLUMB, CTYPE_HORIZ} clino_type;
 
 /* Don't explicitly initialise as we can't set the jmp_buf - this has
  * static scope so will be initialised like this anyway */
@@ -119,6 +115,17 @@ compile_error(int en, ...)
 }
 
 void
+compile_error_skip(int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   error_list_parent_files();
+   v_report(1, file.filename, file.line, en, ap);
+   va_end(ap);
+   skipline();
+}
+
+void
 compile_error_token(int en)
 {
    char *p = NULL;
@@ -129,9 +136,8 @@ compile_error_token(int en)
       s_catchar(&p, &len, ch);
       nextch();
    }
-   compile_error(en, p ? p : "");
+   compile_error_skip(en, p ? p : "");
    osfree(p);
-   skipline();
 }
 
 void
@@ -402,7 +408,7 @@ handle_plumb(clino_type *p_ctype)
       get_token();
       tok = match_tok(clino_tab, TABSIZE(clino_tab));
       if (tok != CLINO_NULL) {
-	 *p_ctype = (clinos[tok] == CLINO_LEVEL ? CLINO_HORIZ : CLINO_PLUMB);
+	 *p_ctype = (clinos[tok] == CLINO_LEVEL ? CTYPE_HORIZ : CTYPE_PLUMB);
 	 return clinos[tok];
       }
       set_pos(&fp);
@@ -411,12 +417,12 @@ handle_plumb(clino_type *p_ctype)
       nextch();
       if (toupper(ch) == 'V') {
 	 nextch();
-	 *p_ctype = CLINO_PLUMB;
+	 *p_ctype = CTYPE_PLUMB;
 	 return (!isMinus(chOld) ? M_PI_2 : -M_PI_2);
       }
 
       if (isOmit(chOld)) {
-	 *p_ctype = CLINO_OMIT;
+	 *p_ctype = CTYPE_OMIT;
 	 /* no clino reading, so assume 0 with large sd */
 	 return (real)0.0;
       }
@@ -424,7 +430,7 @@ handle_plumb(clino_type *p_ctype)
       /* OMIT char may not be a SIGN char too so we need to check here as
        * well as above... */
       nextch();
-      *p_ctype = CLINO_OMIT;
+      *p_ctype = CTYPE_OMIT;
       /* no clino reading, so assume 0 with large sd */
       return (real)0.0;
    }
@@ -491,7 +497,7 @@ handle_compass(real *p_var, real comp, real backcomp)
 	 diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
 	 if (sqrd(diff / 3.0) > var + var(Q_BACKBEARING)) {
 	    /* fore and back readings differ by more than 3 sds */
-	    warn_readings_differ(/*Compass reading and back compass reading disagree by %s degrees*/325, diff);
+	    warn_readings_differ(/*Compass reading and back compass reading disagree by %s degrees*/98, diff);
 	 }
 	 comp = (comp / var + backcomp / var(Q_BACKBEARING));
 	 var = (var + var(Q_BACKBEARING)) / 4;
@@ -527,36 +533,39 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 
    fNoComp = handle_comp_units(&comp, &backcomp);
 
-   if (ctype == CLINO_READING) {
+   if (ctype == CTYPE_READING) {
       real diff_from_abs90;
       clin *= pcs->units[Q_GRADIENT];
+      /* percentage scale */
+      if (pcs->f_clino_percent) clin = atan(clin);
       diff_from_abs90 = fabs(clin) - M_PI_2;
       if (diff_from_abs90 > EPSILON) {
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       } else if (pcs->f90Up && diff_from_abs90 > -EPSILON) {
-	 ctype = CLINO_PLUMB;
+	 ctype = CTYPE_PLUMB;
       }
    }
 
-   if (backctype == CLINO_READING) {
+   if (backctype == CTYPE_READING) {
       real diff_from_abs90;
       backclin *= pcs->units[Q_BACKGRADIENT];
+      /* percentage scale */
+      if (pcs->f_backclino_percent) backclin = atan(backclin);
       diff_from_abs90 = fabs(backclin) - M_PI_2;
       if (diff_from_abs90 > EPSILON) {
 	 /* FIXME: different message for BackClino? */
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       } else if (pcs->f90Up && diff_from_abs90 > -EPSILON) {
-	 backctype = CLINO_PLUMB;
+	 backctype = CTYPE_PLUMB;
       }
    }
 
-   if (ctype != CLINO_OMIT && backctype != CLINO_OMIT && ctype != backctype) {
-      compile_error(/*Clino and BackClino readings must be of the same type*/84);
-      skipline();
+   if (ctype != CTYPE_OMIT && backctype != CTYPE_OMIT && ctype != backctype) {
+      compile_error_skip(/*Clino and BackClino readings must be of the same type*/84);
       return 0;
    }
 
-   if (ctype == CLINO_PLUMB || backctype == CLINO_PLUMB) {
+   if (ctype == CTYPE_PLUMB || backctype == CTYPE_PLUMB) {
       /* plumbed */
       if (!fNoComp) {
 	 /* FIXME: Different message for BackComp? */
@@ -564,11 +573,10 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       }
 
       dx = dy = (real)0.0;
-      if (ctype != CLINO_OMIT) {
-	 if (backctype != CLINO_OMIT && (clin > 0) == (backclin > 0)) {
+      if (ctype != CTYPE_OMIT) {
+	 if (backctype != CTYPE_OMIT && (clin > 0) == (backclin > 0)) {
 	    /* We've got two UPs or two DOWNs - FIXME: not ideal message */
-	    compile_error(/*Clino and BackClino readings must be of the same type*/84);
-	    skipline();
+	    compile_error_skip(/*Clino and BackClino readings must be of the same type*/84);
 	    return 0;
 	 }
 	 dz = (clin > (real)0.0) ? tape : -tape;
@@ -582,13 +590,12 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       cxy = cyz = czx = (real)0.0;
 #endif
    } else {
-      /* Each of ctype and backctype are either CLINO_READING/CLINO_HORIZ
-       * or CLINO_OMIT */
+      /* Each of ctype and backctype are either CTYPE_READING/CTYPE_HORIZ
+       * or CTYPE_OMIT */
       /* clino */
       real L2, cosG, LcosG, cosG2, sinB, cosB, dx2, dy2, dz2, v, V;
       if (fNoComp) {
-	 compile_error(/*Compass reading may not be omitted except on plumbed legs*/14);
-	 skipline();
+	 compile_error_skip(/*Compass reading may not be omitted except on plumbed legs*/14);
 	 return 0;
       }
       if (tape == (real)0.0) {
@@ -606,19 +613,19 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	 real var_clin = var(Q_LEVEL);
 	 real var_comp;
 	 comp = handle_compass(&var_comp, comp, backcomp);
-	 /* ctype != CLINO_READING is LEVEL case */
-	 if (ctype == CLINO_READING) {
+	 /* ctype != CTYPE_READING is LEVEL case */
+	 if (ctype == CTYPE_READING) {
 	    clin = (clin - pcs->z[Q_GRADIENT]) * pcs->sc[Q_GRADIENT];
 	    var_clin = var(Q_GRADIENT);
 	 }
-	 if (backctype == CLINO_READING) {
+	 if (backctype == CTYPE_READING) {
 	    backclin = (backclin - pcs->z[Q_BACKGRADIENT])
 	       * pcs->sc[Q_BACKGRADIENT];
-	    if (ctype == CLINO_READING) {
+	    if (ctype == CTYPE_READING) {
 	       if (sqrd((clin + backclin) / 3.0) >
 		     var_clin + var(Q_BACKGRADIENT)) {
 		  /* fore and back readings differ by more than 3 sds */
-		  warn_readings_differ(/*Clino reading and back clino reading disagree by %s degrees*/326, clin + backclin);
+		  warn_readings_differ(/*Clino reading and back clino reading disagree by %s degrees*/99, clin + backclin);
 	       }
 	       clin = (clin / var_clin - backclin / var(Q_BACKGRADIENT));
 	       var_clin = (var_clin + var(Q_BACKGRADIENT)) / 4;
@@ -659,7 +666,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	       (.5 + sinB * sinB * cosG2) * v);
 	 vy = (var(Q_POS) / 3.0 + dy2 * V + dx2 * var_comp +
 	       (.5 + cosB * cosB * cosG2) * v);
-	 if (ctype == CLINO_OMIT && backctype == CLINO_OMIT) {
+	 if (ctype == CTYPE_OMIT && backctype == CTYPE_OMIT) {
 	    /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
 	    vz = var(Q_POS) / 3.0 + L2 * (real)0.1;
 	 } else {
@@ -671,7 +678,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	    (sinB * sinB * v);
 	 vy = var(Q_POS) / 3.0 + dy2 * V + dx2 * var_comp +
 	    (cosB * cosB * v);
-	 if (ctype == CLINO_OMIT && backctype == CLINO_OMIT) {
+	 if (ctype == CTYPE_OMIT && backctype == CTYPE_OMIT) {
 	    /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
 	    vz = var(Q_POS) / 3.0 + L2 * (real)0.1;
 	 } else {
@@ -1045,7 +1052,7 @@ data_normal(void)
    again:
 
    fRev = fFalse;
-   ctype = backctype = CLINO_OMIT;
+   ctype = backctype = CTYPE_OMIT;
    fDepthChange = fFalse;
 
    /* ordering may omit clino reading, so set up default here */
@@ -1076,8 +1083,7 @@ data_normal(void)
 	     fRev = fTrue;
 	     break;
 	   default:
-	     compile_error(/*Found `%c', expecting `F' or `B'*/131, ch);
-	     skipline();
+	     compile_error_skip(/*Found `%c', expecting `F' or `B'*/131, ch);
 	     process_eol();
 	     return 0;
 	  }
@@ -1112,7 +1118,7 @@ data_normal(void)
 	     process_eol();
 	     return 0;
 	  }
-	  ctype = CLINO_READING;
+	  ctype = CTYPE_READING;
 	  break;
        case BackClino:
 	  backclin = read_numeric(fTrue);
@@ -1123,7 +1129,7 @@ data_normal(void)
 	     process_eol();
 	     return 0;
 	  }
-	  backctype = CLINO_READING;
+	  backctype = CTYPE_READING;
 	  break;
        case FrDepth:
 	  frdepth = read_numeric(fFalse);

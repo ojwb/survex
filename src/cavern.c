@@ -195,8 +195,8 @@ main(int argc, char **argv)
    totadj = total = totplan = totvert = 0.0;
 
    for (d = 0; d <= 2; d++) {
-      min[d] = REAL_BIG;
-      max[d] = -REAL_BIG;
+      min[d] = HUGE_REAL;
+      max[d] = -HUGE_REAL;
       pfxHi[d] = pfxLo[d] = NULL;
    }
 

@@ -1,6 +1,6 @@
 /* debug.h
  * SURVEX debugging info control macros
- * Copyright (C) 1993-1996,2001 Olly Betts
+ * Copyright (C) 1993-1996,2001,2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 #include "useful.h"
+#include "message.h" /* for fatalerror() */
 
 /* turn periodic calls to validate() checks on/off */
 #ifndef VALIDATE

@@ -701,7 +701,7 @@ main(int argc, char **argv)
 	 break;
        case 's':
 	 if (!read_scale(optarg)) {
-	    fatalerror(/*Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')*/217,
+	    fatalerror(/*Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')*/80,
 		       optarg);
 	 }
 	 fInteractive = fFalse;
@@ -783,8 +783,8 @@ main(int argc, char **argv)
 	 /* ini files searched in this order:
 	  * ~/.survex/print.ini [unix only]
 	  * /etc/survex/print.ini [unix only]
-	  * $SURVEXHOME/myprint.ini [not unix]
-	  * $SURVEXHOME/print.ini [must exist]
+	  * <support file directory>/myprint.ini [not unix]
+	  * <support file directory>/print.ini [must exist]
 	  */
 
 #if (OS==UNIX)
@@ -967,7 +967,7 @@ main(int argc, char **argv)
       } else if (!read_scale(szTmp)) {
 	 size_t len = strlen(szTmp);
 	 if (len && szTmp[len - 1] == '\n') szTmp[len - 1] = '\0';
-	 printf(msg(/*Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')*/217),
+	 printf(msg(/*Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')*/80),
 		szTmp);
 	 fOk = fFalse;
 	 continue;
@@ -1003,7 +1003,7 @@ main(int argc, char **argv)
 	    while (1) {
 	       page = next_page(&state, &p, pageLim);
 	       if (state < 0) {
-		  printf(msg(/*Bad list of pages to print `%s'*/218), szPages);
+		  printf(msg(/*Bad list of pages to print `%s'*/179), szPages);
 		  putnl();
 		  fOk = fFalse;
 		  break;

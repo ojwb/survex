@@ -823,8 +823,13 @@ add_unicode(int charset, unsigned char *p, int value)
    return 0;
 }
 
-/* fall back on looking in the current directory */
+#if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
+/* Under Unix, we compile in the configured path */
+static const char *pth_cfg_files = DATADIR "/" PACKAGE;
+#else
+/* On other platforms, we fall back on looking in the current directory */
 static const char *pth_cfg_files = "";
+#endif
 
 static int num_msgs = 0;
 static char **msg_array = NULL;
@@ -1017,19 +1022,26 @@ msg_init(char * const *argv)
       exit(0);
    }
 
-   /* Look for env. var. "SURVEXHOME" or the like */
-   p = getenv("SURVEXHOME");
-   if (p && *p) {
-      pth_cfg_files = osstrdup(p);
-      
-   /* MacOSX version can be installed anywhere, so use argv[0] */
-#if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE) && !defined(__APPLE__)
-   } else {
-      /* under Unix, we compile in the configured path */
-      pth_cfg_files = DATADIR "/" PACKAGE;
+   if (argv[0]) {
+#if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
+      char *pth = path_from_fnm(argv[0]);
+      if (pth[0]) {
+	 /* If we're run with an explicit path, check if "../lib" from
+	  * the program's path is a directory, and if so look there for
+	  * support files - this allows us to test binaries in the build
+	  * tree easily. */
+	 /* May also be useful on MacOS X where the programs may be
+	  * installed anywhere... */
+	 char *p = use_path(pth, "../lib");
+	 if (fDirectory(p)) {
+	    pth_cfg_files = p;
+	 } else {
+	    osfree(p);
+	 }
+      }
+      osfree(pth);
 #else
-   } else if (argv[0]) {
-      /* else try the path on argv[0] */
+      /* Get the path to the support files from argv[0] */
       pth_cfg_files = path_from_fnm(argv[0]);
 #endif
    }

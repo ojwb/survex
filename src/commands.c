@@ -127,6 +127,7 @@ default_units(settings *s)
       else
 	 s->units[quantity] = (real)1.0; /* metres */
    }
+   s->f_clino_percent = s->f_backclino_percent = fFalse;
 }
 
 static void
@@ -256,8 +257,18 @@ static sztok cmd_tab[] = {
      {NULL,        CMD_NULL}
 };
 
+/* masks for units which are length and angles respectively */
+#define LEN_UMASK (BIT(UNITS_METRES) | BIT(UNITS_FEET) | BIT(UNITS_YARDS))
+#define ANG_UMASK (BIT(UNITS_DEGS) | BIT(UNITS_GRADS) | BIT(UNITS_MINUTES))
+
+/* ordering must be the same as the units enum */
+static real factor_tab[] = {
+   1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0),
+   (M_PI/180.0), (M_PI/200.0), 0.01, (M_PI/180.0/60.0)
+};
+
 static int
-get_units(void)
+get_units(unsigned long qmask, bool percent_ok)
 {
    static sztok utab[] = {
 	{"DEGREES",       UNITS_DEGS },
@@ -278,9 +289,17 @@ get_units(void)
    get_token();
    units = match_tok(utab, TABSIZE(utab));
    if (units == UNITS_NULL) {
-      compile_error(/*Unknown units `%s'*/35, buffer);
-   } else if (units == UNITS_PERCENT) {
-      NOT_YET;
+      compile_error_skip(/*Unknown units `%s'*/35, buffer);
+      return UNITS_NULL;
+   }
+   if (units == UNITS_PERCENT && percent_ok &&
+       !(qmask & ~(BIT(Q_GRADIENT)|BIT(Q_BACKGRADIENT)))) {
+      return units;
+   }
+   if (((qmask & LEN_QMASK) && !TSTBIT(LEN_UMASK, units)) ||
+       ((qmask & ANG_QMASK) && !TSTBIT(ANG_UMASK, units))) {
+      compile_error_skip(/*Invalid units `%s' for quantity*/37, buffer);
+      return UNITS_NULL;
    }
    return units;
 }
@@ -332,15 +351,13 @@ get_qlist(unsigned long mask_bad)
       qmask |= BIT(tok);
       if (qmask != BIT(Q_DEFAULT) && (qmask & mask_bad)) {
 	 if (qmask & mask_bad & BIT(Q_DEFAULT)) strcpy(buffer, default_buf);
-	 compile_error(/*Unknown instrument `%s'*/39, buffer);
-	 skipline();
+	 compile_error_skip(/*Unknown instrument `%s'*/39, buffer);
 	 return 0;
       }
    }
 
    if (qmask == 0) {
-      compile_error(/*Unknown quantity `%s'*/34, buffer);
-      skipline();
+      compile_error_skip(/*Unknown quantity `%s'*/34, buffer);
    } else {
       set_pos(&fp);
    }
@@ -375,8 +392,7 @@ cmd_set(void)
    mask = match_tok(chartab, TABSIZE(chartab));
 
    if (mask == SPECIAL_UNKNOWN) {
-      compile_error(/*Unknown character class `%s'*/42, buffer);
-      skipline();
+      compile_error_skip(/*Unknown character class `%s'*/42, buffer);
       return;
    }
 
@@ -551,11 +567,10 @@ cmd_end(void)
    if (pcs->begin_lineno == 0) {
       if (pcsParent == NULL) {
 	 /* more ENDs than BEGINs */
-	 compile_error(/*No matching BEGIN*/192);
+	 compile_error_skip(/*No matching BEGIN*/192);
       } else {
-	 compile_error(/*END with no matching BEGIN in this file*/22);
+	 compile_error_skip(/*END with no matching BEGIN in this file*/22);
       }
-      skipline();
       return;
    }
 
@@ -571,10 +586,10 @@ cmd_end(void)
       if (tag) {
 	 if (!tagBegin) {
 	    /* "*begin" / "*end foo" */
-	    compile_error(/*Matching BEGIN tag has no prefix*/36);
+	    compile_error_skip(/*Matching BEGIN tag has no prefix*/36);
 	 } else {
 	    /* tag mismatch */
-	    compile_error(/*Prefix tag doesn't match BEGIN*/193);
+	    compile_error_skip(/*Prefix tag doesn't match BEGIN*/193);
 	 }
       } else {
 	 /* close tag omitted; open tag given */
@@ -620,8 +635,7 @@ cmd_fix(void)
    if (x == HUGE_REAL) {
       if (stnOmitAlready) {
 	 if (fix_name != stnOmitAlready->name) {
-	    compile_error(/*More than one FIX command with no coordinates*/56);
-	    skipline();
+	    compile_error_skip(/*More than one FIX command with no coordinates*/56);
 	 } else {
 	    compile_warning(/*Same station fixed twice with no coordinates*/61);
 	 }
@@ -780,8 +794,7 @@ cmd_equate(void)
       name1 = read_prefix_stn_check_implicit(fTrue, fTrue);
       if (name1 == NULL) {
 	 if (fOnlyOneStn) {
-	    compile_error(/*Only one station in equate list*/33);
-	    skipline();
+	    compile_error_skip(/*Only one station in equate list*/33);
 	 }
 #ifdef NEW3DFORMAT
 	 if (fUseNewFormat) limb = get_twig(pcs->Prefix);
@@ -972,8 +985,7 @@ cmd_data(void)
    }
 
    if (style == STYLE_UNKNOWN) {
-      compile_error(/*Data style `%s' unknown*/65, buffer);
-      skipline();
+      compile_error_skip(/*Data style `%s' unknown*/65, buffer);
       return;
    }
 
@@ -1006,19 +1018,17 @@ cmd_data(void)
       }
       /* Note: an unknown token is reported as trailing garbage */
       if (!TSTBIT(mask_all[style], d)) {
-	 compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
+	 compile_error_skip(/*Reading `%s' not allowed in data style `%s'*/63,
 		       buffer, style_name);
 	 osfree(style_name);
 	 osfree(new_order);
-	 skipline();
 	 return;
       }
       if (TSTBIT(mUsed, Newline) && TSTBIT(m_multi, d)) {
 	 /* e.g. "*data diving station newline tape depth compass" */
-	 compile_error(/*Reading `%s' must occur before NEWLINE*/225, buffer);
+	 compile_error_skip(/*Reading `%s' must occur before NEWLINE*/225, buffer);
 	 osfree(style_name);
 	 osfree(new_order);
-	 skipline();
 	 return;
       }
       /* Check for duplicates unless it's a special reading:
@@ -1026,10 +1036,9 @@ cmd_data(void)
        */
       if (!((BIT(Ignore) | BIT(End) | BIT(IgnoreAll)) & BIT(d))) {
 	 if (TSTBIT(mUsed, d)) {
-	    compile_error(/*Duplicate reading `%s'*/67, buffer);
+	    compile_error_skip(/*Duplicate reading `%s'*/67, buffer);
 	    osfree(style_name);
 	    osfree(new_order);
-	    skipline();
 	    return;
 	 } else {
 	    /* Check for previously listed readings which are incompatible
@@ -1064,17 +1073,15 @@ cmd_data(void)
 	     case Newline:
 	       if (mUsed & ~m_multi) {
 		  /* e.g. "*data normal from to tape newline compass clino" */
-		  compile_error(/*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
+		  compile_error_skip(/*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
 		  osfree(style_name);
 		  osfree(new_order);
-		  skipline();
 		  return;
 	       }
 	       if (k == 0) {
-		  compile_error(/*NEWLINE can't be the first reading*/222);
+		  compile_error_skip(/*NEWLINE can't be the first reading*/222);
 		  osfree(style_name);
 		  osfree(new_order);
-		  skipline();
 		  return;
 	       }
 	       break;
@@ -1083,11 +1090,10 @@ cmd_data(void)
 	    }
 	    if (fBad) {
 	       /* Not entirely happy with phrasing this... */
-	       compile_error(/*Reading `%s' duplicates previous reading(s)*/219,
+	       compile_error_skip(/*Reading `%s' duplicates previous reading(s)*/77,
 			     buffer);
 	       osfree(style_name);
 	       osfree(new_order);
-	       skipline();
 	       return;
 	    }
 	    mUsed |= BIT(d); /* used to catch duplicates */
@@ -1106,10 +1112,9 @@ cmd_data(void)
    } while (d != End);
 
    if (k >= 2 && new_order[k - 2] == Newline) {
-      compile_error(/*NEWLINE can't be the last reading*/223);
+      compile_error_skip(/*NEWLINE can't be the last reading*/223);
       osfree(style_name);
       osfree(new_order);
-      skipline();
       return;
    }
 
@@ -1127,7 +1132,7 @@ cmd_data(void)
        * *data normal station tape compass clino
        * (i.e. no newline, but interleaved readings)
        */
-      compile_error(/*Interleaved readings, but no NEWLINE*/224);
+      compile_error_skip(/*Interleaved readings, but no NEWLINE*/224);
       osfree(style_name);
       osfree(new_order);
       return;
@@ -1172,7 +1177,7 @@ cmd_data(void)
       /* Test should only fail with too few bits set, not too many */
       ASSERT((((mUsed &~ BIT(Newline)) | mask_optional[style])
 	      &~ mask[style]) == 0);
-      compile_error(/*Too few readings for data style `%s'*/64, style_name);
+      compile_error_skip(/*Too few readings for data style `%s'*/64, style_name);
       osfree(style_name);
       osfree(new_order);
       return;
@@ -1188,16 +1193,6 @@ cmd_data(void)
 
    osfree(style_name);
 }
-
-/* masks for units which are length and angles respectively */
-#define LEN_UMASK (BIT(UNITS_METRES) | BIT(UNITS_FEET) | BIT(UNITS_YARDS))
-#define ANG_UMASK (BIT(UNITS_DEGS) | BIT(UNITS_GRADS) | BIT(UNITS_MINUTES))
-
-/* ordering must be the same as the units enum */
-static real factor_tab[] = {
-   1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0),
-   (M_PI/180.0), (M_PI/200.0), 0.0, (M_PI/180.0/60.0)
-};
 
 static void
 cmd_units(void)
@@ -1215,17 +1210,21 @@ cmd_units(void)
    }
 
    factor = read_numeric(fTrue);
-   if (factor == HUGE_REAL) factor = (real)1.0;
-
-   units = get_units();
-   if (units == UNITS_NULL) return;
-   factor *= factor_tab[units];
-
-   if (((qmask & LEN_QMASK) && !TSTBIT(LEN_UMASK, units)) ||
-       ((qmask & ANG_QMASK) && !TSTBIT(ANG_UMASK, units))) {
-      compile_error(/*Invalid units `%s' for quantity*/37, buffer);
+   if (factor == 0.0) {
+      compile_error_skip(/**UNITS factor must be non-zero*/200);
       return;
    }
+   if (factor == HUGE_REAL) factor = (real)1.0;
+
+   units = get_units(qmask, fTrue);
+   if (units == UNITS_NULL) return;
+   if (TSTBIT(qmask, Q_GRADIENT))
+      pcs->f_clino_percent = (units == UNITS_PERCENT);
+   if (TSTBIT(qmask, Q_BACKGRADIENT))
+      pcs->f_backclino_percent = (units == UNITS_PERCENT);
+
+   factor *= factor_tab[units];
+
    for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1)
       if (qmask & m) pcs->units[quantity] = factor;
 }
@@ -1246,8 +1245,7 @@ cmd_calibrate(void)
    }
 
    if (((qmask & LEN_QMASK)) && ((qmask & ANG_QMASK))) {
-      compile_error(/*Can't calibrate angular and length quantities together*/227);
-      skipline();
+      compile_error_skip(/*Can't calibrate angular and length quantities together*/227);
       return;
    }
 
@@ -1257,8 +1255,7 @@ cmd_calibrate(void)
    /* check for declination scale */
    /* perhaps "*calibrate declination XXX" should be "*declination XXX" ? */
    if (TSTBIT(qmask, Q_DECLINATION) && sc != 1.0) {
-      compile_error(/*Scale factor must be 1.0 for DECLINATION*/40);
-      skipline();
+      compile_error_skip(/*Scale factor must be 1.0 for DECLINATION*/40);
       return;
    }
    for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1) {
@@ -1300,7 +1297,7 @@ cmd_default(void)
       default_units(pcs);
       break;
     default:
-      compile_error(/*Unknown setting `%s'*/41, buffer);
+      compile_error_skip(/*Unknown setting `%s'*/41, buffer);
    }
 }
 #endif
@@ -1358,17 +1355,11 @@ cmd_sd(void)
    }
    sd = read_numeric(fFalse);
    if (sd <= (real)0.0) {
-      compile_error(/*Standard deviation must be positive*/216);
+      compile_error_skip(/*Standard deviation must be positive*/48);
       return;
    }
-   units = get_units();
+   units = get_units(qmask, fFalse);
    if (units == UNITS_NULL) return;
-   if (((qmask & LEN_QMASK) && !TSTBIT(LEN_UMASK, units)) ||
-       ((qmask & ANG_QMASK) && !TSTBIT(ANG_UMASK, units))) {
-      compile_error(/*Invalid units `%s' for quantity*/37, buffer);
-      skipline();
-      return;
-   }
 
    sd *= factor_tab[units];
    variance = sqrd(sd);
@@ -1410,9 +1401,8 @@ cmd_case(void)
    if (setting != -1) {
       pcs->Case = setting;
    } else {
-      compile_error(/*Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'*/10,
+      compile_error_skip(/*Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'*/10,
 		    buffer);
-      skipline();
    }
 }
 
@@ -1437,15 +1427,13 @@ cmd_infer(void)
    get_token();
    setting = match_tok(infer_tab, TABSIZE(infer_tab));
    if (setting == 0) {
-      compile_error(/*Found `%s', expecting `EQUATES', `EXPORTS', or `PLUMBS'*/31, buffer);
-      skipline();
+      compile_error_skip(/*Found `%s', expecting `EQUATES', `EXPORTS', or `PLUMBS'*/31, buffer);
       return;
    }
    get_token();
    on = match_tok(onoff_tab, TABSIZE(onoff_tab));
    if (on == -1) {
-      compile_error(/*Found `%s', expecting `ON' or `OFF'*/32, buffer);
-      skipline();
+      compile_error_skip(/*Found `%s', expecting `ON' or `OFF'*/32, buffer);
       return;
    }
 
@@ -1573,8 +1561,7 @@ handle_command(void)
    cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
 
    if (cmdtok < 0 || cmdtok >= (int)(sizeof(cmd_funcs) / sizeof(cmd_fn))) {
-      compile_error(/*Unknown command `%s'*/12, buffer);
-      skipline();
+      compile_error_skip(/*Unknown command `%s'*/12, buffer);
       return;
    }
 

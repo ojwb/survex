@@ -47,9 +47,6 @@
 
 typedef double real; /* so we can change the precision used easily */
 #define HUGE_REAL HUGE_VAL
-/* this is big, but not so big we can't negate it safely -- not very nice,
- * and possibly unnecessary - need to recheck the standard */
-#define REAL_BIG (DBL_MAX/20.0)
 /* RISC OS FP emulation is broken, and the reported epsilon value isn't
  * useful in practice, so we fake it in the makefile */
 #ifndef REAL_EPSILON
@@ -59,8 +56,6 @@ typedef double real; /* so we can change the precision used easily */
 #if (!EXPLICIT_FIXED_FLAG)
 # define UNFIXED_VAL HUGE_VAL /* if p[0]==UNFIXED_VAL, station is unfixed */
 #endif
-
-#define NOT_YET fatalerror(/*Not yet implemented! Please let the authors know if you badly need this feature*/99)
 
 #define SPECIAL_EOL       0x001
 #define SPECIAL_BLANK     0x002
@@ -75,8 +70,6 @@ typedef double real; /* so we can change the precision used easily */
 #define SPECIAL_DECIMAL   0x100
 #define SPECIAL_MINUS     0x200
 #define SPECIAL_PLUS      0x400
-
-#define MAX_NO_OF_SDs 5
 
 extern char *fnm_output_base;
 extern int fnm_output_base_is_dir;
@@ -264,6 +257,8 @@ typedef struct Settings {
    bool f0Eq;
    bool f90Up;
    bool f_infer_exports;
+   bool f_clino_percent;
+   bool f_backclino_percent;
    enum {OFF, LOWER, UPPER} Case;
    int style;
    prefix *Prefix;

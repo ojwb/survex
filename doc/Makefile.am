@@ -7,18 +7,14 @@ doclist = @DOCS_OTHER@
 other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
  printdm.1 printhpgl.1 printpcl.1 printps.1 print.ini.5 @EXTRA_MANS@
 
-#can produce man page syntax summary from --help something like
-#SURVEXHOME=lib src/xcaverot --help | grep -i ^syntax |
-#sed 's!^[^ ]* \(.*/\)\?!!;s!^!.B !;s! !
-# !;s!\([A-Za-z0-9][A-Za-z0-9_]*\)!\\fI\1\\fR!g;s!\\fI!!;s!\\fR!!'
-
 manual_sources = manual.sgml cad3d.sgml cavern.sgml caverot.sgml\
  diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml xcaverot.sgml\
  printdm.sgml printhpgl.sgml printpcl.sgml printps.sgml printwin.sgml\
  print.ini.sgml
 
 # People can build from CVS without sgmltools v2 or v3 installed but they
-# won't be able to "make dist", which is arguably a good thing
+# won't be able to "make dist", which is arguably a good thing - we don't
+# want tarballs accidentally lacking the documentation.
 EXTRA_DIST = manual $(doclist) survex.1.in index.htm.in\
  index.htm GPL.htm TODO.htm ChngeLog.htm NEWS.htm OLDNEWS.htm\
  AUTHORS.htm HACKING.htm\

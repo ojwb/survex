@@ -1,6 +1,6 @@
 /* diffpos.c */
 /* Utility to compare two SURVEX .pos or .3d files */
-/* Copyright (C) 1994,1996,1998,1999,2001 Olly Betts
+/* Copyright (C) 1994,1996,1998-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,7 @@
 #include "hash.h"
 #include "img.h"
 #include "namecmp.h"
-
-/* macro to just convert argument to a string */
-#define STRING(X) _STRING(X)
-#define _STRING(X) #X
+#include "useful.h"
 
 /* very small value for comparing floating point numbers with */
 #define EPSILON (REAL_EPSILON * 1000)

@@ -11,9 +11,6 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${CAVERN="$testdir"/../src/cavern}
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
-SURVEXHOME="$srcdir"/../lib
-export SURVEXHOME
-
 PROGS="cad3d cavern printdm printps printpcl printhpgl diffpos extend sorterr\
  3dtopos"
 test -r "$testdir"/../src/xcaverot && PROGS="$PROGS xcaverot"

@@ -2,7 +2,8 @@ Changes in 1.0.8:
 
 * Slovak translation added; updated German, Catalan, and Spanish translations.
 
-* aven: reduced memory usage and increased speed and responsiveness.
+* aven: reduced memory usage by around 25% and increased speed and
+  responsiveness.
 
 * aven: rate of rotation and switching between plan and elevation now adjusted
   to the speed of redraw, so aven behaves in a similar way independent of the
@@ -22,8 +23,9 @@ Changes in 1.0.8:
 * aven: eliminated the "twinkling label" effect when dragging the cave with the
   right mouse button.
 
-* aven: the measuring line moves much more smoothly now - it only redraws the
-  area of the window affected by it moving.
+* aven: the measuring line moves much more smoothly now: the mouse cursor now
+  snaps to the nearest station, rather than just a near station; and when the
+  line moves, we now only redraw the affected area of the window.
 
 * aven: resolved annoying limit on zooming in on large surveys.  This was a
   crude way of preventing random lines due to overflow in the windowing system.
@@ -41,13 +43,12 @@ Changes in 1.0.8:
 * printpcl/printdm: Added new .ini setting "font_bitmap" which allows the user
   to choose between alternative fonts.  Current we supply "default" and "bold".
 
+* printps/printhpgl: Fixed --skip-blanks which would incorrectly skip non-blank
+  pages on rare occasions.
+
 * cavern: added support for BackCompass and BackClino.
 
-* cavern: fixed handling of omitted clino readings when OMIT is *set to be
-  different from MINUS and PLUS (new test omitclino).
-
-* cavern: N-S, E-W, and vertical ranges now only count stations which are in
-  underground surveys.
+* cavern: implemented "*units clino percent".
 
 * cavern: added "*infer export on".  Any stations seen while this is on will
   have the necessary *export-s inferred when accessed from outside their
@@ -55,13 +56,21 @@ Changes in 1.0.8:
   doesn't.  It's also useful for a maze cave where so many stations can
   be linked to that listing them explicitly isn't desirable.
 
+* cavern: N-S, E-W, and vertical ranges now only count stations which are in
+  underground surveys.
+
 * cavern: *infer plumbs wasn't inferring -90 to be DOWN - fixed.
 
 * cavern: *infer was giving an internal error if the argument was unknown -
   now it gives the correct error message.
 
+* cavern: fixed handling of omitted clino readings when OMIT is *set to be
+  different from MINUS and PLUS (new test omitclino).
+
 * cavern: fixed a bogus warning for any station which was only used in a line
   of data which was rejected because of an error.
+
+* cavern: added error if the *units factor is zero (e.g. "*units tape 0 feet").
 
 * cavern: removed the ill-thought-out and never implemented LENGTHOUTPUT
   and ANGLEOUTPUT quantities.
@@ -73,6 +82,10 @@ Changes in 1.0.8:
 * Test suite now checks that all programs will run successfully with "--help"
   and with "--version".  This should avoid problems such as that which broke
   the printer drivers in 1.0.4-1.0.6.
+
+* (Unix version): uninstalled binaries now use the path they are run with to
+  find support files, which means SURVEXHOME is no longer required, and has
+  been removed.
 
 Changes in 1.0.7:
 

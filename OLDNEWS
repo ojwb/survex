@@ -337,7 +337,7 @@ Changes in 0.99-prerelease1:
 * `program --version' now works even if message file can't be found.
 
 * (Unix version): Fixed attempt to load messages from
-  "DEFAULTLANG.msg" if both SURVEX_LANG and LANG were unset.
+  "DEFAULTLANG.msg" if both SURVEXLANG and LANG were unset.
 
 * Much more rigorous checking for operating system errors when reading
   and writing files.
@@ -793,7 +793,7 @@ Changes in 0.97-prerelease1:
 * (UNIX version): `make uninstall' now removes the HTML documentation.
 
 * (UNIX version): printer drivers: Look for /etc/survex/print.ini rather
-  than $SURVEXHOME/myprint.ini
+  than <prefix>/share/survex/myprint.ini
 
 * cavern: added warning that use of ROOT character ('\' by default) is
   deprecated; updated documentation to mention this.
@@ -1032,8 +1032,8 @@ Changes in 0.95-prerelease1:
 
 * print*: now search multiple print.ini files so you can override settings
   in the shipped file rather than having to modify it.  Search order is:
-  ~/.survex/print.ini (unix only), $SURVEXHOME/myprint.ini,
-  $SURVEXHOME/print.ini
+  ~/.survex/print.ini (unix only), <prefix>/share/survex/myprint.ini,
+  <prefix>/share/survex/print.ini
 
 * Changed xcaverot rotation/zoom to be the same way round as caverot
 

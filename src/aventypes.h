@@ -2,6 +2,7 @@
 //  aventypes.h
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
+//  Copyright (C) 2002, Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,7 +22,7 @@
 #ifndef aventypes_h
 #define aventypes_h
 
-#include "config.h"
+#include <config.h>
 
 #ifdef AVENGL
 #ifdef _WIN32

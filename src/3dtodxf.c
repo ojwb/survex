@@ -34,6 +34,7 @@
 
 #include "cmdline.h"
 #include "debug.h"
+#include "filename.h"
 #include "hash.h"
 #include "img.h"
 #include "message.h"

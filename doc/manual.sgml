@@ -92,8 +92,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-05-09 12:52:46 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.92 2002-05-09 12:52:46 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-05-13 10:17:44 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.93 2002-05-13 10:17:44 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -340,7 +340,7 @@ which only needs the standard X libraries.
 <Para>
 This version comes packaged with an installation wizard.  Just
 run the downloaded package and let it lead you through the
-installation process.  If installing on Windows NT or 2000
+installation process.  If installing on MS Windows NT, 2000, or XP
 we recommend you run the installer as administrator (or as a
 user with administrator rights) so that the file associations
 can be set up.
@@ -472,9 +472,9 @@ actions:
 
 </Sect3>
 
-<Sect3><Title>Windows 3.1 and &msdos; (Intel 80386 or newer CPU)</Title>
+<Sect3><Title>MS Windows 3.1 and &msdos; (Intel 80386 or newer CPU)</Title>
 
-<Para>For Windows 3.1 we suggest using the &msdos; version.
+<Para>For MS Windows 3.1 we suggest using the &msdos; version.
 This version is compiled with the free DJGPP C compiler
 (<ulink url="&djgppwebsite;">&djgppwebsite;</ulink>) which uses &dpmi;
 to access memory above &msdos;'s 640k. Windows has &dpmi; services built in,
@@ -2739,10 +2739,13 @@ TAPE|LENGTH|COMPASS|BEARING|CLINO|GRADIENT|COUNTER|DEPTH|DECLINATION|X|Y|Z
 
 <Para>Changes current units of all the quantities listed to [&lt;factor&gt;]
 &lt;unit&gt;. Note that quantities can be expressed either as
-the instrument or the measurement.
+the instrument (e.g. COMPASS) or the measurement (e.g. BEARING).
 </Para>
 
-<Para>If &lt;factor&gt; is omitted it defaults to 1.00
+<Para>&lt;factor&gt; allows you to easy specify situations such as measuring
+distance with a diving line knotted every 10cm (*units distance 0.1 metres).
+If &lt;factor&gt; is omitted it defaults to 1.0.  If specified, it must be
+non-zero.
 </Para>
 
 <Para>Valid units for listed quantities are:
@@ -2754,13 +2757,8 @@ the instrument or the measurement.
 in YARDS|FEET|METRIC|METRES|METERS
 </Para>
 
-<!-- FIXME
-<Para>[Percentage gradient not yet implemented]
-</Para>
--->
-
 <Para>CLINO, BACKCLINO, GRADIENT, BACKGRADIENT
-in DEG|DEGREES|GRADS|MILS<!--|PERCENT|PERCENTAGE-->
+in DEG|DEGREES|GRADS|MILS|PERCENT|PERCENTAGE
 </Para>
 
 <Para>COMPASS, BACKCOMPASS, BEARING, BACKBEARING, DECLINATION

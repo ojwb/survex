@@ -14,9 +14,6 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${EXTEND="$testdir"/../src/extend}
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
-SURVEXHOME="$srcdir"/../lib
-export SURVEXHOME
-
 : ${TESTS=${*-"extend extend2names"}}
 
 for file in $TESTS ; do

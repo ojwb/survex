@@ -229,12 +229,7 @@ public:
 class LabelPlotCmp {
 public:
     bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
-	int n;
-	n = pt1->IsEntrance() - pt2->IsEntrance();
-	if (n) return n > 0;
-	n = pt1->IsFixedPt() - pt2->IsFixedPt();
-	if (n) return n > 0;
-	n = pt1->IsExportedPt() - pt2->IsExportedPt();
+	int n = pt1->flags - pt2->flags;
 	if (n) return n > 0;
 	wxString l1 = pt1->GetText().AfterLast('.');
 	wxString l2 = pt2->GetText().AfterLast('.');
@@ -722,6 +717,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		label->x = pt.x;
 		label->y = pt.y;
 		label->z = pt.z;
+		if (survey->flags & img_SFLAG_ENTRANCE) {
+		    survey->flags ^= (img_SFLAG_ENTRANCE | LFLAG_ENTRANCE);
+		}
 		label->flags = survey->flags;
 		if (label->IsEntrance()) {
 		    m_NumEntrances++;
@@ -1698,8 +1696,6 @@ void MainFrm::OnFind(wxCommandEvent& event)
 	return;
     }
 
-    m_Gfx->ClearSpecialPoints();
-
     list<LabelInfo*>::iterator pos = m_Labels.begin();
 
     int found = 0;
@@ -1707,8 +1703,10 @@ void MainFrm::OnFind(wxCommandEvent& event)
 	LabelInfo* label = *pos++;
 
 	if (regexec(&buffer, label->text.c_str(), 0, NULL, 0) == 0) {
-	    m_Gfx->AddSpecialPoint(label->x, label->y, label->z);
+	    label->flags |= LFLAG_HIGHLIGHTED;
 	    found++;
+	} else {
+	    label->flags &= ~LFLAG_HIGHLIGHTED;
 	}
     }
 
@@ -1718,7 +1716,9 @@ void MainFrm::OnFind(wxCommandEvent& event)
 #ifdef _WIN32
     m_Found->Refresh(); // FIXME
 #endif
-    m_Gfx->DisplaySpecialPoints();
+    // Re-sort so highlighted points get names in preference
+    if (found) m_Labels.sort(LabelPlotCmp());
+    m_Gfx->ForceRefresh();
 
 #if 0
     if (!found) {
@@ -1733,7 +1733,12 @@ void MainFrm::OnHide(wxCommandEvent& event)
 {
     // Hide any search result highlights.
     m_Found->SetLabel("");
-    m_Gfx->ClearSpecialPoints();
+    list<LabelInfo*>::iterator pos = m_Labels.begin();
+    while (pos != m_Labels.end()) {
+	LabelInfo* label = *pos++;
+	label->flags &= ~LFLAG_HIGHLIGHTED;
+    }
+    m_Gfx->ForceRefresh();
 }
 
 void MainFrm::SetMouseOverStation(LabelInfo* label)

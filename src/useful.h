@@ -21,6 +21,8 @@
 #ifndef USEFUL_H
 #define USEFUL_H
 
+#include <config.h>
+
 #include <stdlib.h> /* for Borland C which #defines max() & min() there */
 #include <stdio.h>
 #include <math.h>
@@ -32,19 +34,6 @@
 
 /* Macro to do nothing, but avoid compiler warnings about empty if bodies &c */
 #define NOP (void)0
-
-#if 0
-/* These macros work, but we don't need fgetpos/fsetpos - fseek/ftell
- * have equivalent functionality for files < 2Gbytes in size */
-
-/* unix-style libraries may only have ftell/fseek, not fgetpos/fsetpos */
-#ifndef HAVE_FGETPOS
-/* ftell returns -1L on error; fgetpos returns non-zero on error */
-# define fgetpos(FH, P) ((*(P) = ftell(FH)) == -1L)
-# define fsetpos(FH, P) fseek(FH, *(P), SEEK_SET)
-typedef long int fpos_t;
-#endif
-#endif
 
 /* deals with Borland TurboC & maybe others */
 #if (!defined(CLOCKS_PER_SEC) && defined(CLK_TCK))
@@ -115,12 +104,10 @@ typedef long int fpos_t;
 #define deg(X) ((180.0 / M_PI) * (X))  /* convert from radians to degrees */
 
 /* macro to convert argument to a string literal */
-#define STRING(X) _STRING(X)
-#define _STRING(X) #X
+#define STRING(X) STRING_(X)
+#define STRING_(X) #X
 
 #include "osdepend.h"
-#include "filename.h"
-#include "message.h"
 
 #ifndef WORDS_BIGENDIAN
 extern INT16_T useful_w16;

@@ -50,7 +50,7 @@ struct ColourTriple {
 };
 
 // Colours for drawing.
-// These must be in the same order as the entries in the array COLOURS in gfxcore.cc.
+// These must be in the same order as the entries in COLOURS[] in gfxcore.cc.
 enum AvenColour {
     col_BLACK = 0,
     col_GREY,
@@ -64,7 +64,6 @@ enum AvenColour {
     col_INDICATOR_2,
     col_YELLOW,
     col_RED,
-    col_CYAN,
     col_LAST // must be the last entry here
 };
 
@@ -122,13 +121,6 @@ class GfxCore : public wxWindow {
     bool m_AntiAlias;
 #endif
 
-    enum HighlightFlags {
-	hl_NONE = 0,
-	hl_ENTRANCE = 1,
-	hl_EXPORTED = 2,
-	hl_FIXED = 4
-    };
-
     enum LockFlags {
 	lock_NONE = 0,
 	lock_X = 1,
@@ -139,8 +131,6 @@ class GfxCore : public wxWindow {
 	lock_YZ = lock_Y | lock_Z,
 	lock_XY = lock_X | lock_Y
     };
-
-    Point* m_CrossData;
 
     struct PlotData {
 	Point *vertices;
@@ -157,11 +147,6 @@ class GfxCore : public wxWindow {
 	int drag_start_offset_y;
     } m_ScaleBar;
 
-    struct HighlightedPt {
-	LabelInfo *label;
-	HighlightFlags flags;
-    };
-
 #ifdef AVENGL
     struct {
 	// Viewing volume parameters: these are all negative!
@@ -176,25 +161,17 @@ class GfxCore : public wxWindow {
     } m_Textures;
 
     bool m_SolidSurface;
-#endif
 
     Double floor_alt;
     bool terrain_rising;
+#endif
 
-    struct GridPointInfo {
-	long x, y; // screen coordinates
-	LabelInfo* label;
-    };
-
-    list<Point> m_SpecialPoints;
 #ifdef AVENPRES
     list<pair<PresData, Quaternion> > m_Presentation;
     list<pair<PresData, Quaternion> >::iterator m_PresIterator;
 #endif
     double m_MaxExtent; // twice the maximum of the {x,y,z}-extents, in survey coordinates.
     char *m_LabelGrid;
-    HighlightedPt* m_HighlightedPts;
-    int m_NumHighlightedPts;
     bool m_RotationOK;
     LockFlags m_Lock;
     Matrix4 m_RotationMatrix;
@@ -247,10 +224,12 @@ class GfxCore : public wxWindow {
     bool m_FixedPts;
     bool m_ExportedPts;
     bool m_Grid;
-    int m_NumCrosses;
-    list<GridPointInfo>* m_PointGrid;
+
+    list<LabelInfo*> *m_PointGrid;
     bool m_HitTestGridValid;
+#ifdef AVENGL
     bool m_TerrainLoaded;
+#endif
 
 #ifdef AVENPRES
     Double m_DoingPresStep;
@@ -312,6 +291,7 @@ class GfxCore : public wxWindow {
     void LoadTexture(const wxString& file, GLuint* texture);
     void RenderMap();
     void SetSolidSurface(bool);
+    void RenderTerrain(Double floor_alt);
 #endif
 
     Double XToScreen(Double x, Double y, Double z) {
@@ -384,13 +364,7 @@ class GfxCore : public wxWindow {
 
     void Repaint();
 
-#ifdef AVENPRES
-    void PresGoto(PresData& d, Quaternion& q);
-#endif
-
     void CreateHitTestGrid();
-
-    void RenderTerrain(Double floor_alt);
 
 public:
     bool m_Degrees;
@@ -403,9 +377,7 @@ public:
     void InitialiseOnNextResize() { m_InitialisePending = true; }
     void InitialiseTerrain();
 
-    void ClearSpecialPoints();
-    void AddSpecialPoint(Double x, Double y, Double z);
-    void DisplaySpecialPoints();
+    void ForceRefresh();
 
     void RefreshLine(const Point &a1, const Point &b1,
 		     const Point &a2, const Point &b2);
@@ -426,6 +398,8 @@ public:
 
     bool AtStartOfPres();
     bool AtEndOfPres();
+
+    void PresGoto(PresData& d, Quaternion& q);
 #endif
 
     void OnDefaults();

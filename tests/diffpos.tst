@@ -12,9 +12,6 @@ test -x "$testdir"/../src/cavern || testdir=.
 
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
-SURVEXHOME="$srcdir"/../lib
-export SURVEXHOME
-
 : ${TESTS=${*-"delatend addatend"}}
 
 for file in $TESTS ; do

@@ -194,22 +194,25 @@ check_intersection(long x_p, long y_p)
    /* whole line is above, left, right, or below page */
    if (mask_t & mask_p) return 0;
 
+   /* FIXME: these 4 checks are bogus - copy code from gfxcore.cc that works */
    if (mask_t & U) {
-      double v = (double)(y_p - ypPageDepth) / (y_p - y_t);
-      return v >= 0 && v <= 1;
+      double v = (double)((x_p - x_t) * ypPageDepth + x_t * y_p - x_p * y_t) /
+		 (y_p - y_t);
+      return v >= 0 && v <= xpPageWidth;
    }
    if (mask_t & D) {
-      double v = (double)y_p / (y_p - y_t);
-      return v >= 0 && v <= 1;
+      double v = (double)(x_t * y_p - x_p * y_t) / (y_p - y_t);
+      return v >= 0 && v <= xpPageWidth;
    }
    if (mask_t & R) {
-      double v = (double)(x_p - xpPageWidth) / (x_p - x_t);
-      return v >= 0 && v <= 1;
+      double v = (double)((y_p - y_t) * xpPageWidth + x_p * y_t - x_t * y_p) /
+		 (x_p - x_t);
+      return v >= 0 && v <= ypPageDepth;
    }
    ASSERT(mask_t & L);
    {
-      double v = (double)x_p / (x_p - x_t);
-      return v >= 0 && v <= 1;
+      double v = (double)(x_p * y_t - x_t * y_p) / (x_p - x_t);
+      return v >= 0 && v <= ypPageDepth;
    }
 #endif
 #undef U

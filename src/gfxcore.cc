@@ -89,7 +89,6 @@ const ColourTriple COLOURS[] = {
     { 114, 149, 160 }, // indicator 2
     { 255, 255, 0 },   // yellow
     { 255, 0, 0 },     // red
-    { 0, 100, 255 }    // cyan
 };
 
 #define DELETE_ARRAY(A) do { assert((A)); delete[] (A); } while (0)
@@ -125,7 +124,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_InitialisePending(false)
 {
     m_OffscreenBitmap = NULL;
-    m_TerrainLoaded = false;
     m_LastDrag = drag_NONE;
     m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
     m_ScaleBar.offset_y = SCALE_BAR_OFFSET_Y;
@@ -164,6 +162,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     clipping = false;
 
 #ifdef AVENGL
+    m_TerrainLoaded = false;
     m_AntiAlias = false;
     m_SolidSurface = false;
 #else
@@ -182,7 +181,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     SetBackgroundColour(wxColour(0, 0, 0));
 
     // Initialise grid for hit testing.
-    m_PointGrid = new list<GridPointInfo>[HITTEST_SIZE * HITTEST_SIZE];
+    m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
 }
 
 GfxCore::~GfxCore()
@@ -214,10 +213,8 @@ void GfxCore::TryToFreeArrays()
 	}
 
 	DELETE_ARRAY(m_PlotData);
-	DELETE_ARRAY(m_HighlightedPts);
 	DELETE_ARRAY(m_Polylines);
 	DELETE_ARRAY(m_SurfacePolylines);
-	DELETE_ARRAY(m_CrossData);
 
 	if (m_LabelGrid) {
 	    DELETE_ARRAY(m_LabelGrid);
@@ -242,15 +239,10 @@ void GfxCore::Initialise()
 	GetSize(&m_XSize, &m_YSize);
     }
 
-    m_SpecialPoints.clear();
-
     m_Bands = m_Parent->GetNumDepthBands(); // last band is surface data
     m_PlotData = new PlotData[m_Bands];
     m_Polylines = new int[m_Bands];
     m_SurfacePolylines = new int[m_Bands];
-    m_CrossData = new Point[m_Parent->GetNumCrosses()];
-
-    m_HighlightedPts = new HighlightedPt[m_Parent->GetNumCrosses()];
 
     for (int band = 0; band < m_Bands; band++) {
 	m_PlotData[band].vertices = new Point[m_Parent->GetNumPoints()];
@@ -266,7 +258,9 @@ void GfxCore::Initialise()
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
 
+#ifdef AVENGL
     m_TerrainLoaded = false;
+#endif
 
 #ifdef AVENPRES
     m_DoingPresStep = -1; //--Pres: FIXME: delete old lists
@@ -362,8 +356,7 @@ void GfxCore::Initialise()
 
     // Calculate screen coordinates and redraw.
     SetScaleInitial(m_InitialScale);
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::FirstShow()
@@ -601,52 +594,6 @@ void GfxCore::SetScaleInitial(Double scale)
 #endif
 	}
     }
-
-    // Construct polylines for crosses, sort out station names,
-    // and deal with highlighted points.
-    m_NumHighlightedPts = 0;
-    HighlightedPt* hpt = m_HighlightedPts;
-    m_NumCrosses = 0;
-    Point* pt = m_CrossData;
-    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
-    list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
-    wxString text;
-    while (pos != end) {
-	LabelInfo* label = *pos++;
-	pt->x = label->GetX();
-	pt->y = label->GetY();
-	pt->z = label->GetZ();
-	pt++;
-
-	m_NumCrosses++;
-
-	//--FIXME
-#ifndef AVENGL
-	if ((m_FixedPts || m_Entrances || m_ExportedPts) &&
-		((label->IsSurface() && m_Surface) || (label->IsUnderground() && m_Legs) ||
-		 (!label->IsSurface() && !label->IsUnderground() /* for stns with no legs attached */))) {
-	    hpt->label = label;
-	    hpt->flags = hl_NONE;
-
-	    if (label->IsFixedPt()) {
-		hpt->flags = HighlightFlags(hpt->flags | hl_FIXED);
-	    }
-
-	    if (label->IsEntrance()) {
-		hpt->flags = HighlightFlags(hpt->flags | hl_ENTRANCE);
-	    }
-
-	    if (label->IsExportedPt()) {
-		hpt->flags = HighlightFlags(hpt->flags | hl_EXPORTED);
-	    }
-
-	    if (hpt->flags != hl_NONE) {
-		hpt++;
-		m_NumHighlightedPts++;
-	    }
-	}
-#endif
-    }
 }
 
 void GfxCore::SetScale(Double scale)
@@ -874,51 +821,6 @@ void GfxCore::RedrawOffscreen()
     // Invalidate hit-test grid.
     m_HitTestGridValid = false;
 
-    if (m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) {
-	// Construct polylines for crosses, sort out station names,
-	// and deal with highlighted points.
-
-	m_NumHighlightedPts = 0;
-	HighlightedPt* hpt = m_HighlightedPts;
-	list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
-	list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
-	wxString text;
-	while (pos != end) {
-	    LabelInfo* label = *pos++;
-
-	    if (!((label->IsSurface() && m_Surface) ||
-		  (label->IsUnderground() && m_Legs) ||
-		  (!label->IsSurface() && !label->IsUnderground()))) {
-		/* if this station isn't to be displayed, skip to the next
-		 * (last case is for stns with no legs attached) */
-		continue;
-	    }
-
-	    //--FIXME
-	    if (m_FixedPts || m_Entrances || m_ExportedPts) {
-		hpt->label = label;
-		hpt->flags = hl_NONE;
-
-		if (label->IsFixedPt()) {
-		    hpt->flags = HighlightFlags(hpt->flags | hl_FIXED);
-		}
-
-		if (label->IsEntrance()) {
-		    hpt->flags = HighlightFlags(hpt->flags | hl_ENTRANCE);
-		}
-
-		if (label->IsExportedPt()) {
-		    hpt->flags = HighlightFlags(hpt->flags | hl_EXPORTED);
-		}
-
-		if (hpt->flags != hl_NONE) {
-		    hpt++;
-		    m_NumHighlightedPts++;
-		}
-	    }
-	}
-    }
-
     m_DrawDC.BeginDrawing();
 
     // Set the font.
@@ -946,8 +848,7 @@ void GfxCore::RedrawOffscreen()
 		start = 0;
 		end = m_Bands;
 		inc = 1;
-	    }
-	    else {
+	    } else {
 		start = m_Bands - 1;
 		end = -1;
 		inc = -1;
@@ -971,8 +872,7 @@ void GfxCore::RedrawOffscreen()
 		start = 0;
 		end = m_Bands;
 		inc = 1;
-	    }
-	    else {
+	    } else {
 		start = m_Bands - 1;
 		end = -1;
 		inc = -1;
@@ -998,107 +898,85 @@ void GfxCore::RedrawOffscreen()
 	    }
 	}
 
-	// Draw crosses.
-	if (m_Crosses) {
-	    SetColour(col_TURQUOISE);
-	    // Calculate screen coordinates.
-
-	    Point* pt = m_CrossData;
-	    for (int n = m_NumCrosses; n; --n) {
-		Double xp = pt->x + m_Params.translation.x;
-		Double yp = pt->y + m_Params.translation.y;
-		Double zp = pt->z + m_Params.translation.z;
-		int x = int(xp * m_00 + yp * m_01 + zp * m_02) + m_XCentre;
-		if (x >= -CROSS_SIZE && x < m_XSize + CROSS_SIZE) {
-		    int y = -int(xp * m_20 + yp * m_21 + zp * m_22) + m_YCentre;
-		    if (y >= -CROSS_SIZE && y < m_YSize + CROSS_SIZE) {
-			m_DrawDC.DrawLines(2, cross1, x, y);
-			m_DrawDC.DrawLines(2, cross2, x, y);
-		    }
-		}
-		++pt;
-	    }
-	}
-
-	// Plot highlighted points.
-	if (m_Entrances || m_FixedPts || m_ExportedPts) {
-	    for (int count = 0; count < m_NumHighlightedPts; count++) {
-		HighlightedPt* pt = &m_HighlightedPts[count];
+	// Plot crosses and/or blobs.
+	if (true || // FIXME : replace true with test for there being highlighted points...
+		m_Crosses || m_Entrances || m_FixedPts || m_ExportedPts) {
+	    list<LabelInfo*>::const_reverse_iterator pos =
+		m_Parent->GetRevLabels();
+	    while (pos != m_Parent->GetRevLabelsEnd()) {
+		LabelInfo* label = *pos++;
 
 		// When more than one flag is set on a point:
-		// entrance highlighting takes priority over fixed point
+		// search results take priority over entrance highlighting
+		// which takes priority over fixed point
 		// highlighting, which in turn takes priority over exported
 		// point highlighting.
 
 		enum AvenColour col;
-		if (m_Entrances && (pt->flags & hl_ENTRANCE)) {
+		enum {BLOB, CROSS} shape = BLOB;
+		if (!((label->IsSurface() && m_Surface) ||
+		      (label->IsUnderground() && m_Legs) ||
+		      (!label->IsSurface() && !label->IsUnderground()))) {
+		    // if this station isn't to be displayed, skip to the next
+		    // (last case is for stns with no legs attached)
+		    continue;
+		}
+
+		if (label->IsHighLighted()) {
+		    col = col_YELLOW;
+		} else if (m_Entrances && label->IsEntrance()) {
 		    col = col_GREEN;
-		} else if (m_FixedPts && (pt->flags & hl_FIXED)) {
+		} else if (m_FixedPts && label->IsFixedPt()) {
 		    col = col_RED;
-		} else if (m_ExportedPts && (pt->flags & hl_EXPORTED)) {
-		    col = col_CYAN;
+		} else if (m_ExportedPts && label->IsExportedPt()) {
+		    col = col_TURQUOISE;
+		} else if (m_Crosses) {
+		    col = col_LIGHT_GREY;
+		    shape = CROSS;
 		} else {
 		    continue;
 		}
 
-		SetColour(col);
-		SetColour(col, true);
-		Double x3 = pt->label->GetX() + m_Params.translation.x;
-		Double y3 = pt->label->GetY() + m_Params.translation.y;
-		Double z3 = pt->label->GetZ() + m_Params.translation.z;
+		Double x3 = label->GetX() + m_Params.translation.x;
+		Double y3 = label->GetY() + m_Params.translation.y;
+		Double z3 = label->GetZ() + m_Params.translation.z;
 
+		// Calculate screen coordinates, and check if the point is
+		// visible - this is faster, and avoids coordinate
+		// wrap-around problems
 		int x = (int) (x3 * m_00 + y3 * m_01 + z3 * m_02) + m_XCentre;
+		if (x < -CROSS_SIZE || x >= m_XSize + CROSS_SIZE) continue;
 		int y = -(int) (x3 * m_20 + y3 * m_21 + z3 * m_22) + m_YCentre;
-//		m_DrawDC.DrawLines(10, blob, x, y);
-		m_DrawDC.DrawLines(2, cross1, x, y);
-		m_DrawDC.DrawLines(2, cross2, x, y);
-//		m_DrawDC.DrawEllipse(x - HIGHLIGHTED_PT_SIZE,
-//				     y - HIGHLIGHTED_PT_SIZE,
-//				     HIGHLIGHTED_PT_SIZE * 2,
-//				     HIGHLIGHTED_PT_SIZE * 2);
+		if (y < -CROSS_SIZE || y >= m_YSize + CROSS_SIZE) continue;
+
+		SetColour(col);
+		if (shape == CROSS) {
+		    m_DrawDC.DrawLines(2, cross1, x, y);
+		    m_DrawDC.DrawLines(2, cross2, x, y);
+		} else {
+		    SetColour(col, true);
+#if 0
+		    m_DrawDC.DrawEllipse(x - HIGHLIGHTED_PT_SIZE,
+					 y - HIGHLIGHTED_PT_SIZE,
+					 HIGHLIGHTED_PT_SIZE * 2,
+					 HIGHLIGHTED_PT_SIZE * 2);
+#else
+		    m_DrawDC.DrawLines(10, blob, x, y);
+#endif
+		}
 	    }
 	}
 
-	if (m_Grid && !grid_first) {
-	    DrawGrid();
-	}
+	if (m_Grid && !grid_first) DrawGrid();
 
 	// Draw station names.
-	if (m_Names) {
-	    DrawNames();
-	}
-
-	// Draw any special points.
-	SetColour(col_YELLOW);
-	SetColour(col_YELLOW, true);
-	list<Point>::const_iterator sp = m_SpecialPoints.begin();
-	while (sp != m_SpecialPoints.end()) {
-	    Double xp = sp->x + m_Params.translation.x;
-	    Double yp = sp->y + m_Params.translation.y;
-	    Double zp = sp->z + m_Params.translation.z;
-
-	    int x = int(xp * m_00 + yp * m_01 + zp * m_02);
-	    int y = -int(xp * m_20 + yp * m_21 + zp * m_22);
-//	    m_DrawDC.DrawLines(10, blob, x + m_XCentre, y + m_YCentre);
-	    x += m_XCentre;
-	    y += m_YCentre;
-	    m_DrawDC.DrawLines(2, cross1, x, y);
-	    m_DrawDC.DrawLines(2, cross2, x, y);
-//	    m_DrawDC.DrawEllipse(x + xc, y + yc,
-//				 HIGHLIGHTED_PT_SIZE * 2,
-//				 HIGHLIGHTED_PT_SIZE * 2);
-	    ++sp;
-	}
+	if (m_Names) DrawNames();
 
 	// Draw scalebar.
-	if (m_Scalebar) {
-	    DrawScalebar();
-	}
+	if (m_Scalebar) DrawScalebar();
 
 	// Draw depthbar.
-	if (m_Depthbar) {
-	    DrawDepthbar();
-	}
+	if (m_Depthbar) DrawDepthbar();
 
 	// Draw compass or elevation/heading indicators.
 	if ((m_Compass && m_RotationOK) || (m_Clino && m_Lock == lock_NONE)) {
@@ -1608,16 +1486,12 @@ void GfxCore::DrawNames()
 void GfxCore::NattyDrawNames()
 {
     // Draw station names, without overlapping.
-
+    // FIXME: copied to OnSize()
     const int dv = 2;
     const int quantise = int(FONT_SIZE / dv);
     const int quantised_x = m_XSize / quantise;
     const int quantised_y = m_YSize / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
-    if (m_LabelGrid) {
-	delete[] m_LabelGrid;
-    }
-    m_LabelGrid = new char[buffer_size];
     memset((void*)m_LabelGrid, 0, buffer_size);
 
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
@@ -1633,7 +1507,7 @@ void GfxCore::NattyDrawNames()
     glColor3f(0.0, 1.0, 0.0);//--FIXME
 #endif
 
-    for (int name = 0; name < m_NumCrosses; name++) {
+    while (label != m_Parent->GetLabelsEnd()) {
 #ifdef AVENGL
 	// Project the label's position onto the window.
 	GLdouble x, y, z;
@@ -1694,7 +1568,7 @@ void GfxCore::SimpleDrawNames()
 
 #ifndef AVENGL
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
-    for (int name = 0; name < m_NumCrosses; name++) {
+    while (label != m_Parent->GetLabelsEnd()) {
 	wxCoord x = (wxCoord)GridXToScreen((*label)->x, (*label)->y, (*label)->z);
 	wxCoord y = (wxCoord)GridYToScreen((*label)->x, (*label)->y, (*label)->z);
 	m_DrawDC.DrawText((*label)->GetText(), x, y + CROSS_SIZE - FONT_SIZE);
@@ -2062,11 +1936,8 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 #ifdef AVENGL
     glDeleteLists(m_Lists.grid, 1);
     //    DrawGrid();
-#else
-    m_RedrawOffscreen = true;
 #endif
-
-    Refresh(false);
+    ForceRefresh();
 
     m_DragStart = point;
 }
@@ -2089,11 +1960,7 @@ void GfxCore::TurnCave(Double angle)
 	m_PanAngle += M_PI * 2.0;
     }
 
-#ifndef AVENGL
-    m_RedrawOffscreen = true;
-#endif
-
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::TurnCaveTo(Double angle)
@@ -2120,8 +1987,7 @@ void GfxCore::TiltCave(Double tilt_angle)
     m_Params.rotation = q * m_Params.rotation;
     m_RotationMatrix = m_Params.rotation.asMatrix();
 
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::HandleTilt(wxPoint point)
@@ -2182,54 +2048,53 @@ void GfxCore::TranslateCave(int dx, int dy)
     m_Params.translation.y += cy;
     m_Params.translation.z += cz;
 
-#ifndef AVENGL
-    m_RedrawOffscreen = true;
-#endif
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 {
 #ifndef AVENGL
-    if (!m_HitTestGridValid) {
-	CreateHitTestGrid();
-    }
-
-    if (point.x < 0 || point.x > m_XSize || point.y < 0 || point.y > m_YSize) {
+    if (point.x < 0 || point.x >= m_XSize || point.y < 0 || point.y >= m_YSize) {
 	return;
     }
+
+    if (!m_HitTestGridValid) CreateHitTestGrid();
 
     int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
     int grid_y = (point.y * (HITTEST_SIZE - 1)) / m_YSize;
 
-    bool done = false;
+    LabelInfo *best = NULL;
+    int dist_sqrd = 25;
     int square = grid_x + grid_y * HITTEST_SIZE;
-    list<GridPointInfo>::iterator iter = m_PointGrid[square].begin();
-    while (!done && iter != m_PointGrid[square].end()) {
-	GridPointInfo& info = *iter++;
+    list<LabelInfo*>::iterator iter = m_PointGrid[square].begin();
+    while (iter != m_PointGrid[square].end()) {
+	LabelInfo *pt = *iter++;
 
-	//-- FIXME: check types
-	int x0 = info.x;
-	int y0 = info.y;
-	int x1 = point.x;
-	int y1 = point.y;
+	int dx = point.x -
+		(int)GridXToScreen(pt->GetX(), pt->GetY(), pt->GetZ());
+	int ds = dx * dx;
+	if (ds >= dist_sqrd) continue;
+	int dy = point.y -
+		(int)GridYToScreen(pt->GetX(), pt->GetY(), pt->GetZ());
 
-	int dx = x1 - x0;
-	int dy = y1 - y0;
-
-	if (dx*dx + dy*dy < 25.0 && ((info.label->IsSurface() && m_Surface) ||
-				     (info.label->IsUnderground() && m_Legs))) {
-	    m_Parent->SetMouseOverStation(info.label);
-	    if (centre) {
-		CentreOn(info.label->GetX(), info.label->GetY(), info.label->GetZ());
-		SetThere(info.label->GetX(), info.label->GetY(), info.label->GetZ());
-		m_Parent->SelectTreeItem(info.label);
-	    }
-	    done = true;
-	}
+	ds += dy * dy;
+	if (ds >= dist_sqrd) continue;
+ 
+	dist_sqrd = ds;
+	best = pt;
+	
+	if (ds == 0) break;
     }
+    
 
-    if (!done) {
+    if (best) {
+	m_Parent->SetMouseOverStation(best);
+	if (centre) {
+	    CentreOn(best->GetX(), best->GetY(), best->GetZ());
+	    SetThere(best->GetX(), best->GetY(), best->GetZ());
+	    m_Parent->SelectTreeItem(best);
+	}
+    } else {
 	m_Parent->SetMouseOverStation(NULL);
     }
 #endif
@@ -2330,8 +2195,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		      int dx = point.x - m_DragLast.x;
 
 		      SetScale((m_ScaleBar.width + dx) / size_snap);
-		      m_RedrawOffscreen = true;
-		      Refresh(false);
+		      ForceRefresh();
 		  }
 	      }
 	      else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
@@ -2363,8 +2227,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		  int y_inside_bar = m_YSize - m_ScaleBar.drag_start_offset_y - m_DragStart.y;
 		  m_ScaleBar.offset_x = point.x - x_inside_bar;
 		  m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
-		  m_RedrawOffscreen = true;
-		  Refresh(false);
+		  ForceRefresh();
 	    }
 	    else {
 		m_LastDrag = drag_MAIN;
@@ -2398,6 +2261,15 @@ void GfxCore::OnSize(wxSizeEvent& event)
     }
 
     if (m_DoneFirstShow) {
+	// FIXME: copied from NattyDrawNames()
+	const int dv = 2;
+	const int quantise = int(FONT_SIZE / dv);
+	const int quantised_x = m_XSize / quantise;
+	const int quantised_y = m_YSize / quantise;
+	const size_t buffer_size = quantised_x * quantised_y;
+	if (m_LabelGrid) delete[] m_LabelGrid;
+
+	m_LabelGrid = new char[buffer_size];
 	CreateHitTestGrid();
 
 #ifdef AVENGL
@@ -2425,8 +2297,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
 void GfxCore::OnDisplayOverlappingNames()
 {
     m_OverlappingNames = !m_OverlappingNames;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& cmd)
@@ -2438,8 +2309,7 @@ void GfxCore::OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnShowCrosses()
 {
     m_Crosses = !m_Crosses;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnShowCrossesUpdate(wxUpdateUIEvent& cmd)
@@ -2451,8 +2321,7 @@ void GfxCore::OnShowCrossesUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnShowStationNames()
 {
     m_Names = !m_Names;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnShowStationNamesUpdate(wxUpdateUIEvent& cmd)
@@ -2464,8 +2333,7 @@ void GfxCore::OnShowStationNamesUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnShowSurveyLegs()
 {
     m_Legs = !m_Legs;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
@@ -2657,8 +2525,7 @@ void GfxCore::Defaults()
 
     DefaultParameters();
     SetScale(m_InitialScale);
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnDefaultsUpdate(wxUpdateUIEvent& cmd)
@@ -2786,8 +2653,7 @@ void GfxCore::OnZoomIn(bool accel)
 
     //--GL fixes needed
     SetScale(m_Params.scale * (accel ? 1.1236 : 1.06));
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnZoomInUpdate(wxUpdateUIEvent& cmd)
@@ -2800,8 +2666,7 @@ void GfxCore::OnZoomOut(bool accel)
     // Decrease the scale.
 
     SetScale(m_Params.scale / (accel ? 1.1236 : 1.06));
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnZoomOutUpdate(wxUpdateUIEvent& cmd)
@@ -2907,8 +2772,7 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 	    m_TiltAngle = m_PresStep.to.tilt_angle;
 	}
 
-	m_RedrawOffscreen = true;
-	Refresh(false);
+	ForceRefresh();
     }
 #endif
 
@@ -2929,8 +2793,7 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 void GfxCore::OnToggleScalebar()
 {
     m_Scalebar = !m_Scalebar;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnToggleScalebarUpdate(wxUpdateUIEvent& cmd)
@@ -2942,8 +2805,7 @@ void GfxCore::OnToggleScalebarUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnToggleDepthbar()
 {
     m_Depthbar = !m_Depthbar;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnToggleDepthbarUpdate(wxUpdateUIEvent& cmd)
@@ -2955,8 +2817,7 @@ void GfxCore::OnToggleDepthbarUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnViewCompass()
 {
     m_Compass = !m_Compass;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnViewCompassUpdate(wxUpdateUIEvent& cmd)
@@ -2968,8 +2829,7 @@ void GfxCore::OnViewCompassUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnViewClino()
 {
     m_Clino = !m_Clino;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd)
@@ -2981,22 +2841,19 @@ void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnShowSurface()
 {
     m_Surface = !m_Surface;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnShowSurfaceDepth()
 {
     m_SurfaceDepth = !m_SurfaceDepth;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnShowSurfaceDashed()
 {
     m_SurfaceDashed = !m_SurfaceDashed;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnShowSurfaceUpdate(wxUpdateUIEvent& cmd)
@@ -3020,8 +2877,7 @@ void GfxCore::OnShowSurfaceDashedUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnShowEntrances()
 {
     m_Entrances = !m_Entrances;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnShowEntrancesUpdate(wxUpdateUIEvent& cmd)
@@ -3033,8 +2889,7 @@ void GfxCore::OnShowEntrancesUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnShowFixedPts()
 {
     m_FixedPts = !m_FixedPts;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnShowFixedPtsUpdate(wxUpdateUIEvent& cmd)
@@ -3046,8 +2901,7 @@ void GfxCore::OnShowFixedPtsUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnShowExportedPts()
 {
     m_ExportedPts = !m_ExportedPts;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnShowExportedPtsUpdate(wxUpdateUIEvent& cmd)
@@ -3059,8 +2913,7 @@ void GfxCore::OnShowExportedPtsUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnViewGrid()
 {
     m_Grid = !m_Grid;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 void GfxCore::OnViewGridUpdate(wxUpdateUIEvent& cmd)
@@ -3208,8 +3061,7 @@ void GfxCore::CentreOn(Double x, Double y, Double z)
     m_Params.translation.x = -x;
     m_Params.translation.y = -y;
     m_Params.translation.z = -z;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    ForceRefresh();
 }
 
 #ifdef AVENPRES
@@ -3313,28 +3165,9 @@ bool GfxCore::AtEndOfPres()
 }
 #endif
 
-//
-//  Handling of special highlighted points
-//
-
-void GfxCore::ClearSpecialPoints()
+void GfxCore::ForceRefresh()
 {
-    // Clear all special points and redraw the display.
-
-    m_SpecialPoints.clear();
-    DisplaySpecialPoints();
-}
-
-void GfxCore::AddSpecialPoint(Double x, Double y, Double z)
-{
-    // Add a new special point.
-    m_SpecialPoints.push_back(Point(x, y, z));
-}
-
-void GfxCore::DisplaySpecialPoints()
-{
-    // Ensure any newly-added special points are displayed.
-
+    // Redraw the offscreen bitmap
     m_RedrawOffscreen = true;
     Refresh(false);
 }
@@ -3436,24 +3269,24 @@ void GfxCore::CreateHitTestGrid()
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
     while (pos != end) {
-	LabelInfo* label = *pos++;
+	LabelInfo *label = *pos++;
+
+	if (!((m_Surface && label->IsSurface()) ||
+	      (m_Legs && label->IsUnderground()))) {
+	    continue;
+	}
 
 	// Calculate screen coordinates.
 	int cx = (int)GridXToScreen(label->GetX(), label->GetY(), label->GetZ());
+ 	if (cx < 0 || cx >= m_XSize) continue;
 	int cy = (int)GridYToScreen(label->GetX(), label->GetY(), label->GetZ());
+ 	if (cy < 0 || cy >= m_YSize) continue;
 
-	// Add to hit-test grid if onscreen.
- 	if (cx >= 0 && cx < m_XSize && cy >= 0 && cy < m_YSize) {
- 	    int grid_x = (cx * (HITTEST_SIZE - 1)) / m_XSize;
- 	    int grid_y = (cy * (HITTEST_SIZE - 1)) / m_YSize;
-  
-	    GridPointInfo point;
-	    point.x = cx;
-	    point.y = cy;
-	    point.label = label;
+	// On-screen, so add to hit-test grid...
+	int grid_x = (cx * (HITTEST_SIZE - 1)) / m_XSize;
+	int grid_y = (cy * (HITTEST_SIZE - 1)) / m_YSize;
 
-	    m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(point);
-	}
+	m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(label);
     }
 
     m_HitTestGridValid = true;

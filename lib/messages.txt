@@ -576,16 +576,17 @@ ca: 47 No s'ha pogut obrir el fitxer de sortida `%s'
 es: 47 No se pudo abrir el archivo de salida `%s'
 it: 47 Non riesco ad aprire il file di uscita `%s'
 sk: 47 Zlyhal pokus o otvorenie v&yacute;stupn&eacute;ho s&uacute;boru  `%s'
-#48 not used
-#en: 48 Failed to close output file
-#fr: 48 N'a pas r&eacute;ussi &agrave; fermer le fichier de sortie
-#de: 48 Konnte Ausgabedatei nicht schlie&szlig;en
-#de-ch: 48 Konnte Ausgabedatei nicht schliessen
-#pt: 48 N&atilde;o foi poss&iacute;vel fechar arquivo de sa&iacute;da
-#ca: 48 No s'ha pogut tancar el fitxer de sortida
-#es: 48 No se pudo cerrar el archivo de salida
-#it: 48 Non riesco a chiudere il file d'uscita
-#sk: 48 nie je pou&zcaron;it&eacute;
+#
+en: 48 Standard deviation must be positive
+fr: 48 La d&eacute;viation standard doit &ecirc;tre positive
+de: 48 Standardabweichung mu&szlig; positiv sein
+de-de,de-ch: 48 Standardabweichung muss positiv sein
+pt-br: 48 Desvio-padr&atilde;o deve ser positivo
+ca: 48 La desviaci&oacute; est&agrave;ndard ha d'e&acute;sser positiva
+es: 48 La desviaci&oacute;n est&aacute;ndard tiene que ser positiva
+it: 48 La deviazione standard deve essere positiva
+sk: 48 &Scaron;tandardn&aacute; ochylka mus&iacute; by&tcaron; pozit&iacute;vna
+#
 en: 49 Syntax
 fr: 49 Syntaxe
 de: 49 Syntax
@@ -876,15 +877,18 @@ ca: 76 Resolent per trobar coordenades %c
 es: 76 Resolviendo para encontrar coordenadas %c
 it: 76 Sto risolvendo per trovare le coordinate %c
 sk: 76 H&lcaron;ad&aacute; sa %c s&uacute;radn&iacute;c
-# 77 not used at present, but likely to be useful
-# engi: 77 " not fixed"
-# engu: 77 " not fixed"
-# fren: 77 " non d&eacute;finis"
-# germ: 77 " nicht angegeben"
-# port: 77 " n&atilde;o posicionada(s)"
-# cata: 77 " no fixat"
-# span: 77 " no fijado"
-# ital: 77 " non fissato"
+#
+en: 77 Reading `%s' duplicates previous reading(s)
+fr: 77 La valeur `%s' fait doublon avec une ou des valeur(s) pr&eacute;c&eacute;dante(s)
+# de has the reverse singular/plural arrangement :)
+# (i.e., singular has the final -n, plural doesn't)
+de: 77 Eintrag `%s' wiederholt fr&uuml;here(n)
+pt: 77 Valor `%s' duplica valor(es) anterior(es)
+ca: 77 El camp `%s' duplica camp(s) precedent(s)
+es: 77 El campo `%s' duplica campo(s) precedente(s)
+it: 77 La lettura `%s' duplica precedenti letture
+sk: 77 &Uacute;daj `%s' duplikuje predch&aacute;dzaj&uacute;ci &uacute;daj/e
+#
 en: 78 Solving one equation
 fr: 78 R&eacute;soud une &eacute;quation
 de: 78 Eine Gleichung wird gel&ouml;st
@@ -901,6 +905,18 @@ ca: 79 Dist&agrave;ncia ajustada negativa
 es: 79 Distancia ajustada negativa
 it: 79 Distanza corretta negativa
 sk: 79 Z&aacute;porn&aacute; nastaven&aacute; vzdialenos&tcaron;
+#
+en: 80 Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')
+fr: 80 Echelle incorrecte `%s' (syntaxes correctes: `1:500', `500', ou `0.002')
+de: 80 Ma&szlig;stab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
+# (no de-de entry here!)
+de-ch: 80 Massstab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
+pt-br: 80 Escala com problemas: `%s' (esperando algo como `1:500', `500' ou `0.002')
+ca: 80 Escala err&ograve;nia `%s' (esperant per ex. `1:500', `500', o `0.002')
+es: 80 Escala err&oacute;nea `%s' (esperando por ej. `1:500', `500', o `0.002')
+it: 80 Scala errata `%s' (valori di esempio `1:500', `500', or `0.002')
+sk: 80 Nespr&aacute;vne mer&iacute;tko `%s' (predpoklad&aacute; sa napr.: `1:500', `500', alebo `0.002')
+#
 en: 81 Error initialising graphics card
 fr: 81 Erreur &agrave; l'initialisation de la carte graphique
 de: 81 Fehler bei der Initialisierung der Graphikkarte
@@ -1050,14 +1066,11 @@ ca: 97 S'ha rebut un senyal desconegut
 es: 97 Se ha recibido una se&ntilde;al desconocida
 it: 97 Ricevuto segnale sconosciuto
 sk: 97 Bol obdr&zcaron;an&yacute; nezn&aacute;my sign&aacute;l
-en: 99 Not yet implemented! Please let the authors know if you badly need this feature
-fr: 99 Pas encore implement&eacute;! Faites savoir aux auteurs si vous avez vraiment besoin de cette fonctionnalit&eacute; S.V.P.
-de: 99 Dies ist noch nicht implementiert. Wenn Sie es wirklich brauchen, sollten Sie die Autoren informieren
-pt: 99 N&atilde;o implementado ainda! Por favor, avise os autores caso voc&ecirc; realmente precise desta fun&ccedil;&atilde;o
-ca: 99 Encara no implementat! Si us plau, feu saber als autors si realment necessiteu aquesta funci&oacute;
-es: 99 Todavia no implementado! Por favor, comunique a los autores si realmente necesita esta funci&oacute;n
-it: 99 Non ancora implementato! Per favore comunicate agli autori se avete necessit&aacute; di questa funzione
-sk: 99 Zatia&lcaron; neimplementovan&eacute;! Pros&iacute;me, pokia&lcaron; t&uacute;to funkciu bezpodmiene&ccaron;ne potrebujete, dajte na vedomie autorom
+#
+en: 98 Compass reading and back compass reading disagree by %s degrees
+#
+en: 99 Clino reading and back clino reading disagree by %s degrees
+#
 # A computer mouse, not the rodent sort ;)
 # Actually, mouse is somewhat imprecise as it could refer to a trackerball
 # or joystick, but mouse is more compact than "pointing device" and usually
@@ -1810,6 +1823,16 @@ ca:178 La topograf&iacute;a cont&eacute; %ld components connectats.
 es:178 La topografia contiene %ld componentes conectados.
 it:178 La topografia contiene %ld componenti connesse.
 sk:178 Meranie (survey) m&aacute; %ld spojen&yacute;ch &ccaron;ast&iacute;
+#
+en:179 Bad list of pages to print `%s'
+fr:179 Liste de pages &agrave; imprimer incorrecte `%s'
+de:179 Liste zu druckender Seiten `%s' ist fehlerhaft
+pt-br:179 Lista de p&aacute;ginas a imprimir com problemas: `%s'
+ca:179 Llista de p&agrave;gines a imprimir err&ograve;nia: `%s'
+es:179 Lista de p&aacute;ginas a imprimir err&oacute;nea: `%s'
+it:179 Lista di pagine da stampare `%s' errata
+sk:179 Nespr&aacute;vny zoznam str&aacute;nok k tla&ccaron;i `%s'
+#
 # menu commands for (ynq) style choices (may become menu entries later)
 en:180 yes
 fr:180 oui
@@ -1999,28 +2022,14 @@ ca:199 Sols carrega la sub-topografia amb prefix
 es:199 Solo carga la sub-topograf&iacute;a con prefijo
 it:199 Carica un sotto-rilievo con prefisso
 sk:199 S prefixom sa natiahla iba &ccaron;as&tcaron; merania
+# error message given by "*units tape 0 feet" - it's meaningless to say
+# your tape is marked in "0 feet" (but you might measure distance by counting
+# knots on a diving line, and tie them every "2 feet").
+en:200 *UNITS factor must be non-zero
+#
+# XXX 201
 #
 #  Messages for Aven
-#
-en:200 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.
-en-us:200 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-fr:200 Ce programme est un logiciel libre; vous pouvez le redistribuer et/ou le modifier conform&eacute;ment aux dispositions de la Licence Publique G&eacute;n&eacute;rale GNU, telle que publi&eacute;e par la Free Software Foundation; version 2 de la licence, ou encore (&agrave; votre choix) toute version ult&eacute;rieure.
-de:200 Dieses Programm ist freie Software. Sie k&ouml;nnen es unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation herausgegeben, weitergeben und/oder modifizieren, entweder unter Version 2 der Lizenz oder (wenn Sie es w&uuml;nschen) jeder sp&auml;teren Version.
-pt:200 Este programa &eacute; um software de livre distribui&ccedil;&atilde;o, que pode ser copiado e distribu&iacute;do sob os termos da Licen&ccedil;a P&uacute;blica Geral GNU, conforme publicada pela Free Software Foundation, vers&atilde;o 2 da licen&ccedil;a ou (a crit&eacute;rio do autor) qualquer vers&atilde;o posterior.
-ca:200 Aquest programa es software lliure. Pots redistribuir-lo i/o modificar-lo sota les condicions de la Llic&egrave;ncia P&uacute;blica General de GNU segons &eacute;s publicada per la Free Software Foundation, b&eacute; de la versi&oacute; 2 de dita llic&egrave;ncia o b&eacute; (segons la teva elecci&oacute;) de qualsevol versi&oacute; posterior.
-es:200 Este programa es software libre. Puedes redistribuirlo y/o modificarlo bajo los t&eacute;rminos de la Licencia P&uacute;blica General de GNU seg&uacute;n es publicada por la Free Software Foundation, bien de la versi&oacute; 2 de dicha Licencia o bien (seg&uacute;n tu elecci&oacute;n) de cualquier versi&oacute;n posterior.
-es:200 Este programa es software libre. Puede redistribuirlo y/o modificarlo bajo los t&eacute;rminos de la Licencia P&uacute;blica General de GNU seg&uacute;n es publicada por la Free Software Foundation, bien de la versi&oacute; 2 de dicha Licencia o bien (seg&uacute;n su elecci&oacute;n) de cualquier versi&oacute;n posterior.
-it:200 Questo programma &egrave; software libero; &egrave; lecito redistribuirlo o modificarlo secondo i termini della Licenza Pubblica Generica GNU come &egrave; pubblicata dalla Free Software Foundation; o la versione 2 della licenza o (a propria scelta) una versione successiva.
-sk:200 Tento program je voln&yacute; software; m&uring;&zcaron;ete jej &scaron;&iacute;&rcaron;it a modifikovat podle ustanoven&iacute; Obecn&eacute; ve&rcaron;ejn&eacute; licence GNU, vyd&aacute;van&eacute; Free Software Foundation; a to bu&dcaron; verze 2 t&eacute;to licence anebo (podle va&scaron;eho uv&aacute;&zcaron;en&iacute;) kter&eacute;koli pozd&ecaron;j&scaron;&iacute; verze.
-#
-en:201 Display command line options
-fr:201 Affiche les options de la ligne de commande
-de:201 Befehlszeilenoptionen anzeigen
-pt:201 Mostrar op&ccedil;&otilde;es de linha de comando
-ca:201 Mostra les opcions de la l&iacute;nia de comandaments
-es:201 Mostrar opciones en l&iacute;nea de comandos
-it:201 Mostra le opzioni della riga di comando
-sk:201 Zobrazi&tcaron; mo&zcaron;nosti pr&iacute;kazov&eacute;ho riadku
 #
 en:202 No survey data in 3d file `%s'
 fr:202 Pas de donn&eacute;es topo dans le fichier 3d `%s'
@@ -2164,49 +2173,18 @@ es:215 A@yuda
 it:215 @Aiuto
 sk:215 @Help
 #
-# More cavern messages (sorry, 199 wasn't enough!)
-en:216 Standard deviation must be positive
-fr:216 La d&eacute;viation standard doit &ecirc;tre positive
-de:216 Standardabweichung mu&szlig; positiv sein
-de-de,de-ch:216 Standardabweichung muss positiv sein
-pt-br:216 Desvio-padr&atilde;o deve ser positivo
-ca:216 La desviaci&oacute; est&agrave;ndard ha d'e&acute;sser positiva
-es:216 La desviaci&oacute;n est&aacute;ndard tiene que ser positiva
-it:216 La deviazione standard deve essere positiva
-sk:216 &Scaron;tandardn&aacute; ochylka mus&iacute; by&tcaron; pozit&iacute;vna
+# XXX 216 217 218
 #
-en:217 Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')
-fr:217 Echelle incorrecte `%s' (syntaxes correctes: `1:500', `500', ou `0.002')
-de:217 Ma&szlig;stab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
-# (no de-de entry here!)
-de-ch:217 Massstab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
-pt-br:217 Escala com problemas: `%s' (esperando algo como `1:500', `500' ou `0.002')
-ca:217 Escala err&ograve;nia `%s' (esperant per ex. `1:500', `500', o `0.002')
-es:217 Escala err&oacute;nea `%s' (esperando por ej. `1:500', `500', o `0.002')
-it:217 Scala errata `%s' (valori di esempio `1:500', `500', or `0.002')
-sk:217 Nespr&aacute;vne mer&iacute;tko `%s' (predpoklad&aacute; sa napr.: `1:500', `500', alebo `0.002')
-#
-en:218 Bad list of pages to print `%s'
-fr:218 Liste de pages &agrave; imprimer incorrecte `%s'
-de:218 Liste zu druckender Seiten `%s' ist fehlerhaft
-pt-br:218 Lista de p&aacute;ginas a imprimir com problemas: `%s'
-ca:218 Llista de p&agrave;gines a imprimir err&ograve;nia: `%s'
-es:218 Lista de p&aacute;ginas a imprimir err&oacute;nea: `%s'
-it:218 Lista di pagine da stampare `%s' errata
-sk:218 Nespr&aacute;vny zoznam str&aacute;nok k tla&ccaron;i `%s'
-#
-en:219 Reading `%s' duplicates previous reading(s)
-fr:219 La valeur `%s' fait doublon avec une ou des valeur(s) pr&eacute;c&eacute;dante(s)
-# de has the reverse singular/plural arrangement :)
-# (i.e., singular has the final -n, plural doesn't)
-de:219 Eintrag `%s' wiederholt fr&uuml;here(n)
-pt:219 Valor `%s' duplica valor(es) anterior(es)
-ca:219 El camp `%s' duplica camp(s) precedent(s)
-es:219 El campo `%s' duplica campo(s) precedente(s)
-it:219 La lettura `%s' duplica precedenti letture
-sk:219 &Uacute;daj `%s' duplikuje predch&aacute;dzaj&uacute;ci &uacute;daj/e
-#
-# back to aven...
+en:219 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.
+en-us:219 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+fr:219 Ce programme est un logiciel libre; vous pouvez le redistribuer et/ou le modifier conform&eacute;ment aux dispositions de la Licence Publique G&eacute;n&eacute;rale GNU, telle que publi&eacute;e par la Free Software Foundation; version 2 de la licence, ou encore (&agrave; votre choix) toute version ult&eacute;rieure.
+de:219 Dieses Programm ist freie Software. Sie k&ouml;nnen es unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation herausgegeben, weitergeben und/oder modifizieren, entweder unter Version 2 der Lizenz oder (wenn Sie es w&uuml;nschen) jeder sp&auml;teren Version.
+pt:219 Este programa &eacute; um software de livre distribui&ccedil;&atilde;o, que pode ser copiado e distribu&iacute;do sob os termos da Licen&ccedil;a P&uacute;blica Geral GNU, conforme publicada pela Free Software Foundation, vers&atilde;o 2 da licen&ccedil;a ou (a crit&eacute;rio do autor) qualquer vers&atilde;o posterior.
+ca:219 Aquest programa es software lliure. Pots redistribuir-lo i/o modificar-lo sota les condicions de la Llic&egrave;ncia P&uacute;blica General de GNU segons &eacute;s publicada per la Free Software Foundation, b&eacute; de la versi&oacute; 2 de dita llic&egrave;ncia o b&eacute; (segons la teva elecci&oacute;) de qualsevol versi&oacute; posterior.
+es:219 Este programa es software libre. Puedes redistribuirlo y/o modificarlo bajo los t&eacute;rminos de la Licencia P&uacute;blica General de GNU seg&uacute;n es publicada por la Free Software Foundation, bien de la versi&oacute; 2 de dicha Licencia o bien (seg&uacute;n tu elecci&oacute;n) de cualquier versi&oacute;n posterior.
+es:219 Este programa es software libre. Puede redistribuirlo y/o modificarlo bajo los t&eacute;rminos de la Licencia P&uacute;blica General de GNU seg&uacute;n es publicada por la Free Software Foundation, bien de la versi&oacute; 2 de dicha Licencia o bien (seg&uacute;n su elecci&oacute;n) de cualquier versi&oacute;n posterior.
+it:219 Questo programma &egrave; software libero; &egrave; lecito redistribuirlo o modificarlo secondo i termini della Licenza Pubblica Generica GNU come &egrave; pubblicata dalla Free Software Foundation; o la versione 2 della licenza o (a propria scelta) una versione successiva.
+sk:219 Tento program je voln&yacute; software; m&uring;&zcaron;ete jej &scaron;&iacute;&rcaron;it a modifikovat podle ustanoven&iacute; Obecn&eacute; ve&rcaron;ejn&eacute; licence GNU, vyd&aacute;van&eacute; Free Software Foundation; a to bu&dcaron; verze 2 t&eacute;to licence anebo (podle va&scaron;eho uv&aacute;&zcaron;en&iacute;) kter&eacute;koli pozd&ecaron;j&scaron;&iacute; verze.
 #
 # The accelerators must be different within this group
 en:220 @Open...##Ctrl+O
@@ -2361,6 +2339,7 @@ ca:236 Un pas en el sentit @horari
 es:236 Un paso en el senido @horario
 it:236 Un passo @Orario
 sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
+# XXX 237 238 239
 #
 # The accelerators must be different within this group
 # View *looking* North
@@ -2517,7 +2496,7 @@ ca:254 Restablei@x els predeterminats
 es:254 Restaurar @valores predeterminados
 it:254 Ripristina i @valori predefiniti
 sk:254 Znov@u na v&yacute;chodzie hodnoty
-#
+# XXX 255-269
 # The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
 fr:270 @Noms de station##Ctrl+N
@@ -2953,12 +2932,7 @@ ca:324 Re@iniciar
 es:324 Rei@niciar
 it:324 Ri@parte
 sk:324 @Re&scaron;tart
-# Two more cavern messages:
-en:325 Compass reading and back compass reading disagree by %s degrees
-#
-en:326 Clino reading and back clino reading disagree by %s degrees
-# Back to aven once more:
-# XXX 327
+# XXX 325 326 327
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
 de:328 Kein Treffer gefunden.
@@ -2967,7 +2941,7 @@ ca:328 Recerca infroctuosa.
 es:328 B&uacute;squeda infroctuosa.
 it:328 Nessun elemento trovato.
 sk:328 Ne&uacute;spe&scaron;n&eacute; h&lcaron;adanie.
-
+#
 en:329 Open @Terrain...
 fr:329 Ouverture d'un @Terrain...
 de:329 Gel&auml;nde@modell &ouml;ffnen...

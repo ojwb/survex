@@ -13,9 +13,6 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${CAVERN="$testdir"/../src/cavern}
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
-SURVEXHOME="$srcdir"/../lib
-export SURVEXHOME
-
 : ${TESTS=${*-"singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
  lengthunits angleunits cmd_truncate cmd_case cmd_fix cmd_solve\
@@ -36,7 +33,8 @@ export SURVEXHOME
  cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
  plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar\
  newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
- notentranceorexport inferunknown inferexports"}}
+ notentranceorexport inferunknown inferexports bad_units_factor\
+ percent_gradient"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -67,7 +65,7 @@ for file in $TESTS ; do
   cmd_solve) pos=yes ; warn=0 ;;
   cmd_entrance) pos=no ; warn=0 ;;
   cmd_sd) pos=no ; warn=0 ;;
-  cmd_sd_bad) pos=fail ; error=6 ;;
+  cmd_sd_bad) pos=fail ; error=7 ;;
   cmd_set) pos=no ; warn=0 ;;
   cmd_set_bad) pos=fail ; error=7 ;;
   beginroot) pos=no ;;
@@ -152,6 +150,8 @@ for file in $TESTS ; do
   notentranceorexport) pos=fail; warn=0 ;;
   inferunknown) pos=fail; error=1 ;;
   inferexports) pos=no; warn=0 ;;
+  bad_units_factor) pos=fail; error=5 ;;
+  percent_gradient) pos=yes ; warn=0 ;;
   *) file='' ;;
   esac
 
