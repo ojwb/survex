@@ -82,7 +82,7 @@ Warn bearings not 3 digits, gradient not <sign><digit><digit>
 Allow angles as deg/min/sec (for theodolite data) (060°10'15" as 060 10 15,
 or 060.1005 (crap notation))
 
-Add support for bearings of form N20E (ie [NS][0-9]+[EW])
+Add support for bearings of form N20E (ie [NS][0-9]+[EW])?
 
 should % after a clino reading work?
 
@@ -275,4 +275,9 @@ Date: Mon, 25 Jun 2001
 From: Olly
 
 check return values from fgets(), fread(), etc in img.c and elsewhere.
+
+Date: Tue, 26 Jun 2001
+From: Olly
+
+Add --pause-on-exit switch to cavern etc for use by the windows bindings?
 
