@@ -48,12 +48,6 @@ Default variance for topofil counter? (currently same as that of tape)
 and then the prefix of a leg == prefix of each end...?
 
 Date: Fri, 04 May 2001
-Subject: caverot
-From: Olly
-
-extract help screen from caverot.c for translation
-
-Date: Fri, 04 May 2001
 Subject: manual
 From: Olly
 
@@ -86,6 +80,8 @@ This is certainly wrong (2 legs, 1 1-node, and 1 2-node):
 
 Date: Mon, 25 Jun 2001
 From: Olly
+
+extract help screen from caverot.c for translation
 
 update translations (quotes in messages - translate too? e.g. `XXX' to
 «XXX»)
@@ -124,11 +120,6 @@ There are 0 loops.
 1 1-node.
 
 I would expect "1 0-node."
-
-Date: Fri, 20 Jul 2001
-From: Olly
-
-Look into rounding of coords written to .3d files - e.g. tests/oneleg.svx.
 
 Date: Sun, 22 Jul 2001
 From: Olly

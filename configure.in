@@ -190,7 +190,7 @@ if test x"$ac_cv_func_strftime" != xyes ; then
   LIBOBJS="$LIBOBJS strftime.o"
 fi
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(popen signal getpwuid)
+AC_CHECK_FUNCS(popen signal getpwuid round)
 
 dnl don't use AC_CHECK_FUNCS for setjmp - mingw #define-s it to _setjmp
 AC_CHECK_HEADERS(setjmp.h)

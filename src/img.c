@@ -81,6 +81,18 @@ put32(long w, FILE *fh)
 
 #endif
 
+#ifdef HAVE_ROUND
+# include <math.h>
+extern double round(double); /* prototype is often missing... */
+# define my_round round
+#else
+static double
+my_round(double x) {
+   if (x >= 0.0) return floor(x + 0.5);
+   return ceil(x - 0.5);
+}
+#endif
+
 unsigned int img_output_version = 3;
 
 #define TMPBUFLEN 256
@@ -610,7 +622,7 @@ img_read_item(img *pimg, img_point *p)
 
 	 /* Ignore empty labels in some .3d files (caused by a bug) */
 	 if (len == 0) goto again;
-	 if (len >= pimg->buf_len) {
+	 if (len >= (long)pimg->buf_len) {
 	    pimg->label_buf = xosrealloc(pimg->label_buf, len + 1);
 	    if (!pimg->label_buf) {
 	       img_errno = IMG_OUTOFMEMORY;
@@ -844,9 +856,9 @@ img_write_item(img *pimg, int code, int flags, const char *s,
       }
       if (opt) putc(opt, pimg->fh);
       /* Output in cm */
-      put32((INT32_T)(x * 100.0), pimg->fh);
-      put32((INT32_T)(y * 100.0), pimg->fh);
-      put32((INT32_T)(z * 100.0), pimg->fh);
+      put32((INT32_T)my_round(x * 100.0), pimg->fh);
+      put32((INT32_T)my_round(y * 100.0), pimg->fh);
+      put32((INT32_T)my_round(z * 100.0), pimg->fh);
    } else {
       size_t len;
       INT32_T opt = 0;
@@ -894,9 +906,9 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	 if (opt) putc(opt, pimg->fh);
       }
       /* Output in cm */
-      put32((INT32_T)(x * 100.0), pimg->fh);
-      put32((INT32_T)(y * 100.0), pimg->fh);
-      put32((INT32_T)(z * 100.0), pimg->fh);
+      put32((INT32_T)my_round(x * 100.0), pimg->fh);
+      put32((INT32_T)my_round(y * 100.0), pimg->fh);
+      put32((INT32_T)my_round(z * 100.0), pimg->fh);
    }
 }
 
