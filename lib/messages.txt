@@ -2441,7 +2441,7 @@ it:238 @Pareti con texture
 en:239 Fade @Distant Objects
 en-us:239 @Fade Distant Objects
 de,fr:239 @Fade Distant Objects
-it:239 @Sbiadisce gli oggetti distanti
+it:239 Sbiadisce gli oggetti @distanti
 #
 # The accelerators must be different within this group
 # View *looking* North
@@ -2729,7 +2729,7 @@ sk:291 Z&aacute;mery @na povrchu##Ctrl+F
 en:292 Co@lour by Depth
 en-us:292 Co@lor by Depth
 fr,de:292 Colour by @Depth
-it:292 Colori secondo profondit&aacute;
+it:292 Co@lori secondo profondit&aacute;
 # XXX 293
 #
 en:294 Highlight @Entrances
@@ -2748,7 +2748,7 @@ de:295 Fi@xpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
 ca:295 Marca els @Punts fixats
 es:295 Marca los @Puntos fijados
-it:295 Marca i @Punti fissi
+it:295 Marca i Punti @fissi
 sk:295 Zv&yacute;razni&tcaron; @fixn&eacute; body
 #
 en:296 Highlight E@xported Points
@@ -2927,7 +2927,7 @@ en:314 Save Presentation @As...
 it:314 Salva Presentazione @come...
 #
 en:315 @Mark
-it:315 @Segna
+it:315 Se@gna
 #
 en:316 Pla@y
 it:316 @Visualizza
