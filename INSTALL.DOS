@@ -1,6 +1,12 @@
 Installing Survex under MSDOS
 =============================
 
+If you are running Microsoft Windows NT or 95 or newer, you should use
+the MS Windows version of Survex in preference to this one.  In
+particular, the resolutions available to caverot under NT are very
+restricted.  This version is intended for users of MSDOS without
+Microsoft Windows, or with MS Windows 3.0 or 3.1.
+
 First thing to do is to extract the contents of the ZIP archive - these days
 WinZip <http://www.winzip.com/> seems the most popular choice, but you can
 also use PKZIP <http://www.pkware.com/> or the free InfoZip unzip
@@ -9,24 +15,14 @@ such as "C:\SURVEX".
 
 For ease of use, you probably want to add the directory containing the
 executables to your PATH which will allow you to run them whatever the
-current directory is.
+current directory is.  To change your path edit the file AUTOEXEC.BAT
+in the root of your boot-drive (probably your hard drive if you have one).
+It's probably "C:\AUTOEXEC.BAT".
 
-If you are running NT, see below.  Otherwise you should do this by editing
-the file AUTOEXEC.BAT in the root of your boot-drive (probably your hard
-drive if you have one).  Modify the line beginning "PATH=" by adding
-";C:\SURVEX" to the end (or whatever directory you have installed Survex
-in).  For example:
+Modify the line beginning "PATH=" by adding ";C:\SURVEX" to the end (or
+whatever directory you have installed Survex in).  For example:
 
  PATH=C:\DOS;C:\;C:\WINDOWS   ->   PATH=C:\DOS;C:\;C:\WINDOWS;C:\SURVEX
 
 For changes to AUTOEXEC.BAT to come into effect, you need to reboot
 (save your work and press Ctrl-Alt-Del together).
-
-Under NT, go to "Control Panel" (Start Menu->Settings->Control Panel") and
-double-click on "System".  Click on the "Environment" tab, and chose the
-variable "Path" in the upper listbox.  This will copy the current value into
-the "Value" editbox near the bottom of the form.  Click at the end of the
-current value and add ";C:\SURVEX" (or whatever directory you have installed
-Survex in) and then click "Set" and then click "OK".
-
-Hmm: Start Menu->Run, type sysedit, press [enter]... (for win95)
