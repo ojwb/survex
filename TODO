@@ -200,13 +200,6 @@ shift-ed keys should move faster (as they do in caverot)
 
 Middle button drag should "resist" at elevation (i.e. angle == 0)...
 
-Check consistent senses to mouse and keyboard controls:
-          caverot/xcaverot/aven
-but1L/R:     ?     dragbot dragtop (wook thinks drag top)
-c          ?cwise?  cwise  acwise (wook thinks acwise)
-
-reverse controls should reverse mouse and keyboard
-
 sort out wrap-around a highish zoom (caverot is OK)
 
 colour by cave (and more generally by sub-prefix):
