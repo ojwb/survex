@@ -106,6 +106,7 @@ class GfxCore : public GLACanvas {
         glaList surface_legs;
         glaList names;
         glaList indicators;
+        glaList blobs;
     } m_Lists;
 
     GUIControl* m_Control;
@@ -177,6 +178,7 @@ class GfxCore : public GLACanvas {
     void UpdateLegs();
     void UpdateQuaternion();
     void UpdateIndicators();
+    void UpdateBlobs();
 
     Double GridXToScreen(Double x, Double y, Double z);
     Double GridYToScreen(Double x, Double y, Double z);
@@ -198,6 +200,7 @@ class GfxCore : public GLACanvas {
 
     void GenerateDisplayList();
     void GenerateDisplayListSurface();
+    void GenerateBlobsDisplayList();
     void GenerateIndicatorDisplayList();
 
     void TryToFreeArrays();

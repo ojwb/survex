@@ -339,6 +339,7 @@ void GfxCore::FirstShow()
     m_Lists.surface_legs = CreateList(this, &GfxCore::GenerateDisplayListSurface);
     m_Lists.names = CreateList(this, &GfxCore::DrawNames);
     m_Lists.indicators = CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
+    //m_Lists.blobs = CreateList(this, &GfxCore::GenerateBlobsDisplayList);
     
     m_DoneFirstShow = true;
 }
@@ -476,7 +477,15 @@ void GfxCore::SetScale(Double scale)
     m_Params.scale = scale;
 
     GLACanvas::SetScale(scale);
+    
     UpdateIndicators();
+    UpdateBlobs();
+}
+
+void GfxCore::UpdateBlobs()
+{
+//    DeleteList(m_Lists.blobs);
+//    m_Lists.blobs = CreateList(this, &GfxCore::GenerateBlobsDisplayList);
 }
 
 void GfxCore::UpdateLegs()
@@ -547,6 +556,9 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         if (m_Names && !m_Control->MouseDown() && !m_Rotating && !m_SwitchingTo) {
             DrawList(m_Lists.names);
         }
+
+        //DrawList(m_Lists.blobs);
+        GenerateBlobsDisplayList();
 /*
         if (m_Grid) {
             // Draw the grid.
@@ -1957,85 +1969,87 @@ void GfxCore::GenerateDisplayList()
                               m_Polylines[band], m_PlotData[band].num_segs, m_PlotData[band].vertices); 
             }
         }
-       
-#if 0
-        // Plot crosses and/or blobs.
-        if (true || // FIXME : replace true with test for there being highlighted points...
-                m_Crosses || m_Entrances || m_FixedPts || m_ExportedPts) {
-            list<LabelInfo*>::const_reverse_iterator pos =
-                m_Parent->GetRevLabels();
-            while (pos != m_Parent->GetRevLabelsEnd()) {
-                LabelInfo* label = *pos++;
+    }
+    
+    drawtime = timer.Time();
+}
 
-                // When more than one flag is set on a point:
-                // search results take priority over entrance highlighting
-                // which takes priority over fixed point
-                // highlighting, which in turn takes priority over exported
-                // point highlighting.
+void GfxCore::GenerateBlobsDisplayList()
+{
+    // Plot crosses and/or blobs.
+    if (m_Crosses || m_Entrances || m_FixedPts || m_ExportedPts) {
+        list<LabelInfo*>::const_reverse_iterator pos =
+            m_Parent->GetRevLabels();
+        while (pos != m_Parent->GetRevLabelsEnd()) {
+            LabelInfo* label = *pos++;
 
-                enum AvenColour col;
-                enum {BLOB, CROSS} shape = BLOB;
+            // When more than one flag is set on a point:
+            // search results take priority over entrance highlighting
+            // which takes priority over fixed point
+            // highlighting, which in turn takes priority over exported
+            // point highlighting.
 
-                if (!((m_Surface && label->IsSurface()) ||
-                      (m_Legs && label->IsUnderground()) ||
-                      (!label->IsSurface() && !label->IsUnderground()))) {
-                    // if this station isn't to be displayed, skip to the next
-                    // (last case is for stns with no legs attached)
-                    continue;
-                }
+            enum AvenColour col;
+            enum {BLOB, CROSS} shape = BLOB;
 
-                if (label->IsHighLighted()) {
-                    col = col_YELLOW;
-                }
-                else if (m_Entrances && label->IsEntrance()) {
-                    col = col_GREEN;
-                }
-                else if (m_FixedPts && label->IsFixedPt()) {
-                    col = col_RED;
-                }
-                else if (m_ExportedPts && label->IsExportedPt()) {
-                    col = col_TURQUOISE;
-                }
-                else if (m_Crosses) {
-                    col = col_LIGHT_GREY;
-                    shape = CROSS;
-                }
-                else {
-                    continue;
-                }
+            if (!((m_Surface && label->IsSurface()) ||
+                  (m_Legs && label->IsUnderground()) ||
+                  (!label->IsSurface() && !label->IsUnderground()))) {
+                // if this station isn't to be displayed, skip to the next
+                // (last case is for stns with no legs attached)
+                continue;
+            }
 
-                Double x3 = label->GetX() + m_Params.translation.x;
-                Double y3 = label->GetY() + m_Params.translation.y;
-                Double z3 = label->GetZ() + m_Params.translation.z;
+            if (label->IsHighLighted()) {
+                col = col_YELLOW;
+            }
+            else if (m_Entrances && label->IsEntrance()) {
+                col = col_GREEN;
+            }
+            else if (m_FixedPts && label->IsFixedPt()) {
+                col = col_RED;
+            }
+            else if (m_ExportedPts && label->IsExportedPt()) {
+                col = col_TURQUOISE;
+            }
+            else if (m_Crosses) {
+                col = col_LIGHT_GREY;
+                shape = CROSS;
+            }
+            else {
+                continue;
+            }
 
-                // Calculate screen coordinates, and check if the point is
-                // visible - this is faster, and avoids coordinate
-                // wrap-around problems
-                int x = (int) (x3 * m_00 + y3 * m_01 + z3 * m_02) + m_XCentre;
-                if (x < -CROSS_SIZE || x >= m_XSize + CROSS_SIZE) continue;
-                int y = -(int) (x3 * m_20 + y3 * m_21 + z3 * m_22) + m_YCentre;
-                if (y < -CROSS_SIZE || y >= m_YSize + CROSS_SIZE) continue;
+            Double size = SurveyUnitsAcrossViewport() * 3.0 / m_XSize;
+/*
+            Double x3 = label->GetX() + m_Params.translation.x;
+            Double y3 = label->GetY() + m_Params.translation.y;
+            Double z3 = label->GetZ() + m_Params.translation.z;
 
-                SetColour(col);
-                if (shape == CROSS) {
-                    m_DrawDC.DrawLines(2, cross1, x, y);
-                    m_DrawDC.DrawLines(2, cross2, x, y);
-                } else {
-                    SetColour(col, true);
-                    m_DrawDC.DrawLines(10, blob, x, y);
-                }
+            // Calculate screen coordinates, and check if the point is
+            // visible - this is faster, and avoids coordinate
+            // wrap-around problems
+            int x = (int) (x3 * m_00 + y3 * m_01 + z3 * m_02) + m_XCentre;
+            if (x < -CROSS_SIZE || x >= m_XSize + CROSS_SIZE) continue;
+            int y = -(int) (x3 * m_20 + y3 * m_21 + z3 * m_22) + m_YCentre;
+            if (y < -CROSS_SIZE || y >= m_YSize + CROSS_SIZE) continue;
+
+            SetColour(col);
+            */
+            if (shape == CROSS) {
+               // m_DrawDC.DrawLines(2, cross1, x, y);
+               // m_DrawDC.DrawLines(2, cross2, x, y);
+            } else {
+                DrawSphere(m_Pens[col], label->GetX(), label->GetY(), label->GetZ(), size, 16);
             }
         }
-
+    }
+/*
         if (m_Grid && !grid_first) DrawGrid();
 
         // Draw station names.
         if (m_Names) DrawNames();
-
-#endif
-    }
-    
-    drawtime = timer.Time();
+*/
 }
 
 void GfxCore::GenerateIndicatorDisplayList()

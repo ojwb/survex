@@ -80,13 +80,16 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     m_Rotation.setFromEulerAngles(0.0, 0.0, 0.0);
     m_Scale = 0.0;
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
+    m_SphereCreated = false;
 }
 
 GLACanvas::~GLACanvas()
 {
     // Destructor.
 
-
+    if (m_SphereCreated) {
+        glDeleteLists(m_SphereList, 1);
+    }
 }
 
 void GLACanvas::Clear()
@@ -382,6 +385,32 @@ void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
     // Place a vertex for the current indicator object being drawn.
 
     PlaceVertex(x, y, 0.0);
+}
+
+void GLACanvas::DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaCoord radius, int divisions)
+{
+    // Draw a sphere centred on a particular point.
+
+    SetColour(pen);
+
+    if (!m_SphereCreated) {
+        m_SphereCreated = true;
+
+        m_SphereList = glGenLists(1);
+        glNewList(m_SphereList, GL_COMPILE);
+    
+        GLUquadric* quadric = gluNewQuadric();
+        assert(quadric);
+        gluSphere(quadric, 1.0, divisions, divisions);
+
+        glEndList();
+    }
+
+    glTranslated(x, y, z);
+    glScalef(radius, radius, radius);
+    glCallList(m_SphereList);
+    glScalef(1.0 / radius, 1.0 / radius, 1.0 / radius);
+    glTranslated(-x, -y, -z);
 }
 
 void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, glaCoord x0, glaCoord y0, glaCoord w, glaCoord h)

@@ -87,6 +87,9 @@ class GLACanvas : public wxWindow {
 
     static void* const m_Font = GLUT_BITMAP_HELVETICA_10;
     static const int m_FontSize = 10;
+
+    bool m_SphereCreated;
+    GLuint m_SphereList;
     
     void SetViewportAndProjection();
     
@@ -129,6 +132,8 @@ public:
     void DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius);
     void DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start);
     void DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* vertices);
+    
+    void DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaCoord radius, int divisions);
     
     void PlaceVertex(glaCoord x, glaCoord y, glaCoord z);
     void PlaceIndicatorVertex(glaCoord x, glaCoord y);
