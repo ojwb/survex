@@ -616,13 +616,10 @@ es: 63 Dato `%s' no permitido en este STYLE `%s'
 it: 63 Dato `%s' non permesso in questo STYLE `%s'
 # i.e. not enough readings for the style.
 # FIXME: TRANSLATE fr ca es it (data replaced by readings)
-# also pt - addition of "for data style `%s'"
 en: 64 Too few readings for data style `%s'
 fr: 64 Trop peu de donn&eacute;es
 de: 64 Zu wenige Me&szlig;werte f&uuml;r Datenformat `%s'
-pt: 64 Poucos campos para tipo de visada `%s'
-#pt: 64 Faltam campos necess&aacute;rios neste tipo de visada
-#pt: 64 Faltam campos necess&aacute;rios em tipo de visada `%s'
+pt: 64 Faltam campos necess&aacute;rios ao tipo de visada `%s'
 ca: 64 Massa poques dades
 es: 64 Demasiados pocos datos
 it: 64 Mancano dati
