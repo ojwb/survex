@@ -2190,9 +2190,14 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
     if (!m_HitTestGridValid) {
         CreateHitTestGrid();
     }
+
+    if (point.x < 0 || point.x > m_XSize || point.y < 0 || point.y > m_YSize) {
+        return;
+    }
     
     int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
     int grid_y = (point.y * (HITTEST_SIZE - 1)) / m_YSize;
+
     bool done = false;
     int square = grid_x + grid_y * HITTEST_SIZE;
     list<GridPointInfo>::iterator iter = m_PointGrid[square].begin();
