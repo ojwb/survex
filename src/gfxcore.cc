@@ -3768,10 +3768,10 @@ void GfxCore::OnSolidSurfaceUpdate(wxUpdateUIEvent& ui)
 void GfxCore::OnKeyPress(wxKeyEvent &e)
 {
     switch (e.m_keyCode) {
-	case '/':
+	case '/': case '?':
 	    OnLowerViewpoint();
 	    break;
-	case '\'':
+	case '\'': case '@': case '"': // both shifted forms - US and UK kbd
 	    OnHigherViewpoint();
 	    break;
 	case 'C': case 'c':
@@ -3785,6 +3785,36 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	    break;
 	case '[': case '{':
 	    OnZoomOut();
+	    break;
+	case 'N': case 'n':
+	    OnMoveNorth();
+	    break;
+	case 'S': case 's':
+	    OnMoveSouth();
+	    break;
+	case 'E': case 'e':
+	    OnMoveEast();
+	    break;
+	case 'W': case 'w':
+	    OnMoveWest();
+	    break;
+	case 'Z': case 'z':
+	    OnSpeedUp();
+	    break;
+	case 'X': case 'x':
+	    OnSlowDown();
+	    break;
+	case 'R': case 'r':
+	    OnReverseDirectionOfRotation();
+	    break;
+	case 'P': case 'p':
+	    OnPlan();
+	    break;
+	case 'L': case 'l':
+	    OnElevation();
+	    break;
+	case 'O': case 'o':
+	    OnDisplayOverlappingNames();
 	    break;
 	case WXK_DELETE:
 	    OnDefaults();

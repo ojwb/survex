@@ -1910,20 +1910,20 @@ fr:231 @Arr&ecirc;te la rotation##Space
 de:231 Rotation an@halten##Space
 pt-br:231 @Parar Rota&ccedil;&atilde;o##Space
 #
-en:232 Speed @Up##Z
-fr:232 A@cc&eacute;l&egrave;re##Z
-de:232 @Schneller##Z
-pt-br:232 @Aumentar Velocidade##Z
+en:232 Speed @Up
+fr:232 A@cc&eacute;l&egrave;re
+de:232 @Schneller
+pt-br:232 @Aumentar Velocidade
 #
-en:233 Slow @Down##X
-fr:233 @Ralenti##X
-de:233 @Langsamer##X
-pt-br:233 @Diminuir Velocidade##X
+en:233 Slow @Down
+fr:233 @Ralenti
+de:233 @Langsamer
+pt-br:233 @Diminuir Velocidade
 #
-en:234 @Reverse Direction##R
-fr:234 Direction @Inverse##R
-de:234 @Andere Richtung##R
-pt-br:234 @Reverter Sentido##R
+en:234 @Reverse Direction
+fr:234 Direction @Inverse
+de:234 @Andere Richtung
+pt-br:234 @Reverter Sentido
 #
 en:235 Step Once @Anticlockwise
 fr:235 Pas &agrave; pas sens in@verse des aiguilles d'une montre
@@ -1936,25 +1936,25 @@ de:236 Schritt im @Uhrzeigersinn
 pt-br:236 Um Passo A@ntihor&aacute;rio
 #
 # The accelerators must be different within this group
-en:240 View @North##N
-fr:240 Vue vers le @Nord##N
-de:240 Nach @Norden##N
-pt-br:240 Olhar para @Norte##N
+en:240 View @North
+fr:240 Vue vers le @Nord
+de:240 Nach @Norden
+pt-br:240 Olhar para @Norte
 #
-en:241 View @East##E
-fr:241 Vue vers l'@Est##E
-de:241 Nach @Osten##E
-pt-br:241 Olhar para @Leste##E
+en:241 View @East
+fr:241 Vue vers l'@Est
+de:241 Nach @Osten
+pt-br:241 Olhar para @Leste
 #
-en:242 View @South##S
-fr:242 Vue vers le @Sud##S
-de:242 Nach @S&uuml;den##S
-pt-br:242 Olhar para @Sul##S
+en:242 View @South
+fr:242 Vue vers le @Sud
+de:242 Nach @S&uuml;den
+pt-br:242 Olhar para @Sul
 #
-en:243 View @West##W
-fr:243 Vue vers l'@Ouest##W
-de:243 Nach @Westen##W
-pt-br:243 Olhar para @Oeste##W
+en:243 View @West
+fr:243 Vue vers l'@Ouest
+de:243 Nach @Westen
+pt-br:243 Olhar para @Oeste
 #
 en:244 Shift Survey @Left
 fr:244 D&eacute;placement vers la @Gauche
@@ -1977,25 +1977,25 @@ de:247 Verschieben nach @unten
 pt-br:247 Mover para @Baixo
 #
 # c.f. 117
-en:248 @Plan View##P
-fr:248 Vue en @plan##P
-de:248    @Grundri&szlig;##P
-de-ch:248 @Grundriss##P
-pt:248 @Planta##P
-ca:248 @Planta##P
-es:248 @Planta##P
-it:248 @Pianta##P
+en:248 @Plan View
+fr:248 Vue en @plan
+de:248    @Grundri&szlig;
+de-ch:248 @Grundriss
+pt:248 @Planta
+ca:248 @Planta
+es:248 @Planta
+it:248 @Pianta
 #
 # c.f. 118
-en:249 Ele@vation##L
-en-us:249 Pro@file##L
-fr:249 El&eacute;@vation##L
-de:249    @Aufri&szlig;##L
-de-ch:249 @Aufriss##L
-pt:249 Per@fil##L
-ca:249 @Al&ccedil;at##L
-es:249 @Alzado##L
-it:249 Pro@filo##L
+en:249 Ele@vation
+en-us:249 Pro@file
+fr:249 El&eacute;@vation
+de:249    @Aufri&szlig;
+de-ch:249 @Aufriss
+pt:249 Per@fil
+ca:249 @Al&ccedil;at
+es:249 @Alzado
+it:249 Pro@filo
 #
 # TRANSLATE ca es it
 en:250 @Higher Viewpoint
@@ -2043,7 +2043,7 @@ pt:254 @Usar valores pr&eacute;-definidos##Delete
 pt-br:254 @Restaurar padr&otilde;es##Delete
 ca:254 Restableix els @predeterminats##Delete
 es:254 Restaurar @valores predeterminados##Delete
-it:254 Ripristina i @valori predefiniti
+it:254 Ripristina i @valori predefiniti##Delete
 #
 # The accelerators must be different within this group
 # TRANSLATE CHECK ca es it
@@ -2076,10 +2076,10 @@ es:272 @Tiradas##Ctrl+L
 it:272 @Battute##Ctrl+L
 #
 # TRANSLATE ca es it
-en:273 @Overlapping Names##O
-fr:273 @Superposition des noms##O
-de:273 &Uuml;ber@lappende Namen##O
-pt-br:273 Nomes @Sobrepostos##O
+en:273 @Overlapping Names
+fr:273 @Superposition des noms
+de:273 &Uuml;ber@lappende Namen
+pt-br:273 Nomes @Sobrepostos
 #
 en:274 @Compass
 fr:274 @Compas
