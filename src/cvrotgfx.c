@@ -137,10 +137,14 @@ init_ms_mouse(void)
    inregs.x.ax = 0x3533; /* get interrupt vector for int 33 */
    intdosx(&inregs, &outregs, &segregs);
    vector = (((unsigned long)segregs.es) << 16) + (unsigned long)outregs.x.bx;
+
+   /* vector empty */
+   if (vector == 0ul) return -2; /* No mouse driver */
+
    byte = (unsigned char)*(long far*)vector;
 
-   /* vector empty or -> iret */
-   if ((vector == 0ul) || (byte == 0xcf)) return -2; /* No mouse driver */
+   /* vector -> iret */
+   if (byte == 0xcf) return -2; /* No mouse driver */
 
    cmd = 0; /* check mouse & mouse driver working */
    cmousel(&cmd, &cBut, &dummy, &dummy);
