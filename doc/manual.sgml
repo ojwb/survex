@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-10-19 04:08:15 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.102 2002-10-19 04:08:15 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-10-23 02:48:13 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.103 2002-10-23 02:48:13 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -2912,6 +2912,79 @@ can accomplish this like so:
 4 5  2.98  - DOWN
 5 6  9.29 271 -28.5
 *end 163</programlisting>
+
+<Sect2><Title>Specify mark surface survey data</Title>
+
+<Para>
+Say you have 2 underground surveys and 2 surface ones with 2 fixed reference
+points.  You want to mark the surface surveys so that their length isn't
+included in length statistics, and so that Aven knows to display them
+differently.  To do this you mark surface data with the "surface" flag
+- this is set with "*flags surface" like so:
+<Para>
+
+<programlisting>
+; fixed reference points
+*fix fix_a 12345 56789 1234
+*fix fix_b 23456 67890 1111                                                     
+                                                                                
+; surface data (enclosed in *begin ... *end to stop the *flags command
+; from "leaking" out)
+*begin
+*flags surface
+*include surface1
+*include surface2
+*end                                                                            
+                                                                                
+; underground data
+*include cave1
+*include cave2</programlisting>
+
+<Para>
+You might also have a survey which starts on the surface and heads into a
+cave.  This can be easily handled too - here's an example which goes in
+one entrance, through the cave, and out of another entrance:
+</Para>
+
+<programlisting>
+*begin BtoC
+*title "161b to 161c"
+*date 1990.08.06 ; trip 1990-161c-3 in 1990 logbook
+
+*begin
+*flags surface
+02    01      3.09   249    -08.5
+02    03      4.13   252.5  -26
+*end
+
+04    03      6.00   020    +37
+04    05      3.07   329    -31
+06    05      2.67   203    -40.5
+06    07      2.20   014    +04
+07    08      2.98   032    +04
+08    09      2.73   063.5  +21
+09    10     12.35   059    +15
+
+*begin
+*flags surface
+11    10      4.20   221.5  -11.5
+11    12      5.05   215    +03.5
+11    13      6.14   205    +12.5
+13    14     15.40   221    -14
+*end
+
+*end BtoC
+
+<Para>
+Note that to avoid needless complication, Survex regards each leg as
+being either "surface" or "not surface" - if a leg spans the boundary you'll
+have to call it one or the other.  It's good surveying practice to
+deliberately put a station at the surface/underground interface
+(typically the highest closed contour or drip line) so this generally
+isn't an onerous restriction.
+</Para>
+
+</Sect2>
 
 <Sect2><Title>Specify the ordering and type of data</Title>
 
