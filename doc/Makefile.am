@@ -23,7 +23,7 @@ EXTRA_DIST = manual $(doclist) survex.1.in index.htm.in\
  AUTHORS.htm HACKING.htm\
  custom.dsl survex.ent\
  caution.png note.png\
- $(manual_sources)\
+ $(manual_sources) $(other_mans)\
  man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
  man_diffpos.sgml man_extend.sgml man_sorterr.sgml man_xcaverot.sgml\
  man_printdm.sgml man_printhpgl.sgml man_printpcl.sgml man_printps.sgml
@@ -37,8 +37,7 @@ NEWS.htm: ../NEWS
 OLDNEWS.htm: ../OLDNEWS
 	./news2html.pl < ../OLDNEWS > OLDNEWS.htm
 
-MAINTAINERCLEANFILES = $(doclist)
-CLEANFILES = $(other_mans)
+MAINTAINERCLEANFILES = $(doclist) $(other_mans)
 
 pkgdoc_DATA = index.htm GPL.htm TODO.htm ChngeLog.htm\
  NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist)
