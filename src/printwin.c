@@ -197,8 +197,10 @@ win_DrawCross(long x, long y)
       win_DrawTo(x, y + WIN_CROSS_SIZE);
       win_MoveTo(x, y);
    } else {
-      if ((x + PS_CROSS_SIZE > clip.x_min && x - PS_CROSS_SIZE < clip.x_max) ||
-	  (y + PS_CROSS_SIZE > clip.y_min && y - PS_CROSS_SIZE < clip.y_max)) {
+      if ((x + WIN_CROSS_SIZE > clip.x_min &&
+	   x - WIN_CROSS_SIZE < clip.x_max) ||
+	  (y + WIN_CROSS_SIZE > clip.y_min &&
+	   y - WIN_CROSS_SIZE < clip.y_max)) {
 	 fBlankPage = fFalse;
       }
    }
