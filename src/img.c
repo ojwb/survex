@@ -653,12 +653,12 @@ img_read_item(img *pimg, img_point *p)
 	 /* Ignore empty labels in some .3d files (caused by a bug) */
 	 if (len == 0) goto again;
 	 if (len >= (long)pimg->buf_len) {
-	    pimg->label = pimg->label_buf = xosrealloc(pimg->label_buf,
-						       len + 1);
-	    if (!pimg->label_buf) {
+	    char *b = xosrealloc(pimg->label_buf, len + 1);
+	    if (!b) {
 	       img_errno = IMG_OUTOFMEMORY;
 	       return img_BAD;
 	    }
+	    pimg->label = pimg->label_buf = b;
 	    pimg->buf_len = len + 1;
 	 }
 	 if (fread(pimg->label_buf, len, 1, pimg->fh) != 1) {
@@ -769,8 +769,14 @@ img_read_item(img *pimg, img_point *p)
 		  return img_BAD;
 	       }
 	       if (off == pimg->buf_len) {
-		  pimg->buf_len += pimg->buf_len;
-		  pimg->label_buf = xosrealloc(pimg->label_buf, pimg->buf_len);
+		  char *b;
+		  b = xosrealloc(pimg->label_buf, pimg->buf_len * 2);
+		  if (!b) {
+		     img_errno = IMG_OUTOFMEMORY;
+		     return img_BAD;
+		  }
+		  pimg->label_buf = b;
+		  pimg->buf_len *= 2;
 	       }
 	       pimg->label_buf[off++] = ch;
 	       ch = getc(pimg->fh);
@@ -825,6 +831,7 @@ img_read_item(img *pimg, img_point *p)
 
       pimg->label_buf[0] = '\0';
       while (!feof(pimg->fh)) {
+	 char *b;
 	 if (!fgets(pimg->label_buf + off, pimg->buf_len - off, pimg->fh)) {
 	    img_errno = IMG_READERROR;
 	    return img_BAD;
@@ -835,8 +842,13 @@ img_read_item(img *pimg, img_point *p)
 	    pimg->label_buf[off - 1] = '\0';
 	    break;
 	 }
-	 pimg->buf_len += pimg->buf_len;
-	 pimg->label_buf = xosrealloc(pimg->label_buf, pimg->buf_len);
+	 b = xosrealloc(pimg->label_buf, pimg->buf_len * 2);
+	 if (!b) {
+	    img_errno = IMG_OUTOFMEMORY;
+	    return img_BAD;
+	 }
+	 pimg->label_buf = b;
+	 pimg->buf_len *= 2;
       }
 
       pimg->label = pimg->label_buf;
