@@ -8,7 +8,7 @@ icon_DATA = elevation.png open.png pres-go-back.png pres-restart.png \
 	names.png solid-surface.png aven-about.png pres-finish.png\
 	3d.png err.png plt.png pos.png svx.png
 
-.SUFFIXES: .ico .png
+SUFFIXES = .ico .png
 
 .png.ico:
 	$(SHELL) $(top_srcdir)/src/png2winicon $< $@

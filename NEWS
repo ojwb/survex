@@ -5,6 +5,9 @@ Changes in 1.0.17:
   its own icon.
 
 * (Unix Version): Install mime types, icons, and file associations for Gnome.
+  Note: at present GMC doesn't seem to notice new files being created (e.g.
+  Process on a .svx file creates .3d and .err files) - you have to manually
+  refresh the view.
 
 * Minor update to manual.
 

@@ -1,9 +1,13 @@
 survex (1.0.17) unstable; urgency=low
 
-  * 1.0.15 and 1.0.16 addressed MS Windows specific problems.
+  * Note: 1.0.15 and 1.0.16 addressed MS Windows specific problems.
+  * survex-aven package now installs mime types, icons, and file associations
+    for Gnome.  Note: at present GMC doesn't seem to notice new files being
+    created (e.g.  Process on a .svx file creates .3d and .err files) - you
+    have to manually refresh the view.
   * Minor update to manual.
 
- -- Wookey <wookey@survex.com>  Tue, 24 Sep 2002 13:48:33 +0100
+ -- Wookey <wookey@survex.com>  Tue, 24 Sep 2002 05:25:17 +0100
 
 survex (1.0.14) unstable; urgency=low
 
