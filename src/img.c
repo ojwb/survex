@@ -258,12 +258,18 @@ int
 img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
 {
    static float x = 0.0f, y = 0.0f, z = 0.0f;
+   static long opt_lookahead = 0;
    int result;
    if (pimg->version > 0) {
       long opt;
       again: /* label to goto if we get a cross */
       if (pimg->version == 1) {
-         opt = get32(pimg->fh);
+	 if (opt_lookahead) {
+	    opt = opt_lookahead;
+	    opt_lookahead = 0;
+	 } else {
+	    opt = get32(pimg->fh);
+	 }
       } else {
          opt = getc(pimg->fh);
       }
@@ -303,6 +309,14 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
       *px = x;
       *py = y;
       *pz = z;
+
+      if (result == img_MOVE && pimg->version == 1) {
+	 /* peek at next code and see if it's img_LABEL */
+         opt_lookahead = get32(pimg->fh);
+	 if (opt_lookahead == img_LABEL)
+	    return img_read_datum(pimg, sz, px, py, pz);
+      }
+	 
       return result;
    } else {
       ascii_again:
