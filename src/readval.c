@@ -21,8 +21,6 @@
 # include <config.h>
 #endif
 
-#include <stddef.h>
-
 #include "cavern.h"
 #include "filename.h"
 #include "message.h"

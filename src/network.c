@@ -27,8 +27,6 @@
 # include <config.h>
 #endif
 
-#include <stddef.h>
-
 #include "validate.h"
 #include "debug.h"
 #include "cavern.h"
