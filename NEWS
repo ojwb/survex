@@ -1,3 +1,18 @@
+* cavern/3dtopos: cavern no longer produces .pos files - they're
+  mostly useful for hand plotting and are larger than the
+  corresponding .3d files so most of the time the slow processing and
+  then clutter up the disk.  A new utility 3dtopos produces a .pos
+  file from a .3d file, and has the added benefit that it sorts names
+  with numbers in numerically (i.e. 2 before 10).
+
+* cavern: improved parsing of unquoted *include/*title strings - used
+  to end at the first literal space; now they end at the first BLANK
+  character (space, tab, and comma by default).  So the odd case of an
+  unquoted string with commas or tabs will require quotes to be added.
+
+* All versions have been missing RTF, text, and PostScript versions of
+  the documentation in the previous 2 prereleases.
+
 Changes in 0.98-prerelease2:
 
 * (MS Windows version): Fixed "Open" on a .3d file to open in aven
