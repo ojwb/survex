@@ -1,4 +1,17 @@
 #! /bin/sh
+
+cd riscos_exes
+rm *
+unzip ../roexe.zip 
+cd ..
+
+cd bc_exes
+rm *.exe
+unzip ../bcexe.zip
+# Olly's MSDOS installation suffers from a Y2K problem and thinks it's 1980
+touch *.exe
+cd ..
+
 build=${@-riscos borlandc}
 if ! ./configure ; then
    echo configure failed
