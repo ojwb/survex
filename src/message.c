@@ -578,6 +578,7 @@ msg_init(const char *argv0)
 }
 
 /* no point extracting these errors as they won't get used if file opens */
+/* FIXME: if DEFAULTLANG != "en" translate these... */
 static const char *dontextract[] = {
    "Can't open message file `%s' using path `%s'", /*1000*/
    "Problem with message file `%s'", /*1001*/
