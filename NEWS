@@ -21,7 +21,7 @@
 * cavern: parser fixed to recover from errors as intended in a few
   situations where it was failing to.
 
-* Minor documentation updates.
+* Major clean-up of Survex Manual.
 
 * Distinguish between a "bad" .3d file and one which has a newer
   revision of the format than we understand.

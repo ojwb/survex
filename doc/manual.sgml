@@ -4,10 +4,13 @@
 <!ENTITY survexwebsite "http://www.survex.com/">
 <!ENTITY djgppwebsite "http://www.delorie.com/djgpp/">
 <!ENTITY unix "UNIX">
+<!ENTITY chasm "Chasm">
+<!ENTITY linux "Linux">
 <!ENTITY msdos "DOS">
 <!ENTITY riscos "RISC OS">
 <!ENTITY survexsuite "<Application>Survex</Application>">
 <!ENTITY cucc "<Acronym/CUCC/">
+<!ENTITY arge "<Acronym/ARGE/">
 <!ENTITY dpmi "<Acronym/DPMI/">
 <!ENTITY hto "<Acronym/HTO/">
 ]>
@@ -31,6 +34,7 @@ nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in hei
 ``Quick start'' section - lead people through entering and processing
 a sample survey.  Take examples from surveying books and real surveys.
 
+
 3dtopos...
 
 there's a new
@@ -38,7 +42,6 @@ utility - 3dtopos - which takes a .3d file and produces a .pos file
 
 <Para>This file contains a list of all the station positions (ordered x,y,z
 [East, North, Up]) with complete names.
-
 
 the stations are sorted such that numbers occur in the correct order
 (so ``2'' before ``10'').  3dtopos even sorts numbers with a prefix
@@ -63,7 +66,7 @@ where this isn't the case, let me know.
 
 <Article Status="draft" id=index>
  <ArtHeader>
-  <Title>&survexsuite; 0.99 Documentation</Title>
+  <Title>&survexsuite; 0.99 Manual</Title>
   <AuthorGroup>
    <Author>
     <FirstName/Olly/
@@ -89,8 +92,8 @@ where this isn't the case, let me know.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-02 10:47:41 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.44 2001-09-02 10:47:41 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-06 21:52:05 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.45 2001-09-06 21:52:05 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -112,11 +115,13 @@ package.  It currently runs on &unix;, Microsoft Windows 95/98/NT/2000/ME,
 &msdos; version, or may be able to run the MS Windows version with
 Win32s installed (though we've not tried this).</Para>
 
+<!--
 <Para>Porting to other platforms should be fairly easy.  The graphics
 code in caverot would be the most work - the rest only requires an ANSI C
 compiler plus a few details about the format of filenames and the like.
 If you are interested in support for any other machine contact us and we
 will try to help.</Para>
+-->
 
 <!-- with the windows installer, windows printer driver, and aven we
      do now have a GUI of sorts, so this next paragraph could be kinder
@@ -139,28 +144,30 @@ if you use &survexsuite; on a slow machine.</Para>
 
 <Para>&survexsuite; is capable of processing extremely complex caves very
 quickly and has a very effective, real-time cave viewer which allows
-you to rotate, zoom, and drag the cave using mouse or keyboard. We
-have tested it primarily on &cucc;'s Austria data, which has over
-10,500 stations and 60km of underground survey data. This can all be
-processed in a few seconds on a low-end <hardware>Pentium</hardware>
-machine.</Para>
+you to rotate, zoom, and pan the cave using mouse or keyboard. We have
+tested it extensively using &cucc; and &arge;'s surveys of the caves
+under the Loser Plateau in Austria (over 11,500 survey legs, and over
+66km of underground survey data). This can all be processed in a few
+seconds on a low-end <hardware>Pentium</hardware> machine.
+Survex is also used by many other survey projects around the world,
+including the Ogof Draenen survey, the Easegill resurvey project, and the
+<Acronym/OFD/ survey.<!-- FIXME: more examples? e.g. hom mei gui too? -->
 
-<Para>&survexsuite; is not yet finished.  Version 1.0 should be complete (in
-some sense - development will continue), so you could regard
-&survexsuite; 0.90 as roughly 90% there. But &survexsuite; is very usable in
-its present state and is already used for several large projects, including
-&cucc;'s Austria surveys, the Ogof Draenen survey, the Easegill resurvey
-project, and the <Acronym/OFD/ survey.</Para>
+<Para>&survexsuite; is still actively being worked on.  Version 1.0 will be
+complete in some sense, but development will continue - initially in reshaping
+Survex into a more integrated GUI package.</Para>
 
 <Para>We encourage feedback from users on important features or problems,
 which will help to direct future development. Contact addresses are near the
 bottom of this document.</Para>
 
+<!--
 <Para>Because &survexsuite; is still being actively developed, this document
 has an unfortunate tendency to lag slightly behind the capabilities of the
 software. The latest version is now available on the web at <ulink
 url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
 </Para>
+-->
 
 <Sect2><Title>Other Documentation</Title>
 
@@ -172,21 +179,21 @@ using previously.
 </Para>
 
 <Para>
-BUGS or BUGS.txt - a list of known bugs.
-</Para>
-
-<Para>
-TODO or TODO.txt - changes and enhancements that need doing.
-</Para>
-
-<Para>
 ChangeLog or CHANGES.txt - this is a much more detailed list of changes,
 aimed at developers rather than end users.
 </Para>
 
+<Para>
+BUGS or BUGS.txt - a list of known bugs.
+</Para>
+
+<Para>
+TODO or TODO.txt - planned changes and enhancements.
+</Para>
+
 <!-- FIXME: INSTALL no longer relevant and so no longer inclued on win32 thanks to installer -->
 <Para>
-INSTALL or INSTALL.txt - instructions for building and installing &survexsuite;.
+INSTALL or INSTALL.txt - instructions for installing &survexsuite;.
 </Para>
 
 <!-- FIXME: any other text files? -->
@@ -213,13 +220,15 @@ document for addresses.</Para>
 <Para>The details of installation depend greatly on what platform you
 are using, so there is a separate section below for each platform.</Para>
 
-<Sect3><Title>&unix;</Title>
+<Sect3><Title>&linux;</Title>
 
 <Para>
-We supply a pre-compiled version for x86 Linux machines in RPM format
+We supply pre-compiled versions for x86 &linux; machines in RPM format
 (suitable for Redhat, Mandrake, and some other distributions)
 and dpkg format (suitable for Debian and Debian-derived distributions).
 </Para>
+
+<Sect3><Title>Other versions of &unix;</Title>
 
 <Para>For other &unix; versions you'll need to get the source code
 and compile it on your system.  &survexsuite; uses GNU automake
@@ -229,13 +238,14 @@ followed by <command>make</command> to build the programs and then
 <command>make install</command> to install them.</Para>
 
 <Para>
-There's a GUI caverot replacement called aven, which needs wxWindows to
-build, which in turn needs either Motif or Gtk+.  Alternatively
+There's a GUI cave viewer called aven, which needs wxWindows to build,
+which in turn needs either Motif or Gtk+.  If installing the required
+libraries is a problem,
 there's a more basic cave viewer called xcaverot which only needs the
 standard X libraries.
 </Para>
 
-<!-- FIXME: recommend printps of Unix (or just Linux)??? -->
+<!-- FIXME: recommend printps on &UNIX; (or just &linux;)??? -->
 
 </Sect3>
 
@@ -408,19 +418,10 @@ automatically when you install.
 
 <ListItem><Para> diffpos: compares the positions of stations in two
 <filename/.3d/ files.
-It will tell you about stations which are in one file but not the other, and
-you can specify a tolerance by which each station's position is allowed
-to vary.  For backward compatibility it will also read the
-<filename>.pos</filename> files produced by earlier versions of cavern.
 </Para></ListItem>
 
-<ListItem><Para> extend: simplistic Extended Elevation processor. It
-takes a <filename/.3d/ file and squashes it flat. It starts with the
-highest deadend station in the survey (or the highest station if there
-are no deadends) which is put on the left, then folds each leg out
-individually to the right, breaking loops arbitrarily (usually at
-junctions). This suffices for simple caves, and sections of cave. Some
-more control will be added in due course.  </Para></ListItem>
+<ListItem><Para> extend: simplistic Extended Elevation processor.
+</Para></ListItem>
 
 <ListItem><Para> hto2svx and svx2hto: translate
 <filename/.svx/ files to and from Doug
@@ -526,8 +527,8 @@ should not be necessary.
 -->
 </Para>
 
-<Para>Under unix, use "setenv SURVEXHOME /home/user/survex-0.96" (csh)
-or "export SURVEXHOME; SURVEXHOME=/home/user/survex-0.96" (sh).  This
+<Para>Under unix, use "setenv SURVEXHOME /home/user/survex" (csh)
+or "export SURVEXHOME; SURVEXHOME=/home/user/survex" (sh).  This
 is essential when installing a prebuilt survex in other than the
 default location; entirely likely when you're not installing it with
 root privileges.  If you're building survex yourself, you be more
@@ -591,18 +592,14 @@ specified and as an all-lower-case filename.
 <Para>Syntax for simple use: <command/cavern &lt;survey data file&gt;/
 </Para>
 
-<Para>Cavern reads in text files containing the survey data
-(<filename/.svx/) and outputs four data files, with the following
-extensions, further explained below: <filename/.3d/,
-<filename/.err/ and <filename/.inf/</Para>
-
 <Sect2><Title>Cavern Output</Title>
 
-<Para>When you run cavern, three output files are created.  By default these
-are output to the current directory, 
-with the same base
-filename as the first <filename/.svx/ file read (but a different
-extension).
+<Para>Cavern reads in text files containing the survey data
+(<filename/.svx/) and outputs three data files, with the following
+extensions: <filename/.3d/, <filename/.err/ and <filename/.inf/.
+By default these files are put in the current directory, 
+with the same base filename as the first <filename/.svx/ file read
+(but a different extension).
 You can change the directory and/or base filename using the --output switch.
 <!-- FIXME: link --> 
 </Para>
@@ -617,26 +614,30 @@ created: <filename>entrance.3d</filename>,
 these are the same as the info in the <filename/.inf/ file:</Para>
 
 <itemizedlist>
-<listitem><para>the highest and lowest points and the height difference
+<listitem><para>The highest and lowest points and the height difference
 between them
 </para></listitem>
 
-<listitem><para>the total length of the survey (before and after adjustment)
+<listitem><para>The total length of the survey (before and after
+adjustment).  This total excludes survey legs flagged as SURFACE,
+DUPLICATE, or SPLAY.
 </para></listitem>
 
-<listitem><para>the number of legs and stations
+<listitem><para>The number of stations and legs.  Note that a *EQUATE
+is counted as a leg in this statistic.
 </para></listitem>
 
-<listitem><para>the East-West and North-South extents
+<listitem><para>The East-West and North-South ranges.
 </para></listitem>
 
-<listitem><para>the number of each size of node in the network (where size
+<listitem><para>The number of each size of node in the network (where size
 is number of connections to a station) i.e. a one node is the end of a
-dead-end traverse, a two-node is a typical station with a leg going
-out either side, a three-node is a T-junction etc
+dead-end traverse, a two-node is a typical station in the middle of a
+traverse, a three-node is a T-junction etc.
 </para></listitem>
 
-<listitem><para>how long the processing took and how much CPU time was used
+<listitem><para>How long the processing took and how much CPU time was
+used.
 </para></listitem>
 </itemizedlist>
 
@@ -677,9 +678,10 @@ run.</Para>
 
 <!-- FIXME: brackets implied around each file -->
 
-<Para>If the operating system supports filenames with spaces, you can use
-them but you'll need to enclose them in quotes like so: <command>cavern
-"Spider Cave"</command></Para>
+<Para>Filenames with spaces can be processed (provided your operating system
+supports them - &unix; does, and so do recent versions of Microsoft
+Windows).  You need to enclose the filename in quotes like so:
+<command>cavern "Spider Cave"</command></Para>
 
 <!--
 <Para>The command line is processed from left to right.
@@ -799,14 +801,11 @@ colours.
 
 <Para>The syntax is given above. E.g. <command/caverot -c2,6 cave.3d
 surface.3d/ would display <filename/cave.3d/ in colour 2 and
-<filename/surface.3d/ in colour 6. You do not have to give colours, in which
-case it will just use some random ones and probably look horrible.</Para>
+<filename/surface.3d/ in colour 6. If you do not specify colours, a
+predefined set is used.</Para>
 
-<Para>Colour values range between 0 (black) and 255 (probably white). You
-will have to experiment to find which ones are which. There is a limit of
-about 15 colour values at present - more are silently ignored, and whatever
-value happens to be in memory off the end of the array is used for the
-colour if you give more than 15 <filename/.3d/ files.
+<Para>Colour values range between 0 (black) and 255 (white) - experiment
+to find which colours you like.
 </Para>
 
 <Para>Note that there is no perspective in the view. This means that
@@ -831,8 +830,9 @@ mouse has a middle button (and it is recognised by your mouse driver)
 then you can use it to tilt the cave.
 </Para>
 
-<Para>Changing from plan to elevation is now animated (if your machine is
-fast enough) to help you see where you are and how things relate.
+<Para>Changing from plan to elevation is animated to help you see
+where you are and how things relate.  This animation is automatically
+disabled on slow machines to avoid user frustration.
 </Para>
 
 </Sect2>
@@ -1167,10 +1167,6 @@ change the [PCL] section to say like=modern_pcl_a4 . This will enable
 horizontal and vertical tabbing.
 </Para>
 
-<Para>Further information on printer compatibility is in the PRNHELP(.TXT)
-file.
-</Para>
-
 </Sect2>
 
 <Sect2><Title>Printer Calibration</Title>
@@ -1203,21 +1199,22 @@ specific tasks.</Para>
 <Para>Syntax: <command/extend &lt;input imagefile&gt; [&lt;output imagefile&gt;]/
 </Para>
 
-<Para>This program generates Extended Elevations from <filename/.3d/
-files. It does this by first finding the highest endpoint
-(i.e. 1-node) and then unfolding all the legs flat in the E-W plane to
-the right. This is not a very clever algorithm, and it will soon be
-improved so that you have some sort of control over the unfolding.
-</Para>
+<Para>extend
+takes a <filename/.3d/ file and generates an extend elevation from
+it.  It starts with the
+highest deadend station in the survey (or the highest station if there
+are no deadends) which is put on the left, then folds each leg out
+individually to the right, breaking loops arbitrarily (usually at
+junctions).</Para>
 
-<Para>We believe that this should be an interactive process to get good
-results, with the option to project some legs instead of flattening them.
-Nevertheless it produces useful results on simple cave sections and it very
-useful within its limitations.
-</Para>
+<Para>
+This approach suffices for simple caves or sections of cave.
+for more complicated situations human intervention is required -
+try &chasm;'s extended elevation editor (which we plan to integrate
+into Survex in the future).</Para>
 
-<Para>If not specified, the output filename defaults to
-<filename/extend.3d/.</Para>
+<Para>If the output filename is not specified, extend writes its
+output to <filename/extend.3d/.</Para>
 
 </Sect2>
 
@@ -1226,11 +1223,18 @@ useful within its limitations.
 <Para>Syntax: <command/diffpos &lt;posfile1&gt; &lt;posfile2&gt; [&lt;threshold&gt;]/
 </Para>
 
-<Para>This utility compares the contents of the two specified position
-<filename/.pos/ files. The output is a list of stations that differ by
-more than the threshold in any of the axes X, Y, or Z. The threshold
-parameter (given in metres) is optional, and if not specified defaults
-to 0.01m.</Para>
+<Para>diffpos compares the contents of the two specified
+<filename>.3d</filename> files. It will tell you about stations which
+are in one file but not the other, and also stations which have moved
+by more than a specified threshold distance in X, Y, or Z.  The
+threshold distance is given in metres and defaults to 0.01m if not
+specified.
+</Para>
+
+<Para>
+For backward compatibility diffpos will also read the
+<filename>.pos</filename> files produced by earlier versions of cavern.
+</Para>
 
 </Sect2>
 
@@ -1379,7 +1383,7 @@ various elements.
 </Para>
 
 <Para>
-All of these, for example, are valid: +47, 23, -22, +4.5, 1.3, -0.7, +.15, .4,
+All of these are valid examples: +47, 23, -22, +4.5, 1.3, -0.7, +.15, .4,
 -.05
 </Para>
 
@@ -1463,6 +1467,7 @@ INFER
 <VarListEntry><Term>Example</Term>
 
 <listitem>
+<Para>
 <programlisting>
 *begin littlebit
 1 2 10.23 106 -02
@@ -1475,7 +1480,7 @@ INFER
 *sd tape 2 metres
 9 10 6.   031 -07
 *end</programlisting>
-
+</Para>
 </listitem>
 
 </VarListEntry>
@@ -1503,12 +1508,39 @@ depth.</Para></listitem>
 
 </Sect3>
 
-<Sect3><Title>CALIBRATE &lt;quantity list&gt; &lt;ZeroError&gt; [&lt;Scale&gt;]</Title>
+<Sect3><Title>CALIBRATE</Title>
 
-<!-- FIXME: or `*calibrate default' -->
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem>
+<Para>*calibrate &lt;quantity list&gt; &lt;ZeroError&gt; [&lt;Scale&gt;]
+</Para>
+<Para>*calibrate default
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*calibrate tape +0.3
+</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem>
 
 <Para>
-- Calibrates instruments:
+*calibrate is used to specify instrument calibrations.
 </Para>
 
 <Para>
@@ -1539,8 +1571,8 @@ then you can correct it with:
 
 <programlisting>*CALIBRATE tape -0.2</programlisting>
 
-<Para>NB ZeroError is irrelevant for Topofil counters, but the command
-set is neater this way!
+<Para>Note: ZeroError is irrelevant for Topofil counters and depth
+gauges since pairs of readings are subtracted.
 </Para>
 
 <Para>
@@ -1568,6 +1600,20 @@ The default is all quantities calibrated to scale factor 1.0,
 zero error 0.0
 </Para>
 
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*units</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
 </Sect3>
 
 <Sect3><Title>CASE</Title>
@@ -1583,6 +1629,7 @@ zero error 0.0
 <VarListEntry><Term>Example</Term>
 
 <listitem>
+<Para>
 <programlisting>
 *begin bobsbit
 ; Bob insists on using case sensitive station names
@@ -1592,7 +1639,7 @@ zero error 0.0
 2 2A   3.12 034 +02
 2 3    8.64 239 -01
 *end bobsbit</programlisting>
-
+</Para>
 </listitem>
 
 </VarListEntry>
@@ -1698,12 +1745,14 @@ whole run.
 <VarListEntry><Term>Example</Term>
 
 <listitem>
+<Para>
 <programlisting>
 *begin littlebit
 *copyright 1983 CUCC
 1 2 10.23 106 -02
 2 3  1.56 092 +10
 *end littlebit</programlisting>
+</Para>
 </listitem>
 
 </VarListEntry>
@@ -1720,7 +1769,7 @@ stored in a way that can be automatically collated.
 
 <VarListEntry><Term>See Also</Term>
 
-<listitem><Para>*end, *prefix</Para></listitem>
+<listitem><Para>*begin</Para></listitem>
 
 </VarListEntry>
 
@@ -2437,21 +2486,6 @@ points where surveys join.
 0 (east-west), 0 (north-south), 1780 (altitude).
 </Para>
 
-<Para>Other implemented commands are:
-</Para>
-
-<itemizedlist>
-<listitem><Para>*UNITS     - sets units for length and angular measurements</Para></listitem>
-<listitem><Para>*CALIBRATE - takes account of instrument and magnetic error/variation</Para></listitem>
-<listitem><Para>*SD - specify expected Standard Deviations for measurements</Para></listitem>
-<!-- FIXME and more -->
-</itemizedlist>
-
-<Para>
-Full descriptions of all these commands are given in the Command
-specification appendix
-</Para>
-
 </Sect2>
 
 </Sect1>
@@ -2628,7 +2662,7 @@ page.
 </Para>
 
 <Para>
-4 [Not implemented] CYLPOLAR (Cylindrical Polar) style data is
+4 CYLPOLAR (Cylindrical Polar) style data is
 included for completeness, since someone may have a use for it.
 Perhaps a Grade 3 survey, or when surveying with a level and stick
 (?). Let me know if you find a use so I can put a better justification
@@ -2779,8 +2813,9 @@ see Compass Points Issue 10.
 
 <Sect2><Title>Enter Diving Data</Title>
 
-<Para>Diving Data is now accepted. You use the *Data command to specify
-that the following data is of this type.
+<Para>Surveys made underwater using a diver's depth gauge can be
+processed - use the *Data command to specify that the following data
+is of this type.
 </Para>
 
 </Sect2>
@@ -2913,9 +2948,6 @@ removing fixed points.
 <Para>To fix more than one station at known co-ordinates, simply use a *fix
 command for each.  &survexsuite; will check that all stations are connected
 to at least one fixed point (so their co-ordinates can be calculated).
-"Hanging" legs and stations are reported and discarded.  This
-means that unconnected sections of data can be fed in and the connections
-added later.
 </Para>
 
 </Sect3>
@@ -3041,7 +3073,7 @@ These will normally be available via the
 and export functions. These convert &survexsuite; data files from/to
 &hto; (Hierarchical tagged objects) data files. See the command
 description for more details. Details of the spec are available
-on-line via the CSG web pages.You can also just use the text format
+on-line via the CSG web pages. You can also just use the text format
 files and make the changes needed for another piece of software
 to understand the data, either by hand or other text-processing
 tools. We are working on other export tools (Slowly!), so if you
