@@ -11,7 +11,7 @@ EXTRA_DIST = bcra3.svx bcra5.svx messages.txt pfont.txt print.ini\
  named-entities.txt makefont.pl makemsgs.pl $(msg_files) pfont.bit\
  ca.h de.h de_CH.h de_DE.h en.h en_US.h es.h fr.h it.h pt.h
 
-MAINTAINERCLEANFILES = $(msgs_files) pfont.bit
+MAINTAINERCLEANFILES = $(msg_files) pfont.bit
 
 pkgdata_DATA = pfont.bit print.ini bcra3.svx bcra5.svx $(msg_files)
 
