@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-dist-hook:
+check-local dist-hook:
 	if grep '@.*@' borlandc/config.h riscos/config.h ; then \
 	  echo 'Unsubstituted token in src/*/config.h - something is amiss with configure.in'; \
 	  exit 1; \
