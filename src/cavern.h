@@ -146,6 +146,7 @@ typedef enum {
    FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount,
    /* Up to here are readings used in datain.c */
    Fr, To, Station, Depth, DepthChange, Count, Dir,
+   CompassDATFlags,
    Newline, IgnoreAllAndNewLine, Ignore, IgnoreAll
 } reading;
 /* Tape Comp Clino BackComp BackClino FrDepth ToDepth Dx Dy Dz FrCount ToCount */

@@ -1,4 +1,6 @@
-* cavern: now processes compass and clino backsights in Compass DAT files.
+* cavern: when reading Compass DAT files, we now processes compass and clino
+  backsights, and recognise the "X" flag which indicates a leg should be
+  entirely ignored.
 
 * cavern: fixed 3dx output so it actually works with Chasm once more.
 

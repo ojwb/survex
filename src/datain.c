@@ -433,10 +433,13 @@ data_file(const char *pth, const char *fnm)
    if (fmt == FMT_DAT) {
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 static reading compass_order[] = {
-	    Fr, To, Tape, Comp, Clino, IgnoreAll
+	    Fr, To, Tape, Comp, Clino, Ignore, Ignore, Ignore, Ignore,
+	    CompassDATFlags, IgnoreAll
 	 };
 	 static reading compass_order_backsights[] = {
-	    Fr, To, Tape, Comp, Clino, BackComp, BackClino, IgnoreAll
+	    Fr, To, Tape, Comp, Clino, Ignore, Ignore, Ignore, Ignore,
+	    BackComp, BackClino,
+	    CompassDATFlags, IgnoreAll
 	 };
 	 /* <Cave name> */
 	 process_bol();
@@ -851,7 +854,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       if (diff_from_abs90 > EPSILON) {
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
-		 diff_from_abs90 > -EPSILON) {
+		 diff_from_abs90 >= -EPSILON) {
 	 ctype = CTYPE_INFERPLUMB;
       }
    }
@@ -866,7 +869,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	 /* FIXME: different message for BackClino? */
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
-		 diff_from_abs90 > -EPSILON) {
+		 diff_from_abs90 >= -EPSILON) {
 	 backctype = CTYPE_INFERPLUMB;
       }
    }
@@ -1375,6 +1378,7 @@ data_normal(void)
    bool fRev;
    clino_type ctype, backctype;
    bool fDepthChange;
+   unsigned long compass_dat_flags = 0;
 
    reading *ordering;
 
@@ -1493,9 +1497,33 @@ data_normal(void)
 	  VAL(FrDepth) = 0;
 	  read_reading(ToDepth, fFalse);
 	  break;
-       case Ignore:
-	  skipword();
+       case CompassDATFlags:
+	  if (ch == '#') {
+	     nextch();
+	     if (ch == '|') {
+		filepos fp;
+		get_pos(&fp);
+		nextch();
+		while (ch >= 'A' && ch <= 'Z') {
+		   compass_dat_flags |= BIT(ch - 'A');
+		   nextch();
+		}
+		if (ch == '#') {
+		   nextch();
+		} else {
+		   compass_dat_flags = 0;
+		   set_pos(&fp);
+		   push_back('|');
+		   ch = '#';
+		}
+	     } else {
+		push_back(ch);
+		ch = '#';
+	     }
+	  }
 	  break;
+       case Ignore:
+	  skipword(); break;
        case IgnoreAllAndNewLine:
 	  skipline();
 	  /* fall through */
@@ -1577,6 +1605,11 @@ data_normal(void)
        case End:
 	  if (!fMulti) {
 	     int r;
+	     /* Compass ignore flag is 'X' */
+	     if ((compass_dat_flags & BIT('X' - 'A'))) {
+		process_eol();
+		return 1;
+	     }
 	     if (fRev) {
 		prefix *t = fr;
 		fr = to;
