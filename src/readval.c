@@ -35,7 +35,7 @@ ident_cmp(const char *a, const char *b)
    if (isdigit(a[0])) {
       int i, j;
       if (!isdigit(b[0])) return -1;
-      /*FIXME check errno, etc in case out of range*/
+      /*FIXME: check errno, etc in case out of range*/
       i = strtoul(a, &a, 10);
       i -= strtoul(b, &b, 10);
       if (i) return i;
