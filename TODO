@@ -147,7 +147,7 @@ printer driver name spills over one page on Wookey's printer (printdm)
 reporting of 'Arithmetic error' as 'Divide by zero', 'Negative root', etc)
 
 Tests these commands:
- DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET SOLVE (1 test) TITLE
+ DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET TITLE
 
 ? Allow F(orward)/B(ack) in data - checked somehow (?)
 

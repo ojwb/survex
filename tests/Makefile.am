@@ -35,7 +35,7 @@ includecomment.svx reenterwarn.svx\
 angleunits.svx angleunits.pos\
 lengthunits.svx lengthunits.pos\
 cmd_default.svx cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
-cmd_case.svx cmd_case.pos cmd_fix.svx cmd_fix.pos\
+cmd_case.svx cmd_case.pos cmd_fix.svx cmd_fix.pos cmd_solve.svx cmd_solve.pos \
 stnsurvey1.svx stnsurvey2.svx\
 tapelessthandepth.svx longname.svx\
 chinabug.svx chinabug2.svx

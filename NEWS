@@ -37,6 +37,8 @@
 * print*: Fixed handling of surface legs; `-S' now recognised as a
   short-form for `--surface'.
 
+* Added test of *solve command.
+
 Changes in 0.97-prerelease4:
 
 * Updated Portuguese and German translations.
