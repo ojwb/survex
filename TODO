@@ -1,28 +1,3 @@
-Date: Fri, 18 Aug 2000
-From: Olly
-
-aven grid code -> printer drivers, caverot, and xcaverot too.
-grid crosses option (only draw cross at intersections, not a full grid).
-[(x,y) of a point to go through (easting, northing)
-x spacing, y spacing (default to x spacing)
-orientation (bearing of y-axis?) (defaults to 0)]
-
-Date: Sat, 03 Mar 2001
-From: Olly
-
-chase up zombies again?
-
-resolve entries in TODO; resolve FIXMEs in code
-
-use "highest" title
-
-Default variance for topofil counter? (currently same as that of tape)
-
-complain about *export-ing or *entrance-ing fictional stations
-
-?outlaw prefixes on stations in data legs (as Todd has lobbied for)
-and then the prefix of a leg == prefix of each end...?
-
 Date: Tue, 01 May 2001
 Subject: caverot/xcaverot/aven ideas
 From: Wookey, Olly
@@ -61,6 +36,31 @@ little can be seen for part of each rotation).
 
 aven/caverot/xcaverot: if all points share a common prefix then
 default to hiding it?
+
+Date: Fri, 18 Aug 2000
+From: Olly
+
+aven grid code -> printer drivers, caverot, and xcaverot too.
+grid crosses option (only draw cross at intersections, not a full grid).
+[(x,y) of a point to go through (easting, northing)
+x spacing, y spacing (default to x spacing)
+orientation (bearing of y-axis?) (defaults to 0)]
+
+Date: Sat, 03 Mar 2001
+From: Olly
+
+chase up zombies again?
+
+resolve entries in TODO; resolve FIXMEs in code
+
+use "highest" title
+
+Default variance for topofil counter? (currently same as that of tape)
+
+complain about *export-ing or *entrance-ing fictional stations
+
+?outlaw prefixes on stations in data legs (as Todd has lobbied for)
+and then the prefix of a leg == prefix of each end...?
 
 Date: Fri, 04 May 2001
 Subject: caverot
@@ -182,4 +182,6 @@ improve 3d torture test and try to automate its use if possible.
 caverot: on RISC OS now fall back to using 2 or even just one screen
 bank if we can't find a mode where we can create 3 banks [FIXME: need
 to test this works]
+
+print to an image file (use gd?)
 
