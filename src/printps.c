@@ -1,6 +1,6 @@
 /* printps.c & prnthpgl.c */
 /* Device dependent part of Survex Postscript printer/HPGL plotter driver */
-/* Copyright (C) 1993-2001 Olly Betts
+/* Copyright (C) 1993-2002 Olly Betts
  *
  * Postscript font remapping code based on code from a2ps
  * Copyright (C) 1995-1999 Akim Demaille, Miguel Santana
@@ -88,7 +88,7 @@ device printer = {
 };
 #else
 
-# if (OS==UNIX) && defined(HAVE_GETPWUID)
+# if defined(HAVE_GETPWUID) && !defined(__DJGPP__)
 #  include <pwd.h>
 #  include <sys/types.h>
 #  include <unistd.h>
@@ -380,7 +380,7 @@ ps_Pre(int pagesToPrint, const char *title)
    time_t now = time(NULL);
    char *name = NULL;
    char buf[1024];
-#if (OS==UNIX) && defined(HAVE_GETPWUID)
+#if defined(HAVE_GETPWUID) && !defined(__DJGPP__)
    struct passwd *ent;
 #endif
 
@@ -396,7 +396,7 @@ ps_Pre(int pagesToPrint, const char *title)
       prio_print(buf);
    }
 
-#if (OS==UNIX) && defined(HAVE_GETPWUID)
+#if defined(HAVE_GETPWUID) && !defined(__DJGPP__)
    ent = getpwuid(getuid());
    if (ent && ent->pw_gecos[0]) name = ent->pw_gecos;
 #endif
