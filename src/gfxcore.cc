@@ -278,6 +278,9 @@ void GfxCore::Initialise()
     }
     m_InitialScale *= .85;
 
+    // Calculate screen coordinates and redraw.
+    SetScaleInitial(m_InitialScale);
+
     // Apply default parameters.
     OnDefaults();
 }
