@@ -1,12 +1,18 @@
 #! /bin/sh
-if ! cvs diff > /dev/null 2> /dev/null ; then
-   echo There are changes not checked into CVS - please rectify
-   exit 1
+release=yes
+if test x"$1" = x-t ; then
+   release=
 fi
-# Update ChangeLog
-if ! ../cvs2cl/cvs2cl.pl 2> /dev/null ; then
-   echo Failed to update ChangeLog from CVS
-   exit 1
+if test x"$release" = xyes ; then
+   if ! cvs diff > /dev/null 2> /dev/null ; then
+      echo There are changes not checked into CVS - please rectify
+      exit 1
+   fi
+   # Update ChangeLog
+   if ! ../cvs2cl/cvs2cl.pl 2> /dev/null ; then
+      echo Failed to update ChangeLog from CVS
+      exit 1
+   fi
 fi
 if test -f Makefile ; then
    if ! make distclean ; then
@@ -24,13 +30,15 @@ if ! make dist ; then
    echo make dist failed
    exit 1
 fi
-if ! make rpm ; then
-   echo make rpm failed
-   exit 1
-fi
-if ! make dos_doc_zip ; then
-   echo make dos_doc_zip failed
-   exit 1
+if test x"$release" = xyes ; then
+   if ! make rpm ; then
+      echo make rpm failed
+      exit 1
+   fi
+   if ! make dos_doc_zip ; then
+      echo make dos_doc_zip failed
+      exit 1
+   fi
 fi
 if ! make distclean ; then
    echo make distclean failed
@@ -41,20 +49,38 @@ if ! env CC=i386-pc-msdosdjgpp-gcc LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe \
    echo djgpp configure failed
    exit 1
 fi
-if ! make djgpp ; then
+if ! make ; then
    echo djgpp make failed
    exit 1
+fi
+if test x"$release" = xyes ; then
+   if ! make djgpp_zip ; then
+      echo djgpp make djgpp_zip failed
+      exit 1
+   fi
 fi
 if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
 PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
-if ! env ac_cv_c_bigendian=no LDFLAGS=-s ./configure --with-x=no ; then
+if ! env ac_cv_c_bigendian=no LDFLAGS=-s CAVEROT=caverot.exe \
+ CRLIB="-mwindows -lalleg_s -lddraw -lmingwthrd -ldxguid -ldsound -ldinput -lwinmm -lole32" \
+ CROBJX=dosrot.o CFLAGS=-DALLEGRO_STATICLINK ./configure --with-x=no ; then
    echo mingw configure failed
    exit 1
 fi
-if ! make mingw ; then
+if ! make ; then
    echo mingw make failed
+   exit 1
+fi
+if test x"$release" = xyes ; then
+   if ! make mingw_zip ; then
+      echo mingw make mingw_zip failed
+      exit 1
+   fi
+fi
+if ! make distclean ; then
+   echo make distclean failed
    exit 1
 fi

@@ -102,24 +102,18 @@ djgpp_zip : dostxt
 	zip -j -l $(djgpp_zip_name) djgpp_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
-# ick - need to build djgpp before mingw to get caverot.exe, but there's
-# no easy fix I can think of...
-
 mingw : all mingw_zip
 
 mingw_zip_name = survex-win32-@VERSION@.zip
 
 mingw_zip : dostxt
-	echo "Warning: You must build djgpp before mingw for caverot.exe"
 	test -d mingw_exes || mkdir mingw_exes
-	for f in $(base_progs) ; do cp src/$$f.exe mingw_exes ; done
+	for f in $(base_progs) caverot ; do cp src/$$f.exe mingw_exes ; done
 	for a in hto2svx svx2hto ; do cp hto/$$a.exe mingw_exes ; done
 	$(RM) $(mingw_zip_name)
-	zip -j $(mingw_zip_name) mingw_exes/*.exe djgpp_exes/caverot.exe\
-	 $(extra_bin)
+	zip -j $(mingw_zip_name) mingw_exes/*.exe $(extra_bin)
 	# -l means convert LF to CR+LF
-	zip -j -l $(mingw_zip_name) mingw_extras/*.txt dostxt_tmp/*.txt\
-	 $(extra_txt)
+	zip -j -l $(mingw_zip_name) mingw_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
 bc_zip_name = survex-dos286-@VERSION@.zip
