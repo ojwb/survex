@@ -9,13 +9,6 @@ scale factor to very large or very small values (probably larger/smaller
 than MIN/MAXFLOAT)?! This would be worth an error catch....
 [Seems to be fixed by newer allegro version - fix not confirmed by immoh]
 
-Date: Wed, 09 Sep 1998 15:10:12 +0100
-From: Wookey <wookey@aleph1.co.uk>
-
-[On an Aleph1 PC Card in an Acorn RISC OS machine, in DJGPP+Allegro caverot]
-the help screen flashes up and then disappears - this is probably our problem,
-not yours (the VESA 2 support being relatively new) :-)
-
 Date: 17 Sep 1998 17:49:36 GMT
 From: Olly <olly@muscat.co.uk>
 
