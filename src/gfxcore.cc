@@ -797,8 +797,17 @@ void GfxCore::DrawScalebar()
 
     // Calculate the extent of the survey, in metres across the screen plane.
     float m_across_screen = float(m_XSize / m_Params.scale);
-    // The scalebar will represent this distance:
-    float size_snap = (float) pow(10.0, int(log10(m_across_screen * 0.75)));
+
+    // Calculate the length of the scale bar in metres.
+    float size_snap = (float) pow(10.0, int(log10(0.75 * m_across_screen)));
+    float t = m_across_screen * 0.75 / size_snap;
+    if (t >= 5.0) {
+        size_snap *= 5.0;
+    }
+    else if (t >= 2.0) {
+        size_snap *= 2.0;
+    }
+
     // Actual size of the thing in pixels:
     int size = int(size_snap * m_Params.scale);
     
