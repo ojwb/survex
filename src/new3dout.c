@@ -212,7 +212,6 @@ save3d(twig *sticky)
 	cave_write_pos(twiglet->from->pos,twiglet->from);
       } else { /*leg */
 	/* calculate an average percentage error, based on %age change of polars */
-	err = 0.0;
 	/* offset is how far the _to_ point is from where we thought it would be */
 	offset = hypot(twiglet->to->pos->p[2] - (twiglet->from->pos->p[2] +
 						 twiglet->delta[2]),
