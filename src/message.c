@@ -844,6 +844,8 @@ msg_init(char * const *argv)
 	  case 25: /* Russia2 */
 	  case 26: /* Israel */
 #endif	    
+	 }
+#endif
       }
    }
 #ifdef DEBUG
