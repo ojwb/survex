@@ -478,7 +478,7 @@ replace_travs(void)
 		     hTot = sqrd(e[0]) + sqrd(e[1]);
 		     vTot = sqrd(e[2]);
 #ifndef NO_COVARIANCES
-		     /* FIXME what about covariances? */
+		     /* FIXME: what about covariances? */
 		     eTotTheo = leg->v[0][0] + leg->v[1][1] + leg->v[2][2];
 		     hTotTheo = leg->v[0][0] + leg->v[1][1];
 		     vTotTheo = leg->v[2][2];
@@ -549,7 +549,7 @@ replace_travs(void)
 	    divdv(&sc, &e, &stn1->leg[i]->v);
 	 }
 #ifndef NO_COVARIANCES
-	 /* FIXME what about covariances? */
+	 /* FIXME: what about covariances? */
 	 hTotTheo = stn1->leg[i]->v[0][0] + stn1->leg[i]->v[1][1];
 	 vTotTheo = stn1->leg[i]->v[2][2];
 	 eTotTheo = hTotTheo + vTotTheo;
@@ -612,28 +612,32 @@ replace_travs(void)
 	       if (do_blunder && fhErrStat)
 		  do_gross(err, leg->d, stn1, stn3, eTotTheo);
 #endif
-	       if (reached_end) break;
-	       adddd(&POSD(stn3), &POSD(stn1), &leg->d);
+	       if (!reached_end)
+		  adddd(&POSD(stn3), &POSD(stn1), &leg->d);
 	    } else {
  	       leg = stn3->leg[k];
 #ifdef BLUNDER_DETECTION
 	       if (do_blunder && fhErrStat)
 		  do_gross(err, leg->d, stn1, stn3, eTotTheo);
 #endif
-	       if (reached_end) break;
-	       subdd(&POSD(stn3), &POSD(stn1), &leg->d);
+	       if (!reached_end)
+		  subdd(&POSD(stn3), &POSD(stn1), &leg->d);
 	    }
 
 	    lenTot = sqrdd(leg->d);
 
-	    add_stn_to_list(&stnlist, stn3);
-
-	    if (!fZero(&leg->v)) {
-	       fEquate = fFalse;
-	       mulvd(&e, &leg->v, &sc);
-	       adddd(&POSD(stn3), &POSD(stn3), &e);
+	    if (!reached_end) {
+	       add_stn_to_list(&stnlist, stn3);
+	       if (!fZero(&leg->v)) {
+		  fEquate = fFalse;
+		  mulvd(&e, &leg->v, &sc);
+		  adddd(&POSD(stn3), &POSD(stn3), &e);
+	       }
+	       fix(stn3);
+	    } else {
+	       if (!fZero(&leg->v)) fEquate = fFalse;
 	    }
-	    fix(stn3);
+	       
 	    if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
 	       stn1->name->sflags |= BIT(SFLAGS_SURFACE);
 	       stn3->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -650,8 +654,10 @@ replace_travs(void)
  	    }
 #endif
 
-	    /* FIXME: why is an equate at the start of a traverse treated specially? Is it just a lazy way to omit traverses which are *all* equates? */
-	    if (nmPrev != stn3->name && stn3->name->ident[0] && !(fEquate && cLegsTrav == 0)) {
+	    /* FIXME: equate at the start of a traverse treated specially
+	     * - what about equates at end? */	    
+	    if (nmPrev != stn3->name && stn3->name->ident[0]
+		&& !(fEquate && cLegsTrav == 0)) {
 	       /* (node not part of same stn) &&
 		* (not a link inside a fixed point with error estimates) &&
 		* (not equate at start of traverse) */
@@ -659,6 +665,7 @@ replace_travs(void)
 	       if (fhErrStat && !fArtic) {
 		  fprint_prefix(fhErrStat, nmPrev);
 		  fputs(fEquate ? szLinkEq : szLink, fhErrStat);
+		  if (reached_end) fprint_prefix(fhErrStat, stn3->name);
 	       }
 #endif
 	       nmPrev = stn3->name;
@@ -688,69 +695,16 @@ replace_travs(void)
 		  BUG("during calculation of closure errors");
 	       }
 	    }
+	    if (reached_end) break;
 
 	    i = k ^ 1; /* flip direction for other leg of 2 node */
 
 	    stn1 = stn3;
 	 } /* endwhile */
 
-	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
-	    stn1->name->sflags |= BIT(SFLAGS_SURFACE);
-	    stn2->name->sflags |= BIT(SFLAGS_SURFACE);
-	 } else {
-	    stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	    stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	 }
-#ifdef NEW3DFORMAT
- 	 if (!fUseNewFormat) {
-#endif
-	    img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
-			   POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
-#ifdef NEW3DFORMAT
- 	 }
-#endif
-
-#if PRINT_NETBITS
-	 printf("Reached fixed or non-2node station\n");
-#endif
-	 /* FIXME: better to handle the last leg in a traverse with the
-	  * same code as all the others - i.e. in loop above */
-	 if (data_here(stn1->leg[i])) {
-	    if (!fZero(&stn1->leg[i]->v)) fEquate = fFalse;
-	    lenTot = sqrdd(stn1->leg[i]->d);
-	 } else {
-	    ASSERT2(data_here(stn2->leg[j]),
-		    "data not on either direction of leg");
-	    if (!fZero(&stn2->leg[j]->v)) fEquate = fFalse;
-	    lenTot = sqrdd(stn2->leg[j]->d);
-	 }
-#if PRINT_NETBITS
-	 printf("lenTot increased okay\n");
-#endif
-	 if (!fArtic) {
-	    if (cLegsTrav) {
-	       if (stn2->name != nmPrev) {
-#ifndef BLUNDER_DETECTION
-		  if (fhErrStat) {
-		     fprint_prefix(fhErrStat, nmPrev);
-		     fputs(fEquate ? szLinkEq : szLink, fhErrStat);
-		  }
-#endif
-		  if (!fEquate) cLegsTrav++;
-	       }
-#if SHOW_INTERNAL_LEGS
-	       else
-		  if (fhErrStat) fputc('+', fhErrStat);
-#endif
-#ifndef BLUNDER_DETECTION
-	       if (fhErrStat) fprint_prefix(fhErrStat, stn2->name);
-#endif
-	       lenTrav += sqrt(lenTot);
-	    }
-	    if (cLegsTrav && !fArtic && fhErrStat)
-	       err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
-			hTot, hTotTheo, vTot, vTotTheo);
-	 }
+	 if (cLegsTrav && !fArtic && fhErrStat)
+	    err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
+		     hTot, hTotTheo, vTot, vTotTheo);
       }
 
       ptrOld = ptr;
@@ -938,10 +892,9 @@ replace_trailing_travs(void)
 	 if (!fUseNewFormat) {
 #endif	 
 	 if (stn1->name->stn == stn1) {
-	    int sflags = stn1->name->sflags & SFLAGS_MASK;
-	    if (stn1->name->max_export) sflags |= BIT(SFLAGS_EXPORTED);
-	    img_write_item(pimgOut, img_LABEL, sflags,
-			   sprint_prefix(stn1->name),
+	    int sf = stn1->name->sflags & SFLAGS_MASK;
+	    if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
+	    img_write_item(pimgOut, img_LABEL, sf, sprint_prefix(stn1->name),
 			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 	 }
 #ifdef NEW3DFORMAT
