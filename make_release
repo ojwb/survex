@@ -44,7 +44,7 @@ aclocal
 autoheader
 automake -a
 autoconf
-if ! ./configure ; then
+if ! ./configure CFLAGS=-Werror CXXFLAGS=-Werror ; then
    echo configure failed
    exit 1
 fi
@@ -102,7 +102,7 @@ if expr "$mk" : '.*\<djgpp\>'; then
    if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
       PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
    fi
-   if ! ./configure --host=i386-pc-msdosdjgpp --build="$build_platform" --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o ; then
+   if ! ./configure --host=i386-pc-msdosdjgpp --build="$build_platform" --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o CFLAGS=-Werror CXXFLAGS=-Werror ; then
       echo djgpp configure failed
       exit 1
    fi
@@ -143,7 +143,7 @@ if expr "$mk" : '.*\<mingw\>'; then
 	 export CXX
       fi
    fi
-   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG=`pwd`/mingw_extras/wxmsw-config LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= ; then
+   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG=`pwd`/mingw_extras/wxmsw-config LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= CFLAGS=-Werror CXXFLAGS=-Werror ; then
       echo mingw configure failed
       exit 1
    fi
