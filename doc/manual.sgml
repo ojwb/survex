@@ -132,8 +132,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-17 01:48:19 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.54 2001-09-17 01:48:19 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-17 01:58:48 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.55 2001-09-17 01:58:48 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -895,6 +895,14 @@ modes, and always draws into a buffer which is then copied to the
 screen.  It tries to pick a suitable screen mode, but if this fails
 you can bring up a dialog to choose a screen mode from by using the
 --mode-picker command line option.
+<!-- FIXME fettle this in:
+This version doesn't run well under NT.  NT limits access to the
+graphics hardware, and emulates VGA, so the best resolution is
+320x200.  There are also other niggles (e.g. on an NT 4 server,
+the mouse works in the mode-picker, but not in caverot itself).
+[If you're running NT use the MS Windows version which comes with a
+more sophisticated cave viewer called aven.
+-->
 </Para>
 
 <Para>
