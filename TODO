@@ -278,3 +278,15 @@ LRUD to draw crude survey...
 
 legs: "commented out" flag?  syntax check data but otherwise ignore
 
+Date: Wed, 20 Jun 2001
+From: Olly
+
+This survey gives bogus node stats (order for equate stations is
+summed and reported twice):
+
+*fix 1 0 0 0
+1 2 1 0 0
+*equate 2 3
+3 1 1 0 0
+3 1 1 0 0
+
