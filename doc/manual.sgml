@@ -13,17 +13,16 @@ FIXME:
 3dfile title:
 defaults to a list of the leafnames of the &svx; files specified on the
 command line (with any paths and extensions removed).
-
+.
 e.g.: cavern entrance.svx \data\2ndpart.svx
-
+.
 would give a surveytitle of 'entrance 2ndpart'.
-
+.
+but this may change...
 
 FIXME todo:
 mark-up of Windows Windows NT etc?
 section on "design philosophy"
-
-updated surface mesh info to suggest *fix-ing points
 
 level sump fudge:
 
@@ -90,11 +89,11 @@ the station 1 of the Adrian's Route survey.
    </Author>
   </AuthorGroup>
   <copyright>
-   <year>1998-2001</year>
+   <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-03-31 02:46:52 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.88 2002-03-31 02:46:52 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-04-04 01:40:53 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.89 2002-04-04 01:40:53 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -167,7 +166,7 @@ the <Acronym/OFD/ survey, the
 <ulink url="http://www.survex.com/~erin/">Hong Meigui China
 expedition</ulink>. <!-- FIXME more? --></Para>
 
-<Para>&survexsuite; is still actively being worked on.  Version 1.0 will be
+<Para>&survexsuite; is still actively being worked on.  Version 1.0 is
 complete in some sense, but development will continue - initially in reshaping
 Survex into a more integrated GUI package.</Para>
 
@@ -970,7 +969,7 @@ I will have to do some sums...
 
 -->
 
-<Sect2><Title>cavern Commands</Title>
+<Sect2><Title>Cavern Commands</Title>
 
 <Para>Commands in &svx; files are introduced by an asterisk
 (by default - this can be changed using the <command/set/ command).
@@ -1903,8 +1902,10 @@ disagree, you can always use one of the other methods!
 <listitem>
 <Para>
 *fix fixes the position of &lt;station&gt; at the given coordinates.
-If the position is omitted it defaults to (0,0,0). The standard
-errors default to zero (fix station exactly). cavern will complain
+If the position is omitted it defaults to (0,0,0) which allows
+sub-sections of a large survey to be easily processed separately.
+<!-- FIXME - don't want to encourage people to do this really -->
+The standard errors default to zero (fix station exactly). cavern will complain
 if you attempt to fix the same survey station twice.
 </Para>
 
@@ -1916,7 +1917,14 @@ standard error in X and Y, and the second as the standard error in Z).
 
 <Para>
 If you have covariances for the fix, you can also specify these - the
-order is cov(x,y),  cov(y,z),  cov(z,x). 
+order is cov(x,y) cov(y,z) cov(z,x). 
+</Para>
+
+<Para>
+You can fix as many stations as you like - just use a *fix command for each
+one.  Cavern will check that all stations are connected to
+at least one fixed point so that co-ordinates can be calculated for all
+stations.
 </Para>
 
 <Para>
@@ -2077,9 +2085,14 @@ cases such as radial legs in a large chamber.
 *include processes &lt;filename&gt; as if it were inserted at this
 place in the current file. (i.e. The current settings are carried
 into &lt;filename&gt;, and any alterations to settings in &lt;filename&gt;
-will be carried back again). <!--FIXME--> (Nesting allowed up to at least 4
-deep with ANSI C - I think). If &lt;filename&gt; contains spaces,
-it must be enclosed in quotes.
+will be carried back again).  There's one exception to this (for
+obscure historical reasons) which is that the survey prefix is
+restore upon return to the original file.  Since *begin and *end
+nesting cannot cross files, this can only make a difference if you
+use the deprecated *prefix command.
+</Para>
+
+<Para>If &lt;filename&gt; contains spaces, it must be enclosed in quotes.
 </Para>
 
 <Para>An included file which does not have a complete path
@@ -2092,6 +2105,13 @@ use Unix and someone sends you a DOS/Windows dataset with mismatched
 case, unzip it with "unzip -L" and unix cavern will process it).
 </Para>
 
+<Para>
+The depth to which you can include files may be limited by the operating system
+you use.  Usually the limit is fairly high (>30), but if you want to be able to
+process your dataset with &survexsuite; on any supported platform, it
+would be prudent not to go overboard with nested include files.
+</Para>
+</listitem>
 </VarListEntry>
 
 </VariableList>
@@ -2642,8 +2662,9 @@ such a package &survexsuite; allows you to truncate names to whatever
 length you want (but by default truncation if off).
 </Para>
 
-<Para>Figures for the number of characters which are significant is various
+<Para>Figures for the number of characters which are significant in various
 software packages: Compass currently has a limit of 12,
+CMAP has a limit of 6,
 <!-- FIXME any limits for other software -->
 Surveyor87/8 used 8, Andy Waddington's SU-BBC used 6,
 while !SU, the Archimedes version, used 8.
@@ -3026,8 +3047,6 @@ is of this type.
 
 <Sect2><Title>Enter Theodolite data</Title>
 
-<!-- FIXME: we do now have a data style more suited to theodolite,
-  though we don't do turned angles -->
 <Para>
 Theodolite data with turned angles is not yet explicitly catered
 for, so for now you will need to convert it into equivalent legs in
@@ -3136,31 +3155,10 @@ for some ideas of ways to go about it.
 
 <Sect3><Title>Fixed Points (Control Points)</Title>
 
-<!-- FIXME move most of this to *fix ? -->
-
-<Para>The command:
+<Para>The *fix command is used to specify fixed points (also know as control
+points).  See the description of this command in the "Cavern Commands"
+section of this manual.
 </Para>
-
-<programlisting>
-*fix entrance.1    0  0  1780</programlisting>
-
-<Para>fixes station 1 of the entrance survey at the co-ordinates 0
-(east-west),0 (north-south), 1780 (altitude).
-</Para>
-
-<Para>If there are no fixed points specified, &survexsuite; will fix the
-first station mentioned at (0,0,0).  This allows sub-sections of a large
-survey to be processed separately, without the need to keep putting in and
-removing fixed points. <!-- FIXME - don't want to encourage people to do
-this really -->
-</Para>
-
-<Para>To fix more than one station at known co-ordinates, simply use a *fix
-command for each.  &survexsuite; will check that all stations are connected to
-at least one fixed point (and so all station co-ordinates can be calculated).
-</Para>
-
-<!-- FIXME fix with error estimates -->
 
 </Sect3>
 
@@ -3190,26 +3188,84 @@ achieved like so:
 
 <Sect2><Title>Add surface topology</Title>
 
-<!-- FIXME rewrite this - put DEM support in aven -->
-<Para>This process is not yet automated. It is possible to generate
-a mesh or contours overlaying your area by various means. Some
-details of several methods are given in the BCRA Cave Surveying
-Group magazine Compass Points issue 11. This article is also available
-on-line. SpeleoGen can also help with this process if you want
-final output in DXF form. We expect to include mesh generation
-from a grid of height data within &survexsuite; soon. Note that if you
-create your own set of &survexsuite; data for a surface mesh that the
-stations should have different names on the E-W line from the
-N-S lines, otherwise your mesh will have a huge number of loops
-which &survexsuite; will try to solve unnecessarily, using up a great
-deal of memory.
+<!-- FIXME put DEM support in aven -->
+<Para>We intend to allow import of terrain data in DEM format, and also any
+other formats in common use.  But at present the simplest approach is to
+generate a &svx; file with the surface mesh in and display it with the
+survey data.
+</Para>
+
+<Para>
+It is possible to generate
+a mesh or contours overlaying your area by various means.  In the USA,
+usable resolution data can be obtained for free.  In other countries,
+it's harder to come by.  For a small area, reading heights from the
+contours on a map is one approach.  It's laborious, but feasible for
+a small area.
+</Para>
+
+<Para>
+Details of several methods are given in the BCRA Cave Surveying
+Group magazine Compass Points issue 11, available online at
+<ulink url="http://www.chaos.org.uk/survex/cp/CP11/CPoint11.htm#Art_5">http://www.chaos.org.uk/survex/cp/CP11/CPoint11.htm#Art_5</ulink>
+</Para>
+
+<Para>If you're using another program to generate a &svx; file for the surface
+mesh, it's best to use the NOSURVEY data style.
+Simply fix all the grid intersections at the correct
+coordinates and height, and put legs between them using the NOSURVEY style.
+Here's a grid of 4 squares and 9 intersections:
+</Para>
+
+<programlisting>
+*fix 00 000 000 1070
+*fix 01 000 100 1089
+*fix 02 000 200 1093
+
+*fix 10 100 000 1062
+*fix 11 100 100 1080
+*fix 12 100 200 1089
+
+*fix 20 200 000 1050
+*fix 21 200 100 1065
+*fix 22 200 200 1077
+
+*data nosurvey from to
+
+00 01
+01 02
+
+10 11
+11 12
+
+20 21
+21 22
+
+00 10
+10 20
+
+01 11
+11 21
+
+02 12
+12 22</programlisting>
+
+<Para>
+This is far simpler than trying to create fake tape/compass/clino legs of
+the right length for each line in the mesh.  It's also very faster to process
+with cavern.
+</Para>
+
+<Para>SpeleoGen can also help with this process if you want
+final output in DXF form.  See the 'Related Tools' section of the
+Survex website for download links.
 </Para>
 
 </Sect2>
 
 <Sect2><Title>Overlay a grid</Title>
 
-<Para>Aven is able to display a grid, but this functionality isn't
+<Para>Aven is able to display a grid, but this functionality isn't currently
 available in caverot, xcaverot, or the printer drivers.
 You can achieve a similar effect for now by creating a &svx; file
 where the survey legs form a grid.
@@ -3425,9 +3481,14 @@ say thankyou we'd love a copy of a survey you've produced using
 &survexsuite;.  Two copies would be best to save us arguing over who gets
 it.</Para>
 
-<Para>Or alternatively <emphasis>"Say it with code"</emphasis>.  If you're a
-programmer and want to help out there's plenty to do, so feel free to join
-in.</Para>
+<Para>Or contribute your skills to help make &survexsuite; even better.
+Point out areas of the documentation which could be made clearer, or sections
+which are missing entirely.  Download test releases, try them out, and let
+us know if you find problems or have suggestions for improvements.
+If there's no translation to your language, you could provide one.
+Or if your a developer, <emphasis>"Say it with code"</emphasis>.  There's
+plenty to do, so feel free to join in.
+</Para>
 </Sect2>
 
 </Sect1>

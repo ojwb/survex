@@ -3,6 +3,8 @@ Changes in 1.0.5:
 * Fixed bug in img_open_survey() which could cause a crash if you tried to
   open a file which wasn't .3d, .pos, .plt, or .xyz format.
 
+* Documentation updates.
+
 Changes in 1.0.4:
 
 * extend: previously only kept one name for an equated group of stations in the
