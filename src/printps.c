@@ -260,7 +260,6 @@ ps_Pre(int pagesToPrint, const char *title)
    prio_printf("/Z {/%s findfont %d scalefont setfont} def\n",
                szFontSymbol, (int)FontSize);
    prio_print("F\n");
-   prio_printf("%.1f setlinewidth\n", LineWidth);
 
    /* Postscript definition for drawing a cross */
 #define CS PS_CROSS_SIZE
@@ -318,6 +317,8 @@ ps_NewPage(int pg, int pass, int pagesX, int pagesY)
    /* page number - not really much use though. (? => no text numbering) */
 /*   prio_printf("%%%%Page: ? %d\n", pg);*/
    prio_printf("%%%%Page: %d %d\n", pg, pg);
+   /* set the line width */
+   prio_printf("%.1f setlinewidth\n", LineWidth);
    /* shift image up page about 10mm to allow for page footer */
    prio_printf("%ld %ld translate\ngsave\n",
                (long)(MarginLeft * POINTS_PER_MM),
