@@ -865,7 +865,7 @@ main(int argc, char **argv)
       if (fShots) *q++ = 'l';
       if (fSurface) *q++ = 's';
       *q = '\0';
-      printf(msg(/*Plot what (n = station names, c = crosses, l = legs, s = surface) (default &quot;%s&quot;)&#10;: */58), szTmp);      
+      printf(msg(/*Plot what (n = station names, c = crosses, l = legs, s = surface) (default &quot;%s&quot;)&#10;: */58), szTmp);
       fgets(szTmp, sizeof(szTmp), stdin);
       if (szTmp[0] >= 32) {
 	  fLabels = (strchr(szTmp, 'n') != NULL);
