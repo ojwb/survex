@@ -46,10 +46,10 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   {'h',                        "Sort by horizontal error factor"},
-   {'v',                        "Sort by vertical error factor"},
-   {'p',                        "Sort by percentage error"},
-   {'l',                        "Sort by error per leg"},
+   {HLP_ENCODELONG(0),          "Sort by horizontal error factor"},
+   {HLP_ENCODELONG(1),          "Sort by vertical error factor"},
+   {HLP_ENCODELONG(2),          "Sort by percentage error"},
+   {HLP_ENCODELONG(3),          "Sort by error per leg"},
    {0, 0}
 };
 

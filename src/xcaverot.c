@@ -1102,7 +1102,7 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   {'p',                        "Adapt to use on a PDA"},
+   {HLP_ENCODELONG(0),          "Adapt to use on a PDA"},
    {0, 0}
 };
 
