@@ -321,9 +321,7 @@ void GfxCore::FirstShow()
 void GfxCore::SetScale(double scale)
 {
     // Fill the plot data arrays with screen coordinates, scaling the survey
-    // to a particular absolute scale.  The input points must be such that
-    // the conditions for CDC::PolyPolyLine are satisfied (in particular, all polylines
-    // must have >= 2 vertices or nothing appears on the screen).
+    // to a particular absolute scale.
 
     m_Params.scale = scale;
 
@@ -341,88 +339,101 @@ void GfxCore::SetScale(double scale)
 	    assert(spt);
 	    int* scount = m_PlotData[band].surface_num_segs;
 	    assert(scount);
-	    count--; // MainFrm guarantees the first point will be a move.
+	    count--;
 	    scount--;
-	    int current_surface_x = INT_MAX;
-	    int current_surface_y;
+	    double current_x;
+	    double current_y;
+	    double current_z;
 
 	    m_Polylines[band] = 0;
 	    m_SurfacePolylines[band] = 0;
 	    list<PointInfo*>::const_iterator pos = m_Parent->GetPoints(band);
 	    list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd(band);
-	    bool first = true;
-	    bool last_was_surface = false;
+	    bool first_point = true;
+	    bool last_was_move = true;
+	    bool current_polyline_is_surface = false;
 	    while (pos != end) {
  	        const PointInfo* pti = *pos++;
 
-		if (!pti->IsSurface()) {
-		    double x = pti->GetX();
-		    double y = pti->GetY();
-		    double z = pti->GetZ();
-		    bool is_line = pti->IsLine();
+		double x = pti->GetX();
+		double y = pti->GetY();
+		double z = pti->GetZ();
+		
+		if (pti->IsLine()) {
+		    // We have a leg.
 
-		    x += m_Params.translation.x;
-		    y += m_Params.translation.y;
-		    z += m_Params.translation.z;
+		    assert(!first_point); // The first point must always be a move.
 
-		    pt->x = (long) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
-		    pt->y = -(long) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
-		    if (!is_line) {
-		        current_surface_x = pt->x;
-			current_surface_y = pt->y;
+		    // Determine if we're switching from an underground polyline to a
+		    // surface polyline, or vice-versa.
+		    bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
+
+		    // Record new underground/surface state.
+		    current_polyline_is_surface = pti->IsSurface();
+
+		    if (changing_ug_state || last_was_move) {
+		        // Start a new polyline if we're switching underground/surface state
+		        // or if the previous point was a move.
+
+		        wxPoint** dest;
+
+		        if (current_polyline_is_surface) {
+			    m_SurfacePolylines[band]++;
+			    *(++scount) = 1; // initialise number of vertices for next polyline
+			    dest = &spt;
+			}
+			else {
+			    m_Polylines[band]++;
+			    *(++count) = 1; // initialise number of vertices for next polyline
+			    dest = &pt;
+			}
+
+			double xp = current_x + m_Params.translation.x;
+			double yp = current_y + m_Params.translation.y;
+			double zp = current_z + m_Params.translation.z;
+
+			(*dest)->x = (long) (XToScreen(xp, yp, zp) * scale) +
+			             m_Params.display_shift.x;
+			(*dest)->y = -(long) (ZToScreen(xp, yp, zp) * scale) +
+			             m_Params.display_shift.y;
+
+			// Advance the relevant coordinate pointer to the next position.
+			(*dest)++;
 		    }
-		    pt++;
-		    
-		    if (first) {
-		        first = false;
-			assert(!is_line);
-		    }
 
-		    if (!is_line || last_was_surface) {
-		        // new polyline
-		        *++count = 1;
-		        m_Polylines[band]++;
-		    }
-		    else if (is_line) {
-		        // still part of the same polyline => increment count of vertices
-		        // for this polyline.
-		        (*count)++;
-		    }
-		    last_was_surface = false;
-		}
-		else {
-		    assert(pti->IsLine());
-		    assert(current_surface_x != INT_MAX);
+		    // Add the leg onto the current polyline.
+		    wxPoint** dest = &(current_polyline_is_surface ? spt : pt);
 
-		    if (!last_was_surface) {
-		        spt->x = current_surface_x;
-			spt->y = current_surface_y;
-			spt++;
-			*++scount = 1;
-			m_SurfacePolylines[band]++;
+		    // Final coordinate transformations and storage of coordinates.
+		    double xp = x + m_Params.translation.x;
+		    double yp = y + m_Params.translation.y;
+		    double zp = z + m_Params.translation.z;
 
-			last_was_surface = true;
+		    (*dest)->x = (long) (XToScreen(xp, yp, zp) * scale) + m_Params.display_shift.x;
+		    (*dest)->y = -(long) (ZToScreen(xp, yp, zp) * scale) + m_Params.display_shift.y;
+
+		    // Advance the relevant coordinate pointer to the next position.
+		    (*dest)++;
+
+		    // Increment the relevant vertex count.
+		    if (current_polyline_is_surface) {
+		        (*scount)++;
 		    }
 		    else {
-		        double x = pti->GetX();
-			double y = pti->GetY();
-			double z = pti->GetZ();
-
-			x += m_Params.translation.x;
-			y += m_Params.translation.y;
-			z += m_Params.translation.z;
-
-			spt->x = (long) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
-			spt->y = -(long) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
-	
-		        current_surface_x = spt->x;
-			current_surface_y = spt->y;
-			spt++;
-			(*scount)++;
-
-			last_was_surface = true;
+		        (*count)++;
 		    }
+
+		    last_was_move = false;
 		}
+		else {
+		    first_point = false;
+		    last_was_move = true;
+		}
+
+		// Save the current coordinates for the next time around the loop.
+		current_x = x;
+		current_y = y;
+		current_z = z;
 	    }
 
 	    if (!m_UndergroundLegs) {

@@ -338,33 +338,7 @@ bool MainFrm::LoadData(const wxString& file)
 	        case img_MOVE:
 	        case img_LINE:
 		{
-		    // Delete <move1> where we get ... <move1> <move2> ... in the data.
-		    if (result == img_MOVE) {
-		        if (last_was_move) {
-			    PointInfo* pt = points.back();
-			    delete pt;
-			    points.pop_back();
-			    m_NumPoints--;
-			}
-			last_was_move = true;
-		    }
-		    else {
-		        last_was_move = false;
-		    }
-
 		    m_NumPoints++;
-
-		    // We must ensure that the resulting list has a move as its first
-		    // datum.
-		    if (first && (result != img_MOVE)) {
-		        PointInfo* info = new PointInfo;
-			info->x = 0.0;
-			info->y = 0.0;
-			info->z = 0.0;
-			info->isLine = false;
-			points.push_back(info);
-			m_NumPoints++;
-		    }
 		    
 		    // Update survey extents.
 		    if (pt.x < xmin) xmin = pt.x;
@@ -390,20 +364,6 @@ bool MainFrm::LoadData(const wxString& file)
 		    }
 		    
 		    info->isSurface = (survey->flags & img_FLAG_SURFACE);
-
-		    /*
-		    if (info->isSurface && info->isLine) {
-		        if (points.size() > 1) {
-			    PointInfo* p = points.back();
-			    // if (!p->isLine) {
-			        PointInfo* q = new PointInfo;
-				memcpy(q, p, sizeof(PointInfo));
-				q->isSurface = true;
-				points.push_back(q);
-				m_NumPoints++;
-				//}
-			}
-			}*/
 
 		    // Store this point in the list.
 		    points.push_back(info);
@@ -572,6 +532,7 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 		    info->y = split_at_y;
 		    info->z = split_at_z;
 		    info->isLine = true;
+		    info->isSurface = point->isSurface;
 		    m_Points[band].push_back(info);
 
 		    // Create a move to this point in the next band.
@@ -580,6 +541,7 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 		    info->y = split_at_y;
 		    info->z = split_at_z;
 		    info->isLine = false;
+		    info->isSurface = point->isSurface;
 		    m_Points[next_band].push_back(info);
 		    
 		    m_NumExtraLegs++;
