@@ -13,6 +13,9 @@
 
 * Removed 255 character limit on station names in .3d and .3dx files.
 
+* caverot: overlapping label code wasn't allowing enough for vertical
+  overlap.
+
 Changes in 0.97-prerelease4:
 
 * Updated Portuguese and German translations.

@@ -79,13 +79,13 @@ fancy_label(const char *label, int x, int y)
       if (X + len > width) len = width - X; /* or 'return' to right clip */
       p = map + Y * width + X;
       if (memchr(p, 1, len)) return 0;
-      rows = (p - map) / width;
-      if (rows > 2) rows = 2;
+      rows = max(Y, 2);
       p -= width * rows;
       rows += 3;
-      while (--rows && p < map + size) {
-         memset(p, 1, len);
+      while (rows && p < map + size) {
+	 memset(p, 1, len);
 	 p += width;
+	 rows--;
       }
    }
    return 1;
