@@ -281,7 +281,7 @@ remove_subnets(void)
 	     * stn4 *       * stn6      :   :
 	     *      :       :
 	     */
-	    if (fixed(stn) && three_node(stn)) {
+	    if (!fixed(stn) && three_node(stn)) {
 	       for (dirn0 = 0; ; dirn0++) {
 		  if (dirn0 >= 3) goto nodeltastar; /* continue outer loop */
 		  dirn = dirn0;
