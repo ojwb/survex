@@ -121,11 +121,11 @@ it:  2 Questi dati di topografia possono essere trattati da Survex versione %s o
 # In file included from area.svx:12,
 #                  from cave.svx:3:
 # passage.svx:17: <some error or warning>
-# TRANSLATE: check de pt ca es it
+# TRANSLATE: check de ca es it
 en:  3 "from "
 fr:  3 "depuis "
 de:  3 "von "
-pt:  3 "em "
+pt:  3 "de "
 ca:  3 "des de "
 es:  3 "desde "
 it:  3 "da "
@@ -207,7 +207,7 @@ pt: 12 Comando desconhecido `%s'
 ca: 12 Comandament desconegut `%s'
 es: 12 Comando desconocido `%s'
 it: 12 Comando sconosciuto `%s'
-# TRANSLATE: de pt ca es it check insertion of `%s' (station name) ok
+# TRANSLATE: de ca es it check insertion of `%s' (station name) ok
 en: 13 Station `%s' equated to itself
 fr: 13 Station `%s' ne doit pas &ecirc;tre d&eacute;clar&eacute;e "&eacute;gale" &agrave elle-m&ecirc;me
 de: 13 Station `%s' mit sich selbst gleichgesetzt
@@ -412,7 +412,7 @@ pt: 36 O BEGIN correspondente n&atilde;o tem prefixo
 ca: 36 La instrucci&oacute; BEGIN corresponent no te prefix
 es: 36 La instrucci&oacute;n BEGIN correspondiente no tiene prefijo
 it: 36 Il BEGIN corrispondente non ha prefisso
-# TRANSLATE check addition of `%s': de pt ca es it
+# TRANSLATE check addition of `%s': de ca es it
 # Note: In English you talk about the *units* of a single measurement, but
 # the correct term in other languages may be singular.
 en: 37 Invalid units `%s' for quantity
@@ -593,7 +593,7 @@ it: 56 Pi&uacute; di un comando FIX senza coordinate
 # 1 2 1.23 045 -6
 # *export 2
 # *end fred
-# FIXME: TRANSLATE ca es CHECK de pt it
+# FIXME: TRANSLATE ca es CHECK de it
 en: 57 *EXPORT must immediately follow `*BEGIN <SURVEY>'
 fr: 57 *EXPORT doit suivre imm&eacute;diatement `*BEGIN <SURVEY>'
 de-de,de-ch: 57 *EXPORT muss unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
@@ -904,7 +904,7 @@ pt: 92 Instru&ccedil;&atilde;o ilegal
 ca: 92 Instrucci&oacute; il.legal
 es: 92 Instrucci&oacute;n ilegal
 it: 92 Istruzione illegale
-# TRANSLATE check de pt ca es it
+# TRANSLATE check de ca es it
 en: 93 Couldn't open file `%s'
 fr: 93 Ne peut pas ouvrir le fichier `%s'
 de: 93 Konnte Daten nicht &ouml;ffnen oder finden `%s'
@@ -1388,7 +1388,7 @@ pt:156 Saindo.
 ca:156 Sortint.
 es:156 Saliendo.
 it:156 Fine.
-# TRANSLATE: ca check de pt pt-br es it
+# TRANSLATE: ca check de pt-br es it
 en:157 Try `%s --help' for more information.&#10;
 fr:157 Pour en savoir davantage, faites: `%s --help'&#10;
 de:157 Versuchen Sie `%s --help' f&uuml;r weitere Informationen.&#10;
@@ -2038,12 +2038,12 @@ es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
 #
 # TRANSLATE CHECK ca es it
-# TRANSLATION NEEDS REDOING: de pt ca es it [added "Underground"]
+# TRANSLATION NEEDS REDOING: de ca es it [added "Underground"]
 en:272 Underground Survey @Legs##Ctrl+L
 en-us:272 Underground @Shots##Ctrl+L
 fr:272 @Vis&eacute;es sous terre##Ctrl+L
 de:272 @Strecken##Ctrl+L
-pt:272 @Visadas##Ctrl+L
+pt:272 @Visadas Subterr&acirc;neas##Ctrl+L
 ca:272 @Tirades##Ctrl+L
 es:272 @Tiradas##Ctrl+L
 it:272 @Battute##Ctrl+L
