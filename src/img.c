@@ -256,7 +256,7 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->survey = NULL;
    pimg->survey_len = 0;
 
-   pimg->title = NULL;
+   pimg->title = pimg->datestamp = NULL;
    if (survey) {
       len = strlen(survey);
       if (len) {
