@@ -45,6 +45,7 @@
 1997.02.15 added #include <math.h> before DJGPP ceil/floor kludge
 1997.06.05 const added
 1997.06.06 fixed for alpha (hopefully)
+1998.03.22 autoconf-ed
 */
 
 #ifndef OSDEPEND_H  /* only include once */
@@ -85,8 +86,6 @@ typedef short w16;
 #endif
 
 #  define NO_STDPRN
-#  define NO_PIPES
-#  define NO_PERROR
 
 # elif (OS==MSDOS)
 
@@ -98,9 +97,6 @@ typedef short w16;
 #  define FNM_SEP_LEV2 '/'
 #  define FNM_SEP_DRV ':'
 #  define FNM_SEP_EXT '.'
-
-#  define NO_PIPES
-#  define NO_PERROR
 
 #  ifdef __DJGPP__
 #   include <math.h>
@@ -126,9 +122,6 @@ typedef short w16;
 #  define FNM_SEP_LEV '\\'
 #  define FNM_SEP_DRV ':'
 #  define FNM_SEP_EXT '.'
-
-#  define NO_PIPES
-#  define NO_PERROR
 
 # elif (OS==UNIX)
 
@@ -159,8 +152,6 @@ typedef short w16;
 #  define FNM_SEP_EXT '.' /* This is what DOS ones are translated to.. */
 
 #  define NO_STDPRN
-#  define NO_PIPES
-#  define NO_PERROR
 
 # else /* OS==? */
 #  error Do not know operating system 'OS'
