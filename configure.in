@@ -181,10 +181,11 @@ AM_CONDITIONAL(MACOSX, [test yes = "$macosx"])
 if test -n "$AVEN"; then
   if test -n "$WXCONFIG" ; then
     dnl WXCONFIG specified - sanity check the value
-    if (exec >&5 2>&5;$WXCONFIG --libs --ldflags --cflags --cxxflags;exit $?) then
+    dnl don't check for --ldflags - older wx-config didn't do that
+    if (exec >&5 2>&5;$WXCONFIG --libs --cflags --cxxflags;exit $?) then
       :
     else
-      AC_MSG_ERROR([\`$WXCONFIG --libs --ldflags --cflags --cxxflags' doesn't work, bailing out])
+      AC_MSG_ERROR([\`$WXCONFIG --libs --cflags --cxxflags' doesn't work, bailing out])
       dnl line above confuses vim's syntax colouring - resync: \`
     fi
   else
@@ -216,7 +217,9 @@ if test -n "$AVEN"; then
   if test -n "$AVEN"; then
     WX_LIBS="`$WXCONFIG --libs`"
     AC_SUBST(WX_LIBS)
-    WX_LDFLAGS="`$WXCONFIG --ldflags`"
+    dnl older wx-config didn't support this - error goes to stderr, with
+    dnl nothing to stdout, so just ignore stderr
+    WX_LDFLAGS="`$WXCONFIG --ldflags 2> /dev/null`"
     AC_SUBST(WX_LDFLAGS)
     WX_CFLAGS="`$WXCONFIG --cflags`"
     AC_SUBST(WX_CFLAGS)
