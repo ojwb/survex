@@ -271,10 +271,12 @@ ca: 21 Lectura de br&uacute;ixola en una tirada vertical
 es: 21 Lectura de br&uacute;jula en una tirada vertical
 it: 21 Lettura della bussola in una battuta verticale
 # c.f. 192
-# FIXME: translate fr de pt ca es it
+# FIXME: translate de pt ca es it
 en: 22 END with no matching BEGIN in this file
-# FIXME: translate fr de pt ca es it
+fr: 22 END sans BEGIN correspondant dans ce fichier
+# FIXME: translate de pt ca es it
 en: 23 BEGIN with no matching END in this file
+fr: 22 BEGIN sans END correspondant dans ce fichier
 en: 24 Couldn't open data file '%s'
 fr: 24 Ne peut pas ouvrir le fichier de donn&eacute;es '%s'
 de: 24 Konnte Datendatei nicht &ouml;ffnen oder finden '%s'
