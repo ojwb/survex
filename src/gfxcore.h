@@ -159,6 +159,7 @@ class GfxCore : public GLACanvas {
     GLAPen* m_Pens;
 
     void SetAvenColour(AvenColour col, bool background = false /* true => foreground */) {
+	background = background; // FIXME: suppress warning, but sort out why we're passed a useless parameter...
 	assert(col >= (AvenColour) 0 && col < col_LAST);
 	SetColour(m_Pens[col]); // FIXME background stuff
     }

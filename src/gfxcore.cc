@@ -442,6 +442,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 Double GfxCore::GridXToScreen(Double x, Double y, Double z) const
 {
+    x = x; y = y; z = z;
     return 0.0;
 
     /*
@@ -454,6 +455,7 @@ Double GfxCore::GridXToScreen(Double x, Double y, Double z) const
 
 Double GfxCore::GridYToScreen(Double x, Double y, Double z) const
 {
+    x = x; y = y; z = z;
     return 0.0;
 
     /*
@@ -518,6 +520,7 @@ glaCoord GfxCore::GetClinoOffset() const
 
 wxPoint GfxCore::CompassPtToScreen(Double x, Double y, Double z) const
 {
+    x = x; y = y; z = z;
     /*return wxPoint(long(-XToScreen(x, y, z)) + m_XSize - COMPASS_OFFSET_X,
                    long(ZToScreen(x, y, z)) + m_YSize - COMPASS_OFFSET_Y);*/
 
@@ -1216,6 +1219,7 @@ bool GfxCore::Animate(wxIdleEvent*)
 void GfxCore::RefreshLine(const Point &a1, const Point &b1,
                           const Point &a2, const Point &b2)
 {
+    (void)a1; (void)b1; (void)a2; (void)b2;
     ForceRefresh(); //--FIXME
 #if 0
     // Calculate the minimum rectangle which includes the old and new

@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2002 Olly Betts
+//  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -322,7 +322,7 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
     }
 }
 
-void GUIControl::OnMButtonUp(wxMouseEvent& event)
+void GUIControl::OnMButtonUp(wxMouseEvent&)
 {
     if (m_View->HasData() && m_View->GetLock() == lock_NONE) {
 	m_DraggingMiddle = false;
@@ -349,7 +349,7 @@ void GUIControl::OnRButtonDown(wxMouseEvent& event)
     }
 }
 
-void GUIControl::OnRButtonUp(wxMouseEvent& event)
+void GUIControl::OnRButtonUp(wxMouseEvent&)
 {
     m_LastDrag = drag_NONE;
     m_View->ReleaseMouse();
