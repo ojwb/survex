@@ -59,9 +59,10 @@ this myself mostly following instructions from:
 <P><A
 HREF="http://www.objsw.com/CrossGCC/">http://www.objsw.com/CrossGCC/</A>
 
-<P>I suggest using binutils-2.10 rather than binutils-2.9.1.  The newer version
-includes the patch they supply, so the instructions boil down to this
-sequence of commands:
+<P>I suggest using binutils-2.14 rather than binutils-2.9.1, and also newer
+version of the DJGPP crosscompiler kit (djcrx - use 204 which is in beta at
+the time of writing) and GCC.  Newer binutils versions include the patch they
+supply, so the instructions boil down to this sequence of commands:
 
 <pre>
 bash
@@ -70,18 +71,19 @@ cd ~/djcross
 wget ftp://ftp.objsw.com/pub/crossgcc/build-djgpp.sh
 mkdir tars
 cd tars
-# can't get it to build with djcrx203
-wget ftp://ftp.simtel.net/pub/simtelnet/gnu/djgpp/v2/old/djcrx202.zip
-# can't get 2.95.3 to build
-wget http://sunsite.org.uk/gnu/gcc/gcc-2.95.2.tar.gz
-# can't get 2.10.1 to build
-wget http://sunsite.org.uk/gnu/binutils/binutils-2.10.tar.gz
+wget http://www.mirror.ac.uk/sites/ftp.delorie.com/pub/djgpp/current/v2/beta/djcrx204.zip
+wget http://www.mirror.ac.uk/sites/ftp.gnu.org/gnu/gcc/gcc-3.3.2.tar.gz
+wget http://www.mirror.ac.uk/sites/ftp.gnu.org/gnu/binutils/binutils-2.14.tar.gz
 cd ..
 patch -l build-djgpp.sh &lt;&lt;END
-26c26
+24,26c24,26
+&lt; binfile=djcrx202.zip
+&lt; gcc=gcc-2.95.2
 &lt; binutils=binutils-2.9.1
 ---
-&gt; binutils=binutils-2.10
+&gt; binfile=djcrx204.zip
+&gt; gcc=gcc-3.3.2
+&gt; binutils=binutils-2.14
 97c97
 &lt;       patch -p1 &lt;\$patches/\$binutilsdiff
 ---
@@ -90,31 +92,42 @@ END
 sh build-djgpp.sh
 </pre>
 
+If the build of GCC fails, you may need to apply this patch:
+
+<pre>
+--- gcc-3.3.2-orig/libiberty/getpwd.c	2001-10-07 22:53:31.000000000 +0100
++++ gcc-3.3.2/libiberty/getpwd.c	2004-01-12 02:00:41.000000000 +0000
+@@ -50,2 +50,3 @@
+ 
++#undef MAXPATHLEN
+ #ifdef MAXPATHLEN
+</pre>
+
+You may also need to configure and build GCC without support for C++ (the script
+downloaded configures all languages and builds C and C++).  Sorry if that's
+a bit vague - email Olly if you can't work out what to do.
+
 <P>Then you need to build and install the
 <A HREF="http://www.talula.demon.co.uk/allegro/">Allegro graphics library</A>:
 
 <P><A
-HREF="http://prdownloads.sourceforge.net/alleg/allegro-4.0.1.tar.gz"
->http://prdownloads.sourceforge.net/alleg/allegro-4.0.1.tar.gz</A>
-
-<P>Allegro 4.0.2 has been released, but the list of changes doesn't show
-anything relevant to the routines caverot uses, so I've not bothered to
-upgrade.
+HREF="http://prdownloads.sourceforge.net/alleg/allegro-4.0.3.tar.gz"
+>http://prdownloads.sourceforge.net/alleg/allegro-4.0.3.tar.gz</A>
 
 <P>And follow the instructions for building using a cross-compiler which
-you can find starting from readme.txt.  In 4.0.1 these boil down to:
+you can in docs/build/djgpp.txt.  In 4.0.3 these boil down to:
 
 <pre>
-cd allegro-4.0.1
+cd allegro-4.0.3
 ./fix.sh djgpp --quick
 NATIVEPATH=$PATH
 export NATIVEPATH
-DJDIR=/opt/crosstools/i386-pc-msdosdjgpp
+DJDIR=/usr/i386-pc-msdosdjgpp
 export DJDIR
-PATH=$DJDIR/bin:/opt/crosstools/bin:$PATH
+PATH=$DJDIR/bin:$PATH
 CROSSCOMPILE=1
 export CROSSCOMPILE
-make
+make msg lib
 make install
 PATH=$NATIVEPATH
 </pre>
