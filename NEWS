@@ -1,3 +1,8 @@
+* aven: altered colours of "fixed points" and "entrances" buttons to match
+  the coloured blobs used to indicate them.
+
+* (MS Windows version): file icons now have transparent backgrounds.
+
 Changes in 0.99:
 
 * Fixed bug in .3d file reading code which would incorrectly reconstruct
