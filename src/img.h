@@ -20,6 +20,10 @@
 #ifndef IMG_H
 # define IMG_H
 
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
 # ifndef STANDALONE
 #  include "useful.h"
 # endif
@@ -122,5 +126,9 @@ img_errcode img_error(void);
 # else
 int img_error(void);
 # endif
+
+#ifdef	__cplusplus
+}
+#endif
 
 #endif
