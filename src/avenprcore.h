@@ -40,14 +40,12 @@ typedef struct {
 #define PR_FLAG_NOINI		2
 #define PR_FLAG_CALIBRATE	4
 
-
 /* 1:<DEFAULT_SCALE> is the default scale */
 #define DEFAULT_SCALE 500
 
-
-/* this should contain enough information */
-
-struct layout {
+/* Store everything describing the page layout */
+class layout {
+public:
     /* caller modifiable bits */
     bool Labels;
     bool Crosses;
@@ -60,18 +58,26 @@ struct layout {
     char *title;
     char *datestamp;
     double Scale;
-    int rot,tilt;
+    int rot, tilt;
+    enum {PLAN, ELEV, TILT, EXTELEV} view;
 
     /* internal data, but may be accessed */
-    double scX,scY,Sc;
-    double xMin,xMax,yMin,yMax;
-    double PaperWidth,PaperDepth;
-    int pagesX,pagesY,pages;
-    double xOrg,yOrg;
+    double scX, scY;
+    double xMin, xMax, yMin, yMax;
+    double PaperWidth, PaperDepth;
+    int pagesX, pagesY, pages;
+    double xOrg, yOrg;
     const char* footer;
+
+    layout();
+#if 0
+    void make_calibration();
+#endif
+    double pick_scale(int x, int y);
+    void pages_required();
 };
 
-/* things for a back end*/
+/* things for a back end */
 void drawticks(border clip, int tick_size, int x, int y);
 
 int as_int(const char *v, char *p, int min_val, int max_val);
@@ -81,22 +87,9 @@ double as_double(const char *v, char *p, double min_val, double max_val);
 int as_escstring(const char *v, char *s);
 char *as_string(const char *v, char *p);
 
-/* things for a user interface*/
-/* load up layout with the pages required at a given resolution... */
-double pick_scale(layout *l, int x, int y);
-class MainFrm;
 #if 0
+class MainFrm;
 void print_all(MainFrm *m_parent, layout *l, device *pri);
-#endif
 void print_page(MainFrm *m_parent, layout *l, int page, int pass, int cPasses);
 int next_page(int *pstate, char **q, int pageLim);
-
-
-/* these all change a layout */
-/* I recommend doing them in this order... */
-layout* layout_new(void);
-#if 0
-void make_calibration(layout *l);
 #endif
-void pages_required(layout *l);
-void layout_destroy(layout *l);

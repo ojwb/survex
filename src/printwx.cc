@@ -102,7 +102,7 @@ class svxPrintout : public wxPrintout {
 
 BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_TEXT(svx_SCALE, svxPrintDlg::OnChange)
-    EVT_RADIOBOX(svx_ASPECT, svxPrintDlg::OnChange)
+    EVT_COMBOBOX(svx_SCALE, svxPrintDlg::OnChange)
     EVT_SPINCTRL(svx_BEARING, svxPrintDlg::OnChangeSpin)
     EVT_SPINCTRL(svx_TILT, svxPrintDlg::OnChangeSpin)
     EVT_BUTTON(svx_PRINT, svxPrintDlg::OnPrint)
@@ -134,18 +134,33 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
 	: wxDialog(parent, -1, wxString(msg(/*Print*/399))),
 	  m_File(filename), m_parent(parent)
 {
-    m_layout = layout_new();
-    // FIXME rot and tilt shouldn't be integers, but for now add a small
-    // fraction before forcing to int as otherwise plan view ends up being
-    // 89 degrees!
-    m_layout->rot = int(deg(angle) + .001);
-    m_layout->tilt = int(deg(tilt_angle) + .001);
+    m_layout = new layout;
     m_layout->Labels = labels;
     m_layout->Crosses = crosses;
     m_layout->Shots = legs;
     m_layout->Surface = surf;
-    m_layout->title = osstrdup(title.c_str());
     m_layout->datestamp = osstrdup(datestamp.c_str());
+    if (title.length() > 11 &&
+	title.substr(title.length() - 11) == " (extended)") {
+	m_layout->title = osstrdup(title.substr(0, title.length() - 11).c_str());
+	m_layout->view = layout::EXTELEV;
+	m_layout->rot = int(deg(angle) + .001);
+	if (m_layout->rot != 0 && m_layout->rot != 180) m_layout->rot = 0;
+	m_layout->tilt = 0;
+    } else {
+	// FIXME rot and tilt shouldn't be integers, but for now add a small
+	// fraction before forcing to int as otherwise plan view ends up being
+	// 89 degrees!
+	m_layout->title = osstrdup(title.c_str());
+	m_layout->tilt = int(deg(tilt_angle) + .001);
+	if (m_layout->tilt == 90) {
+	    m_layout->view = layout::PLAN;
+	} else if (m_layout->tilt == 0) {
+	    m_layout->view = layout::ELEV;
+	} else {
+	    m_layout->view = layout::TILT;
+	}
+    }
 
     /* setup our print dialog*/
     wxBoxSizer* v1 = new wxBoxSizer(wxVERTICAL);
@@ -154,37 +169,54 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, "Elements"), wxVERTICAL); // FIXME TRANSLATE
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
-    wxBoxSizer* scalebox = new wxBoxSizer(wxHORIZONTAL);
-    scalebox->Add(new wxStaticText(this, -1,
-				   wxString(msg(/*Scale*/154)) + " 1:"),
-		  0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    { // this isn't the "too wide" bit...
+    wxStaticText* label;
+    label = new wxStaticText(this, -1, wxString(msg(/*Scale*/154)) + " 1:");
     m_scale = new wxComboBox(this, svx_SCALE, scales[0], wxDefaultPosition,
 			     wxDefaultSize, sizeof(scales) / sizeof(scales[0]),
 			     scales);
-    scalebox->Add(m_scale, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-    v2->Add(scalebox, 0, wxALIGN_RIGHT + wxALL, 0);
-    // Make the dummy string wider than any sane value so the sizer
-    // picks a suitable width...
-    m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
+    wxBoxSizer* scalebox = new wxBoxSizer(wxHORIZONTAL);
+    scalebox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    scalebox->Add(m_scale, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    v2->Add(scalebox, 0, wxALIGN_LEFT|wxALL, 0);
+    }
+
+    // Make the dummy string wider than any sane value and use that to
+    // fix the width of the control so the sizers allow space for bigger
+    // page layouts.
+    m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE);
     v2->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
-    static const wxString radio_choices[] = { msg(/*Plan view*/117), msg(/*Elevation*/118), "Tilted" }; // FIXME TRANSLATE
-    m_aspect = new wxRadioBox(this, svx_ASPECT, "Orientation", // FIXME TRANSLATE
-			      wxDefaultPosition, wxDefaultSize, 3, 
-			      radio_choices);
-    v2->Add(m_aspect, 0, wxALIGN_LEFT + wxALL, 5);
+
+    { // this isn't the "too wide" bit...
     wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
+    wxStaticText * brg_label;
+    brg_label = new wxStaticText(this, -1, msg(/*Bearing*/259));
+    anglebox->Add(brg_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
+    m_bearing = new wxSpinCtrl(this, svx_BEARING);
+    m_bearing->SetRange(0, 359);
+    anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
     m_tilttext = new wxStaticText(this, -1, "Tilt angle"); // FIXME TRANSLATE
-    anglebox->Add(m_tilttext,0,wxALIGN_CENTER_VERTICAL + wxALIGN_RIGHT + wxALL,5);
+    anglebox->Add(m_tilttext, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
     m_tilt = new wxSpinCtrl(this,svx_TILT);
-    anglebox->Add(m_tilt,0,wxALIGN_CENTER_VERTICAL + wxALIGN_LEFT + wxALL,5);
     m_tilt->SetRange(-90, 90);
-    anglebox->Add(new wxStaticText(this, -1, msg(/*Bearing*/259)), 0, wxALIGN_CENTER_VERTICAL + wxALIGN_RIGHT + wxALL, 5);
-    m_bearing = new wxSpinCtrl(this,svx_BEARING);
-    anglebox->Add(m_bearing,0,wxALIGN_CENTER_VERTICAL + wxALIGN_LEFT + wxALL,5);
-    m_bearing->SetRange(0,359);
-    v2->Add(anglebox,0,wxALIGN_LEFT + wxALL,0);
-    h1->Add(v2,0,wxALIGN_LEFT + wxALL,5);
+    anglebox->Add(m_tilt, 0, wxALIGN_CENTER|wxALL, 5);
+
+    v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
+    }
     
+    if (m_layout->view != layout::EXTELEV) {
+	wxBoxSizer * planelevsizer = new wxBoxSizer(wxHORIZONTAL);
+	planelevsizer->Add(new wxButton(this, svx_PLAN, "Plan"),
+			   0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
+	planelevsizer->Add(new wxButton(this, svx_ELEV, "Elevation"),
+			   0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
+
+	v2->Add(planelevsizer, 0, wxALIGN_LEFT|wxALL, 5);
+    }
+
+    h1->Add(v2, 0, wxALIGN_LEFT|wxALL, 5);
+
     m_legs = new wxCheckBox(this, svx_LEGS, msg(/*Underground Survey Legs*/262));
     v3->Add(m_legs, 0, wxALIGN_LEFT|wxALL, 2);
     m_surface = new wxCheckBox(this, svx_SCALEBAR, msg(/*Sur&amp;face Survey Legs*/403));
@@ -199,7 +231,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
 //    v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
     m_infoBox = new wxCheckBox(this, svx_INFOBOX, "Info Box"); // FIXME TRANSLATE
     v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
+    
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
+
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
 
     wxButton * but;
@@ -218,20 +252,19 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     v1->Fit(this);
     v1->SetSizeHints(this);
 
-    wxCommandEvent dummy;
-    OnChange(dummy);
+    SomethingChanged();
 }
 
 svxPrintDlg::~svxPrintDlg() {
     osfree(m_layout->title);
     osfree(m_layout->datestamp);
-    layout_destroy(m_layout);
+    delete m_layout;
     m_layout = NULL;
 }
 
 void 
 svxPrintDlg::OnPrint(wxCommandEvent& event) {
-    OnChange(event);
+    SomethingChanged();
     wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
     wxPrinter pr(&pd);
     svxPrintout po(m_parent, m_layout, m_parent->GetPageSetupData(), m_File);
@@ -243,7 +276,7 @@ svxPrintDlg::OnPrint(wxCommandEvent& event) {
 
 void 
 svxPrintDlg::OnPreview(wxCommandEvent& event) {
-    OnChange(event);
+    SomethingChanged();
     wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
     wxPrintPreview* pv;
     pv = new wxPrintPreview(new svxPrintout(m_parent, m_layout,
@@ -280,30 +313,35 @@ svxPrintDlg::OnPreview(wxCommandEvent& event) {
     if (h > disp.GetHeight()) h = disp.GetHeight();
     // Centre the window within the "ClientDisplayRect".
     int x = disp.GetLeft() + (disp.GetWidth() - w) / 2;
-    int y = disp.GetBottom() + (disp.GetHeight() - h) / 2;
+    int y = disp.GetTop() + (disp.GetHeight() - h) / 2;
     frame->SetSize(x, y, w, h);
 
-    frame->Show(TRUE);
+    frame->Show();
 }
 
 void 
 svxPrintDlg::OnChangeSpin(wxSpinEvent&e) {
-    OnChange(e);
+    SomethingChanged();
 }
 
 void 
 svxPrintDlg::OnChange(wxCommandEvent&) {
-    wxPageSetupDialogData* data = m_parent->GetPageSetupData();
+    SomethingChanged();
+}
+
+void
+svxPrintDlg::SomethingChanged() {
     UIToLayout();
     // Update the bounding box.
     RecalcBounds();
     if (m_layout->xMax >= m_layout->xMin) { 
+	wxPageSetupDialogData* data = m_parent->GetPageSetupData();
 	// get print details...
 	m_layout->PaperWidth = data->GetPaperSize().GetWidth() - 
 	    data->GetMarginBottomRight().x - data->GetMarginTopLeft().x;
 	m_layout->PaperDepth = data->GetPaperSize().GetHeight() - 
 	    data->GetMarginBottomRight().y - data->GetMarginTopLeft().y;
-	pages_required(m_layout);
+	m_layout->pages_required();
 	m_layout->pages = m_layout->pagesX * m_layout->pagesY;
 	m_printSize->SetLabel(wxString::Format(msg(/*%d pages (%dx%d)*/257), m_layout->pages, m_layout->pagesX, m_layout->pagesY));
     }
@@ -319,16 +357,14 @@ svxPrintDlg::LayoutToUI(){
     m_infoBox->SetValue(!m_layout->Raw);
     m_surface->SetValue(m_layout->Surface);
     m_tilt->SetValue(m_layout->tilt);
+    // FIXME is EXTELEV disable both buttons and tilt and rot spinctrls
+    // FIXME: enable both buttons
     if (m_layout->tilt > 89) {
-	m_aspect->SetSelection(0);
-	m_tilt->Disable();
+	// FIXME: disable Plan button
     } else if (m_layout->tilt == 0) {
-	m_aspect->SetSelection(1);
-	m_tilt->Disable();
-    } else {
-	m_aspect->SetSelection(2);
-	m_tilt->Enable();
+	// FIXME: disable Elevation button
     }
+
     m_bearing->SetValue(m_layout->rot);
     // Do this last as it causes an OnChange message which calls UIToLayout
     if (m_layout->Scale != 0) {
@@ -350,30 +386,21 @@ svxPrintDlg::UIToLayout(){
     m_layout->Raw = !m_infoBox->IsChecked();
     m_layout->Surface = m_surface->IsChecked();
 
-    switch(m_aspect->GetSelection()) {
-	case 0: // Plan;
-	    m_layout->tilt = 90;
-	    m_tilt->SetValue(90);
-	    m_tilt->Disable();
-	    m_tilttext->Disable();
-	    break;
-	case 1: // Elevation;
-	    m_layout->tilt = 0;
-	    m_tilt->SetValue(0);
-	    m_tilt->Disable();
-	    m_tilttext->Disable();
-	    break;
-	case 2: // Tilted
-	    m_layout->tilt = m_tilt->GetValue();
-	    m_tilt->Enable();
-	    m_tilttext->Enable();
-	    break;
+    if (m_layout->view != layout::EXTELEV) {
+	m_layout->tilt = m_tilt->GetValue();
+	if (m_layout->tilt == 90) {
+	    m_layout->view = layout::PLAN;
+	} else if (m_layout->tilt == 0) {
+	    m_layout->view = layout::ELEV;
+	} else {
+	    m_layout->view = layout::TILT;
+	}
+	m_layout->rot = m_bearing->GetValue();
     }
-    m_layout->rot = m_bearing->GetValue();
 
     (m_scale->GetValue()).ToDouble(&(m_layout->Scale));
     if (m_layout->Scale == 0.0) {
-	double x = 1000.0 / pick_scale(1, 1);
+	double x = 1000.0 / m_layout->pick_scale(1, 1);
 
 	/* trim to 2 s.f. (rounding up) */
 	double w = pow(10.0, floor(log10(x) - 1.0));
@@ -433,8 +460,6 @@ svxPrintDlg::RecalcBounds()
     }
 }
 
-static enum {PLAN, ELEV, TILT, EXTELEV} view = PLAN;
-
 #define DEG "\xB0" /* degree symbol in iso-8859-1 */
 
 static int xpPageWidth, ypPageDepth;
@@ -469,7 +494,7 @@ svxPrintout::draw_info_box()
 
    SetColour(PR_COLOUR_FRAME);
 
-   if (view != EXTELEV) {
+   if (l->view != layout::EXTELEV) {
       boxwidth = 100;
       boxheight = 40;
       MOVEMM(60,40);
@@ -488,8 +513,8 @@ svxPrintout::draw_info_box()
    MOVEMM(0, 20); DRAWMM(60, 20);
    MOVEMM(0, 10); DRAWMM(60, 10);
 
-   switch (view) {
-    case PLAN: {
+   switch (l->view) {
+    case layout::PLAN: {
       long ax, ay, bx, by, cx, cy, dx, dy;
 
 #define RADIUS 16.0
@@ -520,7 +545,7 @@ svxPrintout::draw_info_box()
       WriteString(msg(/*Plan view*/117));
       break;
     }
-    case ELEV: case TILT:
+    case layout::ELEV: case layout::TILT:
       MOVEMM(65, 15); DRAWMM(70, 12); DRAWMM(68, 15); DRAWMM(70, 18);
 
       DRAWMM(65, 15); DRAWMM(95, 15);
@@ -541,7 +566,7 @@ svxPrintout::draw_info_box()
       MOVEMM(5, 23);
       WriteString(msg(/*Elevation*/118));
       break;
-    case EXTELEV:
+    case layout::EXTELEV:
       SetColour(PR_COLOUR_TEXT);
       MOVEMM(5, 13);
       WriteString(msg(/*Extended elevation*/191));
@@ -555,8 +580,9 @@ svxPrintout::draw_info_box()
    sprintf(p, " 1:%.0f", l->Scale);
    MOVEMM(5, boxheight - 27); WriteString(szTmp);
 
-   if (view != EXTELEV) {
-      strcpy(szTmp, msg(view == PLAN ? /*Up page*/168 : /*View*/169));
+   if (l->view != layout::EXTELEV) {
+      strcpy(szTmp,
+	     msg(l->view == layout::PLAN ? /*Up page*/168 : /*View*/169));
       p = szTmp + strlen(szTmp);
       sprintf(p, " %03d"DEG, l->rot);
       MOVEMM(5, 3); WriteString(szTmp);
@@ -1353,36 +1379,4 @@ svxPrintout::Init(FILE **fh_list, bool fCalibrate)
    m_layout->scX = 1;
    m_layout->scY = 1;
    return NULL;
-}
-
-#define DEF_RATIO (1.0/(double)DEFAULT_SCALE)
-/* return a scale which will make it fit in the desired size */
-double
-svxPrintDlg::pick_scale(int x, int y)
-{
-   double Sc_x, Sc_y;
-#if 0
-   double E;
-#endif
-   /*    pagesY = ceil((image_dy+allow)/PaperDepth)
-    * so (image_dy+allow)/PaperDepth <= pagesY < (image_dy+allow)/PaperDepth+1
-    * so image_dy <= pagesY*PaperDepth-allow < image_dy+PaperDepth
-    * and Sc = image_dy / (yMax-yMin)
-    * so Sc <= (pagesY*PaperDepth-allow)/(yMax-yMin) < Sc+PaperDepth/(yMax-yMin)
-    */
-   Sc_x = Sc_y = DEF_RATIO;
-   if (m_layout->PaperWidth > 0.0 && m_layout->xMax > m_layout->xMin)
-      Sc_x = (x * m_layout->PaperWidth - 19.0) / (m_layout->xMax - m_layout->xMin);
-   if (m_layout->PaperDepth > 0.0 && m_layout->yMax > m_layout->yMin) {
-      double allow = 21.0;
-      if (!m_layout->Raw) allow += (view == EXTELEV ? 30.0 : 40.0);
-      Sc_y = (y * m_layout->PaperDepth - allow) / (m_layout->yMax - m_layout->yMin);
-   }
-
-   Sc_x = min(Sc_x, Sc_y) * 0.99; /* shrink by 1% so we don't cock up */
-#if 0 /* this picks a nice (in some sense) ratio, but is too stingy */
-   E = pow(10.0, floor(log10(Sc_x)));
-   Sc_x = floor(Sc_x / E) * E;
-#endif
-   return Sc_x;
 }

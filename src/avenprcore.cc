@@ -43,73 +43,48 @@
 #include "avenprcore.h"
 #include "debug.h"
 
-layout* layout_new(void) {
-    /* setup some default values. Some of these are obviously nonsense*/
-    static const layout def_layout = {
-	fFalse, /*Labels*/
-	fFalse, /*Crosses*/
-	fTrue,  /*Shots*/
-	fFalse, /*Surface*/
-	fFalse, /*SkipBlank*/
-	fTrue,  /*Border*/
-	fTrue,  /*Cutlines*/
-	fFalse, /*Raw*/
-	NULL,   /*title*/
-	NULL,   /*datestamp*/
-
-	DEFAULT_SCALE, /*Scale*/
-	0,0,    /*rot,tilt*/
-
-	1,1,0,  /*scX,scY,Sc*/
-	0,1,0,1,/*xMin,xMax,yMin,yMax*/
-	1,1,    /*PaperWidth,PaperDepth*/
-	1,1,0,  /*pagesX,pagesY*/
-	0,0,    /*xOrg,yOrg*/
-
-	NULL     /*footer*/
-    };
-    layout *f;
-    f = osnew(layout);
-    *f = def_layout;
-    return f;
+layout::layout()
+	: Labels(false), Crosses(false), Shots(true), Surface(false),
+	  SkipBlank(false), Border(true), Cutlines(true), Raw(false),
+	  title(NULL), datestamp(NULL), Scale(0), rot(0), tilt(0),
+	  view(PLAN), scX(1), scY(1), xMin(0), xMax(1), yMin(0), yMax(1),
+	  PaperWidth(1), PaperDepth(1), pagesX(1), pagesY(1), pages(1),
+	  xOrg(0), yOrg(0), footer(NULL)
+{
 }
 
 void
-pages_required(layout *l) {
-   double image_dx, image_dy;
-   double image_centre_x, image_centre_y;
-   double paper_centre_x, paper_centre_y;
+layout::pages_required() {
+    double image_dx, image_dy;
+    double image_centre_x, image_centre_y;
+    double paper_centre_x, paper_centre_y;
 
-   double allow = 21.0;
-   if (!l->Raw) allow += (false /*FIXME: view == EXTELEV*/ ? 30.0 : 40.0);
-   image_dx = (l->xMax - l->xMin) * l->Sc;
-   if (l->PaperWidth > 0.0) {
-      l->pagesX = (int)ceil((image_dx + 19.0) / l->PaperWidth);
-   } else {
-      /* paperwidth not fixed (eg window or roll printer/plotter) */
-      l->pagesX = 1;
-      l->PaperWidth = image_dx + 19.0;
-   }
-   paper_centre_x = (l->pagesX * l->PaperWidth) / 2;
-   image_centre_x = l->Sc * (l->xMax + l->xMin) / 2;
-   l->xOrg = paper_centre_x - image_centre_x;
+    double allow = 21.0;
+    if (!Raw) allow += (view == EXTELEV ? 30.0 : 40.0);
+    double Sc = 1000 / Scale;
+    image_dx = (xMax - xMin) * Sc;
+    if (PaperWidth > 0.0) {
+	pagesX = (int)ceil((image_dx + 19.0) / PaperWidth);
+    } else {
+	/* paperwidth not fixed (eg window or roll printer/plotter) */
+	pagesX = 1;
+	PaperWidth = image_dx + 19.0;
+    }
+    paper_centre_x = (pagesX * PaperWidth) / 2;
+    image_centre_x = Sc * (xMax + xMin) / 2;
+    xOrg = paper_centre_x - image_centre_x;
 
-   image_dy = (l->yMax - l->yMin) * l->Sc;
-   if (l->PaperDepth > 0.0) {
-      l->pagesY = (int)ceil((image_dy + allow) / l->PaperDepth);
-   } else {
-      /* paperdepth not fixed (eg window or roll printer/plotter) */
-      l->pagesY = 1;
-      l->PaperDepth = image_dy + allow;
-   }
-   paper_centre_y = 20 + (l->pagesY * l->PaperDepth) / 2;
-   image_centre_y = l->Sc * (l->yMax + l->yMin) / 2;
-   l->yOrg = paper_centre_y - image_centre_y;
-}
-
-void
-layout_destroy(layout *l) {
-    osfree(l);
+    image_dy = (yMax - yMin) * Sc;
+    if (PaperDepth > 0.0) {
+	pagesY = (int)ceil((image_dy + allow) / PaperDepth);
+    } else {
+	/* paperdepth not fixed (eg window or roll printer/plotter) */
+	pagesY = 1;
+	PaperDepth = image_dy + allow;
+    }
+    paper_centre_y = 20 + (pagesY * PaperDepth) / 2;
+    image_centre_y = Sc * (yMax + yMin) / 2;
+    yOrg = paper_centre_y - image_centre_y;
 }
 
 static void setting_missing(const char *v)
@@ -306,30 +281,29 @@ as_escstring(const char *v, char *s)
    return (q - s);
 }
 
-#if 0
 #define DEF_RATIO (1.0/(double)DEFAULT_SCALE)
 
 /* return a scale which will make it fit in the desired size */
 double
-pick_scale(layout *l,int x, int y)
+layout::pick_scale(int x, int y)
 {
    double Sc_x, Sc_y;
 #if 0
    double E;
 #endif
-   /*    l->pagesY = ceil((image_dy+allow)/l->PaperDepth)
-    * so (image_dy+allow)/l->PaperDepth <= l->pagesY < (image_dy+allow)/l->PaperDepth+1
-    * so image_dy <= l->pagesY*l->PaperDepth-allow < image_dy+l->PaperDepth
-    * and Sc = image_dy / (l->yMax-l->yMin)
-    * so Sc <= (l->pagesY*l->PaperDepth-allow)/(l->yMax-l->yMin) < Sc+l->PaperDepth/(l->yMax-l->yMin)
+   /*    pagesY = ceil((image_dy+allow)/PaperDepth)
+    * so (image_dy+allow)/PaperDepth <= pagesY < (image_dy+allow)/PaperDepth+1
+    * so image_dy <= pagesY*PaperDepth-allow < image_dy+PaperDepth
+    * and Sc = image_dy / (yMax-yMin)
+    * so Sc <= (pagesY*PaperDepth-allow)/(yMax-yMin) < Sc+PaperDepth/(yMax-yMin)
     */
    Sc_x = Sc_y = DEF_RATIO;
-   if (l->PaperWidth > 0.0 && l->xMax > l->xMin)
-      Sc_x = (x * l->PaperWidth - 19.0) / (l->xMax - l->xMin);
-   if (l->PaperDepth > 0.0 && l->yMax > l->yMin) {
+   if (PaperWidth > 0.0 && xMax > xMin)
+      Sc_x = (x * PaperWidth - 19.0) / (xMax - xMin);
+   if (PaperDepth > 0.0 && yMax > yMin) {
       double allow = 21.0;
-      if (!l->Raw) allow += (view == EXTELEV ? 30.0 : 40.0);
-      Sc_y = (y * l->PaperDepth - allow) / (l->yMax - l->yMin);
+      if (!Raw) allow += (view == EXTELEV ? 30.0 : 40.0);
+      Sc_y = (y * PaperDepth - allow) / (yMax - yMin);
    }
 
    Sc_x = min(Sc_x, Sc_y) * 0.99; /* shrink by 1% so we don't cock up */
@@ -340,6 +314,7 @@ pick_scale(layout *l,int x, int y)
    return Sc_x;
 }
 
+#if 0
 bool fBlankPage = fFalse;
 
 void print_all(MainFrm *m_parent, layout *l, device *pri) {
@@ -401,4 +376,3 @@ void print_all(MainFrm *m_parent, layout *l, device *pri) {
     select_charset(old_charset);
 }
 #endif
-

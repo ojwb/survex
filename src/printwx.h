@@ -27,14 +27,15 @@ enum {
 	svx_SCALE,
 	svx_BEARING,
 	svx_TILT,
-	svx_ASPECT,
 	svx_LEGS,
 	svx_STATIONS,
 	svx_NAMES,
 	svx_BORDERS,
 	svx_BLANKS,
 	svx_INFOBOX,
-	svx_SCALEBAR
+	svx_SCALEBAR,
+	svx_PLAN,
+	svx_ELEV
 };
 
 class MainFrm;
@@ -42,7 +43,6 @@ struct layout;
 class wxComboBox;
 class wxStaticText;
 class wxSpinCtrl;
-class wxRadioBox;
 class wxCheckBox;
 class wxSpinEvent;
 
@@ -54,7 +54,6 @@ protected:
 	wxStaticText* m_tilttext;
 	wxSpinCtrl* m_bearing;
 	wxSpinCtrl* m_tilt;
-	wxRadioBox* m_aspect;
 	wxCheckBox* m_legs;
 	wxCheckBox* m_stations;
 	wxCheckBox* m_names;
@@ -68,7 +67,6 @@ protected:
 	void LayoutToUI();
 	void UIToLayout();
 	void RecalcBounds();
-	double pick_scale(int x, int y);
  public:
 	svxPrintDlg(MainFrm* parent, const wxString & filename,
 		    const wxString & title, const wxString & datestamp,
@@ -79,7 +77,7 @@ protected:
 	void OnPreview(wxCommandEvent& event);
 	void OnChangeSpin(wxSpinEvent& event); 
 	void OnChange(wxCommandEvent& event); 
-	void OnGetSettings(wxCommandEvent& event);
+	void SomethingChanged();
  private:
 	DECLARE_EVENT_TABLE()
 };
