@@ -1,3 +1,10 @@
+survex (0.99.10) unstable; urgency=low
+
+  * Aven updates
+  * Bug fix in .3d file reading code
+
+ -- Wookey <wookey@survex.com>  Wed, 19 Dec 2001 14:28:10 +0000
+
 survex (0.99.9) unstable; urgency=low
 
   * Aven updates
