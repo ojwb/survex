@@ -32,8 +32,27 @@ static int
 fputcs(const char *s, FILE *fh)
 {
    int len = strlen(s);
-   if (putc((unsigned char)len, fh) == EOF) return EOF;
+   /* if the label is empty or > 255 chars. store 0 in the length byte
+    * followed by a 32 bit length value */
+   if (len == 0 || len > 255) {
+      if (putc(0, fh) == EOF) return EOF;
+      put32((INT32_T)len. fh);
+      if (ferror(fh)) return EOF;
+   } else {
+      if (putc((unsigned char)len, fh) == EOF) return EOF;
+   }
    return fputs(s, fh);
+}
+
+/* length on disk of counted string */
+static unsigned int
+cslen(const char *s)
+{
+   int len = strlen(s);
+   /* if the label is empty or > 255 chars. store 0 in the length byte
+    * followed by a 32 bit length value */
+   if (len == 0 || len > 255) return len + 5;
+   return len + 1;
 }
 
 static char *basesource;
@@ -86,6 +105,7 @@ cave_write_pos(pos *pid, prefix *pre)
     tag = pre->ident;
     ltag = strlen(tag);
     length = ltag + 12 + 4 + 1;
+    /* FIXME: assumes that length of name is a single byte */
     /* ltag for station name, 12 for data, 4 for id, 1 for length of name */
     putc(STATION_3D, pimgOut->fh);
     putc(length, pimgOut->fh);
@@ -135,6 +155,7 @@ cave_open_write(const char *fnm, const char *title)
 int
 cave_error(void)
 {
+   /* FIXME: */
    printf("A cave error has occured. Hmmm\n");
    return 0;
 }
@@ -150,7 +171,7 @@ cave_write_source(const char *source)
 {
   /* create a relative path, given an absolute dir, and an absolute file */
   /* part 1. find where they differ */
-  /* temp bodge */
+  /* FIXME: temp bodge */
   if (fAbsoluteFnm(source)) {
     /* strip source down to just a file name... */
     if (strncmp(source, basesource, strlen(basesource)) != 0) {
@@ -166,8 +187,8 @@ cave_write_source(const char *source)
 static void
 save3d(twig *sticky)
 {
-  char ltag;
-  short unsigned int stubcount;
+  unsigned int ltag;
+  unsigned int stubcount;
   double err, length, offset;
   twig *twiglet;
   for (twiglet = sticky->right; twiglet; twiglet = twiglet->right) {
@@ -217,12 +238,20 @@ save3d(twig *sticky)
 	if (twiglet->tape) stubcount++;
 	if (twiglet->date) stubcount++;
 	stubcount += twiglet->count;
-	put16((unsigned short)stubcount, pimgOut->fh);
-	ltag = (unsigned char)strlen(twiglet->to->ident);
-
-	putc(ltag + 1, pimgOut->fh);
-	putc(ltag, pimgOut->fh);
-	fputs(twiglet->to->ident, pimgOut->fh);
+	if (stubcount > 32767) {
+	  put16(0, pimgOut->fh);
+	  put32(stubcount, pimgOut->fh);
+	} else {
+	  put16((unsigned short)stubcount, pimgOut->fh);
+	}
+	ltag = cslen(twiglet->to->ident);
+	if (ltag < 255) {
+	  putc((unsigned char)(ltag + 1), pimgOut->fh);
+	} else {
+	  putc(0, pimgOut->fh);
+	  put32(ltag + 1, pimgOut->fh);
+	}
+	fputcs(twiglet->to->ident, pimgOut->fh);
 	if (twiglet->source) cave_write_source(twiglet->source);
 	if (twiglet->date) {
 	  putc(DATE_3D, pimgOut->fh);
@@ -291,7 +320,8 @@ cave_close(img *pimg)
       put32((INT32_T)statcount,pimg->fh);
       fclose(pimg->fh);
    }
-   /* memory leak, but it doesn't like this for some reason */
+   /* FIXME: don't understand this comment:
+    * memory leak, but it doesn't like this for some reason */
    osfree(pimg);
 }
 

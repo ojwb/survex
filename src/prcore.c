@@ -433,11 +433,10 @@ static int
 read_in_data(void)
 {
    img_point p;
-   char sz[256];
    int result;
 
    do {
-      result = img_read_item(pimg, sz, &p);
+      result = img_read_item(pimg, &p);
       switch (result) {
        case img_BAD:
 	 return 0;
@@ -452,7 +451,7 @@ read_in_data(void)
          break;
        case img_LABEL:
          stack(img_CROSS, &p);
-         stack_string(sz);
+         stack_string(pimg->label);
          break;
       }
    } while (result != img_BAD && result != img_STOP);

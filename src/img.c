@@ -53,7 +53,7 @@
  * if (s) fputsnl(s,fh); else exit(1);
  * to work as intended
  */
-# define fputsnl(SZ, FH) do {fputs((SZ), (FH)); putc('\n', (FH));} while(0)
+# define fputsnl(S, FH) do {fputs((S), (FH)); putc('\n', (FH));} while(0)
 
 static long
 get32(FILE *fh)
@@ -80,8 +80,8 @@ put32(long w, FILE *fh)
 
 unsigned int img_output_version = 2;
 
-#define lenSzTmp 256
-static char szTmp[lenSzTmp];
+#define TMPBUFLEN 256
+static char tmpbuf[TMPBUFLEN];
 
 #ifndef STANDALONE
 static enum {
@@ -150,6 +150,14 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
       return NULL;
    }
 
+   pimg->buf_len = 257;
+   pimg->label = xosmalloc(pimg->buf_len);
+   if (!pimg->label) {
+      osfree(pimg);
+      img_errno = IMG_OUTOFMEMORY;
+      return NULL;
+   }
+
    pimg->fh = fopenWithPthAndExt("", fnm, EXT_SVX_3D, "rb", NULL);
    if (pimg->fh == NULL) {
       osfree(pimg);
@@ -157,20 +165,20 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
       return NULL;
    }
 
-   getline(szTmp, ossizeof(szTmp), pimg->fh); /* id string */
-   if (strcmp(szTmp, "Survex 3D Image File") != 0) {
+   getline(tmpbuf, TMPBUFLEN, pimg->fh); /* id string */
+   if (strcmp(tmpbuf, "Survex 3D Image File") != 0) {
       fclose(pimg->fh);
       osfree(pimg);
       img_errno = IMG_BADFORMAT;
       return NULL;
    }
 
-   getline(szTmp, ossizeof(szTmp), pimg->fh); /* file format version */
-   pimg->version = (tolower(*szTmp) == 'b'); /* binary file iff B/b prefix */
+   getline(tmpbuf, TMPBUFLEN, pimg->fh); /* file format version */
+   pimg->version = (tolower(*tmpbuf) == 'b'); /* binary file iff B/b prefix */
    /* knock off the 'B' or 'b' if it's there */
-   if (strcmp(szTmp + pimg->version, "v0.01") == 0) {
+   if (strcmp(tmpbuf + pimg->version, "v0.01") == 0) {
       pimg->flags = 0;
-   } else if (pimg->version == 0 && strcmp(szTmp, "v2") == 0) {
+   } else if (pimg->version == 0 && strcmp(tmpbuf, "v2") == 0) {
       pimg->version = 2;
    } else {
       fclose(pimg->fh);
@@ -179,8 +187,8 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
       return NULL;
    }
    /* FIXME sizeof parameter is rather bogus here */
-   getline((szTitle ? szTitle : szTmp), ossizeof(szTmp), pimg->fh);
-   getline((szDateStamp ? szDateStamp : szTmp), ossizeof(szTmp), pimg->fh);
+   getline((szTitle ? szTitle : tmpbuf), TMPBUFLEN, pimg->fh);
+   getline((szDateStamp ? szDateStamp : tmpbuf), TMPBUFLEN, pimg->fh);
    pimg->fLinePending = fFalse; /* not in the middle of a 'LINE' command */
    pimg->fRead = fTrue; /* reading from this file */
    img_errno = IMG_NONE;
@@ -236,8 +244,8 @@ img_open_write(const char *fnm, char *szTitle, bool fBinary)
       fputsnl(TIMENA, pimg->fh);
    } else {
       /* output current date and time in format specified */
-      strftime(szTmp, lenSzTmp, TIMEFMT, localtime(&tm));
-      fputsnl(szTmp, pimg->fh);
+      strftime(tmpbuf, TMPBUFLEN, TIMEFMT, localtime(&tm));
+      fputsnl(tmpbuf, pimg->fh);
    }
    pimg->fRead = fFalse; /* writing to this file */
    img_errno = IMG_NONE;
@@ -245,7 +253,7 @@ img_open_write(const char *fnm, char *szTitle, bool fBinary)
 }
 
 int
-img_read_item(img *pimg, char *sz, img_point *p)
+img_read_item(img *pimg, img_point *p)
 {
    static double x = 0.0, y = 0.0, z = 0.0;
    static long opt_lookahead = 0;
@@ -271,14 +279,32 @@ img_read_item(img *pimg, char *sz, img_point *p)
 	 (void)get32(pimg->fh);
 	 (void)get32(pimg->fh);
 	 goto again;
-       case 2: case 3:
+       case 2: case 3: {
+	 char *p;
 	 result = img_LABEL;
-	 fgets(sz, 256, pimg->fh);
-	 sz += strlen(sz) - 1;
-	 if (*sz != '\n') return img_BAD;
-	 *sz = '\0';
+	 fgets(pimg->label, 257, pimg->fh);
+	 p = pimg->label + strlen(pimg->label) - 1;
+	 if (*p != '\n') return img_BAD;
+	 *p = '\0';
 	 if (opt == 2) goto done;
 	 break;
+       }
+       case 6: {
+	 size_t len;
+	 result = img_LABEL;
+	 len = get32(pimg->fh);
+	 if (len >= pimg->buf_len) {
+	    pimg->label = xosrealloc(pimg->label, len + 1);
+	    if (!pimg->label) {
+	       img_errno = IMG_OUTOFMEMORY;
+	       return img_BAD;
+	    }
+	    pimg->buf_len = len + 1;
+	 }
+	 fread(pimg->label, len, 1, pimg->fh); /* FIXME: check params ; check error
+*/
+	 break;
+       }
        case 4:
 	 result = img_MOVE;
          pimg->flags = 0;
@@ -302,10 +328,10 @@ img_read_item(img *pimg, char *sz, img_point *p)
 
       if (result == img_MOVE && pimg->version == 1) {
 	 /* peek at next code and see if it's img_LABEL */
-         opt_lookahead = get32(pimg->fh);
+	 opt_lookahead = get32(pimg->fh);
 	 if (opt_lookahead == img_LABEL) return img_read_item(pimg, sz, p);
       }
-	 
+
       return result;
    } else {
       ascii_again:
@@ -315,27 +341,29 @@ img_read_item(img *pimg, char *sz, img_point *p)
 	 result = img_LINE;
       } else {
 	 /* Stop if nothing found */
-	 if (fscanf(pimg->fh, "%s", szTmp) < 1) return img_STOP;
-	 if (strcmp(szTmp, "move") == 0)
+	 if (fscanf(pimg->fh, "%s", tmpbuf) < 1) return img_STOP;
+	 if (strcmp(tmpbuf, "move") == 0)
 	    result = img_MOVE;
-	 else if (strcmp(szTmp, "draw") == 0)
+	 else if (strcmp(tmpbuf, "draw") == 0)
 	    result = img_LINE;
-	 else if (strcmp(szTmp, "line") == 0) {
+	 else if (strcmp(tmpbuf, "line") == 0) {
 	    /* set flag to indicate to process second triplet as LINE */
 	    pimg->fLinePending = fTrue;
 	    result = img_MOVE;
-	 } else if (strcmp(szTmp, "cross") == 0) {
+	 } else if (strcmp(tmpbuf, "cross") == 0) {
 	    if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3)
 	       return img_BAD;
 	    goto ascii_again;
-	 } else if (strcmp(szTmp, "name") == 0) {
-	    if (fscanf(pimg->fh,"%s", sz) < 1) return img_BAD;
+	 } else if (strcmp(tmpbuf, "name") == 0) {
+	    /* FIXME: may overflow... */
+	    if (fscanf(pimg->fh,"%s", pimg->label) < 1) return img_BAD;
 	    result = img_LABEL;
 	 } else
 	    return img_BAD; /* unknown keyword */
       }
 
-      if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) return img_BAD;
+      if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) return
+img_BAD;
       return result;
    }
 }
@@ -347,6 +375,7 @@ img_write_item(img *pimg, int code, const char *s,
    if (!pimg) return;
    if (pimg->version > 0) {
       double Sc = 100.0; /* Output in cm */
+      size_t len;
       INT32_T opt = 0;
       switch (code) {
        case img_LABEL:
@@ -357,10 +386,20 @@ img_write_item(img *pimg, int code, const char *s,
 	    fputsnl(s, pimg->fh);
 	    return;
 	 }
-	 putc(3, pimg->fh);
-	 fputsnl(s, pimg->fh);
+	 len = strlen(s);
+	 if (len > 255) {
+	    /* long label - not in early incarnations of v2 format, but few
+	     * 3d files will need these, so better not to force incompatibility
+	     * with a new version I think... */
+	    putc(6, pimg->fh);
+	    put32(len, pimg->fh);
+	    fputs(s, pimg->fh);
+	 } else {
+	    putc(3, pimg->fh);
+	    fputsnl(s, pimg->fh);
+	 }
 	 opt = 0;
-	 break;	  
+	 break;
        case img_MOVE:
 	 opt = 4;
 	 break;
@@ -419,6 +458,7 @@ img_close(img *pimg)
 	 }
 	 fclose(pimg->fh);
       }
+      osfree(pimg->label);
       osfree(pimg);
    }
 }

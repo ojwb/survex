@@ -72,7 +72,6 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
 	  point Huge **ppStns)
 {
    img_point pt;
-   char sz[256];
    int result;
    img *pimg;
 
@@ -100,7 +99,7 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
    if (!pimg) return fFalse;
 
    do {
-      result = img_read_item(pimg, sz, &pt);
+      result = img_read_item(pimg, &pt);
       switch (result) {
        case img_MOVE:
 	 f_pendingmove = fTrue;
@@ -134,7 +133,7 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
     	 break;
        case img_LABEL:
 	 c_stns++;
-	 c_totlabel += strlen(sz) + 1;
+	 c_totlabel += strlen(pimg->label) + 1;
 	 break;
        case img_BAD:
 	 img_close(pimg);
@@ -167,7 +166,7 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
 #endif
    do {
       img_point mv;
-      result = img_read_item(pimg, sz, &pt);
+      result = img_read_item(pimg, &pt);
       switch (result) {
        case img_MOVE:
 	 f_pendingmove = fTrue;
@@ -210,10 +209,10 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
      	  * have crosses in */
     	 break;
        case img_LABEL: {
-	 int size = strlen(sz) + 1;
+	 int size = strlen(pimg->label) + 1;
 	 if (p + size > p_end) return fFalse;
 	 if (c_stn >= c_stns) return fFalse;
-	 strcpy(p, sz);
+	 strcpy(p, pimg->label);
     	 stns[c_stn]._.str = p;
     	 stns[c_stn].X = (coord)(pt.x * factor);
    	 stns[c_stn].Y = (coord)(pt.y * factor);

@@ -113,7 +113,6 @@ main(int argc, char **argv)
    const char *fnmData, *fnmOutput;
    char szDesc[256];
    img_point pt;
-   char sz[256];
    int result;
    point *fr = NULL, *to;
    double zMax = -DBL_MAX;
@@ -142,7 +141,7 @@ main(int argc, char **argv)
    puts(msg(/*Reading in data - please wait...*/105));
 
    do {
-      result = img_read_item(pimg, sz, &pt);
+      result = img_read_item(pimg, &pt);
       switch (result) {
       case img_BAD:
          puts(msg(/*Bad 3d image file `%s'*/106));
@@ -165,7 +164,7 @@ main(int argc, char **argv)
          break;
       case img_LABEL:
          fr = find_point(&pt);
-         add_label(fr, sz);
+         add_label(fr, pimg->label);
          break;
       }
    } while (result != img_BAD && result != img_STOP);

@@ -1,5 +1,5 @@
 /* > 3dtodxf.c
- * Converts a .3d file to a DXF file
+ * Converts a .3d file to a DXF file, or other CAD-like formats
  * Also useful as an example of how to use the img code in your own programs
  */
 
@@ -276,7 +276,7 @@ static int sketch_passes[] = { LEGS, STNS, LABELS, 0 };
 int
 main(int argc, char **argv)
 {
-   char szTitle[256], szDateStamp[256], szName[256];
+   char szTitle[256], szDateStamp[256];
    char *fnm_3d, *fnm_out;
    unsigned char labels, crosses, legs;
    img *pimg;
@@ -446,7 +446,7 @@ main(int argc, char **argv)
    min_x = min_y = min_z = HUGE_VAL;
    max_x = max_y = max_z = -HUGE_VAL;
    do {
-      item = img_read_item(pimg, szName, &p);
+      item = img_read_item(pimg, &p);
 
       if (elevation) {
 	  double xnew = p.x * c - p.y * s;
@@ -493,7 +493,7 @@ main(int argc, char **argv)
 	 img_rewind(pimg);
 	 start_pass(*pass);
 	 do {
-	    item = img_read_item(pimg, szName, &p);
+	    item = img_read_item(pimg, &p);
 
 	    if (format == FMT_SKETCH) {
 	       p.x -= min_x;
@@ -520,7 +520,7 @@ main(int argc, char **argv)
 #endif
 	       if (!fSeenMove) {
 #ifdef DEBUG_3DTODXF
-		  printf("Something is wrong -- img_LINE before any img_MOVE!\n"); /* <<<<<<< create message in messages.txt ? */
+		  printf("Something is wrong -- img_LINE before any img_MOVE!\n"); /* FIXME: create message in messages.txt ? */
 #endif
 		  img_close(pimg);
 		  fatalerror(/*Bad 3d image file `%s'*/106, fnm_3d);
@@ -543,9 +543,9 @@ main(int argc, char **argv)
 #endif
 	     case img_LABEL:
 #ifdef DEBUG_3DTODXF
-	       printf("label `%s' at %9.2f %9.2f %9.2f\n",szName,x,y,z);
+	       printf("label `%s' at %9.2f %9.2f %9.2f\n",pimg->label,x,y,z);
 #endif
-	       if ((*pass & LABELS) && labels) label(p, szName);
+	       if ((*pass & LABELS) && labels) label(p, pimg->label);
 	       if ((*pass & STNS) && crosses) cross(p);
 	       break;
 #ifdef DEBUG_3DTODXF

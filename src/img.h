@@ -48,9 +48,11 @@ typedef struct {
     
 typedef struct {
    /* members you can access */
+   char *label;
    int flags;
    /* all other members are for internal use only */
    FILE *fh;          /* file handle of image file */
+   size_t buf_len;
 # ifndef STANDALONE
    bool fLinePending; /* for old style text format files */
    bool fRead;        /* fTrue for reading, fFalse for writing */
@@ -91,11 +93,11 @@ img *img_open_write(const char *fnm, char *szTitle, int fBinary);
 
 /* Read an item from a .3d file
  * pimg is a pointer to an img struct returned by img_open()
- * sz is a buffer for a label (only meaningful for img_LABEL)
  * coordinates are returned in p
+ * flags and label name are returned in fields in pimg
  * Returns img_XXXX as #define-d above
  */
-int img_read_item(img *pimg, char *sz, img_point *p);
+int img_read_item(img *pimg, img_point *p);
 
 /* Write a item to a .3d file
  * pimg is a pointer to an img struct returned by img_open_write()
