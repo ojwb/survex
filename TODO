@@ -113,3 +113,8 @@ svx092pre5 [...] did produce an error file much longer than whatever
 version I ran before.  [Previous version deleted so unable to discover
 what it was.]
 
+Date: Sun, 09 Jul 2000
+From: Olly
+
+Sort out and include program for generating file associations under Windows.
+

@@ -1,7 +1,12 @@
-Changes in 0.94-pre1:
+Changes in 0.94-prerelease2:
 
-* Tentative fix for bug reported by Leandro - cavern would segfault
-  in articulate() on second *solve
+* Added test for "cavern would segfault in articulate() on second *solve"
+  (bug3.svx)
+
+Changes in 0.94-prerelease1:
+
+* Fix for bug reported by Leandro - cavern would segfault in articulate() on
+  second *solve
 
 * Applied xcaverot patches from Leandro: fix menu buttons, keyboard
   shortcuts, colour of station markers, scalebar length and text display,
