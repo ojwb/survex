@@ -522,20 +522,6 @@ add_unicode(int charset, unsigned char *p, int value)
       break;
 #elif (OS==WIN32)
    case CHARSET_WINCP1250:
-      /* MS Windows extensions to ISO-8859-1 */
-      switch (value) {
-       case 0x152: value = 0x8c; break; /* &OElig; */
-       case 0x153: value = 0x9c; break; /* &oelig; */
-#if 0
-      /* there are a few other obscure ones we don't currently need */
-#endif
-      }
-      if (value < 0x100) {
-	 *p = value;
-	 return 1;
-      }
-      break;
-   case CHARSET_WINCP1250:
       /* MS Windows rough equivalent to ISO-8859-2 */
       if (value >= 0x80) {
 	 int v = 0;
@@ -630,6 +616,20 @@ add_unicode(int charset, unsigned char *p, int value)
       }
       *p = value;
       return 1;
+   case CHARSET_WINCP1252:
+      /* MS Windows extensions to ISO-8859-1 */
+      switch (value) {
+       case 0x152: value = 0x8c; break; /* &OElig; */
+       case 0x153: value = 0x9c; break; /* &oelig; */
+#if 0
+      /* there are a few other obscure ones we don't currently need */
+#endif
+      }
+      if (value < 0x100) {
+	 *p = value;
+	 return 1;
+      }
+      break;
 #endif
 #if (OS==MSDOS)
    case CHARSET_DOSCP437: {
