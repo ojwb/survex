@@ -79,12 +79,11 @@ void
 plot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
      int fixpt)
 {
-   int X, Y; /* screen plot position */
    INIT();
    while (COND(p)) {
       /* calc positions and shift right get screen co-ords */
-      X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
-      Y = (int)((p->X * y1 + p->Y * y2 + p->Z * y3) >> fixpt) + (ycMac >> 1);
+      int X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
+      int Y = (int)((p->X * y1 + p->Y * y2 + p->Z * y3) >> fixpt) + (ycMac >> 1);
       DO_PLOT(p, X, Y);
       p++;
    }
@@ -96,12 +95,11 @@ plot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
 void
 plot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
 {
-   int X, Y; /* screen plot position */
    INIT();
    while (COND(p)) {
       /* calc positions and shift right get screen co-ords */
-      X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
-      Y = (int)((p->Z * y3) >> fixpt) + (ycMac >> 1);
+      int X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
+      int Y = (int)((p->Z * y3) >> fixpt) + (ycMac >> 1);
       DO_PLOT(p, X, Y);
       p++;
    }
@@ -113,12 +111,11 @@ plot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
 void
 plot_plan(point Huge *p, coord x1, coord x2, coord y1, coord y2, int fixpt)
 {
-   int X, Y; /* screen plot position */
    INIT();
    while (COND(p)) {
       /* calc positions and shift right get screen co-ords */
-      X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
-      Y = (int)((p->X * y1 + p->Y * y2) >> fixpt) + (ycMac >> 1);
+      int X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
+      int Y = (int)((p->X * y1 + p->Y * y2) >> fixpt) + (ycMac >> 1);
       DO_PLOT(p, X, Y);
       p++;
    }
@@ -153,11 +150,10 @@ void
 splot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
       int fixpt)
 {
-   int X, Y; /* screen plot position */
    while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
-      X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
-      Y = (int)((p->X * y1 + p->Y * y2 + p->Z * y3) >> fixpt) + (ycMac >> 1);
+      int X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
+      int Y = (int)((p->X * y1 + p->Y * y2 + p->Z * y3) >> fixpt) + (ycMac >> 1);
       drawcross(X, Y);
       p++;
    }
@@ -167,11 +163,10 @@ splot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
 void
 splot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
 {
-   int X, Y; /* screen plot position */
    while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
-      X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
-      Y = (int)((p->Z * y3) >> fixpt) + (ycMac >> 1);
+      int X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
+      int Y = (int)((p->Z * y3) >> fixpt) + (ycMac >> 1);
       drawcross(X, Y);
       p++;
    }
@@ -181,11 +176,10 @@ splot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
 void
 splot_plan(point Huge *p, coord x1, coord x2, coord y1, coord y2, int fixpt)
 {
-   int X, Y; /* screen plot position */
    while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
-      X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
-      Y = (int)((p->X * y1 + p->Y * y2) >> fixpt) + (ycMac >> 1);
+      int X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
+      int Y = (int)((p->X * y1 + p->Y * y2) >> fixpt) + (ycMac >> 1);
       drawcross(X, Y);
       p++;
    }
@@ -196,16 +190,17 @@ void
 lplot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
       int fixpt)
 {
-   int X, Y; /* screen plot position */
    while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
-      X = (int)((p->X * x1 + p->Y * x2) >> fixpt);
-      if ((X < 0 ? -X : X) > (xcMac >> 1)) continue;
-      Y = (int)((p->X * y1 + p->Y * y2 + p->Z * y3) >> fixpt);
-      if ((Y < 0 ? -Y : Y) > (ycMac >> 1)) continue;
-      if (fancy_label(p->_.str, X, Y)) {
-         outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
-                   p->_.str);
+      int X = (int)((p->X * x1 + p->Y * x2) >> fixpt);
+      if ((X < 0 ? -X : X) <= (xcMac >> 1)) {
+	 int Y = (int)((p->X * y1 + p->Y * y2 + p->Z * y3) >> fixpt);
+	 if ((Y < 0 ? -Y : Y) <= (ycMac >> 1)) {
+	    if (fancy_label(p->_.str, X, Y)) {
+	       outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
+			 p->_.str);
+	    }
+	 }
       }
       p++;
    }
@@ -215,16 +210,17 @@ lplot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
 void
 lplot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
 {
-   int X, Y; /* screen plot position */
    while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
-      X = (int)((p->X * x1 + p->Y * x2) >> fixpt);
-      if ((X < 0 ? -X : X) > (xcMac >> 1) ) continue;
-      Y = (int)((p->Z * y3) >> fixpt);
-      if ((Y < 0 ? -Y : Y) > (ycMac >> 1) ) continue;
-      if (fancy_label(p->_.str, X, Y)) {
-         outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
-                   p->_.str);
+      int X = (int)((p->X * x1 + p->Y * x2) >> fixpt);
+      if ((X < 0 ? -X : X) <= (xcMac >> 1) ) {
+	 int Y = (int)((p->Z * y3) >> fixpt);
+	 if ((Y < 0 ? -Y : Y) <= (ycMac >> 1) ) {
+	    if (fancy_label(p->_.str, X, Y)) {
+	       outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
+			 p->_.str);
+	    }
+	 }
       }
       p++;
    }
@@ -234,16 +230,17 @@ lplot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
 void
 lplot_plan(point Huge *p, coord x1, coord x2, coord y1, coord y2, int fixpt)
 {
-   int X, Y; /* screen plot position */
    while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
-      X = (int)((p->X * x1 + p->Y * x2) >> fixpt);
-      if ((X < 0 ? -X : X) > (xcMac >> 1)) continue;
-      Y = (int)((p->X * y1 + p->Y * y2) >> fixpt);
-      if ((Y < 0 ? -Y : Y) > (ycMac >> 1)) continue;
-      if (fancy_label(p->_.str, X, Y)) {
-         outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
-                   p->_.str);
+      int X = (int)((p->X * x1 + p->Y * x2) >> fixpt);
+      if ((X < 0 ? -X : X) <= (xcMac >> 1)) {
+	 int Y = (int)((p->X * y1 + p->Y * y2) >> fixpt);
+	 if ((Y < 0 ? -Y : Y) <= (ycMac >> 1)) {
+	    if (fancy_label(p->_.str, X, Y)) {
+	       outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
+			 p->_.str);
+	    }
+	 }
       }
       p++;
    }

@@ -21,6 +21,9 @@
 * Added "surface", "underground", "exported", "fixed", and "entrance"
   station flags to 3d format.
 
+* (DOS version): caverot: fixed bug Brian Clipstone reported where
+  caverot would lock up when trying to plot a label off-screen.
+
 Changes in 0.97-prerelease5:
 
 * survex: conversion wrapper now only creates __svxtmp.svx file if it
