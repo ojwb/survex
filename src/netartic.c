@@ -161,7 +161,7 @@ uniter:
 	       col = -col;
 	       to->colour = col;
 #if 0
-	       /* Removing this solves Graham Mullen's problem and makes more
+	       /* Removing this solves Graham Mullan's problem and makes more
 		* sense since it means we'll recheck this point for further
 		* legs. */
 #ifdef DEBUG_ARTIC
