@@ -395,19 +395,17 @@ replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
 void
 process_equate(prefix *name1, prefix *name2)
 {
+   node *stn1, *stn2;
    if (name1 == name2) {
       /* catch something like *equate "fred fred" */
       compile_warning(/*Station `%s' equated to itself*/13,
 		      sprint_prefix(name1));
       return;
    }
-
+   stn1 = StnFromPfx(name1);
+   stn2 = StnFromPfx(name2);
    /* equate nodes if not already equated */
-   if (!name1->pos || name1->pos != name2->pos) {
-      node *stn1, *stn2;
-      stn1 = StnFromPfx(name1);
-      stn2 = StnFromPfx(name2);
-
+   if (name1->pos != name2->pos) {
       if (pfx_fixed(name1)) {
 	 if (pfx_fixed(name2)) {
 	    /* both are fixed, but let them off iff their coordinates match */
@@ -425,7 +423,7 @@ process_equate(prefix *name1, prefix *name2)
 			    s, sprint_prefix(name2));
 	    osfree(s);
 	 }
-	 
+
 	 /* name1 is fixed, so replace all refs to name2's pos with name1's */
 	 replace_pfx(name2, name1);
       } else {
