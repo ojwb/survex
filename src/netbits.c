@@ -45,8 +45,8 @@ static void check_var(/*const*/ var *v) {
    for (i = 0; i < 3; i++) {
       char buf[32];
       sprintf(buf, "%6.3f", v[i]);
-      if (strstr(buf, "NaN")) printf("*** NaN!!!\n"), bad = 1;
-      if (strstr(buf, "nan")) printf("*** NaN!!!\n"), bad = 1;
+      if (strstr(buf, "NaN") || strstr(buf, "nan"))
+	 printf("*** NaN!!!\n"), bad = 1;
    }
    if (bad) print_var(v);
    return;
@@ -65,8 +65,8 @@ static void check_var(/*const*/ var *v) {
       for (j = 0; j < 3; j++) {
 	 char buf[32];
 	 sprintf(buf, "%6.3f", V(i, j));
-	 if (strstr(buf, "NaN")) printf("*** NaN!!!\n"), bad = 1, ok = 1;
-	 if (strstr(buf, "nan")) printf("*** NaN!!!\n"), bad = 1, ok = 1;
+	 if (strstr(buf, "NaN") || strstr(buf, "nan"))
+	    printf("*** NaN!!!\n"), bad = 1, ok = 1;
 	 if (V(i, j) != 0.0) ok = 1;
       }
    }
@@ -103,19 +103,17 @@ static void check_var(/*const*/ var *v) {
 static void check_svar(/*const*/ svar *v) {
    int bad = 0;
    int ok = 0;
-   int i, j;
+   int i;
 #if DEBUG_INVALID
    real det = 0.0;
 #endif
 
-   for (i = 0; i < 3; i++) {
-      for (j = 0; j < 3; j++) {
-	 char buf[32];
-	 sprintf(buf, "%6.3f", S(i, j));
-	 if (strstr(buf, "NaN")) printf("*** NaN!!!\n"), bad = 1, ok = 1;
-	 if (strstr(buf, "nan")) printf("*** NaN!!!\n"), bad = 1, ok = 1;
-	 if (S(i, j) != 0.0) ok = 1;
-      }
+   for (i = 0; i < 6; i++) {
+      char buf[32];
+      sprintf(buf, "%6.3f", (*v)[i]);
+      if (strstr(buf, "NaN") || strstr(buf, "nan"))
+	 printf("*** NaN!!!\n"), bad = 1, ok = 1;
+      if ((*v)[i] != 0.0) ok = 1;
    }
    if (!ok) return; /* ignore all-zero matrices */
 
@@ -129,16 +127,12 @@ static void check_svar(/*const*/ svar *v) {
       printf("*** Singular!!!\n"), bad = 1;
 #endif
 
-#if 0
-   if (fabs(S(0,1) - S(1,0)) > THRESHOLD ||
-       fabs(S(0,2) - S(2,0)) > THRESHOLD ||
-       fabs(S(1,2) - S(2,1)) > THRESHOLD)
-      printf("*** Not symmetric!!!\n"), bad = 1;
-   if (S(0,0) <= 0.0 || S(1,1) <= 0.0 || S(2,2) <= 0.0)
+#if 0 /* FIXME */
+   if ((*v)[0] <= 0.0 || (*v)[1] <= 0.0 || (*v)[2] <= 0.0)
       printf("*** Not positive definite (diag <= 0)!!!\n"), bad = 1;
-   if (sqrd(S(0,1)) >= S(0,0)*S(1,1) || sqrd(S(0,2)) >= S(0,0)*S(2,2) ||
-       sqrd(S(1,0)) >= S(0,0)*S(1,1) || sqrd(S(2,0)) >= S(0,0)*S(2,2) ||
-       sqrd(S(1,2)) >= S(2,2)*S(1,1) || sqrd(S(2,1)) >= S(2,2)*S(1,1))
+   if (sqrd((*v)[3]) >= (*v)[0]*(*v)[1] ||
+       sqrd((*v)[4]) >= (*v)[0]*(*v)[2] ||
+       sqrd((*v)[5]) >= (*v)[1]*(*v)[2])
       printf("*** Not positive definite (off diag^2 >= diag product)!!!\n"), bad = 1;
 #endif
    if (bad) print_svar(*v);
@@ -152,8 +146,8 @@ static void check_d(/*const*/ delta *d) {
    for (i = 0; i < 3; i++) {
       char buf[32];
       sprintf(buf, "%6.3f", (*d)[i]);
-      if (strstr(buf, "NaN")) printf("*** NaN!!!\n"), bad = 1;
-      if (strstr(buf, "nan")) printf("*** NaN!!!\n"), bad = 1;
+      if (strstr(buf, "NaN") || strstr(buf, "nan"))
+	 printf("*** NaN!!!\n"), bad = 1;
    }
 
    if (bad) printf("(%4.2f,%4.2f,%4.2f)\n", (*d)[0], (*d)[1], (*d)[2]);
@@ -820,7 +814,7 @@ invert_var(var *inv, /*const*/ var *v)
 	real d = 0;
 	mulvv(&p, v, inv);
 	for (i = 0; i < 3; i++) {
-	   for (j = 0; j < 3; j++ ) d += fabs(p[i][j] - (real)(i==j));
+	   for (j = 0; j < 3; j++) d += fabs(p[i][j] - (real)(i==j));
 	}
 	if (d > THRESHOLD) {
 	   printf("original * inverse=\n");
@@ -841,77 +835,26 @@ invert_var(var *inv, /*const*/ var *v)
 /* inv = v^-1 ; inv,v variance matrices */
 #ifndef NO_COVARIANCES
 extern int
-invert_svar(var *inv, /*const*/ svar *v)
-{
-   int i, j;
-   real det = 0;
-
-#if 0
-   ASSERT((/*const*/ var *)inv != v);
-#endif
-
-   check_svar(v);
-   for (i = 0; i < 3; i++) {
-      det += S(i, 0) * (S((i + 1) % 3, 1) * S((i + 2) % 3, 2) -
-			S((i + 1) % 3, 2) * S((i + 2) % 3, 1));
-   }
-
-   if (fabs(det) < THRESHOLD) {
-      /* printf("det=%.20f\n", det); */
-      return 0; /* matrix is singular */
-   }
-
-   det = 1 / det;
-
-#define B(I,J) (S((J)%3,(I)%3))
-   for (i = 0; i < 3; i++) {
-      for (j = 0; j < 3; j++) {
-         (*inv)[i][j] = det * (B(i+1,j+1)*B(i+2,j+2) - B(i+2,j+1)*B(i+1,j+2));
-      }
-   }
-#undef B
-
-#if 0
-     { /* check that original * inverse = identity matrix */
-	var p;
-	real d = 0;
-	mulvv(&p, v, inv);
-	for (i = 0; i < 3; i++) {
-	   for (j = 0; j < 3; j++ ) d += fabs(p[i][j] - (real)(i==j));
-	}
-	if (d > THRESHOLD) {
-	   printf("original * inverse=\n");
-	   print_var(*v);
-	   printf("*\n");
-	   print_var(*inv);
-	   printf("=\n");
-	   print_var(p);
-	   BUG("matrix didn't invert");
-	}
-	check_var(inv);
-     }
-#endif
-   return 1;
-}
-#endif
-
-/* inv = v^-1 ; inv,v variance matrices */
-#ifndef NO_COVARIANCES
-extern int
-sinvert_svar(svar *inv, /*const*/ svar *v)
+invert_svar(svar *inv, /*const*/ svar *v)
 {
    int i;
-   real det = 0;
+   real det, a, b, c, d, e, f, bcff, efcd, dfbe;
 
 #if 0
    ASSERT((/*const*/ var *)inv != v);
 #endif
 
    check_svar(v);
-   for (i = 0; i < 3; i++) {
-      det += S(i, 0) * (S((i + 1) % 3, 1) * S((i + 2) % 3, 2) -
-			S((i + 1) % 3, 2) * S((i + 2) % 3, 1));
-   }
+   /* a d e
+    * d b f
+    * e f c
+    */
+   a = (*v)[0], b = (*v)[1], c = (*v)[2];
+   d = (*v)[3], e = (*v)[4], f = (*v)[5];
+   bcff = b * c - f * f;
+   efcd = e * f - c * d;
+   dfbe = d * f - b * e;
+   det = a * bcff + d * efcd + e * dfbe;
 
    if (fabs(det) < THRESHOLD) {
       /* printf("det=%.20f\n", det); */
@@ -920,35 +863,32 @@ sinvert_svar(svar *inv, /*const*/ svar *v)
 
    det = 1 / det;
 
-#define B(I,J) (S((J)%3,(I)%3))
-   for (i = 0; i < 3; i++) {
-      (*inv)[i] = det * (B(i+1,i+1)*B(i+2,i+2) - B(i+2,i+1)*B(i+1,i+2));
-   }
-   (*inv)[3] = det * (S(1,2)*S(2,0) - S(2,2)*S(1,0));
-   (*inv)[4] = det * (S(1,0)*S(2,1) - S(2,0)*S(1,1));
-   (*inv)[5] = det * (S(2,0)*S(0,1) - S(0,0)*S(2,1));
-#undef B
+   (*inv)[0] = det * bcff;
+   (*inv)[1] = det * (c * a - e * e);
+   (*inv)[2] = det * (a * b - d * d);
+   (*inv)[3] = det * efcd;
+   (*inv)[4] = det * dfbe;
+   (*inv)[5] = det * (e * d - a * f);
 
-#if 0
      { /* check that original * inverse = identity matrix */
 	var p;
-	real d = 0;
-	mulvv(&p, v, inv);
+	real D = 0;
+	mulss(&p, v, inv);
 	for (i = 0; i < 3; i++) {
-	   for (j = 0; j < 3; j++ ) d += fabs(p[i][j] - (real)(i==j));
+	   int j;
+	   for (j = 0; j < 3; j++) D += fabs(p[i][j] - (real)(i==j));
 	}
-	if (d > THRESHOLD) {
+	if (D > THRESHOLD) {
 	   printf("original * inverse=\n");
-	   print_var(*v);
+	   print_svar(*v);
 	   printf("*\n");
-	   print_var(*inv);
+	   print_svar(*inv);
 	   printf("=\n");
 	   print_var(p);
 	   BUG("matrix didn't invert");
 	}
-	check_var(inv);
+	check_svar(inv);
      }
-#endif
    return 1;
 }
 #endif
@@ -978,7 +918,7 @@ void
 divds(delta *r, /*const*/ delta *a, /*const*/ svar *b)
 {
    svar b_inv;
-   if (!sinvert_svar(&b_inv, b)) {
+   if (!invert_svar(&b_inv, b)) {
       print_svar(*b);
       BUG("covariance matrix is singular");
    }
@@ -1009,30 +949,16 @@ divvv(var *r, /*const*/ var *a, /*const*/ var *b)
 }
 
 bool
-fZero(/*const*/ var *v) {
+fZeros(/*const*/ svar *v) {
 #ifdef NO_COVARIANCES
    /* variance-only version */
    return ((*v)[0] == 0.0 && (*v)[1] == 0.0 && (*v)[2] == 0.0);
 #else
-   int i, j;
-
-   check_var(v);
-   for (i = 0; i < 3; i++) {
-      for (j = 0; j < 3; j++) if ((*v)[i][j] != 0.0) return fFalse;
-   }
-
-   return fTrue;
-#endif
-}
-
-#ifndef NO_COVARIANCES
-bool
-fZeros(/*const*/ svar *v) {
    int i;
 
    check_svar(v);
    for (i = 0; i < 6; i++) if ((*v)[i] != 0.0) return fFalse;
 
    return fTrue;
-}
 #endif
+}

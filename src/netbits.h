@@ -122,13 +122,7 @@ void divvv(var *r, /*const*/ var *a, /*const*/ var *b);
 int invert_var(var *inv, /*const*/ var *v);
 
 /* inv = v^-1 ; inv,v variance matrices */
-int invert_svar(var *inv, /*const*/ svar *v);
-
-/* inv = v^-1 ; inv,v variance matrices */
-int sinvert_svar(svar *inv, /*const*/ svar *v);
-
-/* Is v zero? */
-bool fZero(/*const*/ var *v);
+int invert_svar(svar *inv, /*const*/ svar *v);
 
 /* Is v zero? */
 bool fZeros(/*const*/ svar *v);
@@ -142,8 +136,6 @@ bool fZeros(/*const*/ svar *v);
 #define subss subvv
 #define divds divdv
 #define invert_svar invert_var
-#define sinvert_svar invert_var
-#define fZeros fZero
 #endif
 
 #define PR "%8.6f"

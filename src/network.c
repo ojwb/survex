@@ -209,25 +209,26 @@ remove_subnets(void)
 	       newleg2 = copy_link(stn->leg[(dirn + 2) % 3]);
 		 {
 #ifdef NO_COVARIANCES
-		    var sum, prod;
+		    vars sum;
+		    var prod;
 		    delta temp, temp2;
-		    addvv(&sum, &newleg->v, &newleg2->v);
-		    ASSERT2(!fZero(&sum), "loop of zero variance found");
-		    mulvv(&prod, &newleg->v, &newleg2->v);
-		    mulvd(&temp, &newleg2->v, &newleg->d);
-		    mulvd(&temp2, &newleg->v, &newleg2->d);
+		    addss(&sum, &newleg->v, &newleg2->v);
+		    ASSERT2(!fZeros(&sum), "loop of zero variance found");
+		    mulss(&prod, &newleg->v, &newleg2->v);
+		    mulsd(&temp, &newleg2->v, &newleg->d);
+		    mulsd(&temp2, &newleg->v, &newleg2->d);
 		    adddd(&temp, &temp, &temp2);
-		    divdv(&newleg->d, &temp, &sum);
-		    divvv(&newleg->v, &prod, &sum);
+		    divds(&newleg->d, &temp, &sum);
+		    sdivvs(&newleg->v, &prod, &sum);
 #else
 		    svar inv1, inv2, sum;
 		    delta temp, temp2;
 		    /* if leg one is an equate, we can just ignore leg two
 		     * whatever it is */
-		    if (sinvert_svar(&inv1, &newleg->v)) {
-		       if (sinvert_svar(&inv2, &newleg2->v)) {
+		    if (invert_svar(&inv1, &newleg->v)) {
+		       if (invert_svar(&inv2, &newleg2->v)) {
 			  addss(&sum, &inv1, &inv2);
-			  if (!sinvert_svar(&newleg->v, &sum)) {
+			  if (!invert_svar(&newleg->v, &sum)) {
 			     BUG("matrix singular in parallel legs replacement");
 			  }
 
@@ -403,13 +404,13 @@ remove_subnets(void)
 
 		    /* FIXME: ought to handle cases when some legs are
 		     * equates, but handle as a special case maybe? */
-		    if (!sinvert_svar(&invAB, &legAB->v)) break;
-		    if (!sinvert_svar(&invBC, &legBC->v)) break;
-		    if (!sinvert_svar(&invCA, &legCA->v)) break;
+		    if (!invert_svar(&invAB, &legAB->v)) break;
+		    if (!invert_svar(&invBC, &legBC->v)) break;
+		    if (!invert_svar(&invCA, &legCA->v)) break;
 
 		    addss(&sum, &legBC->v, &legCA->v);
 		    addss(&tmp, &sum, &legAB->v);
-		    if (!sinvert_svar(&inv, &tmp)) {
+		    if (!invert_svar(&inv, &tmp)) {
 		       /* impossible - loop of zero variance */
 		       BUG("loop of zero variance found");
 		    }

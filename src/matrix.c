@@ -173,7 +173,7 @@ build_matrix(node *list)
 #ifdef NO_COVARIANCES
 	 real e;
 #else
-	 var e;
+	 svar e;
 	 delta a;
 #endif
 	 int f, t;
@@ -226,15 +226,16 @@ build_matrix(node *list)
 		     if (invert_svar(&e, &stn->leg[dirn]->v)) {
 			/* not an equate */
 			delta b;
-			int i, j;
+			int i;
 			adddd(&a, &POSD(stn), &stn->leg[dirn]->d);
-			mulvd(&b, &e, &a);
+			mulsd(&b, &e, &a);
 			for (i = 0; i < 3; i++) {
-			   for (j = 0; j <= i; j++) {
-			      M(t * FACTOR + i, t * FACTOR + j) += e[i][j];
-			   }
+			   M(t * FACTOR + i, t * FACTOR + i) += e[i];
 			   B[t * FACTOR + i] += b[i];
 			}
+			M(t * FACTOR + 1, t * FACTOR) += e[3];
+			M(t * FACTOR + 2, t * FACTOR) += e[4];
+			M(t * FACTOR + 2, t * FACTOR + 1) += e[5];
 #if DEBUG_MATRIX_BUILD
 			printf("--- Dealing with stn fixed at (%f, %f, %f)\n",
 			       POS(stn, 0), POS(stn, 1), POS(stn, 2));
@@ -260,15 +261,16 @@ build_matrix(node *list)
 #else
 		     if (invert_svar(&e, &stn->leg[dirn]->v)) {
 			delta b;
-			int i, j;
+			int i;
 			subdd(&a, &POSD(stn->leg[dirn]->l.to), &stn->leg[dirn]->d);
-			mulvd(&b, &e, &a);
+			mulsd(&b, &e, &a);
 			for (i = 0; i < 3; i++) {
-			   for (j = 0; j <= i; j++) {
-			      M(f * FACTOR + i, f * FACTOR + j) += e[i][j];
-			   }
+			   M(f * FACTOR + i, f * FACTOR + i) += e[i];
 			   B[f * FACTOR + i] += b[i];
 			}
+			M(f * FACTOR + 1, f * FACTOR) += e[3];
+			M(f * FACTOR + 2, f * FACTOR) += e[4];
+			M(f * FACTOR + 2, f * FACTOR + 1) += e[5];
 		     }
 #endif
 		  } else {
@@ -292,21 +294,38 @@ build_matrix(node *list)
 		     }
 #else
 		     if (t != f && invert_svar(&e, &stn->leg[dirn]->v)) {
-			int i, j;
-			mulvd(&a, &e, &stn->leg[(dirn)]->d);
+			int i;
+			mulsd(&a, &e, &stn->leg[(dirn)]->d);
 			for (i = 0; i < 3; i++) {
-			   for (j = 0; j <= i; j++) {
-			      M(f * FACTOR + i, f * FACTOR + j) += e[i][j];
-			      M(t * FACTOR + i, t * FACTOR + j) += e[i][j];
-			   }
-			   for (j = 0; j < 3; j++) {
-			      if (f < t)
-				 M(t * FACTOR + i, f * FACTOR + j) -= e[i][j];
-			      else
-				 M(f * FACTOR + i, t * FACTOR + j) -= e[i][j];
-			   }
+			   M(f * FACTOR + i, f * FACTOR + i) += e[i];
+			   M(t * FACTOR + i, t * FACTOR + i) += e[i];
+			   if (f < t)
+			      M(t * FACTOR + i, f * FACTOR + i) -= e[i];
+			   else
+			      M(f * FACTOR + i, t * FACTOR + i) -= e[i];
 			   B[f * FACTOR + i] -= a[i];
 			   B[t * FACTOR + i] += a[i];
+			}
+			M(f * FACTOR + 1, f * FACTOR) += e[3];
+			M(t * FACTOR + 1, t * FACTOR) += e[3];
+			M(f * FACTOR + 2, f * FACTOR) += e[4];
+			M(t * FACTOR + 2, t * FACTOR) += e[4];
+			M(f * FACTOR + 2, f * FACTOR + 1) += e[5];
+			M(t * FACTOR + 2, t * FACTOR + 1) += e[5];
+			if (f < t) {
+			   M(t * FACTOR + 1, f * FACTOR) -= e[3];
+			   M(t * FACTOR, f * FACTOR + 1) -= e[3];
+			   M(t * FACTOR + 2, f * FACTOR) -= e[4];
+			   M(t * FACTOR, f * FACTOR + 2) -= e[4];
+			   M(t * FACTOR + 2, f * FACTOR + 1) -= e[5];
+			   M(t * FACTOR + 1, f * FACTOR + 2) -= e[5];
+			} else {
+			   M(f * FACTOR + 1, t * FACTOR) -= e[3];
+			   M(f * FACTOR, t * FACTOR + 1) -= e[3];
+			   M(f * FACTOR + 2, t * FACTOR) -= e[4];
+			   M(f * FACTOR, t * FACTOR + 2) -= e[4];
+			   M(f * FACTOR + 2, t * FACTOR + 1) -= e[5];
+			   M(f * FACTOR + 1, t * FACTOR + 2) -= e[5];
 			}
 		     }
 #endif
