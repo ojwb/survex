@@ -318,14 +318,15 @@ case `sgmltools --version 2>&5` in
 esac
 AC_SUBST(sgmltools)
 
-dnl extra flags for building with gcc
+dnl extra warning flags for building with gcc
 if test "$GCC" = yes; then
   if test "$cross_compiling" = yes; then
     CFLAGS="$CFLAGS -Wall -W -Wunused -Wpointer-arith -Wmissing-prototypes \
--Wwrite-strings -Wnested-externs -Wcast-align"
+      -Wwrite-strings -Wnested-externs -Wcast-align"
   else
-    CFLAGS="$CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith -Wmissing-prototypes \
--Wwrite-strings -Wredundant-decls -Wnested-externs -Wcast-align"
+    CFLAGS="$CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith \
+      -Wmissing-prototypes -Wwrite-strings -Wredundant-decls -Wnested-externs \
+      -Wcast-align"
   fi
   dnl too many complaints from headers, etc: -Wconversion
 fi
@@ -334,7 +335,7 @@ AC_ARG_ENABLE(profiling,
 [  --enable-profiling Build binaries to generate profiling information],
 [case "${enableval}" in
   yes) CXXFLAGS="$CXXFLAGS -pg"
-       CFLAGS="$CCFLAGS -pg";;
+       CFLAGS="$CFLAGS -pg";;
   no) ;;
   *) AC_MSG_ERROR(bad value ${enableval} for --enable-profiling) ;;
 esac])
