@@ -892,14 +892,14 @@ void MainFrm::FillTree()
         }
         // Otherwise, we must have moved up, and possibly then down again.
         else {
-            int count = 0;
+	    size_t count = 0;
             bool ascent_only = (prefix.Length() < current_prefix.Length() &&
 	                        current_prefix.StartsWith(prefix) &&
                                 (current_prefix[prefix.Length()] == '.' || prefix == ""));
             if (!ascent_only) {
                 // Find out how much of the current prefix and the new prefix are the same.
                 // Note that we require a match of a whole number of parts between dots!
-                int pos = 0;
+		size_t pos = 0;
                 while (prefix[pos] == current_prefix[pos]) {
                     if (prefix[pos] == '.') count = pos + 1;
                     pos++;
@@ -1492,7 +1492,8 @@ void MainFrm::OnFind(wxCommandEvent& event)
     }
 
     if (!true /* !substring */) {
-        if (str.empty() || str[0] != '^') str = '^' + str;
+	// FIXME "0u" required to avoid compilation error with g++-3.0
+        if (str.empty() || str[0u] != '^') str = '^' + str;
         if (str[str.size() - 1] != '$') str = str + '$';
     }
    

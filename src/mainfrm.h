@@ -30,7 +30,12 @@
 #include "img.h"
 
 #include <list>
+// FIXME: do this with a configure test...
+#if defined(__GNUC__) && __GNUC__ == 3
+#include <ext/hash_map>
+#else
 #include <hash_map>
+#endif
 
 using namespace std;
 

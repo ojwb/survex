@@ -28,6 +28,8 @@
   We now support codepages 437 and 850 (the common ones) - for other
   codepages we fall back to using 7-bit ASCII.
 
+* (Unix version): aven: now compiles cleanly with GCC3.0.
+
 Changes in 0.99-prerelease7:
 
 * (MS Windows version): aven was missing from 0.99-prerelease6

@@ -37,7 +37,6 @@
 #endif
 
 using std::list;
-using std::hash_map;
 
 class MainFrm;
 class PointInfo;
