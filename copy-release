@@ -7,8 +7,8 @@ VRR=$VER-$REL
 VRD=$VER
 VRP=$VER
 
-FILES="survex-$VRR.i386.rpm survex-aven-$VRR.i386.rpm survex-$VRR.src.rpm\
- survex_${VRD}_i386.deb survex-aven_${VRD}_i386.deb\
+FILES="survex-$VRR.i386.rpm survex-aven-$VRR.i386.rpm survex-svxedit-$VRR.i386.rpm survex-$VRR.src.rpm\
+ survex_${VRD}_i386.deb survex-aven_${VRD}_i386.deb survex-svxedit_${VRD}_i386.deb\
  survex-$VER.tar.gz survex-dos-$VER.exe survex-win32-$VER.exe\
  svxdoc-doswin-$VER.exe svxdoc-riscos-$VER.zip"
 
