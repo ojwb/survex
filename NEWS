@@ -42,7 +42,7 @@ Changes in 0.97-prerelease1:
 
 * xcaverot: "load" button now works; bearing always shown in range 0-360;
   / and ' now tilt cave; `u' and `d' now switch to view from above/below;
-  shift-ed keys now work.
+  shift-ed keys now work; `o' now turns off non-overlapping labels.
 
 * caverot: n/s/e/w/u/d now work as in xcaverot - the previous functions they
   had weren't actually useful; if memory is really tight, disable

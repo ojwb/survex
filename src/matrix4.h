@@ -1,9 +1,9 @@
 //
-//  aven.cxx
+//  matrix4.h
 //
-//  Main class for Aven.
+//  C++ class for handling 4x4 matrices
 //
-//  Copyright (C) 2001, Mark R. Shinwell.
+//  Copyright (C) 2000-2001, Mark R. Shinwell.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,27 +20,25 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "aven.h"
-#include "mainfrm.h"
+#ifndef Matrix4_h
+#define Matrix4_h
 
-#include <assert.h>
+#include "vector3.h"
 
-IMPLEMENT_APP(Aven)
+class Matrix4 {
+    double data[16];
 
-Aven::Aven() :
-    m_Frame(NULL)
-{
-}
+public:
+    Matrix4();
+    ~Matrix4();
 
-bool Aven::OnInit()
-{
-    m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(640, 480));
-    m_Frame->Show(true);
+    void setRow(int row, double a, double b, double c, double d);
+    Matrix4 transpose();
+    double get(int r, int c) { return data[r*4 + c]; }
+    
+    void print();
+    
+    friend Matrix4 operator*(const Matrix4& left, const Matrix4& right);
+};
 
-    return true;
-}
-
-void Aven::ReportError(const wxString& msg)
-{
-    wxMessageBox(msg, "Aven", wxOK | wxCENTRE | wxICON_EXCLAMATION);
-}
+#endif

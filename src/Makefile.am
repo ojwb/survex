@@ -5,7 +5,8 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  getopt.h img.h ini.h labels.h listpos.h matrix.h message.h netartic.h\
  netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h uni2dos.h useful.h\
- validate.h whichos.h xrot.h new3dout.h 3ddefs.h aven.h
+ validate.h whichos.h xrot.h new3dout.h 3ddefs.h \
+ aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h
 
 LDADD = @LIBOBJS@
 
@@ -23,12 +24,12 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 
 survex_SOURCES = wrap.c osdepend.c
 
-aven_SOURCES = aven.cc cvrotimg.c img.c useful.c osdepend.c filename.c\
- message.c
-#aven_LDADD = @LIBOBJS@ @GTKMM_LIBS@
-aven_LDADD = @LIBOBJS@ @GTKMM_LIBS@ -lgnomemm
-aven_CFLAGS = @GTKMM_CFLAGS@
-aven_CXXFLAGS = @GTKMM_CFLAGS@
+aven_SOURCES = aven.cc img.c \
+ gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc
+
+aven_LDADD = @LIBOBJS@ @WX_LIBS@
+aven_CFLAGS = -DSTANDALONE @WX_CFLAGS@
+aven_CXXFLAGS = @WX_CFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c $(COMMONSRC)
  
@@ -77,38 +78,3 @@ borlandc/config.h borlandc/makefile: Makefile.am $(top_srcdir)/configure.in $(to
 
 riscos/config.h riscos/makefile: Makefile.am $(top_srcdir)/configure.in $(top_srcdir)/hto/Makefile.am miniam.pl
 	cat $(srcdir)/Makefile.am $(top_srcdir)/hto/Makefile.am | $(srcdir)/miniam.pl riscos $(top_srcdir)/configure.in riscos/config.h > riscos/makefile
-
-###########################################################################
-# stuff below here is probably out-of-date and should probably be ignored #
-###########################################################################
-
-### Define customising flags here (eg -DNO_MOUSE_SUPPORT, -DISO8859_1)
-## at start of command line
-#UFLG = -DDEBUG_INVALID
-## at end of command line when linking
-#ULFLG =
-##ULFLG = C:Asylum.o.AsylumLib
-
-# There are a number of macros of the form NO_xxxx or HAVE_xxxx which allow
-# for compilers or OS shortcomings.  Prefixes indicate:
-#
-#  * not really much use (eg not supported everywhere, or for debugging)
-#  D option is ignored unless compiling for MS-DOS
-#  - not currently used
-#
-# The current list is:
-#
-#    HAVE_DIFFTIME         - difftime() func, else just subtract times
-#    HAVE_PERROR           - perror() available
-#    HAVE_POPEN            - popen(), etc available
-#    HAVE_SETJMP           - use setjmp
-#    HAVE_SIGNAL           - compiler supports signals
-#    HAVE_STRERROR         - strerror() available
-#    HAVE_STRFTIME         - strftime() available
-#
-#  * NO_CLIP               - turns off clipping in printps (debug)
-#    NO_FUNC_PTRS          - don't use fn ptrs (only used by caverot)
-#                            [use this if fn ptrs won't fit in a coord]
-#    NO_MOUSE_SUPPORT      - no mouse library available (ignored for RISC OS)
-#    NO_PERCENTAGE         - permanently disable %age displays
-# D -NO_STDPRN             - DOS compiler without stdprn
