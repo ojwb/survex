@@ -230,8 +230,6 @@ Date: Fri, 04 May 2001
 Subject: caverot
 From: Olly
 
-Track down bug Brian reported in DJGPP version...
-
 extract help screen from caverot.c for translation
 
 caverot help page needs fettling so that it appears centrally (and indeed
@@ -255,11 +253,6 @@ doc/svxdocs.sgml has version number (0.97 currently) hardcoded.
 Date: Sat, 16 Jun 2001
 Subject: flags
 From: Olly
-
-done station: fixed/exported/entrance/surface/underground (a station can be both
-surface and underground)
-
-done legs: surface/duplicate/splay
 
 station flags: "important" - e.g. top camp "fixed" point / entrance
 (could be inferred from surface/ug join, but better to specify because
