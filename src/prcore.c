@@ -847,6 +847,7 @@ main(int argc, char **argv)
    }
 
    if (fInteractive) {
+      char *q;
       if (survey == NULL) {
 	 fputs(msg(/*Only load the sub-survey with prefix*/199), stdout);
 	 puts(":");
@@ -856,6 +857,21 @@ main(int argc, char **argv)
 	    if (szTmp[len - 1] == '\n') szTmp[len - 1] = '\0';	 
 	    survey = osstrdup(szTmp);
 	 }
+      }
+
+      q = szTmp;
+      if (fLabels) *q++ = 'n';
+      if (fCrosses) *q++ = 'c';
+      if (fShots) *q++ = 'l';
+      if (fSurface) *q++ = 's';
+      *q = '\0';
+      printf(msg(/*Plot what (n = station names, c = crosses, l = legs, s = surface) (default &quot;%s&quot;)&#10;: */58), szTmp);      
+      fgets(szTmp, sizeof(szTmp), stdin);
+      if (szTmp[0] >= 32) {
+	  fLabels = (strchr(szTmp, 'n') != NULL);
+	  fCrosses = (strchr(szTmp, 'c') != NULL);
+	  fShots = (strchr(szTmp, 'l') != NULL);
+	  fSurface = (strchr(szTmp, 's') != NULL);
       }
 
       putnl();
@@ -1084,20 +1100,16 @@ main(int argc, char **argv)
                }
                break;
              case img_LABEL:
-               if (fCrosses) {
+               if (fCrosses || fLabels) {
                   x = (long)((pli->to.x * Sc + xOrg) * scX);
 	          y = (long)((pli->to.y * Sc + yOrg) * scY);
-                  pr->DrawCross(x, y);
-	          x = y = INT_MAX;
-                  break;
 	       }
+               if (fCrosses) pr->DrawCross(x, y);
                if (fLabels) {
-                  x = (long)((pli->to.x * Sc + xOrg) * scX);
-	          y = (long)((pli->to.y * Sc + yOrg) * scY);
                   pr->MoveTo(x, y);
 		  pr->WriteString(pli->label);
-	          x = y = INT_MAX;
 	       }
+	       if (fCrosses || fLabels) x = y = INT_MAX;
                break;
             }	    
 	 }

@@ -1,8 +1,9 @@
 * aven: fixed bogus lines caused by coordinate wrap-around; fixed
   problem in repeated zoom with [ or ]; tweaked layout and auto-sizing
   of left panel; station search now case insensitive; regexp search
-  enabled; fixed obscure crash in search highlighting; added "rubber band"
-  between measured stations.
+  enabled; suppressed message box when wxWindows doesn't support the
+  language Survex is set to use; fixed obscure crash in search
+  highlighting; added "rubber band" between measured stations.
 
 * (MS Windows version): don't include plain text versions of docs; fixed
   default action for 3d files to be "Open".
@@ -17,6 +18,11 @@
 * print*: improved reporting of invalid scales; interpret a single
   number less than one as the scale in the obvious way (so "0.001"
   means "1:1000").
+
+* print*: "--crosses" no longer prevents "--station-names" from working.
+
+* print*: if running interactively, prompt for what elements to plot
+  when run so MS Windows users don't have to resort to the command line.
 
 * Minor documentation updates.
 

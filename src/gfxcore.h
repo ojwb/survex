@@ -36,6 +36,9 @@
 #include <wx/glcanvas.h>
 #endif
 
+using std::list;
+using std::hash_map;
+
 class MainFrm;
 class PointInfo;
 
@@ -108,6 +111,7 @@ class GfxCore : public wxWindow {
 	} display_shift;
     } m_Params;
 
+#ifdef AVENPRES
     struct PresData {
         struct {
 	    Double x, y, z;
@@ -120,6 +124,7 @@ class GfxCore : public wxWindow {
         Double tilt_angle;
 	bool solid_surface;
     };
+#endif
 
 #ifdef AVENGL
     struct {
@@ -162,11 +167,12 @@ class GfxCore : public wxWindow {
 
     struct {
 #ifdef AVENGL
-        // For the OpenGL version we store the real (x, y, z) coordinates of each station.
+        // For the OpenGL version we store the real (x, y, z) coordinates of
+	// each station.
         Double3* vertices;
 #else
-        // For the non-OpenGL version we store the screen coordinates of each station after
-        // the transformation has been applied.
+        // For the non-OpenGL version we store the screen coordinates of
+	// each station after the transformation has been applied.
         wxPoint* vertices;
 #endif
         int* num_segs;
@@ -213,14 +219,15 @@ class GfxCore : public wxWindow {
     bool terrain_rising;
 
     struct GridPointInfo {
-        long x; // ] screen coordinates
-	long y; // ]
+        long x, y; // screen coordinates
 	LabelInfo* label;
     };
 
     list<SpecialPoint> m_SpecialPoints;
+#ifdef AVENPRES
     list<pair<PresData, Quaternion> > m_Presentation;
     list<pair<PresData, Quaternion> >::iterator m_PresIterator;
+#endif
     double m_MaxExtent; // twice the maximum of the {x,y,z}-extents, in survey coordinates.
     LabelFlags* m_LabelGrid;
     HighlightedPt* m_HighlightedPts;
@@ -293,6 +300,7 @@ class GfxCore : public wxWindow {
     bool m_TerrainLoaded;
     list<PointInfo> m_PointCache;
 
+#ifdef AVENPRES
     int m_DoingPresStep;
     struct step_params {
         Double pan_angle;
@@ -315,6 +323,7 @@ class GfxCore : public wxWindow {
         step_params from;
         step_params to;
     } m_PresStep;
+#endif
 
     struct {
         Double x, y, z;
@@ -362,18 +371,21 @@ class GfxCore : public wxWindow {
 #endif
 
     Double XToScreen(Double x, Double y, Double z) {
-        return Double(x*m_RotationMatrix.get(0, 0) + y*m_RotationMatrix.get(0, 1) +
-		     z*m_RotationMatrix.get(0, 2));
+        return Double(x * m_RotationMatrix.get(0, 0) +
+		      y * m_RotationMatrix.get(0, 1) +
+		      z * m_RotationMatrix.get(0, 2));
     }
 
     Double YToScreen(Double x, Double y, Double z) {
-        return Double(x*m_RotationMatrix.get(1, 0) + y*m_RotationMatrix.get(1, 1) +
-		     z*m_RotationMatrix.get(1, 2));
+        return Double(x * m_RotationMatrix.get(1, 0) +
+		      y * m_RotationMatrix.get(1, 1) +
+		      z * m_RotationMatrix.get(1, 2));
     }
 
     Double ZToScreen(Double x, Double y, Double z) {
-        return Double(x*m_RotationMatrix.get(2, 0) + y*m_RotationMatrix.get(2, 1) +
-		     z*m_RotationMatrix.get(2, 2));
+        return Double(x * m_RotationMatrix.get(2, 0) +
+		      y * m_RotationMatrix.get(2, 1) +
+		      z * m_RotationMatrix.get(2, 2));
     }
 
     Double GridXToScreen(Double x, Double y, Double z);
@@ -423,7 +435,9 @@ class GfxCore : public wxWindow {
 
     void Repaint();
 
+#ifdef AVENPRES
     void PresGoto(PresData& d, Quaternion& q);
+#endif
 
     void CreateHitTestGrid();
     
@@ -448,6 +462,7 @@ public:
 
     void CentreOn(Double x, Double y, Double z);
 
+#ifdef AVENPRES
     void RecordPres(FILE* fp);
     void LoadPres(FILE* fp);
     void PresGo();
@@ -456,6 +471,7 @@ public:
 
     bool AtStartOfPres();
     bool AtEndOfPres();
+#endif
 
     void OnDefaults(wxCommandEvent&);
     void OnPlan(wxCommandEvent&);

@@ -33,7 +33,7 @@
 #define HEAVEN 5000.0 // altitude of heaven
 #define INTERPOLATE(a, b, t) ((a) + (((b) - (a)) * Double(t) / 100.0))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define MAX3(a, b, c) ((a) > (b) ? ((a) > (c) ? (a) : (c)) : ((b) > (c) ? (b) : (c)))
+#define MAX3(a, b, c) ((a) > (b) ? MAX(a, c) : MAX(b, c))
 #define TEXT_COLOUR  wxColour(0, 255, 40)
 #define LABEL_COLOUR wxColour(160, 255, 0)
 
@@ -153,7 +153,9 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_FixedPts = false;
     m_ExportedPts = false;
     m_Grid = false;
+#ifdef AVENPRES
     m_DoingPresStep = -1;
+#endif
 
     m_here.x = m_there.x = DBL_MAX;
    
@@ -226,7 +228,9 @@ void GfxCore::TryToFreeArrays()
         DELETE_ARRAY(m_Polylines);
         DELETE_ARRAY(m_SurfacePolylines);
         DELETE_ARRAY(m_CrossData.vertices);
+#ifdef AVENGL
         DELETE_ARRAY(m_CrossData.num_segs);
+#endif
         DELETE_ARRAY(m_Labels);
         DELETE_ARRAY(m_LabelsLastPlotted);
 
@@ -263,9 +267,9 @@ void GfxCore::Initialise()
     m_CrossData.vertices = new Double3[m_Parent->GetNumCrosses() * 4];
 #else
     m_CrossData.vertices = new wxPoint[m_Parent->GetNumCrosses() * 4];
+    m_CrossData.num_segs = new int[m_Parent->GetNumCrosses() * 2];
 #endif
 
-    m_CrossData.num_segs = new int[m_Parent->GetNumCrosses() * 2];
     m_HighlightedPts = new HighlightedPt[m_Parent->GetNumCrosses()];
     m_Labels = new LabelInfo*[m_Parent->GetNumCrosses()];
     m_LabelsLastPlotted = new LabelFlags[m_Parent->GetNumCrosses()];
@@ -285,7 +289,9 @@ void GfxCore::Initialise()
 
     m_TerrainLoaded = false;
 
+#ifdef AVENPRES
     m_DoingPresStep = -1; //--Pres: FIXME: delete old lists
+#endif
 
     // Apply default parameters.
     DefaultParameters();
@@ -654,7 +660,8 @@ void GfxCore::SetScaleInitial(Double scale)
     }
 
     if ((m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) && !m_ScaleSpecialPtsOnly) {
-        // Construct polylines for crosses, sort out station names and deal with highlighted points.
+	// Construct polylines for crosses, sort out station names,
+	// and deal with highlighted points.
 
         m_NumHighlightedPts = 0;
         HighlightedPt* hpt = m_HighlightedPts;
@@ -815,7 +822,8 @@ void GfxCore::SetScale(Double scale)
     }
 
     if ((m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) && !m_ScaleSpecialPtsOnly) {
-        // Construct polylines for crosses, sort out station names and deal with highlighted points.
+	// Construct polylines for crosses, sort out station names,
+	// and deal with highlighted points.
 
         m_NumHighlightedPts = 0;
         HighlightedPt* hpt = m_HighlightedPts;
@@ -2943,6 +2951,7 @@ void GfxCore::OnTimer(wxIdleEvent& event)
         }
     }
 
+#ifdef AVENPRES
     if (m_DoingPresStep >= 0 && m_DoingPresStep <= 100) {
         m_Params.scale = INTERPOLATE(m_PresStep.from.scale, m_PresStep.to.scale, m_DoingPresStep);
 
@@ -3005,6 +3014,7 @@ void GfxCore::OnTimer(wxIdleEvent& event)
         SetScale(m_Params.scale);
         Refresh(false);
     }
+#endif
 
 #ifdef AVENGL
     if (m_TerrainLoaded && floor_alt > -DBL_MAX && floor_alt <= HEAVEN) {
@@ -3284,6 +3294,7 @@ void GfxCore::CentreOn(Double x, Double y, Double z)
     Refresh(false);
 }
 
+#ifdef AVENPRES
 //
 //  Presentations
 //
@@ -3391,6 +3402,7 @@ bool GfxCore::AtEndOfPres()
 {
    return (m_PresIterator == m_Presentation.end());
 }
+#endif
 
 //
 //  Handling of special highlighted points

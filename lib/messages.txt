@@ -601,7 +601,8 @@ de-de,de-ch: 57 *EXPORT muss unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
 de:     57 *EXPORT mu&szlig; unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
 pt: 57 *EXPORT deve estar logo ap&oacute;s um `*BEGIN <TOPO>'
 it: 57 *EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'
-#XXX 58
+# cf 162
+en: 58 "Plot what (n = station names, c = crosses, l = legs, s = surface) (default &quot;%s&quot;)&#10;: "
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
 fr: 59 Lecture de compas suspecte

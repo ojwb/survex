@@ -59,9 +59,12 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_BUTTON(button_HIDE, MainFrm::OnHide)
 
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
+#ifdef AVENPRES
     EVT_MENU(menu_FILE_OPEN_PRES, MainFrm::OnOpenPres)
+#endif
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
 
+#ifdef AVENPRES
     EVT_MENU(menu_PRES_CREATE, MainFrm::OnPresCreate)
     EVT_MENU(menu_PRES_GO, MainFrm::OnPresGo)
     EVT_MENU(menu_PRES_GO_BACK, MainFrm::OnPresGoBack)
@@ -81,6 +84,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_PRES_FINISH, MainFrm::OnPresFinishUpdate)
     EVT_UPDATE_UI(menu_PRES_ERASE, MainFrm::OnPresEraseUpdate)
     EVT_UPDATE_UI(menu_PRES_ERASE_ALL, MainFrm::OnPresEraseAllUpdate)
+#endif
 
     EVT_CLOSE(MainFrm::OnClose)
 
@@ -214,8 +218,9 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     
 {
 #ifdef _WIN32
-    SetIcon(wxIcon("aaaaaAven")); // the peculiar name is so that the icon is the first in the file
-                                  // (required by Windows for this type of icon)
+    // The peculiar name is so that the icon is the first in the file
+    // (required by Windows for this type of icon)
+    SetIcon(wxIcon("aaaaaAven")); 
 #endif
 
     InitialisePensAndBrushes();
@@ -256,104 +261,102 @@ void MainFrm::CreateMenuBar()
 {
     // Create the menus and the menu bar.
 
-    // The status bar messages aren't internationalised, 'cos there ain't any
-    // status bar at the moment! ;-)
     wxMenu* filemenu = new wxMenu;
-    filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220), "Open a Survex 3D file for viewing");
+    filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
 #ifdef AVENPRES
-    filemenu->Append(menu_FILE_OPEN_PRES, GetTabMsg(/*Open @Presentation...*/321), "unused");
+    filemenu->Append(menu_FILE_OPEN_PRES, GetTabMsg(/*Open @Presentation...*/321));
 #endif
 #ifdef AVENGL
-    filemenu->Append(menu_FILE_OPEN_TERRAIN, GetTabMsg(/*Open @Terrain...*/329), "unused");
+    filemenu->Append(menu_FILE_OPEN_TERRAIN, GetTabMsg(/*Open @Terrain...*/329));
 #endif
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Exit*/221), "Quit Aven");
+    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Exit*/221));
 
     wxMenu* rotmenu = new wxMenu;
-    rotmenu->Append(menu_ROTATION_START, GetTabMsg(/*@Start Rotation##Return*/230), "Start the survey rotating");
-    rotmenu->Append(menu_ROTATION_STOP, GetTabMsg(/*S@top Rotation##Space*/231), "Stop the survey rotating");
+    rotmenu->Append(menu_ROTATION_START, GetTabMsg(/*@Start Rotation##Return*/230));
+    rotmenu->Append(menu_ROTATION_STOP, GetTabMsg(/*S@top Rotation##Space*/231));
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_SPEED_UP, GetTabMsg(/*Speed @Up##Z*/232), "Speed up rotation of the survey");
-    rotmenu->Append(menu_ROTATION_SLOW_DOWN, GetTabMsg(/*S@low Down##X*/233), "Slow down rotation of the survey");
+    rotmenu->Append(menu_ROTATION_SPEED_UP, GetTabMsg(/*Speed @Up##Z*/232));
+    rotmenu->Append(menu_ROTATION_SLOW_DOWN, GetTabMsg(/*S@low Down##X*/233));
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_REVERSE, GetTabMsg(/*@Reverse Direction##R*/234), "Reverse the direction of rotation");
+    rotmenu->Append(menu_ROTATION_REVERSE, GetTabMsg(/*@Reverse Direction##R*/234));
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_STEP_CCW, GetTabMsg(/*Step Once @Anticlockwise##C*/235), "Rotate the cave one step anticlockwise");
-    rotmenu->Append(menu_ROTATION_STEP_CW, GetTabMsg(/*Step Once @Clockwise##V*/236), "Rotate the cave one step clockwise");
+    rotmenu->Append(menu_ROTATION_STEP_CCW, GetTabMsg(/*Step Once @Anticlockwise##C*/235));
+    rotmenu->Append(menu_ROTATION_STEP_CW, GetTabMsg(/*Step Once @Clockwise##V*/236));
 
     wxMenu* orientmenu = new wxMenu;
-    orientmenu->Append(menu_ORIENT_MOVE_NORTH, GetTabMsg(/*View @North##N*/240), "Move the survey so it aims North");
-    orientmenu->Append(menu_ORIENT_MOVE_EAST, GetTabMsg(/*View @East##E*/241), "Move the survey so it aims East");
-    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, GetTabMsg(/*View @South##S*/242), "Move the survey so it aims South");
-    orientmenu->Append(menu_ORIENT_MOVE_WEST, GetTabMsg(/*View @West##W*/243), "Move the survey so it aims West");
+    orientmenu->Append(menu_ORIENT_MOVE_NORTH, GetTabMsg(/*View @North##N*/240));
+    orientmenu->Append(menu_ORIENT_MOVE_EAST, GetTabMsg(/*View @East##E*/241));
+    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, GetTabMsg(/*View @South##S*/242));
+    orientmenu->Append(menu_ORIENT_MOVE_WEST, GetTabMsg(/*View @West##W*/243));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, GetTabMsg(/*Shift Survey @Left##Left Arrow*/244), "Shift the survey to the left");
-    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, GetTabMsg(/*Shift Survey @Right##Right Arrow*/245), "Shift the survey to the right");
-    orientmenu->Append(menu_ORIENT_SHIFT_UP, GetTabMsg(/*Shift Survey @Up##Up Arrow*/246), "Shift the survey upwards");
-    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, GetTabMsg(/*Shift Survey @Down##Down Arrow*/247), "Shift the survey downwards");
+    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, GetTabMsg(/*Shift Survey @Left##Left Arrow*/244));
+    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, GetTabMsg(/*Shift Survey @Right##Right Arrow*/245));
+    orientmenu->Append(menu_ORIENT_SHIFT_UP, GetTabMsg(/*Shift Survey @Up##Up Arrow*/246));
+    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, GetTabMsg(/*Shift Survey @Down##Down Arrow*/247));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_PLAN, GetTabMsg(/*@Plan View##P*/248), "Switch to plan view");
-    orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation View##L*/249), "Switch to elevation view");
+    orientmenu->Append(menu_ORIENT_PLAN, GetTabMsg(/*@Plan View##P*/248));
+    orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation View##L*/249));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(/*@Higher Viewpoint##'*/250), "Raise the angle of viewing");
-    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*Lo@wer Viewpoint##/ */251), "Lower the angle of viewing");
+    orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(/*@Higher Viewpoint##'*/250));
+    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*Lo@wer Viewpoint##/*/251));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_ZOOM_IN, GetTabMsg(/*@Zoom In##]*/252), "Zoom further into the survey");
-    orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253), "Zoom further out from the survey");
+    orientmenu->Append(menu_ORIENT_ZOOM_IN, GetTabMsg(/*@Zoom In##]*/252));
+    orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault Settings##Delete*/254), "Restore default settings for zoom, scale and rotation");
+    orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault Settings##Delete*/254));
 
     wxMenu* viewmenu = new wxMenu;
-    viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "Toggle display of survey station names", true);
-    viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "Toggle display of crosses at survey stations", true);
-    viewmenu->Append(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297), "unused", true);
+    viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "", true);
+    viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "", true);
+    viewmenu->Append(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297), "", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*Underground Survey @Legs##Ctrl+L*/272), "Toggle display of survey legs", true);
-    viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*Sur@face Survey Legs##Ctrl+F*/291), "unused", true);
+    viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*Underground Survey @Legs##Ctrl+L*/272), "", true);
+    viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*Sur@face Survey Legs##Ctrl+F*/291), "", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SURFACE_DEPTH, GetTabMsg(/*Depth Colours on Surface Surveys*/292), "unused", true);
-    viewmenu->Append(menu_VIEW_SURFACE_DASHED, GetTabMsg(/*Dashed Surface Surveys*/293), "unused", true);
+    viewmenu->Append(menu_VIEW_SURFACE_DEPTH, GetTabMsg(/*Depth Colours on Surface Surveys*/292), "", true);
+    viewmenu->Append(menu_VIEW_SURFACE_DASHED, GetTabMsg(/*Dashed Surface Surveys*/293), "", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names##O*/273), "Toggle display all station names, whether or not they overlap", true);
+    viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names##O*/273), "", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "unused", true);
-    viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight Fi@xed Points*/295), "unused", true);
-    viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight Ex&ported Points*/296), "unused", true);
+    viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
+    viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight Fi@xed Points*/295), "", true);
+    viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight Ex&ported Points*/296), "", true);
     viewmenu->AppendSeparator();
 
 #ifdef AVENPRES
     wxMenu* presmenu = new wxMenu;
-    presmenu->Append(menu_PRES_CREATE, GetTabMsg(/*@Create...*/311), "unused", false);
+    presmenu->Append(menu_PRES_CREATE, GetTabMsg(/*@Create...*/311));
     presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_GO, GetTabMsg(/*@Go*/312), "unused", false);
-    presmenu->Append(menu_PRES_GO_BACK, GetTabMsg(/*@Go Back*/318), "unused", false);
-    presmenu->Append(menu_PRES_RESTART, GetTabMsg(/*Res@tart*/324), "unused", false);
+    presmenu->Append(menu_PRES_GO, GetTabMsg(/*@Go*/312));
+    presmenu->Append(menu_PRES_GO_BACK, GetTabMsg(/*@Go Back*/318));
+    presmenu->Append(menu_PRES_RESTART, GetTabMsg(/*Res@tart*/324));
     presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_RECORD, GetTabMsg(/*@Record Position*/313), "unused", false);
-    presmenu->Append(menu_PRES_FINISH, GetTabMsg(/*@Finish and Save*/314), "unused", false);
+    presmenu->Append(menu_PRES_RECORD, GetTabMsg(/*@Record Position*/313));
+    presmenu->Append(menu_PRES_FINISH, GetTabMsg(/*@Finish and Save*/314));
     presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_ERASE, GetTabMsg(/*@Erase Last Position*/315), "unused", false);
-    presmenu->Append(menu_PRES_ERASE_ALL, GetTabMsg(/*Er@ase All Positions*/316), "unused", false);
+    presmenu->Append(menu_PRES_ERASE, GetTabMsg(/*@Erase Last Position*/315));
+    presmenu->Append(menu_PRES_ERASE_ALL, GetTabMsg(/*Er@ase All Positions*/316));
 #endif
 
     wxMenu* indmenu = new wxMenu;
-    indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "Toggle display of the compass", true);
-    indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "Toggle display of the clinometer", true);
-    indmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "Toggle display of the depth bar", true);
-    indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "Toggle display of the scale bar", true);
-    viewmenu->Append(menu_VIEW_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu, "");
+    indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "", true);
+    indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "", true);
+    indmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "", true);
+    indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "", true);
+    viewmenu->Append(menu_VIEW_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
 #ifdef AVENGL
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*S@moothed Survey Legs*/298), "unused", true);
+    viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*S@moothed Survey Legs*/298), "", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*So@lid Surface*/330), "unused", true);
+    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*So@lid Surface*/330), "", true);
 #endif
 
     wxMenu* ctlmenu = new wxMenu;
-    ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "Reverse the sense of the orientation controls", true);
+    ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "", true);
 
     wxMenu* helpmenu = new wxMenu;
-    helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About Aven...*/290), "Display program information, version number, copyright and licence agreement");
+    helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About Aven...*/290));
 
     wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE);
     menubar->Append(filemenu, GetTabMsg(/*@File*/210));
@@ -383,8 +386,8 @@ void MainFrm::CreateToolBar()
     toolbar->AddTool(menu_FILE_OPEN_PRES, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
 #endif
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation.png"), wxNullBitmap, true,
-                     -1, -1, NULL, "Toggle rotation");
+    toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation.png"),
+		     wxNullBitmap, true, -1, -1, NULL, "Toggle rotation");
     toolbar->AddSeparator();
     toolbar->AddTool(menu_ORIENT_PLAN, TOOLBAR_BITMAP("plan.png"), "Switch to plan view");
     toolbar->AddTool(menu_ORIENT_ELEVATION, TOOLBAR_BITMAP("elevation.png"), "Switch to elevation view");
@@ -857,8 +860,10 @@ void MainFrm::FillTree()
             // no need to fiddle with branches...
         }
         // If not, then see if we've descended to a new prefix.
-        else if (prefix.Length() > current_prefix.Length() && prefix.StartsWith(current_prefix) &&
-                 (prefix[current_prefix.Length()] == '.' || current_prefix == "")) {
+        else if (prefix.Length() > current_prefix.Length() &&
+		 prefix.StartsWith(current_prefix) &&
+                 (prefix[current_prefix.Length()] == '.' ||
+		  current_prefix == "")) {
             // We have, so start as many new branches as required.
             int current_prefix_length = current_prefix.Length();
             current_prefix = prefix;
@@ -1189,7 +1194,7 @@ void MainFrm::OnAbout(wxCommandEvent&)
     dlg->ShowModal();
 }
 
-void MainFrm::GetColour(int band, Double& r, Double& g, Double& b)
+void MainFrm::GetColour(int band, Double& r, Double& g, Double& b) const
 {
     assert(band >= 0 && band < NUM_DEPTH_COLOURS);
     r = Double(REDS[band]) / 255.0;
@@ -1283,6 +1288,7 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
     m_Dist3->SetLabel("");
 }
 
+#ifdef AVENPRES
 void MainFrm::OnPresCreate(wxCommandEvent& event)
 {
 #ifdef __WXMOTIF__
@@ -1382,12 +1388,14 @@ void MainFrm::OnOpenPres(wxCommandEvent& event)
         m_Recording = false;
     }
 }
+#endif
 
 void MainFrm::OnFileOpenTerrainUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(m_File != "");
 }
 
+#ifdef AVENPRES
 void MainFrm::OnOpenPresUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(m_File != "");
@@ -1432,6 +1440,7 @@ void MainFrm::OnPresEraseAllUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(m_PresLoaded && m_Recording); //--Pres: FIXME
 }
+#endif
 
 void MainFrm::OnFind(wxCommandEvent& event)
 {

@@ -248,7 +248,9 @@ public:
     ~MainFrm();
 
     void OpenFile(const wxString& file, wxString survey = "", bool delay = true);
+#ifdef AVENPRES
     void OnOpenPresUpdate(wxUpdateUIEvent& event);
+#endif
     void OnFileOpenTerrainUpdate(wxUpdateUIEvent& event);
 
     void OnFind(wxCommandEvent& event);
@@ -256,9 +258,12 @@ public:
 
     void OnOpen(wxCommandEvent& event);
     void OnFileOpenTerrain(wxCommandEvent& event);
+#ifdef AVENPRES
     void OnOpenPres(wxCommandEvent& event);
+#endif
     void OnQuit(wxCommandEvent& event);
 
+#ifdef AVENPRES
     void OnPresCreate(wxCommandEvent& event);
     void OnPresGo(wxCommandEvent& event);
     void OnPresGoBack(wxCommandEvent& event);
@@ -276,6 +281,7 @@ public:
     void OnPresRecordUpdate(wxUpdateUIEvent& event);
     void OnPresEraseUpdate(wxUpdateUIEvent& event);
     void OnPresEraseAllUpdate(wxUpdateUIEvent& event);
+#endif
 
     void OnAbout(wxCommandEvent& event);
     void OnClose(wxCloseEvent&);
@@ -371,95 +377,99 @@ public:
 #endif
     // end of horrible bodges
 
-    Double GetXExtent() { return m_XExt; }
-    Double GetYExtent() { return m_YExt; }
-    Double GetZExtent() { return m_ZExt; }
-    Double GetXMin()    { return m_XMin; }
-    Double GetYMin()    { return m_YMin; }
-    Double GetYMax()    { return m_YMin + m_YExt; }
-    Double GetZMin()    { return m_ZMin; }
-    Double GetZMax()    { return m_ZMin + m_ZExt; }
+    Double GetXExtent() const { return m_XExt; }
+    Double GetYExtent() const { return m_YExt; }
+    Double GetZExtent() const { return m_ZExt; }
+    Double GetXMin() const { return m_XMin; }
+    Double GetYMin() const { return m_YMin; }
+    Double GetYMax() const { return m_YMin + m_YExt; }
+    Double GetZMin() const { return m_ZMin; }
+    Double GetZMax() const { return m_ZMin + m_ZExt; }
 
-    int GetTerrainXSize() { return m_TerrainSize.x; }
-    int GetTerrainYSize() { return m_TerrainSize.y; }
+    int GetTerrainXSize() const { return m_TerrainSize.x; }
+    int GetTerrainYSize() const { return m_TerrainSize.y; }
 
-    Double GetTerrainMinX() { return m_TerrainExtents.xmin; }
-    Double GetTerrainMaxX() { return m_TerrainExtents.xmax; }
-    Double GetTerrainMinY() { return m_TerrainExtents.ymin; }
-    Double GetTerrainMaxY() { return m_TerrainExtents.ymax; }
-    Double GetTerrainMinZ() { return m_TerrainExtents.zmin; }
-    Double GetTerrainMaxZ() { return m_TerrainExtents.zmax; }
+    Double GetTerrainMinX() const { return m_TerrainExtents.xmin; }
+    Double GetTerrainMaxX() const { return m_TerrainExtents.xmax; }
+    Double GetTerrainMinY() const { return m_TerrainExtents.ymin; }
+    Double GetTerrainMaxY() const { return m_TerrainExtents.ymax; }
+    Double GetTerrainMinZ() const { return m_TerrainExtents.zmin; }
+    Double GetTerrainMaxZ() const { return m_TerrainExtents.zmax; }
 
-    Double GetTerrainXSquareSize() { return (m_TerrainExtents.xmax - m_TerrainExtents.xmin) /
-	                                    m_TerrainSize.x; }
-    Double GetTerrainYSquareSize() { return (m_TerrainExtents.ymax - m_TerrainExtents.ymin) /
-	                                    m_TerrainSize.y; }
+    Double GetTerrainXSquareSize() const {
+	return (m_TerrainExtents.xmax - m_TerrainExtents.xmin)
+		/ m_TerrainSize.x;
+    }
+    Double GetTerrainYSquareSize() const {
+	return (m_TerrainExtents.ymax - m_TerrainExtents.ymin)
+		/ m_TerrainSize.y;
+    }
 
-    Double GetTerrainHeight(int x, int y) {
+    Double GetTerrainHeight(int x, int y) const {
 	assert(x >= 0 && x < m_TerrainSize.x);
 	assert(y >= 0 && y < m_TerrainSize.y);
 
 	return m_TerrainGrid[x + m_TerrainSize.x * y];
     }
 
-    int GetNumLegs()   { return m_NumLegs; }
-    int GetNumPoints() { return m_NumPoints; }
-    int GetNumCrosses() { return m_NumCrosses; }
+    int GetNumLegs() const { return m_NumLegs; }
+    int GetNumPoints() const { return m_NumPoints; }
+    int GetNumCrosses() const { return m_NumCrosses; }
 
-    int GetNumDepthBands() { return NUM_DEPTH_COLOURS; }
+    int GetNumDepthBands() const { return NUM_DEPTH_COLOURS; }
 
-    wxPen GetPen(int band) {
+    wxPen GetPen(int band) const {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
         return m_Pens[band];
     }
 
-    wxBrush GetBrush(int band) {
+    wxBrush GetBrush(int band) const {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
         return m_Brushes[band];
     }
 
-    void GetColour(int band, Double& r, Double& g, Double& b);
+    void GetColour(int band, Double& r, Double& g, Double& b) const;
 
-    wxPen GetSurfacePen() { return m_Pens[NUM_DEPTH_COLOURS]; }
+    wxPen GetSurfacePen() const { return m_Pens[NUM_DEPTH_COLOURS]; }
 
-    int GetNumFixedPts() { return m_NumFixedPts; }
-    int GetNumExportedPts() { return m_NumExportedPts; }
-    int GetNumEntrances() { return m_NumEntrances; }
+    int GetNumFixedPts() const { return m_NumFixedPts; }
+    int GetNumExportedPts() const { return m_NumExportedPts; }
+    int GetNumEntrances() const { return m_NumEntrances; }
 
     void ClearCoords();
     void SetCoords(Double x, Double y);
 
-    Double GetXOffset() { return m_Offsets.x; }
-    Double GetYOffset() { return m_Offsets.y; }
-    Double GetZOffset() { return m_Offsets.z; }
+    Double GetXOffset() const { return m_Offsets.x; }
+    Double GetYOffset() const { return m_Offsets.y; }
+    Double GetZOffset() const { return m_Offsets.z; }
 
     void SetMouseOverStation(LabelInfo* label);
 
-    list<PointInfo*>::iterator GetPointsNC(int band) {
+    list<PointInfo*>::iterator GetPointsNC(int band) const {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
         return m_Points[band].begin();
     }
 
-    list<PointInfo*>::iterator GetPointsEndNC(int band) {
+    list<PointInfo*>::iterator GetPointsEndNC(int band) const {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
         return m_Points[band].end();
     }
 
-    list<PointInfo*>::const_iterator GetPoints(int band) {
+    list<PointInfo*>::const_iterator GetPoints(int band) const {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
         return m_Points[band].begin();
     }
 
-    list<LabelInfo*>::const_iterator GetLabels() {
+    list<LabelInfo*>::const_iterator GetLabels() const {
         return m_Labels.begin();
     }
 
-    list<PointInfo*>::const_iterator GetPointsEnd(int band) {
+    list<PointInfo*>::const_iterator GetPointsEnd(int band) const {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
         return m_Points[band].end();
     }
 
-    list<LabelInfo*>::const_iterator GetLabelsEnd() {
+    list<LabelInfo*>::const_iterator GetLabelsEnd() const {
         return m_Labels.end();
     }
 
