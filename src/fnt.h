@@ -19,7 +19,7 @@
  
      For further information visit http://plib.sourceforge.net
 
-     $Id: fnt.h,v 1.1.2.3 2003-11-25 03:59:15 olly Exp $
+     $Id: fnt.h,v 1.1.2.4 2003-12-03 16:21:40 olly Exp $
 */
 
 
@@ -98,4 +98,3 @@ class fntTexFont {
 };
 
 #endif
-

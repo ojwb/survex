@@ -35,4 +35,3 @@ enum LockFlags {
 };
 
 #endif
-

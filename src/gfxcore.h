@@ -382,4 +382,3 @@ private:
 };
 
 #endif
-
