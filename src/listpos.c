@@ -34,8 +34,6 @@
 #include "listpos.h"
 #include "out.h"
 
-static void p_pos(prefix *);
-
 /* Traverse prefix tree depth first starting at from, and
  * calling function fn at each node */
 static void
@@ -64,43 +62,6 @@ traverse_prefix_tree(prefix *from, void (*fn)(prefix *))
    }
 }
 
-static FILE *fhPosList;
-
-extern void
-list_pos(prefix *from)
-{
-   fhPosList = safe_fopen_with_ext(fnm_output_base, EXT_SVX_POS, "w");
-
-   /* Output headings line */
-   fputsnl(msg(/*( Easting, Northing, Altitude )*/195), fhPosList);
-
-   traverse_prefix_tree(from, p_pos);
-
-   fclose(fhPosList);
-}
-
-static void
-p_pos(prefix *p)
-{
-#if PRINT_STN_POS_LIST
-   /* check it's not just a stem node, and that the station is fixed */
-   if (p->pos && pfx_fixed(p)) {
-# ifdef PRINT_STN_ORDER
-      /* NB this patch from Leandro Dybal Bertoni <LEANDRO@trieste.fapesp.br>
-       * will confuse diffpos a lot so is off by default */
-      int shape = p->shape;
-      fprintf(fhPosList, "%2d (%8.2f, %8.2f, %8.2f ) ",
-	      shape, p->pos->p[0], p->pos->p[1], p->pos->p[2]);
-# else
-      fprintf(fhPosList, "(%8.2f, %8.2f, %8.2f ) ",
-	      p->pos->p[0], p->pos->p[1], p->pos->p[2]);
-# endif
-      fprint_prefix(fhPosList, p);
-      fputnl(fhPosList);
-   }
-#endif
-}
-
 #if NODESTAT
 static int *cOrder;
 static int icOrderMac;
@@ -108,21 +69,26 @@ static int icOrderMac;
 static void
 node_stat(prefix *p)
 {
-   if (p->pos && pfx_fixed(p)) {
-      int order = p->shape;
+   if (p->pos) {
+      int order;
+      ASSERT(pfx_fixed(p));
+
+      order = p->shape;
       if (order >= icOrderMac) {
 	 int c = order * 2;
 	 cOrder = osrealloc(cOrder, c * ossizeof(int));
 	 while (icOrderMac < c) cOrder[icOrderMac++] = 0;
       }
       cOrder[order]++;
+
       if (TSTBIT(p->sflags, SFLAGS_SUSPECTTYPO)) {
 	 warning(/*Station `%s' referred to just once, with an explicit prefix - typo?*/70,
 		 sprint_prefix(p));
       }
+
       /* Don't need to worry about export violations in hanging surveys -
-       * if there are hanging surveys then we give up in
-       * replace_trailing_travs() and never get here... */
+       * if there are hanging surveys then we give up in articulate()
+       * and never get here... */
       if (fExportUsed) {
 #if 0
 	 printf("L min %d max %d pfx %s\n",
@@ -167,7 +133,7 @@ print_node_stats(FILE *fh)
    int c;
    node_stats(root);
    for (c = 0; c < icOrderMac; c++) {
-      if (cOrder[c]>0) {
+      if (cOrder[c] > 0) {
 	 char buf[256];
 	 sprintf(buf, "%4d %d-%s.", cOrder[c], c,
 		 msg(cOrder[c] == 1 ? /*node*/176 : /*nodes*/177));

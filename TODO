@@ -28,7 +28,7 @@ use "highest" title
 Tests these commands:
  DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET TITLE
 
-If there are errors, existing .pos and .inf files aren't removed, but
+If there are errors, existing .inf file isn't removed, but
 existing .3d and .err files are...
 
 Default variance for topofil counter? (currently same as that of tape)
@@ -193,35 +193,6 @@ check line numbers with interleaved data (seem to be one too low).
 
 Maybe station lists should know how long they are?
 
-What about a better collating order for stations?  But rather than
-doing this in cavern, it's probably better to do it as a sort before
-presentation...  Here's a first stab at some code:
-/* We ideally want a collating order where "2" sorts before "10"
- * (and "10a" sorts between "10" and "11").
- * So we want an compare cmp(A,B) s.t.
- * 1) cmp(A,A) = 0
- * 2) cmp(A,B) < 0 iff cmp(B,A) > 0
- * 3) cmp(A,B) > 0 and cmp(B,C) > 0 => cmp(A,C) > 0
- * 4) cmp(A,B) = 0 iff strcmp(A,B) = 0 (e.g. "001" and "1" are not equal)
- */
-/* FIXME: is this ordering OK? */
-/* Would also be nice if "xxx2" sorted before "xxx10"... */
-int
-ident_cmp(const char *a, const char *b)
-{
-   if (isdigit(a[0])) {
-      int i;
-      if (!isdigit(b[0])) return -1;
-      /* FIXME: check errno, etc in case out of range */
-      i = strtoul(a, NULL, 10);
-      i -= strtoul(b, NULL, 10);
-      if (i) return i;
-   } else if (isdigit(b[0])) {
-      return 1;
-   }
-   return strcmp(a,b);
-}
-
 translate diffpos, sorterr, etc
 
 tests for direction - should direction work in non-interleaved data?
@@ -264,8 +235,7 @@ leg and station "comments":
 comment can be omitted "-" or not present if at end of line...?
 commentall?
 
-pos files should be generated from .3d by a small utility, and diffpos
-should work on .3d files (diff3d).
+diffpos should work on .3d files (diff3d).
 
 Date: Wed, 18 Jul 20001
 From: Olly

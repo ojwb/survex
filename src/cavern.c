@@ -134,7 +134,7 @@ static struct help_msg help[] = {
    {'a',                        "output ascii variant of .3d file"},
    {HLP_ENCODELONG(2),          "set location for output files"},
    {HLP_ENCODELONG(3),          "only show brief summary (-qq for errors only)"},
-   {HLP_ENCODELONG(4),          "do not create .pos, .inf, or .err files"},
+   {HLP_ENCODELONG(4),          "do not create .inf or .err files"},
 #ifdef NEW3DFORMAT
    {HLP_ENCODELONG(5),          "output data in 3dx format"},
 #endif
@@ -319,9 +319,6 @@ main(int argc, char **argv)
    }
 #endif
    if (fhErrStat) fclose(fhErrStat);
-
-   if (!fSuppress && !(msg_errors || (f_warnings_are_errors && msg_warnings)))
-      list_pos(root); /* produce .pos file */
 
    out_current_action(msg(/*Calculating statistics*/120));
    do_stats();

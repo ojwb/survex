@@ -17,7 +17,7 @@ PRINT = printdm printps printpcl printhpgl
 
 EXTRA_PROGRAMS = caverot xcaverot printxbm printwin aven
 bin_PROGRAMS = cavern $(PRINT) diffpos extend survex cad3d sorterr \
- @CAVEROT@ @AVEN@ @PRINTWIN@
+ 3dtopos @CAVEROT@ @AVEN@ @PRINTWIN@
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
 
@@ -68,6 +68,7 @@ xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
 diffpos_SOURCES = diffpos.c $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
+3dtopos_SOURCES = 3dtopos.c img.c useful.c $(COMMONSRC)
 extend_SOURCES = extend.c $(COMMONSRC) useful.c img.c
 
 cad3d_SOURCES = 3dtodxf.c $(COMMONSRC) useful.c img.c
