@@ -47,7 +47,7 @@ aclocal
 autoheader
 automake -a
 autoconf
-if ! ./configure ; then
+if ! ./configure CC=gcc-3.2 CXX=g++-3.2 ; then
    echo configure failed
    exit 1
 fi

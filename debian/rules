@@ -30,7 +30,8 @@ ifneq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 STRIP=/bin/echo
 endif
 
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex CFLAGS=$(CFLAGS) STRIP=$(STRIP)
+	# need to use GCC 3.2 to link against wxgtk-2.4
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex CFLAGS=$(CFLAGS) STRIP=$(STRIP) CC=gcc-3.2 CXX=g++-3.2
 	$(MAKE)
 ifeq	($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
 	$(MAKE) check
