@@ -347,12 +347,7 @@ replace_travs(void)
    double eTot, lenTrav, lenTot;
    double eTotTheo;
    double vTot, vTotTheo, hTot, hTotTheo;
-#ifdef NO_COVARIANCES
-   d sc;
-#else
-   var sc;
-#endif
-   d e;
+   d e, sc;
    bool fEquate; /* used to indicate equates in output */
    int cLegsTrav;
    prefix *nmPrev;
@@ -459,24 +454,14 @@ replace_travs(void)
 	 hTot = vTot = 0.0;
 	 ASSERT(data_here(stn1->leg[i]));
 	 if (fZero(&stn1->leg[i]->v)) {
-#ifdef NO_COVARIANCES
 	    sc[0] = sc[1] = sc[2] = 0.0;
-#else
-	    sc[0][0] = sc[1][0] = sc[2][0] = 0.0;
-	    sc[0][1] = sc[1][1] = sc[2][1] = 0.0;
-	    sc[0][2] = sc[1][2] = sc[2][2] = 0.0;
-#endif
 	 } else {
 	    subdd(&e, &POSD(stn2), &POSD(stn1));
 	    subdd(&e, &e, &stn1->leg[i]->d);
 	    eTot = sqrdd(e);
 	    hTot = sqrd(e[0]) + sqrd(e[1]);
 	    vTot = sqrd(e[2]);
-#ifdef NO_COVARIANCES
 	    divdv(&sc, &e, &stn1->leg[i]->v);
-#else
-	    invert_var(&sc, &stn1->leg[i]->v); /* FIXME: check non-singular */
-#endif
 	 }
 #ifndef NO_COVARIANCES
 	 /* FIXME what about covariances? */
@@ -556,19 +541,11 @@ replace_travs(void)
 	    
 	    add_stn_to_list(&stnlist, stn3);
 
-#ifdef NO_COVARIANCES
-	    mulvd(&e, &leg->v, &sc);
-	    adddd(&POSD(stn3), &POSD(stn3), &e);
-#else
-	      {
-		 var tmp;
-		 d tmp2;
-		 mulvv(&tmp, &leg->v, &sc);
-		 mulvd(&tmp2, &tmp, &e);
-		 adddd(&POSD(stn3), &POSD(stn3), &tmp2);
-	      }
-#endif
-	    if (!fZero(&leg->v)) fEquate = fFalse;
+	    if (!fZero(&leg->v)) {
+	       fEquate = fFalse;
+	       mulvd(&e, &leg->v, &sc);
+	       adddd(&POSD(stn3), &POSD(stn3), &e);
+	    }
 	    fix(stn3);
 #ifdef NEW3DFORMAT
 	    if (stn3->name->pos->id == 0) cave_write_stn(stn3);
