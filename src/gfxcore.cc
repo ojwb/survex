@@ -1133,6 +1133,8 @@ bool GfxCore::Animate()
 	    t -= next_mark_time;
 	    SetView(next_mark);
 	    PresentationMark prev_mark = next_mark;
+	    if (prev_mark.angle < 0) prev_mark.angle += M_PI * 2;
+	    else if (prev_mark.angle >= M_PI * 2) prev_mark.angle -= M_PI * 2;
 	    next_mark = m_Parent->GetPresMark(MARK_NEXT);
 	    if (!next_mark.is_valid()) {
 		presentation_mode = 0;
