@@ -3,18 +3,6 @@
  * Copyright (C) 1993,1994,1995,1997 Olly Betts
  */
 
-/*
-1993.08.13 fettled header
-1994.03.19 added CROSS
-1994.03.28 pData passed rather than global
-           added lplot*()
-1994.03.29 moved ?plot*() to caverot.h
-1994.03.30 moved arc specific stuff from caverot.h to here
-1994.09.23 sliding point implemented
-1995.01.24 removed CROSS
-1997.05.29 STOP changed from -1 to 0
-*/
-
 #define Y_UP 1 /* Arc has Y increasing up screen */
 
 typedef int coord;  /* type of data used once data is read in */

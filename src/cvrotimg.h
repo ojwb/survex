@@ -5,9 +5,4 @@
  * Copyright (C) 1994,1997 Olly Betts
  */
 
-/*
-1994.06.20 created
-1997.06.03 filename is now const char *
-*/
-
-extern bool load_data( const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns );
+extern bool load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns);
