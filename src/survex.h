@@ -103,7 +103,13 @@
 1996.03.23 settings.Translate is now a pointer, and point one element in
 1996.04.04 NOP introduced
 1996.04.15 SPECIAL_POINT -> SPECIAL_DECIMAL
+1996.06.10 Next and Back added to datum list
+1996.06.25 typo
+1996.11.03 style functions now take an integer argument (action code)
+1997.07.17 fixed up Style typedef
 1997.08.22 v[] -> var[] and added covariances too
+1997.08.24 merged development branches
+           Unique -> Truncate
 */
 
 #include <stdio.h>
@@ -118,9 +124,6 @@
 
 #ifndef SURVEX_H
 #define SURVEX_H
-
-/* Max number of significant chars in each level of survey station name */
-#define IDENT_LEN 12
 
 /* set this to 1 to force an explicit fixed flag to be used in each pos
  * struct, rather than using p[0]==UNFIXED_VAL to indicate unfixed-ness.
@@ -165,9 +168,6 @@ typedef double real; /* so we can change the precision used easily */
 
 /* Types */
 
-/* one part of a station name */
-typedef char id[IDENT_LEN];
-
 typedef enum { Q_NULL=-1, Q_LENGTH, Q_DEPTH,
   Q_DX, Q_DY, Q_DZ, Q_LENGTHOUTPUT,
   Q_COUNT, Q_BEARING, Q_ANGLEOUTPUT,
@@ -189,6 +189,9 @@ typedef enum { UNITS_NULL=-1, UNITS_METRES, UNITS_FEET, UNITS_YARDS,
 /* enumeration of field types */
 typedef enum { End=0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
   FrDepth, ToDepth, dx, dy, dz, FrCount, ToCount, dr,
+#ifdef SVX_MULTILINEDATA
+  Next, Back,
+#endif
   Ignore, IgnoreAll } datum;
 /* assert(IgnoreAll<32); */
 /* dr, Comp, dz give CYLPOL style */
@@ -196,7 +199,11 @@ typedef enum { End=0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
 /* typedef enum {NORMAL,CARTES,DIVING,TOPFIL,CYLPOL} style; */
 
 /* type of a function to read in some data style */
+#ifdef SVX_MULTILINEDATA
+typedef void (*style)(int);
+#else
 typedef void (*style)(void);
+#endif
 
 /* Structures */
 
@@ -205,13 +212,17 @@ typedef struct Prefix {
  struct Prefix *up,*down,*right;
  struct Node   *stn;
  struct Pos    *pos;
- id             ident;
+ char *ident;
 } prefix;
 
 /* variance */
+#ifdef NO_COVARIANCES
+typedef real var[3];
+#else
 typedef real var[3][3];
+#endif
 
-/* postion or length vector */
+/* position or length vector */
 typedef real d[3];
 
 /* stuff stored for both forward & reverse legs */
@@ -276,7 +287,7 @@ typedef struct Inst {
 
 /* various settings preserved by *BEGIN and *END */
 typedef struct Settings {
- uchar                    Unique;
+ int                      Truncate;
  bool                     fAscii;
  bool                     f90Up;
  enum {OFF,LOWER,UPPER}   Case;
