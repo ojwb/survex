@@ -984,8 +984,10 @@ void MainFrm::IntersectLineWithPlane(Double x0, Double y0, Double z0,
     assert(z1 - z0 != 0.0);
 
     Double t = (z - z0) / (z1 - z0);
-    x = x0 + t*(x1 - x0);
-    y = y0 + t*(y1 - y0);
+    assert(0.0 <= t && t <= 1.0);
+
+    x = x0 + t * (x1 - x0);
+    y = y0 + t * (y1 - y0);
 }
 
 void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
@@ -1003,6 +1005,7 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 	// colour boundary.
 	if (point->isLine) {
 	    assert(prev_point);
+#if 0
 	    int col1 = GetDepthColour(prev_point->z);
 	    int col2 = GetDepthColour(point->z);
 	    if (col1 != col2) {
@@ -1044,14 +1047,16 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 		    m_NumPoints += 2;
 		}
 	    }
+#endif
 
 	    // Add the last point of the (possibly split) leg.
+	    int col2 = 0;
 	    m_Points[col2].push_back(point);
 	}
 	else {
 	    // The first point, a surface point, or another move: put it in the
 	    // correct list according to depth.
-	    int band = GetDepthColour(point->z);
+	    int band = 0; //GetDepthColour(point->z);
 	    m_Points[band].push_back(point);
 	}
 

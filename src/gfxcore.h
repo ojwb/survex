@@ -369,7 +369,12 @@ public:
 
     void DragFinished();
 
-    void AddRectangle(const Vector3 &a, const Vector3 &b, 
+    void SplitLineAcrossBands(int band, int band2,
+	    		      const Vector3 &p, const Vector3 &p2,
+			      Double factor);
+    int GetDepthColour(Double z);
+    Double GetDepthBoundaryBetweenBands(int a, int b);
+    void AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
 		      const Vector3 &c, const Vector3 &d);
 private:
     DECLARE_EVENT_TABLE()

@@ -217,11 +217,13 @@ class MainFrm : public wxFrame {
     void ClearPointLists();
     bool LoadData(const wxString& file, wxString prefix = "");
     void SortIntoDepthBands(list<PointInfo*>& points);
+public: // FIXME bodge for now
     void IntersectLineWithPlane(Double x0, Double y0, Double z0,
 				Double x1, Double y1, Double z1,
 				Double z, Double& x, Double& y);
     Double GetDepthBoundaryBetweenBands(int a, int b);
     int GetDepthColour(Double z);
+private: // FIXME unbodge
     void CentreDataset(Double xmin, Double ymin, Double zmin);
 
     wxString GetTabMsg(int key) {

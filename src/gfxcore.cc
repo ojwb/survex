@@ -2085,8 +2085,7 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
     const GLAPen& pen2 = m_Parent->GetPen(next_band);
     
     Double interval = z_ext / (m_Bands - 1);
-    Double band_start = interval * band;
-    Double into_band = (z_offset - band_start) / interval;
+    Double into_band = z_offset / interval - band;
     
     assert(into_band >= 0.0);
     assert(into_band <= 1.0);
@@ -2106,31 +2105,64 @@ void GfxCore::PlaceVertexWithColour(Double x, Double y, Double z, Double factor)
 
 static const Vector3 light(1.0, 1.0, 1.0);
 
-void GfxCore::AddRectangle(const Vector3 &a, const Vector3 &b, 
+void GfxCore::SplitLineAcrossBands(int band, int band2, const Vector3 &p, const Vector3 &p2,
+		   Double factor)
+{
+    int step = (band < band2) ? 1 : -1;
+    for (int i = band; i != band2; i += step) {
+	Double x, y, z;
+	z = GetDepthBoundaryBetweenBands(i, i + step);
+	m_Parent->IntersectLineWithPlane(p.getX(), p.getY(), p.getZ(),
+		p2.getX(), p2.getY(), p2.getZ(),
+		z, x, y);
+	PlaceVertexWithColour(x, y, z, factor);
+    }
+}
+
+int GfxCore::GetDepthColour(Double z)
+{
+    return m_Parent->GetDepthColour(z + m_Parent->GetZMin() + m_Parent->GetZExtent() / 2);
+}
+
+Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b)
+{
+    return m_Parent->GetDepthBoundaryBetweenBands(a, b)
+	- m_Parent->GetZMin() - m_Parent->GetZExtent() / 2;
+}
+
+void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
 			   const Vector3 &c, const Vector3 &d)
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
     int a_band, b_band, c_band, d_band;
-    // FIXME: Get bands for a, b, c, d
-    a_band = b_band = c_band = d_band = 0;
+    a_band = GetDepthColour(a.getZ());
+    a_band = min(max(a_band, 0), m_Bands);
+    b_band = GetDepthColour(b.getZ());
+    b_band = min(max(b_band, 0), m_Bands);
+    c_band = GetDepthColour(c.getZ());
+    c_band = min(max(c_band, 0), m_Bands);
+    d_band = GetDepthColour(d.getZ());
+    d_band = min(max(d_band, 0), m_Bands);
+    BeginPolygon();
     PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
     if (a_band != b_band) {
-	// FIXME: Add vertices
+	SplitLineAcrossBands(a_band, b_band, a, b, factor);
     }
     PlaceVertexWithColour(b.getX(), b.getY(), b.getZ(), factor);
     if (b_band != c_band) {
-	// FIXME: Add vertices
+	SplitLineAcrossBands(b_band, c_band, b, c, factor);
     }
     PlaceVertexWithColour(c.getX(), c.getY(), c.getZ(), factor);
     if (c_band != d_band) {
-	// FIXME: Add vertices
+	SplitLineAcrossBands(c_band, d_band, c, d, factor);
     }
     PlaceVertexWithColour(d.getX(), d.getY(), d.getZ(), factor);
     if (d_band != a_band) {
-	// FIXME: Add vertices
+	SplitLineAcrossBands(d_band, a_band, d, a, factor);
     }
+    EndPolygon();
 }
 
 void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num_points, const Point* vertices)
@@ -2145,9 +2177,30 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 
 	BeginPolyline();
 	
-	for (int segment = 0; segment < length; segment++) {
+	PlaceVertexWithColour(vertices->x, vertices->y, vertices->z, 1.0);
+	int band = GetDepthColour(vertices->z);
+	++vertices;
+
+	for (int segment = 1; segment < length; segment++) {
+	    int band2 = GetDepthColour(vertices->z);
+	    if (band != band2) {
+		int step = (band < band2) ? 1 : -1;
+		for (int i = band; i != band2; i += step) {
+		    Double x, y, z;
+		    z = GetDepthBoundaryBetweenBands(i, i + step);
+		    m_Parent->IntersectLineWithPlane(vertices[-1].x,
+			    			     vertices[-1].y,
+						     vertices[-1].z,
+						     vertices->x,
+			    			     vertices->y,
+						     vertices->z,
+						     z, x, y);
+		    PlaceVertexWithColour(x, y, z, 1.0);
+		}
+	    }
 	    PlaceVertexWithColour(vertices->x, vertices->y, vertices->z, 1.0);
-	    vertices++;
+	    band = band2;
+	    ++vertices;
 	}
 
 	EndPolyline();
@@ -2169,17 +2222,27 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
             // get the coordinates of this vertex
             Vector3 pt_v(vertices_start->x, vertices_start->y, vertices_start->z);
             vertices_start++;
-/*
-            if (segment != 0) {
-                size = sqrt(sqrd(prev_pt_v.getX() - pt_v.getX()) +
-                            sqrd(prev_pt_v.getY() - pt_v.getY()) +
-                            sqrd(prev_pt_v.getZ() - pt_v.getZ())) / 4;
-            } else {
-                size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
-                            sqrd(vertices_start->y - pt_v.getY()) +
-                            sqrd(vertices_start->z - pt_v.getZ())) / 4;
-            }
-*/
+
+	    if (m_Names) { // FIXME abuse the UI
+		if (segment == 0) {
+		    size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
+				sqrd(vertices_start->y - pt_v.getY()) +
+				sqrd(vertices_start->z - pt_v.getZ()) / 9) / 4;
+		} else if (segment == length - 1) {
+		    size = sqrt(sqrd(prev_pt_v.getX() - pt_v.getX()) +
+				sqrd(prev_pt_v.getY() - pt_v.getY()) +
+				sqrd(prev_pt_v.getZ() - pt_v.getZ()) / 9) / 4;
+		} else {
+		    size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
+				sqrd(vertices_start->y - pt_v.getY()) +
+				sqrd(vertices_start->z - pt_v.getZ()) / 9) / 4;
+		    size += sqrt(sqrd(prev_pt_v.getX() - pt_v.getX()) +
+				sqrd(prev_pt_v.getY() - pt_v.getY()) +
+				sqrd(prev_pt_v.getZ() - pt_v.getZ()) / 9) / 4;
+		    size *= .5;
+		}
+	    }
+
 	    double z_pitch_adjust = 0.0;
             bool cover_end = false;
             
@@ -2215,29 +2278,7 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
                 // obtain a horizontal vector in the LRUD plane
                 right = leg_v * up_v;
 		if (right.magnitude() == 0) {
-		    // Twist alignment by minimum angle required to align
-		    // NSEW (need to do this so pitch orientations match across
-		    // depth bands - FIXME better to produce all these x-sections
-		    // at load time and to handle this when legs are split across
-		    // bands)
-		    Vector3 a(last_right.getX(),
-			      last_right.getY(),
-			      0.0);
-
-		    a.normalise();
-		    double d = dot(a, Vector3(1.0, 0.0, 0.0));
-		    if (d >= M_SQRT1_2) {
-			right = Vector3(1.0, 0.0, 0.0);
-		    } else if (d <= -M_SQRT1_2) {
-			right = Vector3(-1.0, 0.0, 0.0);
-		    } else {
-			d = dot(a, Vector3(0.0, 1.0, 0.0));
-			if (d > 0.0) {
-			    right = Vector3(0.0, 1.0, 0.0);
-			} else {
-			    right = Vector3(0.0, -1.0, 0.0);
-			}
-		    }
+		    right = Vector3(last_right.getX(), last_right.getY(), 0.0);
 		    // obtain a second vector in the LRUD plane, perpendicular
 		    // to the first
 		    up = right * leg_v;
@@ -2276,13 +2317,28 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 			z_pitch_adjust = n.getZ();
 			up = Vector3(0, 0, leg1_v.getZ());
 			up = right * up;
-#if 0
-			// FIXME: total bodge for particular case - want to permute
-			// vertices to minimise the tortional "stress" - perhaps even
-			// using triangles instead of rectangles...
-			swap(u[0], u[2]);
-			swap(u[1], u[3]);
-#endif
+			// Rotate pitch section to minimise the "tortional
+			// stress" - FIXME: use triangles instead of
+			// rectangles?
+			int shift = 0;
+			Double maxdotp, dotp;
+			maxdotp = dot(up - right, u[0]);
+			dotp = dot(up - right, u[1]);
+			if (dotp > maxdotp) { maxdotp = dotp; shift = 1; }
+			dotp = dot(up - right, u[2]);
+			if (dotp > maxdotp) { maxdotp = dotp; shift = 2; }
+			dotp = dot(up - right, u[3]);
+			if (dotp > maxdotp) { maxdotp = dotp; shift = 3; }
+			if (shift) {
+			    Vector3 temp(u[0]);
+			    int j = 0;
+			    for (int i = 0; i < 3; ++i) {
+				int k = (j + shift) % 4;
+				u[j] = u[k];
+				j = k;
+			    }
+			    u[j] = temp;
+			}
 		    } else if (r2.magnitude() == 0) {
 			Vector3 n = leg2_v;
 			n.normalise();
@@ -2312,22 +2368,14 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 	    v[3] = pt_v - right - up;
             
             if (segment > 0) {
-                BeginQuadrilaterals();
-
-		AddRectangle(v[0], u[0], u[1], v[1]);
-		AddRectangle(v[3], v[2], u[2], u[3]);
-		AddRectangle(u[1], u[2], v[2], v[1]);
-		AddRectangle(u[3], u[0], v[0], v[3]);
-                
-                EndQuadrilaterals();
+		AddQuadrilateral(u[0], u[1], v[1], v[0]);
+		AddQuadrilateral(v[3], v[2], u[2], u[3]);
+		AddQuadrilateral(u[1], u[2], v[2], v[1]);
+		AddQuadrilateral(u[3], u[0], v[0], v[3]);
             }
 
             if (cover_end) {
-                BeginQuadrilaterals();
-
-                AddRectangle(v[0], v[1], v[2], v[3]);
-                
-                EndQuadrilaterals();
+                AddQuadrilateral(v[0], v[1], v[2], v[3]);
             }
 
             prev_pt_v = pt_v;
@@ -2338,4 +2386,3 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
         }
     }
 }
-
