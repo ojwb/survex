@@ -170,7 +170,6 @@ extern void
 articulate(void)
 {
    node *stn, *stnStart;
-   node *matrixlist = NULL;
    int i;
 #ifdef DEBUG_ARTIC
    ulong cFixed;
