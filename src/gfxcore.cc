@@ -2282,7 +2282,7 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 		Vector3 normal = (v1 - v2_prev) * (v2 - v1_prev);
 		normal.normalise();
                 Double factor;
-                factor = dot(normal, light) * .375 + .625;
+                factor = dot(normal, light) * .3 + .7;
                 PlaceVertexWithColour(v1.getX(), v1.getY(), v1.getZ(), factor);
                 PlaceVertexWithColour(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ(), factor);
                 PlaceVertexWithColour(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ(), factor);
@@ -2290,7 +2290,7 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 
 		normal = (v3 - v4_prev) * (v4 - v3_prev);
 		normal.normalise();
-                factor = dot(normal, light) * .375 + .625;
+                factor = dot(normal, light) * .3 + .7;
                 PlaceVertexWithColour(v4.getX(), v4.getY(), v4.getZ(), factor);
                 PlaceVertexWithColour(v3.getX(), v3.getY(), v3.getZ(), factor);
                 PlaceVertexWithColour(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ(), factor);
@@ -2298,7 +2298,7 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 
 		normal = (v2 - v3_prev) * (v3 - v2_prev);
 		normal.normalise();
-                factor = dot(normal, light) * .375 + .625;
+                factor = dot(normal, light) * .3 + .7;
                 PlaceVertexWithColour(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ(), factor);
                 PlaceVertexWithColour(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ(), factor);
                 PlaceVertexWithColour(v3.getX(), v3.getY(), v3.getZ(), factor);
@@ -2306,7 +2306,7 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 
 		normal = (v4 - v1_prev) * (v1 - v4_prev);
 		normal.normalise();
-                factor = dot(normal, light) * .375 + .625;
+                factor = dot(normal, light) * .3 + .7;
                 PlaceVertexWithColour(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ(), factor);
                 PlaceVertexWithColour(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ(), factor);
                 PlaceVertexWithColour(v1.getX(), v1.getY(), v1.getZ(), factor);
