@@ -74,6 +74,8 @@ typedef struct pfx {
 
 static pfx **htab;
 
+#define HTAB_SIZE 0x2000
+
 static const char *
 find_prefix(const char *prefix)
 {
@@ -82,7 +84,7 @@ find_prefix(const char *prefix)
 
    SVX_ASSERT(prefix);
 
-   hash = hash_string(prefix) & 0x1fff;
+   hash = hash_string(prefix) & (HTAB_SIZE - 1);
    for (p = htab[hash]; p; p = p->next) {
       if (strcmp(prefix, p->label) == 0) return p->label;
    }
@@ -195,7 +197,11 @@ main(int argc, char **argv)
    putnl();
    puts(msg(/*Reading in data - please wait...*/105));
 
-   htab = osmalloc(ossizeof(pfx*) * 0x2000);
+   htab = osmalloc(ossizeof(pfx*) * HTAB_SIZE);
+   {
+       int i;
+       for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
+   }
 
    do {
       result = img_read_item(pimg, &pt);

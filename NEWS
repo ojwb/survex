@@ -24,6 +24,9 @@
 * cad3d: fixed -e and -r options to not crash (the long versions have always
   worked).
 
+* extend: fixed to initialise an internal structure - failing to do so was
+  probably causing crashes on some platforms.
+
 * Fixed standard graphics for "Note", "Warning", etc in the PostScript manual.
 
 * Documentation updated.
