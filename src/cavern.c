@@ -380,8 +380,8 @@ do_stats(void)
 
    if (!fSuppress && !(msg_errors || (f_warnings_are_errors && msg_warnings)))
       fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
-
-   if (!fh && fMute) return;
+   else
+      if (fMute) return;
 
    if (!fMute) putnl();
 
