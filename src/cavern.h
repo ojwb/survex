@@ -67,7 +67,9 @@ typedef double real; /* so we can change the precision used easily */
 #define SPECIAL_KEYWORD   0x004
 #define SPECIAL_COMMENT   0x008
 #define SPECIAL_OMIT      0x010
+#ifndef NO_DEPRECATED
 #define SPECIAL_ROOT      0x020
+#endif
 #define SPECIAL_SEPARATOR 0x040
 #define SPECIAL_NAMES     0x080
 #define SPECIAL_DECIMAL   0x100
@@ -327,7 +329,9 @@ extern bool fSuppress; /* only output 3d(3dx) file */
 #define isKeywd(c)  (pcs->Translate[(c)] & SPECIAL_KEYWORD)
 #define isComm(c)   (pcs->Translate[(c)] & SPECIAL_COMMENT)
 #define isOmit(c)   (pcs->Translate[(c)] & SPECIAL_OMIT)
+#ifndef NO_DEPRECATED
 #define isRoot(c)   (pcs->Translate[(c)] & SPECIAL_ROOT)
+#endif
 #define isSep(c)    (pcs->Translate[(c)] & SPECIAL_SEPARATOR)
 #define isNames(c)  (pcs->Translate[(c)] & SPECIAL_NAMES)
 #define isDecimal(c) (pcs->Translate[(c)] & SPECIAL_DECIMAL)

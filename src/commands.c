@@ -1286,20 +1286,29 @@ cmd_include(void)
 {
    char *pth, *fnm = NULL;
    int fnm_len;
+#ifndef NO_DEPRECATED
    prefix *root_store;
+#endif
    int ch_store;
 
    pth = path_from_fnm(file.filename);
 
    read_string(&fnm, &fnm_len);
 
+#ifndef NO_DEPRECATED
+   /* Since *begin / *end nesting cannot cross file boundaries we only
+    * need to preserve the prefix if the deprecated *prefix command
+    * can be used */
    root_store = root;
    root = pcs->Prefix; /* Root for include file is current prefix */
+#endif
    ch_store = ch;
 
    data_file(pth, fnm);
 
+#ifndef NO_DEPRECATED
    root = root_store; /* and restore root */
+#endif
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) limb = get_twig(root);
 #endif
