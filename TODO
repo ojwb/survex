@@ -301,3 +301,8 @@ From: Olly
 
 quotes in messages
 
+Date: Mon, 25 Jun 2001
+From: Olly
+
+check return values from fgets(), fread(), etc in img.c and elsewhere.
+
