@@ -168,7 +168,7 @@ default_all(settings *s)
    default_flags(s);
 }
 
-static char *buffer = NULL;
+char *buffer = NULL;
 static int buf_len;
 
 static char *ucbuffer = NULL;

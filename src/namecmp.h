@@ -1,6 +1,6 @@
 /* namecmp.h */
 /* Ordering function for station names */
-/* Copyright (C) 2001 Olly Betts
+/* Copyright (C) 2001,2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 extern "C" {
 #endif
 
-extern int name_cmp(const char *a, const char *b);
+extern int name_cmp(const char *a, const char *b, int separator);
 
 #ifdef __cplusplus
 };

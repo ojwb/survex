@@ -74,8 +74,8 @@ class AvenSplitterWindow : public wxSplitterWindow {
 };
 
 BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
-    // The docs say "EVT_SPLITTER_DOUBLECLICKED" but the headers say
-    // "EVT_SPLITTER_DCLICK"
+    // The wx docs say "EVT_SPLITTER_DOUBLECLICKED" but the wx headers say
+    // "EVT_SPLITTER_DCLICK" (wx docs corrected to agree with headers in 2.3)
 #ifdef EVT_SPLITTER_DOUBLECLICKED
     EVT_SPLITTER_DOUBLECLICKED(-1, AvenSplitterWindow::OnSplitterDClick)
 #else
@@ -363,7 +363,7 @@ void MainFrm::CreateMenuBar()
     wxMenu* viewmenu = new wxMenu;
     viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "", true);
 #ifdef AVENGL
-    viewmenu->Append(menu_VIEW_SHOW_TUBES, GetTabMsg(/*Passage @Tubes*/504), "", true);
+    viewmenu->Append(menu_VIEW_SHOW_TUBES, GetTabMsg(/*Passage @Tubes*/346), "", true);
 #endif
     viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "", true);
     viewmenu->Append(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297), "", true);
@@ -714,6 +714,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	}
     } while (result != img_STOP);
 
+    separator = survey->separator;
     img_close(survey);
 
     // Check we've actually loaded some legs or stations!
@@ -753,7 +754,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_YMin = ymin;
 
     // Sort the labels.
-    m_Labels.sort(LabelCmp());
+    m_Labels.sort(LabelCmp(separator));
 
     // Fill the tree of stations and prefixes.
     FillTree();
@@ -765,7 +766,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // Also sort by leaf name so that we'll tend to choose labels
     // from different surveys, rather than labels from surveys which
     // are earlier in the list.
-    m_Labels.sort(LabelPlotCmp());
+    m_Labels.sort(LabelPlotCmp(separator));
 
     // Sort out depth colouring boundaries (before centering dataset!)
     SortIntoDepthBands(points);
@@ -797,7 +798,7 @@ void MainFrm::FillTree()
 	LabelInfo* label = *pos++;
 
 	// Determine the current prefix.
-	wxString prefix = label->GetText().BeforeLast('.');
+	wxString prefix = label->GetText().BeforeLast(separator);
 
 	// Determine if we're still on the same prefix.
 	if (prefix == current_prefix) {
@@ -806,7 +807,7 @@ void MainFrm::FillTree()
 	// If not, then see if we've descended to a new prefix.
 	else if (prefix.Length() > current_prefix.Length() &&
 		 prefix.StartsWith(current_prefix) &&
-		 (prefix[current_prefix.Length()] == '.' ||
+		 (prefix[current_prefix.Length()] == separator ||
 		  current_prefix == "")) {
 	    // We have, so start as many new branches as required.
 	    int current_prefix_length = current_prefix.Length();
@@ -817,7 +818,7 @@ void MainFrm::FillTree()
 	    int next_dot;
 	    do {
 		// Extract the next bit of prefix.
-		next_dot = prefix.Find('.');
+		next_dot = prefix.Find(separator);
 
 		wxString bit = next_dot == -1 ? prefix : prefix.Left(next_dot);
 		assert(bit != "");
@@ -836,7 +837,8 @@ void MainFrm::FillTree()
 	    size_t count = 0;
 	    bool ascent_only = (prefix.Length() < current_prefix.Length() &&
 				current_prefix.StartsWith(prefix) &&
-				(current_prefix[prefix.Length()] == '.' || prefix == ""));
+				(current_prefix[prefix.Length()] == separator ||
+				 prefix == ""));
 	    if (!ascent_only) {
 		// Find out how much of the current prefix and the new prefix
 		// are the same.
@@ -844,7 +846,7 @@ void MainFrm::FillTree()
 		// between dots!
 		size_t pos = 0;
 		while (prefix[pos] == current_prefix[pos]) {
-		    if (prefix[pos] == '.') count = pos + 1;
+		    if (prefix[pos] == separator) count = pos + 1;
 		    pos++;
 		}
 	    }
@@ -858,7 +860,7 @@ void MainFrm::FillTree()
 	    wxString prefixes_ascended = current_prefix.Mid(count);
 
 	    // Count the number of prefixes to ascend over.
-	    int num_prefixes = prefixes_ascended.Freq('.');
+	    int num_prefixes = prefixes_ascended.Freq(separator);
 
 	    // Reverse up over these prefixes.
 	    for (int i = 1; i <= num_prefixes; i++) {
@@ -874,7 +876,7 @@ void MainFrm::FillTree()
 		// Add branches for this new part.
 		while (1) {
 		    // Extract the next bit of prefix.
-		    int next_dot = new_prefix.Find('.');
+		    int next_dot = new_prefix.Find(separator);
 
 		    wxString bit;
 		    if (next_dot == -1) {
@@ -901,7 +903,7 @@ void MainFrm::FillTree()
 	}
 
 	// Now add the leaf.
-	wxString bit = label->GetText().AfterLast('.');
+	wxString bit = label->GetText().AfterLast(separator);
 	assert(bit != "");
 	wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
 	m_Tree->SetItemData(id, new TreeData(label));
@@ -1573,7 +1575,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
     m_Found->Refresh(); // FIXME
 #endif
     // Re-sort so highlighted points get names in preference
-    if (found) m_Labels.sort(LabelPlotCmp());
+    if (found) m_Labels.sort(LabelPlotCmp(separator));
     m_Gfx->ForceRefresh();
 
 #if 0

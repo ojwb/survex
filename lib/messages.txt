@@ -1400,14 +1400,14 @@ es:130 Calculando la red
 it:130 Sto calcolando la rete
 sk:130 V&yacute;po&ccaron;et siete
 # 131 c.f. 10, 31, 32
-en:131 Found `%c', expecting `F' or `B'
-fr:131 Vous avez &eacute;crit `%c'; on attendait `F' ou `B'
-de:131 `%c' gelesen, `F' oder `B' erwartet
-pt:131 Encontrado `%c' quando `F' ou `B' eram esperados
-ca:131 Trobat `%c', esperant `F' o `B'
-es:131 Encontrado `%c', esperando `F' o `B'
-it:131 Trovato `%c', atteso `F' o `B'
-sk:131 N&aacute;jden&eacute; `%c', o&ccaron;ak&aacute;van&eacute; `F' alebo `B'
+en:131 Found `%s', expecting `F' or `B'
+fr:131 Vous avez &eacute;crit `%s'; on attendait `F' ou `B'
+de:131 `%s' gelesen, `F' oder `B' erwartet
+pt:131 Encontrado `%s' quando `F' ou `B' eram esperados
+ca:131 Trobat `%s', esperant `F' o `B'
+es:131 Encontrado `%s', esperando `F' o `B'
+it:131 Trovato `%s', atteso `F' o `B'
+sk:131 N&aacute;jden&eacute; `%s', o&ccaron;ak&aacute;van&eacute; `F' alebo `B'
 #
 en:132 Total length of survey legs = %7.2fm (%7.2fm adjusted)
 en-us:132 Total length of survey shots = %7.2fm (%7.2fm adjusted)
@@ -3151,6 +3151,8 @@ es:345 g.cent
 #it:345 gradi centesimali
 it:345 g.cent.
 sk:345 gr&aacute;dy
+#
+en:346 Passage @Tubes##Ctrl+T
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

@@ -203,6 +203,7 @@ class MainFrm : public wxFrame {
     wxStaticText* m_Found;
     wxCheckBox* m_RegexpCheckBox;
     wxString m_File;
+    int separator; // character separating survey levels (often '.')
 #ifdef AVENPRES
     FILE* m_PresFP;
     bool m_PresLoaded;

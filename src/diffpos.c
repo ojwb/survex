@@ -70,10 +70,12 @@ typedef struct added {
    char *name;
 } added;
 
+static int old_separator, new_separator, sort_separator;
+
 static int
 cmp_pname(const void *a, const void *b)
 {
-   return name_cmp(*(const char **)a, *(const char **)b);
+   return name_cmp(*(const char **)a, *(const char **)b, sort_separator);
 }
 
 static station **htab;
@@ -167,6 +169,7 @@ tree_check(void)
 	 osfree(old);
       }
       SVX_ASSERT(added_list == NULL);
+      sort_separator = new_separator;
       qsort(names, c_added, sizeof(char *), cmp_pname);
       for (i = 0; i < c_added; i++) {
 	 printf(msg(/*Added: %s*/501), names[i]);
@@ -188,6 +191,7 @@ tree_check(void)
       station *p;
       for (p = htab[i]; p; p = p->next) names[c++] = p->name;
    }
+   sort_separator = old_separator;
    qsort(names, c, sizeof(char *), cmp_pname);
    for (i = 0; i < c; i++) {
       printf(msg(/*Deleted: %s*/502), names[i]);
@@ -196,15 +200,17 @@ tree_check(void)
    return fTrue;
 }
 
-static void
+static int
 parse_file(const char *fnm, const char *survey,
 	   void (*tree_func)(const char *, const img_point *))
 {
    img_point pt;
    int result;
+   int separator;
 
    img *pimg = img_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error(), fnm);
+   separator = pimg->separator;
 
    do {
       result = img_read_item(pimg, &pt);
@@ -222,6 +228,7 @@ parse_file(const char *fnm, const char *survey,
    } while (result != img_STOP);
 
    img_close(pimg);
+   return separator;
 }
 
 int
@@ -252,9 +259,9 @@ main(int argc, char **argv)
 
    tree_init();
 
-   parse_file(fnm1, survey, tree_insert);
+   old_separator = parse_file(fnm1, survey, tree_insert);
 
-   parse_file(fnm2, survey, tree_remove);
+   new_separator = parse_file(fnm2, survey, tree_remove);
 
    return tree_check() ? EXIT_FAILURE : EXIT_SUCCESS;
 }

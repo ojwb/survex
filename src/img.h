@@ -60,6 +60,7 @@ typedef struct {
    int flags;
    char *title;
    char *datestamp;
+   char separator; /* charactor used to separate survey levels ('.' usually) */
    /* all other members are for internal use only */
    FILE *fh;          /* file handle of image file */
    char *label_buf;

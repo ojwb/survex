@@ -1,7 +1,15 @@
-* cavern: fixed a rarely sighted bug which caused eroneous error about some
+* Improved handling of Compass PLT files and CMAP xyz files - no longer change
+  dots to spaces in survey and station names - instead use a space as the
+  separator between survey name and station name.
+  FIXME: don't have sample PLT or XYZ files here - check this works.
+
+* cavern: fixed a rarely sighted bug which caused erroneous error about some
   stations not being attached to a fixed point.
 
 * cavern: fixed clino readings to work in interleaved data.
+
+* cavern: improved error reporting when an invalid value is given for a
+  DIRECTION reading.
 
 * Updated documentation.
 

@@ -1142,22 +1142,31 @@ data_normal(void)
 	  to = read_prefix_stn(fFalse, fFalse);
 	  first_stn = To;
 	  break;
-       case Dir:
-	  /* FIXME: use get_token so we can give a better error if the user
-	   * gives a word rather than "F" or "B" */
-	  switch(toupper(ch)) {
-	   case 'F':
+       case Dir: {
+	  typedef enum {
+	     DIR_NULL=-1, DIR_FORE, DIR_BACK
+	  } dir_tok;
+	  static sztok dir_tab[] = {
+	     {"B",     DIR_BACK},
+	     {"F",     DIR_FORE},
+	  };
+	  dir_tok tok;
+	  get_token();
+	  tok = match_tok(dir_tab, TABSIZE(dir_tab));
+	  switch (tok) {
+	   case DIR_FORE:
 	     break;
-	   case 'B':
+	   case DIR_BACK:
 	     fRev = fTrue;
 	     break;
 	   default:
-	     compile_error_skip(/*Found `%c', expecting `F' or `B'*/131, ch);
+	     compile_error_skip(/*Found `%s', expecting `F' or `B'*/131,
+			        buffer);
 	     process_eol();
 	     return 0;
 	  }
-	  nextch();
 	  break;
+       }
        case Tape:
 	  read_reading(Tape, fFalse);
 	  if (VAL(Tape) < (real)0.0)
