@@ -328,10 +328,12 @@ img_open_survey(const char *fnm, const char *survey)
 	       /* FIXME : if there's only one survey in the file, it'd be nice
 		* to use its description as the title here...
 		*/
+	       ungetc('N', pimg->fh);
 	       pimg->start = fpos;
 	       return pimg;
 	    }
 	    line = getline_alloc(pimg->fh);
+	    len = 0;
 	    while (line[len] > 32) ++len;
 	    if (pimg->survey_len != len ||
 		memcmp(line, pimg->survey, len) != 0) {
@@ -1004,7 +1006,7 @@ img_read_item(img *pimg, img_point *p)
 	    case 'M': case 'D': {
 	       /* Move or Draw */
 	       long fpos = -1;
-	       if (pimg->label_len == 0) {
+	       if (!pimg->survey && pimg->label_len == 0) {
 		  /* We're only holding onto this line in case the first line
 		   * of the 'N' is a 'D', so reprocess this line as an 'X'
 		   * to skip it for now...
@@ -1016,6 +1018,7 @@ img_read_item(img *pimg, img_point *p)
 		  fpos = ftell(pimg->fh) - 1;
 		  fseek(pimg->fh, pimg->start, SEEK_SET);
 		  ch = getc(pimg->fh);
+		  pimg->pending = 0;
 	       }
 	       line = getline_alloc(pimg->fh);
 	       if (sscanf(line, "%lf %lf %lf", &p->x, &p->y, &p->z) != 3) {
@@ -1045,10 +1048,13 @@ img_read_item(img *pimg, img_point *p)
 	       pimg->label = pimg->label_buf;
 	       pimg->label[pimg->label_len] = '.';
 	       memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
-	       pimg->pending = (ch ? img_MOVE : img_LINE) + 4;
 	       osfree(line);
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
-	       if (fpos != -1) fseek(pimg->fh, fpos, SEEK_SET);
+	       if (fpos != -1) {
+		  fseek(pimg->fh, fpos, SEEK_SET);
+	       } else {
+		  pimg->pending = (ch == 'M' ? img_MOVE : img_LINE) + 4;
+	       }
 	       return img_LABEL;
 	    }
 	    case 'X': case 'F': case 'S':
@@ -1058,8 +1064,8 @@ img_read_item(img *pimg, img_point *p)
 	       while (1) {
 		  do {
 		     ch = getc(pimg->fh);
-		  } while (ch != '\n' && ch != '\r');
-		  ch = getc(pimg->fh);
+		  } while (ch != '\n' && ch != '\r' && ch != EOF);
+		  while (ch == '\n' || ch == '\r') ch = getc(pimg->fh);
 		  if (ch == 'N') break;
 		  if (ch == '\x1a' || ch == EOF) return img_STOP;
 	       }
@@ -1237,7 +1243,7 @@ img_close(img *pimg)
 	 }
 	 if (ferror(pimg->fh)) result = 0;
 	 if (fclose(pimg->fh)) result = 0;
-	 img_errno = pimg->fRead ? IMG_READERROR : IMG_WRITEERROR;
+	 if (!result) img_errno = pimg->fRead ? IMG_READERROR : IMG_WRITEERROR;
       }
       osfree(pimg->label_buf);
       osfree(pimg);
