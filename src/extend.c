@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2003 Olly Betts
+ * Copyright (C) 1995-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 #endif
 
 #include <float.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
