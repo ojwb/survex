@@ -21,6 +21,8 @@
 #include <config.h>
 #endif
 
+#include <string.h>
+
 #include "message.h"
 
 #include "cvrotgfx.h"
@@ -213,8 +215,10 @@ int
 cvrotgfx_parse_cmdline(int *pargc, char **argv)
 {
 #ifdef ALLEGRO
-   /* set language for Allegro messages */
    char *p, *q;
+   int fr, to;  
+
+   /* set language for Allegro messages */
    p = osmalloc(10 + strlen(msg_lang));
    sprintf(p, "language=%s", msg_lang);
    q = strchr(p, '-');
@@ -222,9 +226,8 @@ cvrotgfx_parse_cmdline(int *pargc, char **argv)
    set_config_data(p, strlen(p));
    osfree(p);
 
-   int fr, to;  
-   for (fr = 1, to = 1; i < *pargc; fr++) {
-      if (strcmp(argv[fr], "--mode-picker") == 0)) {
+   for (fr = 1, to = 1; fr < *pargc; fr++) {
+      if (strcmp(argv[fr], "--mode-picker") == 0) {
 	  mode_picker = 1;
 	  continue;
       }
