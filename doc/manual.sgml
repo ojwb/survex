@@ -65,7 +65,7 @@ the station 1 of the Adrian's Route survey.
 
 <article Status="draft" id=index>
  <articleinfo>
-  <Title>&survexsuite; 0.99 Manual</Title>
+  <Title>&survexsuite; 1.0.0 Manual</Title>
   <AuthorGroup>
    <Author>
     <FirstName/Olly/
@@ -91,8 +91,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-12-17 11:04:39 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.78 2001-12-17 11:04:39 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-12-23 01:55:44 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.79 2001-12-23 01:55:44 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -721,14 +721,14 @@ your data much as it appears on the survey notes, which is important
 in reducing the opportunities for error.
 </Para>
 
-<Para><!--FIXME rewrite this para-->
-Also all the important characters are user-definable so the separators can be
-spaces and tabs, or commas (e.g.  when exporting from a
-spreadsheet). The decimal point can be a slash (for clarity), a comma
+<Para>
+Also all the important characters are user-definable - for example,
+the separators can be spaces and tabs, or commas (e.g. when exporting from a
+spreadsheet), etc; the decimal point can be a slash (for clarity), a comma
 (as used in continental Europe), or anything else you care to choose.
 This flexibility
 means that it should be possible to read in data from almost any sort of
-survey data file.
+survey data file without much work.
 </Para>
 
 <Para>&survexsuite; places no restrictions on you in terms of the ordering

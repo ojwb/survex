@@ -16,15 +16,6 @@ while (<C>) {
 }
 close C;
 
-open C, "<configure.in" or die $!;
-while (<C>) {
-   if (/^RELEASE\s*=\s*([0-9][0-9]*)/) {
-      $version .= ".$1";
-      last;
-   }
-}
-close C;
-
 open CL, "<debian/changelog" or die $!;
 
 my $date = strftime("%a, %d %b %Y %X %z", localtime);

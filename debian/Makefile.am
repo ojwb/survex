@@ -17,13 +17,13 @@ control: Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $(srcdir)/.
 	echo Package: ${PACKAGE} >> control
 	echo Architecture: any >> control
 	echo 'Depends: $${shlibs:Depends}' >> control
-	echo 'Recommends: survex-aven (= ${VERSION}.@RELEASE@)' >> control
+	echo 'Recommends: survex-aven (= ${VERSION})' >> control
 	echo Description: Cave surveying and mapping software >> control
 	sed 's/^/ /' < $(srcdir)/../desc.txt >> control
 	echo >> control
 	echo Package: survex-aven >> control
 	echo Architecture: any >> control
-	echo 'Depends: survex (= ${VERSION}.@RELEASE@), $${shlibs:Depends}' >> control
+	echo 'Depends: survex (= ${VERSION}), $${shlibs:Depends}' >> control
 	echo Description: Sophisticated cave survey viewer for Survex >> control
 	sed 's/^/ /' < $(srcdir)/../desc-aven.txt >> control
 
