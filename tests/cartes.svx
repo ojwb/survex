@@ -1,0 +1,8 @@
+*fix 1 0 0 0
+*data cartesian from easting northing altitude to
+1 0 1 0 2
+2 1 0 0 3
+
+*data cartesian to from easting northing altitude
+4 3 0 -1 0
+5 4 -1 0 0
