@@ -830,12 +830,12 @@ int main(int argc, char **argv)
 
    /* note down so we can switch to printer charset */
    msg166 = msgPerm(/*Page %d of %d*/166);
-   select_charset(0 /*CHARSET_USASCII*/); /* FIXME could do better and find out what charset actually is */
+   select_charset(CHARSET_USASCII); /* FIXME could do better and find out what charset actually is */
    
    /* used in printer's native charset in footer */
    msg167 = msgPerm(/*Survey '%s'   Page %d (of %d)   Processed on %s*/167);
 
-   old_charset = select_charset(1 /*CHARSET_ISO8859_1*/); /* FIXME */
+   old_charset = select_charset(CHARSET_ISO_8859_1);
    cPagesPrinted = 0;
    page = state = 0;
    p = szPages;
