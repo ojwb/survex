@@ -31,7 +31,7 @@ survex_*.deb
 survex-aven_*.deb
 svxdoc-doswin-*.zip
 svxdoc-riscos-*.zip
-survex-*.spec
+survex.spec
 survex.iss
 ChangeLog
 BUILD

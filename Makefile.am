@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = 1.5 foreign
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
 EXTRA_DIST = $(GNU_FILES) TODO alien.pl survex.iss.in OLDNEWS\
- desc.txt desc-aven.txt
+ desc.txt desc-aven.txt survex.spec
 
 SUBDIRS = . lib src doc tests debian
 
@@ -31,61 +31,8 @@ HACKING: doc/HACKING.htm
 TODO: doc/TODO.htm
 	w3m -dump doc/TODO.htm > TODO
 
-spec = ${PACKAGE}-${VERSION}.spec
-
 rpm : dist
-	echo Summary: Cave Surveying Software > ${spec}
-	echo Name: ${PACKAGE} >> ${spec}
-	echo Vendor: The Survex Project >> ${spec}
-	echo Version: ${VERSION} >> ${spec}
-	echo Release: @RELEASE@ >> ${spec}
-	echo Copyright: GPL >> ${spec}
-	echo Group: Applications/Misc >> ${spec}
-	echo Source: http://www.survex.com/software/${PACKAGE}-${VERSION}.tar.gz >> ${spec}
-	echo URL: http://www.survex.com/ >> ${spec}
-	echo "Packager: Olly Betts <olly@survex.com>" >> ${spec}
-	echo BuildRoot: /var/tmp/%{name}-buildroot >> ${spec}
-	echo >> ${spec}
-	echo %description >> ${spec}
-	cat desc.txt >> ${spec}
-	echo >> ${spec}
-	echo %package aven >> ${spec}
-	echo Summary: Aven viewer for Survex >> ${spec}
-	echo Group: Applications/Misc >> ${spec}
-	echo Requires: survex = ${VERSION} >> ${spec}
-	echo >> ${spec}
-	echo %description aven >> ${spec}
-	cat desc-aven.txt >> ${spec}
-	echo >> ${spec}
-	echo %prep >> ${spec}
-	echo %setup >> ${spec}
-	echo >> ${spec}
-	echo %build >> ${spec}
-	echo ./configure --prefix=/usr >> ${spec}
-	echo make >> ${spec}
-	echo >> ${spec}
-	echo %install >> ${spec}
-	echo rm -rf '$$RPM_BUILD_ROOT' >> ${spec}
-	echo mkdir '$$RPM_BUILD_ROOT' >> ${spec}
-	echo make install-strip 'prefix=$$RPM_BUILD_ROOT/usr' >> ${spec}
-	: # Conform to the FHS
-	echo mv '$$RPM_BUILD_ROOT'/usr/doc '$$RPM_BUILD_ROOT'/usr/share/doc
-	echo mv '$$RPM_BUILD_ROOT'/usr/man '$$RPM_BUILD_ROOT'/usr/share/man
-	echo >> ${spec}
-	echo %clean >> ${spec}
-	echo rm -rf '$$RPM_BUILD_ROOT' >> ${spec}
-	echo >> ${spec}
-	echo %files >> ${spec}
-	echo "%defattr(-,root,root)" >> ${spec}
-	echo %doc @EXTRA_TEXT@ >> ${spec}
-	echo %doc /usr/share/doc/${PACKAGE} >> ${spec}
-	echo %doc /usr/share/man >> ${spec}
-	echo '/usr/bin/[b-zA-Z0-9]*' >> ${spec}
-	echo /usr/share/${PACKAGE} >> ${spec}
-	echo %files aven >> ${spec}
-	echo "%defattr(-,root,root)" >> ${spec}
-	echo /usr/bin/aven >> ${spec}
-	: #
+	: # spec file now produced using AC_OUTPUT
 	echo %_topdir `pwd` > rpmmacros
 	echo %_rpmdir `pwd` >> rpmmacros
 	echo %_sourcedir `pwd` >> rpmmacros
@@ -98,7 +45,7 @@ rpm : dist
 	rm -rf BUILD
 	mkdir BUILD
 	: #
-	rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc ${spec}
+	rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
 
 debian : dist
 	: # overkill maybe - we could probably just use this tree

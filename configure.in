@@ -8,8 +8,8 @@ AC_PREREQ(2.50)
 AC_INIT(src/cavern.c)
 
 # next line is for make_release
-CHANGELOG_FROM_TAG=v1_0_7
-AM_INIT_AUTOMAKE(survex, 1.0.8)
+CHANGELOG_FROM_TAG=v1_0_8
+AM_INIT_AUTOMAKE(survex, 1.0.9)
 RELEASE=1
 
 AC_SUBST(RELEASE)
@@ -391,8 +391,14 @@ AC_SUBST(HTMLFILES)
 EXTRA_TEXT="AUTHORS COPYING NEWS TODO ChangeLog"
 AC_SUBST(EXTRA_TEXT)
 
+AC_SUBST_FILE(DESC)
+DESC=desc.txt
+AC_SUBST_FILE(AVENDESC)
+AVENDESC=desc-aven.txt
+
 AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  tests/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
- doc/version.ent debian/copyright src/borlandc/config.h src/riscos/config.h)
+ doc/version.ent debian/copyright src/borlandc/config.h src/riscos/config.h
+ survex.spec)

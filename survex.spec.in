@@ -1,0 +1,52 @@
+Summary: Cave Surveying Software
+Name: @PACKAGE@
+Vendor: The Survex Project
+Version: @VERSION@
+Release: @RELEASE@
+Copyright: GPL
+Group: Applications/Misc
+Source: http://www.survex.com/software/@VERSION@/@PACKAGE@-@VERSION@.tar.gz
+URL: http://www.survex.com/
+Packager: Olly Betts <olly@survex.com>
+BuildRoot: /var/tmp/%{name}-buildroot
+
+%description
+@DESC@
+
+%package aven
+Summary: Aven viewer for Survex
+Group: Applications/Misc
+Requires: survex = @VERSION@
+
+%description aven
+@AVENDESC@
+
+%prep
+%setup
+
+%build
+./configure --prefix=/usr
+make
+
+%install
+rm -rf '$RPM_BUILD_ROOT'
+mkdir '$RPM_BUILD_ROOT'
+make install-strip 'prefix=$RPM_BUILD_ROOT/usr'
+# Rearrange to conform to the FHS
+mv '$RPM_BUILD_ROOT'/usr/doc '$RPM_BUILD_ROOT'/usr/share/doc
+mv '$RPM_BUILD_ROOT'/usr/man '$RPM_BUILD_ROOT'/usr/share/man
+
+%clean
+rm -rf '$RPM_BUILD_ROOT'
+
+%files
+%defattr(-,root,root)
+%doc @EXTRA_TEXT@
+%doc /usr/share/doc/@PACKAGE@
+%doc /usr/share/man
+/usr/bin/[b-zA-Z0-9]*
+/usr/share/@PACKAGE@
+%files aven
+%defattr(-,root,root)
+/usr/bin/aven
+
