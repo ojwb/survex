@@ -3,21 +3,27 @@ From: Olly
 
 Bugs in wxaven:
 
-leaving "about" box causes a segfault
+leaving "about" box causes a segfault -- FIXED
 
 some shortcuts are missing (space/return/arrowkeys/'/slash/[/]/delete)
 
 doesn't load files from command line
 
-toggle status bar does nothing
+toggle status bar does nothing -- FIXED
 
 ought to have ticks or similar on menu items in view menu
 
-N/S/E/W should select views not move cave
+N/S/E/W should select views not move cave -- FIXED
 
-window close doesn't work
+window close doesn't work -- FIXED
 
 sometimes stops responding
 
 "nasty bodge in event handling code (I'll explain later)"
+
+Date: Tue 27 Mar 2001
+From: Mark
+
+wxaven: terrible slowness during rotation
+about box layout is crap; close button doesn't work
 

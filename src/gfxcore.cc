@@ -815,6 +815,13 @@ void GfxCore::TurnCave(double angle)
     Refresh(false);
 }
 
+void GfxCore::TurnCaveTo(double angle)
+{
+    // Turn the cave to a particular pan angle.
+
+    TurnCave(angle - m_PanAngle);
+}
+
 void GfxCore::TiltCave(double tilt_angle)
 {
     // Tilt the cave by a given angle.
@@ -993,54 +1000,42 @@ void GfxCore::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::OnMoveEast(wxCommandEvent&) 
 {
-    m_Params.translation.x += m_Parent->GetXExtent() / 100.0f;
-    m_RedrawOffscreen = true;
-    SetScale(m_Params.scale);
-    Refresh(false);
+    TurnCaveTo(M_PI / 2.0);
 }
 
 void GfxCore::OnMoveEastUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode);
 }
 
 void GfxCore::OnMoveNorth(wxCommandEvent&) 
 {
-    m_Params.translation.y += m_Parent->GetYExtent() / 100.0f;
-    m_RedrawOffscreen = true;
-    SetScale(m_Params.scale);
-    Refresh(false);
+    TurnCaveTo(0.0);
 }
 
 void GfxCore::OnMoveNorthUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode);
 }
 
 void GfxCore::OnMoveSouth(wxCommandEvent&) 
 {
-    m_Params.translation.y -= m_Parent->GetYExtent() / 100.0f;
-    m_RedrawOffscreen = true;
-    SetScale(m_Params.scale);
-    Refresh(false);
+    TurnCaveTo(M_PI);
 }
 
 void GfxCore::OnMoveSouthUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode);
 }
 
 void GfxCore::OnMoveWest(wxCommandEvent&)
 {
-    m_Params.translation.x -= m_Parent->GetXExtent() / 100.0f;
-    m_RedrawOffscreen = true;
-    SetScale(m_Params.scale);
-    Refresh(false);
+    TurnCaveTo(M_PI * 1.5);
 }
 
 void GfxCore::OnMoveWestUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode);
 }
 
 void GfxCore::StartTimer()

@@ -91,6 +91,7 @@ class MainFrm : public wxFrame {
     GfxCore* m_Gfx;
     wxPen* m_Pens;
     wxBrush* m_Brushes;
+    wxStatusBar* m_StatusBar; // NULL if status bar shown, otherwise pointer to hidden bar.
 
     void ClearPointLists();
     bool LoadData(const wxString& file);
@@ -176,6 +177,9 @@ public:
     void OnViewCompass(wxCommandEvent& event) { assert(m_Gfx); m_Gfx->OnViewCompass(event); }
     void OnReverseDirectionOfRotation(wxCommandEvent& event) { assert(m_Gfx); m_Gfx->OnReverseDirectionOfRotation(event); }
     // end of horrible bodges
+
+    void OnToggleStatusbar(wxCommandEvent& event);
+    void OnToggleStatusbarUpdate(wxUpdateUIEvent& event);
 
     float GetXExtent() { return m_XExt; }
     float GetYExtent() { return m_YExt; }

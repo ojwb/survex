@@ -150,7 +150,8 @@ class GfxCore : public wxWindow {
 
     void TiltCave(double tilt_angle);
     void TurnCave(double angle);
-    
+    void TurnCaveTo(double angle);
+
     void StartTimer();
     void StopTimer();
     

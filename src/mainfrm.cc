@@ -68,7 +68,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_COMPASS, MainFrm::OnViewCompass)
     EVT_MENU(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbar)
     EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
-//    EVT_MENU(menu_VIEW_STATUS_BAR, MainFrm::)
+    EVT_MENU(menu_VIEW_STATUS_BAR, MainFrm::OnToggleStatusbar)
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_CTL_CAVEROT_MID, MainFrm::OnOriginalCaverotMouse)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
@@ -102,13 +102,13 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_COMPASS, MainFrm::OnViewCompassUpdate)
     EVT_UPDATE_UI(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
     EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
-//    EVT_UPDATE_UI(menu_VIEW_STATUS_BAR, MainFrm::Update)
+    EVT_UPDATE_UI(menu_VIEW_STATUS_BAR, MainFrm::OnToggleStatusbarUpdate)
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
     EVT_UPDATE_UI(menu_CTL_CAVEROT_MID, MainFrm::OnOriginalCaverotMouseUpdate)
 END_EVENT_TABLE()
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
-    wxFrame(NULL, 101, title, pos, size), m_Gfx(NULL)
+    wxFrame(NULL, 101, title, pos, size), m_Gfx(NULL), m_StatusBar(NULL)
 {
     m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS];
     m_Pens = new wxPen[NUM_DEPTH_COLOURS];
@@ -142,10 +142,10 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 		    "Rotate the cave one step clockwise");
 
     wxMenu* orientmenu = new wxMenu;
-    orientmenu->Append(menu_ORIENT_MOVE_NORTH, "Move &North\tN", "Move the survey northwards");
-    orientmenu->Append(menu_ORIENT_MOVE_EAST, "Move &East\tE", "Move the survey eastwards");
-    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, "Move &South\tS", "Move the survey southwards");
-    orientmenu->Append(menu_ORIENT_MOVE_WEST, "Move &West\tW", "Move the survey westwards");
+    orientmenu->Append(menu_ORIENT_MOVE_NORTH, "&North Upwards\tN", "Move the survey so North is up the screen.");
+    orientmenu->Append(menu_ORIENT_MOVE_EAST, "&East Upwards\tE", "Move the survey so East is up the screen.");
+    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, "&South Upwards\tS", "Move the survey so South is up the screen.");
+    orientmenu->Append(menu_ORIENT_MOVE_WEST, "&West Upwards\tW", "Move the survey so West is up the screen");
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_SHIFT_LEFT, "Shift Survey &Left\tLeft Arrow",
 		       "Shift the survey to the left");
@@ -453,7 +453,7 @@ bool MainFrm::LoadData(const wxString& file)
 	// Update status bar.
 	wxString numlegs_str = wxString::Format(wxString("%d"), m_NumLegs);
 	SetStatusText(numlegs_str + wxString(" legs loaded from ") + file);
-
+	
 	// Update window title.
 	SetTitle(wxString("Aven - [") + file + wxString("]"));
     }
@@ -652,47 +652,72 @@ void MainFrm::OnQuit(wxCommandEvent&)
 
 void MainFrm::OnAbout(wxCommandEvent&)
 {
-    wxDialog dlg(this, 500, "About Aven");
+    wxDialog* dlg = new wxDialog(this, 500, "About Aven");
 
-    wxBoxSizer horiz(wxHORIZONTAL);
-    wxBoxSizer vert(wxVERTICAL);
+    wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticBitmap bitmap(&dlg, 501, wxGetApp().GetAboutBitmap());
-    wxStaticText title(&dlg, 502, wxString("Aven ") + wxString(VERSION));
-    wxStaticText purpose(&dlg, 505, wxString("Visualisation of Survex 3D files"));
-    wxStaticText copyright1(&dlg, 503, "(c) Copyright 1999-2001, Mark R. Shinwell");
-    wxStaticText copyright2(&dlg, 504,
-			    "Portions from Survex (c) Copyright 1990-2001, Olly Betts");
-    wxStaticText licence(&dlg, 506, "This is free software.  Aven is licenced under the");
-    wxStaticText licence2(&dlg, 508, "terms of the GNU General Public Licence version 2,");
-    wxStaticText licence3(&dlg, 509, "or (at your option) any later version.");
-    wxButton close(&dlg, 507, "Close");
-    close.SetDefault();
+    wxStaticBitmap* bitmap = new wxStaticBitmap(dlg, 501, wxGetApp().GetAboutBitmap());
+    wxStaticText* title = new wxStaticText(dlg, 502, wxString("Aven ") + wxString(VERSION));
+    wxStaticText* purpose = new wxStaticText(dlg, 505,
+					     wxString("Visualisation of Survex 3D files"));
+    wxStaticText* copyright1 = new wxStaticText(dlg, 503, "aven copyright");
+    wxStaticText* copyright2 = new wxStaticText(dlg, 504,
+						wxString("Portions from Survex ") +
+						COPYRIGHT_MSG);
+    wxStaticText* licence = new wxStaticText(dlg, 506,
+			    "This is free software.  Aven is licenced under the");
+    wxStaticText* licence2 = new wxStaticText(dlg, 508,
+			     "terms of the GNU General Public Licence version 2,");
+    wxStaticText* licence3 = new wxStaticText(dlg, 509,
+					      "or (at your option) any later version.");
+    wxButton* close = new wxButton(dlg, 507, "Close");
+    close->SetDefault();
 
-    horiz.Add(&bitmap, 0, wxALL, 2);
-    horiz.Add(&vert, 0, wxALL, 2);
+    horiz->Add(bitmap, 0, wxALL, 2);
+    horiz->Add(vert, 0, wxALL, 2);
 
-    vert.Add(&title, 0, wxLEFT | wxRIGHT | wxTOP, 20);
-    vert.Add(10, 5, 0, wxTOP, 5);
-    vert.Add(&purpose, 0, wxLEFT | wxRIGHT, 20);
-    vert.Add(10, 5, 0, wxTOP, 5);
-    vert.Add(&copyright1, 0, wxLEFT | wxRIGHT, 20);
-    vert.Add(&copyright2, 0, wxLEFT | wxBOTTOM | wxRIGHT, 20);
-    vert.Add(10, 5, 0, wxTOP, 5);
-    vert.Add(&licence, 0, wxLEFT | wxRIGHT, 20);
-    vert.Add(&licence2, 0, wxLEFT | wxRIGHT, 20);
-    vert.Add(&licence3, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
-    vert.Add(10, 5, 0, wxEXPAND | wxGROW | wxTOP, 5);
+    vert->Add(title, 0, wxLEFT | wxRIGHT | wxTOP, 20);
+    vert->Add(10, 5, 0, wxTOP, 5);
+    vert->Add(purpose, 0, wxLEFT | wxRIGHT, 20);
+    vert->Add(10, 5, 0, wxTOP, 5);
+    vert->Add(copyright1, 0, wxLEFT | wxRIGHT, 20);
+    vert->Add(copyright2, 0, wxLEFT | wxBOTTOM | wxRIGHT, 20);
+    vert->Add(10, 5, 0, wxTOP, 5);
+    vert->Add(licence, 0, wxLEFT | wxRIGHT, 20);
+    vert->Add(licence2, 0, wxLEFT | wxRIGHT, 20);
+    vert->Add(licence3, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
+    vert->Add(10, 5, 0, wxEXPAND | wxGROW | wxTOP, 5);
 
-    wxBoxSizer bottom(wxHORIZONTAL);
-    bottom.Add(250, 5, 4);
-    bottom.Add(&close, 1);
-    vert.Add(&bottom, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
+    wxBoxSizer* bottom = new wxBoxSizer(wxHORIZONTAL);
+    bottom->Add(250, 5, 4);
+    bottom->Add(close, 1);
+    vert->Add(bottom, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
 
-    horiz.Fit(&dlg);
-    horiz.SetSizeHints(&dlg);
+    horiz->Fit(dlg);
+    horiz->SetSizeHints(dlg);
 
-    dlg.SetAutoLayout(true);
-    dlg.SetSizer(&horiz);
-    dlg.ShowModal();
+    dlg->SetAutoLayout(true);
+    dlg->SetSizer(horiz);
+    dlg->ShowModal();
+}
+
+void MainFrm::OnToggleStatusbar(wxCommandEvent&)
+{
+    if (!m_StatusBar) {
+        m_StatusBar = GetStatusBar();
+	SetStatusBar(NULL);
+    }
+    else {
+        SetStatusBar(m_StatusBar);
+        m_StatusBar = NULL;
+    }
+
+    wxSizeEvent ev(GetSize());
+    OnSize(ev);
+}
+
+void MainFrm::OnToggleStatusbarUpdate(wxUpdateUIEvent& event)
+{
+    event.Check(m_StatusBar);
 }

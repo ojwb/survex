@@ -39,7 +39,9 @@ Aven::Aven() :
 bool Aven::OnInit()
 {
     wxImage::AddHandler(new wxPNGHandler);
-    m_AboutBitmap.LoadFile(wxString(DATADIR) + wxCONFIG_PATH_SEPARATOR +
+    //--need to sort this!
+    m_AboutBitmap.LoadFile(wxString(DATADIR) + wxCONFIG_PATH_SEPARATOR + 
+			   wxString("survex") + wxCONFIG_PATH_SEPARATOR +
 			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
 
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(640, 480));
