@@ -1,6 +1,6 @@
 /* printwin.c */
 /* Device dependent part of Survex Win32 driver */
-/* Copyright (C) 1993-2001 Olly Betts
+/* Copyright (C) 1993-2002 Olly Betts
  * Copyright (C) 2001 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -50,7 +50,7 @@ static const char *win_Name(void);
 static int win_Pre(int pagesToPrint, const char *title);
 static void win_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void win_Init(FILE **fh_list, const char *pth, const char *outfnm,
-		     double *pscX, double *pscY);
+		     double *pscX, double *pscY, bool fCalibrate);
 static int  win_Charset(void);
 static void win_MoveTo(long x, long y);
 static void win_DrawTo(long x, long y);
@@ -206,16 +206,18 @@ win_DrawCross(long x, long y)
    }
 }
 
+static HFONT font_labels, font_default, font_old;
+
 static void
 win_SetFont(int fontcode)
 {
    switch (fontcode) {
       case PR_FONT_DEFAULT:
-	 SelectObject(font_default);
+	 SelectObject(pd, font_default);
 	 tm = tm_default;
 	 break;
       case PR_FONT_LABELS:
-	 SelectObject(font_labels);
+	 SelectObject(pd, font_labels);
 	 tm = tm_labels;
 	 break;
       default:
@@ -254,8 +256,6 @@ win_Charset(void)
 {
    return CHARSET_ISO_8859_1;
 }
-
-static HFONT font_labels, font_default, font_old;
 
 static int
 win_Pre(int pagesToPrint, const char *title)
@@ -329,7 +329,7 @@ win_ShowPage(const char *szPageDetails)
 /* Initialise printer routines */
 static void
 win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-	 double *pscX, double *pscY)
+	 double *pscX, double *pscY, bool fCalibrate)
 {
    PRINTDLGA psd;
    static const char *vars[] = {
