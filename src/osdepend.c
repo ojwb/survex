@@ -86,7 +86,7 @@ double svx_ceil( double v ) {
    if (v<LONG_MIN || v>LONG_MAX) {
       putchar('\b');
       return v;
-   }   
+   }
    r = (double)(long)v;
    if (r<v) r = r + 1.0;
 /*   fprintf(stderr,"svx_ceil(%g)=%g\n",v,r); */
@@ -98,7 +98,7 @@ double svx_floor( double v ) {
    if (v<LONG_MIN || v>LONG_MAX) {
       putchar('\b');
       return v;
-   }   
+   }
    r = (double)(long)v;
    if (r>v) r = r - 1.0;
 /*   fprintf(stderr,"svx_floor(%g)=%g\n",v,r); */
@@ -152,7 +152,7 @@ bool fDirectory( const char *fnm ) {
    /* it's a directory iff objtype is 2 or 3 */
    /* (3 is an image file (for RISC OS 3 and above) but we probably want */
    /* to treat image files as directories) */
-   if (xosfile_read( fnm, &objtype, NULL, NULL, NULL, NULL ) != NULL)
+   if (xosfile_read( (char*)fnm, &objtype, NULL, NULL, NULL, NULL ) != NULL)
       return fFalse;
    return (objtype == osfile_IS_DIR || objtype == osfile_IS_IMAGE);
 }
