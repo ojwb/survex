@@ -87,8 +87,8 @@ where this isn't the case, let me know.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-07-25 01:51:49 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.36 2001-07-25 01:51:49 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-07-25 02:11:34 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.37 2001-07-25 02:11:34 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1960,9 +1960,11 @@ case, unzip it with "unzip -L" and unix cavern will process it).
 
 <VarListEntry><Term>Syntax</Term>
 
-<listitem><Para>*infer plumbs on|off</Para></listitem>
+<listitem>
+<Para>*infer plumbs on|off</Para>
 
-<listitem><Para>*infer equates on|off</Para></listitem>
+<Para>*infer equates on|off</Para>
+</listitem>
 
 </VarListEntry>
 
@@ -1980,14 +1982,14 @@ case, unzip it with "unzip -L" and unix cavern will process it).
 
 <VarListEntry><Term>Description</Term>
 
-<listitem><Para>"*infer plumbs on" tells cavern to interpret gradients of +/- 90
+<listitem>
+<Para>"*infer plumbs on" tells cavern to interpret gradients of +/- 90
 degrees as UP/DOWN (so it
 will not apply the clino correction to them). This is useful when
 the data has not been converted to have UP and DOWN in it.
 </Para>
-</listitem>
 
-<listitem><Para>"*infer equates on" tells cavern to interpret a leg with
+<Para>"*infer equates on" tells cavern to interpret a leg with
 a tape reading of zero as a *equate.  This prevents tape corrections
 being applied to them.
 </Para>
