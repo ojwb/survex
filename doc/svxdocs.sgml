@@ -46,8 +46,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 1999-05-17 21:32:50 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.8 1999-05-17 21:32:50 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 1999-06-06 15:19:42 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.9 1999-06-06 15:19:42 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -413,24 +413,45 @@ should not be necessary.
 
 </Sect1>
 
-<Sect1><Title>Searching for data files</Title>
+<Sect1><Title>Survex Command Line Conventions</Title>
 
-<!-- this is just plain wrong...
-A file specified on the command line of any of the &survexsuite; suite
-of programs will be looked for in this order:
-<Para>
-1) In the specified directory
+<!-- FIXME: bad style -->
+
+<Sect2><Title>Command Line Options</Title>
+
+<Para>All &survexsuite; programs respond to the following command line options:
 </Para>
-<Para>
-2) In the specified directory with the default extension added
+
+<VariableList>
+
+<VarListEntry><Term>--help</Term><listitem><Para>
+display this help and exit
+</Para></listitem></VarListEntry>
+
+<VarListEntry><Term>--version</Term><listitem><Para>
+output version information and exit
+</Para></listitem></VarListEntry>
+
+</VariableList>
+
+<Para> <!-- FIXME: -->
+
+(Actually this isn't quite true yet - caverot, diffpos, extend, and xcaverot
+haven't yet been converted to support these options - they will before
+Survex 1.0.  The HTO filters svx2hto and hto2svx don't either, but they are
+liekyl to be replaced fairly soon.  And finally the "survex" compatibility
+wrapper doesn't, since it's intended to convert the old syntax to the new).
 </Para>
-<Para>
-3) In the current directory
+
+<Para>Note that command line options are case sensitive, so "-B" and "-b"
+are different (this didn't used to be the case before Survex 0.90).  Case
+sensitivity doubles the number of available short options (and is also the
+norm on &unix;).  &msdos; doesn't have a firm convention - some programs
+treat options as case sensitive, while others don't.
 </Para>
-<Para>
-4) In the current directory with the default extension added.
-</Para>
--->
+</Sect2>
+
+<Sect2><Title>Searching for data files</Title>
 
 <Para>A file specified on the command line of any of the &survexsuite; suite
 of programs will be looked for as specified.  If it is not found, then the
@@ -438,15 +459,7 @@ program will try adding the default extension (if appropriate) and try
 again.
 </Para>
 
-<Para>For cavern itself things are a bit more complex as files can be
-included by other files: If an included file does not have a complete path,
-cavern will look for it in the directory of the file which includes it.
-<!--(whether <filename/.svc/ or <filename/.svx/),
-or the current directory if it is referred to on the command line.-->
-If it can not find the file, it will try adding the default extension and
-look again.
-<!-- An error is given if none of these find the file. -->
-</Para>
+</Sect2>
 
 </Sect1>
 
@@ -554,15 +567,17 @@ run.</Para>
 
 <Sect2><Title>Cavern Command line Syntax</Title>
 
-<Para><command>cavern &lt;Options&gt; &lt;SurvexFileList&gt;</command>
-</Para>
+<cmdsynopsis>
+    <command>cavern</command>
+    <arg rep="repeat">options</arg>
+    <arg rep="repeat">survex data file</arg>
+</cmdsynopsis>
 
 <!-- FIXME: brackets implied around each file -->
 
-<Para>where SurvexFileList can be one or more <filename/.svx/ files.  If the
-operating system supports filenames with spaces, you can use them but you'll
-need to enclose them in quotes like so: <command>cavern &quot;Spider
-Cave&quot;</command></Para>
+<Para>If the operating system supports filenames with spaces, you can use
+them but you'll need to enclose them in quotes like so: <command>cavern
+&quot;Spider Cave&quot;</command></Para>
 
 <!--
 <Sect3><Title>Notes</Title>
@@ -676,16 +691,19 @@ cave.</Para>
 
 <!-- FIXME: change to use GNU getopt -->
 
-<Para><command>caverot &lt;image filename&gt; [&lt;image filename2&gt;
-...]</command>
-</Para>
+<cmdsynopsis>
+    <command>caverot</command>
+    <arg rep="repeat">3d image file</arg>
+</cmdsynopsis>
 
 <Para>More exactly, when specifying colours for the files read in it is:
 </Para>
 
-<Para><command>caverot -c&lt;col1&gt;,&lt;col2&gt;,...,&lt;coln&gt;
-&lt;file1&gt;.3d &lt;file2&gt;.3d ... &lt;filen&gt;.3d</command>
-</Para>
+<cmdsynopsis>
+    <command>caverot</command>
+    <arg>-c&lt;col1&gt;,&lt;col2&gt;,...,&lt;coln&gt;</arg>
+    <arg>&lt;file1&gt;.3d &lt;file2&gt;.3d ... &lt;filen&gt;.3d</arg>
+</cmdsynopsis>
 
 <Para>The &msdos; version of caverot supports a wide range of graphics
 cards. If the hardware allows it, two copies of the screen are used,
@@ -903,40 +921,57 @@ this.
 
 <Sect2><Title>Syntax</Title>
 
-<Para>The syntax of the commands is the same in each case. For example:
+<Para>The syntax of the commands is the same in each case. The command line
+options are:
 </Para>
 
-<!-- FIXME: this is now wrong -->
+<variablelist>
+<varlistentry><term>-e, --elevation</term>
+<listitem><para>select elevation</para></listitem></varlistentry>
 
-<Para><command>printdm [-[!]Border] [-[!]Crosses] [-[!]Labels]
-[-[!]Shots] &lt;image filename&gt;</command>
-</Para>
+<varlistentry><term>-p, --plan</term>
+<listitem><para>select plan view</para></listitem></varlistentry>
 
-<Para>The options may be introduced by a '/' except in the &unix; version.
-</Para>
+<varlistentry><term>-b, --bearing=BEARING</term>
+<listitem><para>set bearing</para></listitem></varlistentry>
 
-<Para>printdm and printpcl also have a [-[!]Print_blank_pages] option, which
-is on by default.  If you turn it off, pages which are blank (apart from the
-alignment marks) will not be printed.
-</Para>
+<varlistentry><term>-t, --tilt=TILT</term>
+<listitem><para>set tilt</para></listitem></varlistentry>
 
-<Para>An ! means turn this off, and only the first character of each option
-is important. The default options are: -B -!C -!L -S.  (Borders and legs are
-plotted, crosses and labels are not). E.g. <command/printdm -!B -C pit.3d/
-will produce a plot of <filename/pit.3d/ with no border and crosses
-at each survey station, but no labels. The survey legs (shots) will be
-drawn.
-</Para>
+<varlistentry><term>-s, --scale=SCALE</term>
+<listitem><para>set scale</para></listitem></varlistentry>
 
-<Para>If borders are turned on then dotted borders will be drawn on the
+<varlistentry><term>-n, --station-names</term>
+<listitem><para>display station names</para></listitem></varlistentry>
+
+<varlistentry><term>-c, --crosses</term>
+<listitem><para>display crosses at stations</para></listitem></varlistentry>
+
+<varlistentry><term>-B, --no-border</term>
+<listitem><para>turn off page border.
+Without this option dotted borders will be drawn on the
 sides where pages join. This is to facilitate accurate cutting with
 scissors.
-</Para>
+</para></listitem></varlistentry>
+
+<varlistentry><term>-l, --no-legs</term>
+<listitem><para>turn off display of survey legs</para></listitem></varlistentry>
+
+<varlistentry><term>-k, --skip-blanks</term>
+<listitem><para>don't output blank pages
+(only works for printdm and printpcl at present). <!-- FIXME: really? -->
+With this option pages which are blank (apart from the alignment marks)
+will not be printed.
+</para></listitem></varlistentry>
+
+</variablelist>
+
+<!-- FIXME why is this here? -->
 
 <Para>Under &unix; output may be piped into another command like so:</Para>
 
 <programlisting>
->output=| lpr -Poak
+output=| lpr -Poak
 ; send output to printer 'oak'</programlisting>
 
 </Sect2>
@@ -1740,10 +1775,13 @@ deep with ANSI C - I think). If &lt;filename&gt; contains spaces,
 it must be enclosed in quotes.
 </Para></ListItem>
 
+<ListItem><Para>If an included file does not have a complete path,
+cavern will look for it starting from the directory of the file which
+includes it.
+</Para></ListItem>
+
 <ListItem><Para>Note that the usual filename search procedure is used here,
-so chosspot.svx will be tried if chosspot is not found, and both
-the directory of the including file and the current directory
-will be searched.
+so chosspot.svx will be tried if chosspot is not found.
 </Para></ListItem>
 
 </ItemizedList>
