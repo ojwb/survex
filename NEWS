@@ -1,3 +1,11 @@
+Changes in 1.1.1:
+
+* (Microsoft Windows version): aven: Hopefully fix loading a survey file at
+  startup.		
+
+* aven: Delay loading the bitmap for the "About" dialog until it is first
+  needed.  We want start up to be as quick as possible.
+
 Changes between 1.0.32 and 1.1.0:
 
 * NOTE: Survex 1.1.X releases are development snapshots made available for
