@@ -951,6 +951,7 @@ en: 84 CLINO and BACKCLINO readings must be of the same type
 #fr: 84 Les mesures de Clino et ClinoInverse doivent &ecirc;tre du m&ecirc;me type
 fr: 84 Les mesures de CLINO et BACKCLINO doivent &ecirc;tre du m&ecirc;me type
 de: 84 CLINO- und BACKCLINO-Eintrag m&uuml;ssen den gleichen Typ haben
+pt: 84 Valores de CLINO e BACKCLINO t&ecirc;m que ser do mesmo tipo
 ca: 84 Les lectures de CLINO i BACKCLINO han de ser del mateix tipus
 es: 84 Las lecturas de CLINO y BACKCLINO deben de ser del mismo tipo
 it: 84 Le letture CLINO e BACKCLINO devono essere dello stesso tipo
@@ -1078,6 +1079,7 @@ en: 98 COMPASS reading and BACKCOMPASS reading disagree by %s degrees
 #fr: 98 Les mesures de Compas et CompasInverse diff&egrave;rent de %s degr&eacute;s
 fr: 98 Les mesures de COMPASS et BACKCOMPASS diff&egrave;rent de %s degr&eacute;s
 de: 98 COMPASS- und BACKCOMPASS-Eintrag differieren um %s Grad
+pt: 98 &Acirc;ngulos de COMPASS e BACKCOMPASS diferem em %s graus
 ca: 98 Les lectures de COMPASS i BACKCOMPASS difereixen de %s graus
 es: 98 Las lecturas de COMPASS y BACKCOMPASS difieren de %s grados
 it: 98 Le letture COMPASS e BACKCOMPASS differiscono di %s gradi
@@ -1087,6 +1089,7 @@ en: 99 CLINO reading and BACKCLINO reading disagree by %s degrees
 #fr: 99 Les mesures de Clino et ClinoInverse diff&egrave;rent de %s degr&eacute;s
 fr: 99 Les mesures de CLINO et BACKCLINO diff&egrave;rent de %s degr&eacute;s
 de: 99 CLINO- und BACKCLINO-Eintrag differieren um %s Grad
+pt: 99 &Acirc;ngulos de CLINO e BACKCLINO diferem em %s graus
 ca: 99 Les lectures de CLINO i BACKCLINO difereixen de %s graus
 es: 99 Las lecturas de CLINO y BACKCLINO difieren de %s grados
 it: 99 Le letture CLINO e BACKCLINO differiscono di %s gradi
@@ -1725,6 +1728,7 @@ sk:164 "Ktor&eacute; str&aacute;nky vytla&ccaron;i&tcaron;?&#10;(RETURN pre v&sc
 en:165 Printing to `%s'...
 fr:165 Impression vers `%s'...
 de:165 Drucken nach `%s'...
+pt:165 Imprimindo em `%s'...
 ca:165 Imprimint a `%s'...
 es:165 Imprimiendo en `%s'...
 it:165 In stampa su `%s'...
@@ -2051,6 +2055,7 @@ en:200 *UNITS factor must be non-zero
 fr:200 *UNITS: le facteur doit &ecirc;tre non nul
 de-de,de-ch:200 Faktor nach *UNITS muss von Null verschieden sein
 de:200     Faktor nach *UNITS mu&szlig; von Null verschieden sein
+pt:200 Fator em *UNITS n&atilde;o pode ser zero
 ca:200 El factor *UNITS ha de ser diferent de zero
 es:200 El factor de *UNITS debe de ser diferente de cero
 it:200 Il fattore *UNITS deve essere diverso da zero
@@ -2293,6 +2298,7 @@ sk:227 Nie je mo&zcaron;n&eacute; nakalibrova&tcaron; uhlov&yacute;&eacute; a d&
 en:228 Select a terrain file to view
 fr:228 S&eacute;lectionner un fichier de surface &agrave; visualiser
 de:228 Gel&auml;ndedatei zur Ansicht w&auml;hlen
+pt:228 Escolha um arquivo de relevo de superf&iacute;cie para examinar
 ca:228 Selecciona un fitxer de terreny per veure
 es:228 Selecciona un archivo de terreno para ver
 it:228 Seleziona un modello digitale del suolo da visualizzare
@@ -2301,6 +2307,7 @@ sk:228 Vyber s&uacute;bor s povrchom k zobrazeniu
 en:229 Terrain files
 fr:229 Fichiers de surface
 de:229 Gel&auml;ndedateien
+pt:229 Arquivos de relevo de superf&iacute;cie
 ca:229 Fitxers de terreny
 es:229 Archivos de terreno
 it:229 File di modelli digitali del suolo
@@ -3099,6 +3106,7 @@ sk:341 "  Vzd %d%s,  Azim %03d%s"
 en:342 @Metric
 fr:342 @M&eacute;trique
 de:342 @Metrisch
+pt:342 @M&eacute;trico
 ca:342 @Metric
 es:342 @Metrico
 it:342 @Metrico
@@ -3126,6 +3134,7 @@ sk:344 &deg;
 en:345 grad
 fr:345 grade
 de:345 Neugrad
+pt:345 grados
 #ca:345 graus centesimals
 ca:345 g.cent
 #es:345 grados centesimales
