@@ -254,9 +254,8 @@ printer driver name spills over one page on Wookey's printer (printdm)
 improve messages given when a signal is received (eg more precise
 reporting of 'Arithmetic error' as 'Divide by zero', 'Negative root', etc)
 
-Test units in CALIBRATE *directive* work okay
 Tests for case & uniqueness handling
-Test all the commands!
+Tests for all the commands!
 
 ? Allow F(orward)/B(ack) in data - checked somehow (?)
 
