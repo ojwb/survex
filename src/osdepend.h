@@ -24,7 +24,7 @@
 
 /* OSLib's types.h badly pollutes our namespace, so we kludge it off
  * and then do the vital bits ourselves */
-# ifndef types_H
+# if (OS==RISCOS) && !defined(types_H)
 #  define types_H
 typedef unsigned int bits;
 typedef unsigned char byte;
@@ -74,6 +74,13 @@ typedef unsigned char byte;
 #   define floor(X) svx_floor((X))
 double svx_ceil(double);
 double svx_floor(double);
+#  endif
+
+#  ifdef __TURBOC__
+#   include <time.h>
+#   ifndef CLOCKS_PER_SEC
+#    define CLOCKS_PER_SEC CLK_TCK
+#   endif
 #  endif
 
 # elif (OS==TOS)

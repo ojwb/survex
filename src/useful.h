@@ -35,11 +35,6 @@
 /* Macro to do nothing, but avoid compiler warnings about empty if bodies &c */
 #define NOP (void)0
 
-/* deals with Borland TurboC & maybe others */
-#if (!defined(CLOCKS_PER_SEC) && defined(CLK_TCK))
-# define CLOCKS_PER_SEC CLK_TCK
-#endif
-
 /* Return max/min of two numbers (if not defined already) */
 /* NB Bad news if X or Y has side-effects... */
 #ifndef max
@@ -49,7 +44,7 @@
 # define min(X, Y) ((X) < (Y) ? (X) : (Y))
 #endif
 
-/* Some C libraries define this in math.h */
+/* M_PI, etc may be defined in math.h */
 #ifndef M_PI
 # ifdef PI /* MSVC defines PI IIRC */
 #  define M_PI PI
