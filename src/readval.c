@@ -69,6 +69,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       ptr = root;
       if (!isNames(ch)) {
 	 if (!isSep(ch)) return ptr;
+	 /* Allow optional SEPARATOR after ROOT */
 	 nextch();
       }
       fImplicitPrefix = fFalse;
@@ -191,7 +192,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       SVX_ASSERT(TSTBIT(ptr->sflags, SFLAGS_SURVEY));
       if (!fSurvey) {
 	 ptr->sflags &= ~BIT(SFLAGS_SURVEY);
-	 if (pcs->f_infer_exports) ptr->min_export = USHRT_MAX;
+	 if (TSTBIT(pcs->infer, INFER_EXPORTS)) ptr->min_export = USHRT_MAX;
       }
    } else {
       /* check that the same name isn't being used for a survey and station */
@@ -199,7 +200,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 compile_error(/*`%s' can't be both a station and a survey*/27,
 		       sprint_prefix(ptr));
       }
-      if (!fSurvey && pcs->f_infer_exports) ptr->min_export = USHRT_MAX;
+      if (!fSurvey && TSTBIT(pcs->infer, INFER_EXPORTS)) ptr->min_export = USHRT_MAX;
    }
 
    /* check the export level */

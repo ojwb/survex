@@ -86,6 +86,10 @@ typedef enum {
    Q_PLUMB, Q_LEVEL, Q_MAC
 } q_quantity;
 
+typedef enum {
+   INFER_NULL = -1, INFER_EQUATES, INFER_EXPORTS, INFER_PLUMBS, INFER_SUBSURVEYS
+} infer_what;
+
 /* unsigned long to cope with 16-bit int-s */
 #define BIT(N) (1UL << (N))
 #define BITA(N) (1UL << ((N) - 'a'))
@@ -175,7 +179,7 @@ typedef struct Prefix {
     * prefix has been exported, and min_export is how far down the exports
     * have got (if min_export > 1 after a run, this prefix hasn't been
     * exported from below enough).
-    * If f_infer_exports is active when a station is encountered, we
+    * If INFER_EXPORTS is active when a station is encountered, we
     * set min_export = USHRT_MAX and max_export gets set as usual.  Then at
     * the end of the run, we also mark stations with min_export == USHRT_MAX
     * and max_export > 0 as exported. */
@@ -258,11 +262,9 @@ typedef struct Inst {
 /* various settings preserved by *BEGIN and *END */
 typedef struct Settings {
    unsigned int Truncate;
-   bool f0Eq;
-   bool f90Up;
-   bool f_infer_exports;
    bool f_clino_percent;
    bool f_backclino_percent;
+   unsigned char infer;
    enum {OFF, LOWER, UPPER} Case;
    int style;
    prefix *Prefix;
