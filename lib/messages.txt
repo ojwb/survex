@@ -3110,8 +3110,10 @@ sk:344 &deg;
 en:345 grad
 fr:345 grade
 de:345 Neugrad
-ca:345 graus centesimals
-es:345 grados centesimales
+#ca:345 graus centesimals
+ca:345 g.cent
+#es:345 grados centesimales
+es:345 g.cent
 sk:345 gr&aacute;dy
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
