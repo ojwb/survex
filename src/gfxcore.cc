@@ -1711,12 +1711,13 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	    }
 	    if (m_LastDrag == drag_COMPASS) {
 		// drag in heading indicator
+		double angle = atan2((double)dx0, (double)dy) - M_PI;
 		if (dx0 * dx0 + dy * dy <= radius * radius) {
-		    TurnCaveTo(atan2(dx0, dy) - M_PI);
+		    TurnCaveTo(angle);
 		    m_MouseOutsideCompass = false;
 		}
 		else {
-		    TurnCaveTo(int(int((atan2(dx0, dy) - M_PI) * 180.0 / M_PI) / 45) *
+		    TurnCaveTo(int(int(angle * 180.0 / M_PI) / 45) *
 			       M_PI_4);
 		    m_MouseOutsideCompass = true;
 		}
@@ -1725,7 +1726,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	    else if (m_LastDrag == drag_ELEV) {
 		// drag in elevation indicator
 		if (dx1 >= 0 && dx1 * dx1 + dy * dy <= radius * radius) {
-		    TiltCave(atan2(dy, dx1) - m_TiltAngle);
+		    TiltCave(atan2((double)dy, (double)dx1) - m_TiltAngle);
 		    m_MouseOutsideElev = false;
 		}
 		else if (dy >= INDICATOR_MARGIN) {
