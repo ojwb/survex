@@ -262,6 +262,7 @@ void GfxCore::Initialise()
 	    break;
 
         case lock_XY:
+	{
 	    // survey is linear and parallel to the Z axis => display in elevation.
 	    m_PanAngle = M_PI * 1.5;
 
@@ -272,6 +273,10 @@ void GfxCore::Initialise()
 	    m_RotationMatrix = m_Params.rotation.asMatrix();
 	    m_IndicatorsOff = true;
 	    break;
+	}
+
+        case lock_NONE:
+            break;
     }
 
     // Scale the survey to a reasonable initial size.
@@ -332,9 +337,9 @@ void GfxCore::SetScale(double scale)
 	    assert(scount);
 	    count--;
 	    scount--;
-	    double current_x;
-	    double current_y;
-	    double current_z;
+	    double current_x = 0.0;
+	    double current_y = 0.0;
+	    double current_z = 0.0;
 
 	    m_Polylines[band] = 0;
 	    m_SurfacePolylines[band] = 0;
@@ -446,7 +451,6 @@ void GfxCore::SetScale(double scale)
 	wxString* labels = m_Labels;
 	list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
 	list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
-	double x, y, z;
 	wxString text;
 	while (pos != end) {
 	    LabelInfo* label = *pos++;

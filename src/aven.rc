@@ -1,2 +1,3 @@
+wxSTD_FRAME ICON aven.ico
+wxDEFAULT_FRAME ICON aven.ico
 #include "wx/msw/wx.rc"
-
