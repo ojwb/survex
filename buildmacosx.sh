@@ -2,6 +2,14 @@
 #
 # Run from the unpacked survex-1.0.X directory like so:
 #
+#   ./buildmacosx.sh --install-wx
+#
+# This will automatically download and temporarily install wxWindows
+# (this script is smart enough not to download or build it if it already
+# has).
+#
+# If you already have wxWindows installed permanently, use:
+#
 #   ./buildmacosx.sh
 #
 # If wxWindows is installed somewhere such that wx-config isn't on your
@@ -11,6 +19,25 @@
 #   env WXCONFIG=/path/to/wx-config ./buildmacosx.sh
 
 set -e
+
+if test "x$1" = "x--install-wx" ; then
+  if test -x WXINSTALL/bin/wx-config ; then
+    :
+  else
+    prefix="`pwd`"/WXINSTALL
+    test -f wxMac-2.4.2.tar.gz || \
+      wget ftp://biolpc22.york.ac.uk/pub/2.4.2/wxMac-2.4.2.tar.gz
+    test -d wxMac-2.4.2 || tar zxvf wxMac-2.4.2.tar.gz
+    test -d wxMac-2.4.2/build || mkdir wxMac-2.4.2/build
+    cd wxMac-2.4.2/build
+    ../configure --disable-shared --prefix="$prefix"
+    make -s
+    make -s install
+    cd ../..
+  fi
+  WXCONFIG="`pwd`"/WXINSTALL/bin/wx-config
+fi
+
 test -n "$WXCONFIG" || WXCONFIG=`which wx-config`
 if test -z "$WXCONFIG" ; then
   echo "WXCONFIG not set and wx-config not on your PATH"
