@@ -137,9 +137,7 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
    dppY = DPP(dpiY);
 /* printf("Debug info: dpp x=%d, y=%d\n\n",dppX,dppY); */
 
-   fnm = use_path(pth, leaf);
-   fh = safe_fopen(fnm, "rb");
-   osfree(fnm);
+   fh = fopenWithPthAndExt(pth, leaf, NULL, "rb", &fnm);
 
    if (fread(header, 1, 20, fh) < 20 ||
        memcmp(header, "Svx\nFnt\r\n\xfe\xff", 12) != 0) {
@@ -169,6 +167,7 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
     * a buffer overrun - FIXME this isn't a sensible way for this to work */
    len = (len / 8) + 31;
    if (max_def_char > len) max_def_char = len;
+   osfree(fnm);
    fclose(fh);
 }
 

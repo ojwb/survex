@@ -25,7 +25,9 @@
 #include <ctype.h>
 #include <string.h>
 
-/* FIXME: finish sorting out safe_fopen vs fopenWithPthAndExt... */
+/* safe_fopen should be used when writing a file
+ * fopenWithPthAndExt should be used when reading a file
+ */
 
 /* Wrapper for fopen which throws a fatal error if it fails.
  * Some versions of fopen() are quite happy to open a directory.
@@ -34,14 +36,14 @@ extern FILE *
 safe_fopen(const char *fnm, const char *mode)
 {
    FILE *f;
+   ASSERT(mode[0] == 'w'); /* only expect to be used for writing */
    if (fDirectory(fnm))
       fatalerror(/*Filename `%s' refers to directory*/44, fnm);
 
    f = fopen(fnm, mode);
-   if (!f) fatalerror(mode[0] == 'w' ?
-		      /*Failed to open output file `%s'*/47 :
-		      /*Couldn't open data file `%s'*/24, fnm);
-   if (mode[0] == 'w') filename_register_output(fnm);
+   if (!f) fatalerror(/*Failed to open output file `%s'*/47, fnm);
+
+   filename_register_output(fnm);
    return f;
 }
 
