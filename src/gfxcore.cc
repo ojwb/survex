@@ -910,8 +910,8 @@ void GfxCore::RedrawOffscreen()
 
 		enum AvenColour col;
 		enum {BLOB, CROSS} shape = BLOB;
-		if (!((label->IsSurface() && m_Surface) ||
-		      (label->IsUnderground() && m_Legs) ||
+		if (!((m_Surface && label->IsSurface()) ||
+		      (m_Legs && label->IsUnderground()) ||
 		      (!label->IsSurface() && !label->IsUnderground()))) {
 		    // if this station isn't to be displayed, skip to the next
 		    // (last case is for stns with no legs attached)
@@ -2055,7 +2055,6 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	if (ds == 0) break;
     }
     
-
     if (best) {
 	m_Parent->SetMouseOverStation(best);
 	if (centre) {
@@ -3247,7 +3246,10 @@ void GfxCore::CreateHitTestGrid()
 	LabelInfo *label = *pos++;
 
 	if (!((m_Surface && label->IsSurface()) ||
-	      (m_Legs && label->IsUnderground()))) {
+	      (m_Legs && label->IsUnderground()) ||
+	      (!label->IsSurface() && !label->IsUnderground()))) {
+	    // if this station isn't to be displayed, skip to the next
+	    // (last case is for stns with no legs attached)
 	    continue;
 	}
 
