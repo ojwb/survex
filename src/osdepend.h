@@ -1,6 +1,6 @@
 /* osdepend.h
  * Contains commonly required OS dependent bits
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,6 +87,8 @@ double svx_floor(double);
 
 # elif (OS==UNIX)
 
+/* FIXME: better to test this in configure... */
+#  include <time.h>
 #  ifndef CLOCKS_PER_SEC
 #   define CLOCKS_PER_SEC 1000000 /* nasty hack - true for SunOS anyway */
 #  endif /* !CLOCKS_PER_SEC */
