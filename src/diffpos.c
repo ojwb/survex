@@ -29,6 +29,7 @@
 #include <string.h>
 #include <math.h>
 
+#include "cavern.h" /* just for REAL_EPSILON */
 #include "cmdline.h"
 
 #define sqrd(X) ((X)*(X))
@@ -38,8 +39,7 @@
 #define _STRING(X) #X
 
 /* very small value for comparing floating point numbers with */
-/* FIXME: ought to use a real epsilon value */
-#define EPSILON 0.00001
+#define EPSILON (REAL_EPSILON * 1000)
 
 /* default threshold is 1cm */
 #define DFLT_MAX_THRESHOLD 0.01

@@ -133,9 +133,6 @@ typedef enum {
 /* if IgnoreAll is >= 32, the compiler will choke on this */
 typedef char compiletimeassert_reading[IgnoreAll < 32 ? 1 : -1];
 
-/* Dr, Comp, Dz give CYLPOL style */
-/* FIXME: Cope with any combination which gives enough info ??? */
-
 /* type of a function to read in some data style */
 typedef int (*style_fn)(void);
 

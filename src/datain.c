@@ -39,9 +39,7 @@
 #include "new3dout.h"
 #endif
 
-/* This'll do for now... but we really ought to sort out something in
- * terms of FLT_EPSILON, DBL_EPSILON or LDBL_EPSILON as appropriate */
-#define EPSILON ((real)(1e-6F))
+#define EPSILON (REAL_EPSILON * 1000)
 
 #define MAX_KEYWORD_LEN 16
 

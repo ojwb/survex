@@ -54,7 +54,7 @@ stats.
 Date: Sat, 03 Mar 2001
 From: Olly
 
-cavern: auto declination? NEW_STYLE?
+cavern: auto declination?
 
 update translations
 
@@ -125,9 +125,8 @@ reporting of 'Arithmetic error' as 'Divide by zero', 'Negative root', etc)
 Tests these commands:
  DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET TITLE
 
-? Allow F(orward)/B(ack) in data - checked somehow (?)
-
-? Use machine epsilon for comparing floating point numbers
+? Allow F(orward)/B(ack) in data - checked somehow (?)  definitely
+useful for interleaved style data...
 
 If there are errors, existing .pos and .inf files aren't removed, but
 existing .3d and .err files are...
@@ -138,7 +137,7 @@ For warnings such as "Suspicious compass reading", report the reading
 in question in the error message (in the text form given in the file).
 Also report values when warning about problems with processed readings.
 
-complain about exporting fictional stations
+complain about *export-ing or *entrance-ing fictional stations
 
 ?outlaw prefixes on stations in data legs (as Todd has lobbied for)
 and then the prefix of a leg == prefix of each end...?
@@ -285,4 +284,7 @@ prog --help and --version ought to work (perhaps both just do --version)
 even if messages can't be found.
 
 check line numbers with interleaved data (seem to be one too low).
+
+cylpolar style? Dr, Comp, Dz; back bearings? cope with any combination
+of readings which gives enough info ???
 
