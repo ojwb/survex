@@ -3,7 +3,7 @@
  * Also useful as an example of how to use the img code in your own programs
  */
 
-/* Copyright (C) 1994-2002 Olly Betts
+/* Copyright (C) 1994-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -466,7 +466,7 @@ main(int argc, char **argv)
 	{0,0,0,0}
    };
 
-#define short_opts "s:cnlg::t:m:er::DSPh"
+#define short_opts "s:cnlg::t:m:e:r:DSP"
 
    /* TRANSLATE */
    static struct help_msg help[] = {
