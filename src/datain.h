@@ -41,7 +41,7 @@ extern void showline(const char *dummy, int n);
 extern void showandskipline(const char *dummy, int n);
 
 /* style functions */
-#ifdef NEW_STYLE /* FIXME sort this out */
+#ifdef NEW_STYLE /* FIXME: sort this out */
 extern int data_normal(int /*action*/);
 extern int data_diving(int /*action*/);
 #else
