@@ -29,7 +29,7 @@ BUILT_SOURCES = defaultlang.h
 DISTCLEANFILES = defaultlang.h
 
 $(msg_files) $(hdr_files): messages.txt makemsgs.pl
-	perl $(srcdir)/makemsgs.pl $(srcdir)/messages.txt
+	srcdir=$(srcdir) perl $(srcdir)/makemsgs.pl $(srcdir)/messages.txt
 
 defaultlang.h:
 	-rm -f defaultlang.h

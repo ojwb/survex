@@ -28,7 +28,7 @@ my $minor = 8;
 
 my %ent = ();
 
-open ENT, "named-entities.txt" or die $!;
+open ENT, ($ENV{srcdir}?"$ENV{srcdir}/":"")."named-entities.txt" or die $!;
 while (<ENT>) {
    my ($e, $v) = /^(\w+),(\d+)/;
    $ent{$e} = $v;
@@ -118,7 +118,8 @@ foreach $lang (@langs) {
          $msg = $$parentaref[$n] if defined $parentaref;
 	 if (!defined $msg) {
 	    $msg = ${$msgs{'en'}}[$n];
-	    # don't report if we have a parent (as the omission will be reported there)
+	    # don't report if we have a parent (as the omission will be
+	    # reported there)
 	    if (defined $msg && $msg ne '' && !defined $parentaref) {
 	       print STDERR "Warning: message $n not in language $lang\n";
 	       open TODO, ">>$lang.todo" or die $!;
@@ -126,14 +127,14 @@ foreach $lang (@langs) {
 	       close TODO;
 	       $warned = 1;
 	    } else {
-	       $msg = '';
+	       $msg = '' if !defined $msg;
 	    }
 	 }
       }
       if (defined($raw{$n})
           && $raw{$n} =~ /^\s*#\s*TRANSLATE\b[- \ta-z]*\b$lang\b/m) {
 	 if ($warned) {
-	    print STDERR "Warning: message $n missing and also marked for iretranslation for language $lang\n";
+	    print STDERR "Warning: message $n missing and also marked for retranslation for language $lang\n";
 	 } else {
 	    print STDERR "Warning: message $n needs retranslating for language $lang\n";
 	    open TODO, ">>$lang.todo" or die $!;

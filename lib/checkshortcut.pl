@@ -27,16 +27,20 @@ for my $lang (@ARGV) {
 	my $bad = 0;
 	for (@{$menu{$menu}}) {
             my ($acc) = ($msg[$_] =~ /\@(.)/);
-	    $acc = lc $acc;
-	    if (exists $sc{$acc}) {
-	        if (defined $hdr) {
-		    print $hdr;
-		    $hdr = undef;
-		}
-		print "Menu $menu : '$msg[$sc{$acc}]' and '$msg[$_]' clash\n";
-		$bad = 1;
+	    if (!defined $acc) {
+		print "Lang $lang : message $_ '$msg[$_]' has no shortcut\n";
 	    } else {
-		$sc{$acc} = $_;
+		$acc = lc $acc;
+		if (exists $sc{$acc}) {
+		    if (defined $hdr) {
+			print $hdr;
+			$hdr = undef;
+		    }
+		    print "Menu $menu : '$msg[$sc{$acc}]' and '$msg[$_]' both use shortcut '$acc'\n";
+		    $bad = 1;
+		} else {
+		    $sc{$acc} = $_;
+		}
 	    }
 	}
 	if ($bad) {

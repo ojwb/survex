@@ -15,7 +15,7 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $
 	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
 	echo 'Build-Depends: debhelper (>= 1.1.17), xlibs-dev, libwxgtk2.4-dev, gcc-3.2, g++-3.2' >> control
 	echo >> control
-	echo Package: ${PACKAGE} >> control
+	echo 'Package: ${PACKAGE}' >> control
 	echo Architecture: any >> control
 	echo 'Depends: $${shlibs:Depends}' >> control
 	echo 'Recommends: survex-aven (= ${VERSION})' >> control
