@@ -618,12 +618,12 @@ img_read_item(img *pimg, img_point *p)
 	    }
 	 }
 
-	 pimg->label_len += len;
-	 if (!check_label_space(pimg, pimg->label_len + 1)) {
+	 if (!check_label_space(pimg, pimg->label_len + len + 1)) {
 	    img_errno = IMG_OUTOFMEMORY;
 	    return img_BAD;
 	 }
 	 q = pimg->label_buf + pimg->label_len;
+	 pimg->label_len += len;
 	 if (len && fread(q, len, 1, pimg->fh) != 1) {
 	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
