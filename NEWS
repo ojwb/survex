@@ -19,6 +19,9 @@ Changes in 0.97-prerelease1:
 * printer drivers: put "http://www.survex.com/" on printouts in case someone
   who gets a printout wants to know more about Survex.
 
+* cavern: added easting, northing, altitude added as prefered aliases for
+  dx, dy, dz.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling

@@ -310,6 +310,7 @@ static ulong
 get_qlist(void)
 {
    static sztok qtab[] = {
+	{"ALTITUDE",	 Q_DZ },
 	{"ANGLEOUTPUT",  Q_ANGLEOUTPUT },
 	{"BEARING",      Q_BEARING },
 	{"CLINO",        Q_GRADIENT },    /* alternative name */
@@ -319,13 +320,15 @@ get_qlist(void)
 	{"DECLINATION",  Q_DECLINATION },
 	{"DEFAULT",      Q_DEFAULT }, /* not a real quantity... */
 	{"DEPTH",        Q_DEPTH },
-	{"DX",           Q_DX },
-	{"DY",           Q_DY },
-	{"DZ",           Q_DZ },
+	{"DX",           Q_DX },          /* alternative name */
+	{"DY",           Q_DY },          /* alternative name */
+	{"DZ",           Q_DZ },          /* alternative name */
+	{"EASTING",      Q_DX },
 	{"GRADIENT",     Q_GRADIENT },
 	{"LENGTH",       Q_LENGTH },
 	{"LENGTHOUTPUT", Q_LENGTHOUTPUT },
 	{"LEVEL",        Q_LEVEL},
+	{"NORTHING",     Q_DY },
 	{"PLUMB",        Q_PLUMB},
 	{"POSITION",     Q_POS },
 	{"TAPE",         Q_LENGTH },      /* alternative name */
@@ -787,6 +790,7 @@ data(void)
 {
    /* FIXME: also BackComp, BackClino, Dr */
    static sztok dtab[] = {
+	{"ALTITUDE",	 Dz },
 #ifdef SVX_MULTILINEDATA /* NEW_STYLE */
 	{"BACK",         Back },
 #endif
@@ -796,6 +800,7 @@ data(void)
 	{"DX",		 Dx },
 	{"DY",		 Dy },
 	{"DZ",		 Dz },
+	{"EASTING",      Dx },
 	{"FROM",         Fr },
 	{"FROMCOUNT",    FrCount },
 	{"FROMDEPTH",    FrDepth },
@@ -806,6 +811,7 @@ data(void)
 #ifdef SVX_MULTILINEDATA /* NEW_STYLE */
 	{"NEXT",         Next },
 #endif
+	{"NORTHING",     Dy },
 	{"TAPE",         Tape }, /* alternative name */
 	{"TO",           To },
 	{"TOCOUNT",      ToCount },
