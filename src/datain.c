@@ -487,6 +487,7 @@ data_file(const char *pth, const char *fnm)
 	 nextch(); /* : */
 	 skipblanks();
 	 pcs->z[Q_DECLINATION] = -read_numeric(fFalse, NULL);
+	 pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
 	 get_token();
 	 pcs->ordering = compass_order;
 	 if (strcmp(buffer, "FORMAT") == 0) {
