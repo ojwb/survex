@@ -1610,7 +1610,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
 
     m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found));
 #ifdef _WIN32
-    m_Found->Refresh();
+    m_Found->Refresh(); // FIXME
 #endif
     m_Gfx->DisplaySpecialPoints();
 
@@ -1674,11 +1674,14 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
 
 		str.Printf(msg(/*From %s*/339), label2->text.c_str());
 		m_Dist1->SetLabel(str);
+
 		str.Printf(msg(/*  H %dm, V %dm*/340), int(d_horiz), int(dz));
 		m_Dist2->SetLabel(str);
+
 		str.Printf(msg(/*  Dist. %dm, Brg. %03d&deg;*/341),
 			   int(sqrt(dx*dx + dy*dy + dz*dz)), brg);
 		m_Dist3->SetLabel(str);
+
 		m_Gfx->SetThere(x0, y0, z0);
 	    }
 	}
