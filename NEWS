@@ -1,5 +1,7 @@
 Changes in 1.0.25:
 
+* extend: fixed incorrect extend (broken since 1.0.18).
+
 * (MacOS X version): hopefully fixed building of aven.
 
 * (Unix version): updated config.guess and config.sub so should build out of
