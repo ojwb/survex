@@ -69,6 +69,9 @@ binary-common: build install
 	mkdir -p debian/survex-svxedit/usr/share/man/man1
 	mv debian/tmp/usr/share/man/man1/aven.1.gz debian/survex-aven/usr/share/man/man1
 	mv debian/tmp/usr/share/man/man1/svxedit.1.gz debian/survex-svxedit/usr/share/man/man1
+# oddly /usr/bin/svxedit gets into survex and survex-svxedit otherwise
+# FIXME - this can't be the correct way to do this, can it?
+	rm -f debian/tmp/usr/bin/svxedit
 #	dh_installinfo
 #	dh_undocumented
 	dh_installchangelogs
