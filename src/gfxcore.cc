@@ -2658,9 +2658,8 @@ bool GfxCore::ExportMovie(const wxString & fnm)
     int width;
     int height;
     GetSize(&width, &height);
-    // Round up to next multiple of 4 or screengrab is skewed
-    width = (width + 3) &~ 3;
-    // Round up to next multiple of 2 (reqd by ffmpeg)
+    // Round up to next multiple of 2 (required by ffmpeg).
+    width += (width & 1);
     height += (height & 1);
 
     mpeg = new MovieMaker(width, height);

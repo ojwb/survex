@@ -184,6 +184,13 @@ void GLACanvas::FirstShow()
     //glAlphaFunc(GL_GREATER, 0.5f);
     //CHECK_GL_ERROR("FirstShow", "glAlphaFunc");
 
+    // No padding on pixel packing and unpacking (so screengrabs don't have
+    // "gaps" when the width isn't divisible by 4).
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    CHECK_GL_ERROR("FirstShow", "glPixelStorei GL_UNPACK_ALIGNMENT");
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    CHECK_GL_ERROR("FirstShow", "glPixelStorei GL_PACK_ALIGNMENT");
+
 #ifdef USE_FNT
     // Load font
     wxString path(msg_cfgpth());
@@ -865,8 +872,6 @@ bool GLACanvas::SaveScreenshot(const wxString & fnm, int type) const
     int width;
     int height;
     GetSize(&width, &height);
-    // Round up to next multiple of 4 or screengrab is skewed
-    width = (width + 3) &~ 3;
     unsigned char *pixels = (unsigned char *)malloc(width * height * 3);
     if (!pixels) return false;
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
