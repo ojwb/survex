@@ -290,7 +290,11 @@ img_read_item(img *pimg, img_point *p)
 	 goto again;
        case 2: case 3: {
 	 char *q;
+	 int ch;
 	 result = img_LABEL;
+	 ch = getc(pimg->fh);
+	 if (ch == EOF) return img_BAD;
+	 if (ch != '\\') ungetc(ch, pimg->fh);
 	 fgets(pimg->label, 257, pimg->fh);
 	 q = pimg->label + strlen(pimg->label) - 1;
 	 if (*q != '\n') return img_BAD;
@@ -385,6 +389,10 @@ img_read_item(img *pimg, img_point *p)
 	    goto ascii_again;
 	 } else if (strcmp(tmpbuf, "name") == 0) {
 	    /* FIXME: may overflow... */
+	    int ch;
+	    ch = getc(pimg->fh);
+	    if (ch == EOF) return img_BAD;
+	    if (ch != '\\') ungetc(ch, pimg->fh);
 	    if (fscanf(pimg->fh, "%s", pimg->label) < 1) return img_BAD;
 	    result = img_LABEL;
 	 } else

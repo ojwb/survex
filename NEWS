@@ -27,6 +27,8 @@
 * xcaverot/caverot: tweaked sense of a few controls to be consistent
   with each other and with aven.
 
+* Strip leading '\' from station names read from old .3d files.
+
 Changes in 0.97-prerelease5:
 
 * survex: conversion wrapper now only creates __svxtmp.svx file if it
