@@ -739,9 +739,9 @@ replace_trailing_travs(void)
       printf("    attachment stn is at (%f, %f, %f)\n",
 	     POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 #endif
-      /* We may have swap the links round when we removed the leg.  If we did
-       * then stn1->leg[i] will be in use.  The link we swapped with is the
-       * first free leg */
+      /* We may have swapped the links round when we removed the leg.  If
+       * we did then stn1->leg[i] will be in use.  The link we swapped
+       * with is the first free leg */
       if (stn1->leg[i]) {
 	 /* j is the direction to swap with */
 	 int j = (stn1->leg[1]) ? 2 : 1;
