@@ -8,6 +8,10 @@
 
 * cavern: reduced memory usage in code which reads a survey station name.
 
+* cavern: reported CPU time would go negative if cavern ran for more than
+  about 36 minutes (highly unlikely but not impossible on a slow machine
+  with a large, highly interconnect survey) - fixed.
+
 * cavern: avoid unnecessary work when --percentage isn't specified.
 
 * cavern: Writing "*:" at the start of a .svx file would crash cavern - fixed
