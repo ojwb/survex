@@ -1,3 +1,6 @@
+* Asking for messages in language en_GB now tries language en as it
+  was meant to.
+
 Changes in 0.99-prerelease1:
 
 * Major clean-up of Survex Manual; renamed from "svxdocs" to "manual".

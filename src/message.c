@@ -1,4 +1,4 @@
-/* > message.c
+/* message.c
  * Fairly general purpose message and error routines
  * Copyright (C) 1993-2001 Olly Betts
  *
@@ -633,11 +633,11 @@ parse_msg_file(int charset_code)
    fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
 
    if (!fh) {
-      /* e.g. if 'en-COCKNEY' is unknown, see if we know 'en' */
-      if (strlen(fnm) > 3 && fnm[2] == '-') {
+      /* e.g. if 'en_GB' is unknown, see if we know 'en' */
+      if (strlen(fnm) > 3 && fnm[2] == '_') {
 	 fnm[2] = '\0';
 	 fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
-	 if (!fh) fnm[2] = '-'; /* for error reporting */
+	 if (!fh) fnm[2] = '_'; /* for error reporting */
       }
    }
 
