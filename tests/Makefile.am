@@ -3,6 +3,7 @@
 TESTS = diffpos.tst cavern.tst cavfail.tst extend.tst
 
 EXTRA_DIST = diffpos.tst cavern.tst cavfail.tst extend.tst\
+beginroot.svx beginroot.pos\
 oneleg.svx oneleg.pos\
 midpoint.svx midpoint.pos\
 noose.svx noose.pos\

@@ -411,6 +411,8 @@ set_chars(void)
 static void
 check_reentry(prefix *tag)
 {
+   /* Don't try to check "*prefix \" or "*begin \" */
+   if (!tag->up) return;
    if (tag->filename) {
       if (tag->line != file.line ||
 	  strcmp(tag->filename, file.filename) != 0) {
@@ -432,7 +434,12 @@ check_reentry(prefix *tag)
 static void
 set_prefix(void)
 {
-   prefix *tag = read_prefix(fFalse);
+   prefix *tag;
+   /* Issue warning first, so "*prefix \" warns first that *prefix is
+    * deprecated and then that ROOT is...
+    */
+   compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
+   tag = read_prefix(fFalse);
    pcs->Prefix = tag;
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
@@ -444,7 +451,6 @@ set_prefix(void)
       }
    }
 #endif
-   compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
    check_reentry(tag);
 }
 
