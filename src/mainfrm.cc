@@ -1395,12 +1395,6 @@ void MainFrm::ShowInfo(LabelInfo *label)
 		brg *= 400.0 / 360.0;
 		brg_unit = msg(/*grad*/345);
 	    }
-	    if (brg < 0) {
-		brg += 360;
-	    }
-	    if (brg < 0) {
-		brg += 360;
-	    }
 	    if (m_Gfx->m_Metric) {
 		str.Printf(msg(/*  Dist. %d%s, Brg. %03d%s*/341),
 			   int(dr), "m", int(brg), brg_unit.c_str());
@@ -1554,18 +1548,18 @@ void MainFrm::OnOpenPres(wxCommandEvent& event)
 
 void MainFrm::OnFileOpenTerrainUpdate(wxUpdateUIEvent& event)
 {
-    event.Enable(m_File != "");
+    event.Enable(!m_File.empty());
 }
 
 #ifdef AVENPRES
 void MainFrm::OnOpenPresUpdate(wxUpdateUIEvent& event)
 {
-    event.Enable(m_File != "");
+    event.Enable(!m_File.empty());
 }
 
 void MainFrm::OnPresCreateUpdate(wxUpdateUIEvent& event)
 {
-    event.Enable(!m_PresLoaded && m_File != "");
+    event.Enable(!m_PresLoaded && !m_File.empty());
 }
 
 void MainFrm::OnPresGoUpdate(wxUpdateUIEvent& event)
@@ -1746,6 +1740,6 @@ void MainFrm::ToggleSidePanel()
 
 void MainFrm::OnViewSidePanelUpdate(wxUpdateUIEvent& ui)
 {
-    ui.Enable(m_File != "");
+    ui.Enable(!m_File.empty());
     ui.Check(m_Splitter->IsSplit());
 }

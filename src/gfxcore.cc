@@ -1227,7 +1227,6 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	    glCallList(m_Lists.grid);
 	}
 
-#ifdef AVENGL
 	if (m_TerrainLoaded && m_SolidSurface) {
 	    // Draw the terrain.
 
@@ -1262,7 +1261,6 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	    glDisable(GL_TEXTURE_2D);
 	    glDisable(GL_BLEND);*/
 	}
-#endif
 
 	//--FIXME: share with above
 
