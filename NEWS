@@ -1,3 +1,9 @@
+Changes in 0.95-prerelease3:
+
+* aven: updated to compile with new cvrotimg.
+
+* More fixes for compilation problems on non-Linux UNIX platforms.
+
 Changes in 0.95-prerelease2:
 
 * Minor tweaks to some messages.
