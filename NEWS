@@ -1,4 +1,11 @@
-* aven: improved initial sizing of window.
+* aven: improved initial sizing of window; "Toggle rotation" toolbar
+  icon now works; handle files with only stations better; presentation
+  code disabled for 1.0; releasing mouse over menubar now ends drag;
+  don't highlight hidden stations; accelerator problems fixed; find now
+  works.
+
+* (MS Windows) aven: fixed crash on File/Open when a file was already
+  loaded.
 
 * Consitent capitalisation of --help option descriptions.
 
