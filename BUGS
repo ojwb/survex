@@ -20,6 +20,8 @@ wxaven with Motif:
 Date: Mon, 09 Apr 2001
 From: Olly
 
+wxaven:
+
 - dragging scale bar should change scale, not move scale bar!
 
 - status bar?
@@ -29,8 +31,10 @@ From: Olly
 Date: Wed, 11 Apr 2001
 From: Olly
 
+wxaven:
+
 - Accents in compass and clinometer labels don't display right - need
-to fix font encoding. [quick fix is to use wxROMAN in place of wxSWISS]
+to fix font encoding. [quick fixed by using wxROMAN in place of wxSWISS]
 
 - Accents in menus were working but suddenly stopped - I think this
 happened when I upgraded debian and a new libgtk package got
@@ -40,6 +44,8 @@ installed...
 
 Date: Sun, 21 Apr 2001
 From: Olly
+
+wxaven:
 
 - Provide a toolbar?
 

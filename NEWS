@@ -1,5 +1,9 @@
 * Updated Portuguese and German translations.
 
+* Suppress warning box when starting aven with English messages.
+
+* Accents now work in aven display.
+
 Changes in 0.97-prerelease3:
 
 * (Unix version): aven: Internationalised; Fixed serious drawing bug
