@@ -18,6 +18,8 @@ Changes in 1.0.4:
 * (MacOS X version): aven: aven now builds on MacOS X - we just need to sort
   out packaging now...
 
+* (MSDOS version): upgraded graphics library used to Allegro 4.0.1.
+
 * Minor documentation updates.
 
 Changes in 1.0.3:
@@ -178,7 +180,7 @@ Changes in 0.99-prerelease8:
 * (MS Windows version): aven: wxWindows messages files were missing.  We
   now include them for languages which Survex also supports.
 
-* (MS DOS version): caverot: Shift and/or Ctrl + Arrow keys now works.
+* (MSDOS version): caverot: Shift and/or Ctrl + Arrow keys now works.
 
 * aven: Close button in About box is now always right in the bottom right
   corner.
@@ -186,12 +188,12 @@ Changes in 0.99-prerelease8:
 * Display copyright symbol rather than (C) where the current character set
   allows it.
 
-* (MS DOS version): caverot: default to 320x200 when running under
+* (MSDOS version): caverot: default to 320x200 when running under
   Microsoft Windows 2000 and XP as we already do on NT.
 
-* (MS DOS version): fixed problem when running on DOS outside MS Windows.
+* (MSDOS version): fixed problem when running on DOS outside MS Windows.
 
-* (MS DOS version): detect current codepage rather than assuming it's 850.
+* (MSDOS version): detect current codepage rather than assuming it's 850.
   We now support codepages 437 and 850 (the common ones) - for other
   codepages we fall back to using 7-bit ASCII.
 
@@ -227,7 +229,7 @@ Changes in 0.99-prerelease6:
 * (MS Windows version): don't include plain text versions of docs; fixed
   default action for 3d files to be "Open".
 
-* (MS DOS version): include text docs.
+* (MSDOS version): include text docs.
 
 * cavern: more intelligent and less verbose reporting of errors in nested
   included files (inspired by GCC 3.0).
@@ -682,7 +684,7 @@ Changes in 0.97-prerelease7:
 
 * Messages relating to command line options are now translatable.
 
-* (MS DOS versions): now supply self-extracting zip archives.
+* (MSDOS versions): now supply self-extracting zip archives.
 
 * (MS Windows version): after running cavern, wait for a key press
   before closing the window.
