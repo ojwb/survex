@@ -1,5 +1,8 @@
 * Standards-Version: 3.6.0 / Fixed lintian warning / Tidied up debian/rules.
 
+* cavern: Fixed interleaved topofil data style - the length was always being
+  calculated as zero.
+
 * (Unix version): aven: "All Files" now shows files without extensions too.
 
 * aven: added Ctrl+Q as shortcut for File->Exit.
