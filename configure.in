@@ -110,7 +110,7 @@ if test -n "$WXCONFIG" ; then
     if ( exec >&5 2>&5 ; $WXCONFIG --version ; exit $? ) then
       WX_LIBS=`$WXCONFIG --libs`
       if test -n "$MINGW32$CYGWIN" ; then
-        AVENRC=aven.rc
+        AVENRC=avenrc.o
       fi
       AC_SUBST(WX_LIBS)
       WX_CFLAGS=`$WXCONFIG --cflags`

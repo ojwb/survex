@@ -24,18 +24,16 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 
 survex_SOURCES = wrap.c osdepend.c
 
-EXTRA_aven_SOURCES = aven.rc
-
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
- useful.c @AVENRC@
+ useful.c
 
-aven_LDADD = @LIBOBJS@ @WX_LIBS@
+aven_LDADD = @AVENRC@ @LIBOBJS@ @WX_LIBS@
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN
 
 # FIXME: should use wxconfig or similar to get includes
-aven.coff: aven.rc
+avenrc.o: aven.rc
 	i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $@ $<
 
 PRSRC = prcore.c prio.c useful.c img.c $(COMMONSRC)
@@ -77,7 +75,7 @@ noinst_DATA = borlandc/makefile riscos/makefile
  
 EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
  riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
- riscos/stdh/regnames riscos/stdh/swinames miniam.pl
+ riscos/stdh/regnames riscos/stdh/swinames miniam.pl aven.rc
 
 MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile
 
