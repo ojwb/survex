@@ -71,19 +71,13 @@ binary-common: build install
 	dh_installexamples
 	dh_installmenu
 #	dh_installemacsen
-#	dh_installpam
 #	dh_installmime
-#	dh_installinit
-#	dh_installcron
 	gzip -9 debian/tmp/usr/share/man/man1/*
-#	dh_installinfo
-#	dh_undocumented
 	dh_installchangelogs
 	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
-#	dh_suidregister
 #	dh_makeshlibs
 	dh_installdeb
 #	dh_perl

@@ -64,9 +64,10 @@ class AvenSplitterWindow : public wxSplitterWindow {
 
     public:
 	AvenSplitterWindow(MainFrm *parent_)
-	    : parent(parent_),
-	      wxSplitterWindow(parent_, -1, wxDefaultPosition, wxDefaultSize,
-			       wxSP_3D | wxSP_LIVE_UPDATE) {
+	    : wxSplitterWindow(parent_, -1, wxDefaultPosition, wxDefaultSize,
+			       wxSP_3D | wxSP_LIVE_UPDATE),
+	      parent(parent_)
+	{
 	}
 
 	void OnSplitterDClick(wxSplitterEvent &e) {
@@ -661,8 +662,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     timer.Start();
 #endif
 
-    Splash* splash = wxGetApp().GetSplashScreen();
-
     img* survey = img_open_survey(file, prefix.c_str());
     if (!survey) {
 	wxString m = wxString::Format(msg(img_error()), file.c_str());
@@ -670,10 +669,14 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	return false;
     }
 
-    long pos = ftell(survey->fh);
-    fseek(survey->fh, 0, SEEK_END);
-    long file_size = ftell(survey->fh);
-    fseek(survey->fh, pos, SEEK_SET);
+    Splash* splash = wxGetApp().GetSplashScreen();
+    long file_size;
+    {
+	long pos = ftell(survey->fh);
+	fseek(survey->fh, 0, SEEK_END);
+	file_size = ftell(survey->fh);
+	fseek(survey->fh, pos, SEEK_SET);
+    }
 
     m_File = file;
 
@@ -934,13 +937,10 @@ void MainFrm::FillTree()
 		// are the same.
 		// Note that we require a match of a whole number of parts
 		// between dots!
-		size_t pos = 0;
-		while (prefix[pos] == current_prefix[pos]) {
-		    if (prefix[pos] == separator) count = pos + 1;
-		    pos++;
+		for (size_t i = 0; prefix[i] == current_prefix[i]; ++i) {
+		    if (prefix[i] == separator) count = i + 1;
 		}
-	    }
-	    else {
+	    } else {
 		count = prefix.Length() + 1;
 	    }
 
@@ -1510,7 +1510,7 @@ void MainFrm::OnPresEraseAllUpdate(wxUpdateUIEvent& event)
 }
 #endif
 
-void MainFrm::OnFind(wxCommandEvent& event)
+void MainFrm::OnFind(wxCommandEvent&)
 {
     wxBusyCursor hourglass;
     // Find stations specified by a string or regular expression.
@@ -1609,7 +1609,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
     m_Gfx->SetFocus();
 }
 
-void MainFrm::OnHide(wxCommandEvent& event)
+void MainFrm::OnHide(wxCommandEvent&)
 {
     // Hide any search result highlights.
     m_Found->SetLabel("");

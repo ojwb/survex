@@ -314,7 +314,7 @@ data_file(const char *pth, const char *fnm)
 {
    int begin_lineno_store;
    parse file_store;
-   enum {FMT_SVX, FMT_DAT, FMT_MAK} fmt = FMT_SVX;
+   volatile enum {FMT_SVX, FMT_DAT, FMT_MAK} fmt = FMT_SVX;
 
    {
       char *filename;
@@ -562,13 +562,13 @@ data_file(const char *pth, const char *fnm)
 	 if (ch == '#') {
 	    /* include a file */
 	    int ch_store;
-	    char *pth = path_from_fnm(file.filename);
-	    char *fnm = NULL;
-	    int fnm_len;
+	    char *dat_pth = path_from_fnm(file.filename);
+	    char *dat_fnm = NULL;
+	    int dat_fnm_len;
 	    nextch_handling_eol();
 	    while (ch != ',' && ch != ';' && ch != EOF) {
 	       while (isEol(ch)) process_eol();
-	       s_catchar(&fnm, &fnm_len, ch);
+	       s_catchar(&dat_fnm, &dat_fnm_len, ch);
 	       nextch_handling_eol();
 	    }
 	    while (ch != ';' && ch != EOF) {
@@ -625,11 +625,11 @@ data_file(const char *pth, const char *fnm)
 		     nextch_handling_eol();
 	       }
 	    }
-	    if (fnm) {
+	    if (dat_fnm) {
 	       ch_store = ch;
-	       data_file(pth, fnm);
+	       data_file(dat_pth, dat_fnm);
 	       ch = ch_store;
-	       osfree(fnm);
+	       osfree(dat_fnm);
 	    }
 	 } else {
 	    /* FIXME: also check for % and $ later */
@@ -645,7 +645,7 @@ data_file(const char *pth, const char *fnm)
    } else {
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
-	    int r;
+	    volatile int r;
 #ifdef CHASM3DX
 	    twig *temp = limb;
 #endif
@@ -775,7 +775,7 @@ handle_plumb(clino_type *p_ctype)
 }
 
 static void
-warn_readings_differ(int msg, real diff)
+warn_readings_differ(int msgno, real diff)
 {
    char buf[64];
    char *p;
@@ -788,7 +788,7 @@ warn_readings_differ(int msg, real diff)
       }
       if (*z) *z = '\0';
    }
-   compile_warning(msg, buf);
+   compile_warning(msgno, buf);
 }
 
 static bool
@@ -818,7 +818,7 @@ handle_comp_units(void)
 static real
 handle_compass(real *p_var)
 {
-   real var = VAR(Comp);
+   real compvar = VAR(Comp);
    real comp = VAL(Comp);
    real backcomp = VAL(BackComp);
    if (comp != HUGE_REAL) {
@@ -834,20 +834,20 @@ handle_compass(real *p_var)
 	 real diff = comp - backcomp;
 	 real adj = fabs(diff) > M_PI ? M_PI : 0;
 	 diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
-	 if (sqrd(diff / 2.0) > var + VAR(Q_BACKBEARING)) {
+	 if (sqrd(diff / 2.0) > compvar + VAR(Q_BACKBEARING)) {
 	    /* fore and back readings differ by more than 2 sds */
 	    warn_readings_differ(/*Compass reading and back compass reading disagree by %s degrees*/98, diff);
 	 }
-	 comp = (comp / var + backcomp / VAR(BackComp));
-	 var = (var + VAR(BackComp)) / 4;
-	 comp *= var;
+	 comp = (comp / compvar + backcomp / VAR(BackComp));
+	 compvar = (compvar + VAR(BackComp)) / 4;
+	 comp *= compvar;
 	 comp += adj;
       } else {
 	 comp = backcomp;
-	 var = VAR(BackComp);
+	 compvar = VAR(BackComp);
       }
    }
-   *p_var = var;
+   *p_var = compvar;
    return comp;
 }
 
@@ -1321,8 +1321,6 @@ static int
 process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 {
    real tape = VAL(Tape);
-   real frdepth = VAL(FrDepth);
-   real todepth = VAL(ToDepth);
 
    real dx, dy, dz;
    real vx, vy, vz;
@@ -1482,6 +1480,7 @@ data_normal(void)
        case Count:
 	  VAL(FrCount) = VAL(ToCount);
 	  read_reading(ToCount, fFalse);
+	  fTopofil = fTrue;
 	  break;
        case FrCount:
 	  read_reading(FrCount, fFalse);

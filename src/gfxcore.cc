@@ -333,7 +333,7 @@ void GfxCore::OnIdle(wxIdleEvent& event)
     }
 }
 
-void GfxCore::OnPaint(wxPaintEvent& event)
+void GfxCore::OnPaint(wxPaintEvent&)
 {
     // Redraw the window.
 
@@ -831,8 +831,8 @@ void GfxCore::DrawDepthbar()
         
         strs[band] = FormatLength(z, false);
 
-        glaCoord x, y;
-        GetTextExtent(strs[band], &x, &y);
+        glaCoord x, dummy;
+        GetTextExtent(strs[band], &x, &dummy);
         if (x > size) {
             size = x;
         }
@@ -2029,7 +2029,6 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 void GfxCore::DrawPolylines(bool tubes, bool surface)
 {
     Double x0, y0, z0;
-    int band0;
 
     bool first_point = true;
     bool last_was_move = true;
@@ -2103,11 +2102,10 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 			} else if (tubes) {
 			    list<Vector3>::const_iterator i, prev_i;
 			    i = centreline.begin();
-			    int band0 = GetDepthColour(i->getZ());
 			    PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
 			    prev_i = i;
 			    ++i;
-			    int segment = 0;
+			    list<Vector3>::size_type segment = 0;
 			    while (i != centreline.end()) {
 				// get the coordinates of this vertex
 				const Vector3 & pt_v = *i;
@@ -2154,7 +2152,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 				    }
 
 				    cover_end = true;
-				} else if (segment == centreline.size() - 1) {
+				} else if (segment + 1 == centreline.size()) {
 				    // last segment
 				    Double h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
 					sqrd(prev_pt_v.getY() - pt_v.getY());
@@ -2248,7 +2246,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 						if (shift != 2) {
 						    Vector3 temp(u[0]);
 						    int j = 0;
-						    for (int i = 0; i < 3; ++i) {
+						    for (int l = 0; l < 3; ++l) {
 							int k = (j + shift) % 4;
 							u[j] = u[k];
 							j = k;
@@ -2382,11 +2380,10 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 			} else if (tubes) {
 			    list<Vector3>::const_iterator i, prev_i;
 			    i = centreline.begin();
-			    int band0 = GetDepthColour(i->getZ());
 			    PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
 			    prev_i = i;
 			    ++i;
-			    int segment = 0;
+			    list<Vector3>::size_type segment = 0;
 			    while (i != centreline.end()) {
 				// get the coordinates of this vertex
 				const Vector3 & pt_v = *i;
@@ -2433,7 +2430,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 				    }
 
 				    cover_end = true;
-				} else if (segment == centreline.size() - 1) {
+				} else if (segment + 1 == centreline.size()) {
 				    // last segment
 				    Double h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
 					sqrd(prev_pt_v.getY() - pt_v.getY());
@@ -2527,7 +2524,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 						if (shift != 2) {
 						    Vector3 temp(u[0]);
 						    int j = 0;
-						    for (int i = 0; i < 3; ++i) {
+						    for (int l = 0; l < 3; ++l) {
 							int k = (j + shift) % 4;
 							u[j] = u[k];
 							j = k;

@@ -1,4 +1,4 @@
-Changes between 1.0.25 and 1.1.0:
+Changes between 1.0.26 and 1.1.0:
 
 * NOTE: Survex 1.1.X releases are development snapshots made available for
   the purposes of allowing wider testing and getting more user feedback.  Once
@@ -24,21 +24,48 @@ Changes between 1.0.25 and 1.1.0:
 * aven: Mouse actions changed (hopefully they're now more natural, but
   you may find the change disorientating - feedback wanted on this).
 
+* cavern: Dates given to *date are now stored in the 3d file.
+
+Changes which will be in 1.0.26:
+
+* Standards-Version: 3.6.0 / Fixed lintian warning / Tidied up debian/rules.
+
+* cavern: Fixed interleaved topofil data style - the length was always being
+  calculated as zero.
+
+* (Unix version): aven: "All Files" now shows files without extensions too.
+
 * aven: added Ctrl+Q as shortcut for File->Exit.
 
-* Fixed configure --enable-defaultlang=XX to work.
+* aven: depth colouring now uses a proper colour gradient.
+
+* (MacOS X version): aven: the keyboard and mouse now work!  It turns out that
+  we must apply resources *after* installing.
+
+* (MacOS X version): aven: now works when run from the MacOS X Finder.
+
+* (MacOS X version): look for message files and other resources relative to the
+  binaries so that the user can install Survex from a disk image in the location
+  of their choice.
+
+* (MacOS X version): fixed not to try to build aven if wxWindows isn't
+  installed.
+
+* cad3d: Fixed -e and -r options to not crash (the long versions have always worked).
+
+* Fixed standard graphics for "Note", "Warning", etc in the PostScript manual.
+
+* Documentation updated.
 
 * (Unix version): Fixed svxedit man page which previously contained xcaverot
   documentation!
 
-* Documentation updated.
+* test suite: check that cavern doesn't report "nan" or "NaN" for any values.
 
-* (Unix version): aven: "All Files" now shows files without extensions too.
+* (Unix version): Fixed configure --enable-defaultlang=XX to work.
 
-* Fixed standard graphics for "Note", "Warning", etc in the PostScript manual.
-
-* cavern: Dates given to *date are now stored and passed to img when writing
-  the 3d file.  They aren't yet written though...
+* (Unix version): fixed configure code to turn on lots of GCC warnings and fixed
+  most of them.
 
 Changes in 1.0.25:
 

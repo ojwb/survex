@@ -66,6 +66,9 @@ static jmp_buf jmpbufSignal;
 #elif (OS==RISCOS)
 # include "oslib/wimpreadsy.h"
 # include "oslib/territory.h"
+#elif (OS==UNIX)
+# include <sys/types.h>
+# include <sys/stat.h>
 #endif
 
 /* For funcs which want to be immune from messing around with different
@@ -213,12 +216,10 @@ init_signals(void)
 {
    int en;
    if (!setjmp(jmpbufSignal)) {
-#if 0 /* disable these to get a core dump */
       signal(SIGABRT, report_sig); /* abnormal termination eg abort() */
       signal(SIGFPE,  report_sig); /* arithmetic error eg /0 or overflow */
       signal(SIGILL,  report_sig); /* illegal function image eg illegal instruction */
       signal(SIGSEGV, report_sig); /* illegal storage access eg access outside memory limits */
-#endif
 # ifdef SIGSTAK /* only on RISC OS AFAIK */
       signal(SIGSTAK, report_sig); /* stack overflow */
 # endif
@@ -1036,17 +1037,33 @@ msg_init(char * const *argv)
 	 free_pth = fTrue;
       }
       if (pth[0]) {
+	 struct stat buf;
 	 /* If we're run with an explicit path, check if "../lib/en.msg"
 	  * from the program's path exists, and if so look there for
 	  * support files - this allows us to test binaries in the build
 	  * tree easily. */
-	 /* May also be useful on MacOS X where the programs may be
-	  * installed anywhere... */
-	 char *p = use_path(pth, "../lib/en.msg");
-	 FILE *f = fopen(p, "r");
-	 if (f) {
-	    close(f);
-	    pth_cfg_files = use_path(pth, "../lib");
+#if defined(__GNUC__) && defined(__APPLE_CC__)
+	 /* On MacOS X the programs may be installed anywhere, with lib and
+	  * the binaries in the same directory. */
+	 p = use_path(pth, "lib/en.msg");
+	 if (lstat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
+	    pth_cfg_files = use_path(pth, "lib");
+	 }
+	 osfree(p);
+#endif
+	 p = use_path(pth, "../lib/en.msg");
+	 if (lstat(p, &buf) == 0) {
+#ifdef S_ISDIR
+	    /* POSIX way */
+	    if (S_ISREG(buf.st_mode)) {
+	       pth_cfg_files = use_path(pth, "../lib");
+	    }
+#else
+	    /* BSD way */
+	    if ((buf.st_mode & S_IFMT) == S_IFREG) {
+	       pth_cfg_files = use_path(pth, "../lib");
+	    }
+#endif
 	 }
 	 osfree(p);
       }
@@ -1207,9 +1224,9 @@ msg_init(char * const *argv)
 	      r.x.cx = 2048;
 	      /* bit 1 is the carry flag */
 	      if (__dpmi_int(0x21, &r) != -1 && !(r.x.flags & 1)) {
-		 unsigned short p;
-		 dosmemget(__tb + 3, 2, &p);
-		 country_code = p;
+		 unsigned short val;
+		 dosmemget(__tb + 3, 2, &val);
+		 country_code = val;
 # else
 	      union REGS r;
 	      r.x.ax = 0x3800; /* get current country info */

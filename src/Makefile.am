@@ -107,8 +107,8 @@ endif
 #aven_CXXFLAGS = @WX_CXXFLAGS@
 #aven_LDFLAGS = @WX_LDFLAGS@
 
-aven_CFLAGS = @WXGL_CFLAGS@ -DAVEN
-aven_CXXFLAGS = @WXGL_CXXFLAGS@
+aven_CFLAGS = @WXGL_CFLAGS@ $(AM_CFLAGS) -DAVEN
+aven_CXXFLAGS = @WXGL_CXXFLAGS@ $(AM_CXXFLAGS)
 aven_LDFLAGS = @WX_LDFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
@@ -149,7 +149,7 @@ z_getopt.c: getopt.c gettexttomsg.pl
 aven.pal: $(srcdir)/gradient.pov
 	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-aven.pal && mv tmp-aven.pal aven.pal
 
-MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile
+MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile $(BUILT_SOURCES)
 
 borlandc/makefile: $(srcdir)/Makefile.am miniam.pl
 	$(srcdir)/miniam.pl borlandc < $(srcdir)/Makefile.am > borlandc/tmp-makefile && mv borlandc/tmp-makefile borlandc/makefile

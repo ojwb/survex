@@ -1,6 +1,6 @@
 /* diffpos.c */
 /* Utility to compare two SURVEX .pos or .3d files */
-/* Copyright (C) 1994,1996,1998-2002 Olly Betts
+/* Copyright (C) 1994,1996,1998-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@
 #include <string.h>
 #include <math.h>
 
-#include "cavern.h" /* just for REAL_EPSILON */
 #include "cmdline.h"
 #include "debug.h"
 #include "filelist.h"
@@ -35,8 +34,8 @@
 #include "namecmp.h"
 #include "useful.h"
 
-/* very small value for comparing floating point numbers with */
-#define EPSILON (REAL_EPSILON * 1000)
+/* Don't complain if values mismatch by a tiny amount (1e-6m i.e. 0.001mm) */
+#define TOLERANCE 1e-6
 
 /* default threshold is 1cm */
 #define DFLT_MAX_THRESHOLD 0.01
@@ -58,6 +57,10 @@ static struct help_msg help[] = {
    {HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
    {0, 0}
 };
+
+/* We use a hashtable with linked list buckets - this is how many hash table
+ * entries we have.  0x2000 with sizeof(void *) == 4 uses 32K. */
+#define TREE_SIZE 0x2000
 
 typedef struct station {
    struct station *next;
@@ -88,14 +91,14 @@ static void
 tree_init(void)
 {
    size_t i;
-   htab = osmalloc(0x2000 * ossizeof(station *));
-   for (i = 0; i < 0x2000; i++) htab[i] = NULL;
+   htab = osmalloc(TREE_SIZE * ossizeof(station *));
+   for (i = 0; i < TREE_SIZE; i++) htab[i] = NULL;
 }
 
 static void
 tree_insert(const char *name, const img_point *pt)
 {
-   int v = hash_string(name) & 0x1fff;
+   int v = hash_string(name) & (TREE_SIZE - 1);
    station *stn;
 
    /* Catch duplicate labels - .3d files shouldn't have them, but some do
@@ -115,7 +118,7 @@ tree_insert(const char *name, const img_point *pt)
 static void
 tree_remove(const char *name, const img_point *pt)
 {
-   int v = hash_string(name) & 0x1fff;
+   int v = hash_string(name) & (TREE_SIZE - 1);
    station **prev;
    station *p;
 
@@ -133,9 +136,9 @@ tree_remove(const char *name, const img_point *pt)
       return;
    }
 
-   if (fabs(pt->x - (*prev)->pt.x) - threshold > EPSILON ||
-       fabs(pt->y - (*prev)->pt.y) - threshold > EPSILON ||
-       fabs(pt->z - (*prev)->pt.z) - threshold > EPSILON) {
+   if (fabs(pt->x - (*prev)->pt.x) - threshold > TOLERANCE ||
+       fabs(pt->y - (*prev)->pt.y) - threshold > TOLERANCE ||
+       fabs(pt->z - (*prev)->pt.z) - threshold > TOLERANCE) {
       printf(msg(/*Moved by (%3.2f,%3.2f,%3.2f): %s*/500),
 	     pt->x - (*prev)->pt.x,
 	     pt->y - (*prev)->pt.y,
@@ -179,7 +182,7 @@ tree_check(void)
       osfree(names);
    }
 
-   for (i = 0; i < 0x2000; i++) {
+   for (i = 0; i < TREE_SIZE; i++) {
       station *p;
       for (p = htab[i]; p; p = p->next) c++;
    }
@@ -187,7 +190,7 @@ tree_check(void)
 
    names = osmalloc(c * ossizeof(char *));
    c = 0;
-   for (i = 0; i < 0x2000; i++) {
+   for (i = 0; i < TREE_SIZE; i++) {
       station *p;
       for (p = htab[i]; p; p = p->next) names[c++] = p->name;
    }
