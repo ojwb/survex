@@ -70,7 +70,17 @@ class AvenSplitterWindow : public wxSplitterWindow {
 	}
 
 	void OnSplitterDClick(wxSplitterEvent &e) {
+	    e.Veto();
+#if defined(__UNIX__) && wxMAJOR_VERSION == 2 && wxMINOR_VERSION == 3 && wxRELEASE_NUMBER <= 4
+	    parent->m_SashPosition = GetSashPosition(); // save width of panel
+	    // Calling Unsplit from OnSplitterDClick() doesn't work in debian
+	    // wxGtk 2.3.3.2 (which calls itself 2.3.4) - it does work from CVS
+	    // prior to the actual 2.3.4 though - FIXME: monitor this
+	    // situation...
+	    SetSashPosition(0);
+#else
 	    parent->ToggleSidePanel();
+#endif
 	}
 	
     private:
@@ -1433,8 +1443,7 @@ void MainFrm::ToggleSidePanel()
     if (m_Splitter->IsSplit()) {
 	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
 	m_Splitter->Unsplit(m_Panel);
-    }
-    else {
+    } else {
 	m_Panel->Show(true);
 	m_Gfx->Show(true);
 	m_Splitter->SplitVertically(m_Panel, m_Gfx, m_SashPosition);

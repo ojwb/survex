@@ -165,7 +165,10 @@ public:
 
 class MainFrm : public wxFrame {
     wxFileHistory m_history;
+public: // FIXME: just public for workaround bodge in
+        // wxSplitterWindow::OnSplitterDClick
     int m_SashPosition;
+private:
     list<PointInfo*>* m_Points;
     list<LabelInfo*> m_Labels;
     Double m_XExt;
