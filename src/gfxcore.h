@@ -249,6 +249,7 @@ class GfxCore : public wxWindow {
     bool m_FixedPts;
     bool m_ExportedPts;
     bool m_Grid;
+    int m_NumCrosses;
 
     int m_DoingPresStep;
     struct step_params {

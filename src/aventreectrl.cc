@@ -42,12 +42,14 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
     if (m_Enabled) {
         int flags;
         wxTreeItemId pos = HitTest(event.GetPosition(), flags);
-	if (((flags & wxTREE_HITTEST_ONITEMLABEL) || (flags & wxTREE_HITTEST_ONITEMRIGHT)) && pos != m_LastItem) {
+	if (((flags & wxTREE_HITTEST_ONITEMLABEL) || (flags & wxTREE_HITTEST_ONITEMRIGHT)) &&
+	    pos != m_LastItem) {
 	    if (m_LastItem != -1) {
 	        SetItemBold(m_LastItem, false);
 	    }
 	    SetItemBold(pos, true);
 	    m_Parent->DisplayTreeInfo(GetItemData(pos));
+	    m_LastItem = pos;
 	}
 	else if (pos != m_LastItem) {
 	    if (m_LastItem != -1) {
@@ -55,7 +57,6 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 	    }
 	    m_Parent->DisplayTreeInfo(NULL);
 	}
-	m_LastItem = pos;
     }
 }
 
@@ -80,5 +81,5 @@ bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data)
         *data = GetItemData(id);
     }
 
-    return id.IsOk();
+    return id.IsOk() && *data;
 }

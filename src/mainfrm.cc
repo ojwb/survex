@@ -28,10 +28,14 @@
 #include "img.h"
 #include "namecmp.h"
 
+#include <wx/confbase.h>
 #include <float.h>
 #include <stack>
 
 const int NUM_DEPTH_COLOURS = 13;
+
+#define TOOLBAR_BITMAP(file) wxBitmap(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR + wxString(file),\
+				      wxBITMAP_TYPE_PNG)
 
 static const unsigned char REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255, 230};
 static const unsigned char GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0, 230};
@@ -288,6 +292,50 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxAcceleratorTable accel(11, entries);
     SetAcceleratorTable(accel);
 
+    // Create toolbar.
+    wxToolBar* toolbar = CreateToolBar();
+    toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open.png"), "Open a 3D file for viewing");
+    toolbar->AddTool(menu_FILE_OPEN_PRES, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation.png"), wxNullBitmap, true,
+		     -1, -1, NULL, "Toggle rotation");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_ORIENT_PLAN, TOOLBAR_BITMAP("plan.png"), "Switch to plan view");
+    toolbar->AddTool(menu_ORIENT_ELEVATION, TOOLBAR_BITMAP("elevation.png"), "Switch to elevation view");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_ORIENT_DEFAULTS, TOOLBAR_BITMAP("defaults.png"), "Restore default view");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_VIEW_SHOW_NAMES, TOOLBAR_BITMAP("names.png"), wxNullBitmap, true,
+		     -1, -1, NULL, "Show station names");
+    toolbar->AddTool(menu_VIEW_SHOW_CROSSES, TOOLBAR_BITMAP("crosses.png"), wxNullBitmap, true,
+		     -1, -1, NULL, "Show crosses on stations");
+    toolbar->AddTool(menu_VIEW_SHOW_ENTRANCES, TOOLBAR_BITMAP("entrances.png"), wxNullBitmap, true,
+		     -1, -1, NULL, "Highlight entrances");
+    toolbar->AddTool(menu_VIEW_SHOW_FIXED_PTS, TOOLBAR_BITMAP("fixed-pts.png"), wxNullBitmap, true,
+		     -1, -1, NULL, "Highlight fixed points");
+    toolbar->AddTool(menu_VIEW_SHOW_EXPORTED_PTS, TOOLBAR_BITMAP("exported-pts.png"), wxNullBitmap, true,
+		     -1, -1, NULL, "Highlight exported stations");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_VIEW_SHOW_LEGS, TOOLBAR_BITMAP("ug-legs.png"), wxNullBitmap, true,
+		     -1, -1, NULL, "Show underground surveys");
+    toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs.png"), wxNullBitmap, true,
+		     -1, -1, NULL, "Show surface surveys");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_PRES_CREATE, TOOLBAR_BITMAP("pres-create.png"),
+		     "Create a new presentation");
+    toolbar->AddTool(menu_PRES_RECORD, TOOLBAR_BITMAP("pres-record.png"),
+		     "Record a presentation step");
+    toolbar->AddTool(menu_PRES_FINISH, TOOLBAR_BITMAP("pres-finish.png"),
+		     "Finish this presentation and save it to disk");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_PRES_RESTART, TOOLBAR_BITMAP("pres-restart.png"),
+		     "Go to the start of the presentation");
+    toolbar->AddTool(menu_PRES_GO_BACK, TOOLBAR_BITMAP("pres-go-back.png"),
+		     "Go back one presentation step");
+    toolbar->AddTool(menu_PRES_GO, TOOLBAR_BITMAP("pres-go.png"), "Go forwards one presentation step");
+
+    toolbar->Realize();
+
     int x;
     int y;
     GetSize(&x, &y);
@@ -472,16 +520,14 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		label->x = pt.x;
 		label->y = pt.y;
 		label->z = pt.z;
-		label->isEntrance = (survey->flags & img_SFLAG_ENTRANCE);
-		label->isFixedPt = (survey->flags & img_SFLAG_FIXED);
-		label->isExportedPt = (survey->flags & img_SFLAG_EXPORTED);
-		if (label->isEntrance) {
+		label->flags = survey->flags;
+		if (label->IsEntrance()) {
 		    m_NumEntrances++;
 		}
-		if (label->isFixedPt) {
+		if (label->IsFixedPt()) {
 		    m_NumFixedPts++;
 		}
-		if (label->isExportedPt) {
+		if (label->IsExportedPt()) {
 		    m_NumExportedPts++;
 		}
 		m_Labels.push_back(label);
@@ -561,6 +607,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     // Fill the tree of stations and prefixes.
     FillTree();
+    m_Tree->Expand(m_TreeRoot);
 
     // Sort out depth colouring boundaries (before centering dataset!)
     SortIntoDepthBands(points);
@@ -597,7 +644,9 @@ void MainFrm::FillTree()
 	    if (bit == "") {
 	        bit = "<root>";
 	    }
-	    m_Tree->SetItemData(m_Tree->AppendItem(current_id, bit), new TreeData(label));
+	    wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
+	    m_Tree->SetItemData(id, new TreeData(label));
+	    SetTreeItemColour(id, label);
 	}
 	// If not, then see if we've descended to a new prefix.
 	else if (prefix.Length() > current_prefix.Length() && prefix.StartsWith(current_prefix) &&
@@ -688,6 +737,19 @@ void MainFrm::FillTree()
 
 	    } while (next_dot != -1);
 	}
+    }
+}
+
+void MainFrm::SetTreeItemColour(wxTreeItemId& id, LabelInfo* label)
+{
+    // Set the colour for an item in the survey tree.
+
+    if (label->IsSurface()) {
+        m_Tree->SetItemTextColour(id, wxColour(49, 158, 79));
+    }
+
+    if (label->IsEntrance()) {
+        m_Tree->SetItemTextColour(id, wxColour(255, 0, 0));
     }
 }
 
@@ -931,7 +993,7 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
 		}
 		
 		m_Dist1->SetLabel(wxString("From ") + label2->text);
-		str.Printf("   Horiz: %dm, Vert: %dm", (int) d_horiz, (int) dz);
+		str.Printf("   H: %dm, V: %dm", (int) d_horiz, (int) dz);
 		m_Dist2->SetLabel(str);
 		str.Printf("   Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
 		m_Dist3->SetLabel(str);

@@ -27,6 +27,7 @@
 #include "gfxcore.h"
 #include "message.h"
 #include "aventreectrl.h"
+#include "img.h"
 
 #include <list>
 #include <hash_map>
@@ -48,6 +49,7 @@ enum {
     menu_FILE_QUIT,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
+    menu_ROTATION_TOGGLE,
     menu_ROTATION_SPEED_UP,
     menu_ROTATION_SLOW_DOWN,
     menu_ROTATION_REVERSE,
@@ -118,18 +120,20 @@ class LabelInfo {
     friend class MainFrm;
     Double x, y, z;
     wxString text;
-    bool isEntrance;
-    bool isFixedPt;
-    bool isExportedPt;
+    int flags;
 
 public:
     Double GetX() const { return x; }
     Double GetY() const { return y; }
     Double GetZ() const { return z; }
+
     wxString GetText() const { return text; }
-    bool IsEntrance() const { return isEntrance; }
-    bool IsFixedPt() const { return isFixedPt; }
-    bool IsExportedPt() const { return isExportedPt; }
+
+    bool IsEntrance() const { return flags & img_SFLAG_ENTRANCE; }
+    bool IsFixedPt() const { return flags & img_SFLAG_FIXED; }
+    bool IsExportedPt() const { return flags & img_SFLAG_EXPORTED; }
+    bool IsUnderground() const { return flags & img_SFLAG_UNDERGROUND; }
+    bool IsSurface() const { return flags & img_SFLAG_SURFACE; }
 };
 
 class MainFrm : public wxFrame {
@@ -181,6 +185,7 @@ class MainFrm : public wxFrame {
         Double x, y, z;
     } m_Offsets;
     
+    void SetTreeItemColour(wxTreeItemId& id, LabelInfo* label);
     void FillTree();
     void ClearPointLists();
     bool LoadData(const wxString& file, wxString prefix = "");

@@ -586,6 +586,7 @@ void GfxCore::SetScale(Double scale)
 
         m_NumHighlightedPts = 0;
 	HighlightedPt* hpt = m_HighlightedPts;
+	m_NumCrosses = 0;
 #ifdef AVENGL
 	Double3* pt = m_CrossData.vertices;
 #else
@@ -610,6 +611,8 @@ void GfxCore::SetScale(Double scale)
 	    pt++;
 
 	    *labels++ = label->GetText();
+
+	    m_NumCrosses++;
 #else
 	    x += m_Params.translation.x;
 	    y += m_Params.translation.y;
@@ -617,8 +620,9 @@ void GfxCore::SetScale(Double scale)
 
 	    int cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
 	    int cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
-
-	    if (m_Crosses || m_Names) {
+	    if ((m_Crosses || m_Names) &&
+	        ((label->IsSurface() && m_Surface) ||
+	         (label->IsUnderground() && m_Legs))) {
 	        pt->x = cx - CROSS_SIZE;
 		pt->y = cy - CROSS_SIZE;
 		
@@ -637,6 +641,8 @@ void GfxCore::SetScale(Double scale)
 		*count++ = 2;
 	    
 		*labels++ = label->GetText();
+
+		m_NumCrosses++;
 	    }
 #endif
 
@@ -667,7 +673,6 @@ void GfxCore::SetScale(Double scale)
 #endif
 	}
     }
-
     m_ScaleHighlightedPtsOnly = false;
     m_ScaleCrossesOnly = false;
 }
@@ -773,7 +778,7 @@ void GfxCore::RedrawOffscreen()
 	    SetColour(col_TURQUOISE);
 	    int* num_segs = m_CrossData.num_segs; //-- sort out the polyline stuff!!
 	    wxPoint* vertices = m_CrossData.vertices;
-	    for (int polyline = 0; polyline < m_Parent->GetNumCrosses() * 2; polyline++) {
+	    for (int polyline = 0; polyline < m_NumCrosses * 2; polyline++) {
 	        m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre, m_YCentre);
 		vertices += *num_segs++;
 	    }
@@ -1314,7 +1319,7 @@ void GfxCore::NattyDrawNames()
     wxPoint* pt = m_CrossData.vertices;
 #endif
 	
-    for (int name = 0; name < m_Parent->GetNumCrosses(); name++) {
+    for (int name = 0; name < m_NumCrosses; name++) {
         // For non-OpenGL: *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
         //                 the actual station.
 
@@ -1431,7 +1436,7 @@ void GfxCore::SimpleDrawNames()
     wxPoint* pt = m_CrossData.vertices;
 
     LabelFlags* last_plot = m_LabelsLastPlotted;
-    for (int name = 0; name < m_Parent->GetNumCrosses(); name++) {
+    for (int name = 0; name < m_NumCrosses; name++) {
         // *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
         // the actual station.
 
@@ -2111,6 +2116,7 @@ void GfxCore::OnShowStationNamesUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnShowSurveyLegs(wxCommandEvent&) 
 {
     m_Legs = !m_Legs;
+    SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
     Refresh(false);
 }
@@ -2632,6 +2638,7 @@ void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnShowSurface(wxCommandEvent& cmd)
 {
     m_Surface = !m_Surface;
+    SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
     Refresh(false);
 }
