@@ -1,6 +1,9 @@
 *begin it_all
 *copyright 2001 "Space Oddity Speleos"
-*date 07/02/1971
+*date 1971.02.07
+*date 2000.01
+*date 2001
+*date 1990.07-2001.09
 *instrument light "Jamie's magic torch"
 *team Hannibal "Face Man" B.A. "Murdoch"
 
