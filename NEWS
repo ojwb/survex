@@ -1,7 +1,10 @@
 Changes in 1.0.4:
 
-* extend: used to only keep one name for an equated group of stations in the
-  extended .3d file; now keep all the names.
+* extend: previously only kept one name for an equated group of stations in the
+  extended .3d file; now keeps all the names.
+
+* (MacOS X version): aven: aven now buils on MacOS X - we just need to sort
+  out packaging now...
 
 * Minor documentation updates.
 
