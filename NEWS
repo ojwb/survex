@@ -3,6 +3,8 @@
 * survex: removed conversion wrapper - you should use "cavern file.svx"
   instead of "survex file.svx".
 
+* Fixed --survey option supported by many programs which was broken in 0.99.
+
 * aven: altered colours of "fixed points" and "entrances" buttons to match
   the coloured blobs used to indicate them.
 

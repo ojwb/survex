@@ -29,4 +29,16 @@ for file in $TESTS ; do
   fi
   rm -f diffpos.tmp
 done
+
+for args in '' '--survey survey' '--survey survey.xyzzy' '--survey xyzzy' ; do
+  echo "diffpos $args"
+  rm -f diffpos.tmp
+  $DIFFPOS $args $srcdir/v0.3d $srcdir/v0.3d > diffpos.tmp
+  if test -n "$VERBOSE" ; then
+    cat diffpos.tmp
+  fi
+  cmp diffpos.tmp /dev/null > /dev/null || exit 1
+  rm -f diffpos.tmp
+done
+  
 exit 0

@@ -303,7 +303,10 @@ img_open_survey(const char *fnm, const char *survey)
       goto error;
    }
 
-   if (!pimg->title) pimg->title = getline_alloc(pimg->fh);
+   if (!pimg->title)
+       pimg->title = getline_alloc(pimg->fh);
+   else
+       osfree(getline_alloc(pimg->fh));
    pimg->datestamp = getline_alloc(pimg->fh);
    if (!pimg->title || !pimg->datestamp) {
       img_errno = IMG_OUTOFMEMORY;
@@ -414,12 +417,17 @@ read_coord(FILE *fh, img_point *pt)
    return 1;
 }
 
+static int
+skip_coord(FILE *fh)
+{
+    return (fseek(fh, 12, SEEK_CUR) == 0);
+}
+
 int
 img_read_item(img *pimg, img_point *p)
 {
    int result;
    pimg->flags = 0;
-   pimg->label = pimg->label_buf;
 
    if (pimg->version == 3) {
       int opt;
@@ -430,6 +438,7 @@ img_read_item(img *pimg, img_point *p)
 	 return img_LINE;
       }
       again3: /* label to goto if we get a prefix */
+      pimg->label = pimg->label_buf;
       opt = getc(pimg->fh);
       if (opt == EOF) {
 	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
@@ -445,13 +454,12 @@ img_read_item(img *pimg, img_point *p)
 	 if (opt < 15) {
 	    /* 1-14 mean trim that many levels from current prefix */
 	    int c;
-	    /* zero prefix using "0" */
 	    if (pimg->label_len <= 16) {
+	       /* zero prefix using "0" */
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	    }
 	    c = pimg->label_len - 16 - 1;
-	    opt &= 0x07;
 	    while (pimg->label_buf[c] != '.' || --opt > 0) {
 	       if (--c < 0) {
 		  /* zero prefix using "0" */
@@ -536,7 +544,8 @@ img_read_item(img *pimg, img_point *p)
 	       }
 	    } else {
 	       if (strncmp(pimg->survey, s, l + 1) != 0) {
-		  fseek(pimg->fh, 12, SEEK_CUR);
+		  if (!skip_coord(pimg->fh)) return img_BAD;
+		  pimg->pending = 0;
 		  goto again3;
 	       }
 	    }
@@ -561,7 +570,11 @@ img_read_item(img *pimg, img_point *p)
       if (!read_coord(pimg->fh, p)) return img_BAD;
       pimg->pending = 0;
       return result;
-   } else if (pimg->version > 0) {
+   }
+
+   pimg->label = pimg->label_buf;
+
+   if (pimg->version > 0) {
       static long opt_lookahead = 0;
       static img_point pt = { 0.0, 0.0, 0.0 };
       long opt;
@@ -593,7 +606,7 @@ img_read_item(img *pimg, img_point *p)
 	 return img_STOP; /* end of data marker */
        case 1:
 	 /* skip coordinates */
-	 if (fseek(pimg->fh, 12, SEEK_CUR) == -1) {
+	 if (!skip_coord(pimg->fh)) {
 	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
