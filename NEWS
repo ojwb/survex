@@ -1,3 +1,6 @@
+* Covariance matrices are symmetric - now only store 6 of the 9 entries.
+  Reduces memory requirements and may be faster.
+
 Changes in 0.97-prerelease7:
 
 * Messages relating to command line options are now translatable.

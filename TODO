@@ -23,13 +23,6 @@ then get it update this template and mail it to lsm@execpc.com (with
 the subject 'add' (even for updates)) would ensure things were kept up
 to date.
 
-Date: 05 Mar 2000
-From: Olly
-
-Covariance matrices are symmetric, so we only need to store 6 of the 9
-entries (but intermediate matrices need the full 9 since the product
-of 2 symmetric matrices isn't necessarily symmetric).
-
 Date: 05 Aug 2000
 From: Olly
 
@@ -221,7 +214,7 @@ Date: Fri, 04 May 2001
 Subject: manual
 From: Olly
 
-doc/svxdocs.sgml has version number (0.97 currently) hardcoded.
+doc/svxdocs.sgml has version number (0.98 currently) hardcoded.
 
 Date: Sat, 16 Jun 2001
 Subject: flags

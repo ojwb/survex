@@ -70,11 +70,23 @@ void fprint_prefix(FILE *fh, const prefix *ptr);
 /* r = ab ; r,a,b are variance matrices */
 void mulvv(var *r, /*const*/ var *a, /*const*/ var *b);
 
+/* r = ab ; r,a,b are variance matrices */
+void mulss(var *r, /*const*/ svar *a, /*const*/ svar *b);
+
+/* r = ab ; r,a,b are variance matrices */
+void smulvs(svar *r, /*const*/ var *a, /*const*/ svar *b);
+
 /* r = ab ; r,b delta vectors; a variance matrix */
 void mulvd(delta *r, /*const*/ var *a, /*const*/ delta *b);
 
+/* r = ab ; r,b delta vectors; a variance matrix */
+void mulsd(delta *r, /*const*/ svar *a, /*const*/ delta *b);
+
 /* r = ca ; r,a variance matrices; c real scaling factor  */
 void mulvc(var *r, /*const*/ var *a, real c);
+
+/* r = ca ; r,a variance matrices; c real scaling factor  */
+void mulsc(svar *r, /*const*/ svar *a, real c);
 
 /* r = ca ; r,a delta vectors; c real scaling factor  */
 void muldc(delta *r, /*const*/ delta *a, real c);
@@ -88,11 +100,20 @@ void subdd(delta *r, /*const*/ delta *a, /*const*/ delta *b);
 /* r = a + b ; r,a,b variance matrices */
 void addvv(var *r, /*const*/ var *a, /*const*/ var *b);
 
+/* r = a + b ; r,a,b variance matrices */
+void addss(svar *r, /*const*/ svar *a, /*const*/ svar *b);
+
 /* r = a - b ; r,a,b variance matrices */
 void subvv(var *r, /*const*/ var *a, /*const*/ var *b);
 
+/* r = a - b ; r,a,b variance matrices */
+void subss(svar *r, /*const*/ svar *a, /*const*/ svar *b);
+
 /* r = (b^-1)a ; r,a delta vectors; b variance matrix */
 void divdv(delta *r, /*const*/ delta *a, /*const*/ var *b);
+
+/* r = (b^-1)a ; r,a delta vectors; b variance matrix */
+void divds(delta *r, /*const*/ delta *a, /*const*/ svar *b);
 
 /* r = a(b^-1) ; r,a,b variance matrices */
 void divvv(var *r, /*const*/ var *a, /*const*/ var *b);
@@ -100,19 +121,47 @@ void divvv(var *r, /*const*/ var *a, /*const*/ var *b);
 /* inv = v^-1 ; inv,v variance matrices */
 int invert_var(var *inv, /*const*/ var *v);
 
+/* inv = v^-1 ; inv,v variance matrices */
+int invert_svar(var *inv, /*const*/ svar *v);
+
+/* inv = v^-1 ; inv,v variance matrices */
+int sinvert_svar(svar *inv, /*const*/ svar *v);
+
 /* Is v zero? */
 bool fZero(/*const*/ var *v);
+
+/* Is v zero? */
+bool fZeros(/*const*/ svar *v);
+
+#ifdef NO_COVARIANCES
+#define mulss mulvv
+#define smulvs mulvv
+#define mulsd mulvd
+#define mulsc mulvc
+#define addss addvv
+#define subss subvv
+#define divds divdv
+#define invert_svar invert_var
+#define sinvert_svar invert_var
+#define fZeros fZero
+#endif
 
 #define PR "%8.6f"
 
 #ifdef NO_COVARIANCES
 # define print_var(V) printf("("PR","PR","PR")\n", (V)[0], (V)[1], (V)[2])
+# define print_svar(V) printf("("PR","PR","PR")\n", (V)[0], (V)[1], (V)[2])
 #else
 # define print_var(V) \
 printf("/"PR","PR","PR"\\\n|"PR","PR","PR"|\n\\"PR","PR","PR"/\n",\
 (V)[0][0], (V)[0][1], (V)[0][2],\
 (V)[1][0], (V)[1][1], (V)[1][2],\
 (V)[2][0], (V)[2][1], (V)[2][2])
+# define print_svar(V) \
+printf("/"PR","PR","PR"\\\n:"PR","PR","PR":\n\\"PR","PR","PR"/\n",\
+(V)[0], (V)[3], (V)[4],\
+(V)[3], (V)[1], (V)[5],\
+(V)[4], (V)[5], (V)[2])
 #endif
 
 #define print_d(D) printf("("PR","PR","PR")", (D)[0], (D)[1], (D)[2])

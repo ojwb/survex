@@ -223,7 +223,7 @@ build_matrix(node *list)
 #endif /* DEBUG_MATRIX_BUILD */
 		     }
 #else
-		     if (invert_var(&e, &stn->leg[dirn]->v)) {
+		     if (invert_svar(&e, &stn->leg[dirn]->v)) {
 			/* not an equate */
 			delta b;
 			int i, j;
@@ -258,7 +258,7 @@ build_matrix(node *list)
 				     - stn->leg[dirn]->d[dim]);
 		     }
 #else
-		     if (invert_var(&e, &stn->leg[dirn]->v)) {
+		     if (invert_svar(&e, &stn->leg[dirn]->v)) {
 			delta b;
 			int i, j;
 			subdd(&a, &POSD(stn->leg[dirn]->l.to), &stn->leg[dirn]->d);
@@ -291,7 +291,7 @@ build_matrix(node *list)
 			B[t] += a;
 		     }
 #else
-		     if (t != f && invert_var( &e, &stn->leg[dirn]->v )) {
+		     if (t != f && invert_svar(&e, &stn->leg[dirn]->v)) {
 			int i, j;
 			mulvd(&a, &e, &stn->leg[(dirn)]->d);
 			for (i = 0; i < 3; i++) {

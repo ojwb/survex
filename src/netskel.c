@@ -442,7 +442,7 @@ replace_travs(void)
       for (i = 0; i <= 2; i++) {
 	 linkfor *leg = stn1->leg[i];
 	 if (leg && data_here(leg) &&
-	     !(leg->l.reverse & FLAG_REPLACEMENTLEG) && !fZero(&leg->v)) {
+	     !(leg->l.reverse & FLAG_REPLACEMENTLEG) && !fZeros(&leg->v)) {
 	    if (fixed(stn1)) {
 	       stn2 = leg->l.to;
 	       if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
@@ -481,9 +481,9 @@ replace_travs(void)
 		     vTot = sqrd(e[2]);
 #ifndef NO_COVARIANCES
 		     /* FIXME: what about covariances? */
-		     eTotTheo = leg->v[0][0] + leg->v[1][1] + leg->v[2][2];
-		     hTotTheo = leg->v[0][0] + leg->v[1][1];
-		     vTotTheo = leg->v[2][2];
+		     eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
+		     hTotTheo = leg->v[0] + leg->v[1];
+		     vTotTheo = leg->v[2];
 #else
 		     eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
 		     hTotTheo = leg->v[0] + leg->v[1];
@@ -540,7 +540,7 @@ replace_travs(void)
 	 eTot = 0.0;
 	 hTot = vTot = 0.0;
 	 ASSERT(data_here(stn1->leg[i]));
-	 if (fZero(&stn1->leg[i]->v)) {
+	 if (fZeros(&stn1->leg[i]->v)) {
 	    sc[0] = sc[1] = sc[2] = 0.0;
 	 } else {
 	    subdd(&e, &POSD(stn2), &POSD(stn1));
@@ -548,12 +548,12 @@ replace_travs(void)
 	    eTot = sqrdd(e);
 	    hTot = sqrd(e[0]) + sqrd(e[1]);
 	    vTot = sqrd(e[2]);
-	    divdv(&sc, &e, &stn1->leg[i]->v);
+	    divds(&sc, &e, &stn1->leg[i]->v);
 	 }
 #ifndef NO_COVARIANCES
 	 /* FIXME: what about covariances? */
-	 hTotTheo = stn1->leg[i]->v[0][0] + stn1->leg[i]->v[1][1];
-	 vTotTheo = stn1->leg[i]->v[2][2];
+	 hTotTheo = stn1->leg[i]->v[0] + stn1->leg[i]->v[1];
+	 vTotTheo = stn1->leg[i]->v[2];
 	 eTotTheo = hTotTheo + vTotTheo;
 #else
 	 hTotTheo = stn1->leg[i]->v[0] + stn1->leg[i]->v[1];
@@ -630,14 +630,14 @@ replace_travs(void)
 
 	    if (!reached_end) {
 	       add_stn_to_list(&stnlist, stn3);
-	       if (!fZero(&leg->v)) {
+	       if (!fZeros(&leg->v)) {
 		  fEquate = fFalse;
-		  mulvd(&e, &leg->v, &sc);
+		  mulsd(&e, &leg->v, &sc);
 		  adddd(&POSD(stn3), &POSD(stn3), &e);
 	       }
 	       fix(stn3);
 	    } else {
-	       if (!fZero(&leg->v)) fEquate = fFalse;
+	       if (!fZeros(&leg->v)) fEquate = fFalse;
 	    }
 	       
 	    if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
@@ -969,7 +969,7 @@ replace_trailing_travs(void)
 		  (BIT(FLAGS_DUPLICATE)|BIT(FLAGS_SPLAY)|
 		   BIT(FLAGS_SURFACE)))) {
 	       /* check not an equating leg */
-	       if (!fZero(&leg->v)) {
+	       if (!fZeros(&leg->v)) {
 		  totadj += sqrt(sqrd(POS(stnB, 0) - POS(stn1, 0)) +
 				 sqrd(POS(stnB, 1) - POS(stn1, 1)) +
 				 sqrd(POS(stnB, 2) - POS(stn1, 2)));

@@ -680,7 +680,7 @@ replace_pfx_(node *stn, node *from, pos *pos_replace, pos *pos_with)
       to = leg->l.to;
       if (to == from) continue;
 
-      if (fZero(data_here(leg) ? &leg->v : &reverse_leg(leg)->v))
+      if (fZeros(data_here(leg) ? &leg->v : &reverse_leg(leg)->v))
 	 replace_pfx_(to, stn, pos_replace, pos_with);
    }
 }

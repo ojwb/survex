@@ -173,8 +173,10 @@ typedef struct Prefix {
 /* variance */
 #ifdef NO_COVARIANCES
 typedef real var[3];
+typedef var svar;
 #else
 typedef real var[3][3];
+typedef real svar[6];
 #endif
 
 /* position or length vector */
@@ -206,7 +208,7 @@ typedef struct LinkRev {
 typedef struct Link {
    linkcommon l;
    delta d; /* Delta */
-   var v; /* Variances */
+   svar v; /* Variances */
 } linkfor;
 
 /* node - like a station, except several nodes are used to represent a
