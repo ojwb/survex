@@ -40,6 +40,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
 
     EVT_PAINT(MainFrm::OnPaint)
+    EVT_CLOSE(MainFrm::OnClose)
 
     EVT_MENU(menu_ROTATION_START, MainFrm::OnStartRotation)
     EVT_MENU(menu_ROTATION_STOP, MainFrm::OnStopRotation)
@@ -643,7 +644,15 @@ void MainFrm::OnOpen(wxCommandEvent&)
 
 void MainFrm::OnQuit(wxCommandEvent&)
 {
-    Close(true);
+    // see comment in OnClose()
+    exit(0);
+}
+
+void MainFrm::OnClose(wxCloseEvent&)
+{
+  //--wtf doesn't Destroy() work? (on Windows at least)
+  //    Destroy();
+    exit(0);
 }
 
 void MainFrm::OnAbout(wxCommandEvent&)

@@ -579,6 +579,11 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 {
     // Redraw the window.
 
+    // Get a graphics context.
+    wxPaintDC dc(this);
+
+    const wxRegion& region = GetUpdateRegion();
+
     // Make sure we're initialised.
     if (!m_DoneFirstShow) {
         FirstShow();
@@ -590,13 +595,12 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	RedrawOffscreen();
     }
 
-    // Get a graphics context.
-    wxPaintDC dc(this);
-
     dc.BeginDrawing();
 
+#ifndef _WIN32
     // Get the areas to redraw and update them.
-    wxRegionIterator iter(GetUpdateRegion());
+    wxRegionIterator iter(region);
+    //    wxLogDebug("--start--\n");
     while (iter) {
         // Blit the bitmap onto the window.
 
@@ -605,11 +609,16 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         int width = iter.GetW();
         int height = iter.GetH();
 
+	//wxLogDebug("redrawing (%d,%d) size (%d,%d)\n", x, y, width, height);
+
         dc.Blit(x, y, width, height, &m_DrawDC, x, y);
 
-        // Handle a mouse movement during scale/rotate mode.
 	iter++;
     }
+    //wxLogDebug("--end--\n");
+#else
+    dc.Blit(0, 0, m_XSize, m_YSize, &m_DrawDC, 0, 0);
+#endif
 
     dc.EndDrawing();
 }
@@ -2040,7 +2049,8 @@ void GfxCore::Repaint()
 #ifdef _WIN32
     // On Windows, it transpires that Refresh() only causes the new update region
     // to be queued -- the redraw doesn't actually happen until the next WM_PAINT
-    // message is received.  Thus we call OnPaint() here to sort this out.
+    // message is received.  What wxWindows ought to do is to call ::UpdateWindow()
+    // after ::InvalidateRect().
     wxPaintEvent event;
     OnPaint(event);
 #endif
