@@ -38,7 +38,7 @@ extern void check_var(const var *v) {
 			   (*v)[(i + 1) % 3][2] * (*v)[(i + 2) % 3][1]);
    }
 
-   if (fabs(det) < 1E-10)
+   if (fabs(det) < 1E-20)
       printf("*** Singular!!!\n"), bad = 1;
 
 #if 0
@@ -112,6 +112,7 @@ copy_link(linkfor *leg)
       for (d = 2; d >= 0; d--) legOut->d[d] = leg->d[d];
    } else {
       leg = reverse_leg(leg);
+      ASSERT(data_here(leg));
       for (d = 2; d >= 0; d--) legOut->d[d] = -leg->d[d];
    }
 #if 1
@@ -142,6 +143,7 @@ addto_link(linkfor *leg, linkfor *leg2)
       adddd(&leg->d, &leg->d, &leg2->d);
    } else {
       leg2 = reverse_leg(leg2);
+      ASSERT(data_here(leg2));
       subdd(&leg->d, &leg->d, &leg2->d);
    }
    addvv(&leg->v, &leg->v, &leg2->v);
@@ -303,6 +305,7 @@ StnFromPfx(prefix *name)
 extern void
 fprint_prefix(FILE *fh, const prefix *ptr)
 {
+   ASSERT(ptr);
    if (ptr->up != NULL) {
       fprint_prefix(fh, ptr->up);
       if (ptr->up->up != NULL) fputc('.', fh);
@@ -344,6 +347,7 @@ extern char *
 sprint_prefix(const prefix *ptr)
 {
    static char buffer[512];
+   ASSERT(ptr);
    sprint_prefix_(buffer, sizeof(buffer), ptr);
    return buffer;
 }
