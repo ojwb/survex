@@ -1423,6 +1423,40 @@ cmd_require(void)
    while (isdigit(ch) || ch == '.') nextch();
 }
 
+typedef void (*cmd_fn)(void);
+
+static cmd_fn cmd_funcs[] = {
+   cmd_begin,
+   cmd_calibrate,
+   cmd_case,
+   skipline, /*cmd_copyright,*/
+   cmd_data,
+   skipline, /*cmd_date,*/
+   cmd_default,
+   cmd_end,
+   cmd_entrance,
+   cmd_equate,
+   cmd_export,
+   cmd_fix,
+   cmd_flags,
+   cmd_include,
+   cmd_infer,
+   skipline, /*cmd_instrument,*/
+   skipline, /*cmd_lrud,*/
+   cmd_prefix,
+   cmd_require,
+   cmd_sd,
+   cmd_set,
+   solve_network,
+   skipline, /*cmd_team,*/
+   cmd_title,
+   cmd_truncate,
+   cmd_units
+};
+
+/* Just ignore *lrud for now so Tunnel can put it in */
+/* FIXME: except that tunnel keeps x-sections in a separate file... */
+ 
 extern void
 handle_command(void)
 {
@@ -1430,47 +1464,31 @@ handle_command(void)
    get_token();
    cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
 
-   if (cmdtok == CMD_EXPORT) {
-      if (!f_export_ok)
-	 compile_error(/**EXPORT must immediately follow *BEGIN*/57);
-   } else {
-      f_export_ok = (cmdtok == CMD_BEGIN);
+   if (cmdtok < 0 || cmdtok >= (int)(sizeof(cmd_funcs) / sizeof(cmd_fn))) {
+      compile_error(/*Unknown command `%s'*/12, buffer);
+      skipline();
+      return;
    }
 
    switch (cmdtok) {
-    case CMD_CALIBRATE: cmd_calibrate(); break;
-    case CMD_CASE: cmd_case(); break;
-    case CMD_DATA: cmd_data(); break;
-    case CMD_COPYRIGHT: case CMD_DATE: case CMD_INSTRUMENT: case CMD_TEAM:
-      /* just ignore these for now */
-      skipline();
+    case CMD_EXPORT:
+      if (!f_export_ok)
+	 compile_error(/**EXPORT must immediately follow *BEGIN*/57);
       break;
-    case CMD_DEFAULT: cmd_default(); break;
-    case CMD_EQUATE: cmd_equate(); break;
-    case CMD_EXPORT: cmd_export(); break;
-    case CMD_FIX: cmd_fix(); break;
-    case CMD_FLAGS: cmd_flags(); break;
-    case CMD_INCLUDE: cmd_include(); break;
-    case CMD_INFER: cmd_infer(); break;
-    case CMD_LRUD: {
-       /* just ignore *lrud for now so Tunnel can put it in */
-       /* FIXME: except that tunnel keeps x-sections in a separate file... */
-       skipline();
-       break;
-    }
-    case CMD_PREFIX: cmd_prefix(); break;
-    case CMD_UNITS: cmd_units(); break;
-    case CMD_BEGIN: cmd_begin(); break;
-    case CMD_END: cmd_end(); break;
-    case CMD_ENTRANCE: cmd_entrance(); break;
-    case CMD_REQUIRE: cmd_require(); break;
-    case CMD_SOLVE: solve_network(/*stnlist*/); break;
-    case CMD_SD: cmd_sd(); break;
-    case CMD_SET: cmd_set(); break;
-    case CMD_TITLE: cmd_title(); break;
-    case CMD_TRUNCATE: cmd_truncate(); break;
+    case CMD_BEGIN:
+      f_export_ok = fTrue;
+      break;
+    case CMD_COPYRIGHT:
+    case CMD_DATE:
+    case CMD_INSTRUMENT:
+    case CMD_TEAM:
+    case CMD_TITLE:
+      /* these can occur between *begin and *export */
+      break;      
     default:
-      compile_error(/*Unknown command `%s'*/12, buffer);
-      skipline();
+      f_export_ok = fFalse;
+      break;
    }
+   
+   cmd_funcs[cmdtok]();
 }

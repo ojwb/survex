@@ -7,6 +7,9 @@
 * Further tweaks to charset handling - look at LC_* as well as LANG;
   Check GUI codepage under MS Windows.
 
+* Allow *copyright/*date/*instrument/*team/*title between *begin and
+  *export.
+
 Changes in 0.98-prerelease3:
 
 * cavern/3dtopos: cavern no longer produces .pos files - they're
