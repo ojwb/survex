@@ -247,7 +247,7 @@ Double GLACanvas::SetViewportAndProjection()
     glLoadIdentity();
     CHECK_GL_ERROR("SetViewportAndProjection", "glLoadIdentity");
 
-    assert(m_Scale != 1.0);
+    assert(m_Scale != 0.0);
     Double lr = m_VolumeDiameter / m_Scale * 0.5;
     Double tb = lr * aspect;
     Double near_plane = lr / tan(25.0 * M_PI / 180.0);

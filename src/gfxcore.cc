@@ -237,41 +237,21 @@ void GfxCore::FirstShow()
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
 
-    // Scale the survey to a reasonable initial size.
     switch (m_Lock) {
 	case lock_POINT:
-	    m_RotationOK = false;
-	    m_InitialScale = 1.0;
-	    break;
-	case lock_YZ:
-	    m_InitialScale = Double(m_XSize) / m_Parent->GetXExtent();
-	    break;
-	case lock_XZ:
-	    m_InitialScale = Double(m_YSize) / m_Parent->GetYExtent();
-	    break;
 	case lock_XY:
-	    m_RotationOK = false;
-	    m_InitialScale = Double(m_YSize) / m_Parent->GetZExtent();
-	    break;
 	case lock_X:
-	    m_RotationOK = false;
-	    m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
-				 Double(m_XSize) / m_Parent->GetYExtent());
-	    break;
 	case lock_Y:
 	    m_RotationOK = false;
-	    m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
-				 Double(m_XSize) / m_Parent->GetXExtent());
 	    break;
+	case lock_YZ:
+	case lock_XZ:
 	default:
-	    m_InitialScale = min(Double(m_XSize) / m_Parent->GetXExtent(),
-				 Double(m_YSize) / m_Parent->GetYExtent());
+	    break;
     }
 
-    assert(m_InitialScale != 0.0);
-    m_InitialScale *= .85;
-
-    // Set the scale correctly.
+    // Set the initial scale.
+    m_InitialScale = 1.0;
     SetScale(m_InitialScale);
 
     m_DoneFirstShow = true;
@@ -942,7 +922,8 @@ void GfxCore::DrawScalebar()
     
     if (m_Lock == lock_POINT || m_Perspective) return;
 
-    // Calculate how many metres of survey are currently displayed across the screen.
+    // Calculate how many metres of survey are currently displayed across the
+    // screen.
     Double across_screen = SurveyUnitsAcrossViewport();
 
     // Convert to imperial measurements if required.
