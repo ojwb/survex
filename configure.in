@@ -93,7 +93,7 @@ else
 fi
 
 AC_ARG_VAR(STRIP, [Command for discarding symbols from object files])
-AC_PATH_PROGS(STRIP, strip, [echo "not stripping "])
+AC_PATH_TOOL(STRIP, strip, [echo "not stripping "])
 
 AC_CHECK_LIB(m, sqrt)
 
