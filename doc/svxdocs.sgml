@@ -87,8 +87,8 @@ where this isn't the case, let me know.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-07-20 23:55:13 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.33 2001-07-20 23:55:13 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-07-21 01:17:58 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.34 2001-07-21 01:17:58 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -136,12 +136,12 @@ restricted. Please help us to achieve this by giving us some feedback
 if you use &survexsuite; on a slow machine.</Para>
 
 <Para>&survexsuite; is capable of processing extremely complex caves very
-quickly and has a very effective, real-time cave viewer which allows you to
-rotate, zoom, and drag the cave using mouse or keyboard. We have tested it
-primarily on &cucc;'s Austria data, which has up to 8,500 stations and 93km
-of data when it is all processed together with surface topology. This can
-all be processed in a few seconds on a
-<hardware>486DX2/66 PC</hardware>.</Para>
+quickly and has a very effective, real-time cave viewer which allows
+you to rotate, zoom, and drag the cave using mouse or keyboard. We
+have tested it primarily on &cucc;'s Austria data, which has over
+10,500 stations and 60km of underground survey data. This can all be
+processed in a few seconds on a low-end <hardware>Pentium</hardware>
+machine.</Para>
 
 <Para>&survexsuite; is not yet finished.  Version 1.0 should be complete (in
 some sense - development will continue), so you could regard
@@ -164,9 +164,9 @@ url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
 
 <Para>
 NEWS or NEWS.txt - this file contains a list of changes of interest to
-&survexsuite; users, broken down by version number.  When upgrading, it's
-wise to check this file for information on what has changed since the version
-you were previously using.
+&survexsuite; users, broken down by version number.  Consult this file
+when upgrading to find out what has changed since the version you were
+using previously.
 </Para>
 
 <Para>
@@ -178,8 +178,8 @@ TODO or TODO.txt - changes and enhancements that need doing.
 </Para>
 
 <Para>
-ChangeLog or CHANGES.txt - this is a much more detailed list of changes.
-It's aimed at developers rather than end users.
+ChangeLog or CHANGES.txt - this is a much more detailed list of changes,
+aimed at developers rather than end users.
 </Para>
 
 <!-- FIXME: INSTALL no longer relevant and so no longer inclued on win32 thanks to installer -->
