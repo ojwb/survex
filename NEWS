@@ -9,6 +9,9 @@ Changes in 1.0.8:
 
 * print*: Improved output when --no-border is used.
 
+* printpcl/printdm: Added new .ini setting "font_bitmap" which allows the user
+  to choose between alternative fonts.  Current we supply "default" and "bold".
+
 Changes in 1.0.7:
 
 * print*: halted with a failed assertion in 1.0.4-1.0.6.

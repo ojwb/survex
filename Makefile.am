@@ -14,7 +14,7 @@ SUBDIRS = . lib src doc tests debian
 # seem to need this for "make distclean" to recurse?!?
 DIST_SUBDIRS = $(SUBDIRS)
 
-extra_bin = lib/*.msg lib/pfont.bit
+extra_bin = lib/*.msg lib/default.bit lib/bold.bit
 extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
 

@@ -31,7 +31,7 @@ my %bin2oct = qw(
 
 my $buf = '';
 my $c = 0;
-open IN, ($ARGV[0] || 'pfont.txt') or die $!;
+open IN, ($ARGV[0] || 'default.txt') or die $!;
 while (<IN>) {
    next if /^-+$/;
    chomp();
@@ -48,7 +48,7 @@ while (<IN>) {
 eof IN or die $!;
 close IN;
 
-open OUT, ">".($ARGV[1] || 'pfont.bit') or die $!;
+open OUT, ">".($ARGV[1] || 'default.bit') or die $!;
 print OUT $magic or die $!;
 print OUT pack("CCn", $major, $minor, int($c / 8)) or die $!;
 
