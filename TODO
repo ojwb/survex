@@ -7,11 +7,6 @@ grid crosses option (only draw cross at intersections, not a full grid).
 x spacing, y spacing (default to x spacing)
 orientation (bearing of y-axis?) (defaults to 0)]
 
-Date: Fri, 18 Aug 2000
-From: Olly
-
-Clean up the sample data and start including it again.
-
 Date: Sat, 03 Mar 2001
 From: Olly
 
@@ -232,8 +227,6 @@ leg and station "comments":
 
 comment can be omitted "-" or not present if at end of line...?
 commentall?
-
-diffpos should work on .3d files (diff3d).
 
 Date: Wed, 18 Jul 20001
 From: Olly
