@@ -403,11 +403,21 @@ data_file(const char *pth, const char *fnm)
       t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
       
       t[EOF] = SPECIAL_EOL;
-      memset(t, 0, sizeof(short) * 256);
+      memset(t, 0, sizeof(short) * 33);
+      for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
+      t[127] = 0;
+      for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
+      t['['] = t[','] = t[';'] = 0;
+      t['\t'] |= SPECIAL_BLANK;
+      t[' '] |= SPECIAL_BLANK;
       t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
       t['\n'] |= SPECIAL_EOL;
       t['\r'] |= SPECIAL_EOL;
+      t['.'] |= SPECIAL_DECIMAL;
+      t['-'] |= SPECIAL_MINUS;
+      t['+'] |= SPECIAL_PLUS;
       pcs->Translate = t;
+      pcs->Case = OFF;
    }
 
 #ifdef HAVE_SETJMP_H
@@ -433,6 +443,7 @@ data_file(const char *pth, const char *fnm)
 	 skipline();
 	 process_eol();
 	 /* SURVEY DATE: 7 10 79  COMMENT:<Long name> */
+	 /* Note: Larry says a 2 digit year is always 19XX */
 	 get_token();
 	 get_token();
 	 /* if (ch != ':') ... */
@@ -473,13 +484,15 @@ data_file(const char *pth, const char *fnm)
 	 process_eol();
 	 /* BLANK LINE */
 	 process_bol();
+	 skipline();
 	 process_eol();
 	 /* heading line */
-	 get_token();
+	 process_bol();
 	 skipline();
 	 process_eol();
 	 /* BLANK LINE */
 	 process_bol();
+	 skipline();
 	 process_eol();
 	 while (!feof(file.fh)) {
 	    process_bol();
@@ -499,17 +512,71 @@ data_file(const char *pth, const char *fnm)
 	 pcs = pcsParent;
       }					  
    } else if (fmt == FMT_MAK) {
+      nextch();
       while (!feof(file.fh) && !ferror(file.fh)) {
-	 process_bol();
 	 if (ch == '#') {
+	    /* include a file */
 	    int ch_store;
 	    char *pth = path_from_fnm(file.filename);
 	    char *fnm = NULL;
 	    int fnm_len;
 	    nextch();
-	    while (ch != ',' && ch != ';' && !isEol(ch)) {
+	    while (ch != ',' && ch != ';' && ch != EOF) {
 	       s_catchar(&fnm, &fnm_len, ch);
 	       nextch();
+	    }
+	    while (ch != ';' && ch != EOF) {
+	       prefix *name;
+	       nextch();
+	       name = read_prefix_stn(fTrue, fFalse);
+	       if (name) {
+		  skipblanks();
+		  if (ch == '[') {
+		     /* fixed pt */
+		     node *stn;
+		     real x, y, z;
+		     name->sflags |= BIT(SFLAGS_FIXED);
+		     nextch();
+		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
+			    ch != '.' && ch != ']' && ch != EOF) {
+			nextch();
+		     }
+		     x = read_numeric(fFalse, NULL);
+		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
+			    ch != '.' && ch != ']' && ch != EOF) {
+			nextch();
+		     }
+		     y = read_numeric(fFalse, NULL);
+		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
+			    ch != '.' && ch != ']' && ch != EOF) {
+			nextch();
+		     }
+		     z = read_numeric(fFalse, NULL);
+		     stn = StnFromPfx(name);
+		     if (!fixed(stn)) {
+			POS(stn, 0) = x;
+			POS(stn, 1) = y;
+			POS(stn, 2) = z;
+			fix(stn);
+		     } else {
+			if (x != POS(stn, 0) || y != POS(stn, 1) ||
+			    z != POS(stn, 2)) {
+			   compile_error(/*Station already fixed or equated to a fixed point*/46);
+			} else {
+			   compile_warning(/*Station already fixed at the same coordinates*/55);
+			}
+		     }
+		     while (ch != ']' && ch != EOF) nextch();
+		     if (ch == ']') {
+			nextch();
+			skipblanks();
+		     }
+		  } else {
+		     /* FIXME: link station - ignore for now */
+		     /* FIXME: perhaps issue warning? */
+		  }
+		  while (ch != ',' && ch != ';' && ch != EOF) nextch();
+	       }
 	    }
 	    if (fnm) {
 	       ch_store = ch;
@@ -517,9 +584,10 @@ data_file(const char *pth, const char *fnm)
 	       ch = ch_store;
 	       osfree(fnm);
 	    }
+	 } else {
+	    /* FIXME: also check for % and $ later */
+	    nextch();
 	 }
-	 skipline();
-	 process_eol();
       }
       {
 	 settings *pcsParent = pcs->next;
