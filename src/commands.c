@@ -94,10 +94,10 @@ default_translate(settings *s)
    }
 /*  SVX_ASSERT(EOF==-1);*/ /* important, since we rely on this */
    t = s->Translate;
-   for (i = -1; i <= 255; i++) t[i] = 0;
-   for (i = '0'; i <= '9'; i++) t[i] |= SPECIAL_NAMES;
-   for (i = 'A'; i <= 'Z'; i++) t[i] |= SPECIAL_NAMES;
-   for (i = 'a'; i <= 'z'; i++) t[i] |= SPECIAL_NAMES;
+   memset(t - 1, 0, sizeof(short) * 257);
+   for (i = '0'; i <= '9'; i++) t[i] = SPECIAL_NAMES;
+   for (i = 'A'; i <= 'Z'; i++) t[i] = SPECIAL_NAMES;
+   for (i = 'a'; i <= 'z'; i++) t[i] = SPECIAL_NAMES;
 
    t['\t'] |= SPECIAL_BLANK;
    t[' '] |= SPECIAL_BLANK;

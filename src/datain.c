@@ -291,18 +291,22 @@ read_bearing_or_omit(reading r)
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
 }
 
+#define LITLEN(S) (sizeof(S"") - 1)
+#define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
+			(F)[(L) - LITLEN(E) - 1] == FNM_SEP_EXT &&\
+			strcasecmp((F) + (L) - LITLEN(E), E) == 0)
 extern void
 data_file(const char *pth, const char *fnm)
 {
    int begin_lineno_store;
    parse file_store;
-#ifdef COMPASS_DAT
-   reading * tmp_ordering = pcs->ordering;
-#endif
+   enum {FMT_SVX, FMT_DAT, FMT_MAK} fmt = FMT_SVX;
 
    {
       char *filename;
       FILE *fh;
+      size_t len;
+
       if (!pth) {
 	 /* file specified on command line - don't do special translation */
 	 fh = fopenWithPthAndExt(pth, fnm, EXT_SVX_DATA, "rb", &filename);
@@ -313,6 +317,13 @@ data_file(const char *pth, const char *fnm)
       if (fh == NULL) {
 	 compile_error(/*Couldn't open data file `%s'*/24, fnm);
 	 return;
+      }
+
+      len = strlen(filename);
+      if (has_ext(filename, len, "dat")) {
+	 fmt = FMT_DAT;
+      } else if (has_ext(filename, len, "mak")) {
+	 fmt = FMT_MAK;
       }
 
       file_store = file;
@@ -344,22 +355,60 @@ data_file(const char *pth, const char *fnm)
    }
 #endif
 
-#ifdef COMPASS_DAT
-   {
-      reading compass_order[] = {
-	  Fr, To, Tape, Comp, Clino, IgnoreAll, End
+   if (fmt == FMT_DAT) {
+      static reading compass_order[] = {
+	  Fr, To, Tape, Comp, Clino, IgnoreAll
       };
       short *t;
       int i;
+      settings *pcsNew;
+
+      pcsNew = osnew(settings);
+      *pcsNew = *pcs; /* copy contents */
+      pcsNew->begin_lineno = 0;
+      pcsNew->next = pcs;
+      pcs = pcsNew;
+
       pcs->ordering = compass_order;
       pcs->units[Q_LENGTH] = METRES_PER_FOOT;
-      t = pcs->Translate;
-      for (i = 33; i < 127; i++) t[i] |= SPECIAL_NAMES;
-      for (i = 128; i < 256; i++) t[i] |= SPECIAL_NAMES;
+      t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+      
+      t[EOF] = SPECIAL_EOL;
+      memset(t, 0, sizeof(short) * 33);
+      for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
+      t[127] = 0;
+      for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
+      t['\t'] |= SPECIAL_BLANK;
+      t[' '] |= SPECIAL_BLANK;
+      t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
+      t['\n'] |= SPECIAL_EOL;
+      t['\r'] |= SPECIAL_EOL;
+      t['.'] |= SPECIAL_DECIMAL;
+      t['-'] |= SPECIAL_MINUS;
+      t['+'] |= SPECIAL_PLUS;
+      pcs->Translate = t;
       pcs->Case = OFF;
       pcs->infer = 7; /* FIXME: BIT(EQUATES)|BIT(EXPORTS)|BIT(PLUMBS); */
+   } else if (fmt == FMT_MAK) {
+      short *t;
+      int i;
+      settings *pcsNew;
+
+      pcsNew = osnew(settings);
+      *pcsNew = *pcs; /* copy contents */
+      pcsNew->begin_lineno = 0;
+      pcsNew->next = pcs;
+      pcs = pcsNew;
+
+      t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+      
+      t[EOF] = SPECIAL_EOL;
+      memset(t, 0, sizeof(short) * 256);
+      t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
+      t['\n'] |= SPECIAL_EOL;
+      t['\r'] |= SPECIAL_EOL;
+      pcs->Translate = t;
    }
-#endif
 
 #ifdef HAVE_SETJMP_H
    /* errors in nested functions can longjmp here */
@@ -368,117 +417,154 @@ data_file(const char *pth, const char *fnm)
    }
 #endif
 
-   while (!feof(file.fh) && !ferror(file.fh)) {
-#ifdef COMPASS_DAT
-      /* <Cave name> */
-      process_bol();
-      skipline();
-      process_eol();
-      /* SURVEY NAME: <Short name> */
-      get_token();
-      get_token();
-      /* if (ch != ':') ... */
-      nextch();
-      skipblanks();
-      get_token();
-      skipline();
-      process_eol();
-      /* SURVEY DATE: 7 10 79  COMMENT:<Long name> */
-      get_token();
-      get_token();
-      /* if (ch != ':') ... */
-      nextch();
-      skipline();
-      process_eol();
-      /* SURVEY TEAM: */
-      get_token();
-      get_token();
-      skipline();
-      process_eol();
-      /* <Survey team> */
-      nextch();
-      skipline();
-      process_eol();
-      /* DECLINATION: 1.00  FORMAT: DDDDLUDRADLN  CORRECTIONS: 2.00 3.00 4.00 */
-      get_token();
-      nextch(); /* : */
-      skipblanks();
-      pcs->z[Q_DECLINATION] = -read_numeric(fFalse, NULL);
-      get_token();
-      if (strcmp(buffer, "FORMAT") == 0) {
-	  nextch(); /* : */
-	  get_token();
-	  get_token();
-      }
-      if (strcmp(buffer, "CORRECTIONS") == 0) {
-	  nextch(); /* : */
-	  pcs->z[Q_BEARING] = -read_numeric(fFalse, NULL);
-	  pcs->z[Q_GRADIENT] = -read_numeric(fFalse, NULL);
-	  pcs->z[Q_LENGTH] = -read_numeric(fFalse, NULL);
-      } else {
-	  pcs->z[Q_BEARING] = 0;
-	  pcs->z[Q_GRADIENT] = 0;
-	  pcs->z[Q_LENGTH] = 0;
-      }
-      skipline();
-      process_eol();
-      /* BLANK LINE */
-      process_bol();
-      process_eol();
-      /* heading line */
-      get_token();
-      skipline();
-      process_eol();
-      /* BLANK LINE */
-      process_bol();
-      process_eol();
-      while (!feof(file.fh) && ch != '\x0c') {
-	  process_bol();
-	  (void)data_normal();
-      }
-      skipline();
-      process_eol();
-#else
-      if (!process_non_data_line()) {
-	 int r;
-#ifdef NEW3DFORMAT
-	 twig *temp = limb;
-#endif
-	 f_export_ok = fFalse;
-	 switch (pcs->style) {
-	  case STYLE_NORMAL:
-	  case STYLE_DIVING:
-	  case STYLE_CYLPOLAR:
-	    r = data_normal();
-    	    break;
-	  case STYLE_CARTESIAN:
-	    r = data_cartesian();
-	    break;
-	  case STYLE_NOSURVEY:
-	    r = data_nosurvey();
-	    break;
-	  case STYLE_IGNORE:
-	    r = data_ignore();
-	    break;
-	  default:
-	    BUG("bad style");
+   if (fmt == FMT_DAT) {
+      while (!feof(file.fh) && !ferror(file.fh)) {
+	 /* <Cave name> */
+	 process_bol();
+	 skipline();
+	 process_eol();
+	 /* SURVEY NAME: <Short name> */
+	 get_token();
+	 get_token();
+	 /* if (ch != ':') ... */
+	 nextch();
+	 skipblanks();
+	 get_token();
+	 skipline();
+	 process_eol();
+	 /* SURVEY DATE: 7 10 79  COMMENT:<Long name> */
+	 get_token();
+	 get_token();
+	 /* if (ch != ':') ... */
+	 nextch();
+	 skipline();
+	 process_eol();
+	 /* SURVEY TEAM: */
+	 get_token();
+	 get_token();
+	 skipline();
+	 process_eol();
+	 /* <Survey team> */
+	 nextch();
+	 skipline();
+	 process_eol();
+	 /* DECLINATION: 1.00  FORMAT: DDDDLUDRADLN  CORRECTIONS: 2.00 3.00 4.00 */
+	 get_token();
+	 nextch(); /* : */
+	 skipblanks();
+	 pcs->z[Q_DECLINATION] = -read_numeric(fFalse, NULL);
+	 get_token();
+	 if (strcmp(buffer, "FORMAT") == 0) {
+	     nextch(); /* : */
+	     get_token();
+	     get_token();
 	 }
-	 /* style function returns 0 => error */
-#ifdef NEW3DFORMAT
-	 if (!r) {
-	    /* we have just created a very naughty twiglet, and it must be
-	     * punished */
-	    osfree(limb);
-	    limb = temp;
+	 if (strcmp(buffer, "CORRECTIONS") == 0) {
+	     nextch(); /* : */
+	     pcs->z[Q_BEARING] = -read_numeric(fFalse, NULL);
+	     pcs->z[Q_GRADIENT] = -read_numeric(fFalse, NULL);
+	     pcs->z[Q_LENGTH] = -read_numeric(fFalse, NULL);
+	 } else {
+	     pcs->z[Q_BEARING] = 0;
+	     pcs->z[Q_GRADIENT] = 0;
+	     pcs->z[Q_LENGTH] = 0;
 	 }
-#endif
+	 skipline();
+	 process_eol();
+	 /* BLANK LINE */
+	 process_bol();
+	 process_eol();
+	 /* heading line */
+	 get_token();
+	 skipline();
+	 process_eol();
+	 /* BLANK LINE */
+	 process_bol();
+	 process_eol();
+	 while (!feof(file.fh)) {
+	    process_bol();
+	    if (ch == '\x0c') {
+	       nextch();
+	       process_eol();
+	       break;
+	    }
+	    (void)data_normal();
+	 }
       }
+      {
+	 settings *pcsParent = pcs->next;
+	 SVX_ASSERT(pcsParent);
+	 pcs->ordering = NULL;
+	 free_settings(pcs);
+	 pcs = pcsParent;
+      }					  
+   } else if (fmt == FMT_MAK) {
+      while (!feof(file.fh) && !ferror(file.fh)) {
+	 process_bol();
+	 if (ch == '#') {
+	    int ch_store;
+	    char *pth = path_from_fnm(file.filename);
+	    char *fnm = NULL;
+	    int fnm_len;
+	    nextch();
+	    while (ch != ',' && ch != ';' && !isEol(ch)) {
+	       s_catchar(&fnm, &fnm_len, ch);
+	       nextch();
+	    }
+	    if (fnm) {
+	       ch_store = ch;
+	       data_file(pth, fnm);
+	       ch = ch_store;
+	       osfree(fnm);
+	    }
+	 }
+	 skipline();
+	 process_eol();
+      }
+      {
+	 settings *pcsParent = pcs->next;
+	 SVX_ASSERT(pcsParent);
+	 free_settings(pcs);
+	 pcs = pcsParent;
+      }					  
+   } else {
+      while (!feof(file.fh) && !ferror(file.fh)) {
+	 if (!process_non_data_line()) {
+	    int r;
+#ifdef NEW3DFORMAT
+	    twig *temp = limb;
 #endif
+	    f_export_ok = fFalse;
+	    switch (pcs->style) {
+	     case STYLE_NORMAL:
+	     case STYLE_DIVING:
+	     case STYLE_CYLPOLAR:
+	       r = data_normal();
+	       break;
+	     case STYLE_CARTESIAN:
+	       r = data_cartesian();
+	       break;
+	     case STYLE_NOSURVEY:
+	       r = data_nosurvey();
+	       break;
+	     case STYLE_IGNORE:
+	       r = data_ignore();
+	       break;
+	     default:
+	       BUG("bad style");
+	    }
+	    /* style function returns 0 => error */
+#ifdef NEW3DFORMAT
+	    if (!r) {
+	       /* we have just created a very naughty twiglet, and it must be
+		* punished */
+	       osfree(limb);
+	       limb = temp;
+	    }
+#endif
+	 }
+      }
    }
-
-#ifdef COMPASS_DAT
-   pcs->ordering = tmp_ordering;
-#endif
 
    /* don't allow *BEGIN at the end of a file, then *EXPORT in the
     * including file */
