@@ -1,6 +1,8 @@
 * printwin: fixed new bug introduced in 0.98-prerelease4 which caused
   an internal error.
 
+* printwin: exit cleanly if no printer drivers are installed.
+
 * aven/caverot/xcaverot/print*/cadgen/extend/diffpos/3dtopos: --survey
   command line option once more trims specified prefix from station
   names like it did in xcaverot/caverot in 0.98-prerelease4.
