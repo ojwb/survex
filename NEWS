@@ -5,6 +5,8 @@ Changes in 1.0.6:
 * aven: free rotation mode (engage by pressing control while left dragging,
   exit with Delete) improved.
 
+* aven: added hourglass for "find" operation.
+
 * aven: reenabled loading of files by drag-and-drop (accidentally disabled
   in 1.0.4 and 1.0.5).
 

@@ -1607,6 +1607,7 @@ void MainFrm::OnPresEraseAllUpdate(wxUpdateUIEvent& event)
 
 void MainFrm::OnFind(wxCommandEvent& event)
 {
+    wxBusyCursor hourglass;
     // Find stations specified by a string or regular expression.
 
     wxString str = m_FindBox->GetValue();
