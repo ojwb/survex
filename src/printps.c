@@ -1,6 +1,9 @@
 /* > printps.c & prnthpgl.c */
 /* Device dependent part of Survex Postscript printer/HPGL plotter driver */
 /* Copyright (C) 1993-2001 Olly Betts
+ * 
+ * Postscript font remapping code based on code from a2ps
+ * Copyright (C) 1995-1999 Akim Demaille, Miguel Santana
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
