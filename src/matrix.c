@@ -150,25 +150,24 @@ build_matrix(node *list)
       sprintf(buf, msg(/*Solving to find %c coordinates*/76), (char)('x'+dim));
       out_current_action(buf);
 
-      /* Initialise M and B to zero */
-#if 1
-      /* Zeroing "linearly" will minimise paging when the matrix is large */
+      /* Initialise M and B to zero - zeroing "linearly" will minimise
+       * paging when the matrix is large */      
       {
 	 int end = n_stn_tab * FACTOR;
 	 for (row = 0; row < end; row++) B[row] = (real)0.0;
 	 end = ((OSSIZE_T)n_stn_tab * FACTOR * (n_stn_tab * FACTOR + 1)) >> 1;
 	 for (row = 0; row < end; row++) M[row] = (real)0.0;
       }
-#else
-      for (row = (int)(n_stn_tab * FACTOR - 1); row >= 0; row--) {
-	 int col;
-	 B[row] = (real)0.0;
-	 for (col = row; col >= 0; col--) M(row,col) = (real)0.0;
-      }
-#endif
 
-      /* Construct matrix - Go thru' stn list & add all forward legs to M */
-      /* (so each leg goes on exactly once) */
+      /* Construct matrix - Go thru' stn list & add all forward legs between
+       * two unfixed stations to M (so each leg goes on exactly once).
+       * 
+       * All legs between two fixed stations can be ignored here.
+       * 
+       * All legs between a fixed and an unfixed station are then considered
+       * from the unfixed end (if we consider them from the fixed end we'd
+       * need to somehow detect when we're at a fixed point cut line and work
+       * out which side we're dealing with at this time. */
       FOR_EACH_STN(stn, list) {
 #ifdef NO_COVARIANCES
 	 real e;
@@ -184,153 +183,119 @@ build_matrix(node *list)
 		(!!stn->leg[2]) << 2 | (!!stn -> leg[1]) << 1 | (!!stn->leg[0]),
 		stn->colour);
 
-	 for (dirn = 0; dirn <= 2; dirn++)
- 	    if (USED(stn,dirn)) {
+	 for (dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
 #ifdef NO_COVARIANCES
-	       printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
-		      stn->leg[dirn]->v[0], stn->leg[dirn]->l.reverse);
+	    printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
+		   stn->leg[dirn]->v[0], stn->leg[dirn]->l.reverse);
 #else
-	       printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
-		      stn->leg[dirn]->v[0][0], stn->leg[dirn]->l.reverse);
+	    printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
+		   stn->leg[dirn]->v[0][0], stn->leg[dirn]->l.reverse);
 #endif
-	       print_prefix(stn->leg[dirn]->l.to->name);
-	       putnl();
-	    }
+	    print_prefix(stn->leg[dirn]->l.to->name);
+	    putnl();
+	 }
 	 putnl();
 #endif /* DEBUG_MATRIX_BUILD */
 
-	 if (fixed(stn)) {
-	    for (dirn = 2; dirn >= 0; dirn--)
-	       if (USED(stn,dirn) && data_here(stn->leg[dirn])) {
-#if DEBUG_MATRIX_BUILD
-		  print_prefix(stn->name);
-		  printf(" - ");
-		  print_prefix(stn->leg[dirn]->l.to->name);
-		  putnl();
-#endif /* DEBUG_MATRIX_BUILD */
-		  if (!fixed(stn->leg[dirn]->l.to)) {
-		     t = find_stn_in_tab(stn->leg[dirn]->l.to);
-#ifdef NO_COVARIANCES
-		     e = stn->leg[dirn]->v[dim];
-		     if (e != (real)0.0) {
-			/* not an equate */
-			e = ((real)1.0) / e;
-			M(t,t) += e;
-			B[t] += e * (POS(stn, dim) + stn->leg[dirn]->d[dim]);
-#if DEBUG_MATRIX_BUILD
-			printf("--- Dealing with stn fixed at %f\n",
-			       POS(stn, dim));
-#endif /* DEBUG_MATRIX_BUILD */
-		     }
-#else
-		     if (invert_svar(&e, &stn->leg[dirn]->v)) {
-			/* not an equate */
-			delta b;
-			int i;
-			adddd(&a, &POSD(stn), &stn->leg[dirn]->d);
-			mulsd(&b, &e, &a);
-			for (i = 0; i < 3; i++) {
-			   M(t * FACTOR + i, t * FACTOR + i) += e[i];
-			   B[t * FACTOR + i] += b[i];
-			}
-			M(t * FACTOR + 1, t * FACTOR) += e[3];
-			M(t * FACTOR + 2, t * FACTOR) += e[4];
-			M(t * FACTOR + 2, t * FACTOR + 1) += e[5];
-#if DEBUG_MATRIX_BUILD
-			printf("--- Dealing with stn fixed at (%f, %f, %f)\n",
-			       POS(stn, 0), POS(stn, 1), POS(stn, 2));
-#endif /* DEBUG_MATRIX_BUILD */
-		     }
-#endif
-		  }
-	       }
-	 } else {
+	 if (!fixed(stn)) {
 	    f = find_stn_in_tab(stn);
-	    for (dirn = 2; dirn >= 0; dirn--)
-	       if (USED(stn,dirn) && data_here(stn->leg[dirn])) {
-		  if (fixed(stn->leg[dirn]->l.to)) {
-		     /* Ignore equated nodes */
+	    for (dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
+	       linkfor *leg = stn->leg[dirn];
+	       node *to = leg->l.to;
+	       if (fixed(to)) {
+		  bool fRev = !data_here(leg);
+		  if (fRev) leg = reverse_leg(leg);
+		  /* Ignore equated nodes */
 #ifdef NO_COVARIANCES
-		     e = stn->leg[dirn]->v[dim];
-		     if (e != (real)0.0) {
-			e = ((real)1.0) / e;
-			M(f,f) += e;
-			B[f] += e * (POS(stn->leg[dirn]->l.to,dim)
-				     - stn->leg[dirn]->d[dim]);
+		  e = leg->v[dim];
+		  if (e != (real)0.0) {
+		     e = ((real)1.0) / e;
+		     M(f,f) += e;
+		     B[f] += e * (POS(to, dim);
+		     if (fRev) {
+			B[f] += leg->d[dim]);
+		     } else {
+			B[f] -= leg->d[dim]);
 		     }
-#else
-		     if (invert_svar(&e, &stn->leg[dirn]->v)) {
-			delta b;
-			int i;
-			subdd(&a, &POSD(stn->leg[dirn]->l.to), &stn->leg[dirn]->d);
-			mulsd(&b, &e, &a);
-			for (i = 0; i < 3; i++) {
-			   M(f * FACTOR + i, f * FACTOR + i) += e[i];
-			   B[f * FACTOR + i] += b[i];
-			}
-			M(f * FACTOR + 1, f * FACTOR) += e[3];
-			M(f * FACTOR + 2, f * FACTOR) += e[4];
-			M(f * FACTOR + 2, f * FACTOR + 1) += e[5];
-		     }
-#endif
-		  } else {
-		     t = find_stn_in_tab(stn->leg[dirn]->l.to);
-#if DEBUG_MATRIX
-		     printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
-			    stn->leg[dirn]->d[dim]);
-#endif
-		     /* Ignore equated nodes & lollipops */
-#ifdef NO_COVARIANCES
-		     e = stn->leg[dirn]->v[dim];
-		     if (t != f && e != (real)0.0) {
-			real a;
-			e = ((real)1.0) / e;
-			M(f,f) += e;
-			M(t,t) += e;
-			if (f < t) M(t,f) -= e; else M(f,t) -= e;
-			a = e * stn->leg[(dirn)]->d[dim];
-			B[f] -= a;
-			B[t] += a;
-		     }
-#else
-		     if (t != f && invert_svar(&e, &stn->leg[dirn]->v)) {
-			int i;
-			mulsd(&a, &e, &stn->leg[(dirn)]->d);
-			for (i = 0; i < 3; i++) {
-			   M(f * FACTOR + i, f * FACTOR + i) += e[i];
-			   M(t * FACTOR + i, t * FACTOR + i) += e[i];
-			   if (f < t)
-			      M(t * FACTOR + i, f * FACTOR + i) -= e[i];
-			   else
-			      M(f * FACTOR + i, t * FACTOR + i) -= e[i];
-			   B[f * FACTOR + i] -= a[i];
-			   B[t * FACTOR + i] += a[i];
-			}
-			M(f * FACTOR + 1, f * FACTOR) += e[3];
-			M(t * FACTOR + 1, t * FACTOR) += e[3];
-			M(f * FACTOR + 2, f * FACTOR) += e[4];
-			M(t * FACTOR + 2, t * FACTOR) += e[4];
-			M(f * FACTOR + 2, f * FACTOR + 1) += e[5];
-			M(t * FACTOR + 2, t * FACTOR + 1) += e[5];
-			if (f < t) {
-			   M(t * FACTOR + 1, f * FACTOR) -= e[3];
-			   M(t * FACTOR, f * FACTOR + 1) -= e[3];
-			   M(t * FACTOR + 2, f * FACTOR) -= e[4];
-			   M(t * FACTOR, f * FACTOR + 2) -= e[4];
-			   M(t * FACTOR + 2, f * FACTOR + 1) -= e[5];
-			   M(t * FACTOR + 1, f * FACTOR + 2) -= e[5];
-			} else {
-			   M(f * FACTOR + 1, t * FACTOR) -= e[3];
-			   M(f * FACTOR, t * FACTOR + 1) -= e[3];
-			   M(f * FACTOR + 2, t * FACTOR) -= e[4];
-			   M(f * FACTOR, t * FACTOR + 2) -= e[4];
-			   M(f * FACTOR + 2, t * FACTOR + 1) -= e[5];
-			   M(f * FACTOR + 1, t * FACTOR + 2) -= e[5];
-			}
-		     }
-#endif
 		  }
+#else
+		  if (invert_svar(&e, &leg->v)) {
+		     delta b;
+		     int i;
+		     if (fRev) {
+			adddd(&a, &POSD(to), &leg->d);
+		     } else {
+			subdd(&a, &POSD(to), &leg->d);
+		     }
+		     mulsd(&b, &e, &a);
+		     for (i = 0; i < 3; i++) {
+			M(f * FACTOR + i, f * FACTOR + i) += e[i];
+			B[f * FACTOR + i] += b[i];
+		     }
+		     M(f * FACTOR + 1, f * FACTOR) += e[3];
+		     M(f * FACTOR + 2, f * FACTOR) += e[4];
+		     M(f * FACTOR + 2, f * FACTOR + 1) += e[5];
+		  }
+#endif
+	       } else if (data_here(leg)) {
+		  /* forward leg, unfixed -> unfixed */
+		  t = find_stn_in_tab(to);
+#if DEBUG_MATRIX
+		  printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
+			 leg->d[dim]);
+#endif
+		  /* Ignore equated nodes & lollipops */
+#ifdef NO_COVARIANCES
+		  e = leg->v[dim];
+		  if (t != f && e != (real)0.0) {
+		     real a;
+		     e = ((real)1.0) / e;
+		     M(f,f) += e;
+		     M(t,t) += e;
+		     if (f < t) M(t,f) -= e; else M(f,t) -= e;
+		     a = e * leg->d[dim];
+		     B[f] -= a;
+		     B[t] += a;
+		  }
+#else
+		  if (t != f && invert_svar(&e, &leg->v)) {
+		     int i;
+		     mulsd(&a, &e, &leg->d);
+		     for (i = 0; i < 3; i++) {
+			M(f * FACTOR + i, f * FACTOR + i) += e[i];
+			M(t * FACTOR + i, t * FACTOR + i) += e[i];
+			if (f < t)
+			   M(t * FACTOR + i, f * FACTOR + i) -= e[i];
+			else
+			   M(f * FACTOR + i, t * FACTOR + i) -= e[i];
+			B[f * FACTOR + i] -= a[i];
+			B[t * FACTOR + i] += a[i];
+		     }
+		     M(f * FACTOR + 1, f * FACTOR) += e[3];
+		     M(t * FACTOR + 1, t * FACTOR) += e[3];
+		     M(f * FACTOR + 2, f * FACTOR) += e[4];
+		     M(t * FACTOR + 2, t * FACTOR) += e[4];
+		     M(f * FACTOR + 2, f * FACTOR + 1) += e[5];
+		     M(t * FACTOR + 2, t * FACTOR + 1) += e[5];
+		     if (f < t) {
+			M(t * FACTOR + 1, f * FACTOR) -= e[3];
+			M(t * FACTOR, f * FACTOR + 1) -= e[3];
+			M(t * FACTOR + 2, f * FACTOR) -= e[4];
+			M(t * FACTOR, f * FACTOR + 2) -= e[4];
+			M(t * FACTOR + 2, f * FACTOR + 1) -= e[5];
+			M(t * FACTOR + 1, f * FACTOR + 2) -= e[5];
+		     } else {
+			M(f * FACTOR + 1, t * FACTOR) -= e[3];
+			M(f * FACTOR, t * FACTOR + 1) -= e[3];
+			M(f * FACTOR + 2, t * FACTOR) -= e[4];
+			M(f * FACTOR, t * FACTOR + 2) -= e[4];
+			M(f * FACTOR + 2, t * FACTOR + 1) -= e[5];
+			M(f * FACTOR + 1, t * FACTOR + 2) -= e[5];
+		     }
+		  }
+#endif
 	       }
+	    }
 	 }
       }
 
