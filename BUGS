@@ -5,7 +5,6 @@ wxaven:
 - get it to build on/for win32
 - sort out graphics context problem with wxMotif
 - confusion over semantics of "reverse controls"
-- configure script needs to allow specification of toolkit (GTK/Motif)
 - continuing trouble with accelerator keys
 - translations need doing
 
