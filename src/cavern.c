@@ -74,6 +74,7 @@ bool fAscii = fFalse;
 bool fQuiet = fFalse; /* just show brief summary + errors */
 static bool fMute = fFalse; /* just show errors */
 bool fSuppress = fFalse; /* only output 3d(3dx) file */
+static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */   
 
 nosurveylink *nosurveyhead;
 
@@ -103,6 +104,7 @@ static const struct option long_opts[] = {
    {"output", required_argument, 0, 'o'},
    {"quiet", no_argument, 0, 'q'},
    {"no-auxiliary-files", no_argument, 0, 's'},
+   {"warnings-are-errors", no_argument, 0, 'w'},
 #ifdef NEW3DFORMAT
    {"new-format", no_argument, 0, 'x'},
 #endif
@@ -112,9 +114,9 @@ static const struct option long_opts[] = {
 };
 
 #ifdef NEW3DFORMAT
-#define short_opts "pxao:qsz:"
+#define short_opts "pxao:qswz:"
 #else
-#define short_opts "pao:qsz:"
+#define short_opts "pao:qswz:"
 #endif
 
 /* TRANSLATE extract help messages to message file */
@@ -136,7 +138,8 @@ static struct help_msg help[] = {
 static void
 delete_output_on_error(void)
 {
-   if (msg_errors) filename_delete_output();
+   if (msg_errors || (f_warnings_are_errors && msg_warnings))
+      filename_delete_output();
 }
 
 extern CDECL int
@@ -220,6 +223,9 @@ main(int argc, char **argv)
        case 's':
 	 fSuppress = 1;
 	 break;
+       case 'w':
+	 f_warnings_are_errors = 1;
+	 break;
        case 'z': {
 	 /* Control which network optimisations are used (development tool) */
 	 static int first_opt_z = 1;
@@ -293,7 +299,8 @@ main(int argc, char **argv)
 #endif
    if (fhErrStat) fclose(fhErrStat);
 
-   if (!fSuppress && !msg_errors) list_pos(root); /* produce .pos file */
+   if (!fSuppress && !(msg_errors || (f_warnings_are_errors && msg_warnings)))
+      list_pos(root); /* produce .pos file */
 
    out_current_action(msg(/*Calculating statistics*/120));
    do_stats();
@@ -324,9 +331,11 @@ main(int argc, char **argv)
       printf(msg(/*There were %d warning(s) and %d non-fatal error(s).*/16),
 	     msg_warnings, msg_errors);
       putnl();
-      /* FIXME: if (msg_errors) print "output not produced..."? */
+      /* FIXME: if (msg_errors || (f_warnings_are_errors && msg_warnings)) print "output not produced..."? */
    }
-   return (msg_errors ? EXIT_FAILURE : EXIT_SUCCESS);
+   if (msg_errors || (f_warnings_are_errors && msg_warnings))
+      return EXIT_FAILURE;
+   return EXIT_SUCCESS;
 }
 
 static void
@@ -349,7 +358,7 @@ do_stats(void)
    long cLoops = cComponents + cLegs - cStns;
    char buf[1024];
 
-   if (!fSuppress && !msg_errors)
+   if (!fSuppress && !(msg_errors || (f_warnings_are_errors && msg_warnings)))
       fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
 
    out_puts("");
