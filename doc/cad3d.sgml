@@ -1,0 +1,39 @@
+<refmeta>
+<refentrytitle>cad3d</refentrytitle>
+<manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname>cad3d</refname>
+<refpurpose>convert a &x3d; file into formats which can be read by CAD
+and drawing packages
+</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis>
+<command>cad3d</command>
+<arg choice="opt">
+  <option>options</option>
+</arg>
+<arg>.3d file</arg>
+</cmdsynopsis>
+</refsynopsisdiv>
+  
+<refsect1><title>Description</title>
+<!-- FIXME: more info (opts, etc) -->
+
+<para>
+Cad3d can currently output DXF or Sketch files.
+</para>
+
+<Para>An alternative to cad3d is SpeleoGen, which can be found in the
+"Related Tools" section of the Survex web site. <!--FIXME: url-->
+SpeleoGen is a Windows (3.1/95/NT) utility which reads in
+&survexsuite; &x3d; files, LRUD passage wall data (in <filename/.cav/ format)
+and surface topography info in <filename/.csv/ format.  The results are
+combined, displayed, and saved out as a DXF file for import into
+CAD or drawing packages.
+</Para>
+
+</refsect1>

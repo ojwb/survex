@@ -1,0 +1,39 @@
+<refmeta>
+<refentrytitle>extend</refentrytitle>
+<manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname>extend</refname>
+<refpurpose>produce an extended elevation from a &x3d; file
+</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis>
+<command>extend</command>
+<arg>input .3d file</arg>
+<arg choice="opt">output .3d file</arg>
+</cmdsynopsis>
+</refsynopsisdiv>
+  
+<refsect1><title>Description</title>
+
+<Para>
+Extend starts with the highest station marked as an entrance which
+has at least one underground survey leg attached to it.  If there are
+no such stations, the highest deadend station in the survey (or the
+highest station if there are no deadends) is used.  Extend puts the#
+first station on the left, then folds each leg out individually to the right,
+breaking loops arbitrarily (usually at junctions).</Para>
+
+<Para>
+This approach suffices for simple caves or sections of cave.
+for more complicated situations human intervention is required -
+try &chasm;'s extended elevation editor (which we plan to integrate
+into Survex in the future).</Para>
+
+<Para>If the output filename is not specified, extend writes its
+output to <filename/extend.3d/.</Para>
+
+</refsect1>

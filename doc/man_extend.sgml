@@ -1,0 +1,9 @@
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+ <!-- Define a parameter entity to pull in the standard entites -->
+ <!ENTITY % entities SYSTEM "survex.ent">
+ <!-- Now use the parameter entity -->
+ %entities;
+]>
+<refentry>
+&man.extend;
+</refentry>

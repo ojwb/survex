@@ -1,0 +1,141 @@
+<!ENTITY ollyemail "olly@survex.com">
+<!ENTITY wookeyemail "wookey@survex.com">
+<!ENTITY survexwebsite "http://www.survex.com/">
+<!ENTITY djgppwebsite "http://www.delorie.com/djgpp/">
+<!ENTITY unix "UNIX">
+<!ENTITY chasm "Chasm">
+<!ENTITY linux "Linux">
+<!ENTITY msdos "DOS">
+<!ENTITY riscos "RISC OS">
+<!ENTITY survexsuite "<Application>Survex</Application>">
+<!ENTITY spud "<Application>Spud</Application>">
+<!ENTITY wxwindows "<Application>wxWindows</Application>">
+<!ENTITY cucc "<Acronym/CUCC/">
+<!ENTITY arge "<Acronym/ARGE/">
+<!ENTITY dpmi "<Acronym/DPMI/">
+<!ENTITY svx "<filename>.svx</filename>">
+<!ENTITY x3d "<filename>.3d</filename>">
+<!ENTITY err "<filename>.err</filename>">
+<!ENTITY pos "<filename>.pos</filename>">
+
+<!entity man.aven SYSTEM "aven.sgml">
+<!entity man.3dtopos SYSTEM "3dtopos.sgml">
+<!entity man.cad3d SYSTEM "cad3d.sgml">
+<!entity man.cavern SYSTEM "cavern.sgml">
+<!entity man.caverot SYSTEM "caverot.sgml">
+<!entity man.diffpos SYSTEM "diffpos.sgml">
+<!entity man.extend SYSTEM "extend.sgml">
+<!entity man.printdm SYSTEM "printdm.sgml">
+<!entity man.printhpgl SYSTEM "printhpgl.sgml">
+<!entity man.printpcl SYSTEM "printpcl.sgml">
+<!entity man.printps SYSTEM "printps.sgml">
+<!entity man.printwin SYSTEM "printwin.sgml">
+<!entity man.sorterr SYSTEM "sorterr.sgml">
+<!entity man.xcaverot SYSTEM "xcaverot.sgml">
+
+<!entity printer.options "
+<varlistentry><term>--survey=SURVEY</term>
+<listitem><para>Only load the sub-survey SURVEY</para></listitem></varlistentry>
+
+<varlistentry><term>-e, --elevation</term>
+<listitem><para>select elevation</para></listitem></varlistentry>
+
+<varlistentry><term>-p, --plan</term>
+<listitem><para>select plan view</para></listitem></varlistentry>
+
+<varlistentry><term>-b, --bearing=BEARING</term>
+<listitem><para>set bearing</para></listitem></varlistentry>
+
+<varlistentry><term>-t, --tilt=TILT</term>
+<listitem><para>set tilt</para></listitem></varlistentry>
+
+<varlistentry><term>-s, --scale=SCALE</term>
+<listitem><para>set scale</para></listitem></varlistentry>
+
+<varlistentry><term>-n, --station-names</term>
+<listitem><para>display station names</para></listitem></varlistentry>
+
+<varlistentry><term>-c, --crosses</term>
+<listitem><para>display crosses at stations</para></listitem></varlistentry>
+
+<varlistentry><term>-B, --no-border</term>
+<listitem><para>turn off page border.
+Without this option dotted borders will be drawn on the
+sides where pages join. This is to facilitate accurate cutting with
+scissors.
+</para></listitem></varlistentry>
+
+<varlistentry><term>-l, --no-legs</term>
+<listitem><para>turn off display of survey legs</para></listitem></varlistentry>
+
+<varlistentry><term>-S, --surface</term>
+<listitem><para>turn on display of surface survey legs. By default only
+underground survey legs are shown.</para></listitem></varlistentry>
+
+<varlistentry><term>-k, --skip-blanks</term>
+<listitem><para>don't output blank pages
+With this option pages which are blank (apart from the alignment marks)
+will not be printed.  This option implies --no-border.
+</para></listitem></varlistentry>
+">
+
+<!entity printer.output "
+<varlistentry><term>-o, --output=OUTPUT</term>
+<listitem><para>set output file
+</para></listitem></varlistentry>
+">
+
+<!entity printer.calibrate "
+<varlistentry><term>-C, --calibrate</term>
+<listitem><para>print out calibration page
+</para></listitem></varlistentry>
+">
+
+<!entity printer.interactive "
+<Para>
+When you run the printer driver you will be asked if you want a
+plan or elevation (enter <keycap/P/, or <keycap/E/) - the default is
+plan. Then enter values for the desired plot view. These values
+correspond to those displayed in the top left hand corner when using
+caverot. You would usually use CAVEROT to pick the best view and then
+note the angles before running the Printer Driver. This will
+eventually be integrated.
+</Para>
+
+<Para>
+For a plan enter bearing up the page, in degrees, 0 indicating North
+at the top of the page (the default).
+</Para>
+
+<Para>
+For an elevation enter the angle of view (i.e. the compass bearing
+from which the scene is viewed), and angle of tilt, where 0 is
+horizontal, - is looking down from above, and + is looking up from
+below, so -90 is the same as plan view.
+</Para>
+
+<Para>
+For an extended elevation, no viewing angles are needed.
+</Para>
+
+<Para>You'll be told the scale needed to fit the plot on one page, and
+be asked what scale you want to use. The you're told how many
+pages this will take (and the arrangement of those pages (e.g. 6 pages
+(2x3)) and have the opportunity to print, quit, or change the scale (so
+you can repeat this process until you have a scale and number of pages
+you are happy with).
+</Para>
+
+<Para>You can then print all the pages, a range of pages, or any arbitrary
+list of pages and ranges (handy for when your printer mangles a page).
+</Para>
+">
+
+<!entity printer.config "
+<Para>
+The configuration file <filename/print.ini/, which
+sets various features for each printer. See the 'Printer Settings'
+section for details. Even if your printer is not standard you should be
+able get it to work by customising one of the supplied definitions.
+</Para>
+">

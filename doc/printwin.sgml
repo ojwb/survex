@@ -1,0 +1,46 @@
+<refmeta>
+<refentrytitle>printwin</refentrytitle>
+<manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname>printwin</refname>
+<refpurpose>print &x3d; files via the Microsoft Windows printer system
+</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis>
+<command>printwin</command>
+<arg choice="opt"><option>options</option></arg>
+<arg choice="opt" rep="repeat">.3d file</arg> <!--FIXME-->
+</cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<Para>
+Printwin prints files via the MS Windows printer system.  It is the
+recommended way to print on MS Windows.
+</Para>
+
+&printer.config;
+
+<refsect2><Title>Command Line Options</Title>
+
+<Para>The command line options are:
+</Para>
+
+<variablelist>
+&printer.options;
+</variablelist>
+
+</refsect2>
+
+<refsect2><Title>Interactive Use</Title>
+
+&printer.interactive;
+
+</refsect2>
+
+</refsect1>

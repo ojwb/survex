@@ -1,0 +1,124 @@
+<refsect2><Title>Printer Settings</Title>
+
+<Para>The format of the
+<filename>print.ini</filename>/<filename>myprint.ini</filename>
+file is similar to Windows <filename/.ini/ files.
+There is a section name in square
+brackets, e.g.:
+</Para>
+
+<programlisting>[generic_PCL]</programlisting>
+
+<Para>and there are some options and settings below that of the form
+</Para>
+
+<Para>&lt;option&gt;=&lt;setting&gt;
+</Para>
+
+<Para>e.g.:</Para>
+
+<programlisting>pixels_across_page=960</programlisting>
+
+<Para>below each of this options is usually a comment (indicated by a
+semicolon ';') saying what the option above is for. The codes needed by dot
+matrix printers are given as they are usually shown in manuals. The
+backslash '\' indicating that the following character is to be interpreted
+as a control code so \[ means send the value 27 decimal which is 1B hex,
+also called 'ESC' for Escape. If the backslash is followed by a small x and
+two hex digits - e.g \x0c, then that means send the code 0C hex, which is 12
+decimal, also called LF for LineFeed. This is all inherently rather
+cryptic, but the provided set-ups will work with nearly all dot matrix
+printers, so you are unlikely to need to fiddle with these runes.
+</Para>
+
+<Para>
+The only thing most users will have to specify is the output device
+(and Calibration for Dot Matrix Printers, see 'Printer Calibration').
+This is the setting given in the [base] section of the form
+output_&lt;platform&gt=&lt;device&gt;, where device can be a device name
+(e.g. PRN, LPT1, LPT2 under &msdos;, <filename/Printer:/ under &riscos;) or a
+filename. Under &unix; output may be piped into another command like
+so:
+</Para>
+
+<programlisting>
+[base]
+output_unix=|lpr -Poak
+; send output to printer 'oak'</programlisting>
+
+<Para>
+Any name given which is not recognised as a device will generate a
+file of that name, containing the exact data that would be sent to the
+printer. This can then be send to a printer later (See the note above
+from &msdos; users). You can override the output setting using the
+--output command line option.
+</Para>
+
+<Para>Each type of printer has its own section. The basic types provides
+are:
+</Para>
+
+<Para>[DM] (for Dot Matrix, PRINTDM).[HPGL] (for HPGL plotters, PRNTHPGL),
+[PCL] (for PCL printers PRINTPCL), and [PS] (for Postscript printers), and
+for each of these types at least one specific example is provided, for the
+specified printer and paper size.
+</Para>
+
+<!-- FIXME: check this -->
+
+<Para>The examples provided are: [dm_8pin_a4] [dm_8pin_11inch],
+[dm_8pin_12inch], [dm_9pin_11inch], [dm_9pin_12inch], [dm_24pin_a4],
+[dm_24pin_11inch], [dm_24pin_12inch], [dm_panasonic_24pin],
+[dm_epsonlx86_9pin_11inch]
+</Para>
+
+<Para>[hpgl_generic_a4landscape], [hpgl_generic_A1landscape],
+[hpgl_generic_A0landscape]
+</Para>
+
+<Para>[pcl_generic_a4], [pcl_modern_a4]
+</Para>
+
+<Para>[ps_generic_a4]
+</Para>
+
+<Para>The idea is that your printer can be defined in terms of an existing
+one, using the 'like' option. This makes the settings for the specified
+printer include the settings specified in the 'like' section, except where
+they are overridden by new settings in this section. The syntax is
+Like=&lt;definition name&gt;, where definition name must have been
+previously defined in the file.
+</Para>
+
+<Para>Here is an example of how it works:
+</Para>
+
+<programlisting>
+[dm_9pin_12inch]
+Like=dm_11inch_9pin
+Lines_down_page=108</programlisting>
+
+<Para>So this means that the definition 'dm_9pin_12inch', i.e. 9pin dot
+matrix printer using 12 inch paper, is just like the 11 inch definition for
+the same printer, except for the number of lines down a page.
+</Para>
+
+<!-- FIXME: fettle this -->
+<Para>If you find that your printout does not come out correctly, then the
+best way to make changes for your printer is to create a new section called
+[my_printer], and start with a like=something where something is the closest
+section to your printer. Then add new options to override the ones that are
+not correct for your printer. Finally you need to change the section for the
+type of printer you are using to point to your new definition. E.g. if you
+are using a dot-matrix printer then you need to change the [DM] section to
+say like=my_printer .
+</Para>
+
+<Para>Note that if you are using a PCL printer the defaults are set
+not to use advanced printer features for compatibility. If you want to
+try these (equivalent to HP laserjet III or later), then you should
+change the [PCL] section to say like=modern_pcl_a4 . This will enable
+horizontal and vertical tabbing.
+</Para>
+
+</refsect2>

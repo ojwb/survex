@@ -1,0 +1,48 @@
+<refmeta>
+<refentrytitle>printpcl</refentrytitle>
+<manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname>printpcl</refname>
+<refpurpose>print &x3d; files on a printer supporting Hewlett Packard's PCL
+</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis>
+<command>printpcl</command>
+<arg choice="opt"><option>options</option></arg>
+<arg choice="opt" rep="repeat">.3d file</arg> <!--FIXME-->
+</cmdsynopsis>
+</refsynopsisdiv>
+  
+<refsect1><title>Description</title>
+
+<Para>Printpcl produces output suitable for printers that support
+Hewlett Packard's <Acronym>PCL</Acronym> (Printer Control Language),
+which include Deskjets and Laserjets (i.e. many Inkjets and Laser
+printers).
+</Para>
+
+&printer.config;
+
+<refsect2><Title>Command Line Options</Title>
+
+<Para>The command line options are:
+</Para>
+
+<variablelist>
+&printer.options;
+&printer.output;
+</variablelist>
+
+</refsect2>
+
+<refsect2><Title>Interactive Use</Title>
+
+&printer.interactive;
+
+</refsect2>
+
+</refsect1>

@@ -1,8 +1,8 @@
 Makefile
 Makefile.in
-survex.1
+*.1
 manual
-manual.htm
+manual.html
 manual.ps
 manual.rtf
 manual.txt

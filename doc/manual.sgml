@@ -1,24 +1,10 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
-<!ENTITY ollyemail "olly@survex.com">
-<!ENTITY wookeyemail "wookey@survex.com">
-<!ENTITY survexwebsite "http://www.survex.com/">
-<!ENTITY djgppwebsite "http://www.delorie.com/djgpp/">
-<!ENTITY unix "UNIX">
-<!ENTITY chasm "Chasm">
-<!ENTITY linux "Linux">
-<!ENTITY msdos "DOS">
-<!ENTITY riscos "RISC OS">
-<!ENTITY survexsuite "<Application>Survex</Application>">
-<!ENTITY spud "<Application>Spud</Application>">
-<!ENTITY wxwindows "<Application>wxWindows</Application>">
-<!ENTITY cucc "<Acronym/CUCC/">
-<!ENTITY arge "<Acronym/ARGE/">
-<!ENTITY dpmi "<Acronym/DPMI/">
-<!ENTITY svx "<filename>.svx</filename>">
-<!ENTITY x3d "<filename>.3d</filename>">
-<!ENTITY err "<filename>.err</filename>">
-<!ENTITY pos "<filename>.pos</filename>">
+ <!-- Define a parameter entity to pull in the standard entites -->
+ <!ENTITY % entities SYSTEM "survex.ent">
+ <!-- Now use the parameter entity -->
+ %entities;
 ]>
+
 <!--
 Add note that this is produced from an sgml master and that large
 patches are better done on that...
@@ -56,33 +42,6 @@ nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in hei
 a sample survey.  Take examples from surveying books and real surveys.
 
 
-3dtopos...
-
-there's a new
-utility - 3dtopos - which takes a .3d file and produces a .pos file
-
-<Para>This file contains a list of all the station positions (ordered x,y,z
-[East, North, Up]) with complete names.
-
-the stations are sorted such that numbers occur in the correct order
-(so ``2'' before ``10'').  3dtopos even sorts numbers with a prefix
-and/or suffix, so you'd get:
-
-040.sv8
-040.sv8a
-040.sv8b
-040.sv8c
-040.sv9
-040.sv10
-040.sv11
-40_entrance_tag
-40b_entrance_tag
-
-The intention is to give the order you'd expect, so if you find examples
-where this isn't the case, let me know.
-
-
-
 <Para>The other really important commands apart from *BEGIN, *END, and
 *INCLUDE are *EQUATE and *FIX.
 </Para>
@@ -107,10 +66,35 @@ the station 1 of the Adrian's Route survey.
 0 (east-west), 0 (north-south), 1780 (altitude).
 </Para>
 
+
+
+
+<sect2><Title>IMPORTANT NOTE FOR &msdos; USERS</Title>
+
+<caution>
+<Para>printdm, printpcl and prnthpgl all produce binary files.  If
+output from these is sent to a file, the file
+<emphasis>must</emphasis> then be sent to the printer with
+<userinput>COPY /B OUTPUT PRN</userinput> where OUTPUT is the filename and
+PRN the device name.  Do <emphasis>not</emphasis> use COPY without the
+/B.  If you do, the output may be corrupted. Sorry, this is a problem
+with &msdos;, and there is nothing we can do about it.</Para>
+</caution>
+
+<Para>If you send output straight to the printer, by putting <filename/PRN/
+or <filename/LPT1/ in the configuration file, then this problem should not
+occur.</Para>
+
+<Para>printps produces text files as output, and so should be unaffected by
+this.
+</Para>
+
+</sect2>
+
 -->
 
-<Article Status="draft" id=index>
- <ArticleInfo>
+<article Status="draft" id=index>
+ <articleinfo>
   <Title>&survexsuite; 0.99 Manual</Title>
   <AuthorGroup>
    <Author>
@@ -137,15 +121,15 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-30 14:06:27 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.61 2001-09-30 14:06:27 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-10-04 01:00:02 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.62 2001-10-04 01:00:02 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
     cave surveyors.
    </Para>
   </Abstract>
- </ArticleInfo>
+ </articleinfo>
 
 <!--
 This document also available for download in <a
@@ -254,6 +238,9 @@ rather than end users.
 </Para></listitem>
 </varlistentry>
 
+FIXME: merge INSTALL* into here, then process separately and textify
+to produce INSTALL*
+
 <varlistentry>
 <term>INSTALL or INSTALL.txt</term>
 <listitem><Para>instructions for installing &survexsuite;.  The
@@ -309,7 +296,7 @@ joining it, e.g. at a T-junction. And so on.
 <?dbhtml filename="getstart.htm">
 
 <Para>This section covers how to obtain the software, and how to unpack and
-install it.</Para>
+install it, and how to configure it.</Para>
 
 <Sect2><Title>Obtaining &survexsuite;</Title>
 
@@ -319,6 +306,10 @@ have internet access or would prefer to get a copy by post, we are
 also happy to send out up-to-date copies on receipt of a formatted
 floppy disk and a stamped, self-addressed envelope. See the end of this
 document for addresses.</Para>
+
+</Sect2>
+
+<Sect2><Title>Installing &survexsuite;</Title>
 
 <Para>The details of installation depend greatly on what platform you
 are using, so there is a separate section below for each platform.</Para>
@@ -400,6 +391,14 @@ The installer creates a Survex group in the start menu containing:
 
 </ItemizedList>
 
+<!-- FIXME
+<Para>On Microsoft Windows and &riscos; &survexsuite; installs with
+suitable file associations so that you can drive it from the GUI.
+On &unix; and &msdos; you need to drive &survexsuite; from a command-line
+prompt (or set some a filemanager or graphics shell).
+</Para>
+-->
+
 <Para>
 Icons are installed for &svx;, &x3d;, &err;, and &pos; files.
 Double-clicking on a &svx; file processes it to produce a &x3d; file.
@@ -469,80 +468,17 @@ compatibilty with earlier operating system versions.
 
 </Sect2>
 
-</Sect1>
+<Sect2><Title>Configuration</Title>
 
-<Sect1><Title>Using &survexsuite;</Title>
-<?dbhtml filename="using.htm">
-
-<!-- FIXME: .log... -->
-
-<!--
-<Para>A complete specification of the &survexsuite; program commands is in
-the commands appendix. This will tell you exactly what &survexsuite; can and
-cannot do, however it is not easy to get an overall view of how to use the
-program from that so below are general comments on the basic concepts of
-&survexsuite; and typical ways of using the program.</Para>
--->
-
-<Para>On Microsoft Windows and &riscos; &survexsuite; installs with
-suitable file associations so that you can drive it from the GUI.
-On &unix; and &msdos; you need to drive &survexsuite; from a command-line
-prompt (or set some a filemanager or graphics shell).
-</Para>
-
-<Para>
-There are three main programs:
-</Para>
-
-<ItemizedList>
-
-<ListItem><Para>cavern: is the central data processing part of the
-suite.  It turns survey data into coordinates (in a &x3d; file)
-and writes out information about loop closures (in a &err; file).
-</Para></ListItem>
-
-<ListItem><Para>aven: cave viewer for visualising &x3d; files (on
-&msdos; and &riscos; you get caverot instead).
-</Para></ListItem>
-
-<ListItem><Para>
-printdm, printpcl, printps, prnthpgl, printwin: print processed data
-to scale.  printwin is only available on Microsoft Windows and uses
-the Windows printer driver systems - this is the recommended way to
-print on Windows.
-</Para></ListItem>
-
-</ItemizedList>
-
-<Para>Also supplied are several other useful utilities:</Para>
-
-<ItemizedList>
-
-<ListItem><Para>diffpos: compares the positions of stations in two
-&x3d; files.
-</Para></ListItem>
-
-<ListItem><Para>extend: simplistic Extended Elevation processor.
-</Para></ListItem>
-
-</ItemizedList>
-
-</Sect1>
-
-<!-- FIXME: Installation -->
-
-<!-- FIXME: Configuration -->
-
-<Sect1><Title>Configuration</Title>
-<?dbhtml filename="config.htm">
-
-<Sect2><Title>Selecting a Language</Title>
+<Sect3><Title>Selecting a Language</Title>
 
 <Para>Survex has extensive internationalisation capabilities.  The
 language used for messages from Survex and most of the library calls it uses
 can be changed.  By default this is picked up from the language the operating
-system is set to use (from the MS Windows setting, or from
-the <systemitem>LANG</systemitem> environment variable on Unix).
+system is set to use (from the MS Windows <!--FIXME check what this is
+called--> setting, from
+the <systemitem>LANG</systemitem> environment variable on &unix;,
+or from the configured Territory on &riscos;).
 If no setting is found, International English is used.</Para>
 
 <Para>
@@ -550,8 +486,7 @@ However you may want to override the language manually
 (for example if Survex isn't available in your native language
 you'll want to choose the supported language you speak best).
 You'll also need to use this technique to set a language
-on &msdos; (which has no standard way to set the language) and
-&riscos; (where the numeric language codes used appear to be undocumented).
+on &msdos; (which has no standard way to set the language).
 </Para>
 
 <Para>
@@ -614,16 +549,54 @@ likely to be about a day's work; after that translations for
 new or changed messages are occasionally required.  Contact us for details
 if you're interested.</Para>
 
+</Sect3>
+
+<Sect3><Title>Calibrating Your Dot-Matrix Printer</Title>
+
+<Para>
+To get plots that are properly to scale on dot-matrix printers
+you <emphasis>must</emphasis> measure the output from
+<emphasis>your</emphasis> printer - see `Printer Calibration' <!--
+check section name and add link? --> below.
+</Para>
+
+</Sect3>
+
 </Sect2>
 
 </Sect1>
 
-<Sect1><Title>Survex Command Line Conventions</Title>
+<!-- FIXME
+
+type in .svx file
+
+run cavern
+
+run aven/caverot
+
+run printps/printwin/...
+
+-->
+
+<!-- FIXME:
+<ListItem><Para>aven: cave viewer for visualising &x3d; files (on
+&msdos; and &riscos; you get caverot instead).
+</Para></ListItem>
+-->
+
+<!-- FIXME:
+<ListItem><Para>
+printdm, printpcl, printps, prnthpgl, printwin: print processed data
+to scale.  printwin is only available on Microsoft Windows and uses
+the Windows printer driver systems - this is the recommended way to
+print on Windows.
+</Para></ListItem>
+-->
+
+<Sect1><Title>Survex Programs</Title>
 <?dbhtml filename="cmdline.htm">
 
-<!-- FIXME: bad style -->
-
-<Sect2><Title>Command Line Options</Title>
+<Sect2><Title>Standard Options</Title>
 
 <Para>All &survexsuite; programs respond to the following command line options:
 </Para>
@@ -631,7 +604,7 @@ if you're interested.</Para>
 <VariableList>
 
 <VarListEntry><Term>--help</Term><listitem><Para>
-display this help and exit
+display option summary and exit
 </Para></listitem></VarListEntry>
 
 <VarListEntry><Term>--version</Term><listitem><Para>
@@ -639,6 +612,10 @@ output version information and exit
 </Para></listitem></VarListEntry>
 
 </VariableList>
+
+</Sect2>
+
+<Sect2><Title>Short and Long Options</Title>
 
 <Para>
 Options have two forms: short (a dash followed by a single letter e.g.
@@ -653,6 +630,15 @@ are different (this didn't used to be the case before Survex 0.90).  Case
 sensitivity doubles the number of available short options (and is also the
 norm on &unix;).
 </Para></Note>
+</Sect2>
+
+<Sect2><Title>Filenames on the Command Line</Title>
+
+<Para>Filenames with spaces can be processed (provided your operating system
+supports them - &unix; does, and so do recent versions of Microsoft
+Windows).  You need to enclose the filename in quotes like so:
+<userinput>cavern "Spider Cave"</userinput>
+</Para>
 
 <Para>A file specified on the command line of any of the &survexsuite; suite
 of programs will be looked for as specified.  If it is not found, then the
@@ -661,820 +647,62 @@ file is looked for with the appropriate extension appended.  So
 <filename>survey</filename>, then for <filename>survey.svx</filename>.
 </Para>
 
-<Para>Filenames with spaces can be processed (provided your operating system
-supports them - &unix; does, and so do recent versions of Microsoft
-Windows).  You need to enclose the filename in quotes like so:
-<userinput>cavern "Spider Cave"</userinput>
-</Para>
+</Sect2>
 
-</Sect1>
+<Sect2><title>Command Reference</title>
 
-<Sect1><Title>Cavern</Title>
+<refentry id="cavern">
 <?dbhtml filename="cavern.htm">
-
-<Para>Cavern is the data processing engine of the suite.
-</Para>
-
-<Para>Syntax for simple use: <command/cavern &lt;survey data file&gt;/
-</Para>
-
-<Sect2><Title>Cavern Output</Title>
-
-<Para>Cavern reads in text files containing the survey data
-&svx;) and outputs two files, with the extensions
-&x3d; and &err;.
-By default these files are put in the current directory, 
-with the same base filename as the first &svx; file read,
-but a different extension.
-You can change the directory and/or base filename using the --output
-command line option.
-<!-- FIXME: link --> 
-</Para>
-
-<Para>E.g. if you process the data file <filename>entrance.svx</filename>
-with the command <userinput>cavern entrance</userinput> then the files
-<filename>entrance.3d</filename> and <filename>entrance.err</filename>
-will be created.
-</Para>
-
-<!-- mention .log FIXME -->
-
-<Para>
-Cavern also gives a range of statistics at the end of a successful run:
-</Para>
-
-<itemizedlist>
-<listitem><para>The highest and lowest stations and the height difference
-between them
-</para></listitem>
-
-<listitem><para>The total length of the survey (before and after
-adjustment).  This total excludes survey legs flagged as SURFACE,
-DUPLICATE, or SPLAY.
-</para></listitem>
-
-<listitem><para>The number of stations and legs.  Note that a *EQUATE
-is counted as a leg in this statistic.
-</para></listitem>
-
-<!-- FIXME loops, components, anything else -->
-
-<listitem><para>The East-West and North-South ranges, and the Northmost,
-Southmost, Eastmost, and Westmost stations.
-</para></listitem>
-
-<listitem><para>The number of each size of node in the network (where size
-is number of connections to a station) i.e. a one node is the end of a
-dead-end traverse, a two-node is a typical station in the middle of a
-traverse, a three-node is a T-junction etc.
-</para></listitem>
-
-<listitem><para>How long the processing took and how much CPU time was
-used.
-</para></listitem>
-</itemizedlist>
-
-<Sect3><Title>&x3d; - data describing the loop-closed centre line</Title>
-
-<Para>This file contains details of the stations and legs, and any
-flags associated with them.
-</Para>
-
-</Sect3>
-
-<Sect3><Title>&err; - loop closure statistics (%age errors, etc)</Title>
-
-<Para>This file contains statistics about each traverse in the survey
-including the percentage error in each leg when it is part of a loop. You
-should study this information to determine if any parts of the survey are of
-lower quality or contain gross errors.
-
-<!-- FIXME explain the various statistics -->
-</Para>
-
-</Sect3>
-
-</Sect2>
-
-<Sect2><Title>Cavern Command line Syntax</Title>
-
-<cmdsynopsis>
-    <command>cavern</command>
-    <arg rep="repeat">options</arg>
-    <arg rep="repeat">survex data file</arg>
-</cmdsynopsis>
-
-<!-- FIXME: brackets implied around each file -->
-
-<!--
-<Para>The command line is processed from left to right.
-</Para>
-
-<Sect3><Title>Brackets ( ... )</Title>
-
-<Para>These allow the user to control the passing of settings from one
-survey file to another. A '(' stores the current settings, which are then
-restored by the corresponding ')'. This means that surrounding a filename by
-brackets stops any settings (*SD values, *DATA styles, Calibration settings
-etc.) changed from 'leaking' out. This also allows you to use your own
-default settings file, like so:
-</Para>
-
-<Para>cavern Defaults ( SomeCave ) ( NewBit )
-</Para>
-
-<Para>A warning is given if you do not close as many brackets as you
-open, or if you attempt to close brackets that you have not opened.
-</Para>
-
--->
-
-<Sect3><Title>Cavern Options</Title>
-
-<VariableList>
-<VarListEntry>
-<Term>-p, --percentage</Term>
-<ListItem>
-<Para>You can get cavern to display the percentage progress through the
-current file.  As of &survexsuite; 0.90 this is disabled by default, but you
-can enable it if you want.  Because the value given is for the
-<emphasis/current/ file, the values jump around for a multi-file survey
-project. Also note that displaying this information slows down processing
-a little.
-<!-- FIXME: on a slow machine you'd probably rather it ran faster, and on a
-fast machine you can't follow the change percentages.-->
-</Para>
-</ListItem>
-</VarListEntry>
-
-<VarListEntry>
-<Term>-o, --output=OUTPUT</Term>
-<ListItem>
-<Para>Sets location for output files.
-<!--FIXME elaborate this and other option descriptions.-->
-</Para>
-</ListItem>
-</VarListEntry>
-
-<VarListEntry>
-<Term>-q, --quiet</Term>
-<ListItem>
-<Para>Only show a brief summary (--quiet --quiet or -qq will display
-errors only).
-</Para>
-</ListItem>
-</VarListEntry>
-
-<VarListEntry>
-<Term>-s, --no-auxiliary-files</Term>
-<ListItem>
-<Para>do not create .err file.
-</Para>
-</ListItem>
-</VarListEntry>
-
-<VarListEntry>
-<Term>-w, --warnings-are-errors</Term>
-<ListItem>
-<Para>turn warnings into errors.
-</Para>
-</ListItem>
-</VarListEntry>
-
-<VarListEntry>
-<Term>--log</Term>
-<ListItem>
-<Para>Send screen output to a .log file.
-</Para>
-</ListItem>
-</VarListEntry>
-
-<VarListEntry>
-<Term>-x, --chasm-format</Term>
-<ListItem>
-<Para>Output data in chasm's 3dx format for use with Phil Underwood's
-Chasm application.
-</Para>
-</ListItem>
-</VarListEntry>
-
-</VariableList>
-
-</Sect3>
-
-</Sect2>
-
-</Sect1>
-
-<!-- FIXME: gcc format error messages -->
-
-<Sect1><Title>Caverot</Title>
+&man.cavern;
+</refentry>
+<refentry id="caverot">
 <?dbhtml filename="caverot.htm">
-
-<Para>Caverot reads the &x3d; files and displays the
-results on screen, letting you control the view to understand the
-cave.  Aven is a GUI caverot replacement which supports most of
-caverot's mouse and keyboard controls but offers many additional
-features.</Para>
-
-<Sect2><Title>Syntax</Title>
-
-<Para>Basic syntax is:
-</Para>
-
-<!-- FIXME: change to use GNU getopt -->
-
-<cmdsynopsis>
-    <command>caverot</command>
-    <arg rep="repeat">.3d file</arg>
-</cmdsynopsis>
-
-<!-- FIXME: reword -->
-<Para>More exactly, when specifying colours for the files read in it is:
-</Para>
-
-<cmdsynopsis>
-    <command>caverot</command>
-    <arg>-c&lt;col1&gt;,&lt;col2&gt;,...,&lt;coln&gt;</arg>
-    <arg>&lt;file1&gt;.3d &lt;file2&gt;.3d ... &lt;filen&gt;.3d</arg>
-</cmdsynopsis>
-
-<Para>
-The &msdos; version of caverot for 286 and earlier machines works with
-a wide range of graphics cards, and typically provides resolutions up
-to 640x480.  Usually two copies of the screen are used, and one is
-drawn on while the other is displayed, to give smoother animation.
-Where the hardware does not allow this you may notice a flickering or
-flashing during movement which since you can see the screen being
-redrawn.
-</Para>
-
-<Para>
-The standard &msdos; version can work with higher resolution screen
-modes, and always draws into a buffer which is then copied to the
-screen.  It tries to pick a suitable screen mode, but if this fails
-you can bring up a dialog to choose a screen mode from by using the
---mode-picker command line option.
-<!-- FIXME fettle this in:
-This version doesn't run well under NT.  NT limits access to the
-graphics hardware, and emulates VGA, so the best resolution is
-320x200.  There are also other niggles (e.g. on an NT 4 server,
-the mouse works in the mode-picker, but not in caverot itself).
-[If you're running NT use the MS Windows version which comes with a
-more sophisticated cave viewer called aven.
--->
-</Para>
-
-<Para>
-The &riscos; version will pick the highest resolution screen mode that
-it can use two copies of the screen in, and that will work on the
-monitor in use. It will also use three bank animation for an even more
-flicker-free display if there is enough RAM.
-</Para>
-
-<Para>
-CAVEROT reads in the data and then displays a help screen listing the
-control keys/mouse buttons.  Hitting a key gives the default view.
-This is a plan scaled to fit on the screen, with no labels or station
-crosses. The view can be panned, rotated, zoomed, tilted, or set
-spinning.  This should be fast enough to be almost instant with all
-but the largest surveys on the slowest of hardware. Pressing
-<keycap/H/ at any point will give you the help again.  <keycap/Escape/
-exits the program.
-</Para>
-
-</Sect2>
-
-<Sect2><Title>Colours and multiple data files</Title>
-<!-- FIXME: move up? -->
-<Para>Caverot can read in multiple data files and display them in separate
-colours.
-</Para>
-
-<Para>The syntax is given above. E.g. <command/caverot -c2,6 cave.3d
-surface.3d/ would display <filename/cave.3d/ in colour 2 and
-<filename/surface.3d/ in colour 6. If you do not specify colours, a
-predefined set is used.</Para>
-
-<Para>Colour values range between 0 (black) and 255 (white) - experiment
-to find which colours you like.
-</Para>
-
-<Para>Note that there is no perspective in the view. This means that
-it is impossible to tell which way round a cave is rotating, or
-whether you are viewing something from behind, or in front. So
-if you think the direction of rotation in wrong, or changes as
-you watch, this is just your brain being confused, not a bug!
-</Para>
-
-</Sect2>
-
-<Sect2><Title>Mouse control</Title>
-
-<Para>
-The best way to move the cave is with the mouse. If you hold down the
-right button then the cave is dragged when you move the mouse. If you
-hold down the left button, then the cave is rotated if you move left
-or right, and zoomed if you move up and down.
-</Para>
-
-<Para>
-By default the mouse moves the cave, but if you press <keycap/Ctrl-R/,
-then the mouse will move the viewpoint instead (i.e. everything will
-go in the opposite direction. This seems more natural to some people.
-If your mouse has a middle button (and it is recognised by your mouse
-driver) then you can use it to tilt the cave.
-</Para>
-
-</Sect2>
-
-<Sect2><Title>Keyboard Control</Title>
-
-<Para><keycap/P/ and <keycap/L/ select Plan and eLevation
-respectively.  Changing between plan to elevation is animated to help
-you see where you are and how things relate. This animation is
-automatically disabled on slow machines to avoid user frustration.
-</Para>
-
-<Para>
-Comma <keycap/,/, and Slash <keycap>/</keycap> tilt up
-and down respectively. Tilt goes 180 degrees from plan view to a view
-from directly below (upside down plan).
-</Para>
-
-<Para>
-Enter starts the cave spinning, and <keycap/Space/ stops it. The
-speed of rotation for this, and tilt, is controlled by <keycap/Z/ and
-<keycap/X/.
-</Para>
-
-<Para>Crosses and/or labels can be displayed at survey stations.
-<keycap/Ctrl-X/ toggles crosses and <keycap/Ctrl-N/ station names.
-<keycap/Ctrl-L/ toggles the display of survey legs.
-</Para>
-
-<para>By default, labels and crosses are not redrawn during
-movement, to improve responsiveness.  With a small cave, or a fast
-computer, you can enable redraw of everything during movement with
-<keycap/Ctrl-A/.  <keycap/Ctrl-O/ toggles whether all names are
-displayed, or only non-overlapping ones.
-</para>
-
-<para><keycap/Delete/ is useful if you get lost - it resets the scale,
-position, and rotation speed, so that the cave returns to the centre
-of the screen. There are also keyboard controls to use instead of the
-mouse - <keycap/Shift/ helps here as it accelerates all movements:
-</para>
-
-<screen>
-<keycap/Z/, <keycap/X/ : Faster/Slower Rotation
-<keycap/R/: Reverse direction of rotation
-<keycap/Enter/, <keycap/Space/: Start and stop auto-rotation
-<keycap/C/, <keycap/V/: Rotate cave one step clockwise/anti-clockwise
-<keycap/'/ , <keycap>/</keycap>: Higher/Lower Viewpoint
-<keycap/]/ , <keycap/[/: Zoom in/Out
-<keycap/U/, <keycap/D/: Set view to Up/Down
-<keycap/N/, <keycap/S/, <keycap/E/, <keycap/W/: Set view to North, South, East, West
-<keycap/Delete/: Reset to default scale, rotation rate, etc
-<keycap/P/, <keycap/L/: Plan, Elevation
-<keycap/Cursor Left/, <keycap/Cursor Right/: Pan survey Left/Right (on screen)
-<keycap/Cursor Up/, <keycap/Cursor Down/: Pan survey Up/Down (on screen)
-<keycap/Ctrl-N/: Toggle display of station names
-<keycap/Ctrl-X/: Toggle display of crosses at stations
-<keycap/Ctrl-L/: Toggle display of survey legs
-<keycap/Ctrl-F/: Toggle display of surface legs
-<keycap/Ctrl-A/: Toggle display of All/skeleton when moving
-<keycap/O/: Toggle display of non-overlapping/all names
-<keycap/Ctrl-R/: reverse sense of controls
-<keycap/Escape/: quit program
-<keycap/Shift/: accelerates all movement keys
-<keycap/H/:  help screen giving these controls
-</screen>
-
-<Para>A little experimentation should give a better understanding of how
-this works.
-</Para>
-
-<Para>There is an auto-resizing scale bar on the left side of the screen.
-This varies in length as you zoom in or out.  The current length is given
-just below the bearing. In the top left corner the current direction of view
-(for elevations), or direction up the screen (for plans) is
-displayed. In the top right is a compass pointer showing which way
-is North, and in the bottom right is a clino pointer showing the angle
-of tilt.
-</Para>
-
-<!-- FIXME:
-<Para>Note that Extended Elevations (which are always totally flat
-east-west) are noticed by caverot, and it will prevent their being
-rotated, as this is meaningless.
-</Para>
--->
-
-</Sect2>
-
-</Sect1>
-
-<Sect1><Title>Printer Drivers</Title>
-<?dbhtml filename="printer.htm">
-
-<Para>These read &x3d; files and print out the results on
-various sorts of printer/plotter.</Para>
-
-<!-- some duplication with above -->
-
-<Sect2><Title>Commands</Title>
-
-<Para>PRINTDM for 8, 9, and 24 pin Epson-compatible dot-matrix
-printers.  You need to edit the <filename/print.ini/ file to specify
-which you are using. The 9 pin dump is about 10% faster than the 8
-pin, but some old printers will not support it.  PRINTDM should also
-work with IBM ProPrinters.
-</Para>
-
-<Para>PRINTPCL for printers that use Hewlett Packard's <Acronym/PCL/
-(Printer Control Language), which means Deskjets, Laserjets (i.e. most
-Inkjets and Laser printers). </Para>
-
-<Para>PRINTPS for Postscript printers and plotters.
-</Para>
-
-<Para>PRNTHPGL for HPGL plotters.
-</Para>
-
-<Para>PRINTWIN for printing using the Microsoft Windows printer system.
-</Para>
-
-<Para>Except for PRINTWIN, these all use the configuration file <filename/print.ini/, which
-sets various features for each printer. See 'Printer Settings'
-below. Even if your printer is not standard you should be able get it
-to work by editing these files.
-</Para>
-
-<Para>To get plots that are properly to scale from PRINTDM you
-<emphasis/must/ measure the output from <emphasis/your/ printer - 
-see `Printer Calibration' below.
-</Para>
-
-</Sect2>
-
-<Sect2><Title>IMPORTANT NOTE FOR &msdos; USERS</Title>
-
-<caution>
-<Para>printdm, printpcl and prnthpgl all produce binary files.  If
-output from these is sent to a file, the file
-<emphasis>must</emphasis> then be sent to the printer with
-<userinput>COPY /B OUTPUT PRN</userinput> where OUTPUT is the filename and
-PRN the device name.  Do <emphasis>not</emphasis> use COPY without the
-/B.  If you do, the output may be corrupted. Sorry, this is a problem
-with &msdos;, and there is nothing we can do about it.</Para>
-</caution>
-
-<Para>If you send output straight to the printer, by putting <filename/PRN/
-or <filename/LPT1/ in the configuration file, then this problem should not
-occur.</Para>
-
-<Para>printps produces text files as output, and so should be unaffected by
-this.
-</Para>
-
-</Sect2>
-
-<Sect2><Title>Syntax</Title>
-
-<Para>The syntax of the commands is the same in each case. The command line
-options are:
-</Para>
-
-<variablelist>
-<varlistentry><term>--survey=SURVEY</term>
-<listitem><para>Only load the sub-survey SURVEY</para></listitem></varlistentry>
-
-<varlistentry><term>-e, --elevation</term>
-<listitem><para>select elevation</para></listitem></varlistentry>
-
-<varlistentry><term>-p, --plan</term>
-<listitem><para>select plan view</para></listitem></varlistentry>
-
-<varlistentry><term>-b, --bearing=BEARING</term>
-<listitem><para>set bearing</para></listitem></varlistentry>
-
-<varlistentry><term>-t, --tilt=TILT</term>
-<listitem><para>set tilt</para></listitem></varlistentry>
-
-<varlistentry><term>-s, --scale=SCALE</term>
-<listitem><para>set scale</para></listitem></varlistentry>
-
-<varlistentry><term>-n, --station-names</term>
-<listitem><para>display station names</para></listitem></varlistentry>
-
-<varlistentry><term>-c, --crosses</term>
-<listitem><para>display crosses at stations</para></listitem></varlistentry>
-
-<varlistentry><term>-B, --no-border</term>
-<listitem><para>turn off page border.
-Without this option dotted borders will be drawn on the
-sides where pages join. This is to facilitate accurate cutting with
-scissors.
-</para></listitem></varlistentry>
-
-<varlistentry><term>-l, --no-legs</term>
-<listitem><para>turn off display of survey legs</para></listitem></varlistentry>
-
-<varlistentry><term>-S, --surface</term>
-<listitem><para>turn on display of surface survey legs. By default only
-underground survey legs are shown.</para></listitem></varlistentry>
-
-<varlistentry><term>-k, --skip-blanks</term>
-<listitem><para>don't output blank pages
-With this option pages which are blank (apart from the alignment marks)
-will not be printed.  This option implies --no-border.
-</para></listitem></varlistentry>
-
-<varlistentry><term>-o, --output=OUTPUT<term>
-<listitem><para>set output file (ignored by printwin).
-</para></listitem></varlistentry>
-
-</variablelist>
-
-</Sect2>
-
-<Sect2><Title>Using the Drivers</Title>
-
-<Para>
-When you run the printer driver you will be asked if you want a
-plan or elevation (enter <keycap/P/, or <keycap/E/) - the default is
-plan. Then enter values for the desired plot view. These values
-correspond to those displayed in the top left hand corner when using
-caverot. You would usually use CAVEROT to pick the best view and then
-note the angles before running the Printer Driver. This will
-eventually be integrated.
-</Para>
-
-<Para>
-For a plan enter bearing up the page, in degrees, 0 indicating North
-at the top of the page (the default).
-</Para>
-
-<Para>
-For an elevation enter the angle of view (i.e. the compass bearing
-from which the scene is viewed), and angle of tilt, where 0 is
-horizontal, - is looking down from above, and + is looking up from
-below, so -90 is the same as plan view.
-</Para>
-
-<Para>
-For an extended elevation, no viewing angles are needed.
-</Para>
-
-<Para>You'll be told the scale needed to fit the plot on one page, and
-be asked what scale you want to use. The you're told how many
-pages this will take (and the arrangement of those pages (e.g. 6 pages
-(2x3)) and have the opportunity to print, quit, or change the scale (so
-you can repeat this process until you have a scale and number of pages
-you are happy with).
-</Para>
-
-<Para>You can then print all the pages, a range of pages, or any arbitrary
-list of pages and ranges (handy for when your printer mangles a page).
-</Para>
-
-</Sect2>
-
-<Sect2><Title>Printer Settings</Title>
-
-<Para>The format of the
-<filename>print.ini</filename>/<filename>myprint.ini</filename>
-file is similar to Windows <filename/.ini/ files.
-There is a section name in square
-brackets, e.g.:
-</Para>
-
-<programlisting>[generic_PCL]</programlisting>
-
-<Para>and there are some options and settings below that of the form
-</Para>
-
-<Para>&lt;option&gt;=&lt;setting&gt;
-</Para>
-
-<Para>e.g.:</Para>
-
-<programlisting>pixels_across_page=960</programlisting>
-
-<Para>below each of this options is usually a comment (indicated by a
-semicolon ';') saying what the option above is for. The codes needed by dot
-matrix printers are given as they are usually shown in manuals. The
-backslash '\' indicating that the following character is to be interpreted
-as a control code so \[ means send the value 27 decimal which is 1B hex,
-also called 'ESC' for Escape. If the backslash is followed by a small x and
-two hex digits - e.g \x0c, then that means send the code 0C hex, which is 12
-decimal, also called LF for LineFeed. This is all inherently rather
-cryptic, but the provided set-ups will work with nearly all dot matrix
-printers, so you are unlikely to need to fiddle with these runes.
-</Para>
-
-<Para>
-The only thing most users will have to specify is the output device
-(and Calibration for Dot Matrix Printers, see 'Printer Calibration').
-This is the setting given in the [base] section of the form
-output_&lt;platform&gt=&lt;device&gt;, where device can be a device name
-(e.g. PRN, LPT1, LPT2 under &msdos;, <filename/Printer:/ under &riscos;) or a
-filename. Under &unix; output may be piped into another command like
-so:
-</Para>
-
-<programlisting>
-[base]
-output_unix=|lpr -Poak
-; send output to printer 'oak'</programlisting>
-
-<Para>
-Any name given which is not recognised as a device will generate a
-file of that name, containing the exact data that would be sent to the
-printer. This can then be send to a printer later (See the note above
-from &msdos; users). You can override the output setting using the
---output command line option.
-</Para>
-
-<Para>Each type of printer has its own section. The basic types provides
-are:
-</Para>
-
-<Para>[DM] (for Dot Matrix, PRINTDM).[HPGL] (for HPGL plotters, PRNTHPGL),
-[PCL] (for PCL printers PRINTPCL), and [PS] (for Postscript printers), and
-for each of these types at least one specific example is provided, for the
-specified printer and paper size.
-</Para>
-
-<!-- FIXME: check this -->
-
-<Para>The examples provided are: [dm_8pin_a4] [dm_8pin_11inch],
-[dm_8pin_12inch], [dm_9pin_11inch], [dm_9pin_12inch], [dm_24pin_a4],
-[dm_24pin_11inch], [dm_24pin_12inch], [dm_panasonic_24pin],
-[dm_epsonlx86_9pin_11inch]
-</Para>
-
-<Para>[hpgl_generic_a4landscape], [hpgl_generic_A1landscape],
-[hpgl_generic_A0landscape]
-</Para>
-
-<Para>[pcl_generic_a4], [pcl_modern_a4]
-</Para>
-
-<Para>[ps_generic_a4]
-</Para>
-
-<Para>The idea is that your printer can be defined in terms of an existing
-one, using the 'like' option. This makes the settings for the specified
-printer include the settings specified in the 'like' section, except where
-they are overridden by new settings in this section. The syntax is
-Like=&lt;definition name&gt;, where definition name must have been
-previously defined in the file.
-</Para>
-
-<Para>Here is an example of how it works:
-</Para>
-
-<programlisting>
-[dm_9pin_12inch]
-Like=dm_11inch_9pin
-Lines_down_page=108</programlisting>
-
-<Para>So this means that the definition 'dm_9pin_12inch', i.e. 9pin dot
-matrix printer using 12 inch paper, is just like the 11 inch definition for
-the same printer, except for the number of lines down a page.
-</Para>
-
-<!-- FIXME: fettle this -->
-<Para>If you find that your printout does not come out correctly, then the
-best way to make changes for your printer is to create a new section called
-[my_printer], and start with a like=something where something is the closest
-section to your printer. Then add new options to override the ones that are
-not correct for your printer. Finally you need to change the section for the
-type of printer you are using to point to your new definition. E.g. if you
-are using a dot-matrix printer then you need to change the [DM] section to
-say like=my_printer .
-</Para>
-
-<Para>Note that if you are using a PCL printer the defaults are set
-not to use advanced printer features for compatibility. If you want to
-try these (equivalent to HP laserjet III or later), then you should
-change the [PCL] section to say like=modern_pcl_a4 . This will enable
-horizontal and vertical tabbing.
-</Para>
-
-</Sect2>
-
-<Sect2><Title>Printer Calibration</Title>
-
-<!-- FIXME: allow scaling for all drivers? add - - test-page option? -->
-
-<Para>
-Dot Matrix printers do not print to an accurate size - you need to do
-to calibrate your printer in order to get correctly-scaled
-plots.  Print out a calibration plot using
-<command>printdm --calibrate</command> and measure the width and height
-of the page border.
-</Para>
-
-<Para>
-Then create an entry in <filename>/etc/print.ini</filename> or
-<filename>.survex/print.ini</filename> in your home directory (Unix)
-or <filename>myprint.ini</filename>
-in the installation directory (other platforms) with 
-entries mm_across_page and mm_down_page containing your values.
-The entry should look something like this:
-</Para>
-
-<programlisting>
-[dm]
-like=dm_8pin_a4
-mm_across_page=204.5
-mm_down_page=278</programlisting>
-
-<Para>
-Then run <command>printdm --calibrate</command> again, and check that
-the square is now 10cm wide and high.  This calibration is
-particularly necessary for older dot-matrix printers as they vary
-significantly in scaling - even between two printers of the same make
-and model.
-</Para>
-
-</Sect2>
-
-</Sect1>
-
-<Sect1><Title>Other Utilities</Title>
-<?dbhtml filename="utils.htm">
-
-<Para>There are a number of other utilities available which can help with
-specific tasks.</Para>
-
-<Sect2><Title>Extend</Title>
-
-<Para>Syntax: <command/extend &lt;input imagefile&gt; [&lt;output imagefile&gt;]/
-</Para>
-
-<Para>extend takes a &x3d; file and generates an extend elevation from
-it.  It starts with the highest station marked as an entrance which
-has at least one underground survey leg attached to it.  If there are
-no such stations, the highest deadend station in the survey (or the
-highest station if there are no deadends) is used.  Extend puts the#
-first station on the left, then folds each leg out individually to the right,
-breaking loops arbitrarily (usually at junctions).</Para>
-
-<Para>
-This approach suffices for simple caves or sections of cave.
-for more complicated situations human intervention is required -
-try &chasm;'s extended elevation editor (which we plan to integrate
-into Survex in the future).</Para>
-
-<Para>If the output filename is not specified, extend writes its
-output to <filename/extend.3d/.</Para>
-
-</Sect2>
-
-<Sect2><Title>DiffPos</Title>
-
-<Para>Syntax: <command/diffpos &lt;posfile1&gt; &lt;posfile2&gt; [&lt;threshold&gt;]/
-</Para>
-
-<Para>diffpos compares the contents of the two specified
-&x3d; files. It will tell you about stations which
-are in one file but not the other, and also stations which have moved
-by more than a specified threshold distance in X, Y, or Z.  The
-threshold distance is given in metres and defaults to 0.01m if not
-specified.
-</Para>
-
-<Para>
-For backward compatibility diffpos will also read the
-&pos; files produced by earlier versions of cavern, or by 3dtopos.
-</Para>
-
-</Sect2>
-
-<Sect2><Title>Cad3d</Title>
-
-<Para>
-Syntax: <command/cad3d &lt;datafile&gt;/
-</Para>
-
-<Para>Cad3d converts a &x3d; file
-into a format which can be read by a CAD or drawing package.
-Currently it can produce DXF files or Sketch files.
-<!-- FIXME: more info -->
-</Para>
-
-<Para>An alternative to cad3d is SpeleoGen, which can be found in the
-"Related Tools" section of the Survex web site. <!--FIXME: url-->
-SpeleoGen is a Windows (3.1/95/NT) utility which reads in
-&survexsuite; &x3d; files, LRUD passage wall data (in <filename/.cav/ format)
-and surface topography info in <filename/.csv/ format.  The results are
-combined, displayed, and saved out as a DXF file for import into
-CAD or drawing packages.
-</Para>
+&man.caverot;
+</refentry>
+<refentry id="xcaverot">
+<?dbhtml filename="xcaverot.htm">
+&man.xcaverot;
+</refentry>
+<refentry id="printdm">
+<?dbhtml filename="printdm.htm">
+&man.printdm;
+</refentry>
+<refentry id="printhpgl">
+<?dbhtml filename="printhpgl.htm">
+&man.printhpgl;
+</refentry>
+<refentry id="printpcl">
+<?dbhtml filename="printpcl.htm">
+&man.printpcl;
+</refentry>
+<refentry id="printps">
+<?dbhtml filename="printps.htm">
+&man.printps;
+</refentry>
+<refentry id="printwin">
+<?dbhtml filename="printwin.htm">
+&man.printwin;
+</refentry>
+<refentry id="x3dtopos">
+<?dbhtml filename="3dtopos.htm">
+&man.3dtopos;
+</refentry>
+<refentry id="cad3d">
+<?dbhtml filename="cad3d.htm">
+&man.cad3d;
+</refentry>
+<refentry id="diffpos">
+<?dbhtml filename="diffpos.htm">
+&man.diffpos;
+</refentry>
+<refentry id="extend">
+<?dbhtml filename="extend.htm">
+&man.extend;
+</refentry>
+<refentry id="sorterr">
+<?dbhtml filename="sorterr.htm">
+&man.sorterr;
+</refentry>
 
 </Sect2>
 
@@ -3925,24 +3153,6 @@ and other information.
 
 </Sect1>
 
-<Sect1><Title>Error Messages</Title>
-<?dbhtml filename="errormsg.htm">
-
-<Para>There are a number of error messages that you may get when processing
-data.  Most of these are self explanatory, and will be caused by typing
-mistakes, or by your survey data not being attached to fixed points. After
-the error message telling you what has gone wrong, the filename
-and line number of the offending line will
-be printed, or the filename if a file couldn't be found.
-<!-- FIXME: gcc format error msgs -->
-<!-- FIXME: stops after N errors -->
-</Para>
-
-<Para>When surveys are not all connected to fixed points, &survexsuite; will
-list some of the stations that are not connected.</Para>
-
-</Sect1>
-
 <Sect1><Title>Future Developments</Title>
 <?dbhtml filename="future.htm">
 
@@ -4026,4 +3236,4 @@ in.</Para>
 
 </Sect1>
 
-</Article>
+</article>
