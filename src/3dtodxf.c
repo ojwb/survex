@@ -31,7 +31,9 @@
 #define TEXT_HEIGHT	0.6
 #define MARKER_SIZE	0.8
 
-int main( int argc, char *argv[] ) {
+int
+main(int argc, char **argv)
+{
    char szTitle[256], szDateStamp[256], szName[256];
    char *fnm3D, *fnmDXF;
    unsigned char labels, crosses, legs;
@@ -67,8 +69,8 @@ int main( int argc, char *argv[] ) {
 	{HLP_ENCODELONG(0), "do not generate station markers"},
 	{HLP_ENCODELONG(1), "do not generate station labels"},
 	{HLP_ENCODELONG(2), "do not generate the survey legs"},
-	{HLP_ENCODELONG(3), "station labels text height (default: 0.6)"},
-	{HLP_ENCODELONG(4), "station marker size (default: 0.8)"},
+	{HLP_ENCODELONG(3), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
+	{HLP_ENCODELONG(4), "station marker size (default: "STRING(MARKER_SIZE)")"},
 	{0,0} 
    };
 
@@ -143,7 +145,7 @@ int main( int argc, char *argv[] ) {
    do {
       item = img_read_datum(pimg, szName, &x, &y, &z);
       switch (item) {
-       case img_MOVE: case img_LINE: case img_CROSS:
+       case img_MOVE: case img_LINE: case img_LABEL:
          if (x < min_x) min_x = x;
          if (x > max_x) max_x = x;
          if (y < min_y) min_y = y;
@@ -212,7 +214,7 @@ int main( int argc, char *argv[] ) {
        case img_BAD:
 #ifndef STANDALONE
          img_close(pimg);
-         fatalerror(/*bad 3d file*/106,fnm3D);
+         fatalerror(/*bad 3d file*/106, fnm3D);
 #else
          printf("Bad .3d image file\n");
          exit(1);
@@ -223,9 +225,16 @@ int main( int argc, char *argv[] ) {
          printf("line to %9.2f %9.2f %9.2f\n",x,y,z);
 #endif
          if (!fSeenMove) {
+#ifdef DEBUG_3DTODXF
             printf("Something is wrong -- img_LINE before any img_MOVE!\n"); /* <<<<<<< create message in messages.txt ? */
-            img_close(pimg);
-            exit(1);
+#endif
+#ifndef STANDALONE
+	    img_close(pimg);
+	    fatalerror(/*bad 3d file*/106, fnm3D);
+#else
+	    printf("Bad .3d image file\n");
+	    exit(1);
+#endif
          }
 	 if (legs) {
             fprintf(fh,"0\nLINE\n");
@@ -246,12 +255,15 @@ int main( int argc, char *argv[] ) {
          fSeenMove = 1;
          x1=x; y1=y; z1=z;
          break;
-       case img_CROSS:
 #ifdef DEBUG_3DTODXF
+       case img_CROSS:
          printf("cross at %9.2f %9.2f %9.2f\n",x,y,z);
-#endif
          break;
+#endif
        case img_LABEL:
+#ifdef DEBUG_3DTODXF
+	 printf("label `%s' at %9.2f %9.2f %9.2f\n",szName,x,y,z);
+#endif
 	 if (labels) {
 	    /* write station labels to dxf file */
             fprintf(fh,"0\nTEXT\n");
@@ -270,9 +282,6 @@ int main( int argc, char *argv[] ) {
             fprintf(fh,"20\n%6.2f\n",y);
             fprintf(fh,"30\n%6.2f\n",z);
          }    
-#ifdef DEBUG_3DTODXF
-            printf("label `%s' at %9.2f %9.2f %9.2f\n",szName,x,y,z);
-#endif
          break;
 #ifdef DEBUG_3DTODXF
        case img_STOP:
@@ -282,7 +291,7 @@ int main( int argc, char *argv[] ) {
          printf("other info tag (code %d) ignored\n",item);
 #endif
       }
-   } while (item!=img_STOP);
+   } while (item != img_STOP);
    img_close(pimg);
    fprintf(fh,"000\nENDSEC\n");
    fprintf(fh,"000\nEOF\n");
