@@ -47,7 +47,11 @@ aclocal
 autoheader
 automake -a
 autoconf
-if ! ./configure CC=gcc-3.2 CXX=g++-3.2 ; then
+export CC
+export CXX
+CC=gcc-3.2
+CXX=g++-3.2
+if ! ./configure ; then
    echo configure failed
    exit 1
 fi
@@ -107,6 +111,8 @@ if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
+unset CC
+unset CXX
 if expr "$mk" : '.*\<djgpp\>'; then
    build_platform=`sh config.guess`
    SAVE_PATH="$PATH"
