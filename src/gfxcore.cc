@@ -269,6 +269,7 @@ void GfxCore::Initialise()
 				 Double(m_YSize) / m_Parent->GetYExtent());
     }
 
+    if (m_InitialScale == 0.0) m_InitialScale = 1.0;
     m_InitialScale *= .85;
 
     SetScaleInitial(m_InitialScale);
