@@ -581,9 +581,10 @@ void MainFrm::CreateSidePanel()
 //    panel_sizer->SetSizeHints(m_Panel);
 
     m_Gfx = new GfxCore(this, m_Splitter);
-    m_Gfx->SetFocus();
 
     m_Splitter->Initialize(m_Gfx);
+ 
+    m_Gfx->SetFocus();
 }
 
 void MainFrm::ClearPointLists()

@@ -981,11 +981,7 @@ void GfxCore::RedrawOffscreen()
 
 	// Draw compass or elevation/heading indicators.
 	if ((m_Compass && m_RotationOK) || (m_Clino && m_Lock == lock_NONE)) {
-	    if (m_FreeRotMode) {
-		DrawCompass();
-	    } else {
-		Draw2dIndicators();
-	    }
+	    Draw2dIndicators();
 	}
     }
 
@@ -1438,6 +1434,7 @@ void GfxCore::Draw2dIndicators()
     }
 }
 
+// FIXME: either remove this, or make it an option...
 void GfxCore::DrawCompass()
 {
     // Draw the 3d compass.
@@ -1896,7 +1893,6 @@ void GfxCore::OnRButtonUp(wxMouseEvent& event)
 void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 {
     // Handle a mouse movement during scale/rotate mode.
-
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
@@ -1907,34 +1903,16 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 
     Double pan_angle = m_RotationOK ? (Double(dx) * (-M_PI / 500.0)) : 0.0;
 
-    Quaternion q;
-    Double new_scale = m_Params.scale;
-    // free rotation starts when Control is down
-    if (control) m_FreeRotMode = true;
-	
-    if (m_FreeRotMode) {
-	Double tilt_angle = Double(dy) * (M_PI / 500.0);
-	q.setFromEulerAngles(tilt_angle, 0.0, pan_angle);
+    // left/right => rotate, up/down => scale
+    TurnCave(pan_angle);
+
+    if (control) {
+	// For now...
+	TiltCave(Double(-dy) * M_PI / 500.0);
     } else {
-	// left/right => rotate, up/down => scale
-
-	q.setFromVectorAndAngle(Vector3(XToScreen(0.0, 0.0, 1.0),
-					YToScreen(0.0, 0.0, 1.0),
-					ZToScreen(0.0, 0.0, 1.0)), pan_angle);
-
-	m_PanAngle += pan_angle;
-	if (m_PanAngle >= M_PI * 2.0) {
-	    m_PanAngle -= M_PI * 2.0;
-	} else if (m_PanAngle < 0.0) {
-	    m_PanAngle += M_PI * 2.0;
-	}
-	new_scale *= pow(1.06, 0.08 * dy);
+	SetScale(m_Params.scale *= pow(1.06, 0.08 * dy));
     }
 
-    m_Params.rotation = q * m_Params.rotation;
-    m_RotationMatrix = m_Params.rotation.asMatrix();
-
-    SetScale(new_scale);
 #ifdef AVENGL
     glDeleteLists(m_Lists.grid, 1);
     //    DrawGrid();
@@ -1947,28 +1925,25 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 void GfxCore::TurnCave(Double angle)
 {
     // Turn the cave around its z-axis by a given angle.
-
-    Vector3 v(XToScreen(0.0, 0.0, 1.0), YToScreen(0.0, 0.0, 1.0), ZToScreen(0.0, 0.0, 1.0));
+    Vector3 v(XToScreen(0.0, 0.0, 1.0),
+	      YToScreen(0.0, 0.0, 1.0),
+	      ZToScreen(0.0, 0.0, 1.0));
     Quaternion q(v, angle);
 
     m_Params.rotation = q * m_Params.rotation;
     m_RotationMatrix = m_Params.rotation.asMatrix();
 
     m_PanAngle += angle;
-    if (m_PanAngle > M_PI * 2.0) {
+    if (m_PanAngle >= M_PI * 2.0) {
 	m_PanAngle -= M_PI * 2.0;
-    }
-    if (m_PanAngle < 0.0) {
+    } else if (m_PanAngle < 0.0) {
 	m_PanAngle += M_PI * 2.0;
     }
-
-    ForceRefresh();
 }
 
 void GfxCore::TurnCaveTo(Double angle)
 {
     // Turn the cave to a particular pan angle.
-
     TurnCave(angle - m_PanAngle);
 }
 
@@ -1988,23 +1963,20 @@ void GfxCore::TiltCave(Double tilt_angle)
 
     m_Params.rotation = q * m_Params.rotation;
     m_RotationMatrix = m_Params.rotation.asMatrix();
-
-    ForceRefresh();
 }
 
 void GfxCore::HandleTilt(wxPoint point)
 {
     // Handle a mouse movement during tilt mode.
+    int dy = point.y - m_DragStart.y;
 
-    if (!m_FreeRotMode) {
-	int dy = point.y - m_DragStart.y;
+    if (m_ReverseControls) dy = -dy;
 
-	if (m_ReverseControls) dy = -dy;
+    TiltCave(Double(-dy) * M_PI / 500.0);
 
-	TiltCave(Double(-dy) * M_PI / 500.0);
+    m_DragStart = point;
 
-	m_DragStart = point;
-    }
+    ForceRefresh();
 }
 
 void GfxCore::HandleTranslate(wxPoint point)
@@ -2136,78 +2108,75 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 
     if (!m_SwitchingTo) {
 	if (m_DraggingLeft) {
-	  if (!m_FreeRotMode) {
-	      wxCoord x0 = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
-	      wxCoord x1 = wxCoord(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2);
-	      wxCoord y = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
+	    wxCoord x0 = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
+	    wxCoord x1 = wxCoord(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2);
+	    wxCoord y = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
 
-	      wxCoord dx0 = point.x - x0;
-	      wxCoord dx1 = point.x - x1;
-	      wxCoord dy = point.y - y;
+	    wxCoord dx0 = point.x - x0;
+	    wxCoord dx1 = point.x - x1;
+	    wxCoord dy = point.y - y;
 
-	      wxCoord radius = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
+	    wxCoord radius = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
 
-	      if (m_LastDrag == drag_NONE) {
-		  if (m_Compass && dx0 * dx0 + dy * dy <= radius * radius)
-		      m_LastDrag = drag_COMPASS;
-		  else if (m_Clino && dx1 * dx1 + dy * dy <= radius * radius)
-		      m_LastDrag = drag_ELEV;
-		  else if (point.x >= m_ScaleBar.offset_x &&
-			   point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
-			   point.y <= m_YSize - m_ScaleBar.offset_y &&
-			   point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT)
-		      m_LastDrag = drag_SCALE;
-	      }
-	      if (m_LastDrag == drag_COMPASS) {
-		  // drag in heading indicator
-		  if (dx0 * dx0 + dy * dy <= radius * radius) {
-		      TurnCaveTo(atan2(dx0, dy) - M_PI);
-		      m_MouseOutsideCompass = false;
-		  }
-		  else {
-		      TurnCaveTo(int(int((atan2(dx0, dy) - M_PI) * 180.0 / M_PI) / 45) *
-				 M_PI_4);
-		      m_MouseOutsideCompass = true;
-		  }
-	      }
-	      else if (m_LastDrag == drag_ELEV) {
-		  // drag in elevation indicator
-		  if (dx1 >= 0 && dx1 * dx1 + dy * dy <= radius * radius) {
-		      TiltCave(atan2(dy, dx1) - m_TiltAngle);
-		      m_MouseOutsideElev = false;
-		  }
-		  else if (dy >= INDICATOR_MARGIN) {
-		      TiltCave(M_PI_2 - m_TiltAngle);
-		      m_MouseOutsideElev = true;
-		  }
-		  else if (dy <= -INDICATOR_MARGIN) {
-		      TiltCave(-M_PI_2 - m_TiltAngle);
-		      m_MouseOutsideElev = true;
-		  }
-		  else {
-		      TiltCave(-m_TiltAngle);
-		      m_MouseOutsideElev = true;
-		  }
-	      }
-	      else if (m_LastDrag == drag_SCALE) {
-		  if (point.x >= 0 && point.x <= m_XSize) {
-		      //--FIXME: GL fix needed
+	    if (m_LastDrag == drag_NONE) {
+		if (m_Compass && dx0 * dx0 + dy * dy <= radius * radius)
+		    m_LastDrag = drag_COMPASS;
+		else if (m_Clino && dx1 * dx1 + dy * dy <= radius * radius)
+		    m_LastDrag = drag_ELEV;
+		else if (point.x >= m_ScaleBar.offset_x &&
+			 point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
+			 point.y <= m_YSize - m_ScaleBar.offset_y &&
+			 point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT)
+		    m_LastDrag = drag_SCALE;
+	    }
+	    if (m_LastDrag == drag_COMPASS) {
+		// drag in heading indicator
+		if (dx0 * dx0 + dy * dy <= radius * radius) {
+		    TurnCaveTo(atan2(dx0, dy) - M_PI);
+		    m_MouseOutsideCompass = false;
+		}
+		else {
+		    TurnCaveTo(int(int((atan2(dx0, dy) - M_PI) * 180.0 / M_PI) / 45) *
+			       M_PI_4);
+		    m_MouseOutsideCompass = true;
+		}
+		ForceRefresh();
+	    }
+	    else if (m_LastDrag == drag_ELEV) {
+		// drag in elevation indicator
+		if (dx1 >= 0 && dx1 * dx1 + dy * dy <= radius * radius) {
+		    TiltCave(atan2(dy, dx1) - m_TiltAngle);
+		    m_MouseOutsideElev = false;
+		}
+		else if (dy >= INDICATOR_MARGIN) {
+		    TiltCave(M_PI_2 - m_TiltAngle);
+		    m_MouseOutsideElev = true;
+		}
+		else if (dy <= -INDICATOR_MARGIN) {
+		    TiltCave(-M_PI_2 - m_TiltAngle);
+		    m_MouseOutsideElev = true;
+		}
+		else {
+		    TiltCave(-m_TiltAngle);
+		    m_MouseOutsideElev = true;
+		}
+		ForceRefresh();
+	    }
+	    else if (m_LastDrag == drag_SCALE) {
+		if (point.x >= 0 && point.x <= m_XSize) {
+		    //--FIXME: GL fix needed
 
-		      Double size_snap = Double(m_ScaleBar.width) / m_Params.scale;
-		      int dx = point.x - m_DragLast.x;
+		    Double size_snap = Double(m_ScaleBar.width) / m_Params.scale;
+		    int dx = point.x - m_DragLast.x;
 
-		      SetScale((m_ScaleBar.width + dx) / size_snap);
-		      ForceRefresh();
-		  }
-	      }
-	      else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
-		  m_LastDrag = drag_MAIN;
-		  HandleScaleRotate(event.ControlDown(), point);
-	      }
-	  }
-	  else {
-	      HandleScaleRotate(event.ControlDown(), point);
-	  }
+		    SetScale((m_ScaleBar.width + dx) / size_snap);
+		    ForceRefresh();
+		}
+	    }
+	    else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
+		m_LastDrag = drag_MAIN;
+		HandleScaleRotate(event.ControlDown(), point);
+	    }
 	}
 	else if (m_DraggingMiddle) {
 	    HandleTilt(point);
@@ -2347,6 +2316,7 @@ void GfxCore::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnMoveEast()
 {
     TurnCaveTo(M_PI_2);
+    ForceRefresh();
 }
 
 void GfxCore::OnMoveEastUpdate(wxUpdateUIEvent& cmd)
@@ -2357,6 +2327,7 @@ void GfxCore::OnMoveEastUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnMoveNorth()
 {
     TurnCaveTo(0.0);
+    ForceRefresh();
 }
 
 void GfxCore::OnMoveNorthUpdate(wxUpdateUIEvent& cmd)
@@ -2367,6 +2338,7 @@ void GfxCore::OnMoveNorthUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnMoveSouth()
 {
     TurnCaveTo(M_PI);
+    ForceRefresh();
 }
 
 void GfxCore::OnMoveSouthUpdate(wxUpdateUIEvent& cmd)
@@ -2377,6 +2349,7 @@ void GfxCore::OnMoveSouthUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnMoveWest()
 {
     TurnCaveTo(M_PI * 1.5);
+    ForceRefresh();
 }
 
 void GfxCore::OnMoveWestUpdate(wxUpdateUIEvent& cmd)
@@ -2467,6 +2440,7 @@ void GfxCore::OnSpeedUpUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnStepOnceAnticlockwise(bool accel)
 {
     TurnCave(accel ? 5.0 * M_PI / 18.0 : M_PI / 18.0);
+    ForceRefresh();
 }
 
 void GfxCore::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
@@ -2477,6 +2451,7 @@ void GfxCore::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnStepOnceClockwise(bool accel)
 {
     TurnCave(accel ? 5.0 * -M_PI / 18.0 : -M_PI / 18.0);
+    ForceRefresh();
 }
 
 void GfxCore::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
@@ -2511,7 +2486,6 @@ void GfxCore::DefaultParameters()
     m_Surface = false;
     m_SurfaceDepth = false;
     m_SurfaceDashed = true;
-    m_FreeRotMode = false;
     m_RotationStep = M_PI / 6.0;
     m_Rotating = false;
     m_SwitchingTo = 0;
@@ -2550,20 +2524,20 @@ void GfxCore::OnElevation()
 	    // A second order to switch takes us there right away
 	    TiltCave(-m_TiltAngle);
 	    m_SwitchingTo = 0;
+	    ForceRefresh();
     } 
 }
 
 void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode &&
-	       m_Lock == lock_NONE && m_TiltAngle != 0.0);
+    cmd.Enable(m_PlotData != NULL && m_Lock == lock_NONE && m_TiltAngle != 0.0);
 }
 
 void GfxCore::OnHigherViewpoint(bool accel)
 {
     // Raise the viewpoint.
-
     TiltCave(accel ? 5.0 * M_PI / 18.0 : M_PI / 18.0);
+    ForceRefresh();
 }
 
 void GfxCore::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
@@ -2575,8 +2549,8 @@ void GfxCore::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnLowerViewpoint(bool accel)
 {
     // Lower the viewpoint.
-
     TiltCave(accel ? 5.0 * -M_PI / 18.0 : -M_PI / 18.0);
+    ForceRefresh();
 }
 
 void GfxCore::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
@@ -2600,12 +2574,13 @@ void GfxCore::OnPlan()
 	    // A second order to switch takes us there right away
 	    TiltCave(M_PI_2 - m_TiltAngle);
 	    m_SwitchingTo = 0;
+	    ForceRefresh();
     } 
 }
 
 void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock == lock_NONE &&
+    cmd.Enable(m_PlotData != NULL && m_Lock == lock_NONE &&
 	       m_TiltAngle != M_PI_2);
 }
 
@@ -2696,6 +2671,8 @@ void GfxCore::OnIdle(wxIdleEvent& event)
     if (last_t > 0) t = (t + last_t) / 2;
     last_t = t;
 
+    bool refresh = true;
+
     // When rotating...
     if (m_Rotating) {
 	TurnCave(m_RotationStep * t);
@@ -2734,6 +2711,8 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 		m_SwitchingTo = 0;
 	    }
 	}
+    } else {
+	refresh = false;
     }
 
 #ifdef AVENPRES
@@ -2782,8 +2761,7 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 	    m_PanAngle = m_PresStep.to.pan_angle;
 	    m_TiltAngle = m_PresStep.to.tilt_angle;
 	}
-
-	ForceRefresh();
+	refresh = true;
     }
 #endif
 
@@ -2797,8 +2775,11 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 	}
 	InitialiseTerrain();
 	event.RequestMore();
+	refresh = true;
     }
 #endif
+
+    if (refresh) ForceRefresh();
 }
 
 void GfxCore::OnToggleScalebar()
@@ -2833,7 +2814,7 @@ void GfxCore::OnViewCompass()
 
 void GfxCore::OnViewCompassUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_RotationOK);
+    cmd.Enable(m_PlotData != NULL && m_RotationOK);
     cmd.Check(m_Compass);
 }
 
@@ -2845,7 +2826,7 @@ void GfxCore::OnViewClino()
 
 void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock == lock_NONE);
+    cmd.Enable(m_PlotData != NULL && m_Lock == lock_NONE);
     cmd.Check(m_Clino);
 }
 
@@ -3581,6 +3562,7 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	return;
     }
 
+    // FIXME: do animation if appropriate...
     switch (e.m_keyCode) {
 	case '/': case '?':
 	    if (m_TiltAngle > -M_PI_2 && m_Lock == lock_NONE)
@@ -3635,11 +3617,11 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 		OnReverseDirectionOfRotation();
 	    break;
 	case 'P': case 'p':
-	    if (!m_FreeRotMode && m_Lock == lock_NONE && m_TiltAngle != M_PI_2)
+	    if (m_Lock == lock_NONE && m_TiltAngle != M_PI_2)
 		OnPlan();
 	    break;
 	case 'L': case 'l':
-	    if (!m_FreeRotMode && m_Lock == lock_NONE && m_TiltAngle != 0.0)
+	    if (m_Lock == lock_NONE && m_TiltAngle != 0.0)
 		OnElevation();
 	    break;
 	case 'O': case 'o':

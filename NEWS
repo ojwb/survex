@@ -9,6 +9,13 @@ Changes in 1.0.11:
   (previously it would fail for locales where the decimal character wasn't
   '.').
 
+* aven: switching to plan or elevation while rotating is now smooth.
+
+* aven: removed undocumented and confusing "free rotation mode".
+
+* (MS Windows version): aven: focus now set correctly after loading a file by
+  double-clicking or from the command line.
+
 * cad3d: write dummy passage dimensions to .plt files to avoid Compass bug.
 
 * printwin/printps: now support coloured printouts.

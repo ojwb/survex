@@ -190,7 +190,6 @@ class GfxCore : public wxWindow {
     int* m_SurfacePolylines;
     int m_Bands;
     Double m_InitialScale;
-    bool m_FreeRotMode;
     Double m_TiltAngle;
     Double m_PanAngle;
     bool m_Rotating;
