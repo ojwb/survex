@@ -56,6 +56,22 @@ static long fpLineStart;
 
 static void showline(const char *dummy, int n);
 
+void
+set_pos(long offset)
+{
+   if (fseek(file.fh, offset, SEEK_SET) == -1)
+      fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
+}
+
+long
+get_pos(void)
+{
+   long result = ftell(file.fh);
+   if (result == -1)
+      fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
+   return result;
+}
+
 static void
 error_list_parent_files(void)
 {
@@ -145,7 +161,7 @@ skipline(void)
  * fpLineStart
  * v
  * 12  13   7.5& 120 -34
- *              ^ftell()
+ *              ^get_pos()
  */
 static void
 showline(const char *dummy, int n)
@@ -155,14 +171,17 @@ showline(const char *dummy, int n)
    int state;
    long fpCur;
    dummy = dummy; /* suppress warning */
-   puts(msg(/*in this line:*/58));
-   fpCur = ftell(file.fh);
+
+   fpCur = get_pos();
+
    if (n < 0) {
       n = -n;
       fpCur -= n;
    }
    o = (int)(fpCur - fpLineStart - 1);
-   fseek(file.fh, fpLineStart, SEEK_SET);
+
+   set_pos(fpLineStart);
+
    nextch();
    i = 0;
    state = 0;
@@ -182,15 +201,16 @@ showline(const char *dummy, int n)
 	 sz[i++] = ch < ' ' ? ch + 64 : '?';
 	 /* and adjust o or n to take account of extra character */
 	 switch (state) {
-	 case 0: o++; break;
-	 case 1: if (n < INT_MAX) n++; break;
-	 default: break;
+	  case 0: o++; break;
+	  case 1: if (n < INT_MAX) n++; break;
+	  default: break;
 	 }
       } else
 	 sz[i++]=ch;
       nextch();
    }
    sz[i] = '\0';
+   puts(msg(/*in this line:*/58));
    puts(sz);
    n = min(n, i - o); /* cope with n==INT_MAX, or indeed just too big */
    if (n) {
@@ -199,7 +219,8 @@ showline(const char *dummy, int n)
       sz[o + n] = '\0';
       puts(sz);
    }
-   fseek(file.fh, fpCur, SEEK_SET);
+
+   set_pos(fpCur);
 }
 
 #ifndef NO_PERCENTAGE
@@ -210,7 +231,7 @@ static void
 process_bol(void)
 {
    /* Note start of line for error reporting */
-   fpLineStart = ftell(file.fh);
+   fpLineStart = get_pos();
 
 #ifndef NO_PERCENTAGE
    /* print %age of file done */
@@ -301,7 +322,7 @@ data_file(const char *pth, const char *fnm)
     * However, under ANSI fseek( ..., SEEK_END) may not be supported */
    filelen = 0;
    if (fPercent) {
-      if (fseek(file.fh, 0l, SEEK_END) == 0) filelen = ftell(file.fh);
+      if (fseek(file.fh, 0l, SEEK_END) == 0) filelen = get_pos();
       rewind(file.fh); /* reset file ptr to start & clear any error state */
    }
 #endif
@@ -313,7 +334,7 @@ data_file(const char *pth, const char *fnm)
    }
 #endif
 
-   while (!feof(file.fh)) {
+   while (!feof(file.fh) && !ferror(file.fh)) {
       if (!process_non_data_line()) {
 #ifdef NEW3DFORMAT
 	 twig *temp = limb;
@@ -385,14 +406,14 @@ handle_plumb(bool *pfPlumbed)
 
    skipblanks();
    if (isalpha(ch)) {
-      long fp = ftell(file.fh);
+      long fp = get_pos();
       get_token();
       tok = match_tok(clino_tab, TABSIZE(clino_tab));
       if (tok != CLINO_NULL) {
 	 *pfPlumbed = fTrue;
 	 return clinos[tok];
       }
-      fseek(file.fh, fp, SEEK_SET);
+      set_pos(fp);
    } else if (isSign(ch)) {
       int chOld = ch;
       nextch();

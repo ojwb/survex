@@ -274,10 +274,10 @@ match_units(void)
 	{"YARDS",         UNITS_YARDS },
 	{NULL,            UNITS_NULL }
    };
-   long fp = ftell(file.fh);
+   long fp = get_pos();
    int units = match_tok(utab, TABSIZE(utab));
    if (units == UNITS_NULL) {
-      fseek(file.fh, fp, SEEK_SET);
+      set_pos(fp);
       compile_error(/*Unknown units `%s'*/35, buffer);
    } else if (units == UNITS_PERCENT) {
       NOT_YET;
@@ -555,10 +555,10 @@ cmd_fix(void)
    fix_name = read_prefix_stn(fFalse, fTrue);
    fix_name->sflags |= BIT(SFLAGS_FIXED);
 
-   fp = ftell(file.fh);
+   fp = get_pos();
    get_token();
    if (strcmp(ucbuffer, "REFERENCE") != 0) {
-      if (*ucbuffer) fseek(file.fh, fp, SEEK_SET);
+      if (*ucbuffer) set_pos(fp);
    } else {
       fRef = 1;
    }
@@ -889,13 +889,13 @@ cmd_data(void)
 
    style_name = osstrdup(buffer);
    do {      
-      long fp = ftell(file.fh);
+      long fp = get_pos();
       int save_ch = ch;
       get_token();
       d = match_tok(dtab, TABSIZE(dtab));
       /* only token allowed after IGNOREALL is NEWLINE */
       if (k && new_order[k - 1] == IgnoreAll && d != Newline) {
-	 fseek(file.fh, fp, SEEK_SET);
+	 set_pos(fp);
 	 ch = save_ch;
 	 break;
       }
@@ -1042,7 +1042,7 @@ cmd_units(void)
       return;
    }
 
-   fp = ftell(file.fh);
+   fp = get_pos();
    /* If factor given then read units else units in buffer already */
    factor = read_numeric(fTrue);
    if (factor == HUGE_REAL) {
@@ -1051,7 +1051,7 @@ cmd_units(void)
    } else {
       /* eg check for stuff like: *UNITS LENGTH BOLLOX 3.5 METRES */
       if (*buffer != '\0') {
-	 fseek(file.fh, fp, SEEK_SET);
+	 set_pos(fp);
 	 compile_error(/*Unknown quantity `%s'*/34, buffer);
 	 skipline();
 	 return;
@@ -1297,10 +1297,10 @@ static void
 cmd_truncate(void)
 {
    unsigned int truncate_at = 0; /* default is no truncation */
-   long fp = ftell(file.fh);
+   long fp = get_pos();
    get_token();
    if (strcmp(ucbuffer, "OFF") != 0) {
-      if (*ucbuffer) fseek(file.fh, fp, SEEK_SET);
+      if (*ucbuffer) set_pos(fp);
       truncate_at = read_uint();
    }
    /* for backward compatibility, "*truncate 0" means "*truncate off" */
@@ -1316,7 +1316,7 @@ cmd_require(void)
    char ch_old;
    skipblanks();
    ch_old = ch;
-   fp = ftell(file.fh);
+   fp = get_pos();
    while (1) {
       unsigned int have, want;
       have = (unsigned int)strtoul(p, &p, 10);
@@ -1327,9 +1327,9 @@ cmd_require(void)
 	 char *v;
 	 /* find end of version number */
 	 while (isdigit(ch) || ch == '.') nextch();
-	 len = (size_t)(ftell(file.fh) - fp);
+	 len = (size_t)(get_pos() - fp);
 	 v = osmalloc(len + 1);
-	 fseek(file.fh, fp, SEEK_SET);
+	 set_pos(fp);
 	 ch = ch_old;
 	 for (i = 0; i < len; i++) {
 	    v[i] = ch;

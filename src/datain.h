@@ -39,6 +39,8 @@ extern parse file;
 extern bool f_export_ok;
 
 #define nextch() (ch = getc(file.fh))
+void set_pos(long offset);
+long get_pos(void);
 
 void skipblanks(void);
 

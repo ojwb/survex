@@ -267,7 +267,7 @@ read_numeric(bool fOmit)
    int chOld;
 
    skipblanks();
-   fp = ftell(file.fh);
+   fp = get_pos();
    chOld = ch;
    fPositive = !isMinus(ch);
    if (isSign(ch)) nextch();
@@ -294,7 +294,7 @@ read_numeric(bool fOmit)
 
    /* didn't read a valid number.  If it's optional, reset filepos & return */
    if (fOmit) {
-      fseek(file.fh, fp, SEEK_SET);
+      set_pos(fp);
       ch = chOld;
       return HUGE_REAL;
    }
