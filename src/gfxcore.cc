@@ -2245,56 +2245,97 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 			r2.normalise();
 			right = r1 + r2;
 			if (right.magnitude() == 0) {
+			    // this is the "mid-pitch" case...
 			    right = last_right;
-			    up = right * leg1_v;
-			} else {
-			    if (r1.magnitude() == 0) {
-				Vector3 n = leg1_v;
-				n.normalise();
-				z_pitch_adjust = n.getZ();
-				up = Vector3(0, 0, leg1_v.getZ());
-				up = right * up;
-				// Rotate pitch section to minimise the
-				// "tortional stress" - FIXME: use
-				// triangles instead of rectangles?
-				int shift = 0;
-				Double maxdotp, dotp;
-				maxdotp = dot(up - right, u[0]);
-				dotp = dot(up - right, u[1]);
-				if (dotp > maxdotp) { maxdotp = dotp; shift = 1; }
-				dotp = dot(up - right, u[2]);
-				if (dotp > maxdotp) { maxdotp = dotp; shift = 2; }
-				dotp = dot(up - right, u[3]);
-				if (dotp > maxdotp) { maxdotp = dotp; shift = 3; }
-				if (shift) {
-				    if (shift != 2) {
-					Vector3 temp(u[0]);
-					int j = 0;
-					for (int l = 0; l < 3; ++l) {
-					    int k = (j + shift) % 4;
-					    u[j] = u[k];
-					    j = k;
-					}
-					u[j] = temp;
-				    } else {
-					swap(u[0], u[2]);
-					swap(u[1], u[3]);
-				    }
-				}
-			    } else if (r2.magnitude() == 0) {
-				Vector3 n = leg2_v;
-				n.normalise();
-				z_pitch_adjust = n.getZ();
-				up = Vector3(0, 0, leg2_v.getZ());
-				up = right * up;
-			    } else {
-				up = up_v;
-			    }
-			    last_right = right;
 			}
+			if (r1.magnitude() == 0) {
+			    Vector3 n = leg1_v;
+			    n.normalise();
+			    z_pitch_adjust = n.getZ();
+			    up = Vector3(0, 0, leg1_v.getZ());
+			    up = right * up;
+
+			    // Rotate pitch section to minimise the
+			    // "tortional stress" - FIXME: use
+			    // triangles instead of rectangles?
+			    int shift = 0;
+			    Double maxdotp = 0;
+
+			    // Scale to unit vectors in the LRUD plane.
+			    right.normalise();
+			    up.normalise();
+			    Vector3 vec = up - right;
+			    for (int orient = 0; orient <= 3; ++orient) {
+				Vector3 tmp = u[orient] - prev_pt_v;
+				tmp.normalise();
+				Double dotp = dot(vec, tmp);
+				if (dotp > maxdotp) {
+				    maxdotp = dotp;
+				    shift = orient;
+				}
+			    }
+			    if (shift) {
+				if (shift != 2) {
+				    Vector3 temp(u[0]);
+				    int j = 0;
+				    for (int l = 0; l < 3; ++l) {
+					int k = (j + shift) % 4;
+					u[j] = u[k];
+					j = k;
+				    }
+				    u[j] = temp;
+#if 0
+				    // FIXME: Could do this with 3 vector swaps,
+				    // instead of 5 vector assigns and lots of
+				    // integer calcs...
+				    swap(u[0], u[shift]);
+				    swap(u[shift], u[2]);
+				    swap(u[2], u[shift ^ 2]);
+#endif
+				} else {
+				    swap(u[0], u[2]);
+				    swap(u[1], u[3]);
+				}
+			    }
+#if 0
+			    // Check that the above code actually permuted
+			    // the vertices correctly.
+			    shift = 0;
+			    maxdotp = 0;
+			    for (int i = 0; i <= 3; ++i) {
+				Vector3 tmp = u[i] - prev_pt_v;
+				tmp.normalise();
+				Double dotp = dot(vec, tmp);
+				if (dotp > maxdotp) {
+				    maxdotp = dotp + 1e-6; // Add small tolerance to stop 45 degree offset cases being flagged...
+				    shift = i;
+				}
+			    }
+			    if (shift) {
+				printf("New shift = %d!\n", shift);
+				shift = 0;
+				maxdotp = 0;
+				for (int i = 0; i <= 3; ++i) {
+				    Vector3 tmp = u[i] - prev_pt_v;
+				    tmp.normalise();
+				    Double dotp = dot(vec, tmp);
+				    printf("    %d : %.8f\n", i, dotp);
+				}
+			    }
+#endif
+			} else if (r2.magnitude() == 0) {
+			    Vector3 n = leg2_v;
+			    n.normalise();
+			    z_pitch_adjust = n.getZ();
+			    up = Vector3(0, 0, leg2_v.getZ());
+			    up = right * up;
+			} else {
+			    up = up_v;
+			}
+			last_right = right;
 		    }
 
-		    // Scale the vectors in the LRUD plane appropriately.
+		    // Scale to unit vectors in the LRUD plane.
 		    right.normalise();
 		    up.normalise();
 
@@ -2311,7 +2352,7 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 
 		    if (segment > 0) {
 			(this->*AddQuad)(v[0], v[1], u[1], u[0]);
-			(this->*AddQuad)(u[2], u[3], v[3], v[2]);
+			(this->*AddQuad)(v[2], v[3], u[3], u[2]);
 			(this->*AddQuad)(v[1], v[2], u[2], u[1]);
 			(this->*AddQuad)(v[3], v[0], u[0], u[3]);
 		    }
