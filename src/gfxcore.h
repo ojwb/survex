@@ -37,31 +37,6 @@ using std::list;
 
 class MainFrm;
 
-struct ColourTriple {
-    // RGB triple: values are from 0-255 inclusive for each component.
-    int r;
-    int g;
-    int b;
-};
-
-// Colours for drawing.
-// These must be in the same order as the entries in COLOURS[] in gfxcore.cc.
-enum AvenColour {
-    col_BLACK = 0,
-    col_GREY,
-    col_LIGHT_GREY,
-    col_LIGHT_GREY_2,
-    col_DARK_GREY,
-    col_WHITE,
-    col_TURQUOISE,
-    col_GREEN,
-    col_INDICATOR_1,
-    col_INDICATOR_2,
-    col_YELLOW,
-    col_RED,
-    col_LAST // must be the last entry here
-};
-
 class Point {
     friend class GfxCore;
     Double x, y, z;
@@ -71,8 +46,6 @@ public:
 };
 
 class LabelInfo;
-
-extern const ColourTriple COLOURS[]; // defined in gfxcore.cc
 
 class GfxCore : public GLACanvas {
     struct params {
@@ -102,7 +75,6 @@ class GfxCore : public GLACanvas {
     } m_Lists;
 
     GUIControl* m_Control;
-    double m_MaxExtent; // twice the maximum of the {x,y,z}-extents, in survey coordinates.
     char* m_LabelGrid;
     bool m_RotationOK;
     LockFlags m_Lock;
@@ -153,14 +125,6 @@ class GfxCore : public GLACanvas {
     wxStopWatch timer;
     long drawtime;
     
-    GLAPen* m_Pens;
-
-    void SetAvenColour(AvenColour col, bool background = false /* true => foreground */) {
-	background = background; // FIXME: suppress warning, but sort out why we're passed a useless parameter...
-	assert(col >= (AvenColour) 0 && col < col_LAST);
-	SetColour(m_Pens[col]); // FIXME background stuff
-    }
-
     void UpdateQuaternion();
     void UpdateIndicators();
     

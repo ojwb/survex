@@ -19,7 +19,7 @@
  
      For further information visit http://plib.sourceforge.net
 
-     $Id: fnt.h,v 1.1.2.4 2003-12-03 16:21:40 olly Exp $
+     $Id: fnt.h,v 1.1.2.5 2003-12-04 02:12:47 olly Exp $
 */
 
 
@@ -34,7 +34,7 @@
 
 #include <string.h>
 
-#define FNTMAX_CHAR 256
+#define FNT_MAXCHAR 256
 
 class fntTexFont {
   private:
@@ -45,7 +45,7 @@ class fntTexFont {
     int list_base;
 
     /* Nominal baseline widths */
-    int widths[FNTMAX_CHAR];
+    int widths[FNT_MAXCHAR];
 
   public:
 
@@ -65,7 +65,7 @@ class fntTexFont {
 
     int getFontSize() const { return fnt_size; }
 
-    void getBBox(const char *s, int *width, int *height) const {
+    void getTextExtent(const char *s, int *width, int *height) const {
 	if (width) {
 	    int w = -1;
 	    while (*s) w += widths[(unsigned char)*s++] + 1;

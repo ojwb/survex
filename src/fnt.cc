@@ -19,7 +19,7 @@
  
      For further information visit http://plib.sourceforge.net
 
-     $Id: fnt.cc,v 1.1.2.4 2003-11-25 04:48:37 olly Exp $
+     $Id: fnt.cc,v 1.1.2.5 2003-12-04 02:12:47 olly Exp $
 */
 
 #include "fnt.h"
@@ -180,12 +180,11 @@ fntTexFont::load(const char *fname)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    glAlphaFunc(GL_GREATER, 0.1f);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glAlphaFunc(GL_GREATER, 0.5f);
 
     fseek(fd, fpos, SEEK_SET);
 
-    for (i = 0; i < FNTMAX_CHAR; ++i) widths[i] = -1;
+    for (i = 0; i < FNT_MAXCHAR; ++i) widths[i] = -1;
 
     // Load the glyph array
 
@@ -205,7 +204,7 @@ fntTexFont::load(const char *fname)
 	short x = fnt_readShort(fd);
 	short y = fnt_readShort(fd);
 
-	if (ch < 32 || ch > 255) continue;
+	if (ch < 32 || ch >= FNT_MAXCHAR) continue;
 
 	float tex_left = x * W;
 	float tex_right = (x + w) * W;

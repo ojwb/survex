@@ -354,7 +354,6 @@ void MainFrm::InitialisePensAndBrushes()
     m_Brushes = new wxBrush[NUM_DEPTH_COLOURS + 1];
     for (int pen = 0; pen < NUM_DEPTH_COLOURS + 1; ++pen) {
 	m_Pens[pen].SetColour(REDS[pen] / 255.0, GREENS[pen] / 255.0, BLUES[pen] / 255.0);
-	m_Pens[pen].SetAlpha(1.0);
 	m_Brushes[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
     }
 }

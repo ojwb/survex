@@ -69,9 +69,9 @@ using namespace std;
 //  GLAPen
 //  
 
-GLAPen::GLAPen() :
-    m_Red(0.0), m_Green(0.0), m_Blue(0.0), m_Alpha(0.0)
+GLAPen::GLAPen()
 {
+    components[0] = components[1] = components[2] = 0.0;
 }
 
 GLAPen::~GLAPen()
@@ -80,43 +80,53 @@ GLAPen::~GLAPen()
 
 void GLAPen::SetColour(double red, double green, double blue)
 {
-    m_Red = red;
-    m_Green = green;
-    m_Blue = blue;
-}
-
-void GLAPen::SetAlpha(double alpha)
-{
-    m_Alpha = alpha;
+    components[0] = red;
+    components[1] = green;
+    components[2] = blue;
 }
 
 double GLAPen::GetRed() const
 {
-    return m_Red;
+    return components[0];
 }
 
 double GLAPen::GetGreen() const
 {
-    return m_Green;
+    return components[1];
 }
 
 double GLAPen::GetBlue() const
 {
-    return m_Blue;
-}
-
-double GLAPen::GetAlpha() const
-{
-    return m_Alpha;
+    return components[2];
 }
 
 void GLAPen::Interpolate(const GLAPen& pen, double how_far)
 {
-    m_Red = ((pen.GetRed() - m_Red) * how_far) + m_Red;
-    m_Green = ((pen.GetGreen() - m_Green) * how_far) + m_Green;
-    m_Blue = ((pen.GetBlue() - m_Blue) * how_far) + m_Blue;
-    m_Alpha = ((pen.GetAlpha() - m_Alpha) * how_far) + m_Alpha;
+    components[0] = how_far * (pen.GetRed() - components[0]) + components[0];
+    components[1] = how_far * (pen.GetGreen() - components[1]) + components[1];
+    components[2] = how_far * (pen.GetBlue() - components[2]) + components[2];
 }
+
+struct ColourTriple {
+    // RGB triple: values are from 0-255 inclusive for each component.
+    unsigned char r, g, b;
+};
+
+// These must be in the same order as the entries in COLOURS[] below.
+const ColourTriple COLOURS[] = {
+    { 0, 0, 0 },       // black
+    { 100, 100, 100 }, // grey
+    { 180, 180, 180 }, // light grey
+    { 140, 140, 140 }, // light grey 2
+    { 90, 90, 90 },    // dark grey
+    { 255, 255, 255 }, // white
+    { 0, 100, 255},    // turquoise
+    { 0, 255, 40 },    // green
+    { 150, 205, 224 }, // indicator 1
+    { 114, 149, 160 }, // indicator 2
+    { 255, 255, 0 },   // yellow
+    { 255, 0, 0 },     // red
+};
 
 //
 //  GLACanvas
@@ -445,11 +455,9 @@ void GLACanvas::DeleteList(glaList l)
     // Delete an existing list.
 
     assert(l != 0);
-//    printf("deleting list: %d... ", l);
     SetCurrent();
     glDeleteLists(l, 1);
     CHECK_GL_ERROR("DeleteList", "glDeleteLists");
-//    printf("succeeded\n");fflush(stdout);
 }
 
 void GLACanvas::SetBackgroundColour(float red, float green, float blue)
@@ -460,41 +468,23 @@ void GLACanvas::SetBackgroundColour(float red, float green, float blue)
     CHECK_GL_ERROR("SetBackgroundColour", "glClearColor");
 }
 
-void GLACanvas::SetColour(const GLAPen& pen, bool set_transparency, double rgb_scale)
+void GLACanvas::SetColour(const GLAPen& pen, double rgb_scale)
 {
     // Set the colour for subsequent operations.
-   
-    if (set_transparency) {
-        glColor4f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale,
-                  pen.GetBlue() * rgb_scale, pen.GetAlpha());
-    }
-    else {
-        glColor3f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale,
-                  pen.GetBlue() * rgb_scale);
-    }
+    glColor3f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale,
+	      pen.GetBlue() * rgb_scale);
 }
 
-#if 0 // Unused and won't build on MS Windows
-void GLACanvas::SetBlendColour(const GLAPen& pen, bool set_transparency,
-                               double rgb_scale)
+void GLACanvas::SetColour(const GLAPen& pen)
 {
-    // Set the blend colour for subsequent operations.
-
-    glBlendColor(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale,
-                 pen.GetBlue() * rgb_scale,
-		 set_transparency ? pen.GetAlpha() : 1.0);
+    // Set the colour for subsequent operations.
+    glColor3dv(pen.components);
 }
-#endif
 
-void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool /*set_transparency*/)
+void GLACanvas::SetColour(gla_colour colour)
 {
-    float col[4];
-    col[0] = pen.GetRed();
-    col[1] = pen.GetGreen();
-    col[2] = pen.GetBlue();
-    col[3] = pen.GetAlpha();
-
-    glMaterialfv(front ? GL_FRONT : GL_BACK, GL_AMBIENT_AND_DIFFUSE, col);
+    // Set the colour for subsequent operations.
+    glColor3ubv(&COLOURS[colour].r);
 }
 
 void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str)
@@ -526,7 +516,6 @@ void GLACanvas::DrawIndicatorText(int x, int y, const wxString& str)
 #ifdef USE_FNT
     glPushAttrib(GL_ENABLE_BIT);
     glEnable(GL_ALPHA_TEST);
-    //glEnable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
     m_Font.puts(x, y, str.c_str());
@@ -542,7 +531,7 @@ void GLACanvas::GetTextExtent(const wxString& str, int * x_ext, int * y_ext)
     assert(y_ext);
 
 #ifdef USE_FNT
-    m_Font.getBBox(str.c_str(), x_ext, y_ext);
+    m_Font.getTextExtent(str.c_str(), x_ext, y_ext);
 #else
 #if 1
     *x_ext = glutBitmapLength(m_Font, (const unsigned char *)str.c_str());
@@ -659,12 +648,9 @@ void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
     PlaceVertex(x, y, 0.0);
 }
 
-void GLACanvas::DrawBlob(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z,
-			 glaCoord radius)
+void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z, glaCoord radius)
 {
     // Draw a sphere centred on a particular point.
-
-    SetColour(pen);
 
     glPointSize(radius * 2);
     CHECK_GL_ERROR("DrawBlob", "glPointSize");
@@ -675,12 +661,11 @@ void GLACanvas::DrawBlob(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z,
     CHECK_GL_ERROR("DrawBlob", "GL_POINTS");
 }
 
-void GLACanvas::DrawRing(GLAPen& pen, glaCoord x, glaCoord y, glaCoord radius)
+void GLACanvas::DrawRing(glaCoord x, glaCoord y, glaCoord radius)
 {
     // Draw an unfilled circle
     
     assert(m_Quadric);
-    SetColour(pen);
     glTranslated(x, y, 0.0);
     CHECK_GL_ERROR("DrawRing", "glTranslated");
     gluDisk(m_Quadric, radius - 1.0, radius, 12, 1);
@@ -689,28 +674,24 @@ void GLACanvas::DrawRing(GLAPen& pen, glaCoord x, glaCoord y, glaCoord radius)
     CHECK_GL_ERROR("DrawRing", "glTranslated");
 }
 
-void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& top,
-                              glaCoord x0, glaCoord y0, glaCoord w, glaCoord h,
-                              bool draw_lines)
+void GLACanvas::DrawRectangle(gla_colour edge, gla_colour fill,
+                              glaCoord x0, glaCoord y0, glaCoord w, glaCoord h)
 {
     // Draw a filled rectangle with an edge in the indicator plane.
     // (x0, y0) specify the bottom-left corner of the rectangle and (w, h) the
     // size.
 
     EnableSmoothPolygons();
+    SetColour(fill);
     BeginQuadrilaterals();
-    SetColour(fill);
     PlaceIndicatorVertex(x0, y0);
-    SetColour(fill);
     PlaceIndicatorVertex(x0 + w, y0);
-    SetColour(top);
     PlaceIndicatorVertex(x0 + w, y0 + h);
-    SetColour(top);
     PlaceIndicatorVertex(x0, y0 + h);
     EndQuadrilaterals();
     DisableSmoothPolygons();
 
-    if (draw_lines) {
+    if (edge != fill) {
         SetColour(edge);
         BeginLines();
         PlaceIndicatorVertex(x0, y0);
@@ -721,8 +702,29 @@ void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& top,
     }
 }
 
-void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy,
-                           glaCoord radius)
+void
+GLACanvas::DrawShadedRectangle(const GLAPen & fill_bot, const GLAPen & fill_top,
+			       glaCoord x0, glaCoord y0,
+			       glaCoord w, glaCoord h)
+{
+    // Draw a graduated filled rectangle in the indicator plane.
+    // (x0, y0) specify the bottom-left corner of the rectangle and (w, h) the
+    // size.
+
+    EnableSmoothPolygons();
+    BeginQuadrilaterals();
+    SetColour(fill_bot);
+    PlaceIndicatorVertex(x0, y0);
+    PlaceIndicatorVertex(x0 + w, y0);
+    SetColour(fill_top);
+    PlaceIndicatorVertex(x0 + w, y0 + h);
+    PlaceIndicatorVertex(x0, y0 + h);
+    EndQuadrilaterals();
+    DisableSmoothPolygons();
+}
+
+void GLACanvas::DrawCircle(gla_colour edge, gla_colour fill,
+			   glaCoord cx, glaCoord cy, glaCoord radius)
 {
     // Draw a filled circle with an edge.
     
@@ -742,7 +744,7 @@ void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy,
     CHECK_GL_ERROR("DrawCircle", "glTranslated (2)");
 }
 
-void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill,
+void GLACanvas::DrawSemicircle(gla_colour edge, gla_colour fill,
                                glaCoord cx, glaCoord cy,
                                glaCoord radius, glaCoord start)
 {
@@ -766,7 +768,7 @@ void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill,
     CHECK_GL_ERROR("DrawCircle", "glTranslated (2)");
 }
 
-void GLACanvas::DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* points)
+void GLACanvas::DrawTriangle(gla_colour edge, gla_colour fill, GLAPoint* points)
 {
     // Draw a filled triangle with an edge.
     

@@ -51,24 +51,38 @@ public:
     glaCoord GetZ() { return zc; }
 };
 
+// Colours for drawing.  Don't reorder these!
+enum gla_colour {
+    col_BLACK = 0,
+    col_GREY,
+    col_LIGHT_GREY,
+    col_LIGHT_GREY_2,
+    col_DARK_GREY,
+    col_WHITE,
+    col_TURQUOISE,
+    col_GREEN,
+    col_INDICATOR_1,
+    col_INDICATOR_2,
+    col_YELLOW,
+    col_RED,
+    col_LAST // must be the last entry here
+};
+
 class GLAPen {
-    double m_Red;
-    double m_Green;
-    double m_Blue;
-    double m_Alpha;
+    friend class GLACanvas; // allow direct access to components
+
+    double components[3]; // red, green, blue
     
 public:
     GLAPen();
     ~GLAPen();
 
     void SetColour(double red, double green, double blue); // arguments in range 0 to 1.0
-    void SetAlpha(double alpha);
     void Interpolate(const GLAPen&, double how_far);
 
     double GetRed() const;
     double GetGreen() const;
     double GetBlue() const;
-    double GetAlpha() const;
 };
 
 #ifdef AVENGL
@@ -129,14 +143,12 @@ public:
     glaList CreateList(GfxCore*, void (GfxCore::*generator)());
     void DeleteList(glaList l);
     void DrawList(glaList l);
-    
+ 
     void SetBackgroundColour(float red, float green, float blue);
-    void SetColour(const GLAPen& pen, bool set_transparency = false, double rgb_scale = 1.0);
-#if 0 // Unused and won't build on MS Windows
-    void SetBlendColour(const GLAPen& pen, bool set_transparency = false, double rgb_scale = 1.0);
-#endif
-    void SetPolygonColour(GLAPen& pen, bool front, bool set_transparency = false);
-   
+    void SetColour(const GLAPen& pen, double rgb_scale);
+    void SetColour(const GLAPen& pen);
+    void SetColour(gla_colour colour);
+
     void DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str);
     void DrawIndicatorText(int x, int y, const wxString& str);
     void GetTextExtent(const wxString& str, int * x_ext, int * y_ext);
@@ -154,14 +166,16 @@ public:
     void BeginPolygon();
     void EndPolygon();
     
-    void DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& fill_top,
-                       glaCoord x0, glaCoord y0, glaCoord w, glaCoord h, bool draw_lines = true);
-    void DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius);
-    void DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start);
-    void DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* vertices);
+    void DrawRectangle(gla_colour edge, gla_colour fill,
+                       glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
+    void DrawShadedRectangle(const GLAPen & fill_bot, const GLAPen & fill_top,
+			     glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
+    void DrawCircle(gla_colour edge, gla_colour fill, glaCoord cx, glaCoord cy, glaCoord radius);
+    void DrawSemicircle(gla_colour edge, gla_colour fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start);
+    void DrawTriangle(gla_colour edge, gla_colour fill, GLAPoint* vertices);
     
-    void DrawBlob(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaCoord radius);
-    void DrawRing(GLAPen& pen, glaCoord x, glaCoord y, glaCoord radius);
+    void DrawBlob(glaCoord x, glaCoord y, glaCoord z, glaCoord radius);
+    void DrawRing(glaCoord x, glaCoord y, glaCoord radius);
  
     void PlaceVertex(glaCoord x, glaCoord y, glaCoord z);
     void PlaceIndicatorVertex(glaCoord x, glaCoord y);

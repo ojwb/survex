@@ -75,25 +75,10 @@ static const int SCALE_BAR_OFFSET_X = 15;
 static const int SCALE_BAR_OFFSET_Y = 12;
 static const int SCALE_BAR_HEIGHT = 12;
 static const int HIGHLIGHTED_PT_SIZE = 2;
-static const int TEXT_COLOUR = 7;
-static const int HERE_COLOUR = 5;
 
-const ColourTriple COLOURS[] = {
-    { 0, 0, 0 },       // black
-    { 100, 100, 100 }, // grey
-    { 180, 180, 180 }, // light grey
-    { 140, 140, 140 }, // light grey 2
-    { 90, 90, 90 },    // dark grey
-    { 255, 255, 255 }, // white
-    { 0, 100, 255},    // turquoise
-    { 0, 255, 40 },    // green
-    { 150, 205, 224 }, // indicator 1
-    { 114, 149, 160 }, // indicator 2
-    { 255, 255, 0 },   // yellow
-    { 255, 0, 0 },     // red
-};
-
-static const int NAME_COLOUR_INDEX = 7;
+static const gla_colour TEXT_COLOUR = col_GREEN;
+static const gla_colour HERE_COLOUR = col_WHITE;
+static const gla_colour NAME_COLOUR = col_GREEN;
 
 #define HITTEST_SIZE 20
 
@@ -157,15 +142,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Lists.surface_legs = 0;
     m_Lists.indicators = 0;
 
-    // Create pens and brushes for drawing.
-    int num_colours = (int) col_LAST;
-    m_Pens = new GLAPen[num_colours];
-    for (int col = 0; col < num_colours; col++) {
-	m_Pens[col].SetColour(COLOURS[col].r / 255.0,
-			      COLOURS[col].g / 255.0,
-			      COLOURS[col].b / 255.0);
-    }
-
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
 }
@@ -173,8 +149,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
 GfxCore::~GfxCore()
 {
     TryToFreeArrays();
-
-    delete[] m_Pens;
 
     delete[] m_PointGrid;
 }
@@ -344,7 +318,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	if (m_Legs || m_Tubes) {
 	    // Draw the underground legs.
-	    SetColour(m_Pens[7]);
+	    SetColour(col_GREEN);
 	    DrawList(m_Lists.underground_legs);
 
 	    if (m_Tubes) {
@@ -379,13 +353,15 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	SetIndicatorTransform();
 
-	if (!m_Rotating && !m_SwitchingTo) {
-	    Double hx, hy;
+	if (!m_Rotating && !m_SwitchingTo &&
+	    (m_here.x != DBL_MAX || m_there.x != DBL_MAX)) {
 	    // Draw "here" and "there".
+	    Double hx, hy;
+	    SetColour(HERE_COLOUR);
 	    if (m_here.x != DBL_MAX) {
 		Double dummy;
 		Transform(m_here.x, m_here.y, m_here.z, &hx, &hy, &dummy);
-		DrawRing(m_Pens[HERE_COLOUR], hx, hy, HIGHLIGHTED_PT_SIZE * 2);
+		DrawRing(hx, hy, HIGHLIGHTED_PT_SIZE * 2);
 	    }
 	    if (m_there.x != DBL_MAX) {
 		Double tx, ty;
@@ -397,7 +373,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 		    PlaceIndicatorVertex(tx, ty);
 		    EndLines();
 		}
-		DrawBlob(m_Pens[HERE_COLOUR], tx, ty, 0.0, HIGHLIGHTED_PT_SIZE);
+		DrawBlob(tx, ty, 0.0, HIGHLIGHTED_PT_SIZE);
 	    }
 	}
 	
@@ -539,7 +515,7 @@ void GfxCore::Draw2dIndicators()
 
     // Indicator backgrounds.
     if (m_Compass && m_RotationOK) {
-	DrawCircle(m_Pens[col_LIGHT_GREY_2], m_Pens[col_GREY],
+	DrawCircle(col_LIGHT_GREY_2, col_GREY,
 		   m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
 		   INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
 		   INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN);
@@ -547,12 +523,12 @@ void GfxCore::Draw2dIndicators()
     if (m_Clino && m_Lock == lock_NONE) {
 	glaCoord tilt = (glaCoord) (m_TiltAngle * 180.0 / M_PI);
 	glaCoord start = fabs(-tilt - 90.0);
-	DrawSemicircle(m_Pens[col_LIGHT_GREY_2], m_Pens[col_GREY],
+	DrawSemicircle(col_LIGHT_GREY_2, col_GREY,
 		       m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
 		       INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
 		       INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN, start);
 
-	SetColour(m_Pens[col_GREY]);
+	SetColour(col_GREY);
 	BeginLines();
 	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
 			     INDICATOR_OFFSET_Y + INDICATOR_MARGIN);
@@ -583,9 +559,9 @@ void GfxCore::Draw2dIndicators()
 	if (deg_pan) deg_pan = 360 - deg_pan;
 	for (int angle = deg_pan; angle <= 315 + deg_pan; angle += 45) {
 	    if (deg_pan == angle) {
-		SetAvenColour(col_GREEN);
+		SetColour(col_GREEN);
 	    } else {
-		SetAvenColour(white ? col_WHITE : col_LIGHT_GREY_2);
+		SetColour(white ? col_WHITE : col_LIGHT_GREY_2);
 	    }
 	    DrawTick((int) pan_centre_x, (int) centre_y, angle);
 	}
@@ -596,9 +572,9 @@ void GfxCore::Draw2dIndicators()
 	int deg_elev = (int) (m_TiltAngle * 180.0 / M_PI);
 	for (int angle = 0; angle <= 180; angle += 90) {
 	    if (deg_elev == angle - 90) {
-		SetAvenColour(col_GREEN);
+		SetColour(col_GREEN);
 	    } else {
-		SetAvenColour(white ? col_WHITE : col_LIGHT_GREY_2);
+		SetColour(white ? col_WHITE : col_LIGHT_GREY_2);
 	    }
 	    DrawTick((int) elev_centre_x, (int) centre_y, angle);
 	}
@@ -613,8 +589,8 @@ void GfxCore::Draw2dIndicators()
 	GLAPoint pts1[3] = { p2, p1, pc };
 	GLAPoint pts2[3] = { p3, p1, pc };
 	
-	DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_1], pts1);
-	DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_2], pts2);
+	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts1);
+	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts2);
     }
 
     // Elevation arrow
@@ -625,12 +601,12 @@ void GfxCore::Draw2dIndicators()
 	GLAPoint pce(elev_centre_x, centre_y, 0.0);
 	GLAPoint pts1e[3] = { p2e, p1e, pce };
 	GLAPoint pts2e[3] = { p3e, p1e, pce };
-	DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_2], pts1e);
-	DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_1], pts2e);
+	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts1e);
+	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts2e);
     }
 
     // Text
-    SetColour(m_Pens[TEXT_COLOUR]);
+    SetColour(TEXT_COLOUR);
 
     int w, h;
     int width, height;
@@ -703,7 +679,7 @@ void GfxCore::DrawNames()
     // Draw station names.
     
     SetIndicatorTransform();
-    SetColour(m_Pens[NAME_COLOUR_INDEX]);
+    SetColour(NAME_COLOUR);
     
     if (m_OverlappingNames) {
 	SimpleDrawNames();
@@ -815,9 +791,7 @@ void GfxCore::DrawDepthbar()
     int x_min = m_XSize - DEPTH_BAR_OFFSET_X -
 		     DEPTH_BAR_BLOCK_WIDTH - DEPTH_BAR_MARGIN - size;
 
-    DrawRectangle(m_Pens[col_BLACK],
-		  m_Pens[col_DARK_GREY],
-		  m_Pens[col_DARK_GREY],
+    DrawRectangle(col_BLACK, col_DARK_GREY,
 		  x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
 		  m_YSize - (DEPTH_BAR_BLOCK_HEIGHT*(m_Bands-1)) -
 		      DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
@@ -827,17 +801,13 @@ void GfxCore::DrawDepthbar()
 
     for (band = 0; band < m_Bands; band++) {
 	if (band < m_Bands - 1) {
-	    DrawRectangle(m_Parent->GetPen(band),
-			  m_Parent->GetPen(band),
-			  m_Parent->GetPen(band+1),
-			  x_min,
-			  y,
-			  DEPTH_BAR_BLOCK_WIDTH,
-			  DEPTH_BAR_BLOCK_HEIGHT,
-			  false);
+	    DrawShadedRectangle(m_Parent->GetPen(band),
+				m_Parent->GetPen(band + 1),
+				x_min, y,
+				DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
 	}
 
-	SetColour(m_Pens[TEXT_COLOUR]);
+	SetColour(TEXT_COLOUR);
 
 	DrawIndicatorText(x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
 			  y - (FONT_SIZE / 2) - 1, strs[band]);
@@ -954,20 +924,19 @@ void GfxCore::DrawScalebar()
     int end_y = m_ScaleBar.offset_y + height;
     int interval = size / 10;
 
-    bool solid = true;
+    gla_colour col = col_WHITE;
     for (int ix = 0; ix < 10; ix++) {
 	int x = end_x + int(ix * ((Double) size / 10.0));
-	GLAPen& pen = solid ? m_Pens[col_GREY] : m_Pens[col_WHITE];
 
-	DrawRectangle(pen, pen, pen, x, end_y, interval + 2, height);
+	DrawRectangle(col, col, x, end_y, interval + 2, height);
 
-	solid = !solid;
+	col = (col == col_WHITE) ? col_GREY : col_WHITE;
     }
 
     // Add labels.
     wxString str = FormatLength(size_snap);
 
-    SetColour(m_Pens[TEXT_COLOUR]);
+    SetColour(TEXT_COLOUR);
     DrawIndicatorText(end_x, end_y - FONT_SIZE - 4, "0");
 
     int text_width, text_height;
@@ -1789,7 +1758,7 @@ void GfxCore::GenerateBlobsDisplayList()
 	// highlighting, which in turn takes priority over exported
 	// point highlighting.
 
-	enum AvenColour col;
+	gla_colour col;
 	enum {BLOB, CROSS} shape = BLOB;
 
 	if (!((m_Surface && label->IsSurface()) ||
@@ -1834,7 +1803,8 @@ void GfxCore::GenerateBlobsDisplayList()
 	   // m_DrawDC.DrawLines(2, cross1, x, y);
 	   // m_DrawDC.DrawLines(2, cross2, x, y);
 	} else {
-	    DrawBlob(m_Pens[col], label->GetX(), label->GetY(), label->GetZ(), HIGHLIGHTED_PT_SIZE);
+	    SetColour(col);
+	    DrawBlob(label->GetX(), label->GetY(), label->GetZ(), HIGHLIGHTED_PT_SIZE);
 	}
     }
 }
@@ -1893,7 +1863,7 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
     
     pen1.Interpolate(pen2, into_band);
     
-    SetColour(pen1, true, factor);
+    SetColour(pen1, factor);
 }
 
 void GfxCore::PlaceVertexWithColour(Double x, Double y, Double z, Double factor)
