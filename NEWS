@@ -1,3 +1,5 @@
+Changes in 0.98-prerelease5:
+
 * aven/print*/cadgen/extend/diffpos/3dtopos: Added --survey command
   line option to restrict the operation of the command to a sub-survey
   in the .3d file.
