@@ -16,15 +16,28 @@ while (<>) {
       $_ .= <>;
    }
    
-   s!\@(\w+)\@!$repl{$1}||"\@$1\@"!eg;
+   repl(\$_);
    
    if (/^(\w+)\s*=\s*(.*)$/) {
       $var{$1} = $2;
    }
 }
 
+sub shorten {
+   my $exe = shift;
+   my $max_len = shift;
+   while (length $exe > $max_len) {
+      unless ($exe =~ s/[aeiou]//i) {
+         $exe =~ s/.$//;
+      }
+   }
+   return $exe;
+}
+
 my $progs = $var{'bin_PROGRAMS'};
 $progs =~ s|\$\((\w+)\)|$var{$1}|eg;
+$progs = join " ", map {shorten($_, $max_leaf_len)} split /\s+/, $progs;
+
 my $t = $progs;
 $t =~ s/(\w)\b/$1$repl{'EXEEXT'}/g if $repl{'EXEEXT'};
 print "all: $t\n\n";
@@ -38,18 +51,15 @@ for (sort keys %var) {
    if (/^(\w+)_SOURCES/) {
       my $prog = $1;      
       if ($progs =~ /\b\Q$prog\E\b/) {
-         my $exe = $prog;
-	 while (length $exe > $max_leaf_len) {
-	    unless ($exe =~ s/[aeiou]//i) {
-	       $exe =~ s/.$//;
-	    }
-	 }
-	 $exe .= $repl{'EXEEXT'};
+         my $exe = $prog . $repl{'EXEEXT'};
 
          my $sources = $var{$_};
 
-	 my $extra = $var{"EXTRA_$_"};
-	 $sources .= " " . $extra if defined $extra;
+         my $ldadd = $var{$prog.'_LDADD'} || '';
+         my $extra;
+
+#	 $extra = $var{"EXTRA_$_"};
+#	 $sources .= " " . $extra if defined $extra;
 
          $extra = $repl{"LIBOBJS"};
 	 $sources .= " " . $extra if defined $extra;
@@ -70,10 +80,22 @@ for (sort keys %var) {
 	       $redir = ">>";
 	    }
 	    print "\t\@echo $objs $redir $rsp\n"; # FIXME: @ is msdos specific
-	    print "\t$repl{'CC'} -e$exe $repl{'LDFLAGS'} \@$rsp\n";
+	    print "\t$repl{'CC'} -e$exe";
+	    print " $repl{'CFLAGS'}" if $repl{'CFLAGS'} ne '';
+	    print " $ldadd" if $ldadd ne '';
+	    print " $repl{'LDFLAGS'}" if $repl{'LDFLAGS'} ne '';
+	    print " \@$rsp";
+	    print " $repl{'LIBS'}" if $repl{'LIBS'} ne '';
+	    print "\n";
 	    print "\t\@del /q $rsp\n"; # FIXME: msdos specific
 	 } else {
-	    print "\t$repl{'CC'} -o $exe $repl{'LDFLAGS'} $objs $repl{'LIBS'}\n";
+	    print "\t$repl{'CC'} -o $exe";
+	    print " $repl{'CFLAGS'}" if $repl{'CFLAGS'} ne '';
+	    print " $ldadd" if $ldadd ne '';
+	    print " $repl{'LDFLAGS'}" if $repl{'LDFLAGS'} ne '';
+	    print " $objs";
+	    print " $repl{'LIBS'}" if $repl{'LIBS'} ne '';
+	    print "\n";
 	    print "\tsqueeze $exe\n"; # FIXME: riscos specific
 	 }
 	 print "\n";
@@ -81,21 +103,32 @@ for (sort keys %var) {
    }
 }
 
+sub repl {
+   my $ref = shift;
+   $$ref =~ s!\@(\w+)\@!repl_func($1)!eg;
+}
+
+sub repl_func {
+   my $x = shift;
+   return $repl{$x} if exists $repl{$x};
+   print STDERR "No replacement for \@${x}\@\n";
+   return '';
+}
 
 sub init_riscos {
    %repl = (
       'CAVEROT' => 'caverot',
-      'LIBOBJS' => '',
-      'CRLIB' => 'graphics.lib mouse.lib',
-      'CROBJX' => 'dosrot.c',
-      'CFLAGS' => '-DHAVE_CONFIG_H -DHAVE_FAR_POINTERS -I. -ml -d -O1 -Ogmpvl -X',
-      'LDFLAGS' => '-lm',
-      'LIBS' => '',
+      'LIBOBJS' => 'strcasecmp.o',
+      'CRLIB' => '',
+      'CROBJX' => 'armrot.o',
+      'CFLAGS' => '-DHAVE_CONFIG_H -IC:,@ -throwback -ffahp -fussy',
+      'LDFLAGS' => '',
+      'LIBS' => 'C:OSLib.o.OSLib',
       'CC' => 'cc',
       'OBJEXT' => 'o',
       'EXEEXT' => '',
       'EXTRARULES' => 
-         "armrot.o: armrot.s:\n\tobjasm -ThrowBack -Stamp -quit -CloseExec -from s.armrot -to o.armrot\n\n",	 
+         "armrot.o: armrot.s\n\tobjasm -ThrowBack -Stamp -quit -CloseExec -from s.armrot -to o.armrot\n\n",	 
    );
    $max_leaf_len = 10;
    $use_rsp = 0;
@@ -104,12 +137,12 @@ sub init_riscos {
 sub init_borlandc {
    %repl = (
       'CAVEROT' => 'caverot',
-      'LIBOBJS' => 'strcasecmp.c',
-      'CRLIB' => '',
-      'CROBJX' => 'armrot.s',
-      'CFLAGS' => '-DHAVE_CONFIG_H -IC: -throwback -ffahp -fussy',
+      'LIBOBJS' => '',
+      'CRLIB' => 'graphics.lib mouse.lib',
+      'CROBJX' => 'dosrot.obj',
+      'CFLAGS' => '-DHAVE_CONFIG_H -DHAVE_FAR_POINTERS -I. -ml -d -O1 -Ogmpvl -X',
       'LDFLAGS' => '',
-      'LIBS' => 'C:OSLib.o.OSLib',
+      'LIBS' => '',
       'CC' => 'bcc',
       'OBJEXT' => 'obj',
       'EXEEXT' => '.exe',
