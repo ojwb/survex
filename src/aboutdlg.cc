@@ -43,7 +43,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxStaticText* copyright1 = new wxStaticText(this, 503, AVEN_COPYRIGHT_MSG);
     wxStaticText* copyright2 = new wxStaticText(this, 504, COPYRIGHT_MSG);
     wxString licence_str(msg(/*This is free software.  Aven is licenced under the terms of the GNU General Public Licence version 2, or (at your option) any later version.*/200));
-    int wrap = 42;
+    unsigned int wrap = 42;
     while (wrap < licence_str.length()) {
 	if (licence_str[wrap] == ' ') {
 	   licence_str.SetChar(wrap, '\n');

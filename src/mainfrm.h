@@ -28,6 +28,10 @@
 #include "message.h"
 #include <list>
 
+using namespace std;
+
+extern const int NUM_DEPTH_COLOURS;
+
 enum {
     menu_FILE_OPEN = 1000,
     menu_FILE_QUIT,
@@ -213,16 +217,35 @@ public:
     int GetNumPoints() { return m_NumPoints; }
     int GetNumCrosses() { return m_NumCrosses; }
 
-    int GetNumDepthBands();
+    int GetNumDepthBands() { return NUM_DEPTH_COLOURS; }
 
-    wxPen GetPen(int band);
-    wxBrush GetBrush(int band);
+    wxPen GetPen(int band) {
+        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+        return m_Pens[band];
+    }
 
-    list<PointInfo*>::const_iterator GetPoints(int band);
-    list<LabelInfo*>::const_iterator GetLabels();
+    wxBrush GetBrush(int band) {
+        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+        return m_Brushes[band];
+    }
 
-    list<PointInfo*>::const_iterator GetPointsEnd(int band);
-    list<LabelInfo*>::const_iterator GetLabelsEnd();
+    list<PointInfo*>::const_iterator GetPoints(int band) {
+        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+        return m_Points[band].begin();
+    }
+
+    list<LabelInfo*>::const_iterator GetLabels() {
+        return m_Labels.begin();
+    }
+
+    list<PointInfo*>::const_iterator GetPointsEnd(int band) {
+        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+        return m_Points[band].end();
+    }
+
+    list<LabelInfo*>::const_iterator GetLabelsEnd() {
+        return m_Labels.end();
+    }
 
     //bool ProcessEvent(wxEvent&);
 

@@ -29,10 +29,11 @@
 
 #include <float.h>
 
-static const int NUM_DEPTH_COLOURS = 13;
-static const double REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255};
-static const double GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0};
-static const double BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0};
+const int NUM_DEPTH_COLOURS = 13;
+
+static const unsigned char REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255};
+static const unsigned char GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0};
+static const unsigned char BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0};
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
@@ -246,23 +247,6 @@ void MainFrm::OnPaint(wxPaintEvent&) //-- sort this out!
 	    OpenFile(m_FileToLoad, true);
 	}
     }
-}
-
-int MainFrm::GetNumDepthBands()
-{
-    return NUM_DEPTH_COLOURS;
-}
-
-wxPen MainFrm::GetPen(int band)
-{
-    assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-    return m_Pens[band];
-}
-
-wxBrush MainFrm::GetBrush(int band)
-{
-    assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-    return m_Brushes[band];
 }
 
 void MainFrm::ClearPointLists()
@@ -583,28 +567,6 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 
 	prev_point = point;
     }
-}
-
-list<PointInfo*>::const_iterator MainFrm::GetPoints(int band)
-{
-    assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-    return m_Points[band].begin();
-}
-
-list<PointInfo*>::const_iterator MainFrm::GetPointsEnd(int band)
-{
-    assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-    return m_Points[band].end();
-}
-
-list<LabelInfo*>::const_iterator MainFrm::GetLabels()
-{
-    return m_Labels.begin();
-}
-
-list<LabelInfo*>::const_iterator MainFrm::GetLabelsEnd()
-{
-    return m_Labels.end();
 }
 
 void MainFrm::OpenFile(const wxString& file, bool delay)

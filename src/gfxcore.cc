@@ -861,9 +861,7 @@ void GfxCore::DrawDepthbar()
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
 
-    int width = DEPTH_BAR_BLOCK_WIDTH;
-    int height = DEPTH_BAR_BLOCK_HEIGHT;
-    int y = height*m_Bands + DEPTH_BAR_OFFSET_Y;
+    int y = DEPTH_BAR_BLOCK_HEIGHT*m_Bands + DEPTH_BAR_OFFSET_Y;
     int size = 0;
 
     wxString* strs = new wxString[m_Bands + 1];
@@ -877,7 +875,7 @@ void GfxCore::DrawDepthbar()
 	}
     }
 
-    int x_min = m_XSize - DEPTH_BAR_OFFSET_X - width - DEPTH_BAR_MARGIN - size;
+    int x_min = m_XSize - DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH - DEPTH_BAR_MARGIN - size;
 
     m_DrawDC.SetPen(m_Pens.black);
     m_DrawDC.SetBrush(m_Brushes.dgrey);
@@ -885,18 +883,20 @@ void GfxCore::DrawDepthbar()
 			   DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
 			   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
 			     DEPTH_BAR_EXTRA_LEFT_MARGIN,
-			   height*m_Bands + DEPTH_BAR_MARGIN*4);
+			   DEPTH_BAR_BLOCK_HEIGHT*m_Bands + DEPTH_BAR_MARGIN*4);
 
     for (int band = 0; band <= m_Bands; band++) {
         if (band < m_Bands) {
 	    m_DrawDC.SetPen(m_Parent->GetPen(band));
 	    m_DrawDC.SetBrush(m_Parent->GetBrush(band));
-	    m_DrawDC.DrawRectangle(x_min, y - height, width, height);
+	    m_DrawDC.DrawRectangle(x_min, y - DEPTH_BAR_BLOCK_HEIGHT,
+				   DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
 	}
 
-	m_DrawDC.DrawText(strs[band], x_min + width + 5, y - (FONT_SIZE / 2) - 1);
+	m_DrawDC.DrawText(strs[band], x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
+			  y - (FONT_SIZE / 2) - 1);
 
-	y -= height;
+	y -= DEPTH_BAR_BLOCK_HEIGHT;
     }
 
     delete[] strs;
