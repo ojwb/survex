@@ -92,8 +92,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-05-13 16:26:23 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.94 2002-05-13 16:26:23 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-06-05 01:15:16 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.95 2002-06-05 01:15:16 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -118,34 +118,17 @@ the station 1 of the Adrian's Route survey.
 
 <Para>&survexsuite; is a multi-platform open-source cave surveying
 package.  It currently runs on &unix;, Microsoft Windows 95/NT and
-successors, &msdos;, and Acorn &riscos; machines.
+successors, &msdos;, and Acorn &riscos; machines.  We're working on
+a version for MacOS X, and investigating support for various palmtop
+devices.
 </Para>
-
-<!--
-<Para>Porting to other platforms should be fairly easy.  The graphics
-code in caverot would be the most work - the rest only requires an ANSI C
-compiler plus a few details about the format of filenames and the like.
-If you are interested in support for any other machine contact us and we
-will try to help.</Para>
--->
-
-<!-- with the windows installer, windows printer driver, and aven we
-     do now have a GUI of sorts, so this next paragraph could be kinder
-     on ourselves...
-     FIXME
-<Para>&survexsuite; has been designed to be a powerful and useful
-survey-production tool. This focus on facilities and structure means that
-less attention has so far been given to the user interface, so it does not
-yet have nice menus, on-line help etc. - you will have to read the
-instructions first! Version 2.0 will have windows and menus.</Para>
- -->
 
 <Para>We are well aware that not everyone has access to super hardware
 - often surveying projects are run on little or no budget and any
 computers used are donated.  We aim to ensure that &survexsuite; is
-feasible to use on low-spec machines, although you may not be able to
-process vast cave systems, and some facilities may be
-restricted. Please help us to achieve this by giving us some feedback
+feasible to use on low-spec machines.  Obviously it won't be as
+responsive, but we intend it to be usable.
+Please help us to achieve this by giving us some feedback
 if you use &survexsuite; on a slow machine.</Para>
 
 <Para>&survexsuite; is capable of processing extremely complex caves very
