@@ -1012,20 +1012,29 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		  m_LastDrag == drag_COMPASS) {
 		  // drag in heading indicator
 		  m_LastDrag = drag_COMPASS;
-		  TurnCaveTo(atan2(-dx0, dy) - M_PI);
+		  if (sqrt(dx0*dx0 + dy*dy) <= radius) {
+		      TurnCaveTo(atan2(-dx0, dy) - M_PI);
+		  }
+		  else {
+		      TurnCaveTo(int(int((atan2(-dx0, dy) - M_PI) * 180.0 / M_PI) / 45) *
+				 M_PI/4.0);
+		  }
 	      }
 	      else if (sqrt(dx1*dx1 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
 		  m_LastDrag == drag_ELEV) {
 		  // drag in elevation indicator
 		  m_LastDrag = drag_ELEV;
-		  if (dx1 >= 0) {
+		  if (dx1 >= 0 && sqrt(dx1*dx1 + dy*dy) <= radius) {
 		      TiltCave(atan2(-dy, dx1) - m_TiltAngle);
 		  }
-		  else if (dy >= 0) {
+		  else if (dy >= INDICATOR_MARGIN) {
 		      TiltCave(-M_PI/2.0 - m_TiltAngle);
 		  }
-		  else {
+		  else if (dy <= -INDICATOR_MARGIN) {
 		      TiltCave(M_PI/2.0 - m_TiltAngle);
+		  }
+		  else {
+		      TiltCave(-m_TiltAngle);
 		  }
 	      }
 	      else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
