@@ -73,7 +73,6 @@ static double scale = 500.0;
 static double factor;
 static const char *unit = "mm";
 
-static img *pimg;
 static const char *survey = NULL;
 
 static void
@@ -500,7 +499,8 @@ plt_header(void)
            min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
            min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
            min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
-   fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X", pimg->title);
+   fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X",
+	   survey ? survey : "X"); // Second string is the title
 }
 
 static void
@@ -866,7 +866,7 @@ Export(const wxString &fnm_out, const MainFrm * mainfrm,
 		p.x = xnew;
 	    }
 #ifdef DEBUG_CAD3D
-	    printf("label `%s' at %9.2f %9.2f %9.2f\n",pimg->label,x,y,z);
+	    printf("label `%s' at %9.2f %9.2f %9.2f\n",(*pos)->GetText(),x,y,z);
 #endif
 	    /* Use !UNDERGROUND as the criterion - we want stations where
 	     * a surface and underground survey meet to be in the
@@ -879,7 +879,6 @@ Export(const wxString &fnm_out, const MainFrm * mainfrm,
       }
       pass++;
    }
-   img_close(pimg);
    footer();
    safe_fclose(fh);
    osfree(htab);

@@ -1154,11 +1154,12 @@ void MainFrm::OnExport(wxCommandEvent&)
 {
     char *baseleaf = baseleaf_from_fnm(m_File.c_str());
     wxFileDialog dlg(this, wxString("Export as:"), "",
-		     wxString(baseleaf) + ".dxf",
+		     wxString(baseleaf),
 		     "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|Compass PLT for use with Carto|*.plt",
 		     wxSAVE|wxOVERWRITE_PROMPT);
     free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
+	wxString fnm = dlg.GetPath();
 	if (!m_Gfx->OnExport(dlg.GetPath())) {
 	    wxGetApp().ReportError(wxString::Format("Couldn't write file `%s'", dlg.GetPath().c_str()));
 	}
