@@ -92,8 +92,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-04-05 14:26:57 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.90 2002-04-05 14:26:57 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-04-17 13:34:34 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.91 2002-04-17 13:34:34 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -2087,7 +2087,7 @@ place in the current file. (i.e. The current settings are carried
 into &lt;filename&gt;, and any alterations to settings in &lt;filename&gt;
 will be carried back again).  There's one exception to this (for
 obscure historical reasons) which is that the survey prefix is
-restore upon return to the original file.  Since *begin and *end
+restored upon return to the original file.  Since *begin and *end
 nesting cannot cross files, this can only make a difference if you
 use the deprecated *prefix command.
 </Para>
