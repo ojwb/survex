@@ -2250,8 +2250,6 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 // return: true if animation occured (and ForceRefresh() needs to be called)
 bool GfxCore::Animate()
 {
-    idle_event = idle_event; // Suppress "not used" warning
-
     if (!m_Rotating && !m_SwitchingTo) {
 	return false;
     }
