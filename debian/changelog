@@ -1,3 +1,25 @@
+survex (1.0.19) unstable; urgency=low
+
+  * cavern: can now process Compass format survey data, and even mixed
+    datasets.
+  * cavern: major speedup (up to 60%) when reading in survey data containing
+    a lot of stations in the same survey hierarchy level (which is how Compass
+    files are handled).
+  * cavern: don't warn about a compass reading on a plumbed leg if the
+    plumb was inferred and the compass reading is zero.
+  * cavern: reduced memory usage in code which reads a survey station name.
+  * cavern: reported CPU time would go negative if cavern ran for more than
+    about 36 minutes (highly unlikely but not impossible on a slow machine
+    with a large, highly interconnect survey) - fixed.
+  * cavern: avoid unnecessary work when --percentage isn't specified.
+  * cavern: Writing "*:" at the start of a .svx file would crash cavern - fixed
+    and added test case.  This is an error anyway, but it shouldn't cause a
+    crash.
+  * Don't distribute unused toolbar icons.
+  * Documentation: minor updates.
+
+ -- Wookey <wookey@survex.com>  Fri, 25 Oct 2002 03:16:34 +0100
+
 survex (1.0.18) unstable; urgency=low
 
   * Fixed "Process" action on .svx files.
