@@ -11,12 +11,6 @@
 #
 # Eric's queries:
 #
-#- Error type, message headers:
-#  I still hesitate between 2 styles:
-#      "Survex: Erreur fatale: ..."
-#      "Erreur fatale &agrave; l'&eacute;x&eacute;cution de Survex: ..."
-#  The second is perhaps more correct, I prefer the first one for conciseness.
-#
 #- "Warning"
 #  I don't like Francois's "Impr&eacute;cision"
 #  The official translation is "Avertissement", I will use it even if
@@ -27,13 +21,13 @@
 #  This is difficult to translate literally... It should refer to a
 #  notion properly defined in the (french version of the) documentation!
 #
-# OL: It means a leg measured with a plumb (a weight on a string) in case
+# Ol: It means a leg measured with a plumb (a weight on a string) in case
 #     you weren't clear on that.  Or is it an expression problem rather
 #     than a comprehension one?
 #
 # Eric: Well, essentially yes. And if I understand correctly, you would use
-# it also for an horizontal shot on a lake surface, ... Well "vis&eacute;e plomb&eacute;e"
-# is as good as the english wording.
+# it also for an horizontal shot on a lake surface, ... Well
+# "vis&eacute;e plomb&eacute;e" is as good as the english wording.
 #
 # Ol: Oops.  That needs fixing.
 #
