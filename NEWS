@@ -5,6 +5,8 @@
 * (Unix version): fixed compilation problems with aven and getopt.h on MacOS X
   (and probably some other Unix versions).
 
+* (Unix version): Debian package now Build-Depends on gcc-3.2 and g++-3.2.
+
 Changes in 1.0.23:
 
 * Documentation: include 3d v3 file format description on MS Windows, MS DOS,
