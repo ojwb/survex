@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#if 1
+#if 0
 # define DEBUG_INVALID 1
 # define DEBUG_ARTIC
 #endif
@@ -160,8 +160,10 @@ uniter:
 	       /* we've found a fixed point */
 	       col = -col;
 	       to->colour = col;
-#if 1 /*0*/ /* FIXME: removing this solves Graham Mullen's problem, but breaks
-	     * loser/caves/136/136.svx */
+#if 0
+	       /* Removing this solves Graham Mullen's problem and makes more
+		* sense since it means we'll recheck this point for further
+		* legs. */
 #ifdef DEBUG_ARTIC
 	       printf("Putting FOUND FIXED stn ");
 	       print_prefix(to->name);
