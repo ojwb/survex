@@ -36,6 +36,7 @@
 #include <wx/confbase.h>
 
 #include <float.h>
+#include <functional>
 #include <stack>
 
 #ifdef HAVE_REGEX_H
@@ -201,7 +202,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_DEGREES, MainFrm::OnToggleDegreesUpdate)
 END_EVENT_TABLE()
 
-class LabelCmp {
+class LabelCmp : public greater<const LabelInfo*> {
     int separator;
 public:
     LabelCmp(int separator_) : separator(separator_) {}
@@ -210,7 +211,7 @@ public:
     }
 };
 
-class LabelPlotCmp {
+class LabelPlotCmp : public greater<const LabelInfo*> {
     int separator;
 public:
     LabelPlotCmp(int separator_) : separator(separator_) {}
