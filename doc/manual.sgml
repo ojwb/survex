@@ -16,6 +16,8 @@ FIXME todo:
 mark-up of Windows Windows NT etc?
 section on "design philosophy"
 
+updated surface mesh info to suggest *fix-ing points
+
 level sump fudge:
 
 *begin
@@ -87,8 +89,8 @@ where this isn't the case, let me know.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-08-15 12:23:39 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.42 2001-08-15 12:23:39 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-01 18:00:31 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.43 2001-09-01 18:00:31 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
