@@ -70,6 +70,7 @@ static bool fTilt;
 static bool fLabels = fFalse;
 static bool fCrosses = fFalse;
 static bool fShots = fTrue;
+static bool fSurface = fFalse;
 static bool fSkipBlank = fFalse;
 
 bool fNoBorder = fFalse;
@@ -252,9 +253,8 @@ draw_info_box(float num, float denom)
    sprintf(p, " %03d%s", rot, DEG);
    MOVEMM(5, 3); pr->WriteString(szTmp);
 
-   MOVEMM(102, 8); pr->WriteString("Survex "VERSION" ");
-   pr->WriteString(szDesc);
-   pr->WriteString(msg(/* Driver*/152));
+   sprintf(szTmp, "Survex "VERSION" %s %s", szDesc, msg(/*Driver*/152));
+   MOVEMM(102, 8); pr->WriteString(szTmp);
 
    /* This used to be a copyright line, but it was occasionally
     * mis-interpreted as us claiming copyright on the survey, so let's
@@ -574,6 +574,7 @@ main(int argc, char **argv)
       {"crosses", no_argument, 0, 'c'},
       {"no-border", no_argument, 0, 'B'},
       {"no-legs", no_argument, 0, 'l'},
+      {"surface", no_argument, 0, 'S'},
       {"skip-blanks", no_argument, 0, 'k'},
       {"help", no_argument, 0, HLP_HELP},
       {"version", no_argument, 0, HLP_VERSION},
@@ -594,7 +595,8 @@ main(int argc, char **argv)
       {HLP_ENCODELONG(6),       "display crosses at stations"},
       {HLP_ENCODELONG(7),       "turn off page border"},
       {HLP_ENCODELONG(8),       "turn off display of survey legs"},
-      {HLP_ENCODELONG(9),       "don't output blank pages"},
+      {HLP_ENCODELONG(9),       "turn on display of surface survey legs"},
+      {HLP_ENCODELONG(10),      "don't output blank pages"},
       {0, 0}
    };
 
@@ -616,6 +618,9 @@ main(int argc, char **argv)
 	 break;
        case 'B': /* Border */
 	 fNoBorder = 1;
+	 break;
+       case 'S': /* Surface */
+	 fSurface = 1;
 	 break;
        case 'l': /* legs */
 	 fShots = 0;
@@ -642,7 +647,7 @@ main(int argc, char **argv)
        case 's':
 	 if (!read_scale(optarg)) {
 	    /* FIXME complain? */
-	 }
+ }
 	 fInteractive = fFalse;
 	 break;
       }
@@ -650,8 +655,8 @@ main(int argc, char **argv)
 
    szDesc = pr->Name();
 
-   printf("Survex %s%s v"VERSION"\n  "COPYRIGHT_MSG"\n\n",
-          szDesc, msg(/* Driver*/152));
+   printf("Survex %s %s v"VERSION"\n  "COPYRIGHT_MSG"\n\n",
+          szDesc, msg(/*Driver*/152));
 
    fnm = argv[optind++];
 
@@ -689,8 +694,11 @@ main(int argc, char **argv)
       fh = fopenWithPthAndExt(pth_cfg, "myprint", EXT_INI, "rb", NULL);
       if (fh) *pfh++ = fh;
 #endif
-      fh = fopenWithPthAndExt(pth_cfg, "print", EXT_INI, "rb", NULL);
-      if (!fh) fatalerror(/*Couldn't open data file `%s'*/24, fnm);
+      fh = fopenWithPthAndExt(pth_cfg, "print", EXT_INI, "rb", NULL);      
+      if (!fh) {
+	 char *print_ini = add_ext("print", EXT_INI);
+	 fatalerror(/*Couldn't open data file `%s'*/24, print_ini);
+      }
       *pfh++ = fh;
       *pfh = NULL;
       pr->Init(fh_list, pth_cfg, &scX, &scY);

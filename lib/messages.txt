@@ -1213,13 +1213,13 @@ es:149 "Extensi&oacute;n Este-Oeste = %4.2fm (desde "
 it:149 "Estensione Est-Ovest = %4.2fm (da "
 #XXX 150, 151
 # As in "printer driver"
-en:152 " Driver"
-fr:152 " pilote"
-de:152 " Treiber"
-pt:152 " Driver"
-ca:152 " Driver"
-es:152 " Driver"
-it:152 " Driver"
+en:152 Driver
+fr:152 pilote
+de:152 Treiber
+pt:152 Driver
+ca:152 Driver
+es:152 Driver
+it:152 Driver
 #XXX 153
 en:154 Scale
 fr:154 &Eacute;chelle

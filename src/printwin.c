@@ -38,11 +38,7 @@
 #include "filelist.h"
 #include "debug.h" /* for BUG and ASSERT */
 #include "prcore.h"
-#include "ini.h"
 #include <windows.h>
-
-#define POINTS_PER_INCH 72.0f
-#define POINTS_PER_MM ((float)(POINTS_PER_INCH) / (MM_PER_INCH))
 
 static float MarginLeft, MarginRight, MarginTop, MarginBottom;
 static int fontsize, fontsize_labels;
@@ -84,16 +80,15 @@ device printer = {
    win_Quit
 };
 
-HDC pd; /* printer context */
+static HDC pd; /* printer context */
 
-int midtextheight; /*height of text*/
+static int midtextheight; /*height of text*/
 
-float scX,scY;
+static float scX, scY;
 
 static border clip;
 
 static long xpPageWidth, ypPageDepth;
-
 
 static const char *
 win_Name(void)
@@ -108,7 +103,7 @@ win_MoveTo(long x, long y)
 {
    x_t = x - clip.x_min;
    y_t = clip.y_max - y;
-   MoveToEx(pd,x_t,y_t,NULL);
+   MoveToEx(pd, x_t, y_t, NULL);
 }
 
 static void
@@ -116,57 +111,53 @@ win_DrawTo(long x, long y)
 {
    x_t = x - clip.x_min;
    y_t = clip.y_max - y;
-   LineTo(pd,x_t,y_t);
+   LineTo(pd, x_t, y_t);
 }
 
 static void
 win_DrawCross(long x, long y)
 {
-#define CS WIN_CROSS_SIZE
-#define CS2 (2 * WIN_CROSS_SIZE)
-  win_MoveTo(x-CS,y);
-  win_DrawTo(x+CS,y);
-  win_MoveTo(x,y-CS);
-  win_DrawTo(x,y+CS);
-  win_MoveTo(x,y);
-#undef CS
-#undef CS2
+   win_MoveTo(x - WIN_CROSS_SIZE, y);
+   win_DrawTo(x + WIN_CROSS_SIZE, y);
+   win_MoveTo(x, y - WIN_CROSS_SIZE);
+   win_DrawTo(x, y + WIN_CROSS_SIZE);
+   win_MoveTo(x, y);
 }
 
 
 static void
 win_WriteString(const char *s)
 {
-  TextOut(pd,x_t,y_t-midtextheight,s,strlen(s));
+   TextOut(pd, x_t, y_t - midtextheight, s, strlen(s));
 }
 
 static void
 win_DrawCircle(long x, long y, long r)
 {
-  x_t = x - clip.x_min;
-  y_t = clip.y_max - y;
-  Ellipse(pd,x_t - r, y_t - r,x_t + r, y_t + r);
+   x_t = x - clip.x_min;
+   y_t = clip.y_max - y;
+   Ellipse(pd, x_t - r, y_t - r, x_t + r, y_t + r);
 }
 
 
 static int
 win_Pre(int pagesToPrint, const char *title)
 {
-  PRINTDLGA psd = {0};
-  DOCINFO info = {0};
-  psd.lStructSize = 66;
-  psd.hwndOwner = NULL;
-  psd.hDevMode = NULL;
-  psd.hDevNames = NULL; 
-  psd.hDC = NULL;
-  psd.Flags = PD_RETURNDC + PD_RETURNDEFAULT;
-  psd.hInstance = NULL;
-  PrintDlgA(&psd);
-  pd = psd.hDC;
-  info.lpszDocName = title;
-  info.cbSize = sizeof(DOCINFO);
-  StartDoc(pd,&info);
-  return 1; /* only need 1 pass */
+   PRINTDLGA psd = {0};
+   DOCINFO info = {0};
+   psd.lStructSize = 66;
+   psd.hwndOwner = NULL;
+   psd.hDevMode = NULL;
+   psd.hDevNames = NULL; 
+   psd.hDC = NULL;
+   psd.Flags = PD_RETURNDC + PD_RETURNDEFAULT;
+   psd.hInstance = NULL;
+   PrintDlgA(&psd);
+   pd = psd.hDC;
+   info.lpszDocName = title;
+   info.cbSize = sizeof(DOCINFO);
+   StartDoc(pd, &info);
+   return 1; /* only need 1 pass */
 }
 
 static void
@@ -193,9 +184,9 @@ win_NewPage(int pg, int pass, int pagesX, int pagesY)
 static void
 win_ShowPage(const char *szPageDetails)
 {
-  win_MoveTo((long)(6 * scX) + clip.x_min,(long) (clip.y_min - (7 * scY)));
-  win_WriteString(szPageDetails);
-  EndPage(pd);
+   win_MoveTo((long)(6 * scX) + clip.x_min, clip.y_min - (long)(7 * scY));
+   win_WriteString(szPageDetails);
+   EndPage(pd);
 }
 
 /* Initialise HPGL/PS printer routines */
@@ -203,42 +194,42 @@ static void
 win_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
 {
    /* name and size of font to use for text */
-  TEXTMETRIC temp;
-  PRINTDLGA psd = {0};
-  psd.lStructSize = 66;
-  psd.hwndOwner = NULL;
-  psd.hDevMode = NULL;
-  psd.hDevNames = NULL; 
-  psd.hDC = NULL;
-  psd.Flags = PD_RETURNDC + PD_RETURNDEFAULT;
-  psd.hInstance = NULL;
-  PrintDlgA(&psd);
-  fontsize = 12;
+   TEXTMETRIC temp;
+   PRINTDLGA psd = {0};
+   psd.lStructSize = 66;
+   psd.hwndOwner = NULL;
+   psd.hDevMode = NULL;
+   psd.hDevNames = NULL; 
+   psd.hDC = NULL;
+   psd.Flags = PD_RETURNDC + PD_RETURNDEFAULT;
+   psd.hInstance = NULL;
+   PrintDlgA(&psd);
+   fontsize = 12;
   
-  PaperWidth = GetDeviceCaps(psd.hDC,HORZSIZE);
-  PaperDepth = GetDeviceCaps(psd.hDC,VERTSIZE);
-  xpPageWidth = GetDeviceCaps(psd.hDC,HORZRES);
-  ypPageDepth = GetDeviceCaps(psd.hDC,VERTRES);
-  MarginLeft = MarginBottom = 0;
-  MarginRight = PaperWidth;
-  MarginTop = PaperDepth;
-  LineWidth = 0;
-  scX = *pscX = xpPageWidth/PaperWidth;
-  scY = *pscY = ypPageDepth/PaperDepth;
-  xpPageWidth--;
-  ypPageDepth = ypPageDepth - (int)(10 * *pscY);
-  GetTextMetrics(psd.hDC,&temp);
-  midtextheight = temp.tmAscent;
-  DeleteDC(psd.hDC);
+   PaperWidth = GetDeviceCaps(psd.hDC, HORZSIZE);
+   PaperDepth = GetDeviceCaps(psd.hDC, VERTSIZE);
+   xpPageWidth = GetDeviceCaps(psd.hDC, HORZRES);
+   ypPageDepth = GetDeviceCaps(psd.hDC, VERTRES);
+   MarginLeft = MarginBottom = 0;
+   MarginRight = PaperWidth;
+   MarginTop = PaperDepth;
+   LineWidth = 0;
+   scX = *pscX = xpPageWidth / PaperWidth;
+   scY = *pscY = ypPageDepth / PaperDepth;
+   xpPageWidth--;
+   ypPageDepth = ypPageDepth - (int)(10 * *pscY);
+   GetTextMetrics(psd.hDC, &temp);
+   midtextheight = temp.tmAscent;
+   DeleteDC(psd.hDC);
   
    /* name and size of font to use for station labels (default to text font) */
-  fontname_labels = fontname;
-  fontsize_labels = fontsize;
+   fontname_labels = fontname;
+   fontsize_labels = fontsize;
 }
 
 static void
 win_Quit(void)
 {
-  EndDoc(pd);
-  DeleteDC(pd);
+   EndDoc(pd);
+   DeleteDC(pd);
 }
