@@ -6,9 +6,9 @@
 #ifndef CAVERN_H
 #define CAVERN_H
 
-/* the covariance code doesn't yet fully work - the problems are in
- * matrix.c I think */
-#define NO_COVARIANCES 1
+/* Using covariances increases the memory required somewhat - may be desirable
+ * to disable this for small memory machines */
+/*#define NO_COVARIANCES*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -226,10 +226,12 @@ extern bool fAscii;
 #if EXPLICIT_FIXED_FLAG
 # define pfx_fixed(N) ((N)->pos->fFixed)
 # define fix(S) (S)->name->pos->fFixed = (char)fTrue
+# define fixpos(P) (P)->fFixed = (char)fTrue
 # define unfix(S) (S)->name->pos->fFixed = (char)fFalse
 #else
 # define pfx_fixed(N) ((N)->pos->p[0] != UNFIXED_VAL)
 # define fix(S) NOP
+# define fixpos(P) NOP
 # define unfix(S) POS((S), 0) = UNFIXED_VAL
 #endif
 #define fixed(S) pfx_fixed((S)->name)
