@@ -23,6 +23,8 @@
 static ulong colour;
 
 /* list item visit */
+/* FIXME: we could pack min and dirn into one ulong which would still allow
+ * 2^30 stations.  Also we shouldn't malloc each and every LIV separately */
 typedef struct LIV { struct LIV *next; ulong min; uchar dirn; } liv;
 
 /* The goto iter/uniter avoids using recursion which could lead to stack
@@ -111,7 +113,6 @@ articulate(void)
 #ifdef DEBUG_ARTIC
    ulong cFixed;
 #endif
-   stn_tab = NULL; /* so we can just osfree it */
    /* find articulation points and components */
    cComponents = 0;
    colour = 0;
@@ -165,35 +166,17 @@ articulate(void)
 	       printf("visited %lu nodes\n", n);
 #endif
 	       if (n == 0) continue;
-	       osfree(stn_tab);
-
-	       /* we just need n to be a reasonable estimate >= the number
-		* of stations left after reduction. If memory is
-		* plentiful, we can be crass.
-		*/
-	       stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(prefix*)));
-	       
 	       /* Solve chunk of net from stn in dirn i up to stations
 		* with fArtic set or fixed() true - hmm fixed() test
 		* causes problems if an equated fixed point spans 2
 		* articulations.
-		* Then solve stations
-		* up to next set of fArtic points, and repeat until all
-		* this bit done.
+		* Then solve stations up to next set of fArtic points,
+		* and repeat until all this bit done.
 		*/
 	       stn->status = statFixed;
 	       stn2 = stn->leg[i]->l.to;
 more:
-	       /* FIXME: instead of calling visit_count in matrix.c just count
-		* unfixed stations in stnlist for the bit of network we're
-		* solving for and then fill table with these stations.
-		* We may be able to do further reductions before then too...
-		*/
-#if 0
-	       n_stn_tab = 0;
-	       visit_count(stn2, n);
-	       build_matrix(n_stn_tab, stn_tab);
-#endif
+	       solve_matrix(stnlist);
 	       FOR_EACH_STN(stn2, stnlist) {
 		  if (stn2->fArtic && fixed(stn2)) {
 		     int d;
@@ -232,7 +215,6 @@ more:
       }
       stnStart = stn;
    }
-   osfree(stn_tab);
 #ifdef DEBUG_ARTIC
    FOR_EACH_STN(stn, stnlist) { /* high-light unfixed bits */
       if (stn->status && !fixed(stn)) {
