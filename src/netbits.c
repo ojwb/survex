@@ -68,6 +68,7 @@ static void check_var(const var *v) {
    }
    if (!ok) return; /* ignore all-zero matrices */
 
+#if DEBUG_INVALID
    for (i = 0; i < 3; i++) {
       det += V(i, 0) * (V((i + 1) % 3, 1) * V((i + 2) % 3, 2) -
 			V((i + 1) % 3, 2) * V((i + 2) % 3, 1));
@@ -75,6 +76,7 @@ static void check_var(const var *v) {
 
    if (fabs(det) < THRESHOLD)
       printf("*** Singular!!!\n"), bad = 1;
+#endif
 
 #if 0
    if (fabs(V(0,1) - V(1,0)) > THRESHOLD ||

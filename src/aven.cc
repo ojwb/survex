@@ -1,7 +1,8 @@
 //
-//  Aven.cc
+//  Aven.cxx
 //
-//  A cave visualisation application for Survex.
+//  A cave visualisation application for use in conjunction with Survex and
+//  the GTK+ toolkit.
 //
 //  Copyright (C) 1999-2000, Mark R. Shinwell.
 //  Portions from Survex Copyright (C) Olly Betts and others.
@@ -20,15 +21,15 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // Vastly improved speed is obtained with this #defined...
 #define NASTY_SPEED_HACK
 
-#include "aven.h"
+// Gnome/X11 includes
+#include <X11/Xlib.h>
+#include <X11/extensions/Xdbe.h>
+#include <gnome--.h>
 
+// System includes
 #include <math.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -37,6 +38,13 @@
 extern "C" {
 // X-specific GTK+ interface
 #include <gdk/gdkx.h>
+
+// Survex stuff:
+#include "useful.h"
+#include "filename.h"
+#include "message.h"
+#include "caverot.h" // for LITTLE_MAGNIFY_FACTOR, etc
+#include "cvrotimg.h"    
 };
 
 #define STOP 0
@@ -52,16 +60,241 @@ static const char key_SLOW_DOWN = 'X';
 static const char key_PLAN = 'P';
 static const char key_ELEVATION = 'L';
 
-// Various constants:
-static const int WIDTH = 800;
-static const int HEIGHT = 600;
-static const double SPEED = 1.5;
-static const int SCREEN_WIDTH = 1024;
-static const double PIBY180 = 0.017453293;
-static const int SPLASH_STEPS = 10;
+// Forward declarations:
+static void Toolbar_Rotate(GtkWidget*, gpointer);
+static void Toolbar_Stop(GtkWidget*, gpointer);
+static void Toolbar_Reverse(GtkWidget*, gpointer);
+static void Toolbar_Slower(GtkWidget*, gpointer);
+static void Toolbar_Faster(GtkWidget*, gpointer);
+static void Toolbar_Plan(GtkWidget*, gpointer);
+static void Toolbar_Elevation(GtkWidget*, gpointer);
+static void Toolbar_About(GtkWidget*, gpointer);
+static void Toolbar_Quit(GtkWidget*, gpointer);
+
+// Toolbar description:
+static GnomeUIInfo TOOLBAR[] = {
+    //    GNOMEUIINFO_ITEM_STOCK("Open", "Open a new 3D file", Toolbar_Quit, GNOME_STOCK_PIXMAP_OPEN),
+    GNOMEUIINFO_ITEM_STOCK("Rotate", "Start the cave rotating", Toolbar_Rotate, GNOME_STOCK_PIXMAP_TIMER),
+    GNOMEUIINFO_ITEM_STOCK("Stop", "Stop the cave rotating", Toolbar_Stop, GNOME_STOCK_PIXMAP_STOP),
+    GNOMEUIINFO_ITEM_STOCK("Reverse", "Reverse the direction of rotation", Toolbar_Reverse, GNOME_STOCK_PIXMAP_REFRESH),
+    GNOMEUIINFO_ITEM_STOCK("Slower", "Rotate the cave slower", Toolbar_Slower, GNOME_STOCK_PIXMAP_UNDO),
+    GNOMEUIINFO_ITEM_STOCK("Faster", "Rotate the cave faster", Toolbar_Faster, GNOME_STOCK_PIXMAP_REDO),
+    GNOMEUIINFO_ITEM_STOCK("Plan", "Switch to top plan view", Toolbar_Plan, GNOME_STOCK_PIXMAP_DOWN),
+    GNOMEUIINFO_ITEM_STOCK("Elevation", "Switch to side elevation", Toolbar_Elevation, GNOME_STOCK_PIXMAP_FORWARD),
+    //    GNOMEUIINFO_ITEM_STOCK("Legs", "Toggle display of survey legs", Toolbar_Quit, GNOME_STOCK_PIXMAP_BOOK_RED),
+    //    GNOMEUIINFO_ITEM_STOCK("Labels", "Toggle display of station labels", Toolbar_Quit, GNOME_STOCK_PIXMAP_FONT),
+    //    GNOMEUIINFO_ITEM_STOCK("Defaults", "Restore default settings", Toolbar_Quit, GNOME_STOCK_PIXMAP_UNDO),
+    GNOMEUIINFO_ITEM_STOCK("About", "Display information about the application", Toolbar_About, GNOME_STOCK_PIXMAP_ABOUT),
+    GNOMEUIINFO_ITEM_STOCK("Quit", "Quit the application", Toolbar_Quit, GNOME_STOCK_PIXMAP_QUIT),
+    GNOMEUIINFO_END
+};
+
+#define WIDTH  800
+#define HEIGHT 600
+#define SPEED  1.5
+#define SCREEN_WIDTH 1024
+
+#define PIBY180 0.017453293
+
+#define NCOLS 11
+
+#define SPLASH_STEPS 10
+
+class Aven : public Gnome_App {
+    Gtk_DrawingArea m_Cave;
+    bool m_Moving;
+    bool m_Scaling;
+    int m_CurX;
+    int m_CurY;
+    int m_StartX;
+    int m_StartY;
+    int m_LastX;
+    int m_LastY;
+    GdkGC* m_LineGC;
+    int m_XSize;
+    int m_YSize;
+    GdkWindow* m_CaveWin;
+    float m_LastFactor;
+    float factor;
+    float m_Angle;
+    GdkPixmap* m_DrawPixmap;
+    bool m_Eleving;
+    bool m_Rotating;
+    float m_RotateAngle;
+    bool m_SwitchToPlan;
+    bool m_SwitchToElevation;
+    
+    lid* m_RawLegs[2];
+    lid* m_RawStns[2];
+    int m_NumLines[NCOLS];
+    XdbeBackBuffer m_BackBuf;
+
+    float elev_angle;
+
+    GdkColor black, red;
+    
+    struct _line {
+        coord* x0;
+        coord* y0;
+        coord* x1;
+        coord* y1;
+        coord* x0_orig;
+        coord* y0_orig;
+        coord* x1_orig;
+        coord* y1_orig;
+        coord* z0, *z1, *z0_orig, *z1_orig;
+        bool* ignore;
+        coord* px0, *py0, *pz0, *px1, *py1, *pz1;
+    };
+
+    _line m_Lines[NCOLS];
+    
+    bool m_ForceUseOrig;
+    
+    int total_xshift, total_yshift;
+    float sx, cx, fx, fy, fz;
+    float m_Scale, m_Scale2;
+    coord x_mid, y_mid, z_mid;
+    int m_CurOriginX, m_CurOriginY;
+    int m_RotationTrigOffset;
+    float z_col_scale;
+    bool m_WorkProcEnabled;
+    bool m_WorkProcStateBeforeDrag;
+    bool m_Splash;
+    int m_SplashStep;
+    Connection m_WorkProc;
+
+    Gtk_HBox m_StatusBar;
+    Gtk_Label m_HeadingLabel;
+    Gtk_Label m_LegsLabel;
+    Gtk_Label m_MouseLabel;
+
+    float m_AngleOrig;
+
+    GdkColor cols[NCOLS];
+    
+    double RotationAngleFromXOffset(int);
+    
+    void AllocColour(GdkColor*, float, float, float);
+
+public:
+    Aven(string name);
+    virtual ~Aven();
+    
+    bool Contributes(int x0, int y0, int x1, int y1,
+                     int clip_x0, int clip_y0, int clip_x1, int clip_y1);
+
+    void Open(void*);
+    
+    gint ExposeEvent(GdkEventExpose* event);
+    gint ButtonPressEvent(GdkEventButton* event);
+    gint ButtonReleaseEvent(GdkEventButton* event);
+    gint PointerMotionEvent(GdkEventMotion* event);
+    gint KeyPressEvent(GdkEventKey* event);
+    gint Idle();
+
+    void EnableWorkProc();
+    void DisableWorkProc();
+    
+    int toscreen_x(coord X, coord Y, coord Z, float scale=-1.0)
+    {
+       if (scale==-1.0) scale = m_Scale;
+       return int(((X - x_mid) * -cx + (Y - y_mid) * -sx) * scale);
+    }
+
+    int toscreen_y(coord X, coord Y, coord Z, float scale=-1.0)
+    {
+       if (scale==-1.0) scale = m_Scale;
+       int y= int(((X - x_mid) * fx + (Y - y_mid) * fy
+                      + (Z - z_mid) * fz) * scale);
+                       
+
+       return -y;
+    }
+    
+    void Draw(GdkPixmap* window, GdkGC* gc, int x0, int y0, int x1, int y1,
+              float scale,
+              int bx0, int by0, int bx1, int by1,
+              bool = false, coord = 0, coord = 0, coord = 0);
+
+    gint delete_event_impl();
+
+    void Rotate();
+    void Stop();
+    void Reverse();
+    void Plan();
+    void Elevation();
+    void Faster();
+    void Slower();
+};
+
+// Toolbar callbacks:
+
+static void Toolbar_Rotate(GtkWidget*, gpointer data)
+{
+    assert(data);
+    ((Aven*) data)->Rotate();
+}
+
+static void Toolbar_Stop(GtkWidget*, gpointer data)
+{
+    assert(data);
+    ((Aven*) data)->Stop();
+}
+
+static void Toolbar_Reverse(GtkWidget*, gpointer data)
+{
+    assert(data);
+    ((Aven*) data)->Reverse();
+}
+
+static void Toolbar_Faster(GtkWidget*, gpointer data)
+{
+    assert(data);
+    ((Aven*) data)->Faster();
+}
+
+static void Toolbar_Slower(GtkWidget*, gpointer data)
+{
+    assert(data);
+    ((Aven*) data)->Slower();
+}
+
+static void Toolbar_Plan(GtkWidget*, gpointer data)
+{
+    assert(data);
+    ((Aven*) data)->Plan();
+}
+
+static void Toolbar_Elevation(GtkWidget*, gpointer data)
+{
+    assert(data);
+    ((Aven*) data)->Elevation();
+}
+
+static void Toolbar_Quit(GtkWidget*, gpointer data)
+{
+    assert(data);
+    gtk_main_quit();
+}
+
+static void Toolbar_About(GtkWidget*, gpointer data)
+{
+    // this won't compile with my version of gnome-- - Olly
+#if 0
+    vector<string> authors;
+    Gnome_About* about = new Gnome_About("Aven", "1.0.0 development",
+					 "(c) Copyright 1999-2000, Mark R. Shinwell.",
+					 authors, "A cave visualisation application for Survex.");
+    about->set_position(GTK_WIN_POS_CENTER);
+    about->show();
+#endif
+}
+
+// Aven methods:
 
 Aven::Aven(string name) :
-    m_Eleving(false), m_Rotating(false), m_Splash(true), m_SplashStep(1),
+  Gnome_App("Aven", "Aven"), m_Eleving(false), m_Rotating(false), m_Splash(true), m_SplashStep(1),
     m_Moving(false), m_CurX(0), m_CurY(0), m_CaveWin(NULL), m_LastFactor(1.0),
     m_Scale2(1.0), m_RotateAngle(PI / 180.0),
     m_CurOriginX(0), m_CurOriginY(0), m_ForceUseOrig(false), m_Angle(0),
@@ -190,34 +423,51 @@ Aven::Aven(string name) :
 
     set_usize(WIDTH, HEIGHT);
     set_wmclass("Aven", "Aven");
-    string title = string("Aven - [") + name + string("]");
+    string title = string("Aven for Survex - [") + name + string("]");
     set_title(title.c_str());
+    
+    set_contents(m_Cave);
+    m_Cave.show();
 
-    add(m_Cave);
+    // Create the status bar.
+    m_StatusBar.set_usize(100, 20);
+    set_statusbar(m_StatusBar);
+    m_StatusBar.show();
+    m_StatusBar.pack_start(m_HeadingLabel, false, false);
+    m_HeadingLabel.set_text(" Heading: 000deg");
+    m_HeadingLabel.show();
+    m_StatusBar.pack_end(m_LegsLabel, false, false);
+    char buf[20];
+    sprintf(buf, "%d legs ", nl);
+    m_LegsLabel.set_text(buf);
+    m_LegsLabel.show();
+    m_StatusBar.pack_end(m_MouseLabel, false, false);
+    m_MouseLabel.set_text("Button 1: scale/rotate   Button 2: elevate   Button 3: pan   ");
+    m_MouseLabel.show();
+
+    // Create the toolbar.
+    create_toolbar_with_data(TOOLBAR, (gpointer) this);
 
     // Register event handlers.
-    m_Cave.expose_event.connect(slot(this, &Aven::ExposeEvent));
-    m_Cave.button_press_event.connect(slot(this, &Aven::ButtonPressEvent));
-    m_Cave.button_release_event.connect(slot(this, &Aven::ButtonReleaseEvent));
-    m_Cave.motion_notify_event.connect(slot(this, &Aven::PointerMotionEvent));
-    m_Cave.key_press_event.connect(slot(this, &Aven::KeyPressEvent));
+    connect_to_method(m_Cave.expose_event, this, &Aven::ExposeEvent);
+    connect_to_method(m_Cave.button_press_event, this, &Aven::ButtonPressEvent);
+    connect_to_method(m_Cave.button_release_event, this, &Aven::ButtonReleaseEvent);
+    connect_to_method(m_Cave.motion_notify_event, this, &Aven::PointerMotionEvent);
+    connect_to_method(key_press_event, this, &Aven::KeyPressEvent);
 
     AllocColour(&red, 1.0, 0.0, 0.0);
     AllocColour(&black, 0.0, 0.0, 0.0); 
 
-    float reds[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255};
-    float greens[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0};
-    float blues[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0};
-
-    for (int c = 0; c < NCOLS; c++) AllocColour(&cols[c], reds[c] / 255.0, greens[c] / 255.0,
-						blues[c] / 255.0);
+    float cpts[][NCOLS] = {{0.8, 0.0, 1.0}, {0.6, 0.0, 1.0}, {0.4, 0.0, 1.0},
+                           {0.2, 0.0, 1.0}, {0.0, 0.0, 1.0}, {0.0, 0.2, 1.0},
+                           {0.0, 0.4, 1.0}, {0.0, 0.7, 1.0}, {0.0, 1.0, 0.8},
+                           {0.0, 1.0, 0.4}, {0.0, 1.0, 0.0}};
+    for (int c = 0; c < NCOLS; c++) AllocColour(&cols[c], cpts[c][0],
+                                                cpts[c][1], cpts[c][2]);
 
     m_Cave.set_events(m_Cave.get_events() | GDK_BUTTON_PRESS_MASK |
-              GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK |
-	      GDK_EXPOSURE_MASK);
-    set_events(get_events() | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_EXPOSURE_MASK);
-
-
+              GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
+    set_events(get_events() | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 
     EnableWorkProc();
 }
@@ -239,7 +489,7 @@ void Aven::EnableWorkProc()
 {
     if (!m_WorkProcEnabled) {
         // Register the periodic timeout handler.
-        m_WorkProc = Gtk::Main::timeout.connect(slot(this, &Aven::Idle), 100);
+        m_WorkProc = connect_to_method(Gtk_Main::timeout(100), this, &Aven::Idle);
 
         m_WorkProcEnabled = true;
     }
@@ -774,11 +1024,11 @@ int main(int argc, char* argv[])
     
     set_codes(MOVE, DRAW, STOP);
    
-    Gtk::Main m(argc, argv);
+    Gnome_Main m("Aven", "Aven", argc, argv);
     
     gdk_set_use_xshm(true);
     
     Aven* win = new Aven(string(argv[1]));
-    win->show_all();
+    win->show();
     m.run();
 }
