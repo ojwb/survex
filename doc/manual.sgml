@@ -14,13 +14,12 @@
 <!--
 FIXME todo:
 mark-up of Windows Windows NT etc?
-update size of Austria data, speeds to a modern benchmark?
 section on "design philosophy"
 -->
 
 <Article Status="draft" id=index>
  <ArtHeader>
-  <Title>&survexsuite; 0.91 Documentation</Title>
+  <Title>&survexsuite; 0.95 Documentation</Title>
   <AuthorGroup>
    <Author>
     <FirstName/Olly/
@@ -46,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2000-03-08 01:20:11 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.14 2000-03-08 01:20:11 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2000-08-21 22:23:19 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.15 2000-08-21 22:23:19 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -333,9 +332,10 @@ these in case they are of use to someone.
 
 <Sect2><Title>Language</Title>
 
-<Para>The Language used for messages in &survexsuite; can be specified
-using the <systemitem>SURVEXLANG</systemitem> environment
-variable. The default language is International English.</Para>
+<Para>The language used for messages in &survexsuite; can be specified using
+the <systemitem>SURVEXLANG</systemitem> environment variable. If this is not
+set, then the <systemitem>LANG</systemitem> environment variable is checked.
+The default language is International English.</Para>
 
 <Para>The codes used are those specified in ISO639 - those currently
 supported are:</Para>
@@ -438,20 +438,11 @@ output version information and exit
 
 </VariableList>
 
-<Para> <!-- FIXME: -->
-
-(Actually this isn't quite true yet - caverot, diffpos, extend, and xcaverot
-haven't yet been converted to support these options - they will before
-Survex 1.0.  The HTO filters svx2hto and hto2svx don't either, but they are
-likely to be replaced fairly soon.  And finally the "survex" compatibility
-wrapper doesn't, since it's intended to convert the old syntax to the new).
-</Para>
-
 <Para>Note that command line options are case sensitive, so "-B" and "-b"
 are different (this didn't used to be the case before Survex 0.90).  Case
 sensitivity doubles the number of available short options (and is also the
 norm on &unix;).  &msdos; doesn't have a firm convention - some programs
-treat options as case sensitive, while others don't.
+treat options as case sensitive while others don't.
 </Para>
 </Sect2>
 
@@ -1674,11 +1665,15 @@ disagree, you can always use one of the other methods!
 
 </Sect3>
 
-<Sect3><Title>FIX &lt;Station&gt; [ &lt;x&gt; &lt;y&gt; &lt;z&gt; [&lt;x
-std err&gt; &lt;y std err&gt; &lt;z std err&gt;] ]</Title>
+<Sect3><Title>FIX &lt;Station&gt; [REFERENCE] [ &lt;x&gt; &lt;y&gt; &lt;z&gt;
+[&lt;x std err&gt; &lt;y std err&gt; &lt;z std err&gt;] ]</Title>
 
 <Para>
 e.g. *fix entrance.0 32768 86723 1760
+</Para>
+
+<Para>
+e.g. *fix KT114_96 reference 36670.37 83317.43 1903.97
 </Para>
 
 <Para>
@@ -1686,14 +1681,21 @@ e.g. *fix entrance.0 32768 86723 1760
 </Para>
 
 <Para>
-[Std errs not yet implemented]
-</Para>
-
-<Para>
-- Fixes the position of &lt;Station&gt; at the given coordinates.
+FIX fixes the position of &lt;Station&gt; at the given coordinates.
 If the position is omitted it defaults to (0,0,0). The standard
 errors default to zero (fix station exactly). cavern will complain
 if you attempt to fix the same survey station twice.
+</Para>
+
+<Para>
+You can also specify just one standard error (in which case it is assumed
+equal in X, Y, and Z) or two (in which case the first is taken as the
+standard error in X and Y, and the second as the standard error in Z).
+</Para>
+
+<Para>By default cavern will warn about station which have been FIX-ed but
+not used otherwise.  Specify "REFERENCE" after the station name in the FIX
+command to suppress this warning for a particular station.
 </Para>
 
 </Sect3>
