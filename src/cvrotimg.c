@@ -71,7 +71,7 @@ extern bool
 load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
 	  point Huge **ppStns)
 {
-   img_point pt;
+   img_point mv, pt;
    int result;
    img *pimg;
 
@@ -161,7 +161,6 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
 	  p, p_end, c_leg, c_legs, c_sleg, c_slegs, c_stn, c_stns);
 #endif
    do {
-      img_point mv;
       result = img_read_item(pimg, &pt);
       switch (result) {
        case img_MOVE:
