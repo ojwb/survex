@@ -755,7 +755,6 @@ void GLACanvas::DrawRectangle(gla_colour edge, gla_colour fill,
     // (x0, y0) specify the bottom-left corner of the rectangle and (w, h) the
     // size.
 
-    EnableSmoothPolygons();
     SetColour(fill);
     BeginQuadrilaterals();
     PlaceIndicatorVertex(x0, y0);
@@ -763,7 +762,6 @@ void GLACanvas::DrawRectangle(gla_colour edge, gla_colour fill,
     PlaceIndicatorVertex(x0 + w, y0 + h);
     PlaceIndicatorVertex(x0, y0 + h);
     EndQuadrilaterals();
-    DisableSmoothPolygons();
 
     if (edge != fill) {
         SetColour(edge);
@@ -785,7 +783,7 @@ GLACanvas::DrawShadedRectangle(const GLAPen & fill_bot, const GLAPen & fill_top,
     // (x0, y0) specify the bottom-left corner of the rectangle and (w, h) the
     // size.
 
-    EnableSmoothPolygons();
+    glShadeModel(GL_SMOOTH);
     BeginQuadrilaterals();
     SetColour(fill_bot);
     PlaceIndicatorVertex(x0, y0);
@@ -794,7 +792,7 @@ GLACanvas::DrawShadedRectangle(const GLAPen & fill_bot, const GLAPen & fill_top,
     PlaceIndicatorVertex(x0 + w, y0 + h);
     PlaceIndicatorVertex(x0, y0 + h);
     EndQuadrilaterals();
-    DisableSmoothPolygons();
+    glShadeModel(GL_FLAT);
 }
 
 void GLACanvas::DrawCircle(gla_colour edge, gla_colour fill,
