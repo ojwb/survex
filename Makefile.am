@@ -216,7 +216,7 @@ riscos_zip :
 	mkdir riscos_tmp
 	ln -s ../README.ros riscos_tmp/\!ReadMe,fff
 	# "cp -r riscos_extras riscos_tmp" but avoid CVS directories
-	cd riscos_extras; tar --exclude CVS -cf - . | (cd ../riscos_tmp ; tar xf)	
+	cd riscos_extras; tar --exclude CVS -cf - . | (cd ../riscos_tmp ; tar xf -)
 	cp -r riscos_extras/\!* riscos_tmp
 	for f in $(base_progs) caverot ; do\
 	 ln -s ../../riscos_exes/$$f riscos_tmp/\!Cavern/$$f,ff8 ; done
