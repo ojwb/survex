@@ -41,12 +41,15 @@ extern "C" {
 
 // Survex stuff:
 #include "useful.h"
-#include "img.h"
 #include "filename.h"
 #include "message.h"
-#include "caverot.h"
-#include "cvrotimg.h"
+#include "caverot.h" // for LITTLE_MAGNIFY_FACTOR, etc
+#include "cvrotimg.h"    
 };
+
+#define STOP 0
+#define MOVE 1
+#define DRAW 2
 
 // Key bindings:
 static const char key_ROTATION_1 = ' ';
@@ -90,9 +93,6 @@ static GnomeUIInfo TOOLBAR[] = {
 #define HEIGHT 600
 #define SPEED  1.5
 #define SCREEN_WIDTH 1024
-
-int xcMac = WIDTH, ycMac = HEIGHT;
-float y_stretch = 1.0;
 
 #define PIBY180 0.017453293
 
@@ -323,7 +323,7 @@ Aven::Aven(string name) :
         ptr = ptr->next;
     }
 
-    m_Scale = scale_to_screen(m_RawLegs, m_RawStns) * 1.5;
+    m_Scale = scale_to_screen(m_RawLegs, m_RawStns, WIDTH, HEIGHT, 1.0) * 1.5;
     m_Scale /= pow(1.5, SPLASH_STEPS);
 
     z_col_scale = ((float) (NCOLS - 1)) / (2 * Zrad);
@@ -1022,6 +1022,8 @@ int main(int argc, char* argv[])
         return 1;
     }
     
+    set_codes(MOVE, DRAW, STOP);
+   
     Gnome_Main m("Aven", "Aven", argc, argv);
     
     gdk_set_use_xshm(true);
