@@ -26,6 +26,7 @@
 #include <float.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 
 #include "cmdline.h"
 #include "filename.h"
@@ -180,14 +181,14 @@ cmdline_set_syntax_message(const char *args, const char *extra)
 int
 cmdline_int_arg(void)
 {
-   int result;
+   long result;
    char *endptr;
    
    errno = 0;
 
    result = strtol(optarg, &endptr, 10);
 
-   if (errno == ERANGE) {
+   if (errno == ERANGE || result > INT_MAX || result < INT_MIN) {
       fprintf(stderr, "%s: numeric argument `%s' out of range\n", argv0, optarg);
       cmdline_syntax();
       exit(1);
@@ -197,7 +198,7 @@ cmdline_int_arg(void)
       exit(1);
    }
    
-   return result;
+   return (int)result;
 }
 
 double
