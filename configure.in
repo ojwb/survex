@@ -47,8 +47,8 @@ esac])
 
 if test -n "$AVEN" ; then
   AC_PROG_CXX
-  dnl aclocal from automake 1.4 doesn't like next line:
-  AM_DEPENDENCIES(CXX)
+  dnl aclocal from automake 1.4 or 1.5 doesn't like next line:
+#  AM_DEPENDENCIES(CXX)
   AC_PROG_CXXCPP
 fi
 

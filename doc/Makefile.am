@@ -13,7 +13,7 @@ other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
 # !;s!\([A-Za-z0-9][A-Za-z0-9_]*\)!\\fI\1\\fR!g;s!\\fI!!;s!\\fR!!'
 
 manual_sources = manual.sgml cad3d.sgml cavern.sgml caverot.sgml\
- diffpos.sgml extend.sgml\
+ diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml xcaverot.sgml\
  printdm.sgml printhpgl.sgml printpcl.sgml printps.sgml printwin.sgml
 
 # People can build from CVS without sgmltools v2 or v3 installed but they
@@ -24,8 +24,9 @@ EXTRA_DIST = manual $(doclist) survex.1.in index.htm.in\
  custom.dsl survex.ent\
  caution.png note.png\
  $(manual_sources)\
- man_cad3d.sgml man_cavern.sgml man_caverot.sgml man_diffpos.sgml\
- man_extend.sgml man_printps.sgml
+ man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
+ man_diffpos.sgml man_extend.sgml man_sorterr.sgml man_xcaverot.sgml\
+ man_printdm.sgml man_printhpgl.sgml man_printpcl.sgml man_printps.sgml
 
 ChngeLog.htm: ../ChangeLog
 	./cl2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../ChangeLog > ChngeLog.htm
@@ -85,37 +86,33 @@ xcaverot.1: xcaverot.sgml man_xcaverot.sgml survex.ent
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual; \
-	if test -d "$(srcdir)/manual" ; then \
+	if test -d manual ; then \
+	  for p in manual/*.htm manual/*.png ; do \
+	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
+	  done \
+	elif test -d "$(srcdir)/manual" ; then \
 	  for p in $(srcdir)/manual/*.htm $(srcdir)/manual/*.png ; do \
 	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
 	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
 	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
 	  done \
-	else \
-	  if test -d manual ; then \
-	    for p in manual/*.htm manual/*.png ; do \
-	      f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
-	      echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
-	      $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
-	    done \
-	  fi \
 	fi
 
 uninstall-local:
-	if test -d "$(srcdir)/manual" ; then \
-	  for p in $(srcdir)/manual/*.htm $(srcdir)/manual/*.png ; do
+	if test -d manual ; then \
+	  for p in manual/*.htm manual/*.png ; do \
 	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
 	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
 	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
 	  done \
-	else \
-	  if test -d manual ; then \
-	    for p in manual/*.htm manual/*.png ; do \
-	      f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
-	      echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
-	      rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
-	    done \
-	  fi \
+	elif test -d "$(srcdir)/manual" ; then \
+	  for p in $(srcdir)/manual/*.htm $(srcdir)/manual/*.png ; do \
+	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
+	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
+	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
+	  done \
 	fi
 	-rmdir $(DESTDIR)$(pkgdocdir)/manual
 

@@ -8,10 +8,12 @@ testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 # force VERBOSE if we're run on a subset of tests
 test -n "$*" && VERBOSE=1
 
+test -x "$testdir"/../src/cavern || testdir=.
+
 : ${CAVERN="$testdir"/../src/cavern}
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
-SURVEXHOME="$testdir"/../lib
+SURVEXHOME="$srcdir"/../lib
 export SURVEXHOME
 
 : ${TESTS=${*-"singlefix singlereffix oneleg midpoint noose cross firststn\
@@ -140,50 +142,50 @@ for file in $TESTS ; do
 
   if test x"$file" != x ; then
     echo $file
-    rm -f "$testdir"/tmp.*
+    rm -f tmp.*
     if test -n "$VERBOSE" ; then
       if test x"$pos" = xfail ; then
-        $CAVERN $srcdir/$file.svx --output="$testdir"/tmp
+        $CAVERN $srcdir/$file.svx --output=tmp
 	# success gives 0, signal (128 + <signal number>)
 	test $? = 1 || exit 1
       else
-        $CAVERN $srcdir/$file.svx --output="$testdir"/tmp || exit 1
+        $CAVERN $srcdir/$file.svx --output=tmp || exit 1
       fi
     else
       if test x"$pos" = xfail ; then
-        $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > "$testdir"/tmp.out
+        $CAVERN $srcdir/$file.svx --output=tmp > tmp.out
 	# success gives 0, signal (128 + <signal number>)
 	test $? = 1 || exit 1
       else
-        $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > "$testdir"/tmp.out || exit 1
+        $CAVERN $srcdir/$file.svx --output=tmp > tmp.out || exit 1
       fi
     fi
     if test -n "$warn" ; then
-      test -f "$testdir"/tmp.out || $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > "$testdir"/tmp.out
-      w=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*\([0-9]*\).*/\1/' "$testdir"/tmp.out`
+      test -f tmp.out || $CAVERN $srcdir/$file.svx --output=tmp > tmp.out
+      w=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*\([0-9]*\).*/\1/' tmp.out`
       test x"$w" = x"$warn" || exit 1
     fi
     if test -n "$error" ; then
-      test -f "$testdir"/tmp.out || $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > "$testdir"/tmp.out
-      e=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*[0-9][0-9]*[^0-9][^0-9]*\([0-9][0-9]*\).*/\1/;s/\(.*[^0-9].*\)/0/' "$testdir"/tmp.out`
+      test -f tmp.out || $CAVERN $srcdir/$file.svx --output=tmp > tmp.out
+      e=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*[0-9][0-9]*[^0-9][^0-9]*\([0-9][0-9]*\).*/\1/;s/\(.*[^0-9].*\)/0/' tmp.out`
       test x"$e" = x"$error" || exit 1
     fi
 
     case "$pos" in
     yes)
       if test -n "$VERBOSE" ; then
-        $DIFFPOS "$testdir"/tmp.3d $srcdir/$file.pos || exit 1
+        $DIFFPOS tmp.3d $srcdir/$file.pos || exit 1
       else
-        $DIFFPOS "$testdir"/tmp.3d $srcdir/$file.pos > /dev/null || exit 1
+        $DIFFPOS tmp.3d $srcdir/$file.pos > /dev/null || exit 1
       fi ;;
     no)
-      test -f "$testdir"/tmp.3d || exit 1 ;;
+      test -f tmp.3d || exit 1 ;;
     fail)
-      test -f "$testdir"/tmp.3d && exit 1 ;;
+      test -f tmp.3d && exit 1 ;;
     *)
       echo "Bad value for pos" ; exit 1 ;;
     esac
-    rm -f "$testdir"/tmp.*
+    rm -f tmp.*
   fi
 done
 exit 0

@@ -8,10 +8,12 @@ testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 # force VERBOSE if we're run on a subset of tests
 test -n "$*" && VERBOSE=1
 
+test -x "$testdir"/../src/cavern || testdir=.
+
 : ${DIFFPOS="$testdir"/../src/diffpos}
 : ${TDTOPOS="$testdir"/../src/3dtopos}
 
-SURVEXHOME=$srcdir/../lib
+SURVEXHOME="$srcdir"/../lib
 export SURVEXHOME
 
 : ${TESTS=${*-"pos v0 v1 v2 v3"}}
@@ -23,13 +25,13 @@ for file in $TESTS ; do
   else
     file="$file".3d
   fi
-  rm -f "$testdir"/tmp.pos "$testdir"/diffpos.tmp
-  $TDTOPOS $srcdir/$file "$testdir"/tmp.pos || exit 1
-  $DIFFPOS $srcdir/$file "$testdir"/tmp.pos > "$testdir"/diffpos.tmp
+  rm -f tmp.pos diffpos.tmp
+  $TDTOPOS $srcdir/$file tmp.pos || exit 1
+  $DIFFPOS $srcdir/$file tmp.pos > diffpos.tmp
   if test -n "$VERBOSE" ; then
-    cat "$testdir"/diffpos.tmp
+    cat diffpos.tmp
   fi
-  test -s "$testdir"/diffpos.tmp && exit 1
-  rm -f "$testdir"/tmp.pos "$testdir"/diffpos.tmp
+  test -s diffpos.tmp && exit 1
+  rm -f tmp.pos diffpos.tmp
 done
 exit 0

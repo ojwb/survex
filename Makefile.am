@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 # We aim to be GNU compliant, but some required files are generated
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = 1.5 foreign
 
 RELEASE = 2
 
@@ -43,7 +43,6 @@ rpm : dist
 	echo Version: ${VERSION} >> ${spec}
 	echo Release: ${RELEASE} >> ${spec}
 	echo Copyright: GPL >> ${spec}
-	#echo Group: Applications/Engineering >> ${spec}
 	echo Group: Applications/Misc >> ${spec}
 	echo Source: http://www.survex.com/software/${PACKAGE}-${VERSION}.tar.gz >> ${spec}
 	echo URL: http://www.survex.com/ >> ${spec}
@@ -86,19 +85,19 @@ rpm : dist
 	echo %files aven >> ${spec}
 	echo "%defattr(-,root,root)" >> ${spec}
 	echo /usr/bin/aven >> ${spec}
-	#
+	: #
 	echo %_topdir `pwd` > rpmmacros
 	echo %_rpmdir `pwd` >> rpmmacros
 	echo %_sourcedir `pwd` >> rpmmacros
 	echo %_specdir `pwd` >> rpmmacros
 	echo %_srcrpmdir `pwd` >> rpmmacros
 	echo %_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm >> rpmmacros
-	#
+	: #
 	echo macrofiles : `rpm --showrc | sed 's/^macrofiles\> *: //p;d'`:`pwd`/rpmmacros > rpmrc
-	#
+	: #
 	rm -rf BUILD
 	mkdir BUILD
-	#
+	: #
 	if test -f /usr/lib/rpm/rpmrc ; then \
 	  rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc ${spec} ; \
 	else \
@@ -122,8 +121,8 @@ debian : dist
 	echo Priority: optional >> ${debct}
 	echo "Maintainer: Wookey <wookey@survex.com>" >> ${debct}
 	echo Standards-Version: 3.1.0 >> ${debct}
-	# Need debhelper >= 1.1.17 for DH_OPTIONS to work.
-	echo 'Build-Depends: debhelper (>= 1.1.17), libwxgtk2.2-dev, sgmltools-lite' >> ${debct}
+	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
+	echo 'Build-Depends: debhelper (>= 1.1.17), libwxgtk2.2-dev, sgmltools-lite, docbook-to-man' >> ${debct}
 	echo >> ${debct}
 	echo Package: ${PACKAGE} >> ${debct}
 	echo Architecture: any >> ${debct}
@@ -137,7 +136,7 @@ debian : dist
 	echo 'Depends: survex (= @VERSION@.$(RELEASE)), $${shlibs:Depends}' >> ${debct}
 	echo Description: Sophisticated cave survey viewer for Survex >> ${debct}
 	sed 's/^/ /' < desc-aven.txt >> ${debct}	
-	# -us and -uc mean don't sign packages
+	: # -us and -uc mean don't sign packages
 	cd deb/${PACKAGE}-${VERSION} && debuild -us -uc
 	mv deb/*.deb deb/*.dsc deb/*.changes deb/*.gz .
 	rm -rf deb
@@ -146,7 +145,7 @@ dostxt :
 	$(RM) -rf dostxt_tmp	
 	mkdir dostxt_tmp
 	for a in $(extra_text) ; do ln -s ../$$a dostxt_tmp/$$a.txt ; done
-	# rename to 8.3
+	: # rename to 8.3
 	mv dostxt_tmp/ChangeLog.txt dostxt_tmp/Changes.txt
 
 djgpp : all djgpp_zip
@@ -168,7 +167,7 @@ djgpp_zip : dostxt
 	 djgpp_extras/cwsdpmi.exe djgpp_extras/emu387.dxe
 	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
 	ln -s ../README dostxt_tmp/README.txt
-	# -l means convert LF to CR+LF
+	: # -l means convert LF to CR+LF
 	zip -j -l ../$(djgpp_zip_name) dostxt_tmp/*.txt
 	cd doc;zip -r -l ../$(djgpp_zip_name) manual $(HTMLFILES)
 	zip -j -l $(djgpp_zip_name) $(extra_txt)
@@ -185,7 +184,7 @@ mingw_zip_name = survex-win32-@VERSION@.zip
 mingw_zip : dostxt mingwexes
 	$(RM) $(mingw_zip_name)
 	zip -j $(mingw_zip_name) mingw_exes/*.exe $(extra_bin)
-	# -l means convert LF to CR+LF
+	: # -l means convert LF to CR+LF
 	zip -j -l $(mingw_zip_name) dostxt_tmp/*.txt $(extra_txt) survex.iss
 	$(RM) -rf dostxt_tmp
 
@@ -194,13 +193,13 @@ mingw_iss : dostxt mingwexes
 	mkdir iss_tmp
 	cp dostxt_tmp/*.txt $(extra_txt) survex.iss iss_tmp
 	cd doc;cp $(HTMLFILES) ../iss_tmp
-	# convert LF to CR+LF
+	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
 	cp mingw_extras/*.ico lib/icons/*.png iss_tmp
 	cp /opt/rx-win32/bin/librx.dll iss_tmp
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual
-	# convert LF to CR+LF
+	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
 	$(RM) -rf dostxt_tmp
@@ -225,7 +224,7 @@ borlandc_zip : dostxt
 	zip -j $(bc_zip_name) bc_exes/*.exe $(extra_bin) bc_extras/*.bgi
 	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
 	ln -s ../README dostxt_tmp/README.txt
-	# -l means convert LF to CR+LF
+	: # -l means convert LF to CR+LF
 	zip -j -l $(bc_zip_name) dostxt_tmp/*.txt $(extra_txt)
 	cd doc;zip -l -r ../$(bc_zip_name) manual $(HTMLFILES)
 	$(RM) -rf dostxt_tmp
@@ -234,12 +233,12 @@ riscos_zip_name = survex-riscos-@VERSION@.zip
 
 riscos_zip :
 	$(RM) $(riscos_zip_name)
-	# needs a zip with Darren Salt's patches, which'll hopefully be merged
-	# into the mainstream distribution in future
+	: # needs a zip with Darren Salt's patches, which'll hopefully be merged
+	: # into the mainstream distribution in future
 	$(RM) -rf riscos_tmp
 	mkdir riscos_tmp
 	ln -s ../README.ros riscos_tmp/\!ReadMe,fff
-	# "cp -r riscos_extras riscos_tmp" but avoid CVS directories
+	: # "cp -r riscos_extras riscos_tmp" but avoid CVS directories
 	cd riscos_extras; tar --exclude CVS -cf - . | (cd ../riscos_tmp ; tar xf -)
 	cp -r riscos_extras/\!* riscos_tmp
 	for f in $(base_progs) caverot ; do\
@@ -265,7 +264,7 @@ riscos_zip :
 	mkdir riscos_tmp/manual
 	cd doc && for f in manual/*.htm ; do\
 	 ln -s ../../doc/$$f ../riscos_tmp/$$f,faf ; done
-	# -R doesn't seem to work here, so just glob it all in
+	: # -R doesn't seem to work here, so just glob it all in
 	cd riscos_tmp && ../zip-magic -N ../$(riscos_zip_name) * */* */*/*
 	$(RM) -rf riscos_tmp
 
@@ -311,7 +310,7 @@ dos_doc_exe : dos_doc_zip
 
 dos_doc_zip :
 	$(RM) $(dos_doc_zip_name)
-	# -l means convert LF to CR+LF
+	: # -l means convert LF to CR+LF
 	cd doc && zip -l ../$(dos_doc_zip_name) $(MANUAL)
 
 riscos_doc_zip_name = svxdoc-riscos-@VERSION@.zip

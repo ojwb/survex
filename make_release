@@ -46,10 +46,8 @@ if ! ./configure ; then
    echo configure failed
    exit 1
 fi
-# make distcheck fails - cvs version of automake doesn't clean up all the
-# files it creates... (FIXME: change to distcheck once automake fixed)
-if ! make dist ; then
-   echo make dist failed
+if ! make distcheck ; then
+   echo make distcheck failed
    exit 1
 fi
 if test x"$rel" = xyes && expr "$mk" : '.*\<rpm\>' || test x"$mk" = xrpm ; then
