@@ -29,7 +29,8 @@
 #include "gfxcore.h"
 #include <wx/confbase.h>
 
-static const int DISPLAY_SHIFT = 50;
+const int DISPLAY_SHIFT = 10;
+const double FLYFREE_SHIFT = 0.5;
 
 GUIControl::GUIControl()
 {
@@ -84,7 +85,7 @@ void GUIControl::HandleTranslate(wxPoint point)
 #ifndef FLYFREE
     m_View->TranslateCave(dx, dy);
 #else
-    m_View->MoveViewer(0, dy, dx);
+    m_View->MoveViewer(0, -dy, dx);
 #endif
     m_DragStart = point;
 }
@@ -613,7 +614,7 @@ void GUIControl::OnShiftDisplayDown(bool accel)
 #ifndef FLYFREE
     m_View->TranslateCave(0, accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT);
 #else
-    m_View->MoveViewer(0, accel ? -5.0 : -1.0, 0);
+    m_View->MoveViewer(0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT, 0);
 #endif
 }
 
@@ -627,7 +628,7 @@ void GUIControl::OnShiftDisplayLeft(bool accel)
 #ifndef FLYFREE
     m_View->TranslateCave(accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT, 0);
 #else
-    m_View->MoveViewer(0, 0, accel ? -5.0 : -1.0);
+    m_View->MoveViewer(0, 0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT);
 #endif
 }
 
@@ -641,7 +642,7 @@ void GUIControl::OnShiftDisplayRight(bool accel)
 #ifndef FLYFREE
     m_View->TranslateCave(accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT, 0);
 #else
-    m_View->MoveViewer(0, 0, accel ? 5.0 : 1.0);
+    m_View->MoveViewer(0, 0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT);
 #endif
 }
 
@@ -655,7 +656,7 @@ void GUIControl::OnShiftDisplayUp(bool accel)
 #ifndef FLYFREE
     m_View->TranslateCave(0, accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT);
 #else
-    m_View->MoveViewer(0, accel ? 5.0 : 1.0, 0);
+    m_View->MoveViewer(0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT, 0);
 #endif
 }
 
@@ -672,7 +673,7 @@ void GUIControl::OnZoomIn(bool accel)
     m_View->SetScale(m_View->GetScale() * (accel ? 1.1236 : 1.06));
     m_View->ForceRefresh();
 #else
-    m_View->MoveViewer(accel ? 5.0 : 1.0, 0, 0);
+    m_View->MoveViewer(accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT, 0, 0);
 #endif
 }
 
@@ -689,7 +690,7 @@ void GUIControl::OnZoomOut(bool accel)
     m_View->SetScale(m_View->GetScale() / (accel ? 1.1236 : 1.06));
     m_View->ForceRefresh();
 #else
-    m_View->MoveViewer(accel ? -5.0 : -1.0, 0, 0);
+    m_View->MoveViewer(accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT, 0, 0);
 #endif
 }
 
