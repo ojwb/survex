@@ -3,6 +3,7 @@ Makefile
 Makefile.in
 aclocal.m4
 autom4te.cache
+compile
 config.cache
 config.h
 config.h.in
@@ -11,6 +12,7 @@ config.status
 configure
 config.guess
 config.sub
+depcomp
 bc_exes
 djgpp_exes
 mingw_exes
