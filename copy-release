@@ -1,0 +1,32 @@
+#!/bin/sh
+
+VER=`sed 's/^AM_INIT_AUTOMAKE(.*, * \([0-9][0-9\.]*\)).*/\1/p;d' configure.in`
+REL=`sed 's/^RELEASE *= *\([0-9][0-9]*\).*/\1/p;d' configure.in`
+
+VRR=$VER-$REL
+VRD=$VER.$REL
+VRP=$VER
+
+FILES="survex-$VRR.i386.rpm survex-aven-$VRR.i386.rpm survex-$VRR.src.rpm\
+ survex_${VRD}_i386.deb survex-aven_${VRD}_i386.deb\
+ survex-$VER.tar.gz survex-dos-$VER.exe survex-win32-$VER.exe\
+ svxdoc-doswin-$VER.exe svxdoc-riscos-$VER.zip"
+
+for a in survex-riscos-$VER.zip survex-dos286-$VER.zip; do
+   if test -f $a ; then
+      FILES="$FILES $a"
+   fi
+done
+
+WEBDIR="software/$VRP"
+DIR="/export/survex/www/$WEBDIR"
+mkdir $DIR
+for a in $FILES ; do
+   cp $a $DIR/
+done
+
+DIR="/export/survex/www/docs"
+mkdir $DIR.tmp
+cp -a doc/manual{,.{sgml,ps,txt,rtf}} $DIR.tmp
+mv $DIR $DIR.old && mv $DIR.tmp $DIR
+rm -rf $DIR.old
