@@ -208,16 +208,6 @@ void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
     SetViewportAndProjection();
     SetDataTransform();
 
-    GLdouble modelview_matrix[16];
-    GLdouble projection_matrix[16];
-    GLint viewport[4];
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
-    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "glGetDoublev 1");
-    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
-    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "glGetDoublev 2");
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "glGetIntegerv");
-
     Double x0, y0, z0;
     Double x, y, z;
     gluUnProject(0.0, 0.0, 0.0, modelview_matrix, projection_matrix, viewport,
@@ -270,6 +260,10 @@ void GLACanvas::SetViewportAndProjection()
             m_Volume.front * 3.0 * m_Scale, m_Volume.back * 3.0 * m_Scale);
     CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
 
+    // Save projection info.
+    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "glGetDoublev");
+
     // Save viewport info.
     glGetIntegerv(GL_VIEWPORT, viewport);
     CHECK_GL_ERROR("SetViewportAndProjection", "glGetIntegerv");
@@ -292,15 +286,17 @@ void GLACanvas::EnableSmoothPolygons()
     glShadeModel(GL_SMOOTH);
     //glEnable(GL_COLOR_MATERIAL);
  
-    GLfloat diffuseMaterial[] = { 0.3, 0.3, 0.3, 1.0 };
-    GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0 };
-    wxSize size = GetSize();
-    double aspect = double(size.GetWidth()) / double(size.GetHeight());
+    //GLfloat diffuseMaterial[] = { 0.3, 0.3, 0.3, 1.0 };
+    //GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0 };
+    //wxSize size = GetSize();
+    //double aspect = double(size.GetWidth()) / double(size.GetHeight());
     assert(m_Scale != 0.0);
+#if 0
     GLfloat light_position[] = { m_Volume.right - 5.0,
                                  m_Volume.top / aspect - 5.0,
                                  m_Volume.front * 3.0 * m_Scale + 5.0,
                                  0.0 };
+#endif
     
   //  glMaterialfv(GL_FRONT, GL_AMBIENT, diffuseMaterial);
 //    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -353,8 +349,6 @@ void GLACanvas::SetDataTransform()
     // Save matrices.
     glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
     CHECK_GL_ERROR("SetDataTransform", "glGetDoublev");
-    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
-    CHECK_GL_ERROR("SetDataTransform", "glGetDoublev (2)");
 }
 
 void GLACanvas::SetIndicatorTransform()
@@ -468,7 +462,7 @@ void GLACanvas::SetBlendColour(const GLAPen& pen, bool set_transparency,
 }
 #endif
 
-void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool set_transparency)
+void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool /*set_transparency*/)
 {
     float col[4];
     col[0] = pen.GetRed();
@@ -489,7 +483,7 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
     glutBitmapString(m_Font, (const unsigned char *)str.c_str());
     CHECK_GL_ERROR("DrawText", "glutBitmapString");
 #else
-    for (int pos = 0; pos < str.Length(); pos++) {
+    for (size_t pos = 0; pos < str.Length(); pos++) {
         glutBitmapCharacter(m_Font, int(str[pos]));
         CHECK_GL_ERROR("DrawText", "glutBitmapCharacter");
     }
@@ -772,17 +766,6 @@ void GLACanvas::Transform(Double x, Double y, Double z,
 {
     // Convert from data coordinates to screen coordinates.
     
-    // Get transformation matrices, etc.
-    GLdouble modelview_matrix[16];
-    GLdouble projection_matrix[16];
-    GLint viewport[4];
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
-    CHECK_GL_ERROR("Transform", "glGetDoublev");
-    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
-    CHECK_GL_ERROR("Transform", "glGetDoublev (2)");
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    CHECK_GL_ERROR("Transform", "glGetIntegerv");
-
     // Perform the projection.
     gluProject(x, y, z, modelview_matrix, projection_matrix, viewport,
                x_out, y_out, z_out);
@@ -794,17 +777,6 @@ void GLACanvas::ReverseTransform(Double x, Double y,
 {
     // Convert from screen coordinates to data coordinates.
     
-    // Get transformation matrices, etc.
-    GLdouble modelview_matrix[16];
-    GLdouble projection_matrix[16];
-    GLint viewport[4];
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
-    CHECK_GL_ERROR("ReverseTransform", "glGetDoublev");
-    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
-    CHECK_GL_ERROR("ReverseTransform", "glGetDoublev (2)");
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    CHECK_GL_ERROR("ReverseTransform", "glGetIntegerv");
-
     // Perform the projection.
     gluUnProject(x, y, 0.0, modelview_matrix, projection_matrix, viewport,
                  x_out, y_out, z_out);
