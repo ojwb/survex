@@ -275,7 +275,7 @@ concatenate_trav(node *stn, int i)
 
 #if PRINT_NETBITS
    putchar(' ');
-   print_var(newleg->v);
+   print_var(&(newleg->v));
    printf("\nStacked ");
    print_prefix(newleg2->l.to->name);
    printf(",%d-", reverse_leg_dirn(newleg2));
@@ -391,7 +391,6 @@ replace_travs(void)
    delta e, sc;
    bool fEquate; /* used to indicate equates in output */
    int cLegsTrav = 0;
-   prefix *nmPrev = NULL;
    bool fArtic;
 
    out_current_action(msg(/*Calculating traverses between nodes*/127));
@@ -401,18 +400,18 @@ replace_travs(void)
 
    if (!pimg) {
       char *fnm;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (fUseNewFormat) {
 	 fnm = add_ext(fnm_output_base, EXT_SVX_3DX);
       } else {
 #endif
 	 fnm = add_ext(fnm_output_base, EXT_SVX_3D);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       }
 #endif
       filename_register_output(fnm);
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (fUseNewFormat) {
 	 pimg = cave_open_write(fnm, survey_title);
 	 if (!pimg) fatalerror(cave_error(), fnm);
@@ -420,7 +419,7 @@ replace_travs(void)
 #endif
 	 pimg = img_open_write(fnm, survey_title, fTrue);
 	 if (!pimg) fatalerror(img_error(), fnm);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       }
 #endif
       osfree(fnm);
@@ -428,6 +427,11 @@ replace_travs(void)
 
    /* First do all the one leg traverses */
    FOR_EACH_STN(stn1, stnlist) {
+#if PRINT_NETBITS
+      printf("One leg traverses from ");
+      print_prefix(stn1->name);
+      printf(" [%p]\n", stn1);
+#endif
       for (i = 0; i <= 2; i++) {
 	 linkfor *leg = stn1->leg[i];
 	 if (leg && data_here(leg) &&
@@ -443,7 +447,7 @@ replace_travs(void)
 	       stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	       stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	    }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	    if (!fUseNewFormat) {
 #endif
 	       img_write_item(pimg, img_MOVE, 0, NULL,
@@ -451,7 +455,7 @@ replace_travs(void)
 	       img_write_item(pimg, img_LINE, leg->l.flags,
 			      sprint_prefix(stn1->name->up),
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	    }
 #endif
 	    if (!(leg->l.reverse & FLAG_ARTICULATION)) {
@@ -517,9 +521,9 @@ replace_travs(void)
 #if PRINT_NETBITS
       printf(" Trav ");
       print_prefix(stn1->name);
-      printf("<%p>%s...%s", stn1, szLink, szLink);
+      printf("<%p>[%d]%s...%s", stn1, i, szLink, szLink);
       print_prefix(stn2->name);
-      printf("<%p>\n", stn2);
+      printf("<%p>[%d]\n", stn2, j);
 #endif
 
       SVX_ASSERT(fixed(stn1));
@@ -550,13 +554,12 @@ replace_travs(void)
       eTotTheo = hTotTheo + vTotTheo;
       cLegsTrav = 0;
       lenTrav = 0.0;
-      nmPrev = stn1->name;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (!fUseNewFormat) {
 #endif
 	 img_write_item(pimg, img_MOVE, 0, NULL,
-			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-#ifdef NEW3DFORMAT
+			POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+#ifdef CHASM3DX
       }
 #endif
 
@@ -618,16 +621,14 @@ replace_travs(void)
 
 	 lenTot = sqrdd(leg->d);
 
+	 if (!fZeros(&leg->v)) fEquate = fFalse;
 	 if (!reached_end) {
 	    add_stn_to_list(&stnlist, stn3);
-	    if (!fZeros(&leg->v)) {
-	       fEquate = fFalse;
+	    if (!fEquate) {
 	       mulsd(&e, &leg->v, &sc);
 	       adddd(&POSD(stn3), &POSD(stn3), &e);
 	    }
 	    fix(stn3);
-	 } else {
-	    if (!fZeros(&leg->v)) fEquate = fFalse;
 	 }
 
 	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
@@ -637,7 +638,7 @@ replace_travs(void)
 	    stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	    stn3->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	 }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 if (!fUseNewFormat) {
 #endif
 	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
@@ -647,22 +648,22 @@ replace_travs(void)
 			      sprint_prefix(leg_pfx),
 			      POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
 	    }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 }
 #endif
 
 	 /* FIXME: equate at the start of a traverse treated specially
 	  * - what about equates at end? */
-	 if (nmPrev != stn3->name && !(fEquate && cLegsTrav == 0)) {
-	    /* (node not part of same stn) &&
+	 if (stn1->name != stn3->name && !(fEquate && cLegsTrav == 0)) {
+ 	    /* (node not part of same stn) &&
 	     * (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
 	    if (fhErrStat && !fArtic) {
-	       if (!nmPrev->ident) {
+	       if (!stn1->name->ident) {
 		  /* FIXME: not ideal */
 		  fputs("<fixed point>", fhErrStat);
 	       } else {
-		  fprint_prefix(fhErrStat, nmPrev);
+		  fprint_prefix(fhErrStat, stn1->name);
 	       }
 	       fputs(fEquate ? szLinkEq : szLink, fhErrStat);
 	       if (reached_end) {
@@ -675,18 +676,9 @@ replace_travs(void)
 	       }
 	    }
 #endif
-	    nmPrev = stn3->name;
 	    if (!fEquate) {
 	       cLegsTrav++;
 	       lenTrav += sqrt(lenTot);
-	    } else if (lenTot > 0.0) {
-#if DEBUG_INVALID
-	       fprintf(stderr, "lenTot = %8.4f ", lenTot);
-	       fprint_prefix(stderr, nmPrev);
-	       fprintf(stderr, " -> ");
-	       fprint_prefix(stderr, stn3->name);
-#endif
-	       BUG("during calculation of closure errors");
 	    }
 	 } else {
 #if SHOW_INTERNAL_LEGS
@@ -695,7 +687,7 @@ replace_travs(void)
 	    if (lenTot > 0.0) {
 #if DEBUG_INVALID
 	       fprintf(stderr, "lenTot = %8.4f ", lenTot);
-	       fprint_prefix(stderr, nmPrev);
+	       fprint_prefix(stderr, stn1->name);
 	       fprintf(stderr, " -> ");
 	       fprint_prefix(stderr, stn3->name);
 #endif
@@ -780,12 +772,12 @@ replace_trailing_travs(void)
       }
       stn1->leg[i] = ptrTrail->join1;
       SVX_ASSERT(fixed(stn1));
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (!fUseNewFormat) {
 #endif
 	 img_write_item(pimg, img_MOVE, 0, NULL,
 			POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       }
 #endif
 
@@ -820,7 +812,7 @@ replace_trailing_travs(void)
 	    stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	    stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	 }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 if (!fUseNewFormat) {
 #endif
 	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
@@ -829,7 +821,7 @@ replace_trailing_travs(void)
 			      sprint_prefix(leg_pfx),
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 	    }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 }
 #endif
 
@@ -846,7 +838,7 @@ replace_trailing_travs(void)
    }
 
    /* write out connections with no survey data */
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (!fUseNewFormat) {
 #endif
       while (nosurveyhead) {
@@ -868,7 +860,7 @@ replace_trailing_travs(void)
 	 nosurveyhead = p->next;
 	 osfree(p);
       }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    }
 #endif
 
@@ -877,7 +869,7 @@ replace_trailing_travs(void)
       int d;
       SVX_ASSERT(fixed(stn1));
       /* take care of unused fixed points */
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (!fUseNewFormat) {
 #endif
 	 if (stn1->name->stn == stn1 && stn1->name->ident) {
@@ -891,7 +883,7 @@ replace_trailing_travs(void)
 			      POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 	    }
 	 }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       }
 #endif
       /* update coords of bounding box, ignoring the base positions

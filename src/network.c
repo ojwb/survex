@@ -1,6 +1,6 @@
 /* network.c
  * Survex network reduction - find patterns and apply network reductions
- * Copyright (C) 1991-2001 Olly Betts
+ * Copyright (C) 1991-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,10 @@
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
+#endif
+
+#ifdef CHASM3DX
+#include <stddef.h> /* for offsetof */
 #endif
 
 #include "validate.h"
@@ -469,12 +473,23 @@ remove_subnets(void)
 		    subss(&sum, &sum, &sumAZBZ);
 		    mulsc(&legCZ->v, &sum, 0.5);
 
+#ifdef CHASM3DX
+		    if (fUseNewFormat) {
+		       nameZ = osnew(prefix);
+		       nameZ->pos = osnew(pos);
+		    } else {
+		       /* only allocate the part of the structures we need... */
+		       nameZ = (prefix *)osmalloc(offsetof(prefix, twig_link));
+		       nameZ->pos = (pos *)osmalloc(offsetof(pos, id));
+		    }
+#else
 		    nameZ = osnew(prefix);
+		    nameZ->pos = osnew(pos);
+#endif
 		    nameZ->ident = NULL;
 		    nameZ->shape = 3;
 		    stnZ = osnew(node);
 		    stnZ->name = nameZ;
-		    nameZ->pos = osnew(pos);
 		    nameZ->stn = stnZ;
 		    nameZ->up = NULL;
 		    nameZ->min_export = nameZ->max_export = 0;

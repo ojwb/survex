@@ -21,6 +21,7 @@
 #include <config.h>
 #endif
 
+#include <limits.h>
 #include <time.h>
 
 #include "cavern.h"
@@ -40,7 +41,7 @@
 #include "str.h"
 #include "validate.h"
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 # if OS != RISCOS
 /* include header for getcwd() */
 #  if OS == MSDOS && defined(__TURBOC__)
@@ -110,7 +111,7 @@ static const struct option long_opts[] = {
    {"no-auxiliary-files", no_argument, 0, 's'},
    {"warnings-are-errors", no_argument, 0, 'w'},
    {"log", no_argument, 0, 1},
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    {"chasm-format", no_argument, 0, 'x'},
 #endif
 #if (OS==WIN32)
@@ -121,7 +122,7 @@ static const struct option long_opts[] = {
    {0, 0, 0, 0}
 };
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 #define short_opts "pxao:qswz:"
 #else
 #define short_opts "pao:qswz:"
@@ -136,7 +137,7 @@ static struct help_msg help[] = {
    {HLP_ENCODELONG(4),          "do not create .err file"},
    {HLP_ENCODELONG(5),          "turn warnings into errors"},
    {HLP_ENCODELONG(6),          "log output to .log file"},
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    {HLP_ENCODELONG(7),          "output data in chasm's 3dx format"},
 #endif
  /*{'z',                        "set optimizations for network reduction"},*/
@@ -164,12 +165,8 @@ extern CDECL int
 main(int argc, char **argv)
 {
    int d;
-   static clock_t tmCPUStart;
-   static time_t tmUserStart;
-   static double tmCPU, tmUser;
-
-   tmUserStart = time(NULL);
-   tmCPUStart = clock();
+   time_t tmUserStart = time(NULL);
+   clock_t tmCPUStart = clock();
    init_screen();
 
    msg_init(argv);
@@ -225,7 +222,7 @@ main(int argc, char **argv)
 	 }
 	 break;
        }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
        case 'x': {
 	 fUseNewFormat = 1;
 	 break;
@@ -308,7 +305,7 @@ main(int argc, char **argv)
 
       /* Select defaults settings */
       default_all(pcs);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       /* we need to get the filename of the first one for our base_source */
       /* and also run_file */
       if (fUseNewFormat) {
@@ -334,7 +331,7 @@ main(int argc, char **argv)
    solve_network(/*stnlist*/); /* Find coordinates of all points */
    validate();
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
       /* this actually does all the writing */
       if (!cave_close(pimg)) {
@@ -348,7 +345,7 @@ main(int argc, char **argv)
 	 char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
 	 fatalerror(img_error(), fnm);
       }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    }
 #endif
    if (fhErrStat) safe_fclose(fhErrStat);
@@ -358,9 +355,20 @@ main(int argc, char **argv)
    if (!fQuiet) {
       /* clock() typically wraps after 72 minutes, but there doesn't seem
        * to be a better way.  Still 72 minutes means some cave!
+       * We detect if clock() could have wrapped and suppress CPU time
+       * printing in this case.
        */
-      tmCPU = (clock_t)(clock() - tmCPUStart) / (double)CLOCKS_PER_SEC;
-      tmUser = difftime(time(NULL), tmUserStart);
+      double tmUser = difftime(time(NULL), tmUserStart);
+      double tmCPU;
+      clock_t now = clock();
+#define CLOCK_T_WRAP \
+	(sizeof(clock_t)<sizeof(long)?(1ul << (CHAR_BIT * sizeof(clock_t))):0)
+      tmCPU = (now - (unsigned long)tmCPUStart)
+	 / (double)CLOCKS_PER_SEC;
+      if (now < tmCPUStart)
+	 tmCPU += CLOCK_T_WRAP / (double)CLOCKS_PER_SEC;
+      if (tmUser >= tmCPU + CLOCK_T_WRAP / (double)CLOCKS_PER_SEC)
+	 tmCPU = 0;
 
       /* tmUser is integer, tmCPU not - equivalent to (ceil(tmCPU) >= tmUser) */
       if (tmCPU + 1 > tmUser) {

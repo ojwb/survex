@@ -1,6 +1,6 @@
 /* cmdline.c
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998-2001 Olly Betts
+ * Copyright (C) 1998-2001,2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+
+#include "getopt.h"
 
 #include "cmdline.h"
 #include "filename.h"

@@ -42,6 +42,9 @@
 # define TIMENA "Time not available."
 # define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
 # define EXT_SVX_3D "3d"
+# define EXT_SVX_POS "pos"
+# define FNM_SEP_EXT '.'
+# define METRES_PER_FOOT 0.3048 /* exact value */
 # define xosmalloc(L) malloc((L))
 # define xosrealloc(L,S) realloc((L),(S))
 # define osfree(P) free((P))
@@ -80,10 +83,47 @@ put32(long w, FILE *fh)
    putc((char)(w >> 24l), fh);
 }
 
+static short
+get16(FILE *fh)
+{
+   short w = getc(fh);
+   w |= (long)getc(fh) << 8l;
+   return w;
+}
+
+static void
+put16(short w, FILE *fh)
+{
+   putc((char)(w), fh);
+   putc((char)(w >> 8l), fh);
+}
+
+static char *
+baseleaf_from_fnm(const char *fnm)
+{
+   const char *p;
+   char *q;
+   size_t len;
+
+   p = fnm;
+   q = strrchr(p, '/');
+   if (q) p = q + 1;
+   q = strrchr(p, '\\');
+   if (q) p = q + 1;
+
+   q = strrchr(p, FNM_SEP_EXT);
+   if (q) len = (const char *)q - p; else len = strlen(p);
+
+   q = xosmalloc(len + 1);
+   if (!q) return NULL;
+   memcpy(q, p, len);
+   q[len] = '\0';
+   return q;
+}
 #endif
 
+#include <math.h>
 #ifdef HAVE_ROUND
-# include <math.h>
 extern double round(double); /* prototype is often missing... */
 # define my_round round
 #else
@@ -100,7 +140,7 @@ my_round(double x) {
 #else
 /* What about top bit set chars? */
 int my_strcasecmp(const char *s1, const char *s2) {
-   register c1, c2;
+   register int c1, c2;
    do {
       c1 = *s1++;
       c2 = *s2++;
@@ -270,7 +310,11 @@ img_open_survey(const char *fnm, const char *survey)
 	 if (survey[len - 1] == '.') len--;
 	 if (len) {
 	    char *p;
-	    pimg->survey = osmalloc(len + 2);
+	    pimg->survey = xosmalloc(len + 2);
+	    if (!pimg->survey) {
+	       img_errno = IMG_OUTOFMEMORY;
+	       goto error;
+	    }
 	    memcpy(pimg->survey, survey, len);
 	    /* Set title to leaf survey name */
 	    pimg->survey[len] = '\0';
@@ -1227,8 +1271,12 @@ skip_to_N:
 		  return img_BAD;
 	       }
 	       pimg->label = pimg->label_buf;
-	       pimg->label[pimg->label_len] = ' ';
-	       memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
+	       if (pimg->label_len) {
+		   pimg->label[pimg->label_len] = ' ';
+		   memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
+	       } else {
+		   memcpy(pimg->label, q, len - 1);
+	       }
 	       osfree(line);
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
 	       if (fpos != -1) {

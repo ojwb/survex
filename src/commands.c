@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include <assert.h>
 #include <limits.h>
+#include <stddef.h> /* for offsetof */
 
 #include "cavern.h"
 #include "commands.h"
@@ -94,10 +95,10 @@ default_translate(settings *s)
    }
 /*  SVX_ASSERT(EOF==-1);*/ /* important, since we rely on this */
    t = s->Translate;
-   for (i = -1; i <= 255; i++) t[i] = 0;
-   for (i = '0'; i <= '9'; i++) t[i] |= SPECIAL_NAMES;
-   for (i = 'A'; i <= 'Z'; i++) t[i] |= SPECIAL_NAMES;
-   for (i = 'a'; i <= 'z'; i++) t[i] |= SPECIAL_NAMES;
+   memset(t - 1, 0, sizeof(short) * 257);
+   for (i = '0'; i <= '9'; i++) t[i] = SPECIAL_NAMES;
+   for (i = 'A'; i <= 'Z'; i++) t[i] = SPECIAL_NAMES;
+   for (i = 'a'; i <= 'z'; i++) t[i] = SPECIAL_NAMES;
 
    t['\t'] |= SPECIAL_BLANK;
    t[' '] |= SPECIAL_BLANK;
@@ -122,7 +123,7 @@ default_translate(settings *s)
 #endif
 }
 
-static void
+void
 default_units(settings *s)
 {
    int quantity;
@@ -135,7 +136,7 @@ default_units(settings *s)
    s->f_clino_percent = s->f_backclino_percent = fFalse;
 }
 
-static void
+void
 default_calib(settings *s)
 {
    int quantity;
@@ -175,6 +176,8 @@ static char *ucbuffer = NULL;
 extern void
 get_token(void)
 {
+   int i = -1;
+
    s_zero(&buffer);
    osfree(ucbuffer);
    skipblanks();
@@ -183,14 +186,13 @@ get_token(void)
       nextch();
    }
 
+   if (!buffer) s_catchar(&buffer, &buf_len, '\0');
+
    ucbuffer = osmalloc(buf_len);
-   {
-      int i = -1;
-      do {
-	 i++;
-	 ucbuffer[i] = toupper(buffer[i]);
-      } while (buffer[i]);
-   }
+   do {
+      i++;
+      ucbuffer[i] = toupper(buffer[i]);
+   } while (buffer[i]);
 #if 0
    printf("get_token() got `%s'\n", buffer);
 #endif
@@ -501,7 +503,7 @@ cmd_prefix(void)
    tag = read_prefix_survey(fFalse, fTrue);
    pcs->Prefix = tag;
    check_reentry(tag);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
       limb = get_twig(tag);
       if (limb->up->sourceval < 1) {
@@ -533,7 +535,7 @@ cmd_begin(void)
       check_reentry(tag);
       f_export_ok = fTrue;
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (fUseNewFormat) {
 	 limb = get_twig(pcs->Prefix);
 	 if (limb->up->sourceval < 2) {
@@ -565,7 +567,7 @@ cmd_end(void)
    prefix *tag, *tagBegin;
 
    pcsParent = pcs->next;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) limb = get_twig(pcsParent->Prefix);
 #endif
 
@@ -683,11 +685,23 @@ cmd_fix(void)
 	 stn = StnFromPfx(fix_name);
 	 if (!fixed(stn)) {
 	    node *fixpt = osnew(node);
-	    prefix *name = osnew(prefix);
+	    prefix *name;
+#ifdef CHASM3DX
+	    if (fUseNewFormat) {
+	       name = osnew(prefix);
+	       name->pos = osnew(pos);
+	    } else {
+	       /* only allocate the part of the structures we need... */
+	       name = /*(prefix *)*/osmalloc(offsetof(prefix, twig_link));
+	       name->pos = (pos *)osmalloc(offsetof(pos, id));
+	    }
+#else
+	    name = osnew(prefix);
+	    name->pos = osnew(pos);
+#endif
 	    name->ident = NULL;
 	    name->shape = 0;
 	    fixpt->name = name;
-	    name->pos = osnew(pos);
 	    name->stn = fixpt;
 	    name->up = NULL;
 	    if (TSTBIT(pcs->infer, INFER_EXPORTS)) {
@@ -725,7 +739,7 @@ cmd_fix(void)
       POS(stn, 1) = y;
       POS(stn, 2) = z;
       fix(stn);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (fUseNewFormat) {
 	 fix_name->twig_link->from = fix_name; /* insert fixed point.. */
 	 fix_name->twig_link->to = NULL;
@@ -802,7 +816,7 @@ cmd_equate(void)
 	 if (fOnlyOneStn) {
 	    compile_error_skip(/*Only one station in equate list*/33);
 	 }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 if (fUseNewFormat) limb = get_twig(pcs->Prefix);
 #endif
 	 return;
@@ -1336,7 +1350,7 @@ cmd_include(void)
 #ifndef NO_DEPRECATED
    root = root_store; /* and restore root */
 #endif
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) limb = get_twig(root);
 #endif
    ch = ch_store;

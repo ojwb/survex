@@ -21,7 +21,7 @@
 #include <config.h>
 #include "cavern.h"
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 
 #include <stdio.h>
 #include <math.h>
@@ -262,11 +262,11 @@ save3d(twig *sticky)
 	  put16((unsigned short)stubcount, pimg->fh);
 	}
 	ltag = cslen(twiglet->to->ident);
-	if (ltag < 255) {
-	  putc((unsigned char)(ltag + 1), pimg->fh);
+	if (ltag <= 255) {
+	  putc((unsigned char)ltag, pimg->fh);
 	} else {
 	  putc(0, pimg->fh);
-	  put32(ltag + 1, pimg->fh);
+	  put32(ltag, pimg->fh);
 	}
 	fputcs(twiglet->to->ident, pimg->fh);
 	if (twiglet->source) cave_write_source(twiglet->source);

@@ -43,7 +43,9 @@
 
 int ch;
 
-typedef enum {CTYPE_OMIT, CTYPE_READING, CTYPE_PLUMB, CTYPE_HORIZ} clino_type;
+typedef enum {
+    CTYPE_OMIT, CTYPE_READING, CTYPE_PLUMB, CTYPE_INFERPLUMB, CTYPE_HORIZ
+} clino_type;
 
 /* Don't explicitly initialise as we can't set the jmp_buf - this has
  * static scope so will be initialised like this anyway */
@@ -55,8 +57,6 @@ static real value[Fr - 1];
 #define VAL(N) value[(N)-1]
 static real variance[Fr - 1];
 #define VAR(N) variance[(N)-1]
-
-static filepos fpLineStart;
 
 void
 get_pos(filepos *fp)
@@ -199,13 +199,13 @@ static long int filelen;
 static void
 process_bol(void)
 {
-   /* Note start of line for error reporting */
-   get_pos(&fpLineStart);
-
 #ifndef NO_PERCENTAGE
    /* print %age of file done */
-   if (filelen > 0)
-      printf("%d%%\r", (int)(100 * fpLineStart.offset / filelen));
+   if (filelen > 0) {
+      filepos fp;
+      get_pos(&fp);
+      printf("%d%%\r", (int)(100 * fp.offset / filelen));
+   }
 #endif
 
    nextch();
@@ -293,15 +293,33 @@ read_bearing_or_omit(reading r)
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
 }
 
+/* For reading Compass MAK files which have a freeform syntax */
+static void
+nextch_handling_eol(void)
+{
+   nextch();
+   while (ch != EOF && isEol(ch)) {
+      process_eol();
+      nextch();
+   }
+}
+
+#define LITLEN(S) (sizeof(S"") - 1)
+#define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
+			(F)[(L) - LITLEN(E) - 1] == FNM_SEP_EXT &&\
+			strcasecmp((F) + (L) - LITLEN(E), E) == 0)
 extern void
 data_file(const char *pth, const char *fnm)
 {
    int begin_lineno_store;
    parse file_store;
+   enum {FMT_SVX, FMT_DAT, FMT_MAK} fmt = FMT_SVX;
 
    {
       char *filename;
       FILE *fh;
+      size_t len;
+
       if (!pth) {
 	 /* file specified on command line - don't do special translation */
 	 fh = fopenWithPthAndExt(pth, fnm, EXT_SVX_DATA, "rb", &filename);
@@ -312,6 +330,13 @@ data_file(const char *pth, const char *fnm)
       if (fh == NULL) {
 	 compile_error(/*Couldn't open data file `%s'*/24, fnm);
 	 return;
+      }
+
+      len = strlen(filename);
+      if (has_ext(filename, len, "dat")) {
+	 fmt = FMT_DAT;
+      } else if (has_ext(filename, len, "mak")) {
+	 fmt = FMT_MAK;
       }
 
       file_store = file;
@@ -343,6 +368,72 @@ data_file(const char *pth, const char *fnm)
    }
 #endif
 
+   if (fmt == FMT_DAT) {
+      short *t;
+      int i;
+      settings *pcsNew;
+
+      pcsNew = osnew(settings);
+      *pcsNew = *pcs; /* copy contents */
+      pcsNew->begin_lineno = 0;
+      pcsNew->next = pcs;
+      pcs = pcsNew;
+      default_units(pcs);
+      default_calib(pcs);
+
+      pcs->style = STYLE_NORMAL;
+      pcs->units[Q_LENGTH] = METRES_PER_FOOT;
+      t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+
+      t[EOF] = SPECIAL_EOL;
+      memset(t, 0, sizeof(short) * 33);
+      for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
+      t[127] = 0;
+      for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
+      t['\t'] |= SPECIAL_BLANK;
+      t[' '] |= SPECIAL_BLANK;
+      t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
+      t['\n'] |= SPECIAL_EOL;
+      t['\r'] |= SPECIAL_EOL;
+      t['.'] |= SPECIAL_DECIMAL;
+      t['-'] |= SPECIAL_MINUS;
+      t['+'] |= SPECIAL_PLUS;
+      pcs->Translate = t;
+      pcs->Case = OFF;
+      pcs->Truncate = INT_MAX;
+      pcs->infer = 7; /* FIXME: BIT(EQUATES)|BIT(EXPORTS)|BIT(PLUMBS); */
+   } else if (fmt == FMT_MAK) {
+      short *t;
+      int i;
+      settings *pcsNew;
+
+      pcsNew = osnew(settings);
+      *pcsNew = *pcs; /* copy contents */
+      pcsNew->begin_lineno = 0;
+      pcsNew->next = pcs;
+      pcs = pcsNew;
+
+      t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+      
+      t[EOF] = SPECIAL_EOL;
+      memset(t, 0, sizeof(short) * 33);
+      for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
+      t[127] = 0;
+      for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
+      t['['] = t[','] = t[';'] = 0;
+      t['\t'] |= SPECIAL_BLANK;
+      t[' '] |= SPECIAL_BLANK;
+      t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
+      t['\n'] |= SPECIAL_EOL;
+      t['\r'] |= SPECIAL_EOL;
+      t['.'] |= SPECIAL_DECIMAL;
+      t['-'] |= SPECIAL_MINUS;
+      t['+'] |= SPECIAL_PLUS;
+      pcs->Translate = t;
+      pcs->Case = OFF;
+      pcs->Truncate = INT_MAX;
+   }
+
 #ifdef HAVE_SETJMP_H
    /* errors in nested functions can longjmp here */
    if (setjmp(file.jbSkipLine)) {
@@ -350,40 +441,227 @@ data_file(const char *pth, const char *fnm)
    }
 #endif
 
-   while (!feof(file.fh) && !ferror(file.fh)) {
-      if (!process_non_data_line()) {
-	 int r;
-#ifdef NEW3DFORMAT
-	 twig *temp = limb;
-#endif
-	 f_export_ok = fFalse;
-	 switch (pcs->style) {
-	  case STYLE_NORMAL:
-	  case STYLE_DIVING:
-	  case STYLE_CYLPOLAR:
-	    r = data_normal();
-    	    break;
-	  case STYLE_CARTESIAN:
-	    r = data_cartesian();
-	    break;
-	  case STYLE_NOSURVEY:
-	    r = data_nosurvey();
-	    break;
-	  case STYLE_IGNORE:
-	    r = data_ignore();
-	    break;
-	  default:
-	    BUG("bad style");
+   if (fmt == FMT_DAT) {
+      while (!feof(file.fh) && !ferror(file.fh)) {
+	 static reading compass_order[] = {
+	    Fr, To, Tape, Comp, Clino, Ignore, Ignore, Ignore, Ignore,
+	    CompassDATFlags, IgnoreAll
+	 };
+	 static reading compass_order_backsights[] = {
+	    Fr, To, Tape, Comp, Clino, Ignore, Ignore, Ignore, Ignore,
+	    BackComp, BackClino,
+	    CompassDATFlags, IgnoreAll
+	 };
+	 /* <Cave name> */
+	 process_bol();
+	 skipline();
+	 process_eol();
+	 /* SURVEY NAME: <Short name> */
+	 get_token();
+	 get_token();
+	 /* if (ch != ':') ... */
+	 nextch();
+	 skipblanks();
+	 get_token();
+	 skipline();
+	 process_eol();
+	 /* SURVEY DATE: 7 10 79  COMMENT:<Long name> */
+	 /* Note: Larry says a 2 digit year is always 19XX */
+	 get_token();
+	 get_token();
+	 /* if (ch != ':') ... */
+	 nextch();
+	 skipline();
+	 process_eol();
+	 /* SURVEY TEAM: */
+	 get_token();
+	 get_token();
+	 skipline();
+	 process_eol();
+	 /* <Survey team> */
+	 nextch();
+	 skipline();
+	 process_eol();
+	 /* DECLINATION: 1.00  FORMAT: DDDDLUDRADLN  CORRECTIONS: 2.00 3.00 4.00 */
+	 get_token();
+	 nextch(); /* : */
+	 skipblanks();
+	 pcs->z[Q_DECLINATION] = -read_numeric(fFalse, NULL);
+	 pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
+	 get_token();
+	 pcs->ordering = compass_order;
+	 if (strcmp(buffer, "FORMAT") == 0) {
+	    nextch(); /* : */
+	    get_token();
+	    if (strlen(buffer) >= 12 && buffer[11] == 'B') {
+	       /* We have backsights for compass and clino */
+	       pcs->ordering = compass_order_backsights;
+	    }
+	    get_token();
 	 }
-	 /* style function returns 0 => error */
-#ifdef NEW3DFORMAT
-	 if (!r) {
-	    /* we have just created a very naughty twiglet, and it must be
-	     * punished */
-	    osfree(limb);
-	    limb = temp;
+	 if (strcmp(buffer, "CORRECTIONS") == 0) {
+	    nextch(); /* : */
+	    pcs->z[Q_BEARING] = -rad(read_numeric(fFalse, NULL));
+	    pcs->z[Q_GRADIENT] = -rad(read_numeric(fFalse, NULL));
+	    pcs->z[Q_LENGTH] = -read_numeric(fFalse, NULL);
+	 } else {
+	    pcs->z[Q_BEARING] = 0;
+	    pcs->z[Q_GRADIENT] = 0;
+	    pcs->z[Q_LENGTH] = 0;
 	 }
+	 skipline();
+	 process_eol();
+	 /* BLANK LINE */
+	 process_bol();
+	 skipline();
+	 process_eol();
+	 /* heading line */
+	 process_bol();
+	 skipline();
+	 process_eol();
+	 /* BLANK LINE */
+	 process_bol();
+	 skipline();
+	 process_eol();
+	 while (!feof(file.fh)) {
+	    process_bol();
+	    if (ch == '\x0c') {
+	       nextch();
+	       process_eol();
+	       break;
+	    }
+	    (void)data_normal();
+	 }
+      }
+      {
+	 settings *pcsParent = pcs->next;
+	 SVX_ASSERT(pcsParent);
+	 pcs->ordering = NULL;
+	 free_settings(pcs);
+	 pcs = pcsParent;
+      }					  
+   } else if (fmt == FMT_MAK) {
+      nextch_handling_eol();
+      while (!feof(file.fh) && !ferror(file.fh)) {
+	 if (ch == '#') {
+	    /* include a file */
+	    int ch_store;
+	    char *pth = path_from_fnm(file.filename);
+	    char *fnm = NULL;
+	    int fnm_len;
+	    nextch_handling_eol();
+	    while (ch != ',' && ch != ';' && ch != EOF) {
+	       while (isEol(ch)) process_eol();
+	       s_catchar(&fnm, &fnm_len, ch);
+	       nextch_handling_eol();
+	    }
+	    while (ch != ';' && ch != EOF) {
+	       prefix *name;
+	       nextch_handling_eol();
+	       name = read_prefix_stn(fTrue, fFalse);
+	       if (name) {
+		  skipblanks();
+		  if (ch == '[') {
+		     /* fixed pt */
+		     node *stn;
+		     real x, y, z;
+		     name->sflags |= BIT(SFLAGS_FIXED);
+		     nextch_handling_eol();
+		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
+			    ch != '.' && ch != ']' && ch != EOF) {
+			nextch_handling_eol();
+		     }
+		     x = read_numeric(fFalse, NULL);
+		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
+			    ch != '.' && ch != ']' && ch != EOF) {
+			nextch_handling_eol();
+		     }
+		     y = read_numeric(fFalse, NULL);
+		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
+			    ch != '.' && ch != ']' && ch != EOF) {
+			nextch_handling_eol();
+		     }
+		     z = read_numeric(fFalse, NULL);
+		     stn = StnFromPfx(name);
+		     if (!fixed(stn)) {
+			POS(stn, 0) = x;
+			POS(stn, 1) = y;
+			POS(stn, 2) = z;
+			fix(stn);
+		     } else {
+			if (x != POS(stn, 0) || y != POS(stn, 1) ||
+			    z != POS(stn, 2)) {
+			   compile_error(/*Station already fixed or equated to a fixed point*/46);
+			} else {
+			   compile_warning(/*Station already fixed at the same coordinates*/55);
+			}
+		     }
+		     while (ch != ']' && ch != EOF) nextch_handling_eol();
+		     if (ch == ']') {
+			nextch_handling_eol();
+			skipblanks();
+		     }
+		  } else {
+		     /* FIXME: link station - ignore for now */
+		     /* FIXME: perhaps issue warning? */
+		  }
+		  while (ch != ',' && ch != ';' && ch != EOF)
+		     nextch_handling_eol();
+	       }
+	    }
+	    if (fnm) {
+	       ch_store = ch;
+	       data_file(pth, fnm);
+	       ch = ch_store;
+	       osfree(fnm);
+	    }
+	 } else {
+	    /* FIXME: also check for % and $ later */
+	    nextch_handling_eol();
+	 }
+      }
+      {
+	 settings *pcsParent = pcs->next;
+	 SVX_ASSERT(pcsParent);
+	 free_settings(pcs);
+	 pcs = pcsParent;
+      }					  
+   } else {
+      while (!feof(file.fh) && !ferror(file.fh)) {
+	 if (!process_non_data_line()) {
+	    int r;
+#ifdef CHASM3DX
+	    twig *temp = limb;
 #endif
+	    f_export_ok = fFalse;
+	    switch (pcs->style) {
+	     case STYLE_NORMAL:
+	     case STYLE_DIVING:
+	     case STYLE_CYLPOLAR:
+	       r = data_normal();
+	       break;
+	     case STYLE_CARTESIAN:
+	       r = data_cartesian();
+	       break;
+	     case STYLE_NOSURVEY:
+	       r = data_nosurvey();
+	       break;
+	     case STYLE_IGNORE:
+	       r = data_ignore();
+	       break;
+	     default:
+	       BUG("bad style");
+	    }
+	    /* style function returns 0 => error */
+#ifdef CHASM3DX
+	    if (!r && fUseNewFormat) {
+	       /* we have just created a very naughty twiglet, and it must be
+		* punished */
+	       osfree(limb);
+	       limb = temp;
+	    }
+#endif
+	 }
       }
    }
 
@@ -451,7 +729,7 @@ handle_plumb(clino_type *p_ctype)
       get_token();
       tok = match_tok(clino_tab, TABSIZE(clino_tab));
       if (tok != CLINO_NULL) {
-	 *p_ctype = (clinos[tok] == CLINO_LEVEL ? CTYPE_HORIZ : CTYPE_PLUMB);
+	 *p_ctype = (tok == CLINO_LEVEL ? CTYPE_HORIZ : CTYPE_PLUMB);
 	 return clinos[tok];
       }
       set_pos(&fp);
@@ -562,7 +840,6 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	       clino_type ctype, clino_type backctype)
 {
    real tape = VAL(Tape);
-   real comp = VAL(Comp);
    real clin = VAL(Clino);
    real backclin = VAL(BackClino);
 
@@ -591,24 +868,30 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       if (diff_from_abs90 > EPSILON) {
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
-		 diff_from_abs90 > -EPSILON) {
-	 ctype = CTYPE_PLUMB;
+		 diff_from_abs90 >= -EPSILON) {
+	 ctype = CTYPE_INFERPLUMB;
       }
    }
 
    if (backctype == CTYPE_READING) {
-      real diff_from_abs90;
       backclin *= pcs->units[Q_BACKGRADIENT];
       /* percentage scale */
       if (pcs->f_backclino_percent) backclin = atan(backclin);
-      diff_from_abs90 = fabs(backclin) - M_PI_2;
-      if (diff_from_abs90 > EPSILON) {
-	 /* FIXME: different message for BackClino? */
-	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
-      } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
-		 diff_from_abs90 > -EPSILON) {
-	 backctype = CTYPE_PLUMB;
+      if (ctype != CTYPE_READING) {
+	 real diff_from_abs90 = fabs(backclin) - M_PI_2;
+	 if (diff_from_abs90 > EPSILON) {
+	    /* FIXME: different message for BackClino? */
+	    compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
+	 } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
+		    diff_from_abs90 >= -EPSILON) {
+	    backctype = CTYPE_INFERPLUMB;
+	 }
       }
+   }
+
+   /* un-infer the plumb if the backsight was just a reading */
+   if (ctype == CTYPE_INFERPLUMB && backctype == CTYPE_READING) {
+       ctype = CTYPE_READING;
    }
 
    if (ctype != CTYPE_OMIT && backctype != CTYPE_OMIT && ctype != backctype) {
@@ -616,11 +899,17 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       return 0;
    }
 
-   if (ctype == CTYPE_PLUMB || backctype == CTYPE_PLUMB) {
+   if (ctype == CTYPE_PLUMB || ctype == CTYPE_INFERPLUMB ||
+       backctype == CTYPE_PLUMB || backctype == CTYPE_INFERPLUMB) {
       /* plumbed */
       if (!fNoComp) {
-	 /* FIXME: Different message for BackComp? */
-	 compile_warning(/*Compass reading given on plumbed leg*/21);
+	 if (ctype == CTYPE_PLUMB ||
+	     (ctype == CTYPE_INFERPLUMB && VAL(Comp) != 0.0) ||
+	     backctype == CTYPE_PLUMB ||
+	     (backctype == CTYPE_INFERPLUMB && VAL(BackComp) != 0.0)) {
+	    /* FIXME: Different message for BackComp? */
+	    compile_warning(/*Compass reading given on plumbed leg*/21);
+	 }
       }
 
       dx = dy = (real)0.0;
@@ -673,8 +962,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	    backclin = (backclin - pcs->z[Q_BACKGRADIENT])
 	       * pcs->sc[Q_BACKGRADIENT];
 	    if (ctype == CTYPE_READING) {
-	       if (sqrd((clin + backclin) / 3.0) >
-		     var_clin + VAR(BackClino)) {
+	       if (sqrd((clin + backclin) / 3.0) > var_clin + VAR(BackClino)) {
 		  /* fore and back readings differ by more than 3 sds */
 		  warn_readings_differ(/*Clino reading and back clino reading disagree by %s degrees*/99, clin + backclin);
 	       }
@@ -761,7 +1049,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 #endif
 		);
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
@@ -881,9 +1169,9 @@ process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 		, cxy, cyz, czx
 #endif
 		);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
-      /*new twiglet and insert into twig tree*/
+      /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
       twiglet->from = fr;
       twiglet->to = to;
@@ -917,7 +1205,7 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
 #endif
 		);
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
@@ -1075,9 +1363,9 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 		, cxy, 0, 0
 #endif
 		);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
-      /*new twiglet and insert into twig tree*/
+      /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
       twiglet->from = fr;
       twiglet->to = to;
@@ -1110,6 +1398,7 @@ data_normal(void)
    bool fRev;
    clino_type ctype, backctype;
    bool fDepthChange;
+   unsigned long compass_dat_flags = 0;
 
    reading *ordering;
 
@@ -1228,9 +1517,33 @@ data_normal(void)
 	  VAL(FrDepth) = 0;
 	  read_reading(ToDepth, fFalse);
 	  break;
-       case Ignore:
-	  skipword();
+       case CompassDATFlags:
+	  if (ch == '#') {
+	     nextch();
+	     if (ch == '|') {
+		filepos fp;
+		get_pos(&fp);
+		nextch();
+		while (ch >= 'A' && ch <= 'Z') {
+		   compass_dat_flags |= BIT(ch - 'A');
+		   nextch();
+		}
+		if (ch == '#') {
+		   nextch();
+		} else {
+		   compass_dat_flags = 0;
+		   set_pos(&fp);
+		   push_back('|');
+		   ch = '#';
+		}
+	     } else {
+		push_back(ch);
+		ch = '#';
+	     }
+	  }
 	  break;
+       case Ignore:
+	  skipword(); break;
        case IgnoreAllAndNewLine:
 	  skipline();
 	  /* fall through */
@@ -1312,6 +1625,11 @@ data_normal(void)
        case End:
 	  if (!fMulti) {
 	     int r;
+	     /* Compass ignore flag is 'X' */
+	     if ((compass_dat_flags & BIT('X' - 'A'))) {
+		process_eol();
+		return 1;
+	     }
 	     if (fRev) {
 		prefix *t = fr;
 		fr = to;
@@ -1370,7 +1688,7 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
    nosurveylink *link;
    int shape;
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);

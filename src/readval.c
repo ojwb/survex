@@ -22,6 +22,7 @@
 #endif
 
 #include <limits.h>
+#include <stddef.h> /* for offsetof */
 
 #include "cavern.h"
 #include "debug.h"
@@ -81,11 +82,14 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 #endif
 
    i = 0;
+   name = NULL;
    do {
       fNew = fFalse;
       if (isSep(ch)) fImplicitPrefix = fFalse;
-      /* get a new name buffer for each level */
-      name = osmalloc(name_len);
+      if (name == NULL) {
+	 /* Need a new name buffer */
+	 name = osmalloc(name_len);
+      }
       /* i==0 iff this is the first pass */
       if (i) {
 	 i = 0;
@@ -121,14 +125,24 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       }
 
       name[i++] = '\0';
-      name = osrealloc(name, i);
 
       back_ptr = ptr;
       ptr = ptr->down;
       if (ptr == NULL) {
 	 /* Special case first time around at each level */
+	 name = osrealloc(name, i);
+#ifdef CHASM3DX
+	 if (fUseNewFormat) {
+	    ptr = osnew(prefix);
+	 } else {
+	    /* only allocate the part of the structure we need... */
+	    ptr = (prefix *)osmalloc(offsetof(prefix, twig_link));
+	 }
+#else
 	 ptr = osnew(prefix);
+#endif
 	 ptr->ident = name;
+	 name = NULL;
 	 ptr->right = ptr->down = NULL;
 	 ptr->pos = NULL;
 	 ptr->shape = 0;
@@ -141,22 +155,41 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	    ptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	 back_ptr->down = ptr;
 	 fNew = fTrue;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 if (fUseNewFormat) {
-	    create_twig(ptr,file.filename);
+	    create_twig(ptr, file.filename);
 	 }
 #endif
       } else {
+	 /* Use caching to speed up adding an increasing sequence to a
+	  * large survey */
+	 static prefix *cached_survey = NULL, *cached_station = NULL;
 	 prefix *ptrPrev = NULL;
 	 int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
-	 while (ptr && (cmp = strcmp(ptr->ident, name))>0) {
+	 if (cached_survey == back_ptr) {
+	    cmp = strcmp(cached_station->ident, name);
+	    if (cmp <= 0) ptr = cached_station;
+	 }
+	 while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
 	    ptrPrev = ptr;
 	    ptr = ptr->right;
 	 }
 	 if (cmp) {
 	    /* ie we got to one that was higher, or the end */
-	    prefix *newptr = osnew(prefix);
+	    prefix *newptr;
+	    name = osrealloc(name, i);
+#ifdef CHASM3DX
+	    if (fUseNewFormat) {
+	       newptr = osnew(prefix);
+	    } else {
+	       /* only allocate the part of the structure we need... */
+	       newptr = (prefix *)osmalloc(offsetof(prefix, twig_link));
+	    }
+#else
+	    newptr = osnew(prefix);
+#endif
 	    newptr->ident = name;
+	    name = NULL;
 	    if (ptrPrev == NULL)
 	       back_ptr->down = newptr;
 	    else
@@ -174,16 +207,20 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	       newptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	    ptr = newptr;
 	    fNew = fTrue;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	    if (fUseNewFormat) {
-	       create_twig(ptr,file.filename);
+	       create_twig(ptr, file.filename);
 	    }
 #endif
 	 }
+	 cached_survey = back_ptr;
+	 cached_station = ptr;
       }
       depth++;
       f_optional = fFalse; /* disallow after first level */
    } while (isSep(ch));
+   if (name) osfree(name);
+
    /* don't warn about a station that is refered to twice */
    if (!fNew) ptr->sflags &= ~BIT(SFLAGS_SUSPECTTYPO);
 

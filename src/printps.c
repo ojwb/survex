@@ -161,6 +161,7 @@ static bool fOriginInCentre = fFalse;
 
 static long x_t, y_t;
 
+/* Check if this line intersects the current page */
 static int
 check_intersection(long x_p, long y_p)
 {
@@ -179,6 +180,9 @@ check_intersection(long x_p, long y_p)
    else if (y_p > ypPageDepth)
       mask_p |= U;
 
+   /* At least one end of the line is on the page */
+   if (mask_p == 0) return 1;
+
    if (x_t < 0)
       mask_t = L;
    else if (x_t > xpPageWidth)
@@ -189,37 +193,58 @@ check_intersection(long x_p, long y_p)
    else if (y_t > ypPageDepth)
       mask_t |= U;
 
-#if 0
-   /* approximation to correct answer */
-   return !(mask_t & mask_p);
-#else
    /* One end of the line is on the page */
-   if (!mask_t || !mask_p) return 1;
+   if (mask_t == 0) return 1;
 
-   /* whole line is above, left, right, or below page */
+   /* See if whole line is above, left, right, or below screen. */
    if (mask_t & mask_p) return 0;
 
-   /* FIXME: these 4 checks are bogus - copy code from gfxcore.cc that works */
-   if (mask_t & U) {
-      double v = (double)((x_p - x_t) * ypPageDepth + x_t * y_p - x_p * y_t) /
-		 (y_p - y_t);
-      return v >= 0 && v <= xpPageWidth;
-   }
-   if (mask_t & D) {
-      double v = (double)(x_t * y_p - x_p * y_t) / (y_p - y_t);
-      return v >= 0 && v <= xpPageWidth;
-   }
-   if (mask_t & R) {
-      double v = (double)((y_p - y_t) * xpPageWidth + x_p * y_t - x_t * y_p) /
-		 (x_p - x_t);
-      return v >= 0 && v <= ypPageDepth;
-   }
-   SVX_ASSERT(mask_t & L);
    {
-      double v = (double)(x_p * y_t - x_t * y_p) / (x_p - x_t);
-      return v >= 0 && v <= ypPageDepth;
+      /* Actually need to clip line to screen... */
+      long a = x_p, b = y_p;
+      long c = x_t, d = y_t;
+
+      if (mask_p & U) {
+	 b = ypPageDepth;
+	 a = ((x_p - x_t) * b + x_t * y_p - x_p * y_t) / (y_p - y_t);
+      } else if (mask_p & D) {
+	 b = 0;
+	 a = (x_t * y_p - x_p * y_t) / (y_p - y_t);
+      }
+
+      if (a < 0 || a > xpPageWidth) {
+	 if (!(mask_p & (L|R))) return 0;
+	 if (mask_p & L) {
+	    a = 0;
+	    b = (x_p * y_t - x_t * y_p) / (x_p - x_t);
+	 } else if (mask_p & R) {
+	    a = xpPageWidth;
+	    b = ((y_p - y_t) * a + x_p * y_t - x_t * y_p) / (x_p - x_t);
+	 }
+	 if (b < 0 || b > ypPageDepth) return 0;
+      }
+
+      if (mask_t & U) {
+	 d = ypPageDepth;
+	 c = ((x_p - x_t) * d + x_t * y_p - x_p * y_t) / (y_p - y_t);
+      } else if (mask_t & D) {
+	 d = 0;
+	 c = (x_t * y_p - x_p * y_t) / (y_p - y_t);
+      }
+
+      if (c < 0 || c > xpPageWidth) {
+	 if (!(mask_t & (L|R))) return 0;
+	 if (mask_t & L) {
+	    c = 0;
+	    d = (x_p * y_t - x_t * y_p) / (x_p - x_t);
+	 } else if (mask_t & R) {
+	    c = xpPageWidth;
+	    d = ((y_p - y_t) * c + x_p * y_t - x_t * y_p) / (x_p - x_t);
+	 }
+	 if (d < 0 || d > ypPageDepth) return 0;
+      }
    }
-#endif
+   return 1;
 #undef U
 #undef D
 #undef L

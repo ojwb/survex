@@ -89,12 +89,6 @@ double svx_floor(double);
 
 # elif (OS==UNIX)
 
-/* FIXME: better to test this in configure... */
-#  include <time.h>
-#  ifndef CLOCKS_PER_SEC
-#   define CLOCKS_PER_SEC 1000000 /* nasty hack - true for SunOS anyway */
-#  endif /* !CLOCKS_PER_SEC */
-
 /* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
 #  define FNM_SEP_LEV '/'
 /* #  define FNM_SEP_DRV  No equivalent under UNIX */
