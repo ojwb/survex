@@ -66,12 +66,16 @@ it depends on the redraw?
 <li>aven: Implement "print clipped to what's in the window".
 
 <li>aven: the preview window should display all the pages in one window,
-    arranged in an nxm grid (do this by overriding CreateCanvas and
-    CreateControlBar on wxPreviewFrame).
-    The user should be able to enable/disable
-    pages by clicking on them (or on checkboxes next to them?)  It would
-    also be nice to be able to drag the survey around so that page breaks
-    can be moved to the least awkward positions...
+    arranged in an n x m grid.  We should be able to do this by subclassing
+    wxPreviewFrame and overriding CreateCanvas.  And CreateControlBar too
+    perhaps, though we could just make the page nav buttons scroll the
+    window to show that page.
+
+<li>aven: Once the above is done, the user should be able to enable/disable
+    pages by clicking on them like in Toporobot (or on checkboxes next to
+    them?)  It would also be nice to be able to drag the survey around relative
+    to the pages so that page breaks can be moved to the least awkward
+    positions...
 
 <li>Check skip blank pages works (checked printps)...
 
