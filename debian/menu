@@ -1,8 +1,0 @@
-?package(survex):needs=text section=Apps/math \
-  title="cavern" command="/usr/bin/cavern"
-?package(survex):needs=X11 section=Apps/math \
-  title="xcaverot" command="/usr/bin/xcaverot"
-?package(survex):needs=text section=Apps/math \
-  title="printps" command="/usr/bin/printps"
-?package(survex):needs=text section=Apps/math \
-  title="printhpgl" command="/usr/bin/printhpgl"
