@@ -73,8 +73,8 @@ editwrap_SOURCES = editwrap.c
 editwrap_LDFLAGS = -mwindows
 
 if WIN32
-aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
-avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
+aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@
+avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@
 
 svxeditrc.o: $(srcdir)/svxedit.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
@@ -85,8 +85,8 @@ editwrap_LDADD = svxeditrc.o
 avenrc.o: $(srcdir)/aven.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o $$pwd/avenrc.o aven.rc
 else
-aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
-avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
+aven_LDADD = @LIBOBJS@ @WX_LIBS@
+avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@
 endif
 
 # If we're building aven on MacOS X, we need to bind resources to aven after

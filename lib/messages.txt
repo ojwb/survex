@@ -3491,6 +3491,9 @@ es:403 Tiradas de topografia de super&amp;ficie
 it:403 Battute topografia di Super&amp;ficie
 sk:403 Z&aacute;mery &amp;na povrchu
 ro:403 &amp;Portiuni de suprafata ale topografiei
+# "%s" is replaced by the invalid expression
+en:404 Invalid regular expression: %s
+#
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

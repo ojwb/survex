@@ -36,27 +36,11 @@
 #include "printwx.h"
 
 #include <wx/confbase.h>
+#include <wx/regex.h>
 
 #include <float.h>
 #include <functional>
 #include <stack>
-
-#ifdef HAVE_REGEX_H
-# include <regex.h>
-#else
-extern "C" {
-# ifdef HAVE_RXPOSIX_H
-#  include <rxposix.h>
-# elif defined(HAVE_RX_RXPOSIX_H)
-#  include <rx/rxposix.h>
-# elif !defined(REG_NOSUB)
-// we must be using wxWindows built-in regexp functions
-#  define REG_NOSUB wxRE_NOSUB
-#  define REG_ICASE wxRE_ICASE
-#  define REG_EXTENDED wxRE_EXTENDED
-# endif
-}
-#endif
 
 const int NUM_DEPTH_COLOURS = 13; // up to 13
 
@@ -1351,19 +1335,19 @@ void MainFrm::OnFind(wxCommandEvent&)
     wxBusyCursor hourglass;
     // Find stations specified by a string or regular expression.
 
-    wxString str = m_FindBox->GetValue();
-    int cflags = REG_NOSUB;
+    wxString pattern = m_FindBox->GetValue();
+    int re_flags = wxRE_NOSUB;
 
     if (true /* case insensitive */) {
-	cflags |= REG_ICASE;
+	re_flags |= wxRE_ICASE;
     }
 
     if (m_RegexpCheckBox->GetValue()) {
-	cflags |= REG_EXTENDED;
+	re_flags |= wxRE_EXTENDED;
     } else if (false /* simple glob-style */) {
 	wxString pat;
-	for (size_t i = 0; i < str.size(); i++) {
-	   char ch = str[i];
+	for (size_t i = 0; i < pattern.size(); i++) {
+	   char ch = pattern[i];
 	   // ^ only special at start; $ at end.  But this is simpler...
 	   switch (ch) {
 	    case '^': case '$': case '.': case '[': case '\\':
@@ -1380,11 +1364,12 @@ void MainFrm::OnFind(wxCommandEvent&)
 	      pat += ch;
 	   }
 	}
-	str = pat;
+	pattern = pat;
+	re_flags |= wxRE_BASIC;
     } else {
 	wxString pat;
-	for (size_t i = 0; i < str.size(); i++) {
-	   char ch = str[i];
+	for (size_t i = 0; i < pattern.size(); i++) {
+	   char ch = pattern[i];
 	   // ^ only special at start; $ at end.  But this is simpler...
 	   switch (ch) {
 	    case '^': case '$': case '*': case '.': case '[': case '\\':
@@ -1392,23 +1377,21 @@ void MainFrm::OnFind(wxCommandEvent&)
 	   }
 	   pat += ch;
 	}
-	str = pat;
+	pattern = pat;
+	re_flags |= wxRE_BASIC;
     }
 
     if (!true /* !substring */) {
 	// FIXME "0u" required to avoid compilation error with g++-3.0
-	if (str.empty() || str[0u] != '^') str = '^' + str;
-	if (str[str.size() - 1] != '$') str = str + '$';
+	if (pattern.empty() || pattern[0u] != '^') pattern = '^' + pattern;
+	if (pattern[pattern.size() - 1] != '$') pattern = pattern + '$';
     }
 
-    regex_t buffer;
-    int errcode = regcomp(&buffer, str.c_str(), cflags);
-    if (errcode) {
-	size_t len = regerror(errcode, &buffer, NULL, 0);
-	char *msg = new char[len];
-	regerror(errcode, &buffer, msg, len);
-	wxGetApp().ReportError(msg);
-	delete[] msg;
+    wxRegEx regex;
+    if (!regex.Compile(pattern, re_flags)) {
+	wxString m;
+	m.Printf(msg(/*Invalid regular expression: %s*/404), pattern.c_str());
+	wxGetApp().ReportError(m);
 	return;
     }
 
@@ -1418,15 +1401,13 @@ void MainFrm::OnFind(wxCommandEvent&)
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;
 
-	if (regexec(&buffer, label->text.c_str(), 0, NULL, 0) == 0) {
+	if (regex.Matches(label->text)) {
 	    label->flags |= LFLAG_HIGHLIGHTED;
 	    found++;
 	} else {
 	    label->flags &= ~LFLAG_HIGHLIGHTED;
 	}
     }
-
-    regfree(&buffer);
 
     m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found));
 #ifdef _WIN32
