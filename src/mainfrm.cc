@@ -1085,7 +1085,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 //
 
 #undef FILEDIALOG_MULTIGLOBS
-// MS Windows "*.abc;*.def" natively; wxGtk supports them as of 2.3
+// MS Windows supports "*.abc;*.def" natively; wxGtk supports them as of 2.3
 #if defined(_WIN32) || wxMAJOR_VERSION > 2 || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
 # define FILEDIALOG_MULTIGLOBS
 #endif
@@ -1109,18 +1109,20 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #else
 				       "|%s|*.pl?" // not ideal...
 #endif
-			      	       "|%s|*.xyz"
+				       "|%s|*.xyz"
 #ifdef FILEDIALOG_MULTIGLOBS
 #ifndef _WIN32
 				       ";*.XYZ"
 #endif
 #endif
-				       "|%s|*.*",
+				       "|%s|%s",
 				       msg(/*Survex 3d files*/207),
 				       /* FIXME TRANSLATE */
 				       "Compass PLT files",
 				       "CMAP XYZ files",
-				       msg(/*All files*/208)), wxOPEN);
+				       msg(/*All files*/208),
+				       wxFileSelectorDefaultWildcardStr
+				       ), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
@@ -1179,7 +1181,8 @@ void MainFrm::SetAltitude(Double z)
 {
     wxString str;
     if (m_Gfx->m_Metric) {
-	str.Printf("  %s %dm", msg(/*Altitude*/335),                                               int(z));
+	str.Printf("  %s %dm", msg(/*Altitude*/335),
+		   int(z));
     } else {
 	str.Printf("  %s %dft", msg(/*Altitude*/335),
 		   int(z / METRES_PER_FOOT));
