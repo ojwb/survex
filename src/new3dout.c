@@ -301,7 +301,7 @@ cave_write_base_source(void)
   }
 
 #if 0
-  /* remove any ./../. etcs but not today*/
+  /* remove any ./../. etcs but not today */
   temp = osstrdup(basesource);
   realpath(temp, basesource);
 #endif
@@ -326,10 +326,10 @@ cave_close(img *pimg)
    save3d(twiglet);
    if (pimg->fh) {
       /* If writing a binary file, write end of data marker */
-      putc(END_3D,pimg->fh);
+      putc(END_3D, pimg->fh);
       /* and finally write how many stations there are */
-      fseek(pimg->fh,7L,SEEK_SET);
-      put32((INT32_T)statcount,pimg->fh);
+      fseek(pimg->fh, 7L, SEEK_SET);
+      put32((INT32_T)statcount, pimg->fh);
       fclose(pimg->fh);
    }
    /* FIXME: don't understand this comment:
