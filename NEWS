@@ -1,10 +1,16 @@
 Changes in 1.0.2:
 
+* printdm/printpcl/printwin: take notice of font_size_labels setting in
+  print.ini etc.
+
 * (Mac OS X version): command line programs now build.  We're working on Aven.
 
 * Updates to the Catalan and Spanish translations.
 
 * Updated TODO list.
+
+* xcaverot: documented environmental variables XCAVEROT_INDICATOR_RADIUS and
+  XCAVEROT_FONTNAME.
 
 Changes in 1.0.1:
 
