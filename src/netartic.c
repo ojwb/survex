@@ -249,7 +249,7 @@ articulate(void)
 
 	 /* FIXME: logic to count components isn't the same as the logic
 	  * to start a new one - we should start a new one for a fixed point
-	  * cut-line I think */
+	  * cut-line (see below) */
 	 if (component_list) component_list->artic->stnlist = artlist;
 
 	 art = osnew(articulation);
@@ -279,6 +279,9 @@ articulate(void)
 	     * We're looking for articulation legs - these are those where
 	     * colouring from here doesn't reach a fixed point (including
 	     * stn - the fixed point we've started from)
+	     *
+	     * FIXME: this is a "fixed point cut-line" case where we could
+	     * start a new component.
 	     */
 	    long col = visit(stn2, reverse_leg_dirn(stn->leg[i]));
 #ifdef DEBUG_ARTIC
