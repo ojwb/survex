@@ -822,7 +822,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	// Set up model transformation matrix.
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslated(m_Params.display_shift.x, m_Params.display_shift.y, 0.0);
+	glTranslated(m_Params.display_shift.x, -m_Params.display_shift.y, 0.0);
 	glScaled(m_Params.scale, m_Params.scale, m_Params.scale);
 	m_Params.rotation.CopyToOpenGL();
 	glTranslated(m_Params.translation.x, m_Params.translation.z, m_Params.translation.y);
@@ -1621,11 +1621,7 @@ void GfxCore::TiltCave(Double tilt_angle)
     m_TiltAngle += tilt_angle;
 
     Quaternion q;
-#ifdef AVENGL
-    q.setFromEulerAngles(tilt_angle - M_PI/2.0, 0.0, 0.0);
-#else
     q.setFromEulerAngles(tilt_angle, 0.0, 0.0);
-#endif
 
     m_Params.rotation = q * m_Params.rotation;
     m_RotationMatrix = m_Params.rotation.asMatrix();
@@ -1657,12 +1653,38 @@ void GfxCore::HandleTranslate(wxPoint point)
     int dy = point.y - m_DragStart.y;
 
     // Find out how far the mouse motion takes us in cave coords.
+    /*
+#ifdef AVENGL
+    Double cx, cy, cz;
+    Double px0, py0, pz0;
+    Double px1, py1, pz1;
+    Double modelview_matrix[16];
+    Double projection_matrix[16];
+    GLint viewport[4];
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
+    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    gluUnProject(point.x, point.y, 0.5, modelview_matrix, projection_matrix, viewport, &px0, &py0, &pz0);
+    gluUnProject(m_DragStart.x, m_DragStart.y, 0.5, modelview_matrix, projection_matrix, viewport,
+		 &px0, &py0, &pz0);
+    cx = px1 - px0;
+    cy = py1 - py0;
+    cz = pz1 - pz0;
+#else*/
     Double x = Double(dx / m_Params.scale);
     Double z = Double(-dy / m_Params.scale);
+#ifdef AVENGL
+    //--share with above
+    double size = MAX3(m_Parent->GetXExtent(), m_Parent->GetYExtent(), m_Parent->GetZExtent()) * 2.0;
+    x *= (size / m_XSize);
+    z *= (size * 0.75 / m_YSize);
+#endif
+
     Matrix4 inverse_rotation = m_Params.rotation.asInverseMatrix();
     Double cx = Double(inverse_rotation.get(0, 0)*x + inverse_rotation.get(0, 2)*z);
     Double cy = Double(inverse_rotation.get(1, 0)*x + inverse_rotation.get(1, 2)*z);
     Double cz = Double(inverse_rotation.get(2, 0)*x + inverse_rotation.get(2, 2)*z);
+    //#endif
     
     // Update parameters and redraw.
     m_Params.translation.x += cx;
