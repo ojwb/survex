@@ -108,17 +108,20 @@ pick_scale(int x, int y)
 #if 0
    double E;
 #endif
-   /*    pagesY = ceil((image_dy+61.0)/PaperDepth)
-    * so (image_dy+61.0)/PaperDepth <= pagesY < (image_dy+61.0)/PaperDepth+1
-    * so image_dy <= pagesY*PaperDepth-61 < image_dy+PaperDepth
+   /*    pagesY = ceil((image_dy+allow)/PaperDepth)
+    * so (image_dy+allow)/PaperDepth <= pagesY < (image_dy+allow)/PaperDepth+1
+    * so image_dy <= pagesY*PaperDepth-allow < image_dy+PaperDepth
     * and Sc = image_dy / (yMax-yMin)
-    * so Sc <= (pagesY*PaperDepth-61)/(yMax-yMin) < Sc+PaperDepth/(yMax-yMin)
+    * so Sc <= (pagesY*PaperDepth-allow)/(yMax-yMin) < Sc+PaperDepth/(yMax-yMin)
     */
    Sc_x = Sc_y = DEF_RATIO;
    if (PaperWidth > 0.0 && xMax > xMin)
       Sc_x = (x * PaperWidth - 19.0) / (xMax - xMin);
-   if (PaperDepth > 0.0 && yMax > yMin)
-      Sc_y = (y * PaperDepth - 61.0) / (yMax - yMin);
+   if (PaperDepth > 0.0 && yMax > yMin) {
+      double allow = 21.0;
+      if (!fRaw) allow += (view == EXTELEV ? 30.0 : 40.0);
+      Sc_y = (y * PaperDepth - allow) / (yMax - yMin);
+   }
 
    Sc_x = min(Sc_x, Sc_y) * 0.99; /* shrink by 1% so we don't cock up */
 #if 0 /* this picks a nice (in some sense) ratio, but is too stingy */
@@ -135,6 +138,9 @@ pages_required(double Sc)
    double image_centre_x, image_centre_y;
    double paper_centre_x, paper_centre_y;
 
+   double allow = 21.0;
+   if (!fRaw) allow += (view == EXTELEV ? 30.0 : 40.0);
+
    image_dx = (xMax - xMin) * Sc;
    if (PaperWidth > 0.0) {
       pagesX = (int)ceil((image_dx + 19.0) / PaperWidth);
@@ -149,11 +155,11 @@ pages_required(double Sc)
 
    image_dy = (yMax - yMin) * Sc;
    if (PaperDepth > 0.0) {
-      pagesY = (int)ceil((image_dy + 61.0) / PaperDepth);
+      pagesY = (int)ceil((image_dy + allow) / PaperDepth);
    } else {
       /* paperdepth not fixed (eg window or roll printer/plotter) */
       pagesY = 1;
-      PaperDepth = image_dy + 61.0;
+      PaperDepth = image_dy + allow;
    }
    paper_centre_y = 20 + (pagesY * PaperDepth) / 2;
    image_centre_y = Sc * (yMax + yMin) / 2;
