@@ -1,3 +1,13 @@
+survex (1.0.8) unstable; urgency=low
+
+  * aven: lots of improvements and fixes - now uses 25% less memory.
+  * cavern: support for backsights, percentage gradients, inferred exports,
+    and a few minor bug fixes.
+  * print*: a few improvements.
+  * New Slovak (sk) internationalisation.
+
+ -- Wookey <wookey@survex.com>  Mon, 13 May 2002 12:13:27 +0100
+
 survex (1.0.7) unstable; urgency=low
 
   * print*: halted with a failed assertion in 1.0.4-1.0.6.
