@@ -78,32 +78,39 @@ AC_CHECK_LIB(m, sqrt)
 
 AC_PATH_XTRA
 
+WXCONFIG=wxgtk-config
+if test x$no_x = xyes; then
+  WXCONFIG=
+fi
 PRINTWIN=
 if test -n "$MINGW32$CYGWIN" ; then
   PRINTWIN='printwin$(EXEEXT)'
   AC_MSG_RESULT(building printwin)
+  WXCONFIG=wxmsw-config
 fi
 
 AC_SUBST(PRINTWIN)
 
-WXCONFIG=wxgtk-config
 AC_ARG_WITH(wxconfig,
 [  --with-wxconfig=PROGRAM wxWindows configuration script to use to build Aven],
 [WXCONFIG=$with_wxconfig
 ])
 
-if test x$no_x = xyes; then
-  AVEN=
-else
+if test x$no_x = xno; then
   AC_CHECK_LIB(Xext, XdbeQueryExtension, X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS", ,
                $X_LIBS $X_PRE_LIBS -lX11 -lXext $X_EXTRA_LIBS)
   CAVEROT=xcaverot ${CAVEROT}
   AC_MSG_RESULT(building xcaverot)
+fi
 
+if test -n "$wxconfig" ; then
   if test -n $AVEN; then
     AC_MSG_CHECKING(for wxwindows)
     if ( exec >&5 2>&5 ; $WXCONFIG --version ; exit $? ) then
       WX_LIBS=`$WXCONFIG --libs`
+      if test -n "$MINGW32$CYGWIN" ; then
+        WX_LIBS="aven.coff $WX_LIBS"
+      fi
       AC_SUBST(WX_LIBS)
       WX_CFLAGS=`$WXCONFIG --cflags`
       AC_SUBST(WX_CFLAGS)
@@ -114,6 +121,8 @@ else
       AVEN=
     fi
   fi
+else
+  AVEN=
 fi
 
 AC_LANG_C

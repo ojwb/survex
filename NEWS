@@ -45,6 +45,8 @@ Changes in 0.97-prerelease5:
   currently these are ignored, but they provide a place to put data
   when importing/exporting, and will be processed in future versions.
 
+* (MS Windows version): aven updated to same codebase as Unix version.
+
 Changes in 0.97-prerelease4:
 
 * Updated Portuguese and German translations.

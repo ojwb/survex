@@ -28,9 +28,13 @@ aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c
 
-aven_LDADD = @LIBOBJS@ @WX_LIBS@
+aven_LDADD = @LIBOBJS@ @WX_LIBS@ # FIXME: + aven.coff on win32
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN
+
+# FIXME: should use wxconfig or similar
+aven.coff: aven.rc
+	i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $@ $<
 
 PRSRC = prcore.c prio.c useful.c img.c $(COMMONSRC)
  

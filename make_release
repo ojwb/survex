@@ -114,7 +114,7 @@ else
       export CXX
    fi
 fi
-if ! env LDFLAGS=-s CAVEROT= ./configure --with-x=no ; then
+if ! env LDFLAGS=-s CAVEROT= ./configure --with-x=no --with-wxconfig=`pwd`/mingw_extras/wxmsw-config ; then
    echo mingw configure failed
    exit 1
 fi
