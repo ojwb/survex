@@ -41,11 +41,12 @@ already covered).
 <H2>Developing on Unix Platforms</H2>
 
 <P>You'll need automake 1.5 or later (earlier versions don't support
-per-executable CFLAGS) and autoconf 2.50 or later (for AC_ARG_VAR).
+per-executable CFLAGS; 1.6 has been tested and works)
+and autoconf 2.50 or later (for AC_ARG_VAR).
 There seem to be problems with trying to use autoconf 2.53 - autoconf 2.52
-works though.  It's possible automake 1.6 may be problematic - we've not
-tried it, but there are reports of it requiring tweaks to existing packages.
-For building the documentation you'll need sgmltools 2 or later,
+is known to work.
+
+<P>For building the documentation you'll need sgmltools 2 or later,
 docbook-to-man, and w3m.
 
 <H2>Building on Non-Unix Platforms</H2>
@@ -89,7 +90,8 @@ END
 sh build-djgpp.sh
 </pre>
 
-<P>Then you need to build and install the allegro graphics library:
+<P>Then you need to build and install the
+<A HREF="http://www.talula.demon.co.uk/allegro/">Allegro graphics library</A>:
 
 <P><A
 HREF="http://prdownloads.sourceforge.net/alleg/allegro-4.0.1.tar.gz"
@@ -119,7 +121,7 @@ configure script, or perhaps simpler to modify miniam.pl to generate a
 suitable makefile.  I'm happy to help if you want to try this, and
 I'll incorporate patches provided they're fairly clean.
 
-<H3>Mingw (MS Windows)</H3>
+<H3>Mingw (Microsoft Windows)</H3>
 
 <P>Currently I build this with a Linux hosted cross-compiler.  I use
 the packaged cross-compiler in the debian testing/unstable distribution.
