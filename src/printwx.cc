@@ -113,7 +113,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
 			 const wxString & title, const wxString & datestamp,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf)
-	: wxDialog(parent, -1, wxString("Print")),
+	: wxDialog(parent, -1, wxString(msg(/*Print*/399))),
 	  m_File(filename), m_parent(parent)
 {
     m_layout = layout_new();
@@ -161,12 +161,12 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
     v2->Add(m_printSize, 0, wxALIGN_LEFT + wxALL, 5);
     static const wxString radio_choices[] = { msg(/*Plan view*/117), msg(/*Elevation*/118), "Tilted" }; // FIXME TRANSLATE
-    m_aspect = new wxRadioBox(this, svx_ASPECT, "Orientation",
+    m_aspect = new wxRadioBox(this, svx_ASPECT, "Orientation", // FIXME TRANSLATE
 			      wxDefaultPosition, wxDefaultSize, 3, 
 			      radio_choices);
     v2->Add(m_aspect, 0, wxALIGN_LEFT + wxALL, 5);
     wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
-    m_tilttext = new wxStaticText(this, -1, "Tilt angle");
+    m_tilttext = new wxStaticText(this, -1, "Tilt angle"); // FIXME TRANSLATE
     anglebox->Add(m_tilttext,0,wxALIGN_CENTER_VERTICAL + wxALIGN_RIGHT + wxALL,5);
     m_tilt = new wxSpinCtrl(this,svx_TILT);
     anglebox->Add(m_tilt,0,wxALIGN_CENTER_VERTICAL + wxALIGN_LEFT + wxALL,5);
@@ -178,19 +178,19 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     v2->Add(anglebox,0,wxALIGN_LEFT + wxALL,0);
     h1->Add(v2,0,wxALIGN_LEFT + wxALL,5);
     
-    m_legs = new wxCheckBox(this, svx_LEGS, "Legs");
+    m_legs = new wxCheckBox(this, svx_LEGS, msg(/*Underground Survey Legs*/262));
     v3->Add(m_legs, 0, wxALIGN_LEFT|wxALL, 2);
-    m_surface = new wxCheckBox(this, svx_SCALEBAR, msg(/*Surface survey legs*/403));
+    m_surface = new wxCheckBox(this, svx_SCALEBAR, msg(/*Sur&amp;face Survey Legs*/403));
     v3->Add(m_surface, 0, wxALIGN_LEFT|wxALL, 2);
-    m_stations = new wxCheckBox(this, svx_STATIONS, "Stations");
+    m_stations = new wxCheckBox(this, svx_STATIONS, msg(/*Crosses*/261));
     v3->Add(m_stations, 0, wxALIGN_LEFT|wxALL, 2);
-    m_names = new wxCheckBox(this, svx_NAMES, "Station names");
+    m_names = new wxCheckBox(this, svx_NAMES, msg(/*Station Names*/260));
     v3->Add(m_names, 0, wxALIGN_LEFT|wxALL, 2);
-    m_borders = new wxCheckBox(this, svx_BORDERS, "Borders");
+    m_borders = new wxCheckBox(this, svx_BORDERS, "Borders"); // FIXME TRANSLATE
     v3->Add(m_borders, 0, wxALIGN_LEFT|wxALL, 2);
 //    m_blanks = new wxCheckBox(this, svx_BLANKS, "Blank Pages");
 //    v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
-    m_infoBox = new wxCheckBox(this, svx_INFOBOX, "Info Box");
+    m_infoBox = new wxCheckBox(this, svx_INFOBOX, "Info Box"); // FIXME TRANSLATE
     v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
@@ -243,7 +243,7 @@ svxPrintDlg::OnPreview(wxCommandEvent& event) {
 			    new svxPrintout(m_parent, m_layout,
 					    m_parent->GetPageSetupData(), m_File),
 			    &pd);
-    wxPreviewFrame *frame = new wxPreviewFrame(pv, m_parent, "Print Preview");
+    wxPreviewFrame *frame = new wxPreviewFrame(pv, m_parent, msg(/*Print Preview*/398));
     frame->Centre(wxBOTH);
     frame->Initialize();
     int w, h;
@@ -830,8 +830,15 @@ svxPrintout::OnPrintPage(int pageNum) {
 	wxSize sz = pdc->GetSize();
 	xpPageWidth = sz.GetWidth();
 	ypPageDepth = sz.GetHeight();
-	font_labels->SetPointSize((int)(fontsize_labels * xpPageWidth / w));
-	font_default->SetPointSize((int)(fontsize * xpPageWidth / w));
+	printf("default font size = %d * %ld / %d = %.3f\n", fontsize, xpPageWidth, w, (double)fontsize * xpPageWidth / w);
+	double font_scaling = (double)xpPageWidth / w;
+	int W, H;
+	GetPPIPrinter(&W, &H);
+	font_scaling *= H;
+	GetPPIScreen(&W, &H);
+	font_scaling /= H;
+	font_labels->SetPointSize((int)(fontsize_labels * font_scaling));
+	font_default->SetPointSize((int)(fontsize * font_scaling));
     } else {
 	font_labels->SetPointSize(fontsize_labels);
 	font_default->SetPointSize(fontsize);

@@ -2858,7 +2858,40 @@ es:259 Azimut
 it:259 Azimut
 sk:259 Azimut
 ro:259 Azimut
-# XXX 260-269
+# cf 270
+en:260 Station Names
+fr:260 Noms de station
+de:260     Me&szlig;punktnamen
+de-de,de-ch:260 Messpunktnamen
+pt:260 Nomes de base
+ca:260 Noms d'estaci&oacute;
+es:260 Nombres de estaci&oacute;n
+it:260 Nome di stazione
+sk:260 Men&aacute; bodov
+ro:260 Numele punctelor de statie
+# cf 270
+en:261 Crosses
+fr:261 Croisements
+de:261 Kreuze
+pt,pt-br:261 Marcas de base
+ca:261 Creus
+es:261 Cruces
+it:261 Croci
+sk:261 Kr&iacute;&zcaron;iky
+ro:261 Cruci
+# cf 272
+en:262 Underground Survey Legs
+en-us:262 Underground Shots
+fr:262 Vis&eacute;es sous terre
+#de:262 Strecken
+de:262 Strecken unter Grund
+pt:262 Visadas Subterr&acirc;neas
+ca:262 Tirades Subterr&agrave;nies
+es:262 Tiradas Subterr&aacute;neas
+it:262 Battute del rilievo sotterraneo
+sk:262 Z&aacute;mery pod povrchom
+ro:262 Portiuni subterane ale topografiei
+# XXX 262-269
 # The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
 fr:270 @Noms de station##Ctrl+N
@@ -3397,7 +3430,25 @@ pt:381 Pa@ge Setup...
 it:381 @Imposta pagina...
 sk:381 @Nastaven&iacute; tisku...
 ro:381 Initializare @pagina...
-#
+# Title of the print preview dialog
+# TRANSLATE fr ca es it sk de pt-br check translations culled from elsewhere
+en:398 Print Preview
+fr:398 Aperçu avant impression
+de:398 Druckvorschau
+pt-br:398 Visualizar impress&atilde;o
+ca:398 Imprimeix previsualitzacii&oacute;
+es:398 Previsualizaci&oacute;n de la impresi&oacute;n
+it:398 Anteprima di stampa
+sk:398 Ni&aacute;hled tisku
+# Title of the print dialog
+en:399 Print
+fr:399 Imprimer
+ca:399 Imprimir
+es:399 Imprimir
+it:399 Stampa
+sk:399 Tla&ccaron;i&tcaron;
+ro:399 Imprimare
+# cf 399
 en:400 &amp;Print
 fr:400 &amp;Imprimer
 ca:400 &amp;Imprimir
