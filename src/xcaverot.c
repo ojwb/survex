@@ -1287,9 +1287,12 @@ main(int argc, char **argv)
    }
    button_create("Elev", "Plan", &plan_elev, process_plan);
    button_create("Label", "No Label", &labelling, NULL);
-   button_create("Cross", "No Cross", &crossing, NULL);   
-   button_create("Legs", "No Legs", &legs, NULL);
-   button_create("Surf", "No Surf", &surf, NULL);
+   button_create("Cross", "No Cross", &crossing, NULL);
+   if (!pda) {
+      /* nice to have, but there's not enough room on the ipaq */
+      button_create("Legs", "No Legs", &legs, NULL);
+      button_create("Surf", "No Surf", &surf, NULL);
+   }
 #if 0 /* unused */
    button_create("Select", NULL, NULL, process_select);
 #endif
