@@ -230,6 +230,16 @@ int cvrotgfx_init( void ) {
 # elif defined(ALLEGRO)
    int res;
    int c, w, h;
+
+   void setup_mouse(void) {
+      mouse_buttons = install_mouse(); /* returns # of buttons or -1 */
+      if (mouse_buttons >= 0) {
+	 int dummy;
+	 /* skip the glitch we cause in the first reading */
+	 cvrotgfx_read_mouse( &dummy, &dummy, &dummy );
+      }
+   }
+
    res = allegro_init();
    /* test for res !=0, but never the case ATM */
    if (res) {
@@ -246,30 +256,24 @@ int cvrotgfx_init( void ) {
    }
 
    if (mode_picker) {
-      res = set_gfx_mode( GFX_VGA, 320, 200, 0, 0 );
-	{
-	   int ol_keypressed(void) {
-	      return _bios_keybrd(_KEYBRD_READY);
-	   }
-	   int ol_readkey(void) {
-	      return _bios_keybrd(_KEYBRD_READ);
-	   }
-	   install_keyboard_hooks( ol_keypressed, ol_readkey );
-	}
-      install_timer();
-      mouse_buttons = install_mouse(); /* returns # of buttons or -1 */
-      if (mouse_buttons >= 0) {
-	 int dummy;
-	 /* skip the glitch we cause in the first reading */
-	 cvrotgfx_read_mouse( &dummy, &dummy, &dummy );
+      int ol_keypressed(void) {
+	 return _bios_keybrd(_KEYBRD_READY);
       }
+      int ol_readkey(void) {
+	 return _bios_keybrd(_KEYBRD_READ);
+      }
+      res = set_gfx_mode( GFX_VGA, 320, 200, 0, 0 );
       if (res) {
 	 allegro_exit();
 	 printf("bad mode select 0\n");
 	 printf("%s\n",allegro_error);
 	 exit(1);
       }
+      setup_mouse();
+      /* install a faked up keyboard handler for the picker */
+      install_keyboard_hooks( ol_keypressed, ol_readkey );
       clear(screen);
+      install_timer();
       set_gui_colors();
       
       if (!gfx_mode_select( &c, &w, &h )) {
@@ -278,12 +282,11 @@ int cvrotgfx_init( void ) {
 	 printf("%s\n",allegro_error);
 	 exit(1);
       }
-      remove_timer();      
-/*   remove_keyboard(); */ /* for now */
+      remove_timer();
+      remove_keyboard();
 /*   set_palette( desktop_palette ); */
       res = set_gfx_mode( c, w, h, 0, 0 );
    }
-   text_mode( -1 ); /* don't paint in text background */
 #if 0
    /*!HACK! may have "not initialised" problems -- this is a quick fix */
    BitMapDraw = screen;
@@ -295,12 +298,17 @@ int cvrotgfx_init( void ) {
       printf("%s\n",allegro_error);
       exit(1);
    }
+   text_mode( -1 ); /* don't paint in text background */
    BitMap = create_bitmap( SCREEN_W, SCREEN_H );
    /* check that initialisation was OK */
    if (BitMap == NULL) {
       allegro_exit();
       fatal(81,NULL,NULL,0);
    }
+
+   /* This makes sure the mouse gets set up if we didn't use the picker */
+   if (mouse_buttons == -3) setup_mouse();
+
    colText = 255;
    colDraw = 1;
    xcMac = SCREEN_W;
