@@ -5,7 +5,7 @@ dnl CFLAGS=-DDEFAULTLANG=fr to build with French as the default language.
 dnl Need autoconf 2.13 or later for 3 argument version of AC_DEFINE
 AC_PREREQ(2.13)
 AC_INIT(src/cavern.c)
-AM_INIT_AUTOMAKE(survex, 0.98)
+AM_INIT_AUTOMAKE(survex, 0.99)
 AM_CONFIG_HEADER(config.h)
 
 dnl keep this on two lines like this - miniam.pl relies on this

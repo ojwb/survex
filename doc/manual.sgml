@@ -61,7 +61,7 @@ where this isn't the case, let me know.
 
 <Article Status="draft" id=index>
  <ArtHeader>
-  <Title>&survexsuite; 0.98 Documentation</Title>
+  <Title>&survexsuite; 0.99 Documentation</Title>
   <AuthorGroup>
    <Author>
     <FirstName/Olly/
@@ -87,8 +87,8 @@ where this isn't the case, let me know.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-08-15 12:09:30 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.41 2001-08-15 12:09:30 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-08-15 12:23:39 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.42 2001-08-15 12:23:39 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
