@@ -55,12 +55,14 @@ class PresentationMark {
     Double x, y, z;
     Double angle, tilt_angle;
     Double scale;
-    PresentationMark() : x(0), y(0), z(0), angle(0), tilt_angle(0), scale(0)
+    Double time;
+    PresentationMark()
+	: x(0), y(0), z(0), angle(0), tilt_angle(0), scale(0), time(0)
 	{ }
     PresentationMark(Double x_, Double y_, Double z_, Double angle_,
-		     Double tilt_angle_, Double scale_)
+		     Double tilt_angle_, Double scale_, Double time_ = 0)
 	: x(x_), y(y_), z(z_), angle(angle_), tilt_angle(tilt_angle_),
-	  scale(scale_)
+	  scale(scale_), time(time_)
 	{ }
     bool is_valid() const { return scale > 0; }
 };

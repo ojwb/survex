@@ -1168,31 +1168,36 @@ bool GfxCore::Animate()
 		break;
 	    }
 
-	    double d = sqrt(sqrd(next_mark.x - prev_mark.x) +
-			    sqrd(next_mark.y - prev_mark.y) +
-			    sqrd(next_mark.z - prev_mark.z));
-	    // FIXME: should ignore component of d which is unseen in
-	    // non-perspective mode?
-	    next_mark_time = sqrd(d / 100);
-	    double a = next_mark.angle - prev_mark.angle;
-	    if (a > 180.0) {
-		next_mark.angle -= 360.0;
-		a = 360.0 - a;
-	    } else if (a < -180.0) {
-		next_mark.angle += 360.0;
-		a += 360.0;
+	    if (next_mark.time > 0) {
+		next_mark_time = next_mark.time;
 	    } else {
-		a = fabs(a);
+		double d = sqrt(sqrd(next_mark.x - prev_mark.x) +
+				sqrd(next_mark.y - prev_mark.y) +
+				sqrd(next_mark.z - prev_mark.z));
+		// FIXME: should ignore component of d which is unseen in
+		// non-perspective mode?
+		next_mark_time = sqrd(d / 100);
+		double a = next_mark.angle - prev_mark.angle;
+		if (a > 180.0) {
+		    next_mark.angle -= 360.0;
+		    a = 360.0 - a;
+		} else if (a < -180.0) {
+		    next_mark.angle += 360.0;
+		    a += 360.0;
+		} else {
+		    a = fabs(a);
+		}
+		next_mark_time += sqrd(a / 60.0);
+		double ta = fabs(next_mark.tilt_angle - prev_mark.tilt_angle);
+		next_mark_time += sqrd(ta / 60.0);
+		double s = fabs(log(next_mark.scale) - log(prev_mark.scale));
+		next_mark_time += sqrd(s / 2);
+		next_mark_time = sqrt(next_mark_time);
+		// was: next_mark_time = max(max(d, s / 2), max(a, ta) / 60);
+		//printf("*** %.6f from (\nd: %.6f\ns: %.6f\na: %.6f\nt: %.6f )\n",
+		//       next_mark_time, d/100, s/2, a/60, ta/60);
+		if (next_mark.time < 0) next_mark_time *= -next_mark.time;
 	    }
-	    next_mark_time += sqrd(a / 60.0);
-	    double ta = fabs(next_mark.tilt_angle - prev_mark.tilt_angle);
-	    next_mark_time += sqrd(ta / 60.0);
-	    double s = fabs(log(next_mark.scale) - log(prev_mark.scale));
-	    next_mark_time += sqrd(s / 2);
-	    next_mark_time = sqrt(next_mark_time);
-	    // was: next_mark_time = max(max(d, s / 2), max(a, ta) / 60);
-	    //printf("*** %.6f from (\nd: %.6f\ns: %.6f\na: %.6f\nt: %.6f )\n",
-	    //       next_mark_time, d/100, s/2, a/60, ta/60);
 	}
 
 	if (presentation_mode) {

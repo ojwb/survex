@@ -107,7 +107,7 @@ END_EVENT_TABLE()
 
 class EditMarkDlg : public wxDialog {
     wxTextCtrl * easting, * northing, * altitude;
-    wxTextCtrl * angle, * tilt_angle, * scale;
+    wxTextCtrl * angle, * tilt_angle, * scale, * time;
 public:
     EditMarkDlg(wxWindow* parent, const PresentationMark & p)
 	: wxDialog(parent, 500, wxString("Edit Waypoint"))
@@ -118,7 +118,14 @@ public:
 	angle = new wxTextCtrl(this, 604, wxString::Format("%.3f", p.angle));
 	tilt_angle = new wxTextCtrl(this, 605, wxString::Format("%.3f", p.tilt_angle)); 
 	scale = new wxTextCtrl(this, 606, wxString::Format("%.3f", p.scale));
-	
+	if (p.time > 0.0) {
+	    time = new wxTextCtrl(this, 607, wxString::Format("%.3f", p.time));
+	} else if (p.time < 0.0) {
+	    time = new wxTextCtrl(this, 607, wxString::Format("*%.3f", -p.time));
+	} else {
+	    time = new wxTextCtrl(this, 607, "0");
+	}
+
 	wxBoxSizer * coords = new wxBoxSizer(wxHORIZONTAL);
 	coords->Add(new wxStaticText(this, 610, "("), 0, wxALIGN_CENTRE_VERTICAL);
 	coords->Add(easting, 1);
@@ -145,12 +152,19 @@ public:
 	vert->Add(r4, 0, wxALL, 8);
 
 	wxBoxSizer * r5 = new wxBoxSizer(wxHORIZONTAL);
+	r5->Add(new wxStaticText(this, 616, "Time: "), 0, wxALIGN_CENTRE_VERTICAL);
+	r5->Add(time);
+	r5->Add(new wxStaticText(this, 617, " secs (0 = auto; *6 = 6 times auto)"),
+		0, wxALIGN_CENTRE_VERTICAL);
+	vert->Add(r5, 0, wxALL, 8);
+
+	wxBoxSizer * buttons = new wxBoxSizer(wxHORIZONTAL);
 	wxButton* cancel = new wxButton(this, wxID_CANCEL, wxString("Cancel"));
-	r5->Add(cancel, 0, wxALL, 8);
+	buttons->Add(cancel, 0, wxALL, 8);
 	wxButton* ok = new wxButton(this, wxID_OK, wxString("OK"));
 	ok->SetDefault();
-	r5->Add(ok, 0, wxALL, 8);
-	vert->Add(r5, 0, wxALL|wxALIGN_RIGHT);
+	buttons->Add(ok, 0, wxALL, 8);
+	vert->Add(buttons, 0, wxALL|wxALIGN_RIGHT);
 
 	SetAutoLayout(true);
 	SetSizer(vert);
@@ -159,14 +173,17 @@ public:
 	vert->SetSizeHints(this);
     } 
     PresentationMark GetMark() const {
-	double x, y, z, a, t, s;
+	double x, y, z, a, t, s, T;
 	x = atof(easting->GetValue().c_str());
 	y = atof(northing->GetValue().c_str());
 	z = atof(altitude->GetValue().c_str());
 	a = atof(angle->GetValue().c_str());
 	t = atof(tilt_angle->GetValue().c_str());
 	s = atof(scale->GetValue().c_str());
-	return PresentationMark(x, y, z, a, t, s);
+	wxString str = time->GetValue();
+	if (str[0u] == '*') str[0u] = '-';
+	T = atof(str.c_str());
+	return PresentationMark(x, y, z, a, t, s, T);
     }
 
 private:
@@ -236,7 +253,7 @@ class AvenPresList : public wxListCtrl {
 		    break;
 		}
 		default:
-		    printf("event.GetIndex() = %ld\n", event.GetIndex());
+		    //printf("event.GetIndex() = %ld\n", event.GetIndex());
 		    event.Skip();
 	    }
 	}
@@ -287,6 +304,7 @@ class AvenPresList : public wxListCtrl {
 		case 3: v = p.angle; break;
 		case 4: v = p.tilt_angle; break;
 		case 5: v = p.scale; break;
+		case 6: v = p.time; break;
 #endif
 		default: return "";
 	    }
@@ -330,6 +348,10 @@ class AvenPresList : public wxListCtrl {
 		write_double(p.tilt_angle, fh_pres);
 		putc(' ', fh_pres);
 		write_double(p.scale, fh_pres);
+		if (p.time != 0.0) {
+		    putc(' ', fh_pres);
+		    write_double(p.time, fh_pres);
+		}
 		putc('\n', fh_pres);
 	    }
 	    fclose(fh_pres);
@@ -356,13 +378,15 @@ class AvenPresList : public wxListCtrl {
 		}
 		if (i) {
 		    buf[i] = 0;
-		    double x, y, z, a, t, s;
-		    if (sscanf(buf, "%lf %lf %lf %lf %lf %lf", &x, &y, &z, &a, &t, &s) != 6) {
+		    double x, y, z, a, t, s, T;
+		    int c = sscanf(buf, "%lf %lf %lf %lf %lf %lf %lf", &x, &y, &z, &a, &t, &s, &T);
+		    if (c < 6) {
 			DeleteAllItems();
 			wxGetApp().ReportError(wxString::Format(msg(/*Error in format of presentation file `%s'*/323), fnm.c_str()));
 			return false;
 		    }
-		    AddMark(item, PresentationMark(x, y, z, a, t, s));
+		    if (c == 6) T = 0;
+		    AddMark(item, PresentationMark(x, y, z, a, t, s, T));
 		    ++item;
 		}
 	    }
@@ -1668,9 +1692,10 @@ void MainFrm::OnPresExportMovie(wxCommandEvent&)
     // FIXME : Taking the leaf of the currently loaded presentation as the
     // default might make more sense?
     char *baseleaf = baseleaf_from_fnm(m_File.c_str());
-    wxFileDialog dlg (this, wxString("Export Movie"), "",
-		      wxString(baseleaf) + ".mpg",
-		      "*.mpg", wxSAVE|wxOVERWRITE_PROMPT);
+    wxFileDialog dlg(this, wxString("Export Movie"), "",
+		     wxString(baseleaf) + ".mpg",
+		     "MPEG|*.mpg|AVI|*.avi|QuickTime|*.mov|WMV|*.wmv;*.asf",
+		     wxSAVE|wxOVERWRITE_PROMPT);
     free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	if (!m_Gfx->ExportMovie(dlg.GetPath())) {
