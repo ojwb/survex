@@ -117,6 +117,13 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 #endif
     info += '\n';
     info += wxVERSION_STRING;
+    info += '\n';
+    int bpp = wxDisplayDepth();
+    wxString s;
+    s.Printf("Display Depth: %d bpp", bpp);
+    info += s;
+    if (wxColourDisplay()) info += " (colour)";
+
     // Use a readonly multiline text edit for the system info so users can
     // easily cut and paste it into an email when reporting bugs.
     vert->Add(new wxTextCtrl(this, 507, info, wxDefaultPosition,
