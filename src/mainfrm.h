@@ -25,7 +25,8 @@
 #define mainfrm_h
 
 #include "wx.h"
-#include "wx/docview.h"
+#include <wx/docview.h>
+#include <wx/notebook.h>
 #include "gfxcore.h"
 #include "message.h"
 #include "aventreectrl.h"
@@ -203,6 +204,9 @@ class MainFrm : public wxFrame {
     wxStaticText* m_Dist3;
     wxStaticText* m_Found;
     wxCheckBox* m_RegexpCheckBox;
+    wxNotebook* m_Notebook;
+    wxPanel* m_PresPanel;
+//    wxListCtrl* m_PresList;
     wxString m_File;
     int separator; // character separating survey levels (often '.')
     PrefsDlg* m_PrefsDlg;
@@ -377,6 +381,7 @@ public:
     void OnViewSidePanelUpdate(wxUpdateUIEvent& event);
     void OnViewSidePanel(wxCommandEvent& event);
     void ToggleSidePanel();
+    bool ShowingSidePanel();
 
     Double GetXExtent() const { return m_XExt; }
     Double GetYExtent() const { return m_YExt; }

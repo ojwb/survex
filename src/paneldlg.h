@@ -28,6 +28,8 @@
 
 #include <list>
 
+using namespace std;
+
 class PanelDlg : public wxDialog {
     wxBoxSizer* m_VertSizer;
     wxBoxSizer* m_ButtonSizer;

@@ -47,6 +47,9 @@ class GUIControl {
     void HandleScaleRotate(bool, wxPoint);
     void HandleTilt(wxPoint);
     void HandleTranslate(wxPoint);
+    
+    void HandCursor();
+    void RestoreCursor();
 
 public:
     GUIControl();

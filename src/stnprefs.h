@@ -26,14 +26,33 @@
 #include "paneldlgpage.h"
 #include "aven.h"
 
+class GfxCore;
+
 class StnPrefs : public PanelDlgPage {
+    GfxCore* m_Parent;
+    
+    DECLARE_EVENT_TABLE()
 
 public:
-    StnPrefs(wxWindow* parent);
+    StnPrefs(GfxCore* parent, wxWindow* parent_win);
     virtual ~StnPrefs();
 
     const wxString GetName();
     const wxBitmap GetIcon();
+
+    void OnShowCrosses(wxCommandEvent&);
+    void OnHighlightEntrances(wxCommandEvent&);
+    void OnHighlightFixedPts(wxCommandEvent&);
+    void OnHighlightExportedPts(wxCommandEvent&);
+    void OnNames(wxCommandEvent&);
+    void OnOverlappingNames(wxCommandEvent&);
+
+    void OnShowCrossesUpdate(wxUpdateUIEvent&);
+    void OnHighlightEntrancesUpdate(wxUpdateUIEvent&);
+    void OnHighlightFixedPtsUpdate(wxUpdateUIEvent&);
+    void OnHighlightExportedPtsUpdate(wxUpdateUIEvent&);
+    void OnNamesUpdate(wxUpdateUIEvent&);
+    void OnOverlappingNamesUpdate(wxUpdateUIEvent&);
 };
 
 #endif

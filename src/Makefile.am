@@ -20,7 +20,8 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
  aventypes.h aventreectrl.h guicontrol.h gla.h survey.h paneldlg.h paneldlgpage.h \
  tubeprefs.h prefsdlg.h stnprefs.h legprefs.h gridprefs.h unitsprefs.h ctlprefs.h \
- indicatorprefs.h winprefs.h
+ indicatorprefs.h winprefs.h \
+ splash.h
 
 # GCC 2.95 frequently dies on gfxcore.cc with an internal error, so if the
 # compile fails, rerun it with -O instead of -O2 - FIXME this probably
@@ -66,7 +67,8 @@ aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc \
  guicontrol.cc aven.pal paneldlg.cc prefsdlg.cc paneldlgpage.cc \
  tubeprefs.cc stnprefs.cc legprefs.cc ctlprefs.cc gridprefs.cc unitsprefs.cc \
- indicatorprefs.cc winprefs.cc
+ indicatorprefs.cc winprefs.cc \
+ splash.cc
 
 avengl_SOURCES = $(aven_SOURCES) gla-gl.cc
 

@@ -218,8 +218,6 @@ void GfxCore::Initialise()
     surface_vertices = new Point[m_Parent->GetNumPoints()];
     surface_num_segs = new int[m_Parent->GetNumLegs()];
 
-    m_Tubes = false;
-
     m_HitTestGridValid = false;
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
@@ -323,19 +321,12 @@ void GfxCore::Initialise()
 void GfxCore::FirstShow()
 {
     GLACanvas::FirstShow();
-	
+    SetBackgroundColour(0.0, 0.0, 0.0);
+
     // Update our record of the client area size and centre.
     GetClientSize(&m_XSize, &m_YSize);
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
-
-    if (m_HaveData) {
-        m_Lists.underground_legs = CreateList(this, &GfxCore::GenerateDisplayList);
-        m_Lists.surface_legs = CreateList(this, &GfxCore::GenerateDisplayListSurface);
-        m_Lists.names = CreateList(this, &GfxCore::DrawNames);
-        m_Lists.indicators = CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
-        //m_Lists.blobs = CreateList(this, &GfxCore::GenerateBlobsDisplayList);
-    }
 
     m_DoneFirstShow = true;
 }
@@ -473,7 +464,10 @@ void GfxCore::UpdateBlobs()
 
 void GfxCore::UpdateLegs()
 {
-    DeleteList(m_Lists.underground_legs);
+    if (m_Lists.underground_legs) {
+        DeleteList(m_Lists.underground_legs);
+    }
+
     m_Lists.underground_legs = CreateList(this, &GfxCore::GenerateDisplayList);
 }
 
@@ -503,7 +497,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     // Redraw the window.
     
     wxPaintDC dc(this);
-    SetCurrent();
+    // SetCurrent();
 
     // Make sure we're initialised.
     if (m_InitialisePending) {
@@ -511,8 +505,10 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         m_InitialisePending = false;
     }
 
+    bool first_time = false;
     if (!m_DoneFirstShow) {
         FirstShow();
+        first_time = true;
     }
 
     assert(GetContext());
@@ -527,13 +523,29 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         // Set up model transformation matrix.
         SetDataTransform();
 
+        if (first_time) {
+            m_Lists.underground_legs =
+                CreateList(this, &GfxCore::GenerateDisplayList);
+            
+            m_Lists.surface_legs =
+                CreateList(this, &GfxCore::GenerateDisplayListSurface);
+            
+            m_Lists.names = CreateList(this, &GfxCore::DrawNames);
+
+            m_Lists.indicators =
+                CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
+        }
+
         if (m_Legs) {
             // Draw the underground legs.
             
             if (m_Tubes) {
                 EnableSmoothPolygons();
             }
+
+            SetColour(m_Pens[7]);
             DrawList(m_Lists.underground_legs);
+
             if (m_Tubes) {
                 DisableSmoothPolygons();
             }
@@ -554,12 +566,13 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         }
         
         // Draw station names.
-        if (m_Names && !m_Control->MouseDown() && !m_Rotating && !m_SwitchingTo) {
+        if (m_Names && !m_Control->MouseDown() && !m_Rotating &&
+            !m_SwitchingTo) {
             DrawList(m_Lists.names);
         }
-
+/*
         //DrawList(m_Lists.blobs);
-        GenerateBlobsDisplayList();
+        GenerateBlobsDisplayList();*/
 /*
         if (m_Grid) {
             // Draw the grid.
@@ -729,7 +742,6 @@ void GfxCore::Draw2dIndicators()
                    -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
                    (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2)/2);
     }
-
     if (m_Clino && m_Lock == lock_NONE) {
         glaCoord tilt = (glaCoord) (m_TiltAngle * 180.0 / M_PI);
 	glaCoord start = fabs(-tilt - 90.0);
@@ -754,6 +766,7 @@ void GfxCore::Draw2dIndicators()
         EndLines();
     }
 
+
     // Ticks
     bool white = false;
     /* FIXME m_Control->DraggingMouseOutsideCompass();
@@ -761,6 +774,7 @@ void GfxCore::Draw2dIndicators()
     glaCoord pan_centre_x = m_XSize/2 - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
     glaCoord centre_y = -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2;
     glaCoord elev_centre_x = m_XSize/2 - GetClinoOffset() - INDICATOR_BOX_SIZE/2;
+
     if (m_Compass && m_RotationOK) {
         int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
         //--FIXME: bodge by Olly to stop wrong tick highlighting
@@ -975,13 +989,17 @@ void GfxCore::DrawDepthbar()
 {
     if (m_Parent->GetZExtent() == 0.0) return;
 
-    int y = m_YSize/2 - (DEPTH_BAR_BLOCK_HEIGHT * (m_Bands - 1) + DEPTH_BAR_OFFSET_Y);
+    int y = m_YSize/2 -
+            (DEPTH_BAR_BLOCK_HEIGHT * (m_Bands - 1) + DEPTH_BAR_OFFSET_Y);
     glaCoord size = 0;
 
     wxString* strs = new wxString[m_Bands];
     for (int band = 0; band < m_Bands; band++) {
-        Double z = m_Parent->GetZMin() + m_Parent->GetZExtent() * band / (m_Bands - 1);
+        Double z = m_Parent->GetZMin() +
+                   m_Parent->GetZExtent() * band / (m_Bands - 1);
+        
         strs[band] = FormatLength(z, false);
+
         glaCoord x, y;
         GetTextExtent(strs[band], &x, &y);
         if (x > size) {
@@ -989,17 +1007,24 @@ void GfxCore::DrawDepthbar()
         }
     }
 
-    glaCoord x_min = m_XSize/2 - DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH - DEPTH_BAR_MARGIN - size;
+    glaCoord x_min = m_XSize/2 - DEPTH_BAR_OFFSET_X -
+                     DEPTH_BAR_BLOCK_WIDTH - DEPTH_BAR_MARGIN - size;
 
-    DrawRectangle(m_Pens[col_BLACK], m_Pens[col_DARK_GREY], m_Pens[col_DARK_GREY],
+    DrawRectangle(m_Pens[col_BLACK],
+                  m_Pens[col_DARK_GREY],
+                  m_Pens[col_DARK_GREY],
                   x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
-                  m_YSize/2 - (DEPTH_BAR_BLOCK_HEIGHT*(m_Bands-1))- DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
-                  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 + DEPTH_BAR_EXTRA_LEFT_MARGIN,
+                  m_YSize/2 - (DEPTH_BAR_BLOCK_HEIGHT*(m_Bands-1)) -
+                      DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
+                  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
+                      DEPTH_BAR_EXTRA_LEFT_MARGIN,
                   DEPTH_BAR_BLOCK_HEIGHT*(m_Bands - 1) + DEPTH_BAR_MARGIN*4);
 
     for (int band = 0; band < m_Bands; band++) {
         if (band < m_Bands - 1) {
-            DrawRectangle(m_Parent->GetPen(band), m_Parent->GetPen(band), m_Parent->GetPen(band+1),
+            DrawRectangle(m_Parent->GetPen(band),
+                          m_Parent->GetPen(band),
+                          m_Parent->GetPen(band+1),
                           x_min,
                           y,
                           DEPTH_BAR_BLOCK_WIDTH,
@@ -1008,7 +1033,8 @@ void GfxCore::DrawDepthbar()
         }
 
         SetColour(m_Pens[TEXT_COLOUR]);
-        DrawIndicatorText(x_min + DEPTH_BAR_BLOCK_WIDTH + 5, y - (FONT_SIZE / 2) - 1, strs[band]);
+        DrawIndicatorText(x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
+                          y - (FONT_SIZE / 2) - 1, strs[band]);
 
         y += DEPTH_BAR_BLOCK_HEIGHT;
     }
@@ -1142,10 +1168,11 @@ void GfxCore::DrawScalebar()
     DrawIndicatorText(end_x + size - text_width, end_y - FONT_SIZE - 4, str);
 }
 
-void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
+bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 {
-    if (point.x < 0 || point.x >= m_XSize || point.y < 0 || point.y >= m_YSize) {
-        return;
+    if (point.x < 0 || point.x >= m_XSize ||
+        point.y < 0 || point.y >= m_YSize) {
+        return false;
     }
 
     SetDataTransform();
@@ -1195,11 +1222,15 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
     } else {
         m_Parent->SetMouseOverStation(NULL);
     }
+
+    return best;
 }
 
 void GfxCore::OnSize(wxSizeEvent& event)
 {
     // Handle a change in window size.
+    
+//    wxGLCanvas::OnSize(event);//FIXME
 
     wxSize size = event.GetSize();
 
@@ -1681,7 +1712,8 @@ void GfxCore::RedrawIndicators()
 {
     // Redraw the compass and clino indicators.
 
-    const wxRect r(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 - INDICATOR_GAP,
+    const wxRect r(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 -
+                     INDICATOR_GAP,
                    m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
                    INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
                    INDICATOR_BOX_SIZE);
@@ -2010,16 +2042,16 @@ void GfxCore::GenerateBlobsDisplayList()
 
 void GfxCore::GenerateIndicatorDisplayList()
 {
-    // Draw compass or elevation/heading indicators.
-    if ((m_Compass && m_RotationOK) || (m_Clino && m_Lock == lock_NONE)) {
-        Draw2dIndicators();
-    }
-
     // Draw depthbar.
     if (m_Depthbar) {
         DrawDepthbar();
     }
 
+    // Draw compass or elevation/heading indicators.
+    if ((m_Compass && m_RotationOK) || (m_Clino && m_Lock == lock_NONE)) {
+        Draw2dIndicators();
+    }
+    
     // Draw scalebar.
     if (m_Scalebar) {
         DrawScalebar();
@@ -2050,7 +2082,11 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
     
     Double interval = z_ext / (m_Bands - 1);
     Double into_band = z_offset / interval - band;
-    
+   
+//    printf("%g z_offset=%g interval=%g band=%d\n", into_band,
+//            z_offset, interval, band);
+    if (into_band < 0.0) into_band = 0.0;
+    if (into_band > 1.0) into_band = 1.0;
     assert(into_band >= 0.0);
     assert(into_band <= 1.0);
     
@@ -2082,7 +2118,7 @@ static void IntersectLineWithPlane(Double x0, Double y0, Double z0,
     y = y0 + t * (y1 - y0);
 }
 
-static const Vector3 light(1.0, 1.0, 1.0);
+static const Vector3 light(.577, .577, .577);
 
 void GfxCore::SplitLineAcrossBands(int band, int band2,
 				   const Vector3 &p, const Vector3 &p2,
@@ -2136,6 +2172,7 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     d_band = GetDepthColour(d.getZ());
     d_band = min(max(d_band, 0), m_Bands);
     BeginPolygon();
+////    PlaceNormal(normal.getX(), normal.getY(), normal.getZ());
     PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
     if (a_band != b_band) {
 	SplitLineAcrossBands(a_band, b_band, a, b, factor);
@@ -2160,11 +2197,15 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
 {
     // Draw a set of polylines.
     
+//    EnableSmoothPolygons();
+    
     for (int polyline = 0; polyline < num_polylines; polyline++) {
         int length = num_points[polyline];
         const Point* vertices_start = vertices;
 
         assert(length > 1);
+
+        SetColour(m_Pens[7]);
 
 	BeginPolyline();
 	
@@ -2190,13 +2231,14 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
 			PlaceVertexWithColour(x, y, z, 1.0);
 		    }
 		}
-		PlaceVertexWithColour(vertices->x, vertices->y, vertices->z, 1.0);
+		PlaceVertexWithColour(vertices->x, vertices->y, vertices->z,
+                                      1.0);
 		band = band2;
 		++vertices;
 	    }
 	} else {
-	    SetColour(m_Parent->GetSurfacePen());
 	    for (int segment = 0; segment < length; segment++) {
+	        SetColour(m_Parent->GetSurfacePen());
 		PlaceVertex(vertices->x, vertices->y, vertices->z);
 		++vertices;
 	    }
@@ -2219,7 +2261,8 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
 	
         for (int segment = 0; segment < length; segment++) {
             // get the coordinates of this vertex
-            Vector3 pt_v(vertices_start->x, vertices_start->y, vertices_start->z);
+            Vector3 pt_v(vertices_start->x, vertices_start->y,
+                         vertices_start->z);
             vertices_start++;
 
             if (segment == 0) {
@@ -2365,14 +2408,20 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
 	    v[3] = pt_v - right - up;
             
             if (segment > 0) {
-		AddQuadrilateral(u[0], u[1], v[1], v[0]);
-		AddQuadrilateral(v[3], v[2], u[2], u[3]);
-		AddQuadrilateral(u[1], u[2], v[2], v[1]);
-		AddQuadrilateral(u[3], u[0], v[0], v[3]);
+////		AddQuadrilateral(u[0], u[1], v[1], v[0]);
+//////		AddQuadrilateral(v[3], v[2], u[2], u[3]);
+////		AddQuadrilateral(v[2], v[3], u[3], u[2]);
+////		AddQuadrilateral(u[1], u[2], v[2], v[1]);
+////		AddQuadrilateral(u[3], u[0], v[0], v[3]);
+
+                AddQuadrilateral(v[0], v[1], u[1], u[0]);
+                AddQuadrilateral(u[2], u[3], v[3], v[2]);
+                AddQuadrilateral(v[1], v[2], u[2], u[1]);
+                AddQuadrilateral(v[3], v[0], u[0], u[3]);
             }
 
             if (cover_end) {
-                AddQuadrilateral(v[0], v[1], v[2], v[3]);
+                AddQuadrilateral(v[3], v[2], v[1], v[0]);
             }
 
             prev_pt_v = pt_v;
@@ -2382,6 +2431,8 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
             u[3] = v[3];
         }
     }
+
+  //  DisableSmoothPolygons();
 }
 
 void GfxCore::FullScreenMode()

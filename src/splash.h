@@ -1,9 +1,9 @@
 //
-//  prefsdlg.h
+//  splash.h
 //
-//  Preferences dialog box.
+//  Splash screen for Aven.
 //
-//  Copyright (C) 2002 Mark R. Shinwell
+//  Copyright (C) 2002, Mark R. Shinwell.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,18 +20,20 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef prefsdlg_h
-#define prefsdlg_h
+#ifndef splash_h
+#define splash_h
 
-#include "paneldlg.h"
+#include "wx.h"
 
-class GfxCore;
-
-class PrefsDlg : public PanelDlg {
+class Splash : public wxFrame {
+    wxGauge* m_Gauge;
+    wxBitmap m_Bitmap;
 
 public:
-    PrefsDlg(GfxCore* parent, MainFrm* parent_win);
-    virtual ~PrefsDlg();
+    Splash(bool loading_file);
+    ~Splash();
+
+    void SetProgress(int value /* 0 - 100 */);
 };
 
 #endif

@@ -29,17 +29,18 @@
 #include "tubeprefs.h"
 #include "unitsprefs.h"
 #include "winprefs.h"
+#include "mainfrm.h"
 
-PrefsDlg::PrefsDlg(wxWindow* parent) : PanelDlg(parent, 1000, "Preferences")
+PrefsDlg::PrefsDlg(GfxCore* parent, MainFrm* parent_win) : PanelDlg(parent_win, 1000, "Preferences")
 {
     CtlPrefs* ctlprefs = new CtlPrefs(this);
     GridPrefs* gridprefs = new GridPrefs(this);
     LegPrefs* legprefs = new LegPrefs(this);
-    StnPrefs* stnprefs = new StnPrefs(this);
+    StnPrefs* stnprefs = new StnPrefs(parent, this);
     TubePrefs* tubeprefs = new TubePrefs(this);
     UnitsPrefs* unitsprefs = new UnitsPrefs(this);
     IndicatorPrefs* indicatorprefs = new IndicatorPrefs(this);
-    WinPrefs* winprefs = new WinPrefs(this);
+    WinPrefs* winprefs = new WinPrefs(parent_win, this);
 
     list<PanelDlgPage*> pages;
     pages.push_back(stnprefs);

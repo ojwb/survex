@@ -4,8 +4,10 @@ icondir = $(pkgdatadir)/icons
 icon_DATA = elevation.png open.png crosses.png entrances.png plan.png\
 	rotation.png defaults.png surface-legs.png ug-legs.png fixed-pts.png\
 	exported-pts.png names.png solid-surface.png aven-about.png\
-	tubes.png tubesprefs.png stationsprefs.png indicatorprefs.png\
-	windowprefs.png\
+	tubes.png find.png hideresults.png survey-tree.png pres-tree.png \
+	tubesprefs.png stationsprefs.png indicatorprefs.png\
+	windowprefs.png gridprefs.png unitsprefs.png \
+	legsprefs.png ctlprefs.png \
 	3d.png err.png plt.png pos.png svx.png
 
 #	pres-go-back.png pres-restart.png pres-go.pngpres-create.png

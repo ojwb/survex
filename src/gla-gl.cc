@@ -98,6 +98,9 @@ void GLAPen::Interpolate(const GLAPen& pen, double how_far)
 //  GLACanvas
 //  
 
+void* const GLACanvas::m_Font = GLUT_BITMAP_HELVETICA_10;
+const int GLACanvas::m_FontSize = 10;
+
 GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size) :
     wxGLCanvas(parent, id, posn, size)
 {
@@ -134,6 +137,17 @@ void GLACanvas::FirstShow()
     if (!m_Quadric) {
 	abort(); // FIXME need to cope somehow
     }
+ 
+    glShadeModel(GL_FLAT);
+    CHECK_GL_ERROR("StartDrawing", "glShadeModel");
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    CHECK_GL_ERROR("StartDrawing", "glPolygonMode");
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    CHECK_GL_ERROR("StartDrawing", "glColorMaterial GL_FRONT");
+    glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
+    CHECK_GL_ERROR("StartDrawing", "glColorMaterial GL_BACK");
+    glEnable(GL_DEPTH_TEST);
+    CHECK_GL_ERROR("StartDrawing", "glEnable GL_DEPTH_TEST");
 }
 
 void GLACanvas::Clear()
@@ -238,16 +252,8 @@ void GLACanvas::StartDrawing()
 {
     // Prepare for a redraw operation.
  
-    glShadeModel(GL_SMOOTH);//FLAT);
-    CHECK_GL_ERROR("StartDrawing", "glShadeModel");
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    CHECK_GL_ERROR("StartDrawing", "glPolygonMode");
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    CHECK_GL_ERROR("StartDrawing", "glColorMaterial GL_FRONT");
-    glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
-    CHECK_GL_ERROR("StartDrawing", "glColorMaterial GL_BACK");
-    glEnable(GL_DEPTH_TEST);
-    CHECK_GL_ERROR("StartDrawing", "glEnable GL_DEPTH_TEST");
+    SetCurrent();
+    glDepthMask(true);
 }
 
 void GLACanvas::EnableSmoothPolygons()
@@ -256,12 +262,44 @@ void GLACanvas::EnableSmoothPolygons()
     // Only use this when required (in particular lines in lists may not be
     // coloured correctly when this is enabled).
     
-//    glShadeModel(GL_SMOOTH);
+    glShadeModel(GL_SMOOTH);
+    //glEnable(GL_COLOR_MATERIAL);
+ 
+    GLfloat diffuseMaterial[] = { 0.3, 0.3, 0.3, 1.0 };
+    GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0 };
+    wxSize size = GetSize();
+    double aspect = double(size.GetWidth()) / double(size.GetHeight());
+    GLfloat light_position[] = { m_Volume.right - 5.0,
+                                 m_Volume.top / aspect - 5.0,
+                                 m_Volume.front * 3.0 * m_Scale + 5.0,
+                                 0.0 };
+ 
+  //  glMaterialfv(GL_FRONT, GL_AMBIENT, diffuseMaterial);
+//    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+//    glMaterialf(GL_FRONT, GL_SHININESS, 10.0);
+/*
+    GLfloat light_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    //glColorMaterial(GL_BACK, GL_AMBIENT);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);*/
 }
 
 void GLACanvas::DisableSmoothPolygons()
 {
-//    glShadeModel(GL_FLAT);
+    glShadeModel(GL_FLAT);
+  //  glDisable(GL_LIGHT0);
+//    glDisable(GL_LIGHTING);
+//    glDisable(GL_COLOR_MATERIAL);
+}
+
+void GLACanvas::PlaceNormal(glaCoord x, glaCoord y, glaCoord z)
+{
+    // Add a normal (for polygons etc.)
+
+    glNormal3d(x, y, z);
 }
 
 void GLACanvas::SetDataTransform()
@@ -303,16 +341,16 @@ void GLACanvas::SetIndicatorTransform()
     glScaled(width / size.GetWidth(), height / size.GetHeight(), 1.0);
     CHECK_GL_ERROR("SetIndicatorTransform", "glScaled");
 
-    glDisable(GL_DEPTH_TEST);
-    CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_DEPTH_TEST");
+    glDepthMask(false);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glDepthMask");
 }
 
 void GLACanvas::FinishDrawing()
 {
     // Complete a redraw operation.
     
-    glFlush();
-    CHECK_GL_ERROR("FinishDrawing", "glFlush");
+//    glFlush();
+//    CHECK_GL_ERROR("FinishDrawing", "glFlush");
     SwapBuffers();
 }
 
@@ -329,13 +367,16 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
     // it.
 
     glaList l = glGenLists(1);
+//    printf("new list: %d... ", l);
     CHECK_GL_ERROR("CreateList", "glGenLists");
     assert(l != 0);
     
     glNewList(l, GL_COMPILE);
     CHECK_GL_ERROR("CreateList", "glNewList");
+//    m_Vertices = 0;
     (obj->*generator)();
     glEndList();
+//    printf("done (%d vertices)\n", m_Vertices);
     CHECK_GL_ERROR("CreateList", "glEndList");
 
     return l;
@@ -345,8 +386,12 @@ void GLACanvas::DeleteList(glaList l)
 {
     // Delete an existing list.
 
+    assert(l != 0);
+//    printf("deleting list: %d... ", l);
+    SetCurrent();
     glDeleteLists(l, 1);
     CHECK_GL_ERROR("DeleteList", "glDeleteLists");
+//    printf("succeeded\n");fflush(stdout);
 }
 
 void GLACanvas::SetBackgroundColour(float red, float green, float blue)
@@ -498,6 +543,7 @@ void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
 {
     // Place a vertex for the current object being drawn.
 
+//    m_Vertices++;
     glVertex3d(x, y, z);
 }
 
@@ -550,14 +596,18 @@ void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& top,
     // (x0, y0) specify the bottom-left corner of the rectangle and (w, h) the
     // size.
 
+    EnableSmoothPolygons();
     BeginQuadrilaterals();
     SetColour(fill);
     PlaceIndicatorVertex(x0, y0);
+    SetColour(fill);
     PlaceIndicatorVertex(x0 + w, y0);
     SetColour(top);
     PlaceIndicatorVertex(x0 + w, y0 + h);
+    SetColour(top);
     PlaceIndicatorVertex(x0, y0 + h);
     EndQuadrilaterals();
+    DisableSmoothPolygons();
 
     if (draw_lines) {
         SetColour(edge);

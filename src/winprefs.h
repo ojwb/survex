@@ -26,14 +26,22 @@
 #include "paneldlgpage.h"
 #include "aven.h"
 
+class MainFrm;
+
 class WinPrefs : public PanelDlgPage {
+    MainFrm* m_Parent;
+    
+    DECLARE_EVENT_TABLE()
 
 public:
-    WinPrefs(wxWindow* parent);
+    WinPrefs(MainFrm*, wxWindow*);
     virtual ~WinPrefs();
 
     const wxString GetName();
     const wxBitmap GetIcon();
+
+    void OnSidePanel(wxCommandEvent&);
+    void OnSidePanelUpdate(wxUpdateUIEvent&);
 };
 
 #endif

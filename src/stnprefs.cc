@@ -22,6 +22,7 @@
 
 #include "stnprefs.h"
 #include "message.h"
+#include "gfxcore.h"
 
 #include <wx/statline.h>
 
@@ -35,7 +36,23 @@ static const wxWindowID ID_STN_OVERLAPPING = 2005;
 static const wxWindowID ID_STN_LINE1 = 2006;
 static const wxWindowID ID_STN_LINE2 = 2006;
 
-StnPrefs::StnPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_STN_PREFS)
+BEGIN_EVENT_TABLE(StnPrefs, PanelDlgPage)
+    EVT_CHECKBOX(ID_STN_CROSSES, StnPrefs::OnShowCrosses)
+    EVT_CHECKBOX(ID_STN_HI_ENTS, StnPrefs::OnHighlightEntrances)
+    EVT_CHECKBOX(ID_STN_HI_FIXED, StnPrefs::OnHighlightFixedPts)
+    EVT_CHECKBOX(ID_STN_HI_XPTS, StnPrefs::OnHighlightExportedPts)
+    EVT_CHECKBOX(ID_STN_NAMES, StnPrefs::OnNames)
+    EVT_CHECKBOX(ID_STN_OVERLAPPING, StnPrefs::OnOverlappingNames)
+
+    EVT_UPDATE_UI(ID_STN_CROSSES, StnPrefs::OnShowCrossesUpdate)
+    EVT_UPDATE_UI(ID_STN_HI_ENTS, StnPrefs::OnHighlightEntrancesUpdate)
+    EVT_UPDATE_UI(ID_STN_HI_FIXED, StnPrefs::OnHighlightFixedPtsUpdate)
+    EVT_UPDATE_UI(ID_STN_HI_XPTS, StnPrefs::OnHighlightExportedPtsUpdate)
+    EVT_UPDATE_UI(ID_STN_NAMES, StnPrefs::OnNamesUpdate)
+    EVT_UPDATE_UI(ID_STN_OVERLAPPING, StnPrefs::OnOverlappingNamesUpdate)
+END_EVENT_TABLE()
+
+StnPrefs::StnPrefs(GfxCore* parent, wxWindow* parent_win) : PanelDlgPage(parent_win, ID_STN_PREFS), m_Parent(parent)
 {
     wxCheckBox* show_crosses = new wxCheckBox(this, ID_STN_CROSSES, msg(/*Mark survey stations with crosses*/350));
     wxCheckBox* hi_ents = new wxCheckBox(this, ID_STN_HI_ENTS, msg(/*Highlight stations marked as entrances*/351));
@@ -68,6 +85,66 @@ StnPrefs::StnPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_STN_PREFS)
 StnPrefs::~StnPrefs()
 {
 
+}
+
+void StnPrefs::OnShowCrosses(wxCommandEvent&)
+{
+    m_Parent->ToggleCrosses();
+}
+
+void StnPrefs::OnHighlightEntrances(wxCommandEvent&)
+{
+    m_Parent->ToggleEntrances();
+}
+
+void StnPrefs::OnHighlightFixedPts(wxCommandEvent&)
+{
+    m_Parent->ToggleFixedPts();
+}
+
+void StnPrefs::OnHighlightExportedPts(wxCommandEvent&)
+{
+    m_Parent->ToggleExportedPts();
+}
+
+void StnPrefs::OnNames(wxCommandEvent&)
+{
+    m_Parent->ToggleStationNames();
+}
+
+void StnPrefs::OnOverlappingNames(wxCommandEvent&)
+{
+    m_Parent->ToggleOverlappingNames();
+}
+
+void StnPrefs::OnShowCrossesUpdate(wxUpdateUIEvent& ui)
+{
+    ui.Check(m_Parent->ShowingCrosses());
+}
+
+void StnPrefs::OnHighlightEntrancesUpdate(wxUpdateUIEvent& ui)
+{
+    ui.Check(m_Parent->ShowingEntrances());
+}
+
+void StnPrefs::OnHighlightFixedPtsUpdate(wxUpdateUIEvent& ui)
+{
+    ui.Check(m_Parent->ShowingFixedPts());
+}
+
+void StnPrefs::OnHighlightExportedPtsUpdate(wxUpdateUIEvent& ui)
+{
+    ui.Check(m_Parent->ShowingExportedPts());
+}
+
+void StnPrefs::OnNamesUpdate(wxUpdateUIEvent& ui)
+{
+    ui.Check(m_Parent->ShowingStationNames());
+}
+
+void StnPrefs::OnOverlappingNamesUpdate(wxUpdateUIEvent& ui)
+{
+    ui.Check(m_Parent->ShowingOverlappingNames());
 }
 
 const wxString StnPrefs::GetName()

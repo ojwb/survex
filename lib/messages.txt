@@ -3089,23 +3089,23 @@ es:339 Desde %s
 it:339 Da %s
 sk:339 Od %s
 #
-en:340 "  H %d%s, V %d%s"
-fr:340 "  H %d%s, V %d%s"
-de:340 "  H %d%s, V %d%s"
-pt:340 "  H %d%s, V %d%s"
-ca:340 "  H %d%s, V %d%s"
-es:340 "  H %d%s, V %d%s"
-it:340 "  O %d%s, V %d%s"
-sk:340 "  V %d%s, &Scaron; %d%s"
+en:340 "H %d%s, V %d%s"
+fr:340 "H %d%s, V %d%s"
+de:340 "H %d%s, V %d%s"
+pt:340 "H %d%s, V %d%s"
+ca:340 "H %d%s, V %d%s"
+es:340 "H %d%s, V %d%s"
+it:340 "O %d%s, V %d%s"
+sk:340 "V %d%s, &Scaron; %d%s"
 #
-en:341 "  Dist %d%s, Brg %03d%s"
-fr:341 "  Dist %d%s, Azim %03d%s" 
-de:341 "  Dist %d%s, Richt. %03d%s"
-pt:341 "  Dist %d%s, Azim %03d%s"
-ca:341 "  Dist %d%s, Azim %03d%s" 
-es:341 "  Dist %d%s, Azim %03d%s"
-it:341 "  Dist %d%s, Azm. %03d%s"
-sk:341 "  Vzd %d%s,  Azim %03d%s"
+en:341 "%s: %s, Dist %d%s, Brg %03d%s"
+fr:341 "%s: %s, Dist %d%s, Azim %03d%s" 
+de:341 "%s: %s,  Dist %d%s, Richt. %03d%s"
+pt:341 "%s: %s,  Dist %d%s, Azim %03d%s"
+ca:341 "%s: %s,  Dist %d%s, Azim %03d%s" 
+es:341 "%s: %s,  Dist %d%s, Azim %03d%s"
+it:341 "%s: %s, Dist %d%s, Azm. %03d%s"
+sk:341 "%s: %s,  Vzd %d%s,  Azim %03d%s"
 # tickable menu item in View menu
 en:342 @Metric
 fr:342 @M&eacute;trique
@@ -3182,6 +3182,34 @@ en:370 Display depth bar
 en:371 Display compass
 en:372 Display clinometer
 en:373 Display side panel
+#
+# for status bar:
+en:374 %s: %d E, %d N, %dm altitude
+en:375 %s: %d E, %d N, %dft altitude
+#
+# labels for tabbed side panel:
+en:376 Tree
+en:377 Presentation
+#
+# headings for presentation state list:
+en:378 State
+en:379 Auto
+en:380 Delay
+#
+# for presentation menu:
+en:381 @Record State
+en:382 R@un Presentation
+en:383 Re@hearse Timings
+#
+# for about box:
+en:384 OpenGL renderer:
+en:385 OpenGL version:
+en:386 Host system type:
+# message 387 is used when operating system version cannot be determined:
+en:387 (unavailable)
+en:388 Colour depth:
+en:389 bit
+# 
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

@@ -1,9 +1,9 @@
 //
-//  aven.cxx
+//  aven.cc
 //
 //  Main class for Aven.
 //
-//  Copyright (C) 2001, Mark R. Shinwell.
+//  Copyright (C) 2001-2002, Mark R. Shinwell.
 //  Copyright (C) 2002, Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -124,6 +124,16 @@ bool Aven::OnInit()
 
     wxImage::AddHandler(new wxPNGHandler);
 
+    bool loading_file = false;
+#ifndef USE_WXCMDLINE
+    if (argv[optind]) {
+        loading_file = true;
+    }
+#else
+    loading_file = (cli.GetParamCount() == 1);
+#endif
+    m_SplashScreen = new Splash(loading_file);
+
     m_AboutBitmap.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
 			   wxString("icons") + wxCONFIG_PATH_SEPARATOR +
 			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
@@ -161,6 +171,10 @@ bool Aven::OnInit()
 #ifdef _WIN32
     m_Frame->SetFocus();
 #endif
+
+    delete m_SplashScreen;
+    m_SplashScreen = NULL;
+    
     return true;
 }
 
@@ -196,8 +210,23 @@ const wxBitmap Aven::LoadPreferencesIcon(const wxString& icon) const
     // Load an icon for use in the preferences dialog.
     
     const wxString path = wxString(msg_cfgpth()) +
-                          wxCONFIG_PATH_SEPARATOR + wxString("icons") + wxCONFIG_PATH_SEPARATOR +
+                          wxCONFIG_PATH_SEPARATOR + wxString("icons") +
+                          wxCONFIG_PATH_SEPARATOR +
                           wxString(icon) + wxString("prefs.png");
+    const wxBitmap bitmap(path, wxBITMAP_TYPE_PNG);
+
+    return bitmap;
+}
+
+const wxBitmap Aven::LoadIcon(const wxString& icon) const
+{
+    // Load an icon.
+    //FIXME share code
+    
+    const wxString path = wxString(msg_cfgpth()) +
+                          wxCONFIG_PATH_SEPARATOR + wxString("icons") +
+                          wxCONFIG_PATH_SEPARATOR +
+                          wxString(icon) + wxString(".png");
     const wxBitmap bitmap(path, wxBITMAP_TYPE_PNG);
 
     return bitmap;

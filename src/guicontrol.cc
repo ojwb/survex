@@ -113,6 +113,22 @@ void GUIControl::HandleScaleRotate(bool control, wxPoint point)
     m_DragStart = point;
 }
 
+void GUIControl::HandCursor()
+{
+    const wxCursor HAND_CURSOR(wxCURSOR_HAND);
+    m_View->SetCursor(HAND_CURSOR);
+}
+
+void GUIControl::RestoreCursor()
+{
+    if (m_View->ShowingMeasuringLine()) {
+        HandCursor();
+    }
+    else {
+        m_View->SetCursor(wxNullCursor);
+    }
+}
+
 //
 //  Mouse event handling methods
 //
@@ -126,22 +142,39 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 
     // Check hit-test grid (only if no buttons are pressed).
     if (!event.LeftIsDown() && !event.MiddleIsDown() && !event.RightIsDown()) {
-	m_View->CheckHitTestGrid(point, false);
+	if (m_View->CheckHitTestGrid(point, false)) {
+            HandCursor();
+        }
+        else {            
+            if (m_View->ShowingScaleBar() &&
+                m_View->PointWithinScaleBar(point)) {
+
+                const wxCursor CURSOR(wxCURSOR_SIZEWE);
+                m_View->SetCursor(CURSOR);
+            }
+            else {
+                m_View->SetCursor(wxNullCursor);
+            }
+        }
     }
 
-    // Update coordinate display if in plan view, or altitude if in elevation view.
+    // Update coordinate display if in plan view,
+    // or altitude if in elevation view.
     m_View->SetCoords(point);
 
     if (!m_View->ChangingOrientation()) {
 	if (m_DraggingLeft) {
 	    if (m_LastDrag == drag_NONE) {
-		if (m_View->ShowingCompass() && m_View->PointWithinCompass(point)) {
+		if (m_View->ShowingCompass() &&
+                    m_View->PointWithinCompass(point)) {
 		    m_LastDrag = drag_COMPASS;
 		}
-		else if (m_View->ShowingClino() && m_View->PointWithinClino(point)) {
+		else if (m_View->ShowingClino() &&
+                         m_View->PointWithinClino(point)) {
 		    m_LastDrag = drag_ELEV;
 		}
-		else if (m_View->ShowingScaleBar() && m_View->PointWithinScaleBar(point)) {
+		else if (m_View->ShowingScaleBar() &&
+                         m_View->PointWithinScaleBar(point)) {
 		    m_LastDrag = drag_SCALE;
 		}
 	    }
@@ -200,7 +233,9 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y; */
 
 	m_DragStart = m_DragRealStart = wxPoint(event.GetX(), event.GetY());
-
+        
+//        const wxCursor CURSOR(wxCURSOR_MAGNIFIER);
+//        m_View->SetCursor(CURSOR);
 	m_View->CaptureMouse();
     }
 }
@@ -220,6 +255,8 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 	m_DraggingLeft = false;
 
         m_View->DragFinished();
+        
+        RestoreCursor();
     }
 }
 
@@ -229,6 +266,8 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
 	m_DraggingMiddle = true;
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
 
+        const wxCursor CURSOR(wxCURSOR_SIZENS);
+        m_View->SetCursor(CURSOR);
 	m_View->CaptureMouse();
     }
 }
@@ -239,6 +278,8 @@ void GUIControl::OnMButtonUp(wxMouseEvent& event)
 	m_DraggingMiddle = false;
 	m_View->ReleaseMouse();
         m_View->DragFinished();
+
+        RestoreCursor();
     }
 }
 
@@ -252,6 +293,8 @@ void GUIControl::OnRButtonDown(wxMouseEvent& event)
 
 	m_DraggingRight = true;
 
+      //  const wxCursor CURSOR(wxCURSOR_HAND);
+      //  m_View->SetCursor(CURSOR);
 	m_View->CaptureMouse();
     }
 }
@@ -262,6 +305,9 @@ void GUIControl::OnRButtonUp(wxMouseEvent& event)
     m_View->ReleaseMouse();
 
     m_DraggingRight = false;
+    
+    RestoreCursor();
+    
     m_View->DragFinished();
 }
 

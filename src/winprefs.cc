@@ -22,13 +22,19 @@
 
 #include "winprefs.h"
 #include "message.h"
+#include "mainfrm.h"
 
 #include <wx/statline.h>
 
 static const wxWindowID ID_WIN_PREFS = 5011;
 static const wxWindowID ID_WIN_SIDE_PANEL = 4000;
 
-WinPrefs::WinPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_WIN_PREFS)
+BEGIN_EVENT_TABLE(WinPrefs, PanelDlgPage)
+    EVT_CHECKBOX(ID_WIN_SIDE_PANEL, WinPrefs::OnSidePanel)
+    EVT_UPDATE_UI(ID_WIN_SIDE_PANEL, WinPrefs::OnSidePanelUpdate)
+END_EVENT_TABLE()
+
+WinPrefs::WinPrefs(MainFrm* parent, wxWindow* parent_win) : PanelDlgPage(parent_win, ID_WIN_PREFS), m_Parent(parent)
 {
     wxCheckBox* side_panel = new wxCheckBox(this, ID_WIN_SIDE_PANEL, msg(/*Display side panel*/373));
 
@@ -53,5 +59,15 @@ const wxString WinPrefs::GetName()
 const wxBitmap WinPrefs::GetIcon()
 {
     return wxGetApp().LoadPreferencesIcon("window");
+}
+
+void WinPrefs::OnSidePanel(wxCommandEvent&)
+{
+    m_Parent->ToggleSidePanel();
+}
+
+void WinPrefs::OnSidePanelUpdate(wxUpdateUIEvent& ui)
+{
+    ui.Check(m_Parent->ShowingSidePanel());
 }
 

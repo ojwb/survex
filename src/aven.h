@@ -25,6 +25,7 @@
 #define aven_h
 
 #include <stdarg.h>
+#include "splash.h"
 
 extern
 #ifdef __cplusplus
@@ -42,6 +43,7 @@ class MainFrm;
 class Aven : public wxApp {
     MainFrm* m_Frame;
     wxBitmap m_AboutBitmap;
+    Splash* m_SplashScreen;
 
 public:
     Aven();
@@ -51,6 +53,8 @@ public:
     void ReportError(const wxString&);
     wxBitmap& GetAboutBitmap() { return m_AboutBitmap; }
     const wxBitmap LoadPreferencesIcon(const wxString& icon) const;
+    const wxBitmap LoadIcon(const wxString& icon /* no extension */) const;
+    Splash* GetSplashScreen() const { return m_SplashScreen; }
 };
 
 DECLARE_APP(Aven)

@@ -30,6 +30,7 @@
 #include "namecmp.h"
 
 #include <wx/confbase.h>
+
 #include <float.h>
 #include <stack>
 
@@ -286,7 +287,11 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     InitialisePensAndBrushes();
     CreateMenuBar();
     CreateToolBar();
+    CreateStatusBar(3, wxST_SIZEGRIP);
     CreateSidePanel();
+    
+    int widths[3] = {150, -1 /* variable width */, -1};
+    GetStatusBar()->SetStatusWidths(3, widths);
 
 #ifdef __X__
     int x;
@@ -330,7 +335,6 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
-    filemenu->Append(menu_FILE_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*E@xit*/221));
 
@@ -370,44 +374,18 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault Settings*/254));
-
-    wxMenu* viewmenu = new wxMenu;
-    viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "", true);
-#ifdef AVENGL
-    viewmenu->Append(menu_VIEW_SHOW_TUBES, GetTabMsg(/*Passage @Tubes*/346), "", true);
+#if 0
+    wxMenu* presmenu = new wxMenu;
+    presmenu->Append(menu_PRES_RECORD, GetTabMsg(/*@Record State*/381));
+    presmenu->AppendSeparator();
+    presmenu->Append(menu_PRES_RUN, GetTabMsg(/*R@un Presentation*/382));
+    presmenu->Append(menu_PRES_REHEARSE, GetTabMsg(/*Re@hearse Timings*/383));
 #endif
-    viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "", true);
-    viewmenu->Append(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297), "", true);
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*@Underground Survey Legs##Ctrl+L*/272), "", true);
-    viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*@Surface Survey Legs##Ctrl+F*/291), "", true);
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SURFACE_DEPTH, GetTabMsg(/*@Altitude Colouring on Surface Surveys*/292), "", true);
-    viewmenu->Append(menu_VIEW_SURFACE_DASHED, GetTabMsg(/*@Dashed Surface Surveys*/293), "", true);
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273), "", true);
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
-    viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295), "", true);
-    viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296), "", true);
-    viewmenu->AppendSeparator();
+    wxMenu* viewmenu = new wxMenu;
+    viewmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
     viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode*/356));
-            
-    wxMenu* ctlmenu = new wxMenu;
-    ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "", true);
-    ctlmenu->AppendSeparator();
-    ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
-    ctlmenu->AppendSeparator();
-    wxMenu* indmenu = new wxMenu;
-    indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*@Compass*/274), "", true);
-    indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*C@linometer*/275), "", true);
-    indmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "", true);
-    indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*@Scale Bar*/277), "", true);
-    ctlmenu->Append(menu_VIEW_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
-    ctlmenu->Append(menu_VIEW_SIDE_PANEL, GetTabMsg(/*@Side Panel*/337), "", true);
-    ctlmenu->AppendSeparator();
-    ctlmenu->Append(menu_VIEW_METRIC, GetTabMsg(/*@Metric*/342), "", true);
-    ctlmenu->Append(menu_VIEW_DEGREES, GetTabMsg(/*@Degrees*/343), "", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_FILE_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
 
     wxMenu* helpmenu = new wxMenu;
     helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About...*/290));
@@ -420,7 +398,6 @@ void MainFrm::CreateMenuBar()
 #ifdef AVENPRES
     menubar->Append(presmenu, GetTabMsg(/*@Presentation*/317));
 #endif
-    menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
 }
@@ -469,10 +446,13 @@ void MainFrm::CreateToolBar()
                      -1, -1, NULL, "Show passage tubes");
 #endif
 
-#if 0 // FIXME: maybe...
+    toolbar->AddSeparator();
     m_FindBox = new wxTextCtrl(toolbar, -1, "");
     toolbar->AddControl(m_FindBox);
-#endif
+    toolbar->AddTool(button_FIND, TOOLBAR_BITMAP("find.png"),
+                     "Search for station name");
+    toolbar->AddTool(button_HIDE, TOOLBAR_BITMAP("hideresults.png"),
+                     "Hide search results");
 
     toolbar->Realize();
 }
@@ -481,10 +461,14 @@ void MainFrm::CreateSidePanel()
 {
     m_Splitter = new AvenSplitterWindow(this);
 
-    m_Panel = new wxPanel(m_Splitter);
+    m_Notebook = new wxNotebook(m_Splitter, 400, wxDefaultPosition,
+                                wxDefaultSize,
+                                wxNB_BOTTOM | wxNB_LEFT);
+    m_Notebook->Show(false);
+    
+    m_Panel = new wxPanel(m_Notebook);
     m_Tree = new AvenTreeCtrl(this, m_Panel);
     wxPanel *find_panel = new wxPanel(m_Panel);
-    m_Panel->Show(false);
 
     m_FindBox = new wxTextCtrl(find_panel, -1, "");
     wxButton *find_button, *hide_button;
@@ -545,7 +529,8 @@ void MainFrm::CreateSidePanel()
 
     wxBoxSizer *panel_sizer = new wxBoxSizer(wxVERTICAL);
     panel_sizer->Add(m_Tree, 1, wxALL | wxEXPAND, 2);
-    panel_sizer->Add(find_panel, 0, wxALL | wxEXPAND, 2);
+    //panel_sizer->Add(find_panel, 0, wxALL | wxEXPAND, 2);
+    find_panel->Hide();
     m_Panel->SetAutoLayout(true);
     m_Panel->SetSizer(panel_sizer);
 //    panel_sizer->Fit(m_Panel);
@@ -554,6 +539,33 @@ void MainFrm::CreateSidePanel()
     m_Control = new GUIControl();
     m_Gfx = new GfxCore(this, m_Splitter, m_Control);
     m_Control->SetView(m_Gfx);
+
+    // Presentation panel:
+
+#if 0
+    m_PresPanel = new wxPanel(m_Notebook);
+
+    m_PresList = new wxListCtrl(m_PresPanel, 401, wxDefaultPosition,
+                                wxDefaultSize, wxLC_EDIT_LABELS | wxLC_REPORT);
+    m_PresList->InsertColumn(0, msg(/*State*/378));
+    m_PresList->InsertColumn(1, msg(/*Auto*/379));
+    m_PresList->InsertColumn(2, msg(/*Delay*/380));
+    m_PresList->SetColumnWidth(0, 100);
+    m_PresList->SetColumnWidth(1, 40);
+    m_PresList->SetColumnWidth(2, 40);
+    
+    wxBoxSizer *pres_panel_sizer = new wxBoxSizer(wxVERTICAL);
+    pres_panel_sizer->Add(m_PresList, 1, wxALL | wxEXPAND, 2);
+    m_PresPanel->SetAutoLayout(true);
+    m_PresPanel->SetSizer(pres_panel_sizer);
+#endif
+    // Overall tabbed structure:
+    wxImageList* image_list = new wxImageList();
+    image_list->Add(wxGetApp().LoadIcon("survey-tree"));
+    image_list->Add(wxGetApp().LoadIcon("pres-tree"));
+    m_Notebook->SetImageList(image_list);
+    m_Notebook->AddPage(m_Panel, msg(/*Tree*/376), true, 0);
+//    m_Notebook->AddPage(m_PresPanel, msg(/*Presentation*/377), false, 1);
 
     m_Splitter->Initialize(m_Gfx);
 }
@@ -582,12 +594,19 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     timer.Start();
 #endif
 
+    Splash* splash = wxGetApp().GetSplashScreen();
+
     img* survey = img_open_survey(file, prefix.c_str());
     if (!survey) {
 	wxString m = wxString::Format(msg(img_error()), file.c_str());
 	wxGetApp().ReportError(m);
 	return false;
     }
+
+    long pos = ftell(survey->fh);
+    fseek(survey->fh, 0, SEEK_END);
+    long file_size = ftell(survey->fh);
+    fseek(survey->fh, pos, SEEK_SET);
 
     m_File = file;
 
@@ -626,9 +645,17 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     points.clear();
 
     int result;
+    int items = 0;
     do {
+        if (splash && (items % 200 == 0)) {
+            long pos = ftell(survey->fh);
+            int progress = int((double(pos) / double(file_size)) * 100.0);
+            splash->SetProgress(progress);
+        }
+
 	img_point pt;
 	result = img_read_item(survey, &pt);
+        items++;
 	switch (result) {
 	    case img_MOVE:
 	    case img_LINE:
@@ -962,6 +989,13 @@ void MainFrm::OnMRUFile(wxCommandEvent& event)
 void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 {
     wxBusyCursor hourglass;
+
+    Splash* splash = wxGetApp().GetSplashScreen();
+    
+    if (splash) {
+        splash->SetProgress(0);
+    }
+
     if (LoadData(file, survey)) {
 	if (wxIsAbsolutePath(file)) {
 	    m_history.AddFileToHistory(file);
@@ -980,7 +1014,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	    m_Gfx->Initialise();
 	}
 
-	m_Panel->Show(true);
+	m_Notebook->Show(true);
 	int x;
 	int y;
 	GetSize(&x, &y);
@@ -991,7 +1025,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	else
 	    x /= 5;
 
-	m_Splitter->SplitVertically(m_Panel, m_Gfx, x);
+	m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
 
 	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
 
@@ -1048,7 +1082,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 
 void MainFrm::OnFilePreferences(wxCommandEvent&)
 {
-    m_PrefsDlg = new PrefsDlg(this);
+    m_PrefsDlg = new PrefsDlg(m_Gfx, this);
     m_PrefsDlg->Show(true);
 }
 
@@ -1097,7 +1131,8 @@ void MainFrm::SetCoords(Double x, Double y)
 	str.Printf(msg(/*  %d E, %d N*/338),
 		   int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
     }
-    m_Coords->SetLabel(str);
+    //m_Coords->SetLabel(str);
+    GetStatusBar()->SetStatusText(str);
 }
 
 void MainFrm::SetAltitude(Double z)
@@ -1109,7 +1144,8 @@ void MainFrm::SetAltitude(Double z)
 	str.Printf("  %s %dft", msg(/*Altitude*/335),
 		   int(z / METRES_PER_FOOT));
     }
-    m_Coords->SetLabel(str);
+    //m_Coords->SetLabel(str);
+    GetStatusBar()->SetStatusText(str, 1);
 }
 
 void MainFrm::ShowInfo(const LabelInfo *label)
@@ -1118,17 +1154,22 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	
     wxString str;
     if (m_Gfx->GetMetric()) {
-	str.Printf(msg(/*  %d E, %d N*/338),
+	str.Printf(msg(/*%s: %d E, %d N, %dm altitude*/374),
+                   label->text.GetData(),
 		   int(label->x + m_Offsets.x),
-		   int(label->y + m_Offsets.y));
+		   int(label->y + m_Offsets.y),
+                   int(label->z + m_Offsets.z));
     } else {
-	str.Printf(msg(/*  %d E, %d N*/338),
+	str.Printf(msg(/*%s: %d E, %d N, %dft altitude*/375),
+                   label->text.GetData(),
 		   int((label->x + m_Offsets.x) / METRES_PER_FOOT),
-		   int((label->y + m_Offsets.y) / METRES_PER_FOOT));
+		   int((label->y + m_Offsets.y) / METRES_PER_FOOT),
+		   int((label->z + m_Offsets.z) / METRES_PER_FOOT));
     }
-    m_StnCoords->SetLabel(str);
-    m_StnName->SetLabel(label->text);
-
+//    m_StnCoords->SetLabel(str);
+//    m_StnName->SetLabel(label->text);
+    GetStatusBar()->SetStatusText(str, 1);
+#if 0
     if (m_Gfx->GetMetric()) {
 	str.Printf("  %s %dm", msg(/*Altitude*/335),
 		   int(label->z + m_Offsets.z));
@@ -1137,6 +1178,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 		   int((label->z + m_Offsets.z) / METRES_PER_FOOT));
     }
     m_StnAlt->SetLabel(str);
+#endif
     m_Gfx->SetHere(label->x, label->y, label->z);
 
     wxTreeItemData* sel_wx;
@@ -1164,18 +1206,20 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	    Double brg = atan2(dx, dy) * 180.0 / M_PI;
 	    if (brg < 0) brg += 360;
 
-	    str.Printf(msg(/*From %s*/339), label2->text.c_str());
-	    m_Dist1->SetLabel(str);
+            wxString from_str;
+	    from_str.Printf(msg(/*From %s*/339), label2->text.c_str());
+
+            wxString hv_str;
 	    if (m_Gfx->GetMetric()) {
-		str.Printf(msg(/*  H %d%s, V %d%s*/340),
-			   int(d_horiz), "m",
-			   int(dz), "m");
+		hv_str.Printf(msg(/*H %d%s, V %d%s*/340),
+			      int(d_horiz), "m",
+			      int(dz), "m");
 	    } else {
-		str.Printf(msg(/*  H %d%s, V %d%s*/340),
-			   int(d_horiz / METRES_PER_FOOT), "ft",
-			   int(dz / METRES_PER_FOOT), "ft");
+		hv_str.Printf(msg(/*H %d%s, V %d%s*/340),
+		  	      int(d_horiz / METRES_PER_FOOT), "ft",
+			      int(dz / METRES_PER_FOOT), "ft");
 	    }
-	    m_Dist2->SetLabel(str);
+	    //m_Dist2->SetLabel(str);
 	    wxString brg_unit;
 	    if (m_Gfx->GetDegrees()) {
 		brg_unit = msg(/*&deg;*/344);
@@ -1184,14 +1228,16 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 		brg_unit = msg(/*grad*/345);
 	    }
 	    if (m_Gfx->GetMetric()) {
-		str.Printf(msg(/*  Dist %d%s, Brg %03d%s*/341),
+		str.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
+                           from_str.c_str(), hv_str.c_str(),
 			   int(dr), "m", int(brg), brg_unit.c_str());
 	    } else {
-		str.Printf(msg(/*  Dist %d%s, Brg %03d%s*/341),
+		str.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
+                           from_str.c_str(), hv_str.c_str(),
 			   int(dr / METRES_PER_FOOT), "ft", int(brg),
 			   brg_unit.c_str());
 	    }
-	    m_Dist3->SetLabel(str);
+            GetStatusBar()->SetStatusText(str, 2);
 	    m_Gfx->SetThere(x0, y0, z0);
 	} else {
 	    m_Gfx->SetThere(); // FIXME: not in SetMouseOverStation version?
@@ -1527,14 +1573,20 @@ void MainFrm::ToggleSidePanel()
 	m_Splitter->Unsplit(m_Panel);
     }
     else {
-	m_Panel->Show(true);
+	m_Notebook->Show(true);
 	m_Gfx->Show(true);
-	m_Splitter->SplitVertically(m_Panel, m_Gfx, m_SashPosition);
+	m_Splitter->SplitVertically(m_Notebook, m_Gfx, m_SashPosition);
     }
 }
 
 void MainFrm::OnViewSidePanelUpdate(wxUpdateUIEvent& ui)
 {
     ui.Enable(!m_File.empty());
-    ui.Check(m_Splitter->IsSplit());
+    ui.Check(ShowingSidePanel());
 }
+
+bool MainFrm::ShowingSidePanel()
+{
+    return m_Splitter->IsSplit();
+}
+

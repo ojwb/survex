@@ -3,7 +3,7 @@
 //
 //  About box handling for Aven.
 //
-//  Copyright (C) 2001, Mark R. Shinwell.
+//  Copyright (C) 2001-2002, Mark R. Shinwell.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -24,9 +24,15 @@
 #include "aven.h"
 #include "message.h"
 
+#ifdef AVENGL
+#include <GL/gl.h>
+#endif
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <sys/utsname.h>
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
 END_EVENT_TABLE()
@@ -38,9 +44,21 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
 #ifdef AVENGL
-    wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION" (OpenGL enabled)"));
+    wxStaticText* title = new wxStaticText(this, 502,
+                              wxString("Aven "VERSION" (OpenGL enabled)"));
+    const GLubyte* gl_vendor = glGetString(GL_VENDOR);
+    const GLubyte* gl_renderer = glGetString(GL_RENDERER);
+    const GLubyte* gl_version = glGetString(GL_VERSION);
+    wxStaticText* vendor = new wxStaticText(this, 520,
+                           wxString(msg(/*OpenGL renderer:*/384)) +
+                           wxString(" ") + wxString(gl_vendor) +
+                           wxString(" ") + wxString(gl_renderer));
+    wxStaticText* version = new wxStaticText(this, 521,
+                            wxString(msg(/*OpenGL version:*/385)) +
+                            wxString(" ") + wxString(gl_version));
 #else
-    wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION));
+    wxStaticText* title = new wxStaticText(this, 502,
+                                           wxString("Aven "VERSION));
 #endif
     wxStaticText* purpose = new wxStaticText(this, 505,
 	wxString(msg(/*Visualisation of Survex 3D files*/209)));
@@ -49,6 +67,20 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxStaticText* copyright2 = new wxStaticText(this, 504,
 	    wxString::Format(COPYRIGHT_MSG, msg(/*&copy;*/0)));
 
+//FIXME windows version
+    struct utsname buf;
+    int fail = uname(&buf);
+    
+    wxStaticText* os = new wxStaticText(this, 506,
+                       fail ? wxString(msg(/*(unavailable)*/387))
+                            : msg(/*Host system type:*/386) + wxString(" ") +
+                              wxString(buf.sysname) + wxString(" ") +
+                              wxString(buf.release));
+    wxStaticText* depth = new wxStaticText(this, 507,
+                          msg(/*Colour depth:*/388) + wxString(" ") +
+                          wxString::Format("%d-%s", wxDisplayDepth(),
+                                           msg(/*bit*/389)));
+    
     wxString licence_str;
     wxString l(msg(/*This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.*/219));
     wxClientDC dc(this);
@@ -90,9 +122,19 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     vert->Add(10, 5, 0, wxTOP, 5);
     vert->Add(purpose, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
+
     vert->Add(copyright1, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(copyright2, 0, wxLEFT | wxRIGHT, 20);
+    vert->Add(10, 5, 0, wxTOP, 5);
+
+    vert->Add(os, 0, wxLEFT | wxRIGHT, 20);
+    vert->Add(depth, 0, wxLEFT | wxRIGHT, 20);
+#ifdef AVENGL
+    vert->Add(vendor, 0, wxLEFT | wxRIGHT, 20);
+    vert->Add(version, 0, wxLEFT | wxRIGHT, 20);
+#endif
     vert->Add(10, 5, 0, wxTOP, 15);
+    
     vert->Add(licence, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 1, wxALIGN_BOTTOM | wxTOP, 5);
 

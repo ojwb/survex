@@ -57,11 +57,11 @@ void PanelDlg::PositionPage()
     wxSize button_size = wxButton::GetDefaultSize();
 
     m_CurrentPage->SetSizeHints(-1, -1,
-                                DIALOG_WIDTH - EDGE_MARGIN*3 - SCROLLED_WIN_WIDTH,
-                                DIALOG_HEIGHT - EDGE_MARGIN_V*4 - button_size.GetHeight());
+                                DIALOG_WIDTH - EDGE_MARGIN*5 - SCROLLED_WIN_WIDTH,
+                                DIALOG_HEIGHT - EDGE_MARGIN_V*8 - button_size.GetHeight());
     m_CurrentPage->SetSize(SCROLLED_WIN_WIDTH + EDGE_MARGIN*3, EDGE_MARGIN_V*2,
-                           DIALOG_WIDTH - EDGE_MARGIN*3 - SCROLLED_WIN_WIDTH,
-                           DIALOG_HEIGHT - EDGE_MARGIN_V*4 - button_size.GetHeight());
+                           DIALOG_WIDTH - EDGE_MARGIN*5 - SCROLLED_WIN_WIDTH,
+                           DIALOG_HEIGHT - EDGE_MARGIN_V*8 - button_size.GetHeight());
 }
 
 void PanelDlg::OnPageChange(wxCommandEvent& event)
@@ -150,13 +150,10 @@ void PanelDlg::SetPages(list<PanelDlgPage*> pages)
 
     // Create the OK/Cancel button panel.
     wxSize button_size = wxButton::GetDefaultSize();
-    wxButton* ok_button = new wxButton(this, wxID_OK, "OK",
-                                       wxPoint(DIALOG_WIDTH - button_size.GetWidth()*2 - EDGE_MARGIN*4,
-                                               DIALOG_HEIGHT - button_size.GetHeight() - EDGE_MARGIN_V));
-    ok_button->SetDefault();
-    wxButton* cancel_button = new wxButton(this, wxID_CANCEL, "Cancel",
-                                           wxPoint(DIALOG_WIDTH - button_size.GetWidth() - EDGE_MARGIN*2,
-                                                   DIALOG_HEIGHT - button_size.GetHeight() - EDGE_MARGIN_V));
+    wxButton* close_button = new wxButton(this, wxID_CANCEL, "Close",
+                                          wxPoint(DIALOG_WIDTH - button_size.GetWidth() - EDGE_MARGIN*4,
+                                                  DIALOG_HEIGHT - button_size.GetHeight() - EDGE_MARGIN_V*4));
+    close_button->SetDefault();
 
     // Retrieve the panel for the first page and put it in the correct place.
     PanelDlgPage* first_page = *(pages.begin());

@@ -69,6 +69,10 @@ class GLACanvas : public wxGLCanvas {
 class GLACanvas : public wxWindow {
 #endif
 
+#ifdef GLA_DEBUG
+    int m_Vertices;
+#endif
+
     // Viewing volume extents:
     struct {
         Double left;
@@ -88,15 +92,15 @@ class GLACanvas : public wxWindow {
         Double z;
     } m_Translation;
 
-    static void* const m_Font = GLUT_BITMAP_HELVETICA_10;
-    static const int m_FontSize = 10;
+    static void* const m_Font;
+    static const int m_FontSize;
 
     bool m_SphereCreated;
     GLuint m_SphereList;
     GLUquadric* m_Quadric;
-    
+
     void SetViewportAndProjection();
-    
+
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
     ~GLACanvas();
@@ -147,6 +151,8 @@ public:
     
     void PlaceVertex(glaCoord x, glaCoord y, glaCoord z);
     void PlaceIndicatorVertex(glaCoord x, glaCoord y);
+
+    void PlaceNormal(glaCoord x, glaCoord y, glaCoord z);
     
     void EnableDashedLines();
     void DisableDashedLines();
