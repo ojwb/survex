@@ -1,0 +1,11 @@
+*fix A 0
+*fix B 0 0
+*fix C 0 0 0 1.0 2.0 3.0 3.14
+*fix D 0 0 0 1.0 2.0 3.0 3.14 2.18
+*fix E test
+
+*fix Ar reference 0
+*fix Br reference 0 0
+*fix Cr reference 0 0 0 1.0 2.0 3.0 3.14
+*fix Dr reference 0 0 0 1.0 2.0 3.0 3.14 2.18
+*fix Er reference test

@@ -54,4 +54,5 @@ normal.svx normal.pos\
 normignall.svx normignall.pos\
 nosurv.svx nosurv.pos\
 cmd_flags.svx bad_cmd_flags.svx\
-plumb.svx plumb.pos
+plumb.svx plumb.pos\
+cmd_fix_bad.svx
