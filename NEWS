@@ -30,6 +30,8 @@ Changes in 0.98-prerelease1:
 * cavern: a leg with the same station at both ends now causes an error
   rather than just a warning.
 
+* cavern: added station name to "station equated to itself" message.
+
 Changes in 0.97-prerelease7:
 
 * Messages relating to command line options are now translatable.

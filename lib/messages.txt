@@ -189,13 +189,14 @@ pt: 12 Comando desconhecido `%s'
 ca: 12 Comandament desconegut `%s'
 es: 12 Comando desconocido `%s'
 it: 12 Comando sconosciuto `%s'
-en: 13 Station equated to itself
-fr: 13 Une station ne doit pas &ecirc;tre d&eacute;clar&eacute;e "&eacute;gale" &agrave elle-m&ecirc;me
-de: 13 Station mit sich selbst gleichgesetzt
-pt: 13 Base igualada a ela mesma
-ca: 13 Estaci&oacute; igualada a ella mateixa
-es: 13 Estacio&acute;n igualada a si misma
-it: 13 Stazione uguagliata a se stessa
+# TRANSLATE: fr de pt ca es it check insertion of `%s' (station name) ok
+en: 13 Station `%s' equated to itself
+fr: 13 Station `%s' ne doit pas &ecirc;tre d&eacute;clar&eacute;e "&eacute;gale" &agrave elle-m&ecirc;me
+de: 13 Station `%s' mit sich selbst gleichgesetzt
+pt: 13 Base `%s' igualada a ela mesma
+ca: 13 Estaci&oacute; `%s' igualada a ella mateixa
+es: 13 Estacio&acute;n `%s' igualada a si misma
+it: 13 Stazione `%s' uguagliata a se stessa
 # c.f. 21 and 59
 en: 14 Compass reading may not be omitted here
 fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici

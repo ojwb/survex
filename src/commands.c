@@ -771,7 +771,8 @@ cmd_equate(void)
 
       if (name1 == name2) {
 	 /* catch something like *equate "fred fred" */
-	 compile_warning(/*Station equated to itself*/13);
+	 compile_warning(/*Station `%s' equated to itself*/13,
+			 sprint_prefix(name1));
 	 /* FIXME: this won't catch: "*equate fred jim fred" */
       }
       fOnlyOneStn = fFalse;
