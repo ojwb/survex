@@ -5,6 +5,7 @@
 
 /*
 1997.06.03 written (hacked from dosrot.h)
+1998.03.22 autoconf-ed
 */
 
 #if 0
@@ -49,20 +50,7 @@ typedef int coord;  /* data type used after data is read in */
 # define DRAW  (coord)2
 # define STOP  (coord)0
 
-#elif defined(NO_SETJMP)
-
-/* for speed, store function ptrs in table */
-
-# ifdef MSC
-#  define MOVE  (coord)(_moveto)
-#  define DRAW  (coord)(_lineto)
-# else
-#  define MOVE  (coord)(moveto)
-#  define DRAW  (coord)(lineto)
-# endif
-# define STOP  (coord)NULL
-
-#else /* !NO_SETJMP && !NO_FUNC_PTRS */
+#elif defined(HAVE_SETJMP)
 
 /* for speed, store function ptrs in table */
 
@@ -78,4 +66,17 @@ typedef int coord;  /* data type used after data is read in */
 /* prototype so STOP macro will work */
 extern void stop( int X, int Y );
 
-#endif /* ?NO_SETJMP */
+#else
+
+/* for speed, store function ptrs in table */
+
+# ifdef MSC
+#  define MOVE  (coord)(_moveto)
+#  define DRAW  (coord)(_lineto)
+# else
+#  define MOVE  (coord)(moveto)
+#  define DRAW  (coord)(lineto)
+# endif
+# define STOP  (coord)NULL
+
+#endif

@@ -11,6 +11,7 @@ pre-1995.06.23 written
 1995.10.06 added some debug code
 1996.03.24 now use caseless compare as intended
 1996.04.01 strcmpi -> stricmp
+1998.03.21 stricmp -> strcasecmp
 */
 
 #include <stdio.h>
@@ -18,7 +19,8 @@ pre-1995.06.23 written
 #include <string.h>
 #include <ctype.h>
 #include "ini.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "debug.h"
 #include "useful.h"
 
@@ -28,7 +30,7 @@ pre-1995.06.23 written
 #define REPORT_COLLISION
 
 /* !HACK!-ish - good enough for testing */
-#define stricmp(x,y) strcmp((x),(y))
+#define strcasecmp(x,y) strcmp((x),(y))
 
 char *osstrdup(char *s) {
    char *t;
@@ -63,7 +65,7 @@ void ini_write( const char *section, const char *var, const char *value ) {
    scan_for( section, var );
 
    static char *last_section=NULL;
-   if (!last_section || stricmp(last_section,section)!=0) {
+   if (!last_section || strcasecmp(last_section,section)!=0) {
       if (last_section) {
 	 fputc('\n',stdout);
       }
@@ -131,7 +133,7 @@ char **ini_read( FILE *fh, char *section, char **vars ) {
 	    break; /* now leaving the section we wanted, so stop */
 	 }
 /*         printf("[%s] [%s]\n",section,buf+1);*/
-	 if (!stricmp(section,buf+1))
+	 if (!strcasecmp(section,buf+1))
             fInSection=1;
          continue;
       }
@@ -151,7 +153,7 @@ char **ini_read( FILE *fh, char *section, char **vars ) {
       hash=hash_string(var);
       for( c=n-1 ; c>=0 ; c-- ) {
          if (hash==hash_tab[c]) {
-            if (stricmp(var,vars[c])==0) {
+            if (strcasecmp(var,vars[c])==0) {
                /* if (fWrite) { replace_line(); hash_tab[c]=-1; } else */
                vals[c]=osstrdup(val);
             } else {
