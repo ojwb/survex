@@ -22,3 +22,19 @@ From: olly@muscat.co.uk
 
 Consider using GNU automake
 
+Date: Tue, 08 Sep 1998 17:52:52 -0300
+From: Leandro Dybal Bertoni <dybal@upe.org.br>
+
+There is something that I would like (one more to the wish list?): to have the
+*.err file sorted by error (the segment with the grossest error first).
+
+Date: Wed, 09 Sep 1998 15:10:12 +0100
+From: Wookey <wookey@aleph1.co.uk>
+
+One thing that would be extremely useful is a way to deal with the enormous
+string of 'unused fixed point' errors you get from putting in a load of GPS
+fixes. Some way of indicating that a particular fixed point is not intended
+to be connected to the network is the most general solution. Then it wouldn't
+be deemed a warning when it was found not to be connected. Or possibly
+implement Immo's suggestion of nobbling a particular error message (not a
+great solution - but still useful).
