@@ -123,17 +123,16 @@ else
   AVEN=
 fi
 
-AVENGL=
 AC_ARG_ENABLE(opengl,
 [  --enable-opengl Build OpenGL-enabled version of Aven],
 [case "${enableval}" in
   yes) WX_LIBS="-lwx_gtk_gl -lGLU -lGL $WX_LIBS"
-       AVENGL="\"(OpenGL enabled)\""
-       AC_MSG_RESULT("Enabling OpenGL functionality for Aven");;
+       AC_DEFINE_UNQUOTED(AVENGL,"\"(OpenGL enabled)\"",
+                          [Enables OpenGL functionality in Aven])
+       AC_MSG_RESULT("enabling OpenGL functionality for Aven");;
   no) ;;
   *) AC_MSG_ERROR(bad value ${enableval} for --enable-opengl) ;;
 esac])
-AC_DEFINE_UNQUOTED(AVENGL,$AVENGL,[Enables OpenGL functionality in Aven])
 
 AC_LANG_C
 
