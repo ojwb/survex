@@ -1,3 +1,5 @@
+* extend: ignore surface legs.
+
 Changes in 0.97-prerelease5:
 
 * survex: conversion wrapper now only creates __svxtmp.svx file if it
@@ -153,7 +155,7 @@ Changes in 0.97-prerelease2:
 
 Changes in 0.97-prerelease1:
 
-* extend: fixed bug which result in bogus output (added regression test);
+* extend: fixed bug which resulted in bogus output (added regression test);
   produce binary rather than ASCII .3d output.
 
 * cavern: don't report error stats for articulating traverses.

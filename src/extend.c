@@ -155,7 +155,7 @@ main(int argc, char **argv)
        	    exit(1);
        	 }
          to = find_point(&pt);
-         add_leg(fr, to);
+         if (!(pimg->flags & img_FLAG_SURFACE)) add_leg(fr, to);
          fr = to;
          break;
       case img_CROSS:
