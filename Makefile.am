@@ -163,7 +163,7 @@ mingw_iss :
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
-	: # NB keep this like in step with src/aven.cc and survex.iss.in
+	: # NB keep next line in step with survex.iss.in
 	for a in de es fr it; do\
 	 mkdir iss_tmp/$$a;\
 	 cp /usr/share/locale/$$a/LC_MESSAGES/wxstd.mo iss_tmp/$$a;\

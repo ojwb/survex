@@ -35,10 +35,6 @@
 #include <wx/confbase.h>
 #include <wx/gdicmn.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 IMPLEMENT_APP(Aven)
 
 Aven::Aven() :
@@ -50,34 +46,15 @@ bool Aven::OnInit()
 {
     msg_init(argv);
     
-    // wxLocale::Init() gives an error box if it doesn't find the catalog,
-    // but using FALSE for the penultimate argument and then AddCatalog()
-    // if IsOk() doesn't work.
-    // So we resort to this ugly hack - hard-coding the languages we know
-    // that wxWindows knows...  FIXME if it's possible
-
     const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
-    // also cs da fi nl ru sv zh which survex doesn't (yet) support
-    // NB keep this like in step with survex.iss.in and src/Makefile.am
-    switch (lang[0]) {
-      case 'e':
-        if (lang[1] != 's') lang = NULL;
-        break;
-      case 'd':
-        if (lang[1] != 'e') lang = NULL;
-        break;
-      case 'f':
-        if (lang[1] != 'r') lang = NULL;
-        break;
-      case 'i':
-        if (lang[1] != 't') lang = NULL;
-        break;
-      default:
-        lang = NULL;
-    }  
     if (lang) {
-        // Creating the object is enough - no reason to keep hold of it!
-        (void)new wxLocale(lang, lang, lang, TRUE, TRUE);
+	// suppress message box warnings about messages not found
+	wxLogNull logNo;
+	wxLocale *loc = new wxLocale();
+	loc->AddCatalogLookupPathPrefix(msg_cfgpth());
+	loc->Init(lang, lang, lang, TRUE, TRUE);
+	// The existence of the wxLocale object is enough - no need to keep a
+	// pointer to it!
     }
 
     wxString survey;
