@@ -93,13 +93,16 @@ int invert_var(var *inv, const var *v);
 /* Is v zero? */
 bool fZero(const var *v);
 
+#define PREC "%8.6f"
+
 #ifdef NO_COVARIANCES
-# define print_var(V) printf("(%f,%f,%f)", (V)[0], (V)[1], (V)[2])
+# define print_var(V) printf("("PREC","PREC","PREC")", (V)[0], (V)[1], (V)[2])
 #else
 # define print_var(V) \
-printf("/%4.2f,%4.2f,%4.2f\\\n|%4.2f,%4.2f,%4.2f|\n\\%4.2f,%4.2f,%4.2f/\n",\
+printf("/"PREC","PREC","PREC"\\\n|"PREC","PREC","PREC"|\n\\"PREC","PREC","PREC"/\n",\
 (V)[0][0], (V)[0][1], (V)[0][2],\
 (V)[1][0], (V)[1][1], (V)[1][2],\
 (V)[2][0], (V)[2][1], (V)[2][2])
 #endif
 
+#define print_d(D) printf("("PREC","PREC","PREC")", (D)[0], (D)[1], (D)[2])
