@@ -24,7 +24,6 @@ extra_text = AUTHORS COPYING NEWS TODO ChangeLog
 base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
  extend survex sorterr 3dtopos
 
-# FIXME: keep in step with debian/docs
 HTMLFILES = AUTHORS.htm ChngeLog.htm GPL.htm HACKING.htm NEWS.htm\
  OLDNEWS.htm TODO.htm index.htm
 
@@ -124,11 +123,11 @@ dist-hook:
 	echo Description: Sophisticated cave survey viewer for Survex >> ${debct}
 	sed 's/^/ /' < desc-aven.txt >> ${debct}
 	: # list of docs
-	rm -f debian/doc
+	rm -f debian/docs
 	for a in `echo ${extra_text}|grep -v COPYING|grep -v ChangeLog` ; do \
-	 echo $a >> debian/doc ; done
+	 echo $a >> debian/docs ; done
 	for a in $(HTMLFILES) @DOCS_OTHER@ manual/ ; do \
-	 echo debian/tmp/usr/doc/survex/$a >> debian/doc ; done
+	 echo debian/tmp/usr/doc/survex/$a >> debian/docs ; done
 
 debian : dist
 	: # overkill maybe - we could probably just use this tree
