@@ -49,12 +49,6 @@ From: Olly
 Currently rpm isn't relocatable (since path to support files is compiled
 in).  Can we fix this?  Does anyone care?  [No, nobody cares!]
 
-Date: Wed, 08 Mar 2000 21:38:25 GMT
-From: Brian Clipstone <brian@bclipstone.freeserve.co.uk>
-
-[in 0.92pre6, allegro version] CAVEROT Keys :- Delete, U & D and the
-cursor keys do not work. [Not confirmed as fixed by Brian]
-
 Date: Fri, 08 Dec 2000
 From: Olly
 
