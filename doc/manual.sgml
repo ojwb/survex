@@ -124,8 +124,8 @@ this.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-10-24 09:43:19 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.69 2001-10-24 09:43:19 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-11-07 13:27:50 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.70 2001-11-07 13:27:50 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -989,11 +989,12 @@ Value = ( Reading - ZeroError ) * Scale    (Scale defaults to 1.0)
 </Para>
 
 <Para>
-You need to be careful about the sign of the ZeroError. It is
-the amount needed to correct the reading you got to Zero. This
-means that if your tape measure has the end missing, and you are
-using the 30cm mark to take all measurements from, then you can
-correct it with:
+You need to be careful about the sign of the ZeroError. The value of
+ZeroError is what the the instrument would read when measuring a
+reading which should be zero.  So for example, if your tape measure
+has the end missing, and you are using the 30cm mark to take all
+measurements from, then a zero distance would be measured as 30cm and
+you would correct this with:
 </Para>
 
 <programlisting>*CALIBRATE tape +0.3</programlisting>
