@@ -91,7 +91,8 @@ Show summary of options.
 .B \-\-version
 Show version of program.
 .SH SEE ALSO
-.\" The Survex Manual - to be found in /usr/share/doc/survex or /usr/doc/survex
+The Survex Manual - to be found in /usr/share/doc/survex or
+/usr/doc/survex
 .SH AUTHOR
 This manual page was written by Wookey <wookey@survex.com> and amended by
 Olly Betts <olly@survex.com>
