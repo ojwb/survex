@@ -5,8 +5,8 @@ Changes in 0.99-prerelease1:
 * Text documentation converted to HTML; BUGS and TODO merged, ZOMBIES
   removed.
 
-* Include HTML documentation overview page in all versions (was only
-  included in MS Windows before).
+* Include HTML documentation overview page and manual in all versions
+  (was only included in MS Windows before).
 
 * aven: added new functionality: toolbar, side panel with survey tree,
   find station, measure distance between two stations, click on

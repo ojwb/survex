@@ -167,7 +167,9 @@ djgpp_zip : dostxt
 	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
 	ln -s ../README dostxt_tmp/README.txt
 	# -l means convert LF to CR+LF
-	zip -j -l $(djgpp_zip_name) dostxt_tmp/*.txt $(extra_txt)
+	zip -j -l ../$(djgpp_zip_name) dostxt_tmp/*.txt
+	cd doc;zip -l ../$(djgpp_zip_name) manual $(HTMLFILES)
+	zip -j -l $(djgpp_zip_name) $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
 mingw : all mingw_iss
@@ -188,7 +190,8 @@ mingw_zip : dostxt mingwexes
 mingw_iss : dostxt mingwexes
 	$(RM) -rf iss_tmp
 	mkdir iss_tmp
-	cp dostxt_tmp/*.txt $(extra_txt) survex.iss doc/docindex.htm iss_tmp
+	cp dostxt_tmp/*.txt $(extra_txt) survex.iss iss_tmp
+	cd doc;cp $(HTMLFILES) ../iss_tmp
 	# convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
 	cp mingw_extras/*.ico lib/icons/*.png iss_tmp
@@ -222,6 +225,7 @@ borlandc_zip : dostxt
 	ln -s ../README dostxt_tmp/README.txt
 	# -l means convert LF to CR+LF
 	zip -j -l $(bc_zip_name) dostxt_tmp/*.txt $(extra_txt)
+	cd doc;zip -l ../$(bc_zip_name) manual $(HTMLFILES)
 	$(RM) -rf dostxt_tmp
 
 riscos_zip_name = survex-riscos-@VERSION@.zip
@@ -254,6 +258,12 @@ riscos_zip :
 	  *.msg) type=ffd ;;\
          esac ;\
 	 ln -s ../../$$f riscos_tmp/\!Cavern/$$b,$$type ; done
+	cd doc && for f in $(HTMLFILES) ; do\
+	 ln -s ../doc/$$f ../riscos_tmp/$$f,faf
+	mkdir riscos_tmp/manual
+	cd doc && for f in manual/*.htm ; do\
+	 ln -s ../../doc/$$f ../riscos_tmp/$$f,faf
+	done
 	# -R doesn't seem to work here, so just glob it all in
 	cd riscos_tmp && ../zip-magic -N ../$(riscos_zip_name) * */* */*/*
 	$(RM) -rf riscos_tmp
@@ -287,7 +297,7 @@ alien_src_zip :
 	cd alien_tmp && ../zip-magic -N -r ../$(alien_src_zip_name) *
 	$(RM) -rf alien_tmp
 
-MANUAL = manual manual/*.htm @DOCS_OTHER@
+MANUAL = manual/*.htm @DOCS_OTHER@
 
 dos_doc_zip_name = svxdoc-doswin-@VERSION@.zip
 dos_doc_exe_name = svxdoc-doswin-@VERSION@.exe
@@ -301,7 +311,7 @@ dos_doc_exe : dos_doc_zip
 dos_doc_zip :
 	$(RM) $(dos_doc_zip_name)
 	# -l means convert LF to CR+LF
-	cd doc && zip -l ../$(dos_doc_zip_name) $(MANUAL) docindex.htm
+	cd doc && zip -l ../$(dos_doc_zip_name) $(MANUAL)
 
 riscos_doc_zip_name = svxdoc-riscos-@VERSION@.zip
 
@@ -309,7 +319,7 @@ riscos_doc_zip :
 	$(RM) $(riscos_doc_zip_name)
 	$(RM) -rf riscos_doc_tmp
 	mkdir riscos_doc_tmp
-	cd doc && for f in $(MANUAL) docindex.htm ; do\
+	cd doc && for f in $(MANUAL) ; do\
 	 if test -d $$f ; then\
 	  mkdir ../riscos_doc_tmp/$$f ;\
 	 else\
