@@ -46,17 +46,17 @@ Name: "{group}\Documentation"; Filename: "{app}\index.htm"; Comment: "View the d
 
 [Registry]
 ; Support for loading Compass Plot files
-Root: HKCU; Subkey: ".plt"; ValueType: string; ValueData: "CompassPlotFile"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: ".plf"; ValueType: string; ValueData: "CompassPlotFile"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "CompassPlotFile\shell"; ValueType: string; ValueData: "Open with Aven"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: ".plt"; ValueType: string; ValueData: "CompassPlotFile"
+Root: HKCU; Subkey: ".plf"; ValueType: string; ValueData: "CompassPlotFile"
+Root: HKCU; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"
+Root: HKCU; Subkey: "CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"
+Root: HKCU; Subkey: "CompassPlotFile\shell"; ValueType: string; ValueData: "Open with Aven"
 Root: HKCU; Subkey: "CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
 ; Support for loading CMAP XYZ files
-Root: HKCU; Subkey: ".xyz"; ValueType: string; ValueData: "CMAP.XYZ"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"; Flags: uninsdeletevalue
-;Root: HKCU; Subkey: "CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "CMAP.XYZ\shell"; ValueType: string; ValueData: "Open with Aven"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: ".xyz"; ValueType: string; ValueData: "CMAP.XYZ"
+Root: HKCU; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"
+;Root: HKCU; Subkey: "CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"
+Root: HKCU; Subkey: "CMAP.XYZ\shell"; ValueType: string; ValueData: "Open with Aven"
 Root: HKCU; Subkey: "CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
 ;
 Root: HKCU; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue
@@ -95,17 +95,17 @@ Root: HKCU; Subkey: "survex.log\shell"; ValueType: string; ValueData: "Open"; Fl
 Root: HKCU; Subkey: "survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
 ; and now the administrator versions - same as above but "HKCR" and "noerror":
 ; Support for loading Compass Plot files
-Root: HKCR; Subkey: ".plt"; ValueType: string; ValueData: "CompassPlotFile"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: ".plf"; ValueType: string; ValueData: "CompassPlotFile"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "CompassPlotFile\shell"; ValueType: string; ValueData: "Open with Aven"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: ".plt"; ValueType: string; ValueData: "CompassPlotFile"; Flags: noerror
+Root: HKCR; Subkey: ".plf"; ValueType: string; ValueData: "CompassPlotFile"; Flags: noerror
+Root: HKCR; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"; Flags: noerror
+Root: HKCR; Subkey: "CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Flags: noerror
+Root: HKCR; Subkey: "CompassPlotFile\shell"; ValueType: string; ValueData: "Open with Aven"; Flags: noerror
 Root: HKCR; Subkey: "CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue noerror
 ; Support for loading CMAP XYZ files
-Root: HKCR; Subkey: ".xyz"; ValueType: string; ValueData: "CMAP.XYZ"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"; Flags: uninsdeletevalue noerror
-;Root: HKCR; Subkey: "CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "CMAP.XYZ\shell"; ValueType: string; ValueData: "Open with Aven"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: ".xyz"; ValueType: string; ValueData: "CMAP.XYZ"; Flags: noerror
+Root: HKCR; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"; Flags: noerror
+;Root: HKCR; Subkey: "CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Flags: noerror
+Root: HKCR; Subkey: "CMAP.XYZ\shell"; ValueType: string; ValueData: "Open with Aven"; Flags: noerror
 Root: HKCR; Subkey: "CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue noerror
 ;
 Root: HKCR; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue noerror
