@@ -46,8 +46,6 @@ static double LineWidth;
 
 static char *fontname, *fontname_labels;
 
-#define fontname_symbol "Symbol"
-
 static const char *win_Name(void);
 static int win_Pre(int pagesToPrint, const char *title);
 static void win_NewPage(int pg, int pass, int pagesX, int pagesY);
@@ -57,6 +55,7 @@ static int  win_Charset(void);
 static void win_MoveTo(long x, long y);
 static void win_DrawTo(long x, long y);
 static void win_DrawCross(long x, long y);
+static void win_SetFont(int fontcode);
 static void win_WriteString(const char *s);
 static void win_DrawCircle(long x, long y, long r);
 static void win_ShowPage(const char *szPageDetails);
@@ -72,7 +71,7 @@ device printer = {
    win_MoveTo,
    win_DrawTo,
    win_DrawCross,
-   NULL,
+   win_SetFont,
    win_WriteString,
    win_DrawCircle,
    win_ShowPage,
@@ -82,7 +81,7 @@ device printer = {
 
 static HDC pd; /* printer context */
 
-static TEXTMETRIC tm; /* font info */
+static TEXTMETRIC tm, tm_labels, tm_default; /* font info */
 
 static double scX, scY;
 
@@ -208,6 +207,23 @@ win_DrawCross(long x, long y)
 }
 
 static void
+win_SetFont(int fontcode)
+{
+   switch (fontcode) {
+      case PR_FONT_DEFAULT:
+	 SelectObject(font_default);
+	 tm = tm_default;
+	 break;
+      case PR_FONT_LABELS:
+	 SelectObject(font_labels);
+	 tm = tm_labels;
+	 break;
+      default:
+	 BUG("unknown font code");
+   }
+}
+
+static void
 win_WriteString(const char *s)
 {
    if (cur_pass != -1) {
@@ -239,6 +255,8 @@ win_Charset(void)
    return CHARSET_ISO_8859_1;
 }
 
+static HFONT font_labels, font_default, font_old;
+
 static int
 win_Pre(int pagesToPrint, const char *title)
 {
@@ -254,6 +272,19 @@ win_Pre(int pagesToPrint, const char *title)
    if (!PrintDlgA(&psd)) exit(1);
    pd = psd.hDC;
 
+   font_labels = CreateFont(fontsize_labels, 0, 0, 0, FW_NORMAL, 0, 0, 0,
+			    ANSI_CHARSET, OUT_DEFAULT_PRECIS,
+			    CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+			    FF_DONTCARE | DEFAULT_PITCH, "Arial");   
+   font_default = CreateFont(fontsize, 0, 0, 0, FW_NORMAL, 0, 0, 0,
+		   	  ANSI_CHARSET, OUT_DEFAULT_PRECIS,
+			  CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+			  FF_DONTCARE | DEFAULT_PITCH, "Arial");   
+   font_old = SelectObject(pd, font_labels);
+   GetTextMetrics(pd, &tm_labels);
+   SelectObject(pd, font_default);
+   GetTextMetrics(pd, &tm_default);
+   
    memset(&info, 0, sizeof(DOCINFO));
    info.cbSize = sizeof(DOCINFO);
    info.lpszDocName = title;
@@ -300,20 +331,27 @@ static void
 win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 	 double *pscX, double *pscY)
 {
-   /* name and size of font to use for text */
    PRINTDLGA psd;
+   static const char *vars[] = {
+      "like",
+      "font_size_labels",
+      NULL
+   };
+   char **vals;
 
-   fh_list = fh_list;
-   pth = pth;
+   fCalibrate = fCalibrate; /* suppress unused argument warning */
    out_fnm = out_fnm;
+
+   vals = ini_read_hier(fh_list, "win", vars);
+
+   fontsize_labels = as_int(vars[2], vals[2], 1, INT_MAX);
+   fontsize = 10;
 
    memset(&psd, 0, sizeof(PRINTDLGA));
    psd.lStructSize = 66;
    psd.Flags = PD_RETURNDC | PD_RETURNDEFAULT;
 
    if (!PrintDlgA(&psd)) exit(1);
-
-   fontsize = 12;
 
    PaperWidth = GetDeviceCaps(psd.hDC, HORZSIZE);
    PaperDepth = GetDeviceCaps(psd.hDC, VERTSIZE);
@@ -327,17 +365,15 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    scY = *pscY = ypPageDepth / PaperDepth;
    xpPageWidth--;
    ypPageDepth = ypPageDepth - (int)(10 * *pscY);
-   GetTextMetrics(psd.hDC, &tm);
    DeleteDC(psd.hDC);
-
-   /* name and size of font to use for station labels (default to text font) */
-   fontname_labels = fontname;
-   fontsize_labels = fontsize;
 }
 
 static void
 win_Quit(void)
 {
+   SelectObject(pd, font_old);
+   DeleteObject(font_labels);
+   DeleteObject(font_default);
    EndDoc(pd);
    DeleteDC(pd);
 }

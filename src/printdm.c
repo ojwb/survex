@@ -2,7 +2,7 @@
 
 /* Device dependent part of Survex Dot-matrix/PCL printer driver */
 /* Bitmap routines for Survex Dot-matrix and Inkjet printer drivers */
-/* Copyright (C) 1993-2001 Olly Betts
+/* Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ device printer = {
    MoveTo,
    DrawTo,
    DrawCross,
-   NULL, /* SetFont */
+   SetFont,
    WriteString,
    NULL, /* DrawCircle */
    xbm_ShowPage,
@@ -424,6 +424,7 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 #else
 #error unknown operating system
 #endif
+      "font_size_labels",
 #ifdef XBM
       "width",
       "height",
@@ -471,9 +472,10 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    else
       fnm_prn = as_string(vars[1], vals[1]);
 
+   fontsize_labels = as_int(vars[3], vals[3], 1, INT_MAX);
 #ifdef XBM
-   xpPageWidth = as_int(vars[3], vals[3], 1, INT_MAX);
-   ypPageDepth = as_int(vars[4], vals[4], 1, INT_MAX);
+   xpPageWidth = as_int(vars[4], vals[4], 1, INT_MAX);
+   ypPageDepth = as_int(vars[5], vals[5], 1, INT_MAX);
    ylPageDepth = ypPageDepth;
    ypLineDepth = 1;
    PaperWidth = xpPageWidth;
@@ -481,12 +483,12 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    *pscX = *pscY = 1;
    osfree(vals);
 #elif defined(PCL)
-   dpi = as_int(vars[3], vals[3], 1, INT_MAX);
-   PaperWidth = as_double(vars[4], vals[4], 1, DBL_MAX);
-   PaperDepth = as_double(vars[5], vals[5], 11, DBL_MAX);
+   dpi = as_int(vars[4], vals[4], 1, INT_MAX);
+   PaperWidth = as_double(vars[5], vals[5], 1, DBL_MAX);
+   PaperDepth = as_double(vars[6], vals[6], 11, DBL_MAX);
    PaperDepth -= 10; /* allow 10mm for footer */
-   fPCLHTab = as_bool(vars[6], vals[6]);
-   fPCLVTab = as_bool(vars[7], vals[7]);
+   fPCLHTab = as_bool(vars[7], vals[7]);
+   fPCLVTab = as_bool(vars[8], vals[8]);
    osfree(vals);
 
    *pscX = *pscY = (double)dpi / MM_PER_INCH;
@@ -494,22 +496,22 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    ylPageDepth = ypPageDepth = (int)((dpi / MM_PER_INCH) * PaperDepth);
    ypLineDepth = 1;
 #else
-   xpPageWidth = as_int(vars[3], vals[3], 1, INT_MAX);
-   ylPageDepth = as_int(vars[4], vals[4], 4, INT_MAX);
+   xpPageWidth = as_int(vars[4], vals[4], 1, INT_MAX);
+   ylPageDepth = as_int(vars[5], vals[5], 4, INT_MAX);
    ylPageDepth -= 3; /* allow for footer */
-   ypLineDepth = as_int(vars[5], vals[5], 1, INT_MAX);
+   ypLineDepth = as_int(vars[6], vals[6], 1, INT_MAX);
 
-   if (!vals[6] || !vals[7]) {
+   if (!vals[7] || !vals[8]) {
       if (!fCalibrate)
 	 fatalerror(/*You need to calibrate your printer - see the manual for details.*/103);
 
       /* Set temporary values, so a calibration plot can be produced */
-      if (!vals[6]) PaperWidth = 200.0;
-      if (!vals[7]) PaperWidth = 300.0;
+      if (!vals[7]) PaperWidth = 200.0;
+      if (!vals[8]) PaperWidth = 300.0;
    }
 
-   if (vals[6]) PaperWidth = as_double(vars[6], vals[6], 1, DBL_MAX);
-   if (vals[7]) PaperDepth = as_double(vars[7], vals[7], 1, DBL_MAX);
+   if (vals[7]) PaperWidth = as_double(vars[7], vals[7], 1, DBL_MAX);
+   if (vals[8]) PaperDepth = as_double(vars[8], vals[8], 1, DBL_MAX);
 
    ypPageDepth = ylPageDepth * ypLineDepth;
    *pscX = xpPageWidth / PaperWidth; /* xp per mm */
@@ -518,24 +520,24 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    /* Work out # bytes required to hold one column */
    SIZEOFGRAPH_T = (ypLineDepth + 7) >> 3;
 
-   prn.lnsp.str = vals[8];
-   prn.lnsp.len = as_escstring(vars[8], prn.lnsp.str);
-   prn.grph.str = vals[9];
-   prn.grph.len = as_escstring(vars[9], prn.grph.str);
-   prn.grph2.str = vals[10];
-   prn.grph2.len = as_escstring(vars[10], prn.grph2.str);
-   prn.fnt_big.str = vals[11];
-   prn.fnt_big.len = as_escstring(vars[11], prn.fnt_big.str);
-   prn.fnt_sml.str = vals[12];
-   prn.fnt_sml.len = as_escstring(vars[12], prn.fnt_sml.str);
-   prn.fmfd.str = vals[13];
-   prn.fmfd.len = as_escstring(vars[13], prn.fmfd.str);
-   prn.rst.str = vals[14];
-   prn.rst.len = as_escstring(vars[14], prn.rst.str);
-   prn.eol.str = vals[15];
-   prn.eol.len = as_escstring(vars[15], prn.eol.str);
+   prn.lnsp.str = vals[9];
+   prn.lnsp.len = as_escstring(vars[9], prn.lnsp.str);
+   prn.grph.str = vals[10];
+   prn.grph.len = as_escstring(vars[10], prn.grph.str);
+   prn.grph2.str = vals[11];
+   prn.grph2.len = as_escstring(vars[11], prn.grph2.str);
+   prn.fnt_big.str = vals[12];
+   prn.fnt_big.len = as_escstring(vars[12], prn.fnt_big.str);
+   prn.fnt_sml.str = vals[13];
+   prn.fnt_sml.len = as_escstring(vars[13], prn.fnt_sml.str);
+   prn.fmfd.str = vals[14];
+   prn.fmfd.len = as_escstring(vars[14], prn.fmfd.str);
+   prn.rst.str = vals[15];
+   prn.rst.len = as_escstring(vars[15], prn.rst.str);
+   prn.eol.str = vals[16];
+   prn.eol.len = as_escstring(vars[16], prn.eol.str);
    fIBM = 0; /* default to Epson */
-   if (vals[16]) fIBM = as_bool(vars[16], vals[16]);
+   if (vals[17]) fIBM = as_bool(vars[17], vals[17]);
    osfree(vals);
 #endif
 

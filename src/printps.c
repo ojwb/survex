@@ -423,8 +423,8 @@ ps_Pre(int pagesToPrint, const char *title)
    prio_putc('\n');
 
    /* this code adapted from a2ps */
-   prio_print("%%BeginResource: encoding ISO88591Encoding\n");
-   prio_print("/ISO88591Encoding [");
+   prio_print("%%BeginResource: encoding ISO88591Encoding\n"
+              "/ISO88591Encoding [");
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
@@ -433,24 +433,25 @@ ps_Pre(int pagesToPrint, const char *title)
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
-   prio_print("/space /exclam /quotedbl /numbersign\n");
-   prio_print("/dollar /percent /ampersand /quoteright\n");
-   prio_print("/parenleft /parenright /asterisk /plus\n");
-   prio_print("/comma /minus /period /slash\n");
-   prio_print("/zero /one /two /three\n");
-   prio_print("/four /five /six /seven\n");
-   prio_print("/eight /nine /colon /semicolon\n");
-   prio_print("/less /equal /greater /question\n");
-   prio_print("/at /A /B /C /D /E /F /G\n");
-   prio_print("/H /I /J /K /L /M /N /O\n");
-   prio_print("/P /Q /R /S /T /U /V /W\n");
-   prio_print("/X /Y /Z /bracketleft\n");
-   prio_print("/backslash /bracketright /asciicircum /underscore\n");
-   prio_print("/quoteleft /a /b /c /d /e /f /g\n");
-   prio_print("/h /i /j /k /l /m /n /o\n");
-   prio_print("/p /q /r /s /t /u /v /w\n");
-   prio_print("/x /y /z /braceleft\n");
-   prio_print("/bar /braceright /asciitilde /.notdef\n");
+   prio_print(
+"/space /exclam /quotedbl /numbersign\n"
+"/dollar /percent /ampersand /quoteright\n"
+"/parenleft /parenright /asterisk /plus\n"
+"/comma /minus /period /slash\n"
+"/zero /one /two /three\n"
+"/four /five /six /seven\n"
+"/eight /nine /colon /semicolon\n"
+"/less /equal /greater /question\n"
+"/at /A /B /C /D /E /F /G\n"
+"/H /I /J /K /L /M /N /O\n"
+"/P /Q /R /S /T /U /V /W\n"
+"/X /Y /Z /bracketleft\n"
+"/backslash /bracketright /asciicircum /underscore\n"
+"/quoteleft /a /b /c /d /e /f /g\n"
+"/h /i /j /k /l /m /n /o\n"
+"/p /q /r /s /t /u /v /w\n"
+"/x /y /z /braceleft\n"
+"/bar /braceright /asciitilde /.notdef\n");
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
@@ -459,32 +460,33 @@ ps_Pre(int pagesToPrint, const char *title)
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
    prio_print("/.notdef /.notdef /.notdef /.notdef\n");
-   prio_print("/space /exclamdown /cent /sterling\n");
-   prio_print("/currency /yen /brokenbar /section\n");
-   prio_print("/dieresis /copyright /ordfeminine /guillemotleft\n");
-   prio_print("/logicalnot /hyphen /registered /macron\n");
-   prio_print("/degree /plusminus /twosuperior /threesuperior\n");
-   prio_print("/acute /mu /paragraph /bullet\n");
-   prio_print("/cedilla /onesuperior /ordmasculine /guillemotright\n");
-   prio_print("/onequarter /onehalf /threequarters /questiondown\n");
-   prio_print("/Agrave /Aacute /Acircumflex /Atilde\n");
-   prio_print("/Adieresis /Aring /AE /Ccedilla\n");
-   prio_print("/Egrave /Eacute /Ecircumflex /Edieresis\n");
-   prio_print("/Igrave /Iacute /Icircumflex /Idieresis\n");
-   prio_print("/Eth /Ntilde /Ograve /Oacute\n");
-   prio_print("/Ocircumflex /Otilde /Odieresis /multiply\n");
-   prio_print("/Oslash /Ugrave /Uacute /Ucircumflex\n");
-   prio_print("/Udieresis /Yacute /Thorn /germandbls\n");
-   prio_print("/agrave /aacute /acircumflex /atilde\n");
-   prio_print("/adieresis /aring /ae /ccedilla\n");
-   prio_print("/egrave /eacute /ecircumflex /edieresis\n");
-   prio_print("/igrave /iacute /icircumflex /idieresis\n");
-   prio_print("/eth /ntilde /ograve /oacute\n");
-   prio_print("/ocircumflex /otilde /odieresis /divide\n");
-   prio_print("/oslash /ugrave /uacute /ucircumflex\n");
-   prio_print("/udieresis /yacute /thorn /ydieresis\n");
-   prio_print("] def\n");
-   prio_print("%%EndResource\n");
+   prio_print(
+"/space /exclamdown /cent /sterling\n"
+"/currency /yen /brokenbar /section\n"
+"/dieresis /copyright /ordfeminine /guillemotleft\n"
+"/logicalnot /hyphen /registered /macron\n"
+"/degree /plusminus /twosuperior /threesuperior\n"
+"/acute /mu /paragraph /bullet\n"
+"/cedilla /onesuperior /ordmasculine /guillemotright\n"
+"/onequarter /onehalf /threequarters /questiondown\n"
+"/Agrave /Aacute /Acircumflex /Atilde\n"
+"/Adieresis /Aring /AE /Ccedilla\n"
+"/Egrave /Eacute /Ecircumflex /Edieresis\n"
+"/Igrave /Iacute /Icircumflex /Idieresis\n"
+"/Eth /Ntilde /Ograve /Oacute\n"
+"/Ocircumflex /Otilde /Odieresis /multiply\n"
+"/Oslash /Ugrave /Uacute /Ucircumflex\n"
+"/Udieresis /Yacute /Thorn /germandbls\n"
+"/agrave /aacute /acircumflex /atilde\n"
+"/adieresis /aring /ae /ccedilla\n"
+"/egrave /eacute /ecircumflex /edieresis\n"
+"/igrave /iacute /icircumflex /idieresis\n"
+"/eth /ntilde /ograve /oacute\n"
+"/ocircumflex /otilde /odieresis /divide\n"
+"/oslash /ugrave /uacute /ucircumflex\n"
+"/udieresis /yacute /thorn /ydieresis\n"
+"] def\n"
+"%%EndResource\n");
 
    /* this code adapted from a2ps */
    prio_print(
@@ -561,8 +563,8 @@ ps_Pre(int pagesToPrint, const char *title)
 	      "/S {show} def\n"
 	      "/C {stroke newpath 0 360 arc} def\n");
 
-   prio_print("%%EndComments\n");
-   prio_print("%%EndProlog\n");
+   prio_print("%%EndComments\n"
+	      "%%EndProlog\n");
 
    return 1; /* only need 1 pass */
 }

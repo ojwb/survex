@@ -1,6 +1,6 @@
 /* prbitmap.c */
 /* Bitmap routines for Survex Dot-matrix and Inkjet printer drivers */
-/* Copyright (C) 1993-2001 Olly Betts
+/* Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,23 +27,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "debug.h"
 #include "useful.h"
 #include "filename.h"
 #include "message.h"
 #include "prbitmap.h"
+#include "prcore.h"
 
 void (*PlotDot)(long X, long Y);
 
 static unsigned int max_def_char;
 
-#define CHAR_SPACING 8 /* no. of char_pixels to each char */
+int fontsize = 8, fontsize_labels;
 
-/* rule of thumb for device_dots/char_pixel given dpi */
-#define DPP(dpi) ((int)ceil((dpi) / 110.0))
+#define CHAR_SPACING 8 /* no. of char_pixels to each char */
 
 static long xLast, yLast;
 
 static int dppX, dppY; /* dots (device pixels) per pixel (char defn pixels) */
+static int dppX_labels, dppY_labels; /* ditto for station labels */
 
 /* Uses Bresenham Line generator algorithm */
 extern void
@@ -114,8 +116,10 @@ DrawTo(long x, long y)
 extern void
 DrawCross(long x, long y)
 {
-   DrawLineDots(x - dppX, y - dppY, x + dppX, y + dppY);
-   DrawLineDots(x + dppX, y - dppY, x - dppX, y + dppY);
+   DrawLineDots(x - dppX_labels, y - dppY_labels,
+		x + dppX_labels, y + dppY_labels);
+   DrawLineDots(x + dppX_labels, y - dppY_labels,
+		x - dppX_labels, y + dppY_labels);
    xLast = x;
    yLast = y;
 }
@@ -123,6 +127,9 @@ DrawCross(long x, long y)
 /* Font Driver Routines */
 
 static char *font;
+
+/* Calculate device_dots/char_pixel given point size and dpi */
+#define DPP(POINTS, DPI) max(1, ((int)(POINTS) * (int)(DPI) + 288) / 576)
 
 extern void
 read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
@@ -133,8 +140,10 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
    unsigned int len;
    char *fnm;
 
-   dppX = DPP(dpiX); /* dots (printer pixels) per pixel (char defn pixels) */
-   dppY = DPP(dpiY);
+   dppX_labels = DPP(fontsize_labels, dpiX);
+   dppY_labels = DPP(fontsize_labels, dpiY);
+   dppX = DPP(fontsize, dpiX);
+   dppY = DPP(fontsize, dpiY);
 /* printf("Debug info: dpp x=%d, y=%d\n\n",dppX,dppY); */
 
    fh = fopenWithPthAndExt(pth, leaf, NULL, "rb", &fnm);
@@ -176,6 +185,25 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
    (void)fclose(fh);
 }
 
+static int dppx, dppy;
+
+extern void
+SetFont(int fontcode)
+{
+   switch (fontcode) {
+      case PR_FONT_DEFAULT:
+	 dppx = dppX;
+	 dppy = dppY;
+	 break;
+      case PR_FONT_LABELS:
+	 dppx = dppX_labels;
+	 dppy = dppY_labels;
+	 break;
+      default:
+	 BUG("unknown font code");
+   }
+}
+
 static void
 WriteLetter(int ch, long X, long Y)
 {
@@ -186,9 +214,9 @@ WriteLetter(int ch, long X, long Y)
       for (x = 0; x < 8; x++) {
 	 if (t & 1) {
 	    /* plot mega-pixel */
-	    for (x2 = 0; x2 < dppX; x2++)
-	       for (y2 = 0 ; y2 < dppY; y2++)
-		  (PlotDot)(X + (long)x * dppX + x2, Y + (long)y * dppY + y2);
+	    for (x2 = 0; x2 < dppx; x2++)
+	       for (y2 = 0 ; y2 < dppy; y2++)
+		  (PlotDot)(X + (long)x * dppx + x2, Y + (long)y * dppy + y2);
 	 }
 	 t = t >> 1;
       }
@@ -202,6 +230,6 @@ WriteString(const char *s)
    unsigned const char *p = (unsigned const char *)s;
    while ((ch = *p++) >= 32) {
       if (ch <= max_def_char) WriteLetter(ch, xLast, yLast);
-      xLast += (long)CHAR_SPACING * dppX;
+      xLast += (long)CHAR_SPACING * dppx;
    }
 }
