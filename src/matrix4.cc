@@ -1,9 +1,10 @@
 //
-//  matrix4.cxx
+//  matrix4.cc
 //
 //  C++ class for handling 4x4 matrices
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
+//  Copyright (C) 2002 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -44,10 +45,10 @@ void Matrix4::setRow(int row, double a, double b, double c, double d)
     *p = d;
 }
 
-Matrix4 Matrix4::transpose()
+Matrix4 Matrix4::transpose() const
 {
     Matrix4 r;
-    double* d = data;
+    const double* d = data;
 
     for (int row = 0; row < 4; row++) {
 	for (int col = 0; col < 4; col++) {
@@ -105,9 +106,10 @@ Matrix4 operator*(const Matrix4& left, const Matrix4& right)
     return m;
 }
 
-void Matrix4::print()
+#if 0
+void Matrix4::print() const
 {
-    double* d = data;
+    const double* d = data;
     for (int row = 0; row < 4; row++) {
 	printf("[ ");
 	for (int col = 0; col < 4; col++) {
@@ -116,3 +118,4 @@ void Matrix4::print()
 	printf("]\n");
     }
 }
+#endif
