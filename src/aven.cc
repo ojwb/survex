@@ -78,7 +78,7 @@ bool Aven::OnInit()
 
     static struct help_msg help[] = {
 	/*			     <-- */
-	{HLP_ENCODELONG(0),          "Only load the sub-survey with this prefix"},
+	{HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
 	{0, 0}
     };
 
@@ -94,7 +94,7 @@ bool Aven::OnInit()
 #else
     static wxCmdLineEntryDesc cmdline[] = {
 	// FIXME - if this code is every reenabled, check this is correct, and also handle it below...
-        { wxCMD_LINE_OPTION, "s", "survey", "Only load the sub-survey with this prefix", wxCMD_LINE_VAL_STRING},
+        { wxCMD_LINE_OPTION, "s", "survey", "only load the sub-survey with this prefix", wxCMD_LINE_VAL_STRING},
         { wxCMD_LINE_OPTION, "h", "help", msgPerm(/*Display command line options*/201) },
 	{ wxCMD_LINE_PARAM,  NULL, NULL, msgPerm(/*3d file*/119), wxCMD_LINE_VAL_STRING,
 	  wxCMD_LINE_PARAM_OPTIONAL },
