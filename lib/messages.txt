@@ -1579,7 +1579,25 @@ en:185 numeric argument `%s' out of range
 en:186 argument `%s' not an integer
 # TRANSLATE
 en:187 argument `%s' not a number
-# XXX188-191
+# TRANSLATE check
+en:188 Expecting `DUPLICATE', `SPLAY', or `SURFACE'
+fr:188 On attendait `DUPLICATE', `SPLAY', ou `SURFACE'
+# NB there is no comma before "oder"
+de:188 `DUPLICATE', `SPLAY' oder `SURFACE' erwartet
+pt:188 `DUPLICATE', `SPLAY' ou `SURFACE' eram esperados
+ca:188 Esperant `DUPLICATE', `SPLAY', o `SURFACE'
+es:188 Esperando `DUPLICATE', `SPLAY', o `SURFACE'
+it:188 Atteso `DUPLICATE', `SPLAY' o `SURFACE'
+# TRANSLATE check
+en:189 Expecting `NOT', `DUPLICATE', `SPLAY', or `SURFACE'
+fr:189 On attendait `NOT', `DUPLICATE', `SPLAY', ou `SURFACE'
+# NB there is no comma before "oder"
+de:189 `NOT', `DUPLICATE', `SPLAY' oder `SURFACE' erwartet
+pt:189 `NOT', `DUPLICATE', `SPLAY' ou `SURFACE' eram esperados
+ca:189 Esperant `NOT', `DUPLICATE', `SPLAY', o `SURFACE'
+es:189 Esperando `NOT', `DUPLICATE', `SPLAY', o `SURFACE'
+it:189 Atteso `NOT', `DUPLICATE', `SPLAY' o `SURFACE'
+# XXX190-191
 # c.f. 22
 en:192 No matching BEGIN
 fr:192 BEGIN manquant

@@ -666,13 +666,15 @@ cmd_flags(void)
 	{NULL,        FLAGS_UNKNOWN }
    };
    bool fNot = fFalse;
+   bool fEmpty = fTrue;
    while (1) {
       int flag;
       get_token();
       /* If buffer is empty, it could mean end of line, or maybe
        * some non-letter junk which is better reported later */
-      if (!buffer[0]) return;
+      if (!buffer[0]) break;
 
+      fEmpty = fFalse;
       flag = match_tok(flagtab, TABSIZE(flagtab));
       /* treat the second NOT in "NOT NOT" as an unknown flag */
       if (flag == FLAGS_UNKNOWN || (fNot && flag == FLAGS_NOT)) {
@@ -687,6 +689,12 @@ cmd_flags(void)
       } else {
          pcs->flags |= BIT(flag);
       }
+   }
+
+   if (fNot) {
+      compile_error(/*Expecting `DUPLICATE', `SPLAY', or `SURFACE'*/188);
+   } else if (fEmpty) {
+      compile_error(/*Expecting `NOT', `DUPLICATE', `SPLAY', or `SURFACE'*/189);
    }
 }
 
