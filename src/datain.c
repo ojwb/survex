@@ -287,7 +287,8 @@ data_file(const char *pth, const char *fnm)
        * perhaps this code should be pushed into data_file.  Then
        * it would also work for files specified on the command line...
        */
-      error_in_file(file.filename, pcs->begin_lineno, /*Unclosed BEGIN*/23);
+      error_in_file(file.filename, pcs->begin_lineno,
+		    /*BEGIN with no matching END in this file*/23);
       skipline();
       /* Implicitly close any unclosed BEGINs from this file */
       do {

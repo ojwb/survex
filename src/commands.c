@@ -412,7 +412,7 @@ end_block(void)
 	 /* more ENDs than BEGINs */
 	 compile_error(/*No matching BEGIN*/192);
       } else {
-	 compile_error(/*No matching BEGIN in this file*/22);
+	 compile_error(/*END with no matching BEGIN in this file*/22);
       }
       skipline();
       return;
