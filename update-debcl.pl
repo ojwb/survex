@@ -37,7 +37,7 @@ $package ($version) unstable; urgency=low
 
   * New release
 
- -- Olly Betts <olly\@survex.com>  $date
+ -- Wookey <wookey\@survex.com>  $date
 
 END
    close O;
