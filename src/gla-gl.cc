@@ -416,7 +416,8 @@ void GLACanvas::SetDataTransform()
 	CHECK_GL_ERROR("ToggleTextured", "glTexParameteri GL_TEXTURE_WRAP_T");
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	CHECK_GL_ERROR("ToggleTextured", "glTexParameteri GL_TEXTURE_MAG_FILTER");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+			GL_LINEAR_MIPMAP_LINEAR);
 	CHECK_GL_ERROR("ToggleTextured", "glTexParameteri GL_TEXTURE_MIN_FILTER");
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     } else {
@@ -932,10 +933,11 @@ void GLACanvas::ToggleTextured()
 	    fprintf(stderr, "Couldn't load image.\n");
 	    exit(1);
 	}
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE,
-		     img.GetWidth(), img.GetHeight(),
-		     0, GL_RGB, GL_UNSIGNED_BYTE, img.GetData());
-	CHECK_GL_ERROR("ToggleTextured", "glTexImage2D");
+	// Generate mipmaps.
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_LUMINANCE,
+			  img.GetWidth(), img.GetHeight(),
+			  GL_RGB, GL_UNSIGNED_BYTE, img.GetData());
+	CHECK_GL_ERROR("ToggleTextured", "gluBuild2DMipmaps");
 
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	CHECK_GL_ERROR("ToggleTextured", "glTexEnvi");
