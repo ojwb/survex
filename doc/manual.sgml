@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-03-28 02:02:23 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.108 2003-03-28 02:02:23 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-06-25 23:59:28 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.109 2003-06-25 23:59:28 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -348,7 +348,8 @@ if you don't have root access on the machine you wish to install
 
 <Para>
 There's a GUI cave viewer called aven, which needs &wxwindows; to build,
-which in turn needs either Motif or Gtk+.  If installing the required
+which in turn needs either Motif or Gtk+.
+If installing the required
 libraries is a problem, there's a more basic cave viewer called xcaverot
 which only needs the standard X libraries.
 </Para>
@@ -2914,7 +2915,7 @@ can accomplish this like so:
 5 6  9.29 271 -28.5
 *end 163</programlisting>
 
-<Sect2><Title>Specify mark surface survey data</Title>
+<Sect2><Title>Specify surface survey data</Title>
 
 <Para>
 Say you have 2 underground surveys and 2 surface ones with 2 fixed reference
@@ -3371,7 +3372,9 @@ Survex website for download links.
 <Sect2><Title>Overlay a grid</Title>
 
 <Para>Aven is able to display a grid, but this functionality isn't currently
-available in caverot, xcaverot, or the printer drivers.
+available in caverot,
+xcaverot,
+or the printer drivers.
 You can achieve a similar effect for now by creating a &svx; file
 where the survey legs form a grid.
 </Para>

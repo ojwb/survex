@@ -5,6 +5,8 @@
 * (Unix version): Fixed svxedit man page which previously contained xcaverot
   documentation!
 
+* Minor documentation updates.
+
 Changes in 1.0.25:
 
 * (MacOS X version): hopefully fixed building of aven.
