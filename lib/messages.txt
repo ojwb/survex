@@ -1643,13 +1643,25 @@ en:215 @Help
 
 # The accelerators must be different within this group
 en:220 @Open...##Ctrl+O
+fr:220 @Ouvrir...##Ctrl+O
+de:220 &Ouml;@ffnen...##Ctrl+O
+pt:220 @Abrir...##Ctrl+O
+ca:220 @Obrir...##Ctrl+O
+es:220 @Abrir...##Ctrl+O
+it:220 @Aprire...##Ctrl+O
 en:221 @Exit
+fr:221 @Sortir
+de:221 @Verlassen
+pt:221 @Sair
+ca:221 @Abortar
+es:221 @Abortar
+it:221 @Annulla
 
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
 en:231 S@top Rotation##Space
 en:232 Speed @Up##Z
-en:233 S@low Down##X
+en:233 Slow @Down##X
 en:234 @Reverse Direction##R
 en:235 Step Once @Anticlockwise##C
 en:236 Step Once @Clockwise##V
