@@ -1,0 +1,5 @@
+*fix B 0 0 0
+A B 1 0 0
+A C 1 0 0
+A B 1 0 0
+*equate A C
