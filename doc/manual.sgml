@@ -137,8 +137,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-22 22:44:37 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.60 2001-09-22 22:44:37 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-30 14:06:27 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.61 2001-09-30 14:06:27 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -222,6 +222,7 @@ url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
 </Para>
 -->
 
+<!--
 <Sect2><Title>Other Documentation</Title>
 
 <variablelist>
@@ -263,11 +264,8 @@ the on-screen instructions).
 </varlistentry>
 </variablelist>
 
-<!-- FIXME: other text files:
- AUTHORS COPYING HACKING OLDNEWS ZOMBIES
--->
- 
 </Sect2>
+-->
 
 <Sect2><Title>Terminology</Title>
 
@@ -598,9 +596,15 @@ messages in French (language code fr):</Para>
    <ListItem><Para><userinput>SURVEXLANG=fr ; export SURVEXLANG</userinput></Para></ListItem>
  </VarListEntry>
  <VarListEntry><Term>&riscos;</Term>
-   <ListItem><Para>Edit the <SystemItem>Set SURVEXLANG ...</SystemItem>
-line in <filename>!Survex.!Run</filename> and 
-change the value to the code for the language you want.</Para></ListItem>
+   <ListItem><Para>
+Hold down <keycap>Shift</keycap> and double-click on
+<filename>!Cavern</filename>, then hold down <keycap>Shift</keycap>
+again and double-click on <filename>!Boot</filename>.  Edit the line
+which says <SystemItem>Set SurvexLang en</SystemItem> and change the
+value to the code for the language you want from the table above.
+Save the file, and double-click on <filename>!Boot</filename>.
+This sets the language for all the &survexsuite; programs.
+   </Para></ListItem>
  </VarListEntry>
 </VariableList>
 

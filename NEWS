@@ -1,3 +1,7 @@
+* aven: fixed bug which caused occasional crash during mouse movement;
+  station identifying didn't work after a resize until the survey was
+  moved.
+
 * Asking for messages in language en_GB now tries language en as it
   was meant to.
 
@@ -8,7 +12,8 @@
 
 * More minor tweaks to debian packages.
 
-* Include images with HTML documentation.
+* Include images with HTML documentation; other minor documentation
+  changes.
 
 Changes in 0.99-prerelease1:
 

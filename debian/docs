@@ -1,11 +1,10 @@
 AUTHORS
 NEWS
-OLDNEWS
 TODO
 debian/tmp/usr/doc/survex/index.htm
 debian/tmp/usr/doc/survex/AUTHORS.htm
-debian/tmp/usr/doc/survex/COPYING.htm
 debian/tmp/usr/doc/survex/ChngeLog.htm
+debian/tmp/usr/doc/survex/GPL.htm
 debian/tmp/usr/doc/survex/HACKING.htm
 debian/tmp/usr/doc/survex/NEWS.htm
 debian/tmp/usr/doc/survex/OLDNEWS.htm

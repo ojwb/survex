@@ -9,39 +9,32 @@ to the current directory.
 
 You should have:
 
-ReadMe - this file
-COPYING - GNU General Public License
+!ReadMe - this file
+index.htm - index to HTML documentation
+AUTHORS, COPYING, ChangeLog, NEWS, TODO - Text docs
+AUTHORS.htm, ChngeLog.htm, GPL.htm, HACKING.htm, NEWS.htm, OLDNEWS.htm,
+  TODO.htm - HTML docs
+manual - HTML manual	      
 !CLIcon - a utility to drive command line programs from the desktop
 !Cavern - the processing application
-!Caverot - the cave viewer
+!CaveRot - the cave viewer
 !PrintDM, !PrintHPGL, !PrintPCL, !PrintPS - Printer drivers
 
-The documentation and sample data are supplied in separate archives,
-since they change less frequently than the program files.
+Versions of the manual in other formats and the data are supplied in
+separate archives.
 
-Use the application by double-clicking on them to load them (along
+Use the applications by double-clicking on them to load them (along
 with CLIcon) - then drag and drop data files as required.  You can
-also use CLIcon to create different commands if there are others that
-you use regularly.
+also use CLIcon to create frontends for other commands you use
+regularly.
 
-SURVEX can be configured for various languages.  Currently English, US
-English, French, German, Italian, Catalan, Spanish, and Portuguese are
-available.  To change this, hold down Shift and double-click on !Cavern,
-then hold down shift again and double-click on !Boot.  Edit the line
-which says:
+SURVEX can be configured for various languages.  Survex will check the
+configured territory and try to pick the appropriate language.  See
+the manual for details of how to override this.
 
- Set SurvexLang en
-
-And change the "en" to the language code for the language you want
-(en, en-us, fr, de, it, ca, es, pt respectively) and then save the
-file.
-
-A couple more points:
-
-(a) If you like Survex, please join the Survex User Group - details in
-    the documentation.
-
-(b) The source code is available from http://www.survex.com/
+If you have internet access, visit http://www.survex.com/ for
+downloads, information on the Survex mailing list, and related
+projects.
 
 Enjoy!
 

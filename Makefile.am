@@ -8,7 +8,7 @@ RELEASE = 1
 # These files are installed automatically in --gnu mode
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
-EXTRA_DIST = $(GNU_FILES) OLDNEWS HACKING TODO alien.pl survex.iss.in
+EXTRA_DIST = $(GNU_FILES) TODO alien.pl survex.iss.in OLDNEWS
 
 SUBDIRS = lib src doc tests debian
 
@@ -18,14 +18,14 @@ DIST_SUBDIRS = $(SUBDIRS)
 extra_bin = lib/*.msg lib/pfont.bit
 extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
-extra_text = AUTHORS COPYING NEWS TODO ChangeLog HACKING OLDNEWS
+extra_text = AUTHORS COPYING NEWS TODO ChangeLog
 
 # FIXME: need to keep in step with src/Makefile.am
 base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
  extend survex sorterr 3dtopos
 
 # FIXME: keep in step with debian/docs
-HTMLFILES = AUTHORS.htm COPYING.htm ChngeLog.htm HACKING.htm NEWS.htm\
+HTMLFILES = AUTHORS.htm ChngeLog.htm GPL.htm HACKING.htm NEWS.htm\
  OLDNEWS.htm TODO.htm index.htm
 
 AUTHORS: doc/AUTHORS.htm
@@ -33,9 +33,6 @@ AUTHORS: doc/AUTHORS.htm
 
 TODO: doc/TODO.htm
 	w3m -dump doc/TODO.htm > TODO
-
-HACKING: doc/HACKING.htm
-	w3m -dump doc/HACKING.htm > HACKING
 
 spec = ${PACKAGE}-${VERSION}.spec
 
@@ -264,11 +261,10 @@ riscos_zip :
          esac ;\
 	 ln -s ../../$$f riscos_tmp/\!Cavern/$$b,$$type ; done
 	cd doc && for f in $(HTMLFILES) ; do\
-	 ln -s ../doc/$$f ../riscos_tmp/$$f,faf
+	 ln -s ../doc/$$f ../riscos_tmp/$$f,faf ; done
 	mkdir riscos_tmp/manual
 	cd doc && for f in manual/*.htm ; do\
-	 ln -s ../../doc/$$f ../riscos_tmp/$$f,faf
-	done
+	 ln -s ../../doc/$$f ../riscos_tmp/$$f,faf ; done
 	# -R doesn't seem to work here, so just glob it all in
 	cd riscos_tmp && ../zip-magic -N ../$(riscos_zip_name) * */* */*/*
 	$(RM) -rf riscos_tmp
