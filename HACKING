@@ -143,3 +143,25 @@ To build, create a fresh directory (or empty one) and unpack the contents of
 srcN_NN.zip into it (using !SparkFS or similar).  Then double-click on
 `!ObeyMe' in the unpacked directory to rename the source files into c and h
 subdirectories.  Then double-click on `!MakeMe' to build survex.
+
+
+SURVEXHOME environmental variable
+---------------------------------
+
+Survex needs various support files.  Under UNIX the path to the
+support files needs to be built into the programs, but this causes a
+problem if the support files need to be installed elsewhere for some
+reason and the programs can't be rebuilt.  To get around this problem,
+you can define an environmental variable SURVEXHOME to point to a
+directory in which to look for support files.
+
+This mechanism may sometimes useful on other operating systems.
+
+Under UNIX, use "setenv SURVEXHOME /home/user/survex" (csh)
+or "SURVEXHOME=/home/user/survex ; export SURVEXHOME" (sh).
+
+For DOS, put SET SURVEXHOME=C:\SURVEX in your AUTOEXEC.BAT file
+
+For RISC OS put *Set SURVEXHOME ADFS::4.$.&survexsuite;.!Survex into your
+Boot !Run or !DeskTop
+
