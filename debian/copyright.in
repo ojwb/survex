@@ -7,9 +7,9 @@ Upstream Author(s): Olly Betts <olly@survex.com>
 
 Copyright:
 
-@COPYRIGHT_MSG@
+@COPYRIGHT_MSG_ASCII@
 
-@AVEN_COPYRIGHT_MSG@
+@AVEN_COPYRIGHT_MSG_ASCII@
 
 You are free to distribute this software under the terms of the GNU 
 General Public License.

@@ -27,6 +27,12 @@ AC_DEFINE_UNQUOTED(AVEN_COPYRIGHT_MSG, "$AVEN_COPYRIGHT_MSG",
 AC_SUBST(COPYRIGHT_MSG)
 AC_SUBST(AVEN_COPYRIGHT_MSG)
 
+dnl for use in text files rather than C/C++ code (e.g. debian/copyright)
+COPYRIGHT_MSG_ASCII="`echo \"$COPYRIGHT_MSG\"|sed 's/%s/(C)/g'`"
+AVEN_COPYRIGHT_MSG_ASCII="`echo \"$AVEN_COPYRIGHT_MSG\"|sed 's/%s/(C)/g'`"
+AC_SUBST(COPYRIGHT_MSG_ASCII)
+AC_SUBST(AVEN_COPYRIGHT_MSG_ASCII)
+
 dnl set PRETTYPACKAGE to PACKAGE with the first character capitalised
 PRETTYPACKAGE="`echo \"$PACKAGE\"|cut -b1|tr a-z A-Z``echo \"$PACKAGE\"|cut -b2-`"
 AC_DEFINE_UNQUOTED(PRETTYPACKAGE, "$PRETTYPACKAGE",
@@ -364,7 +370,8 @@ AC_ARG_ENABLE(profiling,
 [  --enable-profiling Build binaries to generate profiling information],
 [case "$enableval" in
   yes) AM_CXXFLAGS="$AM_CXXFLAGS -pg"
-       AM_CFLAGS="$AM_CFLAGS -pg";;
+       AM_CFLAGS="$AM_CFLAGS -pg"
+       AC_MSG_RESULT(building binaries to generate profiling information);;
   no) ;;
   *) AC_MSG_ERROR(bad value $enableval for --enable-profiling) ;;
 esac])
@@ -385,7 +392,11 @@ AVENDESC=desc-aven.txt
 AC_SUBST_FILE(SVXEDITDESC)
 SVXEDITDESC=desc-svxedit.txt
 
-AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
+dnl don't define DATADIR if building for MS Windows - it won't be used, and
+dnl can conflict with DATADIR typedef in objidl.h 
+if test no = "$mswindows"; then
+  AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
+fi
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  tests/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
