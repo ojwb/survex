@@ -159,18 +159,12 @@ if expr "$mk" : '.*\<mingw\>'; then
 	 export CXX
       fi
    fi
-   for WXCONFIG in /usr/i586-mingw32msvc/bin/wxmsw-2.4-i586-mingw32msvc-config \
-	    /opt/wxmsw-2.4.0/bin/wxmsw-2.4-i686-mingw32-config \
-	    ""
-   do
-      test -f "$WXCONFIG" && break
+   wxc=wxmsw-2.4-config
+   for a in /usr/i586-mingw32msvc/bin/wxmsw-2.4-i586-mingw32msvc-config /opt/wxmsw-2.4.0/bin/wxmsw-2.4-i686-mingw32-config ; do
+      test -x "$a" && wxc="$a"
    done
-   if test -z "$WXCONFIG" ; then
-      echo "couldn't find wx-config for mingw"
-      exit 1
-   fi
    LDFLAGS=
-   PASS_CPPFLAGS=
+   CPPFLAGS=
    if test -d /opt/rx-win32 ; then
       LDFLAGS=-L/opt/rx-win32/lib
       CPPFLAGS=-I/opt/rx-win32/include
