@@ -111,9 +111,19 @@ install-exec-hook:
 	`@WXCONFIG@ --rezflags` $(bindir)/aven
 else !MACOSX
 AVEN_REZ =
+
+# need empty target as automake will try to make it because it's in the other
+# branch
+install-exec-hook:
+
 endif !MACOSX
 else !AVEN
 AVEN_REZ =
+
+# need empty target as automake will try to make it because it's in the other
+# branch
+install-exec-hook:
+
 endif !AVEN
  
 noinst_SCRIPTS = $(AVEN_REZ)
@@ -155,7 +165,7 @@ cad3d_SOURCES = cad3d.c $(COMMONSRC) useful.c img.c hash.c
 #        $(COMPILE) -DSTANDALONE -o imgalone.o -c img.c
 
 EXTRA_DIST = aven.rc aven.png aven.ico\
- svxedit.png svxedit.ico getopt.c png2winicon gettexttomsg.pl aven.txf
+ svxedit.png svxedit.ico getopt.c png2winicon gettexttomsg.pl gradient.pov
 
 BUILT_SOURCES = z_getopt.c avenpal.h
 

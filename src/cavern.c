@@ -44,11 +44,11 @@
 #ifdef CHASM3DX
 # if OS != RISCOS
 /* include header for getcwd() */
-#  if OS == MSDOS && defined(__TURBOC__)
+#  if OS == MSDOS && !defined(__DJGPP__)
 #   include <dir.h>
-#  elif OS == WIN32 && defined(__VISUALC__)
+#  elif OS == WIN32
 #   include <direct.h>
-#   include <conio.h>
+#   include <conio.h> /* for _kbhit() and _getch() */
 #  else
 #   include <unistd.h>
 #  endif

@@ -1,3 +1,24 @@
+survex (1.0.26) unstable; urgency=low
+
+  * Standards-Version: 3.6.1 (no changes).
+  * Fixed lintian warning.
+  * Tidied up debian/rules.
+  * cavern: Fixed interleaved topofil data style - the length was always being
+    calculated as zero.
+  * aven: "All Files" now shows files without extensions too.
+  * aven: added Ctrl+Q as shortcut for File->Exit.
+  * aven: depth colouring now uses a proper colour gradient.
+  * cad3d: fixed -e and -r options to not crash (the long versions have always
+    worked).
+  * extend: fixed to initialise an internal structure - failing to do so was
+    probably causing crashes on some platforms.
+  * Fixed standard graphics for "Note", "Warning", etc in the PostScript manual.
+  * Documentation updated.
+  * fixed svxedit man page which previously contained xcaverot documentation!
+  * test suite: check that cavern doesn't report "nan" or "NaN" for any values.
+
+ -- Wookey <wookey@survex.com>  Sat, 29 Nov 2003 00:40:24 +0000
+
 survex (1.0.25) unstable; urgency=low
 
   * Updated config.guess and config.sub (closes: bug#186687).
