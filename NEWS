@@ -1,4 +1,6 @@
-* aven: update display correctly when "Metric" and "Degrees" are toggled.
+Changes in 1.0.20:
+
+* aven: update display when "Metric" or "Degrees" is toggled.
 
 * cavern: fixed handling of compass and clino corrections in Compass survey
   data - these were interpreted as radians rather than degrees so the

@@ -1,3 +1,16 @@
+survex (1.0.20) unstable; urgency=low
+
+  * aven: update display when "Metric" or "Degrees" is toggled.
+  * cavern: fixed handling of compass and clino corrections in Compass survey
+    data - these were interpreted as radians rather than degrees so the
+    correction was about 57 times too large!)
+  * Improved handling of Compass PLT files - if the survey name is empty, don't
+    insert a survey separator character.
+  * Documentation: fixed incorrect markup which resulted in a bogus footnote.
+  * Use wxwindows-2.3 rather than wxwindows-2.2 (closes: bug#166105).
+
+ -- Wookey <wookey@survex.com>  Fri, 01 Nov 2002 15:28:37 +0000
+
 survex (1.0.19) unstable; urgency=low
 
   * cavern: can now process Compass format survey data, and even mixed
