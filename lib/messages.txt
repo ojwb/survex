@@ -991,7 +991,8 @@ de-de,de-ch:103 Drucker muss kalibriert werden - n&auml;her beschrieben im Handb
 de:         103 Drucker mu&szlig; kalibriert werden - n&auml;her beschrieben im Handbuch.
 pt:103 &Eacute; necess&aacute;rio calibrar a impressora - veja como no manual da mesma.
 #
-#XXX 104
+en:104 `*data %s %c ...' is deprecated - use `*data %s ...' instead
+#
 en:105 Reading in data - please wait...
 fr:105 Lecture de donn&eacute;es - attendez S.V.P. ...
 de:105 Daten werden eingelesen - bitte warten...
@@ -1870,6 +1871,11 @@ pt-br:215 A@juda
 ca:215 @Ajuda
 es:215 A@yuda
 it:215 @Aiuto
+#
+# More cavern messages (sorry, 199 wasn't enough!)
+en:216 Standard deviation must be positive
+#
+# back to aven...
 #
 # The accelerators must be different within this group
 en:220 @Open...##Ctrl+O

@@ -7,8 +7,14 @@
 * (MS Windows) aven: fixed crash on File/Open when a file was already
   loaded.
 
-* After *solve, reused points are no longer written to the .3d file a
-  second time.
+* cavern: After *solve, reused points are no longer written to the .3d
+  file a second time.
+
+* cavern: Warn that the undocumented extra "omit" allowed by *data is
+  deprecated.
+
+* cavern: Give error if standard deviation argument to *sd isn't
+  positive.
 
 * Consistent capitalisation of --help option descriptions.
 

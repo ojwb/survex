@@ -959,8 +959,20 @@ cmd_data(void)
    m = mask[style] | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
 
    skipblanks();
-   /* olde syntax had optional field for survey grade, so allow an omit */
-   if (isOmit(ch)) nextch(); /* FIXME: deprecate... */
+#ifndef NO_DEPRECATED
+   /* Olde syntax had optional field for survey grade, so allow an omit
+    * but issue a warning about it */
+   if (isOmit(ch)) {
+      static int data_depr_count = 0;
+      if (data_depr_count < 5) {
+	 compile_warning(/*`*data %s %c ...' is deprecated - use `*data %s ...' instead*/104,
+			 buffer, ch, buffer);
+	 if (++data_depr_count == 5)
+	    compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+      }
+      nextch();
+   }
+#endif
 
    style_name = osstrdup(buffer);
    do {      
@@ -1141,7 +1153,7 @@ cmd_units(void)
 static void
 cmd_calibrate(void)
 {
-   real sc, z; /* added so we don't modify current values if error given */
+   real sc, z;
    unsigned long qmask, m;
    int quantity;
    qmask = get_qlist();
@@ -1157,6 +1169,8 @@ cmd_calibrate(void)
    /* check for things with no valid calibration (like station posn) */
    if (qmask & (BIT(Q_DEFAULT)|BIT(Q_POS)|BIT(Q_LENGTHOUTPUT)
 		|BIT(Q_ANGLEOUTPUT)|BIT(Q_PLUMB)|BIT(Q_LEVEL))) {
+      /* FIXME: buffer is probably wrong here - get_qlist() may
+       * have read several tokens */
       compile_error(/*Unknown instrument `%s'*/39, buffer);
       skipline();
       return;
@@ -1257,8 +1271,9 @@ cmd_sd(void)
       return;
    }
    sd = read_numeric(fFalse);
-   if (sd < (real)0.0) {
-      /* FIXME: complain about negative sd */
+   if (sd <= (real)0.0) {
+      compile_error(/*Standard deviation must be positive*/216);
+      return;
    }
    units = get_units();
    if (units == UNITS_NULL) return;
