@@ -276,7 +276,6 @@ static int sketch_passes[] = { LEGS, STNS, LABELS, 0 };
 int
 main(int argc, char **argv)
 {
-   char szTitle[256], szDateStamp[256];
    char *fnm_3d, *fnm_out;
    unsigned char labels, crosses, legs;
    img *pimg;
@@ -427,15 +426,10 @@ main(int argc, char **argv)
       osfree(base);
    }
 
-   pimg = img_open(fnm_3d, szTitle, szDateStamp);
+   pimg = img_open(fnm_3d, NULL, NULL);
    if (!pimg) fatalerror(img_error(), fnm_3d);
 
    fh = safe_fopen(fnm_out, "w");
-
-#ifdef DEBUG_3DTODXF
-   printf("3d file title `%s'\n", szTitle);
-   printf("Creation time `%s'\n", szDateStamp);
-#endif
 
    if (elevation) {
        s = sin(rad(elev_angle));
