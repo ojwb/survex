@@ -313,6 +313,7 @@ articulate(void)
 	      }
 	   }
 #ifdef DEBUG_ARTIC
+	   putnl();
 	   FOR_EACH_STN(stn, list) {
 	      printf("MX: %c %p (", fixed(stn)?'*':' ', stn);
 	      print_prefix(stn->name);
@@ -320,12 +321,20 @@ articulate(void)
 	   }
 #endif
 	   solve_matrix(list);
+#ifdef DEBUG_ARTIC
+	   putnl();
+	   FOR_EACH_STN(stn, list) {
+	      printf("%c %p (", fixed(stn)?'*':' ', stn);
+	      print_prefix(stn->name);
+	      printf(")\n");	      
+	   }
+#endif
 	   listend->next = stnlist;
 	   if (stnlist) stnlist->prev = listend;
 	   stnlist = list;
 	}
 #ifdef DEBUG_ARTIC
-	printf("\n");
+	printf("done articulating\n");
 #endif
      }
 
