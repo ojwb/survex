@@ -2706,10 +2706,13 @@ void GfxCore::OnZoomOutUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnIdle(wxIdleEvent& event)
 {
     // Handle an idle event.
+    static double last_t = 0;
     double t = timer.Time() * 1.0e-3;
 //    cout << 1.0 / t << " fps (i.e. " << t << " sec)\n";
     if (t == 0) t = 0.001;
     else if (t > 1.0) t = 1.0;
+    if (last_t > 0) t = (t + last_t) / 2;
+    last_t = t;
 
     // When rotating...
     if (m_Rotating) {
