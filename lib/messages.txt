@@ -2232,8 +2232,8 @@ ca:220 @Obrir...##Ctrl+O
 es:220 @Abrir...##Ctrl+O
 it:220 @Apri...##Ctrl+O
 sk:220 @Otvori&tcaron;...##Ctrl+O
-#
-en:221 E@xit##Ctrl+Q
+# TRANSLATE pt ca sk (english changed from Exit to Quit)
+en:221 @Quit##Ctrl+Q
 fr:221 @Quitter##Ctrl+Q
 de:221 @Beenden##Ctrl+Q
 pt:221 @Sair##Ctrl+Q
@@ -2846,80 +2846,6 @@ es:310 %s: opci&oacute;n inv&aacute;lida -- %c&#10;
 it:310 %s: opzione non valida -- %c&#10;
 sk:310 %s: nespr&aacute;vna mo&zcaron;nos&tcaron; -- %c&#10;
 #
-# here pt = pt-br ...
-en:311 @Create...
-fr:311 @Creation...
-de:311 Neue @Pr&auml;sentation...
-pt:311 @Criar...
-ca:311 @Crea...
-es:311 @Crea...
-it:311 @Crea...
-sk:311 @Vytvori&tcaron;...
-#
-en:312 @Go
-fr:312 @D&eacute;marrage
-de:312 @Vorf&uuml;hren
-pt:312 @Ir para
-ca:312 @Anar
-es:312 @Ir
-it:312 @Vai
-sk:312 @Go
-#
-en:313 @Record Position
-fr:313 @Sauvegarde de la position
-de:313 Position @aufzeichnen
-pt:313 G@ravar Posi&ccedil;&atilde;o
-ca:313 @Registra la posici&oacute;
-es:313 @Registra la posici&oacute;n
-it:313 @Registra la posizione
-sk:313 @Z&aacute;znam poz&iacute;cie
-#
-en:314 @Finish and Save
-fr:314 @Fin avec sauvegarde
-de:314 A@bschlie&szlig;en und abspeichern
-de-ch:314 A@bschliessen und abspeichern
-pt:314 @Finalizar e Salvar
-ca:314 @Finalitza i Guarda
-es:314 @Finaliza y Guarda
-it:314 @Finisci e Salva
-sk:314 @Ukon&ccaron;i&tcaron; a ulo&zcaron;i&tcaron;
-#
-en:315 @Erase Last Position
-fr:315 @Effacement de la derni&egrave;re position
-de:315 Letzte Position @l&ouml;schen
-pt:315 R@emover &Uacute;ltima Posi&ccedil;&atilde;o   
-ca:315 @Esborra la &uacute;ltima posici&oacute;
-es:315 @Borra la &uacute;ltima posici&oacute;n
-it:315 Cancella l'@Ultima posizione
-sk:315 V@ymaza&tcaron; posledn&uacute; polohu
-#
-en:316 Er@ase All Positions
-fr:316 Effacement de @toutes les positions
-de:316 Alle P@ositionen l&ouml;schen
-pt:316 Remover @Todas as Posi&ccedil;&otilde;es
-ca:316 Esborra totes les @posicions
-es:316 Borra @todas las posiciones
-it:316 Cancella @Tuttle le posizioni
-sk:316 Vym@aza&tcaron; v&scaron;etky poz&iacute;cie
-#
-en:317 @Presentation
-de:317 @Pr&auml;sentation
-fr:317 @Pr&eacute;sentation
-pt:317 A@presenta&ccedil;&atilde;o  
-ca:317 @Presentaci&oacute;
-es:317 @Presentaci&oacute;n
-it:317 @Presentazione
-sk:317 Pre@zent&aacute;cia
-#
-en:318 Go @Back
-fr:318 @Retour
-de:318 @Zur&uuml;ck
-pt:318 @Voltar
-ca:318 @Torna enrrera
-es:318 @Vuelve atr&aacute;s
-it:318 Torna @Indietro
-sk:318 @Nasp&auml;&tcaron;
-#
 en:319 Select an output filename
 fr:319 S&eacute;lection d'un nom de fichier de sortie
 de:319 Name der Ausgabedatei w&auml;hlen
@@ -2929,52 +2855,7 @@ es:319 Selecciona un nombre de archivo de salida
 it:319 Seleziona un file di uscita
 sk:319 Zvoli&tcaron; meno v&yacute;stupn&eacute;ho s&uacute;boru
 #
-en:320 Aven presentations
-fr:320 Pr&eacute;sentations Aven
-de:320 Aven Pr&auml;sentationen
-pt:320 Apresenta&ccedil;&otilde;es Aven
-ca:320 Presentacions Aven
-es:320 Presentaciones Aven
-it:320 Presentazione Aven
-sk:320 Prezent&aacute;cie programu Aven
 #
-en:321 Open @Presentation...
-fr:321 Ouvrir une @Pr&eacute;sentation
-de:321 @Pr&auml;sentation &ouml;ffnen...
-pt:321 Abrir A@presenta&ccedil;&atilde;o
-ca:321 Obrir @Presentaci&oacute;...
-es:321 Abrir @Presentaci&oacute;n...
-it:321 Apri @Presentazione
-sk:321 Otvori&tcaron; @prezent&aacute;ciu...
-#
-en:322 Select a presentation to open
-fr:322 Slectionner une pr&eacute;sentation &agrave; ouvrir
-de:322 Zu &ouml;ffnende Pr&auml;sentation ausw&auml;hlen
-pt:322 Escolha uma apresenta&ccedil;&atilde;o para abrir
-ca:322 Selecciona una presentaci&oacute; per obrir
-es:322 Selecciona una presentaci&oacute;n para abrir
-it:322 Seleziona una presentazione da aprire
-sk:322 Vybra&tcaron; prezent&aacute;ciu pre otvorenie
-#
-en:323 Recording Presentation
-fr:323 Enregistrement d'une pr&eacute;sentation
-de:323 Pr&auml;sentation wird aufgezeichnet
-# or, somewhat in radio broadcasting lingo,
-# de:323 Aufzeichnung l&auml;uft
-pt:323 Gravando Apresenta&ccedil;&atilde;o
-ca:323 Gravant Presentaci&oacute;
-es:323 Grabando Presentaci&oacute;n
-it:323 Registra Presentazione
-sk:323 Z&aacute;znam prezent&aacute;cie
-#
-en:324 Res@tart
-fr:324 Red&eacute;@marrage
-de:324 @Neustart
-pt:324 Rei@niciar
-ca:324 Re@iniciar
-es:324 Rei@niciar
-it:324 Ri@parte
-sk:324 @Re&scaron;tart
 # XXX 325 326 327
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
@@ -2984,24 +2865,6 @@ ca:328 Recerca infroctuosa.
 es:328 B&uacute;squeda infroctuosa.
 it:328 Nessun elemento trovato.
 sk:328 Ne&uacute;spe&scaron;n&eacute; h&lcaron;adanie.
-#
-en:329 Open @Terrain...
-fr:329 Ouverture d'un @Terrain...
-de:329 Gel&auml;nde@modell &ouml;ffnen...
-pt:329 Abrir @Terreno...
-ca:329 Obrir @Terreny...
-es:329 Abrir @Terreno...
-it:329 Apri Modello Digitale @Terrestre
-sk:329 Otvori&tcaron; digit&aacute;lny model @ter&eacute;nu
-#
-en:330 Solid Su@rface
-fr:330 Surface S@olide
-de:330 @Durchgezogene Oberfl&auml;che
-pt:330 Superf&iacute;cie S&oacute;@lida
-ca:330 Superf&iacute;cie S&ograve;li@da
-es:330 Superficie S&oacute;li@da
-it:330 Superficie S@olida
-sk:330 Neprie@h&lcaron;adn&yacute; povrch
 # number of stations found matching search
 en:331 %d found
 fr:331 %d trouv&eacute;e(s)
