@@ -45,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-04-24 03:00:08 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.24 2001-04-24 03:00:08 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-04-28 20:01:15 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.25 2001-04-28 20:01:15 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -171,17 +171,25 @@ are using, so there is a separate section below for each platform.</Para>
 
 <Sect3><Title>&unix;</Title>
 
-<Para>&survexsuite; for &unix; is supplied as source code which you
-need to compile on your system.  &survexsuite; now uses GNU automake
+<Para>
+We supply a pre-compiled version for x86 Linux machines in RPM format
+(suitable for Redhat, Mandrake, and some other distributions)
+and debian foramt (suitable for Debian and Debian-derived distributions).
+</Para>
+
+<Para>For other &unix; versions you'll need to get the source code
+and compile it on your system.  &survexsuite; now uses GNU automake
 and autoconf to streamline the compile process, so all you need to do
 is unpack the sources, then simply type <command>./configure</command>
 followed by <command>make</command> to build the programs and then
 <command>make install</command> to install them.</Para>
 
-<Para>We also supply a pre-compiled version for x86 Linux machines (ELF
-format, using glibc) in RPM format (suitable for Redhat, Mandrake, and
-various other distributions) and debian foramt (suitable for Debian
-and Debian-derived distributions).</Para>
+<Para>
+There's GUI caverot replacement called aven, which needs wxWindows to
+build, which in turn needs either wxWindows or Gtk+.  Alternatively
+there's a more basic cave viewer called xcaverot which only needs the
+basic X libraries.
+</Para>
 
 </Sect3>
 
