@@ -1,3 +1,5 @@
+* aven: update display correctly when "Metric" and "Degrees" are toggled.
+
 Changes in 1.0.19:
 
 * cavern: you can now process Compass format survey data (.DAT and .MAK files) -

@@ -2445,7 +2445,7 @@ void GfxCore::OnToggleMetric()
     m_Metric = !m_Metric;
     wxConfigBase::Get()->Write("metric", m_Metric);
     wxConfigBase::Get()->Flush();
-    Refresh();
+    ForceRefresh();
 }
 
 void GfxCore::OnToggleMetricUpdate(wxUpdateUIEvent& cmd)
@@ -2459,7 +2459,7 @@ void GfxCore::OnToggleDegrees()
     m_Degrees = !m_Degrees;
     wxConfigBase::Get()->Write("degrees", m_Degrees);
     wxConfigBase::Get()->Flush();
-    Refresh();
+    ForceRefresh();
 }
 
 void GfxCore::OnToggleDegreesUpdate(wxUpdateUIEvent& cmd)
