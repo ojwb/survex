@@ -16,7 +16,7 @@
 #include "message.h"
 #include "filelist.h"
 #include "netbits.h"
-#include "network.h"
+#include "netskel.h"
 #include "readval.h"
 #include "datain.h"
 #include "commands.h"

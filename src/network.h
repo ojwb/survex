@@ -3,4 +3,5 @@
  * Copyright (C) 1994 Olly Betts
  */
 
-extern void solve_network(void /*node *stnlist*/);
+extern void remove_subnets(void);
+extern void replace_subnets(void);

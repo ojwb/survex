@@ -9,22 +9,22 @@
 
 #include <time.h>
 
+#include "cavern.h"
+#include "cmdline.h"
+#include "commands.h"
 #include "datain.h"
 #include "debug.h"
-#include "validate.h"
-#include "cavern.h"
 #include "message.h"
 #include "filename.h"
 #include "filelist.h"
-#include "osdepend.h"
 #include "img.h"
-#include "netbits.h"
-#include "commands.h"
-#include "cmdline.h"
-#include "network.h"
 #include "listpos.h"
+#include "netbits.h"
+#include "netskel.h"
+#include "osdepend.h"
 #include "out.h"
 #include "str.h"
+#include "validate.h"
 
 /* For funcs which want to be immune from messing around with different
  * calling conventions */

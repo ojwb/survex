@@ -11,15 +11,15 @@
 #include <limits.h>
 
 #include "cavern.h"
+#include "commands.h"
+#include "datain.h"
+#include "debug.h"
 #include "filename.h"
 #include "message.h"
 #include "netbits.h"
-#include "commands.h"
-#include "readval.h"
-#include "datain.h"
-#include "debug.h"
+#include "netskel.h"
 #include "out.h"
-#include "network.h"
+#include "readval.h"
 #include "str.h"
 
 static void
