@@ -78,8 +78,8 @@ MSDOS for 286 and earlier (BorlandC)
 ------------------------------------
 
 Wookey currently builds this with a rather elderly BorlandC++ 3.1.
-However Borland/Insprise have recently released BorlandC++ 5 for free.
-I'll try to get this to work.
+However Borland/Insprise have recently released BorlandC++ 5.5 for
+free.  I'll try to get this to work.
 
 Anyway, you can build a suitable source archive for this version using
 `make alien_src_zip' on the source distribution on a Unix box.
@@ -87,8 +87,12 @@ Anyway, you can build a suitable source archive for this version using
 RISC OS
 -------
 
-Currently built with Acorn C V4.  Probably ought to use V5 - I think
-Wookey has access to this.
+We now build this with Acorn C V5.  It will probably still build with
+Acorn C V4.  You also need to get and install OSLib from:
 
-Anyway, you can build a suitable source archive for this version using
-`make alien_src_zip' on the source distribution on a Unix box.
+http://www.doves.demon.co.uk/oslib/
+
+You can build a suitable source archive for this version using `make
+alien_src_zip' on the source distribution on a Unix box.  However for
+this you'll need a specially tweaked version of zip to create the zip
+file with the correct RISC OS file types.  I can supply this on request.
