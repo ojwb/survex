@@ -16,7 +16,7 @@ AC_SUBST(RELEASE)
 AM_CONFIG_HEADER(config.h)
 
 dnl don't reformat the next line, miniam.pl pulls out the value
-COPYRIGHT_MSG="Copyright %s 1990-2002 Olly Betts"
+COPYRIGHT_MSG="Copyright %s 1990-2003 Olly Betts"
 
 AVEN_COPYRIGHT_MSG="Copyright %s 1999-2002 Mark R. Shinwell"
 
@@ -114,6 +114,11 @@ case "$host_os" in
 *) mswindows=no ;;
 esac
 
+case "$host" in
+powerpc-*-darwin*) macosx=yes ;; # wxWindows uses this to detect MacOS X
+*) macosx=no ;;
+esac
+
 AC_C_BIGENDIAN
 
 AC_ARG_VAR(STRIP, [Command for discarding symbols from object files])
@@ -171,6 +176,7 @@ else
 fi
 
 AM_CONDITIONAL(WIN32, [test yes = "$mswindows"])
+AM_CONDITIONAL(MACOSX, [test yes = "$macosx"])
 
 if test -n "$AVEN"; then
   if test -n "$WXCONFIG" ; then
@@ -183,17 +189,18 @@ if test -n "$AVEN"; then
     fi
   else
     # prefer 2.4 if we can find it - a few things work better with it
-    case "$host" in
-      powerpc-*-darwin*) # this is what wxWindows uses to detect MacOS X
-	AC_PATH_PROGS(WXCONFIG, [wxmac-2.4-config wxmac-config wxmac-2.2-config]) ;;
-      *)
-	AC_PATH_PROGS(WXCONFIG, [wxgtk-2.4-config wxgtk-config wxgtk-2.2-config]) ;;
-    esac
+    if test yes = "$macosx" ; then
+      AC_PATH_PROGS(WXCONFIG, [wxmac-2.4-config wxmac-config wxmac-2.2-config])
+      wxdef=__WXMAC__
+    else
+      AC_PATH_PROGS(WXCONFIG, [wxgtk-2.4-config wxgtk-config wxgtk-2.2-config])
+      wxdef=__WXGTK__
+    fi
     if test -z "$WXCONFIG" ; then
-      dnl see if wx-config exists and is for wxgtk version
+      dnl see if wx-config exists and is for the correct version
       AC_PATH_PROGS(WXCONFIG, [wx-config])
       if test -n "$WXCONFIG" ; then
-        if (exec >&5 2>&5;$WXCONFIG --cflags|grep -e -D__WXGTK__;exit $?) then
+        if (exec >&5 2>&5;$WXCONFIG --cflags|grep -e -D"$wxdef";exit $?) then
           :
 	else
 	  WXCONFIG=

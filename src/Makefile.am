@@ -88,6 +88,14 @@ aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
 avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 endif
 
+if MACOSX
+noinst_SCRIPTS = aven-rez
+
+aven-rez: aven
+	`@WXCONFIG@ --rezflags` aven
+	touch aven-rez
+endif
+
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CXXFLAGS@ -DAVEN
 

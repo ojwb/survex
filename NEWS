@@ -4,7 +4,8 @@
 
 * Prefer wxWindows 2.4 if it's available.
 
-* (MacOS X version): detect MacOS X and look for MacOS X build of wxWindows.
+* (MacOS X version): detect MacOS X and look for MacOS X build of wxWindows;
+  automatically add resource fork to aven binary.
 
 Changes in 1.0.22:
 
