@@ -2,7 +2,7 @@ Hacking Survex
 ==============
 
 (That's hacking in the "tinkering with code" sense, not in the
-"breaking into other people's computer systems" sense)
+"breaking into other people's computer systems" sense).
 
 This is currently a random collection of notes that need to be written
 down while I remember.  With time it should evolve into a more
@@ -108,10 +108,14 @@ RISC OS
 We now build this with Acorn C V5.  It will probably still build with
 Acorn C V4.  You also need to get and install OSLib from:
 
-http://www.doves.demon.co.uk/oslib/
+http://www.arcade.demon.co.uk/oslib/homepage.html
 
-You can build a suitable source archive for this version using `make
-alien_src_zip' on the source distribution on a Unix box (you need to have
-run `./configure' first).  However for this you'll need a specially tweaked
-version of zip to create the zip file with the correct RISC OS file types.
-I can supply this on request.
+You can build a suitable source archive for compiling the RISC OS version by
+running `make alien_src_zip' on the source distribution on a Unix box (you
+need to have run `./configure' first).  However for this you'll need a
+specially tweaked version of zip to create the zip file with the correct
+RISC OS file types. I can supply this on request.  You need to put it in the
+top level of the source tree and call it `zip-magic'.
+
+You'll probably need to use Acorn's Make Utility (`amu') to build - the GNU
+make 1.02 port doesn't seem up to the job.
