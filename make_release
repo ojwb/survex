@@ -67,7 +67,7 @@ fi
 (
 # for building on mrs30
 if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
-   PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:$PATH
+   PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
 fi
 if ! env LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe \
  CRLIB=-lalleg CROBJX=dosrot.o ./configure --with-x=no --disable-aven; then
