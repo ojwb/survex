@@ -35,6 +35,8 @@ Changes between 1.0.25 and 1.1.0:
 
 * (Unix version): aven: "All Files" now shows files without extensions too.
 
+* Fixed standard graphics for "Note", "Warning", etc in the PostScript manual.
+
 Changes in 1.0.25:
 
 * (MacOS X version): hopefully fixed building of aven.
