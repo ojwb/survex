@@ -602,7 +602,7 @@ cmd_fix(void)
 #endif
 		       );
 	    /* suppress "unused fixed point" warnings for this station */
-	    if (fRef) fix_name->shape = -1 - fix_name->shape;
+	    if (fRef && fix_name->shape == 1) fix_name->shape = -2;
 	 }
 	 return;
       }

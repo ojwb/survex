@@ -1083,6 +1083,7 @@ static int
 process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
 {
    nosurveylink *link;
+   int shape;
 
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
@@ -1100,6 +1101,14 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
       twiglet->delta[0] = twiglet->delta[1] = twiglet->delta[2] = 0;
    }
 #endif
+
+   /* Suppress "unused fixed point" warnings for these stations
+    * We do this if it's a 0 or 1 node - 1 node might be an sdfix
+    */
+   shape = fr->shape;
+   if (shape == 0 || shape == 1) fr->shape = -1 - shape;
+   shape = to->shape;
+   if (shape == 0 || shape == 1) to->shape = -1 - shape;
 
    /* add to linked list which is dealt with after network is solved */
    link = osnew(nosurveylink);
@@ -1155,6 +1164,14 @@ data_nosurvey(void)
 	    int r;
 	    r = process_nosurvey(fr, to, first_stn == To);
 	    if (!r) skipline();
+	 }
+	 if (ordering[1] == End) {
+	    do {
+	       process_eol();
+	       process_bol();
+	    } while (isComm(ch));
+	    if (!isData(ch)) return 1;
+	    goto again;
 	 }
 	 fMulti = fTrue;
 	 while (1) {

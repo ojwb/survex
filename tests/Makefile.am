@@ -44,4 +44,5 @@ multinormal.svx multinormal.pos\
 multinormignall.svx multinormignall.pos\
 multidiving.svx multidiving.pos\
 multicartesian.svx multicartesian.pos\
+multinosurv.svx multinosurv.pos\
 multinormalbad.svx
