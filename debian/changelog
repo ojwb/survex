@@ -1,3 +1,12 @@
+survex (1.0.22) unstable; urgency=low
+
+  * aven: Fixed handling of extended elevations (and other flat surveys).
+  * Documentation: fixed 3d v3 file format description and include it in debs.
+  * Build-Depends on libwxgtk2.3-dev|libwxgtk2.2-dev so we still build on
+    hppa while Ron Lee resolves the wx hppa build failure.
+
+ -- Wookey <wookey@survex.com>  Tue, 26 Nov 2002 04:22:26 +0000
+
 survex (1.0.21) unstable; urgency=low
 
   * cavern: when reading Compass DAT files, we now processes compass and clino
