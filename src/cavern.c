@@ -111,7 +111,7 @@ static const struct option long_opts[] = {
 #ifdef NEW3DFORMAT
    {"new-format", no_argument, 0, 'x'},
 #endif
-#ifdef NEW3DFORMAT
+#if (OS==WIN32)
    {"pause", no_argument, 0, 256},
 #endif
    {"help", no_argument, 0, HLP_HELP},
