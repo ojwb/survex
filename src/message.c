@@ -267,7 +267,7 @@ default_charset(void)
    r.x.di = __tb & 0x0f;
    r.x.cx = 2048;
    /* bit 1 is the carry flag */
-   if (__dpmi_int(0x21, &r) != -1 && r.x.flags & 1 == 0) {
+   if (__dpmi_int(0x21, &r) != -1 && !(r.x.flags & 1)) {
       unsigned short p;
       dosmemget(__tb + 5, 2, &p);
       if (p == 437) return CHARSET_DOSCP437;
@@ -457,7 +457,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    0, 151, 163, 150, 129,   0,   0, 152,
       };
       if (value >= 160 && value < 256) {
-	 int ch = (int)uni2dostab[value - 160]
+	 int ch = (int)uni2dostab[value - 160];
 	 if (!ch) break;
 	 *p = ch;
 	 return 1;
@@ -943,7 +943,7 @@ msg_init(char * const *argv)
 	      r.x.di = __tb & 0x0f;
 	      r.x.cx = 2048;
 	      /* bit 1 is the carry flag */
-	      if (__dpmi_int(0x21, &r) != -1 && r.x.flags & 1 == 0) {
+	      if (__dpmi_int(0x21, &r) != -1 && !(r.x.flags & 1)) {
 		 unsigned short p;
 	         dosmemget(__tb + 3, 2, &p);
 	         country_code = p;
@@ -1272,7 +1272,7 @@ msg(int en)
    }
 
    if (en == 0) {
-      char *p = msg_array[0];
+      const char *p = msg_array[0];
       if (!*p) p = "(C)";
       return p;
    }
