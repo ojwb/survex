@@ -735,6 +735,10 @@ msg_init(const char *argv0)
 	 if (locid) {
 	    WORD langid = LANGIDFROMLCID(locid);
 	    switch (PRIMARYLANGID(langid)) {
+/* older mingw compilers don't seem to supply this value */
+#ifndef LANG_CATALAN
+# define LANG_CATALAN 0x03
+#endif
 	     case LANG_CATALAN:
 	       msg_lang = "ca";
 	       break;

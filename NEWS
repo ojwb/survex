@@ -29,8 +29,10 @@
   would previously load part of it without complaint.  Fixed to
   complain and not load anything.
 
+* printwin: fixed problem where it hung when waiting for input.
+
 * print*: Added --output command line option to override the output
-  setting in the .ini file.
+  setting in the .ini file (ignored by printwin).
 
 * .3d files now store prefixes for legs (the prefix is taken from the
   "from" station of the leg);  Station names and leg prefixes in .3d

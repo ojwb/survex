@@ -53,7 +53,8 @@ printpcl_SOURCES = printpcl.c $(PRSRC) ini.c hash.c prbitmap.c
 printxbm_SOURCES = printxbm.c $(PRSRC) ini.c hash.c prbitmap.c
 printhpgl_SOURCES = prhpgl.c $(PRSRC) ini.c hash.c
 printwin_SOURCES = printwin.c $(PRSRC)
-printwin_LDFLAGS = -mwindows
+printwin_LDFLAGS = -mconsole
+printwin_LDADD = -lgdi32 -lcomdlg32
 
 ROTSRC = cvrotimg.c img.c useful.c $(COMMONSRC)
 
