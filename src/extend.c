@@ -207,24 +207,32 @@ do_stn(point *p, double X)
    leg *l, *lp;
    double dX;
    img_write_item(pimg, img_LABEL, p->label, X, 0, p->p.z);
-   l = &headleg;
-   while (lp = l, (l = l->next) != NULL) {
-      if (!l->fDone) { /* otherwise we extend loops multiple times */
+   lp = &headleg;
+   for (l = lp->next; l; lp = l, l = lp->next) {
+      if (l->fDone) {
+	 /* this case happens iff a recursive call causes the next leg to be
+	  * removed, leaving our next pointing to a leg which has been dealt
+	  * with... */
+      } else {
          if (l->to == p) {
-            lp->next = l->next; /* unlink FIXME ought to free memory too */
+            lp->next = l->next;
             dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
             img_write_item(pimg, img_MOVE, NULL, X + dX, 0, l->fr->p.z);
             img_write_item(pimg, img_LINE, NULL, X, 0, l->to->p.z);
             l->fDone = 1;
             do_stn(l->fr, X + dX);
+	    /* osfree(l); */
+	    l = lp;
          } else if (l->fr == p) {
-            lp->next = l->next; /* unlink FIXME ought to free memory too */
+            lp->next = l->next;
             dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
             img_write_item(pimg, img_MOVE, NULL, X, 0, l->fr->p.z);
             img_write_item(pimg, img_LINE, NULL, X + dX, 0, l->to->p.z);
             l->fDone = 1;
             do_stn(l->to, X + dX);
-         }
+	    /* osfree(l); */
+	    l = lp;
+	 }
       }
    }
 }
