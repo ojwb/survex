@@ -128,6 +128,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
     EVT_MENU(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbar)
     EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
+    EVT_MENU(menu_VIEW_SIDE_PANEL, MainFrm::OnViewSidePanel)
 #ifdef AVENGL
     EVT_MENU(menu_FILE_OPEN_TERRAIN, MainFrm::OnFileOpenTerrain)
     EVT_MENU(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAlias)
@@ -176,6 +177,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_VIEW_INDICATORS, MainFrm::OnIndicatorsUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SIDE_PANEL, MainFrm::OnViewSidePanelUpdate)
 #ifdef AVENGL
     EVT_UPDATE_UI(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAliasUpdate)
     EVT_UPDATE_UI(menu_VIEW_SOLID_SURFACE, MainFrm::OnSolidSurfaceUpdate)
@@ -320,8 +322,8 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*Underground Survey @Legs##Ctrl+L*/272), "", true);
     viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*Sur@face Survey Legs##Ctrl+F*/291), "", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SURFACE_DEPTH, GetTabMsg(/*Depth Colours on Surface Surveys*/292), "", true);
-    viewmenu->Append(menu_VIEW_SURFACE_DASHED, GetTabMsg(/*Dashed Surface Surveys*/293), "", true);
+    viewmenu->Append(menu_VIEW_SURFACE_DEPTH, GetTabMsg(/*Depth Colo@urs on Surface Surveys*/292), "", true);
+    viewmenu->Append(menu_VIEW_SURFACE_DASHED, GetTabMsg(/*Da@shed Surface Surveys*/293), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273), "", true);
     viewmenu->AppendSeparator();
@@ -351,6 +353,7 @@ void MainFrm::CreateMenuBar()
     indmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "", true);
     indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "", true);
     viewmenu->Append(menu_VIEW_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
+    viewmenu->Append(menu_VIEW_SIDE_PANEL, GetTabMsg(/*Side P@anel*/337), "", true);
 #ifdef AVENGL
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*S@moothed Survey Legs*/298), "", true);
@@ -1639,3 +1642,26 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
         m_Dist3->SetLabel("");
     }
 }
+
+void MainFrm::OnViewSidePanel(wxCommandEvent&)
+{
+    // Toggle display of the side panel.
+
+    assert(m_Gfx);
+
+    if (m_Splitter->IsSplit()) {
+        m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
+        m_Splitter->Unsplit(m_Panel);
+    }
+    else {
+        m_Panel->Show(true);
+        m_Splitter->SplitVertically(m_Panel, m_Gfx, m_SashPosition);
+    }
+}
+
+void MainFrm::OnViewSidePanelUpdate(wxUpdateUIEvent& ui)
+{
+    ui.Enable(m_File != "");
+    ui.Check(m_Splitter->IsSplit());
+}
+

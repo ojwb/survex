@@ -95,6 +95,7 @@ enum {
     menu_VIEW_SCALE_BAR,
     menu_VIEW_STATUS_BAR,
     menu_VIEW_GRID,
+    menu_VIEW_SIDE_PANEL,
 #ifdef AVENGL
     menu_VIEW_ANTIALIAS,
     menu_VIEW_SOLID_SURFACE,
@@ -162,6 +163,7 @@ public:
 };
 
 class MainFrm : public wxFrame {
+    int m_SashPosition;
     list<PointInfo*>* m_Points;
     list<LabelInfo*> m_Labels;
     hash_map<wxTreeItemId, LabelInfo*> m_LabelMap;
@@ -389,6 +391,9 @@ public:
     void OnSolidSurface(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnSolidSurface(); }
 #endif
     // end of horrible bodges
+   
+    void OnViewSidePanelUpdate(wxUpdateUIEvent& event);
+    void OnViewSidePanel(wxCommandEvent& event);
 
     Double GetXExtent() const { return m_XExt; }
     Double GetYExtent() const { return m_YExt; }

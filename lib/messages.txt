@@ -2134,7 +2134,7 @@ fr:291 Segments de topo en Sur@face##Ctrl+F
 de-de,de-ch:291 Messz&uuml;ge Ober@fl&auml;che##Ctrl+F
 de:          291 Me&szlig;z&uuml;ge Ober@fl&auml;che##Ctrl+F
 pt:291 Visadas de Su@perf&iacute;cie##Ctrl+P
-en:292 Depth C@olours on Surface Surveys
+en:292 Depth Colo@urs on Surface Surveys
 fr:292 C@ouleur par profondeur pour les topos de surface
 de:292 Tiefen-F@arben auf Oberfl&auml;chendarstellungen
 pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
@@ -2359,6 +2359,7 @@ es:335 Altitud
 it:335 Quota
 # TRANSLATE fr de pt ca es it
 en:336 You may only view one 3d file at a time.
+en:337 Side P@anel
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s
