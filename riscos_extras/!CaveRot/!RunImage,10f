@@ -1,6 +1,0 @@
-V2
-Name:CaveRot
-Sprites:!caverot
-Flags:%01010101
-Help:Drag a Survex 3d image file here
-Command:ScreenSize 480;<survex$dir>.caverot %0

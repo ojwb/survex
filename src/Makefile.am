@@ -11,12 +11,12 @@ SUFFIXES = .ico .png
 .png.ico:
 	$(SHELL) $(srcdir)/png2winicon $< $@
 
-noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
- cvrotgfx.h cvrotimg.h datain.h debug.h dosrot.h filelist.h filename.h\
- getopt.h hash.h img.h ini.h labels.h listpos.h matrix.h message.h namecmp.h\
+noinst_HEADERS = cavern.h commands.h cmdline.h\
+ datain.h debug.h filelist.h filename.h\
+ getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
  netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
- prbitmap.h prcore.h prio.h readval.h rotplot.h str.h useful.h\
- validate.h whichos.h xrot.h new3dout.h 3ddefs.h \
+ prbitmap.h prcore.h prio.h readval.h str.h useful.h\
+ validate.h whichos.h new3dout.h 3ddefs.h \
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
  aventypes.h aventreectrl.h guicontrol.h gla.h survey.h splash.h
 
@@ -51,10 +51,10 @@ PRINT = printdm printps printpcl printhpgl
 TESTPROGS = @TESTPROGS@
 
 # printxbm and dump3d are test programs
-EXTRA_PROGRAMS = caverot printwin aven avengl dump3d printxbm editwrap
+EXTRA_PROGRAMS = printwin aven avengl dump3d printxbm editwrap
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern $(PRINT) diffpos extend cad3d sorterr \
- 3dtopos @CAVEROT@ @AVEN@ @WINPROGS@ @TESTPROGS@
+ 3dtopos @AVEN@ @WINPROGS@ @TESTPROGS@
 bin_SCRIPTS = svxedit
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
@@ -123,13 +123,6 @@ printwin_SOURCES = printwin.c $(PRSRC)
 printwin_LDFLAGS = -mconsole
 printwin_LDADD = -lgdi32 -lcomdlg32
 
-ROTSRC = cvrotimg.c img.c useful.c $(COMMONSRC)
-
-caverot_SOURCES = caverot.c $(ROTSRC) rotplot.c labels.c cvrotgfx.c
-EXTRA_caverot_SOURCES = dosrot.c
-caverot_LDADD = @LIBOBJS@ @CROBJX@ @CRLIB@
-caverot_DEPENDENCIES = @CROBJX@
-
 diffpos_SOURCES = diffpos.c namecmp.c img.c useful.c hash.c $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
 3dtopos_SOURCES = 3dtopos.c namecmp.c img.c useful.c $(COMMONSRC)
@@ -146,11 +139,7 @@ cad3d_SOURCES = cad3d.c $(COMMONSRC) useful.c img.c hash.c
 #imgalone.o: img.c
 #        $(COMPILE) -DSTANDALONE -o imgalone.o -c img.c
 
-noinst_DATA = borlandc/makefile riscos/makefile
- 
-EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
- riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
- riscos/stdh/regnames riscos/stdh/swinames miniam.pl aven.rc aven.png aven.ico\
+EXTRA_DIST = aven.rc aven.png aven.ico\
  svxedit.png svxedit.ico getopt.c png2winicon gettexttomsg.pl
 
 BUILT_SOURCES = z_getopt.c aven.pal

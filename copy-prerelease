@@ -10,17 +10,10 @@ VRP=$VER-prerelease$REL
 FILES="survex-$VRR.i386.rpm survex-aven-$VRR.i386.rpm survex-$VRR.src.rpm\
  survex_${VRD}_i386.deb survex-aven_${VRD}_i386.deb survex_${VRD}.tar.gz"
 
-for a in survex-$VER.tar.gz survex-dos-$VER.exe survex-win32-$VER.exe\
-      svxdoc-doswin-$VER.exe svxdoc-riscos-$VER.zip ; do
+for a in survex-$VER.tar.gz survex-win32-$VER.exe svxdoc-doswin-$VER.exe ; do
    new_a=`echo $a|sed "s/-$VER\\./-$VRP./"`
    test -f $a && mv $a $new_a
    FILES="$FILES $new_a"
-done
-
-for a in survex-riscos-$VER.zip survex-dos286-$VER.exe; do
-   new_a=`echo $a|sed "s/-$VER\\./-$VRP./"`
-   test -f $a && mv $a $new_a
-   test -f $new_a && FILES="$FILES $new_a"
 done
 
 WEBDIR="software/test/$VRP"
@@ -55,18 +48,8 @@ HREF="$WEBDIR/survex-aven_${VRD}_i386.deb"
 <li> Linux <A
 HREF="$WEBDIR/survex_${VRD}.tar.gz"
 >Debian source package</A>
-<li> Linux i386 binary <A
-HREF="$WEBDIR/survex-$VRR.i386.rpm"
->survex RPM</A> + 
-<A HREF="$WEBDIR/survex-aven-$VRR.i386.rpm"
->aven cave viewer binary RPM</A>
 <li> Linux <A
 HREF="$WEBDIR/survex-$VRR.src.rpm"
 >Source RPM</A>
-<li> <A
-HREF="$WEBDIR/survex-riscos-$VRP.zip"
->RISC OS executables</A> and <A
-HREF="$WEBDIR/svxdoc-riscos-$VRP.zip"
->documentation</A>
 </ul>
 END

@@ -8,7 +8,7 @@ if test x"$1" = x-t ; then
    rel=
    shift
 fi
-mk=${@-src rpm deb doc alien djgpp mingw}
+mk=${@-src rpm deb doc mingw}
 if test x"$rel" = xyes ; then
    # Update debian changelog entry if necessary
    # If it does get updated, then the next check will fail...
@@ -97,16 +97,6 @@ if test x"$rel" = xyes && expr "$mk" : '.*\<doc\>' || test x"$mk" = xdoc ; then
       echo make dos_doc_exe failed
       exit 1
    fi
-   if ! make riscos_doc_zip ; then
-      echo make riscos_doc_zip failed
-      exit 1
-   fi
-fi
-if expr "$mk" : '.*\<alien\>'; then
-   if ! make alien_src_zip ; then
-      echo make alien_src_zip failed
-      exit 1
-   fi
 fi
 if ! make distclean ; then
    echo make distclean failed
@@ -114,31 +104,6 @@ if ! make distclean ; then
 fi
 unset CC
 unset CXX
-if expr "$mk" : '.*\<djgpp\>'; then
-   build_platform=`sh config.guess`
-   SAVE_PATH="$PATH"
-   # for building on mrs30
-   if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
-      PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
-   fi
-   if ! ./configure --host=i386-pc-msdosdjgpp --build="$build_platform" --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o CFLAGS=-Werror CXXFLAGS=-Werror ; then
-      echo djgpp configure failed
-      exit 1
-   fi
-   if ! make ; then
-      echo djgpp make failed
-      exit 1
-   fi
-   if ! make djgpp_exe ; then
-      echo djgpp make djgpp_exe failed
-      exit 1
-   fi
-   if ! make distclean ; then
-      echo make distclean failed
-      exit 1
-   fi
-   PATH="$SAVE_PATH"
-fi
 if expr "$mk" : '.*\<mingw\>'; then
    test -n "$build_platform" || build_platform=`sh config.guess`
    SAVE_PATH="$PATH"

@@ -1,6 +1,0 @@
-*| > <CLIcon$Dir>.!Boot
-Set CLIcon$Dir <Obey$Dir>
-IconSprites <CLIcon$Dir>.!Sprites
-
-Set File$Type_10F CLIcon
-Set Alias$@RunType_10F Run <CLIcon$Dir>.!Run %%*0
