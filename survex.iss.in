@@ -41,7 +41,7 @@ Root: HKCR; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: u
 Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.source\shell"; ValueType: string; ValueData: "Process"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -o ""%1"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.source\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.source\shell\open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue
