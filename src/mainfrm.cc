@@ -250,6 +250,7 @@ public:
     bool IsStation() { return m_Label != NULL; }
 };
 
+#if wxUSE_DRAG_AND_DROP
 class DnDFile : public wxFileDropTarget {
     public:
 	DnDFile(MainFrm *parent) : m_Parent(parent) { }
@@ -274,6 +275,7 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
     m_Parent->OpenFile(filenames[0]);
     return TRUE;
 }
+#endif
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
@@ -301,7 +303,9 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     m_PresLoaded = false;
     m_Recording = false;
 
+#ifndef wxUSE_DRAG_AND_DROP
     SetDropTarget(new DnDFile(this));
+#endif
 }
 
 MainFrm::~MainFrm()
