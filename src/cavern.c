@@ -44,6 +44,9 @@
 #if OS != RISCOS && OS != MSDOS
 #include <unistd.h> /* for getcwd() */
 #endif
+#if OS == MSDOS && defined(__TURBOC__)
+#include <dir.h> /* for getcwd() */
+#endif
 
 #include "new3dout.h"
 #ifndef MAXPATHLEN

@@ -228,7 +228,7 @@ remove_subnets(void)
 		       if (invert_var(&inv2, &newleg2->v)) {
 			  addvv(&sum, &inv1, &inv2);
 			  if (!invert_var(&newleg->v, &sum)) {
-			     ASSERT2(0, "matrix singular in parallel legs replacement");
+			     BUG("matrix singular in parallel legs replacement");
 			  }
 
 			  mulvd(&temp, &inv1, &newleg->d);

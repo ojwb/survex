@@ -46,13 +46,13 @@
 #endif
 
 /* macro to report detected bug */
-#define BUG(SZ) BLK(DEBUG_XTRA(fputsnl((SZ), STDERR);) fatalerror(11);)
+#define BUG(M) BLK(DEBUG_XTRA(fputsnl(__FILE__":"STRING(__LINE__)": "M, STDERR);) fatalerror(11);)
 
 /* assert macro, which calls BUG() if it fails */
-#define ASSERT(E) if (E) {} else BUG(__FILE__":"STRING(__LINE__)": assert("#E") failed")
+#define ASSERT(E) if (E) {} else BUG("assert("#E") failed")
 
 /* assert macro, which calls BUG() if it fails */
-#define ASSERT2(E, M) if (E) {} else BUG(__FILE__":"STRING(__LINE__)": assert("#E") failed - "M)
+#define ASSERT2(E, M) if (E) {} else BUG("assert("#E") failed - "M)
 
 /* error.c */
 
