@@ -55,8 +55,8 @@
 /* Define if you have the popen function.  */
 #undef HAVE_POPEN
 
-/* Define if you have the setjmp function.  */
-#define HAVE_SETJMP 1
+/* Define if you have the <setjmp.h> header file.  */
+#define HAVE_SETJMP_H 1
 
 /* Define if you have the signal function.  */
 #define HAVE_SIGNAL 1

@@ -236,7 +236,7 @@ img_rewind(img *pimg)
    pimg->pending = 0;
 
    img_errno = IMG_NONE;
-   
+
    /* for version 3 we use label_buf to store the prefix for reuse */
    pimg->label_len = 0;
 }
@@ -316,7 +316,7 @@ img_read_item(img *pimg, img_point *p)
 	 *p = pimg->mv;
 	 pimg->flags = (int)(pimg->pending) & 0x3f;
 	 pimg->pending = 0;
-	 return img_LINE; // FIXME
+ 	 return img_LINE;
       }
       again3: /* label to goto if we get a prefix */
       opt = getc(pimg->fh);
@@ -588,7 +588,7 @@ img_read_item(img *pimg, img_point *p)
 	    result = img_MOVE;
 	 } else if (strcmp(tmpbuf, "cross") == 0) {
 	    if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) {
-	       img_errno = IMG_BADFORMAT;	       
+	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	    }
 	    goto ascii_again;
@@ -647,7 +647,7 @@ write_v3label(img *pimg, int opt, const char *s)
       if (n) putc(n + 15, pimg->fh);
    } else if (dot == 0) {
       if (pimg->label_len) putc(0, pimg->fh);
-      len = 0;      
+      len = 0;
    } else {
       const char *p = pimg->label_buf + dot;
       n = 1;

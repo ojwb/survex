@@ -268,7 +268,7 @@ main(int argc, char **argv)
    /* set up signal handler to close down graphics on SIGINT */
    signal(SIGINT, handle_sig);
 #endif
-   
+
    fOverlap = labels_init(xcMac, ycMac);
    labels_plotall(fAllNames);
 
@@ -332,7 +332,7 @@ main(int argc, char **argv)
 	szElev = msgPerm(/*View towards %05.1f*/102);
 
 	lap_timer(fFalse);
-	
+
 	while (fTrue) {
 	   char sz[80];
 
@@ -629,7 +629,7 @@ process_key(void) /* and mouse! */
          fChanged = fTrue; break;
        case 'H': {
 	  show_help();
-	  wait_for_key_or_mouse();	  
+	  wait_for_key_or_mouse();
 	  fChanged = fTrue;
 	  lap_timer(fFalse);
 	  break;
@@ -906,9 +906,7 @@ parse_command(int argc, char **argv)
    /* load data into memory */
    for (c = 0; c < argc; c++) {
       if (!load_data(argv[c], survey, ppLegs + c, ppSLegs + c, ppStns + c)) {
-	 printf(img_error(), argv[c]);
-	 putnl();
-	 exit(1);
+	 fatalerror(img_error(), argv[c]);
       }
    }
 
