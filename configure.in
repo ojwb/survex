@@ -336,7 +336,7 @@ strcasecmp) ;;
 esac
 
 AC_MSG_CHECKING(for sgmltools v2 or v3)
-case `sgmltools --version 2>&5` in
+case `(exec 2>&5 ; $WXCONFIG --libs --cflags)` in
 *" version 2"*)
   sgmltools=sgmltools
   AC_MSG_RESULT(yes) ;;
