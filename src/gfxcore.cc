@@ -1256,6 +1256,8 @@ void GfxCore::OnRButtonDown(wxMouseEvent& event)
 {
     if (m_PlotData) {
         m_DragStart = wxPoint(event.GetX(), event.GetY());
+	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
+	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y;
         m_DraggingRight = true;
     }
 }
@@ -1263,6 +1265,7 @@ void GfxCore::OnRButtonDown(wxMouseEvent& event)
 void GfxCore::OnRButtonUp(wxMouseEvent& event)
 {
     m_DraggingRight = false;
+    m_LastDrag = drag_NONE;
 }
 
 void GfxCore::HandleScaleRotate(bool control, wxPoint point)
@@ -1392,9 +1395,6 @@ void GfxCore::HandleTilt(wxPoint point)
 	TiltCave(M_PI * (double(-dy) / 500.0));
 
 	m_DragStart = point;
-    }
-    else {
-      //        m_Parent->SetStatusText("Disabled in free rotation mode.  Reset using Delete.");
     }
 }
 

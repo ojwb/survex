@@ -62,7 +62,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
         wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, bm);
         horiz->Add(bitmap, 0 /* horizontally unstretchable */, wxALL, 2 /* border width */);
     }
-    horiz->Add(vert, 0, wxALL, 2); // 1, wxEXPAND | wxALL, 2);
+    horiz->Add(vert, 0, wxALL, 2);
 
     vert->Add(title, 0, wxLEFT | wxRIGHT | wxTOP, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
@@ -72,7 +72,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     vert->Add(copyright2, 0, wxLEFT | wxBOTTOM | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
     vert->Add(licence, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
-    vert->Add(10, 5, 1, wxEXPAND | wxGROW | wxTOP, 5);
+    vert->Add(10, 5, 1, wxALIGN_BOTTOM | wxTOP, 5);
 
     wxBoxSizer* bottom = new wxBoxSizer(wxHORIZONTAL);
     bottom->Add(5, 5, 1);

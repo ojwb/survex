@@ -3,13 +3,10 @@ From: Mark
 
 wxaven:
 - clino needs resistance around 0
-- need to prevent zooming in silly amounts (e.g. when scale bar is 1cm)
+- need to prevent zooming in/out silly amounts (e.g. when scale bar is 1cm)
 - scale bar dragging factor needs slight tweak
-- middle button to reset scale bar
 - finish reverse controls
-- bug Olly found to do with plan/elevation switching
 - possible mysterious problem with [ and ] not zooming to screen centre
-- right drag on scale bar can go wrong...
 - get warning box if wxWindows doesn't have translation into requested language
 
 wxaven problems with unknown solution:
