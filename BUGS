@@ -20,13 +20,3 @@ not all Xcaverot keys implemented
 
 heading indicator not working -- soon to be fixed
 	  
-Date: Wed, 08 Mar 2000 15:44:58 GMT
-From: Wookey <wookey@aleph1.co.uk>
-
-On RISC OS: `cavern --output=3Ddir.' results in files such as
-`3Ddir./3d' being created.
-[Olly: I think fDirectory() isn't spotting `3Ddir.' as a directory -
-workaround is to use `3Ddir' instead which does work]
-[2000-07-24 Olly: Believed fixed, needs testing]
-[2001-01-25 Olly: wasn't fixed, but should be now - needs testing again]
-
