@@ -200,8 +200,8 @@ getline_alloc(FILE *fh, size_t ilen)
    return buf;
 }
 
-int lineno = 0;
-point *start = NULL;
+static int lineno = 0;
+static point *start = NULL;
 
 static char*
 delimword(char *ln, char** lr)
@@ -521,13 +521,12 @@ main(int argc, char **argv)
 	 char *lbuf = NULL;
 	 lbuf = getline_alloc(fs, 32);
 	 lineno++;
-	 if (lbuf) {
-	    parseconfigline(lbuf);
-	 } else {
+	 if (!lbuf) {
 	    error(/*Error reading line %i from spec file*/612, lineno);
 	    osfree(lbuf);
 	    break;
 	 }
+	 parseconfigline(lbuf);
 	 osfree(lbuf);
       }
    }
