@@ -4,6 +4,7 @@
 //  About box handling for Aven.
 //
 //  Copyright (C) 2001-2003 Mark R. Shinwell.
+//  Copyright (C) 2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -27,8 +28,6 @@
 #include "aboutdlg.h"
 #include "aven.h"
 #include "message.h"
-
-#include <sys/utsname.h>
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
 END_EVENT_TABLE()
@@ -62,15 +61,9 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxStaticText* copyright2 = new wxStaticText(this, 504,
 	    wxString::Format(COPYRIGHT_MSG, msg(/*&copy;*/0)));
 
-//FIXME windows version
-    struct utsname buf;
-    int fail = uname(&buf);
-    
     wxStaticText* os = new wxStaticText(this, 506,
-                       fail ? wxString(msg(/*(unavailable)*/387))
-                            : msg(/*Host system type:*/386) + wxString(" ") +
-                              wxString(buf.sysname) + wxString(" ") +
-                              wxString(buf.release));
+					msg(/*Host system type:*/386) +
+					wxString(" ") + wxGetOsDescription());
     wxStaticText* depth = new wxStaticText(this, 507,
                           msg(/*Colour depth:*/388) + wxString(" ") +
                           wxString::Format("%d-%s", wxDisplayDepth(),

@@ -3202,8 +3202,7 @@ en:383 Re@hearse Timings
 # XXX 384 385
 # for about box:
 en:386 Host system type:
-# message 387 is used when operating system version cannot be determined:
-en:387 (unavailable)
+# XXX 387
 en:388 Colour depth:
 en:389 bit
 # 
