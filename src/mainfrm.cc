@@ -1518,7 +1518,7 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
     // ClearCoords(); // FIXME or update or ?
 }
 
-void MainFrm::OnPresNew(wxCommandEvent& event)
+void MainFrm::OnPresNew(wxCommandEvent&)
 {
     if (m_PresList->Modified()) {
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
@@ -1531,7 +1531,7 @@ void MainFrm::OnPresNew(wxCommandEvent& event)
     m_PresList->DeleteAllItems();
 }
 
-void MainFrm::OnPresOpen(wxCommandEvent& event)
+void MainFrm::OnPresOpen(wxCommandEvent&)
 {
     if (m_PresList->Modified()) {
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
@@ -1559,33 +1559,44 @@ void MainFrm::OnPresOpen(wxCommandEvent& event)
 	    wxGetApp().ReportError(m);
 	    return;
 	}
+	// FIXME : keep a history of loaded/saved presentations, like we do for
+	// loaded surveys...
     }
 }
 
-void MainFrm::OnPresSave(wxCommandEvent& event)
+void MainFrm::OnPresSave(wxCommandEvent&)
 {
     m_PresList->Save(true);
 }
 
-void MainFrm::OnPresSaveAs(wxCommandEvent& event)
+void MainFrm::OnPresSaveAs(wxCommandEvent&)
 {
     m_PresList->Save(false);
 }
 
-void MainFrm::OnPresMark(wxCommandEvent& event)
+void MainFrm::OnPresMark(wxCommandEvent&)
 {
     m_PresList->AddMark();
 }
 
-void MainFrm::OnPresRun(wxCommandEvent& event)
+void MainFrm::OnPresRun(wxCommandEvent&)
 {
     m_Gfx->PlayPres();
 }
 
-void MainFrm::OnPresExportMovie(wxCommandEvent& event)
+void MainFrm::OnPresExportMovie(wxCommandEvent&)
 {
-    if (!m_Gfx->ExportMovie("test.mpg")) {
-	wxMessageBox("Bad Movie!");
+    // FIXME : Taking the leaf of the currently loaded presentation as the
+    // default might make more sense?
+    char *baseleaf = baseleaf_from_fnm(m_File.c_str());
+    wxFileDialog dlg (this, wxString("Export Movie"), "",
+		      wxString(baseleaf) + ".mpg",
+		      "*.mpg", wxSAVE|wxOVERWRITE_PROMPT);
+    free(baseleaf);
+    if (dlg.ShowModal() == wxID_OK) {
+	if (!m_Gfx->ExportMovie(dlg.GetPath())) {
+	    wxGetApp().ReportError(wxString::Format(msg(/*Error writing to file `%s'*/110), dlg.GetPath().c_str()));
+	}
     }
 }
 
