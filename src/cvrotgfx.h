@@ -219,7 +219,7 @@ extern void text_xy(int x, int y, const char *str);
 # include "allegro.h"
 extern BITMAP *BitMap, *BitMapDraw;
 
-# define cvrotgfx_beep() sound(256) /* 256 is frequency */
+# define cvrotgfx_beep() NOP /*sound(256)*/ /* 256 is frequency */
 
 # define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
 

@@ -49,7 +49,6 @@ buffer_rec *BitMap;
 
 # elif defined(ALLEGRO)
 
-# if (OS != WIN32) /* this stuff doesn't seem to work under WIN32 */
 /* Turn off all the sound, midi, and joystick drivers, since we don't
  * use them */
 
@@ -69,10 +68,8 @@ COLOR_DEPTH_16
 COLOR_DEPTH_8
 #endif
 END_COLOR_DEPTH_LIST
-
-# endif
     
-/* DJGPP + Allegro (or UNIX+allegro) */
+/* Allegro (with DJGPP, Unix, or mingw) */
 BITMAP *BitMap, *BitMapDraw;
 
 static
@@ -318,15 +315,19 @@ cvrotgfx_init(void)
    }
    
    if (!mode_picker) {
+#if (OS==WIN32)
+      res = set_gfx_mode(GFX_DIRECTX, 800, 600, 0, 0);
+#else
 #if (OS==UNIX)
       set_color_depth(16);
 #endif
       if (os_type == OSTYPE_WINNT) {
-	  /* In DOS under Windows NT we can't do better than VGA */
-	  res = set_gfx_mode(GFX_VGA, 640, 480, 0, 0);
+	  /* In DOS under Windows NT we can't do better than this */
+	  res = set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
       } else {
 	  res = set_gfx_mode(GFX_AUTODETECT, 800, 600, 0, 0);
       }
+#endif
       /* if we couldn't get that mode, give the mode picker */
       if (res) mode_picker = 1;
    }
