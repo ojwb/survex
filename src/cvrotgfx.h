@@ -58,7 +58,7 @@ extern BITMAP *BitMap, *BitMapDraw;
 # define CVROTGFX_RBUT 2 /* mask for right mouse button (if present) */
 # define CVROTGFX_MBUT 4 /* mask for middle mouse button (if present) */
 
-# define cvrotgfx_beep() NOP /* FIXME: can't allegro beep? */
+# define cvrotgfx_beep() NOP /* no easy way I know to beep from an X app */
 
 # ifdef NO_MOUSE_SUPPORT
 /* emulate a dead mouse */
@@ -90,11 +90,6 @@ extern BITMAP *BitMap, *BitMapDraw;
 /* Microsoft C */
 #  include <graph.h>
 
-# elif defined(JLIB)
-/* DJGPP + JLIB */
-#  include "jlib.h"
-extern buffer_rec *BitMap;
-
 # elif defined(ALLEGRO)
 /* DJGPP + Allegro */
 #  include "allegro.h"
@@ -116,11 +111,7 @@ extern GrContext *BitMap;
 #  define cvrotgfx_read_mouse(PDX, PDY, PBUT) NOP
 # endif
 
-# ifdef JLIB
-#  define CVROTGFX_LBUT MOUSE_B_LEFT
-#  define CVROTGFX_MBUT MOUSE_B_MIDDLE
-#  define CVROTGFX_RBUT MOUSE_B_RIGHT
-# elif !defined(ALLEGRO) && defined(__DJGPP__)
+# if !defined(ALLEGRO) && defined(__DJGPP__)
 #  define CVROTGFX_LBUT GR_M_LEFT
 #  define CVROTGFX_MBUT GR_M_MIDDLE
 #  define CVROTGFX_RBUT GR_M_RIGHT
@@ -132,10 +123,10 @@ extern GrContext *BitMap;
 
 # define cvrotgfx_beep() sound(256) /* 256 is frequency */
 
-/* FIXME: fix this stuff */
 # ifdef MSC
 #  define shift_pressed() (_bios_keybrd(_KEYBRD_SHIFTSTATUS) & 0x03)
 # elif defined(ALLEGRO)
+/* FIXME: if (keyboard_needs_poll()) we need to poll_keyboard() to update key_shifts */
 #  define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
 # else
 #  define R_SHIFT  0x01
@@ -163,12 +154,6 @@ void cvrotgfx_lineto(int X, int Y);
 #  define set_tcolour(X) _setcolor(X)
 #  define set_gcolour(X) _setcolor(X)
 #  define text_xy(X, Y, S) outtextxy((X) * 12, (Y) * 12, S)
-# elif defined(JLIB)
-#  define outtextxy(X, Y, S) buff_draw_string(BitMap, (S), (X), (Y), 15); /*15 is colour FIXME*/
-#  define set_tcolour(X) NOP /* FIXME */
-#  define set_gcolour(X) BLK(extern int _cvrotgfx_drawcol; _cvrotgfx_drawcol = (X);)
-#  define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, (S))
-#  define far
 # elif defined(ALLEGRO)
 #  ifdef NO_TEXT
 #   define outtextxy(X, Y, S) NOP

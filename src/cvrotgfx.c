@@ -45,10 +45,6 @@ int _cvrotgfx_textcol, _cvrotgfx_drawcol;
 # ifdef MSC
 /* Microsoft C */
 
-# elif defined(JLIB)
-/* DJGPP + JLIB */
-buffer_rec *BitMap;
-
 # elif defined(ALLEGRO)
 
 /* Turn off all the sound, midi, and joystick drivers, since we don't
@@ -101,21 +97,6 @@ GrContext *BitMap;
 
 # ifdef NO_MOUSE_SUPPORT
 /* cvrotgfx_read_mouse() #define-d in cvrotgfx.h */
-# elif defined(JLIB)
-
-void
-cvrotgfx_read_mouse(int *pdx, int *pdy, int *pbut)
-{
-   static int x_old, y_old;
-   int x_new, y_new;
-
-   mouse_get_status(&x_new, &y_new, pbut);
-   *pdx = x_new - x_old;
-   *pdy = y_new - y_old;
-   x_old = x_new;
-   y_old = y_new;
-}
-
 # elif defined(ALLEGRO)
 
 void
@@ -229,27 +210,6 @@ cvrotgfx_init(void)
    _cvrotgfx_drawcol = (vidcfg.numcolors > 2) ? 2 : 1;
    fSwapScreen = (vidcfg.numvideopages > 1);
    y_stretch *= (float)(((float)xcMac / ycMac) * (350.0 / 640.0) * 1.3);
-#elif defined(JLIB)
-   screen_set_video_mode();
-   /* mouse_hide_pointer is intended to remove the pointer to prevent
-    * problems when plotting over it, and may not actually hide the
-    * pointer - but it's the best we can do */
-   mouse_hide_pointer();
-
-   screen_put_pal(255, 0xff, 0xff, 0xff); /*FIXME*/
-   screen_put_pal(0, 0, 0, 0); /*FIXME*/
-
-   /* initialise screen sized buffer */
-   BitMap = buff_init(SCREEN_WIDTH, SCREEN_HEIGHT);
-   /* check that initialisation was OK */
-   if (BitMap == NULL)
-      fatalerror(/*Error initialising graphics card*/81);
-   colText = colHelp = SCREEN_NUM_COLORS - 1;
-   _cvrotgfx_drawcol = 1;
-   xcMac = SCREEN_WIDTH;
-   ycMac = SCREEN_HEIGHT;
-   y_stretch *= (float)(((float)xcMac / ycMac) * (350.0 / 640.0) * 1.3);
-   fSwapScreen = 1;
 # elif defined(ALLEGRO)
    int res;
    int c, w, h;
@@ -483,13 +443,6 @@ cvrotgfx_init(void)
 #endif
 #ifdef NO_MOUSE_SUPPORT
    mouse_buttons = -2;
-#elif defined(JLIB)
-   mouse_buttons = -1;
-   /* With jlib we can't distinguish no mouse from no driver */
-   if (mouse_present() == MOUSE_PRESENT) {
-      /* With jlib we can't count the buttons, so assume max # of buttons */
-      mouse_buttons = MOUSE_NUM_BUTTONS;
-   }
 #elif defined(ALLEGRO)
    /* mouse initialised above */
 #elif defined(__DJGPP__)
@@ -512,10 +465,7 @@ cvrotgfx_init(void)
 int
 cvrotgfx_pre_main_draw(void)
 {
-#if defined(JLIB)
-   /* ignore fSwapScreen -- JLIB can't draw directly to screen */
-   buff_clear(BitMap);
-#elif defined(ALLEGRO)
+#if defined(ALLEGRO)
    if (fSwapScreen) { /* bank swappin' */
       BitMapDraw = BitMap;
    } else {
@@ -552,9 +502,7 @@ cvrotgfx_pre_main_draw(void)
 int
 cvrotgfx_post_main_draw(void)
 {
-#if defined(JLIB)
-   screen_blit_fs_buffer(BitMap);
-#elif defined(ALLEGRO)
+#if defined(ALLEGRO)
    if (fSwapScreen) {
       extern int xcMac, ycMac;
       blit(BitMap, screen, 0, 0, 0, 0, xcMac, ycMac);
@@ -585,7 +533,7 @@ cvrotgfx_pre_supp_draw(void)
 {
 #ifdef ALLEGRO
    BitMapDraw = screen;
-#elif defined(__DJGPP__) && !defined(JLIB)
+#elif defined(__DJGPP__)
    GrSetContext(0); /* write to screen */
 #endif
    return 1;
@@ -596,9 +544,6 @@ cvrotgfx_pre_supp_draw(void)
 int
 cvrotgfx_post_supp_draw(void)
 {
-#if defined(JLIB)
-   screen_blit_fs_buffer(BitMap);
-#endif
    return 1;
 }
 
@@ -606,9 +551,7 @@ cvrotgfx_post_supp_draw(void)
 int
 cvrotgfx_final(void)
 {
-#if defined(JLIB)
-   screen_restore_video_mode();
-#elif defined(ALLEGRO)
+#if defined(ALLEGRO)
 #elif defined(__DJGPP__)
    /* get rid of BitMap */
    /* GrDestroyContext(BitMap); */
@@ -680,9 +623,7 @@ cvrotgfx_moveto(int X, int Y)
 extern void
 cvrotgfx_lineto(int X, int Y)
 {
-# ifdef JLIB
-   buff_draw_line(BitMap, last_x, last_y, X, Y, _cvrotgfx_drawcol);
-# elif defined(ALLEGRO)
+# if defined(ALLEGRO)
    line(BitMapDraw, last_x, last_y, X, Y, _cvrotgfx_drawcol);
 # else
    GrLine(last_x, last_y, X, Y, 15); /* FIXME: 15 is colour */
