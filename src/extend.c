@@ -97,7 +97,7 @@ main(int argc, char **argv)
       exit(1);
    }
 
-   fnmOutput = (argc == 2 ? AddExt("extend", EXT_SVX_3D) : argv[2]);
+   fnmOutput = (argc == 2 ? add_ext("extend", EXT_SVX_3D) : argv[2]);
 
    /* try to open image file, and check it has correct header */
    pimg = img_open(fnmData, szDesc, NULL);
