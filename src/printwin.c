@@ -238,10 +238,10 @@ win_SetColour(int colourcode)
 {
    switch (colourcode) {
       case PR_COLOUR_TEXT:
-	 SetTextColor(colour_text);
+	 SetTextColor(pd, colour_text);
 	 break;
       case PR_COLOUR_LABELS:
-	 SetTextColor(colour_labels);
+	 SetTextColor(pd, colour_labels);
 	 break;
       case PR_COLOUR_FRAME:
 	 SelectObject(pd, pen_frame);
