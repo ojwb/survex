@@ -112,6 +112,7 @@
 1997.08.22 added covariances
 1998.03.21 fixed up to compile cleanly on Linux
 1998.05.27 fettled to work with NO_COVARIANCES
+1998.06.09 data filenames now converted from Unix/DOS format if necessary
 */
 
 #include <limits.h>
@@ -331,11 +332,35 @@ extern void data_file( sz pth, sz fnm ) {
 #endif
   char *fnmUsed;
 
-  file.fh=fopenWithPthAndExt( pth, fnm, EXT_SVX_DATA, "rb", &fnmUsed );
-  if (file.fh==NULL) {
-    error(24,wr,fnm,0);
-    /* print "ignoring..." maybe !HACK! */
-    return;
+  file.fh = fopenWithPthAndExt( pth, fnm, EXT_SVX_DATA, "rb", &fnmUsed );
+  if (file.fh == NULL) {
+#if (OS==RISCOS) || (OS==UNIX)
+     char *fnm_trans, *p;
+     fnm_trans = osstrdup(fnm);
+     for ( p = fnm_trans ; *p ; p++ ) {
+        switch (*p) {
+#if (OS==RISCOS)
+         /* swap either slash to a dot, and a dot to a forward slash */
+         case '.':
+           *p = '/'; break;
+         case '/': case '\\':
+           *p = '.'; break;
+#else
+         /* swap a backslash to a forward slash */
+         case '\\':
+           *p = '/'; break;
+#endif
+        }
+     }
+     file.fh = fopenWithPthAndExt( pth, fnm_trans, EXT_SVX_DATA, "rb",
+                                   &fnmUsed );
+     osfree(fnm_trans);
+#endif
+     if (file.fh == NULL) {
+        error(24,wr,fnm,0);
+	/* print "ignoring..." maybe !HACK! */
+        return;
+     }
   }
 
   sprintf(szOut,msg(122),fnm);
