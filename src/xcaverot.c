@@ -1,4 +1,4 @@
-/* > xcaverot.c
+/* xcaverot.c
  * Copyright (C) 1993-2001 Bill Purvis, Olly Betts, John Pybus, Mark Shinwell,
  * Leandro Dybal Bertoni, Andy Holtsbery, et al
  *
@@ -55,6 +55,7 @@ static int pda = 0;
 #include "filename.h"
 #include "message.h"
 #include "cvrotimg.h"
+#include "img.h" /* for img_error() */
 
 #ifdef XCAVEROT_BUTTONS
 #include "xcvrtbut.h"
