@@ -490,7 +490,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         if (first_time) {
             m_Lists.underground_legs =
                 CreateList(this, &GfxCore::GenerateDisplayList);
-            
+
             m_Lists.surface_legs =
                 CreateList(this, &GfxCore::GenerateDisplayListSurface);
             
@@ -528,7 +528,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
                 DisableDashedLines();
             }
         }
-        
+
         // Draw station names.
         if (m_Names && !m_Control->MouseDown() && !m_Rotating &&
             !m_SwitchingTo) {
@@ -1194,7 +1194,7 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 void GfxCore::OnSize(wxSizeEvent& event)
 {
     // Handle a change in window size.
-    
+
 //    wxGLCanvas::OnSize(event);//FIXME
 
     wxSize size = event.GetSize();
