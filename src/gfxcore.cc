@@ -702,7 +702,6 @@ void GfxCore::DrawNames()
 void GfxCore::NattyDrawNames()
 {
     // Draw station names, without overlapping.
-    // FIXME: copied to OnSize()
    
     const int dv = 2;
     const int quantise = int(GetFontSize() / dv);
@@ -710,10 +709,7 @@ void GfxCore::NattyDrawNames()
     const int quantised_y = m_YSize / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
    
-    if (m_LabelGrid) {
-	delete[] m_LabelGrid;
-    }
-    m_LabelGrid = new char[buffer_size];
+    if (!m_LabelGrid) m_LabelGrid = new char[buffer_size];
 
     memset((void*) m_LabelGrid, 0, buffer_size);
 
@@ -964,9 +960,7 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 
     SetDataTransform();
 
-    if (!m_HitTestGridValid) {
-	CreateHitTestGrid();
-    }
+    if (!m_HitTestGridValid) CreateHitTestGrid();
 
     int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
     int grid_y = (point.y * (HITTEST_SIZE - 1)) / m_YSize;
@@ -1017,13 +1011,14 @@ void GfxCore::OnSize(wxSizeEvent& event)
 {
     // Handle a change in window size.
 
-//    wxGLCanvas::OnSize(event);//FIXME
-
     wxSize size = event.GetSize();
 
     m_XSize = size.GetWidth();
     m_YSize = size.GetHeight();
-    if (m_XSize < 0 || m_YSize < 0) { //-- FIXME
+    if (m_XSize < 0 || m_YSize < 0) {
+	//-- FIXME when does this happen (if ever)?  Can't reproduce on
+	// wxGtk at least...
+	//printf("negative resize?!\n");
 	m_XSize = 640;
 	m_YSize = 480;
     }
@@ -1031,17 +1026,12 @@ void GfxCore::OnSize(wxSizeEvent& event)
     m_YCentre = m_YSize / 2;
 
     if (m_DoneFirstShow) {
-	// FIXME: copied from NattyDrawNames()
-	const int dv = 2;
-	const int quantise = int(GetFontSize() / dv);
-	const int quantised_x = m_XSize / quantise;
-	const int quantised_y = m_YSize / quantise;
-	const size_t buffer_size = quantised_x * quantised_y;
+	if (m_LabelGrid) {
+	    delete[] m_LabelGrid;
+	    m_LabelGrid = NULL;
+	}
 
-	if (m_LabelGrid) delete[] m_LabelGrid;
-
-	m_LabelGrid = new char[buffer_size];
-	CreateHitTestGrid();
+	m_HitTestGridValid = false;
 
 	UpdateIndicators();
 
