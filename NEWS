@@ -1,3 +1,5 @@
+Changes in 0.99-prerelease2:
+
 * aven: fixed bug which caused occasional crash during mouse movement;
   station identifying didn't work after a resize until the survey was
   moved.
