@@ -127,6 +127,9 @@ class AvenListCtrl: public wxListCtrl {
 			 wxLC_EDIT_LABELS | wxLC_REPORT),
 	      gfx(gfx_), current_item(-1), modified(false)
 	    {
+		InsertColumn(0, msg(/*Easting*/378));
+		InsertColumn(1, msg(/*Northing*/379));
+		InsertColumn(2, msg(/*Altitude*/335));
 	    }
 
 	void OnBeginLabelEdit(wxListEvent& event) {
@@ -221,9 +224,10 @@ class AvenListCtrl: public wxListCtrl {
 		}
 	    }
 	    entries.insert(i, mark);
-	    long tmp = InsertItem(item, wxString::Format("%ld", (long)mark.y));
+	    long tmp = InsertItem(item, wxString::Format("%ld", (long)mark.x));
 	    SetItemData(tmp, item);
-	    SetItem(item, 1, wxString::Format("%ld", (long)mark.x));
+	    SetItem(item, 1, wxString::Format("%ld", (long)mark.y));
+	    SetItem(item, 2, wxString::Format("%ld", (long)mark.z));
 	    modified = true;
 	}
 	void Save(bool use_default_name) {
@@ -793,12 +797,6 @@ void MainFrm::CreateSidePanel()
     m_PresPanel = new wxPanel(m_Notebook);
 
     m_PresList = new AvenListCtrl(m_PresPanel, m_Gfx);
-    // FIXME swap order of Northing and Easting (here *and* elsewhere)
-    m_PresList->InsertColumn(0, msg(/*Northing*/379));
-    m_PresList->InsertColumn(1, msg(/*Easting*/378));
-//    m_PresList->SetColumnWidth(0, 100);
-  //  m_PresList->SetColumnWidth(1, 40);
-    //m_PresList->SetColumnWidth(2, 40);
 
     wxBoxSizer *pres_panel_sizer = new wxBoxSizer(wxVERTICAL);
     pres_panel_sizer->Add(m_PresList, 1, wxALL | wxEXPAND, 2);
