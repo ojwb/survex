@@ -22,7 +22,7 @@
 #define nBanks 3
 
 #include "cvrotgfx.h"
-#include "error.h"
+/*#include "error.h"*/
 
 int colDraw, colText;
 int fSwapScreen;
