@@ -956,25 +956,31 @@ void MainFrm::FillTree()
             current_prefix = prefix;
         }
 
-        // Now add the leaf
+        // Now add the leaf.
         wxString bit = label->GetText().AfterLast('.');
         assert(bit != "");
         wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
         m_Tree->SetItemData(id, new TreeData(label));
-        SetTreeItemColour(id, label);
+	label->tree_id = id; // before calling SetTreeItemColour()...
+        SetTreeItemColour(label);
     }
 }
 
-void MainFrm::SetTreeItemColour(wxTreeItemId& id, LabelInfo* label)
+void MainFrm::SelectTreeItem(LabelInfo* label)
+{
+    m_Tree->SelectItem(label->tree_id);
+}
+
+void MainFrm::SetTreeItemColour(LabelInfo* label)
 {
     // Set the colour for an item in the survey tree.
 
     if (label->IsSurface()) {
-        m_Tree->SetItemTextColour(id, wxColour(49, 158, 79));
+        m_Tree->SetItemTextColour(label->tree_id, wxColour(49, 158, 79));
     }
 
     if (label->IsEntrance()) {
-        m_Tree->SetItemTextColour(id, wxColour(255, 0, 0));
+        m_Tree->SetItemTextColour(label->tree_id, wxColour(255, 0, 0));
     }
 }
 

@@ -145,6 +145,7 @@ class LabelInfo {
     Double x, y, z;
     wxString text;
     int flags;
+    wxTreeItemId tree_id;
 
 public:
     Double GetX() const { return x; }
@@ -224,7 +225,7 @@ class MainFrm : public wxFrame {
 
     Double* m_TerrainGrid;
     
-    void SetTreeItemColour(wxTreeItemId& id, LabelInfo* label);
+    void SetTreeItemColour(LabelInfo* label);
     void FillTree();
     void ClearPointLists();
     bool LoadData(const wxString& file, wxString prefix = "");
@@ -442,6 +443,7 @@ public:
 
     wxPen GetSurfacePen() const { return m_Pens[NUM_DEPTH_COLOURS]; }
 
+    void SelectTreeItem(LabelInfo* label);
     void ClearTreeSelection();
 
     int GetNumFixedPts() const { return m_NumFixedPts; }

@@ -646,7 +646,7 @@ void GfxCore::SetScaleInitial(Double scale)
         }
     }
 
-    if ((m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) && !m_ScaleSpecialPtsOnly) {
+  //  if ((m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) && !m_ScaleSpecialPtsOnly) {
 	// Construct polylines for crosses, sort out station names,
 	// and deal with highlighted points.
 
@@ -688,9 +688,9 @@ void GfxCore::SetScaleInitial(Double scale)
             int cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
             int cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
 
-            if ((m_Crosses || m_Names) &&
-                ((label->IsSurface() && m_Surface) ||
-                 (label->IsUnderground() && m_Legs))) {
+         //   if ((m_Crosses || m_Names) &&
+         //       ((label->IsSurface() && m_Surface) ||
+         //        (label->IsUnderground() && m_Legs))) {
                 pt->x = cx - CROSS_SIZE;
                 pt->y = cy - CROSS_SIZE;
                 
@@ -711,7 +711,7 @@ void GfxCore::SetScaleInitial(Double scale)
                 *labels++ = label;
 
                 m_NumCrosses++;
-            }
+          //  }
 #endif
 
             //--FIXME
@@ -742,7 +742,7 @@ void GfxCore::SetScaleInitial(Double scale)
             }
 #endif
         }
-    }
+ //   }
     m_ScaleHighlightedPtsOnly = false;
     m_ScaleCrossesOnly = false;
 
@@ -827,11 +827,11 @@ void GfxCore::SetScale(Double scale)
         wxString text;
         while (pos != end) {
             LabelInfo* label = *pos++;
+
+#ifdef AVENGL
             Double x = label->GetX();
             Double y = label->GetY();
             Double z = label->GetZ();
-
-#ifdef AVENGL
             pt->x = x;
             pt->y = y;
             pt->z = z;
@@ -842,17 +842,26 @@ void GfxCore::SetScale(Double scale)
 
             m_NumCrosses++;
 #else
+            Double x, y, z;
+	    int cx = INT_MAX;
+	    int cy;
+
             // Calculate screen coordinates.
+            if ((m_Crosses || m_Names) &&
+                ((label->IsSurface() && m_Surface) ||
+                 (label->IsUnderground() && m_Legs))) {
+
+            x = label->GetX();
+            y = label->GetY();
+            z = label->GetZ();
+
             x += m_Params.translation.x;
             y += m_Params.translation.y;
             z += m_Params.translation.z;
 
-            int cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
-            int cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
+            cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
+            cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
 
-            if ((m_Crosses || m_Names) &&
-                ((label->IsSurface() && m_Surface) ||
-                 (label->IsUnderground() && m_Legs))) {
                 pt->x = cx - CROSS_SIZE;
                 pt->y = cy - CROSS_SIZE;
                 
@@ -881,6 +890,20 @@ void GfxCore::SetScale(Double scale)
             if ((m_FixedPts || m_Entrances || m_ExportedPts) &&
                 ((label->IsSurface() && m_Surface) || (label->IsUnderground() && m_Legs) ||
                  (!label->IsSurface() && !label->IsUnderground() /* for stns with no legs attached */))) {
+	
+	        if (cx == INT_MAX) {
+            x = label->GetX();
+            y = label->GetY();
+            z = label->GetZ();
+
+            x += m_Params.translation.x;
+            y += m_Params.translation.y;
+            z += m_Params.translation.z;
+
+            cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
+            cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
+                }
+
                 hpt->x = cx;
                 hpt->y = cy;
                 hpt->flags = hl_NONE;
@@ -2296,6 +2319,7 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	    if (centre) {
 	        CentreOn(info.label->GetX(), info.label->GetY(), info.label->GetZ());
 		SetThere(info.label->GetX(), info.label->GetY(), info.label->GetZ());
+		m_Parent->SelectTreeItem(info.label);
             }
 	    done = true;
 	}
