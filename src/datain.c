@@ -1235,11 +1235,6 @@ data_normal(void)
        case Newline:
 	  if (fr != NULL) {
 	     int r;
-	     if (fRev) {
-		prefix *t = fr;
-	   	fr = to;
-	    	to = t;
-	     }
 	     if (fTopofil)
 		VAL(Tape) = VAL(ToCount) - VAL(FrCount);
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
@@ -1249,6 +1244,11 @@ data_normal(void)
 		 VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		goto inferred_equate;
+	     }
+	     if (fRev) {
+		prefix *t = fr;
+	   	fr = to;
+	    	to = t;
 	     }
 	     if (fTopofil) {
 		VAL(Tape) *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
@@ -1274,6 +1274,13 @@ data_normal(void)
 		BUG("bad style");
 	     }
 	     if (!r) skipline();
+	     
+	     /* Swap fr and to back to how they were for next line */
+	     if (fRev) {
+		prefix *t = fr;
+		fr = to;
+		to = t;
+	     }
 	  }
 
 	  fRev = fFalse;
@@ -1285,6 +1292,7 @@ data_normal(void)
 	  VAL(Clino) = VAL(BackClino) = 0;
 
           inferred_equate:
+
 	  fMulti = fTrue;
 	  while (1) {
 	      process_eol();
