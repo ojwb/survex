@@ -3178,6 +3178,9 @@ ca:502 Esborrat: %s
 es:502 Borrado: %s
 it:502 Rimosso: %s
 sk:502 Zru&scaron;en&eacute;: %s
+
+en:504 Passage @Tubes##Ctrl+T
+
 #
 # "don't extract" messages - these are compiled into the programs
 #

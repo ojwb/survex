@@ -47,9 +47,11 @@ double Vector3::magnitude()
 void Vector3::normalise()
 {
     double mag = magnitude();
-    x /= mag;
-    y /= mag;
-    z /= mag;
+    if (mag != 0.0) {
+        x /= mag;
+        y /= mag;
+        z /= mag;
+    }
 }
 
 double dot(const Vector3& left, const Vector3& right)
@@ -129,6 +131,16 @@ Vector3 operator+(const Vector3& v1, const Vector3& v2)
     o.x = v1.x + v2.x;
     o.y = v1.y + v2.y;
     o.z = v1.z + v2.z;
+
+    return o;
+}
+
+Vector3 operator-(const Vector3& v1, const Vector3& v2)
+{
+    Vector3 o;
+    o.x = v1.x - v2.x;
+    o.y = v1.y - v2.y;
+    o.z = v1.z - v2.z;
 
     return o;
 }
