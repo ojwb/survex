@@ -1,5 +1,5 @@
 /* xcaverot.c
- * Copyright (C) 1993-2001 Bill Purvis, Olly Betts, John Pybus, Mark Shinwell,
+ * Copyright (C) 1993-2002 Bill Purvis, Olly Betts, John Pybus, Mark Shinwell,
  * Leandro Dybal Bertoni, Andy Holtsbery, et al
  *
  * This program is free software; you can redistribute it and/or modify
@@ -69,7 +69,7 @@ static int pda = 0;
 #define CROSSLENGTH 3
 
 /* Width and height of compass and elevation indicator windows */
-#define FONTSPACE (10 + ((int)indrad - 8) / 3)
+#define FONTSPACE (10 + (indrad - 8) / 3)
 #define INDWIDTH ((int)(indrad * 2.5))
 #define INDDEPTH (INDWIDTH + FONTSPACE)
 
@@ -81,7 +81,7 @@ static int pda = 0;
 
 /* default radius of compass and clino indicators - 20 is good for smaller
  * screens */
-static double indrad = 40;
+static int indrad = 40;
 
 /* default font to use */
 #define FONTNAME "-adobe-helvetica-medium-r-normal-*-8-*"
@@ -581,29 +581,31 @@ draw_ind_com(GC gc, double angle)
    char temp[32];
    int xm, ym;
    double sa, ca;
-   double rs, rc, r = indrad;
+   double rs, rc, rsa, rca;
 
    xm = ym = INDWIDTH / 2;
 
-   rs = r * sin(rad(C_IND_ANG));
-   rc = r * cos(rad(C_IND_ANG));
+   rs = indrad * sin(rad(C_IND_ANG));
+   rc = indrad * cos(rad(C_IND_ANG));
    sa = -sin(rad(angle));
    ca = cos(rad(angle));
+   rsa = indrad * sa;
+   rca = indrad * ca;
 
    XClearWindow(mydisplay, ind_com);
 
-   XDrawArc(mydisplay, ind_com, gc, xm - (int)r, ym - (int)r, 2 * (int)r,
-	    2 * (int)r, 0, 360 * 64);
+   XDrawArc(mydisplay, ind_com, gc, xm - indrad, ym - indrad, 2 * indrad,
+	    2 * indrad, 0, 360 * 64);
 
-   XDrawLine(mydisplay, ind_com, gc, xm + r * sa, ym - r * ca,
+   XDrawLine(mydisplay, ind_com, gc, xm + rsa, ym - rca,
 	     xm - rs * ca - rc * sa, ym - rs * sa + rc * ca);
-   XDrawLine(mydisplay, ind_com, gc, xm + r * sa, ym - r * ca,
+   XDrawLine(mydisplay, ind_com, gc, xm + rsa, ym - rca,
 	     xm + rs * ca - rc * sa, ym + rs * sa + rc * ca);
    XDrawLine(mydisplay, ind_com, gc, xm - rs * ca - rc * sa,
-	     ym - rs * sa + rc * ca, xm - r * sa / 2, ym + r * ca / 2);
+	     ym - rs * sa + rc * ca, xm - rsa / 2, ym + rca / 2);
    XDrawLine(mydisplay, ind_com, gc, xm + rs * ca - rc * sa,
-	     ym + rs * sa + rc * ca, xm - r * sa / 2, ym + r * ca / 2);
-   XDrawLine(mydisplay, ind_com, gc, xm, ym - r / 2, xm, ym - r);
+	     ym + rs * sa + rc * ca, xm - rsa / 2, ym + rca / 2);
+   XDrawLine(mydisplay, ind_com, gc, xm, ym - indrad / 2, xm, ym - indrad);
 
    sprintf(temp, "%03d", (int)angle);
    XDrawString(mydisplay, ind_com, gc, indrad / 4, INDDEPTH - FONTSPACE + 8,
@@ -1227,7 +1229,7 @@ main(int argc, char **argv)
 
    /* allow indrad to be set */
    tmp = getenv("XCAVEROT_INDICATOR_RADIUS");
-   if (tmp) indrad = atof(tmp);
+   if (tmp) indrad = atoi(tmp);
 
    /* so we can auto adjust scale on window resize */
    oldwidth = attr.width;
