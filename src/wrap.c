@@ -7,12 +7,8 @@
  * not going to invest a lot of time in it...
  */
 
-/*
-[...]
-1996.03.24 changes for Translate table ; buffer -> cmdbuf
-*/
-
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,8 +16,17 @@
 #include "filelist.h"
 #include "osdepend.h"
 
-/* FIXME: check return value */
-#define xmalloc malloc
+/* RISC OS (and maybe old DOS compilers) don't support exec*() */
+/*#if (OS==RISCOS) || (OS==MSDOS && !defined(__DJGPP__))*/
+#if (OS==RISCOS)
+# define NO_EXECV
+#elsif (OS==WIN32)
+# include <process.h>
+#else
+# include <unistd.h>
+#endif
+
+static int fPercent = -1, fAscii = 0;
 
 #define COMMAND_FILE_COMMENT_CHAR ';'
 
@@ -54,22 +59,29 @@ static void errdisp(char *msg, void (*fn)( char * ), char*szArg, char *type ) {
 }
 
 #if 0
-extern void warning(char *en, void (*fn)( char * ), char*szArg) {
+static void warning(char *en, void (*fn)( char * ), char*szArg) {
   cWarnings++; /* And another notch in the bedpost... */
   errdisp( en, fn, szArg, 4 );
 }
 #endif
 
-extern void error(char *en, void (*fn)( char * ), char*szArg) {
+static void error(char *en, void (*fn)( char * ), char*szArg) {
 #if 0
    cErrors++; /* non-fatal errors now return... */
 #endif
   errdisp( en, fn, szArg, "Error" );
 }
 
-extern void fatal(char *en, void (*fn)( char * ), char*szArg) {
+static void fatal(char *en, void (*fn)( char * ), char*szArg) {
   errdisp( en, fn, szArg, "Fatal Error" );
   exit(EXIT_FAILURE);
+}
+
+/* FIXME: check return value */
+static void *xmalloc(size_t size) {
+   void *p = malloc(size);
+   if (!p) fatal("Out of memory!", NULL, NULL);
+   return p;
 }
 
 /* Make fnm from pth and lf, inserting an FNM_SEP_LEV if appropriate */
@@ -116,7 +128,7 @@ fopen_not_dir(const char *fnm, const char *mode)
 }
 
 /* Add ext to fnm, inserting an FNM_SEP_EXT if appropriate */
-extern char *
+static char *
 AddExt(const char *fnm, const char *ext)
 {
    char * fnmNew;
@@ -197,7 +209,7 @@ fopenWithPthAndExt(const char * pth, const char * fnm, const char * szExt,
    return fh;
 }
 
-extern char *
+static char *
 PthFromFnm(const char *fnm)
 {
    char *pth;
@@ -222,7 +234,7 @@ PthFromFnm(const char *fnm)
 
 static FILE *fout;
 
-typedef enum {COMMAND,COMMAND_FILENAME,SPECIAL_CHARS,SVX_FILE,TITLE} Mode;
+typedef enum {COMMAND,COMMAND_FILENAME,SVX_FILE,TITLE} Mode;
 
 static void process_command( char * string, char * pth );
 static void command_file( char * pth, char * fnm );
@@ -282,7 +294,7 @@ static char *process_command_mode( char *string, char *pth ) {
     }
     switch (chOpt) {
       case 'A': /* Ascii */
-        if (fSwitch) fputs(" --ascii", stdout);
+        fAscii = fSwitch;
         break;
       case 'C': /* Case */
         if (fSwitch) {
@@ -310,13 +322,14 @@ static char *process_command_mode( char *string, char *pth ) {
         fprintf(fout, "*infer plumbs %s\n", (fSwitch ? "on" : "off"));
         break;
       case 'P': /* Percentage */
-#ifndef NO_PERCENTAGE
-        if (fSwitch) printf(" --percentage");
-#endif
+        fPercent = fSwitch;
         break;
+#if 0
+       /* -S never implemented */
       case 'S': /* Special Characters */
         mode=SPECIAL_CHARS;
         break;
+#endif
       case 'T': /* Title */
         mode=TITLE;
         break;
@@ -331,8 +344,10 @@ static char *process_command_mode( char *string, char *pth ) {
           sz--;
 	  if (ln < 1) error("Syntax: -U<uniqueness> where uniqueness > 0",skipopt,string);
 	  fprintf(fout, "*truncate %d\n", ln);
-        } else
-	  fprintf(fout, "*truncate 0\n"); // FIXME: ick
+        } else {
+	  /* FIXME: change once "*truncate off" is implemented */
+	  fprintf(fout, "*truncate 0\n");
+	}
         break;
       default:
        error("Unknown command",skipopt,string);
@@ -372,10 +387,6 @@ static void process_command( char * string, char * pth ) {
         mode=COMMAND;
         command_file( pth, sz );
         sz="";
-        break;
-      case SPECIAL_CHARS: /* Special Chars */
-       // FIXME:        NOT_YET;
-        /* Write this bit */
         break;
       case TITLE: /* Survey title */
         fprintf(fout, "*title \"%s\"\n", sz);
@@ -458,9 +469,11 @@ static void checkmode(Mode mode,void (*fn)( char * ),char * szArg) {
     case COMMAND_FILENAME:
       msg = "Command filename expected after -F";
       break;
-    case SPECIAL_CHARS:
+#if 0
+   case SPECIAL_CHARS:
       msg = "Special characters list expected after -S";
       break;
+#endif
     default:
       return;
   }
@@ -475,25 +488,38 @@ static void skipopt(char * sz) {
 #define MYTMP "__xxxtmp.svx"
 
 int main(int argc, char **argv) {
-
+   char *args[5];
+   int i;
+   int res;
+   
    fout = fopen(MYTMP, "w");
    if (!fout) {
-      printf("Couldn't open temporary file `%s'\n", MYTMP);
+      fatal("Couldn't open temporary file:", wr, MYTMP);
       exit(1);
    }
 
-   printf("cavern");
-   
    process_command_line(argc, argv);
 
    fclose(fout);
 
-   /*
-   while (*argv) {
-      printf(" %s", *argv++);
-   }
-   */
-   printf(" "MYTMP"\n");
+   args[0] = "cavern";
+   i = 1;
+   /* ick: honour -P or -!P if specified, else use new default on no %ages */
+   if (fPercent == 1) args[i++] = "--percentage";
+   if (fAscii) args[i++] = "--ascii";
+   args[i++] = MYTMP;
+   args[i] = '\0';
 
+#ifndef NO_EXECV
+   res = execvp("cavern", args);
+#endif
+   /* printf("return from execv = %d, errno = %d\n", res, errno); */
+   fputs(args[0], stdout);
+   i = 1;
+   while (args[i]) {
+      putchar(' ');
+      fputs(args[i++], stdout);
+   }
+   putchar('\n');
    return 0;
 }

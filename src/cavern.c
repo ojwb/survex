@@ -39,11 +39,6 @@ prefix *root;
 long cLegs, cStns;
 long cComponents;
 
-#ifndef OUTPUT_TO_CURRENT_DIRECTORY
-char *pthOutput;
-char *fnmInput;
-#endif
-
 FILE *fhErrStat = NULL;
 img *pimgOut = NULL;
 #ifndef NO_PERCENTAGE
@@ -100,8 +95,6 @@ main(int argc, char **argv)
    tmUserStart = time(NULL);
    tmCPUStart = clock();
    init_screen();
-
-   pthOutput = NULL;
 
    ReadErrorFile(argv[0]);
 
@@ -238,11 +231,8 @@ do_stats(void)
    long cLoops = cComponents + cLegs - cStns;
    char buf[1024];
 
-#ifdef NO_EXTENSIONS
-   fnm = UsePth(pthOutput, STATS_FILE);
-#else
-   fnm = AddExt(fnmInput, EXT_SVX_STAT);
-#endif
+   fnm = AddExt(fnm_output_base, EXT_SVX_STAT);
+
    fh = safe_fopen(fnm, "w");
    osfree(fnm);
 

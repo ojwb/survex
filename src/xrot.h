@@ -3,18 +3,14 @@
  * Copyright (C) 1997 Olly Betts
  */
 
-/*
-1997.06.03 written (hacked from dosrot.h)
-1998.03.22 autoconf-ed
-*/
-
 #if 0
 # include "grx20.h"
 # define cleardevice() GrClearContext(0)
-# define outtextxy(X,Y,SZ) GrTextXY((X),(Y),(SZ),15,0) /* !HACK! 14 and 0 are colours */
+/* !HACK! 15 and 0 in next line are colours */
+# define outtextxy(X, Y, S) GrTextXY((X), (Y), (S), 15, 0)
 # define set_tcolour(X) /* !!HACK!! */
 # define set_gcolour(X) /* !!HACK!! */
-# define text_xy(X,Y,S) outtextxy(12+(X)*12,12+(Y)*12,S)
+# define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, S)
 # define Y_UP
 #endif
 
@@ -46,37 +42,27 @@ typedef int coord;  /* data type used after data is read in */
 #ifdef NO_FUNC_PTRS
 
 /* really plebby version (needed if fn pointers won't fit in a coord) */
-# define MOVE  (coord)1
-# define DRAW  (coord)2
-# define STOP  (coord)0
+# define MOVE (coord)1
+# define DRAW (coord)2
+# define STOP (coord)0
 
 #elif defined(HAVE_SETJMP)
 
 /* for speed, store function ptrs in table */
 
-# ifdef MSC
-#  define MOVE  (coord)(_moveto)
-#  define DRAW  (coord)(_lineto)
-# else
-#  define MOVE  (coord)(moveto)
-#  define DRAW  (coord)(lineto)
-# endif
-# define STOP  (coord)(stop)
+# define MOVE (coord)(moveto)
+# define DRAW (coord)(lineto)
+# define STOP (coord)(stop)
 
 /* prototype so STOP macro will work */
-extern void stop( int X, int Y );
+extern void stop(int X, int Y);
 
 #else
 
 /* for speed, store function ptrs in table */
 
-# ifdef MSC
-#  define MOVE  (coord)(_moveto)
-#  define DRAW  (coord)(_lineto)
-# else
-#  define MOVE  (coord)(moveto)
-#  define DRAW  (coord)(lineto)
-# endif
-# define STOP  (coord)NULL
+# define MOVE (coord)(moveto)
+# define DRAW (coord)(lineto)
+# define STOP (coord)NULL
 
 #endif

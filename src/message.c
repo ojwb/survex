@@ -65,6 +65,11 @@ outofmem(OSSIZE_T size)
    fatalerror(1/*Out of memory (couldn't find %lu bytes).*/, (unsigned long)size);
 }
 
+#ifdef TOMBSTONES
+#define TOMBSTONE_SIZE 16
+static char tombstone[TOMBSTONE_SIZE] = "012345\xfftombstone";
+#endif
+
 /* malloc with error catching if it fails. Also allows us to write special
  * versions easily eg for DOS EMS or MS Windows.
  */
@@ -72,8 +77,20 @@ extern void FAR *
 osmalloc(OSSIZE_T size)
 {
    void FAR *p;
+#ifdef TOMBSTONES
+   size += TOMBSTONE_SIZE * 2;
+   p = malloc(size);
+#else
    p = xosmalloc(size);
+#endif
    if (p == NULL) outofmem(size);
+#ifdef TOMBSTONES
+printf("osmalloc truep=%p truesize=%d\n",p,size);
+   memcpy(p, tombstone, TOMBSTONE_SIZE);
+   memcpy(p + size - TOMBSTONE_SIZE, tombstone, TOMBSTONE_SIZE);
+   *(size_t *)p = size;
+   p += TOMBSTONE_SIZE;
+#endif
    return p;
 }
 
@@ -81,7 +98,37 @@ osmalloc(OSSIZE_T size)
 extern void FAR *
 osrealloc(void *p, OSSIZE_T size)
 {
-   p = xosrealloc(p, size);
+   /* some pre-ANSI realloc implementations don't cope with a NULL pointer */
+   if (p == NULL) {
+      p = xosmalloc(size);
+   } else {
+#ifdef TOMBSTONES
+      int true_size;
+      size += TOMBSTONE_SIZE * 2;
+      p -= TOMBSTONE_SIZE;
+      true_size = *(size_t *)p;
+printf("osrealloc (in truep=%p truesize=%d)\n",p,true_size);
+      if (memcmp(p + sizeof(size_t), tombstone + sizeof(size_t),
+		 TOMBSTONE_SIZE - sizeof(size_t)) != 0) {
+	 printf("start tombstone for block %p, size %d corrupted!",
+		p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);      
+      }
+      if (memcmp(p + true_size - TOMBSTONE_SIZE, tombstone,
+		 TOMBSTONE_SIZE) != 0) {
+	 printf("end tombstone for block %p, size %d corrupted!",
+		p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);      
+      }
+      p = realloc(p, size);
+      if (p == NULL) outofmem(size);
+printf("osrealloc truep=%p truesize=%d\n",p,size);
+      memcpy(p, tombstone, TOMBSTONE_SIZE);
+      memcpy(p + size - TOMBSTONE_SIZE, tombstone, TOMBSTONE_SIZE);
+      *(size_t *)p = size;
+      p += TOMBSTONE_SIZE;
+#else
+      p = xosrealloc(p, size);
+#endif
+   }
    if (p == NULL) outofmem(size);
    return p;
 }
@@ -97,7 +144,29 @@ osstrdup(const char *str)
    return p;
 }
 
-/* osfree is currently a macro in error.h */
+/* osfree is usually just a macro in osalloc.h */
+#ifdef TOMBSTONES
+extern void
+osfree(void *p)
+{
+   int true_size;
+   if (!p) return;
+   p -= TOMBSTONE_SIZE;
+   true_size = *(size_t *)p;
+printf("osfree truep=%p truesize=%d\n",p,true_size);
+   if (memcmp(p + sizeof(size_t), tombstone + sizeof(size_t),
+	      TOMBSTONE_SIZE - sizeof(size_t)) != 0) {
+      printf("start tombstone for block %p, size %d corrupted!",
+	     p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);      
+   }
+   if (memcmp(p + true_size - TOMBSTONE_SIZE, tombstone,
+	      TOMBSTONE_SIZE) != 0) {
+      printf("end tombstone for block %p, size %d corrupted!",
+	     p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);      
+   }
+   free(p);
+}
+#endif
 
 #ifdef HAVE_SIGNAL
 
@@ -324,6 +393,7 @@ parse_msg_file(int charset_code)
       fprintf(STDERR, "Message file truncated?\n");
       exit(EXIT_FAILURE);
    }
+   fclose(fh);
 
    p = msg_blk;
    for (i = 0; i < num_msgs; i++) {
@@ -365,8 +435,6 @@ parse_msg_file(int charset_code)
       }
       *to++ = '\0';
    }
-
-   fclose(fh);
 }
 
 extern const char * FAR
@@ -387,12 +455,18 @@ ReadErrorFile(const char *argv0)
    p = getenv("SURVEXHOME");
    if (p && *p) {
       pthMe = osstrdup(p);
+#if (OS==UNIX) && defined(SURVEXHOME)
+   } else {
+      /* under Unix, we compile in the configured path */
+      pthMe = SURVEXHOME;
+#else
    } else if (argv0) {
       /* else try the path on argv[0] */
       pthMe = PthFromFnm(argv0);
    } else {
       /* otherwise, forget it - go for the current directory */
       pthMe = "";
+#endif
    }
 
    select_charset(default_charset());
@@ -400,28 +474,19 @@ ReadErrorFile(const char *argv0)
    return pthMe;
 }
 
-/* These are English versions of messages which might be needed before the
- * alternative language version has been read from the message file.
- */
 /* message may be overwritten by next call (but not in current implementation) */
 extern const char *
 msg(int en)
 {
-   static const char *erg[] = {
-      "",
-      "Out of memory (couldn't find %ul bytes).\n",
-      "\nFatal error from %s: ",
-      "\nError from %s: ",
-      "\nWarning from %s: ",
-   };
-
    static const char *szBadEn = "???";
 
    const char *p;
 
    if (!msg_blk) {
-      if (1 <= en && en <= 4) return erg[en];
-      return szBadEn;
+      if (en != 1) return szBadEn;
+      /* this should be the only message which can be requested before
+       * the message file is opened and read... */
+      return "Out of memory (couldn't find %ul bytes).\n";
    }
 
    if (en < 0 || en >= num_msgs) return szBadEn;
@@ -572,132 +637,3 @@ select_charset(int charset_code)
 
    return old_charset;
 }
-
-/***************************************************************************/
-
-#if 0
-     case CHARSET_DOSCP850: {
-        /* MS DOS - Code page 850 */
-	static char *my_pszTable[]={
- 	 "\x85\x8A\x95∑\x8D\x97‘ „ÎÏÌ",
-	 "†\x82¢µ°£\x90÷‡È",
-	 "\x83\x88\x93∂\x8C\x96“◊‚Í",
-	 "\x84\x89\x94\x8E\x8B\x81”ÿ\x99\x9A\x98",
-	 "∆ ‰«    Â   §•",
-	 NULL,
-	 NULL,
-	 NULL,
-	 NULL,
-	 NULL,
-	 NULL,
-	 "              \x87",
-	 "               \x80",
-	 NULL,
-	 "¶ ß",
-	 "\x86\x91",
-	 "   \x8F  \x92",
-	 "                  ·",
-	 NULL,
-	 NULL,
-	 "  \x9B     \x9D"
- 	};
-	chOpenQuotes='\"';
-	chCloseQuotes='\"';
-	szSingles="lLij";
-	szSingTab="  ’";
-	szAccents="`'^\"~=.uvHtcCdbaAsOo/";
-	szLetters="aeoAiuEIOUyYnNcCwWs";
-	pszTable = my_pszTable;
- 	break;
-     }
-#if 0
-/* MS DOS - PC-8 (code page 437?) */
-static char chOpenQuotes='\"', chCloseQuotes='\"';
-static char *szSingles="";
-static char *szSingTab=NULL;
-static char *szAccents="`'^\"~=.uvHtcCdbaAsOo/";
-static char *szLetters="aeoAiuEIOUyYnNcCwWs";
-static char *pszTable[]={
- "\x85\x8A\x95 \x8D\x97",
- "†\x82¢ °£\x90",
- "\x83\x88\x93 \x8C\x96",
- "\x84\x89\x94\x8E\x8B\x81  \x99\x9A\x98",
- "            §•",
- NULL,
- NULL,
- NULL,
- NULL,
- NULL,
- NULL,
- "              \x87",
- "               \x80",
- NULL,
- "¶ ß",
- "\x86\x91",
- "   \x8F  \x92",
- "                  ·",
- NULL,
- NULL,
- NULL
-};
-
-#elif 0
-/* MS DOS - PC-8 Denmark/Norway */
-static char chOpenQuotes='\"', chCloseQuotes='\"';
-static char *szSingles="";
-static char *szSingTab=NULL;
-static char *szAccents="`'^\"~=.uvHtcCdbaAsOo/";
-static char *szLetters="aeoAiuEIOUyYnNcCwWs";
-static char *pszTable[]={
- "\x85\x8A\x95 \x8D\x97",
- "†\x82¢ °£\x90     ¨",
- "\x83\x88\x93 \x8C\x96",
- "\x84\x89\x94\x8E\x8B\x81  \x99\x9A\x98",
- "© ¶™    ß   §•",
- NULL,
- NULL,
- NULL,
- NULL,
- NULL,
- NULL,
- "              \x87",
- "               \x80",
- NULL,
- NULL,
- "\x86\x91",
- "   \x8F  \x92",
- "                  ·",
- NULL,
- NULL,
- NULL
-};
-#elif 0
-/* No special chars... */
-# define NO_TEX
-#endif
-default: /*!HACK! do something -- no_tex variable version of NO_TEX ? */
-printf("oops, bad charset...\n");
-(void)0;
-  }
-#endif
-
-/* loosely based on Survex's error.c, but uses SGML entities for accented
- * characters, and is rather more generic */
-
-/* maps: */
-
-/* (lookup table or switch) &#nnn; code to best rendition in each charset */
-
-
-/* filename.c split off with filename manipulation stuff */
-
-/* Beware: This file contains top-bit-set characters (160-255), so be     */
-/* careful of mailers, ascii ftp, etc                                     */
-
-/* Tables for TeX style accented chars, etc for use with Survex           */
-/* Copyright (C) Olly Betts 1993-1996                                     */
-
-/* NB if (as in TeX) \o and \O mean slashed-o and slashed-O, we can't
- * have \oe and \OE for linked-oe and linked-OE without cleverer code.
- * Therefore, I've changed slashed-o and slashed-O to \/o and \/O.
- */

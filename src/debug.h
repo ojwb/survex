@@ -3,36 +3,6 @@
  * Copyright (C) 1993-1996 Olly Betts
  */
 
-/*
-1993.08.10 created to house all debugging info control macros
-1993.08.11 turned it all off, since the program is now bug-free :|
-1993.08.12 added DEBUG_MATRIX
-           added DUMP_NETWORK. This & VALIDATE work by defining null macros
-1993.08.15 fettled
-1993.08.22 turned all debugging off
-1993.09.21 (W)added DEBUG_COPYING_ENTRIES for release
-1993.10.24 (W)added DEBUG_MALLOC [at some point in past]
-1993.11.03 added DEBUG_MATRIX_BUILD to control some #if0-ed code in matrix.c
-           removed DEBUG_COPYING_ENTRIES (from matrix.c)
-1993.11.06 added DEBUG_INVALID
-1993.11.08 added FATAL5ARGS
-1993.11.30 FATAL5ARGS -> FATALARGS
-1994.04.10 added BUG() macro
-1994.04.13 debugging parallel stuff
-1994.04.16 can now force calls with (validate)() and (dump_network)()
-1994.05.10 added dump_node
-1994.06.20 added int argument to warning, error and fatal
-           created validate.h
-1994.08.14 moved survex.exe specific stuff to validate.h
-           include only once
-1994.09.13 moved ASSERT macro here from network.c
-1995.04.15 ASSERT -> ASSERT2; ASSERT now just condition, which is stringized
-1996.02.16 (W)ASSERT & ASSERT2 L -> Line to stop BC whinge !?
-1996.02.20 VALIDATE on
-1996.02.22 and off again
-1996.05.06 ASSERT() and ASSERT2() now use STRING() to include __LINE__ in msg
-*/
-
 #ifndef DEBUG_H
 #define DEBUG_H
 #include "useful.h"
@@ -50,19 +20,19 @@
 
 /* macro to turn on|off extra info given for fatal(5,...) (bug in proggy) */
 #if DEBUG_INVALID
-# define FATALARGS(X,Y) X,Y
+# define DEBUG_XTRA(X) X
 #else
-# define FATALARGS(X,Y) NULL,NULL
+# define DEBUG_XTRA(X)
 #endif
 
 /* macro to report detected bug */
-#define BUG(SZ) fatal(11,FATALARGS(wr,(SZ)),0)
+#define BUG(SZ) BLK(DEBUG_XTRA(fputsnl((SZ), STDERR);) fatalerror(11);)
 
 /* assert macro, which calls BUG() if it fails */
-#define ASSERT(E) if(E){}else BUG(__FILE__":"STRING(__LINE__)": assert("#E") failed")
+#define ASSERT(E) if (E) {} else BUG(__FILE__":"STRING(__LINE__)": assert("#E") failed")
 
 /* assert macro, which calls BUG() if it fails */
-#define ASSERT2(E,M) if(E){}else BUG(__FILE__":"STRING(__LINE__)": assert("#E") failed - "M)
+#define ASSERT2(E, M) if (E) {} else BUG(__FILE__":"STRING(__LINE__)": assert("#E") failed - "M)
 
 /* error.c */
 

@@ -4,19 +4,16 @@
  *   Copyright (C) 1994,1996 Olly Betts
  */
 
-/*
-1994.06.20 created
-1994.08.14 survex.exe specific stuff moved here from debug.h
-1996.04.04 NOP introduced
-*/
+#ifndef VALIDATE_H
+#define VALIDATE_H
 
 #include "debug.h"
-#include "cavein.h"
+#include "cavern.h"
 
-extern bool (validate)( void );
-extern void (dump_node)(node *stn);
-extern void (dump_entire_network)( void );
-extern void (dump_network)( void );
+extern bool validate(void);
+extern void dump_node(node *stn);
+extern void dump_entire_network(void);
+extern void dump_network(void);
 
 #if (VALIDATE==0)
 # define validate() NOP
@@ -26,4 +23,6 @@ extern void (dump_network)( void );
 #if (DUMP_NETWORK==0)
 # define dump_network() NOP
 # define dump_entire_network() NOP
+#endif
+
 #endif

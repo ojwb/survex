@@ -3,34 +3,9 @@
  * Copyright (C) 1993-1997 Olly Betts
  */
 
-/*
-1993.07.12 split from printer drivers
-1993.07.18 corrected fnm -> fnmPrn in Unix pipe code
-1993.08.13 fettled header
-1993.08.15 DOS -> MSDOS
-1993.10.15 (W) fixed DOS printer bug by making check for LPT case insensitive
-1993.10.24 added remark: strcmpi() not ANSI
-1993.11.03 changed error routines
-1993.11.05 changed error numbers so we can use same error list as survex
-1993.11.16 corrected puts to wr in UNIX pipe code & changed message
-1993.11.18 check if output file is directory
-1993.11.21 corrected isDirectory to fDirectory
-1993.11.29 error 10->24
-1993.11.30 sorted out error vs fatal
-1993.12.09 removed explicit OS references--use NO_PIPES and NO_STDPRN macros
-1994.01.05 fixed Wook bug: strcmpi(a,b) should read strcmpi(a,b)==0
-1994.06.02 removed stdprn hack - replaced with a call to ioctl
-1994.06.05 ioctl -> intdos call as msc has that too
-1994.06.20 added int argument to warning, error and fatal
-1994.08.10 fixed # of args to fatal in pipe code
-1995.03.25 fettled
-1995.12.19 patched intdos() calls for DJGPPv2
-1996.02.10 added prio_putpstr
-1996.02.19 fixed so intdos works with DJGPPv2 *and* BorlandC
-1996.05.06 attempted to fix very dim Norcroft warning
-1997.01.23 fixed warning from Norcroft Cv4
-1998.03.22 autoconf-ed
-*/
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include <stdio.h>
 #include <string.h>
@@ -55,74 +30,91 @@
 static FILE *fhPrn;
 
 #ifdef HAVE_POPEN
-static bool fPipeOpen=fFalse;
+static bool fPipeOpen = fFalse;
 #endif
 
-extern void prio_open( sz fnmPrn ) {
+extern void
+prio_open(const char *fnmPrn)
+{
 #ifdef HAVE_POPEN
-   if (*fnmPrn=='|') {
-      fhPrn=popen(fnmPrn+1,"w"); /* fnmPrn+1 to skip '|' */
-      if (!fhPrn)
-         fatal(17,wr,fnmPrn,0);
-      fPipeOpen=fTrue;
+   if (*fnmPrn == '|') {
+      fnmPrn++; /* skip '|' */
+      fhPrn = popen(fnmPrn, "w");
+      if (!fhPrn) fatalerror(/*Couldn't open pipe: `%s'*/17, fnmPrn);
+      fPipeOpen = fTrue;
       return;
    }
 #endif
-   if (fDirectory(fnmPrn))
-      fatal(44,wr,fnmPrn,0);
-   fhPrn=fopen(fnmPrn,"wb");
-   if (!fhPrn)
-      fatal(24,wr,fnmPrn,0);
+   fhPrn = safe_fopen(fnmPrn, "wb");
 #if (OS==MSDOS)
    { /* For DOS, check if we're talking directly to a device, and force
       * "raw mode" if we are, so that ^Z ^S ^Q ^C don't get filtered */
       union REGS in, out;
-      in.x.ax=0x4400; /* get device info */
-      in.x.bx=fileno(fhPrn);
-      intdos(&in,&out);
+      in.x.ax = 0x4400; /* get device info */
+      in.x.bx = fileno(fhPrn);
+      intdos(&in, &out);
       /* check call worked && file is a device */
       if (!out.x.cflag && (out.h.dl & 0x80)) {
-         in.x.ax=0x4401; /* set device info */
-         in.x.dx=out.h.dl | 0x20; /* force binary mode */
-         intdos(&in,&out);
+         in.x.ax = 0x4401; /* set device info */
+         in.x.dx = out.h.dl | 0x20; /* force binary mode */
+         intdos(&in, &out);
       }
    }
 #endif
 }
 
-extern void prio_close( void ) {
+static void
+prio_writeerror(void)
+{
+   fatalerror(/*Error writing printer output*/87);
+}
+
+extern void
+prio_close(void)
+{
 #ifdef HAVE_POPEN
    if (fPipeOpen) {
-      pclose(fhPrn);
+      /* pclose gives return code from program or -1, so only 0 means OK */
+      if (pclose(fhPrn) == -1) prio_writeerror();
       return;
    }
 #endif
-   fclose(fhPrn);
+   if (fclose(fhPrn) == EOF) prio_writeerror();
 }
 
-extern void prio_putc( int ch ) {
+extern void
+prio_putc(int ch)
+{
    /* fputc() returns EOF on write error */
-   if (fputc( ch, fhPrn )==EOF)
-      fatal(87,NULL,NULL,0);
+   if (fputc(ch, fhPrn) == EOF) fatalerror(87);
 }
 
-extern void prio_printf( const char * format, ... ) {
+extern void
+prio_printf(const char *format, ...)
+{
    int result;
    va_list args;
-   va_start(args,format);
-   result = vfprintf( fhPrn, format, args );
+   va_start(args, format);
+   result = vfprintf(fhPrn, format, args);
    va_end(args);
-   if (result<0)
-      fatal(87,NULL,NULL,0);
+   if (result < 0) prio_writeerror();
 }
 
-extern void prio_print( const char *str ) {
-   if (fputs( str, fhPrn ) < 0)
-      fatal(87,NULL,NULL,0);
+extern void
+prio_print(const char *str)
+{
+   if (fputs(str, fhPrn) < 0) prio_writeerror();
 }
 
-extern void prio_putpstr( pstr *p ) {
+extern void
+prio_putpstr(const pstr *p)
+{
+   return prio_putbuf(p->str, p->len);
+}
+
+extern void
+prio_putbuf(const void *buf, size_t len)
+{
    /* fwrite() returns # of members successfuly written */
-   if (fwrite( p->str, 1, p->len, fhPrn ) != p->len)
-      fatal(87,NULL,NULL,0);
+   if (fwrite(buf, 1, len, fhPrn) != len) prio_writeerror();
 }

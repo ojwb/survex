@@ -1,18 +1,10 @@
 /* > diffpos.c */
-
 /* (Originally quick and dirty) program to compare two SURVEX .pos files */
 /* Copyright (C) 1994,1996,1998 Olly Betts */
 
-/*
-1994.04.16 Written
-1994.11.22 Now displays names of stations added/deleted at end of .pos file
-           Now displays and skips lines which it can't parse (eg headers)
-           Negative thresholds allowed (to force a "full" compare)
-           Syntax expanded
-1996.04.04 fixed Borland C warning
-1996.05.06 fixed STRING() macro to correct Syntax: message
-1998.06.09 fettled layout
-*/
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 /* size of line buffer */
 #define BUFLEN 256
@@ -38,15 +30,17 @@
 static void diff_pos(FILE *fh1, FILE *fh2, double threshold);
 static int read_line(FILE *fh, double *px, double *py, double *pz, char *id);
 
-int main( int argc, char *argv[] ) {
+int
+main(int argc, char *argv[])
+{
    double threshold = DFLT_MAX_THRESHOLD;
    char *fnm1, *fnm2;
    FILE *fh1, *fh2;
    if (argc != 3) {
       char *p;
-      if (argc == 4)
-         threshold = strtod(argv[3], &p);
+      if (argc == 4) threshold = strtod(argv[3], &p);
       if (argc != 4 || *p) {
+	 /* FIXME put these in the messages file */
          /* complain if not 4 args, or threshold didn't parse cleanly */
          printf("Syntax: %s <pos file> <pos file> [<threshold>]\n", argv[0]);
          printf(" where <threshold> is the max. permitted change along "
@@ -71,7 +65,9 @@ int main( int argc, char *argv[] ) {
    return 0;
 }
 
-static void diff_pos( FILE *fh1, FILE *fh2, double threshold ) {
+static void
+diff_pos(FILE *fh1, FILE *fh2, double threshold)
+{
    double x1, y1, z1, x2, y2, z2;
    int cmp;
    char id1[BUFLEN], id2[BUFLEN];
@@ -87,11 +83,11 @@ static void diff_pos( FILE *fh1, FILE *fh2, double threshold ) {
       }
       cmp = strcmp(id1, id2);
       if (cmp == 0) {
-         if (fabs(x1 - x2) - threshold > EPSILON
-             || fabs(y1 - y2) - threshold > EPSILON
-             || fabs(z1 - z2) - threshold > EPSILON) {
-            printf("Moved by (%3.2f,%3.2f,%3.2f): %s\n", x1 - x2, y1 - y2,
-                   z1 - z2, id1);
+         if (fabs(x1 - x2) - threshold > EPSILON ||
+             fabs(y1 - y2) - threshold > EPSILON ||
+             fabs(z1 - z2) - threshold > EPSILON) {
+            printf("Moved by (%3.2f,%3.2f,%3.2f): %s\n",
+		   x1 - x2, y1 - y2, z1 - z2, id1);
          }
          fRead1 = fRead2 = 1;
       } else {
@@ -110,8 +106,9 @@ static void diff_pos( FILE *fh1, FILE *fh2, double threshold ) {
       printf("Added: %s (at end of file)\n", id2);
 }
 
-static int read_line(FILE *fh, double *px, double *py, double *pz,
-                     char *id) {
+static int
+read_line(FILE *fh, double *px, double *py, double *pz, char *id)
+{
    char buf[BUFLEN];
    if (!fgets(buf, BUFLEN, fh)) return 0;
    if (sscanf(buf, "(%lf,%lf,%lf )%s", px, py, pz, id) < 4) {

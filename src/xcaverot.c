@@ -49,6 +49,10 @@
 1998.03.21 fixed up to compile cleanly on Linux
   */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 /* Width of each button along the top of the window */
 #define BUTWIDTH 60
 #define BUTHEIGHT 25
@@ -639,23 +643,26 @@ point *find_station( int x, int y, int mask ) {
    /* d_min is some measure of how close we are (e.g. distance squared,
     * min( dx, dy ), etc) */
    int d_min = MAXINT;
+   lid *plid;
 
    if (ppStns == NULL) return NULL;
 
-   setview( angle );
+   setview(angle);
 
-   for ( p = ppStns[0]->pData; p->_.str != NULL; p++ ) {
-      int d;
-      int x1 = toscreen_x( p );
-      int y1 = toscreen_y( p );
+   for (plid = ppStns[0]; plid; plid = plid->next) {
+      for (p = plid->pData; p->_.str != NULL; p++) {
+	 int d;
+	 int x1 = toscreen_x(p);
+	 int y1 = toscreen_y(p);
 #if 1
-      d = (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y);
+	 d = (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y);
 #else
-      d = min( abs(x1 - x), abs(y1 - y) );
+	 d = min(abs(x1 - x), abs(y1 - y));
 #endif
-      if (d < d_min) {
-         d_min = d;
-         q = p;
+	 if (d < d_min) {
+	    d_min = d;
+	    q = p;
+	 }
       }
    }
 
@@ -670,6 +677,7 @@ void redraw_image( Display *display, Window window, GC gc ) {
   XWindowAttributes a;
   int width, height;
   int srvy = 0;
+  lid *plid;
 
   x1 = y1 = 0; /* avoid compiler warning */
 
@@ -699,44 +707,48 @@ void redraw_image( Display *display, Window window, GC gc ) {
 
   /* printf("height=%d, width=%d, xoff=%d, yoff=%d\n", height, width, xoff, yoff); */
 
-  for ( p = ppLegs[0]->pData; p->_.action != STOP; p++ ) {
-      switch (p->_.action) {
-       case MOVE:
-//         srvy = p->survey;
-	 x1 = toscreen_x( p );
-	 y1 = toscreen_y( p );
-	 break;
-       case DRAW:
-	 x2 = toscreen_x( p );
-	 y2 = toscreen_y( p );
-//	 if (surveymask[srvy])
+   for (plid = ppLegs[0]; plid; plid = plid->next) {
+      for (p = plid->pData; p->_.action != STOP; p++) {
+	 switch (p->_.action) {
+	  case MOVE:
+	    /* srvy = p->survey; */
+	    x1 = toscreen_x( p );
+	    y1 = toscreen_y( p );
+	    break;
+	  case DRAW:
+	    x2 = toscreen_x( p );
+	    y2 = toscreen_y( p );
+	    /* if (surveymask[srvy]) */
 	    XDrawLine( display, window, gcs[srvy], x1, y1, x2, y2 );
- 	    /*printf( "draw line from %d,%D to %d,%d\n", x1, y1, x2, y2 );*/
- 	 x1 = x2;
-	 y1 = y2;	/* for continuous drawing */
-	 break;
+	    /*printf( "draw line from %d,%D to %d,%d\n", x1, y1, x2, y2 );*/
+	    x1 = x2;
+	    y1 = y2;	/* for continuous drawing */
+	    break;
+	 }
       }
    }
-	
+   
    if ((crossing || labelling) /*&& surveymask[p->survey]*/) {
-      for ( p = ppStns[0]->pData; p->_.str != NULL; p++ ) {
-         x2 = toscreen_x( p );
-         y2 = toscreen_y( p );
-         if (crossing) {
-            XDrawLine( display, window, gcs[srvy],
-	          		  x2-10, y2, x2+10, y2 );
-            XDrawLine( display, window, gcs[srvy],
-                      x2, y2-10, x2, y2+10 );
-         }
-	     if (labelling) {
-            char *q;
-            q = p->_.str;
-            draw_label( display, window, gcs[lab_col_ind],
-		        x2, y2 + slashheight, q, strlen(q) );
-            /* XDrawString(display,window,gcs[lab_col_ind],x2,y2+slashheight, q, strlen(q)); */
-            /* XDrawString(display,window,gcs[p->survey],x2+10,y2, q, strlen(q)); */
-         }
-      }
+      for (plid = ppStns[0]; plid; plid = plid->next) {
+	 for ( p = plid->pData; p->_.str != NULL; p++ ) {
+	    x2 = toscreen_x( p );
+	    y2 = toscreen_y( p );
+	    if (crossing) {
+	       XDrawLine( display, window, gcs[srvy],
+			 x2-10, y2, x2+10, y2 );
+	       XDrawLine( display, window, gcs[srvy],
+			 x2, y2-10, x2, y2+10 );
+	    }
+	    if (labelling) {
+	       char *q;
+	       q = p->_.str;
+	       draw_label( display, window, gcs[lab_col_ind],
+			  x2, y2 + slashheight, q, strlen(q) );
+	       /* XDrawString(display,window,gcs[lab_col_ind],x2,y2+slashheight, q, strlen(q)); */
+	       /* XDrawString(display,window,gcs[p->survey],x2+10,y2, q, strlen(q)); */
+	    }
+	 }
+      }   
    }
    
 /*   XDestroyRegion( label_reg ); */
@@ -875,6 +887,11 @@ int main( int argc, char **argv ) {
 
   /* set up display and foreground/background */
   mydisplay = XOpenDisplay("");
+  if (!mydisplay) {
+     printf("Unable to open display!\n");
+     exit(1);
+  }
+
   myscreen = DefaultScreen (mydisplay);
   white = mybackground = ind_bg = WhitePixel (mydisplay, myscreen);
   black = myforeground = ind_fg = BlackPixel (mydisplay, myscreen);

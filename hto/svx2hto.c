@@ -12,11 +12,15 @@
 1994.11.13 (OJWB) complain if too many command line args
 */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <stdio.h>
-/*
-#include <sys/types.h>
-*/
 #include <time.h>
+#ifdef TM_IN_SYS_TIME
+# include <sys/time.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include "hto.h"
