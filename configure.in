@@ -30,7 +30,7 @@ else
 dnl autoconf doesn't look in the right place to find the endian-ness of
 dnl a djgpp crosscompiler
 dnl See if machine/endian.h defines the BYTE_ORDER macro.
-AC_MSG_CHECKING(checking from machine/endian.h)
+AC_MSG_CHECKING(endian-ness from machine/endian.h)
 AC_TRY_COMPILE([#include <machine/endian.h>], [
 #if !BYTE_ORDER || !BIG_ENDIAN || !LITTLE_ENDIAN
  bogus endian macros
