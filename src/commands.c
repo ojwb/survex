@@ -977,10 +977,13 @@ cmd_data(void)
 	{NULL,           STYLE_UNKNOWN }
    };
 
+#define m_multi (BIT(Station) | BIT(Count) | BIT(Depth))
+
    int style, k = 0, kMac;
    reading *new_order, d;
    unsigned long m, mUsed = 0;
    char *style_name;
+   bool fHadNewline = fFalse;
 
    /* after a bad *data command ignore survey data until the next
     * *data command to avoid an avalanche of errors */
@@ -1008,7 +1011,7 @@ cmd_data(void)
 
    skipblanks();
    /* olde syntax had optional field for survey grade, so allow an omit */
-   if (isOmit(ch)) nextch();
+   if (isOmit(ch)) nextch(); /* FIXME: deprecate... */
 
    style_name = osstrdup(buffer);
    do {      
@@ -1027,13 +1030,23 @@ cmd_data(void)
 	 compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
 		       buffer, style_name);
 	 osfree(style_name);
-	 skipline();
+ 	 skipline();
+	 return;
+      }
+      if (fHadNewline && TSTBIT(m_multi, d)) {
+	 /* FIXME: redo message - this is for when they write
+	  * *data diving station newline tape depth compass
+	  */
+	 compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
+		       buffer, style_name);
+	 osfree(style_name);
+ 	 skipline();
 	 return;
       }
       /* Check for duplicates unless it's a special reading:
-       *   IGNOREALL,IGNORE,NEWLINE (duplicates allowed) ; END (not possible)
+       *   IGNOREALL,IGNORE (duplicates allowed) ; END (not possible)
        */
-      if (!((BIT(Ignore) | BIT(End) | BIT(IgnoreAll) | BIT(Newline)) & BIT(d))) {
+      if (!((BIT(Ignore) | BIT(End) | BIT(IgnoreAll)) & BIT(d))) {
 	 if (TSTBIT(mUsed, d)) {
 	    compile_error(/*Duplicate reading `%s'*/67, buffer);
 	    osfree(style_name);
@@ -1059,6 +1072,18 @@ cmd_data(void)
 	       break;
 	     case FrDepth: case ToDepth:
 	       if (TSTBIT(mUsed, Depth)) fBad = fTrue;
+	       break;
+	     case Newline:
+	       if (mUsed & ~m_multi) {
+		  /* FIXME: redo message - this is for when they write
+		   * *data normal station tape newline compass clino
+		   */
+		  compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
+				buffer, style_name);
+		  osfree(style_name);
+		  skipline();
+		  return;
+	       }
 	       break;
 	     default: /* avoid compiler warnings about unhandled enums */
 	       break;
@@ -1099,6 +1124,8 @@ cmd_data(void)
    /* printf("mUsed = 0x%x, opt = 0x%x, mask = 0x%x\n", mUsed,
 	  mask_optional[style], mask[style]); */
 
+   mUsed &= ~BIT(Newline);
+
    if ((mUsed | mask_optional[style]) != mask[style]) {
       osfree(new_order);
       compile_error(/*Too few readings for data style `%s'*/64, style_name);
@@ -1106,9 +1133,6 @@ cmd_data(void)
       return;
    }
 
-   /* FIXME: need to verify that all the multiline stuff comes before all
-    * the everyline stuff (or something like that) */
-   
    /* don't free default ordering or ordering used by parent */
    if (pcs->ordering != default_order &&
        !(pcs->next && pcs->next->ordering == pcs->ordering))
