@@ -129,9 +129,10 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 	     point_size_granularity);
     info += s;
 #endif
+    // Use a readonly multiline text edit for the system info so users can
+    // easily cut and paste it into an email when reporting bugs.
     vert->Add(new wxTextCtrl(this, 506, info, wxDefaultPosition,
-			     wxSize(360, 64),
-			     wxTE_MULTILINE|wxTE_READONLY|wxTE_DONTWRAP),
+			     wxSize(360, 64), wxTE_MULTILINE|wxTE_READONLY),
 	      0, wxLEFT | wxRIGHT, 20);
 
     vert->Add(10, 5, 0, wxTOP, 15);
