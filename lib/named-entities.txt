@@ -2,8 +2,6 @@ quot,34
 amp,38
 lt,60
 gt,62
-OElig,338
-oelig,339
 AElig,198
 Aacute,193
 Acirc,194
@@ -100,3 +98,5 @@ uuml,252
 yacute,253
 yen,165
 yuml,255
+OElig,338
+oelig,339
