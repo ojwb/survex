@@ -49,6 +49,7 @@
 1996.04.02 removed spurious < which actually gave compilable code (erk)
 1996.04.04 added NOP macro
 1996.05.06 added STRING macro
+1998.03.22 changed to use autoconf's WORDS_BIGENDIAN
 */
 
 /* only include once */
@@ -74,12 +75,12 @@
  */
 
 /* unix-style libraries may only have ftell/fseek, not fgetpos/fsetpos */
-#ifdef NO_FGETPOS
+#ifndef HAVE_FGETPOS
 /* ftell returns -1L on error; fgetpos returns non-zero on error */
 # define fgetpos(FH,P) ((*(P)=ftell(FH))==-1L)
 # define fsetpos(FH,P) fseek(FH,*(P),SEEK_SET)
   typedef long int fpos_t;
-#endif /* !NO_FGETPOS */
+#endif
 #endif
 
 /* deals with Borland TurboC & maybe others */
@@ -88,17 +89,11 @@
 #endif
 
 /* Deals with TurboC & maybe others. The format string is ignored,
- * and some default used instead - could use UnixLib strftime() but
- * ought to check it's okay first
+ * and some default used instead.
  */
 /* still something of a !HACK! */
-#ifdef NO_STRFTIME
+#ifndef HAVE_STRFTIME
 # define strftime(SZ,LENSZ,FMT,LOCALTIME) BLK(strncpy((SZ),asctime((LOCALTIME)),LENSZ);(SZ)[(LENSZ)-1]='\0';)
-#endif /* !NO_STRFTIME */
-
-/* UNIX libraries don't usually have difftime() */
-#ifdef NO_DIFFTIME
-# define difftime(X,Y) ((Y)-(X))
 #endif
 
 /* Return max/min of two numbers (if not defined already) */
@@ -167,7 +162,8 @@
 #define _STRING(X) #X
 
 #include "osdepend.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 
 /* useful_XXX() are defined in useful.c */
 extern void  FAR useful_put16( w16, FILE* );
@@ -176,7 +172,7 @@ extern w16   FAR useful_get16( FILE* );
 extern w32   FAR useful_get32( FILE* );
 extern int   FAR useful_getline( char *buf, OSSIZE_T len, FILE *fh );
 
-#ifdef LITTLE_ENDIAN
+#ifndef WORDS_BIGENDIAN
 extern w16 useful_w16;
 extern w32 useful_w32;
 
@@ -184,10 +180,6 @@ extern w32 useful_w32;
 # define useful_put32(W,FH) BLK(useful_w32=(W);fwrite(&useful_w32,4,1,(FH));)
 # define useful_get16(FH) (fread(&useful_w16,2,1,(FH)),useful_w16)
 # define useful_get32(FH) (fread(&useful_w32,4,1,(FH)),useful_w32)
-#endif
-
-#ifdef NO_STRICMP
-extern int FAR stricmp(const char *s1, const char *s2);
 #endif
 
 #define put16( W, FH ) useful_put16( W, FH )

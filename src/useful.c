@@ -24,12 +24,14 @@
 1996.02.19 fixed useful_getline prototype
 1996.03.24 fixed strcmpi() to include ctype.h
 1996.04.01 strcmpi -> stricmp
+1998.03.21 case insensitive string compare -> strcasecmp.c
+1998.03.22 changed to use autoconf's WORDS_BIGENDIAN
 */
 
 #include "useful.h"
 #include "osdepend.h"
 
-#ifdef LITTLE_ENDIAN
+#ifndef WORDS_BIGENDIAN
 
 /* used by macro versions of useful_get<nn> functions */
 w16 useful_w16;
@@ -112,18 +114,3 @@ extern int FAR useful_getline( char *buf, OSSIZE_T len, FILE *fh ) {
    buf[i]='\0';
    return (i+1);
 }
-
-#ifdef NO_STRICMP
-#include <ctype.h>
-/* Arbitrarily choose to compare uppercase version */
-/* What about top bit set chars? */
-extern int FAR stricmp(const char *s1, const char *s2) {
-   register r, c1, c2;
-   do {
-      c1=*s1++;
-      c2=*s2++;
-      r=toupper(c1)-toupper(c2);
-   } while (!r && (c1));
-   return r;
-}
-#endif
