@@ -106,8 +106,7 @@ uninstall-local:
 	-rmdir $(DESTDIR)$(pkgdocdir)/manual
 
 maintainer-clean-local:
-	test -d manual && rm -rf manual
-	test -d "$(srcdir)/manual" && rm -rf "$(srcdir)/manual"
+	rm -rf manual "$(srcdir)/manual"
 
 manual: $(manual_sources) custom.dsl survex.ent
 	@sgmltools@ --backend=html --dsssl-spec=custom.dsl#html manual.sgml
