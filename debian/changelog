@@ -7,6 +7,9 @@ survex (1.0.2) unstable; urgency=low
 
   * *FIX with 3 standard deviations but no covariances now works.
 
+  * cad3d: added --plt option to produce crude approximation to Compass .plt
+    files - should be good enough for reading into Carto.
+
   * Updated ca and es internationalisations.
 
  -- Wookey <wookey@survex.com>  Sun, 17 Mar 2002 12:42:44 +0000

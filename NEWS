@@ -14,8 +14,6 @@ Changes in 1.0.2:
 
 * Updates to the Catalan and Spanish translations.
 
-* Updated TODO list.
-
 * xcaverot: documented environmental variables XCAVEROT_INDICATOR_RADIUS and
   XCAVEROT_FONTNAME.
 
