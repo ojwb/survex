@@ -44,29 +44,27 @@ iter:
    printf(" set to colour %d\n", colour);
 #endif
    min = colour;
-   for (i = 0; i <= 2; i++) {
-      if (stn->leg[i]) {
-	 if (stn->leg[i]->l.to->colour == 0) {
-	    livTmp = osnew(liv);
-	    livTmp->next = livTos;
-	    livTos = livTmp;
-	    livTos->min = min;
-	    livTos->dirn = reverse_leg_dirn(stn->leg[i]);
-	    stn = stn->leg[i]->l.to;
-	    goto iter;
+   for (i = 0; i <= 2 && stn->leg[i]; i++) {
+      if (stn->leg[i]->l.to->colour == 0) {
+	 livTmp = osnew(liv);
+	 livTmp->next = livTos;
+	 livTos = livTmp;
+	 livTos->min = min;
+	 livTos->dirn = reverse_leg_dirn(stn->leg[i]);
+	 stn = stn->leg[i]->l.to;
+	 goto iter;
 uniter:
-	    i = reverse_leg_dirn(stn->leg[livTos->dirn]);
-	    stn = stn->leg[livTos->dirn]->l.to;
-	    if (!(min < livTos->min)) {
-	       if (min >= stn->colour) stn->fArtic = fTrue;
-	       min = livTos->min;
-	    }
-	    livTmp = livTos;
-	    livTos = livTos->next;
-	    osfree(livTmp);
-	 } else if (stn->leg[i]->l.to->colour < min) {
- 	    min = stn->leg[i]->l.to->colour;
+	 i = reverse_leg_dirn(stn->leg[livTos->dirn]);
+	 stn = stn->leg[livTos->dirn]->l.to;
+	 if (!(min < livTos->min)) {
+	    if (min >= stn->colour) stn->fArtic = fTrue;
+	    min = livTos->min;
 	 }
+	 livTmp = livTos;
+	 livTos = livTos->next;
+	 osfree(livTmp);
+      } else if (stn->leg[i]->l.to->colour < min) {
+	 min = stn->leg[i]->l.to->colour;
       }
    }
    if (livTos) goto uniter;
