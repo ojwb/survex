@@ -18,7 +18,7 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h useful.h\
  validate.h whichos.h xrot.h xcvrtbut.h new3dout.h 3ddefs.h \
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
- aventypes.h aventreectrl.h printwx.h avenprcore.h
+ aventypes.h aventreectrl.h printwx.h avenprcore.h export.h
 
 # GCC 2.95 frequently dies on gfxcore.cc with an internal error, so if the
 # compile fails, rerun it with -O instead of -O2 - FIXME this probably
@@ -62,8 +62,8 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
- useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc \
- avenpal.h avenprcore.cc printwx.cc ini.c hash.c 
+ useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc export.cc \
+ avenpal.h avenprcore.cc printwx.cc ini.c hash.c
 
 avengl_SOURCES = $(aven_SOURCES)
 

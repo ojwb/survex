@@ -1,6 +1,8 @@
-/* hash.h */
-/* String hashing function */
-/* Copyright (C) 1995-2002 Olly Betts
+/* export.h
+ * Export to CAD-like formats (DXF, Sketch, SVG) and also Compass PLT.
+ */
+
+/* Copyright (C) 2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +19,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-int hash_string(const char *p);
-int hash_lc_string(const char *p);
-int hash_data(const char *p, size_t len);
-
-#ifdef __cplusplus
-}
-#endif
+bool Export(const wxString &fnm_out, const MainFrm * mainfrm,
+       double pan, double tilt, bool labels, bool crosses, bool legs,
+       bool surface);

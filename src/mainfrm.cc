@@ -34,6 +34,7 @@
 #include "img.h"
 #include "namecmp.h"
 #include "printwx.h"
+#include "filename.h"
 
 #include <wx/confbase.h>
 #include <wx/regex.h>
@@ -41,6 +42,8 @@
 #include <float.h>
 #include <functional>
 #include <stack>
+
+using namespace std;
 
 const int NUM_DEPTH_COLOURS = 13; // up to 13
 
@@ -98,6 +101,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
     EVT_MENU(menu_FILE_PRINT, MainFrm::OnPrint)
     EVT_MENU(menu_FILE_PAGE_SETUP, MainFrm::OnPageSetup)
+    EVT_MENU(menu_FILE_EXPORT, MainFrm::OnExport)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
 
@@ -150,6 +154,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 
     EVT_UPDATE_UI(menu_FILE_PRINT, MainFrm::OnPrintUpdate)
+    EVT_UPDATE_UI(menu_FILE_EXPORT, MainFrm::OnExportUpdate)
     EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_STOP, MainFrm::OnStopRotationUpdate)
@@ -310,6 +315,8 @@ void MainFrm::CreateMenuBar()
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_PRINT, GetTabMsg(/*@Print...##Ctrl+P*/380));
     filemenu->Append(menu_FILE_PAGE_SETUP, GetTabMsg(/*P@age Setup...*/381));
+    filemenu->AppendSeparator();
+    filemenu->Append(menu_FILE_EXPORT, "Export as..."); // FIXME TRANSLATE
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
 
@@ -1142,6 +1149,21 @@ void MainFrm::OnPageSetup(wxCommandEvent&)
 
     m_printData = pageSetupDialog.GetPageSetupData().GetPrintData();
     m_pageSetupData = pageSetupDialog.GetPageSetupData();
+}
+
+void MainFrm::OnExport(wxCommandEvent&)
+{
+    char *baseleaf = baseleaf_from_fnm(m_File.c_str());
+    wxFileDialog dlg(this, wxString("Export as:"), "",
+		     wxString(baseleaf) + ".dxf",
+		     "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|Compass PLT for use with Carto|*.plt",
+		     wxSAVE|wxOVERWRITE_PROMPT);
+    free(baseleaf);
+    if (dlg.ShowModal() == wxID_OK) {
+	if (!m_Gfx->OnExport(dlg.GetPath())) {
+	    wxGetApp().ReportError(wxString::Format("Couldn't write file `%s'", dlg.GetPath().c_str()));
+	}
+    }
 }
 
 void MainFrm::OnQuit(wxCommandEvent&)

@@ -34,6 +34,7 @@
 #include "message.h"
 #include "useful.h"
 #include "printwx.h"
+#include "export.h"
 
 #include <wx/confbase.h>
 #include <wx/image.h>
@@ -2726,4 +2727,11 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface);
     p->Show(TRUE);
+}
+
+bool
+GfxCore::OnExport(const wxString &filename)
+{
+    return Export(filename, m_Parent,
+	   m_PanAngle, m_TiltAngle, m_Names, m_Crosses, m_Legs, m_Surface);
 }

@@ -385,6 +385,7 @@ public:
 
     void OnPrint(const wxString &filename, const wxString &title,
 		 const wxString &datestamp);
+    bool OnExport(const wxString &filename);
 
 private:
     DECLARE_EVENT_TABLE()

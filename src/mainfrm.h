@@ -61,6 +61,7 @@ enum {
     menu_FILE_OPEN_PRES,
     menu_FILE_PRINT,
     menu_FILE_PAGE_SETUP,
+    menu_FILE_EXPORT,
     menu_FILE_QUIT,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
@@ -253,6 +254,7 @@ public:
     void OnFileOpenTerrain(wxCommandEvent& event);
     void OnPrint(wxCommandEvent& event);
     void OnPageSetup(wxCommandEvent& event);
+    void OnExport(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
 
     void OnAbout(wxCommandEvent& event);
@@ -261,6 +263,7 @@ public:
     void OnSetFocus(wxFocusEvent &) { if (m_Gfx) m_Gfx->SetFocus(); }
 
     void OnPrintUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
+    void OnExportUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
 
     // temporary bodges until event handling problem is sorted out:
     void OnDefaultsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnDefaultsUpdate(event); }
