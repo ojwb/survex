@@ -1,6 +1,20 @@
 /* > debug.h
  * SURVEX debugging info control macros
  * Copyright (C) 1993-1996 Olly Betts
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 /*#define DEBUG_INVALID 1*/
@@ -78,7 +92,7 @@
 /* print out bumf as matrix is built from network */
 #define DEBUG_MATRIX_BUILD 0
 
-/* survex.c */
+/* cavern.c */
 
 /* display lots of info as statistics are calculated */
 #define DEBUG_STATS 0

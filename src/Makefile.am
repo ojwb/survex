@@ -37,9 +37,6 @@ printpcl_SOURCES = printpcl.c $(PRSRC) prbitmap.c
 printxbm_SOURCES = printxbm.c $(PRSRC) prbitmap.c
 printhpgl_SOURCES = prhpgl.c $(PRSRC)
 
-#printmd0_SOURCES = printmd0.c prbitmap.c prcore.c message.c filename.c\
-# useful.c img.c osdepend.c
-
 ROTSRC = cvrotimg.c img.c useful.c osdepend.c filename.c message.c
 
 caverot_SOURCES = caverot.c $(ROTSRC) rotplot.c labels.c cvrotgfx.c
