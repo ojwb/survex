@@ -552,10 +552,12 @@ extern void
 free_settings(settings *p) {
    /* don't free default ordering or ordering used by parent */
    reading *order = p->ordering;
-   if (order != default_order && order != p->next->ordering) osfree(order);
+   if (order != default_order && (!p->next || order != p->next->ordering))
+      osfree(order);
 
    /* free Translate if not used by parent */
-   if (p->Translate != p->next->Translate) osfree(p->Translate - 1);
+   if (!p->next || p->Translate != p->next->Translate)
+      osfree(p->Translate - 1);
 
    osfree(p);
 }
