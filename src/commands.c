@@ -116,8 +116,10 @@ default_translate(settings *s)
    t['.'] |= SPECIAL_DECIMAL;
    t['-'] |= SPECIAL_MINUS;
    t['+'] |= SPECIAL_PLUS;
+#if 0 /* FIXME */
    t['{'] |= SPECIAL_OPEN;
    t['}'] |= SPECIAL_CLOSE;
+#endif
 }
 
 static void
@@ -374,7 +376,7 @@ cmd_set(void)
 {
    static sztok chartab[] = {
 	{"BLANK",     SPECIAL_BLANK },
-	{"CLOSE",     SPECIAL_CLOSE },
+/*FIXME	{"CLOSE",     SPECIAL_CLOSE }, */
 	{"COMMENT",   SPECIAL_COMMENT },
 	{"DECIMAL",   SPECIAL_DECIMAL },
 	{"EOL",       SPECIAL_EOL }, /* EOL won't work well */
@@ -382,7 +384,7 @@ cmd_set(void)
 	{"MINUS",     SPECIAL_MINUS },
 	{"NAMES",     SPECIAL_NAMES },
 	{"OMIT",      SPECIAL_OMIT },
-	{"OPEN",      SPECIAL_OPEN },
+/*FIXME	{"OPEN",      SPECIAL_OPEN }, */
 	{"PLUS",      SPECIAL_PLUS },
 #ifndef NO_DEPRECATED
 	{"ROOT",      SPECIAL_ROOT },
