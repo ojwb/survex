@@ -1,3 +1,8 @@
+* (MSDOS version): graphics in HTML manual were corrupted (by being
+  packed as text).
+
+* (RISC OS version): graphics were missing from HTML manual.
+
 Changes in 0.99-prerelease3:
 
 * Documentation rearranged.  Some sections which covered the same

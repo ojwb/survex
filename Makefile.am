@@ -138,7 +138,8 @@ djgpp_zip : dostxt
 	ln -s ../README dostxt_tmp/README.txt
 	: # -l means convert LF to CR+LF
 	zip -j -l ../$(djgpp_zip_name) dostxt_tmp/*.txt
-	cd doc;zip -r -l ../$(djgpp_zip_name) manual @HTMLFILES@
+	cd doc;zip -l ../$(djgpp_zip_name) manual/*.htm @HTMLFILES@
+	cd doc;zip ../$(djgpp_zip_name) manual/*.png
 	zip -j -l $(djgpp_zip_name) $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
@@ -195,7 +196,8 @@ borlandc_zip : dostxt
 	ln -s ../README dostxt_tmp/README.txt
 	: # -l means convert LF to CR+LF
 	zip -j -l $(bc_zip_name) dostxt_tmp/*.txt $(extra_txt)
-	cd doc;zip -l -r ../$(bc_zip_name) manual @HTMLFILES@
+	cd doc;zip -l ../$(bc_zip_name) manual/*.htm @HTMLFILES@
+	cd doc;zip ../$(bc_zip_name) manual/*.png
 	$(RM) -rf dostxt_tmp
 
 riscos_zip_name = survex-riscos-@VERSION@.zip
@@ -233,6 +235,8 @@ riscos_zip :
 	mkdir riscos_tmp/manual
 	cd doc && for f in manual/*.htm ; do\
 	 ln -s ../../doc/$$f ../riscos_tmp/$$f,faf ; done
+	cd doc && for f in manual/*.png ; do\
+	 ln -s ../../doc/$$f ../riscos_tmp/$$f,b60 ; done
 	: # -R doesn't seem to work here, so just glob it all in
 	cd riscos_tmp && ../zip-magic -N ../$(riscos_zip_name) * */* */*/*
 	$(RM) -rf riscos_tmp
