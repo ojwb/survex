@@ -84,7 +84,8 @@
 
 #include "useful.h"
 #include "img.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "caverot.h"
 #include "cvrotimg.h"
 

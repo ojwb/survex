@@ -27,7 +27,8 @@
 #include <time.h>
 
 #include "useful.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "prindept.h"
 #include "prbitmap.h"
 

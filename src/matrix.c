@@ -116,7 +116,8 @@
 
 #include "debug.h"
 #include "survex.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "netbits.h"
 #include "matrix.h"
 #include "out.h"

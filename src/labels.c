@@ -19,7 +19,8 @@
 */
 
 #include <string.h>
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "caverot.h"
 #include "cvrotgfx.h"
 #include "labels.h"

@@ -29,7 +29,8 @@
 #include <ctype.h>
 
 #include "useful.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "prbitmap.h"
 
 #define DPP(dpi) ( (int) ceil( (dpi)/110.0 ) )

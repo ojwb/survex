@@ -54,7 +54,8 @@ img_error:       gives message number of error if img_open* returned NULL
 
 #ifndef STANDALONE
 # include "useful.h"
-# include "error.h"
+# include "message.h"
+# include "filename.h"
 # include "filelist.h"
 # define TIMENA msg(108)
 # define TIMEFMT msg(107)

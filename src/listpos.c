@@ -54,7 +54,8 @@
 #define NODESTAT 1
 
 #include "survex.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "filelist.h"
 #include "netbits.h"
 #include "listpos.h"

@@ -23,7 +23,8 @@
 #include <assert.h>
 
 #include "useful.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "filelist.h"
 #include "img.h"
 
