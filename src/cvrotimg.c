@@ -226,6 +226,8 @@ scale_to_screen(lid Huge **pplid, lid Huge **pplid2)
 
    if (!pplid || !*pplid) return (BIG_SCALE);
 
+   Xmin = Xmax = Ymin = Ymax = Zmin = Zmax = 0; /* suppress compiler warning */
+
 xxx:
    for ( ; *pplid; pplid++) {
       plid = *pplid;
