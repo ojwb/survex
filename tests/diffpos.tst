@@ -5,8 +5,7 @@
 
 : ${DIFFPOS=../src/diffpos}
 
-: ${TESTS=$*}
-: ${TESTS="delatend addatend"}
+: ${TESTS=${*-"delatend addatend"}}
 
 for file in $TESTS ; do
   echo $file

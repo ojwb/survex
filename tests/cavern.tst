@@ -9,8 +9,7 @@
 SURVEXHOME=$srcdir/../lib
 export SURVEXHOME
 
-: ${TESTS=$*}
-: ${TESTS="singlefix singlereffix oneleg midpoint noose cross firststn\
+: ${TESTS=${*-"singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey nosurvey2\
  cartesian lengthunits angleunits cmd_truncate cmd_case cmd_fix cmd_solve\
  beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
@@ -22,7 +21,7 @@ export SURVEXHOME
  exporterr1b exporterr2b exporterr3b exporterr6 exporterr6b\
  hanging_cpt badinc badinc2 non_existant_file\
  stnsurvey1 stnsurvey2 stnsurvey3\
- tapelessthandepth longname chinabug chinabug2"}
+ tapelessthandepth longname chinabug chinabug2"}}
 
 for file in $TESTS ; do
   # how many warnings to expect

@@ -9,8 +9,7 @@
 SURVEXHOME=$srcdir/../lib
 export SURVEXHOME
 
-: ${TESTS=$*}
-: ${TESTS="extend"}
+: ${TESTS=${*-"extend"}}
 
 for file in $TESTS ; do
   echo $file
