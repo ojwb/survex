@@ -94,8 +94,6 @@ program - autosense (by looking at argv[0]) which we're being run as
 (and use symbolic link in Unix). Provide command line option as
 override (so we can use alias/batchfile for DOS)?
 
-get DOS programs to abort on Ctrl-C reliably?
-
 Label lengths aren't considered when working out image size in prcore.c,
 so a long label can spill off the edge of the printout
 
@@ -192,8 +190,6 @@ caverot: on RISC OS now fall back to using 2 or even just one screen
 bank if we can't find a mode where we can create 3 banks [FIXME: need
 to test this works]
 
-Check that --mode-picker works on DJGPP caverot.
-
 Date: Fri, 04 May 2001
 Subject: manual
 From: Olly
@@ -212,8 +208,10 @@ articulation pt (know for nodes I think a station is if at least one
 of its nodes is)
 
 flag legs as "skeletal" or something? (i.e. not in the cave passage) -
-e.g. a radiolocation leg isn't surface, but it isn't in the cave
-itself either.  You could just call it surface though...
+e.g. a radiolocation leg from one passage to another isn't surface,
+but it isn't in the cave itself either (it's through rock).  You could
+just call it surface but maybe later we want to use the surface
+flag to produce a points for a surface triangulation...
 
 legs: implied: inloop/plumb/nosurvey, diving, other styles
 
@@ -305,8 +303,6 @@ ident_cmp(const char *a, const char *b)
    return strcmp(a,b);
 }
 
-check borlandc version to see if bios_keybrd is better or worse...
-
 translate diffpos, sorterr, etc
 
 tests for direction - should direction work in non-interleaved data?
@@ -322,4 +318,33 @@ back bearings?
 cope with any combination of readings which gives enough info ???
 
 one page HTML manual
+
+document all the new stuff
+*copyright
+*date
+*entrance
+*export - better example
+*instrument
+*team
+
+win install lang??
+
+glcaverot?
+
+leg and station "comments":
+
+*data stationdata station left right up down comment
+1 1.0 - 50+ 0.5 "large cairn"
+2 ...
+
+*data normal station l r u d comment newline tape compass clino
+1 1.0 - 50+ 0.5 "large cairn"
+  10.78 123 -03
+2 ...
+
+comment can be omitted "-" or not present if at end of line...?
+commentall?
+
+pos files should be generated from .3d by a small utility, and diffpos
+should work on .3d files (diff3d).
 
