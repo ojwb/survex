@@ -8,6 +8,4 @@
 1994.06.27 added push() and pop()
 */
 
-extern void process_command_line( int argc, sz argv[] );
-extern void push(void);
-extern bool pop(void);
+extern void process_command_line(int argc, char **argv);

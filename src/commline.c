@@ -3,6 +3,12 @@
  * Copyright (C) 1991-1997 Olly Betts
  */
 
+/* support some common old style command line options */
+#define COMPAT 1
+
+/* we now bundled GNU getopt so we always have this */
+#define HAVE_GETOPT_LONG 1
+
 /*
 1992.07.20 Fiddled with filename handling bits
 1992.10.25 Minor tidying
@@ -76,75 +82,22 @@
 
 #include <limits.h>
 
-#include "survex.h"
+#include "getopt.h"
+
+#include "cavein.h"
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
 #include "datain.h"
 #include "commline.h"
 
-typedef enum {COMMAND,COMMAND_FILENAME,SPECIAL_CHARS,SVX_FILE,TITLE} Mode;
-
 static void process_command( const char *string, const char *pth );
-static void command_file( const char *pth, const char *fnm );
-static void checkmode(Mode mode, void (*fn)( const char *, int ),
-                      const char *arg);
-static void skipopt( const char *s, int n );
 
 #define TITLE_LEN 80
 char szSurveyTitle[TITLE_LEN];
 bool fExplicitTitle = fFalse;
-static Mode mode;
 
-void push(void) {
-   settings *pcsNew;
-   pcsNew = osnew(settings);
-/*   memcpy(pcsNew, pcs, ossizeof(settings)); */
-   *pcsNew = *pcs; /* copy contents */
-   pcsNew->next = pcs;
-   pcs = pcsNew;
-   /* don't free it - parent still using it */
-   pcs->fOrderingFreeable = fFalse;
-   /* don't free it - parent still using it */
-/*   pcs->fTranslateFreeable=fFalse; */
-}
-
-bool pop(void) {
-   settings *pcsParent;
-   pcsParent = pcs->next;
-   if (pcsParent == NULL) return fFalse;
-   /* free if not used by parent */
-   if (pcs->fOrderingFreeable) osfree(pcs->ordering);
-   /* free if not used by parent */
-   if (pcs->Translate != pcsParent->Translate) osfree(pcs->Translate - 1);
-   osfree(pcs);
-   pcs = pcsParent;
-   return fTrue;
-}
-
-extern void process_command_line( int argc, sz argv[] ) {
-   int j;
-   mode = COMMAND;
-
-   *szSurveyTitle = '\0';
-
-   /* No arguments given */
-   if (argc < 2) fatal(49, NULL, NULL, 0);
-
-   for ( j = 1; j < argc ; j++ ) process_command(argv[j], "");
-
-   /* Check if everything's okay */
-   checkmode(mode, skipopt, NULL);
-   if (pcs->next) {
-      error(20, skipopt, NULL, 0);
-      /* free any stacked stuff */
-      while (pop()) {
-         /* do nothing */
-      }
-   }
-}
-
-static char *datafile(const char *fnm, const char *pth) {
+static void datafile(const char *fnm, const char *pth) {
    char *lf;
    lf = LfFromFnm(fnm);
    if (!fExplicitTitle && strlen(lf)+strlen(szSurveyTitle)+2 <= TITLE_LEN) {
@@ -159,244 +112,98 @@ static char *datafile(const char *fnm, const char *pth) {
    }
    free(lf);
    /* default path is path of command line file (if we're in one) */
-   data_file( pth, fnm );
-   return ""; /* start next token */
+   data_file(pth, fnm);
+   return;
 }
 
-static const char *process_command_mode( const char *string, const char *pth ) {
-   char ch;
-   const char *p = string;
-   ch = *(p++);
-   if (strchr(SWITCH_SYMBOLS, ch) != NULL) {
-      char chOpt;
-      bool fSwitch = fTrue;
-      chOpt = toupper(*p);
-      p++;
-      if (chOpt == '!') {
-         fSwitch = fFalse;
-         chOpt = toupper(*p);
-         p++;
-         if (strchr("DFST", chOpt)) {
-            /* negating these option doesn't make sense */
-            error(27, skipopt, string, 0);
-            return p;
-         }
-      }
-      switch (chOpt) {
-       case 'A': /* Ascii */
-         pcs->fAscii = fSwitch;
-         break;
-       case 'C': /* Case */
-         if (fSwitch) {
-            chOpt = *p++;
-            switch (toupper(chOpt)) {
-             case 'U':
-               pcs->Case=UPPER; break;
-             case 'L':
-               pcs->Case=LOWER; break;
-             default:
-               error(28,skipopt,string,0);
-            }
-         } else {
-            pcs->Case = OFF;
-         }
-         break;
-       case 'D': /* Data File (so fnames can begin with '-' or '/' */
-         mode = SVX_FILE;
-         break;
-       case 'F': /* Command File */
-         mode = COMMAND_FILENAME;
-         break;
-       case 'N': /* NinetyToUp */
-         pcs->f90Up = fSwitch;
-         break;
-       case 'O': { /* Optimizations level used to solve network */
-	 extern long optimize; /* defined in network.c */
-	 optimize = 0;
-	 /* -!O and -O both mean turn all optimizations off */
-	 if (fSwitch) {
-            while (*p && *p != ' ') {
-               switch (toupper(*p)) {
-                case 'N': case 'L':
-                  optimize |= 1; break; /* lollipops */
-                case 'P':
-                  optimize |= 2; break; /* parallel legs */
-                case 'I':
-                  optimize |= 4; break; /* iterative matrix soln*/
-                case 'D':
-                  optimize |= 8; break; /* delta-star */
-                case 'S':
-                  optimize |= 16; break; /* split station list */
-               }
-               p++;
-            }
-         }
-         break;
+static void display_syntax_message(const char *x, int y) {
+   /* avoid warnings about x and y unused */
+   x = x;
+   y = y;
+   printf("%s: %s [-a] [-p] [<.svx file> ...]\n", msg(49), szAppNameCopy);
+}
+
+extern void process_command_line(int argc, char **argv) {
+#ifdef HAVE_GETOPT_LONG
+   static const struct option opts[] = {
+      /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+#ifdef NO_PERCENTAGE
+      "percentage", no_argument, 0, 0,
+      "no-percentage", no_argument, 0, 0,
+#else
+      "percentage", no_argument, (int*)&fPercent, 1, /* or 0, 'p' */
+      "no-percentage", no_argument, (int*)&fPercent, 0,
+#endif
+      0, 0, 0, 0
+   };
+#endif
+
+   *szSurveyTitle = '\0';
+
+   /* No arguments given */
+   if (argc < 2) fatal(49, display_syntax_message, NULL, 0);
+
+   while (1) {
+      extern long optimize; /* defined in network.c */
+#ifdef HAVE_GETOPT_LONG
+# ifdef COMPAT
+      int opt = getopt_long(argc, argv, "!:Ppao:", opts, NULL);
+# else
+      int opt = getopt_long(argc, argv, "pao:", opts, NULL);
+# endif
+#else
+# ifdef COMPAT
+      int opt = getopt(argc, argv, "!:Ppao:");
+# else
+      int opt = getopt(argc, argv, "pao:");
+# endif
+#endif
+      switch (opt) {
+#ifdef COMPAT
+       /* for back compat allow "-!P" "-!p" & "-P" and ignore other "-!<X>" */
+       case '!':
+# ifndef NO_PERCENTAGE
+	 if (tolower(optarg[0]) == 'p') fPercent = 0;
+# endif
+	 break;
+#endif
+       case EOF:
+	 /* end of options, now process data files */
+	 while (argv[optind]) {
+	    datafile(argv[optind], "");
+	    optind++;
+	 }
+	 return;
+       case 0:
+	 break; /* long option processed - ignore */
+	 /* no params, so param can't be missing (!)       case ':' */
+       case '?':
+	 /* FIXME unknown option */
+	 /* or ambiguous match or extraneous param */
+	 fatal(49, display_syntax_message, NULL, 0);
+	 break;
+       case 'a':
+	 pcs->fAscii = fTrue;
+	 break;
+       case 'p':
+#ifdef COMPAT
+       case 'P':
+#endif
+#ifndef NO_PERCENTAGE
+	 fPercent = 1;
+#endif
+	 break;
+       case 'o': {/* Optimizations level used to solve network */
+	 static int first_opt_o = 0;
+	 int ch;
+	 if (first_opt_o) {
+	    optimize = 0;
+	    first_opt_o = 1;
+	 }
+	 /* Lollipops, Parallel legs, Iterate mx, Delta*, Split stnlist */
+	 while ((ch = *optarg++)) if (islower(ch)) optimize |= BIT(ch - 'a');
+	 break;
        }
-       case 'P': /* Percentage */
-   #ifndef NO_PERCENTAGE
-         fPercent = fSwitch;
-   #endif
-         break;
-       case 'S': /* Special Characters */
-         mode = SPECIAL_CHARS;
-         break;
-       case 'T': /* Title */
-         mode = TITLE;
-         break;
-       case 'U': { /* Unique */
-         int len = 0;
-         if (fSwitch) {
-            ch = *(p++);
-   	    while (isdigit(ch)) {
-   	       len = len * 10 + (ch - '0');
-   	       ch = *(p++);
-            }
-   	    p--;
-         }
-         pcs->Truncate = (len < 1) ? INT_MAX : len;
-         break;
-       }
-       default:
-         error(30, skipopt, string, 0);
-      }
-   } else {
-      switch (ch) {
-       case '(': /* Push settings */
-         push();
-         break;
-       case ')': /* Pull settings */
-         if (!pop()) error(31, skipopt, string, 0);
-         break;
-       case '@': /* command line extension (same as -f) */
-         mode = COMMAND_FILENAME;
-         break;
-       default: /* assume it is a filename of a data file */
-         p = datafile(p - 1, pth);
-       break;
       }
    }
-   return p;
-}
-
-static void process_command( const char *string, const char *pth ) {
-  const char *p = string;
-/*  printf("%d >%s<\n",mode,p); */
-  while (*p != '\0') {
-     switch (mode) {
-      case COMMAND:
-         p = process_command_mode(p, pth);
-         break;
-      case SVX_FILE:
-         p = datafile(p, pth);
-         mode = COMMAND;
-         break;
-      case COMMAND_FILENAME:
-         mode = COMMAND;
-         command_file(pth, p);
-         p = "";
-         break;
-      case SPECIAL_CHARS: /* Special Chars */
-         NOT_YET;
-         /* Write this bit */
-         break;
-      case TITLE: /* Survey title */
-         if (!fExplicitTitle) {
-            fExplicitTitle = fTrue;
-            *szSurveyTitle = '\0'; /* Throw away any partial default title */
-         }
-         if (strlen(p) + strlen(szSurveyTitle) + 3 <= TITLE_LEN) {
-            char *q = szSurveyTitle;
-            /* !HACK! should cope better with exceeding title buffer... */
-            if (*q) {
-               /* If there's already a title in the list */
-               q += strlen(szSurveyTitle);
-               *q++ = ',';
-               *q++ = ' ';
-            }
-            strcpy(q, p);
-         }
-         p += strlen(p); /* advance past it */
-         mode = COMMAND;
-         break;
-      }
-   }
-}
-
-static void command_file( const char *pth, const char *fnm ) {
-   FILE *fh;
-   int byte;
-   char cmdbuf[COMMAND_BUFFER_LEN];
-   int i;
-   char *fnmUsed;
-   bool fQuoted;
-   char *path;
-
-   fh = fopenWithPthAndExt( pth, fnm, EXT_SVX_CMND, "r", &fnmUsed );
-   if (fh == NULL) {
-      error(22,skipopt,fnm,0);
-      return;
-   }
-   path = PthFromFnm(fnmUsed);
-   UsingDataFile( fnmUsed );
-   osfree(fnmUsed); /* not needed now */
-
-   byte = fgetc(fh);
-   while (byte != EOF) {
-      fQuoted = fFalse;
-      i = 0;
-      if (byte == '\"') {
-         fQuoted = fTrue;
-         byte = fgetc(fh);
-      }
-      while ((byte != EOF) && (byte != COMMAND_FILE_COMMENT_CHAR)) {
-         if (isspace(byte) || (byte == CR)) byte=' ';
-         /* if it's quoted, a quote ends it, else whitespace ends it */
-         if (byte == (fQuoted ? '\"' : ' ') ) break;
-         cmdbuf[i++] = byte;
-         if (i >= COMMAND_BUFFER_LEN) {
-            buffer[COMMAND_BUFFER_LEN - 1] = '\0';
-            error(26, skipopt, cmdbuf, 0);
-            i = 0; /* kills line */
-            byte = COMMAND_FILE_COMMENT_CHAR; /* skips to end of line */
-            break;
-         }
-         byte = fgetc(fh);
-      }
-      if (byte == COMMAND_FILE_COMMENT_CHAR) {
-         /* NB fiddle above if modifying */
-         while ((byte != LF) && (byte != CR) && (byte != EOF))
-            byte = fgetc(fh);
-      }
-      /* skip character if not EOF */
-      if (byte != EOF) byte = fgetc(fh);
-      if (i > 0) {
-         cmdbuf[i] = '\0';
-         process_command( cmdbuf, path );
-      }
-   }
-   if (ferror(fh) || (fclose(fh) == EOF)) error(23, wr, fnm, 0);
-/*   checkmode(mode,skipopt,fnm); */
-   osfree(path);
-}
-
-static void checkmode(Mode mode, void (*fn)(const char *, int),
-                      const char *arg) {
-   int errnum;
-   switch (mode) {
-    case SVX_FILE:
-      errnum = 10; break;
-    case COMMAND_FILENAME:
-      errnum = 18; break;
-    case SPECIAL_CHARS:
-      errnum = 19; break;
-    default:
-      return;
-   }
-   error(errnum, fn, arg, 0);
-}
-
-static void skipopt( const char *s, int n ) {
-   if (s) wr( s, n );
-   wr( msg(83), 0 );
 }
