@@ -3536,6 +3536,41 @@ it:502 Rimosso: %s
 sk:502 Zru&scaron;en&eacute;: %s
 ro:502 Eliminat: %s
 #
+# for extend:
+en:600 Don't understand command `%s' in config, line %i
+#
+en:601 Unexpected content `%s' in config, line %i
+#
+en:602 Command without station name in config, line %i
+#
+en:603 Failed to find station %s in config, line %i
+#
+en:604 Starting from station %s
+#
+en:605 Plotting to the left from station %s
+#
+en:606 Failed to find leg %s -> %s in config, line %i
+#
+en:607 Plotting to the left from leg %s -> %s
+#
+en:608 Plotting to the right from station %s
+#
+en:609 Plotting to the right from leg %s -> %s
+#
+en:610 Breaking survey at station %s
+#
+en:611 Breaking survey at leg %s -> %s
+#
+en:612 Error reading line %i from spec file
+#
+en:613 Applying specfile: `%s'
+#
+en:614 Writing out .3d file...
+#
+en:615 Swapping plot direction from station %s
+#
+en:616 Swapping plot direction from leg %s -> %s
+#
 # "don't extract" messages - these are compiled into the programs
 #
 en:1000 Can't open message file `%s' using path `%s'

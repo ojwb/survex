@@ -1,5 +1,9 @@
 Changes in 1.0.34:
 
+* extend: Added changes from John Pybus which allow you to specify a
+  configuration file to control how the centreline is extended - e.g.
+  where to fold and where to break loops.
+
 * (MS Windows version): Fixed detection of codepage 1250 (used for Slovak and
   Romanian) - this should fix problems with missing accents.
 
