@@ -1,3 +1,5 @@
+* Don't distribute unused toolbar icons.
+
 Changes in 1.0.18:
 
 * (Unix Version): Fixed "Process" action on .svx files.
