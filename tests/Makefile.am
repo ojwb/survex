@@ -45,4 +45,4 @@ multinormignall.svx multinormignall.pos\
 multidiving.svx multidiving.pos\
 multicartesian.svx multicartesian.pos\
 multinosurv.svx multinosurv.pos\
-multinormalbad.svx
+multinormalbad.svx multibug.svx

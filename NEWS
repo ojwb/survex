@@ -9,6 +9,10 @@
 
 * aven: --version now works, and --help produces more helpful output.
 
+* cavern: fixed bug with eating first character of line after
+  interleaved data; corrected line numbers in some situations
+  involving interleaved data.
+
 * cavern: fixed problem with points fixed with errors.
 
 * Minor documentation updates.

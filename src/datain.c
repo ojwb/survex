@@ -666,6 +666,7 @@ data_normal(void)
 	   default:
 	     compile_error(/*Found `%c', expecting `F' or `B'*/131, ch);
 	     skipline();
+	     process_eol();
 	     return 0;
 	  }
 	  break;
@@ -682,6 +683,7 @@ data_normal(void)
 	     if (!isOmit(ch)) {
 		compile_error(/*Expecting numeric field*/9);
 		showandskipline(NULL, 1);
+		process_eol();
 		return 0;
 	     }
 	     nextch();
@@ -695,6 +697,7 @@ data_normal(void)
 	     if (clin != HUGE_REAL) break;
 	     compile_error(/*Expecting numeric field*/9);
 	     showandskipline(NULL, 1);
+	     process_eol();
 	     return 0;
 	  }
 	  /* we've got a real clino reading, so set clear the flag */
@@ -724,7 +727,10 @@ data_normal(void)
 	    process_eol();
 	    process_bol();
 	    if (isData(ch)) break;
-	    if (!isComm(ch)) return 1;
+	    if (!isComm(ch)) {
+	       ungetc(ch, file.fh);
+	       return 1;
+	    }
 	 }
 	 break;
        case IgnoreAll:
@@ -909,6 +915,7 @@ data_diving(void)
 	   default:
 	     compile_error(/*Found `%c', expecting `F' or `B'*/131, ch);
 	     skipline();
+	     process_eol();
 	     return 0;
 	  }
 	  break;
@@ -919,6 +926,7 @@ data_diving(void)
 	    if (!isOmit(ch)) {
 	       compile_error(/*Expecting numeric field*/9);
 	       showandskipline(NULL, 1);
+	       process_eol();
 	       return 0;
 	    }
 	    nextch();
@@ -951,7 +959,10 @@ data_diving(void)
 	    process_eol();
 	    process_bol();
 	    if (isData(ch)) break;
-	    if (!isComm(ch)) return 1;
+	    if (!isComm(ch)) {
+	       ungetc(ch, file.fh);
+	       return 1;
+	    }
 	 }
 	 break;
        case IgnoreAll:
@@ -1066,7 +1077,10 @@ data_cartesian(void)
 	    process_eol();
 	    process_bol();
 	    if (isData(ch)) break;
-	    if (!isComm(ch)) return 1;
+	    if (!isComm(ch)) {
+	       ungetc(ch, file.fh);
+	       return 1;
+	    }
 	 }
 	 break;
        case IgnoreAll:
@@ -1074,8 +1088,7 @@ data_cartesian(void)
 	 /* fall through */
        case End:
 	 if (!fMulti) {
-	    int r;
-	    r = process_cartesian(fr, to, dx, dy, dz, first_stn == To);
+	    int r = process_cartesian(fr, to, dx, dy, dz, first_stn == To);
 	    process_eol();
 	    return r;
 	 }
@@ -1180,7 +1193,10 @@ data_nosurvey(void)
 	       process_eol();
 	       process_bol();
 	    } while (isComm(ch));
-	    if (!isData(ch)) return 1;
+	    if (!isData(ch)) {
+	       ungetc(ch, file.fh);
+	       return 1;
+	    }
 	    goto again;
 	 }
 	 fMulti = fTrue;
@@ -1188,7 +1204,10 @@ data_nosurvey(void)
 	    process_eol();
 	    process_bol();
 	    if (isData(ch)) break;
-	    if (!isComm(ch)) return 1;
+	    if (!isComm(ch)) {
+	       ungetc(ch, file.fh);
+	       return 1;
+	    }
 	 }
 	 break;
        case IgnoreAll:
@@ -1196,8 +1215,7 @@ data_nosurvey(void)
 	 /* fall through */
        case End:
 	 if (!fMulti) {
-	    int r;
-	    r = process_nosurvey(fr, to, first_stn == To);
+	    int r = process_nosurvey(fr, to, first_stn == To);
 	    process_eol();
 	    return r;
 	 }
@@ -1216,5 +1234,6 @@ extern int
 data_ignore(void)
 {
    skipline();
+   process_eol();
    return 1;
 }
