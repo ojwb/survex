@@ -402,7 +402,7 @@ replace_travs(void)
    if (!fhErrStat && !fSuppress)
       fhErrStat = safe_fopen_with_ext(fnm_output_base, EXT_SVX_ERRS, "w");
 
-   if (!pimgOut) {
+   if (!pimg) {
       char *fnmImg3D;
       char buf[256];
 #ifdef NEW3DFORMAT
@@ -420,20 +420,20 @@ replace_travs(void)
       out_current_action(buf);
 #ifdef NEW3DFORMAT
       if (fUseNewFormat) {
- 	pimgOut = cave_open_write(fnmImg3D, survey_title);
- 	if (!pimgOut) {
- 	  fputsnl(fnmImg3D, STDERR);
- 	  fatalerror(cave_error(), fnmImg3D);
- 	}
-       } else {
+	 pimg = cave_open_write(fnmImg3D, survey_title);
+	 if (!pimg) {
+	    fputsnl(fnmImg3D, STDERR);
+	    fatalerror(cave_error(), fnmImg3D);
+	 }
+      } else {
 #endif
-	 pimgOut = img_open_write(fnmImg3D, survey_title, !fAscii);
-         if (!pimgOut) {
-	   fputsnl(fnmImg3D, STDERR);
-	   fatalerror(img_error(), fnmImg3D);
+	 pimg = img_open_write(fnmImg3D, survey_title, !fAscii);
+         if (!pimg) {
+	    fputsnl(fnmImg3D, STDERR);
+	    fatalerror(img_error(), fnmImg3D);
 	 }
 #ifdef NEW3DFORMAT
-       }
+      }
 #endif
       osfree(fnmImg3D);
    }
@@ -443,8 +443,10 @@ replace_travs(void)
       for (i = 0; i <= 2; i++) {
 	 linkfor *leg = stn1->leg[i];
 	 if (leg && data_here(leg) &&
-	     !(leg->l.reverse & FLAG_REPLACEMENTLEG) && !fZeros(&leg->v)) {
+	     !(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	    ASSERT(fixed(stn1));
+	    ASSERT(!fZeros(&leg->v));
+
 	    stn2 = leg->l.to;
 	    if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
 	       stn1->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -456,9 +458,10 @@ replace_travs(void)
 #ifdef NEW3DFORMAT
 	    if (!fUseNewFormat) {
 #endif
-	       img_write_item(pimgOut, img_MOVE, 0, NULL,
+	       img_write_item(pimg, img_MOVE, 0, NULL,
 			      POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-	       img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
+	       img_write_item(pimg, img_LINE, leg->l.flags,
+			      sprint_prefix(stn1->name->up),
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 #ifdef NEW3DFORMAT
 	    }
@@ -564,7 +567,7 @@ replace_travs(void)
 #ifdef NEW3DFORMAT
       if (!fUseNewFormat) {
 #endif
-	 img_write_item(pimgOut, img_MOVE, 0, NULL,
+	 img_write_item(pimg, img_MOVE, 0, NULL,
 			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 #ifdef NEW3DFORMAT
       }
@@ -594,6 +597,7 @@ replace_travs(void)
 #endif
       while (fTrue) {
 	 int reached_end;
+	 prefix *leg_pfx;
 	 
 	 fEquate = fTrue;
 	 /* get next node in traverse
@@ -606,6 +610,7 @@ replace_travs(void)
 	 reached_end = (stn3 == stn2 && k == j);
 	 
 	 if (data_here(stn1->leg[i])) {
+	    leg_pfx = stn1->name->up;
 	    leg = stn1->leg[i];
 #ifdef BLUNDER_DETECTION
 	    if (do_blunder && fhErrStat)
@@ -614,6 +619,7 @@ replace_travs(void)
 	    if (!reached_end)
 	       adddd(&POSD(stn3), &POSD(stn1), &leg->d);
 	 } else {
+	    leg_pfx = stn3->name->up;
 	    leg = stn3->leg[k];
 #ifdef BLUNDER_DETECTION
 	    if (do_blunder && fhErrStat)
@@ -647,8 +653,13 @@ replace_travs(void)
 #ifdef NEW3DFORMAT
 	 if (!fUseNewFormat) {
 #endif
-	    img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
-			   POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
+	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
+	       ASSERT(!fEquate);
+	       ASSERT(!fZeros(&leg->v));
+	       img_write_item(pimg, img_LINE, leg->l.flags,
+			      sprint_prefix(leg_pfx),
+			      POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
+	    }
 #ifdef NEW3DFORMAT
 	 }
 #endif
@@ -804,23 +815,27 @@ replace_trailing_travs(void)
 #ifdef NEW3DFORMAT
       if (!fUseNewFormat) {
 #endif
-	 img_write_item(pimgOut, img_MOVE, 0, NULL,
+	 img_write_item(pimg, img_MOVE, 0, NULL,
 			POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 #ifdef NEW3DFORMAT
       }
 #endif
 
       while (1) {
+	 prefix *leg_pfx;
 	 int j;
+
 	 leg = stn1->leg[i];
 	 stn2 = leg->l.to;
 	 j = reverse_leg_dirn(leg);
 	 if (data_here(leg)) {
+	    leg_pfx = stn1->name->up;
 	    adddd(&POSD(stn2), &POSD(stn1), &leg->d);
 #if 0
 	    printf("Adding leg (%f, %f, %f)\n", leg->d[0], leg->d[1], leg->d[2]);
 #endif
 	 } else {
+	    leg_pfx = stn2->name->up;
 	    leg = stn2->leg[j];
 	    subdd(&POSD(stn2), &POSD(stn1), &leg->d);
 #if 0
@@ -840,8 +855,12 @@ replace_trailing_travs(void)
 #ifdef NEW3DFORMAT
 	 if (!fUseNewFormat) {
 #endif
-	    img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
-			   POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
+	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
+	       ASSERT(!fZeros(&leg->v));
+	       img_write_item(pimg, img_LINE, leg->l.flags,
+			      sprint_prefix(leg_pfx),
+			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
+	    }
 #ifdef NEW3DFORMAT
 	 }
 #endif
@@ -874,9 +893,10 @@ replace_trailing_travs(void)
 	    p->fr->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	    p->to->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	 }
-	 img_write_item(pimgOut, img_MOVE, 0, NULL,
+	 img_write_item(pimg, img_MOVE, 0, NULL,
 			POS(p->fr, 0), POS(p->fr, 1), POS(p->fr, 2));
-	 img_write_item(pimgOut, img_LINE, p->flags, NULL,
+	 img_write_item(pimg, img_LINE, p->flags,
+			sprint_prefix(p->fr->name->up),
 			POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
 	 nosurveyhead = p->next;
 	 osfree(p);
@@ -896,7 +916,7 @@ replace_trailing_travs(void)
 	 if (stn1->name->stn == stn1 && stn1->name->ident[0]) {
 	    int sf = stn1->name->sflags & SFLAGS_MASK;
 	    if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
-	    img_write_item(pimgOut, img_LABEL, sf, sprint_prefix(stn1->name),
+	    img_write_item(pimg, img_LABEL, sf, sprint_prefix(stn1->name),
 			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 	 }
 #ifdef NEW3DFORMAT
@@ -945,8 +965,8 @@ replace_trailing_travs(void)
 	    if (!(leg->l.flags &
 		  (BIT(FLAGS_DUPLICATE)|BIT(FLAGS_SPLAY)|
 		   BIT(FLAGS_SURFACE)))) {
-	       /* check not an equating leg */
-	       if (!fZeros(&leg->v)) {
+	       /* check not an equating leg, or one inside an sdfix point */
+	       if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 		  totadj += sqrt(sqrd(POS(stnB, 0) - POS(stn1, 0)) +
 				 sqrd(POS(stnB, 1) - POS(stn1, 1)) +
 				 sqrd(POS(stnB, 2) - POS(stn1, 2)));

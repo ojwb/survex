@@ -25,10 +25,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "ini.h"
-#include "filename.h"
-#include "message.h"
+
 #include "debug.h"
+#include "filename.h"
+#include "hash.h"
+#include "ini.h"
+#include "message.h"
 #include "useful.h"
 
 /* for testing separately from Survex */
@@ -54,21 +56,6 @@ osstrdup(char *s)
 #include <assert.h>
 #define ASSERT(M) assert(M)
 #endif
-
-/* some (preferably prime) number for the hashing function */
-#define HASH_PRIME 29363
-
-static int
-hash_string(const char *p)
-{
-   int hash;
-   ASSERT(p != NULL); /* can't hash NULL */
-/*   printf("HASH `%s' to ",p); */
-   for (hash = 0; *p; p++)
-      hash = (hash * HASH_PRIME + tolower(*(unsigned char*)p)) & 0x7fff;
-/*   printf("%d\n",hash); */
-   return hash;
-}
 
 #if 0
 void
@@ -111,7 +98,7 @@ ini_read(FILE **fh_list, const char *section, const char **vars)
 
    /* calculate hashes (to save on strcmp-s) */
    for (c = 0; vars[c]; c++) {
-      hash_tab[c] = hash_string(vars[c]);
+      hash_tab[c] = hash_lc_string(vars[c]);
       vals[c] = NULL;
    }
 
@@ -165,7 +152,7 @@ ini_read(FILE **fh_list, const char *section, const char **vars)
 	 val = p + 1;
 
 	 /* hash the variable name and see if it's in the list passed in */
-	 hash = hash_string(var);
+	 hash = hash_lc_string(var);
 	 for (c = n - 1; c >= 0; c--) {
 	    if (hash == hash_tab[c]) {
 	       if (strcasecmp(var, vars[c]) == 0) {

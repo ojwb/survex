@@ -30,6 +30,7 @@
 #include "cmdline.h"
 #include "debug.h"
 #include "filelist.h"
+#include "hash.h"
 #include "img.h"
 #include "namecmp.h"
 
@@ -63,9 +64,6 @@ static struct help_msg help[] = {
    {0, 0}
 };
 
-/* some (preferably prime) number for the hashing function */
-#define HASH_PRIME 29363
-
 typedef struct station {
    struct station *next;
    char *name;
@@ -76,16 +74,6 @@ typedef struct added {
    struct added *next;
    char *name;
 } added;
-
-static int
-hash_string(const char *p)
-{
-   int hash;
-   ASSERT(p != NULL); /* can't hash NULL */
-   for (hash = 0; *p; p++)
-      hash = (hash * HASH_PRIME + tolower(*(unsigned char*)p)) & 0x7fff;
-   return hash;
-}
 
 static int
 cmp_pname(const void *a, const void *b)

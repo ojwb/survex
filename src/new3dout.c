@@ -115,25 +115,25 @@ cave_write_pos(pos *pid, prefix *pre)
       tag = pre->ident;
       len = cslen(tag) + 12 + 4;
       /* storage station name, 12 for data, 4 for id */
-      putc(STATION_3D, pimgOut->fh);
+      putc(STATION_3D, pimg->fh);
       if (len == 0 || len > 255) {
-	 if (putc(0, pimgOut->fh) == EOF) return EOF;
-	 put32((INT32_T)len, pimgOut->fh);
-	 if (ferror(pimgOut->fh)) return EOF;
+	 if (putc(0, pimg->fh) == EOF) return EOF;
+	 put32((INT32_T)len, pimg->fh);
+	 if (ferror(pimg->fh)) return EOF;
       } else {
-	 if (putc((unsigned char)len, pimgOut->fh) == EOF) return EOF;
+	 if (putc((unsigned char)len, pimg->fh) == EOF) return EOF;
       }
-      put32((INT32_T)statcount, pimgOut->fh); /* station ID */
-      put32((INT32_T)(pid->p[0] * 100.0), pimgOut->fh); /* X in cm */
-      put32((INT32_T)(pid->p[1] * 100.0), pimgOut->fh); /* Y */
-      put32((INT32_T)(pid->p[2] * 100.0), pimgOut->fh); /* Z */
-      fputcs(tag, pimgOut->fh);
+      put32((INT32_T)statcount, pimg->fh); /* station ID */
+      put32((INT32_T)(pid->p[0] * 100.0), pimg->fh); /* X in cm */
+      put32((INT32_T)(pid->p[1] * 100.0), pimg->fh); /* Y */
+      put32((INT32_T)(pid->p[2] * 100.0), pimg->fh); /* Z */
+      fputcs(tag, pimg->fh);
       statcount++;
    } else {
       /* we've already put this in the file, so just a link is needed */
-      putc(STATLINK_3D, pimgOut->fh);
-      putc(0x04, pimgOut->fh);
-      put32((INT32_T)pid->id, pimgOut->fh);
+      putc(STATLINK_3D, pimg->fh);
+      putc(0x04, pimg->fh);
+      put32((INT32_T)pid->id, pimg->fh);
    }
    return 0;
 }
@@ -193,8 +193,8 @@ cave_write_source(const char *source)
       source = source + strlen(basesource);
     }
   }
-  putc(SOURCE_3D, pimgOut->fh);
-  fputcs(source, pimgOut->fh);
+  putc(SOURCE_3D, pimg->fh);
+  fputcs(source, pimg->fh);
 }
 
 static void
@@ -233,16 +233,16 @@ save3d(twig *sticky)
 	} else {
 	  err = 10000.0 * offset / length;
 	}
-	putc(LEG_3D, pimgOut->fh);
-	put16((INT16_T)0x02, pimgOut->fh);
-	putc(0x04, pimgOut->fh);
-	put32((INT32_T)err, pimgOut->fh); /* output error in %*100 */
+	putc(LEG_3D, pimg->fh);
+	put16((INT16_T)0x02, pimg->fh);
+	putc(0x04, pimg->fh);
+	put32((INT32_T)err, pimg->fh); /* output error in %*100 */
 	cave_write_pos(twiglet->from->pos, twiglet->from);
 	cave_write_pos(twiglet->to->pos, twiglet->to);
       }
     } else {
       if (twiglet->count) {
-        putc(BRANCH_3D, pimgOut->fh);
+        putc(BRANCH_3D, pimg->fh);
 	/* number of records  - legs + values */
 	stubcount = 0;
 	if (twiglet->source) stubcount++;
@@ -252,35 +252,35 @@ save3d(twig *sticky)
 	if (twiglet->date) stubcount++;
 	stubcount += twiglet->count;
 	if (stubcount > 32767) {
-	  put16(0, pimgOut->fh);
-	  put32(stubcount, pimgOut->fh);
+	  put16(0, pimg->fh);
+	  put32(stubcount, pimg->fh);
 	} else {
-	  put16((unsigned short)stubcount, pimgOut->fh);
+	  put16((unsigned short)stubcount, pimg->fh);
 	}
 	ltag = cslen(twiglet->to->ident);
 	if (ltag < 255) {
-	  putc((unsigned char)(ltag + 1), pimgOut->fh);
+	  putc((unsigned char)(ltag + 1), pimg->fh);
 	} else {
-	  putc(0, pimgOut->fh);
-	  put32(ltag + 1, pimgOut->fh);
+	  putc(0, pimg->fh);
+	  put32(ltag + 1, pimg->fh);
 	}
-	fputcs(twiglet->to->ident, pimgOut->fh);
+	fputcs(twiglet->to->ident, pimg->fh);
 	if (twiglet->source) cave_write_source(twiglet->source);
 	if (twiglet->date) {
-	  putc(DATE_3D, pimgOut->fh);
-	  fputcs(twiglet->date, pimgOut->fh);
+	  putc(DATE_3D, pimg->fh);
+	  fputcs(twiglet->date, pimg->fh);
 	}
 	if (twiglet->drawings) {
-	  putc(DRAWINGS_3D, pimgOut->fh);
-	  fputcs(twiglet->drawings, pimgOut->fh);
+	  putc(DRAWINGS_3D, pimg->fh);
+	  fputcs(twiglet->drawings, pimg->fh);
 	}
 	if (twiglet->instruments) {
-	  putc(INSTRUMENTS_3D, pimgOut->fh);
-	  fputcs(twiglet->instruments, pimgOut->fh);
+	  putc(INSTRUMENTS_3D, pimg->fh);
+	  fputcs(twiglet->instruments, pimg->fh);
 	}
 	if (twiglet->tape) {
-	  putc(TAPE_3D, pimgOut->fh);
-	  fputcs(twiglet->tape, pimgOut->fh);
+	  putc(TAPE_3D, pimg->fh);
+	  fputcs(twiglet->tape, pimg->fh);
 	}
 	save3d(twiglet->down);
       }
@@ -307,13 +307,13 @@ cave_write_base_source(void)
   realpath(temp, basesource);
 #endif
 
-  putc(BASE_SOURCE_3D, pimgOut->fh);
-  fputcs(basesource, pimgOut->fh);
+  putc(BASE_SOURCE_3D, pimg->fh);
+  fputcs(basesource, pimg->fh);
 
   /* get the actual file name */
   temp = leaf_from_fnm(firstfilename);
-  putc(BASE_FILE_3D, pimgOut->fh);
-  fputcs(temp, pimgOut->fh);
+  putc(BASE_FILE_3D, pimg->fh);
+  fputcs(temp, pimg->fh);
   osfree(temp);
 }
 

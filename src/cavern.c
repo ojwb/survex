@@ -71,7 +71,7 @@ long cComponents;
 bool fExportUsed = fFalse;
 
 FILE *fhErrStat = NULL;
-img *pimgOut = NULL;
+img *pimg = NULL;
 #ifndef NO_PERCENTAGE
 bool fPercent = fFalse;
 #endif
@@ -311,10 +311,10 @@ main(int argc, char **argv)
 
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
-     cave_close(pimgOut); /* this actually does all the writing */
+     cave_close(pimg); /* this actually does all the writing */
    } else {
 #endif
-     img_close(pimgOut); /* close .3d file */
+     img_close(pimg); /* close .3d file */
 #ifdef NEW3DFORMAT
    }
 #endif

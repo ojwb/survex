@@ -235,6 +235,8 @@ stats.
 
 *fix with datums etc
 
+Check leg, loop, and node stats when points are fixed with sds...
+
 Date: Fri, 20 Jul 2001
 From: Olly
 

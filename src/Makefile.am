@@ -2,7 +2,7 @@
 
 noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  cvrotgfx.h cvrotimg.h datain.h debug.h dosrot.h filelist.h filename.h\
- getopt.h img.h ini.h labels.h listpos.h matrix.h message.h namecmp.h\
+ getopt.h hash.h img.h ini.h labels.h listpos.h matrix.h message.h namecmp.h\
  netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h uni2dos.h useful.h\
  validate.h whichos.h xrot.h xcvrtbut.h new3dout.h 3ddefs.h \
@@ -47,11 +47,11 @@ aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN
 
 PRSRC = prcore.c prio.c useful.c img.c $(COMMONSRC)
  
-printps_SOURCES = printps.c $(PRSRC) ini.c
-printdm_SOURCES = printdm.c $(PRSRC) ini.c prbitmap.c
-printpcl_SOURCES = printpcl.c $(PRSRC) ini.c prbitmap.c
-printxbm_SOURCES = printxbm.c $(PRSRC) ini.c prbitmap.c
-printhpgl_SOURCES = prhpgl.c $(PRSRC) ini.c
+printps_SOURCES = printps.c $(PRSRC) ini.c hash.c
+printdm_SOURCES = printdm.c $(PRSRC) ini.c hash.c prbitmap.c
+printpcl_SOURCES = printpcl.c $(PRSRC) ini.c hash.c prbitmap.c
+printxbm_SOURCES = printxbm.c $(PRSRC) ini.c hash.c prbitmap.c
+printhpgl_SOURCES = prhpgl.c $(PRSRC) ini.c hash.c
 printwin_SOURCES = printwin.c $(PRSRC)
 printwin_LDFLAGS = -mwindows
 
@@ -66,10 +66,10 @@ xcaverot_SOURCES = xcaverot.c xcvrtbut.c $(ROTSRC)
 xcaverot_CFLAGS = @X_CFLAGS@ -DXCAVEROT
 xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
-diffpos_SOURCES = diffpos.c namecmp.c img.c useful.c $(COMMONSRC)
+diffpos_SOURCES = diffpos.c namecmp.c img.c useful.c hash.c $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
 3dtopos_SOURCES = 3dtopos.c namecmp.c img.c useful.c $(COMMONSRC)
-extend_SOURCES = extend.c $(COMMONSRC) useful.c img.c
+extend_SOURCES = extend.c $(COMMONSRC) img.c useful.c hash.c
 
 cad3d_SOURCES = 3dtodxf.c $(COMMONSRC) useful.c img.c
 

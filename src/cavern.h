@@ -183,13 +183,14 @@ typedef struct {
    /* bit5 = articulation leg (i.e. carries no error) */
    unsigned char reverse;
    /* flags - e.g. surface, duplicate survey
-    * only used if (FLAG_DATAHERE & !FLAG_REPLACEMENTLEG)
+    * only used if (FLAG_DATAHERE & !(FLAG_REPLACEMENTLEG|FLAG_FAKE))
     */
    unsigned char flags;
 } linkcommon;
 #define FLAG_DATAHERE 0x80
 #define FLAG_REPLACEMENTLEG 0x40
 #define FLAG_ARTICULATION 0x20
+#define FLAG_FAKE 0x10 /* an equate or leg inside an sdfix */
 #define MASK_REVERSEDIRN 0x03
 
 /* reverse leg - deltas & vars stored on other dirn */
@@ -284,8 +285,7 @@ extern int survey_title_len;
 extern bool fExplicitTitle;
 extern long cLegs, cStns, cComponents;
 extern FILE *fhErrStat;
-/* extern FILE *fhPosList; */
-extern img *pimgOut;
+extern img *pimg;
 #ifndef NO_PERCENTAGE
 extern bool fPercent;
 #endif

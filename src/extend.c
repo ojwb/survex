@@ -25,15 +25,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #include "cmdline.h"
-#include "useful.h"
-#include "filename.h"
-#include "message.h"
+#include "debug.h"
 #include "filelist.h"
+#include "filename.h"
+#include "hash.h"
 #include "img.h"
+#include "message.h"
+#include "useful.h"
 
+/* To save memory we should probably use the prefix hash for the prefix on
+ * point labels (FIXME) */
 typedef struct POINT {
    img_point p;
    const char *label;
@@ -44,6 +47,7 @@ typedef struct POINT {
 
 typedef struct LEG {
    point *fr, *to;
+   const char *prefix;
    int fDone;
    int flags;
    struct LEG *next;
@@ -51,11 +55,39 @@ typedef struct LEG {
 
 static point headpoint = {{0, 0, 0}, NULL, 0, 0, NULL};
 
-static leg headleg = {NULL, NULL, 1, 0, NULL};
+static leg headleg = {NULL, NULL, NULL, 1, 0, NULL};
 
 static img *pimg;
 
 static void do_stn(point *, double);
+
+typedef struct pfx {
+   const char *label;
+   struct pfx *next;
+} pfx;
+
+static pfx **htab;
+
+static const char *
+find_prefix(const char *prefix)
+{
+   pfx *p;
+   int hash;
+
+   ASSERT(prefix);
+  
+   hash = hash_string(prefix) & 0x1fff;
+   for (p = htab[hash]; p; p = p->next) {
+      if (strcmp(prefix, p->label) == 0) return p->label;
+   }
+
+   p = osnew(pfx);
+   p->label = osstrdup(prefix);
+   p->next = htab[hash];
+   htab[hash] = p;
+
+   return p->label;
+}
 
 static point *
 find_point(const img_point *pt)
@@ -79,12 +111,16 @@ find_point(const img_point *pt)
 }
 
 static void
-add_leg(point *fr, point *to, int flags)
+add_leg(point *fr, point *to, const char *prefix, int flags)
 {
    leg *l;
    l = osmalloc(ossizeof(leg));
    l->fr = fr;
    l->to = to;
+   if (prefix)
+      l->prefix = find_prefix(prefix);
+   else
+      l->prefix = NULL;
    l->next = headleg.next;
    l->fDone = 0;
    l->flags = flags;
@@ -145,6 +181,8 @@ main(int argc, char **argv)
    putnl();
    puts(msg(/*Reading in data - please wait...*/105));
 
+   htab = osmalloc(ossizeof(pfx*) * 0x2000);
+   
    do {
       result = img_read_item(pimg, &pt);
       switch (result) {
@@ -161,7 +199,7 @@ main(int argc, char **argv)
        	 }
          to = find_point(&pt);
          if (!(pimg->flags & (img_FLAG_SURFACE|img_FLAG_SPLAY)))
-	    add_leg(fr, to, pimg->flags);
+	    add_leg(fr, to, pimg->label, pimg->flags);
          fr = to;
          break;
       case img_LABEL:
@@ -219,7 +257,8 @@ do_stn(point *p, double X)
             lp->next = l->next;
             dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
             img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-            img_write_item(pimg, img_LINE, l->flags, NULL, X, 0, l->to->p.z);
+            img_write_item(pimg, img_LINE, l->flags, l->prefix,
+			   X, 0, l->to->p.z);
             l->fDone = 1;
             do_stn(l->fr, X + dX);
 	    /* osfree(l); */
@@ -228,7 +267,8 @@ do_stn(point *p, double X)
             lp->next = l->next;
             dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
             img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-            img_write_item(pimg, img_LINE, l->flags, NULL, X + dX, 0, l->to->p.z);
+            img_write_item(pimg, img_LINE, l->flags, l->prefix,
+			   X + dX, 0, l->to->p.z);
             l->fDone = 1;
             do_stn(l->to, X + dX);
 	    /* osfree(l); */

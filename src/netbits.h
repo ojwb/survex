@@ -31,12 +31,7 @@ void addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
 #endif
 		  );
 
-void addleg(node *fr, node *to,
-	    real dx, real dy, real dz, real vx, real vy, real vz
-#ifndef NO_COVARIANCES
-	    , real cyz, real czx, real cxy
-#endif
-	    );
+void addequate(node *fr, node *to);
 
 void addfakeleg(node *fr, node *to,
 		real dx, real dy, real dz, real vx, real vy, real vz

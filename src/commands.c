@@ -777,17 +777,7 @@ cmd_equate(void)
 	    replace_pfx(name1, name2);
 	 }
 
-	 /* count equates as legs for now... */
-#ifdef NO_COVARIANCES
-	 addleg(stn1, stn2,
-		(real)0.0, (real)0.0, (real)0.0,
-		(real)0.0, (real)0.0, (real)0.0);
-#else
-	 addleg(stn1, stn2,
-		(real)0.0, (real)0.0, (real)0.0,
-		(real)0.0, (real)0.0, (real)0.0,
-		(real)0.0, (real)0.0, (real)0.0);
-#endif
+	 addequate(stn1, stn2);
       }
    }
 }

@@ -254,70 +254,14 @@ addto_link(linkfor *leg, const linkfor *leg2)
    return leg;
 }
 
-/* Add a leg between names *fr_name and *to_name */
-void
-addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
-	     real dx, real dy, real dz,
-	     real vx, real vy, real vz
+static void
+addleg_(node *fr, node *to,
+	real dx, real dy, real dz,
+	real vx, real vy, real vz,
 #ifndef NO_COVARIANCES
-	     , real cyz, real czx, real cxy
+	real cyz, real czx, real cxy,
 #endif
-	     )
-{
-   node *to, *fr;
-   if (to_name == fr_name) {
-      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
-		    sprint_prefix(to_name));
-      return;
-   }   
-   if (fToFirst) {
-      to = StnFromPfx(to_name);
-      fr = StnFromPfx(fr_name);
-   } else {
-      fr = StnFromPfx(fr_name);
-      to = StnFromPfx(to_name);
-   }
-   addleg(fr, to, dx, dy, dz, vx, vy, vz
-#ifndef NO_COVARIANCES
-	  , cyz, czx, cxy
-#endif
-	  );
-}
-
-/* Add a leg between existing stations *fr and *to
- * If either node is a three node, then it is split into two
- * and the data structure adjusted as necessary
- */
-void
-addleg(node *fr, node *to,
-       real dx, real dy, real dz,
-       real vx, real vy, real vz
-#ifndef NO_COVARIANCES
-       , real cyz, real czx, real cxy
-#endif
-       )
-{
-   cLegs++; /* increment count (first as compiler may do tail recursion) */
-   addfakeleg(fr, to, dx, dy, dz, vx, vy, vz
-#ifndef NO_COVARIANCES
-	      , cyz, czx, cxy
-#endif
-	      );
-}
-
-/* Add a 'fake' leg (not counted) between existing stations *fr and *to
- * (which *must* be different)
- * If either node is a three node, then it is split into two
- * and the data structure adjusted as necessary
- */
-void
-addfakeleg(node *fr, node *to,
-	   real dx, real dy, real dz,
-	   real vx, real vy, real vz
-#ifndef NO_COVARIANCES
-	   , real cyz, real czx, real cxy
-#endif
-	   )
+	int leg_flags)
 {
    int i, j;
    linkfor *leg, *leg2;
@@ -351,7 +295,7 @@ addfakeleg(node *fr, node *to,
    leg->v[2] = vz;
 #endif
    leg2->l.reverse = i;
-   leg->l.reverse = j | FLAG_DATAHERE;
+   leg->l.reverse = j | FLAG_DATAHERE | leg_flags;
 
    leg->l.flags = pcs->flags;
 
@@ -365,6 +309,76 @@ addfakeleg(node *fr, node *to,
    shape = to->name->shape + 1;
    if (shape < 1) shape = 1 - shape;
    to->name->shape = shape;
+}
+
+/* Add a leg between names *fr_name and *to_name */
+void
+addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
+	     real dx, real dy, real dz,
+	     real vx, real vy, real vz
+#ifndef NO_COVARIANCES
+	     , real cyz, real czx, real cxy
+#endif
+	     )
+{
+   node *to, *fr;
+   if (to_name == fr_name) {
+      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
+		    sprint_prefix(to_name));
+      return;
+   }   
+   if (fToFirst) {
+      to = StnFromPfx(to_name);
+      fr = StnFromPfx(fr_name);
+   } else {
+      fr = StnFromPfx(fr_name);
+      to = StnFromPfx(to_name);
+   }
+   cLegs++; /* increment count (first as compiler may do tail recursion) */
+   addleg_(fr, to, dx, dy, dz, vx, vy, vz,
+#ifndef NO_COVARIANCES
+	   cyz, czx, cxy,
+#endif
+	   0);
+}
+
+/* Add a leg between existing stations *fr and *to
+ * If either node is a three node, then it is split into two
+ * and the data structure adjusted as necessary
+ */
+void
+addequate(node *fr, node *to)
+{
+   /* count equates as legs for now... */
+   cLegs++;
+   addleg_(fr, to,
+	   (real)0.0, (real)0.0, (real)0.0,
+	   (real)0.0, (real)0.0, (real)0.0,
+#ifndef NO_COVARIANCES
+	   (real)0.0, (real)0.0, (real)0.0,
+#endif
+	   FLAG_FAKE);
+}
+
+/* Add a 'fake' leg (not counted) between existing stations *fr and *to
+ * (which *must* be different)
+ * If either node is a three node, then it is split into two
+ * and the data structure adjusted as necessary
+ */
+void
+addfakeleg(node *fr, node *to,
+	   real dx, real dy, real dz,
+	   real vx, real vy, real vz
+#ifndef NO_COVARIANCES
+	   , real cyz, real czx, real cxy
+#endif
+	   )
+{
+   addleg_(fr, to, dx, dy, dz, vx, vy, vz,
+#ifndef NO_COVARIANCES
+	   cyz, czx, cxy,
+#endif
+	   FLAG_FAKE);
 }
 
 char
@@ -401,7 +415,7 @@ freeleg(node **stnptr)
 #else
    leg->v[0] = leg->v[1] = leg->v[2] = (real)0.0;
 #endif
-   leg->l.reverse = 1 | FLAG_DATAHERE;
+   leg->l.reverse = 1 | FLAG_DATAHERE | FLAG_FAKE;
    leg->l.flags = pcs->flags;
 
    leg2->l.to = oldstn;
