@@ -16,7 +16,8 @@ bin_PROGRAMS = cavern $(PRINT) diffpos extend survex 3dtodxf @CAVEROT@
 
 cavern_SOURCES = cavern.c message.c filename.c listpos.c commands.c\
  cmdline.c getopt.c getopt1.c datain.c netskel.c network.c readval.c str.c\
- matrix.c img.c osdepend.c netbits.c useful.c validate.c
+ matrix.c img.c osdepend.c netbits.c useful.c validate.c\
+ netartic.c
 
 survex_SOURCES = wrap.c osdepend.c
 
