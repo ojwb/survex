@@ -186,6 +186,7 @@ get_token(void)
    } else {
       /* if token is too long, change end to "..." - that way it won't
        * match, but will look sensible in any error message */
+      /* FIXME: this is naff, better to use resizing buffer */
       strcpy(buffer + MAX_KEYWORD_LEN - 4, "...");
    }
    /* printf("get_token() got "); puts(buffer); */
@@ -958,11 +959,11 @@ infer(void)
    
    switch (setting) {
 #if 0
-    case 1:
+    case 2:
       pcs->f0Eq = on;
       break;
 #endif
-    case 2:
+    case 1:
       pcs->f90Up = on;
       break;
     default:
