@@ -45,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-03-01 17:01:33 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.17 2001-03-01 17:01:33 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-03-28 22:14:54 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.18 2001-03-28 22:14:54 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1296,7 +1296,7 @@ I will have to do some sums...
 
 <!--
 <Para>BEGIN, CALIBRATE, DATA, DEFAULT, END, EQUATE, FIX, GRADE,
-INCLUDE, MEASURE, PREFIX, SD, SET, SOLVE, UNITS</Para>
+INCLUDE, PREFIX, SD, SET, SOLVE, UNITS</Para>
 -->
 
 <Para>The commands are documented in a common format:

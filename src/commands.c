@@ -251,7 +251,7 @@ match_tok(const sztok *tab, int tab_size)
 typedef enum {
    CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_DATA, CMD_DEFAULT,
    CMD_END, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE, CMD_INFER,
-   CMD_LRUD, CMD_MEASURE, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET,
+   CMD_LRUD, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET,
    CMD_SOLVE, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
 
@@ -269,7 +269,6 @@ static sztok cmd_tab[] = {
      {"INCLUDE",   CMD_INCLUDE},
      {"INFER",     CMD_INFER},
      {"LRUD",      CMD_LRUD},
-     {"MEASURE",   CMD_MEASURE},
      {"PREFIX",    CMD_PREFIX},
      {"REQUIRE",   CMD_REQUIRE},
      {"SD",        CMD_SD},
@@ -1390,7 +1389,6 @@ handle_command(void)
        skipline();
        break;
     }
-    case CMD_MEASURE: NOT_YET; break;
     case CMD_PREFIX: cmd_prefix(); break;
     case CMD_UNITS: cmd_units(); break;
     case CMD_BEGIN: cmd_begin(); break;
