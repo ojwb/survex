@@ -199,6 +199,7 @@ img_open_survey(const char *fnm, char *title_buf, char *date_buf,
       img_errno = IMG_BADFORMAT;
       return NULL;
    }
+
    getline((title_buf ? title_buf : tmpbuf), TMPBUFLEN, pimg->fh);
    getline((date_buf ? date_buf : tmpbuf), TMPBUFLEN, pimg->fh);
    pimg->fRead = fTrue; /* reading from this file */
@@ -218,6 +219,14 @@ img_open_survey(const char *fnm, char *title_buf, char *date_buf,
 	 if (len) {
 	    pimg->survey = osmalloc(len + 2);
 	    memcpy(pimg->survey, survey, len);
+	    /* Set title to leaf survey name */
+	    if (title_buf) {
+	       char *p;
+	       pimg->survey[len] = '\0';
+	       p = strchr(pimg->survey, '.');
+	       if (p) p++; else p = pimg->survey;
+	       strcpy(title_buf, p);
+	    }
 	    pimg->survey[len] = '.';
 	    pimg->survey[len + 1] = '\0';
 	 }

@@ -33,6 +33,9 @@
 
 * printps: thinner lines by default (0.1 points rather than 0.5).
 
+* print*: If restricting to a subsurvey, use that survey name for the
+  title of the printout.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.
