@@ -10,8 +10,12 @@ Changes in 1.0.4:
 
 * print*: --no-borders fixed to work as documented; --no-cutlines added to
   turn off the dashed lines where pages join on multi-page printouts.
+
+* aven: tracked down two uninitialised variables which might be the cause
+  of the problems loading a .3d file on startup which some people have been
+  experiencing on Microsoft Windows.
   
-* (MacOS X version): aven: aven now buils on MacOS X - we just need to sort
+* (MacOS X version): aven: aven now builds on MacOS X - we just need to sort
   out packaging now...
 
 * Minor documentation updates.
