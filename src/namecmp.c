@@ -21,7 +21,6 @@
 # include <config.h>
 #endif
 
-#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -39,39 +38,57 @@ name_cmp(const char *a, const char *b)
 	 size_t len_b = dot_b - b;
 	 int res = memcmp(a, b, len_a < len_b ? len_a : len_b);
 	 if (res == 0) res = len_a - len_b;
-	 if (res == 0) res = name_cmp(dot_a + 1, dot_b + 1);
-	 return res;
+	 if (res) return res;
+	 return name_cmp(dot_a + 1, dot_b + 1);
       }
       return -1;
    }
 
    if (dot_b) return 1;
    
+   repeat:
+
    /* skip common prefix */
    while (*a && !isdigit(*a) && *a == *b) {
       a++;
       b++;
    }
-   
-   /* sort numbers numerically and before non-numbers */
-   if (!isdigit(a[0])) {
-      if (isdigit(b[0])) return 1;
-   } else {
-      long n_a, n_b;
-      if (!isdigit(b[0])) return -1;
-      /* FIXME: check errno, etc in case out of range */
-      n_a = strtoul(a, NULL, 10);
-      n_b = strtoul(b, NULL, 10);
-      if (n_a != n_b) {
-	 if (n_a > n_b)
-	    return 1;
-	 else
-	    return -1;
-      }
-      /* drop through - the numbers match, but there may be a suffix
-       * and also we want to give an order to "01" vs "1"... */
+
+   if (!*a) {
+      if (*b) return -1;
+      return 0;
    }
 
-   /* if numbers match, sort by suffix */
+   if (!*b) return 1;
+
+   if (isdigit(a[0])) {
+      /* sort numbers numerically and before non-numbers */
+      const char *sa, *sb, *ea, *eb;
+      int res;
+
+      if (!isdigit(b[0])) return -1;
+
+      sa = a;
+      while (*sa == '0') sa++;
+      ea = sa;
+      while (isdigit(*ea)) ea++;
+
+      sb = b;
+      while (*sb == '0') sb++;
+      eb = sb;
+      while (isdigit(*eb)) eb++;
+
+      res = (ea - sa) - (eb - sb); /* shorter sorts first */
+      if (!res) res = memcmp(sa, sb, ea - sa); /* same length, all digits, so memcmp() sorts numerically */
+      if (!res) res = (sb - b) - (sa - a); /* more leading zeros sorts first */
+      if (res) return res;
+
+      /* if numbers match, sort by suffix */
+      a = ea;
+      b = eb;
+      goto repeat;
+   }
+
+   if (isdigit(b[0])) return 1;
    return strcmp(a, b);
 }
