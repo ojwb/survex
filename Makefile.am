@@ -147,7 +147,7 @@ mingw : all mingw_zip
 
 mingwexes :
 	test -d mingw_exes || mkdir mingw_exes
-	for f in $(base_progs) printwin ; do cp src/$$f.exe mingw_exes ; done
+	for f in $(base_progs) aven printwin ; do cp src/$$f.exe mingw_exes ; done
 	for a in hto2svx svx2hto ; do cp hto/$$a.exe mingw_exes ; done
 
 mingw_zip_name = survex-win32-@VERSION@.zip
