@@ -78,3 +78,27 @@ Allow valid range for an instrument to be specified.  Tie in with
 *instrument.  *units date - ranges for dates - e.g. "1990-" or
 "jun-aug"...
 
+Date: Fri, 04 May 2001
+Subject: xcaverot
+From: Olly
+
+xcaverot missing:, ^A (lazy redraw during drags), ^R (reverse sense of
+controls), escape vs q(?)
+
+switch_to_(plan|elevation) in xcaverot should animate but code is just
+broken.
+
+?try using labels.c in xcaverot to see if XRegions are better or not?
+
+Maybe station lists should know how long they are?
+
+caverot help page needs fettling so that it appears centrally (and indeed
+so that it all fits on the screen in chunky CGA modes) [BC fns to look at:
+textheight("W"), textwidth(), settextstyle()]
+
+cope with any combination of readings which gives enough info ???
+
+Articulation point code: ideally the articulation point code should allow
+further network reductions to happen after splitting at articulation
+points?
+

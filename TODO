@@ -65,26 +65,10 @@ aven/caverot/xcaverot: if all points share a common prefix then
 default to hiding it?
 
 Date: Fri, 04 May 2001
-Subject: xcaverot
-From: Olly
-
-xcaverot missing:, ^A (lazy redraw during drags), ^R (reverse sense of
-controls), escape vs q(?)
-
-switch_to_(plan|elevation) in xcaverot should animate but code is just
-broken.
-
-?try using labels.c in xcaverot to see if XRegions are better or not?
-
-Date: Fri, 04 May 2001
 Subject: caverot
 From: Olly
 
 extract help screen from caverot.c for translation
-
-caverot help page needs fettling so that it appears centrally (and indeed
-so that it all fits on the screen in chunky CGA modes) [BC fns to look at:
-textheight("W"), textwidth(), settextstyle()]
 
 Date: Fri, 04 May 2001
 Subject: manual
@@ -143,8 +127,6 @@ even if messages can't be found.
 
 check line numbers with interleaved data (seem to be one too low).
 
-Maybe station lists should know how long they are?
-
 finish implementing covariances in a few places - grep for FIXCOV.
 
 get Phil to fix where it says PHILU...
@@ -152,8 +134,6 @@ get Phil to fix where it says PHILU...
 cylpolar style? Dr, Comp, Dz
 
 back bearings?
-
-cope with any combination of readings which gives enough info ???
 
 one page HTML manual
 
@@ -164,12 +144,17 @@ glcaverot?
 leg and station "comments":
 
 *data stationdata station left right up down comment
+
 1 1.0 - 50+ 0.5 "large cairn"
+
 2 ...
 
 *data normal station l r u d comment newline tape compass clino
+
 1 1.0 - 50+ 0.5 "large cairn"
+
   10.78 123 -03
+
 2 ...
 
 comment can be omitted "-" or not present if at end of line...?
@@ -177,10 +162,6 @@ commentall?
 
 Date: Wed, 18 Jul 20001
 From: Olly
-
-Articulation point code: ideally the articulation point code should allow
-further network reductions to happen after splitting at articulation
-points?
 
 Rather than forming a linked list of components, solve each as it is
 identified?
