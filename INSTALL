@@ -1,0 +1,6 @@
+For Unix:
+
+./configure
+make
+
+Note: there's no "make install" yet.

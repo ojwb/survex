@@ -1,0 +1,14 @@
+Date: Sat, 11 Apr 1998 14:04:25 +0200
+From: immoh <immoh@donau.de>
+
+Another remark: Did you know that you can crash CAVEROT by setting the
+scale factor to very large or very small values (probably larger/smaller
+than MIN/MAXFLOAT)?! This would be worth an error catch....
+
+Date: Fri, 21 Aug 1998 17:36:00 +0100
+From: olly@muscat.co.uk
+
+Use of "!" to turn a command line option off is annoying on Unix (it does
+event look up in some shells if not escaped) and is rather non-standard -
+think of a better approach.
+

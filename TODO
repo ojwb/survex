@@ -1,0 +1,19 @@
+* allow disabling of specific warnings
+
+* allow valid range for an instrument to be specified...
+
+* cave length...
+
+* migrate command-line parsing to GNU getopt and support --version and
+  --help (http://www.fsf.org/prep/standards_14.html#SEC14)
+
+Date: Tue, 17 Feb 98 18:10:51 GMT
+From: Andy Waddington on Survey stuff <Survex@pennine.demon.co.uk>
+
+Survex ought to have a way of saying "Down" for diving legs too.
+
+Date: 26 Aug 1998 10:06:16 GMT
+From: olly@muscat.co.uk
+
+Sort out 3dtodxf
+
