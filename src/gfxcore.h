@@ -42,6 +42,13 @@ using std::list;
 class MainFrm;
 class PointInfo;
 
+#define SCALE_ALL 0
+#define SCALE_NAMES 1
+#define SCALE_CROSSES 2
+#define SCALE_LEGS 3
+#define SCALE_SPECIALPTS 4
+#define SCALE_HIGHLIGHTEDPTS 5
+
 #ifdef AVENGL
 struct Double3 {
     Double x;
@@ -232,7 +239,6 @@ class GfxCore : public wxWindow {
     LabelFlags* m_LabelGrid;
     HighlightedPt* m_HighlightedPts;
     int m_NumHighlightedPts;
-    bool m_ScaleHighlightedPtsOnly;
     bool m_DepthbarOff;
     bool m_ScalebarOff;
     bool m_IndicatorsOff;
@@ -261,7 +267,6 @@ class GfxCore : public wxWindow {
     bool m_ReverseControls;
     bool m_SwitchingToPlan;
     bool m_SwitchingToElevation;
-    bool m_ScaleCrossesOnly;
     bool m_Crosses;
     bool m_Legs;
     bool m_Names;
@@ -334,8 +339,6 @@ class GfxCore : public wxWindow {
 	Double x, y, z;
     } m_there;
 
-    bool m_ScaleSpecialPtsOnly;
-
 #ifndef AVENGL
     wxPen* m_Pens;
     wxBrush* m_Brushes;
@@ -399,8 +402,8 @@ class GfxCore : public wxWindow {
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
-    void SetScale(Double scale);
-    void SetScaleInitial(Double scale);
+    void SetScale(Double scale, int what = SCALE_ALL);
+    void SetScaleInitial(Double scale, int what = SCALE_ALL);
     void RedrawOffscreen();
     void TryToFreeArrays();
     void FirstShow();
