@@ -2,7 +2,7 @@
 *fix 2 1 0 0
 *fix 3 0 1 0 1 1 1
 *fix 4 0 0 1 1 1 1
-*data nosurvey station newline
+*data nosurvey station
 1
 2
 3

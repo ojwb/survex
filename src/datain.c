@@ -736,7 +736,7 @@ data_normal(void)
 
 static int
 process_diving(prefix *fr, prefix *to, real tape, real comp,
-	       real frdepth, real todepth, bool fToFirst, bool fDz)
+	       real frdepth, real todepth, bool fToFirst, bool fDepthChange)
 {
    real dx, dy, dz;
    real vx, vy, vz;
@@ -744,7 +744,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    real cxy = 0, cyz = 0, czx = 0;
 #endif
 
-   /* Note: frdepth == todepth test works regardless of fDz */
+   /* Note: frdepth == todepth test works regardless of fDepthChange */
    if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
       process_equate(fr, to);
       return 1;
@@ -764,9 +764,9 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
 
    tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
    /* depth gauge readings increase upwards with default calibration */
-   if (fDz) {
+   if (fDepthChange) {
       ASSERT(frdepth == 0.0);
-      dz = (todepth * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
+      dz = (todepth * pcs->units[Q_DEPTH] - pcs->z[Q_DEPTH]) * pcs->sc[Q_DEPTH];
    } else {
       dz = (todepth - frdepth) * pcs->units[Q_DEPTH] * pcs->sc[Q_DEPTH];
    }
@@ -869,7 +869,7 @@ data_diving(void)
    real frdepth = 0, todepth = 0;
 
    bool fMulti = fFalse;
-   bool fRev, fDz;
+   bool fRev, fDepthChange;
 
    reading first_stn = End;
 
@@ -878,7 +878,7 @@ data_diving(void)
    again:
 
    fRev = fFalse;
-   fDz = fFalse;
+   fDepthChange = fFalse;
 
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
@@ -918,8 +918,8 @@ data_diving(void)
 	  frdepth = todepth;
 	  todepth = read_numeric(fFalse);
 	  break;
-       case Dz:
-	  fDz = fTrue;
+       case DepthChange:
+	  fDepthChange = fTrue;
 	  frdepth = 0;
 	  todepth = read_numeric(fFalse);
 	  break;
@@ -936,7 +936,7 @@ data_diving(void)
 	       to = t;
 	    }
 	    r = process_diving(fr, to, tape, comp, frdepth, todepth,
-			       (first_stn == To) ^ fRev, fDz);
+			       (first_stn == To) ^ fRev, fDepthChange);
 	    if (!r) skipline();
 	 }
 	 fMulti = fTrue;
@@ -962,7 +962,7 @@ data_diving(void)
 	       to = t;
 	    }
 	    r = process_diving(fr, to, tape, comp, frdepth, todepth,
-			       (first_stn == To) ^ fRev, fDz);
+			       (first_stn == To) ^ fRev, fDepthChange);
 	    process_eol();
 	    return r;
 	 }
@@ -1089,7 +1089,7 @@ data_cartesian(void)
 
 static int
 process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
-		 real frdepth, real todepth, bool fToFirst, bool fDz)
+		 real frdepth, real todepth, bool fToFirst, bool fDepthChange)
 {
    real dx, dy, dz;
    real vx, vy, vz;
@@ -1097,7 +1097,7 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
    real cxy = 0;
 #endif
 
-   /* Note: frdepth == todepth test works regardless of fDz */
+   /* Note: frdepth == todepth test works regardless of fDepthChange */
    if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
       process_equate(fr, to);
       return 1;
@@ -1117,9 +1117,9 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
 
    tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
    /* depth gauge readings increase upwards with default calibration */
-   if (fDz) {
+   if (fDepthChange) {
       ASSERT(frdepth == 0.0);
-      dz = (todepth * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
+      dz = (todepth * pcs->units[Q_DEPTH] - pcs->z[Q_DEPTH]) * pcs->sc[Q_DEPTH];
    } else {
       dz = (todepth - frdepth) * pcs->units[Q_DEPTH] * pcs->sc[Q_DEPTH];
    }
@@ -1192,7 +1192,7 @@ data_cylpolar(void)
    real frdepth = 0, todepth = 0;
 
    bool fMulti = fFalse;
-   bool fRev, fDz;
+   bool fRev, fDepthChange;
 
    reading first_stn = End;
 
@@ -1201,7 +1201,7 @@ data_cylpolar(void)
    again:
 
    fRev = fFalse;
-   fDz = fFalse;
+   fDepthChange = fFalse;
 
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
@@ -1241,8 +1241,8 @@ data_cylpolar(void)
 	  frdepth = todepth;
 	  todepth = read_numeric(fFalse);
 	  break;
-       case Dz:
-	  fDz = fTrue;
+       case DepthChange:
+	  fDepthChange = fTrue;
 	  frdepth = 0;
 	  todepth = read_numeric(fFalse);
 	  break;
@@ -1259,7 +1259,7 @@ data_cylpolar(void)
 	       to = t;
 	    }
 	    r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
-				 (first_stn == To) ^ fRev, fDz);
+				 (first_stn == To) ^ fRev, fDepthChange);
 	    if (!r) skipline();
 	 }
 	 fMulti = fTrue;
@@ -1285,7 +1285,7 @@ data_cylpolar(void)
 	       to = t;
 	    }
 	    r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
-				 (first_stn == To) ^ fRev, fDz);
+				 (first_stn == To) ^ fRev, fDepthChange);
 	    process_eol();
 	    return r;
 	 }

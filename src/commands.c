@@ -855,6 +855,7 @@ cmd_data(void)
 	{"COMPASS",      Comp }, /* alternative name */
         {"COUNT",        Count }, /* FrCount&ToCount in multiline */
         {"DEPTH",        Depth }, /* FrDepth&ToDepth in multiline */
+	{"DEPTHCHANGE",  DepthChange },
         {"DIRECTION",    Dir },
 	{"DX",		 Dx },
 	{"DY",		 Dy },
@@ -886,22 +887,28 @@ cmd_data(void)
       data_nosurvey
    };
 
+#define MASK_NORMAL BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) |\
+   BIT(Tape) | BIT(Comp) | BIT(Clino)
+#define MASK_TOPOFIL BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) |\
+   BIT(FrCount) | BIT(ToCount) | BIT(Count) | BIT(Comp) | BIT(Clino)
+#define MASK_DIVING BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) |\
+   BIT(Tape) | BIT(Comp) |\
+   BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(DepthChange)
+#define MASK_CARTESIAN BIT(Fr) | BIT(To) | BIT(Station) |\
+   BIT(Dx) | BIT(Dy) | BIT(Dz)
+#define MASK_CYLPOLAR  BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) |\
+   BIT(Tape) | BIT(Comp) |\
+   BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(DepthChange)
+#define MASK_NOSURVEY BIT(Fr) | BIT(To) | BIT(Station)
+   
    /* readings which may be given for each style */
-   static unsigned long mask[] = {
-      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir)
-	 | BIT(Tape) | BIT(Comp) | BIT(Clino),
-      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir)
-	 | BIT(FrCount) | BIT(ToCount) | BIT(Count) | BIT(Comp) | BIT(Clino),
-      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) | BIT(Tape) | BIT(Comp)
-	 | BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(Dz),
-      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dx) | BIT(Dy) | BIT(Dz),
-      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) | BIT(Tape) | BIT(Comp)
-	 | BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(Dz),
-      BIT(Fr) | BIT(To) | BIT(Station)
+   static const unsigned long mask[] = {
+      MASK_NORMAL, MASK_TOPOFIL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR,
+      MASK_NOSURVEY
    };
 
    /* readings which may be omitted for each style */
-   static unsigned long mask_optional[] = {
+   static const unsigned long mask_optional[] = {
       BIT(Dir) | BIT(Clino),
       BIT(Dir) | BIT(Clino),
       BIT(Dir),
@@ -910,6 +917,15 @@ cmd_data(void)
       0
    };
 
+   /* all valid readings */
+   static const unsigned long mask_all[] = {
+      MASK_NORMAL | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_TOPOFIL | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_DIVING | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_CARTESIAN | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_CYLPOLAR | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_NOSURVEY | BIT(Ignore) | BIT(IgnoreAll) | BIT(End)
+   };
 #define STYLE_DEFAULT   -2
 #define STYLE_UNKNOWN   -1
 #define STYLE_NORMAL     0
@@ -934,9 +950,8 @@ cmd_data(void)
 
    int style, k = 0, kMac;
    reading *new_order, d;
-   unsigned long m, mUsed = 0;
+   unsigned long mUsed = 0;
    char *style_name;
-   bool fHadNewline = fFalse;
 
    /* after a bad *data command ignore survey data until the next
     * *data command to avoid an avalanche of errors */
@@ -958,8 +973,6 @@ cmd_data(void)
       skipline();
       return;
    }
-
-   m = mask[style] | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
 
    skipblanks();
 #ifndef NO_DEPRECATED
@@ -989,7 +1002,7 @@ cmd_data(void)
 	 break;
       }
       /* Note: an unknown token is reported as trailing garbage */
-      if (!TSTBIT(m, d)) {
+      if (!TSTBIT(mask_all[style], d)) {
 	 compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
 		       buffer, style_name);
 	 osfree(style_name);
@@ -997,7 +1010,7 @@ cmd_data(void)
  	 skipline();
 	 return;
       }
-      if (fHadNewline && TSTBIT(m_multi, d)) {
+      if (TSTBIT(mUsed, Newline) && TSTBIT(m_multi, d)) {
 	 /* FIXME: redo message - this is for when they write
 	  * *data diving station newline tape depth compass
 	  */
@@ -1034,13 +1047,13 @@ cmd_data(void)
 	       if (TSTBIT(mUsed, Count)) fBad = fTrue;
 	       break;
 	     case Depth:
-	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(Dz)))
+	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(DepthChange)))
 		  fBad = fTrue;
 	       break;
 	     case FrDepth: case ToDepth:
-	       if (mUsed & (BIT(Depth) | BIT(Dz))) fBad = fTrue;
+	       if (mUsed & (BIT(Depth) | BIT(DepthChange))) fBad = fTrue;
 	       break;
-	     case Dz:
+	     case DepthChange:
 	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(Depth)))
 		  fBad = fTrue;
 	       break;
@@ -1051,6 +1064,13 @@ cmd_data(void)
 		   */
 		  compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
 				buffer, style_name);
+		  osfree(style_name);
+		  osfree(new_order);
+		  skipline();
+		  return;
+	       }
+	       if (k == 0) {
+		  compile_error(/*NEWLINE can't be the first reading*/222);
 		  osfree(style_name);
 		  osfree(new_order);
 		  skipline();
@@ -1083,6 +1103,34 @@ cmd_data(void)
       new_order[k++] = d;
    } while (d != End);
 
+   if (k >= 2 && new_order[k - 2] == Newline) {
+      compile_error(/*NEWLINE can't be the last reading*/223);
+      osfree(style_name);
+      osfree(new_order);
+      skipline();
+      return;
+   }
+   
+   if (style == STYLE_NOSURVEY) {
+      if (TSTBIT(mUsed, Station)) {
+	 if (k >= kMac) {
+	    kMac = kMac * 2;
+	    new_order = osrealloc(new_order, kMac * sizeof(reading));
+	 }
+	 new_order[k - 1] = Newline;
+	 new_order[k++] = End;
+      }
+   } else if (!TSTBIT(mUsed, Newline) && (m_multi & mUsed)) {
+      /* This is for when they write
+       * *data normal station tape compass clino
+       * (i.e. no newline, but interleaved readings)
+       */
+      compile_error(/*Interleaved readings, but no NEWLINE*/224);
+      osfree(style_name);
+      osfree(new_order);
+      return;
+   }
+
 #if 0
    printf("mUsed = 0x%x\n", mUsed);
 #endif
@@ -1093,10 +1141,10 @@ cmd_data(void)
       mUsed |= BIT(Fr) | BIT(To);
 
    if (mUsed & (BIT(FrDepth) | BIT(ToDepth)))
-      mUsed |= BIT(Depth) | BIT(Dz);
+      mUsed |= BIT(Depth) | BIT(DepthChange);
    else if (TSTBIT(mUsed, Depth))
-      mUsed |= BIT(FrDepth) | BIT(ToDepth) | BIT(Dz);
-   else if (TSTBIT(mUsed, Dz) && TSTBIT(m, Depth))
+      mUsed |= BIT(FrDepth) | BIT(ToDepth) | BIT(DepthChange);
+   else if (TSTBIT(mUsed, DepthChange))
       mUsed |= BIT(FrDepth) | BIT(ToDepth) | BIT(Depth);
 
    if (mUsed & (BIT(FrCount) | BIT(ToCount)))
@@ -1109,9 +1157,10 @@ cmd_data(void)
 	  mask_optional[style], mask[style]);
 #endif
 
-   mUsed &= ~BIT(Newline);
-
-   if ((mUsed | mask_optional[style]) != mask[style]) {
+   if (((mUsed &~ BIT(Newline)) | mask_optional[style]) != mask[style]) {
+      /* Test should only fail with too few bits set, not too many */
+      ASSERT((((mUsed &~ BIT(Newline)) | mask_optional[style])
+	      &~ mask[style]) == 0);
       compile_error(/*Too few readings for data style `%s'*/64, style_name);
       osfree(style_name);
       osfree(new_order);
@@ -1143,7 +1192,8 @@ static void
 cmd_units(void)
 {
    int units, quantity;
-   unsigned long qmask, m; /* mask with bit x set to indicate quantity x specified */
+   unsigned long qmask;
+   unsigned long m; /* mask with bit x set to indicate quantity x specified */
    real factor;
 
    qmask = get_qlist();
@@ -1153,12 +1203,8 @@ cmd_units(void)
       return;
    }
 
-   /* If factor given then read units else units in buffer already */
    factor = read_numeric(fTrue);
-   if (factor == HUGE_REAL) {
-      factor = (real)1.0;
-      /* If factor given then read units else units in buffer already */
-   }
+   if (factor == HUGE_REAL) factor = (real)1.0;
 
    units = get_units();
    if (units == UNITS_NULL) return;

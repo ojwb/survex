@@ -2,11 +2,17 @@
 
 * (MS Windows version): aven: Loading file on start-up now works!
 
-* (Unix version): aven: Escape cancels distance measuring line (still to
-  be done on MS Windows).
+* aven: Escape cancels distance measuring line.
+
+* aven: fixed problems with selection handling in survey tree.
 
 * aven: suppress distance measuring line during auto-rotation and animated
   tilting.
+
+* cavern: Diving and cylpolar styles now take DEPTHCHANGE where they used to
+  take DZ.
+
+* Updated manual.
 
 * German translation updated.
 

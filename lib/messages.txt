@@ -1879,6 +1879,7 @@ de-ch:217 Massstab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwarte
 #
 en:218 Bad list of pages to print `%s'
 de:218 Liste zu druckender Seiten `%s' ist fehlerhaft
+#XXX219
 #
 # back to aven...
 #
@@ -1898,6 +1899,12 @@ pt:221 @Sair
 ca:221 Ei@xir
 es:221 @Salir
 it:221 @Esci
+#
+en:222 NEWLINE can't be the first reading
+#
+en:223 NEWLINE can't be the last reading
+#
+en:224 Interleaved readings, but no NEWLINE
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return

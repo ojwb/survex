@@ -8,10 +8,6 @@
 <!--
 FIXME:
 
-document interleaved data styles...
-
-length and tape are synonymous
-
 in cylpolar/diving dz its own calibration
 
 3dfile title:
@@ -97,8 +93,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-11-28 17:20:46 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.75 2001-11-28 17:20:46 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-12-11 09:43:43 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.76 2001-12-11 09:43:43 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -413,10 +409,6 @@ as do QEMM and Novell DOS 7.
 For those situations where &dpmi; services aren't available, we
 include the free <filename>cwsdpmi.exe</filename>, which will be used
 automatically if it's needed.</Para>
-
-<!-- It's Microsoft Windows 3.1 users can use the
-&msdos; version, or may be able to run the MS Windows version with
-Win32s installed (though we've not tried this). -->
 </Sect3>
 
 <Sect3><Title>&msdos; (Intel 80286 or earlier CPU)</Title>
@@ -1218,7 +1210,7 @@ stored in a way that can be automatically collated.
 <VarListEntry><Term>Syntax</Term>
 
 <listitem><Para>*data &lt;style&gt; &lt;ordering&gt;</Para></listitem>
-
+<!-- BACKCOMPASS BACKCLINO -->
 </VarListEntry>
 
 <VarListEntry><Term>Example</Term>
@@ -1244,30 +1236,88 @@ stored in a way that can be automatically collated.
 </Para>
 
 <Para>
-&lt;ordering&gt; = A selection from one the following:
+&lt;ordering&gt; = ordered list of instruments - which are valid depends on the
+style.
+</Para>
+
+<Para>
+There are two variants of each style - interleaved and non-interleaved.
+Non-interleaved is "one line per leg", interleaved has a line for the data
+shared between two legs (e.g. STATION=FROM/TO, DEPTH=FROMDEPTH/TODEPTH,
+COUNT=FROMCOUNT/TOCOUNT).  Note that not all interleavable readings have to
+be interleaved - for example:
+
+<programlisting>
+*data diving station newline fromdepth compass tape todepth</programlisting>
+
+In addition, interleaved data can have a DIRECTION reading, which can be "F"
+for a foresight or "B" for a backsight.
 </Para>
 
 <VariableList>
 
 <VarListEntry><Term>DEFAULT</Term>
-<listitem><Para></Para></listitem>
+<listitem><Para>Select the default data style and ordering (NORMAL style, ordering: from to tape compass clino).</Para></listitem>
 </VarListEntry>
 
 <VarListEntry><Term>NORMAL</Term>
-<listitem><Para>
-FROM TO TAPE <!--[BACK]-->COMPASS <!--[BACK]-->CLINO
+<listitem><Para>The usual tape/compass/clino centreline survey.
+For non-interleaved data the allowed readings are: FROM TO TAPE COMPASS CLINO;
+for interleaved data the allowed readings are: STATION TAPE COMPASS CLINO.
+E.g.:
+
+<programlisting>
+*data normal from to compass clino tape
+1 2 172 -03 12.61</programlisting>
+
+<programlisting>
+*data normal station newline direction tape compass clino
+1
+ F 12.61 172 -03
+2</programlisting>
+
 </Para></listitem>
 </VarListEntry>
 
 <VarListEntry><Term>DIVING</Term>
 <listitem><Para>
-FROM TO TAPE <!--[BACK]-->COMPASS FROMDEPTH TODEPTH DZ
+An underwater survey where the vertical information is from a diver's pressure
+gauge.  The vertical change can be given as 2 readings (FROMDEPTH/TODEPTH) or a single reading at each station in interleaved data (DEPTH) or as a change for
+each leg (DEPTHCHANGE).  This style could also conceivably be also used above
+water with an altimeter.
+
+<programlisting>
+*data diving from to tape compass fromdepth todepth
+1 2 14.7 250 -20.7 -22.4</programlisting>
+
+<programlisting>
+*data diving station depth newline tape compass
+1 -20.7
+ 14.7 250
+2 -22.4</programlisting>
+
+<programlisting>
+*data diving from to tape compass depthchange
+1 2 14.7 250 -1.7</programlisting>
 </Para></listitem>
 </VarListEntry>
 
 <VarListEntry><Term>CARTESIAN</Term>
 <listitem><Para>
-FROM TO NORTHING EASTING ALTITUDE
+Cartesian data style allows you to specify the (x,y,z) changes between
+stations.  It's useful for digitising surveys where the original survey
+data has been lost and all that's available is a drawn up version.
+
+<programlisting>
+*data cartesian from to northing easting altitude
+1 2 16.1 20.4 8.7</programlisting>
+
+<programlisting>
+*data cartesian station newline northing easting altitude
+1
+ 16.1 20.4 8.7
+2</programlisting>
+
 <!--FIXME: dx dy dz-->
 </Para>
 
@@ -1280,18 +1330,32 @@ Cartesian data are relative to <emphasis>true</emphasis> North not
 
 <VarListEntry><Term>TOPOFIL</Term>
 <listitem><Para>
-FROM TO FROMCOUNT TOCOUNT <!--[BACK]-->COMPASS <!--[BACK]-->CLINO
+TOPOFIL data style is the same as the NORMAL data style, except that the tape
+reading is replaced with FROMCOUNT/TOCOUNT (or COUNT in interleaved data).
+
+<programlisting>
+*data topofil from to compass clino fromcount tocount
+1 2 172 -03 11532 11873</programlisting>
+
+<programlisting>
+*data topofil station count newline direction compass clino
+1 11532
+ F 172 -03
+2 11873</programlisting>
+ 
 </Para></listitem>
 </VarListEntry>
 
 <VarListEntry><Term>CYLPOLAR</Term>
 <listitem><Para>
-FROM TO TAPE <!--[BACK]-->COMPASS FROMDEPTH TODEPTH DZ
+FROM TO TAPE <!--[BACK]-->COMPASS FROMDEPTH TODEPTH DEPTHCHANGE
 </Para></listitem>
 </VarListEntry>
 
 <VarListEntry><Term>NOSURVEY</Term>
 <listitem><Para>
+A NOSURVEY survey doesn't have any measurements - it merely indicates that
+there is line of sight between the pairs of stations
 FROM TO
 </Para></listitem>
 </VarListEntry>
@@ -1319,35 +1383,10 @@ LENGTH is a synonym for TAPE; BEARING for COMPASS; GRADIENT for CLINO; COUNT for
 </Para>
 
 <Para>
-The default is *DATA Normal From To Tape Compass Clino
-</Para>
-
-<Para>
 The units of each quantity may be set with the UNITS command.
 </Para>
 
-<!-- FIXME:
-Originally proposed feature - interleaved style makes this less useful:
-In DIVING data, either &lt;FromDepth&gt; or &lt;ToDepth&gt; may be
-replaced by an &lt;OMIT&gt; (default '-') if the respective survey
-station is mentioned in the previous line (assuming there is no
-change of depth gauge/water level). If the survey station does not
-appear in the previous line (or this is the first line of diving
-data), then an error is given.
--->
-
 <!-- FIXME: plumbed diving legs -->
-
-<!--
-Originally proposed feature - interleaved style makes this less useful:
-Similarly, for TOPOFIL data &lt;FromCount&gt;
-may be replaced by an &lt;OMIT&gt; (default '-') if the reading
-is the same as the previous &lt;ToCount&gt;. If this is the first
-line of Topofil data, then an error is given. (It is best if both
-readings are input, rather than just the difference between them,
-to aid tracking down incorrect legs. If you do not agree, use NORMAL
-data style).
--->
 
 <!--FIXME:
 <Para>

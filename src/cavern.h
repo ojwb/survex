@@ -143,7 +143,7 @@ typedef int compiletimeassert_sflags5[BIT(SFLAGS_FIXED) == img_SFLAG_FIXED ? 1 :
 /* enumeration of field types */
 typedef enum {
    End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
-   FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount, Dir,
+   FrDepth, ToDepth, DepthChange, Dx, Dy, Dz, FrCount, ToCount, Dir,
    Station, Depth, Count, Newline, IgnoreAllAndNewLine,
    Ignore, IgnoreAll
 } reading;
