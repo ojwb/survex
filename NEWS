@@ -10,12 +10,10 @@ Changes in 1.0.29:
 * (Unix version): Fixed SRPMs to build on RedHat 9 and Fedora Core 1 (patch
   from John Pybus).
 
-* (MacOS X version): Include buildmacosx.sh script which will build a
-  diskimage suitable for distribution.
-
 * Romanian translation started.
 
-* (Unix version): Debian: Fixed a few new lintian warnings.
+* (Unix version): Debian: Fixed new lintian warnings about missing quotes in
+  menu files.
 
 Changes in 1.0.28:
 

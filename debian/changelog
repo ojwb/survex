@@ -1,3 +1,15 @@
+survex (1.0.29) unstable; urgency=low
+
+  * cad3d: Fixed problem with DXF files which stopped them loading with some
+    drawing packages (introduced in 1.0.27).
+  * aven: Changed File->Exit to File->Quit.
+  * Removed some unused messages from the message files.
+  * Romanian translation started.
+  * Fixed a few new lintian warnings.
+  * Fixed new lintian warnings about missing quotes in menu files.
+
+ -- Wookey <wookey@survex.com>  Mon, 19 Mar 2004 14:55:23 +0000
+
 survex (1.0.28) unstable; urgency=low
 
   * Fixed 3d file reading code to fix incorrect unpacking of compressed
