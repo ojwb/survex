@@ -1,3 +1,5 @@
+Changes in 0.97-prerelease5:
+
 * survex: conversion wrapper now only creates __svxtmp.svx file if it
   has to - simple cases (such as "survex example.svx") don't need one;
   also always print warning that user should be using cavern instead.
