@@ -30,6 +30,7 @@
 #include "cmdline.h"
 #include "message.h"
 #include "osalloc.h"
+#include "whichos.h"
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
@@ -207,6 +208,11 @@ main(int argc, char **argv)
       }
       skipline(fh);
       next++;
+   }
+
+   if (next == 0) {
+      /* no entries - nothing more to do whether -r is specified or not */
+      exit(EXIT_SUCCESS);
    }
 
    qsort(blk, next, sizeof(trav), cmp_trav);

@@ -9,7 +9,7 @@
 
 * sorterr: Added --replace option to sort the .err file and replace
   the original with the sorted version (for use by MS Windows file
-  associations).
+  associations); cope with empty .err file.
 
 * cavern: Added --log option to send output to a .log file.
 
