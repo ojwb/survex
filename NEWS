@@ -220,8 +220,7 @@ Changes in 0.95-prerelease1:
 * cavern: improved error reporting in several cases
 
 * caverot: on RISC OS now fall back to using 2 or even just one screen
-  bank if we can't find a mode where we can create 3 banks [FIXME: need
-  to test this works]
+  bank if we can't find a mode where we can create 3 banks
 
 * cavern: added data styles "TOPOFIL" (like tape/compass/clino but with a
   counter instead of the tape), "CARTESIAN" (dx, dy, dz), and "NOSURVEY"
