@@ -924,11 +924,16 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
 		Double dz = z1 - z0;
 
 		Double d_horiz = sqrt(dx*dx + dy*dy);
+
+		int brg = int(atan2(dx, dy) * 180.0 / M_PI);
+		if (brg < 0) {
+		    brg += 360;
+		}
 		
-		m_Dist1->SetLabel(wxString("From ") + label2->text + wxString(":"));
-		str.Printf("   Horiz: %d, Vert: %d", (int) d_horiz, (int) dz);
+		m_Dist1->SetLabel(wxString("From ") + label2->text);
+		str.Printf("   Horiz: %dm, Vert: %dm", (int) d_horiz, (int) dz);
 		m_Dist2->SetLabel(str);
-		str.Printf("   Distance: %d", (int) sqrt(dx*dx + dy*dy + dz*dz));
+		str.Printf("   Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
 		m_Dist3->SetLabel(str);
 	    }
 	}

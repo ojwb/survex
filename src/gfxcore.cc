@@ -24,13 +24,6 @@
 #include "mainfrm.h"
 #include "message.h"
 
-#include <math.h>
-
-// This is for mingw32/Visual C++:
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 #define INTERPOLATE(a, b, t) ((a) + (((b) - (a)) * Double(t) / 100.0))
 #define MAX3(a, b, c) ((a) > (b) ? ((a) > (c) ? (a) : (c)) : ((b) > (c) ? (b) : (c)))
 #define TEXT_COLOUR  wxColour(0, 255, 40)
