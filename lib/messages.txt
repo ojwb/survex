@@ -315,7 +315,7 @@ it: 25 ROOT &eacute; sconsigliato
 # *end outer
 # FIXME: TRANSLATE fr ca es de it
 en: 26 Station `%s' not exported from survey `%s'
-pt: 26 Base `%s' não exportada da topo `%s'
+pt: 26 Base `%s' n&atilde;o exportada da topo `%s'
 # XXX 27,28
 # FIXME: perhaps use "survey" instead of "prefix level"?
 # FIXME: TRANSLATE check amended message fr ca es
@@ -788,7 +788,7 @@ it: 81 Errore d'inizializzazione della scheda grafica
 en: 82 Parameter `%s' has invalid value `%s' in printer configuration file
 fr: 82 Param&egrave;tres `%s' has invalid value `%s' dans le fichier de configuration de l'imprimante
 de: 82 Parameter `%s' hat ung&uuml;ltigen Wert `%s' in der Druckerkonfigurationsdatei
-pt: 82 Par&acirc;metro `%s' tem valor inválido `%s' em arquivo de configura&ccedil;&atilde;o de impressora
+pt: 82 Par&acirc;metro `%s' tem valor inv&aacute;lido `%s' em arquivo de configura&ccedil;&atilde;o de impressora
 ca: 82 Par&agrave;metres `%s' has invalid value `%s' al fitxer de configuraci&oacute; de l'impresora
 es: 82 Par&aacute;metros `%s' has invalid value `%s' en el fichero de configuraci&oacute;n de la impresora
 it: 82 Parametro `%s' has invalid value `%s' nel file di configurazione della stampante
@@ -819,7 +819,7 @@ it: 84 Intera linea ignorata
 en: 85 Parameter `%s' missing in printer configuration file
 fr: 85 Param&egrave;tres `%s' manquant dans le fichier de configuration de l'imprimante
 de: 85 Parameter `%s' fehlt in der Druckerkonfigurationsdatei
-pt: 85 Falta parâmetro `%s' em arquivo de configura&ccedil;&atilde;o de impressora
+pt: 85 Falta par&acirc;metro `%s' em arquivo de configura&ccedil;&atilde;o de impressora
 ca: 85 Par&agrave;metres `%s' manca al fitxer de configuraci&oacute; de l'impresora
 es: 85 Par&aacute;metros `%s' falta en el fichero de configuraci&oacute;n de la impresora
 it: 85 Parametro `%s' manca nel file di configurazione della stampante
@@ -1585,7 +1585,7 @@ it:201 Mostra le opzioni della riga di comando
 # TRANSLATE fr ca es it
 en:202 No survey data in 3d file `%s'
 de:202 Keine Vermessungsdaten in 3D-Datei `%s'
-pt:202 Não há dados de topografia no arquivo 3d '%s'
+pt:202 N&atilde;o h&aacute; dados de topografia no arquivo 3d `%s'
 #
 # TRANSLATE fr ca es it
 en:203 Facing
@@ -1720,10 +1720,10 @@ it:221 @Esci
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
-pt-br:230 @Iniciar Rotação##Return
+pt-br:230 @Iniciar Rota&ccedil;&atilde;o##Return
 #
 en:231 S@top Rotation##Space
-pt-br:231 @Parar Rotação##Space
+pt-br:231 @Parar Rota&ccedil;&atilde;o##Space
 #
 en:232 Speed @Up##Z
 de:232 @Schneller##Z
@@ -1739,11 +1739,11 @@ pt-br:234 @Reverter Sentido##R
 #
 en:235 Step Once @Anticlockwise##C
 de:235 Schritt im @Gegenuhrzeigersinn##C
-pt-br:235 Um Passo @Horário##C
+pt-br:235 Um Passo @Hor&aacute;rio##C
 #
 en:236 Step Once @Clockwise##V
 de:236 Schritt im @Uhrzeigersinn##V
-pt-br:236 Um Passo A@ntihorário##V
+pt-br:236 Um Passo A@ntihor&aacute;rio##V
 #
 # The accelerators must be different within this group
 en:240 View @North##N
@@ -1883,7 +1883,7 @@ en:274 Co@mpass
 fr:274 Co@mpas
 de-de,de-ch:274 @Kompass
 de:         274 @Kompa&szlig;
-pt-br:274 @Bússola
+pt-br:274 @B&uacute;ssola
 ca:274 @Br&uacute;ixola
 es:274 @Br&uacute;jula
 it:274 @Bussola
@@ -1891,7 +1891,7 @@ it:274 @Bussola
 en:275 Cl@inometer
 fr:275 Cl@ino
 de:275 @Neigungsmesser
-pt-br:275 Cl@inômetro
+pt-br:275 Cl@in&ocirc;metro
 ca:275 Cl@ino
 es:275 Cl@ino
 it:275 Cl@inometro
@@ -1917,7 +1917,7 @@ pt-br:280 @Inverter Sentido##Ctrl+R
 # TRANSLATE fr ca es it
 en:281 Caverot-Style @Middle Button
 de:281 Caverot-artiger @mittlerer Mausknopf
-pt-br:281 Botão do @Meio no Estilo do Caverot
+pt-br:281 Bot&atilde;o do @Meio no Estilo do Caverot
 #
 # The accelerators must be different within this group
 # c.f. 205

@@ -108,7 +108,7 @@ foreach $lang (@langs) {
 
 sub string_to_utf8 {
    my $s = shift;
-   $s =~ s/[\x80-\xff]/char_to_utf8(ord($1))/eg;
+   $s =~ s/([\x80-\xff])/char_to_utf8(ord($1))/eg;
    $s =~ s/\&(#\d+|#x[a-f0-9]+|[a-z0-9]+);?/decode_entity($1)/eig;
    return $s;
 }
