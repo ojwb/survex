@@ -9,6 +9,8 @@
 <!ENTITY msdos "DOS">
 <!ENTITY riscos "RISC OS">
 <!ENTITY survexsuite "<Application>Survex</Application>">
+<!ENTITY spud "<Application>Spud</Application>">
+<!ENTITY wxwindows "<Application>wxWindows</Application>">
 <!ENTITY cucc "<Acronym/CUCC/">
 <!ENTITY arge "<Acronym/ARGE/">
 <!ENTITY dpmi "<Acronym/DPMI/">
@@ -121,8 +123,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-16 00:14:52 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.50 2001-09-16 00:14:52 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-16 01:31:43 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.51 2001-09-16 01:31:43 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -332,7 +334,7 @@ if you don't have root access on the machine you wish to install
 </Note>
 
 <Para>
-There's a GUI cave viewer called aven, which needs wxWindows to build,
+There's a GUI cave viewer called aven, which needs &wxwindows; to build,
 which in turn needs either Motif or Gtk+.  If installing the required
 libraries is a problem,
 there's a more basic cave viewer called xcaverot which only needs the
@@ -2065,40 +2067,104 @@ disagree, you can always use one of the other methods!
 
 </Sect3>
 
-<Sect3><Title>EXPORT &lt;station id list&gt;</Title>
+<Sect3><Title>EXPORT</Title>
 
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*export &lt;station&gt;...</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
 <Para>
-e.g: *EXPORT 1 6 17
+<programlisting>
+*export 1 6 17</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid at the start of a *begin/*end block.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*export marks the stations named as referable to from the enclosing
+survey.  To be able to refer to a station from a survey several levels
+above, it must be exported from enclosing survey.
 </Para>
 
+<!-- FIXME:
 <Para>
-- All the station names in the list are marked as referable to in the
-prefix level above.  To use a station name several levels above it must
-be exported from each level.  *export must follow *begin (or another
-*export).
+I think this is preferable to using:
 </Para>
+
+<programlisting> a b 0.00   0   0</programlisting>
+
+<Para>
+as EQUATE does not add in an extra position error. It is also clearer than
+substituting in the original name wherever passages are linked. If you
+disagree, you can always use one of the other methods!
+</Para>
+-->
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
 
 </Sect3>
 
-<Sect3><Title>FIX &lt;Station&gt; [REFERENCE]
+<Sect3><Title>FIX</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*fix &lt;station&gt; [reference]
  [ &lt;x&gt; &lt;y&gt; &lt;z&gt;
    [ &lt;x std err&gt; &lt;y std err&gt; &lt;z std err&gt;
-     [ &lt;cov(x,y)&gt; &lt;cov(y,z)&gt; &lt;cov(z,x)&gt; ] ] ]</Title>
+     [ &lt;cov(x,y)&gt; &lt;cov(y,z)&gt; &lt;cov(z,x)&gt; ] ] ]
+</Para></listitem>
 
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
 <Para>
-e.g. *fix entrance.0 32768 86723 1760
+<programlisting>
+*fix entrance.0 32768 86723 1760</programlisting>
+
+<programlisting>
+*fix KT114_96 reference 36670.37 83317.43 1903.97</programlisting>
 </Para>
+</listitem>
 
-<Para>
-e.g. *fix KT114_96 reference 36670.37 83317.43 1903.97
-</Para>
+</VarListEntry>
 
-<Para>
-(x=Easting y=Northing z=Altitude)
-</Para>
+<VarListEntry><Term>Description</Term>
 
+<listitem>
 <Para>
-FIX fixes the position of &lt;Station&gt; at the given coordinates.
+*fix fixes the position of &lt;Station&gt; at the given coordinates.
 If the position is omitted it defaults to (0,0,0). The standard
 errors default to zero (fix station exactly). cavern will complain
 if you attempt to fix the same survey station twice.
@@ -2123,16 +2189,93 @@ In this sort of situation, specify "REFERENCE" after the station name
 in the FIX command to suppress this warning for a particular station.
 </Para>
 
-</Sect3>
-
-<Sect3><Title>FLAGS &lt;flags&gt;</Title>
-
 <Para>
-e.g *flags duplicate not surface
+Note: (x=Easting y=Northing z=Altitude)
 </Para>
 
-<Para>- The current flag settings are updated according with those
-given.  Flags not mentioned retain their previous state.  Valid flags
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!-- <VarListEntry><Term>See Also</Term>
+
+<listitem><Para></Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
+
+</Sect3>
+
+<!--
+<Sect3><Title></Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Caveats </Term> </VarListEntry>
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para></Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+-->
+
+<Sect3><Title>FLAGS</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*flags &lt;flags&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*flags duplicate not surface</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*flags updates the current flag settings.
+Flags not mentioned retain their previous state.  Valid flags
 are DUPLICATE, SPLAY, and SURFACE, and a flag may be preceded with NOT to
 turn it off.
 </Para>
@@ -2147,25 +2290,56 @@ surveys along the same section of passage (for example to tie two
 surveys into a permanent survey station); SPLAY is intended for 
 cases such as radial legs in a large chamber.
 </Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
 
 </Sect3>
 
-<Sect3><Title>INCLUDE &lt;filename&gt;</Title>
+<Sect3><Title>INCLUDE</Title>
 
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*include &lt;filename&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
 <Para>
-e.g *include chosspot
-</Para>
+<programlisting>
+*include mission</programlisting>
 
-<ItemizedList>
-<ListItem><Para>Processes &lt;filename&gt; as if it were inserted at this
+<programlisting>
+*include "the pits"</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*include processes &lt;filename&gt; as if it were inserted at this
 place in the current file. (i.e. The current settings are carried
 into &lt;filename&gt;, and any alterations to settings in &lt;filename&gt;
-will be carried back again). (Nesting allowed up to at least 4
+will be carried back again). <!--FIXME--> (Nesting allowed up to at least 4
 deep with ANSI C - I think). If &lt;filename&gt; contains spaces,
 it must be enclosed in quotes.
-</Para></ListItem>
+</Para>
 
-<ListItem><Para>An included file which does not have a complete path
+<Para>An included file which does not have a complete path
 is resolved relative to the directory which the parent file is in
 (just as relative HTML links do).  Cavern will try adding a &svx;
 extension, and will also try translating "\" to "/"
@@ -2173,9 +2347,11 @@ extension, and will also try translating "\" to "/"
 resort, it will try a lower case version of the filename (so if you
 use Unix and someone sends you a DOS/Windows dataset with mismatched
 case, unzip it with "unzip -L" and unix cavern will process it).
-</Para></ListItem>
+</Para>
 
-</ItemizedList>
+</VarListEntry>
+
+</VariableList>
 
 </Sect3>
 
@@ -2236,82 +2412,195 @@ being applied to them.
 
 </Sect3>
 
-<Sect3><Title>PREFIX &lt;prefix&gt;</Title>
+<Sect3><Title>PREFIX</Title>
 
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*prefix &lt;survey&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
 <Para>
-- Sets the currents prefix. Now deprecated. Use *BEGIN and *END
-instead. See section on hierarchical prefixes.
+<programlisting>
+*prefix flapjack</programlisting>
 </Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*prefix sets the current survey.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Caveats </Term>
+
+<listitem><Para>*prefix is deprecated - you should use *begin and *end
+instead.</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *end</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
 
 </Sect3>
 
-<Sect3><Title>REQUIRE &lt;version&gt;</Title>
+<Sect3><Title>REQUIRE</Title>
 
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*require &lt;version&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
 <Para>
-- Check that the version of cavern in use is at least &lt;version&gt; and
-issues an error if not.  So if your dataset requires a feature
+<programlisting>
+*require 0.98</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*require checks that the version of cavern in use is at least
+&lt;version&gt; and stops with an error if not.
+So if your dataset requires a feature
 introduced in a particular version, you can add a *require command and
 users will know what version they need to upgrade to, rather than
 getting an error message and having to guess what the real problem is.
-</Para>
+</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
 
 </Sect3>
 
-<Sect3><Title>SD &lt;quantity list&gt; &lt;standard deviation&gt;</Title>
+<Sect3><Title>SD</Title>
 
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*sd &lt;quantity list&gt; &lt;standard deviation&gt;
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
 <Para>
-e.g. *SD tape 0.15 metres
+<programlisting>
+*sd tape 0.15 metres</programlisting>
 </Para>
+</listitem>
 
-<Para>
-- Set standard deviation of measurements.
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*sd sets the standard deviation of a measurement.
 </Para>
 
 <Para>
 &lt;quantity&gt; is one of
-TAPE|COMPASS|CLINO|COUNTER|DEPTH|DECLINATION|DX|DY|DZ
+TAPE|COMPASS|CLINO|COUNTER|DEPTH|DECLINATION|DX|DY|DZ <!-- FIXME:
+check this list -->
 </Para>
 
 <Para>
 &lt;standard deviation&gt; must include units and thus is typically
-'0.05 metres', or 0.02 degrees. See 'UNITS' below for full list
-of permitted options.
+'0.05 metres', or 0.02 degrees. See *units below for full list
+of valid units.
 </Para>
 
+<!-- FIXME mention central limit theorem -->
 <Para>
-To utilise this command fully you need to understand what 'Standard
-deviation' means. It gives a value to the 'spread' of the errors
+To utilise this command fully you need to understand what a
+<emphasis>standard deviation</emphasis> is.
+It gives a value to the 'spread' of the errors
 in a measurement. Assuming that these are normally distributed
-we can say that 95% of the actual lengths will fall within three
+we can say that 99.74% of the actual lengths will fall within three
 standard deviations of the measured length. i.e. a tape SD of
 0.167 metres means that the actual length of a tape measurement
-is within + or - 0.5 metres of the recorded value 95% of the time.
+is within + or - 0.5 metres of the recorded value 99.74% of the time.
 So if the measurement is 7.34m then the actual length is very
-likely (95%) to be between 6.84m and 7.84m. This example corresponds
+likely to be between 6.84m and 7.84m. This example corresponds
 to BCRA grade 3. Note that this is just one interpretation of
-the BCRA standard, taking the permitted error values as 3SD 95%
+the BCRA standard, taking the permitted error values as 3SD 99.74%
 confidence limits. If you want to take the readings as being some
-other limit (e.g. 1SD) then you will need to change the BCRA3
+other limit (e.g. 1SD = 68.26%) then you will need to change the BCRA3
 and BCRA5 files accordingly. This issue is explored in more
 detail in various surveying articles.
-</Para>
+<!--
+2.565 sd 99%
+2.5   sd 98.76%
+2     sd 95.44%
+1     sd 68.26%
+.97   sd 66.67%
+1.15  sd 75%
+-->
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*units</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
 
 </Sect3>
 
-<Sect3><Title>SET &lt;item&gt; &lt;character list&gt;</Title>
+<Sect3><Title>SET</Title>
 
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*set &lt;item&gt; &lt;character list&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
 <Para>
-e.g. *SET Decimal ,
+<programlisting>
+*set decimal ,</programlisting>
 </Para>
+</listitem>
 
-<!--
-<Para>
-*Set Decimal Comma
-</Para>
--->
+</VarListEntry>
 
-<Para>
-- sets the specified &lt;item&gt; to the character or characters
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*set sets the specified &lt;item&gt; to the character or characters
 given in &lt;character list&gt;. The example sets the decimal
 separator to be a comma.
 </Para>
@@ -2325,82 +2614,107 @@ The complete list of items that can be set, the defaults (in
 brackets), and the meaning of the item, is:
 </Para>
 
-<Para>
+<ItemizedList>
+
+<ListItem><Para>
 BLANK (x09x20,) Separates fields
+</Para></ListItem>
 
+<ListItem><Para>
 COMMENT (;) Introduces comments
-</Para>
+</Para></ListItem>
 
-<Para>
+<ListItem><Para>
 DECIMAL (.) Decimal point character 
-</Para>
+</Para></ListItem>
 
-<Para>
-EOL (x0ax0d) End of line character
-</Para>
+<ListItem><Para>
+EOL (x0Ax0D) End of line character
+</Para></ListItem>
 
-<Para>
+<ListItem><Para>
 KEYWORD (*) Introduces keywords
-</Para>
+</Para></ListItem>
 
-<Para>
+<ListItem><Para>
 MINUS (-) Indicates negative number
-</Para>
+</Para></ListItem>
 
-<Para>
+<ListItem><Para>
 NAMES (_-) Non-alphanumeric chars permitted in station
 names (letters and numbers are always permitted).
-</Para>
+</Para></ListItem>
 
-<Para>
+<ListItem><Para>
 OMIT (-) Contents of field omitted (e.g. in plumbed legs)
-</Para>
+</Para></ListItem>
 
-<Para>
+<ListItem><Para>
 PLUS (+) Indicates positive number 
-</Para>
+</Para></ListItem>
 
-<Para>
+<ListItem><Para>
 ROOT (\) Prefix in force at start of current file (use of ROOT is deprecated)
-</Para>
+</Para></ListItem>
 
-<Para>
+<ListItem><Para>
 SEPARATOR (.) Level separator in prefix hierarchy
-</Para>
+</Para></ListItem>
+
+</ItemizedList>
 
 <Para>
 The special characters may not be alphanumeric.
 </Para>
 
-<!-- FIXME this isn't implemented
-<Para>
-The following characters may be written as words:
-</Para>
+</listitem>
 
-<Para>
-Null (&amp;00) Tab (&amp;09) Lf (&amp;0A) Cr (&amp;0D) Space (&amp;20)
-Star (&amp;2A) Comma (&amp;2C)
-</Para>
+</VarListEntry>
 
-<Para>
-Dash (&amp;2D) Dot (&amp;2E) Underscore (&amp;5F)
-</Para>
--->
+</VariableList>
 
 </Sect3>
 
 <Sect3><Title>SOLVE</Title>
 
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*solve</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
 <Para>
-Distributes misclosures around any loops in the survey and fixes
-the positions of all existing stations.  This is done automatically
-after all the survey data has been read in.  This command is intended
-to be useful for adding extensions to an already drawn survey.
- You can read in the old data, use *SOLVE to fix it, and then
-read in the new data. This can be done repeatedly if you want to,
-allowing you to solve loops sequentially, pinning down ones you
-are sure about first.
+<programlisting>
+*include 1997data
+*solve
+*include 1998data
+</programlisting>
 </Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+Distributes misclosures around any loops in the survey and fixes
+the positions of all existing stations.  This command is intended
+for situations where you have some new surveys adding extensions
+to an already drawn-up survey which you wish to avoid completely
+redrawing. You can read in the old data, use *SOLVE to fix it, and then
+read in the new data.  Then old stations will be in the same
+positions as there are in existing drawn up survey, even if new loops
+have been formed by the extensions.
+</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
 
 </Sect3>
 
@@ -3255,6 +3569,7 @@ name of the file in which the error was encountered.
 
 </Sect1>
 
+<!--
 <Sect1><Title>Appendices</Title>
 <?dbhtml filename="appendix.htm">
 
@@ -3265,6 +3580,7 @@ name of the file in which the error was encountered.
 </Para>
 
 </Sect1>
+-->
 
 <Sect1><Title>Mailing List</Title>
 <?dbhtml filename="maillist.htm">
@@ -3301,10 +3617,20 @@ list some of the stations that are not connected.</Para>
 <?dbhtml filename="future.htm">
 
 <Para>
-We plan to bring &survexsuite; to version 1.0, and then start to develop
-version 2.0.  Work on 1.0 will continue, but only bug-fixing and minor new
-features.  More information on these plans is on the
-<ulink url="&survexwebsite;">web site</ulink>.
+We plan to bring &survexsuite; to version 1.0, and then start to
+develop version 2 (codenamed &spud;).  &spud; will evolve out of 
+Survex 1.0 - the GUI framework is likely to be based on aven, with
+the printer drivers and other utility programs being pulled in
+and integrated into the menus.</Para>
+
+<Para>Aven is built on &wxwindows;, which means that can easily support
+Unix and Microsoft Windows.  Mac support is also possible if anyone
+with Mac expertise is interesting in porting &spud;.  There's no MSDOS
+support in &wxwindows; at present, though it may be added.  Support for RISC
+OS is unlikely.</Para>
+
+<Para>More information on our plans for &spud; is on the <ulink
+url="&survexwebsite;">web site</ulink>.
 </Para>
 
 </Sect1>
@@ -3318,8 +3644,7 @@ welcome comments and suggestions for improvements.</Para>
 <Para>If you want the latest version and don't have net access, please
 enclose a suitably formatted floppy and an SAE.  These days, we'd probably
 struggle to cope with anything other than 3.5" floppies.  &msdos; format is
-easiest for us, but we should be able to manage &riscos;, ATARI or MAC
-format.</Para>
+easiest for us.</Para>
 
 <Address>
 Wookey
@@ -3344,6 +3669,8 @@ Olly Betts
 <Email/&ollyemail;/
 </Address>
 
+<!-- FIXME: Mark too? -->
+
 <Para>Or if neither of these get any response try:</Para>
 
 <Address>
@@ -3354,8 +3681,9 @@ c/o James Hickson,
 <Country>UK</Country>
 </Address>
 
-<Sect2><title>Donations</title>
+<Sect2><title>Contributing</title>
 
+<!--FIXME rewrite and elaborate -->
 <Para>Monetary donations are welcome, but if you want a more personal way to
 say thankyou we'd love a copy of a survey you've produced using
 &survexsuite;.  Two copies would be best to save us arguing over who gets
