@@ -550,7 +550,6 @@ int
 main(int argc, char **argv) {
    char *args[7];
    int i;
-   FILE *fout;
 #ifndef HAVE_EXECV
    char *cmd, *p;
    size_t len;
@@ -572,12 +571,6 @@ main(int argc, char **argv) {
        }
    }
 
-   fout = fopen(MYTMP, "w");
-   if (!fout) {
-      fatal("Couldn't open temporary file:", wr, MYTMP);
-      exit(1);
-   }
-
    puts("Hello, welcome to...");
    puts("  ______   __   __   ______    __   __   _______  ___   ___");
    puts(" / ____|| | || | || |  __ \\\\  | || | || |  ____|| \\ \\\\ / //");
@@ -586,6 +579,10 @@ main(int argc, char **argv) {
    puts(" ____) )) | ||_| || | ||\\ \\\\    \\  //   | ||____   / /\\ \\\\");
    puts("|_____//   \\____//  |_|| \\_||    \\//    |______|| /_// \\_\\\\");
    putchar('\n');
+
+   puts("This is a compatibility wrapper to help users convert from survex to cavern.\n"
+        "You should run cavern in preference - this wrapper will be removed at some\n"
+        "future date.\n");
 
    process_command_line(argc, argv);
 
@@ -606,34 +603,48 @@ main(int argc, char **argv) {
       args[i++] = arg;
       args[i++] = output_to;
    }
-   {
+   /* don't bother with temporary file if there's only one file to process */
+   if (head == tail && strncmp(head->line, "*include \"", 10) == 0) {
+      char *p = xmalloc(strlen(head->line + 10) + 1);
+      strcpy(p, head->line + 10);
+      args[i++] = p;
+      /* knock off quote and \n */
+      p[strlen(p) - 2] = '\0';
+   } else {
+      FILE *fout;
       static char arg[] = MYTMP;
       args[i++] = arg;
+
+      fout = fopen(MYTMP, "w");
+      if (!fout) {
+         fatal("Couldn't open temporary file:", wr, MYTMP);
+         exit(1);
+      }
+
+      fputs("; This file was automatically generated from a pre-0.90 survex command line\n"
+	    "; Process this file using the command line:\n"
+	    ";", fout);
+
+      i = 0;
+      while (args[i]) {
+         /* may need to quote arguments, but for now just quote arguments with
+          * spaces and let the user sort out anything else */
+         if (strchr(args[i], ' '))
+	    fprintf(fout, " \"%s\"", args[i]);
+         else
+	    fprintf(fout, " %s", args[i]);
+         i++;
+      }
+      fputs("\n\n", fout);
+
+      while (head) {
+         fputs(head->line, fout);
+         head = head->next;
+      }
+
+      fclose(fout);
    }
    args[i] = NULL;
-
-   fputs("; This file was automatically generated from a pre-0.90 survex command line\n"
-	 "; Process this file using the command line:\n"
-	 ";", fout);
-
-   i = 0;
-   while (args[i]) {
-      /* may need to quote arguments, but for now just quote arguments with
-       * spaces and let the user sort out anything else */
-      if (strchr(args[i], ' '))
-	 fprintf(fout, " \"%s\"", args[i]);
-      else
-	 fprintf(fout, " %s", args[i]);
-      i++;
-   }
-   fputs("\n\n", fout);
-
-   while (head) {
-      fputs(head->line, fout);
-      head = head->next;
-   }
-
-   fclose(fout);
 
 #ifdef HAVE_EXECV
    return execvp(args[0], args);
