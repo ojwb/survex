@@ -93,8 +93,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-03-22 22:31:32 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.84 2002-03-22 22:31:32 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-03-23 11:36:01 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.85 2002-03-23 11:36:01 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -856,7 +856,56 @@ not optional, then an error is given.
 
 <Sect2><Title>Survey Station Names</Title>
 
-<Para>Station names may contain any alphanumeric characters and
+<Para>&survexsuite; has a powerful system for naming stations.  It
+uses a hierarchy of survey names, in a similar way to the directory structure
+on your discs.  So point 6 in the entrance survey of Kaninchenhohle
+(cave number 161) is referred to as: 161.entrance.6
+</Para>
+
+<Para>This seems a natural way to refer to station names.  It also
+means that it is very easy to include more levels, for example if you
+want to plot all the caves in the area you just list them all in
+another file, specifying a new prefix.  So to group our example cave
+and its neighbours on the Loser Plateau you would use a file like
+this:
+</Para>
+
+<programlisting>
+*begin Loser
+*include 161
+*include 2YrGest
+*include 145
+*end Loser</programlisting>
+
+<Para>
+The entrance series point mentioned above would now be referred
+to as: Loser.161.entrance.6
+</Para>
+
+<!--
+<Para>This may seem a tad complex but is really very natural once you
+get the hang of it.
+</Para>
+-->
+<Para>You do not have to use this system at all, and can just give all
+stations unique identifiers if you like:
+</Para>
+
+<Para>1, 2, 3, 4, 5, ... 1381, 1382
+</Para>
+
+<Para>or
+</Para>
+
+<Para>AA06, AA07, P34, ZZ6, etc.
+</Para>
+
+<!-- FIXME:
+<Para>However you'll loose the ability to handle subsurveys if you do.
+</Para>
+-->
+
+<Para>Station and survey names may contain any alphanumeric characters and
 additionally any characters in NAMES (default `_' and `-'). Alphabetic
 characters may be forced to upper or lower case by using the *case
 command. Station names may be any length - if you want to only treat
@@ -2590,8 +2639,11 @@ length you want (but by default truncation if off).
 </Para>
 
 <Para>Figures for the number of characters which are significant is various
-software packages: Surveyor87/8 used 8, Andy Waddington's SU-BBC used 6,
-while !SU, the Archimedes version, used 8, &survexsuite; used 8 per prefix
+software packages: Compass currently has a limit of 12,
+<!-- FIXME any limits for other software -->
+Surveyor87/8 used 8, Andy Waddington's SU-BBC used 6,
+while !SU, the Archimedes version, used 8.
+&survexsuite; itself used 8 per prefix
 level up to version 0.41, and 12 per prefix level up to 0.73 (more recent
 versions removed this rather archaic restriction).
 </Para>
@@ -2712,58 +2764,6 @@ DEG|DEGREES|GRADS|MILS|MINUTES
 </VariableList>
 
 </Sect3>
-
-</Sect2>
-
-<Sect2><Title>Station naming</Title>
-
-<Para>&survexsuite; has a powerful system for naming stations.  It
-uses a hierarchy of names, in a similar way to the directory structure
-on your discs.  So point 6 in the entrance survey of Kaninchenhohle
-(cave number 161) is referred to as: 161.entrance.6
-</Para>
-
-<Para>This seems a natural way to refer to station names.  It also
-means that it is very easy to include more levels, for example if you
-want to plot all the caves in the area you just list them all in
-another file, specifying a new prefix.  So to group our example cave
-and its neighbours on the Loser Plateau you would use a file like
-this:
-</Para>
-
-<programlisting>
-*begin Loser
-*include 161
-*include 2YrGest
-*include 145
-*end Loser</programlisting>
-
-<Para>
-The entrance series point mentioned above would now be referred
-to as: Loser.161.entrance.6
-</Para>
-
-<Para>This may seem a tad complex but is really very natural once you
-get the hang of it.
-</Para>
-
-<Para>You do not have to use this system at all, and can just give all
-stations unique identifiers if you like:
-</Para>
-
-<Para>1, 2, 3, 4, 5, ... 1381, 1382
-</Para>
-
-<Para>or
-</Para>
-
-<Para>AA06, AA07, P34, ZZ6, etc.
-</Para>
-
-<!-- FIXME:
-<Para>However you'll loose the ability to handle subsurveys if you do.
-</Para>
--->
 
 </Sect2>
 
@@ -2974,6 +2974,7 @@ leg:
 
 <Sect2><Title>Enter Radiolocation Data</Title>
 
+<!-- FIXME comments from David Gibson here -->
 <Para>This is done by using the *SD command to specify the appropriate
 errors for the radiolocation `survey leg' so that the loop closure
 algorithm knows how to distribute errors if it forms part of a loop.
