@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2004 Olly Betts
+//  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -634,9 +634,11 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // Delete any existing list entries.
     m_Labels.clear();
 
-    m_XMin = m_YMin = m_ZMin = DBL_MAX;
+    Double xmin = DBL_MAX;
     Double xmax = -DBL_MAX;
+    Double ymin = DBL_MAX;
     Double ymax = -DBL_MAX;
+    m_ZMin = DBL_MAX;
     Double zmax = -DBL_MAX;
 
     points.clear();
@@ -662,9 +664,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		m_NumPoints++;
 
 		// Update survey extents.
-		if (pt.x < m_XMin) m_XMin = pt.x;
+		if (pt.x < xmin) xmin = pt.x;
 		if (pt.x > xmax) xmax = pt.x;
-		if (pt.y < m_YMin) m_YMin = pt.y;
+		if (pt.y < ymin) ymin = pt.y;
 		if (pt.y > ymax) ymax = pt.y;
 		if (pt.z < m_ZMin) m_ZMin = pt.z;
 		if (pt.z > zmax) zmax = pt.z;
@@ -748,9 +750,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	// No legs, so get survey extents from stations
 	list<LabelInfo*>::const_iterator i;
 	for (i = m_Labels.begin(); i != m_Labels.end(); ++i) {
-	    if ((*i)->x < m_XMin) m_XMin = (*i)->x;
+	    if ((*i)->x < xmin) xmin = (*i)->x;
 	    if ((*i)->x > xmax) xmax = (*i)->x;
-	    if ((*i)->y < m_YMin) m_YMin = (*i)->y;
+	    if ((*i)->y < ymin) ymin = (*i)->y;
 	    if ((*i)->y > ymax) ymax = (*i)->y;
 	    if ((*i)->z < m_ZMin) m_ZMin = (*i)->z;
 	    if ((*i)->z > zmax) zmax = (*i)->z;
@@ -763,8 +765,8 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	}
     }
 
-    m_XExt = xmax - m_XMin;
-    m_YExt = ymax - m_YMin;
+    m_XExt = xmax - xmin;
+    m_YExt = ymax - ymin;
     m_ZExt = zmax - m_ZMin;
 
     // Sort the labels.
@@ -781,6 +783,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // from different surveys, rather than labels from surveys which
     // are earlier in the list.
     m_Labels.sort(LabelPlotCmp(separator));
+
+    // Centre the dataset around the origin.
+    CentreDataset(xmin, ymin, m_ZMin);
 
 #if 0
     printf("time to load = %.3f\n", (double)timer.Time());
@@ -934,6 +939,31 @@ void MainFrm::SetTreeItemColour(LabelInfo* label)
 	// FIXME: making this red here doesn't match with entrance blobs
 	// being green...
 	m_Tree->SetItemTextColour(label->tree_id, wxColour(255, 0, 0));
+    }
+}
+
+void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
+{
+    // Centre the dataset around the origin.
+
+    Double xoff = m_Offsets.x = xmin + (m_XExt / 2.0);
+    Double yoff = m_Offsets.y = ymin + (m_YExt / 2.0);
+    Double zoff = m_Offsets.z = zmin + (m_ZExt / 2.0);
+
+    list<PointInfo>::iterator pos = points.begin();
+    while (pos != points.end()) {
+	PointInfo & point = *pos++;
+	point.x -= xoff;
+	point.y -= yoff;
+	point.z -= zoff;
+    }
+
+    list<LabelInfo*>::iterator lpos = m_Labels.begin();
+    while (lpos != m_Labels.end()) {
+	LabelInfo* label = *lpos++;
+	label->x -= xoff;
+	label->y -= yoff;
+	label->z -= zoff;
     }
 }
 
@@ -1111,13 +1141,15 @@ void MainFrm::ShowInfo(const LabelInfo *label)
     if (m_Gfx->GetMetric()) {
 	str.Printf(msg(/*%s: %d E, %d N, %dm altitude*/374),
 		   label->text.GetData(),
-		   int(label->x), int(label->y), int(label->z));
+		   int(label->x + m_Offsets.x),
+		   int(label->y + m_Offsets.y),
+		   int(label->z + m_Offsets.z));
     } else {
 	str.Printf(msg(/*%s: %d E, %d N, %dft altitude*/375),
 		   label->text.GetData(),
-		   int(label->x / METRES_PER_FOOT),
-		   int(label->y / METRES_PER_FOOT),
-		   int(label->z / METRES_PER_FOOT));
+		   int((label->x + m_Offsets.x) / METRES_PER_FOOT),
+		   int((label->y + m_Offsets.y) / METRES_PER_FOOT),
+		   int((label->z + m_Offsets.z) / METRES_PER_FOOT));
     }
     GetStatusBar()->SetStatusText(str, 1);
     m_Gfx->SetHere(label->x, label->y, label->z);
