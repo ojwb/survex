@@ -20,7 +20,6 @@
 
 #include "img.h"
 
-extern bool fNoBorder;
 extern bool fBlankPage;
 
 typedef struct {
