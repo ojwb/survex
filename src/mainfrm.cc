@@ -47,6 +47,11 @@ extern "C" {
 #  include <rxposix.h>
 # elif defined(HAVE_RX_RXPOSIX_H)
 #  include <rx/rxposix.h>
+# elif !defined(REG_NOSUB)
+// we must be using wxWindows built-in regexp functions
+#  define REG_NOSUB wxRE_NOSUB
+#  define REG_ICASE wxRE_ICASE
+#  define REG_EXTENDED wxRE_EXTENDED
 # endif
 }
 #endif

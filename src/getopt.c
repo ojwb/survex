@@ -216,7 +216,10 @@ static char *posixly_correct;
    whose names are inconsistent.  */
 
 #ifndef getenv
+/* avoid "warning C4273: 'getenv' : inconsistent dll linkage." */
+#ifndef __WIN32__
 extern char *getenv ();
+#endif
 #endif
 
 static char *

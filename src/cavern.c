@@ -46,6 +46,9 @@
 /* include header for getcwd() */
 #  if OS == MSDOS && defined(__TURBOC__)
 #   include <dir.h>
+#  elif OS == WIN32 && defined(__VISUALC__)
+#   include <direct.h>
+#   include <conio.h>
 #  else
 #   include <unistd.h>
 #  endif
