@@ -3,6 +3,9 @@
  * Copyright (C) 1991-1999 Olly Betts
  */
 
+#ifndef CAVERN_H
+#define CAVERN_H
+
 /* the covariance code doesn't yet fully work */
 #define NO_COVARIANCES 1
 
@@ -15,9 +18,6 @@
 
 #include "useful.h"
 #include "img.h"
-
-#ifndef SURVEX_H
-#define SURVEX_H
 
 /* set this to 1 to force an explicit fixed flag to be used in each pos
  * struct, rather than using p[0]==UNFIXED_VAL to indicate unfixed-ness.
@@ -51,6 +51,9 @@ typedef double real; /* so we can change the precision used easily */
 #define SPECIAL_PLUS      0x400
 
 #define MAX_NO_OF_SDs 5
+
+extern char *fnm_output_base;
+extern int fnm_output_base_is_dir;
 
 /* Types */
 
@@ -196,9 +199,7 @@ typedef struct Settings {
 extern settings *pcs;
 extern prefix *root;
 extern node *stnlist;
-extern long optimize;
-
-extern char *fnm_output_base;
+extern unsigned long optimize;
 
 extern char *survey_title;
 extern int survey_title_len;
@@ -275,4 +276,4 @@ extern bool fAscii;
    SPECIAL_SEPARATOR | SPECIAL_NAMES | SPECIAL_DECIMAL | SPECIAL_PLUS |\
    SPECIAL_MINUS))
 
-#endif /* SURVEX_H */
+#endif /* CAVERN_H */
