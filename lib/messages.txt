@@ -2148,7 +2148,7 @@ pt-br:214 @Controles
 ca:214 @Controls
 es:214 @Controles
 it:214 @Controlli
-sk:214 @Ovl&aacute;danie
+sk:214 O@vl&aacute;danie
 #
 en:215 @Help
 fr:215 @Aide
@@ -2447,7 +2447,7 @@ pt:249 Per@fil
 ca:249 Al&ccedil;a@t
 es:249 Al@zado
 it:249 Pro@filo
-sk:249 Re@z
+sk:249 R@ez
 #
 en:250 @Higher Viewpoint
 fr:250 Point de vue plus Ha@ut
@@ -2639,7 +2639,7 @@ pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
 ca:292 Colors per @Altitud en topograf&iacute;a de superf&iacute;cie
 es:292 Colores por @Altitud en topografia de superficie
 it:292 Rappresentazione delle @Quote mediante colori
-sk:292 @Farebnos&tcaron; pod&lcaron;a v&yacute;&scaron;ky pre povrchov&eacute; z&aacute;mery
+sk:292 Fare@bnos&tcaron; pod&lcaron;a v&yacute;&scaron;ky pre povrchov&eacute; z&aacute;mery
 #
 en:293 @Dashed Surface Surveys
 fr:293 Topos de surface @Hachur&eacute;es
@@ -2661,14 +2661,14 @@ it:294 Marca gli Ing@ressi
 sk:294 Zv&yacute;razni&tcaron; @vchody
 #
 en:295 Highlight @Fixed Points
-en-us:295 Highlight @Control Points
+en-us:295 Highlight Control @Points
 fr:295 Mise en valeur des points Fi@xes
 de:295 Fi@xpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
 ca:295 Marca els @Punts fixats
 es:295 Marca los @Puntos fijados
 it:295 Marca i @Punti fissi
-sk:295 Zv&yacute;razni&tcaron; fi@xn&eacute; body
+sk:295 Zv&yacute;razni&tcaron; @fixn&eacute; body
 #
 en:296 Highlight E@xported Points
 fr:296 Mise de valeur des points ex@port&eacute;s
@@ -2677,7 +2677,7 @@ pt:296 Destacar Bases Ex@portadas
 ca:296 Marca els Punts E@xportats
 es:296 Marca los Puntos E@xportados
 it:296 Marca i punti @Esportati
-sk:296 Zv&yacute;razni&tcaron; ex@portovan&eacute; body
+sk:296 Zv&yacute;razni&tcaron; e@xportovan&eacute; body
 #
 en:297 @Grid##Ctrl+G
 fr:297 @Grille##Ctrl+G
@@ -2700,12 +2700,13 @@ it:298 Battute topografiche @ammorbidite
 sk:298 V@yrovnan&eacute; z&aacute;mery
 #
 en:299 @Indicators
-fr:299 @Indicateurs
+fr:299 I@ndicateurs
 de:299 @Richtungsanzeiger
 pt:299 @Indicadores
-ca:299 @Indicadors
-es:299 @Indicadores
-it:299 @Indicatori
+pt-br:299 I@ndicadores
+ca:299 I@ndicadors
+es:299 I@ndicadores
+it:299 I@ndicatori
 sk:299 Indik&aacute;@tory
 #
 en:300 %s: option `%s' is ambiguous&#10;
@@ -2875,7 +2876,7 @@ pt:317 A@presenta&ccedil;&atilde;o
 ca:317 @Presentaci&oacute;
 es:317 @Presentaci&oacute;n
 it:317 @Presentazione
-sk:317 @Prezent&aacute;cia
+sk:317 Pre@zent&aacute;cia
 #
 en:318 Go @Back
 fr:318 @Retour
@@ -2911,7 +2912,7 @@ pt:321 Abrir A@presenta&ccedil;&atilde;o
 ca:321 Obrir @Presentaci&oacute;...
 es:321 Abrir @Presentaci&oacute;n...
 it:321 Apri @Presentazione
-sk:321 @Otvori&tcaron; prezent&aacute;ciu...
+sk:321 Otvori&tcaron; @prezent&aacute;ciu...
 #
 en:322 Select a presentation to open
 fr:322 Slectionner une pr&eacute;sentation &agrave; ouvrir
@@ -2967,7 +2968,7 @@ pt:330 Superf&iacute;cie S&oacute;@lida
 ca:330 Superf&iacute;cie S&ograve;li@da
 es:330 Superficie S&oacute;li@da
 it:330 Superficie S@olida
-sk:330 @Neprieh&lcaron;adn&yacute; povrch
+sk:330 Neprie@h&lcaron;adn&yacute; povrch
 # number of stations found matching search
 en:331 %d found
 fr:331 %d trouv&eacute;e(s)
@@ -3031,7 +3032,7 @@ pt:337 @Painel lateral
 ca:337 @Recuadre Lateral
 es:337 @Panel Lateral
 it:337 @Riquadro Laterale
-sk:337 Po@strann&yacute; panel
+sk:337 @Postrann&yacute; panel
 # show coordinates (N = North or Northing, E = East or Easting)
 en:338 "  %d E, %d N"
 fr:338 "  %d E, %d N"
