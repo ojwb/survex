@@ -20,7 +20,8 @@ EXTRA_DIST = manual $(doclist) manual.sgml custom.dsl survex.1.in\
 MAINTAINERCLEANFILES = $(doclist)
 CLEANFILES = $(other_mans)
 
-pkgdoc_DATA = manual $(doclist)
+noinstall_DATA = manual
+pkgdoc_DATA = $(doclist)
 
 man_MANS = survex.1 $(other_mans)
 
@@ -29,34 +30,36 @@ $(other_mans):
 
 install-data-local:
 	if test -d "$(srcdir)/manual" ; then \
-	  for p in `find "$(srcdir)/manual" -name *.htm -type f -print` ; do \
+	  for p in `find "$(srcdir)/manual" -name "*.htm" -type f -print` ; do \
 	    f="`echo $$p | sed -e 's|^.*/||'`"; \
 	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
 	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
 	  done \
-	fi
-	if test -d manual ; then \
-	  for p in `find manual -name *.htm -type f -print` ; do \
-	    f="`echo $$p | sed -e 's|^.*/||'`"; \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
-	  done \
+	else \
+	  if test -d manual ; then \
+	    for p in `find manual -name "*.htm" -type f -print` ; do \
+	      f="`echo $$p | sed -e 's|^.*/||'`"; \
+	      echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
+	      $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
+	    done \
+	  fi \
 	fi
 
 uninstall-local:
 	if test -d "$(srcdir)/manual" ; then \
-	  for p in `find "$(srcdir)/manual" -name *.htm -type f -print` ; do \
+	  for p in `find "$(srcdir)/manual" -name "*.htm" -type f -print` ; do \
 	    f="`echo $$p | sed -e 's|^.*/||'`"; \
 	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
 	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
 	  done \
-	fi
-	if test -d manual ; then \
-	  for p in `find manual -name *.htm -type f -print` ; do \
-	    f="`echo $$p | sed -e 's|^.*/||'`"; \
-	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
-	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
-	  done \
+	else \
+	  if test -d manual ; then \
+	    for p in `find manual -name "*.htm" -type f -print` ; do \
+	      f="`echo $$p | sed -e 's|^.*/||'`"; \
+	      echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
+	      rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
+	    done \
+	  fi \
 	fi
 
 manual: manual.sgml custom.dsl
