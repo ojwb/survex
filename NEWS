@@ -1,3 +1,5 @@
+* (MS Windows version): aven: Delete now works in the search box.
+
 Changes in 0.99-prerelease8:
 
 * aven: Ctrl + Arrow keys is now the preferred way to rotate and tilt

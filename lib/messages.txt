@@ -2022,14 +2022,14 @@ es:253 @Reducir##[
 # it: or "Riduci"
 it:253 Zoo@m indietro##]
 #
-en:254 Restore De@fault Settings##Delete
-fr:254 @Restaurer les valeurs par d&eacute;faut##Delete
-de:254 Voreinstellungen @wiederherstellen##Delete
-pt:254 @Usar valores pr&eacute;-definidos##Delete
-pt-br:254 @Restaurar padr&otilde;es##Delete
-ca:254 Restableix els @predeterminats##Delete
-es:254 Restaurar @valores predeterminados##Delete
-it:254 Ripristina i @valori predefiniti##Delete
+en:254 Restore De@fault Settings
+fr:254 @Restaurer les valeurs par d&eacute;faut
+de:254 Voreinstellungen @wiederherstellen
+pt:254 @Usar valores pr&eacute;-definidos
+pt-br:254 @Restaurar padr&otilde;es
+ca:254 Restableix els @predeterminats
+es:254 Restaurar @valores predeterminados
+it:254 Ripristina i @valori predefiniti
 #
 # The accelerators must be different within this group
 # TRANSLATE ca es it
