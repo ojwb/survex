@@ -10,6 +10,9 @@ Changes in 0.97-prerelease7:
 * (MS Windows version): after running cavern, wait for a key press
   before closing the window.
 
+* cavern: Very quiet mode (-qq) now produces absolutely no output if
+  there are no errors or warnings.
+
 Changes in 0.97-prerelease6:
 
 * (MS Windows version): aven: if there are problems opening the
