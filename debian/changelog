@@ -1,3 +1,14 @@
+survex (1.0.18) unstable; urgency=low
+
+  * Fixed "Process" action on .svx files.
+  * File associations: if survex-svxedit isn't installed, run gnome-edit
+    instead; if survex-aven isn't installed, run xcaverot instead.
+  * Include file associations and file icons in the main package rather than
+    survex-aven.
+  * Updated TODO list.
+
+ -- Wookey <wookey@survex.com>  Thu, 26 Sep 2002 02:45:05 +0100
+
 survex (1.0.17) unstable; urgency=low
 
   * Note: 1.0.15 and 1.0.16 addressed MS Windows specific problems.
