@@ -17,6 +17,14 @@ From: Wookey <wookey@aleph1.co.uk>
 the help screen flashes up and then disappears - this is probably our problem,
 not yours (the VESA 2 support being relatively new) :-)
 
+Date: 17 Sep 1998 17:49:36 GMT
+From: Olly <olly@muscat.co.uk>
+
+DJGPP+Allegro caverot doesn't run well under NT.  The best resolution is
+320x200 and there are other niggles (e.g. on an NT 4 server, the mouse works
+in the mode-picker, but not in caverot itself).  In this situation, use the
+directx version of caverot instead.
+
 Date: Thu, 21 Jan 1999 11:09:49 GMT
 From: Peter Wilton-Jones <P.G.G.Wilton-jones@Bradford.ac.uk>
 
