@@ -5,12 +5,13 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 -->
 </STYLE>
 </HEAD><BODY BGCOLOR=white TEXT=black>
-<H1>Warning - Very Provisional</H1>
+<H1>Warning - Provisional</H1>
 
-This is an <b>early draft</b> of this specification, and I've had to reverse
-engineer it from the code.  It may be incorrect in places, and I certain
-there's a lot of knowledge this document assumes, especially if you aren't
-familiar with Survex.
+This specification is reverse engineered from the code.  At least one person
+has written code to successfully written code to read 3d files using it, but
+it may be incorrect in minor details, and it's possible that there are points
+which aren't fully spelled out.  If you encounter any problems, please mail
+us so we can improve this document.
 
 <H1>Survex 3d Format Specification</H1>
 
@@ -29,7 +30,8 @@ the file, restricted by Survey prefix.</P>
 <P>This consists of:
 
 <ul>
-<li> File ID: the string "Survex 3D Image File" followed by a linefeed (decimal 10, hex x0a)
+<li> File ID: the string "Survex 3D Image File" followed by a linefeed (decimal 10, hex x0a). [Note: v0.01 files can have a carriage return before this and
+other linefeeds - this is a file format error in any other format version].
 <li> File format version: "v3" followed by a linefeed.  Valid values for
 older format versions are ("v0.01", "Bv0.01", "bv0.01", "v2").  Newer versions
 will be "v4", "v5", ..., "v10", "v11", etc.
@@ -110,5 +112,5 @@ of the label buffer give the survey that the leg is in.
 <li> 0xc0-0xff : Reserved
 </ul>
 
-<P>Olly Betts 2002-03-17, 2002-03-21</P>
+<P>Olly Betts 2002-03-17, 2002-03-21, 2002-09-30</P>
 </BODY></HTML>

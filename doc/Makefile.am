@@ -16,7 +16,7 @@ manual_sources = manual.sgml cad3d.sgml cavern.sgml caverot.sgml\
 # want tarballs accidentally lacking the documentation.
 EXTRA_DIST = manual @DOCS_OTHER@ survex.1.in index.htm.in\
  index.htm GPL.htm TODO.htm ChngeLog.htm NEWS.htm OLDNEWS.htm\
- AUTHORS.htm HACKING.htm\
+ AUTHORS.htm HACKING.htm 3dformat.htm\
  custom.dsl survex.ent\
  caution.png note.png\
  $(manual_sources) $(other_mans)\

@@ -1,3 +1,5 @@
+* Documentation: added details of the 3d file format (version 3).
+
 Changes in 1.0.18:
 
 * (Unix Version): Fixed "Process" action on .svx files.
