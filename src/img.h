@@ -43,6 +43,9 @@ extern "C" {
 # define img_FLAG_DUPLICATE 0x02
 # define img_FLAG_SPLAY     0x04
 
+# define img_SFLAG_SURFACE     0x01
+# define img_SFLAG_UNDERGROUND 0x02
+
 typedef struct {
    double x, y, z;
 } img_point;

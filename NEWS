@@ -11,6 +11,9 @@
 * extend: ignore surface legs and splay legs; preserve duplicate flag
   on extended legs.
 
+* print*: if surface data isn't being plotted, ignore surface survey
+  stations too, and select page layout based on underground data only.
+
 Changes in 0.97-prerelease5:
 
 * survex: conversion wrapper now only creates __svxtmp.svx file if it

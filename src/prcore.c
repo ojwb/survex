@@ -461,8 +461,10 @@ read_in_data(void)
           * img_CROSS anyway */
          break;
        case img_LABEL:
-         stack(img_CROSS, &p);
-         stack_string(pimg->label);
+	 if (fSurface || (pimg->flags & img_SFLAG_UNDERGROUND)) {
+	    stack(img_CROSS, &p);
+	    stack_string(pimg->label);
+	 }
          break;
       }
    } while (result != img_BAD && result != img_STOP);
