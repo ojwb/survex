@@ -866,18 +866,18 @@ msg_init(char * const *argv)
 	      int seg = __dpmi_allocate_dos_memory(3, &sel);
 	      if (seg != -1) {
 		 __dpmi_regs r;
-		 r.h.ax = 0x3800;
+		 r.x.ax = 0x3800;
 		 r.d.edx = seg;
-		 if (__dpmi_int(0x21, &r) != -1 && !r.h.flags) {
-		    country_code = r.h.bx;
+		 if (__dpmi_int(0x21, &r) != -1 && !r.x.flags) {
+		    country_code = r.x.bx;
 # else
-	      union REGS in, out;
-	      in.x.ax = 0x3800; /* get current country info */
-	      in.x.dx = 0;
-	      intdos(&in, &out);
-	      if (!out.x.cflag) {
+	      union REGS r;
+	      r.x.ax = 0x3800; /* get current country info */
+	      r.x.dx = 0;
+	      intdos(&r, &r);
+	      if (!r.x.cflag) {
 		 if (1) {
-		    country_code = out.x.bx;
+		    country_code = r.x.bx;
 # endif
 		    /* List of country codes taken from:
 		     * http://www.delorie.com/djgpp/doc/rbinter/it/00/14.html */
