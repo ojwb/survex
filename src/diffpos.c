@@ -1,5 +1,5 @@
 /* > diffpos.c */
-/* (Originally quick and dirty) program to compare two SURVEX .pos files */
+/* Utility to compare two SURVEX .pos files */
 /* Copyright (C) 1994,1996,1998,1999,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
@@ -32,7 +32,9 @@
 #include "cavern.h" /* just for REAL_EPSILON */
 #include "cmdline.h"
 
-#define sqrd(X) ((X)*(X))
+#ifndef sqrd
+# define sqrd(X) ((X)*(X))
+#endif
 
 /* macro to just convert argument to a string */
 #define STRING(X) _STRING(X)
