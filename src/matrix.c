@@ -78,8 +78,9 @@ solve_matrix(node *list)
    
    build_matrix(list, n_stn_tab, stn_tab);
    FOR_EACH_STN(stn, list) {
+      printf("(%8.2f, %8.2f, %8.2f ) ", POS(stn, 0), POS(stn, 1), POS(stn, 2));
       print_prefix(stn->name);
-      printf("\n\t\t(%6.3f, %6.3f, %6.3f)\n", POS(stn, 0), POS(stn, 1), POS(stn, 2));
+      putnl();
    }
 }
 
