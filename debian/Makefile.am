@@ -31,7 +31,7 @@ control: Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $(srcdir)/.
 	echo >> control
 	echo Package: survex-svxedit >> control
 	echo Architecture: any >> control
-	echo 'Depends: bwidget, $${shlibs:Depends}' >> control
+	echo 'Depends: bwidget, wish' >> control
 	echo 'Recommends: survex (= ${VERSION})' >> control
 	echo Description: Survey data editor for Survex >> control
 	: # sed 's/^/ /' < $(srcdir)/../desc-svxedit.txt >> control
