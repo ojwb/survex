@@ -169,6 +169,22 @@ public:
     }
 };
 
+class LabelPlotCmp {
+public:
+    bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
+	int n;
+	n = pt1->IsEntrance() - pt2->IsEntrance();
+	if (n) return n > 0;
+	n = pt1->IsFixedPt() - pt2->IsFixedPt();
+	if (n) return n > 0;
+	n = pt1->IsExportedPt() - pt2->IsExportedPt();
+	if (n) return n > 0;
+        wxString l1 = pt1->GetText().AfterLast('.');
+	wxString l2 = pt2->GetText().AfterLast('.');
+        return name_cmp(l1, l2) < 0;	
+    }
+};
+
 class TreeData : public wxTreeItemData {
     LabelInfo* m_Label;
 
@@ -672,6 +688,13 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // Fill the tree of stations and prefixes.
     FillTree();
     m_Tree->Expand(m_TreeRoot);
+
+    // Sort labels so that entrances are displayed in preference,
+    // then fixed points, then exported points, then other points.
+    // Also sort by leaf name so that we'll tend to choose labels
+    // from different surveys, rather than labels from surveys which
+    // are earlier in the list.
+    m_Labels.sort(LabelPlotCmp());
 
     // Sort out depth colouring boundaries (before centering dataset!)
     SortIntoDepthBands(points);
