@@ -1,6 +1,6 @@
 /* cvrotgfx.c */
 
-/* Copyright (C) Olly Betts 1997
+/* Copyright (C) Olly Betts 1997-2000
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,27 @@ int _cvrotgfx_textcol, _cvrotgfx_drawcol;
 buffer_rec *BitMap;
 
 # elif defined(ALLEGRO)
+
+/* Turn off all the sound, midi, and joystick drivers, since we don't
+ * use them */
+
+BEGIN_DIGI_DRIVER_LIST
+END_DIGI_DRIVER_LIST
+
+BEGIN_MIDI_DRIVER_LIST
+END_MIDI_DRIVER_LIST
+
+BEGIN_JOYSTICK_DRIVER_LIST
+END_JOYSTICK_DRIVER_LIST
+
+BEGIN_COLOR_DEPTH_LIST
+#if (OS==UNIX)
+COLOR_DEPTH_16
+#else
+COLOR_DEPTH_8
+#endif
+END_COLOR_DEPTH_LIST
+
 /* DJGPP + Allegro (or UNIX+allegro) */
 BITMAP *BitMap, *BitMapDraw;
 
