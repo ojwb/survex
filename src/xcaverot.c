@@ -1723,12 +1723,10 @@ main(int argc, char **argv)
 				 rot_speed = rot_speed > 0 ? 720 : -720;
 			      break;
 			    case '[':	/* zoom out */
-			      scale /= 2.0;
-			      if (scale < 0.001) scale = 0.001;
+			      scale /= zoomfactor;
 			      break;
 			    case ']':	/* zoom in */
-			      scale *= 2.0;
-			      if (scale > 0.4) scale = 0.4;
+			      scale *= zoomfactor;
 			      break;
 			    case 'r':	/* reverse dirn of rotation */
 			      rot_speed = -rot_speed;
