@@ -78,11 +78,13 @@ solve_matrix(node *list)
    /* stn_tab = osrealloc(stn_tab, n_stn_tab * ossizeof(pos*)); */
    
    build_matrix(list, n_stn_tab, stn_tab);
+#if DEBUG_MATRIX
    FOR_EACH_STN(stn, list) {
       printf("(%8.2f, %8.2f, %8.2f ) ", POS(stn, 0), POS(stn, 1), POS(stn, 2));
       print_prefix(stn->name);
       putnl();
    }
+#endif
 
    osfree(stn_tab);
 }
