@@ -1,4 +1,4 @@
-/* > datain.c
+/* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
  * Copyright (C) 1991-2001 Olly Betts
  *
@@ -48,7 +48,7 @@ int ch;
 
 /* Don't explicitly initialise as we can't set the jmp_buf - this has
  * static scope so will be initialised like this anyway */
-parse file /* = { NULL, NULL, 0, NULL } */ ;
+parse file /* = { NULL, NULL, 0, fFalse, NULL } */ ;
 
 bool f_export_ok;
 
@@ -83,15 +83,22 @@ push_back(int c)
 static void
 error_list_parent_files(void)
 {
-   /* FIXME: don't list this a second time if we just reported another error
-    * in the same file included in the same way... */
-   if (file.parent) {
-      parse *p = file.parent;
+   if (!file.reported_where && file.parent) {
+      parse *p = file.parent;      
       const char *m = msg(/*In file included from */5);
       size_t len = strlen(m);
+
       fprintf(STDERR, m);
       m = msg(/*from */3);
+
+      /* Suppress reporting of full include tree for further errors
+       * in this file */
+      file.reported_where = fTrue;
+
       while (p) {
+	 /* Force re-report of include tree for further errors in
+	  * parent files */
+	 p->reported_where = fFalse;
 	 fprintf(STDERR, "%s:%d", p->filename, p->line);
 	 p = p->parent;
 	 if (p) fprintf(STDERR, ",\n%*s", (int)len, m);
@@ -325,6 +332,7 @@ data_file(const char *pth, const char *fnm)
       file.fh = fh;
       file.filename = filename;
       file.line = 1;
+      file.reported_where = fFalse;
    }
 
    if (fPercent) printf("%s:\n", fnm);

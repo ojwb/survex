@@ -1,4 +1,4 @@
-/* > datain.h
+/* datain.h
  * Header file for code that...
  * Reads in survey files, dealing with special characters, keywords & data
  * Copyright (C) 1994-2001 Olly Betts
@@ -28,7 +28,8 @@ typedef struct parse {
    FILE *fh;
    const char *filename;
    unsigned int line;
-   struct parse *parent;
+   bool reported_where;
+   struct parse *parent;   
 #ifdef HAVE_SETJMP_H
    jmp_buf jbSkipLine;
 #endif

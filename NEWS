@@ -1,3 +1,6 @@
+* cavern: more intelligent and less verbose reporting of errors in nested
+  included files (inspired by GCC 3.0).
+
 Changes in 0.99-prerelease5:
 
 * aven: improved initial sizing of window; "Toggle rotation" toolbar
