@@ -154,9 +154,9 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
     *
     * <opt> is <LINE> or <DATA> for leg data, or -> label for station data
     */
-   legs = osmalloc(ossizeof(point) * c_legs + 1);
-   stns = osmalloc(ossizeof(point) * c_stns + 1);
-   slegs = osmalloc(ossizeof(point) * c_slegs + 1);
+   legs = osmalloc(ossizeof(point) * (c_legs + 1));
+   stns = osmalloc(ossizeof(point) * (c_stns + 1));
+   slegs = osmalloc(ossizeof(point) * (c_slegs + 1));
    p = osmalloc(c_totlabel);
    p_end = p + c_totlabel;
 
