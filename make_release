@@ -123,8 +123,8 @@ if ! make ; then
    exit 1
 fi
 #if test x"$release" = xyes ; then
-   if ! make mingw_zip ; then
-      echo mingw make mingw_zip failed
+   if ! make mingw_iss ; then
+      echo mingw make mingw_iss failed
       exit 1
    fi
 #fi
