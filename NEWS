@@ -84,9 +84,6 @@
 
 * (UNIX version): man pages now have "Survex <version number>" on them.
 
-* survex: removed conversion wrapper - you should use "cavern file.svx"
-  instead of "survex file.svx".
-
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

@@ -105,3 +105,8 @@ caverot: on RISC OS now fall back to using 2 or even just one screen
 bank if we can't find a mode where we can create 3 banks [FIXME: need
 to test this works]
 
+Date: Sat, 15 Sep 2001
+From: Olly
+
+Retire survex wrapper (no-survex-wrapper.patch) for version 1.0.
+
