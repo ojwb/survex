@@ -114,7 +114,7 @@ main(int argc, char **argv)
 {
    const char *fnmData, *fnmOutput;
    char szDesc[256];
-   double x, y, z;
+   float x, y, z;
    char sz[256];
    int result;
    point *fr = NULL, *to;
@@ -195,7 +195,7 @@ main(int argc, char **argv)
       }
    }
    strcat(szDesc, " (extended)");
-   pimg = img_open_write(fnmOutput, szDesc, fFalse);/* text file for now*/
+   pimg = img_open_write(fnmOutput, szDesc, fTrue);
 
    do_stn(start, 0.0f); /* only does highest connected component currently */
    img_close(pimg);

@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-TESTS = diffpos.tst cavern.tst cavfail.tst
+TESTS = diffpos.tst cavern.tst cavfail.tst extend.tst
 
-EXTRA_DIST = diffpos.tst cavern.tst cavfail.tst\
+EXTRA_DIST = diffpos.tst cavern.tst cavfail.tst extend.tst\
 oneleg.svx oneleg.pos\
 midpoint.svx midpoint.pos\
 noose.svx noose.pos\
@@ -25,4 +25,5 @@ calibrate_tape.svx calibrate_tape.pos\
 delatenda.pos delatendb.pos delatend.out\
 addatenda.pos addatendb.pos addatend.out\
 begin_no_end.svx end_no_begin.svx end_no_begin_nest.svx\
-require_fail.svx
+require_fail.svx\
+extend.svx extendx.3d
