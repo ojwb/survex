@@ -21,6 +21,8 @@ Changes in 0.97-prerelease4:
 
 * Fixed to build on Solaris with Sun's compiler.
 
+* Minor corrections to documentation and man pages.
+
 Changes in 0.97-prerelease3:
 
 * (Unix version): aven: Internationalised; Fixed serious drawing bug
