@@ -20,6 +20,9 @@ Changes in 1.0.2:
 * cad3d: added --plt option to produce crude approximation to Compass .plt
   files - should be good enough for reading into Carto.
 
+* img library enhanced to allow Compass .plt files to be read as if they were
+  .3d files.
+
 Changes in 1.0.1:
 
 * (MS Windows version): printwin: fixed sizes of cross and page alignment

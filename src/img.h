@@ -1,6 +1,6 @@
 /* img.h
  * Header file for routines to read and write Survex ".3d" image files
- * Copyright (C) Olly Betts 1993,1994,1997,2001
+ * Copyright (C) Olly Betts 1993,1994,1997,2001,2002
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,11 +71,12 @@ typedef struct {
 # endif
    long start;
    /* version of file format:
+    *  -2 => Compass .plt file
     *  -1 => .pos file
     *   0 => 0.01 ascii
     *   1 => 0.01 binary,
     *   2 => byte actions and flags
-    *   3 => prefixes for legs; compressed prefixes)
+    *   3 => prefixes for legs; compressed prefixes
     */
    int version;
    char *survey;

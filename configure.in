@@ -290,10 +290,12 @@ AC_DEFINE_UNQUOTED(INT16_T,$INT16_T,[signed 16 bit integer type])
 dnl Checks for library functions.
 AC_FUNC_STRFTIME
 if test x"$ac_cv_func_strftime" != xyes ; then
-  LIBOBJS="$LIBOBJS strftime.o"
+  AC_LIBOBJ(strftime)
 fi
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(popen signal getpwuid round)
+dnl check for strcasecmp here as well as below - this one is to get
+dnl HAVE_STRCASECMP defined if appropriate (for img.c)
+AC_CHECK_FUNCS(popen signal getpwuid round strcasecmp)
 
 dnl difftime seems to be an ANSI invention
 AC_CHECK_FUNCS(difftime)
@@ -314,15 +316,13 @@ fi
 
 case "$strcasecmp" in
 no)
-  LIBOBJS="$LIBOBJS strcasecmp.o"
+  AC_LIBOBJ(strcasecmp)
   AC_MSG_RESULT(using own implementation of strcasecmp) ;;
 strcasecmp) ;;
 *)
   AC_DEFINE_UNQUOTED(strcasecmp, "$strcasecmp",
     [strcasecmp define for systems which call it something else]) ;;
 esac
-
-AC_SUBST(LIBOBJS)
 
 AC_MSG_CHECKING(for sgmltools v2 or v3)
 case `sgmltools --version 2>&5` in

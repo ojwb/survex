@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,6 +94,22 @@ my_round(double x) {
 }
 #endif
 
+/* portable case insensitive string compare */
+#if defined(strcasecmp) || defined(HAVE_STRCASECMP)
+# define my_strcasecmp strcasecmp
+#else
+/* What about top bit set chars? */
+int my_strcasecmp(const char *s1, const char *s2) {
+   register c1, c2;
+   do {
+      c1 = *s1++;
+      c2 = *s2++;
+   } while (c1 && toupper(c1) == toupper(c2));
+   /* now calculate real difference */
+   return c1 - c2;
+}
+#endif
+
 unsigned int img_output_version = 3;
 
 #ifdef IMG_HOSTED
@@ -113,6 +129,8 @@ static img_errcode img_errno = IMG_NONE;
 #endif
 
 #define FILEID "Survex 3D Image File"
+
+#define EXT_PLT "plt"
 
 /* Attempt to string paste to ensure we are passed a literal string */
 #define LITLEN(S) (sizeof(S"") - 1)
@@ -246,7 +264,8 @@ img_open_survey(const char *fnm, const char *survey)
       pimg->survey_len = len;
    }
 
-   /* [version -1] already skipped heading line, or there wasn't one
+   /* [version -2] pending IMG_LINE ('D') or IMG_MOVE ('M')
+    * [version -1] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
     * [version 3] not in the middle of turning a LINE into a MOVE
     */
@@ -255,7 +274,7 @@ img_open_survey(const char *fnm, const char *survey)
    len = strlen(fnm);
    if (len > LITLEN(EXT_SVX_POS) + 1 &&
        fnm[len - LITLEN(EXT_SVX_POS) - 1] == FNM_SEP_EXT &&
-       strcmp(fnm + len - LITLEN(EXT_SVX_POS), EXT_SVX_POS) == 0) {
+       my_strcasecmp(fnm + len - LITLEN(EXT_SVX_POS), EXT_SVX_POS) == 0) {
       pimg->version = -1;
       if (!survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
@@ -263,6 +282,36 @@ img_open_survey(const char *fnm, const char *survey)
 	 img_errno = IMG_OUTOFMEMORY;
 	 goto error;
       }
+      pimg->start = 0;
+      return pimg;
+   }
+   
+   if (len > LITLEN(EXT_PLT) + 1 &&
+       fnm[len - LITLEN(EXT_PLT) - 1] == FNM_SEP_EXT &&
+       my_strcasecmp(fnm + len - LITLEN(EXT_PLT), EXT_PLT) == 0) {
+      char *line = NULL;
+      pimg->version = -2;
+      if (!survey) pimg->title = baseleaf_from_fnm(fnm);
+      pimg->datestamp = my_strdup(TIMENA);
+      if (!pimg->datestamp) {
+	 img_errno = IMG_OUTOFMEMORY;
+	 goto error;
+      }
+      do {
+	 osfree(line);
+	 line = getline_alloc(pimg->fh);
+	 if (!line || line[0] == '\x1a' || feof(pimg->fh)) {
+	    if (line) {
+	       osfree(line);
+	       img_errno = IMG_BADFORMAT;
+	    } else {
+	       img_errno = IMG_OUTOFMEMORY;
+	    }
+	    osfree(pimg->datestamp);
+	    goto error;
+	 }
+      } while (line[0] != 'N');
+      osfree(line);
       pimg->start = 0;
       return pimg;
    }
@@ -477,7 +526,7 @@ img_read_item(img *pimg, img_point *p)
 	 }
 	 /* 16-31 mean remove (n - 15) characters from the prefix */
 	 /* zero prefix using 0 */
-	 if (pimg->label_len <= opt - 15) {
+	 if (pimg->label_len <= (size_t)(opt - 15)) {
 	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
 	 }
@@ -817,7 +866,7 @@ img_read_item(img *pimg, img_point *p)
       }
 
       return result;
-   } else {
+   } else if (pimg->version == -1) {
       /* version -1: .pos file */
       size_t off;
       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
@@ -874,6 +923,90 @@ img_read_item(img *pimg, img_point *p)
       }
 
       return img_LABEL;
+   } else {
+      /* version -2: Compass .plt file */
+      /* FIXME: pimg->survey is ignored - we could compare it to the survey
+       * short-name after the 'N'...
+       */
+      if (pimg->pending) {
+	 int r = pimg->pending == 'M' ? img_MOVE : img_LINE;
+	 pimg->pending = 0;
+	 pimg->flags = 0;
+	 pimg->label[0] = '\0';
+	 return r;
+      }
+
+      while (1) {
+	 char *line = getline_alloc(pimg->fh);
+	 char *q;
+	 size_t len = 0;
+
+	 switch (line[0]) {
+	    case 'M': case 'D':
+	       /* Move or Draw */
+	       if (sscanf(line + 1, "%lf %lf %lf", &p->x, &p->y, &p->z) != 3) {
+		  osfree(line);
+		  if (ferror(pimg->fh)) {
+		     img_errno = IMG_READERROR;
+		  } else {
+		     img_errno = IMG_BADFORMAT;
+		  }
+		  return img_BAD;
+	       }
+	       q = strchr(line, 'S');
+	       if (!q) {
+		  osfree(line);
+		  img_errno = IMG_BADFORMAT; 
+		  return img_BAD;
+	       }
+	       ++q;
+	       len = 0;
+	       while (q[len] > ' ') ++len;
+	       q[len] = '\0';
+	       ++len;
+	       if (len > pimg->buf_len) { 
+	    	  char *b = xosrealloc(pimg->label_buf, len);
+		  if (!b) {
+		     img_errno = IMG_OUTOFMEMORY;
+		     return img_BAD;
+		  }
+		  pimg->label_buf = b;
+		  pimg->buf_len = len;
+	       }
+	       pimg->label = pimg->label_buf;
+	       memcpy(pimg->label, q, len);
+	       pimg->pending = line[0];
+	       osfree(line);
+	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
+	       return img_LABEL;
+	    case 'X': case 'F': case 'S':
+	       /* bounding boX (marks end of survey), Feature survey, or
+		* new Section - skip to next survey */
+	       do {
+		  osfree(line);
+		  line = getline_alloc(pimg->fh);
+		  if (!line) {
+		     img_errno = IMG_OUTOFMEMORY;
+		     return img_BAD;
+		  }
+		  if (line[0] == '\x1a') {
+		     osfree(line);
+		     return img_STOP;
+		  }
+		  if (feof(pimg->fh)) {
+		     osfree(line);
+		     img_errno = IMG_BADFORMAT;
+		     return img_BAD;
+		  }
+	       } while (line[0] != 'N');
+	       osfree(line);
+	       break;
+	    default:
+	       osfree(line);
+	       img_errno = IMG_BADFORMAT;
+	       return img_BAD;
+	 }
+      }
    }
 }
 
