@@ -1,0 +1,5 @@
+; the omittable data for topofil and diving styles were reversed in 0.95
+*data topofil from to fromcount tocount compass
+1 2 12345 67890 090
+*data diving from to tape compass fromdepth todepth
+2 3 1.00 090 0.0 1.2

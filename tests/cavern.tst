@@ -10,7 +10,7 @@ SURVEXHOME=$srcdir/../lib
 export SURVEXHOME
 
 TESTS="oneleg midpoint noose cross firststn break_replace_pfx deltastar\
- deltastar2 bug0 bug1 bug2 bug3 calibrate_tape expobug nosurvey nosurvey2\
+ deltastar2 bug0 bug1 bug2 bug3 bug4 calibrate_tape expobug nosurvey nosurvey2\
  cartesian require"
 
 for file in $TESTS ; do

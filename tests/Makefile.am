@@ -15,6 +15,7 @@ bug0.svx bug0.pos\
 bug1.svx bug1.pos\
 bug2.svx bug2.pos\
 bug3.svx bug3.pos\
+bug4.svx bug4.pos\
 expobug.svx expobug.pos\
 nosurvey.svx nosurvey.pos\
 nosurvey2.svx nosurvey2.pos\

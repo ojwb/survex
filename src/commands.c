@@ -791,8 +791,8 @@ data(void)
    /* readings which may be omitted for each style */
    static ulong mask_optional[] = {
       BIT(Clino),
-      0,
       BIT(Clino),
+      0,
       0,
       0
    };
