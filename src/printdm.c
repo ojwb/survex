@@ -46,7 +46,9 @@
 
 static int Pre(int pagesToPrint, const char *title);
 static void Post(void);
+#if defined(PCL) || defined(XBM)
 static int CharsetLatin1(void);
+#endif
 
 #ifdef XBM
 static const char *xbm_Name(void);

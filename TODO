@@ -33,13 +33,6 @@ From: Olly
 
 Clean up the sample data and start including it again.
 
-Date: Thu, 23 Nov 2000
-From: Olly
-
-This gives "*** Singular!!!" warning with DEBUG_INVALID on:
-1 2 50000 0 -
-1 2 5 0 -30
-
 Date: Fri, 16 Feb 2001
 From: Olly
 
@@ -103,9 +96,6 @@ override (so we can use alias/batchfile for DOS)?
 
 get DOS programs to abort on Ctrl-C reliably?
 
-Sort out code fragments to attempt to handle dud equates (nodes equated
-to each other but not referred to otherwise (done?)
-
 Label lengths aren't considered when working out image size in prcore.c,
 so a long label can spill off the edge of the printout
 
@@ -113,9 +103,6 @@ so a long label can spill off the edge of the printout
 when memory is tight
 
 printer driver name spills over one page on Wookey's printer (printdm)
-
-? improve messages given when a signal is received (eg more precise
-reporting of 'Arithmetic error' as 'Divide by zero', 'Negative root', etc)
 
 Tests these commands:
  DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET TITLE

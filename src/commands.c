@@ -130,7 +130,7 @@ default_units(settings *s)
    int quantity;
    for (quantity = 0; quantity < Q_MAC; quantity++) {
       if (TSTBIT(ANG_QMASK, quantity))
-	 s->units[quantity] = (real)(PI / 180.0); /* degrees */
+	 s->units[quantity] = (real)(M_PI / 180.0); /* degrees */
       else
 	 s->units[quantity] = (real)1.0; /* metres */
    }
@@ -1131,7 +1131,7 @@ cmd_data(void)
 /* ordering must be the same as the units enum */
 static real factor_tab[] = {
    1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0),
-   (PI/180.0), (PI/200.0), 0.0, (PI/180.0/60.0)
+   (M_PI/180.0), (M_PI/200.0), 0.0, (M_PI/180.0/60.0)
 };
 
 static void

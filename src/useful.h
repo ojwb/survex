@@ -60,14 +60,14 @@ typedef long int fpos_t;
 # define min(X, Y) ((X) < (Y) ? (X) : (Y))
 #endif
 
-/* Why doesn't ANSI define PI in 'math.h'? Oh well, here's too many dp: */
-#ifndef PI /* in case it is defined (eg by DJGPP) */
-# ifdef M_PI /* some (eg msc I think) define this */
-#  define PI M_PI
+/* Some C libraries define this in math.h */
+#ifndef M_PI
+# ifdef PI /* MSVC defines PI IIRC */
+#  define M_PI PI
 # else
-#  define PI 3.14159265358979323846264338327950288419716939937510582097494459
+#  define M_PI 3.14159265358979323846264338327950288419716939937510582097494459
 # endif
-#endif /* !PI */
+#endif
 
 #define MM_PER_INCH 25.4 /* exact value */
 #define METRES_PER_FOOT 0.3048 /* exact value */
@@ -105,8 +105,8 @@ typedef long int fpos_t;
 #define fputsnl(SZ, FH) BLK(fputs((SZ), (FH)); putc('\n', (FH));)
 #define sqrd(X) ((X) * (X))        /* macro to square things */
 #define radius(X, Y) sqrt(sqrd((double)(X)) + sqrd((double)(Y))) /* euclidean distance */
-#define rad(X) ((PI / 180.0) * (X))  /* convert from degrees to radians */
-#define deg(X) ((180.0 / PI) * (X))  /* convert from radians to degrees */
+#define rad(X) ((M_PI / 180.0) * (X))  /* convert from degrees to radians */
+#define deg(X) ((180.0 / M_PI) * (X))  /* convert from radians to degrees */
 
 /* macro to convert argument to a string literal */
 #define STRING(X) _STRING(X)
