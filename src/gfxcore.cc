@@ -1011,6 +1011,7 @@ void GfxCore::DrawDepthbar()
                           DEPTH_BAR_BLOCK_HEIGHT);
         }
 
+        SetColour(m_Pens[TEXT_COLOUR]);
         DrawIndicatorText(x_min + DEPTH_BAR_BLOCK_WIDTH + 5, y - (FONT_SIZE / 2) - 1, strs[band]);
 
         y += DEPTH_BAR_BLOCK_HEIGHT;
