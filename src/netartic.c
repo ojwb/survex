@@ -37,6 +37,7 @@ visit(node *stn)
 {
    ulong min;
    int i;
+   node *stn2;
    liv *livTos = NULL, *livTmp;
 iter:
    stn->colour = ++colour;
@@ -57,21 +58,27 @@ iter:
 	 goto iter;
 uniter:
 	 i = reverse_leg_dirn(stn->leg[livTos->dirn]);
-	 stn = stn->leg[livTos->dirn]->l.to;
+	 stn2 = stn->leg[livTos->dirn]->l.to;
 	 /* DO: remove stn from stnlist */
 	 /* DO: add stn to component list */
 	 if (livTos->min <= min) {
-	    if (stn->colour <= min) {
+	    if (stn2->colour <= min) {
 	       /* DO: note down leg (<-), remove and replace:
 		*                 /\   /        /\
 		* [fixed point(s)]  *-*  -> [..]  )
 		*                 \/   \        \/
 		* DO: start new articulation
 		*/
-	       stn->fArtic = fTrue;
+	       printf("Articulate ");
+	       print_prefix(stn->name)
+	       printf(" - ");
+	       print_prefix(stn2->name)
+	       printf(" -...\n");
+	       stn2->fArtic = fTrue;
 	    }
 	    min = livTos->min;
 	 }
+	 stn = stn2;
 	 livTmp = livTos;
 	 livTos = livTos->next;
 	 osfree(livTmp);
@@ -109,7 +116,7 @@ articulate(void)
    node *stn, *stnStart;
    node *matrixlist = NULL;
    node *fixedlist = NULL;
-   int c, i;
+   int i;
 #ifdef DEBUG_ARTIC
    ulong cFixed;
 #endif
@@ -133,7 +140,7 @@ articulate(void)
    cFixed = colour;
 #endif
    while (1) {
-      int cUncolouredNeighbours = 0;
+      int c;
       stn = stnStart;
 #if 0
       /* see if this is a fresh component - it may not be, we may be
@@ -142,9 +149,6 @@ articulate(void)
       if (stn->status != statFixed) cComponents++;
 #endif
 
-      for (i = 0; i <= 2 && stn->leg[i]; i++) {
-	 if (stn->leg[i]->l.to->colour == 0) cUncolouredNeighbours++;
-      }
 #ifdef DEBUG_ARTIC
       print_prefix(stn->name);
       printf(" [%p] is root of component %ld\n", stn, cComponents);
@@ -152,58 +156,56 @@ articulate(void)
       printf(" and colour = %d/%d\n", stn->colour, cFixed);
 /*      if (cNeighbours == 0) printf("0-node\n");*/
 #endif
-      if (cUncolouredNeighbours) {
-	 c = 0;
-	 for (i = 0; i <= 2 && stn->leg[i]; i++) {
-	    if (stn->leg[i]->l.to->colour == 0) {
-	       ulong colBefore = colour;
-	       node *stn2;
-
-	       c++;
-	       visit(stn->leg[i]->l.to);
-	       n = colour - colBefore;
+      
+      c = 0;
+      for (i = 0; i <= 2 && stn->leg[i]; i++) {
+	 node *stn2 = stn->leg[i]->l.to;
+	 if (stn2->colour == 0) {
+	    ulong colBefore = colour;
+	    
+	    c++;
+	    visit(stn2);
+	    n = colour - colBefore;
 #ifdef DEBUG_ARTIC
-	       printf("visited %lu nodes\n", n);
+	    printf("visited %lu nodes\n", n);
 #endif
-	       if (n == 0) continue;
-	       /* Solve chunk of net from stn in dirn i up to stations
-		* with fArtic set or fixed() true - hmm fixed() test
-		* causes problems if an equated fixed point spans 2
-		* articulations.
-		* Then solve stations up to next set of fArtic points,
-		* and repeat until all this bit done.
-		*/
-	       stn->status = statFixed;
-	       stn2 = stn->leg[i]->l.to;
+	    if (n == 0) continue;
+	    /* Solve chunk of net from stn in dirn i up to stations
+	     * with fArtic set or fixed() true - hmm fixed() test
+	     * causes problems if an equated fixed point spans 2
+	     * articulations.
+	     * Then solve stations up to next set of fArtic points,
+	     * and repeat until all this bit done.
+	     */
+	    stn->status = statFixed;
 more:
-	       solve_matrix(stnlist);
-	       FOR_EACH_STN(stn2, stnlist) {
-		  if (stn2->fArtic && fixed(stn2)) {
-		     int d;
-		     for (d = 0; d <= 2 && stn->leg[d]; d++) {
-			node *stn3 = stn2->leg[d]->l.to;
-			if (!fixed(stn3)) {
-			   stn2 = stn3;
-			   goto more;
-			}
+	    solve_matrix(stnlist);
+	    FOR_EACH_STN(stn2, stnlist) {
+	       if (stn2->fArtic && fixed(stn2)) {
+		  int d;
+		  for (d = 0; d <= 2 && stn->leg[d]; d++) {
+		     node *stn3 = stn2->leg[d]->l.to;
+		     if (!fixed(stn3)) {
+			stn2 = stn3;
+			goto more;
 		     }
-		     stn2->fArtic = fFalse;
 		  }
+		  stn2->fArtic = fFalse;
 	       }
-            }
+	    }
 	 }
-	 /* Special case to check if start station is an articulation point
-	  * which it is iff we have to colour from it in more than one dirn
-	  */
-	 if (c > 1) stn->fArtic = fTrue;
-#ifdef DEBUG_ARTIC
-	 FOR_EACH_STN(stn, stnlist) {
-	    printf("%ld - ", stn->colour);
-	    print_prefix(stn->name);
-	    putnl();
-	 }
-#endif
       }
+      /* Special case to check if start station is an articulation point
+       * which it is iff we have to colour from it in more than one dirn
+       */
+      if (c > 1) stn->fArtic = fTrue;
+#ifdef DEBUG_ARTIC
+      FOR_EACH_STN(stn, stnlist) {
+	 printf("%ld - ", stn->colour);
+	 print_prefix(stn->name);
+	 putnl();
+      }
+#endif
       if (stnStart->colour == 1) {
 #ifdef DEBUG_ARTIC
 	 printf("%ld components\n",cComponents);
