@@ -2074,20 +2074,20 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
         int length = num_points[polyline];
         const Point* vertices_start = vertices;
 
-        SetColour(const_cast<GLAPen&>(pen), true);
-    
         assert(length > 1);
 
-        BeginPolyline();
-        
-        for (int segment = 0; segment < length; segment++) {
-            PlaceVertex(vertices->x, vertices->y, vertices->z);
-            vertices++;
-        }
+	SetColour(const_cast<GLAPen&>(pen), true);
 
-        EndPolyline();
+	BeginPolyline();
+	
+	for (int segment = 0; segment < length; segment++) {
+	    PlaceVertex(vertices->x, vertices->y, vertices->z);
+	    vertices++;
+	}
 
-        if (!m_Tubes) continue;
+	EndPolyline();
+
+	if (!m_Tubes) continue;
 
         Double size = 1;
         
@@ -2096,42 +2096,44 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 
 	Vector3 right, up;
 
+	const Vector3 up_v(0.0, 0.0, 1.0);
+
+	Vector3 last_right(1.0, 0.0, 0.0);
+	
         for (int segment = 0; segment < length; segment++) {
             // get the coordinates of this vertex
-            Double x0 = vertices_start->x;
-            Double y0 = vertices_start->y;
-            Double z0 = vertices_start->z;
-            Vector3 pt_v(x0, y0, z0);
+            Vector3 pt_v(vertices_start->x, vertices_start->y, vertices_start->z);
             vertices_start++;
 /*
             if (segment != 0) {
-                size = sqrt(sqrd(prev_pt_v.getX() - x0) +
-                            sqrd(prev_pt_v.getY() - y0) +
-                            sqrd(prev_pt_v.getZ() - z0)) / 4;
+                size = sqrt(sqrd(prev_pt_v.getX() - pt_v.getX()) +
+                            sqrd(prev_pt_v.getY() - pt_v.getY()) +
+                            sqrd(prev_pt_v.getZ() - pt_v.getZ())) / 4;
             } else {
-                size = sqrt(sqrd(vertices_start->x - x0) +
-                            sqrd(vertices_start->y - y0) +
-                            sqrd(vertices_start->z - z0)) / 4;
+                size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
+                            sqrd(vertices_start->y - pt_v.getY()) +
+                            sqrd(vertices_start->z - pt_v.getZ())) / 4;
             }
 */
             if (segment == 0) {
                 // first segment
         
                 // get the coordinates of the next vertex
-                Double x1 = vertices_start->x;
-                Double y1 = vertices_start->y;
-                Double z1 = vertices_start->z;
-                Vector3 next_pt_v(x1, y1, z1);
+                Vector3 next_pt_v(vertices_start->x, vertices_start->y, vertices_start->z);
                 
                 // calculate vector from this pt to the next one
                 Vector3 leg_v = pt_v - next_pt_v;
                 
                 // obtain a vector in the LRUD plane
-                Vector3 up_v(0.0, 0.0, 1.0);
   		right = leg_v * up_v;
-		if (right.magnitude() == 0) right = Vector3(1.0, 0.0, 0.0);
+		if (right.magnitude() == 0) {
+		    right = last_right;
+		} else {
+		    last_right = right;
+		}
 
-                // obtain a second vector in the LRUD plane, perpendicular to the first
+		// obtain a second vector in the LRUD plane, perpendicular to
+		// the first
                 up = right * leg_v;
             }
             else if (segment == length - 1) {
@@ -2140,37 +2142,61 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
                 // calculate vector from the previous pt to this one
                 Vector3 leg_v = prev_pt_v - pt_v;
 
-                // obtain a vector in the LRUD plane
-                Vector3 up_v(0.0, 0.0, 1.0);
+                // obtain a horizontal vector in the LRUD plane
                 right = leg_v * up_v;
-		if (right.magnitude() == 0) right = Vector3(1.0, 0.0, 0.0);
+		if (right.magnitude() == 0) {
+		    // Twist alignment by minimum angle required to align
+		    // NSEW (need to do this so pitch orientations match across
+		    // depth bands)
+		    Vector3 a(last_right.getX(),
+			      last_right.getY(),
+			      0.0);
+
+		    a.normalise();
+		    double d = dot(a, Vector3(1.0, 0.0, 0.0));
+		    if (d >= M_SQRT1_2) {
+			right = Vector3(1.0, 0.0, 0.0);
+		    } else if (d <= -M_SQRT1_2) {
+			right = Vector3(-1.0, 0.0, 0.0);
+		    } else {
+			d = dot(a, Vector3(0.0, 1.0, 0.0));
+			if (d > 0.0) {
+			    right = Vector3(0.0, 1.0, 0.0);
+			} else {
+			    right = Vector3(0.0, -1.0, 0.0);
+			}
+		    }
+		} else {
+		    last_right = right;
+		}
                 
-                // obtain a second vector in the LRUD plane, perpendicular to the first
+		// obtain a second vector in the LRUD plane, perpendicular to
+		// the first
                 up = right * leg_v;
             }
             else {
                 // intermediate segment
 
                 // get the coordinates of the next vertex
-                Double x1 = vertices_start->x;
-                Double y1 = vertices_start->y;
-                Double z1 = vertices_start->z;
-                Vector3 next_pt_v(x1, y1, z1);
+                Vector3 next_pt_v(vertices_start->x, vertices_start->y, vertices_start->z);
 
                 // calculate vectors from this vertex to the next vertex, and
                 // from the previous vertex to this one
                 Vector3 leg1_v = prev_pt_v - pt_v;
                 Vector3 leg2_v = pt_v - next_pt_v;
 
-                // cross product these two vectors to obtain one perpendicular to both,
-                // which will be in the LRUD plane.
-                Vector3 up_v(0.0, 0.0, 1.0);
+		// obtain horizontal vectors perpendicular to both legs,
+		// then normalise and average to get a horizontal bisector
 		Vector3 r1 = leg1_v * up_v;
 		Vector3 r2 = leg2_v * up_v;
 		r1.normalise();
 		r2.normalise();
 		right = r1 + r2;
-		if (right.magnitude() == 0) right = Vector3(1.0, 0.0, 0.0);
+		if (right.magnitude() == 0) {
+		    right = last_right;
+		} else {
+		    last_right = right;
+		}
 		up = right * leg1_v;
             }
 
@@ -2180,12 +2206,11 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 	    right *= size;
 	    up *= size;
 
-	    Vector3 v1, v2, v3, v4;
 	    // produce coordinates of the corners of the LRUD "plane"
-	    v1 = pt_v - right + up;
-	    v2 = pt_v + right + up;
-	    v3 = pt_v + right - up;
-	    v4 = pt_v - right - up;
+	    Vector3 v1 = pt_v - right + up;
+	    Vector3 v2 = pt_v + right + up;
+	    Vector3 v3 = pt_v + right - up;
+	    Vector3 v4 = pt_v - right - up;
 
             if (segment > 0) {
                 BeginQuadrilaterals();
