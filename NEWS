@@ -1,3 +1,5 @@
+* printwin: fixed sizes of cross and page alignment ticks
+
 Changes in 1.0.0:
 
 * Fixed --survey option supported by many programs which was broken in 0.99.

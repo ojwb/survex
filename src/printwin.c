@@ -46,9 +46,6 @@ static double LineWidth;
 
 static char *fontname, *fontname_labels;
 
-#define WIN_TS 9 /* size of alignment 'ticks' on multipage printouts */
-#define WIN_CROSS_SIZE 2 /* length of cross arms (in points!) */
-
 #define fontname_symbol "Symbol"
 
 static const char *win_Name(void);
@@ -187,6 +184,10 @@ win_DrawTo(long x, long y)
    }
 }
 
+#define POINTS_PER_INCH 72.0
+#define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
+#define WIN_CROSS_SIZE (2 * scX / POINTS_PER_MM)
+
 static void
 win_DrawCross(long x, long y)
 {
@@ -283,7 +284,7 @@ win_NewPage(int pg, int pass, int pagesX, int pagesY)
    }
 
    StartPage(pd);
-   drawticks(clip, WIN_TS, x, y);
+   drawticks(clip, 9 * scX / POINTS_PER_MM, x, y);
 }
 
 static void
