@@ -2158,7 +2158,6 @@ pt-br:215 A@juda
 ca:215 @Ajuda
 es:215 A@yuda
 it:215 @Aiuto
-# TRANSLATE sk - check
 sk:215 @Help
 #
 # More cavern messages (sorry, 199 wasn't enough!)
@@ -2222,7 +2221,6 @@ pt:221 @Sair
 ca:221 @Sortir
 es:221 @Salir
 it:221 @Esci
-# TRANSLATE sk check
 sk:221 E@xit
 # back to cavern
 # error from "*data normal newline from to tape compass clino"
@@ -2285,11 +2283,14 @@ en:228 Select a terrain file to view
 fr:228 S&eacute;lectionner un fichier de surface &aagrave; visualiser
 ca:228 Selecciona un fitxer de terreny per veure
 es:228 Selecciona un archivo de terreno para ver
+sk:228 Vyber s&uacute;bor s povrchom k zobrazeniu
+sk:206 Vyberte 3D s&uacute;bor k zobrazeniu
 #
 en:229 Terrain files
 fr:229 Fichiers de surface
 ca:229 Fitxers de terreny
 es:229 Archivos de terreno
+sk:229 S&uacute;bory s povrchom
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
@@ -2609,8 +2610,7 @@ pt:281 @Cancelar linha de medida##Escape
 ca:281 @Cancel.la la lin&iacute;a de mesura##Escape
 es:281 @Cancela la linea de medida##Escape
 it:281 @Cancella la linea di misura##Escape
-# TRANSLATE sk check
-sk:281 @Cancel Measuring Line##Escape
+sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
 #sk: Netu&scaron;&iacute;m o &ccaron;o ide
 #
 # The accelerators must be different within this group
@@ -3010,7 +3010,6 @@ pt-br:334 Express&atilde;o regular
 ca:334 Expressi&oacute; regular
 es:334 Expressi&oacute;n regular
 it:334 Espressione regolare
-# TRANSLATE sk check
 sk:334 Regular expression
 #
 en:335 Altitude
@@ -3069,8 +3068,7 @@ pt:340 "  H %d%s, V %d%s"
 ca:340 "  H %d%s, V %d%s"
 es:340 "  H %d%s, V %d%s"
 it:340 "  O %d%s, V %d%s"
-# TRANSLATE sk check
-sk:340 "  H %d%s, V %d%s"
+sk:340 "  V %d%s, &Scaron; %d%s"
 #
 en:341 "  Dist %d%s, Brg %03d%s"
 fr:341 "  Dist %d%s, Azim %03d%s" 
