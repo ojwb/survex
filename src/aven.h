@@ -52,7 +52,9 @@ public:
 
     void ReportError(const wxString&);
     wxBitmap& GetAboutBitmap() { return m_AboutBitmap; }
+#ifdef PREFS
     const wxBitmap LoadPreferencesIcon(const wxString& icon) const;
+#endif
     const wxBitmap LoadIcon(const wxString& icon /* no extension */) const;
     Splash* GetSplashScreen() const { return m_SplashScreen; }
 };

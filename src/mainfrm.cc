@@ -66,6 +66,7 @@ class AvenSplitterWindow : public wxSplitterWindow {
 
 	void OnSplitterDClick(wxSplitterEvent &e) {
 	    parent->ToggleSidePanel();
+	    e.Skip();
 	}
 	
     private:
@@ -382,10 +383,52 @@ void MainFrm::CreateMenuBar()
     presmenu->Append(menu_PRES_REHEARSE, GetTabMsg(/*Re@hearse Timings*/383));
 #endif
     wxMenu* viewmenu = new wxMenu;
+#ifndef PREFDLG
+    viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "", true);
+#ifdef AVENGL
+    viewmenu->Append(menu_VIEW_SHOW_TUBES, GetTabMsg(/*Passage @Tubes*/346), "", true);
+#endif
+    viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "", true);
+    viewmenu->Append(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297), "", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*@Underground Survey Legs##Ctrl+L*/272), "", true);
+    viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*@Surface Survey Legs##Ctrl+F*/291), "", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_SURFACE_DEPTH, GetTabMsg(/*@Altitude Colouring on Surface Surveys*/292), "", true);
+    viewmenu->Append(menu_VIEW_SURFACE_DASHED, GetTabMsg(/*@Dashed Surface Surveys*/293), "", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273), "", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
+    viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295), "", true);
+    viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296), "", true);
+    viewmenu->AppendSeparator();
+#else
     viewmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
-    viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode*/356));
+#endif
+    viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode##F11*/356));
+#ifdef PREFDLG
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_FILE_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
+#endif
+
+#ifndef PREFDLG
+    wxMenu* ctlmenu = new wxMenu;
+    ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "", true);
+    ctlmenu->AppendSeparator();
+    ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
+    ctlmenu->AppendSeparator();
+    wxMenu* indmenu = new wxMenu;
+    indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*@Compass*/274), "", true);
+    indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*C@linometer*/275), "", true);
+    indmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "", true);
+    indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*@Scale Bar*/277), "", true);
+    ctlmenu->Append(menu_VIEW_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
+    ctlmenu->Append(menu_VIEW_SIDE_PANEL, GetTabMsg(/*@Side Panel*/337), "", true);
+    ctlmenu->AppendSeparator();
+    ctlmenu->Append(menu_VIEW_METRIC, GetTabMsg(/*@Metric*/342), "", true);
+    ctlmenu->Append(menu_VIEW_DEGREES, GetTabMsg(/*@Degrees*/343), "", true);
+#endif
 
     wxMenu* helpmenu = new wxMenu;
     helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About...*/290));
@@ -397,6 +440,9 @@ void MainFrm::CreateMenuBar()
     menubar->Append(viewmenu, GetTabMsg(/*@View*/213));
 #ifdef AVENPRES
     menubar->Append(presmenu, GetTabMsg(/*@Presentation*/317));
+#endif
+#ifdef PREFDLG
+    menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
 #endif
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
@@ -461,14 +507,19 @@ void MainFrm::CreateSidePanel()
 {
     m_Splitter = new AvenSplitterWindow(this);
 
+#if 0
     m_Notebook = new wxNotebook(m_Splitter, 400, wxDefaultPosition,
                                 wxDefaultSize,
                                 wxNB_BOTTOM | wxNB_LEFT);
     m_Notebook->Show(false);
     
     m_Panel = new wxPanel(m_Notebook);
+#else
+    m_Panel = new wxPanel(m_Splitter);
+#endif
     m_Tree = new AvenTreeCtrl(this, m_Panel);
     wxPanel *find_panel = new wxPanel(m_Panel);
+    m_Panel->Show(false);
 
     m_FindBox = new wxTextCtrl(find_panel, -1, "");
     wxButton *find_button, *hide_button;
@@ -559,6 +610,7 @@ void MainFrm::CreateSidePanel()
     m_PresPanel->SetAutoLayout(true);
     m_PresPanel->SetSizer(pres_panel_sizer);
 #endif
+#if 0
     // Overall tabbed structure:
     wxImageList* image_list = new wxImageList();
     image_list->Add(wxGetApp().LoadIcon("survey-tree"));
@@ -566,6 +618,7 @@ void MainFrm::CreateSidePanel()
     m_Notebook->SetImageList(image_list);
     m_Notebook->AddPage(m_Panel, msg(/*Tree*/376), true, 0);
 //    m_Notebook->AddPage(m_PresPanel, msg(/*Presentation*/377), false, 1);
+#endif
 
     m_Splitter->Initialize(m_Gfx);
 }
@@ -1014,7 +1067,11 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	    m_Gfx->Initialise();
 	}
 
+#if 0
 	m_Notebook->Show(true);
+#else
+	m_Panel->Show(true);
+#endif
 	int x;
 	int y;
 	GetSize(&x, &y);
@@ -1025,7 +1082,11 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	else
 	    x /= 5;
 
+#if 0
 	m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
+#else
+	m_Splitter->SplitVertically(m_Panel, m_Gfx, x);
+#endif
 
 	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
 
@@ -1082,8 +1143,10 @@ void MainFrm::OnOpen(wxCommandEvent&)
 
 void MainFrm::OnFilePreferences(wxCommandEvent&)
 {
+#ifdef PREFDLG
     m_PrefsDlg = new PrefsDlg(m_Gfx, this);
     m_PrefsDlg->Show(true);
+#endif
 }
 
 void MainFrm::OnQuit(wxCommandEvent&)
@@ -1573,9 +1636,15 @@ void MainFrm::ToggleSidePanel()
 	m_Splitter->Unsplit(m_Panel);
     }
     else {
+#if 0
 	m_Notebook->Show(true);
 	m_Gfx->Show(true);
 	m_Splitter->SplitVertically(m_Notebook, m_Gfx, m_SashPosition);
+#else
+	m_Panel->Show(true);
+	m_Gfx->Show(true);
+	m_Splitter->SplitVertically(m_Panel, m_Gfx, m_SashPosition);
+#endif
     }
 }
 

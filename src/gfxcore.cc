@@ -127,6 +127,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_ScaleBar.offset_y = SCALE_BAR_OFFSET_Y;
     m_ScaleBar.width = 0;
     m_Parent = parent;
+    m_ParentWin = parent_win;
     m_RotationOK = true;
     m_DoneFirstShow = false;
     m_RedrawOffscreen = false;
@@ -765,7 +766,6 @@ void GfxCore::Draw2dIndicators()
                              -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
         EndLines();
     }
-
 
     // Ticks
     bool white = false;
@@ -2085,6 +2085,8 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
    
 //    printf("%g z_offset=%g interval=%g band=%d\n", into_band,
 //            z_offset, interval, band);
+    // FIXME: why do we need to clamp here?  Is it because the walls can
+    // extend further up/down than the centre-line?
     if (into_band < 0.0) into_band = 0.0;
     if (into_band > 1.0) into_band = 1.0;
     assert(into_band >= 0.0);
@@ -2408,20 +2410,25 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
 	    v[3] = pt_v - right - up;
             
             if (segment > 0) {
-////		AddQuadrilateral(u[0], u[1], v[1], v[0]);
-//////		AddQuadrilateral(v[3], v[2], u[2], u[3]);
-////		AddQuadrilateral(v[2], v[3], u[3], u[2]);
-////		AddQuadrilateral(u[1], u[2], v[2], v[1]);
-////		AddQuadrilateral(u[3], u[0], v[0], v[3]);
-
+#if 0 // pre-Mark
+		AddQuadrilateral(u[0], u[1], v[1], v[0]);
+		AddQuadrilateral(v[3], v[2], u[2], u[3]);
+		AddQuadrilateral(u[1], u[2], v[2], v[1]);
+		AddQuadrilateral(u[3], u[0], v[0], v[3]);
+#else
                 AddQuadrilateral(v[0], v[1], u[1], u[0]);
                 AddQuadrilateral(u[2], u[3], v[3], v[2]);
                 AddQuadrilateral(v[1], v[2], u[2], u[1]);
                 AddQuadrilateral(v[3], v[0], u[0], u[3]);
+#endif
             }
 
             if (cover_end) {
+#if 0 // pre-Mark
+                AddQuadrilateral(v[0], v[1], v[2], v[3]);
+#else
                 AddQuadrilateral(v[3], v[2], v[1], v[0]);
+#endif
             }
 
             prev_pt_v = pt_v;
@@ -2437,20 +2444,26 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
 
 void GfxCore::FullScreenMode()
 {
-    // Switch to full-screen mode.
-    
-    // Determine the dimensions of the screen.
-    int width;
-    int height;
-    wxDisplaySize(&width, &height);
+    // Toggle full-screen mode.
+    wxWindow * old_parent = GetParent();
+    if (old_parent != m_ParentWin) {
+	Reparent(m_ParentWin);
+	old_parent->Destroy();
+    } else {
+	// Determine the dimensions of the screen.
+	int width;
+	int height;
+	wxDisplaySize(&width, &height);
 
-    // Create a window covering the entire screen, with no decorations.
-    wxFrame* full_screen = new wxFrame(m_Parent, 100, "Aven", wxPoint(0, 0), wxSize(width, height),
-                                       wxSTAY_ON_TOP | wxFRAME_FLOAT_ON_PARENT);
-   
-    full_screen->Show(true);
-    
-    // Reparent ourselves to be inside the new frame.
-    Reparent(full_screen);
+	// Create a window covering the entire screen, with no decorations.
+	wxFrame * full_screen;
+	full_screen = new wxFrame(m_Parent, 100, "Aven",
+				  wxPoint(0, 0), wxSize(width, height),
+				  wxSTAY_ON_TOP | wxFRAME_FLOAT_ON_PARENT);
+	full_screen->Show(true);
+	
+	// Reparent ourselves to be inside the new frame.
+	Reparent(full_screen);
+    }
 }
 

@@ -373,10 +373,14 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
     
     glNewList(l, GL_COMPILE);
     CHECK_GL_ERROR("CreateList", "glNewList");
-//    m_Vertices = 0;
+#ifdef GLA_DEBUG
+    m_Vertices = 0;
+#endif
     (obj->*generator)();
     glEndList();
-//    printf("done (%d vertices)\n", m_Vertices);
+#ifdef GLA_DEBUG
+    //printf("done (%d vertices)\n", m_Vertices);
+#endif
     CHECK_GL_ERROR("CreateList", "glEndList");
 
     return l;
@@ -543,7 +547,9 @@ void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
 {
     // Place a vertex for the current object being drawn.
 
-//    m_Vertices++;
+#ifdef GLA_DEBUG
+    m_Vertices++;
+#endif
     glVertex3d(x, y, z);
 }
 

@@ -3100,12 +3100,12 @@ sk:340 "V %d%s, &Scaron; %d%s"
 #
 en:341 "%s: %s, Dist %d%s, Brg %03d%s"
 fr:341 "%s: %s, Dist %d%s, Azim %03d%s" 
-de:341 "%s: %s,  Dist %d%s, Richt. %03d%s"
-pt:341 "%s: %s,  Dist %d%s, Azim %03d%s"
-ca:341 "%s: %s,  Dist %d%s, Azim %03d%s" 
-es:341 "%s: %s,  Dist %d%s, Azim %03d%s"
+de:341 "%s: %s, Dist %d%s, Richt. %03d%s"
+pt:341 "%s: %s, Dist %d%s, Azim %03d%s"
+ca:341 "%s: %s, Dist %d%s, Azim %03d%s" 
+es:341 "%s: %s, Dist %d%s, Azim %03d%s"
 it:341 "%s: %s, Dist %d%s, Azm. %03d%s"
-sk:341 "%s: %s,  Vzd %d%s,  Azim %03d%s"
+sk:341 "%s: %s, Vzd %d%s, Azim %03d%s"
 # tickable menu item in View menu
 en:342 @Metric
 fr:342 @M&eacute;trique
@@ -3162,8 +3162,8 @@ en:354 Mark survey stations with their names
 en:355 Allow names to overlap on the display (faster)
 #
 # TRANSLATE sk
-en:356 Full Screen @Mode
-sk:356 F@ull Screen Mode
+en:356 Full Screen @Mode##F11
+sk:356 F@ull Screen Mode##F11
 #
 en:357 Display underground survey legs
 en:358 Display surface survey legs

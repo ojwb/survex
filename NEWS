@@ -1,3 +1,22 @@
+1.1 branch:
+
+* Use Status bar for coordinates, distances, etc.
+
+* Search moved onto toolbar.
+
+* Solid tunnels option.
+
+* Depth colouring is now continuously varying.
+
+* Full screen mode.
+
+* Annoying splash screen added.
+
+* Context sensitive cursor.
+
+
+
+
 * Don't distribute unused toolbar icons.
 
 Changes in 1.0.18:

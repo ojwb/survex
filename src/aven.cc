@@ -205,6 +205,7 @@ aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
    wxGetApp().ReportError(m);
 }
 
+#ifdef PREFS
 const wxBitmap Aven::LoadPreferencesIcon(const wxString& icon) const
 {
     // Load an icon for use in the preferences dialog.
@@ -217,6 +218,7 @@ const wxBitmap Aven::LoadPreferencesIcon(const wxString& icon) const
 
     return bitmap;
 }
+#endif
 
 const wxBitmap Aven::LoadIcon(const wxString& icon) const
 {
