@@ -74,13 +74,14 @@ ident_cmp(const char *a, const char *b)
 
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
 static prefix *
-read_prefix_(bool fOmit, bool fImplicitPrefix)
+read_prefix_(bool fOmit, bool fSuspectTypo)
 {
    prefix *back_ptr,*ptr;
    char *name;
    size_t name_len = 32;
    int i;
    bool fNew;
+   bool fImplicitPrefix = fTrue;
 
    skipblanks();
    if (isRoot(ch)) {
@@ -142,7 +143,7 @@ read_prefix_(bool fOmit, bool fImplicitPrefix)
 	 ptr->up = back_ptr;
 	 ptr->filename = NULL;
 	 /* FIXME: what if foo.1 is a station as well as a prefix?!? */
-	 ptr->fSuspectTypo = !fImplicitPrefix;
+	 ptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
 	 back_ptr->down = ptr;
 	 fNew = fTrue;
 #ifdef NEW3DFORMAT
