@@ -19,13 +19,14 @@
 
 /* #define DEBUG_3DTODXF */
 
-#ifdef HAVE_CONFIG_h
+#ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
+
 #include "img.h"
 #include "getopt.h"
 #include "useful.h"
@@ -72,7 +73,7 @@ int main( int argc, char *argv[] ) {
 	{HLP_ENCODELONG(0), "do not generate station markers"},
 	{HLP_ENCODELONG(1), "do not generate station labels"},
 	{HLP_ENCODELONG(2), "do not generate the survey legs"},
-	{HLP_ENCODELONG(3), "station labels text height (defult: 0.6)"},
+	{HLP_ENCODELONG(3), "station labels text height (default: 0.6)"},
 	{HLP_ENCODELONG(4), "station marker size (default: 0.8)"},
 	{0,0} 
    };
@@ -260,18 +261,20 @@ int main( int argc, char *argv[] ) {
 #endif
          break;
        case img_LABEL:
-	 if (labels) { // write station labels to dxf file
+	 if (labels) {
+	    /* write station labels to dxf file */
             fprintf(fh,"0\nTEXT\n");
-            fprintf(fh,"8\nLabels\n"); // Layer
+            fprintf(fh,"8\nLabels\n"); /* Layer */
             fprintf(fh,"10\n%6.2f\n",x);
             fprintf(fh,"20\n%6.2f\n",y);
             fprintf(fh,"30\n%6.2f\n",z);
             fprintf(fh,"40\n%6.2f\n", text_height);
             fprintf(fh,"1\n%s\n",szName);
 	 }
-         if (crosses) { // write station markers to dxf file
+         if (crosses) {
+	    /* write station markers to dxf file */
             fprintf(fh,"0\nPOINT\n");
-            fprintf(fh,"8\nStations\n"); // Layer
+            fprintf(fh,"8\nStations\n"); /* Layer */
             fprintf(fh,"10\n%6.2f\n",x);
             fprintf(fh,"20\n%6.2f\n",y);
             fprintf(fh,"30\n%6.2f\n",z);
