@@ -166,10 +166,8 @@ class AvenListCtrl: public wxListCtrl {
 		    }
 		    break;
 		}
-		case WXK_INSERT:
-		    AddMark(event.GetIndex());
-		    break;
 		default:
+		    printf("event.GetIndex() = %ld\n", event.GetIndex());
 		    event.Skip();
 	    }
 	}
@@ -188,7 +186,22 @@ class AvenListCtrl: public wxListCtrl {
 	    current_item = event.GetIndex();
 	}
 	void OnChar(wxKeyEvent& event) {
-	    gfx->OnKeyPress(event);
+	    if (event.GetKeyCode() == WXK_INSERT) {
+		if (event.m_controlDown) {
+		    long c = current_item;
+		    list<PresentationMark>::const_iterator i = entries.begin();
+		    while (c > 0) {
+			++i;
+			if (i == entries.end()) return;
+			--c;
+		    }
+		    AddMark(current_item, *i);
+		} else {
+		    AddMark(current_item);
+		}
+	    } else {
+		gfx->OnKeyPress(event);
+	    }
 	}
 	void AddMark(long item = -1) {
 	    AddMark(item, gfx->GetView());
