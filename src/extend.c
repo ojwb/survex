@@ -65,7 +65,7 @@ static leg headleg = {NULL, NULL, NULL, 1, 0, NULL};
 
 static img *pimg;
 
-static void do_stn(point *, double);
+static void do_stn(point *, double, const char *);
 
 typedef struct pfx {
    const char *label;
@@ -272,7 +272,7 @@ main(int argc, char **argv)
    }
    pimg = img_open_write(fnm_out, desc, fTrue);
 
-   do_stn(start, 0.0); /* only does highest connected component currently */
+   do_stn(start, 0.0, NULL); /* only does highest connected component currently */
    if (!img_close(pimg)) {
       (void)remove(fnm_out);
       fatalerror(img_error(), fnm_out);
@@ -282,7 +282,7 @@ main(int argc, char **argv)
 }
 
 static void
-do_stn(point *p, double X)
+do_stn(point *p, double X, const char *prefix)
 {
    leg *l, *lp;
    double dX;
@@ -290,6 +290,36 @@ do_stn(point *p, double X)
 
    for (s = p->stns; s; s = s->next) {
       img_write_item(pimg, img_LABEL, s->flags, s->label, X, 0, p->p.z);
+   }
+   lp = &headleg;
+   for (l = lp->next; l; lp = l, l = lp->next) {
+      if (l->fDone) {
+	 /* this case happens iff a recursive call causes the next leg to be
+	  * removed, leaving our next pointing to a leg which has been dealt
+	  * with... */
+      } else if (l->prefix == prefix) {
+	 if (l->to == p) {
+	    lp->next = l->next;
+	    dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	    img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
+	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
+			   X, 0, l->to->p.z);
+	    l->fDone = 1;
+	    do_stn(l->fr, X + dX, l->prefix);
+	    /* osfree(l); */
+	    l = lp;
+	 } else if (l->fr == p) {
+	    lp->next = l->next;
+	    dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	    img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
+	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
+			   X + dX, 0, l->to->p.z);
+	    l->fDone = 1;
+	    do_stn(l->to, X + dX, l->prefix);
+	    /* osfree(l); */
+	    l = lp;
+	 }
+      }
    }
    lp = &headleg;
    for (l = lp->next; l; lp = l, l = lp->next) {
@@ -305,7 +335,7 @@ do_stn(point *p, double X)
 	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X, 0, l->to->p.z);
 	    l->fDone = 1;
-	    do_stn(l->fr, X + dX);
+	    do_stn(l->fr, X + dX, l->prefix);
 	    /* osfree(l); */
 	    l = lp;
 	 } else if (l->fr == p) {
@@ -315,7 +345,7 @@ do_stn(point *p, double X)
 	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X + dX, 0, l->to->p.z);
 	    l->fDone = 1;
-	    do_stn(l->to, X + dX);
+	    do_stn(l->to, X + dX, l->prefix);
 	    /* osfree(l); */
 	    l = lp;
 	 }

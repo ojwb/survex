@@ -146,6 +146,7 @@ ca:  4 alerta
 es:  4 alerta
 it:  4 avvertimento
 sk:  4 varovanie
+zh:  4 &#35686;&#21578;
 #
 en:  5 In file included from
 fr:  5 Dans le fichier inclus depuis
@@ -1530,6 +1531,8 @@ ca:144 Fet.
 es:144 Hecho.
 it:144 Fatto.
 sk:144 Hotovo.
+# zh from wxWindows
+zh:144 &#23436;&#25104;&#12290;
 en:145 "Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). "
 en-us:145 "Original length%7.2fm (%3d shots), moved%7.2fm (%5.2fm/shot). "
 fr:145 "Longueur originale%7.2fm (%3d vis&eacute;es), r&eacute;duit &agrave;%7.2fm (%5.2fm/vis&eacute;es). "
@@ -1742,6 +1745,7 @@ ca:166 P&agrave;gina %d de %d
 es:166 P&aacute;gina %d de %d
 it:166 Pagina %d di %d
 sk:166 Str&aacute;nka  %d z %d
+zh:166 &#39029; %d / %d
 en:167 Survey `%s'   Page %d (of %d)   Processed on %s
 fr:167 Topo `%s'   Page %d (sur %d)   En cours sur %s
 de:167 Vermessung `%s'   Seite %d (von %d)   Berechnung von Seite %s
@@ -1868,6 +1872,7 @@ ca:180 si
 es:180 si
 it:180 si
 sk:180 &aacute;no
+zh:180 &#26159;
 en:181 no
 fr:181 non
 de:181 nein
@@ -1876,6 +1881,7 @@ ca:181 no
 es:181 no
 it:181 no
 sk:181 nie
+zh:181 &#21542;
 en:182 quit
 fr:182 sortir
 de:182 verlassen
@@ -2092,6 +2098,7 @@ ca:204 Tancar
 es:204 Cerrar
 it:204 Chiudi
 sk:204 Zavrie&tcaron;
+zh:204 &#20851;&#38381;
 #
 # for the title of the About box (c.f. 290)
 en:205 About %s
@@ -3017,6 +3024,7 @@ ca:332 Troba
 es:332 Encuentra
 it:332 Trova
 sk:332 H&lcaron;ada&tcaron;
+zh:332 &#26597;&#25214;
 # "Hide stations" button label
 en:333 Hide
 fr:333 Masquer
@@ -3026,6 +3034,7 @@ ca:333 Amaga
 es:333 Oculta
 it:333 Nascondi
 sk:333 Schova&tcaron;
+zh:333 &#38544;&#34255;
 # checkbox for regular expression search
 en:334 Regular expression
 fr:334 Expression r&eacute;guli&egrave;re

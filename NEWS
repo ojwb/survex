@@ -1,3 +1,25 @@
+* cavern: fixed a rarely sighted bug which caused eroneous error about some
+  stations not being attached to a fixed point.
+
+* cavern: fixed clino readings to work in interleaved data.
+
+* Updated documentation.
+
+Changes in 1.0.13:
+
+* aven: Fixed bug which caused the occasional spurious leg to be shown
+  connecting arbitrary stations.
+ 
+* extend: try to extend along a survey, and make breaks where other surveys
+  join.
+
+* cavern: Number reading code reworked to allow repeat readings to be
+  supported, but the actual repeat reading code is currently disabled,
+  and everything should work exactly as before.
+
+* Experimental support for Chinese (LANG=zh) - only a few messages are
+  currently translated.
+
 Changes in 1.0.12:
 
 * diffpos: fixed to work on 64bit architectures.

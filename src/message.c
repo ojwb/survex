@@ -1084,6 +1084,9 @@ msg_init(char * const *argv)
 	     case LANG_CATALAN:
 	       msg_lang = "ca";
 	       break;
+	     case LANG_CHINESE:
+	       msg_lang = "zh";
+	       break;
 	     case LANG_ENGLISH:
 	       if (SUBLANGID(langid) == SUBLANG_ENGLISH_US)
 		  msg_lang = "en_US";
@@ -1150,6 +1153,9 @@ msg_init(char * const *argv)
 	  case 8: /* Portugal */
 	    msg_lang = "pt";
 	    break;
+	  case 23: /* Hong Kong */
+	    msg_lang = "zh";
+	    break;
 	  case 48: /* USA */
 	    msg_lang = "en_US";
 	    break;
@@ -1164,7 +1170,6 @@ msg_init(char * const *argv)
 	  case 16: /* Iceland */
 	  case 20: /* Turkey */
 	  case 21: /* Arabic */
-	  case 23: /* Hong Kong */
 	  case 24: /* Russia */
 	  case 25: /* Russia2 */
 	  case 26: /* Israel */
@@ -1344,6 +1349,14 @@ msg_init(char * const *argv)
 		     case 422: /* Slovakia (reported as 421 due to a bug in COUNTRY.SYS) */
 			 msg_lang = "sk";
 			 break;
+		     case 65: /* Singapore */
+		     case 86: /* China (MS-DOS 5.0+) */
+		     case 88: /* Taiwan (MS-DOS 5.0+) */
+		     case 852: /* Hong Kong */
+		     case 853: /* Macao */
+		     case 886: /* Taiwan (MS-DOS 6.22+) */
+			 msg_lang = "zh";
+			 break;
 #if 0
 		     case 7: /* Russia */
 		     case 20: /* Egypt */
@@ -1359,13 +1372,10 @@ msg_init(char * const *argv)
 		     case 48: /* Poland (not supported by DR DOS 5.0) */
 		     case 60: /* Malaysia */
 		     case 62: /* Indonesia / East Timor */
-		     case 65: /* Singapore */
 		     case 66: /* Thailand (or Taiwan??? ) */
 		     case 81: /* Japan (DR DOS 5.0, MS-DOS 5.0+) */
 		     case 82: /* South Korea (DR DOS 5.0) */
 		     case 84: /* Vietnam */
-		     case 86: /* China (MS-DOS 5.0+) */
-		     case 88: /* Taiwan (MS-DOS 5.0+) */
 		     case 90: /* Turkey (MS-DOS 5.0+) */
 		     case 91: /* India */
 		     case 92: /* Pakistan */
@@ -1422,12 +1432,9 @@ msg_init(char * const *argv)
 		     case 785: /* Arabic (Middle East/Saudi Arabia/etc.) */
 		     case 804: /* Ukraine */
 		     case 850: /* North Korea */
-		     case 852: /* Hong Kong */
-		     case 853: /* Macao */
 		     case 855: /* Cambodia */
 		     case 856: /* Laos */
 		     case 880: /* Bangladesh */
-		     case 886: /* Taiwan (MS-DOS 6.22+) */
 		     case 960: /* Maldives */
 		     case 962: /* Jordan */
 		     case 963: /* Syria / Syrian Arab Republic */
@@ -1499,7 +1506,8 @@ msg(int en)
       return dontextract[en - 1000];
    if (!msg_array) {
       if (en != 1)  {
-	 sprintf(badbuf, "Message %d requested before msg_array initialised\n", en);
+	 sprintf(badbuf, "Message %d requested before msg_array initialised\n",
+		 en);
 	 return badbuf;
       }
       /* this should be the only other message which can be requested before

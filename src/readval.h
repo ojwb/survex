@@ -1,6 +1,6 @@
 /* readval.h
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2001 Olly Betts
+ * Copyright (C) 1991-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,12 +19,12 @@
 
 extern int root_depr_count;
 
-prefix *read_prefix_survey(bool fOmit, bool fAllowRoot);
-prefix *read_prefix_stn(bool fOmit, bool fAllowRoot);
-prefix *read_prefix_stn_check_implicit(bool fOmit, bool fAllowRoot);
+prefix *read_prefix_survey(bool f_optional, bool fAllowRoot);
+prefix *read_prefix_stn(bool f_optional, bool fAllowRoot);
+prefix *read_prefix_stn_check_implicit(bool f_optional, bool fAllowRoot);
 
-real read_numeric(bool fOmit);
-real read_numeric_or_omit(void);
+real read_numeric(bool f_optional, int *p_n_readings);
+real read_numeric_or_omit(int *p_n_readings);
 
 unsigned int read_uint(void);
 

@@ -1,6 +1,6 @@
 /* netartic.c
  * Split up network at articulation points
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,6 +160,10 @@ uniter:
 	       /* we've found a fixed point */
 	       col = -col;
 	       to->colour = col;
+#if 0
+	       /* Removing this solves Graham Mullan's problem and makes more
+		* sense since it means we'll recheck this point for further
+		* legs. */
 #ifdef DEBUG_ARTIC
 	       printf("Putting FOUND FIXED stn ");
 	       print_prefix(to->name);
@@ -167,6 +171,7 @@ uniter:
 #endif
 	       remove_stn_from_list(&fixedlist, to);
 	       add_stn_to_list(&artlist, to);
+#endif
 	    }
 
 	    if (col < min_colour) min_colour = col;

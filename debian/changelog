@@ -1,3 +1,17 @@
+survex (1.0.13) unstable; urgency=low
+
+  * aven: Fixed bug which caused the occasional spurious leg to be shown
+    connecting arbitrary stations.
+  * extend: try to extend along a survey, and make breaks where other surveys
+    join.
+  * cavern: Number reading code reworked to allow repeat readings to be
+    supported, but the actual repeat reading code is currently disabled,
+    and everything should work exactly as before.
+  * Experimental support for Chinese (LANG=zh) - only a few messages are
+    currently translated.
+
+ -- Wookey <wookey@survex.com>  Fri, 28 Jun 2002 15:34:26 +0100
+
 survex (1.0.12) unstable; urgency=low
 
   * diffpos: fixed to work on 64bit architectures.
