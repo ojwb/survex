@@ -522,7 +522,7 @@ replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
 
    replace_pfx_(pfx_replace->stn, NULL, pos_replace, pfx_with->pos);
 
-#ifdef DEBUG_INVALID
+#if DEBUG_INVALID
    {
       node *stn;
       FOR_EACH_STN(stn, stnlist) {

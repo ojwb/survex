@@ -22,7 +22,7 @@
 #endif
 
 #if 0
-# define DEBUG_INVALID
+# define DEBUG_INVALID 1
 #endif
 
 #include "debug.h"
@@ -124,7 +124,7 @@ remove_stn_from_list(node **list, node *stn) {
    if (stn->name) print_prefix(stn->name);
    printf(")\n");
 #endif
-#ifdef DEBUG_INVALID
+#if DEBUG_INVALID
      {
 	/* check station is actually in this list */
 	node *stn_to_remove_is_in_list = *list;
