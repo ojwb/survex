@@ -521,7 +521,7 @@ int main(int argc, char **argv)
       {0, 0, 0, 0}
    };
 
-#define short_opts "epbt:s:ncBlk"
+#define short_opts "epb:t:s:ncBlk"
    
    /* FIXME TRANSLATE */
    static struct help_msg help[] = {
