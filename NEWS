@@ -36,6 +36,10 @@ Changes in 0.98-prerelease1:
 
 * sorterr: new utility for resorting .err files by various criteria.
 
+* xcaverot: buttons now size to widest label; added --pda switch to
+  turn off less useful buttons for use on small screens (such as the
+  ipaq PDA).
+
 Changes in 0.97-prerelease7:
 
 * Messages relating to command line options are now translatable.
