@@ -48,8 +48,6 @@ install: build
 # affect _all_ packages. Anything you want to only affect one package
 # should be put in another target, such as the install target.
 binary-common: build install
-	# Need this version of debhelper for DH_OPTIONS to work.
-	dh_testversion 1.1.17
 	dh_testdir
 	dh_testroot
 #	dh_installdebconf

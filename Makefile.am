@@ -124,19 +124,20 @@ debian : dist
 	echo Section: math >> ${debct}
 	echo Priority: optional >> ${debct}
 	echo "Maintainer: Wookey <wookey@survex.com>" >> ${debct}
-	echo Standards-Version: 3.0.1 >> ${debct}
-	echo Build-Depends: debhelper, libwxgtk2.2-dev, sgmltools-lite >> ${debct}
+	echo Standards-Version: 3.1.0 >> ${debct}
+	# Need debhelper >= 1.1.17 for DH_OPTIONS to work.
+	echo 'Build-Depends: debhelper (>= 1.1.17), libwxgtk2.2-dev, sgmltools-lite' >> ${debct}
 	echo >> ${debct}
 	echo Package: ${PACKAGE} >> ${debct}
 	echo Architecture: any >> ${debct}
-	echo 'Depends: ${shlibs:Depends}' >> ${debct}
-	echo Recommends: survex-aven >> ${debct}
+	echo 'Depends: $${shlibs:Depends}' >> ${debct}
+	echo 'Recommends: survex-aven (= @VERSION@)' >> ${debct}
 	echo Description: Cave surveying and mapping software >> ${debct}
 	sed 's/^/ /' < desc.txt >> ${debct}
 	echo >> ${debct}
 	echo Package: survex-aven >> ${debct}
 	echo Architecture: any >> ${debct}
-	echo 'Depends: survex, ${shlibs:Depends}' >> ${debct}
+	echo 'Depends: survex (= @VERSION@), $${shlibs:Depends}' >> ${debct}
 	echo Description: Sophisticated cave survey viewer for Survex >> ${debct}
 	sed 's/^/ /' < desc-aven.txt >> ${debct}	
 	# -us and -uc mean don't sign packages

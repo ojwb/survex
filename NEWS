@@ -6,6 +6,8 @@
 
 * (Unix version): Added man pages for 3dtopos and sorterr.
 
+* More minor tweaks to debian packages.
+
 Changes in 0.99-prerelease1:
 
 * Major clean-up of Survex Manual; renamed from "svxdocs" to "manual".
