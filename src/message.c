@@ -1027,7 +1027,8 @@ msg_init(char * const *argv)
       cmdline_version();
       exit(0);
    }
-
+#define LOG(V) do{FILE *f = fopen("/tmp/survex.log", "a"); if (f) fprintf(f,#V" = \"%s\"\n", V); fclose(f);}while(0)
+   LOG(argv[0]);
    if (argv[0]) {
 #if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
       bool free_pth = fFalse;
@@ -1036,6 +1037,7 @@ msg_init(char * const *argv)
 	 pth = path_from_fnm(argv[0]);
 	 free_pth = fTrue;
       }
+      LOG(pth);
       if (pth[0]) {
 	 struct stat buf;
 	 /* If we're run with an explicit path, check if "../lib/en.msg"
@@ -1046,17 +1048,21 @@ msg_init(char * const *argv)
 	 /* On MacOS X the programs may be installed anywhere, with lib and
 	  * the binaries in the same directory. */
 	 p = use_path(pth, "lib/en.msg");
+	 LOG(p);
 	 if (lstat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
 	    pth_cfg_files = use_path(pth, "lib");
+	    LOG(pth_cfg_files);
 	 }
 	 osfree(p);
 #endif
 	 p = use_path(pth, "../lib/en.msg");
+	 LOG(p);
 	 if (lstat(p, &buf) == 0) {
-#ifdef S_ISREG
+#ifdef S_ISDIR
 	    /* POSIX way */
 	    if (S_ISREG(buf.st_mode)) {
 	       pth_cfg_files = use_path(pth, "../lib");
+	       LOG(pth_cfg_files);
 	    }
 #else
 	    /* BSD way */
@@ -1088,6 +1094,7 @@ msg_init(char * const *argv)
       pth_cfg_files = path_from_fnm(argv[0]);
 #endif
    }
+   LOG(pth_cfg_files);
 
    msg_lang = getenv("SURVEXLANG");
 #ifdef DEBUG
