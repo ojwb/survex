@@ -14,7 +14,9 @@ extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
 extra_text = BUGS AUTHORS COPYING NEWS TODO ChangeLog HACKING OLDNEWS ZOMBIES
 
-base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos extend survex
+# FIXME: need to keep in step with src/Makefile.am
+base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
+ extend survex sorterr 3dtopos
 
 spec = ${PACKAGE}-${VERSION}.spec
 

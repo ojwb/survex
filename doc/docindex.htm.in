@@ -1,11 +1,14 @@
 <HTML><HEAD>
-<TITLE>@PACKAGE@ @VERSION@ Documentation</TITLE>
+<TITLE>@PRETTYPACKAGE@ @VERSION@ Documentation</TITLE>
 </HEAD><BODY BGCOLOR=white TEXT=black>
 
-<H1>@PACKAGE@ @VERSION@ Documentation</H1>
+Access to mailing lists and downloads are available at the <A
+HREF="http://www.survex.com/">Survex web site</A>.
+
+<H1>@PRETTYPACKAGE@ @VERSION@ Documentation</H1>
 
 <ul>
-<li><A HREF="doc/index.htm">@PACKAGE@ @VERSION@ Manual</A>
+<li><A HREF="help/index.htm">@PACKAGE@ @VERSION@ Manual</A>
 <li><A HREF="NEWS.txt">Details of user visible changes in this and previous versions</A>
 	(<A HREF="OLDNEWS.txt">older changes</A>)
 <li><A HREF="BUGS.txt">List of known bugs</A>

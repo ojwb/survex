@@ -4,6 +4,11 @@
 
 * print*: reduced memory usage.
 
+* (MS Windows version): sorterr.exe and 3dtopos.exe were missing;
+  improvements to documentation; default action for .3d file is now to
+  open in aven (was print); option to convert .3d file for hand
+  plotting added.
+
 Changes in 0.98-prerelease5:
 
 * aven/print*/cadgen/extend/diffpos/3dtopos: Added --survey command
