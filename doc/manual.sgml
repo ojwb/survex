@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-03-04 19:47:12 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.106 2003-03-04 19:47:12 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-03-26 04:59:00 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.107 2003-03-26 04:59:00 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -3494,7 +3494,39 @@ which you can then inspect with a text editor.
 </Para>
 
 </Sect1>
--->
+
+<Sect1><Title>Working with Larry Fish's Compass</Title>
+<?dbhtml filename="compass.htm">
+
+<Para>
+Survex can read Compass survey data - both raw data (.DAT and .MAK
+files) and processed survey data (.PLT and .PLF files).  You can even
+use <command>*include compassfile.dat</command> in a &svx; file and
+it'll work!
+</Para>
+
+<Para>
+One point to note (this tripped us up!): station names in DAT files are
+case sensitive and so Survex reads DAT files with the equivalent of
+<command>*case preserve</command>.  The default in SVX files is
+<command>*case lower</command>.  So this won't work:
+
+<programlisting>
+*fix CE1 0 0 0
+*include datfilewhichusesCE1.dat</programlisting>
+
+Because the CE1 in the *fix is actually interpreted as ce1.  This is
+what you have to do:
+
+<programlisting>
+*begin
+*case preserve
+*fix CE1 0 0 0
+*include datfilewhichusesCE1.dat
+*end</programlisting>
+</Para>
+
+</Sect1>
 
 <Sect1><Title>Mailing List</Title>
 <?dbhtml filename="maillist.htm">
@@ -3514,14 +3546,14 @@ and other information.
 <?dbhtml filename="future.htm">
 
 <Para>
-Now that &survexsuite; has reached version 1.0, we plan to continue progress
+Now that &survexsuite; has reached version 1.0, we are continuing progress
 towards version 2, in a series of steps, evolving out of 
 Survex 1.0.  The GUI framework is being based on aven, with
 the printer drivers and other utility programs being pulled in
 and integrated into the menus.</Para>
 
 <Para>Aven is built on &wxwindows;, which means that can easily support
-Unix and Microsoft Windows.  Mac support is under development (at least
+Unix and Microsoft Windows.  Mac support is close to complete (at least
 for OS X).  Support for MSDOS is possible if there's sufficient interest.
 Support for RISC OS is unlikely unless someone very enthusiastic steps
 forward to do the porting work.</Para>
