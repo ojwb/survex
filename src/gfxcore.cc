@@ -587,6 +587,8 @@ void GfxCore::Draw2dIndicators()
     wxCoord elev_centre_x = m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2;
     if (m_Compass) {
         int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
+	// FIXME: bodge by Olly to stop wrong tick highlighting
+	if (deg_pan) deg_pan = 360 - deg_pan;
 	for (int angle = 0; angle <= 315; angle += 45) {
 	    if (deg_pan == angle) {
 	        m_DrawDC.SetPen(m_Pens.green);
