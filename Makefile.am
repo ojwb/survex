@@ -172,7 +172,7 @@ djgpp_zip : dostxt
 	ln -s ../README dostxt_tmp/README.txt
 	# -l means convert LF to CR+LF
 	zip -j -l ../$(djgpp_zip_name) dostxt_tmp/*.txt
-	cd doc;zip -l ../$(djgpp_zip_name) manual $(HTMLFILES)
+	cd doc;zip -r -l ../$(djgpp_zip_name) manual $(HTMLFILES)
 	zip -j -l $(djgpp_zip_name) $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
@@ -229,7 +229,7 @@ borlandc_zip : dostxt
 	ln -s ../README dostxt_tmp/README.txt
 	# -l means convert LF to CR+LF
 	zip -j -l $(bc_zip_name) dostxt_tmp/*.txt $(extra_txt)
-	cd doc;zip -l ../$(bc_zip_name) manual $(HTMLFILES)
+	cd doc;zip -l -r ../$(bc_zip_name) manual $(HTMLFILES)
 	$(RM) -rf dostxt_tmp
 
 riscos_zip_name = survex-riscos-@VERSION@.zip
