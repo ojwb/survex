@@ -401,18 +401,18 @@ replace_travs(void)
 
    if (!pimg) {
       char *fnm;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (fUseNewFormat) {
 	 fnm = add_ext(fnm_output_base, EXT_SVX_3DX);
       } else {
 #endif
 	 fnm = add_ext(fnm_output_base, EXT_SVX_3D);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       }
 #endif
       filename_register_output(fnm);
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (fUseNewFormat) {
 	 pimg = cave_open_write(fnm, survey_title);
 	 if (!pimg) fatalerror(cave_error(), fnm);
@@ -420,7 +420,7 @@ replace_travs(void)
 #endif
 	 pimg = img_open_write(fnm, survey_title, fTrue);
 	 if (!pimg) fatalerror(img_error(), fnm);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       }
 #endif
       osfree(fnm);
@@ -443,7 +443,7 @@ replace_travs(void)
 	       stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	       stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	    }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	    if (!fUseNewFormat) {
 #endif
 	       img_write_item(pimg, img_MOVE, 0, NULL,
@@ -451,7 +451,7 @@ replace_travs(void)
 	       img_write_item(pimg, img_LINE, leg->l.flags,
 			      sprint_prefix(stn1->name->up),
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	    }
 #endif
 	    if (!(leg->l.reverse & FLAG_ARTICULATION)) {
@@ -551,12 +551,12 @@ replace_travs(void)
       cLegsTrav = 0;
       lenTrav = 0.0;
       nmPrev = stn1->name;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (!fUseNewFormat) {
 #endif
 	 img_write_item(pimg, img_MOVE, 0, NULL,
-			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-#ifdef NEW3DFORMAT
+			POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+#ifdef CHASM3DX
       }
 #endif
 
@@ -637,7 +637,7 @@ replace_travs(void)
 	    stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	    stn3->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	 }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 if (!fUseNewFormat) {
 #endif
 	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
@@ -647,7 +647,7 @@ replace_travs(void)
 			      sprint_prefix(leg_pfx),
 			      POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
 	    }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 }
 #endif
 
@@ -780,12 +780,12 @@ replace_trailing_travs(void)
       }
       stn1->leg[i] = ptrTrail->join1;
       SVX_ASSERT(fixed(stn1));
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (!fUseNewFormat) {
 #endif
 	 img_write_item(pimg, img_MOVE, 0, NULL,
 			POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       }
 #endif
 
@@ -820,7 +820,7 @@ replace_trailing_travs(void)
 	    stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	    stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	 }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 if (!fUseNewFormat) {
 #endif
 	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
@@ -829,7 +829,7 @@ replace_trailing_travs(void)
 			      sprint_prefix(leg_pfx),
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 	    }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 }
 #endif
 
@@ -846,7 +846,7 @@ replace_trailing_travs(void)
    }
 
    /* write out connections with no survey data */
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (!fUseNewFormat) {
 #endif
       while (nosurveyhead) {
@@ -868,7 +868,7 @@ replace_trailing_travs(void)
 	 nosurveyhead = p->next;
 	 osfree(p);
       }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    }
 #endif
 
@@ -877,7 +877,7 @@ replace_trailing_travs(void)
       int d;
       SVX_ASSERT(fixed(stn1));
       /* take care of unused fixed points */
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (!fUseNewFormat) {
 #endif
 	 if (stn1->name->stn == stn1 && stn1->name->ident) {
@@ -891,7 +891,7 @@ replace_trailing_travs(void)
 			      POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 	    }
 	 }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       }
 #endif
       /* update coords of bounding box, ignoring the base positions

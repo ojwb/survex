@@ -25,6 +25,8 @@
 # define DEBUG_INVALID 1
 #endif
 
+#include <stddef.h> /* for offsetof */
+
 #include "debug.h"
 #include "cavern.h"
 #include "filename.h"
@@ -527,9 +529,16 @@ StnFromPfx(prefix *name)
    stn = osnew(node);
    stn->name = name;
    if (name->pos == NULL) {
+#ifdef CHASM3DX
+      if (fUseNewFormat) {
+	 name->pos = osnew(pos);
+	 name->pos->id = 0;
+      } else {
+	 /* only allocate the part of the structure we need... */
+	 name->pos = (pos *)osmalloc(offsetof(pos, id));
+      }
+#else
       name->pos = osnew(pos);
-#ifdef NEW3DFORMAT
-      name->pos->id = 0;
 #endif
       unfix(stn);
    }

@@ -21,7 +21,7 @@
 #include <config.h>
 #include "cavern.h"
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 
 #include <stdio.h>
 #include <math.h>

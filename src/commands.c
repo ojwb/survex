@@ -23,6 +23,7 @@
 
 #include <assert.h>
 #include <limits.h>
+#include <stddef.h> /* for offsetof */
 
 #include "cavern.h"
 #include "commands.h"
@@ -503,7 +504,7 @@ cmd_prefix(void)
    tag = read_prefix_survey(fFalse, fTrue);
    pcs->Prefix = tag;
    check_reentry(tag);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
       limb = get_twig(tag);
       if (limb->up->sourceval < 1) {
@@ -535,7 +536,7 @@ cmd_begin(void)
       check_reentry(tag);
       f_export_ok = fTrue;
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (fUseNewFormat) {
 	 limb = get_twig(pcs->Prefix);
 	 if (limb->up->sourceval < 2) {
@@ -567,7 +568,7 @@ cmd_end(void)
    prefix *tag, *tagBegin;
 
    pcsParent = pcs->next;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) limb = get_twig(pcsParent->Prefix);
 #endif
 
@@ -685,11 +686,23 @@ cmd_fix(void)
 	 stn = StnFromPfx(fix_name);
 	 if (!fixed(stn)) {
 	    node *fixpt = osnew(node);
-	    prefix *name = osnew(prefix);
+	    prefix *name;
+#ifdef CHASM3DX
+	    if (fUseNewFormat) {
+	       name = osnew(prefix);
+	       name->pos = osnew(pos);
+	    } else {
+	       /* only allocate the part of the structures we need... */
+	       name = /*(prefix *)*/osmalloc(offsetof(prefix, twig_link));
+	       name->pos = (pos *)osmalloc(offsetof(pos, id));
+	    }
+#else
+	    name = osnew(prefix);
+	    name->pos = osnew(pos);
+#endif
 	    name->ident = NULL;
 	    name->shape = 0;
 	    fixpt->name = name;
-	    name->pos = osnew(pos);
 	    name->stn = fixpt;
 	    name->up = NULL;
 	    if (TSTBIT(pcs->infer, INFER_EXPORTS)) {
@@ -727,7 +740,7 @@ cmd_fix(void)
       POS(stn, 1) = y;
       POS(stn, 2) = z;
       fix(stn);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
       if (fUseNewFormat) {
 	 fix_name->twig_link->from = fix_name; /* insert fixed point.. */
 	 fix_name->twig_link->to = NULL;
@@ -804,7 +817,7 @@ cmd_equate(void)
 	 if (fOnlyOneStn) {
 	    compile_error_skip(/*Only one station in equate list*/33);
 	 }
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 if (fUseNewFormat) limb = get_twig(pcs->Prefix);
 #endif
 	 return;
@@ -1338,7 +1351,7 @@ cmd_include(void)
 #ifndef NO_DEPRECATED
    root = root_store; /* and restore root */
 #endif
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) limb = get_twig(root);
 #endif
    ch = ch_store;

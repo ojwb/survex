@@ -20,7 +20,7 @@
 #ifndef CAVERN_H
 #define CAVERN_H
 
-#define NEW3DFORMAT
+#define CHASM3DX
 
 /* Using covariances increases the memory required somewhat - may be
  * desirable to disable this for small memory machines */
@@ -188,7 +188,7 @@ typedef struct Prefix {
     * also suspecttypo and survey */
    unsigned short sflags;
    short shape;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    struct Twig *twig_link;
 #endif
 } prefix;
@@ -240,7 +240,7 @@ typedef struct Pos {
 #if EXPLICIT_FIXED_FLAG
    unsigned char fFixed; /* flag indicating if station is a fixed point */
 #endif
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    INT32_T id;
 #endif
 } pos;
@@ -358,7 +358,7 @@ typedef struct nosurveylink {
 
 extern nosurveylink *nosurveyhead;
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 #include "new3dout.h"
 #endif
 

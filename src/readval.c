@@ -22,6 +22,7 @@
 #endif
 
 #include <limits.h>
+#include <stddef.h> /* for offsetof */
 
 #include "cavern.h"
 #include "debug.h"
@@ -130,7 +131,16 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       if (ptr == NULL) {
 	 /* Special case first time around at each level */
 	 name = osrealloc(name, i);
+#ifdef CHASM3DX
+	 if (fUseNewFormat) {
+	    ptr = osnew(prefix);
+	 } else {
+	    /* only allocate the part of the structure we need... */
+	    ptr = (prefix *)osmalloc(offsetof(prefix, twig_link));
+	 }
+#else
 	 ptr = osnew(prefix);
+#endif
 	 ptr->ident = name;
 	 name = NULL;
 	 ptr->right = ptr->down = NULL;
@@ -145,9 +155,9 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	    ptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	 back_ptr->down = ptr;
 	 fNew = fTrue;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	 if (fUseNewFormat) {
-	    create_twig(ptr,file.filename);
+	    create_twig(ptr, file.filename);
 	 }
 #endif
       } else {
@@ -168,7 +178,16 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	    /* ie we got to one that was higher, or the end */
 	    prefix *newptr;
 	    name = osrealloc(name, i);
+#ifdef CHASM3DX
+	    if (fUseNewFormat) {
+	       newptr = osnew(prefix);
+	    } else {
+	       /* only allocate the part of the structure we need... */
+	       newptr = (prefix *)osmalloc(offsetof(prefix, twig_link));
+	    }
+#else
 	    newptr = osnew(prefix);
+#endif
 	    newptr->ident = name;
 	    name = NULL;
 	    if (ptrPrev == NULL)
@@ -188,9 +207,9 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	       newptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	    ptr = newptr;
 	    fNew = fTrue;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	    if (fUseNewFormat) {
-	       create_twig(ptr,file.filename);
+	       create_twig(ptr, file.filename);
 	    }
 #endif
 	 }

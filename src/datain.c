@@ -606,7 +606,7 @@ data_file(const char *pth, const char *fnm)
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
 	    int r;
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
 	    twig *temp = limb;
 #endif
 	    f_export_ok = fFalse;
@@ -629,8 +629,8 @@ data_file(const char *pth, const char *fnm)
 	       BUG("bad style");
 	    }
 	    /* style function returns 0 => error */
-#ifdef NEW3DFORMAT
-	    if (!r) {
+#ifdef CHASM3DX
+	    if (!r && fUseNewFormat) {
 	       /* we have just created a very naughty twiglet, and it must be
 		* punished */
 	       osfree(limb);
@@ -1019,7 +1019,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 #endif
 		);
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
@@ -1139,9 +1139,9 @@ process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 		, cxy, cyz, czx
 #endif
 		);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
-      /*new twiglet and insert into twig tree*/
+      /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
       twiglet->from = fr;
       twiglet->to = to;
@@ -1175,7 +1175,7 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
 #endif
 		);
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
@@ -1333,9 +1333,9 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 		, cxy, 0, 0
 #endif
 		);
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
-      /*new twiglet and insert into twig tree*/
+      /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
       twiglet->from = fr;
       twiglet->to = to;
@@ -1628,7 +1628,7 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
    nosurveylink *link;
    int shape;
 
-#ifdef NEW3DFORMAT
+#ifdef CHASM3DX
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
