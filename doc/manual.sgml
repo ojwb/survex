@@ -62,6 +62,17 @@ the station 1 of the Adrian's Route survey.
 0 (east-west), 0 (north-south), 1780 (altitude).
 </Para>
 
+
+<term>node</term>
+<listitem><para>when talking about the survey network, we talk about an
+<emphasis>n</emphasis>-node to describe the number of connections to
+a station.  So a 1-node is a station with only 1 leg to or from it
+- i.e. The end of a passage or survey. A
+2-node is a typical station along a passage with a survey leg coming
+into it, and one going out.  A 3-node is a station with three legs
+joining it, e.g. at a T-junction. And so on.
+</para>
+
 -->
 
 <article Status="draft" id=index>
@@ -92,29 +103,25 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-07-01 01:22:45 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.97 2002-07-01 01:22:45 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-07-14 17:15:52 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.98 2002-07-14 17:15:52 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
     cave surveyors.
-   </Para>
-
-   <Para>
-    The master version of this manual is an <acronym>SGML</acronym>
-    document written using the <ulink
-    url="http://www.docbook.org/">docbook</ulink> <acronym>DTD</acronym>,
-    then automatically converted to a number of other formats.  If
-    you're making <emphasis>major</emphasis> changes, it's much easier
-    to apply them if you work with this master, which you can get
-    from the source archive or <ulink
-    url="http://www.survex.com/docs.html">the Survex website</ulink>.
    </Para>
   </Abstract>
  </articleinfo>
 
 <Sect1><Title>Introduction</Title>
 <?dbhtml filename="intro.htm">
+
+<Para>
+This section describes what &survexsuite; is, and outlines the scope of this
+manual.
+</Para>
+
+<Sect2><Title>About &survexsuite;</Title>
 
 <Para>&survexsuite; is a multi-platform open-source cave surveying
 package.  It currently runs on &unix;, Microsoft Windows 95/NT and
@@ -147,15 +154,17 @@ the <Acronym/OFD/ survey, the
 <ulink url="http://milos2.zoo.ox.ac.uk/~oucc/reports/surveys/surveys.htm"
 ><Acronym/OUCC/ Picos expeditions</ulink>, and the 
 <ulink url="http://www.survex.com/~erin/">Hong Meigui China
-expedition</ulink>. <!-- FIXME more? --></Para>
+expeditions</ulink>. <!-- FIXME more? --></Para>
 
 <Para>&survexsuite; is still actively being worked on.  Version 1.0 is
-complete in some sense, but development will continue - initially in reshaping
+complete in some sense, but development continues - initially in reshaping
 Survex into a more integrated GUI package.</Para>
 
 <Para>We encourage feedback from users on important features or problems,
-which will help to direct future development. Contact addresses are near the
-bottom of this document.</Para>
+which will help to direct future development. Contact addresses are at the
+end of this manual.</Para>
+
+</Sect2>
 
 <!--
 <Para>Because &survexsuite; is still being actively developed, this document
@@ -213,7 +222,29 @@ the on-screen instructions).
 </Sect2>
 -->
 
-<Sect2><Title>Terminology</Title>
+<Sect2><Title>About this Manual</Title>
+
+<Para>
+If there's a part of this manual you find hard to understand, please do
+let us know.  We already know Survex well, so it can be hard for us
+to spot areas where the manual doesn't given enough information, or
+doesn't explain things clearly enough to follow when you don't know what's
+going on.  It's helpful is you can suggest a better wording, but don't worry
+if you can't, just explain the problem as precisely as you can.
+</Para>
+
+<Para>
+The master version of this manual is an <acronym>SGML</acronym>
+document written using the <ulink url="http://www.docbook.org/">docbook
+<acronym>DTD</acronym></ulink>,
+and automatically converted to a number of other formats.  If
+you are going to send us <emphasis>major</emphasis> changes, it's much easier
+to include them if you work from this master.  You can get it
+from the source archive (docs/manual.sgml) or from <ulink
+url="http://www.survex.com/docs.html">the Survex website</ulink>.
+</Para>
+
+<Sect3><Title>Terminology</Title>
 
 <Para>Throughout this document we use British terminology for
 surveying.</Para>
@@ -234,20 +265,13 @@ surveying.</Para>
 <listitem><para>a group of legs surveyed on the same trip
 </para></listitem></varlistentry>
 
-<varlistentry>
-<term>node</term>
-<listitem><para>when talking about the survey network, we talk about an
-<emphasis>n</emphasis>-node to describe the number of connections to
-a station.  So a 1-node is a station with only 1 leg to or from it
-- i.e. The end of a passage or survey. A
-2-node is a typical station along a passage with a survey leg coming
-into it, and one going out.  A 3-node is a station with three legs
-joining it, e.g. at a T-junction. And so on.
-</para></listitem></varlistentry>
-
 </variablelist>
 
+</Sect3>
+
 </Sect2>
+
+<!-- FIXME: Further sources of info: website, mailing lists, other docs -->
 
 </Sect1>
 
@@ -262,9 +286,15 @@ install it, and how to configure it.</Para>
 <Para>The latest version is available from the &survexsuite; website:
 <ulink url="&survexwebsite;">&survexwebsite;</ulink>. If you do not
 have internet access or would prefer to get a copy by post, we are
-also happy to send out up-to-date copies on receipt of a formatted
-floppy disk and a stamped, self-addressed envelope. See the end of this
+also happy to send out up-to-date copies on a floppy on receipt of
+a stamped, self-addressed envelope. See the end of this
 document for addresses.</Para>
+
+<Para>
+There's also a CD containing versions of &survexsuite; for every supported
+platform.  You can download an image for this from the website, or we'll
+send you a copy on a CD-R if you send us money to cover the costs.
+</Para>
 
 </Sect2>
 
