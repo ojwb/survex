@@ -9,7 +9,7 @@ Sort .err file by error (the segment with the grossest error first)
 
 Date: Mon, 02 Nov 1998 09:16:23 +1100
 Subject: caverot/xcaverot/aven
-From: Michael Lake <Mike.Lake@uts.edu.au>, wookey, olly
+From: Michael Lake <Mike.Lake@uts.edu.au>, Wookey, Olly
 
 [Document xcaverot keys somewhere]
 pan view - cursor keys
@@ -50,11 +50,6 @@ aven: surface vs underground data...
 caverot: on RISC OS now fall back to using 2 or even just one screen
 bank if we can't find a mode where we can create 3 banks [FIXME: need
 to test this works]
-
-Date: 15 Dec 1998
-From: Olly
-
-merge "datums" and quantities?
 
 Date: 21 Jul 1999
 From: Olly
