@@ -12,7 +12,7 @@ config.status
 configure
 config.guess
 config.sub
-depcomp
+depcomp install-sh missing mkinstalldirs
 bc_exes
 djgpp_exes
 mingw_exes
