@@ -13,6 +13,8 @@ Changes in 1.0.29:
 * (MacOS X version): Include buildmacosx.sh script which will build a
   diskimage suitable for distribution.
 
+* Romanian translation started.
+
 Changes in 1.0.28:
 
 * Fixed 3d file reading code to fix incorrect unpacking of compressed station

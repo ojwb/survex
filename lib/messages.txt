@@ -103,6 +103,7 @@ ca:  0 &copy;
 es:  0 &copy;
 it:  0 &copy;
 sk:  0 &copy;
+ro:  0 &copy;
 en:  1 Out of memory (couldn't find %lu bytes).
 # octets -- slightly bad notation since (being pedantic) bytes don't necessarily
 # have 8 bits, but it's the common expression.
@@ -138,6 +139,7 @@ ca:  3 des de
 es:  3 desde
 it:  3 da
 sk:  3 z
+ro:  3 de la
 # indicates a warning message e.g. "spoon.svx:12: warning: *prefix is deprecated"
 en:  4 warning
 fr:  4 avertissement
@@ -147,6 +149,7 @@ ca:  4 alerta
 es:  4 alerta
 it:  4 avvertimento
 sk:  4 varovanie
+ro:  4 avertisment
 #zh:  4 &#35686;&#21578;
 # FIXME: kludge to get a zh.msg file generated
 zh:  4 warning
@@ -231,6 +234,7 @@ ca: 12 Comandament desconegut `%s'
 es: 12 Comando desconocido `%s'
 it: 12 Comando sconosciuto `%s'
 sk: 12 Nezn&aacute;my pr&iacute;kaz `%s'
+ro: 12 Comand&abreve; necunoscut&abreve; `%s'
 en: 13 Station `%s' equated to itself
 fr: 13 Station `%s' ne doit pas &ecirc;tre d&eacute;clar&eacute;e "&eacute;gale" &agrave elle-m&ecirc;me
 de: 13 Station `%s' mit sich selbst gleichgesetzt
@@ -297,6 +301,7 @@ ca: 19 Massa errors - proc&eacute;s abandonat
 es: 19 Demasiados errores - proceso abandonado
 it: 19 Troppi errori - processo interrotto
 sk: 19 Pr&iacute;li&scaron; mnoho ch&yacute;b, koniec
+ro: 19 Prea multe erori - am renun&tcedil;at
 en: 20 *DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead
 fr: 20 *DEFAULT n'est plus utilis&eacute; - employer *CALIBRATE/DATA/SD/UNITS avec argument DEFAULT &agrave; la place
 de: 20 *DEFAULT ist veraltet - stattdessen *CALIBRATE/DATA/SD/UNITS mit DEFAULT-Argument verwenden
@@ -546,6 +551,7 @@ ca: 43 Cap dada de topograf&iacute;a
 es: 43 Ning&uacute;n dato de topografia
 it: 43 Mancano i dati topografici
 sk: 43 Ch&yacute;baj&uacute; &uacute;daje z merania
+#
 en: 44 Filename `%s' refers to directory
 fr: 44 Nom de fichier `%s' relatif &agrave; un r&eacute;pertoire
 # sounds ugly, but is correct, and I can't think of a replacement
@@ -555,6 +561,8 @@ ca: 44 Nom de fitxer `%s' referit a un directori
 es: 44 Nombre de archivo `%s' referido a un directorio
 it: 44 Il nome del file `%s' corrisponde ad una directory
 sk: 44 Meno s&uacute;boru `%s' odpoved&aacute; adres&aacute;ru
+ro: 44 Fi&scedil;ierul `%s' este un director
+#
 en: 45 Survey not all connected to fixed stations
 fr: 45 Relev&eacute;s topo pas tous reli&eacute;s &agrave; des points fixes
 de: 45 Teile der Vermessung sind nicht an feste Punkte angeschlossen
@@ -590,15 +598,17 @@ ca: 48 La desviaci&oacute; est&agrave;ndard ha d'e&acute;sser positiva
 es: 48 La desviaci&oacute;n est&aacute;ndard tiene que ser positiva
 it: 48 La deviazione standard deve essere positiva
 sk: 48 &Scaron;tandardn&aacute; ochylka mus&iacute; by&tcaron; pozit&iacute;vna
+# as in: Usage: cavern ...
+en: 49 Usage
+fr: 49 Usage
+de: 49 Aufruf
+pt: 49 Uso
+ca: 49 Forma d'&uacute;s
+es: 49 Utilizaci&oacute;n
+it: 49 Utilizzo
+sk: 49 Pou&zcaron;itie
+ro: 49 Folosire
 #
-en: 49 Syntax
-fr: 49 Syntaxe
-de: 49 Syntax
-pt: 49 Sintaxe
-ca: 49 Sintaxi
-es: 49 Sintaxis
-it: 49 Sintassi
-sk: 49 Syntax
 en: 50 Survey leg with same station (`%s') at both ends - typing error?
 en-us: 50 Survey shot with same station (`%s') at both ends - typing error?
 fr: 50 Vis&eacute;e avec 2 extr&eacute;mit&eacute;s identiques (`%s') - erreur de frappe?
@@ -820,6 +830,7 @@ ca: 69 Manca &quot;
 es: 69 Falta &quot;
 it: 69 Manca &quot;
 sk: 69 Ch&yacute;ba &quot;
+ro: 69 Lipse&scedil;te &quot;
 #
 en: 70 Station `%s' referred to just once, with an explicit prefix - typo?
 fr: 70 La station `%s' n'est mentionn&eacute;e qu'une fois, avec un pr&eacute;fixe explicite - typo?
@@ -1043,6 +1054,7 @@ ca: 93 No s'ha pogut obrir el fitxer `%s'
 es: 93 No se pudo abrir el archivo `%s'
 it: 93 Non riesco ad aprire il file `%s'
 sk: 93 Nie je mo&zcaron;n&eacute; otvori&tcaron; s&uacute;bor `%s'
+ro: 93 Nu am putut deschide fi&scedil;ierul `%s'
 #
 en: 94 Bad memory access
 fr: 94 Mauvais acc&eacute;s m&eacute;moire
@@ -1186,6 +1198,7 @@ ca:107 %a,%Y.%m.%d %H:%M:%S %Z
 es:107 %a,%Y.%m.%d %H:%M:%S %Z
 it:107 %a,%Y.%m.%d %H:%M:%S %Z
 sk:107 %a,%Y.%m.%d %H:%M:%S %Z
+ro:107 %a,%Y.%m.%d %H:%M:%S %Z
 # put in .3d file if we can't read the date/time
 en:108 Date and time not available.
 fr:108 Date et heure non disponibles.
@@ -1347,6 +1360,7 @@ ca:124 FITXER
 es:124 ARCHIVO
 it:124 FILE
 sk:124 S&Uacute;BOR
+ro:124 FI&Scedil;IER
 # a trailing traverse is a dead end back to a junction
 en:125 Removing trailing traverses
 fr:125 Enl&egrave;ve les s&eacute;quences terminales
@@ -1534,6 +1548,7 @@ ca:144 Fet.
 es:144 Hecho.
 it:144 Fatto.
 sk:144 Hotovo.
+ro:144 Gata.
 # zh from wxWindows
 #zh:144 &#23436;&#25104;&#12290;
 en:145 "Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). "
@@ -1595,6 +1610,7 @@ ca:150 mostra aquesta ajuda i surt
 es:150 muestra esta ayuda y sale
 it:150 mostra questo aiuto ed esce
 sk:150 zobrazi&tcaron; t&uacute;to n&aacute;povedu a skon&ccaron;i&tcaron;
+ro:150 afi&scedil;eaz&abreve; acest mesaj &scedil;i termin&abreve;
 # description of --verbose option
 #
 en:151 output version information and exit
@@ -1605,6 +1621,7 @@ ca:151 mostra informaci&oacute; de la versi&oacute; i surt
 es:151 muestra informaci&oacute;n de la versi&oacute;n y sale
 it:151 Mostra informazioni sulla versione ed esce
 sk:151 zobrazi&tcaron; inform&aacute;ciu o verzii a skon&ccaron;i&tcaron;
+ro:151 afi&scedil;eaz&abreve; informa&tcedil;ii despre versiune &scedil;i termin&abreve;
 # As in "printer driver"
 en:152 Driver
 fr:152 pilote
@@ -1614,7 +1631,7 @@ ca:152 Driver
 es:152 Driver
 it:152 Driver
 sk:152 Ovlada&ccaron;
-# in command line syntax messages [OPTION]...
+# in command line usage messages e.g. Usage: cavern [OPTION]...
 #
 en:153 OPTION
 fr:153 OPTION
@@ -1624,6 +1641,7 @@ ca:153 OPCI&Oacute;
 es:153 OPCI&Oacute;N
 it:153 OPZIONI
 sk:153 OPTION
+ro:153 OP&Tcedil;IUNE
 #
 en:154 Scale
 fr:154 &Eacute;chelle
@@ -1642,6 +1660,7 @@ ca:155 Continua
 es:155 Continua
 it:155 Continua
 sk:155 Pokra&ccaron;ova&tcaron;
+#
 en:156 Exiting.
 fr:156 Arr&ecirc;t.
 de:156 Ende.
@@ -1650,6 +1669,7 @@ ca:156 Sortint.
 es:156 Saliendo.
 it:156 Fine.
 sk:156 Ukon&ccaron;i&tcaron;
+#
 en:157 Try `%s --help' for more information.&#10;
 fr:157 Pour en savoir davantage, faites: `%s --help'&#10;
 de:157 Versuchen Sie `%s --help' f&uuml;r weitere Informationen.&#10;
@@ -1661,6 +1681,7 @@ es:157 Prueba `%s --help' para m&aacute;s informaci&oacute;n.&#10;
 it:157 Usare `%s --help' per ulteriori informazioni.&#10;
 #or it:157 Usare `%s --aiuto' per ulteriori informazioni.&#10;
 sk:157 Sk&uacute;ste `%s --help' aby sa zobrazilo viac inform&aacute;ci&iacute;.&#10;
+ro:157 &Icirc;ncerca&tcedil;i `%s --help' pentru informacl&tcedil;ii suplimentare.&#10;
 #
 en:158 Plan or Elevation
 en-us:158 Plan or Elevation (profile)
@@ -1777,6 +1798,7 @@ ca:169 Vista
 es:169 Vista
 it:169 Vista
 sk:169 Poh&lcaron;ad na
+ro:169 Vizualizare
 en:170 This will need %d pages (%dx%d).
 fr:170 Cela prendra %d pages (%dx%d).
 de:170 Dies ben&ouml;tigt %d Seiten (%dx%d).
@@ -1837,6 +1859,8 @@ ca:176 node
 es:176 nodo
 it:176 nodo
 sk:176 uzol
+ro:176 nod
+# node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
 en:177 nodes
 fr:177 n&oelig;uds
 de:177 Verzweigungspunkte
@@ -1845,6 +1869,7 @@ ca:177 nodes
 es:177 nodos
 it:177 nodi
 sk:177 uzly
+ro:177 noduri
 # connected component in the graph theory sense
 # It means there are %ld bits of survey with no connections between them
 # This message is only used if there are more than 1
@@ -1875,6 +1900,7 @@ ca:180 si
 es:180 si
 it:180 si
 sk:180 &aacute;no
+ro:180 da
 #zh:180 &#26159;
 en:181 no
 fr:181 non
@@ -1884,7 +1910,9 @@ ca:181 no
 es:181 no
 it:181 no
 sk:181 nie
+ro:181 nu
 #zh:181 &#21542;
+# cf 221
 en:182 quit
 fr:182 sortir
 de:182 verlassen
@@ -1900,6 +1928,7 @@ ca:182 abortar
 es:182 abortar
 it:182 annulla
 sk:182 zru&scaron;i&tcaron;
+ro:182 termin&abreve;
 en:183 plan
 fr:183 plan
 #germ:183 Plan
@@ -2101,6 +2130,7 @@ ca:204 Tancar
 es:204 Cerrar
 it:204 Chiudi
 sk:204 Zavrie&tcaron;
+ro:204 &Icirc;nchide
 #zh:204 &#20851;&#38381;
 #
 # for the title of the About box (c.f. 290)
@@ -2113,6 +2143,7 @@ ca:205 A prop&ograve;sit de %s
 es:205 Acerca de %s
 it:205 Informazioni su %s
 sk:205 O %s
+ro:205 Despre %s
 #
 # Aven menu items.  An '@' goes before the letter of any accelerator key.
 # The string "##" separates the menu text and any accelerator key.
@@ -2161,6 +2192,7 @@ ca:210 @Fitxer
 es:210 @Archivo
 it:210 @File
 sk:210 @S&uacute;bor
+ro:210 @Fi&scedil;ier
 #
 en:211 @Rotation
 fr:211 @Rotation
@@ -2170,6 +2202,7 @@ ca:211 @Rotaci&oacute;
 es:211 @Rotaci&oacute;n
 it:211 @Rotazione
 sk:211 @Rot&aacute;cia
+ro:211 @Rotire
 #
 en:212 @Orientation
 fr:212 @Orientation
@@ -2189,6 +2222,7 @@ ca:213 @Veure
 es:213 @Vista
 it:213 @Vista
 sk:213 @Poh&lcaron;ad
+ro:213 @Vizualizare
 #
 en:214 @Controls
 fr:214 @Contr&ocirc;les
@@ -2199,6 +2233,7 @@ ca:214 @Controls
 es:214 @Controles
 it:214 @Controlli
 sk:214 O@vl&aacute;danie
+ro:214 @Controale
 #
 en:215 @Help
 fr:215 @Aide
@@ -2209,6 +2244,7 @@ ca:215 @Ajuda
 es:215 A@yuda
 it:215 @Aiuto
 sk:215 @Help
+ro:215 @Ajutor
 #
 # XXX 216 217 218
 #
@@ -2232,7 +2268,9 @@ ca:220 @Obrir...##Ctrl+O
 es:220 @Abrir...##Ctrl+O
 it:220 @Apri...##Ctrl+O
 sk:220 @Otvori&tcaron;...##Ctrl+O
+ro:220 @Deschide...##Ctrl+O
 # TRANSLATE pt ca sk (english changed from Exit to Quit)
+# cf 182
 en:221 @Quit##Ctrl+Q
 fr:221 @Quitter##Ctrl+Q
 de:221 @Beenden##Ctrl+Q
@@ -2241,6 +2279,7 @@ ca:221 @Sortir##Ctrl+Q
 es:221 @Salir##Ctrl+Q
 it:221 @Esci##Ctrl+Q
 sk:221 E@xit##Ctrl+Q
+ro:221 @Termin&abreve;##Ctrl+Q
 # back to cavern
 # error from "*data normal newline from to tape compass clino"
 en:222 NEWLINE can't be the first reading
@@ -2512,7 +2551,8 @@ ca:252 @Apropar##]
 es:252 @Ampliar##]
 # it: or "Ingrandisci"
 it:252 @Zoom avanti##]
-sk:252 Zv&auml;&ccaron;&scaron;@i&tcaron;
+sk:252 Zv&auml;&ccaron;&scaron;@i&tcaron;##]
+ro:252 @M&abreve;rire##]
 #
 en:253 Zoo@m Out##[
 # fr: or "R&eacute;duire"
@@ -2525,7 +2565,8 @@ ca:253 @Reduir##[
 es:253 @Reducir##[
 # it: or "Riduci"
 it:253 Zoo@m indietro##[
-sk:253 Zmen&scaron;i@t
+sk:253 Zmen&scaron;i@t##[
+ro:252 Mi@c&scedil;orare##[
 #
 en:254 Restore De@fault Settings
 en-us:254 Restore Defaul@t Settings
@@ -2651,6 +2692,7 @@ ca:290 @A prop&ograve;sit de...
 es:290 @Acerca de...
 it:290 @Informazioni su...
 sk:290 @Inform&aacute;cie o...
+ro:290 @Despre...
 #
 # here pt = pt-br ...
 en:291 @Surface Survey Legs##Ctrl+F
@@ -2720,6 +2762,7 @@ ca:297 @Graella##Ctrl+G
 es:297 @Rejilla##Ctrl+G
 it:297 @Griglia##Ctrl+G
 sk:297 @Sie&tcaron;##Ctrl+G
+ro:297 @Gril&abreve;##Ctrl+G
 #
 en:298 Smoo@thed Survey Legs
 en-us:298 Smoo@thed Survey Shots
@@ -2741,6 +2784,7 @@ ca:299 I@ndicadors
 es:299 I@ndicadores
 it:299 I@ndicatori
 sk:299 Indik&aacute;@tory
+ro:299 I@ndicatorii
 #
 en:300 %s: option `%s' is ambiguous&#10;
 fr:300 %s: l'option `%s' est ambig&uuml;e&#10;
@@ -2750,6 +2794,7 @@ ca:300 %s: l'opci&oacute; `%s' &eacute;s amb&iacute;gua&#10;
 es:300 %s: la opci&oacute;n `%s' es ambigua&#10;
 it:300 %s: l'opzione `%s' &egrave; ambigua&#10;
 sk:300 %s: mo&zcaron;nos&tcaron; `%s' je dvojzna&ccaron;n&aacute;&#10;
+ro:300 %s: op&tcedil;iunea `%s' este ambigu&abreve;&#10;
 #
 en:301 %s: option `-W %s' is ambiguous&#10;
 fr:301 %s: l'option `-W %s' est ambig&uuml;e&#10;
@@ -2759,6 +2804,7 @@ ca:301 %s: l'opci&oacute; `-W %s' &eacute;s amb&iacute;gua&#10;
 es:301 %s: la opci&oacute;n `-W %s' es ambigua&#10;
 it:301 %s: l'opzione `-W %s' &egrave; ambigua&#10;
 sk:301 %s: mo&zcaron;nos&tcaron; `-W %s' je dvojzna&ccaron;n&aacute;&#10;
+ro:301 %s: op&tcedil;iunea `-W %s' este ambigu&abreve;&#10;
 #
 en:302 %s: option `%c%s' doesn't allow an argument&#10;
 fr:302 %s: l'option `%c%s' n'a pas d'argument&#10;
@@ -2769,6 +2815,7 @@ ca:302 %s: l'opci&oacute; `%c%s' no accepta arguments&#10;
 es:302 %s: la opci&oacute;n `%c%s' no permite argumento&#10;
 it:302 %s: l'opzione `%c%s' non permette un argomento&#10;
 sk:302 %s: mo&zcaron;nos&tcaron; `%c%s' neumo&zcaron;&ncaron;uje argument&#10;
+ro:302 %s: op&tcedil;iunea `%c%s' nu permite un argument&#10;"
 #
 en:303 %s: option `--%s' doesn't allow an argument&#10;
 fr:303 %s: l'option `--%s' n'a pas d'argument&#10;
@@ -2779,6 +2826,7 @@ ca:303 %s: l'opci&oacute; `--%s' no accepta arguments&#10;
 es:303 %s: la opci&oacute;n `--%s' no permite argumento&#10;
 it:303 %s: l'opzione `--%s' non permette un argomento&#10;
 sk:303 %s: mo&zcaron;nos&tcaron; `--%s' neumo&zcaron;&ncaron;uje argument&#10;
+ro:303 %s: op&tcedil;iunea `--%s' nu permite un argument&#10;"
 #
 en:304 %s: option `-W %s' doesn't allow an argument&#10;
 fr:304 %s: l'option `-W %s' n'a pas d'argument&#10;
@@ -2789,6 +2837,7 @@ ca:304 %s: l'opci&oacute; `-W %s' no accepta arguments&#10;
 es:304 %s: la opci&oacute;n `-W %s' no permite argumento&#10;
 it:304 %s: l'opzione `-W %s' non permette un argomento&#10;
 sk:304 %s: mo&zcaron;nos&tcaron; `-W %s' neumo&zcaron;&ncaron;uje argument&#10;
+ro:304 %s: op&tcedil;iunea `-W %s' nu permite un argument&#10;"
 #
 en:305 %s: option `%s' requires an argument&#10;
 fr:305 %s: l'option `%s' requiert un argument&#10;
@@ -2798,6 +2847,7 @@ ca:305 %s: l'opci&oacute; `%s' necessita un argument&#10;
 es:305 %s: la opci&oacute;n `%s' requiere un argumento&#10;
 it:305 %s: l'opzione `%s' richiede un argomento&#10;
 sk:305 %s: mo&zcaron;nos&tcaron; `%s' vy&zcaron;aduje argument&#10;
+ro:305 %s: op&tcedil;iunea `%s' necesit&abreve; un argument&#10;
 #
 en:306 %s: option requires an argument -- %c&#10;
 fr:306 %s: cette option requiert un argument -- %c&#10;
@@ -2806,7 +2856,8 @@ pt,pt-br:306 %s: op&ccedil;&atilde;o requer um argumento -- %c&#10;
 ca:306 %s: l'opci&oacute; necessita un argument -- %c&#10;
 es:306 %s: la opci&oacute;n requiere un argumento -- %c&#10;
 it:306 %s: l'opzione richiede un argomento -- %c&#10;
-sk:306 %s: mo&zcaron;nos&tcaron; vy&zcaron;aduje argument -- &#10;
+sk:306 %s: mo&zcaron;nos&tcaron; vy&zcaron;aduje argument -- %c&#10;
+ro:306 %s: op&tcedil;iunea necesit&abreve; un argument -- %c&#10;
 #
 en:307 %s: unrecognized option `--%s'&#10;
 fr:307 %s: option `--%s' non reconnue&#10;
@@ -2817,6 +2868,7 @@ ca:307 %s: l'opci&oacute; `--%s' &eacute;s desconeguda&#10;
 es:307 %s: opci&oacute;n `--%s' desconocida&#10;
 it:307 %s: opzione non riconosciuta `--%s'&#10;
 sk:307 %s: nerozpoznan&aacute; mo&zcaron;nos&tcaron; `--%s'&#10;
+ro:307 %s: op&tcedil;iune nerecunoscut&abreve; `--%s'&#10;
 #
 en:308 %s: unrecognized option `%c%s'&#10;
 fr:308 %s: option `%c%s' non reconnue&#10;
@@ -2827,6 +2879,7 @@ ca:308 %s: l'opci&oacute; `%c%s' &eacute;s desconeguda&#10;
 es:308 %s: opci&oacute;n `%c%s' desconocida&#10;
 it:308 %s: opzione non riconosciuta `%c%s'&#10;
 sk:308 %s: nerozpoznan&aacute; mo&zcaron;nos&tcaron; `%c%s'&#10;
+ro:308 %s: op&tcedil;iune nerecunoscut&abreve; `%c%s'&#10;
 #
 en:309 %s: illegal option -- %c&#10;
 fr:309 %s: option ill&eacute;gale -- %c&#10;
@@ -2836,6 +2889,7 @@ ca:309 %s: l'opci&oacute; no &eacute;s permesa -- %c&#10;
 es:309 %s: opci&oacute;n no permitida -- %c&#10;
 it:309 %s: opzione illegale -- %c&#10;
 sk:309 %s: nepovolen&aacute; mo&zcaron;nos&tcaron; -- %c&#10;
+ro:309 %s: op&tcedil;iune ilegal&abreve; -- %c&#10;
 #
 en:310 %s: invalid option -- %c&#10;
 fr:310 %s: option invalide -- %c&#10;
@@ -2845,6 +2899,7 @@ ca:310 %s: l'opci&oacute; no &eacute;s v&agrave;lida -- %c&#10;
 es:310 %s: opci&oacute;n inv&aacute;lida -- %c&#10;
 it:310 %s: opzione non valida -- %c&#10;
 sk:310 %s: nespr&aacute;vna mo&zcaron;nos&tcaron; -- %c&#10;
+ro:310 %s: op&tcedil;iune invalid&abreve; -- %c&#10;
 #
 en:319 Select an output filename
 fr:319 S&eacute;lection d'un nom de fichier de sortie
@@ -2883,6 +2938,7 @@ ca:332 Troba
 es:332 Encuentra
 it:332 Trova
 sk:332 H&lcaron;ada&tcaron;
+ro:332 G&abreve;se&scedil;te
 #zh:332 &#26597;&#25214;
 # "Hide stations" button label
 en:333 Hide
@@ -2952,6 +3008,7 @@ ca:339 Des de %s
 es:339 Desde %s
 it:339 Da %s
 sk:339 Od %s
+ro:339 De la %s
 #
 en:340 "  H %d%s, V %d%s"
 fr:340 "  H %d%s, V %d%s"
@@ -2988,6 +3045,7 @@ ca:343 @Graus
 es:343 @Grados
 it:343 @Gradi
 sk:343 @Stupne
+ro:343 @Grade
 # a degree sign...
 en:344 &deg;
 fr:344 &deg;
@@ -2997,6 +3055,7 @@ ca:344 &deg;
 es:344 &deg;
 it:344 &deg;
 sk:344 &deg;
+ro:344 &deg;
 # alternative angle units (400 grad = 360 degrees)
 # try to make this as short as possible...
 en:345 grad
@@ -3075,7 +3134,7 @@ ca:1003 Fitxer de missatges truncat?
 es:1003 Archivo de mensajes truncado?
 it:1003 File dei messaggi troncato?
 sk:1003 S&uacute;bor spr&aacute;v nekompletn&yacute;?
-#
+# same as message 1
 en:1004 Out of memory (couldn't find %lu bytes).
 fr:1004 Plus de m&eacute;moire (%lu octets n&eacute;cessaires, non disponibles).
 de:1004 Zuwenig Speicherplatz (konnte %lu Bytes nicht finden).

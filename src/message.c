@@ -426,7 +426,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x13d: v = '\xa5'; break;
 	    case 0x15a: v = '\xa6'; break;
 	    case 0x160: v = '\xa9'; break;
-	    case 0x15e: v = '\xaa'; break;
+	    case 0x15e: v = '\xaa'; break; /* Scedil */
 	    case 0x164: v = '\xab'; break;
 	    case 0x179: v = '\xac'; break;
 	    case 0x17d: v = '\xae'; break;
@@ -438,7 +438,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x15b: v = '\xb6'; break;
 	    case 0x2c7: v = '\xb7'; break;
 	    case 0x161: v = '\xb9'; break;
-	    case 0x15f: v = '\xba'; break;
+	    case 0x15f: v = '\xba'; break; /* scedil */
 	    case 0x165: v = '\xbb'; break;
 	    case 0x17a: v = '\xbc'; break;
 	    case 0x2dd: v = '\xbd'; break;
@@ -459,7 +459,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x158: v = '\xd8'; break;
 	    case 0x16e: v = '\xd9'; break;
 	    case 0x170: v = '\xdb'; break;
-	    case 0x162: v = '\xde'; break;
+	    case 0x162: v = '\xde'; break; /* &Tcedil; */
 	    case 0x155: v = '\xe0'; break;
 	    case 0x103: v = '\xe3'; break;
 	    case 0x13a: v = '\xe5'; break;
@@ -475,7 +475,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x159: v = '\xf8'; break;
 	    case 0x16f: v = '\xf9'; break;
 	    case 0x171: v = '\xfb'; break;
-	    case 0x163: v = '\xfe'; break;
+	    case 0x163: v = '\xfe'; break; /* tcedil */
 	    case 0x2d9: v = '\xff'; break;
 	 }
 	 if (v == 0) break;
@@ -572,12 +572,12 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x02d8: v = '\xa2'; break;
 	    case 0x0141: v = '\xa3'; break;
 	    case 0x0104: v = '\xa5'; break;
-	    case 0x015e: v = '\xaa'; break;
+	    case 0x015e: v = '\xaa'; break; /* Scedil */
 	    case 0x017b: v = '\xaf'; break;
 	    case 0x02db: v = '\xb2'; break;
 	    case 0x0142: v = '\xb3'; break;
 	    case 0x0105: v = '\xb9'; break;
-	    case 0x015f: v = '\xba'; break;
+	    case 0x015f: v = '\xba'; break; /* scedil */
 	    case 0x013d: v = '\xbc'; break;
 	    case 0x02dd: v = '\xbd'; break;
 	    case 0x013e: v = '\xbe'; break;
@@ -597,7 +597,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x0158: v = '\xd8'; break;
 	    case 0x016e: v = '\xd9'; break;
 	    case 0x0170: v = '\xdb'; break;
-	    case 0x0162: v = '\xde'; break;
+	    case 0x0162: v = '\xde'; break; /* &Tcedil; */
 	    case 0x0155: v = '\xe0'; break;
 	    case 0x0103: v = '\xe3'; break;
 	    case 0x013a: v = '\xe5'; break;
@@ -613,7 +613,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x0159: v = '\xf8'; break;
 	    case 0x016f: v = '\xf9'; break;
 	    case 0x0171: v = '\xfb'; break;
-	    case 0x0163: v = '\xfe'; break;
+	    case 0x0163: v = '\xfe'; break; /* tcedil */
 	    case 0x02d9: v = '\xff'; break;
 	 }
 	 if (v == 0) break;
@@ -762,6 +762,7 @@ add_unicode(int charset, unsigned char *p, int value)
     case 208 /* Ð */: case 222 /* Þ */:
       *p = 'T'; p[1] = 'H'; return 2;
     case 315: /* &Lacute; */
+    case 317: /* &Lcaron; */
       *p = 'L'; return 1;
     case 209 /* Ñ */:
       *p = 'N'; return 1;
@@ -770,7 +771,11 @@ add_unicode(int charset, unsigned char *p, int value)
     case 214 /* Ö */: /* &Ouml; */ case 0x152: /* &OElig; */
       *p = 'O'; p[1] = 'E'; return 2;
     case 352: /* &Scaron; */
+    case 0x15e: /* &Scedil; */
       *p = 'S'; return 1;
+    case 0x162: /* &Tcedil; */
+    case 0x164: /* &Tcaron; */
+      *p = 'T'; return 1;
     case 217 /* Ù */: case 218 /* Ú */: case 219 /* Û */:
       *p = 'U'; return 1;
     case 220 /* Ü */: /* &Uuml; */
@@ -782,6 +787,7 @@ add_unicode(int charset, unsigned char *p, int value)
     case 223 /* ß */:
       p[1] = *p = 's'; return 2;
     case 224 /* à */: case 225 /* á */: case 226 /* â */: case 227 /* ã */:
+    case 259: /* &abreve; */
       *p = 'a'; return 1;
     case 228 /* ä */: /* &auml; */ case 230 /* æ */:
       *p = 'a'; p[1] = 'e'; return 2;
@@ -797,14 +803,17 @@ add_unicode(int charset, unsigned char *p, int value)
     case 236 /* ì */: case 237 /* í */: case 238 /* î */: case 239 /* ï */:
       *p = 'i'; return 1;
     case 316 /* &lacute; */:
+    case 318 /* &lcaron; */:
       *p = 'l'; return 1;
     case 241 /* ñ */: case 328 /* &ncaron; */:
       *p = 'n'; return 1;
     case 345: /* &rcaron; */
       *p = 'r'; return 1;
     case 353: /* &scaron; */
+    case 0x15f: /* &scedil; */
       *p = 's'; return 1;
     case 357: /* &tcaron; */
+    case 0x163: /* &tcedil; */
       *p = 't'; return 1;
     case 240 /* ð */: case 254 /* þ */:
       *p = 't'; p[1] = 'h'; return 2;
@@ -1156,6 +1165,9 @@ macosx_got_lib:
 	       else
 		  msg_lang = "pt";
 	       break;
+	     case LANG_ROMANIAN:
+	       msg_lang = "ro";
+	       break;
 	     case LANG_SLOVAK:
 	       msg_lang = "sk";
 	       break;
@@ -1404,7 +1416,11 @@ macosx_got_lib:
 		     case 35: /* Bulgaria??? */
 		     case 36: /* Hungary (not supported by DR DOS 5.0) */
 		     case 38: /* Yugoslavia (not supported by DR DOS 5.0) -- obsolete */
+#endif
 		     case 40: /* Romania */
+			 msg_lang = "ro";
+			 break;
+#if 0
 		     case 45: /* Denmark */
 		     case 46: /* Sweden */
 		     case 47: /* Norway */
@@ -1450,7 +1466,7 @@ macosx_got_lib:
 		     case 370: /* Lithuania (reported as 372 due to a bug in MS-DOS COUNTRY.SYS) */
 		     case 371: /* Latvia (reported as 372 due to a bug in MS-DOS COUNTRY.SYS) */
 		     case 372: /* Estonia */
-		     case 373: /* Moldova */
+		     case 373: /* Moldova */ /* FIXME: similar to Romanian? */
 		     case 375: /* ??? (MS-DOS 7.10 / Windows98) */
 		     case 380: /* Ukraine */
 		     case 381: /* Serbia / Montenegro */
