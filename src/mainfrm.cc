@@ -274,7 +274,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     CreateToolBar();
     CreateSidePanel();
 
-#ifdef __X__
+#ifdef __X__ // wxMotif or wxX11
     int x;
     int y;
     GetSize(&x, &y);
@@ -1060,17 +1060,9 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	m_history.Save(*b);
 	b->Flush();
 
-	if (delay) {
-	    m_Gfx->InitialiseOnNextResize();
-	}
-	else {
-	    m_Gfx->Initialise();
-	}
-
-	m_Panel->Show(true);
 	int x;
 	int y;
-	GetSize(&x, &y);
+	GetClientSize(&x, &y);
 	if (x < 600)
 	    x /= 3;
 	else if (x < 1000)
@@ -1079,8 +1071,15 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	    x /= 5;
 
 	m_Splitter->SplitVertically(m_Panel, m_Gfx, x);
+	m_SashPosition = x; // Save width of panel.
 
-	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
+	if (delay) {
+	    m_Gfx->InitialiseOnNextResize();
+	} else {
+	    m_Gfx->Initialise();
+	}
+	m_Panel->Show(true);
+
 	m_Gfx->SetFocus();
     }
 }

@@ -1800,12 +1800,14 @@ void GfxCore::OnSize(wxSizeEvent& event)
 
     wxSize size = event.GetSize();
 
+    if (size.GetWidth() < 0 || size.GetHeight() < 0) {
+	// Before things are fully initialised, we sometimes get a bogus
+	// resize message...
+	return;
+    }
+
     m_XSize = size.GetWidth();
     m_YSize = size.GetHeight();
-    if (m_XSize < 0 || m_YSize < 0) { //-- FIXME
-	m_XSize = 640;
-	m_YSize = 480;
-    }
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
 
