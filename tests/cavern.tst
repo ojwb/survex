@@ -29,8 +29,7 @@ export SURVEXHOME
  stnsurvey1 stnsurvey2 stnsurvey3\
  tapelessthandepth longname chinabug chinabug2\
  multinormal multinormignall multidiving multicartesian multinosurv\
- multinormalbad multibug\
- cmd_title cmd_titlebad"}}
+ multinormalbad multibug cmd_title cmd_titlebad cmd_dummy"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -113,6 +112,7 @@ for file in $TESTS ; do
   multibug) pos=no ; warn=0 ;;
   cmd_title) pos=no ; warn=0 ;;
   cmd_titlebad) pos=fail ; error=4 ;;
+  cmd_dummy) pos=no ; warn=0 ;;
   *) file='' ;;
   esac
 

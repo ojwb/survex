@@ -171,7 +171,9 @@ From: Olly
 test diving data with compass omitted (plumbed)
 
 Tests these commands:
- DATA FLAGS INFER LRUD (deprecated) SD SET
+ DATA FLAGS INFER SD SET
+
+deprecate LRUD?
 
 tests for direction - should direction work in non-interleaved data?
 

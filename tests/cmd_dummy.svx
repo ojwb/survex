@@ -1,0 +1,10 @@
+*begin it_all
+*copyright 2001 "Space Oddity Speleos"
+*date 07/02/1971
+*instrument light "Jamie's magic torch"
+*lrud stn 1 2 3 4
+*team Hannibal "Face Man" B.A. "Murdoch"
+
+*fix no_warnings_please reference 0 0 0
+
+*end it_all
