@@ -97,8 +97,6 @@ float y_stretch = -1.0f;  /* factor to multiply y by to correct aspect ratio */
 float y_stretch = -0.3f;  /* test that aspect ratio works */
 #endif
 
-const char *pthMe;            /* path executable was run from */
-
 #if 0
 static int Stored_views;     /* number of defined stores */
 static view *pView_store;     /* pointer to array of view stores */
@@ -167,7 +165,7 @@ main(int argc, char **argv)
 {
    enum { LEGS, STNS, LABS, DONE } item = LEGS;
 
-   pthMe = ReadErrorFile(argv[0]);
+   msg_init(argv[0]);
 
    puts("Survex cave rotator v"VERSION"\n  "COPYRIGHT_MSG);
 
@@ -406,7 +404,7 @@ demo_step(void)
    struct {
    };
 } */
-int dt;
+static int dt;
 
 bool
 process_key(void) /* and mouse! */
@@ -463,7 +461,7 @@ process_key(void) /* and mouse! */
       Accel = 1.0f;
    }
    nStep *= tsc;
-   ZoomFactor = pow(ZoomFactor, tsc);
+   ZoomFactor = (float)pow(ZoomFactor, tsc);
    Accel *= tsc;
 
    if (fRevSense) nStep = -nStep;
@@ -512,9 +510,9 @@ process_key(void) /* and mouse! */
 		  elev = 90.0f;
 	       else {
 /*fprintf(stderr, "P:tsc = %f\n", tsc);fflush(stderr);*/
-		  autotilt = ceil(90.0 / ceil(9.0 / tsc));
+		  autotilt = (int)ceil(90.0 / ceil(9.0 / tsc));
 /*fprintf(stderr,"P:autotilt = %d\n",autotilt);fflush(stderr);*/
-		  if (autotilt > 16.0f) {
+		  if (autotilt > 16) {
 		     autotilt = 0;
 		     elev = 90.0f;
 		  }
@@ -529,9 +527,9 @@ process_key(void) /* and mouse! */
 		  elev = 0.0f;
 	       else {
 /*fprintf(stderr,"L:tsc = %f\n",tsc);fflush(stderr);*/
-		  autotilt = ceil(90.0 / ceil(9.0 / tsc));
+		  autotilt = (int)ceil(90.0 / ceil(9.0 / tsc));
 /*fprintf(stderr,"L:autotilt = %d\n",autotilt);fflush(stderr);*/
-		  if (autotilt > 16.0f) {
+		  if (autotilt > 16) {
 		     elev = 0.0f;
 		     autotilt = 0;
 		  } else if (elev > 0.0f)
