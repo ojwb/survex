@@ -656,7 +656,7 @@ void MainFrm::FillTree()
  	        next_dot = prefix.Find('.');
 
 		wxString bit = next_dot == -1 ? prefix : prefix.Left(next_dot);
-	        assert(bit != "");
+		assert(bit != "");
 
 		// Add the current tree ID to the stack.
 	        previous_ids.push(current_id);
@@ -671,51 +671,37 @@ void MainFrm::FillTree()
 	// Otherwise, we must have moved up, and possibly then down again.
 	else {
 	    int count = 0;
-	    // Check for ascent only
-	    if (prefix.Length() < current_prefix.Length() && current_prefix.StartsWith(prefix) &&
-		(current_prefix[prefix.Length()] == '.' || prefix == "")) {
-
-		// Extract the part of the current prefix after the bit (if any) which has matched.
-		// This gives the prefixes to ascend over.
-		wxString prefixes_ascended = current_prefix.Mid(prefix.Length() + 1);
-
-		// Count the number of prefixes to ascend over.
-		int num_prefixes = prefixes_ascended.Freq('.') + 1;
-
-		// Reverse up over these prefixes.
-		for (int i = 1; i <= num_prefixes; i++) {
-		   current_id = previous_ids.top();
-		   previous_ids.pop();
-		}
-		current_prefix = prefix;
-	    } else {
+	    bool ascent_only = (prefix.Length() < current_prefix.Length() && current_prefix.StartsWith(prefix) &&
+				(current_prefix[prefix.Length()] == '.' || prefix == ""));
+	    if (!ascent_only) {
 		// Find out how much of the current prefix and the new prefix are the same.
 		// Note that we require a match of a whole number of parts between dots!
 		int pos = 0;
 		while (prefix[pos] == current_prefix[pos]) {
-		    if (prefix[pos] == '.') {
-			count = pos + 1;
-		    }
+		    if (prefix[pos] == '.') count = pos + 1;
 		    pos++;
 		}
+	    } else {
+	        count = prefix.Length() + 1;
+	    }
 
-		// Extract the part of the current prefix after the bit (if any) which has matched.
-		// This gives the prefixes to ascend over.
-		wxString prefixes_ascended = current_prefix.Mid(count);
+	    // Extract the part of the current prefix after the bit (if any) which has matched.
+	    // This gives the prefixes to ascend over.
+	    wxString prefixes_ascended = current_prefix.Mid(count);
 
-		// Count the number of prefixes to ascend over.
-		int num_prefixes = prefixes_ascended.Freq('.') + 1;
+	    // Count the number of prefixes to ascend over.
+	    int num_prefixes = prefixes_ascended.Freq('.') + 1;
 
-		// Reverse up over these prefixes.
-		for (int i = 1; i <= num_prefixes; i++) {
-		    current_id = previous_ids.top();
-		    previous_ids.pop();
-		}
+	    // Reverse up over these prefixes.
+	    for (int i = 1; i <= num_prefixes; i++) {
+	        current_id = previous_ids.top();
+	        previous_ids.pop();
+	    }
 
-		// Now extract the bit of new prefix.
-		wxString new_prefix = prefix.Mid(count);
-		current_prefix = prefix;
-
+	    if (!ascent_only) {
+	        // Now extract the bit of new prefix.
+	        wxString new_prefix = prefix.Mid(count);
+	       
 		// Add branches for this new part.
 		int next_dot;
 		while (1) {
@@ -734,8 +720,10 @@ void MainFrm::FillTree()
 		    if (next_dot == -1) break;
 
 		    new_prefix = new_prefix.Mid(next_dot + 1);
-	        }
+		}
 	    }
+
+	    current_prefix = prefix;
 	}
 
 	// Now add the leaf
