@@ -20,7 +20,7 @@
 #ifndef IMG_H
 # define IMG_H
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -133,7 +133,7 @@ img_errcode img_error(void);
 int img_error(void);
 # endif
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 }
 #endif
 

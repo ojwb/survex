@@ -20,6 +20,10 @@
 #ifndef MESSAGE_H /* only include once */
 #define MESSAGE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdarg.h>
 
 #include "useful.h"
@@ -66,5 +70,9 @@ void error_in_file(const char *fnm, int line, int en, ...);
 void fatalerror_in_file(const char *fnm, int line, int en, ...);
 
 int select_charset(int charset_code);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MESSAGE_H */
