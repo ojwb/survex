@@ -138,8 +138,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_DoneFirstShow = false;
     m_PlotData = NULL;
     m_RedrawOffscreen = false;
-    m_Params.display_shift.x = 0;
-    m_Params.display_shift.y = 0;
     m_Crosses = false;
     m_Legs = true;
     m_Names = false;
@@ -818,8 +816,8 @@ static int count = 0;
 
 		    int x = int(X * m_00 + Y * m_01 + Z * m_02);
 		    int y = -int(X * m_20 + Y * m_21 + Z * m_22);
-//		    x += m_XCentre + m_Params.display_shift.x;
-//		    y += m_YCentre + m_Params.display_shift.y;
+//		    x += m_XCentre;
+//		    y += m_YCentre;
 		    wxPoint *pt = tmp; pt->x = x; pt->y = y; pt++;
 		    for (int n = *num_segs; n > 1; --n) {
 			++vertices;
@@ -829,14 +827,14 @@ static int count = 0;
 
 			int x2 = int(X * m_00 + Y * m_01 + Z * m_02);
 			int y2 = -int(X * m_20 + Y * m_21 + Z * m_22);
-//			x2 += m_XCentre + m_Params.display_shift.x;
-//			y2 += m_YCentre + m_Params.display_shift.y;
+//			x2 += m_XCentre;
+//			y2 += m_YCentre;
 			pt->x = x2; pt->y = y2; pt++;
 //			m_DrawDC.DrawLine(x,y,x2,y2);
 //			x = x2;
 //			y = y2;
 		    }
-		    m_DrawDC.DrawLines(pt - tmp, tmp, m_XCentre + m_Params.display_shift.x, m_YCentre + m_Params.display_shift.y);
+		    m_DrawDC.DrawLines(pt - tmp, tmp, m_XCentre, m_YCentre);
 		    ++vertices;
 //		    vertices += *num_segs++;
 		    ++num_segs;
@@ -877,8 +875,7 @@ static int count = 0;
 		wxPoint* vertices = m_PlotData[band].surface_vertices;
 		for (int polyline = 0; polyline < m_SurfacePolylines[band]; polyline++) {
 		    m_DrawDC.DrawLines(*num_segs, vertices,
-			m_XCentre + m_Params.display_shift.x,
-			m_YCentre + m_Params.display_shift.y);
+			m_XCentre, m_YCentre);
 		    vertices += *num_segs++;
 		}
 		if (m_SurfaceDashed) {
@@ -900,9 +897,9 @@ static int count = 0;
 		Double yp = pt->y + m_Params.translation.y;
 		Double zp = pt->z + m_Params.translation.z;
 		int x = int(xp * m_00 + yp * m_01 + zp * m_02);
-		x += m_XCentre + m_Params.display_shift.x;
+		x += m_XCentre;
 		int y = -int(xp * m_20 + yp * m_21 + zp * m_22);
-		y += m_YCentre + m_Params.display_shift.y;
+		y += m_YCentre;
 		m_DrawDC.DrawLines(2, cross1, x, y);
 		m_DrawDC.DrawLines(2, cross2, x, y);
 		++pt;
@@ -1152,10 +1149,8 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	    Double xp = m_here.x + m_Params.translation.x;
 	    Double yp = m_here.y + m_Params.translation.y;
 	    Double zp = m_here.z + m_Params.translation.z;
-	    here_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale)
-		+ m_Params.display_shift.x;
-	    here_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale)
-		+ m_Params.display_shift.y;
+	    here_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale);
+	    here_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale);
 	    dc.DrawEllipse(here_x + m_XCentre - HIGHLIGHTED_PT_SIZE * 2,
 			   here_y + m_YCentre - HIGHLIGHTED_PT_SIZE * 2,
 			   HIGHLIGHTED_PT_SIZE * 4,
@@ -1167,10 +1162,8 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	    Double xp = m_there.x + m_Params.translation.x;
 	    Double yp = m_there.y + m_Params.translation.y;
 	    Double zp = m_there.z + m_Params.translation.z;
-	    long there_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale)
-		+ m_Params.display_shift.x;
-	    long there_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale)
-		+ m_Params.display_shift.y;
+	    long there_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale);
+	    long there_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale);
 	    dc.DrawEllipse(there_x + m_XCentre - HIGHLIGHTED_PT_SIZE,
 		    	   there_y + m_YCentre - HIGHLIGHTED_PT_SIZE,
 			   HIGHLIGHTED_PT_SIZE * 2,
@@ -1192,7 +1185,7 @@ Double GfxCore::GridXToScreen(Double x, Double y, Double z)
     y += m_Params.translation.y;
     z += m_Params.translation.z;
 
-    return (XToScreen(x, y, z) * m_Params.scale) + m_Params.display_shift.x + m_XSize/2;
+    return (XToScreen(x, y, z) * m_Params.scale) + m_XSize/2;
 }
 
 Double GfxCore::GridYToScreen(Double x, Double y, Double z)
@@ -1201,7 +1194,7 @@ Double GfxCore::GridYToScreen(Double x, Double y, Double z)
     y += m_Params.translation.y;
     z += m_Params.translation.z;
 
-    return m_YSize/2 - ((ZToScreen(x, y, z) * m_Params.scale) + m_Params.display_shift.y);
+    return m_YSize/2 - ((ZToScreen(x, y, z) * m_Params.scale));
 }
 
 void GfxCore::DrawGrid()
@@ -2047,18 +2040,23 @@ void GfxCore::HandleTilt(wxPoint point)
 void GfxCore::HandleTranslate(wxPoint point)
 {
     // Handle a mouse movement during translation mode.
-
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
+    
+    if (m_ReverseControls) {
+	dx = -dx;
+	dy = -dy;
+    }
 
-    // Find out how far the mouse motion takes us in cave coords.
+    TranslateCave(dx, dy);
+    m_DragStart = point;
+}
+
+void GfxCore::TranslateCave(int dx, int dy)
+{
+    // Find out how far the screen movement takes us in cave coords.
     Double x = Double(dx / m_Params.scale);
     Double z = Double(-dy / m_Params.scale);
-
-    if (m_ReverseControls) {
-	x = -x;
-	z = -z;
-    }
 
 #ifdef AVENGL
     x *= (m_MaxExtent / m_XSize);
@@ -2086,8 +2084,6 @@ void GfxCore::HandleTranslate(wxPoint point)
     m_RedrawOffscreen = true;
 #endif
     Refresh(false);
-
-    m_DragStart = point;
 }
 
 void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
@@ -2152,8 +2148,8 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
     // Update coordinate display if in plan view, or altitude if in elevation
     // view.
     if (m_TiltAngle == M_PI_2) {
-	int x = event.GetX() - m_XCentre - m_Params.display_shift.x;
-	int y = -(event.GetY() - m_YCentre - m_Params.display_shift.y);
+	int x = event.GetX() - m_XCentre;
+	int y = -(event.GetY() - m_YCentre);
 	Matrix4 inverse_rotation = m_Params.rotation.asInverseMatrix();
 
 	//--TODO: GL version
@@ -2163,7 +2159,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	m_Parent->SetCoords(cx / m_Params.scale - m_Params.translation.x + m_Parent->GetXOffset(),
 			    cy / m_Params.scale - m_Params.translation.y + m_Parent->GetYOffset());
     } else if (m_TiltAngle == 0.0) {
-	int z = -(event.GetY() - m_YCentre - m_Params.display_shift.y);
+	int z = -(event.GetY() - m_YCentre);
 	m_Parent->SetAltitude(z / m_Params.scale - m_Params.translation.z + m_Parent->GetZOffset());
     } else {
 	m_Parent->ClearCoords();
@@ -2540,9 +2536,6 @@ void GfxCore::DefaultParameters()
     m_Params.translation.y = 0.0;
     m_Params.translation.z = 0.0;
 
-    m_Params.display_shift.x = 0;
-    m_Params.display_shift.y = 0;
-
     m_Surface = false;
     m_SurfaceDepth = false;
     m_SurfaceDashed = true;
@@ -2647,9 +2640,7 @@ void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::OnShiftDisplayDown(bool accel)
 {
-    m_Params.display_shift.y += accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    TranslateCave(0, accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT);
 }
 
 void GfxCore::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
@@ -2659,9 +2650,7 @@ void GfxCore::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::OnShiftDisplayLeft(bool accel)
 {
-    m_Params.display_shift.x -= accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    TranslateCave(accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT, 0);
 }
 
 void GfxCore::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
@@ -2671,9 +2660,7 @@ void GfxCore::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::OnShiftDisplayRight(bool accel)
 {
-    m_Params.display_shift.x += accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    TranslateCave(accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT, 0);
 }
 
 void GfxCore::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
@@ -2683,9 +2670,7 @@ void GfxCore::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::OnShiftDisplayUp(bool accel)
 {
-    m_Params.display_shift.y -= accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT;
-    m_RedrawOffscreen = true;
-    Refresh(false);
+    TranslateCave(0, accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT);
 }
 
 void GfxCore::OnShiftDisplayUpUpdate(wxUpdateUIEvent& cmd)
@@ -2780,11 +2765,6 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 					     m_DoingPresStep);
 	m_Params.translation.z = INTERPOLATE(m_PresStep.from.translation.z, m_PresStep.to.translation.z,
 					     m_DoingPresStep);
-
-	m_Params.display_shift.x = (int) INTERPOLATE(m_PresStep.from.display_shift.x, m_PresStep.to.display_shift.x,
-						     m_DoingPresStep);
-	m_Params.display_shift.y = (int) INTERPOLATE(m_PresStep.from.display_shift.y, m_PresStep.to.display_shift.y,
-						     m_DoingPresStep);
 
 	Double c = dot(m_PresStep.from.rotation.getVector(), m_PresStep.to.rotation.getVector()) +
 		       m_PresStep.from.rotation.getScalar() * m_PresStep.to.rotation.getScalar();
@@ -3072,7 +3052,6 @@ void GfxCore::SetModellingTransformation()
 
     // Remember: last line in this sequence of matrix multiplications is the
     // first one to be applied during the modelview transform!
-    glTranslated(m_Params.display_shift.x, -m_Params.display_shift.y, 0.0);
     glScaled(m_Params.scale, m_Params.scale, m_Params.scale);
     m_Params.rotation.CopyToOpenGL();
     glTranslated(m_Params.translation.x, m_Params.translation.y, m_Params.translation.z);
@@ -3141,9 +3120,6 @@ void GfxCore::RecordPres(FILE* fp)
     d.translation.y = m_Params.translation.y;
     d.translation.z = m_Params.translation.z;
 
-    d.display_shift.x = m_Params.display_shift.x;
-    d.display_shift.y = m_Params.display_shift.y;
-
     d.scale = m_Params.scale;
 
     d.pan_angle = m_PanAngle;
@@ -3181,16 +3157,12 @@ void GfxCore::PresGoto(PresData& d, Quaternion& q)
     m_PresStep.from.translation.x = m_Params.translation.x;
     m_PresStep.from.translation.y = m_Params.translation.y;
     m_PresStep.from.translation.z = m_Params.translation.z;
-    m_PresStep.from.display_shift.x = m_Params.display_shift.x;
-    m_PresStep.from.display_shift.y = m_Params.display_shift.y;
     m_PresStep.from.scale = m_Params.scale;
 
     m_PresStep.to.rotation = q;
     m_PresStep.to.translation.x = d.translation.x;
     m_PresStep.to.translation.y = d.translation.y;
     m_PresStep.to.translation.z = d.translation.z;
-    m_PresStep.to.display_shift.x = d.display_shift.x;
-    m_PresStep.to.display_shift.y = d.display_shift.y;
     m_PresStep.to.scale = d.scale;
     m_PresStep.to.pan_angle = d.pan_angle;
     m_PresStep.to.tilt_angle = d.tilt_angle;
@@ -3321,8 +3293,8 @@ void GfxCore::CreateHitTestGrid()
 	y += m_Params.translation.y;
 	z += m_Params.translation.z;
 
-	int cx = (int) (XToScreen(x, y, z) * m_Params.scale) + m_Params.display_shift.x;
-	int cy = -(int) (ZToScreen(x, y, z) * m_Params.scale) + m_Params.display_shift.y;
+	int cx = (int) (XToScreen(x, y, z) * m_Params.scale);
+	int cy = -(int) (ZToScreen(x, y, z) * m_Params.scale);
 
 	int cx_real = cx + m_XCentre;
 	int cy_real = cy + m_YCentre;

@@ -93,9 +93,6 @@ class GfxCore : public wxWindow {
 	    Double y;
 	    Double z;
 	} translation;
-	struct {
-	    int x, y;
-	} display_shift;
     } m_Params;
 
 #ifdef AVENPRES
@@ -103,9 +100,6 @@ class GfxCore : public wxWindow {
 	struct {
 	    Double x, y, z;
 	} translation;
-	struct {
-	    int x, y;
-	} display_shift;
 	Double scale;
 	Double pan_angle;
 	Double tilt_angle;
@@ -270,9 +264,6 @@ class GfxCore : public wxWindow {
 	    Double y;
 	    Double z;
 	} translation;
-	struct {
-	    int x, y;
-	} display_shift;
     };
 
     struct {
@@ -374,6 +365,7 @@ class GfxCore : public wxWindow {
     void HandleTilt(wxPoint);
     void HandleTranslate(wxPoint);
 
+    void TranslateCave(int dx, int dy);
     void TiltCave(Double tilt_angle);
     void TurnCave(Double angle);
     void TurnCaveTo(Double angle);
