@@ -50,10 +50,14 @@
 1995.10.11 fettled layout
 1997.08.22 added covariances
 1998.03.21 fixed up to compile cleanly on Linux
+1998.04.28 invert_var now external and returns 0 if matrix is singular
+1998.04.29 added subvv
 */
 
+#include "debug.h"
 #include "survex.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "netbits.h"
 
 /* Create (uses osmalloc) a forward leg containing the data in leg, or
@@ -64,29 +68,29 @@ extern linkfor *copy_link( linkfor *leg ) {
    int d;
    legOut=osnew(linkfor);
    if (data_here(leg)) {
-      for(d=2;d>=0;d--)
+      for (d=2;d>=0;d--)
          legOut->d[d] = leg->d[d];
    } else {
       leg=leg->l.to->leg[reverse_leg(leg)];
-      for(d=2;d>=0;d--)
+      for (d=2;d>=0;d--)
          legOut->d[d] = -leg->d[d];
    }
-#ifndef NO_COVARIANCES
 #if 1
+# ifndef NO_COVARIANCES
      {
 	int i,j;
 	for ( i = 0; i < 3 ; i++ ) {
 	   for ( j = 0; j < 3 ; j++ ) {
 	      legOut->v[i][j] = leg->v[i][j];
 	   }
-	}	
+	}
      }
+# else
+   for (d=2;d>=0;d--)
+      legOut->v[d] = leg->v[d];
+# endif
 #else
    memcpy( legOut->v, leg->v, sizeof (var));
-#endif
-#else
-   for(d=2;d>=0;d--)
-      legOut->v[d] = leg->v[d];
 #endif
    return legOut;
 }
@@ -111,10 +115,17 @@ extern linkfor *addto_link( linkfor *leg, linkfor *leg2 ) {
  */
 void addleg( node *fr, node *to,
              real dx, real dy, real dz,
-             real vx, real vy, real vz,
-	     real cyz, real czx, real cxy) {
+             real vx, real vy, real vz
+#ifndef NO_COVARIANCES
+	     , real cyz, real czx, real cxy
+#endif
+	    ) {
    cLegs++; /* increment count (first as compiler may do tail recursion) */
-   addfakeleg(fr,to,dx,dy,dz,vx,vy,vz,cyz,czx,cxy);
+   addfakeleg(fr,to,dx,dy,dz,vx,vy,vz
+#ifndef NO_COVARIANCES
+	      ,cyz,czx,cxy
+#endif
+	      );
 }
 
 /* Add a 'fake' leg (not counted) between existing stations *fr and *to
@@ -123,8 +134,11 @@ void addleg( node *fr, node *to,
  */
 void addfakeleg( node *fr, node *to,
 		 real dx, real dy, real dz,
-		 real vx, real vy, real vz,
-		 real cyz, real czx, real cxy) {
+		 real vx, real vy, real vz
+#ifndef NO_COVARIANCES
+		 , real cyz, real czx, real cxy
+#endif
+		) {
    uchar i,j;
    linkfor *leg, *leg2;
 
@@ -168,9 +182,9 @@ char freeleg(node **stnptr) {
    node *stn, *oldstn;
    linkfor *leg, *leg2;
    int i, j;
-   
+
    stn=*stnptr;
-   
+
    if (stn->leg[0]==NULL)
       return 0; /* leg[0] unused */
    if (stn->leg[1]==NULL)
@@ -193,7 +207,7 @@ char freeleg(node **stnptr) {
 
    leg->l.to=stn;
    leg->d[0]=leg->d[1]=leg->d[2]=(real)0.0;
-   
+
 #ifndef NO_COVARIANCES
    for ( i = 0; i < 3 ; i++ ) {
       for ( j = 0; j < 3 ; j++ ) {
@@ -275,8 +289,16 @@ extern char *sprint_prefix( prefix *ptr ) {
    return sz;
 }
 
+#ifndef NO_COVARIANCES
+static void print_var( const var *a ) {
+   printf( "/ %4.2f, %4.2f, %4.2f \\\n", (*a)[0][0], (*a)[0][1], (*a)[0][2] );
+   printf( "| %4.2f, %4.2f, %4.2f |\n", (*a)[1][0], (*a)[1][1], (*a)[1][2] );
+   printf( "\\ %4.2f, %4.2f, %4.2f /\n", (*a)[2][0], (*a)[2][1], (*a)[2][2] );
+}
+#endif
+		 
 /* r = ab ; r,a,b are variance matrices */
-void mulvv( var *r, var *a, var *b ) {
+void mulvv( var *r, const var *a, const var *b ) {
 #ifdef NO_COVARIANCES
    /* variance-only version */
    (*r)[0] = (*a)[0] * (*b)[0];
@@ -342,31 +364,80 @@ void addvv( var *r, var *a, var *b ) {
    (*r)[2] = (*a)[2] + (*b)[2];
 #else
    int i,j;
-   
+
    for ( i = 0; i < 3; i++ )
      for ( j = 0; j < 3; j++ )
        (*r)[i][j] = (*a)[i][j] + (*b)[i][j];
 #endif
 }
 
+/* r = a - b ; r,a,b variance matrices */
+void subvv( var *r, var *a, var *b ) {
+#ifdef NO_COVARIANCES
+   /* variance-only version */
+   (*r)[0] = (*a)[0] - (*b)[0];
+   (*r)[1] = (*a)[1] - (*b)[1];
+   (*r)[2] = (*a)[2] - (*b)[2];
+#else
+   int i,j;
+
+   for ( i = 0; i < 3; i++ )
+     for ( j = 0; j < 3; j++ )
+       (*r)[i][j] = (*a)[i][j] - (*b)[i][j];
+#endif
+}
+
 #ifndef NO_COVARIANCES
-static void invert_var( var *inv, const var *v ) {
+/* inv = v^-1 ; inv,v variance matrices */
+extern int invert_var( var *inv, const var *v ) {
    int i,j;
    real det = 0;
 
    for ( i = 0; i < 3; i++ ) {
-      det += (*v)[i][0] * (*v)[(i+1)%3][1] * (*v)[(i+2)%3][2];
+      /* !HACK! this is just wrong... */
+/*      det += (*v)[i][0] * (*v)[(i+1)%3][1] * (*v)[(i+2)%3][2];*/
+      det += (*v)[i][0] * ( (*v)[(i+1)%3][1] * (*v)[(i+2)%3][2]
+			   - (*v)[(i+1)%3][2] * (*v)[(i+2)%3][1] );
+/*      if (i != 1) det += part; else det -= part; */
    }
-   
+
+   if (fabs(det) < 1E-10) {
+      printf("det=%f\n",det);
+      return 0; /* matrix is singular !HACK! use epsilon */
+   }
+
    det = 1/det;
 
-#define B(I,J) ((*v)[(I)%3][(J)%3])
+#define B(I,J) ((*v)[(J)%3][(I)%3])
    for ( i = 0; i < 3; i++ ) {
       for ( j = 0; j < 3; j++ ) {
          (*inv)[i][j] = det * (B(i+1,j+1)*B(i+2,j+2) - B(i+2,j+1)*B(i+1,j+2));
+/*         if ((i+j) % 2) (*inv)[i][j] = -((*inv)[i][j]);*/
       }
    }
 #undef B
+   
+     {
+	var p;
+	real d = 0;
+	mulvv( &p, v, inv );
+	for ( i = 0; i < 3; i++ ) {
+	   for ( j = 0; j < 3; j++ ) {
+	      d += fabs(p[i][j] - (real)(i==j));
+	   }
+	}
+	if (d > 1E-5) {
+	   printf("original * inverse=\n");
+	   print_var( v );
+	   printf("*\n");
+	   print_var( inv );
+	   printf("=\n");
+	   print_var( &p );
+	   BUG("matrix didn't invert");
+	}
+     }
+
+   return 1;
 }
 #endif
 
@@ -379,7 +450,10 @@ void divdv( d *r, d *a, var *b ) {
    (*r)[2] = (*a)[2] / (*b)[2];
 #else
    var b_inv;
-   invert_var( &b_inv, b );
+   if (!invert_var( &b_inv, b )) {
+      print_var( b );
+      BUG("covariance matrix is singular");
+   }
    mulvd( r, &b_inv, a );
 #endif
 }
@@ -393,8 +467,11 @@ void divvv( var *r, var *a, var *b ) {
    (*r)[2] = (*a)[2] / (*b)[2];
 #else
    var b_inv;
-   invert_var( &b_inv, b );
-   mulvv( r, a, &b_inv ); 
+   if (!invert_var( &b_inv, b )) {
+      print_var( b );
+      BUG("covariance matrix is singular");
+   }
+   mulvv( r, a, &b_inv );
 #endif
 }
 
@@ -404,11 +481,11 @@ bool fZero( var *v ) {
    return ( (*v)[0]==0.0 && (*v)[1]==0.0 && (*v)[2]==0.0 );
 #else
    int i,j;
-   
+
    for ( i = 0; i < 3; i++ )
       for ( j = 0; j < 3; j++ )
 	 if ((*v)[i][j] != 0.0) return fFalse;
 
-   return fTrue;	 
+   return fTrue;
 #endif
 }
