@@ -1,10 +1,12 @@
+Changes in 1.0.19:
+
 * cavern: you can now process Compass format survey data (.DAT and .MAK files) -
   these can even be linked into a Survex dataset with "*include fulford.dat" or
   "*include lech.mak" to allow processing of mixed datasets.
 
-* cavern: major speedup (up to 60%) when reading in surveys with a lot of
-  stations in the same survey hierarchy level (which is how Compass files
-  are handled).
+* cavern: major speedup (up to 60%) when reading in survey data containing
+  a lot of stations in the same survey hierarchy level (which is how Compass
+  files are handled).
 
 * cavern: reduced memory usage in code which reads a survey station name.
 
@@ -15,7 +17,8 @@
 * cavern: avoid unnecessary work when --percentage isn't specified.
 
 * cavern: Writing "*:" at the start of a .svx file would crash cavern - fixed
-  and added test case.
+  and added test case.  This is an error anyway, but it shouldn't cause a
+  crash.
 
 * Don't distribute unused toolbar icons.
 
