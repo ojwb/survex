@@ -1,0 +1,5 @@
+# watch control file
+# Run "uscan" to check for upstream updates and more.
+# Site		Directory		Pattern			Version	Script
+# FIXME: can directory be a regexp?  "man uscan" doesn't say...
+http://www.survex.com	/software/\\d+\\.[\\d.]+/	survex-(.*)\\.tar\\.gz	debian	uupdate
