@@ -61,6 +61,8 @@ class svxPrintout : public wxPrintout {
     wxColour colour_cross,colour_surface_leg;
 
     long x_t, y_t;
+    double font_scaling;
+    wxFont * current_font;
 
     int check_intersection(long x_p, long y_p);
     void draw_info_box();
@@ -842,20 +844,19 @@ svxPrintout::OnPrintPage(int pageNum) {
 	wxSize sz = pdc->GetSize();
 	xpPageWidth = sz.GetWidth();
 	ypPageDepth = sz.GetHeight();
-	double font_scaling = (double)xpPageWidth / w;
+	font_scaling = (double)xpPageWidth / w;
 	int W, H;
 	GetPPIPrinter(&W, &H);
 	font_scaling *= H;
 	GetPPIScreen(&W, &H);
 	font_scaling /= H;
-	font_labels->SetPointSize((int)(fontsize_labels * font_scaling));
-	font_default->SetPointSize((int)(fontsize * font_scaling));
     } else {
-	font_labels->SetPointSize(fontsize_labels);
-	font_default->SetPointSize(fontsize);
 	xpPageWidth = w;
 	ypPageDepth = h;
+	font_scaling = 1.0;
     }
+    font_labels->SetPointSize(fontsize_labels);
+    font_default->SetPointSize(fontsize);
     int PaperWidth, PaperDepth;
     GetPageSizeMM(&PaperWidth, &PaperDepth);
     m_layout->scX = (double)xpPageWidth / PaperWidth;
@@ -1171,10 +1172,10 @@ svxPrintout::SetFont(int fontcode)
 {
     switch (fontcode) {
 	case PR_FONT_DEFAULT:
-	    pdc->SetFont(*font_default);
+	    current_font = font_default;
 	    break;
 	case PR_FONT_LABELS:
-	    pdc->SetFont(*font_labels);
+	    current_font = font_labels;
 	    break;
 	default:
 	    BUG("unknown font code");
@@ -1212,10 +1213,12 @@ svxPrintout::SetColour(int colourcode)
 void
 svxPrintout::WriteString(const char *s)
 {
+    pdc->SetUserScale(font_scaling, font_scaling);
+    pdc->SetFont(*current_font);
     int w,h;
     pdc->GetTextExtent("My", &w, &h);
     if (cur_pass != -1) {
-	pdc->DrawText(s, x_t, y_t - h);
+	pdc->DrawText(s, x_t / font_scaling, y_t / font_scaling - h);
     } else {
 	pdc->GetTextExtent(s, &w, &h);
 	if ((y_t + h > 0 && y_t - h < clip.y_max - clip.y_min) ||
@@ -1223,6 +1226,7 @@ svxPrintout::WriteString(const char *s)
 	    fBlankPage = fFalse;
 	}
     }
+    pdc->SetUserScale(1.0, 1.0);
 }
 
 void
@@ -1257,6 +1261,7 @@ svxPrintout::Pre()
 {
     font_labels = new wxFont(fontsize_labels,wxDEFAULT,wxNORMAL,wxNORMAL,false,fontname_labels,wxFONTENCODING_ISO8859_1);
     font_default = new wxFont(fontsize,wxDEFAULT,wxNORMAL,wxNORMAL,false,fontname,wxFONTENCODING_ISO8859_1);
+    current_font = font_default;
     pen_leg = new wxPen(colour_leg,0,wxSOLID);
     pen_surface_leg = new wxPen(colour_surface_leg,0,wxSOLID);
     pen_cross = new wxPen(colour_cross,0,wxSOLID);
