@@ -1930,8 +1930,8 @@ it:290 @Informazioni su...
 #
 # TRANSLATE en-us fr de pt pt-br ca es it
 en:291 Sur@face Survey Legs##Ctrl+F
-en:292 Depth Colours on Surface Surveys
-en:293 Dashed Surface Surveys
+en:292 Depth C@olours on Surface Surveys
+en:293 Da@shed Surface Surveys
 #
 ############################################################################
 # the rest are no longer used, but it's possible they may be at some point...

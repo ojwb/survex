@@ -1,8 +1,15 @@
-Date: Tue, 01 May 2001
+Date: Wed, 02 May 2001
 From: Mark
 
 wxaven:
-- elevation indicator
+- clino needs resistance around 0
+- move clino across and remove dead pixel
+- scale bar dragging factor needs slight tweak
+- middle button to reset scale bar
+- finish reverse controls
+- bug Olly found to do with plan/elevation switching
+- trouble with zooming in too far
+- possible mysterious problem with [ and ] not zooming to screen centre
 
 wxaven problems with unknown solution:
 - continuing trouble with accelerator keys

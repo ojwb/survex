@@ -132,6 +132,11 @@ class GfxCore : public wxWindow {
     enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV, drag_SCALE } m_LastDrag;
     bool m_MouseOutsideCompass;
     bool m_MouseOutsideElev;
+    bool m_UndergroundLegs;
+    bool m_SurfaceLegs;
+    bool m_Surface;
+    bool m_SurfaceDashed;
+    bool m_SurfaceDepth;
     // wxCursor m_StdCursor;
     // wxCursor m_ScaleRotateCursor;
 
@@ -223,6 +228,9 @@ public:
     void OnShowCrosses(wxCommandEvent&);
     void OnShowStationNames(wxCommandEvent&);
     void OnShowSurveyLegs(wxCommandEvent&);
+    void OnShowSurface(wxCommandEvent&);
+    void OnShowSurfaceDepth(wxCommandEvent&);
+    void OnShowSurfaceDashed(wxCommandEvent&);
     void OnMoveEast(wxCommandEvent&);
     void OnMoveNorth(wxCommandEvent&);
     void OnMoveSouth(wxCommandEvent&);
@@ -263,6 +271,9 @@ public:
     void OnShowCrossesUpdate(wxUpdateUIEvent&);
     void OnShowStationNamesUpdate(wxUpdateUIEvent&);
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent&);
+    void OnShowSurfaceUpdate(wxUpdateUIEvent&);
+    void OnShowSurfaceDepthUpdate(wxUpdateUIEvent&);
+    void OnShowSurfaceDashedUpdate(wxUpdateUIEvent&);
     void OnMoveEastUpdate(wxUpdateUIEvent&);
     void OnMoveNorthUpdate(wxUpdateUIEvent&);
     void OnMoveSouthUpdate(wxUpdateUIEvent&);

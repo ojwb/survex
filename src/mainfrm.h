@@ -149,6 +149,9 @@ public:
     void OnShowCrossesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowCrossesUpdate(event); }
     void OnShowStationNamesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowStationNamesUpdate(event); }
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowSurveyLegsUpdate(event); }
+    void OnShowSurfaceUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceUpdate(event); }
+    void OnShowSurfaceDepthUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceDepthUpdate(event); }
+    void OnShowSurfaceDashedUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceDashedUpdate(event); }
     void OnMoveEastUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnMoveEastUpdate(event); }
     void OnMoveNorthUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnMoveNorthUpdate(event); }
     void OnMoveSouthUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnMoveSouthUpdate(event); }
@@ -181,6 +184,9 @@ public:
     void OnShowCrosses(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowCrosses(event); }
     void OnShowStationNames(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowStationNames(event); }
     void OnShowSurveyLegs(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowSurveyLegs(event); }
+    void OnShowSurface(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowSurface(event); }
+    void OnShowSurfaceDepth(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceDepth(event); }
+    void OnShowSurfaceDashed(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceDashed(event); }
     void OnMoveEast(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnMoveEast(event); }
     void OnMoveNorth(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnMoveNorth(event); }
     void OnMoveSouth(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnMoveSouth(event); }
@@ -232,7 +238,6 @@ public:
     }
 
     wxPen GetSurfacePen() { return m_Pens[NUM_DEPTH_COLOURS]; }
-    wxBrush GetSurfaceBrush() { return m_Brushes[NUM_DEPTH_COLOURS]; }
 
     list<PointInfo*>::const_iterator GetPoints(int band) {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);

@@ -316,6 +316,9 @@ void GfxCore::SetScale(double scale)
         m_Params.scale = m_InitialScale / 20.0;
     }
 
+    m_UndergroundLegs = false;
+    m_SurfaceLegs = false;
+
     if (!m_ScaleCrossesOnly) {
         for (int band = 0; band < m_Bands; band++) {
 	    wxPoint* pt = m_PlotData[band].vertices;
@@ -373,7 +376,6 @@ void GfxCore::SetScale(double scale)
 		        // for this polyline.
 		        (*count)++;
 		    }
-
 		    last_was_surface = false;
 		}
 		else {
@@ -409,6 +411,13 @@ void GfxCore::SetScale(double scale)
 			last_was_surface = true;
 		    }
 		}
+	    }
+
+	    if (!m_UndergroundLegs) {
+	        m_UndergroundLegs = (m_Polylines[band] > 0);
+	    }
+	    if (!m_SurfaceLegs) {
+	        m_SurfaceLegs = (m_SurfacePolylines[band] > 0);
 	    }
 	}
     }
@@ -490,14 +499,22 @@ void GfxCore::RedrawOffscreen()
 	}
 
 	// Draw surface legs.
-        if (m_Legs) {
+        if (m_Surface) {
 	    for (int band = 0; band < m_Bands; band++) {
-	        m_DrawDC.SetPen(m_Parent->GetSurfacePen());
+	        wxPen pen = m_SurfaceDepth ? m_Parent->GetPen(band) : m_Parent->GetSurfacePen();
+		if (m_SurfaceDashed) {
+		    pen.SetStyle(wxSHORT_DASH);
+		}
+		m_DrawDC.SetPen(pen);
+
 		int* num_segs = m_PlotData[band].surface_num_segs; //-- sort out the polyline stuff!!
 		wxPoint* vertices = m_PlotData[band].surface_vertices;
 		for (int polyline = 0; polyline < m_SurfacePolylines[band]; polyline++) {
        		    m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre, m_YCentre);
 		    vertices += *num_segs++;
+		}
+		if (m_SurfaceDashed) {
+		    pen.SetStyle(wxSOLID);
 		}
 	    }
 	}
@@ -1501,7 +1518,7 @@ void GfxCore::OnShowSurveyLegs(wxCommandEvent&)
 
 void GfxCore::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT && m_UndergroundLegs);
     cmd.Check(m_Legs);
 }
 
@@ -1674,6 +1691,9 @@ void GfxCore::DefaultParameters()
     m_Params.display_shift.y = 0;
 
     m_ScaleCrossesOnly = false;
+    m_Surface = false;
+    m_SurfaceDepth = false;
+    m_SurfaceDashed = false;
     m_FreeRotMode = false;
     m_RotationStep = M_PI / 180.0;
     m_Rotating = false;
@@ -1951,4 +1971,43 @@ void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_IndicatorsOff &&
 	       m_Lock == lock_NONE);
     cmd.Check(m_Clino);
+}
+
+void GfxCore::OnShowSurface(wxCommandEvent& cmd)
+{
+    m_Surface = !m_Surface;
+    m_RedrawOffscreen = true;
+    Refresh(false);
+}
+
+void GfxCore::OnShowSurfaceDepth(wxCommandEvent& cmd)
+{
+    m_SurfaceDepth = !m_SurfaceDepth;
+    m_RedrawOffscreen = true;
+    Refresh(false);
+}
+
+void GfxCore::OnShowSurfaceDashed(wxCommandEvent& cmd)
+{
+    m_SurfaceDashed = !m_SurfaceDashed;
+    m_RedrawOffscreen = true;
+    Refresh(false);
+}
+
+void GfxCore::OnShowSurfaceUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData && m_SurfaceLegs);
+    cmd.Check(m_Surface);
+}
+
+void GfxCore::OnShowSurfaceDepthUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData && m_Surface);
+    cmd.Check(m_SurfaceDepth);
+}
+
+void GfxCore::OnShowSurfaceDashedUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData && m_SurfaceLegs && m_Surface);
+    cmd.Check(m_SurfaceDashed);
 }
