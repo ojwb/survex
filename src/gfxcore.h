@@ -334,6 +334,7 @@ class GfxCore : public wxWindow {
     } m_there;
 
     bool m_ScaleSpecialPtsOnly;
+    bool m_DrawDistLine;
 
 #ifndef AVENGL
     wxPen* m_Pens;

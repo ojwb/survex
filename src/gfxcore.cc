@@ -286,6 +286,7 @@ void GfxCore::Initialise()
     m_SurfaceLegs = false;
 
     m_HitTestGridValid = false;
+    m_DrawDistLine = false;
 
     m_TerrainLoaded = false;
 
@@ -1099,7 +1100,6 @@ void GfxCore::RedrawOffscreen()
         }
 
         // Draw any special points.
-        SetColour(col_YELLOW);
         SetColour(col_YELLOW, true);
         list<SpecialPoint>::iterator sp;
         for (sp = m_SpecialPoints.begin(); sp != m_SpecialPoints.end(); ++sp) {
@@ -1108,34 +1108,36 @@ void GfxCore::RedrawOffscreen()
 				 HIGHLIGHTED_PT_SIZE * 2);
         }
 
-        // Draw "here" and "there"
+        // Draw "here" and "there".
+	Double xp = m_here.x + m_Params.translation.x;
+	Double yp = m_here.y + m_Params.translation.y;
+	Double zp = m_here.z + m_Params.translation.z;
+	long here_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.x;
+        long here_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.y;
+
 	if (m_here.x != DBL_MAX) {
 	    SetColour(col_WHITE);
 	    m_DrawDC.SetBrush(*wxTRANSPARENT_BRUSH);
-	    Double xp = m_here.x + m_Params.translation.x;
-	    Double yp = m_here.y + m_Params.translation.y;
-	    Double zp = m_here.z + m_Params.translation.z;
-	    long here_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.x;
-	    long here_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.y;
-	    xc -= HIGHLIGHTED_PT_SIZE;
-	    yc -= HIGHLIGHTED_PT_SIZE;
-	    m_DrawDC.DrawEllipse(here_x + xc, here_y + yc,
+	    m_DrawDC.DrawEllipse(here_x + xc - HIGHLIGHTED_PT_SIZE, here_y + yc - HIGHLIGHTED_PT_SIZE,
 				 HIGHLIGHTED_PT_SIZE * 4,
 				 HIGHLIGHTED_PT_SIZE * 4);
-	    SetColour(col_WHITE, true);        
-	    if (m_there.x != DBL_MAX) {
-		Double xp = m_there.x + m_Params.translation.x;
-		Double yp = m_there.y + m_Params.translation.y;
-		Double zp = m_there.z + m_Params.translation.z;
-		long there_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.x;
-		long there_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.y;
-	        xc += HIGHLIGHTED_PT_SIZE;
-	        yc += HIGHLIGHTED_PT_SIZE;
-		m_DrawDC.DrawEllipse(there_x + xc, there_y + yc,
-				     HIGHLIGHTED_PT_SIZE * 2,
-				     HIGHLIGHTED_PT_SIZE * 2);
-		m_DrawDC.DrawLine(here_x + m_XCentre, here_y + m_YCentre,
-				  there_x + m_XCentre, there_y + m_YCentre);
+	}
+
+	if (m_there.x != DBL_MAX) {
+	    SetColour(col_WHITE);
+	    SetColour(col_WHITE, true);
+            Double xp = m_there.x + m_Params.translation.x;
+            Double yp = m_there.y + m_Params.translation.y;
+	    Double zp = m_there.z + m_Params.translation.z;
+	    long there_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.x;
+	    long there_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.y;
+	    m_DrawDC.DrawEllipse(there_x + m_XCentre - HIGHLIGHTED_PT_SIZE,
+	                         there_y + m_YCentre - HIGHLIGHTED_PT_SIZE,
+				 HIGHLIGHTED_PT_SIZE * 2,
+				 HIGHLIGHTED_PT_SIZE * 2);
+	    if (m_DrawDistLine) {
+	        m_DrawDC.DrawLine(here_x + m_XCentre, here_y + m_YCentre,
+		 	          there_x + m_XCentre, there_y + m_YCentre);
 	    }
         }
 
@@ -2295,6 +2297,10 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	        CentreOn(info.label->GetX(), info.label->GetY(), info.label->GetZ());
             }
 	    done = true;
+	    m_DrawDistLine = true;
+	}
+	else {
+            m_DrawDistLine = false;
 	}
     }
 
@@ -3464,6 +3470,7 @@ void GfxCore::SetThere(Double x, Double y, Double z)
     m_there.x = x;
     m_there.y = y;
     m_there.z = z;
+    m_DrawDistLine = true;
     m_RedrawOffscreen = true;
     Refresh(false);
 }
@@ -3782,3 +3789,4 @@ void GfxCore::OnSolidSurfaceUpdate(wxUpdateUIEvent& ui)
 }
 
 #endif
+
