@@ -189,7 +189,7 @@ public:
     void setFromVectorAndAngle(Vector3 v, Double rotation_amount);
 
 #ifdef AVENGL
-    void CopyToOpenGL() {
+    void CopyToOpenGL() const {
 	Double matrix[16];
 
 	Double xx = v.getX() * v.getX();
