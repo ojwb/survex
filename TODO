@@ -45,11 +45,27 @@ caverot: improve 3d torture test and try to automate its use if possible.
 
 try using labels.c in xcaverot to see if XRegions are better or not?
 
+label junction/fixed points/...
+
+colour by traverse
+
+section colouring/selective labelling
+
 aven: surface vs underground data...
+
+extract help screen from caverot.c for translation
+
+caverot help page needs fettling so that it appears centrally (and indeed
+so that it all fits on the screen in chunky CGA modes) [BC fns to look at:
+textheight("W"), textwidth(), settextstyle()]
 
 caverot: on RISC OS now fall back to using 2 or even just one screen
 bank if we can't find a mode where we can create 3 banks [FIXME: need
 to test this works]
+
+Printout from caverot
+
+caverot: clipping, colours
 
 Date: 21 Jul 1999
 From: Olly
@@ -90,6 +106,9 @@ From: Olly
 
 grid patch -> printer drivers, caverot, aven, and xcaverot too; grid
 crosses option (only draw cross at intersections, not a full grid).
+[(x,y) of a point to go through (easting, northing)
+ x spacing, y spacing (default to x spacing)
+ orientation (bearing of y-axis?) (defaults to 0)]
 
 Date: Fri, 18 Aug 2000
 From: Olly
@@ -139,6 +158,7 @@ and:
 
 add ms windows installer info to docs:
 
+===
 A survex group is created in the start menu containing
  Aven
  Survex Help
@@ -153,6 +173,7 @@ open->aven {default}
 extend->extend /* Is this working properly at the moment? Aven seems to get *
                 * very confused with the output from it...                  */
 print->printwin
+===
 
 Sort out INSTALL.DOS
 
@@ -171,3 +192,77 @@ test diving data with compass omitted (plumbed)
 
 use "highest" title?
 
+Warn bearings not 3 digits, gradient not <sign><digit><digit>
+
+Allow angles as deg/min/sec (for theodolite data) (060°10'15" as 060 10 15,
+or 060.1005 (crap notation))
+
+Add support for bearings of form N20E (ie [NS][0-9]+[EW])
+
+should % after a clino reading work?
+
+add to UNITS: percentage, lengthoutput, angleoutput ?
+
+error and warning log for survex?
+
+Fixing a point by triangulation?
+
+Theodolite + level:
+  delta(bearing (relative to 0 at start)
+  delta(horizontal)
+  delta(vertical) / maybe "clino" instead
+
+Theodolite only:
+  delta(bearing (relative to 0 at start)
+  delta(horizontal)
+  infinite sd for z
+
+Infinite sds so we can fix in x and y only (or z only)?
+
+Radiolocation?
+
+add *data to hto to allow it to cope with different data ordering?
+
+use more accuracy than nearest point (1/72") in printps?
+
+funcs to spot differences between caves:
+  display two plots at once, maybe flash in ram banks?
+  compare nets
+
+make printps & printhpgl one program; make printdm and printpcl one
+program - autosense (by looking at argv[0]) which we're being run as
+(and use symbolic link in Unix). Provide command line option as
+override (so we can use alias/batchfile for DOS)?
+
+get DOS programs to abort on Ctrl-C reliably?
+
+Split network at articulation points (ref: DSA page 245)?
+
+Sort out code fragments to attempt to handle dud equates (nodes equated
+to each other but not referred to otherwise (done?)
+
+Warning: Survey not all connected (but all attached to fixed points)?
+
+Label lengths aren't considered when working out image size in prindept.c,
+so a long label can spill off the edge of the printout
+
+"error.c" add option to read errors from disc only when needed, to help
+when memory is tight
+
+printer driver name spills over one page on Wookey's printer (printdm)
+
+improve messages given when a signal is received (eg more precise
+reporting of 'Arithmetic error' as 'Divide by zero', 'Negative root', etc)
+
+Test units in CALIBRATE *directive* work okay
+Tests for case & uniqueness handling
+Test all the commands - units() was buggy
+
+? Allow F(orward)/B(ack) in data - checked somehow (?)
+
+? Use machine epsilon for comparing floating point numbers
+
+? This survey gives wrong node stats: (2 nodes, 0 legs and 2 *1*-nodes)
+  *fix 1 0 0 0
+  *fix 2 0 0 0
+  *equate 1 2

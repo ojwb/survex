@@ -297,6 +297,9 @@ main(int argc, char **argv)
    out_current_action(msg(/*Calculating statistics*/120));
    do_stats();
    if (!fQuiet) {
+      /* clock() typically wraps after 72 minutes, but there doesn't seem
+       * to be a better way.  Still 72 minutes means some cave!
+       */
       tmCPU = (clock_t)(clock() - tmCPUStart) / (double)CLOCKS_PER_SEC;
       tmUser = difftime(time(NULL), tmUserStart);
 
