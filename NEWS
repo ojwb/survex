@@ -1,10 +1,14 @@
-* (Unix version): aven: various bugs fixed, 3d file specified on command line
-  now loaded.
+* cad3d: Fixed output from `cad3d --help'.
 
 * (Unix version): aven: leaving "about" box no longer causes segfault;
   toggle status bar now works; N/S/E/W selects view rather than moving
   cave; window close now works; now have ticks on appropriate menu
   items; fixed problems with rendering (some legs missing!)
+
+* (Unix version): aven: various bugs fixed, 3d file specified on command line
+  now loaded.
+
+* Updated translations: pt de
 
 Changes in 0.97-prerelease1:
 

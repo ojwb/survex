@@ -929,6 +929,7 @@ cmd_data(void)
    int style, k = 0, kMac;
    reading *new_order, d;
    unsigned long m, mUsed = 0;
+   char *style_name;
 
    kMac = 6; /* minimum for NORMAL style */
    new_order = osmalloc(kMac * sizeof(reading));
@@ -958,13 +959,17 @@ cmd_data(void)
    /* olde syntax had optional field for survey grade, so allow an omit */
    if (isOmit(ch)) nextch();
 
+   style_name = osstrdup(buffer);
    do {
       get_token();
       d = match_tok(dtab, TABSIZE(dtab));
       /* Note: an unknown token is reported as trailing garbage */
       if (!TSTBIT(m, d)) {
-	 compile_error(/*Reading `%s' not allowed for this data style*/63, buffer);
+	 compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
+		       buffer, style_name);
+	 osfree(style_name);
 	 skipline();
+	 osfree(style_name);
 	 return;
       }
 #ifdef SVX_MULTILINEDATA /* NEW_STYLE */
@@ -986,6 +991,7 @@ cmd_data(void)
 	 if (cRealData > cData) {
 	    compile_error(/*Too many readings*/);
 	    showandskipline(NULL, -(int)strlen(buffer));
+	    osfree(style_name);
 	    return;
 	 }
 # endif
@@ -993,6 +999,7 @@ cmd_data(void)
 	 if (mUsed & BIT(d)) {
 	    compile_error(/*Duplicate reading `%s'*/67, buffer);
 	    skipline();
+	    osfree(style_name);
 	    return;
 	 }
 	 mUsed |= BIT(d); /* used to catch duplicates */
@@ -1007,8 +1014,9 @@ cmd_data(void)
 
    if ((mUsed | mask_optional[style-1]) != mask[style-1]) {
       osfree(new_order);
-      compile_error(/*Too few readings*/64);
+      compile_error(/*Too few readings for data style `%s'*/64, style_name);
       skipline();
+      osfree(style_name);
       return;
    }
 
@@ -1018,6 +1026,8 @@ cmd_data(void)
       osfree(pcs->ordering);
 
    pcs->ordering = new_order;
+
+   osfree(style_name);      
 }
 
 /* masks for units which are length and angles respectively */
