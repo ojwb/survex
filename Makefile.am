@@ -154,7 +154,8 @@ mingw_zip : dostxt
 	$(RM) $(mingw_zip_name)
 	zip -j $(mingw_zip_name) mingw_exes/*.exe $(extra_bin)
 	# -l means convert LF to CR+LF
-	zip -j -l $(mingw_zip_name) mingw_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
+	zip -j -l $(mingw_zip_name) mingw_extras/*.txt \
+	 dostxt_tmp/*.txt $(extra_txt) survex.iss
 	$(RM) -rf dostxt_tmp
 
 bc_zip_name = survex-dos286-@VERSION@.zip

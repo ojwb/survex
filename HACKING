@@ -36,6 +36,8 @@ You'll need an unreleased version on automake from their CVS server. I
 recommend checking out the a snapshot at date "Wed Oct 18 15:11:27
 2000" as I've used this version a lot and it's fairly solid.
 
+http://sources.redhat.com/automake/
+
 Building on Non-Unix Platforms
 ==============================
 
