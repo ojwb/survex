@@ -189,7 +189,10 @@ if test x"$ac_cv_func_strftime" != xyes ; then
   LIBOBJS="$LIBOBJS strftime.o"
 fi
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(popen setjmp signal getpwuid)
+AC_CHECK_FUNCS(popen signal getpwuid)
+
+dnl don't use AC_CHECK_FUNCS for setjmp - mingw #define-s it to _setjmp
+AC_CHECK_HEADER(setjmp.h, [AC_DEFINE(HAVE_SETJMP)])
 
 dnl difftime seems to be an ANSI invention
 AC_CHECK_FUNCS(difftime)
