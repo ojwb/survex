@@ -1,6 +1,6 @@
 /* 3dtopos.c */
 /* Produce a .pos file from a .3d file */
-/* Copyright (C) 2001 Olly Betts
+/* Copyright (C) 2001,2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,10 +56,13 @@ typedef struct {
    img_point pt;
 } station;
 
+static int separator;
+
 static int
 cmp_station(const void *a, const void *b)
 {
-   return name_cmp(((const station *)a)->name, ((const station *)b)->name);
+   return name_cmp(((const station *)a)->name, ((const station *)b)->name,
+		   separator);
 }
 
 static station *stns;
@@ -98,6 +101,7 @@ main(int argc, char **argv)
 
    pimg = img_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error(), fnm);
+   separator = pimg->separator;
 
    fh_out = safe_fopen(fnm_out, "w");
 

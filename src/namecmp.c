@@ -27,7 +27,7 @@
 #include "namecmp.h"
 
 int
-name_cmp(const char *a, const char *b)
+name_cmp(const char *a, const char *b, int separator)
 {
    while (1) {
       int cha = *a, chb = *b;
@@ -41,7 +41,7 @@ name_cmp(const char *a, const char *b)
 	 const char *sa, *sb, *ea, *eb;
 	 int res;
 
-	 if (!isdigit(chb)) return chb == '.' ? 1 : -1;
+	 if (!isdigit(chb)) return chb == separator ? 1 : -1;
 
 	 sa = a;
 	 while (*sa == '0') sa++;
@@ -68,8 +68,8 @@ name_cmp(const char *a, const char *b)
       }
 
       if (cha != chb) {
-	 if (cha == '.') return -1;
-	 if (isdigit(chb) || chb == '.') return 1;
+	 if (cha == separator) return -1;
+	 if (isdigit(chb) || chb == separator) return 1;
 	 return cha - chb;
       }
 

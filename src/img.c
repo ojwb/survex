@@ -261,6 +261,7 @@ img_open_survey(const char *fnm, const char *survey)
 
    pimg->survey = NULL;
    pimg->survey_len = 0;
+   pimg->separator = '.';
 
    pimg->title = pimg->datestamp = NULL;
    if (survey) {
@@ -312,6 +313,9 @@ pos_file:
       long fpos;
 plt_file:
       pimg->version = -2;
+      /* Spaces aren't legal in Compass station names, but dots are, so
+       * use space as the level separator */
+      pimg->separator = ' ';
       pimg->start = 0;
       if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
@@ -380,6 +384,9 @@ plt_file:
    if (has_ext(fnm, len, EXT_XYZ)) {
       char *line;
 xyz_file:
+      /* Spaces aren't legal in CMAP station names, but dots are, so
+       * use space as the level separator */
+      pimg->separator = ' ';
       line = getline_alloc(pimg->fh);
       if (!line) {
 	 img_errno = IMG_OUTOFMEMORY;
@@ -1144,13 +1151,7 @@ skip_to_N:
 		  img_errno = IMG_OUTOFMEMORY;
 		  return img_BAD;
 	       }
-	       while (line[len] > 32) {
-		  /* change dots to spaces.  spaces aren't legal in compass
-		   * station names, while dots are the survey level separator
-		   * in Survex */
-		  if (line[len] == '.') line[len] = ' ';
-		  ++len;
-	       }
+	       while (line[len] > 32) ++len;
 	       if (pimg->label_len == 0) pimg->pending = -1;
 	       if (!check_label_space(pimg, len + 1)) {
 		  osfree(line);
@@ -1211,21 +1212,15 @@ skip_to_N:
 	       }
 	       ++q;
 	       len = 0;
-	       while (q[len] > ' ') {
-		  /* change dots to spaces.  spaces aren't legal in compass
-		   * station names, while dots are the survey level separator
-		   * in Survex */
-		  if (q[len] == '.') q[len] = ' ';
-		  ++len;
-	       }
+	       while (q[len] > ' ') ++len;
 	       q[len] = '\0';
-	       len += 2; /* '.' and '\0' */
+	       len += 2; /* ' ' and '\0' */
 	       if (!check_label_space(pimg, pimg->label_len + len)) {
 		  img_errno = IMG_OUTOFMEMORY;
 		  return img_BAD;
 	       }
 	       pimg->label = pimg->label_buf;
-	       pimg->label[pimg->label_len] = '.';
+	       pimg->label[pimg->label_len] = ' ';
 	       memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
 	       osfree(line);
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
@@ -1297,13 +1292,9 @@ skip_to_N:
 	 q = memchr(pimg->label, ' ', 6);
 	 if (!q) q = pimg->label + 6;
 	 *q = '\0';
-	 /* change dots to spaces.  spaces aren't legal in CMAP
-	  * station names, while dots are the survey level separator
-	  * in Survex */
-	 while (--q >= pimg->label) if (*q == '.') *q = ' ';
 
 	 read_xyz_station_coords(p, line);
-	 
+ 
 	 /* FIXME: look at prev for lines (line + 32, 5) */
 	 /* FIXME: duplicate stations... */
 	 return img_LABEL;
@@ -1315,25 +1306,17 @@ skip_to_N:
 	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
 	 }
-	 
+ 
 	 memcpy(old, line, 7);
 	 q = memchr(old, ' ', 7);
 	 if (!q) q = old + 7;
 	 *q = '\0'; 
-	 /* change dots to spaces.  spaces aren't legal in CMAP
-	  * station names, while dots are the survey level separator
-	  * in Survex */
-	 while (--q > old) if (*q == '.') *q = ' ';
-	 
+
 	 memcpy(new, line + 7, 7);
 	 q = memchr(new, ' ', 7);
 	 if (!q) q = new + 7;
 	 *q = '\0'; 
-	 /* change dots to spaces.  spaces aren't legal in CMAP
-	  * station names, while dots are the survey level separator
-	  * in Survex */
-	 while (--q > new) if (*q == '.') *q = ' ';
-	 
+
 	 pimg->flags = img_SFLAG_UNDERGROUND;
 
 	 if (strcmp(old, new) == 0) {
@@ -1343,7 +1326,7 @@ skip_to_N:
 	    osfree(line);
 	    return img_LABEL;
 	 }
-	 
+ 
 	 if (strcmp(old, pimg->label) == 0) {
 	    pimg->pending = img_LINE + 4;
 	    read_xyz_shot_coords(p, line);
