@@ -37,12 +37,13 @@ static const struct option long_opts[] = {
    {"vertical", no_argument, 0, 'v'},
    {"percentage", no_argument, 0, 'p'},
    {"per-leg", no_argument, 0, 'l'},
+   {"replace", no_argument, 0, 'r'},
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "hvpl"
+#define short_opts "hvplr"
 
 static struct help_msg help[] = {
 /*				<-- */
@@ -50,6 +51,7 @@ static struct help_msg help[] = {
    {HLP_ENCODELONG(1),          "Sort by vertical error factor"},
    {HLP_ENCODELONG(2),          "Sort by percentage error"},
    {HLP_ENCODELONG(3),          "Sort by error per leg"},
+   {HLP_ENCODELONG(4),          "Replace .err file with resorted version"},
    {0, 0}
 };
 
@@ -105,6 +107,8 @@ main(int argc, char **argv)
    trav *blk = osmalloc(1024 * sizeof(trav));
    size_t next = 0;
    size_t howmany = 0;
+   FILE *fh_out = stdout;
+   char *fnm_out = NULL;
 
    msg_init(argv[0]);
 
@@ -116,6 +120,9 @@ main(int argc, char **argv)
       switch (opt) {
        case 'h': case 'v': case 'p': case 'l':
 	 sortby = toupper(opt);
+	 break;
+       case 'r':
+	 fh_out = NULL;
 	 break;
       }
    }
@@ -139,7 +146,7 @@ main(int argc, char **argv)
 	 len += len;
 	 blk = osrealloc(blk, len);
       }
-      blk[next].fpos = ftell(fh);
+      CHECK(blk[next].fpos = ftell(fh));
       ch = getc(fh);
       if (ch == EOF) break;
       skipline(fh);
@@ -204,19 +211,31 @@ main(int argc, char **argv)
 
    qsort(blk, next, sizeof(trav), cmp_trav);
 
+   if (fh_out == NULL) {
+      char *base = base_from_fnm(fnm);
+      fnm_out = add_ext(base, "tmp");
+      osfree(base);
+      fh_out = safe_fopen(fnm_out, "tmp", "wb");
+   }
+
    do {
       --next;
       if (fseek(fh, blk[next].fpos, SEEK_SET) == -1) {
 	 printf("couldn't seek\n");
 	 exit(1);
       }
-      printline(fh);
-      printline(fh);
-      printline(fh);
-      printline(fh);
-      putchar('\n');
+      printline(fh, fh_out);
+      printline(fh, fh_out);
+      printline(fh, fh_out);
+      printline(fh, fh_out);
+      putc('\n', fh);
       if (howmany && --howmany == 0) break;
    } while (next);
+
+   if (fnm_out) {
+      fclose(fh_out);
+      rename(fnm_out, fnm);
+   }
 
    return 0;
 }
