@@ -1,3 +1,11 @@
+survex (1.0.34) unstable; urgency=low
+
+  * extend: Added changes from John Pybus which allow you to specify a
+    configuration file to control how the centreline is extended - e.g.
+    where to fold and where to break loops.
+
+ -- Wookey <wookey@survex.com>  Sat, 22 Jan 2005 01:44:39 +0000
+
 survex (1.0.33) unstable; urgency=low
 
   * aven: Fixed bug which would sometimes pick one too few pages
