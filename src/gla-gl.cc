@@ -204,7 +204,8 @@ void GLACanvas::SetViewportAndProjection()
     CHECK_GL_ERROR("SetViewportAndProjection", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetViewportAndProjection", "glLoadIdentity");
-    glOrtho(m_Volume.left, m_Volume.right, m_Volume.bottom / aspect, m_Volume.top / aspect,
+    glOrtho(m_Volume.left, m_Volume.right,
+	    m_Volume.bottom / aspect, m_Volume.top / aspect,
             m_Volume.front * 3.0 * m_Scale, m_Volume.back * 3.0 * m_Scale);
     CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
 }

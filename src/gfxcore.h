@@ -86,13 +86,6 @@ class GfxCore : public GLACanvas {
 	} translation;
     } m_Params;
 
-    struct PlotData {
-	Point* vertices;
-	Point* surface_vertices;
-	int* num_segs;
-	int* surface_num_segs;
-    };
-
     struct {
 	int offset_x;
 	int offset_y;
@@ -140,7 +133,13 @@ class GfxCore : public GLACanvas {
     int m_YSize;
     int m_XCentre;
     int m_YCentre;
-    PlotData* m_PlotData;
+
+    Point* vertices;
+    Point* surface_vertices;
+    int* num_segs;
+    int* surface_num_segs;
+
+    bool m_HaveData;
     bool m_InitialisePending;
     bool m_MouseOutsideCompass;
     bool m_MouseOutsideElev;
@@ -309,7 +308,7 @@ public:
 
     LockFlags GetLock() const { return m_Lock; }
     bool IsRotating() const { return m_Rotating; }
-    bool HasData() const { return m_PlotData != NULL; }
+    bool HasData() const { return m_HaveData; }
 
     double GetScale() const { return m_Params.scale; }
     void SetScale(Double scale);
