@@ -8,7 +8,7 @@ VRD=$VER.$REL
 VRP=$VER-prerelease$REL
 
 FILES="survex-$VRR.i386.rpm survex-aven-$VRR.i386.rpm survex-$VRR.src.rpm\
- survex_${VRD}_i386.deb survex-aven_${VRD}_i386.deb"
+ survex_${VRD}_i386.deb survex-aven_${VRD}_i386.deb survex_${VRD}.tar.gz"
 
 for a in survex-$VER.tar.gz survex-dos-$VER.exe survex-win32-$VER.exe\
       svxdoc-doswin-$VER.exe svxdoc-riscos-$VER.zip ; do
@@ -52,6 +52,9 @@ HREF="$WEBDIR/survex_${VRD}_i386.deb"
 <A
 HREF="$WEBDIR/survex-aven_${VRD}_i386.deb"
 >aven cave viewer binary debian package</A>
+<li> Linux <A
+HREF="$WEBDIR/survex_${VRD}.tar.gz"
+>Debian source package</A>
 <li> Linux i386 binary <A
 HREF="$WEBDIR/survex-$VRR.i386.rpm"
 >survex RPM</A> + 
