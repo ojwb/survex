@@ -874,3 +874,13 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 /* FIXME    if (m_RedrawOffscreen) */ m_View->ForceRefresh();
 }
 
+void GUIControl::OnViewFullScreenUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+}
+
+void GUIControl::OnViewFullScreen()
+{
+    m_View->FullScreenMode();
+}
+

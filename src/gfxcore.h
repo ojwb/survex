@@ -371,6 +371,8 @@ public:
 
     void Defaults();
 
+    void FullScreenMode();
+
     void DragFinished();
 
     void SplitLineAcrossBands(int band, int band2,

@@ -3159,6 +3159,9 @@ en:352 Highlight stations marked as fixed points
 en:353 Highlight stations which are exported
 en:354 Mark survey stations with their names
 en:355 Allow names to overlap on the display (faster)
+en:356 @Full Screen Mode
+
+=======
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

@@ -151,6 +151,14 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
     clipping = false;
+    vertices = NULL;
+    surface_vertices = NULL;
+    num_segs = NULL;
+    surface_num_segs = NULL;
+    m_Lists.underground_legs = 0;
+    m_Lists.surface_legs = 0;
+    m_Lists.names = 0;
+    m_Lists.indicators = 0;
 
     // Create pens and brushes for drawing.
     int num_colours = (int) col_LAST;
@@ -158,9 +166,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     for (int col = 0; col < num_colours; col++) {
         m_Pens[col].SetColour(COLOURS[col].r / 255.0, COLOURS[col].g / 255.0, COLOURS[col].b / 255.0);
     }
-
-    SetBackgroundColour(0.0, 0.0, 0.0);
-    Clear();
 
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
@@ -500,9 +505,11 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         FirstShow();
     }
 
+    SetCurrent();
     StartDrawing();
 
     // Clear the background.
+    SetBackgroundColour(0.0, 0.0, 0.0);
     Clear();
 
     if (m_HaveData) {
@@ -541,7 +548,16 @@ void GfxCore::OnPaint(wxPaintEvent& event)
             DrawList(m_Lists.grid);
         }
 */
- 
+
+#if 0
+        BeginQuadrilaterals();
+        PlaceVertex(0.0, 0.0, 0.0);
+        PlaceVertex(100.0, 0.0, 0.0);
+        PlaceVertex(100.0, 100.0, 0.0);
+        PlaceVertex(0.0, 100.0, 0.0);
+        EndQuadrilaterals();
+      //  assert(0);
+
         if (!m_Rotating && !m_SwitchingTo) {
             Double size = SurveyUnitsAcrossViewport() * HIGHLIGHTED_PT_SIZE / m_XSize;
     
@@ -560,6 +576,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
             }
         }
         
+#endif
         // Draw indicators.
         SetIndicatorTransform();
         DrawList(m_Lists.indicators);
@@ -626,7 +643,7 @@ void GfxCore::DrawGrid()
     for (int xc = 0; xc <= count_x; xc++) {
         Double x = left + xc*grid_size;
         
-	m_DrawDC.DrawLine((int) GridXToScreen(x, bottom, grid_z), (int) GridYToScreen(x, bottom, grid_z),
+        m_DrawDC.DrawLine((int) GridXToScreen(x, bottom, grid_z), (int) GridYToScreen(x, bottom, grid_z),
                           (int) GridXToScreen(x, actual_top, grid_z), (int) GridYToScreen(x, actual_top, grid_z));
     }
 
@@ -1855,9 +1872,8 @@ void GfxCore::ForceRefresh()
 
 void GfxCore::GenerateDisplayListSurface()
 {
-    assert(m_HaveData);
-    DrawPolylines(m_SurfaceDepth, false, m_SurfacePolylines,
-	          surface_num_segs, surface_vertices);
+    //assert(m_HaveData);
+    //DrawPolylines(m_SurfaceDepth, false, m_SurfacePolylines, surface_num_segs, surface_vertices);
 }
 
 void GfxCore::GenerateDisplayList()
@@ -2198,7 +2214,7 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
             Vector3 pt_v(vertices_start->x, vertices_start->y, vertices_start->z);
             vertices_start++;
 
-	    if (m_Names) { // FIXME abuse the UI
+	    if (!m_Names) { // FIXME abuse the UI
 		if (segment == 0) {
 		    size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
 				sqrd(vertices_start->y - pt_v.getY()) +
@@ -2361,3 +2377,23 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
         }
     }
 }
+
+void GfxCore::FullScreenMode()
+{
+    // Switch to full-screen mode.
+    
+    // Determine the dimensions of the screen.
+    int width;
+    int height;
+    wxDisplaySize(&width, &height);
+
+    // Create a window covering the entire screen, with no decorations.
+    wxFrame* full_screen = new wxFrame(m_Parent, 100, "Aven", wxPoint(0, 0), wxSize(width, height),
+                                       wxSTAY_ON_TOP | wxFRAME_FLOAT_ON_PARENT);
+   
+    full_screen->Show(true);
+    
+    // Reparent ourselves to be inside the new frame.
+    Reparent(full_screen);
+}
+

@@ -157,6 +157,9 @@ public:
     
     void OnToggleTubes();
     void OnToggleTubesUpdate(wxUpdateUIEvent& cmd);
+    
+    void OnViewFullScreenUpdate(wxUpdateUIEvent&);
+    void OnViewFullScreen();
 };
 
 #endif

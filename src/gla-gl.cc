@@ -30,7 +30,7 @@
                                  if (err != GL_NO_ERROR) { \
                                      fprintf(stderr, "OpenGL error: %s: call %s in function %s\n", \
                                              gluErrorString(err), m, f); \
-                                     abort(); \
+                                    /* abort();*/ \
                                  } \
                              } \
                              while (0)
@@ -223,8 +223,8 @@ void GLACanvas::StartDrawing()
 {
     // Prepare for a redraw operation.
     
-    SetCurrent();
-    
+    ////SetCurrent();
+   
     glEnable(GL_COLOR_MATERIAL);
     CHECK_GL_ERROR("StartDrawing", "glEnable GL_COLOR_MATERIAL");
     glShadeModel(GL_SMOOTH);
@@ -257,9 +257,6 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
     glTranslated(m_Translation.x, m_Translation.y, m_Translation.z);
     CHECK_GL_ERROR("SetDataTransform", "glTranslated");
-    
-    glEnable(GL_DEPTH_TEST);
-    CHECK_GL_ERROR("SetDataTransform", "glEnable GL_DEPTH_TEST");
 }
 
 void GLACanvas::SetIndicatorTransform()
@@ -306,7 +303,7 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
     // Create a new list to hold a sequence of drawing operations, and compile
     // it.
 
-    SetCurrent();
+    ////SetCurrent();
 
     glaList l = glGenLists(1);
     CHECK_GL_ERROR("CreateList", "glGenLists");

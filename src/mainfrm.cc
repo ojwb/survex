@@ -159,6 +159,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SIDE_PANEL, MainFrm::OnViewSidePanel)
     EVT_MENU(menu_VIEW_METRIC, MainFrm::OnToggleMetric)
     EVT_MENU(menu_VIEW_DEGREES, MainFrm::OnToggleDegrees)
+    EVT_MENU(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreen)
 #ifdef AVENGL
     EVT_MENU(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubes)
 #endif
@@ -210,6 +211,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLineUpdate)
     EVT_UPDATE_UI(menu_VIEW_METRIC, MainFrm::OnToggleMetricUpdate)
     EVT_UPDATE_UI(menu_VIEW_DEGREES, MainFrm::OnToggleDegreesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreenUpdate)
 #ifdef AVENGL
     EVT_UPDATE_UI(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubesUpdate)
 #endif
@@ -381,6 +383,8 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295), "", true);
     viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296), "", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode*/356));
             
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "", true);
