@@ -32,7 +32,7 @@ MAINTAINERCLEANFILES = $(doclist)
 CLEANFILES = $(other_mans)
 
 pkgdoc_DATA = index.htm COPYING.htm TODO.htm ChngeLog.htm\
- NEWS.htm OLDNEWS.htm $(doclist)
+ NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist)
 
 man_MANS = survex.1 $(other_mans)
 
