@@ -1,4 +1,4 @@
-/* > printps.c & prnthpgl.c */
+/* printps.c & prnthpgl.c */
 /* Device dependent part of Survex Postscript printer/HPGL plotter driver */
 /* Copyright (C) 1993-2001 Olly Betts
  * 
@@ -139,6 +139,8 @@ device printer = {
 };
 #endif
 
+static int cur_pass;
+
 static border clip;
 
 static long xpPageWidth, ypPageDepth;
@@ -150,6 +152,71 @@ static bool fNewLines = fTrue;
 static bool fOriginInCentre = fFalse;
 #endif
 
+static long x_t, y_t;
+
+static int
+check_intersection(long x_p, long y_p)
+{
+#define U 1
+#define D 2
+#define L 4
+#define R 8      
+   int mask_p, mask_t;
+   if (x_p < clip.x_min)
+      mask_p = L;
+   else if (x_p > clip.x_max)
+      mask_p = R;
+
+   if (y_p < clip.y_min)
+      mask_p |= D;
+   else if (y_p > clip.y_max)
+      mask_p |= U;
+
+   if (x_t < clip.x_min)
+      mask_t = L;
+   else if (x_t > clip.x_max)
+      mask_t = R;
+
+   if (y_t < clip.y_min)
+      mask_t |= D;
+   else if (y_t > clip.y_max)
+      mask_t |= U;
+
+#if 0
+   /* approximation to correct answer */
+   return !(mask_t & mask_p);
+#e;se
+   /* One end of the line is on the page */
+   if (!mask_t || !mask_p) return 1;
+
+   /* whole line is above, left, right, or below page */
+   if (mask_t & mask_p) return 0;
+
+   if (mask_t == 0) mask_t = mask_p;
+   if (mask_t & U) {
+      double v = (double)(clip.y_max - y_p) / (y_t - y_p);
+      return v >= 0 && v <= 1;
+   }
+   if (mask_t & D) {
+      double v = (double)(clip.y_min - y_p) / (y_t - y_p);
+      return v >= 0 && v <= 1;
+   }
+   if (mask_t & R) {
+      double v = (double)(clip.x_max - x_p) / (x_t - x_p);
+      return v >= 0 && v <= 1;
+   }
+   ASSERT(mask_t & L);
+   {
+      double v = (double)(clip.x_min - x_p) / (x_t - x_p);
+      return v >= 0 && v <= 1;
+   }
+#endif
+#undef U
+#undef D
+#undef L
+#undef R
+}
+
 #ifndef HPGL
 static const char *
 ps_Name(void)
@@ -157,14 +224,12 @@ ps_Name(void)
    return "PostScript Printer";
 }
 
-static long x_t, y_t;
-
 static void
 ps_MoveTo(long x, long y)
 {
    x_t = x - clip.x_min;
    y_t = y - clip.y_min;
-   prio_printf("%ld %ld M\n", x_t, y_t);
+   if (cur_pass != -1) prio_printf("%ld %ld M\n", x_t, y_t);
 }
 
 static void
@@ -174,18 +239,29 @@ ps_DrawTo(long x, long y)
    long x_p = x_t, y_p = y_t;
    x_t = x - clip.x_min;
    y_t = y - clip.y_min;
-   sprintf(abuf, "%ld %ld L\n", x_t, y_t);
-   sprintf(rbuf, "%ld %ld R\n", x_t - x_p, y_t - y_p);
-   if (strlen(rbuf) < strlen(abuf))
-      prio_print(rbuf);
-   else
-      prio_print(abuf);
+   if (cur_pass != -1) {
+      sprintf(abuf, "%ld %ld L\n", x_t, y_t);
+      sprintf(rbuf, "%ld %ld R\n", x_t - x_p, y_t - y_p);
+      if (strlen(rbuf) < strlen(abuf))
+	 prio_print(rbuf);
+      else
+	 prio_print(abuf);
+   } else {
+      if (check_intersection(x_p, y_p)) fBlankPage = fFalse;
+   }
 }
 
 static void
 ps_DrawCross(long x, long y)
 {
-   prio_printf("%ld %ld X\n", x - clip.x_min, y - clip.y_min);
+   if (cur_pass != -1) {
+      prio_printf("%ld %ld X\n", x - clip.x_min, y - clip.y_min);
+   } else {
+      if ((x + PS_CROSS_SIZE > clip.x_min && x - PS_CROSS_SIZE < clip.x_max) ||
+	  (y + PS_CROSS_SIZE > clip.y_min && y - PS_CROSS_SIZE < clip.y_max)) {
+	 fBlankPage = fFalse;
+      }
+   }
 }
 
 static char current_font_code = 'F';
@@ -193,6 +269,8 @@ static char current_font_code = 'F';
 static void
 ps_SetFont(int fontcode)
 {
+   if (fontcode == current_font_code) return;
+
    switch (fontcode) {
     case PR_FONT_DEFAULT:
       current_font_code = 'F';
@@ -210,27 +288,38 @@ ps_SetFont(int fontcode)
 static void
 ps_WriteString(const char *s)
 {
-   unsigned char ch;
-   prio_putc('(');
-   while (*s) {
-      ch = *s++;
-      switch (ch) {
-       case '(': case ')': case '\\': /* need to escape these characters */
-         prio_putc('\\');
-         prio_putc(ch);
-         break;
+   if (cur_pass != -1) {
+      unsigned char ch;
+      prio_putc('(');
+      while (*s) {
+	 ch = *s++;
+	 switch (ch) {
+	  case '(': case ')': case '\\': /* need to escape these characters */
+	    prio_putc('\\');
+	    prio_putc(ch);
+	    break;
        default:
-         prio_putc(ch);
-         break;
+	    prio_putc(ch);
+	    break;
+	 }
+      }
+      prio_print(") S\n");
+   } else {
+      int fs = (current_font_code == 'F' ? fontsize : fontsize_labels);
+      if ((y_t + 3 * fs / 4 > clip.y_min && y_t - fs / 4 < clip.y_max) ||
+	  (x_t < clip.x_max && x_t + strlen(s) * fs > clip.x_min)) {
+	 fBlankPage = fFalse;
       }
    }
-   prio_print(") S\n");
 }
 
 static void
 ps_DrawCircle(long x, long y, long r)
 {
-   prio_printf("%ld %ld %ld C\n", x - clip.x_min, y - clip.y_min, r);
+   /* Don't need to check in first-pass - circle is only used in title box */
+   if (cur_pass != -1) {
+      prio_printf("%ld %ld %ld C\n", x - clip.x_min, y - clip.y_min, r);
+   }
 }
 #endif
 
@@ -486,13 +575,16 @@ ps_NewPage(int pg, int pass, int pagesX, int pagesY)
 {
    int x, y;
 
-   if (pass == -1) {
-      fBlankPage = fFalse; /* hack for now */
-      return;
-   }
-
    x = (pg - 1) % pagesX;
    y = pagesY - 1 - ((pg - 1) / pagesX);
+
+   cur_pass = pass;
+   if (pass == -1) {
+      /* Don't count alignment marks, but do count borders */
+      fBlankPage = fNoBorder
+	 || (x > 0 && y > 0 && x < pagesX - 1 && y < pagesY - 1);
+      return;
+   }
 
    clip.x_min = (long)x * xpPageWidth;
    clip.y_min = (long)y * ypPageDepth;
@@ -678,81 +770,107 @@ ps_Quit(void)
 static void
 hpgl_MoveTo(long x, long y)
 {
-   prio_printf("PU%ld,%ld;", x - x_org, y - y_org);
+   if (cur_pass != -1) {
+      prio_printf("PU%ld,%ld;", x - x_org, y - y_org);
+   } else {
+      x_t = x - clip.x_min;
+      y_t = y - clip.y_min;
+   }
 }
 
 static void
 hpgl_DrawTo(long x, long y)
 {
-   prio_printf("PD%ld,%ld;", x - x_org, y - y_org);
-   if (fNewLines) prio_putc('\n');
+   if (cur_pass != -1) {
+      prio_printf("PD%ld,%ld;", x - x_org, y - y_org);
+   } else {
+      long x_p = x_t, y_p = y_t;
+      x_t = x - clip.x_min;
+      y_t = y - clip.y_min;
+      if (check_intersection(x_p, y_p)) fBlankPage = fFalse;
+   }
 }
 
 static void
 hpgl_DrawCross(long x, long y)
 {
-   hpgl_MoveTo(x, y);
-   /* SM plots a symbol at each point, but it isn't very convenient here   */
-   /* We can write PDPR%d,%dPR%d,%d... but the HP7475A manual doesn't say  */
-   /* clearly if this will work on older plotters (such as the HP9872)     */
+   if (cur_pass != -1) {
+      hpgl_MoveTo(x, y);
+      /* SM plots a symbol at each point, but it isn't very convenient here   */
+      /* We can write PDPR%d,%dPR%d,%d... but the HP7475A manual doesn't say  */
+      /* clearly if this will work on older plotters (such as the HP9872)     */
 #define CS HPGL_CROSS_SIZE
 #define CS2 (2 * HPGL_CROSS_SIZE)
-   prio_printf("PD;PR%d,%d;PR%d,%d;PU%d,0;PD%d,%d;PU%d,%d;PA;",
-               CS, CS,  -CS2, -CS2,  CS2, /*0,*/  -CS2, CS2,  CS, -CS);
+      prio_printf("PD;PR%d,%d;PR%d,%d;PU%d,0;PD%d,%d;PU%d,%d;PA;",
+		  CS, CS,  -CS2, -CS2,  CS2, /*0,*/  -CS2, CS2,  CS, -CS);
 #undef CS
 #undef CS2
-   if (fNewLines) prio_putc('\n');
+      if (fNewLines) prio_putc('\n');
+   } else {
+      if ((x + PS_CROSS_SIZE > clip.x_min && x - PS_CROSS_SIZE < clip.x_max) ||
+	  (y + PS_CROSS_SIZE > clip.y_min && y - PS_CROSS_SIZE < clip.y_max)) {
+	 fBlankPage = fFalse;
+      }
+   }
 }
 
 static void
 hpgl_WriteString(const char *s)
 {
-   prio_print("LB"); /* Label - terminate text with a ^C */
-   while (*s) {
-      switch (*s) {
-       case '\xB0':
+   if (cur_pass != -1) {
+      prio_print("LB"); /* Label - terminate text with a ^C */
+      while (*s) {
+	 switch (*s) {
+	  case '\xB0':
 #ifdef HPGL_USE_UC
-         /* draw a degree sign */
-         prio_print(HPGL_EOL";UC1.25,7.5,99,.25,0,.125,-.25,0,-.5,"
-		    "-.125,-.25,-.25,0,-.125,.25,0,.5,.125,.25;LB");
+	    /* draw a degree sign */
+	    prio_print(HPGL_EOL";UC1.25,7.5,99,.25,0,.125,-.25,0,-.5,"
+		       "-.125,-.25,-.25,0,-.125,.25,0,.5,.125,.25;LB");
 #else
-         /* KLUDGE: this prints the degree sign if the plotter supports
-          * extended chars or a space if not, since we tried to redefine
-          * space.  Nifty, eh? */
-         prio_print(HPGL_SO" "HPGL_SI);
+	    /* KLUDGE: this prints the degree sign if the plotter supports
+	     * extended chars or a space if not, since we tried to redefine
+	     * space.  Nifty, eh? */
+	    prio_print(HPGL_SO" "HPGL_SI);
 #endif
-         break;
-       case '\xA9':
+	    break;
+	  case '\xA9':
 #ifdef HPGL_USE_UC
-         /* (C) needs two chars to look right! */
-         /* This bit does the circle of the (C) symbol: */
-         prio_print(HPGL_EOL";");
-         if (fNewLines) prio_putc('\n');
-         prio_print("UC2,3.5,99,0,1,0.125,1,0.25,.75,0.375,.75,"
-		    ".5,.5,.625,.25,.75,.25,.75,0,.75,-.25,.625,-.25,"
-		    ".5,-.5,.375,-.75,.25,-.75,.125,-1,0,-1,-0.125,-1,"
-		    "-0.25,-.75,-0.375,-.75,-.5,-.5,-.625,-.25,-.75,-.25,"
-		    "-.75,0,-.75,.25,-.625,.25,-.5,.5,-.375,.75,-.25,.75,"
-		    "-.125,1;");
-         if (fNewLines) prio_putc('\n');
-         /* And this bit's the c in the middle: */
-         prio_print("UC.5,5,99,-.125,.25,-.375,.5,-.5,.25,-.625,0,"
-		    "-.625,-.25,-.375,-.25,-.375,-.75,-.125,-.75,.125,-.75,"
-		    ".375,-.75,.375,-.25,.625,-.25,.625,0,.5,.25,.375,.5,"
-		    ".125,.25;");
-         if (fNewLines) prio_putc('\n');
-         prio_print("LB");
+	    /* (C) needs two chars to look right! */
+	    /* This bit does the circle of the (C) symbol: */
+	    prio_print(HPGL_EOL";");
+	    if (fNewLines) prio_putc('\n');
+	    prio_print("UC2,3.5,99,0,1,0.125,1,0.25,.75,0.375,.75,"
+		       ".5,.5,.625,.25,.75,.25,.75,0,.75,-.25,.625,-.25,"
+		       ".5,-.5,.375,-.75,.25,-.75,.125,-1,0,-1,-0.125,-1,"
+		       "-0.25,-.75,-0.375,-.75,-.5,-.5,-.625,-.25,-.75,-.25,"
+		       "-.75,0,-.75,.25,-.625,.25,-.5,.5,-.375,.75,-.25,.75,"
+		       "-.125,1;");
+	    if (fNewLines) prio_putc('\n');
+	    /* And this bit's the c in the middle: */
+	    prio_print("UC.5,5,99,-.125,.25,-.375,.5,-.5,.25,-.625,0,"
+		       "-.625,-.25,-.375,-.25,-.375,-.75,-.125,-.75,.125,-.75,"
+		       ".375,-.75,.375,-.25,.625,-.25,.625,0,.5,.25,.375,.5,"
+		       ".125,.25;");
+	    if (fNewLines) prio_putc('\n');
+	    prio_print("LB");
 #else
-         prio_print(HPGL_SO"(C)"HPGL_SI);
+	    prio_print(HPGL_SO"(C)"HPGL_SI);
 #endif
-         break;
-       default:
-         prio_putc(*s);
+	    break;
+	  default:
+	    prio_putc(*s);
+	 }
+	 s++;
       }
-      s++;
+      prio_print(HPGL_EOL";");
+      if (fNewLines) prio_putc('\n');
+   } else {
+#define CHAR_SIZE (6 * HPGL_UNITS_PER_MM) /* Guesstimate of character size */
+      if ((y_t + CHAR_SIZE > clip.y_min && y_t < clip.y_max) ||
+	  (x_t < clip.x_max && x_t + strlen(s) * CHAR_SIZE > clip.x_min)) {
+	 fBlankPage = fFalse;
+      }
    }
-   prio_print(HPGL_EOL";");
-   if (fNewLines) prio_putc('\n');
 }
 
 static void

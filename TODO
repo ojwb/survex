@@ -76,8 +76,7 @@ extract --help messages for translation.
 Date: Wed, 04 Jul 2001
 From: Olly
 
-Implement skip blank pages on printps/printhpgl; check it works on
-printpcl and printdm (does on printxbm).
+Check skip blank pages works on print*...
 
 win install lang??
 
@@ -153,7 +152,7 @@ Add warning not to edit this file to /usr/share/survex/print.ini
 survex apt source for survex, survex-aven, and wxgtk2.2 so apt-get
 survex will work on potato...
 
-ISO image?
+ISO image?  structure debian packages on it as an apt source.
 
 Mark: "surface.png is for a textured landscape -- there needs to be a
 menu option to select the texturing on/off, and this should be the

@@ -61,7 +61,8 @@ Changes in 0.99-prerelease1:
   appropriately (don't ask for view or bearing, and modify info box
   on printout).
 
-* printdm/printpcl: --skip-blanks now forces --no-border.
+* print*: --skip-blanks now works on printwin/printpcl/printps;
+  --skip-blanks now forces --no-border.
 
 * printps: thinner lines by default (0.1 points rather than 0.5).
 

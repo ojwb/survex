@@ -1014,7 +1014,8 @@ main(int argc, char **argv)
 	 }
 
 	 if (pr->SetFont) pr->SetFont(PR_FONT_LABELS);
-         for (pli = pliHead; pli; pli = pli->pliNext)
+         for (pli = pliHead; pli; pli = pli->pliNext) {
+	    if (pass == -1 && !fBlankPage) break;
             switch (pli->tag) {
              case img_MOVE:
                if (fShots) {
@@ -1065,7 +1066,9 @@ main(int argc, char **argv)
 	          x = y = INT_MAX;
 	       }
                break;
-            }
+            }	    
+	 }
+
          if (pass == -1) {
             if (fBlankPage) break;
          } else {
