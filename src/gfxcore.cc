@@ -2562,6 +2562,22 @@ bool GfxCore::IsFullScreen() const
     return m_Parent->IsFullScreen();
 }
 
+void
+GfxCore::MoveViewer(double forward, double up, double right)
+{
+    double cT = cos(m_TiltAngle);
+    double sT = sin(m_TiltAngle);
+    double cP = cos(m_PanAngle);
+    double sP = sin(m_PanAngle);
+    Vector3 v_forward(cT * sP, cT * cP, -sT);
+    Vector3 v_up(- sT * sP, - sT * cP, cT);
+    double cT2_sT2 = cT * cT - sT * sT;
+    Vector3 v_right(cP * cT2_sT2, sP * cT2_sT2, 0);
+    Vector3 move = v_forward * forward + v_up * up + v_right * right;
+    AddTranslation(-move.getX(), -move.getY(), -move.getZ());
+    ForceRefresh();
+}
+
 PresentationMark GfxCore::GetView() const
 {
     return PresentationMark(m_Translation.x + m_Parent->GetXOffset(),
