@@ -3199,10 +3199,8 @@ en:380 Delay
 en:381 @Record State
 en:382 R@un Presentation
 en:383 Re@hearse Timings
-#
+# XXX 384 385
 # for about box:
-en:384 OpenGL renderer:
-en:385 OpenGL version:
 en:386 Host system type:
 # message 387 is used when operating system version cannot be determined:
 en:387 (unavailable)

@@ -39,22 +39,21 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
-#ifdef AVENGL
     wxStaticText* title = new wxStaticText(this, 502,
-                              wxString("Aven "VERSION" (OpenGL enabled)"));
+                                           wxString("Aven "VERSION));
+#ifdef AVENGL
     const GLubyte* gl_vendor = glGetString(GL_VENDOR);
     const GLubyte* gl_renderer = glGetString(GL_RENDERER);
     const GLubyte* gl_version = glGetString(GL_VERSION);
-    wxStaticText* vendor = new wxStaticText(this, 520,
-                           wxString(msg(/*OpenGL renderer:*/384)) +
-                           wxString(" ") + wxString(gl_vendor) +
-                           wxString(" ") + wxString(gl_renderer));
-    wxStaticText* version = new wxStaticText(this, 521,
-                            wxString(msg(/*OpenGL version:*/385)) +
-                            wxString(" ") + wxString(gl_version));
-#else
-    wxStaticText* title = new wxStaticText(this, 502,
-                                           wxString("Aven "VERSION));
+    wxString gl_desc("OpenGL");
+    gl_desc += ' ';
+    gl_desc += wxString(gl_version);
+    gl_desc += " (";
+    gl_desc += wxString(gl_vendor);
+    gl_desc += ' ';
+    gl_desc += wxString(gl_renderer);
+    gl_desc += ')';
+    wxStaticText* opengl = new wxStaticText(this, 520, gl_desc);
 #endif
     wxStaticText* purpose = new wxStaticText(this, 505,
 	wxString(msg(/*Survey visualisation tool*/209)));
@@ -126,8 +125,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     vert->Add(os, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(depth, 0, wxLEFT | wxRIGHT, 20);
 #ifdef AVENGL
-    vert->Add(vendor, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(version, 0, wxLEFT | wxRIGHT, 20);
+    vert->Add(opengl, 0, wxLEFT | wxRIGHT, 20);
 #endif
     vert->Add(10, 5, 0, wxTOP, 15);
     
