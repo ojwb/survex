@@ -863,7 +863,7 @@ void GfxCore::DrawDepthbar()
     wxString* strs = new wxString[m_Bands + 1];
     for (int band = 0; band <= m_Bands; band++) {
 	double z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / m_Bands);
-	strs[band] = wxString::Format("%.0f%s", z, msg(505) /* m (as in metres) */);
+	strs[band] = wxString::Format("%.0fm", z);
 	int x, y;
 	m_DrawDC.GetTextExtent(strs[band], &x, &y);
 	if (x > size) {
@@ -904,7 +904,7 @@ void GfxCore::DrawScalebar()
     double m_across_screen = double(m_XSize / m_Params.scale);
 
     // Calculate the length of the scale bar in metres.
-    double size_snap = (double) pow(10.0, int(log10(0.75 * m_across_screen)));
+    double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
     double t = m_across_screen * 0.75 / size_snap;
     if (t >= 5.0) {
         size_snap *= 5.0;
@@ -935,29 +935,38 @@ void GfxCore::DrawScalebar()
     }
 
     // Add labels.
-    double dv = size_snap * 100.0f;
-    wxString str;
+    wxString str = wxString("0");
     wxString str2;
-    if (dv < 1.0) {
-        str = wxString::Format("0%s", msg(506) /* mm */);
-	if (dv < 0.001) {
-	    str2 = wxString::Format("%.02f%s", dv * 10.0, msg(506) /* mm */);
-	}
-	else {
-	    str2 = wxString::Format("%.f%s", dv * 10.0, msg(506) /* mm */);
-	}
-    }
-    else if (dv < 100.0) {
-        str = wxString::Format("0%s", msg(507) /* cm */);
-	str2 = wxString::Format("%.02f%s", dv, msg(507) /* cm */);
-    }
-    else if (dv < 100000.0) {
-        str = wxString::Format("0%s", msg(505) /* m */);
-	str2 = wxString::Format("%.02f%s", dv / 100.0, msg(505) /* m */);
-    }
-    else {
-        str = wxString::Format("0%s", msg(508) /* km */);
-        str2 = wxString::Format("%.02f%s", dv / 100000.0, msg(508) /* km */);
+#ifdef SILLY_UNITS
+    if (size_snap < 1e-12) {
+	str2 = wxString::Format("%.3gpm", size_snap * 1e12);
+    } else if (size_snap < 1e-9) {
+	str2 = wxString::Format("%.fpm", size_snap * 1e12);
+    } else if (size_snap < 1e-6) {
+	str2 = wxString::Format("%.fnm", size_snap * 1e9);
+    } else if (size_snap < 1e-3) {
+	str2 = wxString::Format("%.fum", size_snap * 1e6);
+#else
+    if (size_snap < 1e-3) {
+	str2 = wxString::Format("%.3gmm", size_snap * 1e3);
+#endif
+    } else if (size_snap < 1e-2) {
+	str2 = wxString::Format("%.fmm", size_snap * 1e3);
+    } else if (size_snap < 1.0) {
+	str2 = wxString::Format("%.fcm", size_snap * 100.0);
+    } else if (size_snap < 1e3) {
+	str2 = wxString::Format("%.fm", size_snap);
+#ifdef SILLY_UNITS
+    } else if (size_snap < 1e6) {
+	str2 = wxString::Format("%.fkm", size_snap * 1e-3);
+    } else if (size_snap < 1e9) {
+	str2 = wxString::Format("%.fMm", size_snap * 1e-6);
+    } else {
+        str2 = wxString::Format("%.fGm", size_snap * 1e-9);
+#else
+    } else {
+        str2 = wxString::Format("%.fkm", size_snap * 1e-3);
+#endif
     }
 
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
