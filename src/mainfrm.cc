@@ -248,6 +248,8 @@ bool MainFrm::ProcessEvent(wxEvent& event)
 #endif
 void MainFrm::OnPaint(wxPaintEvent&) //-- sort this out!
 {
+    wxPaintDC dc(this);
+
     if (!m_Gfx) {
         m_Gfx = new GfxCore(this);
 	if (m_FileToLoad != wxString("")) {

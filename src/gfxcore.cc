@@ -76,7 +76,7 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
     EVT_RIGHT_UP(GfxCore::OnRButtonUp)
     EVT_MOTION(GfxCore::OnMouseMove)
     EVT_SIZE(GfxCore::OnSize)
-  // EVT_IDLE(GfxCore::OnTimer)
+    EVT_IDLE(GfxCore::OnTimer)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent) :
@@ -291,7 +291,7 @@ void GfxCore::Initialise()
     // Calculate screen coordinates and redraw.
     SetScale(m_InitialScale);
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::FirstShow()
@@ -598,10 +598,8 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 
     dc.BeginDrawing();
 
-#ifndef _WIN32
     // Get the areas to redraw and update them.
     wxRegionIterator iter(region);
-    //    wxLogDebug("--start--\n");
     while (iter) {
         // Blit the bitmap onto the window.
 
@@ -610,16 +608,10 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         int width = iter.GetW();
         int height = iter.GetH();
 
-	//wxLogDebug("redrawing (%d,%d) size (%d,%d)\n", x, y, width, height);
-
         dc.Blit(x, y, width, height, &m_DrawDC, x, y);
 
 	iter++;
     }
-    //wxLogDebug("--end--\n");
-#else
-    dc.Blit(0, 0, m_XSize, m_YSize, &m_DrawDC, 0, 0);
-#endif
 
     dc.EndDrawing();
 }
@@ -1245,7 +1237,7 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
     m_RedrawOffscreen = true;
     RedrawOffscreen();
 
-    Repaint();
+    Refresh(false);
 
     m_DragStart = point;
 }
@@ -1271,7 +1263,7 @@ void GfxCore::TurnCave(double angle)
     SetScale(m_Params.scale);
 
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::TurnCaveTo(double angle)
@@ -1308,7 +1300,7 @@ void GfxCore::TiltCave(double tilt_angle)
     SetScale(m_Params.scale);
     
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::HandleTilt(wxPoint point)
@@ -1360,7 +1352,7 @@ void GfxCore::HandleTranslate(wxPoint point)
     SetScale(m_Params.scale);
 
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 
     m_DragStart = point;
 }
@@ -1430,7 +1422,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		      SetScale(m_Params.scale * pow(1.06, 0.01 *
 						    (-m_DragStart.x + point.x)));
 		      m_RedrawOffscreen = true;
-		      Repaint();
+		      Refresh(false);
 		  }
 	      }
 	      else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
@@ -1462,7 +1454,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		  m_ScaleBar.offset_x = point.x - x_inside_bar;
 		  m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
 		  m_RedrawOffscreen = true;
-		  Repaint();
+		  Refresh(false);
 	    }
 	    else {
 	        HandleTranslate(point);
@@ -1495,7 +1487,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
 	m_OffscreenBitmap.Create(m_XSize, m_YSize);
 	m_DrawDC.SelectObject(m_OffscreenBitmap);
         RedrawOffscreen();
-	Repaint();
+	Refresh(false);
     }
 }
 
@@ -1505,7 +1497,7 @@ void GfxCore::OnDisplayOverlappingNames(wxCommandEvent&)
     m_OverlappingNames = !m_OverlappingNames;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& cmd) 
@@ -1520,7 +1512,7 @@ void GfxCore::OnShowCrosses(wxCommandEvent&)
     m_RedrawOffscreen = true;
     m_ScaleCrossesOnly = true;
     SetScale(m_Params.scale);
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnShowCrossesUpdate(wxUpdateUIEvent& cmd) 
@@ -1534,7 +1526,7 @@ void GfxCore::OnShowStationNames(wxCommandEvent&)
     m_Names = !m_Names;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnShowStationNamesUpdate(wxUpdateUIEvent& cmd) 
@@ -1547,7 +1539,7 @@ void GfxCore::OnShowSurveyLegs(wxCommandEvent&)
 {
     m_Legs = !m_Legs;
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd) 
@@ -1742,7 +1734,7 @@ void GfxCore::Defaults()
     DefaultParameters();
     SetScale(m_InitialScale);
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnDefaultsUpdate(wxUpdateUIEvent& cmd) 
@@ -1819,7 +1811,7 @@ void GfxCore::OnShiftDisplayDown(wxCommandEvent&)
     m_Params.display_shift.y += DISPLAY_SHIFT;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
@@ -1832,7 +1824,7 @@ void GfxCore::OnShiftDisplayLeft(wxCommandEvent&)
     m_Params.display_shift.x -= DISPLAY_SHIFT;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
@@ -1845,7 +1837,7 @@ void GfxCore::OnShiftDisplayRight(wxCommandEvent&)
     m_Params.display_shift.x += DISPLAY_SHIFT;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd) 
@@ -1858,7 +1850,7 @@ void GfxCore::OnShiftDisplayUp(wxCommandEvent&)
     m_Params.display_shift.y -= DISPLAY_SHIFT;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnShiftDisplayUpUpdate(wxUpdateUIEvent& cmd) 
@@ -1873,7 +1865,7 @@ void GfxCore::OnZoomIn(wxCommandEvent&)
     m_Params.scale *= 1.06f;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnZoomInUpdate(wxUpdateUIEvent& cmd) 
@@ -1888,7 +1880,7 @@ void GfxCore::OnZoomOut(wxCommandEvent&)
     m_Params.scale /= 1.06f;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnZoomOutUpdate(wxUpdateUIEvent& cmd) 
@@ -1958,7 +1950,7 @@ void GfxCore::OnToggleScalebar(wxCommandEvent&)
 {
     m_Scalebar = !m_Scalebar;
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnToggleScalebarUpdate(wxUpdateUIEvent& cmd) 
@@ -1971,7 +1963,7 @@ void GfxCore::OnToggleDepthbar(wxCommandEvent&)
 {
     m_Depthbar = !m_Depthbar;
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnToggleDepthbarUpdate(wxUpdateUIEvent& cmd) 
@@ -1984,7 +1976,7 @@ void GfxCore::OnViewCompass(wxCommandEvent&)
 {
     m_Compass = !m_Compass;
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnViewCompassUpdate(wxUpdateUIEvent& cmd) 
@@ -1997,7 +1989,7 @@ void GfxCore::OnViewClino(wxCommandEvent&)
 {
     m_Clino = !m_Clino;
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd) 
@@ -2011,21 +2003,21 @@ void GfxCore::OnShowSurface(wxCommandEvent& cmd)
 {
     m_Surface = !m_Surface;
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnShowSurfaceDepth(wxCommandEvent& cmd)
 {
     m_SurfaceDepth = !m_SurfaceDepth;
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnShowSurfaceDashed(wxCommandEvent& cmd)
 {
     m_SurfaceDashed = !m_SurfaceDashed;
     m_RedrawOffscreen = true;
-    Repaint();
+    Refresh(false);
 }
 
 void GfxCore::OnShowSurfaceUpdate(wxUpdateUIEvent& cmd)
@@ -2044,17 +2036,4 @@ void GfxCore::OnShowSurfaceDashedUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_PlotData && m_SurfaceLegs && m_Surface);
     cmd.Check(m_SurfaceDashed);
-}
-
-void GfxCore::Repaint()
-{
-    Refresh(false);
-#ifdef _WIN32
-    // On Windows, it transpires that Refresh() only causes the new update region
-    // to be queued -- the redraw doesn't actually happen until the next WM_PAINT
-    // message is received.  What wxWindows ought to do is to call ::UpdateWindow()
-    // after ::InvalidateRect().
-    wxPaintEvent event;
-    OnPaint(event);
-#endif
 }
