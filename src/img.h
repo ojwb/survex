@@ -24,6 +24,8 @@
 extern "C" {
 #endif
 
+#include <stdio.h>
+
 # ifndef STANDALONE
 #  include "useful.h"
 # endif
