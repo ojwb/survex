@@ -1,7 +1,7 @@
 /* > netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-1999 Olly Betts
+ * Copyright (C) 1991-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -200,9 +200,12 @@ remove_travs(void)
    out_current_action(msg(/*Concatenating traverses between nodes*/126));
    FOR_EACH_STN(stn, stnlist) {
       if (fixed(stn) || three_node(stn)) {
-	 if (stn->leg[0]) concatenate_trav(stn, 0);
-	 if (stn->leg[1]) concatenate_trav(stn, 1);
-	 if (stn->leg[2]) concatenate_trav(stn, 2);
+	 int d;
+	 for (d = 0; d <= 2; d++) {
+	    linkfor *leg = stn->leg[d];
+	    if (leg && !(leg->l.reverse & FLAG_REPLACEMENTLEG))
+	       concatenate_trav(stn, d);
+	 }
       }
    }
 }
@@ -231,10 +234,9 @@ concatenate_trav(node *stn, int i)
    trav->join1 = stn->leg[i];
 
    j = reverse_leg_dirn(stn->leg[i]);
+   ASSERT(j == 0 || j == 1);
 
    newleg = copy_link(stn->leg[i]);
-
-   stn->leg[i] = newleg;
 
    while (1) {      
       stn = stn2;
@@ -262,6 +264,9 @@ concatenate_trav(node *stn, int i)
 
    newleg->l.to = stn;
    newleg->l.reverse = j | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
+
+   newleg2->l.to->leg[reverse_leg_dirn(newleg2)] = newleg;
+   /* i.e. stn->leg[i] = newleg; with original stn and i */
 
    stn->leg[j] = newleg2;
 

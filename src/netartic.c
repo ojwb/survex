@@ -1,6 +1,6 @@
 /* > netartic.c
  * Split up network at articulation points
- * Copyright (C) 1993-1999 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

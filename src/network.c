@@ -600,11 +600,11 @@ replace_subnets(void)
          } else {
             stn2 = ptrRed->join1->l.to;
             dirn2 = reverse_leg_dirn(ptrRed->join1);
-            add_stn_to_list(&stnlist, stn2);
             dirn2 = (dirn2 + 2) % 3; /* point back at stn again */
             stn = stn2->leg[dirn2]->l.to;
-            add_stn_to_list(&stnlist, stn);
          }
+	 add_stn_to_list(&stnlist, stn);
+	 add_stn_to_list(&stnlist, stn2);
 
          osfree(stn3->leg[dirn3]);
          stn3->leg[dirn3] = ptrRed->join1;
@@ -614,12 +614,11 @@ replace_subnets(void)
          /* parallel legs */
          d e, e2;
          linkfor *leg;
+	 stn = ptrRed->join1->l.to;
+	 stn2 = ptrRed->join2->l.to;
          if (fixed(stn3)) {
             /* NB either both or neither fixed */
-            stn = ptrRed->join1->l.to;
             dirn = reverse_leg_dirn(ptrRed->join1);
-
-            stn2 = ptrRed->join2->l.to;
             dirn2 = reverse_leg_dirn(ptrRed->join2);
 
             leg = stn3->leg[dirn3];
@@ -661,13 +660,10 @@ replace_subnets(void)
             print_prefix(stn3->name); putnl();
             print_prefix(stn4->name); putnl();
 #endif
-         } else {
-            stn = ptrRed->join1->l.to;
-            add_stn_to_list(&stnlist, stn);
-
-            stn2 = ptrRed->join2->l.to;
-            add_stn_to_list(&stnlist, stn2);
          }
+	 add_stn_to_list(&stnlist, stn);
+	 add_stn_to_list(&stnlist, stn2);
+	 
          osfree(stn3->leg[dirn3]);
 	 stn3->leg[dirn3] = ptrRed->join1;
          osfree(stn4->leg[dirn4]);
