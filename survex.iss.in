@@ -32,6 +32,7 @@ Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
 Source: "*.tcl"; DestDir: "{app}"
+Source: "*.txf"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}\icons"
 Source: "manual\*.*"; DestDir: "{app}\manual"
 ; NB keep these lines in step with Makefile.am
