@@ -699,18 +699,19 @@ void GfxCore::RedrawOffscreen()
 	wxPoint(-CROSS_SIZE, CROSS_SIZE),
 	wxPoint(CROSS_SIZE + 1, -CROSS_SIZE - 1) // FIXME: +/- 1 for wxGTK
     };
-    wxPoint tmp[1000];
     // Redraw the offscreen bitmap.
-    static int ignore = 10;
-static double total = 0.0;
-static int count = 0;
-    double t = timer.Time() * 1.0e-3;
-    if (ignore) {
+    if (true) {
+	static int ignore = 10;
+	static double total = 0.0;
+	static int count = 0;
+	double t = timer.Time() * 1.0e-3;
+	if (ignore) {
 	    --ignore;
-    } else {
-    total += t;
-    count++;
-    cout << count / total << " average fps; " << 1.0 / t << " fps (" << t << " sec)\n";
+	} else {
+	    total += t;
+	    count++;
+	    cout << count / total << " average fps; " << 1.0 / t << " fps (" << t << " sec)\n";
+	}
     }
     timer.Start(); // reset timer
 #ifdef AVENGL
@@ -805,6 +806,8 @@ static int count = 0;
 		inc = -1;
 	    }
 
+#define MAX_SEGS 64 // Longest run in all.3d is 44 segments - set dynamically?
+	    wxPoint tmp[MAX_SEGS];
 	    for (int band = start; band != end; band += inc) {
 		m_DrawDC.SetPen(m_Parent->GetPen(band));
 		int* num_segs = m_PlotData[band].num_segs; //-- sort out the polyline stuff!!
@@ -813,30 +816,35 @@ static int count = 0;
 		    double X = vertices->x + m_Params.translation.x;
 		    double Y = vertices->y + m_Params.translation.y;
 		    double Z = vertices->z + m_Params.translation.z;
+		    ++vertices;
 
 		    int x = int(X * m_00 + Y * m_01 + Z * m_02);
 		    int y = -int(X * m_20 + Y * m_21 + Z * m_22);
-//		    x += m_XCentre;
-//		    y += m_YCentre;
-		    wxPoint *pt = tmp; pt->x = x; pt->y = y; pt++;
-		    for (int n = *num_segs; n > 1; --n) {
-			++vertices;
+		    tmp[0].x = x;
+		    tmp[0].y = y;
+		    size_t count = 1;
+		    size_t n = *num_segs;
+		    while (1) {
 			X = vertices->x + m_Params.translation.x;
 			Y = vertices->y + m_Params.translation.y;
 			Z = vertices->z + m_Params.translation.z;
+			++vertices;
 
-			int x2 = int(X * m_00 + Y * m_01 + Z * m_02);
-			int y2 = -int(X * m_20 + Y * m_21 + Z * m_22);
-//			x2 += m_XCentre;
-//			y2 += m_YCentre;
-			pt->x = x2; pt->y = y2; pt++;
-//			m_DrawDC.DrawLine(x,y,x2,y2);
-//			x = x2;
-//			y = y2;
+			x = int(X * m_00 + Y * m_01 + Z * m_02);
+			y = -int(X * m_20 + Y * m_21 + Z * m_22);
+			tmp[count].x = x;
+			tmp[count].y = y;
+			++count;
+			--n;
+			if (count == MAX_SEGS || n == 1) {
+			    m_DrawDC.DrawLines(count, tmp, m_XCentre, m_YCentre);
+			    if (n == 1) break;
+			    // printf("had to split traverse with %d segs\n", *num_segs);
+			    tmp[0].x = x;
+			    tmp[0].y = y;
+			    count = 1;
+			}
 		    }
-		    m_DrawDC.DrawLines(pt - tmp, tmp, m_XCentre, m_YCentre);
-		    ++vertices;
-//		    vertices += *num_segs++;
 		    ++num_segs;
 		}
 	    }
@@ -1569,15 +1577,6 @@ void GfxCore::NattyDrawNames()
 		}
 	    }
 	}
-	
-#if 0 // FIXME
-	if (reject) {
-	    (*label)->flags &= ~LABEL_DISPLAYED;
-	} else {
-	    (*label)->flags |= LABEL_DISPLAYED;
-	}
-#endif
-
 	++label;
     }
 }
@@ -2574,7 +2573,7 @@ void GfxCore::OnElevation()
 	    break;
 	case ELEVATION:
 	    // A second order to switch takes us there right away
-	    TiltCave(- m_TiltAngle);
+	    TiltCave(-m_TiltAngle);
 	    m_SwitchingTo = 0;
     } 
 }
