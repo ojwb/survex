@@ -36,4 +36,5 @@ angleunits.svx angleunits.pos\
 lengthunits.svx lengthunits.pos\
 cmd_default.svx cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
 cmd_case.svx cmd_case.pos\
-stnsurvey1.svx stnsurvey2.svx
+stnsurvey1.svx stnsurvey2.svx\
+tapelessthandepth.svx

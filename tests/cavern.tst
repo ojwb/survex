@@ -20,7 +20,8 @@ export SURVEXHOME
  exporterr1 exporterr2 exporterr3 exporterr4 exporterr5\
  exporterr1b exporterr2b exporterr3b exporterr6 exporterr6b\
  hanging_cpt badinc badinc2 non_existant_file\
- stnsurvey1 stnsurvey2 stnsurvey3"}
+ stnsurvey1 stnsurvey2 stnsurvey3\
+ tapelessthandepth"}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -64,6 +65,7 @@ for file in $TESTS ; do
   singlereffixerr) pos=no ; count=0 ;;
   cmd_prefix) pos=no ; count=1 ;;
   singlefixerr) pos=no ; count=1 ;;
+  tapelessthandepth) pos=no ; count=1 ;;
   begin_no_end) pos=fail ;;
   end_no_begin) pos=fail ;;
   end_no_begin_nest) pos=fail ;;
@@ -84,7 +86,7 @@ for file in $TESTS ; do
   non_existant_file) pos=fail ;;
   stnsurvey1) pos=fail ;;
   stnsurvey2) pos=fail ;;
-  stnsurvey3) pos=fail ;;  
+  stnsurvey3) pos=fail ;;
   *) file='' ;;
   esac
 
