@@ -65,4 +65,5 @@ oldestyle.svx\
 pos.pos v0.3d v1.3d v2.3d v3.3d\
 baddatacylpolar.svx bugdz.svx bugdz.pos badnewline.svx\
 badquantities.svx imgoffbyone.svx imgoffbyone.pos\
-infereqtopofil.svx infereqtopofil.pos
+infereqtopofil.svx infereqtopofil.pos\
+3sdfixbug.svx 3sdfixbug.pos
