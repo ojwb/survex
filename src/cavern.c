@@ -374,10 +374,11 @@ main(int argc, char **argv)
       printf(msg(/*There were %d warning(s) and %d non-fatal error(s).*/16),
 	     msg_warnings, msg_errors);
       putnl();
-      /* FIXME: if (msg_errors || (f_warnings_are_errors && msg_warnings)) print "output not produced..."? */
    }
-   if (msg_errors || (f_warnings_are_errors && msg_warnings))
+   if (msg_errors || (f_warnings_are_errors && msg_warnings)) {
+      puts(msg(/*No output files produced.*/113));
       return EXIT_FAILURE;
+   }
    return EXIT_SUCCESS;
 }
 
