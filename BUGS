@@ -16,7 +16,7 @@ disappears - this is probably our problem, not yours (the VESA 2 support being
 relatively new) :-)
 
 Date: 17 Sep 1998 17:49:36 GMT
-From: olly@muscat.co.uk
+From: Olly <olly@muscat.co.uk>
 
 In DJGPP+Allegro caverot: On an NT 4 server, the mouse works in the
 mode-picker, but not in caverot itself.  Also, the mode caverot tries to
@@ -48,7 +48,7 @@ earlier)]
 cures the problem).  PWJ suggests the graphics card might be the problem.
 
 Date: Mon, 22 Feb 1999 08:58:53 GMT
-From: jep@redestb.es (Josep Guarro)
+From: <jep@redestb.es> Josep Guarro
 
 When I use caverot if I set the language to another one different than
 english, the screen doesn't print well the words with accents.
