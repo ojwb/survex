@@ -8,10 +8,14 @@ AM_CONFIG_HEADER(config.h)
 
 dnl keep this on two lines like this - miniam.pl relies on this
 AC_DEFINE(COPYRIGHT_MSG,
-"Copyright (C) 1990-1999 Olly Betts", [Copyright Message])
+"Copyright (C) 1990-2000 Olly Betts", [Copyright Message])
 
 dnl Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_CXXCPP
+
+AC_LANG_C
 
 AC_PROG_MAKE_SET
 
@@ -20,7 +24,7 @@ AC_OBJEXT
 
 if test "$MINGW32$CYGWIN" != ""; then
 dnl assume mingw32 or cygwin means littleendian (may not be true for NT
-dnl on non-intel platforms...
+dnl on non-intel platforms but ISTR m$ have scrapped that)
 ac_cv_c_bigendian=no
 else
 dnl autoconf doesn't look in the right place to find the endian-ness of
@@ -45,16 +49,26 @@ fi
 
 AC_CHECK_PROGS(STRIP, strip, echo "not stripping ")
 
-AC_CHECK_LIB(m, sqrt)
-
 AC_PATH_XTRA
 
-AC_CHECK_LIB(Xext, XdbeQueryExtension, X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS", ,
- $X_LIBS $X_PRE_LIBS -lX11 -lXext $X_EXTRA_LIBS)
-			 
+AVEN=
+AM_PATH_GTKMM(1.0.0,AVEN=aven,AC_MSG_WARN([GTK-- not found (is gtkmm-config in path?) : not building aven]))
+AC_SUBST(GTKMM_VERSION)
+AC_SUBST(GTKMM_LIBS)
+AC_SUBST(GTKMM_CFLAGS)
+AC_SUBST(AVEN)
+
+AC_LANG_C
+
+AC_CHECK_LIB(m, sqrt)
+
 if test x$no_x != xyes; then
+  AC_CHECK_LIB(Xext, XdbeQueryExtension, X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS", ,
+   $X_LIBS $X_PRE_LIBS -lX11 -lXext $X_EXTRA_LIBS)			 
   CAVEROT=xcaverot ${CAVEROT}
   AC_MSG_RESULT("building xcaverot")
+else
+  AVEN=
 fi
 AC_SUBST(CAVEROT)
 
@@ -88,10 +102,10 @@ AC_MSG_RESULT()
 strcasecmp=no
 # The order of these tests is important.
 AC_CHECK_FUNC(strcasecmp, strcasecmp=strcasecmp)
-if test "x$strcasecmp" = no ; then
+if test "x$strcasecmp" = xno ; then
   AC_CHECK_FUNC(stricmp, strcasecmp=stricmp)
 fi
-if test "x$strcasecmp" = no ; then
+if test "x$strcasecmp" = xno ; then
   AC_CHECK_FUNC(strcmpi, strcasecmp=strcmpi)
 fi
 
