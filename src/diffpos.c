@@ -1,6 +1,6 @@
 /* > diffpos.c */
 /* (Originally quick and dirty) program to compare two SURVEX .pos files */
-/* Copyright (C) 1994,1996,1998,1999 Olly Betts
+/* Copyright (C) 1994,1996,1998,1999,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,12 +84,12 @@ main(int argc, char **argv)
    }
    fh1 = fopen(fnm1, "rb");
    if (!fh1) {
-      printf("Can't open file '%s'\n", fnm1);
+      printf("Can't open file `%s'\n", fnm1);
       exit(1);
    }
    fh2 = fopen(fnm2, "rb");
    if (!fh2) {
-      printf("Can't open file '%s'\n", fnm2);
+      printf("Can't open file `%s'\n", fnm2);
       exit(1);
    }
    return diff_pos(fh1, fh2, threshold);

@@ -426,7 +426,7 @@ parse_msg_file(int charset_code)
 
    if (!fh) {
       /* no point extracting this error as it won't get used if file opens */
-      fprintf(STDERR, "Can't open message file '%s' using path '%s'\n",
+      fprintf(STDERR, "Can't open message file `%s' using path `%s'\n",
 	      msg_lang, pth_cfg_files);
       exit(EXIT_FAILURE);
    }
@@ -434,7 +434,7 @@ parse_msg_file(int charset_code)
    if (fread(header, 1, 20, fh) < 20 ||
        memcmp(header, "Svx\nMsg\r\n\xfe\xff", 12) != 0) {
       /* no point extracting this error as it won't get used if file opens */
-      fprintf(STDERR, "Problem with message file '%s'\n", msg_lang);
+      fprintf(STDERR, "Problem with message file `%s'\n", msg_lang);
       exit(EXIT_FAILURE);
    }
 
@@ -458,7 +458,7 @@ parse_msg_file(int charset_code)
    fclose(fh);
 
 #ifdef DEBUG
-   fprintf(stderr, "msg_lang = '%s', num_msgs = %d, len = %d\n", msg_lang,
+   fprintf(stderr, "msg_lang = `%s', num_msgs = %d, len = %d\n", msg_lang,
            num_msgs, len);
 #endif
 

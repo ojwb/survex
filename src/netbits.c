@@ -253,7 +253,8 @@ addfakeleg(node *fr, node *to,
       /* we have been asked to add a leg with the same node at both ends
        * - give a warning and don't add the leg to the data structure
        */
-      compile_warning(/*Survey leg with same station ('%s') at both ends - typing error?*/50,
+      /* FIXME: should this be an error? */
+      compile_warning(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
 		      sprint_prefix(fr->name));
       /* FIXME: inc loop count? */
       return;

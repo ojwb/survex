@@ -294,13 +294,13 @@ pt: 23 BEGIN sem o END correspondente neste arquivo
 ca: 23 BEGIN sense el corresponent END en aquest fitxer
 es: 23 BEGIN sin el correspondiente END en este fichero
 it: 23 C'&eacute; un BEGIN senza il corrispondente END in questo file
-en: 24 Couldn't open data file '%s'
-fr: 24 Ne peut pas ouvrir le fichier de donn&eacute;es '%s'
-de: 24 Konnte Datendatei nicht &ouml;ffnen oder finden '%s'
-pt: 24 Imposs&iacute;vel abrir arquivo de dados '%s'
-ca: 24 No s'ha pogut obrir el fitxer de dades '%s'
-es: 24 No se pudo abrir el fichero de datos '%s'
-it: 24 Non riesco ad aprire il file dei dati '%s'
+en: 24 Couldn't open data file `%s'
+fr: 24 Ne peut pas ouvrir le fichier de donn&eacute;es `%s'
+de: 24 Konnte Datendatei nicht &ouml;ffnen oder finden `%s'
+pt: 24 Imposs&iacute;vel abrir arquivo de dados `%s'
+ca: 24 No s'ha pogut obrir el fitxer de dades `%s'
+es: 24 No se pudo abrir el fichero de datos `%s'
+it: 24 Non riesco ad aprire il file dei dati `%s'
 # FIXME: TRANSLATE check fr de pt ca es it
 en: 25 ROOT is deprecated
 fr: 25 ROOT n'est plus utilis&eacute;
@@ -440,14 +440,14 @@ pt: 43 Nenhum dado topogr&aacute;fico
 ca: 43 Cap dada de topo
 es: 43 Ning&uacute;n dato de topo
 it: 43 Mancano i dati topografici
-en: 44 Filename '%s' refers to directory
-fr: 44 Nom de fichier '%s' relatif &agrave; un r&eacute;pertoire
+en: 44 Filename `%s' refers to directory
+fr: 44 Nom de fichier `%s' relatif &agrave; un r&eacute;pertoire
 # sounds ugly, but is correct, and I can't think of a replacement
-de: 44 Dateiname '%s' bezeichnet ein Verzeichnis
-pt: 44 Nome de arquivo '%s' referencia diret&oacute;rio ao inv&eacute;s de arquivo
-ca: 44 Nom de fitxer '%s' referit a un directori
-es: 44 Nombre de fichero '%s' referido a un directorio
-it: 44 Il nome del file '%s' corrisponde ad una directory
+de: 44 Dateiname `%s' bezeichnet ein Verzeichnis
+pt: 44 Nome de arquivo `%s' referencia diret&oacute;rio ao inv&eacute;s de arquivo
+ca: 44 Nom de fitxer `%s' referit a un directori
+es: 44 Nombre de fichero `%s' referido a un directorio
+it: 44 Il nome del file `%s' corrisponde ad una directory
 en: 45 Survey not all connected to fixed stations
 fr: 45 Relev&eacute;s topo pas tous reli&eacute;s &agrave; des points fixes
 de: 45 Teile der Vermessung sind nicht an feste Punkte angeschlossen
@@ -462,13 +462,13 @@ pt: 46 Base j&aacute; posicionada
 ca: 46 Estaci&oacute; ja fixada o igualada a un punt fixat
 es: 46 Estaci&oacute;n ya fijada o igualada a un punto fijado
 it: 46 Stazione gi&aacute; fissata o uguagliata ad un punto fisso
-en: 47 Failed to open output file '%s'
-fr: 47 N'a pas r&eacute;ussi &agrave; ouvrir le fichier de sortie '%s'
-de: 47 Konnte Ausgabedatei nicht &ouml;ffnen '%s'
-pt: 47 N&atilde;o foi poss&iacute;vel abrir arquivo de sa&iacute;da '%s'
-ca: 47 No s'ha pogut obrir el fitxer de sortida '%s'
-es: 47 No se pudo abrir el fichero de salida '%s'
-it: 47 Non riesco ad aprire il file di uscita '%s'
+en: 47 Failed to open output file `%s'
+fr: 47 N'a pas r&eacute;ussi &agrave; ouvrir le fichier de sortie `%s'
+de: 47 Konnte Ausgabedatei nicht &ouml;ffnen `%s'
+pt: 47 N&atilde;o foi poss&iacute;vel abrir arquivo de sa&iacute;da `%s'
+ca: 47 No s'ha pogut obrir el fitxer de sortida `%s'
+es: 47 No se pudo abrir el fichero de salida `%s'
+it: 47 Non riesco ad aprire il file di uscita `%s'
 #48 not used
 #en: 48 Failed to close output file
 #fr: 48 N'a pas r&eacute;ussi &agrave; fermer le fichier de sortie
@@ -484,14 +484,14 @@ pt: 49 Sintaxe
 ca: 49 Sintaxi
 es: 49 Sintaxis
 it: 49 Sintassi
-en: 50 Survey leg with same station ('%s') at both ends - typing error?
-en-us: 50 Survey shot with same station ('%s') at both ends - typing error?
-fr: 50 Vis&eacute;e avec 2 extr&eacute;mit&eacute;s identiques ('%s') - erreur de frappe?
-de: 50 Me&szlig;strecke von einem Punkt ('%s') zu sich selbst - Tippfehler?
-pt: 50 Visada com mesma base em ambas as pontas ('%s') ('%s') - erro de digita&ccedil;&atilde;o ?
-ca: 50 Tirada amb la mateixa estaci&oacute; a ambdues puntes ('%s') - error de transcripci&oacute;?
-es: 50 Tirada con la misma estaci&oacute;n en ambas puntas ('%s') - error de transcripci&oacute;n?
-it: 50 Alle estremit&aacute; di una battuta c'&eacute; la stessa stazione ('%s') - Errore di trascrizione?
+en: 50 Survey leg with same station (`%s') at both ends - typing error?
+en-us: 50 Survey shot with same station (`%s') at both ends - typing error?
+fr: 50 Vis&eacute;e avec 2 extr&eacute;mit&eacute;s identiques (`%s') - erreur de frappe?
+de: 50 Me&szlig;strecke von einem Punkt (`%s') zu sich selbst - Tippfehler?
+pt: 50 Visada com mesma base em ambas as pontas (`%s') - erro de digita&ccedil;&atilde;o?
+ca: 50 Tirada amb la mateixa estaci&oacute; a ambdues puntes (`%s') - error de transcripci&oacute;?
+es: 50 Tirada con la misma estaci&oacute;n en ambas puntas (`%s') - error de transcripci&oacute;n?
+it: 50 Alle estremit&aacute; di una battuta c'&eacute; la stessa stazione (`%s') - Errore di trascrizione?
 en: 51 Clino reading over 90 degrees (absolute value)
 en-us: 51 Clino over 90 degrees (absolute value)
 fr: 51 Lecture de clino sup&eacute;rieure &agrave; 90 degr&eacute;s (en value absolue)
@@ -597,13 +597,14 @@ it: 62 La distanza &eacute; minore del dislivello
 # neither style nor datum is a keyword in the program
 # 63 complains about a depth gauge reading in normal style, for example
 # GN(3): Ahhhh.  Got it.  Well, it fits already as it is now. :-)
-en: 63 %s: Datum not allowed for this style
-fr: 63 %s: Donn&eacute;e pas permise pour ce style
-de: 63 %s: Diese Me&szlig;gr&ouml;&szlig;e ist bei diesem STYLE nicht erlaubt
-pt: 63 %s: Dado n&atilde;o permitido neste STYLE
-ca: 63 %s: Dada no permesa en aquest STYLE
-es: 63 %s: Dato no permitido en este STYLE
-it: 63 %s: Dato non permesso in questo STYLE
+# TRANSLATE check adapted translation fr de pt ca es it
+en: 63 Datum `%s' not allowed for this style
+fr: 63 Donn&eacute;e `%s' pas permise pour ce style
+de: 63 Diese Me&szlig;gr&ouml;&szlig;e `%s' ist bei diesem STYLE nicht erlaubt
+pt: 63 Dado `%s' n&atilde;o permitido neste STYLE
+ca: 63 Dada `%s' no permesa en aquest STYLE
+es: 63 Dato `%s' no permitido en este STYLE
+it: 63 Dato `%s' non permesso in questo STYLE
 # i.e. not enough "datums" for the style.  I need to pick a better word than datum really
 en: 64 Too few data
 fr: 64 Trop peu de donn&eacute;es
@@ -788,13 +789,13 @@ pt: 87 Erro ao imprimir
 ca: 87 Error a l'escriure la sortida a impresora
 es: 87 Error al escribir la salida a impresora
 it: 87 Errore nella scrittura del file per la stampa
-en: 88 Error in format of font file '%s'
-fr: 88 Erreur dans le format du fichier de fontes '%s'
-de: 88 Formatfehler in der Zeichensatzdatei '%s'
-pt: 88 Erro no formato do arquivo de fontes '%s'
-ca: 88 Error en el format del fitxer de fonts '%s'
-es: 88 Error en el formato del fichero de fuentes '%s'
-it: 88 Errore nel formato del file dei caratteri '%s'
+en: 88 Error in format of font file `%s'
+fr: 88 Erreur dans le format du fichier de fontes `%s'
+de: 88 Formatfehler in der Zeichensatzdatei `%s'
+pt: 88 Erro no formato do arquivo de fontes `%s'
+ca: 88 Error en el format del fitxer de fonts `%s'
+es: 88 Error en el formato del fichero de fuentes `%s'
+it: 88 Errore nel formato del file dei caratteri `%s'
 # cf no. 84.
 en: 89 Ignoring rest of line
 fr: 89 Ignore le restant de la ligne
@@ -936,13 +937,13 @@ ca:105 Llegint dades, espereu si us plau...
 es:105 Leyendo datos, espere por favor...
 it:105 Sto leggendo i dati - attendere per favore...
 # Probably not a .3D file.  caverot autoexec.bat would give this
-en:106 Bad 3d image file '%s'
-fr:106 Mauvais fichier image 3d '%s'
-de:106 3D-Bilddatei '%s' ist fehlerhaft
-pt:106 Arquivo de imagem 3d '%s' com problemas
-ca:106 Fitxer d'imatge 3d '%s' dolent
-es:106 Fichero de imagen 3d '%s' err&oacute;neo
-it:106 File immagine 3d '%s' errato
+en:106 Bad 3d image file `%s'
+fr:106 Mauvais fichier image 3d `%s'
+de:106 3D-Bilddatei `%s' ist fehlerhaft
+pt:106 Arquivo de imagem 3d `%s' com problemas
+ca:106 Fitxer d'imatge 3d `%s' dolent
+es:106 Fichero de imagen 3d `%s' err&oacute;neo
+it:106 File immagine 3d `%s' errato
 # This is the date format string used to timestamp .3d files internally
 # Probably best to keep it the same for all translations
 en:107 %a,%Y.%m.%d %H:%M:%S %Z
@@ -1003,13 +1004,13 @@ pt:120 Calculando estat&iacute;sticas
 ca:120 Calculant estad&iacute;stiques
 es:120 Calculando estad&iacute;sticas
 it:120 Sto calcolando le statistiche
-en:121 Writing out 3d image file '%s'
-fr:121 Ecriture du fichier 3d '%s'
-de:121 3D-Bilddatei '%s' wird abgespeichert
-pt:121 Gravando arquivo de imagem 3d '%s'
-ca:121 Escrivint el fitxer d'imatge 3d '%s'
-es:121 Gravando el fichero de imagen 3d '%s'
-it:121 Sto scrivendo il file d'immagine 3d '%s'
+en:121 Writing out 3d image file `%s'
+fr:121 Ecriture du fichier 3d `%s'
+de:121 3D-Bilddatei `%s' wird abgespeichert
+pt:121 Gravando arquivo de imagem 3d `%s'
+ca:121 Escrivint el fitxer d'imatge 3d `%s'
+es:121 Gravando el fichero de imagen 3d `%s'
+it:121 Sto scrivendo il file d'immagine 3d `%s'
 #XXX122
 #XXX123
 #XXX124
@@ -1311,13 +1312,13 @@ pt:166 P&aacute;gina %d de %d
 ca:166 P&agrave;gina %d de %d
 es:166 P&aacute;gina %d de %d
 it:166 Pagina %d di %d
-en:167 Survey '%s'   Page %d (of %d)   Processed on %s
-fr:167 Topo '%s'   Page %d (sur %d)   En cours sur %s
-de:167 Vermessung '%s'   Seite %d (von %d)   Berechnung von Seite %s
-pt:167 Topografia '%s'   P&aacute;gina %d (of %d)   Processada em %s
-ca:167 Topo '%s'   P&agrave;gina %d (de %d)   Processada en %s
-es:167 Topo '%s'   P&aacute;gina %d (de %d)   Procesada en %s
-it:167 Topografia '%s'   Pagina %d (di %d)   In corso su %s
+en:167 Survey `%s'   Page %d (of %d)   Processed on %s
+fr:167 Topo `%s'   Page %d (sur %d)   En cours sur %s
+de:167 Vermessung `%s'   Seite %d (von %d)   Berechnung von Seite %s
+pt:167 Topografia `%s'   P&aacute;gina %d (of %d)   Processada em %s
+ca:167 Topo `%s'   P&agrave;gina %d (de %d)   Processada en %s
+es:167 Topo `%s'   P&aacute;gina %d (de %d)   Procesada en %s
+it:167 Topografia `%s'   Pagina %d (di %d)   In corso su %s
 # This is used on printouts of plan views, and gives the bearing up the page
 # (so if North is across the page to the right, 270 is "Up page"
 en:168 Up page

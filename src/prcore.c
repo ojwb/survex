@@ -691,7 +691,7 @@ main(int argc, char **argv)
       if (fh) *p++ = fh;
 #endif
       fh = fopenWithPthAndExt(pth_cfg, "print", EXT_INI, "rb", NULL);
-      if (!fh) fatalerror(/*Couldn't open data file '%s'*/24, fnm);
+      if (!fh) fatalerror(/*Couldn't open data file `%s'*/24, fnm);
       *p++ = fh;
       *p = NULL;
       pr->Init(fh_list, pth_cfg, &scX, &scY);
@@ -756,7 +756,7 @@ main(int argc, char **argv)
 	 pimg = img_open(fnm, NULL, NULL);
 	 if (!pimg) fatalerror(img_error(), fnm);
       }
-      if (!read_in_data()) fatalerror(/*Bad 3d image file '%s'*/106, fnm);
+      if (!read_in_data()) fatalerror(/*Bad 3d image file `%s'*/106, fnm);
       img_close(pimg);
       pimg = NULL;
       fnm = argv[optind++];
@@ -851,7 +851,7 @@ main(int argc, char **argv)
    select_charset(CHARSET_USASCII); /* FIXME could do better and find out what charset actually is */
 
    /* used in printer's native charset in footer */
-   msg167 = msgPerm(/*Survey '%s'   Page %d (of %d)   Processed on %s*/167);
+   msg167 = msgPerm(/*Survey `%s'   Page %d (of %d)   Processed on %s*/167);
 
    old_charset = select_charset(CHARSET_ISO_8859_1);
    cPagesPrinted = 0;

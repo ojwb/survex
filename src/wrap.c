@@ -67,21 +67,9 @@ static void wr(char *msg) {
    if (msg) puts(msg);
 }
 
-static void
-errdisp(char *msg, void (*fn)(char *), char *szArg, char *type)
-{
-  putc('\n', STDERR);
-  fprintf(STDERR, "%s from survex: ", type);
-  fprintf(STDERR, "%s\n", msg);
+static void fatal(char *msg, void (*fn)(char *), char *szArg) {
+  fprintf(STDERR, "\nFatal error from survex: %s\n", msg);
   if (fn) (fn)(szArg);
-}
-
-static void error(char *en, void (*fn)(char *), char *szArg) {
-  errdisp(en, fn, szArg, "Error");
-}
-
-static void fatal(char *en, void (*fn)(char *), char *szArg) {
-  errdisp(en, fn, szArg, "Fatal Error");
   exit(EXIT_FAILURE);
 }
 
@@ -334,9 +322,8 @@ static char *process_command_mode( char *string, char *pth ) {
       sz++;
       if (strchr("DFST",chOpt)) {
         /* negating these option doesn't make sense */
-	error("Not a boolean option - `!' prefix not meaningful",
+	fatal("Not a boolean option - `!' prefix not meaningful",
 	      skipopt, string);
-        return sz;
       }
     }
     switch (chOpt) {
@@ -353,7 +340,7 @@ static char *process_command_mode( char *string, char *pth ) {
 	   case 'L':
              add_to_list("*case tolower\n");
 	     break;
-	   default: error("Expected U or L", skipopt, string);
+	   default: fatal("Expected U or L", skipopt, string);
           }
         } else {
 	  add_to_list("*case preserve\n");
@@ -394,7 +381,7 @@ static char *process_command_mode( char *string, char *pth ) {
           }
           sz--;
 	  if (ln < 1) {
-	    error("Syntax: -U<uniqueness> where uniqueness > 0",
+	    fatal("Syntax: -U<uniqueness> where uniqueness > 0",
 	          skipopt, string);
 	  }
 	  p = xmalloc(32);
@@ -405,7 +392,7 @@ static char *process_command_mode( char *string, char *pth ) {
 	}
         break;
       default:
-       error("Unknown command",skipopt,string);
+       fatal("Unknown command",skipopt,string);
     }
   } else {
     switch (ch) {
@@ -470,7 +457,7 @@ static void command_file( char * pth, char * fnm ) {
 
   fh=fopenWithPthAndExt( pth, fnm, EXT_SVX_CMND, "r", &fnmUsed );
   if (fh==NULL) {
-    error("Couldn't open command file",skipopt,fnm);
+    fatal("Couldn't open command file",skipopt,fnm);
     return;
   }
   pth=PthFromFnm(fnmUsed);
@@ -497,7 +484,7 @@ static void command_file( char * pth, char * fnm ) {
       cmdbuf[i++]=byte;
       if (i>=COMMAND_BUFFER_LEN) {
         buffer[COMMAND_BUFFER_LEN-1]='\0';
-	error("Command too long",skipopt,cmdbuf);
+	fatal("Command too long",skipopt,cmdbuf);
         i=0; /* kills line */
         byte=COMMAND_FILE_COMMENT_CHAR; /* skips to end of line */
         break;
@@ -517,7 +504,7 @@ static void command_file( char * pth, char * fnm ) {
     }
   }
   if (ferror(fh)||(fclose(fh)==EOF)) {
-     error("Couldn't close command file",wr,fnm);
+     fatal("Couldn't close command file",wr,fnm);
   }
 /* checkmode(mode,skipopt,fnm); */
   free(pth);
@@ -540,7 +527,7 @@ static void checkmode(Mode mode,void (*fn)( char * ),char * szArg) {
     default:
       return;
   }
-  error(msg,fn,szArg);
+  fatal(msg,fn,szArg);
 }
 
 static void skipopt(char * sz) {

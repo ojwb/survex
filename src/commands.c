@@ -959,7 +959,7 @@ data(void)
       /* An unknown token is reported as trailing garbage */
       if (!TSTBIT(m, d)) {
 	 /* token not valid for this data style */
-	 compile_error(/*%s: Datum not allowed for this style*/63, buffer);
+	 compile_error(/*Datum `%s' not allowed for this style*/63, buffer);
 	 skipline();
 	 return;
       }

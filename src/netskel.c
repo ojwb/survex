@@ -413,8 +413,8 @@ replace_travs(void)
       }
 #endif
 
-      sprintf(buf, msg(/*Writing out 3d image file '%s'*/121), fnmImg3D);
-      out_current_action(buf); /* writing .3d file */
+      sprintf(buf, msg(/*Writing out 3d image file `%s'*/121), fnmImg3D);
+      out_current_action(buf);
 #ifdef NEW3DFORMAT
       if (fUseNewFormat) {
  	pimgOut = cave_open_write(fnmImg3D, survey_title);
@@ -928,6 +928,10 @@ replace_trailing_travs(void)
       } else {
 	 if (!fNotAttached) {
 	    fNotAttached = fTrue;
+	    /* Actually this error is fatal, but we want to list the survey
+	     * stations which aren't connected, so we report it as an error
+	     * and die later...
+	     */
 	    error(/*Survey not all connected to fixed stations*/45);
 	    out_puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
 	 }
@@ -963,6 +967,7 @@ replace_trailing_travs(void)
 	 }
       }
    }
+   if (fNotAttached) exit(EXIT_FAILURE);
 
    /* The station position is attached to the name, so we leave the names and
     * positions in place - they can then be picked up if we have a *solve

@@ -132,13 +132,13 @@ main(int argc, char **argv)
        case 't': /* Text height */
 	 text_height = cmdline_double_arg();
 #ifdef DEBUG_3DTODXF
-	 printf("Text Height: '%s' input, converted to %6.2f\n", optarg, text_height);
+	 printf("Text Height: `%s' input, converted to %6.2f\n", optarg, text_height);
 #endif
 	 break;
        case 'm': /* Marker size */
 	 marker_size = cmdline_double_arg();
 #ifdef DEBUG_3DTODXF
-	 printf("Marker Size: '%s', converted to %6.2f\n", optarg, marker_size);
+	 printf("Marker Size: `%s', converted to %6.2f\n", optarg, marker_size);
 #endif
 	 break;
 #ifdef DEBUG_3DTODXF
@@ -328,7 +328,7 @@ main(int argc, char **argv)
       switch (item) {
        case img_BAD:
          img_close(pimg);
-         fatalerror(/*Bad 3d image file '%s'*/106, fnm3D);
+         fatalerror(/*Bad 3d image file `%s'*/106, fnm3D);
 	 break;
        case img_LINE:
 #ifdef DEBUG_3DTODXF
@@ -339,7 +339,7 @@ main(int argc, char **argv)
             printf("Something is wrong -- img_LINE before any img_MOVE!\n"); /* <<<<<<< create message in messages.txt ? */
 #endif
 	    img_close(pimg);
-	    fatalerror(/*Bad 3d image file '%s'*/106, fnm3D);
+	    fatalerror(/*Bad 3d image file `%s'*/106, fnm3D);
          }
 	 if (legs) {
 #ifdef DXF

@@ -147,7 +147,7 @@ main(int argc, char **argv)
       result = img_read_datum(pimg, sz, &x, &y, &z);
       switch (result) {
       case img_BAD:
-         puts(msg(/*Bad 3d image file '%s'*/106));
+         puts(msg(/*Bad 3d image file `%s'*/106));
          break;
       case img_MOVE:
          fr = find_point(x, y, z);

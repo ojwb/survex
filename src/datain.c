@@ -220,7 +220,7 @@ data_file(const char *pth, const char *fnm)
       FILE *fh = fopen_portable(pth, fnm, EXT_SVX_DATA, "rb", &filename);
 
       if (fh == NULL) {
-	 compile_error(/*Couldn't open data file '%s'*/24, fnm);
+	 compile_error(/*Couldn't open data file `%s'*/24, fnm);
 	 return;
       }
 
@@ -337,7 +337,7 @@ data_file(const char *pth, const char *fnm)
    pcs->begin_lineno = begin_lineno_store;
 
    if (ferror(file.fh) || (fclose(file.fh) == EOF))
-      compile_error(/*Error reading file*/18);
+      fatalerror(/*Error reading file*/18); /* FIXME: name */
 
    file = file_store;
 

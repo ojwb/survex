@@ -1,6 +1,6 @@
 /* > prbitmap.c */
 /* Bitmap routines for Survex Dot-matrix and Inkjet printer drivers */
-/* Copyright (C) 1993-2000 Olly Betts
+/* Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,12 +143,12 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
 
    if (fread(header, 1, 20, fh) < 20 ||
        memcmp(header, "Svx\nFnt\r\n\xfe\xff", 12) != 0) {
-      fatalerror(/*Error in format of font file '%s'*/88, fnm);
+      fatalerror(/*Error in format of font file `%s'*/88, fnm);
       /* TRANSLATE - not a survex font file... */
    }
 
    if (header[12] != 0) {
-      fatalerror(/*Error in format of font file '%s'*/88, fnm);
+      fatalerror(/*Error in format of font file `%s'*/88, fnm);
       /* TRANSLATE - "I don't understand this font file version" */
    }
 
@@ -161,7 +161,7 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
 
    font = osmalloc(len);
    if (fread(font, 1, len, fh) < len) {
-      fatalerror(/*Error in format of font file '%s'*/88, fnm);
+      fatalerror(/*Error in format of font file `%s'*/88, fnm);
       /* TRANSLATE Font file truncated?/read error */
    }
 

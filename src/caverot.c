@@ -780,7 +780,7 @@ parse_command(int argc, char **argv)
 
    p = cmdline_load_files(argc - optind, argv + optind);
    if (p) {
-      printf(msg(/*Bad 3d image file '%s'*/106), p);
+      printf(msg(/*Bad 3d image file `%s'*/106), p);
       putnl();
       exit(1);
    }
