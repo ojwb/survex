@@ -102,8 +102,6 @@ the station 1 of the Adrian's Route survey.
 0 (east-west), 0 (north-south), 1780 (altitude).
 </Para>
 
-
-
 -->
 
 <Article Status="draft" id=index>
@@ -134,8 +132,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-19 19:24:43 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.57 2001-09-19 19:24:43 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-19 22:49:25 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.58 2001-09-19 22:49:25 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -193,17 +191,15 @@ under the Loser Plateau in Austria (over 11,500 survey legs, and over
 66km of underground survey data). This can all be processed in a few
 seconds on a low-end <hardware>Pentium</hardware> machine.
 Survex is also used by many other survey projects around the world,
-including the Ogof Draenen survey, the Easegill resurvey project, the
-<Acronym/OFD/ survey, the <Acronym/OUCC/ Picos expeditions, and
-the Hong Mei Gui China expedition. <!-- FIXME more? --></Para>
-<!-- FIXME: links
- URLs:
- OD: http://milos2.zoo.ox.ac.uk/~oucc/draenen/draenenmain.htm
- Easegill: http://www.easegill.org.uk/
- OFD: ?
- OUCC: http://milos2.zoo.ox.ac.uk/~oucc/reports/surveys/surveys.htm
- HMG: http://www.survex.com/~erin/
--->
+including the 
+<ulink url="http://milos2.zoo.ox.ac.uk/~oucc/draenen/draenenmain.htm"
+>Ogof Draenen</ulink> survey, the 
+<ulink url="http://www.easegill.org.uk/">Easegill</ulink> resurvey project,
+the <Acronym/OFD/ survey, the 
+<ulink url="http://milos2.zoo.ox.ac.uk/~oucc/reports/surveys/surveys.htm"
+><Acronym/OUCC/ Picos expeditions</ulink>, and the 
+<ulink url="http://www.survex.com/~erin/">Hong Mei Gui China
+expedition</ulink>. <!-- FIXME more? --></Para>
 
 <Para>&survexsuite; is still actively being worked on.  Version 1.0 will be
 complete in some sense, but development will continue - initially in reshaping
@@ -1106,27 +1102,9 @@ below. Even if your printer is not standard you should be able get it
 to work by editing these files.
 </Para>
 
-<!-- FIXME: allow scaling for all drivers? add - - test-page option? -->
-
-<!-- FIXME:
-print.ini info:
-
-> > The package print.ini should just install in
-/usr/share/survex/print.ini
-> > and people shouldn't modify this version at all (they should put
-> > system-wide modifications in /etc/survex/print.ini and per-user
-> > modifications in ~/.survex/print.ini).
-/usr/share/survex/print.ini isn't a
-> > config file - it's a resource for user created config files to
-inherit from
-> > and/or override.  So there shouldn't be anything tricky to handle...
-
-
--->
-
 <Para>To get plots that are properly to scale from PRINTDM you
-<emphasis/must/ measure the output from <emphasis/your/ printer, and
-update <filename/print.ini/ with your numbers.
+<emphasis/must/ measure the output from <emphasis/your/ printer - 
+see `Printer Calibration' below.
 </Para>
 
 </Sect2>
@@ -1257,8 +1235,10 @@ list of pages and ranges (handy for when your printer mangles a page).
 
 <Sect2><Title>Printer Settings</Title>
 
-<Para>The format of the <filename/print.ini/ file is similar to
-Windows <filename/.ini/ files.  There is a section name in square
+<Para>The format of the
+<filename>print.ini</filename>/<filename>myprint.ini</filename>
+file is similar to Windows <filename/.ini/ files.
+There is a section name in square
 brackets, e.g.:
 </Para>
 
@@ -1290,14 +1270,15 @@ printers, so you are unlikely to need to fiddle with these runes.
 The only thing most users will have to specify is the output device
 (and Calibration for Dot Matrix Printers, see 'Printer Calibration').
 This is the setting given in the [base] section of the form
-output=&lt;device&gt;, where device can be a device name (e.g. PRN,
-LPT1, LPT2 under &msdos;, <filename/Printer:/ under &riscos;) or a
+output_&lt;platform&gt=&lt;device&gt;, where device can be a device name
+(e.g. PRN, LPT1, LPT2 under &msdos;, <filename/Printer:/ under &riscos;) or a
 filename. Under &unix; output may be piped into another command like
 so:
 </Para>
 
 <programlisting>
-output=|lpr -Poak
+[base]
+output_unix=|lpr -Poak
 ; send output to printer 'oak'</programlisting>
 
 <Para>
@@ -1317,6 +1298,8 @@ are:
 for each of these types at least one specific example is provided, for the
 specified printer and paper size.
 </Para>
+
+<!-- FIXME: check this -->
 
 <Para>The examples provided are: [dm_8pin_a4] [dm_8pin_11inch],
 [dm_8pin_12inch], [dm_9pin_11inch], [dm_9pin_12inch], [dm_24pin_a4],
@@ -1355,6 +1338,7 @@ matrix printer using 12 inch paper, is just like the 11 inch definition for
 the same printer, except for the number of lines down a page.
 </Para>
 
+<!-- FIXME: fettle this -->
 <Para>If you find that your printout does not come out correctly, then the
 best way to make changes for your printer is to create a new section called
 [my_printer], and start with a like=something where something is the closest
@@ -1376,6 +1360,8 @@ horizontal and vertical tabbing.
 
 <Sect2><Title>Printer Calibration</Title>
 
+<!-- FIXME: allow scaling for all drivers? add - - test-page option? -->
+
 <Para>
 Dot Matrix printers do not print to an accurate size - you need to do
 a test plot to calibrate your printer in order to get correctly-scaled
@@ -1391,12 +1377,26 @@ with <command>cavern square.svx</command> and then print it out using
 3 0 0.1 270 0</programlisting>
 
 <Para>
-Measure the width and height of the page border and fill the results
-into the mm_across_page, and mm_down_page options. Then run printdm
-again, and check that the square is now 10cm wide and high. This
-calibration is particularly necessary for older dot-matrix printers as
-they vary significantly in scaling - even between two printers of the
-same make and model.
+Measure the width and height of the page border and create an entry in
+<filename>/etc/print.ini</filename> or
+<filename>.survex/print.ini</filename> in your home directory (Unix)
+or <filename>myprint.ini</filename>
+in the installation directory (other platforms) with 
+entries mm_across_page and mm_down_page containing your values.
+The entry should look something like this:
+</Para>
+
+<programlisting>
+[dm]
+like=dm_8pin_a4
+mm_across_page=204.5
+mm_down_page=278</programlisting>
+
+<Para>
+Then run printdm again, and check that the square is now 10cm wide and
+high. This calibration is particularly necessary for older dot-matrix
+printers as they vary significantly in scaling - even between two
+printers of the same make and model.
 </Para>
 
 </Sect2>
