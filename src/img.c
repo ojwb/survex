@@ -1200,7 +1200,13 @@ skip_to_N:
 	       }
 	       ++q;
 	       len = 0;
-	       while (q[len] > ' ') ++len;
+	       while (q[len] > ' ') {
+		  /* change dots to spaces.  spaces aren't legal in compass
+		   * station names, while dots are the survey level separator
+		   * in Survex */
+		  if (q[len] == '.') q[len] = ' ';
+		  ++len;
+	       }
 	       q[len] = '\0';
 	       len += 2; /* '.' and '\0' */
 	       if (!check_label_space(pimg, pimg->label_len + len)) {
@@ -1278,6 +1284,10 @@ skip_to_N:
 	 q = memchr(pimg->label, ' ', 6);
 	 if (!q) q = pimg->label + 6;
 	 *q = '\0';
+	 /* change dots to spaces.  spaces aren't legal in CMAP
+	  * station names, while dots are the survey level separator
+	  * in Survex */
+	 while (--q >= pimg->label) if (*q == '.') *q = ' ';
 
 	 read_xyz_station_coords(p, line);
 	 
@@ -1297,11 +1307,19 @@ skip_to_N:
 	 q = memchr(old, ' ', 7);
 	 if (!q) q = old + 7;
 	 *q = '\0'; 
+	 /* change dots to spaces.  spaces aren't legal in CMAP
+	  * station names, while dots are the survey level separator
+	  * in Survex */
+	 while (--q > old) if (*q == '.') *q = ' ';
 	 
 	 memcpy(new, line + 7, 7);
 	 q = memchr(new, ' ', 7);
 	 if (!q) q = new + 7;
 	 *q = '\0'; 
+	 /* change dots to spaces.  spaces aren't legal in CMAP
+	  * station names, while dots are the survey level separator
+	  * in Survex */
+	 while (--q > new) if (*q == '.') *q = ' ';
 	 
 	 pimg->flags = img_SFLAG_UNDERGROUND;
 
