@@ -751,7 +751,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 #endif
 
     // Update window title.
-    SetTitle(wxString("Aven - [") + file + wxString("]"));
+    SetTitle(wxString(APP_NAME" - [") + file + wxString("]"));
     m_File = file;
 
     return true;
@@ -1099,7 +1099,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #ifdef FILEDIALOG_MULTIGLOBS
 				      ";*.3D"
 #endif
-#ifdef FILEDIALOG_MULTIGLOBS 
+#ifdef FILEDIALOG_MULTIGLOBS
 				      "|%s|*.plt;*.plf"
 #ifndef _WIN32
 				      ";*.PLT;*.PLF"
@@ -1107,7 +1107,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #else
 				      "|%s|*.pl?" // not ideal...
 #endif
-			      	      "|%s|*.xyz"
+				      "|%s|*.xyz"
 #ifdef FILEDIALOG_MULTIGLOBS
 #ifndef _WIN32
 				      ";*.XYZ"

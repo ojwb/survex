@@ -3,7 +3,7 @@
 //
 //  Main class for Aven.
 //
-//  Copyright (C) 2001, Mark R. Shinwell.
+//  Copyright (C) 2001 Mark R. Shinwell.
 //  Copyright (C) 2002,2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -66,7 +66,7 @@ bool Aven::OnInit()
 	--argc;
 	memmove(argv + 1, argv + 2, argc * sizeof(char *));
     }
-#endif 
+#endif
     msg_init(argv);
 
     const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
@@ -134,10 +134,6 @@ bool Aven::OnInit()
 
     wxImage::AddHandler(new wxPNGHandler);
 
-    m_AboutBitmap.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
-			   wxString("icons") + wxCONFIG_PATH_SEPARATOR +
-			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
-
     // Obtain the screen size.
     int width;
     int height;
@@ -148,7 +144,7 @@ bool Aven::OnInit()
     int our_height = int(our_width * 0.75);
 
     // Create the main window.
-    m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(our_width, our_height));
+    m_Frame = new MainFrm(APP_NAME, wxPoint(50, 50), wxSize(our_width, our_height));
 
     const bool delay = true;
 
@@ -172,7 +168,7 @@ bool Aven::OnInit()
 
 void Aven::ReportError(const wxString& msg)
 {
-    wxMessageBox(msg, "Aven", wxOK | wxCENTRE | wxICON_EXCLAMATION);
+    wxMessageBox(msg, APP_NAME, wxOK | wxCENTRE | wxICON_EXCLAMATION);
 }
 
 // called to report errors by message.c
