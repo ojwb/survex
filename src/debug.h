@@ -26,7 +26,7 @@
 
 /* turn periodic calls to validate() checks on/off */
 #ifndef VALIDATE
-# define VALIDATE 1
+# define VALIDATE 0
 #endif
 
 /* turn on dumping of network data structure (lots of output) */
