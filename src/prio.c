@@ -109,7 +109,7 @@ prio_print(const char *str)
 extern void
 prio_putpstr(const pstr *p)
 {
-   return prio_putbuf(p->str, p->len);
+   prio_putbuf(p->str, p->len);
 }
 
 extern void
