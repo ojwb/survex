@@ -4,7 +4,7 @@
 //  C++ class for 3-element vectors
 //
 //  Copyright (C) 2000-2002, Mark R. Shinwell.
-//  Copyright (C) 2002 Olly Betts
+//  Copyright (C) 2002-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -72,6 +72,8 @@ public:
     }
     Vector3& operator*=(const double);
     Vector3& operator/=(const double);
+    Vector3& operator+=(const Vector3&);
+    Vector3& operator-=(const Vector3&);
     Vector3& operator=(const Vector3&);
 
     friend Vector3 operator*(const double, const Vector3&);
@@ -81,7 +83,12 @@ public:
     friend Vector3 operator*(const Vector3&, const Vector3&); // cross product
     friend Vector3 operator+(const Vector3&, const Vector3&);
     friend Vector3 operator-(const Vector3&, const Vector3&);
+    friend bool operator==(const Vector3&, const Vector3&);
     friend double dot(const Vector3&, const Vector3&);
 };
+
+inline bool operator==(const Vector3& a, const Vector3& b) {
+    return a.x == b.x && a.y == b.y && a.z == b.z;
+}
 
 #endif
