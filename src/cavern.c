@@ -348,6 +348,7 @@ do_range(FILE *fh, int d, int msg1, int msg2, int msg3)
       printf(msg(msg2), max[d]);
       fprint_prefix(stdout, pfxLo[d]);
       printf(msg(msg3), min[d]);
+      putnl();
    }
    if (fh) {
       fprintf(fh, msg(msg1), max[d] - min[d]);
@@ -355,6 +356,7 @@ do_range(FILE *fh, int d, int msg1, int msg2, int msg3)
       fprintf(fh, msg(msg2), max[d]);
       fprint_prefix(fh, pfxLo[d]);
       fprintf(fh, msg(msg3), min[d]);
+      fputnl(fh);
    }
 }
 
