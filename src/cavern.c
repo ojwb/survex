@@ -101,7 +101,7 @@ main(int argc, char **argv)
    tmCPUStart = clock();
    init_screen();
 
-   ReadErrorFile(argv[0]);
+   msg_init(argv[0]);
 
    pcs = osnew(settings);
    pcs->next = NULL;
@@ -124,8 +124,10 @@ main(int argc, char **argv)
       pfxHi[d] = pfxLo[d] = NULL;
    }
 
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
    while (1) {
-      int opt = my_getopt_long(argc, argv, short_opts, long_opts, NULL, help, 1);
+      /* at least one argument must be given */
+      int opt = cmdline_getopt();
       if (opt == EOF) break;
       switch (opt) {
        case 'a':
