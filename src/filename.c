@@ -78,7 +78,7 @@ safe_fclose(FILE *f)
 	 (void)remove(fnm);
 	 fatalerror(/*Error writing to file `%s'*/110, fnm);
       }
-      // FIXME: this case should never happen...
+      /* FIXME: this case should never happen... */
       fatalerror(/*Error writing to file*/111);
    }
 }
