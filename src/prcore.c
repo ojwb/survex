@@ -670,6 +670,7 @@ main(int argc, char **argv)
       FILE **pfh = fh_list;
       FILE *fh;
       const char *pth_cfg;
+      char *print_ini;
 
       /* ini files searched in this order:
        * ~/.survex/print.ini [unix only]
@@ -681,24 +682,23 @@ main(int argc, char **argv)
 #if (OS==UNIX)
       pth_cfg = getenv("HOME");
       if (pth_cfg) {
-	 fh = fopenWithPthAndExt(pth_cfg, ".survex/print", EXT_INI, "rb",
+	 fh = fopenWithPthAndExt(pth_cfg, ".survex/print."EXT_INI, NULL, "rb",
 				 NULL);
 	 if (fh) *pfh++ = fh;
       }
       pth_cfg = msg_cfgpth();
-      fh = fopenWithPthAndExt(NULL, "/etc/survex/print", EXT_INI, "rb",
+      fh = fopenWithPthAndExt(NULL, "/etc/survex/print."EXT_INI, NULL, "rb",
       	   		      NULL);
       if (fh) *pfh++ = fh;
 #else
       pth_cfg = msg_cfgpth();
-      fh = fopenWithPthAndExt(pth_cfg, "myprint", EXT_INI, "rb", NULL);
+      print_ini = add_ext("myprint", EXT_INI);
+      fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);
       if (fh) *pfh++ = fh;
 #endif
-      fh = fopenWithPthAndExt(pth_cfg, "print", EXT_INI, "rb", NULL);      
-      if (!fh) {
-	 char *print_ini = add_ext("print", EXT_INI);
-	 fatalerror(/*Couldn't open data file `%s'*/24, print_ini);
-      }
+      print_ini = add_ext("print", EXT_INI);
+      fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);      
+      if (!fh) fatalerror(/*Couldn't open data file `%s'*/24, print_ini);
       *pfh++ = fh;
       *pfh = NULL;
       pr->Init(fh_list, pth_cfg, &scX, &scY);
@@ -1048,46 +1048,57 @@ drawticks(border clip, int tsize, int x, int y)
    pr->DrawTo(clip.x_min, clip.y_min);
 }
 
-static void print_config_error(void)
+static void setting_missing(const char *v)
 {
+#if 0
+   printf("setting %s\n", v); /* FIXME */
+#endif
+   fatalerror(/*Mistake in printer configuration file*/85);
+}
+
+static void setting_bad_value(const char *v, const char *p)
+{
+#if 0
+   printf("setting %s bad value \"%s\"\n", v, p); /* FIXME */
+#endif
    fatalerror(/*Mistake in printer configuration file*/85);
 }
 
 char *
-as_string(char *p)
+as_string(const char *v, char *p)
 {
-   if (!p) print_config_error();
+   if (!p) setting_missing(v);
    return p;
 }
 
 int
-as_int(char *p, int min_val, int max_val)
+as_int(const char *v, char *p, int min_val, int max_val)
 {
    long val;
    char *pEnd;
-   if (!p) print_config_error();
+   if (!p) setting_missing(v);
    val = strtol(p, &pEnd, 10);
    if (pEnd == p || val < (long)min_val || val > (long)max_val)
-      print_config_error();
+      setting_bad_value(v, p);
    osfree(p);
    return (int)val;
 }
 
 int
-as_bool(char *p)
+as_bool(const char *v, char *p)
 {
-   return as_int(p, 0, 1);
+   return as_int(v, p, 0, 1);
 }
 
 float
-as_float(char *p, float min_val, float max_val)
+as_float(const char *v, char *p, float min_val, float max_val)
 {
    double val;
    char *pEnd;
-   if (!p) print_config_error();
+   if (!p) setting_missing(v);
    val = strtod(p, &pEnd);
    if (pEnd == p || val < (double)min_val || val > (double)max_val)
-      print_config_error();
+      setting_bad_value(v, p);
    osfree(p);
    return (float)val;
 }
@@ -1109,51 +1120,58 @@ Codes:
 /* Takes a string, converts escape sequences in situ, and returns length
  * of result (needed since converted string may contain '\0' */
 int
-as_escstring(char *s)
+as_escstring(const char *v, char *s)
 {
    char *p, *q;
    char c;
+   int pass;
    static const char *escFr = "[nrt?0"; /* 0 is last so maps to the implicit \0 */
    static const char *escTo = "\x1b\n\r\t\?";
    bool fSyntax = fFalse;
-   if (!s) print_config_error();
-   p = q = s;
-   while (*p) {
-      c = *p++;
-      if (c == '\\') {
-         c = *p++;
-         switch (c) {
-	  case '\\': /* literal "\" */
-            break;
-	  case 'x': /* hex digits */
-            if (isxdigit(*p) && isxdigit(p[1])) {
-               c = (CHAR2HEX(*p) << 4) | CHAR2HEX(p[1]);
-               p += 2;
-               break;
-            }
-            /* \x not followed by 2 hex digits */
-            /* !!! FALLS THROUGH !!! */
-	  case '\0': /* trailing \ is meaningless */
-	    fSyntax = 1;
-	    break;
-	  default: {
-	    const char *t = strchr(escFr, c);
-	    if (t) {
-	       c = escTo[t - escFr];
+   if (!s) setting_missing(v);
+   for (pass = 0; pass <= 1; pass++) {
+      p = q = s;
+      while (*p) {
+	 c = *p++;
+	 if (c == '\\') {
+	    c = *p++;
+	    switch (c) {
+	     case '\\': /* literal "\" */
 	       break;
-	    }
-	    /* \<capital letter> -> Ctrl-<letter> */
-	    if (isupper(c)) {
-	       c -= '@';
+	     case 'x': /* hex digits */
+	       if (isxdigit(*p) && isxdigit(p[1])) {
+		  if (pass) c = (CHAR2HEX(*p) << 4) | CHAR2HEX(p[1]);
+		  p += 2;
+		  break;
+	       }
+	       /* \x not followed by 2 hex digits */
+	       /* !!! FALLS THROUGH !!! */
+	     case '\0': /* trailing \ is meaningless */
+	       fSyntax = 1;
 	       break;
+	     default: 
+	       if (pass) {
+		  const char *t = strchr(escFr, c);
+		  if (t) {
+		     c = escTo[t - escFr];
+		     break;
+		  }
+		  /* \<capital letter> -> Ctrl-<letter> */
+		  if (isupper(c)) {
+		     c -= '@';
+		     break;
+		  }
+		  /* otherwise don't do anything to c (?) */
+		  break;
+	       }
 	    }
-	    /* otherwise don't do anything to c (?) */
-	    break;
-	  }
 	 }
+	 if (pass) *q++ = c;
       }
-      *q++ = c;
+      if (fSyntax) {
+	 ASSERT(pass == 0);
+	 setting_bad_value(v, s);
+      }
    }
-   if (fSyntax) print_config_error();
    return (q - s);
 }

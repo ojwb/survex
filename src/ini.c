@@ -188,23 +188,21 @@ ini_read(FILE **fh_list, const char *section, const char **vars)
 }
 
 char **
-ini_read_hier(FILE **fh_list, const char *sect, const char **v)
+ini_read_hier(FILE **fh_list, const char *section, const char **v)
 {
    int i, j;
    char **vals;
-   char *section;
    int *to;
    const char **vars;
 
    ASSERT(fh_list != NULL);
-   ASSERT(sect != NULL);
+   ASSERT(section != NULL);
    ASSERT(v != NULL);
 
-   vals = ini_read(fh_list, sect, v);
+   vals = ini_read(fh_list, section, v);
    if (!vals) return NULL;
 
-/*{int i; printf("[%s]\n",sect);
-for(i=0;vars[i];i++)printf("%d:%s\"%s\"\n",i,vars[i],vals[i]?vals[i]:"(null)");}*/
+/*{int i; printf("[%s]\n",section);for(i=0;v[i];i++)printf("%d:%s\"%s\"\n",i,v[i],vals[i]?vals[i]:"(null)");}*/
    i = 0;
    while (v[i]) i++;
    vars = malloc((i + 1) * sizeof(char*)); /* + 1 to include NULL */
@@ -216,43 +214,48 @@ for(i=0;vars[i];i++)printf("%d:%s\"%s\"\n",i,vars[i],vals[i]?vals[i]:"(null)");}
       return NULL;
    }
    memcpy(vars, v, (i + 1) * sizeof(char*));
-   while (i) {
-      i--;
-      to[i] = i;
-   }
 
-   section = vals[0];
-
-   while (section) {
-      char **x;
-/*{int i; printf("[%s]\n",section);
-for(i=0;vars[i];i++)printf("%d:%s\"%s\"\n",i,vars[i],x[i]?x[i]:"(null)");}*/
-      for (i = 1, j = 1; vars[i]; i++) {
-/*         printf("%s: %s %d\n",vars[i],vals[i]?vals[i]:"(null)",to[i]);*/
-	 if (vals[i]) {
-	    vals[to[i]] = vals[i];
-	 } else {
-	    vars[j] = vars[i];
-	    to[j] = to[i];
-	    j++;
-	 }
+   for (i = 1, j = 1; vars[i]; i++) {
+/*      printf("%s: %s %d\n",vars[i],vals[i]?vals[i]:"(null)",to[i]);*/
+      if (!vals[i]) {
+	 vars[j] = vars[i];
+	 to[j] = i;
+	 j++;
       }
-      if (j == 1) break;
+   }
+   
+   while (vals[0] && j > 1) {
+      char **x;
+
       vars[j] = NULL;
-      
-      x = ini_read(fh_list, section, vars);
+
+      x = ini_read(fh_list, vals[0], vars);
       if (!x) {
 	 free(vals);
 	 vals = NULL;
 	 break;
       }
 
-      free(section);
-      section = x[0];
+/*{int i; printf("[%s]\n",vals[0]);for(i=0;vars[i];i++)printf("%d:%s\"%s\"\n",i,vars[i],vals[i]?vals[i]:"(null)");}*/
+
+      free(vals[0]);
+      vals[0] = x[0];
+
+      for (i = 1, j = 1; vars[i]; i++) {
+/*         printf("%s: %s %d\n",vars[i],vals[i]?vals[i]:"(null)",to[i]);*/
+	 if (x[i]) {
+	    if (x) vals[to[i]] = x[i];
+	 } else {
+	    vars[j] = vars[i];
+	    to[j] = to[i];
+	    j++;
+	 }
+      }
       free(x);
    }
-   
-   free(section);
+
+   free(vals[0]);
+   vals[0] = NULL;
    free(vars);
    free(to);
 

@@ -2,7 +2,7 @@
 
 /* Device dependent part of Survex Dot-matrix/PCL printer driver */
 /* Bitmap routines for Survex Dot-matrix and Inkjet printer drivers */
-/* Copyright (C) 1993-2000 Olly Betts
+/* Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -453,13 +453,13 @@ dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #endif
 
    if (vals[2])
-      fnmPrn = as_string(vals[2]);
+      fnmPrn = vals[2];
    else
-      fnmPrn = as_string(vals[1]);
+      fnmPrn = as_string(vars[1], vals[1]);
 
 #ifdef XBM
-   xpPageWidth = as_int(vals[3], 1, INT_MAX);
-   ypPageDepth = as_int(vals[4], 1, INT_MAX);
+   xpPageWidth = as_int(vars[3], vals[3], 1, INT_MAX);
+   ypPageDepth = as_int(vars[4], vals[4], 1, INT_MAX);
    ylPageDepth = ypPageDepth;
    ypLineDepth = 1;
    PaperWidth = xpPageWidth;
@@ -467,12 +467,12 @@ dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
    *pscX = *pscY = 1;
    osfree(vals);
 #elif defined(PCL)
-   dpi = as_int(vals[3], 1, INT_MAX);
-   PaperWidth = as_float(vals[4], 1, FLT_MAX);
-   PaperDepth = as_float(vals[5], 11, FLT_MAX);
+   dpi = as_int(vars[3], vals[3], 1, INT_MAX);
+   PaperWidth = as_float(vars[4], vals[4], 1, FLT_MAX);
+   PaperDepth = as_float(vars[5], vals[5], 11, FLT_MAX);
    PaperDepth -= 10; /* allow 10mm for footer */
-   fPCLHTab = as_bool(vals[6]);
-   fPCLVTab = as_bool(vals[7]);
+   fPCLHTab = as_bool(vars[6], vals[6]);
+   fPCLVTab = as_bool(vars[7], vals[7]);
    osfree(vals);
 
    *pscX = *pscY = (float)(dpi / MM_PER_INCH);
@@ -480,12 +480,12 @@ dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
    ylPageDepth = ypPageDepth = (int)((dpi / MM_PER_INCH) * PaperDepth);
    ypLineDepth = 1;
 #else
-   xpPageWidth = as_int(vals[3], 1, INT_MAX);
-   ylPageDepth = as_int(vals[4], 4, INT_MAX);
+   xpPageWidth = as_int(vars[3], vals[3], 1, INT_MAX);
+   ylPageDepth = as_int(vars[4], vals[4], 4, INT_MAX);
    ylPageDepth -= 3; /* allow for footer */
-   ypLineDepth = as_int(vals[5], 1, INT_MAX);
-   PaperWidth = as_float(vals[6], 1, FLT_MAX);
-   PaperDepth = as_float(vals[7], 1, FLT_MAX);
+   ypLineDepth = as_int(vars[5], vals[5], 1, INT_MAX);
+   PaperWidth = as_float(vars[6], vals[6], 1, FLT_MAX);
+   PaperDepth = as_float(vars[7], vals[7], 1, FLT_MAX);
 
    ypPageDepth = ylPageDepth * ypLineDepth;
    *pscX = xpPageWidth / PaperWidth; /* xp per mm */
@@ -495,23 +495,23 @@ dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
    SIZEOFGRAPH_T = (ypLineDepth + 7) >> 3;
 
    prn.lnsp.str = vals[8];      /* $1b3$18   */
-   prn.lnsp.len = as_escstring(prn.lnsp.str);
+   prn.lnsp.len = as_escstring(vars[8], prn.lnsp.str);
    prn.grph.str = vals[9];      /* $1bL      */
-   prn.grph.len = as_escstring(prn.grph.str);
+   prn.grph.len = as_escstring(vars[9], prn.grph.str);
    prn.grph2.str = vals[10];    /*           */
-   prn.grph2.len = as_escstring(prn.grph2.str);
+   prn.grph2.len = as_escstring(vars[10], prn.grph2.str);
    prn.fnt_big.str = vals[11];  /* $12$1bW1  */
-   prn.fnt_big.len = as_escstring(prn.fnt_big.str);
+   prn.fnt_big.len = as_escstring(vars[11], prn.fnt_big.str);
    prn.fnt_sml.str = vals[12];  /* $1bW0$0f  */
-   prn.fnt_sml.len = as_escstring(prn.fnt_sml.str);
+   prn.fnt_sml.len = as_escstring(vars[12], prn.fnt_sml.str);
    prn.fmfd.str = vals[13];     /* $0c       */
-   prn.fmfd.len = as_escstring(prn.fmfd.str);
+   prn.fmfd.len = as_escstring(vars[13], prn.fmfd.str);
    prn.rst.str = vals[14];      /* $1b2      */
-   prn.rst.len = as_escstring(prn.rst.str);
+   prn.rst.len = as_escstring(vars[14], prn.rst.str);
    prn.eol.str = vals[15];      /* $0d       */
-   prn.eol.len = as_escstring(prn.eol.str);
+   prn.eol.len = as_escstring(vars[15], prn.eol.str);
    fIBM = 0; /* default to Epsom */
-   if (vals[16]) fIBM = as_bool(vals[16]);
+   if (vals[16]) fIBM = as_bool(vars[16], vals[16]);
    osfree(vals);
 #endif
 

@@ -1,6 +1,6 @@
 /* > printps.c & prnthpgl.c */
 /* Device dependent part of Survex Postscript printer/HPGL plotter driver */
-/* Copyright (C) 1993-2000 Olly Betts
+/* Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +81,13 @@ device printer = {
    prio_close
 };
 #else
+
+# ifdef HAVE_GETPWUID
+#  include <pwd.h>
+#  include <sys/types.h>
+#  include <unistd.h>
+# endif
+
 # define POINTS_PER_INCH 72.0f
 # define POINTS_PER_MM ((float)(POINTS_PER_INCH) / (MM_PER_INCH))
 
@@ -88,7 +95,7 @@ static float MarginLeft, MarginRight, MarginTop, MarginBottom;
 static int fontsize, fontsize_labels;
 static float LineWidth;
 
-static char *fontname, *fontname_labels;
+static const char *fontname, *fontname_labels;
 
 # define PS_TS 9 /* size of alignment 'ticks' on multipage printouts */
 # define PS_CROSS_SIZE 2 /* length of cross arms (in points!) */
@@ -282,15 +289,46 @@ hpgl_Pre(int pagesToPrint, const char *title)
 static int
 ps_Pre(int pagesToPrint, const char *title)
 {
+   time_t now = time(NULL);
+   char *name = NULL;
+   char buf[1024];
+#ifdef HAVE_GETPWUID
+   struct passwd *ent;
+#endif
+
    prio_print("%!PS-Adobe-1.0\n"); /* PS file w/ document structuring */
-   prio_printf("%%%%Title: %s\n", title);
+
+   prio_print("%%Title: ");
+   prio_print(title);
+   prio_putc('\n');
+
    prio_print("%%Creator: Survex "VERSION" Postscript Printer Driver\n");
-/* FIXME  prio_print("%%CreationDate: Today :)\n"); */
-/*   prio_print("%%For: A Surveyor\n"); */
-   prio_printf("%%%%DocumentFonts: %s ", fontname);
-   if (strcmp(fontname, fontname_labels) != 0)
-      prio_printf("%s ", fontname_labels);
-   prio_printf("%s\n", fontname_symbol);
+   if (strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S %Z\n", localtime(&now))) {
+      prio_print("%%CreationDate: ");
+      prio_print(buf);
+   }
+
+# ifdef HAVE_GETPWUID
+   ent = getpwuid(getuid());
+   if (ent && ent->pw_gecos[0]) name = ent->pw_gecos;
+#endif
+   if (!name) name = getenv("LOGNAME");
+   if (name) {
+      prio_print("%%For: ");
+      prio_print(name);
+      prio_putc('\n');
+   }
+
+   prio_print("%%DocumentFonts: ");
+   prio_print(fontname);
+   if (strcmp(fontname, fontname_labels) != 0) {
+      prio_putc(' ');
+      prio_print(fontname_labels);
+   }
+   prio_putc(' ');
+   prio_print(fontname_symbol);
+   prio_putc('\n');
+
    prio_printf("%%%%BoundingBox: 0 0 %ld %ld\n",
 	       xpPageWidth + (long)(2.0 * MarginLeft * POINTS_PER_MM),
 	       ypPageDepth + (long)((10.0 + 2.0 * MarginBottom) * POINTS_PER_MM));
@@ -416,7 +454,7 @@ hpgl_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #endif
 {
-   char *fnmPrn;
+   const char *fnmPrn;
    static const char *vars[] = {
       "like",
       "output",
@@ -459,16 +497,19 @@ ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #endif
 
    if (vals[2])
-      fnmPrn = as_string(vals[2]);
+      fnmPrn = vals[2];
    else
-      fnmPrn = as_string(vals[1]);
+      fnmPrn = as_string(vars[1], vals[1]);
 
 #ifdef HPGL
-   PaperWidth = as_float(vals[3], 1, FLT_MAX);
-   PaperDepth = as_float(vals[4], 11, FLT_MAX);
-   fOriginInCentre = as_bool(vals[5]);
+   PaperWidth = as_float(vars[3], vals[3], 1, FLT_MAX);
+   PaperDepth = as_float(vars[4], vals[4], 11, FLT_MAX);
+   fOriginInCentre = as_bool(vars[5], vals[5]);
    PaperDepth -= 10; /* Allow 10mm for footer */
    osfree(vals);
+
+   /* name and size of font to use for text */
+   fontname = as_string(vals);
 
    *pscX = *pscY = (float)(HPGL_UNITS_PER_MM);
    xpPageWidth = (long)(HPGL_UNITS_PER_MM * (double)PaperWidth);
@@ -477,21 +518,21 @@ ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
    ypFooter = (int)(HPGL_UNITS_PER_MM * 10.0);
 #else
    /* name and size of font to use for text */
-   fontname = as_string(vals[3]);
-   fontsize = as_int(vals[8], 1, INT_MAX);
+   fontname = as_string(vars[3], vals[3]);
+   fontsize = as_int(vars[8], vals[8], 1, INT_MAX);
 
-   MarginLeft = as_float(vals[4], 0, FLT_MAX);
-   MarginRight = as_float(vals[5], 0, FLT_MAX);
-   MarginBottom = as_float(vals[6], 0, FLT_MAX);
-   MarginTop = as_float(vals[7], 0, FLT_MAX);
+   MarginLeft = as_float(vars[4], vals[4], 0, FLT_MAX);
+   MarginRight = as_float(vars[5], vals[5], 0, FLT_MAX);
+   MarginBottom = as_float(vars[6], vals[6], 0, FLT_MAX);
+   MarginTop = as_float(vars[7], vals[7], 0, FLT_MAX);
 
-   LineWidth = as_float(vals[9], 0, INT_MAX);
+   LineWidth = as_float(vars[9], vals[9], 0, INT_MAX);
 
    /* name and size of font to use for station labels (default to text font) */
    fontname_labels = fontname;
-   if (vals[10]) fontname_labels = as_string(vals[10]);
+   if (vals[10]) fontname_labels = vals[10];
    fontsize_labels = fontsize;
-   if (vals[11]) fontsize_labels = as_int(vals[11], 1, INT_MAX);
+   if (vals[11]) fontsize_labels = as_int(vars[11], vals[11], 1, INT_MAX);
 
    osfree(vals);
 

@@ -1,6 +1,6 @@
 /* > prcore.h
  * Header file for printer independent parts of Survex printer drivers
- * Copyright (C) 1994-2000 Olly Betts
+ * Copyright (C) 1994-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,10 +52,10 @@ extern device printer;
 
 void drawticks(border clip, int tick_size, int x, int y);
 
-int as_int(char *p, int min_val, int max_val);
-int as_bool(char *p);
-float as_float(char *p, float min_val, float max_val);
-int as_escstring(char *s);
-char *as_string(char *p);
+int as_int(const char *v, char *p, int min_val, int max_val);
+int as_bool(const char *v, char *p);
+float as_float(const char *v, char *p, float min_val, float max_val);
+int as_escstring(const char *v, char *s);
+char *as_string(const char *v, char *p);
 
 char **prcore_read_ini(char *section, char **vars);
