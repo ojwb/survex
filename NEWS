@@ -9,6 +9,9 @@
   Chasm unless we're actually producing that output - saves about 8 bytes
   per station.
 
+* cavern: removed slightly too keen sanity check which could misfire in very
+  unusual circumstances.
+
 * (MS Windows Version): all .ico files except 3d.ico have been missing since
   1.0.17 (or maybe 1.0.16) - fixed.  You wouldn't notice this if you installed
   over an previous version.

@@ -34,7 +34,8 @@ test -x "$testdir"/../src/cavern || testdir=.
  plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar\
  newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
  notentranceorexport inferunknown inferexports bad_units_factor\
- percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef"}}
+ percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
+ lech"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -157,6 +158,7 @@ for file in $TESTS ; do
   lowsd) pos=no; warn=0 ;;
   revdir) pos=yes; warn=0 ;;
   gettokennullderef) pos=fail ;;
+  lech) pos=no; warn=0 ;;
   *) file='' ;;
   esac
 

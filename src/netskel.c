@@ -275,7 +275,7 @@ concatenate_trav(node *stn, int i)
 
 #if PRINT_NETBITS
    putchar(' ');
-   print_var(newleg->v);
+   print_var(&(newleg->v));
    printf("\nStacked ");
    print_prefix(newleg2->l.to->name);
    printf(",%d-", reverse_leg_dirn(newleg2));
@@ -391,7 +391,6 @@ replace_travs(void)
    delta e, sc;
    bool fEquate; /* used to indicate equates in output */
    int cLegsTrav = 0;
-   prefix *nmPrev = NULL;
    bool fArtic;
 
    out_current_action(msg(/*Calculating traverses between nodes*/127));
@@ -428,6 +427,11 @@ replace_travs(void)
 
    /* First do all the one leg traverses */
    FOR_EACH_STN(stn1, stnlist) {
+#if PRINT_NETBITS
+      printf("One leg traverses from ");
+      print_prefix(stn1->name);
+      printf(" [%p]\n", stn1);
+#endif
       for (i = 0; i <= 2; i++) {
 	 linkfor *leg = stn1->leg[i];
 	 if (leg && data_here(leg) &&
@@ -517,9 +521,9 @@ replace_travs(void)
 #if PRINT_NETBITS
       printf(" Trav ");
       print_prefix(stn1->name);
-      printf("<%p>%s...%s", stn1, szLink, szLink);
+      printf("<%p>[%d]%s...%s", stn1, i, szLink, szLink);
       print_prefix(stn2->name);
-      printf("<%p>\n", stn2);
+      printf("<%p>[%d]\n", stn2, j);
 #endif
 
       SVX_ASSERT(fixed(stn1));
@@ -550,7 +554,6 @@ replace_travs(void)
       eTotTheo = hTotTheo + vTotTheo;
       cLegsTrav = 0;
       lenTrav = 0.0;
-      nmPrev = stn1->name;
 #ifdef CHASM3DX
       if (!fUseNewFormat) {
 #endif
@@ -618,16 +621,14 @@ replace_travs(void)
 
 	 lenTot = sqrdd(leg->d);
 
+	 if (!fZeros(&leg->v)) fEquate = fFalse;
 	 if (!reached_end) {
 	    add_stn_to_list(&stnlist, stn3);
-	    if (!fZeros(&leg->v)) {
-	       fEquate = fFalse;
+	    if (!fEquate) {
 	       mulsd(&e, &leg->v, &sc);
 	       adddd(&POSD(stn3), &POSD(stn3), &e);
 	    }
 	    fix(stn3);
-	 } else {
-	    if (!fZeros(&leg->v)) fEquate = fFalse;
 	 }
 
 	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
@@ -653,16 +654,16 @@ replace_travs(void)
 
 	 /* FIXME: equate at the start of a traverse treated specially
 	  * - what about equates at end? */
-	 if (nmPrev != stn3->name && !(fEquate && cLegsTrav == 0)) {
-	    /* (node not part of same stn) &&
+	 if (stn1->name != stn3->name && !(fEquate && cLegsTrav == 0)) {
+ 	    /* (node not part of same stn) &&
 	     * (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
 	    if (fhErrStat && !fArtic) {
-	       if (!nmPrev->ident) {
+	       if (!stn1->name->ident) {
 		  /* FIXME: not ideal */
 		  fputs("<fixed point>", fhErrStat);
 	       } else {
-		  fprint_prefix(fhErrStat, nmPrev);
+		  fprint_prefix(fhErrStat, stn1->name);
 	       }
 	       fputs(fEquate ? szLinkEq : szLink, fhErrStat);
 	       if (reached_end) {
@@ -675,18 +676,9 @@ replace_travs(void)
 	       }
 	    }
 #endif
-	    nmPrev = stn3->name;
 	    if (!fEquate) {
 	       cLegsTrav++;
 	       lenTrav += sqrt(lenTot);
-	    } else if (lenTot > 0.0) {
-#if DEBUG_INVALID
-	       fprintf(stderr, "lenTot = %8.4f ", lenTot);
-	       fprint_prefix(stderr, nmPrev);
-	       fprintf(stderr, " -> ");
-	       fprint_prefix(stderr, stn3->name);
-#endif
-	       BUG("during calculation of closure errors");
 	    }
 	 } else {
 #if SHOW_INTERNAL_LEGS
@@ -695,7 +687,7 @@ replace_travs(void)
 	    if (lenTot > 0.0) {
 #if DEBUG_INVALID
 	       fprintf(stderr, "lenTot = %8.4f ", lenTot);
-	       fprint_prefix(stderr, nmPrev);
+	       fprint_prefix(stderr, stn1->name);
 	       fprintf(stderr, " -> ");
 	       fprint_prefix(stderr, stn3->name);
 #endif
