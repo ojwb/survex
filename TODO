@@ -102,11 +102,8 @@ This is certainly wrong (2 legs, 1 1-node, and 1 2-node):
 Date: Mon, 25 Jun 2001
 From: Olly
 
-update translations
-
-quotes in messages - translate too?
-
-translate diffpos, etc
+update translations (quotes in messages - translate too? e.g. `XXX' to
+«XXX»)
 
 extract --help messages for translation.
 

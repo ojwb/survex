@@ -137,11 +137,12 @@ tree_remove(const char *name, const img_point *pt)
    if (fabs(pt->x - (*prev)->pt.x) - threshold > EPSILON ||
        fabs(pt->y - (*prev)->pt.y) - threshold > EPSILON ||
        fabs(pt->z - (*prev)->pt.z) - threshold > EPSILON) {
-      printf("Moved by (%3.2f,%3.2f,%3.2f): %s\n",
+      printf(msg(/*Moved by (%3.2f,%3.2f,%3.2f): %s*/500),
 	     pt->x - (*prev)->pt.x,
 	     pt->y - (*prev)->pt.y,
 	     pt->z - (*prev)->pt.z,
 	     name);
+      putnl();
       fChanged = fTrue;
    }
    
@@ -171,7 +172,8 @@ tree_check(void)
       ASSERT(added_list == NULL);
       qsort(names, c_added, sizeof(char *), cmp_pname);
       for (i = 0; i < c_added; i++) {
-	 printf("Added: %s\n", names[i]);
+	 printf(msg(/*Added: %s*/501), names[i]);
+	 putnl();
 	 osfree(names[i]);
       }
       osfree(names);
@@ -191,7 +193,8 @@ tree_check(void)
    }
    qsort(names, c, sizeof(char *), cmp_pname);
    for (i = 0; i < c; i++) {
-      printf("Deleted: %s\n", names[i]);
+      printf(msg(/*Deleted: %s*/502), names[i]);
+      putnl();
    }
    return fTrue;
 }
@@ -264,7 +267,7 @@ parse_pos_file(const char *fnm, const char *survey,
 	 ch = getc(fh);
 	 if (ch == EOF) break;
 
-	 printf("%s: Ignoring: ", fnm);
+	 printf("%s: %s ", fnm, msg(/*Ignoring:*/503));
 	 while (ch != '\n' && ch != '\r' && ch != EOF) {
 	    putchar(ch);
 	    ch = getc(fh);
