@@ -1,3 +1,10 @@
+survex (1.0.6) unstable; urgency=low
+
+  * Assorted aven fixes and enhancements.
+  * Spell-checked documentation.
+
+ -- Wookey <wookey@survex.com>  Sun, 07 Apr 2002 15:36:11 +0100
+
 survex (1.0.5) unstable; urgency=low
 
   * img_open_survey() could crash if you tried to open an unrecognised file
