@@ -20,18 +20,20 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $
 	echo 'Depends: $${shlibs:Depends}' >> control
 	echo 'Recommends: survex-aven (= ${VERSION})' >> control
 	echo 'Suggests: survex-svxedit (= ${VERSION})' >> control
-	echo Description: Cave surveying and mapping software >> control
+	echo Description: cave surveying and mapping software >> control
 	sed 's/^$$/./;s/^/ /' < $(srcdir)/../desc.txt >> control
+	echo . >> control
+	echo Homepage: http://www.survex.com/ >> control
 	echo >> control
 	echo Package: survex-aven >> control
 	echo Architecture: any >> control
 	echo 'Depends: survex (= ${VERSION}), $${shlibs:Depends}' >> control
-	echo Description: Sophisticated cave survey viewer for Survex >> control
+	echo Description: sophisticated cave survey viewer for Survex >> control
 	sed 's/^$$/./;s/^/ /' < $(srcdir)/../desc-aven.txt >> control
 	echo >> control
 	echo Package: survex-svxedit >> control
 	echo Architecture: all >> control
 	echo 'Depends: tk8.4|wish, bwidget' >> control
 	echo 'Recommends: survex (= ${VERSION})' >> control
-	echo Description: Survey data editor for Survex >> control
+	echo Description: survey data editor for Survex >> control
 	sed 's/^$$/./;s/^/ /' < $(srcdir)/../desc-svxedit.txt >> control
