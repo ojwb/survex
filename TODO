@@ -1,35 +1,23 @@
-* allow disabling of specific warnings
-
 * allow valid range for an instrument to be specified...
 
 * cave length...
 
 Date: Tue, 17 Feb 98 18:10:51 GMT
-From: Andy Waddington on Survey stuff <Survex@pennine.demon.co.uk>
+From: Andy Waddington <Survex@pennine.demon.co.uk>
 
-Survex ought to have a way of saying "Down" for diving legs too.
-
-Date: 26 Aug 1998 10:06:16 GMT
-From: olly@muscat.co.uk
-
-Sort out 3dtodxf
+Ought to have a way of saying "Down" for diving legs too.
 
 Date: Tue, 08 Sep 1998 17:52:52 -0300
 From: Leandro Dybal Bertoni <dybal@upe.org.br>
 
-There is something that I would like (one more to the wish list?): to have the
-*.err file sorted by error (the segment with the grossest error first).
+Sort .err file by error (the segment with the grossest error first)
 
 Date: Wed, 09 Sep 1998 15:10:12 +0100
 From: Wookey <wookey@aleph1.co.uk>
 
-One thing that would be extremely useful is a way to deal with the enormous
-string of 'unused fixed point' errors you get from putting in a load of GPS
-fixes. Some way of indicating that a particular fixed point is not intended
-to be connected to the network is the most general solution. Then it wouldn't
-be deemed a warning when it was found not to be connected. Or possibly
-implement Immo's suggestion of nobbling a particular error message (not a
-great solution - but still useful).
+allow disabling of specific warnings - e.g. loads of 'unused fixed point'
+errors you get from putting in a load of GPS fixes.  Or way to indicate
+a particular fixed point is not necessarily intended to be used.
 
 Date: 13 Dec 1998
 From: Olly
@@ -47,7 +35,7 @@ merge "datums" and quantities?
 Date: 19 Dec 1998
 From: Olly
 
-if there are errors, we shouldn't produce output files (reconsider some
+If there are errors, we shouldn't produce output files (reconsider some
 errors as warnings if this is done though).
 
 Date: 05 Jan 1999
@@ -63,21 +51,11 @@ From: Wookey
 A STYLE for 'connections' (with no TCC info) for feeding in surface data,
 hydrological connections, etc.
 
-Date: 01 Mar 1999
-From: Olly
-
-Put 3dtodxf back in.  Or maybe wait until Leandro has brought it up-to-date.
-
 Date: 04 Mar 1999
 From: Olly
 
 Currently rpm isn't relocatable (since path to support files is compiled
-in).  Can we fix this?
-
-Date: 21 Mar 1999
-From: Olly
-
-Check through warnings from RISC OS compile (in riscos.err)
+in).  Can we fix this?  Does anyone care?
 
 Date: 31 Mar 1999
 From: Olly
@@ -88,9 +66,4 @@ Date: 01 Apr 1999
 From: Wookey
 
 Different print.ini for each platform - or some mechanism to specify?
-
-Date: 01 Apr 1999
-From: Olly
-
-Ideally want makefile to package DOS and RISC OS versions
 
