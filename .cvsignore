@@ -8,6 +8,8 @@ config.h.in
 config.log
 config.status
 configure
+djgpp_exes
+mingw_exes
 src*_*.zip
 stamp-h
 stamp-h.in

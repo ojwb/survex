@@ -23,6 +23,10 @@
 
 * Wrong warning was being given for `*equate 1 1'
 
+* xcaverot: fixed "step" button and keys
+
+* caverot: reduced exe size down to slightly more than 0.91 (allegro issue)
+
 Changes in 0.92-prerelease4:
 
 * cavern: "*infer" wasn't working due to internal token value mismatch

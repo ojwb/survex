@@ -54,16 +54,6 @@ When I use caverot if I set the language to another one different than
 english, the screen doesn't print well the words with accents.
 [Need accent support from Allegro, which is under development - Olly]
 
-Date: 10 Jan 2000
-From: Wookey
-
-On redhat 5.1 with HPJL-II printer -actually an EPl-4300 [...] if I
-use the [...] printpcl driver I get the old 'horizontal-tab' problem,
-as previously reported even though the setting not to use it is still
-there - I do not understand what is going on, but it may have more to
-do with interactions with the lpr dystem than survex itself....
-[Suspected to be lpr rewriting PCL]
-
 Date: 25 Jan 2000
 From: Mark Shinwell
 
