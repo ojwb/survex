@@ -61,7 +61,7 @@ borlandc_zip : dostxt
 	zip -j -l $(bc_zip_name) bc_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
-riscos_zip_name = survex-riscod-@VERSION@.zip
+riscos_zip_name = survex-riscos-@VERSION@.zip
 
 riscos_zip :
 	$(RM) $(riscos_zip_name)
@@ -69,9 +69,10 @@ riscos_zip :
 	# into the mainstream distribution in future
 	$(RM) -rf riscos_tmp
 	mkdir riscos_tmp
+	cp -r riscos_extras/* riscos_tmp
 	for f in $(base_progs) caverot ; do\
-	 ln -s ../riscos_exes/$$f riscos_tmp/$$f,ff8 ; done
-	for f in $(extra_files) $(extra_text) ; do\
+	 ln -s ../../riscos_exes/$$f riscos_tmp/\!Cavern/$$f,ff8 ; done
+	for f in $(extra_text) ; do\
 	 b=`echo "$$f" | sed 's!.*/!!'` ;\
 	 type=fff ;\
 	 case "$$f" in\
@@ -79,8 +80,16 @@ riscos_zip :
 	  *.msg) type=ffd ;;\
          esac ;\
 	 ln -s ../$$f riscos_tmp/$$b,$$type ; done
-	./zip-magic -N -j $(riscos_zip_name) riscos_tmp/*\
-	 riscos_extras/*,[0-9a-f][0-9a-f][0-9a-f]
+	for f in $(extra_files) ; do\
+	 b=`echo "$$f" | sed 's!.*/!!'` ;\
+	 type=fff ;\
+	 case "$$f" in\
+	  *.bit) type=ffd ;;\
+	  *.msg) type=ffd ;;\
+         esac ;\
+	 ln -s ../../$$f riscos_tmp/\!Cavern/$$b,$$type ; done
+	# -R doesn't seem to work here, so just glob it all in
+	cd riscos_tmp && ../zip-magic -N ../$(riscos_zip_name) * */* */*/*
 	$(RM) -rf riscos_tmp
 
 # source code for transfer to the RISC OS/DOS machines for compilation

@@ -1,4 +1,48 @@
-This is Survex, a software package to assist surveying and mapping cave
-systems.
+Survex RISC OS ReadMe
+---------------------
 
-And this will be a ReadMe file when it gets written.
+Create a directory (e.g. one called Survex), then copy the contents of
+the ZIP archive into this.
+
+This will install everything into the correct sub-directories relative
+to the current directory. 
+
+You should have:
+
+ReadMe - this file
+COPYING - GNU General Public License
+!CLIcon - a utility to drive command line programs from the desktop
+!Cavern - the processing application
+!Caverot - the cave viewer
+!PrintDM, !PrintHPGL, !PrintPCL, !PrintPS - Printer drivers
+
+The documentation and sample data are supplied in separate archives,
+since they change less frequently than the program files.
+
+Use the application by double-clicking on them to load them (along
+with CLIcon) - then drag and drop data files as required.  You can
+also use CLIcon to create different commands if there are others that
+you use regularly.
+
+SURVEX can be configured for various languages.  Currently English, US
+English, French, German, Italian, Catalan, Spanish, and Portuguese are
+available.  To change this, hold down Shift and double-click on !Cavern,
+then hold down shift again and double-click on !Boot.  Edit the line
+which says:
+
+ Set SurvexLang en
+
+And change the "en" to the language code for the language you want
+(en, en-us, fr, de, it, ca, es, pt respectively) and then save the
+file.
+
+A couple more points:
+
+(a) If you like Survex, please join the Survex User Group - details in
+    the documentation.
+
+(b) The source code is available from http://www.survex.com/
+
+Enjoy!
+
+Olly Betts <olly@survex.com>
