@@ -28,7 +28,6 @@
 #include "mainfrm.h"
 #include "aven.h"
 #include "aboutdlg.h"
-//#include "splash.h"
 
 #include "message.h"
 #include "img.h"
