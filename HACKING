@@ -99,7 +99,8 @@ BorlandC++ 5.5 can be downloaded for free, but it appears to only compile to
 (I've not tried yet).
 
 You can build a suitable source archive for this version using
-`make alien_src_zip' on the source distribution on a Unix box.
+`make alien_src_zip' on the source distribution on a Unix box (you need to
+have run `./configure' first).
 
 RISC OS
 -------
@@ -110,6 +111,7 @@ Acorn C V4.  You also need to get and install OSLib from:
 http://www.doves.demon.co.uk/oslib/
 
 You can build a suitable source archive for this version using `make
-alien_src_zip' on the source distribution on a Unix box.  However for
-this you'll need a specially tweaked version of zip to create the zip
-file with the correct RISC OS file types.  I can supply this on request.
+alien_src_zip' on the source distribution on a Unix box (you need to have
+run `./configure' first).  However for this you'll need a specially tweaked
+version of zip to create the zip file with the correct RISC OS file types.
+I can supply this on request.
