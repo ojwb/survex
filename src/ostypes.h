@@ -6,7 +6,7 @@
 #ifndef OSTYPES_H /* only include once */
 #define OSTYPES_H
 
-#ifdef __cplusplus
+#ifndef __cplusplus
 typedef enum { fFalse=0, fTrue=1 } BOOL;
 # define bool BOOL
 #else
