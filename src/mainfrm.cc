@@ -903,7 +903,8 @@ void MainFrm::CreateSidePanel()
     m_PresPanel->SetSizer(pres_panel_sizer);
 
     // Overall tabbed structure:
-    wxImageList* image_list = new wxImageList();
+    // FIXME: this assumes images are 15x15
+    wxImageList* image_list = new wxImageList(15, 15);
     const wxString path = wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
 			  wxString("icons") + wxCONFIG_PATH_SEPARATOR;
     image_list->Add(wxBitmap(path + "survey-tree.png", wxBITMAP_TYPE_PNG));
