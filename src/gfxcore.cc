@@ -771,10 +771,12 @@ void GfxCore::SetScale(Double scale)
 {
     // Fill the plot data arrays with screen coordinates, scaling the survey
     // to a particular absolute scale.
-
-    if (scale > 65535.0 / MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent()) ||
-        scale < m_InitialScale / 20) {
-        return;
+   
+    Double max_scale = 32767.0 / MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent());
+    if (scale > max_scale)
+        scale = max_scale;
+    else if (scale < m_InitialScale / 20) {
+        scale = m_InitialScale / 20;
     }
 
     m_Params.scale = scale;

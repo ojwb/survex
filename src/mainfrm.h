@@ -185,6 +185,7 @@ class MainFrm : public wxFrame {
     wxButton* m_HideButton;
     wxTextCtrl* m_FindBox;
     wxBoxSizer* m_FindButtonSizer;
+    wxBoxSizer* m_HideButtonSizer;
     wxBoxSizer* m_FindSizer;
     wxStaticText* m_MousePtr;
     wxStaticText* m_Coords;
@@ -194,6 +195,7 @@ class MainFrm : public wxFrame {
     wxStaticText* m_Dist1;
     wxStaticText* m_Dist2;
     wxStaticText* m_Dist3;
+    wxStaticText* m_Found;
     wxCheckBox* m_RegexpCheckBox;
     FILE* m_PresFP;
     wxString m_File;

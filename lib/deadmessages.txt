@@ -531,3 +531,11 @@
 #ca: 58 en aquesta l&iacute;nia:
 #es: 58 en esta l&iacute;nea:
 #it: 58 in questa linea:
+#en:325 Regular expression compilation failed (perhaps your syntax was incorrect).
+#fr:325 Echec de la compilation d'une expression r&eacute;guli&egrave;re (peut-&ecirc;tre erreur de syntaxe)
+#de:325 &Uuml;bersetzung des regul&auml;ren Ausdrucks fehlgeschlagen (evtl. war die Syntax nicht korreekt).
+#pt:325 Compila&ccedil;&atilde;o de express&atilde;o regular falhou (talvez a sintaxe estivesse errada).
+#en:326 Regular expression compilation (stage 2) failed.
+#fr:326 Echec de la compilation d'une expression r&eacute;guli&egrave;re (&agrave; l'&eacute;tape 2)
+#de:326 Uuml;bersetzung des regul@&auml;ren Ausdrucks (Phase 2) fehlgeschlagen.
+#pt:326 Compila&ccedil;&atilde;o (segundo est&aacute;gio) de express&atilde;o regular falhou.

@@ -20,6 +20,8 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#define AVEN_REGEX
+
 #include "mainfrm.h"
 #include "aven.h"
 #include "aboutdlg.h"
@@ -429,18 +431,21 @@ void MainFrm::CreateToolBar()
 
 void MainFrm::CreateSidePanel()
 {
-    m_Splitter = new wxSplitterWindow(this, -1, wxDefaultPosition, wxDefaultSize,
+    m_Splitter = new wxSplitterWindow(this, -1, wxDefaultPosition,
+		                      wxDefaultSize,
                                       wxSP_3D | wxSP_LIVE_UPDATE);
     m_Panel = new wxPanel(m_Splitter);
     m_Tree = new AvenTreeCtrl(this, m_Panel);
     m_FindPanel = new wxPanel(m_Panel);
     m_Panel->Show(false);
 
-    m_FindButton = new wxButton(m_FindPanel, button_FIND, "Find");
+    m_FindBox = new wxTextCtrl(m_FindPanel, -1, "");
+    m_FindButton = new wxButton(m_FindPanel, button_FIND, msg(/*Find*/332));
     m_FindButton->SetDefault();
     m_FindPanel->SetDefaultItem(m_FindButton);
-    m_HideButton = new wxButton(m_FindPanel, button_HIDE, "Hide");
-    m_RegexpCheckBox = new wxCheckBox(m_FindPanel, -1, "Regular expression");
+    m_HideButton = new wxButton(m_FindPanel, button_HIDE, msg(/*Hide*/333));
+    m_RegexpCheckBox = new wxCheckBox(m_FindPanel, -1,
+		                      msg(/*Regular expression*/334));
     m_Coords = new wxStaticText(m_FindPanel, -1, "");
     m_StnCoords = new wxStaticText(m_FindPanel, -1, "");
     //  m_MousePtr = new wxStaticText(m_FindPanel, -1, "Mouse coordinates");
@@ -449,15 +454,20 @@ void MainFrm::CreateSidePanel()
     m_Dist1 = new wxStaticText(m_FindPanel, -1, "");
     m_Dist2 = new wxStaticText(m_FindPanel, -1, "");
     m_Dist3 = new wxStaticText(m_FindPanel, -1, "");
+    m_Found = new wxStaticText(m_FindPanel, -1, "");
 
     m_FindButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-    m_FindButtonSizer->Add(m_FindButton, 1, wxALL, 2);
-    m_FindButtonSizer->Add(m_HideButton, 1, wxALL, 2);
+    m_FindButtonSizer->Add(m_FindBox, 1, wxALL | wxEXPAND, 2);
+    m_FindButtonSizer->Add(m_FindButton, 0, wxALL | wxALIGN_RIGHT, 6);
+
+    m_HideButtonSizer = new wxBoxSizer(wxHORIZONTAL);
+    m_HideButtonSizer->Add(m_Found, 1, wxALL | wxEXPAND, 2);
+    m_HideButtonSizer->Add(m_HideButton, 0, wxALL | wxALIGN_RIGHT, 2);
 
     m_FindSizer = new wxBoxSizer(wxVERTICAL);
-    m_FindSizer->Add(m_FindBox = new wxTextCtrl(m_FindPanel, -1, ""), 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(m_FindButtonSizer, 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(m_RegexpCheckBox, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_HideButtonSizer, 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
     //   m_FindSizer->Add(m_MousePtr, 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(m_Coords, 0, wxALL | wxEXPAND, 2);
@@ -472,10 +482,11 @@ void MainFrm::CreateSidePanel()
 
     m_FindPanel->SetAutoLayout(true);
     m_FindPanel->SetSizer(m_FindSizer);
+    m_FindSizer->Fit(m_FindPanel);
 
     m_PanelSizer = new wxBoxSizer(wxVERTICAL);
-    m_PanelSizer->Add(m_Tree, 3, wxALL | wxEXPAND, 2);
-    m_PanelSizer->Add(m_FindPanel, 2, wxALL | wxEXPAND, 2);
+    m_PanelSizer->Add(m_Tree, 1, wxALL | wxEXPAND, 2);
+    m_PanelSizer->Add(m_FindPanel, 0, wxALL | wxEXPAND, 2);
     m_Panel->SetAutoLayout(true);
     m_Panel->SetSizer(m_PanelSizer);
     m_PanelSizer->Fit(m_Panel);
@@ -1083,7 +1094,14 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
         int x;
         int y;
         GetSize(&x, &y);
-        m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 5);
+	if (x < 600)
+	    x /= 3;
+	else if (x < 1000)
+	    x = 200;
+	else
+	    x /= 5;
+	
+        m_Splitter->SplitVertically(m_Panel, m_Gfx, x);
 #endif
     }
     SetCursor(*wxSTANDARD_CURSOR);
@@ -1415,10 +1433,11 @@ void MainFrm::OnFind(wxCommandEvent& event)
     re_pattern_buffer buffer;
 #endif
     bool regexp = m_RegexpCheckBox->GetValue();
-    bool found = false;
+    int found = 0;
 
     if (regexp) {
 #ifdef AVEN_REGEX
+        const char * error;
         buffer.translate = NULL;
         buffer.fastmap = new char[256];
         buffer.allocated = 0;
@@ -1426,16 +1445,9 @@ void MainFrm::OnFind(wxCommandEvent& event)
         buffer.can_be_null = 0;
         buffer.no_sub = 0;
 
-        const char* error = re_compile_pattern(str.c_str(), str.Length(), &buffer);
-    
+        error = re_compile_pattern(str.c_str(), str.Length(), &buffer);
         if (error) {
-            wxGetApp().ReportError(
-                msg(/*Regular expression compilation failed (perhaps your syntax was incorrect).*/325));
-            return;
-        }
-
-        if (re_compile_fastmap(&buffer) != 0) {
-            wxGetApp().ReportError(msg(/*Regular expression compilation (stage 2) failed.*/326));
+            wxGetApp().ReportError(error);
             return;
         }
 #endif
@@ -1451,7 +1463,8 @@ void MainFrm::OnFind(wxCommandEvent& event)
         if (regexp) {
 #ifdef AVEN_REGEX
             re_registers regs;
-            int ret = re_search(&buffer, label->text.c_str(), label->text.Length(), 0, label->text.Length(),
+            int ret = re_search(&buffer, label->text.c_str(),
+			        label->text.Length(), 0, label->text.Length(),
                                 NULL);
 
             switch (ret) {
@@ -1463,16 +1476,17 @@ void MainFrm::OnFind(wxCommandEvent& event)
                     break;
 
                 default:
-                    m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_YELLOW, 1);
-                    found = true;
+                    m_Gfx->AddSpecialPoint(label->x, label->y, label->z,
+				           col_YELLOW, 1);
+                    found++;
                     break;
             }
 #endif
-        }
-        else {
-            if (label->text.Contains(str)) {
-                m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_YELLOW, 1);
-                found = true;
+        } else {
+            if (label->text.Find(str) >= 0) {
+                m_Gfx->AddSpecialPoint(label->x, label->y, label->z,
+				       col_YELLOW, 1);
+                found++;
             }
         }
     }
@@ -1483,6 +1497,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
     }
 #endif
 
+    m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found)); 
     m_Gfx->DisplaySpecialPoints();
 
     if (!found) {
@@ -1495,7 +1510,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
 void MainFrm::OnHide(wxCommandEvent& event)
 {
     // Hide any search result highlights.
-
+    m_Found->SetLabel("");
     m_Gfx->ClearSpecialPoints();
 }
 

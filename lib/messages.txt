@@ -2323,14 +2323,7 @@ en:324 Res@tart
 fr:324 Re@d&eacute;marrage
 de:324 @Neustart
 pt:324 Re@iniciar
-en:325 Regular expression compilation failed (perhaps your syntax was incorrect).
-fr:325 Echec de la compilation d'une expression r&eacute;guli&egrave;re (peut-&ecirc;tre erreur de syntaxe)
-de:325 &Uuml;bersetzung des regul&auml;ren Ausdrucks fehlgeschlagen (evtl. war die Syntax nicht korreekt).
-pt:325 Compila&ccedil;&atilde;o de express&atilde;o regular falhou (talvez a sintaxe estivesse errada).
-en:326 Regular expression compilation (stage 2) failed.
-fr:326 Echec de la compilation d'une expression r&eacute;guli&egrave;re (&agrave; l'&eacute;tape 2)
-de:326 Uuml;bersetzung des regul@&auml;ren Ausdrucks (Phase 2) fehlgeschlagen.
-pt:326 Compila&ccedil;&atilde;o (segundo est&aacute;gio) de express&atilde;o regular falhou.
+#XXX 325 326
 en:327 Regular expression search failed.
 fr:327 Expression r&eacute;guli&egrave;re non trouv&eacute;e
 de:327 Suche nach regul&auml;rem Ausdruck fehlgeschlagen.
@@ -2347,6 +2340,14 @@ en:330 So@lid Surface
 fr:330 Surface So@lide
 de:330 @Durchgezogene Oberfl&auml;che
 pt:330 Superf&iacute;cie S&oacute;@lida
+# number of stations found matching search
+en:331 %d found
+# "Find stations" button label
+en:332 Find
+# "Hide stations" button label
+en:333 Hide
+# checkbox for regular expression search
+en:334 Regular expression
 #
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
