@@ -46,6 +46,8 @@
 #define TEXT_HEIGHT	0.6
 #define MARKER_SIZE	0.8
 
+#define GRID_SPACING	100
+
 int
 main(int argc, char **argv)
 {
@@ -61,6 +63,7 @@ main(int argc, char **argv)
    float min_x, min_y, min_z, max_x, max_y, max_z; /* for HEADER section */
    double text_height; /* for station labels */
    double marker_size; /* for station markers */
+   double grid; /* grid spacing (or 0 for no grid) */
 
    /* TRANSLATE */
    static const struct option long_opts[] = {
@@ -68,6 +71,7 @@ main(int argc, char **argv)
 	{"no-crosses", no_argument, 0, 'c'},
 	{"no-station-names", no_argument, 0, 'n'},
 	{"no-legs", no_argument, 0, 'l'},
+	{"grid", optional_argument, 0, 'g'},
 	{"text-height", required_argument, 0, 't'},
 	{"marker-size", required_argument, 0, 'm'},
 	{"htext", required_argument, 0, 't'},
@@ -77,15 +81,16 @@ main(int argc, char **argv)
 	{0,0,0,0}
    };
 
-#define short_opts "cnlt:m:h"
+#define short_opts "cnlig:t:m:h"
 
    /* TRANSLATE */
    static struct help_msg help[] = {
 	{HLP_ENCODELONG(0), "do not generate station markers"},
 	{HLP_ENCODELONG(1), "do not generate station labels"},
 	{HLP_ENCODELONG(2), "do not generate the survey legs"},
-	{HLP_ENCODELONG(3), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
-	{HLP_ENCODELONG(4), "station marker size (default: "STRING(MARKER_SIZE)")"},
+	{HLP_ENCODELONG(3), "generate grid (default: "STRING(GRID_SPACING)"m)"},
+	{HLP_ENCODELONG(4), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
+	{HLP_ENCODELONG(5), "station marker size (default: "STRING(MARKER_SIZE)")"},
 	{0,0} 
    };
 
@@ -97,6 +102,7 @@ main(int argc, char **argv)
    crosses = 1;
    labels = 1;
    legs = 1;
+   grid = 0;
    text_height = TEXT_HEIGHT;
    marker_size = MARKER_SIZE;
 
@@ -114,6 +120,12 @@ main(int argc, char **argv)
 	 break;
        case 'l': /* Legs */
 	 legs = 0;
+	 break;
+       case 'g': /* Grid */
+	 if (optarg)
+	    grid = cmdline_double_arg();
+	 else
+	    grid = GRID_SPACING;
 	 break;
        case 't': /* Text height */
 	 text_height = cmdline_double_arg();
@@ -134,8 +146,8 @@ main(int argc, char **argv)
       }
    } 	 
 
-   fnm3D=argv[optind++];
-   fnmDXF=argv[optind++];
+   fnm3D = argv[optind++];
+   fnmDXF = argv[optind++];
 
    pimg = img_open(fnm3D, szTitle, szDateStamp);
    if (!pimg) {
@@ -171,6 +183,13 @@ main(int argc, char **argv)
       }
    } while (item != img_STOP);   
    img_close(pimg);
+
+   if (grid > 0) {
+      min_x -= grid / 2;
+      max_x += grid / 2;
+      min_y -= grid / 2;
+      max_y += grid / 2;
+   }
 
    /* handle empty file gracefully */
    if (min_x > max_x) {
@@ -215,14 +234,52 @@ main(int argc, char **argv)
    fprintf(fh,"70\n64\n"); /* shows layer is referenced by entities */
    fprintf(fh,"62\n7\n"); /* color: kept the same used by SpeleoGen */
    fprintf(fh,"6\nCONTINUOUS\n"); /* linetype */
+   if (grid > 0) {
+      /* Next Layer: Grid */
+      fprintf(fh,"0\nLAYER\n2\nGrid\n");
+      fprintf(fh,"70\n64\n"); /* shows layer is referenced by entities */
+      fprintf(fh,"62\n7\n"); /* color: kept the same used by SpeleoGen */
+      fprintf(fh,"6\nCONTINUOUS\n"); /* linetype */
+   }
    fprintf(fh,"0\nENDTAB\n");
    fprintf(fh,"0\nENDSEC\n");
 
    fprintf(fh,"0\nSECTION\n");
    fprintf(fh,"2\nENTITIES\n");
 
-   x1 = y1 = z1 = 0; /* avoid compiler warning */
+   if (grid > 0) {
+      x1 = ((int)(min_x / grid)) * grid + grid;
+      y1 = ((int)(min_y / grid)) * grid + grid;
+#ifdef DEBUG_3DTODXF
+      printf("x_min: %d  y_min: %d\n", (int)x1, (int)y1);
+#endif
+      while (x1 < max_x) {
+	 /* horizontal line */      
+         fprintf(fh,"0\nLINE\n");
+         fprintf(fh,"8\nGrid\n"); /* Layer */
+         fprintf(fh,"10\n%6.2f\n",x1);
+         fprintf(fh,"20\n%6.2f\n",min_y);
+         fprintf(fh,"30\n0\n");
+         fprintf(fh,"11\n%6.2f\n",x1);
+         fprintf(fh,"21\n%6.2f\n",max_y);
+         fprintf(fh,"31\n0\n");
+	 x1 += grid;
+      }
+      while (y1 < max_y) {
+         /* vertical line */      
+         fprintf(fh,"0\nLINE\n");
+         fprintf(fh,"8\nGrid\n"); /* Layer */
+         fprintf(fh,"10\n%6.2f\n",min_x);
+         fprintf(fh,"20\n%6.2f\n",y1);
+         fprintf(fh,"30\n0\n");
+         fprintf(fh,"11\n%6.2f\n",max_x);
+         fprintf(fh,"21\n%6.2f\n",y1);
+         fprintf(fh,"31\n0\n");
+	 y1 += grid;
+      }
+   }
 
+   x1 = y1 = z1 = 0; /* avoid compiler warning */
    do {
       item = img_read_datum(pimg, szName, &x, &y, &z);
       switch (item) {
