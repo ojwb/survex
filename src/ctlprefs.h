@@ -1,7 +1,7 @@
 //
-//  paneldlg.h
+//  ctlprefs.h
 //
-//  Dialog boxes with multiple pages and a selector panel.
+//  Preferences page for mouse control options.
 //
 //  Copyright (C) 2002 Mark R. Shinwell
 //
@@ -20,28 +20,20 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef paneldlg_h
-#define paneldlg_h
+#ifndef ctlprefs_h
+#define ctlprefs_h
 
-#include "wx.h"
 #include "paneldlgpage.h"
+#include "aven.h"
 
-#include <list>
-
-class PanelDlg : public wxDialog {
-    wxBoxSizer* m_VertSizer;
-    wxBoxSizer* m_ButtonSizer;
-    list<PanelDlgPage*> m_Pages;
-    PanelDlgPage* m_CurrentPage;
+class CtlPrefs : public PanelDlgPage {
 
 public:
-    PanelDlg(wxWindow* parent, wxWindowID id, const wxString& title);
-    virtual ~PanelDlg();
+    CtlPrefs(wxWindow* parent);
+    virtual ~CtlPrefs();
 
-    void OnPageChange(wxCommandEvent&);
-    void SetPages(list<PanelDlgPage*> pages);
-
-    DECLARE_EVENT_TABLE()
+    const wxString GetName();
+    const wxBitmap GetIcon();
 };
 
 #endif

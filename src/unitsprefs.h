@@ -1,7 +1,7 @@
 //
-//  paneldlg.h
+//  unitsprefs.h
 //
-//  Dialog boxes with multiple pages and a selector panel.
+//  Preferences page for measurement unit options.
 //
 //  Copyright (C) 2002 Mark R. Shinwell
 //
@@ -20,28 +20,20 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef paneldlg_h
-#define paneldlg_h
+#ifndef unitsprefs_h
+#define unitsprefs_h
 
-#include "wx.h"
 #include "paneldlgpage.h"
+#include "aven.h"
 
-#include <list>
-
-class PanelDlg : public wxDialog {
-    wxBoxSizer* m_VertSizer;
-    wxBoxSizer* m_ButtonSizer;
-    list<PanelDlgPage*> m_Pages;
-    PanelDlgPage* m_CurrentPage;
+class UnitsPrefs : public PanelDlgPage {
 
 public:
-    PanelDlg(wxWindow* parent, wxWindowID id, const wxString& title);
-    virtual ~PanelDlg();
+    UnitsPrefs(wxWindow* parent);
+    virtual ~UnitsPrefs();
 
-    void OnPageChange(wxCommandEvent&);
-    void SetPages(list<PanelDlgPage*> pages);
-
-    DECLARE_EVENT_TABLE()
+    const wxString GetName();
+    const wxBitmap GetIcon();
 };
 
 #endif

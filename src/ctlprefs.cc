@@ -1,7 +1,7 @@
 //
-//  stnprefs.cc
+//  ctlprefs.cc
 //
-//  Preferences page for stations.
+//  Preferences page for mouse control options.
 //
 //  Copyright (C) 2002 Mark R. Shinwell
 //
@@ -20,23 +20,16 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "stnprefs.h"
+#include "ctlprefs.h"
 #include "message.h"
 
 #include <wx/statline.h>
 
-static const wxWindowID ID_STN_PREFS = 1001;
-static const wxWindowID ID_STN_CROSSES = 2000;
-static const wxWindowID ID_STN_HI_ENTS = 2001;
-static const wxWindowID ID_STN_HI_FIXED = 2002;
-static const wxWindowID ID_STN_HI_XPTS = 2003;
-static const wxWindowID ID_STN_NAMES = 2004;
-static const wxWindowID ID_STN_OVERLAPPING = 2005;
-static const wxWindowID ID_STN_LINE1 = 2006;
-static const wxWindowID ID_STN_LINE2 = 2006;
+static const wxWindowID ID_CTL_PREFS = 1004;
 
-StnPrefs::StnPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_STN_PREFS)
+CtlPrefs::CtlPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_CTL_PREFS)
 {
+#if 0
     wxCheckBox* show_crosses = new wxCheckBox(this, ID_STN_CROSSES, msg(/*Mark survey stations with crosses*/350));
     wxCheckBox* hi_ents = new wxCheckBox(this, ID_STN_HI_ENTS, msg(/*Highlight stations marked as entrances*/351));
     wxCheckBox* hi_fixed = new wxCheckBox(this, ID_STN_HI_FIXED,
@@ -63,20 +56,21 @@ StnPrefs::StnPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_STN_PREFS)
 
     SetAutoLayout(true);
     SetSizer(sizer);
+#endif
 }
 
-StnPrefs::~StnPrefs()
+CtlPrefs::~CtlPrefs()
 {
 
 }
 
-const wxString StnPrefs::GetName()
+const wxString CtlPrefs::GetName()
 {
-    return "Stations";
+    return "Control";
 }
 
-const wxBitmap StnPrefs::GetIcon()
+const wxBitmap CtlPrefs::GetIcon()
 {
-    return wxGetApp().LoadPreferencesIcon("stations");
+    return wxGetApp().LoadPreferencesIcon("ctl");
 }
 

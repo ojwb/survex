@@ -24,7 +24,7 @@
 
 PanelDlgPage::PanelDlgPage(wxWindow* parent, wxWindowID id) : wxPanel(parent, id)
 {
-     SetSizeHints(400, 300);
+    SetSizeHints(400, 300);
 }
 
 PanelDlgPage::~PanelDlgPage()

@@ -20,8 +20,8 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "message.h"
 #include "tubeprefs.h"
+#include "message.h"
 
 static const wxWindowID ID_TUBE_PREFS = 1001;
 static const wxWindowID ID_SHOW_TUBES = 5000;
@@ -35,8 +35,8 @@ TubePrefs::TubePrefs(wxWindow* parent) : PanelDlgPage(parent, ID_TUBE_PREFS)
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
-    sizer->Add(show_tubes, 0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 8);
-    sizer->Add(estimate_lrud, 0 /* not vertically stretchable */, wxALIGN_TOP);
+    sizer->Add(show_tubes, 0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 4);
+    sizer->Add(estimate_lrud, 0 /* not vertically stretchable */, wxALIGN_TOP | wxLEFT, 32);
 
     SetAutoLayout(true);
     SetSizer(sizer);
