@@ -151,3 +151,28 @@ As"/"Load"/"Save" mould
 Aven presentation recording crashes if you select the "Finish and
 Save" menu item twice.
 
+Aven:
+
+<li>by default put crosses on those points with no legs attached (unused
+fixed points)?
+
+<li>label junctions/dead ends?
+
+<li>colour by traverse
+
+<li>section colouring/selective labelling
+
+<li>clipping - want to select a clip sphere (or maybe cube) centred on
+centre on rotation I think.
+
+<li>colour by cave (and more generally by sub-prefix):
+"aven --survey 161 --colour-by-sub-prefix all.3d" would result in
+lhroute, rhroute, adrian, etc all getting different colours...
+
+<li>LRUD?
+
+<li>Some way to display all the names of an equated station (e.g. in pop-up
+window or the info panel).
+
+<li>Highlight a whole survey by clicking on it in the tree...
+

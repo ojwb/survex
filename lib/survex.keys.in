@@ -1,11 +1,11 @@
 application/x-survex-svx:
 	open=gnome-edit %f
- 	open.tag1.Open in SvxEdit=svxedit %f
- 	open.tag2.Process=%view{ascii} cavern --log -q -o %f %f
+	open.tag1.Open in SvxEdit=if test -x /usr/bin/svxedit ; then svxedit %f ; else gnome-edit %f ; fi
+ 	open.tag2.Process=%view{ascii} cavern -q -o %f %f
 	icon-filename=@prefix@/share/@PACKAGE@/icons/svx.png
 
 application/x-survex-3d:
-	open=aven %f
+	open=if test -x /usr/bin/aven ; then aven %f ; else xcaverot %f ; fi
 	open.tag1.Print=printps %f
 	open.tag2.Extend=extend %f
 	open.tag3.Convert to DXF=cad3d --dxf %f
@@ -13,11 +13,11 @@ application/x-survex-3d:
 	icon-filename=@prefix@/share/@PACKAGE@/icons/3d.png
 
 application/x-compass-plot:
-	open=aven %f
+	open=if test -x /usr/bin/aven ; then aven %f ; else xcaverot %f ; fi
 	icon-filename=@prefix@/share/@PACKAGE@/icons/plt.png
 
 application/x-cmap-xyz:
-	open=aven %f
+	open=if test -x /usr/bin/aven ; then aven %f ; else xcaverot %f ; fi
 
 application/x-survex-err:
 	open=gnome-edit %f

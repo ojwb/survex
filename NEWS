@@ -1,3 +1,19 @@
+Changes in 1.0.18:
+
+* (Unix Version): Fixed "Process" action on .svx files.
+
+* (Unix Version): File associations: if svxedit isn't installed, run gnome-edit
+  instead; if aven isn't installed, run xcaverot instead.
+
+* (Unix Version): In Debian packages, now include file associations and file
+  icons in the survex package rather than survex-aven.
+
+* (Unix Version): File associations were missing from RPM packages; moved
+  aven and svxedit man pages to their respective subpackages; moved aven icons
+  to the aven subpackage.
+
+* Updated TODO list.
+
 Changes in 1.0.17:
 
 * (MS Windows Version): Fixed "Open in SvxEdit" to work (and if tcl isn't

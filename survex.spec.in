@@ -52,13 +52,22 @@ rm -rf "$RPM_BUILD_ROOT"
 %defattr(-,root,root)
 %doc @EXTRA_TEXT@
 %doc /usr/share/doc/@PACKAGE@
-%doc /usr/share/man
+%doc /usr/share/man/[^1]*
+%doc /usr/share/man/1/[b-rt-zA-Z0-9]*
+%doc /usr/share/man/1/sorterr*
 /usr/bin/[b-rt-zA-Z0-9]*
 /usr/bin/sorterr
-/usr/share/@PACKAGE@
+/usr/share/@PACKAGE@/[^i]*
+/usr/share/@PACKAGE@/i[^c]*
+/usr/share/@PACKAGE@/icons/??.png
+/usr/share/@PACKAGE@/icons/???.png
+/usr/share/mime-info
 %files aven
 %defattr(-,root,root)
+%doc /usr/share/man/1/aven*
 /usr/bin/aven
+/usr/share/@PACKAGE@/icons/????*.png
 %files svxedit
 %defattr(-,root,root)
+%doc /usr/share/man/1/svxedit*
 /usr/bin/svxedit
