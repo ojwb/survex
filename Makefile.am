@@ -98,11 +98,7 @@ rpm : dist
 	rm -rf BUILD
 	mkdir BUILD
 	: #
-	if test -f /usr/lib/rpm/rpmrc ; then \
-	  rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc ${spec} ; \
-	else \
-	  rpm -ba --clean --rcfile /opt/crosstools/autotools/lib/rpm/rpmrc:`pwd`/rpmrc ${spec} ; \
-	fi
+	rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc ${spec}
 
 debcl=deb/${PACKAGE}-${VERSION}/debian/changelog
 debct=deb/${PACKAGE}-${VERSION}/debian/control
@@ -122,7 +118,7 @@ debian : dist
 	echo "Maintainer: Wookey <wookey@survex.com>" >> ${debct}
 	echo Standards-Version: 3.1.0 >> ${debct}
 	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
-	echo 'Build-Depends: debhelper (>= 1.1.17), libwxgtk2.2-dev, sgmltools-lite, docbook-to-man' >> ${debct}
+	echo 'Build-Depends: debhelper (>= 1.1.17), libwxgtk2.2-dev' >> ${debct}
 	echo >> ${debct}
 	echo Package: ${PACKAGE} >> ${debct}
 	echo Architecture: any >> ${debct}
