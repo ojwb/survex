@@ -714,7 +714,8 @@ replace_travs(void)
 #endif
 		  fputs(fEquate ? szLinkEq : szLink, fhErrStat);
 	       }
-#endif	       if (!fEquate) cLegsTrav++;
+#endif
+	       if (!fEquate) cLegsTrav++;
 	    }
 #if SHOW_INTERNAL_LEGS
 	    else
