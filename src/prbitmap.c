@@ -141,7 +141,7 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
 
    if (!fh) {
       fatalerror(/*Error in format of font file `%s'*/88, leaf);
-      /* FIXME: TRANSLATE - couldn't open it... */      
+      /* TRANSLATE - couldn't open it... */      
    }
 
    if (fread(header, 1, 20, fh) < 20 ||

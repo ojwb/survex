@@ -995,26 +995,29 @@ process_focus(Display * display, Window window, int ix, int iy)
 }
 #endif
 
-/* FIXME: neither of these produce the animated effect desired...
+/* Neither of these produce the animated effect desired...
  * Use the same technique as in caverot */
 static void
 switch_to_plan(void)
 {
    /* Switch to plan view. */
-
+   elev_angle = 90.0;
+#if 0
    while (elev_angle != 90.0) {
       elev_angle += 5.0;
       if (elev_angle >= 90.0) elev_angle = 90.0;
 
       update_rotation();
    }
+#endif
 }
 
 static void
 switch_to_elevation(void)
 {
    /* Switch to elevation view. */
-
+   elev_angle = 0.0;
+#if 0
    int going_up = (elev_angle < 0.0);
    double step = going_up ? 5.0 : -5.0;
 
@@ -1024,6 +1027,7 @@ switch_to_elevation(void)
 
       update_rotation();
    }
+#endif
 }
 
 static void

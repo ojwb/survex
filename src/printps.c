@@ -314,6 +314,13 @@ ps_Pre(int pagesToPrint, const char *title)
       prio_putc('\n');
    }
 
+   prio_printf("%%%%BoundingBox: 0 0 %ld %ld\n",
+	       xpPageWidth + (long)(2.0 * MarginLeft * POINTS_PER_MM),
+	       ypPageDepth + (long)((10.0 + 2.0 * MarginBottom) * POINTS_PER_MM));
+   prio_print("%%PageOrder: Ascend\n");
+   prio_printf("%%%%Pages: %d\n", pagesToPrint);
+   prio_print("%%Orientation: Portrait\n");
+
    prio_print("%%DocumentFonts: ");
    prio_print(fontname);
    if (strcmp(fontname, fontname_labels) != 0) {
@@ -386,12 +393,6 @@ ps_Pre(int pagesToPrint, const char *title)
    prio_print("] def\n");
    prio_print("%%EndResource\n");
    
-   prio_printf("%%%%BoundingBox: 0 0 %ld %ld\n",
-	       xpPageWidth + (long)(2.0 * MarginLeft * POINTS_PER_MM),
-	       ypPageDepth + (long)((10.0 + 2.0 * MarginBottom) * POINTS_PER_MM));
-   /* FIXME is this a level 1 feature?   prio_print("%%PageOrder: Ascend\n"); */
-   prio_printf("%%%%Pages: %d\n", pagesToPrint);
-
    /* this code adapted from a2ps */
    prio_print(
 "/reencode {\n" /* def */
