@@ -2227,7 +2227,8 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	int dx = x1 - x0;
 	int dy = y1 - y0;
 
-        if (int(sqrt(dx*dx + dy*dy)) <= 4.0) {
+        if (int(sqrt(dx*dx + dy*dy)) <= 4.0 && ((info.label->IsSurface() && m_Surface) ||
+	                                        (info.label->IsUnderground() && m_Legs))) {
 	    m_Parent->SetMouseOverStation(info.label);
 	    if (centre) {
 	        CentreOn(info.label->GetX(), info.label->GetY(), info.label->GetZ());
