@@ -136,6 +136,7 @@ static int plan_elev;
 static int rot = 0;
 static int crossing = 0;
 static int labelling = 0;
+static int allnames = 0;
 
 static struct timeval lastframe;
 
@@ -664,24 +665,27 @@ void
 draw_label(Display * display, Window window, GC gc, int x, int y,
 	   const char *string, int length)
 {
-   XRectangle r;
-   int strwidth;
-   int width = oldwidth;
-   int height = oldheight;
+   if (!allnames) {
+      int strwidth;
+      XRectangle r;
 
-   strwidth = XTextWidth(fontinfo, string, length);
+      if (x >= oldwidth || y >= oldheight || y + fontheight <= 0) return;
 
-   if (x < width && y < height && x + strwidth > 0 && y + fontheight > 0) {
+      strwidth = XTextWidth(fontinfo, string, length);
 
-      if (XRectInRegion(label_reg, x, y, strwidth, fontheight) == RectangleOut) {
-	 r.x = x;
-	 r.y = y;
-	 r.width = strwidth;
-	 r.height = fontheight;
-	 XUnionRectWithRegion(&r, label_reg, label_reg);
-	 XDrawString(display, window, gc, x, y, string, length);
-      }
+      if (x + strwidth <= 0) return;
+
+      if (XRectInRegion(label_reg, x, y, strwidth, fontheight) != RectangleOut)
+	 return;
+      
+      r.x = x;
+      r.y = y;
+      r.width = strwidth;
+      r.height = fontheight;
+      XUnionRectWithRegion(&r, label_reg, label_reg);
    }
+
+   XDrawString(display, window, gc, x, y, string, length);
 }
 
 int
@@ -1734,6 +1738,9 @@ main(int argc, char **argv)
 			    case 'w':	/* cave west */
 			      view_angle = 270.0;
 			      break;
+			    case 'o':
+			      allnames = !allnames;
+			      break;
 			   }
 		     }
 		    }
@@ -1785,6 +1792,7 @@ main(int argc, char **argv)
 	 static float old_scale = -1;
 	 static int old_crossing = -1;
 	 static int old_labelling = -1;
+	 static int old_allnames = -1;
 	 static coord old_x_mid;
 	 static coord old_y_mid;
 	 static coord old_z_mid;
@@ -1808,9 +1816,12 @@ main(int argc, char **argv)
 	    redraw = 1;
 	 }
 
-	 if (old_crossing != crossing || old_labelling != labelling) {
+	 if (old_crossing != crossing ||
+	     old_labelling != labelling ||
+	     old_allnames != allnames) {
 	    old_crossing = crossing;
 	    old_labelling = labelling;
+	    old_allnames = allnames;
 	    redraw = 1;
 	 }
 

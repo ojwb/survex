@@ -27,8 +27,9 @@ r - reverse direction of autorotation
 c/v - rotate one step
 '// - higher/lower viewpoint
 n/s/e/w/u/d - view cave from north/south/east/west/above/below
+O (overlapping labels)
 
-xcaverot missing: O (overlapping labels), ^A (lazy redraw during drags) ^L
+xcaverot missing:, ^A (lazy redraw during drags) ^L
 (no legs), ^R (reverse sense of controls), escape vs q...
 
 check xcaverot/caverot/aven have consistent senses to mouse and keyboard
