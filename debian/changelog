@@ -1,3 +1,9 @@
+survex (1.0.15) unstable; urgency=low
+
+  * New release
+
+ -- Wookey <wookey@survex.com>  Tue, 17 Sep 2002 02:41:16 +0100
+
 survex (1.0.14) unstable; urgency=low
 
   * svxedit: This is a Survex data entry editor from the therion team.  It
