@@ -1,3 +1,5 @@
+TODO entries which aren't likely to be done for 1.0:
+
 Warn bearings not 3 digits, gradient not <sign><digit><digit>
 
 Allow angles as deg/min/sec (for theodolite data) (060°10'15" as 060 10 15,
@@ -53,4 +55,26 @@ printer driver name spills over one page on Wookey's printer (printdm)
 For warnings such as "Suspicious compass reading", report the reading
 in question in the error message (in the text form given in the file).
 Also report values when warning about problems with processed readings.
+
+legs: implied: inloop/plumb/nosurvey, diving, other styles
+
+legs: "dubious" for "tapeless" legs - bearing along continuation...
+
+legs: hydrology - fossil/active/not recorded/static water/underwater
+(sump) [diving uderw by default? except style can mean altimeter
+too...]
+
+legs: floor type - mud/sand/breakdown/flowstone/etc and can then used
+LRUD to draw crude survey...
+
+legs: "commented out" flag?  syntax check data but otherwise ignore
+
+station flags: "important" - e.g. top camp "fixed" point /
+junction,deadend (implied by order) /
+articulation pt (know for nodes I think a station is if at least one
+of its nodes is)
+
+Allow valid range for an instrument to be specified.  Tie in with
+*instrument.  *units date - ranges for dates - e.g. "1990-" or
+"jun-aug"...
 
