@@ -82,10 +82,8 @@ hash_string(const char *p)
 {
    int hash;
    ASSERT(p != NULL); /* can't hash NULL */
-/*   printf("HASH `%s' to ",p); */
    for (hash = 0; *p; p++)
       hash = (hash * HASH_PRIME + tolower(*(unsigned char*)p)) & 0x7fff;
-/*   printf("%d\n",hash); */
    return hash;
 }
 
@@ -114,12 +112,14 @@ tree_insert(const char *name, const img_point *pt)
 {
    int v = hash_string(name) & 0x1fff;
    station *stn;
-#if 1
-   /* need to allow for duplicate labels ... */
+
+   /* Catch duplicate labels - .3d files shouldn't have them, but some do
+    * due to a couple of bugs in some versions of Survex
+    */
    for (stn = htab[v]; stn; stn = stn->next) {
       if (strcmp(stn->name, name) == 0) return; /* found dup */
    }
-#endif
+
    stn = osnew(station);
    stn->name = osstrdup(name);
    stn->pt = *pt;
@@ -210,14 +210,106 @@ tree_check(void)
    return fTrue;
 }
 
+static void
+parse_3d_file(const char *fnm,
+	      void (*tree_func)(const char *, const img_point *))
+{
+   img_point pt;
+   int result;
+ 
+   img *pimg = img_open(fnm, NULL, NULL);
+   if (!pimg) fatalerror(img_error(), fnm);
+
+   do {
+      result = img_read_item(pimg, &pt);
+      switch (result) {
+       case img_MOVE:
+       case img_LINE:
+	 break;
+       case img_LABEL:
+	 tree_func(pimg->label, &pt);
+	 break;
+       case img_BAD:
+	 img_close(pimg);
+	 fatalerror(/*Bad 3d image file `%s'*/106, fnm);
+      }
+   } while (result != img_STOP);
+      
+   img_close(pimg);
+}
+
+static void
+parse_pos_file(const char *fnm,
+	       void (*tree_func)(const char *, const img_point *))
+{
+   FILE *fh;
+   img_point pt;
+   char *buf;
+   size_t buf_len = 256;
+
+   buf = osmalloc(buf_len);
+   
+   fh = fopen(fnm, "rb");
+   if (!fh) fatalerror(/*Couldn't open file `%s'*/93, fnm);
+
+   while (1) {
+      size_t off = 0;
+      long fp = ftell(fh);
+      if (fscanf(fh, "(%lf,%lf,%lf ) ", &pt.x, &pt.y, &pt.z) != 3) {
+	 int ch;
+	 fseek(fh, SEEK_SET, fp);
+	 ch = getc(fh);
+	 if (ch == EOF) break;
+
+	 printf("%s: Ignoring: ", fnm);
+	 while (ch != '\n' && ch != '\r' && ch != EOF) {
+	    putchar(ch);
+	    ch = getc(fh);
+	 }
+	 putchar('\n');
+	 
+	 if (feof(fh)) break;
+	 continue;
+      }
+      buf[0] = '\0';
+      while (!feof(fh)) {
+	 if (!fgets(buf + off, buf_len - off, fh)) {
+	    /* FIXME */
+	    break;
+	 }
+	 off += strlen(buf + off);
+	 if (off && buf[off - 1] == '\n') {
+	    buf[off - 1] = '\0';
+	    break;
+	 }
+	 buf_len += buf_len;
+	 buf = osrealloc(buf, buf_len);
+      }
+      tree_func(buf, &pt);
+   }
+   fclose(fh);
+
+   osfree(buf);
+}
+
+static void
+parse_file(const char *fnm,
+	   void (*tree_func)(const char *, const img_point *))
+{
+   static const char ext3d[] = EXT_SVX_3D;
+   size_t len = strlen(fnm);
+   if (len > sizeof(ext3d) && fnm[len - sizeof(ext3d)] == FNM_SEP_EXT &&
+       strcmp(fnm + len - sizeof(ext3d) + 1, ext3d) == 0) {
+      parse_3d_file(fnm, tree_func);
+   } else {
+      parse_pos_file(fnm, tree_func);
+   }
+}
+
 int
 main(int argc, char **argv)
 {
    char *fnm1, *fnm2;
-   char *buf;
-   size_t len, buf_len = 256;
-   const char ext3d[] = EXT_SVX_3D;
-
    msg_init(argv[0]);
 
    cmdline_set_syntax_message("FILE1 FILE2 [THRESHOLD]",
@@ -238,129 +330,9 @@ main(int argc, char **argv)
 
    tree_init();
 
-   buf = osmalloc(buf_len);
+   parse_file(fnm1, tree_insert);
 
-   len = strlen(fnm1);
-   if (len > sizeof(ext3d) && fnm1[len - sizeof(ext3d)] == FNM_SEP_EXT &&
-       strcmp(fnm1 + len - sizeof(ext3d) + 1, ext3d) == 0) {
-      img_point pt;
-      int result;
-      img *pimg = img_open(fnm1, NULL, NULL);
-      if (!pimg) fatalerror(img_error(), fnm1);
-
-      do {
-	 result = img_read_item(pimg, &pt);
-	 switch (result) {
-	  case img_MOVE:
-	  case img_LINE:
-	    break;
-	  case img_LABEL:
-	    tree_insert(pimg->label, &pt);
-	    break;
-	  case img_BAD:
-	    img_close(pimg);
-	    fatalerror(/*Bad 3d image file `%s'*/106, fnm1);
-	 }
-      } while (result != img_STOP);
-      
-      img_close(pimg);
-   } else {
-      img_point pt;
-
-      FILE *fh = fopen(fnm1, "rb");
-      if (!fh) fatalerror(/*Couldn't open file `%s'*/93, fnm1);
-
-      while (1) {
-	 size_t off = 0;
-	 if (fscanf(fh, "(%lf,%lf,%lf ) ", &pt.x, &pt.y, &pt.z) != 3) {
-	    int ch;
-	    if (feof(fh)) break;
-	    printf("Skipping first\n"); /* FIXME: print the line */
-	    do {
-	       ch = getc(fh);
-	    } while (ch != EOF && ch != '\n');
-	    continue;
-	 }
-	 buf[0] = '\0';
-	 while (!feof(fh)) {
-	    if (!fgets(buf + off, buf_len - off, fh)) {
-	       /* FIXME */
-	       break;
-	    }
-	    off += strlen(buf + off);
-	    if (off && buf[off - 1] == '\n') {
-	       buf[off - 1] = '\0';
-	       break;
-	    }
-	    buf_len += buf_len;
-	    buf = osrealloc(buf, buf_len);
-	 }
-	 tree_insert(buf, &pt);
-      }
-
-      fclose(fh);
-   }
-
-   len = strlen(fnm2);
-   if (len > sizeof(ext3d) && fnm2[len - sizeof(ext3d)] == FNM_SEP_EXT &&
-       strcmp(fnm2 + len - sizeof(ext3d) + 1, ext3d) == 0) {
-      img_point pt;
-      int result;
-      img *pimg = img_open(fnm2, NULL, NULL);
-      if (!pimg) fatalerror(img_error(), fnm2);
-      do {
-	 result = img_read_item(pimg, &pt);
-	 switch (result) {
-	  case img_MOVE:
-	  case img_LINE:
-	    break;
-	  case img_LABEL:
-	    tree_remove(pimg->label, &pt);
-	    break;
-	  case img_BAD:
-	    img_close(pimg);
-	    fatalerror(/*Bad 3d image file `%s'*/106, fnm2);
-	 }
-      } while (result != img_STOP);
-      
-      img_close(pimg);
-   } else {
-      img_point pt;
-
-      FILE *fh = fopen(fnm2, "rb");
-      if (!fh) fatalerror(/*Couldn't open file `%s'*/93, fnm2);
-
-      while (1) {
-	 size_t off = 0;
-	 if (fscanf(fh, "(%lf,%lf,%lf ) ", &pt.x, &pt.y, &pt.z) != 3) {
-	    int ch;
-	    if (feof(fh)) break;
-	    printf("Skipping second\n"); /* FIXME: print the line */
-	    do {
-	       ch = getc(fh);
-	    } while (ch != EOF && ch != '\n');
-	    /* FIXME */
-	    continue;
-	 }
-	 buf[0] = '\0';
-	 while (!feof(fh)) {
-	    if (!fgets(buf + off, buf_len - off, fh)) {
-	       /* FIXME */
-	       break;
-	    }
-	    off += strlen(buf + off);
-	    if (off && buf[off - 1] == '\n') {
-	       buf[off - 1] = '\0';
-	       break;
-	    }
-	    buf_len += buf_len;
-	    buf = osrealloc(buf, buf_len);
-	 }
-	 tree_remove(buf, &pt);
-      }
-
-      fclose(fh);
-   }
-
+   parse_file(fnm2, tree_remove);
+   
    return tree_check() ? EXIT_FAILURE : EXIT_SUCCESS;
 }

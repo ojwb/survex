@@ -10,8 +10,6 @@ orientation (bearing of y-axis?) (defaults to 0)]
 Date: Sat, 03 Mar 2001
 From: Olly
 
-update translations
-
 chase up zombies again?
 
 resolve entries in TODO; resolve FIXMEs in code
@@ -158,7 +156,13 @@ This is certainly wrong (2 legs, 1 1-node, and 1 2-node):
 Date: Mon, 25 Jun 2001
 From: Olly
 
+update translations
+
 quotes in messages - translate too?
+
+translate diffpos, etc
+
+extract --help messages for translation.
 
 Date: Mon, 25 Jun 2001
 From: Olly
@@ -177,16 +181,12 @@ From: Olly
 
 check skip blank pages works on printer drivers (notably printpcl)
 
-extract --help messages for translation.
-
 prog --help and --version ought to work (perhaps both just do --version)
 even if messages can't be found.
 
 check line numbers with interleaved data (seem to be one too low).
 
 Maybe station lists should know how long they are?
-
-translate diffpos, sorterr, etc
 
 tests for direction - should direction work in non-interleaved data?
 
@@ -232,6 +232,8 @@ identified?
 
 Don't split other traverses at articulating traverses when reporting error
 stats.
+
+*fix with datums etc
 
 Date: Fri, 20 Jul 2001
 From: Olly
