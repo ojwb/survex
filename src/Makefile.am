@@ -75,7 +75,7 @@ noinst_DATA = borlandc/makefile riscos/makefile
  
 EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
  riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
- riscos/stdh/regnames riscos/stdh/swinames miniam.pl aven.rc
+ riscos/stdh/regnames riscos/stdh/swinames miniam.pl aven.rc aven.ico
 
 MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile
 
