@@ -23,8 +23,10 @@
 #ifndef Vector3_h
 #define Vector3_h
 
+#include <stdio.h>
+
 class Vector3 {
-    double x;
+    double x; //--FIXME
     double y;
     double z;
 
@@ -32,6 +34,18 @@ public:
     Vector3();
     Vector3(double, double, double);
     ~Vector3();
+
+    void Save(FILE* fp) { //--Pres: FIXME
+        fwrite(&x, sizeof(double), 1, fp);
+        fwrite(&y, sizeof(double), 1, fp);
+        fwrite(&z, sizeof(double), 1, fp);
+    }
+
+    void Load(FILE* fp) { //--Pres: FIXME
+        fread(&x, sizeof(double), 1, fp);
+        fread(&y, sizeof(double), 1, fp);
+        fread(&z, sizeof(double), 1, fp);
+    }
 
     double getX() { return x; }
     double getY() { return y; }
@@ -42,13 +56,20 @@ public:
 
     void set(double, double, double);
 
+    friend Vector3 operator-(const Vector3& v) {
+        Vector3 o;
+	o.x = -v.x;
+	o.y = -v.y;
+	o.z = -v.z;
+	return o;
+    }
     Vector3& operator*=(const double);
     Vector3& operator/=(const double);
     Vector3& operator=(const Vector3&);
 
     friend Vector3 operator*(const Vector3&, const double);
     friend Vector3 operator*(const double, const Vector3&);
-    friend Vector3 operator*(const Vector3&, const Vector3&);
+    friend Vector3 operator*(const Vector3&, const Vector3&); // cross product
     friend Vector3 operator+(const Vector3&, const Vector3&);
     friend double dot(const Vector3&, const Vector3&);
 };

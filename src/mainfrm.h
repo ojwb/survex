@@ -26,7 +26,10 @@
 #include "wx.h"
 #include "gfxcore.h"
 #include "message.h"
+#include "aventreectrl.h"
+
 #include <list>
+#include <hash_map>
 
 using namespace std;
 
@@ -34,6 +37,7 @@ extern const int NUM_DEPTH_COLOURS;
 
 enum {
     menu_FILE_OPEN = 1000,
+    menu_FILE_OPEN_PRES,
     menu_FILE_QUIT,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
@@ -77,6 +81,14 @@ enum {
 #ifdef AVENGL
     menu_VIEW_ANTIALIAS,
 #endif
+    menu_PRES_CREATE,
+    menu_PRES_GO,
+    menu_PRES_GO_BACK,
+    menu_PRES_RESTART,
+    menu_PRES_RECORD,
+    menu_PRES_FINISH,
+    menu_PRES_ERASE,
+    menu_PRES_ERASE_ALL,
     menu_CTL_REVERSE,
     menu_HELP_ABOUT
 };
@@ -116,6 +128,7 @@ public:
 class MainFrm : public wxFrame {
     list<PointInfo*>* m_Points;
     list<LabelInfo*> m_Labels;
+    hash_map<wxTreeItemId, LabelInfo*> m_LabelMap;
     Double m_XExt;
     Double m_YExt;
     Double m_ZExt;
@@ -133,7 +146,35 @@ class MainFrm : public wxFrame {
     int m_NumEntrances;
     int m_NumFixedPts;
     int m_NumExportedPts;
+    wxSplitterWindow* m_Splitter;
+    wxPanel* m_Panel;
+    AvenTreeCtrl* m_Tree;
+    wxBoxSizer* m_PanelSizer;
+    wxPanel* m_FindPanel;
+    wxTreeItemId m_TreeRoot;
+    wxButton* m_FindButton;
+    wxButton* m_HideButton;
+    wxTextCtrl* m_FindBox;
+    wxBoxSizer* m_FindButtonSizer;
+    wxBoxSizer* m_FindSizer;
+    wxStaticText* m_MousePtr;
+    wxStaticText* m_Coords;
+    wxStaticText* m_StnCoords;
+    wxStaticText* m_StnName;
+    wxStaticText* m_StnAlt;
+    wxStaticText* m_Dist1;
+    wxStaticText* m_Dist2;
+    wxStaticText* m_Dist3;
+    FILE* m_PresFP;
+    wxString m_File;
+    bool m_PresLoaded;
+    bool m_Recording;
 
+    struct {
+        Double x, y, z;
+    } m_Offsets;
+    
+    void FillTree();
     void ClearPointLists();
     bool LoadData(const wxString& file, wxString prefix = "");
     void SortIntoDepthBands(list<PointInfo*>& points);
@@ -156,7 +197,16 @@ public:
 		  bool delay_gfx_init = false);
 
     void OnOpen(wxCommandEvent& event);
+    void OnOpenPres(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
+    void OnPresCreate(wxCommandEvent& event);
+    void OnPresGo(wxCommandEvent& event);
+    void OnPresGoBack(wxCommandEvent& event);
+    void OnPresFinish(wxCommandEvent& event);
+    void OnPresRestart(wxCommandEvent& event);
+    void OnPresRecord(wxCommandEvent& event);
+    void OnPresErase(wxCommandEvent& event);
+    void OnPresEraseAll(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnClose(wxCloseEvent&);
 
@@ -278,6 +328,13 @@ public:
     int GetNumExportedPts() { return m_NumExportedPts; }
     int GetNumEntrances() { return m_NumEntrances; }
 
+    void ClearCoords();
+    void SetCoords(Double x, Double y);
+
+    Double GetXOffset() { return m_Offsets.x; }
+    Double GetYOffset() { return m_Offsets.y; }
+    Double GetZOffset() { return m_Offsets.z; }
+
     list<PointInfo*>::const_iterator GetPoints(int band) {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
         return m_Points[band].begin();
@@ -296,7 +353,8 @@ public:
         return m_Labels.end();
     }
 
-    //bool ProcessEvent(wxEvent&);
+    void DisplayTreeInfo(wxTreeItemData* data);
+    void TreeItemSelected(wxTreeItemData* data);
 
 private:
     DECLARE_EVENT_TABLE()

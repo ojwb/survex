@@ -1,5 +1,5 @@
 //
-//  mainfrm.cxx
+//  mainfrm.cc
 //
 //  Main frame handling for Aven.
 //
@@ -26,8 +26,10 @@
 
 #include "message.h"
 #include "img.h"
+#include "namecmp.h"
 
 #include <float.h>
+#include <stack>
 
 const int NUM_DEPTH_COLOURS = 13;
 
@@ -37,7 +39,18 @@ static const unsigned char BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
+    EVT_MENU(menu_FILE_OPEN_PRES, MainFrm::OnOpenPres)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
+
+    EVT_MENU(menu_PRES_CREATE, MainFrm::OnPresCreate)
+    EVT_MENU(menu_PRES_GO, MainFrm::OnPresGo)
+    EVT_MENU(menu_PRES_GO_BACK, MainFrm::OnPresGoBack)
+
+    EVT_MENU(menu_PRES_RESTART, MainFrm::OnPresRestart)
+    EVT_MENU(menu_PRES_RECORD, MainFrm::OnPresRecord)
+    EVT_MENU(menu_PRES_FINISH, MainFrm::OnPresFinish)
+    EVT_MENU(menu_PRES_ERASE, MainFrm::OnPresErase)
+    EVT_MENU(menu_PRES_ERASE_ALL, MainFrm::OnPresEraseAll)
 
     EVT_CLOSE(MainFrm::OnClose)
 
@@ -128,6 +141,22 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
 END_EVENT_TABLE()
 
+class LabelCmp {
+public:
+    bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
+        return name_cmp(pt1->GetText(), pt2->GetText()) < 0;
+    }
+};
+
+class TreeData : public wxTreeItemData {
+    LabelInfo* m_Label;
+
+public:
+    TreeData(LabelInfo* label) : m_Label(label) {}
+    LabelInfo* GetLabel() { return m_Label; }
+    bool IsStation() { return m_Label != NULL; }
+};
+
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
     m_Gfx(NULL), m_FileToLoad(""), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0)
@@ -149,6 +178,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     // status bar at the moment! ;-)
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220), "Open a Survex 3D file for viewing");
+    filemenu->Append(menu_FILE_OPEN_PRES, GetTabMsg(/*Open @Presentation*/321), "unused");
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Exit*/221), "Quit Aven");
 
@@ -203,6 +233,18 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight Fi@xed Points*/295), "unused", true);
     viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight Ex&ported Points*/296), "unused", true);
     viewmenu->AppendSeparator();
+    wxMenu* presmenu = new wxMenu;
+    presmenu->Append(menu_PRES_CREATE, GetTabMsg(/*@Create...*/311), "unused", false);
+    presmenu->AppendSeparator();
+    presmenu->Append(menu_PRES_GO, GetTabMsg(/*@Go*/312), "unused", false);
+    presmenu->Append(menu_PRES_GO_BACK, GetTabMsg(/*@Go Back*/318), "unused", false);
+    presmenu->Append(menu_PRES_RESTART, GetTabMsg(/*Res@tart*/324), "unused", false);
+    presmenu->AppendSeparator();
+    presmenu->Append(menu_PRES_RECORD, GetTabMsg(/*@Record Position*/313), "unused", false);
+    presmenu->Append(menu_PRES_FINISH, GetTabMsg(/*@Finish and Save*/314), "unused", false);
+    presmenu->AppendSeparator();
+    presmenu->Append(menu_PRES_ERASE, GetTabMsg(/*@Erase Last Position*/315), "unused", false);
+    presmenu->Append(menu_PRES_ERASE_ALL, GetTabMsg(/*Er@ase All Positions*/316), "unused", false);
     wxMenu* indmenu = new wxMenu;
     indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "Toggle display of the compass", true);
     indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "Toggle display of the clinometer", true);
@@ -225,6 +267,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     menubar->Append(rotmenu, GetTabMsg(/*@Rotation*/211));
     menubar->Append(orientmenu, GetTabMsg(/*@Orientation*/212));
     menubar->Append(viewmenu, GetTabMsg(/*@View*/213));
+    menubar->Append(presmenu, GetTabMsg(/*@Presentation*/317));
     menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
@@ -245,15 +288,68 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxAcceleratorTable accel(11, entries);
     SetAcceleratorTable(accel);
 
-    m_Gfx = new GfxCore(this);
-
-#ifdef __X__
-    // X seems to require a forced resize.
     int x;
     int y;
     GetSize(&x, &y);
+
+    m_Splitter = new wxSplitterWindow(this, -1, wxDefaultPosition, wxDefaultSize,
+      				      wxSP_3D | wxSP_LIVE_UPDATE);
+    m_Panel = new wxPanel(m_Splitter);
+    m_Tree = new AvenTreeCtrl(this, m_Panel);
+    m_FindPanel = new wxPanel(m_Panel);
+
+    m_FindButton = new wxButton(m_FindPanel, -1, "Find");
+    m_HideButton = new wxButton(m_FindPanel, -1, "Hide");
+    m_Coords = new wxStaticText(m_FindPanel, -1, "");
+    m_StnCoords = new wxStaticText(m_FindPanel, -1, "");
+    m_MousePtr = new wxStaticText(m_FindPanel, -1, "Mouse coordinates");
+    m_StnName = new wxStaticText(m_FindPanel, -1, "");
+    m_StnAlt = new wxStaticText(m_FindPanel, -1, "");
+    m_Dist1 = new wxStaticText(m_FindPanel, -1, "");
+    m_Dist2 = new wxStaticText(m_FindPanel, -1, "");
+    m_Dist3 = new wxStaticText(m_FindPanel, -1, "");
+
+    m_FindButtonSizer = new wxBoxSizer(wxHORIZONTAL);
+    m_FindButtonSizer->Add(m_FindButton, 1, wxALL, 2);
+    m_FindButtonSizer->Add(m_HideButton, 1, wxALL, 2);
+
+    m_FindSizer = new wxBoxSizer(wxVERTICAL);
+    m_FindSizer->Add(m_FindBox = new wxTextCtrl(m_FindPanel, -1, ""), 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_FindButtonSizer, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_MousePtr, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_Coords, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_StnName, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_StnCoords, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_StnAlt, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_Dist1, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_Dist2, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_Dist3, 0, wxALL | wxEXPAND, 2);
+
+    m_FindPanel->SetAutoLayout(true);
+    m_FindPanel->SetSizer(m_FindSizer);
+
+    m_PanelSizer = new wxBoxSizer(wxVERTICAL);
+    m_PanelSizer->Add(m_Tree, 3, wxALL | wxEXPAND, 2);
+    m_PanelSizer->Add(m_FindPanel, 2, wxALL | wxEXPAND, 2);
+    m_Panel->SetAutoLayout(true);
+    m_Panel->SetSizer(m_PanelSizer);
+    m_PanelSizer->Fit(m_Panel);
+    m_PanelSizer->SetSizeHints(m_Panel);
+
+    m_Gfx = new GfxCore(this, m_Splitter);
+
+    m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 4);
+
+#ifdef __X__
+    // X seems to require a forced resize.
     SetSize(-1, -1, x, y);
 #endif
+
+    m_PresLoaded = false;
+    m_Recording = false;
 }
 
 MainFrm::~MainFrm()
@@ -299,6 +395,11 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	return false;
     }
 
+    m_File = file;
+
+    m_TreeRoot = m_Tree->AddRoot(wxFileNameFromPath(file));
+    m_Tree->SetEnabled();
+
     // Create a list of all the leg vertices, counting them and finding the
     // extent of the survey at the same time.
 
@@ -309,6 +410,10 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_NumFixedPts = 0;
     m_NumExportedPts = 0;
     m_NumEntrances = 0;
+
+    m_PresLoaded = false;
+    m_Recording = false;
+    //--Pres: FIXME: discard existing one, ask user about saving
 
     // Delete any existing list entries.
     ClearPointLists();
@@ -381,6 +486,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		}
 		m_Labels.push_back(label);
 		m_NumCrosses++;
+
 		break;
 	    }
 
@@ -449,6 +555,13 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_XMin = xmin;
     m_YMin = ymin;
 
+    // Sort the labels.
+    LabelCmp cmp;
+    m_Labels.sort(cmp);
+
+    // Fill the tree of stations and prefixes.
+    FillTree();
+
     // Sort out depth colouring boundaries (before centering dataset!)
     SortIntoDepthBands(points);
 
@@ -457,17 +570,134 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     // Update window title.
     SetTitle(wxString("Aven - [") + file + wxString("]"));
+    m_File = file;
 
     return true;
+}
+
+void MainFrm::FillTree()
+{
+    // Fill the tree of stations and prefixes.
+
+    list<LabelInfo*>::iterator pos = m_Labels.begin();
+    stack<wxTreeItemId> previous_ids;
+    wxString current_prefix = "";
+    wxTreeItemId current_id = m_TreeRoot;
+
+    while (pos != m_Labels.end()) {
+        LabelInfo* label = *pos++;
+
+	// Determine the current prefix.
+	wxString prefix = label->GetText().BeforeLast('.');
+
+	// Determine if we're still on the same prefix.
+	if (prefix == current_prefix) {
+	    // We are, so just add the item under the current branch.
+	    wxString bit = label->GetText().AfterLast('.');
+	    if (bit == "") {
+	        bit = "<root>";
+	    }
+	    m_Tree->SetItemData(m_Tree->AppendItem(current_id, bit), new TreeData(label));
+	}
+	// If not, then see if we've descended to a new prefix.
+	else if (prefix.Length() > current_prefix.Length() && prefix.StartsWith(current_prefix) &&
+		 (prefix[current_prefix.Length()] == '.' || current_prefix == "")) {
+  	    // We have, so start as many new branches as required.
+	    int current_prefix_length = current_prefix.Length();
+	    current_prefix = prefix;
+	    if (current_prefix_length != 0) {
+	        prefix = prefix.Mid(current_prefix_length + 1);
+	    }
+	    int next_dot;
+	    do {
+	        // Extract the next bit of prefix.
+ 	        next_dot = prefix.Find('.');
+		wxString bit = next_dot == -1 ? prefix : prefix.Left(next_dot);
+
+		// Add the current tree ID to the stack.
+	        previous_ids.push(current_id);
+
+		// Append the new item to the tree and set this as the current branch.
+		if (bit == "") {
+		    bit = "<root>";
+		}
+		current_id = m_Tree->AppendItem(current_id, bit);
+		m_Tree->SetItemData(current_id, new TreeData(NULL));
+
+		prefix = prefix.Mid(next_dot + 1);
+	    } while (next_dot != -1);
+	}
+	// Otherwise, we must have moved up, and possibly then down again.
+	else {
+	    // Find out how much of the current prefix and the new prefix are the same.
+	    // Note that we require a match of a whole number of parts between dots!
+	    int count = 0;
+	    int pos = 0;
+	    int count_to_dot = 0;
+	    bool done = false;
+	    while (!done && pos < prefix.Length() && pos < current_prefix.Length()) {
+	        if (prefix[pos] != current_prefix[pos]) {
+		    done = true;
+	        }
+		else {
+	  	    if (prefix[pos] == '.') {
+		        count += count_to_dot + 1;
+			count_to_dot = 0;
+		    }
+		    count_to_dot++;
+		    pos++;
+		}
+	    }
+
+	    // Extract the part of the current prefix after the bit (if any) which has matched.
+	    // This gives the prefixes to ascend over.
+	    wxString prefixes_ascended = current_prefix.Mid(count);
+
+	    // Count the number of prefixes to ascend over.
+	    int num_prefixes = prefixes_ascended.Freq('.') + 1;
+
+	    // Reverse up over these prefixes.
+	    for (int i = 1; i <= num_prefixes; i++) {
+	        current_id = previous_ids.top();
+		previous_ids.pop();
+	    }
+
+	    // Now extract the bit of new prefix.
+	    wxString new_prefix = prefix.Mid(count);
+	    current_prefix = prefix;
+
+	    // Add branches for this new part.
+	    int next_dot;
+	    do {
+	        // Extract the next bit of prefix.
+ 	        next_dot = new_prefix.Find('.');
+		wxString bit = next_dot == -1 ? new_prefix : new_prefix.Left(next_dot);
+
+		// Add the current tree ID to the stack.
+	        previous_ids.push(current_id);
+
+		if (bit == "") {
+		    bit = "<root>";
+		}
+
+		// Append the new item to the tree and set this as the current branch.
+		current_id = m_Tree->AppendItem(current_id, bit);
+		m_Tree->SetItemData(current_id, new TreeData(NULL));
+
+		new_prefix = new_prefix.Mid(next_dot + 1);
+
+	    } while (next_dot != -1);
+	}
+    }
 }
 
 void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 {
     // Centre the dataset around the origin.
 
-    Double xoff = xmin + (m_XExt / 2.0f);
-    Double yoff = ymin + (m_YExt / 2.0f);
-    Double zoff = zmin + (m_ZExt / 2.0f);
+    Double xoff = m_Offsets.x = xmin + (m_XExt / 2.0f);
+    Double yoff = m_Offsets.y = ymin + (m_YExt / 2.0f);
+    Double zoff = m_Offsets.z = zmin + (m_ZExt / 2.0f);
     
     for (int band = 0; band < NUM_DEPTH_COLOURS + 1; band++) {
         list<PointInfo*>::iterator pos = m_Points[band].begin();
@@ -646,4 +876,183 @@ void MainFrm::GetColour(int band, Double& r, Double& g, Double& b)
     r = Double(REDS[band]) / 255.0;
     g = Double(GREENS[band]) / 255.0;
     b = Double(BLUES[band]) / 255.0;
+}
+
+void MainFrm::ClearCoords()
+{
+    m_Coords->SetLabel("   -");
+}
+
+void MainFrm::SetCoords(Double x, Double y)
+{
+    wxString str;
+    str.Printf("   %d N, %d E", (int) x, (int) y);
+    m_Coords->SetLabel(str);
+}
+
+void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
+{
+    TreeData* data = (TreeData*) item;
+    
+    if (data && data->IsStation()) {
+        LabelInfo* label = data->GetLabel();
+	wxString str;
+	str.Printf("   %d N, %d E", (int) (label->x + m_Offsets.x), (int) (label->y + m_Offsets.y));
+	m_StnCoords->SetLabel(str);
+	m_StnName->SetLabel(label->text);
+	str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
+	m_StnAlt->SetLabel(str);
+	m_Gfx->SetSpecialPt(label->x, label->y, label->z);
+
+	wxTreeItemData* sel_wx;
+	bool sel = m_Tree->GetSelectionData(&sel_wx);
+	if (sel) {
+	    data = (TreeData*) sel_wx;
+
+	    if (data->IsStation()) {
+	        LabelInfo* label2 = data->GetLabel();
+		assert(label2);
+	
+		Double x0 = label2->x;
+		Double x1 = label->x;
+		Double dx = x1 - x0;
+		Double y0 = label2->y;
+		Double y1 = label->y;
+		Double dy = y1 - y0;
+		Double z0 = label2->z;
+		Double z1 = label->z;
+		Double dz = z1 - z0;
+
+		Double d_horiz = sqrt(dx*dx + dy*dy);
+		
+		m_Dist1->SetLabel(wxString("From ") + label2->text + wxString(":"));
+		str.Printf("   Horiz: %d, Vert: %d", (int) d_horiz, (int) dz);
+		m_Dist2->SetLabel(str);
+		str.Printf("   Distance: %d", (int) sqrt(dx*dx + dy*dy + dz*dz));
+		m_Dist3->SetLabel(str);
+	    }
+	}
+    }
+    else if (!data) {
+        m_StnName->SetLabel("");
+        m_StnCoords->SetLabel("");
+	m_StnAlt->SetLabel("");
+	m_Gfx->ClearSpecialPt();
+	m_Dist1->SetLabel("");
+	m_Dist2->SetLabel("");
+	m_Dist3->SetLabel("");
+    }
+}
+
+void MainFrm::TreeItemSelected(wxTreeItemData* item)
+{
+    TreeData* data = (TreeData*) item;
+    
+    if (data && data->IsStation()) {
+        LabelInfo* label = data->GetLabel();
+	m_Gfx->CentreOn(label->x, label->y, label->z);
+    }
+
+    m_Dist1->SetLabel("");
+    m_Dist2->SetLabel("");
+    m_Dist3->SetLabel("");
+}
+
+void MainFrm::OnPresCreate(wxCommandEvent& event)
+{
+#ifdef __WXMOTIF__
+    wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
+		      "*.avp", wxSAVE);
+#else
+    wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
+		      wxString::Format("%s|*.avp|%s|*.*",
+				       msg(/*Aven presentations*/320),
+				       msg(/*All files*/208)), wxSAVE);
+#endif
+    if (dlg.ShowModal() == wxID_OK) {
+        m_PresFP = fopen(dlg.GetPath().c_str(), "w");
+	assert(m_PresFP); //--Pres: FIXME
+
+	// Update window title.
+	SetTitle(wxString("Aven - [") + m_File + wxString(msg(/*] - Recording Presentation*/323)));
+
+	//--Pres: FIXME: discard existing one
+	m_PresLoaded = true;
+	m_Recording = true;
+    }
+}
+
+void MainFrm::OnPresGo(wxCommandEvent& event)
+{
+    assert(m_PresLoaded && !m_Recording); //--Pres: FIXME
+
+    m_Gfx->PresGo();
+}
+
+void MainFrm::OnPresGoBack(wxCommandEvent& event)
+{
+    assert(m_PresLoaded && !m_Recording); //--Pres: FIXME
+
+
+}
+
+void MainFrm::OnPresRecord(wxCommandEvent& event)
+{
+    assert(m_PresLoaded && m_Recording); //--Pres: FIXME
+
+    m_Gfx->RecordPres(m_PresFP);
+}
+
+void MainFrm::OnPresFinish(wxCommandEvent& event)
+{
+    assert(m_PresFP); //--Pres: FIXME
+    fclose(m_PresFP);
+
+    // Update window title.
+    SetTitle(wxString("Aven - [") + m_File + wxString("]"));
+}
+
+void MainFrm::OnPresRestart(wxCommandEvent& event)
+{
+    assert(m_PresLoaded && !m_Recording); //--Pres: FIXME
+
+    m_Gfx->RestartPres();
+}
+
+void MainFrm::OnPresErase(wxCommandEvent& event)
+{
+    assert(m_PresLoaded && m_Recording); //--Pres: FIXME
+
+
+}
+
+void MainFrm::OnPresEraseAll(wxCommandEvent& event)
+{
+    assert(m_PresLoaded && m_Recording); //--Pres: FIXME
+
+
+}
+
+void MainFrm::OnOpenPres(wxCommandEvent& event)
+{
+#ifdef __WXMOTIF__
+    wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
+		      "*.avp", wxSAVE);
+#else
+    wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
+		      wxString::Format("%s|*.avp|%s|*.*",
+				       msg(/*Aven presentations*/320),
+				       msg(/*All files*/208)), wxOPEN);
+#endif
+    if (dlg.ShowModal() == wxID_OK) {
+        m_PresFP = fopen(dlg.GetPath(), "rb");
+	assert(m_PresFP); //--Pres: FIXME
+
+	m_Gfx->LoadPres(m_PresFP);
+
+	fclose(m_PresFP);
+
+	m_PresLoaded = true;
+	m_Recording = false;
+    }
 }

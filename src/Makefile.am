@@ -7,7 +7,7 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h uni2dos.h useful.h\
  validate.h whichos.h xrot.h xcvrtbut.h new3dout.h 3ddefs.h \
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
- aventypes.h
+ aventypes.h aventreectrl.h
 
 LDADD = @LIBOBJS@
 
@@ -31,7 +31,7 @@ survex_SOURCES = wrap.c osdepend.c
 
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
- useful.c cmdline.c z_getopt.c getopt1.c
+ useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc
 
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
 

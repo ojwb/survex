@@ -25,6 +25,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "namecmp.h"
+
 int
 name_cmp(const char *a, const char *b)
 {

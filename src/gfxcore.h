@@ -25,6 +25,8 @@
 
 #include "quaternion.h"
 #include "wx.h"
+#include <utility>
+#include <list>
 #ifdef AVENGL
 #ifndef wxUSE_GLCANVAS
 #define wxUSE_GLCANVAS
@@ -33,6 +35,42 @@
 #endif
 
 class MainFrm;
+
+#ifdef AVENGL
+struct Double3 {
+    Double x;
+    Double y;
+    Double z;
+};
+#endif
+
+struct ColourTriple {
+    // RGB triple: values are from 0-255 inclusive for each component.
+    int r;
+    int g;
+    int b;
+};
+
+// Colours for drawing.
+// These must be in the same order as the entries in the array COLOURS in gfxcore.cc.
+enum AvenColour {
+    col_BLACK = 0,
+    col_GREY,
+    col_LIGHT_GREY,
+    col_LIGHT_GREY_2,
+    col_DARK_GREY,
+    col_WHITE,
+    col_TURQUOISE,
+    col_GREEN,
+    col_INDICATOR_1,
+    col_INDICATOR_2,
+    col_YELLOW,
+    col_RED,
+    col_CYAN,
+    col_LAST // must be the last entry here
+};
+
+extern const ColourTriple COLOURS[]; // defined in gfxcore.cc
 
 #ifdef AVENGL
 class GfxCore : public wxGLCanvas {
@@ -50,8 +88,21 @@ class GfxCore : public wxWindow {
         struct {
 	    int x;
 	    int y;
+	    int z;
 	} display_shift;
     } m_Params;
+
+    struct PresData {
+        struct {
+	    Double x, y, z;
+	} translation;
+        struct {
+	    int x, y, z;
+	} display_shift;
+        Double scale;
+        Double pan_angle;
+        Double tilt_angle;
+    };
 
 #ifdef AVENGL
     struct {
@@ -59,6 +110,7 @@ class GfxCore : public wxWindow {
         GLint survey; // all underground data
         GLint surface; // all surface data in uniform colour
         GLint surface_depth; // all surface data in depth bands
+        GLint grid; // the grid
     } m_Lists;
 
     bool m_AntiAlias;
@@ -89,7 +141,14 @@ class GfxCore : public wxWindow {
     };
 
     struct {
+#ifdef AVENGL
+        // For the OpenGL version we store the real (x, y, z) coordinates of each station.
+        Double3* vertices;
+#else
+        // For the non-OpenGL version we store the screen coordinates of each station after
+        // the transformation has been applied.
         wxPoint* vertices;
+#endif
         int* num_segs;
     } m_CrossData;
 
@@ -114,6 +173,18 @@ class GfxCore : public wxWindow {
         HighlightFlags flags;
     };
 
+#ifdef AVENGL
+    struct {
+        // Viewing volume parameters: these are all negative!
+        Double left;
+        Double bottom;
+        Double near;
+    } m_Volume;
+#endif
+
+    list<pair<PresData, Quaternion> > m_Presentation;
+    list<pair<PresData, Quaternion> >::iterator m_PresIterator;
+    double m_MaxExtent; // twice the maximum of the {x,y,z}-extents, in survey coordinates.
     LabelFlags* m_LabelGrid;
     HighlightedPt* m_HighlightedPts;
     int m_NumHighlightedPts;
@@ -177,36 +248,68 @@ class GfxCore : public wxWindow {
     bool m_Entrances;
     bool m_FixedPts;
     bool m_ExportedPts;
-    // wxCursor m_StdCursor;
-    // wxCursor m_ScaleRotateCursor;
     bool m_Grid;
 
-    struct pens {
-        wxPen black;
-        wxPen yellow;
-        wxPen red;
-        wxPen cyan;
-        wxPen turquoise;
-        wxPen green;
-        wxPen white;
-        wxPen grey;
-        wxPen lgrey;
-        wxPen lgrey2;
-        wxPen indicator1;
-        wxPen indicator2;
-    } m_Pens;
+    int m_DoingPresStep;
+    struct step_params {
+        Double pan_angle;
+        Double tilt_angle;
+        Quaternion rotation;
+        Double scale;
+        struct {
+	    Double x;
+	    Double y;
+	    Double z;
+	} translation;
+        struct {
+	    int x;
+	    int y;
+	    int z;
+	} display_shift;
+    };
 
-    struct brushes {
-        wxBrush black;
-        wxBrush yellow;
-        wxBrush red;
-        wxBrush cyan;
-        wxBrush grey;
-        wxBrush dgrey;
-        wxBrush white;
-        wxBrush indicator1;
-        wxBrush indicator2;
-    } m_Brushes;
+    struct {
+        step_params from;
+        step_params to;
+    } m_PresStep;
+
+    struct {
+        Double x, y, z;
+    } m_SpecialPt;
+
+    bool m_SpecialPtOn;
+
+#ifndef AVENGL
+    wxPen* m_Pens;
+    wxBrush* m_Brushes;
+#endif
+
+    void SetColour(AvenColour col, bool background = false /* true => foreground */) {
+        assert(col >= (AvenColour) 0 && col < col_LAST);
+#ifdef AVENGL
+        glColor3f(GLfloat(COLOURS[col].r) / 256.0,
+ 		  GLfloat(COLOURS[col].g) / 256.0,
+		  GLfloat(COLOURS[col].b) / 256.0);
+#else
+	if (background) {
+	    assert(m_Brushes[col].Ok());
+	    wxColour& colour = m_Brushes[col].GetColour();
+ 	    m_DrawDC.SetBrush(m_Brushes[col]);
+	}
+	else {
+	    assert(m_Pens[col].Ok());
+	    wxColour& colour = m_Pens[col].GetColour();
+	    m_DrawDC.SetPen(m_Pens[col]);
+	}
+#endif
+    }
+
+#ifdef AVENGL
+    void SetGLProjection();
+    void SetModellingTransformation();
+    void ClearBackgroundAndBuffers();
+    void SetGLAntiAliasing();
+#endif
 
     Double XToScreen(Double x, Double y, Double z) {
         return Double(x*m_RotationMatrix.get(0, 0) + y*m_RotationMatrix.get(0, 1) +
@@ -268,11 +371,21 @@ class GfxCore : public wxWindow {
     void Repaint();
 
 public:
-    GfxCore(MainFrm* parent);
+    GfxCore(MainFrm* parent, wxWindow* parent_window);
     ~GfxCore();
 
     void Initialise();
     void InitialiseOnNextResize() { m_InitialisePending = true; }
+
+    void SetSpecialPt(Double x, Double y, Double z);
+    void ClearSpecialPt();
+
+    void CentreOn(Double x, Double y, Double z);
+
+    void RecordPres(FILE* fp);
+    void LoadPres(FILE* fp);
+    void PresGo();
+    void RestartPres();
 
     void OnDefaults(wxCommandEvent&);
     void OnPlan(wxCommandEvent&);
@@ -325,7 +438,7 @@ public:
     void OnRButtonDown(wxMouseEvent& event);
     void OnRButtonUp(wxMouseEvent& event);
     void OnSize(wxSizeEvent& event);
-    void OnTimer(wxTimerEvent& event);
+    void OnTimer(wxIdleEvent& event);
 
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent&);
     void OnShowCrossesUpdate(wxUpdateUIEvent&);

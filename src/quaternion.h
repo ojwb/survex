@@ -26,6 +26,7 @@
 #include "aventypes.h"
 
 #include <math.h>
+#include <stdio.h>
 
 class Quaternion {
     Double w;
@@ -41,6 +42,16 @@ public:
     }
 
     ~Quaternion() {}
+
+    void Save(FILE* fp) { //--Pres: FIXME: error handling
+        fwrite(&w, sizeof(Double), 1, fp);
+	v.Save(fp);
+    }
+
+    void Load(FILE* fp) { //--Pres: FIXME: error handling
+        fread(&w, sizeof(Double), 1, fp);
+	v.Load(fp);
+    }
 
     Double magnitude() {
         Double mv = v.magnitude();
@@ -93,6 +104,13 @@ public:
 	return *this;
     }
 
+    friend Quaternion operator-(const Quaternion& q) {
+        Quaternion o;
+	o.v = -q.v;
+	o.w = -q.w;
+	return o;
+    }
+
     friend Quaternion operator*(const Quaternion& qa, const Quaternion& qb) {
         static Quaternion q;
 
@@ -100,6 +118,28 @@ public:
 	q.v = (qa.w * qb.v) + (qa.v * qb.w) + (qa.v * qb.v);
 
 	q.normalise();
+	
+	return q;
+    }
+
+    friend Quaternion operator*(const double d, const Quaternion& qa) {
+        static Quaternion q;
+
+	q.w = d * qa.w;
+	q.v = d * qa.v;
+
+	//	q.normalise();
+	
+	return q;
+    }
+
+    friend Quaternion operator+(const Quaternion& qa, const Quaternion& qb) {
+        static Quaternion q;
+
+	q.w = qa.w + qb.w;
+	q.v = qa.v + qb.v;
+
+	//q.normalise();
 	
 	return q;
     }
@@ -128,6 +168,10 @@ public:
 	v.set(sr * cpcy - cr * spsy, cr * sp * cy + sr * cp * sy, cr * cp * sy - sr * sp * cy);
 
 	normalise();
+    }
+
+    void print() {
+        printf("[%.02g  %.02g  %.02g] %.02g\n", v.getX(), v.getY(), v.getZ(), w);
     }
 
     void setFromSphericalPolars(Double pan, Double tilt, Double rotation_amount);

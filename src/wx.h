@@ -8,4 +8,4 @@
     #include "wx/wx.h"
 #endif
 
-#include "wx/docview.h"
+#include "wx/splitter.h"
