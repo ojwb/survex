@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-06-26 15:08:50 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.5 2003-06-26 15:08:50 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-07-26 14:02:36 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.6 2003-07-26 14:02:36 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -362,11 +362,11 @@ which in turn needs either Motif or Gtk+.
 
 <Para>
 This version comes packaged with an installation wizard.  Just
-run the downloaded package and let it lead you through the
+run the downloaded package and it will lead you through the
 installation process.  If installing on MS Windows NT, 2000, or XP
 we recommend you run the installer as administrator (or as a
 user with administrator rights) so that the file associations
-can be set up.
+can be set up for all users.
 </Para>
 
 <Para>
@@ -392,7 +392,8 @@ Start menu containing the following items:
 
 <Para>
 Icons are installed for &svx;, &x3d;, &err;, and &pos; files, and also for
-Compass <filename>PLT</filename> files (which Survex can read).
+Compass Plot files (<filename>.plt</filename> and <filename>.plf</filename>)
+(which Survex can read). <!-- FIXME XYZ -->
 Double-clicking on a &svx; file processes it to produce a &x3d; file.
 Double-clicking the &x3d; file views it in aven.
 You can also right click on these files to bring up a menu of other possible
@@ -437,7 +438,7 @@ actions:
   </VarListEntry>
   <VarListEntry><Term>Convert to DXF</Term>
   <ListItem><Para>
-  Convert to a DXF file (suitable for importing to many CAD packages)
+  Convert to a DXF file (suitable for importing into many CAD packages)
   </Para></ListItem>
   </VarListEntry>
   <VarListEntry><Term>Convert for hand plotting</Term>
@@ -577,7 +578,9 @@ if you're interested.</Para>
 <Para>
 On Microsoft Windows, we recommend you print using printwin which uses
 the built in drivers and so requires no separate configuration - if you
-can print from other programs, you can print from Survex.
+can print from other programs, you can print from Survex.  The only
+thing you may want to configure is the colours used if you have a colour
+printer.
 </Para>
 
 <Para>
@@ -616,6 +619,7 @@ print on Windows.
 </Para></ListItem>
 -->
 
+<!-- FIXME perhaps move this after data files section? -->
 <Sect1><Title>Survex Programs</Title>
 <?dbhtml filename="cmdline.htm">
 
@@ -737,10 +741,11 @@ file is looked for with the appropriate extension appended.  So
 <Para>Survey data is entered in the form of text files. You can use any
 text editor you like for this, so long as it has the capability of
 writing a plain ASCII text file. The data format is very flexible;
-survey legs don't need to be listed in any special order, and the ordering 
-of instrument readings on each line is specifiable.  So you can enter
+unlike some other cave surveying software, Survex does not require
+survey legs to be rearranged to suit the computer, and the ordering 
+of instrument readings on each line is fully specifiable.  So you can enter
 your data much as it appears on the survey notes, which is important
-in reducing the opportunities for error.
+in reducing the opportunities for transcription errors.
 </Para>
 
 <Para>
@@ -788,6 +793,7 @@ same file or directory.
 Which is partly covered above, though the last bit isn't... 
 -->
 
+<!-- FIXME "Anatomy of a Survey" section -->
 <Sect2><Title>Readings</Title>
 
 <Para>Blank lines (i.e. lines consisting solely of BLANK characters)
@@ -803,16 +809,17 @@ not optional, then an error is given.
 <Sect2><Title>Survey Station Names</Title>
 
 <Para>&survexsuite; has a powerful system for naming stations.  It
-uses a hierarchy of survey names, in a similar way to the directory structure
-on your discs.  So point 6 in the entrance survey of Kaninchenh&ouml;hle
+uses a hierarchy of survey names, similar to the nested folders
+your computer stores files in.
+So point 6 in the entrance survey of Kaninchenh&ouml;hle
 (cave number 161) is referred to as: 161.entrance.6
 </Para>
 
 <Para>This seems a natural way to refer to station names.  It also
 means that it is very easy to include more levels, for example if you
 want to plot all the caves in the area you just list them all in
-another file, specifying a new prefix.  So to group our example cave
-and its neighbours on the Loser Plateau you would use a file like
+another file, specifying a new prefix.  So to group 3 nearby caves
+on the Loser Plateau you would use a file like
 this:
 </Para>
 
@@ -1381,7 +1388,7 @@ E.g.:
 
 <VarListEntry><Term>DIVING</Term>
 <listitem><Para>
-An underwater survey where the vertical information is from a diver's pressure
+An underwater survey where the vertical information is from a diver's depth
 gauge.  This style can also be also used for an above water where the alititude
 is measured with an altimeter.  DEPTH is defined as the altitude (Z) so
 increases upwards by default.  So for a diver's depth guage, you'll need to
@@ -1747,12 +1754,11 @@ disagree, you can always use one of the other methods!
 
 <!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
 
-<!-- <VarListEntry><Term>See Also</Term>
+<VarListEntry><Term>See Also</Term>
 
-<listitem><Para></Para></listitem>
+<listitem><Para>*infer equates</Para></listitem>
 
 </VarListEntry>
--->
 
 </VariableList>
 
@@ -1816,7 +1822,7 @@ disagree, you can always use one of the other methods!
 
 <VarListEntry><Term>See Also</Term>
 
-<listitem><Para>*begin</Para></listitem>
+<listitem><Para>*begin, *infer exports</Para></listitem>
 
 </VarListEntry>
 
@@ -2083,6 +2089,8 @@ would be prudent not to go overboard with nested include files.
 <Para>*infer plumbs on|off</Para>
 
 <Para>*infer equates on|off</Para>
+
+<Para>*infer exports on|off</Para>
 </listitem>
 
 </VarListEntry>
@@ -2108,10 +2116,16 @@ will not apply the clino correction to them). This is useful when
 the data has not been converted to have UP and DOWN in it.
 </Para>
 
-<Para>"*infer equates on" tells cavern to interpret a leg with
-a tape reading of zero as a *equate.  This prevents tape corrections
+<para>"*infer equates on" tells cavern to interpret a leg with
+a tape reading of zero as a *equate.  this prevents tape corrections
 being applied to them.
-</Para>
+</para>
+
+<para>"*infer exports on" is necessary when you have a dataset which is
+partly annotated with *export.  It tells cavern not to complain about
+missing *export commands in part of the dataset.  Also stations which
+were used to join surveys are marked as exported in the 3d file.
+</para>
 </listitem>
 
 </VarListEntry>
@@ -2435,6 +2449,7 @@ ROOT (\) Prefix in force at start of current file (use of ROOT is deprecated)
 SEPARATOR (.) Level separator in prefix hierarchy
 </Para></ListItem>
 
+<!-- FIXME OPEN ({) and CLOSE (}) -->
 </ItemizedList>
 
 <Para>
@@ -2519,6 +2534,7 @@ have been formed by the extensions.
 
 <listitem><Para>valid at the start of a *begin/*end block.
 </Para></listitem>
+<!-- FIXME valid roles are? -->
 
 </VarListEntry>
 
@@ -2619,15 +2635,14 @@ other (mostly older) cave surveying software only regard the first few
 characters of a name as significant (e.g. "entran" and "entrance"
 might be treated as the same).  To facilitate using data imported from
 such a package &survexsuite; allows you to truncate names to whatever
-length you want (but by default truncation if off).
+length you want (but by default truncation is off).
 </Para>
 
 <Para>Figures for the number of characters which are significant in various
 software packages: Compass currently has a limit of 12,
 CMAP has a limit of 6,
-<!-- FIXME any limits for other software -->
-Surveyor87/8 used 8, Andy Waddington's SU-BBC used 6,
-while !SU, the Archimedes version, used 8.
+<!-- FIXME any limits for other software, winkarst for example? -->
+Surveyor87/8 used 8.
 &survexsuite; itself used 8 per prefix
 level up to version 0.41, and 12 per prefix level up to 0.73 (more recent
 versions removed this rather archaic restriction).
@@ -2935,7 +2950,7 @@ to stop clino corrections being applied to -90 and +90 clino readings.
 -->
 
 <Para>
-PLUMBED LEGS should be given using 'UP' or 'DOWN' in place of the
+Plumbed legs should be given using 'UP' or 'DOWN' in place of the
 clino reading and a dash (or a different specified 'OMIT' character)
 in place of the compass reading.  This distinguishes
 them from legs measured with a compass and clino.  Here's an example:
@@ -2948,7 +2963,7 @@ them from legs measured with a compass and clino.  Here's an example:
 5 4 10.38 - DOWN</programlisting>
 
 <Para>
-U/D or +V/-V may be used instead of UP/DOWN, and the check is not case
+U/D or +V/-V may be used instead of UP/DOWN; the check is not case
 sensitive.
 </Para>
 
@@ -2971,10 +2986,8 @@ This prevents the clino correction being applied.  Here's an example:
 <Para>The *SD command can be used to specify the standard deviations of the
 various measurements (tape, compass, clino, etc).  Examples files are
 supplied which define BCRA Grade 3 and BCRA Grade 5 using a number of *sd
-commands. You can use these by simply including them at the relevant point..
-</Para>
-
-<Para>You can use them as follows:
+commands. You can use these by simply including them at the relevant point,
+as follows:
 </Para>
 
 <programlisting>
@@ -3015,6 +3028,8 @@ leg:
 *end
 5 6  9.29 271 -28.5</programlisting>
 
+<!-- FIXME also *calibrate and *instrument? Except rope is measure with the
+tape... -->
 </Sect2>
 
 <Sect2><Title>Enter Radiolocation Data</Title>
@@ -3036,7 +3051,7 @@ that is the expected plumb error. 20m is the expected error in the
 length. To get the equivalent SD we assume that 99.74% of readings will
 be within 3 standard deviations of the error value. Thus we divide the
 expected errors by 3 to get the SD we should specify:
-</Para>
+</Para> <!-- 3 SD? or same as BCRA3.SVX, etc -->
 
 <programlisting>
 *begin
@@ -3221,7 +3236,7 @@ survey data.
 It is possible to generate
 a mesh or contours overlaying your area by various means.  In the USA,
 usable resolution data can be obtained for free.  In other countries,
-it's harder to come by.  For a small area, reading heights from the
+it's harder to come by.  Reading heights from the
 contours on a map is one approach.  It's laborious, but feasible for
 a small area.
 </Para>
@@ -3280,7 +3295,7 @@ Here's a grid of 4 squares and 9 intersections:
 
 <Para>
 This is far simpler than trying to create fake tape/compass/clino legs of
-the right length for each line in the mesh.  It's also very faster to process
+the right length for each line in the mesh.  It's also very fast to process
 with cavern.
 </Para>
 
@@ -3374,7 +3389,10 @@ These will normally be available via the
 <Sect2><Title>Export data from &survexsuite;</Title>
 
 <Para>See Rosetta Stal in the Related Tools section of the Survex web
-site.</Para> <!--FIXME: more info-->
+site.  This is a utility written by Taco van Ieperen and Gary Petrie.
+Note though that this only supports a subset of the svx format,
+and only work on Microsoft Windows.  The Survex support is limited
+and doesn't understand the more recently added commands.</Para>
 
 </Sect2>
 

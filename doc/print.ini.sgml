@@ -132,7 +132,7 @@ This will enable horizontal and vertical tabbing.
 </Para>
 </refsect3>
 
-<refsect3><title>printhpgl</title>
+<refsect3><title>printps</title>
 
 <Para>There's only one definition provided at present:
 ps_generic_a4.</Para>

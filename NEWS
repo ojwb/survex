@@ -31,7 +31,7 @@ Changes between 1.0.25 and 1.1.0:
 * (Unix version): Fixed svxedit man page which previously contained xcaverot
   documentation!
 
-* Minor documentation updates.
+* Documentation updated.
 
 * (Unix version): aven: "All Files" now shows files without extensions too.
 
