@@ -15,6 +15,15 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
  aventypes.h aventreectrl.h
 
+# GCC 2.95 frequently dies on gfxcore.cc with an internal error, so if the
+# compile fails, rerun it with -O instead of -O2 - FIXME this probably
+# assumes things about automake internals...
+aven-gfxcore.o: gfxcore.cc
+	source='gfxcore.cc' object='aven-gfxcore.o' libtool=no \
+	depfile='$(DEPDIR)/aven-gfxcore.Po' tmpdepfile='$(DEPDIR)/aven-gfxcore.TPo' \
+	$(CXXDEPMODE) $(depcomp) \
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aven_CXXFLAGS) $(CXXFLAGS) -c -o aven-gfxcore.o `test -f gfxcore.cc || echo '$(srcdir)/'`gfxcore.cc || $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) `echo $(aven_CXXFLAGS) $(CXXFLAGS)|sed 's/-O2/-O/g'` -c -o aven-gfxcore.o `test -f gfxcore.cc || echo '$(srcdir)/'`gfxcore.cc
+ 
 LDADD = @LIBOBJS@
 
 INCLUDES = -DIMG_HOSTED

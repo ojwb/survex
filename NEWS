@@ -3,6 +3,10 @@
 
 * (MS Windows version): file icons now have transparent backgrounds.
 
+* (Unix version): GCC 2.95 sometimes fails with an internal error when trying
+  to compile gfxcore.cc - if it does, the Makefile will now try recompiling
+  with a lower optimisation level.
+
 Changes in 0.99:
 
 * Fixed bug in .3d file reading code which would incorrectly reconstruct
