@@ -107,16 +107,16 @@ PickAScale(int x, int y)
     */
    Sc_x = Sc_y = DEF_RATIO;
    if (PaperWidth > 0.0 && xMax > xMin)
-      Sc_x = (x * PaperWidth - 19.0f) / (xMax - xMin);
+      Sc_x = (x * PaperWidth - 19.0f) / (double)(xMax - xMin);
    if (PaperDepth > 0.0 && yMax > yMin)
-      Sc_y = (y * PaperDepth - 61.0f) / (yMax - yMin);
+      Sc_y = (y * PaperDepth - 61.0f) / (double)(yMax - yMin);
 
    Sc_x = min(Sc_x, Sc_y) * 0.99; /* shrink by 1% so we don't cock up */
 #if 0 /* this picks a nice (in some sense) ratio, but is too stingy */
    E = pow(10.0, floor(log10(Sc_x)));
    Sc_x = floor(Sc_x / E) * E;
 #endif
-   return Sc_x;
+   return (float)Sc_x;
 }
 
 static void
@@ -493,7 +493,6 @@ int main(int argc, char **argv)
    float N_Scale = 1, D_Scale = 500, Sc = 0;
    unsigned int page, pages;
    char *fnm;
-   const char *pthMe;
    int cPasses, pass;
    unsigned int cPagesPrinted;
    int state;
@@ -540,19 +539,14 @@ int main(int argc, char **argv)
       {0, 0}
    };
 
-   int min_args = 1;
-   
-   pthMe = ReadErrorFile(argv[0]);
-
-   szDesc = pr->Name();
-
-   printf("Survex %s%s v"VERSION"\n  "COPYRIGHT_MSG"\n\n",
-          szDesc, msg(/* Driver*/152));
+   msg_init(argv[0]);
 
    fnm = NULL;
 
+   /* at least one argument must be given */
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
    while (1) {
-      int opt = my_getopt_long(argc, argv, short_opts, long_opts, NULL, help, min_args);
+      int opt = cmdline_getopt();
       if (opt == EOF) break;
       switch (opt) {
        case 'n': /* Labels */
@@ -579,11 +573,11 @@ int main(int argc, char **argv)
 	 fInteractive = fFalse;
 	 break;
        case 'b':
-	 rot = atoi(optarg); /* FIXME check for trailing garbage... */
+	 rot = cmdline_int_arg();
 	 fInteractive = fFalse;
 	 break;
        case 't':
-	 tilt = atoi(optarg); /* FIXME check for trailing garbage... */
+	 tilt = cmdline_int_arg();
 	 fInteractive = fFalse;
 	 break;
        case 's':
@@ -596,6 +590,11 @@ int main(int argc, char **argv)
       }
    }
 
+   szDesc = pr->Name();
+
+   printf("Survex %s%s v"VERSION"\n  "COPYRIGHT_MSG"\n\n",
+          szDesc, msg(/* Driver*/152));
+
    fnm = argv[optind++];
 
    /* Try to open first image file and check it has correct header,
@@ -605,9 +604,10 @@ int main(int argc, char **argv)
    
    if (pr->Init) {
       FILE *fh;
-      fh = fopenWithPthAndExt(pthMe, PRINT_INI, NULL, "rb", NULL);
+      const char *pth_cfg = msg_cfgpth();
+      fh = fopenWithPthAndExt(pth_cfg, PRINT_INI, NULL, "rb", NULL);
       if (!fh) fatalerror(/*Couldn't open data file '%s'*/24, fnm);
-      pr->Init(fh, pthMe, &scX, &scY);
+      pr->Init(fh, pth_cfg, &scX, &scY);
       fclose(fh);
    }
 
@@ -679,7 +679,7 @@ int main(int argc, char **argv)
    if (xMax < xMin || yMax < yMin) fatalerror(/*No data in 3d Image file*/86);
    
    {
-      float w, x;
+      double w, x;
       x = 1000.0 / PickAScale(1, 1);
       
       /* trim to 2 s.f. (rounding up) */
@@ -690,7 +690,7 @@ int main(int argc, char **argv)
       printf(" = 1:%.0f\n", x);
       if (N_Scale == 0.0) {
          N_Scale = 1;
-         D_Scale = x;
+         D_Scale = (float)x;
          Sc = N_Scale * 1000 / D_Scale;
          PagesRequired(Sc);
       } else if (!fInteractive) {
