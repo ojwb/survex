@@ -159,8 +159,8 @@ if expr "$mk" : '.*\<mingw\>'; then
 	 export CXX
       fi
    fi
-   wxc=wxmsw-2.4-config
-   for a in /usr/i586-mingw32msvc/bin/wxmsw-2.4-i586-mingw32msvc-config /opt/wxmsw-2.4.0/bin/wxmsw-2.4-i686-mingw32-config ; do
+   wxc=wxmsw-2.5-config
+   for a in /usr/i586-mingw32msvc/bin/wxmsw-2.5-i586-mingw32msvc-config ; do
       test -x "$a" && wxc="$a"
    done
    LDFLAGS=
