@@ -259,7 +259,9 @@ cvrotgfx_init(void)
       /* Could do this: set_color_depth(GFX_SAFE_DEPTH); but we'd need to
        * cope with different colour depths, and 256 colours seems to work
        * in most cases. */
-      if (os_type == OSTYPE_WINNT) {
+      if (os_type == OSTYPE_WINNT ||
+	  os_type == OSTYPE_WIN2000 ||
+	  os_type == OSTYPE_WINXP) {
 	  /* In DOS under Windows NT we can't do better than this */
 	  res = set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
       } else {

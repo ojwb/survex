@@ -16,6 +16,9 @@
 * Display copyright symbol rather than (C) where the current character set
   allows it.
 
+* (MS DOS version): caverot: default to 320x200 when running under
+  Microsoft Windows 2000 and XP as we already do on NT.
+
 Changes in 0.99-prerelease7:
 
 * (MS Windows version): aven was missing from 0.99-prerelease6
