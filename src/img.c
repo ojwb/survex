@@ -1182,7 +1182,8 @@ skip_to_N:
 		  img_errno = IMG_OUTOFMEMORY;
 		  return img_BAD;
 	       }
-	       if (sscanf(line, "%lf %lf %lf", &p->x, &p->y, &p->z) != 3) {
+	       /* Compass store coordinates as North, East, Up = (y,x,z)! */
+	       if (sscanf(line, "%lf%lf%lf", &p->y, &p->x, &p->z) != 3) {
 		  osfree(line);
 		  if (ferror(pimg->fh)) {
 		     img_errno = IMG_READERROR;

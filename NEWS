@@ -1,7 +1,9 @@
 Changes in 1.0.5:
 
 * Fixed bug in img_open_survey() which could cause a crash if you tried to
-  open a file which wasn't .3d, .pos, .plt, or .xyz format.
+  open an unrecognised file (i.e. not .3d, .pos, .plt, or .xyz format).
+
+* North and East were the wrong way round when reading in .plt files.
 
 * Documentation updates.
 
