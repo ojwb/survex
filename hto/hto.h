@@ -1,7 +1,7 @@
 /*	File:	hto.h		Hierarchical Tagged Objects library header
-/*	Author:	Douglas P. Dotson
-/*	Date:	31 May 1993
-/*	Edit:	27 Aug 1993	2350	DPD
+ *	Author:	Douglas P. Dotson
+ *	Date:	31 May 1993
+ *	Edit:	27 Aug 1993	2350	DPD
 */
 
 /* Delimiters */

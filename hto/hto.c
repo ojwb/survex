@@ -1,7 +1,7 @@
 /*	File:	hto.c		Hierarchical Tagged Objects library
-/*	Author:	Douglas P. Dotson
-/*	Date:	31 May 1993
-/*	Edit:	16 Sep 1993	2002	DPD
+ *	Author:	Douglas P. Dotson
+ *	Date:	31 May 1993
+ *	Edit:	16 Sep 1993	2002	DPD
 */
 
 #include <stdio.h>
@@ -13,12 +13,12 @@
 
 /* ------------------------ Grammar --------------------------*/
 /*
-/*	<data-file> ::= <object-list>
-/*
-/*	<object> ::= ( tag : <object-list> )
-/*	<object> ::= ( tag : string )
-/*
-/*	<object-list> ::= <object> <object-list>
+ *	<data-file> ::= <object-list>
+ *
+ *	<object> ::= ( tag : <object-list> )
+ *	<object> ::= ( tag : string )
+ *
+ *	<object-list> ::= <object> <object-list>
 */
 
 /* Static functions in this module */
@@ -381,7 +381,6 @@ static void PushObjectValue (HTO p, char *Tag, char *Value)
     VLEntry	*Ent;
     ValStack	*v;
     char	*s;
-    int		i, j;
 
     /* This function pushes the value of a terminal object onto its */
     /* associated stack.  If this is the first occurrance of the object */
@@ -464,7 +463,7 @@ char *HTO_GetObjectValue (HTO p, char *Tag, char *Value)
     int		i;
 
     /* Determine if a value stack exists for this tag.  If not, place */
-    /* an empty string in the value buffer and return a pointer to the
+    /* an empty string in the value buffer and return a pointer to the */
     /* buffer. */
 
     Ent = (VLEntry *) bsearch (Tag, p->ValueStackList, p->Num_ValStacks,
