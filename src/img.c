@@ -290,6 +290,7 @@ img_open_survey(const char *fnm, const char *survey)
        fnm[len - LITLEN(EXT_PLT) - 1] == FNM_SEP_EXT &&
        my_strcasecmp(fnm + len - LITLEN(EXT_PLT), EXT_PLT) == 0) {
       char *line = NULL;
+
       pimg->version = -2;
       if (!survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
@@ -311,6 +312,23 @@ img_open_survey(const char *fnm, const char *survey)
 	    goto error;
 	 }
       } while (line[0] != 'N');
+
+      len = 1;
+      while (line[len] > 32) ++len;
+
+      if (len > pimg->buf_len) { 
+	 char *b = xosrealloc(pimg->label_buf, len);
+	 if (!b) {
+	    img_errno = IMG_OUTOFMEMORY;
+	    return NULL;
+	 }
+	 pimg->label_buf = b;
+	 pimg->buf_len = len;
+      }
+      pimg->label_len = len;
+      pimg->label = pimg->label_buf;
+      memcpy(pimg->label, line + 1, len);
+      pimg->label[len] = '\0';
       osfree(line);
       pimg->start = 0;
       return pimg;
@@ -932,7 +950,7 @@ img_read_item(img *pimg, img_point *p)
 	 int r = pimg->pending == 'M' ? img_MOVE : img_LINE;
 	 pimg->pending = 0;
 	 pimg->flags = 0;
-	 pimg->label[0] = '\0';
+	 pimg->label[pimg->label_len] = '\0';
 	 return r;
       }
 
@@ -963,18 +981,19 @@ img_read_item(img *pimg, img_point *p)
 	       len = 0;
 	       while (q[len] > ' ') ++len;
 	       q[len] = '\0';
-	       ++len;
-	       if (len > pimg->buf_len) { 
-	    	  char *b = xosrealloc(pimg->label_buf, len);
+	       len += 2; /* '.' and '\0' */
+	       if (pimg->label_len + len > pimg->buf_len) { 
+	    	  char *b = xosrealloc(pimg->label_buf, pimg->label_len + len);
 		  if (!b) {
 		     img_errno = IMG_OUTOFMEMORY;
 		     return img_BAD;
 		  }
 		  pimg->label_buf = b;
-		  pimg->buf_len = len;
+		  pimg->buf_len = pimg->label_len + len;
 	       }
 	       pimg->label = pimg->label_buf;
-	       memcpy(pimg->label, q, len);
+	       pimg->label[pimg->label_len] = '.';
+	       memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
 	       pimg->pending = line[0];
 	       osfree(line);
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
@@ -999,6 +1018,25 @@ img_read_item(img *pimg, img_point *p)
 		     return img_BAD;
 		  }
 	       } while (line[0] != 'N');
+
+	       len = 1;
+	       while (line[len] > 32) ++len;
+
+	       if (len > pimg->buf_len) {
+		  char *b = xosrealloc(pimg->label_buf, len);
+		  if (!b) {
+		     img_errno = IMG_OUTOFMEMORY;
+		     return img_BAD;
+		  }
+		  pimg->label_buf = b;
+		  pimg->buf_len = len;
+	       }
+	       --len;
+	       pimg->label_len = len;
+	       pimg->label = pimg->label_buf;
+	       memcpy(pimg->label, line + 1, len);
+	       pimg->label[len] = '\0';
+
 	       osfree(line);
 	       break;
 	    default:
