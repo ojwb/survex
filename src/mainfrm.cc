@@ -74,8 +74,8 @@ class AvenSplitterWindow : public wxSplitterWindow {
 };
 
 BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
-    // The docs say "EVT_SPLITTER_DOUBLECLICKED" but the headers say
-    // "EVT_SPLITTER_DCLICK"
+    // The wx docs say "EVT_SPLITTER_DOUBLECLICKED" but the wx headers say
+    // "EVT_SPLITTER_DCLICK" (wx docs corrected to agree with headers in 2.3)
 #ifdef EVT_SPLITTER_DOUBLECLICKED
     EVT_SPLITTER_DOUBLECLICKED(-1, AvenSplitterWindow::OnSplitterDClick)
 #else
