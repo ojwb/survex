@@ -1,3 +1,5 @@
+Changes in 0.99-prerelease4:
+
 * Minor improvements to manual and Unix man pages.
 
 * printps/printhpgl/printwin: --skip-blanks fixed.
