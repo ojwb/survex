@@ -55,7 +55,6 @@ clear_map(void)
 void
 fancy_label(const char *label, int x, int y)
 {
-   extern bool fAllNames;
 #ifndef really_plot
    extern void really_plot(const char * /*label*/, int /*x*/, int /*y*/);
 #endif

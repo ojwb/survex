@@ -149,7 +149,7 @@ PlotDotDM(long x, long y)
    /* Shift up to fit snugly at high end */
    v = (int)(y % ypLineDepth) + ((-ypLineDepth) & 7);
    y /= ypLineDepth;
-   x = (int)x * SIZEOFGRAPH_T + (SIZEOFGRAPH_T - (v >> 3) - 1);
+   x = (int)(x * SIZEOFGRAPH_T + (SIZEOFGRAPH_T - (v >> 3) - 1));
    bitmap[y][x] |= 1 << (v & 7);
 }
 
@@ -162,6 +162,7 @@ PlotDotPCL(long x, long y)
    bitmap[y - clip.y_min][x >> 3] |= 128 >> (x & 7);
 }
 
+#ifdef XBM
 static void
 PlotDotXBM(long x, long y)
 {
@@ -170,8 +171,6 @@ PlotDotXBM(long x, long y)
    bitmap[y - clip.y_min][x - clip.x_min] = '*';
 }
 
-
-#ifdef XBM
 static const char *
 xbm_Name(void)
 {

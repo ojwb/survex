@@ -362,7 +362,7 @@ build_matrix(long n, prefix **stn_tab)
       out_current_action(buf);
       /* Initialise M and B to zero */
       /* FIXME might be best to zero "linearly" */
-      for (row = n - 1; row >= 0; row--) {
+      for (row = (int)(n - 1); row >= 0; row--) {
 	 BELT_COPY(B[row], B_ZERO);
 	 for (col = row; col >= 0; col--) MELT_COPY(M(row,col), M_ZERO);
       }
@@ -506,7 +506,7 @@ build_matrix(long n, prefix **stn_tab)
 
       {
 	 int m;
-	 for (m = n - 1; m >= 0; m--) {
+	 for (m = (int)(n - 1); m >= 0; m--) {
 #ifdef NO_COVARIANCES
 	    stn_tab[m]->pos->p[dim] = B[m];
 #else
@@ -695,7 +695,7 @@ choleski(
 #endif
 
    /* Multiply x by (L transpose) inverse */
-   for (i = n - 1; i > 0; i--) {
+   for (i = (int)(n - 1); i > 0; i--) {
       for (j = i - 1; j >= 0; j--) {
 #ifdef NO_COVARIANCES
   	 B[j] -= M(i,j) * B[i];

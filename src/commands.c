@@ -942,15 +942,16 @@ infer(void)
 static void
 truncate(void)
 {
-   int truncate;
+   int truncate = 0; /* default is no truncation */
    /* FIXME: this really is *not* the way to do this */
    skipblanks();
-   if (toupper(ch) == 'O') {
+   if (toupper(ch) != 'O') {
+      truncate = (int)read_numeric(fFalse); /* FIXME: really want +ve int... */
+   } else {
       nextch();
       if (toupper(ch) == 'F') {
 	 nextch();
 	 if (toupper(ch) == 'F') {
-	    truncate = 0;
 	    nextch();
 	 } else {
 	    ch = 'F';
@@ -962,8 +963,6 @@ truncate(void)
 	 read_numeric(fFalse);
 	 NOT_YET;	       
       }      
-   } else {
-      truncate = (int)read_numeric(fFalse); /* FIXME: really want +ve int... */
    }
    /* for backward compatibility, "*truncate 0" means "*truncate off" */
    pcs->Truncate = (truncate < 1) ? INT_MAX : truncate;

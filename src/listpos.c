@@ -105,7 +105,7 @@ node_stat(prefix *p)
    }
 }
 
-extern void
+static void
 node_stats(prefix *from)
 {
    icOrderMac = 8; /* Start value */

@@ -249,8 +249,8 @@ ps_Pre(int pagesToPrint, const char *title)
 /*   prio_print("%%For: A Surveyor\n"); */
    prio_printf("%%%%DocumentFonts: %s %s\n", szFont, szFontSymbol);
    prio_printf("%%%%BoundingBox: 0 0 %ld %ld\n",
-	       xpPageWidth + (long)(2 * MarginLeft * POINTS_PER_MM),
-	       ypPageDepth + (long)((10 + 2 * MarginBottom) * POINTS_PER_MM));
+	       xpPageWidth + (long)(2.0 * MarginLeft * POINTS_PER_MM),
+	       ypPageDepth + (long)((10.0 + 2.0 * MarginBottom) * POINTS_PER_MM));
    /* FIXME is this a level 1 feature?   prio_print("%%PageOrder: Ascend\n"); */
    prio_printf("%%%%Pages: %d\n", pagesToPrint);
 
