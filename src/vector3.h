@@ -69,11 +69,19 @@ public:
     friend Vector3 operator+(const Vector3&, const Vector3&);
     friend Vector3 operator-(const Vector3&, const Vector3&);
     friend bool operator==(const Vector3&, const Vector3&);
+    friend bool operator<(const Vector3&, const Vector3&);
     friend double dot(const Vector3&, const Vector3&);
 };
 
 inline bool operator==(const Vector3& a, const Vector3& b) {
     return a.x == b.x && a.y == b.y && a.z == b.z;
+}
+
+// So we can use Vector3 as a key in a map...
+inline bool operator<(const Vector3& a, const Vector3& b) {
+    if (a.x != b.x) return a.x < b.x;
+    if (a.y != b.y) return a.y < b.y;
+    return a.z < b.z;
 }
 
 #endif
