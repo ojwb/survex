@@ -1160,7 +1160,8 @@ data_normal(void)
 	     fRev = fTrue;
 	     break;
 	   default:
-	     compile_error_skip(/*Found `%s', expecting `F' or `B'*/131, ch);
+	     compile_error_skip(/*Found `%s', expecting `F' or `B'*/131,
+			        buffer);
 	     process_eol();
 	     return 0;
 	  }
