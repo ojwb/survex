@@ -415,7 +415,7 @@ static int add_unicode(int charset, char *p, int value) {
       *p = value;
       return 1;
    }
-   return 0;   
+   return 0;
 }
 
 static int decode_entity(const char *entity, size_t len) {
@@ -786,7 +786,7 @@ printf("opened error file\n");
                   unsigned long value = strtoul( q+2, &q, 10);
               	  if (*q == ';') q++;
 		  if (value < 127) {
-		     estr[c++] = value;
+		     estr[c++] = (char)value;
 		  } else {
 		     c += add_unicode(charset_code, estr+c, value);
 		  }
@@ -857,7 +857,7 @@ extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvV
       /* otherwise, forget it - go for the current directory */
       pthMe = "";
    }
-   
+
    /* Look for env. var. "SURVEXLANG" or the like */
    if ((szTmp=getenv(szLangVar))==0 || !*szTmp) {
       szTmp = DEFAULTLANG;
@@ -868,19 +868,19 @@ extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvV
       if (strcmp(prefix, "engi") == 0) {
 	 strcpy(prefix, "en");
       } else if (strcmp(prefix, "engu") == 0) {
-	 strcpy(prefix, "en-us");	   
+	 strcpy(prefix, "en-us");
       } else if (strcmp(prefix, "fren") == 0) {
-	 strcpy(prefix, "fr");	   
+	 strcpy(prefix, "fr");
       } else if (strcmp(prefix, "germ") == 0) {
-	 strcpy(prefix, "de");	   
+	 strcpy(prefix, "de");
       } else if (strcmp(prefix, "ital") == 0) {
-	 strcpy(prefix, "it");	   
+	 strcpy(prefix, "it");
       } else if (strcmp(prefix, "span") == 0) {
-	 strcpy(prefix, "es");	   
+	 strcpy(prefix, "es");
       } else if (strcmp(prefix, "cata") == 0) {
-	 strcpy(prefix, "ca");	   
+	 strcpy(prefix, "ca");
       } else if (strcmp(prefix, "port") == 0) {
-	 strcpy(prefix, "pt");	   
+	 strcpy(prefix, "pt");
       } else {
 	 while (szTmp[c] && c < sizeof(prefix)) {
 	    prefix[c] = tolower(szTmp[c]);
@@ -891,7 +891,7 @@ extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvV
    }
    strcat(prefix, ":");
    prefix_len = strlen(prefix);
-   
+
    /* If the language is something like "en-us", fallback to "en" if we don't
     * have an entry for en-us */
    szTmp = strchr(prefix, '-');
