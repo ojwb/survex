@@ -32,4 +32,4 @@ docs: Makefile.am $(top_srcdir)/configure.in
 	for a in `echo @EXTRA_TEXT@|grep -v COPYING|grep -v ChangeLog` ; do \
 	 echo $$a >> docs ; done
 	for a in @HTMLFILES@ @DOCS_OTHER@ manual/ ; do \
-	 echo debian/tmp/usr/doc/survex/$$a >> docs ; done
+	 echo debian/tmp/usr/share/doc/survex/$$a >> docs ; done

@@ -1,9 +1,11 @@
 #!/usr/bin/make -f
 # Based on sample debian/rules that uses debhelper.
 # GPL copyright 1997 to 1999 by Joey Hess.
+# Copyright (C) 2001 Wookey
+# Copyright (C) 2001 Olly Betts
 #
-# This version is for a multibinary package. It also allows you to build any
-# of the binary packages independantly, via binary-<package> targets.
+# This is a multibinary package. You to build any of the binary packages
+# independently, via binary-<package> targets.
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -18,7 +20,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex
 	$(MAKE)
 
 	touch build-stamp

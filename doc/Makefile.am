@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-pkgdocdir = $(prefix)/doc/@PACKAGE@
+pkgdocdir = @PKGDOCDIR@
 
 doclist = @DOCS_OTHER@
 

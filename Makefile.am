@@ -20,7 +20,7 @@ extra_files = $(extra_bin) $(extra_txt)
 
 # FIXME: need to keep in step with src/Makefile.am
 base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
- extend survex sorterr 3dtopos
+ extend sorterr 3dtopos
 
 AUTHORS: doc/AUTHORS.htm
 	w3m -dump doc/AUTHORS.htm > AUTHORS

@@ -3,7 +3,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH SURVEX 1 "2001-10-12" "@PRETTYPACKAGE@ @VERSION@"
+.TH SURVEX 1 "2001-12-22" "@PRETTYPACKAGE@ @VERSION@"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -34,15 +34,15 @@ rtf formats; see below.
 .\" respectively.
 .SH OPTIONS
 These programs follow the usual GNU command line syntax, with long
-options starting with two dashes (`--').
-A summary of common options is included below.
-For a complete description, see the full documentation.
+options starting with two dashes (`--').  All commands support the options
+described below; for a complete description of options for a command, see
+its man page or the manual.
 .TP
 .B \-\-help
 Show summary of options.
 .TP
 .B \-\-version
-Show version of program.
+Output version information and exit.
 .SH SEE ALSO
 \fB3dtopos\fP\fB(1)\fP, 
 \fBaven\fP\fB(1)\fP, 
@@ -56,8 +56,7 @@ Show version of program.
 \fBprintps\fP\fB(1)\fP, 
 \fBsorterr\fP\fB(1)\fP, 
 \fBxcaverot\fP\fB(1)\fP, 
-The Survex Manual - to be found in /usr/share/doc/survex or
-/usr/doc/survex
+The Survex Manual - to be found in @PKGDOCDIR@
 .SH AUTHOR
-This manual page was written by Wookey <wookey@survex.com> and amended by
+This manual page was written by Wookey <wookey@survex.com> and
 Olly Betts <olly@survex.com>

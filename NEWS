@@ -1,5 +1,8 @@
 * German translation now completely up-to-date.
 
+* survex: removed conversion wrapper - you should use "cavern file.svx"
+  instead of "survex file.svx".
+
 * aven: altered colours of "fixed points" and "entrances" buttons to match
   the coloured blobs used to indicate them.
 
