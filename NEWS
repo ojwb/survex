@@ -5,6 +5,9 @@ Changes in 1.0.5:
 
 * North and East were the wrong way round when reading in .plt files.
 
+* cad3d: Improved .plt file output a little - there's probably enough file
+  structure for Compass to read them now.
+
 * Documentation updates.
 
 Changes in 1.0.4:

@@ -62,6 +62,9 @@ static double grid; /* grid spacing (or 0 for no grid) */
 static double scale = 500.0;
 static double factor;
 
+static img *pimg;
+static const char *survey = NULL;
+
 static void
 dxf_header(void)
 {
@@ -294,6 +297,12 @@ plt_header(void)
    size_t i;
    htab = osmalloc(0x2000 * sizeof(point**));
    for (i = 0; i < 0x2000; ++i) htab[i] = NULL;
+   /* Survex is E, N, Alt - PLT file is N, E, Alt */
+   fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
+           min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
+           min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
+           min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
+   fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X", pimg->title);
 }
 
 static void
@@ -393,6 +402,11 @@ plt_cross(img_point p)
 static void
 plt_footer(void)
 {
+   /* Survex is E, N, Alt - PLT file is N, E, Alt */
+   fprintf(fh, "X %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
+           min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
+           min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
+           min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    /* Yucky DOS "end of textfile" marker */
    fprintf(fh, "\x1a");
 }
@@ -409,7 +423,6 @@ main(int argc, char **argv)
 {
    char *fnm_3d, *fnm_out;
    unsigned char labels, crosses, legs;
-   img *pimg;
    int item;
    int fSeenMove = 0;
    img_point p, p1;
@@ -419,7 +432,6 @@ main(int argc, char **argv)
    enum { FMT_DXF = 0, FMT_SKETCH, FMT_PLT, FMT_AUTO } format;
    static const char *extensions[] = { "dxf", "sk", "plt" };
    int *pass;
-   const char *survey = NULL;
 
    void (*header)(void);
    void (*start_pass)(int);
