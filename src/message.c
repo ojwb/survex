@@ -356,24 +356,17 @@ parse_msg_file(int charset_code)
    }
 
    if (!fh) {
-      /* no point extracting this error as it won't get used if file opens */
-      fprintf(STDERR, "Can't open message file `%s' using path `%s'\n",
-	      fnm, pth_cfg_files);
-      exit(EXIT_FAILURE);
+      fatalerror(/*Can't open message file `%s' using path `%s'*/1000,
+		 fnm, pth_cfg_files);
    }
 
    if (fread(header, 1, 20, fh) < 20 ||
        memcmp(header, "Svx\nMsg\r\n\xfe\xff", 12) != 0) {
-      /* no point extracting this error as it won't get used if file opens */
-      fprintf(STDERR, "Problem with message file `%s'\n", fnm);
-      exit(EXIT_FAILURE);
+      fatalerror(/*Problem with message file `%s'*/1001, fnm);
    }
 
-   if (header[12] != 0) {
-      /* no point extracting this error as it won't get used if file opens */
-      fprintf(STDERR, "I don't understand this message file version\n");
-      exit(EXIT_FAILURE);
-   }
+   if (header[12] != 0)
+      fatalerror(/*I don't understand this message file version*/1002);
 
    num_msgs = (header[14] << 8) | header[15];
 
@@ -381,11 +374,9 @@ parse_msg_file(int charset_code)
    for (i = 16; i < 20; i++) len = (len << 8) | header[i];
 
    p = osmalloc(len);
-   if (fread(p, 1, len, fh) < len) {
-      /* no point extracting this error - translation will never be used */
-      fprintf(STDERR, "Message file truncated?\n");
-      exit(EXIT_FAILURE);
-   }
+   if (fread(p, 1, len, fh) < len)
+      fatalerror(/*Message file truncated?*/1003);
+   
    fclose(fh);
 
 #ifdef DEBUG
@@ -533,6 +524,14 @@ msg_init(const char *argv0)
    select_charset(default_charset());
 }
 
+/* no point extracting these errors as they won't get used if file opens */
+static const char *dontextract[] = {
+   "Can't open message file `%s' using path `%s'", /*1000*/
+   "Problem with message file `%s'", /*1001*/
+   "I don't understand this message file version", /*1002*/
+   "Message file truncated?" /*1003*/
+};
+
 /* message may be overwritten by next call
  * (but not in current implementation) */
 const char *
@@ -540,6 +539,8 @@ msg(int en)
 {
    /* NB can't use ASSERT here! */
    static char badbuf[256];
+   if (en >= 1000 && en < 1000 + sizeof(dontextract)/sizeof(char*))
+      return dontextract[en - 1000];
    if (!msg_array) {
       if (en != 1)  {
 	 sprintf(badbuf, "Message %d requested before msg_array initialised\n", en);
