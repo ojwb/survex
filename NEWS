@@ -1,3 +1,8 @@
+Changes in 1.0.34:
+
+* (MS Windows version): Fixed detection of codepage 1250 (used for Slovak and
+  Romanian) - this should fix problems with missing accents.
+
 Changes in 1.0.33:
 
 * aven,printwin: Fixed bug which would sometimes pick one too few pages

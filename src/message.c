@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -303,6 +303,7 @@ default_charset(void)
 # endif
    switch (CODEPAGE) {
     case 1252: return CHARSET_WINCP1252;
+    case 1250: return CHARSET_WINCP1250;
     case 850: return CHARSET_DOSCP850;
    }
    return CHARSET_USASCII;
