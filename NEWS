@@ -18,6 +18,10 @@
 * cavern: on error, remove any existing .inf file for consistency with
   .3d and .err files.
 
+* aven: if a .3d file is truncated or corrupted part way through, aven
+  would previously load part of it without complaint.  Fixed to
+  complain and not load anything.
+
 * print*: Added --output command line option to override the output
   setting in the .ini file.
 

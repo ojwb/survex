@@ -395,6 +395,26 @@ bool MainFrm::LoadData(const wxString& file)
 
 		    break;
 		}
+
+	        case img_BAD:
+		{
+		    m_Labels.clear();
+ 
+		    // FIXME: Do we need to reset all these? - Olly
+		    m_NumLegs = 0;
+		    m_NumPoints = 0;
+		    m_NumExtraLegs = 0;
+		    m_NumCrosses = 0;
+		    m_NumFixedPts = 0;
+		    m_NumExportedPts = 0;
+		    m_NumEntrances = 0;
+
+		    m_ZMin = DBL_MAX;
+
+		    wxString m = wxString::Format(msg(img_error()), file.c_str());
+		    wxGetApp().ReportError(m);
+		    return false;		    
+		}
 		
 	        default:
 	            break;
@@ -402,7 +422,7 @@ bool MainFrm::LoadData(const wxString& file)
 
 	    first = false;
 
-	} while (result != img_BAD && result != img_STOP);
+	} while (result != img_STOP);
 
 	// Check we've actually loaded some legs or stations!
 	if (m_NumLegs == 0 && m_Labels.empty()) {
