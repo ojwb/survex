@@ -30,8 +30,14 @@
 
 typedef double real; /* so we can change the precision used easily */
 #define HUGE_REAL HUGE_VAL
-/* this is big, but not so big we can't negate it safely -- not very nice */
+/* this is big, but not so big we can't negate it safely -- not very nice,
+ * and possibly unnecessary - need to recheck the standard */
 #define REAL_BIG (DBL_MAX/20.0)
+/* RISC OS FP emulation is broken, and the reported epsilon value isn't
+ * useful in practice, so we fake it in the makefile */
+#ifndef REAL_EPSILON
+# define REAL_EPSILON DBL_EPSILON
+#endif
 
 #if (!EXPLICIT_FIXED_FLAG)
 # define UNFIXED_VAL HUGE_VAL /* if p[0]==UNFIXED_VAL, station is unfixed */

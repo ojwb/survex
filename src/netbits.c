@@ -18,6 +18,8 @@
 #include "netbits.h"
 #include "datain.h" /* for compile_error */
 
+#define THRESHOLD (REAL_EPSILON * 100)
+
 node *stn_iter = NULL; /* for FOR_EACH_STN */
 
 #ifdef NO_COVARIANCES
@@ -47,13 +49,13 @@ extern void check_var(const var *v) {
 			   (*v)[(i + 1) % 3][2] * (*v)[(i + 2) % 3][1]);
    }
 
-   if (fabs(det) < 1E-20)
+   if (fabs(det) < THRESHOLD)
       printf("*** Singular!!!\n"), bad = 1;
 
 #if 0
-   if (fabs(V(0,1) - V(1,0)) > 1e-12 ||
-       fabs(V(0,2) - V(2,0)) > 1e-12 ||
-       fabs(V(1,2) - V(2,1)) > 1e-12)
+   if (fabs(V(0,1) - V(1,0)) > THRESHOLD ||
+       fabs(V(0,2) - V(2,0)) > THRESHOLD ||
+       fabs(V(1,2) - V(2,1)) > THRESHOLD)
       printf("*** Not symmetric!!!\n"), bad = 1;
    if (V(0,0) <= 0.0 || V(1,1) <= 0.0 || V(2,2) <= 0.0)
       printf("*** Not positive definite (diag <= 0)!!!\n"), bad = 1;
@@ -211,6 +213,7 @@ addfakeleg(node *fr, node *to,
        */
       compile_warning(/*Survey leg with same station ('%s') at both ends - typing error?*/50,
 		      sprint_prefix(fr->name));
+      /* FIXME: inc loop count? */
       return;
    }
 
@@ -530,7 +533,7 @@ invert_var(var *inv, const var *v)
 {
    int i;
    for (i = 0; i < 3; i++) {
-      if ((*v)[i] < 1E-10) return 0; /* matrix is singular - FIXME use epsilon */
+      if ((*v)[i] < THRESHOLD) return 0; /* matrix is singular - FIXME use epsilon */
       (*inv)[i] = 1.0 / (*v)[i];
    }
    return 1;
@@ -550,7 +553,7 @@ invert_var(var *inv, const var *v)
 			   (*v)[(i + 1) % 3][2] * (*v)[(i + 2) % 3][1]);
    }
 
-   if (fabs(det) < 1E-10) {
+   if (fabs(det) < THRESHOLD) {
       /* printf("det=%.20f\n", det); */
       return 0; /* matrix is singular - FIXME use epsilon */
    }
@@ -572,7 +575,7 @@ invert_var(var *inv, const var *v)
 	for (i = 0; i < 3; i++) {
 	   for (j = 0; j < 3; j++ ) d += fabs(p[i][j] - (real)(i==j));
 	}
-	if (d > 1E-10) {
+	if (d > THRESHOLD) {
 	   printf("original * inverse=\n");
 	   print_var(*v);
 	   printf("*\n");
