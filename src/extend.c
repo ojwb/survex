@@ -41,7 +41,7 @@
 typedef struct stn {
    const char *label;
    int flags;
-   struct stn *next;
+   const struct stn *next;
 } stn;
 
 typedef struct POINT {
@@ -59,7 +59,7 @@ typedef struct LEG {
    struct LEG *next;
 } leg;
 
-static point headpoint = {{0, 0, 0}, NULL, 0, 0, NULL};
+static point headpoint = {{0, 0, 0}, NULL, 0, NULL};
 
 static leg headleg = {NULL, NULL, NULL, 1, 0, NULL};
 
@@ -232,7 +232,7 @@ main(int argc, char **argv)
    /* start at the highest entrance with some legs attached */
    for (p = headpoint.next; p != NULL; p = p->next) {
       if (p->order > 0 && p->p.z > zMax) {
-	 stn *s;
+	 const stn *s;
 	 for (s = p->stns; s; s = s->next) {
 	    if (s->flags & img_SFLAG_ENTRANCE) {
 	       start = p;
@@ -286,7 +286,7 @@ do_stn(point *p, double X)
 {
    leg *l, *lp;
    double dX;
-   stn *s;
+   const stn *s;
 
    for (s = p->stns; s; s = s->next) {
       img_write_item(pimg, img_LABEL, s->flags, s->label, X, 0, p->p.z);
