@@ -24,15 +24,15 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 
 survex_SOURCES = wrap.c osdepend.c
 
+EXTRA_aven_SOURCES = aven.rc
+
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
- useful.c
+ useful.c @AVENRC@
 
 aven_LDADD = @LIBOBJS@ @WX_LIBS@
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN
-
-EXTRA_aven_SOURCES = aven.rc
 
 # FIXME: should use wxconfig or similar to get includes
 aven.coff: aven.rc
