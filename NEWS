@@ -1,3 +1,5 @@
+Changes in 0.97-prerelease7:
+
 * Messages relating to command line options are now translatable.
 
 * (MS DOS versions): now supply self-extracting zip archives.
