@@ -1209,7 +1209,9 @@ void MainFrm::OnFind(wxCommandEvent& event)
 {
     wxString str = m_FindBox->GetValue();
     re_pattern_buffer buffer;
-    if (m_RegexpCheckBox->GetValue()) {
+    bool regexp = m_RegexpCheckBox->GetValue();
+
+    if (regexp) {
         buffer.translate = NULL;
 	buffer.fastmap = new char[256];
 	buffer.allocated = 0;
@@ -1237,7 +1239,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
     while (pos != m_Labels.end()) {
         LabelInfo* label = *pos++;
 	
-	if (m_RegexpCheckBox->GetValue()) {
+	if (regexp) {
 	    re_registers regs;
 	    int ret = re_search(&buffer, label->text.c_str(), label->text.Length(), 0, label->text.Length(),
 				NULL);
@@ -1254,14 +1256,16 @@ void MainFrm::OnFind(wxCommandEvent& event)
 	            m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_YELLOW, 1);
 	            break;
 	    }
-
-	    delete[] buffer.fastmap;
 	}
 	else {
 	    if (label->text.Contains(str)) {
 	        m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_YELLOW, 1);
 	    }
 	}
+    }
+
+    if (regexp) {
+        delete[] buffer.fastmap;
     }
 
     m_Gfx->DisplaySpecialPoints();
