@@ -67,10 +67,10 @@ avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 endif
 
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
-aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN
+aven_CXXFLAGS = @WX_CXXFLAGS@ -DAVEN
 
 avengl_CFLAGS = @WXGL_CFLAGS@ -DAVEN
-avengl_CXXFLAGS = @WXGL_CFLAGS@ -DAVEN
+avengl_CXXFLAGS = @WXGL_CXXFLAGS@ -DAVEN
 avengl_LDFLAGS = @LIBRX@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
