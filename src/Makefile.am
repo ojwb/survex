@@ -66,7 +66,7 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc \
- guicontrol.cc gla-gl.cc avenpal.h
+ guicontrol.cc gla-gl.cc avenpal.h fnt.cc fnt.h
 
 # splash.cc paneldlg.cc paneldlgpage.cc prefsdlg.cc \
 # tubeprefs.cc stnprefs.cc legprefs.cc ctlprefs.cc gridprefs.cc unitsprefs.cc \
@@ -155,7 +155,7 @@ cad3d_SOURCES = cad3d.c $(COMMONSRC) useful.c img.c hash.c
 #        $(COMPILE) -DSTANDALONE -o imgalone.o -c img.c
 
 EXTRA_DIST = aven.rc aven.png aven.ico\
- svxedit.png svxedit.ico getopt.c png2winicon gettexttomsg.pl
+ svxedit.png svxedit.ico getopt.c png2winicon gettexttomsg.pl aven.txf
 
 BUILT_SOURCES = z_getopt.c avenpal.h
 
@@ -172,3 +172,6 @@ borlandc/makefile: $(srcdir)/Makefile.am miniam.pl
 
 riscos/makefile: $(srcdir)/Makefile.am miniam.pl
 	$(srcdir)/miniam.pl riscos < $(srcdir)/Makefile.am > riscos/tmp-makefile && mv riscos/tmp-makefile riscos/makefile
+
+aven.txf:
+	./gentexfont -w 128 -h 128 -glist `perl -e 'for (33..126,160..255) {print chr $$_}'` -fn -misc-fixed-medium-r-normal--13-100-100-100-c-80-iso8859-1 -file aven.txf

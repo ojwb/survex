@@ -28,6 +28,8 @@
 #include <algorithm>
 
 #include "gla.h"
+
+#ifndef USE_FNT
 // Some WIN32 stupidity which causes mingw to fail to link for some reason;
 // doing this probably means we can't safely use atexit() - see the comments in
 // glut.h if you can take the full horror...
@@ -37,6 +39,7 @@
 #include <GL/glut.h>
 #ifdef FREEGLUT
 #include <GL/freeglut_ext.h>
+#endif
 #endif
 
 using namespace std;
@@ -116,8 +119,10 @@ void GLAPen::Interpolate(const GLAPen& pen, double how_far)
 //  GLACanvas
 //  
 
+#ifndef USE_FNT
 void* const GLACanvas::m_Font = GLUT_BITMAP_HELVETICA_10;
 const int GLACanvas::m_FontSize = 10;
+#endif
 
 GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size) :
     wxGLCanvas(parent, id, posn, size)
@@ -165,6 +170,12 @@ void GLACanvas::FirstShow()
     CHECK_GL_ERROR("FirstShow", "glColorMaterial GL_FRONT");
     glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
     CHECK_GL_ERROR("FirstShow", "glColorMaterial GL_BACK");
+
+#ifdef USE_FNT
+    // Load font
+    m_Font.load("aven.txf");
+    CHECK_GL_ERROR("FirstShow", "texture font loading");
+#endif
 }
 
 void GLACanvas::Clear()
@@ -374,8 +385,7 @@ void GLACanvas::SetIndicatorTransform()
     CHECK_GL_ERROR("SetIndicatorTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity (2)");
-    gluOrtho2D(-window_width / 2, window_width / 2,
-	       -window_height / 2, window_height / 2);
+    gluOrtho2D(0, window_width, 0, window_height);
     CHECK_GL_ERROR("SetIndicatorTransform", "gluOrtho2D");
 }
 
@@ -480,6 +490,12 @@ void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool /*set_transparenc
 void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str)
 {
     // Draw a text string on the current buffer in the current font.
+#ifdef USE_FNT
+    GLdouble X, Y, Z;
+    if (!gluProject(x, y, z, modelview_matrix, projection_matrix, viewport,
+		    &X, &Y, &Z)) return;
+    DrawIndicatorText((int)X, (int)Y, str);
+#else
     glRasterPos3d(x, y, z);
     CHECK_GL_ERROR("DrawText", "glRasterPos3d");
 
@@ -492,18 +508,33 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
         CHECK_GL_ERROR("DrawText", "glutBitmapCharacter");
     }
 #endif
+#endif
 }
 
-void GLACanvas::DrawIndicatorText(glaCoord x, glaCoord y, const wxString& str)
+void GLACanvas::DrawIndicatorText(int x, int y, const wxString& str)
 {
+#ifdef USE_FNT
+    glPushAttrib(GL_CURRENT_BIT|GL_ENABLE_BIT);
+    glEnable(GL_ALPHA_TEST);
+    glAlphaFunc(GL_GREATER, 0.1f);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    m_Font.puts(x, y, str.c_str());
+    glPopAttrib();
+#else
     DrawText(x, y, 0.0, str);
+#endif
 }
 
-void GLACanvas::GetTextExtent(const wxString& str, glaCoord* x_ext, glaCoord* y_ext)
+void GLACanvas::GetTextExtent(const wxString& str, int * x_ext, int * y_ext)
 {
     assert(x_ext);
     assert(y_ext);
 
+#ifdef USE_FNT
+    m_Font.getBBox(str.c_str(), x_ext, y_ext);
+#else
 #if 1
     *x_ext = glutBitmapLength(m_Font, (const unsigned char *)str.c_str());
     CHECK_GL_ERROR("GetTextExtent", "glutBitmapLength");
@@ -514,8 +545,8 @@ void GLACanvas::GetTextExtent(const wxString& str, glaCoord* x_ext, glaCoord* y_
         CHECK_GL_ERROR("DrawText", "glutBitmapWidth");
     }
 #endif
-
     *y_ext = m_FontSize + 2;
+#endif
 }
 
 void GLACanvas::BeginQuadrilaterals()

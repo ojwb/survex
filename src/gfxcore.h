@@ -97,7 +97,6 @@ class GfxCore : public GLACanvas {
         glaList underground_legs;
         glaList tubes;
         glaList surface_legs;
-        glaList names;
         glaList indicators;
         glaList blobs;
     } m_Lists;
@@ -162,7 +161,6 @@ class GfxCore : public GLACanvas {
 	SetColour(m_Pens[col]); // FIXME background stuff
     }
 
-    void UpdateNames();
     void UpdateQuaternion();
     void UpdateIndicators();
     void UpdateBlobs();
@@ -180,7 +178,7 @@ class GfxCore : public GLACanvas {
 	return GridYToScreen(p.x, p.y, p.z);
     }
 
-    glaCoord GetClinoOffset() const;
+    int GetClinoOffset() const;
     wxPoint CompassPtToScreen(Double x, Double y, Double z) const;
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
@@ -215,10 +213,10 @@ class GfxCore : public GLACanvas {
 
     void CreateHitTestGrid();
 
-    wxCoord GetCompassXPosition() const;
-    glaCoord GetClinoXPosition() const;
-    wxCoord GetIndicatorYPosition() const;
-    wxCoord GetIndicatorRadius() const;
+    int GetCompassXPosition() const;
+    int GetClinoXPosition() const;
+    int GetIndicatorYPosition() const;
+    int GetIndicatorRadius() const;
 
     void ToggleFlag(bool* flag, bool refresh = true);
 
@@ -332,7 +330,7 @@ public:
     void ToggleExportedPts() { ToggleFlag(&m_ExportedPts); }
     void ToggleGrid() { ToggleFlag(&m_Grid); }
     void ToggleCrosses() { ToggleFlag(&m_Crosses); }
-    void ToggleStationNames() { ToggleFlag(&m_Names, false); UpdateNames(); ForceRefresh(); }
+    void ToggleStationNames() { ToggleFlag(&m_Names, false); ForceRefresh(); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
     void ToggleDepthBar() { ToggleFlag(&m_Depthbar, false); UpdateIndicators(); ForceRefresh(); }
     void ToggleMetric() { ToggleFlag(&m_Metric, false); UpdateIndicators(); ForceRefresh(); }

@@ -1,0 +1,240 @@
+/*
+     Based on:
+     PLIB - A Suite of Portable Game Libraries
+     Copyright (C) 1998,2002  Steve Baker
+ 
+     This library is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Library General Public
+     License as published by the Free Software Foundation; either
+     version 2 of the License, or (at your option) any later version.
+ 
+     This library is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     Library General Public License for more details.
+ 
+     You should have received a copy of the GNU Library General Public
+     License along with this library; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ 
+     For further information visit http://plib.sourceforge.net
+
+     $Id: fnt.cc,v 1.1.2.1 2003-11-24 02:22:17 olly Exp $
+*/
+
+#include "fnt.h"
+
+#include <stdio.h>
+
+static bool isSwapped = false;
+
+inline void _fnt_swab_short(unsigned short *x) {
+    if (isSwapped)
+	*x = ((*x >>  8) & 0x00FF) | 
+	     ((*x <<  8) & 0xFF00) ;
+}
+
+inline void _fnt_swab_int ( unsigned int *x )
+{
+    if (isSwapped)
+	*x = ((*x >> 24) & 0x000000FF) | 
+	     ((*x >>  8) & 0x0000FF00) | 
+	     ((*x <<  8) & 0x00FF0000) | 
+	     ((*x << 24) & 0xFF000000) ;
+}
+
+inline unsigned char _fnt_readByte(FILE *fd) {
+    return (unsigned char)getc(fd);
+}
+
+inline unsigned short _fnt_readShort(FILE *fd) {
+    unsigned short x;
+    fread(&x, sizeof(unsigned short), 1, fd);
+    _fnt_swab_short(&x);
+    return x;
+}
+
+inline unsigned int _fnt_readInt(FILE *fd) {
+    unsigned int x;
+    fread(&x, sizeof(unsigned int), 1, fd);
+    _fnt_swab_int(&x);
+    return x;
+}
+
+#define FNT_BYTE_FORMAT		0
+#define FNT_BITMAP_FORMAT	1
+
+bool
+fntTexFont::load(const char *fname)
+{
+    FILE *fd;
+
+    if ((fd = fopen(fname, "rb")) == NULL) {
+	printf("Failed to open '%s' for reading.", fname);
+	return false;
+    }
+
+    unsigned char magic[4];
+
+    if (fread(&magic, sizeof(unsigned int), 1, fd) != 1) {
+	printf("'%s' an empty file!", fname);
+	return false;
+    }
+
+    char cookie[4] = { '\xff', 't', 'x', 'f' };
+    if (memcmp(magic, cookie, 4) != 0) {
+	printf("'%s' is not a 'txf' font file.", fname);
+	return false;
+    }
+
+    isSwapped = false;
+    int endianness = _fnt_readInt(fd);
+
+    isSwapped = (endianness != 0x12345678);
+
+    int format      = _fnt_readInt(fd);
+    int tex_width   = _fnt_readInt(fd);
+    int tex_height  = _fnt_readInt(fd);
+    /* int max_height = */ _fnt_readInt(fd);
+    /* int unknown = */ _fnt_readInt(fd);
+    int num_glyphs  = _fnt_readInt(fd);
+    list_base = glGenLists(256 - 32) - 32;
+
+    int i, j;
+
+    // Skip the glyph info first so we can set up the texture, then create
+    // display lists from it using the glyph info
+    int fpos = ftell(fd);
+    fseek(fd, num_glyphs * 12, SEEK_CUR);
+    // Load the image part of the file
+    int ntexels = tex_width * tex_height;
+
+    unsigned char *teximage;
+
+    switch (format) {
+	case FNT_BYTE_FORMAT: {
+	    unsigned char *orig = new unsigned char[ntexels];
+
+	    if ((int)fread(orig, 1, ntexels, fd) != ntexels) {
+		printf("Premature EOF in '%s'.", fname);
+		return false;
+	    }
+
+	    teximage = new unsigned char [2 * ntexels];
+
+	    for (i = 0; i < ntexels; ++i) {
+		teximage [i * 2] = orig[i];
+		teximage [i * 2 + 1] = orig[i];
+	    }
+
+	    delete [] orig;
+	    break;
+	}
+
+	case FNT_BITMAP_FORMAT: {
+	    int stride = (tex_width + 7) >> 3;
+
+	    unsigned char *texbitmap = new unsigned char[stride * tex_height];
+
+	    if ((int)fread(texbitmap, 1, stride * tex_height, fd)
+		    != stride * tex_height) {
+		delete [] texbitmap ;
+		printf("Premature EOF in '%s'.", fname);
+		return false;
+	    }
+
+	    teximage = new unsigned char[2 * ntexels];
+	    memset((void*)teximage, 0, 2 * ntexels);
+
+	    for (i = 0; i < tex_height; ++i)
+		for (j = 0; j < tex_width; ++j)
+		    if (texbitmap[i * stride + (j >> 3)] & (1 << (j & 7))) {
+			teximage[(i * tex_width + j) * 2    ] = 255;
+			teximage[(i * tex_width + j) * 2 + 1] = 255;
+		    }
+
+	    delete [] texbitmap;
+	    break;
+	}
+
+	default:
+	    printf("Unrecognised format type in '%s'.", fname);
+	    return false;
+    }
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glGenTextures(1, & texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, tex_width, tex_height,
+		 0 /* Border */,
+		 GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, (GLvoid *)teximage);
+    delete [] teximage;
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    fseek(fd, fpos, SEEK_SET);
+
+    for (i = 0; i < FNTMAX_CHAR; ++i) widths[i] = -1;
+
+    // Load the glyph array
+
+    float W = 1.0f / (float)tex_width;
+    float H = 1.0f / (float)tex_height;
+    unsigned char max_w = 0;
+    int u = 0, d = 0;
+    for (i = 0; i < num_glyphs; ++i) {
+	unsigned short ch = _fnt_readShort(fd);
+	unsigned char w = _fnt_readByte(fd);
+	if (w > max_w) max_w = w;
+	unsigned char h = _fnt_readByte(fd);
+	int vtx_left = (signed char)_fnt_readByte(fd);
+	int vtx_bot = (signed char)_fnt_readByte(fd);
+	/* signed char step =*/ _fnt_readByte(fd);
+	/* signed char unknown =*/ _fnt_readByte(fd);
+	short x = _fnt_readShort(fd);
+	short y = _fnt_readShort(fd);
+
+	if (ch < 32 || ch > 255) continue;
+	glNewList(list_base + ch, GL_COMPILE);
+	glBegin(GL_QUADS);
+	float tex_left = x * W;
+	float tex_right = (x + w) * W;
+	float tex_bot = y * H;
+	float tex_top = (y + h) * H;
+	int vtx_right = vtx_left + w;
+	int vtx_top = vtx_bot + h;
+	widths[ch] = w + 1;
+	glBegin(GL_QUADS);
+	glTexCoord2f(tex_left, tex_bot);
+	glVertex2i(vtx_left, vtx_bot);
+	glTexCoord2f(tex_right, tex_bot);
+	glVertex2i(vtx_right, vtx_bot);
+	glTexCoord2f(tex_right, tex_top);
+	glVertex2i(vtx_right, vtx_top);
+	glTexCoord2f(tex_left, tex_top);
+	glVertex2i(vtx_left, vtx_top);
+	glEnd();
+	glTranslated(w + 1, 0, 0);
+	glEndList();
+	if (vtx_bot < d) d = vtx_bot;
+	if (vtx_top > u) u = vtx_top;
+    }
+    fnt_size = u - d;
+
+    if (widths[(int)' '] == -1) {
+	glNewList(list_base + ' ', GL_COMPILE);
+	widths[(int)' '] = fnt_size / 2;
+	glTranslated(fnt_size / 2, 0, 0);
+	glEndList();
+    }
+
+    fclose(fd);
+    return true;
+}

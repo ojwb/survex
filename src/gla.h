@@ -21,9 +21,16 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+// Use texture mapped fonts (lots faster, at least with hardware 3d)
+#define USE_FNT
+
 #include "wx.h"
 #include "aventypes.h"
 #include "quaternion.h"
+
+#ifdef USE_FNT
+#include "fnt.h"
+#endif
 
 class GfxCore;
 
@@ -92,13 +99,19 @@ class GLACanvas : public wxWindow {
         Double z;
     } m_Translation;
 
+#ifdef USE_FNT
+    fntTexFont m_Font;
+#else
     static void* const m_Font;
     static const int m_FontSize;
+#endif
 
     bool m_SphereCreated;
     GLuint m_SphereList;
     GLUquadric* m_Quadric;
     
+    bool m_Perspective;
+
     Double SetViewportAndProjection();
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
@@ -127,8 +140,8 @@ public:
     void SetPolygonColour(GLAPen& pen, bool front, bool set_transparency = false);
    
     void DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str);
-    void DrawIndicatorText(glaCoord x, glaCoord y, const wxString& str);
-    void GetTextExtent(const wxString& str, glaCoord* x_ext, glaCoord* y_ext);
+    void DrawIndicatorText(int x, int y, const wxString& str);
+    void GetTextExtent(const wxString& str, int * x_ext, int * y_ext);
     
     void BeginQuadrilaterals();
     void EndQuadrilaterals();
@@ -171,13 +184,10 @@ public:
     void Transform(Double x, Double y, Double z, Double* x_out, Double* y_out, Double* z_out);
     void ReverseTransform(Double x, Double y, Double* x_out, Double* y_out, Double* z_out);
 
-    int GetFontSize() const { return m_FontSize; }
+    int GetFontSize() const { return m_Font.getFontSize(); }
 
     Double SurveyUnitsAcrossViewport();
 
     void TogglePerspective() { m_Perspective = !m_Perspective; }
     bool GetPerspective() const { return m_Perspective; }
-
-    bool m_Perspective;
 };
-

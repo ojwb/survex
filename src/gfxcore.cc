@@ -39,6 +39,8 @@
 #include <wx/confbase.h>
 #include <wx/image.h>
 
+//#define DrawList(L) do { printf("DrawList(%s)\n", #L); (DrawList)(L); } while (0)
+
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MAX3(a, b, c) ((a) > (b) ? MAX(a, c) : MAX(b, c))
 
@@ -52,7 +54,7 @@ static const int FONT_SIZE = 8;
 static const int FONT_SIZE = 9;
 #endif
 static const int CROSS_SIZE = 3;
-static const Double COMPASS_SIZE = 24.0;
+static const int COMPASS_SIZE = 24;
 static const int COMPASS_OFFSET_X = 60;
 static const int COMPASS_OFFSET_Y = 80;
 static const int INDICATOR_BOX_SIZE = 60;
@@ -146,7 +148,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_ExportedPts = false;
     m_Tubes = false;
     m_Grid = false;
-    m_Perspective = false;
     wxConfigBase::Get()->Read("metric", &m_Metric, true);
     wxConfigBase::Get()->Read("degrees", &m_Degrees, true);
     m_here.x = DBL_MAX;
@@ -154,7 +155,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Lists.underground_legs = 0;
     m_Lists.tubes = 0;
     m_Lists.surface_legs = 0;
-    m_Lists.names = 0;
     m_Lists.indicators = 0;
 
     // Create pens and brushes for drawing.
@@ -287,14 +287,6 @@ void GfxCore::UpdateBlobs()
 //    m_Lists.blobs = CreateList(this, &GfxCore::GenerateBlobsDisplayList);
 }
 
-void GfxCore::UpdateNames()
-{
-    if (m_Names) {
-        DeleteList(m_Lists.names);
-        m_Lists.names = CreateList(this, &GfxCore::DrawNames);
-    }
-}
-
 //
 //  Event handlers
 //
@@ -342,8 +334,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
             m_Lists.surface_legs =
                 CreateList(this, &GfxCore::GenerateDisplayListSurface);
             
-            m_Lists.names = CreateList(this, &GfxCore::DrawNames);
-
             m_Lists.indicators =
                 CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
         }
@@ -368,9 +358,9 @@ void GfxCore::OnPaint(wxPaintEvent&)
         }
 
         // Draw station names.
-        if (m_Names && !m_Control->MouseDown() && !m_Rotating &&
-            !m_SwitchingTo) {
-            DrawList(m_Lists.names);
+        if (m_Names
+	/*&& !m_Control->MouseDown() && !m_Rotating && !m_SwitchingTo*/) {
+            DrawNames();
         }
 /*
         //DrawList(m_Lists.blobs);
@@ -488,7 +478,7 @@ void GfxCore::DrawGrid()
 */
 }
 
-glaCoord GfxCore::GetClinoOffset() const
+int GfxCore::GetClinoOffset() const
 {
     return m_Compass ? CLINO_OFFSET_X : INDICATOR_OFFSET_X;
 }
@@ -509,8 +499,8 @@ GLAPoint GfxCore::IndicatorCompassToScreenPan(int angle) const
     glaCoord x = glaCoord(length * sin(theta));
     glaCoord y = glaCoord(length * cos(theta));
 
-    return GLAPoint(m_XSize/2 - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2 - x,
-                    -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
+    return GLAPoint(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2 - x,
+                    INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
 }
 
 GLAPoint GfxCore::IndicatorCompassToScreenElev(int angle) const
@@ -520,8 +510,8 @@ GLAPoint GfxCore::IndicatorCompassToScreenElev(int angle) const
     glaCoord x = glaCoord(length * sin(-theta));
     glaCoord y = glaCoord(length * cos(-theta));
 
-    return GLAPoint(m_XSize/2 - GetClinoOffset() - INDICATOR_BOX_SIZE/2 - x,
-                    -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
+    return GLAPoint(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2 - x,
+                    INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
 }
 
 void GfxCore::DrawTick(wxCoord cx, wxCoord cy, int angle_cw)
@@ -547,31 +537,31 @@ void GfxCore::Draw2dIndicators()
     // Indicator backgrounds.
     if (m_Compass && m_RotationOK) {
         DrawCircle(m_Pens[col_LIGHT_GREY_2], m_Pens[col_GREY],
-                   m_XSize/2 - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-                   -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
-                   (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2)/2);
+                   m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
+                   INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
+                   INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN);
     }
     if (m_Clino && m_Lock == lock_NONE) {
         glaCoord tilt = (glaCoord) (m_TiltAngle * 180.0 / M_PI);
 	glaCoord start = fabs(-tilt - 90.0);
         DrawSemicircle(m_Pens[col_LIGHT_GREY_2], m_Pens[col_GREY],
-		       m_XSize/2 - GetClinoOffset() - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-                       -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
-                       (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2)/2, start);
+		       m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
+                       INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
+                       INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN, start);
 
         SetColour(m_Pens[col_GREY]);
         BeginLines();
-        PlaceIndicatorVertex(m_XSize/2 - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-                             -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_MARGIN);
+        PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
+                             INDICATOR_OFFSET_Y + INDICATOR_MARGIN);
         
-        PlaceIndicatorVertex(m_XSize/2 - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-                             -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN);
+        PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
+                             INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN);
 
-        PlaceIndicatorVertex(m_XSize/2 - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-                             -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
+        PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
+                             INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
         
-        PlaceIndicatorVertex(m_XSize/2 - GetClinoOffset() - INDICATOR_MARGIN,
-                             -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
+        PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_MARGIN,
+                             INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
         EndLines();
     }
 
@@ -580,9 +570,9 @@ void GfxCore::Draw2dIndicators()
     bool white = false;
     /* FIXME m_Control->DraggingMouseOutsideCompass();
     m_DraggingLeft && m_LastDrag == drag_COMPASS && m_MouseOutsideCompass; */
-    glaCoord pan_centre_x = m_XSize/2 - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
-    glaCoord centre_y = -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2;
-    glaCoord elev_centre_x = m_XSize/2 - GetClinoOffset() - INDICATOR_BOX_SIZE/2;
+    int pan_centre_x = m_XSize - INDICATOR_BOX_SIZE / 2 - INDICATOR_OFFSET_X;
+    int centre_y = INDICATOR_BOX_SIZE / 2 + INDICATOR_OFFSET_Y;
+    int elev_centre_x = m_XSize - INDICATOR_BOX_SIZE / 2 - GetClinoOffset();
 
     if (m_Compass && m_RotationOK) {
         int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
@@ -591,8 +581,7 @@ void GfxCore::Draw2dIndicators()
         for (int angle = deg_pan; angle <= 315 + deg_pan; angle += 45) {
             if (deg_pan == angle) {
                 SetAvenColour(col_GREEN);
-            }
-            else {
+            } else {
                 SetAvenColour(white ? col_WHITE : col_LIGHT_GREY_2);
             }
             DrawTick((int) pan_centre_x, (int) centre_y, angle);
@@ -605,8 +594,7 @@ void GfxCore::Draw2dIndicators()
         for (int angle = 0; angle <= 180; angle += 90) {
             if (deg_elev == angle - 90) {
                 SetAvenColour(col_GREEN);
-            }
-            else {
+            } else {
                 SetAvenColour(white ? col_WHITE : col_LIGHT_GREY_2);
             }
             DrawTick((int) elev_centre_x, (int) centre_y, angle);
@@ -641,12 +629,12 @@ void GfxCore::Draw2dIndicators()
     // Text
     SetColour(m_Pens[TEXT_COLOUR]);
 
-    glaCoord w, h;
-    glaCoord width, height;
+    int w, h;
+    int width, height;
     wxString str;
 
     GetTextExtent(wxString("000"), &width, &h);
-    height = -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE + INDICATOR_GAP + h;
+    height = INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE + INDICATOR_GAP + h;
 
     if (m_Compass && m_RotationOK) {
         if (m_Degrees) {
@@ -711,6 +699,7 @@ void GfxCore::DrawNames()
 {
     // Draw station names.
     
+    SetIndicatorTransform();
     SetColour(m_Pens[NAME_COLOUR_INDEX]);
     
     if (m_OverlappingNames) {
@@ -718,6 +707,7 @@ void GfxCore::DrawNames()
     } else {
         NattyDrawNames();
     }
+    SetDataTransform();
 }
 
 void GfxCore::NattyDrawNames()
@@ -742,15 +732,17 @@ void GfxCore::NattyDrawNames()
 
     while (label != m_Parent->GetLabelsEnd()) {
         Double x, y, z;
-        
+ 
         Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
-        y += CROSS_SIZE - GetFontSize();
+	y += CROSS_SIZE - GetFontSize();
 
         wxString str = (*label)->GetText();
 
+	// Apply a small shift so that translating the view doesn't make which
+	// labels are displayed change as the resulting twinkling effect is
+	// distracting.
         Double tx, ty, tz;
         Transform(0, 0, 0, &tx, &ty, &tz);
-
         tx -= floor(tx / quantise) * quantise;
         ty -= floor(ty / quantise) * quantise;
 
@@ -770,7 +762,7 @@ void GfxCore::NattyDrawNames()
             }
 
             if (!reject) {
-                DrawText((*label)->x, (*label)->y, (*label)->z, str);
+                DrawIndicatorText((int)x, (int)y, str);
 
                 int ymin = (iy >= 2) ? iy - 2 : iy;
                 int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
@@ -789,6 +781,8 @@ void GfxCore::SimpleDrawNames()
     // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     while (label != m_Parent->GetLabelsEnd()) {
+        // FIXME: do this in the simple case too...
+	//y += CROSS_SIZE - GetFontSize();
         DrawText((*label)->x, (*label)->y, (*label)->z, (*label)->GetText());
         ++label;
     }
@@ -798,9 +792,9 @@ void GfxCore::DrawDepthbar()
 {
     if (m_Parent->GetZExtent() == 0.0) return;
 
-    int y = m_YSize/2 -
+    int y = m_YSize -
             (DEPTH_BAR_BLOCK_HEIGHT * (m_Bands - 1) + DEPTH_BAR_OFFSET_Y);
-    glaCoord size = 0;
+    int size = 0;
 
     wxString* strs = new wxString[m_Bands];
     int band;
@@ -810,21 +804,19 @@ void GfxCore::DrawDepthbar()
         
         strs[band] = FormatLength(z, false);
 
-        glaCoord x, dummy;
+        int x, dummy;
         GetTextExtent(strs[band], &x, &dummy);
-        if (x > size) {
-            size = x;
-        }
+        if (x > size) size = x;
     }
 
-    glaCoord x_min = m_XSize/2 - DEPTH_BAR_OFFSET_X -
+    int x_min = m_XSize - DEPTH_BAR_OFFSET_X -
                      DEPTH_BAR_BLOCK_WIDTH - DEPTH_BAR_MARGIN - size;
 
     DrawRectangle(m_Pens[col_BLACK],
                   m_Pens[col_DARK_GREY],
                   m_Pens[col_DARK_GREY],
                   x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
-                  m_YSize/2 - (DEPTH_BAR_BLOCK_HEIGHT*(m_Bands-1)) -
+                  m_YSize - (DEPTH_BAR_BLOCK_HEIGHT*(m_Bands-1)) -
                       DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
                   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
                       DEPTH_BAR_EXTRA_LEFT_MARGIN,
@@ -921,7 +913,7 @@ void GfxCore::DrawScalebar()
 {
     // Draw the scalebar.
     
-    if (m_Lock == lock_POINT || m_Perspective) return;
+    if (m_Lock == lock_POINT || GetPerspective()) return;
 
     // Calculate how many metres of survey are currently displayed across the
     // screen.
@@ -954,9 +946,9 @@ void GfxCore::DrawScalebar()
     m_ScaleBar.width = size;
 
     // Draw it...
-    int end_x = -m_XSize/2 + m_ScaleBar.offset_x;
+    int end_x = m_ScaleBar.offset_x;
     int height = SCALE_BAR_HEIGHT;
-    int end_y = -m_YSize/2 + m_ScaleBar.offset_y + height;
+    int end_y = m_ScaleBar.offset_y + height;
     int interval = size / 10;
 
     bool solid = true;
@@ -975,7 +967,7 @@ void GfxCore::DrawScalebar()
     SetColour(m_Pens[TEXT_COLOUR]);
     DrawIndicatorText(end_x, end_y - FONT_SIZE - 4, "0");
 
-    glaCoord text_width, text_height;
+    int text_width, text_height;
     GetTextExtent(str, &text_width, &text_height);
     DrawIndicatorText(end_x + size - text_width, end_y - FONT_SIZE - 4, str);
 }
@@ -1134,7 +1126,7 @@ void GfxCore::DefaultParameters()
     m_ExportedPts = false;
     m_Grid = false;
     m_Tubes = false;
-    m_Perspective = false; 
+    if (GetPerspective()) TogglePerspective();
 }
 
 void GfxCore::Defaults()
@@ -1171,7 +1163,6 @@ bool GfxCore::Animate(wxIdleEvent*)
         TiltCave(M_PI_2 * t);
         if (m_TiltAngle == M_PI_2) {
             m_SwitchingTo = 0;
-            UpdateNames();
             ForceRefresh();
         }
     }
@@ -1180,7 +1171,6 @@ bool GfxCore::Animate(wxIdleEvent*)
         if (fabs(m_TiltAngle) < M_PI_2 * t) {
             m_SwitchingTo = 0;
             TiltCave(-m_TiltAngle);
-            UpdateNames();
             ForceRefresh();
         }
         else if (m_TiltAngle < 0.0) {
@@ -1389,7 +1379,6 @@ void GfxCore::TranslateCave(int dx, int dy)
 
 void GfxCore::DragFinished()
 {
-    UpdateNames();
     ForceRefresh();
 }
 
@@ -1436,32 +1425,32 @@ bool GfxCore::ShowingClino() const
     return m_Clino;
 }
 
-wxCoord GfxCore::GetCompassXPosition() const
+int GfxCore::GetCompassXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window coordinates.
     
-    return m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
+    return m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE / 2;
 }
 
-glaCoord GfxCore::GetClinoXPosition() const
+int GfxCore::GetClinoXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window coordinates.
 
-    return m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2;
+    return m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE / 2;
 }
 
-wxCoord GfxCore::GetIndicatorYPosition() const
+int GfxCore::GetIndicatorYPosition() const
 {
     // Return the y-coordinate of the centre of the indicators in window coordinates.
 
-    return m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
+    return m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE / 2;
 }
 
-wxCoord GfxCore::GetIndicatorRadius() const
+int GfxCore::GetIndicatorRadius() const
 {
     // Return the radius of each indicator.
     
-    return (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
+    return (INDICATOR_BOX_SIZE - INDICATOR_MARGIN * 2) / 2;
 }
 
 bool GfxCore::PointWithinCompass(wxPoint point) const
@@ -1593,7 +1582,6 @@ void GfxCore::StopRotation()
     // Stop the survey rotating.
 
     m_Rotating = false;
-    UpdateNames();
     ForceRefresh();
 }
 
@@ -1848,12 +1836,6 @@ void GfxCore::GenerateBlobsDisplayList()
             }
         }
     }
-/*
-        if (m_Grid && !grid_first) DrawGrid();
-
-        // Draw station names.
-        if (m_Names) DrawNames();
-*/
 }
 
 void GfxCore::GenerateIndicatorDisplayList()
@@ -1867,7 +1849,7 @@ void GfxCore::GenerateIndicatorDisplayList()
     if ((m_Compass && m_RotationOK) || (m_Clino && m_Lock == lock_NONE)) {
         Draw2dIndicators();
     }
-    
+ 
     // Draw scalebar.
     if (m_Scalebar) {
         DrawScalebar();
