@@ -200,7 +200,7 @@ main(int argc, char **argv)
 #else
    img_close(pimgOut); /* close .3d file */
 #endif
-   fclose(fhErrStat);
+   if (fhErrStat) fclose(fhErrStat); /* FIXME: only NULL if we're meddling? */
 
    list_pos(root); /* produce .pos file */
 
