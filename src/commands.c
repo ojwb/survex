@@ -45,6 +45,8 @@ default_grade(settings *s)
    s->Var[Q_GRADIENT] = (real)sqrd(rad(1.0));
    /* SD of plumbed legs (0.25 degrees?) */
    s->Var[Q_PLUMB] = (real)sqrd(rad(0.25));
+   /* SD of level legs (0.25 degrees?) */
+   s->Var[Q_LEVEL] = (real)sqrd(rad(0.25));
    s->Var[Q_DEPTH] = (real)sqrd(0.10);
 }
 
