@@ -88,20 +88,29 @@ svxeditrc.o: $(srcdir)/svxedit.rc
 
 editwrap_LDADD = svxeditrc.o
 
-# FIXME: should use wxconfig or similar to get includes
+# FIXME: use path on WXCONFIG to get --include-dir?
 avenrc.o: $(srcdir)/aven.rc
-	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $$pwd/avenrc.o aven.rc
+	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o $$pwd/avenrc.o aven.rc
 else
 aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
 avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 endif
 
+if MACOSX
+noinst_SCRIPTS = aven-rez
+
+aven-rez: aven
+	`@WXCONFIG@ --rezflags` aven
+	touch aven-rez
+endif
+
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CXXFLAGS@ -DAVEN
+aven_LDFLAGS = @WX_LDFLAGS@
 
 avengl_CFLAGS = @WXGL_CFLAGS@ -DAVENGL
 avengl_CXXFLAGS = @WXGL_CXXFLAGS@ -DAVENGL
-avengl_LDFLAGS = @LIBRX@
+avengl_LDFLAGS = @WX_LDFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
  
