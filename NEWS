@@ -21,6 +21,8 @@
 * cavern: parser fixed to recover from errors as intended in a few
   situations where it was failing to.
 
+* Minor documentation updates.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

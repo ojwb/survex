@@ -87,8 +87,8 @@ where this isn't the case, let me know.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-07-25 23:24:43 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.38 2001-07-25 23:24:43 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-08-15 10:45:12 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.39 2001-08-15 10:45:12 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -205,7 +205,7 @@ install it.</Para>
 <ulink url="&survexwebsite;">&survexwebsite;</ulink>. If you do not
 have internet access or would prefer to get a copy by post, we are
 also happy to send out up-to-date copies on receipt of a formatted
-disk and a stamped, self-addressed envelope. See the end of this
+floppy disk and a stamped, self-addressed envelope. See the end of this
 document for addresses.</Para>
 
 <Para>The details of installation depend greatly on what platform you
@@ -220,7 +220,7 @@ and dpkg format (suitable for Debian and Debian-derived distributions).
 </Para>
 
 <Para>For other &unix; versions you'll need to get the source code
-and compile it on your system.  &survexsuite; now uses GNU automake
+and compile it on your system.  &survexsuite; uses GNU automake
 and autoconf to streamline the compile process, so all you need to do
 is unpack the sources, then simply type <command>./configure</command>
 followed by <command>make</command> to build the programs and then
@@ -230,8 +230,10 @@ followed by <command>make</command> to build the programs and then
 There's a GUI caverot replacement called aven, which needs wxWindows to
 build, which in turn needs either Motif or Gtk+.  Alternatively
 there's a more basic cave viewer called xcaverot which only needs the
-basic X libraries.
+standard X libraries.
 </Para>
+
+<!-- FIXME: recommend printps of Unix (or just Linux)??? -->
 
 </Sect3>
 
@@ -239,16 +241,17 @@ basic X libraries.
 <Sect3><Title>Microsoft Windows 95/98/NT/2000/ME</Title>
 
 <Para>
-On moderm versions of MS Windows we advise you use the native Win32
-version which comes packaged with an installation wizard, so you just
-need to run the downloaded package and let it lead you through the
+Unless you are using MS Windows 3.11 or earlier
+we advise you use the native Win32
+version which comes packaged with an installation wizard.  Just
+run the downloaded package and let it lead you through the
 installation process.
 </Para>
 
 <Para>
 This version includes a GUI caverot replacement called aven, and a
 Survex printer driver (printwin) which uses the Windows printer
-system.<!-- FIXME: recommend printps of Unix (or just Linux)??? -->
+system.
 </Para>
 
 <Para><!-- FIXME check up to date -->
@@ -1853,8 +1856,10 @@ be exported from each level.  *export must follow *begin (or another
 
 </Sect3>
 
-<Sect3><Title>FIX &lt;Station&gt; [REFERENCE] [ &lt;x&gt; &lt;y&gt; &lt;z&gt;
-[&lt;x std err&gt; &lt;y std err&gt; &lt;z std err&gt;] ]</Title>
+<Sect3><Title>FIX &lt;Station&gt; [REFERENCE]
+ [ &lt;x&gt; &lt;y&gt; &lt;z&gt;
+   [ &lt;x std err&gt; &lt;y std err&gt; &lt;z std err&gt;
+     [ &lt;cov(x,y)&gt; &lt;cov(y,z)&gt; &lt;cov(z,x)&gt; ] ] ]</Title>
 
 <Para>
 e.g. *fix entrance.0 32768 86723 1760
@@ -1865,7 +1870,7 @@ e.g. *fix KT114_96 reference 36670.37 83317.43 1903.97
 </Para>
 
 <Para>
-(x=Easting y=Northing z=Height)
+(x=Easting y=Northing z=Altitude)
 </Para>
 
 <Para>
@@ -1881,9 +1886,17 @@ equal in X, Y, and Z) or two (in which case the first is taken as the
 standard error in X and Y, and the second as the standard error in Z).
 </Para>
 
-<Para>By default cavern will warn about station which have been FIX-ed but
-not used otherwise.  Specify "REFERENCE" after the station name in the FIX
-command to suppress this warning for a particular station.
+<Para>
+If you have covariances for the fix, you can also specify these - the
+order is cov(x,y),  cov(y,z),  cov(z,x). 
+</Para>
+
+<Para>
+By default cavern will warn about stations which have been FIX-ed but
+not used otherwise.  This is unhelpful if you want to include a
+standard file of benchmarks, some of which won't be used.
+In this sort of situation, specify "REFERENCE" after the station name
+in the FIX command to suppress this warning for a particular station.
 </Para>
 
 </Sect3>
