@@ -62,16 +62,6 @@ Need to catch *begin with no *end
 Date: 10 Jan 2000
 From: Wookey
 
-Using survex v0.91 printps (on redhat 5.1 with HPJL-II printer -actually
-an EPl-4300) I find that the first page of any printout has extremely
-fine lines (only just visible). All subsequent pages have properly-sized
-lines which vary according to the line-width setting in the print.ini
-file, and are very nice.
-[Believed fixed - awaiting confirmation]
-
-Date: 10 Jan 2000
-From: Wookey
-
 On redhat 5.1 with HPJL-II printer -actually an EPl-4300 [...] if I
 use the [...] printpcl driver I get the old 'horizontal-tab' problem,
 as previously reported even though the setting not to use it is still

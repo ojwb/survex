@@ -57,23 +57,11 @@ From: Olly
 Currently rpm isn't relocatable (since path to support files is compiled
 in).  Can we fix this?  Does anyone care?
 
-Date: 31 Mar 1999
-From: Olly
-
-Need to update French translation (about 8 new messages)
-
-Date: 01 Apr 1999
-From: Wookey
-
-Different print.ini for each platform - or some mechanism to specify?
-
 Date: 21 Jul 1999
 From: Olly
 
-Need to redo articulation point code.  It has to find any network components
-which aren't anchored, and ideally the articulation point code should allow
+Articulation point code: ideally the articulation point code should allow
 further network reductions to happen after splitting at articulation points.
-[Has this been fixed now???]
 
 Date: 23 Jul 1999
 From: Olly
@@ -85,4 +73,28 @@ From: Olly
 
 RISC OS caverot should probably fall back to using 2 or even just one screen
 bank if it can't find a mode where 3 works.
+
+Date: 20 Feb 2000
+From: Olly
+
+Sort out INSTALL.DOS and mingw_extras/INSTALL.txt
+
+Date: 24 Feb 2000
+From: Wookey
+
+[lsm entry]
+If you have an auto-update scheme for the webpages when you do a release,
+then get it update this template and mail it to lsm@execpc.com (with
+the subject 'add' (even for updates)) would ensure things were kept up
+to date.
+
+Date: 25 Feb 2000
+From: Wookey
+
+If you do 'make install' it replaces your print.ini with the new
+default one, which is a pain in the bum (loses your selected printer,
+and new defintions you might have made, etc). Can we make it do
+something smarter please?  [Probably best to have second file for
+customisations - also checking "~/.survex/print.ini" might be useful
+while we're at it]
 

@@ -1,3 +1,15 @@
+* printps: now allow separate font sizes (and fonts) for station
+  labels and other text
+
+* print*/print.ini: allow different outputs to be specified for each
+  operating system with sensible defaults in print.ini
+
+* print.ini: major overhaul of layout to improve readability
+
+* Another regression test case added
+
+Changes in 0.92-prerelease4:
+
 * cavern: "*infer" wasn't working due to internal token value mismatch
 
 * Short usage information now directs user to "--help"
