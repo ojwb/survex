@@ -1,6 +1,6 @@
 /* matrix.c
  * Matrix building and solving routines
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -211,11 +211,11 @@ build_matrix(node *list)
 		  if (e != (real)0.0) {
 		     e = ((real)1.0) / e;
 		     M(f,f) += e;
-		     B[f] += e * (POS(to, dim);
+		     B[f] += e * POS(to, dim);
 		     if (fRev) {
-			B[f] += leg->d[dim]);
+			B[f] += leg->d[dim];
 		     } else {
-			B[f] -= leg->d[dim]);
+			B[f] -= leg->d[dim];
 		     }
 		  }
 #else
@@ -385,12 +385,12 @@ choleski(real FAR *M, real *B, long n)
 #ifndef NO_PERCENTAGE
    unsigned long flopsTot, flops = 0, temp = 0;
 #define do_percent(N) BLK(flops += (N); printf("%d%%\r", (int)((100.0 * flops) / flopsTot));)
-#endif
 
    /* calc as double so we don't overflow a unsigned long with intermediate results */
    flopsTot = (unsigned long)(n * (2.0 * n * n + 9.0 * n - 5.0) / 6.0);
    /* 3*n*(n-1)/2 + n*(n-1)*(n-2)/3 + n*(n-1)/2 + n + n*(n-1)/2; */
    /* n*(9*n-5 + 2*n*n )/6 ; */
+#endif
 
    for (j = 1; j < n; j++) {
       real V;
