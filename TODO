@@ -110,3 +110,19 @@ From: Olly
 
 Retire survex wrapper (no-survex-wrapper.patch) for version 1.0.
 
+Date: Sun, 16 Sep 2001
+From: Olly
+
+Platform specific versions of docs?
+
+Allow extend (or printing of extend) to unfold right-left instead of
+left to right?
+
+Update innosetup
+
+Put more terms in terminology in docs ? trip, instrument, ...
+
+cylpolar with dz rather than depth?
+
+comma separated dates in *date?
+

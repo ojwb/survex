@@ -1,5 +1,6 @@
 Bugs which are unrepeatable, or believed fixed but never confirmed by
-whoever reported the bug, or not relevant any longer:
+the person who reported the bug, or which are simply not relevant any
+longer:
 
 Date: Sat, 11 Apr 1998 14:04:25 +0200
 From: immoh <immoh@donau.de>
@@ -8,15 +9,6 @@ Another remark: Did you know that you can crash CAVEROT by setting the
 scale factor to very large or very small values (probably larger/smaller
 than MIN/MAXFLOAT)?! This would be worth an error catch....
 [Seems to be fixed by newer allegro version - fix not confirmed by immoh]
-
-Date: 17 Sep 1998 17:49:36 GMT
-From: Olly
-
-DJGPP+Allegro caverot doesn't run well under NT.  The best resolution is
-320x200 and there are other niggles (e.g. on an NT 4 server, the mouse works
-in the mode-picker, but not in caverot itself).
-[If you're running NT use the MS Windows version which comes with a cave
-viewer called aven]
 
 Date: Thu, 21 Jan 1999 11:09:49 GMT
 From: Peter Wilton-Jones <P.G.G.Wilton-jones@Bradford.ac.uk>
@@ -42,5 +34,5 @@ From: Olly
 directx caverot: redraw after switching away and back code seems to kill
 program; resolutions (use desktop res?); windowed mode doesn't work;
 command line switches don't seem to work...
-[directx caverot is now eclipsed by winaven]
+[directx caverot is now eclipsed by aven]
 
