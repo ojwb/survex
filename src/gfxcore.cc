@@ -1993,7 +1993,7 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 
 void GfxCore::DrawPolylines(bool tubes, bool surface)
 {
-    Double x0, y0, z0;
+    Double x0 = 0.0, y0 = 0.0, z0 = 0.0;
 
     bool first_point = true;
     bool last_was_move = true;
