@@ -31,7 +31,6 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define MAX(a, b)     (((a) > (b)) ? (a) : (b))
 #define MAX3(a, b, c) ((a) > (b) ? ((a) > (c) ? (a) : (c)) : ((b) > (c) ? (b) : (c)))
 #define TEXT_COLOUR  wxColour(0, 255, 40)
 #define LABEL_COLOUR wxColour(160, 255, 0)
@@ -300,9 +299,19 @@ void GfxCore::Initialise()
     }
 
     // Scale the survey to a reasonable initial size.
-    m_InitialScale = m_Lock == lock_POINT ? 1.0 :
-      m_Lock == lock_XY ? Double(m_YSize) / Double(m_Parent->GetZExtent()) :
-      Double(m_XSize) / (Double(MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent())) * 1.1);
+    switch (m_Lock) {
+     case lock_POINT:
+       m_InitialScale = 1.0;
+       break;
+     case lock_XY:
+       m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
+			    Double(m_XSize) / m_Parent->GetXExtent());
+       break;
+     default:
+       m_InitialScale = min(Double(m_XSize) / m_Parent->GetXExtent(),
+			    Double(m_YSize) / m_Parent->GetYExtent());
+    }
+    m_InitialScale *= .85;
 
     // Calculate screen coordinates and redraw.
     m_ScaleCrossesOnly = false;

@@ -53,8 +53,6 @@ colour by cave (and more generally by sub-prefix):
 "caverot --survey 161 --colour-by-sub-prefix all.3d" would result in
 lhroute, rhroute, adrian, etc all getting different colours...
 
-centre on only legs???
-
 aven on monochrome displays - check depth colouring looks ok.
 
 aven: redraw time should feed back to step size (so small caves on

@@ -385,14 +385,6 @@ bool MainFrm::LoadData(const wxString& file)
 		    m_Labels.push_back(label);
 		    m_NumCrosses++;
 
-		    // Update survey extents (just in case there are no legs).
-		    if (pt.x < xmin) xmin = pt.x;
-		    if (pt.x > xmax) xmax = pt.x;
-		    if (pt.y < ymin) ymin = pt.y;
-		    if (pt.y > ymax) ymax = pt.y;
-		    if (pt.z < m_ZMin) m_ZMin = pt.z;
-		    if (pt.z > zmax) zmax = pt.z;
-
 		    break;
 		}
 
@@ -431,7 +423,18 @@ bool MainFrm::LoadData(const wxString& file)
 	    return false;
 	}
 
-        if (!points.empty()) {
+        if (points.empty()) {
+	    // No legs, so get survey extents from stations
+	    list<LabelInfo*>::const_iterator i;
+	    for (i = m_Labels.begin(); i != m_Labels.end(); ++i) {
+		if ((*i)->x < xmin) xmin = (*i)->x;
+		if ((*i)->x > xmax) xmax = (*i)->x;
+		if ((*i)->y < ymin) ymin = (*i)->y;
+		if ((*i)->y > ymax) ymax = (*i)->y;
+		if ((*i)->z < m_ZMin) m_ZMin = (*i)->z;
+		if ((*i)->z > zmax) zmax = (*i)->z;
+	    }
+	} else {
 	    // Delete any trailing move.	
 	    PointInfo* pt = points.back();
 	    if (!pt->isLine) {
@@ -445,7 +448,7 @@ bool MainFrm::LoadData(const wxString& file)
 	m_YExt = ymax - ymin;
 	m_ZExt = zmax - m_ZMin;
 
-	//--temporary bodge
+	// FIXME -- temporary bodge
 	m_XMin = xmin;
 	m_YMin = ymin;
 
@@ -610,13 +613,13 @@ void MainFrm::OpenFile(const wxString& file, bool delay)
 void MainFrm::OnOpen(wxCommandEvent&)
 {
 #ifdef __WXMOTIF__
-    wxFileDialog dlg (this, wxString(msg(206)) /* Select a 3D file to view */, "", "",
+    wxFileDialog dlg (this, wxString(msg(/*Select a 3D file to view*/206)), "", "",
 		      "*.3d", wxOPEN);
 #else
-    wxFileDialog dlg (this, wxString(msg(206)) /* Select a 3D file to view */, "", "",
+    wxFileDialog dlg (this, wxString(msg(/*Select a 3D file to view*/206)), "", "",
 		      wxString::Format("%s|*.3d|%s|*.*",
-				       msg(207) /* Survex 3d files */,
-				       msg(208) /* All files */), wxOPEN);
+				       msg(/*Survex 3d files*/207),
+				       msg(/*All files*/208)), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
         OpenFile(dlg.GetPath());
