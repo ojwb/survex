@@ -19,7 +19,7 @@
  
      For further information visit http://plib.sourceforge.net
 
-     $Id: fnt.cc,v 1.1.2.1 2003-11-24 02:22:17 olly Exp $
+     $Id: fnt.cc,v 1.1.2.2 2003-11-24 23:52:28 olly Exp $
 */
 
 #include "fnt.h"
@@ -203,7 +203,6 @@ fntTexFont::load(const char *fname)
 
 	if (ch < 32 || ch > 255) continue;
 	glNewList(list_base + ch, GL_COMPILE);
-	glBegin(GL_QUADS);
 	float tex_left = x * W;
 	float tex_right = (x + w) * W;
 	float tex_bot = y * H;

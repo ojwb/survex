@@ -19,7 +19,7 @@
  
      For further information visit http://plib.sourceforge.net
 
-     $Id: fnt.h,v 1.1.2.1 2003-11-24 02:22:17 olly Exp $
+     $Id: fnt.h,v 1.1.2.2 2003-11-24 23:52:28 olly Exp $
 */
 
 
@@ -88,7 +88,7 @@ class fntTexFont {
 	glLoadIdentity();
 	glTranslated(x, y, 0);
 	glListBase(list_base);
-	glCallLists(strlen(s), GL_BYTE, s);
+	glCallLists(strlen(s), GL_UNSIGNED_BYTE, s);
 	glPopMatrix();
     }
 #if 0
