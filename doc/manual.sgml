@@ -132,8 +132,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-17 01:58:48 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.55 2001-09-17 01:58:48 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-17 15:12:59 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.56 2001-09-17 15:12:59 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -191,8 +191,17 @@ under the Loser Plateau in Austria (over 11,500 survey legs, and over
 66km of underground survey data). This can all be processed in a few
 seconds on a low-end <hardware>Pentium</hardware> machine.
 Survex is also used by many other survey projects around the world,
-including the Ogof Draenen survey, the Easegill resurvey project, and the
-<Acronym/OFD/ survey.<!-- FIXME: more examples? e.g. hom mei gui too? -->
+including the Ogof Draenen survey, the Easegill resurvey project, the
+<Acronym/OFD/ survey, the <Acronym/OUCC/ Picos expeditions, and
+the Hong Mei Gui China expedition. <!-- FIXME more? --></Para>
+<!-- FIXME: links
+ URLs:
+ OD: http://milos2.zoo.ox.ac.uk/~oucc/draenen/draenenmain.htm
+ Easegill: http://www.easegill.org.uk/
+ OFD: ?
+ OUCC: http://milos2.zoo.ox.ac.uk/~oucc/reports/surveys/surveys.htm
+ HMG: http://www.survex.com/~erin/
+-->
 
 <Para>&survexsuite; is still actively being worked on.  Version 1.0 will be
 complete in some sense, but development will continue - initially in reshaping
@@ -241,16 +250,20 @@ rather than end users.
 </Para></listitem>
 </varlistentry>
 
-<!-- FIXME: INSTALL no longer relevant and so no longer inclued on win32 thanks to installer -->
 <varlistentry>
 <term>INSTALL or INSTALL.txt</term>
-<listitem><Para>instructions for installing &survexsuite;.
+<listitem><Para>instructions for installing &survexsuite;.  The
+Microsoft Windows version comes packaged up with an installation wizard,
+so this file doesn't exist there (you just run the package and follow
+the on-screen instructions).
 </Para></listitem>
 </varlistentry>
 </variablelist>
 
-<!-- FIXME: any other text files? -->
-
+<!-- FIXME: other text files:
+ AUTHORS COPYING HACKING OLDNEWS ZOMBIES
+-->
+ 
 </Sect2>
 
 <Sect2><Title>Terminology</Title>
