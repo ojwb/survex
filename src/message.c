@@ -54,9 +54,10 @@ static jmp_buf jmpbufSignal;
 #endif
 
 #if (OS==WIN32)
+# define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 #elif (OS==MSDOS)
-#include <dos.h>
+# include <dos.h>
 # ifdef __DJGPP__
 #  include <dpmi.h>
 #  include <go32.h>
