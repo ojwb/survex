@@ -23,11 +23,13 @@ Changes in 0.97-prerelease2:
 * caverot/xcaverot: fix missing end of list marker for surface data
   which typically resulted in a few extra bogus surface legs appearing.
 
-* printer drivers: fix .ini file reading routine (bug introduced in
+* printer drivers: fixed .ini file reading routine (bug introduced in
   0.97-prerelease 1).
 
 * printps: postscript file meta information now includes the date of
   creation, and also the name of the user running printps (Unix only).
+
+* printer drivers: improved reporting of problems with print.ini files.
 
 Changes in 0.97-prerelease1:
 

@@ -796,14 +796,14 @@ pt: 81 Erro inicializando placa de v&iacute;deo
 ca: 81 Error a l'inicialitzar la placa gr&agrave;fica
 es: 81 Error al inicializar la placa gr&aacute;fica
 it: 81 Errore d'inizializzazione della scheda grafica
-# a bit vague I know
-#en: 82 Bad command line parameters
-#fr: 82 Mauvais param&egrave;tres dans la ligne de commande
-#de: 82 Kommandozeilenparameter unbekannt oder fehlerhaft
-#pt: 82 Par&acirc;metros de linha de comando com problemas
-#ca: 82 Par&agrave;metres dolents a la l&iacute;nia de comandaments
-#es: 82 Par&aacute;metros err&oacute;neos en la l&iacute;nea de comandos
-#it: 82 Parametro della linea dei comandi errato
+# TRANSLATE fr de pt ca es it
+en: 82 Parameter `%s' has invalid value `%s' in printer configuration file
+fr: 82 Param&egrave;tres `%s' has invalid value `%s' dans le fichier de configuration de l'imprimante
+de: 82 Parameter `%s' has invalid value `%s' in der Druckerkonfigurationsdatei
+pt: 82 Par&acirc;metros `%s' has invalid value `%s' em arquivo de configura&ccedil;&atilde;o de impressora
+ca: 82 Par&agrave;metres `%s' has invalid value `%s' al fitxer de configuraci&oacute; de l'impresora
+es: 82 Par&aacute;metros `%s' has invalid value `%s' en el fichero de configuraci&oacute;n de la impresora
+it: 82 Parametro `%s' has invalid value `%s' nel file di configurazione della stampante
 en: 83 Scale to fit on 1 page
 fr: 83 Mettre &agrave; l'&eacute;chelle pour tenir en 1 page
 # somewhat clumsily, but anything else would require a subordinate
@@ -826,13 +826,14 @@ pt: 84 Ignorando toda a linha
 ca: 84 Ignorant tota la l&iacute;nia
 es: 84 Ignorando toda la l&iacute;nea
 it: 84 Intera linea ignorata
-en: 85 Mistake in printer configuration file
-fr: 85 Erreur dans le fichier de configuration de l'imprimante
-de: 85 Fehler in der Druckerkonfigurationsdatei
-pt: 85 Erro em arquivo de configura&ccedil;&atilde;o de impressora
-ca: 85 Error al fitxer de configuraci&oacute; de l'impresora
-es: 85 Error en el fichero de configuraci&oacute;n de la impresora
-it: 85 Errore nel file di configurazione della stampante
+# TRANSLATE fr de pt ca es it (I've made a stab)
+en: 85 Parameter `%s' missing in printer configuration file
+fr: 85 Param&egrave;tres `%s' manquant dans le fichier de configuration de l'imprimante
+de: 85 Parameter `%s' &uuml;fehlt in der Druckerkonfigurationsdatei
+pt: 85 Par&acirc;metros `%s' falta em arquivo de configura&ccedil;&atilde;o de impressora
+ca: 85 Par&agrave;metres `%s' manca al fitxer de configuraci&oacute; de l'impresora
+es: 85 Par&aacute;metros `%s' falta en el fichero de configuraci&oacute;n de la impresora
+it: 85 Parametro `%s' manca nel file di configurazione della stampante
 en: 86 No data in 3d Image file
 fr: 86 Pas de donn&eacute;es dans le fichier image 3d
 de: 86 Keine Daten in der 3D-Bilddatei
@@ -1984,3 +1985,10 @@ it:197 " a %4.2fm)"
 #ca: 29 Reentrar en un nivell de prefix existent ja no s'utilitza (previament entrat a %s:%lu)
 #es: 29 Reentrar en un nivel de prefijo existente yo no se usa (previamente entrado en %s:%lu)
 #it: 29 Reimmettere un prefisso di livello gi&aacute; esistente &eacute; sconsigliato (gi&aacute; immesso in %s:%lu)
+#en: 82 Bad command line parameters
+#fr: 82 Mauvais param&egrave;tres dans la ligne de commande
+#de: 82 Kommandozeilenparameter unbekannt oder fehlerhaft
+#pt: 82 Par&acirc;metros de linha de comando com problemas
+#ca: 82 Par&agrave;metres dolents a la l&iacute;nia de comandaments
+#es: 82 Par&aacute;metros err&oacute;neos en la l&iacute;nea de comandos
+#it: 82 Parametro della linea dei comandi errato

@@ -1050,18 +1050,13 @@ drawticks(border clip, int tsize, int x, int y)
 
 static void setting_missing(const char *v)
 {
-#if 0
-   printf("setting %s\n", v); /* FIXME */
-#endif
-   fatalerror(/*Mistake in printer configuration file*/85);
+   fatalerror(/*Parameter `%s' missing in printer configuration file*/85, v);
 }
 
 static void setting_bad_value(const char *v, const char *p)
 {
-#if 0
-   printf("setting %s bad value \"%s\"\n", v, p); /* FIXME */
-#endif
-   fatalerror(/*Mistake in printer configuration file*/85);
+   fatalerror(/*Parameter `%s' has invalid value `%s' in printer configuration file*/82,
+	      v, p);
 }
 
 char *
