@@ -8,6 +8,9 @@
   this doesn't make sense now that root is deprecated, and didn't make
   much sense before to be honest.
 
+* (non-Unix versions): remove path and extension and lower-case program
+  name for use in error reporting.
+
 * (MS Windows version): added documentation overview page to HTML
   help.
 
