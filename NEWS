@@ -1,3 +1,5 @@
+Changes in 0.98-prerelease2:
+
 * (MS Windows version): Fixed "Open" on a .3d file to open in aven
   rather than converting to a DXF.  "Convert to DXF" now appears as a
   separate menu item.
@@ -10,6 +12,9 @@
 * cavern: Check for chunks of survey not connected to a fixed point is
   now done earlier on (which simplifies quite a bit of the network
   code).
+
+* xcaverot: Disabled "legs" and "surface" buttons in --pda mode - they
+  make the button bar too wide.
 
 Changes in 0.98-prerelease1:
 
