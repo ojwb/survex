@@ -56,6 +56,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    int depth = -1;
 
    skipblanks();
+#ifndef NO_DEPRECATED
    if (isRoot(ch)) {
       if (!fAllowRoot) {
 	 compile_error(/*ROOT is deprecated*/25);
@@ -77,6 +78,9 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    } else {
       ptr = pcs->Prefix;
    }
+#else
+   ptr = pcs->Prefix;
+#endif
 
    i = 0;
    do {

@@ -349,7 +349,9 @@ cmd_set(void)
 	{"NAMES",     SPECIAL_NAMES },
 	{"OMIT",      SPECIAL_OMIT },
 	{"PLUS",      SPECIAL_PLUS },
+#ifndef NO_DEPRECATED
 	{"ROOT",      SPECIAL_ROOT },
+#endif
 	{"SEPARATOR", SPECIAL_SEPARATOR },
 	{NULL,        SPECIAL_UNKNOWN }
    };
@@ -365,6 +367,7 @@ cmd_set(void)
       return;
    }
 
+#ifndef NO_DEPRECATED
    if (mask == SPECIAL_ROOT) {
       if (root_depr_count < 5) {
 	 compile_warning(/*ROOT is deprecated*/25);
@@ -372,6 +375,7 @@ cmd_set(void)
 	    compile_warning(/*No further uses of this deprecated feature will be reported*/95);
       }
    }
+#endif
 
    /* if we're currently using an inherited translation table, allocate a new
     * table, and copy old one into it */
@@ -446,6 +450,7 @@ check_reentry(prefix *tag)
    }
 }
 
+#ifndef NO_DEPRECATED
 static void
 cmd_prefix(void)
 {
@@ -473,6 +478,7 @@ cmd_prefix(void)
    }
 #endif
 }
+#endif
 
 static void
 cmd_begin(void)
@@ -1173,6 +1179,7 @@ cmd_calibrate(void)
    }
 }
 
+#ifndef NO_DEPRECATED
 static void
 cmd_default(void)
 {
@@ -1206,6 +1213,7 @@ cmd_default(void)
       compile_error(/*Unknown setting `%s'*/41, buffer);
    }
 }
+#endif
 
 static void
 cmd_include(void)
@@ -1426,7 +1434,9 @@ static cmd_fn cmd_funcs[] = {
    skipline, /*cmd_copyright,*/
    cmd_data,
    cmd_date,
+#ifndef NO_DEPRECATED
    cmd_default,
+#endif
    cmd_end,
    cmd_entrance,
    cmd_equate,
@@ -1436,7 +1446,9 @@ static cmd_fn cmd_funcs[] = {
    cmd_include,
    cmd_infer,
    skipline, /*cmd_instrument,*/
+#ifndef NO_DEPRECATED
    cmd_prefix,
+#endif
    cmd_require,
    cmd_sd,
    cmd_set,
