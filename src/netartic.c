@@ -53,6 +53,8 @@ typedef struct component {
 
 static component *component_list;
 
+static articulation *articulation_list;
+
 static node *artlist;
 
 static node *fixedlist;
@@ -163,12 +165,12 @@ uniter:
 	    stn2->leg[i]->l.reverse |= FLAG_ARTICULATION;
 	     
 	    /* start new articulation */
-	    component_list->artic->stnlist = artlist;
+	    art = osnew(articulation);
+	    art->stnlist = artlist;
+	    art->next = articulation_list;
+	    articulation_list = art;
 	    artlist = NULL;
 
-	    art = osnew(articulation);
-	    art->next = component_list->artic;
-	    component_list->artic = art;
 #ifdef DEBUG_ARTIC
 	    printf("Articulate *-");
 	    print_prefix(stn2->name);
@@ -206,6 +208,7 @@ articulate(void)
    long cFixed;
 
    component_list = NULL;
+   articulation_list = NULL;
    artlist = NULL;
    fixedlist = NULL;
 
@@ -237,9 +240,6 @@ articulate(void)
       /* see if this is a fresh component - it may not be, we may be
        * processing the other way from a fixed point cut-line */
       if (stn->colour < 0) {
-	 component *comp;
-	 articulation *art;
-
 #ifdef DEBUG_ARTIC
 	 printf("new component\n");
 #endif
@@ -250,16 +250,23 @@ articulate(void)
 	 /* FIXME: logic to count components isn't the same as the logic
 	  * to start a new one - we should start a new one for a fixed point
 	  * cut-line (see below) */
-	 if (component_list) component_list->artic->stnlist = artlist;
+	 if (artlist) {
+	     component *comp;
+	     articulation *art;
+	  
+	     art = osnew(articulation);
+	     art->stnlist = artlist;
+	     art->next = articulation_list;
+	     articulation_list = art;
+	     artlist = NULL;
+	     
+	     comp = osnew(component);
+	     comp->next = component_list;
+	     comp->artic = articulation_list;
+	     component_list = comp;
+	     articulation_list = NULL;
+	 }
 
-	 art = osnew(articulation);
-	 art->next = NULL;
-	 artlist = NULL;
-
-	 comp = osnew(component);
-	 comp->next = component_list;
-	 comp->artic = art;
-	 component_list = comp;
 #ifdef DEBUG_ARTIC
 	 print_prefix(stn->name);
 	 printf(" [%p] is root of component %ld\n", stn, cComponents);
@@ -290,10 +297,18 @@ articulate(void)
 	    print_prefix(stn2->name);
 	    printf(" col %d cFixed %d\n", col, cFixed);
 #endif
-	    if (col > cFixed) c |= 1 << i;
+	    if (col > cFixed) {
+		/* start new articulation - FIXME - overeager */
+		articulation *art = osnew(articulation);
+		art->stnlist = artlist;
+		art->next = articulation_list;
+		articulation_list = art;
+		artlist = NULL;
+		c |= 1 << i;
+	    }
 	 }
       }
-
+	  
       if (c) {
 #ifdef DEBUG_ARTIC
 	 print_prefix(stn->name);
@@ -337,15 +352,27 @@ articulate(void)
       stnStart = fixedlist;
       if (!stnStart) break;
    }
-   if (component_list) component_list->artic->stnlist = artlist;
-   /* if (artlist) component_list->artic->stnlist = artlist; */
-
+   if (artlist) {
+      articulation *art = osnew(articulation);
+      art->stnlist = artlist;
+      art->next = articulation_list;
+      articulation_list = art;
+      artlist = NULL;
+   }
+   if (articulation_list) {
+      component *comp = osnew(component);
+      comp->next = component_list;
+      comp->artic = articulation_list;
+      component_list = comp;
+      articulation_list = NULL;
+   }
      {
 	component *comp;
 	articulation *art;
 	node *stn;
 
-	/* reverse component list */
+#if 0
+	/* reverse component list (why?) */
 	component *rev = NULL;
 	comp = component_list;
 	while (comp) {
@@ -355,6 +382,7 @@ articulate(void)
 	   comp = tmp;
 	}
 	component_list = rev;
+#endif
 
 #ifdef DEBUG_ARTIC
 	printf("\nDump of %d components:\n", cComponents);
@@ -369,9 +397,10 @@ articulate(void)
 #ifdef DEBUG_ARTIC
 	      printf("  Articulation (%p):\n", art->stnlist);
 #endif
+	      ASSERT(art->stnlist);
 	      if (listend) {
 		 listend->next = art->stnlist;
-		 if (art->stnlist) art->stnlist->prev = listend;
+		 art->stnlist->prev = listend;
 	      } else {
 		 list = art->stnlist;
 	      }
@@ -411,7 +440,7 @@ articulate(void)
 #endif
      }
 
-#if 0 /*def DEBUG_ARTIC*/
+#ifdef DEBUG_ARTIC
    /* highlight unfixed bits */
    FOR_EACH_STN(stn, stnlist) {
       if (!fixed(stn)) {
