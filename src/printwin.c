@@ -192,10 +192,10 @@ static void
 win_DrawCross(long x, long y)
 {
    if (cur_pass != -1) {
-      win_MoveTo(x - WIN_CROSS_SIZE, y);
-      win_DrawTo(x + WIN_CROSS_SIZE, y);
-      win_MoveTo(x, y - WIN_CROSS_SIZE);
-      win_DrawTo(x, y + WIN_CROSS_SIZE);
+      win_MoveTo(x - WIN_CROSS_SIZE, y - WIN_CROSS_SIZE);
+      win_DrawTo(x + WIN_CROSS_SIZE, y + WIN_CROSS_SIZE);
+      win_MoveTo(x + WIN_CROSS_SIZE, y - WIN_CROSS_SIZE);
+      win_DrawTo(x - WIN_CROSS_SIZE, y + WIN_CROSS_SIZE);
       win_MoveTo(x, y);
    } else {
       if ((x + WIN_CROSS_SIZE > clip.x_min &&
