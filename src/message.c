@@ -29,6 +29,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <errno.h>
+#include <locale.h>
 
 #include "whichos.h"
 #include "filename.h"
@@ -399,23 +400,23 @@ parse_msg_file(int charset_code)
       msg_lang = lang;
    }
 
-   /* try to set_locale() appropriately too */
-   if (strchr(msg_lang, "-") {
+   /* try to setlocale() appropriately too */
+   if (strchr(msg_lang, '-')) {
       char *lang = osstrdup(msg_lang);
       char *dash = strchr(lang, '-');
-      char *p = dash;
-      *p++ = '_';
-      while (*p) {
-	 *p = toupper(*p);
-	 p++;
+      char *q = dash;
+      *q++ = '_';
+      while (*q) {
+	 *q = toupper(*q);
+	 q++;
       }
-      if (!set_locale(lang)) {
+      if (!setlocale(LC_MESSAGES, lang)) {
 	 *dash = '\0';
-	 set_locale(lang);
+	 setlocale(LC_MESSAGES, lang);
       }
       osfree(lang);
    } else {
-      set_locale(msg_lang);
+      setlocale(LC_MESSAGES, msg_lang);
    }
    
    fh = fopenWithPthAndExt(pth_cfg_files, msg_lang, EXT_SVX_MSG, "rb", NULL);
