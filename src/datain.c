@@ -280,7 +280,6 @@ data_file(const char *pth, const char *fnm)
 	    osfree(limb);
 	    limb = temp;
 #endif
-	    continue;
 	 }
       } else if (isKeywd(ch)) {
 	 nextch();
@@ -969,4 +968,5 @@ extern int
 data_ignore(void)
 {
    skipline();
+   return 1;
 }

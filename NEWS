@@ -4,6 +4,9 @@
   message file, report them in a message box rather than printing text
   which the user will never see.
 
+* cavern: invalid data lines weren't being counted, so you'd get
+  incorrect line numbers reported for further errors and warnings.
+
 Changes in 0.97-prerelease5:
 
 * survex: conversion wrapper now only creates __svxtmp.svx file if it
