@@ -214,6 +214,8 @@ class GfxCore : public wxWindow {
     void Plan();
     void Elevation();
 
+    void Repaint();
+
 public:
     GfxCore(MainFrm* parent);
     ~GfxCore();
