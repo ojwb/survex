@@ -27,7 +27,7 @@ typedef int coord;  /* data type used after data is read in */
 
 #define RETURN_KEY      (13)  /* key definitions */
 #define ESCAPE_KEY      (27)
-//#if 0
+/*#if 0*/
 #define DELETE_KEY   (0x153)  /* enhanced DOS key codes (+ 0x100) */
 #define COPYEND_KEY  (0x14f)  /* to distinguish them from normal key codes */
 #define CURSOR_LEFT  (0x14b)
@@ -36,7 +36,7 @@ typedef int coord;  /* data type used after data is read in */
 #define CURSOR_UP    (0x148)
 #define SHIFT_QUOTE      '@'  /* UK keyboards only I think !HACK! */
 #define QUOTE           (39)
-//#endif
+/*#endif*/
 
 #define NO_FUNC_PTRS
 #ifdef NO_FUNC_PTRS
