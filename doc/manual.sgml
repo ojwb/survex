@@ -20,7 +20,7 @@ section on "design philosophy"
 
 <Article Status="draft" id=index>
  <ArtHeader>
-  <Title>&survexsuite; 0.90 Documentation</Title>
+  <Title>&survexsuite; 0.91 Documentation</Title>
   <AuthorGroup>
    <Author>
     <FirstName/Olly/
@@ -46,8 +46,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 1999-05-17 20:23:59 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.6 1999-05-17 20:23:59 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 1999-05-17 21:20:31 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.7 1999-05-17 21:20:31 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -100,7 +100,7 @@ all be processed in a few seconds on a
 <hardware>486DX2/66 PC</hardware>.</Para>
 
 <Para>&survexsuite; is not yet finished.  Version 1.0 should be complete (in
-some sense - development will no doubt continue), so you could regard
+some sense - development will continue), so you could regard
 &survexsuite; 0.90 as roughly 90% there. But &survexsuite; is very usable in
 its present state and is already used for several large projects, including
 &cucc;'s Austria surveys, the Ogof Draenen survey, the Easegill resurvey
@@ -273,9 +273,9 @@ data to scale.
 </ItemizedList>
 
 <Para>The best way to use the program suite is to use some sort of
-shell to automatically start survex if you click on a <filename/.svx/
+shell to automatically run cavern if you click on a <filename/.svx/
 file, and start caverot or an appropriate printXXX if you click on a
-<filename/.3d/ file.  This reduces the typing significantly. You can
+<filename/.3d/ file.  This reduces the typing significantly.  You can
 use Windows as the shell.
 </Para>
 
@@ -320,6 +320,10 @@ these in case they are of use to someone.
 
 </Sect1>
 
+<!-- FIXME: Installation -->
+
+<!-- FIXME: Configuration -->
+
 <Sect1><Title>Environment variables</Title>
 
 <!-- FIXME: bad style -->
@@ -356,8 +360,9 @@ supported are:</Para>
 <VariableList>
  <VarListEntry><Term>&msdos;</Term>
    <ListItem><Para>Put <SystemItem>SET SURVEXLANG=fr</SystemItem> in your
-AUTOEXEC.BAT script to get French messages.</Para></ListItem>
+<filename>AUTOEXEC.BAT</filename> script to get French messages.</Para></ListItem>
  </VarListEntry>
+ <!-- FIXME: windows? -->
  <VarListEntry><Term>&unix; - csh/tcsh</Term>
    <ListItem><Para><SystemItem>setenv SURVEXLANG fr</SystemItem></Para></ListItem>
  </VarListEntry>
@@ -366,15 +371,18 @@ AUTOEXEC.BAT script to get French messages.</Para></ListItem>
  </VarListEntry>
  <VarListEntry><Term>&riscos;</Term>
    <ListItem><Para>Edit the <SystemItem>Set SURVEXLANG ...</SystemItem>
-line in the !Survex.!Run file,
-changing the value to the code for the language you want.</Para></ListItem>
+line in <filename>!Survex.!Run</filename> and 
+change the value to the code for the language you want.</Para></ListItem>
  </VarListEntry>
 </VariableList>
 
 </Sect2>
-
+<!-- FIXME: more translations? OS messages and startup may still be in
+English -->
 <Sect2><Title>Telling &survexsuite; where to find its support files</Title>
 
+<!-- Following not true for Unix - location of lib is compiled in, but
+ can be overridden still -->
 <Para>&survexsuite; needs various support files, which by default it looks
 for in the directory where the executables are.  It is possible under some
 operating systems (this is not a problem with &msdos;) for &survexsuite; not
@@ -389,10 +397,11 @@ can also be used if you would rather install the support files elsewhere.
 your AUTOEXEC.BAT file
 </Para>
 
+<!-- FIXME: use Wooks Wimp frontend -->
 <Para>For &riscos; put <SystemItem>*Set SURVEXHOME
-ADFS::4.$.&survexsuite;.!Survex</SystemItem> into your Boot !Run or !DeskTop
-file (assuming <filename>ADFS::4.$.Survex.!Survex</filename> contains the
-&survexsuite; executables).
+ADFS::4.$.&survexsuite;.!Survex</SystemItem> into your Boot <filename/!Run/
+or <filename/!DeskTop/ (assuming <filename>ADFS::4.$.Survex.!Survex</filename>
+contains the &survexsuite; executables).
 </Para>
 
 <Para>If you ensure that !Survex is seen by the filer with a line like
@@ -429,9 +438,9 @@ program will try adding the default extension (if appropriate) and try
 again.
 </Para>
 
-<Para>For survex itself things are a bit more complex as files can be
+<Para>For cavern itself things are a bit more complex as files can be
 included by other files: If an included file does not have a complete path,
-Survex will look for it in the directory of the file which includes it.
+cavern will look for it in the directory of the file which includes it.
 <!--(whether <filename/.svc/ or <filename/.svx/),
 or the current directory if it is referred to on the command line.-->
 If it can not find the file, it will try adding the default extension and
@@ -441,28 +450,31 @@ look again.
 
 </Sect1>
 
-<Sect1><Title>Survex</Title>
+<Sect1><Title>Cavern</Title>
 
-<Para>Survex is the data processing engine of the suite.
+<Para>Cavern is the data processing engine of the suite.
 </Para>
 
-<Para>Syntax for simple use: survex &lt;survey data file&gt;
+<!-- FIXME: markup -->
+<Para>Syntax for simple use: cavern &lt;survey data file&gt;
 </Para>
 
-<Para>survex reads in text files containing the survey data
+<Para>Cavern reads in text files containing the survey data
 (<filename/.svx/) and outputs four data files: <filename/.3d/,
 <filename/.pos/, <filename/.err/ and <filename/.inf/ - explained
 below.</Para>
 
-<Sect2><Title>Survex Output</Title>
+<Sect2><Title>Cavern Output</Title>
 
-<Para>When you run survex, four files are output into the directory
-containing &lt;survey data file&gt;. The filenames are the same, but with
-the extension changed.
+<Para>When you run cavern, four output files are created.  By default these
+are output to the current directory, but you can change this using the
+--output switch. <!-- FIXME: link --> The output files have the same base
+filename as the first <filename/.svx/ file read, but the extension is
+changed.
 </Para>
 
 <Para>E.g. if you process the data file <filename>entrance.svx</filename>
-with the command <command>survex entrance</command> then four files will be
+with the command <command>cavern entrance</command> then four files will be
 created: <filename>entrance.3d</filename>,
 <filename>entrance.pos</filename>, <filename>entrance.err</filename>, and
 <filename>entrance.inf</filename>.
@@ -477,7 +489,7 @@ compiled to use extensions or mock extensions on all platforms.
 </Para>
 -->
 
-<Para>Survex also gives a range of statistics at the end of a run
+<Para>Cavern also gives a range of statistics at the end of a run
 these are the same as the info in the <filename/.inf/ file:</Para>
 
 <itemizedlist>
@@ -540,16 +552,17 @@ run.</Para>
 
 </Sect2>
 
-<Sect2><Title>Survex Command line Syntax</Title>
+<Sect2><Title>Cavern Command line Syntax</Title>
 
-<Para><SystemItem>survex &lt;Options&gt; &lt;SurvexFileList&gt;</SystemItem>
+<Para><command>cavern &lt;Options&gt; &lt;SurvexFileList&gt;</command>
 </Para>
 
-<Para>where SurvexFileList can be one or more <filename/.svx/
-files<!--, possibly surrounded by parentheses (brackets)-->. You can give
-single filenames, full pathnames, or relative pathnames. If the operating
-system supports it, you can use filenames containing spaces by quoting them
-thus: like so: <command>survex &quot;Spider Cave&quot;</command></Para>
+<!-- FIXME: brackets implied around each file -->
+
+<Para>where SurvexFileList can be one or more <filename/.svx/ files.  If the
+operating system supports filenames with spaces, you can use them but you'll
+need to enclose them in quotes like so: <command>cavern &quot;Spider
+Cave&quot;</command></Para>
 
 <!--
 <Sect3><Title>Notes</Title>
@@ -580,25 +593,25 @@ etc.) changed from 'leaking' out. This also allows you to use your own
 default settings file, like so:
 </Para>
 
-<Para>survex Defaults ( SomeCave ) ( NewBit )
+<Para>cavern Defaults ( SomeCave ) ( NewBit )
 </Para>
 
 <Para>A warning is given if you do not close as many brackets as you
 open, or if you attempt to close brackets that you have not opened.
 </Para>
 
-<Para>survex &lt;filename&gt;
+<Para>cavern &lt;filename&gt;
 </Para>
 
-<Para>Tells survex to process the survey stored in &lt;filename&gt;.
+<Para>Tells cavern to process the survey stored in &lt;filename&gt;.
 (Anything not preceded by a '-' or '/' is assumed to be the filename of a
 survey file).
 </Para>
 
-<Para>survex -D &lt;filename&gt;
+<Para>cavern -D &lt;filename&gt;
 </Para>
 
-<Para>Tells survex to process the survey stored in &lt;filename&gt;.
+<Para>Tells cavern to process the survey stored in &lt;filename&gt;.
 Generally not required, unless the filename starts with '-' or
 '/' then you can still process it by preceding it with '-D'.
 </Para>
@@ -607,9 +620,17 @@ Generally not required, unless the filename starts with '-' or
 
 -->
 
-<Sect3><Title>Survex Options</Title>
+<Sect3><Title>Cavern Options</Title>
 
-<Sect4><Title><command/survex -a/ - output ASCII <filename/.3d/ file</Title>
+<Para>
+Options have two forms: short (a dash followed by a single letter e.g.
+<command/cavern -p/) and long (two dashes followed by one or more words e.g.
+<command/cavern --percentage/).  The long form is generally easier to
+remember, while the short form is quicker to type.  Options are often
+available in both forms.
+</Para>
+
+<Sect4><Title><command/cavern -a/ - output ASCII <filename/.3d/ file</Title>
 
 <Para>The <filename/.3d/ image file produced will be in ASCII
 format (the default is binary, since the files are smaller and faster to
@@ -620,14 +641,17 @@ will include a utility to display it as ASCII.</Para>
 
 </Sect4>
 
-<Sect4><Title><command/survex -p/ - Display percentage progress</Title>
+<Sect4><Title><command/cavern --percentage//<command/cavern -p/ - Display percentage progress</Title>
 
-<Para>You can get survex to display the percentage progress through the
-current file.  As of &survexsuite; 0.81 this is disabled by default, but you
-can turn enable it if you want.  Because the value given is for the
+<Para>You can get cavern to display the percentage progress through the
+current file.  As of &survexsuite; 0.90 this is disabled by default, but you
+can enable it if you want.  Because the value given is for the
 <emphasis/current/ file, the values jump around for a multi-file survey
-project. Also note that displaying this information results in slightly
-slower processing.</Para>
+project. Also note that displaying this information slows down processing
+a little.
+<!-- FIXME: on a slow machine you'd probably rather it ran faster, and on a
+fast machine you can't follow the change percentages.-->
+</Para>
 
 </Sect4>
 
@@ -637,16 +661,20 @@ slower processing.</Para>
 
 </Sect1>
 
+<!-- FIXME: gcc format error messages -->
+
 <Sect1><Title>CAVEROT</Title>
 
 <Para>Caverot reads the <filename/.3d/ image files and displays the
 results on screen, letting you control the view to understand the
 cave.</Para>
 
-<Sect2><Title>Syntax: </Title>
+<Sect2><Title>Syntax</Title>
 
 <Para>Basic syntax is:
 </Para>
+
+<!-- FIXME: change to use GNU getopt -->
 
 <Para><command>caverot &lt;image filename&gt; [&lt;image filename2&gt;
 ...]</command>
@@ -1179,10 +1207,10 @@ station name twice.
 
 <Para>The usual form is to have one file which lists all the others
 that are included (<filename/161.svx/ in the example data). Then
-<command/survex 161/ will process all your data. To just process a
-section use the filename for that section, e.g. <command/survex dtime/
+<command/cavern 161/ will process all your data. To just process a
+section use the filename for that section, e.g. <command/cavern dtime/
 will process the dreamtime file/section of Kaninchenh&ouml;hle.  To
-help you out, if a survey is connected but has no fixed points, survex
+help you out, if a survey is connected but has no fixed points, cavern
 will 'invent' a fixed point and print a warning message to this
 effect.
 </Para>
@@ -1211,7 +1239,7 @@ not optional, then an error is given.
 additionally any characters in &lt;NAMES&gt; (default '_'). Alphabetic
 characters may be forced to upper or lower case by using the *case
 command. Station names may be any length - if you want to only treat
-the first few characters as significant you can get survex to truncate
+the first few characters as significant you can get cavern to truncate
 the names using the *truncate command.
 </Para>
 
@@ -1272,7 +1300,7 @@ I will have to do some sums...
 
 -->
 
-<Sect2><Title>Survex Commands</Title>
+<Sect2><Title>cavern Commands</Title>
 
 <Para>Commands in <filename/.svx/ files are introduced by an asterisk
 (by default - this can be changed using the set command).
@@ -1351,7 +1379,7 @@ depth.</Para></listitem>
 <!-- FIXME turn these into commands: -->
 <Sect3><Title>Case</Title>
 
-<Para>survex -CU,-CL,-!C (Default: -CL)
+<Para>cavern -CU,-CL,-!C (Default: -CL)
 </Para>
 
 <Para>Used when comparing station names to see if they are the same point.
@@ -1401,7 +1429,7 @@ Think of the lines starting with a "*" as "command or meta-data".
 >
 >The reason '-C' was made into a command-line option, was that it made very
 >little sense to change it part way though a dataset. What exactly happens if
->you suddenly tell Survex to become case-sensitive halfway through a run?
+>you suddenly tell cavern to become case-sensitive halfway through a run?
 
 -C has always had 3 settings - "leave case alone", "force to lower", and
 "force to upper".  It doesn't really mean "case sensitivity" but rather
@@ -1436,10 +1464,10 @@ whole run.
 
 <Sect3><Title>Ninetytoup</Title>
 
-<Para>survex -N,-!N (Default: -!N)
+<Para>cavern -N,-!N (Default: -!N)
 </Para>
 
-<Para>Makes survex read gradients of +/- 90 degrees as UP/DOWN (so it
+<Para>Makes cavern read gradients of +/- 90 degrees as UP/DOWN (so it
 will not apply the clino correction to them). This is useful when
 the data has not been converted to have UP and DOWN in it.
 </Para>
@@ -1448,7 +1476,7 @@ the data has not been converted to have UP and DOWN in it.
 
 <Sect3><Title>Title</Title>
 
-<Para>survex -T &lt;title&gt;
+<Para>cavern -T &lt;title&gt;
 </Para>
 
 <Para>Allows you to set the title used in the <filename/.3d/ file. If
@@ -1459,7 +1487,7 @@ a list of the leafnames of the .svx files processed (with the
 extensions removed).
 </Para>
 
-<Para>e.g.: survex entrance.svx \data\2ndpart.svx
+<Para>e.g.: cavern entrance.svx \data\2ndpart.svx
 </Para>
 
 <Para>would give a surveytitle of 'entrance 2ndpart'.
@@ -1469,7 +1497,7 @@ extensions removed).
 
 <Sect3><Title>Truncation</Title>
 
-<Para>survex -U&lt;n&gt;,-!U
+<Para>cavern -U&lt;n&gt;,-!U
 </Para>
 
 <Para>Where n is from a positive integer (Default: -!U which disables
@@ -1534,7 +1562,7 @@ set is neater this way!
 <Para>
 The magnetic deviation varies from year to year and it is often
 desirable to keep the compass zero error and the magnetic deviation
-separate. survex calculates the true bearing as follows:
+separate. cavern calculates the true bearing as follows:
 </Para>
 
 <Para>
@@ -1691,7 +1719,7 @@ e.g. *fix entrance.0 32768 86723 1760
 <Para>
 - Fixes the position of &lt;Station&gt; at the given coordinates.
 If the position is omitted it defaults to (0,0,0). The standard
-errors default to zero (fix station exactly). survex will complain
+errors default to zero (fix station exactly). cavern will complain
 if you attempt to fix the same survey station twice.
 </Para>
 
@@ -1922,7 +1950,7 @@ DEG|DEGREES|GRADS|MILS|MINUTES
 <Para>[LENGTHOUTPUT and ANGLEOUTPUT not yet implemented]
 </Para>
 
-<Para>LENGTHOUTPUT determines the units in which survex displays
+<Para>LENGTHOUTPUT determines the units in which cavern displays
 lengths and positions. Similarly, ANGLEOUTPUT determines the units of
 any angles output.
 </Para>
@@ -2621,7 +2649,7 @@ output to a file, which you can do like so (which works for &msdos;,
 &unix;, and &riscos;):
 </Para>
 
-<para><command/survex cavename &gt; tmpfile/
+<para><command/cavern cavename &gt; tmpfile/
 </para>
 
 <para>where 'tmpfile' is the name of the file you want the output to go
@@ -2682,11 +2710,9 @@ without recompiling the program.</Para>
 
 </Sect1>
 
-<Sect1><Title>FUTURE DEVELOPMENTS</Title>
+<Sect1><Title>Future Developments</Title>
 
-<Para>
-Very Soon:
-</Para>
+<Sect2><Title>Soon</Title>
 
 <Para>
 OS-level printer driver, so drivers for Windows, &riscos; etc can
@@ -2704,7 +2730,7 @@ data.
 </Para>
 
 <Para>
-Many of the other features in the spec but not yet implemented
+Most of the other features in the spec but not yet implemented
 will appear soon.
 </Para>
 
@@ -2721,10 +2747,9 @@ is now working.  This will hopefully be releasable in the not
 too distant future, and will be the next major step in making
 &survexsuite; into a complete survey production tool.
 </Para>
+</sect2>
 
-<Para>
-Later:
-</Para>
+<sect2><title>Later</title>
 
 <Para>
 Some development of a general GUI-based version has already taken
@@ -2735,8 +2760,13 @@ to Microsoft Windows, X-windows, Macintosh etc.  (probably in
 that order). 
 </Para>
 
+</sect2>
+
+<sect2><title>Thankyous</title>
+
 <Para>
-Major thanks are due to:
+Major thanks are due to the following people (sadly this isn't a very
+complete list):
 </Para>
 
 <Para>
@@ -2767,15 +2797,18 @@ and suggested improvements. I will not list you all, as I would only
 forget someone.
 </Para>
 
-<Para>
-COPIES OBTAINABLE FROM:
-</Para>
+</Sect2>
 
-<Para>
-Please send a formatted floppy and an SAE.  We can supply discs
-in 5.25&quot; or 3.5&quot; HD or DD sizes, &msdos;, &riscos;, ATARI,
-and MAC formats.
-</Para>
+<Sect2><title>Contacting the authors</title>
+
+<Para>We'd be delighted to hear how you get on with &survexsuite; and
+welcome comments and suggestions for improvements.</Para>
+
+<Para>If you want the latest version and don't have net access, please
+enclose a suitably formatted floppy and an SAE.  These days, we'd probably
+struggle to cope with anything other than 3.5" floppies.  &msdos; format is
+easiest for us, but we should be able to manage &riscos;, ATARI or MAC
+format.</Para>
 
 <Address>
 Wookey
@@ -2811,9 +2844,20 @@ c/o James Hickson,
 <Country>UK</Country>
 </Address>
 
-<Para>
-DOSH:
-</Para>
+</Sect2>
+
+<Sect2><title>Donations</title>
+
+<Para>Monetary donations are welcome, but if you want a more personal way to
+say thankyou we'd love a copy of a survey you've produced using
+&survexsuite;.  Two copies would be best to save us arguing over who gets
+it.</Para>
+
+<Para>Or alternatively <emphasis>"Say it with code"</emphasis>.  If you're a
+programmer and want to help out there's plenty to do, so feel free to join
+in.</Para>
+</Sect2>
+<!--
 
 <Para>
 We have put a lot of effort into this project, and we hope you
@@ -2837,6 +2881,9 @@ We are not asking for money, but would appreciate the occasional
 donation of 5 or 10 pounds if you think it is worth it, to help
 cover our costs and provide encouragement.
 </Para>
+
+-->
+
 </Sect1>
 
 </Article>
