@@ -55,8 +55,6 @@ using namespace std;
 #define M_PI 3.14159265358979323846
 #endif
 
-extern const int NUM_DEPTH_COLOURS;
-
 enum {
     menu_FILE_OPEN = 1000,
     menu_FILE_OPEN_PRES,
@@ -186,8 +184,6 @@ class MainFrm : public wxFrame {
     int m_NumExtraLegs;
     GfxCore* m_Gfx;
     GUIControl* m_Control;
-    GLAPen* m_Pens;
-    wxBrush* m_Brushes;
     int m_NumEntrances;
     int m_NumFixedPts;
     int m_NumExportedPts;
@@ -228,7 +224,6 @@ class MainFrm : public wxFrame {
 	wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
     }
 
-    void InitialisePensAndBrushes();
     void CreateMenuBar();
     void CreateToolBar();
     void CreateSidePanel();
@@ -392,22 +387,6 @@ public:
     int GetNumLegs() const { return m_NumLegs; }
     int GetNumPoints() const { return m_NumPoints; }
     int GetNumCrosses() const { return m_NumCrosses; }
-
-    int GetNumDepthBands() const { return NUM_DEPTH_COLOURS; }
-
-    GLAPen& GetPen(int band) const {
-	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-	return m_Pens[band];
-    }
-
-    wxBrush GetBrush(int band) const {
-	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-	return m_Brushes[band];
-    }
-
-    void GetColour(int band, Double& r, Double& g, Double& b) const;
-
-    GLAPen& GetSurfacePen() const { return m_Pens[NUM_DEPTH_COLOURS]; }
 
     void SelectTreeItem(LabelInfo* label);
     void ClearTreeSelection();

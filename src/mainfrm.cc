@@ -57,13 +57,9 @@ extern "C" {
 }
 #endif
 
-const int NUM_DEPTH_COLOURS = 13; // up to 13
-
 #define TOOLBAR_BITMAP(file) wxBitmap(wxString(msg_cfgpth()) + \
     wxCONFIG_PATH_SEPARATOR + wxString("icons") + wxCONFIG_PATH_SEPARATOR + \
     wxString(file), wxBITMAP_TYPE_PNG)
-
-#include "avenpal.h"
 
 class AvenSplitterWindow : public wxSplitterWindow {
     MainFrm *parent;
@@ -314,7 +310,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     SetIcon(wxIcon("aaaaaAven"));
 #endif
 
-    InitialisePensAndBrushes();
     CreateMenuBar();
     CreateToolBar();
     CreateStatusBar(3, wxST_SIZEGRIP);
@@ -344,18 +339,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 MainFrm::~MainFrm()
 {
     m_Labels.clear();
-    delete[] m_Pens;
-    delete[] m_Brushes;
-}
-
-void MainFrm::InitialisePensAndBrushes()
-{
-    m_Pens = new GLAPen[NUM_DEPTH_COLOURS + 1];
-    m_Brushes = new wxBrush[NUM_DEPTH_COLOURS + 1];
-    for (int pen = 0; pen < NUM_DEPTH_COLOURS + 1; ++pen) {
-	m_Pens[pen].SetColour(REDS[pen] / 255.0, GREENS[pen] / 255.0, BLUES[pen] / 255.0);
-	m_Brushes[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
-    }
 }
 
 void MainFrm::CreateMenuBar()
@@ -1114,14 +1097,6 @@ void MainFrm::OnAbout(wxCommandEvent&)
     wxDialog* dlg = new AboutDlg(this);
     dlg->Centre();
     dlg->ShowModal();
-}
-
-void MainFrm::GetColour(int band, Double& r, Double& g, Double& b) const
-{
-    assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-    r = Double(REDS[band]) / 255.0;
-    g = Double(GREENS[band]) / 255.0;
-    b = Double(BLUES[band]) / 255.0;
 }
 
 void MainFrm::ClearTreeSelection()

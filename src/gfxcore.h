@@ -37,6 +37,8 @@ using std::list;
 
 class MainFrm;
 
+extern const int NUM_DEPTH_COLOURS;
+
 class Point {
     friend class GfxCore;
     Double x, y, z;
@@ -83,7 +85,6 @@ class GfxCore : public GLACanvas {
     bool m_RedrawOffscreen;
     int m_Polylines;
     int m_SurfacePolylines;
-    int m_Bands;
     Double m_InitialScale;
     Double m_TiltAngle;
     Double m_PanAngle;
@@ -125,6 +126,8 @@ class GfxCore : public GLACanvas {
     wxStopWatch timer;
     long drawtime;
     
+    GLAPen * m_Pens;
+
     void UpdateQuaternion();
     void UpdateIndicators();
     
@@ -182,6 +185,15 @@ class GfxCore : public GLACanvas {
     int GetIndicatorRadius() const;
 
     void ToggleFlag(bool* flag, bool refresh = true);
+
+    GLAPen& GetPen(int band) const {
+	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+	return m_Pens[band];
+    }
+
+    GLAPen& GetSurfacePen() const { return m_Pens[NUM_DEPTH_COLOURS]; }
+
+    int GetNumDepthBands() const { return NUM_DEPTH_COLOURS; }
 
 public:
     GfxCore(MainFrm* parent, wxWindow* parent_window, GUIControl* control);

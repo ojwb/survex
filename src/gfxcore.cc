@@ -48,6 +48,10 @@
 #define PLAN 1
 #define ELEVATION 2
 
+const int NUM_DEPTH_COLOURS = 13; // up to 13
+
+#include "avenpal.h"
+
 #ifdef _WIN32
 static const int FONT_SIZE = 8;
 #else
@@ -144,12 +148,20 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
 
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
+
+    m_Pens = new GLAPen[NUM_DEPTH_COLOURS + 1];
+    for (int pen = 0; pen < NUM_DEPTH_COLOURS + 1; ++pen) {
+	m_Pens[pen].SetColour(REDS[pen] / 255.0,
+			      GREENS[pen] / 255.0,
+			      BLUES[pen] / 255.0);
+    }
 }
 
 GfxCore::~GfxCore()
 {
     TryToFreeArrays();
 
+    delete[] m_Pens;
     delete[] m_PointGrid;
 }
 
@@ -175,8 +187,6 @@ void GfxCore::Initialise()
 
     m_DoneFirstShow = false;
 
-    m_Bands = m_Parent->GetNumDepthBands();
-    
     m_HitTestGridValid = false;
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
@@ -772,14 +782,15 @@ void GfxCore::DrawDepthbar()
     if (m_Parent->GetZExtent() == 0.0) return;
 
     int y = m_YSize -
-	    (DEPTH_BAR_BLOCK_HEIGHT * (m_Bands - 1) + DEPTH_BAR_OFFSET_Y);
+	    (DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1)
+	     						+ DEPTH_BAR_OFFSET_Y);
     int size = 0;
 
-    wxString* strs = new wxString[m_Bands];
+    wxString* strs = new wxString[GetNumDepthBands()];
     int band;
-    for (band = 0; band < m_Bands; band++) {
+    for (band = 0; band < GetNumDepthBands(); band++) {
 	Double z = m_Parent->GetZMin() +
-		   m_Parent->GetZExtent() * band / (m_Bands - 1);
+		   m_Parent->GetZExtent() * band / (GetNumDepthBands() - 1);
 	
 	strs[band] = FormatLength(z, false);
 
@@ -793,16 +804,16 @@ void GfxCore::DrawDepthbar()
 
     DrawRectangle(col_BLACK, col_DARK_GREY,
 		  x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
-		  m_YSize - (DEPTH_BAR_BLOCK_HEIGHT*(m_Bands-1)) -
-		      DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
-		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
+		  m_YSize - DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1) -
+		      DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN * 2,
+		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN * 3 +
 		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
-		  DEPTH_BAR_BLOCK_HEIGHT*(m_Bands - 1) + DEPTH_BAR_MARGIN*4);
+		  DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1) +
+		      DEPTH_BAR_MARGIN*4);
 
-    for (band = 0; band < m_Bands; band++) {
-	if (band < m_Bands - 1) {
-	    DrawShadedRectangle(m_Parent->GetPen(band),
-				m_Parent->GetPen(band + 1),
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	if (band < GetNumDepthBands() - 1) {
+	    DrawShadedRectangle(GetPen(band), GetPen(band + 1),
 				x_min, y,
 				DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
 	}
@@ -1843,13 +1854,13 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
     assert(how_far >= 0.0);
     assert(how_far <= 1.0);
 
-    int band = int(floor(how_far * (m_Bands - 1)));
-    int next_band = (band == (m_Bands - 1)) ? band : band+1;
+    int band = int(floor(how_far * (GetNumDepthBands() - 1)));
+    int next_band = (band == (GetNumDepthBands() - 1)) ? band : band + 1;
     
-    GLAPen pen1 = m_Parent->GetPen(band);
-    const GLAPen& pen2 = m_Parent->GetPen(next_band);
+    GLAPen pen1 = GetPen(band);
+    const GLAPen& pen2 = GetPen(next_band);
     
-    Double interval = z_ext / (m_Bands - 1);
+    Double interval = z_ext / (GetNumDepthBands() - 1);
     Double into_band = z_offset / interval - band;
    
 //    printf("%g z_offset=%g interval=%g band=%d\n", into_band,
@@ -1909,7 +1920,7 @@ int GfxCore::GetDepthColour(Double z) const
     // Return the (0-based) depth colour band index for a z-coordinate.
     Double z_ext = m_Parent->GetZExtent();
     z += z_ext / 2;
-    return int((z / (z_ext == 0.0 ? 1.0 : z_ext)) * (m_Bands - 1));
+    return int((z / (z_ext == 0.0 ? 1.0 : z_ext)) * (GetNumDepthBands() - 1));
 }
 
 Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
@@ -1918,11 +1929,11 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
     // two adjacent depth colour bands (specified by 0-based indices).
 
     assert((a == b - 1) || (a == b + 1));
+    if (GetNumDepthBands() == 1) return 0;
 
     int band = (a > b) ? a : b; // boundary N lies on the bottom of band N.
-    if (m_Bands == 1) return 0;
     Double z_ext = m_Parent->GetZExtent();
-    return (z_ext * band / (m_Bands - 1)) - z_ext / 2;
+    return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2;
 }
 
 void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
@@ -1933,13 +1944,13 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     Double factor = dot(normal, light) * .3 + .7;
     int a_band, b_band, c_band, d_band;
     a_band = GetDepthColour(a.getZ());
-    a_band = min(max(a_band, 0), m_Bands);
+    a_band = min(max(a_band, 0), GetNumDepthBands());
     b_band = GetDepthColour(b.getZ());
-    b_band = min(max(b_band, 0), m_Bands);
+    b_band = min(max(b_band, 0), GetNumDepthBands());
     c_band = GetDepthColour(c.getZ());
-    c_band = min(max(c_band, 0), m_Bands);
+    c_band = min(max(c_band, 0), GetNumDepthBands());
     d_band = GetDepthColour(d.getZ());
-    d_band = min(max(d_band, 0), m_Bands);
+    d_band = min(max(d_band, 0), GetNumDepthBands());
     BeginPolygon();
 ////    PlaceNormal(normal.getX(), normal.getY(), normal.getZ());
     PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
@@ -2002,7 +2013,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 		    if (current_polyline_is_surface) {
 			if (surface) {
 			    BeginPolyline();
-			    SetColour(m_Parent->GetSurfacePen());
+			    SetColour(GetSurfacePen());
 			    list<Vector3>::const_iterator i = centreline.begin();
 			    PlaceVertex(i->getX(), i->getY(), i->getZ());
 			    ++i;
@@ -2278,7 +2289,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 		    if (current_polyline_is_surface) {
 			if (surface) {
 			    BeginPolyline();
-			    SetColour(m_Parent->GetSurfacePen());
+			    SetColour(GetSurfacePen());
 			    list<Vector3>::const_iterator i = centreline.begin();
 			    PlaceVertex(i->getX(), i->getY(), i->getZ());
 			    ++i;
