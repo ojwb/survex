@@ -661,7 +661,7 @@ void MainFrm::OnAbout(wxCommandEvent&)
     wxStaticText* title = new wxStaticText(dlg, 502, wxString("Aven ") + wxString(VERSION));
     wxStaticText* purpose = new wxStaticText(dlg, 505,
 					     wxString("Visualisation of Survex 3D files"));
-    wxStaticText* copyright1 = new wxStaticText(dlg, 503, "aven copyright");
+    wxStaticText* copyright1 = new wxStaticText(dlg, 503, "(C) Copyright 1999-2001, Mark R. Shinwell");
     wxStaticText* copyright2 = new wxStaticText(dlg, 504,
 						wxString("Portions from Survex ") +
 						COPYRIGHT_MSG);
