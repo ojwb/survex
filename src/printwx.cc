@@ -117,8 +117,11 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
 	  m_File(filename), m_parent(parent)
 {
     m_layout = layout_new();
-    m_layout->rot = (int)deg(angle);
-    m_layout->tilt = (int)deg(tilt_angle);
+    // FIXME rot and tilt shouldn't be integers, but for now add a small
+    // fraction before forcing to int as otherwise plan view ends up being
+    // 89 degrees!
+    m_layout->rot = int(deg(angle) + .001);
+    m_layout->tilt = int(deg(tilt_angle) + .001);
     m_layout->Labels = labels;
     m_layout->Crosses = crosses;
     m_layout->Shots = legs;
@@ -153,7 +156,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     m_scale = new wxComboBox(this,svx_SCALE,"500",wxDefaultPosition,wxDefaultSize,12,choices);
     scalebox->Add(m_scale,1,wxALIGN_LEFT + wxALIGN_CENTER_VERTICAL + wxALL,5);
     v2->Add(scalebox, 0, wxALIGN_RIGHT + wxALL, 0);
-    m_printSize = new wxStaticText(this, -1, "0 Pages (0x0)");
+    // Make the dummy string wider than any sane value so the sizer
+    // picks a suitable width...
+    m_printSize = new wxStaticText(this, -1, "9604 Pages (98x98)");
     v2->Add(m_printSize, 0, wxALIGN_LEFT + wxALL, 5);
     static const wxString radio_choices[] = { "Plan", "Elevation", "Tilted" };
     m_aspect = new wxRadioBox(this, svx_ASPECT, "Orientation",
@@ -200,10 +205,12 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     v1->Add(h2, 0, wxALIGN_RIGHT|wxALL, 5);
     
     LayoutToUI();
+
     SetAutoLayout(true);
     SetSizer(v1);
     v1->Fit(this);
     v1->SetSizeHints(this);
+
     wxCommandEvent dummy;
     OnChange(dummy);
 }
