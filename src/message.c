@@ -395,8 +395,9 @@ add_unicode(int charset, unsigned char *p, int value)
 	 *p = value;
 	 return 1;
       }
-      break;      
-#elif (OS==MSDOS || OS==WIN32)
+      break;
+#endif
+#if (OS==MSDOS || OS==WIN32)
    case CHARSET_DOSCP850:
       value = xlate_dos_cp850(value);
       if (value) {
