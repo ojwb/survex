@@ -48,8 +48,6 @@ void swap_screen(bool);        /* swap displayed screen and drawing screen */
 /* translate all points */
 void translate_data(coord Xchange, coord Ychange, coord Zchange);
 
-float scale_to_screen(lid Huge **pplid, lid Huge **pplid2);
-
 /***************************************************************************/
 
 /* global variables */
@@ -84,8 +82,6 @@ static bool fSlowMachine = fFalse; /* Controls slick tilt, etc */
 static float elev;             /* angle of elevation of viewpoint */
 static float nStepsize;        /* stepsize for movements */
 static bool f3D;              /* flag indicating red/green 3d view mode */
-coord Xorg, Yorg, Zorg; /* position of centre of survey */
-coord Xrad, Yrad, Zrad; /* "radii" */
 int xcMac, ycMac;            /* screen size in plot units (==pixels usually) */
 #if 1
 #ifdef Y_UP
@@ -309,82 +305,6 @@ main(int argc, char **argv)
 
 /***************************************************************************/
 
-#define BIG_SCALE 1e3f
-
-static bool
-last_leg(point *p)
-{
-   return (p->_.action == STOP);
-}
-
-static bool
-last_stn(point *p)
-{
-   return (p->_.str == NULL);
-}
-
-float
-scale_to_screen(lid Huge **pplid, lid Huge **pplid2)
-{
-   /* run through data to find max & min points */
-   coord Xmin, Xmax, Ymin, Ymax, Zmin, Zmax; /* min & max values of co-ords */
-   coord Radius; /* radius of plan */
-   point Huge *p;
-   lid Huge *plid;
-   bool fData = 0;
-   bool (*checkendfn)(point *) = last_leg;
-
-   /* if no data, return BIG_SCALE as scale factor */
-   if (!pplid || !*pplid) {
-      pplid = pplid2;
-      pplid2 = NULL;
-   }
-
-   if (!pplid || !*pplid) return (BIG_SCALE);
-
-xxx:
-   for ( ; *pplid; pplid++) {
-      plid = *pplid;
-      p = plid->pData;
-
-      if (!p || checkendfn(p)) continue;
-
-      if (!fData) {
-         Xmin = Xmax = p->X;
-         Ymin = Ymax = p->Y;
-         Zmin = Zmax = p->Z;
-         fData = 1;
-      }
-
-      for ( ; plid; plid = plid->next) {
-         p = plid->pData;
-         for ( ; !checkendfn(p); p++) {
-            if (p->X < Xmin) Xmin = p->X; else if (p->X > Xmax) Xmax = p->X;
-            if (p->Y < Ymin) Ymin = p->Y; else if (p->Y > Ymax) Ymax = p->Y;
-            if (p->Z < Zmin) Zmin = p->Z; else if (p->Z > Zmax) Zmax = p->Z;
-         }
-      }
-   }
-   if (pplid2) {
-      pplid = pplid2;
-      pplid2 = NULL;
-      checkendfn = last_stn;
-      goto xxx;
-   }
-   /* centre survey in each (spatial) dimension */
-   Xorg = (Xmin + Xmax)/2; Yorg = (Ymin + Ymax)/2; Zorg = (Zmin + Zmax)/2;
-   Xrad = (Xmax - Xmin)/2; Yrad = (Ymax - Ymin)/2; Zrad = (Zmax - Zmin)/2;
-   Radius = (coord)(SQRT(sqrd((double)Xrad) + sqrd((double)Yrad)));
-
-   if (Radius == 0 && Zrad == 0) return (BIG_SCALE);
-
-   return ((0.5f * 0.99f
-	    * min((float)xcMac, (float)ycMac / (float)fabs(y_stretch)))
-	   / (float)(max(Radius, Zrad)));
-}
-
-/***************************************************************************/
-
 /* things in here get reset by DELETE key */
 void
 set_defaults(void)
@@ -486,7 +406,9 @@ process_key(void) /* and mouse! */
       }
       if (locked == 0) {
 	 switch (iKeycode) {
-	  case QUOTE: case SHIFT_QUOTE:
+	  case '\'': case '@': case '"':
+	    /* shift-' varies with keyboard layout
+	     * so check both '@' (UK) and '"' (US) */
 	    if (fRevSense) goto tiltup;
 	    tiltdown:
 	    if (elev > -90.0f) {
@@ -495,7 +417,7 @@ process_key(void) /* and mouse! */
 	       fRedraw = fTrue;
 	    }
 	    break;
-	  case '/': case'?':
+	  case '/': case '?':
 	    if (fRevSense) goto tiltdown;
 	    tiltup:
 	    if (elev < 90.0f) {
@@ -542,10 +464,10 @@ process_key(void) /* and mouse! */
 	 }
       }
       switch (iKeycode) {
-       case ']': case'}':
+       case ']': case '}':
          sc = fRevSense ? sc / ZoomFactor : sc * ZoomFactor;
          fRedraw = fTrue; break;
-       case '[': case'{':
+       case '[': case '{':
          sc = fRevSense ? sc * ZoomFactor : sc / ZoomFactor;
          fRedraw = fTrue; break;
        case 'U': translate_data(0, 0, (coord)nStep); fRedraw = fTrue; break;
@@ -683,7 +605,7 @@ show_help(void)
 	{"                    R : [R]everse direction of rotation", FLAG_ALWAYS},
 	{"          Enter,Space : Start/Stop auto-rotation", FLAG_ALWAYS},
 	{"                  C,V : Rotate cave one step clockwise/anti", FLAG_ALWAYS},
-	{"                  :,/ : Higher/Lower viewpoint", FLAG_ALWAYS},
+	{"                  ',/ : Higher/Lower viewpoint", FLAG_ALWAYS},
 	{"                  ],[ : Zoom In/Out", FLAG_ALWAYS},
 	{"                  U,D : Cave [U]p/[D]own", FLAG_ALWAYS},
 	{"              N,S,E,W : Cave [N]orth/[S]outh/[E]ast/[W]est", FLAG_ALWAYS},

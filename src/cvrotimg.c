@@ -1,7 +1,7 @@
 /* > cvrotimg.c
  * Reads a .3d image file into two linked lists of blocks, suitable for use
  * by caverot.c
- * Copyright (C) 1993-1997 Olly Betts
+ * Copyright (C) 1993-1999 Olly Betts
  */
 
 #ifdef HAVE_CONFIG_H
@@ -172,4 +172,83 @@ load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns)
    *ppStns = AddLid(plidStnHead, pStnData, DATA_STNS);
 
    return (result != img_BAD); /* return fTrue iff image was OK */
+}
+
+coord Xorg, Yorg, Zorg; /* position of centre of survey */
+coord Xrad, Yrad, Zrad; /* "radii" */
+
+#define BIG_SCALE 1e3f
+
+static bool
+last_leg(point *p)
+{
+   return (p->_.action == STOP);
+}
+
+static bool
+last_stn(point *p)
+{
+   return (p->_.str == NULL);
+}
+
+extern int xcMac, ycMac; /* FIXME */
+
+float
+scale_to_screen(lid Huge **pplid, lid Huge **pplid2)
+{
+   /* run through data to find max & min points */
+   coord Xmin, Xmax, Ymin, Ymax, Zmin, Zmax; /* min & max values of co-ords */
+   coord Radius; /* radius of plan */
+   point Huge *p;
+   lid Huge *plid;
+   bool fData = 0;
+   bool (*checkendfn)(point *) = last_leg;
+
+   /* if no data, return BIG_SCALE as scale factor */
+   if (!pplid || !*pplid) {
+      pplid = pplid2;
+      pplid2 = NULL;
+   }
+
+   if (!pplid || !*pplid) return (BIG_SCALE);
+
+xxx:
+   for ( ; *pplid; pplid++) {
+      plid = *pplid;
+      p = plid->pData;
+
+      if (!p || checkendfn(p)) continue;
+
+      if (!fData) {
+         Xmin = Xmax = p->X;
+         Ymin = Ymax = p->Y;
+         Zmin = Zmax = p->Z;
+         fData = 1;
+      }
+
+      for ( ; plid; plid = plid->next) {
+         p = plid->pData;
+         for ( ; !checkendfn(p); p++) {
+            if (p->X < Xmin) Xmin = p->X; else if (p->X > Xmax) Xmax = p->X;
+            if (p->Y < Ymin) Ymin = p->Y; else if (p->Y > Ymax) Ymax = p->Y;
+            if (p->Z < Zmin) Zmin = p->Z; else if (p->Z > Zmax) Zmax = p->Z;
+         }
+      }
+   }
+   if (pplid2) {
+      pplid = pplid2;
+      pplid2 = NULL;
+      checkendfn = last_stn;
+      goto xxx;
+   }
+   /* centre survey in each (spatial) dimension */
+   Xorg = (Xmin + Xmax)/2; Yorg = (Ymin + Ymax)/2; Zorg = (Zmin + Zmax)/2;
+   Xrad = (Xmax - Xmin)/2; Yrad = (Ymax - Ymin)/2; Zrad = (Zmax - Zmin)/2;
+   Radius = (coord)(SQRT(sqrd((double)Xrad) + sqrd((double)Yrad)));
+
+   if (Radius == 0 && Zrad == 0) return (BIG_SCALE);
+
+   return ((0.5f * 0.99f
+	    * min((float)xcMac, (float)ycMac / (float)fabs(y_stretch)))
+	   / (float)(max(Radius, Zrad)));
 }

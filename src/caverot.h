@@ -35,8 +35,6 @@
 # error Operating System not known
 #endif
 
-extern coord Xorg, Yorg, Zorg; /* position of centre of survey */
-extern coord Xrad, Yrad, Zrad; /* "radii" */
 extern float scDefault;
 
 extern bool fAllNames;
@@ -55,6 +53,8 @@ typedef struct LID {
    point Huge *pData;
    struct LID Huge *next;
 } lid; /* List Item Data */
+
+#include "cvrotimg.h"
 
 /* These are the datatype-s */
 #define DATA_LEGS 0
