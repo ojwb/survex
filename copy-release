@@ -12,7 +12,7 @@ FILES="survex-$VRR.i386.rpm survex-aven-$VRR.i386.rpm survex-$VRR.src.rpm\
  survex-$VER.tar.gz survex-dos-$VER.exe survex-win32-$VER.exe\
  svxdoc-doswin-$VER.exe svxdoc-riscos-$VER.zip"
 
-for a in survex-riscos-$VER.zip survex-dos286-$VER.zip; do
+for a in survex-riscos-$VER.zip survex-dos286-$VER.exe; do
    if test -f $a ; then
       FILES="$FILES $a"
    fi
