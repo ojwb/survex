@@ -3899,11 +3899,9 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	    else
 		OnShiftDisplayDown();
 	    break;
-#if 0
 	case WXK_ESCAPE:
-	    SetThere();
+	    OnCancelDistLine();
 	    break; 
-#endif
 	default:
 	    e.Skip();
     }

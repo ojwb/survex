@@ -224,15 +224,15 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
     // (required by Windows for this type of icon)
-    SetIcon(wxIcon("aaaaaAven")); 
+    SetIcon(wxIcon("aaaaaAven"));
+
+    DragAcceptFiles(true);
 #endif
 
     InitialisePensAndBrushes();
     CreateMenuBar();
     CreateToolBar();
     CreateSidePanel();
-
-    DragAcceptFiles(true);
 
 #ifdef __X__
     int x;
