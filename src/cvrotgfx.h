@@ -113,14 +113,14 @@ extern BITMAP *BitMap, *BitMapDraw;
 
 # ifdef MSC
 #  define shift_pressed() (_bios_keybrd(_KEYBRD_SHIFTSTATUS) & 0x03)
-/* FIXME guess... #  define ctrl_pressed() (_bios_keybrd(_KEYBRD_SHIFTSTATUS) & 0x0c) */
+/* Guess: #  define ctrl_pressed() (_bios_keybrd(_KEYBRD_SHIFTSTATUS) & 0x0c) */
 # elif defined(ALLEGRO)
 #  define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
 #  define ctrl_pressed() (key_shifts & KB_CTRL_FLAG)
 # else
 #  define R_SHIFT 0x01
 #  define L_SHIFT 0x02
-/* FIXME 
+/* Guesses:
 #  define R_CTRL  0x04
 #  define L_CTRL  0x08
 */
