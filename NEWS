@@ -1,6 +1,8 @@
 * Fixed potential problem when reading or writing a 3d file which couldn't
   be opened.
 
+* Better handling of PLT files which have a D command before any M command.
+
 Changes in 1.0.9:
 
 * aven: Fixed jerky start when auto-rotation begins.

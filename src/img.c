@@ -1150,8 +1150,7 @@ skip_to_N:
 		  return img_BAD;
 	       }
 	       while (line[len] > 32) ++len;
-	       if (pimg->survey && pimg->label_len == 0)
-		  pimg->pending = -1;
+	       if (pimg->label_len == 0) pimg->pending = -1;
 	       if (!check_label_space(pimg, len + 1)) {
 		  osfree(line);
 		  img_errno = IMG_OUTOFMEMORY;
@@ -1173,10 +1172,17 @@ skip_to_N:
 		  goto skip_to_N;
 	       }
 	       if (ch == 'D' && pimg->pending == -1) {
-		  fpos = ftell(pimg->fh) - 1;
-		  fseek(pimg->fh, pimg->start, SEEK_SET);
-		  ch = getc(pimg->fh);
-		  pimg->pending = 0;
+		  if (pimg->survey) {
+		     fpos = ftell(pimg->fh) - 1;
+		     fseek(pimg->fh, pimg->start, SEEK_SET);
+		     ch = getc(pimg->fh);
+		     pimg->pending = 0;
+		  } else {
+		     /* If a file actually has a 'D' before any 'M', then
+		      * pretend the 'D' is an 'M' - one of the examples
+		      * in the docs was like this! */
+		     ch = 'M';
+		  }
 	       }
 	       line = getline_alloc(pimg->fh);
 	       if (!line) {
