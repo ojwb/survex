@@ -3,7 +3,7 @@
 # Makefile for survex support files
 
 check-local:
-	perl $(srcdir)/checkshortcut.pl $(msg_files)
+	srcdir=$(srcdir) perl $(srcdir)/checkshortcut.pl $(msg_files)
 
 SUBDIRS = icons
 
