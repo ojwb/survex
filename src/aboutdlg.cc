@@ -73,8 +73,8 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     } while (!l.empty());
 
     wxStaticText* licence = new wxStaticText(this, 506, licence_str);
-    wxButton* close = new wxButton(this, wxID_OK, wxString(msg(/*Close*/204)));
-    close->SetDefault();
+    wxButton* ok = new wxButton(this, wxID_OK, wxGetTranslation("OK"));
+    ok->SetDefault();
 
     wxBitmap& bm = wxGetApp().GetAboutBitmap();
     if (bm.Ok()) {
@@ -98,7 +98,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 
     wxBoxSizer* bottom = new wxBoxSizer(wxHORIZONTAL);
     bottom->Add(5, 5, 1);
-    bottom->Add(close, 0, wxRIGHT | wxBOTTOM, 15);
+    bottom->Add(ok, 0, wxRIGHT | wxBOTTOM, 15);
     vert->Add(bottom, 0, wxEXPAND | wxLEFT | wxRIGHT, 0);
     vert->SetMinSize(0, bm.GetHeight());
 
