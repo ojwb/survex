@@ -95,7 +95,9 @@ static bool fSLegs = fFalse;   /* Draw surface legs? */
 static bool fStns = fFalse;  /* Draw crosses at stns? */
 static bool fAll = fFalse;  /* Draw all during movement? */
 static bool fRevSense = fFalse; /* Movements relate to cave/observer */
+/* FIXME: actually set fSlowMachine */
 static bool fSlowMachine = fFalse; /* Controls slick tilt, etc */
+static bool fRevRot = fFalse; /* auto-rotate backwards */
 static float elev;             /* angle of elevation of viewpoint */
 static float nStepsize;        /* stepsize for movements */
 static bool f3D;              /* flag indicating red/green 3d view mode */
@@ -455,11 +457,17 @@ process_key(void) /* and mouse! */
 	 /* no restriction, or plan only */
 	 switch (iKeycode) {
 /*        case '3': case SHIFT_3:    f3D = !f3D; break; */
-	  case 'Z': if (degViewStep < 45) degViewStep *= 1.2f; break;
-	  case 'X': degViewStep /= 1.2f; break;
+	  case 'Z':
+	    degViewStep *= 1.2f;
+	    if (degViewStep >= 45) degViewStep = 45;
+	    break;
+	  case 'X':
+	    degViewStep /= 1.2f;
+	    if (degViewStep <= 0.1) degViewStep = 0.1;
+	    break;
 	  case 'C': degView -= degViewStep * Accel; fChanged = fTrue; break;
 	  case 'V': degView += degViewStep * Accel; fChanged = fTrue; break;
-	  case 'R': degViewStep = -degViewStep; break;
+	  case 'R': fRevRot = !fRevRot; break;
 	  case ' ':            fRotating = fFalse; break;
 	  case RETURN_KEY:     fRotating = fTrue; break;
 	 }
@@ -472,7 +480,7 @@ process_key(void) /* and mouse! */
 	    if (fRevSense) goto tiltup;
 	    tiltdown:
 	    if (elev > -90.0f) {
-	       elev -= degViewStep*Accel;
+	       elev -= degViewStep * Accel;
 	       if (elev < -90.0f) elev = -90.0f;
 	       fChanged = fTrue;
 	    }
@@ -643,7 +651,11 @@ process_key(void) /* and mouse! */
 
    /* rotate by current stepsize */
    if (fRotating) {
-      degView += degViewStep*tsc;
+      if (fRevRot) {
+	 degView -= degViewStep * tsc;
+      } else {
+	 degView += degViewStep * tsc;
+      }
       fChanged = fTrue; /* and force a redraw */
    }
 

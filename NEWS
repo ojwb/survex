@@ -13,7 +13,9 @@ Changes in 0.97-prerelease4:
 * caverot/xcaverot: Middle button now tilts cave by dragging rather
   than toggling plan/elevation.
 
-* caverot: continue setup in background while help page is displayed.
+* caverot: continue setup in background while help page is displayed;
+  "R" (Reverse Rotation) now only affects the auto-rotation - it used
+  to affect "C", "V", "/", and "'".
 
 * cavern: unused fix point warnings now work for stations fixed with
   error estimates; added test cases for this.
