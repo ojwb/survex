@@ -26,6 +26,7 @@
 #include <math.h>
 
 #include "3ddefs.h"
+#include "debug.h"
 
 twig *rhizome, *limb;
 char *firstfilename, *startingdir;
@@ -74,25 +75,20 @@ static int statcount = 1; /* this is the total number of things added */
 static int
 scount(twig *twiglet)
 {
+  twig *lib;
+
   if (twiglet->from) return 1;
 
-  if (twiglet->to) {
-    twig *lib = twiglet->down;
-    twiglet->count = 0;
-    while (lib->right) {
-      lib = lib->right;
-      twiglet->count += scount(lib);
-    }
-    return (twiglet->count ? 1 : 0);
+  ASSERT(twiglet->to);
+    
+  lib = twiglet->down;
+  twiglet->count = 0;
+  while (lib->right) {
+    lib = lib->right;
+    twiglet->count += scount(lib);
   }
-
-  /* errr no - this should happen for fixed points... */
-  printf("This should not happen. Ever\n");
-  return 1;
-  /* we should never reach above function - it's just here to  *
-   * cheer up the compiler*/
+  return (twiglet->count ? 1 : 0);
 }
-
 
 void
 cave_write_title(const char *title, img *pimg)
