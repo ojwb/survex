@@ -4,6 +4,7 @@
 //  Core drawing code for Aven, with both standard 2D and OpenGL functionality.
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
+//  Copyright (C) 2001-2002 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,10 +23,11 @@
 
 #include <float.h>
 
+#include "aven.h"
 #include "gfxcore.h"
 #include "mainfrm.h"
 #include "message.h"
-#include "aven.h"
+#include "useful.h"
 
 #include <wx/confbase.h>
 #include <wx/image.h>
@@ -155,6 +157,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_FixedPts = false;
     m_ExportedPts = false;
     m_Grid = false;
+    m_Metric = true;
+    m_Degrees = true;
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
 #ifdef AVENPRES
@@ -1590,7 +1594,11 @@ void GfxCore::Draw2dIndicators()
     height = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h;
 
     if (m_Compass) {
-	str = wxString::Format("%03d", int(m_PanAngle * 180.0 / M_PI));
+	if (m_Degrees) {
+	    str = wxString::Format("%03d", int(m_PanAngle * 180.0 / M_PI));
+	} else {
+	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / M_PI));
+	}	    
 	m_DrawDC.GetTextExtent(str, &w, &h);
 	m_DrawDC.DrawText(str, pan_centre_x + width / 2 - w, height);
 	str = wxString(msg(/*Facing*/203));
@@ -1599,7 +1607,12 @@ void GfxCore::Draw2dIndicators()
     }
 
     if (m_Clino) {
-	int angle = int(-m_TiltAngle * 180.0 / M_PI);
+	int angle;
+	if (m_Degrees) {
+	    angle = int(-m_TiltAngle * 180.0 / M_PI);
+	} else {
+	    angle = int(-m_TiltAngle * 200.0 / M_PI);
+	}	    
 	str = angle ? wxString::Format("%+03d", angle) : wxString("00");
 	m_DrawDC.GetTextExtent(str, &w, &h);
 	m_DrawDC.DrawText(str, elev_centre_x + width / 2 - w, height);
@@ -1832,7 +1845,6 @@ void GfxCore::SimpleDrawNames()
 
 void GfxCore::DrawDepthbar()
 {
-    // metric
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
 
@@ -1895,9 +1907,7 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 
     if (size_snap == 0.0) {
 	str = "0";
-    }
-    else {
-	// metric
+    } else if (m_Metric) {
 #ifdef SILLY_UNITS
 	if (size_snap < 1e-12) {
 	    str = wxString::Format("%.3gpm", size_snap * 1e12);
@@ -1929,6 +1939,22 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 	    str = wxString::Format(scalebar ? "%.fkm" : "%.2fkm", size_snap * 1e-3);
 #endif
 	}
+    } else {
+	size_snap /= METRES_PER_FOOT;
+	if (scalebar) {
+	    Double inches = size_snap * 12;
+	    if (inches < 1.0) {
+		str = wxString::Format("%.3gin", inches);
+	    } else if (size_snap < 1.0) {
+		str = wxString::Format("%.fin", inches);
+	    } else if (size_snap < 5279.5) {
+		str = wxString::Format("%.fft", size_snap);
+	    } else {
+		str = wxString::Format("%.f miles", size_snap / 5280.0);
+	    }
+	} else {
+	    str = wxString::Format("%.fft", size_snap);
+	}
     }
 
     return negative ? wxString("-") + str : str;
@@ -1945,17 +1971,28 @@ void GfxCore::DrawScalebar()
     int x_size = m_XSize;
 #endif
 
-    Double m_across_screen = Double(x_size / m_Params.scale);
+    Double across_screen = Double(x_size / m_Params.scale);
+    Double multiplier = 1.0;
 
-    // Calculate the length of the scale bar in metres.
-    Double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
-    Double t = m_across_screen * 0.75 / size_snap;
+    if (!m_Metric) {
+	across_screen /= METRES_PER_FOOT;
+	multiplier = METRES_PER_FOOT;
+	if (across_screen >= 5280.0 / 0.75) {
+	    across_screen /= 5280.0;
+	    multiplier *= 5280.0;
+	}
+    }
+    
+    // Calculate the length of the scale bar.
+    Double size_snap = pow(10.0, floor(log10(0.75 * across_screen)));
+    Double t = across_screen * 0.75 / size_snap;
     if (t >= 5.0) {
 	size_snap *= 5.0;
-    }
-    else if (t >= 2.0) {
+    } else if (t >= 2.0) {
 	size_snap *= 2.0;
     }
+
+    if (!m_Metric) size_snap *= multiplier;
 
     // Actual size of the thing in pixels:
 #ifdef AVENGL
@@ -2336,8 +2373,8 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	int dx = x1 - x0;
 	int dy = y1 - y0;
 
-	if (int(sqrt(dx*dx + dy*dy)) <= 4.0 && ((info.label->IsSurface() && m_Surface) ||
-						(info.label->IsUnderground() && m_Legs))) {
+	if (dx*dx + dy*dy < 25.0 && ((info.label->IsSurface() && m_Surface) ||
+				     (info.label->IsUnderground() && m_Legs))) {
 	    m_Parent->SetMouseOverStation(info.label);
 	    if (centre) {
 		CentreOn(info.label->GetX(), info.label->GetY(), info.label->GetZ());
@@ -2377,8 +2414,10 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 
 	m_Parent->SetCoords(cx / m_Params.scale - m_Params.translation.x + m_Parent->GetXOffset(),
 			    cy / m_Params.scale - m_Params.translation.y + m_Parent->GetYOffset());
-    }
-    else {
+    } else if (m_TiltAngle == 0.0) {
+	int z = -(event.GetY() - m_YCentre - m_Params.display_shift.y);
+	m_Parent->SetAltitude(z / m_Params.scale - m_Params.translation.z + m_Parent->GetZOffset());
+    } else {
 	m_Parent->ClearCoords();
     }
 
@@ -3229,6 +3268,30 @@ void GfxCore::OnViewGridUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnIndicatorsUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_PlotData);
+}
+
+void GfxCore::OnToggleMetric()
+{
+    m_Metric = !m_Metric;
+    Refresh();    
+}
+
+void GfxCore::OnToggleMetricUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData);
+    cmd.Check(m_Metric);
+}
+
+void GfxCore::OnToggleDegrees()
+{
+    m_Degrees = !m_Degrees;
+    Refresh();    
+}
+
+void GfxCore::OnToggleDegreesUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData);
+    cmd.Check(m_Degrees);
 }
 
 //

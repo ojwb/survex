@@ -1,5 +1,11 @@
 Changes in 1.0.3:
 
+* aven: you can now select distances to be displayed in feet (or miles when
+  you zoom right out) instead of metres, and angles to be in grads instead
+  of degrees.
+
+* aven: show altitude of mouse pointer when in elevation view.
+
 * cad3d: fixed bug which caused --plt to crash on some platforms.
 
 * print*: added "Printing to `XXX'..." message to say where output is being

@@ -100,6 +100,8 @@ enum {
     menu_VIEW_ANTIALIAS,
     menu_VIEW_SOLID_SURFACE,
 #endif
+    menu_VIEW_METRIC,
+    menu_VIEW_DEGREES,
     menu_PRES_CREATE,
     menu_PRES_GO,
     menu_PRES_GO_BACK,
@@ -390,6 +392,12 @@ public:
 #endif
     // end of horrible bodges
 
+    void OnToggleMetric(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnToggleMetric(); }
+    void OnToggleDegrees(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnToggleDegrees(); }
+    
+    void OnToggleMetricUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleMetricUpdate(event); }
+    void OnToggleDegreesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleDegreesUpdate(event); }
+    
     void OnViewSidePanelUpdate(wxUpdateUIEvent& event);
     void OnViewSidePanel(wxCommandEvent& event);
     void ToggleSidePanel();
@@ -458,6 +466,7 @@ public:
 
     void ClearCoords();
     void SetCoords(Double x, Double y);
+    void SetAltitude(Double z);
 
     Double GetXOffset() const { return m_Offsets.x; }
     Double GetYOffset() const { return m_Offsets.y; }
@@ -493,6 +502,7 @@ public:
 	return m_Labels.end();
     }
 
+    void ShowInfo(LabelInfo *label);
     void DisplayTreeInfo(wxTreeItemData* data);
     void TreeItemSelected(wxTreeItemData* data);
 

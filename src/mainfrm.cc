@@ -156,6 +156,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbar)
     EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
     EVT_MENU(menu_VIEW_SIDE_PANEL, MainFrm::OnViewSidePanel)
+    EVT_MENU(menu_VIEW_METRIC, MainFrm::OnToggleMetric)
+    EVT_MENU(menu_VIEW_DEGREES, MainFrm::OnToggleDegrees)
 #ifdef AVENGL
     EVT_MENU(menu_FILE_OPEN_TERRAIN, MainFrm::OnFileOpenTerrain)
     EVT_MENU(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAlias)
@@ -211,6 +213,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 #endif
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
     EVT_UPDATE_UI(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLineUpdate)
+    EVT_UPDATE_UI(menu_VIEW_METRIC, MainFrm::OnToggleMetricUpdate)
+    EVT_UPDATE_UI(menu_VIEW_DEGREES, MainFrm::OnToggleDegreesUpdate)
 END_EVENT_TABLE()
 
 class LabelCmp {
@@ -382,6 +386,22 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight Fi@xed Points*/295), "", true);
     viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight Ex&ported Points*/296), "", true);
     viewmenu->AppendSeparator();
+    wxMenu* indmenu = new wxMenu;
+    indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "", true);
+    indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "", true);
+    indmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "", true);
+    indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "", true);
+    viewmenu->Append(menu_VIEW_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
+    viewmenu->Append(menu_VIEW_SIDE_PANEL, GetTabMsg(/*Side P@anel*/337), "", true);
+#ifdef AVENGL
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*S@moothed Survey Legs*/298), "", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*Soli@d Surface*/330), "", true);
+#endif
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_METRIC, GetTabMsg(/*Metric*/342), "", true);
+    viewmenu->Append(menu_VIEW_DEGREES, GetTabMsg(/*Degrees*/343), "", true);
 
 #ifdef AVENPRES
     wxMenu* presmenu = new wxMenu;
@@ -396,20 +416,6 @@ void MainFrm::CreateMenuBar()
     presmenu->AppendSeparator();
     presmenu->Append(menu_PRES_ERASE, GetTabMsg(/*@Erase Last Position*/315));
     presmenu->Append(menu_PRES_ERASE_ALL, GetTabMsg(/*Er@ase All Positions*/316));
-#endif
-
-    wxMenu* indmenu = new wxMenu;
-    indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "", true);
-    indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "", true);
-    indmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "", true);
-    indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "", true);
-    viewmenu->Append(menu_VIEW_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
-    viewmenu->Append(menu_VIEW_SIDE_PANEL, GetTabMsg(/*Side P@anel*/337), "", true);
-#ifdef AVENGL
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*S@moothed Survey Legs*/298), "", true);
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*Soli@d Surface*/330), "", true);
 #endif
 
     wxMenu* ctlmenu = new wxMenu;
@@ -1289,78 +1295,138 @@ void MainFrm::ClearCoords()
 void MainFrm::SetCoords(Double x, Double y)
 {
     wxString str;
-    str.Printf(msg(/*  %d E, %d N*/338), (int)x, (int)y);
+    if (m_Gfx->m_Metric) {
+	str.Printf(msg(/*  %d E, %d N*/338), int(x), int(y));
+    } else {
+	str.Printf(msg(/*  %d E, %d N*/338),
+		   int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
+    }
     m_Coords->SetLabel(str);
+}
+
+void MainFrm::SetAltitude(Double z)
+{
+    wxString str;
+    if (m_Gfx->m_Metric) {
+	str.Printf("  %s %dm", msg(/*Altitude*/335),                                               int(z));
+    } else {
+	str.Printf("  %s %dft", msg(/*Altitude*/335),
+		   int(z / METRES_PER_FOOT));
+    }
+    m_Coords->SetLabel(str);
+}
+
+void MainFrm::ShowInfo(LabelInfo *label)
+{
+    assert(m_Gfx);
+	
+    wxString str;
+    if (m_Gfx->m_Metric) {
+	str.Printf(msg(/*  %d E, %d N*/338),
+		   int(label->x + m_Offsets.x),
+		   int(label->y + m_Offsets.y));
+    } else {
+	str.Printf(msg(/*  %d E, %d N*/338),
+		   int((label->x + m_Offsets.x) / METRES_PER_FOOT),
+		   int((label->y + m_Offsets.y) / METRES_PER_FOOT));
+    }
+    m_StnCoords->SetLabel(str);
+    m_StnName->SetLabel(label->text);
+
+    if (m_Gfx->m_Metric) {
+	str.Printf("  %s %dm", msg(/*Altitude*/335),
+		   int(label->z + m_Offsets.z));
+    } else {
+	str.Printf("  %s %dft", msg(/*Altitude*/335),
+		   int((label->z + m_Offsets.z) / METRES_PER_FOOT));
+    }
+    m_StnAlt->SetLabel(str);
+    m_Gfx->SetHere(label->x, label->y, label->z);
+
+    wxTreeItemData* sel_wx;
+    bool sel = m_Tree->GetSelectionData(&sel_wx);
+    if (sel) {
+	TreeData *data = (TreeData*) sel_wx;
+
+	if (data->IsStation()) {
+	    LabelInfo* label2 = data->GetLabel();
+	    assert(label2);
+
+	    Double x0 = label2->x;
+	    Double x1 = label->x;
+	    Double dx = x1 - x0;
+	    Double y0 = label2->y;
+	    Double y1 = label->y;
+	    Double dy = y1 - y0;
+	    Double z0 = label2->z;
+	    Double z1 = label->z;
+	    Double dz = z1 - z0;
+
+	    Double d_horiz = sqrt(dx*dx + dy*dy);
+	    Double dr = sqrt(dx*dx + dy*dy + dz*dz);
+
+	    Double brg = atan2(dx, dy) * 180.0 / M_PI;
+	    if (brg < 0) {
+		brg += 360;
+	    }
+
+	    str.Printf(msg(/*From %s*/339), label2->text.c_str());
+	    m_Dist1->SetLabel(str);
+	    if (m_Gfx->m_Metric) {
+		str.Printf(msg(/*  H %d%s, V %d%s*/340),
+			   int(d_horiz), "m",
+			   int(dz), "m");
+	    } else {
+		str.Printf(msg(/*  H %d%s, V %d%s*/340),
+			   int(d_horiz / METRES_PER_FOOT), "m",
+			   int(dz / METRES_PER_FOOT), "m");
+	    }
+	    m_Dist2->SetLabel(str);
+	    wxString brg_unit;
+	    if (m_Gfx->m_Degrees) {
+		brg_unit = msg(/*&deg;*/344);
+	    } else {
+		brg *= 400.0 / 360.0;
+		brg_unit = msg(/*grad*/345);
+	    }
+	    if (brg < 0) {
+		brg += 360;
+	    }
+	    if (brg < 0) {
+		brg += 360;
+	    }
+	    if (m_Gfx->m_Metric) {
+		str.Printf(msg(/*  Dist. %d%s, Brg. %03d%s*/341),
+			   int(dr), "m", int(brg), brg_unit.c_str());
+	    } else {
+		str.Printf(msg(/*  Dist. %d%s, Brg. %03d%s*/341),
+			   int(dr / METRES_PER_FOOT), "ft", int(brg),
+			   brg_unit.c_str());
+	    }
+	    m_Dist3->SetLabel(str);
+	    m_Gfx->SetThere(x0, y0, z0);
+	} else {
+	    m_Gfx->SetThere(); // FIXME: not in SetMouseOverStation version?
+	}
+    }
 }
 
 void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
 {
     TreeData* data = (TreeData*) item;
 
-    if (data && data->IsStation()) {
-	LabelInfo* label = data->GetLabel();
-	wxString str;
-	// metric
-	str.Printf(msg(/*  %d E, %d N*/338),
-		   int(label->x + m_Offsets.x),
-		   int(label->y + m_Offsets.y));
-	m_StnCoords->SetLabel(str);
-	m_StnName->SetLabel(label->text);
-	// metric
-	str.Printf("  %s %dm", msg(/*Altitude*/335),
-		   int(label->z + m_Offsets.z));
-	m_StnAlt->SetLabel(str);
-	m_Gfx->SetHere(label->x, label->y, label->z);
-
-	wxTreeItemData* sel_wx;
-	bool sel = m_Tree->GetSelectionData(&sel_wx);
-	if (sel) {
-	    data = (TreeData*) sel_wx;
-
-	    if (data->IsStation()) {
-		LabelInfo* label2 = data->GetLabel();
-		assert(label2);
-
-		Double x0 = label2->x;
-		Double x1 = label->x;
-		Double dx = x1 - x0;
-		Double y0 = label2->y;
-		Double y1 = label->y;
-		Double dy = y1 - y0;
-		Double z0 = label2->z;
-		Double z1 = label->z;
-		Double dz = z1 - z0;
-
-		Double d_horiz = sqrt(dx*dx + dy*dy);
-
-		int brg = int(atan2(dx, dy) * 180.0 / M_PI);
-		if (brg < 0) {
-		    brg += 360;
-		}
-
-		str.Printf(msg(/*From %s*/339), label2->text.c_str());
-		m_Dist1->SetLabel(str);
-		// metric
-		str.Printf(msg(/*  H %dm, V %dm*/340), int(d_horiz), int(dz));
-		m_Dist2->SetLabel(str);
-		// metric
-		str.Printf(msg(/*  Dist. %dm, Brg. %03d&deg;*/341),
-			   int(sqrt(dx*dx + dy*dy + dz*dz)), brg);
-		m_Dist3->SetLabel(str);
-		m_Gfx->SetThere(x0, y0, z0);
-	    } else {
-		m_Gfx->SetThere();
-	    }
+    if (data) {
+	if (data->IsStation()) {
+	    ShowInfo(data->GetLabel());
+	} else {
+	    m_StnName->SetLabel("");
+	    m_StnCoords->SetLabel("");
+	    m_StnAlt->SetLabel("");
+	    m_Gfx->SetHere();
+	    m_Dist1->SetLabel("");
+	    m_Dist2->SetLabel("");
+	    m_Dist3->SetLabel("");
 	}
-    }
-    else if (!data) {
-	m_StnName->SetLabel("");
-	m_StnCoords->SetLabel("");
-	m_StnAlt->SetLabel("");
-	m_Gfx->SetHere();
-	m_Dist1->SetLabel("");
-	m_Dist2->SetLabel("");
-	m_Dist3->SetLabel("");
     }
 }
 
@@ -1637,65 +1703,9 @@ void MainFrm::OnHide(wxCommandEvent& event)
 
 void MainFrm::SetMouseOverStation(LabelInfo* label)
 {
-    //-- FIXME: share with code above
-
     if (label) {
-	wxString str;
-	// metric
-	str.Printf(msg(/*  %d E, %d N*/338), (int)(label->x + m_Offsets.x),
-		   (int) (label->y + m_Offsets.y));
-	m_StnCoords->SetLabel(str);
-	m_StnName->SetLabel(label->text);
-	// metric
-	str.Printf("  %s %dm", msg(/*Altitude*/335),
-		   (int) (label->z + m_Offsets.z));
-	m_StnAlt->SetLabel(str);
-	m_Gfx->SetHere(label->x, label->y, label->z);
-	m_Gfx->DisplaySpecialPoints();
-
-	wxTreeItemData* sel_wx;
-	bool sel = m_Tree->GetSelectionData(&sel_wx);
-	if (sel) {
-	    TreeData* data = (TreeData*) sel_wx;
-
-	    if (data->IsStation()) {
-		LabelInfo* label2 = data->GetLabel();
-		assert(label2);
-
-		Double x0 = label2->x;
-		Double x1 = label->x;
-		Double dx = x1 - x0;
-		Double y0 = label2->y;
-		Double y1 = label->y;
-		Double dy = y1 - y0;
-		Double z0 = label2->z;
-		Double z1 = label->z;
-		Double dz = z1 - z0;
-
-		Double d_horiz = sqrt(dx*dx + dy*dy);
-
-		int brg = int(atan2(dx, dy) * 180.0 / M_PI);
-		if (brg < 0) {
-		    brg += 360;
-		}
-
-		str.Printf(msg(/*From %s*/339), label2->text.c_str());
-		m_Dist1->SetLabel(str);
-
-		// metric
-		str.Printf(msg(/*  H %dm, V %dm*/340), int(d_horiz), int(dz));
-		m_Dist2->SetLabel(str);
-
-		// metric
-		str.Printf(msg(/*  Dist. %dm, Brg. %03d&deg;*/341),
-			   int(sqrt(dx*dx + dy*dy + dz*dz)), brg);
-		m_Dist3->SetLabel(str);
-
-		m_Gfx->SetThere(x0, y0, z0);
-	    }
-	}
-    }
-    else {
+	ShowInfo(label);
+    } else {
 	m_StnName->SetLabel("");
 	m_StnCoords->SetLabel("");
 	m_StnAlt->SetLabel("");

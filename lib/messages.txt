@@ -2751,21 +2751,21 @@ ca:339 Des de %s
 es:339 Desde %s
 it:339 Da %s
 #
-en:340 "  H %dm, V %dm"
-fr:340 "  H %dm, V %dm"
-de:340 "  H %dm, V %dm"
-pt:340 "  H %dm, V %dm"
-ca:340 "  H %dm, V %dm"
-es:340 "  H %dm, V %dm"
-it:340 "  O %dm, V %dm"
+en:340 "  H %d%s, V %d%s"
+fr:340 "  H %d%s, V %d%s"
+de:340 "  H %d%s, V %d%s"
+pt:340 "  H %d%s, V %d%s"
+ca:340 "  H %d%s, V %d%s"
+es:340 "  H %d%s, V %d%s"
+it:340 "  O %d%s, V %d%s"
 #
-en:341 "  Dist %dm, Brg %03d&deg;"
-fr:341 "  Dist %dm, Azim %03d&deg;" 
-de:341 "  Dist %dm, Richt. %03d&deg;"
-pt:341 "  Dist %dm, Azim %03d&deg;"
-ca:341 "  Dist %dm, Azim %03d&deg;" 
-es:341 "  Dist %dm, Azim %03d&deg;"
-it:341 "  Dist %dm, Azm. %03d&deg;"
+en:341 "  Dist %d%s, Brg %03d%s"
+fr:341 "  Dist %d%s, Azim %03d%s" 
+de:341 "  Dist %d%s, Richt. %03d%s"
+pt:341 "  Dist %d%s, Azim %03d%s"
+ca:341 "  Dist %d%s, Azim %03d%s" 
+es:341 "  Dist %d%s, Azim %03d%s"
+it:341 "  Dist %d%s, Azm. %03d%s"
 # tickable menu item in View menu
 en:342 @Metric
 fr:342 @M&eacute;trique
@@ -2780,6 +2780,17 @@ pt:343 G@raus
 ca:343 G@raus
 es:343 @Grados
 it:343 Gra@di
+# a degree sign...
+en:344 &deg;
+fr:344 &deg;
+de:344 &deg;
+pt:344 &deg;
+ca:344 &deg;
+es:344 &deg;
+it:344 &deg;
+# try to make this as short as possible...
+en:345 grad
+de:345 Neugrad
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s
