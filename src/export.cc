@@ -394,6 +394,9 @@ find_name(const img_point *p)
    return "?";
 }
 
+static bool to_close = 0;
+static bool close_g = 0;
+
 static void
 svg_header(void)
 {
@@ -407,10 +410,9 @@ svg_header(void)
            (max_x - min_x) * factor, (max_y - min_y) * factor );
    fprintf(fh, "<g transform=\"translate(%.3f %.3f)\">\n",
            min_x * -factor, max_y * factor);
+   to_close = 0;
+   close_g = 0;
 }
-
-static bool to_close = 0;
-static bool close_g = 0;
 
 static void
 svg_start_pass(int layer)
@@ -440,7 +442,7 @@ svg_move(const img_point *p)
    if (to_close) {
       fprintf(fh, "\"/>\n");
    }
-   fprintf(fh, "<path d=\"M %.3f %.3f", p->x * factor, p->y * -factor);
+   fprintf(fh, "<path d=\"M%.3f %.3f", p->x * factor, p->y * -factor);
    to_close = 1;
 }
 
@@ -449,7 +451,7 @@ svg_line(const img_point *p1, const img_point *p, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    p1 = p1; /* unused */
-   fprintf(fh, "L%.3f %.3f", p->x * factor, p->y * factor);
+   fprintf(fh, "L%.3f %.3f", p->x * factor, p->y * -factor);
    to_close = 1;
 }
 
@@ -458,7 +460,7 @@ svg_label(const img_point *p, const char *s, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
-           p->x * factor, p->y * factor);
+           p->x * factor, p->y * -factor);
    fprintf(fh, s);
    fprintf(fh, "</text>\n");
    set_name(p, s);
@@ -478,13 +480,16 @@ svg_cross(const img_point *p, bool fSurface)
 }
 
 static void
-svg_footer(void) ////
+svg_footer(void)
 {
    if (to_close) {
       fprintf(fh, "\"/>\n");
       to_close = 0;
    }
-   fprintf(fh, "</g>\n");
+   if (close_g) {
+      fprintf(fh, "</g>\n");
+   }
+   close_g = 1;
    fprintf(fh, "</g>\n</svg>");
 }
 
@@ -803,8 +808,13 @@ Export(const wxString &fnm_out, const MainFrm * mainfrm,
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
 
    while (*pass) {
-      if ((*pass & LEGS) && legs) {
-	 start_pass(*pass);
+      bool legs_this_pass = ((*pass & LEGS) && legs);
+      bool crosses_this_pass = ((*pass & STNS) && crosses);
+      bool labels_this_pass = ((*pass & LABELS) && labels);
+      if (legs_this_pass || crosses_this_pass || labels_this_pass) {
+	  start_pass(*pass);
+      }
+      if (legs_this_pass) {
 	 for (int band = 0; band < mainfrm->GetNumDepthBands(); ++band) {
 	     list<PointInfo*>::const_iterator pos = mainfrm->GetPoints(band);
 	     list<PointInfo*>::const_iterator end = mainfrm->GetPointsEnd(band);
@@ -844,7 +854,7 @@ Export(const wxString &fnm_out, const MainFrm * mainfrm,
 	     }
 	 }
       }
-      if (((*pass & STNS) && crosses) || ((*pass & LABELS) && labels)) {
+      if (crosses_this_pass || labels_this_pass) {
 	list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
 	list<LabelInfo*>::const_iterator end = mainfrm->GetLabelsEnd();
 	for ( ; pos != end; ++pos) {
@@ -871,9 +881,9 @@ Export(const wxString &fnm_out, const MainFrm * mainfrm,
 	    /* Use !UNDERGROUND as the criterion - we want stations where
 	     * a surface and underground survey meet to be in the
 	     * underground layer */
-	    if ((*pass & LABELS) && labels)
+	    if (labels_this_pass)
 		label(&p, (*pos)->GetText(), !(*pos)->IsUnderground());
-	    if ((*pass & STNS) && crosses)
+	    if (crosses_this_pass)
 		cross(&p, !(*pos)->IsUnderground());
 	}
       }
