@@ -143,19 +143,21 @@ pt:  4 alerta
 ca:  4 alerta
 es:  4 alerta
 it:  4 avvertimento
-#FIXME translate
 en:  5 "In file included from "
+fr:  5 "Dans le fichier inclus depuis "
 # we really want the filename/line number at the end (so error parsing editors
 # can follow), so the natural translation:
-#"In von %s:%d: aus eingelesener Datei"
+#"In von %s:%d: aus eingelesener Datei "
 # isn't ideal.  This is "clumsy but workable":
 de:  5 "In eingelesener Datei ausgehend von "
 pt:  5 "No arquivo inclu&iacute;do em "
 ca:  5 "Al fitxer incl&ograve;s des de "
 es:  5 "En el fichero incluido desde "
 it:  5 "Nel file inserito da "
-#FIXME translate
+#FIXME translate ca es it
 en:  6 *prefix is deprecated - use *begin and *end instead
+fr:  6 *prefix n'est plus utilis&eacute; - employer *begin et *end &agrave; la place
+de:  6 *prefix ist veraltet - stattdessen *begin und *end verwenden
 pt:  6 *prefix descontinuado - use *begin e *end em seu lugar
 en:  7 Character not allowed in station name
 fr:  7 Caract&egrave;re interdit dans un nom de station
@@ -178,8 +180,8 @@ pt:  9 Valor num&eacute;rico esperado
 ca:  9 S'espera un camp numeric
 es:  9 Se espera un campo num&eacute;rico
 it:  9 Questo campo &eacute; numerico
-# FIXME translate
 en: 10 Expecting `OFF', `UPPER', or `LOWER'
+fr: 10 On attendait `OFF', `UPPER', ou `LOWER'
 # NB there is no comma before "oder"
 de: 10 `OFF', `UPPER' oder `LOWER' erwartet
 pt: 10 Esperando `OFF', `UPPER' ou `LOWER'
@@ -201,8 +203,10 @@ pt: 12 Comando desconhecido no arquivo de dados - linha ignorada
 ca: 12 Comandament desconegut en fitxer de dades - l&iacute;nia ignorada
 es: 12 Comando desconocido en fichero de datos - l&iacute;nea ignorada
 it: 12 Comando sconosciuto nel file dei dati - linea ignorata
-#FIXME translate
+#FIXME translate ca es it
 en: 13 Station equated to itself
+fr: 13 Une station ne doit pas &ecirc;tre d&eacute;clar&eacute;e "&eacute;gale" &agrave elle-m&ecirc;me
+de: 13 Station mit sich selbst gleichgesetzt
 pt: 13 Base igualada a ela mesma
 en: 14 Compass reading may not be omitted here
 fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici
@@ -237,14 +241,15 @@ pt: 17 Imposs&iacute;vel abrir `pipe': `%s'
 ca: 17 No s'ha pogut obrir el `pipe': `%s'
 es: 17 No se pudo abrir el `pipe': `%s'
 it: 17 Il piping non pu&oacute; essere eseguito: `%s'
-# FIXME: translations for 18 19
 en: 18 Error reading file
+fr: 18 Erreur &agrave; la lecture du fichier
 de: 18 Fehler beim Einlesen der Datei
 pt: 18 Erro lendo arquivo
 ca: 18 Error llegint el fitxer
 es: 18 Error leyendo el fichero
 it: 18 Errore nella lettura del file
 en: 19 Too many errors - giving up
+fr: 19 Trop d'erreurs, j'abandonne
 #anthropomorphising version: de: 19 Zu viele Fehler - ich gebe auf
 de: 19 Abbruch wegen zu vieler Fehler
 #pt: 19 Erros em excesso - desistindo!
@@ -252,8 +257,10 @@ pt: 19 Erros em excesso - desistindo
 ca: 19 Massa errors - proc&eacute;s abandonat
 es: 19 Demasiados errores - proceso abandonado
 it: 19 Troppi errori - processo interrotto
-#FIXME translate
+#FIXME translate ca es it
 en: 20 *default is deprecated - use *calibrate/data/style/units with argument DEFAULT instead
+fr: 20 *default n'est plus utilis&eacute; - employer *calibrate/data/style/units avec argument DEFAULT &agrave; la place
+de: 20 *default ist veraltet - stattdessen *calibrate/data/style/units mit DEFAULT-Argument verwenden
 pt: 20 *default decontinuado - use *calibrate/data/style/units com argumento DEFAULT em seu lugar
 en: 21 Compass reading given on plumbed leg
 en-us: 21 Compass reading given on plumbed shot
@@ -284,15 +291,16 @@ pt: 30 Comando desconhecido
 ca: 30 Comandament desconegut
 es: 30 Comando desconocido
 it: 30 Comando sconosciuto
-# FIXME translate 31 and 32
 # 31 c.f. 10
 en: 31 Expecting `PLUMBS'
+fr: 31 On attendait `PLUMBS'
 de: 31 `PLUMBS' erwartet
 pt: 31 Esperando `PLUMBS'
 ca: 31 Esperant `PLUMBS'
 es: 31 Esperando `PLUMBS'
 it: 31 Atteso `PLUMBS'
 en: 32 Expecting `ON' or `OFF'
+fr: 32 On attendait `ON' ou `OFF'
 de: 32 `ON' oder `OFF' erwartet
 pt: 32 Esperando `ON' ou `OFF'
 ca: 32 Esperant `ON' o `OFF'
@@ -364,8 +372,8 @@ ca: 41 Configuraci&oacute; desconeguda
 es: 41 Configuraci&oacute;n desconocida
 it: 41 Parametro sconosciuto
 #ital: 41 Configurazione sconosciuta
-# FIXME translate 42
 en: 42 Unknown character class `%s'
+fr: 42 Classe de caract&egrave;re inconnue `%s'
 de: 42 Unbekannte Zeichenklasse `%s'
 pt: 42 Classe de caracteres desconhecida: `%s'
 ca: 42 Classe de car&agrave;cter desconeguda `%s'
@@ -664,8 +672,8 @@ pt: 82 Par&acirc;metros de linha de comando com problemas
 ca: 82 Par&agrave;metres dolents a la l&iacute;nia de comandaments
 es: 82 Par&aacute;metros err&oacute;neos en la l&iacute;nea de comandos
 it: 82 Parametro della linea dei comandi errato
-# FIXME TRANSLATE 83
 en: 83 Scale to fit on 1 page
+fr: 83 Mettre &agrave; l'&eacute;chelle pour tenir en 1 page
 # somewhat clumsily, but anything else would require a subordinate
 # clause and become much longer:
 de: 83 Ma&szlig;stab f&uuml;r Zeichnung auf 1 Seite
