@@ -58,6 +58,7 @@ static void win_MoveTo(long x, long y);
 static void win_DrawTo(long x, long y);
 static void win_DrawCross(long x, long y);
 static void win_SetFont(int fontcode);
+static void win_SetColour(int colourcode);
 static void win_WriteString(const char *s);
 static void win_DrawCircle(long x, long y, long r);
 static void win_ShowPage(const char *szPageDetails);
@@ -88,7 +89,7 @@ static TEXTMETRIC *tm, tm_labels, tm_default; /* font info */
 
 static COLORREF colour_leg, colour_surface_leg, colour_cross, colour_frame;
 static COLORREF colour_text, colour_labels;
-static HPEN pen_leg, pen_surface_leg, pen_crosses, pen_frame;
+static HPEN pen_leg, pen_surface_leg, pen_cross, pen_frame;
 
 static double scX, scY;
 
