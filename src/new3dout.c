@@ -345,7 +345,7 @@ create_twig(prefix *pre, const char *fname)
 {
   twig *twiglet;
   twig *lib;
-  lib = get_twig(pre->up); /* get the active twig for parent's prefix*/
+  lib = get_twig(pre->up); /* get the active twig for parent's prefix */
   twiglet = osnew(twig);
   twiglet->from = NULL;
   twiglet->to = pre;

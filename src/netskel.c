@@ -866,7 +866,6 @@ replace_trailing_travs(void)
    }
 
    /* write out connections with no survey data */
-   /* PHILU: look at this... */
 #ifdef NEW3DFORMAT
    if (!fUseNewFormat) {
 #endif

@@ -1257,7 +1257,8 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
       twiglet->up = limb->up;
       limb->right = twiglet;
       limb = twiglet;
-      /* PHILU: what should we do here? */
+      /* delta is only used to calculate error - pass zero and cope
+       * elsewhere */
       twiglet->delta[0] = twiglet->delta[1] = twiglet->delta[2] = 0;
    }
 #endif
