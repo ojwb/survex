@@ -88,6 +88,8 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Brushes.black.SetColour(0, 0, 0);
     m_Brushes.white.SetColour(255, 255, 255);
     m_Brushes.grey.SetColour(100, 100, 100);
+
+    SetBackgroundColour(wxColour(0, 0, 0));
 }
 
 GfxCore::~GfxCore()
