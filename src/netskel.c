@@ -403,37 +403,34 @@ replace_travs(void)
       fhErrStat = safe_fopen_with_ext(fnm_output_base, EXT_SVX_ERRS, "w");
 
    if (!pimg) {
-      char *fnmImg3D;
-      char buf[256];
-#ifdef NEW3DFORMAT
-      if (fUseNewFormat) {
-	 fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3DX);
-      } else {
-#endif
-	 fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3D);
-#ifdef NEW3DFORMAT
-      }
-#endif
-      filename_register_output(fnmImg3D);
+      char *fnm;
+      fnm = add_ext(fnm_output_base, EXT_SVX_STAT);
+      filename_register_output(fnm);
+      osfree(fnm);
 
 #ifdef NEW3DFORMAT
       if (fUseNewFormat) {
-	 pimg = cave_open_write(fnmImg3D, survey_title);
-	 if (!pimg) {
-	    fputsnl(fnmImg3D, STDERR);
-	    fatalerror(cave_error(), fnmImg3D);
-	 }
+	 fnm = add_ext(fnm_output_base, EXT_SVX_3DX);
       } else {
 #endif
-	 pimg = img_open_write(fnmImg3D, survey_title, fTrue);
-         if (!pimg) {
-	    fputsnl(fnmImg3D, STDERR);
-	    fatalerror(img_error(), fnmImg3D);
-	 }
+	 fnm = add_ext(fnm_output_base, EXT_SVX_3D);
 #ifdef NEW3DFORMAT
       }
 #endif
-      osfree(fnmImg3D);
+      filename_register_output(fnm);
+
+#ifdef NEW3DFORMAT
+      if (fUseNewFormat) {
+	 pimg = cave_open_write(fnm, survey_title);
+	 if (!pimg) fatalerror(cave_error(), fnm);
+      } else {
+#endif
+	 pimg = img_open_write(fnm, survey_title, fTrue);
+         if (!pimg) fatalerror(img_error(), fnm);
+#ifdef NEW3DFORMAT
+      }
+#endif
+      osfree(fnm);
    }
 
    /* First do all the one leg traverses */

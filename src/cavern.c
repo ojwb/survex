@@ -94,7 +94,7 @@ bool fExplicitTitle = fFalse;
 char *fnm_output_base = NULL;
 int fnm_output_base_is_dir = 0;
 
-static void do_stats(FILE *fh);
+static void do_stats(void);
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
@@ -165,7 +165,6 @@ main(int argc, char **argv)
    static clock_t tmCPUStart;
    static time_t tmUserStart;
    static double tmCPU, tmUser;
-   FILE *fh_inf = NULL;
 
    tmUserStart = time(NULL);
    tmCPUStart = clock();
@@ -266,9 +265,6 @@ main(int argc, char **argv)
 
    atexit(delete_output_on_error);
 
-   if (!fSuppress && !(msg_errors || (f_warnings_are_errors && msg_warnings)))
-      fh_inf = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
-
    /* end of options, now process data files */
    while (argv[optind]) {
       const char *fnm = argv[optind];
@@ -321,8 +317,7 @@ main(int argc, char **argv)
    if (fhErrStat) fclose(fhErrStat);
 
    out_current_action(msg(/*Calculating statistics*/120));
-   do_stats(fh_inf);
-   fclose(fh_inf);
+   do_stats();
    if (!fQuiet) {
       /* clock() typically wraps after 72 minutes, but there doesn't seem
        * to be a better way.  Still 72 minutes means some cave!
@@ -379,9 +374,13 @@ do_range(FILE *fh, int d, int msg1, int msg2, int msg3)
 }
 
 static void
-do_stats(FILE *fh)
+do_stats(void)
 {
+   FILE *fh = NULL;
    long cLoops = cComponents + cLegs - cStns;
+
+   if (!fSuppress && !(msg_errors || (f_warnings_are_errors && msg_warnings)))
+      fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
 
    if (!fh && fMute) return;
 
