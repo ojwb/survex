@@ -1263,7 +1263,19 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		      "*.3d", wxOPEN);
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
-		      wxString::Format("%s|*.3d|%s|*.plt|%s|*.xyz|%s|*.*",
+		      wxString::Format("%s|*.3d"
+#ifndef _WIN32
+				       ";*.3D"
+#endif
+				       "|%s|*.plt;*.plf"
+#ifndef _WIN32
+				       ";*.PLT;*.PLF"
+#endif
+			      	       "|%s|*.xyz"
+#ifndef _WIN32
+				       ";*.XYZ"
+#endif
+				       "|%s|*.*",
 				       msg(/*Survex 3d files*/207),
 				       /* FIXME TRANSLATE */
 				       "Compass PLT files",

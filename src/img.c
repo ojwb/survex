@@ -131,6 +131,7 @@ static img_errcode img_errno = IMG_NONE;
 #define FILEID "Survex 3D Image File"
 
 #define EXT_PLT "plt"
+#define EXT_PLF "plf"
 #define EXT_XYZ "xyz"
 
 /* Attempt to string paste to ensure we are passed a literal string */
@@ -206,6 +207,10 @@ check_label_space(img *pimg, size_t len)
    }
    return fTrue;
 }
+
+#define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
+			(F)[(L) - LITLEN(E) - 1] == FNM_SEP_EXT &&\
+			my_strcasecmp((F) + (L) - LITLEN(E), E) == 0)
 
 img *
 img_open_survey(const char *fnm, const char *survey)
@@ -290,9 +295,7 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->pending = 0;
 
    len = strlen(fnm);
-   if (len > LITLEN(EXT_SVX_POS) + 1 &&
-       fnm[len - LITLEN(EXT_SVX_POS) - 1] == FNM_SEP_EXT &&
-       my_strcasecmp(fnm + len - LITLEN(EXT_SVX_POS), EXT_SVX_POS) == 0) {
+   if (has_ext(fnm, len, EXT_SVX_POS)) {
 pos_file:
       pimg->version = -1;
       if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
@@ -305,9 +308,7 @@ pos_file:
       return pimg;
    }
 
-   if (len > LITLEN(EXT_PLT) + 1 &&
-       fnm[len - LITLEN(EXT_PLT) - 1] == FNM_SEP_EXT &&
-       my_strcasecmp(fnm + len - LITLEN(EXT_PLT), EXT_PLT) == 0) {
+   if (has_ext(fnm, len, EXT_PLT) || has_ext(fnm, len, EXT_PLF)) {
       long fpos;
 plt_file:
       pimg->version = -2;
@@ -376,9 +377,7 @@ plt_file:
       }
    }
 
-   if (len > LITLEN(EXT_XYZ) + 1 &&
-       fnm[len - LITLEN(EXT_XYZ) - 1] == FNM_SEP_EXT &&
-       my_strcasecmp(fnm + len - LITLEN(EXT_XYZ), EXT_XYZ) == 0) {
+   if (has_ext(fnm, len, EXT_XYZ)) {
       long fpos;
       char *line;
 xyz_file:
@@ -445,22 +444,20 @@ xyz_file:
    }
 
    if (fread(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
-       memcmp(buf, FILEID"\n", LITLEN(FILEID)) != 0) {
+       memcmp(buf, FILEID"\n", LITLEN(FILEID) + 1) != 0) {
+      rewind(pimg->fh);
       if (buf[1] == ' ') {
 	 if (buf[0] == ' ') {
 	    /* Looks like a CMAP .xyz file ... */
-	    rewind(pimg->fh);
 	    goto xyz_file;
 	 } else if (strchr("ZSNF", buf[0])) {
 	    /* Looks like a Compass .plt file ... */
 	    /* Almost certainly it'll start "Z " */
-	    rewind(pimg->fh);
 	    goto plt_file;
 	 }
       }
       if (buf[0] == '(') {
 	 /* Looks like a Survex .pos file ... */
-	 rewind(pimg->fh);
 	 goto pos_file;
       }
       img_errno = IMG_BADFORMAT;

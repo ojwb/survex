@@ -6,6 +6,10 @@ Changes in 1.0.10:
 * aven: only add a file to the list of recently used files if it was opened
   successfully.
 
+* aven: recognise ".plf" as a Compass PLT file too; and on Unix list "*.PLT",
+  "*.PLF", "*.XYZ", and "*.3D" as well as the lowercase versions to help people
+  who transfer files from MSDOS/MS Windows.
+
 * cavern: fixed bogus warning triggered by "*begin abc.def" (I'm not sure
   that this should be valid, but the warning given wasn't appropriate).
 
