@@ -44,10 +44,7 @@
 #define MOVEMM(X, Y) pr->MoveTo((long)((X) * scX), (long)((Y) * scY));
 #define DRAWMM(X, Y) pr->DrawTo((long)((X) * scX), (long)((Y) * scY));
 
-/* degree sign is 176, (C) is 169 in iso-8859-1 */
-#define DEG "\xB0" /* specially defined degree symbol */
-#define COPYRIGHT "\xA9" /* specially defined degree symbol */
-/* also #define COPYRIGHT "(C)" will work */
+#define DEG "\xB0" /* degree symbol in iso-8859-1 */
 
 /* 1:<DEFAULT_SCALE> is the default scale */
 #define DEFAULT_SCALE 500
@@ -250,7 +247,7 @@ draw_info_box(float num, float denom)
 
    strcpy(szTmp, msg(fPlan ? /*Up page*/168 : /*View*/169));
    p = szTmp + strlen(szTmp);
-   sprintf(p, " %03d%s", rot, DEG);
+   sprintf(p, " %03d"DEG, rot);
    MOVEMM(5, 3); pr->WriteString(szTmp);
 
    sprintf(szTmp, "Survex "VERSION" %s %s", szDesc, msg(/*Driver*/152));
@@ -654,7 +651,7 @@ main(int argc, char **argv)
 	 break;
        case 's':
 	 if (!read_scale(optarg)) {
-	    /* FIXME complain? */
+	    /* FIXME complain */
 	 }
 	 fInteractive = fFalse;
 	 break;
@@ -846,7 +843,6 @@ main(int argc, char **argv)
                   break;
                }
                if (page == 0) break;
-/*               printf("page %d\n", page);*/  /*FIXME*/
                pages++;
             }
          } else {
@@ -967,10 +963,7 @@ main(int argc, char **argv)
                break;
             }
          if (pass == -1) {
-            if (fBlankPage) {
-               /* FIXME printf("\rSkipping blank page\n"); */
-               break;
-            }
+            if (fBlankPage) break;
          } else {
             if (pr->ShowPage) {
                sprintf(szTmp, msg167, title, (int)page, pagesX * pagesY,
