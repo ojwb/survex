@@ -105,6 +105,8 @@ class GfxCore : public wxWindow {
     wxString* m_Labels;
     bool m_InitialisePending;
     enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV } m_LastDrag;
+    bool m_MouseOutsideCompass;
+    bool m_MouseOutsideElev;
 
     struct pens {
         wxPen black;
@@ -142,6 +144,7 @@ class GfxCore : public wxWindow {
     }
 
     wxPoint CompassPtToScreen(float x, float y, float z);
+    void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
 
     void SetScale(double scale);
     void RedrawOffscreen();

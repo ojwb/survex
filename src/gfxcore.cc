@@ -39,6 +39,7 @@ static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 60;
 static const int INDICATOR_GAP = 2;
+static const int TICK_LENGTH = 4;
 static const int DISPLAY_SHIFT = 50;
 static const int TIMER_ID = 0;
 
@@ -414,7 +415,7 @@ wxPoint GfxCore::IndicatorCompassToScreenPan(int angle)
 
 wxPoint GfxCore::IndicatorCompassToScreenElev(int angle)
 {
-    float theta = (angle * M_PI / 180.0) - m_TiltAngle + M_PI/2.0;
+    double theta = (angle * M_PI / 180.0) - m_TiltAngle + M_PI/2.0;
     wxCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     wxCoord x = wxCoord(length * sin(-theta));
     wxCoord y = wxCoord(length * cos(-theta));
@@ -423,10 +424,24 @@ wxPoint GfxCore::IndicatorCompassToScreenElev(int angle)
 		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2 - y);
 }
 
+void GfxCore::DrawTick(wxCoord cx, wxCoord cy, int angle_cw)
+{
+    double theta = angle_cw * M_PI / 180.0;
+    wxCoord length1 = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
+    wxCoord length0 = length1 + TICK_LENGTH;
+    wxCoord x0 = wxCoord(length0 * sin(theta));
+    wxCoord y0 = wxCoord(length0 * -cos(theta));
+    wxCoord x1 = wxCoord(length1 * sin(theta));
+    wxCoord y1 = wxCoord(length1 * -cos(theta));
+
+    m_DrawDC.DrawLine(cx + x0, cy + y0, cx + x1, cy + y1);
+}
+
 void GfxCore::Draw2dIndicators()
 {
     // Draw the "traditional" elevation and compass indicators.
 
+    // Indicator backgrounds
     m_DrawDC.SetBrush(m_Brushes.grey);
     m_DrawDC.SetPen(m_Pens.lgrey2);
     m_DrawDC.DrawEllipse(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
@@ -443,12 +458,39 @@ void GfxCore::Draw2dIndicators()
 		      m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - INDICATOR_GAP,
 		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN);
 
+    // Ticks
+    bool white = m_DraggingLeft && m_LastDrag == drag_COMPASS && m_MouseOutsideCompass;
+    wxCoord pan_centre_x = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
+    wxCoord centre_y = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
+    wxCoord elev_centre_x = wxCoord(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 -
+				    INDICATOR_GAP);
+    int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
+    for (int angle = 0; angle <= 315; angle += 45) {
+        if (deg_pan == angle) {
+	    m_DrawDC.SetPen(m_Pens.green);
+        }
+	else {
+	    m_DrawDC.SetPen(white ? m_Pens.white : m_Pens.lgrey2);
+	}
+        DrawTick(pan_centre_x, centre_y, angle);
+    }
+    white = m_DraggingLeft && m_LastDrag == drag_ELEV && m_MouseOutsideElev;
+    int deg_elev = (int) (m_TiltAngle * 180.0 / M_PI);
+    for (int angle = 0; angle <= 180; angle += 90) {
+        if (-deg_elev == angle - 90) {
+	    m_DrawDC.SetPen(m_Pens.green);
+        }
+	else {
+	    m_DrawDC.SetPen(white ? m_Pens.white : m_Pens.lgrey2);
+	}
+        DrawTick(elev_centre_x, centre_y, angle);
+    }
+
     // Pan arrow
     wxPoint p1 = IndicatorCompassToScreenPan(0);
     wxPoint p2 = IndicatorCompassToScreenPan(150);
     wxPoint p3 = IndicatorCompassToScreenPan(210);
-    wxPoint pc(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2,
-	       m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2);
+    wxPoint pc(pan_centre_x, centre_y);
     wxPoint pts1[3] = { p2, p1, pc };
     wxPoint pts2[3] = { p3, p1, pc };
     m_DrawDC.SetPen(m_Pens.lgrey);
@@ -461,8 +503,7 @@ void GfxCore::Draw2dIndicators()
     wxPoint p1e = IndicatorCompassToScreenElev(0);
     wxPoint p2e = IndicatorCompassToScreenElev(150);
     wxPoint p3e = IndicatorCompassToScreenElev(210);
-    wxPoint pce(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - INDICATOR_GAP,
-	        m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2);
+    wxPoint pce(elev_centre_x, centre_y);
     wxPoint pts1e[3] = { p2e, p1e, pce };
     wxPoint pts2e[3] = { p3e, p1e, pce };
     m_DrawDC.SetPen(m_Pens.lgrey);
@@ -478,13 +519,12 @@ void GfxCore::Draw2dIndicators()
     wxString str = wxString::Format("Facing %03d", int(m_PanAngle * 180.0 / M_PI));
     int w, h;
     m_DrawDC.GetTextExtent(str, &w, &h);
-    m_DrawDC.DrawText(str, m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2 - w/2,
+    m_DrawDC.DrawText(str, pan_centre_x - w/2,
 		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
 
     str = wxString::Format("Elev %03d", int(m_TiltAngle * 180.0 / M_PI));
     m_DrawDC.GetTextExtent(str, &w, &h);
-    m_DrawDC.DrawText(str, m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 -
-		        INDICATOR_GAP - w/2,
+    m_DrawDC.DrawText(str, elev_centre_x - w/2,
 		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
 }
 
@@ -774,6 +814,12 @@ void GfxCore::OnLButtonUp(wxMouseEvent& event)
 {
     m_LastDrag = drag_NONE;
     m_DraggingLeft = false;
+    const wxRect r(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 - INDICATOR_GAP,
+		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
+		   INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
+		   INDICATOR_BOX_SIZE);
+    m_RedrawOffscreen = true;
+    Refresh(false, &r);
 }
 
 void GfxCore::OnMButtonDown(wxMouseEvent& event)
@@ -1012,14 +1058,16 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	      if (sqrt(dx0*dx0 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
 		  m_LastDrag == drag_COMPASS) {
 		  // drag in heading indicator
-		  m_LastDrag = drag_COMPASS;
 		  if (sqrt(dx0*dx0 + dy*dy) <= radius) {
 		      TurnCaveTo(atan2(-dx0, dy) - M_PI);
+		      m_MouseOutsideCompass = false;
 		  }
 		  else {
 		      TurnCaveTo(int(int((atan2(-dx0, dy) - M_PI) * 180.0 / M_PI) / 45) *
 				 M_PI/4.0);
+		      m_MouseOutsideCompass = true;
 		  }
+		  m_LastDrag = drag_COMPASS;
 	      }
 	      else if (sqrt(dx1*dx1 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
 		  m_LastDrag == drag_ELEV) {
@@ -1027,15 +1075,19 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		  m_LastDrag = drag_ELEV;
 		  if (dx1 >= 0 && sqrt(dx1*dx1 + dy*dy) <= radius) {
 		      TiltCave(atan2(-dy, dx1) - m_TiltAngle);
+		      m_MouseOutsideElev = false;
 		  }
 		  else if (dy >= INDICATOR_MARGIN) {
 		      TiltCave(-M_PI/2.0 - m_TiltAngle);
+		      m_MouseOutsideElev = true;
 		  }
 		  else if (dy <= -INDICATOR_MARGIN) {
 		      TiltCave(M_PI/2.0 - m_TiltAngle);
+		      m_MouseOutsideElev = true;
 		  }
 		  else {
 		      TiltCave(-m_TiltAngle);
+		      m_MouseOutsideElev = true;
 		  }
 	      }
 	      else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
