@@ -24,8 +24,8 @@ by CAD and drawing packages
 
 <para>
 Cad3d can currently output DXF or Sketch files for import into CAD packages.
-It can also produce a crude cut-down version of a Compass .plt file, which
-is suitable for importing into Carto (and little else).
+It can also produce Compass .plt files, which are primarily intended for
+importing into Carto, but can also be used with Compass itself.
 </para>
 
 <Para>An alternative to cad3d is SpeleoGen, which can be found in the

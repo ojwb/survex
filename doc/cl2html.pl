@@ -11,6 +11,10 @@ $title = "$ARGV[0] $title" if defined $ARGV[0];
 print <<END;
 <HTML><HEAD>
 <TITLE>$title</TITLE>
+<STYLE type="text/css"><!--
+BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
+-->
+</STYLE>
 </HEAD><BODY BGCOLOR=white TEXT=black>
 
 <dl>

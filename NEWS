@@ -19,6 +19,8 @@ Changes in 1.0.11:
 
 * Updates to Italian translation.
 
+* Minor documentation updates.
+
 Changes in 1.0.10:
 
 * (MS Windows version): aven: fixed assert failure upon turning on station

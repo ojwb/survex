@@ -1,5 +1,9 @@
 <HTML><HEAD>
 <!-- @configure_input@ -->
+<STYLE type="text/css"><!--
+BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
+-->
+</STYLE>
 <TITLE>@PRETTYPACKAGE@ @VERSION@ Documentation</TITLE>
 </HEAD><BODY BGCOLOR=white TEXT=black>
 
@@ -21,7 +25,7 @@ and previous versions</A> (<A HREF="OLDNEWS.htm">older changes</A>)
 
 <ul>
 <li><A HREF="HACKING.htm">Collection of useful information for developers</A>
-<li><A HREF="ChngeLog.htm">Detailed list of internal changes</A>
+<li><A HREF="ChngeLog.htm">Detailed list of internal changes in this version</A>
 </ul>
 
 </BODY>

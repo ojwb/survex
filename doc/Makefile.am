@@ -104,19 +104,22 @@ uninstall-local:
 maintainer-clean-local:
 	rm -rf manual "$(srcdir)/manual"
 
-manual: $(manual_sources) custom.dsl survex.ent
+# manual depends on config.h so it gets rebuilt when the version number is
+# bumped
+
+manual: $(manual_sources) custom.dsl survex.ent ../config.h
 	@sgmltools@ --backend=html --dsssl-spec=custom.dsl#html manual.sgml
 	cp caution.png note.png manual
 
 # this rule is not used by the build system - it's for "manual" use (ho ho)
-manual.html: $(manual_sources) custom.dsl survex.ent
+manual.html: $(manual_sources) custom.dsl survex.ent ../config.h
 	@sgmltools@ --backend=onehtml --dsssl-spec='custom.dsl#onehtml' manual.sgml
 
-manual.rtf: $(manual_sources) survex.ent
+manual.rtf: $(manual_sources) survex.ent ../config.h
 	@sgmltools@ --backend=rtf manual.sgml
 
-manual.txt: $(manual_sources) survex.ent
+manual.txt: $(manual_sources) survex.ent ../config.h
 	@sgmltools@ --backend=txt manual.sgml
 
-manual.ps: $(manual_sources) survex.ent
+manual.ps: $(manual_sources) survex.ent ../config.h
 	@sgmltools@ --backend=ps manual.sgml
