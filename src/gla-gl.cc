@@ -23,17 +23,20 @@
 #include "gla.h"
 #include <GL/gl.h>
 
-#include <iostream>
 #ifdef GLA_DEBUG
-#define CHECK_GL_ERROR(f, m) do { \
-                                 GLenum err = glGetError(); \
-                                 if (err != GL_NO_ERROR) { \
-                                     fprintf(stderr, "OpenGL error: %s: call %s in function %s\n", \
-                                             gluErrorString(err), m, f); \
-                                    /* abort();*/ \
-                                 } \
-                             } \
-                             while (0)
+// Important: CHECK_GL_ERROR must not be called within a glBegin()/glEnd() pair
+//            (thus it must not be called from BeginLines(), etc., or within a
+//             BeginLines()/EndLines() block etc.)
+#define CHECK_GL_ERROR(f, m) \
+    do { \
+        GLenum err = glGetError(); \
+        if (err != GL_NO_ERROR) { \
+            fprintf(stderr, "OpenGL error: %s: call %s in function %s\n", \
+                    gluErrorString(err), m, f); \
+            /* abort();*/ \
+        } \
+    } \
+    while (0)
 #else
 #define CHECK_GL_ERROR(f, m)
 #endif
@@ -100,16 +103,12 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
 {
     // Constructor.
 
+    m_Quadric = NULL;
     m_Rotation.setFromEulerAngles(0.0, 0.0, 0.0);
     m_Scale = 1.0;
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
     m_SphereCreated = false;
     SetVolumeCoordinates(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
-    quadric = gluNewQuadric();
-    CHECK_GL_ERROR("GLACanvas", "gluNewQuadric");
-    if (!quadric) {
-	abort(); // FIXME need to cope somehow
-    }
 }
 
 GLACanvas::~GLACanvas()
@@ -121,8 +120,20 @@ GLACanvas::~GLACanvas()
         CHECK_GL_ERROR("~GLACanvas", "glDeleteLists");
     }
 
-    gluDeleteQuadric(quadric);
-    CHECK_GL_ERROR("~GLACanvas", "gluDeleteQuadric");
+    if (m_Quadric) {
+        gluDeleteQuadric(m_Quadric);
+        CHECK_GL_ERROR("~GLACanvas", "gluDeleteQuadric");
+    }
+}
+
+void GLACanvas::FirstShow()
+{
+    SetCurrent();
+    m_Quadric = gluNewQuadric();
+    CHECK_GL_ERROR("GLACanvas", "gluNewQuadric");
+    if (!m_Quadric) {
+	abort(); // FIXME need to cope somehow
+    }
 }
 
 void GLACanvas::Clear()
@@ -177,16 +188,19 @@ void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
 
     Double x0, y0, z0;
     Double x, y, z;
-    gluUnProject(0.0, 0.0, 0.0, modelview_matrix, projection_matrix, viewport, &x0, &y0, &z0);
+    gluUnProject(0.0, 0.0, 0.0, modelview_matrix, projection_matrix, viewport,
+                 &x0, &y0, &z0);
     CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject 1");
-    gluUnProject(dx, -dy, 0.0, modelview_matrix, projection_matrix, viewport, &x, &y, &z);
+    gluUnProject(dx, -dy, 0.0, modelview_matrix, projection_matrix, viewport,
+                 &x, &y, &z);
     CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject 2");
 
     // Apply the translation.
     AddTranslation(x - x0, y - y0, z - z0);
 }
 
-void GLACanvas::SetVolumeCoordinates(glaCoord left, glaCoord right, glaCoord front, glaCoord back,
+void GLACanvas::SetVolumeCoordinates(glaCoord left, glaCoord right,
+                                     glaCoord front, glaCoord back,
                                      glaCoord bottom, glaCoord top)
 {
     // Set the size of the data drawing volume by giving the coordinates
@@ -205,6 +219,7 @@ void GLACanvas::SetViewportAndProjection()
     // Set viewport.
     wxSize size = GetSize();
     double aspect = double(size.GetWidth()) / double(size.GetHeight());
+    //FIXME: dimensions go to zero when the panel is dragged right across
     glViewport(0, 0, size.GetWidth(), size.GetHeight());
     CHECK_GL_ERROR("SetViewportAndProjection", "glViewport");
 
@@ -223,11 +238,7 @@ void GLACanvas::StartDrawing()
 {
     // Prepare for a redraw operation.
     
-    ////SetCurrent();
-   
-    glEnable(GL_COLOR_MATERIAL);
-    CHECK_GL_ERROR("StartDrawing", "glEnable GL_COLOR_MATERIAL");
-    glShadeModel(GL_SMOOTH);
+    glShadeModel(GL_FLAT);
     CHECK_GL_ERROR("StartDrawing", "glShadeModel");
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     CHECK_GL_ERROR("StartDrawing", "glPolygonMode");
@@ -237,6 +248,20 @@ void GLACanvas::StartDrawing()
     CHECK_GL_ERROR("StartDrawing", "glColorMaterial GL_BACK");
     glEnable(GL_DEPTH_TEST);
     CHECK_GL_ERROR("StartDrawing", "glEnable GL_DEPTH_TEST");
+}
+
+void GLACanvas::EnableSmoothPolygons()
+{
+    // Prepare for drawing smoothly-shaded polygons.
+    // Only use this when required (in particular lines in lists may not be
+    // coloured correctly when this is enabled).
+    
+    glShadeModel(GL_SMOOTH);
+}
+
+void GLACanvas::DisableSmoothPolygons()
+{
+    glShadeModel(GL_FLAT);
 }
 
 void GLACanvas::SetDataTransform()
@@ -303,8 +328,6 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
     // Create a new list to hold a sequence of drawing operations, and compile
     // it.
 
-    ////SetCurrent();
-
     glaList l = glGenLists(1);
     CHECK_GL_ERROR("CreateList", "glGenLists");
     assert(l != 0);
@@ -339,22 +362,22 @@ void GLACanvas::SetColour(const GLAPen& pen, bool set_transparency, double rgb_s
     // Set the colour for subsequent operations.
    
     if (set_transparency) {
-        glColor4f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale, pen.GetBlue() * rgb_scale, pen.GetAlpha());
-        CHECK_GL_ERROR("SetColour", "glColor4f");
+        glColor4f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale,
+                  pen.GetBlue() * rgb_scale, pen.GetAlpha());
     }
     else {
-        glColor3f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale, pen.GetBlue() * rgb_scale);
-        CHECK_GL_ERROR("SetColour", "glColor3f");
+        glColor3f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale,
+                  pen.GetBlue() * rgb_scale);
     }
 }
 
-void GLACanvas::SetBlendColour(const GLAPen& pen, bool set_transparency, double rgb_scale)
+void GLACanvas::SetBlendColour(const GLAPen& pen, bool set_transparency,
+                               double rgb_scale)
 {
     // Set the blend colour for subsequent operations.
    
-    glBlendColor(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale, pen.GetBlue() * rgb_scale,
-                 set_transparency ? pen.GetAlpha() : 1.0);
-    CHECK_GL_ERROR("SetBlendColour", "glBlendColor");
+    glBlendColor(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale,
+                 pen.GetBlue() * rgb_scale, set_transparency ? pen.GetAlpha() : 1.0);
 }
 
 void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool set_transparency)
@@ -366,7 +389,6 @@ void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool set_transparency)
     col[3] = pen.GetAlpha();
 
     glMaterialfv(front ? GL_FRONT : GL_BACK, GL_AMBIENT_AND_DIFFUSE, col);
-    CHECK_GL_ERROR("SetPolygonColour", "glMaterialfv");
 }
 
 void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str)
@@ -407,7 +429,6 @@ void GLACanvas::BeginQuadrilaterals()
     // Commence drawing of quadrilaterals.
     
     glBegin(GL_QUADS);
-    CHECK_GL_ERROR("BeginQuadrilaterals", "glBegin");
 }
 
 void GLACanvas::EndQuadrilaterals()
@@ -415,7 +436,6 @@ void GLACanvas::EndQuadrilaterals()
     // Finish drawing of quadrilaterals.
     
     glEnd();
-    CHECK_GL_ERROR("EndQuadrilaterals", "glEnd");
 }
 
 void GLACanvas::BeginLines()
@@ -423,7 +443,6 @@ void GLACanvas::BeginLines()
     // Commence drawing of a set of lines.
 
     glBegin(GL_LINES);
-    CHECK_GL_ERROR("BeginLines", "glBegin");
 }
 
 void GLACanvas::EndLines()
@@ -431,7 +450,6 @@ void GLACanvas::EndLines()
     // Finish drawing of a set of lines.
 
     glEnd();
-    CHECK_GL_ERROR("EndLines", "glEnd");
 }
 
 void GLACanvas::BeginTriangles()
@@ -439,7 +457,6 @@ void GLACanvas::BeginTriangles()
     // Commence drawing of a set of triangles.
 
     glBegin(GL_TRIANGLES);
-    CHECK_GL_ERROR("BeginTriangles", "glBegin");
 }
 
 void GLACanvas::EndTriangles()
@@ -447,7 +464,6 @@ void GLACanvas::EndTriangles()
     // Finish drawing of a set of triangles.
 
     glEnd();
-    CHECK_GL_ERROR("EndTriangles", "glEnd");
 }
 
 void GLACanvas::BeginPolyline()
@@ -455,7 +471,6 @@ void GLACanvas::BeginPolyline()
     // Commence drawing of a polyline.
 
     glBegin(GL_LINE_STRIP);
-    CHECK_GL_ERROR("BeginPolyline", "glBegin");
 }
 
 void GLACanvas::EndPolyline()
@@ -463,7 +478,6 @@ void GLACanvas::EndPolyline()
     // Finish drawing of a polyline.
     
     glEnd();
-    CHECK_GL_ERROR("EndPolyline", "glEnd");
 }
 
 void GLACanvas::BeginPolygon()
@@ -471,7 +485,6 @@ void GLACanvas::BeginPolygon()
     // Commence drawing of a polygon.
 
     glBegin(GL_POLYGON);
-    CHECK_GL_ERROR("BeginPolygon", "glBegin");
 }
 
 void GLACanvas::EndPolygon()
@@ -479,7 +492,6 @@ void GLACanvas::EndPolygon()
     // Finish drawing of a polygon.
     
     glEnd();
-    CHECK_GL_ERROR("EndPolygon", "glEnd");
 }
 
 void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
@@ -487,7 +499,6 @@ void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
     // Place a vertex for the current object being drawn.
 
     glVertex3d(x, y, z);
-    CHECK_GL_ERROR("PlaceVertex", "glVertex3d");
 }
 
 void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
@@ -497,7 +508,8 @@ void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
     PlaceVertex(x, y, 0.0);
 }
 
-void GLACanvas::DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaCoord radius, int divisions)
+void GLACanvas::DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z,
+                           glaCoord radius, int divisions)
 {
     // Draw a sphere centred on a particular point.
 
@@ -511,7 +523,8 @@ void GLACanvas::DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaC
 	assert(m_SphereList != 0);
         glNewList(m_SphereList, GL_COMPILE);
         CHECK_GL_ERROR("DrawSphere", "glNewList");
-        gluSphere(quadric, 1.0, divisions, divisions);
+        assert(m_Quadric);
+        gluSphere(m_Quadric, 1.0, divisions, divisions);
         CHECK_GL_ERROR("DrawSphere", "gluSphere");
         glEndList();
         CHECK_GL_ERROR("DrawSphere", "glEndList");
@@ -557,7 +570,8 @@ void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& top,
     }
 }
 
-void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius)
+void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy,
+                           glaCoord radius)
 {
     // Draw a filled circle with an edge.
     
@@ -567,16 +581,19 @@ void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy,
     SetColour(fill);
     glTranslated(cx, cy, 0.0);
     CHECK_GL_ERROR("DrawCircle", "glTranslated");
-    gluDisk(quadric, 0.0, radius, 36, 1);
+    assert(m_Quadric);
+    gluDisk(m_Quadric, 0.0, radius, 36, 1);
     CHECK_GL_ERROR("DrawCircle", "gluDisk");
     SetColour(edge);
-    gluDisk(quadric, radius - 1.0, radius, 36, 1);
+    gluDisk(m_Quadric, radius - 1.0, radius, 36, 1);
     CHECK_GL_ERROR("DrawCircle", "gluDisk (2)");
     glTranslated(-cx, -cy, 0.0);
     CHECK_GL_ERROR("DrawCircle", "glTranslated (2)");
 }
 
-void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start)
+void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill,
+                               glaCoord cx, glaCoord cy,
+                               glaCoord radius, glaCoord start)
 {
     // Draw a filled semicircle with an edge.
     // The semicircle extends from "start" deg to "start"+180 deg (increasing
@@ -588,10 +605,11 @@ void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord
     SetColour(fill);
     glTranslated(cx, cy, 0.0);
     CHECK_GL_ERROR("DrawCircle", "glTranslated");
-    gluPartialDisk(quadric, 0.0, radius, 36, 1, start, 180.0);
+    assert(m_Quadric);
+    gluPartialDisk(m_Quadric, 0.0, radius, 36, 1, start, 180.0);
     CHECK_GL_ERROR("DrawCircle", "gluPartialDisk");
     SetColour(edge);
-    gluPartialDisk(quadric, radius - 1.0, radius, 36, 1, start, 180.0);
+    gluPartialDisk(m_Quadric, radius - 1.0, radius, 36, 1, start, 180.0);
     CHECK_GL_ERROR("DrawCircle", "gluPartialDisk (2)");
     glTranslated(-cx, -cy, 0.0);
     CHECK_GL_ERROR("DrawCircle", "glTranslated (2)");
@@ -640,7 +658,8 @@ void GLACanvas::DisableDashedLines()
     CHECK_GL_ERROR("DisableDashedLines", "glDisable");
 }
 
-void GLACanvas::Transform(Double x, Double y, Double z, Double* x_out, Double* y_out, Double* z_out)
+void GLACanvas::Transform(Double x, Double y, Double z,
+                          Double* x_out, Double* y_out, Double* z_out)
 {
     // Convert from data coordinates to screen coordinates.
     
@@ -656,11 +675,13 @@ void GLACanvas::Transform(Double x, Double y, Double z, Double* x_out, Double* y
     CHECK_GL_ERROR("Transform", "glGetIntegerv");
 
     // Perform the projection.
-    gluProject(x, y, z, modelview_matrix, projection_matrix, viewport, x_out, y_out, z_out);
+    gluProject(x, y, z, modelview_matrix, projection_matrix, viewport,
+               x_out, y_out, z_out);
     CHECK_GL_ERROR("Transform", "gluProject");
 }
 
-void GLACanvas::ReverseTransform(Double x, Double y, Double* x_out, Double* y_out, Double* z_out)
+void GLACanvas::ReverseTransform(Double x, Double y,
+                                 Double* x_out, Double* y_out, Double* z_out)
 {
     // Convert from screen coordinates to data coordinates.
     
@@ -676,7 +697,8 @@ void GLACanvas::ReverseTransform(Double x, Double y, Double* x_out, Double* y_ou
     CHECK_GL_ERROR("ReverseTransform", "glGetIntegerv");
 
     // Perform the projection.
-    gluUnProject(x, y, 0.0, modelview_matrix, projection_matrix, viewport, x_out, y_out, z_out);
+    gluUnProject(x, y, 0.0, modelview_matrix, projection_matrix, viewport,
+                 x_out, y_out, z_out);
     CHECK_GL_ERROR("ReverseTransform", "gluUnProject");
 }
 
@@ -687,3 +709,4 @@ Double GLACanvas::SurveyUnitsAcrossViewport()
 
     return (m_Volume.right - m_Volume.left) / m_Scale;
 }
+

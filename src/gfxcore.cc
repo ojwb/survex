@@ -322,6 +322,8 @@ void GfxCore::Initialise()
 
 void GfxCore::FirstShow()
 {
+    GLACanvas::FirstShow();
+	
     // Update our record of the client area size and centre.
     GetClientSize(&m_XSize, &m_YSize);
     m_XCentre = m_XSize / 2;
@@ -500,6 +502,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 {
     // Redraw the window.
     
+    wxPaintDC dc(this);
     SetCurrent();
 
     // Make sure we're initialised.
@@ -524,7 +527,14 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 
         if (m_Legs) {
             // Draw the underground legs.
+            
+            if (m_Tubes) {
+                EnableSmoothPolygons();
+            }
             DrawList(m_Lists.underground_legs);
+            if (m_Tubes) {
+                DisableSmoothPolygons();
+            }
         }
 
         if (m_Surface) {
@@ -2214,25 +2224,23 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
             Vector3 pt_v(vertices_start->x, vertices_start->y, vertices_start->z);
             vertices_start++;
 
-	    if (!m_Names) { // FIXME abuse the UI
-		if (segment == 0) {
-		    size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
-				sqrd(vertices_start->y - pt_v.getY()) +
-				sqrd(vertices_start->z - pt_v.getZ()) / 9) / 4;
-		} else if (segment == length - 1) {
-		    size = sqrt(sqrd(prev_pt_v.getX() - pt_v.getX()) +
-				sqrd(prev_pt_v.getY() - pt_v.getY()) +
-				sqrd(prev_pt_v.getZ() - pt_v.getZ()) / 9) / 4;
-		} else {
-		    size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
-				sqrd(vertices_start->y - pt_v.getY()) +
-				sqrd(vertices_start->z - pt_v.getZ()) / 9) / 4;
-		    size += sqrt(sqrd(prev_pt_v.getX() - pt_v.getX()) +
-				sqrd(prev_pt_v.getY() - pt_v.getY()) +
-				sqrd(prev_pt_v.getZ() - pt_v.getZ()) / 9) / 4;
-		    size *= .5;
-		}
-	    }
+            if (segment == 0) {
+                size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
+                            sqrd(vertices_start->y - pt_v.getY()) +
+                            sqrd(vertices_start->z - pt_v.getZ()) / 9) / 4;
+            } else if (segment == length - 1) {
+                size = sqrt(sqrd(prev_pt_v.getX() - pt_v.getX()) +
+                            sqrd(prev_pt_v.getY() - pt_v.getY()) +
+                            sqrd(prev_pt_v.getZ() - pt_v.getZ()) / 9) / 4;
+            } else {
+                size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
+                            sqrd(vertices_start->y - pt_v.getY()) +
+                            sqrd(vertices_start->z - pt_v.getZ()) / 9) / 4;
+                size += sqrt(sqrd(prev_pt_v.getX() - pt_v.getX()) +
+                            sqrd(prev_pt_v.getY() - pt_v.getY()) +
+                            sqrd(prev_pt_v.getZ() - pt_v.getZ()) / 9) / 4;
+                size *= .5;
+            }
 
 	    double z_pitch_adjust = 0.0;
             bool cover_end = false;

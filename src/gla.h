@@ -93,14 +93,15 @@ class GLACanvas : public wxWindow {
 
     bool m_SphereCreated;
     GLuint m_SphereList;
-
-    GLUquadric* quadric;
+    GLUquadric* m_Quadric;
     
     void SetViewportAndProjection();
     
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
     ~GLACanvas();
+
+    void FirstShow();
 
     void Clear();
     void StartDrawing();
@@ -149,6 +150,9 @@ public:
     
     void EnableDashedLines();
     void DisableDashedLines();
+
+    void EnableSmoothPolygons();
+    void DisableSmoothPolygons();
 
     void SetRotation(Quaternion&);
     void SetScale(Double);
