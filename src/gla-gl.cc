@@ -514,12 +514,11 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
 void GLACanvas::DrawIndicatorText(int x, int y, const wxString& str)
 {
 #ifdef USE_FNT
-    glPushAttrib(GL_CURRENT_BIT|GL_ENABLE_BIT);
+    glPushAttrib(GL_ENABLE_BIT);
     glEnable(GL_ALPHA_TEST);
-    glAlphaFunc(GL_GREATER, 0.1f);
     //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
     m_Font.puts(x, y, str.c_str());
     glPopAttrib();
 #else

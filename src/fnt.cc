@@ -19,7 +19,7 @@
  
      For further information visit http://plib.sourceforge.net
 
-     $Id: fnt.cc,v 1.1.2.2 2003-11-24 23:52:28 olly Exp $
+     $Id: fnt.cc,v 1.1.2.3 2003-11-25 03:59:15 olly Exp $
 */
 
 #include "fnt.h"
@@ -28,13 +28,13 @@
 
 static bool isSwapped = false;
 
-inline void _fnt_swab_short(unsigned short *x) {
+inline void fnt_swab_short(unsigned short *x) {
     if (isSwapped)
 	*x = ((*x >>  8) & 0x00FF) | 
 	     ((*x <<  8) & 0xFF00) ;
 }
 
-inline void _fnt_swab_int ( unsigned int *x )
+inline void fnt_swab_int ( unsigned int *x )
 {
     if (isSwapped)
 	*x = ((*x >> 24) & 0x000000FF) | 
@@ -43,21 +43,21 @@ inline void _fnt_swab_int ( unsigned int *x )
 	     ((*x << 24) & 0xFF000000) ;
 }
 
-inline unsigned char _fnt_readByte(FILE *fd) {
+inline unsigned char fnt_readByte(FILE *fd) {
     return (unsigned char)getc(fd);
 }
 
-inline unsigned short _fnt_readShort(FILE *fd) {
+inline unsigned short fnt_readShort(FILE *fd) {
     unsigned short x;
     fread(&x, sizeof(unsigned short), 1, fd);
-    _fnt_swab_short(&x);
+    fnt_swab_short(&x);
     return x;
 }
 
-inline unsigned int _fnt_readInt(FILE *fd) {
+inline unsigned int fnt_readInt(FILE *fd) {
     unsigned int x;
     fread(&x, sizeof(unsigned int), 1, fd);
-    _fnt_swab_int(&x);
+    fnt_swab_int(&x);
     return x;
 }
 
@@ -88,16 +88,16 @@ fntTexFont::load(const char *fname)
     }
 
     isSwapped = false;
-    int endianness = _fnt_readInt(fd);
+    int endianness = fnt_readInt(fd);
 
     isSwapped = (endianness != 0x12345678);
 
-    int format      = _fnt_readInt(fd);
-    int tex_width   = _fnt_readInt(fd);
-    int tex_height  = _fnt_readInt(fd);
-    /* int max_height = */ _fnt_readInt(fd);
-    /* int unknown = */ _fnt_readInt(fd);
-    int num_glyphs  = _fnt_readInt(fd);
+    int format      = fnt_readInt(fd);
+    int tex_width   = fnt_readInt(fd);
+    int tex_height  = fnt_readInt(fd);
+    /* int max_height = */ fnt_readInt(fd);
+    /* int unknown = */ fnt_readInt(fd);
+    int num_glyphs  = fnt_readInt(fd);
     list_base = glGenLists(256 - 32) - 32;
 
     int i, j;
@@ -146,12 +146,14 @@ fntTexFont::load(const char *fname)
 	    teximage = new unsigned char[2 * ntexels];
 	    memset((void*)teximage, 0, 2 * ntexels);
 
-	    for (i = 0; i < tex_height; ++i)
-		for (j = 0; j < tex_width; ++j)
+	    for (i = 0; i < tex_height; ++i) {
+		for (j = 0; j < tex_width; ++j) {
 		    if (texbitmap[i * stride + (j >> 3)] & (1 << (j & 7))) {
 			teximage[(i * tex_width + j) * 2    ] = 255;
 			teximage[(i * tex_width + j) * 2 + 1] = 255;
 		    }
+		}
+	    }
 
 	    delete [] texbitmap;
 	    break;
@@ -171,13 +173,15 @@ fntTexFont::load(const char *fname)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, tex_width, tex_height,
-		 0 /* Border */,
-		 GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, (GLvoid *)teximage);
+		 0 /* Border */, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE,
+		 (GLvoid *)teximage);
     delete [] teximage;
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glAlphaFunc(GL_GREATER, 0.1f);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     fseek(fd, fpos, SEEK_SET);
 
@@ -190,37 +194,44 @@ fntTexFont::load(const char *fname)
     unsigned char max_w = 0;
     int u = 0, d = 0;
     for (i = 0; i < num_glyphs; ++i) {
-	unsigned short ch = _fnt_readShort(fd);
-	unsigned char w = _fnt_readByte(fd);
+	unsigned short ch = fnt_readShort(fd);
+	unsigned char w = fnt_readByte(fd);
 	if (w > max_w) max_w = w;
-	unsigned char h = _fnt_readByte(fd);
-	int vtx_left = (signed char)_fnt_readByte(fd);
-	int vtx_bot = (signed char)_fnt_readByte(fd);
-	/* signed char step =*/ _fnt_readByte(fd);
-	/* signed char unknown =*/ _fnt_readByte(fd);
-	short x = _fnt_readShort(fd);
-	short y = _fnt_readShort(fd);
+	unsigned char h = fnt_readByte(fd);
+	int vtx_left = (signed char)fnt_readByte(fd);
+	int vtx_bot = (signed char)fnt_readByte(fd);
+	/* signed char step =*/ fnt_readByte(fd);
+	/* signed char unknown =*/ fnt_readByte(fd);
+	short x = fnt_readShort(fd);
+	short y = fnt_readShort(fd);
 
 	if (ch < 32 || ch > 255) continue;
-	glNewList(list_base + ch, GL_COMPILE);
+
 	float tex_left = x * W;
 	float tex_right = (x + w) * W;
 	float tex_bot = y * H;
 	float tex_top = (y + h) * H;
 	int vtx_right = vtx_left + w;
 	int vtx_top = vtx_bot + h;
-	widths[ch] = w + 1;
-	glBegin(GL_QUADS);
-	glTexCoord2f(tex_left, tex_bot);
-	glVertex2i(vtx_left, vtx_bot);
-	glTexCoord2f(tex_right, tex_bot);
-	glVertex2i(vtx_right, vtx_bot);
-	glTexCoord2f(tex_right, tex_top);
-	glVertex2i(vtx_right, vtx_top);
-	glTexCoord2f(tex_left, tex_top);
-	glVertex2i(vtx_left, vtx_top);
-	glEnd();
-	glTranslated(w + 1, 0, 0);
+	glNewList(list_base + ch, GL_COMPILE);
+	if (w != 0 && h != 0) {
+	    glBegin(GL_QUADS);
+	    glTexCoord2f(tex_left, tex_bot);
+	    glVertex2i(vtx_left, vtx_bot);
+	    glTexCoord2f(tex_right, tex_bot);
+	    glVertex2i(vtx_right, vtx_bot);
+	    glTexCoord2f(tex_right, tex_top);
+	    glVertex2i(vtx_right, vtx_top);
+	    glTexCoord2f(tex_left, tex_top);
+	    glVertex2i(vtx_left, vtx_top);
+	    glEnd();
+	    // FIXME: why do we need to add 2? 1 should do but seems to
+	    // result in some characters touching (but not others...)
+	    widths[ch] = w + 2;
+	} else {
+	    widths[ch] = fnt_size / 2;
+	}
+	glTranslated(widths[ch], 0, 0);
 	glEndList();
 	if (vtx_bot < d) d = vtx_bot;
 	if (vtx_top > u) u = vtx_top;
@@ -230,7 +241,7 @@ fntTexFont::load(const char *fname)
     if (widths[(int)' '] == -1) {
 	glNewList(list_base + ' ', GL_COMPILE);
 	widths[(int)' '] = fnt_size / 2;
-	glTranslated(fnt_size / 2, 0, 0);
+	glTranslated(widths[(int)' '], 0, 0);
 	glEndList();
     }
 

@@ -19,7 +19,7 @@
  
      For further information visit http://plib.sourceforge.net
 
-     $Id: fnt.h,v 1.1.2.2 2003-11-24 23:52:28 olly Exp $
+     $Id: fnt.h,v 1.1.2.3 2003-11-25 03:59:15 olly Exp $
 */
 
 
@@ -46,12 +46,6 @@ class fntTexFont {
 
     /* Nominal baseline widths */
     int widths[FNTMAX_CHAR];
-
-    void bind_texture() const {
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glDisable(GL_DEPTH_TEST);
-    }
 
   public:
 
@@ -82,7 +76,6 @@ class fntTexFont {
     }
 
     void puts(int x, int y, const char *s) const {
-	bind_texture();
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
@@ -93,7 +86,6 @@ class fntTexFont {
     }
 #if 0
     void putch(int x, int y, char c) {
-	bind_texture();
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
