@@ -95,6 +95,9 @@ fAbsoluteFnm(const char *fnm)
 
 /* fDirectory( fnm ) returns fTrue if fnm is a directory; fFalse if fnm is a
  * file, doesn't exist, or another error occurs (eg disc not in drive, ...)
+ * NB If fnm has a trailing directory separator (e.g. `/' or `/home/olly/'
+ * then it's assumed to be a directory even if it doesn't exist (as is an
+ * empty string).
  */
 
 #if ((OS==UNIX) || (OS==MSDOS) || (OS==TOS) || (OS==WIN32))
@@ -107,6 +110,11 @@ bool
 fDirectory(const char *fnm)
 {
    struct stat buf;
+   if (!fnm[0] || fnm[strlen(fnm) - 1] == FNM_SEP_LEV
+#ifdef FNM_SEP_LEV2
+       || fnm[strlen(fnm) - 1] == FNM_SEP_LEV2
+#endif
+       ) return 1;
    if (stat(fnm, &buf) != 0) return 0;
    return ((buf.st_mode & S_IFMT) == S_IFDIR);
 }
@@ -119,18 +127,12 @@ bool
 fDirectory(const char *fnm)
 {
    int objtype;
-   bool fResult;
-   char *f = osstrdup(fnm);
-   size_t len = strlen(f);
-
-   /* osfile doesn't like a trailing '.' */
-   if (len && f[len - 1] == '.') f[len - 1] = '\0';
-   fResult = (xosfile_read(f, &objtype, NULL, NULL, NULL, NULL) != NULL);
-   osfree(f);
-   /* it's a directory iff (osfile suceeded and objtype is 2 or 3) */
+   if (!fnm[0] || fnm[strlen(fnm) - 1] == '.') return 1;
+   if (xosfile_read(f, &objtype, NULL, NULL, NULL, NULL) != NULL) return 0;
+   /* it's a directory iff (objtype is 2 or 3) */
    /* (3 is an image file (for RISC OS 3 and above) but we probably want */
    /* to treat image files as directories) */
-   return fResult && (objtype == osfile_IS_DIR || objtype == osfile_IS_IMAGE);
+   return (objtype == osfile_IS_DIR || objtype == osfile_IS_IMAGE);
 }
 
 #else

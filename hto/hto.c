@@ -358,6 +358,7 @@ static int FindCmp (const void *p, const void *q)
 void HTO_NoCallBack (HTO p, char *Tag)
 {
     /* This is just a stub used when no callback function is specified */
+    p = p; Tag = Tag; /* suppress compiler warnings */
 }
 
 /*----------*/

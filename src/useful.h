@@ -21,10 +21,6 @@
 #ifndef USEFUL_H
 #define USEFUL_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stdlib.h> /* for Borland C which #defines max() & min() there */
 #include <stdio.h>
 #include <math.h>

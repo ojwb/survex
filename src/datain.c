@@ -35,6 +35,9 @@
 #include "datain.h"
 #include "commands.h"
 #include "out.h"
+#ifdef NEW3DFORMAT
+#include "new3dout.h"
+#endif
 
 /* This'll do for now... but we really ought to sort out something in
  * terms of FLT_EPSILON, DBL_EPSILON or LDBL_EPSILON as appropriate */

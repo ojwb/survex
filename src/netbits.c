@@ -38,7 +38,7 @@
 node *stn_iter = NULL; /* for FOR_EACH_STN */
 
 #ifdef NO_COVARIANCES
-extern void check_var(const var *v) {
+static void check_var(const var *v) {
    int bad = 0;
    int i;
 
@@ -52,7 +52,7 @@ extern void check_var(const var *v) {
 }
 #else
 #define V(A,B) ((*v)[A][B])
-extern void check_var(const var *v) {
+static void check_var(const var *v) {
    int bad = 0;
    int ok = 0;
    int i, j;
@@ -92,7 +92,7 @@ extern void check_var(const var *v) {
 }
 #endif
 
-extern void check_d(const d *d) {
+static void check_d(const d *d) {
    int bad = 0;
    int i;
 
@@ -585,7 +585,6 @@ invert_var(var *inv, const var *v)
    return 1;
 }
 #else
-#define V(A,B) ((*v)[A][B])
 extern int
 invert_var(var *inv, const var *v)
 {

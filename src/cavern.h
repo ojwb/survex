@@ -250,13 +250,6 @@ extern prefix *root;
 extern node *stnlist;
 extern unsigned long optimize;
 
-#ifdef NEW3DFORMAT
-/* these are the root and the current part of the twig structure, respectively*/
-extern twig *rhizome, *limb;
-extern char *startingdir, *basepath, *firstfilename;
-extern char fUseNewFormat; /* note defined in new3dout.h */
-#endif
-
 extern char *survey_title;
 extern int survey_title_len;
 

@@ -93,29 +93,11 @@ static void fatal(char *en, void (*fn)( char * ), char*szArg) {
   exit(EXIT_FAILURE);
 }
 
-static void *xmalloc(size_t size) {
-   void *p = malloc(size);
-   if (!p) fatal("Out of memory!", NULL, NULL);
-   return p;
-}
-
 extern void *xmalloc(size_t size) {
    void *p = malloc(size);
    if (!p) fatal("Out of memory!", NULL, NULL);
    return p;
 }
-
-#if (OS==RISCOS)
-/* needed by fDirectory() in osdepend.c - otherwise we have to link message.c
- * which also needs filename.c */
-extern void *osstrdup(const char *str) {
-   char *p;
-   size_t len = strlen(str) + 1;
-   p = xmalloc(len);
-   memcpy(p, str, len);
-   return p;
-}
-#endif
 
 typedef struct list {
    const char *line;

@@ -24,11 +24,12 @@
 #include "new3dout.h"
 #ifdef NEW3DFORMAT
 twig *rhizome, *limb;
-char *firstfilename, *startingdir, *basesource;
-char fUseNewFormat=0;
-static int statcount=1; /* this is the total number of things added */
+char *firstfilename, *startingdir;
+static char *basesource;
+int fUseNewFormat = 0;
+static int statcount = 1; /* this is the total number of things added */
 
-int scount(twig *twiglet) {
+static int scount(twig *twiglet) {
   twig *lib;
 
   if (twiglet->from) {
@@ -59,13 +60,14 @@ void cave_write_title (const char *title, img *pimg)
   fputs(title,pimg->fh);
 }
 
-void cave_write_stn(node *nod)
+void cave_write_stn(node *nod)   
 {
+    nod = nod; /* avoid compiler warnings */
 }
 
 
 
-void
+static void
 cave_write_pos(pos *pid,prefix *pre)
 {
 uchar length;
@@ -129,8 +131,9 @@ printf("A cave error has occured. Hmmm\n");
 return 0;
 }
 
-void cave_write_leg(linkfor *leg)
+void cave_write_leg(linkfor *leg)    
 {
+    leg = leg; /* avoid compiler warnings */
 }
 
 void
@@ -152,7 +155,7 @@ cave_write_source(const char *source)
   fputs(source,pimgOut->fh);
 }
 
-void save3d(twig *sticky)
+static void save3d(twig *sticky)
 {
   char ltag;
   short unsigned int stubcount;
@@ -244,7 +247,8 @@ void save3d(twig *sticky)
       }
     }
 }
-void
+
+static void
 cave_write_base_source()
 {
   char *temp, *temp2;
@@ -292,7 +296,7 @@ void cave_close(img *pimg)
       put32((long)statcount,pimg->fh);
       fclose(pimg->fh);
    }
-   /*   memory leak, but it doesn't like this for soem reason */
+   /*   memory leak, but it doesn't like this for some reason */
    osfree(pimg);
 }
 
