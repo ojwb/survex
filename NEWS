@@ -1,5 +1,6 @@
-* Major clean-up of Survex Manual; renamed it from "svxdocs" to
-  "manual".
+Changes in 0.99-prerelease1:
+
+* Major clean-up of Survex Manual; renamed from "svxdocs" to "manual".
 
 * cavern: added error checks for "*flags" (with no arguments) and
   "*flags not".

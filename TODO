@@ -126,3 +126,15 @@ cylpolar with dz rather than depth?
 
 comma separated dates in *date?
 
+Date: Mon, 17 Sep 2001
+From: Olly
+
+Allow "*exportall" or similar?  Leandro's point about "maze caves" -
+just saying "don't use *export" is unhelpful if someone connects a
+cave with *export to one without...
+
+Find a solution to Thilo's "." problem.
+
+aven: load a .pos file and no stations are shown - I think the problem
+is in aven, as img looks to be setting the station "underground" flag...
+
