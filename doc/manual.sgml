@@ -93,8 +93,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-03-16 23:18:04 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.82 2002-03-16 23:18:04 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-03-18 01:16:42 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.83 2002-03-18 01:16:42 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -381,21 +381,95 @@ Icons are installed for &svx;, &x3d;, &err;, and &pos; files.
 Double-clicking on a &svx; file processes it to produce a &x3d; file.
 Double-clicking the &x3d; file views it in aven.
 You can also right click on the files to bring up a menu of other possible
-actions.
+actions:
 </Para>
 
-<!--
-right click on svx:
+<VariableList>
+<VarListEntry><Term>&svx;</Term>
+<ListItem>
+  <VariableList>
+  <VarListEntry><Term>Open</Term>
+  <ListItem><Para>
+  Load file into Notepad
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Process</Term>
+  <ListItem><Para>
+  Process file with cavern to produce &x3d; file (and &err; file)
+  </Para></ListItem>
+  </VarListEntry>
+  </VariableList>
+</ListItem>
+</VarListEntry>
+    
+<VarListEntry><Term>&x3d;</Term>
+<ListItem>
+  <VariableList>
+  <VarListEntry><Term>Open</Term>
+  <ListItem><Para>
+  Load file into Aven
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Print</Term>
+  <ListItem><Para>
+  Send to the printer
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Extend</Term>
+  <ListItem><Para>
+  Produce extended elevation
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Convert to DXF</Term>
+  <ListItem><Para>
+  Convert to a DXF file (suitable for importing to many CAD packages)
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Convert for hand plotting</Term>
+  <ListItem><Para>
+  Produce a &pos; file listing all the stations and their coordinates
+  </Para></ListItem>
+  </VarListEntry>
+  </VariableList>
+</ListItem>
 
-open->notepad {default}
-process->cavern
-
-right click on 3d:
-
-open->aven {default}
-extend->extend
-print->printwin
--->
+<VarListEntry><Term>&err;</Term>
+<ListItem>
+  <VariableList>
+  <VarListEntry><Term>Open</Term>
+  <ListItem><Para>
+  Load file into Notepad
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Sort by Error</Term>
+  <ListItem><Para>
+  Sort &err; file by the error in each traverse
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Sort by Horizontal Error</Term>
+  <ListItem><Para>
+  Sort &err; file by the horizontal error in each traverse
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Sort by Vertical Error</Term>
+  <ListItem><Para>
+  Sort &err; file by the vertical error in each traverse
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Sort by Percentage Error</Term>
+  <ListItem><Para>
+  Sort &err; file by the percentage error in each traverse
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Sort by Error per Leg</Term>
+  <ListItem><Para>
+  Sort &err; file by the error per leg in each traverse
+  </Para></ListItem>
+  </VarListEntry>
+  </VariableList>
+</ListItem>
+</VarListEntry>
+</VariableList>
 
 </Sect3>
 
