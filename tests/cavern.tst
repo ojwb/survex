@@ -28,9 +28,11 @@ export SURVEXHOME
  hanging_cpt badinc badinc2 non_existant_file\
  stnsurvey1 stnsurvey2 stnsurvey3\
  tapelessthandepth longname chinabug chinabug2\
- multinormal multinormignall multidiving multicartesian multinosurv\
- multinormalbad multibug cmd_title cmd_titlebad cmd_dummy cmd_infer\
- cartes diving normal normignall nosurv cmd_flags bad_cmd_flags plumb"}}
+ multinormal multinormignall multidiving multicylpolar multicartesian\
+ multinosurv multinormalbad multibug\
+ cmd_title cmd_titlebad cmd_dummy cmd_infer\
+ cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
+ plumb"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -112,6 +114,7 @@ for file in $TESTS ; do
   multinormal) pos=yes ; warn=0 ;;
   multinormignall) pos=yes ; warn=0 ;;
   multidiving) pos=yes ; warn=0 ;;
+  multicylpolar) pos=yes ; warn=0 ;;
   multicartesian) pos=yes ; warn=0 ;;
   multinosurv) pos=yes ; warn=0 ;;
   multinormalbad) pos=fail ;;
@@ -122,6 +125,7 @@ for file in $TESTS ; do
   cmd_infer) pos=yes ; warn=0 ;;
   cartes) pos=yes ; warn=0 ;;
   diving) pos=yes ; warn=0 ;;
+  cylpolar) pos=yes ; warn=0 ;;
   normal) pos=yes ; warn=0 ;;
   normignall) pos=yes ; warn=0 ;;
   nosurv) pos=yes ; warn=0 ;;

@@ -795,6 +795,9 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
 #endif
 
    if (pcs->f0Eq && tape == (real)0.0) {
+      if (frdepth != todepth) {
+	 /* FIXME: warn! */
+      }
       process_equate(fr, to);
       return 1;
    }
@@ -1126,6 +1129,116 @@ data_cartesian(void)
    }
 }
 
+extern int
+data_cylpolar(void)
+{
+   prefix *fr = NULL, *to = NULL;
+
+   real tape = 0, comp = 0;
+   real frdepth = 0, todepth = 0;
+
+   bool fMulti = fFalse;
+   bool fRev;
+
+   reading first_stn = End;
+
+   reading *ordering;
+
+   again:
+
+   fRev = fFalse;
+
+   for (ordering = pcs->ordering; ; ordering++) {
+      skipblanks();
+      switch (*ordering) {
+       case Fr:
+	 fr = read_prefix_stn(fFalse, fTrue);
+	 if (first_stn == End) first_stn = Fr;
+	 break;
+       case To:
+	 to = read_prefix_stn(fFalse, fTrue);
+	 if (first_stn == End) first_stn = To;
+	 break;
+       case Station:
+	 fr = to;
+	 to = read_prefix_stn(fFalse, fFalse);
+	 first_stn = To;
+	 break;
+       case Dir:
+	  switch(toupper(ch)) {
+	   case 'F':
+	     break;
+	   case 'B':
+	     fRev = fTrue;
+	     break;
+	   default:
+	     compile_error(/*Found `%c', expecting `F' or `B'*/131, ch);
+	     skipline();
+	     process_eol();
+	     return 0;
+	  }
+	  break;
+       case Tape: tape = read_numeric(fFalse); break;
+       case Comp: comp = read_numeric_or_omit(); break;
+       case FrDepth: frdepth = read_numeric(fFalse); break;
+       case ToDepth: todepth = read_numeric(fFalse); break;
+       case Depth:
+	  frdepth = todepth;
+	  todepth = read_numeric(fFalse);
+	  break;
+       case Ignore: skipword(); break;
+       case IgnoreAllAndNewLine:
+	 skipline();
+	 /* fall through */
+       case Newline:
+	 if (fr != NULL) {
+	    int r;
+	    if (fRev) {
+	       prefix *t = fr;
+	       fr = to;
+	       to = t;
+	    }
+	    r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
+				 (first_stn == To) ^ fRev);
+	    if (!r) skipline();
+	 }
+	 fMulti = fTrue;
+	 while (1) {
+	    process_eol();
+	    process_bol();
+	    if (isData(ch)) break;
+	    if (!isComm(ch)) {
+	       push_back(ch);
+	       return 1;
+	    }
+	 }
+	 break;
+       case IgnoreAll:
+	 skipline();
+	 /* fall through */
+       case End:
+	 if (!fMulti) {
+	    int r;
+	    if (fRev) {
+	       prefix *t = fr;
+	       fr = to;
+	       to = t;
+	    }
+	    r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
+				 (first_stn == To) ^ fRev);
+	    process_eol();
+	    return r;
+	 }
+	 do {
+	    process_eol();
+	    process_bol();
+	 } while (isComm(ch));
+	 goto again;
+      default: BUG("Unknown reading in ordering");
+      }
+   }
+}
+
 static int
 process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
 {
@@ -1169,6 +1282,99 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
    link->flags = pcs->flags;
    link->next = nosurveyhead;
    nosurveyhead = link;
+   return 1;
+}
+
+static int
+process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
+		 real frdepth, real todepth, bool fToFirst)
+{
+   real dx, dy, dz;
+   real vx, vy, vz;
+#ifndef NO_COVARIANCES
+   real cxy = 0;
+#endif
+
+   if (pcs->f0Eq && tape == (real)0.0) {
+      if (frdepth != todepth) {
+	 /* FIXME: warn! */
+      }
+      process_equate(fr, to);
+      return 1;
+   }
+   
+   if (tape < (real)0.0) {
+      compile_warning(/*Negative tape reading*/60);
+   }
+
+   tape *= pcs->units[Q_LENGTH];
+   if (comp != HUGE_REAL) {
+      comp *= pcs->units[Q_BEARING];
+      if (comp < (real)0.0 || comp - M_PI * 2 > EPSILON) {
+         compile_warning(/*Suspicious compass reading*/59);
+      }
+   }
+
+   tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
+   /* assuming depths are negative */
+   dz = (todepth - frdepth) * pcs->sc[Q_DEPTH];
+
+   /* adjusted tape is negative -- probably the calibration is wrong */
+   if (tape < (real)0.0) {
+      compile_warning(/*Negative adjusted tape reading*/79);
+   }
+
+   if (comp == HUGE_REAL) {
+      /* plumb */
+      dx = dy = (real)0.0;
+      vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
+      vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
+   } else {
+      real sinB, cosB;
+      comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+      comp -= pcs->z[Q_DECLINATION];
+
+      sinB = sin(comp);
+      cosB = cos(comp);
+
+      dx = tape * sinB;
+      dy = tape * cosB;
+
+      vx = var(Q_POS) / 3.0 +
+	 var(Q_LENGTH) * sinB * sinB + var(Q_BEARING) * dy * dy;
+      vy = var(Q_POS) / 3.0 +
+	 var(Q_LENGTH) * cosB * cosB + var(Q_BEARING) * dx * dx;
+      vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
+
+#ifndef NO_COVARIANCES
+      cxy = (var(Q_LENGTH) - var(Q_BEARING) * tape * tape) * sinB * cosB;
+#endif
+   }
+   addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
+#ifndef NO_COVARIANCES
+		, cxy, 0, 0
+#endif
+		);
+#ifdef NEW3DFORMAT
+   if (fUseNewFormat) {
+      /*new twiglet and insert into twig tree*/
+      twig *twiglet = osnew(twig);
+      twiglet->from = fr;
+      twiglet->to = to;
+      twiglet->down = twiglet->right = NULL;
+      twiglet->source = twiglet->drawings
+	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
+      twiglet->up = limb->up;
+      limb->right = twiglet;
+      limb = twiglet;
+
+      /* record pre-fettling deltas */
+      twiglet->delta[0] = dx;
+      twiglet->delta[1] = dy;
+      twiglet->delta[2] = dz;
+   }
+#endif
+
    return 1;
 }
 

@@ -143,7 +143,7 @@ typedef int compiletimeassert_sflags5[BIT(SFLAGS_FIXED) == img_SFLAG_FIXED ? 1 :
 /* enumeration of field types */
 typedef enum {
    End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
-   FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount, Dr, Dir,
+   FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount, Dir,
    Station, Depth, Count, Newline, IgnoreAllAndNewLine,
    Ignore, IgnoreAll
 } reading;
@@ -241,15 +241,6 @@ typedef struct Pos {
    INT32_T id;
 #endif
 } pos;
-
-#define STYLE_DEFAULT   -2
-#define STYLE_UNKNOWN   -1
-#define STYLE_NORMAL     0
-#define STYLE_TOPOFIL    1
-#define STYLE_DIVING     2
-#define STYLE_CARTESIAN  3
-#define STYLE_NOSURVEY   4
-#define STYLE_NOSURVEY   4
 
 /*
 typedef struct Inst {

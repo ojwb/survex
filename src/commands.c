@@ -873,6 +873,7 @@ cmd_data(void)
       data_normal,
       data_diving,
       data_cartesian,
+      data_cylpolar,
       data_nosurvey
    };
 
@@ -885,6 +886,8 @@ cmd_data(void)
       BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) | BIT(Tape) | BIT(Comp)
 	 | BIT(FrDepth) | BIT(ToDepth) | BIT(Depth),
       BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dx) | BIT(Dy) | BIT(Dz),
+      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) | BIT(Tape) | BIT(Comp)
+	 | BIT(FrDepth) | BIT(ToDepth) | BIT(Depth),
       BIT(Fr) | BIT(To) | BIT(Station)
    };
 
@@ -894,11 +897,22 @@ cmd_data(void)
       BIT(Dir) | BIT(Clino),
       BIT(Dir),
       0,
+      BIT(Dir),
       0
    };
 
+#define STYLE_DEFAULT   -2
+#define STYLE_UNKNOWN   -1
+#define STYLE_NORMAL     0
+#define STYLE_TOPOFIL    1
+#define STYLE_DIVING     2
+#define STYLE_CARTESIAN  3
+#define STYLE_CYLPOLAR   4
+#define STYLE_NOSURVEY   5
+
    static sztok styletab[] = {
 	{"CARTESIAN",    STYLE_CARTESIAN },
+	{"CYLPOLAR",     STYLE_CYLPOLAR },
 	{"DEFAULT",      STYLE_DEFAULT },
 	{"DIVING",       STYLE_DIVING },
 	{"NORMAL",       STYLE_NORMAL },

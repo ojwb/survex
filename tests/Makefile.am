@@ -43,6 +43,7 @@ chinabug.svx chinabug2.svx\
 multinormal.svx multinormal.pos\
 multinormignall.svx multinormignall.pos\
 multidiving.svx multidiving.pos\
+multicylpolar.svx multicylpolar.pos\
 multicartesian.svx multicartesian.pos\
 multinosurv.svx multinosurv.pos\
 multinormalbad.svx multibug.svx\
@@ -50,6 +51,7 @@ cmd_title.svx cmd_titlebad.svx\
 cmd_dummy.svx cmd_infer.svx cmd_infer.pos\
 cartes.svx cartes.pos\
 diving.svx diving.pos\
+cylpolar.svx cylpolar.pos\
 normal.svx normal.pos\
 normignall.svx normignall.pos\
 nosurv.svx nosurv.pos\

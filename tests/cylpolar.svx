@@ -1,0 +1,8 @@
+*fix 1 0 0 0
+*data cylpolar from to fromdepth todepth tape compass
+1 2 0.0 1.0 1.00 000
+2 3 1.0 0.0 1.00 090
+
+*data cylpolar to from fromdepth todepth tape compass
+4 3 1.0 1.0 1.00 180
+5 4 1.0 1.0 1.00 270

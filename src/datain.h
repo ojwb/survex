@@ -60,6 +60,7 @@ void showandskipline(const char *dummy, int n);
 int data_normal(void);
 int data_diving(void);
 int data_cartesian(void);
+int data_cylpolar(void);
 int data_nosurvey(void);
 int data_ignore(void);
 
