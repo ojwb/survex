@@ -1,3 +1,5 @@
+Changes in 1.0.28:
+
 * Fixed 3d file reading code to fix incorrect unpacking of compressed station
   names in a rare case.  Also checked other rare cases work correctly.
 
