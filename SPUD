@@ -30,6 +30,8 @@ perspective vs survey size - is there an issue?
 
 sort out date colouring cleanly.  also error colouring, etc.
 
+texture mapped fonts: seems to be a minor alignment bug - investigate.
+
 ---
 
 TODO entries which aren't likely to be done for 1.0.x:
