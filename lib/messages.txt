@@ -823,9 +823,9 @@ ro: 62 Distanta este mai mica decat difeneta de nivel
 # GN(3): Ahhhh.  Got it.  Well, it fits already as it is now. :-)
 en: 63 Reading `%s' not allowed in data style `%s'
 fr: 63 Donn&eacute;e `%s' incorrecte pour le style de donn&eacute;es `%s'
-de-de:   63 Diese Messgr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
-de-ch:        63 Diese Messgr&ouml;sse `%s' ist bei Datenformat `%s' nicht erlaubt
-de: 63 Diese Me&szlig;gr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
+de-de:   63 Messgr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
+de-ch:        63 Messgr&ouml;sse `%s' ist bei Datenformat `%s' nicht erlaubt
+de: 63 Me&szlig;gr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
 pt: 63 Campo `%s' n&atilde;o &eacute; permitido em tipo de visada `%s'
 ca: 63 Camp `%s' no perm&egrave;s en aquest estil de dades `%s'
 es: 63 Campo `%s' no permitido en este estilo de datos `%s'
@@ -1729,7 +1729,7 @@ ro:146 Eroare%7.2f%%
 # the message above.
 en:147 Error    N/A
 fr:147 Erreur    N/A
-de:147 Fehler (sinnlose(r) Wert(e))
+de:147 Fehler   belanglos
 pt:147 Erro    N/A
 ca:147 Error    N/A
 es:147 Error    N/A
@@ -2291,7 +2291,7 @@ ro:199 Incarcati doar sub-topografia cu prefixul
 en:200 *UNITS factor must be non-zero
 fr:200 *UNITS: le facteur doit &ecirc;tre non nul
 de-de,de-ch:200 Faktor nach *UNITS muss von Null verschieden sein
-de:200     Faktor nach *UNITS mu&szlig; von Null verschieden sein
+de:200 Faktor nach *UNITS mu&szlig; von Null verschieden sein
 pt:200 Fator em *UNITS n&atilde;o pode ser zero
 ca:200 El factor *UNITS ha de ser diferent de zero
 es:200 El factor de *UNITS debe de ser diferente de cero
@@ -2386,7 +2386,7 @@ ro:208 Toate fisierele
 # in the about box (summarising the purpose of aven)
 en:209 Survey visualisation tool
 fr:209 Outil de visualisation de topographies
-de:209 Visualisierungswerkzeug f&uuml;r Vermessungsdaten
+de:209 Visualisierungsprogramm f&uuml;r Vermessungsdaten
 ca:209 Eina per visualitzar topografies
 es:209 Herramienta para visualizar topografias
 it:209 Strumento di visualizzazione rilievi
@@ -2822,7 +2822,7 @@ it:254 Ripristina i @valori predefiniti
 sk:254 Znov@u na v&yacute;chodzie hodnoty
 ro:254 @Restabiliti setarile initiale
 # Used in print dialog to label 
-# TRANSLATE fr de pt pt-br ca es it sk ro check reused message makes sense
+# TRANSLATE fr pt pt-br ca es it sk ro check reused message makes sense
 # in this context
 # cf 213
 en:255 View
@@ -2837,7 +2837,7 @@ sk:255 Poh&lcaron;ad
 ro:255 Vizualizare
 # XXX 256 (for "Elements" or whatever we change that to)
 # cf 170
-# TRANSLATE fr de pt pt-br ca es it sk ro check adapted message is ok
+# TRANSLATE fr pt pt-br ca es it sk ro check adapted message is ok
 en:257 %d pages (%dx%d)
 fr:257 %d pages (%dx%d)
 de:257 %d Seiten (%dx%d)
@@ -2849,7 +2849,7 @@ sk:257 %d str&aacute;nok (%dx%d)
 ro:257 %d pagini (%dx%d)
 # XXX 258
 # cf 159
-# TRANSLATE fr de pt pt-br ca es it sk ro check adapted message is ok
+# TRANSLATE fr pt pt-br ca es it sk ro check adapted message is ok
 en:259 Bearing
 fr:259 Azimut
 de:259 Richtung
@@ -3449,6 +3449,7 @@ sk:398 Ni&aacute;hled tisku
 # Title of the print dialog
 en:399 Print
 fr:399 Imprimer
+de:399 Drucken
 ca:399 Imprimir
 es:399 Imprimir
 it:399 Stampa
@@ -3463,10 +3464,10 @@ es:400 &amp;Imprimir
 it:400 &amp;Stampa
 sk:400 &amp;Tla&ccaron;i&tcaron;
 ro:400 &amp;Imprimare
-# TRANSLATE sk
+#
 en:401 Pre&amp;view
 fr:401 &amp;Pr&eacute;visualiser
-de:401 &amp;Voransicht
+de:401 &amp;Vorschau
 ca:401 &amp;Previsualitza
 es:401 &amp;Previsualiza
 it:401 Ante&amp;prima di stampa
