@@ -937,7 +937,7 @@ void MainFrm::ClearCoords()
 void MainFrm::SetCoords(Double x, Double y)
 {
     wxString str;
-    str.Printf("   %d N, %d E", (int) x, (int) y);
+    str.Printf("   %d N, %d E", (int) y, (int) x);
     m_Coords->SetLabel(str);
 }
 
@@ -948,7 +948,7 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
     if (data && data->IsStation()) {
         LabelInfo* label = data->GetLabel();
 	wxString str;
-	str.Printf("   %d N, %d E", (int) (label->x + m_Offsets.x), (int) (label->y + m_Offsets.y));
+	str.Printf("   %d N, %d E", (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
 	m_StnCoords->SetLabel(str);
 	m_StnName->SetLabel(label->text);
 	str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
