@@ -140,7 +140,8 @@ yucky divdv( &d, &d, &v ) code.  Oh well, at least it seems to work.
 #include "validate.h"
 #include "debug.h"
 #include "survex.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "filelist.h"
 #include "netbits.h"
 #include "matrix.h"
@@ -149,7 +150,7 @@ yucky divdv( &d, &d, &v ) code.  Oh well, at least it seems to work.
 #include "out.h"
 
 static void print_var( const var v ) {
-#if 0
+#ifdef NO_COVARIANCES
    printf("(%f,%f,%f)",v[0],v[1],v[2]);
 #else
    int i;
@@ -386,7 +387,7 @@ static void concatenate_trav( node *stn, uchar i ) {
  trav->next=ptr;
  ptr=trav;
 
-#if 1 /* !HACK! */
+#if 0 /* !HACK! */
  print_var(newleg->v); putnl();
 #endif
 
@@ -486,6 +487,7 @@ static void remove_subnets( void ) {
   }
 
   if (optimize & 2) {
+/*printf("replacing parallel legs\n");*/
    FOR_EACH_STN( stn ) {
     /*
        :
@@ -536,13 +538,24 @@ static void remove_subnets( void ) {
      {
       var sum, prod;
       d temp, temp2;
+#if 0 /*ndef NO_COVARIANCES*/
+      print_var( newleg->v );
+      printf("plus\n");
+      print_var( newleg2->v );
+      printf("equals\n");
+#endif
       addvv(&sum,&newleg->v,&newleg2->v);
       ASSERT2( !fZero(&sum), "loop of zero variance found");
+#if 0 /*ndef NO_COVARIANCES*/
+      print_var( sum );
+#endif
       mulvv(&prod,&newleg->v,&newleg2->v);
       mulvd(&temp,&newleg2->v,&newleg->d);
       mulvd(&temp2,&newleg->v,&newleg2->d);
       adddd(&temp,&temp,&temp2);
+/*printf("divdv(&newleg->d,&temp,&sum)\n");*/
       divdv(&newleg->d,&temp,&sum);
+/*printf("divvv(&newleg->v,&prod,&sum)\n");*/
       divvv(&newleg->v,&prod,&sum);
      }
      osfree(newleg2);
@@ -583,6 +596,7 @@ static void remove_subnets( void ) {
      fMore=fTrue;
     }
    }
+/*printf("done replacing parallel legs\n");*/
   }
 
   if (optimize & 8) {
@@ -590,6 +604,7 @@ static void remove_subnets( void ) {
    int dirn5, dirn6, dirn0;
    linkfor *legAB, *legBC, *legCA;
    linkfor *legAZ, *legBZ, *legCZ;
+/*printf("replacing delta with star\n");*/
    FOR_EACH_STN( stn ) {
 /*    printf("*");*/
     /*
@@ -723,12 +738,8 @@ static void remove_subnets( void ) {
       subdd( &legCZ->d, &legCZ->d, &temp );
       divdv( &legCZ->d, &legCZ->d, &sum );
 
-#ifdef TRIM_PREFIX
-      nameZ=osmalloc((OSSIZE_T)(offsetof(prefix,ident)+1));
-#else
       nameZ=osnew(prefix);
-#endif
-      nameZ->ident[0]='\0'; /* root has ident[0]=="\" */
+      nameZ->ident = ""; /* root has ident[0]=="\" */
       stnZ=osnew(node);
       stnZ->name=nameZ;
       nameZ->pos=osnew(pos);
@@ -778,6 +789,7 @@ static void remove_subnets( void ) {
     }
     nodeltastar:;
    }
+/*printf("done replacing delta with star\n");*/
   }
 
  }
@@ -1029,6 +1041,7 @@ static void replace_subnets( void ) {
  }
 }
 
+#ifdef BLUNDER_DETECTION
 static void do_gross( d e, d v, node *stn1, node *stn2 ) {
    double hsqrd, rsqrd, s, cx, cy, cz;
    double tot;
@@ -1079,6 +1092,7 @@ printf( " v=( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
    }
    putnl();
 }
+#endif
 
 static void replace_travs( void ) {
  stack *ptrOld;
@@ -1218,8 +1232,9 @@ static void replace_travs( void ) {
   if (fFixed) {
    d err;
    memcpy( &err, &e, sizeof(d) );
-printf( "\n--- e=( %.2f, %.2f, %.2f )\n", e[0], e[1], e[2] );
-
+#ifdef BLUNDER_DETECTION
+   printf( "\n--- e=( %.2f, %.2f, %.2f )\n", e[0], e[1], e[2] );
+#endif
    while (fTrue) {
     fEquate=fTrue;
     lenTot=0.0;
@@ -1235,11 +1250,15 @@ printf( "\n--- e=( %.2f, %.2f, %.2f )\n", e[0], e[1], e[2] );
     if (data_here(stn1->leg[i])) {
      leg=stn1->leg[i];
      adddd( &POSD(stn3), &POSD(stn1), &leg->d );
+#ifdef BLUNDER_DETECTION
      do_gross( err, leg->d, stn1, stn3 );
+#endif
     } else {
      leg=stn3->leg[k];
      subdd( &POSD(stn3), &POSD(stn1), &leg->d );
+#ifdef BLUNDER_DETECTION
      do_gross( err, leg->d, stn3, stn1 );
+#endif
     }
 
     if (stn3==stn2 && k==j)
