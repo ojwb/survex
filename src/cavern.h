@@ -8,7 +8,7 @@
 
 /* Using covariances increases the memory required somewhat - may be desirable
  * to disable this for small memory machines */
-/*#define NO_COVARIANCES*/
+/* #define NO_COVARIANCES 1 */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,7 +58,7 @@ extern int fnm_output_base_is_dir;
 
 /* Types */
 
-typedef enum { Q_NULL=-1, Q_DEFAULT, Q_LENGTH, Q_DEPTH,
+typedef enum { Q_NULL = -1, Q_DEFAULT, Q_LENGTH, Q_DEPTH,
   Q_DX, Q_DY, Q_DZ, Q_LENGTHOUTPUT,
   Q_COUNT, Q_BEARING, Q_ANGLEOUTPUT,
   Q_GRADIENT, Q_DECLINATION, Q_POS, Q_PLUMB, Q_LEVEL, Q_MAC } q_quantity;
