@@ -728,7 +728,7 @@ handle_plumb(clino_type *p_ctype)
       get_token();
       tok = match_tok(clino_tab, TABSIZE(clino_tab));
       if (tok != CLINO_NULL) {
-	 *p_ctype = (clinos[tok] == CLINO_LEVEL ? CTYPE_HORIZ : CTYPE_PLUMB);
+	 *p_ctype = (tok == CLINO_LEVEL ? CTYPE_HORIZ : CTYPE_PLUMB);
 	 return clinos[tok];
       }
       set_pos(&fp);
