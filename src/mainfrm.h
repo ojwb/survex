@@ -67,6 +67,7 @@ enum {
     menu_VIEW_SHOW_ENTRANCES,
     menu_VIEW_SHOW_FIXED_PTS,
     menu_VIEW_SHOW_EXPORTED_PTS,
+    menu_VIEW_INDICATORS,
     menu_VIEW_COMPASS,
     menu_VIEW_CLINO,
     menu_VIEW_DEPTH_BAR,
@@ -200,6 +201,7 @@ public:
 #ifdef AVENGL
     void OnAntiAliasUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnAntiAliasUpdate(event); }
 #endif
+    void OnIndicatorsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnIndicatorsUpdate(event); }
 
     void OnDefaults(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnDefaults(event); }
     void OnPlan(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnPlan(event); }

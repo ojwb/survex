@@ -121,6 +121,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
     EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
+    EVT_UPDATE_UI(menu_VIEW_INDICATORS, MainFrm::OnIndicatorsUpdate)
 #ifdef AVENGL
     EVT_UPDATE_UI(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAliasUpdate)
 #endif
@@ -202,10 +203,12 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight Fi@xed Points*/295), "unused", true);
     viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight Ex&ported Points*/296), "unused", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "Toggle display of the compass", true);
-    viewmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "Toggle display of the clinometer", true);
-    viewmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "Toggle display of the depth bar", true);
-    viewmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "Toggle display of the scale bar", true);
+    wxMenu* indmenu = new wxMenu;
+    indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "Toggle display of the compass", true);
+    indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "Toggle display of the clinometer", true);
+    indmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "Toggle display of the depth bar", true);
+    indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "Toggle display of the scale bar", true);
+    viewmenu->Append(menu_VIEW_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu, "");
 #ifdef AVENGL
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*S@moothed Survey Legs*/298), "unused", true);

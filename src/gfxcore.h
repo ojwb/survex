@@ -367,6 +367,7 @@ public:
 #ifdef AVENGL
     void OnAntiAliasUpdate(wxUpdateUIEvent&);
 #endif
+    void OnIndicatorsUpdate(wxUpdateUIEvent&);
 
 private:
     DECLARE_EVENT_TABLE()

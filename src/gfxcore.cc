@@ -810,7 +810,15 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 
 	if (m_Surface) {
 	    // Draw the surface legs.
+
+	    if (m_SurfaceDashed) {
+	        glLineStipple(1, 0xaaaa);
+		glEnable(GL_LINE_STIPPLE);
+	    }
 	    glCallList(m_Lists.surface);
+	    if (m_SurfaceDashed) {
+	        glDisable(GL_LINE_STIPPLE);
+	    }
 	}
 	
 	// Flush pipeline and swap buffers.
@@ -2434,3 +2442,8 @@ void GfxCore::OnAntiAliasUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_AntiAlias);
 }
 #endif
+
+void GfxCore::OnIndicatorsUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData);
+}
