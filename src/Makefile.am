@@ -32,6 +32,8 @@ aven_LDADD = @LIBOBJS@ @WX_LIBS@
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN
 
+EXTRA_aven_SOURCES = aven.rc
+
 # FIXME: should use wxconfig or similar to get includes
 aven.coff: aven.rc
 	i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $@ $<
