@@ -1,6 +1,6 @@
 /* > network.c
  * SURVEX Network reduction routines
- * Copyright (C) 1991-1995 Olly Betts
+ * Copyright (C) 1991-1995,1997 Olly Betts
  */
 
 /*
@@ -127,6 +127,8 @@ splitting up, as it's rather slow to recompile.
            should now throw away unfixed bits and give non-fatal error
 1995.04.17 ASSERT->ASSERT2
 1996.08.04 H: and V: error values were incorrectly transposed
+1997.07.16 added gross error detection code
+1997.08.24 covariance code
 */
 
 /*
@@ -387,6 +389,7 @@ static void concatenate_trav( node *stn, uchar i ) {
 #if 1 /* !HACK! */
  print_var(newleg->v); putnl();
 #endif
+
 #if PRINT_NETBITS
  putchar(' ');
  print_var(newleg->v);
@@ -1026,6 +1029,57 @@ static void replace_subnets( void ) {
  }
 }
 
+static void do_gross( d e, d v, node *stn1, node *stn2 ) {
+   double hsqrd, rsqrd, s, cx, cy, cz;
+   double tot;
+   int i;
+#if 0
+printf( "e=( %.2f, %.2f, %.2f )", e[0], e[1], e[2] );
+printf( " v=( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
+#endif
+   hsqrd = sqrd(v[0])+sqrd(v[1]);
+   rsqrd = sqrdd(v);
+   if (rsqrd == 0.0) return;
+
+   fprint_prefix( stdout, stn1->name );
+   fputs( "->", stdout );
+   fprint_prefix( stdout, stn2->name );
+
+   cx = v[0] + e[0];
+   cy = v[1] + e[1];
+   cz = v[2] + e[2];
+
+   s = (e[0]*v[0] + e[1]*v[1] + e[2]*v[2]) / rsqrd;
+   tot = 0;
+   for ( i = 2; i >= 0; --i )
+      tot += sqrd(e[i] - v[i]*s);
+   printf( " L: %.2f", tot );
+
+   s = sqrd(cx) + sqrd(cy);
+   if (s>0.0) {
+      s = hsqrd / s;
+      s = s<0.0 ? 0.0 : sqrt(s);
+      s = 1 - s;
+      tot = sqrd(cx*s) + sqrd(cy*s) + sqrd(e[2]);
+      printf( " B: %.2f", tot );
+   }
+
+   if (hsqrd>0.0) {
+      double nx, ny;
+      s = (e[0]*v[1] - e[1]*v[0]) / hsqrd;
+      nx = cx - s*v[1];
+      ny = cy + s*v[0];
+      s = sqrd(nx) + sqrd(ny) + sqrd(cz);
+      if (s>0.0) {
+         s = rsqrd / s;
+         s = s<0.0 ? 0.0 : sqrt(s);
+         tot = sqrd(cx - s*nx) + sqrd(cy - s*ny) + sqrd(cz - s*cz);
+         printf( " G: %.2f", tot );
+      }
+   }
+   putnl();
+}
+
 static void replace_travs( void ) {
  stack *ptrOld;
  node *stn1,*stn2,*stn3;
@@ -1094,9 +1148,16 @@ static void replace_travs( void ) {
       eTot = sqrdd( e );
       hTot = sqrd(e[0])+sqrd(e[1]);
       vTot = sqrd(e[2]);
+#ifndef NO_COVARIANCES
+      /* !HACK! what about covariances? */
       eTotTheo=leg->v[0][0]+leg->v[1][1]+leg->v[2][2];
       hTotTheo=leg->v[0][0]+leg->v[1][1];
       vTotTheo=leg->v[2][2];
+#else
+      eTotTheo=leg->v[0]+leg->v[1]+leg->v[2];
+      hTotTheo=leg->v[0]+leg->v[1];
+      vTotTheo=leg->v[2];
+#endif
       err_stat( 1, sqrt(sqrdd(leg->d)), eTot, eTotTheo, hTot, hTotTheo,
                  vTot, vTotTheo );
      }
@@ -1135,9 +1196,16 @@ static void replace_travs( void ) {
     vTot = sqrd(e[2]);
     divdv( &sc, &e, &stn1->leg[i]->v );
    }
+#ifndef NO_COVARIANCES
+   /* !HACK! what about covariances? */
    eTotTheo=stn1->leg[i]->v[0][0]+stn1->leg[i]->v[1][1]+stn1->leg[i]->v[2][2];
    hTotTheo=stn1->leg[i]->v[0][0]+stn1->leg[i]->v[1][1];
    vTotTheo=stn1->leg[i]->v[2][2];
+#else
+   eTotTheo=stn1->leg[i]->v[0]+stn1->leg[i]->v[1]+stn1->leg[i]->v[2];
+   hTotTheo=stn1->leg[i]->v[0]+stn1->leg[i]->v[1];
+   vTotTheo=stn1->leg[i]->v[2];
+#endif
    cLegsTrav=0;
    lenTrav=0.0;
    nmPrev=stn1->name;
@@ -1148,6 +1216,10 @@ static void replace_travs( void ) {
   osfree(stn2->leg[j]); stn2->leg[j]=ptr->join2; /* and the other end */
 
   if (fFixed) {
+   d err;
+   memcpy( &err, &e, sizeof(d) );
+printf( "\n--- e=( %.2f, %.2f, %.2f )\n", e[0], e[1], e[2] );
+
    while (fTrue) {
     fEquate=fTrue;
     lenTot=0.0;
@@ -1160,16 +1232,19 @@ static void replace_travs( void ) {
      break;
 #endif
 
-    if (stn3==stn2 && k==j)
-     break;
-
     if (data_here(stn1->leg[i])) {
      leg=stn1->leg[i];
      adddd( &POSD(stn3), &POSD(stn1), &leg->d );
+     do_gross( err, leg->d, stn1, stn3 );
     } else {
      leg=stn3->leg[k];
      subdd( &POSD(stn3), &POSD(stn1), &leg->d );
+     do_gross( err, leg->d, stn3, stn1 );
     }
+
+    if (stn3==stn2 && k==j)
+     break;
+
     mulvd( &e, &leg->v, &sc );
     adddd( &POSD(stn3), &POSD(stn3), &e );
     if (!fZero(&leg->v))
