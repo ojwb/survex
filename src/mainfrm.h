@@ -69,35 +69,35 @@ enum {
 
 class PointInfo {
     friend class MainFrm;
-    float x, y, z;
+    double x, y, z;
     bool isLine; // false => move, true => draw line
 
 public:
-    float GetX() const { return x; }
-    float GetY() const { return y; }
-    float GetZ() const { return z; }
+    double GetX() const { return x; }
+    double GetY() const { return y; }
+    double GetZ() const { return z; }
     bool IsLine() const { return isLine; }
 };
 
 class LabelInfo {
     friend class MainFrm;
-    float x, y, z;
+    double x, y, z;
     wxString text;
 
 public:
-    float GetX() const { return x; }
-    float GetY() const { return y; }
-    float GetZ() const { return z; }
+    double GetX() const { return x; }
+    double GetY() const { return y; }
+    double GetZ() const { return z; }
     wxString GetText() const { return text; }
 };
 
 class MainFrm : public wxFrame {
     list<PointInfo*>* m_Points;
     list<LabelInfo*> m_Labels;
-    float m_XExt;
-    float m_YExt;
-    float m_ZExt;
-    float m_ZMin;
+    double m_XExt;
+    double m_YExt;
+    double m_ZExt;
+    double m_ZMin;
     int m_NumLegs;
     int m_NumPoints;
     int m_NumCrosses;
@@ -111,12 +111,12 @@ class MainFrm : public wxFrame {
     void ClearPointLists();
     bool LoadData(const wxString& file);
     void SortIntoDepthBands(list<PointInfo*>& points);
-    void IntersectLineWithPlane(float x0, float y0, float z0,
-				float x1, float y1, float z1,
-				float z, float& x, float& y);
-    float GetDepthBoundaryBetweenBands(int a, int b);
-    int GetDepthColour(float z);
-    void CentreDataset(float xmin, float ymin, float zmin);
+    void IntersectLineWithPlane(double x0, double y0, double z0,
+				double x1, double y1, double z1,
+				double z, double& x, double& y);
+    double GetDepthBoundaryBetweenBands(int a, int b);
+    int GetDepthColour(double z);
+    void CentreDataset(double xmin, double ymin, double zmin);
 
     wxString GetTabMsg(int key) {
         wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
@@ -204,10 +204,10 @@ public:
     void OnToggleStatusbar(wxCommandEvent& event);
     void OnToggleStatusbarUpdate(wxUpdateUIEvent& event);
 
-    float GetXExtent() { return m_XExt; }
-    float GetYExtent() { return m_YExt; }
-    float GetZExtent() { return m_ZExt; }
-    float GetZMin()    { return m_ZMin; }
+    double GetXExtent() { return m_XExt; }
+    double GetYExtent() { return m_YExt; }
+    double GetZExtent() { return m_ZExt; }
+    double GetZMin()    { return m_ZMin; }
 
     int GetNumLegs()   { return m_NumLegs; }
     int GetNumPoints() { return m_NumPoints; }

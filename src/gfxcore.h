@@ -33,9 +33,9 @@ class GfxCore : public wxWindow {
         Quaternion rotation;
         double scale;
         struct {
-	    float x;
-	    float y;
-	    float z;
+	    double x;
+	    double y;
+	    double z;
 	} translation;
         struct {
 	    int x;
@@ -49,6 +49,16 @@ class GfxCore : public wxWindow {
 	label_CHECK_AGAIN
     };
 
+    enum LockFlags {
+        lock_NONE = 0,
+        lock_X = 1,
+	lock_Y = 2,
+	lock_Z = 4,
+	lock_POINT = lock_X | lock_Y | lock_Z,
+	lock_XZ = lock_X | lock_Z,
+	lock_YZ = lock_Y | lock_Z,
+	lock_XY = lock_X | lock_Y
+    };
 
     struct {
         wxPoint* vertices;
@@ -69,6 +79,10 @@ class GfxCore : public wxWindow {
     } m_ScaleBar;
 
     LabelFlags* m_LabelGrid;
+    bool m_DepthbarOff;
+    bool m_ScalebarOff;
+    bool m_IndicatorsOff;
+    LockFlags m_Lock;
     Matrix4 m_RotationMatrix;
     bool m_DraggingLeft;
     bool m_DraggingMiddle;
@@ -87,7 +101,7 @@ class GfxCore : public wxWindow {
     double m_PanAngle;
     bool m_CaverotMouse;
     bool m_Rotating;
-    float m_RotationStep;
+    double m_RotationStep;
     bool m_ReverseControls;
     bool m_SwitchingToPlan;
     bool m_SwitchingToElevation;
@@ -138,23 +152,23 @@ class GfxCore : public wxWindow {
         wxBrush indicator2;
     } m_Brushes;
 
-    float XToScreen(float x, float y, float z) {
-        return float(x*m_RotationMatrix.get(0, 0) + y*m_RotationMatrix.get(0, 1) +
+    double XToScreen(double x, double y, double z) {
+        return double(x*m_RotationMatrix.get(0, 0) + y*m_RotationMatrix.get(0, 1) +
 		     z*m_RotationMatrix.get(0, 2));
     }
 
-    float YToScreen(float x, float y, float z) {
-        return float(x*m_RotationMatrix.get(1, 0) + y*m_RotationMatrix.get(1, 1) +
+    double YToScreen(double x, double y, double z) {
+        return double(x*m_RotationMatrix.get(1, 0) + y*m_RotationMatrix.get(1, 1) +
 		     z*m_RotationMatrix.get(1, 2));
     }
 
-    float ZToScreen(float x, float y, float z) {
-        return float(x*m_RotationMatrix.get(2, 0) + y*m_RotationMatrix.get(2, 1) +
+    double ZToScreen(double x, double y, double z) {
+        return double(x*m_RotationMatrix.get(2, 0) + y*m_RotationMatrix.get(2, 1) +
 		     z*m_RotationMatrix.get(2, 2));
     }
 
     wxCoord GetClinoOffset();
-    wxPoint CompassPtToScreen(float x, float y, float z);
+    wxPoint CompassPtToScreen(double x, double y, double z);
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
 
     void SetScale(double scale);
@@ -186,6 +200,7 @@ class GfxCore : public wxWindow {
     void SimpleDrawNames();
 
     void Defaults();
+    void DefaultParameters();
     void Plan();
     void Elevation();
 

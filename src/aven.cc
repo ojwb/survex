@@ -26,6 +26,7 @@
 #include "message.h"
 
 #include <assert.h>
+#include <signal.h>
 
 #include <wx/image.h>
 #include <wx/cmdline.h>
@@ -41,6 +42,7 @@ Aven::Aven() :
 bool Aven::OnInit()
 {
     msg_init(argv[0]);
+    signal(SIGINT, SIG_DFL); // I want to be able to press Ctrl+C!!
 
     static wxCmdLineEntryDesc cmdline[] = {
         { wxCMD_LINE_OPTION, "h", "help", msgPerm(501) /* Print command line options */ },

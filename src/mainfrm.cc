@@ -30,9 +30,9 @@
 #include <float.h>
 
 static const int NUM_DEPTH_COLOURS = 13;
-static const float REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255};
-static const float GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0};
-static const float BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0};
+static const double REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255};
+static const double GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0};
+static const double BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0};
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
@@ -348,12 +348,12 @@ bool MainFrm::LoadData(const wxString& file)
 	// Delete any existing list entries.
 	ClearPointLists();
 
-	float xmin = FLT_MAX;
-	float xmax = FLT_MIN;
-	float ymin = FLT_MAX;
-	float ymax = FLT_MIN;
-	m_ZMin = FLT_MAX;
-	float zmax = FLT_MIN;
+	double xmin = DBL_MAX;
+	double xmax = -DBL_MAX;
+	double ymin = DBL_MAX;
+	double ymax = -DBL_MAX;
+	m_ZMin = DBL_MAX;
+	double zmax = -DBL_MAX;
 
 	bool first = true;
 	bool last_was_move = false;
@@ -492,13 +492,13 @@ bool MainFrm::LoadData(const wxString& file)
     return (survey != NULL);
 }
 
-void MainFrm::CentreDataset(float xmin, float ymin, float zmin)
+void MainFrm::CentreDataset(double xmin, double ymin, double zmin)
 {
     // Centre the dataset around the origin.
 
-    float xoff = xmin + (m_XExt / 2.0f);
-    float yoff = ymin + (m_YExt / 2.0f);
-    float zoff = zmin + (m_ZExt / 2.0f);
+    double xoff = xmin + (m_XExt / 2.0f);
+    double yoff = ymin + (m_YExt / 2.0f);
+    double zoff = zmin + (m_ZExt / 2.0f);
     
     for (int band = 0; band < NUM_DEPTH_COLOURS; band++) {
         list<PointInfo*>::iterator pos = m_Points[band].begin();
@@ -520,13 +520,13 @@ void MainFrm::CentreDataset(float xmin, float ymin, float zmin)
     }
 }
 
-int MainFrm::GetDepthColour(float z)
+int MainFrm::GetDepthColour(double z)
 {
     // Return the (0-based) depth colour band index for a z-coordinate.
     return int(((z - m_ZMin) / (m_ZExt == 0.0f ? 1.0f : m_ZExt)) * (NUM_DEPTH_COLOURS - 1));
 }
 
-float MainFrm::GetDepthBoundaryBetweenBands(int a, int b)
+double MainFrm::GetDepthBoundaryBetweenBands(int a, int b)
 {
     // Return the z-coordinate of the depth colour boundary between
     // two adjacent depth colour bands (specified by 0-based indices).
@@ -537,14 +537,14 @@ float MainFrm::GetDepthBoundaryBetweenBands(int a, int b)
     return m_ZMin + (m_ZExt * band / (NUM_DEPTH_COLOURS - 1));
 }
 
-void MainFrm::IntersectLineWithPlane(float x0, float y0, float z0,
-				     float x1, float y1, float z1,
-				     float z, float& x, float& y)
+void MainFrm::IntersectLineWithPlane(double x0, double y0, double z0,
+				     double x1, double y1, double z1,
+				     double z, double& x, double& y)
 {
     // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1) with
     // the plane parallel to the xy-plane with z-axis intersection z.
 
-    float t = (z - z0) / (z1 - z0);
+    double t = (z - z0) / (z1 - z0);
     x = x0 + t*(x1 - x0);
     y = y0 + t*(y1 - y0);
 }
@@ -573,8 +573,8 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 		    int next_band = band + inc;
 
 		    // Determine the z-coordinate of the boundary being intersected.
-		    float split_at_z = GetDepthBoundaryBetweenBands(band, next_band);
-		    float split_at_x, split_at_y;
+		    double split_at_z = GetDepthBoundaryBetweenBands(band, next_band);
+		    double split_at_x, split_at_y;
 
 		    // Find the coordinates of the intersection point.
 		    IntersectLineWithPlane(prev_point->x, prev_point->y, prev_point->z,
@@ -676,10 +676,6 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #endif
     if (dlg.ShowModal() == wxID_OK) {
         OpenFile(dlg.GetPath());
-#ifdef __WXMOTIF__
-	wxSizeEvent ev(GetSize());
-	OnSize(ev);
-#endif
     }
 }
 
