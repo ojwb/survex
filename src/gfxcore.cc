@@ -33,6 +33,7 @@
 #include "mainfrm.h"
 #include "message.h"
 #include "useful.h"
+#include "printwx.h"
 
 #include <wx/confbase.h>
 #include <wx/image.h>
@@ -2719,4 +2720,13 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
     // OnPaint clears m_RedrawOffscreen so it'll only still be set if we need
     // to redraw
     if (m_RedrawOffscreen) ForceRefresh();
+}
+
+void
+GfxCore::OnPrint(const wxString &filename, const wxString &title,
+		 const wxString &datestamp)
+{
+    svxPrintDlg p(m_Parent, filename, title, datestamp, m_PanAngle, m_TiltAngle,
+		  m_Names, m_Crosses, m_Legs, m_Surface);
+    p.ShowModal();
 }

@@ -36,7 +36,7 @@ aven-gfxcore.o: gfxcore.cc
 	$h $(aven_CXXFLAGS) $(CXXFLAGS) $t \
 	 || $h `echo $(aven_CXXFLAGS) $(CXXFLAGS)|sed 's/-O2/-O/g'` $t \
 	 || $h `echo $(aven_CXXFLAGS) $(CXXFLAGS)|sed 's/-O2*//g'` $t
- 
+
 LDADD = @LIBOBJS@
 
 INCLUDES = -DIMG_HOSTED
@@ -63,7 +63,7 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc \
- avenpal.h
+ avenpal.h avenprcore.cc printwx.cc ini.c hash.c 
 
 avengl_SOURCES = $(aven_SOURCES)
 
@@ -133,7 +133,7 @@ avengl_CXXFLAGS = @WXGL_CXXFLAGS@ $(AM_CXXFLAGS)
 avengl_LDFLAGS = @WX_LDFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
- 
+
 printps_SOURCES = printps.c $(PRSRC)
 printdm_SOURCES = printdm.c $(PRSRC) prbitmap.c
 printpcl_SOURCES = printpcl.c $(PRSRC) prbitmap.c
@@ -171,7 +171,7 @@ cad3d_SOURCES = cad3d.c $(COMMONSRC) useful.c img.c hash.c
 #        $(COMPILE) -DSTANDALONE -o imgalone.o -c img.c
 
 noinst_DATA = borlandc/makefile riscos/makefile
- 
+
 EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
  riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
  riscos/stdh/regnames riscos/stdh/swinames msvc/config.h msvc/config.h.in\

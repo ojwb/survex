@@ -133,8 +133,6 @@ grid crosses option (only draw cross at intersections, not a full grid).
 x spacing, y spacing (default to x spacing)
 orientation (bearing of y-axis?) (defaults to 0)]
 
-printout of current view from aven...
-
 *fix with datums etc
 
 Profile aven (for speed and memory usage)

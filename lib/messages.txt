@@ -3069,6 +3069,10 @@ es:345 g.cent
 #it:345 gradi centesimali
 it:345 g.cent.
 sk:345 gr&aacute;dy
+#
+en:380 @Print...##Ctrl+P
+#
+en:381 P@age Setup...
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

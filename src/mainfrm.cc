@@ -32,6 +32,7 @@
 #include "message.h"
 #include "img.h"
 #include "namecmp.h"
+#include "printwx.h"
 
 #include <wx/confbase.h>
 
@@ -110,6 +111,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_BUTTON(button_HIDE, MainFrm::OnHide)
 
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
+    EVT_MENU(menu_FILE_PRINT, MainFrm::OnPrint)
+    EVT_MENU(menu_FILE_PAGE_SETUP, MainFrm::OnPageSetup)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
 
@@ -318,6 +321,9 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
+    filemenu->AppendSeparator();
+    filemenu->Append(menu_FILE_PRINT, GetTabMsg(/*@Print...##Ctrl+P*/380));
+    filemenu->Append(menu_FILE_PAGE_SETUP, GetTabMsg(/*P@age Setup...*/381));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
 
@@ -692,6 +698,8 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     } while (result != img_STOP);
 
     separator = survey->separator;
+    m_Title = survey->title;
+    m_DateStamp = survey->datestamp;
     img_close(survey);
 
     // Check we've actually loaded some legs or stations!
@@ -1132,6 +1140,22 @@ void MainFrm::OnOpen(wxCommandEvent&)
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
     }
+}
+
+void MainFrm::OnPrint(wxCommandEvent&)
+{
+    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp);
+}
+
+void MainFrm::OnPageSetup(wxCommandEvent&)
+{
+    m_pageSetupData = m_printData;
+
+    wxPageSetupDialog pageSetupDialog(this, &m_pageSetupData);
+    pageSetupDialog.ShowModal();
+   
+    m_printData = pageSetupDialog.GetPageSetupData().GetPrintData();
+    m_pageSetupData = pageSetupDialog.GetPageSetupData();
 }
 
 void MainFrm::OnQuit(wxCommandEvent&)

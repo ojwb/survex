@@ -25,7 +25,9 @@
 #define mainfrm_h
 
 #include "wx.h"
-#include "wx/docview.h"
+#include <wx/docview.h> // for m_FileHistory
+#include <wx/print.h>
+#include <wx/printdlg.h>
 #include "gfxcore.h"
 #include "message.h"
 #include "aventreectrl.h"
@@ -57,6 +59,8 @@ extern const int NUM_DEPTH_COLOURS;
 enum {
     menu_FILE_OPEN = 1000,
     menu_FILE_OPEN_PRES,
+    menu_FILE_PRINT,
+    menu_FILE_PAGE_SETUP,
     menu_FILE_QUIT,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
@@ -203,11 +207,15 @@ private:
     wxStaticText* m_Found;
     wxCheckBox* m_RegexpCheckBox;
     wxString m_File;
+    wxString m_Title, m_DateStamp;
     int separator; // character separating survey levels (often '.')
 
     struct {
 	Double x, y, z;
     } m_Offsets;
+
+    wxPageSetupData m_pageSetupData;
+    wxPrintData m_printData;
 
     void SetTreeItemColour(LabelInfo* label);
     void FillTree();
@@ -243,6 +251,8 @@ public:
 
     void OnOpen(wxCommandEvent& event);
     void OnFileOpenTerrain(wxCommandEvent& event);
+    void OnPrint(wxCommandEvent& event);
+    void OnPageSetup(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
 
     void OnAbout(wxCommandEvent& event);
@@ -430,6 +440,7 @@ public:
     void ShowInfo(const LabelInfo *label);
     void DisplayTreeInfo(const wxTreeItemData* data);
     void TreeItemSelected(wxTreeItemData* data);
+    wxPageSetupData * GetPageSetupData() { return &m_pageSetupData; }
 
 private:
     DECLARE_EVENT_TABLE()
