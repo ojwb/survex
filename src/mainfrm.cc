@@ -1128,12 +1128,14 @@ void MainFrm::OnOpen(wxCommandEvent&)
 				       ";*.XYZ"
 #endif
 #endif
-				       "|%s|*.*",
-				       msg(/*Survex 3d files*/207),
-				       /* FIXME TRANSLATE */
-				       "Compass PLT files",
-				       "CMAP XYZ files",
-				       msg(/*All files*/208)), wxOPEN);
+                                       "|%s|%s",
+                                       msg(/*Survex 3d files*/207),
+                                       /* FIXME TRANSLATE */
+                                       "Compass PLT files",
+                                       "CMAP XYZ files",
+                                       msg(/*All files*/208),
+                                       wxFileSelectorDefaultWildcardStr
+                                       ), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
@@ -1347,9 +1349,11 @@ void MainFrm::OnPresCreate(wxCommandEvent& event)
 		      "*.avp", wxSAVE);
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
-		      wxString::Format("%s|*.avp|%s|*.*",
+		      wxString::Format("%s|*.avp|%s|%s",
 				       msg(/*Aven presentations*/320),
-				       msg(/*All files*/208)), wxSAVE);
+				       msg(/*All files*/208),
+                                       wxFileSelectorDefaultWildcardStr),
+		      wxSAVE);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	m_PresFP = fopen(dlg.GetPath().c_str(), "w");
@@ -1423,9 +1427,11 @@ void MainFrm::OnOpenPres(wxCommandEvent& event)
 		      "*.avp", wxSAVE);
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      wxString::Format("%s|*.avp|%s|*.*",
+		      wxString::Format("%s|*.avp|%s|%s",
 				       msg(/*Aven presentations*/320),
-				       msg(/*All files*/208)), wxOPEN);
+				       msg(/*All files*/208),
+                                       wxFileSelectorDefaultWildcardStr),
+		      wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	m_PresFP = fopen(dlg.GetPath(), "rb");
