@@ -72,7 +72,7 @@ get_pos(void)
    return result;
 }
 
-void
+static void
 push_back(int c)
 {
    if (c != EOF && ungetc(c, file.fh) == EOF)
@@ -256,10 +256,8 @@ process_eol(void)
 
    skipblanks();
 
-   if (isComm(ch)) while (!isEol(ch)) nextch();
-
    if (!isEol(ch)) {
-      compile_error(/*End of line not blank*/15);
+      if (!isComm(ch)) compile_error(/*End of line not blank*/15);
       skipline();
    }
 
