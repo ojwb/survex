@@ -1,7 +1,7 @@
 /* > printwin.c */
 /* Device dependent part of Survex Win32 driver */
-/* Copyright (C) 1993-2000 Olly Betts
- * Copyright (C) 2001 Philip Underwood, Olly Betts
+/* Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 2001 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
