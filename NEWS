@@ -1,6 +1,7 @@
 Changes in 1.0.1:
 
-* printwin: fixed sizes of cross and page alignment ticks
+* (MS Windows version): printwin: fixed sizes of cross and page alignmenti
+  ticks.
 
 * Updates to the Portuguese and Italian translations.
 
@@ -11,7 +12,7 @@ Changes in 1.0.0:
 * aven: altered colours of "fixed points" and "entrances" buttons to match
   the coloured blobs used to indicate them.
 
-* (MS Windows Version): aven: changed current point highlighting in the
+* (MS Windows version): aven: changed current point highlighting in the
   survey tree to use a light grey background rather than bold (bold causes
   the text to "wriggle" as the highlight runs up or down).
 
