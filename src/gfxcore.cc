@@ -139,7 +139,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Clino = true;
     m_Depthbar = true;
     m_Scalebar = true;
-    m_ReverseControls = false;
     m_LabelGrid = NULL;
     m_Rotating = false;
     m_SwitchingTo = 0;
@@ -1271,7 +1270,6 @@ void GfxCore::DefaultParameters()
     }
 
     m_Params.rotation.setFromEulerAngles(m_TiltAngle, 0.0, m_PanAngle);
-    m_RotationMatrix = m_Params.rotation.asMatrix();
 
     m_Params.translation.x = 0.0;
     m_Params.translation.y = 0.0;
