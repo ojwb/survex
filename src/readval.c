@@ -41,10 +41,6 @@
 
 int root_depr_count = 0;
 
-/* Dinky macro to handle any case forcing needed */
-#define docase(X) (pcs->Case == OFF ? (X) :\
-		   (pcs->Case == UPPER ? toupper(X) : tolower(X)))
-
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
 static prefix *
 read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
@@ -97,7 +93,8 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       while (isNames(ch)) {
 	 if (i < pcs->Truncate) {
 	    /* truncate name */
-	    name[i++] = docase(ch);
+	    name[i++] = (pcs->Case == LOWER ? tolower(ch) :
+			 (pcs->Case == OFF ? ch : toupper(ch)));
 	    if (i >= name_len) {
 	       name_len = name_len + name_len;
 	       name = osrealloc(name, name_len);
@@ -362,6 +359,7 @@ read_string(char **pstr, int *plen)
 
    skipblanks();
    if (ch == '\"') {
+      /* String quoted in "" */
       nextch();
       while (1) {
 	 if (isEol(ch)) {
@@ -375,6 +373,7 @@ read_string(char **pstr, int *plen)
 	 nextch();
       }
    } else {
+      /* Unquoted string */
       while (1) {
 	 if (isEol(ch) || isComm(ch)) {
 	    if (!*pstr || !(*pstr)[0]) {
