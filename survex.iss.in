@@ -33,7 +33,7 @@ Source: "*.ico"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}\icons"
 Source: "manual\*.*"; DestDir: "{app}\manual"
-; NB keep these lines in step with src/Makefile.am
+; NB keep these lines in step with Makefile.am
 Source: "cs\wxstd.mo"; DestDir: "{app}\cs"
 Source: "de\wxstd.mo"; DestDir: "{app}\de"
 Source: "es\wxstd.mo"; DestDir: "{app}\es"
