@@ -252,11 +252,6 @@ From: Olly
 
 doc/svxdocs.sgml has version number (0.97 currently) hardcoded.
 
-Date: Fri, 15 Jun 2001
-From: Olly
-
-prcore.c: want to ignore surface stations...
-
 Date: Sat, 16 Jun 2001
 Subject: flags
 From: Olly
@@ -274,7 +269,7 @@ an entrance) / exported
 junction,deadend (inferable from order) / articulation pt (know for
 nodes I think a station is if at least one of its nodes is)
 
-legs: surface/duplicate/splay
+legs: surface/duplicate/splay (done)
 
 legs: implied: inloop/plumb/nosurvey, diving, other styles
 
