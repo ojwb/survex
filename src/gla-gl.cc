@@ -361,6 +361,7 @@ void GLACanvas::SetDataTransform()
 	glFrustum(-lr, lr, -tb, tb, near_plane, far_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glFrustum");
     } else {
+	near_plane = 0.0;
 	assert(m_Scale != 0.0);
 	Double lr = m_VolumeDiameter / m_Scale * 0.5;
 	Double far_plane = m_VolumeDiameter + near_plane;
@@ -385,8 +386,10 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
     m_Rotation.CopyToOpenGL();
     CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
-    glTranslated(m_Translation.x, m_Translation.y, m_Translation.z);
-    CHECK_GL_ERROR("SetDataTransform", "glTranslated");
+    if (m_Perspective) {
+	glTranslated(m_Translation.x, m_Translation.y, m_Translation.z);
+	CHECK_GL_ERROR("SetDataTransform", "glTranslated");
+    }
 
     // Save projection matrix.
     glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
@@ -400,6 +403,21 @@ void GLACanvas::SetDataTransform()
     glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
     CHECK_GL_ERROR("SetDataTransform", "glGetDoublev");
 
+    if (!m_Perspective) {
+	// Adjust the translation so we don't change the Z position of the model
+	Double X, Y, Z;
+	gluProject(m_Translation.x, m_Translation.y, m_Translation.z,
+		   modelview_matrix, projection_matrix, viewport,
+		   &X, &Y, &Z);
+	Double Tx, Ty, Tz;
+	gluUnProject(X, Y, 0.5, modelview_matrix, projection_matrix, viewport,
+		     &Tx, &Ty, &Tz);
+	glMatrixMode(GL_MODELVIEW);
+	glTranslated(Tx, Ty, Tz);
+	CHECK_GL_ERROR("SetDataTransform", "glTranslated");
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
+    }
+    
     glEnable(GL_DEPTH_TEST);
     CHECK_GL_ERROR("SetDataTransform", "glEnable GL_DEPTH_TEST");
 
