@@ -2,8 +2,9 @@ Changes in 0.97-prerelease4:
 
 * Updated Portuguese and German translations.
 
-* aven: Accents now work in display; suppress warning box if wxWindows
-  dialogs aren't translated into the requested language.
+* aven: Accents now work in display; suppress "wxstd" warning box for
+  en and en_US; speed improvements; redesign of indicators; rescale by
+  dragging scalebar.
 
 * cavern: Complain if the same name is used for a survey and a station.
 

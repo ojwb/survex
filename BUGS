@@ -10,6 +10,7 @@ wxaven:
 - trouble with zooming in too far
 - possible mysterious problem with [ and ] not zooming to screen centre
 - right drag on scale bar can go wrong...
+- get warning box if wxWindows doesn't have translation into requested language
 
 wxaven problems with unknown solution:
 - continuing trouble with accelerator keys
