@@ -151,7 +151,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     wxConfigBase::Get()->Read("degrees", &m_Degrees, true);
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
-    clipping = false;
     m_Lists.underground_legs = 0;
     m_Lists.tubes = 0;
     m_Lists.surface_legs = 0;
@@ -287,14 +286,10 @@ void GfxCore::SetScale(Double scale)
     // Fill the plot data arrays with screen coordinates, scaling the survey
     // to a particular absolute scale.
 
-    clipping = false;
     if (scale < m_InitialScale / 20) {
         scale = m_InitialScale / 20;
     } else {
         if (scale > 1000.0) scale = 1000.0;
-        Double max_scale =
-            32767.0 / MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent());
-        if (scale > max_scale) clipping = true;
     }
 
     m_Params.scale = scale;

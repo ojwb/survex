@@ -154,8 +154,6 @@ class GfxCore : public GLACanvas {
     wxStopWatch timer;
     long drawtime;
     
-    bool clipping;
-
     GLAPen* m_Pens;
 
     void SetAvenColour(AvenColour col, bool background = false /* true => foreground */) {
