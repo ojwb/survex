@@ -118,11 +118,6 @@ This gives "*** Singular!!!" warning with DEBUG_INVALID on:
 1 2 50000 0 -
 1 2 5 0 -30
 
-Date: Tue, 12 Dec 2000
-From: Olly
-
-Check make uninstall works (docs in particular).
-
 Date: Fri, 16 Feb 2001
 From: Olly
 

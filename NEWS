@@ -5,6 +5,8 @@ Changes in 0.97-prerelease1:
 
 * cavern: don't report error stats for articulating traverses.
 
+* (UNIX version): `make uninstall' now removes the HTML documentation.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling

@@ -39,6 +39,22 @@ install-data-local:
 	  done \
 	fi
 
+uninstall-local:
+	if test -d "$$(srcdir)/svxdocs" ; then \
+	  for p in `find "$$(srcdir)/svxdocs" -name *.htm -type f -print` ; do \
+	    f="`echo $$p | sed -e 's|^.*/||'`"; \
+	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
+	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
+	  done \
+	fi
+	if test -d svxdocs ; then \
+	  for p in `find svxdocs -name *.htm -type f -print` ; do \
+	    f="`echo $$p | sed -e 's|^.*/||'`"; \
+	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
+	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
+	  done \
+	fi
+
 svxdocs: svxdocs.sgml custom.dsl
 	@sgmltools@ --backend=html --dsssl-spec=custom.dsl#html svxdocs.sgml
 
