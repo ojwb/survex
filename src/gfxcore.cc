@@ -531,12 +531,8 @@ void GfxCore::SetScale(Double scale)
                             dest = &pt;
                         }
 
-                        Double xp = current_x + m_Params.translation.x;
-                        Double yp = current_y + m_Params.translation.y;
-                        Double zp = current_z + m_Params.translation.z;
-
-                        (*dest)->x = (long) ((xp*m_00 + yp*m_01 + zp*m_02) * scale);
-                        (*dest)->y = -(long) ((xp*m_20 + yp*m_21 + zp*m_22) * scale);
+                        (*dest)->x = (long) ((current_x*m_00 + current_y*m_01 + current_z*m_02) * scale);
+                        (*dest)->y = -(long) ((current_x*m_20 + current_y*m_21 + current_z*m_22) * scale);
 
                         // Advance the relevant coordinate pointer to the next position.
                         (*dest)++;
@@ -561,12 +557,12 @@ void GfxCore::SetScale(Double scale)
                     wxPoint** dest = &(current_polyline_is_surface ? spt : pt);
 
                     // Final coordinate transformations and storage of coordinates.
-                    Double xp = pti->GetX() + m_Params.translation.x;
-                    Double yp = pti->GetY() + m_Params.translation.y;
-                    Double zp = pti->GetZ() + m_Params.translation.z;
+                    current_x = pti->GetX() + m_Params.translation.x;
+                    current_y = pti->GetY() + m_Params.translation.y;
+                    current_z = pti->GetZ() + m_Params.translation.z;
 
-                    (*dest)->x = (long) ((xp*m_00 + yp*m_01 + zp*m_02) * scale);
-                    (*dest)->y = -(long) ((xp*m_20 + yp*m_21 + zp*m_22) * scale);
+                    (*dest)->x = (long) ((current_x*m_00 + current_y*m_01 + current_z*m_02) * scale);
+                    (*dest)->y = -(long) ((current_x*m_20 + current_y*m_21 + current_z*m_22) * scale);
 
                     // Advance the relevant coordinate pointer to the next position.
                     (*dest)++;
@@ -594,9 +590,9 @@ void GfxCore::SetScale(Double scale)
                     last_was_move = true;
 
                     // Save the current coordinates for the next time around the loop.
-                    current_x = pti->GetX();
-                    current_y = pti->GetY();
-                    current_z = pti->GetZ();
+                    current_x = pti->GetX() + m_Params.translation.x;
+                    current_y = pti->GetY() + m_Params.translation.y;
+                    current_z = pti->GetZ() + m_Params.translation.z;
                 }
             }
 #ifndef AVENGL
