@@ -222,9 +222,17 @@ static void color_set_up( Display *display, Window window ) {
 
 static void flip_button( Display *display, Window mainwin, Window button,
 		  GC normalgc, GC inversegc, char *string ) {
+   int len = strlen(string);
+   int width;
+   int offset;
+   width = XTextWidth(XQueryFont(display, XGContextFromGC(inversegc)),
+		      string, len);
+   offset = (BUTWIDTH - width) / 2;
+   if (offset < 0) offset = 0;
+   
    XClearWindow(display, button);
-   XFillRectangle(display, button, normalgc, 0, 0, BUTWIDTH, 25);
-   XDrawImageString(display, button, inversegc, BUTWIDTH/4, 20, string, strlen(string));
+   XFillRectangle(display, button, normalgc, 0, 0, BUTWIDTH, BUTHEIGHT);
+   XDrawImageString(display, button, inversegc, offset, 20, string, len);
    XFlush(display);
 }
 
@@ -426,7 +434,7 @@ void process_select(Display *display, Window window, Window button, GC mygc, GC 
   XEvent event;
   int n, wid, ht, x, y, i;
 
-  flip_button(display, window, button, mygc, egc, "select");
+  flip_button(display, window, button, mygc, egc, "Select");
   for (n=1; n*n*5 < numsurvey; n++)
     ;
   ht = n * 5 * 20;
@@ -485,7 +493,7 @@ void process_select(Display *display, Window window, Window button, GC mygc, GC 
 	}
     }
   XDestroyWindow(display, select);
-  flip_button(display, window, button, egc, mygc, "select");
+  flip_button(display, window, button, egc, mygc, "Select");
 }
 
 void draw_ind_elev( Display *display, GC gc, float angle ) {
@@ -661,7 +669,7 @@ void redraw_image( Display *display, Window window, GC gc ) {
   coord x1, y1, x2, y2;
   XWindowAttributes a;
   int width, height;
-  int srvy=1;
+  int srvy = 0;
 
   x1 = y1 = 0; /* avoid compiler warning */
 
@@ -800,17 +808,17 @@ void draw_string( Window win, int x, int y, char *str ) {
    XDrawImageString( mydisplay, win, mygc, x, y, str, strlen(str) );
 }
 
-void draw_buttons( void ) {
-   draw_string(butload, BUTWIDTH/4, 20, "Load");
-   draw_string(butrot , BUTWIDTH/4, 20, rot ? "Stop" : "Rotate");
-   draw_string(butstep, BUTWIDTH/4, 20, "Step");
-   draw_string(butzoom, BUTWIDTH/4, 20, "Zoom in");
-   draw_string(butmooz, BUTWIDTH/4, 20, "Zoom out");
-   draw_string(butplan, BUTWIDTH/4, 20, plan_elev==ELEVATION ? "Elev" :(plan_elev==PLAN ? "Plan": "Tilt"));
-   draw_string(butlabel,BUTWIDTH/4, 20, labelling ? "No Label" : "Label");
-   draw_string(butcross,BUTWIDTH/4, 20, crossing ? "No Cross" : "Cross");
-   draw_string(butselect,BUTWIDTH/4,20, "Select");
-   draw_string(butquit, BUTWIDTH/4, 20, "Quit");
+void draw_buttons(Display *display, Window mainwin, GC mygc, GC egc) {
+   flip_button(display, mainwin, butload, egc, mygc, "Load");
+   flip_button(display, mainwin, butrot,  egc, mygc, rot ? "Stop" : "Rotate");
+   flip_button(display, mainwin, butstep, egc, mygc, "Step");
+   flip_button(display, mainwin, butzoom, egc, mygc, "Zoom in");
+   flip_button(display, mainwin, butmooz, egc, mygc, "Zoom out");
+   flip_button(display, mainwin, butplan, egc, mygc, plan_elev==ELEVATION ? "Elev" :(plan_elev==PLAN ? "Plan": "Tilt"));
+   flip_button(display, mainwin, butlabel, egc, mygc, labelling ? "No Label" : "Label");
+   flip_button(display, mainwin, butcross, egc, mygc, crossing ? "No Cross" : "Cross");
+   flip_button(display, mainwin, butselect, egc, mygc, "Select");
+   flip_button(display, mainwin, butquit, egc, mygc, "Quit");
 }
 
 void drag_compass( int x, int y ) {
@@ -955,7 +963,7 @@ int main( int argc, char **argv ) {
   color_set_up(mydisplay, mywindow);
 
   /* Get height value for font to use in label positioning JPNP 26/3/97 */
-  fontinfo  = XQueryFont(mydisplay, XGContextFromGC(gcs[0]) );
+  fontinfo = XQueryFont(mydisplay, XGContextFromGC(gcs[0]) );
   if (fontinfo) {
       fontheight = (fontinfo->max_bounds).ascent ;
       if (fontinfo->per_char != NULL)
@@ -1000,7 +1008,7 @@ int main( int argc, char **argv ) {
   /* Display menu strings */
 
   XNextEvent(mydisplay,&myevent);
-  draw_buttons();
+  draw_buttons(mydisplay, mywindow, mygc, enter_gc);
 
   /* Loop through until a q is press when the cursor is in
      the window, which will cause the application to quit */
@@ -1122,7 +1130,7 @@ int main( int argc, char **argv ) {
 	    } /* end if */
 	}
       redraw_image(mydisplay, mywindow, mygc);
-      draw_buttons();
+      draw_buttons(mydisplay, mywindow, mygc, enter_gc);
     } /* while */
 
   /* Free up and clean up the windows created */
