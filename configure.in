@@ -22,7 +22,7 @@ AC_SUBST(PRETTYPACKAGE)
 dnl Checks for programs.
 AC_PROG_CC
 
-AVEN=aven
+AVEN='aven$(EXEEXT)'
 AC_ARG_ENABLE(aven,
 [  --disable-aven Don't try to build Aven cave viewer],
 [case "${enableval}" in
