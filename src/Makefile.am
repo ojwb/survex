@@ -15,7 +15,9 @@ INCLUDES = -DIMG_HOSTED
 
 PRINT = printdm printps printpcl printhpgl
 
-EXTRA_PROGRAMS = caverot xcaverot printxbm printwin aven
+# printxbm and dump3d are test programs
+EXTRA_PROGRAMS = caverot xcaverot printwin aven printxbm dump3d
+# FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern $(PRINT) diffpos extend survex cad3d sorterr \
  3dtopos @CAVEROT@ @AVEN@ @PRINTWIN@
 
@@ -30,6 +32,8 @@ survex_SOURCES = wrap.c osdepend.c
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c
+
+dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
 
 if WIN32
 aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@
