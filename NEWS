@@ -1,10 +1,12 @@
-* Short usage information now directs user to "--help"
+* cmdline.c: Short usage information now directs user to "--help"
 
-* "*infer" wasn't working due to mismatch of internal token values
+* commands.c: "*infer" wasn't working due to mismatch of internal
+  token values
 
 * message.c: Corrected use of strdup to osstrdup (strdup isn't portable)
 
-* print.ini: tidied up comments about font size and line width for printps
+* print.ini: tidied up comments about font size and line width for
+  printps
 
 * printps.c: Line width now set correctly for all pages with ghostview
 
@@ -15,6 +17,19 @@
 * Only printer drivers were being linked with @LIBOBJS@ - fixed.
 
 * src/miniam.pl: Fixed handling of @LIBOBJS@
+
+* commands.c: fixed replace_pfx to work correctly with highly
+  *equate-d nodes
+
+* aven.cc: fixed redraw errors; enabled splash screen [MRS]
+
+* BUGS: updated
+
+* src/netartic.c: removed unused variable
+
+* src/netbits.h: added \n to print_var when using NO_COVARIANCE
+
+* src/network.c: Fixed deltastar to work in covariance case
 
 Changes in 0.92-prerelease3:
 
