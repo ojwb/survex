@@ -400,6 +400,7 @@ parse_msg_file(int charset_code)
       msg_lang = lang;
    }
 
+#ifdef LC_MESSAGES
    /* try to setlocale() appropriately too */
    if (strchr(msg_lang, '-')) {
       char *lang = osstrdup(msg_lang);
@@ -418,6 +419,7 @@ parse_msg_file(int charset_code)
    } else {
       setlocale(LC_MESSAGES, msg_lang);
    }
+#endif
    
    fh = fopenWithPthAndExt(pth_cfg_files, msg_lang, EXT_SVX_MSG, "rb", NULL);
 
