@@ -3,7 +3,7 @@
 # We aim to be GNU compliant, but some required files are generated
 AUTOMAKE_OPTIONS = foreign
 
-RELEASE = 1
+RELEASE = 2
 
 # These files are installed automatically in --gnu mode
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
