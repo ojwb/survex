@@ -4,7 +4,7 @@
 //  Core drawing code for Aven, with both standard 2D and OpenGL functionality.
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001-2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -2244,12 +2244,11 @@ void GfxCore::OnZoomOutUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnIdle(wxIdleEvent& event)
 {
     // Handle an idle event.
-    if (Animate(&event)) ForceRefresh();
+    if (Animate()) ForceRefresh();
 }
 
-// idle_event is a pointer to and idle event (to call RequestMore()) or NULL
 // return: true if animation occured (and ForceRefresh() needs to be called)
-bool GfxCore::Animate(wxIdleEvent *idle_event)
+bool GfxCore::Animate()
 {
     idle_event = idle_event; // Suppress "not used" warning
 
