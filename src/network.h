@@ -1,6 +1,6 @@
 /* > network.h
  * SURVEX Network reduction routines
- * Copyright (C) 1994 Olly Betts
+ * Copyright (C) 1994,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,5 +17,5 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-extern void remove_subnets(void);
-extern void replace_subnets(void);
+void remove_subnets(void);
+void replace_subnets(void);

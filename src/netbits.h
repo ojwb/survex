@@ -17,28 +17,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-extern node *StnFromPfx(prefix *name);
+node *StnFromPfx(prefix *name);
 
-extern linkfor *copy_link(linkfor *leg);
-extern linkfor *addto_link(linkfor *leg, const linkfor *leg2);
+linkfor *copy_link(linkfor *leg);
+linkfor *addto_link(linkfor *leg, const linkfor *leg2);
 
-extern char freeleg(node **stnptr);
+char freeleg(node **stnptr);
 
-extern void addleg(node *fr, node *to,
-		   real dx, real dy, real dz,
-		   real vx, real vy, real vz
+void addleg(node *fr, node *to,
+	    real dx, real dy, real dz, real vx, real vy, real vz
 #ifndef NO_COVARIANCES
-		   , real cyz, real czx, real cxy
+	    , real cyz, real czx, real cxy
 #endif
-		   );
+	    );
 
-extern void addfakeleg(node *fr, node *to,
-		       real dx, real dy, real dz,
-		       real vx, real vy, real vz
+void addfakeleg(node *fr, node *to,
+		real dx, real dy, real dz, real vx, real vy, real vz
 #ifndef NO_COVARIANCES
-		       , real cyz, real czx, real cxy
+		, real cyz, real czx, real cxy
 #endif
-		       );
+		);
 
 /* insert at head of double-linked list */
 void add_stn_to_list(node **list, node *stn);

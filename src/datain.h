@@ -40,19 +40,19 @@ extern bool f_export_ok;
 
 #define nextch() (ch = getc(file.fh))
 
-extern void skipblanks(void);
+void skipblanks(void);
 
 /* reads complete data file */
-extern void data_file(const char *pth, const char *fnm);
+void data_file(const char *pth, const char *fnm);
 
-extern void skipline(void);
-extern void showandskipline(const char *dummy, int n);
+void skipline(void);
+void showandskipline(const char *dummy, int n);
 
 /* style functions */
-extern int data_normal(void);
-extern int data_diving(void);
-extern int data_cartesian(void);
-extern int data_nosurvey(void);
+int data_normal(void);
+int data_diving(void);
+int data_cartesian(void);
+int data_nosurvey(void);
 
 void compile_warning(int en, ...);
 void compile_error(int en, ...);

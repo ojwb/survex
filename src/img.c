@@ -247,7 +247,7 @@ img_open_write(const char *fnm, char *szTitle, bool fBinary)
 int
 img_read_item(img *pimg, char *sz, img_point *p)
 {
-   static float x = 0.0f, y = 0.0f, z = 0.0f;
+   static double x = 0.0, y = 0.0, z = 0.0;
    static long opt_lookahead = 0;
    int result;
    if (pimg->version > 0) {
@@ -292,9 +292,9 @@ img_read_item(img *pimg, char *sz, img_point *p)
 	 result = img_LINE;
 	 break;
       }
-      x = (float)get32(pimg->fh) / 100.0f;
-      y = (float)get32(pimg->fh) / 100.0f;
-      z = (float)get32(pimg->fh) / 100.0f;
+      x = get32(pimg->fh) / 100.0;
+      y = get32(pimg->fh) / 100.0;
+      z = get32(pimg->fh) / 100.0;
       done:
       p->x = x;
       p->y = y;
@@ -325,7 +325,7 @@ img_read_item(img *pimg, char *sz, img_point *p)
 	    pimg->fLinePending = fTrue;
 	    result = img_MOVE;
 	 } else if (strcmp(szTmp, "cross") == 0) {
-	    if (fscanf(pimg->fh, "%f%f%f", &p->x, &p->y, &p->z) < 3)
+	    if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3)
 	       return img_BAD;
 	    goto ascii_again;
 	 } else if (strcmp(szTmp, "name") == 0) {
@@ -335,17 +335,18 @@ img_read_item(img *pimg, char *sz, img_point *p)
 	    return img_BAD; /* unknown keyword */
       }
 
-      if (fscanf(pimg->fh, "%f%f%f", &p->x, &p->y, &p->z) < 3) return img_BAD;
+      if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) return img_BAD;
       return result;
    }
 }
 
 void
-img_write_item(img *pimg, int code, const char *s, float x, float y, float z)
+img_write_item(img *pimg, int code, const char *s,
+	       double x, double y, double z)
 {
    if (!pimg) return;
    if (pimg->version > 0) {
-      float Sc = (float)100.0; /* Output in cm */
+      double Sc = 100.0; /* Output in cm */
       INT32_T opt = 0;
       switch (code) {
        case img_LABEL:

@@ -43,7 +43,7 @@ coord Xrad, Yrad, Zrad; /* "radii" */
 
 /* scale all data by this to fit in coord data type */
 /* Note: data in file in metres. 100.0 below stores to nearest cm */
-static float factor = (float)(100.0 / SHRINKAGE);
+static double factor = 100.0 / SHRINKAGE;
 
 static coord move = 1, draw = 2, stop = 0;
 
@@ -282,13 +282,13 @@ update_limits(point *pmin, point *pmax, point Huge *pLegs, point Huge *pStns)
    return;
 }
 
-#define BIG_SCALE 1e3f
+#define BIG_SCALE 1000.0
 
-float
+double
 scale_to_screen(const point *pmin, const point *pmax, int xcMac, int ycMac,
 		double y_stretch)
 {
-   float Radius; /* "radius" of plan */
+   double Radius; /* "radius" of plan */
 
    if (pmin->X > pmax->X) {
       /* no data */
@@ -310,6 +310,5 @@ scale_to_screen(const point *pmin, const point *pmax, int xcMac, int ycMac,
 
    if (Radius == 0) return (BIG_SCALE);
 
-   return min((float)xcMac, (float)ycMac / (float)fabs(y_stretch)) * .99
-	  / (Radius * 2);
+   return min((double)xcMac, ycMac / fabs(y_stretch)) * .99 / (Radius * 2.0);
 }

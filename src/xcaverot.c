@@ -110,26 +110,26 @@ static XSetWindowAttributes dbwinattr;
 
 /* scale all data by this to fit in coord data type */
 /* Note: data in file in metres. 100.0 below stores to nearest cm */
-static float datafactor = (float)100.0;
+static double datafactor = 100.0;
 
-static float scale_default;
+static double scale_default;
 
 /* factor to scale view on screen by */
-static float scale;
-static float zoomfactor = 1.2;
-static float sbar;	/* length of scale bar */
-static float scale_orig;	/* saved state of scale, used in drag re-scale */
+static double scale;
+static double zoomfactor = 1.2;
+static double sbar;	/* length of scale bar */
+static double scale_orig;	/* saved state of scale, used in drag re-scale */
 
 static struct {
    int x;
    int y;
 } orig;	/* position of original click in pointer drags */
 
-static float view_angle = 180.0;	/* viewed from this bearing */
+static double view_angle = 180.0;	/* viewed from this bearing */
 
 				 /* subtract 180 for bearing up page */
-static float elev_angle = 0.0;
-static float rot_speed;	/* rotation speed degrees per second */
+static double elev_angle = 0.0;
+static double rot_speed;	/* rotation speed degrees per second */
 
 static int plan_elev;
 static int rot = 0;
@@ -145,7 +145,7 @@ static int xoff, yoff;	/* offsets at which survey is plotted in window */
 static coord x_mid;
 static coord y_mid;
 static coord z_mid;
-static float z_col_scale;
+static double z_col_scale;
 
 static Display *mydisplay;
 static Window mywindow;
@@ -234,12 +234,12 @@ static GC gcs[128];
 
 static int dragging_about = 0;	/* whether cave is being dragged with right button */
 static int drag_start_x, drag_start_y;
-static float x_mid_orig, y_mid_orig, z_mid_orig;	/* original posns b4 drag */
+static double x_mid_orig, y_mid_orig, z_mid_orig;	/* original posns b4 drag */
 static int rotsc_start_x, rotsc_start_y;
 static int rotating_and_scaling = 0;	/* whether left button is depressed */
-static float rotsc_angle;	/* rotn b4 drag w/ left button */
-static float rotsc_scale;	/* scale b4 drag w/ left button */
-static float sv, cv, se, ce;
+static double rotsc_angle;	/* rotn b4 drag w/ left button */
+static double rotsc_scale;	/* scale b4 drag w/ left button */
+static double sv, cv, se, ce;
 
 /* Create a set of colors from named colors */
 
@@ -349,7 +349,7 @@ load_file(const char *name, int replace)
    y_mid = Yorg;
    z_mid = Zorg;
 
-   z_col_scale = ((float)(NUM_DEPTH_COLOURS - 1)) / (2 * Zrad);
+   z_col_scale = ((double)(NUM_DEPTH_COLOURS - 1)) / (2 * Zrad);
 
    return 1;
 }
@@ -475,14 +475,14 @@ static void
 draw_scalebar(int changedscale, GC scale_gc)
 {
    char temp[20];
-   float l, m, n, o;
+   double l, m, n, o;
 
    if (changedscale) {
       XWindowAttributes a;
 
       XGetWindowAttributes(mydisplay, scalebar, &a);
 
-      l = (float)(a.height - 4) / (datafactor * scale);
+      l = (a.height - 4) / (datafactor * scale);
 
       m = log10(l);
 
@@ -590,13 +590,13 @@ process_select(Display * display, Window window, Window button, GC mygc,
 #endif
 
 static void
-draw_ind_elev(Display * display, GC gc, float angle)
+draw_ind_elev(Display * display, GC gc, double angle)
 {
    char temp[32];
    int xm, ym;
    double sa, ca;
-   double r = (double)INDWIDTH * E_IND_LINE / 2;
-   double q = (double)INDWIDTH * E_IND_PTR / 2;
+   double r = INDWIDTH * E_IND_LINE / 2;
+   double q = INDWIDTH * E_IND_PTR / 2;
 
    xm = ym = INDWIDTH / 2;
 
@@ -624,7 +624,7 @@ draw_ind_elev(Display * display, GC gc, float angle)
 }
 
 static void
-draw_ind_com(Display * display, GC gc, float angle)
+draw_ind_com(Display * display, GC gc, double angle)
 {
    char temp[32];
    int xm, ym;
@@ -731,7 +731,7 @@ add_to_segment_cache(point **pp, int f_surface)
 	       group = &segment_groups[NUM_DEPTH_COLOURS];
 	    } else {
 	       /* calculate depth band */
-	       int depth = (int)((float)(-p->Z + Zorg + Zrad) * z_col_scale);
+	       int depth = (int)((double)(-p->Z + Zorg + Zrad) * z_col_scale);
 	       if (depth < 0) {
 		  depth = 0;
 	       } else if (depth >= NUM_DEPTH_COLOURS) {
@@ -964,7 +964,7 @@ static void
 process_focus(Display * display, Window window, int ix, int iy)
 {
    int height, width;
-   float x, y;
+   double x, y;
    XWindowAttributes a;
    point *q;
 
@@ -972,8 +972,8 @@ process_focus(Display * display, Window window, int ix, int iy)
    height = a.height / 2;
    width = a.width / 2;
 
-   x = (int)((float)(-ix + width) / scale);
-   y = (int)((float)(height - iy) / scale);
+   x = (int)((double)(-ix + width) / scale);
+   y = (int)((double)(height - iy) / scale);
    /* printf("process focus: ix=%d, iy=%d, x=%f, y=%f\n", ix, iy, (double)x, (double)y); */
    /* no distinction between PLAN or ELEVATION in the focus any more */
    /* plan_elev is no longer maintained correctly anyway JPNP 14/06/97 */
@@ -1023,7 +1023,7 @@ switch_to_elevation(void)
    /* Switch to elevation view. */
 
    int going_up = (elev_angle < 0.0);
-   float step = going_up ? 5.0 : -5.0;
+   double step = going_up ? 5.0 : -5.0;
 
    while (elev_angle != 0.0) {
       elev_angle += step;
@@ -1072,15 +1072,15 @@ static void
 mouse_moved(int mx, int my)
 {
    if (dragging_about) {
-      float x, y;
+      double x, y;
       int dx, dy;
 
       /* get offset moved */
       dx = mx - drag_start_x;
       dy = my - drag_start_y;
 
-      x = (int)((float)(dx) / scale);
-      y = (int)((float)(dy) / scale);
+      x = (int)((double)(dx) / scale);
+      y = (int)((double)(dy) / scale);
 
       if (plan_elev == PLAN) {
 	 x_mid = x_mid_orig + (x * cv + y * sv);
@@ -1097,7 +1097,7 @@ mouse_moved(int mx, int my)
       int dy = my - rotsc_start_y;
 
       /* L-R => rotation */
-      view_angle = rotsc_angle - (((float)dx) / 2.5);
+      view_angle = rotsc_angle - (((double)dx) / 2.5);
 
       while (view_angle < 0.0)
 	 view_angle += 360.0;
@@ -1107,10 +1107,10 @@ mouse_moved(int mx, int my)
       /*dy = -dy; */
 
       /* U-D => scaling */
-      if (fabs((float)dy) <= 1.0) {
+      if (fabs((double)dy) <= 1.0) {
 	 a = 0.0;
       } else {
-	 a = log(fabs((float)dy)) / 3;
+	 a = log(fabs((double)dy)) / 3;
       }
 
       if (dy <= 0) {
@@ -1172,11 +1172,11 @@ drag_elevation(int x, int y)
       /* if the mouse is to the left of the elevation indicator,
        * snap to view from -90, 0 or 90 */
       if (abs(y) < INDWIDTH * E_IND_PTR / 2) {
-	 elev_angle = 0.0f;
+	 elev_angle = 0.0;
       } else if (y < 0) {
-	 elev_angle = 90.0f;
+	 elev_angle = 90.0;
       } else {
-	 elev_angle = -90.0f;
+	 elev_angle = -90.0;
       }
    }
 }
@@ -1592,11 +1592,11 @@ main(int argc, char **argv)
 	    } else if (myevent.xmotion.window == scalebar) {
 	       if (myevent.xmotion.state & Button1Mask)
 		  scale = exp(log(scale_orig)
-			      + (float)(myevent.xmotion.y - orig.y) / (250)
+			      + (double)(myevent.xmotion.y - orig.y) / (250)
 			      );
 	       else
 		  scale = exp(log(scale_orig)
-			      * (1 - (float)(myevent.xmotion.y - orig.y) / 100)
+			      * (1 - (double)(myevent.xmotion.y - orig.y) / 100)
 			      );
 
 	    } else if (myevent.xmotion.window == mywindow) {
@@ -1749,13 +1749,13 @@ main(int argc, char **argv)
 	     case ConfigureNotify:
 
 #if 0	/* rescale to keep view in window */
-	       scale *= min((float)myevent.xconfigure.width /
-			    (float)oldwidth,
-			    (float)myevent.xconfigure.height / (float)oldheight);
+	       scale *= min((double)myevent.xconfigure.width /
+			    (double)oldwidth,
+			    (double)myevent.xconfigure.height / (double)oldheight);
 #else /* keep in mind aspect ratio to make resizes associative */
-	       scale *= min(3.0 * (float)myevent.xconfigure.width,
-			    4.0 * (float)myevent.xconfigure.height) /
-		  min(3.0 * (float)oldwidth, 4.0 * (float)oldheight);
+	       scale *= min(3.0 * (double)myevent.xconfigure.width,
+			    4.0 * (double)myevent.xconfigure.height) /
+		  min(3.0 * (double)oldwidth, 4.0 * (double)oldheight);
 #endif
 	       oldwidth = myevent.xconfigure.width;
 	       oldheight = myevent.xconfigure.height;
@@ -1787,9 +1787,9 @@ main(int argc, char **argv)
 #endif
 
       {
-	 static float old_view_angle = -1;
-	 static float old_elev_angle = -1;
-	 static float old_scale = -1;
+	 static double old_view_angle = -1;
+	 static double old_elev_angle = -1;
+	 static double old_scale = -1;
 	 static int old_crossing = -1;
 	 static int old_labelling = -1;
 	 static int old_allnames = -1;

@@ -134,10 +134,10 @@ extern INT32_T useful_w32;
 # define get16(FH) (fread(&useful_w16, 2, 1, (FH)), useful_w16)
 # define get32(FH) (fread(&useful_w32, 4, 1, (FH)), useful_w32)
 #else
-extern void FAR useful_put16(INT16_T, FILE *);
-extern void FAR useful_put32(INT32_T, FILE *);
-extern INT16_T FAR useful_get16(FILE *);
-extern INT32_T FAR useful_get32(FILE *);
+void FAR useful_put16(INT16_T, FILE *);
+void FAR useful_put32(INT32_T, FILE *);
+INT16_T FAR useful_get16(FILE *);
+INT32_T FAR useful_get32(FILE *);
 
 # define put16(W, FH) useful_put16(W, FH)
 # define put32(W, FH) useful_put32(W, FH)

@@ -59,7 +59,7 @@
 # define STOP (coord)(stop)
 
 /* prototype so STOP macro will work */
-extern void stop(int X, int Y);
+void stop(int X, int Y);
 
 #else
 

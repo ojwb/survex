@@ -34,17 +34,17 @@ extern volatile bool fRedraw;
 # define ALLEGRO 1
 #endif
 
-extern int cvrotgfx_init(void);
-extern int cvrotgfx_pre_main_draw(void);
-extern int cvrotgfx_post_main_draw(void);
-extern int cvrotgfx_pre_supp_draw(void);
-extern int cvrotgfx_post_supp_draw(void);
-extern int cvrotgfx_final(void);
-extern int cvrotgfx_get_key(void);
-extern void cvrotgfx_read_mouse(int *pdx, int *pdy, int *pbut);
-extern void (cvrotgfx_beep)(void); /* make a beep */
-extern void cvrotgfx_moveto(int X, int Y);
-extern void cvrotgfx_lineto(int X, int Y);
+int cvrotgfx_init(void);
+int cvrotgfx_pre_main_draw(void);
+int cvrotgfx_post_main_draw(void);
+int cvrotgfx_pre_supp_draw(void);
+int cvrotgfx_post_supp_draw(void);
+int cvrotgfx_final(void);
+int cvrotgfx_get_key(void);
+void cvrotgfx_read_mouse(int *pdx, int *pdy, int *pbut);
+void (cvrotgfx_beep)(void); /* make a beep */
+void cvrotgfx_moveto(int X, int Y);
+void cvrotgfx_lineto(int X, int Y);
 
 #if (OS==UNIX)
 
@@ -153,8 +153,8 @@ extern GrContext *BitMap;
 #  define cvrotgfx_moveto moveto
 #  define cvrotgfx_lineto lineto
 # else
-extern void cvrotgfx_moveto(int X, int Y);
-extern void cvrotgfx_lineto(int X, int Y);
+void cvrotgfx_moveto(int X, int Y);
+void cvrotgfx_lineto(int X, int Y);
 # endif
 
 # ifdef MSC
@@ -199,8 +199,8 @@ extern void cvrotgfx_lineto(int X, int Y);
 # include "oslib/osword.h"
 # define bool BOOL
 
-extern void outtextxy(int x, int y, const char *str);
-extern void text_xy(int x, int y, const char *str);
+void outtextxy(int x, int y, const char *str);
+void text_xy(int x, int y, const char *str);
 
 # define set_gcolour(X) (ol_setcol((X)))
 # define set_tcolour(X) (xos_set_gcol(), xos_writec(0), xos_writec((X)))
@@ -225,8 +225,8 @@ extern BITMAP *BitMap, *BitMapDraw;
 
 # define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
 
-extern void cvrotgfx_moveto(int X, int Y);
-extern void cvrotgfx_lineto(int X, int Y);
+void cvrotgfx_moveto(int X, int Y);
+void cvrotgfx_lineto(int X, int Y);
 
 # ifdef NO_TEXT
 #  define outtextxy(X, Y, S) NOP

@@ -1,6 +1,6 @@
 /* > netartic.h
  * Header file for network articulation point code
- * Copyright (C) 2000 Olly Betts
+ * Copyright (C) 2000,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,4 +17,4 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-extern void articulate(void);
+void articulate(void);

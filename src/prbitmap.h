@@ -1,7 +1,7 @@
 /* > prbitmap.h
  * Header files for
  * Bitmap routines for Survex Dot-matrix and Inkjet printer drivers
- * Copyright (C) 1994 Olly Betts
+ * Copyright (C) 1994,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@
 
 extern void (*PlotDot)(long X, long Y);
 
-extern void DrawLineDots(long x, long y, long x2, long y2);
-extern void MoveTo(long x, long y);
-extern void DrawTo(long x, long y);
-extern void DrawCross(long x, long y);
-extern void read_font(const char *pth, const char *leaf, int dpiX, int dpiY);
-extern void WriteString(const char *s);
+void DrawLineDots(long x, long y, long x2, long y2);
+void MoveTo(long x, long y);
+void DrawTo(long x, long y);
+void DrawCross(long x, long y);
+void read_font(const char *pth, const char *leaf, int dpiX, int dpiY);
+void WriteString(const char *s);

@@ -68,6 +68,9 @@ Changes in 0.97-prerelease1:
 
 * printwin: new native Microsoft Windows printer driver.
 
+* Use double precision floating point to pass numbers to/from .3d file
+  reading rotuines to avoid rounding problems.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling

@@ -74,8 +74,8 @@ typedef unsigned char byte;
 /* DJGPP's ceil and floor are buggy if FP is emulated, so do it ourselves */
 #   define ceil(X) svx_ceil((X))
 #   define floor(X) svx_floor((X))
-extern double svx_ceil(double);
-extern double svx_floor(double);
+double svx_ceil(double);
+double svx_floor(double);
 #  endif
 
 # elif (OS==TOS)
@@ -129,8 +129,8 @@ extern double svx_floor(double);
 # endif /* !init_screen */
 
 /* prototypes for functions in osdepend.c */
-extern bool fAbsoluteFnm(const char *fnm);
-extern bool fDirectory(const char *fnm);
+bool fAbsoluteFnm(const char *fnm);
+bool fDirectory(const char *fnm);
 
 # ifndef HAVE_DIFFTIME
 #  define difftime(A, B) ((B)-(A))

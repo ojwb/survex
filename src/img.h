@@ -43,7 +43,7 @@ extern "C" {
 # define img_FLAG_DUPLICATE 0x02
 
 typedef struct {
-   float x, y, z;
+   double x, y, z;
 } img_point;
     
 typedef struct {
@@ -104,7 +104,7 @@ int img_read_item(img *pimg, char *sz, img_point *p);
  * x, y, z are the coordinates
  */
 void img_write_item(img *pimg, int code, const char *sz,
-		    float x, float y, float z);
+		    double x, double y, double z);
 
 /* rewind a .3d file opened for reading so the data can be read in
  * several passes

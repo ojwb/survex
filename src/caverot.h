@@ -97,4 +97,4 @@ extern int xcMac, ycMac; /* screen size in plot units (==pixels usually) */
 extern float y_stretch; /* multiplier for y to correct aspect ratio */
 
 /* plot text x chars *right* and y *down* */
-extern void (text_xy)(int x, int y, const char *s);
+void (text_xy)(int x, int y, const char *s);

@@ -1,6 +1,6 @@
 /* > osalloc.h
  * Function prototypes for OS dep. malloc &c - funcs in error.c
- * Copyright (C) 1996,1997 Olly Betts
+ * Copyright (C) 1996,1997,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@
 #  define xosmalloc(s) malloc((s))
 #  define xosrealloc(p, s) realloc((p), (s))
 # else
-extern void osfree(void *p);
+void osfree(void *p);
 /* ick: */
 #  define xosmalloc(s) osmalloc((s))
 #  define xosrealloc(p, s) osrealloc((p), (s))
@@ -51,12 +51,11 @@ extern void osfree(void *p);
 
 /* NB No extra () around X as sizeof((char*)) doesn't work */
 #define ossizeof(X) ((OSSIZE_T)sizeof(X))
-/* C++ like malloc thingy -- call osnew(<type>) eg. osnew(float) */
+/* C++ like malloc thingy -- call osnew(<type>) eg. osnew(point) */
 #define osnew(T) (T*)osmalloc(ossizeof(T))
 
-extern void FAR *osmalloc(OSSIZE_T);
-extern void FAR *osrealloc(void *, OSSIZE_T);
-
-extern void FAR *osstrdup(const char *str);
+void FAR *osmalloc(OSSIZE_T);
+void FAR *osrealloc(void *, OSSIZE_T);
+void FAR *osstrdup(const char *str);
 
 #endif

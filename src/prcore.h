@@ -50,11 +50,11 @@ typedef struct {
 
 extern device printer;
 
-extern void drawticks(border clip, int tick_size, int x, int y);
+void drawticks(border clip, int tick_size, int x, int y);
 
-extern int as_int(char *p, int min_val, int max_val);
-extern int as_bool(char *p);
-extern float as_float(char *p, float min_val, float max_val);
+int as_int(char *p, int min_val, int max_val);
+int as_bool(char *p);
+float as_float(char *p, float min_val, float max_val);
 int as_escstring(char *s);
 char *as_string(char *p);
 

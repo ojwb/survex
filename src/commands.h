@@ -17,15 +17,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-extern void handle_command(void);
-extern void default_all(settings *s);
+void handle_command(void);
+void default_all(settings *s);
 
-extern void free_settings(settings *p);
+void free_settings(settings *p);
 
-extern void get_token(void);
+void get_token(void);
 
 typedef struct { const char *sz; int tok; } sztok;
-extern int match_tok(const sztok *tab, int tab_size);
+int match_tok(const sztok *tab, int tab_size);
 
 #define TABSIZE(T) ((sizeof(T) / sizeof(sztok)) - 1)
 

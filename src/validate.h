@@ -1,7 +1,7 @@
 /* > validate.h
  * Header file for validate.c
  *
- * Copyright (C) 1994,1996 Olly Betts
+ * Copyright (C) 1994,1996,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,10 +24,10 @@
 #include "debug.h"
 #include "cavern.h"
 
-extern bool validate(void);
-extern void dump_node(node *stn);
-extern void dump_entire_network(void);
-extern void dump_network(void);
+bool validate(void);
+void dump_node(node *stn);
+void dump_entire_network(void);
+void dump_network(void);
 
 #if (VALIDATE==0)
 # define validate() NOP

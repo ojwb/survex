@@ -44,8 +44,8 @@ void reset_limits(point *pmin, point *pmax);
 void update_limits(point *pmin, point *pmax,
 		   point Huge *pLegs, point Huge *pStns);
 
-float scale_to_screen(const point *pmin, const point *pmax,
-		      int xcMac, int ycMac, double y_stretch);
+double scale_to_screen(const point *pmin, const point *pmax,
+		       int xcMac, int ycMac, double y_stretch);
 
 extern coord Xorg, Yorg, Zorg; /* position of centre of survey */
 extern coord Xrad, Yrad, Zrad; /* "radii" */
