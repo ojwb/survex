@@ -1538,6 +1538,7 @@ void MainFrm::OnHide(wxCommandEvent&)
 	LabelInfo* label = *pos++;
 	label->flags &= ~LFLAG_HIGHLIGHTED;
     }
+    m_NumHighlighted = 0;
     m_Gfx->UpdateBlobs();
     m_Gfx->ForceRefresh();
 }
