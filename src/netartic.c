@@ -56,8 +56,18 @@ iter:
 uniter:
 	 i = reverse_leg_dirn(stn->leg[livTos->dirn]);
 	 stn = stn->leg[livTos->dirn]->l.to;
-	 if (!(min < livTos->min)) {
-	    if (min >= stn->colour) stn->fArtic = fTrue;
+	 /* DO: remove stn from stnlist */
+	 /* DO: add stn to component list */
+	 if (livTos->min <= min) {
+	    if (stn->colour <= min) {
+	       /* DO: note down leg (<-), remove and replace:
+		*                 /\   /        /\
+		* [fixed point(s)]  *-*  -> [..]  )
+		*                 \/   \        \/
+		* DO: start new articulation
+		*/
+	       stn->fArtic = fTrue;
+	    }
 	    min = livTos->min;
 	 }
 	 livTmp = livTos;
@@ -65,12 +75,17 @@ uniter:
 	 osfree(livTmp);
       } else if (stn->leg[i]->l.to->colour < min) {
 	 min = stn->leg[i]->l.to->colour;
+	 /* FIXME: hmm, min may be reduced on way back out or way in - is
+	  * that OK? */
       }
    }
    if (livTos) goto uniter;
    return min;
 }
 
+/* DO: instead of this, in matrix.c we just need to count stations in stnlist
+ * for the bit of network we're solving for.  And we may be able to do further
+ * reductions before then too */
 static void
 visit_count(node *stn, ulong max)
 {
@@ -168,19 +183,16 @@ articulate(void)
       int cUncolouredNeighbours = 0;
       stn = stnStart;
 #if 0
-      /* see if this is a fresh component */
+      /* see if this is a fresh component - it may not be, we may be
+       * processing the other way from a fixed point cut-line */
+      /* FIXME: recode to not use status */
       if (stn->status != statFixed) cComponents++;
 #endif
-      /* FIXME: do we always have a fresh component?  I think so, but the
-       * comment above suggests otherwise */
-      cComponents++;
 
       for (i = 0; i <= 2; i++) {
 	 if (stn->leg[i]) {
 	    if (stn->leg[i]->l.to->colour == 0) {
 	       cUncolouredNeighbours++;
-	    } else {
-/*	       stn->leg[i]->l.to->status = statFixed;*/
 	    }
 	 }
       }
@@ -193,8 +205,8 @@ articulate(void)
 #endif
       if (cUncolouredNeighbours) {
 	 c = 0;
-	 for (i = 0; i <= 2; i++) {
-	    if (stn->leg[i] && stn->leg[i]->l.to->colour == 0) {
+	 for (i = 0; i <= 2 && stn->leg[i]; i++) {
+	    if (stn->leg[i]->l.to->colour == 0) {
 	       ulong colBefore = colour;
 	       node *stn2;
 
@@ -214,7 +226,10 @@ articulate(void)
 	       stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(prefix*)));
 	       
 	       /* Solve chunk of net from stn in dirn i up to stations
-		* with fArtic set or fixed() true. Then solve stations
+		* with fArtic set or fixed() true - hmm fixed() test
+		* causes problems if an equated fixed point spans 2
+		* articulations.
+		* Then solve stations
 		* up to next set of fArtic points, and repeat until all
 		* this bit done.
 		*/
@@ -230,13 +245,11 @@ more:
 	       FOR_EACH_STN(stn2, stnlist) {
 		  if (stn2->fArtic && fixed(stn2)) {
 		     int d;
-		     for (d = 0; d <= 2; d++) {
-			if (USED(stn2, d)) {
-			   node *stn3 = stn2->leg[d]->l.to;
-			   if (!fixed(stn3)) {
-			      stn2 = stn3;
-			      goto more;
-			   }
+		     for (d = 0; d <= 2 && stn->leg[d]; d++) {
+			node *stn3 = stn2->leg[d]->l.to;
+			if (!fixed(stn3)) {
+			   stn2 = stn3;
+			   goto more;
 			}
 		     }
 		     stn2->fArtic = fFalse;
