@@ -219,7 +219,7 @@ void GfxCore::TryToFreeArrays()
 	DELETE_ARRAY(m_Polylines);
 	DELETE_ARRAY(m_SurfacePolylines);
 	DELETE_ARRAY(m_CrossData.vertices);
-#ifdef AVENGL
+#ifndef AVENGL
 	DELETE_ARRAY(m_CrossData.num_segs);
 #endif
 	DELETE_ARRAY(m_Labels);
