@@ -44,32 +44,30 @@
 # define PRINT_INI "print/ini"
 
 # define EXT_SVX_DATA "/svx" /* allows files to be read from DOS discs */
-# define EXT_SVX_CMND "/svc"
 # define EXT_SVX_3D   "/3d"
 # define EXT_SVX_ERRS "/err"
 # define EXT_SVX_STAT "/inf"
 # define EXT_SVX_POS  "/pos"
 
-#elif (OS==MSDOS || OS==TOS)
+#elif (OS==MSDOS || OS==TOS || OS==WIN32)
 
-# define ERRSTAT_FILE "ERRSTATS.TXT"
-# define STATS_FILE   "STATS.TXT"
-# define IMAGE_FILE   "IMAGE.3D"
-# define POSLIST_FILE "POSLIST.TXT"
-# define MESSAGE_FILE "MESSAGES.TXT"
+# define ERRSTAT_FILE "errstats.txt"
+# define STATS_FILE   "stats.txt"
+# define IMAGE_FILE   "image.3d"
+# define POSLIST_FILE "poslist.txt"
+# define MESSAGE_FILE "messages.txt"
 
-# define PCL_CFG  "PCL.CFG"
-# define DM_CFG   "DM.CFG"
-# define PS_CFG   "PS.CFG"
-# define HPGL_CFG "HPGL.CFG"
-# define PRINT_INI "PRINT.INI"
+# define PCL_CFG  "pcl.cfg"
+# define DM_CFG   "dm.cfg"
+# define PS_CFG   "ps.cfg"
+# define HPGL_CFG "hpgl.cfg"
+# define PRINT_INI "print.ini"
 
-# define EXT_SVX_DATA ".SVX"
-# define EXT_SVX_CMND ".SVC"
-# define EXT_SVX_3D   ".3D"
-# define EXT_SVX_ERRS ".ERR"
-# define EXT_SVX_STAT ".INF"
-# define EXT_SVX_POS  ".POS"
+# define EXT_SVX_DATA ".svx"
+# define EXT_SVX_3D   ".3d"
+# define EXT_SVX_ERRS ".err"
+# define EXT_SVX_STAT ".inf"
+# define EXT_SVX_POS  ".pos"
 
 #elif (OS==UNIX)
 
@@ -86,7 +84,6 @@
 # define PRINT_INI "print.ini"
 
 # define EXT_SVX_DATA ".svx"
-# define EXT_SVX_CMND ".svc"
 # define EXT_SVX_3D   ".3d"
 # define EXT_SVX_ERRS ".err"
 # define EXT_SVX_STAT ".inf"
@@ -107,7 +104,6 @@
 # define PRINT_INI "print.ini"
 
 # define EXT_SVX_DATA ".svx"
-# define EXT_SVX_CMND ".svc"
 # define EXT_SVX_3D   ".3d"
 # define EXT_SVX_ERRS ".err"
 # define EXT_SVX_STAT ".inf"
