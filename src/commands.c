@@ -913,9 +913,6 @@ cmd_data(void)
    /* FIXME: also BackComp, BackClino, Dr */
    static sztok dtab[] = {
 	{"ALTITUDE",	 Dz },
-#ifdef SVX_MULTILINEDATA /* NEW_STYLE */
-	{"BACK",         Back },
-#endif
 	{"BEARING",      Comp },
 	{"CLINO",        Clino }, /* alternative name */
 	{"COMPASS",      Comp }, /* alternative name */
@@ -930,9 +927,7 @@ cmd_data(void)
 	{"IGNORE",       Ignore },
 	{"IGNOREALL",    IgnoreAll },
 	{"LENGTH",       Tape },
-#ifdef SVX_MULTILINEDATA /* NEW_STYLE */
-	{"NEXT",         Next },
-#endif
+	{"NEWLINE",      Newline },
 	{"NORTHING",     Dy },
 	{"TAPE",         Tape }, /* alternative name */
 	{"TO",           To },
@@ -1003,11 +998,11 @@ cmd_data(void)
       return;
    }
 
-   pcs->Style = fn[style - 1];
+   pcs->Style = fn[style];
 #ifdef SVX_MULTILINEDATA /* NEW_STYLE */
-   m = mask[style - 1] | BIT(Back) | BIT(Next) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
+   m = mask[style] | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
 #else
-   m = mask[style - 1] | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
+   m = mask[style] | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
 #endif
 
    skipblanks();
@@ -1064,7 +1059,7 @@ cmd_data(void)
 #define mask_done (BIT(End) | BIT(IgnoreAll))
    } while (!TSTBIT(mask_done, d));
 
-   if ((mUsed | mask_optional[style-1]) != mask[style-1]) {
+   if ((mUsed | mask_optional[style]) != mask[style]) {
       osfree(new_order);
       compile_error(/*Too few readings for data style `%s'*/64, style_name);
       osfree(style_name);

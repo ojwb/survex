@@ -126,9 +126,7 @@ typedef enum {
 typedef enum {
    End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
    FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount, Dr,
-#ifdef SVX_MULTILINEDATA
-   Next, Back,
-#endif
+   Newline,
    Ignore, IgnoreAll
 } reading;
 
@@ -244,14 +242,13 @@ struct Twig {
 };
 #endif
 
-#define STYLE_DEFAULT   -1
-#define STYLE_UNKNOWN    0
-#define STYLE_NORMAL     1
-#define STYLE_TOPOFIL    2
-#define STYLE_DIVING     3
-#define STYLE_CARTESIAN  4
-#define STYLE_NOSURVEY   5
-/*#define STYLE_MAX     6*/
+#define STYLE_DEFAULT   -2
+#define STYLE_UNKNOWN   -1
+#define STYLE_NORMAL     0
+#define STYLE_TOPOFIL    1
+#define STYLE_DIVING     2
+#define STYLE_CARTESIAN  3
+#define STYLE_NOSURVEY   4
 
 /*
 typedef struct Inst {
