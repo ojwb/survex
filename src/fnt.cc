@@ -169,8 +169,6 @@ fntTexFont::load(const char *fname)
 		 (GLvoid *)teximage);
     delete [] teximage;
 
-    glAlphaFunc(GL_GREATER, 0.5f);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 	 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
