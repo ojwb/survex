@@ -83,7 +83,7 @@ device printer = {
 
 static HDC pd; /* printer context */
 
-static TEXTMETRIC tm, tm_labels, tm_default; /* font info */
+static TEXTMETRIC *tm, tm_labels, tm_default; /* font info */
 
 static double scX, scY;
 
@@ -216,11 +216,11 @@ win_SetFont(int fontcode)
    switch (fontcode) {
       case PR_FONT_DEFAULT:
 	 SelectObject(pd, font_default);
-	 tm = tm_default;
+	 tm = &tm_default;
 	 break;
       case PR_FONT_LABELS:
 	 SelectObject(pd, font_labels);
-	 tm = tm_labels;
+	 tm = &tm_labels;
 	 break;
       default:
 	 BUG("unknown font code");
@@ -231,12 +231,12 @@ static void
 win_WriteString(const char *s)
 {
    if (cur_pass != -1) {
-      TextOut(pd, x_t, y_t - tm.tmAscent, s, strlen(s));
+      TextOut(pd, x_t, y_t - tm->tmAscent, s, strlen(s));
    } else {
-      if ((y_t + tm.tmDescent > 0 &&
-	   y_t - tm.tmAscent < clip.y_max - clip.y_min) ||
+      if ((y_t + tm->tmDescent > 0 &&
+	   y_t - tm->tmAscent < clip.y_max - clip.y_min) ||
 	  (x_t < clip.x_max - clip.x_min &&
-	   x_t + strlen(s) * tm.tmAveCharWidth > 0)) {
+	   x_t + strlen(s) * tm->tmAveCharWidth > 0)) {
 	 fBlankPage = fFalse;
       }
    }
@@ -280,17 +280,17 @@ win_Pre(int pagesToPrint, const char *title)
 			    0, 0, 0, FW_NORMAL, 0, 0, 0,
 			    ANSI_CHARSET, OUT_DEFAULT_PRECIS,
 			    CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-			    FF_DONTCARE | DEFAULT_PITCH, "Arial");   
+			    FF_DONTCARE | DEFAULT_PITCH, "Arial");
    font_default = CreateFont(-MulDiv(fontsize, logpixelsy, 72),
 			     0, 0, 0, FW_NORMAL, 0, 0, 0,
 			     ANSI_CHARSET, OUT_DEFAULT_PRECIS,
 			     CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-			     FF_DONTCARE | DEFAULT_PITCH, "Arial");   
+			     FF_DONTCARE | DEFAULT_PITCH, "Arial");
    font_old = SelectObject(pd, font_labels);
    GetTextMetrics(pd, &tm_labels);
    SelectObject(pd, font_default);
    GetTextMetrics(pd, &tm_default);
-   
+
    memset(&info, 0, sizeof(DOCINFO));
    info.cbSize = sizeof(DOCINFO);
    info.lpszDocName = title;
