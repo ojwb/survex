@@ -24,6 +24,30 @@ Save" menu item twice.
 <li>Load a .pos file and no stations are shown - I think the problem
 is in aven, as img looks to be setting the station "underground" flag...
 
+<li>continuing trouble with accelerator keys:
+
+<ul>
+<li>"[", "]", "'", and "/" accelerators don't work (on MS Windows 98)
+<li>Some keystrokes in the "Search box" are interpreted as accelerators
+</ul>
+
+<li>possible mysterious problem with [ and ] not zooming to screen centre
+
+<li>suppress warning box if wxWindows doesn't have translations in requested
+language (doesn't appear to be possible)
+
+<li>Accents in menus were working but suddenly stopped - I think this
+happened when I upgraded debian and a new libgtk package got
+installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
+[from Olly: installing "locales" package fixes this for me...]
+
+<li>releasing drag over menubar doesn't send event properly
+
+<li>Close button in About box not in correct place (on MS Windows)
+
+<li>"random lines" when zooming in a lot on wxaven for GTK (xcaverot too)
+- fix by doing the clipping ourselves?
+
 </ul>
 
 <H2>Aven</H2>
@@ -38,34 +62,8 @@ is in aven, as img looks to be setting the station "underground" flag...
 
 <li>finish reverse controls
 
-<li>possible mysterious problem with [ and ] not zooming to screen centre
-
-<li>suppress warning box if wxWindows doesn't have translations in requested
-language (doesn't appear to be possible)
-
-<li>continuing trouble with accelerator keys:
-
-<ul>
-<li>"[", "]", "'", and "/" accelerators don't work (on MS Windows 98)
-<li>Some keystrokes in the "Search box" are interpreted as accelerators
-</ul>
-
-<li>Accents in menus were working but suddenly stopped - I think this
-happened when I upgraded debian and a new libgtk package got
-installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
-[from Olly: installing "locales" package fixes this for me...]
-
-<li>releasing drag over menubar doesn't send event properly
-
-<li>Close button in About box not in correct place (on MS Windows)
-
-<li>"random lines" when zooming in a lot on wxaven for GTK (xcaverot too)
-- fix by doing the clipping ourselves?
-
 <li>by default put crosses on those points with no legs attached (unused
 fixed points)?
-
-<li>click on station to centre; type in station to centre
 
 <li>label junctions/dead ends?
 
@@ -155,7 +153,8 @@ cave with *export to one without...
 <li>extract help screen from caverot.c for translation
 
 <li>How to select alternative language on MS Windows - setting env
-vars isn't easy win install lang??
+vars isn't easy win install lang?? control panel / system / advanced /
+env vars I think...
 
 <li>quotes in messages - translate too? e.g. `XXX' to « XXX ».  Eric
 suggests not in French.
@@ -199,8 +198,7 @@ left to right?
 
 <li>cylpolar with dz rather than depth?
 
-<li>survex apt source for survex, survex-aven, and wxgtk2.2 so apt-get
-survex will work on potato...
+<li>survex apt source for survex and survex-aven...
 
 <li>ISO image?  structure debian packages on it as an apt source.
 autorun for MS Windows?
