@@ -217,6 +217,10 @@ static unsigned long black, white;
 static int lab_col_ind = 19;	/* Hack to get labels in sensible colour JPNP */
 static int fontheight, slashheight;	/* JPNP */
 
+static void update_rotation(void);
+static void fill_segment_cache(void);
+static void perform_redraw(void);
+
 static char *ncolors[] = { "black",
 #if 0
    "BlanchedAlmond", "BlueViolet",
@@ -479,9 +483,14 @@ void
 process_step(Display * display, Window mainwin, Window button, GC mygc, GC egc)
 {
    flip_button(display, mainwin, button, mygc, egc, "Step");
-   view_angle += 3.0;
+   view_angle += rot_speed / 5;
    if (view_angle >= 360.0)
-      view_angle = 0.0;
+      view_angle -= 360.0;
+   else if (view_angle < 0)
+      view_angle += 360.0;      
+   update_rotation();
+   if (!rot) fill_segment_cache();
+   perform_redraw();
    flip_button(display, mainwin, button, egc, mygc, "Step");
 }
 
@@ -762,7 +771,7 @@ toscreen_y(point * p)
 }
 
 static void
-fill_segment_cache()
+fill_segment_cache(void)
 {
    /* Calculate positions of all line segments and put them in the cache. */
 
@@ -863,7 +872,7 @@ find_station(int x, int y, int mask)
 }
 
 static void
-update_rotation()
+update_rotation(void)
 {
    /* calculate amount of rotation by how long since last redraw
     * to keep a constant speed no matter how long between redraws */
@@ -986,7 +995,7 @@ perform_redraw(void)
 
 #if 0
 int
-x()
+x(void)
 {
    /* XClearWindow(display, window); */
    XGetWindowAttributes(display, window, &a);
@@ -1144,13 +1153,13 @@ press_right_button(int x, int y)
 }
 
 static void
-release_left_button()
+release_left_button(void)
 {
    rotating_and_scaling = 0;
 }
 
 static void
-release_right_button()
+release_right_button(void)
 {
    dragging_about = 0;
 }
@@ -1805,7 +1814,7 @@ main(int argc, char **argv)
 			      rot_speed = -rot_speed;
 			      break;
 			    case 'c':	/* rotate one step "clockwise" */
-			      // FIXME: view_angle += rot_step;
+			      view_angle += rot_speed / 5;
 			      if (view_angle >= 360.0) {
 				 view_angle -= 360.0;
 			      }
@@ -1813,7 +1822,7 @@ main(int argc, char **argv)
 			      redraw = 1;
 			      break;
 			    case 'v':	/* rotate one step "anticlockwise" */
-			      // FIXME: view_angle -= rot_step;
+			      view_angle -= rot_speed / 5;
 			      if (view_angle <= 0.0) {
 				 view_angle += 360.0;
 			      }
