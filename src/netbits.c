@@ -385,45 +385,36 @@ fprint_prefix(FILE *fh, const prefix *ptr)
       fprint_prefix(fh, ptr->up);
       if (ptr->up->up != NULL) fputc('.', fh);
       fputs(ptr->ident, fh);
-   } else {
-      fputc('\\', fh);
    }
 }
 
-/* FIXME buffer overflow problems... */
-static char *
-sprint_prefix_(char *buf, OSSIZE_T len, const prefix *ptr)
+static char *buffer = NULL;
+static int buffer_len = 256;
+
+static size_t
+sprint_prefix_(const prefix *ptr)
 {
-   size_t i;
+   size_t len = 1;
    if (ptr->up != NULL) {
-      char *p;
-      p = sprint_prefix_(buf, len, ptr->up);
-      len -= (p - buf);
-      buf = p;
-      if (ptr->up->up != NULL) {
-	 *buf++ = '.';
-	 if (len <= 1) { printf("buffer overflow!\n"); exit(1); }
-	 len--;
+      len = sprint_prefix_(ptr->up) + strlen(ptr->indent);
+      if (ptr->up->up != NULL) len++;
+      if (len > buffer_len) {
+	 buffer = osrealloc(buffer, len);
+	 buffer_len = len;
       }
-      i = strlen(ptr->ident);
-      if (len <= i) { printf("buffer overflow!\n"); exit(1); }
-      memcpy(buf, ptr->ident, i);
-      buf += i;
-   } else {
-      if (len <= 1) { printf("buffer overflow!\n"); exit(1); }
-      *buf++ = '\\';
-      len--;
+      if (ptr->up->up != NULL) strcat(buffer, ".");
+      strcat(buffer, ptr->ident);
    }
-   *buf = '\0';
-   return buf;
+   return len;
 }
 
 extern char *
 sprint_prefix(const prefix *ptr)
 {
-   static char buffer[512];
    ASSERT(ptr);
-   sprint_prefix_(buffer, sizeof(buffer), ptr);
+   if (!buffer) buffer = osmalloc(buffer_len);
+   *buffer = '\0';
+   sprint_prefix_(ptr);
    return buffer;
 }
 
