@@ -132,8 +132,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     /* setup our print dialog*/
     wxBoxSizer* v1 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* h1 = new wxBoxSizer(wxHORIZONTAL); // holds controls
-    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, "View"), wxVERTICAL); 
-    wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, "Elements"), wxVERTICAL); 
+    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, msg(/*View*/255)), wxVERTICAL); 
+    wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, "Elements"), wxVERTICAL); // FIXME TRANSLATE
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
     wxBoxSizer* scalebox = new wxBoxSizer(wxHORIZONTAL);
@@ -158,9 +158,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     v2->Add(scalebox, 0, wxALIGN_RIGHT + wxALL, 0);
     // Make the dummy string wider than any sane value so the sizer
     // picks a suitable width...
-    m_printSize = new wxStaticText(this, -1, "9604 Pages (98x98)");
+    m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
     v2->Add(m_printSize, 0, wxALIGN_LEFT + wxALL, 5);
-    static const wxString radio_choices[] = { "Plan", "Elevation", "Tilted" };
+    static const wxString radio_choices[] = { msg(/*Plan view*/117), msg(/*Elevation*/118), "Tilted" }; // FIXME TRANSLATE
     m_aspect = new wxRadioBox(this, svx_ASPECT, "Orientation",
 			      wxDefaultPosition, wxDefaultSize, 3, 
 			      radio_choices);
@@ -170,8 +170,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     anglebox->Add(m_tilttext,0,wxALIGN_CENTER_VERTICAL + wxALIGN_RIGHT + wxALL,5);
     m_tilt = new wxSpinCtrl(this,svx_TILT);
     anglebox->Add(m_tilt,0,wxALIGN_CENTER_VERTICAL + wxALIGN_LEFT + wxALL,5);
-    m_tilt->SetRange(-90,90);
-    anglebox->Add(new wxStaticText(this,-1,"Bearing"),0,wxALIGN_CENTER_VERTICAL + wxALIGN_RIGHT + wxALL,5);
+    m_tilt->SetRange(-90, 90);
+    anglebox->Add(new wxStaticText(this, -1, msg(/*Bearing*/259)), 0, wxALIGN_CENTER_VERTICAL + wxALIGN_RIGHT + wxALL, 5);
     m_bearing = new wxSpinCtrl(this,svx_BEARING);
     anglebox->Add(m_bearing,0,wxALIGN_CENTER_VERTICAL + wxALIGN_LEFT + wxALL,5);
     m_bearing->SetRange(0,359);
@@ -281,9 +281,7 @@ svxPrintDlg::OnChange(wxCommandEvent& event) {
 	    data->GetMarginBottomRight().y - data->GetMarginTopLeft().y;
 	pages_required(m_layout);
 	m_layout->pages = m_layout->pagesX * m_layout->pagesY;
-	wxString temp;
-	temp.Printf("%d pages (%d x %d)",m_layout->pages,m_layout->pagesX,m_layout->pagesY);
-	m_printSize->SetLabel(temp);
+	m_printSize->SetLabel(wxString::Format(msg(/*%d pages (%dx%d)*/257), m_layout->pages, m_layout->pagesX, m_layout->pagesY));
     }
 }
 

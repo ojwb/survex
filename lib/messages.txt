@@ -1851,7 +1851,7 @@ es:158 Planta o Alzado
 it:158 Pianta o profilo
 sk:158 P&ocirc;dorys alebo profil
 ro:158 Plan sau profil
-# cf 51
+# cf 101
 en:159 "Bearing up page (degrees): "
 fr:159 "Azimut haut de page (degr&eacute;s): "
 de:159 "Richtung nach oben auf der Seite (Grad): "
@@ -1860,6 +1860,7 @@ ca:159 "Azimut de la p&agrave;gina a dalt (graus): "
 es:159 "Azimut de la pagina arriba (grados): "
 it:159 "Azimut della cima della pagina (gradi): "
 sk:159 "Azimut str&aacute;nky (v stup&ncaron;och): "
+#
 en:160 "View towards: "
 fr:160 "Vue en direction de: "
 de:160 "Blick in Richtung: "
@@ -2412,7 +2413,7 @@ es:212 @Orientaci&oacute;n
 it:212 @Orientazione
 sk:212 @Orient&aacute;cia
 ro:212 @Orientare
-#
+# c.f. 255
 en:213 @View
 fr:213 @Vue
 de:213 @Ansehen
@@ -2811,7 +2812,43 @@ es:254 Restaurar @valores predeterminados
 it:254 Ripristina i @valori predefiniti
 sk:254 Znov@u na v&yacute;chodzie hodnoty
 ro:254 @Restabiliti setarile initiale
-# XXX 255-269
+# Used in print dialog to label 
+# TRANSLATE fr de pt pt-br ca es it sk ro check reused message makes sense
+# in this context
+# cf 213
+en:255 View
+fr:255 Vue
+de:255 Ansehen
+pt:255 Vista
+pt-br:255 Visualisar
+ca:255 Veure
+es:255 Vista
+it:255 Vista
+sk:255 Poh&lcaron;ad
+ro:255 Vizualizare
+# XXX 256 (for "Elements" or whatever we change that to)
+# cf 170
+# TRANSLATE fr de pt pt-br ca es it sk ro check adapted message is ok
+en:257 %d pages (%dx%d)
+fr:257 %d pages (%dx%d)
+de:257 %d Seiten (%dx%d)
+pt:257 %d p&aacute;ginas (%dx%d)
+ca:257 %d p&agrave;gines (%dx%d)
+es:257 %d p&aacute;ginas (%dx%d)
+it:257 %d pagine (%dx%d)
+sk:257 %d str&aacute;nok (%dx%d)
+ro:257 %d pagini (%dx%d)
+# XXX 258
+# cf 159
+en:259 Bearing
+fr:259 Azimut
+de:259 Richtung
+pt:259 Dire&ccedil;&atilde;o
+ca:259 Azimut
+es:259 Azimut
+it:259 Azimut
+sk:259 Azimut
+# XXX 260-269
 # The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
 fr:270 @Noms de station##Ctrl+N
