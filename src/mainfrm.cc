@@ -172,19 +172,19 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNames)
     EVT_MENU(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNames)
     EVT_MENU(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurface)
-    EVT_MENU(menu_VIEW_COMPASS, MainFrm::OnViewCompass)
-    EVT_MENU(menu_VIEW_CLINO, MainFrm::OnViewClino)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
-    EVT_MENU(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbar)
-    EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
-    EVT_MENU(menu_VIEW_SIDE_PANEL, MainFrm::OnViewSidePanel)
-    EVT_MENU(menu_VIEW_METRIC, MainFrm::OnToggleMetric)
-    EVT_MENU(menu_VIEW_DEGREES, MainFrm::OnToggleDegrees)
     EVT_MENU(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspective)
     EVT_MENU(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreen)
 #ifdef AVENGL
     EVT_MENU(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubes)
 #endif
+    EVT_MENU(menu_IND_COMPASS, MainFrm::OnViewCompass)
+    EVT_MENU(menu_IND_CLINO, MainFrm::OnViewClino)
+    EVT_MENU(menu_IND_DEPTH_BAR, MainFrm::OnToggleDepthbar)
+    EVT_MENU(menu_IND_SCALE_BAR, MainFrm::OnToggleScalebar)
+    EVT_MENU(menu_CTL_SIDE_PANEL, MainFrm::OnViewSidePanel)
+    EVT_MENU(menu_CTL_METRIC, MainFrm::OnToggleMetric)
+    EVT_MENU(menu_CTL_DEGREES, MainFrm::OnToggleDegrees)
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
@@ -220,22 +220,22 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNamesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurfaceUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNamesUpdate)
-    EVT_UPDATE_UI(menu_VIEW_COMPASS, MainFrm::OnViewCompassUpdate)
-    EVT_UPDATE_UI(menu_VIEW_CLINO, MainFrm::OnViewClinoUpdate)
-    EVT_UPDATE_UI(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
-    EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
-    EVT_UPDATE_UI(menu_VIEW_INDICATORS, MainFrm::OnIndicatorsUpdate)
-    EVT_UPDATE_UI(menu_VIEW_SIDE_PANEL, MainFrm::OnViewSidePanelUpdate)
-    EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
-    EVT_UPDATE_UI(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLineUpdate)
-    EVT_UPDATE_UI(menu_VIEW_METRIC, MainFrm::OnToggleMetricUpdate)
-    EVT_UPDATE_UI(menu_VIEW_DEGREES, MainFrm::OnToggleDegreesUpdate)
     EVT_UPDATE_UI(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspectiveUpdate)
     EVT_UPDATE_UI(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreenUpdate)
 #ifdef AVENGL
     EVT_UPDATE_UI(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubesUpdate)
 #endif
+    EVT_UPDATE_UI(menu_IND_COMPASS, MainFrm::OnViewCompassUpdate)
+    EVT_UPDATE_UI(menu_IND_CLINO, MainFrm::OnViewClinoUpdate)
+    EVT_UPDATE_UI(menu_IND_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
+    EVT_UPDATE_UI(menu_IND_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
+    EVT_UPDATE_UI(menu_CTL_INDICATORS, MainFrm::OnIndicatorsUpdate)
+    EVT_UPDATE_UI(menu_CTL_SIDE_PANEL, MainFrm::OnViewSidePanelUpdate)
+    EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
+    EVT_UPDATE_UI(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLineUpdate)
+    EVT_UPDATE_UI(menu_CTL_METRIC, MainFrm::OnToggleMetricUpdate)
+    EVT_UPDATE_UI(menu_CTL_DEGREES, MainFrm::OnToggleDegreesUpdate)
 END_EVENT_TABLE()
 
 class LabelCmp : public greater<const LabelInfo*> {
@@ -412,14 +412,14 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296), "", true);
     viewmenu->AppendSeparator();
 #else
-    viewmenu-> Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
+    viewmenu-> Append(menu_VIEW_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
 #endif
     viewmenu->Append(menu_VIEW_PERSPECTIVE, GetTabMsg(/*@Perspective*/237), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode##F11*/356), "", true);
 #ifdef PREFDLG
     viewmenu->AppendSeparator();
-    viewmenu-> Append(menu_FILE_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
+    viewmenu-> Append(menu_VIEW_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
 #endif
 
 #ifndef PREFDLG
@@ -429,15 +429,15 @@ void MainFrm::CreateMenuBar()
     ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
     ctlmenu->AppendSeparator();
     wxMenu* indmenu = new wxMenu;
-    indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*@Compass*/274), "", true);
-    indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*C@linometer*/275), "", true);
-    indmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "", true);
-    indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*@Scale Bar*/277), "", true);
-    ctlmenu->Append(menu_VIEW_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
-    ctlmenu->Append(menu_VIEW_SIDE_PANEL, GetTabMsg(/*@Side Panel*/337), "", true);
+    indmenu->Append(menu_IND_COMPASS, GetTabMsg(/*@Compass*/274), "", true);
+    indmenu->Append(menu_IND_CLINO, GetTabMsg(/*C@linometer*/275), "", true);
+    indmenu->Append(menu_IND_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "", true);
+    indmenu->Append(menu_IND_SCALE_BAR, GetTabMsg(/*@Scale Bar*/277), "", true);
+    ctlmenu->Append(menu_CTL_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
+    ctlmenu->Append(menu_CTL_SIDE_PANEL, GetTabMsg(/*@Side Panel*/337), "", true);
     ctlmenu->AppendSeparator();
-    ctlmenu->Append(menu_VIEW_METRIC, GetTabMsg(/*@Metric*/342), "", true);
-    ctlmenu->Append(menu_VIEW_DEGREES, GetTabMsg(/*@Degrees*/343), "", true);
+    ctlmenu->Append(menu_CTL_METRIC, GetTabMsg(/*@Metric*/342), "", true);
+    ctlmenu->Append(menu_CTL_DEGREES, GetTabMsg(/*@Degrees*/343), "", true);
 #endif
 
     wxMenu* helpmenu = new wxMenu;
