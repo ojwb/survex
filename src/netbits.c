@@ -31,6 +31,7 @@
 #include "message.h"
 #include "netbits.h"
 #include "datain.h" /* for compile_error */
+#include "validate.h" /* for compile_error */
 
 #define THRESHOLD (REAL_EPSILON * 100)
 
