@@ -19,6 +19,9 @@
 
 * (MS Windows version): aven: Delete now works in the search box.
 
+* (Unix version): aven: Highlight current station in tree with grey background
+  (don't seem to be able to use bold like we do on MS Windows).
+
 * cavern: Fixed handling of interleaved nosurvey data.
 
 * cavern: Diving and cylpolar styles now take DEPTHCHANGE where they used to

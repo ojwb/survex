@@ -11,8 +11,6 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 
 <ul>
 
-<li>aven: "Here" isn't highlighted under wxGTK (fairly sure it used to be).
-
 <li>printdm: put standard scaling in print.ini for canon bj
 (work out what's up with vertical size...)
 
@@ -45,6 +43,10 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 <H2>Aven</H2>
 
 <ul>
+
+<li>wxTreeCtrl::SetItemBold() doesn't seem to work under wxGTK - at
+present we work around by setting the background to grey instead, but we
+ought to report this to the wxWindows people...
 
 <li>clino needs resistance around 0
 

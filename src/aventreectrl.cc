@@ -43,20 +43,35 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
     if (m_Enabled) {
 	int flags;
 	wxTreeItemId pos = HitTest(event.GetPosition(), flags);
-	if (((flags & wxTREE_HITTEST_ONITEMLABEL) || (flags & wxTREE_HITTEST_ONITEMRIGHT)) &&
-	    pos != m_LastItem) {
-	    if (m_LastItem != -1) {
-		SetItemBold(m_LastItem, false);
+	if (pos != m_LastItem) {
+	    if (flags &
+		(wxTREE_HITTEST_ONITEMLABEL | wxTREE_HITTEST_ONITEMRIGHT)) {
+		if (m_LastItem != -1) {
+#ifndef __WXGTK__
+		    SetItemBold(m_LastItem, false);
+#else
+		    SetItemBackgroundColour(m_LastItem,
+			    		    wxColour(255, 255, 255));
+#endif
+		}
+#ifndef __WXGTK__
+		SetItemBold(pos, true);
+#else
+		SetItemBackgroundColour(pos, wxColour(180, 180, 180));
+#endif
+		m_Parent->DisplayTreeInfo(GetItemData(pos));
+		m_LastItem = pos;
+	    } else {
+		if (m_LastItem != -1) {
+#ifndef __WXGTK__
+		    SetItemBold(m_LastItem, false);
+#else
+		    SetItemBackgroundColour(m_LastItem,
+			    		    wxColour(255, 255, 255));
+#endif
+		}
+		m_Parent->DisplayTreeInfo(NULL);
 	    }
-	    SetItemBold(pos, true);
-	    m_Parent->DisplayTreeInfo(GetItemData(pos));
-	    m_LastItem = pos;
-	}
-	else if (pos != m_LastItem) {
-	    if (m_LastItem != -1) {
-		SetItemBold(m_LastItem, false);
-	    }
-	    m_Parent->DisplayTreeInfo(NULL);
 	}
     }
 }
