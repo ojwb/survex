@@ -98,10 +98,8 @@ djgpp_zip : dostxt
 mingw : all mingw_iss
 
 mingw_iss :
-	$(RM) -rf iss_tmp mingw_exes
+	$(RM) -rf iss_tmp
 	mkdir iss_tmp
-	mkdir mingw_exes
-	for f in $(base_progs) aven printwin editwrap ; do cp src/$$f.exe mingw_exes ; done
 	cp src/svxedit iss_tmp/svxedit.tcl
 	cp $(extra_txt) survex.iss iss_tmp
 	: # so the installer can display the license
@@ -109,16 +107,18 @@ mingw_iss :
 	cd doc;cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
+	for f in $(base_progs) aven printwin editwrap ; do cp src/$$f.exe iss_tmp ; done
 	cp lib/icons/*.ico lib/icons/*.png iss_tmp
 	: # don't ship pngs for which we ship the ico version
 	for a in iss_tmp/*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
-	cp /opt/rx-win32/bin/librx.dll iss_tmp
+	cp mingw_extras/librx.dll iss_tmp
+	gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp doc/manual/*.png iss_tmp/manual
-	cp mingw_exes/*.exe $(extra_bin) iss_tmp
+	cp $(extra_bin) iss_tmp
 	: # NB keep next line in step with survex.iss.in
 	for a in cs de es fr it; do\
 	 mkdir iss_tmp/$$a;\
@@ -128,7 +128,7 @@ mingw_iss :
 	(Xvfb :9 -screen 0 64x32x8 &)
 	DISPLAY=:9 wine "c:/Program Files/Inno Setup 2/ISCC.exe" iss_tmp/survex.iss
 	mv iss_tmp/Output/*.exe .
-	$(RM) -rf iss_tmp mingw_exes
+	$(RM) -rf iss_tmp
 	killall Xvfb
 
 bc_zip_name = survex-dos286-@VERSION@.zip
