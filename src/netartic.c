@@ -1,6 +1,6 @@
 /* netartic.c
  * Split up network at articulation points
- * Copyright (C) 1993-2002 Olly Betts
+ * Copyright (C) 1993-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -446,12 +446,12 @@ articulate(void)
 #endif
    }
 
-#if 1 /*def DEBUG_ARTIC*/
+#ifdef DEBUG_ARTIC
    /* test articulation */
    FOR_EACH_STN(stn, stnlist) {
       int d;
       int f;
-      if (stn->name->sflags & BIT(SFLAGS_FIXED)) {
+      if (stn->name->ident && stn->name->sflags & BIT(SFLAGS_FIXED)) {
 	 stn->colour = 1;
       } else {
 	 stn->colour = 0;
