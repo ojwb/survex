@@ -148,6 +148,8 @@ es:  4 alerta
 it:  4 avvertimento
 sk:  4 varovanie
 #zh:  4 &#35686;&#21578;
+# FIXME: kludge to get a zh.msg file generated
+zh:  4 warning
 #
 en:  5 In file included from
 fr:  5 Dans le fichier inclus depuis
