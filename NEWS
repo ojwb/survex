@@ -34,6 +34,9 @@
 
 * xcaverot: Fixed display of surface legs and related minor issues.
 
+* print*: Fixed handling of surface legs; `-S' now recognised as a
+  short-form for `--surface'.
+
 Changes in 0.97-prerelease4:
 
 * Updated Portuguese and German translations.

@@ -56,7 +56,6 @@ static const char *szDesc;
 
 typedef struct LI {
    struct LI *pliNext;
-   int surface;
    int tag;
    union {
       struct { float x, y; } to;
@@ -398,11 +397,10 @@ describe_layout(int x, int y)
 }
 
 static void
-stack(int tag, const img_point *p, int surface)
+stack(int tag, const img_point *p)
 {
    li *pli;
    pli = osnew(li);
-   pli->surface = surface;
    pli->tag = tag;
    pli->d.to.x = p->x * COS - p->y * SIN;
    if (fPlan) {
@@ -443,16 +441,22 @@ read_in_data(void)
        case img_BAD:
 	 return 0;
          /* break; */
-       case img_MOVE:
        case img_LINE:
-         stack(result, &p, pimg->flags & img_FLAG_SURFACE);
+	 /* if we're not plotting surface legs, and this is a surface leg */
+         if (!fSurface && (pimg->flags & img_FLAG_SURFACE))
+	    stack(img_MOVE, &p);
+	 else
+	    stack(img_LINE, &p);
+         break;
+       case img_MOVE:
+	 stack(img_MOVE, &p);
          break;
        case img_CROSS:
          /* use img_LABEL to posn CROSS - newer .3d files don't have
           * img_CROSS anyway */
          break;
        case img_LABEL:
-         stack(img_CROSS, &p, 0);
+         stack(img_CROSS, &p);
          stack_string(pimg->label);
          break;
       }
@@ -582,7 +586,7 @@ main(int argc, char **argv)
       {0, 0, 0, 0}
    };
 
-#define short_opts "epb:t:s:ncBlk"
+#define short_opts "epb:t:s:ncBlSk"
 
    /* TRANSLATE */
    static struct help_msg help[] = {
@@ -648,7 +652,7 @@ main(int argc, char **argv)
        case 's':
 	 if (!read_scale(optarg)) {
 	    /* FIXME complain? */
- }
+	 }
 	 fInteractive = fFalse;
 	 break;
       }
@@ -890,12 +894,9 @@ main(int argc, char **argv)
          pass = 0;
       fBlankPage = fFalse;
       for ( ; pass < cPasses; pass++) {
-         int surf;
          li *pli;
 	 long x, y;
 	 int pending_move = 0;
-
-         surf = 0;
 
 	 x = y = INT_MAX;
 
@@ -935,14 +936,12 @@ main(int argc, char **argv)
 		     pending_move = 0;
 		  }
 
-                  surf = (pli->surface);
                   /* avoid drawing superfluous lines */
                   if (xnew != x || ynew != y) {
 		     x = xnew;
 		     y = ynew;
-		    if (fSurface || (!fSurface && !surf))  pr->DrawTo(x, y);
+		     pr->DrawTo(x, y);
 		  }
-
                }
                break;
              case img_CROSS:
