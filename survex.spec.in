@@ -28,7 +28,7 @@ Group: Applications/Misc
 Requires: survex = @VERSION@
 
 %description svxedit
-Experimental.
+@SVXEDITDESC@
 
 %prep
 %setup

@@ -356,6 +356,8 @@ AC_SUBST_FILE(DESC)
 DESC=desc.txt
 AC_SUBST_FILE(AVENDESC)
 AVENDESC=desc-aven.txt
+AC_SUBST_FILE(SVXEDITDESC)
+SVXEDITDESC=desc-svxedit.txt
 
 AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 
