@@ -1,3 +1,20 @@
+survex (1.0.21) unstable; urgency=low
+
+  * cavern: when reading Compass DAT files, we now processes compass and clino
+    backsights, and recognise the "X" flag which indicates a leg should be
+    entirely ignored.  And we now report correct line number with errors in
+    Compass .MAK files.
+  * cavern: if "*infer plumbs on", don't infer a plumb if the clino is
+    +/- 90 degrees, but the backclino isn't (and vice versa).
+  * cavern: fixed 3dx output so it actually works with Chasm once more.
+  * cavern: don't allocate extra space needed for producing 3dx output for
+    Chasm unless we're actually producing that output - saves about 8 bytes
+    per station.
+  * cavern: removed slightly too keen sanity check which could misfire in very
+    unusual circumstances.
+
+ -- Wookey <wookey@survex.com>  Sat, 16 Nov 2002 15:15:12 +0000
+
 survex (1.0.20) unstable; urgency=low
 
   * aven: update display when "Metric" or "Degrees" is toggled.
