@@ -36,6 +36,7 @@ if test x"$rel" = xyes ; then
    perl -e '-M "config.guess" && -M "config.sub" && exit 1' &&\
       wget ftp://ftp.gnu.org/gnu/config/config.guess -O config.guess.new &&\
       wget ftp://ftp.gnu.org/gnu/config/config.sub -O config.sub.new &&\
+      chmod 755 config.guess.new config.sub.new &&\
       mv config.guess.new config.guess && mv config.sub.new config.sub
 fi
 aclocal
@@ -99,7 +100,7 @@ if expr "$mk" : '.*\<djgpp\>'; then
    if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
       PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
    fi
-   if ! ./configure --host=linux --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o ; then
+   if ! ./configure --host=djgpp --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o ; then
       echo djgpp configure failed
       exit 1
    fi
@@ -118,6 +119,7 @@ if expr "$mk" : '.*\<djgpp\>'; then
    PATH="$SAVE_PATH"
 fi
 if expr "$mk" : '.*\<mingw\>'; then
+   build_platform=`sh config.guess`
    SAVE_PATH="$PATH"
    if test -d /usr/local/cross-tools/i386-mingw32msvc/bin ; then
       # binaries from http://www.devolution.com/~slouken/SDL/Xmingw32/
@@ -139,7 +141,7 @@ if expr "$mk" : '.*\<mingw\>'; then
 	 export CXX
       fi
    fi
-   if ! ./configure --host=linux --with-x=no WXCONFIG=`pwd`/mingw_extras/wxmsw-config LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= ; then
+   if ! ./configure --host=mingw32 --build=$build_platform --with-x=no WXCONFIG=`pwd`/mingw_extras/wxmsw-config LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= ; then
       echo mingw configure failed
       exit 1
    fi

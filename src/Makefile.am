@@ -44,7 +44,7 @@ avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 
 # FIXME: should use wxconfig or similar to get includes
 avenrc.o: aven.rc
-	i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $@ $<
+	cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $@ $<
 
 else
 aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
