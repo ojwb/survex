@@ -882,7 +882,7 @@ main(int argc, char **argv)
       else
          pass = 0;
       fBlankPage = fFalse;
-      for ( ; pass<cPasses; pass++) {
+      for ( ; pass < cPasses; pass++) {
          li *pli;
 	 long x, y;
 	 int pending_move = 0;
