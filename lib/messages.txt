@@ -2908,7 +2908,7 @@ en:325 CMAP XYZ files
 # title of message box
 en:326 Modified Presentation
 # and the question in that box
-en:327 "The current presentation has been modified.  Abandon unsaved changes?
+en:327 The current presentation has been modified.  Abandon unsaved changes?
 #
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
