@@ -36,7 +36,7 @@ fputcs(const char *s, FILE *fh)
     * followed by a 32 bit length value */
    if (len == 0 || len > 255) {
       if (putc(0, fh) == EOF) return EOF;
-      put32((INT32_T)len. fh);
+      put32((INT32_T)len, fh);
       if (ferror(fh)) return EOF;
    } else {
       if (putc((unsigned char)len, fh) == EOF) return EOF;

@@ -135,7 +135,7 @@ img_error(void)
 #endif
 
 img *
-img_open(const char *fnm, char *szTitle, char *szDateStamp)
+img_open(const char *fnm, char *title_buf, char *szDateStamp)
 {
    img *pimg;
 
@@ -187,7 +187,7 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
       return NULL;
    }
    /* FIXME sizeof parameter is rather bogus here */
-   getline((szTitle ? szTitle : tmpbuf), TMPBUFLEN, pimg->fh);
+   getline((title_buf ? title_buf : tmpbuf), TMPBUFLEN, pimg->fh);
    getline((szDateStamp ? szDateStamp : tmpbuf), TMPBUFLEN, pimg->fh);
    pimg->fLinePending = fFalse; /* not in the middle of a 'LINE' command */
    pimg->fRead = fTrue; /* reading from this file */
@@ -203,7 +203,7 @@ img_rewind(img *pimg)
 }
 
 img *
-img_open_write(const char *fnm, char *szTitle, bool fBinary)
+img_open_write(const char *fnm, char *title_buf, bool fBinary)
 {
    time_t tm;
    img *pimg;
@@ -215,6 +215,14 @@ img_open_write(const char *fnm, char *szTitle, bool fBinary)
 
    pimg = (img *)xosmalloc(ossizeof(img));
    if (pimg == NULL) {
+      img_errno = IMG_OUTOFMEMORY;
+      return NULL;
+   }
+
+   pimg->buf_len = 257;
+   pimg->label = xosmalloc(pimg->buf_len);
+   if (!pimg->label) {
+      osfree(pimg);
       img_errno = IMG_OUTOFMEMORY;
       return NULL;
    }
@@ -238,7 +246,7 @@ img_open_write(const char *fnm, char *szTitle, bool fBinary)
       pimg->version = 2;
       fprintf(pimg->fh, "v%d\n", pimg->version); /* file format version no. */
    }
-   fputsnl(szTitle, pimg->fh);
+   fputsnl(title_buf, pimg->fh);
    tm = time(NULL);
    if (tm == (time_t)-1) {
       fputsnl(TIMENA, pimg->fh);
@@ -280,12 +288,12 @@ img_read_item(img *pimg, img_point *p)
 	 (void)get32(pimg->fh);
 	 goto again;
        case 2: case 3: {
-	 char *p;
+	 char *q;
 	 result = img_LABEL;
 	 fgets(pimg->label, 257, pimg->fh);
-	 p = pimg->label + strlen(pimg->label) - 1;
-	 if (*p != '\n') return img_BAD;
-	 *p = '\0';
+	 q = pimg->label + strlen(pimg->label) - 1;
+	 if (*q != '\n') return img_BAD;
+	 *q = '\0';
 	 if (opt == 2) goto done;
 	 break;
        }
@@ -301,8 +309,7 @@ img_read_item(img *pimg, img_point *p)
 	    }
 	    pimg->buf_len = len + 1;
 	 }
-	 fread(pimg->label, len, 1, pimg->fh); /* FIXME: check params ; check error
-*/
+	 fread(pimg->label, len, 1, pimg->fh); /* FIXME: check params ; check error */
 	 break;
        }
        case 4:
@@ -329,7 +336,7 @@ img_read_item(img *pimg, img_point *p)
       if (result == img_MOVE && pimg->version == 1) {
 	 /* peek at next code and see if it's img_LABEL */
 	 opt_lookahead = get32(pimg->fh);
-	 if (opt_lookahead == img_LABEL) return img_read_item(pimg, sz, p);
+	 if (opt_lookahead == img_LABEL) return img_read_item(pimg, p);
       }
 
       return result;
@@ -356,14 +363,14 @@ img_read_item(img *pimg, img_point *p)
 	    goto ascii_again;
 	 } else if (strcmp(tmpbuf, "name") == 0) {
 	    /* FIXME: may overflow... */
-	    if (fscanf(pimg->fh,"%s", pimg->label) < 1) return img_BAD;
+	    if (fscanf(pimg->fh, "%s", pimg->label) < 1) return img_BAD;
 	    result = img_LABEL;
 	 } else
 	    return img_BAD; /* unknown keyword */
       }
 
-      if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) return
-img_BAD;
+      if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3)
+	 return img_BAD;
       return result;
    }
 }
