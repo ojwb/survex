@@ -73,6 +73,11 @@
 * cavern: only apply special pathname handling to filenames in
   *include, not those on the command line.
 
+* cavern: *date now checks its argument.  It expects an ISO format date
+  (e.g. 2001.09.13) or range (e.g. 2001.09.12-2001.09.13).  For cases
+  where the exact date isn't know, the day and month can be omitted -
+  e.g. 2001.09 and 2001 are also valid.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

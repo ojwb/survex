@@ -325,13 +325,13 @@ read_numeric_or_omit(void)
    return v;
 }
 
-extern unsigned int
-read_uint(void)
+/* Don't skip blanks, variable error code */
+static unsigned int
+read_uint_internal(int errmsg)
 {
    unsigned int n = 0;
-   skipblanks();
    if (!isdigit(ch)) {
-      compile_error(/*Expecting numeric field*/9);
+      compile_error(errmsg);
       showandskipline(NULL, 1);
       LONGJMP(file.jbSkipLine);
    }
@@ -340,6 +340,13 @@ read_uint(void)
       nextch();
    }
    return n;
+}
+
+extern unsigned int
+read_uint(void)
+{
+   skipblanks();
+   return read_uint_internal(/*Expecting numeric field*/9);
 }
 
 extern void
@@ -380,4 +387,21 @@ read_string(char **pstr, int *plen)
    }
    
    nextch();
+}
+
+extern void
+read_date(void)
+{
+   int y = 0, m = 0, d = 0;
+
+   skipblanks();
+   y = read_uint_internal(/*Expecting date*/198);
+   if (ch == '.') {
+      nextch();
+      m = read_uint_internal(/*Expecting date*/198);
+      if (ch == '.') {
+	 nextch();
+	 d = read_uint_internal(/*Expecting date*/198);
+      }
+   }
 }

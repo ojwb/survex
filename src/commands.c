@@ -1409,6 +1409,17 @@ cmd_require(void)
    while (isdigit(ch) || ch == '.') nextch();
 }
 
+static void
+cmd_date(void)
+{   
+   read_date();
+   skipblanks();
+   if (ch == '-') {
+      nextch();
+      read_date();
+   }
+}
+
 typedef void (*cmd_fn)(void);
 
 static cmd_fn cmd_funcs[] = {
@@ -1417,7 +1428,7 @@ static cmd_fn cmd_funcs[] = {
    cmd_case,
    skipline, /*cmd_copyright,*/
    cmd_data,
-   skipline, /*cmd_date,*/
+   cmd_date,
    cmd_default,
    cmd_end,
    cmd_entrance,

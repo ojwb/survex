@@ -29,3 +29,5 @@ real read_numeric_or_omit(void);
 unsigned int read_uint(void);
 
 void read_string(char **pstr, int *plen);
+
+void read_date(void);
