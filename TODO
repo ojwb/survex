@@ -107,8 +107,6 @@ identified?
 Don't split other traverses at articulating traverses when reporting error
 stats.
 
-*fix with datums etc
-
 Date: Sun, 22 Jul 2001
 From: Olly
 
