@@ -9,8 +9,6 @@
 #
 # Trailing spaces are stripped unless quoted, so don't worry about them.
 #
-# port: 178(components)
-#
 # Eric's queries:
 #
 #- Error type, message headers:
@@ -45,9 +43,6 @@
 #  Are those messages useful for the end-user, anyhow?
 #
 # OL: Not really.  They do let them know that something is happening though.
-#
-# portugese:
-# 20,195
 #
 # gerhard's queries from GN(2):
 #
@@ -133,8 +128,9 @@ pt:  1 Mem&oacute;ria insuficiente (s&atilde;o necesss&aacute;rios mais %lu byte
 ca:  1 Mem&ograve;ria insuficient (es necessiten %lu bytes m&eacute;s).
 es:  1 Memoria insuficiente (se necesitan %lu bytes de m&aacute;s).
 it:  1 Memoria insufficiente (ci vorrebbero altri %lu bytes).
-# FIXME: translate fr de pt ca es it
+# FIXME: translate fr de ca es it
 en:  2 Survex version %s or greater required to process this survey data.
+pt:  2 Para processar estes dados &eacute; necess&acute;ria a vers&atilde;o %s (ou posterior) do Survex.
 #XXX3
 # indicates a warning message e.g. "spoon.svx:12: warning: *prefix is deprecated"
 en:  4 warning
@@ -161,7 +157,7 @@ fr:  6 *prefix n'est plus utilis&eacute; - employer *begin et *end &agrave; la p
 de:  6 *prefix ist veraltet - stattdessen *begin und *end verwenden
 pt:  6 *prefix descontinuado - use *begin e *end em seu lugar
 it:  6 *prefix &eacute sconsigliato - usare invece *begin e *end
-# FIXME fr de pt ca es it - check addition of `%c' fits with translations, add *set names reference
+# FIXME fr de ca es it - check addition of `%c' fits with translations, add *set names reference
 en:  7 Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)
 fr:  7 Caract&egrave;re `%c' interdit dans un nom de station
 de:  7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname
@@ -183,12 +179,12 @@ pt:  9 Valor num&eacute;rico esperado
 ca:  9 S'espera un camp numeric
 es:  9 Se espera un campo num&eacute;rico
 it:  9 Questo campo &eacute; numerico
-#FIXME translate "Found `%s'," fr ge pt ca es it (c.f. 31 and 32)
+#FIXME translate "Found `%s'," fr ge ca es it (c.f. 31 and 32)
 en: 10 Found `%s', expecting `OFF', `UPPER', or `LOWER'
 fr: 10 On attendait `OFF', `UPPER', ou `LOWER'
 # NB there is no comma before "oder"
 de: 10 `OFF', `UPPER' oder `LOWER' erwartet
-pt: 10 Esperando `OFF', `UPPER' ou `LOWER'
+pt: 10 Encontrado `%s' quando `OFF', `UPPER' ou `LOWER' eram esperados
 ca: 10 Esperant `OFF', `UPPER', o `LOWER'
 es: 10 Esperando `OFF', `UPPER', o `LOWER'
 it: 10 Atteso `OFF', `UPPER' o `LOWER'
@@ -199,7 +195,7 @@ pt: 11 Erro no programa! Por favor, comunique aos autores
 ca: 11 Error detectat al programa! Si us plau comunica-ho als autors
 es: 11 Error detectado en el programa! Por favor comun&iacute;calo a los autores
 it: 11 Individuato un errore nel programma! Per favore comunicatelo agli autori
-# FIXME check fr de pt ca es it (c.f. old12 at end of file)
+# FIXME translate check fr de ca es it (c.f. old12 at end of file)
 en: 12 Unknown command `%s'
 fr: 12 Commande inconnue `%s'
 #de: message 30 used to translate this as "Unbekannter Befehl"...
@@ -301,22 +297,23 @@ it: 24 Non riesco ad aprire il file dei dati '%s'
 #XXX26
 #XXX27
 #XXX28
-# FIXME TRANSLATE fr de pt ca es it
+# FIXME TRANSLATE fr de ca es it
 en: 29 Reentering an existing prefix level is deprecated (previously entered at %s:%lu)
+pt: 29 A re-utiliza&ccedil;&atilde;o de um prefixo &eacute; desaconselhada (utilizado previamente em %s:%lu)
 #XXX30
-# 31 c.f. 10, 32 FIXME TRANSLATE fr de pt ca es it
+# 31 c.f. 10, 32 FIXME TRANSLATE fr de ca es it
 en: 31 Found `%s', expecting `PLUMBS'
 fr: 31 On attendait `PLUMBS'
 de: 31 `PLUMBS' erwartet
-pt: 31 Esperando `PLUMBS'
+pt: 31 Encontrado `%s' quando `PLUMBS' era esperado
 ca: 31 Esperant `PLUMBS'
 es: 31 Esperando `PLUMBS'
 it: 31 Atteso `PLUMBS'
-# 32 c.f. 10, 31 FIXME TRANSLATE fr de pt ca es it
+# 32 c.f. 10, 31 FIXME TRANSLATE fr de ca es it
 en: 32 Found `%s', expecting `ON' or `OFF'
 fr: 32 On attendait `ON' ou `OFF'
 de: 32 `ON' oder `OFF' erwartet
-pt: 32 Esperando `ON' ou `OFF'
+pt: 32 Encontrado `%s' quando `ON' ou `OFF' eram esperados
 ca: 32 Esperant `ON' o `OFF'
 es: 32 Esperando `ON' o `OFF'
 it: 32 Atteso `ON' o `OFF'
@@ -328,7 +325,7 @@ pt: 33 Somente uma base na lista de equival&ecirc;ncia
 ca: 33 Sols una estaci&oacute; a la llista d'equival&egrave;ncia
 es: 33 Solo una estaci&oacute;n en la lista de equivalencia
 it: 33 Solo una stazione nella lista di equivalenza
-# FIXME fr de pt ca es it - check addition of `%s' fits with translations
+# FIXME fr de ca es it - check addition of `%s' fits with translations
 en: 34 Unknown quantity `%s'
 fr: 34 Quantit&eacute; `%s' inconnue
 de: 34 Unbekannte Gr&ouml;&szlig;e `%s'
@@ -336,7 +333,7 @@ pt: 34 Tipo de quantidade `%s' desconhecida
 ca: 34 Quantitat `%s' desconeguda
 es: 34 Cantidad `%s' desconocida
 it: 34 Quantit&aacute; `%s' sconosciuta
-# FIXME fr de pt ca es it - check addition of `%s' fits with translations
+# FIXME fr de ca es it - check addition of `%s' fits with translations
 en: 35 Unknown units `%s'
 fr: 35 Unit&eacute; `%s' inconnue
 #germ: 35 Unbekannte `%s' Einheiten
@@ -345,9 +342,10 @@ pt: 35 Unidade `%s' desconhecida
 ca: 35 Unitats `%s' desconegudes
 es: 35 Unidades `%s' desconocidas
 it: 35 Unit&aacute; `%s' sconosciute
-# FIXME TRANSLATE fr de pt ca es it
+# FIXME TRANSLATE fr de ca es it
 # "*begin" / "*end foo"
 en: 36 Matching BEGIN tag has no prefix
+pt: 36 O BEGIN correspondente n&atilde;o tem prefixo 
 #
 en: 37 Invalid units for quantity
 fr: 37 Unit&eacute; incorrecte pour une quantit&eacute;
@@ -366,7 +364,7 @@ pt: 38 Mem&oacute;ria insuficiente %.0s
 ca: 38 Mem&ograve;ria insuficient %.0s
 es: 38 Mem&oacute;ria insuficiente %.0s
 it: 38 Memoria insufficiente %.0s
-# FIXME fr de pt ca es it - check addition of `%s' fits with translations
+# FIXME fr de ca es it - check addition of `%s' fits with translations
 en: 39 Unknown instrument `%s'
 fr: 39 Instrument `%s' inconnu
 de: 39 Unbekanntes Instrument `%s'
@@ -383,7 +381,7 @@ pt: 40 Fator de escala tem que ser 1.0 para comando DECLINATION
 ca: 40 El factor d'escala ha d'&egrave;sser 1.0 pel comandament DECLINATION
 es: 40 El factor de escala debe ser 1.0 para el comando DECLINATION
 it: 40 Il fattore di scala per il comando DECLINATION deve essere 1.0
-# FIXME fr de pt ca es it - check addition of `%s' fits with translations
+# FIXME fr de ca es it - check addition of `%s' fits with translations
 en: 41 Unknown setting `%s'
 fr: 41 Param&egrave;tres `%s' inconnus
 #germ: 41 Unbekannter Parameter `%s'
@@ -581,7 +579,7 @@ it: 64 Mancano dati
 #ital: 64 Troppo pochi dati
 # e.g. trying to refer to an invalid FNORD data style
 # GN(3): ie unknown STYLE?  ok, rephrasing.
-# FIXME fr de pt ca es it - check addition of `%s' fits with translations
+# FIXME fr de ca es it - check addition of `%s' fits with translations
 en: 65 STYLE `%s' unknown
 fr: 65 STYLE `%s' non reconnu
 de: 65 STYLE `%s' unbekannt
@@ -606,8 +604,9 @@ pt: 69 Falta &quot;
 ca: 69 Manca &quot;
 es: 69 Falta &quot;
 it: 69 Manca &quot;
-# FIXME: TRANSLATE: fr de pt ca es it
+# FIXME: TRANSLATE: fr de ca es it
 en: 70 Station `%s' referred to just once, with an explicit prefix - typo?
+pt: 70 Base `%s' utilizada apenas uma vez, e com um prefixo expl&iacute;cito - erro de digita&ccedil;&atilde;o?
 en: 71 The following survey stations are not attached to a fixed point:
 fr: 71 Les stations topo suivantes ne sont pas attach&eacute;s &agrave; des points fixes:
 de: 71 Die folgenden Vermessungspunkte haben keine festen Koordinaten:
@@ -1433,7 +1432,7 @@ it:194 Prefisso omesso in END
 # please try to ensure the ','s (or at least the columns) are in the same place
 en:195 ( Easting, Northing, Altitude )
 fr:195 ( X (Est), Y (Nord), Altitude )
-de:195 ( Rechtsw.,Hochwert, H&ouml;he )
+de:195 ( Rechtsw.,Hochwert, H&ouml;he     )
 pt:195 ( Leste,   Norte,    Altura   )
 ca:195 ( Est X  , Nord Y  , Altitut Z)
 es:195 ( Este X , Norte Y , Altitud Z)
