@@ -23,7 +23,6 @@ build-stamp:
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex
 	$(MAKE)
 ifeq	($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
-	echo ".$(DEB_HOST_GNU_TYPE).$(DEB_BUILD_GNU_TYPE)."
 	: # Run make check but don't abort if it fails for now - we've only
 	: # just enabled this so if it fails on any platform, the currently
 	: # accepted build is equally broken.  Remove the '-' once we verified
