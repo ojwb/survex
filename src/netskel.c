@@ -938,8 +938,9 @@ replace_trailing_travs(void)
 	 if (!fUseNewFormat) {
 #endif	 
 	 if (stn1->name->stn == stn1) {
-	    /* FIXME: stn flags mask... */
-	    img_write_item(pimgOut, img_LABEL, stn1->name->sflags & 0xff,
+	    int sflags = stn1->name->sflags & SFLAGS_MASK;
+	    if (stn1->name->max_export) sflags |= BIT(SFLAGS_EXPORTED);
+	    img_write_item(pimgOut, img_LABEL, sflags,
 			   sprint_prefix(stn1->name),
 			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 	 }

@@ -16,6 +16,11 @@
 
 * (MS Windows version): get default language from Windows.
 
+* cavern: added *entrance command for indicating cave entrances.
+
+* Added "surface", "underground", "exported", "fixed", and "entrance"
+  station flags to 3d format.
+
 Changes in 0.97-prerelease5:
 
 * survex: conversion wrapper now only creates __svxtmp.svx file if it

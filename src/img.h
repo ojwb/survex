@@ -45,6 +45,9 @@ extern "C" {
 
 # define img_SFLAG_SURFACE     0x01
 # define img_SFLAG_UNDERGROUND 0x02
+# define img_SFLAG_ENTRANCE    0x04
+# define img_SFLAG_EXPORTED    0x08
+# define img_SFLAG_FIXED       0x10
 
 typedef struct {
    double x, y, z;

@@ -116,10 +116,11 @@ typedef enum {
 
 /* don't reorder these values!  They need to match with img.h too */
 typedef enum {
-   SFLAGS_SURFACE, SFLAGS_UNDERGROUND,
-   SFLAGS_ENTRANCE,
+   SFLAGS_SURFACE = 0, SFLAGS_UNDERGROUND, SFLAGS_ENTRANCE, SFLAGS_EXPORTED,
+   SFLAGS_FIXED,
    SFLAGS_SUSPECTTYPO = 14, SFLAGS_SURVEY = 15
 } sflags;
+#define SFLAGS_MASK (~(BIT(SFLAGS_SUSPECTTYPO)|BIT(SFLAGS_SURVEY)))
 
 /* enumeration of field types */
 typedef enum {

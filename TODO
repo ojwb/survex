@@ -256,20 +256,21 @@ Date: Sat, 16 Jun 2001
 Subject: flags
 From: Olly
 
+done station: fixed/exported/entrance/surface/underground (a station can be both
+surface and underground)
+
+done legs: surface/duplicate/splay
+
+station flags: "important" - e.g. top camp "fixed" point / entrance
+(could be inferred from surface/ug join, but better to specify because
+of caves with no surf svy and also situations in which multiple
+surveys leave an entrance) / junction,deadend (implied by order) /
+articulation pt (know for nodes I think a station is if at least one
+of its nodes is)
+
 flag legs as "skeletal" or something? (i.e. not in the cave passage) -
 e.g. a radiolocation leg isn't surface, but it isn't in the cave
 itself either.  You could just call it surface though...
-
-station flags: fixed point / "important" - e.g. top camp "fixed" point
-/ ? surface/underground (a station can be both) (inferable from legs)
-/ entrance (implied by surface/ug join, but better to specify as caves
-with no surf svy and also situations in which multiple surveys leave
-an entrance) / exported
-
-junction,deadend (inferable from order) / articulation pt (know for
-nodes I think a station is if at least one of its nodes is)
-
-legs: surface/duplicate/splay (done)
 
 legs: implied: inloop/plumb/nosurvey, diving, other styles
 

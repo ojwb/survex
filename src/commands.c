@@ -250,8 +250,8 @@ match_tok(const sztok *tab, int tab_size)
 
 typedef enum {
    CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_COPYRIGHT,
-   CMD_DATA, CMD_DATE, CMD_DEFAULT, CMD_END, CMD_EQUATE, CMD_EXPORT,
-   CMD_FIX, CMD_FLAGS, CMD_INCLUDE, CMD_INFER, CMD_INSTRUMENT,
+   CMD_DATA, CMD_DATE, CMD_DEFAULT, CMD_END, CMD_ENTRANCE, CMD_EQUATE,
+   CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE, CMD_INFER, CMD_INSTRUMENT,
    CMD_LRUD, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET, CMD_SOLVE,
    CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
@@ -265,6 +265,7 @@ static sztok cmd_tab[] = {
      {"DATE",      CMD_DATE},
      {"DEFAULT",   CMD_DEFAULT},
      {"END",       CMD_END},
+     {"ENTRANCE",  CMD_ENTRANCE},
      {"EQUATE",    CMD_EQUATE},
      {"EXPORT",    CMD_EXPORT},
      {"FIX",       CMD_FIX},
@@ -547,6 +548,14 @@ cmd_end(void)
 }
 
 static void
+cmd_entrance(void)
+{
+   /* FIXME: what about stations created by *entrance? */
+   prefix *pfx = read_prefix_survey(fFalse);
+   pfx->sflags |= BIT(SFLAGS_ENTRANCE);
+}
+
+static void
 cmd_fix(void)
 {
    prefix *fix_name;
@@ -557,6 +566,7 @@ cmd_fix(void)
    long fp;
 
    fix_name = read_prefix_stn(fFalse);
+   fix_name->sflags |= BIT(SFLAGS_FIXED);
    stn = StnFromPfx(fix_name);
 
    fp = ftell(file.fh);
@@ -1434,6 +1444,7 @@ handle_command(void)
     case CMD_UNITS: cmd_units(); break;
     case CMD_BEGIN: cmd_begin(); break;
     case CMD_END: cmd_end(); break;
+    case CMD_ENTRANCE: cmd_entrance(); break;
     case CMD_REQUIRE: cmd_require(); break;
     case CMD_SOLVE: solve_network(/*stnlist*/); break;
     case CMD_SD: cmd_sd(); break;
