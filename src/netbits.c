@@ -403,7 +403,7 @@ process_equate(prefix *name1, prefix *name2)
    }
 
    /* equate nodes if not already equated */
-   if (name1->pos != name2->pos) {
+   if (!name1->pos || name1->pos != name2->pos) {
       node *stn1, *stn2;
       stn1 = StnFromPfx(name1);
       stn2 = StnFromPfx(name2);
