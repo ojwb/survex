@@ -1,4 +1,4 @@
-/* > 3dtodxf.c
+/* 3dtodxf.c
  * Converts a .3d file to a DXF file, or other CAD-like formats
  * Also useful as an example of how to use the img code in your own programs
  */
@@ -44,6 +44,9 @@
 
 #define GRID_SPACING	100
 
+#define POINTS_PER_INCH	72.0
+#define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
+
 static FILE *fh;
 
 /* bounds */
@@ -52,6 +55,8 @@ static double min_x, min_y, min_z, max_x, max_y, max_z;
 static double text_height; /* for station labels */
 static double marker_size; /* for station markers */
 static double grid; /* grid spacing (or 0 for no grid) */
+static double scale = 500.0;
+static double factor;
 
 static void
 dxf_header(void)
@@ -198,7 +203,8 @@ sketch_header(void)
 {
    fprintf(fh, "##Sketch 1 2\n"); /* Sketch file version */
    fprintf(fh, "document()\n");
-   fprintf(fh, "layout((%.3f,%.3f),0)\n", max_x - min_x, max_y - min_y);
+   fprintf(fh, "layout((%.3f,%.3f),0)\n",
+	   (max_x - min_x) * factor, (max_y - min_y) * factor);
 }
 
 static const char *layer_names[] = {
@@ -219,14 +225,14 @@ static void
 sketch_move(img_point p)
 {
    fprintf(fh, "b()\n");
-   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x, p.y, 0.0);
+   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x * factor, p.y * factor, 0.0);
 }
 
 static void
 sketch_line(img_point p1, img_point p)
 {
    p1 = p1;
-   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x, p.y, 0.0);
+   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x * factor, p.y * factor, 0.0);
 }
 
 static void
@@ -242,7 +248,7 @@ sketch_label(img_point p, const char *s)
       if (ch == '\'' || ch == '\\') putc('\\', fh);
       putc(ch, fh);
    }
-   fprintf(fh, "',(%.3f,%.3f))\n", p.x, p.y);
+   fprintf(fh, "',(%.3f,%.3f))\n", p.x * factor, p.y * factor);
 }
 
 static void
@@ -250,21 +256,24 @@ sketch_cross(img_point p)
 {
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p.x - MARKER_SIZE, p.y - MARKER_SIZE, 0.0);
+	   p.x * factor - MARKER_SIZE, p.y * factor - MARKER_SIZE, 0.0);
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p.x + MARKER_SIZE, p.y + MARKER_SIZE, 0.0);
+	   p.x * factor + MARKER_SIZE, p.y * factor + MARKER_SIZE, 0.0);
    fprintf(fh, "bn()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p.x + MARKER_SIZE, p.y - MARKER_SIZE, 0.0);
+	   p.x * factor + MARKER_SIZE, p.y * factor - MARKER_SIZE, 0.0);
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p.x - MARKER_SIZE, p.y + MARKER_SIZE, 0.0);
+	   p.x * factor - MARKER_SIZE, p.y * factor + MARKER_SIZE, 0.0);
 }
 
 static void
 sketch_footer(void)
 {
    fprintf(fh, "guidelayer('Guide Lines',1,0,0,1,(0,0,1))\n");
-   fprintf(fh, "grid((0,0,20,20),0,(0,0,1),'Grid')\n");
+   if (grid) {
+      fprintf(fh, "grid((0,0,%.3f,%.3f),1,(0,0,1),'Grid')\n",
+	      grid * factor, grid * factor);
+   }
 }
 
 #define LEGS 1
@@ -309,6 +318,7 @@ main(int argc, char **argv)
 	{"text-height", required_argument, 0, 't'},
 	{"marker-size", required_argument, 0, 'm'},
 	{"elevation", required_argument, 0, 'e'},
+	{"reduction", required_argument, 0, 'r'},
         {"dxf", no_argument, 0, 'D'},
         {"sketch", no_argument, 0, 'S'},
 	{"help", no_argument, 0, HLP_HELP},
@@ -316,7 +326,7 @@ main(int argc, char **argv)
 	{0,0,0,0}
    };
 
-#define short_opts "s:cnlg:t:m:eDSh"
+#define short_opts "s:cnlg::t:m:er::DSh"
 	
    /* TRANSLATE */
    static struct help_msg help[] = {
@@ -324,12 +334,13 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(1), "do not generate station markers"},
 	{HLP_ENCODELONG(2), "do not generate station labels"},
 	{HLP_ENCODELONG(3), "do not generate the survey legs"},
-	{HLP_ENCODELONG(4), "generate grid (default: "STRING(GRID_SPACING)"m)"},
-	{HLP_ENCODELONG(5), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
-	{HLP_ENCODELONG(6), "station marker size (default: "STRING(MARKER_SIZE)")"},
+	{HLP_ENCODELONG(4), "generate grid (default "STRING(GRID_SPACING)"m)"},
+	{HLP_ENCODELONG(5), "station labels text height (default "STRING(TEXT_HEIGHT)")"},
+	{HLP_ENCODELONG(6), "station marker size (default "STRING(MARKER_SIZE)")"},
 	{HLP_ENCODELONG(7), "produce an elevation view"},
-	{HLP_ENCODELONG(8), "produce DXF output"},
-	{HLP_ENCODELONG(9), "produce sketch output"},
+	{HLP_ENCODELONG(8), "factor to scale down by (default 500)"},
+	{HLP_ENCODELONG(9), "produce DXF output"},
+	{HLP_ENCODELONG(10), "produce sketch output"},
 	{0,0}
    };
 
@@ -363,10 +374,14 @@ main(int argc, char **argv)
 	 legs = 0;
 	 break;
        case 'g': /* Grid */
-	 if (optarg)
+	 if (optarg) {
 	    grid = cmdline_double_arg();
-	 else
-	    grid = GRID_SPACING;
+	 } else {
+	    grid = (double)GRID_SPACING;
+	 }
+	 break;
+       case 'r': /* Reduction factor */
+	 scale = cmdline_double_arg();
 	 break;
        case 't': /* Text height */
 	 text_height = cmdline_double_arg();
@@ -418,6 +433,7 @@ main(int argc, char **argv)
       footer = sketch_footer;
       ext = "sk";
       pass = sketch_passes;
+      factor = POINTS_PER_MM * 1000.0 / scale;
       break;
     default:
       exit(1);
@@ -427,9 +443,9 @@ main(int argc, char **argv)
    if (argv[optind]) {
       fnm_out = argv[optind];
    } else {
-      char *base = base_from_fnm(fnm_3d);
-      fnm_out = add_ext(base, ext);
-      osfree(base);
+      char *baseleaf = baseleaf_from_fnm(fnm_3d);
+      fnm_out = add_ext(baseleaf, ext);
+      osfree(baseleaf);
    }
 
    pimg = img_open_survey(fnm_3d, survey);
@@ -438,8 +454,8 @@ main(int argc, char **argv)
    fh = safe_fopen(fnm_out, "w");
 
    if (elevation) {
-       s = sin(rad(elev_angle));
-       c = cos(rad(elev_angle));
+      s = sin(rad(elev_angle));
+      c = cos(rad(elev_angle));
    }
 
    /* Get drawing corners */
@@ -449,11 +465,11 @@ main(int argc, char **argv)
       item = img_read_item(pimg, &p);
 
       if (elevation) {
-	  double xnew = p.x * c - p.y * s;
-	  double znew = - p.x * s - p.y * c;
-	  p.y = p.z;
-	  p.z = znew;
-	  p.x = xnew;
+	 double xnew = p.x * c - p.y * s;
+	 double znew = - p.x * s - p.y * c;
+	 p.y = p.z;
+	 p.z = znew;
+	 p.x = xnew;
       }
 
       switch (item) {

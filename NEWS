@@ -72,6 +72,11 @@ Changes in 0.99-prerelease1:
   needed, and displays corresponding cavern command line, and (if
   appropriate) file.
 
+* cad3d: added --reduction option (from Leandro) which allows sketch
+  output to be scaled down (default scale is 1:500); grid in sketch
+  file is now visible by default; default output now goes in the
+  current directory. 
+
 * cad3d/3dtopos/sorterr: delete output file if there's an error
   writing to it.
 
@@ -106,8 +111,8 @@ Changes in 0.99-prerelease1:
 
 * Expanded testsuite further.
 
-* French translation brought completely up-to-date; Portuguese
-  translation mostly updated.
+* French and Brazillian Portuguese translations brought completely
+  up-to-date.
 
 * Include documentation overview page in all versions (was just in MS
   Windows version).
