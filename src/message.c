@@ -48,6 +48,10 @@ static jmp_buf jmpbufSignal;
 # endif
 #endif
 
+#if (OS==WIN32)
+#include <windows.h>
+#endif
+
 /* This is the name of the default language.  Add -DDEFAULTLANG to CFLAGS
  * e.g. with `CFLAGS="-DDEFAULTLANG=fr" ./configure'
  */
@@ -440,10 +444,6 @@ msg_cfgpth(void)
 {
    return pth_cfg_files;
 }
-
-#if (OS==WIN32)
-#include <windows.h>
-#endif
 
 void
 msg_init(const char *argv0)
