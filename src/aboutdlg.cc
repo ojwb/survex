@@ -61,7 +61,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
                                            wxString("Aven "VERSION));
 #endif
     wxStaticText* purpose = new wxStaticText(this, 505,
-	wxString(msg(/*Visualisation of Survex 3D files*/209)));
+	wxString(msg(/*Survey visualisation tool*/209)));
     wxStaticText* copyright1 = new wxStaticText(this, 503,
 	    wxString::Format(AVEN_COPYRIGHT_MSG, msg(/*&copy;*/0)));
     wxStaticText* copyright2 = new wxStaticText(this, 504,

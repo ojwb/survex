@@ -2146,7 +2146,6 @@ it:208 Tutti i file
 sk:208 V&scaron;etky s&uacute;bory
 #
 # in the about box (summarising the purpose of aven)
-# TRANSLATE fr de pt-br ca es it sk
 en:209 Survey visualisation tool
 #
 # Aven menu titles.  An '@' goes before the letter of any accelerator key.
