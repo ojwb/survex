@@ -75,6 +75,8 @@ protected:
 	~svxPrintDlg();
 	void OnPrint(wxCommandEvent& event); 
 	void OnPreview(wxCommandEvent& event);
+	void OnPlan(wxCommandEvent&);
+	void OnElevation(wxCommandEvent&);
 	void OnChangeSpin(wxSpinEvent& event); 
 	void OnChange(wxCommandEvent& event); 
 	void SomethingChanged();

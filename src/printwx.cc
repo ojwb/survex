@@ -107,6 +107,8 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_SPINCTRL(svx_TILT, svxPrintDlg::OnChangeSpin)
     EVT_BUTTON(svx_PRINT, svxPrintDlg::OnPrint)
     EVT_BUTTON(svx_PREVIEW, svxPrintDlg::OnPreview)
+    EVT_BUTTON(svx_PLAN, svxPrintDlg::OnPlan)
+    EVT_BUTTON(svx_ELEV, svxPrintDlg::OnElevation)
 END_EVENT_TABLE()
 
 static const wxString scales[] = {
@@ -263,7 +265,7 @@ svxPrintDlg::~svxPrintDlg() {
 }
 
 void 
-svxPrintDlg::OnPrint(wxCommandEvent& event) {
+svxPrintDlg::OnPrint(wxCommandEvent&) {
     SomethingChanged();
     wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
     wxPrinter pr(&pd);
@@ -275,7 +277,7 @@ svxPrintDlg::OnPrint(wxCommandEvent& event) {
 }
 
 void 
-svxPrintDlg::OnPreview(wxCommandEvent& event) {
+svxPrintDlg::OnPreview(wxCommandEvent&) {
     SomethingChanged();
     wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
     wxPrintPreview* pv;
@@ -317,6 +319,18 @@ svxPrintDlg::OnPreview(wxCommandEvent& event) {
     frame->SetSize(x, y, w, h);
 
     frame->Show();
+}
+
+void 
+svxPrintDlg::OnPlan(wxCommandEvent&) {
+    m_tilt->SetValue(90);
+    SomethingChanged();
+}
+
+void 
+svxPrintDlg::OnElevation(wxCommandEvent&) {
+    m_tilt->SetValue(0);
+    SomethingChanged();
 }
 
 void 
