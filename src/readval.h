@@ -22,3 +22,4 @@ prefix *read_prefix_stn(bool fOmit, bool fAllowRoot);
 prefix *read_prefix_stn_check_implicit(bool fOmit, bool fAllowRoot);
 real read_numeric(bool fOmit);
 unsigned int read_uint(void);
+void read_string(char **pstr, int *plen);

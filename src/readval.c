@@ -29,6 +29,7 @@
 #include "datain.h"
 #include "netbits.h"
 #include "osalloc.h"
+#include "str.h"
 #ifdef NEW3DFORMAT
 #include "new3dout.h"
 #endif
@@ -38,9 +39,6 @@
 #else
 # define LONGJMP(JB) exit(1)
 #endif
-
-/* ident_cmp returns -ve for <, 0 for =, +ve for > (like strcmp) */
-# define ident_cmp strcmp
 
 /* Dinky macro to handle any case forcing needed */
 #define docase(X) (pcs->Case == OFF ? (X) :\
@@ -117,7 +115,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 return (prefix *)NULL;
       }
 
-      name[i++]='\0';
+      name[i++] = '\0';
       name = osrealloc(name, i);
 
       back_ptr = ptr;
@@ -145,8 +143,8 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 #endif
       } else {
 	 prefix *ptrPrev = NULL;
-	 int cmp = 1; /* result of ident_cmp ( -ve for <, 0 for =, +ve for > ) */
-	 while (ptr && (cmp = ident_cmp(ptr->ident, name))<0) {
+	 int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
+	 while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
 	    ptrPrev = ptr;
 	    ptr = ptr->right;
 	 }
@@ -323,4 +321,33 @@ read_uint(void)
       nextch();
    }
    return n;
+}
+
+extern void
+read_string(char **pstr, int *plen)
+{
+   char quote = 0;
+
+   s_zero(pstr);
+
+   skipblanks();
+   if (ch == '\"') {
+      quote = ch;
+      nextch();
+   }
+   while (1) {
+      if (isEol(ch)) {
+	 if (quote) {
+	    compile_error(/*Missing &quot;*/69);
+	    skipline();
+	 }
+	 return;
+      }
+
+      if (quote ? ch == quote : isBlank(ch)) break;
+
+      s_catchar(pstr, plen, ch);
+      nextch();
+   }
+   nextch();
 }

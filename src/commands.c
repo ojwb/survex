@@ -167,34 +167,6 @@ default_all(settings *s)
    default_flags(s);
 }
 
-static void
-read_string(char **pstr, int *plen)
-{
-   bool fQuoted = fFalse;
-
-   s_zero(pstr);
-
-   skipblanks();
-   if (ch == '\"') {
-      fQuoted = fTrue;
-      nextch();
-   }
-   while (!isEol(ch)) {
-      if (ch == (fQuoted ? '\"' : ' ')) {
-	 nextch();
-	 fQuoted = fFalse;
-	 break;
-      }
-      s_catchar(pstr, plen, ch);
-      nextch();
-   }
-
-   if (fQuoted) {
-      compile_error(/*Missing &quot;*/69);
-      skipline();
-   }
-}
-
 static char *buffer = NULL;
 static int buf_len;
 
