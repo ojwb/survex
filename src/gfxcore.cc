@@ -645,7 +645,7 @@ void GfxCore::SetScaleInitial(Double scale)
 	if ((m_FixedPts || m_Entrances || m_ExportedPts) &&
 		((label->IsSurface() && m_Surface) || (label->IsUnderground() && m_Legs) ||
 		 (!label->IsSurface() && !label->IsUnderground() /* for stns with no legs attached */))) {
-	    hpt->label = &label;
+	    hpt->label = label;
 	    hpt->flags = hl_NONE;
 
 	    if (label->IsFixedPt()) {
@@ -758,17 +758,9 @@ static int count = 0;
 		continue;
 	    }
 
-	    Double x = label->GetX() + m_Params.translation.x;
-	    Double y = label->GetY() + m_Params.translation.y;
-	    Double z = label->GetZ() + m_Params.translation.z;
-
-	    int cx = (int) (x * m_00 + y * m_01 + z * m_02);
-	    int cy = -(int) (x * m_20 + y * m_21 + z * m_22);
-
 	    //--FIXME
 	    if (m_FixedPts || m_Entrances || m_ExportedPts) {
-		hpt->x = cx;
-		hpt->y = cy;
+		hpt->label = label;
 		hpt->flags = hl_NONE;
 
 		if (label->IsFixedPt()) {
@@ -950,12 +942,17 @@ static int count = 0;
 
 		SetColour(col);
 		SetColour(col, true);
-//		m_DrawDC.DrawLines(10, blob, pt->x + m_XCentre, pt->y + m_YCentre);
-		int x = pt->x + m_XCentre;
-		int y = pt->y + m_YCentre;
+		Double x3 = pt->label->GetX() + m_Params.translation.x;
+		Double y3 = pt->label->GetY() + m_Params.translation.y;
+		Double z3 = pt->label->GetZ() + m_Params.translation.z;
+
+		int x = (int) (x3 * m_00 + y3 * m_01 + z3 * m_02) + m_XCentre;
+		int y = -(int) (x3 * m_20 + y3 * m_21 + z3 * m_22) + m_YCentre;
+//		m_DrawDC.DrawLines(10, blob, x, y);
 		m_DrawDC.DrawLines(2, cross1, x, y);
 		m_DrawDC.DrawLines(2, cross2, x, y);
-//		m_DrawDC.DrawEllipse(pt->x + xc, pt->y + yc,
+//		m_DrawDC.DrawEllipse(x - HIGHLIGHTED_PT_SIZE,
+//				     y - HIGHLIGHTED_PT_SIZE,
 //				     HIGHLIGHTED_PT_SIZE * 2,
 //				     HIGHLIGHTED_PT_SIZE * 2);
 	    }
@@ -1569,9 +1566,8 @@ void GfxCore::NattyDrawNames()
 	int code = gluProject(pt->x, pt->y, pt->z, modelview_matrix, projection_matrix,
 			      viewport, &x, &y, &z);
 #else
-//	wxCoord x = XToScreen(pt->x, pt->y, pt->z) + m_XCentre + m_Params.display_shift.x;
-//	wxCoord y = pt->y + m_YCentre + m_Params.display_shift.y + CROSS_SIZE - FONT_SIZE;
-wxCoord x = 0, y = 0; // FIXME
+	wxCoord x = GridXToScreen(pt->x, pt->y, pt->z);
+	wxCoord y = GridYToScreen(pt->x, pt->y, pt->z) + CROSS_SIZE - FONT_SIZE;
 #endif
 
 	// We may have labels in the cache which are still going to be in the
