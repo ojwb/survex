@@ -303,7 +303,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     m_PresLoaded = false;
     m_Recording = false;
 
-#ifndef wxUSE_DRAG_AND_DROP
+#if wxUSE_DRAG_AND_DROP
     SetDropTarget(new DnDFile(this));
 #endif
 }
