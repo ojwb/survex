@@ -27,96 +27,87 @@
 1996.05.02 very small max caused overflow in log10(max)
            -,- X limit was miscalculated
 1997.02.01 bbc_vdu() calls in debug code converted to use OSLib
+1997.02.24 converted to cvrotgfx
+1997.03.06 more
+1997.05.08 fettled code to find bounding box corners ; fixed typo
 */
 
 #include "useful.h"
 #include "caverot.h"
 #include "rotplot.h"
-
-/* avoid problems with eg cos(10) where cos prototype is double cos(); */
-#define SIN(X) (sin((double)(X)))
-#define COS(X) (cos((double)(X)))
-#define SQRT(X) (sqrt((double)(X)))
-
-/* SIND(A)/COSD(A) give sine/cosine of angle A degrees */
-#define SIND(X) (sin(rad((double)(X))))
-#define COSD(X) (cos(rad((double)(X))))
+#include "cvrotgfx.h"
 
 static coord x1=0, x2=0, y1_sigh=0, y2=0, y3=0;
 static float sc_last, theta_last, elev_last;
 static bool fPlan;
 
-static int fixed_pt_pos=FIXED_PT_POS;
+static int fixed_pt_pos = FIXED_PT_POS;
 
 /* looking towards theta from height z, with zoom factor sc */
-extern void set_view(float sc, float theta, float elev) {
-  double sine,cosine;
-  double scale;
-  double X1, X2, Y1, Y2, Y3;
-  double max, t;
-  double phi;
-  phi=rad(elev);
+extern void set_view( float sc, float theta, float elev ) {
+   double sine, cosine;
+   double scale;
+   double X1, X2, Y1, Y2, Y3;
+   double max, t;
+   double phi;
+   phi = rad(elev);
 
-  sc_last=sc;
-  theta_last=theta;
-  elev_last=elev;
-  fPlan=(elev==90.0);
+   sc_last = sc;
+   theta_last = theta;
+   elev_last = elev;
+   fPlan = (elev == 90.0);
 
-  sine=(float)SIND(theta);
-  cosine=(float)COSD(theta);
+   sine = (float)SIND(theta);
+   cosine = (float)COSD(theta);
 
-  X1 = cosine*sc;
-  X2 = -sine*sc;
-  max=fabs((coord)(Xorg+Xrad)*X1+(coord)(Yorg+Yrad)*X2);
-  t = fabs((coord)(Xorg-Xrad)*X1+(coord)(Yorg+Yrad)*X2);
-  if (t>max) max=t;
-  t = fabs((coord)(Xorg+Xrad)*X1+(coord)(Yorg-Yrad)*X2);
-  if (t>max) max=t;
-  t = fabs((coord)(Xorg-Xrad)*X1+(coord)(Yorg-Yrad)*X2);
-  if (t>max) max=t;
+   X1 = cosine*sc;
+   X2 = -sine*sc;
+#define CORNER( XP, YP ) fabs( (coord)(Xorg XP Xrad)*X1 + \
+                               (coord)(Yorg YP Yrad)*X2 )
+   max = CORNER( +, + );
+   if ((t = CORNER( -, + )) > max) max = t;
+   if ((t = CORNER( +, - )) > max) max = t;
+   if ((t = CORNER( -, - )) > max) max = t;
+#undef CORNER
 
-  if (fPlan) {
-    Y1 = sine*sc*y_stretch;
-    Y2 = cosine*sc*y_stretch;
-    Y3 = 0.0;
-    t = fabs((coord)(Xorg+Xrad)*Y1+(coord)(Yorg+Yrad)*Y2);
-    if (t>max) max=t;
-    t = fabs((coord)(Xorg-Xrad)*Y1+(coord)(Yorg+Yrad)*Y2);
-    if (t>max) max=t;
-    t = fabs((coord)(Xorg+Xrad)*Y1+(coord)(Yorg-Yrad)*Y2);
-    if (t>max) max=t;
-    t = fabs((coord)(Xorg-Xrad)*Y1+(coord)(Yorg-Yrad)*Y2);
-    if (t>max) max=t;
-  } else {
-    /* work out y scale factor for whole survey */
-    Y3 = (double)sc*y_stretch * cos(phi);
-    Y1 = sine*tan(phi)*Y3;
-    Y2 = cosine*tan(phi)*Y3;
-    t = fabs((coord)(Xorg+Xrad)*Y1+(coord)(Yorg+Yrad)*Y2+(coord)(Zorg+Zrad)*Y3);
-    if (t>max) max=t;
-    t = fabs((coord)(Xorg-Xrad)*Y1+(coord)(Yorg+Yrad)*Y2+(coord)(Zorg+Zrad)*Y3);
-    if (t>max) max=t;
-    t = fabs((coord)(Xorg+Xrad)*Y1+(coord)(Yorg-Yrad)*Y2+(coord)(Zorg+Zrad)*Y3);
-    if (t>max) max=t;
-    t = fabs((coord)(Xorg+Xrad)*Y1+(coord)(Yorg+Yrad)*Y2+(coord)(Zorg-Zrad)*Y3);
-    if (t>max) max=t;
-    t = fabs((coord)(Xorg-Xrad)*Y1+(coord)(Yorg-Yrad)*Y2+(coord)(Zorg+Zrad)*Y3);
-    if (t>max) max=t;
-    t = fabs((coord)(Xorg+Xrad)*Y1+(coord)(Yorg-Yrad)*Y2+(coord)(Zorg-Zrad)*Y3);
-    if (t>max) max=t;
-    t = fabs((coord)(Xorg-Xrad)*Y1+(coord)(Yorg+Yrad)*Y2+(coord)(Zorg-Zrad)*Y3);
-    if (t>max) max=t;
-    t = fabs((coord)(Xorg-Xrad)*Y1+(coord)(Yorg-Yrad)*Y2+(coord)(Zorg-Zrad)*Y3);
-    if (t>max) max=t;
+   if (fPlan) {
+      Y1 = sine*sc*y_stretch;
+      Y2 = cosine*sc*y_stretch;
+      Y3 = 0.0;
+#define CORNER( XP, YP ) fabs( (coord)(Xorg XP Xrad)*Y1 + \
+                               (coord)(Yorg YP Yrad)*Y2 )
+      if ((t = CORNER( +, + )) > max) max = t;
+      if ((t = CORNER( -, + )) > max) max = t;
+      if ((t = CORNER( +, - )) > max) max = t;
+      if ((t = CORNER( -, - )) > max) max = t;
+#undef CORNER
+   } else {
+      /* work out y scale factor for whole survey */
+      Y3 = (double)sc*y_stretch * cos(phi);
+      Y1 = sine*tan(phi)*Y3;
+      Y2 = cosine*tan(phi)*Y3;
+#define CORNER( XP, YP, ZP ) fabs( (coord)(Xorg XP Xrad)*Y1 + \
+                                   (coord)(Yorg YP Yrad)*Y2 + \
+                                   (coord)(Zorg ZP Zrad)*Y3 )
+      if ((t = CORNER( +, +, + )) > max) max = t;
+      if ((t = CORNER( -, +, + )) > max) max = t;
+      if ((t = CORNER( +, -, + )) > max) max = t;
+      if ((t = CORNER( +, +, - )) > max) max = t;
+      if ((t = CORNER( -, -, + )) > max) max = t;
+      if ((t = CORNER( +, -, - )) > max) max = t;
+      if ((t = CORNER( -, +, - )) > max) max = t;
+      if ((t = CORNER( -, +, - )) > max) max = t;
+      if ((t = CORNER( -, -, - )) > max) max = t;
+#undef CORNER
   }
-  if (max>=0.1)
-     fixed_pt_pos= 30-(int)ceil(log10(max)/log10(2));
+  if (max >= 0.1)
+     fixed_pt_pos = 30 - (int)ceil( log10(max)/log10(2) );
   else
-     fixed_pt_pos= 30;
-  if (fixed_pt_pos<0)
-    fixed_pt_pos=0;
-  else if (fixed_pt_pos>30)
-    fixed_pt_pos=30;
+     fixed_pt_pos = 30;
+  if (fixed_pt_pos < 0)
+     fixed_pt_pos = 0;
+  else if (fixed_pt_pos > 30)
+     fixed_pt_pos = 30;
 
 #if 0
   xos_writec( os_VDU_GRAPH_TEXT_OFF );
