@@ -382,7 +382,6 @@ pop(void)
    
    pcsParent = pcs->next;
    if (pcsParent == NULL) return fFalse;
-
    
    /* don't free default ordering or ordering used by parent */
    order = pcs->ordering;
@@ -500,7 +499,7 @@ equate_list(void)
       /* equate nodes if not already equated */
       if (name1->pos != name2->pos) {
 	 node *stn;
-	 pos *posReplace; /* need this as name2->pos gets changed during loop */
+	 pos *posReplace;
 	 pos *posWith;
 	 if (fixed(stn1)) {
 	    if (fixed(stn2)) {
@@ -522,8 +521,9 @@ equate_list(void)
 	    posWith = name2->pos;
 	 }
 
+	 /* FIXME: better to iterate over all name-s using prefix tree? */
 	 /* replace all refs to posReplace with references to pos of stn1 */
-	 FOR_EACH_STN(stn)
+	 FOR_EACH_STN(stn, stnlist)
 	    if (stn->name->pos == posReplace) stn->name->pos = posWith;
 
 	 /* free the (now-unused) old pos */

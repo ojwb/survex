@@ -63,6 +63,7 @@ static long n_stn_tab;
 static prefix **stn_tab; /* FIXME: use pos ** instead */
 static long n;
 
+#if 0
 static ulong colour;
 
 /* list item visit */
@@ -80,8 +81,7 @@ visit(node *stn)
    int i;
    liv *livTos = NULL, *livTmp;
 iter:
-   colour++;
-   stn->colour = colour;
+   stn->colour = ++colour;
 #ifdef DEBUG_ARTIC
    printf("visit: stn [%p] ", stn);
    print_prefix(stn->name);
@@ -162,11 +162,12 @@ uniter:
    return;
 }
 
-#if 1
 extern void
 solve_matrix(void)
 {
    node *stn, *stnStart;
+   node *matrixlist = NULL;
+   node *fixedlist = NULL;
    int c, i;
 #ifdef DEBUG_ARTIC
    ulong cFixed;
@@ -174,33 +175,38 @@ solve_matrix(void)
    stn_tab = NULL; /* so we can just osfree it */
    /* find articulation points and components */
    cComponents = 0;
-   colour = 1;
+   colour = 0;
    stnStart = NULL;
-   FOR_EACH_STN(stn) {
+   FOR_EACH_STN(stn, stnlist) {
       stn->fArtic = fFalse;
       if (fixed(stn)) {
-	 stnStart = stn;
-	 stn->colour = colour++;
+	 stn->colour = ++colour;
+	 remove_stn_from_list(&stnlist, stn);
+	 add_stn_to_list(&fixedlist, stn);
       } else {
 	 stn->colour = 0;
       }
    }
+   stnStart = fixedlist;
    ASSERT2(stnStart,"no fixed points!");
 #ifdef DEBUG_ARTIC
-   cFixed = colour - 1;
+   cFixed = colour;
 #endif
    while (1) {
-      int cColouredNeighbours = 0, cNeighbours = 0;
+      int cUncolouredNeighbours = 0;
       stn = stnStart;
+#if 0
+      /* FIXME: need to count components to get correct loop count */
       /* see if this is a fresh component */
       if (stn->status != statFixed) cComponents++;
+#endif
 
       for (i = 0; i <= 2; i++) {
 	 if (stn->leg[i]) {
-	    cNeighbours++;
-	    if (stn->leg[i]->l.to->colour) {
-	       cColouredNeighbours++;
-	       stn->leg[i]->l.to->status = statFixed;
+	    if (stn->leg[i]->l.to->colour == 0) {
+	       cUncolouredNeighbours++;
+	    } else {
+/*	       stn->leg[i]->l.to->status = statFixed;*/
 	    }
 	 }
       }
@@ -209,60 +215,57 @@ solve_matrix(void)
       printf(" [%p] is root of component %ld\n", stn, cComponents);
       dump_node(stn);
       printf(" and colour = %d/%d\n", stn->colour, cFixed);
-      if (cNeighbours == 0) printf("0-node\n");
+/*      if (cNeighbours == 0) printf("0-node\n");*/
 #endif
-      if (cColouredNeighbours != cNeighbours) {
-/*    stn->colour=colour; */
+      if (cUncolouredNeighbours) {
 	 c = 0;
 	 for (i = 0; i <= 2; i++) {
-	    if (stn->leg[i]) {
-	       if (stn->leg[i]->l.to->colour == 0) {
-		  ulong colBefore = colour;
-		  node *stn2;
+	    if (stn->leg[i] && stn->leg[i]->l.to->colour == 0) {
+	       ulong colBefore = colour;
+	       node *stn2;
 
-		  c++;
-		  visit(stn->leg[i]->l.to);
-		  n = colour - colBefore;
+	       c++;
+	       visit(stn->leg[i]->l.to);
+	       n = colour - colBefore;
 #ifdef DEBUG_ARTIC
-		  printf("visited %lu nodes\n", n);
+	       printf("visited %lu nodes\n", n);
 #endif
-		  if (n == 0) continue;
-		  osfree(stn_tab);
+	       if (n == 0) continue;
+	       osfree(stn_tab);
 
-		  /* we just need n to be a reasonable estimate >= the number
-		   * of stations left after reduction. If memory is
-		   * plentiful, we can be crass.
-		   */
-		  stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(prefix*)));
-
-		  /* Solve chunk of net from stn in dirn i up to stations
-                   * with fArtic set or fixed() true. Then solve stations
-                   * up to next set of fArtic points, and repeat until all
-                   * this bit done.
-		   */
-		  stn->status = statFixed;
-		  stn2 = stn->leg[i]->l.to;
+	       /* we just need n to be a reasonable estimate >= the number
+		* of stations left after reduction. If memory is
+		* plentiful, we can be crass.
+		*/
+	       stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(prefix*)));
+	       
+	       /* Solve chunk of net from stn in dirn i up to stations
+		* with fArtic set or fixed() true. Then solve stations
+		* up to next set of fArtic points, and repeat until all
+		* this bit done.
+		*/
+	       stn->status = statFixed;
+	       stn2 = stn->leg[i]->l.to;
 more:
-		  n_stn_tab = 0;
-		  visit_count(stn2, n);
+	       n_stn_tab = 0;
+	       visit_count(stn2, n);
 #ifdef DEBUG_ARTIC
-		  printf("visit_count returned okay\n");
+	       printf("visit_count returned okay\n");
 #endif
-		  build_matrix(n_stn_tab, stn_tab);
-		  FOR_EACH_STN(stn2) {
-		     if (stn2->fArtic && fixed(stn2)) {
-			int d;
-			for (d = 0; d <= 2; d++) {
-			   if (USED(stn2, d)) {
-			      node *stn3 = stn2->leg[d]->l.to;
-			      if (!fixed(stn3)) {
-				 stn2 = stn3;
-				 goto more;
-			      }
+	       build_matrix(n_stn_tab, stn_tab);
+	       FOR_EACH_STN(stn2, stnlist) {
+		  if (stn2->fArtic && fixed(stn2)) {
+		     int d;
+		     for (d = 0; d <= 2; d++) {
+			if (USED(stn2, d)) {
+			   node *stn3 = stn2->leg[d]->l.to;
+			   if (!fixed(stn3)) {
+			      stn2 = stn3;
+			      goto more;
 			   }
 			}
-			stn2->fArtic = fFalse;
 		     }
+		     stn2->fArtic = fFalse;
 		  }
 	       }
             }
@@ -272,7 +275,7 @@ more:
 	  */
 	 if (c > 1) stn->fArtic = fTrue;
 #ifdef DEBUG_ARTIC
-	 FOR_EACH_STN(stn) {
+	 FOR_EACH_STN(stn, stnlist) {
 	    printf("%ld - ", stn->colour);
 	    print_prefix(stn->name);
 	    putnl();
@@ -292,10 +295,10 @@ more:
    }
    osfree(stn_tab);
 #ifdef DEBUG_ARTIC
-   FOR_EACH_STN(stn) { /* high-light unfixed bits */
+   FOR_EACH_STN(stn, stnlist) { /* high-light unfixed bits */
       if (stn->status && !fixed(stn)) {
 	 print_prefix(stn->name);
-	 printf(" UNFIXED (status %d) [%p]\n", stn->status, stn);
+	 printf(" [%p] UNFIXED\n", stn);
       }
    }
 #endif
@@ -306,7 +309,7 @@ solve_matrix(void)
 {
    node *stn;
    n = 0;
-   FOR_EACH_STN(stn) {
+   FOR_EACH_STN(stn, stnlist) {
       if (!fixed(stn)) n++;
    }
    if (n == 0) return;
@@ -317,7 +320,7 @@ solve_matrix(void)
     */
    stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(prefix*)));
    
-   FOR_EACH_STN(stn) {
+   FOR_EACH_STN(stn, stnlist) {
       if (!fixed(stn)) add_stn_to_tab(stn);
    }
 
@@ -406,12 +409,12 @@ build_matrix(long n, prefix **stn_tab)
 
       /* Construct matrix - Go thru' stn list & add all forward legs to M */
       /* (so each leg goes on exactly once) */
-      FOR_EACH_STN(stn) {
+      FOR_EACH_STN(stn, stnlist) {
 #if DEBUG_MATRIX_BUILD
 	 int dirn;
 
 	 print_prefix(stn->name);
-	 printf(" status? %d, used: %d artic %d colour %d\n",stn->status,
+	 printf(" used: %d artic %d colour %d\n",
 		(!!stn->leg[2]) << 2 | (!!stn -> leg[1]) << 1 | (!!stn->leg[0]),
 		stn->fArtic, stn->colour);
 
@@ -424,108 +427,105 @@ build_matrix(long n, prefix **stn_tab)
 	    }
 	 putnl();
 #endif /* DEBUG_MATRIX_BUILD */
-	 if (stn->status == statFixed) {
-	    int f, t;
-	    int dirn;
-/*          print_prefix(stn->name); putnl(); */
-	    if (fixed(stn)) {
-	       for (dirn = 2; dirn >= 0; dirn--)
-		  if (USED(stn,dirn) && data_here(stn->leg[dirn])) {
+	 int f, t;
+	 int dirn;
+/*         print_prefix(stn->name); putnl(); */
+	 if (fixed(stn)) {
+	    for (dirn = 2; dirn >= 0; dirn--)
+	       if (USED(stn,dirn) && data_here(stn->leg[dirn])) {
 #if DEBUG_MATRIX_BUILD
-		     print_prefix(stn->name);
-		     printf(" - ");
-		     print_prefix(stn->leg[dirn]->l.to->name);
-		     putnl();
+		  print_prefix(stn->name);
+		  printf(" - ");
+		  print_prefix(stn->leg[dirn]->l.to->name);
+		  putnl();
 #endif /* DEBUG_MATRIX_BUILD */
-		     if (!(fixed(stn->leg[dirn]->l.to)) &&
-			 stn->leg[dirn]->l.to->status == statFixed) {
-		        t = find_stn_in_tab(stn->leg[dirn]->l.to);
+		  if (!fixed(stn->leg[dirn]->l.to)) {
+		     t = find_stn_in_tab(stn->leg[dirn]->l.to);
 #ifdef NO_COVARIANCES
-		        e = stn->leg[dirn]->v[dim];
-		        if (e != (real)0.0) {
-			   /* not an equate */
-			   e = ((real)1.0) / e;
-			   M(t,t) += e;
-			   B[t] += e * (POS(stn, dim) + stn->leg[dirn]->d[dim]);
+		     e = stn->leg[dirn]->v[dim];
+		     if (e != (real)0.0) {
+			/* not an equate */
+			e = ((real)1.0) / e;
+			M(t,t) += e;
+			B[t] += e * (POS(stn, dim) + stn->leg[dirn]->d[dim]);
 #if DEBUG_MATRIX_BUILD
-			   printf("--- Dealing with stn fixed at %lf\n",
-				  POS(stn, dim));
+			printf("--- Dealing with stn fixed at %lf\n",
+			       POS(stn, dim));
 #endif /* DEBUG_MATRIX_BUILD */
-		        }
-#else
-		        if (invert_var( &e, &stn->leg[dirn]->v )) {
-			   /* not an equate */
-			   d b;
-			   addvv(&M(t,t), &M(t,t), &e);
-			   adddd(&a, &POSD(stn), &stn->leg[dirn]->d);
-			   mulvd(&b, &e, &a);
-			   adddd(&B[t], &B[t], &b);
-#if DEBUG_MATRIX_BUILD
-			   printf("--- Dealing with stn fixed at (%lf, %lf, %lf)\n",
-			   	  POS(stn, 0), POS(stn, 1), POS(stn, 2));
-#endif /* DEBUG_MATRIX_BUILD */
-		        }
-#endif
 		     }
-		  }
-	    } else {
-	       f = find_stn_in_tab(stn);
-	       for (dirn = 2; dirn >= 0; dirn--)
-		  if (USED(stn,dirn) && data_here(stn->leg[dirn])) {
-		     if (fixed(stn->leg[dirn]->l.to)) {
-			/* Ignore equated nodes */
-#ifdef NO_COVARIANCES
-                        e = stn->leg[dirn]->v[dim];
-			if (e != (real)0.0) {
-			   e = ((real)1.0) / e;
-			   M(f,f) += e;
-			   B[f] += e * (POS(stn->leg[dirn]->l.to,dim)
-			                - stn->leg[dirn]->d[dim]);
-			}
 #else
-			if (invert_var(&e, &stn->leg[dirn]->v)) {
-			   d b;
-			   addvv(&M(f, f), &M(f, f), &e);
-			   subdd(&a, &POSD(stn->leg[dirn]->l.to),
-				 &stn->leg[dirn]->d);
-			   mulvd(&b, &e, &a);
-			   adddd(&B[f], &B[f], &b);
-			}
+		     if (invert_var( &e, &stn->leg[dirn]->v )) {
+			/* not an equate */
+			d b;
+			addvv(&M(t,t), &M(t,t), &e);
+			adddd(&a, &POSD(stn), &stn->leg[dirn]->d);
+			mulvd(&b, &e, &a);
+			adddd(&B[t], &B[t], &b);
+#if DEBUG_MATRIX_BUILD
+			printf("--- Dealing with stn fixed at (%lf, %lf, %lf)\n",
+			       POS(stn, 0), POS(stn, 1), POS(stn, 2));
+#endif /* DEBUG_MATRIX_BUILD */
+		     }
 #endif
-		     } else if (stn->leg[dirn]->l.to->status == statFixed) {
-			t = find_stn_in_tab(stn->leg[dirn]->l.to);
+		  }
+	       }
+	 } else {
+	    f = find_stn_in_tab(stn);
+	    for (dirn = 2; dirn >= 0; dirn--)
+	       if (USED(stn,dirn) && data_here(stn->leg[dirn])) {
+		  if (fixed(stn->leg[dirn]->l.to)) {
+		     /* Ignore equated nodes */
+#ifdef NO_COVARIANCES
+		     e = stn->leg[dirn]->v[dim];
+		     if (e != (real)0.0) {
+			e = ((real)1.0) / e;
+			M(f,f) += e;
+			B[f] += e * (POS(stn->leg[dirn]->l.to,dim)
+				     - stn->leg[dirn]->d[dim]);
+		     }
+#else
+		     if (invert_var(&e, &stn->leg[dirn]->v)) {
+			d b;
+			addvv(&M(f, f), &M(f, f), &e);
+			subdd(&a, &POSD(stn->leg[dirn]->l.to),
+			      &stn->leg[dirn]->d);
+			mulvd(&b, &e, &a);
+			adddd(&B[f], &B[f], &b);
+		     }
+#endif
+		  } else {
+		     t = find_stn_in_tab(stn->leg[dirn]->l.to);
 #if DEBUG_MATRIX
-			printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
-			       stn->leg[dirn]->d[dim]);
+		     printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
+			    stn->leg[dirn]->d[dim]);
 #endif
-			/* Ignore equated nodes & lollipops */
+		     /* Ignore equated nodes & lollipops */
 #ifdef NO_COVARIANCES
-			e = stn->leg[dirn]->v[dim];
-			if (t != f && e != (real)0.0) {
-			   real a;
-			   e = ((real)1.0) / e;
-			   M(f,f) += e;
-			   M(t,t) += e;
-			   if (f < t) M(t,f) -= e; else M(f,t) -= e;
-			   a = e * stn->leg[(dirn)]->d[dim];
-			   B[f] -= a;
-			   B[t] += a;
-			}
-#else
-			if (t != f && invert_var( &e, &stn->leg[dirn]->v )) {
-			   var *p;
-			   mulvd(&a, &e, &stn->leg[(dirn)]->d);
-			   addvv(&M(f,f), &M(f,f), &e);
-			   addvv(&M(t,t), &M(t,t), &e);
-			   if (f < t) p = &M(t,f); else p = &M(f,t);
-			   subvv(p, p, &e);
-			   subdd(&B[f], &B[f], &a);
-			   adddd(&B[t], &B[t], &a);
-			}
-#endif
+		     e = stn->leg[dirn]->v[dim];
+		     if (t != f && e != (real)0.0) {
+			real a;
+			e = ((real)1.0) / e;
+			M(f,f) += e;
+			M(t,t) += e;
+			if (f < t) M(t,f) -= e; else M(f,t) -= e;
+			a = e * stn->leg[(dirn)]->d[dim];
+			B[f] -= a;
+			B[t] += a;
 		     }
+#else
+		     if (t != f && invert_var( &e, &stn->leg[dirn]->v )) {
+			var *p;
+			mulvd(&a, &e, &stn->leg[(dirn)]->d);
+			addvv(&M(f,f), &M(f,f), &e);
+			addvv(&M(t,t), &M(t,t), &e);
+			if (f < t) p = &M(t,f); else p = &M(f,t);
+			subvv(p, p, &e);
+			subdd(&B[f], &B[f], &a);
+			adddd(&B[t], &B[t], &a);
+		     }
+#endif
 		  }
-	    }
+	       }
 	 }
       }
 
@@ -591,7 +591,7 @@ find_stn_in_tab(node *stn)
 #endif
 #if 0
 	 print_prefix(stn->name);
-	 printf(" status? %d, used: %d artic %d colour %d\n", stn->status,
+	 printf(" used: %d artic %d colour %d\n",
 		(!!stn->leg[2])<<2 | (!!stn->leg[1])<<1 | (!!stn->leg[0]),
 		stn->fArtic, stn->colour );
 #endif

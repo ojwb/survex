@@ -14,6 +14,36 @@
 #include "netbits.h"
 #include "datain.h" /* for compile_error */
 
+node *stn_iter = NULL; /* for FOR_EACH_STN */
+
+/* insert at head of double-linked list */
+void
+add_stn_to_list(node **list, node *stn) {
+   ASSERT(list);
+   ASSERT(stn);
+   stn->next = *list;
+   stn->prev = NULL;
+   if (*list) (*list)->prev = stn;
+   *list = stn;
+}
+
+/* remove from double-linked list */
+void
+remove_stn_from_list(node **list, node *stn) {
+   ASSERT(list);
+   ASSERT(stn);
+   /* adjust the iterator if it points to the element we're deleting */
+   if (stn_iter == stn) stn_iter = stn_iter->next;
+   /* need a special case if we're removing the list head */
+   if (stn->prev == NULL) {
+      *list = stn->next;
+      if (*list) (*list)->prev = NULL;
+   } else {
+      stn->prev->next = stn->next;
+      stn->next->prev = stn->prev;
+   }
+}
+
 /* Create (uses osmalloc) a forward leg containing the data in leg, or
  * the reversed data in the reverse of leg, if leg doesn't hold data
  */
@@ -99,47 +129,46 @@ addfakeleg(node *fr, node *to,
    uchar i, j;
    linkfor *leg, *leg2;
 
-   if (fr->name != to->name) {
-      leg = osnew(linkfor);
-      leg2 = (linkfor*)osnew(linkrev);
-
-      i = freeleg(&fr);
-      j = freeleg(&to);
-
-      leg->l.to = to;
-      leg2->l.to = fr;
-      leg->d[0] = dx;
-      leg->d[1] = dy;
-      leg->d[2] = dz;
-#ifndef NO_COVARIANCES
-      leg->v[0][0] = vx;
-      leg->v[1][1] = vy;
-      leg->v[2][2] = vz;
-      leg->v[0][1] = leg->v[1][0] = cxy;
-      leg->v[1][2] = leg->v[2][1] = cyz;
-      leg->v[2][0] = leg->v[0][2] = czx;
-#else
-      leg->v[0] = vx;
-      leg->v[1] = vy;
-      leg->v[2] = vz;
-#endif
-      leg2->l.reverse = i;
-      leg->l.reverse = (j | 0x80);
-
-      fr->leg[i] = leg;
-      to->leg[j] = leg2;
-
-      fr->name->pos->shape++;
-      to->name->pos->shape++;
-
+   if (fr->name == to->name) {
+      /* we have been asked to add a leg with the same node at both ends
+       * - give a warning and don't add the leg to the data structure
+       */
+      compile_warning(/*Survey leg with same station ('%s') at both ends - typing error?*/50,
+		      sprint_prefix(fr->name));
       return;
    }
 
-   /* we have been asked to add a leg with the same node at both ends
-    * - give a warning and don't add the leg to the data structure
-    */
-   compile_warning(/*Survey leg with same station ('%s') at both ends - typing error?*/50,
-		   sprint_prefix(fr->name));
+   leg = osnew(linkfor);
+   leg2 = (linkfor*)osnew(linkrev);
+
+   i = freeleg(&fr);
+   j = freeleg(&to);
+
+   leg->l.to = to;
+   leg2->l.to = fr;
+   leg->d[0] = dx;
+   leg->d[1] = dy;
+   leg->d[2] = dz;
+#ifndef NO_COVARIANCES
+   leg->v[0][0] = vx;
+   leg->v[1][1] = vy;
+   leg->v[2][2] = vz;
+   leg->v[0][1] = leg->v[1][0] = cxy;
+   leg->v[1][2] = leg->v[2][1] = cyz;
+   leg->v[2][0] = leg->v[0][2] = czx;
+#else
+   leg->v[0] = vx;
+   leg->v[1] = vy;
+   leg->v[2] = vz;
+#endif
+   leg2->l.reverse = i;
+   leg->l.reverse = (j | 0x80);
+
+   fr->leg[i] = leg;
+   to->leg[j] = leg2;
+
+   fr->name->pos->shape++;
+   to->name->pos->shape++;
 }
 
 char
@@ -165,10 +194,8 @@ freeleg(node **stnptr)
 
    *stnptr = stn;
 
-   stn->next = stnlist;
-   stnlist = stn;
+   add_stn_to_list(&stnlist, stn);
    stn->name = oldstn->name;
-   stn->status = oldstn->status;
 
    leg->l.to = stn;
    leg->d[0] = leg->d[1] = leg->d[2] = (real)0.0;
@@ -209,10 +236,8 @@ StnFromPfx(prefix *name)
       name->pos->shape = 0;
       unfix(stn);
    }
-   stn->status = statInNet;
    stn->leg[0] = stn->leg[1] = stn->leg[2] = NULL;
-   stn->next = stnlist;
-   stnlist = stn;
+   add_stn_to_list(&stnlist, stn);
    name->stn = stn;
    cStns++;
    return stn;

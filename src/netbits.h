@@ -26,7 +26,30 @@ extern void addfakeleg(node *fr, node *to,
 #endif
 		       );
 
-#define FOR_EACH_STN(S) for((S) = stnlist; (S) != NULL; (S) = (S)->next)
+/* insert at head of double-linked list */
+void add_stn_to_list(node **list, node *stn);
+
+/* remove from double-linked list */
+void remove_stn_from_list(node **list, node *stn);
+
+/* one node must only use leg[0] */
+#define one_node(S) (!(S)->leg[1] && (S)->leg[0])
+
+/* two node must only use leg[0] and leg[1] */
+#define two_node(S) (!(S)->leg[2] && (S)->leg[1])
+
+/* three node iff it uses leg[2] */
+#define three_node(S) ((S)->leg[2])
+
+/* NB FOR_EACH_STN() can't be nested - but it's hard to police as we can't
+ * easily set stn_iter to NULL if the loop is exited with break */
+
+/* Need stn_iter so we can adjust iterator if the stn it points to is deleted */
+extern node *stn_iter;
+#define FOR_EACH_STN(S,L) \
+ for (stn_iter = (L); ((S) = stn_iter);\
+ stn_iter = ((S) == stn_iter) ? stn_iter->next : stn_iter)
+
 #define print_prefix(N) fprint_prefix(stdout, (N))
 
 char *sprint_prefix(prefix *ptr);

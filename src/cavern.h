@@ -142,8 +142,7 @@ typedef struct Link {
 typedef struct Node {
    struct Prefix *name;
    struct Link *leg[3];
-   struct Node *next;
-   uchar status; /* possible values are statXXXXX (defd. below) */
+   struct Node *prev, *next;
    uchar fArtic; /* Is this an articulation point? */
    unsigned long colour;
 } node;
@@ -156,14 +155,6 @@ typedef struct Pos {
    uchar fFixed; /* flag indicating if station is a fixed point */
 #endif
 } pos;
-
-#define statRemvd 0 /* removed during network reduction */
-#define statInNet 1 /* in network */
-#define statFixed 2 /* connected to a fixed point (& in network) */
-#if 0
-#define statDudEq 3 /* stn only equated, and being ignored */
-#define statBogus 4 /* eg stn invented and discarded for delta-star */
-#endif
 
 #define STYLE_DEFAULT -1
 #define STYLE_UNKNOWN 0
@@ -224,15 +215,6 @@ extern bool fAscii;
 #define POSD(S) ((S)->name->pos->p)
 #define USED(S, L) ((S)->leg[(L)] != NULL)
 
-/* Macro to neaten code for following along traverses of unfixed 2-nodes */
-#define FOLLOW_TRAV(S,I,O) BLK(\
-   if ((S)->leg[((I) + 1) % 3] != NULL) {\
-      if ((S)->leg[((I) + 2) % 3] == NULL) (O) = ((I) + 1) % 3;\
-   } else {\
-      if ((S)->leg[((I) + 2) % 3] != NULL) (O) = ((I) + 2) % 3;\
-   })
-#define BAD_DIRN 255 /* used as a bad direction (ie not 0, 1, or 2) */
-
 #define FLAG_DATAHERE 128
 #define FLAG_REPLACEMENTLEG 64
 
@@ -250,12 +232,6 @@ extern bool fAscii;
 # define unfix(S) POS((S), 0) = UNFIXED_VAL
 #endif
 #define fixed(S) pfx_fixed((S)->name)
-
-#define shape(S) (((S)->leg[0] != NULL) +\
-                  ((S)->leg[1] != NULL) +\
-                  ((S)->leg[2] != NULL))
-#define unfixed_2_node(S) ((shape((S)) == 2) && !fixed((S)))
-#define remove_leg_from_station(L, S) (S)->leg[(L)] = NULL
 
 /* macros/fns for special chars */
 

@@ -34,7 +34,7 @@ check_fixed(void)
     * which get spotted and removed */
    node *stn;
    printf("*** Checking fixed-ness\n");
-   FOR_EACH_STN(stn) {
+   FOR_EACH_STN(stn, stnlist) {
       if (stn->status && !fixed(stn)) {
 	 printf("*** Station '");
 	 print_prefix(stn->name);
@@ -128,10 +128,11 @@ validate_station_list(void)
    node *stn, *stn2;
    int d, d2;
 
-   FOR_EACH_STN(stn) {
+   FOR_EACH_STN(stn, stnlist) {
       for (d = 0; d <= 2; d++) {
 	 if (stn->leg[d]) {
 	    stn2 = stn->leg[d]->l.to;
+#if 0
 	    if (stn->status && !stn2->status) {
 	       printf("*** Station '");
 	       print_prefix(stn->name);
@@ -140,10 +141,13 @@ validate_station_list(void)
 	       printf("' which has status %d\n", stn2->status);
 	       fOk = fFalse;
 	    }
+#endif
 	    d2 = reverse_leg_dirn(stn->leg[d]);
 	    if (stn2->leg[d2] == NULL) {
 	       /* fine iff stn is at the disconnected end of a fragment */
-	       if (stn->status != statRemvd) {
+	       node *s;
+	       FOR_EACH_STN(s, stnlist) if (s == stn) break;
+	       if (s) {
 		  printf("*** Station '");
 		  print_prefix(stn->name);
 		  printf("', leg %d doesn't reciprocate from station '", d);
@@ -153,7 +157,9 @@ validate_station_list(void)
 	       }
 	    } else if (stn2->leg[d2]->l.to!=stn) {
 	       /* fine iff stn is at the disconnected end of a fragment */
-	       if (stn->status != statRemvd) {
+	       node *s;
+	       FOR_EACH_STN(s, stnlist) if (s == stn) break;
+	       if (s) {
 		  printf("*** Station '");
 		  print_prefix(stn->name);
 		  printf("', leg %d reciprocates via station '", d);
@@ -215,8 +221,8 @@ dump_node(node *stn)
    else
       printf("<null>");
 
-   printf(" stn [%p] name (%p) status %d %sfixed\n",
-	  stn, stn->name, stn->status, fixed(stn) ? "" : "un");
+   printf(" stn [%p] name (%p) colour %ld %sfixed\n",
+	  stn, stn->name, stn->colour, fixed(stn) ? "" : "un");
 
    for (d = 0; d <= 2; d++) {
       if (stn->leg[d]) {
@@ -232,7 +238,8 @@ extern void
 dump_entire_network(void) 
 {
    node *stn;
-   FOR_EACH_STN(stn) dump_node(stn);
+   /* FIXME: this doesn't cover removed stations - iterate prefix tree? */
+   FOR_EACH_STN(stn, stnlist) dump_node(stn);
 }
 
 #undef dump_network 
@@ -240,6 +247,5 @@ extern void
 dump_network(void)
 {
    node *stn;
-   printf("Nodes with status!=statRemvd\n");
-   FOR_EACH_STN(stn) if (stn->status) dump_node(stn);
+   FOR_EACH_STN(stn, stnlist) dump_node(stn);
 }
