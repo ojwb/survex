@@ -512,8 +512,8 @@ void MainFrm::CreateSidePanel()
 
     m_FindBox = new wxTextCtrl(m_FindPanel, -1, "");
     m_FindButton = new wxButton(m_FindPanel, button_FIND, msg(/*Find*/332));
-///    m_FindButton->SetDefault();
-///    m_FindPanel->SetDefaultItem(m_FindButton);
+    m_FindButton->SetDefault();
+    m_FindPanel->SetDefaultItem(m_FindButton);
     m_HideButton = new wxButton(m_FindPanel, button_HIDE, msg(/*Hide*/333));
     m_RegexpCheckBox = new wxCheckBox(m_FindPanel, -1,
 				      msg(/*Regular expression*/334));
