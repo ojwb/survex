@@ -1,0 +1,114 @@
+* output files now go in currrent directory rather than the same directory
+  where the first .svx file is found.  You can set a different directory using
+  the "--output" command line option, which can point to a directory or a fileI think a better plan is to put them in the
+
+* "*truncate off" rather than "*truncate 0"
+
+* added wrapper to convert survex invocation into cavern invocation
+
+* hto filters moved into separate subdirectory of source distribution
+
+* added "miniam.pl" which generates makefiles for BorlandC and RISC OS
+
+* printdm/printpcl weren't showing text - problem with new format font file
+
+* check for old SURVEXLANG codes (engi, fren, germ, ...) now case insensitive
+
+Changes in 0.90 beta2:
+
+* Fixed xcaverot to handle > 2048 stations/legs
+
+* Spanish and Catalan translations updated (only French left to do)
+
+Changes in 0.90 beta1:
+
+* German, Italian, and Portugese translations updated
+
+* Linux binaries included (x86 RPM)
+
+* Documentation brought largely up to date
+
+In 0.90 alpha5:
+
+* comment parsing fix
+
+* network reduction bug fixed
+
+* new messages extracted for translation
+
+* much smaller postscript output
+
+* real circles in postscript output
+
+* nicer infobox on printouts
+
+* caverot help page improved
+
+* scale units on printout bug fixed
+
+In 0.90 alpha4:
+
+* made postscript bounding box slightly larger
+
+* tweaked postscript output to reduce size (5% smaller for Kaninchenhoehle)
+
+In 0.90 alpha3:
+
+* fixed bogus "Error writing printer output" message from printer drivers
+
+* minor cosmetic fixes to printer drivers
+
+* added postscript bounding box
+
+* fixed extra "%"s in postscript output
+
+* removed stray debug messages from cavern added in alpha2
+
+In 0.90 alpha2:
+
+* fixed memory allocation bug (affected *include and *title)
+
+In 0.90 alpha1:
+
+* Halt after 50 errors to save swamping user
+
+* now use GNU getopt to parse command line options
+
+* -f and @ removed
+
+* -n, -t and -u replaced by *-commands
+
+* source code tidied up considerably
+
+* new format message files - now internally use unicode (in UTF-8) and
+  should be faster and smaller
+
+* new format font file for printdm/printpcl (faster and smaller)
+
+* GCC format error/warning messages to allow clicking on messages to jump to
+  the problem line in editors which support it (e.g. GNU emacs and jed)
+
+* Now uses GNU automake under Unix which makes my life a lot easier and also
+  provides "make install"
+
+* xcaverot now checks for failing to open the X display
+
+Changes in 0.81:
+
+* Network reduction bug fixed (fix carried back from 0.90 development)
+
+Changes between prerelease3 and 0.80:
+
+* Set version to 0.80 (since this is a release candidate)
+
+* Added ChangeLog
+
+* DOS binary distribution now includes files: BUGS NEWS TODO ChangeLog
+
+* Fixed 32-bit DOS caverot keyboard and mouse initialisation problems
+
+* Cross-compiler build for DOS now has stripped .exe files once more, and so
+  is rather smaller
+
+* Sources now include configure.in for those wanting to do major development
+  work

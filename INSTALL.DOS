@@ -1,0 +1,14 @@
+Installing Survex under MSDOS
+=============================
+
+For ease of use, you probably want to add the directory containing the
+executables to your PATH.  This will allow you to run them whatever
+the current directory is.  To do this, edit the file AUTOEXEC.BAT in
+the root of your boot-drive (usually your hard drive if you have one).
+Modify the line beginning PATH by adding ;C:\SURVEX to the end (or
+whatever directory you have installed Survex in).  For example:
+
+ PATH=C:\DOS;C:\;C:\WINDOWS   ->   PATH=C:\DOS;C:\;C:\WINDOWS;C:\SURVEX
+
+For changes to AUTOEXEC.BAT to come into effect, you need to reboot
+(save your work and press Ctrl-Alt-Del together).
