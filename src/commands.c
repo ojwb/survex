@@ -612,6 +612,7 @@ cmd_fix(void)
 	    POS(fixpt, 1) = y;
 	    POS(fixpt, 2) = z;
 	    fix(fixpt);
+	    fixpt->leg[0] = fixpt->leg[1] = fixpt->leg[2] = NULL;
 	    addfakeleg(fixpt, stn, 0, 0, 0,
 		       sdx * sdx, sdy * sdy, sdz * sdz
 #ifndef NO_COVARIANCES

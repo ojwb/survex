@@ -9,6 +9,8 @@
 
 * aven: --version now works, and --help produces more helpful output.
 
+* cavern: fixed problem with points fixed with errors.
+
 * Minor documentation updates.
 
 Changes in 0.98-prerelease4:
