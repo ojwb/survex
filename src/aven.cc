@@ -135,9 +135,9 @@ bool Aven::OnInit()
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(our_width, our_height));
 
 #ifdef _WIN32
-    bool delay = false;
+    const bool delay = false;
 #else
-    bool delay = true;
+    const bool delay = true;
 #endif
 
 #ifndef USE_WXCMDLINE

@@ -583,8 +583,6 @@ void MainFrm::CreateSidePanel()
     m_Gfx = new GfxCore(this, m_Splitter);
 
     m_Splitter->Initialize(m_Gfx);
- 
-    m_Gfx->SetFocus();
 }
 
 void MainFrm::ClearPointLists()
@@ -1240,6 +1238,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 
 	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
 #endif
+	m_Gfx->SetFocus();
     }
 }
 
@@ -1297,7 +1296,6 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
-	SetFocus();
     }
 }
 
