@@ -32,7 +32,7 @@
 #include "img.h"
 
 #include <list>
-#if 0 // if you turn this back on, reenabled the check in configure.in too
+#if 0 // if you turn this back on, reenable the check in configure.in too
 #ifdef HAVE_EXT_HASH_MAP
 #include <ext/hash_map>
 #elif defined HAVE_HASH_MAP
