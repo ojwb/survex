@@ -52,68 +52,53 @@ typedef struct {
    img_point pt;
 } station;
 
-//What about a better collating order for stations?  But rather than
-//doing this in cavern, it's probably better to do it as a sort before
-//presentation...  Here's a first stab at some code:
-/* We ideally want a collating order where "2" sorts before "10"
- * (and "10a" sorts between "10" and "11").
- * So we want an compare cmp(A,B) s.t.
- * 1) cmp(A,A) = 0
- * 2) cmp(A,B) < 0 iff cmp(B,A) > 0
- * 3) cmp(A,B) > 0 and cmp(B,C) > 0 => cmp(A,C) > 0
- * 4) cmp(A,B) = 0 iff strcmp(A,B) = 0 (e.g. "001" and "1" are not equal)
- */
-/* FIXME: is this ordering OK? */
-/* Would also be nice if "xxx2" sorted before "xxx10"... */
 static int
 name_cmp(const char *a, const char *b)
 {
    const char *dot_a = strchr(a, '.');
    const char *dot_b = strchr(b, '.');
-   int res;
 
    if (dot_a) {
       if (dot_b) {
 	 size_t len_a = dot_a - a;
 	 size_t len_b = dot_b - b;
-	 res = memcmp(a, b, min(len_a, len_b));
+	 int res = memcmp(a, b, min(len_a, len_b));
 	 if (res == 0) res = len_a - len_b;
 	 if (res == 0) res = name_cmp(dot_a + 1, dot_b + 1);
-      } else {
-	 return -1;
+	 return res;
       }
-   } else {
-      if (dot_b) {
-	 return 1;
-      } else {
-	 /* skip common prefix */
-	 while (*a && !isdigit(*a) && *a == *b) {
-	    a++;
-	    b++;
-	 }
-	 /* sort numbers numerically and before non-numbers */
-	 if (isdigit(a[0])) {
-	    long n_a, n_b;
-	    if (!isdigit(b[0])) return -1;
-	    /* FIXME: check errno, etc in case out of range */
-	    n_a = strtoul(a, NULL, 10);
-	    n_b = strtoul(b, NULL, 10);
-	    if (n_a != n_b) {
-	       if (n_a > n_b)
-		  return 1;
-	       else
-		  return -1;
-	    }
-	    /* drop through - the numbers match, but there may be a suffix
-	     * and also we want to give an order to "01" vs "1"... */
-	 } else if (isdigit(b[0])) {
-	    return 1;
-	 }
-	 /* if numbers match, sort by suffix */
-	 return strcmp(a,b);
-      }
+      return -1;
    }
-   return res;
+
+   if (dot_b) return 1;
+   
+   /* skip common prefix */
+   while (*a && !isdigit(*a) && *a == *b) {
+      a++;
+      b++;
+   }
+   
+   /* sort numbers numerically and before non-numbers */
+   if (!isdigit(a[0])) {
+      if (isdigit(b[0])) return 1;
+   } else {
+      long n_a, n_b;
+      if (!isdigit(b[0])) return -1;
+      /* FIXME: check errno, etc in case out of range */
+      n_a = strtoul(a, NULL, 10);
+      n_b = strtoul(b, NULL, 10);
+      if (n_a != n_b) {
+	 if (n_a > n_b)
+	    return 1;
+	 else
+	    return -1;
+      }
+      /* drop through - the numbers match, but there may be a suffix
+       * and also we want to give an order to "01" vs "1"... */
+   }
+
+   /* if numbers match, sort by suffix */
+   return strcmp(a, b);
 }
 
 #if 0
