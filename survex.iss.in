@@ -51,4 +51,4 @@ Root: HKCR; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueD
 Root: HKCR; Subkey: "survex.bin\shell"; ValueType: string; ValueData: "Open"
 Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""
 Root: HKCR; Subkey: "survex.bin\shell"; ValueType: string; ValueData: "Convert to DXF"
-Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""
+Root: HKCR; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""
