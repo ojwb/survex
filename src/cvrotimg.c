@@ -90,7 +90,7 @@ load_data(const char *fnmData, const char *survey,
    char *p, *p_end;
 
    /* try to open image file, and check it has correct header */
-   pimg = img_open_survey(fnmData, NULL, NULL, survey);
+   pimg = img_open_survey(fnmData, survey);
    if (!pimg) return fFalse;
 
    /* Make 2 passes - one to work out exactly how much space to allocate,

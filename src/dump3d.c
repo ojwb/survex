@@ -79,7 +79,7 @@ main(int argc, char **argv)
    img_close(pimg);
 #endif
 
-   pimg = img_open_survey(fnm, NULL, NULL, survey);
+   pimg = img_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error(), fnm);
 
    do {

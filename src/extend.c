@@ -154,7 +154,7 @@ int
 main(int argc, char **argv)
 {
    const char *fnm_in, *fnm_out;
-   char szDesc[256];
+   char *desc;
    img_point pt;
    int result;
    point *fr = NULL, *to;
@@ -180,7 +180,7 @@ main(int argc, char **argv)
    }
 
    /* try to open image file, and check it has correct header */
-   pimg = img_open_survey(fnm_in, szDesc, NULL, survey);
+   pimg = img_open_survey(fnm_in, survey);
    if (pimg == NULL) fatalerror(img_error(), fnm_in);
 
    putnl();
@@ -214,6 +214,10 @@ main(int argc, char **argv)
       }
    } while (result != img_STOP);
 
+   desc = osmalloc(strlen(pimg->title) + strlen(" (extended)") + 1);
+   strcpy(desc, pimg->title);
+   strcat(desc, " (extended)");
+
    (void)img_close(pimg);
 
    /* start at the highest 1-node */
@@ -236,8 +240,7 @@ main(int argc, char **argv)
 	 return EXIT_FAILURE;
       }
    }
-   strcat(szDesc, " (extended)");
-   pimg = img_open_write(fnm_out, szDesc, fTrue);
+   pimg = img_open_write(fnm_out, desc, fTrue);
 
    do_stn(start, 0.0); /* only does highest connected component currently */
    if (!img_close(pimg)) {

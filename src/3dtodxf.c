@@ -432,7 +432,7 @@ main(int argc, char **argv)
       osfree(base);
    }
 
-   pimg = img_open_survey(fnm_3d, NULL, NULL, survey);
+   pimg = img_open_survey(fnm_3d, survey);
    if (!pimg) fatalerror(img_error(), fnm_3d);
 
    fh = safe_fopen(fnm_out, "w");

@@ -79,8 +79,7 @@ static device *pr = &hpgl;
 #endif
 static device *pr = &printer;
 
-#define lenSzDateStamp 40
-static char title[256], szDateStamp[lenSzDateStamp];
+static char *title, *datestamp;
 
 static int rot = 0, tilt = 0;
 static float xMin, xMax, yMin, yMax;
@@ -665,8 +664,10 @@ main(int argc, char **argv)
 
    /* Try to open first image file and check it has correct header,
     * rather than asking lots of questions then failing */
-   pimg = img_open_survey(fnm, title, szDateStamp, survey);
+   pimg = img_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error(), fnm);
+   title = pimg->title;
+   datestamp = pimg->datestamp;
 
    if (pr->Init) {
       FILE *fh_list[4];
@@ -775,7 +776,7 @@ main(int argc, char **argv)
       /* first time around pimg is already open... */
       if (!pimg) {
 	 /* for multiple files use title and datestamp from the first */
-	 pimg = img_open_survey(fnm, NULL, NULL, survey);
+	 pimg = img_open_survey(fnm, survey);
 	 if (!pimg) fatalerror(img_error(), fnm);
       }
       if (!read_in_data()) fatalerror(img_error(), fnm);
@@ -975,7 +976,7 @@ main(int argc, char **argv)
          } else {
             if (pr->ShowPage) {
                sprintf(szTmp, msg167, title, (int)page, pagesX * pagesY,
-                       szDateStamp);
+                       datestamp);
                pr->ShowPage(szTmp);
             }
          }

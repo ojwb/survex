@@ -57,6 +57,8 @@ typedef struct {
    /* members you can access when reading (don't touch when writing) */
    char *label;
    int flags;
+   char *title;
+   char *datestamp;
    /* all other members are for internal use only */
    FILE *fh;          /* file handle of image file */
    char *label_buf;
@@ -83,22 +85,17 @@ extern unsigned int img_output_version;
 
 /* Open a .3d file for reading
  * fnm is the filename
- * title_buf and date_buf should be buffers to put the title and datestamp in
- * (each of size 256 chars) or NULL if you don't want the information
  * Returns pointer to an img struct or NULL
  */
-#define img_open(F, T, D) img_open_survey((F), (T), (D), NULL)
+#define img_open(F) img_open_survey((F), NULL)
 
 /* Open a .3d file for reading
  * fnm is the filename
- * title_buf and date_buf should be buffers to put the title and datestamp in
- * (each of size 256 chars) or NULL if you don't want the information
  * Returns pointer to an img struct or NULL
  * survey points to a survey name to restrict reading to (or NULL for all
  * survey data in the file)
  */
-img *img_open_survey(const char *fnm, char *title_buf, char *date_buf,
-		     const char *survey);
+img *img_open_survey(const char *fnm, const char *survey);
 
 /* Open a .3d file for output
  * fnm is the filename

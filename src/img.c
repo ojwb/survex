@@ -126,6 +126,41 @@ getline(char *buf, size_t len, FILE *fh)
    return i;
 }
 
+static char *
+getline_alloc(FILE *fh)
+{
+   int ch;
+   size_t i = 0;
+   size_t len = 16;
+   char *buf = xosmalloc(len);
+   if (!buf) return NULL;
+
+   ch = getc(fh);
+   while (ch != '\n' && ch != '\r' && ch != EOF) {
+      buf[i++] = ch;
+      if (i == len - 1) {
+	 char *p;
+	 len += len;
+	 p = xosrealloc(buf, len);
+	 if (!p) {
+	    osfree(buf);
+	    return NULL;
+	 }
+	 buf = p;
+      }
+      ch = getc(fh);
+   }
+   if (ch == '\n' || ch == '\r') {
+      /* remove any further eol chars (for DOS text files) */
+      do {
+	 ch = getc(fh);
+      } while (ch == '\n' || ch == '\r');
+      ungetc(ch, fh); /* we don't want it, so put it back */
+   }
+   buf[i++] = '\0';   
+   return buf;
+}
+
 #ifndef IMG_HOSTED
 img_errcode
 img_error(void)
@@ -141,8 +176,7 @@ img_error(void)
 #endif
 
 img *
-img_open_survey(const char *fnm, char *title_buf, char *date_buf,
-		const char *survey)
+img_open_survey(const char *fnm, const char *survey)
 {
    img *pimg;
 
@@ -200,8 +234,16 @@ img_open_survey(const char *fnm, char *title_buf, char *date_buf,
       return NULL;
    }
 
-   getline((title_buf ? title_buf : tmpbuf), TMPBUFLEN, pimg->fh);
-   getline((date_buf ? date_buf : tmpbuf), TMPBUFLEN, pimg->fh);
+   pimg->title = getline_alloc(pimg->fh);
+   pimg->datestamp = getline_alloc(pimg->fh);
+   if (!pimg->title || !pimg->datestamp) {
+      osfree(pimg->title);
+      fclose(pimg->fh);
+      osfree(pimg);
+      img_errno = IMG_OUTOFMEMORY;
+      return NULL;
+   }
+
    pimg->fRead = fTrue; /* reading from this file */
    img_errno = IMG_NONE;
    pimg->start = ftell(pimg->fh);
@@ -217,16 +259,14 @@ img_open_survey(const char *fnm, char *title_buf, char *date_buf,
       if (len) {
 	 if (survey[len - 1] == '.') len--;
 	 if (len) {
+	    char *p;
 	    pimg->survey = osmalloc(len + 2);
 	    memcpy(pimg->survey, survey, len);
 	    /* Set title to leaf survey name */
-	    if (title_buf) {
-	       char *p;
-	       pimg->survey[len] = '\0';
-	       p = strchr(pimg->survey, '.');
-	       if (p) p++; else p = pimg->survey;
-	       strcpy(title_buf, p);
-	    }
+	    pimg->survey[len] = '\0';
+	    p = strchr(pimg->survey, '.');
+	    if (p) p++; else p = pimg->survey;
+	    strcpy(pimg->title, p);
 	    pimg->survey[len] = '.';
 	    pimg->survey[len + 1] = '\0';
 	 }
@@ -868,6 +908,8 @@ img_close(img *pimg)
       if (pimg->fh) {
 	 if (pimg->fRead) {
 	    osfree(pimg->survey);
+	    osfree(pimg->title);
+	    osfree(pimg->datestamp);
 	 } else {
 	    /* write end of data marker */
 	    switch (pimg->version) {

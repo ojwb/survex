@@ -206,7 +206,7 @@ parse_3d_file(const char *fnm, const char *survey,
    img_point pt;
    int result;
  
-   img *pimg = img_open_survey(fnm, NULL, NULL, survey);
+   img *pimg = img_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error(), fnm);
 
    do {

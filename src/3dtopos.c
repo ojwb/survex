@@ -95,7 +95,7 @@ main(int argc, char **argv)
       osfree(base);
    }
 
-   pimg = img_open_survey(fnm, NULL, NULL, survey);
+   pimg = img_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error(), fnm);
 
    fh_out = safe_fopen(fnm_out, "w");
