@@ -1,4 +1,8 @@
 Makefile
 Makefile.in
 pfont.bit
-*.msg
+[a-z][a-z].msg
+[a-z][a-z]_[A-Z][A-Z].msg
+[a-z][a-z].h
+[a-z][a-z]_[A-Z][A-Z].h
+dontextr.h

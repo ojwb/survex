@@ -2,7 +2,7 @@
 
 RELEASE = 1
 
-EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES survex.iss.in docindex.htm.in
+EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES survex.iss.in
 
 SUBDIRS = hto lib src doc tests debian
 
@@ -169,7 +169,7 @@ mingw_zip : dostxt mingwexes
 mingw_iss : dostxt mingwexes
 	$(RM) -rf iss_tmp
 	mkdir iss_tmp
-	cp dostxt_tmp/*.txt $(extra_txt) survex.iss docindex.htm iss_tmp
+	cp dostxt_tmp/*.txt $(extra_txt) survex.iss doc/docindex.htm iss_tmp
 	# convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
 	cp mingw_extras/*.ico lib/aven-about.png iss_tmp

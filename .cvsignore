@@ -8,6 +8,7 @@ config.h.in
 config.log
 config.status
 configure
+bc_exes
 djgpp_exes
 mingw_exes
 riscos_exes

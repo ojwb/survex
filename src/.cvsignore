@@ -1,6 +1,7 @@
 .deps
 Makefile
 Makefile.in
+z_getopt.c
 aven
 cavern
 printdm

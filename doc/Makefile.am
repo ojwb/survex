@@ -16,7 +16,8 @@ other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 hto2svx.1 \
 
 # People can build from CVS without sgmltools v2 or v3 installed but they
 # won't be able to "make dist", which is arguably a good thing
-EXTRA_DIST = svxdocs $(doclist) svxdocs.sgml custom.dsl survex.1
+EXTRA_DIST = svxdocs $(doclist) svxdocs.sgml custom.dsl survex.1\
+ docindex.htm.in
 
 MAINTAINERCLEANFILES = $(doclist)
 CLEANFILES = $(other_mans)
