@@ -135,7 +135,7 @@ class MainFrm : public wxFrame {
     int m_NumExportedPts;
 
     void ClearPointLists();
-    bool LoadData(const wxString& file);
+    bool LoadData(const wxString& file, wxString prefix = "");
     void SortIntoDepthBands(list<PointInfo*>& points);
     void IntersectLineWithPlane(Double x0, Double y0, Double z0,
 				Double x1, Double y1, Double z1,
@@ -152,7 +152,8 @@ public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
     ~MainFrm();
 
-    void OpenFile(const wxString& file, bool delay_gfx_init = false);
+    void OpenFile(const wxString& file, const wxString& survey = "",
+		  bool delay_gfx_init = false);
 
     void OnOpen(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);

@@ -121,12 +121,12 @@ bool Aven::OnInit()
 
 #ifndef USE_WXCMDLINE
     if (argv[optind]) {
-	m_Frame->OpenFile(wxString(argv[optind]));
+	m_Frame->OpenFile(wxString(argv[optind]), survey);
     }
 #else
     if (cli.GetParamCount() == 1) {
         wxString file = cli.GetParam(0);
-	m_Frame->OpenFile(file);
+	m_Frame->OpenFile(file, survey);
     }
 #endif
 

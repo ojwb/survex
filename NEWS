@@ -1,7 +1,5 @@
-* print*: Added --survey command line option to restrict the view to a
+* aven/print*: Added --survey command line option to restrict the view to a
   sub-survey in the .3d file.
-
-* Minor documentation updates.
 
 * aven: initial scaling now ignores unused fixed points (unless there
   are no legs at all), and scales survey so it fits inside window.
@@ -9,6 +7,8 @@
 * aven: can now load a survey with no legs, only stations.
 
 * aven: --version now works, and --help produces more helpful output.
+
+* Minor documentation updates.
 
 Changes in 0.98-prerelease4:
 

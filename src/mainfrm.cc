@@ -284,11 +284,25 @@ void MainFrm::ClearPointLists()
     m_Labels.clear();
 }
 
-bool MainFrm::LoadData(const wxString& file)
+/* similar to function in cvrotimg.c and prcore.c */
+static bool
+pfx_filter(const char *lab, const wxString &prefix)
+{
+   size_t l = prefix.size();
+   return !l || (strncmp(prefix.c_str(), lab, l) == 0 && (lab[l] == '.' || !lab[l]));
+}
+
+bool MainFrm::LoadData(const wxString& file, wxString prefix)
 {
     // Load survey data from file, centre the dataset around the origin,
     // chop legs such that no legs cross depth colour boundaries and prepare
     // the data for drawing.
+
+    // prepare prefix by removing any trailing '.'
+
+    if (!prefix.empty() && prefix[prefix.size() - 1] == '.') {
+	prefix.resize(prefix.size() - 1);
+    }
 
     // Load the survey data.
 
@@ -296,42 +310,69 @@ bool MainFrm::LoadData(const wxString& file)
     if (!survey) {
 	wxString m = wxString::Format(msg(img_error()), file.c_str());
 	wxGetApp().ReportError(m);
+	return false;
     }
-    else {
-        // Create a list of all the leg vertices, counting them and finding the
-        // extent of the survey at the same time.
- 
-	m_NumLegs = 0;
-	m_NumPoints = 0;
-	m_NumExtraLegs = 0;
-	m_NumCrosses = 0;
-	m_NumFixedPts = 0;
-	m_NumExportedPts = 0;
-	m_NumEntrances = 0;
 
-	// Delete any existing list entries.
-	ClearPointLists();
+    // Create a list of all the leg vertices, counting them and finding the
+    // extent of the survey at the same time.
 
-	Double xmin = DBL_MAX;
-	Double xmax = -DBL_MAX;
-	Double ymin = DBL_MAX;
-	Double ymax = -DBL_MAX;
-	m_ZMin = DBL_MAX;
-	Double zmax = -DBL_MAX;
+    m_NumLegs = 0;
+    m_NumPoints = 0;
+    m_NumExtraLegs = 0;
+    m_NumCrosses = 0;
+    m_NumFixedPts = 0;
+    m_NumExportedPts = 0;
+    m_NumEntrances = 0;
 
-	bool first = true;
+    // Delete any existing list entries.
+    ClearPointLists();
 
-	list<PointInfo*> points;
+    Double xmin = DBL_MAX;
+    Double xmax = -DBL_MAX;
+    Double ymin = DBL_MAX;
+    Double ymax = -DBL_MAX;
+    m_ZMin = DBL_MAX;
+    Double zmax = -DBL_MAX;
 
-	int result;
-	do {
-	    img_point pt;
-	    switch (result = img_read_item(survey, &pt)) {
-	        case img_MOVE:
-	        case img_LINE:
-		{
+    bool first = true;
+
+    list<PointInfo*> points;
+
+    int result;
+    bool pending_move = false;
+    img_point mv;
+    do {
+	img_point pt;
+	switch (result = img_read_item(survey, &pt)) {
+	    case img_LINE:
+	    {
+		if (survey->version < 3 || pfx_filter(survey->label, prefix)) {
+		    if (pending_move) {
+			pending_move = false;
+
+			m_NumPoints++;
+
+			// Update survey extents.
+			if (mv.x < xmin) xmin = mv.x;
+			if (mv.x > xmax) xmax = mv.x;
+			if (mv.y < ymin) ymin = mv.y;
+			if (mv.y > ymax) ymax = mv.y;
+			if (mv.z < m_ZMin) m_ZMin = mv.z;
+			if (mv.z > zmax) zmax = mv.z;
+
+			PointInfo* info = new PointInfo;
+			info->x = mv.x;
+			info->y = mv.y;
+			info->z = mv.z;
+
+			info->isLine = false;
+
+			// Store this point in the list.
+			points.push_back(info);			
+		    }
+			
 		    m_NumPoints++;
-		    
+
 		    // Update survey extents.
 		    if (pt.x < xmin) xmin = pt.x;
 		    if (pt.x > xmax) xmax = pt.x;
@@ -345,26 +386,29 @@ bool MainFrm::LoadData(const wxString& file)
 		    info->y = pt.y;
 		    info->z = pt.z;
 
-		    // Set flags if this datum is a line rather than a move;
-		    // update number of legs if it's a line.
-		    if (result == img_LINE) {
-		        m_NumLegs++;
-		        info->isLine = true;
-		    }
-		    else {
-		        info->isLine = false;
-		    }
-		    
+		    // Set flags to say this is a line rather than a move
+		    m_NumLegs++;
+		    info->isLine = true;
 		    info->isSurface = (survey->flags & img_FLAG_SURFACE);
 
 		    // Store this point in the list.
 		    points.push_back(info);
-		    
+
 		    break;
 		}
+	    }
+	    /* FALL THRU */
 
-	        case img_LABEL:
-		{
+            case img_MOVE:
+	    {
+		pending_move = true;
+		mv = pt;
+		break;
+	    }
+
+	    case img_LABEL:
+	    {
+		if (pfx_filter(survey->label, prefix) && survey->label[prefix.size()]) {
 		    LabelInfo* label = new LabelInfo;
 		    label->text = survey->label;
 		    label->x = pt.x;
@@ -374,95 +418,98 @@ bool MainFrm::LoadData(const wxString& file)
 		    label->isFixedPt = (survey->flags & img_SFLAG_FIXED);
 		    label->isExportedPt = (survey->flags & img_SFLAG_EXPORTED);
 		    if (label->isEntrance) {
-		        m_NumEntrances++;
+		       m_NumEntrances++;
 		    }
 		    if (label->isFixedPt) {
-		        m_NumFixedPts++;
+		       m_NumFixedPts++;
 		    }
 		    if (label->isExportedPt) {
-		        m_NumExportedPts++;
+		       m_NumExportedPts++;
 		    }
 		    m_Labels.push_back(label);
 		    m_NumCrosses++;
-
-		    break;
 		}
+		break;
+	    }
 
-	        case img_BAD:
-		{
-		    m_Labels.clear();
- 
-		    // FIXME: Do we need to reset all these? - Olly
-		    m_NumLegs = 0;
-		    m_NumPoints = 0;
-		    m_NumExtraLegs = 0;
-		    m_NumCrosses = 0;
-		    m_NumFixedPts = 0;
-		    m_NumExportedPts = 0;
-		    m_NumEntrances = 0;
+	    case img_BAD:
+	    {
+		m_Labels.clear();
 
-		    m_ZMin = DBL_MAX;
+		// FIXME: Do we need to reset all these? - Olly
+		m_NumLegs = 0;
+		m_NumPoints = 0;
+		m_NumExtraLegs = 0;
+		m_NumCrosses = 0;
+		m_NumFixedPts = 0;
+		m_NumExportedPts = 0;
+		m_NumEntrances = 0;
 
-		    wxString m = wxString::Format(msg(img_error()), file.c_str());
-		    wxGetApp().ReportError(m);
-		    return false;		    
-		}
+		m_ZMin = DBL_MAX;
+
+	        img_close(survey);
+
+		wxString m = wxString::Format(msg(img_error()), file.c_str());
+		wxGetApp().ReportError(m);
+		return false;		    
+	    }
 		
-	        default:
-	            break;
-	    }
-
-	    first = false;
-
-	} while (result != img_STOP);
-
-	// Check we've actually loaded some legs or stations!
-	if (m_NumLegs == 0 && m_Labels.empty()) {
-	    wxString m = wxString::Format(msg(/*No survey data in 3d file `%s'*/202), file.c_str());
-	    wxGetApp().ReportError(m);
-	    return false;
+	    default:
+		break;
 	}
 
-        if (points.empty()) {
-	    // No legs, so get survey extents from stations
-	    list<LabelInfo*>::const_iterator i;
-	    for (i = m_Labels.begin(); i != m_Labels.end(); ++i) {
-		if ((*i)->x < xmin) xmin = (*i)->x;
-		if ((*i)->x > xmax) xmax = (*i)->x;
-		if ((*i)->y < ymin) ymin = (*i)->y;
-		if ((*i)->y > ymax) ymax = (*i)->y;
-		if ((*i)->z < m_ZMin) m_ZMin = (*i)->z;
-		if ((*i)->z > zmax) zmax = (*i)->z;
-	    }
-	} else {
-	    // Delete any trailing move.	
-	    PointInfo* pt = points.back();
-	    if (!pt->isLine) {
-	       m_NumPoints--;
-	       points.pop_back();
-	       delete pt;
-	    }
-	}
+	first = false;
 
-	m_XExt = xmax - xmin;
-	m_YExt = ymax - ymin;
-	m_ZExt = zmax - m_ZMin;
+    } while (result != img_STOP);
 
-	// FIXME -- temporary bodge
-	m_XMin = xmin;
-	m_YMin = ymin;
+    img_close(survey);
 
-	// Sort out depth colouring boundaries (before centering dataset!)
-	SortIntoDepthBands(points);
-
-	// Centre the dataset around the origin.
-	CentreDataset(xmin, ymin, m_ZMin);
-
-	// Update window title.
-	SetTitle(wxString("Aven - [") + file + wxString("]"));
+    // Check we've actually loaded some legs or stations!
+    if (m_NumLegs == 0 && m_Labels.empty()) {
+	wxString m = wxString::Format(msg(/*No survey data in 3d file `%s'*/202), file.c_str());
+	wxGetApp().ReportError(m);
+	return false;
     }
 
-    return (survey != NULL);
+    if (points.empty()) {
+	// No legs, so get survey extents from stations
+	list<LabelInfo*>::const_iterator i;
+	for (i = m_Labels.begin(); i != m_Labels.end(); ++i) {
+	    if ((*i)->x < xmin) xmin = (*i)->x;
+	    if ((*i)->x > xmax) xmax = (*i)->x;
+	    if ((*i)->y < ymin) ymin = (*i)->y;
+	    if ((*i)->y > ymax) ymax = (*i)->y;
+	    if ((*i)->z < m_ZMin) m_ZMin = (*i)->z;
+	    if ((*i)->z > zmax) zmax = (*i)->z;
+	}
+    } else {
+	// Delete any trailing move.	
+	PointInfo* pt = points.back();
+	if (!pt->isLine) {
+	    m_NumPoints--;
+	    points.pop_back();
+	    delete pt;
+	}
+    }
+
+    m_XExt = xmax - xmin;
+    m_YExt = ymax - ymin;
+    m_ZExt = zmax - m_ZMin;
+
+    // FIXME -- temporary bodge
+    m_XMin = xmin;
+    m_YMin = ymin;
+
+    // Sort out depth colouring boundaries (before centering dataset!)
+    SortIntoDepthBands(points);
+
+    // Centre the dataset around the origin.
+    CentreDataset(xmin, ymin, m_ZMin);
+
+    // Update window title.
+    SetTitle(wxString("Aven - [") + file + wxString("]"));
+
+    return true;
 }
 
 void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
@@ -592,10 +639,11 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
     }
 }
 
-void MainFrm::OpenFile(const wxString& file, bool delay)
+void MainFrm::OpenFile(const wxString& file, const wxString & survey, bool delay)
 {
+    // FIXME: delay is always false...
     SetCursor(*wxHOURGLASS_CURSOR);
-    if (LoadData(file)) {
+    if (LoadData(file, survey)) {
         if (!delay) {
 	    m_Gfx->Initialise();
 	}
