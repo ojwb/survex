@@ -59,7 +59,7 @@ fast machine you can't follow the change percentages.-->
 <Term>-q, --quiet</Term>
 <ListItem>
 <Para>Only show a brief summary (--quiet --quiet or -qq will display
-errors only).
+warnings and errors only).
 </Para>
 </ListItem>
 </VarListEntry>

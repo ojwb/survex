@@ -12,7 +12,7 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>xcaverot</command>
-<arg choice="opt">options</arg>
+<arg choice="opt">options</arg><!--FIXME - -survey SURVEY and - -pda -->
 <arg choice="req" rep="repeat">.3d file</arg>
 </cmdsynopsis>
 </refsynopsisdiv>

@@ -136,6 +136,15 @@ I used to use pre-built binaries for gcc 2.95.2 obtained from:
 <P><A HREF="http://www.libsdl.org/extras/win32/cross/"
 >http://www.libsdl.org/extras/win32/cross/</A>
 
+<!--
+for opengl, we need glut too:
+http://www.xmission.com/~nate/glut.html
+download glut-X.XX-bin.zip and unzip into the compiler directories:
+unzip glut-3.7.6-bin.zip
+mv glut-3.7.6-bin/glut.h /usr/i586-mingw32msvc/include/GL
+mv glut-3.7.6-bin/glut32.lib /usr/i586-mingw32msvc/lib/libglut.a
+mv glut-3.7.6-bin/glut32.dll mingw_extras
+-->
 <P>Building on Windows in a native mingw environment will probably
 require tinkering.  Best bet is probably to install bash and use the
 current configure script.  I'm happy to help if you want to try this,

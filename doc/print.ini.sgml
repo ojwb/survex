@@ -57,14 +57,14 @@ for the same printer, except that there are more lines per page.
 </Para>
 
 <Para>Each printer driver reads a different section -
-<command>printdm</command> (the Dot Matrix driver) reads
-<screen>[dm]</screen>,
-<command>printhpgl</command> (for HPGL plotters) reads
-<screen>[hpgl]</screen>,
-<command>printpcl</command> (for PCL printers) reads
-<screen>[pcl]</screen>, and
-<command>printps</command> (for Postscript printers) reads
-<screen>[ps]</screen>.
+<command>printdm</command> (the Dot Matrix driver) reads:
+<screen>[dm]</screen>
+<command>printhpgl</command> (for HPGL plotters) reads:
+<screen>[hpgl]</screen>
+<command>printpcl</command> (for PCL printers) reads:
+<screen>[pcl]</screen>
+<command>printps</command> (for Postscript printers) reads:
+<screen>[ps]</screen>
 Several definitions are supplied for each printer driver, covering
 most commonly encountered printers of each type.
 </Para>
@@ -132,11 +132,10 @@ This will enable horizontal and vertical tabbing.
 </Para>
 </refsect3>
 
-<refsect3><title>printhpgl</title>
+<refsect3><title>printps</title>
 
 <Para>There's only one definition provided at present:
 ps_generic_a4.</Para>
-
 </refsect3>
 
 <!-- FIXME: fettle this

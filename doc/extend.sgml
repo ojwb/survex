@@ -23,7 +23,7 @@
 Extend starts with the highest station marked as an entrance which
 has at least one underground survey leg attached to it.  If there are
 no such stations, the highest deadend station in the survey (or the
-highest station if there are no deadends) is used.  Extend puts the#
+highest station if there are no deadends) is used.  Extend puts the
 first station on the left, then folds each leg out individually to the right,
 breaking loops arbitrarily (usually at junctions).</Para>
 
