@@ -40,7 +40,12 @@ Changes in 0.97-prerelease1:
 
 * cavern: bug fix: "*prefix \" or "*begin \" would cause an internal error.
 
-* xcaverot: "load" button now works.
+* xcaverot: "load" button now works; bearing always shown in range 0-360;
+  / and ' now tilt cave; `u' and `d' now switch to view from above/below;
+  shift-ed keys now work.
+
+* caverot: if memory is really tight, disable non-overlapping labels rather
+  than dying with an error.
 
 Changes in 0.96:
 
@@ -55,9 +60,6 @@ Changes in 0.96:
 
 * xcaverot: cursor keys now move the 3D centre of rotation rather than just
   the position of the survey in the window.
-
-* caverot: if memory is really tight, disable non-overlapping labels rather
-  than dying with an error.
 
 Changes in 0.96-prerelease4:
 

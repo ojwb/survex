@@ -18,7 +18,6 @@ toggle labels - ^N
 toggle crosses - ^X
 restore default view - delete
 exit - q
-move cave up/down - u/d
 eLevation - l
 Plan - p
 z/x - slower/faster rotation
@@ -26,7 +25,7 @@ z/x - slower/faster rotation
 r - reverse direction of autorotation
 c/v - rotate one step
 '// - higher/lower viewpoint
-n/s/e/w - view cave from north/south/east/west
+n/s/e/w/u/d - view cave from north/south/east/west/above/below
 
 Date: 15 Dec 1998
 From: Olly
@@ -158,4 +157,8 @@ try using labels.c in xcaverot to see if XRegions are better or not?
 test diving data with compass omitted (plumbed)
 
 duncs comment on rewording docs on where files are looked for...
+
+shift-ed keys in xcaverot should move faster...
+
+switch_to_(plan|elevation) in xcaverot should animate.
 

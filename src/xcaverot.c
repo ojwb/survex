@@ -833,9 +833,9 @@ update_rotation(void)
       timefact += (temptime.tv_usec - lastframe.tv_usec) / 1000000.0;
       view_angle += rot_speed * timefact;
 
-      while (view_angle > 180.0)
+      while (view_angle >= 360.0)
 	 view_angle -= 360.0;
-      while (view_angle <= -180.0)
+      while (view_angle < 0.0)
 	 view_angle += 360.0;
 
       if (elev_angle == 0.0)
@@ -1005,6 +1005,8 @@ process_focus(Display * display, Window window, int ix, int iy)
    /*printf("x_mid, y_mid moved to %f,%f\n", (double)x_mid, (double)y_mid); */
 }
 
+/* FIXME: neither of these produce the animated effect desired...
+ * Use the same technique as in caverot */
 static void
 switch_to_plan(void)
 {
@@ -1016,8 +1018,6 @@ switch_to_plan(void)
 
       update_rotation();
    }
-
-   plan_elev = PLAN;
 }
 
 static void
@@ -1034,8 +1034,6 @@ switch_to_elevation(void)
 
       update_rotation();
    }
-
-   plan_elev = ELEVATION;
 }
 
 /* a sensible way of navigating about the cave */
@@ -1673,13 +1671,11 @@ main(int argc, char **argv)
 			    case 'q':
 			      done = 1;
 			      break;
-			    case 'u':	/* cave up */
-			      elev_angle += 3.0;
-			      if (elev_angle > 90.0) elev_angle = 90.0;
+			    case 'u':	/* view from above */
+			      elev_angle = 90;
 			      break;
-			    case 'd':	/* cave down */
-			      elev_angle -= 3.0;
-			      if (elev_angle < -90.0) elev_angle = -90.0;
+			    case 'd':	/* view from below */
+			      elev_angle = -90;
 			      break;
 			    case 'l':	/* switch to elevation */
 			      switch_to_elevation();
@@ -1698,9 +1694,11 @@ main(int argc, char **argv)
 				 rot_speed = rot_speed > 0 ? 720 : -720;
 			      break;
 			    case '[':	/* zoom out */
+			    case '{':
 			      scale /= zoomfactor;
 			      break;
 			    case ']':	/* zoom in */
+			    case '}':
 			      scale *= zoomfactor;
 			      break;
 			    case 'r':	/* reverse dirn of rotation */
@@ -1714,11 +1712,15 @@ main(int argc, char **argv)
 			      view_angle -= rot_speed / 5;
 			      if (view_angle <= 0.0) view_angle += 360.0;
 			      break;
-			    case '\'':	/* higher viewpoint (?) */
-			      z_mid += Zrad / 7.5;
+			    case '\'':	/* higher viewpoint */
+			    case '@': case '"': /* alternate shifted forms */
+			      elev_angle += 3.0;
+			      if (elev_angle > 90.0) elev_angle = 90.0;
 			      break;
-			    case '/':	/* lower viewpoint (?) */
-			      z_mid -= Zrad / 7.5;
+			    case '/':	/* lower viewpoint */
+			    case '?':
+			      elev_angle -= 3.0;
+			      if (elev_angle < -90.0) elev_angle = -90.0;
 			      break;
 			    case 'n':	/* cave north */
 			      view_angle = 0.0;
