@@ -22,8 +22,6 @@
 #ifndef aventypes_h
 #define aventypes_h
 
-#include <config.h>
-
 typedef double Double;
 
 #endif
