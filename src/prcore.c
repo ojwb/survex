@@ -129,6 +129,8 @@
 #include <time.h>
 #include <float.h>
 
+#include "getopt.h"
+
 #include "useful.h"
 #include "filename.h"
 #include "message.h"
@@ -473,12 +475,9 @@ static void stackSz( sz sz ) {
 }
 
 static void ReadInData( void ) {
-   float x,y,z;
+   float x, y, z;
    char sz[256];
    int result;
-
-   xMax=yMax=-(FLT_MAX/10.0f); /* any (sane) value will beat this */
-   xMin=yMin=FLT_MAX; /* ditto */
 
    do {
       result=img_read_datum( pimg, sz, &x, &y, &z );
@@ -503,8 +502,6 @@ static void ReadInData( void ) {
 
    *ppliEnd=NULL;
 
-   if (xMax<xMin || yMax<yMin) /* can't have been any data */
-      fatal(86,NULL,NULL,0);
 }
 
 static int next_page( int *pstate, char **q, int pageLim ) {
@@ -575,144 +572,123 @@ int main( int argc, sz argv[] ) {
    const char *msg166, *msg167;
    int old_charset;
 
-   pthMe=ReadErrorFile("Printer driver","SURVEXHOME","SURVEXLANG",argv[0],
-                       MESSAGE_FILE);
+   static const struct option opts[] = {
+      /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+      "elevation", no_argument, 0, 'e',
+      "elev", no_argument, 0, 'e', /* FIXME superfluous? */
+      "plan", no_argument, 0, 'p',
+      "bearing", required_argument, 0, 'b',
+      "tilt", required_argument, 0, 't',
+      "scale", required_argument, 0, 's',
+      "station-names", no_argument, 0, 'n',
+      "crosses", no_argument, 0, 'c',
+      "no-border", no_argument, 0, 'B',
+      "no-legs", no_argument, 0, 'l',
+      "skip-blanks", no_argument, 0, 'k',
+      0, 0, 0, 0
+   };
+
+   pthMe = ReadErrorFile("Printer driver", "SURVEXHOME", "SURVEXLANG",
+			 argv[0], MESSAGE_FILE);
 
    szDesc = pr->Name();
 
    printf("Survex %s%s v"VERSION
           "\n  (C) Copyright Olly Betts 1993-"THIS_YEAR"\n\n",
-          szDesc,msg(152));
+          szDesc, msg(152));
 
 /*#include "expire.h"*/
 
-   fnm=NULL;
-   for ( j=1; j<argc; j++ ) {
-      char ch;
-      p = argv[j];
-      ch = *p;
-      /* if first char of argument is a switch char, then set options */
-      if (strchr(SWITCH_SYMBOLS,ch) != NULL) {
-         char chOpt;
-         bool fOpt=fTrue;
-         p++;
-         chOpt = toupper(*p);
+   fnm = NULL;
+   
+   /* No arguments given */
+   if (argc < 2) fatal(82, NULL /*display_syntax_message*/, NULL, 0); /*FIXME*/
 
-/*printf("chOpt = %c\n",chOpt);*/
-
-         if (strchr(SWITCH_SYMBOLS,chOpt) != NULL) {
-            p++;
-/*printf("*p = %c\n",*p);*/
-            switch (*p) {
-               case 'e':
-                 if ( streq( p, "elevation" ) || streq( p, "elev" ) ) {
-                    fPlan = fFalse;
-                    fInteractive = fFalse;
-/*printf("fInteractive = %d\n",fInteractive);*/
-                    break;
-                 }
-                 goto err;
-               case 'p':
-                 if ( streq( p, "plan" ) ) {
-                    fPlan = fTrue;
-                    fInteractive = fFalse;
-                    break;
-                 }
-                 goto err;
-               case 'b':
-                 if ( streq( p, "bearing" ) && argv[j+1] ) {
-                    j++;
-                    rot = atoi(argv[j]);
-                    fInteractive = fFalse;
-                    break;
-                 }
-                 goto err;
-               case 't':
-                 if ( streq( p, "tilt" ) && argv[j+1] ) {
-                    j++;
-                    tilt = atoi(argv[j]);
-                    fInteractive = fFalse;
-                    break;
-                 }
-                 goto err;
-               case 's':
-                 if ( streq( p, "scale" ) && argv[j+1] ) {
-                    j++;
-		    if (sscanf( argv[j], "%f:%f", &N_Scale, &D_Scale )==2) {
-		       fInteractive = fFalse;
-		       break;
-		    }
-                 }
-                 goto err;
-               default:
-               err:
-                 fatal(82,wr,argv[j],0); /* bad command line options */
-            }
-            continue;
-         }
-
-         if (chOpt=='!') {
-            fOpt=fFalse;
-            p++;
-            chOpt = toupper(*p);
-         }
-         switch (chOpt) {
-          case 'L': /* Labels */
-            fLabels   = fOpt; break;
-          case 'C': /* Crosses */
-            fCrosses  = fOpt; break;
-          case 'B': /* Border */
-            fNoBorder =!fOpt; break;
-          case 'S': /* Shots */
-            fShots    = fOpt; break;
-          case 'P': /* Print blank pages */
-            fSkipBlank=!fOpt; break;
-          default:
-            fatal(82,wr,argv[j],0);
-         }
-      } else {
-         /* if not an option then assume a filename */
-         if (fnm) fatal(82,wr,argv[j],0);
-         fnm=argv[j];
+   while (1) {
+      int opt = getopt_long(argc, argv, "epbt:s:ncBlk", opts, NULL);
+      if (opt == EOF) break;
+      switch (opt) {
+       case 0:
+	 break; /* long option processed - ignore */
+       case ':':
+	  /* missing param - fall through */
+       case '?':
+	 /* FIXME unknown option */
+	 /* or ambiguous match or extraneous param */
+	 fatal(82, NULL /*display_syntax_message*/, NULL, 0); /* FIXME */
+	 break;
+       case 'n': /* Labels */
+	 fLabels = 1;
+	 break;
+       case 'c': /* Crosses */
+	 fCrosses = 1;
+	 break;
+       case 'B': /* Border */
+	 fNoBorder = 1;
+	 break;
+       case 'l': /* legs */
+	 fShots = 0;
+	 break;
+       case 'k': /* Print blank pages */
+	 fSkipBlank = 1;
+	 break;
+       case 'e':
+	 fPlan = fFalse;
+	 fInteractive = fFalse;
+	 break;
+       case 'p':
+	 fPlan = fTrue;
+	 fInteractive = fFalse;
+	 break;
+       case 'b':
+	 rot = atoi(optarg); /* FIXME check for trailing garbage... */
+	 fInteractive = fFalse;
+	 break;
+       case 't':
+	 tilt = atoi(optarg); /* FIXME check for trailing garbage... */
+	 fInteractive = fFalse;
+	 break;
+       case 's':
+	 /* FIXME check for trailing garbage... */
+	 if (sscanf(optarg, "%f:%f", &N_Scale, &D_Scale) == 2) {
+	    fInteractive = fFalse;
+	    break;
+	 }
+	 /* fall through */
+       default: /* FIXME default ? */
+	 fatal(82, wr, argv[j], 0); /* bad command line options */
       }
    }
 
-/*printf("fInteractive = %d\n",fInteractive);*/
-/*   printf("%s\n",fnm); */
-
-   if (fnm==NULL) {
-      char *leaf = LfFromFnm(argv[0]);
-      printf( msg(157), leaf );
-      free(leaf);
+   fnm = argv[optind++];
+   if (!fnm) {
+      /* no .3d files given */
+      printf(msg(157), szAppNameCopy);
       putnl();
       exit(EXIT_FAILURE);
    }
 
-   /* try to open image file, and check it has correct header */
-   if (( pimg=img_open( fnm, szTitle, szDateStamp ) )==NULL)
-      fatal(img_error(),wr,fnm,0);
-
+   /* Try to open first image file and check it has correct header,
+    * rather than asking lots of questions then failing */
+   pimg = img_open(fnm, szTitle, szDateStamp);
+   if (!pimg) fatal(img_error(), wr, fnm, 0);
+   
    if (pr->Init) {
-      char *fnm;
-      char *lf=PRINT_INI;
       FILE *fh;
-      fnm=UsePth(pthMe,lf);
-      fh=safe_fopen(fnm,"rb");
-      if (!fh)
-         fatal(24,wr,fnm,0);
-      pr->Init( fh, pthMe, &scX, &scY );
+      fh = fopenWithPthAndExt(pthMe, PRINT_INI, NULL, "rb", NULL);
+      if (!fh) fatal(24, wr, fnm, 0);
+      pr->Init(fh, pthMe, &scX, &scY);
       fclose(fh);
-      free(fnm);
    }
 
    if (fInteractive) {
       char szReplies[3];
-      szReplies[0]=*msg(183); /* plan */
-      szReplies[1]=*msg(184); /* elevation */
-      szReplies[2]='\0';
+      szReplies[0] = *msg(183); /* plan */
+      szReplies[1] = *msg(184); /* elevation */
+      szReplies[2] = '\0';
       /* "Plan or Elevation (pe) : " */
-      printf( "%s ", msg(158) );
-      fPlan=( getanswer(szReplies) != 1 ); /* elevation */
+      printf("%s ", msg(158));
+      fPlan = ( getanswer(szReplies) != 1 ); /* elevation */
    }
 
    if (fInteractive) {
@@ -726,8 +702,8 @@ int main( int argc, sz argv[] ) {
          printf("%d\n",rot);
       }
    }
-   SIN=(float)sin(rad(rot));
-   COS=(float)cos(rad(rot));
+   SIN = (float)sin(rad(rot));
+   COS = (float)cos(rad(rot));
 
    if (!fPlan) {
       if (fInteractive) {
@@ -750,10 +726,25 @@ int main( int argc, sz argv[] ) {
       putnl();
       puts(msg(105));
    }
-   ReadInData();
 
-   img_close(pimg);
+   xMax = yMax = -(FLT_MAX/10.0f); /* any (sane) value will beat this */
+   xMin = yMin = FLT_MAX; /* ditto */
+   
+   while (fnm) {
+      /* first time around pimg is already open... */
+      if (!pimg) {
+	 pimg = img_open(fnm, szTitle, szDateStamp);
+	 if (!pimg) fatal(img_error(), wr, fnm, 0);
+      }
+      ReadInData();
+      img_close(pimg);
+      pimg = NULL;
+      fnm = argv[optind++];
+   }
 
+   /* can't have been any data */
+   if (xMax<xMin || yMax<yMin) fatal(86, NULL, NULL, 0);
+   
    {
       float x;
       x = 1000.0/PickAScale(1,1);
@@ -1025,17 +1016,15 @@ void drawticks( border clip, int tick_size, int x, int y ) {
    pr->DrawTo(clip.x_min, clip.y_min);
 }
 
-char *as_string( char *p ) {
-   if (!p)
-      fatal(85,NULL,NULL,0); /* bad printer config file */
+char *as_string(char *p) {
+   if (!p) fatal(85, NULL, NULL, 0); /* bad printer config file */
    return p;
 }
 
 int as_int( char *p, int min_val, int max_val ) {
    long val;
    char *pEnd;
-   if (!p)
-      fatal(85,NULL,NULL,0); /* bad printer config file */
+   if (!p) fatal(85, NULL, NULL, 0); /* bad printer config file */
    val=strtol( p, &pEnd, 10 );
    if (pEnd==p || val<(long)min_val || val>(long)max_val)
       fatal(85,NULL,NULL,0); /* bad printer config file */
@@ -1050,8 +1039,7 @@ int as_bool( char *p ) {
 float as_float( char *p, float min_val, float max_val ) {
    double val;
    char *pEnd;
-   if (!p)
-      fatal(85,NULL,NULL,0); /* bad printer config file */
+   if (!p) fatal(85, NULL, NULL, 0); /* bad printer config file */
    val=strtod( p, &pEnd );
    if (pEnd==p || val<(double)min_val || val>(double)max_val)
       fatal(85,NULL,NULL,0); /* bad printer config file */
@@ -1119,7 +1107,6 @@ int as_escstring( char *s ) {
       }
       *q++=c;
    }
-   if (fSyntax)
-      fatal(85,NULL,NULL,0); /* bad printer config file */
+   if (fSyntax) fatal(85, NULL, NULL, 0); /* bad printer config file */
    return (q-s);
 }
