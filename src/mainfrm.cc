@@ -144,7 +144,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxMenu* orientmenu = new wxMenu;
     orientmenu->Append(menu_ORIENT_MOVE_NORTH, "Move &North\tN", "Move the survey northwards");
     orientmenu->Append(menu_ORIENT_MOVE_EAST, "Move &East\tE", "Move the survey eastwards");
-    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, "Move S&outh\tS", "Move the survey southwards");
+    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, "Move &South\tS", "Move the survey southwards");
     orientmenu->Append(menu_ORIENT_MOVE_WEST, "Move &West\tW", "Move the survey westwards");
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_SHIFT_LEFT, "Shift Survey &Left\tLeft Arrow",
