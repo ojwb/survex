@@ -1,9 +1,9 @@
 survex (1.0.25) unstable; urgency=low
 
   * Updated config.guess and config.sub (closes: bug#186687).
-  * Added missing Build-Depends on xlibs-dev.
+  * Added missing Build-Depends on xlibs-dev (closes: bug#186956).
 
- -- Wookey <wookey@survex.com>  Sun, 30 Mar 2003 22:25:29 +0100
+ -- Wookey <wookey@survex.com>  Mon, 31 Mar 2003 17:49:29 +0100
 
 survex (1.0.24) unstable; urgency=low
 
