@@ -1536,6 +1536,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		  Refresh(false);
 	    }
 	    else {
+	        m_LastDrag = drag_MAIN;
 	        HandleTranslate(point);
 	    }
 	}
