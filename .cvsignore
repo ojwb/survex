@@ -7,4 +7,4 @@ config.status
 configure
 stamp-h
 stamp-h.in
- 
+survex-*.tar.gz
