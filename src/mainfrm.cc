@@ -454,11 +454,11 @@ void MainFrm::CreateMenuBar()
     menubar->Append(rotmenu, GetTabMsg(/*@Rotation*/211));
     menubar->Append(orientmenu, GetTabMsg(/*@Orientation*/212));
     menubar->Append(viewmenu, GetTabMsg(/*@View*/213));
+#ifndef PREFDLG
+    menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
+#endif
 #ifdef AVENPRES
     menubar->Append(presmenu, GetTabMsg(/*@Presentation*/317));
-#endif
-#ifdef PREFDLG
-    menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
 #endif
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
