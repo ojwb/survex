@@ -48,6 +48,18 @@ safe_fopen(const char *fnm, const char *mode)
    return f;
 }
 
+/* Wrapper for fclose which throws a fatal error if there's been a write
+ * error.
+ */
+extern void
+safe_fclose(FILE *f)
+{
+   ASSERT(f);
+   /* NB: use of | rather than || - we always want to call fclose() */
+   if (ferror(f) | (fclose(f) == EOF))
+      fatalerror(/*Error writing to file*/111);
+}
+
 extern FILE *
 safe_fopen_with_ext(const char *fnm, const char *ext, const char *mode)
 {

@@ -505,5 +505,5 @@ do_stats(void)
     *  # fixed stations (list of?)
     */
 
-   if (fh) fclose(fh);
+   if (fh) safe_fclose(fh);
 }

@@ -723,11 +723,8 @@ replace_travs(void)
       osfree(ptrOld);
    }
 
-   /* leave fhErrStat open in case we're asked to close loops again */
-   /* but not if it's not open in the first place */
-#if 0
-   if (!fSuppress) fclose(fhErrStat);
-#endif
+   /* Leave fhErrStat open in case we're asked to close loops again... */
+   /* if (!fSuppress) fclose(fhErrStat); */
 }
 
 static void

@@ -38,6 +38,7 @@ FILE *fopen_portable(const char *pth, const char *fnm, const char *ext,
 
 FILE *safe_fopen(const char *fnm, const char *mode);
 FILE *safe_fopen_with_ext(const char *fnm, const char *ext, const char *mode);
+void safe_fclose(FILE *f);
 
 void filename_register_output(const char *fnm);
 void filename_delete_output(void);

@@ -240,7 +240,7 @@ main(int argc, char **argv)
    fclose(fh);
 
    if (fnm_out) {
-      fclose(fh_out);
+      safe_fclose(fh_out);
 #if (OS!=UNIX)
       /* UNIX rename atomically replaces - other OSes are less useful */
       /* FIXME: WIN32 needs this - haven't actually checked others. */

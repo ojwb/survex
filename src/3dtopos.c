@@ -167,7 +167,7 @@ main(int argc, char **argv)
       }
    }
 
-   fclose(fh_out);
+   safe_fclose(fh_out);
 
    return EXIT_SUCCESS;
 }

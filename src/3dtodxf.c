@@ -557,6 +557,6 @@ main(int argc, char **argv)
    }
    img_close(pimg);
    footer();
-   fclose(fh);
+   safe_fclose(fh);
    return 0;
 }

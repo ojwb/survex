@@ -1017,7 +1017,9 @@ it:108 Data e ora non disponibili.
 en:109 Error reading from file `%s'
 # TRANSLATE
 en:110 Error writing to file `%s'
-# XXX 111,112,113,114
+# TRANSLATE
+en:111 Error writing to file
+# XXX 112,113,114
 en:115 North
 fr:115 Nord
 de:115 Norden

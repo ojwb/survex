@@ -1,8 +1,8 @@
 * (Unix version): Fixed attempt to load messages from
   "DEFAULTLANG.msg" if both SURVEX_LANG and LANG were unset.
 
-* Much more rigorous checking for errors when reading and writing .3d
-  files.
+* Much more rigorous checking for operating system errors when reading
+  and writing files.
 
 Changes in 0.98:
 
