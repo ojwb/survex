@@ -271,12 +271,16 @@ ca: 21 Lectura de br&uacute;ixola en una tirada vertical
 es: 21 Lectura de br&uacute;jula en una tirada vertical
 it: 21 Lettura della bussola in una battuta verticale
 # c.f. 192
-# FIXME: translate de pt ca es it
+# FIXME: translate ca es it
 en: 22 END with no matching BEGIN in this file
 fr: 22 END sans BEGIN correspondant dans ce fichier
-# FIXME: translate de pt ca es it
+de: 22 END ohne entsprechendes BEGIN in dieser Datei
+pt: 22 END sem o BEGIN correspondente neste arquivo
+# FIXME: translate ca es it
 en: 23 BEGIN with no matching END in this file
-fr: 22 BEGIN sans END correspondant dans ce fichier
+fr: 23 BEGIN sans END correspondant dans ce fichier
+de: 23 BEGIN ohne entsprechendes END in dieser Datei
+pt: 23 BEGIN sem o END correspondente neste arquivo
 en: 24 Couldn't open data file '%s'
 fr: 24 Ne peut pas ouvrir le fichier de donn&eacute;es '%s'
 de: 24 Konnte Datendatei nicht &ouml;ffnen oder finden '%s'
@@ -444,13 +448,13 @@ es: 50 Tirada con la misma estaci&oacute;n en ambas puntas ('%s') - error de tra
 it: 50 Alle estremit&aacute; di una battuta c'&eacute; la stessa stazione ('%s') - Errore di trascrizione?
 en: 51 Clino reading over 90 degrees (absolute value)
 en-us: 51 Clino over 90 degrees (absolute value)
-fr: 51 Lecture de clino sup&egrave;rieure &agrave; 90 degr&eacute;s (en value absolue)
+fr: 51 Lecture de clino sup&eacute;rieure &agrave; 90 degr&eacute;s (en value absolue)
 # GN (2): `Grad' *is* `degree'.  The decimal grades are called `Neugrad'
 # when necessary to avoid confusion.  While surface surveyors here use
 # these per default, cavers rarely do.
 #germ: 51 Streckenneigung &uuml;bertrifft 90 Grad (Absolutwert)
 de: 51 Neigungseintrag &uuml;bertrifft 90 Grad (Absolutwert)
-# Eric queries if "graus" is correct here:
+# "graus" is correct here ("grad" would be "grados")
 pt: 51 Inclina&ccedil;&atilde;o maior que 90 graus em valor absoluto
 # Eric queries if "graus" is correct here:
 ca: 51 Lectura del clino superior a 90 graus (valor absolut)
