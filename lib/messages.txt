@@ -465,7 +465,7 @@ pt: 51 Inclina&ccedil;&atilde;o maior que 90 graus em valor absoluto
 ca: 51 Lectura del clino superior a 90 graus (valor absolut)
 # Eric queries if "grados" is correct here:
 es: 51 Lectura del clino superior a 90 grados (valor absoluto)
-# "gradi" is correct here
+# "gradi" is correct here (grads would be "gradi quattrocentesimali")
 it: 51 Lettura del clinometro superiore a 90 gradi (valore assoluto)
 en: 52 Tried to equate two non-equal fixed stations
 fr: 52 Essai de rendre &eacute;gaux deux points fixes distincts

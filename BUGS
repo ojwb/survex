@@ -69,3 +69,18 @@ not all Xcaverot keys implemented
 
 heading indicator not working -- soon to be fixed
 	  
+Date: Wed, 08 Mar 2000 15:44:58 GMT
+From: Wookey <wookey@aleph1.co.uk>
+
+On RISC OS: `cavern --output=3Ddir.' results in files such as
+`3Ddir./3d' being created.
+
+[Olly: I think fDirectory() isn't spotting `3Ddir.' as a directory -
+workaround is to use `3Ddir' instead which does work]
+
+Date: Wed, 08 Mar 2000 21:38:25 GMT
+From: Brian Clipstone <brian@bclipstone.freeserve.co.uk>
+
+[in 0.92pre6, allegro version] CAVEROT Keys :- Delete, U & D and the
+cursor keys do not work.
+
