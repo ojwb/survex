@@ -50,6 +50,8 @@
   appropriately (don't ask for view or bearing, and modify info box
   on printout).
 
+* (Unix version): fixed minor flaws in man pages.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

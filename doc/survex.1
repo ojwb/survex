@@ -18,15 +18,14 @@
 .SH NAME
 survex \- cave survey software
 .SH SYNOPSIS
-.B survex
-[\fIOPTION\fR]... \fISVX_FILE\fR...
-.br
 .B cavern
 [\fIOPTION\fR]... \fISVX_FILE\fR...
 .br
-.B xcaverot
+.B aven
 [\fIOPTION\fR]... \fI3DFILE\fR...
 .br
+.B xcaverot
+[\fIOPTION\fR]... \fI3DFILE\fR...
 .br
 .B printps
 [\fIOPTION\fR]... \fI3DFILE\fR...
@@ -40,15 +39,20 @@ survex \- cave survey software
 .B printdm
 [\fIOPTION\fR]... \fI3DFILE\fR...
 .br
-.br
 .B extend
 \fIINPUT_3DFILE\fR [\fIOUTPUT_3DFILE\fR]
 .br
 .B diffpos
 \fI3DFILE\fR \fI3DFILE\fR [\fITHRESHOLD\fR]
 .br
-.B 3dtodxf
+.B cad3d
 [\fIOPTION\fR]... \fI3DFILE\fR [\fI3DFILE\fR]
+.br
+.B 3dtopos
+[\fIOPTION\fR]... \fI3DFILE\fR [\fI3DFILE\fR]
+.br
+.B survex
+[\fIOPTION\fR]... \fISVX_FILE\fR...
 .br
 .B svx2hto
 [\fIHTO_FILE\fR [\fISVX_FILE\fR]]
@@ -65,13 +69,14 @@ cave survey data.
 
 .PP
 This manual page documents briefly the
-\fBsurvex\fP,
 \fBcavern\fP,
-\fBxcaverot\fP,
 \fBaven\fP,
+\fBxcaverot\fP,
 \fBprint(ps|hpgl|pcl|dm)\fP,
 \fBdiffpos\fP,
-\fB3dtodxf\fP,
+\fBcad3d\fP,
+\fB3dtopos\fP,
+\fBsurvex\fP,
 \fBsvx2hto\fP,
 and
 \fBhto2svx\fP
@@ -97,7 +102,7 @@ Show version of program.
 .SH SEE ALSO
 .\" Nothing - this feeble manpage is it.
 These programs are described fully by the documentation found in
-/usr/share/doc/survex or /usr/docs/survex
+/usr/share/doc/survex or /usr/doc/survex
 .SH AUTHOR
 This manual page was written by Wookey <wookey@survex.com> and amended by
 Olly Betts <olly@survex.com>
