@@ -44,8 +44,10 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 #endif
     wxStaticText* purpose = new wxStaticText(this, 505,
         wxString(msg(/*Visualisation of Survex 3D files*/209)));
-    wxStaticText* copyright1 = new wxStaticText(this, 503, AVEN_COPYRIGHT_MSG);
-    wxStaticText* copyright2 = new wxStaticText(this, 504, COPYRIGHT_MSG);
+    wxStaticText* copyright1 = new wxStaticText(this, 503,
+	    wxString::Format(AVEN_COPYRIGHT_MSG, msg(/*&copy;*/0)));
+    wxStaticText* copyright2 = new wxStaticText(this, 504,
+	    wxString::Format(COPYRIGHT_MSG, msg(/*&copy;*/0)));
 
     wxString licence_str(msg(/*This is free software.  Aven is licenced under the terms of the GNU General Public Licence version 2, or (at your option) any later version.*/200));
     unsigned int wrap = 42;
@@ -82,6 +84,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     bottom->Add(5, 5, 1);
     bottom->Add(close, 0, wxRIGHT | wxBOTTOM, 15);
     vert->Add(bottom, 0, wxEXPAND | wxLEFT | wxRIGHT, 0);
+    vert->SetMinSize(0, bm.GetHeight());
 
     SetAutoLayout(true);
     SetSizer(horiz);

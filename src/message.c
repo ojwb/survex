@@ -1178,6 +1178,12 @@ msg(int en)
       return badbuf;
    }
 
+   if (en == 0) {
+      char *p = msg_array[0];
+      if (!*p) p = "(C)";
+      return p;
+   }
+
    return msg_array[en];
 }
 

@@ -90,6 +90,13 @@
 #     jargon, you may use whatever in the simpler. Especially as the official
 #     quotes are not standard ascii."
 #
+en:  0 &copy;
+fr:  0 &copy;
+de:  0 &copy;
+pt:  0 &copy;
+ca:  0 &copy;
+es:  0 &copy;
+it:  0 &copy;
 en:  1 Out of memory (couldn't find %lu bytes).
 # octets -- slightly bad notation since (being pedantic) bytes don't necessarily
 # have 8 bits, but it's the common expression.

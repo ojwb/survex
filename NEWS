@@ -1,3 +1,9 @@
+* aven: Close button in About box is now always right in the bottom right
+  corner.
+
+* Display copyright symbol rather than (C) where the current character set
+  allows it.
+
 Changes in 0.99-prerelease7:
 
 * (MS Windows version): aven was missing from 0.99-prerelease6

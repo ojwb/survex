@@ -249,7 +249,8 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
-   puts("Survex cave rotator v"VERSION"\n  "COPYRIGHT_MSG);
+   printf("Survex cave rotator v"VERSION"\n  "COPYRIGHT_MSG"\n",
+	  msg(/*&copy;*/0));
 
    parse_command(argc, argv);
 

@@ -736,7 +736,7 @@ main(int argc, char **argv)
    szDesc = pr->Name();
 
    printf("Survex %s %s v"VERSION"\n  "COPYRIGHT_MSG"\n\n",
-          szDesc, msg(/*Driver*/152));
+          szDesc, msg(/*Driver*/152), msg(/*&copy;*/0));
 
    if (!fCalibrate) {      
       fnm = argv[optind++];
