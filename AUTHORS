@@ -1,0 +1,26 @@
+This is all rather incomplete.  I really must sort it out.
+
+Thanks to Mark Fearon, Bill Purvis, and Andy Waddinton for spotting and
+solving minor problems in previous releases, and to Bill Purvis, Devon
+Bowen, and John Pybus for their work on xcaverot.  Iain Miller also deserves
+a mention for letting us play with his very interconnected survey data from
+OFD.  Andy Holtsbery kindly fixed a few problems with xcaverot due to
+changes in other files.
+
+Martin Heller, John Halleck, Sean Kelly, Patrick Warren, and Leandro Dybal
+Bertoni also deserve a mention.
+
+Also a big thankyou to CUCC for a great deal of testing in Austria over the
+past few years.
+
+Thankyou to the following people for their work on the translations:
+
+French: Eric Madelaine/Francois Dani
+German: Gerhard Niklasch/Jens Rasch
+Portuguese: Leandro Dybal Bertoni
+Catalan and Spanish: Josep Guarro
+Italian: Roberto Maugeri (Zoom)
+
+Also, a big thanks to everyone who has reported bugs and problems, and
+suggested improvements.  I will not list you all, as I would only forget
+someone.
