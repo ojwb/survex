@@ -102,6 +102,11 @@ void
 add_stn_to_list(node **list, node *stn) {
    ASSERT(list);
    ASSERT(stn);
+#if 0
+   printf("add_stn_to_list(%p, [%p] ", list, stn);
+   if (stn->name) print_prefix(stn->name);
+   printf(")\n");
+#endif
    stn->next = *list;
    stn->prev = NULL;
    if (*list) (*list)->prev = stn;
@@ -111,16 +116,24 @@ add_stn_to_list(node **list, node *stn) {
 /* remove from double-linked list */
 void
 remove_stn_from_list(node **list, node *stn) {
-#ifdef DEBUG_INVALID
-   /* check station is actually in this list */
-   node *stn_to_remove_is_in_list = *list;
-   while (stn_to_remove_is_in_list != stn) {
-      ASSERT(stn_to_remove_is_in_list);
-      stn_to_remove_is_in_list = stn_to_remove_is_in_list->next;
-   }
-#endif
    ASSERT(list);
    ASSERT(stn);
+#if 0
+   printf("remove_stn_from_list(%p, [%p] ", list, stn);
+   if (stn->name) print_prefix(stn->name);
+   printf(")\n");
+#endif
+#ifdef DEBUG_INVALID
+     {
+	/* check station is actually in this list */
+	node *stn_to_remove_is_in_list = *list;
+	validate();
+	while (stn_to_remove_is_in_list != stn) {
+	   ASSERT(stn_to_remove_is_in_list);
+	   stn_to_remove_is_in_list = stn_to_remove_is_in_list->next;
+	}
+     }
+#endif
    /* adjust the iterator if it points to the element we're deleting */
    if (stn_iter == stn) stn_iter = stn_iter->next;
    /* need a special case if we're removing the list head */
