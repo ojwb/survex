@@ -19,6 +19,8 @@
 * .3d file now stores prefixes for legs (the prefix is taken from the
   "from" station of the leg.
 
+* (MS Windows version): added explorer bindings for sorterr.
+
 * Minor documentation updates.
 
 Changes in 0.98-prerelease3:
