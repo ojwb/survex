@@ -511,12 +511,12 @@ process_key(void) /* and mouse! */
        case '[': case '{':
          sc = fRevSense ? sc * ZoomFactor : sc / ZoomFactor;
          fChanged = fTrue; break;
-       case 'U': translate_data(0, 0, (coord)nStep); fChanged = fTrue; break;
-       case 'D': translate_data(0, 0, (coord)-nStep); fChanged = fTrue; break;
-       case 'N': translate_data(0, (coord)nStep, 0); fChanged = fTrue; break;
-       case 'S': translate_data(0, (coord)-nStep, 0); fChanged = fTrue; break;
-       case 'E': translate_data((coord)nStep, 0, 0); fChanged = fTrue; break;
-       case 'W': translate_data((coord)-nStep, 0, 0); fChanged = fTrue; break;
+       case 'U': elev = 90; fChanged = fTrue; break;
+       case 'D': elev = -90; fChanged = fTrue; break;
+       case 'N': degView = 0; fChanged = fTrue; break;
+       case 'S': degView = 180; fChanged = fTrue; break;
+       case 'E': degView = 90; fChanged = fTrue; break;
+       case 'W': degView = 270; fChanged = fTrue; break;
        case DELETE_KEY:  set_defaults(); fChanged = fTrue; break;
        case 'O':   fAllNames = !fAllNames; fChanged = fNames; break;
 /*       case 'I':   get_view_details(); fChanged=fTrue; break; */
@@ -648,8 +648,8 @@ show_help(void)
 	{"                  C,V : Rotate cave one step clockwise/anti", FLAG_ALWAYS},
 	{"                  ',/ : Higher/Lower viewpoint", FLAG_ALWAYS},
 	{"                  ],[ : Zoom In/Out", FLAG_ALWAYS},
-	{"                  U,D : Cave [U]p/[D]own", FLAG_ALWAYS},
-	{"              N,S,E,W : Cave [N]orth/[S]outh/[E]ast/[W]est", FLAG_ALWAYS},
+	{"                  U,D : View cave from [U]p/[D]own", FLAG_ALWAYS},
+	{"              N,S,E,W : View cave from [N]orth/[S]outh/[E]ast/[W]est", FLAG_ALWAYS},
 	{"               Delete : Default scale, rotation rate, etc", FLAG_ALWAYS},
 	{"                  P,L : [P]lan/e[L]evation", FLAG_ALWAYS},
       /*  "                    I : [I]nput values", */

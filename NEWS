@@ -44,8 +44,9 @@ Changes in 0.97-prerelease1:
   / and ' now tilt cave; `u' and `d' now switch to view from above/below;
   shift-ed keys now work.
 
-* caverot: if memory is really tight, disable non-overlapping labels rather
-  than dying with an error.
+* caverot: n/s/e/w/u/d now work as in xcaverot - the previous functions they
+  had weren't actually useful; if memory is really tight, disable
+  non-overlapping labels rather than dying with an error.
 
 Changes in 0.96:
 
