@@ -1,17 +1,3 @@
-Date: 24 Feb 2000
-From: Wookey
-
-[lsm entry]
-If you have an auto-update scheme for the webpages when you do a release,
-then get it update this template and mail it to lsm@execpc.com (with
-the subject 'add' (even for updates)) would ensure things were kept up
-to date.
-
-Date: 05 Aug 2000
-From: Olly
-
-Sort out gross error detection code
-
 Date: Fri, 18 Aug 2000
 From: Olly
 
@@ -29,8 +15,6 @@ Clean up the sample data and start including it again.
 Date: Sat, 03 Mar 2001
 From: Olly
 
-cavern: auto declination?
-
 update translations
 
 chase up zombies again?
@@ -41,54 +25,6 @@ test diving data with compass omitted (plumbed)
 
 use "highest" title
 
-Warn bearings not 3 digits, gradient not <sign><digit><digit>
-
-Allow angles as deg/min/sec (for theodolite data) (060°10'15" as 060 10 15,
-or 060.1005 (crap notation))
-
-Add support for bearings of form N20E (ie [NS][0-9]+[EW])?
-
-should % after a clino reading work?
-
-add to UNITS: percentage, lengthoutput, angleoutput ?
-
-error and warning log for survex?
-
-Fixing a point by triangulation?
-
-Theodolite + level:
-  delta(bearing (relative to 0 at start)
-  delta(horizontal)
-  delta(vertical) / maybe "clino" instead
-
-Theodolite only:
-  delta(bearing (relative to 0 at start)
-  delta(horizontal)
-  infinite sd for z
-
-Infinite sds so we can fix in x and y only (or z only)?
-
-add *data to hto to allow it to cope with different data ordering?
-
-use more accuracy than nearest point (1/72") in printps?
-
-funcs to spot differences between caves:
-  display two plots at once, maybe flash in ram banks?
-  compare nets
-
-? make printps & printhpgl one program; make printdm and printpcl one
-program - autosense (by looking at argv[0]) which we're being run as
-(and use symbolic link in Unix). Provide command line option as
-override (so we can use alias/batchfile for DOS)?
-
-Label lengths aren't considered when working out image size in prcore.c,
-so a long label can spill off the edge of the printout
-
-"message.c" add option to read errors from disc only when needed, to help
-when memory is tight
-
-printer driver name spills over one page on Wookey's printer (printdm)
-
 Tests these commands:
  DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET TITLE
 
@@ -96,10 +32,6 @@ If there are errors, existing .pos and .inf files aren't removed, but
 existing .3d and .err files are...
 
 Default variance for topofil counter? (currently same as that of tape)
-
-For warnings such as "Suspicious compass reading", report the reading
-in question in the error message (in the text form given in the file).
-Also report values when warning about problems with processed readings.
 
 complain about *export-ing or *entrance-ing fictional stations
 
