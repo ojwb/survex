@@ -128,7 +128,8 @@ fDirectory(const char *fnm)
 {
    int objtype;
    if (!fnm[0] || fnm[strlen(fnm) - 1] == '.') return 1;
-   if (xosfile_read(f, &objtype, NULL, NULL, NULL, NULL) != NULL) return 0;
+   if (xosfile_read((char*)fnm, &objtype, NULL, NULL, NULL, NULL) != NULL)
+      return 0;
    /* it's a directory iff (objtype is 2 or 3) */
    /* (3 is an image file (for RISC OS 3 and above) but we probably want */
    /* to treat image files as directories) */
