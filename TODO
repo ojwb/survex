@@ -139,25 +139,6 @@ win install lang??
 
 glcaverot?
 
-leg and station "comments":
-
-*data stationdata station left right up down comment
-
-1 1.0 - 50+ 0.5 "large cairn"
-
-2 ...
-
-*data normal station l r u d comment newline tape compass clino
-
-1 1.0 - 50+ 0.5 "large cairn"
-
-  10.78 123 -03
-
-2 ...
-
-comment can be omitted "-" or not present if at end of line...?
-commentall?
-
 Date: Wed, 18 Jul 20001
 From: Olly
 
