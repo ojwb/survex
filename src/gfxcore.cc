@@ -985,13 +985,12 @@ void GfxCore::DrawDepthbar()
 {
     if (m_Parent->GetZExtent() == 0.0) return;
 
-    int y = DEPTH_BAR_BLOCK_HEIGHT * (m_Bands - 1) + DEPTH_BAR_OFFSET_Y;
+    int y = m_YSize/2 - (DEPTH_BAR_BLOCK_HEIGHT * (m_Bands - 1) + DEPTH_BAR_OFFSET_Y);
     glaCoord size = 0;
 
     wxString* strs = new wxString[m_Bands];
     for (int band = 0; band < m_Bands; band++) {
-        Double z = m_Parent->GetZMin() + m_Parent->GetZExtent() * band
-                / (m_Bands - 1);
+        Double z = m_Parent->GetZMin() + m_Parent->GetZExtent() * band / (m_Bands - 1);
         strs[band] = FormatLength(z, false);
         glaCoord x, y;
         GetTextExtent(strs[band], &x, &y);
@@ -1004,7 +1003,7 @@ void GfxCore::DrawDepthbar()
 
     DrawRectangle(m_Pens[col_BLACK], m_Pens[col_DARK_GREY],
                   x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
-                  DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
+                  m_YSize/2 - (DEPTH_BAR_BLOCK_HEIGHT*(m_Bands-1))- DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
                   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 + DEPTH_BAR_EXTRA_LEFT_MARGIN,
                   DEPTH_BAR_BLOCK_HEIGHT*(m_Bands - 1) + DEPTH_BAR_MARGIN*4);
 
@@ -1012,14 +1011,14 @@ void GfxCore::DrawDepthbar()
         if (band < m_Bands - 1) {
             DrawRectangle(m_Parent->GetPen(band), m_Parent->GetPen(band),
                           x_min,
-                          y - DEPTH_BAR_BLOCK_HEIGHT,
+                          y,
                           DEPTH_BAR_BLOCK_WIDTH,
                           DEPTH_BAR_BLOCK_HEIGHT);
         }
 
         DrawIndicatorText(x_min + DEPTH_BAR_BLOCK_WIDTH + 5, y - (FONT_SIZE / 2) - 1, strs[band]);
 
-        y -= DEPTH_BAR_BLOCK_HEIGHT;
+        y += DEPTH_BAR_BLOCK_HEIGHT;
     }
 
     delete[] strs;
