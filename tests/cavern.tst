@@ -52,7 +52,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
  notentranceorexport inferunknown inferexports bad_units_factor\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
- lech level declination.dat ignore.dat"}}
+ lech level 2fixbug declination.dat ignore.dat"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -177,6 +177,7 @@ for file in $TESTS ; do
   gettokennullderef) pos=fail ;;
   lech) pos=no; warn=0 ;;
   level) pos=yes; warn=0 ;;
+  2fixbug) pos=no; warn=0 ;;
   declination.dat) pos=yes; warn=0 ;;
   ignore.dat) pos=yes; warn=0 ;;
   *) file='' ;;
@@ -193,32 +194,26 @@ for file in $TESTS ; do
       posfile="$srcdir/$file.pos" ;;
     esac
     rm -f tmp.*
-    if test -n "$VERBOSE" ; then
-      if test fail = "$pos" ; then
-        $CAVERN "$input" --output=tmp
-	# success gives 0, signal (128 + <signal number>)
-	test $? = 1 || exit 1
-      else
-        $CAVERN "$input" --output=tmp || exit 1
-      fi
+    $CAVERN "$input" --output=tmp > tmp.out
+    exitcode=$?
+    test -n "$VERBOSE" && cat tmp.out
+    if test fail = "$pos" ; then
+      # success gives 0, signal (128 + <signal number>)
+      test $exitcode = 1 || exit 1
     else
-      if test fail = "$pos" ; then
-        $CAVERN "$input" --output=tmp > tmp.out
-	# success gives 0, signal (128 + <signal number>)
-	test $? = 1 || exit 1
-      else
-        $CAVERN "$input" --output=tmp > tmp.out || exit 1
-      fi
+      test $exitcode = 0 || exit 1
     fi
     if test -n "$warn" ; then
-      test -f tmp.out || $CAVERN "$input" --output=tmp > tmp.out
       w=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*\([0-9]*\).*/\1/' tmp.out`
       test x"$w" = x"$warn" || exit 1
     fi
     if test -n "$error" ; then
-      test -f tmp.out || $CAVERN "$input" --output=tmp > tmp.out
       e=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*[0-9][0-9]*[^0-9][^0-9]*\([0-9][0-9]*\).*/\1/;s/\(.*[^0-9].*\)/0/' tmp.out`
       test x"$e" = x"$error" || exit 1
+    fi
+    nan=`sed 's/.*\<[Nn]a[Nn]m\?\>.*/x/p;d' tmp.out`
+    if test -n "$nan" ; then
+      exit 1
     fi
 
     case "$pos" in

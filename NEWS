@@ -16,6 +16,8 @@
 * (MacOS X version): fixed not to try to build aven if wxWindows isn't
   installed.
 
+* test suite: check that cavern doesn't report "nan" or "NaN" for any values.
+
 Changes in 1.0.25:
 
 * (MacOS X version): hopefully fixed building of aven.
