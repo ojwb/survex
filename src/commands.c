@@ -522,6 +522,7 @@ equate_list(void)
 	 }
 
 	 /* FIXME: better to iterate over all name-s using prefix tree? */
+	 /* except after a *fix we have lots more names than stn-s */
 	 /* replace all refs to posReplace with references to pos of stn1 */
 	 FOR_EACH_STN(stn, stnlist)
 	    if (stn->name->pos == posReplace) stn->name->pos = posWith;

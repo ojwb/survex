@@ -160,7 +160,7 @@ main(int argc, char **argv)
 	    optimize = 0;
 	    first_opt_z = 0;
 	 }
-	 /* Lollipops, Parallel legs, Iterate mx, Delta*, Split stnlist */
+	 /* Lollipops, Parallel legs, Iterate mx, Delta* */
 	 while ((ch = *optarg++)) if (islower(ch)) optimize |= BITA(ch);
 	 break;
        }
