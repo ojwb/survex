@@ -1,3 +1,6 @@
+* (Unix version): fixed compilation problems with aven and getopt.h on MacOS X
+  (and probably some other Unix versions).
+
 Changes in 1.0.23:
 
 * Documentation: include 3d v3 file format description on MS Windows, MS DOS,

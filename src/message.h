@@ -1,6 +1,6 @@
 /* message.h
  * Function prototypes for message.c
- * Copyright (C) 1998-2002 Olly Betts
+ * Copyright (C) 1998-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ extern "C" {
 
 #include <stdarg.h>
 
-#include "cmdline.h"
 #include "useful.h"
 #include "osdepend.h"
 #include "osalloc.h"

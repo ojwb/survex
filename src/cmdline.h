@@ -1,6 +1,6 @@
 /* cmdline.h
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998-2001 Olly Betts
+ * Copyright (C) 1998-2001,2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,29 @@
 extern "C" {
 #endif
 
-#include "getopt.h"
+/* Duplicate these from getopt.h to avoid problems
+ * with trying to compile getopt.h with C++ on MacOS X */
+#ifndef no_argument
+/* These values are definitely correct since getopt.h says 0, 1, 2 work */
+# define no_argument            0
+# define required_argument      1
+# define optional_argument      2
+
+/* FIXME: struct definition needs to match getopt.h */
+struct option {
+   const char *name;
+   /* has_arg can't be an enum because some compilers complain about
+    * type mismatches in all the code that assumes it is an int.  */
+   int has_arg;
+   int *flag;
+   int val;
+};
+#endif
+
+extern char *optarg;
+extern int optind;
+extern int opterr;
+extern int optopt;
 
 struct help_msg {
    int opt;
