@@ -18,7 +18,7 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h useful.h\
  validate.h whichos.h xrot.h xcvrtbut.h new3dout.h 3ddefs.h \
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
- aventypes.h aventreectrl.h
+ aventypes.h aventreectrl.h printwx.h avenprcore.h
 
 # GCC 2.95 frequently dies on gfxcore.cc with an internal error, so if the
 # compile fails, rerun it with -O instead of -O2 - FIXME this probably
