@@ -14,7 +14,7 @@
 #include "cvrotgfx.h"
 
 int colText, colHelp;
-int fSwapScreen;
+static int fSwapScreen;
 
 int mouse_buttons = -3; /*!HACK! special value => "not yet initialised" */
 static int bank = 0;
@@ -25,11 +25,9 @@ int _cvrotgfx_textcol, _cvrotgfx_drawcol;
 
 # ifdef MSC
 /* Microsoft C */
-/*# include <graph.h>*/
 
 # elif defined(JLIB)
 /* DJGPP + JLIB */
-/*# include "jlib.h"*/
 buffer_rec *BitMap;
 
 # elif defined(ALLEGRO)
@@ -54,12 +52,10 @@ void set_gui_colors(void)
 
 # elif defined(__DJGPP__)
 /* DJGPP + GRX */
-/*# include "grx20.h"*/
 GrContext *BitMap;
 
 # else
 /* Borland C */
-/*# include <graphics.h>*/
 
 # endif
 
@@ -177,6 +173,12 @@ int dry = 600;
 int
 cvrotgfx_parse_cmdline(int *pargc, char **argv)
 {
+#ifdef ALLEGRO
+   if (*pargc > 2 && (strcmp(argv[*pargc - 1], "--mode-picker") == 0)) {
+      mode_picker = 1;
+      (*pargc)--;
+      argv[*pargc] = NULL;
+   }
 #if 0 /*def ALLEGRO*/
    if (*pargc > 2 && isdigit(argv[*pargc - 1][0])) {
       char *p = argv[*pargc - 1];
@@ -189,12 +191,10 @@ cvrotgfx_parse_cmdline(int *pargc, char **argv)
       argv[*pargc] = NULL;
    }
 #endif
-#ifdef ALLEGRO
-   if (*pargc > 2 && (strcmp(argv[*pargc - 1], "--mode-picker") == 0)) {
-      mode_picker = 1;
-      (*pargc)--;
-      argv[*pargc] = NULL;
-   }
+#else
+   /* avoid compiler warnings */
+   pargc = pargc;
+   argv = argv;
 #endif
    return 1;
 }
@@ -360,7 +360,6 @@ cvrotgfx_init(void)
    y_stretch *= (float)(((float)xcMac / ycMac) * (350.0 / 640.0) * 1.3);
    fSwapScreen = 1;
 # else
-   extern char *pthMe; /* SURVEXHOME if set, else directory prog. was run from */
    int gdriver, gmode, errorcode;
    /* detect graphics hardware available */
    detectgraph(&gdriver, &gmode);
@@ -423,7 +422,7 @@ cvrotgfx_init(void)
       fatalerror(/*Error initialising graphics card*/81);
    }
    /* initialize graphics and global variables */
-   initgraph(&gdriver, &gmode, pthMe);
+   initgraph(&gdriver, &gmode, msg_cfgpth());
 
    /* read result of initgraph call */
    errorcode = graphresult();
@@ -485,8 +484,10 @@ cvrotgfx_pre_main_draw(void)
    }
 #elif defined(MSC)
    _setactivepage(bank);
+   _clearscreen(_GCLEARSCREEN);
 #else
    setactivepage(bank);
+   cleardevice();
 #endif
 #if 0
    /* palette switchin' would look something like this */
@@ -645,6 +646,9 @@ static int eigX, eigY;
 int
 cvrotgfx_parse_cmdline(int *pargc, char **argv)
 {
+   /* avoid compiler warnings */
+   pargc = pargc;
+   argv = argv;
    return 1;
 }
 
@@ -652,6 +656,7 @@ int
 cvrotgfx_init(void)
 {
    extern void fastline_init(void); /* initialise fast lines routines */
+   /* FIXME: Acorn C sez 2x "Warning implicit cast (to 'int') overflow": */
    oswordpointer_bbox_block bbox = {{}, 1, 0x8000, 0x8000, 0x7fff, 0x7fff };
    extern float y_stretch;
    extern int xcMac, ycMac;
@@ -677,12 +682,11 @@ cvrotgfx_init(void)
 
    os_byte(osbyte_SCREEN_CHAR, 0, 0, NULL, &mode_on_entry);
    os_read_vdu_variables((os_vdu_var_list*)&var_list, val_list);
-   mode = val_list[0];
    scrmem = val_list[1]; /* screen memory size */
    modeBest = -1;
    cPixelsBest = 0;
    cColsBest = 0;
-   for( ; mode >= 0; mode--) {
+   for (mode = val_list[0]; mode >= 0; mode--) {
       if (xos_check_mode_valid((os_mode)mode, &modeAlt, NULL, NULL) != NULL)
 	 continue;
       /* modeAlt is -1 for no such mode, -2 for not feasible */
