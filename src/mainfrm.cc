@@ -329,7 +329,7 @@ bool MainFrm::LoadData(const wxString& file)
 	    case IMG_BADFORMAT:    svxerr = msg(603); /* incorrect 3D file format */ break;
 	    default: assert(0);
 	}
-        wxString m = wxString(msg(604) /* Couldn't open 3d file */) +
+        wxString m = wxString(msg(604) /* Couldn't open 3d file */) + wxString(" '") +
 	                      file + wxString("' (") + svxerr +
 	                      wxString(").");
 	wxGetApp().ReportError(m);

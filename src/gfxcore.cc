@@ -182,10 +182,6 @@ void GfxCore::Initialise()
     m_Labels = new wxString[m_Parent->GetNumCrosses()];
     m_LabelsLastPlotted = new LabelFlags[m_Parent->GetNumCrosses()];
     m_LabelCacheNotInvalidated = false;
-
-    // Scale the survey to a reasonable initial size.
-    m_InitialScale = double(m_XSize) / (double(MAX(m_Parent->GetXExtent(),
-						   m_Parent->GetYExtent())) * 1.1);
     
     for (int band = 0; band < m_Bands; band++) {
         m_PlotData[band].vertices = new wxPoint[m_Parent->GetNumPoints()];
@@ -212,9 +208,17 @@ void GfxCore::Initialise()
     }
     switch (m_Lock) {
         case lock_X:
+	{
 	    // elevation looking along X axis
 	    m_PanAngle = M_PI * 1.5;
+
+	    Quaternion q;
+	    q.setFromEulerAngles(0.0, 0.0, m_PanAngle);
+
+	    m_Params.rotation = q * m_Params.rotation;
+	    m_RotationMatrix = m_Params.rotation.asMatrix();
 	    break;
+	}
 
         case lock_Y:
   	    // elevation looking along Y axis: this is the default orientation.
@@ -223,10 +227,18 @@ void GfxCore::Initialise()
         case lock_Z:
         case lock_XZ: // linear survey parallel to Y axis
         case lock_YZ: // linear survey parallel to X axis
+	{
 	    // flat survey (zero height range) => go into plan view.
+	    Quaternion q;
 	    m_TiltAngle = M_PI / 2.0;
+	    q.setFromEulerAngles(m_TiltAngle, 0.0, 0.0);
+
+	    m_Params.rotation = q * m_Params.rotation;
+	    m_RotationMatrix = m_Params.rotation.asMatrix();
+	
 	    m_DepthbarOff = true;
 	    break;
+	}
 
         case lock_POINT:
   	    m_DepthbarOff = true;
@@ -239,6 +251,11 @@ void GfxCore::Initialise()
 	    // survey is linear and parallel to the Z axis => display in elevation.
 	    break;
     }
+
+    // Scale the survey to a reasonable initial size.
+    m_InitialScale = m_Lock == lock_POINT ? 1.0 :
+                               double(m_XSize) / (double(MAX(m_Parent->GetXExtent(),
+			       m_Parent->GetYExtent())) * 1.1);
 
     // Calculate screen coordinates and redraw.
     SetScale(m_InitialScale);
@@ -352,11 +369,12 @@ void GfxCore::SetScale(double scale)
 	    y += m_Params.translation.y;
 	    z += m_Params.translation.z;
 
-	    long cx = (long) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
-	    long cy = -(long) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
+	    int cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
+	    int cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
 
 	    pt->x = cx - CROSS_SIZE;
 	    pt->y = cy - CROSS_SIZE;
+	
 	    pt++;
 	    pt->x = cx + CROSS_SIZE;
 	    pt->y = cy + CROSS_SIZE;
@@ -699,7 +717,7 @@ void GfxCore::NattyDrawNames()
     // Draw station names, without overlapping.
 
     const int dv = 2;
-    const int quantise = FONT_SIZE / dv;
+    const int quantise = int(FONT_SIZE / dv);
     const int quantised_x = m_XSize / quantise;
     const int quantised_y = m_YSize / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
@@ -714,12 +732,13 @@ void GfxCore::NattyDrawNames()
     wxString* label = m_Labels;
     LabelFlags* last_plot = m_LabelsLastPlotted;
     wxPoint* pt = m_CrossData.vertices;
+	
     for (int name = 0; name < m_Parent->GetNumCrosses(); name++) {
         // *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
         // the actual station.
-
-        long x = pt->x + m_XSize/2;
-	long y = pt->y + CROSS_SIZE - FONT_SIZE + m_YSize/2;
+ 
+        wxCoord x = pt->x + m_XSize/2;
+	wxCoord y = pt->y + CROSS_SIZE - FONT_SIZE + m_YSize/2;
 
 	// We may have labels in the cache which are still going to be in the
 	// same place: in this case we only consider labels here which are in
@@ -792,7 +811,7 @@ void GfxCore::NattyDrawNames()
 		x <= m_LabelCacheExtend.GetRight() + 50 &&
 		y >= m_LabelCacheExtend.GetTop() - 50 &&
 		y <= m_LabelCacheExtend.GetBottom() + 50) {
-	      *last_plot++ = label_CHECK_AGAIN;
+	        *last_plot++ = label_CHECK_AGAIN;
 	    }
 	    else {
 	        last_plot++; // leave the cache alone
@@ -811,6 +830,7 @@ void GfxCore::SimpleDrawNames()
 
     wxString* label = m_Labels;
     wxPoint* pt = m_CrossData.vertices;
+
     LabelFlags* last_plot = m_LabelsLastPlotted;
     for (int name = 0; name < m_Parent->GetNumCrosses(); name++) {
         // *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
@@ -1037,7 +1057,7 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
-    double pan_angle = -M_PI * (double(dx) / 500.0);
+    double pan_angle = m_Lock == lock_NONE ? -M_PI * (double(dx) / 500.0) : 0.0;
 
     Quaternion q;
     double new_scale = m_Params.scale;
