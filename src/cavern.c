@@ -1,4 +1,4 @@
-/* > cavern.c
+/* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
  * Copyright (C) 1991-2001 Olly Betts
  *
@@ -271,17 +271,17 @@ main(int argc, char **argv)
       if (!fnm_output_base) {
 	 char *p;
 	 p = baseleaf_from_fnm(argv[optind]);
-	 fnm = add_ext(p, "log");
+	 fnm = add_ext(p, EXT_LOG);
 	 osfree(p);	 
       } else if (fnm_output_base_is_dir) {
 	 char *p;
 	 fnm = baseleaf_from_fnm(argv[optind]);
 	 p = use_path(fnm_output_base, fnm);
 	 osfree(fnm);
-	 fnm = add_ext(p, "log");
+	 fnm = add_ext(p, EXT_LOG);
 	 osfree(p);
       } else {
-	 fnm = add_ext(fnm_output_base, "log");
+	 fnm = add_ext(fnm_output_base, EXT_LOG);
       }
       
       if (!freopen(fnm, "w", stdout))

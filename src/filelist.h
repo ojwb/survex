@@ -1,4 +1,4 @@
-/* > filelist.h
+/* filelist.h
  * Filename extensions used by Survex programs
  * Copyright (C) 1993-2001 Olly Betts
  *
@@ -25,3 +25,4 @@
 #define EXT_SVX_POS  "pos"
 #define EXT_SVX_MSG  "msg"
 #define EXT_INI      "ini"
+#define EXT_LOG      "log"
