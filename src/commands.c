@@ -585,7 +585,7 @@ cmd_fix(void)
 	    /* only one variance given */
 	    sdy = sdz = sdx;
 	 } else {
-	    sdz = read_numeric(fFalse);
+	    sdz = read_numeric(fTrue);
 	    if (sdz == HUGE_REAL) {
 	       /* two variances given - horizontal & vertical */
 	       sdz = sdy;
