@@ -201,6 +201,7 @@ AC_SUBST(sgmltools)
 dnl extra flags for building with gcc
 if test "$GCC" = yes; then
   CFLAGS="$CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -Wredundant-decls -Wnested-externs"
+  # FIXME: also try -pedantic -ansi -Wcast-align -Wconversion -Werror
 fi
 
 AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])

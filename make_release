@@ -72,6 +72,7 @@ if ! make distclean ; then
    exit 1
 fi
 PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
+# FIXME: is this all needed?
 if ! env ac_cv_c_bigendian=no LDFLAGS=-s CAVEROT= ./configure --with-x=no ; then
    echo mingw configure failed
    exit 1
