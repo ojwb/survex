@@ -945,7 +945,7 @@ void GLACanvas::ToggleTextured()
 	    exit(1);
 	}
 	// Generate mipmaps.
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_LUMINANCE,
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, // was GL_LUMINANCE
 			  img.GetWidth(), img.GetHeight(),
 			  GL_RGB, GL_UNSIGNED_BYTE, img.GetData());
 	CHECK_GL_ERROR("ToggleTextured", "gluBuild2DMipmaps");
