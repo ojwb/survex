@@ -2515,7 +2515,9 @@ pt-br:271 @Marcas de base##Ctrl+X
 ca:271 @Creus##Ctrl+X
 es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
-sk:271 @Rezy##Ctrl+X
+sk:271 @Kr&iacute;&zcaron;iky##Ctrl+X
+#"Rezy" means cross sections, not crosses
+#sk:271 @Rezy##Ctrl+X
 #
 en:272 @Underground Survey Legs##Ctrl+L
 en-us:272 @Underground Shots##Ctrl+L
