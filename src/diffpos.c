@@ -80,8 +80,8 @@ cmp_pname(const void *a, const void *b)
 static station **htab;
 static bool fChanged = fFalse;
 
-static added *added_list = NULL;;
-OSSIZE_T c_added = 0;
+static added *added_list = NULL;
+static OSSIZE_T c_added = 0;
 
 static void
 tree_init(void)

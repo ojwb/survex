@@ -858,7 +858,7 @@ static const struct option long_opts[] = {
 /* TRANSLATE: extract help messages to message file */
 static struct help_msg help[] = {
 /*				<-- */
-   {"survey", required_argument, 0, 's'},
+   {HLP_ENCODELONG(0),          "Only load the sub-survey with this prefix"},
    CVROTGFX_HELP(1)
    {'c',                        "set display colours"},
    {0, 0}
