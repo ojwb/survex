@@ -3,6 +3,8 @@
 
 * Better handling of PLT files which have a D command before any M command.
 
+* Updates to German translation.
+
 Changes in 1.0.9:
 
 * aven: Fixed jerky start when auto-rotation begins.
