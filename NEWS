@@ -1,5 +1,15 @@
 * (MS Windows version): aven: Delete now works in the search box.
 
+* (MS Windows version): aven: Loading file on start-up now works!
+
+* (Unix version): aven: Escape cancels distance measuring line (still to
+  be done on MS Windows).
+
+* aven: suppress distance measuring line during auto-rotation and animated
+  tilting.
+
+* German translation updated.
+
 Changes in 0.99-prerelease8:
 
 * aven: Ctrl + Arrow keys is now the preferred way to rotate and tilt

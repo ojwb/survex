@@ -271,7 +271,6 @@ void GfxCore::Initialise()
     m_SurfaceLegs = false;
 
     m_HitTestGridValid = false;
-    m_DrawDistLine = false;
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
 
@@ -1087,6 +1086,7 @@ void GfxCore::RedrawOffscreen()
         }
 
         // Draw any special points.
+        SetColour(col_YELLOW);
         SetColour(col_YELLOW, true);
         list<SpecialPoint>::iterator sp;
         for (sp = m_SpecialPoints.begin(); sp != m_SpecialPoints.end(); ++sp) {
@@ -1095,36 +1095,49 @@ void GfxCore::RedrawOffscreen()
 				 HIGHLIGHTED_PT_SIZE * 2);
         }
 
-        // Draw "here" and "there".
-	Double xp = m_here.x + m_Params.translation.x;
-	Double yp = m_here.y + m_Params.translation.y;
-	Double zp = m_here.z + m_Params.translation.z;
-	long here_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.x;
-        long here_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.y;
 
-	if (m_here.x != DBL_MAX) {
-	    SetColour(col_WHITE);
-	    m_DrawDC.SetBrush(*wxTRANSPARENT_BRUSH);
-	    m_DrawDC.DrawEllipse(here_x + xc - HIGHLIGHTED_PT_SIZE, here_y + yc - HIGHLIGHTED_PT_SIZE,
-				 HIGHLIGHTED_PT_SIZE * 4,
-				 HIGHLIGHTED_PT_SIZE * 4);
-	}
-
-	if (m_there.x != DBL_MAX) {
-	    SetColour(col_WHITE);
-	    SetColour(col_WHITE, true);
-            Double xp = m_there.x + m_Params.translation.x;
-            Double yp = m_there.y + m_Params.translation.y;
-	    Double zp = m_there.z + m_Params.translation.z;
-	    long there_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.x;
-	    long there_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.y;
-	    m_DrawDC.DrawEllipse(there_x + m_XCentre - HIGHLIGHTED_PT_SIZE,
-	                         there_y + m_YCentre - HIGHLIGHTED_PT_SIZE,
-				 HIGHLIGHTED_PT_SIZE * 2,
-				 HIGHLIGHTED_PT_SIZE * 2);
-	    if (m_DrawDistLine) {
-	        m_DrawDC.DrawLine(here_x + m_XCentre, here_y + m_YCentre,
-		 	          there_x + m_XCentre, there_y + m_YCentre);
+	if (!m_Rotating && !m_SwitchingToPlan && !m_SwitchingToElevation
+#ifdef AVENPRES
+	    && !(m_DoingPresStep >= 0 && m_DoingPresStep <= 100)
+#endif
+#ifdef AVENGL
+	    && !(m_TerrainLoaded && floor_alt > -DBL_MAX && floor_alt <= HEAVEN)
+#endif
+	    ) {
+	    long here_x = LONG_MAX, here_y;
+	    // Draw "here" and "there".
+	    if (m_here.x != DBL_MAX) {
+		SetColour(col_WHITE);
+		m_DrawDC.SetBrush(*wxTRANSPARENT_BRUSH);
+		Double xp = m_here.x + m_Params.translation.x;
+		Double yp = m_here.y + m_Params.translation.y;
+		Double zp = m_here.z + m_Params.translation.z;
+		here_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale)
+		    + m_Params.display_shift.x;
+		here_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale)
+		    + m_Params.display_shift.y;
+		m_DrawDC.DrawEllipse(here_x + xc - HIGHLIGHTED_PT_SIZE,
+				     here_y + yc - HIGHLIGHTED_PT_SIZE,
+				     HIGHLIGHTED_PT_SIZE * 4,
+				     HIGHLIGHTED_PT_SIZE * 4);
+	    }
+	    if (m_there.x != DBL_MAX) {
+		if (here_x == LONG_MAX) SetColour(col_WHITE);
+		SetColour(col_WHITE, true);
+		Double xp = m_there.x + m_Params.translation.x;
+		Double yp = m_there.y + m_Params.translation.y;
+		Double zp = m_there.z + m_Params.translation.z;
+		long there_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale)
+		    + m_Params.display_shift.x;
+		long there_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale)
+		    + m_Params.display_shift.y;
+		m_DrawDC.DrawEllipse(there_x + xc, there_y + yc,
+				     HIGHLIGHTED_PT_SIZE * 2,
+				     HIGHLIGHTED_PT_SIZE * 2);
+		if (here_x != LONG_MAX) {
+		    m_DrawDC.DrawLine(here_x + m_XCentre, here_y + m_YCentre,
+				      there_x + m_XCentre, there_y + m_YCentre);
+		}
 	    }
         }
 
@@ -2282,12 +2295,9 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	    m_Parent->SetMouseOverStation(info.label);
 	    if (centre) {
 	        CentreOn(info.label->GetX(), info.label->GetY(), info.label->GetZ());
+		SetThere(info.label->GetX(), info.label->GetY(), info.label->GetZ());
             }
 	    done = true;
-	    m_DrawDistLine = true;
-	}
-	else {
-            m_DrawDistLine = false;
 	}
     }
 
@@ -3447,14 +3457,12 @@ void GfxCore::SetThere(Double x, Double y, Double z)
     m_there.x = x;
     m_there.y = y;
     m_there.z = z;
-    m_DrawDistLine = true;
     m_RedrawOffscreen = true;
     Refresh(false);
 }
 
 void GfxCore::OnCancelDistLine(wxCommandEvent&)
 {
-    m_DrawDistLine = false;
     SetThere();
     m_Parent->ClearTreeSelection();
 }
@@ -3838,7 +3846,7 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	    break;
 	case WXK_SPACE:
 	    OnStopRotation();
-	    break;
+	    break; 
 	case WXK_LEFT:
 	    if (e.m_controlDown)
 		OnStepOnceAnticlockwise();
@@ -3863,6 +3871,11 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	    else
 		OnShiftDisplayDown();
 	    break;
+#if 0
+	case WXK_ESCAPE:
+	    SetThere();
+	    break; 
+#endif
 	default:
 	    e.Skip();
     }

@@ -181,6 +181,7 @@ it:  8 Questo campo non pu&oacute; essere omesso
 #es:  9 Se espera un campo num&eacute;rico
 #it:  9 Questo campo &eacute; numerico
 en:  9 Expecting numeric field, found `%s'
+de:  9 Zahl erwartet, `%s' gelesen
 # 10 c.f. 31, 32, 131
 en: 10 Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'
 fr: 10 Vous avez &eacute;crit `%s'; on attendait `PRESERVE', `TOUPPER', ou `TOLOWER'
@@ -226,6 +227,8 @@ it: 13 Stazione `%s' uguagliata a se stessa
 #es: 14 La lectura de la br&uacute;jula no se puede omitir aqu&iacute;
 #it: 14 La lettura della bussola non pu&oacute; essere omessa qui
 en: 14 Compass reading may not be omitted except on plumbed legs
+de-de,de-ch: 14 Kompassablesung darf nur bei Lotstrecken weggelassen werden
+de:     14 Kompa&szlig;ablesung darf nur bei Lotstrecken weggelassen werden
 en: 15 End of line not blank
 fr: 15 Fin de ligne non vide
 de: 15 Ende der Zeile ist nicht leer
@@ -606,6 +609,7 @@ pt: 57 *EXPORT deve estar logo ap&oacute;s um `*BEGIN <TOPO>'
 it: 57 *EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'
 # cf 162
 en: 58 "Plot what (n = station names, c = crosses, l = legs, s = surface) (default &quot;%s&quot;)&#10;: "
+de: 58 "Was plotten? (n = Stationsnamen, c = Kreuze, l = Strecken, s = Oberfl&auml;che) (Default &quot;%s&quot;)&#10;: "
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
 fr: 59 Lecture de compas suspecte
@@ -990,6 +994,7 @@ de:         103 Drucker mu&szlig; kalibriert werden - n&auml;her beschrieben im 
 pt:103 &Eacute; necess&aacute;rio calibrar a impressora - veja como no manual da mesma.
 #
 en:104 `*data %s %c ...' is deprecated - use `*data %s ...' instead
+de:104 `*data %s %c ...' ist veraltet - stattdessen `*data %s ...' verwenden
 #
 en:105 Reading in data - please wait...
 fr:105 Lecture de donn&eacute;es - attendez S.V.P. ...
@@ -1715,9 +1720,10 @@ it:197 " a %4.2fm)"
 # Old versions
 #en:198 Expecting date
 #fr:198 On attendait une date
-#de:198 Datum erwartet
 #pt:198 Esperando data
 en:198 Expecting date, found `%s'
+de:198 Datum erwartet, `%s' gelesen
+#
 en:199 Only load the sub-survey with prefix
 fr:199 Ne charge que la partie de topo avec le prefixe
 de:199 Nur Teilvermessung mit Pr&auml;fix laden
@@ -1863,10 +1869,16 @@ it:215 @Aiuto
 #
 # More cavern messages (sorry, 199 wasn't enough!)
 en:216 Standard deviation must be positive
+de:216 Standardabweichung mu&szlig; positiv sein
+de-de,de-ch:216 Standardabweichung muss positiv sein
 #
 en:217 Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')
+de:217 Ma&szlig;stab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
+# (no de-de entry here!)
+de-ch:217 Massstab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
 #
 en:218 Bad list of pages to print `%s'
+de:218 Liste zu druckender Seiten `%s' ist fehlerhaft
 #
 # back to aven...
 #
@@ -2020,7 +2032,7 @@ ca:254 A@llunya##[
 #es or "Disminuir"
 es:253 @Reducir##[
 # it: or "Riduci"
-it:253 Zoo@m indietro##]
+it:253 Zoo@m indietro##[
 #
 en:254 Restore De@fault Settings
 fr:254 @Restaurer les valeurs par d&eacute;faut
@@ -2099,6 +2111,8 @@ en:280 @Reverse Sense##Ctrl+R
 fr:280 Sens @Inverse##Ctrl+R
 de:280 Richtung @umkehren##Ctrl+R
 pt-br:280 @Inverter Sentido##Ctrl+R
+#
+en:281 @Cancel Measuring Line##Escape
 #
 # The accelerators must be different within this group
 # c.f. 205
@@ -2323,14 +2337,24 @@ de:330 @Durchgezogene Oberfl&auml;che
 pt:330 Superf&iacute;cie S&oacute;@lida
 # number of stations found matching search
 en:331 %d found
+de:331 %d gefunden
 # "Find stations" button label
 en:332 Find
+de:332 Suchen
 # "Hide stations" button label
 en:333 Hide
+de:333 Unterdr&uuml;cken
 # checkbox for regular expression search
 en:334 Regular expression
-en:335 @Cancel Measuring Line##Escape
+de:334 Regul&auml;rer Ausdruck
 #
+en:335 Altitude
+fr:335 Altitude
+de:335 H&ouml;he    
+pt:335 Altura  
+ca:335 Altitut 
+es:335 Altitud 
+it:335 Quota
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

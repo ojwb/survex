@@ -359,7 +359,7 @@ void MainFrm::CreateMenuBar()
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "", true);
     ctlmenu->AppendSeparator();
-    ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/335));
+    ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
 
     wxMenu* helpmenu = new wxMenu;
     helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About Aven...*/290));
