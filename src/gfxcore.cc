@@ -508,11 +508,13 @@ void GfxCore::SetScale(Double scale)
 		    last_was_move = false;
 		}
 		else {
+#ifdef AVENGL
 		    if (line_open) {
 		        glVertex3d(current_x, current_y, current_z);
 		        glEnd();
 			line_open = false;
 		    }
+#endif
 		    first_point = false;
 		    last_was_move = true;
 		}
@@ -655,7 +657,22 @@ void GfxCore::RedrawOffscreen()
 
 	// Draw surface legs.
         if (m_Surface) {
-	    for (int band = 0; band < m_Bands; band++) {
+	    int start;
+	    int end;
+	    int inc;
+
+	    if (m_TiltAngle < 0.0) {
+	        start = 0;
+		end = m_Bands;
+		inc = 1;
+	    }
+	    else {
+	        start = m_Bands;
+		end = 0;
+		inc = -1;
+	    }
+
+	    for (int band = start; band < end; band += inc) {
 	        wxPen pen = m_SurfaceDepth ? m_Parent->GetPen(band) : m_Parent->GetSurfacePen();
 		if (m_SurfaceDashed) {
 #ifdef _WIN32
@@ -1605,9 +1622,9 @@ void GfxCore::TiltCave(Double tilt_angle)
 
     Quaternion q;
 #ifdef AVENGL
-    q.setFromEulerAngles(tilt_angle, 0.0, 0.0);
-#else
     q.setFromEulerAngles(tilt_angle - M_PI/2.0, 0.0, 0.0);
+#else
+    q.setFromEulerAngles(tilt_angle, 0.0, 0.0);
 #endif
 
     m_Params.rotation = q * m_Params.rotation;
