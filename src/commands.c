@@ -916,6 +916,8 @@ cmd_data(void)
 	{"BEARING",      Comp },
 	{"CLINO",        Clino }, /* alternative name */
 	{"COMPASS",      Comp }, /* alternative name */
+        {"COUNT",        Count }, /* FrCount&ToCount in multiline */
+        {"DEPTH",        Depth }, /* FrDepth&ToDepth in multiline */
 	{"DX",		 Dx },
 	{"DY",		 Dy },
 	{"DZ",		 Dz },
@@ -929,6 +931,7 @@ cmd_data(void)
 	{"LENGTH",       Tape },
 	{"NEWLINE",      Newline },
 	{"NORTHING",     Dy },
+        {"STATION",      Station }, /* Fr&To in multiline */
 	{"TAPE",         Tape }, /* alternative name */
 	{"TO",           To },
 	{"TOCOUNT",      ToCount },
@@ -946,11 +949,13 @@ cmd_data(void)
 
    /* readings which may be given for each style */
    static unsigned long mask[] = {
-      BIT(Fr) | BIT(To) | BIT(Tape) | BIT(Comp) | BIT(Clino),
-      BIT(Fr) | BIT(To) | BIT(FrCount) | BIT(ToCount) | BIT(Comp) | BIT(Clino),
-      BIT(Fr) | BIT(To) | BIT(Tape) | BIT(Comp) | BIT(FrDepth) | BIT(ToDepth),
-      BIT(Fr) | BIT(To) | BIT(Dx) | BIT(Dy) | BIT(Dz),
-      BIT(Fr) | BIT(To)
+      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Tape) | BIT(Comp) | BIT(Clino),
+      BIT(Fr) | BIT(To) | BIT(Station)
+	 | BIT(FrCount) | BIT(ToCount) | BIT(Count) | BIT(Comp) | BIT(Clino),
+      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Tape) | BIT(Comp)
+	 | BIT(FrDepth) | BIT(ToDepth) | BIT(Depth),
+      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dx) | BIT(Dy) | BIT(Dz),
+      BIT(Fr) | BIT(To) | BIT(Station)
    };
 
    /* readings which may be omitted for each style */
@@ -999,20 +1004,24 @@ cmd_data(void)
    }
 
    pcs->Style = fn[style];
-#ifdef SVX_MULTILINEDATA /* NEW_STYLE */
    m = mask[style] | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
-#else
-   m = mask[style] | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
-#endif
 
    skipblanks();
    /* olde syntax had optional field for survey grade, so allow an omit */
    if (isOmit(ch)) nextch();
 
    style_name = osstrdup(buffer);
-   do {
+   do {      
+      long fp = ftell(file.fh);
+      int save_ch = ch;
       get_token();
       d = match_tok(dtab, TABSIZE(dtab));
+      /* only token allowed after IGNOREALL is NEWLINE */
+      if (k && new_order[k - 1] == IgnoreAll && d != Newline) {
+	 fseek(file.fh, fp, SEEK_SET);
+	 ch = save_ch;
+	 break;
+      }
       /* Note: an unknown token is reported as trailing garbage */
       if (!TSTBIT(m, d)) {
 	 compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
@@ -1021,43 +1030,74 @@ cmd_data(void)
 	 skipline();
 	 return;
       }
-#ifdef SVX_MULTILINEDATA /* NEW_STYLE */
       /* Check for duplicates unless it's a special reading:
-       *   IGNORE,NEXT (duplicates allowed)
-       *   END,IGNOREALL (not possible)
+       *   IGNOREALL,IGNORE,NEWLINE (duplicates allowed) ; END (not possible)
        */
-      if (d == Next && TSTBIT(mUsed. Back)) {
-	 /* FIXME: "... back ... next ..." not allowed */
-      }
-# define mask_dup_ok (BIT(Ignore) | BIT(End) | BIT(IgnoreAll) | BIT(Next))
-      if (!TSTBIT(mask_dup_ok, d)) {
-#else
-      /* check for duplicates unless it's IGNORE (duplicates allowed) */
-      /* or End/IGNOREALL (not possible) */
-      if (d != Ignore && d != End && d != IgnoreAll) {
-# if 0
-	 cRealData++;
-	 if (cRealData > cData) {
-	    compile_error(/*Too many readings*/);
-	    skipline();
-	    osfree(style_name);
-	    return;
-	 }
-# endif
-#endif
+      if (!((BIT(Ignore) | BIT(End) | BIT(IgnoreAll) | BIT(Newline)) & BIT(d))) {
 	 if (TSTBIT(mUsed, d)) {
 	    compile_error(/*Duplicate reading `%s'*/67, buffer);
+	    osfree(style_name);
+	    skipline();
+	    return;
 	 } else {
+	    bool fBad = fFalse;
+	    switch (d) {
+	     case Station:
+	       if (mUsed & (BIT(Fr) | BIT(To))) fBad = fTrue;
+	       break;
+	     case Fr: case To:
+	       if (TSTBIT(mUsed, Station)) fBad = fTrue;
+	       break;
+	     case Count:
+	       if (mUsed & (BIT(FrCount) | BIT(ToCount))) fBad = fTrue;
+	       break;
+	     case FrCount: case ToCount:
+	       if (TSTBIT(mUsed, Count)) fBad = fTrue;
+	       break;
+	     case Depth:
+	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth))) fBad = fTrue;
+	       break;
+	     case FrDepth: case ToDepth:
+	       if (TSTBIT(mUsed, Depth)) fBad = fTrue;
+	       break;
+	     default: /* avoid compiler warnings about unhandled enums */
+	       break;
+	    }		  
+	    if (fBad) {
+	       /* FIXME: not really the correct error here */
+	       compile_error(/*Duplicate reading `%s'*/67, buffer);
+	       osfree(style_name);
+	       skipline();
+	       return;
+	    }
 	    mUsed |= BIT(d); /* used to catch duplicates */
 	 }
+      }
+      if (k && new_order[k - 1] == IgnoreAll) {
+	 ASSERT(d == Newline);
+	 k--;
+	 d = IgnoreAllAndNewLine;
       }
       if (k >= kMac) {
 	 kMac = kMac * 2;
 	 new_order = osrealloc(new_order, kMac * sizeof(reading));
       }
       new_order[k++] = d;
-#define mask_done (BIT(End) | BIT(IgnoreAll))
-   } while (!TSTBIT(mask_done, d));
+   } while (d != End);
+
+   /* printf("mUsed = 0x%x\n", mUsed); */
+
+   if (mUsed & (BIT(Fr) | BIT(To))) mUsed |= BIT(Station);
+   else if (TSTBIT(mUsed, Station)) mUsed |= BIT(Fr) | BIT(To);
+
+   if (mUsed & (BIT(FrDepth) | BIT(ToDepth))) mUsed |= BIT(Depth);
+   else if (TSTBIT(mUsed, Depth)) mUsed |= BIT(FrDepth) | BIT(ToDepth);
+
+   if (mUsed & (BIT(FrCount) | BIT(ToCount))) mUsed |= BIT(Count);
+   else if (TSTBIT(mUsed, Count)) mUsed |= BIT(FrCount) | BIT(ToCount);
+
+   /* printf("mUsed = 0x%x, opt = 0x%x, mask = 0x%x\n", mUsed,
+	  mask_optional[style], mask[style]); */
 
    if ((mUsed | mask_optional[style]) != mask[style]) {
       osfree(new_order);
@@ -1066,6 +1106,9 @@ cmd_data(void)
       return;
    }
 
+   /* FIXME: need to verify that all the multiline stuff comes before all
+    * the everyline stuff (or something like that) */
+   
    /* don't free default ordering or ordering used by parent */
    if (pcs->ordering != default_order &&
        !(pcs->next && pcs->next->ordering == pcs->ordering))

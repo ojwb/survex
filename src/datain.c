@@ -205,14 +205,75 @@ showline(const char *dummy, int n)
    fseek(file.fh, fpCur, SEEK_SET);
 }
 
+#ifndef NO_PERCENTAGE
+static long int filelen;
+#endif
+
+static void
+process_bol(void)
+{
+   /* Note start of line for error reporting */
+   fpLineStart = ftell(file.fh);
+
+#ifndef NO_PERCENTAGE
+   /* print %age of file done */
+   if (filelen > 0) printf("%d%%\r", (int)(100 * fpLineStart / filelen));
+#endif
+
+   nextch();
+   skipblanks();
+}
+
+static void
+process_eol(void)
+{
+   int eolchar;
+
+   skipblanks();
+
+   if (isComm(ch)) while (!isEol(ch)) nextch();
+
+   if (!isEol(ch)) {
+      compile_error(/*End of line not blank*/15);
+      skipline();
+   }
+
+   eolchar = ch;
+   file.line++;
+   /* skip any different eol characters so we get line counts correct on
+    * DOS text files and similar, but don't count several adjacent blank
+    * lines as one */
+   while (ch != EOF) {
+      nextch();
+      if (ch == eolchar || !isEol(ch)) {
+	 ungetc(ch, file.fh);
+	 break;
+      }
+   }
+}
+
+static bool
+process_non_data_line(void)
+{
+   process_bol();
+
+   if (isData(ch)) return fFalse;
+
+   if (isKeywd(ch)) {
+      nextch();
+      handle_command();
+   }
+
+   process_eol();
+
+   return fTrue;
+}
+
 extern void
 data_file(const char *pth, const char *fnm)
 {
    int begin_lineno_store;
    parse file_store;
-#ifndef NO_PERCENTAGE
-   volatile long int filelen;
-#endif
 
    {
       char *filename;
@@ -256,56 +317,20 @@ data_file(const char *pth, const char *fnm)
 #endif
 
    while (!feof(file.fh)) {
-      int eolchar;
-      /* Note start of line for error reporting */
-      fpLineStart = ftell(file.fh);
-#ifndef NO_PERCENTAGE
-      /* print %age of file done */
-      if (filelen > 0) printf("%d%%\r", (int)(100 * fpLineStart / filelen));
-#endif
-
-      nextch();
-      skipblanks();
-
-      if (isData(ch)) {
+      if (!process_non_data_line()) {
 #ifdef NEW3DFORMAT
 	 twig *temp = limb;
 #endif
 	 f_export_ok = fFalse;
-
-	 /* style function returns 0 => error, so start next line */
+	 
+	 /* style function returns 0 => error */
 	 if (!(pcs->Style)()) {
-	    skipline();
 #ifdef NEW3DFORMAT
-	    /* we have just created a very naughty twiglet, and it must be punished*/
+	    /* we have just created a very naughty twiglet, and it must be
+	     * punished */
 	    osfree(limb);
 	    limb = temp;
 #endif
-	 }
-      } else if (isKeywd(ch)) {
-	 nextch();
-	 handle_command();
-      }
-
-      skipblanks();
-
-      if (isComm(ch)) while (!isEol(ch)) nextch();
-
-      if (!isEol(ch)) {
-	 compile_error(/*End of line not blank*/15);
-	 skipline();
-      }
-
-      file.line++;
-      /* skip any different eol characters so we get line counts correct on
-       * DOS text files and similar, but don't count several adjacent blank
-       * lines as one */
-      eolchar = ch;
-      while (ch != EOF) {
-	 nextch();
-	 if (ch == eolchar || !isEol(ch)) {
-	    ungetc(ch, file.fh);
-	    break;
 	 }
       }
    }
@@ -390,93 +415,28 @@ handle_plumb(bool *pfPlumbed)
    return HUGE_REAL;
 }
 
-/* tape/compass/clino and topofil (fromcount/tocount/compass/clino) */
-extern int
-data_normal(void)
+static int
+process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
+	       real count, bool fToFirst, bool fNoClino, bool fTopofil,
+	       bool fPlumbed)
 {
-   /* Horrible hack this, rewrite when I get the chance */
-   /* It's getting better incrementally */
-   prefix *fr_name = NULL, *to_name = NULL;
    real dx, dy, dz;
    real vx, vy, vz;
 #ifndef NO_COVARIANCES
    real cxy, cyz, czx;
 #endif
 
-   reading first_stn = End;
-
-   real tape = 0, comp = 0, clin, frcount = 0, tocount = 0;
-   bool fNoComp, fNoClino, fTopofil = fFalse, fPlumbed = fFalse;
-
-   reading *ordering;
-
-   /* ordering may omit clino reading, so set up default here */
-   /* this is also used if clino reading is the omit character */
-   clin = (real)0.0; /* no clino reading, so assume 0 with large sd */
-   fNoClino = fTrue;
-
-   for (ordering = pcs->ordering ; ; ordering++) {
-      skipblanks();
-      switch (*ordering) {
-       case Fr:
-	  fr_name = read_prefix_stn(fFalse);
-	  if (first_stn == End) first_stn = Fr;
-	  break;
-       case To:
-	  to_name = read_prefix_stn(fFalse);
-	  if (first_stn == End) first_stn = To;
-	  break;
-       case Tape: tape = read_numeric(fFalse); break;
-       case FrCount: frcount = read_numeric(fFalse); break;
-       case ToCount: tocount = read_numeric(fFalse); fTopofil = fTrue; break;
-       case Comp: {
-	  comp = read_numeric(fTrue);
-	  if (comp == HUGE_REAL) {
-	     if (!isOmit(ch)) {
-		compile_error(/*Expecting numeric field*/9);
-		showandskipline(NULL, 1);
-		return 0;
-	     }
-	     nextch();
-	  }
-	  break;
-       }
-       case Clino: {
-	  clin = read_numeric(fTrue);
-	  if (clin == HUGE_REAL) {
-	     clin = handle_plumb(&fPlumbed);
-	     if (clin != HUGE_REAL) break;
-	     compile_error(/*Expecting numeric field*/9);
-	     showandskipline(NULL, 1);
-	     return 0;
-	  }
-	  /* we've got a real clino reading, so set clear the flag */
-	  fNoClino = fFalse;
-	  break;
-       }
-       case Ignore:
-	 skipword(); break;
-       case IgnoreAll:
-	 skipline();
-	 /* fall through */
-       case End:
-	 goto dataread;
-       default: BUG("Unknown reading in ordering");
-      }
-   }
-
-   dataread:
+   bool fNoComp;
 
 #if 0
-   print_prefix(fr_name);
+   print_prefix(fr);
    printf("->");
-   print_prefix(to_name);
+   print_prefix(to);
    printf(" %.2f %.2f %.2f\n",tape,comp,clin);
 #endif
 
    if (fTopofil) {
-      frcount *= pcs->units[Q_COUNT];
-      tocount *= pcs->units[Q_COUNT];
+      count *= pcs->units[Q_COUNT];
    } else {
       if (tape < (real)0.0) {
 	 compile_warning(/*Negative tape reading*/60);
@@ -501,7 +461,7 @@ data_normal(void)
    }
 
    if (fTopofil) {
-      tape = (tocount - frcount) * pcs->sc[Q_COUNT];
+      tape = count * pcs->sc[Q_COUNT];
    } else {
       tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
    }
@@ -627,7 +587,7 @@ printf("clin %.2f\n",clin);
    printf("Just before addleg, vx = %f\n", vx);
 #endif
    /*printf("dx,dy,dz = %.2f %.2f %.2f\n\n", dx, dy, dz);*/
-   addlegbyname(fr_name, to_name, (first_stn == To), dx, dy, dz, vx, vy, vz
+   addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
 #ifndef NO_COVARIANCES
 		, cyz, czx, cxy
 #endif
@@ -637,8 +597,8 @@ printf("clin %.2f\n",clin);
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
-      twiglet->from = fr_name;
-      twiglet->to = to_name;
+      twiglet->from = fr;
+      twiglet->to = to;
       twiglet->down = twiglet->right = NULL;
       twiglet->source = twiglet->drawings
 	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
@@ -652,14 +612,126 @@ printf("clin %.2f\n",clin);
       twiglet->delta[2] = dz;
    }
 #endif
-
    return 1;
+}
+
+/* tape/compass/clino and topofil (fromcount/tocount/compass/clino) */
+extern int
+data_normal(void)
+{
+   prefix *fr = NULL, *to = NULL;
+   reading first_stn = End;
+
+   real tape = 0, comp = 0, clin, frcount = 0, tocount = 0;
+   bool fTopofil = fFalse, fMulti = fFalse; /* features of style... */
+   bool fNoClino, fPlumbed;
+
+   reading *ordering;
+
+   again:
+
+   fPlumbed = fFalse;
+   
+   /* ordering may omit clino reading, so set up default here */
+   /* this is also used if clino reading is the omit character */
+   clin = (real)0.0; /* no clino reading, so assume 0 with large sd */
+   fNoClino = fTrue;
+
+   for (ordering = pcs->ordering ; ; ordering++) {
+      skipblanks();
+      switch (*ordering) {
+       case Fr:
+	  fr = read_prefix_stn(fFalse);
+	  if (first_stn == End) first_stn = Fr;
+	  break;
+       case To:
+	  to = read_prefix_stn(fFalse);
+	  if (first_stn == End) first_stn = To;
+	  break;
+       case Station:
+	  fr = to;
+	  to = read_prefix_stn(fFalse);
+	  first_stn = To;
+	  break;
+       case Count:
+	  frcount = tocount;
+	  tocount = read_numeric(fFalse);
+	  break;
+       case Tape: tape = read_numeric(fFalse); break;
+       case FrCount: frcount = read_numeric(fFalse); break;
+       case ToCount: tocount = read_numeric(fFalse); fTopofil = fTrue; break;
+       case Comp: {
+	  comp = read_numeric(fTrue);
+	  if (comp == HUGE_REAL) {
+	     if (!isOmit(ch)) {
+		compile_error(/*Expecting numeric field*/9);
+		showandskipline(NULL, 1);
+		return 0;
+	     }
+	     nextch();
+	  }
+	  break;
+       }
+       case Clino: {
+	  clin = read_numeric(fTrue);
+	  if (clin == HUGE_REAL) {
+	     clin = handle_plumb(&fPlumbed);
+	     if (clin != HUGE_REAL) break;
+	     compile_error(/*Expecting numeric field*/9);
+	     showandskipline(NULL, 1);
+	     return 0;
+	  }
+	  /* we've got a real clino reading, so set clear the flag */
+	  fNoClino = fFalse;
+	  break;
+       }
+       case Ignore:
+	 skipword(); break;
+       case IgnoreAllAndNewLine:
+	 skipline();
+	 /* fall through */
+       case Newline:
+	 if (fr != NULL) {
+	    int r;
+	    r = process_normal(fr, to, tape, comp, clin, tocount - frcount,
+			       first_stn == To, fNoClino, fTopofil, fPlumbed);
+	    if (!r) skipline();
+	 }
+	 fMulti = fTrue;	    
+	 while (1) {
+	    process_eol();
+	    process_bol();
+	    if (isData(ch)) break;
+	    if (!isComm(ch)) return 1;
+	 }
+	 break;
+       case IgnoreAll:
+	 skipline();
+	 /* fall through */
+       case End:
+	 if (!fMulti) {
+	    int r;
+	    r = process_normal(fr, to, tape, comp, clin, tocount - frcount,
+			       first_stn == To, fNoClino, fTopofil, fPlumbed);
+	    process_eol();
+	    return r;
+	 }
+	 while (1) {
+	    process_eol();
+	    process_bol();
+	    if (isData(ch)) break;
+	    if (!isComm(ch)) return 1;
+	 }
+	 goto again;
+       default: BUG("Unknown reading in ordering");
+      }
+   }
 }
 
 extern int
 data_diving(void)
 {
-   prefix *fr_name = NULL, *to_name = NULL;
+   prefix *fr = NULL, *to = NULL;
    real dx, dy, dz;
    real vx, vy, vz;
 
@@ -674,11 +746,11 @@ data_diving(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr_name = read_prefix_stn(fFalse);
+	  fr = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to_name = read_prefix_stn(fFalse);
+	  to = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = To;
 	  break;
       case Tape: tape = read_numeric(fFalse); break;
@@ -707,9 +779,9 @@ data_diving(void)
 
    dataread:
 
-   if (to_name == fr_name) {
+   if (to == fr) {
       compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
-		    sprint_prefix(to_name));
+		    sprint_prefix(to));
       return 1;
    }
    
@@ -783,7 +855,7 @@ data_diving(void)
       }
       vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
    }
-   addlegbyname(fr_name, to_name, (first_stn == To), dx, dy, dz, vx, vy, vz
+   addlegbyname(fr, to, (first_stn == To), dx, dy, dz, vx, vy, vz
 #ifndef NO_COVARIANCES
 		, 0, 0, 0 /* FIXME: need covariances */
 #endif
@@ -792,8 +864,8 @@ data_diving(void)
    if (fUseNewFormat) {
       /*new twiglet and insert into twig tree*/
       twig *twiglet = osnew(twig);
-      twiglet->from = fr_name;
-      twiglet->to = to_name;
+      twiglet->from = fr;
+      twiglet->to = to;
       twiglet->down = twiglet->right = NULL;
       twiglet->source = twiglet->drawings
 	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
@@ -814,7 +886,7 @@ data_diving(void)
 extern int
 data_cartesian(void)
 {
-   prefix *fr_name = NULL, *to_name = NULL;
+   prefix *fr = NULL, *to = NULL;
    real dx = 0, dy = 0, dz = 0;
 
    reading first_stn = End;
@@ -825,11 +897,11 @@ data_cartesian(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr_name = read_prefix_stn(fFalse);
+	  fr = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to_name = read_prefix_stn(fFalse);
+	  to = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Dx: dx = read_numeric(fFalse); break;
@@ -848,9 +920,9 @@ data_cartesian(void)
 
    dataread:
 
-   if (to_name == fr_name) {
+   if (to == fr) {
       compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
-		    sprint_prefix(to_name));
+		    sprint_prefix(to));
       return 1;
    }
 
@@ -858,7 +930,7 @@ data_cartesian(void)
    dy = (dy * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
    dz = (dz * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
 
-   addlegbyname(fr_name, to_name, (first_stn == To), dx, dy, dz,
+   addlegbyname(fr, to, (first_stn == To), dx, dy, dz,
 		var(Q_DX), var(Q_DY), var(Q_DZ)
 #ifndef NO_COVARIANCES
 		, 0, 0, 0 /* FIXME: need covariances */
@@ -869,8 +941,8 @@ data_cartesian(void)
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
-      twiglet->from = fr_name;
-      twiglet->to = to_name;
+      twiglet->from = fr;
+      twiglet->to = to;
       twiglet->down = twiglet->right = NULL;
       twiglet->source = twiglet->drawings
 	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
@@ -891,7 +963,7 @@ data_cartesian(void)
 extern int
 data_nosurvey(void)
 {
-   prefix *fr_name = NULL, *to_name = NULL;
+   prefix *fr = NULL, *to = NULL;
    nosurveylink *link;
 
    reading first_stn = End;
@@ -902,11 +974,11 @@ data_nosurvey(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr_name = read_prefix_stn(fFalse);
+	  fr = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to_name = read_prefix_stn(fFalse);
+	  to = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Ignore:
@@ -922,9 +994,9 @@ data_nosurvey(void)
 
    dataread:
 
-   if (to_name == fr_name) {
+   if (to == fr) {
       compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
-		    sprint_prefix(to_name));
+		    sprint_prefix(to));
       return 1;
    }
    
@@ -932,8 +1004,8 @@ data_nosurvey(void)
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
       twig *twiglet = osnew(twig);
-      twiglet->from = fr_name;
-      twiglet->to = to_name;
+      twiglet->from = fr;
+      twiglet->to = to;
       twiglet->down = twiglet->right = NULL;
       twiglet->source = twiglet->drawings
 	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
@@ -948,11 +1020,11 @@ data_nosurvey(void)
    /* add to linked list which is dealt with after network is solved */
    link = osnew(nosurveylink);
    if (first_stn == To) {
-      link->to = StnFromPfx(to_name);
-      link->fr = StnFromPfx(fr_name);
+      link->to = StnFromPfx(to);
+      link->fr = StnFromPfx(fr);
    } else {
-      link->fr = StnFromPfx(fr_name);
-      link->to = StnFromPfx(to_name);
+      link->fr = StnFromPfx(fr);
+      link->to = StnFromPfx(to);
    }
    link->next = nosurveyhead;
    nosurveyhead = link;

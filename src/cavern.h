@@ -126,13 +126,15 @@ typedef enum {
 typedef enum {
    End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
    FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount, Dr,
-   Newline,
+   Station, Depth, Count, Newline, IgnoreAllAndNewLine,
    Ignore, IgnoreAll
 } reading;
 
-/* assert(IgnoreAll<32); */
+/* if IgnoreAll is >= 32, the compiler will choke on this */
+typedef char compiletimeassert_reading[IgnoreAll < 32 ? 1 : -1];
+
 /* Dr, Comp, Dz give CYLPOL style */
-/* Cope with any combination which gives enough info ??? */
+/* FIXME: Cope with any combination which gives enough info ??? */
 
 /* type of a function to read in some data style */
 #ifdef SVX_MULTILINEDATA

@@ -32,6 +32,8 @@ Changes in 0.98-prerelease1:
 
 * cavern: added station name to "station equated to itself" message.
 
+* cavern: allow interleaved data formats.
+
 Changes in 0.97-prerelease7:
 
 * Messages relating to command line options are now translatable.
