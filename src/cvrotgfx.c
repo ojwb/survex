@@ -198,59 +198,12 @@ cvrotgfx_read_mouse(int *pdx, int *pdy, int *pbut)
 
 /*****************************************************************************/
 
-static int mode_picker = 0;
+int cvrotgfx_mode_picker = 0;
 # if 0
 int driver = GFX_AUTODETECT;
 int drx = 800;
 int dry = 600;
 # endif
-
-/* Called just after message file is read in to allow graphics library */
-/* specific command line switches to be processed */
-/* You should modify argv and *pargc to remove any switches you process */
-int
-cvrotgfx_parse_cmdline(int *pargc, char **argv)
-{
-#ifdef ALLEGRO
-   char *p, *q;
-   int fr, to;  
-
-   /* set language for Allegro messages */
-   p = osmalloc(10 + strlen(msg_lang));
-   sprintf(p, "language=%s", msg_lang);
-   q = strchr(p, '-');
-   if (q) *q = 0;
-   set_config_data(p, strlen(p));
-   osfree(p);
-
-   for (fr = 1, to = 1; fr < *pargc; fr++) {
-      if (strcmp(argv[fr], "--mode-picker") == 0) {
-	  mode_picker = 1;
-	  continue;
-      }
-#if 0
-      if (*pargc > 2 && isdigit(argv[*pargc - 1][0])) {
-	 char *p = argv[*pargc - 1];
-	 driver = atoi(p);
-	 p = strchr(p, ',');
-	 if (p) drx = atoi(++p);
-	 p = strchr(p, ',');
-	 if (p) dry = atoi(++p);
-	 (*pargc)--;
-	 argv[*pargc] = NULL;
-     }
-#endif
-      argv[to++] = argv[fr];      
-   }
-   argv[to] = NULL;
-   *pargc = to;
-#else
-   /* avoid compiler warnings */
-   pargc = pargc;
-   argv = argv;
-#endif
-   return 1;
-}
 
 /* Set up graphics screen/window and initialise any state needed */
 int
@@ -304,9 +257,19 @@ cvrotgfx_init(void)
 	 cvrotgfx_read_mouse(&dummy, &dummy, &dummy);
       }
    }
+    
+   char *p, *q;
+
+   /* set language for Allegro messages */
+   p = osmalloc(10 + strlen(msg_lang));
+   sprintf(p, "language=%s", msg_lang);
+   q = strchr(p, '-');
+   if (q) *q = 0;
+   set_config_data(p, strlen(p));
+   osfree(p);
 
    res = allegro_init();
-   /* test for res !=0, but never the case ATM */
+   /* test for res != 0, but never the case ATM */
    if (res) {
       allegro_exit();
       printf("bad allegro_init\n");
@@ -314,13 +277,16 @@ cvrotgfx_init(void)
       exit(1);
    }
    
-   if (!mode_picker) {
+   if (!cvrotgfx_mode_picker) {
 #if (OS==WIN32)
       res = set_gfx_mode(GFX_DIRECTX, 800, 600, 0, 0);
+/*      res = set_gfx_mode(GFX_GDI, 800, 600, 0, 0);*/
+/*      res = set_gfx_mode(GFX_DIRECTX_WIN, 800, 600, 0, 0);*/
 #else
 #if (OS==UNIX)
       set_color_depth(16);
 #endif
+      /* FIXME: set_color_depth(GFX_SAFE_DEPTH); */
       if (os_type == OSTYPE_WINNT) {
 	  /* In DOS under Windows NT we can't do better than this */
 	  res = set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
@@ -329,13 +295,12 @@ cvrotgfx_init(void)
       }
 #endif
       /* if we couldn't get that mode, give the mode picker */
-      if (res) mode_picker = 1;
+      if (res) cvrotgfx_mode_picker = 1;
    }
 
-#if (OS!=WIN32)
-   if (mode_picker) {
+   if (cvrotgfx_mode_picker) {
       do {
-	 res = set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
+	 res = set_gfx_mode(GFX_SAFE, GFX_SAFE_W, GFX_SAFE_H, 0, 0);
 	 if (res) {
 	    allegro_exit();
 	    printf("bad mode select 0\n");
@@ -362,7 +327,6 @@ cvrotgfx_init(void)
 	 res = set_gfx_mode(c, w, h, 0, 0);
       } while (res);
    }
-#endif
    text_mode(-1); /* don't paint in text background */
    BitMap = create_bitmap(SCREEN_W, SCREEN_H);
    /* check that initialisation was OK */

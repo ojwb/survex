@@ -182,7 +182,6 @@ main(int argc, char **argv)
 
    puts("Survex cave rotator v"VERSION"\n  "COPYRIGHT_MSG);
 
-   /* FIXME: check return value */ cvrotgfx_parse_cmdline( &argc, argv );
    parse_command(argc, argv);
 
    /* these aren't in set_defaults() 'cos we don't want DELETE to reset them */
@@ -712,16 +711,18 @@ static char *cmdline_load_files(int argc, char **argv);
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+   CVROTGFX_LONGOPTS
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "c:"
+#define short_opts "c:"CVROTGFX_SHORTOPTS
 
 /* TRANSLATE: FIXME extract help messages to message file */
 static struct help_msg help[] = {
 /*				<-- */
+   CVROTGFX_HELP(0)
    {'c',                        "set display colours"},
    {0, 0}
 };

@@ -32,7 +32,6 @@ extern int colText, colHelp;
 # define ALLEGRO 1
 #endif
 
-extern int cvrotgfx_parse_cmdline(int *pargc, char **argv);
 extern int cvrotgfx_init(void);
 extern int cvrotgfx_pre_main_draw(void);
 extern int cvrotgfx_post_main_draw(void);
@@ -245,6 +244,29 @@ extern void cvrotgfx_lineto(int X, int Y);
 
 #else
 # error Operating System not known
+#endif
+
+#ifdef ALLEGRO
+extern int cvrotgfx_mode_picker;
+
+#define CVROTGFX_LONGOPTS \
+   {"mode-picker", no_argument, &cvrotgfx_mode_picker, '0'},
+
+/*				<-- */
+#define CVROTGFX_HELP(N) \
+   {HLP_ENCODELONG((N)),        "bring up screen mode chooser dialog"},
+#endif
+
+#ifndef CVROTGFX_LONGOPTS
+# define CVROTGFX_LONGOPTS
+#endif
+
+#ifndef CVROTGFX_SHORTOPTS
+# define CVROTGFX_SHORTOPTS
+#endif
+
+#ifndef CVROTGFX_HELP
+# define CVROTGFX_HELP(X)
 #endif
 
 #endif
