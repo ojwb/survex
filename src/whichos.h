@@ -29,6 +29,8 @@
  * _MSDOS, (MSDOS not ANSI)	Microsoft C (OJWB)
  * MC68000, mc68000, SOZOBON, ATARI_ST, TOS|MINIX
  *				Sozobon C (OJWB from MM's docs)
+ * MacOSX with apple modified gcc:
+ * -D__ppc__ -D__MACH__ -D__APPLE__ -D__APPLE_CC__=932
  */
 
 #ifndef WHICHOS_H
