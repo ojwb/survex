@@ -2,8 +2,6 @@
 
 /* Copyright (C) Olly Betts 1997 */
 
-#define ALLEGRO 1
-
 #ifndef SVX_CVROTGFX_H
 #define SVX_CVROTGFX_H 1
 
@@ -12,6 +10,10 @@
 extern int mouse_buttons;
 
 extern int colText, colHelp;
+
+#ifdef __DJGPP__
+# define ALLEGRO 1
+#endif
 
 #if (OS==UNIX)
 
@@ -139,11 +141,11 @@ extern void cvrotgfx_lineto(int X, int Y);
 # endif
 
 # ifdef MSC
-#  define cvrotgfx_moveto(X, Y) _moveto((X), (Y))
-#  define cvrotgfx_lineto(X, Y) _lineto((X), (Y))
+#  define cvrotgfx_moveto _moveto
+#  define cvrotgfx_lineto _lineto
 # elif !defined(__DJGPP__)
-#  define cvrotgfx_moveto(X, Y) moveto((X), (Y))
-#  define cvrotgfx_lineto(X, Y) lineto((X), (Y))
+#  define cvrotgfx_moveto moveto
+#  define cvrotgfx_lineto lineto
 # else
 extern void cvrotgfx_moveto(int X, int Y);
 extern void cvrotgfx_lineto(int X, int Y);
@@ -197,8 +199,8 @@ extern void cvrotgfx_lineto(int X, int Y);
 # include "oslib/osword.h"
 # define bool BOOL
 
-extern void outtextxy(int x, int y, char *str);
-extern void text_xy(int x, int y, char *str);
+extern void outtextxy(int x, int y, const char *str);
+extern void text_xy(int x, int y, const char *str);
 
 # define set_gcolour(X) (ol_setcol((X)))
 # define set_tcolour(X) (xos_set_gcol(), xos_writec(0), xos_writec((X)))
