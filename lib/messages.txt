@@ -1574,7 +1574,6 @@ it:200 Questo programma &egrave; software libero; &egrave; lecito redistribuirlo
 en:201 Display command line options
 fr:201 Affiche les options de la ligne de commande
 de:201 Befehlszeilenparameter anzeigen
-# or "... comandos"?
 pt:201 Mostrar op&ccedil;&otilde;es de linha de comando
 ca:201 Mostra les opcions de la l&iacute;nia de comanda
 es:201 Mostrar opciones en l&iacute;nea de comandos
@@ -1635,6 +1634,7 @@ ca:208 Tots els fitxers
 es:208 Todos los archivos
 it:208 Tutti i file
 #
+# TRANSLATE fr de pt ca es it
 en:209 Visualisation of Survex 3D files
 #
 # Aven menu titles.  An '@' goes before the letter of any accelerator key.
@@ -1726,6 +1726,7 @@ en:244 Shift Survey @Left##Left Arrow
 en:245 Shift Survey @Right##Right Arrow
 en:246 Shift Survey @Up##Up Arrow
 en:247 Shift Survey @Down##Down Arrow
+#
 # c.f. 117
 en:248 @Plan View##P
 fr:248 Vue en @plan##P
@@ -1735,6 +1736,7 @@ pt:248 @Planta##P
 ca:248 @Planta##P
 es:248 @Planta##P
 it:248 @Pianta##P
+#
 # c.f. 118
 en:249 Ele@vation##L
 en-us:249 Pro@file##L
@@ -1746,7 +1748,10 @@ ca:249 @Al&ccedil;at##L
 es:249 @Alzado##L
 it:249 Pro@filo##L
 #
+# TRANSLATE fr de pt ca es it
 en:250 @Higher Viewpoint##'
+#
+# TRANSLATE fr de pt ca es it
 en:251 Lo@wer Viewpoint##/
 #
 en:252 @Zoom In##]
@@ -1783,17 +1788,36 @@ es:254 Restaurar @valores predeterminados##Delete
 it:254 Ripristina i @valori predefiniti
 #
 # The accelerators must be different within this group
+# TRANSLATE CHECK fr de pt ca es it
 en:270 Station @Names##Ctrl+N
-# TRANSLATE fr de pt
+fr:270 @Noms de station##Ctrl+N
+de:270     Me&szlig;punkt@namen##Ctrl+N
+de-de,de-ch:270 Messpunkt@namen##Ctrl+N
+pt:270 @Nomes de base##Ctrl+N
+ca:270 @Noms d'estaci&oacute;##Ctrl+N
+es:270 @Nombres de estaci&oacute;n##Ctrl+N
+it:270 @Nomes di stazione##Ctrl+N
+#
+# TRANSLATE fr pt
 en:271 @Crosses##Ctrl+X
 de:271 @Kreuze##Ctrl+X
 ca:271 @Creus##Ctrl+X
 es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
 #
+# TRANSLATE CHECK fr de pt ca es it
 en:272 Survey @Legs##Ctrl+L
 en-us:272 @Shots##Ctrl+L
+fr:272 @Vis&eacute;es##Ctrl+L
+de:272 @Strecken##Ctrl+L
+pt:272 @Visadas##Ctrl+L
+ca:272 @Tirades##Ctrl+L
+es:272 @Tiradas##Ctrl+L
+it:272 @Battute##Ctrl+L
+#
+# TRANSLATE fr de pt ca es it
 en:273 @Overlapping Names##O
+#
 # TRANSLATE pt
 en:274 Co@mpass
 fr:274 Co@mpas
@@ -1802,6 +1826,7 @@ de:         274 @Kompa&szlig;
 ca:274 @Br&uacute;ixola
 es:274 @Br&uacute;jula
 it:274 @Bussola
+#
 # TRANSLATE de pt
 en:275 Cl@inometer
 fr:275 Cl@ino
@@ -1809,11 +1834,17 @@ ca:275 Cl@ino
 es:275 Cl@ino
 it:275 Cl@inometro
 #
+# TRANSLATE fr de pt ca es it
 en:276 @Depth Bar
+#
+# TRANSLATE fr de pt ca es it
 en:277 Sc@ale Bar
 #
 # The accelerators must be different within this group
+# TRANSLATE fr de pt ca es it
 en:280 @Reverse Sense##Ctrl+R
+#
+# TRANSLATE fr de pt ca es it
 en:281 Caverot-Style @Middle Button
 #
 # The accelerators must be different within this group
@@ -1970,18 +2001,18 @@ it:290 @Informazioni su...
 #cata: 70 Les seg&uuml;ents estacions (i potser altres) no s&oacute;n conectades a un punt fixe:
 #span: 70 Las siguientes estaciones (y quiz&aacute;s otras) no est&aacute;n conectadas a un punto fijo:
 #ital: 70 Le seguenti stazioni (e forse altre) non sono connesse ad un punto fisso:
-#engi: 72 "Survey has no fixed points, but is connected. Therefore I've fixed %s at (0,0,0)"
-#engu: 72 "Survey has no fixed points, but is connected. Therefore I've fixed %s at (0,0,0)"
-#fren: 72 "La topo n'a pas de points fixes mais est connect&eacute;e. Par cons&eacute;quent j'ai fix&eacute; %s &agrave; (0,0,0)"
-#germ: 72 "Vermessung hat keine Festpunkte, ist aber zusammenh&auml;ngend. %s wurde als Nullpunkt (0,0,0) gew&auml;hlt"
-#port: 72 "Topografia sem bases posicionadas, mas conexa. Assim %s foi posicionada (0,0,0)"
-#cata: 72 "La topografia no te punts fixats, per&ograve; est&agrave; connectada. Tanmateix he fixat %s a (0,0,0)"
-#span: 72 "La topografia no tiene puntos fijados, pero est&aacute; conectada. De todos modos he fijado %s en (0,0,0)"
-#ital: 72 "La topografia non ha punti fissi ma &eacute; connessa. Quindi %s &eacute; stata fissata a (0,0,0)"
-#en: 83 Skipping bad command line option&#10;
-#fr: 83 Mauvaise option sur la ligne de commande, ignor&eacute;e&#10;
-#de: 83 Unbekannte Kommandozeilenoption wurde ignoriert&#10;
-#pt: 83 Ignorando op&ccedil;&atilde;o de linha de comando com problemas&#10;
+#engi: 72 Survey has no fixed points, but is connected. Therefore I've fixed %s at (0,0,0)
+#engu: 72 Survey has no fixed points, but is connected. Therefore I've fixed %s at (0,0,0)
+#fren: 72 La topo n'a pas de points fixes mais est connect&eacute;e. Par cons&eacute;quent j'ai fix&eacute; %s &agrave; (0,0,0)
+#germ: 72 Vermessung hat keine Festpunkte, ist aber zusammenh&auml;ngend. %s wurde als Nullpunkt (0,0,0) gew&auml;hlt
+#port: 72 Topografia sem bases posicionadas, mas conexa. Assim %s foi posicionada (0,0,0)
+#cata: 72 La topografia no te punts fixats, per&ograve; est&agrave; connectada. Tanmateix he fixat %s a (0,0,0)
+#span: 72 La topografia no tiene puntos fijados, pero est&aacute; conectada. De todos modos he fijado %s en (0,0,0)
+#ital: 72 La topografia non ha punti fissi ma &eacute; connessa. Quindi %s &eacute; stata fissata a (0,0,0)
+#en: 83 Skipping bad command line option
+#fr: 83 Mauvaise option sur la ligne de commande, ignor&eacute;e
+#de: 83 Unbekannte Kommandozeilenoption wurde ignoriert
+#pt: 83 Ignorando op&ccedil;&atilde;o de linha de comando com problemas
 #ca: 83 Ignorant opci&oacute; dolenta a la l&iacute;nia de comandaments
 #es: 83 Ignorando opci&oacute;n err&oacute;nea en la l&iacute;nea de comandos
 #it: 83 Parametro errato nella linea di comandi ignorato
@@ -2000,41 +2031,41 @@ it:290 @Informazioni su...
 #ca: 25 No s'ha pogut tancar el fitxer de dades
 #es: 25 No se pudo cerrar el fichero de datos
 #it: 25 Non riesco a chiudere il file dei dati
-#en:  2 "Fatal error from %s: "
-#fr:  2 "%s: Erreur fatale: "
-#de:  2 "Fataler Fehler von %s: "
-#pt:  2 "Erro fatal encontrado por %s: "
-#ca:  2 "Error fatal a %s: "
-#es:  2 "Error fatal en %s: "
-#it:  2 "Errore fatale per %s: "
-#en:  3 "Error from %s: "
-#fr:  3 "%s: Erreur: "
-#de:  3 "Fehler von %s: "
-#pt:  3 "Erro encontrado por %s: "
-#ca:  3 "Error a %s: "
-#es:  3 "Error en %s: "
-#it:  3 "Errore per %s: "
-#en:  4 "Warning from %s: "
-#fr:  4 "%s: Avertissement: "
-#de:  4 "Warnung von %s: "
-#pt:  4 "Alerta de %s: "
-#ca:  4 "Alerta a %s: "
-#es:  4 "Alerta en %s: "
-#it:  4 "Avvertimento da %s: "
-#en:  5 "Error message file has incorrect format&#10;"
-#fr:  5 "Le fichier de messages d'erreurs a un format incorrect&#10;"
-#de:  5 Fehlermeldungsdatei hat falsches Format&#10;
-#pt:  5 "Arquivo de mensagens formatado incorretamente&#10;"
-#ca:  5 "El fitxer de missatges d'errors te un format incorrecte&#10;"
-#es:  5 "El fichero de mensages de errores tiene un formato incorrecto&#10;"
-#it:  5 "Il file dei messaggi d'errore ha un formato scorretto&#10;"
-#en:  6 "Negative error numbers are not allowed&#10;"
-#fr:  6 "Num&eacute;ros d'erreur n&eacute;gatifs non accept&eacute;s&#10;"
-#de:  6 "Negative Fehlermeldungsnummern gibt es nicht&#10;"
-#pt:  6 "Desvio padr&atilde;o n&atilde;o pode ser negativo&#10;"
-#ca:  6 "N&uacute;meros d'error negatius no s&oacute;n acceptats&#10;"
-#es:  6 "N&uacute;meros de error negativos no son aceptados&#10;"
-#it:  6 "I numeri d'errore negativi non sono accettati&#10;"
+#en:  2 Fatal error from %s:
+#fr:  2 %s: Erreur fatale:
+#de:  2 Fataler Fehler von %s:
+#pt:  2 Erro fatal encontrado por %s:
+#ca:  2 Error fatal a %s:
+#es:  2 Error fatal en %s:
+#it:  2 Errore fatale per %s:
+#en:  3 Error from %s:
+#fr:  3 %s: Erreur:
+#de:  3 Fehler von %s:
+#pt:  3 Erro encontrado por %s:
+#ca:  3 Error a %s:
+#es:  3 Error en %s:
+#it:  3 Errore per %s:
+#en:  4 Warning from %s:
+#fr:  4 %s: Avertissement:
+#de:  4 Warnung von %s:
+#pt:  4 Alerta de %s:
+#ca:  4 Alerta a %s:
+#es:  4 Alerta en %s:
+#it:  4 Avvertimento da %s:
+#en:  5 Error message file has incorrect format
+#fr:  5 Le fichier de messages d'erreurs a un format incorrect
+#de:  5 Fehlermeldungsdatei hat falsches Format
+#pt:  5 Arquivo de mensagens formatado incorretamente
+#ca:  5 El fitxer de missatges d'errors te un format incorrecte
+#es:  5 El fichero de mensages de errores tiene un formato incorrecto
+#it:  5 Il file dei messaggi d'errore ha un formato scorretto
+#en:  6 Negative error numbers are not allowed
+#fr:  6 Num&eacute;ros d'erreur n&eacute;gatifs non accept&eacute;s
+#de:  6 Negative Fehlermeldungsnummern gibt es nicht
+#pt:  6 Desvio padr&atilde;o n&atilde;o pode ser negativo
+#ca:  6 N&uacute;meros d'error negatius no s&oacute;n acceptats
+#es:  6 N&uacute;meros de error negativos no son aceptados
+#it:  6 I numeri d'errore negativi non sono accettati
 # ASCII nul (i.e. '\0', CHR$(0), ...)
 # (This is unlikely to happen on most machines, but ANSI C says it can)
 #en: 57 Apparent nul padding at end of file
@@ -2095,7 +2126,8 @@ it:290 @Informazioni su...
 # Labels are station names
 #en:157 Syntax: %s [-[!]Border] [-[!]Crosses] [-[!]Labels] [-[!]Shots] <Image file>
 #fr:157 Syntaxe: %s [-[!]Border] [-[!]Crosses] [-[!]Labels] [-[!]Shots] <fichier image>
-#de:157 Syntax: %s [-[!]Border] [-[!]Crosses] [-[!]Labels] [-[!]Shots] <Image file>&#10;Syntax: %s [-[!]Rand] [-[!]Kreuze] [-[!]Namen] [-[!]Strecken] <Bilddatei>
+#de:157 Syntax: %s [-[!]Border] [-[!]Crosses] [-[!]Labels] [-[!]Shots] <Image file>
+#       Syntax: %s [-[!]Rand] [-[!]Kreuze] [-[!]Namen] [-[!]Strecken] <Bilddatei>
 #pt:157 Sintaxe: %s [-[!]Border] [-[!]Crosses] [-[!]Labels] [-[!]Shots] <nome do arquivo de imagem 3d>
 #ca:157 Sintaxi: %s [-[!]B<marc>] [-[!]Creus] [-[!]L<noms d'estaci&oacute;>] [-[!]S<tirades>] <fitxer imatge>
 #es:157 Sintaxis: %s [-[!]Borde] [-[!]Cruces] [-[!]L<nombres de estaci&oacute;n>] [-[!]S<tiradas>] <fichero imagen>
