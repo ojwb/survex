@@ -1,2 +1,2 @@
-?package(survex-svxedit):needs=X11 section=Apps/Science \
+?package(survex-svxedit):needs="X11" section="Apps/Science" \
  title="SvxEdit" command="/usr/bin/svxedit"
