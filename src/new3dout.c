@@ -328,7 +328,7 @@ cave_close(img *pimg)
    scount(rhizome);
    save3d(twiglet);
    if (pimg->fh) {
-      /* If writing a binary file, write end of data marker */
+      /* Write end of data marker */
       putc(END_3D, pimg->fh);
       /* and finally write how many stations there are */
       fseek(pimg->fh, 7L, SEEK_SET);
