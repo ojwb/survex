@@ -311,7 +311,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     CreateStatusBar(3, wxST_SIZEGRIP);
     CreateSidePanel();
     
-    int widths[3] = {150, -1 /* variable width */, -1};
+    int widths[3] = { 150, -1 /* variable width */, -1 };
     GetStatusBar()->SetStatusWidths(3, widths);
 
 #ifdef __X__
@@ -1179,7 +1179,8 @@ void MainFrm::ClearTreeSelection()
 
 void MainFrm::ClearCoords()
 {
-    m_Coords->SetLabel("");
+    //m_Coords->SetLabel("");
+    GetStatusBar()->SetStatusText("");
 }
 
 void MainFrm::SetCoords(Double x, Double y)
@@ -1206,7 +1207,7 @@ void MainFrm::SetAltitude(Double z)
 		   int(z / METRES_PER_FOOT));
     }
     //m_Coords->SetLabel(str);
-    GetStatusBar()->SetStatusText(str, 1);
+    GetStatusBar()->SetStatusText(str);
 }
 
 void MainFrm::ShowInfo(const LabelInfo *label)
