@@ -1,13 +1,13 @@
-Date: Fri, 15 June 2001
+Date: Wed, 21 June 2001
 From: Mark
 
 wxaven:
 - clino needs resistance around 0
+- need to prevent zooming in silly amounts (e.g. when scale bar is 1cm)
 - scale bar dragging factor needs slight tweak
 - middle button to reset scale bar
 - finish reverse controls
 - bug Olly found to do with plan/elevation switching
-- trouble with zooming in too far
 - possible mysterious problem with [ and ] not zooming to screen centre
 - right drag on scale bar can go wrong...
 - get warning box if wxWindows doesn't have translation into requested language
@@ -18,14 +18,10 @@ wxaven problems with unknown solution:
 happened when I upgraded debian and a new libgtk package got
 installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
 - releasing drag over menubar doesn't send event properly...
+- icon not set correctly on frame [Windows only]
 
 wxaven for Windows:
-- slow plotting of labels
-- icon not set correctly on frame
 - Close button in About box not in correct place
 
-wxaven with Motif:
-- need to resize window to get any display at all (may be fixed now)
-- about box is resizable
-- flicker on window resize
-
+wxaven for GTK:
+- trouble with zooming in too far
