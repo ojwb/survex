@@ -1,22 +1,19 @@
-Document: survex-manual
+Document: manual
 Title: Survex Manual
 Author: Wookey and Olly Betts 
-Abstract: This manual describes what Survex is
- and how it can be used to process cave survey data.
+Abstract: This manual describes what Survex is and how it can be used to
+ process cave survey data.
 Section: math
 
 Format: postscript
-Files: /usr/share/doc/survex/survex-manual/manual.ps.gz
+Files: /usr/share/doc/survex/manual.ps.gz
 
 Format: text
-Files: /usr/share/doc/survex/survex-manual/manual.txt.gz
+Files: /usr/share/doc/survex/manual.txt.gz
 
 Format: rtf
-Files: /usr/share/doc/survex/survex-manual/manual.rtf.gz
+Files: /usr/share/doc/survex/manual.rtf.gz
 
 Format: HTML
-Files: /usr/share/doc/survex/survex-manual/manual.htm
-
-Format: HTML
-Index: /usr/share/doc/survex/survex-manual/manual/index.htm
-Files: /usr/share/doc/survex/survex-manual/manual/*.htm
+Index: /usr/share/doc/survex/manual/index.htm
+Files: /usr/share/doc/survex/manual/*.htm

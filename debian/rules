@@ -53,7 +53,6 @@ binary-common: build install
 	dh_testdir
 	dh_testroot
 #	dh_installdebconf
-	mv debian/tmp/usr/doc/survex debian/tmp/usr/doc/survex-manual
 	dh_installdocs
 	rm -rf debian/tmp/usr/doc
 	dh_installexamples

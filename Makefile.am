@@ -106,17 +106,19 @@ debian : dist
 	echo Priority: optional >> ${debct}
 	echo "Maintainer: Wookey <wookey@survex.com>" >> ${debct}
 	echo Standards-Version: 3.0.1 >> ${debct}
+	echo Build-Depends: debhelper, libwxgtk2.2-dev, sgmltools-lite >> ${debct}
 	echo >> ${debct}
 	echo Package: ${PACKAGE} >> ${debct}
 	echo Architecture: any >> ${debct}
 	echo 'Depends: ${shlibs:Depends}' >> ${debct}
-	echo Description: Cave survey software >> ${debct}
+	echo Recommends: survex-aven >> ${debct}
+	echo Description: Cave surveying software >> ${debct}
 	sed 's/^/ /' < desc.txt >> ${debct}
 	echo >> ${debct}
 	echo Package: survex-aven >> ${debct}
 	echo Architecture: any >> ${debct}
-	echo 'Depends: ${shlibs:Depends}' >> ${debct}
-	echo Description: Aven viewer for Survex >> ${debct}
+	echo 'Depends: survex, ${shlibs:Depends}' >> ${debct}
+	echo Description: Aven cave survey viewer for Survex >> ${debct}
 	sed 's/^/ /' < desc-aven.txt >> ${debct}	
 	# -us and -uc mean don't sign packages
 	cd deb/${PACKAGE}-${VERSION} && debuild -us -uc

@@ -119,6 +119,8 @@ Changes in 0.99-prerelease1:
 
 * printdm: added --calibrate option to print calibration page.
 
+* Lots of little improvements to debian packages (mostly from Wookey).
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

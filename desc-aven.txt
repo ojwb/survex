@@ -1,1 +1,2 @@
-A fancy cave viewer for Survex, written using the wxWindows library.
+Advanced cave viewer for Survex, written using the wxWindows library.
+Aven supersedes the xcaverot viewer in the main survex package.

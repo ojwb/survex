@@ -1,6 +1,11 @@
+AUTHORS
 BUGS
-INSTALL
 NEWS
-README
+OLDNEWS
 TODO
-debian/tmp/usr/doc/survex-manual/
+ZOMBIES
+debian/tmp/usr/doc/survex/docindex.htm
+debian/tmp/usr/doc/survex/manual/
+debian/tmp/usr/doc/survex/manual.ps
+debian/tmp/usr/doc/survex/manual.rtf
+debian/tmp/usr/doc/survex/manual.txt

@@ -139,5 +139,32 @@ is in aven, as img looks to be setting the station "underground" flag...
 Date: Wed, 19 Sep 2001
 From: Olly
 
-Check images in html docs work.
+Make images in html docs work.
+
+Date: Fri, 21 Sep 2001
+From: Olly
+
+debian changelog?
+
+/etc/survex/example.print.ini ?
+
+Add warning not to edit this file to /usr/share/survex/print.ini
+
+survex apt source for survex, survex-aven, and wxgtk2.2 so apt-get
+survex will work on potato...
+
+ISO image?
+
+Mark: "surface.png is for a textured landscape -- there needs to be a
+menu option to select the texturing on/off, and this should be the
+texture used. map.png is just a different surface overlay for Loser."
+
+Profile aven
+
+Check menu short-cuts don't clash in translation...
+
+CAD fuer hoehlen excel conversion macros?
+
+man pages from sgml source shared with manual - see:
+/usr/share/debhelper/dh_make/debian/manpage.sgml.ex
 
