@@ -268,7 +268,12 @@ main(int argc, char **argv)
 
    if (fLog) {
       char *fnm;
-      if (fnm_output_base_is_dir) {
+      if (!fnm_output_base) {
+	 char *p;
+	 p = baseleaf_from_fnm(argv[optind]);
+	 fnm = add_ext(p, "log");
+	 osfree(p);	 
+      } else if (fnm_output_base_is_dir) {
 	 char *p;
 	 fnm = baseleaf_from_fnm(argv[optind]);
 	 p = use_path(fnm_output_base, fnm);
