@@ -35,7 +35,7 @@ if test -f Makefile ; then
       exit 1
    fi
 fi
-if test x"$rel" = xyes ; then
+if test yes = "$rel" ; then
    rm -f config.guess.new config.sub.new
    perl -e '-M "config.guess" && -M "config.sub" && exit 1' &&\
       wget ftp://ftp.gnu.org/gnu/config/config.guess -O config.guess.new &&\
@@ -47,15 +47,22 @@ aclocal
 autoheader
 automake -a
 autoconf
-if ! ./configure CFLAGS=-Werror CXXFLAGS=-Werror ; then
+if ! ./configure ; then
    echo configure failed
    exit 1
 fi
-if test x"$rel" = xyes ; then
+if test yes = "$rel" ; then
+   export CFLAGS
+   export CXXFLAGS
+   # tell the preproceesor to be C89 - this makes it reject // comments
+   CFLAGS="-Werror -Wp,-std=c89"
+   CXXFLAGS="-Werror"
    if ! make distcheck ; then
       echo make distcheck failed
       exit 1
    fi
+   CFLAGS=
+   CXXFLAGS=
 else
    if ! make dist ; then
       echo make dist failed
