@@ -25,10 +25,6 @@
 # define DEBUG_INVALID 1
 #endif
 
-#ifdef CHASM3DX
-#include <stddef.h> /* for offsetof */
-#endif
-
 #include "debug.h"
 #include "cavern.h"
 #include "filename.h"
@@ -36,6 +32,10 @@
 #include "netbits.h"
 #include "datain.h" /* for compile_error */
 #include "validate.h" /* for compile_error */
+
+#ifdef CHASM3DX
+#include <stddef.h> /* for offsetof */
+#endif
 
 #define THRESHOLD (REAL_EPSILON * 1000) /* 100 was too small */
 

@@ -27,10 +27,6 @@
 # include <config.h>
 #endif
 
-#ifdef CHASM3DX
-#include <stddef.h> /* for offsetof */
-#endif
-
 #include "validate.h"
 #include "debug.h"
 #include "cavern.h"
@@ -38,6 +34,10 @@
 #include "netbits.h"
 #include "network.h"
 #include "out.h"
+
+#ifdef CHASM3DX
+#include <stddef.h> /* for offsetof */
+#endif
 
 /* type field isn't vital - join3 is unused except for deltastar, so
  * we can set its value to indicate which type this is:
