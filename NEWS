@@ -9,6 +9,10 @@
 
 * (MacOS X version): aven: now works when run from the MacOS X Finder.
 
+* (MacOS X version): look for message files and other resources relative to the
+  binaries so that the user can install Survex from a disk image in the location
+  of their choice.
+
 * (MacOS X version): fixed not to try to build aven if wxWindows isn't
   installed.
 
