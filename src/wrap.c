@@ -59,11 +59,7 @@ static int fPercent = -1, fAscii = 0;
 # define SWITCH_SYMBOLS "/-"
 #endif
 
-#if (OS==RISCOS)
-# define EXT_SVX_CMND "/svc" /* allows files to be read from DOS discs */
-#else
-# define EXT_SVX_CMND ".svc"
-#endif
+#define EXT_SVX_CMND "svc"
 
 #define STDERR stdout
 
