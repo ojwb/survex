@@ -66,7 +66,7 @@ AC_ARG_ENABLE(defaultlang,
   AC_MSG_ERROR([configure: Syntax: configure --enable-defaultlang=LANGUAGE]) ;;
 esac
 DEFAULTLANG="$enableval"
-AC_DEFINE(DEFAULTLANG, [$enableval], [Default language for messages])
+AC_DEFINE_UNQUOTED(DEFAULTLANG, [$enableval], [Default language for messages])
 ]
 )
 AC_SUBST(DEFAULTLANG)
