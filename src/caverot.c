@@ -404,6 +404,7 @@ process_key(void) /* and mouse! */
    static clock_t last_animate = 0;
 #endif
 
+   /* FIXME: use timer with better resolution than clock() ? */
    old_time = new_time;
    new_time = clock();
    if (fChanged) {
