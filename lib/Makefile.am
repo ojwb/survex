@@ -21,6 +21,7 @@ MAINTAINERCLEANFILES = $(msg_files) $(hdr_files) default.bit bold.bit\
  *.todo
 
 pkgdata_DATA = default.bit bold.bit print.ini bcra3.svx bcra5.svx $(msg_files)
+pkgdata_SCRIPTS = aven-or-xcaverot
 
 BUILT_SOURCES = defaultlang.h
 
