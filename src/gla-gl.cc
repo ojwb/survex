@@ -183,10 +183,6 @@ void GLACanvas::FirstShow()
     CHECK_GL_ERROR("FirstShow", "glShadeModel");
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     CHECK_GL_ERROR("FirstShow", "glPolygonMode");
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    CHECK_GL_ERROR("FirstShow", "glColorMaterial GL_FRONT");
-    glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
-    CHECK_GL_ERROR("FirstShow", "glColorMaterial GL_BACK");
     //glEnable(GL_POINT_SMOOTH);
     //CHECK_GL_ERROR("FirstShow", "glEnable GL_POINT_SMOOTH");
     glPointSize(4);
