@@ -125,7 +125,13 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
       if (i == 0) {
 	 osfree(name);
 	 if (!fOmit) {
-	    compile_error(/*Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
+	    if (isEol(ch)) {
+	       /* FIXME: if (fSurvey) { ... "survey name" not "station name" ? */
+	       compile_error(/*Expecting station name*/28);
+	    } else {
+	       /* FIXME: if (fSurvey) { ... "survey name" not "station name" ? */
+	       compile_error(/*Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
+	    }
 	    skipline();
 	    LONGJMP(file.jbSkipLine);
 	 }

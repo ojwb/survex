@@ -30,6 +30,8 @@
 
 * printdm/printpcl: exit cleanly if bitmap font file is missing.
 
+* cavern: give a more helpful error on empty "*export" or "*prefix".
+
 Changes in 0.97-prerelease4:
 
 * Updated Portuguese and German translations.
