@@ -3,6 +3,9 @@ Changes in 1.0.10:
 * aven: only add a file to the list of recently used files if it was opened
   successfully.
 
+* cavern: fixed bogus warning triggered by "*begin abc.def" (I'm not sure
+  that this should be valid, but the warning given wasn't appropriate).
+
 * Fixed potential problem when reading or writing a 3d file which couldn't
   be opened.
 

@@ -72,15 +72,19 @@ static void
 node_stat(prefix *p)
 {
    if (!p->pos) {
-      if (TSTBIT(p->sflags, SFLAGS_ENTRANCE) || p->max_export) {
-	  /* p was referred to in "*entrance" and/or "*export"
-	   * but not elsewhere (otherwise it would have a position).
-	   * p could also be a survey (SFLAGS_SURVEY) or be mentioned as
-	   * a station, but only in a line of data which was rejected because
-	   * of an error.
-	   */
-	  warning(/*Station `%s' referred to by *entrance or *export but never used*/190,
-		  sprint_prefix(p));
+      if (!TSTBIT(p->sflags, SFLAGS_SURVEY)) {
+	 /* Could do away with the SFLAGS_SURVEY check and check
+	  * p->min_export instead of p->max_export I think ... */
+	 if (TSTBIT(p->sflags, SFLAGS_ENTRANCE) || p->max_export) {
+	     /* p is a station which was referred to in "*entrance" and/or
+	      * "*export" but not elsewhere (otherwise it'd have a position).
+	      * p could also be a survey (SFLAGS_SURVEY) or be mentioned as
+	      * a station, but only in a line of data which was rejected
+	      * because of an error.
+	      */
+	     warning(/*Station `%s' referred to by *entrance or *export but never used*/190,
+		     sprint_prefix(p));
+	 }
       }
    } else {
       int order;

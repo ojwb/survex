@@ -34,7 +34,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar\
  newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
  notentranceorexport inferunknown inferexports bad_units_factor\
- percent_gradient"}}
+ percent_gradient dotinsurvey"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -151,15 +151,16 @@ for file in $TESTS ; do
   inferunknown) pos=fail; error=1 ;;
   inferexports) pos=no; warn=0 ;;
   bad_units_factor) pos=fail; error=5 ;;
-  percent_gradient) pos=yes ; warn=0 ;;
+  percent_gradient) pos=yes; warn=0 ;;
+  dotinsurvey) pos=no; warn=0 ;;
   *) file='' ;;
   esac
 
-  if test x"$file" != x ; then
-    echo $file
+  if test -n "$file" ; then
+    echo "$file"
     rm -f tmp.*
     if test -n "$VERBOSE" ; then
-      if test x"$pos" = xfail ; then
+      if test fail = "$pos" ; then
         $CAVERN $srcdir/$file.svx --output=tmp
 	# success gives 0, signal (128 + <signal number>)
 	test $? = 1 || exit 1
@@ -167,7 +168,7 @@ for file in $TESTS ; do
         $CAVERN $srcdir/$file.svx --output=tmp || exit 1
       fi
     else
-      if test x"$pos" = xfail ; then
+      if test fail = "$pos" ; then
         $CAVERN $srcdir/$file.svx --output=tmp > tmp.out
 	# success gives 0, signal (128 + <signal number>)
 	test $? = 1 || exit 1
@@ -198,9 +199,10 @@ for file in $TESTS ; do
     fail)
       test -f tmp.3d && exit 1 ;;
     *)
-      echo "Bad value for pos" ; exit 1 ;;
+      echo "Bad value for pos: '$pos'" ; exit 1 ;;
     esac
     rm -f tmp.*
   fi
 done
+test -n "$VERBOSE" && echo "Test passed"
 exit 0
