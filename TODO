@@ -107,12 +107,6 @@ update translations (quotes in messages - translate too? e.g. `XXX' to
 
 extract --help messages for translation.
 
-Date: Mon, 25 Jun 2001
-From: Olly
-
-check return values from fgets(), fread(). Need to fix diffpos.c
-and new3dout.c (everything else checked).
-
 Date: Wed, 04 Jul 2001
 From: Olly
 

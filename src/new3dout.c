@@ -319,9 +319,10 @@ cave_write_base_source(void)
   osfree(temp);
 }
 
-void
+int
 cave_close(img *pimg)
 {
+   int result = 1;
    /* let's do the twiglet traverse! */
    twig *twiglet = rhizome->down;
    cave_write_base_source();
@@ -333,9 +334,11 @@ cave_close(img *pimg)
       /* and finally write how many stations there are */
       fseek(pimg->fh, 7L, SEEK_SET);
       put32((INT32_T)statcount, pimg->fh);
-      fclose(pimg->fh);
+      if (ferror(pimg->fh)) result = 0;
+      if (fclose(pimg->fh) == EOF) result = 0;
    }
    osfree(pimg);
+   return result;
 }
 
 void

@@ -153,7 +153,7 @@ static struct help_msg help[] = {
 int
 main(int argc, char **argv)
 {
-   const char *fnmData, *fnmOutput;
+   const char *fnm_in, *fnm_out;
    char szDesc[256];
    img_point pt;
    int result;
@@ -172,16 +172,16 @@ main(int argc, char **argv)
       if (opt == EOF) break;
       if (opt == 's') survey = optarg;
    }
-   fnmData = argv[optind++];
+   fnm_in = argv[optind++];
    if (argv[optind]) {
-      fnmOutput = argv[optind];
+      fnm_out = argv[optind];
    } else {
-      fnmOutput = add_ext("extend", EXT_SVX_3D);
+      fnm_out = add_ext("extend", EXT_SVX_3D);
    }
 
    /* try to open image file, and check it has correct header */
-   pimg = img_open_survey(fnmData, szDesc, NULL, survey);
-   if (pimg == NULL) fatalerror(img_error(), fnmData);
+   pimg = img_open_survey(fnm_in, szDesc, NULL, survey);
+   if (pimg == NULL) fatalerror(img_error(), fnm_in);
 
    putnl();
    puts(msg(/*Reading in data - please wait...*/105));
@@ -209,12 +209,12 @@ main(int argc, char **argv)
          add_label(fr, pimg->label, pimg->flags);
          break;
       case img_BAD:
-	 img_close(pimg);
-	 fatalerror(img_error(), fnmData);
+	 (void)img_close(pimg);
+	 fatalerror(img_error(), fnm_in);
       }
    } while (result != img_STOP);
 
-   img_close(pimg);
+   (void)img_close(pimg);
 
    /* start at the highest 1-node */
    for (p = headpoint.next; p != NULL; p = p->next) {
@@ -237,10 +237,13 @@ main(int argc, char **argv)
       }
    }
    strcat(szDesc, " (extended)");
-   pimg = img_open_write(fnmOutput, szDesc, fTrue);
+   pimg = img_open_write(fnm_out, szDesc, fTrue);
 
    do_stn(start, 0.0); /* only does highest connected component currently */
-   img_close(pimg);
+   if (!img_close(pimg)) {
+      (void)remove(fnm_out);
+      fatalerror(img_error(), fnm_out);
+   }
 
    return EXIT_SUCCESS;
 }

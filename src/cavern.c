@@ -336,10 +336,18 @@ main(int argc, char **argv)
    
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
-      cave_close(pimg); /* this actually does all the writing */
+      /* this actually does all the writing */
+      if (!cave_close(pimg)) {
+	 char *fnm = add_ext(fnm_output_base, EXT_SVX_3DX);
+	 fatalerror_in_file(fnm, 0, /*Error writing to file*/111);
+      }
    } else {
 #endif
-      img_close(pimg); /* close .3d file */
+      /* close .3d file */
+      if (!img_close(pimg)) {
+	 char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
+	 fatalerror(img_error(), fnm);
+      }
 #ifdef NEW3DFORMAT
    }
 #endif
