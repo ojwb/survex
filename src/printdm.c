@@ -2,7 +2,7 @@
 
 /* Device dependent part of Survex Dot-matrix/PCL printer driver */
 /* Bitmap routines for Survex Dot-matrix and Inkjet printer drivers */
-/* Copyright (C) 1993-1997 Olly Betts
+/* Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ device printer = {
    MoveTo,
    DrawTo,
    DrawCross,
+   NULL, /* SetFont */
    WriteString,
    NULL, /* DrawCircle */
    xbm_ShowPage,
@@ -72,8 +73,8 @@ device printer = {
 };
 #elif defined(PCL)
 static bool fPCL = fTrue;
-static bool fNoPCLHTab = fFalse;
-static bool fNoPCLVTab = fFalse;
+static bool fPCLHTab = fTrue;
+static bool fPCLVTab = fTrue;
 
 static const char *pcl_Name(void);
 static void pcl_NewPage(int pg, int pass, int pagesX, int pagesY);
@@ -89,6 +90,7 @@ device printer = {
    MoveTo,
    DrawTo,
    DrawCross,
+   NULL, /* SetFont */
    WriteString,
    NULL, /* DrawCircle */
    pcl_ShowPage,
@@ -113,6 +115,7 @@ device printer = {
    MoveTo,
    DrawTo,
    DrawCross,
+   NULL, /* SetFont */
    WriteString,
    NULL, /* DrawCircle */
    dm_ShowPage,
@@ -309,7 +312,7 @@ dm_ShowPage(const char *szPageDetails)
       while (last >= 0 && !bitmap[y][last]) last--;      
 
       first = 0;
-      if (!fNoPCLHTab) {
+      if (fPCLHTab) {
 	 /* Check there are enough bytes that an htab can save space */
 	 if (last > firstMin) {
 	    /* Scan in from left end to first used byte, then stop */
@@ -323,7 +326,7 @@ dm_ShowPage(const char *szPageDetails)
       }
 
       /* need blank lines (last==-1) for PCL dump ... (sigh) */
-      if (!fNoPCLVTab && last == -1) {
+      if (fPCLVTab && last == -1) {
          cEmpties++; /* line is completely blank */
       } else {
 	 int len;
@@ -400,6 +403,17 @@ dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
    static char *vars[] = {
       "like",
       "output",
+#if (OS==MSDOS)
+      "output_msdos",
+#elif (OS==UNIX)
+      "output_unix",
+#elif (OS==RISCOS)
+      "output_riscos",
+#elif (OS==WIN32)
+      "output_mswindows",
+#else
+#error unknown operating system
+#endif
 #ifdef XBM
       "width",
       "height",
@@ -431,9 +445,21 @@ dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
 
 #ifdef XBM
    vals = ini_read_hier(fh, "xbm", vars);
-   fnmPrn = as_string(vals[1]);
-   xpPageWidth = as_int(vals[2], 1, INT_MAX);
-   ypPageDepth = as_int(vals[3], 1, INT_MAX);
+#elif defined(PCL)
+   vals = ini_read_hier(fh, "pcl", vars);
+#else
+   vals = ini_read_hier(fh, "dm", vars);
+/*   vals = ini_read_hier(fh, "bj", vars);*/
+#endif
+
+   if (vals[2]) 
+      fnmPrn = as_string(vals[2]);
+   else
+      fnmPrn = as_string(vals[1]);
+
+#ifdef XBM
+   xpPageWidth = as_int(vals[3], 1, INT_MAX);
+   ypPageDepth = as_int(vals[4], 1, INT_MAX);
    ylPageDepth = ypPageDepth;
    ypLineDepth = 1;
    PaperWidth = xpPageWidth;
@@ -441,14 +467,12 @@ dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
    *pscX = *pscY = 1;
    osfree(vals);
 #elif defined(PCL)
-   vals = ini_read_hier(fh, "pcl", vars);
-   fnmPrn = as_string(vals[1]);
-   dpi = as_int(vals[2], 1, INT_MAX);
-   PaperWidth = as_float(vals[3], 1, FLT_MAX);
-   PaperDepth = as_float(vals[4], 11, FLT_MAX);
+   dpi = as_int(vals[3], 1, INT_MAX);
+   PaperWidth = as_float(vals[4], 1, FLT_MAX);
+   PaperDepth = as_float(vals[5], 11, FLT_MAX);
    PaperDepth -= 10; /* allow 10mm for footer */
-   fNoPCLHTab = !as_bool(vals[5]);
-   fNoPCLVTab = !as_bool(vals[6]);
+   fPCLHTab = as_bool(vals[6]);
+   fPCLVTab = as_bool(vals[7]);
    osfree(vals);
 
    *pscX = *pscY = (float)(dpi / MM_PER_INCH);
@@ -456,15 +480,12 @@ dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
    ylPageDepth = ypPageDepth = (int)((dpi / MM_PER_INCH) * PaperDepth);
    ypLineDepth = 1;
 #else
-   vals = ini_read_hier(fh, "dm", vars);
-/*   vals = ini_read_hier(fh, "bj", vars);*/
-   fnmPrn = as_string(vals[1]);
-   xpPageWidth = as_int(vals[2], 1, INT_MAX);
-   ylPageDepth = as_int(vals[3], 4, INT_MAX);
+   xpPageWidth = as_int(vals[3], 1, INT_MAX);
+   ylPageDepth = as_int(vals[4], 4, INT_MAX);
    ylPageDepth -= 3; /* allow for footer */
-   ypLineDepth = as_int(vals[4], 1, INT_MAX);
-   PaperWidth = as_float(vals[5], 1, FLT_MAX);
-   PaperDepth = as_float(vals[6], 1, FLT_MAX);
+   ypLineDepth = as_int(vals[5], 1, INT_MAX);
+   PaperWidth = as_float(vals[6], 1, FLT_MAX);
+   PaperDepth = as_float(vals[7], 1, FLT_MAX);
 
    ypPageDepth = ylPageDepth * ypLineDepth;
    *pscX = xpPageWidth / PaperWidth; /* xp per mm */
@@ -473,24 +494,24 @@ dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
    /* Work out # bytes required to hold one column */
    SIZEOFGRAPH_T = (ypLineDepth + 7) >> 3;
 
-   prn.lnsp.str = vals[7];     /* $1b3$18   */
+   prn.lnsp.str = vals[8];      /* $1b3$18   */
    prn.lnsp.len = as_escstring(prn.lnsp.str);
-   prn.grph.str = vals[8];     /* $1bL      */
+   prn.grph.str = vals[9];      /* $1bL      */
    prn.grph.len = as_escstring(prn.grph.str);
-   prn.grph2.str = vals[9];    /*           */
+   prn.grph2.str = vals[10];    /*           */
    prn.grph2.len = as_escstring(prn.grph2.str);
-   prn.fnt_big.str = vals[10];  /* $12$1bW1  */
+   prn.fnt_big.str = vals[11];  /* $12$1bW1  */
    prn.fnt_big.len = as_escstring(prn.fnt_big.str);
-   prn.fnt_sml.str = vals[11];  /* $1bW0$0f  */
+   prn.fnt_sml.str = vals[12];  /* $1bW0$0f  */
    prn.fnt_sml.len = as_escstring(prn.fnt_sml.str);
-   prn.fmfd.str = vals[12];     /* $0c       */
+   prn.fmfd.str = vals[13];     /* $0c       */
    prn.fmfd.len = as_escstring(prn.fmfd.str);
-   prn.rst.str = vals[13];      /* $1b2      */
+   prn.rst.str = vals[14];      /* $1b2      */
    prn.rst.len = as_escstring(prn.rst.str);
-   prn.eol.str = vals[14];      /* $0d       */
+   prn.eol.str = vals[15];      /* $0d       */
    prn.eol.len = as_escstring(prn.eol.str);
    fIBM = 0; /* default to Epsom */
-   if (vals[15]) fIBM = as_bool(vals[15]);
+   if (vals[16]) fIBM = as_bool(vals[16]);
    osfree(vals);
 #endif
 

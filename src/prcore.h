@@ -1,7 +1,6 @@
 /* > prcore.h
- * Header file for
- * Printer independent parts of Survex printer drivers
- * Copyright (C) 1994-1995 Olly Betts
+ * Header file for printer independent parts of Survex printer drivers
+ * Copyright (C) 1994-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +27,9 @@ typedef struct {
    long x_min, y_min, x_max, y_max;
 } border;
 
+#define PR_FONT_DEFAULT 0
+#define PR_FONT_LABELS 1
+
 typedef struct {
    const char * (*Name)(void); /* returns "Widgetware printer" or whatever */
    /* A NULL fn ptr is Ok for Init, Alloc, NewPage, ShowPage, Free, Quit */
@@ -38,6 +40,7 @@ typedef struct {
    void (*MoveTo)(long x, long y);
    void (*DrawTo)(long x, long y);
    void (*DrawCross)(long x, long y);
+   void (*SetFont)(int font); /* takes PR_FONT_xxx values */
    void (*WriteString)(const char *s);
    void (*DrawCircle)(long x, long y, long r);
    void (*ShowPage)(const char *szPageDetails);

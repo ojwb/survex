@@ -73,6 +73,7 @@ device printer = {
    hpgl_MoveTo,
    hpgl_DrawTo,
    hpgl_DrawCross,
+   NULL, /* SetFont */
    hpgl_WriteString,
    NULL, /* hpgl_DrawCircle */
    hpgl_ShowPage,
@@ -84,15 +85,15 @@ device printer = {
 # define POINTS_PER_MM ((float)(POINTS_PER_INCH) / (MM_PER_INCH))
 
 static float MarginLeft, MarginRight, MarginTop, MarginBottom;
-static int FontSize;
+static int fontsize, fontsize_labels;
 static float LineWidth;
 
-static char *szFont;
+static char *fontname, *fontname_labels;
 
 # define PS_TS 9 /* size of alignment 'ticks' on multipage printouts */
 # define PS_CROSS_SIZE 2 /* length of cross arms (in points!) */
 
-#define szFontSymbol "Symbol"
+#define fontname_symbol "Symbol"
 
 static const char *ps_Name(void);
 static int ps_Pre(int pagesToPrint, const char *title);
@@ -101,6 +102,7 @@ static void ps_Init(FILE *fh, const char *pth, float *pscX, float *pscY);
 static void ps_MoveTo(long x, long y);
 static void ps_DrawTo(long x, long y);
 static void ps_DrawCross(long x, long y);
+static void ps_SetFont(int fontcode);
 static void ps_WriteString(const char *s);
 static void ps_DrawCircle(long x, long y, long r);
 static void ps_ShowPage(const char *szPageDetails);
@@ -115,6 +117,7 @@ device printer = {
    ps_MoveTo,
    ps_DrawTo,
    ps_DrawCross,
+   ps_SetFont,
    ps_WriteString,
    ps_DrawCircle,
    ps_ShowPage,
@@ -172,6 +175,25 @@ ps_DrawCross(long x, long y)
    prio_printf("%ld %ld X\n", x - clip.x_min, y - clip.y_min);
 }
 
+static char current_font_code = 'F';
+
+static void
+ps_SetFont(int fontcode)
+{
+   switch (fontcode) {
+    case PR_FONT_DEFAULT:
+      current_font_code = 'F';
+      break;
+    case PR_FONT_LABELS:
+      current_font_code = 'N';
+      break;
+    default:
+      BUG("unknown font code");
+   }
+   prio_putc(current_font_code);
+   prio_putc('\n');
+}
+
 static void
 ps_WriteString(const char *s)
 {
@@ -181,10 +203,13 @@ ps_WriteString(const char *s)
       ch = *s++;
       switch (ch) {
        case 0xB0:
-         prio_print("\\312"); /* degree symbol */
+	 /* degree symbol - FIXME: font encoding for other chars? */
+         prio_print("\\312");
          break;
        case 0xA9:
-         prio_print(") S Z (\\323) S F ("); /* (C) symbol (symbol font) */
+	 /* (C) symbol (symbol font) */
+	 /* FIXME: (C) in labels will come out at the wrong size... */
+         prio_printf(") S Z (\\323) S %c (", current_font_code);
          break;
        case '(': case ')': case '\\': /* need to escape these characters */
          prio_putc('\\');
@@ -262,18 +287,23 @@ ps_Pre(int pagesToPrint, const char *title)
    prio_print("%%Creator: Survex "VERSION" Postscript Printer Driver\n");
 /* FIXME  prio_print("%%CreationDate: Today :)\n"); */
 /*   prio_print("%%For: A Surveyor\n"); */
-   prio_printf("%%%%DocumentFonts: %s %s\n", szFont, szFontSymbol);
+   prio_printf("%%%%DocumentFonts: %s ", fontname);
+   if (strcmp(fontname, fontname_labels) != 0)
+      prio_printf("%s ", fontname_labels);
+   prio_printf("%s\n", fontname_symbol);
    prio_printf("%%%%BoundingBox: 0 0 %ld %ld\n",
 	       xpPageWidth + (long)(2.0 * MarginLeft * POINTS_PER_MM),
 	       ypPageDepth + (long)((10.0 + 2.0 * MarginBottom) * POINTS_PER_MM));
    /* FIXME is this a level 1 feature?   prio_print("%%PageOrder: Ascend\n"); */
    prio_printf("%%%%Pages: %d\n", pagesToPrint);
 
-   /* F switches to text font; Z switches to symbol font */
+   /* F switches to text font; N - font for labels (Names); Z - symbol font */
    prio_printf("/F {/%s findfont %d scalefont setfont} def\n",
-	       szFont, (int)FontSize);
+	       fontname, (int)fontsize);
+   prio_printf("/N {/%s findfont %d scalefont setfont} def\n",
+	       fontname_labels, (int)fontsize_labels);
    prio_printf("/Z {/%s findfont %d scalefont setfont} def\n",
-               szFontSymbol, (int)FontSize);
+               fontname_symbol, (int)fontsize);
    prio_print("F\n");
 
    /* Postscript definition for drawing a cross */
@@ -387,19 +417,56 @@ ps_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
 #endif
 {
    char *fnmPrn;
+   static char *vars[] = {
+      "like",
+      "output",
+#if (OS==MSDOS)
+      "output_msdos",
+#elif (OS==UNIX)
+      "output_unix",
+#elif (OS==RISCOS)
+      "output_riscos",
+#elif (OS==WIN32)
+      "output_mswindows",
+#else
+#error unknown operating system
+#endif
+#ifdef HPGL
+      "mm_across_page",
+      "mm_down_page",
+      "origin_in_centre",
+#else
+      "font",
+      "mm_left_margin",
+      "mm_right_margin",
+      "mm_bottom_margin",
+      "mm_top_margin",
+      "font_size",
+      "line_width",
+      "font_labels",
+      "font_size_labels",
+#endif
+      NULL
+   };
    char **vals;
 
    pth = pth; /* shut-up warning */
+
 #ifdef HPGL
-{
-   char *vars[] = {"like", "output", "mm_across_page", "mm_down_page",
-      "origin_in_centre", NULL};
    vals = ini_read_hier(fh, "hpgl", vars);
-}
-   fnmPrn = as_string(vals[1]);
-   PaperWidth = as_float(vals[2], 1, FLT_MAX);
-   PaperDepth = as_float(vals[3], 11, FLT_MAX);
-   fOriginInCentre = as_bool(vals[4]);
+#else
+   vals = ini_read_hier(fh, "ps", vars);
+#endif
+
+   if (vals[2]) 
+      fnmPrn = as_string(vals[2]);
+   else
+      fnmPrn = as_string(vals[1]);
+
+#ifdef HPGL
+   PaperWidth = as_float(vals[3], 1, FLT_MAX);
+   PaperDepth = as_float(vals[4], 11, FLT_MAX);
+   fOriginInCentre = as_bool(vals[5]);
    PaperDepth -= 10; /* Allow 10mm for footer */
    osfree(vals);
 
@@ -409,23 +476,25 @@ ps_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
 
    ypFooter = (int)(HPGL_UNITS_PER_MM * 10.0);
 #else
-{
-   /* fix parameter list */
-   char *vars[] = {"like", "output", "font",
-      "mm_left_margin", "mm_right_margin",
-      "mm_bottom_margin", "mm_top_margin",
-      "font_size", "line_width", NULL};
-   vals = ini_read_hier(fh, "ps", vars);
-}
-   fnmPrn = as_string(vals[1]);
-   szFont = as_string(vals[2]); /* name of font to use */
-   MarginLeft = as_float(vals[3], 0, FLT_MAX);
-   MarginRight = as_float(vals[4], 0, FLT_MAX);
-   MarginBottom = as_float(vals[5], 0, FLT_MAX);
-   MarginTop = as_float(vals[6], 0, FLT_MAX);
-   FontSize = as_int(vals[7], 1, INT_MAX);
-   LineWidth = as_float(vals[8], 0, INT_MAX);
+   /* name and size of font to use for text */
+   fontname = as_string(vals[3]);
+   fontsize = as_int(vals[8], 1, INT_MAX);
+
+   MarginLeft = as_float(vals[4], 0, FLT_MAX);
+   MarginRight = as_float(vals[5], 0, FLT_MAX);
+   MarginBottom = as_float(vals[6], 0, FLT_MAX);
+   MarginTop = as_float(vals[7], 0, FLT_MAX);
+
+   LineWidth = as_float(vals[9], 0, INT_MAX);
+
+   /* name and size of font to use for station labels (default to text font) */
+   fontname_labels = fontname;
+   if (vals[10]) fontname_labels = as_string(vals[10]);
+   fontsize_labels = fontsize;
+   if (vals[11]) fontsize_labels = as_int(vals[11], 1, INT_MAX);
+
    osfree(vals);
+
    PaperWidth = MarginRight - MarginLeft;
    PaperDepth = MarginTop - MarginBottom - 10; /* Allow 10mm for footer */
 

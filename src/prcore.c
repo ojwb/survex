@@ -1,6 +1,6 @@
 /* > prcore.c
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-1997 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -831,8 +831,13 @@ int main(int argc, char **argv)
 
          if (pr->NewPage)
             pr->NewPage((int)page, pass, pagesX, pagesY);
-         if ((int)page == (pagesY - 1) * pagesX + 1)
+
+         if ((int)page == (pagesY - 1) * pagesX + 1) {
+	    if (pr->SetFont) pr->SetFont(PR_FONT_DEFAULT);
             DrawInfoBox(N_Scale, D_Scale);
+	 }
+
+	 if (pr->SetFont) pr->SetFont(PR_FONT_LABELS);
          for (pli = pliHead; pli; pli = pli->pliNext)
             switch (pli->tag) {
              case img_MOVE:
