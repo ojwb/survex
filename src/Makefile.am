@@ -80,9 +80,9 @@ svxeditrc.o: $(srcdir)/svxedit.rc
 
 editwrap_LDADD = svxeditrc.o
 
-# FIXME: should use wxconfig or similar to get includes
+# FIXME: use path on WXCONFIG to get --include-dir?
 avenrc.o: $(srcdir)/aven.rc
-	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $$pwd/avenrc.o aven.rc
+	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o $$pwd/avenrc.o aven.rc
 else
 aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
 avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
@@ -97,11 +97,11 @@ aven-rez: aven
 endif
 
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
-aven_CXXFLAGS = @WX_CXXFLAGS@ -DAVEN
+aven_CXXFLAGS = @WX_CXXFLAGS@
 aven_LDFLAGS = @WX_LDFLAGS@
 
 avengl_CFLAGS = @WXGL_CFLAGS@ -DAVEN
-avengl_CXXFLAGS = @WXGL_CXXFLAGS@ -DAVEN
+avengl_CXXFLAGS = @WXGL_CXXFLAGS@
 avengl_LDFLAGS = @WX_LDFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
@@ -160,4 +160,4 @@ borlandc/makefile: $(srcdir)/Makefile.am miniam.pl
 	$(srcdir)/miniam.pl borlandc < $(srcdir)/Makefile.am > borlandc/makefile
 
 riscos/makefile: $(srcdir)/Makefile.am miniam.pl
-	$(srcdir)/miniam.pl riscos < $(srcdir)/Makefile.am > riscos/makefile
+	$(srcdir)/miniam.pl riscos < $(srcdir)/Makefile.am > riscos/tmp-makefile && mv riscos/tmp-makefile riscos/makefile
