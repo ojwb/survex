@@ -225,11 +225,13 @@ extern bool fAscii;
 
 #if EXPLICIT_FIXED_FLAG
 # define pfx_fixed(N) ((N)->pos->fFixed)
+# define pos_fixed(P) ((P)->fFixed)
 # define fix(S) (S)->name->pos->fFixed = (char)fTrue
 # define fixpos(P) (P)->fFixed = (char)fTrue
 # define unfix(S) (S)->name->pos->fFixed = (char)fFalse
 #else
 # define pfx_fixed(N) ((N)->pos->p[0] != UNFIXED_VAL)
+# define pos_fixed(P) ((P)->p[0] != UNFIXED_VAL)
 # define fix(S) NOP
 # define fixpos(P) NOP
 # define unfix(S) POS((S), 0) = UNFIXED_VAL
