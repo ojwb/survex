@@ -47,7 +47,8 @@ bool fAmbiguousFnm( const char *fnm ) {
 #endif
 }
 
-#elif ((OS==MSDOS) || (OS==TOS))
+#elif ((OS==MSDOS) || (OS==TOS) || (OS==WIN32))
+/* FIXME UNC paths for WIN32 (and maybe MSDOS?) */
 
 # include <ctype.h> /* needed for isalpha */
 
@@ -131,7 +132,7 @@ bool fAmbiguousFnm( const char *fnm ) {
  * file, doesn't exist, or another error occurs (eg disc not in drive, ...)
  */
 
-#if ((OS==UNIX) || (OS==MSDOS) || (OS==TOS))
+#if ((OS==UNIX) || (OS==MSDOS) || (OS==TOS) || (OS==WIN32))
 
 # include <sys/types.h>
 # include <sys/stat.h>

@@ -91,7 +91,7 @@ typedef short w16;
 
 #  define NO_STDPRN
 
-# elif (OS==MSDOS)
+# elif (OS==MSDOS) || (OS==WIN32)
 
 typedef long w32;
 typedef short w16;
@@ -141,8 +141,6 @@ typedef short w16;
 /* #  define FNM_SEP_DRV  No equivalent under UNIX */
 #  define FNM_SEP_EXT '.'
 
-#  define SWITCH_SYMBOLS "-" /* otherwise '/' causes ambiguity problems */
-
 #  define NO_STDPRN
 
 # elif (OS==AMIGA)
@@ -180,10 +178,6 @@ typedef short w16;
 # ifndef check_fp_ok
 #  define check_fp_ok() /* ie do nothing special */
 # endif /* !check_fp_ok */
-
-# ifndef SWITCH_SYMBOLS
-#  define SWITCH_SYMBOLS "/-"
-# endif
 
 # if 0
 #  include <assert.h>
