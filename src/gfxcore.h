@@ -300,8 +300,8 @@ public:
     bool ShowingOverlappingNames() const { return m_OverlappingNames; }
     bool ShowingCrosses() const { return m_Crosses; }
 
-    bool HasUndergroundLegs() const { return true; /* FIXME */ }
-    bool HasSurfaceLegs() const { return true; /* FIXME */ }
+    bool HasUndergroundLegs() const;
+    bool HasSurfaceLegs() const;
 
     bool ShowingUndergroundLegs() const { return m_Legs; }
     bool ShowingSurfaceLegs() const { return m_Surface; }

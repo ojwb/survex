@@ -36,6 +36,9 @@ Changes between 1.0.26 and 1.1.0:
 
 * aven: Depth fogging option.
 
+* aven: If a survey has surface legs but no underground legs, default to
+  showing the surface legs.
+
 * cavern: Dates given to *date are now stored in the 3d file.
 
 Changes in 1.0.26:

@@ -265,6 +265,16 @@ void GfxCore::SetScale(Double scale)
     UpdateIndicators();
 }
 
+bool GfxCore::HasUndergroundLegs() const
+{
+    return m_Parent->HasUndergroundLegs();
+}
+
+bool GfxCore::HasSurfaceLegs() const
+{
+    return m_Parent->HasSurfaceLegs();
+}
+
 void GfxCore::UpdateBlobs()
 {
     DeleteList(m_Lists.blobs);
@@ -312,10 +322,10 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	    m_Lists.tubes =
 		CreateList(this, &GfxCore::GenerateDisplayListTubes);
-	    
+
 	    m_Lists.surface_legs =
 		CreateList(this, &GfxCore::GenerateDisplayListSurface);
-	    
+
 	    m_Lists.indicators =
 		CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
 
@@ -385,7 +395,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 		EndBlobs();
 	    }
 	}
-	
+
 	// Draw indicators.
 	DrawList(m_Lists.indicators);
 
@@ -454,7 +464,7 @@ void GfxCore::DrawGrid()
 
     for (int xc = 0; xc <= count_x; xc++) {
 	Double x = left + xc*grid_size;
-	
+
 	m_DrawDC.DrawLine((int) GridXToScreen(x, bottom, grid_z), (int) GridYToScreen(x, bottom, grid_z),
 			  (int) GridXToScreen(x, actual_top, grid_z), (int) GridYToScreen(x, actual_top, grid_z));
     }
@@ -543,13 +553,13 @@ void GfxCore::Draw2dIndicators()
 	BeginLines();
 	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
 			     INDICATOR_OFFSET_Y + INDICATOR_MARGIN);
-	
+
 	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
 			     INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN);
 
 	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
 			     INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
-	
+
 	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_MARGIN,
 			     INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
 	EndLines();
@@ -599,7 +609,7 @@ void GfxCore::Draw2dIndicators()
 	GLAPoint pc(pan_centre_x, centre_y, 0.0);
 	GLAPoint pts1[3] = { p2, p1, pc };
 	GLAPoint pts2[3] = { p3, p1, pc };
-	
+
 	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts1);
 	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts2);
     }
@@ -631,7 +641,7 @@ void GfxCore::Draw2dIndicators()
 	    str = wxString::Format("%03d", int(m_PanAngle));
 	} else {
 	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / 180.0));
-	}       
+	}
 	GetTextExtent(str, &w, &h);
 	DrawIndicatorText(pan_centre_x + width / 2 - w, height, str);
 	str = wxString(msg(/*Facing*/203));
@@ -645,7 +655,7 @@ void GfxCore::Draw2dIndicators()
 	    angle = int(-m_TiltAngle);
 	} else {
 	    angle = int(-m_TiltAngle * 200.0 / 180.0);
-	}       
+	}
 	str = angle ? wxString::Format("%+03d", angle) : wxString("00");
 	GetTextExtent(str, &w, &h);
 	DrawIndicatorText(elev_centre_x + width / 2 - w, height, str);
@@ -688,10 +698,10 @@ void GfxCore::DrawCompass()
 void GfxCore::DrawNames()
 {
     // Draw station names.
-    
+
     SetIndicatorTransform();
     SetColour(NAME_COLOUR);
-    
+
     if (m_OverlappingNames) {
 	SimpleDrawNames();
     } else {
@@ -703,13 +713,13 @@ void GfxCore::DrawNames()
 void GfxCore::NattyDrawNames()
 {
     // Draw station names, without overlapping.
-   
+
     const int dv = 2;
     const int quantise = int(GetFontSize() / dv);
     const int quantised_x = m_XSize / quantise;
     const int quantised_y = m_YSize / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
-   
+
     if (!m_LabelGrid) m_LabelGrid = new char[buffer_size];
 
     memset((void*) m_LabelGrid, 0, buffer_size);
@@ -718,7 +728,7 @@ void GfxCore::NattyDrawNames()
 
     while (label != m_Parent->GetLabelsEnd()) {
 	Double x, y, z;
- 
+
 	Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
 	y += CROSS_SIZE - GetFontSize();
 
@@ -788,7 +798,7 @@ void GfxCore::DrawDepthbar()
     for (band = 0; band < GetNumDepthBands(); band++) {
 	Double z = m_Parent->GetZMin() +
 		   m_Parent->GetZExtent() * band / (GetNumDepthBands() - 1);
-	
+
 	strs[band] = FormatLength(z, false);
 
 	int x, dummy;
@@ -893,7 +903,7 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 void GfxCore::DrawScalebar()
 {
     // Draw the scalebar.
-    
+
     if (m_Lock == lock_POINT || GetPerspective()) return;
 
     // Calculate how many metres of survey are currently displayed across the
@@ -987,13 +997,13 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 
 	ds += dy * dy;
 	if (ds >= dist_sqrd) continue;
- 
+
 	dist_sqrd = ds;
 	best = pt;
-	
+
 	if (ds == 0) break;
     }
-    
+
     if (best) {
 	m_Parent->SetMouseOverStation(best);
 	if (centre) {
@@ -1044,9 +1054,17 @@ void GfxCore::DefaultParameters()
 {
     // Set default viewing parameters.
 
-    // If there are no legs (e.g. after loading a .pos file), turn crosses on.
-    if (m_Parent->GetNumLegs() == 0) {
-	m_Crosses = true;
+    m_Surface = false;
+    if (!m_Parent->HasUndergroundLegs()) {
+	if (m_Parent->HasSurfaceLegs()) {
+	    // If there are surface legs, but no underground legs, turn
+	    // surface surveys on.
+	    m_Surface = true;
+	} else {
+	    // If there are no legs (e.g. after loading a .pos file), turn
+	    // crosses on.
+	    m_Crosses = true;
+	}
     }
 
     m_PanAngle = 0.0;
@@ -1085,7 +1103,6 @@ void GfxCore::DefaultParameters()
     UpdateQuaternion();
     SetTranslation(0.0, 0.0, 0.0);
 
-    m_Surface = false;
     m_RotationStep = 30.0;
     m_Rotating = false;
     m_SwitchingTo = 0;
@@ -1472,51 +1489,49 @@ bool GfxCore::ShowingClino() const
 
 int GfxCore::GetCompassXPosition() const
 {
-    // Return the x-coordinate of the centre of the compass in window coordinates.
-    
+    // Return the x-coordinate of the centre of the compass in window
+    // coordinates.
     return m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE / 2;
 }
 
 int GfxCore::GetClinoXPosition() const
 {
-    // Return the x-coordinate of the centre of the compass in window coordinates.
-
+    // Return the x-coordinate of the centre of the compass in window
+    // coordinates.
     return m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE / 2;
 }
 
 int GfxCore::GetIndicatorYPosition() const
 {
-    // Return the y-coordinate of the centre of the indicators in window coordinates.
-
+    // Return the y-coordinate of the centre of the indicators in window
+    // coordinates.
     return m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE / 2;
 }
 
 int GfxCore::GetIndicatorRadius() const
 {
     // Return the radius of each indicator.
-    
     return (INDICATOR_BOX_SIZE - INDICATOR_MARGIN * 2) / 2;
 }
 
 bool GfxCore::PointWithinCompass(wxPoint point) const
 {
-    // Determine whether a point (in window coordinates) lies within the compass.
-
+    // Determine whether a point (in window coordinates) lies within the
+    // compass.
     glaCoord dx = point.x - GetCompassXPosition();
     glaCoord dy = point.y - GetIndicatorYPosition();
     glaCoord radius = GetIndicatorRadius();
-    
+
     return (dx * dx + dy * dy <= radius * radius);
 }
 
 bool GfxCore::PointWithinClino(wxPoint point) const
 {
     // Determine whether a point (in window coordinates) lies within the clino.
-
     glaCoord dx = point.x - GetClinoXPosition();
     glaCoord dy = point.y - GetIndicatorYPosition();
     glaCoord radius = GetIndicatorRadius();
-    
+
     return (dx * dx + dy * dy <= radius * radius);
 }
 
@@ -1560,7 +1575,7 @@ void GfxCore::SetClinoFromPoint(wxPoint point)
     glaCoord dx = point.x - GetClinoXPosition();
     glaCoord dy = point.y - GetIndicatorYPosition();
     glaCoord radius = GetIndicatorRadius();
-    
+
     if (dx >= 0 && dx * dx + dy * dy <= radius * radius) {
 	TiltCave(deg(atan2(dy, dx)) - m_TiltAngle);
 	m_MouseOutsideElev = false;
@@ -1596,14 +1611,14 @@ void GfxCore::RedrawIndicators()
 		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
 		   INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
 		   INDICATOR_BOX_SIZE);
-		   
+
     Refresh(false, &r);
 }
 
 void GfxCore::StartRotation()
 {
     // Start the survey rotating.
-    
+
     m_Rotating = true;
     timer.Start(drawtime);
 }
@@ -1611,7 +1626,7 @@ void GfxCore::StartRotation()
 void GfxCore::ToggleRotation()
 {
     // Toggle the survey rotation on/off.
-    
+
     m_Rotating = !m_Rotating;
 
     if (m_Rotating) {
@@ -1670,11 +1685,11 @@ void GfxCore::SwitchToElevation()
 	    timer.Start(drawtime);
 	    m_SwitchingTo = ELEVATION;
 	    break;
-	    
+
 	case PLAN:
 	    m_SwitchingTo = ELEVATION;
 	    break;
-	    
+
 	case ELEVATION:
 	    // a second order to switch takes us there right away
 	    TiltCave(-m_TiltAngle);
@@ -1692,7 +1707,7 @@ void GfxCore::SwitchToPlan()
 	    timer.Start(drawtime);
 	    m_SwitchingTo = PLAN;
 	    break;
-	    
+
 	case ELEVATION:
 	    m_SwitchingTo = PLAN;
 	    break;
@@ -1708,7 +1723,7 @@ void GfxCore::SwitchToPlan()
 bool GfxCore::CanRaiseViewpoint() const
 {
     // Determine if the survey can be viewed from a higher angle of elevation.
-    
+
     return (m_TiltAngle < 90.0);
 }
 
@@ -1722,21 +1737,21 @@ bool GfxCore::CanLowerViewpoint() const
 bool GfxCore::ShowingPlan() const
 {
     // Determine if the survey is in plan view.
-    
+
     return (m_TiltAngle == 90.0);
 }
 
 bool GfxCore::ShowingElevation() const
 {
     // Determine if the survey is in elevation view.
-    
+
     return (m_TiltAngle == 0.0);
 }
 
 bool GfxCore::ShowingMeasuringLine() const
 {
     // Determine if the measuring line is being shown.
-    
+
     return (m_there.x != DBL_MAX);
 }
 
@@ -1775,7 +1790,7 @@ void GfxCore::CentreOn(Double x, Double y, Double z)
 {
     SetTranslation(-x, -y, -z);
     m_HitTestGridValid = false;
-    
+
     ForceRefresh();
 }
 
@@ -1896,7 +1911,7 @@ void GfxCore::GenerateIndicatorDisplayList()
     if ((m_Compass && m_RotationOK) || (m_Clino && m_Lock == lock_NONE)) {
 	Draw2dIndicators();
     }
- 
+
     // Draw scalebar.
     if (m_Scalebar) {
 	DrawScalebar();
@@ -1906,7 +1921,7 @@ void GfxCore::GenerateIndicatorDisplayList()
 void GfxCore::SetColourFromHeight(Double z, Double factor)
 {
     // Set the drawing colour based on an altitude.
-   
+
     Double z_ext = m_Parent->GetZExtent();
 
     // points arising from tubes may be slightly outside the limits...
@@ -1921,13 +1936,13 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
 
     int band = int(floor(how_far * (GetNumDepthBands() - 1)));
     int next_band = (band == (GetNumDepthBands() - 1)) ? band : band + 1;
-    
+
     GLAPen pen1 = GetPen(band);
     const GLAPen& pen2 = GetPen(next_band);
-    
+
     Double interval = z_ext / (GetNumDepthBands() - 1);
     Double into_band = z_offset / interval - band;
-   
+
 //    printf("%g z_offset=%g interval=%g band=%d\n", into_band,
 //	    z_offset, interval, band);
     // FIXME: why do we need to clamp here?  Is it because the walls can
@@ -1936,9 +1951,9 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
     if (into_band > 1.0) into_band = 1.0;
     assert(into_band >= 0.0);
     assert(into_band <= 1.0);
-    
+
     pen1.Interpolate(pen2, into_band);
-    
+
     SetColour(pen1, factor);
 }
 
@@ -2001,7 +2016,7 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
     return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2;
 }
 
-void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
+void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			       const Vector3 &c, const Vector3 &d)
 {
     Vector3 normal = (a - c) * (d - b);
@@ -2339,7 +2354,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 		// Record new underground/surface state.
 		current_polyline_is_surface = pti.IsSurface();
 	    }
-   
+
 	    centreline.push_back(Vector3(x, y, z));
 	} else {
 	    first_point = false;
@@ -2685,7 +2700,7 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 	mpeg = 0;
 	return false;
     }
-    
+
     PlayPres();
     return true;
 }

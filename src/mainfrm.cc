@@ -88,7 +88,7 @@ class AvenSplitterWindow : public wxSplitterWindow {
 	    parent->ToggleSidePanel();
 #endif
 	}
-	
+
     private:
 	DECLARE_EVENT_TABLE()
 };
@@ -119,7 +119,7 @@ class AvenListCtrl: public wxListCtrl {
     long current_item;
     bool modified;
     wxString filename;
- 
+
     public:
 	AvenListCtrl(wxWindow * parent, GfxCore * gfx_)
 	    : wxListCtrl(parent, listctrl_PRES, wxDefaultPosition, wxDefaultSize,
@@ -317,7 +317,7 @@ class AvenListCtrl: public wxListCtrl {
 	DECLARE_NO_COPY_CLASS(AvenListCtrl)
 	DECLARE_EVENT_TABLE()
 };
- 
+
 BEGIN_EVENT_TABLE(AvenListCtrl, wxListCtrl)
     EVT_LIST_BEGIN_LABEL_EDIT(listctrl_PRES, AvenListCtrl::OnBeginLabelEdit)
     EVT_LIST_DELETE_ITEM(listctrl_PRES, AvenListCtrl::OnDeleteItem)
@@ -520,7 +520,7 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
     m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
-    m_NumHighlighted(0)
+    m_NumHighlighted(0), m_HasUndergroundLegs(false), m_HasSurfaceLegs(false)
 #ifdef PREFDLG
     , m_PrefsDlg(NULL)
 #endif
@@ -535,7 +535,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     CreateToolBar();
     CreateStatusBar(3, wxST_SIZEGRIP);
     CreateSidePanel();
-    
+
     int widths[3] = { 150, -1 /* variable width */, -1 };
     GetStatusBar()->SetStatusWidths(3, widths);
 
@@ -744,7 +744,7 @@ void MainFrm::CreateSidePanel()
 				wxDefaultSize,
 				wxNB_BOTTOM | wxNB_LEFT);
     m_Notebook->Show(false);
-    
+
     m_Panel = new wxPanel(m_Notebook);
     m_Tree = new AvenTreeCtrl(this, m_Panel);
 
@@ -773,7 +773,7 @@ void MainFrm::CreateSidePanel()
 //    m_PresList->SetColumnWidth(0, 100);
   //  m_PresList->SetColumnWidth(1, 40);
     //m_PresList->SetColumnWidth(2, 40);
-    
+
     wxBoxSizer *pres_panel_sizer = new wxBoxSizer(wxVERTICAL);
     pres_panel_sizer->Add(m_PresList, 1, wxALL | wxEXPAND, 2);
     m_PresPanel->SetAutoLayout(true);
@@ -830,12 +830,13 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // Create a list of all the leg vertices, counting them and finding the
     // extent of the survey at the same time.
 
-    m_NumLegs = 0;
     m_NumPoints = 0;
     m_NumCrosses = 0;
     m_NumFixedPts = 0;
     m_NumExportedPts = 0;
     m_NumEntrances = 0;
+    m_HasUndergroundLegs = false;
+    m_HasSurfaceLegs = false;
 
     // FIXME: discard existing presentation? ask user about saving if we do!
 
@@ -882,8 +883,12 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		bool is_surface = false;
 		if (result == img_LINE) {
 		    // Set flags to say this is a line rather than a move
-		    m_NumLegs++;
 		    is_surface = (survey->flags & img_FLAG_SURFACE);
+		    if (is_surface) {
+			m_HasSurfaceLegs = true;
+		    } else {
+			m_HasUndergroundLegs = true;
+		    }
 		}
 
 		// Add this point in the list.
@@ -922,12 +927,13 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		m_Labels.clear();
 
 		// FIXME: Do we need to reset all these? - Olly
-		m_NumLegs = 0;
 		m_NumPoints = 0;
 		m_NumCrosses = 0;
 		m_NumFixedPts = 0;
 		m_NumExportedPts = 0;
 		m_NumEntrances = 0;
+		m_HasUndergroundLegs = false;
+		m_HasSurfaceLegs = false;
 
 		m_ZMin = DBL_MAX;
 
@@ -948,7 +954,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     img_close(survey);
 
     // Check we've actually loaded some legs or stations!
-    if (m_NumLegs == 0 && m_Labels.empty()) {
+    if (!m_HasUndergroundLegs && !m_HasSurfaceLegs && m_Labels.empty()) {
 	wxString m = wxString::Format(msg(/*No survey data in 3d file `%s'*/202), file.c_str());
 	wxGetApp().ReportError(m);
 	return false;
@@ -1186,7 +1192,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
     wxBusyCursor hourglass;
 #if 0
     Splash* splash = wxGetApp().GetSplashScreen();
-    
+
     if (splash) {
 	splash->SetProgress(0);
     }
@@ -1393,7 +1399,7 @@ void MainFrm::SetAltitude(Double z)
 void MainFrm::ShowInfo(const LabelInfo *label)
 {
     assert(m_Gfx);
-	
+
     wxString str;
     if (m_Gfx->GetMetric()) {
 	str.Printf(msg(/*%s: %d E, %d N, %dm altitude*/374),

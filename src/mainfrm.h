@@ -180,7 +180,6 @@ class MainFrm : public wxFrame {
     Double m_YExt;
     Double m_ZExt;
     Double m_ZMin;
-    int m_NumLegs;
     int m_NumPoints;
     int m_NumCrosses;
     GfxCore* m_Gfx;
@@ -189,6 +188,8 @@ class MainFrm : public wxFrame {
     int m_NumFixedPts;
     int m_NumExportedPts;
     int m_NumHighlighted;
+    bool m_HasUndergroundLegs;
+    bool m_HasSurfaceLegs;
     wxSplitterWindow* m_Splitter;
     wxPanel* m_Panel;
     AvenTreeCtrl* m_Tree;
@@ -359,7 +360,7 @@ public:
     void OnToggleTubesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleTubesUpdate(event); }
 
     // end of horrible bodges
-    
+
     void OnViewSidePanelUpdate(wxUpdateUIEvent& event);
     void OnViewSidePanel(wxCommandEvent& event);
     void ToggleSidePanel();
@@ -371,7 +372,6 @@ public:
     Double GetZMin() const { return m_ZMin; }
     Double GetZMax() const { return m_ZMin + m_ZExt; }
 
-    int GetNumLegs() const { return m_NumLegs; }
     int GetNumPoints() const { return m_NumPoints; } // FIXME: unused
     int GetNumCrosses() const { return m_NumCrosses; } // FIXME: unused
 
@@ -382,6 +382,9 @@ public:
     int GetNumExportedPts() const { return m_NumExportedPts; }
     int GetNumEntrances() const { return m_NumEntrances; }
     int GetNumHighlightedPts() const { return m_NumHighlighted; }
+
+    bool HasUndergroundLegs() const { return m_HasUndergroundLegs; }
+    bool HasSurfaceLegs() const { return m_HasSurfaceLegs; }
 
     void ClearCoords();
     void SetCoords(Double x, Double y, Double z);
