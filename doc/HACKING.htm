@@ -40,9 +40,10 @@ already covered).
 
 <H2>Developing on Unix Platforms</H2>
 
-<P>You'll need an unreleased version on automake from their CVS server. I
-recommend checking out the a snapshot at date "Wed Oct 18 15:11:27
-2000" as I've used this version a lot and it's fairly solid.
+<P>You'll need automake 1.5 or later (earlier versions don't support
+per-executable CFLAGS) and autoconf 2.13 or later.  Also sgmltools 2
+or later, docbook-to-man, and w3m are required for building the
+documentation.
 
 <P><A HREF="http://sources.redhat.com/automake/"
 >http://sources.redhat.com/automake</A>
@@ -91,13 +92,44 @@ sh build-djgpp.sh
 <P>Then you need to build and install the allegro graphics library:
 
 <P><A
-HREF="http://sunsite.dk/allegro/allegro-3.9.34.tar.gz">http://sunsite.dk/allegro/allegro-3.9.34.tar.gz</A>
+HREF="http://prdownloads.sourceforge.net/alleg/allegro-3.9.38.tar.gz"
+>http://prdownloads.sourceforge.net/alleg/allegro-3.9.38.tar.gz</A>
 
 <P>And follow the instructions for building using a cross-compiler is
-readme.dj.
+readme.dj.  In 3.9.38 these boil down to this (the patch turns off use
+of sincos which isn't supported by djgpp 2.02 it seems - you may not
+need it, but it isn't harmful):
 
-<P>Building under DOS in a native djgpp environment will probably require
-tinkering.  Best bet is either to install bash and use the current
+<pre>
+cd allegro-3.9.38
+./fix.sh djgpp
+patch -p0 &lt;&lt;END
+--- src/rotate.c~	Thu Sep 13 20:33:59 2001
++++ src/rotate.c	Fri Oct  5 11:29:55 2001
+@@ -715,7 +715,7 @@
+    if (angle &gt;= 0x800000)
+       angle -= 0x1000000;
+ 
+-   #ifdef ALLEGRO_DJGPP
++   #if 0 /*def ALLEGRO_DJGPP*/
+       /* Faster way to obtain both sin and cos with one call under djgpp.
+ 	 Todo: Do other platforms support this? (not watcom, mingw or msvc)
+       */
+END
+NATIVEPATH=$PATH
+export NATIVEPATH
+PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
+DJDIR=/opt/crosstools/i386-pc-msdosdjgpp
+export DJDIR
+CROSSCOMPILE=1
+export CROSSCOMPILE
+make
+make install
+PATH=$NATIVEPATH
+</pre>
+
+<P>Building Survex under DOS in a native djgpp environment will require
+some tinkering.  Best bet is either to install bash and use the current
 configure script, or perhaps simpler to modify miniam.pl to generate a
 suitable makefile.  I'm happy to help if you want to try this, and
 I'll incorporate patches provided they're fairly clean.
