@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001 Mark R. Shinwell.
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001-2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -49,15 +49,24 @@ public:
 
 class LabelInfo;
 
+class PresentationMark {
+    public:
+    Double x, y, z;
+    Double angle, tilt_angle;
+    Double scale;
+    PresentationMark() : x(0), y(0), z(0), angle(0), tilt_angle(0), scale(0)
+	{ }
+    PresentationMark(Double x_, Double y_, Double z_, Double angle_,
+		     Double tilt_angle_, Double scale_)
+	: x(x_), y(y_), z(z_), angle(angle_), tilt_angle(tilt_angle_),
+	  scale(scale_)
+	{ }
+    bool is_valid() const { return scale > 0; }
+};
+
 class GfxCore : public GLACanvas {
     struct params {
-	Quaternion rotation;
 	Double scale;
-	struct {
-	    Double x;
-	    Double y;
-	    Double z;
-	} translation;
     } m_Params;
 
     struct {
@@ -82,7 +91,6 @@ class GfxCore : public GLACanvas {
     LockFlags m_Lock;
     MainFrm* m_Parent;
     bool m_DoneFirstShow;
-    bool m_RedrawOffscreen;
     int m_Polylines;
     int m_SurfacePolylines;
     Double m_InitialScale;
@@ -128,6 +136,11 @@ class GfxCore : public GLACanvas {
     
     GLAPen * m_Pens;
 
+#define PLAYING 1
+    int presentation_mode; // for now, 0 => off, PLAYING => continuous play
+    PresentationMark next_mark;
+    double next_mark_time;
+ 
     void UpdateQuaternion();
     void UpdateIndicators();
     
@@ -232,7 +245,7 @@ public:
     void OnRButtonUp(wxMouseEvent& event) { m_Control->OnRButtonUp(event); }
     void OnKeyPress(wxKeyEvent &event) { m_Control->OnKeyPress(event); }
 
-    bool Animate(wxIdleEvent* idle_event = NULL);
+    bool Animate();
 
     void SetCoords(wxPoint);
 
@@ -353,6 +366,11 @@ public:
 	ForceRefresh();
     }
 #endif
+
+    PresentationMark GetView() const;
+    void SetView(const PresentationMark & p);
+    void PlayPres();
+
 private:
     DECLARE_EVENT_TABLE()
 };

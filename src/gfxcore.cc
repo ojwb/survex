@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003 Mark R. Shinwell
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001-2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -119,7 +119,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Parent = parent;
     m_RotationOK = true;
     m_DoneFirstShow = false;
-    m_RedrawOffscreen = false;
     m_Crosses = false;
     m_Legs = true;
     m_Names = false;
@@ -144,6 +143,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Lists.tubes = 0;
     m_Lists.surface_legs = 0;
     m_Lists.indicators = 0;
+    presentation_mode = 0;
 
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
@@ -209,7 +209,7 @@ void GfxCore::FirstShow()
     GLACanvas::FirstShow();
 
     SetBackgroundColour(0.0, 0.0, 0.0);
-	
+
     // Set diameter of the viewing volume.
     SetVolumeDiameter(sqrt(sqrd(m_Parent->GetXExtent()) +
 			   sqrd(m_Parent->GetYExtent()) +
@@ -277,9 +277,7 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 {
     // Handle an idle event.
 
-    if (Animate(&event)) {
-	ForceRefresh();
-    }
+    if (Animate()) ForceRefresh();
 }
 
 void GfxCore::OnPaint(wxPaintEvent&)
@@ -1082,17 +1080,11 @@ void GfxCore::DefaultParameters()
 	    break;
     }
 
-    m_Params.rotation.setFromEulerAngles(m_TiltAngle, 0.0, m_PanAngle);
-
-    m_Params.translation.x = 0.0;
-    m_Params.translation.y = 0.0;
-    m_Params.translation.z = 0.0;
-
-    SetRotation(m_Params.rotation);
+    UpdateQuaternion();
     SetTranslation(0.0, 0.0, 0.0);
 
     m_Surface = false;
-    m_RotationStep = M_PI / 400.0; // FIXME temp bodge (was 6.0)
+    m_RotationStep = M_PI / 6.0;
     m_Rotating = false;
     m_SwitchingTo = 0;
     m_Entrances = false;
@@ -1112,11 +1104,10 @@ void GfxCore::Defaults()
     ForceRefresh();
 }
 
-// the argument is a pointer to an idle event (to call RequestMore()) or NULL
 // return: true if animation occured (and ForceRefresh() needs to be called)
-bool GfxCore::Animate(wxIdleEvent*)
+bool GfxCore::Animate()
 {
-    if (!m_Rotating && !m_SwitchingTo) {
+    if (!m_Rotating && !m_SwitchingTo && presentation_mode == 0) {
 	return false;
     }
 
@@ -1127,9 +1118,37 @@ bool GfxCore::Animate(wxIdleEvent*)
     if (last_t > 0) t = (t + last_t) / 2;
     last_t = t;
 
+    if (presentation_mode == PLAYING) {
+	while (t >= next_mark_time) {
+	    t -= next_mark_time;
+	    SetView(next_mark);
+	    next_mark = m_Parent->GetPresMark(MARK_NEXT);
+	    if (!next_mark.is_valid()) {
+		presentation_mode = 0;
+		break;
+	    }
+	    next_mark_time = 3; // FIXME
+	}
+
+	if (presentation_mode) {
+	    // Advance position towards next_mark
+	    double p = t / next_mark_time;
+	    double q = 1 - p;
+	    PresentationMark here = GetView();
+	    here.x = q * here.x + p * next_mark.x;
+	    here.y = q * here.y + p * next_mark.y;
+	    here.z = q * here.z + p * next_mark.z;
+	    here.angle = q * here.angle + p * next_mark.angle;
+	    here.tilt_angle = q * here.tilt_angle + p * next_mark.tilt_angle;
+	    here.scale = q * here.scale + p * next_mark.scale;
+	    SetView(here);
+	    next_mark_time -= t;
+	}
+    }
+
     // When rotating...
     if (m_Rotating) {
-	TurnCave(m_RotationStep /* FIXME * t */);
+	TurnCave(m_RotationStep * t);
     }
 
     if (m_SwitchingTo == PLAN) {
@@ -1137,20 +1156,15 @@ bool GfxCore::Animate(wxIdleEvent*)
 	TiltCave(M_PI_2 * t);
 	if (m_TiltAngle == M_PI_2) {
 	    m_SwitchingTo = 0;
-	    ForceRefresh();
 	}
-    }
-    else if (m_SwitchingTo == ELEVATION) {
+    } else if (m_SwitchingTo == ELEVATION) {
 	// When switching to elevation view...
 	if (fabs(m_TiltAngle) < M_PI_2 * t) {
 	    m_SwitchingTo = 0;
 	    TiltCave(-m_TiltAngle);
-	    ForceRefresh();
-	}
-	else if (m_TiltAngle < 0.0) {
+	} else if (m_TiltAngle < 0.0) {
 	    TiltCave(M_PI_2 * t);
-	}
-	else {
+	} else {
 	    TiltCave(-M_PI_2 * t);
 	}
     }
@@ -1280,15 +1294,14 @@ void GfxCore::CreateHitTestGrid()
 void GfxCore::UpdateQuaternion()
 {
     // Produce the rotation quaternion from the pan and tilt angles.
-    
     Vector3 v1(0.0, 0.0, 1.0);
     Vector3 v2(1.0, 0.0, 0.0);
     Quaternion q1(v1, m_PanAngle);
     Quaternion q2(v2, m_TiltAngle);
 
-    m_Params.rotation = q2 * q1; // care: quaternion multiplication
-				 //       is not commutative!
-    SetRotation(m_Params.rotation);
+    // care: quaternion multiplication is not commutative!
+    Quaternion rotation = q2 * q1;
+    SetRotation(rotation);
 }
 
 void GfxCore::UpdateIndicators()
@@ -1533,7 +1546,6 @@ void GfxCore::RedrawIndicators()
 		   INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
 		   INDICATOR_BOX_SIZE);
 		   
-    m_RedrawOffscreen = true;
     Refresh(false, &r);
 }
 
@@ -1583,9 +1595,9 @@ void GfxCore::RotateSlower(bool accel)
     // Decrease the speed of rotation, optionally by an increased amount.
 
     m_RotationStep /= accel ? 1.44 : 1.2;
-/* FIXME    if (m_RotationStep < M_PI / 180.0) {
+    if (m_RotationStep < M_PI / 180.0) {
 	m_RotationStep = (Double) M_PI / 180.0;
-    } */
+    }
 }
 
 void GfxCore::RotateFaster(bool accel)
@@ -1593,9 +1605,9 @@ void GfxCore::RotateFaster(bool accel)
     // Increase the speed of rotation, optionally by an increased amount.
 
     m_RotationStep *= accel ? 1.44 : 1.2;
-/*    if (m_RotationStep > 2.5 * M_PI) {
+    if (m_RotationStep > 2.5 * M_PI) {
 	m_RotationStep = (Double) 2.5 * M_PI;
-    }*/
+    }
 }
 
 void GfxCore::SwitchToElevation()
@@ -1707,10 +1719,6 @@ void GfxCore::ClearTreeSelection()
 
 void GfxCore::CentreOn(Double x, Double y, Double z)
 {
-    m_Params.translation.x = -x;
-    m_Params.translation.y = -y;
-    m_Params.translation.z = -z;
-    
     SetTranslation(-x, -y, -z);
     m_HitTestGridValid = false;
     
@@ -1719,8 +1727,6 @@ void GfxCore::CentreOn(Double x, Double y, Double z)
 
 void GfxCore::ForceRefresh()
 {
-    // Force a redraw of the offscreen bitmap.
-    m_RedrawOffscreen = true;
     Refresh(false);
 }
 
@@ -2554,4 +2560,34 @@ void GfxCore::FullScreenMode()
 bool GfxCore::IsFullScreen() const
 {
     return m_Parent->IsFullScreen();
+}
+
+PresentationMark GfxCore::GetView() const
+{
+    return PresentationMark(m_Translation.x + m_Parent->GetXOffset(),
+			    m_Translation.y + m_Parent->GetYOffset(),
+			    m_Translation.z + m_Parent->GetZOffset(),
+			    m_PanAngle,
+			    m_TiltAngle,
+			    m_Params.scale);
+}
+
+void GfxCore::SetView(const PresentationMark & p)
+{
+    m_SwitchingTo = 0;
+    SetTranslation(p.x - m_Parent->GetXOffset(),
+		   p.y - m_Parent->GetYOffset(),
+		   p.z - m_Parent->GetZOffset());
+    m_PanAngle = p.angle;
+    m_TiltAngle = p.tilt_angle;
+    UpdateQuaternion();
+    SetScale(p.scale);
+    ForceRefresh();
+}
+
+void GfxCore::PlayPres() {
+    presentation_mode = PLAYING;
+    next_mark = m_Parent->GetPresMark(MARK_FIRST);
+    SetView(next_mark);
+    next_mark_time = 0; // There already!
 }

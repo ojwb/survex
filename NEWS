@@ -29,6 +29,9 @@ Changes between 1.0.26 and 1.1.0:
 * aven: Mouse actions changed (hopefully they're now more natural, but
   you may find the change disorientating - feedback wanted on this).
 
+* aven: Added "presentations" which allow you to set up fly-through paths
+  and load/save/run them.
+
 * cavern: Dates given to *date are now stored in the 3d file.
 
 Changes in 1.0.26:

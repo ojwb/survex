@@ -6,14 +6,15 @@ icon_DATA = elevation.png open.png crosses.png entrances.png plan.png\
 	exported-pts.png names.png aven-about.png\
 	solid-surface.png\
 	tubes.png find.png hideresults.png survey-tree.png pres-tree.png \
-	3d.png err.png plt.png pos.png svx.png
+	3d.png err.png plt.png pos.png svx.png\
+	open-pres.png
 
 #	tubesprefs.png stationsprefs.png indicatorprefs.png\
 #	windowprefs.png gridprefs.png unitsprefs.png \
 #	legsprefs.png ctlprefs.png
 
-#	pres-go-back.png pres-restart.png pres-go.pngpres-create.png
-#	pres-record.png open-pres.png pres-finish.png
+#	pres-go-back.png pres-restart.png pres-go.png pres-create.png
+#	pres-record.png pres-finish.png
 
 SUFFIXES = .ico .png
 

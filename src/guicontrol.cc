@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001-2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -870,7 +870,10 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	return;
     }
 
-/*     m_RedrawOffscreen = Animate();  FIXME */
+    // The changelog says this is meant to keep animation going while keys are
+    // pressed, but that happens anyway (on linux at least - perhaps it helps
+    // on windows?)  FIXME : check!
+    //bool refresh = m_View->Animate();
 
     switch (e.m_keyCode) {
 	case '/': case '?':
@@ -988,9 +991,7 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    e.Skip();
     }
  
-    // OnPaint clears m_RedrawOffscreen so it'll only still be set if we need
-    // to redraw
-/* FIXME    if (m_RedrawOffscreen) */ m_View->ForceRefresh();
+    //if (refresh) m_View->ForceRefresh();
 }
 
 void GUIControl::OnViewFullScreenUpdate(wxUpdateUIEvent& cmd)

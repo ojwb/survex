@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001-2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -102,6 +102,213 @@ BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
 #endif
 END_EVENT_TABLE()
 
+class AvenListCtrl: public wxListCtrl {
+    GfxCore * gfx;
+    list<PresentationMark> entries;
+    long current_item;
+    bool modified;
+    wxString filename;
+ 
+    public:
+	AvenListCtrl(wxWindow * parent, GfxCore * gfx_)
+	    : wxListCtrl(parent, listctrl_PRES, wxDefaultPosition, wxDefaultSize,
+			 wxLC_EDIT_LABELS | wxLC_REPORT),
+	      gfx(gfx_), current_item(-1), modified(false)
+	    {
+	    }
+
+	void OnBeginLabelEdit(wxListEvent& event) {
+	    event.Veto(); // No editting allowed
+	}
+	void OnDeleteItem(wxListEvent& event) {
+	    long item = event.GetIndex();
+	    if (current_item == item) {
+		current_item = -1;
+	    } else if (current_item > item) {
+		--current_item;
+	    }
+	    list<PresentationMark>::iterator i = entries.begin();
+	    while (item > 0) {
+		++i;
+		if (i == entries.end()) return;
+		--item;
+	    }
+	    entries.erase(i);
+	    modified = true;
+	}
+	void OnDeleteAllItems(wxListEvent& event) {
+	    entries.clear();
+	    filename = "";
+	    modified = false;
+	}
+	void OnListKeyDown(wxListEvent& event) {
+	    switch (event.GetKeyCode()) {
+		case WXK_DELETE: {
+		    long item = GetNextItem(-1, wxLIST_NEXT_ALL,
+					    wxLIST_STATE_SELECTED);
+		    while (item != -1) {
+			DeleteItem(item);
+			// - 1 because the indices were shifted by DeleteItem()
+			item = GetNextItem(item - 1, wxLIST_NEXT_ALL,
+					   wxLIST_STATE_SELECTED);
+		    }
+		    break;
+		}
+		case WXK_INSERT:
+		    AddMark(event.GetIndex());
+		    break;
+		default:
+		    event.Skip();
+	    }
+	}
+	void OnActivated(wxListEvent& event) {
+	    // Jump to this view.
+	    long item = event.GetIndex();
+	    list<PresentationMark>::const_iterator i = entries.begin();
+	    while (item > 0) {
+		++i;
+		if (i == entries.end()) return;
+		--item;
+	    }
+	    gfx->SetView(*i);
+	}
+	void OnFocused(wxListEvent& event) {
+	    current_item = event.GetIndex();
+	}
+	void OnChar(wxKeyEvent& event) {
+	    gfx->OnKeyPress(event);
+	}
+	void AddMark(long item = -1) {
+	    AddMark(item, gfx->GetView());
+	}
+	void AddMark(long item, const PresentationMark & mark) {
+	    list<PresentationMark>::iterator i;
+	    if (item == -1) {
+		item = entries.size();
+		i = entries.end();
+	    } else {
+		long c = item;
+		i = entries.begin();
+		while (c > 0) {
+		    if (i == entries.end()) return;
+		    ++i;
+		    --c;
+		}
+	    }
+	    entries.insert(i, mark);
+	    long tmp = InsertItem(item, wxString::Format("%ld", (long)mark.y));
+	    SetItemData(tmp, item);
+	    SetItem(item, 1, wxString::Format("%ld", (long)mark.x));
+	    modified = true;
+	}
+	void Save(bool use_default_name) {
+	    wxString fnm = filename;
+	    if (!use_default_name || fnm.empty()) {
+#ifdef __WXMOTIF__
+		wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", fnm,
+				  "*.avp", wxSAVE|wxOVERWRITE_PROMPT);
+#else
+		wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", fnm,
+				  wxString::Format("%s|*.avp|%s|%s",
+						   msg(/*Aven presentations*/320),
+						   msg(/*All files*/208),
+						   wxFileSelectorDefaultWildcardStr),
+				  wxSAVE|wxOVERWRITE_PROMPT);
+#endif
+		if (dlg.ShowModal() != wxID_OK) return;
+		fnm = dlg.GetPath();
+	    }
+
+	    FILE * fh_pres = fopen(fnm.c_str(), "w");
+	    if (!fh_pres) {
+		wxString m = wxString::Format("Could not write presentation `%s'.",
+					      fnm.c_str());
+		wxGetApp().ReportError(m);
+		return;
+	    }
+	    list<PresentationMark>::const_iterator i;
+	    for (i = entries.begin(); i != entries.end(); ++i) {
+		const PresentationMark &p = *i;
+		fprintf(fh_pres, "%.21f %.21f %.21f %.21f %.21f %.21f\n",
+			p.x, p.y, p.z, p.angle, p.tilt_angle, p.scale);
+	    }
+	    fclose(fh_pres);
+	    filename = fnm;
+	    modified = false;
+	}
+	bool Load(const wxString &fnm) {
+	    FILE * fh_pres = fopen(fnm.c_str(), "r");
+	    if (!fh_pres) return false;
+	    DeleteAllItems();
+	    long item = 0;
+	    while (!feof(fh_pres)) {
+		char buf[4096];
+		size_t i = 0;
+		while (i < sizeof(buf) - 1) {
+		    int ch = getc(fh_pres);
+		    if (ch == EOF || ch == '\n' || ch == '\r') break;
+		    buf[i++] = ch;
+		}
+		if (i) {
+		    buf[i] = 0;
+		    double x, y, z, a, t, s;
+		    if (sscanf(buf, "%lf %lf %lf %lf %lf %lf", &x, &y, &z, &a, &t, &s) != 6) {
+			// FIXME bad file - moan
+		    } else {
+			AddMark(item, PresentationMark(x, y, z, a, t, s));
+			++item;
+		    }
+		}
+	    }
+	    fclose(fh_pres);
+	    filename = fnm;
+	    modified = false;
+	    return true;
+	}
+	bool Modified() const { return modified; }
+	bool Empty() const { return entries.empty(); }
+	PresentationMark GetPresMark(int which) {
+	    list<PresentationMark>::iterator i = entries.begin();
+	    long item = current_item;
+	    if (which == MARK_FIRST) {
+		item = 0;
+	    } else if (which == MARK_NEXT) {
+		long c = ++item;
+		while (c > 0) {
+		    if (i == entries.end()) break;
+		    ++i;
+		    --c;
+		}
+	    }
+	    if (item != current_item) {
+		// Move the focus
+		if (current_item != -1) {
+		    wxListCtrl::SetItemState(current_item, wxLIST_STATE_FOCUSED,
+					     0);
+		}
+		wxListCtrl::SetItemState(item, wxLIST_STATE_FOCUSED,
+					 wxLIST_STATE_FOCUSED);
+	    }
+	    if (i == entries.end()) return PresentationMark();
+	    return *i;
+	}
+
+    private:
+
+	DECLARE_NO_COPY_CLASS(AvenListCtrl)
+	DECLARE_EVENT_TABLE()
+};
+ 
+BEGIN_EVENT_TABLE(AvenListCtrl, wxListCtrl)
+    EVT_LIST_BEGIN_LABEL_EDIT(listctrl_PRES, AvenListCtrl::OnBeginLabelEdit)
+    EVT_LIST_DELETE_ITEM(listctrl_PRES, AvenListCtrl::OnDeleteItem)
+    EVT_LIST_DELETE_ALL_ITEMS(listctrl_PRES, AvenListCtrl::OnDeleteAllItems)
+    EVT_LIST_KEY_DOWN(listctrl_PRES, AvenListCtrl::OnListKeyDown)
+    EVT_LIST_ITEM_ACTIVATED(listctrl_PRES, AvenListCtrl::OnActivated)
+    EVT_LIST_ITEM_FOCUSED(listctrl_PRES, AvenListCtrl::OnFocused)
+    EVT_CHAR(AvenListCtrl::OnChar)
+END_EVENT_TABLE()
+
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_TEXT_ENTER(textctrl_FIND, MainFrm::OnFind)
     EVT_MENU(button_FIND, MainFrm::OnFind)
@@ -109,34 +316,23 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
 
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
-#ifdef AVENPRES
-    EVT_MENU(menu_FILE_OPEN_PRES, MainFrm::OnOpenPres)
-#endif
 //    EVT_MENU(menu_FILE_PREFERENCES, MainFrm::OnFilePreferences)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
 
-#ifdef AVENPRES
-    EVT_MENU(menu_PRES_CREATE, MainFrm::OnPresCreate)
-    EVT_MENU(menu_PRES_GO, MainFrm::OnPresGo)
-    EVT_MENU(menu_PRES_GO_BACK, MainFrm::OnPresGoBack)
-    EVT_MENU(menu_PRES_RESTART, MainFrm::OnPresRestart)
-    EVT_MENU(menu_PRES_RECORD, MainFrm::OnPresRecord)
-    EVT_MENU(menu_PRES_FINISH, MainFrm::OnPresFinish)
-    EVT_MENU(menu_PRES_ERASE, MainFrm::OnPresErase)
-    EVT_MENU(menu_PRES_ERASE_ALL, MainFrm::OnPresEraseAll)
+    EVT_MENU(menu_PRES_NEW, MainFrm::OnPresNew)
+    EVT_MENU(menu_PRES_OPEN, MainFrm::OnPresOpen)
+    EVT_MENU(menu_PRES_SAVE, MainFrm::OnPresSave)
+    EVT_MENU(menu_PRES_SAVE_AS, MainFrm::OnPresSaveAs)
+    EVT_MENU(menu_PRES_MARK, MainFrm::OnPresMark)
+    EVT_MENU(menu_PRES_RUN, MainFrm::OnPresRun)
 
-    EVT_UPDATE_UI(menu_FILE_OPEN_PRES, MainFrm::OnOpenPresUpdate)
-
-    EVT_UPDATE_UI(menu_PRES_CREATE, MainFrm::OnPresCreateUpdate)
-    EVT_UPDATE_UI(menu_PRES_GO, MainFrm::OnPresGoUpdate)
-    EVT_UPDATE_UI(menu_PRES_GO_BACK, MainFrm::OnPresGoBackUpdate)
-    EVT_UPDATE_UI(menu_PRES_RESTART, MainFrm::OnPresRestartUpdate)
-    EVT_UPDATE_UI(menu_PRES_RECORD, MainFrm::OnPresRecordUpdate)
-    EVT_UPDATE_UI(menu_PRES_FINISH, MainFrm::OnPresFinishUpdate)
-    EVT_UPDATE_UI(menu_PRES_ERASE, MainFrm::OnPresEraseUpdate)
-    EVT_UPDATE_UI(menu_PRES_ERASE_ALL, MainFrm::OnPresEraseAllUpdate)
-#endif
+    EVT_UPDATE_UI(menu_PRES_NEW, MainFrm::OnPresNewUpdate)
+    EVT_UPDATE_UI(menu_PRES_OPEN, MainFrm::OnPresOpenUpdate)
+    EVT_UPDATE_UI(menu_PRES_SAVE, MainFrm::OnPresSaveUpdate)
+    EVT_UPDATE_UI(menu_PRES_SAVE_AS, MainFrm::OnPresSaveAsUpdate)
+    EVT_UPDATE_UI(menu_PRES_MARK, MainFrm::OnPresMarkUpdate)
+    EVT_UPDATE_UI(menu_PRES_RUN, MainFrm::OnPresRunUpdate)
 
     EVT_CLOSE(MainFrm::OnClose)
     EVT_SET_FOCUS(MainFrm::OnSetFocus)
@@ -326,11 +522,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     SetSize(-1, -1, x, y);
 #endif
 
-#ifdef AVENPRES
-    m_PresLoaded = false;
-    m_Recording = false;
-#endif
-
 #if wxUSE_DRAG_AND_DROP
     SetDropTarget(new DnDFile(this));
 #endif
@@ -386,13 +577,19 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault Settings*/254));
-#if 0
+
     wxMenu* presmenu = new wxMenu;
-    presmenu-> Append(menu_PRES_RECORD, GetTabMsg(/*@Record State*/381));
+    presmenu->Append(menu_PRES_NEW, "New");
+    presmenu->Append(menu_PRES_OPEN, "Open");
+    presmenu->Append(menu_PRES_SAVE, "Save");
+    presmenu->Append(menu_PRES_SAVE_AS, "Save As");
     presmenu->AppendSeparator();
-    presmenu-> Append(menu_PRES_RUN, GetTabMsg(/*R@un Presentation*/382));
-    presmenu-> Append(menu_PRES_REHEARSE, GetTabMsg(/*Re@hearse Timings*/383));
-#endif
+    presmenu->Append(menu_PRES_MARK, "Mark");
+    presmenu->Append(menu_PRES_RUN, "Run");
+    // GetTabMsg(/*@Record State*/381));
+    // GetTabMsg(/*R@un Presentation*/382));
+    // GetTabMsg(/*Re@hearse Timings*/383));
+
     wxMenu* viewmenu = new wxMenu;
 #ifndef PREFDLG
     viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "", true);
@@ -451,9 +648,7 @@ void MainFrm::CreateMenuBar()
 #ifndef PREFDLG
     menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
 #endif
-#ifdef AVENPRES
-    menubar-> Append(presmenu, GetTabMsg(/*@Presentation*/317));
-#endif
+    menubar->Append(presmenu, GetTabMsg(/*@Presentation*/317));
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
 }
@@ -469,9 +664,7 @@ void MainFrm::CreateToolBar()
 #endif
 
     toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open.png"), "Open a 3D file for viewing");
-#ifdef AVENPRES
-    toolbar->AddTool(menu_FILE_OPEN_PRES, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
-#endif
+    toolbar->AddTool(menu_PRES_OPEN, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
     toolbar->AddSeparator();
     toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation.png"),
 		     wxNullBitmap, true, -1, -1, NULL, "Toggle rotation");
@@ -518,18 +711,13 @@ void MainFrm::CreateSidePanel()
 {
     m_Splitter = new AvenSplitterWindow(this);
 
-#if 0
     m_Notebook = new wxNotebook(m_Splitter, 400, wxDefaultPosition,
 				wxDefaultSize,
 				wxNB_BOTTOM | wxNB_LEFT);
     m_Notebook->Show(false);
     
     m_Panel = new wxPanel(m_Notebook);
-#else
-    m_Panel = new wxPanel(m_Splitter);
-#endif
     m_Tree = new AvenTreeCtrl(this, m_Panel);
-    m_Panel->Show(false);
 
 //    m_RegexpCheckBox = new wxCheckBox(find_panel, -1,
 //				      msg(/*Regular expression*/334));
@@ -547,33 +735,28 @@ void MainFrm::CreateSidePanel()
     m_Control->SetView(m_Gfx);
 
     // Presentation panel:
-
-#ifdef AVENPRES
     m_PresPanel = new wxPanel(m_Notebook);
 
-    m_PresList = new wxListCtrl(m_PresPanel, 401, wxDefaultPosition,
-				wxDefaultSize, wxLC_EDIT_LABELS | wxLC_REPORT);
-    m_PresList->InsertColumn(0, msg(/*State*/378));
-    m_PresList->InsertColumn(1, msg(/*Auto*/379));
-    m_PresList->InsertColumn(2, msg(/*Delay*/380));
-    m_PresList->SetColumnWidth(0, 100);
-    m_PresList->SetColumnWidth(1, 40);
-    m_PresList->SetColumnWidth(2, 40);
+    m_PresList = new AvenListCtrl(m_PresPanel, m_Gfx);
+    m_PresList->InsertColumn(0, "Northing");//msg(/*State*/378));
+    m_PresList->InsertColumn(1, "Easting");//msg(/*Auto*/379));
+//    m_PresList->InsertColumn(2, msg(/*Delay*/380));
+//    m_PresList->SetColumnWidth(0, 100);
+  //  m_PresList->SetColumnWidth(1, 40);
+    //m_PresList->SetColumnWidth(2, 40);
     
     wxBoxSizer *pres_panel_sizer = new wxBoxSizer(wxVERTICAL);
     pres_panel_sizer->Add(m_PresList, 1, wxALL | wxEXPAND, 2);
     m_PresPanel->SetAutoLayout(true);
     m_PresPanel->SetSizer(pres_panel_sizer);
-#endif
-#if 0
+
     // Overall tabbed structure:
     wxImageList* image_list = new wxImageList();
     image_list->Add(wxGetApp().LoadIcon("survey-tree"));
     image_list->Add(wxGetApp().LoadIcon("pres-tree"));
     m_Notebook->SetImageList(image_list);
     m_Notebook->AddPage(m_Panel, msg(/*Tree*/376), true, 0);
-//    m_Notebook->AddPage(m_PresPanel, msg(/*Presentation*/377), false, 1);
-#endif
+    m_Notebook->AddPage(m_PresPanel, msg(/*Presentation*/377), false, 1);
 
     m_Splitter->Initialize(m_Gfx);
 }
@@ -625,11 +808,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_NumExportedPts = 0;
     m_NumEntrances = 0;
 
-#ifdef AVENPRES
-    m_PresLoaded = false;
-    m_Recording = false;
-    //--Pres: FIXME: discard existing one, ask user about saving
-#endif
+    // FIXME: discard existing presentation? ask user about saving if we do!
 
     // Delete any existing list entries.
     m_Labels.clear();
@@ -996,11 +1175,8 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 
 	m_Gfx->Initialise();
 
-#if 0
 	m_Notebook->Show(true);
-#else
-	m_Panel->Show(true);
-#endif
+
 	int x;
 	int y;
 	GetSize(&x, &y);
@@ -1011,11 +1187,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 	else
 	    x /= 5;
 
-#if 0
 	m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
-#else
-	m_Splitter->SplitVertically(m_Panel, m_Gfx, x);
-#endif
 
 	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
 
@@ -1082,11 +1254,27 @@ void MainFrm::OnFilePreferences(wxCommandEvent&)
 
 void MainFrm::OnQuit(wxCommandEvent&)
 {
+    if (m_PresList->Modified()) {
+	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
+	if (wxMessageBox("The current presentation has been modified.  Abandon unsaved changes?",
+			 "Modified Presentation",
+			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
+	    return;
+	}
+    }
     exit(0);
 }
 
 void MainFrm::OnClose(wxCloseEvent&)
 {
+    if (m_PresList->Modified()) {
+	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
+	if (wxMessageBox("The current presentation has been modified.  Abandon unsaved changes?",
+			 "Modified Presentation",
+			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
+	    return;
+	}
+    }
     exit(0);
 }
 
@@ -1242,87 +1430,29 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
     // ClearCoords(); // FIXME or update or ?
 }
 
-#ifdef AVENPRES
-void MainFrm::OnPresCreate(wxCommandEvent& event)
+void MainFrm::OnPresNew(wxCommandEvent& event)
 {
-#ifdef __WXMOTIF__
-    wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
-		      "*.avp", wxSAVE);
-#else
-    wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
-		      wxString::Format("%s|*.avp|%s|%s",
-				       msg(/*Aven presentations*/320),
-				       msg(/*All files*/208),
-				       wxFileSelectorDefaultWildcardStr),
-		      wxSAVE);
-#endif
-    if (dlg.ShowModal() == wxID_OK) {
-	m_PresFP = fopen(dlg.GetPath().c_str(), "w");
-	assert(m_PresFP); //--Pres: FIXME
-
-	// Update window title.
-	SetTitle(wxString("Aven - [") + m_File + wxString("] - ") +
-		 wxString(msg(/*Recording Presentation*/323)));
-
-	//--Pres: FIXME: discard existing one
-	m_PresLoaded = true;
-	m_Recording = true;
+    if (m_PresList->Modified()) {
+	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
+	if (wxMessageBox("The current presentation has been modified.  Abandon unsaved changes?",
+			 "Modified Presentation",
+			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
+	    return;
+	}
     }
+    m_PresList->DeleteAllItems();
 }
 
-void MainFrm::OnPresGo(wxCommandEvent& event)
+void MainFrm::OnPresOpen(wxCommandEvent& event)
 {
-    assert(m_PresLoaded && !m_Recording); //--Pres: FIXME
-
-    m_Gfx->PresGo();
-}
-
-void MainFrm::OnPresGoBack(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && !m_Recording); //--Pres: FIXME
-
-    m_Gfx->PresGoBack();
-}
-
-void MainFrm::OnPresRecord(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && m_Recording); //--Pres: FIXME
-
-    m_Gfx->RecordPres(m_PresFP);
-}
-
-void MainFrm::OnPresFinish(wxCommandEvent& event)
-{
-    assert(m_PresFP); //--Pres: FIXME
-    fclose(m_PresFP);
-
-    // Update window title.
-    SetTitle(wxString("Aven - [") + m_File + wxString("]"));
-}
-
-void MainFrm::OnPresRestart(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && !m_Recording); //--Pres: FIXME
-
-    m_Gfx->RestartPres();
-}
-
-void MainFrm::OnPresErase(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && m_Recording); //--Pres: FIXME
-
-
-}
-
-void MainFrm::OnPresEraseAll(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && m_Recording); //--Pres: FIXME
-
-
-}
-
-void MainFrm::OnOpenPres(wxCommandEvent& event)
-{
+    if (m_PresList->Modified()) {
+	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
+	if (wxMessageBox("The current presentation has been modified.  Abandon unsaved changes?",
+			 "Modified Presentation",
+			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
+	    return;
+	}
+    }
 #ifdef __WXMOTIF__
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
 		      "*.avp", wxSAVE);
@@ -1335,70 +1465,74 @@ void MainFrm::OnOpenPres(wxCommandEvent& event)
 		      wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
-	m_PresFP = fopen(dlg.GetPath(), "rb");
-	assert(m_PresFP); //--Pres: FIXME
-
-	m_Gfx->LoadPres(m_PresFP);
-
-	fclose(m_PresFP);
-
-	m_PresLoaded = true;
-	m_Recording = false;
+	if (!m_PresList->Load(dlg.GetPath())) {
+	    wxString m = wxString::Format("Could not open presentation `%s'.",
+					  dlg.GetPath().c_str());
+	    wxGetApp().ReportError(m);
+	    return;
+	}
     }
 }
-#endif
 
-void MainFrm::OnFileOpenTerrainUpdate(wxUpdateUIEvent& event)
+void MainFrm::OnPresSave(wxCommandEvent& event)
+{
+    m_PresList->Save(true);
+}
+
+void MainFrm::OnPresSaveAs(wxCommandEvent& event)
+{
+    m_PresList->Save(false);
+}
+
+void MainFrm::OnPresMark(wxCommandEvent& event)
+{
+    m_PresList->AddMark();
+}
+
+void MainFrm::OnPresRun(wxCommandEvent& event)
+{
+    m_Gfx->PlayPres();
+}
+
+PresentationMark MainFrm::GetPresMark(int which)
+{
+    return m_PresList->GetPresMark(which);
+}
+
+//void MainFrm::OnFileOpenTerrainUpdate(wxUpdateUIEvent& event)
+//{
+//    event.Enable(!m_File.empty());
+//}
+
+void MainFrm::OnPresNewUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(!m_PresList->Empty());
+}
+
+void MainFrm::OnPresOpenUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(!m_File.empty());
 }
 
-#ifdef AVENPRES
-void MainFrm::OnOpenPresUpdate(wxUpdateUIEvent& event)
+void MainFrm::OnPresSaveUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(!m_PresList->Empty());
+}
+
+void MainFrm::OnPresSaveAsUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(!m_PresList->Empty());
+}
+
+void MainFrm::OnPresMarkUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(!m_File.empty());
 }
 
-void MainFrm::OnPresCreateUpdate(wxUpdateUIEvent& event)
+void MainFrm::OnPresRunUpdate(wxUpdateUIEvent& event)
 {
-    event.Enable(!m_PresLoaded && !m_File.empty());
+    event.Enable(!m_PresList->Empty());
 }
-
-void MainFrm::OnPresGoUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && !m_Recording && !m_Gfx->AtEndOfPres());
-}
-
-void MainFrm::OnPresGoBackUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && !m_Recording && !m_Gfx->AtStartOfPres());
-}
-
-void MainFrm::OnPresFinishUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && m_Recording);
-}
-
-void MainFrm::OnPresRestartUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && !m_Recording && !m_Gfx->AtStartOfPres());
-}
-
-void MainFrm::OnPresRecordUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && m_Recording);
-}
-
-void MainFrm::OnPresEraseUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && m_Recording); //--Pres: FIXME
-}
-
-void MainFrm::OnPresEraseAllUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && m_Recording); //--Pres: FIXME
-}
-#endif
 
 void MainFrm::OnFind(wxCommandEvent&)
 {
@@ -1543,17 +1677,11 @@ void MainFrm::ToggleSidePanel()
 
     if (m_Splitter->IsSplit()) {
 	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
-	m_Splitter->Unsplit(m_Panel);
+	m_Splitter->Unsplit(m_Notebook);
     } else {
-#if 0
 	m_Notebook->Show(true);
 	m_Gfx->Show(true);
 	m_Splitter->SplitVertically(m_Notebook, m_Gfx, m_SashPosition);
-#else
-	m_Panel->Show(true);
-	m_Gfx->Show(true);
-	m_Splitter->SplitVertically(m_Panel, m_Gfx, m_SashPosition);
-#endif
     }
 }
 

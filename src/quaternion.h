@@ -144,6 +144,7 @@ public:
     void setVector(const Vector3& vec) { v = vec; }
     void setScalar(const Double w_) { w = w_; }
 
+#if 0
     void setFromEulerAngles(Double rotation_x, Double rotation_y, Double rotation_z) {
 	static Double cr, cp, cy, sr, sp, sy, cpcy, spsy;
 
@@ -163,6 +164,7 @@ public:
 
 	normalise();
     }
+#endif
 
 #if 0
     void print() const {

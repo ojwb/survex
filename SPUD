@@ -29,6 +29,10 @@ sort out date colouring cleanly.  also error colouring, etc.
 texture mapped fonts: seems to be a minor alignment bug which gives spacing
 inconsitencies - investigate.
 
+smooth wrinkles in presentation code (Add "stop", stop pres on Open or New,
+sort out time proportional to "largest" movement, changing focus on listctrl
+as presentation plays doesn't really work properly)
+
 ---
 
 TODO entries which aren't likely to be done for 1.0.x:
@@ -177,12 +181,6 @@ glcaverot features - depth fogging...
 Mark: "surface.png is for a textured landscape -- there needs to be a
 menu option to select the texturing on/off, and this should be the
 texture used. map.png is just a different surface overlay for Loser."
-
-Rework presentation recording into the more usual "New"/"Save
-As"/"Load"/"Save" mould
-
-Aven presentation recording crashes if you select the "Finish and
-Save" menu item twice.
 
 Aven:
 

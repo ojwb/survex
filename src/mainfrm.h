@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003 Mark R. Shinwell
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001-2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 #include <wx.h>
 #include <wx/docview.h>
+#include <wx/listctrl.h>
 #include <wx/notebook.h>
 #include "gfxcore.h"
 #include "message.h"
@@ -55,10 +56,18 @@ using namespace std;
 #define M_PI 3.14159265358979323846
 #endif
 
+#define MARK_FIRST 1
+#define MARK_NEXT 2
+
 enum {
     menu_FILE_OPEN = 1000,
-    menu_FILE_OPEN_PRES,
     menu_FILE_QUIT,
+    menu_PRES_NEW,
+    menu_PRES_OPEN,
+    menu_PRES_SAVE,
+    menu_PRES_SAVE_AS,
+    menu_PRES_MARK,
+    menu_PRES_RUN,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
     menu_ROTATION_TOGGLE,
@@ -106,18 +115,11 @@ enum {
     menu_CTL_DEGREES,
     menu_CTL_REVERSE,
     menu_CTL_CANCEL_DIST_LINE,
-    menu_PRES_CREATE,
-    menu_PRES_GO,
-    menu_PRES_GO_BACK,
-    menu_PRES_RESTART,
-    menu_PRES_RECORD,
-    menu_PRES_FINISH,
-    menu_PRES_ERASE,
-    menu_PRES_ERASE_ALL,
     menu_HELP_ABOUT,
     textctrl_FIND,
     button_FIND,
-    button_HIDE
+    button_HIDE,
+    listctrl_PRES
 };
 
 class PointInfo {
@@ -144,6 +146,7 @@ public:
 #define LFLAG_HIGHLIGHTED	0x200
 
 class LabelPlotCmp;
+class AvenListCtrl;
 
 class LabelInfo {
     friend class MainFrm;
@@ -195,20 +198,15 @@ class MainFrm : public wxFrame {
     wxStaticText* m_Found;
     // wxCheckBox* m_RegexpCheckBox;
     wxNotebook* m_Notebook;
-#ifdef AVENPRES
     wxPanel* m_PresPanel;
-    wxListCtrl* m_PresList;
-#endif
+    AvenListCtrl* m_PresList;
     wxString m_File;
     int separator; // character separating survey levels (often '.')
 #ifdef PREFDLG
     PrefsDlg* m_PrefsDlg;
 #endif
-#ifdef AVENPRES
-    FILE* m_PresFP;
-    bool m_PresLoaded;
-    bool m_Recording;
-#endif
+    wxString m_pres_filename;
+    bool m_pres_modified;
 
     struct {
 	Double x, y, z;
@@ -233,10 +231,14 @@ public:
 
     void OnMRUFile(wxCommandEvent& event);
     void OpenFile(const wxString& file, wxString survey = "");
-#ifdef AVENPRES
-    void OnOpenPresUpdate(wxUpdateUIEvent& event);
-#endif
-    void OnFileOpenTerrainUpdate(wxUpdateUIEvent& event);
+
+    void OnPresNewUpdate(wxUpdateUIEvent& event);
+    void OnPresOpenUpdate(wxUpdateUIEvent& event);
+    void OnPresSaveUpdate(wxUpdateUIEvent& event);
+    void OnPresSaveAsUpdate(wxUpdateUIEvent& event);
+    void OnPresMarkUpdate(wxUpdateUIEvent& event);
+    void OnPresRunUpdate(wxUpdateUIEvent& event);
+    //void OnFileOpenTerrainUpdate(wxUpdateUIEvent& event);
 
     void OnFind(wxCommandEvent& event);
     void OnHide(wxCommandEvent& event);
@@ -245,30 +247,13 @@ public:
     void OnOpen(wxCommandEvent& event);
     void OnFilePreferences(wxCommandEvent& event);
     void OnFileOpenTerrain(wxCommandEvent& event);
-#ifdef AVENPRES
-    void OnOpenPres(wxCommandEvent& event);
-#endif
+    void OnPresNew(wxCommandEvent& event);
+    void OnPresOpen(wxCommandEvent& event);
+    void OnPresSave(wxCommandEvent& event);
+    void OnPresSaveAs(wxCommandEvent& event);
+    void OnPresMark(wxCommandEvent& event);
+    void OnPresRun(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
-
-#ifdef AVENPRES
-    void OnPresCreate(wxCommandEvent& event);
-    void OnPresGo(wxCommandEvent& event);
-    void OnPresGoBack(wxCommandEvent& event);
-    void OnPresFinish(wxCommandEvent& event);
-    void OnPresRestart(wxCommandEvent& event);
-    void OnPresRecord(wxCommandEvent& event);
-    void OnPresErase(wxCommandEvent& event);
-    void OnPresEraseAll(wxCommandEvent& event);
-
-    void OnPresCreateUpdate(wxUpdateUIEvent& event);
-    void OnPresGoUpdate(wxUpdateUIEvent& event);
-    void OnPresGoBackUpdate(wxUpdateUIEvent& event);
-    void OnPresFinishUpdate(wxUpdateUIEvent& event);
-    void OnPresRestartUpdate(wxUpdateUIEvent& event);
-    void OnPresRecordUpdate(wxUpdateUIEvent& event);
-    void OnPresEraseUpdate(wxUpdateUIEvent& event);
-    void OnPresEraseAllUpdate(wxUpdateUIEvent& event);
-#endif
 
     void OnAbout(wxCommandEvent& event);
     void OnClose(wxCloseEvent&);
@@ -432,6 +417,7 @@ public:
     void ShowInfo(const LabelInfo *label);
     void DisplayTreeInfo(const wxTreeItemData* data);
     void TreeItemSelected(wxTreeItemData* data);
+    PresentationMark GetPresMark(int which);
 
 private:
     DECLARE_EVENT_TABLE()

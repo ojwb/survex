@@ -107,11 +107,13 @@ class GLACanvas : public wxWindow {
     // Parameters for plotting data:
     Quaternion m_Rotation;
     Double m_Scale;
+    public: // FIXME
     struct {
         Double x;
         Double y;
         Double z;
     } m_Translation;
+    private:
 
 #ifdef USE_FNT
     fntTexFont m_Font;
