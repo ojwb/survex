@@ -154,7 +154,8 @@ pt:  5 "No arquivo inclu&iacute;do em "
 ca:  5 "Al fitxer incl&ograve;s des de "
 es:  5 "En el fichero incluido desde "
 it:  5 "Nel file inserito da "
-#XXX6
+#FIXME translate
+en:  6 *prefix is deprecated - use *begin and *end instead
 en:  7 Character not allowed in station name
 fr:  7 Caract&egrave;re interdit dans un nom de station
 de:  7 Unerlaubtes Zeichen in Me&szlig;punktname
@@ -199,7 +200,8 @@ pt: 12 Comando desconhecido no arquivo de dados - linha ignorada
 ca: 12 Comandament desconegut en fitxer de dades - l&iacute;nia ignorada
 es: 12 Comando desconocido en fichero de datos - l&iacute;nea ignorada
 it: 12 Comando sconosciuto nel file dei dati - linea ignorata
-#XXX13
+#FIXME translate
+en: 13 Station equated to itself
 en: 14 Compass reading may not be omitted here
 fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici
 de: 14 Kompa&szlig;ablesung darf nicht weggelassen werden
@@ -248,7 +250,8 @@ pt: 19 Erros em excesso - desistindo
 ca: 19 Massa errors - proc&eacute;s abandonat
 es: 19 Demasiados errores - proceso abandonado
 it: 19 Troppi errori - processo interrotto
-#XXX20
+#FIXME translate
+en: 20 *default is deprecated - use *calibrate/data/style/units with argument DEFAULT instead
 en: 21 Compass reading given on plumbed leg
 en-us: 21 Compass reading given on plumbed shot
 fr: 21 Lecture d'azimut donn&eacute;e sur une vis&eacute;e 'plomb&eacute;e'
