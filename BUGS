@@ -1,1 +1,21 @@
-None known!
+Date: Sun Mar 18 23:46:31 GMT 2001
+From: Olly
+
+Bugs in wxaven:
+
+leaving "about" box causes a segfault
+
+some shortcuts are missing (space/return/arrowkeys/'/slash/[/]/delete)
+
+doesn't load files from command line
+
+toggle status bar does nothing
+
+ought to have ticks on menu items in view menu
+
+N/S/E/W should select views
+
+window close doesn't work
+
+sometimes stops responding
+
