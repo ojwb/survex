@@ -1,4 +1,4 @@
-/* > ostypes.h
+/* ostypes.h
  * Generally useful type definitions
  * Copyright (C) 1996,2001 Olly Betts
  *

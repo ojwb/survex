@@ -36,15 +36,15 @@ public:
     ~Vector3();
 
     void Save(FILE* fp) { //--Pres: FIXME
-        fwrite(&x, sizeof(double), 1, fp);
-        fwrite(&y, sizeof(double), 1, fp);
-        fwrite(&z, sizeof(double), 1, fp);
+	fwrite(&x, sizeof(double), 1, fp);
+	fwrite(&y, sizeof(double), 1, fp);
+	fwrite(&z, sizeof(double), 1, fp);
     }
 
     void Load(FILE* fp) { //--Pres: FIXME
-        fread(&x, sizeof(double), 1, fp);
-        fread(&y, sizeof(double), 1, fp);
-        fread(&z, sizeof(double), 1, fp);
+	fread(&x, sizeof(double), 1, fp);
+	fread(&y, sizeof(double), 1, fp);
+	fread(&z, sizeof(double), 1, fp);
     }
 
     double getX() { return x; }
@@ -57,7 +57,7 @@ public:
     void set(double, double, double);
 
     friend Vector3 operator-(const Vector3& v) {
-        Vector3 o;
+	Vector3 o;
 	o.x = -v.x;
 	o.y = -v.y;
 	o.z = -v.z;

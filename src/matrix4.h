@@ -35,9 +35,9 @@ public:
     void setRow(int row, double a, double b, double c, double d);
     Matrix4 transpose();
     double get(int r, int c) { return data[r*4 + c]; }
-    
+
     void print();
-    
+
     friend Matrix4 operator*(const Matrix4& left, const Matrix4& right);
 };
 

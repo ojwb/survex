@@ -75,7 +75,7 @@ find_prefix(const char *prefix)
    int hash;
 
    ASSERT(prefix);
-  
+
    hash = hash_string(prefix) & 0x1fff;
    for (p = htab[hash]; p; p = p->next) {
       if (strcmp(prefix, p->label) == 0) return p->label;
@@ -188,27 +188,27 @@ main(int argc, char **argv)
    puts(msg(/*Reading in data - please wait...*/105));
 
    htab = osmalloc(ossizeof(pfx*) * 0x2000);
-   
+
    do {
       result = img_read_item(pimg, &pt);
       switch (result) {
       case img_MOVE:
-         fr = find_point(&pt);
-         break;
+	 fr = find_point(&pt);
+	 break;
       case img_LINE:
-       	 if (!fr) {
+	 if (!fr) {
 	    result = img_BAD;
 	    break;
-       	 }
-         to = find_point(&pt);
-         if (!(pimg->flags & (img_FLAG_SURFACE|img_FLAG_SPLAY)))
+	 }
+	 to = find_point(&pt);
+	 if (!(pimg->flags & (img_FLAG_SURFACE|img_FLAG_SPLAY)))
 	    add_leg(fr, to, pimg->label, pimg->flags);
-         fr = to;
-         break;
+	 fr = to;
+	 break;
       case img_LABEL:
-         fr = find_point(&pt);
-         add_label(fr, pimg->label, pimg->flags);
-         break;
+	 fr = find_point(&pt);
+	 add_label(fr, pimg->label, pimg->flags);
+	 break;
       case img_BAD:
 	 (void)img_close(pimg);
 	 fatalerror(img_error(), fnm_in);
@@ -280,24 +280,24 @@ do_stn(point *p, double X)
 	  * removed, leaving our next pointing to a leg which has been dealt
 	  * with... */
       } else {
-         if (l->to == p) {
-            lp->next = l->next;
-            dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-            img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-            img_write_item(pimg, img_LINE, l->flags, l->prefix,
+	 if (l->to == p) {
+	    lp->next = l->next;
+	    dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	    img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
+	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X, 0, l->to->p.z);
-            l->fDone = 1;
-            do_stn(l->fr, X + dX);
+	    l->fDone = 1;
+	    do_stn(l->fr, X + dX);
 	    /* osfree(l); */
 	    l = lp;
-         } else if (l->fr == p) {
-            lp->next = l->next;
-            dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-            img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-            img_write_item(pimg, img_LINE, l->flags, l->prefix,
+	 } else if (l->fr == p) {
+	    lp->next = l->next;
+	    dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	    img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
+	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X + dX, 0, l->to->p.z);
-            l->fDone = 1;
-            do_stn(l->to, X + dX);
+	    l->fDone = 1;
+	    do_stn(l->to, X + dX);
 	    /* osfree(l); */
 	    l = lp;
 	 }

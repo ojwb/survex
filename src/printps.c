@@ -1,7 +1,7 @@
 /* printps.c & prnthpgl.c */
 /* Device dependent part of Survex Postscript printer/HPGL plotter driver */
 /* Copyright (C) 1993-2001 Olly Betts
- * 
+ *
  * Postscript font remapping code based on code from a2ps
  * Copyright (C) 1995-1999 Akim Demaille, Miguel Santana
  *
@@ -162,7 +162,7 @@ check_intersection(long x_p, long y_p)
 #define U 1
 #define D 2
 #define L 4
-#define R 8      
+#define R 8
    int mask_p = 0, mask_t = 0;
    if (x_p < 0)
       mask_p = L;
@@ -344,7 +344,7 @@ hpgl_Pre(int pagesToPrint, const char *title)
    /*     Or: Scale chars absolute to 2/3 of default size on A4 page */
    prio_print("IN;SP1;"
 #ifndef HPGL_USE_UC
-              "CA-1;GM0,800;" /* Char set Alternate -1; Get Memory; */
+	      "CA-1;GM0,800;" /* Char set Alternate -1; Get Memory; */
 #endif
 #ifdef HPGL_USE_SR
 	      "SR0.5,1.0;"
@@ -485,7 +485,7 @@ ps_Pre(int pagesToPrint, const char *title)
    prio_print("/udieresis /yacute /thorn /ydieresis\n");
    prio_print("] def\n");
    prio_print("%%EndResource\n");
-   
+
    /* this code adapted from a2ps */
    prio_print(
 "/reencode {\n" /* def */
@@ -512,28 +512,28 @@ ps_Pre(int pagesToPrint, const char *title)
  */
 "/UnderlinePosition 1 def\n"
 "/UnderlineThickness 1 def\n"
-    
+
 /* Get the underline position and thickness if they're defined. */
 "currentdict /FontInfo known {\n"
 "FontInfo\n"
-      
+
 "dup /UnderlinePosition known {\n"
 "dup /UnderlinePosition get\n"
 "0 exch FontMatrix transform exch pop\n"
 "/UnderlinePosition exch def\n"
 "} if\n"
-      
+
 "dup /UnderlineThickness known {\n"
 "/UnderlineThickness get\n"
 "0 exch FontMatrix transform exch pop\n"
 "/UnderlineThickness exch def\n"
 "} if\n"
-      
+
 "} if\n"
 "currentdict\n"
 "end\n"
 "} bind def\n");
-   
+
    prio_printf("/txt ISO88591Encoding /%s findfont reencode definefont pop\n",
 	       fontname);
    prio_printf("/lab ISO88591Encoding /%s findfont reencode definefont pop\n",
@@ -549,8 +549,8 @@ ps_Pre(int pagesToPrint, const char *title)
 #define CS PS_CROSS_SIZE
 #define CS2 (2*PS_CROSS_SIZE)
    prio_printf("/X {stroke moveto %d %d rmoveto %d %d rlineto "
-               "%d 0 rmoveto %d %d rlineto %d %d rmoveto} def\n",
-               -CS, -CS,  CS2, CS2,  -CS2,  CS2, -CS2,  -CS, CS );
+	       "%d 0 rmoveto %d %d rlineto %d %d rmoveto} def\n",
+	       -CS, -CS,  CS2, CS2,  -CS2,  CS2, -CS2,  -CS, CS );
 #undef CS
 #undef CS2
 
@@ -607,21 +607,21 @@ ps_NewPage(int pg, int pass, int pagesX, int pagesY)
    prio_printf("%.1f setlinewidth\n", LineWidth);
    /* shift image up page about 10mm to allow for page footer */
    prio_printf("%ld %ld translate\ngsave\n",
-               (long)(MarginLeft * POINTS_PER_MM),
-               (long)((MarginBottom + 10.0) * POINTS_PER_MM));
+	       (long)(MarginLeft * POINTS_PER_MM),
+	       (long)((MarginBottom + 10.0) * POINTS_PER_MM));
    /* and set clipping on printer */
 #if 0 /* old version */
    prio_printf("%d %d moveto %d %d moveto %d %d moveto %d %d moveto\n"
-               "closepath clip\n",
-               clip.x_min,clip.y_min, clip.x_min,clip.y_max,
-               clip.x_max,clip.y_max, clip.x_max,clip.y_min);
+	       "closepath clip\n",
+	       clip.x_min,clip.y_min, clip.x_min,clip.y_max,
+	       clip.x_max,clip.y_max, clip.x_max,clip.y_min);
 #endif
    /* Bill Purvis' version: */
 #ifndef NO_CLIP
    prio_printf("0 0 moveto 0 %ld lineto %ld %ld lineto"
-               " %ld 0 lineto\nclosepath clip newpath\n",
-               /*0l,0l, 0l,*/ ypPageDepth,
-               xpPageWidth, ypPageDepth, xpPageWidth /*,0l*/ );
+	       " %ld 0 lineto\nclosepath clip newpath\n",
+	       /*0l,0l, 0l,*/ ypPageDepth,
+	       xpPageWidth, ypPageDepth, xpPageWidth /*,0l*/ );
 #endif
 #endif
 
@@ -881,7 +881,7 @@ hpgl_ShowPage(const char *szPageDetails)
 {
    /* clear clipping window and print footer */
    prio_printf("IW;PU%ld,%ld;",
-               clip.x_min - x_org, clip.y_min - ypFooter / 2L - y_org);
+	       clip.x_min - x_org, clip.y_min - ypFooter / 2L - y_org);
    hpgl_WriteString(szPageDetails);
    prio_print("PG;"); /* New page.  NB PG is a no-op on the HP7475A */
    if (fNewLines) prio_putc('\n');

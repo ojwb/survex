@@ -103,7 +103,7 @@ check_intersection(long x_p, long y_p)
 #define U 1
 #define D 2
 #define L 4
-#define R 8      
+#define R 8
    int mask_p = 0, mask_t = 0;
    if (x_p < 0)
       mask_p = L;
@@ -310,7 +310,7 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    psd.lStructSize = 66;
    psd.Flags = PD_RETURNDC | PD_RETURNDEFAULT;
 
-   if (!PrintDlgA(&psd)) exit(1);      
+   if (!PrintDlgA(&psd)) exit(1);
 
    fontsize = 12;
 
@@ -328,7 +328,7 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    ypPageDepth = ypPageDepth - (int)(10 * *pscY);
    GetTextMetrics(psd.hDC, &tm);
    DeleteDC(psd.hDC);
-  
+
    /* name and size of font to use for station labels (default to text font) */
    fontname_labels = fontname;
    fontsize_labels = fontsize;

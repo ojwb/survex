@@ -1,4 +1,4 @@
-/* > prio.h
+/* prio.h
  * Headers for printer I/O routines for Survex printer drivers
  * Copyright (C) 1993,1996,2001 Olly Betts
  *

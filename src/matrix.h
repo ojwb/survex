@@ -1,4 +1,4 @@
-/* > matrix.h
+/* matrix.h
  * Header file for matrix building and solving routines
  * Copyright (C) 1993,1994,2001 Olly Betts
  *

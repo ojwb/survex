@@ -43,7 +43,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION));
 #endif
     wxStaticText* purpose = new wxStaticText(this, 505,
-        wxString(msg(/*Visualisation of Survex 3D files*/209)));
+	wxString(msg(/*Visualisation of Survex 3D files*/209)));
     wxStaticText* copyright1 = new wxStaticText(this, 503,
 	    wxString::Format(AVEN_COPYRIGHT_MSG, msg(/*&copy;*/0)));
     wxStaticText* copyright2 = new wxStaticText(this, 504,
@@ -56,7 +56,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 	   licence_str.SetChar(wrap, '\n');
 	   wrap += 42;
 	}
-	wrap++;  
+	wrap++;
     }
 
     wxStaticText* licence = new wxStaticText(this, 506, licence_str);
@@ -65,8 +65,8 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 
     wxBitmap& bm = wxGetApp().GetAboutBitmap();
     if (bm.Ok()) {
-        wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, bm);
-        horiz->Add(bitmap, 0 /* horizontally unstretchable */, wxALL, 2 /* border width */);
+	wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, bm);
+	horiz->Add(bitmap, 0 /* horizontally unstretchable */, wxALL, 2 /* border width */);
     }
     horiz->Add(vert, 0, wxALL, 2);
 

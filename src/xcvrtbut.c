@@ -1,4 +1,4 @@
-/* > xcvrtbut.c
+/* xcvrtbut.c
  * Copyright (C) 1993-2001 Bill Purvis, Olly Betts, John Pybus, Mark Shinwell,
  * Leandro Dybal Bertoni, Andy Holtsbery, et al
  *
@@ -66,7 +66,7 @@ button_init(Display *display, Window window,
    button_count = 0;
    button_fg = fg;
    button_bg = bg;
-   
+
    f = XQueryFont(display, XGContextFromGC(gc));
    if (f) {
       button_height = f->max_bounds.ascent + 4;
@@ -90,7 +90,7 @@ button_create(const char *txt, const char *txt2, int *pstate,
       printf("more buttons than space was reserved for\n");
       exit(1);
    }
-   buttons[button_count].txt = txt;   
+   buttons[button_count].txt = txt;
    buttons[button_count].txt2 = txt2;
    buttons[button_count].process = fn;
    buttons[button_count].pstate = pstate;
@@ -141,7 +141,7 @@ button_draw(void)
       XFreeFontInfo(NULL, fs, 1);
 
       button_width += 4;
-      
+
       for (i = 0; i < button_count; i++) {
 	 Window b;
 	 b = XCreateSimpleWindow(mydisplay, mywindow, button_width * i, 0,

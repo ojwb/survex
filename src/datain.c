@@ -83,7 +83,7 @@ static void
 error_list_parent_files(void)
 {
    if (!file.reported_where && file.parent) {
-      parse *p = file.parent;      
+      parse *p = file.parent;
       const char *m = msg(/*In file included from */5);
       size_t len = strlen(m);
 
@@ -305,7 +305,7 @@ data_file(const char *pth, const char *fnm)
 	 twig *temp = limb;
 #endif
 	 f_export_ok = fFalse;
-	 
+
 	 /* style function returns 0 => error */
 	 if (!(pcs->Style)()) {
 #ifdef NEW3DFORMAT
@@ -478,7 +478,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
    } else {
       /* clino */
       real L2, cosG, LcosG, cosG2, sinB, cosB, dx2, dy2, dz2, v, V;
-      if (fNoComp) {	 
+      if (fNoComp) {
 	 compile_error(/*Compass reading may not be omitted except on plumbed legs*/14);
 	 skipline();
 	 return 0;
@@ -496,7 +496,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	 real sinGcosG;
 	 comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
 	 comp -= pcs->z[Q_DECLINATION];
-         /* LEVEL case */
+	 /* LEVEL case */
 	 if (!fPlumbed && !fNoClino)
 	    clin = (clin - pcs->z[Q_GRADIENT]) * pcs->sc[Q_GRADIENT];
 /*
@@ -696,7 +696,7 @@ data_normal(void)
 			       fPlumbed);
 	    if (!r) skipline();
 	 }
-	 fMulti = fTrue;	    
+	 fMulti = fTrue;
 	 while (1) {
 	    process_eol();
 	    process_bol();
@@ -758,7 +758,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    if (comp != HUGE_REAL) {
       comp *= pcs->units[Q_BEARING];
       if (comp < (real)0.0 || comp - M_PI * 2 > EPSILON) {
-         compile_warning(/*Suspicious compass reading*/59);
+	 compile_warning(/*Suspicious compass reading*/59);
       }
    }
 
@@ -790,10 +790,10 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
       dx = dy = (real)0.0;
       if (dz < 0) tape = -tape;
       dz = (dz * var(Q_LENGTH) + tape * 2 * var(Q_DEPTH))
-         / (var(Q_LENGTH) * 2 * var(Q_DEPTH));
+	 / (var(Q_LENGTH) * 2 * var(Q_DEPTH));
       vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
       vz = var(Q_POS) / 3.0 + var(Q_LENGTH) * 2 * var(Q_DEPTH)
-                              / (var(Q_LENGTH) + var(Q_DEPTH));
+			      / (var(Q_LENGTH) + var(Q_DEPTH));
    } else {
       real L2, sinB, cosB, dz2, D2;
       comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
@@ -1102,7 +1102,7 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
       process_equate(fr, to);
       return 1;
    }
-   
+
    if (tape < (real)0.0) {
       compile_warning(/*Negative tape reading*/60);
    }
@@ -1111,7 +1111,7 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
    if (comp != HUGE_REAL) {
       comp *= pcs->units[Q_BEARING];
       if (comp < (real)0.0 || comp - M_PI * 2 > EPSILON) {
-         compile_warning(/*Suspicious compass reading*/59);
+	 compile_warning(/*Suspicious compass reading*/59);
       }
    }
 

@@ -54,7 +54,7 @@ set_view(double sc, double theta, double elev)
    X1 = cosine * sc;
    X2 = -sine * sc;
 #define CORNER(XP, YP) fabs((coord)(Xorg XP Xrad) * X1 + \
-                            (coord)(Yorg YP Yrad) * X2)
+			    (coord)(Yorg YP Yrad) * X2)
    max = CORNER(+, +);
    t = CORNER(-, +);
    if (t > max) max = t;
@@ -69,7 +69,7 @@ set_view(double sc, double theta, double elev)
       Y2 = cosine * sc * y_stretch;
       Y3 = 0.0;
 #define CORNER(XP, YP) fabs((coord)(Xorg XP Xrad) * Y1 + \
-                            (coord)(Yorg YP Yrad) * Y2)
+			    (coord)(Yorg YP Yrad) * Y2)
       t = CORNER(+, +);
       if (t > max) max = t;
       t = CORNER(-, +);
@@ -85,8 +85,8 @@ set_view(double sc, double theta, double elev)
       Y1 = sine * tan(phi) * Y3;
       Y2 = cosine * tan(phi) * Y3;
 #define CORNER(XP, YP, ZP) fabs((coord)(Xorg XP Xrad) * Y1 + \
-                                (coord)(Yorg YP Yrad) * Y2 + \
-                                (coord)(Zorg ZP Zrad) * Y3)
+				(coord)(Yorg YP Yrad) * Y2 + \
+				(coord)(Zorg ZP Zrad) * Y3)
       t = CORNER(+, +, +);
       if (t > max) max = t;
       t = CORNER(-, +, +);

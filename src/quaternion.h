@@ -35,31 +35,31 @@ class Quaternion {
 public:
     Quaternion() : w(0.0) {}
     Quaternion(Double pan, Double tilt, Double rotation_amount) {
-        setFromSphericalPolars(pan, tilt, rotation_amount);
+	setFromSphericalPolars(pan, tilt, rotation_amount);
     }
     Quaternion(Vector3 v, Double rotation_amount) {
-        setFromVectorAndAngle(v, rotation_amount);
+	setFromVectorAndAngle(v, rotation_amount);
     }
 
     ~Quaternion() {}
 
     void Save(FILE* fp) { //--Pres: FIXME: error handling
-        fwrite(&w, sizeof(Double), 1, fp);
+	fwrite(&w, sizeof(Double), 1, fp);
 	v.Save(fp);
     }
 
     void Load(FILE* fp) { //--Pres: FIXME: error handling
-        fread(&w, sizeof(Double), 1, fp);
+	fread(&w, sizeof(Double), 1, fp);
 	v.Load(fp);
     }
 
     Double magnitude() {
-        Double mv = v.magnitude();
-        return sqrt(mv*mv + w*w);
+	Double mv = v.magnitude();
+	return sqrt(mv*mv + w*w);
     }
 
     void normalise() {
-        Double mag = magnitude();
+	Double mag = magnitude();
 
 	if (mag != 0.0) {
 	    w /= mag;
@@ -68,7 +68,7 @@ public:
     }
 
     Matrix4 asMatrix() {
-        static Matrix4 m;
+	static Matrix4 m;
 
 	Double xx = v.getX() * v.getX();
 	Double xy = v.getX() * v.getY();
@@ -91,56 +91,56 @@ public:
     }
 
     Matrix4 asInverseMatrix() {
-        static Quaternion q;
+	static Quaternion q;
 	q.v.set(-v.getX(), -v.getY(), -v.getZ());
 	q.w = w;
 	return q.asMatrix();
     }
 
     Quaternion& operator=(const Quaternion& q) {
-        v = q.v;
+	v = q.v;
 	w = q.w;
 
 	return *this;
     }
 
     friend Quaternion operator-(const Quaternion& q) {
-        Quaternion o;
+	Quaternion o;
 	o.v = -q.v;
 	o.w = -q.w;
 	return o;
     }
 
     friend Quaternion operator*(const Quaternion& qa, const Quaternion& qb) {
-        static Quaternion q;
+	static Quaternion q;
 
 	q.w = (qa.w * qb.w) - dot(qa.v, qb.v);
 	q.v = (qa.w * qb.v) + (qa.v * qb.w) + (qa.v * qb.v);
 
 	q.normalise();
-	
+
 	return q;
     }
 
     friend Quaternion operator*(const double d, const Quaternion& qa) {
-        static Quaternion q;
+	static Quaternion q;
 
 	q.w = d * qa.w;
 	q.v = d * qa.v;
 
 	//	q.normalise();
-	
+
 	return q;
     }
 
     friend Quaternion operator+(const Quaternion& qa, const Quaternion& qb) {
-        static Quaternion q;
+	static Quaternion q;
 
 	q.w = qa.w + qb.w;
 	q.v = qa.v + qb.v;
 
 	//q.normalise();
-	
+
 	return q;
     }
 
@@ -151,7 +151,7 @@ public:
     void setScalar(const Double w) { this->w = w; }
 
     void setFromEulerAngles(Double rotation_x, Double rotation_y, Double rotation_z) {
-        static Double cr, cp, cy, sr, sp, sy, cpcy, spsy;
+	static Double cr, cp, cy, sr, sp, sy, cpcy, spsy;
 
 	cr = cos(rotation_x / 2.0);
 	cp = cos(rotation_y / 2.0);
@@ -171,7 +171,7 @@ public:
     }
 
     void print() {
-        printf("[%.02g  %.02g  %.02g] %.02g\n", v.getX(), v.getY(), v.getZ(), w);
+	printf("[%.02g  %.02g  %.02g] %.02g\n", v.getX(), v.getY(), v.getZ(), w);
     }
 
     void setFromSphericalPolars(Double pan, Double tilt, Double rotation_amount);
@@ -179,7 +179,7 @@ public:
 
 #ifdef AVENGL
     void CopyToOpenGL() {
-        static Double matrix[16];
+	static Double matrix[16];
 
 	Double xx = v.getX() * v.getX();
 	Double xy = v.getX() * v.getY();

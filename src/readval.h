@@ -1,4 +1,4 @@
-/* > readval.h
+/* readval.h
  * Routines to read a prefix or number from the current input file
  * Copyright (C) 1991-2001 Olly Betts
  *

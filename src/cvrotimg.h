@@ -1,4 +1,4 @@
-/* > cvrotimg.h
+/* cvrotimg.h
  * Header file for
  * Reads a .3d image file into two linked lists of blocks, suitable for use
  * by caverot.c

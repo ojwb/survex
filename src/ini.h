@@ -1,4 +1,4 @@
-/* > ini.h
+/* ini.h
  * .ini file routines
  * Copyright (C) 1995-2001 Olly Betts
  *

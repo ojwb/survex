@@ -1,4 +1,4 @@
-/* > out.h
+/* out.h
  * Header file for output stuff
  * Copyright (C) Olly Betts 2000,2001
  * This program is free software; you can redistribute it and/or modify

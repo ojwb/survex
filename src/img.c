@@ -158,7 +158,7 @@ getline_alloc(FILE *fh)
       } while (ch == '\n' || ch == '\r');
       ungetc(ch, fh); /* we don't want it, so put it back */
    }
-   buf[i++] = '\0';   
+   buf[i++] = '\0';
    return buf;
 }
 
@@ -302,7 +302,7 @@ img_open_survey(const char *fnm, const char *survey)
       img_errno = IMG_BADFORMAT;
       goto error;
    }
-   
+
    if (!pimg->title) pimg->title = getline_alloc(pimg->fh);
    pimg->datestamp = getline_alloc(pimg->fh);
    if (!pimg->title || !pimg->datestamp) {
@@ -315,7 +315,7 @@ img_open_survey(const char *fnm, const char *survey)
    }
 
    pimg->start = ftell(pimg->fh);
-   
+
    return pimg;
 }
 
@@ -410,7 +410,7 @@ read_coord(FILE *fh, img_point *pt)
    if (ferror(fh) || feof(fh)) {
       img_errno = feof(fh) ? IMG_BADFORMAT : IMG_READERROR;
       return 0;
-   }       
+   }
    return 1;
 }
 
@@ -427,7 +427,7 @@ img_read_item(img *pimg, img_point *p)
 	 *p = pimg->mv;
 	 pimg->flags = (int)(pimg->pending) & 0x3f;
 	 pimg->pending = 0;
- 	 return img_LINE;
+	 return img_LINE;
       }
       again3: /* label to goto if we get a prefix */
       opt = getc(pimg->fh);
@@ -531,9 +531,9 @@ img_read_item(img *pimg, img_point *p)
 	    if (result == img_LINE) {
 	       if (strncmp(pimg->survey, s, l) != 0 ||
 		   !(s[l] == '.' || s[l] == '\0')) {
-		  if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;		     
+		  if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
 		  pimg->pending = 15;
-	          goto again3;
+		  goto again3;
 	       }
 	    } else {
 	       if (strncmp(pimg->survey, s, l + 1) != 0) {
@@ -577,7 +577,7 @@ img_read_item(img *pimg, img_point *p)
 	    opt = get32(pimg->fh);
 	 }
       } else {
-         opt = getc(pimg->fh);
+	 opt = getc(pimg->fh);
       }
 
       if (feof(pimg->fh)) {
@@ -610,11 +610,11 @@ img_read_item(img *pimg, img_point *p)
 	 }
 	 if (ch != '\\') ungetc(ch, pimg->fh);
 	 fgets(pimg->label_buf, 257, pimg->fh);
-         if (feof(pimg->fh)) {
+	 if (feof(pimg->fh)) {
 	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
 	 }
-         if (ferror(pimg->fh)) {
+	 if (ferror(pimg->fh)) {
 	    img_errno = IMG_READERROR;
 	    return img_BAD;
 	 }
@@ -853,7 +853,7 @@ img_read_item(img *pimg, img_point *p)
 
       pimg->label = pimg->label_buf;
 
-      if (pimg->label[0] == '\\') pimg->label++;	 
+      if (pimg->label[0] == '\\') pimg->label++;
 
       if (pimg->survey_len) {
 	 size_t l = pimg->survey_len + 1;
@@ -985,10 +985,10 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	 opt = 4;
 	 break;
        case img_LINE:
-         if (pimg->version > 1) {
+	 if (pimg->version > 1) {
 	    opt = 0x80 | (flags & 0x3f);
 	    break;
-         }
+	 }
 	 opt = 5;
 	 break;
        default: /* ignore for now */

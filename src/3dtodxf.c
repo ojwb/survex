@@ -117,26 +117,26 @@ dxf_header(void)
 #endif
       while (x < max_x) {
 	 /* horizontal line */
-         fprintf(fh, "0\nLINE\n");
-         fprintf(fh, "8\nGrid\n"); /* Layer */
-         fprintf(fh, "10\n%6.2f\n", x);
-         fprintf(fh, "20\n%6.2f\n", min_y);
-         fprintf(fh, "30\n0\n");
-         fprintf(fh, "11\n%6.2f\n", x);
-         fprintf(fh, "21\n%6.2f\n", max_y);
-         fprintf(fh, "31\n0\n");
+	 fprintf(fh, "0\nLINE\n");
+	 fprintf(fh, "8\nGrid\n"); /* Layer */
+	 fprintf(fh, "10\n%6.2f\n", x);
+	 fprintf(fh, "20\n%6.2f\n", min_y);
+	 fprintf(fh, "30\n0\n");
+	 fprintf(fh, "11\n%6.2f\n", x);
+	 fprintf(fh, "21\n%6.2f\n", max_y);
+	 fprintf(fh, "31\n0\n");
 	 x += grid;
       }
       while (y < max_y) {
-         /* vertical line */
-         fprintf(fh, "0\nLINE\n");
-         fprintf(fh, "8\nGrid\n"); /* Layer */
-         fprintf(fh, "10\n%6.2f\n", min_x);
-         fprintf(fh, "20\n%6.2f\n", y);
-         fprintf(fh, "30\n0\n");
-         fprintf(fh, "11\n%6.2f\n", max_x);
-         fprintf(fh, "21\n%6.2f\n", y);
-         fprintf(fh, "31\n0\n");
+	 /* vertical line */
+	 fprintf(fh, "0\nLINE\n");
+	 fprintf(fh, "8\nGrid\n"); /* Layer */
+	 fprintf(fh, "10\n%6.2f\n", min_x);
+	 fprintf(fh, "20\n%6.2f\n", y);
+	 fprintf(fh, "30\n0\n");
+	 fprintf(fh, "11\n%6.2f\n", max_x);
+	 fprintf(fh, "21\n%6.2f\n", y);
+	 fprintf(fh, "31\n0\n");
 	 y += grid;
       }
    }
@@ -319,15 +319,15 @@ main(int argc, char **argv)
 	{"marker-size", required_argument, 0, 'm'},
 	{"elevation", required_argument, 0, 'e'},
 	{"reduction", required_argument, 0, 'r'},
-        {"dxf", no_argument, 0, 'D'},
-        {"sketch", no_argument, 0, 'S'},
+	{"dxf", no_argument, 0, 'D'},
+	{"sketch", no_argument, 0, 'S'},
 	{"help", no_argument, 0, HLP_HELP},
 	{"version", no_argument, 0, HLP_VERSION},
 	{0,0,0,0}
    };
 
 #define short_opts "s:cnlg::t:m:er::DSh"
-	
+
    /* TRANSLATE */
    static struct help_msg help[] = {
 	{HLP_ENCODELONG(0), "only load the sub-survey with this prefix"},
@@ -363,10 +363,10 @@ main(int argc, char **argv)
        case 'e': /* Elevation */
 	 elevation = 1;
 	 elev_angle = cmdline_double_arg();
-         break;
+	 break;
        case 'c': /* Crosses */
-         crosses = 0;
-         break;
+	 crosses = 0;
+	 break;
        case 'n': /* Labels */
 	 labels = 0;
 	 break;
@@ -474,13 +474,13 @@ main(int argc, char **argv)
 
       switch (item) {
        case img_MOVE: case img_LINE: case img_LABEL:
-         if (p.x < min_x) min_x = p.x;
-         if (p.x > max_x) max_x = p.x;
-         if (p.y < min_y) min_y = p.y;
-         if (p.y > max_y) max_y = p.y;
-         if (p.z < min_z) min_z = p.z;
-         if (p.z > max_z) max_z = p.z;
-         break;
+	 if (p.x < min_x) min_x = p.x;
+	 if (p.x > max_x) max_x = p.x;
+	 if (p.y < min_y) min_y = p.y;
+	 if (p.y > max_y) max_y = p.y;
+	 if (p.z < min_z) min_z = p.z;
+	 if (p.z > max_z) max_z = p.z;
+	 break;
       }
    } while (item != img_STOP);
 
@@ -503,7 +503,7 @@ main(int argc, char **argv)
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
 
    while (*pass) {
-      if (((*pass & LEGS) && legs) || 
+      if (((*pass & LEGS) && legs) ||
 	  ((*pass & STNS) && crosses) ||
 	  ((*pass & LABELS) && labels)) {
 	 img_rewind(pimg);

@@ -1,4 +1,4 @@
-/* > netbits.h
+/* netbits.h
  * Header file for miscellaneous primitive network routines for Survex
  * Copyright (C) 1994,1997,1998,2001 Olly Betts
  *

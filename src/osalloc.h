@@ -1,4 +1,4 @@
-/* > osalloc.h
+/* osalloc.h
  * Function prototypes for OS dep. malloc &c - funcs in error.c
  * Copyright (C) 1996,1997,2001 Olly Betts
  *

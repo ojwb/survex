@@ -252,12 +252,12 @@ dm_NewPage(int pg, int pass, int pagesX, int pagesY)
       clip.y_max -= pass * ((long)ylPassDepth * ypLineDepth);
       if (pass == passMax - 1) {
 	 /* remaining lines */
-         ylThisPassDepth = (ylPageDepth - 1) % ylPassDepth + 1;
+	 ylThisPassDepth = (ylPageDepth - 1) % ylPassDepth + 1;
       } else {
-         long y_min_new = clip.y_max - (long)ylPassDepth * ypLineDepth + 1;
-         ASSERT(y_min_new >= clip.y_min);
-         clip.y_min = y_min_new;
-         ylThisPassDepth = ylPassDepth;
+	 long y_min_new = clip.y_max - (long)ylPassDepth * ypLineDepth + 1;
+	 ASSERT(y_min_new >= clip.y_min);
+	 clip.y_min = y_min_new;
+	 ylThisPassDepth = ylPassDepth;
       }
 
 #ifdef XBM
@@ -332,17 +332,17 @@ dm_ShowPage(const char *szPageDetails)
 
       /* need blank lines (last==-1) for PCL dump ... (sigh) */
       if (fPCLVTab && last == -1) {
-         cEmpties++; /* line is completely blank */
+	 cEmpties++; /* line is completely blank */
       } else {
 	 int len;
-         if (cEmpties) {
-            /* if we've just had some blank lines, do a vertical offset */
-            prio_printf("\x1b*b%dY", cEmpties);
-            cEmpties = 0;
-         }
-         /* don't trust the printer to do a 0 byte line */
+	 if (cEmpties) {
+	    /* if we've just had some blank lines, do a vertical offset */
+	    prio_printf("\x1b*b%dY", cEmpties);
+	    cEmpties = 0;
+	 }
+	 /* don't trust the printer to do a 0 byte line */
 	 len = max(1, last + 1 - first);
-         prio_printf("\x1b*b%dW", len);
+	 prio_printf("\x1b*b%dW", len);
 	 prio_putbuf(bitmap[y] + first, len);
       }
    }
@@ -359,19 +359,19 @@ dm_ShowPage(const char *szPageDetails)
    }
    for (y = ylThisPassDepth - 1; y >= 0; y--) {
       for (last = xpPageWidth * SIZEOFGRAPH_T - 1; last >= 0; last--)
-         if (bitmap[y][last]) break;
+	 if (bitmap[y][last]) break;
       /* Scan in from right hand end to first used 'byte', then stop */
       if (last >= 0) {
-         int len;
-         last = last / SIZEOFGRAPH_T + 1;
-         len = last * SIZEOFGRAPH_T;
+	 int len;
+	 last = last / SIZEOFGRAPH_T + 1;
+	 len = last * SIZEOFGRAPH_T;
 	 /* IBM Proprinter style codes pass the length differently */
-         if (fIBM) last = len + 1;
-         prio_putpstr(&prn.grph);
-         prio_putc(last & 255);
-         prio_putc(last >> 8);
-         prio_putpstr(&prn.grph2);
-         prio_putbuf(bitmap[y], len);
+	 if (fIBM) last = len + 1;
+	 prio_putpstr(&prn.grph);
+	 prio_putc(last & 255);
+	 prio_putc(last >> 8);
+	 prio_putpstr(&prn.grph2);
+	 prio_putbuf(bitmap[y], len);
       }
       prio_putpstr(&prn.eol);
    }
@@ -500,7 +500,7 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    ypLineDepth = as_int(vars[5], vals[5], 1, INT_MAX);
 
    if (!vals[6] || !vals[7]) {
-      if (!fCalibrate) 
+      if (!fCalibrate)
 	 fatalerror(/*You need to calibrate your printer - see the manual for details.*/103);
 
       /* Set temporary values, so a calibration plot can be produced */
@@ -581,9 +581,9 @@ Pre(int pagesToPrint, const char *title)
    for (y = 1; y < ylPageDepth; y++) {
       bitmap[y] = xosmalloc(lenLine);
       if (!bitmap[y]) {
-         passMax = (int)ceil((double)ylPageDepth / y);
-         bitmap = osrealloc(bitmap, y * ossizeof(void*));
-         break;
+	 passMax = (int)ceil((double)ylPageDepth / y);
+	 bitmap = osrealloc(bitmap, y * ossizeof(void*));
+	 break;
       }
    }
    ylPassDepth = y;

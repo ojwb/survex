@@ -1,4 +1,4 @@
-/* > new3dout.c
+/* new3dout.c
  * .3dx writing routines
  * Copyright (C) 2000, 2001 Phil Underwood
  *
@@ -80,7 +80,7 @@ scount(twig *twiglet)
   if (twiglet->from) return 1;
 
   ASSERT(twiglet->to);
-    
+
   lib = twiglet->down;
   twiglet->count = 0;
   while (lib->right) {
@@ -231,7 +231,7 @@ save3d(twig *sticky)
 #endif
 	if (fabs(length) < 0.01) {
 	  err = 0; /* What is the error for a leg with zero length?
-	  	    * Phil -  he say none. */
+		    * Phil -  he say none. */
 	} else {
 	  err = 10000.0 * offset / length;
 	}
@@ -244,7 +244,7 @@ save3d(twig *sticky)
       }
     } else {
       if (twiglet->count) {
-        putc(BRANCH_3D, pimg->fh);
+	putc(BRANCH_3D, pimg->fh);
 	/* number of records  - legs + values */
 	stubcount = 0;
 	if (twiglet->source) stubcount++;

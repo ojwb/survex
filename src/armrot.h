@@ -1,4 +1,4 @@
-/* > armrot.h
+/* armrot.h
  * Caverot plot & translate headers for RISCOS - armrot.s contains ARM code
  * Copyright (C) 1993-2001 Olly Betts
  *

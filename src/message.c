@@ -82,7 +82,7 @@ static void
 outofmem(OSSIZE_T size)
 {
    fatalerror(/*Out of memory (couldn't find %lu bytes).*/1,
-              (unsigned long)size);
+	      (unsigned long)size);
 }
 
 #ifdef TOMBSTONES
@@ -313,7 +313,7 @@ default_charset(void)
       if (name_len) {
 	 int only_digit = 1;
 	 size_t cnt;
-        
+
 	 for (cnt = 0; cnt < name_len; ++cnt)
 	    if (isalpha(chset[cnt])) {
 	       only_digit = 0;
@@ -321,7 +321,7 @@ default_charset(void)
 	    }
 
 	 if (only_digit) goto iso;
-	 
+
 	 switch (tolower(chset[0])) {
 	  case 'i':
 	    if (tolower(chset[1]) == 's' && tolower(chset[2]) == 'o') {
@@ -333,7 +333,7 @@ default_charset(void)
 		  switch (atoi(chset)) {
 		   case 1: return CHARSET_ISO_8859_1;
 		   case 15: return CHARSET_ISO_8859_15;
-		   default: return CHARSET_USASCII;		   
+		   default: return CHARSET_USASCII;
 		  }
 	       }
 	    }
@@ -593,7 +593,7 @@ add_unicode(int charset, unsigned char *p, int value)
       *p = 'n'; return 1;
     case 240 /* ð */: case 254 /* þ */:
       *p = 't'; p[1] = 'h'; return 2;
-    case 242 /* ò */: case 243 /* ó */: case 244 /* ô */: case 245 /* õ */: 
+    case 242 /* ò */: case 243 /* ó */: case 244 /* ô */: case 245 /* õ */:
       *p = 'o'; return 1;
     case 246 /* ö */: /* &ouml; */ case 0x153: /* &oelig; */
       *p = 'o'; p[1] = 'e'; return 2;
@@ -660,12 +660,12 @@ parse_msgs(int n, unsigned char *p, int charset_code) {
 	    }
 	 }
 
-         resync:
+	 resync:
 
 	 if (ch < 127) {
 	    *to++ = (char)ch;
 	 } else {
-            /* We assume an N byte UTF-8 code never transliterates to more
+	    /* We assume an N byte UTF-8 code never transliterates to more
 	     * than N characters (so we can't transliterate © to (C) or
 	     * ® to (R) for example) */
 	    to += add_unicode(charset_code, to, ch);
@@ -699,7 +699,7 @@ parse_msg_file(int charset_code)
 {
    FILE *fh;
    unsigned char header[20];
-   int i;   
+   int i;
    unsigned len;
    unsigned char *p;
    char *fnm, *s;
@@ -928,7 +928,7 @@ msg_init(char * const *argv)
 	  case 24: /* Russia */
 	  case 25: /* Russia2 */
 	  case 26: /* Israel */
-#endif	    
+#endif
 	 }
 #elif (OS==MSDOS)
 	   {
@@ -945,8 +945,8 @@ msg_init(char * const *argv)
 	      /* bit 1 is the carry flag */
 	      if (__dpmi_int(0x21, &r) != -1 && !(r.x.flags & 1)) {
 		 unsigned short p;
-	         dosmemget(__tb + 3, 2, &p);
-	         country_code = p;
+		 dosmemget(__tb + 3, 2, &p);
+		 country_code = p;
 # else
 	      union REGS r;
 	      r.x.ax = 0x3800; /* get current country info */
@@ -1399,7 +1399,7 @@ select_charset(int charset_code)
 
 #ifdef DEBUG
    fprintf(stderr, "select_charset(%d), old charset = %d\n", charset_code,
-           charset);
+	   charset);
 #endif
 
    charset = charset_code;
@@ -1410,8 +1410,8 @@ select_charset(int charset_code)
       printf("%p: code %d msg_array %p\n", p, p->code, p->msg_array);
 #endif
       if (p->code == charset) {
-         msg_array = p->msg_array;
-         return old_charset;
+	 msg_array = p->msg_array;
+	 return old_charset;
       }
    }
 

@@ -1,4 +1,4 @@
-/* > matrix.c
+/* matrix.c
  * Matrix building and solving routines
  * Copyright (C) 1993-2001 Olly Betts
  *
@@ -56,7 +56,7 @@ static void sor(real FAR *M, real *B, long n);
 
 /* for M(row, col) col must be <= row, so Y <= X */
 # define M(X, Y) ((real Huge *)M)[((((OSSIZE_T)(X)) * ((X) + 1)) >> 1) + (Y)]
-              /* +(Y>X?0*printf("row<col (line %d)\n",__LINE__):0) */
+	      /* +(Y>X?0*printf("row<col (line %d)\n",__LINE__):0) */
 /*#define M_(X, Y) ((real Huge *)M)[((((OSSIZE_T)(Y)) * ((Y) + 1)) >> 1) + (X)]*/
 
 static int find_stn_in_tab(node *stn);
@@ -151,7 +151,7 @@ build_matrix(node *list)
       out_current_action(buf);
 
       /* Initialise M and B to zero - zeroing "linearly" will minimise
-       * paging when the matrix is large */      
+       * paging when the matrix is large */
       {
 	 int end = n_stn_tab * FACTOR;
 	 for (row = 0; row < end; row++) B[row] = (real)0.0;
@@ -161,9 +161,9 @@ build_matrix(node *list)
 
       /* Construct matrix - Go thru' stn list & add all forward legs between
        * two unfixed stations to M (so each leg goes on exactly once).
-       * 
+       *
        * All legs between two fixed stations can be ignored here.
-       * 
+       *
        * All legs between a fixed and an unfixed station are then considered
        * from the unfixed end (if we consider them from the fixed end we'd
        * need to somehow detect when we're at a fixed point cut line and work
@@ -395,7 +395,7 @@ choleski(real FAR *M, real *B, long n)
    for (j = 1; j < n; j++) {
       real V;
       for (i = 0; i < j; i++) {
-         V = (real)0.0;
+	 V = (real)0.0;
 	 for (k = 0; k < i; k++) V += M(i,k) * M(j,k) * M(k,k);
 	 M(j,i) = (M(j,i) - V) / M(i,i);
       }
@@ -437,7 +437,7 @@ choleski(real FAR *M, real *B, long n)
    /* Multiply x by (L transpose) inverse */
    for (i = (int)(n - 1); i > 0; i--) {
       for (j = i - 1; j >= 0; j--) {
-  	 B[j] -= M(i,j) * B[i];
+	 B[j] -= M(i,j) * B[i];
       }
    }
 

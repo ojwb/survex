@@ -45,7 +45,7 @@ Aven::Aven() :
 bool Aven::OnInit()
 {
     msg_init(argv);
-    
+
     const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
     if (lang) {
 	// suppress message box warnings about messages not found
@@ -58,7 +58,7 @@ bool Aven::OnInit()
     }
 
     wxString survey;
-   
+
     /* Want --version and a decent --help output, which cmdline does for us */
 #ifndef USE_WXCMDLINE
     static const struct option long_opts[] = {
@@ -89,8 +89,8 @@ bool Aven::OnInit()
 #else
     static wxCmdLineEntryDesc cmdline[] = {
 	// FIXME - if this code is every reenabled, check this is correct, and also handle it below...
-        { wxCMD_LINE_OPTION, "s", "survey", "only load the sub-survey with this prefix", wxCMD_LINE_VAL_STRING},
-        { wxCMD_LINE_OPTION, "h", "help", msgPerm(/*Display command line options*/201) },
+	{ wxCMD_LINE_OPTION, "s", "survey", "only load the sub-survey with this prefix", wxCMD_LINE_VAL_STRING},
+	{ wxCMD_LINE_OPTION, "h", "help", msgPerm(/*Display command line options*/201) },
 	{ wxCMD_LINE_PARAM,  NULL, NULL, msgPerm(/*3d file*/119), wxCMD_LINE_VAL_STRING,
 	  wxCMD_LINE_PARAM_OPTIONAL },
 	{ wxCMD_LINE_NONE }
@@ -100,8 +100,8 @@ bool Aven::OnInit()
     int c = cli.Parse();
     if (c != 0 || cli.Found("h")) {
 	// write in two goes to avoid msg() overwriting its buffer on 2nd call
-        fprintf(stderr, "%s: %s ", msg(/*Syntax*/49), argv[0]);
-        fprintf(stderr, "[%s]\n", msg(/*3d file*/119));
+	fprintf(stderr, "%s: %s ", msg(/*Syntax*/49), argv[0]);
+	fprintf(stderr, "[%s]\n", msg(/*3d file*/119));
 	exit(c > 0 ? 1 /* syntax error */ : 0 /* --help */);
     }
 #endif
@@ -136,7 +136,7 @@ bool Aven::OnInit()
     }
 #else
     if (cli.GetParamCount() == 1) {
-        wxString file = cli.GetParam(0);
+	wxString file = cli.GetParam(0);
 	m_Frame->OpenFile(file, survey, delay);
     }
 #endif

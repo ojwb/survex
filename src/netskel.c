@@ -60,7 +60,7 @@ static const char *szLinkEq = " = "; /* use this one for equates */
 
 #if 0
 #define fprint_prefix(FH, NAME) BLK((fprint_prefix)((FH), (NAME));\
-                                    fprintf((FH), " [%p]", (void*)(NAME)); )
+				    fprintf((FH), " [%p]", (void*)(NAME)); )
 #endif
 
 static stack *ptr; /* Ptr to TRaverse linked list for in-between travs */
@@ -179,7 +179,7 @@ remove_trailing_travs(void)
 	 /* We want to keep all 2-nodes using legs 0 and 1 and all one nodes
 	  * using leg 0 so we may need to swap leg j with leg 2 (for a 3 node)
 	  * or leg 1 (for a fixed 2 node) */
-         if ((j == 0 && !one_node(stn2)) || (j == 1 && three_node(stn2))) {
+	 if ((j == 0 && !one_node(stn2)) || (j == 1 && three_node(stn2))) {
 	    /* i is the direction to swap with */
 	    i = (three_node(stn2)) ? 2 : 1;
 	    /* change the other direction of leg i to use leg j */
@@ -356,10 +356,10 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
       ny = cy + s * v[0];
       s = sqrd(nx) + sqrd(ny) + sqrd(cz);
       if (s > 0.0) {
-         s = rsqrd / s;
+	 s = rsqrd / s;
 	 ASSERT(s >= 0);
-         s = sqrt(s);
-         tot = sqrd(cx - s * nx) + sqrd(cy - s * ny) + sqrd(cz - s * cz);
+	 s = sqrt(s);
+	 tot = sqrd(cx - s * nx) + sqrd(cy - s * ny) + sqrd(cz - s * cz);
 	 if (tot <= expected_error) {
 	    if (!output) {
 	       fprint_prefix(fhErrStat, name1);
@@ -419,7 +419,7 @@ replace_travs(void)
       } else {
 #endif
 	 pimg = img_open_write(fnm, survey_title, fTrue);
-         if (!pimg) fatalerror(img_error(), fnm);
+	 if (!pimg) fatalerror(img_error(), fnm);
 #ifdef NEW3DFORMAT
       }
 #endif
@@ -585,7 +585,7 @@ replace_travs(void)
       while (fTrue) {
 	 int reached_end;
 	 prefix *leg_pfx;
-	 
+
 	 fEquate = fTrue;
 	 /* get next node in traverse
 	  * should have stn3->leg[k]->l.to == stn1 */
@@ -593,9 +593,9 @@ replace_travs(void)
 	 k = reverse_leg_dirn(stn1->leg[i]);
 	 ASSERT2(stn3->leg[k]->l.to == stn1,
 		 "reverse leg doesn't reciprocate");
-	 
+
 	 reached_end = (stn3 == stn2 && k == j);
-	 
+
 	 if (data_here(stn1->leg[i])) {
 	    leg_pfx = stn1->name->up;
 	    leg = stn1->leg[i];
@@ -615,9 +615,9 @@ replace_travs(void)
 	    if (!reached_end)
 	       subdd(&POSD(stn3), &POSD(stn1), &leg->d);
 	 }
-	 
+
 	 lenTot = sqrdd(leg->d);
-	 
+
 	 if (!reached_end) {
 	    add_stn_to_list(&stnlist, stn3);
 	    if (!fZeros(&leg->v)) {
@@ -629,7 +629,7 @@ replace_travs(void)
 	 } else {
 	    if (!fZeros(&leg->v)) fEquate = fFalse;
 	 }
-	 
+
 	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
 	    stn1->name->sflags |= BIT(SFLAGS_SURFACE);
 	    stn3->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -652,7 +652,7 @@ replace_travs(void)
 #endif
 
 	 /* FIXME: equate at the start of a traverse treated specially
-	  * - what about equates at end? */	    
+	  * - what about equates at end? */
 	 if (nmPrev != stn3->name && !(fEquate && cLegsTrav == 0)) {
 	    /* (node not part of same stn) &&
 	     * (not equate at start of traverse) */
@@ -703,16 +703,16 @@ replace_travs(void)
 	    }
 	 }
 	 if (reached_end) break;
-	 
+
 	 i = k ^ 1; /* flip direction for other leg of 2 node */
-	 
+
 	 stn1 = stn3;
       } /* endwhile */
-      
+
       if (cLegsTrav && !fArtic && fhErrStat)
 	 err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
 		  hTot, hTotTheo, vTot, vTotTheo);
-   
+
       ptrOld = ptr;
       ptr = ptr->next;
       osfree(ptrOld);
@@ -734,9 +734,9 @@ err_stat(int cLegsTrav, double lenTrav,
       fprintf(fhErrStat, msg(/*Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). */145),
 	      lenTrav, cLegsTrav, sqrt_eTot, sqrt_eTot / cLegsTrav);
       if (lenTrav > 0.0)
-         fprintf(fhErrStat, msg(/*Error%7.2f%%*/146), 100 * sqrt_eTot / lenTrav);
+	 fprintf(fhErrStat, msg(/*Error%7.2f%%*/146), 100 * sqrt_eTot / lenTrav);
       else
-         fputs(msg(/*Error    N/A*/147), fhErrStat);
+	 fputs(msg(/*Error    N/A*/147), fhErrStat);
       fputnl(fhErrStat);
       fprintf(fhErrStat, "%f\n", sqrt(eTot / eTotTheo));
       fprintf(fhErrStat, "H: %f V: %f\n",
@@ -879,7 +879,7 @@ replace_trailing_travs(void)
       /* take care of unused fixed points */
 #ifdef NEW3DFORMAT
       if (!fUseNewFormat) {
-#endif	 
+#endif
 	 if (stn1->name->stn == stn1 && stn1->name->ident) {
 	    int sf = stn1->name->sflags;
 	    if (!TSTBIT(sf, SFLAGS_SOLVED)) {
@@ -908,7 +908,7 @@ replace_trailing_travs(void)
 	    }
 	 }
       }
-      
+
       d = stn1->name->shape;
       if (d < 0) {
 	 /* "*fix STN reference ..." sets order negative to suppress the

@@ -99,7 +99,7 @@ main(int argc, char **argv)
 	 fatalerror(img_error(), fnm);
       }
    } while (code != img_STOP);
-      
+
    img_close(pimg);
 
    return 0;

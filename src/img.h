@@ -1,4 +1,4 @@
-/* > img.h
+/* img.h
  * Header file for routines to read and write Survex ".3d" image files
  * Copyright (C) Olly Betts 1993,1994,1997,2001
  *
@@ -52,7 +52,7 @@ extern "C" {
 typedef struct {
    double x, y, z;
 } img_point;
-    
+
 typedef struct {
    /* members you can access when reading (don't touch when writing) */
    char *label;

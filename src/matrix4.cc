@@ -50,7 +50,7 @@ Matrix4 Matrix4::transpose()
     double* d = data;
 
     for (int row = 0; row < 4; row++) {
-        for (int col = 0; col < 4; col++) {
+	for (int col = 0; col < 4; col++) {
 	    r.data[row*4 + col] = *d++;
 	}
     }
@@ -71,35 +71,35 @@ Matrix4 operator*(const Matrix4& left, const Matrix4& right)
 
     // for a particular column in the right matrix...
     for (int col = 0; col < 4; col++) {
-        row_start_l = left.data;
+	row_start_l = left.data;
 
-        // find the top of the column in the output matrix for this column...
-        result = &m.data[col];
+	// find the top of the column in the output matrix for this column...
+	result = &m.data[col];
 
-        // and iterate over the rows in the left matrix.
-        for (int row = 0; row < 4; row++) {
+	// and iterate over the rows in the left matrix.
+	for (int row = 0; row < 4; row++) {
 	    posn_l = row_start_l;
 	    posn_r = col_start_r;
-	    
+
 	    // for the row in the left matrix, multiply it by the column in the right matrix.
 	    for (int elem = 0; elem < 4; elem++) {
-	        total += (*posn_l++) * (*posn_r);
+		total += (*posn_l++) * (*posn_r);
 		posn_r += 4;
 	    }
 
 	    // store this value in the correct place in the output matrix.
 	    *result = total;
 	    result += 4;
-	    
+
 	    // reset the total
 	    total = 0.0;
-	    
+
 	    // get to the start of the next row in the left matrix
 	    row_start_l += 4;
-        }
+	}
 
 	// get to the top of the next column in the right matrix
-        col_start_r++;
+	col_start_r++;
     }
 
     return m;
@@ -109,10 +109,10 @@ void Matrix4::print()
 {
     double* d = data;
     for (int row = 0; row < 4; row++) {
-        printf("[ ");
-        for (int col = 0; col < 4; col++) {
+	printf("[ ");
+	for (int col = 0; col < 4; col++) {
 	    printf("%02.2g ", *d++);
-        }
+	}
 	printf("]\n");
     }
 }

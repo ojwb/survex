@@ -78,7 +78,7 @@ bool fQuiet = fFalse; /* just show brief summary + errors */
 bool fMute = fFalse; /* just show errors */
 bool fSuppress = fFalse; /* only output 3d(3dx) file */
 static bool fLog = fFalse; /* stdout to .log file */
-static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */   
+static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */
 
 nosurveylink *nosurveyhead;
 
@@ -182,7 +182,7 @@ main(int argc, char **argv)
    root = osnew(prefix);
    root->up = root->right = root->down = NULL;
    root->stn = NULL;
-   root->pos = NULL;   
+   root->pos = NULL;
    root->ident = NULL;
    root->min_export = root->max_export = 0;
    root->sflags = BIT(SFLAGS_SURVEY);
@@ -271,7 +271,7 @@ main(int argc, char **argv)
 	 char *p;
 	 p = baseleaf_from_fnm(argv[optind]);
 	 fnm = add_ext(p, EXT_LOG);
-	 osfree(p);	 
+	 osfree(p);
       } else if (fnm_output_base_is_dir) {
 	 char *p;
 	 fnm = baseleaf_from_fnm(argv[optind]);
@@ -282,7 +282,7 @@ main(int argc, char **argv)
       } else {
 	 fnm = add_ext(fnm_output_base, EXT_LOG);
       }
-      
+
       if (!freopen(fnm, "w", stdout))
 	 fatalerror(/*Failed to open output file `%s'*/47, fnm);
 
@@ -333,7 +333,7 @@ main(int argc, char **argv)
 
    solve_network(/*stnlist*/); /* Find coordinates of all points */
    validate();
-   
+
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
       /* this actually does all the writing */
@@ -364,12 +364,12 @@ main(int argc, char **argv)
 
       /* tmCPU is integer, tmUser not - equivalent to (ceil(tmCPU) >= tmUser) */
       if (tmCPU + 1 > tmUser) {
-         printf(msg(/*CPU time used %5.2fs*/140), tmCPU);
+	 printf(msg(/*CPU time used %5.2fs*/140), tmCPU);
       } else if (tmCPU == 0) {
-         if (tmUser == 0.0) {
-            printf(msg(/*Time used %5.2fs*/141), tmUser);
+	 if (tmUser == 0.0) {
+	    printf(msg(/*Time used %5.2fs*/141), tmUser);
 	 } else {
-            fputs(msg(/*Time used unavailable*/142), stdout);
+	    fputs(msg(/*Time used unavailable*/142), stdout);
 	 }
       } else {
 	 printf(msg(/*Time used %5.2fs (%5.2fs CPU time)*/143), tmUser, tmCPU);

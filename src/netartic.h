@@ -1,4 +1,4 @@
-/* > netartic.h
+/* netartic.h
  * Header file for network articulation point code
  * Copyright (C) 2000,2001 Olly Betts
  *

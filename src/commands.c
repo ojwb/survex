@@ -185,8 +185,8 @@ get_token(void)
    {
       int i = -1;
       do {
-         i++;
-         ucbuffer[i] = toupper(buffer[i]);
+	 i++;
+	 ucbuffer[i] = toupper(buffer[i]);
       } while (buffer[i]);
    }
 #if 0
@@ -331,7 +331,7 @@ get_qlist(void)
 
    if (qmask == 0) {
       compile_error(/*Unknown quantity `%s'*/34, buffer);
-      skipline();      
+      skipline();
    } else {
       set_pos(&fp);
    }
@@ -475,9 +475,9 @@ cmd_prefix(void)
    if (fUseNewFormat) {
       limb = get_twig(tag);
       if (limb->up->sourceval < 1) {
-      	 osfree(limb->up->source);
-       	 limb->up->sourceval = 1;
-       	 limb->up->source = osstrdup(file.filename);
+	 osfree(limb->up->source);
+	 limb->up->sourceval = 1;
+	 limb->up->source = osstrdup(file.filename);
       }
    }
 #endif
@@ -736,12 +736,12 @@ cmd_flags(void)
 	 /* Recover from `*FLAGS NOT BOGUS SURFACE' by ignoring "NOT BOGUS" */
 	 fNot = fFalse;
       } else if (flag == FLAGS_NOT) {
-         fNot = fTrue;
+	 fNot = fTrue;
       } else if (fNot) {
-         pcs->flags &= ~BIT(flag);
-         fNot = fFalse;
+	 pcs->flags &= ~BIT(flag);
+	 fNot = fFalse;
       } else {
-         pcs->flags |= BIT(flag);
+	 pcs->flags |= BIT(flag);
       }
    }
 
@@ -814,7 +814,7 @@ cmd_export(void)
    do {
       int depth = 0;
       {
-         prefix *p = pfx;
+	 prefix *p = pfx;
 	 while (p != NULL && p != pcs->Prefix) {
 	    depth++;
 	    p = p->up;
@@ -829,17 +829,17 @@ cmd_export(void)
 	     pfx->min_export, pfx->max_export, depth, sprint_prefix(pfx));
 #endif
       if (pfx->min_export == 0) {
-         /* not encountered *export for this name before */
-         if (pfx->max_export > depth) report_missing_export(pfx, depth);
-         pfx->min_export = pfx->max_export = depth;
+	 /* not encountered *export for this name before */
+	 if (pfx->max_export > depth) report_missing_export(pfx, depth);
+	 pfx->min_export = pfx->max_export = depth;
       } else {
-         if (pfx->min_export - 1 > depth) {
+	 if (pfx->min_export - 1 > depth) {
 	    report_missing_export(pfx, depth);
-         } else if (pfx->min_export - 1 < depth) {
+	 } else if (pfx->min_export - 1 < depth) {
 	    compile_error(/*Station `%s' already exported*/66,
 			  sprint_prefix(pfx));
-         }
-         pfx->min_export = depth;
+	 }
+	 pfx->min_export = depth;
       }
       pfx = read_prefix_stn(fTrue, fFalse);
    } while (pfx);
@@ -853,10 +853,10 @@ cmd_data(void)
 	{"BEARING",      Comp },
 	{"CLINO",        Clino }, /* alternative name */
 	{"COMPASS",      Comp }, /* alternative name */
-        {"COUNT",        Count }, /* FrCount&ToCount in multiline */
-        {"DEPTH",        Depth }, /* FrDepth&ToDepth in multiline */
+	{"COUNT",        Count }, /* FrCount&ToCount in multiline */
+	{"DEPTH",        Depth }, /* FrDepth&ToDepth in multiline */
 	{"DEPTHCHANGE",  DepthChange },
-        {"DIRECTION",    Dir },
+	{"DIRECTION",    Dir },
 	{"DX",		 Dx },
 	{"DY",		 Dy },
 	{"DZ",		 Dz },
@@ -870,7 +870,7 @@ cmd_data(void)
 	{"LENGTH",       Tape },
 	{"NEWLINE",      Newline },
 	{"NORTHING",     Dy },
-        {"STATION",      Station }, /* Fr&To in multiline */
+	{"STATION",      Station }, /* Fr&To in multiline */
 	{"TAPE",         Tape }, /* alternative name */
 	{"TO",           To },
 	{"TOCOUNT",      ToCount },
@@ -900,7 +900,7 @@ cmd_data(void)
    BIT(Tape) | BIT(Comp) |\
    BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(DepthChange)
 #define MASK_NOSURVEY BIT(Fr) | BIT(To) | BIT(Station)
-   
+
    /* readings which may be given for each style */
    static const unsigned long mask[] = {
       MASK_NORMAL, MASK_TOPOFIL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR,
@@ -942,7 +942,7 @@ cmd_data(void)
 	{"DIVING",       STYLE_DIVING },
 	{"NORMAL",       STYLE_NORMAL },
 	{"NOSURVEY",     STYLE_NOSURVEY },
-        {"TOPOFIL",      STYLE_TOPOFIL },
+	{"TOPOFIL",      STYLE_TOPOFIL },
 	{NULL,           STYLE_UNKNOWN }
    };
 
@@ -991,7 +991,7 @@ cmd_data(void)
 #endif
 
    style_name = osstrdup(buffer);
-   do {      
+   do {
       filepos fp;
       get_pos(&fp);
       get_token();
@@ -1007,7 +1007,7 @@ cmd_data(void)
 		       buffer, style_name);
 	 osfree(style_name);
 	 osfree(new_order);
- 	 skipline();
+	 skipline();
 	 return;
       }
       if (TSTBIT(mUsed, Newline) && TSTBIT(m_multi, d)) {
@@ -1018,7 +1018,7 @@ cmd_data(void)
 		       buffer, style_name);
 	 osfree(style_name);
 	 osfree(new_order);
- 	 skipline();
+	 skipline();
 	 return;
       }
       /* Check for duplicates unless it's a special reading:
@@ -1079,7 +1079,7 @@ cmd_data(void)
 	       break;
 	     default: /* avoid compiler warnings about unhandled enums */
 	       break;
-	    }		  
+	    }
 	    if (fBad) {
 	       /* FIXME: not really the correct error here */
 	       compile_error(/*Duplicate reading `%s'*/67, buffer);
@@ -1110,7 +1110,7 @@ cmd_data(void)
       skipline();
       return;
    }
-   
+
    if (style == STYLE_NOSURVEY) {
       if (TSTBIT(mUsed, Station)) {
 	 if (k >= kMac) {
@@ -1175,7 +1175,7 @@ cmd_data(void)
    pcs->Style = fn[style];
    pcs->ordering = new_order;
 
-   osfree(style_name);      
+   osfree(style_name);
 }
 
 /* masks for units which are length and angles respectively */
@@ -1503,7 +1503,7 @@ cmd_require(void)
 
 static void
 cmd_date(void)
-{   
+{
    read_date();
    skipblanks();
    if (ch == '-') {
@@ -1570,12 +1570,12 @@ handle_command(void)
     case CMD_TEAM:
     case CMD_TITLE:
       /* These can occur between *begin and *export */
-      break;      
+      break;
     default:
       /* NB: additional handling for "*begin <survey>" in cmd_begin */
       f_export_ok = fFalse;
       break;
    }
-   
+
    cmd_funcs[cmdtok]();
 }

@@ -297,7 +297,7 @@ load_file(const char *name, const char *survey, int replace)
    ppStns = osrealloc(ppStns, (blocks + 2) * sizeof(point Huge *));
 
    /* load data into memory */
-   if (!load_data(name, survey, 
+   if (!load_data(name, survey,
 		  ppLegs + blocks, ppSLegs + blocks, ppStns + blocks)) {
       ppLegs[blocks] = ppSLegs[blocks] = ppStns[blocks] = NULL;
       return 0;
@@ -305,13 +305,13 @@ load_file(const char *name, const char *survey, int replace)
    ppLegs[blocks + 1] = ppSLegs[blocks + 1] = ppStns[blocks + 1] = NULL;
 
    XGetWindowAttributes(mydisplay, mywindow, &attr);
-   
+
    {
       int c;
       point lower, upper;
-       
+
       reset_limits(&lower, &upper);
-      
+
       for (c = 0; ppLegs[c]; c++) {
 	 update_limits(&lower, &upper, ppLegs[c], ppStns[c]);
 	 update_limits(&lower, &upper, ppSLegs[c], NULL);
@@ -626,7 +626,7 @@ draw_label(Window window, GC gc, int x, int y,
 
       if (XRectInRegion(label_reg, x, y, strwidth, fontheight) != RectangleOut)
 	 return;
-      
+
       r.x = x;
       r.y = y;
       r.width = strwidth;
@@ -673,7 +673,7 @@ add_to_segment_cache(point **pp, int f_surface)
 	    X1 = toscreen_x(p);
 	    Y1 = toscreen_y(p);
 	    break;
-	    
+
 	  case DRAW: {
 	    SegmentGroup *group;
 
@@ -702,7 +702,7 @@ add_to_segment_cache(point **pp, int f_surface)
 	    } else {
 	       fprintf(stderr, "ignoring some legs for now rather than overflowing fixed segment buffer\n");
 	    }
-		
+
 	    break;
 	  }
 	 }
@@ -1321,8 +1321,8 @@ main(int argc, char **argv)
 #else
    scalebar =
       XCreateSimpleWindow(mydisplay, mywindow, 0, FONTSPACE,
-                          23, attr.height - 5, 0,
-                          ind_fg, ind_bg);
+			  23, attr.height - 5, 0,
+			  ind_fg, ind_bg);
 #endif
 
    /* children windows to act as indicators */
@@ -1368,9 +1368,9 @@ main(int argc, char **argv)
       while (XPending(mydisplay)) {
 	 XEvent myevent;
 	 ickybodge:
-         XNextEvent(mydisplay, &myevent);
+	 XNextEvent(mydisplay, &myevent);
 #if 0
-         printf("event of type #%d, in window %x\n",myevent.type, (int)myevent.xany.window);
+	 printf("event of type #%d, in window %x\n",myevent.type, (int)myevent.xany.window);
 #endif
 	 if (myevent.type == ButtonRelease) {
 	    unsigned int but = myevent.xbutton.button;
@@ -1387,11 +1387,11 @@ main(int argc, char **argv)
 	    orig.x = myevent.xbutton.x;
 	    orig.y = myevent.xbutton.y;
 #if 0
-            printf("ButtonPress: x=%d, y=%d, window=%x\n",orig.x,orig.y,(int)myevent.xbutton.subwindow);
+	    printf("ButtonPress: x=%d, y=%d, window=%x\n",orig.x,orig.y,(int)myevent.xbutton.subwindow);
 #endif
 	    if (drag_button == Button1) {
-               if (myevent.xbutton.window == ind_com) {
-                  drag_compass(myevent.xbutton.x, myevent.xbutton.y);
+	       if (myevent.xbutton.window == ind_com) {
+		  drag_compass(myevent.xbutton.x, myevent.xbutton.y);
 	       } else if (myevent.xbutton.window == ind_elev) {
 		  drag_elevation(myevent.xbutton.x, myevent.xbutton.y);
 	       } else if (myevent.xbutton.window == scalebar) {
@@ -1400,11 +1400,11 @@ main(int argc, char **argv)
 		  view_angle_orig = view_angle;
 		  scale_orig = scale;
 #ifdef XCAVEROT_BUTTONS
-               } else {
+	       } else {
 		  button_handleevent(&myevent);
 #endif
 	       }
-            } else if (drag_button == Button2) {
+	    } else if (drag_button == Button2) {
 	       elev_angle_orig = elev_angle;
 	    } else if (drag_button == Button3) {
 	       x_mid_orig = x_mid;
@@ -1444,7 +1444,7 @@ main(int argc, char **argv)
 		       if (key_event->state & ControlMask) {
 			  /* rotate one step "anticlockwise" */
 			  view_angle += fabs(rot_speed) * shift_factor / 5;
-			  break;			  
+			  break;
 		       }
 		       x_mid -= cv * 20 * shift_factor / scale;
 		       y_mid -= sv * 20 * shift_factor / scale;

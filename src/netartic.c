@@ -75,7 +75,7 @@ static long *min_stack = NULL;
 
 static unsigned long
 visit(node *stn, int back)
-{   
+{
    long min_colour;
    int i;
    unsigned long tos = 0;
@@ -123,12 +123,12 @@ uniter:
 #endif
 	    remove_stn_from_list(&stnlist, to);
 	    add_stn_to_list(&artlist, to);
-	    
+
 	    if (to->colour <= min_colour) {
 	       articulation *art;
 
 	       min_colour = to->colour;
-	       
+
 	       /* FIXME: note down leg (<-), remove and replace:
 		*                 /\   /        /\
 		* [fixed point(s)]  *-*  -> [..]  )
@@ -168,16 +168,16 @@ uniter:
 	       remove_stn_from_list(&fixedlist, to);
 	       add_stn_to_list(&artlist, to);
 	    }
-	    
+
 	    if (col < min_colour) min_colour = col;
-	 }	 
+	 }
       }
    }
 
    ASSERT(!stn->leg[0] || stn->leg[0]->l.to->colour > 0);
    ASSERT(!stn->leg[1] || stn->leg[1]->l.to->colour > 0);
    ASSERT(!stn->leg[2] || stn->leg[2]->l.to->colour > 0);
-   
+
    if (tos > 0) goto uniter;
 
 #ifdef DEBUG_ARTIC
@@ -361,7 +361,7 @@ articulate(void)
       component_list = comp;
       articulation_list = NULL;
    }
-   
+
    if (stnlist) {
       /* Actually this error is fatal, but we want to list the survey
        * stations which aren't connected, so we report it as an error
@@ -402,10 +402,10 @@ articulate(void)
 	    if (listend) {
 	       listend->next = art->stnlist;
 	       art->stnlist->prev = listend;
- 	    } else {
+	    } else {
 	       list = art->stnlist;
 	    }
- 
+
 	    FOR_EACH_STN(stn, art->stnlist) {
 #ifdef DEBUG_ARTIC
 	       printf("    %d %p (", stn->colour, stn);
@@ -413,8 +413,8 @@ articulate(void)
 	       printf(")\n");
 #endif
 	       listend = stn;
- 	    }
- 	 }
+	    }
+	 }
 #ifdef DEBUG_ARTIC
 	 putnl();
 	 FOR_EACH_STN(stn, list) {
@@ -476,7 +476,7 @@ articulate(void)
 
    while (1) {
       int c;
-      int f;      
+      int f;
       do {
 	 c = 0;
 	 FOR_EACH_STN(stn, stnlist) {
@@ -502,7 +502,7 @@ articulate(void)
 	    }
 	 }
       } while (c);
-      
+
       /* colour bits */
       FOR_EACH_STN(stn, stnlist) {
 	 if (stn->colour == 0) break;

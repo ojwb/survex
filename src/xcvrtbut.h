@@ -1,4 +1,4 @@
-/* > xcvrtbut.c
+/* xcvrtbut.h
  * Copyright (C) 1993-2001 Bill Purvis, Olly Betts, John Pybus, Mark Shinwell,
  * Leandro Dybal Bertoni, Andy Holtsbery, et al
  *

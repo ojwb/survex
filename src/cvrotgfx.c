@@ -383,7 +383,7 @@ cvrotgfx_init(void)
 # ifdef USE_VGAHI
 	fSwapScreen = fFalse;
 # else /* !USE_VGAHI */
-        gmode = VGAMED; /* because VGAHI has only one bank */
+	gmode = VGAMED; /* because VGAHI has only one bank */
 # endif /* ?USE_VGAHI */
       colText = colHelp = 15;
       fSwapScreen = 1;

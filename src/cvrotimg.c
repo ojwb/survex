@@ -1,4 +1,4 @@
-/* > cvrotimg.c
+/* cvrotimg.c
  * Reads a .3d image file into two linked lists of blocks, suitable for use
  * by caverot.c
  * Copyright (C) 1993-2001 Olly Betts
@@ -73,7 +73,7 @@ load_data(const char *fnmData, const char *survey,
 {
    img_point mv, pt;
    int result;
-   img *pimg;     
+   img *pimg;
 
    point Huge *legs;
    point Huge *slegs;

@@ -36,18 +36,18 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     m_Parent(parent),
     m_SelValid(false)
 {
-    
+
 }
 
 void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 {
     if (m_Enabled) {
-        int flags;
-        wxTreeItemId pos = HitTest(event.GetPosition(), flags);
+	int flags;
+	wxTreeItemId pos = HitTest(event.GetPosition(), flags);
 	if (((flags & wxTREE_HITTEST_ONITEMLABEL) || (flags & wxTREE_HITTEST_ONITEMRIGHT)) &&
 	    pos != m_LastItem) {
 	    if (m_LastItem != -1) {
-	        SetItemBold(m_LastItem, false);
+		SetItemBold(m_LastItem, false);
 	    }
 	    SetItemBold(pos, true);
 	    m_Parent->DisplayTreeInfo(GetItemData(pos));
@@ -55,7 +55,7 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 	}
 	else if (pos != m_LastItem) {
 	    if (m_LastItem != -1) {
- 	        SetItemBold(m_LastItem, false);
+		SetItemBold(m_LastItem, false);
 	    }
 	    m_Parent->DisplayTreeInfo(NULL);
 	}
@@ -70,7 +70,7 @@ void AvenTreeCtrl::SetEnabled(bool enabled)
 void AvenTreeCtrl::OnSelChanged(wxTreeEvent& event)
 {
     if (m_Enabled) {
-        m_Parent->TreeItemSelected(GetItemData(GetSelection()));
+	m_Parent->TreeItemSelected(GetItemData(GetSelection()));
     }
 
     m_SelValid = true;
@@ -81,12 +81,12 @@ bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data)
     assert(m_Enabled);
 
     if (!m_SelValid) {
-        return false;
+	return false;
     }
-   
+
     wxTreeItemId id = GetSelection();
     if (id.IsOk()) {
-        *data = GetItemData(id);
+	*data = GetItemData(id);
     }
 
     return id.IsOk() && *data;

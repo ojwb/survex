@@ -1,4 +1,4 @@
-/* > filename.h
+/* filename.h
  * Function prototypes for filename.c
  * Copyright (C) 1998-2001 Olly Betts
  *

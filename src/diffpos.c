@@ -119,11 +119,11 @@ tree_remove(const char *name, const img_point *pt)
    int v = hash_string(name) & 0x1fff;
    station **prev;
    station *p;
-   
+
    for (prev = &htab[v]; *prev; prev = &((*prev)->next)) {
       if (strcmp((*prev)->name, name) == 0) break;
    }
-   
+
    if (!*prev) {
       added *add = osnew(added);
       add->name = osstrdup(name);
@@ -133,7 +133,7 @@ tree_remove(const char *name, const img_point *pt)
       fChanged = fTrue;
       return;
    }
-   
+
    if (fabs(pt->x - (*prev)->pt.x) - threshold > EPSILON ||
        fabs(pt->y - (*prev)->pt.y) - threshold > EPSILON ||
        fabs(pt->z - (*prev)->pt.z) - threshold > EPSILON) {
@@ -145,7 +145,7 @@ tree_remove(const char *name, const img_point *pt)
       putnl();
       fChanged = fTrue;
    }
-   
+
    osfree((*prev)->name);
    p = *prev;
    *prev = p->next;
@@ -205,7 +205,7 @@ parse_file(const char *fnm, const char *survey,
 {
    img_point pt;
    int result;
- 
+
    img *pimg = img_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error(), fnm);
 
@@ -223,7 +223,7 @@ parse_file(const char *fnm, const char *survey,
 	 fatalerror(img_error(), fnm);
       }
    } while (result != img_STOP);
-      
+
    img_close(pimg);
 }
 
@@ -231,12 +231,12 @@ int
 main(int argc, char **argv)
 {
    char *fnm1, *fnm2;
-   const char *survey = NULL;   
+   const char *survey = NULL;
 
    msg_init(argv);
 
    cmdline_set_syntax_message("FILE1 FILE2 [THRESHOLD]",
-			      "FILE1 and FILE2 can be .pos or .3d files\n" 
+			      "FILE1 and FILE2 can be .pos or .3d files\n"
 			      "THRESHOLD is the max. ignorable change along "
 			      "any axis in metres (default "
 			      STRING(DFLT_MAX_THRESHOLD)")");
@@ -258,6 +258,6 @@ main(int argc, char **argv)
    parse_file(fnm1, survey, tree_insert);
 
    parse_file(fnm2, survey, tree_remove);
-   
+
    return tree_check() ? EXIT_FAILURE : EXIT_SUCCESS;
 }

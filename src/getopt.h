@@ -78,7 +78,7 @@ extern int optopt;
    The field `has_arg' is:
    no_argument		(or 0) if the option does not take an argument,
    required_argument	(or 1) if the option requires an argument,
-   optional_argument 	(or 2) if the option takes an optional argument.
+   optional_argument	(or 2) if the option takes an optional argument.
 
    If the field `flag' is not NULL, it points to a variable that is set
    to the value given in the field `val' when the option is found, but
@@ -149,15 +149,15 @@ extern int getopt ();
 
 # ifndef __need_getopt
 extern int getopt_long (int /*__argc*/, char *const */*__argv*/, const char *__shortopts,
-		        const struct option *__longopts, int *__longind);
+			const struct option *__longopts, int *__longind);
 extern int getopt_long_only (int /*__argc*/, char *const */*__argv*/,
 			     const char *__shortopts,
-		             const struct option *__longopts, int *__longind);
+			     const struct option *__longopts, int *__longind);
 
 /* Internal only.  Users should not call this directly.  */
 extern int _getopt_internal (int /*__argc*/, char *const */*__argv*/,
 			     const char *__shortopts,
-		             const struct option *__longopts, int *__longind,
+			     const struct option *__longopts, int *__longind,
 			     int __long_only);
 # endif
 #else /* not __STDC__ */

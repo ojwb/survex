@@ -1,4 +1,4 @@
-/* > dosrot.c
+/* dosrot.c
  * Survex cave rotator plot & translate routines for MS-DOS
  * Copyright (C) 1993-2001 Olly Betts
  *

@@ -1,4 +1,4 @@
-/* > whichos.h
+/* whichos.h
  * Determines which OS Survex will try to compile for
  * Copyright (C) 1993-1995 Olly Betts
  *
@@ -18,16 +18,17 @@
  */
 
 /* Built-in #define-s that identify compilers: (initals => checked)
- * __arm                       (Acorn) Norcroft RISC OS ARM C vsn 4.00 (OJWB)
+ * __arm			(Acorn) Norcroft RISC OS ARM C vsn 4.00 (OJWB)
  *   also __CC_NORCROFT __riscos __acorn
- * unix,UNIX                   Unix systems (?)
- * __MSDOS__                   Borland C++ (OJWB)
+ * unix,UNIX			Unix systems (?)
+ * __MSDOS__			Borland C++ (OJWB)
  *       [also __BORLANDC__ (version num) __TURBOC__ (version num)]
- * __TURBOC__  		       Turbo C
- * __GO32__,unix,MSDOS,__DJGPP__ DJGPP (W) (also GO32, __MSDOS__)
- * _MSDOS, (MSDOS not ANSI)    Microsoft C (OJWB)
+ * __TURBOC__			Turbo C
+ * __GO32__,unix,MSDOS,__DJGPP__
+ *				DJGPP (W) (also GO32, __MSDOS__)
+ * _MSDOS, (MSDOS not ANSI)	Microsoft C (OJWB)
  * MC68000, mc68000, SOZOBON, ATARI_ST, TOS|MINIX
- *                             Sozobon C (OJWB from MM's docs)
+ *				Sozobon C (OJWB from MM's docs)
  */
 
 #ifndef WHICHOS_H

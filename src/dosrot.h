@@ -1,4 +1,4 @@
-/* > dosrot.h
+/* dosrot.h
  * header for caverot plot & translate routines for MS-DOS
  * Copyright (C) 1993-2001 Olly Betts
  *

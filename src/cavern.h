@@ -184,7 +184,7 @@ typedef struct Prefix {
    unsigned char max_export, min_export;
    /* stn flags - e.g. surface, underground, entrance
     * also suspecttypo and survey */
-   unsigned short sflags;   
+   unsigned short sflags;
 #ifdef NEW3DFORMAT
    struct Twig *twig_link;
 #endif

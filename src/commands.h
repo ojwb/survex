@@ -1,4 +1,4 @@
-/* > commands.h
+/* commands.h
  * Header file for code for directives
  * Copyright (C) 1994-2001 Olly Betts
  *

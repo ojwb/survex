@@ -1,4 +1,4 @@
-/* > ini.c
+/* ini.c
  * .ini file routines
  * Copyright (C) 1995-2001 Olly Betts
  *
@@ -210,7 +210,7 @@ ini_read_hier(FILE **fh_list, const char *section, const char **v)
 	 j++;
       }
    }
-   
+
    while (vals[0] && j > 1) {
       char **x;
 

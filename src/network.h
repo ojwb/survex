@@ -1,4 +1,4 @@
-/* > network.h
+/* network.h
  * SURVEX Network reduction routines
  * Copyright (C) 1994,2001 Olly Betts
  *

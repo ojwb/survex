@@ -96,14 +96,14 @@ class GfxCore : public wxGLCanvas {
 class GfxCore : public wxWindow {
 #endif
     struct params {
-        Quaternion rotation;
-        Double scale;
-        struct {
+	Quaternion rotation;
+	Double scale;
+	struct {
 	    Double x;
 	    Double y;
 	    Double z;
 	} translation;
-        struct {
+	struct {
 	    int x;
 	    int y;
 	    int z;
@@ -112,26 +112,26 @@ class GfxCore : public wxWindow {
 
 #ifdef AVENPRES
     struct PresData {
-        struct {
+	struct {
 	    Double x, y, z;
 	} translation;
-        struct {
+	struct {
 	    int x, y, z;
 	} display_shift;
-        Double scale;
-        Double pan_angle;
-        Double tilt_angle;
+	Double scale;
+	Double pan_angle;
+	Double tilt_angle;
 	bool solid_surface;
     };
 #endif
 
 #ifdef AVENGL
     struct {
-        // OpenGL display lists.
-        GLint survey; // all underground data
-        GLint surface; // all surface data in uniform colour
-        GLint surface_depth; // all surface data in depth bands
-        GLint grid; // the grid
+	// OpenGL display lists.
+	GLint survey; // all underground data
+	GLint surface; // all surface data in uniform colour
+	GLint surface_depth; // all surface data in depth bands
+	GLint grid; // the grid
 	GLint terrain; // surface terrain
 	GLint flat_terrain; // flat surface terrain - used for drape effect
 	GLint map; // map overlay
@@ -141,21 +141,21 @@ class GfxCore : public wxWindow {
 #endif
 
     enum LabelFlags {
-        label_NOT_PLOTTED,
+	label_NOT_PLOTTED,
 	label_PLOTTED,
 	label_CHECK_AGAIN
     };
 
     enum HighlightFlags {
-        hl_NONE = 0,
-        hl_ENTRANCE = 1,
-        hl_EXPORTED = 2,
-        hl_FIXED = 4
+	hl_NONE = 0,
+	hl_ENTRANCE = 1,
+	hl_EXPORTED = 2,
+	hl_FIXED = 4
     };
 
     enum LockFlags {
-        lock_NONE = 0,
-        lock_X = 1,
+	lock_NONE = 0,
+	lock_X = 1,
 	lock_Y = 2,
 	lock_Z = 4,
 	lock_POINT = lock_X | lock_Y | lock_Z,
@@ -166,48 +166,48 @@ class GfxCore : public wxWindow {
 
     struct {
 #ifdef AVENGL
-        // For the OpenGL version we store the real (x, y, z) coordinates of
+	// For the OpenGL version we store the real (x, y, z) coordinates of
 	// each station.
-        Double3* vertices;
+	Double3* vertices;
 #else
-        // For the non-OpenGL version we store the screen coordinates of
+	// For the non-OpenGL version we store the screen coordinates of
 	// each station after the transformation has been applied.
-        wxPoint* vertices;
+	wxPoint* vertices;
 #endif
-        int* num_segs;
+	int* num_segs;
     } m_CrossData;
 
     struct PlotData {
-        wxPoint* vertices;
-        wxPoint* surface_vertices;
-        int* num_segs;
-        int* surface_num_segs;
+	wxPoint* vertices;
+	wxPoint* surface_vertices;
+	int* num_segs;
+	int* surface_num_segs;
     };
 
     struct {
-        int offset_x;
-        int offset_y;
-        int width;
-        int drag_start_offset_x;
-        int drag_start_offset_y;
+	int offset_x;
+	int offset_y;
+	int width;
+	int drag_start_offset_x;
+	int drag_start_offset_y;
     } m_ScaleBar;
 
     struct HighlightedPt {
-        int x;
-        int y;
-        HighlightFlags flags;
+	int x;
+	int y;
+	HighlightFlags flags;
     };
 
 #ifdef AVENGL
     struct {
-        // Viewing volume parameters: these are all negative!
-        Double left;
-        Double bottom;
-        Double nearface;
+	// Viewing volume parameters: these are all negative!
+	Double left;
+	Double bottom;
+	Double nearface;
     } m_Volume;
 
     struct {
-        GLuint surface;
+	GLuint surface;
 	GLuint map;
     } m_Textures;
 
@@ -218,7 +218,7 @@ class GfxCore : public wxWindow {
     bool terrain_rising;
 
     struct GridPointInfo {
-        long x, y; // screen coordinates
+	long x, y; // screen coordinates
 	LabelInfo* label;
     };
 
@@ -303,16 +303,16 @@ class GfxCore : public wxWindow {
 #ifdef AVENPRES
     int m_DoingPresStep;
     struct step_params {
-        Double pan_angle;
-        Double tilt_angle;
-        Quaternion rotation;
-        Double scale;
-        struct {
+	Double pan_angle;
+	Double tilt_angle;
+	Quaternion rotation;
+	Double scale;
+	struct {
 	    Double x;
 	    Double y;
 	    Double z;
 	} translation;
-        struct {
+	struct {
 	    int x;
 	    int y;
 	    int z;
@@ -320,17 +320,17 @@ class GfxCore : public wxWindow {
     };
 
     struct {
-        step_params from;
-        step_params to;
+	step_params from;
+	step_params to;
     } m_PresStep;
 #endif
 
     struct {
-        Double x, y, z;
+	Double x, y, z;
     } m_here;
 
     struct {
-        Double x, y, z;
+	Double x, y, z;
     } m_there;
 
     bool m_ScaleSpecialPtsOnly;
@@ -341,15 +341,15 @@ class GfxCore : public wxWindow {
 #endif
 
     void SetColour(AvenColour col, bool background = false /* true => foreground */) {
-        assert(col >= (AvenColour) 0 && col < col_LAST);
+	assert(col >= (AvenColour) 0 && col < col_LAST);
 #ifdef AVENGL
-        glColor3f(GLfloat(COLOURS[col].r) / 256.0,
- 		  GLfloat(COLOURS[col].g) / 256.0,
+	glColor3f(GLfloat(COLOURS[col].r) / 256.0,
+		  GLfloat(COLOURS[col].g) / 256.0,
 		  GLfloat(COLOURS[col].b) / 256.0);
 #else
 	if (background) {
 	    assert(m_Brushes[col].Ok());
- 	    m_DrawDC.SetBrush(m_Brushes[col]);
+	    m_DrawDC.SetBrush(m_Brushes[col]);
 	}
 	else {
 	    assert(m_Pens[col].Ok());
@@ -371,19 +371,19 @@ class GfxCore : public wxWindow {
 #endif
 
     Double XToScreen(Double x, Double y, Double z) {
-        return Double(x * m_RotationMatrix.get(0, 0) +
+	return Double(x * m_RotationMatrix.get(0, 0) +
 		      y * m_RotationMatrix.get(0, 1) +
 		      z * m_RotationMatrix.get(0, 2));
     }
 
     Double YToScreen(Double x, Double y, Double z) {
-        return Double(x * m_RotationMatrix.get(1, 0) +
+	return Double(x * m_RotationMatrix.get(1, 0) +
 		      y * m_RotationMatrix.get(1, 1) +
 		      z * m_RotationMatrix.get(1, 2));
     }
 
     Double ZToScreen(Double x, Double y, Double z) {
-        return Double(x * m_RotationMatrix.get(2, 0) +
+	return Double(x * m_RotationMatrix.get(2, 0) +
 		      y * m_RotationMatrix.get(2, 1) +
 		      z * m_RotationMatrix.get(2, 2));
     }
@@ -423,7 +423,7 @@ class GfxCore : public wxWindow {
 
     void StartTimer();
     void StopTimer();
-    
+
     void DrawNames();
     void NattyDrawNames();
     void SimpleDrawNames();
@@ -438,7 +438,7 @@ class GfxCore : public wxWindow {
 #endif
 
     void CreateHitTestGrid();
-    
+
     void RenderTerrain(Double floor_alt);
 
 public:

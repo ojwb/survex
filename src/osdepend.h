@@ -1,4 +1,4 @@
-/* > osdepend.h
+/* osdepend.h
  * Contains commonly required OS dependent bits
  * Copyright (C) 1993-2001 Olly Betts
  *

@@ -1,4 +1,4 @@
-/* > prio.c
+/* prio.c
  * Printer I/O routines for Survex printer drivers
  * Copyright (C) 1993-1997 Olly Betts
  *
@@ -67,9 +67,9 @@ prio_open(const char *fnmPrn)
       intdos(&in, &out);
       /* check call worked && file is a device */
       if (!out.x.cflag && (out.h.dl & 0x80)) {
-         in.x.ax = 0x4401; /* set device info */
-         in.x.dx = out.h.dl | 0x20; /* force binary mode */
-         intdos(&in, &out);
+	 in.x.ax = 0x4401; /* set device info */
+	 in.x.dx = out.h.dl | 0x20; /* force binary mode */
+	 intdos(&in, &out);
       }
    }
 #endif

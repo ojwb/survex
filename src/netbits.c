@@ -329,7 +329,7 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
       compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
 		    sprint_prefix(to_name));
       return;
-   }   
+   }
    if (fToFirst) {
       to = StnFromPfx(to_name);
       fr = StnFromPfx(fr_name);
@@ -930,7 +930,7 @@ invert_var(var *inv, /*const*/ var *v)
 #define B(I,J) ((*v)[(J)%3][(I)%3])
    for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) {
-         (*inv)[i][j] = det * (B(i+1,j+1)*B(i+2,j+2) - B(i+2,j+1)*B(i+1,j+2));
+	 (*inv)[i][j] = det * (B(i+1,j+1)*B(i+2,j+2) - B(i+2,j+1)*B(i+1,j+2));
       }
    }
 #undef B

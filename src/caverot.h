@@ -67,27 +67,27 @@ typedef struct {
 
 /* general plot (used if neither of the special cases applies */
 void plot(point Huge *pData,
-          coord x1, coord x2, coord y1, coord y2, coord y3, int fixpt);
+	  coord x1, coord x2, coord y1, coord y2, coord y3, int fixpt);
 void splot(point Huge *pData,
-           coord x1, coord x2, coord y1, coord y2, coord y3, int fixpt);
+	   coord x1, coord x2, coord y1, coord y2, coord y3, int fixpt);
 void lplot(point Huge *pData,
-           coord x1, coord x2, coord y1, coord y2, coord y3, int fixpt);
+	   coord x1, coord x2, coord y1, coord y2, coord y3, int fixpt);
 
 /* plot with viewheight=0 */
 void plot_no_tilt(point Huge *pData,
-                  coord x1, coord x2, coord y3, int fixpt);
+		  coord x1, coord x2, coord y3, int fixpt);
 void splot_no_tilt(point Huge *pData,
-                   coord x1, coord x2, coord y3, int fixpt);
+		   coord x1, coord x2, coord y3, int fixpt);
 void lplot_no_tilt(point Huge *pData,
-                   coord x1, coord x2, coord y3, int fixpt);
+		   coord x1, coord x2, coord y3, int fixpt);
 
 /* plot plan */
 void plot_plan(point Huge *pData,
 	       coord x1, coord x2, coord y1, coord y2, int fixpt);
 void splot_plan(point Huge *pData,
-                coord x1, coord x2, coord y1, coord y2, int fixpt);
+		coord x1, coord x2, coord y1, coord y2, int fixpt);
 void lplot_plan(point Huge *pData,
-                coord x1, coord x2, coord y1, coord y2, int fixpt);
+		coord x1, coord x2, coord y1, coord y2, int fixpt);
 
 /* translate whole cave */
 void do_translate(point Huge *p, coord dX, coord dY, coord dZ);

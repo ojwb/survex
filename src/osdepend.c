@@ -1,4 +1,4 @@
-/* > osdepend.c
+/* osdepend.c
  * OS dependent functions
  * Copyright (C) 1993-2001 Olly Betts
  *

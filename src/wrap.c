@@ -123,12 +123,12 @@ UsePth(const char *pth, const char *lf)
       if (pth[len - 1] != FNM_SEP_LEV2) {
 #endif
 #ifdef FNM_SEP_DRV
-         if (pth[len - 1] != FNM_SEP_DRV) {
+	 if (pth[len - 1] != FNM_SEP_DRV) {
 #endif
-            fAddSep = fTrue;
-            len_total++;
+	    fAddSep = fTrue;
+	    len_total++;
 #ifdef FNM_SEP_DRV
-         }
+	 }
 #endif
 #ifdef FNM_SEP_LEV2
       }
@@ -331,92 +331,92 @@ process_command_mode(const char *string, const char *pth)
       chOpt=toupper(*s);
       s++;
       if (strchr("DFST",chOpt)) {
-        /* negating these option doesn't make sense */
+	/* negating these option doesn't make sense */
 	fatal("Not a boolean option - `!' prefix not meaningful",
 	      skipopt, string);
       }
     }
     switch (chOpt) {
       case 'A': /* Ascii */ /* ignore nowadays */
-        break;
+	break;
       case 'C': /* Case */
-        if (fSwitch) {
-          chOpt=*s++;
-          switch (toupper(chOpt)) {
+	if (fSwitch) {
+	  chOpt=*s++;
+	  switch (toupper(chOpt)) {
 	   case 'U':
-             add_to_list("*case toupper\n");
+	     add_to_list("*case toupper\n");
 	     break;
 	   case 'L':
-             add_to_list("*case tolower\n");
+	     add_to_list("*case tolower\n");
 	     break;
 	   default: fatal("Expected U or L", skipopt, string);
-          }
-        } else {
+	  }
+	} else {
 	  add_to_list("*case preserve\n");
 	}
-        break;
+	break;
       case 'D': /* Data File (so fnames can begin with '-' or '/' */
-        mode=SVX_FILE;
-        break;
+	mode=SVX_FILE;
+	break;
       case 'F': /* Command File */
-        mode=COMMAND_FILENAME;
-        break;
+	mode=COMMAND_FILENAME;
+	break;
       case 'N': /* NinetyToUp */
-        if (fSwitch)
+	if (fSwitch)
 	  add_to_list("*infer plumbs on\n");
-        else
+	else
 	  add_to_list("*infer plumbs off\n");
-        break;
+	break;
       case 'P': /* Percentage */
-        fPercent = fSwitch;
-        break;
+	fPercent = fSwitch;
+	break;
 #if 0
       /* -S was never implemented */
       case 'S': /* Special Characters */
-        mode=SPECIAL_CHARS;
-        break;
+	mode=SPECIAL_CHARS;
+	break;
 #endif
       case 'T': /* Title */
-        mode=TITLE;
-        break;
+	mode=TITLE;
+	break;
       case 'U': /* Unique */
-        if (fSwitch) {
+	if (fSwitch) {
 	  char *p;
-          int ln = 0;
-          ch = *(s++); /* if we have no digits, ln=0 & error is given */
-          while (isdigit(ch)) {
-            ln = ln * 10 + (ch - '0');
-            ch = *(s++);
-          }
-          s--;
+	  int ln = 0;
+	  ch = *(s++); /* if we have no digits, ln=0 & error is given */
+	  while (isdigit(ch)) {
+	    ln = ln * 10 + (ch - '0');
+	    ch = *(s++);
+	  }
+	  s--;
 	  if (ln < 1) {
 	    fatal("Syntax: -U<uniqueness> where uniqueness > 0",
-	          skipopt, string);
+		  skipopt, string);
 	  }
 	  p = xmalloc(32);
 	  sprintf(p, "*truncate %d\n", ln);
 	  add_to_list(p);
-        } else {
+	} else {
 	  add_to_list("*truncate off\n");
 	}
-        break;
+	break;
       default:
        fatal("Unknown command",skipopt,string);
     }
   } else {
     switch (ch) {
       case '(': /* Push settings */
-        add_to_list("*begin\n");
-        break;
+	add_to_list("*begin\n");
+	break;
       case ')': /* Pull settings */
-        add_to_list("*end\n");
-        break;
+	add_to_list("*end\n");
+	break;
       case '@': /* command line extension (same as -f) */
-        mode=COMMAND_FILENAME;
-        break;
+	mode=COMMAND_FILENAME;
+	break;
       default: /* assume it is a filename of a data file */
-        s = datafile(s - 1, pth);
-        break;
+	s = datafile(s - 1, pth);
+	break;
     }
   }
   return s;
@@ -430,17 +430,17 @@ process_command(const char * string, const char * pth)
   while (*s) {
     switch (mode) {
       case COMMAND:
-        s = process_command_mode(s, pth);
-        break;
+	s = process_command_mode(s, pth);
+	break;
       case SVX_FILE:
-        s = datafile(s, pth);
-        mode=COMMAND;
-        break;
+	s = datafile(s, pth);
+	mode=COMMAND;
+	break;
       case COMMAND_FILENAME:
-        mode = COMMAND;
-        command_file(pth, s);
-        s = "";
-        break;
+	mode = COMMAND;
+	command_file(pth, s);
+	s = "";
+	break;
       case TITLE: {
 	 /* Survey title */
 	 char *p;
@@ -491,23 +491,23 @@ command_file(const char *pth, const char *fnm)
     }
     while ( (ch!=EOF) && (ch!=COMMAND_FILE_COMMENT_CHAR) ) {
       if (isspace(ch) || (ch==CR))
-        ch=' ';
+	ch=' ';
       /* if it's quoted, a quote ends it, else whitespace ends it */
       if (ch == (fQuoted ? '\"' : ' ') )
-        break;
+	break;
       cmdbuf[i++]=ch;
       if (i>=COMMAND_BUFFER_LEN) {
-        buffer[COMMAND_BUFFER_LEN-1]='\0';
+	buffer[COMMAND_BUFFER_LEN-1]='\0';
 	fatal("Command too long",skipopt,cmdbuf);
-        i=0; /* kills line */
-        ch=COMMAND_FILE_COMMENT_CHAR; /* skips to end of line */
-        break;
+	i=0; /* kills line */
+	ch=COMMAND_FILE_COMMENT_CHAR; /* skips to end of line */
+	break;
       }
       ch = getc(fh);
     }
     if (ch==COMMAND_FILE_COMMENT_CHAR) { /* NB fiddle above if modifying */
       while ((ch!=LF) && (ch!=CR) && (ch!=EOF))
-        ch = getc(fh);
+	ch = getc(fh);
     }
     /* skip character if not EOF */
     if (ch!=EOF)
@@ -595,8 +595,8 @@ main(int argc, char **argv)
    putchar('\n');
 
    puts("This is a compatibility wrapper to help users convert from survex to cavern.\n"
-        "You should run cavern in preference - this wrapper will be removed at some\n"
-        "future date.\n");
+	"You should run cavern in preference - this wrapper will be removed at some\n"
+	"future date.\n");
 
    process_command_line(argc, argv);
 
@@ -638,15 +638,15 @@ main(int argc, char **argv)
 
       i = 0;
       while (args[i]) {
-         /* may need to quote arguments, but for now just quote arguments with
-          * spaces and let the user sort out anything else */
+	 /* may need to quote arguments, but for now just quote arguments with
+	  * spaces and let the user sort out anything else */
 	 if (i) putchar(' ');
-         if (strchr(args[i], ' ')) {
+	 if (strchr(args[i], ' ')) {
 	    printf("\"%s\"", args[i]);
 	 } else {
 	    fputs(args[i], stdout);
 	 }
-         i++;
+	 i++;
       }
       putchar('\n');
    } else {
@@ -657,8 +657,8 @@ main(int argc, char **argv)
 
       fout = fopen(MYTMP, "w");
       if (!fout) {
-         fatal("Couldn't open temporary file:", wr, MYTMP);
-         exit(1);
+	 fatal("Couldn't open temporary file:", wr, MYTMP);
+	 exit(1);
       }
 
       fputs("; This file was automatically generated from a pre-0.90 survex command line\n"
@@ -669,25 +669,25 @@ main(int argc, char **argv)
 
       i = 0;
       while (args[i]) {
-         /* may need to quote arguments, but for now just quote arguments with
-          * spaces and let the user sort out anything else */
+	 /* may need to quote arguments, but for now just quote arguments with
+	  * spaces and let the user sort out anything else */
 	 if (i) putchar(' ');
-         if (strchr(args[i], ' ')) {
+	 if (strchr(args[i], ' ')) {
 	    fprintf(fout, " \"%s\"", args[i]);
 	    printf("\"%s\"", args[i]);
 	 } else {
 	    fprintf(fout, " %s", args[i]);
 	    fputs(args[i], stdout);
 	 }
-         i++;
+	 i++;
       }
       fputs("\n\n", fout);
       puts("\n\nwhere "MYTMP" contains:\n");
 
       while (head) {
-         fputs(head->line, fout);
-         fputs(head->line, stdout);
-         head = head->next;
+	 fputs(head->line, fout);
+	 fputs(head->line, stdout);
+	 head = head->next;
       }
 
       if (ferror(fout) || fclose(fout) == EOF) {

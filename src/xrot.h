@@ -1,4 +1,4 @@
-/* > xrot.h
+/* xrot.h
  * header for caverot plot & translate routines for Unix + X
  * Copyright (C) 1997-2001 Olly Betts
  *

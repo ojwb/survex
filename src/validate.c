@@ -1,4 +1,4 @@
-/* > validate.c
+/* validate.c
  *
  *   Checks that SURVEX's data structures are valid and consistent
  *

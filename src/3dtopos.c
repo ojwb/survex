@@ -66,7 +66,7 @@ static OSSIZE_T c_stns = 0;
 
 int
 main(int argc, char **argv)
-{   
+{
    char *fnm, *fnm_out;
    FILE *fh_out;
    img *pimg;
@@ -74,7 +74,7 @@ main(int argc, char **argv)
    OSSIZE_T c_labels = 0;
    OSSIZE_T c_totlabel = 0;
    char *p, *p_end;
-   const char *survey = NULL;   
+   const char *survey = NULL;
 
    msg_init(argv);
 
@@ -109,7 +109,7 @@ main(int argc, char **argv)
       switch (result) {
        case img_MOVE:
        case img_LINE:
-    	 break;
+	 break;
        case img_LABEL:
 	 c_labels++;
 	 c_totlabel += strlen(pimg->label) + 1;
@@ -124,15 +124,15 @@ main(int argc, char **argv)
    stns = osmalloc(ossizeof(station) * (c_labels + 1));
    p = osmalloc(c_totlabel);
    p_end = p + c_totlabel;
-   
+
    img_rewind(pimg);
-   
+
    do {
       result = img_read_item(pimg, &(stns[c_stns].pt));
       switch (result) {
        case img_MOVE:
        case img_LINE:
-    	 break;
+	 break;
        case img_LABEL:
 	 if (c_stns < c_labels) {
 	    OSSIZE_T len = strlen(pimg->label) + 1;

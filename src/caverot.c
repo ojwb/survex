@@ -500,12 +500,12 @@ process_key(void) /* and mouse! */
    if (new_time - last_animate > CLOCKS_PER_SEC / ANIMATE_FPS) {
       cAnimate += incAnimate;
       if (cAnimate == 0 || ppLegs[cAnimate + 1] == NULL)
-         incAnimate = -incAnimate;
+	 incAnimate = -incAnimate;
 
       if (last_animate == 0)
-         last_animate = new_time;
+	 last_animate = new_time;
       else
-         last_animate += CLOCKS_PER_SEC / ANIMATE_FPS;
+	 last_animate += CLOCKS_PER_SEC / ANIMATE_FPS;
 
       fChanged = fTrue;
    }
@@ -558,7 +558,7 @@ process_key(void) /* and mouse! */
 	  case 'R': fRevRot = !fRevRot; break;
 	  case ' ':            fRotating = fFalse; break;
 	  case RETURN_KEY:     fRotating = fTrue; break;
-	 }	 
+	 }
       }
       if (locked == 0) {
 	 switch (iKeycode) {
@@ -627,11 +627,11 @@ process_key(void) /* and mouse! */
        */
       switch (iKeycode) {
        case ']': case '}':
-         sc = fRevSense ? sc / ZoomFactor : sc * ZoomFactor;
-         fChanged = fTrue; break;
+	 sc = fRevSense ? sc / ZoomFactor : sc * ZoomFactor;
+	 fChanged = fTrue; break;
        case '[': case '{':
-         sc = fRevSense ? sc * ZoomFactor : sc / ZoomFactor;
-         fChanged = fTrue; break;
+	 sc = fRevSense ? sc * ZoomFactor : sc / ZoomFactor;
+	 fChanged = fTrue; break;
        case 'U': elev = 90; fChanged = fTrue; break;
        case 'D': elev = -90; fChanged = fTrue; break;
        case 'N': degView = 0; fChanged = fTrue; break;
@@ -646,23 +646,23 @@ process_key(void) /* and mouse! */
 	 break;
 /*       case 'I':   get_view_details(); fChanged=fTrue; break; */
        case CURSOR_UP:
-         if (elev == 90.0)
-            translate_data((coord)(nStep * s), (coord)(nStep * c), 0);
-         else
-            translate_data(0, 0, (coord)nStep);
-         fChanged = fTrue; break;
+	 if (elev == 90.0)
+	    translate_data((coord)(nStep * s), (coord)(nStep * c), 0);
+	 else
+	    translate_data(0, 0, (coord)nStep);
+	 fChanged = fTrue; break;
        case CURSOR_DOWN:
-         if (elev == 90.0)
-            translate_data(-(coord)(nStep * s), -(coord)(nStep * c), 0);
-         else
-            translate_data(0, 0, (coord)-nStep);
-         fChanged = fTrue; break;
+	 if (elev == 90.0)
+	    translate_data(-(coord)(nStep * s), -(coord)(nStep * c), 0);
+	 else
+	    translate_data(0, 0, (coord)-nStep);
+	 fChanged = fTrue; break;
        case CURSOR_LEFT:
-         translate_data(-(coord)(nStep * c), (coord)(nStep * s), 0);
-         fChanged = fTrue; break;
+	 translate_data(-(coord)(nStep * c), (coord)(nStep * s), 0);
+	 fChanged = fTrue; break;
        case CURSOR_RIGHT:
-         translate_data((coord)(nStep * c), -(coord)(nStep * s), 0);
-         fChanged = fTrue; break;
+	 translate_data((coord)(nStep * c), -(coord)(nStep * s), 0);
+	 fChanged = fTrue; break;
        case 'H': {
 	  show_help();
 	  wait_for_key_or_mouse();
@@ -671,22 +671,22 @@ process_key(void) /* and mouse! */
 	  break;
        }
        case ('A' - '@'):
-         fAll = !fAll; break; /* no need to redraw */
+	 fAll = !fAll; break; /* no need to redraw */
        case ('N' - '@'):
-         fChanged = fTrue; fNames = !fNames; break;
+	 fChanged = fTrue; fNames = !fNames; break;
        case ('X' - '@'):
-         fChanged = fTrue; fStns = !fStns; break;
+	 fChanged = fTrue; fStns = !fStns; break;
        case ('L' - '@'):
-         fChanged = fTrue; fLegs = !fLegs; break;
+	 fChanged = fTrue; fLegs = !fLegs; break;
        /* surFace - ^S is iffy on BorlandC DOS - you need to hit it 3 times
 	* for it to work!  But include it for more common DJGPP version. */
        case ('F' - '@'): case ('S' - '@'):
-         fChanged = fTrue; fSLegs = !fSLegs; break;
+	 fChanged = fTrue; fSLegs = !fSLegs; break;
        case ('R' - '@'):
-         fRevSense = !fRevSense; break;
+	 fRevSense = !fRevSense; break;
        case ESCAPE_KEY:
 	 cvrotgfx_final();
-         exit(EXIT_SUCCESS); break; /* That's all folks */
+	 exit(EXIT_SUCCESS); break; /* That's all folks */
       }
    }
 
@@ -697,35 +697,35 @@ process_key(void) /* and mouse! */
       if (buttons & (CVROTGFX_LBUT | CVROTGFX_RBUT | CVROTGFX_MBUT))
 	 autotilt = 0;
       if (buttons & CVROTGFX_LBUT) {
-         if (fRevSense) {
-            sc *= pow(LITTLE_MAGNIFY_FACTOR, 0.08 * dy);
-            if (locked == 0 || locked == 3) degView += dx * 0.16;
-         } else {
-            sc *= pow(LITTLE_MAGNIFY_FACTOR, -0.08 * dy);
-            if (locked == 0 || locked == 3) degView -= dx * 0.16;
-         }
-         fChanged = fTrue;
+	 if (fRevSense) {
+	    sc *= pow(LITTLE_MAGNIFY_FACTOR, 0.08 * dy);
+	    if (locked == 0 || locked == 3) degView += dx * 0.16;
+	 } else {
+	    sc *= pow(LITTLE_MAGNIFY_FACTOR, -0.08 * dy);
+	    if (locked == 0 || locked == 3) degView -= dx * 0.16;
+	 }
+	 fChanged = fTrue;
       }
       if (buttons & CVROTGFX_RBUT) {
-         nStep *= 0.025;
-         if (elev == 90.0)
-            translate_data((coord)(nStep * (dx * c + dy * s)),
-                           -(coord)(nStep * (dx * s - dy * c)), 0);
-         else
-            translate_data((coord)(nStep * dx * c),
-                           -(coord)(nStep * dx * s),
+	 nStep *= 0.025;
+	 if (elev == 90.0)
+	    translate_data((coord)(nStep * (dx * c + dy * s)),
+			   -(coord)(nStep * (dx * s - dy * c)), 0);
+	 else
+	    translate_data((coord)(nStep * dx * c),
+			   -(coord)(nStep * dx * s),
 			   (coord)(nStep * dy));
-         fChanged = fTrue;
+	 fChanged = fTrue;
       }
       if (locked == 0 && (buttons & CVROTGFX_MBUT)) {
-         if (fRevSense) {
+	 if (fRevSense) {
 	    elev += dy * 0.16;
 	 } else {
 	    elev -= dy * 0.16;
 	 }
 	 if (elev > 90.0) elev = 90.0;
 	 if (elev < -90.0) elev = -90.0;
-         fChanged = fTrue;
+	 fChanged = fTrue;
       }
    }
 
@@ -733,15 +733,15 @@ process_key(void) /* and mouse! */
       elev += autotilt;
       fChanged = fTrue;
       if (autotilt > 0) {
-         if (elev >= autotilttarget) {
-            elev = autotilttarget;
-            autotilt = 0;
-         }
+	 if (elev >= autotilttarget) {
+	    elev = autotilttarget;
+	    autotilt = 0;
+	 }
       } else {
-         if (elev <= autotilttarget) {
-            elev = autotilttarget;
-            autotilt = 0;
-         }
+	 if (elev <= autotilttarget) {
+	    elev = autotilttarget;
+	    autotilt = 0;
+	 }
       }
    }
 

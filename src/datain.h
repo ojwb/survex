@@ -29,7 +29,7 @@ typedef struct parse {
    const char *filename;
    unsigned int line;
    bool reported_where;
-   struct parse *parent;   
+   struct parse *parent;
 #ifdef HAVE_SETJMP_H
    jmp_buf jbSkipLine;
 #endif

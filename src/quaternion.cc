@@ -47,7 +47,7 @@ void Quaternion::setFromSphericalPolars(double pan, double tilt, double rotation
 void Quaternion::setFromVectorAndAngle(Vector3 vec, double rotation_amount)
 {
     double sin_rot = sin(rotation_amount / 2.0);
-    
+
     v = vec;
     v *= sin_rot;
     w = cos(rotation_amount / 2.0);
@@ -63,7 +63,7 @@ void Quaternion::axisAndAngleForInterpolation(const Matrix4& m1, const Matrix4& 
 
     Matrix4 tr = m1.transpose();
     Matrix4 m = tr * m2;
-    
+
     m.toAxisAndAngle(axis, angle);
 }
 */

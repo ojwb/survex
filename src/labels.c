@@ -1,4 +1,4 @@
-/* > labels.c
+/* labels.c
  * Clever non-overlapping label plotting code
  * Copyright (C) 1995,1996,1997,2001 Olly Betts
  *
@@ -54,7 +54,7 @@ labels_init(unsigned int w, unsigned int h)
 void
 labels_reset(void)
 {
-   if (map) memset(map, 0, size);       
+   if (map) memset(map, 0, size);
 }
 
 void
@@ -76,7 +76,7 @@ labels_plot(const char *label, int x, int y)
    if (map && !fAllNames) {
       unsigned int X, Y; /* use unsigned so we can test for <0 for free */
       unsigned int len;
-      char *p;      
+      char *p;
       X = (unsigned)(x + x_mid) / 4u;
       if (X >= width) return 0;
       Y = (unsigned)(y + y_mid) / 4u;

@@ -1,4 +1,4 @@
-/* > new3dout.h
+/* new3dout.h
  * Header file for .3dx writing routines
  * Copyright (C) 2000, 2001 Phil Underwood
  * Copyright (C) 2001 Olly Betts
@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 #include "img.h"
-   
+
 struct Twig {
   struct Twig *up, *down, *right;
   struct Prefix *to, *from;
@@ -62,5 +62,5 @@ twig *get_twig(prefix *pre);
 #ifdef __cplusplus
 }
 #endif
-   
+
 #endif

@@ -207,12 +207,12 @@ use_path(const char *pth, const char *lf)
       if (pth[len - 1] != FNM_SEP_LEV2) {
 #endif
 #ifdef FNM_SEP_DRV
-         if (pth[len - 1] != FNM_SEP_DRV) {
+	 if (pth[len - 1] != FNM_SEP_DRV) {
 #endif
-            fAddSep = fTrue;
-            len_total++;
+	    fAddSep = fTrue;
+	    len_total++;
 #ifdef FNM_SEP_DRV
-         }
+	 }
 #endif
 #ifdef FNM_SEP_LEV2
       }
@@ -326,9 +326,9 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
       for (p = fnm_trans; *p; p++) {
 	 switch (*p) {
 #if (OS==RISCOS)
-         /* swap either slash to a dot, and a dot to a forward slash */
+	 /* swap either slash to a dot, and a dot to a forward slash */
 	 /* but .. goes to ^ */
-         case '.':
+	 case '.':
 	    if (p[1] == '.') {
 	       *q++ = '^';
 	       p++; /* skip second dot */
@@ -337,14 +337,14 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 	    }
 	    f_changed = 1;
 	    break;
-         case '/': case '\\':
+	 case '/': case '\\':
 	    *q++ = '.';
 	    f_changed = 1;
 	    break;
 	 default:
 	    *q++ = *p; break;
 #else
-         case '\\': /* swap a backslash to a forward slash */
+	 case '\\': /* swap a backslash to a forward slash */
 	    *p = '/';
 	    f_changed = 1;
 	    break;
@@ -378,7 +378,7 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 
 void
 filename_register_output(const char *fnm)
-{   
+{
    filelist *p = osnew(filelist);
    ASSERT(fnm);
    p->fnm = osstrdup(fnm);

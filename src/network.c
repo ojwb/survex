@@ -87,7 +87,7 @@ remove_subnets(void)
 #if PRINT_NETBITS
 	 printf("replacing lollipops\n");
 #endif
-         /*      _
+	 /*      _
 	  *     ( )
 	  *      * stn
 	  *      |
@@ -151,7 +151,7 @@ remove_subnets(void)
 	       stn4->leg[dirn4] = newleg2;
 
 	       trav->next = ptrRed;
-               SET_NOOSE(trav);
+	       SET_NOOSE(trav);
 #if PRINT_NETBITS
 	       printf("remove noose\n");
 #endif
@@ -282,7 +282,7 @@ remove_subnets(void)
 	       stn4->leg[dirn4] = newleg2;
 
 	       trav->next = ptrRed;
-               SET_PARALLEL(trav);
+	       SET_PARALLEL(trav);
 #if PRINT_NETBITS
 	       printf("remove parallel\n");
 #endif
@@ -308,7 +308,7 @@ remove_subnets(void)
 	     *          * stn2            |
 	     *         / \        ->      O stnZ
 	     *    stn *---* stn3         / \
-             *       /     \       stn4 *   * stn6
+	     *       /     \       stn4 *   * stn6
 	     * stn4 *       * stn6      :   :
 	     *      :       :
 	     */
@@ -551,24 +551,24 @@ replace_subnets(void)
 
       if (!IS_DELTASTAR(ptrRed)) {
 	 linkfor *leg;
-         leg = ptrRed->join1; leg = reverse_leg(leg);
-         stn3 = leg->l.to; dirn3 = reverse_leg_dirn(leg);
-         leg = ptrRed->join2; leg = reverse_leg(leg);
-         stn4 = leg->l.to; dirn4 = reverse_leg_dirn(leg);
+	 leg = ptrRed->join1; leg = reverse_leg(leg);
+	 stn3 = leg->l.to; dirn3 = reverse_leg_dirn(leg);
+	 leg = ptrRed->join2; leg = reverse_leg(leg);
+	 stn4 = leg->l.to; dirn4 = reverse_leg_dirn(leg);
 
-         ASSERT(fixed(stn3));
+	 ASSERT(fixed(stn3));
 	 ASSERT(fixed(stn4));
-         ASSERT(data_here(stn3->leg[dirn3]));
+	 ASSERT(data_here(stn3->leg[dirn3]));
       }
 
       if (IS_NOOSE(ptrRed)) {
-         /* noose (hanging-loop) */
+	 /* noose (hanging-loop) */
 	 node *stn;
-         delta e;
-         linkfor *leg;
+	 delta e;
+	 linkfor *leg;
 	 int zero;
 
-         ASSERT(fixed(stn3));
+	 ASSERT(fixed(stn3));
 	 ASSERT(fixed(stn4));
 
 	 leg = stn3->leg[dirn3];
@@ -621,20 +621,20 @@ replace_subnets(void)
 	 add_stn_to_list(&stnlist, stn);
 	 add_stn_to_list(&stnlist, stn2);
 
-         osfree(stn3->leg[dirn3]);
-         stn3->leg[dirn3] = ptrRed->join1;
-         osfree(stn4->leg[dirn4]);
-         stn4->leg[dirn4] = ptrRed->join2;
+	 osfree(stn3->leg[dirn3]);
+	 stn3->leg[dirn3] = ptrRed->join1;
+	 osfree(stn4->leg[dirn4]);
+	 stn4->leg[dirn4] = ptrRed->join2;
       } else if (IS_PARALLEL(ptrRed)) {
-         /* parallel legs */
+	 /* parallel legs */
 	 node *stn;
-         delta e, e2;
-         linkfor *leg;
+	 delta e, e2;
+	 linkfor *leg;
 	 int dirn;
-	 
+
 	 stn = ptrRed->join1->l.to;
 	 stn2 = ptrRed->join2->l.to;
-         ASSERT(fixed(stn3));
+	 ASSERT(fixed(stn3));
 	 ASSERT(fixed(stn4));
 
 	 dirn = reverse_leg_dirn(ptrRed->join1);
@@ -690,31 +690,31 @@ replace_subnets(void)
 	 add_stn_to_list(&stnlist, stn);
 	 add_stn_to_list(&stnlist, stn2);
 
-         osfree(stn3->leg[dirn3]);
+	 osfree(stn3->leg[dirn3]);
 	 stn3->leg[dirn3] = ptrRed->join1;
-         osfree(stn4->leg[dirn4]);
+	 osfree(stn4->leg[dirn4]);
 	 stn4->leg[dirn4] = ptrRed->join2;
       } else if (IS_DELTASTAR(ptrRed)) {
-         node *stnZ;
-         node *stn[3];
-         int dirn[3];
-         linkfor *legs[3];
-         int i;
-         linkfor *leg;
+	 node *stnZ;
+	 node *stn[3];
+	 int dirn[3];
+	 linkfor *legs[3];
+	 int i;
+	 linkfor *leg;
 
-         legs[0] = ptrRed->join1;
-         legs[1] = ptrRed->join2;
-         legs[2] = ptrRed->join3;
+	 legs[0] = ptrRed->join1;
+	 legs[1] = ptrRed->join2;
+	 legs[2] = ptrRed->join3;
 
-         /* work out ends as we don't bother stacking them */
-         leg = reverse_leg(legs[0]);
-         stn[0] = leg->l.to;
-         dirn[0] = reverse_leg_dirn(leg);
-         stnZ = stn[0]->leg[dirn[0]]->l.to;
+	 /* work out ends as we don't bother stacking them */
+	 leg = reverse_leg(legs[0]);
+	 stn[0] = leg->l.to;
+	 dirn[0] = reverse_leg_dirn(leg);
+	 stnZ = stn[0]->leg[dirn[0]]->l.to;
 	 ASSERT(fixed(stnZ));
-         stn[1] = stnZ->leg[1]->l.to;
+	 stn[1] = stnZ->leg[1]->l.to;
 	 dirn[1] = reverse_leg_dirn(stnZ->leg[1]);
-         stn[2] = stnZ->leg[2]->l.to;
+	 stn[2] = stnZ->leg[2]->l.to;
 	 dirn[2] = reverse_leg_dirn(stnZ->leg[2]);
 	 /*print_prefix(stnZ->name);printf(" %p\n",(void*)stnZ);*/
 
@@ -763,7 +763,7 @@ replace_subnets(void)
 	 osfree(stnZ->name);
 	 osfree(stnZ);
       } else {
-         BUG("ptrRed has unknown type");
+	 BUG("ptrRed has unknown type");
       }
 
       ptrOld = ptrRed;

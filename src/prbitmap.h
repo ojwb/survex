@@ -1,4 +1,4 @@
-/* > prbitmap.h
+/* prbitmap.h
  * Header files for
  * Bitmap routines for Survex Dot-matrix and Inkjet printer drivers
  * Copyright (C) 1994,2001 Olly Betts

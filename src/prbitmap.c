@@ -1,4 +1,4 @@
-/* > prbitmap.c */
+/* prbitmap.c */
 /* Bitmap routines for Survex Dot-matrix and Inkjet printer drivers */
 /* Copyright (C) 1993-2001 Olly Betts
  *
@@ -72,26 +72,26 @@ DrawLineDots(long x, long y, long x2, long y2)
    if (dx > dy) {
       d = (dy << 1) - dx;
       while (x != x2) {
-         x += xs;
-         if (d >= 0) {
-            y += ys;
+	 x += xs;
+	 if (d >= 0) {
+	    y += ys;
 	    d += (dy - dx) << 1;
-         } else {
-            d += dy << 1;
+	 } else {
+	    d += dy << 1;
 	 }
-         (PlotDot)(x, y);
+	 (PlotDot)(x, y);
       }
    } else {
       d = (dx << 1) - dy;
       while (y != y2) {
-         y += ys;
-         if (d >= 0) {
+	 y += ys;
+	 if (d >= 0) {
 	    x += xs;
 	    d += (dx - dy) << 1;
 	 } else {
-            d += dx << 1;
+	    d += dx << 1;
 	 }
-         (PlotDot)(x, y);
+	 (PlotDot)(x, y);
       }
    }
 }
@@ -184,13 +184,13 @@ WriteLetter(int ch, long X, long Y)
    for (y = 7; y >= 0; y--) {
       t = font[(ch - 32) * 8 + 7 - y];
       for (x = 0; x < 8; x++) {
-         if (t & 1) {
+	 if (t & 1) {
 	    /* plot mega-pixel */
-            for (x2 = 0; x2 < dppX; x2++)
-               for (y2 = 0 ; y2 < dppY; y2++)
-                  (PlotDot)(X + (long)x * dppX + x2, Y + (long)y * dppY + y2);
-         }
-         t = t >> 1;
+	    for (x2 = 0; x2 < dppX; x2++)
+	       for (y2 = 0 ; y2 < dppY; y2++)
+		  (PlotDot)(X + (long)x * dppX + x2, Y + (long)y * dppY + y2);
+	 }
+	 t = t >> 1;
       }
    }
 }

@@ -1,4 +1,4 @@
-/* > useful.h
+/* useful.h
  * Lots of oddments that come in handy generally
  * Copyright (C) 1993-2001 Olly Betts
  *

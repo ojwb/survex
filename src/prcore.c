@@ -97,7 +97,7 @@ double PaperWidth, PaperDepth;
 /* draw fancy scale bar with bottom left at (x,y) (both in mm) and at most */
 /* MaxLength mm long. The scaling in use is 1:scale */
 static void draw_scale_bar(double x, double y, double MaxLength,
-       	    		   double scale);
+			   double scale);
 
 #define DEF_RATIO (1.0/(double)DEFAULT_SCALE)
 /* return a scale which will make it fit in the desired size */
@@ -166,7 +166,7 @@ draw_info_box(double num, double denom)
    char *p;
    int boxwidth = 60;
    int boxheight = 30;
-    
+
    if (view != EXTELEV) {
       boxwidth = 100;
       boxheight = 40;
@@ -174,7 +174,7 @@ draw_info_box(double num, double denom)
       DRAWMM(60, 0);
       MOVEMM(0, 30); DRAWMM(60, 30);
    }
-   
+
    MOVEMM(0, 0);
    DRAWMM(0, boxheight);
    DRAWMM(boxwidth, boxheight);
@@ -369,9 +369,9 @@ getanswer(char *szReplies)
     * just take a line and look at the first character */
    do {
       ch = getchar();
-      
+
       if (ch == '\n') return 0; /* default to first answer */
-      
+
       /* skip rest of line entered */
       while (getchar() != '\n') {}
 
@@ -379,7 +379,7 @@ getanswer(char *szReplies)
       reply = strchr(szReplies, ch);
       /* if that isn't there, then try toggling the case of the letter */
       if (!reply)
-         reply = strchr(szReplies, isupper(ch) ? tolower(ch) : toupper(ch));
+	 reply = strchr(szReplies, isupper(ch) ? tolower(ch) : toupper(ch));
    } while (!reply);
    return (reply - szReplies);
 }
@@ -450,7 +450,7 @@ read_in_data(void)
 	 return 0;
        case img_LINE:
 	 /* if we're plotting surface legs or this isn't a surface leg */
-         if (fSurface || !(pimg->flags & img_FLAG_SURFACE)) {
+	 if (fSurface || !(pimg->flags & img_FLAG_SURFACE)) {
 	    if (fMove) {
 	       fMove = fFalse;
 	       stack(img_MOVE, NULL, &p_move);
@@ -462,11 +462,11 @@ read_in_data(void)
        case img_MOVE:
 	 p_move = p;
 	 fMove = fTrue;
-         break;
+	 break;
        case img_LABEL:
 	 if (fSurface || (pimg->flags & img_SFLAG_UNDERGROUND))
 	    stack(img_LABEL, pimg->label, &p);
-         break;
+	 break;
       }
    } while (result != img_STOP);
 
@@ -488,9 +488,9 @@ next_page(int *pstate, char **q, int pageLim)
       p++;
       while (isspace(*p)) p++;
       if (sscanf(p, "%u%n", &page, &c) > 0) {
-         p += c;
+	 p += c;
       } else {
-         page = pageLim;
+	 page = pageLim;
       }
       if (*pstate > page) goto err;
       if (*pstate < page) return *pstate;
@@ -513,8 +513,8 @@ next_page(int *pstate, char **q, int pageLim)
       while (isspace(*p)) p++;
       *q = p;
       if (0 < page && page <= pageLim) {
-         if (*p == '-') *pstate = page; /* range with start */
-         return page;
+	 if (*p == '-') *pstate = page; /* range with start */
+	 return page;
       }
    }
    err:
@@ -642,7 +642,7 @@ main(int argc, char **argv)
 
    if (pr->flags & PR_FLAG_NOFILEOUTPUT) help[12] = help[14];
    if (!(pr->flags & PR_FLAG_CALIBRATE)) help[13] = help[14];
-   
+
    fnm = NULL;
 
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, -1);
@@ -736,9 +736,9 @@ main(int argc, char **argv)
    szDesc = pr->Name();
 
    printf("Survex %s %s v"VERSION"\n  "COPYRIGHT_MSG"\n\n",
-          szDesc, msg(/*Driver*/152), msg(/*&copy;*/0));
+	  szDesc, msg(/*Driver*/152), msg(/*&copy;*/0));
 
-   if (!fCalibrate) {      
+   if (!fCalibrate) {
       fnm = argv[optind++];
 
       /* Try to open first image file and check it has correct header,
@@ -794,7 +794,7 @@ main(int argc, char **argv)
 	 if (fh) *pfh++ = fh;
 #endif
 	 print_ini = add_ext("print", EXT_INI);
-	 fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);      
+	 fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);
 	 if (!fh) fatalerror(/*Couldn't open data file `%s'*/24, print_ini);
 	 *pfh++ = fh;
 	 *pfh = NULL;
@@ -815,14 +815,14 @@ main(int argc, char **argv)
       if (getanswer(szReplies) == 1) view = ELEV;
 
       do {
-         printf(msg(view == PLAN ? /*Bearing up page (degrees): */159:
+	 printf(msg(view == PLAN ? /*Bearing up page (degrees): */159:
 		    /*View towards: */160));
-         fgets(szTmp, sizeof(szTmp), stdin);
+	 fgets(szTmp, sizeof(szTmp), stdin);
       } while (*szTmp >= 32 && sscanf(szTmp, "%d", &rot) < 1);
       if (*szTmp < 32) {
-         /* if just return, default view to North up page/looking North */
-         rot = 0;
-         printf("%d\n", rot);
+	 /* if just return, default view to North up page/looking North */
+	 rot = 0;
+	 printf("%d\n", rot);
       }
    }
 
@@ -831,15 +831,15 @@ main(int argc, char **argv)
 
    if (view == ELEV) {
       if (fInteractive) {
-         do {
-            printf(msg(/*Tilt (degrees): */161));
-            fgets(szTmp, sizeof(szTmp), stdin);
-         } while (*szTmp >= 32 && sscanf(szTmp, "%d", &tilt) < 1);
-         if (*szTmp < 32) {
-            /* if just return, default to no tilt */
-            tilt = 0;
-            printf("%d\n", tilt);
-         }
+	 do {
+	    printf(msg(/*Tilt (degrees): */161));
+	    fgets(szTmp, sizeof(szTmp), stdin);
+	 } while (*szTmp >= 32 && sscanf(szTmp, "%d", &tilt) < 1);
+	 if (*szTmp < 32) {
+	    /* if just return, default to no tilt */
+	    tilt = 0;
+	    printf("%d\n", tilt);
+	 }
       }
       if (tilt != 0) view = TILT;
       SINT = sin(rad(tilt));
@@ -854,7 +854,7 @@ main(int argc, char **argv)
 	 fgets(szTmp, sizeof(szTmp), stdin);
 	 if (szTmp[0] >= 32) {
 	    size_t len = strlen(szTmp);
-	    if (szTmp[len - 1] == '\n') szTmp[len - 1] = '\0';	 
+	    if (szTmp[len - 1] == '\n') szTmp[len - 1] = '\0';
 	    survey = osstrdup(szTmp);
 	 }
       }
@@ -900,7 +900,7 @@ main(int argc, char **argv)
       stack(img_LABEL, "10cm", &pt);
 
       *ppliEnd = NULL;
-      
+
       Sc = 1000.0;
       pages_required(Sc);
    } else {
@@ -934,13 +934,13 @@ main(int argc, char **argv)
       fputs(msg(/*Scale to fit on 1 page*/83), stdout);
       printf(" = 1:%.0f\n", x);
       if (N_Scale == 0.0) {
-         N_Scale = 1;
-         D_Scale = x;
-         Sc = N_Scale * 1000 / D_Scale;
-         pages_required(Sc);
+	 N_Scale = 1;
+	 D_Scale = x;
+	 Sc = N_Scale * 1000 / D_Scale;
+	 pages_required(Sc);
       } else if (!fInteractive) {
-         Sc = N_Scale * 1000 / D_Scale;
-         pages_required(Sc);
+	 Sc = N_Scale * 1000 / D_Scale;
+	 pages_required(Sc);
       }
    }
 
@@ -951,11 +951,11 @@ main(int argc, char **argv)
       fgets(szTmp, sizeof(szTmp), stdin);
       putnl();
       if (*szTmp == '\n') {
-         N_Scale = 1.0;
-         D_Scale = (double)DEFAULT_SCALE;
+	 N_Scale = 1.0;
+	 D_Scale = (double)DEFAULT_SCALE;
       } else if (!read_scale(szTmp)) {
 	 size_t len = strlen(szTmp);
-	 if (len && szTmp[len - 1] == '\n') szTmp[len - 1] = '\0';	 
+	 if (len && szTmp[len - 1] == '\n') szTmp[len - 1] = '\0';
 	 printf(msg(/*Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')*/217),
 		szTmp);
 	 fOk = fFalse;
@@ -973,36 +973,36 @@ main(int argc, char **argv)
       pages = 1;
    } else {
       do {
-         fOk = fTrue;
-         if (fInteractive) {
+	 fOk = fTrue;
+	 if (fInteractive) {
 	    fputs(msg(/*Print which pages?&#10;(RETURN for all; 'n' for one page, 'm-n', 'm-', '-n' for a range)&#10;: */164), stdout);
-            fgets(szTmp, sizeof(szTmp), stdin);
+	    fgets(szTmp, sizeof(szTmp), stdin);
 	 } else {
-            *szTmp = '\0'; /* default to all if non-interactive */
+	    *szTmp = '\0'; /* default to all if non-interactive */
 	 }
 
 	 p = szTmp;
 	 while (isspace(*p)) p++;
-         szPages = osstrdup(p);
-         if (*szPages) {
-            pages = page = state = 0;
+	 szPages = osstrdup(p);
+	 if (*szPages) {
+	    pages = page = state = 0;
 	    p = szPages + strlen(szPages) - 1;
 	    if (*p == '\n') *p = '\0';
 	    p = szPages;
 	    while (1) {
-               page = next_page(&state, &p, pageLim);
-               if (state < 0) {
-                  printf(msg(/*Bad list of pages to print `%s'*/218), szPages);
+	       page = next_page(&state, &p, pageLim);
+	       if (state < 0) {
+		  printf(msg(/*Bad list of pages to print `%s'*/218), szPages);
 		  putnl();
-                  fOk = fFalse;
-                  break;
-               }
-               if (page == 0) break;
-               pages++;
-            }
-         } else {
-            pages = pageLim;
-         }
+		  fOk = fFalse;
+		  break;
+	       }
+	       if (page == 0) break;
+	       pages++;
+	    }
+	 } else {
+	    pages = pageLim;
+	 }
       } while (!fOk);
    }
 
@@ -1024,105 +1024,105 @@ main(int argc, char **argv)
    p = szPages;
    while (1) {
       if (pageLim == 1) {
-         if (page == 0)
-            page = 1;
-         else
-            page = 0; /* we've already printed the only page */
+	 if (page == 0)
+	    page = 1;
+	 else
+	    page = 0; /* we've already printed the only page */
       } else if (!*szPages) {
-         page++;
-         if (page > pageLim) page = 0; /* all pages printed */
+	 page++;
+	 if (page > pageLim) page = 0; /* all pages printed */
       } else {
-         page = next_page(&state, &p, pageLim);
+	 page = next_page(&state, &p, pageLim);
       }
       ASSERT(state >= 0); /* errors should have been caught above */
       if (page == 0) break;
       cPagesPrinted++;
       if (pages > 1) {
-         putchar('\r');
-         printf(msg166, (int)cPagesPrinted, pages);
+	 putchar('\r');
+	 printf(msg166, (int)cPagesPrinted, pages);
       }
       /* don't skip the page with the info box on */
       if (fSkipBlank && (int)page != (pagesY - 1) * pagesX + 1)
-         pass = -1;
+	 pass = -1;
       else
-         pass = 0;
+	 pass = 0;
       fBlankPage = fFalse;
       for ( ; pass < cPasses; pass++) {
-         li *pli;
+	 li *pli;
 	 long x, y;
 	 int pending_move = 0;
 
 	 x = y = INT_MAX;
 
-         if (pr->NewPage)
-            pr->NewPage((int)page, pass, pagesX, pagesY);
+	 if (pr->NewPage)
+	    pr->NewPage((int)page, pass, pagesX, pagesY);
 
-         if ((int)page == (pagesY - 1) * pagesX + 1) {
+	 if ((int)page == (pagesY - 1) * pagesX + 1) {
 	    if (pr->SetFont) pr->SetFont(PR_FONT_DEFAULT);
-            draw_info_box(N_Scale, D_Scale);
+	    draw_info_box(N_Scale, D_Scale);
 	 }
 
 	 if (pr->SetFont) pr->SetFont(PR_FONT_LABELS);
-         for (pli = pliHead; pli; pli = pli->pliNext) {
+	 for (pli = pliHead; pli; pli = pli->pliNext) {
 	    if (pass == -1 && !fBlankPage) break;
-            switch (pli->tag) {
-             case img_MOVE:
-               if (fShots) {
+	    switch (pli->tag) {
+	     case img_MOVE:
+	       if (fShots) {
 		  long xnew, ynew;
 		  xnew = (long)((pli->to.x * Sc + xOrg) * scX);
-	          ynew = (long)((pli->to.y * Sc + yOrg) * scY);
+		  ynew = (long)((pli->to.y * Sc + yOrg) * scY);
 
-                  /* avoid superfluous moves */
-                  if (xnew != x || ynew != y) {
+		  /* avoid superfluous moves */
+		  if (xnew != x || ynew != y) {
 		     x = xnew;
 		     y = ynew;
 		     pending_move = 1;
 		  }
 	       }
-               break;
-             case img_LINE:
-               if (fShots) {
+	       break;
+	     case img_LINE:
+	       if (fShots) {
 		  long xnew, ynew;
 		  xnew = (long)((pli->to.x * Sc + xOrg) * scX);
-	          ynew = (long)((pli->to.y * Sc + yOrg) * scY);
+		  ynew = (long)((pli->to.y * Sc + yOrg) * scY);
 
 		  if (pending_move) {
 		     pr->MoveTo(x, y);
 		     pending_move = 0;
 		  }
 
-                  /* avoid drawing superfluous lines */
-                  if (xnew != x || ynew != y) {
+		  /* avoid drawing superfluous lines */
+		  if (xnew != x || ynew != y) {
 		     x = xnew;
 		     y = ynew;
 		     pr->DrawTo(x, y);
 		  }
-               }
-               break;
-             case img_LABEL:
-               if (fCrosses || fLabels) {
-                  x = (long)((pli->to.x * Sc + xOrg) * scX);
-	          y = (long)((pli->to.y * Sc + yOrg) * scY);
 	       }
-               if (fCrosses) pr->DrawCross(x, y);
-               if (fLabels) {
-                  pr->MoveTo(x, y);
+	       break;
+	     case img_LABEL:
+	       if (fCrosses || fLabels) {
+		  x = (long)((pli->to.x * Sc + xOrg) * scX);
+		  y = (long)((pli->to.y * Sc + yOrg) * scY);
+	       }
+	       if (fCrosses) pr->DrawCross(x, y);
+	       if (fLabels) {
+		  pr->MoveTo(x, y);
 		  pr->WriteString(pli->label);
 	       }
 	       if (fCrosses || fLabels) x = y = INT_MAX;
-               break;
-            }	    
+	       break;
+	    }
 	 }
 
-         if (pass == -1) {
-            if (fBlankPage) break;
-         } else {
-            if (pr->ShowPage) {
-               sprintf(szTmp, msg167, title, (int)page, pagesX * pagesY,
-                       datestamp);
-               pr->ShowPage(szTmp);
-            }
-         }
+	 if (pass == -1) {
+	    if (fBlankPage) break;
+	 } else {
+	    if (pr->ShowPage) {
+	       sprintf(szTmp, msg167, title, (int)page, pagesX * pagesY,
+		       datestamp);
+	       pr->ShowPage(szTmp);
+	    }
+	 }
       }
    }
 
@@ -1150,12 +1150,12 @@ drawticks(border clip, int tsize, int x, int y)
    if (fNoBorder || x) {
       pr->DrawTo(clip.x_min, clip.y_min + tsize);
       if (fDotBorders) {
-         i = (clip.y_max - clip.y_min) -
+	 i = (clip.y_max - clip.y_min) -
 	     (tsize + ((clip.y_max - clip.y_min - tsize * 2L) % s) / 2);
-         for ( ; i > tsize; i -= s) {
-            pr->MoveTo(clip.x_min, clip.y_max - (i + o));
-            pr->DrawTo(clip.x_min, clip.y_max - (i - o));
-         }
+	 for ( ; i > tsize; i -= s) {
+	    pr->MoveTo(clip.x_min, clip.y_max - (i + o));
+	    pr->DrawTo(clip.x_min, clip.y_max - (i - o));
+	 }
       }
       pr->MoveTo(clip.x_min, clip.y_max - tsize);
    }
@@ -1163,12 +1163,12 @@ drawticks(border clip, int tsize, int x, int y)
    if (fNoBorder || y < pagesY - 1) {
       pr->DrawTo(clip.x_min + tsize, clip.y_max);
       if (fDotBorders) {
-         i = (clip.x_max - clip.x_min) -
-             (tsize + ((clip.x_max - clip.x_min - tsize * 2L) % s) / 2);
-         for ( ; i > tsize; i -= s) {
-            pr->MoveTo(clip.x_max - (i + o), clip.y_max);
-            pr->DrawTo(clip.x_max - (i - o), clip.y_max);
-         }
+	 i = (clip.x_max - clip.x_min) -
+	     (tsize + ((clip.x_max - clip.x_min - tsize * 2L) % s) / 2);
+	 for ( ; i > tsize; i -= s) {
+	    pr->MoveTo(clip.x_max - (i + o), clip.y_max);
+	    pr->DrawTo(clip.x_max - (i - o), clip.y_max);
+	 }
       }
       pr->MoveTo(clip.x_max - tsize, clip.y_max);
    }
@@ -1176,12 +1176,12 @@ drawticks(border clip, int tsize, int x, int y)
    if (fNoBorder || x < pagesX - 1) {
       pr->DrawTo(clip.x_max, clip.y_max - tsize);
       if (fDotBorders) {
-         i = (clip.y_max - clip.y_min) -
-             (tsize + ((clip.y_max - clip.y_min - tsize * 2L) % s) / 2);
-         for ( ; i > tsize; i -= s) {
-            pr->MoveTo(clip.x_max, clip.y_min + (i + o));
-            pr->DrawTo(clip.x_max, clip.y_min + (i - o));
-         }
+	 i = (clip.y_max - clip.y_min) -
+	     (tsize + ((clip.y_max - clip.y_min - tsize * 2L) % s) / 2);
+	 for ( ; i > tsize; i -= s) {
+	    pr->MoveTo(clip.x_max, clip.y_min + (i + o));
+	    pr->DrawTo(clip.x_max, clip.y_min + (i - o));
+	 }
       }
       pr->MoveTo(clip.x_max, clip.y_min + tsize);
    }
@@ -1189,12 +1189,12 @@ drawticks(border clip, int tsize, int x, int y)
    if (fNoBorder || y) {
       pr->DrawTo(clip.x_max - tsize, clip.y_min);
       if (fDotBorders) {
-         i = (clip.x_max - clip.x_min) -
-             (tsize + ((clip.x_max - clip.x_min - tsize * 2L) % s) / 2);
-         for ( ; i > tsize; i -= s) {
-            pr->MoveTo(clip.x_min + (i + o), clip.y_min);
-            pr->DrawTo(clip.x_min + (i - o), clip.y_min);
-         }
+	 i = (clip.x_max - clip.x_min) -
+	     (tsize + ((clip.x_max - clip.x_min - tsize * 2L) % s) / 2);
+	 for ( ; i > tsize; i -= s) {
+	    pr->MoveTo(clip.x_min + (i + o), clip.y_min);
+	    pr->DrawTo(clip.x_min + (i - o), clip.y_min);
+	 }
       }
       pr->MoveTo(clip.x_min + tsize, clip.y_min);
    }
@@ -1297,7 +1297,7 @@ as_escstring(const char *v, char *s)
 	     case '\0': /* trailing \ is meaningless */
 	       fSyntax = 1;
 	       break;
-	     default: 
+	     default:
 	       if (pass) {
 		  const char *t = strchr(escFr, c);
 		  if (t) {

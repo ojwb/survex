@@ -1,4 +1,4 @@
-/* > labels.h
+/* labels.h
  * Clever non-overlapping label plotting code
  * Copyright (C) 1996,2001 Olly Betts
  *

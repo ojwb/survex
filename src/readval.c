@@ -41,7 +41,7 @@ int root_depr_count = 0;
 
 /* Dinky macro to handle any case forcing needed */
 #define docase(X) (pcs->Case == OFF ? (X) :\
-                   (pcs->Case == UPPER ? toupper(X) : tolower(X)))
+		   (pcs->Case == UPPER ? toupper(X) : tolower(X)))
 
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
 static prefix *
@@ -61,7 +61,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       if (!fAllowRoot) {
 	 compile_error(/*ROOT is deprecated*/25);
 	 skipline();
-	 LONGJMP(file.jbSkipLine);	 
+	 LONGJMP(file.jbSkipLine);
       }
       if (root_depr_count < 5) {
 	 compile_warning(/*ROOT is deprecated*/25);
@@ -170,7 +170,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	    newptr->stn = NULL;
 	    newptr->up = back_ptr;
 	    newptr->filename = NULL;
-  	    newptr->min_export = newptr->max_export = 0;
+	    newptr->min_export = newptr->max_export = 0;
 	    newptr->sflags = BIT(SFLAGS_SURVEY);
 	    if (fSuspectTypo && !fImplicitPrefix)
 	       newptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
@@ -188,7 +188,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    } while (isSep(ch));
    /* don't warn about a station that is refered to twice */
    if (!fNew) ptr->sflags &= ~BIT(SFLAGS_SUSPECTTYPO);
-   
+
    if (fNew) {
       /* fNew means SFLAGS_SURVEY is currently set */
       ASSERT(TSTBIT(ptr->sflags, SFLAGS_SURVEY));
@@ -232,7 +232,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       osfree(s);
 #if 0
       printf(" *** pfx %s warning not exported enough depth %d "
-             "ptr->max_export %d\n", sprint_prefix(ptr),
+	     "ptr->max_export %d\n", sprint_prefix(ptr),
 	     depth, ptr->max_export);
 #endif
    }
@@ -331,7 +331,7 @@ read_numeric_or_omit(void)
 static unsigned int
 read_uint_internal(int errmsg, filepos *fp)
 {
-   unsigned int n = 0;   
+   unsigned int n = 0;
    if (!isdigit(ch)) {
       if (fp) set_pos(fp);
       compile_error_token(errmsg);
@@ -387,7 +387,7 @@ read_string(char **pstr, int *plen)
 	 nextch();
       }
    }
-   
+
    nextch();
 }
 

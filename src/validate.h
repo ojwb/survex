@@ -1,4 +1,4 @@
-/* > validate.h
+/* validate.h
  * Header file for validate.c
  *
  * Copyright (C) 1994,1996,2001 Olly Betts

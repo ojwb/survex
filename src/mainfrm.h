@@ -212,7 +212,7 @@ class MainFrm : public wxFrame {
     bool m_Recording;
 
     struct {
-        Double x, y, z;
+	Double x, y, z;
     } m_Offsets;
 
     struct {
@@ -226,7 +226,7 @@ class MainFrm : public wxFrame {
     } m_TerrainSize;
 
     Double* m_TerrainGrid;
-    
+
     void SetTreeItemColour(LabelInfo* label);
     void FillTree();
     void ClearPointLists();
@@ -244,7 +244,7 @@ class MainFrm : public wxFrame {
     void CentreDataset(Double xmin, Double ymin, Double zmin);
 
     wxString GetTabMsg(int key) {
-        wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
+	wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
     }
 
     void InitialisePensAndBrushes();
@@ -389,7 +389,7 @@ public:
     void OnSolidSurface(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnSolidSurface(); }
 #endif
     // end of horrible bodges
-   
+
     void OnViewSidePanelUpdate(wxUpdateUIEvent& event);
     void OnViewSidePanel(wxCommandEvent& event);
 
@@ -435,13 +435,13 @@ public:
     int GetNumDepthBands() const { return NUM_DEPTH_COLOURS; }
 
     wxPen GetPen(int band) const {
-        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-        return m_Pens[band];
+	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+	return m_Pens[band];
     }
 
     wxBrush GetBrush(int band) const {
-        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-        return m_Brushes[band];
+	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+	return m_Brushes[band];
     }
 
     void GetColour(int band, Double& r, Double& g, Double& b) const;
@@ -465,31 +465,31 @@ public:
     void SetMouseOverStation(LabelInfo* label);
 
     list<PointInfo*>::iterator GetPointsNC(int band) const {
-        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-        return m_Points[band].begin();
+	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+	return m_Points[band].begin();
     }
 
     list<PointInfo*>::iterator GetPointsEndNC(int band) const {
-        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-        return m_Points[band].end();
+	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+	return m_Points[band].end();
     }
 
     list<PointInfo*>::const_iterator GetPoints(int band) const {
-        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-        return m_Points[band].begin();
+	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+	return m_Points[band].begin();
     }
 
     list<LabelInfo*>::const_iterator GetLabels() const {
-        return m_Labels.begin();
+	return m_Labels.begin();
     }
 
     list<PointInfo*>::const_iterator GetPointsEnd(int band) const {
-        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-        return m_Points[band].end();
+	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+	return m_Points[band].end();
     }
 
     list<LabelInfo*>::const_iterator GetLabelsEnd() const {
-        return m_Labels.end();
+	return m_Labels.end();
     }
 
     void DisplayTreeInfo(wxTreeItemData* data);
