@@ -36,7 +36,11 @@
 #define LABEL_COLOUR wxColour(160, 255, 0)
 //#define LABEL_COLOUR wxColour(175, 4, 214)
 
+#ifdef _WIN32
+static const int FONT_SIZE = 8;
+#else
 static const int FONT_SIZE = 10;
+#endif
 static const int CROSS_SIZE = 5;
 static const double COMPASS_SIZE = 24.0f;
 static const int COMPASS_OFFSET_X = 60;
@@ -84,13 +88,6 @@ GfxCore::GfxCore(MainFrm* parent) :
     //    m_Timer(this, TIMER_ID),
     m_InitialisePending(false)
 {
-
-#ifdef _WIN32
-  //   wxLogWindow* logger = new wxLogWindow(NULL, "Debug");
-    //    cout = *new ostream(logger->GetTextCtrl());
-  // wxLog::SetActiveTarget(logger);
-#endif
-
     m_LastDrag = drag_NONE;
     m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
     m_ScaleBar.offset_y = SCALE_BAR_OFFSET_Y;
@@ -518,7 +515,11 @@ void GfxCore::RedrawOffscreen()
 	    for (int band = 0; band < m_Bands; band++) {
 	        wxPen pen = m_SurfaceDepth ? m_Parent->GetPen(band) : m_Parent->GetSurfacePen();
 		if (m_SurfaceDashed) {
+#ifdef _WIN32
+		    pen.SetStyle(wxDOT);
+#else
 		    pen.SetStyle(wxSHORT_DASH);
+#endif
 		}
 		m_DrawDC.SetPen(pen);
 
