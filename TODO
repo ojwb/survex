@@ -106,7 +106,7 @@ get DOS programs to abort on Ctrl-C reliably?
 Sort out code fragments to attempt to handle dud equates (nodes equated
 to each other but not referred to otherwise (done?)
 
-Label lengths aren't considered when working out image size in prindept.c,
+Label lengths aren't considered when working out image size in prcore.c,
 so a long label can spill off the edge of the printout
 
 "message.c" add option to read errors from disc only when needed, to help
@@ -119,9 +119,6 @@ reporting of 'Arithmetic error' as 'Divide by zero', 'Negative root', etc)
 
 Tests these commands:
  DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET TITLE
-
-? Allow F(orward)/B(ack) in data - checked somehow (?)  definitely
-useful for interleaved style data...
 
 If there are errors, existing .pos and .inf files aren't removed, but
 existing .3d and .err files are...
@@ -319,5 +316,5 @@ check borlandc version to see if bios_keybrd is better or worse...
 
 translate diffpos, sorterr, etc
 
-tests for direction
+tests for direction - should direction work in non-interleaved data?
 
