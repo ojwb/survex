@@ -19,6 +19,9 @@ Changes in 1.0.2:
 * xcaverot: documented environmental variables XCAVEROT_INDICATOR_RADIUS and
   XCAVEROT_FONTNAME.
 
+* cad3d: added --plt option to produce crude approximation to Compass .plt
+  files - should be good enough for reading into Carto.
+
 Changes in 1.0.1:
 
 * (MS Windows version): printwin: fixed sizes of cross and page alignment

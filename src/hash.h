@@ -1,6 +1,6 @@
 /* hash.h */
 /* String hashing function */
-/* Copyright (C) 1995-2001 Olly Betts
+/* Copyright (C) 1995-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,5 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-extern int hash_string(const char *p);
-extern int hash_lc_string(const char *p);
+int hash_string(const char *p);
+int hash_lc_string(const char *p);
+int hash_data(const char *p, size_t len);

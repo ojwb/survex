@@ -1,6 +1,6 @@
 /* hash.c */
 /* String hashing function */
-/* Copyright (C) 1995-2001 Olly Betts
+/* Copyright (C) 1995-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,5 +42,15 @@ hash_lc_string(const char *p)
    ASSERT(p);
    for (hash = 0; *p; p++)
       hash = (hash * HASH_PRIME + tolower(*(const unsigned char*)p)) & 0x7fff;
+   return hash;
+}
+
+int
+hash_data(const char *p, size_t len)
+{
+   int hash;
+   ASSERT(p);
+   for (hash = 0; len--; p++)
+      hash = (hash * HASH_PRIME + *(const unsigned char*)p) & 0x7fff;
    return hash;
 }

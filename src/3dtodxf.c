@@ -3,7 +3,7 @@
  * Also useful as an example of how to use the img code in your own programs
  */
 
-/* Copyright (C) 1994-2001 Olly Betts
+/* Copyright (C) 1994-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,17 +26,18 @@
 #include <config.h>
 #endif
 
+#include <float.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <float.h>
+#include <string.h>
 
-#include "img.h"
-#include "getopt.h"
-#include "useful.h"
 #include "cmdline.h"
-
+#include "debug.h"
+#include "hash.h"
+#include "img.h"
 #include "message.h"
+#include "useful.h"
 
 /* default values - can be overridden with --htext and --msize respectively */
 #define TEXT_HEIGHT	0.6
@@ -276,11 +277,127 @@ sketch_footer(void)
    }
 }
 
+typedef struct point {
+   img_point p;
+   const char *label;
+   struct point *next;
+} point;
+
+static point **htab;
+
+static void
+plt_header(void)
+{
+   htab = osmalloc(0x2000 * sizeof(point**));
+}
+
+static void
+plt_start_pass(int layer)
+{
+   layer = layer;
+}
+
+static void
+set_name(img_point p, const char *s)
+{
+   int hash;
+   point *pt;
+   union {
+      char data[sizeof(int) * 3];
+      int x[3];
+   } u;
+   
+   u.x[0] = p.x * 100;
+   u.x[1] = p.y * 100;
+   u.x[2] = p.z * 100;
+   hash = (hash_data(u.data, sizeof(int) * 3) & 0x1fff);
+   for (pt = htab[hash]; pt; pt = pt->next) {
+      if (pt->p.x == p.x && pt->p.y == p.y && pt->p.z == p.z) {
+	 /* already got name for these coordinates */
+	 return;
+      }
+   }
+
+   pt = osnew(point);
+   pt->label = osstrdup(s);
+   pt->p = p;
+   pt->next = htab[hash];
+   htab[hash] = pt;
+
+   return;
+}
+
+static const char *
+find_name(const img_point *p)
+{
+   int hash;
+   point *pt;
+   union {
+      char data[sizeof(int) * 3];
+      int x[3];
+   } u;
+   ASSERT(p);
+   
+   u.x[0] = p->x * 100;
+   u.x[1] = p->y * 100;
+   u.x[2] = p->z * 100;
+   hash = (hash_data(u.data, sizeof(int) * 3) & 0x1fff);
+   for (pt = htab[hash]; pt; pt = pt->next) {
+      if (pt->p.x == p->x && pt->p.y == p->y && pt->p.z == p->z)
+	 return pt->label;
+   }
+   return "?";
+}
+
+static void
+plt_move(img_point p)
+{
+   /* Survex is E, N, Alt - PLT file is N, E, Alt */
+   fprintf(fh, "M %.3f %.3f %.3f ",
+	   p.y / METRES_PER_FOOT, p.x / METRES_PER_FOOT, p.z / METRES_PER_FOOT);
+   fprintf(fh, "S%s\r\n", find_name(&p));
+}
+
+static void
+plt_line(img_point p1, img_point p)
+{
+   p1 = p1;
+   /* Survex is E, N, Alt - PLT file is N, E, Alt */
+   fprintf(fh, "D %.3f %.3f %.3f ",
+	   p.y / METRES_PER_FOOT, p.x / METRES_PER_FOOT, p.z / METRES_PER_FOOT);
+   fprintf(fh, "S%s\r\n", find_name(&p));
+}
+
+static void
+plt_label(img_point p, const char *s)
+{
+   /* FIXME: also ctrl characters - ought to remap them, not give up */
+   if (strchr(s, ' ')) {
+      fprintf(stderr, "PLT format can't cope with spaces in station names\n");
+      exit(1);
+   }
+   set_name(p, s); 
+}
+
+static void
+plt_cross(img_point p)
+{
+   p = p;
+}
+
+static void
+plt_footer(void)
+{
+   /* Yucky DOS "end of textfile" marker */
+   fprintf(fh, "\x1a");
+}
+
 #define LEGS 1
 #define STNS 2
 #define LABELS 4
 static int dxf_passes[] = { LEGS|STNS|LABELS, 0 };
 static int sketch_passes[] = { LEGS, STNS, LABELS, 0 };
+static int plt_passes[] = { LABELS, LEGS, 0 };
 
 int
 main(int argc, char **argv)
@@ -295,7 +412,7 @@ main(int argc, char **argv)
    double elev_angle = 0;
    double s = 0, c = 0;
    const char *ext;
-   enum { FMT_DXF, FMT_SKETCH } format;
+   enum { FMT_DXF, FMT_SKETCH, FMT_PLT } format;
    int *pass;
    const char *survey = NULL;
 
@@ -321,12 +438,13 @@ main(int argc, char **argv)
 	{"reduction", required_argument, 0, 'r'},
 	{"dxf", no_argument, 0, 'D'},
 	{"sketch", no_argument, 0, 'S'},
+	{"plt", no_argument, 0, 'P'},
 	{"help", no_argument, 0, HLP_HELP},
 	{"version", no_argument, 0, HLP_VERSION},
 	{0,0,0,0}
    };
 
-#define short_opts "s:cnlg::t:m:er::DSh"
+#define short_opts "s:cnlg::t:m:er::DSPh"
 
    /* TRANSLATE */
    static struct help_msg help[] = {
@@ -341,6 +459,7 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(8), "factor to scale down by (default 500)"},
 	{HLP_ENCODELONG(9), "produce DXF output"},
 	{HLP_ENCODELONG(10), "produce sketch output"},
+	{HLP_ENCODELONG(11), "produce Compass PLT output for Carto"},
 	{0,0}
    };
 
@@ -401,6 +520,9 @@ main(int argc, char **argv)
        case 'S':
 	 format = FMT_SKETCH;
 	 break;
+       case 'P':
+	 format = FMT_PLT;
+	 break;
        case 's':
 	 survey = optarg;
 	 break;
@@ -434,6 +556,17 @@ main(int argc, char **argv)
       ext = "sk";
       pass = sketch_passes;
       factor = POINTS_PER_MM * 1000.0 / scale;
+      break;
+    case FMT_PLT:
+      header = plt_header;
+      start_pass = plt_start_pass;
+      move = plt_move;
+      line = plt_line;
+      label = plt_label;
+      cross = plt_cross;
+      footer = plt_footer;
+      ext = "plt";
+      pass = plt_passes;
       break;
     default:
       exit(1);
