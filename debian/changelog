@@ -1,3 +1,13 @@
+survex (1.0.5) unstable; urgency=low
+
+  * img_open_survey() could crash if you tried to open an unrecognised file
+    (i.e. not .3d, .pos, .plt, or .xyz format).
+  * North and East were the wrong way round when reading in .plt files.
+  * cad3d: Improved .plt file output - Compass should read it now.
+  * Documentation updates.
+
+ -- Wookey <wookey@survex.com>  Fri, 05 Apr 2002 01:52:54 +0100
+
 survex (1.0.4) unstable; urgency=low
 
   * extend: now keep all names for an equated group of stations.
