@@ -621,3 +621,23 @@ ca:209 Visualitzaci&oacute; de fitxers Survex 3D
 es:209 Visualizaci&oacute;n de archivos Survex 3D
 it:209 Visualizzazione di file survex 3D
 sk:209 Vizualiz&aacute;cia 3D s&uacute;borov Survex
+#
+en:292 @Altitude Colouring on Surface Surveys
+en-us:292 @Altitude Coloring on Surface Surveys
+fr:292 Couleur par altit@ude pour les topos de surface
+de:292 H&ouml;hen-F@arben auf Oberfl&auml;chendarstellungen
+pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
+ca:292 Colors per @Altitud en topograf&iacute;a de superf&iacute;cie
+es:292 Colores por @Altitud en topografia de superficie
+it:292 Rappresentazione delle @Quote mediante colori
+sk:292 Fare@bnos&tcaron; pod&lcaron;a v&yacute;&scaron;ky pre povrchov&eacute; z&aacute;mery
+#
+en:293 @Dashed Surface Surveys
+fr:293 Topos de surface @Hachur&eacute;es
+de-de,de-ch:293 Gestrichelte @Oberfl&auml;chenmessz&uuml;ge
+de:          293 Gestrichelte @Oberfl&auml;chenme&szlig;z&uuml;ge
+pt:293 Topografias de Superf&iacute;cie @Tracejadas
+ca:293 T@opograf&iacute;a de superf&iacute;cie amb tra&ccedil; discontinuat
+es:293 T@opografias de superficie con trazo discont&iacute;nuo
+it:293 Superficie topografica @Tratteggiata
+sk:293 &Ccaron;i@arkovan&eacute; povrchov&eacute; z&aacute;mery

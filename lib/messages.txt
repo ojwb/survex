@@ -2570,15 +2570,13 @@ ca:272 @Tirades Subterr&agrave;nies##Ctrl+L
 es:272 @Tiradas Subterr&aacute;neas##Ctrl+L
 it:272 @Battute del rilievo sotterraneo##Ctrl+L
 sk:272 Z&aacute;mery @pod povrchom##Ctrl+L
-# TRANSLATE pt
 en:273 @Overlapping Names
-fr:273 @Superposition des noms
+fr:273 S@uperposition des noms
 de:273 &Uuml;ber@lappende Namen
-pt:273 Overlapping Name@s
 pt-br:273 Nomes @Sobrepostos
-ca:273 Noms @Sobreposats
-es:273 Nombres @Superpuestos
-it:273 Nomi @Sovrapposti
+ca:273 Noms S@obreposats
+es:273 Nombres Superpuest@os
+it:273 Nomi S@ovrapposti
 sk:273 Pr@ekr&yacute;vaj&uacute;ce sa men&aacute;
 #
 en:274 @Compass
@@ -2655,34 +2653,15 @@ sk:290 @Inform&aacute;cie o...
 # here pt = pt-br ...
 en:291 @Surface Survey Legs##Ctrl+F
 en-us:291 @Surface Shots##Ctrl+F
-fr:291 Segments de topo en Sur@face##Ctrl+F
-de-de,de-ch:291 Messz&uuml;ge Ober@fl&auml;che##Ctrl+F
-de:          291 Me&szlig;z&uuml;ge Ober@fl&auml;che##Ctrl+F
+fr:291 Segments de topo en @Surface##Ctrl+F
+de-de,de-ch:291 Messz&uuml;ge @Oberfl&auml;che##Ctrl+F
+de:          291 Me&szlig;z&uuml;ge @Oberfl&auml;che##Ctrl+F
 pt:291 Visadas de Super@f&iacute;cie##Ctrl+F
-ca:291 Tirades de topograf&iacute;a de super@f&iacute;cie##Ctrl+F
-es:291 Tiradas de topografia de super@ficie##Ctrl+F
-it:291 Battute topografia di Super@ficie##Ctrl+F
+ca:291 Tirades de topograf&iacute;a de @superf&iacute;cie##Ctrl+F
+es:291 Tiradas de topografia de @superficie##Ctrl+F
+it:291 Battute topografia di @Superficie##Ctrl+F
 sk:291 Z&aacute;mery @na povrchu##Ctrl+F
-#
-en:292 @Altitude Colouring on Surface Surveys
-en-us:292 @Altitude Coloring on Surface Surveys
-fr:292 Couleur par altit@ude pour les topos de surface
-de:292 H&ouml;hen-F@arben auf Oberfl&auml;chendarstellungen
-pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
-ca:292 Colors per @Altitud en topograf&iacute;a de superf&iacute;cie
-es:292 Colores por @Altitud en topografia de superficie
-it:292 Rappresentazione delle @Quote mediante colori
-sk:292 Fare@bnos&tcaron; pod&lcaron;a v&yacute;&scaron;ky pre povrchov&eacute; z&aacute;mery
-#
-en:293 @Dashed Surface Surveys
-fr:293 Topos de surface @Hachur&eacute;es
-de-de,de-ch:293 Gestrichelte @Oberfl&auml;chenmessz&uuml;ge
-de:          293 Gestrichelte @Oberfl&auml;chenme&szlig;z&uuml;ge
-pt:293 Topografias de Superf&iacute;cie @Tracejadas
-ca:293 T@opograf&iacute;a de superf&iacute;cie amb tra&ccedil; discontinuat
-es:293 T@opografias de superficie con trazo discont&iacute;nuo
-it:293 Superficie topografica @Tratteggiata
-sk:293 &Ccaron;i@arkovan&eacute; povrchov&eacute; z&aacute;mery
+# XXX 292 293
 #
 en:294 Highlight @Entrances
 fr:294 Mise en valeur des @entr&egrave;es
@@ -2714,7 +2693,7 @@ sk:296 Zv&yacute;razni&tcaron; e@xportovan&eacute; body
 #
 en:297 @Grid##Ctrl+G
 fr:297 @Grille##Ctrl+G
-de:297 Gi@tter##Ctrl+G
+de:297 @Gitter##Ctrl+G
 pt:297 @Grade##Ctrl+G
 ca:297 @Graella##Ctrl+G
 es:297 @Rejilla##Ctrl+G
@@ -3148,9 +3127,9 @@ es:345 g.cent
 it:345 g.cent.
 sk:345 gr&aacute;dy
 #
-# TRANSLATE ca de es it pt
+# TRANSLATE ca es
 en:346 Passage @Tubes##Ctrl+T
-ca,de,es,it,pt:346 Passage T@ubes##Ctrl+T
+ca,es:346 Passage T@ubes##Ctrl+T
 #
 en:347 @Preferences...
 en:348 Draw passage walls

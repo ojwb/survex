@@ -31,18 +31,12 @@
 static const wxWindowID ID_LEG_PREFS = 1003;
 static const wxWindowID ID_LEG_UG_LEGS = 2000;
 static const wxWindowID ID_LEG_SURF_LEGS = 2001;
-static const wxWindowID ID_LEG_COLOUR_SURFACE = 2002;
-static const wxWindowID ID_LEG_DASHED_SURFACE = 2003;
-static const wxWindowID ID_LEG_LINE = 2004;
+static const wxWindowID ID_LEG_LINE = 2002;
 
 LegPrefs::LegPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_LEG_PREFS)
 {
     wxCheckBox* ug_legs = new wxCheckBox(this, ID_LEG_UG_LEGS, msg(/*Display underground survey legs*/357));
     wxCheckBox* surf_legs = new wxCheckBox(this, ID_LEG_SURF_LEGS, msg(/*Display surface survey legs*/358));
-    wxCheckBox* col_surface = new wxCheckBox(this, ID_LEG_COLOUR_SURFACE,
-                                             msg(/*Colour surface surveys by depth*/359));
-    wxCheckBox* dashed_surface = new wxCheckBox(this, ID_LEG_DASHED_SURFACE,
-                                                msg(/*Draw surface legs with dashed lines*/360));
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 

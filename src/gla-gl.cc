@@ -116,7 +116,7 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
 
     m_Quadric = NULL;
     m_Rotation.setFromEulerAngles(0.0, 0.0, 0.0);
-    m_Scale = 1.0;
+    m_Scale = 0.0;
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
     m_SphereCreated = false;
     SetVolumeCoordinates(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
@@ -250,6 +250,7 @@ void GLACanvas::SetViewportAndProjection()
     CHECK_GL_ERROR("SetViewportAndProjection", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetViewportAndProjection", "glLoadIdentity");
+    assert(m_Scale != 0.0);
     glOrtho(m_Volume.left, m_Volume.right,
 	    m_Volume.bottom / aspect, m_Volume.top / aspect,
             m_Volume.front * 3.0 * m_Scale, m_Volume.back * 3.0 * m_Scale);
@@ -281,6 +282,7 @@ void GLACanvas::EnableSmoothPolygons()
     GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0 };
     wxSize size = GetSize();
     double aspect = double(size.GetWidth()) / double(size.GetHeight());
+    assert(m_Scale != 0.0);
     GLfloat light_position[] = { m_Volume.right - 5.0,
                                  m_Volume.top / aspect - 5.0,
                                  m_Volume.front * 3.0 * m_Scale + 5.0,
@@ -323,6 +325,7 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
+    assert(m_Scale != 0.0);
     glScaled(m_Scale, m_Scale, m_Scale);
     CHECK_GL_ERROR("SetDataTransform", "glScaled");
     // Get axes the correct way around (z upwards, y into screen)
@@ -354,6 +357,7 @@ void GLACanvas::SetIndicatorTransform()
     CHECK_GL_ERROR("SetIndicatorTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity");
+    assert(m_Scale != 0.0);
     glTranslated(0.0, 0.0, -m_Volume.front * 2.5 * m_Scale);
     CHECK_GL_ERROR("SetIndicatorTransform", "glTranslated");
     glScaled(width / size.GetWidth(), height / size.GetHeight(), 1.0);
@@ -735,7 +739,7 @@ void GLACanvas::EnableDashedLines()
 {
     // Enable dashed lines, and start drawing in them.
 
-    glLineStipple(1, 0xaaaa);
+    glLineStipple(1, 0x3333);
     CHECK_GL_ERROR("EnableDashedLines", "glLineStipple");
     glEnable(GL_LINE_STIPPLE);
     CHECK_GL_ERROR("EnableDashedLines", "glEnable");
@@ -796,6 +800,7 @@ Double GLACanvas::SurveyUnitsAcrossViewport()
     // Measure the current viewport in survey units, taking into account the
     // current display scale.
 
+    assert(m_Scale != 0.0);
     return (m_Volume.right - m_Volume.left) / m_Scale;
 }
 

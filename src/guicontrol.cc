@@ -715,32 +715,10 @@ void GUIControl::OnShowSurface()
     m_View->ToggleSurfaceLegs();
 }
 
-void GUIControl::OnShowSurfaceDepth()
-{
-    m_View->ToggleSurfaceDepth();
-}
-
-void GUIControl::OnShowSurfaceDashed()
-{
-    m_View->ToggleSurfaceDashed();
-}
-
 void GUIControl::OnShowSurfaceUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && m_View->HasSurfaceLegs());
     cmd.Check(m_View->ShowingSurfaceLegs());
-}
-
-void GUIControl::OnShowSurfaceDepthUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData() && m_View->HasSurfaceLegs());
-    cmd.Check(m_View->ShowingSurfaceDepth());
-}
-
-void GUIControl::OnShowSurfaceDashedUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData() && m_View->ShowingSurfaceLegs() && m_View->HasSurfaceLegs());
-    cmd.Check(m_View->ShowingSurfaceDashed());
 }
 
 void GUIControl::OnShowEntrances()

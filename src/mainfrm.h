@@ -89,8 +89,6 @@ enum {
     menu_VIEW_SHOW_CROSSES,
     menu_VIEW_SHOW_NAMES,
     menu_VIEW_SHOW_SURFACE,
-    menu_VIEW_SURFACE_DEPTH,
-    menu_VIEW_SURFACE_DASHED,
     menu_VIEW_SHOW_OVERLAPPING_NAMES,
     menu_VIEW_SHOW_ENTRANCES,
     menu_VIEW_SHOW_FIXED_PTS,
@@ -298,8 +296,6 @@ public:
     void OnShowStationNamesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowStationNamesUpdate(event); }
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurveyLegsUpdate(event); }
     void OnShowSurfaceUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurfaceUpdate(event); }
-    void OnShowSurfaceDepthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurfaceDepthUpdate(event); }
-    void OnShowSurfaceDashedUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurfaceDashedUpdate(event); }
     void OnMoveEastUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveEastUpdate(event); }
     void OnMoveNorthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveNorthUpdate(event); }
     void OnMoveSouthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveSouthUpdate(event); }
@@ -341,8 +337,6 @@ public:
     void OnShowStationNames(wxCommandEvent& event) { if (m_Control) m_Control->OnShowStationNames(); }
     void OnShowSurveyLegs(wxCommandEvent& event) { if (m_Control) m_Control->OnShowSurveyLegs(); }
     void OnShowSurface(wxCommandEvent& event) { if (m_Control) m_Control->OnShowSurface(); }
-    void OnShowSurfaceDepth(wxCommandEvent& event) { if (m_Control) m_Control->OnShowSurfaceDepth(); }
-    void OnShowSurfaceDashed(wxCommandEvent& event) { if (m_Control) m_Control->OnShowSurfaceDashed(); }
     void OnMoveEast(wxCommandEvent& event) { if (m_Control) m_Control->OnMoveEast(); }
     void OnMoveNorth(wxCommandEvent& event) { if (m_Control) m_Control->OnMoveNorth(); }
     void OnMoveSouth(wxCommandEvent& event) { if (m_Control) m_Control->OnMoveSouth(); }

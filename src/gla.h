@@ -105,6 +105,7 @@ class GLACanvas : public wxWindow {
     GLuint m_SphereList;
     GLUquadric* m_Quadric;
     
+    void SetViewportAndProjection();
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
     ~GLACanvas();
@@ -120,7 +121,6 @@ public:
     void SetDataTransform();
     void SetIndicatorTransform();
     void SetQuaternion(Quaternion& q);
-    void SetViewportAndProjection();
     
     glaList CreateList(GfxCore*, void (GfxCore::*generator)());
     void DeleteList(glaList l);

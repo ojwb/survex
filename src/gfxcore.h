@@ -95,6 +95,7 @@ class GfxCore : public GLACanvas {
 
     struct {
         glaList underground_legs;
+        glaList tubes;
         glaList surface_legs;
         glaList names;
         glaList indicators;
@@ -133,17 +134,10 @@ class GfxCore : public GLACanvas {
     int m_XCentre;
     int m_YCentre;
 
-    Point* vertices;
-    Point* surface_vertices;
-    int* num_segs;
-    int* surface_num_segs;
-
     bool m_HaveData;
     bool m_MouseOutsideCompass;
     bool m_MouseOutsideElev;
     bool m_Surface;
-    bool m_SurfaceDashed;
-    bool m_SurfaceDepth;
     bool m_Entrances;
     bool m_FixedPts;
     bool m_ExportedPts;
@@ -170,13 +164,13 @@ class GfxCore : public GLACanvas {
     }
 
     void UpdateNames();
-    void UpdateLegs();
     void UpdateQuaternion();
     void UpdateIndicators();
     void UpdateBlobs();
     
     void SetColourFromHeight(Double z, Double factor);
-    void PlaceVertexWithColour(Double x, Double y, Double z, Double factor);
+    void PlaceVertexWithColour(Double x, Double y, Double z,
+			       Double factor = 1.0);
    
     Double GridXToScreen(Double x, Double y, Double z) const;
     Double GridYToScreen(Double x, Double y, Double z) const;
@@ -192,12 +186,10 @@ class GfxCore : public GLACanvas {
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
-    void DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
-		       const int *num_points, const Point *vertices);
-
-    void SetScaleInitial(Double scale);
+    void DrawPolylines(bool tubes, bool surface);
 
     void GenerateDisplayList();
+    void GenerateDisplayListTubes();
     void GenerateDisplayListSurface();
     void GenerateBlobsDisplayList();
     void GenerateIndicatorDisplayList();
@@ -314,13 +306,11 @@ public:
     bool ShowingOverlappingNames() const { return m_OverlappingNames; }
     bool ShowingCrosses() const { return m_Crosses; }
 
-    bool HasUndergroundLegs() const { return (m_Polylines > 0); }
-    bool HasSurfaceLegs() const { return (m_SurfacePolylines > 0); }
+    bool HasUndergroundLegs() const { return true; /* FIXME */ }
+    bool HasSurfaceLegs() const { return true; /* FIXME */ }
 
     bool ShowingUndergroundLegs() const { return m_Legs; }
     bool ShowingSurfaceLegs() const { return m_Surface; }
-    bool ShowingSurfaceDepth() const { return m_SurfaceDepth; }
-    bool ShowingSurfaceDashed() const { return m_SurfaceDashed; }
 
     bool ShowingDepthBar() const { return m_Depthbar; }
     bool ShowingScaleBar() const { return m_Scalebar; }
@@ -346,17 +336,9 @@ public:
     void ToggleStationNames() { ToggleFlag(&m_Names, false); UpdateNames(); ForceRefresh(); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
     void ToggleDepthBar() { ToggleFlag(&m_Depthbar, false); UpdateIndicators(); ForceRefresh(); }
-    void ToggleSurfaceDepth() {
-	ToggleFlag(&m_SurfaceDepth);
-	m_Lists.surface_legs = CreateList(this, &GfxCore::GenerateDisplayListSurface);
-    }
-    void ToggleSurfaceDashed() {
-	ToggleFlag(&m_SurfaceDashed);
-	m_Lists.surface_legs = CreateList(this, &GfxCore::GenerateDisplayListSurface);
-    }
     void ToggleMetric() { ToggleFlag(&m_Metric, false); UpdateIndicators(); ForceRefresh(); }
     void ToggleDegrees() { ToggleFlag(&m_Degrees, false); UpdateIndicators(); ForceRefresh(); }
-    void ToggleTubes() { ToggleFlag(&m_Tubes, false); UpdateLegs(); ForceRefresh(); }
+    void ToggleTubes() { ToggleFlag(&m_Tubes, false); ForceRefresh(); }
 
     bool GetMetric() const { return m_Metric; }
     bool GetDegrees() const { return m_Degrees; }
@@ -376,7 +358,7 @@ public:
 
     void SplitLineAcrossBands(int band, int band2,
 	    		      const Vector3 &p, const Vector3 &p2,
-			      Double factor);
+			      Double factor = 1.0);
     int GetDepthColour(Double z) const;
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
