@@ -452,6 +452,8 @@ void MainFrm::CreateSidePanel()
     m_Splitter = new wxSplitterWindow(this, -1, wxDefaultPosition,
 				      wxDefaultSize,
 				      wxSP_3D | wxSP_LIVE_UPDATE);
+    m_Splitter->SetMinimumPaneSize(20);
+				      
     m_Panel = new wxPanel(m_Splitter);
     m_Tree = new AvenTreeCtrl(this, m_Panel);
     m_FindPanel = new wxPanel(m_Panel);
