@@ -1,7 +1,7 @@
 /* datain.h
  * Header file for code that...
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1994-2001 Olly Betts
+ * Copyright (C) 1994-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,6 @@ void skipline(void);
 
 /* style functions */
 int data_normal(void);
-int data_diving(void);
 int data_cartesian(void);
 int data_cylpolar(void);
 int data_nosurvey(void);

@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2001 Olly Betts
+ * Copyright (C) 1991-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -301,13 +301,31 @@ data_file(const char *pth, const char *fnm)
 
    while (!feof(file.fh) && !ferror(file.fh)) {
       if (!process_non_data_line()) {
+	 int r;
 #ifdef NEW3DFORMAT
 	 twig *temp = limb;
 #endif
 	 f_export_ok = fFalse;
-
+	 switch (pcs->style) {
+	  case STYLE_NORMAL:
+	  case STYLE_DIVING:
+	  case STYLE_CYLPOLAR:
+	    r = data_normal();
+    	    break;
+	  case STYLE_CARTESIAN:
+	    r = data_cartesian();
+	    break;
+	  case STYLE_NOSURVEY:
+	    r = data_nosurvey();
+	    break;
+	  case STYLE_IGNORE:
+	    r = data_ignore();
+	    break;
+	  default:
+	    BUG("bad style");
+	 }
 	 /* style function returns 0 => error */
-	 if (!(pcs->Style)()) {
+	 if (!r) {
 #ifdef NEW3DFORMAT
 	    /* we have just created a very naughty twiglet, and it must be
 	     * punished */
@@ -400,8 +418,7 @@ handle_plumb(bool *pfPlumbed)
 
 static int
 process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
-	       real count, bool fToFirst, bool fNoClino, bool fTopofil,
-	       bool fPlumbed)
+	       bool fToFirst, bool fNoClino, bool fPlumbed)
 {
    real dx, dy, dz;
    real vx, vy, vz;
@@ -411,26 +428,10 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 
    bool fNoComp;
 
-   if (pcs->f0Eq && tape == (real)0.0) {
-      process_equate(fr, to);
-      return 1;
-   }
-
-#if 0
-   print_prefix(fr);
-   printf("->");
-   print_prefix(to);
-   printf(" %.2f %.2f %.2f\n",tape,comp,clin);
-#endif
-
-   if (fTopofil) {
-      count *= pcs->units[Q_COUNT];
-   } else {
-      if (tape < (real)0.0) {
-	 compile_warning(/*Negative tape reading*/60);
-      }
-
-      tape *= pcs->units[Q_LENGTH];
+   /* adjusted tape is negative -- probably the calibration is wrong */
+   if (tape < (real)0.0) {
+      /* TRANSLATE different message for topofil? */
+      compile_warning(/*Negative adjusted tape reading*/79);
    }
 
    fNoComp = (comp == HUGE_REAL);
@@ -446,18 +447,6 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       if (fabs(clin) - M_PI / 2 > EPSILON) {
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       }
-   }
-
-   if (fTopofil) {
-      tape = count * pcs->sc[Q_COUNT];
-   } else {
-      tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
-   }
-
-   /* adjusted tape is negative -- probably the calibration is wrong */
-   if (tape < (real)0.0) {
-      /* TRANSLATE different message for topofil? */
-      compile_warning(/*Negative adjusted tape reading*/79);
    }
 
    if ((fPlumbed && clin != (real)0) ||
@@ -604,136 +593,6 @@ printf("clin %.2f\n",clin);
    return 1;
 }
 
-/* tape/compass/clino and topofil (fromcount/tocount/compass/clino) */
-extern int
-data_normal(void)
-{
-   prefix *fr = NULL, *to = NULL;
-   reading first_stn = End;
-
-   real tape = 0, comp = 0, clin, frcount = 0, tocount = 0;
-   bool fTopofil = fFalse, fMulti = fFalse; /* features of style... */
-   bool fNoClino, fPlumbed, fRev;
-
-   reading *ordering;
-
-   again:
-
-   fPlumbed = fFalse;
-   fRev = fFalse;
-
-   /* ordering may omit clino reading, so set up default here */
-   /* this is also used if clino reading is the omit character */
-   clin = (real)0.0; /* no clino reading, so assume 0 with large sd */
-   fNoClino = fTrue;
-
-   for (ordering = pcs->ordering ; ; ordering++) {
-      skipblanks();
-      switch (*ordering) {
-       case Fr:
-	  fr = read_prefix_stn(fFalse, fTrue);
-	  if (first_stn != End) first_stn = Fr;
-	  break;
-       case To:
-	  to = read_prefix_stn(fFalse, fTrue);
-	  if (first_stn != End) first_stn = To;
-	  break;
-       case Station:
-	  fr = to;
-	  to = read_prefix_stn(fFalse, fFalse);
-	  first_stn = To;
-	  break;
-       case Dir:
-	  switch(toupper(ch)) {
-	   case 'F':
-	     break;
-	   case 'B':
-	     fRev = fTrue;
-	     break;
-	   default:
-	     compile_error(/*Found `%c', expecting `F' or `B'*/131, ch);
-	     skipline();
-	     process_eol();
-	     return 0;
-	  }
-	  break;
-       case Count:
-	  frcount = tocount;
-	  tocount = read_numeric(fFalse);
-	  break;
-       case Tape: tape = read_numeric(fFalse); break;
-       case FrCount: frcount = read_numeric(fFalse); break;
-       case ToCount: tocount = read_numeric(fFalse); fTopofil = fTrue; break;
-       case Comp: comp = read_numeric_or_omit(); break;
-       case Clino: {
-	  clin = read_numeric(fTrue);
-	  if (clin == HUGE_REAL) {
-	     clin = handle_plumb(&fPlumbed);
-	     if (clin != HUGE_REAL) break;
-	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
-	     process_eol();
-	     return 0;
-	  }
-	  /* we've got a real clino reading, so clear the flag */
-	  fNoClino = fFalse;
-	  break;
-       }
-       case Ignore:
-	 skipword(); break;
-       case IgnoreAllAndNewLine:
-	 skipline();
-	 /* fall through */
-       case Newline:
-	 if (fr != NULL) {
-	    int r;
-	    if (fRev) {
-	       prefix *t = fr;
-	       fr = to;
-	       to = t;
-	    }
-	    r = process_normal(fr, to, tape, comp, clin, tocount - frcount,
-			       (first_stn == To) ^ fRev, fNoClino, fTopofil,
-			       fPlumbed);
-	    if (!r) skipline();
-	 }
-	 fMulti = fTrue;
-	 while (1) {
-	    process_eol();
-	    process_bol();
-	    if (isData(ch)) break;
-	    if (!isComm(ch)) {
-	       push_back(ch);
-	       return 1;
-	    }
-	 }
-	 break;
-       case IgnoreAll:
-	 skipline();
-	 /* fall through */
-       case End:
-	 if (!fMulti) {
-	    int r;
-	    if (fRev) {
-	       prefix *t = fr;
-	       fr = to;
-	       to = t;
-	    }
-	    r = process_normal(fr, to, tape, comp, clin, tocount - frcount,
-			       (first_stn == To) ^ fRev, fNoClino, fTopofil,
-			       fPlumbed);
-	    process_eol();
-	    return r;
-	 }
-	 do {
-	    process_eol();
-	    process_bol();
-	 } while (isComm(ch));
-	 goto again;
-       default: BUG("Unknown reading in ordering");
-      }
-   }
-}
-
 static int
 process_diving(prefix *fr, prefix *to, real tape, real comp,
 	       real frdepth, real todepth, bool fToFirst, bool fDepthChange)
@@ -744,17 +603,6 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    real cxy = 0, cyz = 0, czx = 0;
 #endif
 
-   /* Note: frdepth == todepth test works regardless of fDepthChange */
-   if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
-      process_equate(fr, to);
-      return 1;
-   }
-
-   if (tape < (real)0.0) {
-      compile_warning(/*Negative tape reading*/60);
-   }
-
-   tape *= pcs->units[Q_LENGTH];
    if (comp != HUGE_REAL) {
       comp *= pcs->units[Q_BEARING];
       if (comp < (real)0.0 || comp - M_PI * 2 > EPSILON) {
@@ -762,7 +610,6 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
       }
    }
 
-   tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
    /* depth gauge readings increase upwards with default calibration */
    if (fDepthChange) {
       ASSERT(frdepth == 0.0);
@@ -858,122 +705,6 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
 #endif
 
    return 1;
-}
-
-extern int
-data_diving(void)
-{
-   prefix *fr = NULL, *to = NULL;
-
-   real tape = 0, comp = 0;
-   real frdepth = 0, todepth = 0;
-
-   bool fMulti = fFalse;
-   bool fRev, fDepthChange;
-
-   reading first_stn = End;
-
-   reading *ordering;
-
-   again:
-
-   fRev = fFalse;
-   fDepthChange = fFalse;
-
-   for (ordering = pcs->ordering; ; ordering++) {
-      skipblanks();
-      switch (*ordering) {
-       case Fr:
-	 fr = read_prefix_stn(fFalse, fTrue);
-	 if (first_stn == End) first_stn = Fr;
-	 break;
-       case To:
-	 to = read_prefix_stn(fFalse, fTrue);
-	 if (first_stn == End) first_stn = To;
-	 break;
-       case Station:
-	 fr = to;
-	 to = read_prefix_stn(fFalse, fFalse);
-	 first_stn = To;
-	 break;
-       case Dir:
-	  switch(toupper(ch)) {
-	   case 'F':
-	     break;
-	   case 'B':
-	     fRev = fTrue;
-	     break;
-	   default:
-	     compile_error(/*Found `%c', expecting `F' or `B'*/131, ch);
-	     skipline();
-	     process_eol();
-	     return 0;
-	  }
-	  break;
-       case Tape: tape = read_numeric(fFalse); break;
-       case Comp: comp = read_numeric_or_omit(); break;
-       case FrDepth: frdepth = read_numeric(fFalse); break;
-       case ToDepth: todepth = read_numeric(fFalse); break;
-       case Depth:
-	  frdepth = todepth;
-	  todepth = read_numeric(fFalse);
-	  break;
-       case DepthChange:
-	  fDepthChange = fTrue;
-	  frdepth = 0;
-	  todepth = read_numeric(fFalse);
-	  break;
-       case Ignore: skipword(); break;
-       case IgnoreAllAndNewLine:
-	 skipline();
-	 /* fall through */
-       case Newline:
-	 if (fr != NULL) {
-	    int r;
-	    if (fRev) {
-	       prefix *t = fr;
-	       fr = to;
-	       to = t;
-	    }
-	    r = process_diving(fr, to, tape, comp, frdepth, todepth,
-			       (first_stn == To) ^ fRev, fDepthChange);
-	    if (!r) skipline();
-	 }
-	 fMulti = fTrue;
-	 while (1) {
-	    process_eol();
-	    process_bol();
-	    if (isData(ch)) break;
-	    if (!isComm(ch)) {
-	       push_back(ch);
-	       return 1;
-	    }
-	 }
-	 break;
-       case IgnoreAll:
-	 skipline();
-	 /* fall through */
-       case End:
-	 if (!fMulti) {
-	    int r;
-	    if (fRev) {
-	       prefix *t = fr;
-	       fr = to;
-	       to = t;
-	    }
-	    r = process_diving(fr, to, tape, comp, frdepth, todepth,
-			       (first_stn == To) ^ fRev, fDepthChange);
-	    process_eol();
-	    return r;
-	 }
-	 do {
-	    process_eol();
-	    process_bol();
-	 } while (isComm(ch));
-	 goto again;
-      default: BUG("Unknown reading in ordering");
-      }
-   }
 }
 
 static int
@@ -1097,17 +828,6 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
    real cxy = 0;
 #endif
 
-   /* Note: frdepth == todepth test works regardless of fDepthChange */
-   if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
-      process_equate(fr, to);
-      return 1;
-   }
-
-   if (tape < (real)0.0) {
-      compile_warning(/*Negative tape reading*/60);
-   }
-
-   tape *= pcs->units[Q_LENGTH];
    if (comp != HUGE_REAL) {
       comp *= pcs->units[Q_BEARING];
       if (comp < (real)0.0 || comp - M_PI * 2 > EPSILON) {
@@ -1115,7 +835,6 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
       }
    }
 
-   tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
    /* depth gauge readings increase upwards with default calibration */
    if (fDepthChange) {
       ASSERT(frdepth == 0.0);
@@ -1183,42 +902,52 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
    return 1;
 }
 
+/* Process tape/compass/clino, diving, and cylpolar styles of survey data
+ * Also handles topofil (fromcount/tocount or count) in place of tape */
 extern int
-data_cylpolar(void)
+data_normal(void)
 {
    prefix *fr = NULL, *to = NULL;
+   reading first_stn = End;
 
-   real tape = 0, comp = 0;
+   real tape = 0, comp = 0, frcount = 0, tocount = 0;
+   real clin;
    real frdepth = 0, todepth = 0;
 
-   bool fMulti = fFalse;
-   bool fRev, fDepthChange;
-
-   reading first_stn = End;
+   bool fTopofil = fFalse, fMulti = fFalse;
+   bool fRev;
+   bool fNoClino, fPlumbed;
+   bool fDepthChange;
 
    reading *ordering;
 
    again:
 
    fRev = fFalse;
+   fPlumbed = fFalse;
    fDepthChange = fFalse;
+
+   /* ordering may omit clino reading, so set up default here */
+   /* this is also used if clino reading is the omit character */
+   clin = (real)0.0; /* no clino reading, so assume 0 with large sd */
+   fNoClino = fTrue;
 
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
       switch (*ordering) {
        case Fr:
-	 fr = read_prefix_stn(fFalse, fTrue);
-	 if (first_stn == End) first_stn = Fr;
-	 break;
+	  fr = read_prefix_stn(fFalse, fTrue);
+	  if (first_stn == End) first_stn = Fr;
+	  break;
        case To:
-	 to = read_prefix_stn(fFalse, fTrue);
-	 if (first_stn == End) first_stn = To;
-	 break;
+	  to = read_prefix_stn(fFalse, fTrue);
+	  if (first_stn == End) first_stn = To;
+	  break;
        case Station:
-	 fr = to;
-	 to = read_prefix_stn(fFalse, fFalse);
-	 first_stn = To;
-	 break;
+	  fr = to;
+	  to = read_prefix_stn(fFalse, fFalse);
+	  first_stn = To;
+	  break;
        case Dir:
 	  switch(toupper(ch)) {
 	   case 'F':
@@ -1233,10 +962,42 @@ data_cylpolar(void)
 	     return 0;
 	  }
 	  break;
-       case Tape: tape = read_numeric(fFalse); break;
-       case Comp: comp = read_numeric_or_omit(); break;
-       case FrDepth: frdepth = read_numeric(fFalse); break;
-       case ToDepth: todepth = read_numeric(fFalse); break;
+       case Tape:
+	  tape = read_numeric(fFalse);
+	  if (tape < (real)0.0) compile_warning(/*Negative tape reading*/60);
+	  break;
+       case Count:
+	  frcount = tocount;
+	  tocount = read_numeric(fFalse);
+	  break;
+       case FrCount:
+	  frcount = read_numeric(fFalse);
+	  break;
+       case ToCount:
+	  tocount = read_numeric(fFalse);
+	  fTopofil = fTrue;
+	  break;
+       case Comp:
+	  comp = read_numeric_or_omit();
+	  break;
+       case Clino: 
+	  clin = read_numeric(fTrue);
+	  if (clin == HUGE_REAL) {
+	     clin = handle_plumb(&fPlumbed);
+	     if (clin != HUGE_REAL) break;
+	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
+	     process_eol();
+	     return 0;
+	  }
+	  /* we've got a real clino reading, so clear the flag */
+	  fNoClino = fFalse;
+	  break;
+       case FrDepth:
+	  frdepth = read_numeric(fFalse);
+	  break;
+       case ToDepth:
+	  todepth = read_numeric(fFalse);
+	  break;
        case Depth:
 	  frdepth = todepth;
 	  todepth = read_numeric(fFalse);
@@ -1246,55 +1007,116 @@ data_cylpolar(void)
 	  frdepth = 0;
 	  todepth = read_numeric(fFalse);
 	  break;
-       case Ignore: skipword(); break;
+       case Ignore:
+	  skipword();
+	  break;
        case IgnoreAllAndNewLine:
-	 skipline();
-	 /* fall through */
+	  skipline();
+	  /* fall through */
        case Newline:
-	 if (fr != NULL) {
-	    int r;
-	    if (fRev) {
-	       prefix *t = fr;
-	       fr = to;
-	       to = t;
-	    }
-	    r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
-				 (first_stn == To) ^ fRev, fDepthChange);
-	    if (!r) skipline();
-	 }
-	 fMulti = fTrue;
-	 while (1) {
-	    process_eol();
-	    process_bol();
-	    if (isData(ch)) break;
-	    if (!isComm(ch)) {
-	       push_back(ch);
-	       return 1;
-	    }
-	 }
-	 break;
+	  if (fr != NULL) {
+	     int r;
+	     if (fRev) {
+		prefix *t = fr;
+	   	fr = to;
+	    	to = t;
+	     }
+	     if (fTopofil) tape = tocount - frcount;
+	     /* Note: frdepth == todepth test works regardless of fDepthChange
+	      * (frdepth always zero, todepth is change of depth) and also
+	      * works for STYLE_NORMAL (both remain 0) */
+	     if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
+		process_equate(fr, to);
+		goto inferred_equate;
+	     }
+	     if (fTopofil) {
+		tape *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
+	     } else {
+		tape *= pcs->units[Q_LENGTH];
+		tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
+	     }
+	     switch (pcs->style) {
+	      case STYLE_NORMAL:
+		r = process_normal(fr, to, tape, comp, clin,
+				   (first_stn == To) ^ fRev, fNoClino, fPlumbed);
+		break;
+	      case STYLE_DIVING:
+		r = process_diving(fr, to, tape, comp, frdepth, todepth,
+	       			   (first_stn == To) ^ fRev, fDepthChange);
+		break;
+	      case STYLE_CYLPOLAR:
+		r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
+				     (first_stn == To) ^ fRev, fDepthChange);
+		break;
+	      default:
+		BUG("bad style");
+	     }
+	     if (!r) skipline();
+	  }
+          inferred_equate:
+	  fMulti = fTrue;
+	  while (1) {
+	      process_eol();
+	      process_bol();
+	      if (isData(ch)) break;
+	      if (!isComm(ch)) {
+		 push_back(ch);
+		 return 1;
+	      }
+	  }
+	  break;
        case IgnoreAll:
-	 skipline();
-	 /* fall through */
+	  skipline();
+	  /* fall through */
        case End:
-	 if (!fMulti) {
-	    int r;
-	    if (fRev) {
-	       prefix *t = fr;
-	       fr = to;
-	       to = t;
-	    }
-	    r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
-				 (first_stn == To) ^ fRev, fDepthChange);
-	    process_eol();
-	    return r;
-	 }
-	 do {
-	    process_eol();
-	    process_bol();
-	 } while (isComm(ch));
-	 goto again;
-      default: BUG("Unknown reading in ordering");
+	  if (!fMulti) {
+	     int r;
+	     if (fRev) {
+		prefix *t = fr;
+		fr = to;
+		to = t;
+	     }
+	     if (fTopofil) tape = tocount - frcount;
+	     /* Note: frdepth == todepth test works regardless of fDepthChange
+	      * (frdepth always zero, todepth is change of depth) and also
+	      * works for STYLE_NORMAL (both remain 0) */
+	     if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
+		process_equate(fr, to);
+		process_eol();
+		return 1;
+	     }
+	     if (fTopofil) {
+		tape *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
+	     } else {
+		tape *= pcs->units[Q_LENGTH];
+		tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
+	     }
+	     switch (pcs->style) {
+	      case STYLE_NORMAL:
+		r = process_normal(fr, to, tape, comp, clin,
+				   (first_stn == To) ^ fRev, fNoClino, fPlumbed);
+		break;
+	      case STYLE_DIVING:
+		r = process_diving(fr, to, tape, comp, frdepth, todepth,
+	       			   (first_stn == To) ^ fRev, fDepthChange);
+		break;
+	      case STYLE_CYLPOLAR:
+		r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
+				     (first_stn == To) ^ fRev, fDepthChange);
+		break;
+	      default:
+		BUG("bad style");
+	     }
+	     process_eol();
+	     return r;
+	  }
+	  do {
+	     process_eol();
+	     process_bol();
+	  } while (isComm(ch));
+	  goto again;
+       default:
+	  BUG("Unknown reading in ordering");
       }
    }
 }

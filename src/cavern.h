@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2001 Olly Betts
+ * Copyright (C) 1991-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,9 +151,6 @@ typedef enum {
 /* if IgnoreAll is >= 32, the compiler will choke on this */
 typedef char compiletimeassert_reading[IgnoreAll < 32 ? 1 : -1];
 
-/* type of a function to read in some data style */
-typedef int (*style_fn)(void);
-
 /* position or length vector */
 typedef real delta[3];
 
@@ -248,13 +245,21 @@ typedef struct Inst {
 } inst;
 */
 
+/* Survey data styles */
+#define STYLE_NORMAL     0
+#define STYLE_DIVING     1
+#define STYLE_CARTESIAN  2
+#define STYLE_CYLPOLAR   3
+#define STYLE_NOSURVEY   4
+#define STYLE_IGNORE     5
+
 /* various settings preserved by *BEGIN and *END */
 typedef struct Settings {
    unsigned int Truncate;
    bool f0Eq;
    bool f90Up;
    enum {OFF, LOWER, UPPER} Case;
-   style_fn Style;
+   int style;
    prefix *Prefix;
    prefix *tag; /* used to check BEGIN/END tags match */
    short *Translate; /* if short is >= 16 bits, which ANSI requires */

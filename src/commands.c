@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2001 Olly Betts
+ * Copyright (C) 1991-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ reading default_order[] = { Fr, To, Tape, Comp, Clino, End };
 static void
 default_style(settings *s)
 {
-   s->Style = (data_normal);
+   s->style = STYLE_NORMAL;
    s->ordering = default_order;
 }
 
@@ -887,38 +887,23 @@ cmd_data(void)
 	{NULL,           End }
    };
 
-   static style_fn fn[] = {
-      data_normal,
-      data_normal,
-      data_diving,
-      data_cartesian,
-      data_cylpolar,
-      data_nosurvey
-   };
+#define MASK_stns BIT(Fr) | BIT(To) | BIT(Station)
+#define MASK_tape BIT(Tape) | BIT(FrCount) | BIT(ToCount) | BIT(Count)
+#define MASK_dpth BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(DepthChange)
 
-#define MASK_NORMAL BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) |\
-   BIT(Tape) | BIT(Comp) | BIT(Clino)
-#define MASK_TOPOFIL BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) |\
-   BIT(FrCount) | BIT(ToCount) | BIT(Count) | BIT(Comp) | BIT(Clino)
-#define MASK_DIVING BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) |\
-   BIT(Tape) | BIT(Comp) |\
-   BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(DepthChange)
-#define MASK_CARTESIAN BIT(Fr) | BIT(To) | BIT(Station) |\
-   BIT(Dx) | BIT(Dy) | BIT(Dz)
-#define MASK_CYLPOLAR  BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) |\
-   BIT(Tape) | BIT(Comp) |\
-   BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(DepthChange)
-#define MASK_NOSURVEY BIT(Fr) | BIT(To) | BIT(Station)
+#define MASK_NORMAL MASK_stns | BIT(Dir) | MASK_tape | BIT(Comp) | BIT(Clino)
+#define MASK_DIVING MASK_stns | BIT(Dir) | MASK_tape | BIT(Comp) | MASK_dpth
+#define MASK_CARTESIAN MASK_stns | BIT(Dx) | BIT(Dy) | BIT(Dz)
+#define MASK_CYLPOLAR  MASK_stns | BIT(Dir) | MASK_tape | BIT(Comp) | MASK_dpth
+#define MASK_NOSURVEY MASK_stns
 
    /* readings which may be given for each style */
    static const unsigned long mask[] = {
-      MASK_NORMAL, MASK_TOPOFIL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR,
-      MASK_NOSURVEY
+      MASK_NORMAL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR, MASK_NOSURVEY
    };
 
    /* readings which may be omitted for each style */
    static const unsigned long mask_optional[] = {
-      BIT(Dir) | BIT(Clino),
       BIT(Dir) | BIT(Clino),
       BIT(Dir),
       0,
@@ -929,7 +914,6 @@ cmd_data(void)
    /* all valid readings */
    static const unsigned long mask_all[] = {
       MASK_NORMAL | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
-      MASK_TOPOFIL | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_DIVING | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_CARTESIAN | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_CYLPOLAR | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
@@ -937,12 +921,6 @@ cmd_data(void)
    };
 #define STYLE_DEFAULT   -2
 #define STYLE_UNKNOWN   -1
-#define STYLE_NORMAL     0
-#define STYLE_TOPOFIL    1
-#define STYLE_DIVING     2
-#define STYLE_CARTESIAN  3
-#define STYLE_CYLPOLAR   4
-#define STYLE_NOSURVEY   5
 
    static sztok styletab[] = {
 	{"CARTESIAN",    STYLE_CARTESIAN },
@@ -951,7 +929,7 @@ cmd_data(void)
 	{"DIVING",       STYLE_DIVING },
 	{"NORMAL",       STYLE_NORMAL },
 	{"NOSURVEY",     STYLE_NOSURVEY },
-	{"TOPOFIL",      STYLE_TOPOFIL },
+	{"TOPOFIL",      STYLE_NORMAL },
 	{NULL,           STYLE_UNKNOWN }
    };
 
@@ -964,7 +942,7 @@ cmd_data(void)
 
    /* after a bad *data command ignore survey data until the next
     * *data command to avoid an avalanche of errors */
-   pcs->Style = data_ignore;
+   pcs->style = STYLE_IGNORE;
 
    kMac = 6; /* minimum for NORMAL style */
    new_order = osmalloc(kMac * sizeof(reading));
@@ -1047,10 +1025,12 @@ cmd_data(void)
 	       if (TSTBIT(mUsed, Station)) fBad = fTrue;
 	       break;
 	     case Count:
-	       if (mUsed & (BIT(FrCount) | BIT(ToCount))) fBad = fTrue;
+	       if (mUsed & (BIT(FrCount) | BIT(ToCount) | BIT(Tape)))
+		  fBad = fTrue;
 	       break;
 	     case FrCount: case ToCount:
-	       if (TSTBIT(mUsed, Count)) fBad = fTrue;
+	       if (mUsed & (BIT(Count) | BIT(Tape)))
+		  fBad = fTrue;
 	       break;
 	     case Depth:
 	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(DepthChange)))
@@ -1152,9 +1132,11 @@ cmd_data(void)
       mUsed |= BIT(FrDepth) | BIT(ToDepth) | BIT(Depth);
 
    if (mUsed & (BIT(FrCount) | BIT(ToCount)))
-      mUsed |= BIT(Count);
+      mUsed |= BIT(Count) | BIT(Tape);
    else if (TSTBIT(mUsed, Count))
-      mUsed |= BIT(FrCount) | BIT(ToCount);
+      mUsed |= BIT(FrCount) | BIT(ToCount) | BIT(Tape);
+   else if (TSTBIT(mUsed, Tape))
+      mUsed |= BIT(FrCount) | BIT(ToCount) | BIT(Count);
 
 #if 0
    printf("mUsed = 0x%x, opt = 0x%x, mask = 0x%x\n", mUsed,
@@ -1176,7 +1158,7 @@ cmd_data(void)
        !(pcs->next && pcs->next->ordering == pcs->ordering))
       osfree(pcs->ordering);
 
-   pcs->Style = fn[style];
+   pcs->style = style;
    pcs->ordering = new_order;
 
    osfree(style_name);

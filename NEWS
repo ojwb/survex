@@ -3,6 +3,11 @@ Changes in 1.0.2:
 * printdm/printpcl/printwin: take notice of font_size_labels setting in
   print.ini etc.
 
+* cavern: Topofil can now be used with DIVING and CYLPOLAR styles; TOPOFIL
+  style is now synonymous with NORMAL.
+
+* cavern: *INFER EQUATES and *DATA TOPOFIL now work together correctly.
+
 * (Mac OS X version): command line programs now build.  We're working on Aven.
 
 * Updates to the Catalan and Spanish translations.

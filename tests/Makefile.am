@@ -14,9 +14,9 @@ firststn.svx firststn.pos\
 break_replace_pfx.svx\
 bug0.svx bug1.svx bug2.svx bug3.svx bug3.pos bug4.svx bug5.svx\
 expobug.svx\
-nosurvey.svx nosurvey.pos\
 nosurvey2.svx nosurvey2.pos\
 cartesian.svx cartesian.pos\
+cartesian2.svx cartesian2.pos\
 require.svx\
 calibrate_tape.svx calibrate_tape.pos\
 delatenda.pos delatendb.pos delatend.out\
@@ -64,4 +64,5 @@ unusedstation.svx exportnakedbegin.svx\
 oldestyle.svx\
 pos.pos v0.3d v1.3d v2.3d v3.3d\
 baddatacylpolar.svx bugdz.svx bugdz.pos badnewline.svx\
-badquantities.svx imgoffbyone.svx imgoffbyone.pos
+badquantities.svx imgoffbyone.svx imgoffbyone.pos\
+infereqtopofil.svx infereqtopofil.pos

@@ -17,8 +17,8 @@ SURVEXHOME="$srcdir"/../lib
 export SURVEXHOME
 
 : ${TESTS=${*-"singlefix singlereffix oneleg midpoint noose cross firststn\
- deltastar deltastar2 bug3 calibrate_tape nosurvey nosurvey2\
- cartesian lengthunits angleunits cmd_truncate cmd_case cmd_fix cmd_solve\
+ deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
+ lengthunits angleunits cmd_truncate cmd_case cmd_fix cmd_solve\
  cmd_entrance cmd_sd cmd_sd_bad cmd_fix_bad cmd_set cmd_set_bad\
  beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
  expobug require export export2 includecomment\
@@ -35,7 +35,7 @@ export SURVEXHOME
  cmd_title cmd_titlebad cmd_dummy cmd_infer\
  cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
  plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar
- newline badquantities imgoffbyone"}}
+ newline badquantities imgoffbyone infereqtopofil"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -54,9 +54,9 @@ for file in $TESTS ; do
   deltastar2) pos=yes ; warn=0 ;;
   bug3) pos=yes ; warn=0 ;;
   calibrate_tape) pos=yes ; warn=0 ;;
-  nosurvey) pos=yes ; warn=0 ;;
   nosurvey2) pos=yes ; warn=0 ;;
   cartesian) pos=yes ; warn=0 ;;
+  cartesian2) pos=yes ; warn=0 ;;
   lengthunits) pos=yes ; warn=0 ;;
   angleunits) pos=yes ; warn=0 ;;
   cmd_truncate) pos=yes ; warn=0 ;;
@@ -144,6 +144,7 @@ for file in $TESTS ; do
   badnewline) pos=fail ; error=2 ;;
   badquantities) pos=fail ; error=11 ;;
   imgoffbyone) pos=yes ;; # don't actually care about coords, just the names
+  infereqtopofil) pos=yes ; warn=0 ;;
   *) file='' ;;
   esac
 
