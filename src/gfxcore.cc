@@ -1183,8 +1183,7 @@ void GfxCore::NattyDrawNames()
     memset((void*)m_LabelGrid, 0, buffer_size);
 
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
-
-    while (label != m_Parent->GetLabelsEnd()) {
+    for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
 	Double x = GridXToScreen((*label)->x, (*label)->y, (*label)->z);
 	Double y = GridYToScreen((*label)->x, (*label)->y, (*label)->z)
 	    + CROSS_SIZE - FONT_SIZE;
@@ -1201,7 +1200,7 @@ void GfxCore::NattyDrawNames()
 	bool reject = true;
 
 	if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
-	    char *test = &m_LabelGrid[ix + iy * quantised_x];
+	    char * test = &m_LabelGrid[ix + iy * quantised_x];
 	    int len = str.Length() * dv + 1;
 	    reject = (ix + len >= quantised_x);
 	    int i = 0;
@@ -1215,12 +1214,11 @@ void GfxCore::NattyDrawNames()
 		int ymin = (iy >= 2) ? iy - 2 : iy;
 		int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
 		for (int y0 = ymin; y0 <= ymax; y0++) {
-                    assert((ix + y0 * quantised_x) < (quantised_x * quantised_y));
+		    assert((ix + y0 * quantised_x) < (quantised_x * quantised_y));
 		    memset((void*) &m_LabelGrid[ix + y0 * quantised_x], 1, len);
 		}
 	    }
 	}
-	++label;
     }
 }
 
@@ -1251,12 +1249,12 @@ void GfxCore::DrawDepthbar()
     for (band = 0; band < m_Bands; band++) {
 	Double z = m_Parent->GetZMin() + m_Parent->GetZExtent() * band
 		/ (m_Bands - 1);
+
 	strs[band] = FormatLength(z, false);
+	
 	int x, dummy;
 	m_DrawDC.GetTextExtent(strs[band], &x, &dummy);
-	if (x > size) {
-	    size = x;
-	}
+	if (x > size) size = x;
     }
 
     int x_min = m_XSize - DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
@@ -1356,16 +1354,17 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 
 void GfxCore::DrawScalebar()
 {
-    if (m_Lock == lock_POINT) return;
-
     // Draw the scalebar.
 
-    // Calculate the extent of the survey, in metres across the screen plane.
+    if (m_Lock == lock_POINT) return;
+
+    // Calculate how many metres of survey are currently displayed across the
+    // screen.
     int x_size = m_XSize;
-
     Double across_screen = Double(x_size / m_Params.scale);
-    Double multiplier = 1.0;
 
+    // Convert to imperial measurements if required.
+    Double multiplier = 1.0;
     if (!m_Metric) {
 	across_screen /= METRES_PER_FOOT;
 	multiplier = METRES_PER_FOOT;
@@ -1388,7 +1387,7 @@ void GfxCore::DrawScalebar()
 
     // Actual size of the thing in pixels:
     int size = int(size_snap * m_Params.scale);
-    m_ScaleBar.width = (int) size; //FIXME
+    m_ScaleBar.width = size;
 
     // Draw it...
     //--FIXME: improve this
@@ -1714,7 +1713,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	    }
 	    if (m_LastDrag == drag_COMPASS) {
 		// drag in heading indicator
-		double angle = atan2((double)dx0, (double)dy) - M_PI;
+		double angle = atan2(double(dx0), double(dy)) - M_PI;
 		if (dx0 * dx0 + dy * dy <= radius * radius) {
 		    TurnCaveTo(angle);
 		    m_MouseOutsideCompass = false;
@@ -1729,7 +1728,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	    else if (m_LastDrag == drag_ELEV) {
 		// drag in elevation indicator
 		if (dx1 >= 0 && dx1 * dx1 + dy * dy <= radius * radius) {
-		    TiltCave(atan2((double)dy, (double)dx1) - m_TiltAngle);
+		    TiltCave(atan2(double(dy), double(dx1)) - m_TiltAngle);
 		    m_MouseOutsideElev = false;
 		}
 		else if (dy >= INDICATOR_MARGIN) {
@@ -2169,7 +2168,7 @@ void GfxCore::OnPlan()
 	    TiltCave(M_PI_2 - m_TiltAngle);
 	    m_SwitchingTo = 0;
 	    ForceRefresh();
-    } 
+    }
 }
 
 void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd)
