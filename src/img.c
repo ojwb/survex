@@ -224,7 +224,6 @@ img_open_survey(const char *fnm, const char *survey)
 
    pimg->fRead = fTrue; /* reading from this file */
    img_errno = IMG_NONE;
-   pimg->start = ftell(pimg->fh);
 
    pimg->flags = 0;
 
@@ -234,6 +233,7 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->survey = NULL;
    pimg->survey_len = 0;
 
+   pimg->title = NULL;
    if (survey) {
       len = strlen(survey);
       if (len) {
@@ -246,7 +246,7 @@ img_open_survey(const char *fnm, const char *survey)
 	    pimg->survey[len] = '\0';
 	    p = strchr(pimg->survey, '.');
 	    if (p) p++; else p = pimg->survey;
-	    strcpy(pimg->title, p);
+	    pimg->title = osstrdup(p); /* FIXME: osstrdup for non IMG_HOSTED case */
 	    pimg->survey[len] = '.';
 	    pimg->survey[len + 1] = '\0';
 	 }
@@ -265,17 +265,17 @@ img_open_survey(const char *fnm, const char *survey)
        fnm[len - LITLEN(EXT_SVX_POS) - 1] == FNM_SEP_EXT &&
        strcmp(fnm + len - LITLEN(EXT_SVX_POS), EXT_SVX_POS) == 0) {
       pimg->version = -1;
-      pimg->title = baseleaf_from_fnm(fnm);
-      pimg->datestamp = osstrdup(msg(/*Date and time not available.*/108));
+      if (!survey) pimg->title = baseleaf_from_fnm(fnm);
+      /* FIXME: osstrdup for non IMG_HOSTED case */
+      pimg->datestamp = osstrdup(TIMENA);
+      pimg->start = 0;
       return pimg;
    }
 
    getline(tmpbuf, TMPBUFLEN, pimg->fh); /* id string */
    if (strcmp(tmpbuf, "Survex 3D Image File") != 0) {
-      fclose(pimg->fh);
-      osfree(pimg);
       img_errno = IMG_BADFORMAT;
-      return NULL;
+      goto error;
    }
 
    getline(tmpbuf, TMPBUFLEN, pimg->fh); /* file format version */
@@ -285,29 +285,28 @@ img_open_survey(const char *fnm, const char *survey)
       /* nothing special to do */
    } else if (pimg->version == 0 && tmpbuf[0] == 'v') {
       if (tmpbuf[1] < '2' || tmpbuf[1] > '3' || tmpbuf[2] != '\0') {
-	 fclose(pimg->fh);
-	 osfree(pimg);
 	 img_errno = IMG_TOONEW;
-	 return NULL;	 
+	 goto error;
       }
       pimg->version = tmpbuf[1] - '0';
    } else {
-      fclose(pimg->fh);
-      osfree(pimg);
       img_errno = IMG_BADFORMAT;
-      return NULL;
+      goto error;
    }
 
-   pimg->title = getline_alloc(pimg->fh);
+   if (!pimg->title) pimg->title = getline_alloc(pimg->fh);
    pimg->datestamp = getline_alloc(pimg->fh);
    if (!pimg->title || !pimg->datestamp) {
+      img_errno = IMG_OUTOFMEMORY;
+      error:
       osfree(pimg->title);
       fclose(pimg->fh);
       osfree(pimg);
-      img_errno = IMG_OUTOFMEMORY;
       return NULL;
    }
 
+   pimg->start = ftell(pimg->fh);
+   
    return pimg;
 }
 
@@ -315,8 +314,9 @@ void
 img_rewind(img *pimg)
 {
    fseek(pimg->fh, pimg->start, SEEK_SET);
-
-   /* [version 0] not in the middle of a 'LINE' command
+   clearerr(pimg->fh);
+   /* [version -1] already skipped heading line, or there wasn't one
+    * [version 0] not in the middle of a 'LINE' command
     * [version 3] not in the middle of turning a LINE into a MOVE */
    pimg->pending = 0;
 
@@ -498,11 +498,13 @@ img_read_item(img *pimg, img_point *p)
 	 q = pimg->label_buf + pimg->label_len;
 	 pimg->label_len += len;
 	 if (pimg->label_len >= pimg->buf_len) {
-	    pimg->label_buf = xosrealloc(pimg->label_buf, pimg->label_len + 1);
-	    if (!pimg->label_buf) {
+	    char *b = xosrealloc(pimg->label_buf, pimg->label_len + 1);
+	    if (!b) {
 	       img_errno = IMG_OUTOFMEMORY;
 	       return img_BAD;
 	    }
+	    q = (q - pimg->label_buf) + b;
+	    pimg->label = pimg->label_buf = b;
 	    pimg->buf_len = pimg->label_len + 1;
 	 }
 	 if (len && fread(q, len, 1, pimg->fh) != 1) {
@@ -641,7 +643,8 @@ img_read_item(img *pimg, img_point *p)
 	 /* Ignore empty labels in some .3d files (caused by a bug) */
 	 if (len == 0) goto again;
 	 if (len >= (long)pimg->buf_len) {
-	    pimg->label_buf = xosrealloc(pimg->label_buf, len + 1);
+	    pimg->label = pimg->label_buf = xosrealloc(pimg->label_buf,
+						       len + 1);
 	    if (!pimg->label_buf) {
 	       img_errno = IMG_OUTOFMEMORY;
 	       return img_BAD;
@@ -747,25 +750,25 @@ img_read_item(img *pimg, img_point *p)
 	    goto ascii_again;
 	 } else if (strcmp(tmpbuf, "name") == 0) {
 	    size_t off = 0;
-	    pimg->label_buf[0] = '\0';
-	    while (!feof(pimg->fh)) {
-	       if (!fgets(pimg->label_buf + off, pimg->buf_len - off, pimg->fh)) {
-		  img_errno = IMG_READERROR;
+	    int ch = getc(pimg->fh);
+	    if (ch == ' ') ch = getc(pimg->fh);
+	    while (ch != ' ') {
+	       if (ch == '\n' || ch == EOF) {
+		  img_errno = ferror(pimg->fh) ? IMG_READERROR : IMG_BADFORMAT;
 		  return img_BAD;
 	       }
-
-	       off += strlen(pimg->label_buf + off);
-	       if (off && pimg->label_buf[off - 1] == '\n') {
-		  pimg->label_buf[off - 1] = '\0';
-		  break;
+	       if (off == pimg->buf_len) {
+		  pimg->buf_len += pimg->buf_len;
+		  pimg->label_buf = xosrealloc(pimg->label_buf, pimg->buf_len);
 	       }
-	       pimg->buf_len += pimg->buf_len;
-	       pimg->label_buf = xosrealloc(pimg->label_buf, pimg->buf_len);
+	       pimg->label_buf[off++] = ch;
+	       ch = getc(pimg->fh);
 	    }
+	    pimg->label_buf[off] = '\0';
 
-	    if (pimg->label[0] == '\\')
-	       memmove(pimg->label, pimg->label + 1, off - 1);
-      
+	    pimg->label = pimg->label_buf;
+	    if (pimg->label[0] == '\\') pimg->label++;
+
 	    result = img_LABEL;
 	 } else {
 	    img_errno = IMG_BADFORMAT;
@@ -778,9 +781,8 @@ img_read_item(img *pimg, img_point *p)
 	 return img_BAD;
       }
 
-      if (result == img_LABEL) {
-	 if (pimg->survey_len &&
-	  (strncmp(pimg->label_buf, pimg->survey, pimg->survey_len + 1) != 0))
+      if (result == img_LABEL && pimg->survey_len) {
+	 if (strncmp(pimg->label, pimg->survey, pimg->survey_len + 1) != 0)
 	    goto ascii_again;
 	 pimg->label += pimg->survey_len + 1;
       }
@@ -788,7 +790,9 @@ img_read_item(img *pimg, img_point *p)
       return result;
    } else {
       /* version -1: .pos file */
-      size_t off = 0;
+      size_t off;
+      againpos:
+      off = 0;
       while (fscanf(pimg->fh, "(%lf,%lf,%lf ) ", &p->x, &p->y, &p->z) != 3) {
 	 int ch;
 	 if (ferror(pimg->fh)) {
@@ -823,9 +827,16 @@ img_read_item(img *pimg, img_point *p)
 	 pimg->label_buf = xosrealloc(pimg->label_buf, pimg->buf_len);
       }
 
-      if (pimg->label[0] == '\\')
-	 memmove(pimg->label, pimg->label + 1, off - 1);
-      
+      pimg->label = pimg->label_buf;
+
+      if (pimg->label[0] == '\\') pimg->label++;	 
+
+      if (pimg->survey_len) {
+	 size_t l = pimg->survey_len + 1;
+	 if (strncmp(pimg->survey, pimg->label, l) != 0) goto againpos;
+	 pimg->label += l;
+      }
+
       return img_LABEL;
    }
 }

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-TESTS = diffpos.tst cavern.tst extend.tst
+TESTS = diffpos.tst cavern.tst extend.tst 3dtopos.tst
 
 EXTRA_DIST = diffpos.tst cavern.tst extend.tst\
 beginroot.svx\
@@ -60,4 +60,5 @@ plumb.svx plumb.pos\
 cmd_fix_bad.svx\
 cmd_sd.svx cmd_sd_bad.svx\
 cmd_set.svx cmd_set_bad.svx\
-unusedstation.svx exportnakedbegin.svx
+unusedstation.svx exportnakedbegin.svx\
+pos.pos v0.3d v1.3d v2.3d v3.3d
