@@ -47,32 +47,32 @@ make install-strip DESTDIR="%{buildroot}"
 # Rearrange to conform to the FHS
 mkdir -p "%{buildroot}"/usr/share/doc
 # Recent Redhat versions (7.3 for e.g.) use /usr/share/doc/@PACKAGE@-@VERSION@ !
-mv "%{buildroot}"/usr/doc/@PACKAGE@ "%{buildroot}"/usr/share/doc/@PACKAGE@
+mv "%{buildroot}"/usr/doc/@PACKAGE@ "%{buildroot}"/usr/share/doc/@PACKAGE@-@VERSION@
 mv "%{buildroot}"/usr/man "%{buildroot}"/usr/share/man
 
 %clean
+[ "%{buildroot}" = "/" ] && echo "buildroot cannot be /" && exit 1
 [ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
+%defattr(-, root, root)
 %doc @EXTRA_TEXT@
-%doc /usr/share/doc/@PACKAGE@
-%doc /usr/share/man/man[^1]*
-%doc /usr/share/man/man1/[b-rt-zA-Z0-9]*
-%doc /usr/share/man/man1/sorterr*
-/usr/bin/[b-rt-zA-Z0-9]*
-/usr/bin/sorterr
-/usr/share/@PACKAGE@/[^i]*
-/usr/share/@PACKAGE@/i[^c]*
-/usr/share/@PACKAGE@/icons/??.png
-/usr/share/@PACKAGE@/icons/???.png
+%doc /usr/share/doc/@PACKAGE@-@VERSION@
+%doc /usr/share/man/
+%exclude /usr/share/man/man1/aven*
+%exclude /usr/share/man/man1/svxedit*
+/usr/bin/*
+%exclude /usr/bin/aven
+%exclude /usr/bin/svxedit
+/usr/share/@PACKAGE@/
+%exclude /usr/share/@PACKAGE@/icons/????*.png
 /usr/share/mime-info/survex.*
 %files aven
-%defattr(-,root,root)
+%defattr(-, root, root)
 %doc /usr/share/man/man1/aven*
 /usr/bin/aven
 /usr/share/@PACKAGE@/icons/????*.png
 %files svxedit
-%defattr(-,root,root)
+%defattr(-, root, root)
 %doc /usr/share/man/man1/svxedit*
 /usr/bin/svxedit
