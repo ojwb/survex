@@ -333,7 +333,7 @@ void GfxCore::SetScaleInitial(Double scale)
 
 	m_Polylines[band] = 0;
 	m_SurfacePolylines[band] = 0;
-	Double x, y, z;
+	Double x = 0, y = 0, z = 0;
 
 	list<PointInfo*>::iterator pos = m_Parent->GetPointsNC(band);
 	list<PointInfo*>::iterator end = m_Parent->GetPointsEndNC(band);
@@ -855,7 +855,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
     }
     
     if (!m_Rotating && !m_SwitchingTo) {
-	int here_x = INT_MAX, here_y;
+	int here_x = INT_MAX, here_y = INT_MAX;
 	// Draw "here" and "there".
 	if (m_here.x != DBL_MAX) {
 	    dc.SetPen(*wxWHITE_PEN);
