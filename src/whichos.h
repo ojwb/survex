@@ -63,6 +63,10 @@
 #   undef TOS
 #   define OS TOS
 #  endif
+#  if (defined(__WIN32__))
+#   undef WIN32
+#   define OS WIN32
+#  endif
 /* etc ... */
 # endif /*!defined(OS)*/
 
@@ -75,6 +79,7 @@
 # define UNIX   3
 # define AMIGA  4
 # define TOS    5
+# define WIN32  6
 /* Just numbers, not a rating system ;) */
 
 /* One last check, in case nothing worked */
