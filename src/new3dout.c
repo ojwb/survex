@@ -335,8 +335,6 @@ cave_close(img *pimg)
       put32((INT32_T)statcount, pimg->fh);
       fclose(pimg->fh);
    }
-   /* PHILU: don't understand this comment - suspect it's out of date - Olly
-    * memory leak, but it doesn't like this for some reason */
    osfree(pimg);
 }
 
