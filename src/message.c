@@ -601,15 +601,12 @@ parse_msgs(int n, unsigned char *p, int charset_code) {
    return msgs;
 }
 
-/* This is the name of the default language.  Add -DDEFAULTLANG to CFLAGS
- * e.g. with `CFLAGS="-DDEFAULTLANG=fr" ./configure'
+/* This is the name of the default language, which can be set like so:
+ * ./configure --enable-defaultlang=fr
  */
 #ifdef DEFAULTLANG
 /* No point extracting these errors as they won't get used if file opens */
-/* FIXME: this works on gcc but not some other compilers (e.g. norcroft),
- * and also ../lib/fr.h, etc don't go into srcN_NN.zip */
-# define HDR(D) "../lib/"STRING(D)".h"
-# include HDR(DEFAULTLANG)
+# include "../lib/defaultlang.h"
 #else
 #define N_DONTEXTRACTMSGS 5
 static unsigned char dontextractmsgs[] =
