@@ -94,12 +94,21 @@ if test -d /usr/local/cross-tools/i386-mingw32msvc/bin ; then
    # binaries from http://www.devolution.com/~slouken/SDL/Xmingw32/
    PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
 else
-   # debian mingw32 package
-   PATH=/usr/i386-mingw32msvc/bin:$PATH
-   CC=/usr/bin/i386-mingw32msvc-gcc
-   export CC
-   CXX=/usr/bin/i386-mingw32msvc-g++
-   export CXX
+   if test -d /usr/i586-mingw32msvc/bin ; then
+      # debian mingw32 package
+      PATH=/usr/i586-mingw32msvc/bin:$PATH
+      CC=/usr/bin/i586-mingw32msvc-gcc
+      export CC
+      CXX=/usr/bin/i586-mingw32msvc-g++
+      export CXX
+   else
+      # variant of debian mingw32 package?
+      PATH=/usr/i386-mingw32msvc/bin:$PATH
+      CC=/usr/bin/i386-mingw32msvc-gcc
+      export CC
+      CXX=/usr/bin/i386-mingw32msvc-g++
+      export CXX
+   fi
 fi
 if ! env LDFLAGS=-s CAVEROT= ./configure --with-x=no ; then
    echo mingw configure failed
