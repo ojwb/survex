@@ -10,7 +10,7 @@ than MIN/MAXFLOAT)?! This would be worth an error catch....
 [Seems to be fixed by newer allegro version - fix not confirmed by immoh]
 
 Date: 17 Sep 1998 17:49:36 GMT
-From: Olly <olly@muscat.co.uk>
+From: Olly
 
 DJGPP+Allegro caverot doesn't run well under NT.  The best resolution is
 320x200 and there are other niggles (e.g. on an NT 4 server, the mouse works
