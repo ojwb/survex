@@ -26,8 +26,8 @@ static ulong colour;
 typedef struct LIV { struct LIV *next; ulong min; uchar dirn; } liv;
 
 /* The goto iter/uniter avoids using recursion which could lead to stack
- * overflow.  Instead we use a linked list or array which will probably use
- * much less memory on most compilers.  Particularly true in visit_count().
+ * overflow.  Instead we use a linked list which will probably use
+ * much less memory on most compilers.
  */
 
 static ulong
@@ -81,54 +81,6 @@ uniter:
    }
    if (livTos) goto uniter;
    return min;
-}
-
-/* DO: instead of this, in matrix.c we just need to count stations in stnlist
- * for the bit of network we're solving for.  And we may be able to do further
- * reductions before then too */
-static void
-visit_count(node *stn, ulong max)
-{
-   int i;
-   int sp = 0;
-   node *stn2;
-   uchar *j_s;
-   stn->status = statFixed;
-   if (fixed(stn)) return;
-   add_stn_to_tab(stn);
-   if (stn->fArtic) return;
-   j_s = (uchar*)osmalloc((OSSIZE_T)max);
-iter:
-#ifdef DEBUG_ARTIC
-   printf("visit_count: stn [%p] ", stn);
-   print_prefix(stn->name);
-   printf("\n");
-#endif
-   for (i = 0; i <= 2; i++) {
-      if (stn->leg[i]) {
-	 stn2 = stn->leg[i]->l.to;
-	 if (fixed(stn2)) {
-	    stn2->status = statFixed;
-	 } else if (stn2->status != statFixed) {
-	    add_stn_to_tab(stn2);
-	    stn2->status = statFixed;
-	    if (!stn2->fArtic) {
-	       ASSERT2(sp<max, "dirn stack too small in visit_count");
-	       j_s[sp] = reverse_leg_dirn(stn->leg[i]);
-	       sp++;
-	       stn = stn2;
-	       goto iter;
-uniter:
-	       sp--;
-	       i = reverse_leg_dirn(stn->leg[j_s[sp]]);
-	       stn = stn->leg[j_s[sp]]->l.to;
-	    }
-	 }
-      }
-   }
-   if (sp > 0) goto uniter;
-   osfree(j_s);
-   return;
 }
 
 /* We want to split stations list into a list of components, each of which
@@ -189,12 +141,8 @@ articulate(void)
       if (stn->status != statFixed) cComponents++;
 #endif
 
-      for (i = 0; i <= 2; i++) {
-	 if (stn->leg[i]) {
-	    if (stn->leg[i]->l.to->colour == 0) {
-	       cUncolouredNeighbours++;
-	    }
-	 }
+      for (i = 0; i <= 2 && stn->leg[i]; i++) {
+	 if (stn->leg[i]->l.to->colour == 0) cUncolouredNeighbours++;
       }
 #ifdef DEBUG_ARTIC
       print_prefix(stn->name);
@@ -236,12 +184,16 @@ articulate(void)
 	       stn->status = statFixed;
 	       stn2 = stn->leg[i]->l.to;
 more:
+	       /* FIXME: instead of calling visit_count in matrix.c just count
+		* unfixed stations in stnlist for the bit of network we're
+		* solving for and then fill table with these stations.
+		* We may be able to do further reductions before then too...
+		*/
+#if 0
 	       n_stn_tab = 0;
 	       visit_count(stn2, n);
-#ifdef DEBUG_ARTIC
-	       printf("visit_count returned okay\n");
-#endif
 	       build_matrix(n_stn_tab, stn_tab);
+#endif
 	       FOR_EACH_STN(stn2, stnlist) {
 		  if (stn2->fArtic && fixed(stn2)) {
 		     int d;
