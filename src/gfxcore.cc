@@ -657,7 +657,7 @@ void GfxCore::RedrawOffscreen()
 	    int end;
 	    int inc;
 
-	    if (m_TiltAngle < 0.0) {
+	    if (m_TiltAngle >= 0.0) {
 	        start = 0;
 		end = m_Bands;
 		inc = 1;
@@ -685,7 +685,7 @@ void GfxCore::RedrawOffscreen()
 	    int end;
 	    int inc;
 
-	    if (m_TiltAngle < 0.0) {
+	    if (m_TiltAngle >= 0.0) {
 	        start = 0;
 		end = m_Bands;
 		inc = 1;
