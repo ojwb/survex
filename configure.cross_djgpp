@@ -1,5 +1,0 @@
-#! /bin/sh
-#env STRIP=echo EXTEXE=.exe CC=dos-gcc LDFLAGS=-s CAVEROT=caverot.exe \
-# CRLIB=-lalleg CROBJX=dosrot.o ./configure --with-x=no
-env CC=dos-gcc LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg \
- CROBJX=dosrot.o ./configure --with-x=no
