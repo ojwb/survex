@@ -55,13 +55,6 @@ From: Brian Clipstone <brian@bclipstone.freeserve.co.uk>
 [in 0.92pre6, allegro version] CAVEROT Keys :- Delete, U & D and the
 cursor keys do not work. [Not confirmed as fixed by Brian]
 
-Date: Wed, 08 Mar 2000 18:29:09 EST
-From: Mike Yocum <myocum@mis.net>
-
-svx092pre5 [...] did produce an error file much longer than whatever
-version I ran before.  [Previous version deleted so unable to discover
-what it was.]
-
 Date: Fri, 08 Dec 2000
 From: Olly
 
