@@ -2268,22 +2268,47 @@ void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
             vertices_start++;
 
             if (segment == 0) {
-                size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
-                            sqrd(vertices_start->y - pt_v.getY()) +
-                            sqrd(vertices_start->z - pt_v.getZ()) / 9) / 4;
+		Double h = sqrd(vertices_start->x - pt_v.getX()) +
+			   sqrd(vertices_start->y - pt_v.getY());
+		Double v = sqrd(vertices_start->z - pt_v.getZ());
+		if (h + v > 30.0 * 30.0) {
+		    Double scale = 30.0 / sqrt(h + v);
+		    h *= scale;
+		    v *= scale;
+		}
+                size = sqrt(h + v / 9);
             } else if (segment == length - 1) {
-                size = sqrt(sqrd(prev_pt_v.getX() - pt_v.getX()) +
-                            sqrd(prev_pt_v.getY() - pt_v.getY()) +
-                            sqrd(prev_pt_v.getZ() - pt_v.getZ()) / 9) / 4;
+		Double h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
+			   sqrd(prev_pt_v.getY() - pt_v.getY());
+		Double v = sqrd(prev_pt_v.getZ() - pt_v.getZ());
+		if (h + v > 30.0 * 30.0) {
+		    Double scale = 30.0 / sqrt(h + v);
+		    h *= scale;
+		    v *= scale;
+		}
+                size = sqrt(h + v / 9);
             } else {
-                size = sqrt(sqrd(vertices_start->x - pt_v.getX()) +
-                            sqrd(vertices_start->y - pt_v.getY()) +
-                            sqrd(vertices_start->z - pt_v.getZ()) / 9) / 4;
-                size += sqrt(sqrd(prev_pt_v.getX() - pt_v.getX()) +
-                            sqrd(prev_pt_v.getY() - pt_v.getY()) +
-                            sqrd(prev_pt_v.getZ() - pt_v.getZ()) / 9) / 4;
-                size *= .5;
+		Double h = sqrd(vertices_start->x - pt_v.getX()) +
+			   sqrd(vertices_start->y - pt_v.getY());
+		Double v = sqrd(vertices_start->z - pt_v.getZ());
+		if (h + v > 30.0 * 30.0) {
+		    Double scale = 30.0 / sqrt(h + v);
+		    h *= scale;
+		    v *= scale;
+		}
+                size = sqrt(h + v / 9);
+		h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
+		    sqrd(prev_pt_v.getY() - pt_v.getY());
+		v = sqrd(prev_pt_v.getZ() - pt_v.getZ());
+		if (h + v > 30.0 * 30.0) {
+		    Double scale = 30.0 / sqrt(h + v);
+		    h *= scale;
+		    v *= scale;
+		}
+                size += sqrt(h + v / 9);
+                size /= 2;
             }
+	    size /= 4;
 
 	    double z_pitch_adjust = 0.0;
             bool cover_end = false;
