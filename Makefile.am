@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = 1.5 foreign
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
 EXTRA_DIST = $(GNU_FILES) TODO alien.pl survex.iss.in OLDNEWS\
- desc.txt desc-aven.txt survex.spec
+ desc.txt desc-aven.txt survex.spec.in survex.spec
 
 SUBDIRS = . lib src doc tests debian
 
@@ -114,7 +114,7 @@ mingw_iss :
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
 	: # NB keep next line in step with survex.iss.in
-	for a in de es fr it; do\
+	for a in cs de es fr it; do\
 	 mkdir iss_tmp/$$a;\
 	 cp /usr/share/locale/$$a/LC_MESSAGES/wxstd.mo iss_tmp/$$a;\
 	done
