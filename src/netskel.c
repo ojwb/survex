@@ -4,6 +4,8 @@
  * Copyright (C) 1991-1999 Olly Betts
  */
 
+extern void articulate(void); /* FIXME: */
+
 /*#define BLUNDER_DETECTION 1*/
 
 #if 0
@@ -113,7 +115,8 @@ solve_network(void /*node *stnlist*/)
    validate(); dump_network();
    remove_subnets();
    validate(); dump_network();
-   solve_matrix(stnlist);
+   articulate();
+/*   solve_matrix(stnlist); */
    validate(); dump_network();
    replace_subnets();
    validate(); dump_network();
