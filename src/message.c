@@ -143,7 +143,7 @@ osrealloc(void *p, OSSIZE_T size)
    return p;
 }
 
-void FAR *
+char FAR *
 osstrdup(const char *str)
 {
    char *p;

@@ -56,6 +56,6 @@ void osfree(void *p);
 
 void FAR *osmalloc(OSSIZE_T);
 void FAR *osrealloc(void *, OSSIZE_T);
-void FAR *osstrdup(const char *str);
+char FAR *osstrdup(const char *str);
 
 #endif
