@@ -255,11 +255,13 @@ public:
 	wxString l2 = pt2->text.AfterLast(separator);
 	n = name_cmp(l1, l2, separator);
 	if (n) return n < 0;
+	// Prefer non-2-nodes...
+	// FIXME; implement
 	// if leaf names are the same, prefer shorter labels as we can
 	// display more of them
 	n = pt1->text.length() - pt2->text.length();
 	if (n) return n < 0;
-	// make sure that we don't ever compare different label as equal
+	// make sure that we don't ever compare different labels as equal
 	return name_cmp(pt1->text, pt2->text, separator) < 0;
     }
 };
@@ -646,7 +648,7 @@ void MainFrm::ClearPointLists()
 {
     // Free memory occupied by the contents of the label lists.
 
-    list<LabelInfo*>::iterator pos = m_Labels.begin();
+    list<LabelInfo*>::const_iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;
 	delete label;
