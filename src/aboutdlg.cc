@@ -28,6 +28,7 @@
 #include "aboutdlg.h"
 #include "aven.h"
 #include "message.h"
+#include <stdio.h> // for popen
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
 END_EVENT_TABLE()
@@ -38,13 +39,21 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticText* title = new wxStaticText(this, 502, "Aven "VERSION);
-    wxStaticText* purpose = new wxStaticText(this, 503,
-	    wxString(msg(/*Survey visualisation tool*/209)));
-    wxStaticText* copyright1 = new wxStaticText(this, 504,
-	    wxString::Format(AVEN_COPYRIGHT_MSG, msg(/*&copy;*/0)));
-    wxStaticText* copyright2 = new wxStaticText(this, 505,
-	    wxString::Format(COPYRIGHT_MSG, msg(/*&copy;*/0)));
+    wxBitmap& bm = wxGetApp().GetAboutBitmap();
+    if (bm.Ok()) {
+	wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, bm);
+	horiz->Add(bitmap, 0 /* horizontally unstretchable */, wxALL,
+		   2 /* border width */);
+    }
+    horiz->Add(vert, 0, wxALL, 2);
+
+    wxString id = wxString("Aven "VERSION);
+    id += '\n';
+    id += msg(/*Survey visualisation tool*/209);
+    wxStaticText* title = new wxStaticText(this, 502, id);
+    wxStaticText* copyright = new wxStaticText(this, 503,
+	    wxString::Format(AVEN_COPYRIGHT_MSG"\n"COPYRIGHT_MSG,
+			     msg(/*&copy;*/0), msg(/*&copy;*/0)));
 
     wxString licence_str;
     wxString l(msg(/*This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.*/219));
@@ -71,28 +80,18 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 	l = l.substr(a);
     } while (!l.empty());
 
-    wxStaticText* licence = new wxStaticText(this, 508, licence_str);
+    wxStaticText* licence = new wxStaticText(this, 504, licence_str);
     wxButton* ok = new wxButton(this, wxID_OK, wxGetTranslation("OK"));
     ok->SetDefault();
-
-    wxBitmap& bm = wxGetApp().GetAboutBitmap();
-    if (bm.Ok()) {
-	wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, bm);
-	horiz->Add(bitmap, 0 /* horizontally unstretchable */, wxALL, 2 /* border width */);
-    }
-    horiz->Add(vert, 0, wxALL, 2);
 
     vert->Add(10, 5, 0, wxTOP, 5);
     vert->Add(title, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
-    vert->Add(purpose, 0, wxLEFT | wxRIGHT, 20);
+
+    vert->Add(copyright, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
 
-    vert->Add(copyright1, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(copyright2, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(10, 5, 0, wxTOP, 15);
-
-    vert->Add(new wxStaticText(this, 506, msg(/*System Information:*/390)),
+    vert->Add(new wxStaticText(this, 505, msg(/*System Information:*/390)),
 	      0, wxLEFT | wxRIGHT, 20);
 
 #ifdef unix
@@ -126,7 +125,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 
     // Use a readonly multiline text edit for the system info so users can
     // easily cut and paste it into an email when reporting bugs.
-    vert->Add(new wxTextCtrl(this, 507, info, wxDefaultPosition,
+    vert->Add(new wxTextCtrl(this, 506, info, wxDefaultPosition,
 			     wxSize(360, 64), wxTE_MULTILINE|wxTE_READONLY),
 	      0, wxLEFT | wxRIGHT, 20);
 
