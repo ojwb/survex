@@ -2042,22 +2042,22 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
     list<Vector3> centreline;
 
     if (surface) EnableDashedLines();
-    list<PointInfo*>::const_iterator pos = m_Parent->GetPoints();
-    list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd();
+    list<PointInfo>::const_iterator pos = m_Parent->GetPoints();
+    list<PointInfo>::const_iterator end = m_Parent->GetPointsEnd();
     while (pos != end) {
-	PointInfo* pti = *pos++;
+	const PointInfo & pti = *pos++;
 
 	Double x, y, z;
-	x = pti->GetX();
-	y = pti->GetY();
-	z = pti->GetZ();
+	x = pti.GetX();
+	y = pti.GetY();
+	z = pti.GetZ();
 
-	if (pti->IsLine()) {
+	if (pti.IsLine()) {
 	    // We have a leg.
 
 	    assert(!first_point); // The first point must always be a move.
 	    bool changing_ug_state =
-                (current_polyline_is_surface != pti->IsSurface());
+                (current_polyline_is_surface != pti.IsSurface());
 
 	    if (changing_ug_state || last_was_move) {
 		// Start a new polyline if we're switching
@@ -2326,7 +2326,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 		last_was_move = false;
 
 		// Record new underground/surface state.
-		current_polyline_is_surface = pti->IsSurface();
+		current_polyline_is_surface = pti.IsSurface();
 	    }
    
 	    centreline.push_back(Vector3(x, y, z));

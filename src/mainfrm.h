@@ -127,6 +127,8 @@ class PointInfo {
     bool isSurface;
 
 public:
+    PointInfo(Double x_, Double y_, Double z_, bool line, bool surface)
+	: x(x_), y(y_), z(z_), isLine(line), isSurface(surface) { }
     Double GetX() const { return x; }
     Double GetY() const { return y; }
     Double GetZ() const { return z; }
@@ -170,7 +172,7 @@ public:
 class MainFrm : public wxFrame {
     wxFileHistory m_history;
     int m_SashPosition;
-    list<PointInfo*> points;
+    list<PointInfo> points;
     list<LabelInfo*> m_Labels;
     Double m_XExt;
     Double m_YExt;
@@ -224,7 +226,6 @@ class MainFrm : public wxFrame {
 
     void SetTreeItemColour(LabelInfo* label);
     void FillTree();
-    void ClearPointLists();
     bool LoadData(const wxString& file, wxString prefix = "");
     void CentreDataset(Double xmin, Double ymin, Double zmin);
 
@@ -427,11 +428,11 @@ public:
 
     void SetMouseOverStation(LabelInfo* label);
 
-    list<PointInfo*>::const_iterator GetPoints() const {
+    list<PointInfo>::const_iterator GetPoints() const {
 	return points.begin();
     }
 
-    list<PointInfo*>::const_iterator GetPointsEnd() const {
+    list<PointInfo>::const_iterator GetPointsEnd() const {
 	return points.end();
     }
 
