@@ -1,3 +1,5 @@
+Changes in 0.97-prerelease6:
+
 * (MS Windows version): aven: if there are problems opening the
   message file, report them in a message box rather than printing text
   which the user will never see.
@@ -28,6 +30,11 @@
   with each other and with aven.
 
 * Strip leading '\' from station names read from old .3d files.
+
+* cavern: Better reporting of error stats involving a station fixed
+  with errors.
+
+* aven: allow highlighting of fixed, exported, and entrance stations.
 
 Changes in 0.97-prerelease5:
 

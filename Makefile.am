@@ -16,7 +16,7 @@ base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos extend surv
 
 spec = ${PACKAGE}-${VERSION}.spec
 
-RELEASE = 5
+RELEASE = 6
 
 rpm : dist
 	echo Summary: Cave Surveying Software > ${spec}
