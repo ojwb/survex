@@ -6,7 +6,8 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h uni2dos.h useful.h\
  validate.h whichos.h xrot.h new3dout.h 3ddefs.h \
- aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h
+ aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h\
+ avendefs.h avenview.h avendoc.h childfrm.h
 
 LDADD = @LIBOBJS@
 
@@ -26,7 +27,7 @@ survex_SOURCES = wrap.c osdepend.c
 
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
- useful.c
+ useful.c avendoc.cc avenview.cc avendefs.cc childfrm.cc
 
 aven_LDADD = @LIBOBJS@ @WX_LIBS@
 aven_CFLAGS = @WX_CFLAGS@

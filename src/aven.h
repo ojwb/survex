@@ -24,12 +24,17 @@
 #define aven_h
 
 #include "wx.h"
+#include "avendefs.h"
+#include "message.h"
 
 class MainFrm;
 
 class Aven : public wxApp {
+    wxDocManager* m_DocManager;
     MainFrm* m_Frame;
     wxBitmap m_AboutBitmap;
+    wxPen* m_Pens;
+    wxBrush* m_Brushes;
 
 public:
     Aven();
@@ -38,6 +43,26 @@ public:
 
     void ReportError(const wxString&);
     wxBitmap& GetAboutBitmap() { return m_AboutBitmap; }
+
+    MainFrm* GetMainFrame() { return m_Frame; }
+
+    wxPen GetPen(int band) {
+        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+        return m_Pens[band];
+    }
+
+    wxBrush GetBrush(int band) {
+        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+        return m_Brushes[band];
+    }
+
+    wxPen GetSurfacePen() { return m_Pens[NUM_DEPTH_COLOURS]; }
+
+    wxString GetTabMsg(int key) {
+        wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
+    }
+
+    void OnAbout(wxCommandEvent&);
 };
 
 DECLARE_APP(Aven)

@@ -21,8 +21,11 @@
 //
 
 #include "gfxcore.h"
-#include "mainfrm.h"
+#include "avendoc.h"
+#include "childfrm.h"
 #include "message.h"
+#include "avendefs.h"
+#include "aven.h"
 
 #include <math.h>
 
@@ -77,16 +80,89 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
     EVT_MOTION(GfxCore::OnMouseMove)
     EVT_SIZE(GfxCore::OnSize)
     EVT_IDLE(GfxCore::OnTimer)
+
+    EVT_MENU(menu_ROTATION_START, GfxCore::OnStartRotation)
+    EVT_MENU(menu_ROTATION_STOP, GfxCore::OnStopRotation)
+    EVT_MENU(menu_ROTATION_SPEED_UP, GfxCore::OnSpeedUp)
+    EVT_MENU(menu_ROTATION_SLOW_DOWN, GfxCore::OnSlowDown)
+    EVT_MENU(menu_ROTATION_REVERSE, GfxCore::OnReverseDirectionOfRotation)
+    EVT_MENU(menu_ROTATION_STEP_CCW, GfxCore::OnStepOnceAnticlockwise)
+    EVT_MENU(menu_ROTATION_STEP_CW, GfxCore::OnStepOnceClockwise)
+
+    EVT_MENU(menu_ORIENT_MOVE_NORTH, GfxCore::OnMoveNorth)
+    EVT_MENU(menu_ORIENT_MOVE_EAST, GfxCore::OnMoveEast)
+    EVT_MENU(menu_ORIENT_MOVE_SOUTH, GfxCore::OnMoveSouth)
+    EVT_MENU(menu_ORIENT_MOVE_WEST, GfxCore::OnMoveWest)
+    EVT_MENU(menu_ORIENT_SHIFT_LEFT, GfxCore::OnShiftDisplayLeft)
+    EVT_MENU(menu_ORIENT_SHIFT_RIGHT, GfxCore::OnShiftDisplayRight)
+    EVT_MENU(menu_ORIENT_SHIFT_UP, GfxCore::OnShiftDisplayUp)
+    EVT_MENU(menu_ORIENT_SHIFT_DOWN, GfxCore::OnShiftDisplayDown)
+    EVT_MENU(menu_ORIENT_PLAN, GfxCore::OnPlan)
+    EVT_MENU(menu_ORIENT_ELEVATION, GfxCore::OnElevation)
+    EVT_MENU(menu_ORIENT_HIGHER_VP, GfxCore::OnHigherViewpoint)
+    EVT_MENU(menu_ORIENT_LOWER_VP, GfxCore::OnLowerViewpoint)
+    EVT_MENU(menu_ORIENT_ZOOM_IN, GfxCore::OnZoomIn)
+    EVT_MENU(menu_ORIENT_ZOOM_OUT, GfxCore::OnZoomOut)
+    EVT_MENU(menu_ORIENT_DEFAULTS, GfxCore::OnDefaults)
+
+    EVT_MENU(menu_VIEW_SHOW_LEGS, GfxCore::OnShowSurveyLegs)
+    EVT_MENU(menu_VIEW_SHOW_CROSSES, GfxCore::OnShowCrosses)
+    EVT_MENU(menu_VIEW_SHOW_NAMES, GfxCore::OnShowStationNames)
+    EVT_MENU(menu_VIEW_SHOW_OVERLAPPING_NAMES, GfxCore::OnDisplayOverlappingNames)
+    EVT_MENU(menu_VIEW_SHOW_SURFACE, GfxCore::OnShowSurface)
+    EVT_MENU(menu_VIEW_SURFACE_DEPTH, GfxCore::OnShowSurfaceDepth)
+    EVT_MENU(menu_VIEW_SURFACE_DASHED, GfxCore::OnShowSurfaceDashed)
+    EVT_MENU(menu_VIEW_COMPASS, GfxCore::OnViewCompass)
+    EVT_MENU(menu_VIEW_CLINO, GfxCore::OnViewClino)
+    EVT_MENU(menu_VIEW_DEPTH_BAR, GfxCore::OnToggleDepthbar)
+    EVT_MENU(menu_VIEW_SCALE_BAR, GfxCore::OnToggleScalebar)
+
+    EVT_MENU(menu_CTL_REVERSE, GfxCore::OnReverseControls)
+
+    EVT_MENU(menu_HELP_ABOUT, Aven::OnAbout)
+
+    EVT_UPDATE_UI(menu_ROTATION_START, GfxCore::OnStartRotationUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_STOP, GfxCore::OnStopRotationUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_SPEED_UP, GfxCore::OnSpeedUpUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_SLOW_DOWN, GfxCore::OnSlowDownUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_REVERSE, GfxCore::OnReverseDirectionOfRotationUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_STEP_CCW, GfxCore::OnStepOnceAnticlockwiseUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_STEP_CW, GfxCore::OnStepOnceClockwiseUpdate)
+
+    EVT_UPDATE_UI(menu_ORIENT_MOVE_NORTH, GfxCore::OnMoveNorthUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_MOVE_EAST, GfxCore::OnMoveEastUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_MOVE_SOUTH, GfxCore::OnMoveSouthUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_MOVE_WEST, GfxCore::OnMoveWestUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_SHIFT_LEFT, GfxCore::OnShiftDisplayLeftUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_SHIFT_RIGHT, GfxCore::OnShiftDisplayRightUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_SHIFT_UP, GfxCore::OnShiftDisplayUpUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_SHIFT_DOWN, GfxCore::OnShiftDisplayDownUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_PLAN, GfxCore::OnPlanUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_ELEVATION, GfxCore::OnElevationUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_HIGHER_VP, GfxCore::OnHigherViewpointUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_LOWER_VP, GfxCore::OnLowerViewpointUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_ZOOM_IN, GfxCore::OnZoomInUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_ZOOM_OUT, GfxCore::OnZoomOutUpdate)
+    EVT_UPDATE_UI(menu_ORIENT_DEFAULTS, GfxCore::OnDefaultsUpdate)
+
+    EVT_UPDATE_UI(menu_VIEW_SHOW_LEGS, GfxCore::OnShowSurveyLegsUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_CROSSES, GfxCore::OnShowCrossesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_NAMES, GfxCore::OnShowStationNamesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_SURFACE, GfxCore::OnShowSurfaceUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SURFACE_DEPTH, GfxCore::OnShowSurfaceDepthUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SURFACE_DASHED, GfxCore::OnShowSurfaceDashedUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_OVERLAPPING_NAMES, GfxCore::OnDisplayOverlappingNamesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_COMPASS, GfxCore::OnViewCompassUpdate)
+    EVT_UPDATE_UI(menu_VIEW_CLINO, GfxCore::OnViewClinoUpdate)
+    EVT_UPDATE_UI(menu_VIEW_DEPTH_BAR, GfxCore::OnToggleDepthbarUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, GfxCore::OnToggleScalebarUpdate)
+
+    EVT_UPDATE_UI(menu_CTL_REVERSE, GfxCore::OnReverseControlsUpdate)
 END_EVENT_TABLE()
 
-GfxCore::GfxCore(MainFrm* parent) :
+GfxCore::GfxCore(AvenDoc* doc, ChildFrm* parent) :
     wxWindow(parent, 100),
-    m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
-	   wxFONTENCODING_ISO8859_1),
-    //    m_StdCursor(wxCURSOR_ARROW),
-    //    m_ScaleRotateCursor("/home/mark/Development/survex/cursors/scrot.xbm"),
-    //    m_Timer(this, TIMER_ID),
-    m_InitialisePending(false)
+    m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica", wxFONTENCODING_ISO8859_1)
 {
     m_LastDrag = drag_NONE;
     m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
@@ -96,6 +172,7 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_DraggingMiddle = false;
     m_DraggingRight = false;
     m_Parent = parent;
+    m_Doc = doc;
     m_DepthbarOff = false;
     m_ScalebarOff = false;
     m_IndicatorsOff = false;
@@ -138,20 +215,11 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Brushes.indicator2.SetColour(114, 149, 160);
 
     SetBackgroundColour(wxColour(0, 0, 0));
-
-#ifdef _WIN32
-    // fp = fopen("avendebug.txt", "rw");
-    // assert(fp);
-#endif
 }
 
 GfxCore::~GfxCore()
 {
     TryToFreeArrays();
-
-#ifdef _WIN32
-    //  fclose(fp);
-#endif
 }
 
 void GfxCore::TryToFreeArrays()
@@ -193,21 +261,22 @@ void GfxCore::Initialise()
 
     TryToFreeArrays();
 
-    m_Bands = m_Parent->GetNumDepthBands(); // last band is surface data
+    m_Bands = m_Doc->GetNumDepthBands(); // last band is surface data
+
     m_PlotData = new PlotData[m_Bands];
     m_Polylines = new int[m_Bands];
     m_SurfacePolylines = new int[m_Bands];
-    m_CrossData.vertices = new wxPoint[m_Parent->GetNumCrosses() * 4];
-    m_CrossData.num_segs = new int[m_Parent->GetNumCrosses() * 2];
-    m_Labels = new wxString[m_Parent->GetNumCrosses()];
-    m_LabelsLastPlotted = new LabelFlags[m_Parent->GetNumCrosses()];
+    m_CrossData.vertices = new wxPoint[m_Doc->GetNumCrosses() * 4];
+    m_CrossData.num_segs = new int[m_Doc->GetNumCrosses() * 2];
+    m_Labels = new wxString[m_Doc->GetNumCrosses()];
+    m_LabelsLastPlotted = new LabelFlags[m_Doc->GetNumCrosses()];
     m_LabelCacheNotInvalidated = false;
     
     for (int band = 0; band < m_Bands; band++) {
-        m_PlotData[band].vertices = new wxPoint[m_Parent->GetNumPoints()];
-	m_PlotData[band].num_segs = new int[m_Parent->GetNumLegs()];
-        m_PlotData[band].surface_vertices = new wxPoint[m_Parent->GetNumPoints()];
-	m_PlotData[band].surface_num_segs = new int[m_Parent->GetNumLegs()];
+        m_PlotData[band].vertices = new wxPoint[m_Doc->GetNumPoints()];
+	m_PlotData[band].num_segs = new int[m_Doc->GetNumLegs()];
+        m_PlotData[band].surface_vertices = new wxPoint[m_Doc->GetNumPoints()];
+	m_PlotData[band].surface_num_segs = new int[m_Doc->GetNumLegs()];
     }
 
     m_UndergroundLegs = false;
@@ -222,13 +291,13 @@ void GfxCore::Initialise()
     m_DepthbarOff = false;
     m_ScalebarOff = false;
     
-    if (m_Parent->GetXExtent() == 0.0) {
+    if (m_Doc->GetXExtent() == 0.0) {
         m_Lock = LockFlags(m_Lock | lock_X);
     }
-    if (m_Parent->GetYExtent() == 0.0) {
+    if (m_Doc->GetYExtent() == 0.0) {
         m_Lock = LockFlags(m_Lock | lock_Y);
     }
-    if (m_Parent->GetZExtent() == 0.0) {
+    if (m_Doc->GetZExtent() == 0.0) {
         m_Lock = LockFlags(m_Lock | lock_Z);
     }
     switch (m_Lock) {
@@ -271,6 +340,7 @@ void GfxCore::Initialise()
 	    break;
 
         case lock_XY:
+	{
 	    // survey is linear and parallel to the Z axis => display in elevation.
 	    m_PanAngle = M_PI * 1.5;
 
@@ -281,12 +351,16 @@ void GfxCore::Initialise()
 	    m_RotationMatrix = m_Params.rotation.asMatrix();
 	    m_IndicatorsOff = true;
 	    break;
+	}
+
+        default:
+	    break;
     }
 
     // Scale the survey to a reasonable initial size.
     m_InitialScale = m_Lock == lock_POINT ? 1.0 :
-      m_Lock == lock_XY ? double(m_YSize) / double(m_Parent->GetZExtent()) :
-      double(m_XSize) / (double(MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent())) * 1.1);
+      m_Lock == lock_XY ? double(m_YSize) / double(m_Doc->GetZExtent()) :
+      double(m_XSize) / (double(MAX(m_Doc->GetXExtent(), m_Doc->GetYExtent())) * 1.1);
 
     // Calculate screen coordinates and redraw.
     SetScale(m_InitialScale);
@@ -344,12 +418,12 @@ void GfxCore::SetScale(double scale)
 	    count--; // MainFrm guarantees the first point will be a move.
 	    scount--;
 	    int current_surface_x = INT_MAX;
-	    int current_surface_y;
+	    int current_surface_y = INT_MAX;
 
 	    m_Polylines[band] = 0;
 	    m_SurfacePolylines[band] = 0;
-	    list<PointInfo*>::const_iterator pos = m_Parent->GetPoints(band);
-	    list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd(band);
+	    list<PointInfo*>::const_iterator pos = m_Doc->GetPoints(band);
+	    list<PointInfo*>::const_iterator end = m_Doc->GetPointsEnd(band);
 	    bool first = true;
 	    bool last_was_surface = false;
 	    while (pos != end) {
@@ -442,9 +516,8 @@ void GfxCore::SetScale(double scale)
         wxPoint* pt = m_CrossData.vertices;
 	int* count = m_CrossData.num_segs;
 	wxString* labels = m_Labels;
-	list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
-	list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
-	double x, y, z;
+	list<LabelInfo*>::const_iterator pos = m_Doc->GetLabels();
+	list<LabelInfo*>::const_iterator end = m_Doc->GetLabelsEnd();
 	wxString text;
 	while (pos != end) {
 	    LabelInfo* label = *pos++;
@@ -500,7 +573,7 @@ void GfxCore::RedrawOffscreen()
         // Draw underground legs.
         if (m_Legs) {
 	    for (int band = 0; band < m_Bands; band++) {
-	        m_DrawDC.SetPen(m_Parent->GetPen(band));
+	        m_DrawDC.SetPen(wxGetApp().GetPen(band));
 		int* num_segs = m_PlotData[band].num_segs; //-- sort out the polyline stuff!!
 		wxPoint* vertices = m_PlotData[band].vertices;
 		for (int polyline = 0; polyline < m_Polylines[band]; polyline++) {
@@ -513,7 +586,7 @@ void GfxCore::RedrawOffscreen()
 	// Draw surface legs.
         if (m_Surface) {
 	    for (int band = 0; band < m_Bands; band++) {
-	        wxPen pen = m_SurfaceDepth ? m_Parent->GetPen(band) : m_Parent->GetSurfacePen();
+	        wxPen pen = m_SurfaceDepth ? wxGetApp().GetPen(band) : wxGetApp().GetSurfacePen();
 		if (m_SurfaceDashed) {
 #ifdef _WIN32
 		    pen.SetStyle(wxDOT);
@@ -540,7 +613,7 @@ void GfxCore::RedrawOffscreen()
 	    m_DrawDC.SetPen(m_Pens.turquoise);
 	    int* num_segs = m_CrossData.num_segs; //-- sort out the polyline stuff!!
 	    wxPoint* vertices = m_CrossData.vertices;
-	    for (int polyline = 0; polyline < m_Parent->GetNumCrosses() * 2; polyline++) {
+	    for (int polyline = 0; polyline < m_Doc->GetNumCrosses() * 2; polyline++) {
 	        m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre, m_YCentre);
 		vertices += *num_segs++;
 	    }
@@ -862,7 +935,7 @@ void GfxCore::NattyDrawNames()
     LabelFlags* last_plot = m_LabelsLastPlotted;
     wxPoint* pt = m_CrossData.vertices;
 	
-    for (int name = 0; name < m_Parent->GetNumCrosses(); name++) {
+    for (int name = 0; name < m_Doc->GetNumCrosses(); name++) {
         // *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
         // the actual station.
  
@@ -961,7 +1034,7 @@ void GfxCore::SimpleDrawNames()
     wxPoint* pt = m_CrossData.vertices;
 
     LabelFlags* last_plot = m_LabelsLastPlotted;
-    for (int name = 0; name < m_Parent->GetNumCrosses(); name++) {
+    for (int name = 0; name < m_Doc->GetNumCrosses(); name++) {
         // *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
         // the actual station.
 
@@ -991,7 +1064,7 @@ void GfxCore::DrawDepthbar()
 
     wxString* strs = new wxString[bands + 1];
     for (int band = 0; band <= bands; band++) {
-	double z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / bands);
+	double z = m_Doc->GetZMin() + (m_Doc->GetZExtent() * band / bands);
 	strs[band] = FormatLength(z, false);
 	int x, y;
 	m_DrawDC.GetTextExtent(strs[band], &x, &y);
@@ -1012,8 +1085,8 @@ void GfxCore::DrawDepthbar()
 
     for (int band = (bands == 1 ? 1 : 0); band <= bands; band++) {
         if (band < bands || bands == 1) {
-	    m_DrawDC.SetPen(m_Parent->GetPen(band));
-	    m_DrawDC.SetBrush(m_Parent->GetBrush(band));
+	    m_DrawDC.SetPen(wxGetApp().GetPen(band));
+	    m_DrawDC.SetBrush(wxGetApp().GetBrush(band));
 	    m_DrawDC.DrawRectangle(x_min, y - DEPTH_BAR_BLOCK_HEIGHT,
 				   DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
 	}
@@ -1199,7 +1272,6 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
         // free rotation starts when Control is down
 
         if (!m_FreeRotMode) {
-	  //	    m_Parent->SetStatusText("Free rotation mode.  Switch back using Delete.");
 	    m_FreeRotMode = true;
 	}
 
@@ -1233,10 +1305,7 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 
     SetScale(new_scale);
 
-    m_DrawDC.SelectObject(m_OffscreenBitmap);
     m_RedrawOffscreen = true;
-    RedrawOffscreen();
-
     Refresh(false);
 
     m_DragStart = point;
@@ -1313,9 +1382,6 @@ void GfxCore::HandleTilt(wxPoint point)
 	TiltCave(M_PI * (double(-dy) / 500.0));
 
 	m_DragStart = point;
-    }
-    else {
-      //        m_Parent->SetStatusText("Disabled in free rotation mode.  Reset using Delete.");
     }
 }
 
@@ -1474,11 +1540,11 @@ void GfxCore::OnSize(wxSizeEvent& event)
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
 
-    if (m_InitialisePending) {
-        Initialise();
-	m_InitialisePending = false;
-	m_DoneFirstShow = true;
-    }
+    //  if (m_InitialisePending) {
+    //      Initialise();
+    //m_InitialisePending = false;
+	//m_DoneFirstShow = true;
+    // }
 
     if (m_DoneFirstShow) {
 #ifndef __WXMOTIF__
