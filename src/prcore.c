@@ -1104,11 +1104,11 @@ main(int argc, char **argv)
 
 		  if (pending_move) {
 		     pr->MoveTo(x, y);
-		     pending_move = 0;
 		  }
 
 		  /* avoid drawing superfluous lines */
-		  if (xnew != x || ynew != y) {
+		  if (pending_move || xnew != x || ynew != y) {
+		     pending_move = 0;
 		     x = xnew;
 		     y = ynew;
 		     pr->DrawTo(x, y);
@@ -1117,15 +1117,17 @@ main(int argc, char **argv)
 	       break;
 	     case img_LABEL:
 	       if (fCrosses || fLabels) {
-		  x = (long)((pli->to.x * Sc + xOrg) * scX);
-		  y = (long)((pli->to.y * Sc + yOrg) * scY);
+		  long xnew, ynew;
+		  xnew = (long)((pli->to.x * Sc + xOrg) * scX);
+		  ynew = (long)((pli->to.y * Sc + yOrg) * scY);
+		  if (fCrosses) pr->DrawCross(xnew, ynew);
+		  if (fLabels) {
+		     pr->MoveTo(xnew, ynew);
+		     pr->WriteString(pli->label);
+		  }
+		  /* Flag we need another MoveTo if (x,y) are to be reused. */
+		  pending_move = 1;
 	       }
-	       if (fCrosses) pr->DrawCross(x, y);
-	       if (fLabels) {
-		  pr->MoveTo(x, y);
-		  pr->WriteString(pli->label);
-	       }
-	       if (fCrosses || fLabels) x = y = INT_MAX;
 	       break;
 	    }
 	 }

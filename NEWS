@@ -1,7 +1,5 @@
 Changes in 1.0.11:
 
-* cad3d: write dummy passage dimensions to .plt files to avoid Compass bug.
-
 * aven: improvements in 1.0.10 to the file type selector only work properly
   on MS Windows, and with wxGtk >= 2.3 on Unix (the latest stable release is
   2.2.9 where this doesn't work).  Fixed to work as well as possible on 2.2.9,
@@ -11,7 +9,11 @@ Changes in 1.0.11:
   (previously it would fail for locales where the decimal character wasn't
   '.').
 
-* extend: fixed to work with PLT files.
+* cad3d: write dummy passage dimensions to .plt files to avoid Compass bug.
+
+* print*: fixed to work correctly with PLT files.
+
+* extend: fixed to work correctly with PLT files.
 
 Changes in 1.0.10:
 
