@@ -2241,8 +2241,8 @@ ca:220 @Obrir...##Ctrl+O
 es:220 @Abrir...##Ctrl+O
 it:220 @Apri...##Ctrl+O
 sk:220 @Otvori&tcaron;...##Ctrl+O
-#
-en:221 E@xit##Ctrl+Q
+# TRANSLATE pt ca sk (english changed from Exit to Quit)
+en:221 @Quit##Ctrl+Q
 fr:221 @Quitter##Ctrl+Q
 de:221 @Beenden##Ctrl+Q
 pt:221 @Sair##Ctrl+Q
