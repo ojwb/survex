@@ -39,6 +39,8 @@ extern coord Xorg, Yorg, Zorg; /* position of centre of survey */
 extern coord Xrad, Yrad, Zrad; /* "radii" */
 extern float scDefault;
 
+extern bool fAllNames;
+
 /* Data structures */
 typedef struct {
    union {
