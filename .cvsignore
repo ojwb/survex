@@ -18,5 +18,11 @@ survex-*.tar.gz
 survex-win32-*.zip
 survex-dos-*.zip
 survex-riscos-*.zip
+survex-*.rpm
 svxdoc-doswin-*.zip
 svxdoc-riscos-*.zip
+survex-*.spec
+ChangeLog
+BUILD
+rpmrc
+rpmmacros

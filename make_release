@@ -24,6 +24,10 @@ if ! make dist ; then
    echo make dist failed
    exit 1
 fi
+if ! make rpm ; then
+   echo make rpm failed
+   exit 1
+fi
 if ! make dos_doc_zip ; then
    echo make dos_doc_zip failed
    exit 1

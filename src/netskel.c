@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#define BLUNDER_DETECTION 1
+/* #define BLUNDER_DETECTION */
 
 #if 0
 #define DEBUG_INVALID 1

@@ -11,6 +11,57 @@ extra_text = BUGS AUTHORS COPYING NEWS TODO ChangeLog HACKING OLDNEWS ZOMBIES
 
 base_progs = 3dtodxf cavern printdm printps printpcl printhpgl diffpos extend survex
 
+spec = ${PACKAGE}-${VERSION}.spec
+
+rpm : dist
+	rm -rf BUILD
+	mkdir BUILD
+	echo Summary: Cave Surveying Software > ${spec}
+	echo Name: ${PACKAGE} >> ${spec}
+	echo Vendor: The Survex Project >> ${spec}
+	echo Version: ${VERSION} >> ${spec}
+	echo Release: 1 >> ${spec}
+	echo Copyright: GPL >> ${spec}
+	#echo Group: Applications/Engineering >> ${spec}
+	echo Group: Applications/Misc >> ${spec}
+	echo Source: http://www.survex.com/software/${PACKAGE}-${VERSION}.tar.gz >> ${spec}
+	echo URL: http://www.survex.com/
+	echo BuildRoot: /var/tmp/%{name}-buildroot >> ${spec}
+	echo "" >> ${spec}
+	echo %description >> ${spec}
+	cat desc.txt >> ${spec}
+	echo "" >> ${spec}
+	echo %prep >> ${spec}
+	echo %setup >> ${spec}
+	echo "" >> ${spec}
+	echo %build >> ${spec}
+	echo ./configure --prefix=/usr >> ${spec}
+	echo make >> ${spec}
+	echo "" >> ${spec}
+	echo %install >> ${spec}
+	echo rm -rf '$$RPM_BUILD_ROOT' >> ${spec}
+	echo mkdir '$$RPM_BUILD_ROOT' >> ${spec}
+	echo make install 'prefix=$$RPM_BUILD_ROOT/usr' >> ${spec}
+	echo "" >> ${spec}
+	echo %clean >> ${spec}
+	echo rm -rf '$$RPM_BUILD_ROOT' >> ${spec}
+	echo "" >> ${spec}
+	echo %files >> ${spec}
+	echo "%defattr(-,root,root)" >> ${spec}
+	echo %doc ${extra_text} >> ${spec}
+	echo %doc /usr/doc/${PACKAGE} >> ${spec}
+	echo %doc /usr/man >> ${spec}
+	echo /usr/bin >> ${spec}
+	echo /usr/share/${PACKAGE} >> ${spec}
+	echo %_topdir `pwd` > rpmmacros
+	echo %_rpmdir `pwd` >> rpmmacros
+	echo %_sourcedir `pwd` >> rpmmacros
+	echo %_specdir `pwd` >> rpmmacros
+	echo %_srcrpmdir `pwd` >> rpmmacros
+	echo %_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm >> rpmmacros
+	echo macrofiles : `rpm --showrc | sed 's/^macrofiles\> *: //p;d'`:`pwd`/rpmmacros > rpmrc
+	rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc ${spec}
+
 dostxt :
 	$(RM) -rf dostxt_tmp	
 	mkdir dostxt_tmp

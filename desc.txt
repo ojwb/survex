@@ -1,0 +1,4 @@
+Cave Surveying Software.  Multiplatform.  Can reduce arbitrarily complex
+datasets (large caves, multiple caves).  Fast cave viewer.  Most printers
+supported.  Many related tools for survey drawing/data conversion.
+Development and further platform ports are ongoing.

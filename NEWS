@@ -1,3 +1,10 @@
+Changes in 0.95-prerelease7:
+
+* Disabled experimental gross-error detection code.
+
+* Now build RPMs (for RedHat Linux - may also work with Mandrake and some
+  others).
+
 Changes in 0.95-prerelease6:
 
 * Updated all translations.
