@@ -3,6 +3,9 @@ Changes in 1.0.4:
 * extend: previously only kept one name for an equated group of stations in the
   extended .3d file; now keeps all the names.
 
+* cad3d: if an output filename is given, use its extension to pick the default
+  output format.
+
 * (MacOS X version): aven: aven now buils on MacOS X - we just need to sort
   out packaging now...
 

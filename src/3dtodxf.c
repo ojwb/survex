@@ -48,6 +48,9 @@
 #define POINTS_PER_INCH	72.0
 #define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
+/* default to DXF */
+#define FMT_DEFAULT FMT_DXF
+
 static FILE *fh;
 
 /* bounds */
@@ -413,8 +416,8 @@ main(int argc, char **argv)
    int elevation = 0;
    double elev_angle = 0;
    double s = 0, c = 0;
-   const char *ext;
-   enum { FMT_DXF, FMT_SKETCH, FMT_PLT } format;
+   enum { FMT_DXF = 0, FMT_SKETCH, FMT_PLT, FMT_AUTO } format;
+   static const char *extensions[] = { "dxf", "sk", "plt" };
    int *pass;
    const char *survey = NULL;
 
@@ -460,7 +463,7 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(7), "produce an elevation view"},
 	{HLP_ENCODELONG(8), "factor to scale down by (default 500)"},
 	{HLP_ENCODELONG(9), "produce DXF output"},
-	{HLP_ENCODELONG(10), "produce sketch output"},
+	{HLP_ENCODELONG(10), "produce Sketch output"},
 	{HLP_ENCODELONG(11), "produce Compass PLT output for Carto"},
 	{0,0}
    };
@@ -474,7 +477,7 @@ main(int argc, char **argv)
    grid = 0;
    text_height = TEXT_HEIGHT;
    marker_size = MARKER_SIZE;
-   format = FMT_DXF;
+   format = FMT_AUTO;
 
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
    while (1) {
@@ -535,6 +538,29 @@ main(int argc, char **argv)
       }
    }
 
+   fnm_3d = argv[optind++];
+   if (argv[optind]) {
+      fnm_out = argv[optind];
+      if (format == FMT_AUTO) {
+	 size_t i;
+	 size_t len = strlen(fnm_out);
+	 format = FMT_DEFAULT;
+	 for (i = 0; i < FMT_AUTO; ++i) {
+	    size_t l = strlen(extensions[i]);
+	    if (len > l + 1 && fnm_out[len - l - 1] == FNM_SEP_EXT &&
+		strcasecmp(fnm_out + len - l, extensions[i]) == 0) {
+	       format = i;
+	       break;
+	    }
+	 }
+      }
+   } else {
+      char *baseleaf = baseleaf_from_fnm(fnm_3d);
+      if (format == FMT_AUTO) format = FMT_DEFAULT;
+      fnm_out = add_ext(baseleaf, extensions[format]);
+      osfree(baseleaf);
+   }
+
    switch (format) {
     case FMT_DXF:
       header = dxf_header;
@@ -544,7 +570,6 @@ main(int argc, char **argv)
       label = dxf_label;
       cross = dxf_cross;
       footer = dxf_footer;
-      ext = "dxf";
       pass = dxf_passes;
       break;
     case FMT_SKETCH:
@@ -555,7 +580,6 @@ main(int argc, char **argv)
       label = sketch_label;
       cross = sketch_cross;
       footer = sketch_footer;
-      ext = "sk";
       pass = sketch_passes;
       factor = POINTS_PER_MM * 1000.0 / scale;
       break;
@@ -567,20 +591,10 @@ main(int argc, char **argv)
       label = plt_label;
       cross = plt_cross;
       footer = plt_footer;
-      ext = "plt";
       pass = plt_passes;
       break;
     default:
       exit(1);
-   }
-
-   fnm_3d = argv[optind++];
-   if (argv[optind]) {
-      fnm_out = argv[optind];
-   } else {
-      char *baseleaf = baseleaf_from_fnm(fnm_3d);
-      fnm_out = add_ext(baseleaf, ext);
-      osfree(baseleaf);
    }
 
    pimg = img_open_survey(fnm_3d, survey);
