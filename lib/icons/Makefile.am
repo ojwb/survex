@@ -6,3 +6,4 @@ pkgdata_DATA = elevation.png open.png pres-go-back.png pres-restart.png \
                ug-legs.png fixed-pts.png exported-pts.png open-pres.png \
                names.png solid-surface.png
  
+EXTRA_DIST = $(pkgdata_DATA)
