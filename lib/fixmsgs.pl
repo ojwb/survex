@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-require 5.8;
+require 5.008;
 use bytes;
 use strict;
 
