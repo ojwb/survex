@@ -79,8 +79,8 @@ ULFLG =
 # Let me know if you do - Olly                                             #
 ############################################################################
 
-# There are a number of macros of the form NO_xxxx which allow for compilers
-# or OS shortcomings.  Prefixes indicate:
+# There are a number of macros of the form NO_xxxx or HAVE_xxxx which allow
+# for compilers or OS shortcomings.  Prefixes indicate:
 #
 #  * not really much use (eg not supported everywhere, or for debugging)
 #  D option is ignored unless compiling for MS-DOS
@@ -88,8 +88,16 @@ ULFLG =
 #
 # The current list is:
 #
+#    HAVE_DIFFTIME         - difftime() func, else just subtract times
+#    HAVE_PERROR           - perror() available
+#    HAVE_POPEN            - popen(), etc available
+#    HAVE_SETJMP           - use setjmp
+#    HAVE_SIGNAL           - compiler supports signals
+#    HAVE_STRCASECMP       - strcasecmp() available
+#    HAVE_STRERROR         - strerror() available
+#    HAVE_STRFTIME         - strftime() available
+#
 #  * NO_CLIP               - turns off clipping in printps (debug)
-#    NO_DIFFTIME           - no difftime() function, so just subtract times
 #    NO_EXTENSIONS         - no filename extensions (output from survex)
 #  *-NO_FGETPOS            - fgetpos()/fsetpos() not available
 # D  NO_FLAT_DOS           - we've gotta fight DOS's idea of a memory map
@@ -98,14 +106,7 @@ ULFLG =
 #    NO_MOUSE_SUPPORT      - no mouse library available (ignored for RISC OS)
 #    NO_NICEHELLO          - turn off "Good afternoon" and big SURVEX
 #    NO_PERCENTAGE         - permanently disable %age displays
-#    NO_PERROR             - perror() not available
-#    NO_PIPES              - popen(), etc not available
-#    NO_SETJMP             - don't use setjmp
-#    NO_SIGNAL             - compiler doesn't support signals
 # D -NO_STDPRN             - DOS compiler without stdprn
-#    NO_STRICMP            - stricmp() not available
-#    NO_STRERROR           - strerror() not available
-#    NO_STRFTIME           - strftime() not available
 #    NO_TEX                - don't use TeX style accented chars in messages
 #
 # If you're porting, don't define any to start with, and define them as
@@ -143,7 +144,7 @@ endif
 # Generic UNIX + GCC version with ANSI libraries
 ifdef gcc_ansilib
 CC=gcc
-CFLG=-O2 -Wall -DNO_DIFFTIME -DNO_STRERROR -DNO_STRICMP
+CFLG=-O2 -Wall -Ddifftime(A,B)=((B)-(A))
 OP=-o ./# needed?
 LFLG=-lm
 CLEAN=core *~
@@ -160,11 +161,13 @@ CRLIB=
 RM=rm -f# you'll need to find one...
 ifdef debug
 #also build printmd0 ?
-CFLG=-IC: -throwback -fahp -fussy -DLITTLE_ENDIAN -DNO_STRICMP -g
+CFLG=-IC: -throwback -fahp -fussy -UWORDS_BIGENDIAN -g
+# need to add strcasecmp.o to objects list
 PP=@|
 UFLG=-DDEBUG_INVALID
 else
-CFLG=-IC: -throwback -ffahp -fussy -DLITTLE_ENDIAN -DNO_STRICMP
+CFLG=-IC: -throwback -ffahp -fussy -UWORDS_BIGENDIAN
+# need to add strcasecmp.o to objects list
 PP=squeeze
 endif
 endif
@@ -172,7 +175,7 @@ endif
 # Archimedes version (RISC OS + GCC)
 ifdef arc_gcc
 CC=gcc
-CFLG=-IUnix: -Wall -DLITTLE_ENDIAN
+CFLG=-IUnix: -Wall -UWORDS_BIGENDIAN
 #LFLG=C:o.RISC_OSLib
 LFLG=C:OSLib.o.OSLib
 REM=@|
@@ -225,7 +228,7 @@ endif
 
 # DOS + Microsoft C
 ifdef dos_msc
-echo /AL /F 1000 /DNO_MOUSE_SUPPORT /DMSC /DLITTLE_ENDIAN > cflags.rsp
+echo /AL /F 1000 /DNO_MOUSE_SUPPORT /DMSC /UWORDS_BIGENDIAN > cflags.rsp
 echo /link C:\MSVC\LIB\LLIBCE.LIB > lflags.rsp
 $(MAKE) rsp
 CC=cl
@@ -244,7 +247,7 @@ CLEAN=*.*~ *.bak
 endif
 
 # This is common to dos_gcc and unix_djgpp
-DJGPPCFLG=-O2 -Wall -DLITTLE_ENDIAN
+DJGPPCFLG=-O2 -Wall -UWORDS_BIGENDIAN
 
 # DOS + DJGPP
 ifdef dos_gcc
@@ -463,7 +466,7 @@ pr.rsp : Makefile
 	echo $(PROBJ1) > pr.rsp
 
 cflags.rsp : Makefile
-	echo -ml -O1 -DFAR=far -DHuge=huge -DNO_FLATDOS -DLITTLE_ENDIAN > cflags.rsp
+	echo -ml -O1 -DFAR=far -DHuge=huge -DNO_FLATDOS -UWORDS_BIGENDIAN > cflags.rsp
 
 crl.rsp : Makefile
 	echo graphics.lib mouse.lib > crl.rsp
