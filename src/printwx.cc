@@ -842,7 +842,6 @@ svxPrintout::OnPrintPage(int pageNum) {
     GetPageSizeMM(&PaperWidth, &PaperDepth);
     m_layout->scX = (double)xpPageWidth / PaperWidth;
     m_layout->scY = (double)ypPageDepth / PaperDepth;
-    wxSize ppi = pdc->GetPPI();
     if (IsPreview()) {
 	wxSize sz = pdc->GetSize();
 	pdc->SetUserScale((double)sz.GetWidth() / xpPageWidth,
