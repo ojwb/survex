@@ -88,7 +88,7 @@ put32(long w, FILE *fh)
 #endif
 #include "img.h"
 
-unsigned int img_output_version = 1;
+unsigned int img_output_version = 2;
 
 #define lenSzTmp 256
 static char szTmp[lenSzTmp];
@@ -194,7 +194,6 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
    pimg->fLinePending = fFalse; /* not in the middle of a 'LINE' command */
    pimg->fRead = fTrue; /* reading from this file */
    img_errno = IMG_NONE;
-printf("*** version %d\n", pimg->version);
    return pimg;
 }
 
@@ -261,7 +260,6 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
       } else {
          opt = getc(pimg->fh);
       }
-printf("*** opt %d\n", opt);
       switch (opt) {
        case -1: case 255:
 	 return img_STOP; /* end of data marker */
