@@ -147,6 +147,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Lists.surface_legs = 0;
     m_Lists.indicators = 0;
     presentation_mode = 0;
+    pres_speed = 0.0;
+    pres_reverse = false;
     mpeg = NULL;
 
     // Initialise grid for hit testing.
@@ -303,13 +305,13 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
     assert(GetContext());
 
-    // Make sure we're initialised.
-    bool first_time = !m_DoneFirstShow;
-    if (first_time) {
-	FirstShow();
-    }
-
     if (m_HaveData) {
+	// Make sure we're initialised.
+	bool first_time = !m_DoneFirstShow;
+	if (first_time) {
+	    FirstShow();
+	}
+
 	StartDrawing();
 
 	// Clear the background.
@@ -779,11 +781,10 @@ void GfxCore::SimpleDrawNames()
 {
     // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
-    while (label != m_Parent->GetLabelsEnd()) {
+    for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
 	// FIXME: do this in the simple case too...
 	//y += CROSS_SIZE - GetFontSize();
 	DrawText((*label)->x, (*label)->y, (*label)->z, (*label)->GetText());
-	++label;
     }
 }
 
