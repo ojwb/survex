@@ -26,6 +26,10 @@
 
 #include <math.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #define MAX(a, b)    (((a) > (b)) ? (a) : (b))
 #define TEXT_COLOUR  wxColour(0, 255, 40)
 #define LABEL_COLOUR wxColour(160, 255, 0)
