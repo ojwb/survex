@@ -1,4 +1,4 @@
 A software suite to process, view, and print cave survey data. Survex is
 cross-platform (Unix, MS Windows, DOS, RISCOS), and supports English,
-French, German, Potuguese, Catalan, and Spanish. It can deal with extremely
-large and complex datasets and can read survey data from many sources.
+French, German, Portuguese, Catalan, and Spanish. It can deal with extremely
+large and complex datasets and can read survey data from many sources. 
