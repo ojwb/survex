@@ -2641,7 +2641,7 @@ void GfxCore::OnReverseDirectionOfRotation()
 
 void GfxCore::OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_Rotating);
+    cmd.Enable(m_PlotData != NULL && m_RotationOK);
 }
 
 void GfxCore::OnSlowDown(bool accel)
@@ -2654,7 +2654,7 @@ void GfxCore::OnSlowDown(bool accel)
 
 void GfxCore::OnSlowDownUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_Rotating);
+    cmd.Enable(m_PlotData != NULL && m_RotationOK);
 }
 
 void GfxCore::OnSpeedUp(bool accel)
@@ -2667,7 +2667,7 @@ void GfxCore::OnSpeedUp(bool accel)
 
 void GfxCore::OnSpeedUpUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_Rotating);
+    cmd.Enable(m_PlotData != NULL && m_RotationOK);
 }
 
 void GfxCore::OnStepOnceAnticlockwise(bool accel)
@@ -2677,7 +2677,7 @@ void GfxCore::OnStepOnceAnticlockwise(bool accel)
 
 void GfxCore::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_Rotating && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && m_RotationOK && !m_Rotating);
 }
 
 void GfxCore::OnStepOnceClockwise(bool accel)
@@ -2687,7 +2687,7 @@ void GfxCore::OnStepOnceClockwise(bool accel)
 
 void GfxCore::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_Rotating && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && m_RotationOK && !m_Rotating);
 }
 
 void GfxCore::OnDefaults()
@@ -2748,14 +2748,24 @@ void GfxCore::OnDefaultsUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnElevation()
 {
     // Switch to elevation view.
-
-    timer.Start(drawtime);
-    m_SwitchingTo = ELEVATION;
+    switch (m_SwitchingTo) {
+	case 0:
+	    timer.Start(drawtime);
+	    m_SwitchingTo = ELEVATION;
+	    break;
+	case PLAN:
+	    m_SwitchingTo = ELEVATION;
+	    break;
+	case ELEVATION:
+	    // A second order to switch takes us there right away
+	    TiltCave(- m_TiltAngle);
+	    m_SwitchingTo = 0;
+    } 
 }
 
 void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_SwitchingTo &&
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode &&
 	       m_Lock == lock_NONE && m_TiltAngle != 0.0);
 }
 
@@ -2788,15 +2798,25 @@ void GfxCore::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnPlan()
 {
     // Switch to plan view.
-
-    timer.Start(drawtime);
-    m_SwitchingTo = PLAN;
+    switch (m_SwitchingTo) {
+	case 0:
+	    timer.Start(drawtime);
+	    m_SwitchingTo = PLAN;
+	    break;
+	case ELEVATION:
+	    m_SwitchingTo = PLAN;
+	    break;
+	case PLAN:
+	    // A second order to switch takes us there right away
+	    TiltCave(M_PI_2 - m_TiltAngle);
+	    m_SwitchingTo = 0;
+    } 
 }
 
 void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_SwitchingTo &&
-	       m_Lock == lock_NONE && m_TiltAngle != M_PI_2);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock == lock_NONE &&
+	       m_TiltAngle != M_PI_2);
 }
 
 void GfxCore::OnShiftDisplayDown(bool accel)
@@ -2894,15 +2914,14 @@ void GfxCore::OnIdle(wxIdleEvent& event)
     if (m_Rotating) {
 	TurnCave(m_RotationStep * t);
     }
-    // When switching to plan view...
     if (m_SwitchingTo == PLAN) {
+	// When switching to plan view...
 	if (m_TiltAngle == M_PI_2) {
 	    m_SwitchingTo = 0;
 	}
 	TiltCave(M_PI_2 * t);
-    }
-    // When switching to elevation view...
-    if (m_SwitchingTo == ELEVATION) {
+    } else if (m_SwitchingTo == ELEVATION) {
+	// When switching to elevation view...
 	if (m_TiltAngle == 0.0) {
 	    m_SwitchingTo= 0;
 	}
@@ -3799,51 +3818,71 @@ void GfxCore::OnSolidSurfaceUpdate(wxUpdateUIEvent& ui)
 
 void GfxCore::OnKeyPress(wxKeyEvent &e)
 {
+    if (!m_PlotData) {
+	e.Skip();
+	return;
+    }
+
     switch (e.m_keyCode) {
 	case '/': case '?':
-	    OnLowerViewpoint(e.m_shiftDown);
+	    if (m_TiltAngle > -M_PI_2 && m_Lock == lock_NONE)
+		OnLowerViewpoint(e.m_shiftDown);
 	    break;
 	case '\'': case '@': case '"': // both shifted forms - US and UK kbd
-	    OnHigherViewpoint(e.m_shiftDown);
+	    if (m_TiltAngle < M_PI_2 && m_Lock == lock_NONE)
+		OnHigherViewpoint(e.m_shiftDown);
 	    break;
 	case 'C': case 'c':
-	    OnStepOnceAnticlockwise(e.m_shiftDown);
+	    if (m_RotationOK && !m_Rotating)
+		OnStepOnceAnticlockwise(e.m_shiftDown);
 	    break;
 	case 'V': case 'v':
-	    OnStepOnceClockwise(e.m_shiftDown);
+	    if (m_RotationOK && !m_Rotating)
+		OnStepOnceClockwise(e.m_shiftDown);
 	    break;
 	case ']': case '}':
-	    OnZoomIn(e.m_shiftDown);
+	    if (m_Lock != lock_POINT)
+		OnZoomIn(e.m_shiftDown);
 	    break;
 	case '[': case '{':
-	    OnZoomOut(e.m_shiftDown);
+	    if (m_Lock != lock_POINT)
+		OnZoomOut(e.m_shiftDown);
 	    break;
 	case 'N': case 'n':
-	    OnMoveNorth();
+	    if (!(m_Lock & lock_X))
+		OnMoveNorth();
 	    break;
 	case 'S': case 's':
-	    OnMoveSouth();
+	    if (!(m_Lock & lock_X))
+		OnMoveSouth();
 	    break;
 	case 'E': case 'e':
-	    OnMoveEast();
+	    if (!(m_Lock & lock_Y))
+		OnMoveEast();
 	    break;
 	case 'W': case 'w':
-	    OnMoveWest();
+	    if (!(m_Lock & lock_Y))
+		OnMoveWest();
 	    break;
 	case 'Z': case 'z':
-	    OnSpeedUp(e.m_shiftDown);
+	    if (m_RotationOK)
+		OnSpeedUp(e.m_shiftDown);
 	    break;
 	case 'X': case 'x':
-	    OnSlowDown(e.m_shiftDown);
+	    if (m_RotationOK)
+		OnSlowDown(e.m_shiftDown);
 	    break;
 	case 'R': case 'r':
-	    OnReverseDirectionOfRotation();
+	    if (m_RotationOK)
+		OnReverseDirectionOfRotation();
 	    break;
 	case 'P': case 'p':
-	    OnPlan();
+	    if (!m_FreeRotMode && m_Lock == lock_NONE && m_TiltAngle != M_PI_2)
+		OnPlan();
 	    break;
 	case 'L': case 'l':
-	    OnElevation();
+	    if (!m_FreeRotMode && m_Lock == lock_NONE && m_TiltAngle != 0.0)
+		OnElevation();
 	    break;
 	case 'O': case 'o':
 	    OnDisplayOverlappingNames();
@@ -3852,37 +3891,48 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	    OnDefaults();
 	    break;
 	case WXK_RETURN:
-	    OnStartRotation();
+	    if (m_RotationOK && !m_Rotating)
+		OnStartRotation();
 	    break;
 	case WXK_SPACE:
-	    OnStopRotation();
+	    if (m_Rotating)
+		OnStopRotation();
 	    break;
 	case WXK_LEFT:
-	    if (e.m_controlDown)
-		OnStepOnceAnticlockwise(e.m_shiftDown);
-	    else
+	    if (e.m_controlDown) {
+		if (m_RotationOK && !m_Rotating)
+		    OnStepOnceAnticlockwise(e.m_shiftDown);
+	    } else {
 		OnShiftDisplayLeft(e.m_shiftDown);
+	    }
 	    break;
 	case WXK_RIGHT:
-	    if (e.m_controlDown)
-		OnStepOnceClockwise(e.m_shiftDown);
-	    else
+	    if (e.m_controlDown) {
+		if (m_RotationOK && !m_Rotating)
+		    OnStepOnceClockwise(e.m_shiftDown);
+	    } else {
 		OnShiftDisplayRight(e.m_shiftDown);
+	    }
 	    break;
 	case WXK_UP:
-	    if (e.m_controlDown)
-		OnHigherViewpoint(e.m_shiftDown);
-	    else
+	    if (e.m_controlDown) {
+		if (m_TiltAngle < M_PI_2 && m_Lock == lock_NONE)
+		    OnHigherViewpoint(e.m_shiftDown);
+	    } else {
 		OnShiftDisplayUp(e.m_shiftDown);
+	    }
 	    break;
 	case WXK_DOWN:
-	    if (e.m_controlDown)
-		OnLowerViewpoint(e.m_shiftDown);
-	    else
+	    if (e.m_controlDown) {
+		if (m_TiltAngle > -M_PI_2 && m_Lock == lock_NONE)
+		    OnLowerViewpoint(e.m_shiftDown);
+	    } else {
 		OnShiftDisplayDown(e.m_shiftDown);
+	    }
 	    break;
 	case WXK_ESCAPE:
-	    OnCancelDistLine();
+	    if (m_there.x != DBL_MAX)
+		OnCancelDistLine();
 	    break;
 	default:
 	    e.Skip();
