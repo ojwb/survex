@@ -1,14 +1,19 @@
-dnl @synopsis AC_DEFINE_DIR(VARNAME, DIR)
+dnl @synopsis AC_DEFINE_DIR(VARNAME, DIR [, DESCRIPTION])
 dnl
 dnl This macro defines (with AC_DEFINE) VARNAME to the expansion of the DIR
 dnl variable, taking care of fixing up ${prefix} and such.
 dnl
-dnl Example:
+dnl Note that the 3 argument form is only supported with autoconf 2.13 and
+dnl later (i.e. only where AC_DEFINE supports 3 arguments).
+dnl
+dnl Examples:
 dnl
 dnl    AC_DEFINE_DIR(DATADIR, datadir)
 dnl
-dnl @version $Id: acinclude.m4,v 1.1 1999-09-26 22:18:15 olly Exp $
-dnl @author Alexandre Oliva <oliva@dcc.unicamp.br>
+dnl    AC_DEFINE_DIR(PROG_PATH, bindir, [Location of installed binaries])
+dnl
+dnl @version $Id: acinclude.m4,v 1.2 1999-09-27 15:02:43 olly Exp $
+dnl @author Alexandre Oliva <oliva@lsd.ic.unicamp.br>
 
 AC_DEFUN(AC_DEFINE_DIR, [
 	ac_expanded=`(
@@ -16,5 +21,7 @@ AC_DEFUN(AC_DEFINE_DIR, [
 	    test "x$exec_prefix" = xNONE && exec_prefix="${prefix}"
 	    eval echo \""[$]$2"\"
         )`
-	AC_DEFINE_UNQUOTED($1, "$ac_expanded", $3)
+	ifelse($3, ,
+	  AC_DEFINE_UNQUOTED($1, "$ac_expanded"), 
+	  AC_DEFINE_UNQUOTED($1, "$ac_expanded", $3))
 ])
