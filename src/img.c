@@ -469,12 +469,12 @@ img_read_item(img *pimg, img_point *p)
 	    break;
 	 }
 	 /* 16-31 mean remove (n - 15) characters from the prefix */
-	 pimg->label_len -= (opt - 15);
 	 /* zero prefix using 0 */
-	 if (pimg->label_len <= 0) {
+	 if (pimg->label_len <= opt - 15) {
 	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
 	 }
+	 pimg->label_len -= (opt - 15);
 	 goto again3;
        case 1: case 2: {
 	 char *q;

@@ -63,6 +63,7 @@ static jmp_buf jmpbufSignal;
 # endif
 #elif (OS==RISCOS)
 # include "oslib/wimpreadsy.h"
+# include "oslib/territory.h"
 #endif
 
 /* For funcs which want to be immune from messing around with different

@@ -39,6 +39,7 @@
 #include "caverot.h"
 #include "cvrotimg.h"
 #include "cvrotgfx.h"
+#include "img.h" /* for img_error() */
 #include "rotplot.h"
 #include "labels.h"
 
