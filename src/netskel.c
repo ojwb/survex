@@ -881,10 +881,15 @@ replace_trailing_travs(void)
       if (!fUseNewFormat) {
 #endif	 
 	 if (stn1->name->stn == stn1 && stn1->name->ident) {
-	    int sf = stn1->name->sflags & SFLAGS_MASK;
-	    if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
-	    img_write_item(pimg, img_LABEL, sf, sprint_prefix(stn1->name),
-			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+	    int sf = stn1->name->sflags;
+	    if (!TSTBIT(sf, SFLAGS_SOLVED)) {
+	       /* Set flag to stop station being rewritten after *solve */
+	       stn1->name->sflags = sf | BIT(SFLAGS_SOLVED);
+	       sf &= SFLAGS_MASK;
+	       if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
+	       img_write_item(pimg, img_LABEL, sf, sprint_prefix(stn1->name),
+			      POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+	    }
 	 }
 #ifdef NEW3DFORMAT
       }

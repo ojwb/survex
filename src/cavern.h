@@ -1,4 +1,4 @@
-/* > cavern.h
+/* cavern.h
  * SURVEX Cave surveying software - header file
  * Copyright (C) 1991-2001 Olly Betts
  *
@@ -130,7 +130,7 @@ typedef int compiletimeassert_flags3[BIT(FLAGS_SPLAY) == img_FLAG_SPLAY ? 1 : -1
 typedef enum {
    SFLAGS_SURFACE = 0, SFLAGS_UNDERGROUND, SFLAGS_ENTRANCE, SFLAGS_EXPORTED,
    SFLAGS_FIXED,
-   SFLAGS_SUSPECTTYPO = 14, SFLAGS_SURVEY = 15
+   SFLAGS_SOLVED = 13, SFLAGS_SUSPECTTYPO = 14, SFLAGS_SURVEY = 15
 } sflags;
 #define SFLAGS_MASK (~(BIT(SFLAGS_SUSPECTTYPO)|BIT(SFLAGS_SURVEY)))
 

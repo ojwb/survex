@@ -7,7 +7,10 @@
 * (MS Windows) aven: fixed crash on File/Open when a file was already
   loaded.
 
-* Consitent capitalisation of --help option descriptions.
+* After *solve, reused points are no longer written to the .3d file a
+  second time.
+
+* Consistent capitalisation of --help option descriptions.
 
 Changes in 0.99-prerelease4:
 
