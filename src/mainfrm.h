@@ -446,7 +446,11 @@ class AvenAllowOnTop {
         MainFrm * mainfrm;
 #endif
     public:
-	AvenAllowOnTop(MainFrm * mainfrm_) : mainfrm(0) {
+	AvenAllowOnTop(MainFrm * mainfrm_)
+#ifndef _WIN32
+	    : mainfrm(0)
+#endif
+	{
 #ifndef _WIN32
 	    if (mainfrm_->IsFullScreen()) {
 		mainfrm = mainfrm_;
