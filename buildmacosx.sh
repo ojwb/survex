@@ -49,7 +49,7 @@ fi
 # Force static linking so the user doesn't need to install wxWindows.
 WXCONFIG=$WXCONFIG' --static'
 export WXCONFIG
-rm -rf *.dmg Survex macosx
+rm -rf *.dmg Survex macosxtmp
 D="`pwd`/Survex"
 T="`pwd`/macosxtmp"
 ./configure --prefix="$D" --bindir="$D" --mandir="$T" CFLAGS=-DMACOSX_BUNDLE
@@ -71,9 +71,11 @@ hdiutil create -sectors $sectors survex-macosx -layout NONE -fs HFS+ -volname Su
 echo "Present image to the filesystems for mounting."
 # This will mount the image onto the Desktop.
 # Get the name of the device we mounted it on...
-dev=`hdid survex-macosx.dmg|tail -1|sed 's!/dev/!!'`
+dev=`hdid survex-macosx.dmg|tail -1|sed 's!/dev/\([!-~]*\).*!\1!;'`
+echo "Mounted on device $dev, copying files into image."
 ditto -rsrcFork Survex /Volumes/Survex/Survex
 ditto lib/INSTALL.OSX /Volumes/Survex/INSTALL
+echo "Detaching image."
 hdiutil detach $dev
 
 version="`sed 's/.*AM_INIT_AUTOMAKE([^,]*, *\([0-9.]*\).*/\1/p;d' configure.in`"
