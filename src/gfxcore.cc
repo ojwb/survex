@@ -32,6 +32,7 @@
 
 #define HEAVEN 5000.0 // altitude of heaven
 #define INTERPOLATE(a, b, t) ((a) + (((b) - (a)) * Double(t) / 100.0))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MAX3(a, b, c) ((a) > (b) ? ((a) > (c) ? (a) : (c)) : ((b) > (c) ? (b) : (c)))
 #define TEXT_COLOUR  wxColour(0, 255, 40)
 #define LABEL_COLOUR wxColour(160, 255, 0)
@@ -766,7 +767,8 @@ void GfxCore::SetScale(Double scale)
     // Fill the plot data arrays with screen coordinates, scaling the survey
     // to a particular absolute scale.
 
-    if (scale > m_InitialScale * 2000 || scale < m_InitialScale / 20) {
+    if (scale > 65535.0 / MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent()) ||
+        scale < m_InitialScale / 20) {
         return;
     }
 
