@@ -29,9 +29,7 @@ typedef enum { fFalse=0, fTrue=1 } BOOL;
 #endif
 typedef unsigned char UCHAR;
 typedef unsigned long ULONG;
-typedef unsigned int UINT;
 # define uchar UCHAR
 # define ulong ULONG
-# define uint UINT
 
 #endif
