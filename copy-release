@@ -22,7 +22,7 @@ WEBDIR="software/$VRP"
 DIR="/export/survex/www/$WEBDIR"
 mkdir $DIR
 for a in $FILES ; do
-   cp $a $DIR/
+   cp $a $DIR/ || echo "File '$a' missing"
 done
 
 DIR="/export/survex/www/docs"
