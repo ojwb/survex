@@ -8,3 +8,4 @@ default.bit
 [a-z][a-z]_[A-Z][A-Z].h
 [a-z][a-z].todo
 survex.keys
+gentexfont aven.txf

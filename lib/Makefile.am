@@ -15,12 +15,14 @@ hdr_files = ca.h de.h de_CH.h de_DE.h en.h en_US.h\
 
 EXTRA_DIST = bcra3.svx bcra5.svx messages.txt default.txt bold.txt print.ini\
  named-entities.txt makefont.pl makemsgs.pl checkshortcut.pl\
- $(msg_files) default.bit bold.bit $(hdr_files) survex.mime survex.keys.in
+ $(msg_files) default.bit bold.bit $(hdr_files) survex.mime survex.keys.in\
+ aven.txf gentexfont.c TexFont.h
 
 MAINTAINERCLEANFILES = $(msg_files) $(hdr_files) default.bit bold.bit\
- *.todo
+ *.todo aven.txf
 
-pkgdata_DATA = default.bit bold.bit print.ini bcra3.svx bcra5.svx $(msg_files)
+pkgdata_DATA = default.bit bold.bit print.ini bcra3.svx bcra5.svx\
+ $(msg_files) aven.txf
 
 BUILT_SOURCES = defaultlang.h
 
@@ -43,3 +45,10 @@ bold.bit: bold.txt makefont.pl
 
 mimedir = $(datadir)/mime-info
 mime_DATA = survex.mime survex.keys
+
+aven.txf:
+	$(MAKE) gentexfont$(EXEEXT)
+	./gentexfont$(EXEEXT) -w 128 -h 128 -glist `perl -e 'for (33..126,160..255) {print chr $$_}'` -fn -misc-fixed-medium-r-normal--13-100-100-100-c-80-iso8859-1 -file aven.txf
+
+gentexfont$(EXEEXT): gentexfont.c TexFont.h
+	$(CC) -o gentexfont$(EXEEXT) gentexfont.c @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@

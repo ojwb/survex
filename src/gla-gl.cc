@@ -25,9 +25,12 @@
 #include <config.h>
 #endif
 
+#include <wx/confbase.h>
+
 #include <algorithm>
 
 #include "gla.h"
+#include "message.h"
 
 #ifndef USE_FNT
 // Some WIN32 stupidity which causes mingw to fail to link for some reason;
@@ -173,8 +176,10 @@ void GLACanvas::FirstShow()
 
 #ifdef USE_FNT
     // Load font
-    m_Font.load("aven.txf");
-    CHECK_GL_ERROR("FirstShow", "texture font loading");
+    wxString path(msg_cfgpth());
+    path += wxCONFIG_PATH_SEPARATOR;
+    path += "aven.txf";
+    m_Font.load(path.c_str());
 #endif
 }
 

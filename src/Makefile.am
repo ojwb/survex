@@ -172,6 +172,3 @@ borlandc/makefile: $(srcdir)/Makefile.am miniam.pl
 
 riscos/makefile: $(srcdir)/Makefile.am miniam.pl
 	$(srcdir)/miniam.pl riscos < $(srcdir)/Makefile.am > riscos/tmp-makefile && mv riscos/tmp-makefile riscos/makefile
-
-aven.txf:
-	./gentexfont -w 128 -h 128 -glist `perl -e 'for (33..126,160..255) {print chr $$_}'` -fn -misc-fixed-medium-r-normal--13-100-100-100-c-80-iso8859-1 -file aven.txf

@@ -19,7 +19,7 @@
  
      For further information visit http://plib.sourceforge.net
 
-     $Id: fnt.cc,v 1.1.2.3 2003-11-25 03:59:15 olly Exp $
+     $Id: fnt.cc,v 1.1.2.4 2003-11-25 04:48:37 olly Exp $
 */
 
 #include "fnt.h"
@@ -70,20 +70,20 @@ fntTexFont::load(const char *fname)
     FILE *fd;
 
     if ((fd = fopen(fname, "rb")) == NULL) {
-	printf("Failed to open '%s' for reading.", fname);
+	fprintf(stderr, "Failed to open '%s' for reading.\n", fname);
 	return false;
     }
 
     unsigned char magic[4];
 
     if (fread(&magic, sizeof(unsigned int), 1, fd) != 1) {
-	printf("'%s' an empty file!", fname);
+	fprintf(stderr, "'%s' an empty file!\n", fname);
 	return false;
     }
 
     char cookie[4] = { '\xff', 't', 'x', 'f' };
     if (memcmp(magic, cookie, 4) != 0) {
-	printf("'%s' is not a 'txf' font file.", fname);
+	fprintf(stderr, "'%s' is not a 'txf' font file.\n", fname);
 	return false;
     }
 
@@ -116,7 +116,7 @@ fntTexFont::load(const char *fname)
 	    unsigned char *orig = new unsigned char[ntexels];
 
 	    if ((int)fread(orig, 1, ntexels, fd) != ntexels) {
-		printf("Premature EOF in '%s'.", fname);
+		fprintf(stderr, "Premature EOF in '%s'.\n", fname);
 		return false;
 	    }
 
@@ -139,7 +139,7 @@ fntTexFont::load(const char *fname)
 	    if ((int)fread(texbitmap, 1, stride * tex_height, fd)
 		    != stride * tex_height) {
 		delete [] texbitmap ;
-		printf("Premature EOF in '%s'.", fname);
+		fprintf(stderr, "Premature EOF in '%s'.\n", fname);
 		return false;
 	    }
 
@@ -160,7 +160,7 @@ fntTexFont::load(const char *fname)
 	}
 
 	default:
-	    printf("Unrecognised format type in '%s'.", fname);
+	    fprintf(stderr, "Unrecognised format type in '%s'.\n", fname);
 	    return false;
     }
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
