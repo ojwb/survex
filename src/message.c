@@ -1053,7 +1053,7 @@ msg_init(char * const *argv)
 #endif
 	 p = use_path(pth, "../lib/en.msg");
 	 if (lstat(p, &buf) == 0) {
-#ifdef S_ISDIR
+#ifdef S_ISREG
 	    /* POSIX way */
 	    if (S_ISREG(buf.st_mode)) {
 	       pth_cfg_files = use_path(pth, "../lib");
