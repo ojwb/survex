@@ -32,7 +32,7 @@
 #include "aventreectrl.h"
 #include "img.h"
 #include "guicontrol.h"
-#include "prefsdlg.h"
+//#include "prefsdlg.h"
 
 #include <list>
 #if 0 // if you turn this back on, reenable the check in configure.in too
@@ -205,11 +205,15 @@ class MainFrm : public wxFrame {
     wxStaticText* m_Found;
     wxCheckBox* m_RegexpCheckBox;
     wxNotebook* m_Notebook;
+#ifdef AVENPRES
     wxPanel* m_PresPanel;
-//    wxListCtrl* m_PresList;
+    wxListCtrl* m_PresList;
+#endif
     wxString m_File;
     int separator; // character separating survey levels (often '.')
+#ifdef PREFDLG
     PrefsDlg* m_PrefsDlg;
+#endif
 #ifdef AVENPRES
     FILE* m_PresFP;
     bool m_PresLoaded;

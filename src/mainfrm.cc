@@ -293,7 +293,10 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
-    m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0), m_PrefsDlg(NULL)
+    m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0)
+#ifdef PREFDLG
+    , m_PrefsDlg(NULL)
+#endif
 {
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
@@ -393,10 +396,10 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault Settings*/254));
 #if 0
     wxMenu* presmenu = new wxMenu;
-    presmenu->Append(menu_PRES_RECORD, GetTabMsg(/*@Record State*/381));
+    presmenu-> Append(menu_PRES_RECORD, GetTabMsg(/*@Record State*/381));
     presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_RUN, GetTabMsg(/*R@un Presentation*/382));
-    presmenu->Append(menu_PRES_REHEARSE, GetTabMsg(/*Re@hearse Timings*/383));
+    presmenu-> Append(menu_PRES_RUN, GetTabMsg(/*R@un Presentation*/382));
+    presmenu-> Append(menu_PRES_REHEARSE, GetTabMsg(/*Re@hearse Timings*/383));
 #endif
     wxMenu* viewmenu = new wxMenu;
 #ifndef PREFDLG
@@ -420,12 +423,12 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296), "", true);
     viewmenu->AppendSeparator();
 #else
-    viewmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
+    viewmenu-> Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
 #endif
     viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode##F11*/356), "", true);
 #ifdef PREFDLG
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_FILE_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
+    viewmenu-> Append(menu_FILE_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
 #endif
 
 #ifndef PREFDLG
@@ -458,7 +461,7 @@ void MainFrm::CreateMenuBar()
     menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
 #endif
 #ifdef AVENPRES
-    menubar->Append(presmenu, GetTabMsg(/*@Presentation*/317));
+    menubar-> Append(presmenu, GetTabMsg(/*@Presentation*/317));
 #endif
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
@@ -609,7 +612,7 @@ void MainFrm::CreateSidePanel()
 
     // Presentation panel:
 
-#if 0
+#ifdef AVENPRES
     m_PresPanel = new wxPanel(m_Notebook);
 
     m_PresList = new wxListCtrl(m_PresPanel, 401, wxDefaultPosition,
