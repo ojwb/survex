@@ -61,8 +61,8 @@ if test x"$release" = xyes && expr "$build" : '.*\<deb\>'; then
    fi
 fi
 if test x"$release" = xyes && expr "$build" : '.*\<doc\>'; then
-   if ! make dos_doc_zip ; then
-      echo make dos_doc_zip failed
+   if ! make dos_doc_exe ; then
+      echo make dos_doc_exe failed
       exit 1
    fi
    if ! make riscos_doc_zip ; then
@@ -95,8 +95,8 @@ if expr "$build" : '.*\<djgpp\>'; then
       echo djgpp make failed
       exit 1
    fi
-   if ! make djgpp_zip ; then
-      echo djgpp make djgpp_zip failed
+   if ! make djgpp_exe ; then
+      echo djgpp make djgpp_exe failed
       exit 1
    fi
    if ! make distclean ; then

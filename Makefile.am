@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+RELEASE = 6
+
 EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES survex.iss.in docindex.htm.in
 
 SUBDIRS = hto src lib doc tests debian
@@ -15,8 +17,6 @@ extra_text = BUGS AUTHORS COPYING NEWS TODO ChangeLog HACKING OLDNEWS ZOMBIES
 base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos extend survex
 
 spec = ${PACKAGE}-${VERSION}.spec
-
-RELEASE = 6
 
 rpm : dist
 	echo Summary: Cave Surveying Software > ${spec}
@@ -131,6 +131,14 @@ dostxt :
 djgpp : all djgpp_zip
 
 djgpp_zip_name = survex-dos-@VERSION@.zip
+djgpp_exe_name = svxdoc-dos-@VERSION@.zip
+
+djgpp_exe : djgpp_zip
+	$(RM) $(djgpp_exe_name)~
+	cat dos_extras/unzipsfx.exe $(djgpp_zip_name) > $(djgpp_exe_name)~
+	zip -A $(djgpp_exe_name)~
+	mv $(djgpp_exe_name)~ $(djgpp_exe_name)
+
 
 djgpp_zip : dostxt
 	test -d djgpp_exes || mkdir djgpp_exes
@@ -180,6 +188,13 @@ mingw_iss : dostxt mingwexes
 	killall Xvfb
 
 bc_zip_name = survex-dos286-@VERSION@.zip
+bc_exe_name = survex-dos286-@VERSION@.exe
+
+borlandc_exe : borlandc_zip
+	$(RM) $(bc_exe_name)~
+	cat dos_extras/unzipsfx.exe $(bc_zip_name) > $(bc_exe_name)~
+	zip -A $(bc_exe_name)~
+	mv $(bc_exe_name)~ $(bc_exe_name)
 
 borlandc_zip : dostxt
 	$(RM) $(bc_zip_name)
@@ -251,6 +266,13 @@ alien_src_zip :
 SVXDOCS = svxdocs svxdocs/*.htm svxdocs.rtf svxdocs.txt svxdocs.ps
 
 dos_doc_zip_name = svxdoc-doswin-@VERSION@.zip
+dos_doc_exe_name = svxdoc-doswin-@VERSION@.zip
+
+dos_doc_exe : dos_doc_zip
+	$(RM) $(dos_doc_exe_name)~
+	cat dos_extras/unzipsfx.exe $(dos_doc_zip_name) > $(dos_doc_exe_name)~
+	zip -A $(dos_doc_exe_name)~
+	mv $(dos_doc_exe_name)~ $(dos_doc_exe_name)
 
 dos_doc_zip :
 	$(RM) $(dos_doc_zip_name)
