@@ -333,6 +333,8 @@ static const char *pth_cfg_files = "";
 static int num_msgs = 0;
 static char **msg_array = NULL;
 
+const char *msg_lang = NULL;
+
 static void
 parse_msg_file(int charset_code)
 {
