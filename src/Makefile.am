@@ -1,5 +1,11 @@
 ## Process this file with automake to produce Makefile.in
 
+dist-hook:
+	if grep '@.*@' borlandc/config.h riscos/config.h ; then \
+	  echo 'Unsubstituted token in src/*/config.h - something is amiss with configure.in'; \
+	  exit 1; \
+	fi
+
 noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  cvrotgfx.h cvrotimg.h datain.h debug.h dosrot.h filelist.h filename.h\
  getopt.h hash.h img.h ini.h labels.h listpos.h matrix.h message.h namecmp.h\
