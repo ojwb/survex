@@ -20,6 +20,8 @@
 #ifndef MESSAGE_H /* only include once */
 #define MESSAGE_H
 
+#include <stdarg.h>
+
 #include "useful.h"
 #include "osdepend.h"
 #include "osalloc.h"
