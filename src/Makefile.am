@@ -71,13 +71,13 @@ avengl_CFLAGS = @WXGL_CFLAGS@ -DAVEN
 avengl_CXXFLAGS = @WXGL_CFLAGS@ -DAVEN
 avengl_LDFLAGS = @LIBRX@
 
-PRSRC = prcore.c prio.c useful.c img.c $(COMMONSRC)
+PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
  
-printps_SOURCES = printps.c $(PRSRC) ini.c hash.c
-printdm_SOURCES = printdm.c $(PRSRC) ini.c hash.c prbitmap.c
-printpcl_SOURCES = printpcl.c $(PRSRC) ini.c hash.c prbitmap.c
-printxbm_SOURCES = printxbm.c $(PRSRC) ini.c hash.c prbitmap.c
-printhpgl_SOURCES = prhpgl.c $(PRSRC) ini.c hash.c
+printps_SOURCES = printps.c $(PRSRC)
+printdm_SOURCES = printdm.c $(PRSRC) prbitmap.c
+printpcl_SOURCES = printpcl.c $(PRSRC) prbitmap.c
+printxbm_SOURCES = printxbm.c $(PRSRC) prbitmap.c
+printhpgl_SOURCES = prhpgl.c $(PRSRC)
 printwin_SOURCES = printwin.c $(PRSRC)
 printwin_LDFLAGS = -mconsole
 printwin_LDADD = -lgdi32 -lcomdlg32

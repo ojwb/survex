@@ -31,13 +31,15 @@
 #include <float.h>
 #include <limits.h>
 
-#include "useful.h"
-#include "filename.h"
-#include "message.h"
-#include "prio.h"
-#include "filelist.h"
 #include "debug.h" /* for BUG and ASSERT */
+#include "filelist.h"
+#include "filename.h"
+#include "ini.h"
+#include "message.h"
 #include "prcore.h"
+#include "prio.h"
+#include "useful.h"
+
 #include <windows.h>
 
 static double MarginLeft, MarginRight, MarginTop, MarginBottom;
@@ -341,6 +343,7 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 
    fCalibrate = fCalibrate; /* suppress unused argument warning */
    out_fnm = out_fnm;
+   pth = pth;
 
    vals = ini_read_hier(fh_list, "win", vars);
 
