@@ -5,7 +5,10 @@ Changes in 1.0.25:
 * (Unix version): updated config.guess and config.sub so should build out of
   the box on more Unix platforms.
 
-* (Unix version): added missing Build-Depends on xlibs-dev.
+* (Unix version): Debian: added missing Build-Depends on xlibs-dev.
+
+* (Unix version): RPMs: give up supplying binary RPMs due to apparently
+  insurmountable technical problems.
   
 Changes in 1.0.24:
 

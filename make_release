@@ -8,7 +8,7 @@ if test x"$1" = x-t ; then
    rel=
    shift
 fi
-mk=${@-src rpm deb doc alien djgpp mingw}
+mk=${@-src deb doc alien djgpp mingw}
 if test x"$rel" = xyes ; then
    # Update debian changelog entry if necessary
    # If it does get updated, then the next check will fail...
@@ -64,7 +64,7 @@ if test yes = "$rel" ; then
 # FIXME   CXXFLAGS="-Werror"
    CFLAGS="-Wp,-std=c89"
    CXXFLAGS=
-   if ! make dist ; then
+   if ! make distcheck ; then
 # FIXME extend.tst, test extend seems to bogusly fail in distcheck from here (but not otherwise) if ! make distcheck ; then
       echo make distcheck failed
       exit 1
@@ -75,16 +75,6 @@ else
    if ! make dist ; then
       echo make dist failed
       exit 1
-   fi
-fi
-if test x"$rel" = xyes && expr "$mk" : '.*\<rpm\>' || test x"$mk" = xrpm ; then
-   if rpm --version > /dev/null 2> /dev/null ; then
-      if ! make rpm ; then
-         echo make rpm failed
-         exit 1
-       fi
-   else
-       echo rpm not installed - skipping rpm generation
    fi
 fi
 if test x"$rel" = xyes && expr "$mk" : '.*\<deb\>' || test x"$mk" = xdeb ; then
