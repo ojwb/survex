@@ -148,10 +148,10 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 		    "Rotate the cave one step clockwise");
 
     wxMenu* orientmenu = new wxMenu;
-    orientmenu->Append(menu_ORIENT_MOVE_NORTH, "&View North\tN", "Move the survey so it aims North");
-    orientmenu->Append(menu_ORIENT_MOVE_EAST, "&View East\tE", "Move the survey so it aims East");
-    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, "&View South\tS", "Move the survey so it aims South");
-    orientmenu->Append(menu_ORIENT_MOVE_WEST, "&View West\tW", "Move the survey so it aims West");
+    orientmenu->Append(menu_ORIENT_MOVE_NORTH, "View &North\tN", "Move the survey so it aims North");
+    orientmenu->Append(menu_ORIENT_MOVE_EAST, "View &East\tE", "Move the survey so it aims East");
+    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, "View &South\tS", "Move the survey so it aims South");
+    orientmenu->Append(menu_ORIENT_MOVE_WEST, "View &West\tW", "Move the survey so it aims West");
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_SHIFT_LEFT, "Shift Survey &Left\tLeft Arrow",
 		       "Shift the survey to the left");
