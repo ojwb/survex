@@ -82,7 +82,7 @@ device printer = {
 };
 #else
 
-# ifdef HAVE_GETPWUID
+# if (OS==UNIX) && defined(HAVE_GETPWUID)
 #  include <pwd.h>
 #  include <sys/types.h>
 #  include <unistd.h>
@@ -292,7 +292,7 @@ ps_Pre(int pagesToPrint, const char *title)
    time_t now = time(NULL);
    char *name = NULL;
    char buf[1024];
-#ifdef HAVE_GETPWUID
+#if (OS==UNIX) && defined(HAVE_GETPWUID)
    struct passwd *ent;
 #endif
 
@@ -308,7 +308,7 @@ ps_Pre(int pagesToPrint, const char *title)
       prio_print(buf);
    }
 
-# ifdef HAVE_GETPWUID
+#if (OS==UNIX) && defined(HAVE_GETPWUID)
    ent = getpwuid(getuid());
    if (ent && ent->pw_gecos[0]) name = ent->pw_gecos;
 #endif
