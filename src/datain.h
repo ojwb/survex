@@ -17,6 +17,8 @@
 1996.03.24 parse structure introduced
 1996.11.03 added STYLE_* action codes
 1997.01.23 fixed to work without new datain.c
+1997.08.28 NEW_STYLE
+1998.03.21 fixed up to compile cleanly on Linux
 */
 
 #ifdef NO_SETJMP
@@ -45,11 +47,11 @@ extern void skipblanks(void);
 extern void data_file( sz pth, sz fnm ); /* reads complete data file */
 extern void UsingDataFile( sz fnmUsed );
 extern void skipline( void );
-extern void showline(char *dummy,int n);
-extern void showandskipline(char *dummy, int n);
+extern void showline( const char *dummy, int n );
+extern void showandskipline( const char *dummy, int n );
 
 /* style functions */
-#if 0
+#ifdef NEW_STYLE /* !HACK! */
 extern void data_normal( int /*action*/ );
 extern void data_diving( int /*action*/ );
 #else
