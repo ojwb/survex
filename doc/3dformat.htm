@@ -62,6 +62,22 @@ It's incorrect if the label ends up empty, or you attempt to trim more
 label than there is.
 <li> 0x20-0x3f : Reserved
 <li> 0x40-0x7f &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
+&lt;z coord&gt; : station flags are (N &amp; 0x1f):
+<ul>
+<li> 0x01 : Station is on an above ground leg
+<li> 0x02 : Station is on an underground leg (both may be true at an entrance)
+<li> 0x04 : Station is marked as an entrance (with *entrance)
+<li> 0x08 : Station is exported (i.e. may be used as a connection point to
+other surveys)
+<li> 0x10 : Station is a fixed point (control point)
+<li> 0x20 : Reserved
+</ul>
+
+Append label to the current label buffer.  Return station at the coordinates
+given, and update current position to coordinates given (FIXME: check this).
+The label gives the survey stations full name.
+
+<li> 0x80-0xbf &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
 &lt;z coord&gt; : leg flags are (N &amp; 0x1f):
 <ul>
 <li> 0x01 : Leg is above ground 
@@ -69,6 +85,7 @@ label than there is.
 <li> 0x04 : Leg is a splay shot in a chamber (radial shots from a central point)
 <li> 0x08 : Reserved
 <li> 0x10 : Reserved
+<li> 0x20 : Reserved
 </ul>
 Append label to the current label buffer.  The length of label is given by
 length, which is encoded as follows:
@@ -82,21 +99,7 @@ length, which is encoded as follows:
 Return leg from current position to coordinates given, and update current
 position to coordinates given.  The label gives the survey that the leg is
 in.
-<li> 0x80-0x9f &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
-&lt;z coord&gt; : station flags are (N &amp; 0x1f):
-<ul>
-<li> 0x01 : Station is on an above ground leg
-<li> 0x02 : Station is on an underground leg (both may be true at an entrance)
-<li> 0x04 : Station is marked as an entrance (with *entrance)
-<li> 0x08 : Station is exported (i.e. may be used as a connection point to
-other surveys)
-<li> 0x10 : Station is a fixed point (control point)
-</ul>
-
-Append label to the current label buffer.  Return station at the coordinates
-given, and update current position to coordinates given (FIXME: check this).
-The label gives the survey stations full name.
-<li> 0xa0-0xff : Reserved
+<li> 0xc0-0xff : Reserved
 </ul>
 
 <P>Olly Betts 2002-03-17, 2002-03-21</P>
