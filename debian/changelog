@@ -2,7 +2,7 @@ survex (1.0.18) unstable; urgency=low
 
   * Fixed "Process" action on .svx files.
   * File associations: if survex-svxedit isn't installed, run gnome-edit
-    instead; if survex-aven isn't installed, run xcaverot instead.
+    instead.
   * Include file associations and file icons in the main package rather than
     survex-aven.
   * Documentation: added details of the 3d file format (version 3).

@@ -5,7 +5,7 @@ application/x-survex-svx:
 	icon-filename=@prefix@/share/@PACKAGE@/icons/svx.png
 
 application/x-survex-3d:
-	open=@prefix@/share/@PACKAGE@/aven-or-xcaverot
+	open=aven %f
 	open.tag1.Print=printps %f
 	open.tag2.Extend=extend %f
 	open.tag3.Convert to DXF=cad3d --dxf %f
@@ -13,11 +13,11 @@ application/x-survex-3d:
 	icon-filename=@prefix@/share/@PACKAGE@/icons/3d.png
 
 application/x-compass-plot:
-	open=@prefix@/share/@PACKAGE@/aven-or-xcaverot
+	open=aven %f
 	icon-filename=@prefix@/share/@PACKAGE@/icons/plt.png
 
 application/x-cmap-xyz:
-	open=@prefix@/share/@PACKAGE@/aven-or-xcaverot
+	open=aven %f
 
 application/x-survex-err:
 	open=gnome-edit %f

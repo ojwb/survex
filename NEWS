@@ -3,7 +3,7 @@ Changes in 1.0.18:
 * (Unix Version): Fixed "Process" action on .svx files.
 
 * (Unix Version): File associations: if svxedit isn't installed, run gnome-edit
-  instead; if aven isn't installed, run xcaverot instead.
+  instead.
 
 * (Unix Version): In Debian packages, now include file associations and file
   icons in the survex package rather than survex-aven.
