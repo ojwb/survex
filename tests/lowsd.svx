@@ -1,0 +1,5 @@
+*sd length position 0.0013 metres
+*sd bearing gradient 0.00185 degrees
+*fix 1 0 0 0
+1 2 10.00 180 -10
+2 1 10.00 001 11
