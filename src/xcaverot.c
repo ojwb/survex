@@ -1,4 +1,3 @@
-/* FIXME: Zoom In -> In / Zoom Out -> Out ??? */
 /*	xcaverot.c
 
   X-Windows cave viewing program
@@ -100,7 +99,7 @@ float y_stretch = 1.0;
 
 /* Width of each button along the top of the window */
 #define BUTWIDTH 60
-#define BUTHEIGHT 25 /* FIXME: MRS has 50 */
+#define BUTHEIGHT 25
 
 /* Width and height of compass and elevation indicator windows */
 #define FONTSPACE 20
@@ -490,6 +489,7 @@ static void draw_scalebar(void)
   XDrawLine(mydisplay, scalebar, scale_gc, 13, 2, 13, 2 + scale*datafactor*sbar);
 }
 
+/* FIXME: Zoom In -> In / Zoom Out -> Out ??? */
 void process_zoom(Display *display, Window mainwin, Window button,
 		  GC mygc, GC egc)
 {
@@ -752,11 +752,8 @@ static void fill_segment_cache()
                 /* calculate colour */
                 int depth = (int) ((float) (- p->Z + Zorg + Zrad) * z_col_scale);
 	        if (depth < 0) {
-		   // FIXME:
-		   printf("!!! depth = %d\n", depth);
 		   depth = 0;
 		} else if (depth >= NUM_DEPTH_COLOURS) {
-		   printf("!!! depth = %d\n", depth);
 		   depth = NUM_DEPTH_COLOURS - 1;
 		}
                 /* store coordinates */
@@ -859,7 +856,6 @@ void redraw_image_dbe(Display* display, Window window, GC gc)
    lid *plid;
 
    char temp[32];
-   // FIXME:   int clip_left = 0, clip_right = 800, clip_top = 0, clip_bottom = 600;
    int group;
 
    x1 = y1 = 0; /* avoid compiler warning */
@@ -1229,7 +1225,6 @@ int main( int argc, char **argv )
   int visdepth; /* used in Double Buffer setup code */
 
   int redraw = 1;
-   // FIXME: GC enter_gc;
   XEvent myevent;
   XSizeHints myhint;
   XGCValues gvalues;
@@ -1392,7 +1387,7 @@ int main( int argc, char **argv )
   }
 #endif
 
-#if 0 /* FIXME: JPNP coide */
+#if 0 /* FIXME: JPNP code */
   /* set scale to fit cave in screen */
   scale = 0.6 * min((float)oldwidth/(xRad * 2 + 1),
 		    min( (float)oldheight/(yRad * 2 + 1),
@@ -1412,9 +1407,6 @@ int main( int argc, char **argv )
   mygc = XCreateGC (mydisplay, mywindow, 0, 0);
   gvalues.foreground = myforeground;
   gvalues.background = mybackground;
-#if 0 // FIXME
-  enter_gc = XCreateGC(mydisplay,butzoom, 0, 0);
-#endif
   scale_gc = XCreateGC(mydisplay,mywindow, 0, 0);
   slab_gc = XCreateGC(mydisplay,mywindow, 0, 0);
 
@@ -1427,15 +1419,8 @@ int main( int argc, char **argv )
   /* Load the font */
   font = XLoadFont(mydisplay,FONTNAME);
   XSetFont(mydisplay,mygc,font);
-#if 0 // FIXME
-  XSetFont(mydisplay,enter_gc,font);
-#endif
   XSetBackground (mydisplay, mygc, mybackground);
   XSetForeground (mydisplay, mygc, myforeground);
-#if 0 // FIXME
-  XSetBackground (mydisplay,enter_gc,myforeground);
-  XSetForeground (mydisplay,enter_gc,mybackground);
-#endif
   color_set_up(mydisplay, mywindow);
   XSetFont(mydisplay,gcs[lab_col_ind],font);
 
@@ -1576,16 +1561,14 @@ int main( int argc, char **argv )
 		  /* toggle plan/elevation */
 		  if (plan_elev == PLAN) {
 		      switch_to_elevation();
-		  }
-		  else {
+		  } else {
 		      switch_to_plan();
 		  }
 	      }
 	      else if (myevent.xbutton.button == Button3) {
 		  /* translate cave */
 		  press_right_button(myevent.xbutton.x, myevent.xbutton.y);
-		    
-		 }
+	      }
 	      }
 	      }
 	    }
