@@ -99,6 +99,8 @@ float y_stretch = 1.0;
 
 #define NCOLS 11
 
+#define SPLASH_STEPS 10
+
 class Aven : public Gnome_App {
     Gtk_DrawingArea m_Cave;
     bool m_Moving;
@@ -159,11 +161,14 @@ class Aven : public Gnome_App {
     float z_col_scale;
     bool m_WorkProcEnabled;
     bool m_WorkProcStateBeforeDrag;
+    bool m_Splash;
+    int m_SplashStep;
     Connection m_WorkProc;
 
     Gtk_HBox m_StatusBar;
     Gtk_Label m_HeadingLabel;
     Gtk_Label m_LegsLabel;
+    Gtk_Label m_MouseLabel;
 
     float m_AngleOrig;
 
@@ -211,7 +216,7 @@ public:
     void Draw(GdkPixmap* window, GdkGC* gc, int x0, int y0, int x1, int y1,
               float scale,
               int bx0, int by0, int bx1, int by1,
-              double sin_angle = -99.0, double cos_angle = -99.0);
+              bool = false, coord = 0, coord = 0, coord = 0);
 
     gint delete_event_impl();
 
@@ -287,8 +292,8 @@ static void Toolbar_About(GtkWidget*, gpointer data)
 // Aven methods:
 
 Aven::Aven(string name) :
-    Gnome_App("Aven", "Aven"), m_Eleving(false), m_Rotating(false),
-    m_Moving(false), m_CurX(WIDTH/2), m_CurY(HEIGHT/2), m_CaveWin(NULL), m_LastFactor(1.0),
+  Gnome_App("Aven", "Aven"), m_Eleving(false), m_Rotating(false), m_Splash(false), m_SplashStep(1),
+    m_Moving(false), m_CurX(0), m_CurY(0), m_CaveWin(NULL), m_LastFactor(1.0),
     m_Scale2(1.0), m_RotateAngle(PI / 180.0),
     m_CurOriginX(0), m_CurOriginY(0), m_ForceUseOrig(false), m_Angle(0),
     elev_angle(35.0), total_xshift(0), total_yshift(0), m_XSize(WIDTH), m_YSize(HEIGHT),
@@ -317,6 +322,7 @@ Aven::Aven(string name) :
     }
 
     m_Scale = scale_to_screen(m_RawLegs, m_RawStns) * 1.5;
+//    m_Scale /= pow(1.5, SPLASH_STEPS);
 
     z_col_scale = ((float) (NCOLS - 1)) / (2 * Zrad);
     
@@ -433,6 +439,9 @@ Aven::Aven(string name) :
     sprintf(buf, "%d legs ", nl);
     m_LegsLabel.set_text(buf);
     m_LegsLabel.show();
+    m_StatusBar.pack_end(m_MouseLabel, false, false);
+    m_MouseLabel.set_text("Button 1: scale/rotate   Button 2: elevate   Button 3: pan   ");
+    m_MouseLabel.show();
 
     // Create the toolbar.
     create_toolbar_with_data(TOOLBAR, (gpointer) this);
@@ -457,6 +466,8 @@ Aven::Aven(string name) :
     m_Cave.set_events(m_Cave.get_events() | GDK_BUTTON_PRESS_MASK |
               GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
     set_events(get_events() | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
+
+//    EnableWorkProc();
 }
 
 Aven::~Aven()
@@ -526,16 +537,20 @@ bool Aven::Contributes(int x0, int y0, int x1, int y1,
 }
 
 void Aven::Draw(GdkPixmap* window, GdkGC* gc, int x0, int y0, int x1, int y1,
-                    float scale, int bx0, int by0, int bx1, int by1,
-                    double sin_angle, double cos_angle)
+		float scale, int bx0, int by0, int bx1, int by1,
+		bool translate, coord xshift, coord yshift, coord zshift)
 {
-    bool scale_and_rotate = (scale != m_Scale2 || m_ForceUseOrig || sin_angle != -99.0);
+    bool scale_and_rotate = (scale != m_Scale2 || m_ForceUseOrig);
   
     if (scale_and_rotate) {
         char buf[30];
         sprintf(buf, " Heading: %03ddeg", int(m_Angle * 180.0 / PI));
         m_HeadingLabel.set_text(buf);
     }
+
+    GtkWidget* widget = GTK_WIDGET(m_Cave.gtkobj());
+    gdk_window_get_size(widget->window, &m_XSize, &m_YSize);
+    int halfxs = m_XSize / 2, halfys = m_YSize / 2;
 
     gdk_gc_set_foreground(gc, &black);
     gdk_draw_rectangle(window, gc, true, x0, y0, x1 - x0, y1 - y0);
@@ -553,6 +568,19 @@ void Aven::Draw(GdkPixmap* window, GdkGC* gc, int x0, int y0, int x1, int y1,
         gdk_gc_set_foreground(gc, &cols[depth]);
     
         for (int i = 0; i < m_NumLines[depth]; i++) { // THE speed-critical loop!
+            if (translate) {
+	      //   printf("old coord x's: %d/%d\n", m_Lines[depth].px0[i], m_Lines[depth].px1[i]);
+
+  	        m_Lines[depth].px0[i] += xshift;
+  	        m_Lines[depth].px1[i] += xshift;
+  	        m_Lines[depth].py0[i] += yshift;
+  	        m_Lines[depth].py1[i] += yshift;
+  	        m_Lines[depth].pz0[i] += zshift;
+  	        m_Lines[depth].pz1[i] += zshift;
+		//      printf("new coord x's: %d/%d\n", m_Lines[depth].px0[i], m_Lines[depth].px1[i]);
+		scale_and_rotate = true; // next "if" gets executed now
+	    }
+
             if (scale_and_rotate) {
                 m_ForceUseOrig = false;
 //       printf("requested %f, override %f\n",scale,m_Scale); 
@@ -563,7 +591,7 @@ void Aven::Draw(GdkPixmap* window, GdkGC* gc, int x0, int y0, int x1, int y1,
                 m_Lines[depth].y1[i] = toscreen_y(m_Lines[depth].px1[i], m_Lines[depth].py1[i], m_Lines[depth].pz1[i], scale);
         
                 m_Lines[depth].ignore[i] = (m_Lines[depth].x0[i] == m_Lines[depth].x1[i]) &&
-                                    (m_Lines[depth].y0[i] == m_Lines[depth].y1[i]);
+                                           (m_Lines[depth].y0[i] == m_Lines[depth].y1[i]);
             }
             
             if (m_Lines[depth].ignore[i]) {
@@ -572,10 +600,10 @@ void Aven::Draw(GdkPixmap* window, GdkGC* gc, int x0, int y0, int x1, int y1,
     
             cur_seg = &segs[num_to_draw];
         
-            cur_seg->x1 = m_Lines[depth].x0[i] + m_CurX;
-            cur_seg->x2 = m_Lines[depth].x1[i] + m_CurX;
-            cur_seg->y1 = m_Lines[depth].y0[i] + m_CurY;
-            cur_seg->y2 = m_Lines[depth].y1[i] + m_CurY;
+            cur_seg->x1 = m_Lines[depth].x0[i] + halfxs;
+            cur_seg->x2 = m_Lines[depth].x1[i] + halfxs;
+            cur_seg->y1 = m_Lines[depth].y0[i] + halfys;
+            cur_seg->y2 = m_Lines[depth].y1[i] + halfys;
                 
             if (Contributes(cur_seg->x1, cur_seg->y1, cur_seg->x2, cur_seg->y2,
                             x0, y0, x1, y1) ||
@@ -643,30 +671,12 @@ gint Aven::ButtonPressEvent(GdkEventButton* event)
         m_Scaling = true;
         m_LastFactor = m_Scale;
 
+        m_XSize = m_Cave.width();
+        m_YSize = m_Cave.height();
+
         m_AngleOrig = m_Angle;
         
         m_RotationTrigOffset = -int(event->x) + SCREEN_WIDTH;
-        
-        // Recenter dataset now.
-        int xshift = int((-(m_XSize / 2) + m_CurX) / m_LastFactor);
-        int yshift = int((-(m_YSize / 2) + m_CurY) / m_LastFactor);
-        
-        for (int depth = 0; depth < NCOLS; depth++) {
-            for (int i = 0; i < m_NumLines[depth]; i++) {
-                m_Lines[depth].x0_orig[i] += xshift;
-                m_Lines[depth].x1_orig[i] += xshift;
-                m_Lines[depth].y0_orig[i] += yshift;
-                m_Lines[depth].y1_orig[i] += yshift;
-            }
-        }
-
-        total_xshift += xshift;
-        total_yshift += yshift;
-        
-        m_ForceUseOrig = true;
-        
-        m_CurX = m_XSize / 2;
-        m_CurY = m_YSize / 2;
     }
 
     m_WorkProcStateBeforeDrag = m_WorkProcEnabled;
@@ -693,10 +703,24 @@ gint Aven::Idle()
 {
     // Perform automatic rotation of the display.
 
-    assert (m_Rotating || m_SwitchToPlan || m_SwitchToElevation);
+    assert (m_Rotating || m_SwitchToPlan || m_SwitchToElevation || m_Splash);
     assert (!m_Scaling && !m_Eleving && !m_Moving);
 
     if (!m_CaveWin) return 1;
+
+    if (m_Splash) {
+        elev_angle = 90.0 - (m_SplashStep * (60.0 / SPLASH_STEPS));
+	m_Angle = 1.5*PI - (m_SplashStep * 1.5*PI / SPLASH_STEPS);
+	m_Scale *= 1.5;
+        sx = sin(m_Angle);
+        cx = cos(m_Angle);
+	fz = cos(elev_angle*PIBY180);
+        // other trig terms get updated below...
+	if (m_SplashStep++ == SPLASH_STEPS) {
+  	    m_Splash = false;
+	    DisableWorkProc();
+	}
+    }
 
     // Handle switching to plan or elevation.
     if (m_SwitchToPlan) {
@@ -736,7 +760,8 @@ gint Aven::Idle()
     if (m_Rotating) {
         // Calculate rotation.
         m_Angle += m_RotateAngle;
-        if (m_Angle >= (2*PI)) m_Angle -= (2*PI);
+        while (m_Angle >= (2*PI)) m_Angle -= (2*PI);
+        while (m_Angle < 0.0) m_Angle += 2*PI;
         sx = sin(m_Angle);
         cx = cos(m_Angle);
     }
@@ -744,8 +769,9 @@ gint Aven::Idle()
     fx = sin(elev_angle*PIBY180) * sx;
     fy = sin(elev_angle*PIBY180) * -cx;
 
+    m_ForceUseOrig = true;
     Draw(m_DrawPixmap, m_LineGC, 0, 0, m_XSize, m_YSize, m_Scale,
-         -1, -1, -1, -1, sin(m_Angle), cos(m_Angle));
+         -1, -1, -1, -1);
 
     // Swap buffers.
     XdbeSwapInfo info;
@@ -774,40 +800,22 @@ gint Aven::PointerMotionEvent(GdkEventMotion* event)
     if (m_Moving) {
         mask2 = GDK_BUTTON3_MASK;
     
-        int dx = int((int(event->x) - m_LastX));
-        int dy = int((int(event->y) - m_LastY));
+        int dx = -int((int(event->x) - m_LastX));
+        int dy = -int((int(event->y) - m_LastY));
+
+	float dxp = (float(dx)*cx) / m_Scale;
+	float dyp = (float(dx)*sx) / m_Scale;
+	float dzp = float(dy) / m_Scale;
+
+	coord xshift = coord(dxp);
+	coord yshift = coord(dyp);
+	coord zshift = coord(dzp);
         
         m_LastX = int(event->x);
         m_LastY = int(event->y);
-        
-        m_CurX += dx;
-        m_CurY += dy;
 
-        gdk_window_copy_area(m_DrawPixmap, m_LineGC, dx, dy, m_DrawPixmap,
-                 0, 0, m_XSize, m_YSize);
-        
-        if (dx < 0) {
-            if (dy < 0) Draw(m_DrawPixmap, m_LineGC,
-                             m_XSize + dx, 0, m_XSize, m_YSize,
-                             m_Scale2,
-                             0, m_YSize + dy, m_XSize, m_YSize);
-            else        Draw(m_DrawPixmap, m_LineGC,
-                             m_XSize + dx, 0, m_XSize, m_YSize,
-                             m_Scale2,
-                             0, 0, m_XSize, dy);
-        }
-        else {
-            if (dy < 0) Draw(m_DrawPixmap, m_LineGC,
-                             0, 0, dx, m_YSize,
-                             m_Scale2,
-                             0, m_YSize + dy, m_XSize, m_YSize);
-            else        Draw(m_DrawPixmap, m_LineGC,
-                             0, 0, dx, m_YSize,
-                             m_Scale2,
-                             0, 0, m_XSize, dy);
-        }
-        gdk_window_copy_area(m_CaveWin, m_LineGC, 0, 0, m_DrawPixmap,
-                 0, 0, m_XSize, m_YSize);
+	Draw(m_DrawPixmap, m_LineGC, 0, 0, m_XSize, m_YSize, m_Scale,
+	     -1, -1, -1, -1, true, xshift, yshift, zshift);
     }
     else if (m_Eleving) {
         mask2 = GDK_BUTTON2_MASK;
@@ -825,7 +833,7 @@ gint Aven::PointerMotionEvent(GdkEventMotion* event)
 
         if (elev_angle != m_AngleOrig) {
             Draw(m_DrawPixmap, m_LineGC, 0, 0, m_XSize, m_YSize, m_Scale2,
-                 -1, -1, -1, -1, sin(m_Angle), cos(m_Angle));
+                 -1, -1, -1, -1);
         }
     }
     else if (m_Scaling) {
@@ -841,8 +849,8 @@ gint Aven::PointerMotionEvent(GdkEventMotion* event)
         // Calculate rotation.
         m_Angle = m_AngleOrig + (PI * float(event->x - m_StartX) / 512.0);
 
-        if (m_Angle < 0.0) m_Angle += 2*PI;
-        if (m_Angle >= 2*PI) m_Angle -= 2*PI;
+        while (m_Angle < 0.0) m_Angle += 2*PI;
+        while (m_Angle >= 2*PI) m_Angle -= 2*PI;
 
         sx = sin(m_Angle);
         cx = cos(m_Angle);
@@ -852,7 +860,7 @@ gint Aven::PointerMotionEvent(GdkEventMotion* event)
 
         if (factor != old_factor || m_Angle != old_angle) {
             Draw(m_DrawPixmap, m_LineGC, 0, 0, m_XSize, m_YSize, factor * m_LastFactor,
-                 -1, -1, -1, -1, sin(m_Angle), cos(m_Angle));
+                 -1, -1, -1, -1);
         }
     }
 
