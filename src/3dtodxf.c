@@ -52,7 +52,7 @@ int main( int argc, char *argv[] ) {
    float x,y,z;
    float min_x, min_y, min_z, max_x, max_y, max_z; /* for HEADER section */
    double text_height; /* for station labels */
-   double  marker_size; /* for station markers */
+   double marker_size; /* for station markers */
 
    /* FIXME TRANSLATE */
    static const struct option long_opts[] = {
@@ -63,6 +63,7 @@ int main( int argc, char *argv[] ) {
 	{"htext", required_argument, 0, 't'},
 	{"msize", required_argument, 0, 'm'},
 	{"help", no_argument, 0, HLP_HELP},
+	{"version", no_argument, 0, HLP_VERSION},
 	{0,0,0,0}
    };
 
