@@ -629,6 +629,10 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // the data for drawing.
 
     // Load the survey data.
+#if 0
+    wxStopWatch timer;
+    timer.Start();
+#endif
 
     img* survey = img_open_survey(file, prefix.c_str());
     if (!survey) {
@@ -820,6 +824,10 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     // Centre the dataset around the origin.
     CentreDataset(xmin, ymin, m_ZMin);
+
+#if 0
+    printf("time to load = %.3f\n", (double)timer.Time());
+#endif
 
     // Update window title.
     SetTitle(wxString("Aven - [") + file + wxString("]"));
