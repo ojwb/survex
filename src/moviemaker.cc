@@ -34,6 +34,10 @@
 #include "avformat.h"
 #endif
 
+// ffmpeg CVS has added av_alloc_format_context() - we're ready for it!
+#define av_alloc_format_context() \
+    ((AVFormatContext*)av_mallocz(sizeof(AVFormatContext)))
+
 const int OUTBUF_SIZE = 200000;
 
 MovieMaker::MovieMaker()
@@ -69,7 +73,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     }
 
     // Allocate the output media context.
-    oc = (AVFormatContext*)av_mallocz(sizeof(AVFormatContext));
+    oc = av_alloc_format_context();
     if (!oc) {
 	// FIXME : out of memory
 	return false;
