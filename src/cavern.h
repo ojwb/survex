@@ -342,6 +342,7 @@ extern bool fSuppress; /* only output 3d(3dx) file */
 
 typedef struct nosurveylink {
    node *fr, *to;
+   int flags;
    struct nosurveylink *next;
 } nosurveylink;
 

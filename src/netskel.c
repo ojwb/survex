@@ -874,19 +874,16 @@ replace_trailing_travs(void)
    while (nosurveyhead) {
       nosurveylink *p = nosurveyhead;
       if (fixed(p->fr) && fixed(p->to)) {
-#if 0
-	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+	 if (TSTBIT(p->flags, FLAGS_SURFACE)) {
 	    p->fr->name->sflags |= BIT(SFLAGS_SURFACE);
 	    p->to->name->sflags |= BIT(SFLAGS_SURFACE);
 	 } else {
 	    p->fr->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	    p->to->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	 }
-#endif
 	 img_write_item(pimgOut, img_MOVE, 0, NULL,
 			POS(p->fr, 0), POS(p->fr, 1), POS(p->fr, 2));
-	 /* FIXME: flags? */
-	 img_write_item(pimgOut, img_LINE, 0, NULL,
+	 img_write_item(pimgOut, img_LINE, p->flags, NULL,
 			POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
       }
       nosurveyhead = p->next;

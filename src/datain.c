@@ -1113,6 +1113,7 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
       link->fr = StnFromPfx(fr);
       link->to = StnFromPfx(to);
    }
+   link->flags = pcs->flags;
    link->next = nosurveyhead;
    nosurveyhead = link;
    return 1;
