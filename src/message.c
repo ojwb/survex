@@ -263,11 +263,11 @@ default_charset(void)
    return CHARSET_DOSCP850;
 #elif (OS==WIN32)
 # ifdef AVEN
-   return CHARSET_WINCP1252:
+   return CHARSET_WINCP1252;
 # else
    switch (GetConsoleOutputCP()) {
-    case 1252: return CHARSET_WINCP1252:
-/* FIXME: case 850: return CHARSET_DOSCP850; */
+    case 1252: return CHARSET_WINCP1252;
+    case 850: return CHARSET_DOSCP850;
    }
    return CHARSET_USASCII;
 # endif
@@ -330,7 +330,7 @@ default_charset(void)
 #endif
 }
 
-#if (OS==MSDOS)
+#if (OS==MSDOS || OS==WIN32)
 static int
 xlate_dos_cp850(int unicode)
 {
@@ -396,7 +396,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	 return 1;
       }
       break;      
-#elif (OS==MSDOS)
+#elif (OS==MSDOS || OS==WIN32)
    case CHARSET_DOSCP850:
       value = xlate_dos_cp850(value);
       if (value) {

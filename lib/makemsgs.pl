@@ -123,7 +123,9 @@ foreach $lang (@langs) {
 }
 
 foreach $lang (@langs) {
-   open OUT, ">$lang.h" or die $!;
+   my $fnm = $lang;
+   $fnm =~ s/(_.*)$/\U$1/;
+   open OUT, ">$fnm.h" or die $!;
    print OUT "#define N_DONTEXTRACTMSGS ", $num_dontextract, "\n";
    print OUT "static unsigned char dontextractmsgs[] =";
 
