@@ -1037,7 +1037,13 @@ msg_init(char * const *argv)
       exit(0);
    }
    if (argv[0]) {
-#if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
+#ifdef MACOSX_BUNDLE
+      /* If we're being built into a bundle, always look relative to
+       * the path to the binary. */
+      char * pth = path_from_fnm(argv[0]);
+      pth_cfg_files = use_path(pth, "share/survex");
+      osfree(pth);
+#elif (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
       bool free_pth = fFalse;
       char *pth = getenv("srcdir");
       if (!pth || !pth[0]) {
@@ -1046,10 +1052,6 @@ msg_init(char * const *argv)
       }
       if (pth[0]) {
 	 struct stat buf;
-	 /* If we're run with an explicit path, check if "../lib/en.msg"
-	  * from the program's path exists, and if so look there for
-	  * support files - this allows us to test binaries in the build
-	  * tree easily. */
 #if defined(__GNUC__) && defined(__APPLE_CC__)
 	 /* On MacOS X the programs may be installed anywhere, with the
 	  * share directory and the binaries in the same directory. */
@@ -1060,6 +1062,10 @@ msg_init(char * const *argv)
 	 }
 	 osfree(p);
 #endif
+	 /* If we're run with an explicit path, check if "../lib/en.msg"
+	  * from the program's path exists, and if so look there for
+	  * support files - this allows us to test binaries in the build
+	  * tree easily. */
 	 p = use_path(pth, "../lib/en.msg");
 	 if (lstat(p, &buf) == 0) {
 #ifdef S_ISDIR
@@ -1078,6 +1084,7 @@ msg_init(char * const *argv)
 macosx_got_msg:
 #endif
 	 osfree(p);
+#endif
       }
       
       if (free_pth) osfree(pth);

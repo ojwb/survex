@@ -52,7 +52,7 @@ export WXCONFIG
 rm -rf *.dmg Survex macosx
 D="`pwd`/Survex"
 T="`pwd`/macosxtmp"
-./configure --prefix="$D" --bindir="$D" --mandir="$T"
+./configure --prefix="$D" --bindir="$D" --mandir="$T" CFLAGS=-DMACOSX_BUNDLE
 make
 make install
 #mv Survex/survex Survex/Survex
@@ -65,7 +65,7 @@ if test $sectors -lt 8192 ; then
   sectors=8192
 fi
 echo "Creating new blank image survex-macosx.dmg of $sectors sectors"
-# This just writes ASCII data to the file until it's the correct size.
+# This creates the diskimage file and initialises it as an HFS+ volume.
 hdiutil create -sectors $sectors survex-macosx -layout NONE -fs HFS+ -volname Survex
 
 echo "Present image to the filesystems for mounting."
