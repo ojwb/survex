@@ -181,6 +181,9 @@ fntTexFont::load(const char *fname)
 
     glAlphaFunc(GL_GREATER, 0.5f);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 	 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
     fseek(fd, fpos, SEEK_SET);
 
     for (i = 0; i < FNT_MAXCHAR; ++i) widths[i] = -1;
