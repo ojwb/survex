@@ -6,5 +6,6 @@ EXTRA_DIST = diffpos.tst cavern.tst\
 oneleg.svx oneleg.pos\
 midpoint.svx midpoint.pos\
 noose.svx noose.pos\
+cross.svx cross.pos\
 delatenda.pos delatendb.pos delatend.out\
-addatenda.pos addatendb.pos addatend.out
+addatenda.pos addatendb.pos addatend.out\
