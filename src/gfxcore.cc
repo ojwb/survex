@@ -2003,6 +2003,8 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     c_band = min(max(c_band, 0), GetNumDepthBands());
     d_band = GetDepthColour(d.getZ());
     d_band = min(max(d_band, 0), GetNumDepthBands());
+    // All this splitting is incorrect - we need to make a separate polygon
+    // for each depth band...
     BeginPolygon();
 ////    PlaceNormal(normal.getX(), normal.getY(), normal.getZ());
     PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
