@@ -21,7 +21,9 @@
 /* name of current application */
 extern const char *szAppNameCopy;
 
-extern const char * FAR ReadErrorFile(const char *argv0);
+extern void msg_init(const char *argv0);
+
+extern const char *msg_cfgpth(void);
 
 /* report total warnings and non-fatal errors */
 extern int error_summary(void);

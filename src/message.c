@@ -255,8 +255,6 @@ static int default_charset( void ) {
 #endif
 }
 
-static const char *pthMe = NULL;
-
 #if (OS==MSDOS)
 static int
 xlate_dos_cp850(int unicode)
@@ -312,6 +310,9 @@ add_unicode(int charset, char *p, int value)
    return 0;
 }
 
+/* fall back on looking in the current directory */
+static const char *pth_cfg_files = "";
+
 static unsigned char *msg_blk;
 static int num_msgs = 0;
 
@@ -349,7 +350,7 @@ parse_msg_file(int charset_code)
    }
 #endif
 
-   fh = fopenWithPthAndExt(pthMe, lang, EXT_SVX_MSG, "rb", NULL);
+   fh = fopenWithPthAndExt(pth_cfg_files, lang, EXT_SVX_MSG, "rb", NULL);
 
    if (!fh) {
       /* e.g. if 'en-COCKNEY' is unknown, see if we know 'en' */
@@ -358,14 +359,15 @@ parse_msg_file(int charset_code)
          lang_generic[0] = lang[0];
          lang_generic[1] = lang[1];
 	 lang_generic[2] = '\0';
-	 fh = fopenWithPthAndExt(pthMe, lang_generic, EXT_SVX_MSG, "rb", NULL);
+	 fh = fopenWithPthAndExt(pth_cfg_files, lang_generic, EXT_SVX_MSG,
+				 "rb", NULL);
       }
    }
 
    if (!fh) {
       /* no point extracting this error, as it won't get used if file opens */
       fprintf(STDERR, "Can't open message file '%s' using path '%s'\n",
-	      lang, pthMe);
+	      lang, pth_cfg_files);
       exit(EXIT_FAILURE);
    }
 
@@ -437,8 +439,14 @@ parse_msg_file(int charset_code)
    }
 }
 
-extern const char * FAR
-ReadErrorFile(const char *argv0)
+const char *
+msg_cfgpth(void)
+{
+   return pth_cfg_files;
+}
+
+void
+msg_init(const char *argv0)
 {
    char *p;
 
@@ -454,24 +462,19 @@ ReadErrorFile(const char *argv0)
    /* Look for env. var. "SURVEXHOME" or the like */
    p = getenv("SURVEXHOME");
    if (p && *p) {
-      pthMe = osstrdup(p);
+      pth_cfg_files = osstrdup(p);
 #if (OS==UNIX) && defined(SURVEXHOME)
    } else {
       /* under Unix, we compile in the configured path */
-      pthMe = SURVEXHOME;
+      pth_cfg_files = SURVEXHOME;
 #else
    } else if (argv0) {
       /* else try the path on argv[0] */
-      pthMe = path_from_fnm(argv0);
-   } else {
-      /* otherwise, forget it - go for the current directory */
-      pthMe = "";
+      pth_cfg_files = path_from_fnm(argv0);
 #endif
    }
 
    select_charset(default_charset());
-
-   return pthMe;
 }
 
 /* message may be overwritten by next call (but not in current implementation) */
