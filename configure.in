@@ -259,6 +259,14 @@ AC_TYPE_SIZE_T
 AC_STRUCT_TM
 AC_TYPE_SIGNAL
 
+dnl check if CLOCKS_PER_SEC is defined by time.h (as ANSI says it should be)
+dnl if it isn't, assume it is 1000000, as it is on SunOS 4
+AC_TRY_COMPILE([#include <time.h>],[
+#ifndef CLOCKS_PER_SEC
+choke me
+#endif
+], , AC_DEFINE(CLOCKS_PER_SEC, 1000000, [For old systems which don't define it themselves]))
+
 dnl Look for a signed 32 bit integer type
 AC_MSG_CHECKING(for 32 bit integer type)
 AC_TRY_COMPILE(,[switch (0) { case (sizeof(int)==4): case 0: break; }],
