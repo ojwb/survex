@@ -450,7 +450,7 @@ img_read_item(img *pimg, img_point *p)
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	    }
-	    c = pimg->label_len - 16;
+	    c = pimg->label_len - 16 - 1;
 	    opt &= 0x07;
 	    while (pimg->label_buf[c] != '.' || --opt > 0) {
 	       if (--c < 0) {
@@ -460,7 +460,6 @@ img_read_item(img *pimg, img_point *p)
 	       }
 	    }
 	    c++;
-	    pimg->label_buf[c] = '\0';
 	    pimg->label_len = c;
 	    goto again3;
 	 }

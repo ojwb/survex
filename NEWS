@@ -1,3 +1,6 @@
+* Fixed bug in .3d file reading code which would incorrectly reconstruct
+  the survey hierarchy in rare cases.
+
 * (MS Windows version): aven: fixed redraw problem for "N found".
 
 * (MS Windows version): minor tweaks to .err, .pos, and .svx file icons.
