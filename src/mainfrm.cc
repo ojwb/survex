@@ -22,6 +22,7 @@
 
 #include "img.h"
 #include "mainfrm.h"
+#include "config.h"
 
 #include "aven.h"
 
@@ -70,7 +71,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 //    EVT_MENU(menu_VIEW_STATUS_BAR, MainFrm::)
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_CTL_CAVEROT_MID, MainFrm::OnOriginalCaverotMouse)
-//    EVT_MENU(menu_HELP_ABOUT, MainFrm::)
+    EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 
     EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_STOP, MainFrm::OnStopRotationUpdate)
@@ -647,4 +648,51 @@ void MainFrm::OnOpen(wxCommandEvent&)
 void MainFrm::OnQuit(wxCommandEvent&)
 {
     Close(true);
+}
+
+void MainFrm::OnAbout(wxCommandEvent&)
+{
+    wxDialog dlg(this, 500, "About Aven");
+
+    wxBoxSizer horiz(wxHORIZONTAL);
+    wxBoxSizer vert(wxVERTICAL);
+
+    wxStaticBitmap bitmap(&dlg, 501, wxGetApp().GetAboutBitmap());
+    wxStaticText title(&dlg, 502, wxString("Aven ") + wxString(VERSION));
+    wxStaticText purpose(&dlg, 505, wxString("Visualisation of Survex 3D files"));
+    wxStaticText copyright1(&dlg, 503, "(c) Copyright 1999-2001, Mark R. Shinwell");
+    wxStaticText copyright2(&dlg, 504,
+			    "Portions from Survex (c) Copyright 1990-2001, Olly Betts");
+    wxStaticText licence(&dlg, 506, "This is free software.  Aven is licenced under the");
+    wxStaticText licence2(&dlg, 508, "terms of the GNU General Public Licence version 2,");
+    wxStaticText licence3(&dlg, 509, "or (at your option) any later version.");
+    wxButton close(&dlg, 507, "Close");
+    close.SetDefault();
+
+    horiz.Add(&bitmap, 0, wxALL, 2);
+    horiz.Add(&vert, 0, wxALL, 2);
+
+    vert.Add(&title, 0, wxLEFT | wxRIGHT | wxTOP, 20);
+    vert.Add(10, 5, 0, wxTOP, 5);
+    vert.Add(&purpose, 0, wxLEFT | wxRIGHT, 20);
+    vert.Add(10, 5, 0, wxTOP, 5);
+    vert.Add(&copyright1, 0, wxLEFT | wxRIGHT, 20);
+    vert.Add(&copyright2, 0, wxLEFT | wxBOTTOM | wxRIGHT, 20);
+    vert.Add(10, 5, 0, wxTOP, 5);
+    vert.Add(&licence, 0, wxLEFT | wxRIGHT, 20);
+    vert.Add(&licence2, 0, wxLEFT | wxRIGHT, 20);
+    vert.Add(&licence3, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
+    vert.Add(10, 5, 0, wxEXPAND | wxGROW | wxTOP, 5);
+
+    wxBoxSizer bottom(wxHORIZONTAL);
+    bottom.Add(250, 5, 4);
+    bottom.Add(&close, 1);
+    vert.Add(&bottom, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
+
+    horiz.Fit(&dlg);
+    horiz.SetSizeHints(&dlg);
+
+    dlg.SetAutoLayout(true);
+    dlg.SetSizer(&horiz);
+    dlg.ShowModal();
 }

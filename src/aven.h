@@ -29,6 +29,7 @@ class MainFrm;
 
 class Aven : public wxApp {
     MainFrm* m_Frame;
+    wxBitmap m_AboutBitmap;
 
 public:
     Aven();
@@ -36,6 +37,7 @@ public:
     virtual bool OnInit();
 
     void ReportError(const wxString&);
+    wxBitmap& GetAboutBitmap() { return m_AboutBitmap; }
 };
 
 DECLARE_APP(Aven)

@@ -22,8 +22,12 @@
 
 #include "aven.h"
 #include "mainfrm.h"
+#include "config.h"
 
 #include <assert.h>
+
+#include <wx/image.h>
+#include <wx/confbase.h>
 
 IMPLEMENT_APP(Aven)
 
@@ -34,6 +38,10 @@ Aven::Aven() :
 
 bool Aven::OnInit()
 {
+    wxImage::AddHandler(new wxPNGHandler);
+    m_AboutBitmap.LoadFile(wxString(DATADIR) + wxCONFIG_PATH_SEPARATOR +
+			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
+
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(640, 480));
     m_Frame->Show(true);
 

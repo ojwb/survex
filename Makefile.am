@@ -41,7 +41,7 @@ rpm : dist
 	echo Requires: survex = ${VERSION} >> ${spec}
 	echo "" >> ${spec}
 	echo %description aven >> ${spec}
-	echo A fancy cave viewer for Survex, written using the GTK-- library. >> ${spec}
+	echo A fancy cave viewer for Survex, written using the wxWindows library. >> ${spec}
 	echo "" >> ${spec}
 	echo %prep >> ${spec}
 	echo %setup >> ${spec}
