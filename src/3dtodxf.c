@@ -57,7 +57,7 @@ main(int argc, char **argv)
    img *pimg;
    FILE *fh;
    int item;
-   int fSeenMove=0;
+   int fSeenMove = 0;
    float x, y, z;
    float x1, y1, z1;
    float min_x, min_y, min_z, max_x, max_y, max_z; /* for HEADER section */
@@ -106,8 +106,7 @@ main(int argc, char **argv)
    text_height = TEXT_HEIGHT;
    marker_size = MARKER_SIZE;
 
-   /* exactly two arguments must be given */
-   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 2, 2);
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
    while (1) {      
       int opt = cmdline_getopt();
       if (opt == EOF) break;
@@ -147,7 +146,13 @@ main(int argc, char **argv)
    } 	 
 
    fnm3D = argv[optind++];
-   fnmDXF = argv[optind++];
+   if (argv[optind]) {
+      fnmDXF = argv[optind];
+   } else {
+      char *base = base_from_fnm(fnm3D);
+      fnmDXF = add_ext(base, "dxf");
+      osfree(base);
+   }
 
    pimg = img_open(fnm3D, szTitle, szDateStamp);
    if (!pimg) {
