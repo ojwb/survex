@@ -93,8 +93,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-03-23 20:21:31 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.86 2002-03-23 20:21:31 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-03-31 00:35:39 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.87 2002-03-31 00:35:39 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1402,6 +1402,10 @@ performed with a Topofil instead of a tape.
 <listitem><Para>The usual tape/compass/clino centreline survey.
 For non-interleaved data the allowed readings are: FROM TO TAPE COMPASS CLINO;
 for interleaved data the allowed readings are: STATION TAPE COMPASS CLINO.
+The CLINO reading is not required - if it's not given, the vertical standard
+deviation is taken to be proportional to the tape measurement.  Alternatively,
+individual clino readings can be given as OMIT (default "-") which allows
+for data where only some clino readings are missing.
 E.g.:
 
 <programlisting>
