@@ -1044,7 +1044,7 @@ data_normal(void)
 
    bool fTopofil = fFalse, fMulti = fFalse;
    bool fRev;
-   bool ctype, backctype;
+   clino_type ctype, backctype;
    bool fDepthChange;
 
    reading *ordering;
