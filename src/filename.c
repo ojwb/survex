@@ -21,6 +21,7 @@
 #endif
 
 #include "filename.h"
+#include "debug.h"
 
 #include <ctype.h>
 #include <string.h>

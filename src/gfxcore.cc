@@ -739,7 +739,7 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
-    double pan_angle = M_PI * (double(dx) / 500.0);
+    double pan_angle = -M_PI * (double(dx) / 500.0);
 
     Quaternion q;
     double new_scale = m_Params.scale;
@@ -761,10 +761,10 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 	}
 	q.setFromVectorAndAngle(Vector3(XToScreen(0.0, 0.0, 1.0),
 					YToScreen(0.0, 0.0, 1.0),
-					ZToScreen(0.0, 0.0, 1.0)), -pan_angle);
+					ZToScreen(0.0, 0.0, 1.0)), pan_angle);
 
 	m_PanAngle += pan_angle;
-	if (m_PanAngle > M_PI*2.0) {
+	if (m_PanAngle >= M_PI*2.0) {
 	    m_PanAngle -= M_PI*2.0;
 	}
 	if (m_PanAngle < 0.0) {
