@@ -79,13 +79,16 @@ else
 fi
 
 if test -n $AVEN; then
-  if wx-config --version > /dev/null ; then
+  AC_MSG_CHECKING(for wxwindows)
+  if wx-config --version > /dev/null 2> /dev/null ; then
     WX_LIBS=`wx-config --libs`
     AC_SUBST(WX_LIBS)
     WX_CFLAGS=`wx-config --cflags`
     AC_SUBST(WX_CFLAGS)
+    AC_MSG_RESULT(found)
     AC_MSG_RESULT(building aven)
   else
+    AC_MSG_RESULT(not found)
     AVEN=
   fi
 fi
