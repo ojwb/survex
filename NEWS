@@ -1,3 +1,5 @@
+Changes in 0.98-prerelease3:
+
 * cavern/3dtopos: cavern no longer produces .pos files - they're
   mostly useful for hand plotting and are larger than the
   corresponding .3d files so most of the time the slow processing and
