@@ -6,6 +6,8 @@ Changes in 1.0.4:
 * cad3d: if an output filename is given, use its extension to pick the default
   output format.
 
+* aven: movement with keyboard is now accelerated by Shift as in caverot.
+
 * (MacOS X version): aven: aven now buils on MacOS X - we just need to sort
   out packaging now...
 

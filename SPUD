@@ -84,6 +84,8 @@ controls), escape vs q(?)
 switch_to_(plan|elevation) in xcaverot should animate but code is just
 broken.
 
+Shift-ed keys should move faster as they do in aven and caverot
+
 ?try using labels.c in xcaverot to see if XRegions are better or not?
 
 Maybe station lists should know how long they are?

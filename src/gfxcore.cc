@@ -2752,11 +2752,11 @@ void GfxCore::OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && m_Rotating);
 }
 
-void GfxCore::OnSlowDown()
+void GfxCore::OnSlowDown(bool accel)
 {
-    m_RotationStep /= 1.2f;
-    if (m_RotationStep < M_PI/2000.0f) {
-	m_RotationStep = (Double) M_PI/2000.0f;
+    m_RotationStep /= accel ? 1.44 : 1.2;
+    if (m_RotationStep < M_PI / 2000.0) {
+	m_RotationStep = (Double) M_PI / 2000.0;
     }
 }
 
@@ -2765,11 +2765,11 @@ void GfxCore::OnSlowDownUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && m_Rotating);
 }
 
-void GfxCore::OnSpeedUp()
+void GfxCore::OnSpeedUp(bool accel)
 {
-    m_RotationStep *= 1.2f;
-    if (m_RotationStep > M_PI/8.0f) {
-	m_RotationStep = (Double) M_PI/8.0f;
+    m_RotationStep *= accel ? 1.44 : 1.2;
+    if (m_RotationStep > M_PI / 8.0) {
+	m_RotationStep = (Double) M_PI / 8.0;
     }
 }
 
@@ -2778,9 +2778,9 @@ void GfxCore::OnSpeedUpUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && m_Rotating);
 }
 
-void GfxCore::OnStepOnceAnticlockwise()
+void GfxCore::OnStepOnceAnticlockwise(bool accel)
 {
-    TurnCave(M_PI / 18.0);
+    TurnCave(accel ? 5.0 * M_PI / 18.0 : M_PI / 18.0);
 }
 
 void GfxCore::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
@@ -2788,9 +2788,9 @@ void GfxCore::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating && m_Lock != lock_POINT);
 }
 
-void GfxCore::OnStepOnceClockwise()
+void GfxCore::OnStepOnceClockwise(bool accel)
 {
-    TurnCave(-M_PI / 18.0);
+    TurnCave(accel ? 5.0 * -M_PI / 18.0 : -M_PI / 18.0);
 }
 
 void GfxCore::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
@@ -2869,11 +2869,11 @@ void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd)
 		!m_SwitchingToElevation && m_Lock == lock_NONE && m_TiltAngle != 0.0);
 }
 
-void GfxCore::OnHigherViewpoint()
+void GfxCore::OnHigherViewpoint(bool accel)
 {
     // Raise the viewpoint.
 
-    TiltCave(M_PI / 18.0);
+    TiltCave(accel ? 5.0 * M_PI / 18.0 : M_PI / 18.0);
 }
 
 void GfxCore::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
@@ -2882,11 +2882,11 @@ void GfxCore::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
 	       m_Lock == lock_NONE);
 }
 
-void GfxCore::OnLowerViewpoint()
+void GfxCore::OnLowerViewpoint(bool accel)
 {
     // Lower the viewpoint.
 
-    TiltCave(-M_PI / 18.0);
+    TiltCave(accel ? 5.0 * -M_PI / 18.0 : -M_PI / 18.0);
 }
 
 void GfxCore::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
@@ -2909,9 +2909,9 @@ void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd)
 		!m_SwitchingToPlan && m_Lock == lock_NONE && m_TiltAngle != M_PI / 2.0);
 }
 
-void GfxCore::OnShiftDisplayDown()
+void GfxCore::OnShiftDisplayDown(bool accel)
 {
-    m_Params.display_shift.y += DISPLAY_SHIFT;
+    m_Params.display_shift.y += accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
     Refresh(false);
@@ -2922,9 +2922,9 @@ void GfxCore::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::OnShiftDisplayLeft()
+void GfxCore::OnShiftDisplayLeft(bool accel)
 {
-    m_Params.display_shift.x -= DISPLAY_SHIFT;
+    m_Params.display_shift.x -= accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
     Refresh(false);
@@ -2935,9 +2935,9 @@ void GfxCore::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::OnShiftDisplayRight()
+void GfxCore::OnShiftDisplayRight(bool accel)
 {
-    m_Params.display_shift.x += DISPLAY_SHIFT;
+    m_Params.display_shift.x += accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
     Refresh(false);
@@ -2948,9 +2948,9 @@ void GfxCore::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::OnShiftDisplayUp()
+void GfxCore::OnShiftDisplayUp(bool accel)
 {
-    m_Params.display_shift.y -= DISPLAY_SHIFT;
+    m_Params.display_shift.y -= accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
     Refresh(false);
@@ -2961,12 +2961,12 @@ void GfxCore::OnShiftDisplayUpUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::OnZoomIn()
+void GfxCore::OnZoomIn(bool accel)
 {
     // Increase the scale.
 
     //--GL fixes needed
-    m_Params.scale *= 1.06f;
+    m_Params.scale *= accel ? 1.1236 : 1.06;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
     Refresh(false);
@@ -2977,11 +2977,11 @@ void GfxCore::OnZoomInUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
 }
 
-void GfxCore::OnZoomOut()
+void GfxCore::OnZoomOut(bool accel)
 {
     // Decrease the scale.
 
-    m_Params.scale /= 1.06f;
+    m_Params.scale /= accel ? 1.1236 : 1.06;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
     Refresh(false);
@@ -3910,22 +3910,22 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 {
     switch (e.m_keyCode) {
 	case '/': case '?':
-	    OnLowerViewpoint();
+	    OnLowerViewpoint(e.m_shiftDown);
 	    break;
 	case '\'': case '@': case '"': // both shifted forms - US and UK kbd
-	    OnHigherViewpoint();
+	    OnHigherViewpoint(e.m_shiftDown);
 	    break;
 	case 'C': case 'c':
-	    OnStepOnceAnticlockwise();
+	    OnStepOnceAnticlockwise(e.m_shiftDown);
 	    break;
 	case 'V': case 'v':
-	    OnStepOnceClockwise();
+	    OnStepOnceClockwise(e.m_shiftDown);
 	    break;
 	case ']': case '}':
-	    OnZoomIn();
+	    OnZoomIn(e.m_shiftDown);
 	    break;
 	case '[': case '{':
-	    OnZoomOut();
+	    OnZoomOut(e.m_shiftDown);
 	    break;
 	case 'N': case 'n':
 	    OnMoveNorth();
@@ -3940,10 +3940,10 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	    OnMoveWest();
 	    break;
 	case 'Z': case 'z':
-	    OnSpeedUp();
+	    OnSpeedUp(e.m_shiftDown);
 	    break;
 	case 'X': case 'x':
-	    OnSlowDown();
+	    OnSlowDown(e.m_shiftDown);
 	    break;
 	case 'R': case 'r':
 	    OnReverseDirectionOfRotation();
@@ -3968,27 +3968,27 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	    break;
 	case WXK_LEFT:
 	    if (e.m_controlDown)
-		OnStepOnceAnticlockwise();
+		OnStepOnceAnticlockwise(e.m_shiftDown);
 	    else
-		OnShiftDisplayLeft();
+		OnShiftDisplayLeft(e.m_shiftDown);
 	    break;
 	case WXK_RIGHT:
 	    if (e.m_controlDown)
-		OnStepOnceClockwise();
+		OnStepOnceClockwise(e.m_shiftDown);
 	    else
-		OnShiftDisplayRight();
+		OnShiftDisplayRight(e.m_shiftDown);
 	    break;
 	case WXK_UP:
 	    if (e.m_controlDown)
-		OnHigherViewpoint();
+		OnHigherViewpoint(e.m_shiftDown);
 	    else
-		OnShiftDisplayUp();
+		OnShiftDisplayUp(e.m_shiftDown);
 	    break;
 	case WXK_DOWN:
 	    if (e.m_controlDown)
-		OnLowerViewpoint();
+		OnLowerViewpoint(e.m_shiftDown);
 	    else
-		OnShiftDisplayDown();
+		OnShiftDisplayDown(e.m_shiftDown);
 	    break;
 	case WXK_ESCAPE:
 	    OnCancelDistLine();
