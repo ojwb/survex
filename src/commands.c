@@ -474,6 +474,41 @@ fix_station(void)
    compile_warning(/*Station already fixed at the same coordinates*/55);
 }
 
+/* helper function for replace_pfx */
+static void
+replace_pfx_(node *stn, pos *pos_replace, pos *pos_with)
+{
+   int d;
+   ASSERT(stn->name->pos == pos_replace);
+   stn->name->pos = pos_with;
+   for (d = 0; stn->leg[d]; d++) {
+      node *stn2 = stn->leg[d]->l.to;
+      if (stn2->name->pos == pos_replace) 
+	 replace_pfx_(stn2, pos_replace, pos_with);
+   }
+}
+
+/* We used to iterate over the whole station list (inefficient) - now we
+ * just look at any neighbouring nodes to see if they are equated */
+static void
+replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
+{
+   pos *pos_replace = pfx_replace->pos;
+   ASSERT(pos_replace != pfx_with->pos);
+
+   replace_pfx_(pfx_replace->stn, pos_replace, pfx_with->pos);
+
+#ifdef DEBUG_INVALID
+   {
+      node *stn;
+      FOR_EACH_STN(stn, stnlist) ASSERT(stn->name->pos != pos_replace);
+   }
+#endif
+
+   /* free the (now-unused) old pos */
+   osfree(pos_replace);
+}
+
 static void
 equate_list(void)
 {
@@ -494,13 +529,16 @@ equate_list(void)
 	 }
 	 return;
       }
+      
+      if (name1 == name2) {
+	 /* e.g. *equate "fred fred" */
+	 /* FIXME: complain! */
+	 /* FIXME: this won't catch: "*equate fred jim fred" */
+      }
       fOnlyOneStn = fFalse;
       stn1 = StnFromPfx(name1);
       /* equate nodes if not already equated */
       if (name1->pos != name2->pos) {
-	 node *stn;
-	 pos *posReplace;
-	 pos *posWith;
 	 if (fixed(stn1)) {
 	    if (fixed(stn2)) {
 	       /* both are fixed, but let them off iff their coordinates match */
@@ -514,26 +552,13 @@ equate_list(void)
 	       compile_warning(/*Equating two equal fixed points*/53);
 	       showline(NULL, 1);
 	    }
-	    posReplace = name2->pos; /* stn1 is fixed, so replace the other's pos */
-	    posWith = name1->pos;
+
+	    /* stn1 is fixed, so replace all refs to stn2's pos with stn1's */
+	    replace_pfx(name2, name1);
 	 } else {
-	    posReplace = name1->pos; /* stn1 isn't fixed, so replace its pos */
-	    posWith = name2->pos;
+	    /* stn1 isn't fixed, so replace all refs to its pos with stn2's */
+	    replace_pfx(name1, name2);
 	 }
-	 
-	 /* FIXME: this is a hotspot - a lot of time can be spent here -
-	  * we ought to try to improve this. */
-	 /* Better to iterate over all name-s using prefix tree? */
-	 /* except after a *fix we have lots more names than stn-s */
-	 /* Or better yet use pos->stn and just look at any neighbouring
-	  * equated nodes? */
-
-	 /* replace all refs to posReplace with references to pos of stn1 */
-	 FOR_EACH_STN(stn, stnlist)
-	    if (stn->name->pos == posReplace) stn->name->pos = posWith;
-
-	 /* free the (now-unused) old pos */
-	 osfree(posReplace);
 
 	 /* count equates as legs for now... */
 #ifdef NO_COVARIANCES
