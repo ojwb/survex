@@ -23,7 +23,7 @@
 
 * (MS Windows version): added explorer bindings for sorterr.
 
-* xcaverot/sorterr: fixed --help output to include long options.
+* cavern/xcaverot/sorterr: fixed --help output to include long options.
 
 * Minor documentation updates.
 
