@@ -67,6 +67,7 @@ add(point Huge *p, OSSIZE_T *c, OSSIZE_T tot, coord act, const img_point *pt)
    return fTrue;
 }
 
+/* duplicated in prcore.c */
 static bool
 pfx_filter(const char *lab, const char *pfx, size_t l)
 {

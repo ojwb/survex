@@ -426,12 +426,35 @@ stack_string(const char *s)
    ppliEnd = &(pli->pliNext);
 }
 
+/* duplicated in cvrotimg.c */
+static bool
+pfx_filter(const char *lab, const char *pfx, size_t l)
+{
+   return !l || (strncmp(pfx, lab, l) == 0 && (lab[l] == '.' || !lab[l]));
+}
+
 static int
-read_in_data(void)
+read_in_data(const char *survey)
 {
    bool fMove = fFalse;
    img_point p, p_move;
    int result;
+
+   char *pfx = NULL;
+   size_t pfx_len = 0;
+
+   if (survey) {
+      pfx_len = strlen(survey);
+      if (pfx_len) {
+	 if (survey[pfx_len - 1] == '.') pfx_len--;
+	 if (pfx_len) {
+	    pfx = osmalloc(pfx_len + 1);
+	    memcpy(pfx, survey, pfx_len);
+	    pfx[pfx_len] = '\0';
+	 }
+      }
+   }
+   
    do {
       result = img_read_item(pimg, &p);
       switch (result) {
@@ -441,12 +464,14 @@ read_in_data(void)
        case img_LINE:
 	 /* if we're plotting surface legs or this isn't a surface leg */
          if (fSurface || !(pimg->flags & img_FLAG_SURFACE)) {
-	    if (fMove) {
-	       fMove = fFalse;
-	       stack(img_MOVE, &p_move);
+	    if (pimg->version < 3 || pfx_filter(pimg->label, pfx, pfx_len)) {
+	       if (fMove) {
+		  fMove = fFalse;
+		  stack(img_MOVE, &p_move);
+	       }
+	       stack(img_LINE, &p);
+	       break;
 	    }
-	    stack(img_LINE, &p);
-	    break;
 	 }
 	 /* FALLTHRU */
        case img_MOVE:
@@ -455,8 +480,10 @@ read_in_data(void)
          break;
        case img_LABEL:
 	 if (fSurface || (pimg->flags & img_SFLAG_UNDERGROUND)) {
-	    stack(img_CROSS, &p);
-	    stack_string(pimg->label);
+	    if (pfx_filter(pimg->label, pfx, pfx_len) && pimg->label[pfx_len]) {
+	       stack(img_CROSS, &p);
+	       stack_string(pimg->label);
+	    }
 	 }
          break;
       }
@@ -563,7 +590,8 @@ main(int argc, char **argv)
    bool fInteractive = fTrue;
    const char *msg166, *msg167;
    int old_charset;
-   char *output_fnm = NULL;
+   const char *output_fnm = NULL;
+   const char *survey = NULL;
 
    /* TRANSLATE */
    static const struct option long_opts[] = {
@@ -571,6 +599,7 @@ main(int argc, char **argv)
        * int has_arg (0 no_argument, 1 required_*, 2 optional_*);
        * int *flag;
        * int val; */
+      {"survey", required_argument, 0, 1},
       {"elevation", no_argument, 0, 'e'},
       {"plan", no_argument, 0, 'p'},
       {"bearing", required_argument, 0, 'b'},
@@ -593,18 +622,19 @@ main(int argc, char **argv)
    /* TRANSLATE */
    static struct help_msg help[] = {
 /*				<-- */
-      {HLP_ENCODELONG(0),       "select elevation"},
-      {HLP_ENCODELONG(1),       "select plan view"},
-      {HLP_ENCODELONG(2),       "set bearing"},
-      {HLP_ENCODELONG(3),       "set tilt"},
-      {HLP_ENCODELONG(4),       "set scale"},
-      {HLP_ENCODELONG(5),       "display station names"},
-      {HLP_ENCODELONG(6),       "display crosses at stations"},
-      {HLP_ENCODELONG(7),       "turn off page border"},
-      {HLP_ENCODELONG(8),       "turn off display of survey legs"},
-      {HLP_ENCODELONG(9),       "turn on display of surface survey legs"},
-      {HLP_ENCODELONG(10),      "don't output blank pages"},
-      {HLP_ENCODELONG(11),      "set output file"},
+      {HLP_ENCODELONG(0),       "Only load the sub-survey with this prefix"},
+      {HLP_ENCODELONG(1),       "select elevation"},
+      {HLP_ENCODELONG(2),       "select plan view"},
+      {HLP_ENCODELONG(3),       "set bearing"},
+      {HLP_ENCODELONG(4),       "set tilt"},
+      {HLP_ENCODELONG(5),       "set scale"},
+      {HLP_ENCODELONG(6),       "display station names"},
+      {HLP_ENCODELONG(7),       "display crosses at stations"},
+      {HLP_ENCODELONG(8),       "turn off page border"},
+      {HLP_ENCODELONG(9),       "turn off display of survey legs"},
+      {HLP_ENCODELONG(10),      "turn on display of surface survey legs"},
+      {HLP_ENCODELONG(11),      "don't output blank pages"},
+      {HLP_ENCODELONG(12),      "set output file"},
       {0, 0}
    };
 
@@ -618,6 +648,9 @@ main(int argc, char **argv)
       int opt = cmdline_getopt();
       if (opt == EOF) break;
       switch (opt) {
+       case 1:
+	 survey = optarg;
+	 break;
        case 'n': /* Labels */
 	 fLabels = 1;
 	 break;
@@ -759,6 +792,18 @@ main(int argc, char **argv)
       COST = (float)cos(rad(tilt));
    }
 
+   if (fInteractive && survey == NULL) {
+      /* FIXME: extract this message */
+      fputs("Only load the sub-survey with this prefix", stdout);
+      puts(":");
+      fgets(szTmp, sizeof(szTmp), stdin);
+      if (szTmp[0] >= 32) {
+	 size_t len = strlen(szTmp);
+	 if (szTmp[len - 1] == '\n') szTmp[len - 1] = '\0';	 
+	 survey = osstrdup(szTmp);
+      }
+   }
+
    if (fInteractive) {
       putnl();
       puts(msg(/*Reading in data - please wait...*/105));
@@ -774,7 +819,7 @@ main(int argc, char **argv)
 	 pimg = img_open(fnm, NULL, NULL);
 	 if (!pimg) fatalerror(img_error(), fnm);
       }
-      if (!read_in_data()) fatalerror(/*Bad 3d image file `%s'*/106, fnm);
+      if (!read_in_data(survey)) fatalerror(img_error(), fnm);
       img_close(pimg);
       pimg = NULL;
       fnm = argv[optind++];
