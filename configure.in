@@ -63,9 +63,12 @@ AC_PROG_MAKE_SET
 AC_EXEEXT
 AC_OBJEXT
 
-AC_MINGW32
+case "$host" in
+*mingw*|*cygwin*) mswindows=yes ;;
+*) mswindows=no ;;
+esac
 
-if test -n "$MINGW32" ; then
+if test $mswindows = yes ; then
   dnl assume mingw32 means littleendian (may not be true for NT
   dnl on non-intel platforms but ISTR m$ have scrapped that)
   AC_MSG_CHECKING(endian-ness)
@@ -125,7 +128,7 @@ AC_SUBST(LIBRX)
 AC_PATH_XTRA
 
 PRINTWIN=
-if test -n "$MINGW32" ; then
+if test $mswindows = yes ; then
   PRINTWIN='printwin$(EXEEXT)'
   AC_MSG_RESULT(building printwin)
 fi
@@ -138,13 +141,13 @@ if test x$no_x != xyes; then
   AC_MSG_RESULT(building xcaverot)
 else
   AC_MSG_RESULT([not building xcaverot (X libraries not found or disabled)])
-  if test -z "$MINGW32" ; then
+  if test $mswindows = no ; then
     AC_MSG_RESULT([not building aven (X libraries not found or disabled)])
     AVEN=
   fi
 fi
 
-AM_CONDITIONAL(WIN32, test -n "$MINGW32")
+AM_CONDITIONAL(WIN32, [test $mswindows = yes])
 
 if test -n "$AVEN"; then
   AC_ARG_VAR(WXCONFIG, [wxWindows configuration script to use to build Aven])
