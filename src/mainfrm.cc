@@ -31,7 +31,9 @@
 #include <wx/confbase.h>
 #include <float.h>
 #include <stack>
+#ifdef AVEN_REGEX
 #include <regex.h>
+#endif
 
 const int NUM_DEPTH_COLOURS = 13;
 
@@ -523,6 +525,8 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     }
 
     m_File = file;
+
+    m_Tree->DeleteAllItems();
 
     m_TreeRoot = m_Tree->AddRoot(wxFileNameFromPath(file));
     m_Tree->SetEnabled();
@@ -1407,11 +1411,14 @@ void MainFrm::OnFind(wxCommandEvent& event)
     // Find stations specified by a string or regular expression.
 
     wxString str = m_FindBox->GetValue();
+#ifdef AVEN_REGEX
     re_pattern_buffer buffer;
+#endif
     bool regexp = m_RegexpCheckBox->GetValue();
     bool found = false;
 
     if (regexp) {
+#ifdef AVEN_REGEX
         buffer.translate = NULL;
         buffer.fastmap = new char[256];
         buffer.allocated = 0;
@@ -1431,6 +1438,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
             wxGetApp().ReportError(msg(/*Regular expression compilation (stage 2) failed.*/326));
             return;
         }
+#endif
     }
 
     m_Gfx->ClearSpecialPoints();
@@ -1441,6 +1449,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
         LabelInfo* label = *pos++;
         
         if (regexp) {
+#ifdef AVEN_REGEX
             re_registers regs;
             int ret = re_search(&buffer, label->text.c_str(), label->text.Length(), 0, label->text.Length(),
                                 NULL);
@@ -1458,6 +1467,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
                     found = true;
                     break;
             }
+#endif
         }
         else {
             if (label->text.Contains(str)) {
@@ -1467,9 +1477,11 @@ void MainFrm::OnFind(wxCommandEvent& event)
         }
     }
 
+#ifdef AVEN_REGEX
     if (regexp) {
         delete[] buffer.fastmap;
     }
+#endif
 
     m_Gfx->DisplaySpecialPoints();
 
