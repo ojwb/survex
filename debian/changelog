@@ -1,3 +1,17 @@
+survex (1.0.33) unstable; urgency=low
+
+  * aven: Fixed bug which would sometimes pick one too few pages
+    vertically resulting in the survey escaping off the top of the topmost
+    pages.
+  * aven: Changed the toner-wasting, hard-to-measure-exactly alternately filled
+    scale bar to a simple line with ticks.
+  * aven: SVG export fixes: second and subsequent exports had bogus extra
+    "</g>"; Fixed to invert all Y coordinates, not just some; Fixed tags for
+    layers.
+  * Minor documentation updates.
+
+ -- Wookey <wookey@survex.com>  Wed, 12 Jan 2005 04:06:11 +0000
+
 survex (1.0.32) unstable; urgency=low
 
   * aven: Fixed font sizes in "Print Preview".

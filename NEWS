@@ -10,7 +10,7 @@ Changes in 1.0.33:
 * aven: SVG export fixes: second and subsequent exports had bogus extra "</g>";
   Fixed to invert all Y coordinates, not just some; Fixed tags for layers.
 
-* aven: Fixed inverted icons.
+* (MS Windows version): aven: Fixed inverted icons.
 
 * aven: Initial window size and position will not straddle monitors if you have
   multiple monitors connected to one machine (needs wxWidgets 2.5 to work on
