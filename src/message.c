@@ -391,10 +391,9 @@ static int default_charset( void ) {
    return CHARSET_ISO_8859_1;
 #elif (OS==RISCOS)
 /*
-RISCOS 3.1 and above
-CHARSET_RISCOS31 !HCAK!
+RISCOS 3.1 and above CHARSET_RISCOS31 !HACK!
 */
-   return CHARSET_ISO_8859_1;
+   return CHARSET_CHARSET_RISCOS31;
 #elif (OS==MSDOS)
    return CHARSET_DOSCP850;
 #else
@@ -409,118 +408,261 @@ static int prefix_len;
 static char prefix_root[32];
 static int prefix_root_len;
 
+#if (OS==MSDOS)
+static int xlate_dos_cp850(int unicode) {
+   switch (unicode) {
+/*# include "unicode-to-dos-cp-default.tab"*/
+case 160: return 255;
+case 161: return 173;
+case 162: return 189;
+case 163: return 156;
+case 164: return 207;
+case 165: return 190;
+case 167: return 245;
+case 168: return 249;
+case 169: return 184;
+case 170: return 166;
+case 171: return 174;
+case 172: return 170;
+case 173: return 240;
+case 174: return 169;
+#if 0
+case 175: return 223;
+case 175: return 238;
+#endif
+case 176: return 248;
+case 177: return 241;
+case 178: return 253;
+case 179: return 252;
+case 180: return 239;
+case 181: return 230;
+case 182: return 244;
+case 183: return 250;
+case 184: return 247;
+case 185: return 251;
+case 186: return 167;
+case 187: return 175;
+case 188: return 172;
+case 189: return 171;
+case 190: return 243;
+case 191: return 168;
+case 192: return 183;
+case 193: return 181;
+case 194: return 182;
+case 195: return 199;
+case 196: return 142;
+case 197: return 143;
+case 198: return 146;
+case 199: return 128;
+case 200: return 212;
+case 201: return 144;
+case 202: return 210;
+case 203: return 211;
+case 204: return 222;
+case 205: return 214;
+case 206: return 215;
+case 207: return 216;
+case 208: return 209;
+case 209: return 165;
+case 210: return 227;
+case 211: return 224;
+case 212: return 226;
+case 213: return 229;
+case 214: return 153;
+case 215: return 158;
+case 216: return 157;
+case 217: return 235;
+case 218: return 233;
+case 219: return 234;
+case 220: return 154;
+case 221: return 237;
+case 222: return 232;
+case 223: return 225;
+case 224: return 133;
+case 225: return 160;
+case 226: return 131;
+case 227: return 198;
+case 228: return 132;
+case 229: return 134;
+case 230: return 145;
+case 231: return 135;
+case 232: return 138;
+case 233: return 130;
+case 234: return 136;
+case 235: return 137;
+case 236: return 141;
+case 237: return 161;
+case 238: return 140;
+case 239: return 139;
+case 240: return 208;
+case 241: return 164;
+case 242: return 149;
+case 243: return 162;
+case 244: return 147;
+case 245: return 228;
+case 246: return 148;
+case 247: return 246;
+case 248: return 155;
+case 249: return 151;
+case 250: return 163;
+case 251: return 150;
+case 252: return 129;
+case 253: return 236;
+case 254: return 231;
+case 255: return 152;
+   }
+   return 0;
+}
+#endif
+
 static int add_unicode(int charset, char *p, int value) {
    if (value == 0) return 0;
-   if (charset == CHARSET_ISO_8859_1 && value < 256) {
-      *p = value;
-      return 1;
+   switch (charset) {
+    case CHARSET_USASCII:
+      if (value < 128) {
+	 *p = value;
+	 return 1;
+      }
+      break;
+    case CHARSET_ISO_8859_1:
+#if (OS==RISCOS)
+    case CHARSET_RISCOS31: /* RISC OS 3.1 has a few extras in 128-159 */
+#endif
+      if (value < 256) {
+	 *p = value;
+	 return 1;
+      }
+#if (OS==RISCOS)
+      /* !HACK! handle extras here */
+#endif
+      break;
+#if (OS==MSDOS)
+    case CHARSET_DOSCP850:
+      value = xlate_dos_cp850(value);
+      if (value) {
+	 *p = value;
+	 return 1;
+      }
+      break;
+#endif
    }
    return 0;
 }
 
 static int decode_entity(const char *entity, size_t len) {
-   unsigned long value = 0;
+   unsigned long value;   
    int i;
-   for (i = 0; i < 4 && i < len; i++) value = (value<<8) | entity[i];
+   
+   if (len > 6) return 0;
+   value = entity[0] - '0';
+   if (value >= 'a' - '0') {
+      value += 36 - ('a' - '0');
+   } else if (value >= 'A' - '0') {
+      value += 10 - ('A' - '0');
+   }
+   for (i = 1; i < 6 && i < len; i++) {
+      int c;
+      c = toupper(entity[i]) - '0';
+      if (c >= 'A' - '0') c += 10 - ('A' - '0');
+      value = value * 36 + c;
+   }
    switch (value) {
-    case 'nbsp': return 160;
-    case 'iexc': return 161;
-    case 'cent': return 162;
-    case 'poun': return 163;
-    case 'curr': return 164;
-    case 'yen': return 165;
-    case 'brvb': return 166;
-    case 'sect': return 167;
-    case 'uml': return 168;
-    case 'copy': return 169;
-    case 'ordf': return 170;
-    case 'laqu': return 171;
-    case 'not': return 172;
-    case 'shy': return 173;
-    case 'reg': return 174;
-    case 'macr': return 175;
-    case 'deg': return 176;
-    case 'plus': return 177;
-    case 'sup2': return 178;
-    case 'sup3': return 179;
-    case 'acut': return 180;
-    case 'micr': return 181;
-    case 'para': return 182;
-    case 'midd': return 183;
-    case 'cedi': return 184;
-    case 'sup1': return 185;
-    case 'ordm': return 186;
-    case 'raqu': return 187;
-#if 0
-    case 'frac': return 188;
-    case 'frac': return 189;
-    case 'frac': return 190;
-#endif
-    case 'ique': return 191;
-    case 'Agra': return 192;
-    case 'Aacu': return 193;
-    case 'Acir': return 194;
-    case 'Atil': return 195;
-    case 'Auml': return 196;
-    case 'Arin': return 197;
-    case 'AEli': return 198;
-    case 'Cced': return 199;
-    case 'Egra': return 200;
-    case 'Eacu': return 201;
-    case 'Ecir': return 202;
-    case 'Euml': return 203;
-    case 'Igra': return 204;
-    case 'Iacu': return 205;
-    case 'Icir': return 206;
-    case 'Iuml': return 207;
-    case 'ETH': return 208;
-    case 'Ntil': return 209;
-    case 'Ogra': return 210;
-    case 'Oacu': return 211;
-    case 'Ocir': return 212;
-    case 'Otil': return 213;
-    case 'Ouml': return 214;
-    case 'time': return 215;
-    case 'Osla': return 216;
-    case 'Ugra': return 217;
-    case 'Uacu': return 218;
-    case 'Ucir': return 219;
-    case 'Uuml': return 220;
-    case 'Yacu': return 221;
-    case 'THOR': return 222;
-    case 'szli': return 223;
-    case 'agra': return 224;
-    case 'aacu': return 225;
-    case 'acir': return 226;
-    case 'atil': return 227;
-    case 'auml': return 228;
-    case 'arin': return 229;
-    case 'aeli': return 230;
-    case 'cced': return 231;
-    case 'egra': return 232;
-    case 'eacu': return 233;
-    case 'ecir': return 234;
-    case 'euml': return 235;
-    case 'igra': return 236;
-    case 'iacu': return 237;
-    case 'icir': return 238;
-    case 'iuml': return 239;
-    case 'eth': return 240;
-    case 'ntil': return 241;
-    case 'ogra': return 242;
-    case 'oacu': return 243;
-    case 'ocir': return 244;
-    case 'otil': return 245;
-    case 'ouml': return 246;
-    case 'divi': return 247;
-    case 'osla': return 248;
-    case 'ugra': return 249;
-    case 'uacu': return 250;
-    case 'ucir': return 251;
-    case 'uuml': return 252;
-    case 'yacu': return 253;
-    case 'thor': return 254;
-    case 'yuml': return 255;
+    case 17477224u: return 198; /* AElig */
+    case 622057730u: return 193; /* Aacute */
+    case 17380344u: return 194; /* Acirc */
+    case 632809418u: return 192; /* Agrave */
+    case 18080044u: return 197; /* Aring */
+    case 654238130u: return 195; /* Atilde */
+    case 506253u: return 196; /* Auml */
+    case 746420205u: return 199; /* Ccedil */
+    case 19205u: return 208; /* ETH */
+    case 863922434u: return 201; /* Eacute */
+    case 24098808u: return 202; /* Ecirc */
+    case 874674122u: return 200; /* Egrave */
+    case 692877u: return 203; /* Euml */
+    case 1105787138u: return 205; /* Iacute */
+    case 30817272u: return 206; /* Icirc */
+    case 1116538826u: return 204; /* Igrave */
+    case 879501u: return 207; /* Iuml */
+    case 1440298418u: return 209; /* Ntilde */
+    case 1468584194u: return 211; /* Oacute */
+    case 40894968u: return 212; /* Ocirc */
+    case 1479335882u: return 210; /* Ograve */
+    case 1499211233u: return 216; /* Oslash */
+    case 1500764594u: return 213; /* Otilde */
+    case 1159437u: return 214; /* Ouml */
+    case 49534115u: return 222; /* THORN */
+    case 1831381250u: return 218; /* Uacute */
+    case 50972664u: return 219; /* Ucirc */
+    case 1842132938u: return 217; /* Ugrave */
+    case 1439373u: return 220; /* Uuml */
+    case 2073245954u: return 221; /* Yacute */
+    case 2194178306u: return 225; /* aacute */
+    case 61050360u: return 226; /* acirc */
+    case 61065986u: return 180; /* acute */
+    case 61147240u: return 230; /* aelig */
+    case 2204929994u: return 224; /* agrave */
+    case 61750060u: return 229; /* aring */
+    case 2226358706u: return 227; /* atilde */
+    case 1719309u: return 228; /* auml */
+    case 2284059123u: return 166; /* brvbar */
+    case 2318540781u: return 231; /* ccedil */
+    case 64496109u: return 184; /* cedil */
+    case 1791929u: return 162; /* cent */
+    case 1804966u: return 169; /* copy */
+    case 2349398399u: return 164; /* curren */
+    case 51064u: return 176; /* deg */
+    case 2389884098u: return 247; /* divide */
+    case 2436043010u: return 233; /* eacute */
+    case 67768824u: return 234; /* ecirc */
+    case 2446794698u: return 232; /* egrave */
+    case 52901u: return 240; /* eth */
+    case 1905933u: return 235; /* euml */
+    case 2524944998u: return 189; /* frac12 */
+    case 2524945000u: return 188; /* frac14 */
+    case 2524945072u: return 190; /* frac34 */
+    case 2677907714u: return 237; /* iacute */
+    case 74487288u: return 238; /* icirc */
+    case 74599509u: return 161; /* iexcl */
+    case 2688659402u: return 236; /* igrave */
+    case 2705600621u: return 191; /* iquest */
+    case 2092557u: return 239; /* iuml */
+    case 79443312u: return 171; /* laquo */
+    case 2252907u: return 175; /* macr */
+    case 81477924u: return 181; /* micro */
+    case 2933233805u: return 183; /* middot */
+    case 2301433u: return 160; /* nbsp */
+    case 64397u: return 172; /* not */
+    case 3012418994u: return 241; /* ntilde */
+    case 3040704770u: return 243; /* oacute */
+    case 84564984u: return 244; /* ocirc */
+    case 3051456458u: return 242; /* ograve */
+    case 2368275u: return 170; /* ordf */
+    case 2368282u: return 186; /* ordm */
+    case 3071331809u: return 248; /* oslash */
+    case 3072885170u: return 245; /* otilde */
+    case 2372493u: return 246; /* ouml */
+    case 2393398u: return 182; /* para */
+    case 3120483695u: return 177; /* plusmn */
+    case 86819881u: return 163; /* pound */
+    case 89521008u: return 187; /* raquo */
+    case 69208u: return 174; /* reg */
+    case 2538029u: return 167; /* sect */
+    case 70630u: return 173; /* shy */
+    case 2559205u: return 185; /* sup1 */
+    case 2559206u: return 178; /* sup2 */
+    case 2559207u: return 179; /* sup3 */
+    case 92360104u: return 223; /* szlig */
+    case 93204131u: return 254; /* thorn */
+    case 93247732u: return 215; /* times */
+    case 3403501826u: return 250; /* uacute */
+    case 94642680u: return 251; /* ucirc */
+    case 3414253514u: return 249; /* ugrave */
+    case 73389u: return 168; /* uml */
+    case 2652429u: return 252; /* uuml */
+    case 3645366530u: return 253; /* yacute */
+    case 78287u: return 165; /* yen */
+    case 2839053u: return 255; /* yuml */
    }
    return 0;
 }
