@@ -1,6 +1,6 @@
 /* whichos.h
  * Determines which OS Survex will try to compile for
- * Copyright (C) 1993-1995 Olly Betts
+ * Copyright (C) 1993-1995,2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,10 @@
 #  endif
 #  if (defined(unix) || defined(UNIX))
 #   undef UNIX /* to stop it causing problems later */
+#   define OS UNIX
+#  endif
+#  if defined(__GNUC__) && defined(__APPLE_CC__)
+/* Mac OS X is Unix underneath */
 #   define OS UNIX
 #  endif
 #  if (defined(ATARI_ST) || defined(TOS))
