@@ -39,21 +39,20 @@ avengl_SOURCES = $(aven_SOURCES)
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
 
 if WIN32
-aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@
-avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@
+aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
+avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 
 # FIXME: should use wxconfig or similar to get includes
 avenrc.o: aven.rc
 	i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $@ $<
 
 else
-aven_LDADD = @LIBOBJS@ @WX_LIBS@
-avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@
+aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
+avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 endif
 
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN -O2
-aven_LDFLAGS = @LIBRX@
 
 avengl_CFLAGS = @WXGL_CFLAGS@ -DAVEN
 avengl_CXXFLAGS = @WXGL_CFLAGS@ -DAVEN -O2

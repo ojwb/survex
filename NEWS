@@ -1,6 +1,6 @@
 * aven: fixed bogus lines caused by coordinate wrap-around; fixed
   problem in repeated zoom with [ or ]; tweaked layout and auto-sizing
-  of left panel.
+  of left panel; regexp search enabled.
 
 * cavern: more intelligent and less verbose reporting of errors in nested
   included files (inspired by GCC 3.0).

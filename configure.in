@@ -97,7 +97,7 @@ AC_CHECK_LIB(m, sqrt)
 dnl On Linux, regexp routines are included in recent version of libc
 dnl so check if we need -lrx
 LIBRX=
-AC_CHECK_LIB(rx, re_compile_pattern, LIBRX=-lrx)
+AC_TRY_LINK_FUNC(rx, , AC_CHECK_LIB(rx, regcomp, LIBRX=-lrx))
 AC_SUBST(LIBRX)
 
 AC_PATH_XTRA

@@ -133,7 +133,7 @@ if expr "$mk" : '.*\<mingw\>'; then
 	 export CXX
       fi
    fi
-   if ! env LDFLAGS="-s -L/opt/rx-win32/lib" INCLUDES=-I/opt/rx-win32/include CAVEROT= ./configure --with-x=no --with-wxconfig=`pwd`/mingw_extras/wxmsw-config ; then
+   if ! env LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= ./configure --with-x=no --with-wxconfig=`pwd`/mingw_extras/wxmsw-config ; then
       echo mingw configure failed
       exit 1
    fi

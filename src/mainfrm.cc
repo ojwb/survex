@@ -34,7 +34,13 @@
 #include <float.h>
 #include <stack>
 #ifdef AVEN_REGEX
-#include <regex.h>
+#ifndef _WIN32 // FIXME: very much the wrong thing to be testing on...
+# include <regex.h>
+#else
+extern "C" {
+# include <rxposix.h>
+}
+#endif
 #endif
 
 const int NUM_DEPTH_COLOURS = 13;
@@ -228,10 +234,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     m_PresLoaded = false;
     m_Recording = false;
-#ifdef AVEN_REGEX
-    // Set regular expression syntax.
-    re_set_syntax(RE_SYNTAX_POSIX_EXTENDED);
-#endif
 }
 
 MainFrm::~MainFrm()
@@ -1430,24 +1432,22 @@ void MainFrm::OnFind(wxCommandEvent& event)
 
     wxString str = m_FindBox->GetValue();
 #ifdef AVEN_REGEX
-    re_pattern_buffer buffer;
+    regex_t buffer;
 #endif
     bool regexp = m_RegexpCheckBox->GetValue();
     int found = 0;
 
     if (regexp) {
 #ifdef AVEN_REGEX
-        const char * error;
-        buffer.translate = NULL;
-        buffer.fastmap = new char[256];
-        buffer.allocated = 0;
-        buffer.buffer = NULL;
-        buffer.can_be_null = 0;
-        buffer.no_sub = 0;
-
-        error = re_compile_pattern(str.c_str(), str.Length(), &buffer);
-        if (error) {
-            wxGetApp().ReportError(error);
+        /* REG_ICASE for insensitive */
+        int errcode = regcomp(&buffer, str.c_str(),
+			      REG_EXTENDED|REG_NOSUB);
+        if (errcode) {
+	    size_t len = regerror(errcode, &buffer, NULL, 0);
+	    char *msg = new char[len];
+	    regerror(errcode, &buffer, msg, len);
+            wxGetApp().ReportError(msg);
+	    delete[] msg;
             return;
         }
 #endif
@@ -1462,24 +1462,10 @@ void MainFrm::OnFind(wxCommandEvent& event)
         
         if (regexp) {
 #ifdef AVEN_REGEX
-            re_registers regs;
-            int ret = re_search(&buffer, label->text.c_str(),
-			        label->text.Length(), 0, label->text.Length(),
-                                NULL);
-
-            switch (ret) {
-                case -2:
-                    wxGetApp().ReportError(msg(/*Regular expression search failed.*/327));
-                    return;
-
-                case -1:
-                    break;
-
-                default:
-                    m_Gfx->AddSpecialPoint(label->x, label->y, label->z,
-				           col_YELLOW, 1);
-                    found++;
-                    break;
+            if (regexec(&buffer, label->text.c_str(), 0, NULL, 0) == 0) {
+	       m_Gfx->AddSpecialPoint(label->x, label->y, label->z,
+				      col_YELLOW, 1);
+	       found++;
             }
 #endif
         } else {
@@ -1492,9 +1478,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
     }
 
 #ifdef AVEN_REGEX
-    if (regexp) {
-        delete[] buffer.fastmap;
-    }
+    if (regexp) regfree(&buffer);
 #endif
 
     m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found)); 
