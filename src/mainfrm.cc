@@ -1256,6 +1256,12 @@ void MainFrm::OpenTerrain(const wxString& file)
 //  UI event handlers
 //
 
+#undef FILEDIALOG_MULTIGLOBS
+// MS Windows "*.abc;*.def" natively; wxGtk supports them as of 2.3
+#if defined(_WIN32) || (wxMAJOR_VERSION > 2) || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
+# define FILEDIALOG_MULTIGLOBS
+#endif
+
 void MainFrm::OnOpen(wxCommandEvent&)
 {
 #ifdef __WXMOTIF__
@@ -1264,16 +1270,22 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
 		      wxString::Format("%s|*.3d"
-#ifndef _WIN32
+#ifdef FILEDIALOG_MULTIGLOBS
 				       ";*.3D"
 #endif
+#ifdef FILEDIALOG_MULTIGLOBS 
 				       "|%s|*.plt;*.plf"
 #ifndef _WIN32
 				       ";*.PLT;*.PLF"
 #endif
+#else
+				       "|%s|*.pl?" // not ideal...
+#endif
 			      	       "|%s|*.xyz"
+#ifdef FILEDIALOG_MULTIGLOBS
 #ifndef _WIN32
 				       ";*.XYZ"
+#endif
 #endif
 				       "|%s|*.*",
 				       msg(/*Survex 3d files*/207),
