@@ -36,6 +36,9 @@
 #include <signal.h>
 
 #include <wx/image.h>
+#ifdef wxUSE_DISPLAY // wxDisplay was added in wx 2.5
+#include <wx/display.h>
+#endif
 
 IMPLEMENT_APP(Aven)
 
@@ -121,16 +124,26 @@ bool Aven::OnInit()
     wxImage::AddHandler(new wxPNGHandler);
 
     // Obtain the screen size.
-    int width;
-    int height;
-    wxDisplaySize(&width, &height);
+    int x, y;
+    int width, height;
+#ifdef wxUSE_DISPLAY // wxDisplay was added in wx 2.5
+    wxRect geom = wxDisplay().GetGeometry();
+    x = geom.x;
+    y = geom.y;
+    width = geom.width;
+    height = geom.height;
+#else
+    wxClientDisplayRect(&x, &y, &width, &height);
+#endif
 
     // Calculate a reasonable size for our window.
-    int our_width = int(width * 0.75);
-    int our_height = int(our_width * 0.75);
+    x += width / 8;
+    y += height / 8;
+    width = width * 3 / 4;
+    height = height * 3 / 4;
 
     // Create the main window.
-    m_Frame = new MainFrm(APP_NAME, wxPoint(50, 50), wxSize(our_width, our_height));
+    m_Frame = new MainFrm(APP_NAME, wxPoint(x, y), wxSize(width, height));
 
     if (argv[optind]) {
 	m_Frame->OpenFile(wxString(argv[optind]), survey);
