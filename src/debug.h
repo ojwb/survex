@@ -4,14 +4,18 @@
  */
 
 #ifndef DEBUG_H
-#define DEBUG_H
+# define DEBUG_H
 #include "useful.h"
 
 /* turn periodic calls to validate() checks on/off */
-#define VALIDATE 0
+#ifndef VALIDATE
+# define VALIDATE 0
+#endif
 
 /* turn on dumping of network data structure (lots of output) */
-#define DUMP_NETWORK 0
+#ifndef DUMP_NETWORK
+# define DUMP_NETWORK 0
+#endif
 
 /* elaborate if data structure becomes invalid */
 #ifndef DEBUG_INVALID
