@@ -445,10 +445,10 @@ lap_timer(bool want_time)
    /* no point using anything better than clock() on DOS at least */
    new_time = clock();
    if (want_time) {
-      static int dt = (int)(new_time - old_time);
+      int dt = (int)(new_time - old_time);
       /* better to be paranoid */
       if (dt < 1) dt = 1;
-      lap_time = (double)dt * / CLOCKS_PER_SEC;
+      lap_time = (double)dt / CLOCKS_PER_SEC;
       if (lap_time > 60.0) {
 	 cvrotgfx_beep(); /* FIXME: do something more sensible */
 	 lap_time = 60.0;
@@ -619,13 +619,10 @@ process_key(void) /* and mouse! */
          translate_data((coord)(nStep * c), -(coord)(nStep * s), 0);
          fChanged = fTrue; break;
        case 'H': {
-	  clock_t start_time;
-	  start_time = clock();
-	  fChanged = fTrue;
 	  show_help();
-	  wait_for_key_or_mouse();
-	  new_time += (clock() - start_time); /* ignore time user spends viewing help */
-	  /* cruder: new_time = clock(); */
+	  wait_for_key_or_mouse();	  
+	  fChanged = fTrue;
+	  lap_timer(fFalse);
 	  break;
        }
        case ('A' - '@'):
