@@ -9,12 +9,12 @@
 SURVEXHOME=$srcdir/../lib
 export SURVEXHOME
 
-TESTS="oneleg midpoint noose cross firststn deltastar\
+TESTS="singlefix oneleg midpoint noose cross firststn deltastar\
  deltastar2 bug3 calibrate_tape nosurvey nosurvey2\
  cartesian"
 
 NO_POS_TESTS="beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
- expobug require"
+ expobug require export includecomment"
 
 for file in $TESTS ; do
   echo $file
