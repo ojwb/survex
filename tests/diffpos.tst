@@ -5,7 +5,9 @@
 
 : ${DIFFPOS=../src/diffpos}
 
-for file in delatend addatend ; do
+: ${TESTS="delatend addatend"}
+
+for file in $TESTS ; do
   echo $file
   rm -f diffpos.tmp
   $DIFFPOS $srcdir/${file}a.pos $srcdir/${file}b.pos > diffpos.tmp

@@ -9,13 +9,18 @@ SURVEXHOME=$srcdir/../lib
 export SURVEXHOME
 
 # tests which should produce warnings...
-# expect one warning unless ":<number>" is appended
-TESTS="self_loop self_eq_loop reenterwarn:2 cmd_default:3 cmd_prefix:1"
+: ${TESTS="self_loop self_eq_loop reenterwarn cmd_default cmd_prefix"}
 
-for t in $TESTS ; do
-  file=`echo $t|cut -f 1 -d :`
-  count=`echo $t|sed 's/[^:]*:\?//'`
+for file in $TESTS ; do
   echo $file
+
+  # how many warnings to expect
+  count=1
+  case "$file" in
+  reenterwarn) count=2 ;;
+  cmd_default) count=3 ;;
+  esac
+
   rm -f ./tmp.*
   
   warns=`$CAVERN $srcdir/$file.svx --output=./tmp | sed '$!d;$s/[^0-9]*\([0-9]*\).*/\1/'`
