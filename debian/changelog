@@ -5,9 +5,11 @@ survex (1.0.17) unstable; urgency=low
     for Gnome.  Note: at present GMC doesn't seem to notice new files being
     created (e.g.  Process on a .svx file creates .3d and .err files) - you
     have to manually refresh the view.
+  * survex-svxedit is now architecture independent.  Fixed up a few lintian
+    warnings relating to it too.
   * Minor update to manual.
 
- -- Wookey <wookey@survex.com>  Tue, 24 Sep 2002 05:25:17 +0100
+ -- Wookey <wookey@survex.com>  Tue, 24 Sep 2002 20:20:20 +0100
 
 survex (1.0.14) unstable; urgency=low
 
