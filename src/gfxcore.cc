@@ -812,13 +812,6 @@ void GfxCore::RedrawOffscreen()
 #ifdef AVENGL
 
 #else
-    Double m_00 = m_RotationMatrix.get(0, 0) * m_Params.scale;
-    Double m_01 = m_RotationMatrix.get(0, 1) * m_Params.scale;
-    Double m_02 = m_RotationMatrix.get(0, 2) * m_Params.scale;
-    Double m_20 = m_RotationMatrix.get(2, 0) * m_Params.scale;
-    Double m_21 = m_RotationMatrix.get(2, 1) * m_Params.scale;
-    Double m_22 = m_RotationMatrix.get(2, 2) * m_Params.scale;
-
     // Invalidate hit-test grid.
     m_HitTestGridValid = false;
 
@@ -833,6 +826,13 @@ void GfxCore::RedrawOffscreen()
     m_DrawDC.DrawRectangle(0, 0, m_XSize, m_YSize);
 
     if (m_PlotData) {
+	Double m_00 = m_RotationMatrix.get(0, 0) * m_Params.scale;
+	Double m_01 = m_RotationMatrix.get(0, 1) * m_Params.scale;
+	Double m_02 = m_RotationMatrix.get(0, 2) * m_Params.scale;
+	Double m_20 = m_RotationMatrix.get(2, 0) * m_Params.scale;
+	Double m_21 = m_RotationMatrix.get(2, 1) * m_Params.scale;
+	Double m_22 = m_RotationMatrix.get(2, 2) * m_Params.scale;
+
 	bool grid_first = (m_TiltAngle >= 0.0);
 
 	if (m_Grid && grid_first) {
