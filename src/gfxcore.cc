@@ -1,7 +1,7 @@
 //
 //  gfxcore.cc
 //
-//  Core drawing code for Aven, with both standard 2D and OpenGL functionality.
+//  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
 //  Copyright (C) 2001-2003,2004 Olly Betts
@@ -1675,7 +1675,6 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	int y = -(event.GetY() - m_YCentre);
 	Matrix4 inverse_rotation = m_Params.rotation.asInverseMatrix();
 
-	//--TODO: GL version
 	Double cx = Double(inverse_rotation.get(0, 0)*x + inverse_rotation.get(0, 2)*y);
 	Double cy = Double(inverse_rotation.get(1, 0)*x + inverse_rotation.get(1, 2)*y);
 
@@ -1747,8 +1746,6 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	    }
 	    else if (m_LastDrag == drag_SCALE) {
 		if (point.x >= 0 && point.x <= m_XSize) {
-		    //--FIXME: GL fix needed
-
 		    Double size_snap = Double(m_ScaleBar.width) / m_Params.scale;
 		    int dx = point.x - m_DragLast.x;
 
@@ -1765,7 +1762,6 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	    HandleTilt(point);
 	}
 	else if (m_DraggingRight) {
-	  //FIXME: this needs sorting for GL
 	    if ((m_LastDrag == drag_NONE &&
 		 point.x >= m_ScaleBar.offset_x &&
 		 point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
@@ -2221,7 +2217,6 @@ void GfxCore::OnZoomIn(bool accel)
 {
     // Increase the scale.
 
-    //--GL fixes needed
     SetScale(m_Params.scale * (accel ? 1.1236 : 1.06));
     ForceRefresh();
 }
@@ -2453,10 +2448,6 @@ void GfxCore::OnToggleDegreesUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData);
     cmd.Check(m_Degrees);
 }
-
-//
-//  OpenGL-specific methods
-//
 
 void GfxCore::CentreOn(Double x, Double y, Double z)
 {
