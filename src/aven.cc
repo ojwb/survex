@@ -44,8 +44,9 @@ bool Aven::OnInit()
 {
     msg_init(argv[0]);
 
-    static wxLocale wx_locale;
-    if (!wx_locale.Init(msg_lang, msg_lang, msg_lang, TRUE, TRUE)) {
+    static wxLocale wx_locale;    
+    if (strcmp(msg_lang, "en") != 0 &&
+	!wx_locale.Init(msg_lang, msg_lang, msg_lang, TRUE, TRUE)) {
 	if (msg_lang2) {
 	    wx_locale.Init(msg_lang2, msg_lang2, msg_lang2, TRUE, TRUE);
 	}
