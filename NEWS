@@ -2,6 +2,10 @@
   these can even be linked into a Survex dataset with "*include fulford.dat" or
   "*include lech.mak" to allow processing of mixed datasets.
 
+* cavern: major speedup (up to 60%) when reading in surveys with a lot of
+  stations in the same survey hierarchy level (which is how Compass files
+  are handled).
+
 * cavern: reduced memory usage in code which reads a survey station name.
 
 * cavern: avoid unnecessary work when --percentage isn't specified.

@@ -151,9 +151,16 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 }
 #endif
       } else {
+	 /* Use caching to speed up adding an increasing sequence to a
+	  * large survey */
+	 static prefix *cached_survey = NULL, *cached_station = NULL;
 	 prefix *ptrPrev = NULL;
 	 int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
-	 while (ptr && (cmp = strcmp(ptr->ident, name))>0) {
+	 if (cached_survey == back_ptr) {
+	    cmp = strcmp(cached_station->ident, name);
+	    if (cmp <= 0) ptr = cached_station;
+	 }
+	 while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
 	    ptrPrev = ptr;
 	    ptr = ptr->right;
 	 }
@@ -187,6 +194,8 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	    }
 #endif
 	 }
+	 cached_survey = back_ptr;
+	 cached_station = ptr;
       }
       depth++;
       f_optional = fFalse; /* disallow after first level */
