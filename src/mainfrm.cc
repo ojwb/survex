@@ -175,14 +175,14 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 		       "Restore default settings for zoom, scale and rotation");
 
     wxMenu* viewmenu = new wxMenu;
-    viewmenu->Append(menu_VIEW_SHOW_NAMES, "Show Station &Names\tCtrl+N",
+    viewmenu->Append(menu_VIEW_SHOW_NAMES, "Station &Names\tCtrl+N",
 		     "Toggle display of survey station names", true);
-    viewmenu->Append(menu_VIEW_SHOW_CROSSES, "Show &Crosses\tCtrl+X",
+    viewmenu->Append(menu_VIEW_SHOW_CROSSES, "&Crosses\tCtrl+X",
 		     "Toggle display of crosses at survey stations", true);
-    viewmenu->Append(menu_VIEW_SHOW_LEGS, "Show Survey &Legs\tCtrl+L",
+    viewmenu->Append(menu_VIEW_SHOW_LEGS, "Survey &Legs\tCtrl+L",
 		     "Toggle display of survey legs", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, "Show &Overlapping Names\tO",
+    viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, "&Overlapping Names\tO",
 		     "Display all station names, whether or not they overlap", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_COMPASS, "Co&mpass", "Toggle the display of the compass", true);
@@ -203,7 +203,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     helpmenu->Append(menu_HELP_ABOUT, "&About Aven...",
 		"Display program information, version number, copyright and licence agreement");
 
-    wxMenuBar* menubar = new wxMenuBar;
+    wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE);
     menubar->Append(filemenu, "&File");
     menubar->Append(rotmenu, "&Rotation");
     menubar->Append(orientmenu, "&Orientation");
@@ -211,6 +211,22 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     menubar->Append(ctlmenu, "&Controls");
     menubar->Append(helpmenu, "&Help");
     SetMenuBar(menubar);
+
+    wxAcceleratorEntry entries[11];
+    entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, menu_ORIENT_DEFAULTS);
+    entries[1].Set(wxACCEL_NORMAL, WXK_UP, menu_ORIENT_SHIFT_UP);
+    entries[2].Set(wxACCEL_NORMAL, WXK_DOWN, menu_ORIENT_SHIFT_DOWN);
+    entries[3].Set(wxACCEL_NORMAL, WXK_LEFT, menu_ORIENT_SHIFT_LEFT);
+    entries[4].Set(wxACCEL_NORMAL, WXK_RIGHT, menu_ORIENT_SHIFT_RIGHT);
+    entries[5].Set(wxACCEL_NORMAL, (int) '\'', menu_ORIENT_HIGHER_VP);
+    entries[6].Set(wxACCEL_NORMAL, (int) '/', menu_ORIENT_LOWER_VP);
+    entries[7].Set(wxACCEL_NORMAL, (int) ']', menu_ORIENT_ZOOM_IN);
+    entries[8].Set(wxACCEL_NORMAL, (int) '[', menu_ORIENT_ZOOM_OUT);
+    entries[9].Set(wxACCEL_NORMAL, WXK_RETURN, menu_ROTATION_START);
+    entries[10].Set(wxACCEL_NORMAL, WXK_SPACE, menu_ROTATION_STOP);
+
+    wxAcceleratorTable accel(11, entries);
+    SetAcceleratorTable(accel);
 
     CreateStatusBar(2);
     SetStatusText("Ready");
