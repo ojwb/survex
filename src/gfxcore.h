@@ -272,13 +272,7 @@ class GfxCore : public wxWindow {
     } m_PresStep;
 #endif
 
-    struct {
-	Double x, y, z;
-    } m_here;
-
-    struct {
-	Double x, y, z;
-    } m_there;
+    Point m_here, m_there;
 
     wxStopWatch timer;
     long drawtime;
