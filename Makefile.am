@@ -253,7 +253,8 @@ alien_src_zip :
 	mkdir alien_tmp/o
 	mkdir alien_tmp/stdh
 	perl alien.pl src/*.c src/*.h hto/*.c hto/*.h > alien_tmp/\!ObeyMe,feb
-	echo 'Dir <Obey$$Dir>' > alien_tmp/\!MakeMe,feb
+	echo 'RMEnsure DDEUtils 0 System:modules.ddeutils' > alien_tmp/\!MakeMe,feb
+	echo 'Dir <Obey$$Dir>' >> alien_tmp/\!MakeMe,feb
 	echo amu >> alien_tmp/\!MakeMe,feb
 	echo Back >> alien_tmp/\!MakeMe,feb
 	ln -s ../src/riscos/stdh/[a-z]* alien_tmp

@@ -81,7 +81,9 @@ my $progs = expand('bin_PROGRAMS');
 
 my $t = join " ", map {shorten($_, $max_leaf_len)} split /\s+/, $progs;
 $t =~ s/(\w)\b/$1$repl{'EXEEXT'}/g if $repl{'EXEEXT'};
-print "all: $t\n\n";
+print "all: $t\n";
+print "\tzip $repl{exezip} $t\n";
+print "\t$repl{movezip}\n\n";
 
 print ".c.$repl{'OBJEXT'}:\n";
 print "\t$repl{'CC'} $repl{'CFLAGS'} -c \$<\n\n";
@@ -164,6 +166,8 @@ sub init_riscos {
       'EXEEXT' => '',
       'EXTRARULES' =>
          "armrot.o: armrot.s\n\tobjasm -ThrowBack -Stamp -quit -CloseExec -from s.armrot -to o.armrot\n\n",
+      'exezip' => 'roexe/zip',
+      'copyzip' => 'copy roexe/zip ADFS::0.$.roexe/zip ~c',
    );
    $max_leaf_len = 10;
    $use_rsp = 0;
@@ -183,6 +187,8 @@ sub init_borlandc {
       'OBJEXT' => 'obj',
       'EXEEXT' => '.exe',
       'EXTRARULES' => '',
+      'exezip' => 'bcexe.zip',
+      'copyzip' => 'move bcexe.zip a:',
    );
    $max_leaf_len = 8;
    $use_rsp = 1;
