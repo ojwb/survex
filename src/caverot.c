@@ -31,7 +31,7 @@
 #include <time.h>
 
 #ifdef HAVE_SIGNAL
-# ifdef HAVE_SETJMP
+# ifdef HAVE_SETJMP_H
 #  include <setjmp.h>
 static jmp_buf jmpbufSignal;
 #  include <signal.h>

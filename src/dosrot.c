@@ -44,7 +44,7 @@
 # define DO_PLOT(p, X, Y)\
  if ((p)->_.action == DRAW) cvrotgfx_lineto((X), (Y)); else cvrotgfx_moveto((X), (Y))
 
-#elif defined(HAVE_SETJMP)
+#elif defined(HAVE_SETJMP_H)
 
 /* uses function pointers and setjmp (fastest for Borland C) */
 # include <setjmp.h>

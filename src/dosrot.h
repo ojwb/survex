@@ -50,7 +50,7 @@
 # define DRAW (coord)2
 # define STOP (coord)0
 
-#elif defined(HAVE_SETJMP)
+#elif defined(HAVE_SETJMP_H)
 
 /* for speed, store function ptrs in table */
 

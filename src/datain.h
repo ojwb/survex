@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifdef HAVE_SETJMP
+#ifdef HAVE_SETJMP_H
 # include <setjmp.h>
 #endif
 
@@ -29,7 +29,7 @@ typedef struct parse {
    const char *filename;
    unsigned int line;
    struct parse *parent;
-#ifdef HAVE_SETJMP
+#ifdef HAVE_SETJMP_H
    jmp_buf jbSkipLine;
 #endif
 } parse;

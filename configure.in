@@ -192,7 +192,7 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(popen signal getpwuid)
 
 dnl don't use AC_CHECK_FUNCS for setjmp - mingw #define-s it to _setjmp
-AC_CHECK_HEADER(setjmp.h, [AC_DEFINE(HAVE_SETJMP)])
+AC_CHECK_HEADERS(setjmp.h)
 
 dnl difftime seems to be an ANSI invention
 AC_CHECK_FUNCS(difftime)

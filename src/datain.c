@@ -306,7 +306,7 @@ data_file(const char *pth, const char *fnm)
    }
 #endif
 
-#ifdef HAVE_SETJMP
+#ifdef HAVE_SETJMP_H
    /* errors in nested functions can longjmp here */
    if (setjmp(file.jbSkipLine)) {
       process_eol();

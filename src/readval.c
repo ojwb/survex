@@ -31,7 +31,7 @@
 #include "osalloc.h"
 #include "str.h"
 
-#ifdef HAVE_SETJMP
+#ifdef HAVE_SETJMP_H
 # define LONGJMP(JB) longjmp((JB), 1)
 #else
 # define LONGJMP(JB) exit(1)
