@@ -192,6 +192,7 @@ data_file(const char *pth, const char *fnm)
    file.fh = fopenWithPthAndExt(pth, fnm, EXT_SVX_DATA, "rb", &file.filename);
    if (file.fh == NULL) {
 #if (OS==RISCOS) || (OS==UNIX)
+      int f_changed = 0;
       char *fnm_trans, *p;
 #if OS==RISCOS
       char *q;
@@ -212,22 +213,43 @@ data_file(const char *pth, const char *fnm)
 	    } else {
 	       *q++ = '/';
 	    }
+	    f_changed = 1;
 	    break;
          case '/': case '\\':
-	    *q++ = '.'; break;
+	    *q++ = '.';
+	    f_changed = 1;
+	    break;
 	 default:
 	    *q++ = *p; break;
 #else
          case '\\': /* swap a backslash to a forward slash */
-	    *p = '/'; break;
+	    *p = '/';
+	    f_changed = 1;
+	    break;
 #endif
 	 }
       }
 #if OS==RISCOS
       *q = '\0';
 #endif
-      file.fh = fopenWithPthAndExt(pth, fnm_trans, EXT_SVX_DATA, "rb",
-                                   &file.filename);
+      if (f_changed)
+	 file.fh = fopenWithPthAndExt(pth, fnm_trans, EXT_SVX_DATA, "rb",
+				      &file.filename);
+
+#if (OS==UNIX)
+      /* as a last ditch measure, try lowercasing the filename */
+      if (file.fh == NULL) {
+	 f_changed = 0;
+	 for (p = fnm_trans; *p ; p++)
+	    if (isupper(*p)) {
+	       *p = tolower(*p);
+	       f_changed = 1;
+	    }
+	 if (f_changed)
+	    file.fh = fopenWithPthAndExt(pth, fnm_trans, EXT_SVX_DATA, "rb",
+					 &file.filename);
+      }
+#endif
       osfree(fnm_trans);
 #endif
       if (file.fh == NULL) {
