@@ -284,29 +284,15 @@ void MainFrm::ClearPointLists()
     m_Labels.clear();
 }
 
-/* similar to function in cvrotimg.c and prcore.c */
-static bool
-pfx_filter(const char *lab, const wxString &prefix)
-{
-   size_t l = prefix.size();
-   return !l || (strncmp(prefix.c_str(), lab, l) == 0 && (lab[l] == '.' || !lab[l]));
-}
-
 bool MainFrm::LoadData(const wxString& file, wxString prefix)
 {
     // Load survey data from file, centre the dataset around the origin,
     // chop legs such that no legs cross depth colour boundaries and prepare
     // the data for drawing.
 
-    // prepare prefix by removing any trailing '.'
-
-    if (!prefix.empty() && prefix[prefix.size() - 1] == '.') {
-	prefix.resize(prefix.size() - 1);
-    }
-
     // Load the survey data.
 
-    img* survey = img_open(file, NULL, NULL);
+    img* survey = img_open_survey(file, NULL, NULL, prefix.c_str());
     if (!survey) {
 	wxString m = wxString::Format(msg(img_error()), file.c_str());
 	wxGetApp().ReportError(m);
@@ -346,56 +332,53 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	switch (result = img_read_item(survey, &pt)) {
 	    case img_LINE:
 	    {
-		if (survey->version < 3 || pfx_filter(survey->label, prefix)) {
-		    if (pending_move) {
-			pending_move = false;
+		if (pending_move) {
+		    pending_move = false;
 
-			m_NumPoints++;
-
-			// Update survey extents.
-			if (mv.x < xmin) xmin = mv.x;
-			if (mv.x > xmax) xmax = mv.x;
-			if (mv.y < ymin) ymin = mv.y;
-			if (mv.y > ymax) ymax = mv.y;
-			if (mv.z < m_ZMin) m_ZMin = mv.z;
-			if (mv.z > zmax) zmax = mv.z;
-
-			PointInfo* info = new PointInfo;
-			info->x = mv.x;
-			info->y = mv.y;
-			info->z = mv.z;
-
-			info->isLine = false;
-
-			// Store this point in the list.
-			points.push_back(info);			
-		    }
-			
 		    m_NumPoints++;
 
 		    // Update survey extents.
-		    if (pt.x < xmin) xmin = pt.x;
-		    if (pt.x > xmax) xmax = pt.x;
-		    if (pt.y < ymin) ymin = pt.y;
-		    if (pt.y > ymax) ymax = pt.y;
-		    if (pt.z < m_ZMin) m_ZMin = pt.z;
-		    if (pt.z > zmax) zmax = pt.z;
+		    if (mv.x < xmin) xmin = mv.x;
+		    if (mv.x > xmax) xmax = mv.x;
+		    if (mv.y < ymin) ymin = mv.y;
+		    if (mv.y > ymax) ymax = mv.y;
+		    if (mv.z < m_ZMin) m_ZMin = mv.z;
+		    if (mv.z > zmax) zmax = mv.z;
 
 		    PointInfo* info = new PointInfo;
-		    info->x = pt.x;
-		    info->y = pt.y;
-		    info->z = pt.z;
+		    info->x = mv.x;
+		    info->y = mv.y;
+		    info->z = mv.z;
 
-		    // Set flags to say this is a line rather than a move
-		    m_NumLegs++;
-		    info->isLine = true;
-		    info->isSurface = (survey->flags & img_FLAG_SURFACE);
+		    info->isLine = false;
 
 		    // Store this point in the list.
-		    points.push_back(info);
-
-		    break;
+		    points.push_back(info);			
 		}
+		m_NumPoints++;
+
+		// Update survey extents.
+		if (pt.x < xmin) xmin = pt.x;
+		if (pt.x > xmax) xmax = pt.x;
+		if (pt.y < ymin) ymin = pt.y;
+		if (pt.y > ymax) ymax = pt.y;
+		if (pt.z < m_ZMin) m_ZMin = pt.z;
+		if (pt.z > zmax) zmax = pt.z;
+
+		PointInfo* info = new PointInfo;
+		info->x = pt.x;
+		info->y = pt.y;
+		info->z = pt.z;
+
+		// Set flags to say this is a line rather than a move
+		m_NumLegs++;
+		info->isLine = true;
+		info->isSurface = (survey->flags & img_FLAG_SURFACE);
+
+		// Store this point in the list.
+		points.push_back(info);
+
+		break;
 	    }
 	    /* FALL THRU */
 
@@ -407,28 +390,26 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	    }
 
 	    case img_LABEL:
-	    {
-		if (pfx_filter(survey->label, prefix) && survey->label[prefix.size()]) {
-		    LabelInfo* label = new LabelInfo;
-		    label->text = survey->label;
-		    label->x = pt.x;
-		    label->y = pt.y;
-		    label->z = pt.z;
-		    label->isEntrance = (survey->flags & img_SFLAG_ENTRANCE);
-		    label->isFixedPt = (survey->flags & img_SFLAG_FIXED);
-		    label->isExportedPt = (survey->flags & img_SFLAG_EXPORTED);
-		    if (label->isEntrance) {
-		       m_NumEntrances++;
-		    }
-		    if (label->isFixedPt) {
-		       m_NumFixedPts++;
-		    }
-		    if (label->isExportedPt) {
-		       m_NumExportedPts++;
-		    }
-		    m_Labels.push_back(label);
-		    m_NumCrosses++;
+	     {
+		LabelInfo* label = new LabelInfo;
+		label->text = survey->label;
+		label->x = pt.x;
+		label->y = pt.y;
+		label->z = pt.z;
+		label->isEntrance = (survey->flags & img_SFLAG_ENTRANCE);
+		label->isFixedPt = (survey->flags & img_SFLAG_FIXED);
+		label->isExportedPt = (survey->flags & img_SFLAG_EXPORTED);
+		if (label->isEntrance) {
+		    m_NumEntrances++;
 		}
+		if (label->isFixedPt) {
+		    m_NumFixedPts++;
+		}
+		if (label->isExportedPt) {
+		    m_NumExportedPts++;
+		}
+		m_Labels.push_back(label);
+		m_NumCrosses++;
 		break;
 	    }
 

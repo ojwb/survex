@@ -48,15 +48,17 @@ static double threshold = DFLT_MAX_THRESHOLD;
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+   {"survey", required_argument, 0, 's'},
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts ""
+#define short_opts "s:"
 
 static struct help_msg help[] = {
 /*				<-- */
+   {HLP_ENCODELONG(0),          "Only load the sub-survey with this prefix"},
    {0, 0}
 };
 
@@ -195,13 +197,13 @@ tree_check(void)
 }
 
 static void
-parse_3d_file(const char *fnm,
+parse_3d_file(const char *fnm, const char *survey,
 	      void (*tree_func)(const char *, const img_point *))
 {
    img_point pt;
    int result;
  
-   img *pimg = img_open(fnm, NULL, NULL);
+   img *pimg = img_open_survey(fnm, NULL, NULL, survey);
    if (!pimg) fatalerror(img_error(), fnm);
 
    do {
@@ -223,7 +225,7 @@ parse_3d_file(const char *fnm,
 }
 
 static void
-parse_pos_file(const char *fnm,
+parse_pos_file(const char *fnm, const char *survey,
 	       void (*tree_func)(const char *, const img_point *))
 {
    FILE *fh;
@@ -231,6 +233,22 @@ parse_pos_file(const char *fnm,
    char *buf;
    size_t buf_len = 256;
 
+   char *pfx = NULL;
+   size_t pfx_len = 0;
+
+   if (survey) {
+      pfx_len = strlen(survey);
+      if (pfx_len) {
+	 if (survey[pfx_len - 1] == '.') pfx_len--;
+	 if (pfx_len) {
+	    pfx = osmalloc(pfx_len + 2);
+	    memcpy(pfx, survey, pfx_len);
+	    pfx[pfx_len++] = '.';
+	    pfx[pfx_len] = '\0';
+	 }
+      }
+   }
+   
    buf = osmalloc(buf_len);
    
    fh = fopen(fnm, "rb");
@@ -255,6 +273,7 @@ parse_pos_file(const char *fnm,
 	 if (feof(fh)) break;
 	 continue;
       }
+
       buf[0] = '\0';
       while (!feof(fh)) {
 	 if (!fgets(buf + off, buf_len - off, fh)) {
@@ -269,24 +288,28 @@ parse_pos_file(const char *fnm,
 	 buf_len += buf_len;
 	 buf = osrealloc(buf, buf_len);
       }
-      tree_func(buf, &pt);
+
+      if (!pfx_len || strncmp(buf, pfx, pfx_len) == 0) {
+	 tree_func(buf + pfx_len, &pt);
+      }
    }
    fclose(fh);
 
    osfree(buf);
+   osfree(pfx);
 }
 
 static void
-parse_file(const char *fnm,
+parse_file(const char *fnm, const char *survey,
 	   void (*tree_func)(const char *, const img_point *))
 {
    static const char ext3d[] = EXT_SVX_3D;
    size_t len = strlen(fnm);
    if (len > sizeof(ext3d) && fnm[len - sizeof(ext3d)] == FNM_SEP_EXT &&
        strcmp(fnm + len - sizeof(ext3d) + 1, ext3d) == 0) {
-      parse_3d_file(fnm, tree_func);
+      parse_3d_file(fnm, survey, tree_func);
    } else {
-      parse_pos_file(fnm, tree_func);
+      parse_pos_file(fnm, survey, tree_func);
    }
 }
 
@@ -294,6 +317,8 @@ int
 main(int argc, char **argv)
 {
    char *fnm1, *fnm2;
+   const char *survey = NULL;   
+
    msg_init(argv[0]);
 
    cmdline_set_syntax_message("FILE1 FILE2 [THRESHOLD]",
@@ -302,8 +327,10 @@ main(int argc, char **argv)
 			      "any axis in metres (default "
 			      STRING(DFLT_MAX_THRESHOLD)")");
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 2, 3);
-   while (cmdline_getopt() != EOF) {
-      /* do nothing */
+   while (1) {
+      int opt = cmdline_getopt();
+      if (opt == EOF) break;
+      if (opt == 's') survey = optarg;
    }
    fnm1 = argv[optind++];
    fnm2 = argv[optind++];
@@ -314,9 +341,9 @@ main(int argc, char **argv)
 
    tree_init();
 
-   parse_file(fnm1, tree_insert);
+   parse_file(fnm1, survey, tree_insert);
 
-   parse_file(fnm2, tree_remove);
+   parse_file(fnm2, survey, tree_remove);
    
    return tree_check() ? EXIT_FAILURE : EXIT_SUCCESS;
 }

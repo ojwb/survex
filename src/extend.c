@@ -136,15 +136,17 @@ add_label(point *p, const char *label, int flags)
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+   {"survey", required_argument, 0, 's'},
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts ""
+#define short_opts "s:"
 
 static struct help_msg help[] = {
 /*				<-- */
+   {HLP_ENCODELONG(0),          "Only load the sub-survey with this prefix"},
    {0, 0}
 };
 
@@ -159,13 +161,16 @@ main(int argc, char **argv)
    double zMax = -DBL_MAX;
    point *start = NULL;
    point *p;
+   const char *survey = NULL;
 
    msg_init(argv[0]);
 
    cmdline_set_syntax_message("INPUT_3D_FILE [OUTPUT_3D_FILE]", NULL);
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
-   while (cmdline_getopt() != EOF) {
-      /* do nothing */
+   while (1) {
+      int opt = cmdline_getopt();
+      if (opt == EOF) break;
+      if (opt == 's') survey = optarg;
    }
    fnmData = argv[optind++];
    if (argv[optind]) {
@@ -175,7 +180,7 @@ main(int argc, char **argv)
    }
 
    /* try to open image file, and check it has correct header */
-   pimg = img_open(fnmData, szDesc, NULL);
+   pimg = img_open_survey(fnmData, szDesc, NULL, survey);
    if (pimg == NULL) fatalerror(img_error(), fnmData);
 
    putnl();
@@ -194,8 +199,8 @@ main(int argc, char **argv)
          break;
       case img_LINE:
        	 if (!fr) {
-       	    printf("img_LINE before any img_MOVE\n");
-       	    exit(1);
+	    result = img_BAD;
+	    break;
        	 }
          to = find_point(&pt);
          if (!(pimg->flags & (img_FLAG_SURFACE|img_FLAG_SPLAY)))

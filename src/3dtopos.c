@@ -36,15 +36,17 @@
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+   {"survey", required_argument, 0, 's'},
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts ""
+#define short_opts "s:"
 
 static struct help_msg help[] = {
 /*				<-- */
+   {HLP_ENCODELONG(0),          "Only load the sub-survey with this prefix"},
    {0, 0}
 };
 
@@ -72,6 +74,7 @@ main(int argc, char **argv)
    OSSIZE_T c_labels = 0;
    OSSIZE_T c_totlabel = 0;
    char *p, *p_end;
+   const char *survey = NULL;   
 
    msg_init(argv[0]);
 
@@ -80,6 +83,7 @@ main(int argc, char **argv)
    while (1) {
       int opt = cmdline_getopt();
       if (opt == EOF) break;
+      if (opt == 's') survey = optarg;
    }
 
    fnm = argv[optind++];
@@ -91,7 +95,7 @@ main(int argc, char **argv)
       osfree(base);
    }
 
-   pimg = img_open(fnm, NULL, NULL);
+   pimg = img_open_survey(fnm, NULL, NULL, survey);
    if (!pimg) fatalerror(img_error(), fnm);
 
    fh_out = safe_fopen(fnm_out, "w");
@@ -131,7 +135,7 @@ main(int argc, char **argv)
        case img_LABEL:
 	 if (c_stns < c_labels) {
 	    OSSIZE_T len = strlen(pimg->label) + 1;
-	    if (p + len < p_end) {
+	    if (p + len <= p_end) {
 	       memcpy(p, pimg->label, len);
 	       p += len;
 	       stns[c_stns++].name = p;

@@ -288,6 +288,7 @@ main(int argc, char **argv)
    const char *ext;
    enum { FMT_DXF, FMT_SKETCH } format;
    int *pass;
+   const char *survey = NULL;
 
    void (*header)(void);
    void (*start_pass)(int);
@@ -300,6 +301,7 @@ main(int argc, char **argv)
    /* TRANSLATE */
    static const struct option long_opts[] = {
 	/* const char *name; int has_arg (0 no_argument, 1 required, 2 options_*); int *flag; int val */
+	{"survey", required_argument, 0, 's'},
 	{"no-crosses", no_argument, 0, 'c'},
 	{"no-station-names", no_argument, 0, 'n'},
 	{"no-legs", no_argument, 0, 'l'},
@@ -314,19 +316,20 @@ main(int argc, char **argv)
 	{0,0,0,0}
    };
 
-#define short_opts "cnlg:t:m:eDSh"
+#define short_opts "s:cnlg:t:m:eDSh"
 	
    /* TRANSLATE */
    static struct help_msg help[] = {
-	{HLP_ENCODELONG(0), "do not generate station markers"},
-	{HLP_ENCODELONG(1), "do not generate station labels"},
-	{HLP_ENCODELONG(2), "do not generate the survey legs"},
-	{HLP_ENCODELONG(3), "generate grid (default: "STRING(GRID_SPACING)"m)"},
-	{HLP_ENCODELONG(4), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
-	{HLP_ENCODELONG(5), "station marker size (default: "STRING(MARKER_SIZE)")"},
-	{HLP_ENCODELONG(6), "produce an elevation view"},
-	{HLP_ENCODELONG(7), "produce DXF output"},
-	{HLP_ENCODELONG(8), "produce sketch output"},
+	{HLP_ENCODELONG(0), "only load the sub-survey with this prefix"},
+	{HLP_ENCODELONG(1), "do not generate station markers"},
+	{HLP_ENCODELONG(2), "do not generate station labels"},
+	{HLP_ENCODELONG(3), "do not generate the survey legs"},
+	{HLP_ENCODELONG(4), "generate grid (default: "STRING(GRID_SPACING)"m)"},
+	{HLP_ENCODELONG(5), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
+	{HLP_ENCODELONG(6), "station marker size (default: "STRING(MARKER_SIZE)")"},
+	{HLP_ENCODELONG(7), "produce an elevation view"},
+	{HLP_ENCODELONG(8), "produce DXF output"},
+	{HLP_ENCODELONG(9), "produce sketch output"},
 	{0,0}
    };
 
@@ -383,6 +386,9 @@ main(int argc, char **argv)
        case 'S':
 	 format = FMT_SKETCH;
 	 break;
+       case 's':
+	 survey = optarg;
+	 break;
 #ifdef DEBUG_3DTODXF
        default:
 	 printf("Internal Error: 'getopt' returned '%c' %d\n", opt, opt);
@@ -426,7 +432,7 @@ main(int argc, char **argv)
       osfree(base);
    }
 
-   pimg = img_open(fnm_3d, NULL, NULL);
+   pimg = img_open_survey(fnm_3d, NULL, NULL, survey);
    if (!pimg) fatalerror(img_error(), fnm_3d);
 
    fh = safe_fopen(fnm_out, "w");

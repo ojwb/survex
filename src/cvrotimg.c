@@ -67,13 +67,6 @@ add(point Huge *p, OSSIZE_T *c, OSSIZE_T tot, coord act, const img_point *pt)
    return fTrue;
 }
 
-/* duplicated in prcore.c */
-static bool
-pfx_filter(const char *lab, const char *pfx, size_t l)
-{
-   return !l || (strncmp(pfx, lab, l) == 0 && (lab[l] == '.' || !lab[l]));
-}
-
 extern bool
 load_data(const char *fnmData, const char *survey,
 	  point Huge **ppLegs, point Huge **ppSLegs, point Huge **ppStns)
@@ -93,79 +86,53 @@ load_data(const char *fnmData, const char *survey,
    OSSIZE_T c_leg, c_sleg, c_stn;
 
    bool f_surf = fFalse, f_pendingmove = fFalse;
-   
+
    char *p, *p_end;
 
-   char *pfx = NULL;
-   size_t pfx_len = 0;
-
-   if (survey) {
-      pfx_len = strlen(survey);
-      if (pfx_len) {
-	 if (survey[pfx_len - 1] == '.') pfx_len--;
-	 if (pfx_len) {
-	    pfx = osmalloc(pfx_len + 1);
-	    memcpy(pfx, survey, pfx_len);
-	    pfx[pfx_len] = '\0';
-	 }
-      }
-   }
+   /* try to open image file, and check it has correct header */
+   pimg = img_open_survey(fnmData, NULL, NULL, survey);
+   if (!pimg) return fFalse;
 
    /* Make 2 passes - one to work out exactly how much space to allocate,
     * the second to actually read the data.  Disk caching should make this
     * fairly efficient and it means we can use every last scrap of memory
     */
 
-   /* try to open image file, and check it has correct header */
-   pimg = img_open(fnmData, NULL, NULL);
-   if (!pimg) {
-      osfree(pfx);
-      return fFalse;
-   }
-
-   /* FIXME: if prefix doesn't match, handle img_LINE as img_MOVE;
-    * ignore img_LABEL */   
    do {
       result = img_read_item(pimg, &pt);
       switch (result) {
        case img_LINE:
-	 if (pimg->version < 3 || pfx_filter(pimg->label, pfx, pfx_len)) {
-	    if (f_pendingmove) {
-	       f_pendingmove = fFalse;
-	       f_surf = (pimg->flags & img_FLAG_SURFACE);
-	       if (f_surf) c_slegs += 2; else c_legs += 2;
-	    } else {
-	       if (f_surf) {
-		  if (pimg->flags & img_FLAG_SURFACE) {
-		     c_slegs++;
-		  } else {
-		     f_surf = fFalse;
-		     c_legs += 2;
-		  }
+	 if (f_pendingmove) {
+	    f_pendingmove = fFalse;
+	    f_surf = (pimg->flags & img_FLAG_SURFACE);
+	    if (f_surf) c_slegs += 2; else c_legs += 2;
+	 } else {
+	    if (f_surf) {
+	       if (pimg->flags & img_FLAG_SURFACE) {
+		  c_slegs++;
 	       } else {
-		  if (pimg->flags & img_FLAG_SURFACE) {
-		     f_surf = fTrue;
-		     c_slegs += 2;
-		  } else {
-		     c_legs++;
-		  }
+		  f_surf = fFalse;
+		  c_legs += 2;
+	       }
+	    } else {
+	       if (pimg->flags & img_FLAG_SURFACE) {
+		  f_surf = fTrue;
+		  c_slegs += 2;
+	       } else {
+		  c_legs++;
 	       }
 	    }
-	    break;
-         }
-         /* FALLTHRU */
+	 }
+	 break;
        case img_MOVE:
 	 f_pendingmove = fTrue;
 	 break;
        case img_LABEL:
-	 if (pfx_filter(pimg->label, pfx, pfx_len) && pimg->label[pfx_len]) {
-	    c_stns++;
-	    c_totlabel += strlen(pimg->label + pfx_len + 1) + 1;
-	 }
+	 c_stns++;
+	 c_totlabel += strlen(pimg->label) + 1;
 	 break;
        case img_BAD:
 	 img_close(pimg);
-	 osfree(pfx);
 	 return fFalse;
       }
    } while (result != img_STOP);
@@ -196,71 +163,57 @@ load_data(const char *fnmData, const char *survey,
    do {
       result = img_read_item(pimg, &pt);
       switch (result) {
-       case img_LINE:
-	 if (pimg->version < 3 || pfx_filter(pimg->label, pfx, pfx_len)) {
-	    bool fBad = fFalse;
-	    if (f_pendingmove) {
-	       f_pendingmove = fFalse;
-	       f_surf = (pimg->flags & img_FLAG_SURFACE);
-	       if (f_surf) {
-		  fBad = (!add(slegs, &c_sleg, c_slegs, move, &mv) ||
-			  !add(slegs, &c_sleg, c_slegs, draw, &pt));
+       case img_LINE: {
+	 bool fBad = fFalse;
+	 if (f_pendingmove) {
+	    f_pendingmove = fFalse;
+	    f_surf = (pimg->flags & img_FLAG_SURFACE);
+	    if (f_surf) {
+	       fBad = (!add(slegs, &c_sleg, c_slegs, move, &mv) ||
+		       !add(slegs, &c_sleg, c_slegs, draw, &pt));
+	    } else {
+	       fBad = (!add(legs, &c_leg, c_legs, move, &mv) ||
+		       !add(legs, &c_leg, c_legs, draw, &pt));
+	    }
+	 } else {
+	    if (f_surf) {
+	       if (pimg->flags & img_FLAG_SURFACE) {
+		  fBad = !add(slegs, &c_sleg, c_slegs, draw, &pt);
 	       } else {
+		  f_surf = fFalse;
 		  fBad = (!add(legs, &c_leg, c_legs, move, &mv) ||
 			  !add(legs, &c_leg, c_legs, draw, &pt));
 	       }
 	    } else {
-	       if (f_surf) {
-		  if (pimg->flags & img_FLAG_SURFACE) {
-		     fBad = !add(slegs, &c_sleg, c_slegs, draw, &pt);
-		  } else {
-		     f_surf = fFalse;
-		     fBad = (!add(legs, &c_leg, c_legs, move, &mv) ||
-			     !add(legs, &c_leg, c_legs, draw, &pt));
-		  }
+	       if (pimg->flags & img_FLAG_SURFACE) {
+		  f_surf = fTrue;
+		  fBad = (!add(slegs, &c_sleg, c_slegs, move, &mv) ||
+			  !add(slegs, &c_sleg, c_slegs, draw, &pt));
 	       } else {
-		  if (pimg->flags & img_FLAG_SURFACE) {
-		     f_surf = fTrue;
-		     fBad = (!add(slegs, &c_sleg, c_slegs, move, &mv) ||
-			     !add(slegs, &c_sleg, c_slegs, draw, &pt));
-		  } else {
-		     fBad = !add(legs, &c_leg, c_legs, draw, &pt);
-		  }
+		  fBad = !add(legs, &c_leg, c_legs, draw, &pt);
 	       }
 	    }
-	    if (fBad) {
-	       osfree(pfx);
-	       return fFalse;
-	    }
-	    mv = pt;
-	    break;
 	 }
-         /* FALLTHRU */
+	 if (fBad) return fFalse;
+	 mv = pt;
+	 break;
+       }
        case img_MOVE:
 	 f_pendingmove = fTrue;
 	 mv = pt;
 	 break;
        case img_LABEL:
-	 if (pfx_filter(pimg->label, pfx, pfx_len) && pimg->label[pfx_len]) {
-	    char *l = pimg->label + pfx_len + 1;
-	    int size = strlen(l) + 1;
-	    if (p + size > p_end ||
-		c_stn >= c_stns) {
-	       osfree(pfx);
-	       return fFalse;
-	    }
-	    strcpy(p, l);
-	    stns[c_stn]._.str = p;
-	    p += size;
-	    stns[c_stn].X = (coord)(pt.x * factor);
-	    stns[c_stn].Y = (coord)(pt.y * factor);
-	    stns[c_stn].Z = (coord)(pt.z * factor);
-	    c_stn++;
-	 }
+	 if (p + strlen(pimg->label) > p_end || c_stn >= c_stns) return fFalse;
+	 strcpy(p, pimg->label);
+	 stns[c_stn]._.str = p;
+	 p += strlen(pimg->label) + 1;
+	 stns[c_stn].X = (coord)(pt.x * factor);
+	 stns[c_stn].Y = (coord)(pt.y * factor);
+	 stns[c_stn].Z = (coord)(pt.z * factor);
+	 c_stn++;
 	 break;
        case img_BAD:
 	 img_close(pimg);
-	 osfree(pfx);
 	 return fFalse;
       }
    } while (result != img_STOP);
@@ -274,7 +227,6 @@ load_data(const char *fnmData, const char *survey,
        c_leg != c_legs ||
        c_sleg != c_slegs ||
        c_stn != c_stns) {
-      osfree(pfx);
       return fFalse;
    }
    legs[c_leg]._.action = stop;
@@ -285,7 +237,6 @@ load_data(const char *fnmData, const char *survey,
    *ppSLegs = slegs;
    *ppStns = stns;
 
-   osfree(pfx);
    return fTrue; /* return fTrue iff image was OK */
 }
 

@@ -426,35 +426,13 @@ stack_string(const char *s)
    ppliEnd = &(pli->pliNext);
 }
 
-/* duplicated in cvrotimg.c */
-static bool
-pfx_filter(const char *lab, const char *pfx, size_t l)
-{
-   return !l || (strncmp(pfx, lab, l) == 0 && (lab[l] == '.' || !lab[l]));
-}
-
 static int
-read_in_data(const char *survey)
+read_in_data(void)
 {
    bool fMove = fFalse;
    img_point p, p_move;
    int result;
 
-   char *pfx = NULL;
-   size_t pfx_len = 0;
-
-   if (survey) {
-      pfx_len = strlen(survey);
-      if (pfx_len) {
-	 if (survey[pfx_len - 1] == '.') pfx_len--;
-	 if (pfx_len) {
-	    pfx = osmalloc(pfx_len + 1);
-	    memcpy(pfx, survey, pfx_len);
-	    pfx[pfx_len] = '\0';
-	 }
-      }
-   }
-   
    do {
       result = img_read_item(pimg, &p);
       switch (result) {
@@ -464,14 +442,12 @@ read_in_data(const char *survey)
        case img_LINE:
 	 /* if we're plotting surface legs or this isn't a surface leg */
          if (fSurface || !(pimg->flags & img_FLAG_SURFACE)) {
-	    if (pimg->version < 3 || pfx_filter(pimg->label, pfx, pfx_len)) {
-	       if (fMove) {
-		  fMove = fFalse;
-		  stack(img_MOVE, &p_move);
-	       }
-	       stack(img_LINE, &p);
-	       break;
+	    if (fMove) {
+	       fMove = fFalse;
+	       stack(img_MOVE, &p_move);
 	    }
+	    stack(img_LINE, &p);
+	    break;
 	 }
 	 /* FALLTHRU */
        case img_MOVE:
@@ -480,10 +456,8 @@ read_in_data(const char *survey)
          break;
        case img_LABEL:
 	 if (fSurface || (pimg->flags & img_SFLAG_UNDERGROUND)) {
-	    if (pfx_filter(pimg->label, pfx, pfx_len) && pimg->label[pfx_len]) {
-	       stack(img_CROSS, &p);
-	       stack_string(pimg->label);
-	    }
+	    stack(img_CROSS, &p);
+	    stack_string(pimg->label);
 	 }
          break;
       }
@@ -706,7 +680,7 @@ main(int argc, char **argv)
 
    /* Try to open first image file and check it has correct header,
     * rather than asking lots of questions then failing */
-   pimg = img_open(fnm, title, szDateStamp);
+   pimg = img_open_survey(fnm, title, szDateStamp, survey);
    if (!pimg) fatalerror(img_error(), fnm);
 
    if (pr->Init) {
@@ -816,10 +790,10 @@ main(int argc, char **argv)
       /* first time around pimg is already open... */
       if (!pimg) {
 	 /* for multiple files use title and datestamp from the first */
-	 pimg = img_open(fnm, NULL, NULL);
+	 pimg = img_open_survey(fnm, NULL, NULL, survey);
 	 if (!pimg) fatalerror(img_error(), fnm);
       }
-      if (!read_in_data(survey)) fatalerror(img_error(), fnm);
+      if (!read_in_data()) fatalerror(img_error(), fnm);
       img_close(pimg);
       pimg = NULL;
       fnm = argv[optind++];

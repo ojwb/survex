@@ -1,5 +1,6 @@
-* aven/print*: Added --survey command line option to restrict the view to a
-  sub-survey in the .3d file.
+* aven/print*/cadgen/extend/diffpos/3dtopos: Added --survey command
+  line option to restrict the operation of the command to a sub-survey
+  in the .3d file.
 
 * aven: initial scaling now ignores unused fixed points (unless there
   are no legs at all), and scales survey so it fits inside window.

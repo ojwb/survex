@@ -139,7 +139,8 @@ img_error(void)
 #endif
 
 img *
-img_open(const char *fnm, char *title_buf, char *date_buf)
+img_open_survey(const char *fnm, char *title_buf, char *date_buf,
+		const char *survey)
 {
    img *pimg;
 
@@ -194,13 +195,33 @@ img_open(const char *fnm, char *title_buf, char *date_buf)
    }
    getline((title_buf ? title_buf : tmpbuf), TMPBUFLEN, pimg->fh);
    getline((date_buf ? date_buf : tmpbuf), TMPBUFLEN, pimg->fh);
-   pimg->fLinePending = fFalse; /* not in the middle of a 'LINE' command */
    pimg->fRead = fTrue; /* reading from this file */
    img_errno = IMG_NONE;
    pimg->start = ftell(pimg->fh);
 
    /* for version 3 we use label to store the prefix for reuse */
    pimg->label_len = 0;
+
+   pimg->survey = NULL;
+   pimg->survey_len = 0;
+
+   if (survey) {
+      size_t len = strlen(survey);
+      if (len) {
+	 if (survey[len - 1] == '.') len--;
+	 if (len) {
+	    pimg->survey = osmalloc(len + 2);
+	    memcpy(pimg->survey, survey, len);
+	    pimg->survey[len] = '.';
+	    pimg->survey[len + 1] = '\0';
+	 }
+      }
+      pimg->survey_len = len;
+   }
+
+   /* [version 0] not in the middle of a 'LINE' command
+    * [version 3] not in the middle of turning a LINE into a MOVE */
+   pimg->pending = 0;
 
    return pimg;
 }
@@ -209,8 +230,10 @@ void
 img_rewind(img *pimg)
 {
    fseek(pimg->fh, pimg->start, SEEK_SET);
-   
-   pimg->fLinePending = fFalse; /* not in the middle of a 'LINE' command */
+
+   /* [version 0] not in the middle of a 'LINE' command
+    * [version 3] not in the middle of turning a LINE into a MOVE */
+   pimg->pending = 0;
 
    img_errno = IMG_NONE;
    
@@ -288,6 +311,12 @@ img_read_item(img *pimg, img_point *p)
 
    if (pimg->version == 3) {
       int opt;
+      if (pimg->pending >= 0x80) {
+	 *p = pimg->mv;
+	 pimg->flags = (int)(pimg->pending) & 0x3f;
+	 pimg->pending = 0;
+	 return img_LINE;
+      }
       again3: /* label to goto if we get a prefix */
       opt = getc(pimg->fh);
       switch (opt >> 6) {
@@ -335,9 +364,6 @@ img_read_item(img *pimg, img_point *p)
 	 char *q;
 	 size_t len;
 
-	 pimg->flags = (int)opt & 0x3f;
-	 result = opt & 0x40 ? img_LABEL : img_LINE;
-
 	 len = getc(pimg->fh);
 	 if (len == 0xfe) {
 	    len += get16(pimg->fh);
@@ -364,6 +390,38 @@ img_read_item(img *pimg, img_point *p)
 	    return img_BAD;
 	 }
 	 q[len] = '\0';
+
+	 result = opt & 0x40 ? img_LABEL : img_LINE;
+
+	 if (pimg->survey_len) {
+	    size_t l = pimg->survey_len;
+	    const char *s = pimg->label;
+	    if (result == img_LINE) {
+	       if (strncmp(pimg->survey, s, l) != 0 ||
+		   !(s[l] == '.' || s[l] == '\0')) {
+		  pimg->mv.x = get32(pimg->fh) / 100.0;
+		  pimg->mv.y = get32(pimg->fh) / 100.0;
+		  pimg->mv.z = get32(pimg->fh) / 100.0;
+		  pimg->pending = 15;
+	          goto again3;
+	       }
+	    } else {
+	       if (strncmp(pimg->survey, s, l + 1) != 0) {
+		  fseek(pimg->fh, 12, SEEK_CUR);
+		  goto again3;
+	       }
+	    }
+	 }
+
+	 if (result == img_LINE && pimg->pending) {
+	    *p = pimg->mv;
+	    pimg->mv.x = get32(pimg->fh) / 100.0;
+	    pimg->mv.y = get32(pimg->fh) / 100.0;
+	    pimg->mv.z = get32(pimg->fh) / 100.0;
+	    pimg->pending = opt;
+	    return img_MOVE;
+	 }
+	 pimg->flags = (int)opt & 0x3f;
 	 break;
        }
        default:
@@ -373,6 +431,7 @@ img_read_item(img *pimg, img_point *p)
       p->x = get32(pimg->fh) / 100.0;
       p->y = get32(pimg->fh) / 100.0;
       p->z = get32(pimg->fh) / 100.0;
+      pimg->pending = 0;
       return result;
    } else if (pimg->version > 0) {
       static long opt_lookahead = 0;
@@ -485,6 +544,11 @@ img_read_item(img *pimg, img_point *p)
       x = get32(pimg->fh) / 100.0;
       y = get32(pimg->fh) / 100.0;
       z = get32(pimg->fh) / 100.0;
+
+      if (result == img_LABEL && pimg->survey_len &&
+	  (strncmp(pimg->label, pimg->survey, pimg->survey_len + 1) != 0))
+	 goto again;
+
       done:
       p->x = x;
       p->y = y;
@@ -500,8 +564,8 @@ img_read_item(img *pimg, img_point *p)
    } else {
       ascii_again:
       if (feof(pimg->fh)) return img_STOP;
-      if (pimg->fLinePending) {
-	 pimg->fLinePending = fFalse;
+      if (pimg->pending) {
+	 pimg->pending = 0;
 	 result = img_LINE;
       } else {
 	 /* Stop if nothing found */
@@ -512,7 +576,7 @@ img_read_item(img *pimg, img_point *p)
 	    result = img_LINE;
 	 else if (strcmp(tmpbuf, "line") == 0) {
 	    /* set flag to indicate to process second triplet as LINE */
-	    pimg->fLinePending = fTrue;
+	    pimg->pending = 1;
 	    result = img_MOVE;
 	 } else if (strcmp(tmpbuf, "cross") == 0) {
 	    if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) {
@@ -544,6 +608,10 @@ img_read_item(img *pimg, img_point *p)
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
       }
+
+      if (result == img_LABEL && pimg->survey_len &&
+	  (strncmp(pimg->label, pimg->survey, pimg->survey_len) != 0 ||
+	   !pimg->survey[pimg->survey_len] == '.')) goto ascii_again;
 
       return result;
    }
@@ -705,8 +773,10 @@ img_close(img *pimg)
 {
    if (pimg) {
       if (pimg->fh) {
-	 /* write end of data marker */
-	 if (!pimg->fRead) {
+	 if (pimg->fRead) {
+	    osfree(pimg->survey);
+	 } else {
+	    /* write end of data marker */
 	    switch (pimg->version) {
 	     case 1:
 	       put32((INT32_T)-1, pimg->fh);

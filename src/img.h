@@ -62,10 +62,8 @@ typedef struct {
    size_t buf_len;
    size_t label_len;
 # ifdef IMG_HOSTED
-   bool fLinePending; /* for old style text format files */
    bool fRead;        /* fTrue for reading, fFalse for writing */
 # else
-   int fLinePending; /* for old style text format files */
    int fRead;        /* fTrue for reading, fFalse for writing */
 # endif
    long start;
@@ -73,6 +71,10 @@ typedef struct {
     * 2 => byte actions and flags, 3 => prefixes for legs; compressed
     * prefixes) */
    int version;
+   char *survey;
+   size_t survey_len;
+   int pending; /* for old style text format files and survey filtering */
+   img_point mv;
 } img;
 
 /* Which version of the file format to output (defaults to newest) */
@@ -84,7 +86,18 @@ extern unsigned int img_output_version;
  * (each of size 256 chars) or NULL if you don't want the information
  * Returns pointer to an img struct or NULL
  */
-img *img_open(const char *fnm, char *title_buf, char *date_buf);
+#define img_open(F, T, D) img_open_survey((F), (T), (D), NULL)
+
+/* Open a .3d file for reading
+ * fnm is the filename
+ * title_buf and date_buf should be buffers to put the title and datestamp in
+ * (each of size 256 chars) or NULL if you don't want the information
+ * Returns pointer to an img struct or NULL
+ * survey points to a survey name to restrict reading to (or NULL for all
+ * survey data in the file)
+ */
+img *img_open_survey(const char *fnm, char *title_buf, char *date_buf,
+		     const char *survey);
 
 /* Open a .3d file for output
  * fnm is the filename
