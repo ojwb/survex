@@ -19,6 +19,18 @@
 
 #include "whichos.h"
 
+# define EXT_SVX_DATA "svx"
+# define EXT_SVX_3D   "3d"
+
+#ifdef NEW3DFORMAT
+# define EXT_SVX_3DX  "3dx"
+#endif
+
+# define EXT_SVX_ERRS "err"
+# define EXT_SVX_STAT "inf"
+# define EXT_SVX_POS  "pos"
+# define EXT_SVX_MSG  "msg"
+
 #if (OS==RISCOS)
 
 # define ERRSTAT_FILE "ErrStats"
@@ -28,18 +40,6 @@
 # define MESSAGE_FILE "Messages"
 
 # define PRINT_INI "print/ini"
-
-# define EXT_SVX_DATA "/svx" /* allows files to be read from DOS discs */
-# define EXT_SVX_3D   "/3d"
-
-#ifdef NEW3DFORMAT
-# define EXT_SVX_3DX  "/3dx"
-#endif
-
-# define EXT_SVX_ERRS "/err"
-# define EXT_SVX_STAT "/inf"
-# define EXT_SVX_POS  "/pos"
-# define EXT_SVX_MSG  "/msg"
 
 #elif (OS==MSDOS || OS==TOS || OS==WIN32 || OS==UNIX || OS==AMIGA)
 
@@ -55,18 +55,6 @@
 # define MESSAGE_FILE "messages.txt"
 
 # define PRINT_INI "print.ini"
-
-# define EXT_SVX_DATA ".svx"
-# define EXT_SVX_3D   ".3d"
-
-#ifdef NEW3DFORMAT
-# define EXT_SVX_3DX  ".3dx"
-#endif
-
-# define EXT_SVX_ERRS ".err"
-# define EXT_SVX_STAT ".inf"
-# define EXT_SVX_POS  ".pos"
-# define EXT_SVX_MSG  ".msg"
 
 #else
 # error Do not know operating system 'OS'

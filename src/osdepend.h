@@ -46,7 +46,9 @@ typedef unsigned char byte;
 /* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
 #  define FNM_SEP_LEV '.'
 #  define FNM_SEP_DRV ':'
-#  define FNM_SEP_EXT '/' /* This is what DOS ones are translated to.. */
+/* "." in DOS filenames is translated to "/" by DOSFS and some other software.
+ * We follow this defacto convention */
+#  define FNM_SEP_EXT '/'
 
 #  define NO_STDPRN
 
