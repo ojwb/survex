@@ -2,10 +2,10 @@
 
 noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  cvrotgfx.h cvrotimg.h datain.h debug.h dosrot.h filelist.h filename.h\
- getopt.h img.h ini.h labels.h listpos.h matrix.h message.h netbits.h\
- netskel.h network.h osalloc.h osdepend.h ostypes.h out.h prbitmap.h prcore.h\
- prio.h readval.h rotplot.h str.h useful.h validate.h whichos.h xrot.h\
- uni2dos.h
+ getopt.h img.h ini.h labels.h listpos.h matrix.h message.h netartic.h\
+ netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
+ prbitmap.h prcore.h prio.h readval.h rotplot.h str.h uni2dos.h useful.h\
+ validate.h whichos.h xrot.h
 
 PRINT = printdm printps printpcl printhpgl
 
