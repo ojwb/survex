@@ -108,20 +108,25 @@ maintainer-clean-local:
 # bumped
 
 manual: $(manual_sources) custom.dsl survex.ent ../config.h
+	-test . != "$(srcdir)" && ln -s $(srcdir)/manual.sgml manual.sgml
 	@sgmltools@ --backend=html --dsssl-spec='$(srcdir)/custom.dsl#html' \
-		$(srcdir)/manual.sgml
+		manual.sgml
 	cp $(srcdir)/caution.png $(srcdir)/note.png manual
 
 # this rule is not used by the build system - it's for "manual" use (ho ho)
 manual.html: $(manual_sources) custom.dsl survex.ent ../config.h
+	-test . != "$(srcdir)" && ln -s $(srcdir)/manual.sgml manual.sgml
 	@sgmltools@ --backend=onehtml \
-	   --dsssl-spec='$(srcdir)/custom.dsl#onehtml' $(srcdir)/manual.sgml
+	   --dsssl-spec='$(srcdir)/custom.dsl#onehtml' manual.sgml
 
 manual.rtf: $(manual_sources) survex.ent ../config.h
-	@sgmltools@ --backend=rtf $(srcdir)/manual.sgml
+	-test . != "$(srcdir)" && ln -s $(srcdir)/manual.sgml manual.sgml
+	@sgmltools@ --backend=rtf manual.sgml
 
 manual.txt: $(manual_sources) survex.ent ../config.h
-	@sgmltools@ --backend=txt $(srcdir)/manual.sgml
+	-test . != "$(srcdir)" && ln -s $(srcdir)/manual.sgml manual.sgml
+	@sgmltools@ --backend=txt manual.sgml
 
 manual.ps: $(manual_sources) survex.ent ../config.h
-	@sgmltools@ --backend=ps $(srcdir)/manual.sgml
+	-test . != "$(srcdir)" && ln -s $(srcdir)/manual.sgml manual.sgml
+	@sgmltools@ --backend=ps manual.sgml
