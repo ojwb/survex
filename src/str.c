@@ -1,3 +1,4 @@
+/* append a string */
 /* Copyright (c) Olly Betts 1999
  *
  * This program is free software; you can redistribute it and/or modify
