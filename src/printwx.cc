@@ -101,8 +101,8 @@ class svxPrintout : public wxPrintout {
 BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_TEXT(svx_SCALE, svxPrintDlg::OnChange)
     EVT_RADIOBOX(svx_ASPECT, svxPrintDlg::OnChange)
-    EVT_SPINCTRL(svx_BEARING, svxPrintDlg::OnChange)
-    EVT_SPINCTRL(svx_TILT, svxPrintDlg::OnChange)
+    EVT_SPINCTRL(svx_BEARING, svxPrintDlg::OnChangeSpin)
+    EVT_SPINCTRL(svx_TILT, svxPrintDlg::OnChangeSpin)
     EVT_BUTTON(svx_PRINT, svxPrintDlg::OnPrint)
     EVT_BUTTON(svx_PREVIEW, svxPrintDlg::OnPreview)
 END_EVENT_TABLE()
@@ -268,7 +268,12 @@ svxPrintDlg::OnPreview(wxCommandEvent& event) {
 }
 
 void 
-svxPrintDlg::OnChange(wxCommandEvent& event) {
+svxPrintDlg::OnChangeSpin(wxSpinEvent&e) {
+    OnChange(e);
+}
+
+void 
+svxPrintDlg::OnChange(wxCommandEvent&) {
     wxPageSetupDialogData* data = m_parent->GetPageSetupData();
     UIToLayout();
     // Update the bounding box.

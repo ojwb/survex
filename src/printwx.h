@@ -44,6 +44,7 @@ class wxStaticText;
 class wxSpinCtrl;
 class wxRadioBox;
 class wxCheckBox;
+class wxSpinEvent;
 
 class svxPrintDlg : public wxDialog {
 protected:
@@ -75,6 +76,7 @@ protected:
 	~svxPrintDlg();
 	void OnPrint(wxCommandEvent& event); 
 	void OnPreview(wxCommandEvent& event);
+	void OnChangeSpin(wxSpinEvent& event); 
 	void OnChange(wxCommandEvent& event); 
 	void OnGetSettings(wxCommandEvent& event);
  private:
