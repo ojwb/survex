@@ -802,6 +802,7 @@ img_read_item(img *pimg, img_point *p)
    } else {
       /* version -1: .pos file */
       size_t off;
+      pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
       againpos:
       off = 0;
       while (fscanf(pimg->fh, "(%lf,%lf,%lf ) ", &p->x, &p->y, &p->z) != 3) {
