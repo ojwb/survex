@@ -75,7 +75,7 @@ typedef long int fpos_t;
 /* DJGPP needs these: */
 
 #ifndef EXIT_FAILURE
-# define EXIT_FAILURE 1 /* FIXME: in fact FAILURE_EXIT_STATUS or ? check! */
+# define EXIT_FAILURE 1
 #endif /* !EXIT_FAILURE */
 
 #ifndef EXIT_SUCCESS
