@@ -276,7 +276,7 @@ img_open_survey(const char *fnm, const char *survey)
        fnm[len - LITLEN(EXT_SVX_POS) - 1] == FNM_SEP_EXT &&
        my_strcasecmp(fnm + len - LITLEN(EXT_SVX_POS), EXT_SVX_POS) == 0) {
       pimg->version = -1;
-      if (!survey) pimg->title = baseleaf_from_fnm(fnm);
+      if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
       if (!pimg->datestamp) {
 	 img_errno = IMG_OUTOFMEMORY;
@@ -292,43 +292,64 @@ img_open_survey(const char *fnm, const char *survey)
       char *line = NULL;
 
       pimg->version = -2;
-      if (!survey) pimg->title = baseleaf_from_fnm(fnm);
+      if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
       if (!pimg->datestamp) {
 	 img_errno = IMG_OUTOFMEMORY;
 	 goto error;
       }
       do {
-	 osfree(line);
-	 line = getline_alloc(pimg->fh);
-	 if (!line || line[0] == '\x1a' || feof(pimg->fh)) {
-	    if (line) {
+	 do {
+	    osfree(line);
+	    line = getline_alloc(pimg->fh);
+	    if (!line) {
+	       img_errno = IMG_OUTOFMEMORY;
+	       goto error;
+	    }
+	    if (line[0] == '\x1a') {
+	       osfree(line);
+	       pimg->pending = img_STOP + 4;
+	       return pimg;
+	    }
+	    if (feof(pimg->fh)) {
 	       osfree(line);
 	       img_errno = IMG_BADFORMAT;
-	    } else {
-	       img_errno = IMG_OUTOFMEMORY;
+	       goto error;
 	    }
-	    osfree(pimg->datestamp);
-	    goto error;
-	 }
-      } while (line[0] != 'N');
+	 } while (line[0] != 'N');
 
-      len = 1;
-      while (line[len] > 32) ++len;
+	 len = 1;
+	 while (line[len] > 32) ++len;
+      } while (pimg->survey && (pimg->survey_len != len - 1 ||
+	       memcmp(line + 1, pimg->survey, pimg->survey_len) != 0));
 
       if (len > pimg->buf_len) { 
 	 char *b = xosrealloc(pimg->label_buf, len);
 	 if (!b) {
 	    img_errno = IMG_OUTOFMEMORY;
-	    return NULL;
+	    goto error;
 	 }
 	 pimg->label_buf = b;
 	 pimg->buf_len = len;
       }
+      --len;
       pimg->label_len = len;
       pimg->label = pimg->label_buf;
       memcpy(pimg->label, line + 1, len);
       pimg->label[len] = '\0';
+      if (pimg->survey) {
+	 char *q = strchr(line + len, 'C'); 
+	 if (q && q[1]) {
+	    osfree(pimg->title);
+	    pimg->title = osstrdup(q + 1);
+	 } else if (!pimg->title) {
+	    pimg->title = osstrdup(pimg->label);
+	 }
+	 if (!pimg->title) {
+	    img_errno = IMG_OUTOFMEMORY;
+	    goto error;
+	 }
+      }
       osfree(line);
       pimg->start = 0;
       return pimg;
@@ -379,6 +400,7 @@ img_open_survey(const char *fnm, const char *survey)
       img_errno = IMG_OUTOFMEMORY;
       error:
       osfree(pimg->title);
+      osfree(pimg->datestamp);
       fclose(pimg->fh);
       osfree(pimg);
       return NULL;
@@ -397,7 +419,7 @@ img_rewind(img *pimg)
    /* [version -1] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
     * [version 3] not in the middle of turning a LINE into a MOVE */
-   pimg->pending = 0;
+   pimg->pending = 0; /* FIXME: consider rewind on .plt with survey matching nothing ... */
 
    img_errno = IMG_NONE;
 
@@ -943,11 +965,9 @@ img_read_item(img *pimg, img_point *p)
       return img_LABEL;
    } else {
       /* version -2: Compass .plt file */
-      /* FIXME: pimg->survey is ignored - we could compare it to the survey
-       * short-name after the 'N'...
-       */
       if (pimg->pending) {
-	 int r = pimg->pending == 'M' ? img_MOVE : img_LINE;
+	 /* pending MOVE or LINE or STOP */
+	 int r = pimg->pending - 4;
 	 pimg->pending = 0;
 	 pimg->flags = 0;
 	 pimg->label[pimg->label_len] = '\0';
@@ -994,7 +1014,7 @@ img_read_item(img *pimg, img_point *p)
 	       pimg->label = pimg->label_buf;
 	       pimg->label[pimg->label_len] = '.';
 	       memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
-	       pimg->pending = line[0];
+	       pimg->pending = (line[0] == 'M' ? img_MOVE : img_LINE) + 4;
 	       osfree(line);
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
 	       return img_LABEL;
@@ -1002,25 +1022,28 @@ img_read_item(img *pimg, img_point *p)
 	       /* bounding boX (marks end of survey), Feature survey, or
 		* new Section - skip to next survey */
 	       do {
-		  osfree(line);
-		  line = getline_alloc(pimg->fh);
-		  if (!line) {
-		     img_errno = IMG_OUTOFMEMORY;
-		     return img_BAD;
-		  }
-		  if (line[0] == '\x1a') {
+		  do {
 		     osfree(line);
-		     return img_STOP;
-		  }
-		  if (feof(pimg->fh)) {
-		     osfree(line);
-		     img_errno = IMG_BADFORMAT;
-		     return img_BAD;
-		  }
-	       } while (line[0] != 'N');
+		     line = getline_alloc(pimg->fh);
+		     if (!line) {
+			img_errno = IMG_OUTOFMEMORY;
+			return img_BAD;
+		     }
+		     if (line[0] == '\x1a') {
+			osfree(line);
+			return img_STOP;
+		     }
+		     if (feof(pimg->fh)) {
+			osfree(line);
+			img_errno = IMG_BADFORMAT;
+			return img_BAD;
+		     }
+		  } while (line[0] != 'N');
 
-	       len = 1;
-	       while (line[len] > 32) ++len;
+		  len = 1;
+		  while (line[len] > 32) ++len;
+	       } while (pimg->survey && (pimg->survey_len != len - 1 ||
+			memcmp(line + 1, pimg->survey, pimg->survey_len) != 0));
 
 	       if (len > pimg->buf_len) {
 		  char *b = xosrealloc(pimg->label_buf, len);
