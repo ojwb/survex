@@ -196,19 +196,11 @@ remove_subnets(void)
 	       /* use newleg2 for scratch */
 	       newleg2 = copy_link(stn->leg[(dirn + 2) % 3]);
 		 {
+#ifdef NO_COVARIANCES
 		    var sum, prod;
 		    d temp, temp2;
-#if 0 /*ndef NO_COVARIANCES*/
-		    print_var(newleg->v);
-		    printf("plus\n");
-		    print_var(newleg2->v);
-		    printf("equals\n");
-#endif
 		    addvv(&sum, &newleg->v, &newleg2->v);
 		    ASSERT2(!fZero(&sum), "loop of zero variance found");
-#if 0 /*ndef NO_COVARIANCES*/
-		    print_var(sum);
-#endif
 		    mulvv(&prod, &newleg->v, &newleg2->v);
 		    mulvd(&temp, &newleg2->v, &newleg->d);
 		    mulvd(&temp2, &newleg->v, &newleg2->d);
@@ -217,6 +209,31 @@ remove_subnets(void)
 		    divdv(&newleg->d, &temp, &sum);
 /*printf("divvv(&newleg->v, &prod, &sum)\n");*/
 		    divvv(&newleg->v, &prod, &sum);
+#else
+		    var inv1, inv2, sum;
+		    d temp, temp2;
+		    /* if leg one is an equate, we can just ignore leg two
+		     * whatever it is */
+		    if (invert_var(&inv1, &newleg->v)) {
+		       if (invert_var(&inv2, &newleg2->v)) {
+			  addvv(&sum, &inv1, &inv2);
+			  if (!invert_var(&newleg->v, &sum)) {
+			     ASSERT2(0, "matrix singular in parallel legs replacement");
+			  }
+			  
+			  mulvd(&temp, &inv1, &newleg->d);
+			  mulvd(&temp2, &inv2, &newleg2->d);
+			  adddd(&temp, &temp, &temp2);
+			  mulvd(&newleg->d, &newleg->v, &temp);
+		       } else {
+			  /* leg two is an equate, so just ignore leg 1 */
+			  linkfor *tmpleg;
+			  tmpleg = newleg;
+			  newleg = newleg2;
+			  newleg2 = tmpleg;
+		       }
+		    }
+#endif
 		 }
 	       osfree(newleg2);
 	       newleg2 = (linkfor*)osnew(linkrev);
@@ -368,33 +385,79 @@ remove_subnets(void)
 	       legCZ = osnew(linkfor);
 
 		 {
-		    var sum;
-		    d temp;
 		    node *stnZ;
 		    prefix *nameZ;
-		    addvv(&sum, &legAB->v, &legBC->v);
-		    addvv(&sum, &sum, &legCA->v);
-		    ASSERT2(!fZero(&sum), "loop of zero variance found");
+		    var invAB, invBC, invCA, tmp, sum;
+		    var sumAZBZ, sumBZCZ, sumCZAZ;
+		    d temp, temp2;
+		    d dsumAZBZ, dsumBZCZ, dsumCZAZ;
 
-		    mulvv(&legAZ->v, &legCA->v, &legAB->v);
-		    divvv(&legAZ->v, &legAZ->v, &sum);
-		    mulvv(&legBZ->v, &legAB->v, &legBC->v);
-		    divvv(&legBZ->v, &legBZ->v, &sum);
-		    mulvv(&legCZ->v, &legBC->v, &legCA->v);
-		    divvv(&legCZ->v, &legCZ->v, &sum);
+		    /* FIXME: ought to handle cases when some legs are
+		     * equates, but handle as a special case maybe? */
+		    if (!invert_var(&invAB, &legAB->v)) break; /* FIXME */
+		    if (!invert_var(&invBC, &legBC->v)) break; /* FIXME */
+		    if (!invert_var(&invCA, &legCA->v)) break; /* FIXME */
 
-		    mulvd(&legAZ->d, &legCA->v, &legAB->d);
-		    mulvd(&temp,     &legAB->v, &legCA->d);
-		    subdd(&legAZ->d, &legAZ->d, &temp);
-		    divdv(&legAZ->d, &legAZ->d, &sum);
-		    mulvd(&legBZ->d, &legAB->v, &legBC->d);
-		    mulvd(&temp,     &legBC->v, &legAB->d);
-		    subdd(&legBZ->d, &legBZ->d, &temp);
-		    divdv(&legBZ->d, &legBZ->d, &sum);
-		    mulvd(&legCZ->d, &legBC->v, &legCA->d);
-		    mulvd(&temp,     &legCA->v, &legBC->d);
-		    subdd(&legCZ->d, &legCZ->d, &temp);
-		    divdv(&legCZ->d, &legCZ->d, &sum);
+		    /* AZBZ */
+		    addvv(&tmp, &legBC->v, &legCA->v);
+		    if (!invert_var(&sum, &tmp)) break; /* FIXME: impossible */
+
+		    addvv(&tmp, &invAB, &sum);
+		    if (!invert_var(&sumAZBZ, &tmp)) break; /* FIXME: impossible */
+
+		    adddd(&temp, &legBC->d, &legCA->d);
+		    mulvd(&temp2, &sum, &temp);
+		    mulvd(&temp, &invAB, &legAB->d);
+		    adddd(&dsumAZBZ, &temp, &temp2);
+
+		    /* BZCZ */
+		    addvv(&tmp, &legCA->v, &legAB->v);
+		    if (!invert_var(&sum, &tmp)) break; /* FIXME */
+
+		    addvv(&tmp, &invBC, &sum);
+		    if (!invert_var(&sumBZCZ, &tmp)) break; /* FIXME */
+
+		    adddd(&temp, &legCA->d, &legAB->d);
+		    mulvd(&temp2, &sum, &temp);
+		    mulvd(&temp, &invBC, &legBC->d);
+		    adddd(&dsumBZCZ, &temp, &temp2);
+
+		    /* CZAZ */
+		    addvv(&tmp, &legAB->v, &legBC->v);
+		    if (!invert_var(&sum, &tmp)) break; /* FIXME */
+
+		    addvv(&tmp, &invCA, &sum);
+		    if (!invert_var(&sumCZAZ, &tmp)) break; /* FIXME */
+
+		    adddd(&temp, &legAB->d, &legBC->d);
+		    mulvd(&temp2, &sum, &temp);
+		    mulvd(&temp, &invCA, &legCA->d);
+		    adddd(&dsumCZAZ, &temp, &temp2);
+
+		    /* Now add two, subtract third, and scale by 0.5 */
+		    addvv(&sum, &sumAZBZ, &sumCZAZ);
+		    subvv(&sum, &sum, &sumBZCZ);
+		    mulvc(&legAZ->v, &sum, 0.5);
+
+		    adddd(&temp, &dsumAZBZ, &dsumCZAZ);
+		    subdd(&temp, &temp, &dsumBZCZ);
+		    muldc(&legAZ->d, &temp, 0.5);
+		    
+		    addvv(&sum, &sumBZCZ, &sumAZBZ);
+		    subvv(&sum, &sum, &sumCZAZ);
+		    mulvc(&legBZ->v, &sum, 0.5);
+
+		    adddd(&temp, &dsumBZCZ, &dsumAZBZ);
+		    subdd(&temp, &temp, &dsumCZAZ);
+		    muldc(&legBZ->d, &temp, 0.5);
+
+		    addvv(&sum, &sumCZAZ, &sumBZCZ);
+		    subvv(&sum, &sum, &sumAZBZ);
+		    mulvc(&legCZ->v, &sum, 0.5);
+
+		    adddd(&temp, &dsumCZAZ, &dsumBZCZ);
+		    subdd(&temp, &temp, &dsumAZBZ);
+		    muldc(&legCZ->d, &temp, 0.5);
 
 		    nameZ = osnew(prefix);
 		    nameZ->ident = ""; /* root has ident[0] == "\" */
@@ -462,7 +525,6 @@ replace_subnets(void)
    node *stn, *stn2, *stn3, *stn4;
    int dirn, dirn2, dirn3, dirn4;
    linkfor *leg;
-   unsigned long cBogus = 0; /* how many invented stations? */
 
    /* help to catch bad accesses */
    stn = stn2 = stn3 = stn4 = NULL;
@@ -498,25 +560,49 @@ replace_subnets(void)
          linkfor *leg;
          if (fixed(stn3)) {
             /* NB either both or neither fixed */
+	    int zero;
+
             leg = stn3->leg[dirn3];
             stn2 = ptrRed->join1->l.to;
             dirn2 = reverse_leg_dirn(ptrRed->join1);
-
-            if (fZero(&leg->v))
-               e[0] = e[1] = e[2] = 0.0;
-            else {
-               subdd(&e, &POSD(stn4), &POSD(stn3) );
-               subdd(&e, &e, &leg->d );
-               divdv(&e, &e, &leg->v );
+	    
+	    zero = fZero(&leg->v);
+            if (!zero) {
+               subdd(&e, &POSD(stn4), &POSD(stn3));
+               subdd(&e, &e, &leg->d);
+#ifdef NO_COVARIANCES
+	       /* FIXME: I'm not convinced we need separate cases here,
+		* but it doesn't give the right answers if we don't -
+		* need to find out why... */
+               divdv(&e, &e, &leg->v);
+#endif
             }
             if (data_here(ptrRed->join1)) {
-               mulvd(&e, &ptrRed->join1->v, &e);
+	       d tmp2;
+	       if (!zero) {
+#ifdef NO_COVARIANCES
+		  mulvd(&tmp2, &ptrRed->join1->v, &e);
+#else
+		  var v;
+		  divvv(&v, &ptrRed->join1->v, &leg->v);
+		  mulvd(&tmp2, &v, &e);
+#endif
+	       }
                adddd(&POSD(stn2), &POSD(stn3), &ptrRed->join1->d);
-               adddd(&POSD(stn2), &POSD(stn2), &e);
+	       if (!zero) adddd(&POSD(stn2), &POSD(stn2), &tmp2);
             } else {
-               mulvd(&e, &stn2->leg[dirn2]->v, &e);
+	       d tmp2;
+	       if (!zero) {
+#ifdef NO_COVARIANCES
+		  mulvd(&tmp2, &stn2->leg[dirn2]->v, &e);
+#else
+		  var v;
+		  divvv(&v, &stn2->leg[dirn2]->v, &leg->v);
+		  mulvd(&tmp2, &v, &e);
+#endif
+	       }
                subdd(&POSD(stn2), &POSD(stn3), &stn2->leg[dirn2]->d);
-               adddd(&POSD(stn2), &POSD(stn2), &e);
+               if (!zero) adddd(&POSD(stn2), &POSD(stn2), &tmp2);
             }
             fix(stn2);
             dirn2 = (dirn2 + 2) % 3; /* point back at stn again */
@@ -564,9 +650,10 @@ replace_subnets(void)
             if (fZero(&leg->v))
                e[0] = e[1] = e[2] = 0.0;
             else {
+	       d tmp;
                subdd(&e, &POSD(stn4), &POSD(stn3));
-               subdd(&e, &e, &leg->d);
-               divdv(&e, &e, &leg->v);
+               subdd(&tmp, &e, &leg->d);
+               divdv(&e, &tmp, &leg->v);
             }
 
             if (data_here(ptrRed->join1)) {
@@ -648,10 +735,11 @@ replace_subnets(void)
                if (fZero(&leg2->v))
                   e[0] = e[1] = e[2] = 0.0;
                else {
+		  d tmp;
                   subdd(&e, &POSD(stnZ), &POSD(stn[i]));
                   subdd(&e, &e, &leg2->d);
-                  divdv(&e, &e, &leg2->v);
-                  mulvd(&e, &leg1->v, &e);
+                  divdv(&tmp, &e, &leg2->v);
+                  mulvd(&e, &leg1->v, &tmp);
                }
                adddd(&POSD(stn2), &POSD(stn[i]), &leg1->d);
                adddd(&POSD(stn2), &POSD(stn2), &e);
@@ -662,7 +750,7 @@ replace_subnets(void)
                osfree(stnZ->leg[i]);
                stnZ->leg[i] = NULL;
             }
-/*printf("---%d %f %f %f\n",cBogus,POS(stnZ, 0), POS(stnZ, 1), POS(stnZ, 2));*/
+/*printf("---%f %f %f\n",POS(stnZ, 0), POS(stnZ, 1), POS(stnZ, 2));*/
          } else { /* not fixed case */
             for (i = 0; i < 3; i++) {
                ASSERT2(!fixed(stn[i]), "stn fixed for D*");
@@ -679,12 +767,12 @@ replace_subnets(void)
                osfree(leg2);
                stn[i]->leg[dirn[i]] = leg[i];
                osfree(stnZ->leg[i]);
-               stnZ->leg[i] = NULL;
+               /* stnZ->leg[i] = NULL; */
             }
-/*     printf("---%d not fixed\n", cBogus);*/
+	    remove_stn_from_list(&stnlist, stnZ);
+	    osfree(stnZ->name);
+	    osfree(stnZ);
 	 }
-
-	 cBogus++;
       } else {
          BUG("ptrRed has unknown type");
       }
@@ -692,22 +780,5 @@ replace_subnets(void)
       ptrOld = ptrRed;
       ptrRed = ptrRed->next;
       osfree(ptrOld);
-   }
-
-   if (cBogus) {
-      int cBogus2 = 0;
-      /* this loop could stop when it has found cBogus, but continue for now as
-       * it's a useful sanity check */
-      FOR_EACH_STN(stn, stnlist) {
-	 if (stn->name->up == NULL && stn->name->ident[0] == '\0') {
-	    /* printf(":::%d %f %f %f\n", cBogus2, POS(stn, 0), POS(stn, 1), POS(stn, 2));*/
-	    remove_stn_from_list(&stnlist, stn);
-	    osfree(stn->name);
-	    osfree(stn);
-	    cBogus2++;
-	    /* cBogus--;*/
-	 }
-      }
-      ASSERT2(cBogus == cBogus2, "bogus station count is wrong");
    }
 }
