@@ -221,7 +221,7 @@ if test -n "$AVEN"; then
     fi
   fi
 
-  if test -n $AVEN; then
+  if test -n "$AVEN"; then
     WX_LIBS=`$WXCONFIG --libs`
     AC_SUBST(WX_LIBS)
     WX_CFLAGS=`$WXCONFIG --cflags`
