@@ -64,6 +64,9 @@ void mulvd(d *r, const var *a, const d *b);
 /* r = ca ; r,a variance matrices; c real scaling factor  */
 void mulvc(var *r, const var *a, real c);
 
+/* r = ca ; r,a delta vectors; c real scaling factor  */
+void muldc(d *r, const d *a, real c);
+
 /* r = a + b ; r,a,b delta vectors */
 void adddd(d *r, const d *a, const d *b);
 
