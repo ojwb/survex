@@ -173,26 +173,28 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     wxMenu* viewmenu = new wxMenu;
     viewmenu->Append(menu_VIEW_SHOW_NAMES, "Show Station &Names\tCtrl+N",
-		     "Toggle display of survey station names");
+		     "Toggle display of survey station names", true);
     viewmenu->Append(menu_VIEW_SHOW_CROSSES, "Show &Crosses\tCtrl+X",
-		     "Toggle display of crosses at survey stations");
+		     "Toggle display of crosses at survey stations", true);
     viewmenu->Append(menu_VIEW_SHOW_LEGS, "Show Survey &Legs\tCtrl+L",
-		     "Toggle display of survey legs");
+		     "Toggle display of survey legs", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, "Show &Overlapping Names\tO",
-		     "Display all station names, whether or not they overlap");
+		     "Display all station names, whether or not they overlap", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_COMPASS, "Co&mpass", "Toggle the display of the compass");
-    viewmenu->Append(menu_VIEW_DEPTH_BAR, "&Depth Bar", "Toggle the display of the depth bar");
-    viewmenu->Append(menu_VIEW_SCALE_BAR, "Sc&ale Bar", "Toggle the display of the scale bar");
+    viewmenu->Append(menu_VIEW_COMPASS, "Co&mpass", "Toggle the display of the compass", true);
+    viewmenu->Append(menu_VIEW_DEPTH_BAR, "&Depth Bar", "Toggle the display of the depth bar",
+		     true);
+    viewmenu->Append(menu_VIEW_SCALE_BAR, "Sc&ale Bar", "Toggle the display of the scale bar",
+		     true);
     viewmenu->Append(menu_VIEW_STATUS_BAR, "&Status Bar",
-		     "Toggle the display of the status bar");
+		     "Toggle the display of the status bar", true);
 
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->Append(menu_CTL_REVERSE, "&Reverse Sense\tCtrl+R",
-		    "Reverse the sense of the orientation controls");
+		    "Reverse the sense of the orientation controls", true);
     ctlmenu->Append(menu_CTL_CAVEROT_MID, "Caverot-Style &Middle Button",
-		    "Cause the middle button to toggle between plan and elevation");
+		    "Cause the middle button to toggle between plan and elevation", true);
 
     wxMenu* helpmenu = new wxMenu;
     helpmenu->Append(menu_HELP_ABOUT, "&About Aven...",
@@ -652,7 +654,7 @@ void MainFrm::OnQuit(wxCommandEvent&)
 
 void MainFrm::OnAbout(wxCommandEvent&)
 {
-    wxDialog* dlg = new wxDialog(this, 500, "About Aven");
+    wxDialog* dlg = new wxDialog(this, 500, wxString("About Aven"));
 
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
@@ -719,5 +721,5 @@ void MainFrm::OnToggleStatusbar(wxCommandEvent&)
 
 void MainFrm::OnToggleStatusbarUpdate(wxUpdateUIEvent& event)
 {
-    event.Check(m_StatusBar);
+    event.Check(!m_StatusBar);
 }
