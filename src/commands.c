@@ -959,7 +959,6 @@ cmd_data(void)
       return;
    }
 
-   pcs->Style = fn[style];
    m = mask[style] | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
 
    skipblanks();
@@ -994,6 +993,7 @@ cmd_data(void)
 	 compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
 		       buffer, style_name);
 	 osfree(style_name);
+	 osfree(new_order);
  	 skipline();
 	 return;
       }
@@ -1004,6 +1004,7 @@ cmd_data(void)
 	 compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
 		       buffer, style_name);
 	 osfree(style_name);
+	 osfree(new_order);
  	 skipline();
 	 return;
       }
@@ -1014,6 +1015,7 @@ cmd_data(void)
 	 if (TSTBIT(mUsed, d)) {
 	    compile_error(/*Duplicate reading `%s'*/67, buffer);
 	    osfree(style_name);
+	    osfree(new_order);
 	    skipline();
 	    return;
 	 } else {
@@ -1050,6 +1052,7 @@ cmd_data(void)
 		  compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
 				buffer, style_name);
 		  osfree(style_name);
+		  osfree(new_order);
 		  skipline();
 		  return;
 	       }
@@ -1061,6 +1064,7 @@ cmd_data(void)
 	       /* FIXME: not really the correct error here */
 	       compile_error(/*Duplicate reading `%s'*/67, buffer);
 	       osfree(style_name);
+	       osfree(new_order);
 	       skipline();
 	       return;
 	    }
@@ -1079,7 +1083,9 @@ cmd_data(void)
       new_order[k++] = d;
    } while (d != End);
 
-   /* printf("mUsed = 0x%x\n", mUsed); */
+#if 0
+   printf("mUsed = 0x%x\n", mUsed);
+#endif
 
    if (mUsed & (BIT(Fr) | BIT(To)))
       mUsed |= BIT(Station);
@@ -1098,15 +1104,17 @@ cmd_data(void)
    else if (TSTBIT(mUsed, Count))
       mUsed |= BIT(FrCount) | BIT(ToCount);
 
-   /* printf("mUsed = 0x%x, opt = 0x%x, mask = 0x%x\n", mUsed,
-	  mask_optional[style], mask[style]); */
+#if 0
+   printf("mUsed = 0x%x, opt = 0x%x, mask = 0x%x\n", mUsed,
+	  mask_optional[style], mask[style]);
+#endif
 
    mUsed &= ~BIT(Newline);
 
    if ((mUsed | mask_optional[style]) != mask[style]) {
-      osfree(new_order);
       compile_error(/*Too few readings for data style `%s'*/64, style_name);
       osfree(style_name);
+      osfree(new_order);
       return;
    }
 
@@ -1115,6 +1123,7 @@ cmd_data(void)
        !(pcs->next && pcs->next->ordering == pcs->ordering))
       osfree(pcs->ordering);
 
+   pcs->Style = fn[style];
    pcs->ordering = new_order;
 
    osfree(style_name);      

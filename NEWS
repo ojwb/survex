@@ -3,6 +3,13 @@
 
 * xcaverot: Shift-ed movement keys now work faster as in caverot.
 
+* cavern: fixed *calibrate depth/todepth/fromdepth/dz and *units dz to
+  work in data styles diving and cylpolar.
+
+* cavern: fixed handling of malformed *data commands.
+
+* Minor documentation clarifications.
+
 Changes in 0.99-prerelease6:
 
 * aven: fixed bogus lines caused by coordinate wrap-around; fixed

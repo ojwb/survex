@@ -6,8 +6,13 @@
 ]>
 
 <!--
-interleaved data styles...
+FIXME:
 
+document interleaved data styles...
+
+length and tape are synonymous
+
+in cylpolar/diving dz its own calibration
 
 3dfile title:
 defaults to a list of the leafnames of the &svx; files specified on the
@@ -52,7 +57,7 @@ indicates that station 6 of the entrance survey was used as
 the station 1 of the Adrian's Route survey.
 </Para>
 
-<Para>*FIX is for fixing points in space. E.g.
+<Para>*FIX is for fixing control points - for example:
 </Para>
 
 <programlisting>
@@ -92,8 +97,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-11-09 11:16:40 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.72 2001-11-09 11:16:40 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-11-13 09:32:06 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.73 2001-11-13 09:32:06 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -117,10 +122,9 @@ the station 1 of the Adrian's Route survey.
 <?dbhtml filename="intro.htm">
 
 <Para>&survexsuite; is a multi-platform open-source cave surveying
-package.  It currently runs on &unix;, Microsoft Windows 95/98/NT/2000/ME,
-&msdos;, and Acorn &riscos; machines.  MS Windows 3.1 users can use the
-&msdos; version, or may be able to run the MS Windows version with
-Win32s installed (though we've not tried this).</Para>
+package.  It currently runs on &unix;, Microsoft Windows 95/NT and
+successors, &msdos;, and Acorn &riscos; machines.
+</Para>
 
 <!--
 <Para>Porting to other platforms should be fairly easy.  The graphics
@@ -164,7 +168,7 @@ including the
 the <Acronym/OFD/ survey, the 
 <ulink url="http://milos2.zoo.ox.ac.uk/~oucc/reports/surveys/surveys.htm"
 ><Acronym/OUCC/ Picos expeditions</ulink>, and the 
-<ulink url="http://www.survex.com/~erin/">Hong Mei Gui China
+<ulink url="http://www.survex.com/~erin/">Hong Meigui China
 expedition</ulink>. <!-- FIXME more? --></Para>
 
 <Para>&survexsuite; is still actively being worked on.  Version 1.0 will be
@@ -328,28 +332,27 @@ if you don't have root access on the machine you wish to install
 <Para>
 There's a GUI cave viewer called aven, which needs &wxwindows; to build,
 which in turn needs either Motif or Gtk+.  If installing the required
-libraries is a problem,
-there's a more basic cave viewer called xcaverot which only needs the
-standard X libraries.
+libraries is a problem, there's a more basic cave viewer called xcaverot
+which only needs the standard X libraries.
 </Para>
 
 <!-- FIXME: recommend printps on &UNIX; (or just &linux;)??? -->
 
 </Sect3>
 
-<!-- FIXME: rather a long list now... -->
-<Sect3><Title>Microsoft Windows 95/98/NT/2000/ME</Title>
+<Sect3><Title>Microsoft Windows 95/NT and successors</Title>
 
 <Para>
-Unless you are using MS Windows 3.11 or earlier
-we advise you use the native Win32
-version which comes packaged with an installation wizard.  Just
+This version comes packaged with an installation wizard.  Just
 run the downloaded package and let it lead you through the
-installation process.
+installation process.  If installing on Windows NT or 2000
+we recommend you run the installer as administrator (or as a
+user with administrator rights) so that the file associations
+can be set up.
 </Para>
 
 <Para>
-This version includes a GUI caverot replacement called aven, and a
+This version includes a GUI cave survey viewer called aven, and a
 Survex printer driver (printwin) which uses the Windows printer
 system.
 </Para>
@@ -411,6 +414,9 @@ For those situations where &dpmi; services aren't available, we
 include the free <filename>cwsdpmi.exe</filename>, which will be used
 automatically if it's needed.</Para>
 
+<!-- It's Microsoft Windows 3.1 users can use the
+&msdos; version, or may be able to run the MS Windows version with
+Win32s installed (though we've not tried this). -->
 </Sect3>
 
 <Sect3><Title>&msdos; (Intel 80286 or earlier CPU)</Title>
@@ -424,7 +430,7 @@ need more memory.
 </Para>
 
 <Para>This version is built with <Application/Borland C/.
-One consequence is that the best way to force a program to
+A feature of this is that the best way to force a program to
 terminate is with <keycap/Ctrl-Break/. <keycap/Ctrl-C/ sometimes works,
 but is less reliable.</Para>
 

@@ -736,7 +736,7 @@ data_normal(void)
 
 static int
 process_diving(prefix *fr, prefix *to, real tape, real comp,
-	       real frdepth, real todepth, bool fToFirst)
+	       real frdepth, real todepth, bool fToFirst, bool fDz)
 {
    real dx, dy, dz;
    real vx, vy, vz;
@@ -744,11 +744,12 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    real cxy = 0, cyz = 0, czx = 0;
 #endif
 
+   /* Note: frdepth == todepth test works regardless of fDz */
    if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
       process_equate(fr, to);
       return 1;
    }
-   
+
    if (tape < (real)0.0) {
       compile_warning(/*Negative tape reading*/60);
    }
@@ -762,8 +763,13 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    }
 
    tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
-   /* assuming depths are negative */
-   dz = (todepth - frdepth) * pcs->sc[Q_DEPTH];
+   /* depth gauge readings increase upwards with default calibration */
+   if (fDz) {
+      ASSERT(frdepth == 0.0);
+      dz = (todepth * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
+   } else {
+      dz = (todepth - frdepth) * pcs->units[Q_DEPTH] * pcs->sc[Q_DEPTH];
+   }
 
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
@@ -863,7 +869,7 @@ data_diving(void)
    real frdepth = 0, todepth = 0;
 
    bool fMulti = fFalse;
-   bool fRev;
+   bool fRev, fDz;
 
    reading first_stn = End;
 
@@ -872,6 +878,7 @@ data_diving(void)
    again:
 
    fRev = fFalse;
+   fDz = fFalse;
 
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
@@ -912,6 +919,7 @@ data_diving(void)
 	  todepth = read_numeric(fFalse);
 	  break;
        case Dz:
+	  fDz = fTrue;
 	  frdepth = 0;
 	  todepth = read_numeric(fFalse);
 	  break;
@@ -928,7 +936,7 @@ data_diving(void)
 	       to = t;
 	    }
 	    r = process_diving(fr, to, tape, comp, frdepth, todepth,
-			       (first_stn == To) ^ fRev);
+			       (first_stn == To) ^ fRev, fDz);
 	    if (!r) skipline();
 	 }
 	 fMulti = fTrue;
@@ -954,7 +962,7 @@ data_diving(void)
 	       to = t;
 	    }
 	    r = process_diving(fr, to, tape, comp, frdepth, todepth,
-			       (first_stn == To) ^ fRev);
+			       (first_stn == To) ^ fRev, fDz);
 	    process_eol();
 	    return r;
 	 }
@@ -1081,7 +1089,7 @@ data_cartesian(void)
 
 static int
 process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
-		 real frdepth, real todepth, bool fToFirst)
+		 real frdepth, real todepth, bool fToFirst, bool fDz)
 {
    real dx, dy, dz;
    real vx, vy, vz;
@@ -1089,6 +1097,7 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
    real cxy = 0;
 #endif
 
+   /* Note: frdepth == todepth test works regardless of fDz */
    if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
       process_equate(fr, to);
       return 1;
@@ -1107,8 +1116,13 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
    }
 
    tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
-   /* assuming depths are negative */
-   dz = (todepth - frdepth) * pcs->sc[Q_DEPTH];
+   /* depth gauge readings increase upwards with default calibration */
+   if (fDz) {
+      ASSERT(frdepth == 0.0);
+      dz = (todepth * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
+   } else {
+      dz = (todepth - frdepth) * pcs->units[Q_DEPTH] * pcs->sc[Q_DEPTH];
+   }
 
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
@@ -1178,7 +1192,7 @@ data_cylpolar(void)
    real frdepth = 0, todepth = 0;
 
    bool fMulti = fFalse;
-   bool fRev;
+   bool fRev, fDz;
 
    reading first_stn = End;
 
@@ -1187,6 +1201,7 @@ data_cylpolar(void)
    again:
 
    fRev = fFalse;
+   fDz = fFalse;
 
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
@@ -1227,6 +1242,7 @@ data_cylpolar(void)
 	  todepth = read_numeric(fFalse);
 	  break;
        case Dz:
+	  fDz = fTrue;
 	  frdepth = 0;
 	  todepth = read_numeric(fFalse);
 	  break;
@@ -1243,7 +1259,7 @@ data_cylpolar(void)
 	       to = t;
 	    }
 	    r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
-				 (first_stn == To) ^ fRev);
+				 (first_stn == To) ^ fRev, fDz);
 	    if (!r) skipline();
 	 }
 	 fMulti = fTrue;
@@ -1269,7 +1285,7 @@ data_cylpolar(void)
 	       to = t;
 	    }
 	    r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
-				 (first_stn == To) ^ fRev);
+				 (first_stn == To) ^ fRev, fDz);
 	    process_eol();
 	    return r;
 	 }

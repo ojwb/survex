@@ -34,7 +34,7 @@ export SURVEXHOME
  multinosurv multinormalbad multibug\
  cmd_title cmd_titlebad cmd_dummy cmd_infer\
  cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
- plumb unusedstation exportnakedbegin oldestyle"}}
+ plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -138,6 +138,8 @@ for file in $TESTS ; do
   unusedstation) pos=no ; warn=2 ;;
   oldestyle) pos=no ; warn=1 ;;
   exportnakedbegin) pos=fail ;;
+  bugdz) pos=yes ; warn=0 ;;
+  baddatacylpolar) pos=fail ; error=1 ;;
   *) file='' ;;
   esac
 
