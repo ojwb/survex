@@ -138,8 +138,10 @@ void img_write_item(img *pimg, int code, int flags, const char *s,
 /* rewind a .3d file opened for reading so the data can be read in
  * several passes
  * pimg is a pointer to an img struct returned by img_open()
+ * Returns: non-zero for success, zero for error (check img_error() for
+ *   details)
  */
-void img_rewind(img *pimg);
+int img_rewind(img *pimg);
 
 /* Close a .3d file
  * pimg is a pointer to an img struct returned by img_open() or

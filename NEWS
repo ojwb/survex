@@ -14,7 +14,9 @@ Changes in 1.0.4:
 * aven: tracked down two uninitialised variables which might be the cause
   of the problems loading a .3d file on startup which some people have been
   experiencing on Microsoft Windows.
-  
+
+* img routines: img_rewind() now returns a value indicating success/failure.
+
 * (MacOS X version): aven: aven now builds on MacOS X - we just need to sort
   out packaging now...
 

@@ -411,10 +411,17 @@ img_open_survey(const char *fnm, const char *survey)
    return pimg;
 }
 
-void
+int
 img_rewind(img *pimg)
 {
-   fseek(pimg->fh, pimg->start, SEEK_SET);
+   if (!pimg->fRead) {
+      img_errno = IMG_WRITEERROR;
+      return 0;
+   }
+   if (fseek(pimg->fh, pimg->start, SEEK_SET) != 0) {
+      img_errno = IMG_READERROR;
+      return 0;
+   }
    clearerr(pimg->fh);
    /* [version -1] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
@@ -425,6 +432,7 @@ img_rewind(img *pimg)
 
    /* for version 3 we use label_buf to store the prefix for reuse */
    pimg->label_len = 0;
+   return 1;
 }
 
 img *
