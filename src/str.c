@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "osalloc.h"
+#include "str.h"
 
 /* append a string */
 void
