@@ -90,7 +90,7 @@ main(int argc, char **argv)
    point *fr, *to;
    fr = NULL;
 
-   ReadErrorFile(argv[0]);
+   msg_init(argv[0]);
 
    if (argc < 2 || argc > 3) {
       fprintf(stderr, "Syntax: extend <input .3d file> [<output .3d file>]\n");
@@ -157,16 +157,16 @@ do_stn(point *p, float X)
       if (!l->fDone) { /* otherwise we extend loops multiple times */
          if (l->to == p) {
             lp->next = l->next; /* unlink FIXME ought to free memory too */
-            dX = (float)sqrt(sqrd(l->fr->x - l->to->x) + 
-			     sqrd(l->fr->y - l->to->y));
+            dX = (float)sqrt((sqrd(l->fr->x - l->to->x) + 
+			      sqrd(l->fr->y - l->to->y)));
             img_write_datum(pimg, img_MOVE, NULL, X + dX, 0, l->fr->z);
             img_write_datum(pimg, img_LINE, NULL, X, 0, l->to->z);
             l->fDone = 1;
             do_stn(l->fr, X + dX);
          } else if (l->fr == p) {
             lp->next = l->next; /* unlink FIXME ought to free memory too */
-            dX = (float)sqrt(sqrd(l->fr->x - l->to->x) +
-			     sqrd(l->fr->y - l->to->y));
+            dX = (float)sqrt((sqrd(l->fr->x - l->to->x) +
+			      sqrd(l->fr->y - l->to->y)));
             img_write_datum(pimg, img_MOVE, NULL, X, 0, l->fr->z);
             img_write_datum(pimg, img_LINE, NULL, X + dX, 0, l->to->z);
             l->fDone = 1;
