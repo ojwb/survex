@@ -1085,17 +1085,12 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 
 void GfxCore::DrawScalebar()
 {
-#if 0
+    // Draw the scalebar.
+    
     if (m_Lock == lock_POINT) return;
 
-    // Draw the scalebar.
-
     // Calculate the extent of the survey, in metres across the screen plane.
-#ifdef AVENGL
-    Double x_size = -m_Volume.left * 2.0;
-#else
     int x_size = m_XSize;
-#endif
 
     Double across_screen = Double(x_size / m_Params.scale);
     Double multiplier = 1.0;
@@ -1121,51 +1116,21 @@ void GfxCore::DrawScalebar()
     if (!m_Metric) size_snap *= multiplier;
 
     // Actual size of the thing in pixels:
-#ifdef AVENGL
-    Double size = size_snap * m_Params.scale;
-#else
     int size = int(size_snap * m_Params.scale);
-#endif
-    m_ScaleBar.width = (int) size; //FIXME
+    m_ScaleBar.width = size;
 
     // Draw it...
-    //--FIXME: improve this
-#ifdef AVENGL
-    Double end_x = m_Volume.left + m_ScaleBar.offset_x;
-    Double height = (-m_Volume.bottom * 2.0) / 40.0;
-    Double gl_z = m_Volume.nearface + 1.0; //-- is this OK??
-    Double end_y = m_Volume.bottom + m_ScaleBar.offset_y - height;
-    Double interval = size / 10.0;
-#else
-    int end_x = m_ScaleBar.offset_x;
+    int end_x = -m_XSize/2 + m_ScaleBar.offset_x;
     int height = SCALE_BAR_HEIGHT;
-    int end_y = m_YSize - m_ScaleBar.offset_y - height;
+    int end_y = -m_YSize/2 + m_ScaleBar.offset_y + height;
     int interval = size / 10;
-#endif
 
     bool solid = true;
-#ifdef AVENGL
-    glLoadIdentity();
-    glBegin(GL_QUADS);
-#endif
     for (int ix = 0; ix < 10; ix++) {
-#ifdef AVENGL
-        Double x = end_x + ix * ((Double) size / 10.0);
-#else
         int x = end_x + int(ix * ((Double) size / 10.0));
-#endif
+        GLAPen& pen = solid ? m_Pens[col_GREY] : m_Pens[col_WHITE];
 
-        SetColour(solid ? col_GREY : col_WHITE);
-        SetColour(solid ? col_GREY : col_WHITE, true);
-
-#ifdef AVENGL
-        glVertex3d(x, end_y, gl_z);
-        glVertex3d(x + interval, end_y, gl_z);
-        glVertex3d(x + interval, end_y + height, gl_z);
-        glVertex3d(x, end_y + height, gl_z);
-#else
-        m_DrawDC.DrawRectangle(x, end_y, interval + 2, height);
-#endif
+        DrawRectangle(pen, pen, x, end_y, interval + 2, height);
 
         solid = !solid;
     }
@@ -1173,19 +1138,14 @@ void GfxCore::DrawScalebar()
     // Add labels.
     wxString str = FormatLength(size_snap);
 
-#ifdef AVENGL
-    glEnd();
-#else
-    m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
-    m_DrawDC.SetTextForeground(TEXT_COLOUR);
-    m_DrawDC.DrawText("0", end_x, end_y - FONT_SIZE - 4);
+    SetColour(m_Pens[TEXT_COLOUR]);
+    DrawIndicatorText(end_x, end_y - FONT_SIZE - 4, "0");
 
-    int text_width, text_height;
-    m_DrawDC.GetTextExtent(str, &text_width, &text_height);
-    m_DrawDC.DrawText(str, end_x + size - text_width, end_y - FONT_SIZE - 4);
-#endif
-#endif
+    glaCoord text_width, text_height;
+    GetTextExtent(str, &text_width, &text_height);
+    DrawIndicatorText(end_x + size - text_width, end_y - FONT_SIZE - 4, str);
 }
+
 void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 {
 #if 0
@@ -2094,9 +2054,6 @@ void GfxCore::GenerateDisplayList()
         // Draw station names.
         if (m_Names) DrawNames();
 
-        // Draw scalebar.
-        if (m_Scalebar) DrawScalebar();
-
 #endif
     }
     
@@ -2113,6 +2070,11 @@ void GfxCore::GenerateIndicatorDisplayList()
     // Draw depthbar.
     if (m_Depthbar) {
         DrawDepthbar();
+    }
+
+    // Draw scalebar.
+    if (m_Scalebar) {
+        DrawScalebar();
     }
 }
 
