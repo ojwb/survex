@@ -24,7 +24,7 @@
 #include "network.h"
 #include "listpos.h"
 #include "out.h"
-#include "s.h"
+#include "str.h"
 
 /* For funcs which want to be immune from messing around with different
  * calling conventions */
@@ -55,6 +55,9 @@ int survey_title_len;
 
 bool fExplicitTitle = fFalse;
 
+char *fnm_output_base = NULL;
+int fnm_output_base_is_dir = 0;
+
 static void do_stats(void);
 
 static const struct option long_opts[] = {
@@ -66,19 +69,21 @@ static const struct option long_opts[] = {
    {"percentage", no_argument, 0, 'p'},
    {"no-percentage", no_argument, (int*)&fPercent, 0},
 #endif
+   {"output", required_argument, 0, 'o'},
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "pao:"
+#define short_opts "pao:z:"
 
 /* TRANSLATE: FIXME extract help messages to message file */
 static struct help_msg help[] = {
 /*				<-- */
    {HLP_ENCODELONG(0),          "display percentage progress"},
    {'a',                        "output ascii variant of .3d file"},
- /*{'o',                        "set optimizations for network reduction"},*/
+   {HLP_ENCODELONG(2),          "set location for output files"},
+ /*{'z',                        "set optimizations for network reduction"},*/
    {0, 0}
 };
 
@@ -120,7 +125,6 @@ main(int argc, char **argv)
    }
 
    while (1) {
-      extern long optimize; /* defined in network.c */
       int opt = my_getopt_long(argc, argv, short_opts, long_opts, NULL, help, 1);
       if (opt == EOF) break;
       switch (opt) {
@@ -128,19 +132,31 @@ main(int argc, char **argv)
 	 fAscii = fTrue;
 	 break;
        case 'p':
-#ifdef COMPAT
-       case 'P':
-#endif
 #ifndef NO_PERCENTAGE
 	 fPercent = 1;
 #endif
 	 break;
-       case 'o': {/* Optimizations level used to solve network */
-	 static int first_opt_o = 0;
+       case 'o': {
+	 /* can be a directory (in which case use basename of leaf input)
+	  * or a file (in which case just trim the extension off) */
+	 if (fDirectory(optarg)) {
+	    /* this is a little tricky - we need to note the path here,
+	     * and then add the leaf later on (in datain.c) */
+	    fnm_output_base = base_from_fnm(optarg);
+	    fnm_output_base_is_dir = 1;
+	 } else {
+	    osfree(fnm_output_base); /* in case of multiple -o options */
+	    fnm_output_base = base_from_fnm(optarg);
+	 }
+	 break;
+       }
+       case 'z': {
+	 /* Control which network optimisations are used (development tool) */
+	 static int first_opt_z = 1;
 	 int ch;
-	 if (first_opt_o) {
+	 if (first_opt_z) {
 	    optimize = 0;
-	    first_opt_o = 1;
+	    first_opt_z = 0;
 	 }
 	 /* Lollipops, Parallel legs, Iterate mx, Delta*, Split stnlist */
 	 while ((ch = *optarg++)) if (islower(ch)) optimize |= BITA(ch);
@@ -159,7 +175,7 @@ main(int argc, char **argv)
 
       if (!fExplicitTitle) {
 	 char *lf;
-	 lf = LfFromFnm(fnm);
+	 lf = baseleaf_from_fnm(fnm);
 	 if (survey_title) s_catchar(&survey_title, &survey_title_len, ' ');
 	 s_cat(&survey_title, &survey_title_len, lf);
 	 osfree(lf);
@@ -226,15 +242,11 @@ do_range(FILE *fh, int d, int msg1, int msg2, int msg3)
 static void
 do_stats(void)
 {
-   char *fnm;
    FILE *fh;
    long cLoops = cComponents + cLegs - cStns;
    char buf[1024];
 
-   fnm = AddExt(fnm_output_base, EXT_SVX_STAT);
-
-   fh = safe_fopen(fnm, "w");
-   osfree(fnm);
+   fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
 
    out_puts("");
 
