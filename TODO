@@ -269,8 +269,3 @@ From: Olly
 
 check return values from fgets(), fread(), etc in img.c and elsewhere.
 
-Date: Tue, 26 Jun 2001
-From: Olly
-
-Add --pause-on-exit switch to cavern etc for use by the windows bindings?
-
