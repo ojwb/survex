@@ -144,7 +144,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 	if (*gl_extensions) {
 	    info += gl_extensions;
 	    info += '\n';
-	}  
+	}
 	GLint red, green, blue;
 	glGetIntegerv(GL_RED_BITS, &red);
 	glGetIntegerv(GL_GREEN_BITS, &green);

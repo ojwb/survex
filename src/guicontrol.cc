@@ -77,7 +77,7 @@ void GUIControl::HandleTranslate(wxPoint point)
     // Handle a mouse movement during translation mode.
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
- 
+
     if (m_ReverseControls) {
 	dx = -dx;
 	dy = -dy;
@@ -172,8 +172,7 @@ void GUIControl::RestoreCursor()
 {
     if (m_View->ShowingMeasuringLine()) {
         HandCursor();
-    }
-    else {
+    } else {
         m_View->SetCursor(wxNullCursor);
     }
 }
@@ -193,15 +192,13 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     if (!event.LeftIsDown() && !event.MiddleIsDown() && !event.RightIsDown()) {
 	if (m_View->CheckHitTestGrid(point, false)) {
             HandCursor();
-        }
-        else {            
+        } else {
             if (m_View->ShowingScaleBar() &&
                 m_View->PointWithinScaleBar(point)) {
 
                 const wxCursor CURSOR(wxCURSOR_SIZEWE);
                 m_View->SetCursor(CURSOR);
-            }
-            else {
+            } else {
                 m_View->SetCursor(wxNullCursor);
             }
         }
@@ -217,12 +214,10 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 		if (m_View->ShowingCompass() &&
                     m_View->PointWithinCompass(point)) {
 		    m_LastDrag = drag_COMPASS;
-		}
-		else if (m_View->ShowingClino() &&
+		} else if (m_View->ShowingClino() &&
                          m_View->PointWithinClino(point)) {
 		    m_LastDrag = drag_ELEV;
-		}
-		else if (m_View->ShowingScaleBar() &&
+		} else if (m_View->ShowingScaleBar() &&
                          m_View->PointWithinScaleBar(point)) {
 		    m_LastDrag = drag_SCALE;
 		}
@@ -231,35 +226,28 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 	    if (m_LastDrag == drag_COMPASS) {
 		// drag in heading indicator
 		m_View->SetCompassFromPoint(point);
-	    }
-	    else if (m_LastDrag == drag_ELEV) {
+	    } else if (m_LastDrag == drag_ELEV) {
 		// drag in clinometer
 		m_View->SetClinoFromPoint(point);
-	    }
-	    else if (m_LastDrag == drag_SCALE) {
+	    } else if (m_LastDrag == drag_SCALE) {
 		// FIXME: check why there was a check here for x being inside
 		// the window
 	        m_View->SetScaleBarFromOffset(point.x - m_DragLast.x);
-	    }
-	    else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
+	    } else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
 		m_LastDrag = drag_MAIN;
                 if (event.ShiftDown()) {
 		    HandleScaleRotate(point);
-                }
-                else {
+                } else {
 		    HandleTiltRotate(point);
                 }
 	    }
-	}
-	else if (m_DraggingMiddle) {
+	} else if (m_DraggingMiddle) {
             if (event.ShiftDown()) {
 	        HandleTilt(point);
-            }
-            else {
+            } else {
 		HandleScale(point);
             }
-	}
-	else if (m_DraggingRight) {
+	} else if (m_DraggingRight) {
 	    if ((m_LastDrag == drag_NONE && m_View->PointWithinScaleBar(point)) || m_LastDrag == drag_SCALE) {
 	    /* FIXME
 		  if (point.x < 0) point.x = 0;
@@ -272,8 +260,7 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 		  m_ScaleBar.offset_x = point.x - x_inside_bar;
 		  m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
 		  m_View->ForceRefresh(); */
-	    }
-	    else {
+	    } else {
 		m_LastDrag = drag_MAIN;
 		HandleTranslate(point);
 	    }
@@ -287,13 +274,13 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 {
     if (m_View->HasData() && m_View->GetLock() != lock_POINT) {
 	m_DraggingLeft = true;
-	
+
 	/* FIXME
 	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
 	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y; */
 
 	m_DragStart = m_DragRealStart = wxPoint(event.GetX(), event.GetY());
-        
+
 //        const wxCursor CURSOR(wxCURSOR_MAGNIFIER);
 //        m_View->SetCursor(CURSOR);
 	m_View->CaptureMouse();
@@ -315,7 +302,7 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 	m_DraggingLeft = false;
 
         m_View->DragFinished();
-        
+
         RestoreCursor();
     }
 }
@@ -347,7 +334,7 @@ void GUIControl::OnRButtonDown(wxMouseEvent& event)
 {
     if (m_View->HasData()) {
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
-	
+
 /* FIXME	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
 	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y; */
 
@@ -365,9 +352,9 @@ void GUIControl::OnRButtonUp(wxMouseEvent&)
     m_View->ReleaseMouse();
 
     m_DraggingRight = false;
-    
+
     RestoreCursor();
-    
+
     m_View->DragFinished();
 }
 
@@ -643,7 +630,7 @@ void GUIControl::OnPlanUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayDown(bool accel)
 {
-    if (m_View->GetPerspective()) 
+    if (m_View->GetPerspective())
 	m_View->MoveViewer(0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT, 0);
     else
 	m_View->TranslateCave(0, accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT);
@@ -656,7 +643,7 @@ void GUIControl::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayLeft(bool accel)
 {
-    if (m_View->GetPerspective()) 
+    if (m_View->GetPerspective())
 	m_View->MoveViewer(0, 0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT);
     else
 	m_View->TranslateCave(accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT, 0);
@@ -669,7 +656,7 @@ void GUIControl::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayRight(bool accel)
 {
-    if (m_View->GetPerspective()) 
+    if (m_View->GetPerspective())
 	m_View->MoveViewer(0, 0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT);
     else
 	m_View->TranslateCave(accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT, 0);
@@ -682,7 +669,7 @@ void GUIControl::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayUp(bool accel)
 {
-    if (m_View->GetPerspective()) 
+    if (m_View->GetPerspective())
 	m_View->MoveViewer(0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT, 0);
     else
 	m_View->TranslateCave(0, accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT);
@@ -900,7 +887,7 @@ void GUIControl::OnToggleMetricUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnToggleDegrees()
 {
     m_View->ToggleDegrees();
-    
+
     wxConfigBase::Get()->Write("degrees", m_View->GetDegrees());
     wxConfigBase::Get()->Flush();
 }
@@ -1059,7 +1046,7 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	default:
 	    e.Skip();
     }
- 
+
     //if (refresh) m_View->ForceRefresh();
 }
 

@@ -66,7 +66,7 @@ bool Aven::OnInit()
 	--argc;
 	memmove(argv + 1, argv + 2, argc * sizeof(char *));
     }
-#endif 
+#endif
     msg_init(argv);
 
     const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
@@ -179,7 +179,7 @@ const wxBitmap Aven::LoadPreferencesIcon(const wxString& icon) const
 {
     // Load an icon for use in the preferences dialog.
     //FIXME share code with LoadIcon...
-    
+
     const wxString path = wxString(msg_cfgpth()) +
                           wxCONFIG_PATH_SEPARATOR + wxString("icons") +
                           wxCONFIG_PATH_SEPARATOR +
@@ -191,7 +191,7 @@ const wxBitmap Aven::LoadPreferencesIcon(const wxString& icon) const
 const wxBitmap Aven::LoadIcon(const wxString& icon) const
 {
     // Load an icon.
-    
+
     const wxString path = wxString(msg_cfgpth()) +
                           wxCONFIG_PATH_SEPARATOR + wxString("icons") +
                           wxCONFIG_PATH_SEPARATOR +

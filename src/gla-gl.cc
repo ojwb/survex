@@ -69,7 +69,7 @@ using namespace std;
 
 //
 //  GLAPen
-//  
+//
 
 GLAPen::GLAPen()
 {
@@ -132,7 +132,7 @@ const ColourTriple COLOURS[] = {
 
 //
 //  GLACanvas
-//  
+//
 
 #ifndef USE_FNT
 void* const GLACanvas::m_Font = GLUT_BITMAP_HELVETICA_10;
@@ -178,7 +178,7 @@ void GLACanvas::FirstShow()
     if (!m_Quadric) {
 	abort(); // FIXME need to cope somehow
     }
- 
+
     glShadeModel(GL_FLAT);
     CHECK_GL_ERROR("FirstShow", "glShadeModel");
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -189,7 +189,7 @@ void GLACanvas::FirstShow()
     CHECK_GL_ERROR("FirstShow", "glPointSize");
     //glAlphaFunc(GL_GREATER, 0.5f);
     //CHECK_GL_ERROR("FirstShow", "glAlphaFunc");
- 
+
     // Grey fog effect.
     GLfloat fogcolour[4] = { 0.5, 0.5, 0.5, 1.0 };
     glFogfv(GL_FOG_COLOR, fogcolour);
@@ -251,7 +251,7 @@ void GLACanvas::AddTranslation(Double x, Double y, Double z)
 void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
 {
     // Translate the data by a given amount, specified in screen coordinates.
-    
+
     // Find out how far the translation takes us in data coordinates.
     SetDataTransform();
 
@@ -279,7 +279,7 @@ void GLACanvas::SetVolumeDiameter(glaCoord diameter)
 void GLACanvas::StartDrawing()
 {
     // Prepare for a redraw operation.
- 
+
     SetCurrent();
     glDepthMask(true);
 }
@@ -289,10 +289,10 @@ void GLACanvas::EnableSmoothPolygons()
     // Prepare for drawing smoothly-shaded polygons.
     // Only use this when required (in particular lines in lists may not be
     // coloured correctly when this is enabled).
-    
+
     glShadeModel(GL_SMOOTH);
     //glEnable(GL_COLOR_MATERIAL);
- 
+
     //GLfloat diffuseMaterial[] = { 0.3, 0.3, 0.3, 1.0 };
     //GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0 };
     //wxSize size = GetSize();
@@ -303,7 +303,7 @@ void GLACanvas::EnableSmoothPolygons()
                                  m_VolumeDiameter * 0.5 + 5.0,
                                  0.0 };
 #endif
-    
+
   //  glMaterialfv(GL_FRONT, GL_AMBIENT, diffuseMaterial);
 //    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 //    glMaterialf(GL_FRONT, GL_SHININESS, 10.0);
@@ -417,7 +417,7 @@ void GLACanvas::SetDataTransform()
 	CHECK_GL_ERROR("SetDataTransform", "glTranslated");
 	glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
     }
-    
+
     glEnable(GL_DEPTH_TEST);
     CHECK_GL_ERROR("SetDataTransform", "glEnable GL_DEPTH_TEST");
 
@@ -485,7 +485,7 @@ void GLACanvas::SetIndicatorTransform()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glAlphaFunc(GL_GREATER, 0.5f);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 	 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 }
@@ -493,7 +493,7 @@ void GLACanvas::SetIndicatorTransform()
 void GLACanvas::FinishDrawing()
 {
     // Complete a redraw operation.
-    
+
 //    glFlush();
 //    CHECK_GL_ERROR("FinishDrawing", "glFlush");
     SwapBuffers();
@@ -508,7 +508,7 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
 //    printf("new list: %d... ", l);
     CHECK_GL_ERROR("CreateList", "glGenLists");
     assert(l != 0);
-    
+
     glNewList(l, GL_COMPILE);
     CHECK_GL_ERROR("CreateList", "glNewList");
 #ifdef GLA_DEBUG
@@ -537,7 +537,7 @@ void GLACanvas::DeleteList(glaList l)
 void GLACanvas::SetBackgroundColour(float red, float green, float blue)
 {
     // Set the background colour of the canvas.
-    
+
     glClearColor(red, green, blue, 1.0);
     CHECK_GL_ERROR("SetBackgroundColour", "glClearColor");
 }
@@ -625,14 +625,14 @@ void GLACanvas::GetTextExtent(const wxString& str, int * x_ext, int * y_ext)
 void GLACanvas::BeginQuadrilaterals()
 {
     // Commence drawing of quadrilaterals.
-    
+
     glBegin(GL_QUADS);
 }
 
 void GLACanvas::EndQuadrilaterals()
 {
     // Finish drawing of quadrilaterals.
-    
+
     glEnd();
 }
 
@@ -688,7 +688,7 @@ void GLACanvas::BeginPolyline()
 void GLACanvas::EndPolyline()
 {
     // Finish drawing of a polyline.
-    
+
     glEnd();
 }
 
@@ -702,7 +702,7 @@ void GLACanvas::BeginPolygon()
 void GLACanvas::EndPolygon()
 {
     // Finish drawing of a polygon.
-    
+
     glEnd();
 }
 
@@ -749,7 +749,7 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 void GLACanvas::DrawRing(glaCoord x, glaCoord y)
 {
     // Draw an unfilled circle
-    const Double radius = 4; 
+    const Double radius = 4;
     assert(m_Quadric);
     glTranslated(x, y, 0.0);
     CHECK_GL_ERROR("DrawRing", "glTranslated");
@@ -810,10 +810,10 @@ void GLACanvas::DrawCircle(gla_colour edge, gla_colour fill,
 			   glaCoord cx, glaCoord cy, glaCoord radius)
 {
     // Draw a filled circle with an edge.
-    
+
     cx += radius;
     cy -= radius;
-    
+
     SetColour(fill);
     glTranslated(cx, cy, 0.0);
     CHECK_GL_ERROR("DrawCircle", "glTranslated");
@@ -834,7 +834,7 @@ void GLACanvas::DrawSemicircle(gla_colour edge, gla_colour fill,
     // Draw a filled semicircle with an edge.
     // The semicircle extends from "start" deg to "start"+180 deg (increasing
     // clockwise, 0 deg upwards).
-    
+
     cx += radius;
     cy -= radius;
 
@@ -854,7 +854,7 @@ void GLACanvas::DrawSemicircle(gla_colour edge, gla_colour fill,
 void GLACanvas::DrawTriangle(gla_colour edge, gla_colour fill, GLAPoint* points)
 {
     // Draw a filled triangle with an edge.
-    
+
     SetColour(fill);
     BeginTriangles();
     PlaceIndicatorVertex(points[0].GetX(), points[0].GetY());
@@ -873,7 +873,7 @@ void GLACanvas::DrawTriangle(gla_colour edge, gla_colour fill, GLAPoint* points)
 void GLACanvas::DrawList(glaList l)
 {
     // Perform the operations specified by a display list.
-    
+
     glCallList(l);
     CHECK_GL_ERROR("DrawList", "glCallList");
 }
@@ -898,7 +898,7 @@ void GLACanvas::Transform(Double x, Double y, Double z,
                           Double* x_out, Double* y_out, Double* z_out)
 {
     // Convert from data coordinates to screen coordinates.
-    
+
     // Perform the projection.
     gluProject(x, y, z, modelview_matrix, projection_matrix, viewport,
                x_out, y_out, z_out);
@@ -909,7 +909,7 @@ void GLACanvas::ReverseTransform(Double x, Double y,
                                  Double* x_out, Double* y_out, Double* z_out)
 {
     // Convert from screen coordinates to data coordinates.
-    
+
     // Perform the projection.
     gluUnProject(x, y, 0.0, modelview_matrix, projection_matrix, viewport,
                  x_out, y_out, z_out);

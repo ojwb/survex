@@ -57,7 +57,7 @@ PanelDlg::~PanelDlg()
 void PanelDlg::PositionPage()
 {
     // Position the current page on the dialog.
-    
+
     wxSize button_size = wxButton::GetDefaultSize();
 
     m_CurrentPage->SetSizeHints(-1, -1,
@@ -71,7 +71,7 @@ void PanelDlg::PositionPage()
 void PanelDlg::OnPageChange(wxCommandEvent& event)
 {
     // The user has requested a change of page.
-    
+
     // Identify the new page.
     int page = event.GetId() - ID_PAGE_BASE_IMG;
     assert(page >= 0 && page < m_Pages.size());
@@ -81,7 +81,7 @@ void PanelDlg::OnPageChange(wxCommandEvent& event)
     assert(page_ptr);
 
     if (page_ptr == m_CurrentPage) return;
-    
+
     // Remove the current page from display.
     m_CurrentPage->Hide();
 
@@ -104,7 +104,7 @@ void PanelDlg::SetPages(list<PanelDlgPage*> pages)
 
     // Get the background colour and calculate a "darker" version of it.
     wxColour col = page_panel->GetBackgroundColour();
-    
+
     unsigned char r = (unsigned char)(double(col.Red()) * 0.5);
     unsigned char g = (unsigned char)(double(col.Green()) * 0.5);
     unsigned char b = (unsigned char)(double(col.Blue()) * 0.5);
@@ -148,7 +148,7 @@ void PanelDlg::SetPages(list<PanelDlgPage*> pages)
     page_panel->SetSize(PAGE_PANEL_WIDTH, height);
     scrolled_win->SetScrollbars(0, height / page_num, 0, page_num);
     scrolled_win->SetSize(EDGE_MARGIN, EDGE_MARGIN, SCROLLED_WIN_WIDTH, DIALOG_HEIGHT - EDGE_MARGIN_V*2);
- 
+
     // Darken the background colour for the page selector panel.
     page_panel->SetBackgroundColour(col);
 
