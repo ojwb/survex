@@ -33,6 +33,7 @@
 1995.10.10 __GO32__ -> __DJGPP__ ; removed path from grx20.h include
 1996.01.20 added JLIB support
 1997.01.30 kludged in colour for JLIB
+1998.03.22 autoconf-ed
 */
 
 #if (OS==MSDOS)
@@ -100,20 +101,7 @@ typedef long coord;  /* data type used after data is read in */
 # define DRAW  (coord)2
 # define STOP  (coord)0
 
-#elif defined(NO_SETJMP)
-
-/* for speed, store function ptrs in table */
-
-# ifdef MSC
-#  define MOVE  (coord)(_moveto)
-#  define DRAW  (coord)(_lineto)
-# else
-#  define MOVE  (coord)(moveto)
-#  define DRAW  (coord)(lineto)
-# endif
-# define STOP  (coord)NULL
-
-#else /* !NO_SETJMP && !NO_FUNC_PTRS */
+#elif defined(HAVE_SETJMP)
 
 /* for speed, store function ptrs in table */
 
@@ -129,7 +117,20 @@ typedef long coord;  /* data type used after data is read in */
 /* prototype so STOP macro will work */
 extern void stop( int X, int Y );
 
-#endif /* ?NO_SETJMP */
+#else
+
+/* for speed, store function ptrs in table */
+
+# ifdef MSC
+#  define MOVE  (coord)(_moveto)
+#  define DRAW  (coord)(_lineto)
+# else
+#  define MOVE  (coord)(moveto)
+#  define DRAW  (coord)(lineto)
+# endif
+# define STOP  (coord)NULL
+
+#endif
 
 #ifdef __DJGPP__
 #ifdef JLIB

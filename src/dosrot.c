@@ -48,6 +48,7 @@
 1996.04.04 fixed 3 warnings
 1997.01.30 kludged in colour for JLIB
 1997.02.01 fettled INIT, COND and DO_PLOT to improve code clarity
+1998.03.22 autoconf-ed
 */
 
 #include "caverot.h"
@@ -81,14 +82,7 @@ static int last_x=0,last_y=0;
 
 # define DO_PLOT(p,X,Y) if ((p)->Option==DRAW) _lineto((X),(Y)); else _moveto((X),(Y))
 
-#elif defined(NO_SETJMP)
-
-/* uses function pointers, but not setjmp */
-# define INIT() NOP /* do nothing */
-# define COND(p) ((p)->Option!=STOP)
-# define DO_PLOT(p,X,Y) (((void(*)(int,int))((p)->Option))( (X), (Y) ))
-
-#else
+#elif defined(HAVE_SETJMP)
 
 /* uses function pointers and setjmp (fastest for Borland C) */
 # include <setjmp.h>
@@ -103,6 +97,13 @@ extern void far stop( int X, int Y ) {
    X=X; Y=Y; /* suppress compiler warnings */
    longjmp(jbEnd,1); /* return to setjmp() and return 1 & so exit function */
 }
+
+#else
+
+/* uses function pointers, but not setjmp */
+# define INIT() NOP /* do nothing */
+# define COND(p) ((p)->Option!=STOP)
+# define DO_PLOT(p,X,Y) (((void(*)(int,int))((p)->Option))( (X), (Y) ))
 
 #endif
 

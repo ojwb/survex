@@ -19,18 +19,19 @@
 1997.01.23 fixed to work without new datain.c
 1997.08.28 NEW_STYLE
 1998.03.21 fixed up to compile cleanly on Linux
+1998.03.22 autoconf-ed
 */
 
-#ifdef NO_SETJMP
-# define errorjmp( EN,A,JB ) fatal((EN),showline,NULL,(A))
-#else
+#ifdef HAVE_SETJMP
 # include <setjmp.h>
 # define errorjmp( EN,A,JB ) BLK( error((EN),showandskipline,NULL,(A)); longjmp((JB),1); )
+#else
+# define errorjmp( EN,A,JB ) fatal((EN),showline,NULL,(A))
 #endif
 
 typedef struct {
   FILE *fh;
-#ifndef NO_SETJMP
+#ifdef HAVE_SETJMP
   jmp_buf jbSkipLine;
 #endif
 } parse;
@@ -44,7 +45,9 @@ extern uchar buffer[];
 
 extern void skipblanks(void);
 
-extern void data_file( sz pth, sz fnm ); /* reads complete data file */
+/* reads complete data file */
+extern void data_file( const char *pth, const char *fnm );
+
 extern void UsingDataFile( sz fnmUsed );
 extern void skipline( void );
 extern void showline( const char *dummy, int n );
