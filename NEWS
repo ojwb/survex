@@ -4,6 +4,11 @@
   enabled; fixed obscure crash in search highlighting; added "rubber band"
   between measured stations.
 
+* (MS Windows version): don't include plain text versions of docs; fixed
+  default action for 3d files to be "Open".
+
+* (MS DOS version): include text docs.
+
 * cavern: more intelligent and less verbose reporting of errors in nested
   included files (inspired by GCC 3.0).
 
@@ -23,8 +28,8 @@ Changes in 0.99-prerelease5:
   don't highlight hidden stations; accelerator problems fixed; find now
   works.
 
-* (MS Windows) aven: fixed crash on File/Open when a file was already
-  loaded.
+* (MS Windows version) aven: fixed crash on File/Open when a file was
+  already loaded.
 
 * cavern: After *solve, reused points are no longer written to the .3d
   file a second time.

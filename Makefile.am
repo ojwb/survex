@@ -137,31 +137,22 @@ djgpp_zip : dostxt
 	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
 	ln -s ../README dostxt_tmp/README.txt
 	: # -l means convert LF to CR+LF
-	zip -j -l ../$(djgpp_zip_name) dostxt_tmp/*.txt
+	: # FIXME: really include dostxt too on DOS?
+	zip -j -l $(djgpp_zip_name) dostxt_tmp/*.txt $(extra_txt)
 	cd doc;zip -l ../$(djgpp_zip_name) manual/*.htm @HTMLFILES@
 	cd doc;zip ../$(djgpp_zip_name) manual/*.png
-	zip -j -l $(djgpp_zip_name) $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
 mingw : all mingw_iss
 
-mingwexes :
-	test -d mingw_exes || mkdir mingw_exes
-	for f in $(base_progs) aven printwin ; do cp src/$$f.exe mingw_exes ; done
-
-mingw_zip_name = survex-win32-@VERSION@.zip
-
-mingw_zip : dostxt mingwexes
-	$(RM) $(mingw_zip_name)
-	zip -j $(mingw_zip_name) mingw_exes/*.exe $(extra_bin)
-	: # -l means convert LF to CR+LF
-	zip -j -l $(mingw_zip_name) dostxt_tmp/*.txt $(extra_txt) survex.iss
-	$(RM) -rf dostxt_tmp
-
-mingw_iss : dostxt mingwexes
-	$(RM) -rf iss_tmp
+mingw_iss :
+	$(RM) -rf iss_tmp mingw_exes
 	mkdir iss_tmp
-	cp dostxt_tmp/*.txt $(extra_txt) survex.iss iss_tmp
+	mkdir mingw_exes
+	for f in $(base_progs) aven printwin ; do cp src/$$f.exe mingw_exes ; done
+	cp $(extra_txt) survex.iss iss_tmp
+	: # so the can display the license
+	cp COPYING iss_tmp/COPYING.txt
 	cd doc;cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
@@ -172,12 +163,11 @@ mingw_iss : dostxt mingwexes
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
-	$(RM) -rf dostxt_tmp
 	-killall Xvfb
 	(Xvfb :9 -screen 0 64x32x8 &)
 	DISPLAY=:9 wine "c:/Program Files/Inno Setup 2/ISCC.exe" iss_tmp/survex.iss
 	mv iss_tmp/Output/*.exe .
-	$(RM) -rf iss_tmp	
+	$(RM) -rf iss_tmp mingw_exes
 	killall Xvfb
 
 bc_zip_name = survex-dos286-@VERSION@.zip
@@ -195,6 +185,7 @@ borlandc_zip : dostxt
 	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
 	ln -s ../README dostxt_tmp/README.txt
 	: # -l means convert LF to CR+LF
+	: # FIXME: really include dostxt too on DOS?
 	zip -j -l $(bc_zip_name) dostxt_tmp/*.txt $(extra_txt)
 	cd doc;zip -l ../$(bc_zip_name) manual/*.htm @HTMLFILES@
 	cd doc;zip ../$(bc_zip_name) manual/*.png
