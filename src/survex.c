@@ -1,6 +1,6 @@
 /* > survex.c
  * SURVEX Cave surveying software: main() and related functions
- * Copyright (C) 1991-1997 Olly Betts
+ * Copyright (C) 1991-1998 Olly Betts
  */
 
 /*
@@ -197,64 +197,54 @@
 /* For funcs which want to be immune from messing around with different
  * calling conventions */
 #ifndef CDECL
-#define CDECL
+# define CDECL
 #endif
 
 /* Globals */
-node     *stnlist = NULL;
+node *stnlist = NULL;
 settings *pcs;
-prefix   *root;
-sz       pthOutput;
-long     cLegs, cStns;
-long     cComponents;
-sz       fnmInput;
-FILE     *fhErrStat = NULL;
-img      *pimgOut = NULL;
+prefix *root;
+char *pthOutput;
+long cLegs, cStns;
+long cComponents;
+char *fnmInput;
+FILE *fhErrStat = NULL;
+img *pimgOut = NULL;
 #ifndef NO_PERCENTAGE
-bool     fPercent = fTrue;
+bool fPercent = fTrue;
 #endif
-char     szOut[256];
-real     totadj, total, totplan, totvert;
-real     min[3], max[3];
-prefix   *pfxHi[3], *pfxLo[3];
+char out_buf[256];
+real totadj, total, totplan, totvert;
+real min[3], max[3];
+prefix *pfxHi[3], *pfxLo[3];
 
-static clock_t  tmCPUStart;
-static time_t   tmUserStart;
-static double   tmCPU, tmUser;
+static clock_t tmCPUStart;
+static time_t tmUserStart;
+static double tmCPU, tmUser;
 
 static void display_banner(void);
-static void do_stats( void );
+static void do_stats(void);
 
-/* Send malloc heap info to display program */
-#ifdef RISCOS_MALLOC_DISPLAY
-# include "HeapGraph.HeapGraph.h"
-#endif
-
-#ifdef RISCOS_LEAKFIND
-# include "Mnemosyne.MnemoStubs.h"
-#endif
-
-extern CDECL int main(int argc, sz argv[]) {
+extern CDECL int
+main(int argc, char **argv)
+{
    int d;
 
    check_fp_ok(); /* check very early on */
 
-   tmUserStart = time( NULL );
+   tmUserStart = time(NULL);
    tmCPUStart = clock();
    init_screen();
 
    pthOutput = NULL;
 
-   ReadErrorFile( "Survex", "SURVEXHOME", "SURVEXLANG", argv[0],
-                  MESSAGE_FILE );
+   ReadErrorFile("Survex", "SURVEXHOME", "SURVEXLANG", argv[0], MESSAGE_FILE);
 
    display_banner();
 
-/*#include "expire.h"*/
-
    pcs = osnew(settings);
    pcs->next = NULL;
-   pcs->Translate = ((short*)osmalloc(ossizeof(short)*257))+1;
+   pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
 
    /* Set up root of prefix hierarchy */
    root = osnew(prefix);
@@ -269,7 +259,7 @@ extern CDECL int main(int argc, sz argv[]) {
    cComponents = 0;
    totadj = total = totplan = totvert = 0.0;
 
-   for ( d=0 ; d<=2 ; d++ ) {
+   for ( d = 0 ; d <= 2 ; d++ ) {
       min[d] = REAL_BIG;
       max[d] = -REAL_BIG;
       pfxHi[d] = pfxLo[d] = NULL;
@@ -287,7 +277,7 @@ extern CDECL int main(int argc, sz argv[]) {
    default_units(pcs);
    default_calib(pcs);
 
-   process_command_line( argc, argv ); /* Read files and build network */
+   process_command_line(argc, argv); /* Read files and build network */
    validate();
 
    solve_network(/*stnlist*/); /* Find coordinates of all points */
@@ -300,8 +290,8 @@ extern CDECL int main(int argc, sz argv[]) {
    out_current_action(msg(120));
    do_stats();
 
-   tmCPU = (clock_t)(clock() - tmCPUStart) / (double)CLOCKS_PER_SEC;
-   tmUser = difftime(time( NULL ),tmUserStart);
+   tmCPU = (clock_t) (clock() - tmCPUStart) / (double) CLOCKS_PER_SEC;
+   tmUser = difftime(time(NULL), tmUserStart);
 
 #if 0
    /* use ceil because tmUser is integer no of seconds */
@@ -310,18 +300,18 @@ extern CDECL int main(int argc, sz argv[]) {
    /* equivalent test, I think */
    if (tmCPU+1 > tmUser) {
 #endif
-      sprintf(szOut,msg(140),tmCPU);
-      out_info(szOut);
+      sprintf(out_buf, msg(140), tmCPU);
+      out_info(out_buf);
    } else if (tmCPU == 0) {
       if (tmUser == 0.0) {
-         sprintf( szOut, msg(141), tmUser );
-         out_info(szOut);
+         sprintf(out_buf, msg(141), tmUser);
+         out_info(out_buf);
       } else {
          out_info(msg(142));
       }
    } else {
-      sprintf( szOut, msg(143), tmUser, tmCPU );
-      out_info(szOut);
+      sprintf(out_buf, msg(143), tmUser, tmCPU);
+      out_info(out_buf);
    }
 
    out_info(msg(144));
@@ -329,23 +319,26 @@ extern CDECL int main(int argc, sz argv[]) {
 }
 
 /* Display startup banner */
-static void display_banner(void) {
+static void
+display_banner(void)
+{
    int msgGreet = 112;
-   const char *szWelcomeTo;
+   const char *welcome_to;
 #ifndef NO_NICEHELLO
    if (tmUserStart != (time_t)-1) {
       int hr;
       static uchar greetings[24] = {
          109,109,109,109, 109,109,109,109, 109,109,109,109,
-         110,110,110,110, 110,110,111,111, 111,111,112,112 };
+         110,110,110,110, 110,110,111,111, 111,111,112,112
+      };
       hr = (localtime(&tmUserStart))->tm_hour;
       msgGreet = (int)greetings[hr];
    }
 #endif
-   szWelcomeTo = msgPerm(113);
-   sprintf( szOut, "%s%s", msg(msgGreet), szWelcomeTo );
-   out_info(szOut);
-   msgFree(szWelcomeTo);
+   welcome_to = msgPerm(113);
+   sprintf(out_buf, "%s%s", msg(msgGreet), welcome_to);
+   out_info(out_buf);
+   msgFree(welcome_to);
 #ifndef NO_NICEHELLO
    out_info("  ______   __   __   ______    __   __   _______  ___   ___");
    out_info(" / ____|| | || | || |  __ \\\\  | || | || |  ____|| \\ \\\\ / //");
@@ -357,77 +350,93 @@ static void display_banner(void) {
    out_info("SURVEX");
 #endif
    out_info("");
-   sprintf( szOut, "%s "VERSION, msg(114) );
-   out_info(szOut);
-   out_info( "Copyright (C) 1991-"THIS_YEAR" Olly Betts" );
+   sprintf(out_buf, "%s "VERSION, msg(114));
+   out_info(out_buf);
+   out_info("Copyright (C) 1991-"THIS_YEAR" Olly Betts");
 }
 
-static void do_range( FILE *fh, int d, int msg1, int msg2, int msg3 ) {
-   sprintf(szOut,msg(msg1),max[d]-min[d]);
-   strcat(szOut,sprint_prefix(pfxHi[d]));
-   sprintf(szOut+strlen(szOut),msg(msg2),max[d]);
-   strcat(szOut,sprint_prefix(pfxLo[d]));
-   sprintf(szOut+strlen(szOut),msg(msg3),min[d]);
-   out_info(szOut);
-   fputsnl(szOut,fh);
+static void
+do_range(FILE *fh, int d, int msg1, int msg2, int msg3)
+{
+   sprintf(out_buf, msg(msg1), max[d] - min[d]);
+   strcat(out_buf, sprint_prefix(pfxHi[d]));
+   sprintf(out_buf + strlen(out_buf), msg(msg2), max[d]);
+   strcat(out_buf, sprint_prefix(pfxLo[d]));
+   sprintf(out_buf + strlen(out_buf), msg(msg3), min[d]);
+   out_info(out_buf);
+   fputsnl(out_buf, fh);
 }
 
-static void do_stats( void ) {
-   sz fnm;
+static void
+do_stats(void)
+{
+   char *fnm;
    FILE *fh;
    long cLoops = cComponents + cLegs - cStns;
 
 #ifdef NO_EXTENSIONS
-   fnm = UsePth( pthOutput, STATS_FILE );
+   fnm = UsePth(pthOutput, STATS_FILE);
 #else
-   fnm = AddExt( fnmInput, EXT_SVX_STAT );
+   fnm = AddExt(fnmInput, EXT_SVX_STAT);
 #endif
-   if (fDirectory(fnm))
-      fatal(44,wr,fnm,0);
-   if ((fh=fopen(fnm,"w")) == 0)
-      fatal(47,wr,fnm,0);
+
+   if (fDirectory(fnm)) fatal(44, wr, fnm, 0);
+
+   fh = fopen(fnm, "w");
+   if (fh == NULL) fatal(47, wr, fnm, 0);
+
    osfree(fnm);
 
    out_info("");
 
    if (cStns == 1)
-      sprintf(szOut,msg(172));
+      sprintf(out_buf, msg(172));
    else
-      sprintf(szOut,msg(173),cStns);
+      sprintf(out_buf, msg(173), cStns);
+
    if (cLegs == 1)
-      sprintf(szOut+strlen(szOut),msg(174));
+      sprintf(out_buf + strlen(out_buf), msg(174));
    else
-      sprintf(szOut+strlen(szOut),msg(175),cLegs);
-   out_info(szOut); fputsnl(szOut,fh);
+      sprintf(out_buf + strlen(out_buf), msg(175), cLegs);
+
+   out_info(out_buf);
+   fputsnl(out_buf, fh);
 
    if (cLoops == 1)
-      sprintf(szOut,msg(138));
+      sprintf(out_buf, msg(138));
    else
-      sprintf(szOut,msg(139),cLoops);
-   out_info(szOut); fputsnl(szOut,fh);
+      sprintf(out_buf, msg(139), cLoops);
+
+   out_info(out_buf);
+   fputsnl(out_buf, fh);
 
    if (cComponents != 1) {
-      sprintf(szOut,msg(178),cComponents);
-      out_info(szOut); fputsnl(szOut,fh);
+      sprintf(out_buf, msg(178), cComponents);
+      out_info(out_buf);
+      fputsnl(out_buf, fh);
    }
 
-   sprintf(szOut,msg(132),total,totadj);
-   out_info(szOut); fputsnl(szOut,fh);
+   sprintf(out_buf, msg(132), total, totadj);
+   out_info(out_buf);
+   fputsnl(out_buf, fh);
 
-   sprintf(szOut,msg(133),totplan);
-   out_info(szOut); fputsnl(szOut,fh);
+   sprintf(out_buf, msg(133), totplan);
+   out_info(out_buf);
+   fputsnl(out_buf, fh);
 
-   sprintf(szOut,msg(134),totvert);
-   out_info(szOut); fputsnl(szOut,fh);
+   sprintf(out_buf, msg(134), totvert);
+   out_info(out_buf);
+   fputsnl(out_buf, fh);
 
-   do_range(fh,2,135,136,137);
-   do_range(fh,1,148,196,197);
-   do_range(fh,0,149,196,197);
+   do_range(fh, 2, 135, 136, 137);
+   do_range(fh, 1, 148, 196, 197);
+   do_range(fh, 0, 149, 196, 197);
 
    print_node_stats(fh);
    /* Also, could give:
     *  # nodes stations (ie have other than two references or are fixed)
     *  # fixed stations (list of?)
     */
+
    fclose(fh);
 }
