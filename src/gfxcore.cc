@@ -33,7 +33,8 @@
 
 #define MAX(a, b)    (((a) > (b)) ? (a) : (b))
 #define TEXT_COLOUR  wxColour(0, 255, 40)
-#define LABEL_COLOUR wxColour(160, 255, 0)
+//#define LABEL_COLOUR wxColour(160, 255, 0)
+#define LABEL_COLOUR wxColour(175, 4, 214)
 
 static const int FONT_SIZE = 10;
 static const int CROSS_SIZE = 5;
@@ -605,7 +606,7 @@ void GfxCore::Draw2dIndicators()
         int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
 	// FIXME: bodge by Olly to stop wrong tick highlighting
 	if (deg_pan) deg_pan = 360 - deg_pan;
-	for (int angle = 0; angle <= 315; angle += 45) {
+	for (int angle = deg_pan; angle <= 315 + deg_pan; angle += 45) {
 	    if (deg_pan == angle) {
 	        m_DrawDC.SetPen(m_Pens.green);
 	    }
