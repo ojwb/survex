@@ -45,6 +45,8 @@ caverot: improve 3d torture test and try to automate its use if possible.
 
 try using labels.c in xcaverot to see if XRegions are better or not?
 
+aven: surface vs underground data...
+
 caverot: on RISC OS now fall back to using 2 or even just one screen
 bank if we can't find a mode where we can create 3 banks [FIXME: need
 to test this works]

@@ -20,11 +20,11 @@ Changes in 0.97-prerelease1:
   surveys (to be ignored when calculating the total survey length) to be
   indicated.
 
-* caverot/xcaverot: allow surface legs to be hidden (they are by default)
-
 * new version of 3d file format which can store flags and is slightly more
   compact.  NB New programs can load old .3d files, but old programs can't
   load new .3d files.
+
+* caverot/xcaverot: allow surface legs to be hidden (they are by default)
 
 * cavern: compass can be omitted on legs in diving data to indicate a plumbed
   leg.  In this case the tape and depth gauge readings are combined to give
@@ -44,7 +44,8 @@ Changes in 0.97-prerelease1:
 
 * xcaverot: "load" button now works; bearing always shown in range 0-360;
   / and ' now tilt cave; `u' and `d' now switch to view from above/below;
-  shift-ed keys now work; `o' now turns off non-overlapping labels.
+  shift-ed keys now work; `o' now turns off non-overlapping labels;
+  `ctrl-L' toggles display of survey legs.
 
 * caverot: n/s/e/w/u/d now work as in xcaverot - the previous functions they
   had weren't actually useful; if memory is really tight, disable
@@ -64,12 +65,17 @@ Changes in 0.97-prerelease1:
 
 * 3dtodxf: renamed to cad3d since it can now produce DXF or sketch format.
 
-* aven: rewritten to use wxwindows.
+* aven: rewritten to use wxwindows (under Unix only so far).
 
 * printwin: new native Microsoft Windows printer driver.
 
+* (MS Windows version): new installation wizard.
+
 * Use double precision floating point to pass numbers to/from .3d file
   reading rotuines to avoid rounding problems.
+
+* cavern: change of terminology - use "reading" instead of "datum",
+  since datum more usually means a map datum in surveying.
 
 Changes in 0.96:
 
