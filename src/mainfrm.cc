@@ -661,6 +661,7 @@ void MainFrm::FillTree()
 	    do {
 	        // Extract the next bit of prefix.
  	        next_dot = prefix.Find('.');
+
 		wxString bit = next_dot == -1 ? prefix : prefix.Left(next_dot);
 
 		// Add the current tree ID to the stack.
@@ -670,11 +671,18 @@ void MainFrm::FillTree()
 		if (bit == "") {
 		    bit = "<root>";
 		}
+	
 		current_id = m_Tree->AppendItem(current_id, bit);
 		m_Tree->SetItemData(current_id, new TreeData(NULL));
 
 		prefix = prefix.Mid(next_dot + 1);
 	    } while (next_dot != -1);
+
+	    // Now add the first entry under the new branch.
+	    wxString bit = label->GetText().AfterLast('.');
+	    wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
+	    m_Tree->SetItemData(id, new TreeData(label));
+	    SetTreeItemColour(id, label);
 	}
 	// Otherwise, we must have moved up, and possibly then down again.
 	else {
