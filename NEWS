@@ -38,6 +38,9 @@ Changes in 1.0.8:
 
 * Slovak translation added; updated de, ca, es.
 
+* ChangeLog now only includes entries since the previous release (the full file
+  is 220K or so, and of interest to very few people).
+
 Changes in 1.0.7:
 
 * print*: halted with a failed assertion in 1.0.4-1.0.6.
