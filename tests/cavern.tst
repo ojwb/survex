@@ -17,7 +17,7 @@ export SURVEXHOME
 : ${TESTS=${*-"singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey nosurvey2\
  cartesian lengthunits angleunits cmd_truncate cmd_case cmd_fix cmd_solve\
- cmd_entrance cmd_sd cmd_sd_bad cmd_fix_bad\
+ cmd_entrance cmd_sd cmd_sd_bad cmd_fix_bad cmd_set cmd_set_bad\
  beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
  expobug require export export2 includecomment\
  self_loop self_eq_loop reenterwarn cmd_default cmd_prefix\
@@ -62,6 +62,8 @@ for file in $TESTS ; do
   cmd_entrance) pos=no ; warn=0 ;;
   cmd_sd) pos=no ; warn=0 ;;
   cmd_sd_bad) pos=fail ; error=6 ;;
+  cmd_set) pos=no ; warn=0 ;;
+  cmd_set_bad) pos=fail ; error=7 ;;
   beginroot) pos=no ;;
   revcomplist) pos=no ; warn=0 ;;
   break_replace_pfx) pos=no ; warn=0 ;;

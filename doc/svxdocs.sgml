@@ -87,8 +87,8 @@ where this isn't the case, let me know.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-08-15 11:20:57 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.40 2001-08-15 11:20:57 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-08-15 12:09:30 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.41 2001-08-15 12:09:30 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -2080,25 +2080,29 @@ detail in various surveying articles.
 e.g. *SET Decimal ,
 </Para>
 
+<!--
 <Para>
 *Set Decimal Comma
 </Para>
+-->
 
 <Para>
 - sets the specified &lt;item&gt; to the character or characters
 given in &lt;character list&gt;. The example sets the decimal
-separator to be Comma
+separator to be a comma.
 </Para>
 
 <Para>
-The complete list of  items that can be set, the defaults (in
+xAB means the character with hex value AB. Eg x20 is a space.
+</Para>
+
+<Para>
+The complete list of items that can be set, the defaults (in
 brackets), and the meaning of the item, is:
 </Para>
 
 <Para>
-BLANK (SpaceTabComma) Separates fields
-#ifdef XXX
-#endif /* XXX */
+BLANK (x09x20,) Separates fields
 
 COMMENT (;) Introduces comments
 </Para>
@@ -2108,7 +2112,7 @@ DECIMAL (.) Decimal point character
 </Para>
 
 <Para>
-EOL (CrLf) End of line character
+EOL (x0ax0d) End of line character
 </Para>
 
 <Para>
@@ -2156,11 +2160,6 @@ Star (&amp;2A) Comma (&amp;2C)
 
 <Para>
 Dash (&amp;2D) Dot (&amp;2E) Underscore (&amp;5F)
-</Para>
-
-<Para>
-Also, HexXX means the character with hex value XX. Eg Hex20 is
-a space.
 </Para>
 -->
 

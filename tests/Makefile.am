@@ -56,4 +56,5 @@ nosurv.svx nosurv.pos\
 cmd_flags.svx bad_cmd_flags.svx\
 plumb.svx plumb.pos\
 cmd_fix_bad.svx\
-cmd_sd.svx cmd_sd_bad.svx
+cmd_sd.svx cmd_sd_bad.svx\
+cmd_set.svx cmd_set_bad.svx

@@ -382,13 +382,37 @@ cmd_set(void)
       memcpy(p - 1, pcs->Translate - 1, sizeof(short) * 257);
       pcs->Translate = p;
    }
+
+   skipblanks();
+
    /* clear this flag for all non-alphanums */
    for (i = 0; i < 256; i++)
       if (!isalnum(i)) pcs->Translate[i] &= ~mask;
-   skipblanks();
+
    /* now set this flag for all specified chars */
    while (!isEol(ch)) {
-      if (!isalnum(ch)) pcs->Translate[ch] |= mask;
+      if (!isalnum(ch)) {
+	 pcs->Translate[ch] |= mask;
+      } else if (tolower(ch) == 'x') {
+	 int hex;
+	 filepos fp;
+	 get_pos(&fp);
+	 nextch();
+	 if (!isxdigit(ch)) {
+	    set_pos(&fp);
+	    break;
+	 }
+	 hex = isdigit(ch) ? ch - '0' : tolower(ch) - 'a';
+	 nextch();
+	 if (!isxdigit(ch)) {
+	    set_pos(&fp);
+	    break;
+	 }
+	 hex = hex << 4 | (isdigit(ch) ? ch - '0' : tolower(ch) - 'a');
+	 pcs->Translate[hex] |= mask;
+      } else {
+	 break;
+      }
       nextch();
    }
 }
@@ -730,7 +754,10 @@ cmd_equate(void)
       name2 = name1;
       name1 = read_prefix_stn_check_implicit(fTrue, fTrue);
       if (name1 == NULL) {
-	 if (fOnlyOneStn) compile_error(/*Only one station in equate list*/33);
+	 if (fOnlyOneStn) {
+	    compile_error(/*Only one station in equate list*/33);
+	    skipline();
+	 }
 #ifdef NEW3DFORMAT
 	 if (fUseNewFormat) limb = get_twig(pcs->Prefix);
 #endif
