@@ -2,7 +2,7 @@
 
 TESTS = diffpos.tst cavern.tst cavfail.tst
 
-EXTRA_DIST = diffpos.tst cavern.tst\
+EXTRA_DIST = diffpos.tst cavern.tst cavfail.tst\
 oneleg.svx oneleg.pos\
 midpoint.svx midpoint.pos\
 noose.svx noose.pos\
