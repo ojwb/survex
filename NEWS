@@ -7,16 +7,17 @@
 * cavern: Fixed bug in articulation point code which could result in
   a traverse "exploding" in certain situations (introduced in 0.95).
 
-* cavern: Check for survey legs not connected to a fixed point is now
-  done earlier on (which simplifies quite a bit of the network code).
+* cavern: Check for chunks of survey not connected to a fixed point is
+  now done earlier on (which simplifies quite a bit of the network
+  code).
 
 Changes in 0.98-prerelease1:
 
 * Covariance matrices are symmetric - now only store 6 of the 9 entries.
   Typically uses 10% less memory and is 15% faster.
 
-* caverot: adjust to speed of machine/size on initial draw, rather than
-  on first input from user.
+* caverot: adjust to speed of machine/size of survey on initial draw,
+  rather than on first action from user.
 
 * (MS Windows version): now handle oe-ligatures.
 
