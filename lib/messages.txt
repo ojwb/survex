@@ -1654,8 +1654,8 @@ es:197 " en %4.2fm)"
 it:197 " a %4.2fm)"
 # TRANSLATE
 en:198 Expecting date
-#
-# XXX 199
+# TRANSLATE
+en:199 Only load the sub-survey with prefix
 #
 #  Messages for Aven
 #

@@ -85,6 +85,8 @@
   only released software to ever provide support, and an exchange format
   that nobody else supports is useless.
 
+* (UNIX version): man pages now have "Survex <version number>" on them.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.
