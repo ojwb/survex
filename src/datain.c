@@ -544,13 +544,13 @@ handle_compass(real *p_var)
 	    /* fore and back readings differ by more than 2 sds */
 	    warn_readings_differ(/*Compass reading and back compass reading disagree by %s degrees*/98, diff);
 	 }
-	 comp = (comp / var + backcomp / VAR(BackClino));
-	 var = (var + VAR(BackClino)) / 4;
+	 comp = (comp / var + backcomp / VAR(BackComp));
+	 var = (var + VAR(BackComp)) / 4;
 	 comp *= var;
 	 comp += adj;
       } else {
 	 comp = backcomp;
-	 var = VAR(BackClino);
+	 var = VAR(BackComp);
       }
    }
    *p_var = var;
@@ -1116,8 +1116,6 @@ data_normal(void)
    VAL(FrCount) = VAL(ToCount) = 0;
    VAL(FrDepth) = VAL(ToDepth) = 0;
 
-   again:
-
    fRev = fFalse;
    ctype = backctype = CTYPE_OMIT;
    fDepthChange = fFalse;
@@ -1125,6 +1123,8 @@ data_normal(void)
    /* ordering may omit clino reading, so set up default here */
    /* this is also used if clino reading is the omit character */
    VAL(Clino) = VAL(BackClino) = 0;
+
+   again:
 
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
@@ -1266,6 +1266,15 @@ data_normal(void)
 	     }
 	     if (!r) skipline();
 	  }
+
+	  fRev = fFalse;
+	  ctype = backctype = CTYPE_OMIT;
+	  fDepthChange = fFalse;
+
+	  /* ordering may omit clino reading, so set up default here */
+	  /* this is also used if clino reading is the omit character */
+	  VAL(Clino) = VAL(BackClino) = 0;
+
           inferred_equate:
 	  fMulti = fTrue;
 	  while (1) {
