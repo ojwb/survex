@@ -68,7 +68,7 @@ default_case(settings *s)
    s->Case = LOWER;
 }
 
-extern datum default_order[] = { Fr, To, Tape, Comp, Clino, End };
+datum default_order[] = { Fr, To, Tape, Comp, Clino, End };
 
 static void
 default_style(settings *s)
