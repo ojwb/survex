@@ -2,8 +2,8 @@
 
 noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  cvrotgfx.h cvrotimg.h datain.h debug.h dosrot.h filelist.h filename.h\
- getopt.h img.h ini.h labels.h listpos.h matrix.h message.h netartic.h\
- netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
+ getopt.h img.h ini.h labels.h listpos.h matrix.h message.h namecmp.h\
+ netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h uni2dos.h useful.h\
  validate.h whichos.h xrot.h xcvrtbut.h new3dout.h 3ddefs.h \
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
@@ -66,9 +66,9 @@ xcaverot_SOURCES = xcaverot.c xcvrtbut.c $(ROTSRC)
 xcaverot_CFLAGS = @X_CFLAGS@ -DXCAVEROT
 xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
-diffpos_SOURCES = diffpos.c img.c useful.c $(COMMONSRC)
+diffpos_SOURCES = diffpos.c namecmp.c img.c useful.c $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
-3dtopos_SOURCES = 3dtopos.c img.c useful.c $(COMMONSRC)
+3dtopos_SOURCES = 3dtopos.c namecmp.c img.c useful.c $(COMMONSRC)
 extend_SOURCES = extend.c $(COMMONSRC) useful.c img.c
 
 cad3d_SOURCES = 3dtodxf.c $(COMMONSRC) useful.c img.c

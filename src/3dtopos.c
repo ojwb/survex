@@ -32,6 +32,7 @@
 #include "osalloc.h"
 #include "img.h"
 #include "filelist.h"
+#include "namecmp.h"
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
@@ -53,69 +54,13 @@ typedef struct {
 } station;
 
 static int
-name_cmp(const char *a, const char *b)
-{
-   const char *dot_a = strchr(a, '.');
-   const char *dot_b = strchr(b, '.');
-
-   if (dot_a) {
-      if (dot_b) {
-	 size_t len_a = dot_a - a;
-	 size_t len_b = dot_b - b;
-	 int res = memcmp(a, b, min(len_a, len_b));
-	 if (res == 0) res = len_a - len_b;
-	 if (res == 0) res = name_cmp(dot_a + 1, dot_b + 1);
-	 return res;
-      }
-      return -1;
-   }
-
-   if (dot_b) return 1;
-   
-   /* skip common prefix */
-   while (*a && !isdigit(*a) && *a == *b) {
-      a++;
-      b++;
-   }
-   
-   /* sort numbers numerically and before non-numbers */
-   if (!isdigit(a[0])) {
-      if (isdigit(b[0])) return 1;
-   } else {
-      long n_a, n_b;
-      if (!isdigit(b[0])) return -1;
-      /* FIXME: check errno, etc in case out of range */
-      n_a = strtoul(a, NULL, 10);
-      n_b = strtoul(b, NULL, 10);
-      if (n_a != n_b) {
-	 if (n_a > n_b)
-	    return 1;
-	 else
-	    return -1;
-      }
-      /* drop through - the numbers match, but there may be a suffix
-       * and also we want to give an order to "01" vs "1"... */
-   }
-
-   /* if numbers match, sort by suffix */
-   return strcmp(a, b);
-}
-
-#if 0
-foo()
-{
-}
-#endif
-
-static int
 cmp_station(const void *a, const void *b)
 {
    return name_cmp(((const station *)a)->name, ((const station *)b)->name);
 }
 
-/* FIXME: remove static limit here */
-static station stns[100000];
-static int c_stns = 0;
+static station *stns;
+static OSSIZE_T c_stns = 0;
 
 int
 main(int argc, char **argv)
@@ -124,6 +69,9 @@ main(int argc, char **argv)
    FILE *fh_out;
    img *pimg;
    int result;
+   OSSIZE_T c_labels = 0;
+   OSSIZE_T c_totlabel = 0;
+   char *p, *p_end;
 
    msg_init(argv[0]);
 
@@ -152,26 +100,61 @@ main(int argc, char **argv)
    fputsnl(msg(/*( Easting, Northing, Altitude )*/195), fh_out);
 
    do {
+      img_point pt;
+      result = img_read_item(pimg, &pt);
+      switch (result) {
+       case img_MOVE:
+       case img_LINE:
+    	 break;
+       case img_LABEL:
+	 c_labels++;
+	 c_totlabel += strlen(pimg->label) + 1;
+	 break;
+       case img_BAD:
+	 img_close(pimg);
+	 exit(EXIT_FAILURE); /* FIXME report errors! */
+      }
+   } while (result != img_STOP);
+
+   stns = osmalloc(ossizeof(station) * c_labels);
+   p = osmalloc(c_totlabel);
+   p_end = p + c_totlabel;
+   
+   img_rewind(pimg);
+   
+   do {
       result = img_read_item(pimg, &(stns[c_stns].pt));
       switch (result) {
        case img_MOVE:
        case img_LINE:
     	 break;
        case img_LABEL:
-	 stns[c_stns++].name = osstrdup(pimg->label);
-	 break;
+	 if (c_stns < c_labels) {
+	    OSSIZE_T len = strlen(pimg->label) + 1;
+	    if (p + len < p_end) {
+	       memcpy(p, pimg->label, len);
+	       p += len;
+	       stns[c_stns++].name = p;
+	       break;
+	    }
+	 }
+	 /* FALLTHRU */
        case img_BAD:
 	 img_close(pimg);
-	 exit(1);
+	 exit(EXIT_FAILURE); /* FIXME report errors! */
       }
    } while (result != img_STOP);
 
    img_close(pimg);
 
+   if (c_stns != c_labels || p != p_end) {
+      exit(EXIT_FAILURE); /* FIXME report errors! */
+   }
+
    qsort(stns, c_stns, sizeof(station), cmp_station);
 
    {
-      int i;
+      OSSIZE_T i;
       for (i = 0; i < c_stns; i++) {
 	 fprintf(fh_out, "(%8.2f, %8.2f, %8.2f ) %s\n",
 		 stns[i].pt.x, stns[i].pt.y, stns[i].pt.z, stns[i].name);
@@ -180,5 +163,5 @@ main(int argc, char **argv)
 
    fclose(fh_out);
 
-   return 0;
+   return EXIT_SUCCESS;
 }

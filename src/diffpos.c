@@ -31,6 +31,7 @@
 #include "debug.h"
 #include "filelist.h"
 #include "img.h"
+#include "namecmp.h"
 
 #ifndef sqrd
 # define sqrd(X) ((X)*(X))
@@ -81,6 +82,12 @@ hash_string(const char *p)
       hash = (hash * HASH_PRIME + tolower(*(unsigned char*)p)) & 0x7fff;
 /*   printf("%d\n",hash); */
    return hash;
+}
+
+static int
+cmp_pname(const void *a, const void *b)
+{
+   return name_cmp(*(const char **)a, *(const char **)b);
 }
 
 static station **htab;
@@ -149,15 +156,26 @@ tree_remove(const char *name, const img_point *pt)
 static int
 tree_check(void)
 {
+   size_t c = 0;
+   char **names;
    size_t i;
    for (i = 0; i < 0x2000; i++) {
       station *p;
-      for (p = htab[i]; p; p = p->next) {
-	 printf("Deleted: %s\n", p->name);
-	 fChanged = fTrue;	 
-      }
+      for (p = htab[i]; p; p = p->next) c++;
    }
-   return fChanged;
+   if (c == 0) return fChanged;
+
+   names = osmalloc(c * ossizeof(char *));
+   c = 0;
+   for (i = 0; i < 0x2000; i++) {
+      station *p;
+      for (p = htab[i]; p; p = p->next) names[c++] = p->name;
+   }
+   qsort(names, c, sizeof(char *), cmp_pname);
+   for (i = 0; i < c; i++) {
+      printf("Deleted: %s\n", names[c]);
+   }
+   return fTrue;
 }
 
 int
