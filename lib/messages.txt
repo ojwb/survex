@@ -2380,8 +2380,10 @@ ca:236 Un pas en el sentit @horari
 es:236 Un paso en el senido @horario
 it:236 Un passo @Orario
 sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
-#
+# TRANSLATE ca de es fr it pt sk
 en:237 @Perspective
+ca,de,es,it:237 Perspecti@ve
+fr,pt,sk:237 Pe@rspective
 # XXX 238 239
 #
 # The accelerators must be different within this group
@@ -2675,7 +2677,7 @@ it:294 Marca gli Ing@ressi
 sk:294 Zv&yacute;razni&tcaron; @vchody
 #
 en:295 Highlight @Fixed Points
-en-us:295 Highlight Control @Points
+en-us:295 @Highlight Control Points
 fr:295 Mise en valeur des points Fi@xes
 de:295 Fi@xpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
@@ -3145,7 +3147,7 @@ en:355 Allow names to overlap on the display (faster)
 #
 # TRANSLATE sk
 en:356 Full Screen @Mode##F11
-sk:356 F@ull Screen Mode##F11
+pt-br,sk:356 F@ull Screen Mode##F11
 #
 en:357 Display underground survey legs
 en:358 Display surface survey legs
