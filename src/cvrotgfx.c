@@ -30,6 +30,8 @@
 int colText, colHelp;
 static int fSwapScreen;
 
+volatile bool fRedraw = fTrue;
+
 int mouse_buttons = -3; /* special value => "not yet initialised" */
 static int bank = 0;
 
@@ -207,8 +209,6 @@ int driver = GFX_AUTODETECT;
 int drx = 800;
 int dry = 600;
 # endif
-
-volatile bool fRedraw = fTrue;
 
 /* Set up graphics screen/window and initialise any state needed */
 int
