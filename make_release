@@ -59,19 +59,10 @@ if ! ./configure ; then
    exit 1
 fi
 if test yes = "$rel" ; then
-   export CFLAGS
-   export CXXFLAGS
-   # tell the preproceesor to be C89 - this makes it reject // comments
-# FIXME -Werror makes configure explode CFLAGS="-Werror -Wp,-std=c89"
-# FIXME   CXXFLAGS="-Werror"
-   CFLAGS="-Wp,-std=c89"
-   CXXFLAGS=
    if ! make dist ; then # distcheck fails extend.tst for some reason!
       echo make distcheck failed
       exit 1
    fi
-   CFLAGS=
-   CXXFLAGS=
 else
    if ! make dist ; then
       echo make dist failed
@@ -123,7 +114,7 @@ if expr "$mk" : '.*\<djgpp\>'; then
    if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
       PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
    fi
-   if ! ./configure --host=i386-pc-msdosdjgpp --build="$build_platform" --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o CFLAGS=-Werror CXXFLAGS=-Werror ; then
+   if ! ./configure --host=i386-pc-msdosdjgpp --build="$build_platform" --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o ; then
       echo djgpp configure failed
       exit 1
    fi
@@ -174,7 +165,7 @@ if expr "$mk" : '.*\<mingw\>'; then
       LDFLAGS=-L/opt/rx-win32/lib
       CPPFLAGS=-I/opt/rx-win32/include
    fi
-   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no CAVEROT= WXCONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" CFLAGS=-Werror CXXFLAGS=-Werror ; then
+   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no CAVEROT= WXCONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" ; then
       echo mingw configure failed
       exit 1
    fi

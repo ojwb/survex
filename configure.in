@@ -338,15 +338,17 @@ AC_SUBST(sgmltools)
 
 dnl extra warning flags for building with GCC
 if test yes = "$GCC"; then
+  # -Wp,-std=c89 tells the preproceesor to be C89 - this makes it reject //
+  # comments which not all C compilers recognise.
   if test yes = "$cross_compiling"; then
-    AM_CFLAGS="$AM_CFLAGS -Wall -Wunused -Wpointer-arith\
-      -Wwrite-strings -Wcast-align"
-    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wunused -Wpointer-arith\
+    AM_CFLAGS="$AM_CFLAGS -Werror -Wall -Wunused -Wpointer-arith\
+      -Wwrite-strings -Wcast-align -Wp,-std=c89"
+    AM_CXXFLAGS="$AM_CXXFLAGS -Werror -Wall -Wunused -Wpointer-arith\
       -Wwrite-strings -Wcast-align"
   else
     AM_CFLAGS="$AM_CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith\
       -Wmissing-prototypes -Wwrite-strings -Wredundant-decls -Wnested-externs\
-      -Wcast-align"
+      -Wcast-align -Wp,-std=c89"
     dnl -W causes problems with wxWindows
     AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wunused -Wshadow -Wpointer-arith\
       -Wwrite-strings -Wcast-align"
