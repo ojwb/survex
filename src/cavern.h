@@ -197,7 +197,7 @@ typedef struct Prefix {
 /* survey metadata */
 typedef struct Meta_data {
     size_t ref_count;
-    unsigned short date1, date2;
+    time_t date1, date2;
 } meta_data;
 
 /* stuff stored for both forward & reverse legs */
