@@ -169,6 +169,7 @@ main(int argc, char **argv)
    root->min_export = root->max_export = 0;
    root->fSuspectTypo = fFalse;
    root->fSurvey = fTrue;
+   root->filename = NULL;
 
    nosurveyhead = NULL;
 

@@ -128,10 +128,20 @@ node_stat(prefix *p)
 #endif
 	 if (p->min_export > 1 || (p->min_export == 0 && p->max_export)) {
 	    char *s;
-	    ASSERT(p->up);
-	    s = osstrdup(sprint_prefix(p->up));
-	    error(/*Station `%s' not exported from survey `%s'*/26,
-		  sprint_prefix(p), s);
+	    const char *filename_store = file.filename;
+	    unsigned int line_store = file.line;
+	    prefix *where = p->up;
+	    ASSERT(where);
+	    s = osstrdup(sprint_prefix(where));
+	    /* Report better when station called 2.1 for example */
+	    while (!where->filename && where->up) where = where->up;
+
+	    file.filename = where->filename;
+	    file.line = where->line;
+	    compile_error(/*Station `%s' not exported from survey `%s'*/26,
+			  sprint_prefix(p), s);
+	    file.filename = filename_store;
+	    file.line = line_store;
 	    osfree(s);
 	 }
       }

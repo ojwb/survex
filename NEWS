@@ -23,6 +23,9 @@ Changes in 0.97-prerelease4:
 
 * Minor corrections to documentation and man pages.
 
+* cavern: report *export errors at the file and line where the *begin
+  for the survey involved was as that's much more useful.
+
 Changes in 0.97-prerelease3:
 
 * (Unix version): aven: Internationalised; Fixed serious drawing bug

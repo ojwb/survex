@@ -829,6 +829,8 @@ cmd_export(void)
       if (pfx->min_export == 0) {
          /* not encountered *export for this name before */
          if (pfx->max_export > depth) {
+	    const char *filename_store = file.filename;
+	    unsigned int line_store = file.line;
 	    prefix *survey = pfx;
 	    char *s;
 	    int i;
@@ -837,13 +839,24 @@ cmd_export(void)
 	       ASSERT(survey);
 	    }
 	    s = osstrdup(sprint_prefix(survey));
+	    if (survey->filename) {
+	       file.filename = survey->filename;
+	       file.line = survey->line;
+	    }
 	    compile_error(/*Station `%s' not exported from survey `%s'*/26,
 			  sprint_prefix(pfx), s);
+	    if (survey->filename) {
+	       file.filename = filename_store;
+	       file.line = line_store;
+	    }
 	    osfree(s);
          }
          pfx->min_export = pfx->max_export = depth;
       } else {
          if (pfx->min_export - 1 > depth) {
+	    /* FIXME: refactor to reuse code above */
+	    const char *filename_store = file.filename;
+	    unsigned int line_store = file.line;
 	    prefix *survey = pfx;
 	    char *s;
 	    int i;
@@ -852,8 +865,16 @@ cmd_export(void)
 	       ASSERT(survey);
 	    }
 	    s = osstrdup(sprint_prefix(survey));
+	    if (survey->filename) {
+	       file.filename = survey->filename;
+	       file.line = survey->line;
+	    }
 	    compile_error(/*Station `%s' not exported from survey `%s'*/26,
 			  sprint_prefix(pfx), s);
+	    if (survey->filename) {
+	       file.filename = filename_store;
+	       file.line = line_store;
+	    }
 	    osfree(s);
          } else if (pfx->min_export - 1 < depth) {
 	    compile_error(/*Station `%s' already exported*/66,

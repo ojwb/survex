@@ -213,6 +213,8 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
    if (ptr->min_export == 0) {
       if (depth > ptr->max_export) ptr->max_export = depth;
    } else if (ptr->max_export < depth) {
+      const char *filename_store = file.filename;
+      unsigned int line_store = file.line;
       prefix *survey = ptr;
       char *s;
       int level;
@@ -221,8 +223,16 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 	 ASSERT(survey);
       }
       s = osstrdup(sprint_prefix(survey));
+      if (survey->filename) {
+	 file.filename = survey->filename;
+	 file.line = survey->line;
+      }
       compile_error(/*Station `%s' not exported from survey `%s'*/26,
 		    sprint_prefix(ptr), s);
+      if (survey->filename) {
+	 file.filename = filename_store;
+	 file.line = line_store;
+      }
       osfree(s);
 #if 0
       printf(" *** pfx %s warning not exported enough depth %d "
