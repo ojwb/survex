@@ -431,12 +431,14 @@ bool MainFrm::LoadData(const wxString& file)
 	    return false;
 	}
 
-	// Delete any trailing move.
-	PointInfo* pt = points.back();
-	if (!pt->isLine) {
-	    m_NumPoints--;
-	    points.pop_back();
-	    delete pt;
+        if (!points.empty()) {
+	    // Delete any trailing move.	
+	    PointInfo* pt = points.back();
+	    if (!pt->isLine) {
+	       m_NumPoints--;
+	       points.pop_back();
+	       delete pt;
+	    }
 	}
 
 	m_XExt = xmax - xmin;

@@ -20,8 +20,6 @@ wxaven:
 
 - get warning box if wxWindows doesn't have translation into requested language
 
-- segfaults trying to load 3dtorture/onestn.3d
-
 wxaven problems with unknown solution:
 
 - continuing trouble with accelerator keys
