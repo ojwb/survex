@@ -11,9 +11,9 @@ doesn't load files from command line
 
 toggle status bar does nothing
 
-ought to have ticks on menu items in view menu
+ought to have ticks or similar on menu items in view menu
 
-N/S/E/W should select views
+N/S/E/W should select views not move cave
 
 window close doesn't work
 

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES
+EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES survex.iss.in
 
 SUBDIRS = hto src lib doc tests
 

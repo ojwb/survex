@@ -12,6 +12,9 @@ AC_DEFINE(COPYRIGHT_MSG,
 
 dnl FIXME: --with-default-language=fr could add -DDEFAULTLANG=fr to CFLAGS
 
+PRETTYPACKAGE=`echo $PACKAGE|cut -b1|tr 'a-z' 'A-Z'``echo $PACKAGE|cut -b2-`
+AC_SUBST(PRETTYPACKAGE)
+
 dnl Checks for programs.
 AC_PROG_CC
 
@@ -202,11 +205,13 @@ AC_SUBST(sgmltools)
 
 dnl extra flags for building with gcc
 if test "$GCC" = yes; then
-  CFLAGS="$CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -Wredundant-decls -Wnested-externs"
-  # FIXME: also try -pedantic -ansi -Wcast-align -Wconversion -Werror
+  CFLAGS="$CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith -Wmissing-prototypes \
+-Wwrite-strings -Wredundant-decls -Wnested-externs -Wcast-align"
+  # FIXME: also try -pedantic -ansi -Werror
+  # too many complaints from headers, etc: -Wconversion
 fi
 
 AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile hto/Makefile
- tests/Makefile)
+ tests/Makefile survex.iss)
