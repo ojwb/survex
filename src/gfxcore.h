@@ -514,6 +514,7 @@ public:
     void OnAntiAlias();
     void OnSolidSurface();
 #endif
+    void OnCancelDistLine(wxCommandEvent&);
 
     void OnPaint(wxPaintEvent&);
     void OnMouseMove(wxMouseEvent& event);
@@ -572,6 +573,7 @@ public:
     void OnSolidSurfaceUpdate(wxUpdateUIEvent&);
 #endif
     void OnIndicatorsUpdate(wxUpdateUIEvent&);
+    void OnCancelDistLineUpdate(wxUpdateUIEvent&);
 
 private:
     DECLARE_EVENT_TABLE()

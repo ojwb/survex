@@ -2329,6 +2329,7 @@ en:332 Find
 en:333 Hide
 # checkbox for regular expression search
 en:334 Regular expression
+en:335 @Cancel Measuring Line##Escape
 #
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s

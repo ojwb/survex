@@ -124,14 +124,20 @@ bool Aven::OnInit()
     // Create the main window.
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(our_width, our_height));
 
+#ifdef _WIN32
+    bool delay = false;
+#else
+    bool delay = true;
+#endif
+
 #ifndef USE_WXCMDLINE
     if (argv[optind]) {
-	m_Frame->OpenFile(wxString(argv[optind]), survey);
+	m_Frame->OpenFile(wxString(argv[optind]), survey, delay);
     }
 #else
     if (cli.GetParamCount() == 1) {
         wxString file = cli.GetParam(0);
-	m_Frame->OpenFile(file, survey);
+	m_Frame->OpenFile(file, survey, delay);
     }
 #endif
 

@@ -75,7 +75,7 @@ void AvenTreeCtrl::OnSelChanged(wxTreeEvent& event)
 bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data)
 {
     assert(m_Enabled);
-    
+   
     wxTreeItemId id = GetSelection();
     if (id.IsOk()) {
         *data = GetItemData(id);

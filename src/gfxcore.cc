@@ -154,12 +154,12 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_FixedPts = false;
     m_ExportedPts = false;
     m_Grid = false;
+    m_here.x = DBL_MAX;
+    m_there.x = DBL_MAX;
 #ifdef AVENPRES
     m_DoingPresStep = -1;
 #endif
 
-    m_here.x = m_there.x = DBL_MAX;
-   
 #ifdef AVENGL
     m_AntiAlias = false;
     m_SolidSurface = false;
@@ -272,6 +272,8 @@ void GfxCore::Initialise()
 
     m_HitTestGridValid = false;
     m_DrawDistLine = false;
+    m_here.x = DBL_MAX;
+    m_there.x = DBL_MAX;
 
     m_TerrainLoaded = false;
 
@@ -3449,7 +3451,19 @@ void GfxCore::SetThere(Double x, Double y, Double z)
     m_RedrawOffscreen = true;
     Refresh(false);
 }
-    
+
+void GfxCore::OnCancelDistLine(wxCommandEvent&)
+{
+    m_DrawDistLine = false;
+    SetThere();
+    m_Parent->ClearTreeSelection();
+}
+
+void GfxCore::OnCancelDistLineUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_there.x != DBL_MAX);
+}
+
 void GfxCore::CreateHitTestGrid()
 {
     // Clear hit-test grid.

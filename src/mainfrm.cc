@@ -134,6 +134,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SOLID_SURFACE, MainFrm::OnSolidSurface)
 #endif
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
+    EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 
     EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
@@ -180,6 +181,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SOLID_SURFACE, MainFrm::OnSolidSurfaceUpdate)
 #endif
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
+    EVT_UPDATE_UI(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLineUpdate)
 END_EVENT_TABLE()
 
 class LabelCmp {
@@ -356,6 +358,8 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "", true);
+    ctlmenu->AppendSeparator();
+    ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/335));
 
     wxMenu* helpmenu = new wxMenu;
     helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About Aven...*/290));
@@ -1203,6 +1207,11 @@ void MainFrm::GetColour(int band, Double& r, Double& g, Double& b) const
     b = Double(BLUES[band]) / 255.0;
 }
 
+void MainFrm::ClearTreeSelection()
+{
+    m_Tree->UnselectAll();
+}
+
 void MainFrm::ClearCoords()
 {
     m_Coords->SetLabel("   -");
@@ -1560,6 +1569,7 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
         wxTreeItemData* sel_wx;
         bool sel = m_Tree->GetSelectionData(&sel_wx);
         if (sel) {
+	printf("selection\n");
 	    TreeData* data = (TreeData*) sel_wx;
 
             if (data->IsStation()) {
