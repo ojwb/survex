@@ -445,13 +445,16 @@ void GfxCore::SetScaleInitial(Double scale)
 	m_HitTestGridValid = false;
 
 #ifdef AVENGL
-	// With OpenGL we have to make three passes, as OpenGL lists are immutable and
-	// we need the surface and underground data in different lists.  The third pass is
-	// so we get different lists for surface data split into depth bands, and not split like that.
-	// This isn't a problem as this routine is only called once in the OpenGL version and it
-	// contains very little in the way of calculations for this version.
-	for (int pass = 0; pass < 3; pass++) { // 1st pass -> u/g data; 2nd pass -> surface (uniform);
-					       // 3rd pass -> surface (w/depth colouring)
+	// With OpenGL we have to make three passes, as OpenGL lists are
+	// immutable and we need the surface and underground data in different
+	// lists.  The third pass is so we get different lists for surface data
+	// split into depth bands, and not split like that.  This isn't a
+	// problem as this routine is only called once in the OpenGL version
+	// and it contains very little in the way of calculations for this
+	// version.
+	for (int pass = 0; pass < 3; pass++) {
+	    // 1st pass -> u/g data; 2nd pass -> surface (uniform);
+	    // 3rd pass -> surface (w/depth colouring)
 	    //--should delete any old GL list. (only a prob on reinit I think)
 	    if (pass == 0) {
 		CheckGLError("before allocating survey list");
@@ -519,8 +522,8 @@ void GfxCore::SetScaleInitial(Double scale)
 
 		    assert(!first_point); // The first point must always be a move.
 
-		    // Determine if we're switching from an underground polyline to a
-		    // surface polyline, or vice-versa.
+		    // Determine if we're switching from an underground
+		    // polyline to a surface polyline, or vice-versa.
 		    bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
 		    pti->SetChangingUGState(changing_ug_state);
 		    pti->SetLastWasMove(last_was_move);
@@ -529,8 +532,9 @@ void GfxCore::SetScaleInitial(Double scale)
 		    current_polyline_is_surface = pti->IsSurface();
 
 		    if (changing_ug_state || last_was_move) {
-			// Start a new polyline if we're switching underground/surface state
-			// or if the previous point was a move.
+			// Start a new polyline if we're switching
+			// underground/surface state or if the previous point
+			// was a move.
 #ifdef AVENGL
 			if ((current_polyline_is_surface && pass > 0) ||
 			    (!current_polyline_is_surface && pass == 0)) {
@@ -544,12 +548,14 @@ void GfxCore::SetScaleInitial(Double scale)
 
 			if (current_polyline_is_surface) {
 			    m_SurfacePolylines[band]++;
-			    *(++scount) = 1; // initialise number of vertices for next polyline
+			    // initialise number of vertices for next polyline
+			    *(++scount) = 1;
 			    dest = &spt;
 			}
 			else {
 			    m_Polylines[band]++;
-			    *(++count) = 1; // initialise number of vertices for next polyline
+			    // initialise number of vertices for next polyline
+			    *(++count) = 1;
 			    dest = &pt;
 			}
 
@@ -560,7 +566,8 @@ void GfxCore::SetScaleInitial(Double scale)
 			pti_new.SetDestination(*dest);
 			m_PointCache.push_back(pti_new);
 
-			// Advance the relevant coordinate pointer to the next position.
+			// Advance the relevant coordinate pointer to the next
+			// position.
 			(*dest)++;
 #endif
 		    }
@@ -582,7 +589,8 @@ void GfxCore::SetScaleInitial(Double scale)
 		    // Add the leg onto the current polyline.
 		    wxPoint** dest = &(current_polyline_is_surface ? spt : pt);
 
-		    // Final coordinate transformations and storage of coordinates.
+		    // Final coordinate transformations and storage of
+		    // coordinates.
 		    current_x = pti->GetX() + m_Params.translation.x;
 		    current_y = pti->GetY() + m_Params.translation.y;
 		    current_z = pti->GetZ() + m_Params.translation.z;
@@ -595,7 +603,8 @@ void GfxCore::SetScaleInitial(Double scale)
 		    m_PointCache.push_back(pti_new);
 		    prev_pti = pti;
 
-		    // Advance the relevant coordinate pointer to the next position.
+		    // Advance the relevant coordinate pointer to the next
+		    // position.
 		    (*dest)++;
 
 		    // Increment the relevant vertex count.
@@ -620,7 +629,8 @@ void GfxCore::SetScaleInitial(Double scale)
 		    first_point = false;
 		    last_was_move = true;
 
-		    // Save the current coordinates for the next time around the loop.
+		    // Save the current coordinates for the next time around
+		    // the loop.
 		    current_x = pti->GetX() + m_Params.translation.x;
 		    current_y = pti->GetY() + m_Params.translation.y;
 		    current_z = pti->GetZ() + m_Params.translation.z;
@@ -1073,8 +1083,9 @@ void GfxCore::RedrawOffscreen()
 		bool draw = true;
 
 		// When more than one flag is set on a point:
-		// entrance highlighting takes priority over fixed point highlighting, which in turn
-		// takes priority over exported point highlighting.
+		// entrance highlighting takes priority over fixed point
+		// highlighting, which in turn takes priority over exported
+		// point highlighting.
 
 		if (m_Entrances && (pt->flags & hl_ENTRANCE)) {
 		    SetColour(col_GREEN);
@@ -1681,8 +1692,8 @@ void GfxCore::NattyDrawNames()
 #endif
 
     for (int name = 0; name < m_NumCrosses; name++) {
-	// For non-OpenGL: *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
-	//                 the actual station.
+	// For non-OpenGL: *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are
+	// the coordinates of the actual station.
 
 #ifdef AVENGL
 	// Project the label's position onto the window.
@@ -1696,10 +1707,11 @@ void GfxCore::NattyDrawNames()
 
 	// We may have labels in the cache which are still going to be in the
 	// same place: in this case we only consider labels here which are in
-	// just about the region of screen exposed since the last label cache generation,
-	// and were not plotted last time, together with labels which were in
-	// this category last time around but didn't end up plotted (possibly because
-	// the newly exposed region was too small, as happens during a drag).
+	// just about the region of screen exposed since the last label cache
+	// generation, and were not plotted last time, together with labels
+	// which were in this category last time around but didn't end up
+	// plotted (possibly because the newly exposed region was too small, as
+	// happens during a drag).
 #ifdef _DEBUG
 	if (m_LabelCacheNotInvalidated) {
 	    assert(m_LabelCacheExtend.bottom >= m_LabelCacheExtend.top);
@@ -1798,8 +1810,8 @@ void GfxCore::SimpleDrawNames()
 
     LabelFlags* last_plot = m_LabelsLastPlotted;
     for (int name = 0; name < m_NumCrosses; name++) {
-	// *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates of
-	// the actual station.
+	// *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates
+	// of the actual station.
 
 	if ((m_LabelCacheNotInvalidated && *last_plot == label_PLOTTED) ||
 	    !m_LabelCacheNotInvalidated) {
@@ -3244,10 +3256,11 @@ void GfxCore::SetGLProjection()
     double aspect = double(m_YSize) / double(m_XSize);
     m_Volume.bottom = -m_MaxExtent * aspect / 2.0;
     m_Volume.left = -m_MaxExtent / 2.0;
-    // Observe that the survey can't "escape" out of the sides of the viewing volume
-    // 'cos it's an orthographic projection.  It can, however, escape out of the front or back;
-    // thus these parameters must be changed according to the scale (which the others must not be,
-    // or else the survey will never appear to change size).
+    // Observe that the survey can't "escape" out of the sides of the viewing
+    // volume 'cos it's an orthographic projection.  It can, however, escape
+    // out of the front or back; thus these parameters must be changed
+    // according to the scale (which the others must not be, or else the survey
+    // will never appear to change size).
     glOrtho(m_Volume.left, // left
 	    -m_Volume.left, // right
 	    m_Volume.bottom, // bottom
@@ -3263,8 +3276,8 @@ void GfxCore::SetModellingTransformation()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Remember: last line in this sequence of matrix multiplications is the first one to be
-    //           applied during the modelview transform!
+    // Remember: last line in this sequence of matrix multiplications is the
+    // first one to be applied during the modelview transform!
     glTranslated(m_Params.display_shift.x, -m_Params.display_shift.y, 0.0);
     glScaled(m_Params.scale, m_Params.scale, m_Params.scale);
     m_Params.rotation.CopyToOpenGL();
@@ -3273,7 +3286,8 @@ void GfxCore::SetModellingTransformation()
 
 void GfxCore::ClearBackgroundAndBuffers()
 {
-    // Initialise the OpenGL background colour, and clear the depth and colour buffers.
+    // Initialise the OpenGL background colour, and clear the depth and colour
+    // buffers.
 
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -3281,7 +3295,8 @@ void GfxCore::ClearBackgroundAndBuffers()
 
 void GfxCore::SetGLAntiAliasing()
 {
-    // Propagate the setting of the anti-aliasing field through to the OpenGL subsystem.
+    // Propagate the setting of the anti-aliasing field through to the OpenGL
+    // subsystem.
 
     if (!m_DoneFirstShow) {
 	return;
