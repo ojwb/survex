@@ -25,9 +25,8 @@
 
 #include "quaternion.h"
 #include "wx.h"
-#include "avendoc.h"
 
-class ChildFrm;
+class MainFrm;
 
 class GfxCore : public wxWindow {
     struct params {
@@ -90,8 +89,7 @@ class GfxCore : public wxWindow {
     bool m_DraggingLeft;
     bool m_DraggingMiddle;
     bool m_DraggingRight;
-    wxWindow* m_Parent;
-    AvenDoc* m_Doc;
+    MainFrm* m_Parent;
     wxPoint m_DragStart;
     wxBitmap m_OffscreenBitmap;
     wxMemoryDC m_DrawDC;
@@ -219,12 +217,11 @@ class GfxCore : public wxWindow {
     void Repaint();
 
 public:
-    GfxCore(AvenDoc* doc, wxWindow* parent);
+    GfxCore(MainFrm* parent);
     ~GfxCore();
 
     void Initialise();
-
-    void OnAbout(wxCommandEvent&);
+    void InitialiseOnNextResize() { m_InitialisePending = true; }
 
     void OnDefaults(wxCommandEvent&);
     void OnPlan(wxCommandEvent&);

@@ -39,9 +39,10 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 
     wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION));
     wxStaticText* purpose = new wxStaticText(this, 505,
-	wxString(msg(/*Visualisation of Survex 3D files*/209)));
+        wxString(msg(/*Visualisation of Survex 3D files*/209)));
     wxStaticText* copyright1 = new wxStaticText(this, 503, AVEN_COPYRIGHT_MSG);
     wxStaticText* copyright2 = new wxStaticText(this, 504, COPYRIGHT_MSG);
+
     wxString licence_str(msg(/*This is free software.  Aven is licenced under the terms of the GNU General Public Licence version 2, or (at your option) any later version.*/200));
     unsigned int wrap = 42;
     while (wrap < licence_str.length()) {
@@ -51,6 +52,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 	}
 	wrap++;  
     }
+
     wxStaticText* licence = new wxStaticText(this, 506, licence_str);
     wxButton* close = new wxButton(this, wxID_OK, wxString(msg(/*Close*/204)));
     close->SetDefault();
@@ -58,9 +60,9 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBitmap& bm = wxGetApp().GetAboutBitmap();
     if (bm.Ok()) {
         wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, bm);
-        horiz->Add(bitmap, 0, wxALL, 2);
+        horiz->Add(bitmap, 0 /* horizontally unstretchable */, wxALL, 2 /* border width */);
     }
-    horiz->Add(vert, 1, wxEXPAND | wxALL, 2);
+    horiz->Add(vert, 0, wxALL, 2); // 1, wxEXPAND | wxALL, 2);
 
     vert->Add(title, 0, wxLEFT | wxRIGHT | wxTOP, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
@@ -77,9 +79,9 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     bottom->Add(close, 0, wxRIGHT | wxBOTTOM, 15);
     vert->Add(bottom, 0, wxEXPAND | wxLEFT | wxRIGHT, 0);
 
-    horiz->Fit(this);
-    horiz->SetSizeHints(this);
-
     SetAutoLayout(true);
     SetSizer(horiz);
+
+    horiz->Fit(this);
+    horiz->SetSizeHints(this);
 }

@@ -22,9 +22,6 @@
 
 #include "aven.h"
 #include "mainfrm.h"
-#include "avendoc.h"
-#include "avenview.h"
-#include "aboutdlg.h"
 
 #include "message.h"
 
@@ -79,13 +76,6 @@ bool Aven::OnInit()
 	exit(c > 0 ? 1 /* syntax error */ : 0 /* --help */);
     }
 
-    m_Pens = new wxPen[NUM_DEPTH_COLOURS+1];
-    m_Brushes = new wxBrush[NUM_DEPTH_COLOURS+1];
-    for (int pen = 0; pen < NUM_DEPTH_COLOURS+1; pen++) {
-	m_Pens[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
-	m_Brushes[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
-    }
-
     wxImage::AddHandler(new wxPNGHandler);
     //--need to sort this!
 #ifdef _WIN32
@@ -95,16 +85,11 @@ bool Aven::OnInit()
 			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
 #endif
 
-    m_DocManager = new wxDocManager;
-    (void) new wxDocTemplate(m_DocManager, "Survex 3d files", "*.3d", "", "3d",
-			     "Survey Doc", "Survey View",
-        CLASSINFO(AvenDoc), CLASSINFO(AvenView));
-
-    m_Frame = new MainFrm(m_DocManager, NULL, -1, "Aven");
+    m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(640, 480));
 
     if (cli.GetParamCount() == 1) {
         wxString file = cli.GetParam(0);
-	//	m_Frame->OpenFile(file); //--tbs
+	m_Frame->OpenFile(file);
     }
 
     m_Frame->Show(true);
@@ -117,11 +102,3 @@ void Aven::ReportError(const wxString& msg)
     wxMessageBox(msg, "Aven", wxOK | wxCENTRE | wxICON_EXCLAMATION);
 }
 
-void Aven::OnAbout(wxWindow* parent)
-{
-    // Display the About box.
-
-    wxDialog* dlg = new AboutDlg(parent);
-    dlg->Centre();
-    dlg->ShowModal();
-}
