@@ -372,7 +372,7 @@ parse_msg_file(int charset_code)
    fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
 #endif
 
-   lang = strdup(lang);
+   lang = osstrdup(lang);
    /* On my RedHat 6.1 Linux box, LANG defaults to en_US - be nice and
     * handle this... */
    if (strchr(lang, '_')) {
