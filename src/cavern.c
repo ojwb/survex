@@ -256,7 +256,7 @@ main(int argc, char **argv)
 	 }
 	 /* Lollipops, Parallel legs, Iterate mx, Delta* */
 	 while ((c = *optarg++) != '\0')
-	    if (islower(c)) optimize |= BITA(c);
+	    if (islower((unsigned char)c)) optimize |= BITA(c);
 	 break;
        case 1:
 	 fLog = fTrue;

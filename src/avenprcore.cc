@@ -287,7 +287,7 @@ as_escstring(const char *v, char *s)
 		     break;
 		  }
 		  /* \<capital letter> -> Ctrl-<letter> */
-		  if (isupper(c)) {
+		  if (isupper((unsigned char)c)) {
 		     c -= '@';
 		     break;
 		  }

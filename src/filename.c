@@ -362,11 +362,13 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
       /* as a last ditch measure, try lowercasing the filename */
       if (fh == NULL) {
 	 f_changed = 0;
-	 for (p = fnm_trans; *p ; p++)
-	    if (isupper((unsigned char)*p)) {
-	       *p = tolower(*p);
+	 for (p = fnm_trans; *p ; p++) {
+	    unsigned char ch = *p;
+	    if (isupper(ch)) {
+	       *p = tolower(ch);
 	       f_changed = 1;
 	    }
+	 }
 	 if (f_changed)
 	    fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
       }
