@@ -148,7 +148,7 @@ public:
 #define LFLAG_HIGHLIGHTED	0x200
 
 class LabelPlotCmp;
-class AvenListCtrl;
+class AvenPresList;
 
 class LabelInfo {
     friend class MainFrm;
@@ -202,7 +202,7 @@ class MainFrm : public wxFrame {
     // wxCheckBox* m_RegexpCheckBox;
     wxNotebook* m_Notebook;
     wxPanel* m_PresPanel;
-    AvenListCtrl* m_PresList;
+    AvenPresList* m_PresList;
     wxString m_File;
     int separator; // character separating survey levels (often '.')
 #ifdef PREFDLG
@@ -437,6 +437,30 @@ public:
 
 private:
     DECLARE_EVENT_TABLE()
+};
+
+// wxGtk loses the dialog under the always-on-top, maximised window.
+// By creating this object on the stack, you can get the dialog on top...
+class AvenAllowOnTop {
+#ifndef _WIN32
+        MainFrm * mainfrm;
+#endif
+    public:
+	AvenAllowOnTop(MainFrm * mainfrm_) : mainfrm(0) {
+#ifndef _WIN32
+	    if (mainfrm_->IsFullScreen()) {
+		mainfrm = mainfrm_;
+		mainfrm->ViewFullScreen();
+	    }
+#else
+	    (void)mainfrm_;
+#endif
+	}
+	~AvenAllowOnTop() {
+#ifndef _WIN32
+	    if (mainfrm) mainfrm->ViewFullScreen();
+#endif
+	}
 };
 
 #endif

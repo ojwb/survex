@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001-2002 Mark R. Shinwell.
-//  Copyright (C) 2002-2003 Olly Betts
+//  Copyright (C) 2002,2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -186,6 +186,7 @@ bool Aven::OnInit()
 
 void Aven::ReportError(const wxString& msg)
 {
+    AvenAllowOnTop ontop(m_Frame);
     wxMessageBox(msg, "Aven", wxOK | wxCENTRE | wxICON_EXCLAMATION);
 }
 

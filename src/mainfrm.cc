@@ -114,7 +114,8 @@ static void write_double(double d, FILE * fh) {
     fwrite(buf, l, 1, fh);
 }
 
-class AvenListCtrl: public wxListCtrl {
+class AvenPresList : public wxListCtrl {
+    MainFrm * mainfrm;
     GfxCore * gfx;
     list<PresentationMark> entries;
     long current_item;
@@ -122,10 +123,10 @@ class AvenListCtrl: public wxListCtrl {
     wxString filename;
 
     public:
-	AvenListCtrl(wxWindow * parent, GfxCore * gfx_)
+	AvenPresList(MainFrm * mainfrm_, wxWindow * parent, GfxCore * gfx_)
 	    : wxListCtrl(parent, listctrl_PRES, wxDefaultPosition, wxDefaultSize,
 			 wxLC_EDIT_LABELS | wxLC_REPORT),
-	      gfx(gfx_), current_item(-1), modified(false)
+	      mainfrm(mainfrm_), gfx(gfx_), current_item(-1), modified(false)
 	    {
 		InsertColumn(0, msg(/*Easting*/378));
 		InsertColumn(1, msg(/*Northing*/379));
@@ -233,6 +234,7 @@ class AvenListCtrl: public wxListCtrl {
 	void Save(bool use_default_name) {
 	    wxString fnm = filename;
 	    if (!use_default_name || fnm.empty()) {
+		AvenAllowOnTop ontop(mainfrm);
 #ifdef __WXMOTIF__
 		wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", fnm,
 				  "*.fly", wxSAVE|wxOVERWRITE_PROMPT);
@@ -338,18 +340,18 @@ class AvenListCtrl: public wxListCtrl {
 
     private:
 
-	DECLARE_NO_COPY_CLASS(AvenListCtrl)
+	DECLARE_NO_COPY_CLASS(AvenPresList)
 	DECLARE_EVENT_TABLE()
 };
 
-BEGIN_EVENT_TABLE(AvenListCtrl, wxListCtrl)
-    EVT_LIST_BEGIN_LABEL_EDIT(listctrl_PRES, AvenListCtrl::OnBeginLabelEdit)
-    EVT_LIST_DELETE_ITEM(listctrl_PRES, AvenListCtrl::OnDeleteItem)
-    EVT_LIST_DELETE_ALL_ITEMS(listctrl_PRES, AvenListCtrl::OnDeleteAllItems)
-    EVT_LIST_KEY_DOWN(listctrl_PRES, AvenListCtrl::OnListKeyDown)
-    EVT_LIST_ITEM_ACTIVATED(listctrl_PRES, AvenListCtrl::OnActivated)
-    EVT_LIST_ITEM_FOCUSED(listctrl_PRES, AvenListCtrl::OnFocused)
-    EVT_CHAR(AvenListCtrl::OnChar)
+BEGIN_EVENT_TABLE(AvenPresList, wxListCtrl)
+    EVT_LIST_BEGIN_LABEL_EDIT(listctrl_PRES, AvenPresList::OnBeginLabelEdit)
+    EVT_LIST_DELETE_ITEM(listctrl_PRES, AvenPresList::OnDeleteItem)
+    EVT_LIST_DELETE_ALL_ITEMS(listctrl_PRES, AvenPresList::OnDeleteAllItems)
+    EVT_LIST_KEY_DOWN(listctrl_PRES, AvenPresList::OnListKeyDown)
+    EVT_LIST_ITEM_ACTIVATED(listctrl_PRES, AvenPresList::OnActivated)
+    EVT_LIST_ITEM_FOCUSED(listctrl_PRES, AvenPresList::OnFocused)
+    EVT_CHAR(AvenPresList::OnChar)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
@@ -796,7 +798,7 @@ void MainFrm::CreateSidePanel()
     // Presentation panel:
     m_PresPanel = new wxPanel(m_Notebook);
 
-    m_PresList = new AvenListCtrl(m_PresPanel, m_Gfx);
+    m_PresList = new AvenPresList(this, m_PresPanel, m_Gfx);
 
     wxBoxSizer *pres_panel_sizer = new wxBoxSizer(wxVERTICAL);
     pres_panel_sizer->Add(m_PresList, 1, wxALL | wxEXPAND, 2);
@@ -1266,6 +1268,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 
 void MainFrm::OnOpen(wxCommandEvent&)
 {
+    AvenAllowOnTop ontop(this);
 #ifdef __WXMOTIF__
     wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
 		      "*.3d", wxOPEN);
@@ -1304,6 +1307,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 
 void MainFrm::OnScreenshot(wxCommandEvent&)
 {
+    AvenAllowOnTop ontop(this);
     char *baseleaf = baseleaf_from_fnm(m_File.c_str());
     wxFileDialog dlg (this, msg(/*Save Screenshot*/321), "",
 		      wxString(baseleaf) + ".png",
@@ -1341,6 +1345,7 @@ void MainFrm::OnFilePreferences(wxCommandEvent&)
 void MainFrm::OnQuit(wxCommandEvent&)
 {
     if (m_PresList->Modified()) {
+	AvenAllowOnTop ontop(this);
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
 	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
 			 msg(/*Modified Presentation*/326),
@@ -1354,6 +1359,7 @@ void MainFrm::OnQuit(wxCommandEvent&)
 void MainFrm::OnClose(wxCloseEvent&)
 {
     if (m_PresList->Modified()) {
+	AvenAllowOnTop ontop(this);
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
 	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
 			 msg(/*Modified Presentation*/326),
@@ -1366,6 +1372,7 @@ void MainFrm::OnClose(wxCloseEvent&)
 
 void MainFrm::OnAbout(wxCommandEvent&)
 {
+    AvenAllowOnTop ontop(this);
     wxDialog* dlg = new AboutDlg(this);
     dlg->Centre();
     dlg->ShowModal();
@@ -1534,6 +1541,7 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
 void MainFrm::OnPresNew(wxCommandEvent&)
 {
     if (m_PresList->Modified()) {
+	AvenAllowOnTop ontop(this);
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
 	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
 			 msg(/*Modified Presentation*/326),
@@ -1546,6 +1554,7 @@ void MainFrm::OnPresNew(wxCommandEvent&)
 
 void MainFrm::OnPresOpen(wxCommandEvent&)
 {
+    AvenAllowOnTop ontop(this);
     if (m_PresList->Modified()) {
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
 	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
@@ -1596,6 +1605,7 @@ void MainFrm::OnPresRun(wxCommandEvent&)
 
 void MainFrm::OnPresExportMovie(wxCommandEvent&)
 {
+    AvenAllowOnTop ontop(this);
     // FIXME : Taking the leaf of the currently loaded presentation as the
     // default might make more sense?
     char *baseleaf = baseleaf_from_fnm(m_File.c_str());

@@ -26,7 +26,9 @@ texture mapped fonts: seems to be a minor alignment bug which gives spacing
 inconsistencies - investigate.
 
 Unix full screen mode needs to allow dialogs to appear over the window
-(e.g. try Ctrl+O while in full screen mode).
+(e.g. try Ctrl+O while in full screen mode).  Added tweak to drop out
+of it before showing dialog and return after, but this isn't ideal.
+It would be best of all if wx got this right...
 
 smooth wrinkles in presentation code (Add "stop", stop pres on Open or New,
 changing focus on listctrl as presentation plays doesn't really work properly)
