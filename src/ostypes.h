@@ -21,8 +21,8 @@
 #define OSTYPES_H
 
 #ifndef __cplusplus
-typedef enum { fFalse=0, fTrue=1 } BOOL;
-# define bool BOOL
+typedef enum { fFalse=0, fTrue=1 } SVXBOOL;
+# define bool SVXBOOL
 #else
 #define fFalse false
 #define fTrue true

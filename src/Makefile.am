@@ -39,6 +39,7 @@ printpcl_SOURCES = printpcl.c $(PRSRC) ini.c prbitmap.c
 printxbm_SOURCES = printxbm.c $(PRSRC) ini.c prbitmap.c
 printhpgl_SOURCES = prhpgl.c $(PRSRC) ini.c
 printwin_SOURCES = printwin.c $(PRSRC)
+printwin_LDFLAGS = -mwindows
 
 ROTSRC = cvrotimg.c img.c useful.c $(COMMONSRC)
 
@@ -51,7 +52,6 @@ xcaverot_SOURCES = xcaverot.c $(ROTSRC)
 xcaverot_CFLAGS = @X_CFLAGS@
 xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
-# next line is actually superfluous to automake (but riscos/bc hack needs it)
 diffpos_SOURCES = diffpos.c $(COMMONSRC)
 extend_SOURCES = extend.c $(COMMONSRC) useful.c img.c
 

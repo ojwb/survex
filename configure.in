@@ -41,6 +41,8 @@ AC_OBJEXT
 if test -n "$MINGW32$CYGWIN" ; then
 dnl assume mingw32 or cygwin means littleendian (may not be true for NT
 dnl on non-intel platforms but ISTR m$ have scrapped that)
+AC_MSG_CHECKING(endian-ness)
+AC_MSG_RESULT(mingw/cygwin so assuming little endian)
 ac_cv_c_bigendian=no
 else
 dnl autoconf doesn't look in the right place to find the endian-ness of
@@ -71,7 +73,7 @@ AC_PATH_XTRA
 
 PRINTWIN=
 if test -n "$MINGW32$CYGWIN" ; then
-  PRINTWIN=printwin
+  PRINTWIN='printwin$(EXEEXT)'
   AC_MSG_RESULT(building printwin)
 fi
 
@@ -84,20 +86,20 @@ else
                $X_LIBS $X_PRE_LIBS -lX11 -lXext $X_EXTRA_LIBS)
   CAVEROT=xcaverot ${CAVEROT}
   AC_MSG_RESULT(building xcaverot)
-fi
 
-if test -n $AVEN; then
-  AC_MSG_CHECKING(for wxwindows)
-  if wxgtk-config --version > /dev/null 2> /dev/null ; then
-    WX_LIBS=`wxgtk-config --libs`
-    AC_SUBST(WX_LIBS)
-    WX_CFLAGS=`wxgtk-config --cflags`
-    AC_SUBST(WX_CFLAGS)
-    AC_MSG_RESULT(found)
-    AC_MSG_RESULT(building aven)
-  else
-    AC_MSG_RESULT(not found)
-    AVEN=
+  if test -n $AVEN; then
+    AC_MSG_CHECKING(for wxwindows)
+    if wxgtk-config --version > /dev/null 2> /dev/null ; then
+      WX_LIBS=`wxgtk-config --libs`
+      AC_SUBST(WX_LIBS)
+      WX_CFLAGS=`wxgtk-config --cflags`
+      AC_SUBST(WX_CFLAGS)
+      AC_MSG_RESULT(found)
+      AC_MSG_RESULT(building aven)
+    else
+      AC_MSG_RESULT(not found)
+      AVEN=
+    fi
   fi
 fi
 

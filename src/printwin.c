@@ -54,7 +54,7 @@ static char *fontname, *fontname_labels;
 static const char *win_Name(void);
 static int win_Pre(int pagesToPrint, const char *title);
 static void win_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void win_Init(FILE *fh, const char *pth, float *pscX, float *pscY);
+static void win_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
 static void win_MoveTo(long x, long y);
 static void win_DrawTo(long x, long y);
 static void win_DrawCross(long x, long y);
@@ -139,7 +139,6 @@ win_DrawCircle(long x, long y, long r)
    Ellipse(pd, x_t - r, y_t - r, x_t + r, y_t + r);
 }
 
-
 static int
 win_Pre(int pagesToPrint, const char *title)
 {
@@ -191,7 +190,7 @@ win_ShowPage(const char *szPageDetails)
 
 /* Initialise HPGL/PS printer routines */
 static void
-win_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
+win_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 {
    /* name and size of font to use for text */
    TEXTMETRIC temp;
