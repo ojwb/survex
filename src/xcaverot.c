@@ -1212,7 +1212,7 @@ mouse_moved(Display * display, Window window, int mx, int my)
       int dy = my - rotsc_start_y;
 
       /* L-R => rotation */
-      view_angle = rotsc_angle + (((float)dx) / 2.5);
+      view_angle = rotsc_angle - (((float)dx) / 2.5);
 
       while (view_angle < 0.0)
 	 view_angle += 360.0;
@@ -1230,10 +1230,10 @@ mouse_moved(Display * display, Window window, int mx, int my)
 
       if (dy <= 0) {
 	 /* mouse moved up or back to starting pt */
-	 scale = rotsc_scale * pow(2, a);
+	 scale = rotsc_scale * pow(2, -a);
       } else if (dy > 0) {
 	 /* mouse moved down */
-	 scale = rotsc_scale * pow(2, -a);
+	 scale = rotsc_scale * pow(2, a);
       }
       changedscale = 1;
    }
