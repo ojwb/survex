@@ -95,7 +95,7 @@ remove_stn_from_list(node **list, node *stn) {
       if (*list) (*list)->prev = NULL;
    } else {
       stn->prev->next = stn->next;
-      stn->next->prev = stn->prev;
+      if (stn->next) stn->next->prev = stn->prev;
    }
 }
 
