@@ -700,8 +700,8 @@ void GfxCore::RedrawOffscreen()
 	wxPoint(CROSS_SIZE + 1, -CROSS_SIZE - 1) // FIXME: +/- 1 for wxGTK
     };
     // Redraw the offscreen bitmap.
-    if (true) {
-	static int ignore = 10;
+    if (false) {
+	static int ignore = 10; // Ignore the first few redraws before averaging
 	static double total = 0.0;
 	static int count = 0;
 	double t = timer.Time() * 1.0e-3;
