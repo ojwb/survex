@@ -1,6 +1,6 @@
 /* > cmdline.c
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998 Olly Betts
+ * Copyright (C) 1998, 1999 Olly Betts
  */
 
 #ifdef HAVE_CONFIG_H
@@ -8,6 +8,7 @@
 #endif
 
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -15,7 +16,7 @@
 #include "filename.h"
 
 /* It might be useful to be able to disable all long options on small
- * platforms like pre-386 DOS and some PDAs...
+ * platforms like pre-386 DOS and perhaps some PDAs...
  */
 #if 0
 # define getopt_long(ARGC, ARGV, STR, OPTS, PTR) getopt(ARGC, ARGV, STR)
@@ -43,14 +44,22 @@
 /*
  * want to cope with optional/required parameters on long options
  * and also parameters on short options
-*/
+ */
 
 static const char newline_tabs[] = "\n\t\t\t\t";
 
-static const char *argv0 = "<program>";
+static int argc;
+static char *const *argv;
+static const char *shortopts;
+static const struct option *longopts;
+static int *longind;
+static const struct help_msg *help;
+static int min_args, max_args;
 
-static void
-display_help(const struct help_msg *help, const struct option *opts)
+static const char *argv0 = NULL;
+
+void
+cmdline_help(void)
 {
    while (help->opt) {
       const char *longopt = 0;
@@ -58,7 +67,7 @@ display_help(const struct help_msg *help, const struct option *opts)
       const struct option *o = 0;
 
       if (HLP_ISLONG(opt)) {
-	 o = opts + HLP_DECODELONG(opt);
+	 o = longopts + HLP_DECODELONG(opt);
 	 longopt = o->name;
 	 opt = o->val;
       }
@@ -103,48 +112,129 @@ display_help(const struct help_msg *help, const struct option *opts)
    exit(0);
 }
 
-static void
-display_version(void)
+void
+cmdline_version(void)
 {
    printf("%s - "PACKAGE" "VERSION"\n", argv0);
 }
 
-static void
-display_syntax(void)
-{
-   printf("\nSyntax: %s [OPTION]... [FILE]...\n", argv0);
+void
+cmdline_syntax(void)
+{  
+   printf("\nSyntax: %s [OPTION]...", argv0);
+   if (min_args) {
+      int i = min_args;
+      while (i--) fputs(" FILE", stdout);
+   } else {
+      if (max_args) fputs(" [FILE]", stdout);
+   }
+   if (max_args == -1) fputs("...", stdout);
+   
+   /* FIXME: not quite right - "..." means an indefinite number */
+   if (max_args > min_args) fputs("...", stdout);
+   putnl();
 }
 
-extern int
-my_getopt_long(int argc, char *const *argv, const char *shortopts,
-	       const struct option *longopts, int *longind,
-	       const struct help_msg *help, int min_args)
+int
+cmdline_int_arg(void)
 {
-   int opt;
+   int result;
+   char *endptr;
    
-   argv0 = argv[0]; /* FIXME: tidy up argv0 (remove path and extension) */
+   errno = 0;
+
+   result = strtol(optarg, &endptr, 10);
+
+   if (errno == ERANGE) {
+      fprintf(stderr, "%s: numeric argument `%s' out of range\n", argv0, optarg);
+      cmdline_syntax();
+      exit(0);
+   } else if (*optarg == '\0' || *endptr != '\0') {
+      fprintf(stderr, "%s: argument `%s' not an integer\n", argv0, optarg);
+      cmdline_syntax();
+      exit(0);
+   }
    
-   opt = getopt_long(argc, argv, shortopts, longopts, longind);
+   return result;
+}
+
+float
+cmdline_float_arg(void)
+{
+   float result;
+   char *endptr;
+   
+   errno = 0;
+
+   result = strtod(optarg, &endptr);
+
+   if (errno == ERANGE) {
+      fprintf(stderr, "%s: numeric argument `%s' out of range\n", argv0, optarg);
+      cmdline_syntax();
+      exit(0);
+   } else if (*optarg == '\0' || *endptr != '\0') {
+      fprintf(stderr, "%s: argument `%s' not a number\n", argv0, optarg);
+      cmdline_syntax();
+      exit(0);
+   }
+   
+   return result;
+}
+
+void
+cmdline_init(int argc_, char *const *argv_, const char *shortopts_,
+	     const struct option *longopts_, int *longind_,
+	     const struct help_msg *help_,
+	     int min_args_, int max_args_)
+{
+   if (!argv0) {
+      argv0 = argv_[0];
+      /* FIXME: tidy up argv0 (remove path and extension) */
+   }
+
+   argc = argc_;
+   argv = argv_;
+   shortopts = shortopts_;
+   longopts = longopts_;
+   longind = longind_;
+   help = help_;
+   min_args = min_args_;
+   max_args = max_args_;
+}
+
+int
+cmdline_getopt(void)
+{
+   int opt = getopt_long(argc, argv, shortopts, longopts, longind);
 
    if (opt == EOF) {
-      /* check minimum # of args given - if not give help message */
-      if (argc - optind < min_args) opt = HLP_HELP;
+      /* check minimum # of args given - if not give syntax message */
+      if (argc - optind < min_args) {
+	 /* FIXME: TRANSLATE */
+	 fprintf(stderr, "%s: too few arguments\n", argv0);
+	 opt = '?';
+      } else if (max_args >= 0 && argc - optind > max_args) {
+	 /* FIXME: TRANSLATE */
+	 fprintf(stderr, "%s: too many arguments\n", argv0);
+	 opt = '?';
+      }
    }
 
    switch (opt) {
     case ':': /* parameter missing */
     case '?': /* unknown opt, ambiguous match, or extraneous param */
       /* getopt displays a message for us (unless we set opterr to 0) */
-      display_syntax();
+      /* FIXME: set opterr to 0 so we can translate messages? */
+      cmdline_syntax();
       exit(0);
     case HLP_VERSION: /* --version */
-      display_version();
+      cmdline_version();
       exit(0);
     case HLP_HELP: /* --help */
-      display_version();
-      display_syntax();
+      cmdline_version();
+      cmdline_syntax();
       putchar('\n');
-      display_help(help, longopts);
+      cmdline_help();
       exit(0);
    }
    return opt;
