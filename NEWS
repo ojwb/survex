@@ -1,6 +1,9 @@
 * Asking for messages in language en_GB now tries language en as it
   was meant to.
 
+* printps/printhpgl/printwin: fixed typo which made --skip-blanks get
+  it wrong in some rare cases.
+
 Changes in 0.99-prerelease1:
 
 * Major clean-up of Survex Manual; renamed from "svxdocs" to "manual".

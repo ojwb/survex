@@ -128,7 +128,7 @@ check_intersection(long x_p, long y_p)
 #if 0
    /* approximation to correct answer */
    return !(mask_t & mask_p);
-#e;se
+#else
    /* One end of the line is on the page */
    if (!mask_t || !mask_p) return 1;
 
