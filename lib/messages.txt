@@ -316,7 +316,9 @@ it: 25 ROOT &eacute; sconsigliato
 # FIXME: TRANSLATE fr ca es de it
 en: 26 Station `%s' not exported from survey `%s'
 pt: 26 Base `%s' n&atilde;o exportada da topo `%s'
-# XXX 27,28
+# FIXME: TRANSLATE fr de pt ca es it
+en: 27 `%s' can't be both a station and a survey
+# XXX 28
 # FIXME: perhaps use "survey" instead of "prefix level"?
 # FIXME: TRANSLATE check amended message fr ca es
 en: 29 Reentering an existing prefix level is deprecated

@@ -12,7 +12,8 @@ export SURVEXHOME
 TESTS="begin_no_end end_no_begin end_no_begin_nest require_fail\
  exporterr1 exporterr2 exporterr3 exporterr4 exporterr5\
  exporterr1b exporterr2b exporterr3b exporterr6 exporterr6b\
- hanging_cpt badinc badinc2 non_existant_file"
+ hanging_cpt badinc badinc2 non_existant_file\
+ stnsurvey1.svx stnsurvey2.svx"
 
 for file in $TESTS ; do
   echo $file

@@ -422,11 +422,11 @@ data_normal(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr_name = read_prefix(fFalse);
+	  fr_name = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to_name = read_prefix(fFalse);
+	  to_name = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Tape: tape = read_numeric(fFalse); break;
@@ -690,11 +690,11 @@ data_diving(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr_name = read_prefix(fFalse);
+	  fr_name = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to_name = read_prefix(fFalse);
+	  to_name = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = To;
 	  break;
       case Tape: tape = read_numeric(fFalse); break;
@@ -847,11 +847,11 @@ data_cartesian(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr_name = read_prefix(fFalse);
+	  fr_name = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to_name = read_prefix(fFalse);
+	  to_name = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Dx: dx = read_numeric(fFalse); break;
@@ -924,11 +924,11 @@ data_nosurvey(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr_name = read_prefix(fFalse);
+	  fr_name = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to_name = read_prefix(fFalse);
+	  to_name = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Ignore:

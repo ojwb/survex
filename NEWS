@@ -1,8 +1,10 @@
 * Updated Portuguese and German translations.
 
-* Suppress warning box when starting aven with English messages.
+* aven: Suppress warning box when starting with English messages.
 
-* Accents now work in aven display.
+* aven: Accents now work in display.
+
+* cavern: Complain if the same name is used for a survey and a station.
 
 Changes in 0.97-prerelease3:
 

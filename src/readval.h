@@ -17,7 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-prefix *read_prefix(bool fOmit);
-prefix *read_prefix_check_implicit(bool fOmit);
+prefix *read_prefix_survey(bool fOmit);
+prefix *read_prefix_stn(bool fOmit);
+prefix *read_prefix_stn_check_implicit(bool fOmit);
 real read_numeric(bool fOmit);
 unsigned int read_uint(void);

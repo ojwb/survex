@@ -438,7 +438,7 @@ cmd_prefix(void)
     * deprecated and then that ROOT is...
     */
    compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
-   tag = read_prefix(fFalse);
+   tag = read_prefix_survey(fFalse);
    pcs->Prefix = tag;
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
@@ -465,7 +465,7 @@ cmd_begin(void)
    pcsNew->next = pcs;
    pcs = pcsNew;
 
-   tag = read_prefix(fTrue);
+   tag = read_prefix_survey(fTrue);
    pcs->tag = tag;
    if (tag) {
       pcs->Prefix = tag;
@@ -524,7 +524,7 @@ cmd_end(void)
    free_settings(pcs);
    pcs = pcsParent;
 
-   tag = read_prefix(fTrue); /* need to read using root *before* BEGIN */
+   tag = read_prefix_survey(fTrue); /* need to read using root *before* BEGIN */
    if (tag != tagBegin) {
       if (tag) {
 	 if (!tagBegin) {
@@ -552,7 +552,7 @@ cmd_fix(void)
    bool fRef = 0;
    long fp;
 
-   fix_name = read_prefix(fFalse);
+   fix_name = read_prefix_stn(fFalse);
    stn = StnFromPfx(fix_name);
 
    fp = ftell(file.fh);
@@ -739,12 +739,12 @@ cmd_equate(void)
    prefix *name1, *name2;
    bool fOnlyOneStn = fTrue; /* to trap eg *equate entrance.6 */
 
-   name1 = read_prefix_check_implicit(fFalse);
+   name1 = read_prefix_stn_check_implicit(fFalse);
    stn1 = StnFromPfx(name1);
    while (fTrue) {
       stn2 = stn1;
       name2 = name1;
-      name1 = read_prefix_check_implicit(fTrue);
+      name1 = read_prefix_stn_check_implicit(fTrue);
       if (name1 == NULL) {
 	 if (fOnlyOneStn) {
 	    compile_error(/*Only one station in equate list*/33);
@@ -812,7 +812,7 @@ cmd_export(void)
    prefix *pfx;
 
    fExportUsed = fTrue;
-   pfx = read_prefix(fFalse);
+   pfx = read_prefix_stn(fFalse);
    do {
       int depth = 0;
       {
@@ -869,7 +869,7 @@ cmd_export(void)
          }
          pfx->min_export = depth;
       }
-      pfx = read_prefix(fTrue);
+      pfx = read_prefix_stn(fTrue);
    } while (pfx);
 }
 

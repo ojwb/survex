@@ -76,7 +76,7 @@ ident_cmp(const char *a, const char *b)
 
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
 static prefix *
-read_prefix_(bool fOmit, bool fSuspectTypo)
+read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 {
    prefix *back_ptr, *ptr;
    char *name;
@@ -147,7 +147,6 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 	 ptr->up = back_ptr;
 	 ptr->filename = NULL;
 	 ptr->min_export = ptr->max_export = 0;
-	 /* FIXME: what if foo.1 is a station as well as a prefix?!? */
 	 ptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
 	 back_ptr->down = ptr;
 	 fNew = fTrue;
@@ -193,6 +192,13 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
    } while (isSep(ch));
    /* don't warn about a station that is refered to twice */
    if (!fNew) ptr->fSuspectTypo = fFalse;
+
+   /* check that the same name isn't being used for a survey and a station */
+   if (!fNew && (fSurvey ? ptr->stn != NULL : ptr->down != NULL)) {
+      compile_error(/*`%s' can't be both a station and a survey*/27,
+		    sprint_prefix(ptr));
+   }
+
    /* check the export level */
 #if 0
    printf("R min %d max %d depth %d pfx %s\n",
@@ -223,17 +229,24 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
 extern prefix *
-read_prefix(bool fOmit)
+read_prefix_survey(bool fOmit)
 {
-   return read_prefix_(fOmit, fFalse);
+   return read_prefix_(fOmit, fTrue, fFalse);
 }
 
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
-/* Same as read_prefix but implicit checks are made */
 extern prefix *
-read_prefix_check_implicit(bool fOmit)
+read_prefix_stn(bool fOmit)
 {
-   return read_prefix_(fOmit, fTrue);
+   return read_prefix_(fOmit, fFalse, fFalse);
+}
+
+/* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
+/* Same as read_prefix_stn but implicit checks are made */
+extern prefix *
+read_prefix_stn_check_implicit(bool fOmit)
+{
+   return read_prefix_(fOmit, fFalse, fTrue);
 }
 
 /* if numeric expr is omitted: if fOmit return HUGE_REAL, else longjmp */
