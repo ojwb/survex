@@ -119,7 +119,8 @@
 
 #include "debug.h"
 #include "survex.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "filelist.h"
 #include "netbits.h"
 #include "network.h"
@@ -303,7 +304,7 @@ extern void showline( const char *dummy, int n ) {
 #endif
 }
 
-extern void data_file( sz pth, sz fnm ) {
+extern void data_file( const char *pth, const char *fnm ) {
   typedef enum {CMD_NULL=-1, CMD_CALIBRATE, CMD_DATA, CMD_DEFAULT,
     CMD_EQUATE, CMD_FIX, CMD_GRADE, CMD_HALT, CMD_INCLUDE, CMD_MEASURE,
     CMD_PREFIX, CMD_UNITS, CMD_BEGIN, CMD_END, CMD_SOLVE, CMD_SD, CMD_SET
@@ -336,15 +337,30 @@ extern void data_file( sz pth, sz fnm ) {
   if (file.fh == NULL) {
 #if (OS==RISCOS) || (OS==UNIX)
      char *fnm_trans, *p;
+#if OS==RISCOS
+     char *q;
+#endif
      fnm_trans = osstrdup(fnm);
+#if OS==RISCOS
+     q = fnm_trans;
+#endif
      for ( p = fnm_trans ; *p ; p++ ) {
         switch (*p) {
 #if (OS==RISCOS)
          /* swap either slash to a dot, and a dot to a forward slash */
+	 /* but .. goes to ^ */
          case '.':
-           *p = '/'; break;
+	   if (p[1] == '.') {
+	      *q++ = '^';
+	      p++; /* skip second dot */
+	   } else {
+	      *q++ = '/';
+	   }
+	   break;
          case '/': case '\\':
-           *p = '.'; break;
+           *q++ = '.'; break;
+	 default:
+	   *q++ = *p; break;
 #else
          /* swap a backslash to a forward slash */
          case '\\':
@@ -352,6 +368,9 @@ extern void data_file( sz pth, sz fnm ) {
 #endif
         }
      }
+#if OS==RISCOS
+     *q = '\0';
+#endif
      file.fh = fopenWithPthAndExt( pth, fnm_trans, EXT_SVX_DATA, "rb",
                                    &fnmUsed );
      osfree(fnm_trans);
