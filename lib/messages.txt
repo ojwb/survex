@@ -270,8 +270,11 @@ pt: 21 Azimute fornecido numa visada vertical
 ca: 21 Lectura de br&uacute;ixola en una tirada vertical
 es: 21 Lectura de br&uacute;jula en una tirada vertical
 it: 21 Lettura della bussola in una battuta verticale
-#XXX22
-#XXX23
+# c.f. 192
+# FIXME: translate fr de pt ca es it
+en: 22 END with no matching BEGIN in this file
+# FIXME: translate fr de pt ca es it
+en: 23 BEGIN with no matching END in this file
 en: 24 Couldn't open data file '%s'
 fr: 24 Ne peut pas ouvrir le fichier de donn&eacute;es '%s'
 de: 24 Konnte Datendatei nicht &ouml;ffnen oder finden '%s'
@@ -402,7 +405,7 @@ ca: 45 La topografia no es pas completament connectada a estacions fixes
 es: 45 La topografia no est&aacute; completamente conectada a estaciones fijas
 it: 45 La topografia non &eacute; completamente connessa alle stazioni fisse
 en: 46 Station already fixed or equated to a fixed point
-fr: 46 Station d&eacute;j&agrave; d&eacute;clar&eacute; fix&eacute;e ou &eacute;quivalente &agrave; un point fix&eacute;
+fr: 46 Station d&eacute;j&agrave; d&eacute;clar&eacute; fixe ou &eacute;quivalente &agrave; un point fixe
 de: 46 Me&szlig;punkt ist schon fest oder gleich einem festen Punkt
 pt: 46 Base j&aacute; posicionada
 ca: 46 Estaci&oacute; ja fixada o igualada a un punt fixat
@@ -445,9 +448,13 @@ fr: 51 Lecture de clino sup&egrave;rieure &agrave; 90 degr&eacute;s (en value ab
 # these per default, cavers rarely do.
 #germ: 51 Streckenneigung &uuml;bertrifft 90 Grad (Absolutwert)
 de: 51 Neigungseintrag &uuml;bertrifft 90 Grad (Absolutwert)
+# Eric queries if "graus" is correct here:
 pt: 51 Inclina&ccedil;&atilde;o maior que 90 graus em valor absoluto
+# Eric queries if "graus" is correct here:
 ca: 51 Lectura del clino superior a 90 graus (valor absolut)
+# Eric queries if "grados" is correct here:
 es: 51 Lectura del clino superior a 90 grados (valor absoluto)
+# Eric queries if "gradi" is correct here:
 it: 51 Lettura del clinometro superiore a 90 gradi (valore assoluto)
 en: 52 Tried to equate two non-equal fixed stations
 fr: 52 Essai de rendre &eacute;gaux deux points fixes distincts
@@ -581,7 +588,7 @@ ca: 68 Dada desconeguda
 es: 68 Dato desconocido
 it: 68 Dato sconosciuto
 en: 69 Missing &quot;
-fr: 69 &quot; uml;manquant
+fr: 69 &quot; manquant
 de: 69 &quot; uml;fehlt
 pt: 69 Falta &quot;
 ca: 69 Manca &quot;
@@ -682,7 +689,7 @@ ca: 83 Escala per a encaixar en 1 p&agrave;gina
 es: 83 Escala para encajar en 1 p&aacute;gina
 it: 83 Scala per rientrare in una pagina
 en: 84 Ignoring entire line
-fr: 84 Ignore la ligne en enti&egrave;rement
+fr: 84 84 Ignore toute la ligne
 #germ: 84 Ignoriere die gesamte Zeile
 # GN(2): Not _quite_ satisfactory. (1) This is anthropomorphizing again, (2) the
 # grammar is ambiguous --- it could be read as an imperative, `please do
@@ -794,7 +801,7 @@ es: 95 Terminaci&oacute;n solicitada
 it: 95 Esecuzione interrotta su richiesta
 #ital: 95 Terminazione richiesta
 en: 96 Stack overflow
-fr: 96 La pile a d&eacute;bord&eacute;
+fr: 96 D&eacute;bordement de pile
 de: 96 Stack-&Uuml;berlauf
 pt: 96 Estouro de pilha
 ca: 96 Desbordament de la pila
@@ -1008,7 +1015,7 @@ ca:121 Escrivint el fitxer d'imatge 3d '%s'
 es:121 Gravando el fichero de imagen 3d '%s'
 it:121 Sto scrivendo il file d'immagine 3d '%s'
 en:122 Processing data file '%s'
-fr:122 Traitement fichier de donn&eacute;es '%s'
+fr:122 Traitement du fichier de donn&eacute;es '%s'
 de:122 Datendatei '%s' wird bearbeitet
 pt:122 Processando arquivo de dados '%s'
 ca:122 Processant fitxer de dades '%s'
@@ -1018,7 +1025,7 @@ it:122 Sto trattando il file di dati '%s'
 #XXX124
 # a trailing traverse is a dead end back to a junction
 en:125 Removing trailing traverses
-fr:125 Enl&egrave;ve les s&eacute;quences extr&eacute;males
+fr:125 Enl&egrave;ve les s&eacute;quences terminales
 #germ:125 Entferne Blindg&auml;nge
 de:125 Einseitig angeschlossene Me&szlig;z&uuml;ge werden entfernt
 pt:125 Removendo seq&uuml;&ecirc;ncias de ponta
@@ -1233,7 +1240,7 @@ es:151 VISTA     %03d%s
 it:151 VISTA     %03d%s
 # As in "printer driver"
 en:152 " Driver"
-fr:152 " 'driver'"
+fr:152 " pilote"
 de:152 " Treiber"
 pt:152 " Driver"
 ca:152 " Driver"
@@ -1495,6 +1502,7 @@ pt:191 Necess&aacute;rio arquivo de mensagens com vers&atilde;o
 ca:191 &Eacute;s necessari un fitxer de missatges amb versi&oacute;
 es:191 Se necessita un fichero de mensages con versi&oacute;n
 it:191 &Eacute; necessario un file dei messaggi versione
+# c.f. 22
 en:192 No matching BEGIN
 fr:192 BEGIN manquant
 de:192 Kein entsprechendes BEGIN
