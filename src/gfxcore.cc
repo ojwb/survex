@@ -1493,7 +1493,7 @@ void GfxCore::NattyDrawNames()
     const int quantised_x = m_XSize / quantise;
     const int quantised_y = m_YSize / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
-    assert(m_LabelGrid);
+    if (!m_LabelGrid) m_LabelGrid = new char[buffer_size];
     memset((void*)m_LabelGrid, 0, buffer_size);
 
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();

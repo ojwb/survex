@@ -1,5 +1,8 @@
 Changes in 1.0.10:
 
+* (MS Windows version): aven: fixed assert failure upon turning on station
+  names.
+
 * aven: only add a file to the list of recently used files if it was opened
   successfully.
 
