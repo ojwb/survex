@@ -13,22 +13,11 @@
 1996.03.24 added set_chars()
 */
 
-extern void calibrate( void );
-extern void data( void );
-extern void equate_list( void );
-extern void fix_station( void );
-extern void include( sz pth );
-extern void set_chars( void );
-extern void set_default( void );
-extern void set_prefix( void );
-extern void set_sd( void );
-extern void units( void );
-extern void begin_block( void );
-extern void end_block( void );
+extern void handle_command(const char *fnmUsed, const char *fnm);
 
 extern void get_token(int en);
 
 typedef struct { char *sz; int tok; } sztok;
-extern int match_tok( sztok *tab, int tab_size, char *szTry );
+extern int match_tok(sztok *tab, int tab_size);
 
 #define TABSIZE(T) ((sizeof(T)/sizeof(sztok))-1)

@@ -102,7 +102,7 @@
 */
 
 #include <assert.h>
-#include "survex.h"
+#include "cavein.h"
 #include "filename.h"
 #include "message.h"
 #include "netbits.h"
@@ -112,385 +112,434 @@
 #include "datain.h"
 #include "commline.h"
 #include "debug.h"
+#include "out.h"
 
 #define MAX_KEYWORD_LEN 16
 
+static char buffer[MAX_KEYWORD_LEN];
+
 /* read token, giving error 'en' if it is too long and skipping line */
 extern void get_token(int en) {
-  int j;
-  skipblanks();
-  for( j=0 ; isalpha(ch) ; ) {
-    buffer[j++]=toupper(ch);
-    if (j>=MAX_KEYWORD_LEN)
-      errorjmp(en,j,file.jbSkipLine);
-    nextch();
-  }
-  buffer[j]='\0';
-  /* printf("get_token() got "); puts((sz)buffer); */
+   int j = 0;
+   skipblanks();
+   while (isalpha(ch)) {
+      buffer[j++] = toupper(ch);
+      if (j >= MAX_KEYWORD_LEN) errorjmp(en, j, file.jbSkipLine);
+      nextch();
+   }
+   buffer[j] = '\0';
+   /* printf("get_token() got "); puts(buffer); */
 }
 
 /* match_tok() now uses binary chop
  * tab argument should be alphabetically sorted (ascending)
  */
-extern int match_tok( sztok *tab, int tab_size, char *szTry ) {
-  int a=0, b=tab_size-1, c;
-  int r;
-  assert(tab_size>0); /* catch empty table */
+extern int match_tok(sztok *tab, int tab_size) {
+   int a = 0, b = tab_size - 1, c;
+   int r;
+   assert(tab_size > 0); /* catch empty table */
 /*  printf("[%d,%d]",a,b); */
-  while (a<=b) {
-     c=(unsigned)(a+b)/2;
+   while (a <= b) {
+      c = (unsigned)(a + b) / 2;
 /*     printf(" %d",c); */
-     r=strcmp(tab[c].sz,szTry);
-     if (r==0)
-       return tab[c].tok; /* match */
-     if (r<0)
-       a=c+1;
-     else
-       b=c-1;
-  }
-  return tab[tab_size].tok; /* no match */
+      r = strcmp(tab[c].sz, buffer);
+      if (r == 0) return tab[c].tok; /* match */
+      if (r < 0)
+	 a = c + 1;
+      else
+	 b = c - 1;
+   }
+   return tab[tab_size].tok; /* no match */
 }
+
+typedef enum {CMD_NULL=-1, CMD_CALIBRATE, CMD_DATA, CMD_DEFAULT, CMD_EQUATE,
+   CMD_FIX, CMD_GRADE, CMD_HALT, CMD_INCLUDE, CMD_LRUD, CMD_MEASURE,
+   CMD_PREFIX, CMD_UNITS, CMD_BEGIN, CMD_END, CMD_SOLVE, CMD_SD, CMD_SET
+} cmds;
+ 
+static sztok cmd_tab[] = {
+     {"BEGIN",     CMD_BEGIN},
+     {"CALIBRATE", CMD_CALIBRATE},
+     {"DATA",      CMD_DATA},
+     {"DEFAULT",   CMD_DEFAULT},
+     {"END",       CMD_END},
+     {"EQUATE",    CMD_EQUATE},
+     {"FIX",       CMD_FIX},
+     {"GRADE",     CMD_GRADE},
+     {"HALT",      CMD_HALT},
+     {"INCLUDE",   CMD_INCLUDE},
+     {"LRUD",      CMD_LRUD},
+     {"MEASURE",   CMD_MEASURE},
+     {"PREFIX",    CMD_PREFIX},
+     {"SD",        CMD_SD},
+     {"SET",       CMD_SET},
+     {"SOLVE",     CMD_SOLVE},
+     {"UNITS",     CMD_UNITS},
+     {NULL,        CMD_NULL}
+};
 
 /* NB match_units *doesn't* call get_token, so do it yourself if approp. */
 static int match_units(void) {
-  static sztok utab[] = {
-    {"DEGREES",       UNITS_DEGS },
-    {"DEGS",          UNITS_DEGS },
-    {"FEET",          UNITS_FEET },
-    {"GRADS",         UNITS_GRADS },
-    {"METERS",        UNITS_METRES },
-    {"METRES",        UNITS_METRES },
-    {"METRIC",        UNITS_METRES },
-    {"MILS",          UNITS_GRADS },
-    {"MINUTES",       UNITS_MINUTES },
-    {"PERCENT",       UNITS_PERCENT },
-    {"PERCENTAGE",    UNITS_PERCENT },
-    {"YARDS",         UNITS_YARDS },
-    {NULL,            UNITS_NULL }
-  };
-  int units;
-  units=match_tok(utab,TABSIZE(utab),(sz)buffer);
-  if (units==UNITS_NULL)
-    errorjmp(35,strlen((sz)buffer),file.jbSkipLine);
-  if (units==UNITS_PERCENT) {
-    NOT_YET;
-  }
-  return units;
+   static sztok utab[] = {
+	{"DEGREES",       UNITS_DEGS },
+	{"DEGS",          UNITS_DEGS },
+	{"FEET",          UNITS_FEET },
+	{"GRADS",         UNITS_GRADS },
+	{"METERS",        UNITS_METRES },
+	{"METRES",        UNITS_METRES },
+	{"METRIC",        UNITS_METRES },
+	{"MILS",          UNITS_GRADS },
+	{"MINUTES",       UNITS_MINUTES },
+	{"PERCENT",       UNITS_PERCENT },
+	{"PERCENTAGE",    UNITS_PERCENT },
+	{"YARDS",         UNITS_YARDS },
+	{NULL,            UNITS_NULL }
+   };
+   int units;
+   units = match_tok(utab, TABSIZE(utab));
+   if (units == UNITS_NULL) errorjmp(35, strlen(buffer), file.jbSkipLine);
+   if (units == UNITS_PERCENT) NOT_YET;
+   return units;
 }
 
 /* returns mask with bit x set to indicate quantity x specified */
 static ulong get_qlist(void) {
-  static sztok qtab[] = {
-    {"ANGLEOUTPUT",  Q_ANGLEOUTPUT },
-    {"BEARING",      Q_BEARING },
-    {"CLINO",        Q_GRADIENT },    /* alternative name */
-    {"COMPASS",      Q_BEARING },     /* alternative name */
-    {"COUNT",        Q_COUNT },
-    {"COUNTER",      Q_COUNT },       /* alternative name */
-    {"DECLINATION",  Q_DECLINATION },
-    {"DEPTH",        Q_DEPTH },
-    {"DX",           Q_DX },
-    {"DY",           Q_DY },
-    {"DZ",           Q_DZ },
-    {"GRADIENT",     Q_GRADIENT },
-    {"LENGTH",       Q_LENGTH },
-    {"LENGTHOUTPUT", Q_LENGTHOUTPUT },
-    {"LEVEL",        Q_LEVEL},
-    {"PLUMB",        Q_PLUMB},
-    {"POSITION",     Q_POS },
-    {"TAPE",         Q_LENGTH },      /* alternative name */
-    {NULL,           Q_NULL }
-  };
-  ulong qmask=0;
-  int tok;
-  for (;;) {
-    get_token(34);
-    tok=match_tok(qtab,TABSIZE(qtab),(sz)buffer);
-    if (tok==Q_NULL)
-      break; /* bail out if we reach the table end with no match */
-    qmask|=BIT(tok);
-  }
-  return qmask;
-}
-
-static int tok_style(char *szStyle) {
-  static sztok styletab[] = {
-    {"DIVING",       STYLE_DIVING },
-    {"NORMAL",       STYLE_NORMAL },
-    {NULL,           STYLE_UNKNOWN }
-  };
-  return match_tok(styletab,TABSIZE(styletab),szStyle);
+   static sztok qtab[] = {
+	{"ANGLEOUTPUT",  Q_ANGLEOUTPUT },
+	{"BEARING",      Q_BEARING },
+	{"CLINO",        Q_GRADIENT },    /* alternative name */
+	{"COMPASS",      Q_BEARING },     /* alternative name */
+	{"COUNT",        Q_COUNT },
+	{"COUNTER",      Q_COUNT },       /* alternative name */
+	{"DECLINATION",  Q_DECLINATION },
+	{"DEPTH",        Q_DEPTH },
+	{"DX",           Q_DX },
+	{"DY",           Q_DY },
+	{"DZ",           Q_DZ },
+	{"GRADIENT",     Q_GRADIENT },
+	{"LENGTH",       Q_LENGTH },
+	{"LENGTHOUTPUT", Q_LENGTHOUTPUT },
+	{"LEVEL",        Q_LEVEL},
+	{"PLUMB",        Q_PLUMB},
+	{"POSITION",     Q_POS },
+	{"TAPE",         Q_LENGTH },      /* alternative name */
+	{NULL,           Q_NULL }
+   };
+   ulong qmask = 0;
+   int tok;
+   for (;;) {
+      get_token(34);
+      tok = match_tok(qtab, TABSIZE(qtab));
+      /* bail out if we reach the table end with no match */
+      if (tok == Q_NULL) break;
+      qmask |= BIT(tok);
+   }
+   return qmask;
 }
 
 #define SPECIAL_UNKNOWN 0
-extern void set_chars( void ) {
-  static sztok chartab[] = {
-    {"BLANK",     SPECIAL_BLANK },
-    {"COMMENT",   SPECIAL_COMMENT },
-    {"DECIMAL",   SPECIAL_DECIMAL },
-    {"EOL",       SPECIAL_EOL }, /* EOL won't work well */
-    {"KEYWORD",   SPECIAL_KEYWORD },
-    {"MINUS",     SPECIAL_MINUS },
-    {"NAMES",     SPECIAL_NAMES },
-    {"OMIT",      SPECIAL_OMIT },
-    {"PLUS",      SPECIAL_PLUS },
-    {"ROOT",      SPECIAL_ROOT },
-    {"SEPARATOR", SPECIAL_SEPARATOR },
-    {NULL,        SPECIAL_UNKNOWN }
-  };
-  int mask;
-  int i;
-  get_token(0); /* !HACK! error message if not found */
-  mask=match_tok(chartab,TABSIZE(chartab),(sz)buffer);
-  if (!mask) {
-    error(0,showandskipline,NULL,(int)strlen((sz)buffer)); /* !HACK! error message if not found */
-    return;
-  }
-  /* if we're currently using an inherited translation table, allocate a new
-   * table, and copy old one into it */
-  if (pcs->next && pcs->next->Translate==pcs->Translate) {
-     short *p;
-     p=((short*)osmalloc(ossizeof(short)*257))+1;
-     memcpy(p-1,pcs->Translate-1,sizeof(short)*257);
-     pcs->Translate=p;
-  }
-  /* clear this flag for all non-alphanums */
-  for( i=0; i<256 ; i++ )
-    if (!isalnum(i))
-      pcs->Translate[i]&=~mask;
-  skipblanks();
-  /* now set this flag for all specified chars */
-  for( ; !isEol(ch) ; ) {
-    if (!isalnum(ch))
-      pcs->Translate[ch]|=mask;
-    nextch();
-  }
+static void set_chars(void) {
+   static sztok chartab[] = {
+	{"BLANK",     SPECIAL_BLANK },
+	{"COMMENT",   SPECIAL_COMMENT },
+	{"DECIMAL",   SPECIAL_DECIMAL },
+	{"EOL",       SPECIAL_EOL }, /* EOL won't work well */
+	{"KEYWORD",   SPECIAL_KEYWORD },
+	{"MINUS",     SPECIAL_MINUS },
+	{"NAMES",     SPECIAL_NAMES },
+	{"OMIT",      SPECIAL_OMIT },
+	{"PLUS",      SPECIAL_PLUS },
+	{"ROOT",      SPECIAL_ROOT },
+	{"SEPARATOR", SPECIAL_SEPARATOR },
+	{NULL,        SPECIAL_UNKNOWN }
+   };
+   int mask;
+   int i;
+   get_token(0); /* !HACK! error message if not found */
+   mask = match_tok(chartab, TABSIZE(chartab));
+   if (!mask) {
+      /* FIXME error message if not found */
+      error(0, showandskipline, NULL, (int)strlen(buffer));
+      return;
+   }
+   /* if we're currently using an inherited translation table, allocate a new
+    * table, and copy old one into it */
+   if (pcs->next && pcs->next->Translate == pcs->Translate) {
+      short *p;
+      p = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+      memcpy(p - 1, pcs->Translate - 1, sizeof(short) * 257);
+      pcs->Translate = p;
+   }
+   /* clear this flag for all non-alphanums */
+   for (i = 0; i < 256; i++) if (!isalnum(i)) pcs->Translate[i] &= ~mask;
+   skipblanks();
+   /* now set this flag for all specified chars */
+   while (!isEol(ch)) {
+      if (!isalnum(ch)) pcs->Translate[ch] |= mask;
+      nextch();
+   }
 }
 
-extern void set_prefix( void ) {
-  pcs->Prefix=read_prefix(fFalse);
-  /* !HACK! maybe warn that this command is now deprecated */
+static void set_prefix(void) {
+   pcs->Prefix = read_prefix(fFalse);
+   /* !HACK! maybe warn that this command is now deprecated */
 }
 
-extern void begin_block( void ) {
-  prefix *tag;
-  push();
-  tag=read_prefix(fTrue);
-  pcs->tag=tag;
-  if (tag)
-    pcs->Prefix=tag;
+static void push(void) {
+   settings *pcsNew;
+   pcsNew = osnew(settings);
+/*   memcpy(pcsNew, pcs, ossizeof(settings)); */
+   *pcsNew = *pcs; /* copy contents */
+   pcsNew->next = pcs;
+   pcs = pcsNew;
+   /* don't free it - parent still using it */
+   pcs->fOrderingFreeable = fFalse;
+   /* don't free it - parent still using it */
+/*   pcs->fTranslateFreeable=fFalse; */
 }
 
-extern void end_block( void ) {
-  prefix *tag, *tagBegin;
-  tagBegin=pcs->tag;
-  if (!pop()) {
-    error(192,showandskipline,NULL,0); /* more ENDs than BEGINs */
-    return;
-  }
-  tag=read_prefix(fTrue); /* need to read using root *before* BEGIN */
-  if (tag!=tagBegin) {
-    if (tag)
-      error(193,showandskipline,NULL,0); /* tag mismatch */
-    else
-      warning(194,showline,NULL,0); /* close tag omitted; open tag given */
-  }
+static bool pop(void) {
+   settings *pcsParent;
+   pcsParent = pcs->next;
+   if (pcsParent == NULL) return fFalse;
+   /* free ordering and/or Translate if not used by parent */
+   if (pcs->ordering != pcsParent->ordering) osfree(pcs->ordering);
+   if (pcs->Translate != pcsParent->Translate) osfree(pcs->Translate - 1);
+   osfree(pcs);
+   pcs = pcsParent;
+   return fTrue;
 }
 
-extern void fix_station( void ) {
-  prefix *fix_name;
-  node   *stn;
-  static node *stnOmitAlready=NULL;
-  real x,y,z;
+static void begin_block(void) {
+   prefix *tag;
+   push();
+   tag = read_prefix(fTrue);
+   pcs->tag = tag;
+   if (tag) pcs->Prefix = tag;
+}
 
-  fix_name=read_prefix(fFalse);
-  stn=StnFromPfx(fix_name);
-
-  x=read_numeric(fTrue);
-  if (x==HUGE_REAL) {
-    if (stnOmitAlready) {
-      if (stn!=stnOmitAlready)
-        error(56,showandskipline,NULL,0);
+static void end_block(void) {
+   prefix *tag, *tagBegin;
+   tagBegin = pcs->tag;
+   if (!pop()) {
+      error(192, showandskipline, NULL, 0); /* more ENDs than BEGINs */
+      return;
+   }
+   tag = read_prefix(fTrue); /* need to read using root *before* BEGIN */
+   if (tag != tagBegin) {
+      if (tag)
+	 error(193, showandskipline, NULL, 0); /* tag mismatch */
       else
-        warning(61,showline,NULL,0);
-      return;
-    }
-    warning(54,showline,NULL,0);
-    x=y=z=(real)0.0;
-    stnOmitAlready=stn;
-  } else {
-    y=read_numeric(fFalse);
-    z=read_numeric(fFalse);
-  }
-
-  if (!fixed(stn)) {
-    POS(stn,0)=x;
-    POS(stn,1)=y;
-    POS(stn,2)=z;
-    fix(stn);
-    return;
-  }
-
-  if (x!=POS(stn,0) || y!=POS(stn,1) || z!=POS(stn,2)) {
-    error(46,showandskipline,NULL,0);
-    return;
-  }
-  warning(55,showline,NULL,0);
+	 /* close tag omitted; open tag given */
+	 warning(194, showline, NULL, 0);
+   }
 }
 
-extern void equate_list( void ) {
-  node   *stn1,*stn2;
-  prefix *name1,*name2;
-  bool   fOnlyOneStn=fTrue; /* to trap eg *equate entrance.6 */
+static void fix_station(void) {
+   prefix *fix_name;
+   node *stn;
+   static node *stnOmitAlready = NULL;
+   real x,y,z;
 
-  name1=read_prefix(fFalse);
-  stn1=StnFromPfx( name1 );
-  while (fTrue) {
-    stn2=stn1;
-    name2=name1;
-    name1=read_prefix(fTrue);
-    if (name1==NULL) {
-      if (fOnlyOneStn)
-        error(33,showandskipline,NULL,0);
-      return;
-    }
-    fOnlyOneStn=fFalse;
-    stn1=StnFromPfx( name1 );
-    /* equate nodes if not already equated */
-    if (name1->pos!=name2->pos) {
-      node *stn;
-      pos *posReplace; /* need this as name2->pos gets changed during loop */
-      pos *posWith;
-      if (fixed(stn1)) {
-        if (fixed(stn2)) {
-         /* both are fixed, but let them off iff their coordinates match */
-         int d;
-         for( d=2 ; d>=0 ; d-- )
-           if ( name1->pos->p[d]!=name2->pos->p[d] ) {
-             error(52,showandskipline,NULL,1);
-             return;
-           }
-         warning(53,showline,NULL,1);
+   fix_name = read_prefix(fFalse);
+   stn = StnFromPfx(fix_name);
+
+   x = read_numeric(fTrue);
+   if (x == HUGE_REAL) {
+      if (stnOmitAlready) {
+	 if (stn != stnOmitAlready) 
+	    error(56, showandskipline, NULL, 0);
+	 else
+	    warning(61, showline, NULL, 0);
+	 return;
       }
-      posReplace=name2->pos; /* stn1 is fixed, so replace the other's pos */
-      posWith=name1->pos;
-    } else {
-      posReplace=name1->pos; /* stn1 isn't fixed, so replace its pos */
-      posWith=name2->pos;
-    }
+      warning(54, showline, NULL, 0);
+      x = y = z = (real)0.0;
+      stnOmitAlready = stn;
+   } else {
+      y = read_numeric(fFalse);
+      z = read_numeric(fFalse);
+   }
 
-    /* replace all refs to posReplace with references to pos of stn1 */
-    FOR_EACH_STN( stn )
-      if (stn->name->pos==posReplace)
-        stn->name->pos=posWith;
-    /* free the (now-unused) old pos */
-    osfree(posReplace);
-    /* count equates as legs for now... */
+   if (!fixed(stn)) {
+      POS(stn, 0) = x;
+      POS(stn, 1) = y;
+      POS(stn, 2) = z;
+      fix(stn);
+      return;
+   }
+
+   if (x != POS(stn, 0) || y != POS(stn, 1) || z != POS(stn, 2)) {
+      error(46, showandskipline, NULL, 0);
+      return;
+   }
+   warning(55, showline, NULL, 0);
+}
+
+static void equate_list(void) {
+   node *stn1, *stn2;
+   prefix *name1, *name2;
+   bool fOnlyOneStn = fTrue; /* to trap eg *equate entrance.6 */
+
+   name1 = read_prefix(fFalse);
+   stn1 = StnFromPfx(name1);
+   while (fTrue) {
+      stn2 = stn1;
+      name2 = name1;
+      name1 = read_prefix(fTrue);
+      if (name1 == NULL) {
+	 if (fOnlyOneStn) error(33, showandskipline, NULL, 0);
+	 return;
+      }
+      fOnlyOneStn = fFalse;
+      stn1 = StnFromPfx(name1);
+      /* equate nodes if not already equated */
+      if (name1->pos != name2->pos) {
+	 node *stn;
+	 pos *posReplace; /* need this as name2->pos gets changed during loop */
+	 pos *posWith;
+	 if (fixed(stn1)) {
+	    if (fixed(stn2)) {
+	       /* both are fixed, but let them off iff their coordinates match */
+	       int d;
+	       for (d = 2; d >= 0; d--)
+		  if (name1->pos->p[d] != name2->pos->p[d]) {
+		     error(52, showandskipline, NULL, 1);
+		     return;
+		  }
+	       warning(53, showline, NULL, 1);
+	    }
+	    posReplace = name2->pos; /* stn1 is fixed, so replace the other's pos */
+	    posWith = name1->pos;
+	 } else {
+	    posReplace = name1->pos; /* stn1 isn't fixed, so replace its pos */
+	    posWith = name2->pos;
+	 }
+
+	 /* replace all refs to posReplace with references to pos of stn1 */
+	 FOR_EACH_STN(stn)
+	    if (stn->name->pos == posReplace) stn->name->pos = posWith;
+
+	 /* free the (now-unused) old pos */
+	 osfree(posReplace);
+
+	 /* count equates as legs for now... */
 #ifdef NO_COVARIANCES
-    addleg(stn1,stn2,(real)0.0,(real)0.0,(real)0.0,
-                     (real)0.0,(real)0.0,(real)0.0);
+	 addleg(stn1, stn2,
+		(real)0.0, (real)0.0, (real)0.0,
+		(real)0.0, (real)0.0, (real)0.0);
 #else
-    addleg(stn1,stn2,(real)0.0,(real)0.0,(real)0.0,
-                     (real)0.0,(real)0.0,(real)0.0,
-                     (real)0.0,(real)0.0,(real)0.0);
+	 addleg(stn1, stn2,
+		(real)0.0, (real)0.0, (real)0.0,
+		(real)0.0, (real)0.0, (real)0.0,
+		(real)0.0, (real)0.0, (real)0.0);
 #endif
-    }
-  }
+      }
+   }
 }
 
-void data( void ) {
-  static sztok dtab[]= {
+static void data(void) {
+   static sztok dtab[] = {
 #ifdef SVX_MULTILINEDATA
-    {"BACK",         Back },
+	{"BACK",         Back },
 #endif
-    {"BEARING",      Comp },
-    {"FROM",         Fr },
-    {"FROMDEPTH",    FrDepth },
-    {"GRADIENT",     Clino },
-    {"IGNORE",       Ignore },
-    {"IGNOREALL",    IgnoreAll },
-    {"LENGTH",       Tape },
+	{"BEARING",      Comp },
+	{"FROM",         Fr },
+	{"FROMDEPTH",    FrDepth },
+	{"GRADIENT",     Clino },
+	{"IGNORE",       Ignore },
+	{"IGNOREALL",    IgnoreAll },
+	{"LENGTH",       Tape },
 #ifdef SVX_MULTILINEDATA
-    {"NEXT",         Next },
+	{"NEXT",         Next },
 #endif
-    {"TO",           To },
-    {"TODEPTH",      ToDepth },
-    { NULL,          End }
-  };
-/*typedef enum { End=0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
-  FrDepth, ToDepth, dx, dy, dz, FrCount, ToCount, dr,
-  Ignore, IgnoreAll } datum;*/
-
-  static style fn[]={data_normal,data_diving};
-
-  /* readings which may be given for each style */
-  static ulong mask[]={
-    BIT(Fr)|BIT(To)|BIT(Tape)|BIT(Comp)|BIT(Clino),
-    BIT(Fr)|BIT(To)|BIT(Tape)|BIT(Comp)|BIT(FrDepth)|BIT(ToDepth)
-  };
-  /* readings which may be omitted for each style */
-  static ulong mask_optional[]={
-    BIT(Clino),
-    0
-  };
-
-  int style, k=0, kMac;
-  datum *new_order, d;
-  unsigned long m,mUsed=0;
-
-  kMac = 6; /* minimum for NORMAL style */
-  new_order = osmalloc( kMac*sizeof(datum) );
-
-  get_token(65);
-  style=tok_style((char*)buffer);
-  if (style==STYLE_UNKNOWN) {
-    error(65,showandskipline,NULL,(int)strlen((sz)buffer));
-    return;
-  }
-  pcs->Style=fn[style-1];
-#ifdef SVX_MULTILINEDATA
-  m=mask[style-1]|BIT(Back)|BIT(Next)|BIT(Ignore)|BIT(IgnoreAll)|BIT(End);
-#else
-  m=mask[style-1]|BIT(Ignore)|BIT(IgnoreAll)|BIT(End);
+	{"TO",           To },
+	{"TODEPTH",      ToDepth },
+	{NULL,           End }
+   };
+#if 0
+   typedef enum { End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
+      FrDepth, ToDepth, dx, dy, dz, FrCount, ToCount, dr,
+      Ignore, IgnoreAll } datum;
 #endif
 
-  skipblanks();
-  /* olde syntax had optional field for survey grade, so allow an omit */
-  if (isOmit(ch))
-    nextch();
+   static style fn[] = {data_normal, data_diving};
 
-  do {
-    get_token(68);
-    d=match_tok(dtab,TABSIZE(dtab),(sz)buffer);
-    if (((m>>d)&1)==0) {
-      /* token not valid for this data style */
-      error(63,showandskipline,NULL,(int)strlen((sz)buffer));
+   /* readings which may be given for each style */
+   static ulong mask[] = {
+      BIT(Fr) | BIT(To) | BIT(Tape) | BIT(Comp) | BIT(Clino),
+      BIT(Fr) | BIT(To) | BIT(Tape) | BIT(Comp) | BIT(FrDepth) | BIT(ToDepth)
+   };
+
+   /* readings which may be omitted for each style */
+   static ulong mask_optional[] = {
+      BIT(Clino),
+      0
+   };
+
+   static sztok styletab[] = {
+	{"DIVING",       STYLE_DIVING },
+	{"NORMAL",       STYLE_NORMAL },
+	{NULL,           STYLE_UNKNOWN }
+   };
+
+   int style, k = 0, kMac;
+   datum *new_order, d;
+   unsigned long m, mUsed = 0;
+
+   kMac = 6; /* minimum for NORMAL style */
+   new_order = osmalloc(kMac * sizeof(datum));
+
+   get_token(65);
+   style = match_tok(styletab, TABSIZE(styletab));
+
+   if (style == STYLE_UNKNOWN) {
+      error(65, showandskipline, NULL, (int)strlen(buffer));
       return;
-    }
+   }
+   pcs->Style = fn[style - 1];
 #ifdef SVX_MULTILINEDATA
-    /* Check for duplicates unless it's a special datum:
-     *   IGNORE,NEXT (duplicates allowed)
-     *   END,IGNOREALL (not possible)
-     */
-    if (d==Next && (mUsed & BIT(Back))) {
-      /* !HACK! "... back ... next ..." not allowed */
-    }
-#define mask_dup_ok (BIT(Ignore)|BIT(End)|BIT(IgnoreAll)|BIT(Next))
-    if (!(mask_dup_ok & BIT(d))) {
-#else 
-    /* check for duplicates unless it's IGNORE (duplicates allowed) */
-    /* or End/IGNOREALL (not possible) */
-    if (d!=Ignore && d!=End && d!=IgnoreAll) {
-/*
-      cRealData++;
-      if (cRealData>cData) {
-        error(66,showandskipline,NULL,(int)strlen((sz)buffer));
-        return;
-      }
-*/
+   m = mask[style - 1] | BIT(Back) | BIT(Next) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
+#else
+   m = mask[style - 1] | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
 #endif
-      if (mUsed & BIT(d)) {
-        error(67,showandskipline,NULL,(int)strlen((sz)buffer));
+
+   skipblanks();
+   /* olde syntax had optional field for survey grade, so allow an omit */
+   if (isOmit(ch)) nextch();
+
+   do {
+      get_token(68);
+      d = match_tok(dtab, TABSIZE(dtab));
+      if (((m >> d) & 1) == 0) {
+      /* token not valid for this data style */
+	 error(63, showandskipline, NULL, (int)strlen(buffer));
+	 return;
+      }
+#ifdef SVX_MULTILINEDATA
+      /* Check for duplicates unless it's a special datum:
+       *   IGNORE,NEXT (duplicates allowed)
+       *   END,IGNOREALL (not possible)
+       */
+      if (d == Next && (mUsed & BIT(Back))) {
+	 /* !HACK! "... back ... next ..." not allowed */
+      }
+#define mask_dup_ok (BIT(Ignore) | BIT(End) | BIT(IgnoreAll) | BIT(Next))
+      if (!(mask_dup_ok & BIT(d))) {
+#else 
+	 /* check for duplicates unless it's IGNORE (duplicates allowed) */
+	 /* or End/IGNOREALL (not possible) */
+	 if (d != Ignore && d != End && d != IgnoreAll) {
+# if 0
+	    cRealData++;
+	    if (cRealData > cData) {
+	       error(66, showandskipline, NULL, (int)strlen(buffer));
+	       return;
+	    }
+# endif
+#endif
+	    if (mUsed & BIT(d)) {
+	       error(67, showandskipline, NULL, (int)strlen(buffer));
         return;
       }
       mUsed |= BIT(d); /* used to catch duplicates */
@@ -500,7 +549,7 @@ void data( void ) {
       new_order=osrealloc( new_order, kMac*sizeof(datum) );
     }
     new_order[k++]=d;
-#define mask_done (BIT(End)|BIT(IgnoreAll))
+#define mask_done (BIT(End) | BIT(IgnoreAll))
   } while (!(mask_done & BIT(d)));
 
   if ( (mUsed | mask_optional[style-1]) != mask[style-1] ) {
@@ -515,64 +564,63 @@ void data( void ) {
 }
 
 /* masks for units which are length and angles respectively */
-#define LEN_UMASK (BIT(UNITS_METRES)|BIT(UNITS_FEET)|BIT(UNITS_YARDS))
-#define ANG_UMASK (BIT(UNITS_DEGS)|BIT(UNITS_GRADS)|BIT(UNITS_MINUTES))
+#define LEN_UMASK (BIT(UNITS_METRES) | BIT(UNITS_FEET) | BIT(UNITS_YARDS))
+#define ANG_UMASK (BIT(UNITS_DEGS) | BIT(UNITS_GRADS) | BIT(UNITS_MINUTES))
 
 /* ordering must be the same as the units enum */
 static real factor_tab[]={1.0,METRES_PER_FOOT,(METRES_PER_FOOT*3.0),
                           (PI/180.0),(PI/200.0),0.0,(PI/180.0/60.0)};
 
-void units( void ) {
-  int units, quantity;
-  ulong qmask, m; /* mask with bit x set to indicate quantity x specified */
-  real factor;
-  qmask=get_qlist();
-  if (qmask==0) {
-    badquantity:
-    error(34,showandskipline,NULL,(int)strlen((sz)buffer));
-    return;
-  }
-  /* If factor given then read units else units in buffer already */
-  factor=read_numeric( fTrue );
-  if (factor==HUGE_REAL) {
-    factor=(real)1.0;
-    /* If factor given then read units else units in buffer already */
-  } else {
-    if (*buffer!='\0') /* eg *UNITS LENGTH BOLLOX 3.5 METRES */
-      goto badquantity;
-    get_token(35); /* get units */
-  }
-  units=match_units();
-  factor*=factor_tab[units];
+static void units( void ) {
+   int units, quantity;
+   ulong qmask, m; /* mask with bit x set to indicate quantity x specified */
+   real factor;
+   qmask = get_qlist();
+   if (qmask == 0) {
+      badquantity:
+      error(34, showandskipline, NULL, (int)strlen(buffer));
+      return;
+   }
+   /* If factor given then read units else units in buffer already */
+   factor = read_numeric(fTrue);
+   if (factor == HUGE_REAL) {
+      factor = (real)1.0;
+      /* If factor given then read units else units in buffer already */
+   } else {
+      /* eg check for stuff like: *UNITS LENGTH BOLLOX 3.5 METRES */
+      if (*buffer != '\0') goto badquantity;
+      get_token(35); /* get units */
+   }
+   units = match_units();
+   factor *= factor_tab[units];
 
-  if ( ((qmask & LEN_QMASK) && !(BIT(units)&LEN_UMASK)) ||
-       ((qmask & ANG_QMASK) && !(BIT(units)&ANG_UMASK)) ) {
-    error(37,showandskipline,NULL,(int)strlen((sz)buffer));
-    return;
-  }
-  if (qmask & (BIT(Q_LENGTHOUTPUT)|BIT(Q_ANGLEOUTPUT)) ) {
-    NOT_YET;
-  }
-  for( quantity=0, m=BIT(quantity) ; m<=qmask ; quantity++, m<<=1 )
-    if (qmask & m)
-      pcs->units[quantity]=factor;
+   if (((qmask & LEN_QMASK) && !(BIT(units) & LEN_UMASK)) ||
+       ((qmask & ANG_QMASK) && !(BIT(units) & ANG_UMASK)) ) {
+      error(37, showandskipline, NULL, (int)strlen(buffer));
+      return;
+   }
+   if (qmask & (BIT(Q_LENGTHOUTPUT) | BIT(Q_ANGLEOUTPUT)) ) {
+      NOT_YET;
+   }
+   for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1)
+      if (qmask & m) pcs->units[quantity] = factor;
 }
 
-void calibrate( void ) {
+static void calibrate(void) {
   real  sc,z; /* added so we don't modify current values if error given */
   ulong qmask, m;
   int quantity;
   qmask=get_qlist();
   if (qmask==0) {
-    error(34,showandskipline,NULL,(int)strlen((sz)buffer));
-    return;
+     error(34, showandskipline, NULL, (int)strlen(buffer));
+     return;
   }
   /* useful check? */
   if ( ((qmask & LEN_QMASK)) && ((qmask & ANG_QMASK)) ) {
     /* mixed angles/lengths */
   }
   /* check for things with no valid calibration (like station posn) !HACK! */
-/*  error(39,showandskipline,NULL,(int)strlen((sz)buffer));
+/*  error(39,showandskipline,NULL,(int)strlen(buffer));
     return; */
   z=read_numeric(fFalse);
   sc=read_numeric(fTrue);
@@ -587,103 +635,201 @@ void calibrate( void ) {
     }
 }
 
-#define EQ(S) streq((char*)buffer,(S))
-void set_default( void ) {
-  get_token(36);
-  if (EQ("ALL")) {
-    NOT_YET;
-  } else if (EQ("CALIBRATE")) {
-    default_calib(pcs);
-  } else if (EQ("DATA")) {
-    default_style(pcs);default_grade(pcs);
-  } else if (EQ("GRADE")) {
-    NOT_YET;
-  } else if (EQ("UNITS")) {
-    default_units(pcs);
-  } else {
-    error(41,showandskipline,NULL,(int)strlen((sz)buffer));
-  }
+#define EQ(S) streq(buffer, (S))
+static void set_default(void) {
+   get_token(36);
+   if (EQ("ALL")) {
+      NOT_YET;
+   } else if (EQ("CALIBRATE")) {
+      default_calib(pcs);
+   } else if (EQ("DATA")) {
+      default_style(pcs);
+      default_grade(pcs);
+   } else if (EQ("GRADE")) {
+      NOT_YET;
+   } else if (EQ("UNITS")) {
+      default_units(pcs);
+   } else {
+      error(41, showandskipline, NULL, (int)strlen(buffer));
+   }
 }
 #undef EQ
 
 /* SETJMP_FIX doesn't -- the problem was elsewhere */
 #define SETJMP_FIX 0
-void include( sz pth ) {
+static void include(char *pth) {
 #if SETJMP_FIX
-  char *fnm;
+   char *fnm;
 #else
-  char   fnm[FILENAME_MAX];
+   char fnm[FILENAME_MAX];
 #endif
-  int    c;
-  parse  file_store;
-  prefix *root_store;
-  int    ch_store;
-  bool   fQuoted=fFalse;
+   int c;
+   parse file_store;
+   prefix *root_store;
+   int ch_store;
+   bool fQuoted = fFalse;
+
 #if SETJMP_FIX
-  fnm=osmalloc(FILENAME_MAX);
+   fnm = osmalloc(FILENAME_MAX);
 #endif
-  skipblanks();
-  if (ch=='\"') {
-    fQuoted=fTrue;
-    nextch();
-  }
-  for( c=0 ; !isEol(ch) ; ) {
-    if (ch == (fQuoted ? '\"' : ' ') ) {
+   skipblanks();
+   if (ch == '\"') {
+      fQuoted = fTrue;
       nextch();
-      fQuoted=fFalse;
-      break;
-    }
-    if (c>=FILENAME_MAX) {
-      error(32,showandskipline,NULL,c);
-      return;
-    }
-    fnm[c++]=ch;
-    nextch();
-  }
+   }
+   c = 0;
+   while (!isEol(ch)) {
+      if (ch == (fQuoted ? '\"' : ' ')) {
+	 nextch();
+	 fQuoted = fFalse;
+	 break;
+      }
+      if (c >= FILENAME_MAX) {
+	 error(32, showandskipline, NULL, c);
+	 return;
+      }
+      fnm[c++] = ch;
+      nextch();
+   }
 
-  if (fQuoted) {
-    error(69,showandskipline,NULL,c);
-    return;
-  }
-  fnm[c]='\0';
-  root_store=root;
-  root=pcs->Prefix; /* Root for include file is current prefix */
-  file_store=file;
-  ch_store=ch;
-  data_file( pth, fnm );
-  root=root_store; /* and restore root */
-  file=file_store;
-  ch=ch_store;
+   if (fQuoted) {
+      error(69, showandskipline, NULL, c);
+      return;
+   }
+   fnm[c] = '\0';
+   root_store = root;
+   root = pcs->Prefix; /* Root for include file is current prefix */
+   file_store = file;
+   ch_store = ch;
+   data_file(pth, fnm);
+   root = root_store; /* and restore root */
+   file = file_store;
+   ch = ch_store;
 
 #if SETJMP_FIX
-  osfree(fnm);
+   osfree(fnm);
 #endif
 }
 
-extern void set_sd(void) {
-  real sd, variance;
-  int units;
-  ulong qmask, m;
-  int quantity;
-  qmask=get_qlist();
-  if (qmask==0) {
-    error(34,showandskipline,NULL,(int)strlen((sz)buffer));
-    return;
-  }
-  sd=read_numeric(fFalse);
-  if (sd<(real)0.0) {
-    /* complain about negative sd !HACK! */
-  }
-  get_token(35);
-  units=match_units();
-  if ( ((qmask & LEN_QMASK) && !(BIT(units)&LEN_UMASK)) ||
-       ((qmask & ANG_QMASK) && !(BIT(units)&ANG_UMASK)) ) {
-    error(37,showandskipline,NULL,(int)strlen((sz)buffer));
-    return;
-  }
-  sd*=factor_tab[units];
-  variance = sqrd(sd);
-  for( quantity=0, m=BIT(quantity) ; m<=qmask ; quantity++, m<<=1 )
-    if (qmask & m)
-      pcs->Var[quantity] = variance;
+static void set_sd(void) {
+   real sd, variance;
+   int units;
+   ulong qmask, m;
+   int quantity;
+   qmask = get_qlist();
+   if (qmask == 0) {
+      error(34, showandskipline, NULL, (int)strlen(buffer));
+      return;
+   }
+   sd = read_numeric(fFalse);
+   if (sd < (real)0.0) {
+      /* complain about negative sd !HACK! */
+   }
+   get_token(35);
+   units = match_units();
+   if (((qmask & LEN_QMASK) && !(BIT(units) & LEN_UMASK)) ||
+       ((qmask & ANG_QMASK) && !(BIT(units) & ANG_UMASK)) ) {
+      error(37, showandskipline, NULL, (int)strlen(buffer));
+      return;
+   }
+
+   sd *= factor_tab[units];
+   variance = sqrd(sd);
+
+   for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1)
+      if (qmask & m) pcs->Var[quantity] = variance;
 }
+
+/* FIXME these parameters are a quick fix - clean this up */
+extern void handle_command(const char *fnmUsed, const char *fnm) {
+   get_token(12);
+   switch (match_tok(cmd_tab, TABSIZE(cmd_tab))) {
+    case CMD_CALIBRATE: calibrate(); break;
+    case CMD_DATA: data(); break;
+    case CMD_DEFAULT: set_default(); break;
+    case CMD_EQUATE: equate_list(); break;
+    case CMD_FIX: fix_station(); break;
+    case CMD_GRADE: NOT_YET; break;
+    case CMD_HALT: NOT_YET; break;
+    case CMD_INCLUDE: {
+       char *pth;
+       pth = PthFromFnm(fnmUsed);
+       include(pth);
+       osfree(pth);
+       sprintf(out_buf, msg(123), fnm); /* back to file '..' */
+       out_info(out_buf);
+       break;
+    }
+    case CMD_LRUD: {
+       /* just ignore *lrud for now so Tunnel can put it in */
+       skipline();
+       break;
+    }
+    case CMD_MEASURE: NOT_YET; break;
+    case CMD_PREFIX: set_prefix(); break;
+    case CMD_UNITS: units(); break;
+    case CMD_BEGIN: begin_block(); break;
+    case CMD_END: end_block(); break;
+    case CMD_SOLVE: solve_network(/*stnlist*/); break;
+    case CMD_SD: set_sd(); break;
+    case CMD_SET: set_chars(); break;
+    default: error(12, showandskipline, NULL, strlen(buffer));
+   }  
+}
+
+#if 0
+   /* FIXME turns these into commands */
+ /* Survey title */
+         if (!fExplicitTitle) {
+            fExplicitTitle = fTrue;
+            *szSurveyTitle = '\0'; /* Throw away any partial default title */
+         }
+         if (strlen(p) + strlen(szSurveyTitle) + 3 <= TITLE_LEN) {
+            char *q = szSurveyTitle;
+            /* !HACK! should cope better with exceeding title buffer... */
+            if (*q) {
+               /* If there's already a title in the list */
+               q += strlen(szSurveyTitle);
+               *q++ = ',';
+               *q++ = ' ';
+            }
+            strcpy(q, p);
+         }
+         p += strlen(p); /* advance past it */
+         mode = COMMAND;
+         break;
+       case 'C': /* Case */
+         if (fSwitch) {
+            chOpt = *p++;
+            switch (toupper(chOpt)) {
+             case 'U':
+               pcs->Case=UPPER; break;
+             case 'L':
+               pcs->Case=LOWER; break;
+             default:
+               error(28,skipopt,string,0);
+            }
+         } else {
+            pcs->Case = OFF;
+         }
+         break;
+       case 'N': /* NinetyToUp */
+         pcs->f90Up = fSwitch;
+         break;
+       case 'U': { /* Unique */
+         int len = 0;
+         if (fSwitch) {
+            ch = *(p++);
+   	    while (isdigit(ch)) {
+   	       len = len * 10 + (ch - '0');
+   	       ch = *(p++);
+            }
+   	    p--;
+         }
+         pcs->Truncate = (len < 1) ? INT_MAX : len;
+         break;
+       }
+       default:
+         error(30, skipopt, string, 0);
+      }
+#endif
