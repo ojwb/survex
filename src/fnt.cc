@@ -19,7 +19,7 @@
  
      For further information visit http://plib.sourceforge.net
 
-     $Id: fnt.cc,v 1.1.2.5 2003-12-04 02:12:47 olly Exp $
+     $Id: fnt.cc,v 1.1.2.6 2004-03-02 12:28:58 olly Exp $
 */
 
 #include "fnt.h"
@@ -176,9 +176,6 @@ fntTexFont::load(const char *fname)
 		 0 /* Border */, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE,
 		 (GLvoid *)teximage);
     delete [] teximage;
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
     glAlphaFunc(GL_GREATER, 0.5f);
 
