@@ -30,6 +30,16 @@
 #include <string.h>
 #include <time.h>
 
+#ifdef HAVE_SIGNAL
+# ifdef HAVE_SETJMP
+#  include <setjmp.h>
+static jmp_buf jmpbufSignal;
+#  include <signal.h>
+# else
+#  undef HAVE_SIGNAL
+# endif
+#endif
+
 #include "cmdline.h"
 #include "filename.h"
 #include "message.h"
@@ -186,6 +196,23 @@ draw_names(void)
 /*************************************************************************/
 /*************************************************************************/
 
+#ifdef HAVE_SIGNAL
+
+/* for systems not using autoconf, assume the signal handler returns void
+ * unless specified elsewhere */
+#ifndef RETSIGTYPE
+# define RETSIGTYPE void
+#endif
+
+static CDECL RETSIGTYPE FAR
+handle_sig(int sig)
+{
+   sig = sig;
+   longjmp(jmpbufSignal, 1);
+}
+
+#endif
+
 int
 main(int argc, char **argv)
 {
@@ -218,9 +245,23 @@ main(int argc, char **argv)
    pView_store = (viewstore*) osmalloc(Stored_views * sizeof(view));
 #endif
 
+#ifdef HAVE_SIGNAL
+   /* set up signal handler */
+   if (setjmp(jmpbufSignal)) {
+      signal(SIGINT, SIG_DFL);
+      cvrotgfx_final();
+      exit(EXIT_FAILURE);
+   }
+#endif
+
    /* initialise graphics h/ware & s/ware */
    cvrotgfx_init();
 
+#ifdef HAVE_SIGNAL
+   /* set up signal handler to close down graphics on SIGINT */
+   signal(SIGINT, handle_sig);
+#endif
+   
    /* display help screen to give user something to read while we do scaling */
    show_help();
 

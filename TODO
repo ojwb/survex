@@ -172,7 +172,7 @@ click on station to centre; type in station to centre
 
 improve 3d torture test and try to automate its use if possible.
 
-label junction/fixed points/...
+label junctions/dead ends
 
 colour by traverse
 
@@ -221,8 +221,6 @@ bank if we can't find a mode where we can create 3 banks [FIXME: need
 to test this works]
 
 Check that --mode-picker works on DJGPP caverot.
-
-Check SIGINT on DOS caverot restores text mode...
 
 Date: Fri, 04 May 2001
 Subject: manual
