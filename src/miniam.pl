@@ -90,14 +90,14 @@ for (sort keys %var) {
 
          my $sources = $var{$_};
 
-         my $ldadd = $var{$prog.'_LDADD'} || '';
+         my $ldadd = $var{$prog.'_LDADD'} || $var{'LDADD'} || '';
          my $extra;
 
 #	 $extra = $var{"EXTRA_$_"};
 #	 $sources .= " " . $extra if defined $extra;
 
-         $extra = $repl{"LIBOBJS"};
-	 $sources .= " " . $extra if defined $extra;
+#         $extra = $repl{"LIBOBJS"};
+#	 $sources .= " " . $extra if defined $extra;
 
 	 $sources =~ s|\$\((\w+)\)|$var{$1}|eg;
 	 my $objs = $sources;
