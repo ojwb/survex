@@ -86,8 +86,8 @@ binary-common: build install
 	dh_builddeb
 
 # Build architecture independant packages using the common target.
-binary-indep:
-	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+#binary-indep:
+#	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
 
 # Build architecture dependant packages using the common target.
 binary-arch:
@@ -97,5 +97,5 @@ binary-arch:
 binary-%: build install
 	make -f debian/rules binary-common DH_OPTIONS=-p$*
 
-binary: binary-indep binary-arch
+binary: binary-arch
 .PHONY: build clean binary-indep binary-arch binary install
