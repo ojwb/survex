@@ -80,18 +80,19 @@
 1996.04.09 0.69 (0.70 test release)
 1997.01.16 0.71
 1997.03.22 0.73
+1998.09.17 0.80
 */
 
 #ifndef VERSION_H /* include once only */
 #define VERSION_H
 
-#define VERSION "0.73"
+#define VERSION "0.80"
 
 /* MESSAGE_VERSION_MIN <= msg(0) <= VERSION */
 /* change MESSAGE_VERSION_MIN to be the current setting of VERSION when a
  * non-backward compatible change is made to messages.txt
  */
-#define MESSAGE_VERSION_MIN "0.73"
+#define MESSAGE_VERSION_MIN "0.80"
 
 /* THIS_YEAR is used for copyright strings, e.g. "1991-"THIS_YEAR */
 
