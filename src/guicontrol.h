@@ -158,6 +158,9 @@ public:
     void OnViewFog();
     void OnViewFogUpdate(wxUpdateUIEvent& cmd);
 
+    void OnViewSmoothLines();
+    void OnViewSmoothLinesUpdate(wxUpdateUIEvent& cmd);
+
     void OnToggleMetric();
     void OnToggleMetricUpdate(wxUpdateUIEvent& cmd);
 

@@ -42,6 +42,8 @@ Changes between 1.0.26 and 1.1.0:
 * aven: Colour by depth can now be turned off (and there's the start of a
   framework for properly implementing colour by date, error, etc).
 
+* aven: Added Smooth Lines option.
+
 * cavern: Dates given to *date are now stored in the 3d file.
 
 Changes in 1.0.26:

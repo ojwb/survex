@@ -20,10 +20,6 @@ Process all pending input before rerendering to improve responsiveness.
 Check timing code - we need to glFinish to ensure it's all drawn, and that
 may be needed to get meaningful timing info.
 
-"smooth" (anti-aliased) lines option.
-
-perspective vs survey size - is there an issue?
-
 sort out date colouring cleanly.  also error colouring, etc.
 
 texture mapped fonts: seems to be a minor alignment bug which gives spacing

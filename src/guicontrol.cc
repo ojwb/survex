@@ -868,6 +868,17 @@ void GUIControl::OnViewFogUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_View->GetFog());
 }
 
+void GUIControl::OnViewSmoothLines()
+{
+    m_View->ToggleAntiAlias();
+}
+
+void GUIControl::OnViewSmoothLinesUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+    cmd.Check(m_View->GetAntiAlias());
+}
+
 void GUIControl::OnToggleMetric()
 {
     m_View->ToggleMetric();

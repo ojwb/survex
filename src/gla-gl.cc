@@ -150,6 +150,7 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     m_VolumeDiameter = 1.0;
     m_Perspective = false;
     m_Fog = false;
+    m_AntiAlias = false;
 }
 
 GLACanvas::~GLACanvas()
@@ -407,6 +408,14 @@ void GLACanvas::SetDataTransform()
 	glFogf(GL_FOG_START, near_plane);
 	glFogf(GL_FOG_END, near_plane + m_VolumeDiameter);
 	glEnable(GL_FOG);
+    } else {
+	glDisable(GL_FOG);
+    }
+
+    if (m_AntiAlias) {
+	glEnable(GL_LINE_SMOOTH);
+    } else {
+	glDisable(GL_LINE_SMOOTH);
     }
 }
 

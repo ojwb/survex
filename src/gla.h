@@ -126,6 +126,7 @@ class GLACanvas : public wxWindow {
     
     bool m_Perspective;
     bool m_Fog;
+    bool m_AntiAlias;
 
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
@@ -210,6 +211,9 @@ public:
 
     void ToggleFog() { m_Fog = !m_Fog; }
     bool GetFog() const { return m_Fog; }
+
+    void ToggleAntiAlias() { m_AntiAlias = !m_AntiAlias; }
+    bool GetAntiAlias() const { return m_AntiAlias; }
 
     bool SaveScreenshot(const wxString & fnm, int type) const;
 };
