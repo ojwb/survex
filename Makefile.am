@@ -77,7 +77,6 @@ mingw_iss :
 	: # don't ship pngs for which we ship the ico version
 	for a in iss_tmp/*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
 	cp mingw_extras/librx.dll iss_tmp
-	cp mingw_extras/glut32.dll iss_tmp
 	gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual
