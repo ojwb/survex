@@ -16,7 +16,7 @@ base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos extend surv
 
 spec = ${PACKAGE}-${VERSION}.spec
 
-RELEASE = 4
+RELEASE = 5
 
 rpm : dist
 	echo Summary: Cave Surveying Software > ${spec}
@@ -164,16 +164,17 @@ mingw_iss : dostxt mingwexes
 	mkdir iss_tmp
 	cp dostxt_tmp/*.txt $(extra_txt) survex.iss docindex.htm iss_tmp
 	# convert LF to CR+LF
-	perl -p -i -e 's/\n/\r\n' iss_tmp/*
+	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
+	cp mingw_extras/*.ico iss_tmp
 	mkdir iss_tmp/help
 	cp doc/svxdocs/*.htm iss_tmp/help
 	# convert LF to CR+LF
-	perl -p -i -e 's/\n/\r\n' iss_tmp/help/*
+	perl -p -i -e 's/\n/\r\n/' iss_tmp/help/*
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
 	$(RM) -rf dostxt_tmp
 	-killall Xvfb
 	(Xvfb :9 -screen 0 64x32x8 &)
-	DISPLAY=:9 wine "c:/Program\ Files/Inno\ Setup\ 2/ISCC.exe iss_tmp/survex.iss"
+	DISPLAY=:9 wine "c:/Program Files/Inno Setup 2/ISCC.exe" iss_tmp/survex.iss
 	mv iss_tmp/Output/*.exe .
 	$(RM) -rf iss_tmp	
 	killall Xvfb
