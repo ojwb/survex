@@ -14,8 +14,8 @@ test -x "$testdir"/../src/cavern || testdir=.
 PROGS="cad3d cavern printdm printps printpcl printhpgl diffpos extend sorterr\
  3dtopos"
 test -r "$testdir"/../src/xcaverot && PROGS="$PROGS xcaverot"
-test -r "$testdir"/../src/aven && PROGS="$PROGS aven"
-# FIXME: aten and xcaverot where 
+# aven tries to open an X display even for --help and --version
+#test -r "$testdir"/../src/aven && PROGS="$PROGS aven"
 
 for p in ${PROGS}; do
    echo $p
