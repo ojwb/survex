@@ -1056,10 +1056,13 @@ static void replace_subnets( void ) {
 }
 
 #ifdef BLUNDER_DETECTION
-static void do_gross( d e, d v, node *stn1, node *stn2 ) {
+/* expected_error is actually squared... */
+static void do_gross( d e, d v, node *stn1, node *stn2, double expected_error ) {   
    double hsqrd, rsqrd, s, cx, cy, cz;
    double tot;
    int i;
+   int output = 0;
+
 #if 0
 printf( "e=( %.2f, %.2f, %.2f )", e[0], e[1], e[2] );
 printf( " v=( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
@@ -1067,10 +1070,6 @@ printf( " v=( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
    hsqrd = sqrd(v[0])+sqrd(v[1]);
    rsqrd = sqrdd(v);
    if (rsqrd == 0.0) return;
-
-   fprint_prefix( stdout, stn1->name );
-   fputs( "->", stdout );
-   fprint_prefix( stdout, stn2->name );
 
    cx = v[0] + e[0];
    cy = v[1] + e[1];
@@ -1080,7 +1079,16 @@ printf( " v=( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
    tot = 0;
    for ( i = 2; i >= 0; --i )
       tot += sqrd(e[i] - v[i]*s);
-   printf( " L: %.2f", tot );
+
+   if (tot <= expected_error) {
+      if (!output) {
+	 fprint_prefix( stdout, stn1->name );
+	 fputs( "->", stdout );
+	 fprint_prefix( stdout, stn2->name );
+      }
+      printf( " L: %.2f", tot );
+      output = 1;
+   }
 
    s = sqrd(cx) + sqrd(cy);
    if (s>0.0) {
@@ -1088,7 +1096,15 @@ printf( " v=( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
       s = s<0.0 ? 0.0 : sqrt(s);
       s = 1 - s;
       tot = sqrd(cx*s) + sqrd(cy*s) + sqrd(e[2]);
-      printf( " B: %.2f", tot );
+      if (tot <= expected_error) {
+	 if (!output) {
+	    fprint_prefix( stdout, stn1->name );
+	    fputs( "->", stdout );
+	    fprint_prefix( stdout, stn2->name );
+	 }
+	 printf( " B: %.2f", tot );
+	 output = 1;
+      }
    }
 
    if (hsqrd>0.0) {
@@ -1101,10 +1117,18 @@ printf( " v=( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
          s = rsqrd / s;
          s = s<0.0 ? 0.0 : sqrt(s);
          tot = sqrd(cx - s*nx) + sqrd(cy - s*ny) + sqrd(cz - s*cz);
-         printf( " G: %.2f", tot );
+	 if (tot <= expected_error) {
+	    if (!output) {
+	       fprint_prefix( stdout, stn1->name );
+	       fputs( "->", stdout );
+	       fprint_prefix( stdout, stn2->name );
+	    }
+	    printf( " G: %.2f", tot );
+	    output = 1;
+	 }
       }
    }
-   putnl();
+   if (output) putnl();
 }
 #endif
 
@@ -1244,87 +1268,91 @@ static void replace_travs( void ) {
   osfree(stn2->leg[j]); stn2->leg[j]=ptr->join2; /* and the other end */
 
   if (fFixed) {
-   d err;
-   memcpy( &err, &e, sizeof(d) );
 #ifdef BLUNDER_DETECTION
-   printf( "\n--- e=( %.2f, %.2f, %.2f )\n", e[0], e[1], e[2] );
+     d err;
+     int do_blunder;
+     memcpy( &err, &e, sizeof(d) );
+     do_blunder = (eTot > eTotTheo);
+     fputs("\ntraverse ",stdout);
+     fprint_prefix( stdout, stn1->name );
+     fputs( "->", stdout );
+     fprint_prefix( stdout, stn2->name );
+     printf(" e=(%.2f,%.2f,%.2f) mag^2=%.2f %s\n", e[0], e[1], e[2], eTot,
+	    (do_blunder?"suspect:":"OK"));
 #endif
-   while (fTrue) {
-    fEquate=fTrue;
-    lenTot=0.0;
-    /* get next node in traverse - should have stn3->leg[k]->l.to==stn1 */
-    stn3=stn1->leg[i]->l.to; k=reverse_leg(stn1->leg[i]);
-    ASSERT2( stn3->leg[k]->l.to==stn1, "reverse leg doesn't reciprocate");
+     while (fTrue) {
+	fEquate = fTrue;
+	lenTot = 0.0;
+	/* get next node in traverse - should have stn3->leg[k]->l.to==stn1 */
+	stn3 = stn1->leg[i]->l.to; k=reverse_leg(stn1->leg[i]);
+	ASSERT2( stn3->leg[k]->l.to==stn1, "reverse leg doesn't reciprocate");
 
 #if 0
-    if (!unfixed_2_node(stn3))
-     break;
+	if (!unfixed_2_node(stn3)) break;
 #endif
 
-    if (data_here(stn1->leg[i])) {
-     leg=stn1->leg[i];
-     adddd( &POSD(stn3), &POSD(stn1), &leg->d );
+	if (data_here(stn1->leg[i])) {
+	   leg = stn1->leg[i];
+	   adddd( &POSD(stn3), &POSD(stn1), &leg->d );
 #ifdef BLUNDER_DETECTION
-     do_gross( err, leg->d, stn1, stn3 );
+	   if (do_blunder) do_gross(err, leg->d, stn1, stn3, eTotTheo);
 #endif
-    } else {
-     leg=stn3->leg[k];
-     subdd( &POSD(stn3), &POSD(stn1), &leg->d );
+	} else {
+	   leg = stn3->leg[k];
+	   subdd( &POSD(stn3), &POSD(stn1), &leg->d );
 #ifdef BLUNDER_DETECTION
-     do_gross( err, leg->d, stn3, stn1 );
+	   if (do_blunder) do_gross(err, leg->d, stn3, stn1, eTotTheo);
 #endif
-    }
+	}
 
-    if (stn3==stn2 && k==j)
-     break;
+	if (stn3==stn2 && k==j) break;
 
-    mulvd( &e, &leg->v, &sc );
-    adddd( &POSD(stn3), &POSD(stn3), &e );
-    if (!fZero(&leg->v))
-     fEquate=fFalse;
-    lenTot+=sqrdd( leg->d );
-    stn3->status=statFixed;
-    fix(stn3);
-    img_write_datum( pimgOut, img_LINE, NULL,
-                     POS(stn3,0),  POS(stn3,1),  POS(stn3,2)  );
+	mulvd( &e, &leg->v, &sc );
+	adddd( &POSD(stn3), &POSD(stn3), &e );
+	if (!fZero(&leg->v)) fEquate=fFalse;
+	lenTot+=sqrdd( leg->d );
+	stn3->status=statFixed;
+	fix(stn3);
+	img_write_datum(pimgOut, img_LINE, NULL,
+			POS(stn3,0), POS(stn3,1), POS(stn3,2));
 
-    if (nmPrev!=stn3->name && !(fEquate && cLegsTrav==0)) {
-     /* (node not part of same stn) && (not equate at start of traverse) */
-     fprint_prefix( fhErrStat, nmPrev );
+	if (nmPrev!=stn3->name && !(fEquate && cLegsTrav==0)) {
+	   /* (node not part of same stn) && (not equate at start of traverse) */
+	   fprint_prefix( fhErrStat, nmPrev );
 #if PRINT_NAME_PTRS
-     fprintf( fhErrStat, "[%p|%p]", nmPrev, stn3->name );
+	   fprintf( fhErrStat, "[%p|%p]", nmPrev, stn3->name );
 #endif
-     fputs( fEquate?szLinkEq:szLink, fhErrStat );
-     nmPrev=stn3->name;
+	   fputs( fEquate?szLinkEq:szLink, fhErrStat );
+	   nmPrev=stn3->name;
 #if PRINT_NAME_PTRS
-     fprintf( fhErrStat, "[%p]", nmPrev );
+	   fprintf( fhErrStat, "[%p]", nmPrev );
 #endif
-     if (!fEquate) {
-      cLegsTrav++;
-      lenTrav+=sqrt(lenTot);
-     } else
-      if (lenTot>0.0) {
+	   if (!fEquate) {
+	      cLegsTrav++;
+	      lenTrav+=sqrt(lenTot);
+	   } else
+	      if (lenTot>0.0) {
 #if DEBUG_INVALID
-       fprintf(stderr,"lenTot = %8.4f ",lenTot); fprint_prefix(stderr,nmPrev);
-       fprintf(stderr," -> "); fprint_prefix( stderr, stn3->name );
+		 fprintf(stderr,"lenTot = %8.4f ",lenTot); fprint_prefix(stderr,nmPrev);
+		 fprintf(stderr," -> "); fprint_prefix( stderr, stn3->name );
 #endif
-       BUG("during calculation of closure errors");
-      }
-    } else {
+		 BUG("during calculation of closure errors");
+	      }
+	} else {
 #if SHOW_INTERNAL_LEGS
-     fprintf(fhErrStat,"+");
+	   fprintf(fhErrStat,"+");
 #endif
-     if (lenTot>0.0) {
+	   if (lenTot>0.0) {
 #if DEBUG_INVALID
-      fprintf(stderr,"lenTot = %8.4f ",lenTot); fprint_prefix(stderr,nmPrev);
-      fprintf(stderr," -> "); fprint_prefix( stderr, stn3->name );
+	      fprintf(stderr,"lenTot = %8.4f ",lenTot); fprint_prefix(stderr,nmPrev);
+	      fprintf(stderr," -> "); fprint_prefix( stderr, stn3->name );
 #endif
-      BUG("during calculation of closure errors");
-     }
-    }
-    FOLLOW_TRAV(stn3,k,i);
-    stn1=stn3;
-   } /* endwhile */
+	      BUG("during calculation of closure errors");
+	   }
+	}
+	FOLLOW_TRAV(stn3,k,i);
+	stn1=stn3;
+     } /* endwhile */
 
    img_write_datum( pimgOut, img_LINE, NULL,
                     POS(stn2,0),  POS(stn2,1),  POS(stn2,2)  );
