@@ -29,6 +29,7 @@
 
 #include <math.h>
 #include <assert.h>
+//#include <stdio.h>
 
 void Quaternion::setFromSphericalPolars(double pan, double tilt, double rotation_amount)
 {
@@ -39,6 +40,8 @@ void Quaternion::setFromSphericalPolars(double pan, double tilt, double rotation
     double vz = vy * cos(pan);
 
     w = cos(rotation_amount);
+    //    printf("w is %.2g\n", w);
+    //    printf("v is [%.02g %.02g %.02g]\n", v.getX(), v.getY(), v.getZ());
 
     v.set(vx, vy, vz);
     normalise();
