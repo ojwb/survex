@@ -449,6 +449,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	 return 1;
       }
       break;
+   }
 #endif
    }
    /* Transliterate characters we can't represent */
