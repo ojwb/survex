@@ -190,7 +190,7 @@ init_signals(void)
 {
    int en;
    if (!setjmp(jmpbufSignal)) {
-#if 0 /* FIXME disable for now so we get a core dump */
+#if 0 /* FIXME: disable for now so we get a core dump */
       signal(SIGABRT, report_sig); /* abnormal termination eg abort() */
       signal(SIGFPE,  report_sig); /* arithmetic error eg /0 or overflow */
       signal(SIGILL,  report_sig); /* illegal function image eg illegal instruction */
