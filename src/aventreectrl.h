@@ -31,11 +31,13 @@ class AvenTreeCtrl : public wxTreeCtrl {
     MainFrm* m_Parent;
     bool m_Enabled;
     wxTreeItemId m_LastItem;
+    bool m_SelValid;
 
 public:
     AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent);
 
     void SetEnabled(bool enabled = true);
+    void UnselectAll();
 
     void OnMouseMove(wxMouseEvent& event);
     void OnSelChanged(wxTreeEvent& event);

@@ -32,7 +32,8 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     wxTreeCtrl(window_parent, -1, wxDefaultPosition),
     m_LastItem((wxTreeItemId) -1),
     m_Enabled(false),
-    m_Parent(parent)
+    m_Parent(parent),
+    m_SelValid(false)
 {
     
 }
@@ -70,11 +71,17 @@ void AvenTreeCtrl::OnSelChanged(wxTreeEvent& event)
     if (m_Enabled) {
         m_Parent->TreeItemSelected(GetItemData(GetSelection()));
     }
+
+    m_SelValid = true;
 }
 
 bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data)
 {
     assert(m_Enabled);
+
+    if (!m_SelValid) {
+        return false;
+    }
    
     wxTreeItemId id = GetSelection();
     if (id.IsOk()) {
@@ -83,3 +90,10 @@ bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data)
 
     return id.IsOk() && *data;
 }
+
+void AvenTreeCtrl::UnselectAll()
+{
+    m_SelValid = false;
+    wxTreeCtrl::UnselectAll();
+}
+

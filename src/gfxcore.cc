@@ -3906,3 +3906,4 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	    e.Skip();
     }
 }
+
