@@ -1,4 +1,4 @@
-<!DOCTYPE article PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
 <!ENTITY ollyemail "olly@survex.com">
 <!ENTITY wookeyemail "wookey@survex.com">
 <!ENTITY survexwebsite "http://www.survex.com/">
@@ -46,8 +46,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 1999-08-26 15:49:30 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.12 1999-08-26 15:49:30 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2000-02-20 12:35:18 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.13 2000-02-20 12:35:18 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
