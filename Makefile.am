@@ -101,7 +101,7 @@ mingw_iss :
 	$(RM) -rf iss_tmp mingw_exes
 	mkdir iss_tmp
 	mkdir mingw_exes
-	for f in $(base_progs) aven printwin svxedit ; do cp src/$$f.exe mingw_exes ; done
+	for f in $(base_progs) aven printwin editwrap ; do cp src/$$f.exe mingw_exes ; done
 	cp src/svxedit iss_tmp/svxedit.tcl
 	cp $(extra_txt) survex.iss iss_tmp
 	: # so the installer can display the license

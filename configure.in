@@ -146,12 +146,12 @@ AC_SUBST(LIBRX)
 
 AC_PATH_XTRA
 
-PRINTWIN=
+WINPROGS=
 if test yes = "$mswindows"; then
-  PRINTWIN='printwin$(EXEEXT)'
-  AC_MSG_RESULT(building printwin)
+  WINPROGS='printwin$(EXEEXT) editwrap$(EXEEXT)'
+  AC_MSG_RESULT(building printwin and editwrap)
 fi
-AC_SUBST(PRINTWIN)
+AC_SUBST(WINPROGS)
 
 AC_ARG_VAR(WXCONFIG, [wxWindows configuration script to use to build Aven])
 

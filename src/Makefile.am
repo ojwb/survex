@@ -43,13 +43,10 @@ TESTPROGS = @TESTPROGS@
 
 # printxbm and dump3d are test programs
 EXTRA_PROGRAMS = caverot xcaverot printwin aven avengl dump3d printxbm \
- svxedit.exe
+ editwrap
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern $(PRINT) diffpos extend cad3d sorterr \
- 3dtopos @CAVEROT@ @AVEN@ @PRINTWIN@ @TESTPROGS@
-if WIN32
-bin_PROGRAMS += svxedit.exe
-endif
+ 3dtopos @CAVEROT@ @AVEN@ @WINPROGS@ @TESTPROGS@
 bin_SCRIPTS = svxedit
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
@@ -65,6 +62,9 @@ aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
 avengl_SOURCES = $(aven_SOURCES)
 
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
+
+editwrap_SOURCES = editwrap.c
+editwrap_LDFLAGS = -mwindows
 
 if WIN32
 aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@

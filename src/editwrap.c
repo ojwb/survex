@@ -1,4 +1,4 @@
-/* svxedit.c
+/* editwrap.c
  * Run svxedit.tcl from the same directory as this program
  * Copyright (C) 2002 Olly Betts
  *
@@ -21,16 +21,23 @@
 #include <config.h>
 #endif
 
+#include <stdlib.h>
+#include <string.h>
 #include <windows.h>
 
-int
-main(int /* argc */, char **argv)
+//int
+//main(int argc, char **argv)
+int APIENTRY
+WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
    DWORD len = 256;
    char *buf = NULL, *p;
+   hInst = hInst; /* suppress compiler warning */
+   hPrevInst = hPrevInst; /* suppress compiler warning */
    while (1) {
        DWORD got;
-       buf = osrealloc(buf, len);
+       buf = realloc(buf, len);
+       if (!buf) exit(1);
        got = GetModuleFileName(NULL, buf, len);
        if (got + 12 < len) break;
        len += len;
@@ -40,8 +47,10 @@ main(int /* argc */, char **argv)
    p = strrchr(buf, '\\');
    if (p) ++p; else p = buf;
    strcpy(p, "svxedit.tcl");
-   if (ShellExecute(NULL, NULL, buf, argv[1], NULL, SW_SHOWNORMAL) <= 32) {
-       ShellExecute(NULL, NULL, "notepad", argv[1], NULL, SW_SHOWNORMAL);
+   /* ShellExecute returns an HINSTANCE for some wacko reason - the docs say
+    * the only valid operation is to convert it to an int.  Marvellous. */
+   if ((int)ShellExecute(NULL, NULL, buf, lpCmdLine, NULL, nCmdShow) <= 32) {
+       ShellExecute(NULL, NULL, "notepad", lpCmdLine, NULL, nCmdShow);
    }
    return 0; 
 }
