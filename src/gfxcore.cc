@@ -889,7 +889,7 @@ void GfxCore::DrawDepthbar()
     wxString* strs = new wxString[bands + 1];
     for (int band = 0; band <= bands; band++) {
 	double z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / bands);
-	strs[band] = FormatLength(z);
+	strs[band] = FormatLength(z, false);
 	int x, y;
 	m_DrawDC.GetTextExtent(strs[band], &x, &y);
 	if (x > size) {
@@ -924,7 +924,7 @@ void GfxCore::DrawDepthbar()
     delete[] strs;
 }
 
-wxString GfxCore::FormatLength(double size_snap)
+wxString GfxCore::FormatLength(double size_snap, bool scalebar)
 {
     wxString str;
     bool negative = (size_snap < 0.0);
@@ -965,7 +965,7 @@ wxString GfxCore::FormatLength(double size_snap)
 	    str = wxString::Format("%.fGm", size_snap * 1e-9);
 #else
 	} else {
-	    str = wxString::Format("%.fkm", size_snap * 1e-3);
+	    str = wxString::Format(scalebar ? "%.fkm" : "%.2fkm", size_snap * 1e-3);
 #endif
 	}
     }
