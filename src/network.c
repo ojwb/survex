@@ -28,9 +28,6 @@
 #include "readval.h"
 #include "out.h"
 
-#define FLAG_DATAHERE 128
-#define FLAG_REPLACEMENTLEG 64
-
 #if PRINT_NETBITS
 static void
 print_var(const var v)
@@ -82,7 +79,7 @@ static const char *szLink = " - ";
 static const char *szLinkEq = " = "; /* use this one for equates */
 
 /* can be altered by -o<letters> on command line */
-long optimize = BITA('l') | BITA('p') | BITA('d') | BITA('s');
+unsigned long optimize = BITA('l') | BITA('p') | BITA('d') | BITA('s');
 /* Lollipops, Parallel legs, Iterate mx, Delta*, Split stnlist */
 
 #if 0
@@ -1071,18 +1068,14 @@ replace_travs(void)
 
    out_current_action(msg(/*Calculating traverses between nodes*/127));
 
-   if (!fhErrStat) {
-      char *fnmErrStat;
-      fnmErrStat = AddExt(fnm_output_base, EXT_SVX_ERRS);
-      fhErrStat = safe_fopen(fnmErrStat, "w");
-      osfree(fnmErrStat);
-   }
+   if (!fhErrStat)
+      fhErrStat = safe_fopen_with_ext(fnm_output_base, EXT_SVX_ERRS, "w");
 
    if (!pimgOut) {
       char *fnmImg3D;
       char buf[256];
 
-      fnmImg3D = AddExt(fnm_output_base, EXT_SVX_3D);
+      fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3D);
       sprintf(buf, msg(/*Writing out 3d image file '%s'*/121), fnmImg3D);
       out_current_action(buf); /* writing .3d file */
 #ifdef NEW3DFORMAT
@@ -1493,12 +1486,13 @@ replace_trailing_travs(void)
    for (stn1 = stnlist; stn1; stn1 = stn2) {
       if (fixed(stn1)) {
 	 int d;
-#ifdef NEW3DFORMAT
 	 /* take care of unused fixed points */
+#ifdef NEW3DFORMAT
 	 if (stn1->name->pos->id == 0) cave_write_stn(stn1);      
 #else
-	 img_write_datum(pimgOut, img_LABEL, sprint_prefix(stn1->name),
-			 POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+	 if (stn1->name->stn == stn1)
+	    img_write_datum(pimgOut, img_LABEL, sprint_prefix(stn1->name),
+			    POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 #endif
 	 /* update coords of bounding box */
 	 for (d = 0; d < 3; d++) {
