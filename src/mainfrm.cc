@@ -69,6 +69,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNames)
     EVT_MENU(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNames)
     EVT_MENU(menu_VIEW_COMPASS, MainFrm::OnViewCompass)
+    EVT_MENU(menu_VIEW_CLINO, MainFrm::OnViewClino)
     EVT_MENU(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbar)
     EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
     EVT_MENU(menu_VIEW_STATUS_BAR, MainFrm::OnToggleStatusbar)
@@ -103,6 +104,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNamesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNamesUpdate)
     EVT_UPDATE_UI(menu_VIEW_COMPASS, MainFrm::OnViewCompassUpdate)
+    EVT_UPDATE_UI(menu_VIEW_CLINO, MainFrm::OnViewClinoUpdate)
     EVT_UPDATE_UI(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
     EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
     EVT_UPDATE_UI(menu_VIEW_STATUS_BAR, MainFrm::OnToggleStatusbarUpdate)
@@ -186,6 +188,8 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 		     "Display all station names, whether or not they overlap", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_COMPASS, "Co&mpass", "Toggle the display of the compass", true);
+    viewmenu->Append(menu_VIEW_CLINO, "Cl&inometer", "Toggle the display of the clinometer",
+		     true);
     viewmenu->Append(menu_VIEW_DEPTH_BAR, "&Depth Bar", "Toggle the display of the depth bar",
 		     true);
     viewmenu->Append(menu_VIEW_SCALE_BAR, "Sc&ale Bar", "Toggle the display of the scale bar",

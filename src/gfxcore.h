@@ -95,6 +95,7 @@ class GfxCore : public wxWindow {
     LabelFlags* m_LabelsLastPlotted;
     wxRect m_LabelCacheExtend;
     bool m_Compass;
+    bool m_Clino;
     int m_XSize;
     int m_YSize;
     int m_XCentre;
@@ -123,6 +124,7 @@ class GfxCore : public wxWindow {
     struct brushes {
         wxBrush black;
         wxBrush grey;
+        wxBrush dgrey;
         wxBrush white;
         wxBrush indicator1;
         wxBrush indicator2;
@@ -143,6 +145,7 @@ class GfxCore : public wxWindow {
 		     z*m_RotationMatrix.get(2, 2));
     }
 
+    wxCoord GetClinoOffset();
     wxPoint CompassPtToScreen(float x, float y, float z);
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
 
@@ -215,6 +218,7 @@ public:
     void OnToggleScalebar(wxCommandEvent&);
     void OnToggleDepthbar(wxCommandEvent&);
     void OnViewCompass(wxCommandEvent&);
+    void OnViewClino(wxCommandEvent&);
     void OnReverseDirectionOfRotation(wxCommandEvent&);
 
     void OnPaint(wxPaintEvent&);
@@ -259,6 +263,7 @@ public:
     void OnToggleScalebarUpdate(wxUpdateUIEvent&);
     void OnToggleDepthbarUpdate(wxUpdateUIEvent&);
     void OnViewCompassUpdate(wxUpdateUIEvent&);
+    void OnViewClinoUpdate(wxUpdateUIEvent&);
 
 private:
     DECLARE_EVENT_TABLE()

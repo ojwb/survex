@@ -35,10 +35,16 @@ static const float COMPASS_SIZE = 24.0f;
 static const int COMPASS_OFFSET_X = 60;
 static const int COMPASS_OFFSET_Y = 80;
 static const int INDICATOR_BOX_SIZE = 60;
+static const int INDICATOR_GAP = 2;
 static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
-static const int INDICATOR_OFFSET_Y = 60;
-static const int INDICATOR_GAP = 2;
+static const int INDICATOR_OFFSET_Y = 15;
+static const int CLINO_OFFSET_X = INDICATOR_OFFSET_X + INDICATOR_BOX_SIZE + INDICATOR_GAP;
+static const int DEPTH_BAR_OFFSET_X = 15;
+static const int DEPTH_BAR_OFFSET_Y = 15;
+static const int DEPTH_BAR_BLOCK_WIDTH = 20;
+static const int DEPTH_BAR_BLOCK_HEIGHT = 15;
+static const int DEPTH_BAR_MARGIN = 8;
 static const int TICK_LENGTH = 4;
 static const int DISPLAY_SHIFT = 50;
 static const int TIMER_ID = 0;
@@ -77,6 +83,7 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Names = false;
     m_OverlappingNames = false;
     m_Compass = true;
+    m_Clino = true;
     m_Depthbar = true;
     m_Scalebar = true;
     m_ReverseControls = false;
@@ -100,6 +107,7 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Brushes.black.SetColour(0, 0, 0);
     m_Brushes.white.SetColour(255, 255, 255);
     m_Brushes.grey.SetColour(100, 100, 100);
+    m_Brushes.dgrey.SetColour(70, 70, 70);
     m_Brushes.indicator1.SetColour(150, 205, 224);
     m_Brushes.indicator2.SetColour(114, 149, 160);
 
@@ -345,7 +353,7 @@ void GfxCore::RedrawOffscreen()
 	}
 
 	// Draw compass or elevation/heading indicators.
-	if (m_Compass) {
+	if (m_Compass || m_Clino) {
 	    if (m_FreeRotMode) {
 	        DrawCompass();
 	    }
@@ -396,6 +404,11 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     dc.EndDrawing();
 }
 
+wxCoord GfxCore::GetClinoOffset()
+{
+    return m_Compass ? CLINO_OFFSET_X : INDICATOR_OFFSET_X;
+}
+
 wxPoint GfxCore::CompassPtToScreen(float x, float y, float z)
 {
     return wxPoint(long(-XToScreen(x, y, z)) + m_XSize - COMPASS_OFFSET_X,
@@ -420,7 +433,7 @@ wxPoint GfxCore::IndicatorCompassToScreenElev(int angle)
     wxCoord x = wxCoord(length * sin(-theta));
     wxCoord y = wxCoord(length * cos(-theta));
 
-    return wxPoint(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - INDICATOR_GAP - x,
+    return wxPoint(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2 - x,
 		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2 - y);
 }
 
@@ -441,91 +454,113 @@ void GfxCore::Draw2dIndicators()
 {
     // Draw the "traditional" elevation and compass indicators.
 
+    //-- code is a bit messy...
+
     // Indicator backgrounds
     m_DrawDC.SetBrush(m_Brushes.grey);
     m_DrawDC.SetPen(m_Pens.lgrey2);
-    m_DrawDC.DrawEllipse(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-			 m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-			 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
-			 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2);
-    m_DrawDC.DrawEllipticArc(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 +
-			       INDICATOR_MARGIN - INDICATOR_GAP,
+    if (m_Compass) {
+        m_DrawDC.DrawEllipse(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
 			     m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
 			     INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
-			     INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2, -90, 90);
-    m_DrawDC.DrawLine(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - INDICATOR_GAP,
-		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_MARGIN,
-		      m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - INDICATOR_GAP,
-		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN);
-
+			     INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2);
+    }
+    if (m_Clino) {
+        m_DrawDC.DrawEllipticArc(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE +
+				 INDICATOR_MARGIN,
+				 m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE +
+				 INDICATOR_MARGIN,
+				 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
+				 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2, -90, 90);
+    
+	m_DrawDC.DrawLine(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
+			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_MARGIN,
+			  m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
+			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN);
+    }
+	
     // Ticks
     bool white = m_DraggingLeft && m_LastDrag == drag_COMPASS && m_MouseOutsideCompass;
     wxCoord pan_centre_x = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
     wxCoord centre_y = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
-    wxCoord elev_centre_x = wxCoord(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 -
-				    INDICATOR_GAP);
-    int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
-    for (int angle = 0; angle <= 315; angle += 45) {
-        if (deg_pan == angle) {
-	    m_DrawDC.SetPen(m_Pens.green);
-        }
-	else {
-	    m_DrawDC.SetPen(white ? m_Pens.white : m_Pens.lgrey2);
+    wxCoord elev_centre_x = m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2;
+    if (m_Compass) {
+        int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
+	for (int angle = 0; angle <= 315; angle += 45) {
+	    if (deg_pan == angle) {
+	        m_DrawDC.SetPen(m_Pens.green);
+	    }
+	    else {
+	        m_DrawDC.SetPen(white ? m_Pens.white : m_Pens.lgrey2);
+	    }
+	    DrawTick(pan_centre_x, centre_y, angle);
 	}
-        DrawTick(pan_centre_x, centre_y, angle);
     }
-    white = m_DraggingLeft && m_LastDrag == drag_ELEV && m_MouseOutsideElev;
-    int deg_elev = (int) (m_TiltAngle * 180.0 / M_PI);
-    for (int angle = 0; angle <= 180; angle += 90) {
-        if (-deg_elev == angle - 90) {
-	    m_DrawDC.SetPen(m_Pens.green);
-        }
-	else {
-	    m_DrawDC.SetPen(white ? m_Pens.white : m_Pens.lgrey2);
+    if (m_Clino) {
+        white = m_DraggingLeft && m_LastDrag == drag_ELEV && m_MouseOutsideElev;
+	int deg_elev = (int) (m_TiltAngle * 180.0 / M_PI);
+	for (int angle = 0; angle <= 180; angle += 90) {
+	    if (-deg_elev == angle - 90) {
+	        m_DrawDC.SetPen(m_Pens.green);
+	    }
+	    else {
+	        m_DrawDC.SetPen(white ? m_Pens.white : m_Pens.lgrey2);
+	    }
+	    DrawTick(elev_centre_x, centre_y, angle);
 	}
-        DrawTick(elev_centre_x, centre_y, angle);
     }
 
     // Pan arrow
-    wxPoint p1 = IndicatorCompassToScreenPan(0);
-    wxPoint p2 = IndicatorCompassToScreenPan(150);
-    wxPoint p3 = IndicatorCompassToScreenPan(210);
-    wxPoint pc(pan_centre_x, centre_y);
-    wxPoint pts1[3] = { p2, p1, pc };
-    wxPoint pts2[3] = { p3, p1, pc };
-    m_DrawDC.SetPen(m_Pens.lgrey);
-    m_DrawDC.SetBrush(m_Brushes.indicator1);
-    m_DrawDC.DrawPolygon(3, pts1);
-    m_DrawDC.SetBrush(m_Brushes.indicator2);
-    m_DrawDC.DrawPolygon(3, pts2);
+    if (m_Compass) {
+        wxPoint p1 = IndicatorCompassToScreenPan(0);
+	wxPoint p2 = IndicatorCompassToScreenPan(150);
+	wxPoint p3 = IndicatorCompassToScreenPan(210);
+	wxPoint pc(pan_centre_x, centre_y);
+	wxPoint pts1[3] = { p2, p1, pc };
+	wxPoint pts2[3] = { p3, p1, pc };
+	m_DrawDC.SetPen(m_Pens.lgrey);
+	m_DrawDC.SetBrush(m_Brushes.indicator1);
+	m_DrawDC.DrawPolygon(3, pts1);
+	m_DrawDC.SetBrush(m_Brushes.indicator2);
+	m_DrawDC.DrawPolygon(3, pts2);
+    }
 
     // Elevation arrow
-    wxPoint p1e = IndicatorCompassToScreenElev(0);
-    wxPoint p2e = IndicatorCompassToScreenElev(150);
-    wxPoint p3e = IndicatorCompassToScreenElev(210);
-    wxPoint pce(elev_centre_x, centre_y);
-    wxPoint pts1e[3] = { p2e, p1e, pce };
-    wxPoint pts2e[3] = { p3e, p1e, pce };
-    m_DrawDC.SetPen(m_Pens.lgrey);
-    m_DrawDC.SetBrush(m_Brushes.indicator2);
-    m_DrawDC.DrawPolygon(3, pts1e);
-    m_DrawDC.SetBrush(m_Brushes.indicator1);
-    m_DrawDC.DrawPolygon(3, pts2e);
+    if (m_Clino) {
+        wxPoint p1e = IndicatorCompassToScreenElev(0);
+	wxPoint p2e = IndicatorCompassToScreenElev(150);
+	wxPoint p3e = IndicatorCompassToScreenElev(210);
+	wxPoint pce(elev_centre_x, centre_y);
+	wxPoint pts1e[3] = { p2e, p1e, pce };
+	wxPoint pts2e[3] = { p3e, p1e, pce };
+	m_DrawDC.SetPen(m_Pens.lgrey);
+	m_DrawDC.SetBrush(m_Brushes.indicator2);
+	m_DrawDC.DrawPolygon(3, pts1e);
+	m_DrawDC.SetBrush(m_Brushes.indicator1);
+	m_DrawDC.DrawPolygon(3, pts2e);
+    }
 
     // Text
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
 
-    wxString str = wxString::Format("Facing %03d", int(m_PanAngle * 180.0 / M_PI));
     int w, h;
-    m_DrawDC.GetTextExtent(str, &w, &h);
-    m_DrawDC.DrawText(str, pan_centre_x - w/2,
-		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
+    wxString str;
 
-    str = wxString::Format("Elev %03d", int(m_TiltAngle * 180.0 / M_PI));
-    m_DrawDC.GetTextExtent(str, &w, &h);
-    m_DrawDC.DrawText(str, elev_centre_x - w/2,
-		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
+    if (m_Compass) {
+        str = wxString::Format("Facing %03d", int(m_PanAngle * 180.0 / M_PI));
+	m_DrawDC.GetTextExtent(str, &w, &h);
+	m_DrawDC.DrawText(str, pan_centre_x - w/2,
+			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
+    }
+
+    if (m_Clino) {
+        str = m_TiltAngle == 0 ? wxString("Elev 00") :
+	                         wxString::Format("Elev %+03d", int(m_TiltAngle * 180.0 / M_PI));
+	m_DrawDC.GetTextExtent(str, &w, &h);
+	m_DrawDC.DrawText(str, elev_centre_x - w/2,
+			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
+    }
 }
 
 void GfxCore::DrawCompass()
@@ -717,24 +752,43 @@ void GfxCore::DrawDepthbar()
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
 
-    int width = 20;
-    int height = 16;
-    int x_min = m_XSize/2 - width - 50;
-    int y = -m_YSize/2 + (height*m_Bands) + 15;
+    int width = DEPTH_BAR_BLOCK_WIDTH;
+    int height = DEPTH_BAR_BLOCK_HEIGHT;
+    int y = height*m_Bands + DEPTH_BAR_OFFSET_Y;
+    int size = 0;
+
+    wxString* strs = new wxString[m_Bands + 1];
+    for (int band = 0; band <= m_Bands; band++) {
+	float z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / m_Bands);
+	strs[band] = wxString::Format("%.0fm", z);
+	int x, y;
+	m_DrawDC.GetTextExtent(strs[band], &x, &y);
+	if (x > size) {
+	    size = x;
+	}
+    }
+
+    int x_min = m_XSize - DEPTH_BAR_OFFSET_X - width - DEPTH_BAR_MARGIN - size;
+
+    m_DrawDC.SetPen(m_Pens.black);
+    m_DrawDC.SetBrush(m_Brushes.dgrey);
+    m_DrawDC.DrawRectangle(x_min - DEPTH_BAR_MARGIN, DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN,
+			   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*2,
+			   height*m_Bands + DEPTH_BAR_MARGIN*2);
 
     for (int band = 0; band <= m_Bands; band++) {
         if (band < m_Bands) {
 	    m_DrawDC.SetPen(m_Parent->GetPen(band));
 	    m_DrawDC.SetBrush(m_Parent->GetBrush(band));
-	    m_DrawDC.DrawRectangle(m_XCentre + x_min, m_YCentre + y - height, width, height);
+	    m_DrawDC.DrawRectangle(x_min, y - height, width, height);
 	}
 
-	float z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / m_Bands);
-	wxString str = wxString::Format("%.0fm", z);
-	m_DrawDC.DrawText(str, m_XCentre + x_min + width + 5, m_YCentre + y - (FONT_SIZE / 2));
+	m_DrawDC.DrawText(strs[band], x_min + width + 5, y - (FONT_SIZE / 2));
 
 	y -= height;
     }
+
+    delete[] strs;
 }
 
 void GfxCore::DrawScalebar()
@@ -744,23 +798,23 @@ void GfxCore::DrawScalebar()
     // Calculate the extent of the survey, in metres across the screen plane.
     float m_across_screen = float(m_XSize / m_Params.scale);
     // The scalebar will represent this distance:
-    float size_snap = (float) pow(10.0, int(log10(m_across_screen * 0.94)));
+    float size_snap = (float) pow(10.0, int(log10(m_across_screen * 0.75)));
     // Actual size of the thing in pixels:
     int size = int(size_snap * m_Params.scale);
     
     // Draw it...
-    int end_x = m_XSize/2 - 15;
+    int end_x = 15;
     int height = 12;
     int end_y = m_YSize/2 - 15 - height;
     int interval = size / 10;
 
     bool solid = true;
     for (int ix = 0; ix < 10; ix++) {
-        int x = end_x - size + int(ix * ((float) size / 10.0));
+        int x = end_x + int(ix * ((float) size / 10.0));
         
 	m_DrawDC.SetPen(solid ? m_Pens.grey : m_Pens.white);
 	m_DrawDC.SetBrush(solid ? m_Brushes.grey : m_Brushes.white);
-        m_DrawDC.DrawRectangle(m_XCentre + x, m_YCentre + end_y, interval + 2, height);
+        m_DrawDC.DrawRectangle(x, m_YCentre + end_y, interval + 2, height);
 	
         solid = !solid;
     }
@@ -793,11 +847,11 @@ void GfxCore::DrawScalebar()
 
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
-    m_DrawDC.DrawText(str, m_XCentre + end_x - size, m_YCentre + end_y - FONT_SIZE - 4);
+    m_DrawDC.DrawText(str, end_x, m_YCentre + end_y - FONT_SIZE - 4);
 
     int text_width, text_height;
     m_DrawDC.GetTextExtent(str2, &text_width, &text_height);
-    m_DrawDC.DrawText(str2, m_XCentre + end_x - text_width, m_YCentre + end_y - FONT_SIZE - 4);
+    m_DrawDC.DrawText(str2, end_x + size - text_width, m_YCentre + end_y - FONT_SIZE - 4);
 }
 
 //
@@ -1045,8 +1099,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
         if (m_DraggingLeft) {
 	  if (!m_FreeRotMode) {
 	      wxCoord x0 = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
-	      wxCoord x1 = wxCoord(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 -
-				   INDICATOR_GAP);
+	      wxCoord x1 = wxCoord(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2);
 	      wxCoord y = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
 
 	      wxCoord dx0 = point.x - x0;
@@ -1055,7 +1108,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 
 	      wxCoord radius = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
 
-	      if (sqrt(dx0*dx0 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
+	      if (m_Compass && sqrt(dx0*dx0 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
 		  m_LastDrag == drag_COMPASS) {
 		  // drag in heading indicator
 		  if (sqrt(dx0*dx0 + dy*dy) <= radius) {
@@ -1069,7 +1122,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		  }
 		  m_LastDrag = drag_COMPASS;
 	      }
-	      else if (sqrt(dx1*dx1 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
+	      else if (m_Clino && sqrt(dx1*dx1 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
 		  m_LastDrag == drag_ELEV) {
 		  // drag in elevation indicator
 		  m_LastDrag = drag_ELEV;
@@ -1625,4 +1678,17 @@ void GfxCore::OnViewCompassUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_PlotData != NULL);
     cmd.Check(m_Compass);
+}
+
+void GfxCore::OnViewClino(wxCommandEvent&) 
+{
+    m_Clino = !m_Clino;
+    m_RedrawOffscreen = true;
+    Refresh(false);
+}
+
+void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd) 
+{
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode);
+    cmd.Check(m_Clino);
 }

@@ -57,6 +57,7 @@ enum {
     menu_VIEW_SHOW_NAMES,
     menu_VIEW_SHOW_OVERLAPPING_NAMES,
     menu_VIEW_COMPASS,
+    menu_VIEW_CLINO,
     menu_VIEW_DEPTH_BAR,
     menu_VIEW_SCALE_BAR,
     menu_VIEW_STATUS_BAR,
@@ -146,6 +147,7 @@ public:
     void OnToggleScalebarUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleScalebarUpdate(event); }
     void OnToggleDepthbarUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnToggleDepthbarUpdate(event); }
     void OnViewCompassUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnViewCompassUpdate(event); }
+    void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnViewClinoUpdate(event); }
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotationUpdate(event); }
 
     void OnDefaults(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnDefaults(event); }
@@ -178,6 +180,7 @@ public:
     void OnToggleScalebar(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnToggleScalebar(event); }
     void OnToggleDepthbar(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnToggleDepthbar(event); }
     void OnViewCompass(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewCompass(event); }
+    void OnViewClino(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewClino(event); }
     void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotation(event); }
     // end of horrible bodges
 

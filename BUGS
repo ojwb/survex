@@ -1,20 +1,14 @@
-Date: Sun, 18 Mar 2001
-From: Olly
-
-Bugs in wxaven:
-
-some shortcuts are missing (space/return/arrowkeys/'/slash/[/]/delete)
- -- only from menus now (although return/space don't work on first attempt!),
-    investigations continuing
-
-"nasty bodge in event handling code (I'll explain later)"
-
-Date: Tue, 27 Mar 2001
+Date: Thu, 29 Mar 2001
 From: Mark
-
 wxaven:
-about box layout is crap (awful with motif version); Close button doesn't work
-probs with building on win32
-still confusion over the "reverse controls" command
-configure script needs to allow specification of toolkit
-
+- about box layout needs attention
+- Close button in about box doesn't work
+- get it to build on/for win32
+- confusion over semantics of "reverse controls"
+- configure script needs to allow specification of toolkit
+- some code needs a bit of a tidy
+- occasional random crashes on startup (suspected wxWindows problem)
+- continuing trouble with accelerator keys
+- internationalisation needs doing
+- tiny change required to code locating about box png file
+- toggling status bar on requires window resize for correct operation
