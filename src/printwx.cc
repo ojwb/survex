@@ -1215,10 +1215,10 @@ svxPrintout::WriteString(const char *s)
 {
     pdc->SetUserScale(font_scaling, font_scaling);
     pdc->SetFont(*current_font);
-    int w,h;
-    pdc->GetTextExtent("My", &w, &h);
+    int w, h;
     if (cur_pass != -1) {
-	pdc->DrawText(s, x_t / font_scaling, y_t / font_scaling - h);
+	pdc->GetTextExtent("My", &w, &h);
+	pdc->DrawText(s, long(x_t / font_scaling), long(y_t / font_scaling) - h);
     } else {
 	pdc->GetTextExtent(s, &w, &h);
 	if ((y_t + h > 0 && y_t - h < clip.y_max - clip.y_min) ||
