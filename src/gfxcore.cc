@@ -113,7 +113,7 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
-    wxWindow(parent_win, 100, wxDefaultPosition, wxSize(640, 480)),
+    wxWindow(parent_win, 100),
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
 	   wxFONTENCODING_ISO8859_1),
     m_InitialisePending(false)
@@ -1795,7 +1795,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
 
     wxSize size = event.GetSize();
 
-    if (size.GetWidth() < 0 || size.GetHeight() < 0) {
+    if (size.GetWidth() <= 0 || size.GetHeight() <= 0) {
 	// Before things are fully initialised, we sometimes get a bogus
 	// resize message...
 	return;
