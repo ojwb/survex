@@ -624,6 +624,14 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
+   ASSERT(help[12].opt == HLP_ENCODELONG(12));
+   ASSERT(help[13].opt == HLP_ENCODELONG(13));
+   ASSERT(help[14].opt == 0);
+   ASSERT(!(pr->flags & PR_FLAG_CALIBRATE && pr->flags & PR_FLAG_NOFILEOUTPUT));
+
+   if (pr->flags & PR_FLAG_NOFILEOUTPUT) help[12] = help[14];
+   if (!(pr->flags & PR_FLAG_CALIBRATE)) help[13] = help[14];
+   
    fnm = NULL;
 
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, -1);
@@ -740,43 +748,47 @@ main(int argc, char **argv)
    }
 
    if (pr->Init) {
-      FILE *fh_list[4];
-      FILE **pfh = fh_list;
-      FILE *fh;
-      const char *pth_cfg;
-      char *print_ini;
+      if (pr->flags & PR_FLAG_NOINI) {
+	 pr->Init(NULL, msg_cfgpth(), output_fnm, &scX, &scY, 0);
+      } else {
+	 FILE *fh_list[4];
+	 FILE **pfh = fh_list;
+	 FILE *fh;
+	 const char *pth_cfg;
+	 char *print_ini;
 
-      /* ini files searched in this order:
-       * ~/.survex/print.ini [unix only]
-       * /etc/survex/print.ini [unix only]
-       * $SURVEXHOME/myprint.ini [not unix]
-       * $SURVEXHOME/print.ini [must exist]
-       */
+	 /* ini files searched in this order:
+	  * ~/.survex/print.ini [unix only]
+	  * /etc/survex/print.ini [unix only]
+	  * $SURVEXHOME/myprint.ini [not unix]
+	  * $SURVEXHOME/print.ini [must exist]
+	  */
 
 #if (OS==UNIX)
-      pth_cfg = getenv("HOME");
-      if (pth_cfg) {
-	 fh = fopenWithPthAndExt(pth_cfg, ".survex/print."EXT_INI, NULL, "rb",
+	 pth_cfg = getenv("HOME");
+	 if (pth_cfg) {
+	    fh = fopenWithPthAndExt(pth_cfg, ".survex/print."EXT_INI, NULL,
+				    "rb", NULL);
+	    if (fh) *pfh++ = fh;
+	 }
+	 pth_cfg = msg_cfgpth();
+	 fh = fopenWithPthAndExt(NULL, "/etc/survex/print."EXT_INI, NULL, "rb",
 				 NULL);
 	 if (fh) *pfh++ = fh;
-      }
-      pth_cfg = msg_cfgpth();
-      fh = fopenWithPthAndExt(NULL, "/etc/survex/print."EXT_INI, NULL, "rb",
-      	   		      NULL);
-      if (fh) *pfh++ = fh;
 #else
-      pth_cfg = msg_cfgpth();
-      print_ini = add_ext("myprint", EXT_INI);
-      fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);
-      if (fh) *pfh++ = fh;
+	 pth_cfg = msg_cfgpth();
+	 print_ini = add_ext("myprint", EXT_INI);
+	 fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);
+	 if (fh) *pfh++ = fh;
 #endif
-      print_ini = add_ext("print", EXT_INI);
-      fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);      
-      if (!fh) fatalerror(/*Couldn't open data file `%s'*/24, print_ini);
-      *pfh++ = fh;
-      *pfh = NULL;
-      pr->Init(fh_list, pth_cfg, output_fnm, &scX, &scY);
-      for (pfh = fh_list; *pfh; pfh++) (void)fclose(*pfh);
+	 print_ini = add_ext("print", EXT_INI);
+	 fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);      
+	 if (!fh) fatalerror(/*Couldn't open data file `%s'*/24, print_ini);
+	 *pfh++ = fh;
+	 *pfh = NULL;
+	 pr->Init(fh_list, pth_cfg, output_fnm, &scX, &scY, fCalibrate);
+	 for (pfh = fh_list; *pfh; pfh++) (void)fclose(*pfh);
+      }
    }
 
    if (fInteractive && view != EXTELEV) {

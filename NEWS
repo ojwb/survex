@@ -66,6 +66,12 @@ Changes in 0.99-prerelease1:
 
 * printps: thinner lines by default (0.1 points rather than 0.5).
 
+* printdm: added --calibrate option to print calibration page; if
+  there's no calibration in the .ini file, refuse to print (apart
+  from calibration pages) rather than printing to the wrong scale.
+
+* printwin: removed --output option - there is no output file.
+
 * extend: wasn't picking start station as documented - fixed and
   also enhanced to try to find an entrance with legs first.
 
@@ -117,8 +123,6 @@ Changes in 0.99-prerelease1:
 
 * Include documentation overview page in all versions (was just in MS
   Windows version).
-
-* printdm: added --calibrate option to print calibration page.
 
 * Lots of little improvements to debian packages (mostly from Wookey).
 

@@ -510,3 +510,17 @@
 #ca:121 Escrivint el fitxer d'imatge 3d `%s'
 #es:121 Gravando el fichero de imagen 3d `%s'
 #it:121 Sto scrivendo il file d'immagine 3d `%s'
+#en:103 Syntax: caverot <image file>
+#fr:103 Syntaxe: caverot <fichier image>
+#de:103 Syntax: caverot <Bilddatei>
+#pt:103 Sintaxe: caverot <nome do arquivo de imagem 3d>
+#ca:103 Sintaxi: caverot <fitxer imatge>
+#es:103 Sintaxis: caverot <fichero imagen>
+#it:103 Sintassi: caverot <nome file 3d>
+#en:104 Attempting to read in 3d image file
+#fr:104 Essai de lire un fichier image 3d
+#de:104 Versuch, 3D-Bilddatei zu lesen
+#pt:104 Tentando ler arquivo de imagem 3d
+#ca:104 Intentant de llegir un fitxer d'imatge 3d
+#es:104 Intentando leer un fichero de imagen 3d
+#it:104 Tentativo di lettura nel file immagine 3d

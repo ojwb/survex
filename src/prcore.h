@@ -30,13 +30,18 @@ typedef struct {
 #define PR_FONT_DEFAULT 0
 #define PR_FONT_LABELS 1
 
+#define PR_FLAG_NOFILEOUTPUT 1
+#define PR_FLAG_NOINI 2
+#define PR_FLAG_CALIBRATE 4
+
 typedef struct {
+   int flags;
    const char * (*Name)(void); /* returns "Widgetware printer" or whatever */
    /* A NULL fn ptr is Ok for Init, Charset, Pre, NewPage, ShowPage,
     & Post, Quit */
    /* if Pre==NULL, it "returns" 1 */
    void (*Init)(FILE **fh_list, const char *pth, const char *out_fnm,
-		double *pscX, double *pscY);
+		double *pscX, double *pscY, bool fCalibrate);
    int  (*Charset)(void);
    int  (*Pre)(int pagesToPrint, const char *title);
    void (*NewPage)(int pg, int pass, int pagesX, int pagesY);

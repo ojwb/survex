@@ -58,13 +58,14 @@ static int CharsetLatin1(void);
 static const char *xbm_Name(void);
 static void xbm_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void xbm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-		     double *pscX, double *pscY);
+		     double *pscX, double *pscY, bool fCalibrate);
 static void xbm_ShowPage(const char *szPageDetails);
 
 static int xbm_page_no = 0;
 
 /*device xbm = {*/
 device printer = {
+   0,
    xbm_Name,
    xbm_Init,
    CharsetLatin1,
@@ -87,11 +88,12 @@ static bool fPCLVTab = fTrue;
 static const char *pcl_Name(void);
 static void pcl_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void pcl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-		     double *pscX, double *pscY);
+		     double *pscX, double *pscY, bool fCalibrate);
 static void pcl_ShowPage(const char *szPageDetails);
 
 /*device pcl = {*/
 device printer = {
+   0,
    pcl_Name,
    pcl_Init,
    CharsetLatin1,
@@ -113,11 +115,12 @@ static bool fIBM = fFalse;
 static const char *dm_Name(void);
 static void dm_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-		    double *pscX, double *pscY);
+		    double *pscX, double *pscY, bool fCalibrate);
 static void dm_ShowPage(const char *szPageDetails);
 
 /*device dm = {*/
 device printer = {
+   PR_FLAG_CALIBRATE,
    dm_Name,
    dm_Init,
    NULL, /*CharsetLatin1,*/
@@ -397,13 +400,13 @@ dm_ShowPage(const char *szPageDetails)
 static void
 #ifdef XBM
 xbm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-	 double *pscX, double *pscY)
+	 double *pscX, double *pscY, bool fCalibrate)
 #elif defined(PCL)
 pcl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-	 double *pscX, double *pscY)
+	 double *pscX, double *pscY, bool fCalibrate)
 #else
 dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-	double *pscX, double *pscY)
+	double *pscX, double *pscY, bool fCalibrate)
 #endif
 {
    char *fnm_prn;
@@ -450,6 +453,8 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    };
    char **vals;
 
+   fCalibrate = fCalibrate; /* suppress unused argument warning */
+
 #ifdef XBM
    vals = ini_read_hier(fh_list, "xbm", vars);
 #elif defined(PCL)
@@ -493,8 +498,18 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    ylPageDepth = as_int(vars[4], vals[4], 4, INT_MAX);
    ylPageDepth -= 3; /* allow for footer */
    ypLineDepth = as_int(vars[5], vals[5], 1, INT_MAX);
-   PaperWidth = as_double(vars[6], vals[6], 1, DBL_MAX);
-   PaperDepth = as_double(vars[7], vals[7], 1, DBL_MAX);
+
+   if (!vals[6] || !vals[7]) {
+      if (!fCalibrate) 
+	 fatalerror(/*You need to calibrate your printer - see the manual for details.*/103);
+
+      /* Set temporary values, so a calibration plot can be produced */
+      if (!vals[6]) PaperWidth = 200.0;
+      if (!vals[7]) PaperWidth = 300.0;
+   }
+
+   if (vals[6]) PaperWidth = as_double(vars[6], vals[6], 1, DBL_MAX);
+   if (vals[7]) PaperDepth = as_double(vars[7], vals[7], 1, DBL_MAX);
 
    ypPageDepth = ylPageDepth * ypLineDepth;
    *pscX = xpPageWidth / PaperWidth; /* xp per mm */
@@ -503,23 +518,23 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    /* Work out # bytes required to hold one column */
    SIZEOFGRAPH_T = (ypLineDepth + 7) >> 3;
 
-   prn.lnsp.str = vals[8];      /* $1b3$18   */
+   prn.lnsp.str = vals[8];
    prn.lnsp.len = as_escstring(vars[8], prn.lnsp.str);
-   prn.grph.str = vals[9];      /* $1bL      */
+   prn.grph.str = vals[9];
    prn.grph.len = as_escstring(vars[9], prn.grph.str);
-   prn.grph2.str = vals[10];    /*           */
+   prn.grph2.str = vals[10];
    prn.grph2.len = as_escstring(vars[10], prn.grph2.str);
-   prn.fnt_big.str = vals[11];  /* $12$1bW1  */
+   prn.fnt_big.str = vals[11];
    prn.fnt_big.len = as_escstring(vars[11], prn.fnt_big.str);
-   prn.fnt_sml.str = vals[12];  /* $1bW0$0f  */
+   prn.fnt_sml.str = vals[12];
    prn.fnt_sml.len = as_escstring(vars[12], prn.fnt_sml.str);
-   prn.fmfd.str = vals[13];     /* $0c       */
+   prn.fmfd.str = vals[13];
    prn.fmfd.len = as_escstring(vars[13], prn.fmfd.str);
-   prn.rst.str = vals[14];      /* $1b2      */
+   prn.rst.str = vals[14];
    prn.rst.len = as_escstring(vars[14], prn.rst.str);
-   prn.eol.str = vals[15];      /* $0d       */
+   prn.eol.str = vals[15];
    prn.eol.len = as_escstring(vars[15], prn.eol.str);
-   fIBM = 0; /* default to Epsom */
+   fIBM = 0; /* default to Epson */
    if (vals[16]) fIBM = as_bool(vars[16], vals[16]);
    osfree(vals);
 #endif

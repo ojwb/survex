@@ -975,20 +975,10 @@ pt:102 Olhando em dire&ccedil;&atilde;o a %05.1f
 ca:102 Vista en direcci&oacute; %05.1f
 es:102 Vista en direcci&oacute;n %05.1f
 it:102 Vista in direzione %05.1f
-#en:103 Syntax: caverot <image file>
-#fr:103 Syntaxe: caverot <fichier image>
-#de:103 Syntax: caverot <Bilddatei>
-#pt:103 Sintaxe: caverot <nome do arquivo de imagem 3d>
-#ca:103 Sintaxi: caverot <fitxer imatge>
-#es:103 Sintaxis: caverot <fichero imagen>
-#it:103 Sintassi: caverot <nome file 3d>
-#en:104 Attempting to read in 3d image file
-#fr:104 Essai de lire un fichier image 3d
-#de:104 Versuch, 3D-Bilddatei zu lesen
-#pt:104 Tentando ler arquivo de imagem 3d
-#ca:104 Intentant de llegir un fitxer d'imatge 3d
-#es:104 Intentando leer un fichero de imagen 3d
-#it:104 Tentativo di lettura nel file immagine 3d
+#
+en:103 You need to calibrate your printer - see the manual for details.
+#
+#XXX 104
 en:105 Reading in data - please wait...
 fr:105 Lecture de donn&eacute;es - attendez S.V.P. ...
 de:105 Daten werden eingelesen - bitte warten...

@@ -61,7 +61,7 @@ static const char *hpgl_Name(void);
 static int hpgl_Pre(int pagesToPrint, const char *title);
 static void hpgl_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void hpgl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-		      double *pscX, double *pscY);
+		      double *pscX, double *pscY, bool fCalibrate);
 static void hpgl_MoveTo(long x, long y);
 static void hpgl_DrawTo(long x, long y);
 static void hpgl_DrawCross(long x, long y);
@@ -70,6 +70,7 @@ static void hpgl_ShowPage(const char *szPageDetails);
 
 /*device hpgl = {*/
 device printer = {
+   0,
    hpgl_Name,
    hpgl_Init,
    NULL, /* Charset */
@@ -109,7 +110,7 @@ static const char *ps_Name(void);
 static int ps_Pre(int pagesToPrint, const char *title);
 static void ps_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-		    double *pscX, double *pscY);
+		    double *pscX, double *pscY, bool fCalibrate);
 static int CharsetLatin1(void);
 static void ps_MoveTo(long x, long y);
 static void ps_DrawTo(long x, long y);
@@ -122,6 +123,7 @@ static void ps_Quit(void);
 
 /*device ps = {*/
 device printer = {
+   0,
    ps_Name,
    ps_Init,
    CharsetLatin1,
@@ -652,10 +654,10 @@ ps_ShowPage(const char *szPageDetails)
 static void
 #ifdef HPGL
 hpgl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-	  double *pscX, double *pscY)
+	  double *pscX, double *pscY, bool fCalibrate)
 #else
 ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-	double *pscX, double *pscY)
+	double *pscX, double *pscY, bool fCalibrate)
 #endif
 {
    char *fnm_prn;
@@ -692,7 +694,9 @@ ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    };
    char **vals;
 
-   pth = pth; /* shut-up warning */
+   /* suppress unused argument warnings */
+   fCalibrate = fCalibrate;
+   pth = pth;
 
 #ifdef HPGL
    vals = ini_read_hier(fh_list, "hpgl", vars);
