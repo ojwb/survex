@@ -171,6 +171,7 @@ class GfxCore : public wxWindow {
     wxCoord GetClinoOffset();
     wxPoint CompassPtToScreen(double x, double y, double z);
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
+    wxString FormatLength(double);
 
     void SetScale(double scale);
     void RedrawOffscreen();

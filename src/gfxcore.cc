@@ -889,7 +889,7 @@ void GfxCore::DrawDepthbar()
     wxString* strs = new wxString[bands + 1];
     for (int band = 0; band <= bands; band++) {
 	double z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / bands);
-	strs[band] = wxString::Format("%.0fm", z);
+	strs[band] = FormatLength(z);
 	int x, y;
 	m_DrawDC.GetTextExtent(strs[band], &x, &y);
 	if (x > size) {
@@ -922,6 +922,50 @@ void GfxCore::DrawDepthbar()
     }
 
     delete[] strs;
+}
+
+wxString GfxCore::FormatLength(double size_snap)
+{
+    wxString str;
+
+    if (size_snap == 0.0) {
+        str = "0";
+    }
+    else {
+#ifdef SILLY_UNITS
+        if (size_snap < 1e-12) {
+	    str = wxString::Format("%.3gpm", size_snap * 1e12);
+	} else if (size_snap < 1e-9) {
+	    str = wxString::Format("%.fpm", size_snap * 1e12);
+	} else if (size_snap < 1e-6) {
+	    str = wxString::Format("%.fnm", size_snap * 1e9);
+	} else if (size_snap < 1e-3) {
+	    str = wxString::Format("%.fum", size_snap * 1e6);
+#else
+	if (size_snap < 1e-3) {
+	    str = wxString::Format("%.3gmm", size_snap * 1e3);
+#endif
+	} else if (size_snap < 1e-2) {
+	    str = wxString::Format("%.fmm", size_snap * 1e3);
+	} else if (size_snap < 1.0) {
+	    str = wxString::Format("%.fcm", size_snap * 100.0);
+	} else if (size_snap < 1e3) {
+	    str = wxString::Format("%.fm", size_snap);
+#ifdef SILLY_UNITS
+	} else if (size_snap < 1e6) {
+	    str = wxString::Format("%.fkm", size_snap * 1e-3);
+	} else if (size_snap < 1e9) {
+	    str = wxString::Format("%.fMm", size_snap * 1e-6);
+	} else {
+	    str = wxString::Format("%.fGm", size_snap * 1e-9);
+#else
+	} else {
+	    str = wxString::Format("%.fkm", size_snap * 1e-3);
+#endif
+	}
+    }
+
+    return str;
 }
 
 void GfxCore::DrawScalebar()
@@ -963,47 +1007,15 @@ void GfxCore::DrawScalebar()
     }
 
     // Add labels.
-    wxString str = wxString("0");
-    wxString str2;
-#ifdef SILLY_UNITS
-    if (size_snap < 1e-12) {
-	str2 = wxString::Format("%.3gpm", size_snap * 1e12);
-    } else if (size_snap < 1e-9) {
-	str2 = wxString::Format("%.fpm", size_snap * 1e12);
-    } else if (size_snap < 1e-6) {
-	str2 = wxString::Format("%.fnm", size_snap * 1e9);
-    } else if (size_snap < 1e-3) {
-	str2 = wxString::Format("%.fum", size_snap * 1e6);
-#else
-    if (size_snap < 1e-3) {
-	str2 = wxString::Format("%.3gmm", size_snap * 1e3);
-#endif
-    } else if (size_snap < 1e-2) {
-	str2 = wxString::Format("%.fmm", size_snap * 1e3);
-    } else if (size_snap < 1.0) {
-	str2 = wxString::Format("%.fcm", size_snap * 100.0);
-    } else if (size_snap < 1e3) {
-	str2 = wxString::Format("%.fm", size_snap);
-#ifdef SILLY_UNITS
-    } else if (size_snap < 1e6) {
-	str2 = wxString::Format("%.fkm", size_snap * 1e-3);
-    } else if (size_snap < 1e9) {
-	str2 = wxString::Format("%.fMm", size_snap * 1e-6);
-    } else {
-        str2 = wxString::Format("%.fGm", size_snap * 1e-9);
-#else
-    } else {
-        str2 = wxString::Format("%.fkm", size_snap * 1e-3);
-#endif
-    }
+    wxString str = FormatLength(size_snap);
 
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
-    m_DrawDC.DrawText(str, end_x, end_y - FONT_SIZE - 4);
+    m_DrawDC.DrawText("0", end_x, end_y - FONT_SIZE - 4);
 
     int text_width, text_height;
-    m_DrawDC.GetTextExtent(str2, &text_width, &text_height);
-    m_DrawDC.DrawText(str2, end_x + size - text_width, end_y - FONT_SIZE - 4);
+    m_DrawDC.GetTextExtent(str, &text_width, &text_height);
+    m_DrawDC.DrawText(str, end_x + size - text_width, end_y - FONT_SIZE - 4);
 }
 
 //

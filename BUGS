@@ -3,7 +3,6 @@ From: Mark
 
 wxaven:
 - confusion over semantics of "reverse controls"
-- depth bar needs to change num of decimal places
 - dragging scale bar should change scale, not move scale bar!
 - elevation indicator
 
