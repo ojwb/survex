@@ -1,0 +1,89 @@
+Changes in 0.72:
+
+* Expiry timeout removed from all programs
+
+Changes in 0.71:
+
+* printdm: Native Printer support for Cannon BJ printers.
+
+* caverot: DJGPP version for use of more than 640K
+
+* xcaverot: Updated to have most of the features of Caverot (non-overlapping
+  lables, scale bar & tilt/direction indicators)
+
+Changes in 0.70:
+
+* Language support for Catalan, Spanish, and Italian added
+
+* caverot: tilt indicator added
+
+* caverot: constant speed rotation (e.g. for small caves on fast computers)
+
+* caverot: Smooth plan <-> elevation transitions on faster machines
+
+* caverot: Two files can be read in and displayed in different colour
+  (eg cave and surface data)
+
+* caverot: Extended memory version so big datasets can be displayed on
+  DOS version
+
+* Printer Drivers: INI file used instead of multiple configuration files.
+
+* Printer Drivers: Defaults set-able for all print settings
+
+* Printer Drivers: Option to print tilted plots
+
+* printhpgl: now has origin in centre of page option (and is default)
+
+* printdm/printpcl: Printer font made ISO-8859-1 compatible
+
+* Printer Drivers: Dotted borders to facilitate cutting to size with scissors
+
+* Printer Drivers: Scale bar length limited to save time on large plots
+
+* survex: If adjusted tape is negative then warning generated
+
+* survex: User-definable characters for input (e.g. for odd characters
+  in imported station names)
+
+Changes in 0.62:
+
+* printdm: bug-fix: a graphics postfix setting had been added to
+  dm.cfg, but if this was not used then printing would go wrong
+
+* printpcl: added an option for printers that do not understand the
+  PCL Vertical Tab command - see PCL.cfg
+
+Changes in 0.61:
+
+* Includes a new version of caverot that arranges the labels so that
+  they don't overlap.
+
+Changes in 0.60:
+
+* French and German translations greatly improved
+
+* survex: Survey grades now supported
+
+* survex: *calibrate, *data, and *units enhanced in a backwards
+  compatible way
+
+* survex: survey network is now split at articulation points
+  (faster/less memory)
+
+* survex: Omitted clino readings give a vertical sd of tape/sqrt(10)
+
+* survex: filenames with spaces are now supported - just put them in
+  quotes ("")
+
+* diffpos/3dtodxf: improved and made more robust
+
+* caverot: "sliding point" code improved to work even in really
+  extreme cases
+
+* caverot: added a "compass"
+
+* caverot: memory usage improved, so it now copes with larger files
+
+* And a host of more minor improvements and bug-fixes
+
