@@ -108,7 +108,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 #ifdef AVENPRES
     EVT_MENU(menu_FILE_OPEN_PRES, MainFrm::OnOpenPres)
 #endif
-    EVT_MENU(menu_FILE_PREFERENCES, MainFrm::OnFilePreferences)
+//    EVT_MENU(menu_FILE_PREFERENCES, MainFrm::OnFilePreferences)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
 
@@ -332,7 +332,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
 MainFrm::~MainFrm()
 {
-    ClearPointLists();
+    m_Labels.clear();
     delete[] m_Pens;
     delete[] m_Brushes;
 }
@@ -638,18 +638,6 @@ void MainFrm::CreateSidePanel()
     m_Splitter->Initialize(m_Gfx);
 }
 
-void MainFrm::ClearPointLists()
-{
-    // Free memory occupied by the contents of the label lists.
-
-    list<LabelInfo*>::const_iterator pos = m_Labels.begin();
-    while (pos != m_Labels.end()) {
-	LabelInfo* label = *pos++;
-	delete label;
-    }
-    m_Labels.clear();
-}
-
 bool MainFrm::LoadData(const wxString& file, wxString prefix)
 {
     // Load survey data from file, centre the dataset around the origin,
@@ -705,7 +693,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 #endif
 
     // Delete any existing list entries.
-    ClearPointLists();
+    m_Labels.clear();
 
     Double xmin = DBL_MAX;
     Double xmax = -DBL_MAX;
@@ -744,23 +732,15 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		if (pt.z < m_ZMin) m_ZMin = pt.z;
 		if (pt.z > zmax) zmax = pt.z;
 
-		PointInfo* info = new PointInfo;
-		info->x = pt.x;
-		info->y = pt.y;
-		info->z = pt.z;
-
+		bool is_surface = false;
 		if (result == img_LINE) {
 		    // Set flags to say this is a line rather than a move
 		    m_NumLegs++;
-		    info->isLine = true;
-		    info->isSurface = (survey->flags & img_FLAG_SURFACE);
-		} else {
-		    info->isLine = false;
+		    is_surface = (survey->flags & img_FLAG_SURFACE);
 		}
 
-		// Store this point in the list.
-		points.push_back(info);
-
+		// Add this point in the list.
+		points.push_back(PointInfo(pt.x, pt.y, pt.z, (result == img_LINE), is_surface));
 		break;
 	    }
 
@@ -841,11 +821,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	}
     } else {
 	// Delete any trailing move.
-	PointInfo* pt = points.back();
-	if (!pt->isLine) {
+	if (!points.back().isLine) {
 	    m_NumPoints--;
 	    points.pop_back();
-	    delete pt;
 	}
     }
 
@@ -1034,12 +1012,12 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
     Double yoff = m_Offsets.y = ymin + (m_YExt / 2.0);
     Double zoff = m_Offsets.z = zmin + (m_ZExt / 2.0);
 
-    list<PointInfo*>::iterator pos = points.begin();
+    list<PointInfo>::iterator pos = points.begin();
     while (pos != points.end()) {
-	PointInfo* point = *pos++;
-	point->x -= xoff;
-	point->y -= yoff;
-	point->z -= zoff;
+	PointInfo & point = *pos++;
+	point.x -= xoff;
+	point.y -= yoff;
+	point.z -= zoff;
     }
 
     list<LabelInfo*>::iterator lpos = m_Labels.begin();
