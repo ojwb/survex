@@ -81,11 +81,14 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 #endif
 
    i = 0;
+   name = NULL;
    do {
       fNew = fFalse;
       if (isSep(ch)) fImplicitPrefix = fFalse;
-      /* get a new name buffer for each level */
-      name = osmalloc(name_len);
+      if (name == NULL) {
+	 /* Need a new name buffer */
+	 name = osmalloc(name_len);
+      }
       /* i==0 iff this is the first pass */
       if (i) {
 	 i = 0;
@@ -121,14 +124,15 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       }
 
       name[i++] = '\0';
-      name = osrealloc(name, i);
 
       back_ptr = ptr;
       ptr = ptr->down;
       if (ptr == NULL) {
 	 /* Special case first time around at each level */
+	 name = osrealloc(name, i);
 	 ptr = osnew(prefix);
 	 ptr->ident = name;
+	 name = NULL;
 	 ptr->right = ptr->down = NULL;
 	 ptr->pos = NULL;
 	 ptr->shape = 0;
@@ -155,8 +159,11 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 }
 	 if (cmp) {
 	    /* ie we got to one that was higher, or the end */
-	    prefix *newptr = osnew(prefix);
+	    prefix *newptr;
+	    name = osrealloc(name, i);
+	    newptr = osnew(prefix);
 	    newptr->ident = name;
+	    name = NULL;
 	    if (ptrPrev == NULL)
 	       back_ptr->down = newptr;
 	    else
@@ -184,6 +191,8 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       depth++;
       f_optional = fFalse; /* disallow after first level */
    } while (isSep(ch));
+   if (name) osfree(name);
+
    /* don't warn about a station that is refered to twice */
    if (!fNew) ptr->sflags &= ~BIT(SFLAGS_SUSPECTTYPO);
 

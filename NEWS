@@ -1,13 +1,15 @@
-* cavern: Can now process Compass format survey data (.DAT and .MAK files) -
+* cavern: you can now process Compass format survey data (.DAT and .MAK files) -
   these can even be linked into a Survex dataset with "*include fulford.dat" or
   "*include lech.mak" to allow processing of mixed datasets.
 
-* Don't distribute unused toolbar icons.
+* cavern: reduced memory usage in code which reads a survey station name.
 
 * cavern: avoid unnecessary work when --percentage isn't specified.
 
 * cavern: Writing "*:" at the start of a .svx file would crash cavern - fixed
   and added test case.
+
+* Don't distribute unused toolbar icons.
 
 * Documentation: minor updates.
 
