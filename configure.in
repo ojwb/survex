@@ -8,8 +8,8 @@ AC_PREREQ(2.50)
 AC_INIT(src/cavern.c)
 
 # next line is for make_release
-CHANGELOG_FROM_TAG=v1_0_24
-AM_INIT_AUTOMAKE(survex, 1.0.25)
+CHANGELOG_FROM_TAG=v1_0_25
+AM_INIT_AUTOMAKE(survex, 1.0.26)
 RELEASE=1
 
 AC_SUBST(RELEASE)
