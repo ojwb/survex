@@ -9,8 +9,9 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
 
 PRINT = printdm printps printpcl printhpgl
 
-EXTRA_PROGRAMS = caverot xcaverot printxbm
-bin_PROGRAMS = cavern $(PRINT) diffpos extend survex 3dtodxf @CAVEROT@
+EXTRA_PROGRAMS = caverot xcaverot printxbm aven
+bin_PROGRAMS = cavern $(PRINT) diffpos extend survex 3dtodxf @CAVEROT@ \
+ @AVEN@
 
 cavern_SOURCES = cavern.c message.c filename.c listpos.c commands.c\
  cmdline.c getopt.c getopt1.c datain.c netskel.c network.c readval.c str.c\
@@ -18,6 +19,12 @@ cavern_SOURCES = cavern.c message.c filename.c listpos.c commands.c\
  netartic.c
 
 survex_SOURCES = wrap.c osdepend.c
+
+aven_SOURCES = aven.cc cvrotimg.c img.c useful.c osdepend.c filename.c\
+ message.c
+aven_LDADD = @GTKMM_LIBS@ -lgnomemm
+aven_CFLAGS = @GTKMM_CFLAGS@
+aven_CXXFLAGS = @GTKMM_CFLAGS@
 
 PRSRC = prcore.c prio.c message.c filename.c useful.c img.c osdepend.c\
  ini.c getopt.c getopt1.c cmdline.c
@@ -44,7 +51,7 @@ caverot_LDADD = @CROBJX@ @CRLIB@
 caverot_DEPENDENCIES = @CROBJX@
 
 xcaverot_SOURCES = xcaverot.c $(ROTSRC)
-xcaverot_CFLAGS = @X_CFLAGS@ -DXCAVEROT_BUTTONS
+xcaverot_CFLAGS = @X_CFLAGS@
 xcaverot_LDADD = @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
 # next line is actually superfluous to automake (but riscos/bc hack needs it)
