@@ -1,6 +1,6 @@
 /* > readval.c
  * Read a datum from the current input file
- * Copyright (C) 1991-1994,1996,1997 Olly Betts
+ * Copyright (C) 1991-1994,1996,1997,2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,6 +123,7 @@ read_prefix(bool fOmit)
 	 ptr->pos = NULL;
 	 ptr->stn = NULL;
 	 ptr->up = back_ptr;
+	 ptr->filename = NULL;
 	 back_ptr->down = ptr;
       } else {
 	 prefix *ptrPrev = NULL;
@@ -145,6 +146,7 @@ read_prefix(bool fOmit)
 	    new->pos = NULL;
 	    new->stn = NULL;
 	    new->up = back_ptr;
+	    new->filename = NULL;
 	    ptr = new;
 	 }
       }

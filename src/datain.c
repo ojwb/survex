@@ -317,7 +317,9 @@ data_file(const char *pth, const char *fnm)
       compile_error(/*Error reading file*/18);
    
    /* set_current_fnm(""); not correct if filenames are nested */
-   osfree(file.filename);
+
+   /* don't free this - it may be pointed to by prefix.file */
+   /* osfree(file.filename); */
 }
 
 extern int

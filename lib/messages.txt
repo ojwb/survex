@@ -297,7 +297,8 @@ it: 24 Non riesco ad aprire il file dei dati '%s'
 #XXX26
 #XXX27
 #XXX28
-#XXX29
+# FIXME TRANSLATE
+en: 29 Reentering an existing prefix level is deprecated (previously entered at %s:%lu)
 en: 30 Unknown command
 fr: 30 Commande inconnue
 de: 30 Unbekannter Befehl

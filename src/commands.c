@@ -374,10 +374,27 @@ set_chars(void)
 }
 
 static void
+check_reentry(prefix *tag)
+{
+   if (tag->filename) {
+      if (tag->line != file.line ||
+	  strcmp(tag->filename, file.filename) != 0) {
+	 compile_warning(/*Reentering an existing prefix level is deprecated (previously entered at %s:%lu)*/29,
+			 tag->filename, tag->line);
+      }
+   } else {
+      tag->filename = file.filename;
+      tag->line = file.line;
+   }
+}
+
+static void
 set_prefix(void)
 {
-   pcs->Prefix = read_prefix(fFalse);
+   prefix *tag = read_prefix(fFalse);
+   pcs->Prefix = tag;
    compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
+   check_reentry(tag);
 }
 
 static void
@@ -395,7 +412,10 @@ begin_block(void)
 
    tag = read_prefix(fTrue);
    pcs->tag = tag;
-   if (tag) pcs->Prefix = tag;
+   if (tag) {
+      pcs->Prefix = tag;
+      check_reentry(tag);
+   }
 }
 
 static void

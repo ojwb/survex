@@ -133,6 +133,8 @@ typedef struct Prefix {
    struct Node *stn;
    struct Pos *pos;
    char *ident;
+   const char *filename;
+   unsigned int line;
 } prefix;
 
 /* variance */

@@ -118,3 +118,16 @@ From: Olly
 
 Sort out and include program for generating file associations under Windows.
 
+Date: Fri, 14 Jul 2000
+From: Olly
+
+Sort out output from:
+*fix 1
+*fix 2
+
+Date: Fri, 14 Jul 2000
+From: Olly
+
+Make *begin/*prefix reentry warning store ptr to file struct in tag, and
+call compile_warning twice, second time with msg "Previously entered here".
+
