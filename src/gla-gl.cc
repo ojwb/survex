@@ -25,9 +25,11 @@
 #endif
 
 #include "gla.h"
-#ifdef HAVE_GL_GLUT_H
+// Some WIN32 stupidity which causes mingw to fail to link for some reason;
+// probably means we can't safely use atexit() - see the comments in glut.h
+// if you can take the full horror...
+#define GLUT_DISABLE_ATEXIT_HACK
 #include <GL/glut.h>
-#endif
 
 #ifdef GLA_DEBUG
 // Important: CHECK_GL_ERROR must not be called within a glBegin()/glEnd() pair
@@ -104,11 +106,7 @@ void GLAPen::Interpolate(const GLAPen& pen, double how_far)
 //  GLACanvas
 //  
 
-#ifdef HAVE_GL_GLUT_H
 void* const GLACanvas::m_Font = GLUT_BITMAP_HELVETICA_10;
-#else
-void* const GLACanvas::m_Font = NULL;
-#endif
 const int GLACanvas::m_FontSize = 10;
 
 GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size) :
@@ -466,7 +464,6 @@ void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool set_transparency)
 void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str)
 {
     // Draw a text string on the current buffer in the current font.
-#ifdef HAVE_GL_GLUT_H
     glRasterPos3d(x, y, z);
     CHECK_GL_ERROR("DrawText", "glRasterPos3d");
     
@@ -474,7 +471,6 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
         glutBitmapCharacter(m_Font, int(str[pos]));
         CHECK_GL_ERROR("DrawText", "glutBitmapCharacter");
     }
-#endif
 }
 
 void GLACanvas::DrawIndicatorText(glaCoord x, glaCoord y, const wxString& str)
@@ -488,16 +484,12 @@ void GLACanvas::GetTextExtent(const wxString& str, glaCoord* x_ext, glaCoord* y_
     assert(y_ext);
 
     *x_ext = 0;
-#ifdef HAVE_GL_GLUT_H
     for (int pos = 0; pos < str.Length(); pos++) {
         *x_ext += glutBitmapWidth(m_Font, str[pos]);
         CHECK_GL_ERROR("GetTextExtent", "glutBitmapWidth");
     }
 
     *y_ext = m_FontSize + 2;
-#else
-    *y_ext = 0;
-#endif
 }
 
 void GLACanvas::BeginQuadrilaterals()
