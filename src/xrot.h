@@ -11,8 +11,9 @@
 # define set_tcolour(X) /* !!HACK!! */
 # define set_gcolour(X) /* !!HACK!! */
 # define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, S)
-# define Y_UP
 #endif
+
+# define Y_UP
 
 typedef int coord;  /* data type used after data is read in */
 
