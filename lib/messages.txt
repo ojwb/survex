@@ -1687,8 +1687,9 @@ sk:164 "Ktor&eacute; str&aacute;nky vytla&ccaron;i&tcaron;?&#10;(RETURN pre v&sc
 # e.g. "Printing to `somefile.ps'..." / "Printing to `Laserjet4 on amachine...'
 en:165 Printing to `%s'...
 fr:165 Impression vers `%s'...
-ca:165 Imprimint a `%s'
-es:165 Imprimiendo en `%s'
+de:165 Drucken nach `%s'...
+ca:165 Imprimint a `%s'...
+es:165 Imprimiendo en `%s'...
 sk:165 Tla&ccaron;&iacute;m na/do `%s'...
 #
 en:166 Page %d of %d
@@ -2281,13 +2282,14 @@ sk:227 Nie je mo&zcaron;n&eacute; nakalibrova&tcaron; uhlov&yacute;&eacute; a d&
 #
 en:228 Select a terrain file to view
 fr:228 S&eacute;lectionner un fichier de surface &aagrave; visualiser
+de:228 Gel&auml;ndedatei zur Ansicht w&auml;hlen
 ca:228 Selecciona un fitxer de terreny per veure
 es:228 Selecciona un archivo de terreno para ver
 sk:228 Vyber s&uacute;bor s povrchom k zobrazeniu
-sk:206 Vyberte 3D s&uacute;bor k zobrazeniu
 #
 en:229 Terrain files
 fr:229 Fichiers de surface
+de:229 Gel&auml;ndedateien
 ca:229 Fitxers de terreny
 es:229 Archivos de terreno
 sk:229 S&uacute;bory s povrchom
