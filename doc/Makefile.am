@@ -28,6 +28,7 @@ $(other_mans):
 	ln -s $(srcdir)/survex.1 $@
 
 install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual; \
 	if test -d "$(srcdir)/manual" ; then \
 	  for p in `find "$(srcdir)/manual" -name "*.htm" -type f -print` ; do \
 	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
