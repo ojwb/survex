@@ -75,6 +75,7 @@ static const int SCALE_BAR_OFFSET_Y = 12;
 static const int SCALE_BAR_HEIGHT = 12;
 static const int HIGHLIGHTED_PT_SIZE = 2;
 static const int TEXT_COLOUR = 7;
+static const int HERE_COLOUR = 5;
 
 const ColourTriple COLOURS[] = {
     { 0, 0, 0 },       // black
@@ -352,9 +353,6 @@ void GfxCore::SetScaleInitial(Double scale)
 {
     GfxCore::SetScale(scale);
 	
-    // Invalidate hit-test grid.
-    m_HitTestGridValid = false;
-
     for (int band = 0; band < m_Bands; band++) {
         Point* pt = m_PlotData[band].vertices;
         assert(pt);
@@ -475,6 +473,7 @@ void GfxCore::SetScale(Double scale)
     }
 
     m_Params.scale = scale;
+    m_HitTestGridValid = false;
 
     GLACanvas::SetScale(scale);
     
@@ -565,51 +564,31 @@ void GfxCore::OnPaint(wxPaintEvent& event)
             DrawList(m_Lists.grid);
         }
 */
-
+ 
+        if (!m_Rotating && !m_SwitchingTo) {
+            Double size = SurveyUnitsAcrossViewport() * HIGHLIGHTED_PT_SIZE / m_XSize;
+    
+            // Draw "here" and "there".
+            if (m_here.x != DBL_MAX) {
+                DrawSphere(m_Pens[HERE_COLOUR], m_here.x, m_here.y, m_here.z, size, 16);
+            }
+            if (m_there.x != DBL_MAX) {
+                if (m_here.x != DBL_MAX) {
+                    BeginLines();
+                    PlaceVertex(m_here.x, m_here.y, m_here.z);
+                    PlaceVertex(m_there.x, m_there.y, m_there.z);
+                    EndLines();
+                }
+                DrawSphere(m_Pens[HERE_COLOUR], m_there.x, m_there.y, m_there.z, size, 16);
+            }
+        }
+        
         // Draw indicators.
         SetIndicatorTransform();
         DrawList(m_Lists.indicators);
-
-/*
-        // Draw scalebar.
-        if (m_Scalebar) {
-            DrawScalebar();
-        }*/
     }
-   
+
     FinishDrawing();
-
-    /*
-    if (!m_Rotating && !m_SwitchingTo) {
-        int here_x = INT_MAX;
-        int here_y;
-
-        // Draw "here" and "there".
-        if (m_here.x != DBL_MAX) {
-            dc.SetPen(*wxWHITE_PEN);
-            dc.SetBrush(*wxTRANSPARENT_BRUSH);
-            here_x = (int)GridXToScreen(m_here);
-            here_y = (int)GridYToScreen(m_here);
-            dc.DrawEllipse(here_x - HIGHLIGHTED_PT_SIZE * 2,
-                           here_y - HIGHLIGHTED_PT_SIZE * 2,
-                           HIGHLIGHTED_PT_SIZE * 4,
-                           HIGHLIGHTED_PT_SIZE * 4);
-        }
-        if (m_there.x != DBL_MAX) {
-            if (here_x == INT_MAX) dc.SetPen(*wxWHITE_PEN);
-            dc.SetBrush(*wxWHITE_BRUSH);
-            int there_x = (int)GridXToScreen(m_there);
-            int there_y = (int)GridYToScreen(m_there);
-            if (here_x != INT_MAX) {
-                dc.DrawLine(here_x, here_y, there_x, there_y);
-            }
-            dc.DrawEllipse(there_x - HIGHLIGHTED_PT_SIZE,
-                           there_y - HIGHLIGHTED_PT_SIZE,
-                           HIGHLIGHTED_PT_SIZE * 2,
-                           HIGHLIGHTED_PT_SIZE * 2);
-        }
-    }
-*/
 }
 
 Double GfxCore::GridXToScreen(Double x, Double y, Double z)
@@ -1159,13 +1138,15 @@ void GfxCore::DrawScalebar()
 
 void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 {
-#if 0
-#ifndef AVENGL
     if (point.x < 0 || point.x >= m_XSize || point.y < 0 || point.y >= m_YSize) {
         return;
     }
 
-    if (!m_HitTestGridValid) CreateHitTestGrid();
+    SetDataTransform();
+
+    if (!m_HitTestGridValid) {
+        CreateHitTestGrid();
+    }
 
     int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
     int grid_y = (point.y * (HITTEST_SIZE - 1)) / m_YSize;
@@ -1174,15 +1155,20 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
     int dist_sqrd = 25;
     int square = grid_x + grid_y * HITTEST_SIZE;
     list<LabelInfo*>::iterator iter = m_PointGrid[square].begin();
+
     while (iter != m_PointGrid[square].end()) {
         LabelInfo *pt = *iter++;
 
-        int dx = point.x -
-                (int)GridXToScreen(pt->GetX(), pt->GetY(), pt->GetZ());
+        Double cx, cy, cz;
+
+        Transform(pt->GetX(), pt->GetY(), pt->GetZ(), &cx, &cy, &cz);
+
+        cy = m_YSize - cy;
+
+        int dx = point.x - int(cx);
         int ds = dx * dx;
         if (ds >= dist_sqrd) continue;
-        int dy = point.y -
-                (int)GridYToScreen(pt->GetX(), pt->GetY(), pt->GetZ());
+        int dy = point.y - int(cy);
 
         ds += dy * dy;
         if (ds >= dist_sqrd) continue;
@@ -1203,8 +1189,6 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
     } else {
         m_Parent->SetMouseOverStation(NULL);
     }
-#endif
-#endif
 }
 
 void GfxCore::OnSize(wxSizeEvent& event)
@@ -1411,7 +1395,7 @@ void GfxCore::SetThere(Double x, Double y, Double z)
 
 void GfxCore::CreateHitTestGrid()
 {
-/*    // Clear hit-test grid.
+    // Clear hit-test grid.
     for (int i = 0; i < HITTEST_SIZE * HITTEST_SIZE; i++) {
         m_PointGrid[i].clear();
     }
@@ -1420,7 +1404,7 @@ void GfxCore::CreateHitTestGrid()
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
     while (pos != end) {
-        LabelInfo *label = *pos++;
+        LabelInfo* label = *pos++;
 
         if (!((m_Surface && label->IsSurface()) ||
 	      (m_Legs && label->IsUnderground()) ||
@@ -1431,19 +1415,21 @@ void GfxCore::CreateHitTestGrid()
         }
 
         // Calculate screen coordinates.
-        int cx = (int)GridXToScreen(label->GetX(), label->GetY(), label->GetZ());
+        Double cx, cy, cz;
+        Transform(label->GetX(), label->GetY(), label->GetZ(), &cx, &cy, &cz);
         if (cx < 0 || cx >= m_XSize) continue;
-        int cy = (int)GridYToScreen(label->GetX(), label->GetY(), label->GetZ());
         if (cy < 0 || cy >= m_YSize) continue;
 
+        cy = m_YSize - cy;
+
         // On-screen, so add to hit-test grid...
-        int grid_x = (cx * (HITTEST_SIZE - 1)) / m_XSize;
-        int grid_y = (cy * (HITTEST_SIZE - 1)) / m_YSize;
+        int grid_x = int((cx * (HITTEST_SIZE - 1)) / m_XSize);
+        int grid_y = int((cy * (HITTEST_SIZE - 1)) / m_YSize);
 
         m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(label);
     }
 
-    m_HitTestGridValid = true;*/
+    m_HitTestGridValid = true;
 }
 
 void GfxCore::UpdateQuaternion()
@@ -1483,6 +1469,8 @@ void GfxCore::TurnCave(Double angle)
         m_PanAngle += M_PI * 2.0;
     }
 
+    m_HitTestGridValid = false;
+
     UpdateQuaternion();
     UpdateIndicators();
 }
@@ -1504,6 +1492,8 @@ void GfxCore::TiltCave(Double tilt_angle)
 
     m_TiltAngle += tilt_angle;
 
+    m_HitTestGridValid = false;
+
     UpdateQuaternion();
     UpdateIndicators();
 }
@@ -1511,6 +1501,8 @@ void GfxCore::TiltCave(Double tilt_angle)
 void GfxCore::TranslateCave(int dx, int dy)
 {
     AddTranslationScreenCoordinates(dx, dy);
+    m_HitTestGridValid = false;
+
     ForceRefresh();
 }
 
@@ -1869,6 +1861,10 @@ void GfxCore::CentreOn(Double x, Double y, Double z)
     m_Params.translation.x = -x;
     m_Params.translation.y = -y;
     m_Params.translation.z = -z;
+    
+    SetTranslation(-x, -y, -z);
+    m_HitTestGridValid = false;
+    
     ForceRefresh();
 }
 
