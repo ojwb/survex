@@ -1,3 +1,16 @@
+survex (1.0.12) unstable; urgency=low
+
+  * diffpos: fixed to work on 64bit architectures.
+  * sorterr: fixed to work with more than 1024 traverses.
+  * Fixed handling of iso-8859-2 character set.
+  * Fixed Aven to work from Debian Apps menu (running an installed program
+    with an explicit path works again).
+  * xcaverot: automatically switch on PDA mode if the screen is narrower than
+    640 pixels.
+  * Updates to Portuguese translation - all translations are now up-to-date.
+
+ -- Wookey <wookey@survex.com>  Fri, 07 Jun 2002 18:16:30 +0100
+
 survex (1.0.11) unstable; urgency=low
 
   * aven: improvements in 1.0.10 to the file type selector only work with
