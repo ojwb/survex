@@ -304,7 +304,7 @@ ca: 25 ROOT ja no s'utilitza
 es: 25 ROOT ya no se usa
 it: 25 ROOT &eacute; sconsigliato
 #A station must be exported out of each level it is in, so this would give
-#error 26:
+#"Station `\outer.inner.1' not exported from survey `\outer')":
 # *equate entrance outer.inner.1
 # *begin outer
 # *begin inner
@@ -312,36 +312,10 @@ it: 25 ROOT &eacute; sconsigliato
 # 1 2 1.23 045 -6
 # *end inner
 # *end outer
-# FIXME: TRANSLATE fr ca es
-en: 26 Station `%s' not exported high enough
-de: 26 Station `%s' nicht gen&uuml;gend hoch exportiert
-pt: 26 Base `%s' n&atilde;o foi exportada nos blocos BEGIN/END mais externos
-it: 26 La stazione `%s' deve essere esportata in un livello superiore
-#Similarly, it must be exported from the lowest level:
-# *equate entrance outer.inner.1
-# *begin outer
-# *export inner.1
-# *begin inner
-# 1 2 1.23 045 -6
-# *end inner
-# *end outer
-# FIXME: TRANSLATE fr ca es
-en: 27 Station `%s' not exported from lowest prefix level
-de: 27 Station `%s' nicht aus der innersten Pr&auml;fix-Ebene exportiert
-pt: 27 Base `%s' n&atilde;o foi exportada no bloco BEGIN/END mais interno
-it: 27 La stazione `%s' deve essere esportata in un livello pi&uacute; basso
-#And if it's not exported at all:
-# *equate entrance outer.inner.1
-# *begin outer
-# *begin inner
-# 1 2 1.23 045 -6
-# *end inner
-# *end outer
-# FIXME: TRANSLATE fr ca es
-en: 28 Station `%s' not exported with *EXPORT
-de: 28 Station `%s' nicht mit *EXPORT exportiert
-pt: 28 Base `%s' n&atilde;o foi exportada em nenhum n&iacute;vel
-it: 28 Stazione `%s' non esportata con *EXPORT
+# FIXME: TRANSLATE fr ca es de pt it
+en: 26 Station `%s' not exported from survey `%s'
+# XXX 27,28
+# FIXME: perhaps use "survey" instead of "prefix level"?
 # FIXME: TRANSLATE check amended message fr ca es
 en: 29 Reentering an existing prefix level is deprecated
 #fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute;
@@ -2129,3 +2103,34 @@ en:290 @About Aven...
 #ca: 82 Par&agrave;metres dolents a la l&iacute;nia de comandaments
 #es: 82 Par&aacute;metros err&oacute;neos en la l&iacute;nea de comandos
 #it: 82 Parametro della linea dei comandi errato
+#A station must be exported out of each level it is in, so this would give
+#error 26:
+#en: 26 Station `%s' not exported high enough
+#de: 26 Station `%s' nicht gen&uuml;gend hoch exportiert
+#pt: 26 Base `%s' n&atilde;o foi exportada nos blocos BEGIN/END mais externos
+#it: 26 La stazione `%s' deve essere esportata in un livello superiore
+#Similarly, it must be exported from the lowest level:
+# *equate entrance outer.inner.1
+# *begin outer
+# *export inner.1
+# *begin inner
+# 1 2 1.23 045 -6
+# *end inner
+# *end outer
+# FIXME: TRANSLATE fr ca es
+#en: 27 Station `%s' not exported from lowest prefix level
+#de: 27 Station `%s' nicht aus der innersten Pr&auml;fix-Ebene exportiert
+#pt: 27 Base `%s' n&atilde;o foi exportada no bloco BEGIN/END mais interno
+#it: 27 La stazione `%s' deve essere esportata in un livello pi&uacute; basso
+#And if it's not exported at all:
+# *equate entrance outer.inner.1
+# *begin outer
+# *begin inner
+# 1 2 1.23 045 -6
+# *end inner
+# *end outer
+# FIXME: TRANSLATE fr ca es
+#en: 28 Station `%s' not exported with *EXPORT
+#de: 28 Station `%s' nicht mit *EXPORT exportiert
+#pt: 28 Base `%s' n&atilde;o foi exportada em nenhum n&iacute;vel
+#it: 28 Stazione `%s' non esportata con *EXPORT

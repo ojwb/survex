@@ -17,4 +17,5 @@ From: Olly
 
 - dragging scale bar should change scale, not move scale bar!
 - where did the status bar go?
+- "Alt-F, Ctrl-Z" changes hotkey for File->Open from Ctrl-O to Ctrl-Z !?!
 

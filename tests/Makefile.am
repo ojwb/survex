@@ -27,7 +27,7 @@ require_fail.svx\
 extend.svx extendx.3d\
 revcomplist.svx\
 exporterr1.svx exporterr2.svx exporterr3.svx exporterr4.svx exporterr5.svx\
-exporterr1b.svx exporterr2b.svx exporterr3b.svx\
+exporterr6.svx exporterr1b.svx exporterr2b.svx exporterr3b.svx exporterr6b.svx\
 hanging_cpt.svx\
 self_loop.svx self_eq_loop.svx badinc.svx badinc2.svx export.svx export2.svx\
 singlefix.svx singlefix.pos includecomment.svx reenterwarn.svx\

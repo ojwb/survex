@@ -837,14 +837,32 @@ cmd_export(void)
       if (pfx->min_export == 0) {
          /* not encountered *export for this name before */
          if (pfx->max_export > depth) {
-	    compile_error(/*Station `%s' not exported high enough*/26,
-			  sprint_prefix(pfx));
+	    prefix *survey = pfx;
+	    char *s;
+	    int i;
+	    for (i = depth + 1; i; i--) {
+	       survey = survey->up;
+	       ASSERT(survey);
+	    }
+	    s = osstrdup(sprint_prefix(survey));
+	    compile_error(/*Station `%s' not exported from survey `%s'*/26,
+			  sprint_prefix(pfx), s);
+	    osfree(s);
          }
          pfx->min_export = pfx->max_export = depth;
       } else {
          if (pfx->min_export - 1 > depth) {
-	    compile_error(/*Station `%s' not exported high enough*/26,
-			  sprint_prefix(pfx));
+	    prefix *survey = pfx;
+	    char *s;
+	    int i;
+	    for (i = depth + 1; i; i--) {
+	       survey = survey->up;
+	       ASSERT(survey);
+	    }
+	    s = osstrdup(sprint_prefix(survey));
+	    compile_error(/*Station `%s' not exported from survey `%s'*/26,
+			  sprint_prefix(pfx), s);
+	    osfree(s);
          } else if (pfx->min_export - 1 < depth) {
 	    compile_error(/*Station `%s' already exported*/66,
 			  sprint_prefix(pfx));

@@ -26,6 +26,7 @@
 
 #include "cavern.h"
 #include "datain.h"
+#include "debug.h"
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
@@ -123,13 +124,19 @@ node_stat(prefix *p)
 	 warning(/*Station `%s' referred to just once, with an explicit prefix - typo?*/70,
 		 sprint_prefix(p));
       }
+      /* FIXME: what about export violations in hanging surveys? */
       if (fExportUsed) {
-	 if (p->min_export > 1) {
-	    error(/*Station `%s' not exported from lowest prefix level*/27,
-		  sprint_prefix(p));
-	 } else if (p->min_export == 0 && p->max_export) {
-	    error(/*Station `%s' not exported with *EXPORT*/28,
-		  sprint_prefix(p));
+#if 0
+	 printf("L min %d max %d pfx %s\n",
+		p->min_export, p->max_export, sprint_prefix(p));
+#endif
+	 if (p->min_export > 1 || (p->min_export == 0 && p->max_export)) {
+	    char *s;
+	    ASSERT(p->up);
+	    s = osstrdup(sprint_prefix(p->up));
+	    error(/*Station `%s' not exported from survey `%s'*/26,
+		  sprint_prefix(p), s);
+	    osfree(s);
 	 }
       }
    }

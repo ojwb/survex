@@ -22,6 +22,7 @@
 #endif
 
 #include "cavern.h"
+#include "debug.h"
 #include "filename.h"
 #include "message.h"
 #include "readval.h"
@@ -200,8 +201,17 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
    if (ptr->min_export == 0) {
       if (depth > ptr->max_export) ptr->max_export = depth;
    } else if (ptr->max_export < depth) {
-      compile_error(/*Station `%s' not exported high enough*/26,
-		    sprint_prefix(ptr));
+      prefix *survey = ptr;
+      char *s;
+      int level;
+      for (level = ptr->max_export + 1; level; level--) {
+	 survey = survey->up;
+	 ASSERT(survey);
+      }
+      s = osstrdup(sprint_prefix(survey));
+      compile_error(/*Station `%s' not exported from survey `%s'*/26,
+		    sprint_prefix(ptr), s);
+      osfree(s);
 #if 0
       printf(" *** pfx %s warning not exported enough depth %d "
              "ptr->max_export %d\n", sprint_prefix(ptr),
