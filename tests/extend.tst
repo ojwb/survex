@@ -10,6 +10,7 @@ test -n "$*" && VERBOSE=1
 
 : ${CAVERN="$testdir"/../src/cavern}
 : ${EXTEND="$testdir"/../src/extend}
+: ${DIFFPOS="$testdir"/../src/diffpos}
 
 SURVEXHOME=$srcdir/../lib
 export SURVEXHOME
@@ -21,12 +22,12 @@ for file in $TESTS ; do
   rm -f "$testdir"/tmp.*
   if test -n "$VERBOSE" ; then
     $CAVERN $srcdir/$file.svx --output="$testdir"/tmp || exit 1
-    $EXTEND "$testdir"/tmp.3d "$testdir"/tmp.x3d || exit 1
-    sed '1,4d' < "$testdir"/tmp.x3d | cmp - "$srcdir"/${file}x.3d || exit 1
+    $EXTEND "$testdir"/tmp.3d "$testdir"/tmp.x.3d || exit 1
+    $DIFFPOS "$testdir"/tmp.x.3d $srcdir/${file}x.3d || exit 1
   else
     $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > /dev/null || exit 1
-    $EXTEND "$testdir"/tmp.3d "$testdir"/tmp.x3d > /dev/null || exit 1
-    sed '1,4d' < "$testdir"/tmp.x3d | cmp - "$srcdir"/${file}x.3d > /dev/null || exit 1
+    $EXTEND "$testdir"/tmp.3d "$testdir"/tmp.x.3d > /dev/null || exit 1
+    $DIFFPOS "$testdir"/tmp.x.3d $srcdir/${file}x.3d > /dev/null || exit 1
   fi
   rm -f "$testdir"/tmp.*
 done
