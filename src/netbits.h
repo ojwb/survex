@@ -52,32 +52,35 @@ extern node *stn_iter;
 
 #define print_prefix(N) fprint_prefix(stdout, (N))
 
-char *sprint_prefix(prefix *ptr);
-void fprint_prefix(FILE *fh, prefix *ptr);
+char *sprint_prefix(const prefix *ptr);
+void fprint_prefix(FILE *fh, const prefix *ptr);
 
 /* r = ab ; r,a,b are variance matrices */
 void mulvv(var *r, const var *a, const var *b);
 
 /* r = ab ; r,b delta vectors; a variance matrix */
-void mulvd(d *r, var *a, d *b);
+void mulvd(d *r, const var *a, const d *b);
+
+/* r = ca ; r,a variance matrices; c real scaling factor  */
+void mulvc(var *r, const var *a, real c);
 
 /* r = a + b ; r,a,b delta vectors */
-void adddd(d *r, d *a, d *b);
+void adddd(d *r, const d *a, const d *b);
 
 /* r = a - b ; r,a,b delta vectors */
-void subdd(d *r, d *a, d *b);
+void subdd(d *r, const d *a, const d *b);
 
 /* r = a + b ; r,a,b variance matrices */
-void addvv(var *r, var *a, var *b);
+void addvv(var *r, const var *a, const var *b);
 
 /* r = a - b ; r,a,b variance matrices */
-void subvv(var *r, var *a, var *b);
+void subvv(var *r, const var *a, const var *b);
 
-/* r = a(b^-1) ; r,a delta vectors; b variance matrix */
-void divdv(d *r, d *a, var *b);
+/* r = (b^-1)a ; r,a delta vectors; b variance matrix */
+void divdv(d *r, const d *a, const var *b);
 
 /* r = a(b^-1) ; r,a,b variance matrices */
-void divvv(var *r, var *a, var *b);
+void divvv(var *r, const var *a, const var *b);
 
 #ifndef NO_COVARIANCES
 /* inv = v^-1 ; inv,v variance matrices */
