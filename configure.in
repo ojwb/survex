@@ -17,7 +17,7 @@ AC_PROG_CC
 AC_PROG_CXX #_PROBE
 if test -n "$CXX" ; then
   dnl aclocal from automake 1.4 doesn't like next line:
-  AM_DEPENDENCIES(CXX)
+  #AM_DEPENDENCIES(CXX)
   AC_PROG_CXXCPP
 fi
 
@@ -74,21 +74,20 @@ AC_ARG_ENABLE(aven,
   no)  AVEN=no ;;
   *) AC_MSG_ERROR(bad value ${enableval} for --enable-aven) ;;
 esac])
-if test x"$AVEN" = xno ; then
+#if test x"$AVEN" = xno ; then
   AVEN=
-else
-  if test -n "$CXX" ; then
-    if test x$no_x != xyes; then
-dnl   AM_PATH_GTKMM(1.2.0,AVEN=aven;AC_MSG_RESULT(building aven),AC_MSG_WARN([GTK-- 1.2 not found (is gtkmm-config in path?) : not building aven]))
-      AM_PATH_GTKMM(1.0.0,AVEN=aven;AC_MSG_RESULT(building aven),
-	AC_MSG_WARN([GTK-- not found (is gtkmm-config in path?) : not building aven]))
-      AC_SUBST(GTKMM_VERSION)
-      AC_SUBST(GTKMM_LIBS)
-      AC_SUBST(GTKMM_CFLAGS)
-    fi
-  fi
-fi
-
+#else
+#  if test -n "$CXX" ; then
+#    if test x$no_x != xyes; then
+#dnl   AM_PATH_GTKMM(1.2.0,AVEN=aven;AC_MSG_RESULT(building aven),AC_MSG_WARN([GTK-- 1.2 not found (is gtkmm-config in path?) : not building aven]))
+#      AM_PATH_GTKMM(1.0.0,AVEN=aven;AC_MSG_RESULT(building aven),
+#	AC_MSG_WARN([GTK-- not found (is gtkmm-config in path?) : not building aven]))
+#      AC_SUBST(GTKMM_VERSION)
+#      AC_SUBST(GTKMM_LIBS)
+#      AC_SUBST(GTKMM_CFLAGS)
+#    fi
+#  fi
+#fi
 
 AC_LANG_C
 
