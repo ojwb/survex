@@ -29,13 +29,15 @@
 1996.02.19 fixed so intdos works with DJGPPv2 *and* BorlandC
 1996.05.06 attempted to fix very dim Norcroft warning
 1997.01.23 fixed warning from Norcroft Cv4
+1998.03.22 autoconf-ed
 */
 
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "useful.h"
 #include "osdepend.h"
 #include "prio.h"
@@ -52,12 +54,12 @@
 
 static FILE *fhPrn;
 
-#ifndef NO_PIPES
+#ifdef HAVE_POPEN
 static bool fPipeOpen=fFalse;
 #endif
 
 extern void prio_open( sz fnmPrn ) {
-#ifndef NO_PIPES
+#ifdef HAVE_POPEN
    if (*fnmPrn=='|') {
       fhPrn=popen(fnmPrn+1,"w"); /* fnmPrn+1 to skip '|' */
       if (!fhPrn)
@@ -89,7 +91,7 @@ extern void prio_open( sz fnmPrn ) {
 }
 
 extern void prio_close( void ) {
-#ifndef NO_PIPES
+#ifdef HAVE_POPEN
    if (fPipeOpen) {
       pclose(fhPrn);
       return;
@@ -108,9 +110,14 @@ extern void prio_printf( const char * format, ... ) {
    int result;
    va_list args;
    va_start(args,format);
-   result=vfprintf( fhPrn, format, args );
+   result = vfprintf( fhPrn, format, args );
    va_end(args);
    if (result<0)
+      fatal(87,NULL,NULL,0);
+}
+
+extern void prio_print( const char *str ) {
+   if (fputs( str, fhPrn ) < 0)
       fatal(87,NULL,NULL,0);
 }
 

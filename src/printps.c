@@ -130,7 +130,8 @@
 #include <limits.h>
 
 #include "useful.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "prio.h"
 #include "filelist.h"
 #include "debug.h" /* for BUG and ASSERT */
@@ -253,10 +254,10 @@ static void ps_WriteString( const char *s ) {
       ch = *s++;
       switch (ch) {
        case 0xB0:
-         prio_printf("\\312"); /* degree symbol */
+         prio_print("\\312"); /* degree symbol */
          break;
        case 0xA9:
-         prio_printf(") S SF (\\323) S FF ("); /* (C) symbol (symbol font) */
+         prio_print(") S SF (\\323) S FF ("); /* (C) symbol (symbol font) */
          break;
        case '(': case ')': case '\\': /* need to escape these characters */
          prio_putc('\\');
@@ -267,7 +268,7 @@ static void ps_WriteString( const char *s ) {
          break;
       }
    }
-   prio_printf(") S\n");
+   prio_print(") S\n");
 }
 #endif
 
@@ -283,7 +284,7 @@ static int hpgl_Pre( int pagesToPrint ) {
    /* INitialise; Select Pen 1;  */
    /* Either: Scale chars Relative to P1 & P2 0.5,1.0 (2/3 deflt size) */
    /*     Or: Scale chars absolute to 2/3 of default size on A4 page */
-   prio_printf("IN;SP1;"
+   prio_print("IN;SP1;"
 #ifndef HPGL_USE_UC
                "CA-1;GM0,800;" /* Char set Alternate -1; Get Memory; */
 #endif
@@ -296,17 +297,17 @@ static int hpgl_Pre( int pagesToPrint ) {
       prio_putc('\n');
 #ifndef HPGL_USE_UC
    /* define degree and copyright symbols */
-   prio_printf("DL32,10,30,12,30,13,29,13,27,12,26,10,26,9,27,9,29,"
+   prio_print("DL32,10,30,12,30,13,29,13,27,12,26,10,26,9,27,9,29,"
                "10,30;DL40,0,0;"); /* Hope this works! Seems to for BP */
    if (fNewLines)
       prio_putc('\n');
-   prio_printf("DL67,16,14,16,18,17,22,19,25,22,28,26,30,31,31,37,32,"
+   prio_print("DL67,16,14,16,18,17,22,19,25,22,28,26,30,31,31,37,32,"
                "43,32,49,31,53,30,58,28,61,25,63,22,64,18,64,14,63,10,"
                "61,7,58,4,53,2,49,1,43,0,37,0,31,1,26,2,22,4,19,7,17,10,"
                "16,14;");
    if (fNewLines)
       prio_putc('\n');
-   prio_printf("DL41,4,20,3,19,0,23,-4,24,-9,24,-14,23,-17,22,-20,19,"
+   prio_print("DL41,4,20,3,19,0,23,-4,24,-9,24,-14,23,-17,22,-20,19,"
                "-21,16,-20,13,-17,10,-14,9,-9,8,-4,8,0,9,3,11,4,12;");
    if (fNewLines)
       prio_putc('\n');
@@ -315,19 +316,19 @@ static int hpgl_Pre( int pagesToPrint ) {
 }
 #else
 static int ps_Pre( int pagesToPrint ) {
-   prio_printf("%%!PS-Adobe-1.0\n"); /* PS file w/ document structuring */
-   prio_printf("%%%%Title: %s\n","Survex draft survey");
-   prio_printf("%%%%Creator: Survex Postscript Printer Driver\n");
-/*   prio_printf("%%%%CreationDate: Today :)\n"); */
-/*   prio_printf("%%%%For: A Surveyor\n"); */
-   prio_printf("%%%%DocumentFonts: %s %s\n",szFont,szFontSymbol);
-/*   prio_printf("%%%%BoundingBox: llx lly urx ury\n"); */
+   prio_print("%%!PS-Adobe-1.0\n"); /* PS file w/ document structuring */
+   prio_printf( "%%%%Title: %s\n", "Survex draft survey" );
+   prio_print("%%%%Creator: Survex Postscript Printer Driver\n");
+/*   prio_print("%%%%CreationDate: Today :)\n"); */
+/*   prio_print("%%%%For: A Surveyor\n"); */
+   prio_printf( "%%%%DocumentFonts: %s %s\n", szFont, szFontSymbol );
+/*   prio_print("%%%%BoundingBox: llx lly urx ury\n"); */
    /* FF switches to text font; SF switches to symbol font */
    prio_printf("/FF {/%s findfont %d scalefont setfont} def\n",
                szFont, (int) FontSize);
    prio_printf("/SF {/%s findfont %d scalefont setfont} def\n",
                szFontSymbol, (int) FontSize);
-   prio_printf("FF\n");
+   prio_print("FF\n");
    /* Postscript definition for drawing a cross */
 #define CS PS_CROSS_SIZE
 #define CS2 (2*PS_CROSS_SIZE)
@@ -337,10 +338,10 @@ static int ps_Pre( int pagesToPrint ) {
 #undef CS
 #undef CS2
    /* define M, L and S to keep file short */
-   prio_printf("/M {stroke moveto} def /L {lineto} def /S {show} def\n");
+   prio_print("/M {stroke moveto} def /L {lineto} def /S {show} def\n");
    prio_printf("%%%%Pages: %d\n",pagesToPrint);
-   prio_printf("%%%%EndComments\n");
-   prio_printf("%%%%EndProlog\n");
+   prio_print("%%%%EndComments\n");
+   prio_print("%%%%EndProlog\n");
    return 1; /* only need 1 pass */
 }
 #endif
@@ -413,7 +414,7 @@ static void ps_NewPage( int pg, int pass, int pagesX, int pagesY ) {
 static void ps_ShowPage( const char *szPageDetails ) {
    prio_printf("stroke grestore\n0 -%d moveto\n",(int)(10.0*POINTS_PER_MM));
    ps_WriteString( szPageDetails );
-   prio_printf("stroke\nshowpage\n");
+   prio_print("stroke\nshowpage\n");
 }
 #endif
 
@@ -477,7 +478,7 @@ static void ps_Init( FILE *fh, const char *pth, float *pscX, float *pscY ) {
 
 #ifndef HPGL
 static void ps_Quit( void ) {
-   prio_printf("%%%%Trailer\n");
+   prio_print("%%%%Trailer\n");
    prio_close();
 }
 #endif
@@ -509,29 +510,29 @@ static void hpgl_DrawCross( long x, long y ) {
 }
 
 static void hpgl_WriteString( const char *s ) {
-   prio_printf("LB"); /* Label - terminate text with a ^C */
+   prio_print("LB"); /* Label - terminate text with a ^C */
    while (*s) {
       switch (*s) {
        case '\xB0':
 #ifdef HPGL_USE_UC
          /* draw a degree sign */
-         prio_printf(HPGL_EOL";UC1.25,7.5,99,.25,0,.125,-.25,0,-.5,"
+         prio_print(HPGL_EOL";UC1.25,7.5,99,.25,0,.125,-.25,0,-.5,"
                      "-.125,-.25,-.25,0,-.125,.25,0,.5,.125,.25;LB");
 #else
          /* KLUDGE: this prints the degree sign if the plotter supports
           * extended chars or a space if not, since we tried to redefine
           * space.  Nifty, eh? */
-         prio_printf( HPGL_SO" "HPGL_SI );
+         prio_print( HPGL_SO" "HPGL_SI );
 #endif
          break;
        case '\xA9':
 #ifdef HPGL_USE_UC
          /* (C) needs two chars to look right! */
          /* This bit does the circle of the (C) symbol: */
-         prio_printf(HPGL_EOL";");
+         prio_print(HPGL_EOL";");
          if (fNewLines)
             prio_putc('\n');
-         prio_printf("UC2,3.5,99,0,1,0.125,1,0.25,.75,0.375,.75,"
+         prio_print("UC2,3.5,99,0,1,0.125,1,0.25,.75,0.375,.75,"
                      ".5,.5,.625,.25,.75,.25,.75,0,.75,-.25,.625,-.25,"
                      ".5,-.5,.375,-.75,.25,-.75,.125,-1,0,-1,-0.125,-1,"
                      "-0.25,-.75,-0.375,-.75,-.5,-.5,-.625,-.25,-.75,-.25,"
@@ -540,15 +541,15 @@ static void hpgl_WriteString( const char *s ) {
          if (fNewLines)
             prio_putc('\n');
          /* And this bit's the c in the middle: */
-         prio_printf("UC.5,5,99,-.125,.25,-.375,.5,-.5,.25,-.625,0,"
+         prio_print("UC.5,5,99,-.125,.25,-.375,.5,-.5,.25,-.625,0,"
                      "-.625,-.25,-.375,-.25,-.375,-.75,-.125,-.75,.125,-.75,"
                      ".375,-.75,.375,-.25,.625,-.25,.625,0,.5,.25,.375,.5,"
                      ".125,.25;");
          if (fNewLines)
             prio_putc('\n');
-         prio_printf("LB");
+         prio_print("LB");
 #else
-         prio_printf( HPGL_SO"(C)"HPGL_SI );
+         prio_print( HPGL_SO"(C)"HPGL_SI );
 #endif
          break;
        default:
@@ -556,7 +557,7 @@ static void hpgl_WriteString( const char *s ) {
       }
       s++;
    }
-   prio_printf( HPGL_EOL";" );
+   prio_print( HPGL_EOL";" );
    if (fNewLines)
       prio_putc('\n');
 }
@@ -566,7 +567,7 @@ static void hpgl_ShowPage( const char *szPageDetails ) {
    prio_printf("IW;PU%ld,%ld;",
                clip.x_min-x_org,clip.y_min-ypFooter/2L-y_org);
    hpgl_WriteString(szPageDetails);
-   prio_printf("PG;"); /* New page.  NB PG is a no-op on the HP7475A */
+   prio_print("PG;"); /* New page.  NB PG is a no-op on the HP7475A */
    if (fNewLines)
       prio_putc('\n');
 }
