@@ -3,7 +3,7 @@
 EXTRA_DIST = copyright copyright.in docs survex-aven.files doc-base \
  rules survex-aven.menu watch control changelog
 
-control: Makefile ../desc.txt ../desc-aven.txt
+control: Makefile $(top_srcdir)/desc.txt $(top_srcdir)/desc-aven.txt
 	echo Source: survex > control
 	echo Section: math >> control
 	echo Priority: optional >> control
@@ -17,15 +17,15 @@ control: Makefile ../desc.txt ../desc-aven.txt
 	echo 'Depends: $${shlibs:Depends}' >> control
 	echo 'Recommends: survex-aven (= ${VERSION}.@RELEASE@)' >> control
 	echo Description: Cave surveying and mapping software >> control
-	sed 's/^/ /' < ../desc.txt >> control
+	sed 's/^/ /' < $(top_srcdir)/desc.txt >> control
 	echo >> control
 	echo Package: survex-aven >> control
 	echo Architecture: any >> control
 	echo 'Depends: survex (= ${VERSION}.@RELEASE@), $${shlibs:Depends}' >> control
 	echo Description: Sophisticated cave survey viewer for Survex >> control
-	sed 's/^/ /' < ../desc-aven.txt >> control
+	sed 's/^/ /' < $(top_srcdir)/desc-aven.txt >> control
 
-docs: Makefile ../Makefile.am
+docs: Makefile $(top_srcdir)/configure.in
 	rm -f docs
 	for a in `echo @EXTRA_TEXT@|grep -v COPYING|grep -v ChangeLog` ; do \
 	 echo $a >> docs ; done
