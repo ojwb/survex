@@ -1,8 +1,9 @@
+/* OS dependent filename manipulation routines */
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
-/* OS dependent filename manipulation routines */
 #include "filename.h"
 #include <string.h>
 

@@ -211,7 +211,7 @@ draw_scale_bar(void)
       sprintf(sz, "%gkm", len / 1000.0);
 #if 0
   { /* display the time slice */
-     extern int dt;
+     extern int dt; /* now static in caverot.c */
      sprintf(sz + strlen(sz), " %d", dt);
   }
 #endif
