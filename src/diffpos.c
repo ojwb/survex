@@ -217,7 +217,7 @@ parse_3d_file(const char *fnm, const char *survey,
 	 break;
        case img_BAD:
 	 img_close(pimg);
-	 fatalerror(/*Bad 3d image file `%s'*/106, fnm);
+	 fatalerror(img_error(), fnm);
       }
    } while (result != img_STOP);
       

@@ -906,7 +906,7 @@ parse_command(int argc, char **argv)
    /* load data into memory */
    for (c = 0; c < argc; c++) {
       if (!load_data(argv[c], survey, ppLegs + c, ppSLegs + c, ppStns + c)) {
-	 printf(msg(/*Bad 3d image file `%s'*/106), argv[c]);
+	 printf(img_error(), argv[c]);
 	 putnl();
 	 exit(1);
       }
