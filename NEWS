@@ -17,7 +17,7 @@ Changes in 0.97-prerelease3:
 * cavern: Improved reporting of missing *export-s; added 2 more
   *export tests.
 
-* Stopped trapping SIGINT (ctrl-C) or SIGTERM (Ctrl-\ on Unix) as we
+* No longer trap SIGINT (Ctrl-C) or SIGTERM (Ctrl-\ on Unix) as we
   can't do anything useful.
 
 Changes in 0.97-prerelease2:

@@ -1570,8 +1570,9 @@ pt:200 Este programa &eacute; um software de livre distribui&ccedil;&atilde;o, q
 es:200 Este programa es software libre. Puede redistribuirlo y/o modificarlo bajo los t&eacute;rminos de la Licencia P&uacute;blica General de GNU seg&uacute;n es publicada por la Free Software Foundation, bien de la versi&oacute; 2 de dicha Licencia o bien (seg&uacute;n su elecci&oacute;n) de cualquier versi&oacute;n posterior.
 it:200 Questo programma &egrave; software libero; &egrave; lecito redistribuirlo o modificarlo secondo i termini della Licenza Pubblica Generica GNU come &egrave; pubblicata dalla Free Software Foundation; o la versione 2 della licenza o (a propria scelta) una versione successiva.
 #
-# TRANSLATE lots
+# TRANSLATE check fr de pt ca es it
 en:201 Display command line options
+fr:201 Affiche les options de la ligne de commande
 de:201 Befehlszeilenparameter anzeigen
 # or "... comandos"?
 pt:201 Mostrar op&ccedil;&otilde;es de linha de comando
@@ -1579,8 +1580,10 @@ ca:201 Mostra les opcions de la l&iacute;nia de comanda
 es:201 Mostrar opciones en l&iacute;nea de comandos
 it:201 Mostra le opzioni della riga di comando
 #
+# TRANSLATE fr de pt ca es it
 en:202 No survey data in 3d file `%s'
 #
+# TRANSLATE fr de pt ca es it
 en:203 Facing
 #
 en:204 Close
@@ -1609,9 +1612,12 @@ it:205 Informazioni su %s
 # The string "##" separates the menu text and any accelerator key.
 #
 # File->Open dialog:
+# TRANSLATE fr de pt ca es it
 en:206 Select a 3d file to view
 #
+# TRANSLATE ca check fr de pt es it
 en:207 Survex 3d files
+fr:207 Fichiers de Survex 3d
 de:207 Survex 3d Dateien
 pt:207 Ficheiros de Survex 3d
 pt-br:207 Arquivos de Survex 3d
@@ -1620,6 +1626,7 @@ es:207 Archivos Survex 3d
 it:207 File Survex 3d
 #
 en:208 All files
+fr:208 Tous les fichiers
 de:208 Alle Dateien
 pt:208 Todos os ficheiros
 pt-br:208 Todos os arquivos
@@ -1642,6 +1649,7 @@ es:210 @Archivo
 it:210 @File
 #
 en:211 @Rotation
+fr:211 @Rotation
 de:211 @Drehung
 pt:211 @Rota&ccedil;&atilde;o
 ca:211 @Rotaci&oacute;
@@ -1649,6 +1657,7 @@ es:211 @Rotaci&oacute;n
 it:211 @Rotazione
 #
 en:212 @Orientation
+fr:212 @Orientation
 de:212 @Ausrichtung
 pt:212 @Orienta&ccedil;&atilde;o
 ca:212 @Orientaci&oacute;
@@ -1665,6 +1674,7 @@ es:213 @Vista
 it:213 @Vista
 #
 en:214 @Controls
+fr:214 @Contr&ocirc;les
 de:214 @Steuerung
 pt:214 @Comandos
 pt-br:214 @Controles
@@ -1740,6 +1750,8 @@ en:250 @Higher Viewpoint##'
 en:251 Lo@wer Viewpoint##/
 #
 en:252 @Zoom In##]
+# fr: or "Agrandir"
+fr:252 @Zoom Avant##]
 de:252 Ver@gr&ouml;&szlig;ern##]
 # pt or "Ampliar"
 pt:252 @Aumentar##]
@@ -1750,6 +1762,8 @@ es:252 @Ampliar##]
 it:252 @Zoom avanti##]
 #
 en:253 Zoo@m Out##[
+# fr: or "R&eacute;duire"
+fr:253 Zoo@m Arri&egrave;re##[
 de:253 Ver@kleinern##[
 # pt or "Reduzir"
 pt:253 @Diminuir##[
@@ -1757,9 +1771,10 @@ ca:254 A@llunya##[
 #es or "Disminuir"
 es:253 @Reducir##[
 # it: or "Riduci"
-it:253 Zoom @indietro##]
+it:253 Zoo@m indietro##]
 #
 en:254 Restore De@fault Settings##Delete
+fr:254 Restaurer les @valeurs par d&eacute;faut##Delete
 de:254 @Standard wiederherstellen##Delete
 pt:254 @Usar valores pr&eacute;-definidos##Delete
 pt-br:254 Restaurar @padr&otilde;es##Delete
