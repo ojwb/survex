@@ -2,6 +2,10 @@
 
 * xcaverot: fixed poor handling of keypresses when rotating
 
+* xcaverot: reenabled buttons and made plan/elev button work properly
+
+* aven: new experimental gtk-based xcaverot replacement
+
 Changes in 0.92-prerelease2:
 
 * Default srcdir if not set so we can easily run a test standalone
