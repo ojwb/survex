@@ -1,6 +1,6 @@
 /* useful.h
  * Lots of oddments that come in handy generally
- * Copyright (C) 1993-2003 Olly Betts
+ * Copyright (C) 1993-2003,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,13 +35,20 @@
 /* Macro to do nothing, but avoid compiler warnings about empty if bodies &c */
 #define NOP (void)0
 
-/* Return max/min of two numbers (if not defined already) */
+/* Return max/min of two numbers. */
+#ifdef __cplusplus
+# include <algorithm>
+using std::min;
+using std::max;
+#else
+/* May be defined already (e.g. by Borland C in stdlib.h) */
 /* NB Bad news if X or Y has side-effects... */
-#ifndef max
-# define max(X, Y) ((X) > (Y) ? (X) : (Y))
-#endif
-#ifndef min
-# define min(X, Y) ((X) < (Y) ? (X) : (Y))
+# ifndef max
+#  define max(X, Y) ((X) > (Y) ? (X) : (Y))
+# endif
+# ifndef min
+#  define min(X, Y) ((X) < (Y) ? (X) : (Y))
+# endif
 #endif
 
 /* M_PI, etc may be defined in math.h */
