@@ -1,5 +1,12 @@
 * aven: update display correctly when "Metric" and "Degrees" are toggled.
 
+* cavern: fixed handling of compass and clino corrections in Compass survey
+  data - these were interpreted as radians rather than degrees so the
+  correction was about 57 times too large!)
+
+* Improved handling of Compass PLT files - if the survey name is empty, don't
+  insert a survey separator character.
+
 Changes in 1.0.19:
 
 * cavern: you can now process Compass format survey data (.DAT and .MAK files) -

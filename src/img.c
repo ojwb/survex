@@ -1227,8 +1227,12 @@ skip_to_N:
 		  return img_BAD;
 	       }
 	       pimg->label = pimg->label_buf;
-	       pimg->label[pimg->label_len] = ' ';
-	       memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
+	       if (pimg->label_len) {
+		   pimg->label[pimg->label_len] = ' ';
+		   memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
+	       } else {
+		   memcpy(pimg->label, q, len - 1);
+	       }
 	       osfree(line);
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
 	       if (fpos != -1) {
