@@ -112,13 +112,13 @@ debian : dist
 	echo Architecture: any >> ${debct}
 	echo 'Depends: ${shlibs:Depends}' >> ${debct}
 	echo Recommends: survex-aven >> ${debct}
-	echo Description: Cave surveying software >> ${debct}
+	echo Description: Cave surveying and mapping software >> ${debct}
 	sed 's/^/ /' < desc.txt >> ${debct}
 	echo >> ${debct}
 	echo Package: survex-aven >> ${debct}
 	echo Architecture: any >> ${debct}
 	echo 'Depends: survex, ${shlibs:Depends}' >> ${debct}
-	echo Description: Aven cave survey viewer for Survex >> ${debct}
+	echo Description: Sophisticated cave survey viewer for Survex >> ${debct}
 	sed 's/^/ /' < desc-aven.txt >> ${debct}	
 	# -us and -uc mean don't sign packages
 	cd deb/${PACKAGE}-${VERSION} && debuild -us -uc
