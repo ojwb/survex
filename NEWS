@@ -2,6 +2,8 @@
 
 * cavern: corrected handling of declination in Compass DAT files and added test   case; also added tests for other aspects of Compass DAT file reading.
 
+* printps/printpcl: fixed blank page detection in some obscure cases.
+
 * Documentation: started manual section on working with Compass data files.
 
 * (Unix version): fixed compilation problems with aven and getopt.h on MacOS X
