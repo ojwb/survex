@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2001 Olly Betts
+ * Copyright (C) 1995-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,11 +37,17 @@
 
 /* To save memory we should probably use the prefix hash for the prefix on
  * point labels (FIXME) */
+
+typedef struct stn {
+   const char *label;
+   int flags;
+   struct stn *next;
+} stn;
+
 typedef struct POINT {
    img_point p;
-   const char *label;
+   const stn *stns;
    unsigned int order;
-   int flags;
    struct POINT *next;
 } point;
 
@@ -101,10 +107,9 @@ find_point(const img_point *pt)
 
    p = osmalloc(ossizeof(point));
    p->p = *pt;
-   p->label = "<none>";
+   p->stns = NULL;
    p->order = 0;
    p->next = headpoint.next;
-   p->flags = 0;
    headpoint.next = p;
    return p;
 }
@@ -131,8 +136,11 @@ add_leg(point *fr, point *to, const char *prefix, int flags)
 static void
 add_label(point *p, const char *label, int flags)
 {
-   p->label = osstrdup(label);
-   p->flags = flags;
+   stn *s = osnew(stn);
+   s->label = osstrdup(label);
+   s->flags = flags;
+   s->next = p->stns;
+   p->stns = s;
 }
 
 static const struct option long_opts[] = {
@@ -223,9 +231,15 @@ main(int argc, char **argv)
 
    /* start at the highest entrance with some legs attached */
    for (p = headpoint.next; p != NULL; p = p->next) {
-      if (p->order > 0 && (p->flags & img_SFLAG_ENTRANCE) && p->p.z > zMax) {
-	 start = p;
-	 zMax = p->p.z;
+      if (p->order > 0 && p->p.z > zMax) {
+	 stn *s;
+	 for (s = p->stns; s; s = s->next) {
+	    if (s->flags & img_SFLAG_ENTRANCE) {
+	       start = p;
+	       zMax = p->p.z;
+	       break;
+	    }
+	 }
       }
    }
    if (start == NULL) {
@@ -272,7 +286,11 @@ do_stn(point *p, double X)
 {
    leg *l, *lp;
    double dX;
-   img_write_item(pimg, img_LABEL, p->flags, p->label, X, 0, p->p.z);
+   stn *s;
+
+   for (s = p->stns; s; s = s->next) {
+      img_write_item(pimg, img_LABEL, s->flags, s->label, X, 0, p->p.z);
+   }
    lp = &headleg;
    for (l = lp->next; l; lp = l, l = lp->next) {
       if (l->fDone) {

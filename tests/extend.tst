@@ -17,7 +17,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 SURVEXHOME="$srcdir"/../lib
 export SURVEXHOME
 
-: ${TESTS=${*-"extend"}}
+: ${TESTS=${*-"extend extend2names"}}
 
 for file in $TESTS ; do
   echo $file
