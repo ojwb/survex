@@ -109,9 +109,8 @@ img *img_open_survey(const char *fnm, const char *survey);
 /* Open a .3d file for output
  * fnm is the filename
  * title_buf is the title
- * fBinary == 0 for ASCII .3d file
- *         != 0 for binary .3d file
- * NB only the original .3d file format has an ASCII variant
+ * fBinary is ignored (it used to select an ASCII variant of the earliest
+ * version of the 3d file format)
  * Returns pointer to an img struct or NULL for error (check img_error()
  * for details)
  */
