@@ -91,6 +91,8 @@ typedef enum {
 #define BIT(N) (1UL << (N))
 #define BITA(N) (1UL << ((N) - 'a'))
 
+#define TSTBIT(W, N) (((W)>>(N))&1)
+
 /* masks for quantities which are length and angles respectively */
 #define LEN_QMASK (BIT(Q_LENGTH) | BIT(Q_DEPTH) |\
    BIT(Q_DX) | BIT(Q_DY) | BIT(Q_DZ) | BIT(Q_POS) |\
@@ -166,7 +168,7 @@ typedef struct {
 } linkcommon;
 #define FLAG_DATAHERE 0x80
 #define FLAG_REPLACEMENTLEG 0x40
-/*#define FLAG_ARTICULATION 0x20 not used at the moment */
+#define FLAG_ARTICULATION 0x20
 #define MASK_REVERSEDIRN 0x03
 
 /* reverse leg - deltas & vars stored on other dirn */

@@ -30,19 +30,3 @@ workaround is to use `3Ddir' instead which does work]
 [2000-07-24 Olly: Believed fixed, needs testing]
 [2001-01-25 Olly: wasn't fixed, but should be now - needs testing again]
 
-Date: 21 Feb 2001
-From: Olly
-
-`*include 193' reported oddly:
-
-In file included from surface/2000/root.svx:16,
-                      surf.svx:31,
-		      all.svx:13:
-cavern: Couldn't open data file '193'
-
-This would be better:
-
-In file included from surf.svx:31,
-		      all.svx:13:
-surface/2000/root.svx:16: Couldn't open data file '193'
-

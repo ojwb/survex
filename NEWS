@@ -4,6 +4,14 @@ Changes in 0.96:
   introduced in 0.96-prerelease 1 - symptoms: messages incorrectly looked
   for in current directory, or just printing "???" and exiting.
 
+* cavern: attempting to *include a non-existant file used to complain:
+  "In file included from example.svx:31:" / "cavern: Couldn't open data file
+  'bad.svx'" - now complain "example.svx:31: Couldn't open data file
+  'bad.svx'".
+
+* xcaverot: cursor keys now move the 3D centre of rotation rather than just
+  the position of the survey in the window.
+
 Changes in 0.96-prerelease4:
 
 * cavern (RISC OS version): "is this a directory" test would never say

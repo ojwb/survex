@@ -556,8 +556,8 @@ replace_subnets(void)
          d e;
          linkfor *leg;
          if (fixed(stn3)) {
-            /* NB either both or neither fixed */
 	    int zero;
+	    ASSERT(fixed(stn4)); /* either both or neither fixed */
 
             leg = stn3->leg[dirn3];
             stn2 = ptrRed->join1->l.to;
@@ -618,10 +618,11 @@ replace_subnets(void)
          /* parallel legs */
          d e, e2;
          linkfor *leg;
+
 	 stn = ptrRed->join1->l.to;
-	 stn2 = ptrRed->join2->l.to;
+	 stn2 = ptrRed->join2->l.to;	  
          if (fixed(stn3)) {
-            /* NB either both or neither fixed */
+	    ASSERT(fixed(stn4)); /* either both or neither fixed */
             dirn = reverse_leg_dirn(ptrRed->join1);
             dirn2 = reverse_leg_dirn(ptrRed->join2);
 

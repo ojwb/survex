@@ -706,36 +706,36 @@ replace_travs(void)
 #if PRINT_NETBITS
 	 printf("lenTot increased okay\n");
 #endif
-	 if (cLegsTrav) {
-	    if (stn2->name != nmPrev) {
+	    if (cLegsTrav) {
+	       if (stn2->name != nmPrev) {
+#ifndef BLUNDER_DETECTION
+		  if (!fSuppress) {
+		     fprint_prefix(fhErrStat, nmPrev);
+#if PRINT_NAME_PTRS
+		     fprintf(fhErrStat, "[%p]", nmPrev);
+#endif
+		     fputs(fEquate ? szLinkEq : szLink, fhErrStat);
+		  }
+#endif
+		  if (!fEquate) cLegsTrav++;
+	       }
+#if SHOW_INTERNAL_LEGS
+	       else
+		  if (!fSuppress) fputc('+', fhErrStat);
+#endif
 #ifndef BLUNDER_DETECTION
 	       if (!fSuppress) {
-		  fprint_prefix(fhErrStat, nmPrev);
+		  fprint_prefix(fhErrStat, stn2->name);
 #if PRINT_NAME_PTRS
-		  fprintf(fhErrStat, "[%p]", nmPrev);
+		  fprintf(fhErrStat, "[%p]", stn2->name);
 #endif
-		  fputs(fEquate ? szLinkEq : szLink, fhErrStat);
 	       }
 #endif
-	       if (!fEquate) cLegsTrav++;
+	       lenTrav += sqrt(lenTot);
 	    }
-#if SHOW_INTERNAL_LEGS
-	    else
-	       if (!fSuppress) fputc('+', fhErrStat);
-#endif
-#ifndef BLUNDER_DETECTION
-	    if (!fSuppress) {
-	      fprint_prefix(fhErrStat, stn2->name);
-#if PRINT_NAME_PTRS
-	      fprintf(fhErrStat, "[%p]", stn2->name);
-#endif
-	    }
-#endif
-	    lenTrav += sqrt(lenTot);
-	 }
 	 if (cLegsTrav /*&& !fArtic*/)
-	    err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
-		     hTot, hTotTheo, vTot, vTotTheo);
+	       err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
+			hTot, hTotTheo, vTot, vTotTheo);
       }
 
       ptrOld = ptr;

@@ -128,7 +128,7 @@ default_units(settings *s)
 {
    int quantity;
    for (quantity = 0; quantity < Q_MAC; quantity++) {
-      if ((ANG_QMASK >> quantity) & 1)
+      if (TSTBIT(ANG_QMASK, quantity))
 	 s->units[quantity] = (real)(PI / 180.0); /* degrees */
       else
 	 s->units[quantity] = (real)1.0; /* metres */
@@ -843,7 +843,7 @@ data(void)
       get_token();
       d = match_tok(dtab, TABSIZE(dtab));
       /* An unknown token is reported as trailing garbage */
-      if (((m >> d) & 1) == 0) {
+      if (!TSTBIT(m, d)) {
 	 /* token not valid for this data style */
 	 compile_error(/*%s: Datum not allowed for this style*/63, buffer);
 	 skipline();
@@ -1027,7 +1027,6 @@ include(void)
 {
    char *pth, *fnm = NULL;
    int fnm_len;
-   parse file_store;
    prefix *root_store;
    int ch_store;
 
@@ -1037,19 +1036,14 @@ include(void)
 
    root_store = root;
    root = pcs->Prefix; /* Root for include file is current prefix */
-   file_store = file;
-   file.parent = &file_store;
    ch_store = ch;
 
    data_file(pth, fnm);
 
    root = root_store; /* and restore root */
 #ifdef NEW3DFORMAT
-   if (fUseNewFormat) {
-       limb = get_twig(root);
-   }
+   if (fUseNewFormat) limb = get_twig(root);
 #endif
-   file = file_store;
    ch = ch_store;
 
    s_free(&fnm);

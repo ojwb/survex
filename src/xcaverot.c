@@ -1,5 +1,5 @@
 /* > xcaverot.c
- * Copyright (C) 1993-2000 Olly Betts, John Pybus, Mark Shinwell,
+ * Copyright (C) 1993-2001 Olly Betts, John Pybus, Mark Shinwell,
  * Leandro Dybal Bertoni, Andy Holtsbery, et al
  *
  * This program is free software; you can redistribute it and/or modify
@@ -97,7 +97,7 @@ typedef struct {
    /* A group of segments to be drawn in the same colour. */
 
    int num_segments;	/* number of segments */
-   XSegment segments[20000];	/* array of line segments, fixed limit temporary hack */
+   XSegment segments[20000];	/* array of line segments, FIXME: fixed limit temporary hack */
 } SegmentGroup;
 
 static SegmentGroup segment_groups[NUM_DEPTH_COLOURS];
@@ -150,7 +150,10 @@ static Window mywindow;
 
 #ifdef XCAVEROT_BUTTONS
 static Window butzoom, butmooz, butload, butrot, butstep, butquit;
-static Window butplan, butlabel, butcross, butselect;
+static Window butplan, butlabel, butcross;
+#if 0 /* unused */
+static Window butselect;
+#endif
 #endif
 static Window ind_com, ind_elev, scalebar;
 static GC mygc, scale_gc, slab_gc;
@@ -235,8 +238,7 @@ static int rotsc_start_x, rotsc_start_y;
 static int rotating_and_scaling = 0;	/* whether left button is depressed */
 static float rotsc_angle;	/* rotn b4 drag w/ left button */
 static float rotsc_scale;	/* scale b4 drag w/ left button */
-static int drag_start_xoff, drag_start_yoff;	/* original posns b4 drag */
-static float sx, cx, fx, fy, fz;
+static float sv, cv, se, ce;
 
 /* Create a set of colors from named colors */
 
@@ -673,7 +675,7 @@ draw_label(Display * display, Window window, GC gc, int x, int y,
 int
 toscreen_x(point * p)
 {
-   return (((p->X - x_mid) * -cx + (p->Y - y_mid) * -sx) * scale) + xoff;
+   return (((p->X - x_mid) * -cv + (p->Y - y_mid) * -sv) * scale) + xoff;
 }
 
 int
@@ -683,12 +685,12 @@ toscreen_y(point * p)
 
    switch (plan_elev) {
    case PLAN:
-      y = ((p->X - x_mid) * sx - (p->Y - y_mid) * cx) * scale;
+      y = ((p->X - x_mid) * sv - (p->Y - y_mid) * cv) * scale;
    case ELEVATION:
       y = (p->Z - z_mid) * scale;
    default:
-      y = ((p->X - x_mid) * fx + (p->Y - y_mid) * fy
-	   + (p->Z - z_mid) * fz) * scale;
+      y = (((p->X - x_mid) * sv - (p->Y - y_mid) * cv) * se
+	   + (p->Z - z_mid) * ce) * scale;
    }
    return yoff - y;
 }
@@ -719,11 +721,10 @@ fill_segment_cache(void)
    else
       plan_elev = 0;
 
-   sx = sin(rad(view_angle));
-   cx = cos(rad(view_angle));
-   fz = cos(rad(elev_angle));
-   fx = sin(rad(elev_angle)) * sx;
-   fy = sin(rad(elev_angle)) * -cx;
+   sv = sin(rad(view_angle));
+   cv = cos(rad(view_angle));
+   se = sin(rad(elev_angle));
+   ce = cos(rad(elev_angle));
 
    for (group = 0; group < NUM_DEPTH_COLOURS; group++) {
       segment_groups[group].num_segments = 0;
@@ -957,8 +958,6 @@ x(void)
    xoff = width / 2;
    yoff = height / 2;
 
-
-
    XFlush(display);
    /* if we're using double buffering now is the time to swap buffers */
    if (have_double_buffering)
@@ -970,7 +969,7 @@ void
 process_focus(Display * display, Window window, int ix, int iy)
 {
    int height, width;
-   float x, y, sx, cx;
+   float x, y;
    XWindowAttributes a;
    point *q;
 
@@ -980,61 +979,25 @@ process_focus(Display * display, Window window, int ix, int iy)
 
    x = (int)((float)(-ix + width) / scale);
    y = (int)((float)(height - iy) / scale);
-   sx = sin(rad(view_angle));
-   cx = cos(rad(view_angle));
    /* printf("process focus: ix=%d, iy=%d, x=%f, y=%f\n", ix, iy, (double)x, (double)y); */
    /* no distinction between PLAN or ELEVATION in the focus any more */
    /* plan_elev is no longer maintained correctly anyway JPNP 14/06/97 */
    if (plan_elev == PLAN) {
-      x_mid += x * cx + y * sx;
-      y_mid += x * sx - y * cx;
+      x_mid += x * cv + y * sv;
+      y_mid += x * sv - y * cv;
    } else if (plan_elev == ELEVATION) {
       z_mid += y;
-      x_mid += x * cx;
-      y_mid += x * sx;
+      x_mid += x * cv;
+      y_mid += x * sv;
    } else {
       if ((q = find_station(ix, iy, MOVE | DRAW /*| LABEL */ )) != NULL) {
-	 float n1, n2, n3, j1, j2, j3, i1, i2, i3;
-
-	 /*
-	  * x_mid = q->X;
-	  * y_mid = q->Y;
-	  * z_mid = q->Z;
-	  */
-
-	 /*
-	  * fz = cos(rad(elev_angle));
-	  */
-	 n1 = sx * fz;
-	 n2 = cx * fz;
-	 n3 = rad(sin(elev_angle));
-	 /*
-	  * fx = n3 * sx;
-	  * fy = n3 * -cx;
-	  */
-
-	 /* add a few comments to this section, when I can remember exactly
-	  * how it does work   JPNP */
-
-	 /* do we know that sx, cx, fx. fy. fz are properly set? JPNP */
-	 /* yes find_station has done so! JPNP */
 	 x = -(ix - toscreen_x(q)) / scale;
 	 y = (iy - toscreen_y(q)) / scale;
 
-	 i1 = cx;
-	 i2 = sx;
-	 i3 = 0;
-
-	 j1 = n2 * i3 - n3 * i2;
-	 j2 = n3 * i1 - n1 * i3;
-	 j3 = n1 * i2 - n2 * i1;
-
-	 x_mid = q->X + x * i1 + y * j1;
-	 y_mid = q->Y + x * i2 + y * j2;
-	 z_mid = q->Z + x * i3 + y * j3;
+	 x_mid = q->X + x * cv - y * se * cv;
+	 y_mid = q->Y + x * sv + y * se * cv;
+	 z_mid = q->Z + y * (sv - cv) * ce * sv;
 #if 0
-	 printf("vector (%f,%f,%f)\n", x * i1 + y * j1, x * i2 + y * j2,
-		x * i3 + y * j3);
 	 printf("x_mid, y_mid moved to %d,%d,%d\n", x_mid, y_mid, z_mid);
 #endif
       }
@@ -1091,8 +1054,6 @@ press_left_button(int x, int y)
 static void
 press_right_button(int x, int y)
 {
-   drag_start_xoff = xoff;
-   drag_start_yoff = yoff;
    dragging_about = 1;
    drag_start_x = x;
    drag_start_y = y;
@@ -1124,19 +1085,16 @@ mouse_moved(Display * display, Window window, int mx, int my)
       dx = mx - drag_start_x;
       dy = my - drag_start_y;
 
-/*	xoff = drag_start_xoff + dx; */
-/*	yoff = drag_start_yoff + dy; */
-
       x = (int)((float)(dx) / scale);
       y = (int)((float)(dy) / scale);
 
       if (plan_elev == PLAN) {
-	 x_mid = x_mid_orig + (x * cx + y * sx);
-	 y_mid = y_mid_orig + (x * sx - y * cx);
+	 x_mid = x_mid_orig + (x * cv + y * sv);
+	 y_mid = y_mid_orig + (x * sv - y * cv);
       } else {
 	 z_mid = z_mid_orig + y;
-	 x_mid = x_mid_orig + (x * cx);
-	 y_mid = y_mid_orig + (x * sx);
+	 x_mid = x_mid_orig + (x * cv);
+	 y_mid = y_mid_orig + (x * sv);
       }
    } else if (rotating_and_scaling) {
       double a;
@@ -1660,22 +1618,34 @@ main(int argc, char **argv)
 
 		    switch (key_event->keycode) {
 		     case 100:
-		       xoff += 20;
+		       x_mid -= cv * 20 / scale;
+		       y_mid -= sv * 20 / scale;
 		       break;
 
 		     case 102:
-		       xoff -= 20;
+		       x_mid += cv * 20 / scale;
+		       y_mid += sv * 20 / scale;
 		       break;
 
 		     case 98:
-		       yoff += 20;
+		       if (plan_elev == PLAN) {
+			   x_mid -= sv * 20 / scale;
+			   y_mid += cv * 20 / scale;
+		       } else {
+			   z_mid -= 20 / scale;
+		       }
 		       break;
 
 		     case 104:
-		       yoff -= 20;
+		       if (plan_elev == PLAN) {
+			   x_mid += sv * 20 / scale;
+			   y_mid -= cv * 20 / scale;
+		       } else {
+			   z_mid += 20 / scale;
+		       }
 		       break;
 
-		     default:{
+		     default: {
 			i = XLookupString(key_event, text, 10, &mykey, 0);
 			if (i == 1)
 			   switch (tolower(text[0])) {
@@ -1694,6 +1664,7 @@ main(int argc, char **argv)
 			      break;
 			    case 127:	/* Delete => restore defaults */
 			      set_defaults();
+			      refresh_window = 1;
 			      break;
 			    case 'q':
 			      done = 1;
@@ -1785,7 +1756,14 @@ main(int argc, char **argv)
 	       XMoveWindow(mydisplay, ind_elev,
 			   myevent.xconfigure.width - (2 * INDWIDTH) - 1, 0);
 	       break;
-	    default: refresh_window = 1;
+	    default: {
+		XWindowAttributes a;
+
+		XGetWindowAttributes(mydisplay, mywindow, &a);
+		xoff = a.width / 2;
+		yoff = a.height / 2;
+		refresh_window = 1;
+	    }
 	    }
 	 }
       }

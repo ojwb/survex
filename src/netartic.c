@@ -285,22 +285,22 @@ articulate(void)
 	    /* Special case to check if start station is an articulation point
 	     * which it is iff we have to colour from it in more than one dirn
 	     */
-	    if (c) {
+      if (c) {
 	       /* FIXME: stn2 is an articulation point! */
 #if 0
-	       /* flag leg as an articulation for loop error reporting */
-	       stn->leg[i]->l.reverse |= FLAG_ARTICULATION;
-	       reverse_leg(stn->leg[i])->l.reverse |= FLAG_ARTICULATION;
+		   /* flag leg as an articulation for loop error reporting */
+		   stn->leg[i]->l.reverse |= FLAG_ARTICULATION;
+		   reverse_leg(stn->leg[i])->l.reverse |= FLAG_ARTICULATION;
 #endif
 #if 1 /*def DEBUG_ARTIC*/
 	       print_prefix(stn2->name);
 	       printf(" is a special case start articulation point\n");
 #endif
-	    }
+	       }
 
 	    c++;
 	    visit(stn2, reverse_leg_dirn(stn->leg[i]));
-	 }
+	   }
       }
 
 #ifdef DEBUG_ARTIC

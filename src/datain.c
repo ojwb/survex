@@ -208,6 +208,7 @@ extern void
 data_file(const char *pth, const char *fnm)
 {
    int begin_lineno_store;
+   parse file_store;
 #ifndef NO_PERCENTAGE
    volatile long int filelen;
 #endif
@@ -215,10 +216,20 @@ data_file(const char *pth, const char *fnm)
    twig *temp;
 #endif
 
-   file.fh = fopen_portable(pth, fnm, EXT_SVX_DATA, "rb", &file.filename);
-   if (file.fh == NULL) {
-      compile_error(/*Couldn't open data file '%s'*/24, fnm);
-      return;
+   {
+      char *filename;
+      FILE *fh = fopen_portable(pth, fnm, EXT_SVX_DATA, "rb", &filename);
+       
+      if (fh == NULL) {
+	 compile_error(/*Couldn't open data file '%s'*/24, fnm);
+	 return;
+      }
+
+      file_store = file;
+      if (file.fh) file.parent = &file_store;
+      file.fh = fh;
+      file.filename = filename;
+      file.line = 1;
    }
 
    out_set_fnm(fnm); /* FIXME: file.filename maybe? */
@@ -237,8 +248,6 @@ data_file(const char *pth, const char *fnm)
       rewind(file.fh); /* reset file ptr to start & clear any error state */
    }
 #endif
-
-   file.line = 1;
 
 #ifdef HAVE_SETJMP
    /* errors in nested functions can longjmp here */
@@ -324,6 +333,8 @@ data_file(const char *pth, const char *fnm)
 
    if (ferror(file.fh) || (fclose(file.fh) == EOF))
       compile_error(/*Error reading file*/18);
+
+   file = file_store;
 
    /* set_current_fnm(""); not correct if filenames are nested */
 
