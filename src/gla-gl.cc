@@ -32,6 +32,8 @@
 // doing this probably means we can't safely use atexit() - see the comments in
 // glut.h if you can take the full horror...
 #define GLUT_DISABLE_ATEXIT_HACK
+// For glutBitmapLength()
+#define GLUT_API_VERSION 4
 #include <GL/glut.h>
 
 using namespace std;
@@ -496,11 +498,8 @@ void GLACanvas::GetTextExtent(const wxString& str, glaCoord* x_ext, glaCoord* y_
     assert(x_ext);
     assert(y_ext);
 
-    *x_ext = 0;
-    for (int pos = 0; pos < str.Length(); pos++) {
-        *x_ext += glutBitmapWidth(m_Font, str[pos]);
-        CHECK_GL_ERROR("GetTextExtent", "glutBitmapWidth");
-    }
+    *x_ext = glutBitmapLength(m_Font, (const unsigned char *)str.c_str());
+    CHECK_GL_ERROR("GetTextExtent", "glutBitmapLength");
 
     *y_ext = m_FontSize + 2;
 }
