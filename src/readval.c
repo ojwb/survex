@@ -21,6 +21,8 @@
 # include <config.h>
 #endif
 
+#include <limits.h>
+
 #include "cavern.h"
 #include "debug.h"
 #include "filename.h"
@@ -192,13 +194,17 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    if (fNew) {
       /* fNew means SFLAGS_SURVEY is currently set */
       ASSERT(TSTBIT(ptr->sflags, SFLAGS_SURVEY));
-      if (!fSurvey) ptr->sflags &= ~BIT(SFLAGS_SURVEY);
+      if (!fSurvey) {
+	 ptr->sflags &= ~BIT(SFLAGS_SURVEY);
+	 if (pcs->f_infer_exports) ptr->min_export = USHRT_MAX;
+      }
    } else {
       /* check that the same name isn't being used for a survey and station */
       if (fSurvey ^ TSTBIT(ptr->sflags, SFLAGS_SURVEY)) {
 	 compile_error(/*`%s' can't be both a station and a survey*/27,
 		       sprint_prefix(ptr));
       }
+      if (!fSurvey && pcs->f_infer_exports) ptr->min_export = USHRT_MAX;
    }
 
    /* check the export level */
@@ -206,7 +212,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    printf("R min %d max %d depth %d pfx %s\n",
 	  ptr->min_export, ptr->max_export, depth, sprint_prefix(ptr));
 #endif
-   if (ptr->min_export == 0) {
+   if (ptr->min_export == 0 || ptr->min_export == USHRT_MAX) {
       if (depth > ptr->max_export) ptr->max_export = depth;
    } else if (ptr->max_export < depth) {
       const char *filename_store = file.filename;

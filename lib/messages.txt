@@ -411,14 +411,14 @@ it: 30 Gi&aacute; utilizzato qui
 sk: 30 P&ocirc;vodne vlo&zcaron;en&eacute; sem
 #sk: tak toto skutocne neviem - overit
 # 31 c.f. 10, 32, 131
-en: 31 Found `%s', expecting `PLUMBS'
-fr: 31 Vous avez &eacute;crit `%s'; on attendait `PLUMBS'
-de: 31 `%s' gelesen, `PLUMBS' erwartet
-pt: 31 Encontrado `%s' quando `PLUMBS' era esperado
-ca: 31 Trobat `%s', esperant `PLUMBS'
-es: 31 Encontrado `%s', esperando `PLUMBS'
-it: 31 Trovato `%s', atteso `PLUMBS'
-sk: 31 Zisten&eacute; `%s', predpokladan&eacute; `PLUMBS'
+en: 31 Found `%s', expecting `EQUATES', `EXPORTS', or `PLUMBS'
+fr: 31 Vous avez &eacute;crit `%s'; on attendait `EQUATES', `EXPORTS', ou `PLUMBS'
+de: 31 `%s' gelesen, `EQUATES', `EXPORTS' oder `PLUMBS' erwartet
+pt: 31 Encontrado `%s' quando `EQUATES', `EXPORTS' ou `PLUMBS' era esperado
+ca: 31 Trobat `%s', esperant `EQUATES', `EXPORTS', o `PLUMBS'
+es: 31 Encontrado `%s', esperando `EQUATES', `EXPORTS', o `PLUMBS'
+it: 31 Trovato `%s', atteso `EQUATES', `EXPORTS' o `PLUMBS'
+sk: 31 Zisten&eacute; `%s', predpokladan&eacute; `EQUATES', `EXPORTS' alebo `PLUMBS'
 # 32 c.f. 10, 31, 131
 en: 32 Found `%s', expecting `ON' or `OFF'
 fr: 32 Vous avez &eacute;crit `%s'; on attendait `ON' ou `OFF'

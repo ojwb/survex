@@ -170,19 +170,23 @@ typedef struct Prefix {
    struct Node *stn;
    struct Pos *pos;
    const char *ident;
-   int shape;
    const char *filename;
    unsigned int line;
-   /* if (min_export == 0) then max_export is max # levels above is this
-    * prefix is used (and so needs to be exported) (0 == parent only)
-    * if (min_export > 0) then max_export is max # levels above this
+   /* If (min_export == 0) then max_export is max # levels above is this
+    * prefix is used (and so needs to be exported) (0 == parent only).
+    * If (min_export > 0) then max_export is max # levels above this
     * prefix has been exported, and min_export is how far down the exports
     * have got (if min_export > 1 after a run, this prefix hasn't been
-    * exported from below enough) */
-   unsigned char max_export, min_export;
+    * exported from below enough).
+    * If f_infer_exports is active when a station is encountered, we
+    * set min_export = USHRT_MAX and max_export gets set as usual.  Then at
+    * the end of the run, we also mark stations with min_export == USHRT_MAX
+    * and max_export > 0 as exported. */
+   unsigned short max_export, min_export;
    /* stn flags - e.g. surface, underground, entrance
     * also suspecttypo and survey */
    unsigned short sflags;
+   short shape;
 #ifdef NEW3DFORMAT
    struct Twig *twig_link;
 #endif
@@ -259,6 +263,7 @@ typedef struct Settings {
    unsigned int Truncate;
    bool f0Eq;
    bool f90Up;
+   bool f_infer_exports;
    enum {OFF, LOWER, UPPER} Case;
    int style;
    prefix *Prefix;

@@ -70,4 +70,4 @@ infereqtopofil.svx infereqtopofil.pos\
 extend2names.svx extend2namesx.3d\
 omitclino.svx omitclino.pos\
 back.svx back.pos\
-notentranceorexport.svx
+notentranceorexport.svx inferunknown.svx inferexports.svx

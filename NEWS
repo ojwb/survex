@@ -39,7 +39,16 @@ Changes in 1.0.8:
 * cavern: N-S, E-W, and vertical ranges now only count stations which are in
   underground surveys.
 
+* cavern: added "*infer export on".  Any stations seen while this is on will
+  have the necessary *export-s inferred when accessed from outside their
+  own survey.  This allows linking a survey which uses *export to one which
+  doesn't.  It's also useful for a maze cave where so many stations can
+  be linked to that listing them explicitly isn't desirable.
+
 * cavern: *infer plumbs wasn't inferring -90 to be DOWN - fixed.
+
+* cavern: *infer was giving an internal error if the argument was unknown -
+  now it gives the correct error message.
 
 * cavern: fixed a bogus warning for any station which was only used in a line
   of data which was rejected because of an error.

@@ -24,6 +24,8 @@
 #define PRINT_STN_POS_LIST 1
 #define NODESTAT 1
 
+#include <limits.h>
+
 #include "cavern.h"
 #include "datain.h"
 #include "debug.h"
@@ -70,7 +72,7 @@ static void
 node_stat(prefix *p)
 {
    if (!p->pos) {
-      if (TSTBIT(p->sflags, SFLAGS_ENTRANCE) || p->min_export) {
+      if (TSTBIT(p->sflags, SFLAGS_ENTRANCE) || p->max_export) {
 	  /* p was referred to in "*entrance" and/or "*export"
 	   * but not elsewhere (otherwise it would have a position).
 	   * p could also be a survey (SFLAGS_SURVEY) or be mentioned as
@@ -106,7 +108,8 @@ node_stat(prefix *p)
 	 printf("L min %d max %d pfx %s\n",
 		p->min_export, p->max_export, sprint_prefix(p));
 #endif
-	 if (p->min_export > 1 || (p->min_export == 0 && p->max_export)) {
+	 if ((p->min_export > 1 && p->min_export != USHRT_MAX) ||
+	     (p->min_export == 0 && p->max_export)) {
 	    char *s;
 	    const char *filename_store = file.filename;
 	    unsigned int line_store = file.line;

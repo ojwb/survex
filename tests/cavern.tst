@@ -36,7 +36,7 @@ export SURVEXHOME
  cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
  plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar\
  newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
- notentranceorexport"}}
+ notentranceorexport inferunknown inferexports"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -150,6 +150,8 @@ for file in $TESTS ; do
   omitclino) pos=yes ; warn=0 ;;
   back) pos=yes; warn=0 ;;
   notentranceorexport) pos=fail; warn=0 ;;
+  inferunknown) pos=fail; error=1 ;;
+  inferexports) pos=no; warn=0 ;;
   *) file='' ;;
   esac
 

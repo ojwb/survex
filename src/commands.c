@@ -151,6 +151,7 @@ default_all(settings *s)
    default_truncate(s);
    s->f90Up = fFalse;
    s->f0Eq = fFalse;
+   s->f_infer_exports = fFalse;
    default_case(s);
    default_style(s);
    default_prefix(s);
@@ -669,7 +670,12 @@ cmd_fix(void)
 	    name->pos = osnew(pos);
 	    name->stn = fixpt;
 	    name->up = NULL;
-	    name->min_export = name->max_export = 0;
+	    if (pcs->f_infer_exports) {
+	       name->min_export = USHRT_MAX;
+	    } else {
+	       name->min_export = 0;
+	    }
+	    name->max_export = 0;
 	    name->sflags = 0;
 	    add_stn_to_list(&stnlist, fixpt);
 	    POS(fixpt, 0) = x;
@@ -842,7 +848,10 @@ cmd_export(void)
 	 /* not encountered *export for this name before */
 	 if (pfx->max_export > depth) report_missing_export(pfx, depth);
 	 pfx->min_export = pfx->max_export = depth;
-      } else {
+      } else if (pfx->min_export != USHRT_MAX) {
+	 /* FIXME: what to do if a station is marked for inferred exports
+	  * but is then explicitly exported?  Currently we just ignore the
+	  * explicit export... */
 	 if (pfx->min_export - 1 > depth) {
 	    report_missing_export(pfx, depth);
 	 } else if (pfx->min_export - 1 < depth) {
@@ -1408,7 +1417,8 @@ cmd_case(void)
 }
 
 static sztok infer_tab[] = {
-     {"EQUATES",    2},
+     {"EQUATES",    3},
+     {"EXPORTS",    2},
      {"PLUMBS",     1},
      {NULL,      0}
 };
@@ -1426,8 +1436,8 @@ cmd_infer(void)
    int on;
    get_token();
    setting = match_tok(infer_tab, TABSIZE(infer_tab));
-   if (setting == -1) {
-      compile_error(/*Found `%s', expecting `PLUMBS'*/31, buffer);
+   if (setting == 0) {
+      compile_error(/*Found `%s', expecting `EQUATES', `EXPORTS', or `PLUMBS'*/31, buffer);
       skipline();
       return;
    }
@@ -1440,8 +1450,12 @@ cmd_infer(void)
    }
 
    switch (setting) {
-    case 2:
+    case 3:
       pcs->f0Eq = on;
+      break;
+    case 2:
+      pcs->f_infer_exports = on;
+      if (on) fExportUsed = fTrue;
       break;
     case 1:
       pcs->f90Up = on;
