@@ -1010,7 +1010,8 @@ main(int argc, char **argv)
    cPasses = (pr->Pre ? pr->Pre(pages, title) : 1);
 
    if (output_fnm) {
-      puts(msg(/*Printing to `%s'...*/165), output_fnm);
+      printf(msg(/*Printing to `%s'...*/165), output_fnm);
+      putnl();
    }
 
    /* note down so we can switch to printer charset */
