@@ -237,12 +237,14 @@ cvrotgfx_init(void)
       exit(1);
    }
 
-   set_window_title("caverot"); /* FIXME: include the filename(s) */
+#if (OS!=MSDOS)
+   set_window_title("caverot");
+#endif
 
    if (!cvrotgfx_mode_picker) {
 #if (OS==WIN32)
       if (cvrotgfx_window) {
-	  /* FIXME: this doesn't work (tested on NT4) */
+	  /* this doesn't work (tested on NT4) */
 	  res = set_gfx_mode(GFX_DIRECTX_OVL, 640, 480, 0, 0);
 	  if (res) res = set_gfx_mode(GFX_DIRECTX_WIN, 640, 480, 0, 0);
 	  if (res) res = set_gfx_mode(GFX_GDI, 640, 480, 0, 0);
@@ -254,7 +256,9 @@ cvrotgfx_init(void)
 #if (OS==UNIX)
       set_color_depth(16);
 #endif
-      /* FIXME: set_color_depth(GFX_SAFE_DEPTH); */
+      /* Could do this: set_color_depth(GFX_SAFE_DEPTH); but we'd need to
+       * cope with different colour depths, and 256 colours seems to work
+       * in most cases. */
       if (os_type == OSTYPE_WINNT) {
 	  /* In DOS under Windows NT we can't do better than this */
 	  res = set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
@@ -385,7 +389,8 @@ cvrotgfx_init(void)
     case PC3270:
       break;
     case IBM8514:
-      /* FIXME: total guess - don't have access to an IBM8514 */
+      /* total guess - don't have access to an IBM8514, but then I suspect
+       * nobody else does either. */
       colText = colHelp = 255;
       break;
     default:
@@ -519,7 +524,22 @@ cvrotgfx_get_key(void)
    return keycode & 0xff;
 }
 #else
-/* FIXME: use _bios_keybd() instead? */
+#if 1
+/* returns a keycode - if enhanced keycode then 0x100 added; -1 if none */
+int
+cvrotgfx_get_key(void)
+{
+   int keycode;
+   if (!_bios_keybrd(_KEYBRD_READY))
+      return -1; /* -1 => no key pressed */
+   keycode = _bios_keybrd(_KEYBRD_READ);
+   if (keycode & 0xff == 0) /* if enhanced key_code add 0x100 */
+      keycode = keycode >> 8 | 0x100;
+   /* flush the keyboard buffer to stop key presses backing up */
+   while (_bios_keybrd(_KEYBRD_READY)) _bios_keybrd(_KEYBRD_READ);
+   return keycode;
+}
+#else
 /* returns a keycode - if enhanced keycode then 0x100 added; -1 if none */
 int
 cvrotgfx_get_key(void)
@@ -536,6 +556,7 @@ cvrotgfx_get_key(void)
       if (getch() == 0) getch();
    return keycode;
 }
+#endif
 #endif
 
 #ifdef ALLEGRO
@@ -632,7 +653,7 @@ cvrotgfx_init(void)
       }
    }
    if (modeBest == -1) {
-      /* FIXME: actually we probably don't have enough video memory assigned */
+      /* we probably don't have enough video memory assigned... */
       fatalerror(/*Error initialising graphics card*/81);
    }
    xos_set_mode(), xos_writec(modeBest);
