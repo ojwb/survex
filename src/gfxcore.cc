@@ -568,7 +568,6 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     if (!m_DoneFirstShow) {
         FirstShow();
     }
-    // Handle a mouse movement during scale/rotate mode.
 
     // Redraw the offscreen bitmap if it's out of date.
     if (m_RedrawOffscreen) {
@@ -1215,7 +1214,9 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 
     SetScale(new_scale);
 
+    m_DrawDC.SelectObject(m_OffscreenBitmap);
     m_RedrawOffscreen = true;
+    RedrawOffscreen();
     Refresh(false);
 
     m_DragStart = point;

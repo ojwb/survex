@@ -33,6 +33,10 @@
 #include <wx/cmdline.h>
 #include <wx/confbase.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 IMPLEMENT_APP(Aven)
 
 Aven::Aven() :
@@ -93,3 +97,4 @@ void Aven::ReportError(const wxString& msg)
 {
     wxMessageBox(msg, "Aven", wxOK | wxCENTRE | wxICON_EXCLAMATION);
 }
+

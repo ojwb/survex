@@ -149,7 +149,7 @@ osstrdup(const char *str)
    char *p;
    OSSIZE_T len;
    len = strlen(str) + 1;
-   p = osmalloc(len);
+   p = (char*) osmalloc(len);
    memcpy(p, str, len);
    return p;
 }
@@ -317,7 +317,11 @@ add_unicode(int charset, unsigned char *p, int value)
 }
 
 /* fall back on looking in the current directory */
+#ifdef _WIN32
+static const char *pth_cfg_files = "C:\\";
+#else
 static const char *pth_cfg_files = "";
+#endif
 
 static int num_msgs = 0;
 static char **msg_array = NULL;
@@ -339,7 +343,11 @@ parse_msg_file(int charset_code)
    fprintf(stderr, "parse_msg_file(%d)\n", charset_code);
 #endif
 
-   fnm = osstrdup(msg_lang);
+#ifdef _WIN32
+   fnm = (char*) osstrdup("messages");
+#else
+   fnm = (char*) osstrdup(msg_lang);
+#endif
    /* trim off charset from stuff like "de_DE.iso8859_1" */
    s = strchr(fnm, '.');
    if (s) *s = '\0';
@@ -380,7 +388,7 @@ parse_msg_file(int charset_code)
    len = 0;
    for (i = 16; i < 20; i++) len = (len << 8) | header[i];
 
-   p = osmalloc(len);
+   p = (unsigned char*) osmalloc(len);
    if (fread(p, 1, len, fh) < len) {
       /* no point extracting this error - translation will never be used */
       fprintf(STDERR, "Message file truncated?\n");
@@ -393,7 +401,7 @@ parse_msg_file(int charset_code)
 #endif
    osfree(fnm);
 
-   msg_array = osmalloc(sizeof(char *) * num_msgs);
+   msg_array = (char**) osmalloc(sizeof(char *) * num_msgs);
 
    for (i = 0; i < num_msgs; i++) {
       unsigned char *to = p;
@@ -461,12 +469,14 @@ msg_init(const char *argv0)
    /* Point to argv0 itself so we get the app name correct if osstrdup()
     * generates a signal */
    szAppNameCopy = argv0;
-   szAppNameCopy = osstrdup(argv0);
+   szAppNameCopy = (char*) osstrdup(argv0);
+
+#ifndef _WIN32
 
    /* Look for env. var. "SURVEXHOME" or the like */
    p = getenv("SURVEXHOME");
    if (p && *p) {
-      pth_cfg_files = osstrdup(p);
+      pth_cfg_files = (char*) osstrdup(p);
 #if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
    } else {
       /* under Unix, we compile in the configured path */
@@ -477,6 +487,8 @@ msg_init(const char *argv0)
       pth_cfg_files = path_from_fnm(argv0);
 #endif
    }
+
+#endif
 
    msg_lang = getenv("SURVEXLANG");
 #ifdef DEBUG
@@ -494,7 +506,7 @@ msg_init(const char *argv0)
    /* On Mandrake LANG defaults to C */
    if (strcmp(msg_lang, "C") == 0) msg_lang = "en";
 
-   msg_lang = osstrdup(msg_lang);
+   msg_lang = (char*) osstrdup(msg_lang);
 
    /* Convert en-us to en_US, etc */
    p = strchr(msg_lang, '-');
@@ -509,7 +521,7 @@ msg_init(const char *argv0)
    p = strchr(msg_lang, '_');
    if (p) {
       *p = '\0';
-      msg_lang2 = osstrdup(msg_lang);
+      msg_lang2 = (char*) osstrdup(msg_lang);
       *p = '_';
    }
 

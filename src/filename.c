@@ -85,7 +85,7 @@ path_from_fnm(const char *fnm)
 #endif
    if (lf) lenpth = lf - fnm + 1;
 
-   pth = osmalloc(lenpth + 1);
+   pth = (char*) osmalloc(lenpth + 1);
    memcpy(pth, fnm, lenpth);
    pth[lenpth] = '\0';
 
@@ -106,13 +106,13 @@ base_from_fnm(const char *fnm)
        ) {
       size_t len = (const char *)p - fnm;
 
-      p = osmalloc(len + 1);
+      p = (char*) osmalloc(len + 1);
       memcpy(p, fnm, len);
       p[len] = '\0';
       return p;
    }
 
-   return osstrdup(fnm);
+   return (char*) osstrdup(fnm);
 }
 
 extern char *
@@ -133,7 +133,7 @@ baseleaf_from_fnm(const char *fnm)
    q = strrchr(p, FNM_SEP_EXT);
    if (q) len = (const char *)q - p; else len = strlen(p);
 
-   q = osmalloc(len + 1);
+   q = (char*) osmalloc(len + 1);
    memcpy(q, p, len);
    q[len] = '\0';
    return q;
@@ -153,7 +153,7 @@ leaf_from_fnm(const char *fnm)
    lf = strrchr(fnm, FNM_SEP_DRV);
    if (lf) fnm = lf + 1;
 #endif
-   return osstrdup(fnm);
+   return (char*) osstrdup(fnm);
 }
 
 /* Make fnm from pth and lf, inserting an FNM_SEP_LEV if appropriate */
@@ -185,7 +185,7 @@ use_path(const char *pth, const char *lf)
 #endif
    }
 
-   fnm = osmalloc(len_total);
+   fnm = (char*) osmalloc(len_total);
    strcpy(fnm, pth);
    if (fAddSep) fnm[len++] = FNM_SEP_LEV;
    strcpy(fnm + len, lf);
@@ -211,7 +211,7 @@ add_ext(const char *fnm, const char *ext)
    }
 #endif
 
-   fnmNew = osmalloc(len_total);
+   fnmNew = (char*) osmalloc(len_total);
    strcpy(fnmNew, fnm);
 #ifdef FNM_SEP_EXT
    if (fAddSep) fnmNew[len++] = FNM_SEP_EXT;
@@ -239,7 +239,7 @@ fopenWithPthAndExt(const char *pth, const char *fnm, const char *ext,
    if (fAbs) {
       fh = fopen_not_dir(fnm, mode);
       if (fh) {
-	 if (fnmUsed) fnmFull = osstrdup(fnm);
+	 if (fnmUsed) fnmFull = (char*) osstrdup(fnm);
       } else {
 	 if (ext && *ext) {
 	    /* we've been given an extension so try using it */
@@ -353,7 +353,7 @@ void
 filename_register_output(const char *fnm)
 {
    filelist *p = osnew(filelist);
-   p->fnm = osstrdup(fnm);
+   p->fnm = (char*) osstrdup(fnm);
    p->next = flhead;
    flhead = p;
 }
