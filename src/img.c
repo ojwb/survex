@@ -295,13 +295,17 @@ img_read_item(img *pimg, img_point *p)
 	 q = pimg->label + strlen(pimg->label) - 1;
 	 if (*q != '\n') return img_BAD;
 	 *q = '\0';
+	 pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
 	 if (opt == 2) goto done;
 	 break;
        }
        case 6: case 7: {
 	 size_t len;
 	 result = img_LABEL;
-	 if (opt == 7) pimg->flags = getc(pimg->fh);
+	 if (opt == 7)
+	    pimg->flags = getc(pimg->fh);
+	 else
+	    pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
 	 len = get32(pimg->fh);
 	 if (len >= pimg->buf_len) {
 	    pimg->label = xosrealloc(pimg->label, len + 1);
