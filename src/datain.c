@@ -799,10 +799,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    real cxy = 0, cyz = 0, czx = 0;
 #endif
 
-   if (pcs->f0Eq && tape == (real)0.0) {
-      if (frdepth != todepth) {
-	 /* FIXME: warn! */
-      }
+   if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
       process_equate(fr, to);
       return 1;
    }
@@ -834,8 +831,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
       compile_warning(/*Tape reading is less than change in depth*/62);
    }
 
-   if (tape == (real)0.0) {
-      /* FIXME: this entirely ignores depth readings */
+   if (tape == (real)0.0 && dz == 0.0) {
       dx = dy = dz = (real)0.0;
       vx = vy = vz = (real)(var(Q_POS) / 3.0); /* Position error only */
    } else if (comp == HUGE_REAL) {
@@ -1144,10 +1140,7 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
    real cxy = 0;
 #endif
 
-   if (pcs->f0Eq && tape == (real)0.0) {
-      if (frdepth != todepth) {
-	 /* FIXME: warn! */
-      }
+   if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
       process_equate(fr, to);
       return 1;
    }

@@ -475,11 +475,12 @@ replace_travs(void)
 		  /* FIXME: what about covariances? */
 		  hTotTheo = leg->v[0] + leg->v[1];
 		  vTotTheo = leg->v[2];
+		  eTotTheo = hTotTheo + vTotTheo;
 #else
 		  hTotTheo = leg->v[0] + leg->v[1];
 		  vTotTheo = leg->v[2];
-#endif
 		  eTotTheo = hTotTheo + vTotTheo;
+#endif
 #ifdef BLUNDER_DETECTION
 		  memcpy(&err, &e, sizeof(d));
 		  do_blunder = (eTot > eTotTheo);
