@@ -2142,6 +2142,8 @@ en:325 Regular expression compilation failed (perhaps your syntax was incorrect)
 en:326 Regular expression compilation (stage 2) failed.
 en:327 Regular expression search failed.
 en:328 No matches were found.
+en:329 Open @Terrain...
+en:330 So@lid Surface
 #
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s

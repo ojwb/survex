@@ -124,6 +124,8 @@ class GfxCore : public wxWindow {
         GLint surface; // all surface data in uniform colour
         GLint surface_depth; // all surface data in depth bands
         GLint grid; // the grid
+	GLint terrain; // surface terrain
+	GLint map; // map overlay
     } m_Lists;
 
     bool m_AntiAlias;
@@ -193,6 +195,13 @@ class GfxCore : public wxWindow {
         Double bottom;
         Double near;
     } m_Volume;
+
+    struct {
+        GLuint surface;
+	GLuint map;
+    } m_Textures;
+
+    bool m_SolidSurface;
 #endif
 
     struct GridPointInfo {
@@ -272,6 +281,7 @@ class GfxCore : public wxWindow {
     int m_NumCrosses;
     list<GridPointInfo>* m_PointGrid;
     bool m_HitTestGridValid;
+    bool m_TerrainLoaded;
 
     int m_DoingPresStep;
     struct step_params {
@@ -332,6 +342,10 @@ class GfxCore : public wxWindow {
     void SetModellingTransformation();
     void ClearBackgroundAndBuffers();
     void SetGLAntiAliasing();
+    void CheckGLError(const wxString& where);
+    void SetTerrainColour(Double);
+    void LoadTexture(const wxString& file, GLuint* texture);
+    void RenderMap();
 #endif
 
     Double XToScreen(Double x, Double y, Double z) {
@@ -396,6 +410,8 @@ class GfxCore : public wxWindow {
     void PresGoto(PresData& d, Quaternion& q);
 
     void CreateHitTestGrid();
+    
+    void RenderTerrain();
 
 public:
     GfxCore(MainFrm* parent, wxWindow* parent_window);
@@ -403,6 +419,7 @@ public:
 
     void Initialise();
     void InitialiseOnNextResize() { m_InitialisePending = true; }
+    void InitialiseTerrain();
 
     void ClearSpecialPoints();
     void DeleteSpecialPoint(list<SpecialPoint>::iterator pos);
@@ -461,6 +478,7 @@ public:
     void OnShowExportedPts(wxCommandEvent&);
 #ifdef AVENGL
     void OnAntiAlias(wxCommandEvent&);
+    void OnSolidSurface(wxCommandEvent&);
 #endif
 
     void OnPaint(wxPaintEvent&);
@@ -514,6 +532,7 @@ public:
     void OnShowFixedPtsUpdate(wxUpdateUIEvent&);
 #ifdef AVENGL
     void OnAntiAliasUpdate(wxUpdateUIEvent&);
+    void OnSolidSurfaceUpdate(wxUpdateUIEvent&);
 #endif
     void OnIndicatorsUpdate(wxUpdateUIEvent&);
 

@@ -38,7 +38,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
 #ifdef AVENGL
-    wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION" "AVENGL));
+    wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION" (OpenGL enabled)"));
 #else
     wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION));
 #endif

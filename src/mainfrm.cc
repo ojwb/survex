@@ -110,7 +110,9 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbar)
     EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
 #ifdef AVENGL
+    EVT_MENU(menu_FILE_OPEN_TERRAIN, MainFrm::OnFileOpenTerrain)
     EVT_MENU(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAlias)
+    EVT_MENU(menu_VIEW_SOLID_SURFACE, MainFrm::OnSolidSurface)
 #endif
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
@@ -155,6 +157,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_INDICATORS, MainFrm::OnIndicatorsUpdate)
 #ifdef AVENGL
     EVT_UPDATE_UI(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAliasUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SOLID_SURFACE, MainFrm::OnSolidSurfaceUpdate)
 #endif
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
 END_EVENT_TABLE()
@@ -233,7 +236,10 @@ void MainFrm::CreateMenuBar()
     // status bar at the moment! ;-)
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220), "Open a Survex 3D file for viewing");
-    filemenu->Append(menu_FILE_OPEN_PRES, GetTabMsg(/*Open @Presentation*/321), "unused");
+    filemenu->Append(menu_FILE_OPEN_PRES, GetTabMsg(/*Open @Presentation...*/321), "unused");
+#ifdef AVENGL
+    filemenu->Append(menu_FILE_OPEN_TERRAIN, GetTabMsg(/*Open @Terrain...*/329), "unused");
+#endif
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Exit*/221), "Quit Aven");
 
@@ -309,6 +315,8 @@ void MainFrm::CreateMenuBar()
 #ifdef AVENGL
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*S@moothed Survey Legs*/298), "unused", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*So@lid Surface*/330), "unused", true);
 #endif
 
     wxMenu* ctlmenu = new wxMenu;
@@ -361,6 +369,11 @@ void MainFrm::CreateToolBar()
     toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs.png"), wxNullBitmap, true,
                      -1, -1, NULL, "Show surface surveys");
     toolbar->AddSeparator();
+#ifdef AVENGL
+    toolbar->AddTool(menu_VIEW_SOLID_SURFACE, TOOLBAR_BITMAP("solid-surface.png"), wxNullBitmap, true,
+                     -1, -1, NULL, "Show solid surface");
+    toolbar->AddSeparator();
+#endif
     toolbar->AddTool(menu_PRES_CREATE, TOOLBAR_BITMAP("pres-create.png"),
                      "Create a new presentation");
     toolbar->AddTool(menu_PRES_RECORD, TOOLBAR_BITMAP("pres-record.png"),
@@ -673,6 +686,102 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     return true;
 }
 
+#ifdef AVENGL
+bool MainFrm::LoadTerrain(const wxString& file)
+{
+    // Load terrain data from a 3D file (temporary bodge).
+
+    img* survey = img_open_survey(file, NULL, NULL, "");
+    if (!survey) {
+        wxString m = wxString::Format(msg(img_error()), file.c_str());
+        wxGetApp().ReportError(m);
+        return false;
+    }
+
+    //--FIXME: need to be specified properly
+    m_TerrainSize.x = 40;
+    m_TerrainSize.y = 40;
+
+    m_TerrainExtents.xmin = DBL_MAX;
+    m_TerrainExtents.xmax = -DBL_MAX;
+    m_TerrainExtents.ymin = DBL_MAX;
+    m_TerrainExtents.ymax = -DBL_MAX;
+    m_TerrainExtents.zmin = DBL_MAX;
+    m_TerrainExtents.zmax = -DBL_MAX;
+
+    m_TerrainGrid = new Double[m_TerrainSize.x * m_TerrainSize.y];
+
+    int result;
+    do {
+        img_point pt;
+        result = img_read_item(survey, &pt);
+        switch (result) {
+            case img_MOVE:
+            case img_LINE:
+            {
+                // Update survey extents.
+                if (pt.x < m_TerrainExtents.xmin) m_TerrainExtents.xmin = pt.x;
+                if (pt.x > m_TerrainExtents.xmax) m_TerrainExtents.xmax = pt.x;
+                if (pt.y < m_TerrainExtents.ymin) m_TerrainExtents.ymin = pt.y;
+                if (pt.y > m_TerrainExtents.ymax) m_TerrainExtents.ymax = pt.y;
+                if (pt.z < m_TerrainExtents.zmin) m_TerrainExtents.zmin = pt.z;
+                if (pt.z > m_TerrainExtents.zmax) m_TerrainExtents.zmax = pt.z;
+
+                break;
+            }
+
+            case img_BAD:
+	    	assert(0);
+                break;
+
+            default:
+                break;
+        }
+    } while (result != img_STOP);
+
+    img_rewind(survey);
+
+    Double xext = m_TerrainExtents.xmax - m_TerrainExtents.xmin;
+    Double yext = m_TerrainExtents.ymax - m_TerrainExtents.ymin;
+
+    do {
+        img_point pt;
+        result = img_read_item(survey, &pt);
+        switch (result) {
+            case img_LABEL:
+            {
+		int x = int(floor(0.5 + ((pt.x - m_TerrainExtents.xmin) * (m_TerrainSize.x - 2) / xext)));
+		int y = int(floor(0.5 + ((pt.y - m_TerrainExtents.ymin) * (m_TerrainSize.y - 1) / yext)));
+
+		m_TerrainGrid[x + m_TerrainSize.x * y] = pt.z - m_Offsets.z;
+		
+                break;
+            }
+
+            case img_BAD:
+	    	assert(0);
+                break;
+
+            default:
+                break;
+        }
+    } while (result != img_STOP);
+
+    for (int i = 0; i < m_TerrainSize.y; i++)
+        m_TerrainGrid[m_TerrainSize.x-1 + m_TerrainSize.y*i] =
+            m_TerrainGrid[m_TerrainSize.x-2 + m_TerrainSize.y*i];
+
+    img_close(survey);
+    
+    m_TerrainExtents.xmin -= m_Offsets.x;
+    m_TerrainExtents.xmax -= m_Offsets.x;
+    m_TerrainExtents.ymin -= m_Offsets.y;
+    m_TerrainExtents.ymax -= m_Offsets.y;
+
+    return true;
+}
+#endif
+
 void MainFrm::FillTree()
 {
     // Fill the tree of stations and prefixes.
@@ -942,14 +1051,27 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
             m_Gfx->Initialise();
         }
 
+#ifndef AVENGL
         m_Panel->Show(true);
         int x;
         int y;
         GetSize(&x, &y);
         m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 4);
+#endif
     }
     SetCursor(*wxSTANDARD_CURSOR);
 }
+
+#ifdef AVENGL
+void MainFrm::OpenTerrain(const wxString& file)
+{
+    SetCursor(*wxHOURGLASS_CURSOR);
+    if (LoadTerrain(file)) {
+    	m_Gfx->InitialiseTerrain();
+    }
+    SetCursor(*wxSTANDARD_CURSOR);
+}
+#endif
 
 //
 //  UI event handlers
@@ -970,6 +1092,24 @@ void MainFrm::OnOpen(wxCommandEvent&)
         OpenFile(dlg.GetPath(), "", false);
     }
 }
+
+#ifdef AVENGL
+void MainFrm::OnFileOpenTerrain(wxCommandEvent&)
+{
+#ifdef __WXMOTIF__
+    wxFileDialog dlg (this, wxString(msg(/*Select a terrain file to view*/206)), "", "",
+                      "*.3d", wxOPEN);
+#else
+    wxFileDialog dlg (this, wxString(msg(/*Select a terrain file to view*/206)), "", "",
+                      wxString::Format("%s|*.3d|%s|*.*",
+                                       msg(/*Terrain files*/207),
+                                       msg(/*All files*/208)), wxOPEN);
+#endif
+    if (dlg.ShowModal() == wxID_OK) {
+        OpenTerrain(dlg.GetPath());
+    }
+}
+#endif
 
 void MainFrm::OnQuit(wxCommandEvent&)
 {
@@ -1187,6 +1327,11 @@ void MainFrm::OnOpenPres(wxCommandEvent& event)
         m_PresLoaded = true;
         m_Recording = false;
     }
+}
+
+void MainFrm::OnFileOpenTerrainUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_File != "");
 }
 
 void MainFrm::OnOpenPresUpdate(wxUpdateUIEvent& event)

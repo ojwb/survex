@@ -15,7 +15,7 @@ EXTRA_DIST = bcra3.svx bcra5.svx messages.txt pfont.txt print.ini\
 MAINTAINERCLEANFILES = $(msgs_files) pfont.bit
 
 pkgdata_DATA = pfont.bit print.ini bcra3.svx bcra5.svx $(msg_files)\
- aven-about.png
+ aven-about.png surface.png map.png
 
 # does $(msgs_files) here work?
 ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg es.msg fr.msg it.msg pt.msg\

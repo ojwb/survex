@@ -119,10 +119,10 @@ if test -n "$WXCONFIG" ; then
       [case "${enableval}" in
         yes) WXGL_LIBS="-lwx_gtk_gl -lglut -lGLU -lGL $WX_LIBS"
 	     AC_SUBST(WXGL_LIBS)
-             AC_DEFINE_UNQUOTED(AVENGL,"(OpenGL enabled)",
-                                [Enables OpenGL functionality in Aven])
-             AC_MSG_RESULT("enabling OpenGL functionality for Aven");;
-	     AVEN="$AVEN avengl"
+	     WXGL_CFLAGS="-DAVENGL $WX_CFLAGS"
+	     AC_SUBST(WXGL_CFLAGS)
+             AC_MSG_RESULT("enabling OpenGL functionality for Aven")
+	     AVEN="$AVEN avengl";;
         no) ;;
         *) AC_MSG_ERROR(bad value ${enableval} for --enable-opengl) ;;
       esac])
