@@ -75,7 +75,7 @@
 # B*gger the Americans who want to impose their funny Year-Month-Day
 # arrangement on us...    ;-)
 #
-# OL: Actually US folks use the brain dead Month/Day/Year which means that
+# OL: Actually US folks use the illogical Month/Day/Year which means that
 # 1/12/94 could be January or December depending who wrote it.
 #
 # year.month.day convention is international and unambiguous.  It's
@@ -121,14 +121,14 @@ it:  2 Questi dati di topografia possono essere trattati da Survex versione %s o
 # In file included from area.svx:12,
 #                  from cave.svx:3:
 # passage.svx:17: <some error or warning>
-# TRANSLATE ca es 
-en:  3 "from "
-fr:  3 "depuis "
-de:  3 "von "
-pt:  3 "de "
-ca:  3 "des de "
-es:  3 "desde "
-it:  3 "da "
+# TRANSLATE ca es
+en:  3 from
+fr:  3 depuis
+de:  3 von
+pt:  3 de
+ca:  3 des de
+es:  3 desde
+it:  3 da
 # indicates a warning message e.g. "spoon.svx:12: warning: *prefix is deprecated"
 en:  4 warning
 fr:  4 avertissement
@@ -137,17 +137,19 @@ pt:  4 alerta
 ca:  4 alerta
 es:  4 alerta
 it:  4 avvertimento
-en:  5 "In file included from "
-fr:  5 "Dans le fichier inclus depuis "
+#
+en:  5 In file included from
+fr:  5 Dans le fichier inclus depuis
 # we really want the filename/line number at the end (so error parsing editors
 # can follow), so the natural translation:
-#"In von %s:%d: aus eingelesener Datei "
+#"In von %s:%d: aus eingelesener Datei"
 # isn't ideal.  This is "clumsy but workable":
-de:  5 "In eingelesener Datei ausgehend von "
-pt:  5 "No arquivo inclu&iacute;do em "
-ca:  5 "Al fitxer incl&ograve;s des de "
-es:  5 "En el fichero incluido desde "
-it:  5 "Nel file inserito da "
+de:  5 In eingelesener Datei ausgehend von
+pt:  5 No arquivo inclu&iacute;do em
+ca:  5 Al fitxer incl&ograve;s des de
+es:  5 En el fichero incluido desde
+it:  5 Nel file inserito da
+#
 en:  6 *prefix is deprecated - use *begin and *end instead
 fr:  6 *prefix n'est plus utilis&eacute; - employer *begin et *end &agrave; la place
 de:  6 *prefix ist veraltet - stattdessen *begin und *end verwenden
@@ -269,13 +271,13 @@ pt: 19 Erros em excesso - desistindo
 ca: 19 Massa errors - proc&eacute;s abandonat
 es: 19 Demasiados errores - proceso abandonado
 it: 19 Troppi errori - processo interrotto
-en: 20 *DEFAULT is deprecated - use *CALIBRATE/DATA/UNITS with argument DEFAULT instead
-fr: 20 *DEFAULT n'est plus utilis&eacute; - employer *CALIBRATE/DATA/UNITS avec argument DEFAULT &agrave; la place
-de: 20 *DEFAULT ist veraltet - stattdessen *CALIBRATE/DATA/UNITS mit DEFAULT-Argument verwenden
-pt: 20 *DEFAULT decontinuado - use *CALIBRATE/DATA/UNITS com argumento DEFAULT em seu lugar
-ca: 20 *DEFAULT ja no s'utilitza - fes servir *CALIBRATE/DATA/UNITS amb l'argument DEFAULT en el seu lloc
-es: 20 *DEFAULT ya no se usa - utiliza *CALIBRATE/DATA/UNITS con el argumento DEFAULT en su lugar
-it: 20 *DEFAULT &eacute sconsigliato - usare invece *CALIBRATE/DATA/UNITS con argomento DEFAULT
+en: 20 *DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead
+fr: 20 *DEFAULT n'est plus utilis&eacute; - employer *CALIBRATE/DATA/SD/UNITS avec argument DEFAULT &agrave; la place
+de: 20 *DEFAULT ist veraltet - stattdessen *CALIBRATE/DATA/SD/UNITS mit DEFAULT-Argument verwenden
+pt: 20 *DEFAULT decontinuado - use *CALIBRATE/DATA/SD/UNITS com argumento DEFAULT em seu lugar
+ca: 20 *DEFAULT ja no s'utilitza - fes servir *CALIBRATE/DATA/SD/UNITS amb l'argument DEFAULT en el seu lloc
+es: 20 *DEFAULT ya no se usa - utiliza *CALIBRATE/DATA/SD/UNITS con el argumento DEFAULT en su lugar
+it: 20 *DEFAULT &eacute sconsigliato - usare invece *CALIBRATE/DATA/SD/UNITS con argomento DEFAULT
 en: 21 Compass reading given on plumbed leg
 en-us: 21 Compass reading given on plumbed shot
 fr: 21 Lecture d'azimut donn&eacute;e sur une vis&eacute;e 'plomb&eacute;e'
@@ -1916,7 +1918,8 @@ en:218 Bad list of pages to print `%s'
 de:218 Liste zu druckender Seiten `%s' ist fehlerhaft
 pt-br:218 Lista de p&aacute;ginas a imprimir com problemas: `%s'
 it:218 Lista di pagine da stampare `%s' errata
-#XXX219
+#
+en:219 Reading `%s' duplicates previous reading(s)
 #
 # back to aven...
 #
@@ -1936,6 +1939,7 @@ pt:221 @Sair
 ca:221 Ei@xir
 es:221 @Salir
 it:221 @Esci
+# back to cavern
 # error from "*data normal newline from to tape compass clino"
 en:222 NEWLINE can't be the first reading
 de:222 NEWLINE kann nicht der erste Eintrag sein
@@ -1945,12 +1949,19 @@ de:223 NEWLINE kann nicht der letzte Eintrag sein
 # error from "*data normal station tape compass clino"
 en:224 Interleaved readings, but no NEWLINE
 de:224 Abwechselnde Eintr&auml;ge, aber kein NEWLINE
+# caused by e.g. "*data diving station newline depth tape compass"
+en:225 Reading `%s' must occur before NEWLINE
+# e.g. "*data normal from to tape newline compass clino"
+en:226 NEWLINE can only be preceded by STATION, DEPTH, and COUNT
+#
+en:227 Can't calibrate angular and length quantities together
+# XXX228,229
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
 fr:230 @D&eacute;marre la rotation##Return
 de:230 @Rotation starten##Return
-pt-br:230 @Iniciar Rota&ccedil;&atilde;o##Return
+pt-br:230 Iniciar @Rota&ccedil;&atilde;o##Return
 it:230 @Avvia la rotazione##Return
 #
 en:231 S@top Rotation##Space
@@ -2038,7 +2049,7 @@ en:247 Shift Survey @Down
 fr:247 D&eacute;placement vers le @Bas
 de:247 Verschieben nach @unten
 pt-br:247 Mover para @Baixo
-it:247 Sposta il rilievo verso il Bass@o
+it:247 Sposta il @rilievo verso il Basso
 #
 # c.f. 117
 en:248 @Plan View
@@ -2057,8 +2068,8 @@ fr:249 El&eacute;@vation
 de:249    @Aufri&szlig;
 de-ch:249 @Aufriss
 pt:249 Per@fil
-ca:249 @Al&ccedil;at
-es:249 @Alzado
+ca:249 Al&ccedil;a@t
+es:249 Al@zado
 it:249 Pro@filo
 #
 en:250 @Higher Viewpoint
@@ -2067,7 +2078,7 @@ de:250 @H&ouml;herer Standort
 pt-br:250 Observador Mais @Alto
 it:250 A@lza il punto di vista
 #
-en:251 Lo@wer Viewpoint
+en:251 L@ower Viewpoint
 fr:251 Point de vue plus B@as
 de:251 Nie@drigerer Standort
 pt-br:251 Observador Mais Bai@xo
@@ -2102,10 +2113,10 @@ it:253 Zoo@m indietro##[
 #
 en:254 Restore De@fault Settings
 fr:254 @Restaurer les valeurs par d&eacute;faut
-de:254 Voreinstellungen @wiederherstellen
+de:254 Voreinstellungen w@iederherstellen
 pt:254 @Usar valores pr&eacute;-definidos
 pt-br:254 @Restaurar padr&otilde;es
-ca:254 Restableix els @predeterminats
+ca:254 Restablei@x els predeterminats
 es:254 Restaurar @valores predeterminados
 it:254 Ripristina i @valori predefiniti
 #
@@ -2173,7 +2184,7 @@ fr:277 Barre de controle des @Echelles
 de:277 @Ma&szlig;stab
 de-ch:277 @Massstab
 pt-br:277 Barra de @Escala
-it:277 Barra di controllo della S@cala
+it:277 Barra di controllo della @Scala
 #
 # The accelerators must be different within this group
 en:280 @Reverse Sense##Ctrl+R
@@ -2203,11 +2214,11 @@ en-us:291 Sur@face Shots##Ctrl+F
 fr:291 Segments de topo en Sur@face##Ctrl+F
 de-de,de-ch:291 Messz&uuml;ge Ober@fl&auml;che##Ctrl+F
 de:          291 Me&szlig;z&uuml;ge Ober@fl&auml;che##Ctrl+F
-pt:291 Visadas de Su@perf&iacute;cie##Ctrl+P
-it:291 Battute topografia di @Superficie##Ctrl+F
-# TRANSLATE fr de "Depth Colours" -> "Altitude Colours"
-en:292 Altitude Colo@urs on Surface Surveys
-en-us:292 Altit@ude Colors on Surface Surveys
+pt:291 Visadas de Super@f&iacute;cie##Ctrl+F
+it:291 Battute topografia di Super@ficie##Ctrl+F
+# TRANSLATE fr de "Depth Colours" -> "Altitude Colouring"
+en:292 Altitude Colo@uring on Surface Surveys
+en-us:292 Altit@ude Coloring on Surface Surveys
 fr:292 C@ouleur par profondeur pour les topos de surface
 de:292 Tiefen-F@arben auf Oberfl&auml;chendarstellungen
 pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
@@ -2224,7 +2235,7 @@ en:294 Highlight @Entrances
 fr:294 Mise en valeur des @entr&egrave;es
 de:294 @Eing&auml;nge hervorheben
 pt:294 Destacar @Entradas
-it:294 Marca gli I@ngressi
+it:294 Marca gli Ing@ressi
 #
 en:295 Highlight Fi@xed Points
 en-us:295 Highlight Co@ntrol Points
@@ -2248,8 +2259,8 @@ it:297 @Griglia##Ctrl+G
 en:298 S@moothed Survey Legs
 en-us:298 S@moothed Survey Shots
 fr:298 @Lissage des segments topographiques
-de-de,de-ch:298 Geg@l&auml;ttete Messz&uuml;ge
-de:298          Geg@l&auml;ttete Me&szlig;z&uuml;ge
+de-de,de-ch:298 Gegl&auml;ttete @Messz&uuml;ge
+de:298          Gegl&auml;ttete @Me&szlig;z&uuml;ge
 pt:298 Visadas S@uavizadas 
 it:298 Battute topografiche ammorbidite
 #
@@ -2355,7 +2366,7 @@ it:310 %s: opzione non valida -- %c&#10;
 # here pt = pt-br ...
 en:311 @Create...
 fr:311 @Creation...
-de:311 @Neue Pr&auml;sentation...
+de:311 Neue @Pr&auml;sentation...
 pt:311 @Criar...
 it:311 @Crea...
 #
@@ -2366,15 +2377,15 @@ pt:312 @Ir para
 it:312 @Vai
 #
 en:313 @Record Position
-fr:313 Sauvega@rde de la position
+fr:313 @Sauvegarde de la position
 de:313 Position @aufzeichnen
 pt:313 G@ravar Posi&ccedil;&atilde;o
 it:313 @Registra la posizione
 #
 en:314 @Finish and Save
 fr:314 @Fin avec sauvegarde
-de:314 @Abschlie&szlig;en und abspeichern
-de-ch:314 @Abschliessen und abspeichern
+de:314 A@bschlie&szlig;en und abspeichern
+de-ch:314 A@bschliessen und abspeichern
 pt:314 @Finalizar e Salvar
 it:314 @Finisci e Salva
 #
@@ -2386,14 +2397,14 @@ it:315 Cancella l'@Ultima posizione
 #
 en:316 Er@ase All Positions
 fr:316 Effacement de @toutes les positions
-de:316 @Alle Positionen l&ouml;schen
+de:316 Alle P@ositionen l&ouml;schen
 pt:316 Remover @Todas as Posi&ccedil;&otilde;es
 it:316 Cancella @Tuttle le posizioni
 #
 en:317 @Presentation
 de:317 @Pr&auml;sentation
 fr:317 @Pr&eacute;sentation
-pt:317 @Apresenta&ccedil;&atilde;o  
+pt:317 A@presenta&ccedil;&atilde;o  
 it:317 @Presentazione
 #
 en:318 Go @Back
@@ -2417,7 +2428,7 @@ it:320 Presentazione Aven
 en:321 Open @Presentation...
 fr:321 Ouvrir une @Pr&eacute;sentation
 de:321 @Pr&auml;sentation &ouml;ffnen...
-pt:321 Abrir @Apresenta&ccedil;&atilde;o
+pt:321 Abrir A@presenta&ccedil;&atilde;o
 it:321 Apri @Presentazione
 #
 en:322 Select a presentation to open
@@ -2435,11 +2446,11 @@ pt:323 Gravando Apresenta&ccedil;&atilde;o
 it:323 Registra Presentazione
 #
 en:324 Res@tart
-fr:324 Re@d&eacute;marrage
+fr:324 Red&eacute;@marrage
 de:324 @Neustart
-pt:324 Re@iniciar
-it:324 Ripar@te
-#XXX 325 326 327
+pt:324 Rei@niciar
+it:324 Ri@parte
+# XXX325 326 327
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
 de:328 Kein Treffer gefunden.
@@ -2452,8 +2463,8 @@ de:329 Gel&auml;nde@modell &ouml;ffnen...
 pt:329 Abrir @Terreno...
 it:329 Apri Modello Digitale @Terrestre
 #
-en:330 So@lid Surface
-fr:330 Surface So@lide
+en:330 Soli@d Surface
+fr:330 Surface Soli@de
 de:330 @Durchgezogene Oberfl&auml;che
 pt:330 Superf&iacute;cie S&oacute;@lida
 it:330 Superficie So@lida

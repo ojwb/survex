@@ -1,6 +1,16 @@
-* (RISC OS version): fixed automatic detection of language.
+* (MS Windows version): aven: fixed redraw problem for "N found".
 
 * (MS Windows version): minor tweaks to .err, .pos, and .svx file icons.
+
+* (Unix version): aven: Highlight of current station restores old background
+  colour correctly rather than assuming it's white.
+
+* aven: Resolved a number of menu shortcut clashes.
+
+* (RISC OS version): fixed automatic detection of language.
+
+* cavern: improved error reporting from *data; better handling of some
+  incorrect usages of *sd and *units.
 
 * Italian translation updated.
 

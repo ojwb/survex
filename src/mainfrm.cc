@@ -358,7 +358,7 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation View*/249));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(/*@Higher Viewpoint*/250));
-    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*Lo@wer Viewpoint*/251));
+    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*L@ower Viewpoint*/251));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_ZOOM_IN, GetTabMsg(/*@Zoom In##]*/252));
     orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253));
@@ -409,7 +409,7 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*S@moothed Survey Legs*/298), "", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*So@lid Surface*/330), "", true);
+    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*Soli@d Surface*/330), "", true);
 #endif
 
     wxMenu* ctlmenu = new wxMenu;

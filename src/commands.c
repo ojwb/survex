@@ -289,7 +289,7 @@ get_units(void)
 
 /* returns mask with bit x set to indicate quantity x specified */
 static unsigned long
-get_qlist(void)
+get_qlist(unsigned long mask_bad)
 {
    static sztok qtab[] = {
 	{"ALTITUDE",	 Q_DZ },
@@ -327,6 +327,11 @@ get_qlist(void)
       /* bail out if we reach the table end with no match */
       if (tok == Q_NULL) break;
       qmask |= BIT(tok);
+      if (qmask != BIT(Q_DEFAULT) && (qmask & mask_bad)) {
+	 compile_error(/*Unknown instrument `%s'*/39, buffer);
+	 skipline();
+	 return 0;
+      }
    }
 
    if (qmask == 0) {
@@ -1011,11 +1016,8 @@ cmd_data(void)
 	 return;
       }
       if (TSTBIT(mUsed, Newline) && TSTBIT(m_multi, d)) {
-	 /* FIXME: redo message - this is for when they write
-	  * *data diving station newline tape depth compass
-	  */
-	 compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
-		       buffer, style_name);
+	 /* e.g. "*data diving station newline tape depth compass" */
+	 compile_error(/*Reading `%s' must occur before NEWLINE*/225, buffer);
 	 osfree(style_name);
 	 osfree(new_order);
 	 skipline();
@@ -1059,11 +1061,8 @@ cmd_data(void)
 	       break;
 	     case Newline:
 	       if (mUsed & ~m_multi) {
-		  /* FIXME: redo message - this is for when they write
-		   * *data normal station tape newline compass clino
-		   */
-		  compile_error(/*Reading `%s' not allowed in data style `%s'*/63,
-				buffer, style_name);
+		  /* e.g. "*data normal from to tape newline compass clino" */
+		  compile_error(/*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
 		  osfree(style_name);
 		  osfree(new_order);
 		  skipline();
@@ -1081,8 +1080,9 @@ cmd_data(void)
 	       break;
 	    }
 	    if (fBad) {
-	       /* FIXME: not really the correct error here */
-	       compile_error(/*Duplicate reading `%s'*/67, buffer);
+	       /* Not entirely happy with phrasing this... */
+	       compile_error(/*Reading `%s' duplicates previous reading(s)*/219,
+			     buffer);
 	       osfree(style_name);
 	       osfree(new_order);
 	       skipline();
@@ -1196,7 +1196,7 @@ cmd_units(void)
    unsigned long m; /* mask with bit x set to indicate quantity x specified */
    real factor;
 
-   qmask = get_qlist();
+   qmask = get_qlist(BIT(Q_DEFAULT));
    if (!qmask) return;
    if (qmask == BIT(Q_DEFAULT)) {
       default_units(pcs);
@@ -1228,25 +1228,22 @@ cmd_calibrate(void)
    real sc, z;
    unsigned long qmask, m;
    int quantity;
-   qmask = get_qlist();
-   if (!qmask) return;
+
+   qmask = get_qlist(BIT(Q_DEFAULT)|BIT(Q_POS)|BIT(Q_LENGTHOUTPUT)|
+		BIT(Q_ANGLEOUTPUT)|BIT(Q_PLUMB)|BIT(Q_LEVEL));
+   if (!qmask) return; /* error already reported */
+
    if (qmask == BIT(Q_DEFAULT)) {
       default_calib(pcs);
       return;
    }
-   /* useful check? */
+
    if (((qmask & LEN_QMASK)) && ((qmask & ANG_QMASK))) {
-      /* FIXME: mixed angles/lengths */
-   }
-   /* check for things with no valid calibration (like station posn) */
-   if (qmask & (BIT(Q_DEFAULT)|BIT(Q_POS)|BIT(Q_LENGTHOUTPUT)
-		|BIT(Q_ANGLEOUTPUT)|BIT(Q_PLUMB)|BIT(Q_LEVEL))) {
-      /* FIXME: buffer is probably wrong here - get_qlist() may
-       * have read several tokens */
-      compile_error(/*Unknown instrument `%s'*/39, buffer);
+      compile_error(/*Can't calibrate angular and length quantities together*/227);
       skipline();
       return;
    }
+
    z = read_numeric(fFalse);
    sc = read_numeric(fTrue);
    if (sc == HUGE_REAL) sc = (real)1.0;
@@ -1278,7 +1275,7 @@ cmd_default(void)
    static int default_depr_count = 0;
 
    if (default_depr_count < 5) {
-      compile_warning(/**DEFAULT is deprecated - use *CALIBRATE/DATA/UNITS with argument DEFAULT instead*/20);
+      compile_warning(/**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
       if (++default_depr_count == 5)
 	 compile_warning(/*No further uses of this deprecated feature will be reported*/95);
    }
@@ -1336,8 +1333,9 @@ cmd_sd(void)
    int units;
    unsigned long qmask, m;
    int quantity;
-   qmask = get_qlist();
-   if (!qmask) return;
+   qmask = get_qlist(BIT(Q_ANGLEOUTPUT)|BIT(Q_LENGTHOUTPUT)|BIT(Q_DECLINATION));
+   if (!qmask) return; /* no quantities found - error already reported */
+
    if (qmask == BIT(Q_DEFAULT)) {
       default_grade(pcs);
       return;
