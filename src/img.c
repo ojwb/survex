@@ -288,6 +288,7 @@ img_open_survey(const char *fnm, const char *survey)
    if (len > LITLEN(EXT_SVX_POS) + 1 &&
        fnm[len - LITLEN(EXT_SVX_POS) - 1] == FNM_SEP_EXT &&
        my_strcasecmp(fnm + len - LITLEN(EXT_SVX_POS), EXT_SVX_POS) == 0) {
+pos_file:
       pimg->version = -1;
       if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
@@ -372,6 +373,11 @@ plt_file:
 	 /* Looks like a Compass .plt file ... */
 	 rewind(pimg->fh);
 	 goto plt_file;
+      }
+      if (buf[0] == '(') {
+	 /* Looks like a Survex .pos file ... */
+	 rewind(pimg->fh);
+	 goto pos_file;
       }
       img_errno = IMG_BADFORMAT;
       goto error;
