@@ -183,7 +183,7 @@ remove_travs(void)
    node *stn;
    out_current_action(msg(/*Concatenating traverses between nodes*/126));
    FOR_EACH_STN(stn, stnlist) {
-      if (fixed(stn) || !two_node(stn)) {
+      if (fixed(stn) || three_node(stn)) {
 	 if (stn->leg[0]) concatenate_trav(stn, 0);
 	 if (stn->leg[1]) concatenate_trav(stn, 1);
 	 if (stn->leg[2]) concatenate_trav(stn, 2);
@@ -245,7 +245,7 @@ concatenate_trav(node *stn, int i)
    ptr = trav;
 
    newleg->l.to = stn;
-   newleg->l.reverse= j | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
+   newleg->l.reverse = j | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 
    stn->leg[j] = newleg2;
 
@@ -347,7 +347,12 @@ replace_travs(void)
    double eTot, lenTrav, lenTot;
    double eTotTheo;
    double vTot, vTotTheo, hTot, hTotTheo;
-   d sc, e;
+#ifdef NO_COVARIANCES
+   d sc;
+#else
+   var sc;
+#endif
+   d e;
    bool fEquate; /* used to indicate equates in output */
    int cLegsTrav;
    prefix *nmPrev;
@@ -454,14 +459,24 @@ replace_travs(void)
 	 hTot = vTot = 0.0;
 	 ASSERT(data_here(stn1->leg[i]));
 	 if (fZero(&stn1->leg[i]->v)) {
+#ifdef NO_COVARIANCES
 	    sc[0] = sc[1] = sc[2] = 0.0;
+#else
+	    sc[0][0] = sc[1][0] = sc[2][0] = 0.0;
+	    sc[0][1] = sc[1][1] = sc[2][1] = 0.0;
+	    sc[0][2] = sc[1][2] = sc[2][2] = 0.0;
+#endif
 	 } else {
 	    subdd(&e, &POSD(stn2), &POSD(stn1));
 	    subdd(&e, &e, &stn1->leg[i]->d);
 	    eTot = sqrdd(e);
 	    hTot = sqrd(e[0]) + sqrd(e[1]);
 	    vTot = sqrd(e[2]);
+#ifdef NO_COVARIANCES
 	    divdv(&sc, &e, &stn1->leg[i]->v);
+#else
+	    invert_var(&sc, &stn1->leg[i]->v); /* FIXME: check non-singular */
+#endif
 	 }
 #ifndef NO_COVARIANCES
 	 /* FIXME what about covariances? */
@@ -512,7 +527,6 @@ replace_travs(void)
 	    int reached_end;
 	    
   	    fEquate = fTrue;
-	    lenTot = 0.0;
 	    /* get next node in traverse
 	     * should have stn3->leg[k]->l.to == stn1 */
 	    stn3 = stn1->leg[i]->l.to;
@@ -538,12 +552,23 @@ replace_travs(void)
 	       subdd(&POSD(stn3), &POSD(stn1), &leg->d);
 	    }
 
-	    if (!reached_end) add_stn_to_list(&stnlist, stn3);
+	    lenTot = sqrdd(leg->d);
+	    
+	    add_stn_to_list(&stnlist, stn3);
 
+#ifdef NO_COVARIANCES
 	    mulvd(&e, &leg->v, &sc);
 	    adddd(&POSD(stn3), &POSD(stn3), &e);
+#else
+	      {
+		 var tmp;
+		 d tmp2;
+		 mulvv(&tmp, &leg->v, &sc);
+		 mulvd(&tmp2, &tmp, &e);
+		 adddd(&POSD(stn3), &POSD(stn3), &tmp2);
+	      }
+#endif
 	    if (!fZero(&leg->v)) fEquate = fFalse;
-	    lenTot += sqrdd(leg->d);
 	    fix(stn3);
 #ifdef NEW3DFORMAT
 	    if (stn3->name->pos->id == 0) cave_write_stn(stn3);
@@ -608,22 +633,16 @@ replace_travs(void)
 #if PRINT_NETBITS
 	 printf("Reached fixed or non-2node station\n");
 #endif
-#if 0 /* no point testing - this is the exit condn now ... */
-	 if (stn3 != stn2 || k != j) {
-	    print_prefix(stn3->name);
-	    printf(",%d NOT ", k);
-	    print_prefix(stn2->name);
-	    printf(",%d\n", j);
-	 }
-#endif
+	 /* FIXME: better to handle the last leg in a traverse with the
+	  * same code as all the others - i.e. in loop above */
 	 if (data_here(stn1->leg[i])) {
 	    if (!fZero(&stn1->leg[i]->v)) fEquate = fFalse;
-	    lenTot += sqrdd(stn1->leg[i]->d);
+	    lenTot = sqrdd(stn1->leg[i]->d);
 	 } else {
 	    ASSERT2(data_here(stn2->leg[j]),
 		    "data not on either direction of leg");
 	    if (!fZero(&stn2->leg[j]->v)) fEquate = fFalse;
-	    lenTot += sqrdd(stn2->leg[j]->d);
+	    lenTot = sqrdd(stn2->leg[j]->d);
 	 }
 #if PRINT_NETBITS
 	 printf("lenTot increased okay\n");
