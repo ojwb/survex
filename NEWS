@@ -1,3 +1,6 @@
+* cavern: Equates are no longer considered when deciding which stations are
+  flagged as surface and underground.
+
 * aven: Fixed memory leak when showing the "About" dialog.
 
 Changes in 1.0.29:
