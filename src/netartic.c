@@ -78,7 +78,6 @@ visit(node *stn, int back)
 {   
    long min_colour;
    int i;
-   node *stn2;
    unsigned long tos = 0;
    ASSERT(dirn_stack && min_stack);
 #ifdef DEBUG_ARTIC
@@ -98,45 +97,47 @@ iter:
 	 long col = to->colour;
 	 if (col == 0) {
 	    ASSERT(tos < cMaxVisits);
-	    dirn_stack[tos] = back = reverse_leg_dirn(stn->leg[i]);
+	    dirn_stack[tos] = back;
 	    min_stack[tos] = min_colour;
 	    tos++;
+	    back = reverse_leg_dirn(stn->leg[i]);
 	    stn = to;
 	    goto iter;
 uniter:
 	    ASSERT(tos > 0);
 	    --tos;
-	    back = dirn_stack[tos];
 	    i = reverse_leg_dirn(stn->leg[back]);
-	    stn2 = stn->leg[back]->l.to;
+	    to = stn;
+	    stn = to->leg[back]->l.to;
+	    back = dirn_stack[tos];
 	    if (min_stack[tos] < min_colour) min_colour = min_stack[tos];
 
 #ifdef DEBUG_ARTIC
-	    printf("unwind: stn [%p] ", stn2);
-	    print_prefix(stn2->name);
-	    printf(" colour %d, min %d, station after %d\n", stn2->colour,
-		   min_colour, stn->colour);
-	    printf("Putting stn ");
+	    printf("unwind: stn [%p] ", stn);
 	    print_prefix(stn->name);
+	    printf(" colour %d, min %d, station after %d\n", stn->colour,
+		   min_colour, to->colour);
+	    printf("Putting stn ");
+	    print_prefix(to->name);
 	    printf(" on artlist\n");
 #endif
-	    remove_stn_from_list(&stnlist, stn);
-	    add_stn_to_list(&artlist, stn);
+	    remove_stn_from_list(&stnlist, to);
+	    add_stn_to_list(&artlist, to);
 	    
-	    if (stn->colour <= min_colour) {
+	    if (to->colour <= min_colour) {
 	       articulation *art;
 
-	       min_colour = stn->colour;
+	       min_colour = to->colour;
 	       
 	       /* FIXME: note down leg (<-), remove and replace:
 		*                 /\   /        /\
 		* [fixed point(s)]  *-*  -> [..]  )
 		*                 \/   \        \/
-		*                stn2 stn
+		*                 stn to
 		*/
 	       /* flag leg as an articulation for loop error reporting */
-	       stn->leg[dirn_stack[tos]]->l.reverse |= FLAG_ARTICULATION;
-	       stn2->leg[i]->l.reverse |= FLAG_ARTICULATION;
+	       to->leg[dirn_stack[tos]]->l.reverse |= FLAG_ARTICULATION;
+	       stn->leg[i]->l.reverse |= FLAG_ARTICULATION;
 
 	       /* start new articulation */
 	       art = osnew(articulation);
@@ -147,14 +148,12 @@ uniter:
 
 #ifdef DEBUG_ARTIC
 	       printf("Articulate *-");
-	       print_prefix(stn2->name);
-	       printf("-");
 	       print_prefix(stn->name);
+	       printf("-");
+	       print_prefix(to->name);
 	       printf("-...\n");
 #endif
 	    }
-
-	    stn = stn2;
 	 } else {
 	    /* back edge case */
 	    if (col < 0) {
@@ -174,6 +173,10 @@ uniter:
 	 }	 
       }
    }
+
+   ASSERT(!stn->leg[0] || stn->leg[0]->l.to->colour > 0);
+   ASSERT(!stn->leg[1] || stn->leg[1]->l.to->colour > 0);
+   ASSERT(!stn->leg[2] || stn->leg[2]->l.to->colour > 0);
    
    if (tos > 0) goto uniter;
 
@@ -377,13 +380,73 @@ articulate(void)
       }
       exit(EXIT_FAILURE);
    }
-   
+
+   {
+      component *comp;
+      articulation *art;
+
+#ifdef DEBUG_ARTIC
+      printf("\nDump of %d components:\n", cComponents);
+#endif
+      for (comp = component_list; comp; comp = comp->next) {
+	 node *list = NULL, *listend = NULL;
+#ifdef DEBUG_ARTIC
+	 printf("Component:\n");
+#endif
+	 ASSERT(comp->artic);
+	 for (art = comp->artic; art; art = art->next) {
+#ifdef DEBUG_ARTIC
+	    printf("  Articulation (%p):\n", art->stnlist);
+#endif
+	    ASSERT(art->stnlist);
+	    if (listend) {
+	       listend->next = art->stnlist;
+	       art->stnlist->prev = listend;
+ 	    } else {
+	       list = art->stnlist;
+	    }
+ 
+	    FOR_EACH_STN(stn, art->stnlist) {
+#ifdef DEBUG_ARTIC
+	       printf("    %d %p (", stn->colour, stn);
+	       print_prefix(stn->name);
+	       printf(")\n");
+#endif
+	       listend = stn;
+ 	    }
+ 	 }
+#ifdef DEBUG_ARTIC
+	 putnl();
+	 FOR_EACH_STN(stn, list) {
+	    printf("MX: %c %p (", fixed(stn)?'*':' ', stn);
+	    print_prefix(stn->name);
+	    printf(")\n");
+	 }
+#endif
+	 solve_matrix(list);
+#ifdef DEBUG_ARTIC
+	 putnl();
+	 FOR_EACH_STN(stn, list) {
+	    printf("%c %p (", fixed(stn)?'*':' ', stn);
+	    print_prefix(stn->name);
+	    printf(")\n");
+	 }
+#endif
+	 listend->next = stnlist;
+	 if (stnlist) stnlist->prev = listend;
+	 stnlist = list;
+      }
+#ifdef DEBUG_ARTIC
+      printf("done articulating\n");
+#endif
+   }
+
 #if 1 /*def DEBUG_ARTIC*/
    /* test articulation */
    FOR_EACH_STN(stn, stnlist) {
       int d;
       int f;
-      if (fixed(stn)) {
+      if (stn->name->sflags & BIT(SFLAGS_FIXED)) {
 	 stn->colour = 1;
       } else {
 	 stn->colour = 0;
@@ -474,70 +537,7 @@ articulate(void)
       }
    }
 #endif
-
-   {
-      component *comp;
-      articulation *art;
-
-#ifdef DEBUG_ARTIC
-      printf("\nDump of %d components:\n", cComponents);
-#endif
-      for (comp = component_list; comp; comp = comp->next) {
-	 node *list = NULL, *listend = NULL;
-#ifdef DEBUG_ARTIC
-	 printf("Component:\n");
-#endif
-	 ASSERT(comp->artic);
-	 for (art = comp->artic; art; art = art->next) {
-#ifdef DEBUG_ARTIC
-	    printf("  Articulation (%p):\n", art->stnlist);
-#endif
-	    ASSERT(art->stnlist);
-	    if (listend) {
-	       listend->next = art->stnlist;
-	       art->stnlist->prev = listend;
- 	    } else {
-	       list = art->stnlist;
-	    }
- 
-	    FOR_EACH_STN(stn, art->stnlist) {
-#ifdef DEBUG_ARTIC
-	       printf("    %d %p (", stn->colour, stn);
-	       print_prefix(stn->name);
-	       printf(")\n");
-#endif
-	       listend = stn;
- 	    }
- 	 }
-#ifdef DEBUG_ARTIC
-	 putnl();
-	 FOR_EACH_STN(stn, list) {
-	    printf("MX: %c %p (", fixed(stn)?'*':' ', stn);
-	    print_prefix(stn->name);
-	    printf(")\n");
-	 }
-#endif
-	 solve_matrix(list);
-#ifdef DEBUG_ARTIC
-	 putnl();
-	 FOR_EACH_STN(stn, list) {
-	    printf("%c %p (", fixed(stn)?'*':' ', stn);
-	    print_prefix(stn->name);
-	    printf(")\n");
-	 }
-#endif
-	 listend->next = stnlist;
-	 if (stnlist) stnlist->prev = listend;
-	 stnlist = list;
-      }
-#ifdef DEBUG_ARTIC
-      printf("done articulating\n");
-#endif
-   }
-
-#ifdef DEBUG_ARTIC
    FOR_EACH_STN(stn, stnlist) {
       ASSERT(fixed(stn));
    }
-#endif
 }

@@ -13,6 +13,8 @@
 * All versions have been missing RTF, text, and PostScript versions of
   the documentation in the previous 2 prereleases.
 
+* cavern: Fixed articulation code wasn't quite.
+
 Changes in 0.98-prerelease2:
 
 * (MS Windows version): Fixed "Open" on a .3d file to open in aven
