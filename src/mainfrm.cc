@@ -343,8 +343,10 @@ void MainFrm::CreateMenuBar()
     filemenu->Append(menu_FILE_OPEN_TERRAIN, GetTabMsg(/*Open @Terrain...*/329));
 #endif
     filemenu->AppendSeparator();
-    m_history.UseMenu(filemenu);
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Exit*/221));
+
+    m_history.UseMenu(filemenu);
+    m_history.Load(*wxConfigBase::Get());
 
     wxMenu* rotmenu = new wxMenu;
     rotmenu->Append(menu_ROTATION_START, GetTabMsg(/*@Start Rotation##Return*/230));
@@ -1201,6 +1203,9 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 {
     wxBusyCursor hourglass;
     m_history.AddFileToHistory(file);
+    wxConfigBase *b = wxConfigBase::Get();
+    m_history.Save(*b);
+    b->Flush();
     if (LoadData(file, survey)) {
 	if (delay) {
 	    m_Gfx->InitialiseOnNextResize();
