@@ -29,6 +29,15 @@ static const wxWindowID ID_PAGE_BASE_IMG = 150;
 static const wxWindowID ID_PAGE_BASE_PANEL = 200;
 static const wxWindowID ID_PAGE_BASE_IMG_END = ID_PAGE_BASE_PANEL - 1;
 
+static const int PAGE_ICON_HEAD_FOOT = 12;
+static const int PAGE_ICON_HEIGHT = 75;
+static const int PAGE_PANEL_WIDTH = int((48 + (2*PAGE_ICON_HEAD_FOOT)) * 4.0/3.0);
+static const int EDGE_MARGIN = 4;
+static const int EDGE_MARGIN_V = 3;
+static const int SCROLLED_WIN_WIDTH = 16 + PAGE_PANEL_WIDTH;
+static const int DIALOG_WIDTH = 500;
+static const int DIALOG_HEIGHT = PAGE_ICON_HEIGHT*4 + PAGE_ICON_HEAD_FOOT;
+
 BEGIN_EVENT_TABLE(PanelDlg, wxDialog)
     EVT_COMMAND_RANGE(ID_PAGE_BASE_IMG, ID_PAGE_BASE_IMG_END, wxEVT_COMMAND_BUTTON_CLICKED, PanelDlg::OnPageChange)
 END_EVENT_TABLE()
@@ -40,6 +49,20 @@ PanelDlg::PanelDlg(wxWindow* parent, wxWindowID id, const wxString& title) :
 
 PanelDlg::~PanelDlg()
 {
+}
+
+void PanelDlg::PositionPage()
+{
+    // Position the current page on the dialog.
+    
+    wxSize button_size = wxButton::GetDefaultSize();
+
+    m_CurrentPage->SetSizeHints(-1, -1,
+                                DIALOG_WIDTH - EDGE_MARGIN*2 - SCROLLED_WIN_WIDTH,
+                                DIALOG_HEIGHT - EDGE_MARGIN_V*3 - button_size.GetHeight());
+    m_CurrentPage->SetSize(SCROLLED_WIN_WIDTH + EDGE_MARGIN*2, EDGE_MARGIN,
+                           DIALOG_WIDTH - EDGE_MARGIN*2 - SCROLLED_WIN_WIDTH,
+                           DIALOG_HEIGHT - EDGE_MARGIN_V*3 - button_size.GetHeight());
 }
 
 void PanelDlg::OnPageChange(wxCommandEvent& event)
@@ -58,16 +81,11 @@ void PanelDlg::OnPageChange(wxCommandEvent& event)
     
     // Remove the current page from display.
     m_CurrentPage->Hide();
-    m_VertSizer->Remove(m_CurrentPage);
-    m_VertSizer->Layout();
 
     // Display the new page.
-    m_VertSizer->Prepend(page_ptr, 1 /* fill available space */, wxALL, 4);
     m_CurrentPage = page_ptr;
-
-    // Force a re-layout of the sizer.
-    m_VertSizer->Layout();
-    page_ptr->Show();
+    m_CurrentPage->Show();
+    PositionPage();
 }
 
 void PanelDlg::SetPages(list<PanelDlgPage*> pages)
@@ -75,10 +93,6 @@ void PanelDlg::SetPages(list<PanelDlgPage*> pages)
     assert(pages.size() >= 1);
 
     m_Pages = pages;
-
-    // Create sizers.
-    wxBoxSizer* horiz_sizer = new wxBoxSizer(wxHORIZONTAL);
-    m_VertSizer = new wxBoxSizer(wxVERTICAL);
 
     // Create the left-hand page button panel.
     wxScrolledWindow* scrolled_win = new wxScrolledWindow(this, 3000, wxDefaultPosition, wxDefaultSize,
@@ -96,9 +110,6 @@ void PanelDlg::SetPages(list<PanelDlgPage*> pages)
 
     // Fill the page button panel.
     wxBoxSizer* page_panel_sizer = new wxBoxSizer(wxVERTICAL);
-    const int PAGE_ICON_HEAD_FOOT = 12;
-    const int PAGE_ICON_HEIGHT = 75;
-    const int PAGE_PANEL_WIDTH = int((48 + (2*PAGE_ICON_HEAD_FOOT)) * 4.0/3.0);
     list<PanelDlgPage*>::iterator iter = pages.begin();
     int page_num = 0;
     while (iter != pages.end()) {
@@ -133,39 +144,29 @@ void PanelDlg::SetPages(list<PanelDlgPage*> pages)
     page_panel->SetSizeHints(PAGE_PANEL_WIDTH, height);
     page_panel->SetSize(PAGE_PANEL_WIDTH, height);
     scrolled_win->SetScrollbars(0, height / page_num, 0, page_num);
-    scrolled_win->SetSize(/* FIXME */ 16 + PAGE_PANEL_WIDTH, 500);
+    scrolled_win->SetSize(EDGE_MARGIN, EDGE_MARGIN, SCROLLED_WIN_WIDTH, DIALOG_HEIGHT - EDGE_MARGIN_V*2);
  
-    // Darken the background colour.
+    // Darken the background colour for the page selector panel.
     page_panel->SetBackgroundColour(col);
 
-    // Fill the horizontal sizer.
-    horiz_sizer->Add(scrolled_win, 0 /* not horizontally stretchable */, wxEXPAND | wxALL, 2);
-    horiz_sizer->Add(m_VertSizer, 1 /* fill available space */, wxEXPAND | wxALL, 2);
+    // Create the OK/Cancel button panel.
+    wxSize button_size = wxButton::GetDefaultSize();
+    wxButton* ok_button = new wxButton(this, wxID_OK, "OK",
+                                       wxPoint(DIALOG_WIDTH - button_size.GetWidth()*2 - EDGE_MARGIN*4,
+                                               DIALOG_HEIGHT - button_size.GetHeight() - EDGE_MARGIN_V));
+    ok_button->SetDefault();
+    wxButton* cancel_button = new wxButton(this, wxID_CANCEL, "Cancel",
+                                           wxPoint(DIALOG_WIDTH - button_size.GetWidth() - EDGE_MARGIN*2,
+                                                   DIALOG_HEIGHT - button_size.GetHeight() - EDGE_MARGIN_V));
 
-    // Retrieve the panel for the first page.
+    // Retrieve the panel for the first page and put it in the correct place.
     PanelDlgPage* first_page = *(pages.begin());
     assert(first_page);
     m_CurrentPage = first_page;
-
-    // Create the OK/Cancel button panel.
-    m_ButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-    wxButton* ok_button = new wxButton(this, wxID_OK, "OK");
-    ok_button->SetDefault();
-    wxButton* cancel_button = new wxButton(this, wxID_CANCEL, "Cancel");
-    m_ButtonSizer->Add(ok_button, 0 /* not horizontally stretchable */, wxALIGN_RIGHT | wxRIGHT, 4);
-    m_ButtonSizer->Add(cancel_button, 0 /* not horizontally stretchable */, wxALIGN_RIGHT);
-
-    // Fill the sizer holding the page and the button panel.
-    m_VertSizer->Add(first_page, 1 /* fill available space */, wxALIGN_TOP | wxALL, 4);
-    m_VertSizer->Add(m_ButtonSizer, 0 /* not vertically stretchable */, wxALIGN_RIGHT | wxALL, 4);
-
-    // Cause the dialog to use the horizontal sizer.
-    SetAutoLayout(true);
-    SetSizer(horiz_sizer);
-    horiz_sizer->Fit(this);
+    PositionPage();
 
     // Set a reasonable size and centre the dialog with respect to the parent window.
-    SetSize(500, PAGE_ICON_HEIGHT*4 + PAGE_ICON_HEAD_FOOT);
+    SetSize(DIALOG_WIDTH, DIALOG_HEIGHT);
     CentreOnParent();
 }
 

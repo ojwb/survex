@@ -34,6 +34,8 @@ class PanelDlg : public wxDialog {
     list<PanelDlgPage*> m_Pages;
     PanelDlgPage* m_CurrentPage;
 
+    void PositionPage();
+
 public:
     PanelDlg(wxWindow* parent, wxWindowID id, const wxString& title);
     virtual ~PanelDlg();
