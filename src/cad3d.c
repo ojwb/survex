@@ -4,6 +4,7 @@
  */
 
 /* Copyright (C) 1994-2004 Olly Betts
+ * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +50,12 @@
 #define POINTS_PER_INCH	72.0
 #define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
+#define SQRT_2          1.41421356237309504880168872420969
+
+#define LEGS 1
+#define STNS 2
+#define LABELS 4
+
 /* default to DXF */
 #define FMT_DEFAULT FMT_DXF
 
@@ -62,6 +69,7 @@ static double marker_size; /* for station markers */
 static double grid; /* grid spacing (or 0 for no grid) */
 static double scale = 500.0;
 static double factor;
+static const char *unit = "mm";
 
 static img *pimg;
 static const char *survey = NULL;
@@ -333,26 +341,6 @@ typedef struct point {
 static point **htab;
 
 static void
-plt_header(void)
-{
-   size_t i;
-   htab = osmalloc(HTAB_SIZE * ossizeof(point *));
-   for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
-   /* Survex is E, N, Alt - PLT file is N, E, Alt */
-   fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
-           min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
-           min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
-           min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
-   fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X", pimg->title);
-}
-
-static void
-plt_start_pass(int layer)
-{
-   layer = layer;
-}
-
-static void
 set_name(const img_point *p, const char *s)
 {
    int hash;
@@ -368,9 +356,9 @@ set_name(const img_point *p, const char *s)
    hash = (hash_data(u.data, sizeof(int) * 3) & (HTAB_SIZE - 1));
    for (pt = htab[hash]; pt; pt = pt->next) {
       if (pt->p.x == p->x && pt->p.y == p->y && pt->p.z == p->z) {
-	 /* already got name for these coordinates */
-	 /* FIXME: what about multiple names for the same station? */
-	 return;
+         /* already got name for these coordinates */
+         /* FIXME: what about multiple names for the same station? */
+         return;
       }
    }
 
@@ -403,6 +391,120 @@ find_name(const img_point *p)
 	 return pt->label;
    }
    return "?";
+}
+
+static void
+svg_header(void)
+{
+   size_t i;
+   htab = osmalloc(HTAB_SIZE * ossizeof(point *));
+   for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
+   fprintf(fh, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
+   fprintf(fh, "<svg width=\"%.3f%s\" height=\"%.3f%s\""
+               " viewBox=\"0 0 %0.3f %0.3f\">\n",
+           (max_x - min_x) * factor, unit, (max_y - min_y) * factor, unit,
+           (max_x - min_x) * factor, (max_y - min_y) * factor );
+   fprintf(fh, "<g transform=\"translate(%.3f %.3f)\">\n",
+           min_x * -factor, max_y * factor);
+}
+
+static bool to_close = 0;
+static bool close_g = 0;
+
+static void
+svg_start_pass(int layer)
+{
+   if (to_close) {
+      fprintf(fh, "\"/>\n");
+      to_close = 0;
+   }
+   if (close_g) {
+      fprintf(fh, "</g>\n");
+   }
+   close_g = 1;
+
+   fprintf(fh, "<g id=\"%s\"", layer_names[layer]);
+   if (layer & LEGS)
+      fprintf(fh, " style=\"stroke:black;fill:none;stroke-width:0.4\"");
+   else if (layer & STNS)
+      fprintf(fh, " style=\"stroke:black;fill:none;stroke-width:0.05\"");
+   else if (layer & LABELS)
+      fprintf(fh, " style=\"font-size:%.3f\"", text_height);
+   fprintf(fh, ">\n");
+}
+
+static void
+svg_move(const img_point *p)
+{
+   if (to_close) {
+      fprintf(fh, "\"/>\n");
+   }
+   fprintf(fh, "<path d=\"M %.3f %.3f", p->x * factor, p->y * -factor);
+   to_close = 1;
+}
+
+static void
+svg_line(const img_point *p1, const img_point *p, bool fSurface)
+{
+   fSurface = fSurface; /* unused */
+   p1 = p1; /* unused */
+   fprintf(fh, "L%.3f %.3f", p->x * factor, p->y * -factor);
+   to_close = 1;
+}
+
+static void
+svg_label(const img_point *p, const char *s, bool fSurface)
+{
+   fSurface = fSurface; /* unused */
+   fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
+           p->x * factor, p->y * -factor);
+   fprintf(fh, s);
+   fprintf(fh, "</text>\n");
+   set_name(p, s);
+}
+
+static void
+svg_cross(const img_point *p, bool fSurface)
+{
+   fSurface = fSurface; /* unused */
+   fprintf(fh, "<circle id=\"%s\" cx=\"%.3f\" cy=\"%.3f\" r=\"%.3f\"/>\n",
+           find_name(p), p->x * factor, p->y * -factor, MARKER_SIZE * SQRT_2);
+   fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3fM%.3f %.3fL%.3f %.3f\"/>\n",
+	   p->x * factor - MARKER_SIZE, p->y * -factor - MARKER_SIZE,
+	   p->x * factor + MARKER_SIZE, p->y * -factor + MARKER_SIZE,
+	   p->x * factor + MARKER_SIZE, p->y * -factor - MARKER_SIZE,
+	   p->x * factor - MARKER_SIZE, p->y * -factor + MARKER_SIZE );
+}
+
+static void
+svg_footer(void) ////
+{
+   if (to_close) {
+      fprintf(fh, "\"/>\n");
+      to_close = 0;
+   }
+   fprintf(fh, "</g>\n");
+   fprintf(fh, "</g>\n</svg>");
+}
+
+static void
+plt_header(void)
+{
+   size_t i;
+   htab = osmalloc(HTAB_SIZE * ossizeof(point *));
+   for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
+   /* Survex is E, N, Alt - PLT file is N, E, Alt */
+   fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
+           min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
+           min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
+           min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
+   fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X", pimg->title);
+}
+
+static void
+plt_start_pass(int layer)
+{
+   layer = layer;
 }
 
 static void
@@ -458,12 +560,10 @@ plt_footer(void)
    putc('\x1a', fh);
 }
 
-#define LEGS 1
-#define STNS 2
-#define LABELS 4
 static int dxf_passes[] = { LEGS|STNS|LABELS, 0 };
 static int sketch_passes[] = { LEGS, STNS, LABELS, 0 };
 static int plt_passes[] = { LABELS, LEGS, 0 };
+static int svg_passes[] = { LEGS, LABELS, STNS, 0 };
 
 int
 main(int argc, char **argv)
@@ -476,8 +576,8 @@ main(int argc, char **argv)
    int elevation = 0;
    double elev_angle = 0;
    double s = 0, c = 0;
-   enum { FMT_DXF = 0, FMT_SKETCH, FMT_PLT, FMT_AUTO } format;
-   static const char *extensions[] = { "dxf", "sk", "plt" };
+   enum { FMT_DXF = 0, FMT_SKETCH, FMT_PLT, FMT_SVG, FMT_AUTO } format;
+   static const char *extensions[] = { "dxf", "sk", "plt", "svg" };
    int *pass;
 
    void (*header)(void);
@@ -504,12 +604,13 @@ main(int argc, char **argv)
 	{"dxf", no_argument, 0, 'D'},
 	{"sketch", no_argument, 0, 'S'},
 	{"plt", no_argument, 0, 'P'},
+        {"svg", no_argument, 0, 'V'},
 	{"help", no_argument, 0, HLP_HELP},
 	{"version", no_argument, 0, HLP_VERSION},
 	{0,0,0,0}
    };
 
-#define short_opts "s:cnlg::t:m:e:r:DSP"
+#define short_opts "s:cnlg::t:m:e:r:DSPV"
 
    /* TRANSLATE */
    static struct help_msg help[] = {
@@ -525,6 +626,7 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(9), "produce DXF output"},
 	{HLP_ENCODELONG(10), "produce Sketch output"},
 	{HLP_ENCODELONG(11), "produce Compass PLT output for Carto"},
+        {HLP_ENCODELONG(12), "produce SVG output"},
 	{0,0}
    };
 
@@ -588,6 +690,9 @@ main(int argc, char **argv)
        case 'P':
 	 format = FMT_PLT;
 	 break;
+       case 'V':
+         format = FMT_SVG;
+         break;
        case 's':
 	 survey = optarg;
 	 break;
@@ -654,6 +759,18 @@ main(int argc, char **argv)
       cross = plt_cross;
       footer = plt_footer;
       pass = plt_passes;
+      mode = "wb"; /* Binary file output */
+      break;
+    case FMT_SVG:
+      header = svg_header;
+      start_pass = svg_start_pass;
+      move = svg_move;
+      line = svg_line;
+      label = svg_label;
+      cross = svg_cross;
+      footer = svg_footer;
+      pass = svg_passes;
+      factor = 1000.0 / scale;
       mode = "wb"; /* Binary file output */
       break;
     default:
