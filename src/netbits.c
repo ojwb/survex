@@ -900,7 +900,7 @@ invert_var(var *inv, /*const*/ var *v)
 {
    int i;
    for (i = 0; i < 3; i++) {
-      if ((*v)[i] < THRESHOLD) return 0; /* matrix is singular */
+      if ((*v)[i] == 0.0) return 0; /* matrix is singular */
       (*inv)[i] = 1.0 / (*v)[i];
    }
    return 1;
@@ -920,7 +920,7 @@ invert_var(var *inv, /*const*/ var *v)
 			V((i + 1) % 3, 2) * V((i + 2) % 3, 1));
    }
 
-   if (fabs(det) < THRESHOLD) {
+   if (det == 0.0) {
       /* printf("det=%.20f\n", det); */
       return 0; /* matrix is singular */
    }
@@ -989,7 +989,7 @@ invert_svar(svar *inv, /*const*/ svar *v)
    dfbe = d * f - b * e;
    det = a * bcff + d * efcd + e * dfbe;
 
-   if (fabs(det) < THRESHOLD) {
+   if (det == 0.0) {
       /* printf("det=%.20f\n", det); */
       return 0; /* matrix is singular */
    }

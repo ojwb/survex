@@ -410,8 +410,7 @@ void GfxCore::SetScaleInitial(Double scale)
 	    (*dest)->y = y = pti->GetY();
 	    (*dest)->z = z = pti->GetZ();
 
-	    // Advance the relevant coordinate pointer to the next
-	    // position.
+	    // Advance the relevant coordinate pointer to the next position.
 	    (*dest)++;
 
 	    // Increment the relevant vertex count.
@@ -428,8 +427,7 @@ void GfxCore::SetScaleInitial(Double scale)
 	    first_point = false;
 	    last_was_move = true;
 
-	    // Save the current coordinates for the next time around
-	    // the loop.
+	    // Save the current coordinates for the next time around the loop.
 	    x = pti->GetX();
 	    y = pti->GetY();
 	    z = pti->GetZ();
@@ -549,16 +547,24 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     
             // Draw "here" and "there".
             if (m_here.x != DBL_MAX) {
-                DrawSphere(m_Pens[HERE_COLOUR], m_here.x, m_here.y, m_here.z, size, 16);
+                //DrawSphere(m_Pens[HERE_COLOUR], m_here.x, m_here.y, m_here.z, size, 16);
             }
             if (m_there.x != DBL_MAX) {
                 if (m_here.x != DBL_MAX) {
                     BeginLines();
+#if 0
                     PlaceVertex(m_here.x, m_here.y, m_here.z);
-                    PlaceVertex(m_there.x, m_there.y, m_there.z);
-                    EndLines();
+		    PlaceVertex(m_there.x, m_there.y, m_there.z);
+#else
+		    PlaceVertex(0,0,0);
+		    PlaceVertex(1,1,1);
+		    PlaceVertex(1,0,1);
+#endif
+		    cout << "Hello" << endl;
+		    EndLines();
+		    cout << "Hello" << endl;
                 }
-                DrawSphere(m_Pens[HERE_COLOUR], m_there.x, m_there.y, m_there.z, size, 16);
+                //DrawSphere(m_Pens[HERE_COLOUR], m_there.x, m_there.y, m_there.z, size, 16);
             }
         }
         

@@ -11,6 +11,8 @@
 * cavern: improved error reporting when an invalid value is given for a
   DIRECTION reading.
 
+* cavern: fixed "singular matrix" error when very low SDs were specified.
+
 * Updated documentation.
 
 Changes in 1.0.13:
