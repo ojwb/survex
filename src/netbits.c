@@ -245,7 +245,7 @@ addfakeleg(node *fr, node *to,
 #endif
 	   )
 {
-   uchar i, j;
+   int i, j;
    linkfor *leg, *leg2;
    int shape;
 

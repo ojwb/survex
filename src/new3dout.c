@@ -32,7 +32,7 @@ static int
 fputcs(const char *s, FILE *fh)
 {
    int len = strlen(s);
-   if (putc((uchar)len, fh) == EOF) return EOF;
+   if (putc((unsigned char)len, fh) == EOF) return EOF;
    return fputs(s, fh);
 }
 
@@ -78,8 +78,8 @@ cave_write_stn(node *nod)
 static void
 cave_write_pos(pos *pid, prefix *pre)
 {
-  uchar length;
-  uchar ltag;
+  unsigned char length;
+  unsigned char ltag;
   const char *tag;
   if (pid->id == 0) {
     pid->id = (INT32_T)statcount;
@@ -218,7 +218,7 @@ save3d(twig *sticky)
 	if (twiglet->date) stubcount++;
 	stubcount += twiglet->count;
 	put16((unsigned short)stubcount, pimgOut->fh);
-	ltag = (uchar)strlen(twiglet->to->ident);
+	ltag = (unsigned char)strlen(twiglet->to->ident);
 
 	putc(ltag + 1, pimgOut->fh);
 	putc(ltag, pimgOut->fh);

@@ -125,7 +125,7 @@ set_view(float sc, float theta, float elev)
    xos_writec(os_VDU_GRAPH_TEXT_ON);
 #endif
 
-   scale = (ulong)(1UL << fixed_pt_pos);
+   scale = (unsigned long)(1UL << fixed_pt_pos);
    x1 = (coord)(scale * X1);
    x2 = (coord)(scale * X2);
    y1_sigh = (coord)(scale * Y1);

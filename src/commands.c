@@ -310,7 +310,7 @@ match_units(void)
 }
 
 /* returns mask with bit x set to indicate quantity x specified */
-static ulong
+static unsigned long
 get_qlist(void)
 {
    static sztok qtab[] = {
@@ -338,7 +338,7 @@ get_qlist(void)
 	{"TAPE",         Q_LENGTH },      /* alternative name */
 	{NULL,           Q_NULL }
    };
-   ulong qmask = 0;
+   unsigned long qmask = 0;
    int tok;
    while (1) {
       get_token();
@@ -908,7 +908,7 @@ cmd_data(void)
    };
 
    /* readings which may be given for each style */
-   static ulong mask[] = {
+   static unsigned long mask[] = {
       BIT(Fr) | BIT(To) | BIT(Tape) | BIT(Comp) | BIT(Clino),
       BIT(Fr) | BIT(To) | BIT(FrCount) | BIT(ToCount) | BIT(Comp) | BIT(Clino),
       BIT(Fr) | BIT(To) | BIT(Tape) | BIT(Comp) | BIT(FrDepth) | BIT(ToDepth),
@@ -917,7 +917,7 @@ cmd_data(void)
    };
 
    /* readings which may be omitted for each style */
-   static ulong mask_optional[] = {
+   static unsigned long mask_optional[] = {
       BIT(Clino),
       BIT(Clino),
       0,
@@ -1049,7 +1049,7 @@ static void
 cmd_units(void)
 {
    int units, quantity;
-   ulong qmask, m; /* mask with bit x set to indicate quantity x specified */
+   unsigned long qmask, m; /* mask with bit x set to indicate quantity x specified */
    real factor;
    long fp;
 
@@ -1097,7 +1097,7 @@ static void
 cmd_calibrate(void)
 {
    real sc, z; /* added so we don't modify current values if error given */
-   ulong qmask, m;
+   unsigned long qmask, m;
    int quantity;
    qmask = get_qlist();
    if (!qmask) return;
@@ -1194,7 +1194,7 @@ cmd_sd(void)
 {
    real sd, variance;
    int units;
-   ulong qmask, m;
+   unsigned long qmask, m;
    int quantity;
    qmask = get_qlist();
    if (!qmask) return;

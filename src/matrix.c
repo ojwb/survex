@@ -397,12 +397,12 @@ choleski(real FAR *M, real *B, long n)
 {
    int i, j, k;
 #ifndef NO_PERCENTAGE
-   ulong flopsTot, flops = 0, temp = 0;
+   unsigned long flopsTot, flops = 0, temp = 0;
 #define do_percent(N) BLK(flops += (N); out_set_percentage((int)((100.0 * flops) / flopsTot));)
 #endif
 
-   /* calc as double so we don't overflow a ulong with intermediate results */
-   flopsTot = (ulong)(n * (2.0 * n * n + 9.0 * n - 5.0) / 6.0);
+   /* calc as double so we don't overflow a unsigned long with intermediate results */
+   flopsTot = (unsigned long)(n * (2.0 * n * n + 9.0 * n - 5.0) / 6.0);
    /* 3*n*(n-1)/2 + n*(n-1)*(n-2)/3 + n*(n-1)/2 + n + n*(n-1)/2; */
    /* n*(9*n-5 + 2*n*n )/6 ; */
 
@@ -419,7 +419,7 @@ choleski(real FAR *M, real *B, long n)
 
 #ifndef NO_PERCENTAGE
       if (fPercent) {
-	 temp += ((ulong)j + j) + 1ul; /* avoid multiplies */
+	 temp += ((unsigned long)j + j) + 1ul; /* avoid multiplies */
 	 do_percent(temp);
       }
 #endif
@@ -434,7 +434,7 @@ choleski(real FAR *M, real *B, long n)
 
 #ifndef NO_PERCENTAGE
    if (fPercent) {
-      temp = (ulong)n * (n - 1ul) / 2ul; /* needed again lower down */
+      temp = (unsigned long)n * (n - 1ul) / 2ul; /* needed again lower down */
       do_percent(temp);
    }
 #endif
@@ -445,7 +445,7 @@ choleski(real FAR *M, real *B, long n)
    }
 
 #ifndef NO_PERCENTAGE
-   if (fPercent) do_percent((ulong)n);
+   if (fPercent) do_percent((unsigned long)n);
 #endif
 
    /* Multiply x by (L transpose) inverse */

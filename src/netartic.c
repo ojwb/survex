@@ -63,7 +63,7 @@ static node *fixedlist;
 /* FIXME: we shouldn't malloc each and every LIV separately! */
 typedef struct LIV {
    struct LIV *next;
-   uchar dirn;
+   unsigned char dirn;
 } liv;
 
 /* The goto iter/uniter avoids using recursion which could lead to stack
@@ -73,7 +73,7 @@ typedef struct LIV {
 
 static long colour;
 
-static ulong
+static unsigned long
 visit(node *stn, int back)
 {
    long min_colour;

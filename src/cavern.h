@@ -151,15 +151,14 @@ typedef struct Prefix {
     * prefix has been exported, and min_export is how far down the exports
     * have got (if min_export > 1 after a run, this prefix hasn't been
     * exported from below enough) */
-   uchar max_export;
-   uchar min_export;
+   unsigned char max_export, min_export;
    /* If a survey leg or an *equate command refers to a station using a
     * prefix, and that station isn't refered to elsewhere, it's likely
     * that the user has cocked up the prefix in some way.
     */
-   uchar fSuspectTypo;
+   unsigned char fSuspectTypo;
    /* non-zero for a survey; zero for a station */
-   uchar fSurvey;
+   unsigned char fSurvey;
 #ifdef NEW3DFORMAT
    twig *twig_link;
 #endif
@@ -181,11 +180,11 @@ typedef struct {
    /* bits 0..1 = reverse leg number; bit7 is fFullLeg */
    /* bit6 = fReplacementLeg (by reduction rules) */
    /* bit5 = articulation leg (i.e. carries no error) */
-   uchar reverse;
+   unsigned char reverse;
    /* flags - e.g. surface, duplicate survey
     * only used if (FLAG_DATAHERE & !FLAG_REPLACEMENTLEG)
     */
-   uchar flags;
+   unsigned char flags;
 } linkcommon;
 #define FLAG_DATAHERE 0x80
 #define FLAG_REPLACEMENTLEG 0x40
@@ -219,7 +218,7 @@ typedef struct Pos {
    delta p; /* Position */
    int shape;
 #if EXPLICIT_FIXED_FLAG
-   uchar fFixed; /* flag indicating if station is a fixed point */
+   unsigned char fFixed; /* flag indicating if station is a fixed point */
 #endif
 #ifdef NEW3DFORMAT
    INT32_T id;

@@ -1,6 +1,6 @@
 /* > ostypes.h
  * Generally useful type definitions
- * Copyright (C) 1996 Olly Betts
+ * Copyright (C) 1996,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,5 @@ typedef enum { fFalse=0, fTrue=1 } SVXBOOL;
 #define fFalse false
 #define fTrue true
 #endif
-typedef unsigned char UCHAR;
-typedef unsigned long ULONG;
-# define uchar UCHAR
-# define ulong ULONG
 
 #endif
