@@ -558,7 +558,7 @@ equate_list(void)
       
       if (name1 == name2) {
 	 /* catch something like *equate "fred fred" */
-	 compile_warning(/*Station equated to itself*/33);
+	 compile_warning(/*Station equated to itself*/13);
 	 /* FIXME: this won't catch: "*equate fred jim fred" */
       }
       fOnlyOneStn = fFalse;
