@@ -101,6 +101,7 @@ enum {
     menu_VIEW_GRID,
     menu_VIEW_SHOW_TUBES,
     menu_VIEW_PERSPECTIVE,
+    menu_VIEW_TEXTURED,
     menu_VIEW_FOG,
     menu_VIEW_SMOOTH_LINES,
     menu_VIEW_FULLSCREEN,
@@ -305,6 +306,7 @@ public:
     void OnViewGridUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewGridUpdate(event); }
     void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewClinoUpdate(event); }
     void OnViewPerspectiveUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewPerspectiveUpdate(event); }
+    void OnViewTexturedUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewTexturedUpdate(event); }
     void OnViewFogUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewFogUpdate(event); }
     void OnViewSmoothLinesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewSmoothLinesUpdate(event); }
     void OnViewFullScreenUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewFullScreenUpdate(event); }
@@ -350,6 +352,7 @@ public:
     void OnViewClino(wxCommandEvent&) { if (m_Control) m_Control->OnViewClino(); }
     void OnViewGrid(wxCommandEvent&) { if (m_Control) m_Control->OnViewGrid(); }
     void OnViewPerspective(wxCommandEvent&) { if (m_Control) m_Control->OnViewPerspective(); }
+    void OnViewTextured(wxCommandEvent&) { if (m_Control) m_Control->OnViewTextured(); }
     void OnViewFog(wxCommandEvent&) { if (m_Control) m_Control->OnViewFog(); }
     void OnViewSmoothLines(wxCommandEvent&) { if (m_Control) m_Control->OnViewSmoothLines(); }
     void OnViewFullScreen(wxCommandEvent&) { ViewFullScreen(); }

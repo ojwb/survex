@@ -857,6 +857,17 @@ void GUIControl::OnViewPerspectiveUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_View->GetPerspective());
 }
 
+void GUIControl::OnViewTextured()
+{
+    m_View->ToggleTextured();
+}
+
+void GUIControl::OnViewTexturedUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+    cmd.Check(m_View->GetTextured());
+}
+
 void GUIControl::OnViewFog()
 {
     m_View->ToggleFog();

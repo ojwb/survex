@@ -149,6 +149,8 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     m_Scale = 0.0;
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
     m_VolumeDiameter = 1.0;
+    m_Texture = 0;
+    m_Textured = false;
     m_Perspective = false;
     m_Fog = false;
     m_AntiAlias = false;
@@ -202,11 +204,11 @@ void GLACanvas::FirstShow()
     // Optimise for speed (compute fog per vertex).
     glHint(GL_FOG_HINT, GL_FASTEST);
 
-    // No padding on pixel packing and unpacking (so screengrabs don't have
-    // "gaps" when the width isn't divisible by 4).
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    // No padding on pixel packing and unpacking (default is to pad each
+    // line to a multiple of 4 bytes).
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // For setting texture maps.
     CHECK_GL_ERROR("FirstShow", "glPixelStorei GL_UNPACK_ALIGNMENT");
-    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1); // For screengrabs and movies.
     CHECK_GL_ERROR("FirstShow", "glPixelStorei GL_PACK_ALIGNMENT");
 
 #ifdef USE_FNT
@@ -405,6 +407,23 @@ void GLACanvas::SetDataTransform()
     glEnable(GL_DEPTH_TEST);
     CHECK_GL_ERROR("SetDataTransform", "glEnable GL_DEPTH_TEST");
 
+    if (m_Textured) {
+	glBindTexture(GL_TEXTURE_2D, m_Texture);
+	glEnable(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	CHECK_GL_ERROR("ToggleTextured", "glTexParameteri GL_TEXTURE_WRAP_S");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	CHECK_GL_ERROR("ToggleTextured", "glTexParameteri GL_TEXTURE_WRAP_T");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	CHECK_GL_ERROR("ToggleTextured", "glTexParameteri GL_TEXTURE_MAG_FILTER");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	CHECK_GL_ERROR("ToggleTextured", "glTexParameteri GL_TEXTURE_MIN_FILTER");
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    } else {
+	glDisable(GL_TEXTURE_GEN_S);
+	glDisable(GL_TEXTURE_GEN_T);
+	glDisable(GL_TEXTURE_2D);
+    }
     if (m_Fog) {
 	glFogf(GL_FOG_START, near_plane);
 	glFogf(GL_FOG_END, near_plane + m_VolumeDiameter);
@@ -445,6 +464,10 @@ void GLACanvas::SetIndicatorTransform()
     CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity (2)");
     gluOrtho2D(0, window_width, 0, window_height);
     CHECK_GL_ERROR("SetIndicatorTransform", "gluOrtho2D");
+
+    glDisable(GL_TEXTURE_GEN_S);
+    glDisable(GL_TEXTURE_GEN_T);
+    glDisable(GL_TEXTURE_2D);
 }
 
 void GLACanvas::FinishDrawing()
@@ -890,6 +913,35 @@ Double GLACanvas::SurveyUnitsAcrossViewport()
     return m_VolumeDiameter / m_Scale;
 }
 
+void GLACanvas::ToggleTextured()
+{
+    m_Textured = !m_Textured;
+    if (m_Textured && m_Texture == 0) {
+	glGenTextures(1, &m_Texture);
+	CHECK_GL_ERROR("ToggleTextured", "glGenTextures");
+
+	glBindTexture(GL_TEXTURE_2D, m_Texture);
+	CHECK_GL_ERROR("ToggleTextured", "glBindTexture");
+
+	::wxInitAllImageHandlers();
+	wxImage img;
+	if (!img.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
+			  wxString("icons") + wxCONFIG_PATH_SEPARATOR +
+			  wxString("texture.png"), wxBITMAP_TYPE_PNG)) {
+	    // FIXME
+	    fprintf(stderr, "Couldn't load image.\n");
+	    exit(1);
+	}
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE,
+		     img.GetWidth(), img.GetHeight(),
+		     0, GL_RGB, GL_UNSIGNED_BYTE, img.GetData());
+	CHECK_GL_ERROR("ToggleTextured", "glTexImage2D");
+
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	CHECK_GL_ERROR("ToggleTextured", "glTexEnvi");
+    }
+}
+
 bool GLACanvas::SaveScreenshot(const wxString & fnm, int type) const
 {
     int width;
@@ -900,7 +952,6 @@ bool GLACanvas::SaveScreenshot(const wxString & fnm, int type) const
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
     wxImage grab(width, height, pixels);
     // FIXME: might be slow to create new image, and uses twice the memory.
-    // Perhaps flip image inplace ourselves using memcpy?  And we can fix
-    // the skew problem at the same time...
+    // Perhaps flip image inplace ourselves using memcpy?
     return grab.Mirror(false).SaveFile(fnm, type);
 }

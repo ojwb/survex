@@ -3,7 +3,7 @@
 icondir = $(pkgdatadir)/icons
 icon_DATA = elevation.png open.png crosses.png entrances.png plan.png\
 	rotation.png defaults.png surface-legs.png ug-legs.png fixed-pts.png\
-	exported-pts.png names.png aven-about.png\
+	exported-pts.png names.png aven-about.png texture.png\
 	solid-surface.png\
 	tubes.png find.png hideresults.png survey-tree.png pres-tree.png \
 	3d.png err.png plt.png pos.png svx.png\

@@ -123,7 +123,10 @@ class GLACanvas : public wxWindow {
 #endif
 
     GLUquadric* m_Quadric;
-    
+
+    GLuint m_Texture;
+
+    bool m_Textured;
     bool m_Perspective;
     bool m_Fog;
     bool m_AntiAlias;
@@ -205,6 +208,9 @@ public:
     int GetFontSize() const { return m_Font.getFontSize(); }
 
     Double SurveyUnitsAcrossViewport();
+
+    void ToggleTextured();
+    bool GetTextured() const { return m_Textured; }
 
     void TogglePerspective() { m_Perspective = !m_Perspective; }
     bool GetPerspective() const { return m_Perspective; }

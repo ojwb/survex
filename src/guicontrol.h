@@ -155,6 +155,9 @@ public:
     void OnViewPerspective();
     void OnViewPerspectiveUpdate(wxUpdateUIEvent& cmd);
 
+    void OnViewTextured();
+    void OnViewTexturedUpdate(wxUpdateUIEvent& cmd);
+
     void OnViewFog();
     void OnViewFogUpdate(wxUpdateUIEvent& cmd);
 

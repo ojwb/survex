@@ -2062,10 +2062,16 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
+    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
     BeginQuadrilaterals();
+    glTexCoord2i(0, 0);
     PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
+    glTexCoord2i(w, 0);
     PlaceVertexWithColour(b.getX(), b.getY(), b.getZ(), factor);
+    glTexCoord2i(w, h);
     PlaceVertexWithColour(c.getX(), c.getY(), c.getZ(), factor);
+    glTexCoord2i(0, h);
     PlaceVertexWithColour(d.getX(), d.getY(), d.getZ(), factor);
     EndQuadrilaterals();
 }
@@ -2087,20 +2093,26 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     d_band = min(max(d_band, 0), GetNumDepthBands());
     // All this splitting is incorrect - we need to make a separate polygon
     // for each depth band...
+    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
     BeginPolygon();
 ////    PlaceNormal(normal.getX(), normal.getY(), normal.getZ());
+    glTexCoord2i(0, 0);
     PlaceVertexWithDepthColour(a.getX(), a.getY(), a.getZ(), factor);
     if (a_band != b_band) {
 	SplitLineAcrossBands(a_band, b_band, a, b, factor);
     }
+    glTexCoord2i(w, 0);
     PlaceVertexWithDepthColour(b.getX(), b.getY(), b.getZ(), factor);
     if (b_band != c_band) {
 	SplitLineAcrossBands(b_band, c_band, b, c, factor);
     }
+    glTexCoord2i(w, h);
     PlaceVertexWithDepthColour(c.getX(), c.getY(), c.getZ(), factor);
     if (c_band != d_band) {
 	SplitLineAcrossBands(c_band, d_band, c, d, factor);
     }
+    glTexCoord2i(0, h);
     PlaceVertexWithDepthColour(d.getX(), d.getY(), d.getZ(), factor);
     if (d_band != a_band) {
 	SplitLineAcrossBands(d_band, a_band, d, a, factor);

@@ -394,6 +394,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurface)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
     EVT_MENU(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspective)
+    EVT_MENU(menu_VIEW_TEXTURED, MainFrm::OnViewTextured)
     EVT_MENU(menu_VIEW_FOG, MainFrm::OnViewFog)
     EVT_MENU(menu_VIEW_SMOOTH_LINES, MainFrm::OnViewSmoothLines)
     EVT_MENU(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreen)
@@ -446,6 +447,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepthUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspectiveUpdate)
+    EVT_UPDATE_UI(menu_VIEW_TEXTURED, MainFrm::OnViewTexturedUpdate)
     EVT_UPDATE_UI(menu_VIEW_FOG, MainFrm::OnViewFogUpdate)
     EVT_UPDATE_UI(menu_VIEW_SMOOTH_LINES, MainFrm::OnViewSmoothLinesUpdate)
     EVT_UPDATE_UI(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreenUpdate)
@@ -646,6 +648,7 @@ void MainFrm::CreateMenuBar()
     viewmenu-> Append(menu_VIEW_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
 #endif
     viewmenu->Append(menu_VIEW_PERSPECTIVE, GetTabMsg(/*@Perspective*/237), "", true);
+    viewmenu->Append(menu_VIEW_TEXTURED, "Textured Walls", "", true);
     viewmenu->Append(menu_VIEW_FOG, "Fog", "", true);
     viewmenu->Append(menu_VIEW_SMOOTH_LINES, "Smooth Lines", "", true);
     viewmenu->AppendSeparator();
