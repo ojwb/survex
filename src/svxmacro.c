@@ -1,5 +1,5 @@
 /* > svxmacro.c
- * Function versions of various macros - possibly of user
+ * Function versions of various macros - possibly of use
  * for trying to make smaller executable
  * Copyright (C) 1993,1994,1996 Olly Betts
  */
@@ -63,30 +63,6 @@ unfix(node *stn)
 # else
    POS(stn, 0) = UNFIXED_VAL;
 # endif
-}
-#endif
-
-#ifndef shape
-extern int
-shape(node *stn)
-{
-   return (stn->leg[0] != NULL) + (stn->leg[1] != NULL) + (stn->leg[2] != NULL);
-}
-#endif
-
-#ifndef unfixed_2_node
-extern bool
-unfixed_2_node(node *stn)
-{
-   return ((shape(stn) == 2) && !fixed(stn));
-}
-#endif
-
-#ifndef remove_leg_from_station
-extern void
-remove_leg_from_station(uchar leg , node *stn)
-{
-   stn->leg[leg] = NULL;
 }
 #endif
 
