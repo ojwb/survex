@@ -1,12 +1,12 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = BUGS alien.pl
+EXTRA_DIST = HACKING BUGS alien.pl
 SUBDIRS = hto src lib doc tests
 
 extra_bin = lib/*.msg lib/pfont.bit
 extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
-extra_text = BUGS AUTHORS COPYING NEWS TODO ChangeLog
+extra_text = BUGS AUTHORS COPYING NEWS TODO ChangeLog HACKING
 
 base_progs = cavern printdm printps printpcl printhpgl diffpos extend survex
 
