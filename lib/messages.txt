@@ -1311,10 +1311,10 @@ it:156 Fine.
 # TRANSLATE: ca check fr de pt pt-br es it
 en:157 Try `%s --help' for more information.&#10;
 fr:157 Pour en savoir davantage, faites: `%s --help'&#10;
-de:157 Versuchen Sie `%s --help' für weitere Informationen.&#10;
-pt:157 Tenta `%s --help' para mais informação.&#10;
-pt-br:157 Tente `%s --help' para mais informações.&#10;
-es:157 Pruebe `%s --help' para más información.&#10;
+de:157 Versuchen Sie `%s --help' f&uuml;r weitere Informationen.&#10;
+pt:157 Tenta `%s --help' para mais informa&ccedil;&atilde;o.&#10;
+pt-br:157 Tente `%s --help' para mais informa&ccedil;&otilde;es.&#10;
+es:157 Pruebe `%s --help' para m&aacute;s informaci&oacute;n.&#10;
 it:157 Usare `%s --help' per ulteriori informazioni.&#10;
 #
 en:158 Plan or Elevation
@@ -1967,96 +1967,96 @@ en:295 Highlight Fi@xed Points
 en:296 Highlight Ex@ported Points
 #
 en:300 %s: option `%s' is ambiguous&#10;
-fr:300 %s: l'option `%s' est ambigüe&#10;
+fr:300 %s: l'option `%s' est ambig&uuml;e&#10;
 de:300 %s: Die Option `%s' ist nicht eindeutig&#10;
-pt,pt-br:300 %s: opção `%s' é ambígua&#10;
-ca:300 %s: l'opció `%s' és ambígua&#10;
-es:300 %s: la opción `%s' es ambigua&#10;
-it:300 %s: l'opzione `%s' è ambigua&#10;
+pt,pt-br:300 %s: op&ccedil;&atilde;o `%s' &eacute; amb&iacute;gua&#10;
+ca:300 %s: l'opci&oacute; `%s' &eacute;s amb&iacute;gua&#10;
+es:300 %s: la opci&oacute;n `%s' es ambigua&#10;
+it:300 %s: l'opzione `%s' &egrave; ambigua&#10;
 #
-en:301 %s: option `-W %s' is ambiguous&#10;
-fr:301 %s: l'option `-W %s' est ambigüe&#10;
-de:301 %s: Die Option `-W %s' ist nicht eindeutig&#10;
-pt,pt-br:301 %s: opção `-W %s' é ambígua&#10;
-ca:301 %s: l'opció `-W %s' és ambígua&#10;
-es:301 %s: la opción `-W %s' es ambigua&#10;
-it:301 %s: l'opzione `-W %s' è ambigua&#10;
+en:301 %s: option `-W `%s' is ambiguous&#10;
+fr:301 %s: l'option `-W `%s' est ambig&uuml;e&#10;
+de:301 %s: Die Option `-W `%s' ist nicht eindeutig&#10;
+pt,pt-br:301 %s: op&ccedil;&atilde;o `-W `%s' &eacute; amb&iacute;gua&#10;
+ca:301 %s: l'opci&oacute; `-W `%s' &eacute;s amb&iacute;gua&#10;
+es:301 %s: la opci&oacute;n `-W `%s' es ambigua&#10;
+it:301 %s: l'opzione `-W `%s' &egrave; ambigua&#10;
 #
 en:302 %s: option `%c%s' doesn't allow an argument&#10;
 fr:302 %s: l'option `%c%s' n'a pas d'argument&#10;
 de:302 %s: Die Option `%c%s' erlaubt kein Argmuent&#10;
-pt:302 %s: opção `%c%s' não recebe nenhum argumento&#10;
-pt-br:302 %s: opção `%c%s' não permite argumentos&#10;
-ca:302 %s: l'opció `%c%s' no accepta arguments&#10;
-es:302 %s: la opción `%c%s' no permite argumento&#10;
+pt:302 %s: op&ccedil;&atilde;o `%c%s' n&atilde;o recebe nenhum argumento&#10;
+pt-br:302 %s: op&ccedil;&atilde;o `%c%s' n&atilde;o permite argumentos&#10;
+ca:302 %s: l'opci&oacute; `%c%s' no accepta arguments&#10;
+es:302 %s: la opci&oacute;n `%c%s' no permite argumento&#10;
 it:302 %s: l'opzione `%c%s' non permette un argomento&#10;
 #
 en:303 %s: option `--%s' doesn't allow an argument&#10;
 fr:303 %s: l'option `--%s' n'a pas d'argument&#10;
 de:303 %s: Die Option `--%s' erlaubt kein Argmuent&#10;
-pt:303 %s: opção `--%s' não recebe nenhum argumento&#10;
-pt-br:303 %s: opção `--%s' não permite argumentos&#10;
-ca:303 %s: l'opció `--%s' no accepta arguments&#10;
-es:303 %s: la opción `--%s' no permite argumento&#10;
+pt:303 %s: op&ccedil;&atilde;o `--%s' n&atilde;o recebe nenhum argumento&#10;
+pt-br:303 %s: op&ccedil;&atilde;o `--%s' n&atilde;o permite argumentos&#10;
+ca:303 %s: l'opci&oacute; `--%s' no accepta arguments&#10;
+es:303 %s: la opci&oacute;n `--%s' no permite argumento&#10;
 it:303 %s: l'opzione `--%s' non permette un argomento&#10;
 #
-en:304 %s: option `-W %s' doesn't allow an argument&#10;
-fr:304 %s: l'option `-W %s' n'a pas d'argument&#10;
-de:304 %s: Die Option `-W %s' erlaubt kein Argmuent&#10;
-pt:304 %s: opção `-W %s' não recebe nenhum argumento&#10;
-pt-br:304 %s: opção `-W %s' não permite argumentos&#10;
-ca:304 %s: l'opció `-W %s' no accepta arguments&#10;
-es:304 %s: la opción `-W %s' no permite argumento&#10;
-it:304 %s: l'opzione `-W %s' non permette un argomento&#10;
+en:304 %s: option `-W `%s' doesn't allow an argument&#10;
+fr:304 %s: l'option `-W `%s' n'a pas d'argument&#10;
+de:304 %s: Die Option `-W `%s' erlaubt kein Argmuent&#10;
+pt:304 %s: op&ccedil;&atilde;o `-W `%s' n&atilde;o recebe nenhum argumento&#10;
+pt-br:304 %s: op&ccedil;&atilde;o `-W `%s' n&atilde;o permite argumentos&#10;
+ca:304 %s: l'opci&oacute; `-W `%s' no accepta arguments&#10;
+es:304 %s: la opci&oacute;n `-W `%s' no permite argumento&#10;
+it:304 %s: l'opzione `-W `%s' non permette un argomento&#10;
 #
 en:305 %s: option `%s' requires an argument&#10;
 fr:305 %s: l'option `%s' requiert un argument&#10;
-de:305 %s: Option `%s' benötigt ein Argument&#10;
-pt,pt-br:305 %s: opção `%s' requer um argumento&#10;
-ca:305 %s: l'opció `%s' necessita un argument&#10;
-es:305 %s: la opción `%s' requiere un argumento&#10;
+de:305 %s: Option `%s' ben&ouml;tigt ein Argument&#10;
+pt,pt-br:305 %s: op&ccedil;&atilde;o `%s' requer um argumento&#10;
+ca:305 %s: l'opci&oacute; `%s' necessita un argument&#10;
+es:305 %s: la opci&oacute;n `%s' requiere un argumento&#10;
 it:305 %s: l'opzione `%s' richiede un argomento&#10;
 #
 en:306 %s: option requires an argument -- %c&#10;
 fr:306 %s: cette option requiert un argument -- %c&#10;
 de:306 %s: Die Option verlangt ein Argmuent -- %c&#10;
-pt,pt-br:306 %s: opção requer um argumento -- %c&#10;
-ca:306 %s: l'opció necessita un argument -- %c&#10;
-es:306 %s: la opción requiere un argumento -- %c&#10;
+pt,pt-br:306 %s: op&ccedil;&atilde;o requer um argumento -- %c&#10;
+ca:306 %s: l'opci&oacute; necessita un argument -- %c&#10;
+es:306 %s: la opci&oacute;n requiere un argumento -- %c&#10;
 it:306 %s: l'opzione richiede un argomento -- %c&#10;
 #
 en:307 %s: unrecognized option `--%s'&#10;
 fr:307 %s: option `--%s' non reconnue&#10;
 de:307 %s: unbekannte Option `--%s'&#10;
-pt:307 %s: opção `--%s' não é reconhecida&#10;
-pt-br:307 %s: opção `--%s' não reconhecida&#10;
-ca:307 %s: l'opció `--%s' és desconeguda&#10;
-es:307 %s: opción `--%s' desconocida&#10;
+pt:307 %s: op&ccedil;&atilde;o `--%s' n&atilde;o &eacute; reconhecida&#10;
+pt-br:307 %s: op&ccedil;&atilde;o `--%s' n&atilde;o reconhecida&#10;
+ca:307 %s: l'opci&oacute; `--%s' &eacute;s desconeguda&#10;
+es:307 %s: opci&oacute;n `--%s' desconocida&#10;
 it:307 %s: opzione non riconosciuta `--%s'&#10;
 #
 en:308 %s: unrecognized option `%c%s'&#10;
 fr:308 %s: option `%c%s' non reconnue&#10;
 de:308 %s: unbekannte Option `%c%s'&#10;
-pt:308 %s: opção `%c%s' não é reconhecida&#10;
-pt-br:308 %s: opção `%c%s' não reconhecida&#10;
-ca:308 %s: l'opció `%c%s' és desconeguda&#10;
-es:308 %s: opción `%c%s' desconocida&#10;
+pt:308 %s: op&ccedil;&atilde;o `%c%s' n&atilde;o &eacute; reconhecida&#10;
+pt-br:308 %s: op&ccedil;&atilde;o `%c%s' n&atilde;o reconhecida&#10;
+ca:308 %s: l'opci&oacute; `%c%s' &eacute;s desconeguda&#10;
+es:308 %s: opci&oacute;n `%c%s' desconocida&#10;
 it:308 %s: opzione non riconosciuta `%c%s'&#10;
 #
 en:309 %s: illegal option -- %c&#10;
-fr:309 %s: option illégale -- %c&#10;
-de:309 %s: unzulässige Option -- %c&#10;
-pt,pt-br:309 %s: opção ilegal -- %c&#10;
-ca:309 %s: l'opció no és permesa -- %c&#10;
-es:309 %s: opción no permitida -- %c&#10;
+fr:309 %s: option ill&eacute;gale -- %c&#10;
+de:309 %s: unzul&auml;ssige Option -- %c&#10;
+pt,pt-br:309 %s: op&ccedil;&atilde;o ilegal -- %c&#10;
+ca:309 %s: l'opci&oacute; no &eacute;s permesa -- %c&#10;
+es:309 %s: opci&oacute;n no permitida -- %c&#10;
 it:309 %s: opzione illegale -- %c&#10;
 #
 en:310 %s: invalid option -- %c&#10;
 fr:310 %s: option invalide -- %c&#10;
-de:310 %s: ungültige Option -- %c&#10;
-pt,pt-br:310 %s: opção inválida -- %c&#10;
-ca:310 %s: l'opció no és vàlida -- %c&#10;
-es:310 %s: opción inválida -- %c&#10;
+de:310 %s: ung&uuml;ltige Option -- %c&#10;
+pt,pt-br:310 %s: op&ccedil;&atilde;o inv&aacute;lida -- %c&#10;
+ca:310 %s: l'opci&oacute; no &eacute;s v&agrave;lida -- %c&#10;
+es:310 %s: opci&oacute;n inv&aacute;lida -- %c&#10;
 it:310 %s: opzione non valida -- %c&#10;
 #
 ############################################################################
