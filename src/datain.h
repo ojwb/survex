@@ -53,6 +53,7 @@ int data_normal(void);
 int data_diving(void);
 int data_cartesian(void);
 int data_nosurvey(void);
+int data_ignore(void);
 
 void compile_warning(int en, ...);
 void compile_error(int en, ...);

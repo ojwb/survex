@@ -963,3 +963,10 @@ data_nosurvey(void)
    nosurveyhead = link;
    return 1;
 }
+
+/* totally ignore a line of survey data */
+extern int
+data_ignore(void)
+{
+   skipline();
+}

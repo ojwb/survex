@@ -962,8 +962,8 @@ cmd_data(void)
    unsigned long m, mUsed = 0;
    char *style_name;
 
-   /* after a bad *data command ignore survey data until the next              
-    * *data command to avoid an avalanche of errors */                         
+   /* after a bad *data command ignore survey data until the next
+    * *data command to avoid an avalanche of errors */
    pcs->Style = style_ignore;
 
    kMac = 6; /* minimum for NORMAL style */
