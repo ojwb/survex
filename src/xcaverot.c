@@ -610,7 +610,7 @@ draw_ind_elev(Display * display, GC gc, double angle)
 	     xm - q + E_IND_LEN * q * cos(rad(angle - E_IND_ANG)),
 	     ym - E_IND_LEN * q * sin(rad(angle - E_IND_ANG)));
 
-   sprintf(temp, "%d", (int)angle);
+   sprintf(temp, "%d", -(int)angle);
    XDrawString(display, ind_elev, gc, INDWIDTH / 2 - 20, INDDEPTH - 10, temp,
 	       strlen(temp));
 }
@@ -1725,6 +1725,8 @@ main(int argc, char **argv)
 	 static int old_crossing = -1;
 	 static int old_labelling = -1;
 	 static int old_allnames = -1;
+	 static int old_legs = -1;
+	 static int old_surf = -1;
 	 static coord old_x_mid;
 	 static coord old_y_mid;
 	 static coord old_z_mid;
@@ -1750,10 +1752,14 @@ main(int argc, char **argv)
 
 	 if (old_crossing != crossing ||
 	     old_labelling != labelling ||
-	     old_allnames != allnames) {
+	     old_allnames != allnames ||
+	     old_legs != legs ||
+	     old_surf != surf) {
 	    old_crossing = crossing;
 	    old_labelling = labelling;
 	    old_allnames = allnames;
+	    old_legs = legs;
+	    old_surf = surf;
 	    redraw = 1;
 	 }
 
