@@ -124,8 +124,8 @@ this.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-10-04 23:56:26 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.65 2001-10-04 23:56:26 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-10-05 18:35:46 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.66 2001-10-05 18:35:46 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -433,7 +433,7 @@ This version is compiled with the free DJGPP C compiler
 to access memory above &msdos;'s 640k. Windows has &dpmi; services built in,
 as do QEMM and Novell DOS 7.
 For those situations where &dpmi; services aren't available, we
-inlcude the free <filename>cwsdpmi.exe</filename>, which will be used
+include the free <filename>cwsdpmi.exe</filename>, which will be used
 automatically if it's needed.</Para>
 
 </Sect3>
