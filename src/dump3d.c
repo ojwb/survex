@@ -34,16 +34,18 @@
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
    {"survey", required_argument, 0, 's'},
+   {"rewind", no_argument, 0, 'r'},
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "s:"
+#define short_opts "rs:"
 
 static struct help_msg help[] = {
 /*				<-- */
    {HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
+   {HLP_ENCODELONG(1),          "rewind file and read it a second time"},
    {0, 0}
 };
 
@@ -55,6 +57,7 @@ main(int argc, char **argv)
    img_point pt;
    int code;
    const char *survey = NULL;
+   bool fRewind = fFalse;
 
    msg_init(argv);
 
@@ -63,6 +66,7 @@ main(int argc, char **argv)
       int opt = cmdline_getopt();
       if (opt == EOF) break;
       if (opt == 's') survey = optarg;
+      if (opt == 'r') fRewind = fTrue;
    }
    fnm = argv[optind];
 
@@ -81,28 +85,38 @@ main(int argc, char **argv)
 
    pimg = img_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error(), fnm);
+
    printf("TITLE \"%s\"\n", pimg->title);
    printf("DATE \"%s\"\n", pimg->datestamp);
    printf("VERSION %d\n", pimg->version);
    printf("--\n");
 
+   code = img_BAD;
    do {
-      code = img_read_item(pimg, &pt);
-      switch (code) {
-       case img_MOVE:
-	 printf("MOVE %f %f %f\n", pt.x, pt.y, pt.z);
-	 break;
-       case img_LINE:
-	 printf("LINE %f %f %f [%s]\n", pt.x, pt.y, pt.z, pimg->label);
-	 break;
-       case img_LABEL:
-	 printf("NODE %f %f %f [%s]\n", pt.x, pt.y, pt.z, pimg->label);
-	 break;
-       case img_BAD:
-	 img_close(pimg);
-	 fatalerror(img_error(), fnm);
+      if (code == img_STOP) {
+	 printf("<<< REWIND <<<\n");
+	 fRewind = fFalse;
+	 if (!img_rewind(pimg)) fatalerror(img_error(), fnm);
       }
-   } while (code != img_STOP);
+
+      do {
+	 code = img_read_item(pimg, &pt);
+	 switch (code) {
+	  case img_MOVE:
+	    printf("MOVE %f %f %f\n", pt.x, pt.y, pt.z);
+	    break;
+	  case img_LINE:
+	    printf("LINE %f %f %f [%s]\n", pt.x, pt.y, pt.z, pimg->label);
+	    break;
+	  case img_LABEL:
+	    printf("NODE %f %f %f [%s]\n", pt.x, pt.y, pt.z, pimg->label);
+	    break;
+	  case img_BAD:
+	    img_close(pimg);
+	    fatalerror(img_error(), fnm);
+	 }
+      } while (code != img_STOP);
+   } while (fRewind);
 
    img_close(pimg);
 
