@@ -28,7 +28,7 @@ my $minor = 8;
 
 my %ent = ();
 
-open ENT, "named-entities.txt" or die $!;
+open ENT, ($ENV{srcdir}?"$ENV{srcdir}/":"")."named-entities.txt" or die $!;
 while (<ENT>) {
    my ($e, $v) = /^(\w+),(\d+)/;
    $ent{$e} = $v;
