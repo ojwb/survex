@@ -26,6 +26,16 @@
 #include <ctype.h>
 #include <string.h>
 
+typedef struct filelist {
+   char *fnm;
+   FILE *fh;
+   struct filelist *next;
+} filelist;
+
+static filelist *flhead = NULL;
+
+static void filename_register_output_with_fh(const char *fnm, FILE *fh);
+
 /* safe_fopen should be used when writing a file
  * fopenWithPthAndExt should be used when reading a file
  */
@@ -44,7 +54,7 @@ safe_fopen(const char *fnm, const char *mode)
    f = fopen(fnm, mode);
    if (!f) fatalerror(/*Failed to open output file `%s'*/47, fnm);
 
-   filename_register_output(fnm);
+   filename_register_output_with_fh(fnm, f);
    return f;
 }
 
@@ -56,8 +66,20 @@ safe_fclose(FILE *f)
 {
    ASSERT(f);
    /* NB: use of | rather than || - we always want to call fclose() */
-   if (ferror(f) | (fclose(f) == EOF))
+   if (ferror(f) | (fclose(f) == EOF)) {
+      filelist *p;
+      for (p = flhead; p != NULL; p = p->next)
+	 if (p->fh == f) break;
+
+      if (p && p->fnm) {
+	 const char *fnm = p->fnm;
+	 p->fnm = NULL;
+	 p->fh = NULL;
+	 (void)remove(fnm);
+	 fatalerror_in_file(fnm, 0, /*Error writing to file*/111);
+      }
       fatalerror(/*Error writing to file*/111);
+   }
 }
 
 extern FILE *
@@ -97,7 +119,7 @@ path_from_fnm(const char *fnm)
 #endif
    if (lf) lenpth = lf - fnm + 1;
 
-   pth = (char*) osmalloc(lenpth + 1);
+   pth = osmalloc(lenpth + 1);
    memcpy(pth, fnm, lenpth);
    pth[lenpth] = '\0';
 
@@ -118,13 +140,13 @@ base_from_fnm(const char *fnm)
        ) {
       size_t len = (const char *)p - fnm;
 
-      p = (char*) osmalloc(len + 1);
+      p = osmalloc(len + 1);
       memcpy(p, fnm, len);
       p[len] = '\0';
       return p;
    }
 
-   return (char*) osstrdup(fnm);
+   return osstrdup(fnm);
 }
 
 extern char *
@@ -145,7 +167,7 @@ baseleaf_from_fnm(const char *fnm)
    q = strrchr(p, FNM_SEP_EXT);
    if (q) len = (const char *)q - p; else len = strlen(p);
 
-   q = (char*) osmalloc(len + 1);
+   q = osmalloc(len + 1);
    memcpy(q, p, len);
    q[len] = '\0';
    return q;
@@ -165,7 +187,7 @@ leaf_from_fnm(const char *fnm)
    lf = strrchr(fnm, FNM_SEP_DRV);
    if (lf) fnm = lf + 1;
 #endif
-   return (char*) osstrdup(fnm);
+   return osstrdup(fnm);
 }
 
 /* Make fnm from pth and lf, inserting an FNM_SEP_LEV if appropriate */
@@ -197,7 +219,7 @@ use_path(const char *pth, const char *lf)
 #endif
    }
 
-   fnm = (char*) osmalloc(len_total);
+   fnm = osmalloc(len_total);
    strcpy(fnm, pth);
    if (fAddSep) fnm[len++] = FNM_SEP_LEV;
    strcpy(fnm + len, lf);
@@ -223,7 +245,7 @@ add_ext(const char *fnm, const char *ext)
    }
 #endif
 
-   fnmNew = (char*) osmalloc(len_total);
+   fnmNew = osmalloc(len_total);
    strcpy(fnmNew, fnm);
 #ifdef FNM_SEP_EXT
    if (fAddSep) fnmNew[len++] = FNM_SEP_EXT;
@@ -251,7 +273,7 @@ fopenWithPthAndExt(const char *pth, const char *fnm, const char *ext,
    if (fAbs) {
       fh = fopen_not_dir(fnm, mode);
       if (fh) {
-	 if (fnmUsed) fnmFull = (char*) osstrdup(fnm);
+	 if (fnmUsed) fnmFull = osstrdup(fnm);
       } else {
 	 if (ext && *ext) {
 	    /* we've been given an extension so try using it */
@@ -354,18 +376,24 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
    return fh;
 }
 
-typedef struct filelist {
-   char *fnm;
-   struct filelist *next;
-} filelist;
-
-static filelist *flhead = NULL;
-
 void
 filename_register_output(const char *fnm)
+{   
+   filelist *p = osnew(filelist);
+   ASSERT(fnm);
+   p->fnm = osstrdup(fnm);
+   p->fh = NULL;
+   p->next = flhead;
+   flhead = p;
+}
+
+static void
+filename_register_output_with_fh(const char *fnm, FILE *fh)
 {
    filelist *p = osnew(filelist);
-   p->fnm = (char*) osstrdup(fnm);
+   ASSERT(fnm);
+   p->fnm = osstrdup(fnm);
+   p->fh = fh;
    p->next = flhead;
    flhead = p;
 }
@@ -376,8 +404,10 @@ filename_delete_output(void)
    while (flhead) {
       filelist *p = flhead;
       flhead = flhead->next;
-      (void)remove(p->fnm);
-      osfree(p->fnm);
+      if (p->fnm) {
+	 (void)remove(p->fnm);
+	 osfree(p->fnm);
+      }
       osfree(p);
    }
 }

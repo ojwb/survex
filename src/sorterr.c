@@ -160,8 +160,7 @@ main(int argc, char **argv)
 	 skipline(fnm, fh);
 	 if (fscanf(fh, "%lf", &blk[next].err) != 1) {
 	    baderrfile:
-	    printf("Couldn't parse .err file\n");
-	    exit(1);
+	    fatalerror_in_file(fnm, 0, /*Couldn't parse .err file*/112);
 	 }
 	 skipline(fnm, fh);
 	 skipline(fnm, fh);
@@ -230,10 +229,9 @@ main(int argc, char **argv)
 
    do {
       --next;
-      if (fseek(fh, blk[next].fpos, SEEK_SET) == -1) {
-	 printf("couldn't seek\n");
-	 exit(1);
-      }
+      if (fseek(fh, blk[next].fpos, SEEK_SET) == -1)
+	 fatalerror_in_file(fnm, 0, /*Error reading file*/18);
+
       printline(fnm, fh, fh_out);
       printline(fnm, fh, fh_out);
       printline(fnm, fh, fh_out);

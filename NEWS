@@ -10,6 +10,9 @@
 
 * Expanded testsuite further.
 
+* cad3d/3dtopos/sorterr: delete output file if there's an error
+  writing to it.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.
