@@ -1146,32 +1146,25 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	if (m_here.x != DBL_MAX) {
 	    dc.SetPen(*wxWHITE_PEN);
 	    dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	    Double xp = m_here.x + m_Params.translation.x;
-	    Double yp = m_here.y + m_Params.translation.y;
-	    Double zp = m_here.z + m_Params.translation.z;
-	    here_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale);
-	    here_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale);
-	    dc.DrawEllipse(here_x + m_XCentre - HIGHLIGHTED_PT_SIZE * 2,
-			   here_y + m_YCentre - HIGHLIGHTED_PT_SIZE * 2,
+	    here_x = (long)GridXToScreen(m_here);
+	    here_y = (long)GridYToScreen(m_here);
+	    dc.DrawEllipse(here_x - HIGHLIGHTED_PT_SIZE * 2,
+			   here_y - HIGHLIGHTED_PT_SIZE * 2,
 			   HIGHLIGHTED_PT_SIZE * 4,
 			   HIGHLIGHTED_PT_SIZE * 4);
 	}
 	if (m_there.x != DBL_MAX) {
 	    if (here_x == LONG_MAX) dc.SetPen(*wxWHITE_PEN);
 	    dc.SetBrush(*wxWHITE_BRUSH);
-	    Double xp = m_there.x + m_Params.translation.x;
-	    Double yp = m_there.y + m_Params.translation.y;
-	    Double zp = m_there.z + m_Params.translation.z;
-	    long there_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale);
-	    long there_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale);
-	    dc.DrawEllipse(there_x + m_XCentre - HIGHLIGHTED_PT_SIZE,
-		    	   there_y + m_YCentre - HIGHLIGHTED_PT_SIZE,
+	    long there_x = (long)GridXToScreen(m_there);
+	    long there_y = (long)GridYToScreen(m_there);
+	    if (here_x != LONG_MAX) {
+		dc.DrawLine(here_x, here_y, there_x, there_y);
+	    }
+	    dc.DrawEllipse(there_x - HIGHLIGHTED_PT_SIZE,
+		    	   there_y - HIGHLIGHTED_PT_SIZE,
 			   HIGHLIGHTED_PT_SIZE * 2,
 			   HIGHLIGHTED_PT_SIZE * 2);
-	    if (here_x != LONG_MAX) {
-		dc.DrawLine(here_x + m_XCentre, here_y + m_YCentre,
-			    there_x + m_XCentre, there_y + m_YCentre);
-	    }
 	}
     }
 
@@ -3238,32 +3231,80 @@ void GfxCore::DisplaySpecialPoints()
     Refresh(false);
 }
 
+void GfxCore::RefreshLine(const Point &a1, const Point &b1,
+			  const Point &a2, const Point &b2)
+{
+    // Calculate the minimum rectangle which includes the old and new
+    // measuring lines to minimise the redraw time
+    int l = INT_MAX, r = INT_MIN, u = INT_MIN, d = INT_MAX;
+    if (a1.x != DBL_MAX) {
+	int x = (int)GridXToScreen(a1);
+	int y = (int)GridYToScreen(a1);
+	l = x - HIGHLIGHTED_PT_SIZE * 4;
+	r = x + HIGHLIGHTED_PT_SIZE * 4;
+	u = y + HIGHLIGHTED_PT_SIZE * 4;
+	d = y - HIGHLIGHTED_PT_SIZE * 4;
+    }
+    if (a2.x != DBL_MAX) {
+	int x = (int)GridXToScreen(a2);
+	int y = (int)GridYToScreen(a2);
+	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
+	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
+	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
+	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
+    }
+    if (b1.x != DBL_MAX) {
+	int x = (int)GridXToScreen(b1);
+	int y = (int)GridYToScreen(b1);
+	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
+	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
+	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
+	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
+    }
+    if (b2.x != DBL_MAX) {
+	int x = (int)GridXToScreen(b2);
+	int y = (int)GridYToScreen(b2);
+	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
+	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
+	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
+	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
+    }
+    const wxRect R(l, d, r - l, u - d);
+    Refresh(false, &R);
+}
+
 void GfxCore::SetHere()
 {
+//    if (m_here.x == DBL_MAX) return;
+    Point old = m_here;
     m_here.x = DBL_MAX;
-    Refresh(false);
+    RefreshLine(old, m_there, m_here, m_there);
 }
 
 void GfxCore::SetHere(Double x, Double y, Double z)
 {
+    Point old = m_here;
     m_here.x = x;
     m_here.y = y;
     m_here.z = z;
-    Refresh(false);
+    RefreshLine(old, m_there, m_here, m_there);
 }
 
 void GfxCore::SetThere()
 {
+//    if (m_there.x == DBL_MAX) return;
+    Point old = m_there;
     m_there.x = DBL_MAX;
-    Refresh(false);
+    RefreshLine(m_here, old, m_here, m_there);
 }
 
 void GfxCore::SetThere(Double x, Double y, Double z)
 {
+    Point old = m_there;
     m_there.x = x;
     m_there.y = y;
     m_there.z = z;
-    Refresh(false);
+    RefreshLine(m_here, old, m_here, m_there);
 }
 
 void GfxCore::OnCancelDistLine()

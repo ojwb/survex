@@ -20,6 +20,9 @@ Changes in 1.0.8:
 * aven: eliminated the "twinkling label" effect when dragging the cave with the
   right mouse button.
 
+* aven: the measuring line moves much more smoothly now - it only redraws the
+  area of the window affected by it moving.
+
 * print*: improved output when --no-border is used.
 
 * printpcl/printdm: Added new .ini setting "font_bitmap" which allows the user

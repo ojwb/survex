@@ -329,9 +329,15 @@ class GfxCore : public wxWindow {
 		      y * m_RotationMatrix.get(2, 1) +
 		      z * m_RotationMatrix.get(2, 2));
     }
-
+    
     Double GridXToScreen(Double x, Double y, Double z);
     Double GridYToScreen(Double x, Double y, Double z);
+    Double GridXToScreen(const Point &p) {
+	return GridXToScreen(p.x, p.y, p.z);
+    }
+    Double GridYToScreen(const Point &p) {
+	return GridYToScreen(p.x, p.y, p.z);
+    }
 
     void CheckHitTestGrid(wxPoint& point, bool centre);
 
@@ -396,6 +402,9 @@ public:
     void AddSpecialPoint(Double x, Double y, Double z);
     void DisplaySpecialPoints();
 
+    void RefreshLine(const Point &a1, const Point &b1,
+		     const Point &a2, const Point &b2);
+ 
     void SetHere();
     void SetHere(Double x, Double y, Double z);
     void SetThere();
