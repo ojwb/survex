@@ -409,7 +409,7 @@ ps_Pre(int pagesToPrint, const char *title)
  * and overall height; don't forget that these values have to be
  * transformed using the font's matrix.
  * We use `load' because sometimes BBox is executable, sometimes not.
- * Since we need 4 numbers an not an array avoid BBox from being executed
+ * Since we need 4 numbers and not an array avoid BBox from being executed
  */
 "/FontBBox load aload pop\n"
 "FontMatrix transform /Ascent exch def pop\n"
