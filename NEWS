@@ -1,3 +1,8 @@
+Changes in 0.99-prerelease7:
+
+* (MS Windows version): aven was missing from 0.99-prerelease6
+  (if you installed over an old version you'd have kept the old aven).
+
 * caverot/xcaverot: Ctrl + Arrow keys is now the preferred way to
   rotate and tilt (easier to remember than "C"/"V" and "'"/"/").
 
@@ -8,7 +13,7 @@
 
 * cavern: fixed handling of malformed *data commands.
 
-* Minor documentation clarifications.
+* Various documentation clarifications.
 
 Changes in 0.99-prerelease6:
 
