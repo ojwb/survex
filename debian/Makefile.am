@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = copyright copyright.in docs survex-aven.files doc-base \
+EXTRA_DIST = copyright copyright.in survex-aven.files doc-base \
  rules survex-aven.menu watch control changelog dhelp
 
-MAINTAINERCLEANFILES = control docs
+MAINTAINERCLEANFILES = control
 
 control: Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $(srcdir)/../desc-aven.txt
 	echo Source: survex > control
@@ -26,8 +26,3 @@ control: Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $(srcdir)/.
 	echo 'Depends: survex (= ${VERSION}), $${shlibs:Depends}' >> control
 	echo Description: Sophisticated cave survey viewer for Survex >> control
 	sed 's/^/ /' < $(srcdir)/../desc-aven.txt >> control
-
-docs: Makefile.am $(srcdir)/../configure.in
-	rm -f docs
-	for a in `echo @EXTRA_TEXT@|grep -v COPYING|grep -v ChangeLog` ; do \
-	 echo $$a >> docs ; done
