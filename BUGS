@@ -12,3 +12,19 @@ Use of "!" to turn a command line option off is annoying on Unix (it does
 event look up in some shells if not escaped) and is rather non-standard -
 think of a better approach.
 
+Date: Wed, 09 Sep 1998 15:10:12 +0100
+From: Wookey <wookey@aleph1.co.uk>
+
+On a PC Card:
+[In DJGPP+Allegro caverot] the help screen flashes up and then
+disappears - this is probably our problem, not yours (the VESA 2 support being
+relatively new) :-)
+
+Date: 17 Sep 1998 17:49:36 GMT
+From: olly@muscat.co.uk
+
+In DJGPP+Allegro caverot: On an NT 4 server, the mouse works in the
+mode-picker, but not in caverot itself.  Also, the mode caverot tries to
+select by default doesn't work, although caverot seems blissfully unaware of
+the fact. 
+
