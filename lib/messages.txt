@@ -366,15 +366,18 @@ pt: 35 Unidade `%s' desconhecida
 ca: 35 Unitats `%s' desconegudes
 es: 35 Unidades `%s' desconocidas
 it: 35 Unit&aacute; `%s' sconosciute
-# "*begin" / "*end foo"
-# TRANSLATE it dubious
+# 36 is used when a BEGIN tag has no prefix, but the END tag has one, e.g.:
+#
+# *begin
+# 1 2 10.00 178 -01
+# *end entrance      <--[Message given here]
 en: 36 Matching BEGIN tag has no prefix
 fr: 36 Le tag BEGIN correspondant n'a pas de pr&eacute;fixe
 de: 36 Zugeh&ouml;riges BEGIN hatte keine Pr&auml;fix
 pt: 36 O BEGIN correspondente n&atilde;o tem prefixo 
 ca: 36 La instrucci&oacute; BEGIN corresponent no te prefix
 es: 36 La instrucci&oacute;n BEGIN correspondiente no tiene prefijo
-it: 36 BEGIN / END senza prefisso
+it: 36 Il BEGIN corrispondente non ha prefisso
 #
 en: 37 Invalid units for quantity
 fr: 37 Unit&eacute; incorrecte pour une quantit&eacute;
@@ -632,11 +635,12 @@ pt: 69 Falta &quot;
 ca: 69 Manca &quot;
 es: 69 Falta &quot;
 it: 69 Manca &quot;
-# FIXME: TRANSLATE: ca es it
+# FIXME: TRANSLATE: ca es
 en: 70 Station `%s' referred to just once, with an explicit prefix - typo?
 fr: 70 La station `%s' n'est mentionn&eacute;e qu'une fois, avec un pr&eacute;fixe explicite - typo?
 de: 70 Station `%s' nur einmal erw&auml;hnt, mit explizitem Pr&auml;fix - Tippfehler?
 pt: 70 Base `%s' utilizada apenas uma vez, e com um prefixo expl&iacute;cito - erro de digita&ccedil;&atilde;o?
+it: 70 La statione `%s' &eacute; ha un unico riferimento, con un prefisso esplicito - errore di scrittura?
 en: 71 The following survey stations are not attached to a fixed point:
 fr: 71 Les stations topo suivantes ne sont pas attach&eacute;s &agrave; des points fixes:
 de: 71 Die folgenden Vermessungspunkte haben keine festen Koordinaten:
