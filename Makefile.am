@@ -24,6 +24,10 @@ extra_text = AUTHORS COPYING NEWS TODO ChangeLog HACKING OLDNEWS
 base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
  extend survex sorterr 3dtopos
 
+# FIXME: keep in step with debian/docs
+HTMLFILES = AUTHORS.htm COPYING.htm ChngeLog.htm HACKING.htm NEWS.htm\
+ OLDNEWS.htm TODO.htm index.htm
+
 AUTHORS: doc/AUTHORS.htm
 	w3m -dump doc/AUTHORS.htm > AUTHORS
 
@@ -297,7 +301,7 @@ alien_src_zip :
 	cd alien_tmp && ../zip-magic -N -r ../$(alien_src_zip_name) *
 	$(RM) -rf alien_tmp
 
-MANUAL = manual/*.htm @DOCS_OTHER@
+MANUAL = @DOCS_OTHER@
 
 dos_doc_zip_name = svxdoc-doswin-@VERSION@.zip
 dos_doc_exe_name = svxdoc-doswin-@VERSION@.exe
