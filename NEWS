@@ -39,6 +39,8 @@
 * cavern: complain about *export-ing or *entrance-ing a station which
   is never used.
 
+* cavern: complain about *export after a *begin without an argument.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

@@ -577,18 +577,18 @@ pt: 56 Mais de um comando FIX sem coordenadas
 ca: 56 M&eacute;s d'un comandament FIX sense coordenades
 es: 56 M&aacute;s de un comando FIX sin coordenadas
 it: 56 Pi&uacute; di un comando FIX senza coordinate
-#The new command *EXPORT is only valid just after *BEGIN, so this would
+#The new command *EXPORT is only valid just after *BEGIN <SURVEY>, so this would
 #generate error 57:
 # *begin fred
 # 1 2 1.23 045 -6
 # *export 2
 # *end fred
-# FIXME: TRANSLATE fr ca es
-en: 57 *EXPORT must immediately follow *BEGIN
-de-de,de-ch: 57 *EXPORT muss unmittelbar auf *BEGIN folgen
-de:     57 *EXPORT mu&szlig; unmittelbar auf *BEGIN folgen
-pt: 57 *EXPORT deve estar logo ap&oacute;s um *BEGIN
-it: 57 *EXPORT deve seguire *BEGIN
+# FIXME: TRANSLATE fr ca es CHECK de pt it
+en: 57 *EXPORT must immediately follow `*BEGIN <SURVEY>'
+de-de,de-ch: 57 *EXPORT muss unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
+de:     57 *EXPORT mu&szlig; unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
+pt: 57 *EXPORT deve estar logo ap&oacute;s um `*BEGIN <TOPO>'
+it: 57 *EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'
 en: 58 in this line:
 fr: 58 dans cette ligne:
 de: 58 in dieser Zeile:

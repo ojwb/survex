@@ -492,6 +492,7 @@ cmd_begin(void)
    if (tag) {
       pcs->Prefix = tag;
       check_reentry(tag);
+      f_export_ok = fTrue;
    }
 
 #ifdef NEW3DFORMAT
@@ -1460,17 +1461,15 @@ handle_command(void)
       if (!f_export_ok)
 	 compile_error(/**EXPORT must immediately follow *BEGIN*/57);
       break;
-    case CMD_BEGIN:
-      f_export_ok = fTrue;
-      break;
     case CMD_COPYRIGHT:
     case CMD_DATE:
     case CMD_INSTRUMENT:
     case CMD_TEAM:
     case CMD_TITLE:
-      /* these can occur between *begin and *export */
+      /* These can occur between *begin and *export */
       break;      
     default:
+      /* NB: additional handling for "*begin <survey>" in cmd_begin */
       f_export_ok = fFalse;
       break;
    }
