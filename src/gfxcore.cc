@@ -2044,7 +2044,7 @@ void GfxCore::DefaultParameters()
     m_ScaleCrossesOnly = false;
     m_Surface = false;
     m_SurfaceDepth = false;
-    m_SurfaceDashed = false;
+    m_SurfaceDashed = true;
     m_FreeRotMode = false;
     m_RotationStep = M_PI / 180.0;
     m_Rotating = false;
