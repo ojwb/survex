@@ -219,11 +219,6 @@ void GfxCore::Initialise()
     DefaultParameters();
 
     m_HaveData = true;
-
-#ifdef FLYFREE
-    AddTranslation(0, 0, -m_Parent->GetZExtent());
-    TogglePerspective();
-#endif
 }
 
 void GfxCore::FirstShow()
