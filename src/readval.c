@@ -1,6 +1,6 @@
 /* > readval.c
  * Read a datum from the current input file
- * Copyright (C) 1991-2000 Olly Betts
+ * Copyright (C) 1991-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,6 +85,7 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 
    skipblanks();
    if (isRoot(ch)) {
+      compile_warning(/*ROOT is deprecated*/25);
       nextch();
       ptr = root;
       if (!isNames(ch)) {

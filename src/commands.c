@@ -365,13 +365,19 @@ set_chars(void)
    };
    int mask;
    int i;
+
    get_token();
    mask = match_tok(chartab, TABSIZE(chartab));
+
    if (mask == SPECIAL_UNKNOWN) {
       compile_error(/*Unknown character class `%s'*/42, buffer);
       skipline();
       return;
    }
+
+   if (mask == SPECIAL_ROOT)
+      compile_warning(/*ROOT is deprecated*/25);
+
    /* if we're currently using an inherited translation table, allocate a new
     * table, and copy old one into it */
    if (pcs->next && pcs->next->Translate == pcs->Translate) {

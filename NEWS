@@ -10,6 +10,9 @@ Changes in 0.97-prerelease1:
 * (UNIX version): printer drivers: Look for /etc/survex/print.ini rather
   than $SURVEXHOME/myprint.ini
 
+* cavern: added warning that use of ROOT character ('\' by default) is
+  deprecated; updated documentation to mention this.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling
