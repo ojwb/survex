@@ -56,7 +56,7 @@
 jmp_buf jbEnd; /* store for environment for exiting plot loop */
 
 extern void FAR
-stop(int X, int Y)
+dosrot_stop(int X, int Y)
 {
    X = X; /* suppress compiler warnings */
    Y = Y;

@@ -56,10 +56,10 @@
 
 # define MOVE (coord)(cvrotgfx_moveto)
 # define DRAW (coord)(cvrotgfx_lineto)
-# define STOP (coord)(stop)
+# define STOP (coord)(dosrot_stop)
 
 /* prototype so STOP macro will work */
-void stop(int X, int Y);
+void dosrot_stop(int X, int Y);
 
 #else
 
