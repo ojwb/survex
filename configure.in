@@ -89,7 +89,7 @@ else
   )
 fi
 
-AC_CHECK_PROGS(STRIP, strip, echo "not stripping ")
+AC_PATH_PROGS(STRIP, strip, echo "not stripping ")
 
 AC_CHECK_LIB(m, sqrt)
 
@@ -156,7 +156,7 @@ if test -n "$AVEN"; then
       AC_MSG_ERROR([\`$WXCONFIG --libs --cflags' doesn't work, bailing out])
     fi
   else
-    AC_CHECK_PROGS(WXCONFIG, [wxgtk-config wxgtk-2.2-config])
+    AC_PATH_PROGS(WXCONFIG, [wxgtk-config wxgtk-2.2-config])
     if test -z "$WXCONFIG" ; then
       dnl see if wx-config exists and is for wxgtk version
       if ( exec >&5 2>&5 ; wx-config --cflags | grep -e -D__WXGTK__ ; exit $? ) then
