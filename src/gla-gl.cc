@@ -23,6 +23,20 @@
 #include "gla.h"
 #include <GL/gl.h>
 
+#ifdef GLA_DEBUG
+#define CHECK_GL_ERROR(f, m) do { \
+                                 GLenum err = glGetError(); \
+                                 if (err != GL_NO_ERROR) { \
+                                     fprintf(stderr, "OpenGL error: %s: call %s in function %s\n", \
+                                             gluErrorString(err), m, f); \
+                                     abort(); \
+                                 } \
+                             } \
+                             while (0)
+#else
+#define CHECK_GL_ERROR(f, m)
+#endif
+
 //
 //  GLAPen
 //  
@@ -97,6 +111,8 @@ GLACanvas::~GLACanvas()
 
     if (m_SphereCreated) {
         glDeleteLists(m_SphereList, 1);
+
+        CHECK_GL_ERROR("~GLACanvas", "glDeleteLists");
     }
 }
 
@@ -105,6 +121,7 @@ void GLACanvas::Clear()
     // Clear the canvas.
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    CHECK_GL_ERROR("Clear", "glClear");
 }
 
 void GLACanvas::SetRotation(Quaternion& q)
@@ -143,13 +160,18 @@ void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
     GLdouble projection_matrix[16];
     GLint viewport[4];
     glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
+    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "glGetDoublev 1");
     glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "glGetDoublev 2");
     glGetIntegerv(GL_VIEWPORT, viewport);
+    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "glGetIntegerv");
 
     Double x0, y0, z0;
     Double x, y, z;
     gluUnProject(0.0, 0.0, 0.0, modelview_matrix, projection_matrix, viewport, &x0, &y0, &z0);
+    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject 1");
     gluUnProject(dx, -dy, 0.0, modelview_matrix, projection_matrix, viewport, &x, &y, &z);
+    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject 2");
 
     // Apply the translation.
     AddTranslation(x - x0, y - y0, z - z0);
@@ -175,12 +197,16 @@ void GLACanvas::SetViewportAndProjection()
     wxSize size = GetSize();
     double aspect = double(size.GetWidth()) / double(size.GetHeight());
     glViewport(0, 0, size.GetWidth(), size.GetHeight());
+    CHECK_GL_ERROR("SetViewportAndProjection", "glViewport");
 
     // Set projection.
     glMatrixMode(GL_PROJECTION);
+    CHECK_GL_ERROR("SetViewportAndProjection", "glMatrixMode");
     glLoadIdentity();
+    CHECK_GL_ERROR("SetViewportAndProjection", "glLoadIdentity");
     glOrtho(m_Volume.left, m_Volume.right, m_Volume.bottom / aspect, m_Volume.top / aspect,
             m_Volume.front * 3.0 * m_Scale, m_Volume.back * 3.0 * m_Scale);
+    CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
 }
 
 void GLACanvas::StartDrawing()
@@ -188,28 +214,41 @@ void GLACanvas::StartDrawing()
     // Prepare for a redraw operation.
     
     SetCurrent();
-    SetViewportAndProjection();
     
     glEnable(GL_COLOR_MATERIAL);
+    CHECK_GL_ERROR("StartDrawing", "glEnable GL_COLOR_MATERIAL");
     glShadeModel(GL_SMOOTH);
+    CHECK_GL_ERROR("StartDrawing", "glShadeModel");
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    CHECK_GL_ERROR("StartDrawing", "glPolygonMode");
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    CHECK_GL_ERROR("StartDrawing", "glColorMaterial GL_FRONT");
     glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
+    CHECK_GL_ERROR("StartDrawing", "glColorMaterial GL_BACK");
     glEnable(GL_DEPTH_TEST);
+    CHECK_GL_ERROR("StartDrawing", "glEnable GL_DEPTH_TEST");
 }
 
 void GLACanvas::SetDataTransform()
 {
     // Set the modelview transform for drawing data.
     
+    SetViewportAndProjection();
     glMatrixMode(GL_MODELVIEW);
+    CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
     glLoadIdentity();
+    CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
     glScaled(m_Scale, m_Scale, m_Scale);
+    CHECK_GL_ERROR("SetDataTransform", "glScaled");
     glRotated(-90.0, 1.0, 0.0, 0.0); // get axes the correct way around (z upwards, y into screen)
+    CHECK_GL_ERROR("SetDataTransform", "glRotated");
     m_Rotation.CopyToOpenGL();
+    CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
     glTranslated(m_Translation.x, m_Translation.y, m_Translation.z);
+    CHECK_GL_ERROR("SetDataTransform", "glTranslated");
     
     glEnable(GL_DEPTH_TEST);
+    CHECK_GL_ERROR("SetDataTransform", "glEnable GL_DEPTH_TEST");
 }
 
 void GLACanvas::SetIndicatorTransform()
@@ -223,11 +262,16 @@ void GLACanvas::SetIndicatorTransform()
     double height = (m_Volume.top / aspect) - (m_Volume.bottom / aspect);
 
     glMatrixMode(GL_MODELVIEW);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glMatrixMode");
     glLoadIdentity();
+    CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity");
     glTranslated(0.0, 0.0, -m_Volume.front * 2.5 * m_Scale);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glTranslated");
     glScaled(width / size.GetWidth(), height / size.GetHeight(), 1.0);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glScaled");
 
     glDisable(GL_DEPTH_TEST);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_DEPTH_TEST");
 }
 
 void GLACanvas::FinishDrawing()
@@ -235,6 +279,7 @@ void GLACanvas::FinishDrawing()
     // Complete a redraw operation.
     
     glFlush();
+    CHECK_GL_ERROR("FinishDrawing", "glFlush");
     SwapBuffers();
 }
 
@@ -250,11 +295,13 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
     // Create a new list to hold a sequence of drawing operations, and compile it.
 
     glaList l = glGenLists(1);
+    CHECK_GL_ERROR("CreateList", "glGenLists");
     
-    SetCurrent();
     glNewList(l, GL_COMPILE);
+    CHECK_GL_ERROR("CreateList", "glNewList");
     (obj->*generator)();
     glEndList();
+    CHECK_GL_ERROR("CreateList", "glEndList");
     
     return l;
 }
@@ -264,6 +311,7 @@ void GLACanvas::DeleteList(glaList l)
     // Delete an existing list.
 
     glDeleteLists(l, 1);
+    CHECK_GL_ERROR("DeleteList", "glDeleteLists");
 }
 
 void GLACanvas::SetBackgroundColour(float red, float green, float blue)
@@ -271,6 +319,7 @@ void GLACanvas::SetBackgroundColour(float red, float green, float blue)
     // Set the background colour of the canvas.
     
     glClearColor(red, green, blue, 1.0);
+    CHECK_GL_ERROR("SetBackgroundColour", "glClearColor");
 }
 
 void GLACanvas::SetColour(const GLAPen& pen, bool set_transparency, double rgb_scale)
@@ -279,9 +328,11 @@ void GLACanvas::SetColour(const GLAPen& pen, bool set_transparency, double rgb_s
    
     if (set_transparency) {
         glColor4f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale, pen.GetBlue() * rgb_scale, pen.GetAlpha());
+        CHECK_GL_ERROR("SetColour", "glColor4f");
     }
     else {
         glColor3f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale, pen.GetBlue() * rgb_scale);
+        CHECK_GL_ERROR("SetColour", "glColor3f");
     }
 }
 
@@ -291,6 +342,7 @@ void GLACanvas::SetBlendColour(const GLAPen& pen, bool set_transparency, double 
    
     glBlendColor(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale, pen.GetBlue() * rgb_scale,
                  set_transparency ? pen.GetAlpha() : 1.0);
+    CHECK_GL_ERROR("SetBlendColour", "glBlendColor");
 }
 
 void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool set_transparency)
@@ -302,6 +354,7 @@ void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool set_transparency)
     col[3] = pen.GetAlpha();
 
     glMaterialfv(front ? GL_FRONT : GL_BACK, GL_AMBIENT_AND_DIFFUSE, col);
+    CHECK_GL_ERROR("SetPolygonColour", "glMaterialfv");
 }
 
 void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str)
@@ -309,9 +362,11 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
     // Draw a text string on the current buffer in the current font.
  
     glRasterPos3d(x, y, z);
+    CHECK_GL_ERROR("DrawText", "glRasterPos3d");
     
     for (int pos = 0; pos < str.Length(); pos++) {
         glutBitmapCharacter(m_Font, int(str[pos]));
+        CHECK_GL_ERROR("DrawText", "glutBitmapCharacter");
     }
 }
 
@@ -329,6 +384,7 @@ void GLACanvas::GetTextExtent(const wxString& str, glaCoord* x_ext, glaCoord* y_
 
     for (int pos = 0; pos < str.Length(); pos++) {
         *x_ext += glutBitmapWidth(m_Font, str[pos]);
+        CHECK_GL_ERROR("GetTextExtent", "glutBitmapWidth");
     }
 
     *y_ext = m_FontSize + 2;
@@ -339,6 +395,7 @@ void GLACanvas::BeginQuadrilaterals()
     // Commence drawing of quadrilaterals.
     
     glBegin(GL_QUADS);
+    CHECK_GL_ERROR("BeginQuadrilaterals", "glBegin");
 }
 
 void GLACanvas::EndQuadrilaterals()
@@ -346,6 +403,7 @@ void GLACanvas::EndQuadrilaterals()
     // Finish drawing of quadrilaterals.
     
     glEnd();
+    CHECK_GL_ERROR("EndQuadrilaterals", "glEnd");
 }
 
 void GLACanvas::BeginLines()
@@ -353,6 +411,7 @@ void GLACanvas::BeginLines()
     // Commence drawing of a set of lines.
 
     glBegin(GL_LINES);
+    CHECK_GL_ERROR("BeginLines", "glBegin");
 }
 
 void GLACanvas::EndLines()
@@ -360,6 +419,7 @@ void GLACanvas::EndLines()
     // Finish drawing of a set of lines.
 
     glEnd();
+    CHECK_GL_ERROR("EndLines", "glEnd");
 }
 
 void GLACanvas::BeginTriangles()
@@ -367,6 +427,7 @@ void GLACanvas::BeginTriangles()
     // Commence drawing of a set of triangles.
 
     glBegin(GL_TRIANGLES);
+    CHECK_GL_ERROR("BeginTriangles", "glBegin");
 }
 
 void GLACanvas::EndTriangles()
@@ -374,6 +435,7 @@ void GLACanvas::EndTriangles()
     // Finish drawing of a set of triangles.
 
     glEnd();
+    CHECK_GL_ERROR("EndTriangles", "glEnd");
 }
 
 void GLACanvas::BeginPolyline()
@@ -381,6 +443,7 @@ void GLACanvas::BeginPolyline()
     // Commence drawing of a polyline.
 
     glBegin(GL_LINE_STRIP);
+    CHECK_GL_ERROR("BeginPolyline", "glBegin");
 }
 
 void GLACanvas::EndPolyline()
@@ -388,6 +451,7 @@ void GLACanvas::EndPolyline()
     // Finish drawing of a polyline.
     
     glEnd();
+    CHECK_GL_ERROR("EndPolyline", "glEnd");
 }
 
 void GLACanvas::BeginPolygon()
@@ -395,6 +459,7 @@ void GLACanvas::BeginPolygon()
     // Commence drawing of a polygon.
 
     glBegin(GL_POLYGON);
+    CHECK_GL_ERROR("BeginPolygon", "glBegin");
 }
 
 void GLACanvas::EndPolygon()
@@ -402,6 +467,7 @@ void GLACanvas::EndPolygon()
     // Finish drawing of a polygon.
     
     glEnd();
+    CHECK_GL_ERROR("EndPolygon", "glEnd");
 }
 
 void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
@@ -409,6 +475,7 @@ void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
     // Place a vertex for the current object being drawn.
 
     glVertex3d(x, y, z);
+    CHECK_GL_ERROR("PlaceVertex", "glVertex3d");
 }
 
 void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
@@ -428,20 +495,29 @@ void GLACanvas::DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaC
         m_SphereCreated = true;
 
         m_SphereList = glGenLists(1);
+        CHECK_GL_ERROR("DrawSphere", "glGenLists");
         glNewList(m_SphereList, GL_COMPILE);
+        CHECK_GL_ERROR("DrawSphere", "glNewList");
     
         GLUquadric* quadric = gluNewQuadric();
         assert(quadric);
         gluSphere(quadric, 1.0, divisions, divisions);
+        CHECK_GL_ERROR("DrawSphere", "gluSphere");
 
         glEndList();
+        CHECK_GL_ERROR("DrawSphere", "glEndList");
     }
 
     glTranslated(x, y, z);
+    CHECK_GL_ERROR("DrawSphere", "glTranslated");
     glScalef(radius, radius, radius);
+    CHECK_GL_ERROR("DrawSphere", "glScalef");
     glCallList(m_SphereList);
+    CHECK_GL_ERROR("DrawSphere", "glCallList");
     glScalef(1.0 / radius, 1.0 / radius, 1.0 / radius);
+    CHECK_GL_ERROR("DrawSphere", "glScalef");
     glTranslated(-x, -y, -z);
+    CHECK_GL_ERROR("DrawSphere", "glTranslated");
 }
 
 void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& top,

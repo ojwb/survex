@@ -26,6 +26,8 @@
 
 class GfxCore;
 
+#define GLA_DEBUG 1
+
 typedef Double glaCoord;
 typedef GLuint glaList;
 

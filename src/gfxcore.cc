@@ -312,9 +312,6 @@ void GfxCore::Initialise()
     
     m_InitialScale *= .85;
 
-    double extent = MAX3(m_Parent->GetXExtent(), m_Parent->GetYExtent(), m_Parent->GetZExtent()) / 2.0;
-    SetVolumeCoordinates(-extent, extent, -extent, extent, -extent, extent);
-
     SetScaleInitial(m_InitialScale);
 }
 
@@ -325,12 +322,17 @@ void GfxCore::FirstShow()
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
 
-    m_Lists.underground_legs = CreateList(this, &GfxCore::GenerateDisplayList);
-    m_Lists.surface_legs = CreateList(this, &GfxCore::GenerateDisplayListSurface);
-    m_Lists.names = CreateList(this, &GfxCore::DrawNames);
-    m_Lists.indicators = CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
-    //m_Lists.blobs = CreateList(this, &GfxCore::GenerateBlobsDisplayList);
-    
+    if (m_PlotData) {
+        m_Lists.underground_legs = CreateList(this, &GfxCore::GenerateDisplayList);
+        m_Lists.surface_legs = CreateList(this, &GfxCore::GenerateDisplayListSurface);
+        m_Lists.names = CreateList(this, &GfxCore::DrawNames);
+        m_Lists.indicators = CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
+        //m_Lists.blobs = CreateList(this, &GfxCore::GenerateBlobsDisplayList);
+        
+        double extent = MAX3(m_Parent->GetXExtent(), m_Parent->GetYExtent(), m_Parent->GetZExtent()) / 2.0;
+        SetVolumeCoordinates(-extent, extent, -extent, extent, -extent, extent);
+    }
+
     m_DoneFirstShow = true;
 }
 
