@@ -9,8 +9,9 @@ Group: Applications/Misc
 Source: http://www.survex.com/software/@VERSION@/@PACKAGE@-@VERSION@.tar.gz
 URL: http://www.survex.com/
 Packager: Olly Betts <olly@survex.com>
-BuildRequires: wxGTK >= 2.4.0
-BuildRoot: %{_tmppath}/var/tmp/%{name}-buildroot
+#Can't build with rpm on debian with this next line uncommented:
+#BuildRequires: wxGTK-devel >= 2.4.0
+BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
 @DESC@
@@ -18,7 +19,7 @@ BuildRoot: %{_tmppath}/var/tmp/%{name}-buildroot
 %package aven
 Summary: Aven viewer for Survex
 Group: Applications/Misc
-Requires: survex = @VERSION@
+Requires: survex = @VERSION@, wxGTK >= 2.4.0
 
 %description aven
 @AVENDESC@
