@@ -2,6 +2,8 @@
 
 # Makefile for survex support files
 
+SUBDIRS = icons
+
 msg_files = ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg\
 es.msg fr.msg it.msg pt.msg
 

@@ -264,5 +264,6 @@ AC_SUBST(DOCS_OTHER)
 
 AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 
-AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile hto/Makefile
- tests/Makefile debian/Makefile survex.iss doc/docindex.htm debian/copyright)
+AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
+ hto/Makefile tests/Makefile debian/Makefile survex.iss doc/docindex.htm
+ debian/copyright)
