@@ -1,3 +1,6 @@
+* (MS Windows version): New icons for .svx, .pos, and .err files.
+  Tweaked .3d icon to work better in 256 colour modes.
+
 * Added tests for `*infer plumbs' and `*infer equates'.
 
 Changes in 0.98-prerelease6:
