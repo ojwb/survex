@@ -1572,6 +1572,12 @@ it:200 Questo programma &egrave; software libero; &egrave; lecito redistribuirlo
 #
 # TRANSLATE lots
 en:201 Display command line options
+de:201 Befehlszeilenparameter anzeigen
+# or "... comandos"?
+pt:201 Mostrar op&ccedil;&otilde;es de linha de comando
+ca:201 Mostra les opcions de la l&iacute;nia de comanda
+es:201 Mostrar opciones en l&iacute;nea de comandos
+it:201 Mostra le opzioni della riga di comando
 #
 en:202 No survey data in 3d file `%s'
 #
@@ -1604,9 +1610,23 @@ it:205 Informazioni su %s
 #
 # File->Open dialog:
 en:206 Select a 3d file to view
+#
 en:207 Survex 3d files
+de:207 Survex 3d Dateien
+pt:207 Ficheiros de Survex 3d
+pt-br:207 Arquivos de Survex 3d
+# es: or "Ficheros Survex 3d"?
+es:207 Archivos Survex 3d
+it:207 File Survex 3d
+#
 en:208 All files
+de:208 Alle Dateien
+pt:208 Todos os ficheiros
+pt-br:208 Todos os arquivos
 ca:208 Tots els fitxers
+# es: or "Todos los ficheros"?
+es:208 Todos los archivos
+it:208 Tutti i file
 #
 en:209 Visualisation of Survex 3D files
 #
@@ -1622,12 +1642,22 @@ es:210 @Archivo
 it:210 @File
 #
 en:211 @Rotation
+de:211 @Drehung
+pt:211 @Rota&ccedil;&atilde;o
+ca:211 @Rotaci&oacute;
+es:211 @Rotaci&oacute;n
+it:211 @Rotazione
 #
 en:212 @Orientation
+de:212 @Ausrichtung
+pt:212 @Orienta&ccedil;&atilde;o
+ca:212 @Orientaci&oacute;
+es:212 @Orientaci&oacute;n
+it:212 @Orientazione
 #
 en:213 @View
 fr:213 @Vue
-de:213 @Ansicht
+de:213 A@nsicht
 pt:213 @Vista
 pt-br:213 @Visualisar
 ca:213 @Veure
@@ -1635,6 +1665,12 @@ es:213 @Vista
 it:213 @Vista
 #
 en:214 @Controls
+de:214 @Steuerung
+pt:214 @Comandos
+pt-br:214 @Controles
+ca:214 @Controls
+es:214 @Controles
+it:214 @Controlli
 #
 en:215 @Help
 fr:215 @Aide
@@ -1702,14 +1738,40 @@ it:249 Pro@filo##L
 #
 en:250 @Higher Viewpoint##'
 en:251 Lo@wer Viewpoint##/
+#
 en:252 @Zoom In##]
+de:252 Ver@gr&ouml;&szlig;ern##]
+# pt or "Ampliar"
+pt:252 @Aumentar##]
+ca:252 @Apropa##]
+#es or "Aumentar"
+es:252 @Ampliar##]
+# it: or "Ingrandisci"
+it:252 @Zoom avanti##]
+#
 en:253 Zoo@m Out##[
+de:253 Ver@kleinern##[
+# pt or "Reduzir"
+pt:253 @Diminuir##[
+ca:254 A@llunya##[
+#es or "Disminuir"
+es:253 @Reducir##[
+# it: or "Riduci"
+it:253 Zoom @indietro##]
+#
 en:254 Restore De@fault Settings##Delete
+de:254 @Standard wiederherstellen##Delete
+pt:254 @Usar valores pr&eacute;-definidos##Delete
+pt-br:254 Restaurar @padr&otilde;es##Delete
+ca:254 Restableix els @predeterminats##Delete
+es:254 Restaurar @valores predeterminados##Delete
+it:254 Ripristina i @valori predefiniti
 #
 # The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
 # TRANSLATE fr de pt
 en:271 @Crosses##Ctrl+X
+de:271 @Kreuze##Ctrl+X
 ca:271 @Creus##Ctrl+X
 es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
@@ -1730,7 +1792,7 @@ en:275 Cl@inometer
 fr:275 Cl@ino
 ca:275 Cl@ino
 es:275 Cl@ino
-it:271 Cl@inometro
+it:275 Cl@inometro
 #
 en:276 @Depth Bar
 en:277 Sc@ale Bar
