@@ -22,10 +22,7 @@
 
 #include "mainfrm.h"
 #include "aven.h"
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "aboutdlg.h"
 
 #include "img.h"
 
@@ -679,51 +676,7 @@ void MainFrm::OnQuit(wxCommandEvent&)
 
 void MainFrm::OnAbout(wxCommandEvent&)
 {
-    wxDialog* dlg = new wxDialog(this, 500, wxString("About Aven"));
-
-    wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
-
-    wxStaticBitmap* bitmap = new wxStaticBitmap(dlg, 501, wxGetApp().GetAboutBitmap());
-    wxStaticText* title = new wxStaticText(dlg, 502, wxString("Aven ") + wxString(VERSION));
-    wxStaticText* purpose = new wxStaticText(dlg, 505,
-					     wxString("Visualisation of Survex 3D files"));
-    wxStaticText* copyright1 = new wxStaticText(dlg, 503, AVEN_COPYRIGHT_MSG);
-    wxStaticText* copyright2 = new wxStaticText(dlg, 504, COPYRIGHT_MSG);
-    wxStaticText* licence = new wxStaticText(dlg, 506,
-			    "This is free software.  Aven is licenced under the");
-    wxStaticText* licence2 = new wxStaticText(dlg, 508,
-			     "terms of the GNU General Public Licence version 2,");
-    wxStaticText* licence3 = new wxStaticText(dlg, 509,
-					      "or (at your option) any later version.");
-    wxButton* close = new wxButton(dlg, 507, "Close");
-    close->SetDefault();
-
-    horiz->Add(bitmap, 0, wxALL, 2);
-    horiz->Add(vert, 0, wxALL, 2);
-
-    vert->Add(title, 0, wxLEFT | wxRIGHT | wxTOP, 20);
-    vert->Add(10, 5, 0, wxTOP, 5);
-    vert->Add(purpose, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(10, 5, 0, wxTOP, 5);
-    vert->Add(copyright1, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(copyright2, 0, wxLEFT | wxBOTTOM | wxRIGHT, 20);
-    vert->Add(10, 5, 0, wxTOP, 5);
-    vert->Add(licence, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(licence2, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(licence3, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
-    vert->Add(10, 5, 0, wxEXPAND | wxGROW | wxTOP, 5);
-
-    wxBoxSizer* bottom = new wxBoxSizer(wxHORIZONTAL);
-    bottom->Add(250, 5, 4);
-    bottom->Add(close, 1);
-    vert->Add(bottom, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
-
-    horiz->Fit(dlg);
-    horiz->SetSizeHints(dlg);
-
-    dlg->SetAutoLayout(true);
-    dlg->SetSizer(horiz);
+    wxDialog* dlg = new AboutDlg(this);
     dlg->ShowModal();
 }
 
