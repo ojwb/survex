@@ -893,27 +893,31 @@ void GfxCore::DrawScalebar()
 
 void GfxCore::OnLButtonDown(wxMouseEvent& event)
 {
-    m_DraggingLeft = true;
-    m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
-    m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y;
-    m_DragStart = wxPoint(event.GetX(), event.GetY());
+    if (m_PlotData) {
+        m_DraggingLeft = true;
+	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
+	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y;
+	m_DragStart = wxPoint(event.GetX(), event.GetY());
+    }
 }
 
 void GfxCore::OnLButtonUp(wxMouseEvent& event)
 {
-    m_LastDrag = drag_NONE;
-    m_DraggingLeft = false;
-    const wxRect r(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 - INDICATOR_GAP,
-		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
-		   INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
-		   INDICATOR_BOX_SIZE);
-    m_RedrawOffscreen = true;
-    Refresh(false, &r);
+    if (m_PlotData) {
+        m_LastDrag = drag_NONE;
+	m_DraggingLeft = false;
+	const wxRect r(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 - INDICATOR_GAP,
+		       m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
+		       INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
+		       INDICATOR_BOX_SIZE);
+	m_RedrawOffscreen = true;
+	Refresh(false, &r);
+    }
 }
 
 void GfxCore::OnMButtonDown(wxMouseEvent& event)
 {
-    if (!m_CaverotMouse) {
+    if (m_PlotData && !m_CaverotMouse) {
         m_DraggingMiddle = true;
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
     }
@@ -921,38 +925,42 @@ void GfxCore::OnMButtonDown(wxMouseEvent& event)
 
 void GfxCore::OnMButtonUp(wxMouseEvent& event)
 {
-    if (m_CaverotMouse) {
-        if (m_FreeRotMode) {
-	  //	    m_Parent->SetStatusText("Disabled in free rotation mode.  Reset using Delete.");
-	}
-	else {
-	    // plan/elevation toggle
-	    if (m_TiltAngle == 0.0) {
-	        Plan();
-	    }
-	    else if (m_TiltAngle == M_PI/2.0) {
-	        Elevation();
+    if (m_PlotData) {
+        if (m_CaverotMouse) {
+	    if (m_FreeRotMode) {
+	      //  	    m_Parent->SetStatusText("Disabled in free rotation mode.  Reset using Delete.");
 	    }
 	    else {
-		// go to whichever of plan or elevation is nearer
-	        if (m_TiltAngle > M_PI/4.0) {
-		     Plan();
+  	        // plan/elevation toggle
+	        if (m_TiltAngle == 0.0) {
+	            Plan();
+		}
+		else if (m_TiltAngle == M_PI/2.0) {
+		    Elevation();
 		}
 		else {
-		     Elevation();
+		    // go to whichever of plan or elevation is nearer
+		    if (m_TiltAngle > M_PI/4.0) {
+		        Plan();
+		    }
+		    else {
+		        Elevation();
+		    }
 		}
 	    }
 	}
-    }
-    else {
-        m_DraggingMiddle = false;
+	else {
+	    m_DraggingMiddle = false;
+	}
     }
 }
 
 void GfxCore::OnRButtonDown(wxMouseEvent& event)
 {
-    m_DragStart = wxPoint(event.GetX(), event.GetY());
-    m_DraggingRight = true;
+    if (m_PlotData) {
+        m_DragStart = wxPoint(event.GetX(), event.GetY());
+        m_DraggingRight = true;
+    }
 }
 
 void GfxCore::OnRButtonUp(wxMouseEvent& event)

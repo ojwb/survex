@@ -38,7 +38,6 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
 
     EVT_PAINT(MainFrm::OnPaint)
-    EVT_LEFT_UP(MainFrm::OnLButtonUp)
 
     EVT_MENU(menu_ROTATION_START, MainFrm::OnStartRotation)
     EVT_MENU(menu_ROTATION_STOP, MainFrm::OnStopRotation)
@@ -677,6 +676,7 @@ void MainFrm::OnQuit(wxCommandEvent&)
 void MainFrm::OnAbout(wxCommandEvent&)
 {
     wxDialog* dlg = new AboutDlg(this);
+    dlg->Centre();
     dlg->ShowModal();
 }
 

@@ -42,12 +42,12 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 					     wxString("Visualisation of Survex 3D files"));
     wxStaticText* copyright1 = new wxStaticText(this, 503, AVEN_COPYRIGHT_MSG);
     wxStaticText* copyright2 = new wxStaticText(this, 504, COPYRIGHT_MSG);
-    wxStaticText* licence = new wxStaticText(this, 506, "This is free software.  Aven is licenced under the\nterms of the GNU General Public Licence version 2,\nor (at your option) any later version.");
-    wxButton* close = new wxButton(this, 507, "Close");
+    wxStaticText* licence = new wxStaticText(this, 506, "This is free software.  Aven is licenced under\nthe terms of the GNU General Public Licence\nversion 2, or (at your option) any later version.");
+    wxButton* close = new wxButton(this, wxID_OK, "Close");
     close->SetDefault();
 
     horiz->Add(bitmap, 0, wxALL, 2);
-    horiz->Add(vert, 0, wxALL, 2);
+    horiz->Add(vert, 1, wxEXPAND | wxALL, 2);
 
     vert->Add(title, 0, wxLEFT | wxRIGHT | wxTOP, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
@@ -57,12 +57,12 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     vert->Add(copyright2, 0, wxLEFT | wxBOTTOM | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
     vert->Add(licence, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
-    vert->Add(10, 5, 0, wxEXPAND | wxGROW | wxTOP, 5);
+    vert->Add(10, 5, 1, wxEXPAND | wxGROW | wxTOP, 5);
 
     wxBoxSizer* bottom = new wxBoxSizer(wxHORIZONTAL);
-    bottom->Add(250, 5, 4);
-    bottom->Add(close, 1);
-    vert->Add(bottom, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
+    bottom->Add(5, 5, 1);
+    bottom->Add(close, 0, wxRIGHT | wxBOTTOM, 15);
+    vert->Add(bottom, 0, wxEXPAND | wxLEFT | wxRIGHT, 0);
 
     horiz->Fit(this);
     horiz->SetSizeHints(this);
