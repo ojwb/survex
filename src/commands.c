@@ -477,15 +477,19 @@ fix_station(void)
 
 /* helper function for replace_pfx */
 static void
-replace_pfx_(node *stn, pos *pos_replace, pos *pos_with)
+replace_pfx_(node *stn, node *from, pos *pos_replace, pos *pos_with)
 {
    int d;
-   ASSERT(stn->name->pos == pos_replace);
    stn->name->pos = pos_with;
-   for (d = 0; stn->leg[d]; d++) {
-      node *stn2 = stn->leg[d]->l.to;
-      if (stn2->name->pos == pos_replace) 
-	 replace_pfx_(stn2, pos_replace, pos_with);
+   for (d = 0; d < 3; d++) {
+      linkfor *leg = stn->leg[d];
+      node *to;
+      if (!leg) break;
+      to = leg->l.to;
+      if (to == from) continue;
+
+      if (fZero(data_here(leg) ? &leg->v : &reverse_leg(leg)->v))
+	 replace_pfx_(to, stn, pos_replace, pos_with);
    }
 }
 
@@ -494,15 +498,20 @@ replace_pfx_(node *stn, pos *pos_replace, pos *pos_with)
 static void
 replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
 {
-   pos *pos_replace = pfx_replace->pos;
+   pos *pos_replace;
+   ASSERT(pfx_replace);
+   ASSERT(pfx_with);
+   pos_replace = pfx_replace->pos;
    ASSERT(pos_replace != pfx_with->pos);
 
-   replace_pfx_(pfx_replace->stn, pos_replace, pfx_with->pos);
+   replace_pfx_(pfx_replace->stn, NULL, pos_replace, pfx_with->pos);
 
 #ifdef DEBUG_INVALID
    {
       node *stn;
-      FOR_EACH_STN(stn, stnlist) ASSERT(stn->name->pos != pos_replace);
+      FOR_EACH_STN(stn, stnlist) {
+	 ASSERT(stn->name->pos != pos_replace);
+      }
    }
 #endif
 
