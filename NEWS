@@ -9,6 +9,9 @@ Changes in 1.0.11:
   (previously it would fail for locales where the decimal character wasn't
   '.').
 
+* aven: key actions during autorotation no longer temporarily pause
+  autorotation.
+
 * aven: switching to plan or elevation while rotating is now smooth.
 
 * aven: removed undocumented and confusing "free rotation mode".

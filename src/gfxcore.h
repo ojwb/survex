@@ -456,6 +456,7 @@ public:
     void OnRButtonUp(wxMouseEvent& event);
     void OnSize(wxSizeEvent& event);
     void OnIdle(wxIdleEvent& event);
+    bool Animate(wxIdleEvent *idle_event = NULL);
 
     void OnKeyPress(wxKeyEvent &e);
 

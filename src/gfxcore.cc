@@ -2653,6 +2653,18 @@ void GfxCore::OnZoomOutUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::OnIdle(wxIdleEvent& event)
 {
+    // Handle an idle event.
+    if (Animate(&event)) ForceRefresh();
+}
+
+// idle_event is a pointer to and idle event (to call RequestMore()) or NULL
+// return: true if animation occured (and ForceRefresh() needs to be called)
+bool GfxCore::Animate(wxIdleEvent *idle_event)
+{
+#if !defined(AVENPRES) && !defined(AVENGL)
+    idle_event = idle_event; // Suppress "not used" warning
+#endif
+
     if (!m_Rotating && !m_SwitchingTo
 #ifdef AVENPRES
 	&& !(m_DoingPresStep >= 0 && m_DoingPresStep <= 100)
@@ -2660,9 +2672,10 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 #ifdef AVENGL
         && !(m_TerrainLoaded && floor_alt > -DBL_MAX && floor_alt <= HEAVEN)
 #endif
-       )
-	return;
-    // Handle an idle event.
+       ) {
+	return false;
+    }
+
     static double last_t = 0;
     double t = timer.Time() * 1.0e-3;
 //    cout << 1.0 / t << " fps (i.e. " << t << " sec)\n";
@@ -2671,48 +2684,25 @@ void GfxCore::OnIdle(wxIdleEvent& event)
     if (last_t > 0) t = (t + last_t) / 2;
     last_t = t;
 
-    bool refresh = true;
-
     // When rotating...
     if (m_Rotating) {
 	TurnCave(m_RotationStep * t);
     }
+
     if (m_SwitchingTo == PLAN) {
 	// When switching to plan view...
-	if (m_TiltAngle == M_PI_2) {
-	    m_SwitchingTo = 0;
-	}
 	TiltCave(M_PI_2 * t);
+	if (m_TiltAngle == M_PI_2) m_SwitchingTo = 0;
     } else if (m_SwitchingTo == ELEVATION) {
 	// When switching to elevation view...
-	if (m_TiltAngle == 0.0) {
-	    m_SwitchingTo= 0;
+	if (fabs(m_TiltAngle) < M_PI_2 * t) {
+	    TiltCave(-m_TiltAngle);
+	    m_SwitchingTo = 0;
+	} else if (m_TiltAngle < 0.0) {
+	    TiltCave(M_PI_2 * t);
+	} else {
+	    TiltCave(-M_PI_2 * t);
 	}
-	else if (m_TiltAngle < 0.0) {
-	    if (m_TiltAngle > (-M_PI_2 * t)) {
-		TiltCave(-m_TiltAngle);
-	    }
-	    else {
-		TiltCave(M_PI_2 * t);
-	    }
-	    if (m_TiltAngle >= 0.0) {
-		m_SwitchingTo = 0;
-	    }
-	}
-	else {
-	    if (m_TiltAngle < (M_PI_2 * t)) {
-		TiltCave(-m_TiltAngle);
-	    }
-	    else {
-		TiltCave(-M_PI_2 * t);
-	    }
-
-	    if (m_TiltAngle <= 0.0) {
-		m_SwitchingTo = 0;
-	    }
-	}
-    } else {
-	refresh = false;
     }
 
 #ifdef AVENPRES
@@ -2755,13 +2745,12 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 
 	m_DoingPresStep += 30.0 * t;
 	if (m_DoingPresStep <= 100.0) {
-	    event.RequestMore();
+	    idle_event->RequestMore();
 	}
 	else {
 	    m_PanAngle = m_PresStep.to.pan_angle;
 	    m_TiltAngle = m_PresStep.to.tilt_angle;
 	}
-	refresh = true;
     }
 #endif
 
@@ -2774,12 +2763,11 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 	    floor_alt -= 200.0 * t;
 	}
 	InitialiseTerrain();
-	event.RequestMore();
-	refresh = true;
+	idle_event->RequestMore();
     }
 #endif
 
-    if (refresh) ForceRefresh();
+    return true;
 }
 
 void GfxCore::OnToggleScalebar()
@@ -3562,7 +3550,8 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	return;
     }
 
-    // FIXME: do animation if appropriate...
+    m_RedrawOffscreen = Animate();
+
     switch (e.m_keyCode) {
 	case '/': case '?':
 	    if (m_TiltAngle > -M_PI_2 && m_Lock == lock_NONE)
@@ -3677,4 +3666,8 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	default:
 	    e.Skip();
     }
+ 
+    // OnPaint clears m_RedrawOffscreen so it'll only still be set if we need
+    // to redraw
+    if (m_RedrawOffscreen) ForceRefresh();
 }
