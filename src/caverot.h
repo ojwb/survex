@@ -40,7 +40,7 @@
 /* machine specific stuff */
 #if (OS==RISCOS)
 # include "armrot.h"
-#elif ((OS==MSDOS) || (OS==TOS))
+#elif ((OS==MSDOS) || (OS==TOS) || (OS==WIN32))
 # include "dosrot.h"
 #elif (OS==UNIX)
 # include "xrot.h"

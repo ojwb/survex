@@ -211,6 +211,38 @@ extern void text_xy(int x, int y, const char *str);
 # define CVROTGFX_MBUT 2
 # define CVROTGFX_RBUT 1
 
+#elif (OS==WIN32)
+
+# define ALLEGRO 1
+
+/* mingw + Allegro */
+# include "allegro.h"
+extern BITMAP *BitMap, *BitMapDraw;
+
+# define cvrotgfx_beep() sound(256) /* 256 is frequency */
+
+# define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
+
+extern void cvrotgfx_moveto(int X, int Y);
+extern void cvrotgfx_lineto(int X, int Y);
+
+# ifdef NO_TEXT
+#  define outtextxy(X, Y, S) NOP
+# else
+#  define outtextxy(X, Y, S) BLK(\
+ extern int _cvrotgfx_textcol;\
+ textout(BitMapDraw, font, (char *)(S), (X), (Y), _cvrotgfx_textcol);)
+# endif
+# define set_tcolour(X) BLK(extern int _cvrotgfx_textcol; _cvrotgfx_textcol = (X);)
+# define set_gcolour(X) BLK(extern int _cvrotgfx_drawcol; _cvrotgfx_drawcol = (X);)
+# define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, S)
+
+# undef  Y_UP /* PC has increasing Y down screen */
+
+#  define CVROTGFX_LBUT 1 /* mask for left mouse button */
+#  define CVROTGFX_RBUT 2 /* mask for right mouse button (if present) */
+#  define CVROTGFX_MBUT 4 /* mask for middle mouse button (if present) */
+
 #else
 # error Operating System not known
 #endif

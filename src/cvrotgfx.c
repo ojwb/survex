@@ -36,7 +36,7 @@ static int nBanks = 3;
 
 int _cvrotgfx_textcol, _cvrotgfx_drawcol;
 
-#if (OS==MSDOS) || (OS==UNIX)
+#if (OS==MSDOS) || (OS==UNIX) || (OS == WIN32)
 
 # ifdef MSC
 /* Microsoft C */
@@ -47,6 +47,7 @@ buffer_rec *BitMap;
 
 # elif defined(ALLEGRO)
 
+# if (OS != WIN32) /* this stuff doesn't seem to work under WIN32 */
 /* Turn off all the sound, midi, and joystick drivers, since we don't
  * use them */
 
@@ -67,6 +68,8 @@ COLOR_DEPTH_8
 #endif
 END_COLOR_DEPTH_LIST
 
+# endif
+    
 /* DJGPP + Allegro (or UNIX+allegro) */
 BITMAP *BitMap, *BitMapDraw;
 
@@ -210,23 +213,37 @@ int
 cvrotgfx_parse_cmdline(int *pargc, char **argv)
 {
 #ifdef ALLEGRO
-   if (*pargc > 2 && (strcmp(argv[*pargc - 1], "--mode-picker") == 0)) {
-      mode_picker = 1;
-      (*pargc)--;
-      argv[*pargc] = NULL;
-   }
-#if 0 /*def ALLEGRO*/
-   if (*pargc > 2 && isdigit(argv[*pargc - 1][0])) {
-      char *p = argv[*pargc - 1];
-      driver = atoi(p);
-      p = strchr(p, ',');
-      if (p) drx = atoi(++p);
-      p = strchr(p, ',');
-      if (p) dry = atoi(++p);
-      (*pargc)--;
-      argv[*pargc] = NULL;
-   }
+   /* set language for Allegro messages */
+   char *p, *q;
+   p = osmalloc(10 + strlen(msg_lang));
+   sprintf(p, "language=%s", msg_lang);
+   q = strchr(p, '-');
+   if (q) *q = 0;
+   set_config_data(p, strlen(p));
+   osfree(p);
+
+   int fr, to;  
+   for (fr = 1, to = 1; i < *pargc; fr++) {
+      if (strcmp(argv[fr], "--mode-picker") == 0)) {
+	  mode_picker = 1;
+	  continue;
+      }
+#if 0
+      if (*pargc > 2 && isdigit(argv[*pargc - 1][0])) {
+	 char *p = argv[*pargc - 1];
+	 driver = atoi(p);
+	 p = strchr(p, ',');
+	 if (p) drx = atoi(++p);
+	 p = strchr(p, ',');
+	 if (p) dry = atoi(++p);
+	 (*pargc)--;
+	 argv[*pargc] = NULL;
+     }
 #endif
+      argv[to++] = argv[fr];      
+   }
+   argv[to] = NULL;
+   *pargc = to;
 #else
    /* avoid compiler warnings */
    pargc = pargc;
@@ -301,11 +318,17 @@ cvrotgfx_init(void)
 #if (OS==UNIX)
       set_color_depth(16);
 #endif
-      res = set_gfx_mode(GFX_AUTODETECT, 800, 600, 0, 0);
+      if (os_type == OSTYPE_WINNT) {
+	  /* In DOS under Windows NT we can't do better than VGA */
+	  res = set_gfx_mode(GFX_VGA, 640, 480, 0, 0);
+      } else {
+	  res = set_gfx_mode(GFX_AUTODETECT, 800, 600, 0, 0);
+      }
       /* if we couldn't get that mode, give the mode picker */
       if (res) mode_picker = 1;
    }
 
+#if (OS!=WIN32)
    if (mode_picker) {
       do {
 	 res = set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
@@ -335,6 +358,7 @@ cvrotgfx_init(void)
 	 res = set_gfx_mode(c, w, h, 0, 0);
       } while (res);
    }
+#endif
    text_mode(-1); /* don't paint in text background */
    BitMap = create_bitmap(SCREEN_W, SCREEN_H);
    /* check that initialisation was OK */
@@ -653,7 +677,7 @@ cvrotgfx_get_key(void)
 void cvrotgfx_beep(void); /* make a beep */
 #endif
 
-#if defined(__DJGPP__) || (OS==UNIX)
+#if defined(__DJGPP__) || (OS==UNIX) || (OS==WIN32)
 static int last_x = 0, last_y = 0;
 extern void
 cvrotgfx_moveto(int X, int Y)

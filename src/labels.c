@@ -28,7 +28,7 @@
 #include "cvrotgfx.h"
 #include "labels.h"
 
-#if (OS==MSDOS) || (OS==UNIX)
+#if (OS==MSDOS) || (OS==UNIX) || (OS==WIN32)
 # define really_plot(S, X, Y) outtextxy((X) + (unsigned)xcMac / 2u,\
                                         (Y) + (unsigned)ycMac / 2u, (S))
 #endif
