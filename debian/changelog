@@ -1,3 +1,9 @@
+survex (0.99.8) unstable; urgency=low
+
+  * New release - now compiles under GCC3.0 so should build on hppa
+
+ -- Wookey <wookey@survex.com>  Tue, 04 Dec 2001 19:30:07 +0000
+
 survex (0.99.7) unstable; urgency=low
 
   * New release
