@@ -1,6 +1,6 @@
 /* readval.h
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,4 +30,4 @@ unsigned int read_uint(void);
 
 void read_string(char **pstr, int *plen);
 
-void read_date(void);
+void read_date(int *py, int *pm, int *pd);

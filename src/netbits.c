@@ -1,6 +1,6 @@
 /* netbits.c
  * Miscellaneous primitive network routines for Survex
- * Copyright (C) 1992-2002 Olly Betts
+ * Copyright (C) 1992-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -238,6 +238,8 @@ copy_link(linkfor *leg)
 #else
    memcpy(legOut->v, leg->v, sizeof(svar));
 #endif
+   legOut->meta = pcs->meta;
+   if (pcs->meta) ++pcs->meta->ref_count;
    return legOut;
 }
 
@@ -302,6 +304,8 @@ addleg_(node *fr, node *to,
    leg->l.reverse = j | FLAG_DATAHERE | leg_flags;
 
    leg->l.flags = pcs->flags;
+   leg->meta = pcs->meta;
+   if (pcs->meta) ++pcs->meta->ref_count;
 
    fr->leg[i] = leg;
    to->leg[j] = leg2;

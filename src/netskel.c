@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -452,6 +452,13 @@ replace_travs(void)
 #endif
 	       img_write_item(pimg, img_MOVE, 0, NULL,
 			      POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+	       if (leg->meta) {
+		   pimg->date1 = leg->meta->date1;
+		   pimg->date2 = leg->meta->date2;
+	       } else {
+		   pimg->date1 = 0;
+		   pimg->date2 = 0;
+	       }
 	       img_write_item(pimg, img_LINE, leg->l.flags,
 			      sprint_prefix(stn1->name->up),
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
@@ -644,6 +651,13 @@ replace_travs(void)
 	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	       SVX_ASSERT(!fEquate);
 	       SVX_ASSERT(!fZeros(&leg->v));
+	       if (leg->meta) {
+		   pimg->date1 = leg->meta->date1;
+		   pimg->date2 = leg->meta->date2;
+	       } else {
+		   pimg->date1 = 0;
+		   pimg->date2 = 0;
+	       }
 	       img_write_item(pimg, img_LINE, leg->l.flags,
 			      sprint_prefix(leg_pfx),
 			      POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
@@ -817,6 +831,13 @@ replace_trailing_travs(void)
 #endif
 	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	       SVX_ASSERT(!fZeros(&leg->v));
+	       if (leg->meta) {
+		   pimg->date1 = leg->meta->date1;
+		   pimg->date2 = leg->meta->date2;
+	       } else {
+		   pimg->date1 = 0;
+		   pimg->date2 = 0;
+	       }
 	       img_write_item(pimg, img_LINE, leg->l.flags,
 			      sprint_prefix(leg_pfx),
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
@@ -854,6 +875,13 @@ replace_trailing_travs(void)
 	 }
 	 img_write_item(pimg, img_MOVE, 0, NULL,
 			POS(p->fr, 0), POS(p->fr, 1), POS(p->fr, 2));
+	 if (leg->meta) {
+	     pimg->date1 = leg->meta->date1;
+	     pimg->date2 = leg->meta->date2;
+	 } else {
+	     pimg->date1 = 0;
+	     pimg->date2 = 0;
+	 }
 	 img_write_item(pimg, img_LINE, p->flags,
 			sprint_prefix(p->fr->name->up),
 			POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));

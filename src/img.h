@@ -1,6 +1,6 @@
 /* img.h
  * Header file for routines to read and write Survex ".3d" image files
- * Copyright (C) Olly Betts 1993,1994,1997,2001,2002
+ * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ typedef struct {
    char *title;
    char *datestamp;
    char separator; /* charactor used to separate survey levels ('.' usually) */
+   time_t date1, date2;
    /* all other members are for internal use only */
    FILE *fh;          /* file handle of image file */
    char *label_buf;
@@ -81,6 +82,7 @@ typedef struct {
     *   1 => 0.01 binary,
     *   2 => byte actions and flags
     *   3 => prefixes for legs; compressed prefixes
+    *   4 => survey date
     */
    int version;
    char *survey;

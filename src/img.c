@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2002 Olly Betts
+ * Copyright (C) 1993-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,7 +150,7 @@ int my_strcasecmp(const char *s1, const char *s2) {
 }
 #endif
 
-unsigned int img_output_version = 3;
+unsigned int img_output_version = 4;
 
 #ifdef IMG_HOSTED
 static enum {
@@ -292,7 +292,7 @@ img_open_survey(const char *fnm, const char *survey)
 
    pimg->flags = 0;
 
-   /* for version 3 we use label_buf to store the prefix for reuse */
+   /* for version >= 3 we use label_buf to store the prefix for reuse */
    /* for version -2, 0 value indicates we haven't entered a survey yet */
    /* for version -4, we store the last station here to detect whether
     * we MOVE or LINE */
@@ -302,6 +302,8 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->survey = NULL;
    pimg->survey_len = 0;
    pimg->separator = '.';
+   pimg->date1 = 0;
+   pimg->date2 = 0;
 
    pimg->title = pimg->datestamp = NULL;
    if (survey) {
@@ -335,7 +337,7 @@ img_open_survey(const char *fnm, const char *survey)
    /* [version -2, -3, -4] pending IMG_LINE or IMG_MOVE - both have 4 added
     * [version -1] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
-    * [version 3] not in the middle of turning a LINE into a MOVE
+    * [version >= 3] not in the middle of turning a LINE into a MOVE
     */
    pimg->pending = 0;
 
@@ -540,7 +542,7 @@ xyz_file:
       }
       /* nothing special to do */
    } else if (pimg->version == 0) {
-      if (ch < '2' || ch > '3' || getc(pimg->fh) != '\n') {
+      if (ch < '2' || ch > '4' || getc(pimg->fh) != '\n') {
 	 img_errno = IMG_TOONEW;
 	 goto error;
       }
@@ -585,12 +587,12 @@ img_rewind(img *pimg)
    clearerr(pimg->fh);
    /* [version -1] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
-    * [version 3] not in the middle of turning a LINE into a MOVE */
+    * [version >= 3] not in the middle of turning a LINE into a MOVE */
    pimg->pending = 0;
 
    img_errno = IMG_NONE;
 
-   /* for version 3 we use label_buf to store the prefix for reuse */
+   /* for version >= 3 we use label_buf to store the prefix for reuse */
    /* for version -2, 0 value indicates we haven't entered a survey yet */
    /* for version -4, we store the last station here to detect whether
     * we MOVE or LINE */
@@ -639,7 +641,7 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
       pimg->version = 1;
       fputs("Bv0.01\n", pimg->fh); /* binary file format version number */
    } else {
-      pimg->version = (img_output_version > 2) ? 3 : 2;
+      pimg->version = (img_output_version > 4) ? 4 : img_output_version;
       fprintf(pimg->fh, "v%d\n", pimg->version); /* file format version no. */
    }
    fputsnl(title_buf, pimg->fh);
@@ -655,9 +657,12 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    pimg->fRead = fFalse; /* writing to this file */
    img_errno = IMG_NONE;
 
-   /* for version 3 we use label_buf to store the prefix for reuse */
+   /* for version >= 3 we use label_buf to store the prefix for reuse */
    pimg->label_buf[0] = '\0';
    pimg->label_len = 0;
+
+   pimg->date1 = 0;
+   pimg->date2 = 0;
 
    /* Don't check for write errors now - let img_close() report them... */
    return pimg;
@@ -732,7 +737,7 @@ img_read_item(img *pimg, img_point *p)
    int result;
    pimg->flags = 0;
 
-   if (pimg->version == 3) {
+   if (pimg->version >= 3) {
       int opt;
       if (pimg->pending >= 0x80) {
 	 *p = pimg->mv;
@@ -1463,7 +1468,7 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	       double x, double y, double z)
 {
    if (!pimg) return;
-   if (pimg->version == 3) {
+   if (pimg->version >= 3) {
       int opt = 0;
       switch (code) {
        case img_LABEL:
@@ -1557,7 +1562,7 @@ img_close(img *pimg)
 	     case 2:
 	       putc(0, pimg->fh);
 	       break;
-	     case 3:
+	     case 3: case 4:
 	       if (pimg->label_len) putc(0, pimg->fh);
 	       putc(0, pimg->fh);
 	       break;

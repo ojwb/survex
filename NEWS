@@ -37,6 +37,9 @@ Changes between 1.0.25 and 1.1.0:
 
 * Fixed standard graphics for "Note", "Warning", etc in the PostScript manual.
 
+* cavern: Dates given to *date are now stored and passed to img when writing
+  the 3d file.  They aren't yet written though...
+
 Changes in 1.0.25:
 
 * (MacOS X version): hopefully fixed building of aven.

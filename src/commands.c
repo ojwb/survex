@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <stddef.h> /* for offsetof */
+#include <time.h>
 
 #include "cavern.h"
 #include "commands.h"
@@ -556,6 +557,10 @@ free_settings(settings *p) {
 
    /* free Translate if not used by parent */
    if (p->Translate != p->next->Translate) osfree(p->Translate - 1);
+
+   /* free meta is not used by parent, or in this block */
+   if (p->meta && p->meta != p->next->meta && p->meta->ref_count == 0)
+       osfree(p->meta);
 
    osfree(p);
 }
@@ -1523,14 +1528,58 @@ cmd_require(void)
    while (isdigit(ch) || ch == '.') nextch();
 }
 
+/* allocate new meta_data if need be */
+void
+copy_on_write_meta(settings *s)
+{
+   if (!s->meta || s->meta->ref_count != 0) {
+       meta_data * meta_new = osnew(meta_data);
+       if (!s->meta) {
+	   meta_new->date1 = 0;
+	   meta_new->date2 = 0;
+       } else {
+	   *meta_new = *(s->meta);
+       }
+       meta_new->ref_count = 0;
+       s->meta = meta_new;
+   }
+}
+
 static void
 cmd_date(void)
 {
-   read_date();
+   struct tm t;
+
+   copy_on_write_meta(pcs);
+
+   memset(&t, 0, sizeof(t));
+   read_date(&t.tm_year, &t.tm_mon, &t.tm_mday);
+   if (t.tm_mon == 0) {
+       t.tm_mon = 6;
+       t.tm_mday = 1;
+   } else if (t.tm_mday == 0) {
+       t.tm_mday = 15;
+   }
+   --t.tm_mon; /* Jan is 0 */
+   if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
+   pcs->meta->date1 = mktime(&t);
+  
    skipblanks();
    if (ch == '-') {
       nextch();
-      read_date();
+      memset(&t, 0, sizeof(t));
+      read_date(&t.tm_year, &t.tm_mon, &t.tm_mday);
+      if (t.tm_mon == 0) {
+	  t.tm_mon = 6;
+	  t.tm_mday = 1;
+      } else if (t.tm_mday == 0) {
+	  t.tm_mday = 15;
+      }
+      --t.tm_mon; /* Jan is 0 */
+      if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
+      pcs->meta->date2 = mktime(&t);
+   } else {
+      pcs->meta->date2 = pcs->meta->date1;
    }
 }
 

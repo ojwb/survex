@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include <limits.h>
 #include <stdarg.h>
+#include <time.h>
 
 #include "debug.h"
 #include "cavern.h"
@@ -466,11 +467,26 @@ data_file(const char *pth, const char *fnm)
 	 skipline();
 	 process_eol();
 	 /* SURVEY DATE: 7 10 79  COMMENT:<Long name> */
-	 /* Note: Larry says a 2 digit year is always 19XX */
+	 /* NB order is *month* *day* year */
 	 get_token();
 	 get_token();
-	 /* if (ch != ':') ... */
-	 nextch();
+	 if (ch == ':') {
+	     struct tm t;
+
+	     copy_on_write_meta(pcs);
+
+	     nextch();
+	     /* struct tm month uses 0 for Jan */
+	     t.tm_mon = read_uint() - 1;
+	     t.tm_mday = read_uint();
+	     /* struct tm uses year - 1900 */
+	     t.tm_year = read_uint();
+	     /* Note: Larry says a 2 digit year is always 19XX */
+	     if (t.tm_year >= 100) t.tm_year -= 1900;
+
+	     pcs->meta->date1 = mktime(&t);
+	     pcs->meta->date2 = pcs->meta->date1;
+	 }
 	 skipline();
 	 process_eol();
 	 /* SURVEY TEAM: */

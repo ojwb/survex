@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,6 +174,7 @@ main(int argc, char **argv)
    pcs = osnew(settings);
    pcs->next = NULL;
    pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
+   pcs->meta = NULL;
 
    /* Set up root of prefix hierarchy */
    root = osnew(prefix);

@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -194,6 +194,12 @@ typedef struct Prefix {
 #endif
 } prefix;
 
+/* survey metadata */
+typedef struct Meta_data {
+    size_t ref_count;
+    unsigned short date1, date2;
+} meta_data;
+
 /* stuff stored for both forward & reverse legs */
 typedef struct {
    struct Node *to;
@@ -203,6 +209,8 @@ typedef struct {
    unsigned char reverse;
    /* flags - e.g. surface, duplicate survey
     * only used if (FLAG_DATAHERE & !(FLAG_REPLACEMENTLEG|FLAG_FAKE))
+    * This could be only in linkfor, but this is actually more space
+    * efficient.
     */
    unsigned char flags;
 } linkcommon;
@@ -223,6 +231,7 @@ typedef struct Link {
    linkcommon l;
    delta d; /* Delta */
    svar v; /* Variances */
+   meta_data *meta;
 } linkfor;
 
 /* node - like a station, except several nodes are used to represent a
@@ -262,6 +271,7 @@ typedef struct Inst {
 
 /* various settings preserved by *BEGIN and *END */
 typedef struct Settings {
+   struct Settings *next;
    unsigned int Truncate;
    bool f_clino_percent;
    bool f_backclino_percent;
@@ -278,7 +288,7 @@ typedef struct Settings {
    reading *ordering;
    int begin_lineno; /* 0 means no block started in this file */
    int flags;
-   struct Settings *next;
+   meta_data * meta;
 } settings;
 
 /* global variables */
