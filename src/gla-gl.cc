@@ -80,7 +80,6 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     m_Rotation.setFromEulerAngles(0.0, 0.0, 0.0);
     m_Scale = 0.0;
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
-    m_IndicatorZPosition = 0.0;
 }
 
 GLACanvas::~GLACanvas()
@@ -157,8 +156,6 @@ void GLACanvas::SetVolumeCoordinates(glaCoord left, glaCoord right, glaCoord fro
     m_Volume.back = back;
     m_Volume.bottom = bottom;
     m_Volume.top = top;
-
-    m_IndicatorZPosition = m_Volume.front * 2.5;
 }
 
 void GLACanvas::SetViewportAndProjection()
@@ -218,7 +215,7 @@ void GLACanvas::SetIndicatorTransform()
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glTranslated(0.0, 0.0, -m_IndicatorZPosition);
+    glTranslated(0.0, 0.0, -m_Volume.front * 2.5 * m_Scale);
     glScaled(width / size.GetWidth(), height / size.GetHeight(), 1.0);
 
     glDisable(GL_DEPTH_TEST);
@@ -302,7 +299,7 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
 
 void GLACanvas::DrawIndicatorText(glaCoord x, glaCoord y, const wxString& str)
 {
-    DrawText(x, y, m_IndicatorZPosition + 15.0, str);
+    DrawText(x, y, 0.0, str);
 }
 
 void GLACanvas::GetTextExtent(const wxString& str, glaCoord* x_ext, glaCoord* y_ext)
@@ -386,7 +383,7 @@ void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
 {
     // Place a vertex for the current indicator object being drawn.
 
-    PlaceVertex(x, y, m_IndicatorZPosition + 10.0);
+    PlaceVertex(x, y, 0.0);
 }
 
 void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, glaCoord x0, glaCoord y0, glaCoord w, glaCoord h)
@@ -413,8 +410,7 @@ void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, glaCoord x0, glaCoord 
 
 void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius)
 {
-    // Draw a filled circle with an edge.  The filled circle is in the z=0 plane whilst the edge
-    // is in the z=5 plane.
+    // Draw a filled circle with an edge.
     
     GLUquadric* quadric = gluNewQuadric();
 
@@ -427,7 +423,6 @@ void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy,
     glTranslated(cx, cy, 0.0);
     gluDisk(quadric, 0.0, radius, 36, 1);
     SetColour(edge);
-    glTranslated(0.0, 0.0, 5.0);
     gluDisk(quadric, radius - 1.0, radius, 36, 1);
     glTranslated(-cx, -cy, 0.0);
 }
@@ -436,7 +431,6 @@ void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord
 {
     // Draw a filled semicircle with an edge.
     // The semicircle extends from "start" deg to "start"+180 deg (increasing clockwise, 0 deg upwards).
-    // The filled semicircle is in the z=0 plane whilst the edge is in the z=5 plane.
     
     GLUquadric* quadric = gluNewQuadric();
 
@@ -449,7 +443,6 @@ void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord
     glTranslated(cx, cy, 0.0);
     gluPartialDisk(quadric, 0.0, radius, 36, 1, start, 180.0);
     SetColour(edge);
-    glTranslated(0.0, 0.0, 5.0);
     gluPartialDisk(quadric, radius - 1.0, radius, 36, 1, start, 180.0);
     glTranslated(-cx, -cy, 0.0);
 }
@@ -507,6 +500,15 @@ void GLACanvas::Transform(Double x, Double y, Double z, Double* x_out, Double* y
     glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
     glGetIntegerv(GL_VIEWPORT, viewport);
 
+    // Perform the projection.
     gluProject(x, y, z, modelview_matrix, projection_matrix, viewport, x_out, y_out, z_out);
+}
+
+Double GLACanvas::SurveyUnitsAcrossViewport()
+{
+    // Measure the current viewport in survey units, taking into account the current
+    // display scale.
+
+    return (m_Volume.right - m_Volume.left) / m_Scale;
 }
 

@@ -85,8 +85,6 @@ class GLACanvas : public wxWindow {
         Double z;
     } m_Translation;
 
-    Double m_IndicatorZPosition;
-    
     static void* const m_Font = GLUT_BITMAP_HELVETICA_10;
     static const int m_FontSize = 10;
     
@@ -147,5 +145,7 @@ public:
     void Transform(Double x, Double y, Double z, Double* x_out, Double* y_out, Double* z_out);
 
     int GetFontSize() { return m_FontSize; }
+
+    Double SurveyUnitsAcrossViewport();
 };
 

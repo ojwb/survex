@@ -1089,12 +1089,11 @@ void GfxCore::DrawScalebar()
     
     if (m_Lock == lock_POINT) return;
 
-    // Calculate the extent of the survey, in metres across the screen plane.
-    int x_size = m_XSize;
+    // Calculate how many metres of survey are currently displayed across the screen.
+    Double across_screen = SurveyUnitsAcrossViewport();
 
-    Double across_screen = Double(x_size / m_Params.scale);
+    // Convert to imperial measurements if required.
     Double multiplier = 1.0;
-
     if (!m_Metric) {
         across_screen /= METRES_PER_FOOT;
         multiplier = METRES_PER_FOOT;
@@ -1105,8 +1104,8 @@ void GfxCore::DrawScalebar()
     }
 
     // Calculate the length of the scale bar.
-    Double size_snap = pow(10.0, floor(log10(0.75 * across_screen)));
-    Double t = across_screen * 0.75 / size_snap;
+    Double size_snap = pow(10.0, floor(log10(0.65 * across_screen)));
+    Double t = across_screen * 0.65 / size_snap;
     if (t >= 5.0) {
         size_snap *= 5.0;
     } else if (t >= 2.0) {
@@ -1116,7 +1115,7 @@ void GfxCore::DrawScalebar()
     if (!m_Metric) size_snap *= multiplier;
 
     // Actual size of the thing in pixels:
-    int size = int(size_snap * m_Params.scale);
+    int size = int((size_snap / SurveyUnitsAcrossViewport()) * m_XSize);
     m_ScaleBar.width = size;
 
     // Draw it...
