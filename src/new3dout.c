@@ -182,17 +182,22 @@ cave_write_source(const char *source)
 {
   /* create a relative path, given an absolute dir, and an absolute file */
   /* part 1. find where they differ */
-  /* PHILU: temp bodge */
-  if (fAbsoluteFnm(source)) {
-    /* strip source down to just a file name... */
-    if (strncmp(source, basesource, strlen(basesource)) != 0) {
-      printf("Warning: source links may not work\n");
-    } else {
-      source = source + strlen(basesource);
-    }
+  char *allocated_source = NULL;
+  /* is it an absolute? */
+  if (!fAbsoluteFnm(source)) {
+    allocated_source = use_path(startingdir, source);
+    source = allocated_source;
+  }
+
+  /* strip source down to just a file name... */
+  if (strncmp(source, basesource, strlen(basesource)) != 0) {
+    printf("Warning: source links may not work\n");
+  } else {
+    source = source + strlen(basesource);
   }
   putc(SOURCE_3D, pimg->fh);
   fputcs(source, pimg->fh);
+  osfree(allocated_source);
 }
 
 static void
