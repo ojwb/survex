@@ -568,41 +568,25 @@ replace_subnets(void)
 	    
 	    zero = fZero(&leg->v);
             if (!zero) {
+	       d tmp;
                subdd(&e, &POSD(stn4), &POSD(stn3));
-               subdd(&e, &e, &leg->d);
-#ifdef NO_COVARIANCES
-	       /* FIXME: I'm not convinced we need separate cases here,
-		* but it doesn't give the right answers if we don't -
-		* need to find out why... */
-               divdv(&e, &e, &leg->v);
-#endif
+               subdd(&tmp, &e, &leg->d);
+               divdv(&e, &tmp, &leg->v);
             }
             if (data_here(ptrRed->join1)) {
-	       d tmp2;
-	       if (!zero) {
-#ifdef NO_COVARIANCES
-		  mulvd(&tmp2, &ptrRed->join1->v, &e);
-#else
-		  var v;
-		  divvv(&v, &ptrRed->join1->v, &leg->v);
-		  mulvd(&tmp2, &v, &e);
-#endif
-	       }
                adddd(&POSD(stn2), &POSD(stn3), &ptrRed->join1->d);
-	       if (!zero) adddd(&POSD(stn2), &POSD(stn2), &tmp2);
-            } else {
-	       d tmp2;
 	       if (!zero) {
-#ifdef NO_COVARIANCES
-		  mulvd(&tmp2, &stn2->leg[dirn2]->v, &e);
-#else
-		  var v;
-		  divvv(&v, &stn2->leg[dirn2]->v, &leg->v);
-		  mulvd(&tmp2, &v, &e);
-#endif
+		  d tmp;
+		  mulvd(&tmp, &ptrRed->join1->v, &e);
+		  adddd(&POSD(stn2), &POSD(stn2), &tmp);
 	       }
+            } else {
                subdd(&POSD(stn2), &POSD(stn3), &stn2->leg[dirn2]->d);
-               if (!zero) adddd(&POSD(stn2), &POSD(stn2), &tmp2);
+               if (!zero) {
+		  d tmp;
+		  mulvd(&tmp, &stn2->leg[dirn2]->v, &e);
+		  adddd(&POSD(stn2), &POSD(stn2), &tmp);
+	       }
             }
             fix(stn2);
             dirn2 = (dirn2 + 2) % 3; /* point back at stn again */
