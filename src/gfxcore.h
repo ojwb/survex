@@ -36,7 +36,6 @@
 using std::list;
 
 class MainFrm;
-class PointInfo;
 
 struct ColourTriple {
     // RGB triple: values are from 0-255 inclusive for each component.
