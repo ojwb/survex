@@ -915,6 +915,7 @@ img_read_item(img *pimg, img_point *p)
 	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
+	 pimg->label_buf[len] = '\0';
 	 break;
        }
        case 4:
@@ -1242,7 +1243,9 @@ skip_to_N:
       if (pimg->pending) {
 	 /* pending MOVE or LINE or LABEL or STOP */
 	 int r = pimg->pending - 4;
-	 pimg->label = "";
+	 /* Set label to empty - don't use "" as we adjust label relative
+	  * to label_buf when label_buf is reallocated. */
+	 pimg->label = pimg->label_buf + strlen(pimg->label_buf);
 	 pimg->flags = 0;
 	 if (r == img_LABEL) {
 	    /* nasty magic */
