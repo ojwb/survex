@@ -177,8 +177,6 @@ get DOS programs to abort on Ctrl-C reliably?
 Sort out code fragments to attempt to handle dud equates (nodes equated
 to each other but not referred to otherwise (done?)
 
-Warning: Survey not all connected (but all attached to fixed points)?
-
 Label lengths aren't considered when working out image size in prindept.c,
 so a long label can spill off the edge of the printout
 
@@ -202,17 +200,9 @@ Tests these commands:
   *fix 2 0 0 0
   *equate 1 2
 
-Specify prefix level explicitly here:
-en: 26 Station `%s' must be exported in a higher level
-en: 27 Station `%s' not exported from lowest prefix level
-
-szlig new orthography...
-
 flag legs as "skeletal" or something? (i.e. not in the cave passage) -
 e.g. a radiolocation leg isn't surface, but it isn't in the cave
 itself either.  You could just call it surface though...
 
 Check SIGINT on DOS caverot restores text mode...
-
-Signal handler should NOT do I/O...
 

@@ -141,5 +141,5 @@ make 1.02 port doesn't seem up to the job.
 
 To build, create a fresh directory (or empty one) and unpack the contents of
 srcN_NN.zip into it (using !SparkFS or similar).  Then double-click on
-`ObeyMe' in the unpacked directory.  Then open a taskwindow (or the
-commandline) and run `amu'.
+`!ObeyMe' in the unpacked directory to rename the source files into c and h
+subdirectories.  Then double-click on `!MakeMe' to build survex.

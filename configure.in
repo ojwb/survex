@@ -170,7 +170,7 @@ if test x"$ac_cv_func_strftime" != xyes ; then
   LIBOBJS="$LIBOBJS strftime.o"
 fi
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(mktime strdup strerror perror strtod strtol popen setjmp signal getpwuid)
+AC_CHECK_FUNCS(popen setjmp signal getpwuid)
 
 dnl difftime seems to be an ANSI invention
 AC_CHECK_FUNCS(difftime)

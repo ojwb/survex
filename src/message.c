@@ -223,23 +223,7 @@ init_signals(void)
       default:      en = /*Unknown signal received*/97; break;
    }
    fputsnl(msg(en), STDERR);
-#if 0
-   /* Not useful to display errno - it's just left from the last library
-    * call which failed... */
-   if (errno >= 0) {
-# ifdef HAVE_STRERROR
-      fputsnl(strerror(errno), STDERR);
-# elif defined(HAVE_SYS_ERRLIST)
-      if (errno < sys_nerr) fputsnl(STDERR, sys_errlist[errno]);
-# elif defined(HAVE_PERROR)
-      perror(NULL); /* always goes to stderr */
-      /* if (arg!=NULL && *arg!='\0') fputs("<arg>: <err>\n",stderr); */
-      /* else fputs("<err>\n",stderr); */
-# else
-      fprintf(STDERR, "error code %d\n", errno);
-# endif
-   }
-#endif
+
    /* Any of the signals we catch indicates a bug */
    fatalerror(/*Bug in program detected! Please report this to the authors*/11);
 
@@ -253,8 +237,17 @@ default_charset(void)
 #ifdef ISO8859_1
    return CHARSET_ISO_8859_1;
 #elif (OS==RISCOS)
-/* RISCOS 3.1 and above CHARSET_RISCOS31 (ISO_8859_1 + extras in 128-159)
- * FIXME: RISCOS < 3.1 is ISO_8859_1 */
+   /* RISCOS 3.1 and above CHARSET_RISCOS31 (ISO_8859_1 + extras in 128-159)
+    * RISCOS < 3.1 is ISO_8859_1 */
+ 
+   if (xwimpreadsysinfo_version(&version) != NULL) {
+      /* RISC OS 2 or some error (don't care which) */
+      return CHARSET_ISO_8859_1;
+   }
+
+   /* oddly wimp_VERSION_RO3 is RISC OS 3.1 */
+   if (version < wimp_VERSION_RO3) return CHARSET_ISO_8859_1;
+      
    return CHARSET_RISCOS31;
 #elif (OS==MSDOS)
    return CHARSET_DOSCP850;
@@ -289,25 +282,28 @@ add_unicode(int charset, unsigned char *p, int value)
       }
       break;
    case CHARSET_ISO_8859_1:
-#if (OS==RISCOS)
-   case CHARSET_RISCOS31: /* RISC OS 3.1 has a few extras in 128-159 */
-#endif
       if (value < 0x100) {
 	 *p = value;
 	 return 1;
       }
-#if (OS==RISCOS)
-      /* FIXME: if OS version >= 3.1 handle extras here */
-      /* RISC OS 3.1 (and later) extensions to ISO-8859-1:
-       * \^y = \x86
-       * \^Y = \x85
-       * \^w = \x82
-       * \^W = \x81
-       * \oe = \x9b
-       * \OE = \x9a
-       */
-#endif
       break;
+#if (OS==RISCOS)
+   case CHARSET_RISCOS31:
+      /* RISC OS 3.1 (and later) extensions to ISO-8859-1 */
+      switch (value) {
+       case 0x152: value = 0x9a; break; /* &OElig; */
+       case 0x153: value = 0x9b; break; /* &oelig; */
+       case 0x174: value = 0x81; break; /* &Wcirc; */
+       case 0x175: value = 0x82; break; /* &wcirc; */
+       case 0x176: value = 0x85; break; /* &Ycirc; */
+       case 0x177: value = 0x86; break; /* &ycirc; */
+      }
+      if (value < 0x100) {
+	 *p = value;
+	 return 1;
+      }
+      break;
+#endif
 #if (OS==MSDOS)
    case CHARSET_DOSCP850:
       value = xlate_dos_cp850(value);
@@ -354,31 +350,6 @@ parse_msg_file(int charset_code)
    }
 #ifdef DEBUG
    fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
-#endif
-
-#if 1
-   /* backward compatibility - FIXME deprecate? */
-   if (strcasecmp(msg_lang, "engi") == 0) {
-      msg_lang = "en";
-   } else if (strcasecmp(msg_lang, "engu") == 0) {
-      msg_lang = "en_US";
-   } else if (strcasecmp(msg_lang, "fren") == 0) {
-      msg_lang = "fr";
-   } else if (strcasecmp(msg_lang, "germ") == 0) {
-      msg_lang = "de";
-   } else if (strcasecmp(msg_lang, "ital") == 0) {
-      msg_lang = "it";
-   } else if (strcasecmp(msg_lang, "span") == 0) {
-      msg_lang = "es";
-   } else if (strcasecmp(msg_lang, "cata") == 0) {
-      msg_lang = "ca";
-   } else if (strcasecmp(msg_lang, "port") == 0) {
-      msg_lang = "pt";
-   }
-#endif
-#ifdef DEBUG
-   fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang,
-           msg_lang ? msg_lang : "(null)");
 #endif
 
    /* On Mandrake LANG defaults to C */

@@ -20,6 +20,11 @@ Changes in 0.97-prerelease3:
 * No longer trap SIGINT (Ctrl-C) or SIGTERM (Ctrl-\ on Unix) as we
   can't do anything useful.
 
+* Removed support for really old language names ("fren", "germ",
+  "ital", etc) - use "fr", "de", "it", etc instead.
+
+* (RISC OS version): support a few extra accents in messages.
+
 Changes in 0.97-prerelease2:
 
 * cad3d: Fixed output from `--help'; -e, -D, -S short options now work;
