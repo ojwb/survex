@@ -88,7 +88,7 @@ resolve entries in TODO; resolve FIXMEs in code
 
 test diving data with compass omitted (plumbed)
 
-use "highest" title?
+use "highest" title
 
 Warn bearings not 3 digits, gradient not <sign><digit><digit>
 
@@ -125,7 +125,7 @@ funcs to spot differences between caves:
   display two plots at once, maybe flash in ram banks?
   compare nets
 
-make printps & printhpgl one program; make printdm and printpcl one
+? make printps & printhpgl one program; make printdm and printpcl one
 program - autosense (by looking at argv[0]) which we're being run as
 (and use symbolic link in Unix). Provide command line option as
 override (so we can use alias/batchfile for DOS)?
@@ -138,12 +138,12 @@ to each other but not referred to otherwise (done?)
 Label lengths aren't considered when working out image size in prindept.c,
 so a long label can spill off the edge of the printout
 
-"error.c" add option to read errors from disc only when needed, to help
+"message.c" add option to read errors from disc only when needed, to help
 when memory is tight
 
 printer driver name spills over one page on Wookey's printer (printdm)
 
-improve messages given when a signal is received (eg more precise
+? improve messages given when a signal is received (eg more precise
 reporting of 'Arithmetic error' as 'Divide by zero', 'Negative root', etc)
 
 Tests these commands:
