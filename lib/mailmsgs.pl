@@ -8,9 +8,10 @@ my %email = (
  'de' => 'Gerhard Niklasch <nikl@mathematik.tu-muenchen.de>, <niklasch@consol.de>',
  'fr' => 'Eric.Madelaine@sophia.inria.fr',
  'it' => 'zoom7@freemail.it',
- 'es' => 'nobody@localhost',
+# 'es' => 'nobody@localhost',
  'ca' => 'jep@redestb.es',
- 'pt' => 'leandro@dybal.eti.br'
+ 'pt' => 'leandro@dybal.eti.br',
+ 'sk' => 'martinsluka@mac.com'
 );
 
 system "rm *.todo";

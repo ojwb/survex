@@ -52,7 +52,13 @@ bool Aven::OnInit()
 	wxLogNull logNo;
 	wxLocale *loc = new wxLocale();
 	loc->AddCatalogLookupPathPrefix(msg_cfgpth());
-	loc->Init(lang, lang, lang, TRUE, TRUE);
+	if (!loc->Init(lang, lang, lang, TRUE, TRUE)) {
+	    if (strcmp(lang, "sk") == 0) {
+	       // As of 2.2.9, wxWindows has cs but not sk - the two languages
+	       // are close, so this makes sense...
+	       loc->Init("cs", "cs", "cs", TRUE, TRUE);
+	    }
+	}
 	// The existence of the wxLocale object is enough - no need to keep a
 	// pointer to it!
     }

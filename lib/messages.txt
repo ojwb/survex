@@ -2282,8 +2282,14 @@ it:227 Le quantit&aacute; di lunghezza e angolari non possono essere calibrate i
 sk:227 Nie je mo&zcaron;n&eacute; nakalibrova&tcaron; uhlov&yacute;&eacute; a d&lacute;&zcaron;kov&eacute; &uacute;daje naraz
 #
 en:228 Select a terrain file to view
+fr:228 S&eacute;lectionner un fichier de surface &aagrave; visualiser
+ca:228 Selecciona un fitxer de terreny per veure
+es:228 Selecciona un archivo de terreno para ver
 #
 en:229 Terrain files
+fr:229 Fichiers de surface
+ca:229 Fitxers de terreny
+es:229 Archivos de terreno
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
@@ -3099,9 +3105,13 @@ ca:344 &deg;
 es:344 &deg;
 it:344 &deg;
 sk:344 &deg;
+# alternative angle units (400 grad = 360 degrees)
 # try to make this as short as possible...
 en:345 grad
+fr:345 grade
 de:345 Neugrad
+ca:345 graus centesimals
+es:345 grados centesimales
 sk:345 gr&aacute;dy
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
