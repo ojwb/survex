@@ -14,8 +14,11 @@ Changes between 1.0.26 and 1.1.0:
 
 * aven: Depth colouring is now continuously varying.
 
-* aven: Search moved onto the toolbar, and we now use the status bar for
-  coordinates, distances, etc to make better use of screen space.
+* aven: Find stations moved onto the toolbar and now uses a simple wildcarded
+  match (? matches any character, * matches any number of characters).
+
+* aven: We now use the status bar for coordinates, distances, etc to make
+  better use of screen space.
 
 * aven: Full screen mode (F11).
 
