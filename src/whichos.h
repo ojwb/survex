@@ -1,6 +1,6 @@
 /* whichos.h
  * Determines which OS Survex will try to compile for
- * Copyright (C) 1993-1995,2002 Olly Betts
+ * Copyright (C) 1993-1995,2002,2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@
 #   undef TOS
 #   define OS TOS
 #  endif
-#  if (defined(__WIN32__))
+#  if (defined (WIN32) || defined(__WIN32__))
 #   undef WIN32
 #   define OS WIN32
 #  endif

@@ -81,26 +81,43 @@ if WIN32
 #aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
 aven_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 
-svxeditrc.o: $(srcdir)/svxedit.rc svxedit.ico
+svxeditrc.o: $(srcdir)/svxedit.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
 
 editwrap_LDADD = svxeditrc.o
 
 # FIXME: use path on WXCONFIG to get --include-dir?
-avenrc.o: $(srcdir)/aven.rc aven.ico
+avenrc.o: $(srcdir)/aven.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o $$pwd/avenrc.o aven.rc
 else
 #aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
 aven_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 endif
 
+# If we're building aven on MacOS X, we need to bind resources to aven after
+# we build it.  Use aven-rez as a timestamp file to track whether we've
+# bound resources.
+# The MacOS X install program doesn't copy the resource fork (clever eh?) so
+# we reapply the resources after installing too...
+if AVEN
 if MACOSX
-noinst_SCRIPTS = aven-rez
+AVEN_REZ = aven-rez
 
 aven-rez: aven
 	`@WXCONFIG@ --rezflags` aven
 	touch aven-rez
-endif
+ 
+install-exec-hook:
+	`@WXCONFIG@ --rezflags` $(bindir)/aven
+else !MACOSX
+AVEN_REZ =
+endif !MACOSX
+else !AVEN
+AVEN_REZ =
+endif !AVEN
+ 
+noinst_SCRIPTS = $(AVEN_REZ)
+MOSTLYCLEANFILES = $(AVEN_REZ)
 
 #aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 #aven_CXXFLAGS = @WX_CXXFLAGS@

@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-07-26 14:02:36 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.6 2003-07-26 14:02:36 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-11-22 16:50:28 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.7 2003-11-22 16:50:28 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -493,7 +493,7 @@ actions:
 
 <Sect2><Title>Configuration</Title>
 
-<Sect3><Title>Selecting a Language</Title>
+<Sect3><Title>Selecting Your Preferred Language</Title>
 
 <Para>Survex has extensive internationalisation capabilities.  The
 language used for messages from Survex and most of the library calls
@@ -508,13 +508,13 @@ requested language, UK English is used.</Para>
 <Para>
 However you may want to override the language manually -
 for example if Survex isn't available in your native language
-you'll want to choose the supported language you speak best.
+you'll want to choose the supported language you understand best.
 </Para>
 
 <Para>
 To do this, you set the
 <systemitem>SURVEXLANG</systemitem> environment variable.  Here's a list
-of the code currently supported:</Para>
+of the codes currently supported:</Para>
 
 <informaltable frame="all">
 <tgroup cols="2">
@@ -544,8 +544,10 @@ messages in French (language code fr):</Para>
 <VariableList>
  <VarListEntry><Term>Microsoft Windows</Term>
    <ListItem><Para>
-For MS Windows 95 and 98 (and probably ME), you'll need to add a line to
-<filename>AUTOEXEC.BAT</filename> as for MSDOS (see above).
+For MS Windows 95 and 98 (and probably ME), you'll need to add a line
+containing <command>SET SURVEXLANG=fr</command> to your
+<filename>AUTOEXEC.BAT</filename> script.  You need to
+reboot for the change to take effect.
 </Para>
 
 <Para>For MS Windows NT4, 2000, and XP, you should proceed as follows
@@ -878,7 +880,7 @@ the names using the *truncate command.
 or [&lt;MINUS&gt;|&lt;PLUS&gt;] &lt;DECIMAL&gt; &lt;dec fraction&gt;
 </Para>
 
-<Para>
+<Para><!-- FIXME: put informal description first -->
 i.e. optional PLUS or MINUS sign in front, with
 optional DECIMAL character (default '.'), which may be
 embedded, leading or trailing. No spaces are allowed between the
@@ -1090,7 +1092,7 @@ scale factor)
 
 <Para>
 The scale factor for DECLINATION must be 1.0, otherwise an error
-is given.
+is given. <!-- FIXME: practical example for declination -->
 </Para>
 
 <Para>
@@ -1866,8 +1868,10 @@ disagree, you can always use one of the other methods!
 If the position is omitted it defaults to (0,0,0). <!-- which allows
 sub-sections of a large survey to be easily processed separately.
  FIXME - don't want to encourage people to do this really -->
-The standard errors default to zero (fix station exactly). cavern will complain
-if you attempt to fix the same survey station twice.
+The standard errors default to zero (fix station exactly). cavern will
+give an error if you attempt to fix the same survey station twice
+at different coordinates, or a warning if you fix it twice with matching
+coordinates.
 </Para>
 
 <Para>
@@ -2067,7 +2071,8 @@ case, unzip it with "unzip -L" and unix cavern will process it).
 </Para>
 
 <Para>
-The depth to which you can include files may be limited by the operating system
+The depth to which you can nest
+include files may be limited by the operating system
 you use.  Usually the limit is fairly high (>30), but if you want to be able to
 process your dataset with &survexsuite; on any supported platform, it
 would be prudent not to go overboard with nested include files.
@@ -2315,7 +2320,7 @@ check this list -->
 
 <Para>
 &lt;standard deviation&gt; must include units and thus is typically
-'0.05 metres', or 0.02 degrees. See *units below for full list
+"0.05 metres", or "0.02 degrees". See *units below for full list
 of valid units.
 </Para>
 
@@ -2497,7 +2502,7 @@ for situations where you have some new surveys adding extensions
 to an already drawn-up survey which you wish to avoid completely
 redrawing. You can read in the old data, use *SOLVE to fix it, and then
 read in the new data.  Then old stations will be in the same
-positions as there are in existing drawn up survey, even if new loops
+positions as they are in the existing drawn up survey, even if new loops
 have been formed by the extensions.
 </Para></listitem>
 
@@ -2756,6 +2761,7 @@ in DEG|DEGREES|GRADS|MILS|MINUTES
 
 </Sect1>
 
+<!-- FIXME rename to "Cookbook"? -->
 <Sect1><Title>Contents of &svx; files: How do I?</Title>
 <?dbhtml filename="svxhowto.htm">
 
@@ -2942,6 +2948,8 @@ clino, but with a plumb of some sort, then it is useful to distinguish
 them in this way so that any clino adjustment is not applied to
 these values.
 </Para>
+
+FIXME: paste in section from mail to list
 
 <Para>
 Note that a similar effect can be achieved by using the "*infer plumbs" command
@@ -3495,8 +3503,9 @@ the printer drivers and other utility programs being pulled in
 and integrated into the menus.</Para>
 
 <Para>Aven is built on &wxwindows;, which means that can easily support
-Unix and Microsoft Windows.  Mac support is close to complete (at least
-for OS X).  Support for &msdos; is possible if there's sufficient interest.
+Unix, Microsoft Windows, and MacOS X.  MacOS 9 support is possible, but
+requires somebody with MacOS 9 and a compiler to build it with.
+Support for &msdos; is possible if there's sufficient interest.
 Support for &riscos; is unlikely unless someone very enthusiastic steps
 forward to do the porting work.</Para>
 

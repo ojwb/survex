@@ -11,7 +11,7 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt
 	echo Section: science >> control
 	echo Priority: extra >> control
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
-	echo Standards-Version: 3.6.0 >> control
+	echo Standards-Version: 3.6.1 >> control
 	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
 	echo 'Build-Depends: debhelper (>= 1.1.17), xlibs-dev, libwxgtk2.4-dev, libglut3-dev, gcc-3.2, g++-3.2' >> control
 	echo >> control

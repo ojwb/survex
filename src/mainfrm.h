@@ -24,7 +24,7 @@
 #ifndef mainfrm_h
 #define mainfrm_h
 
-#include "wx.h"
+#include <wx.h>
 #include <wx/docview.h>
 #include <wx/notebook.h>
 #include "gfxcore.h"
@@ -162,12 +162,12 @@ public:
 
     wxString GetText() const { return text; }
 
-    bool IsEntrance() const { return flags & LFLAG_ENTRANCE; }
-    bool IsFixedPt() const { return flags & LFLAG_FIXED; }
-    bool IsExportedPt() const { return flags & LFLAG_EXPORTED; }
-    bool IsUnderground() const { return flags & LFLAG_UNDERGROUND; }
-    bool IsSurface() const { return flags & LFLAG_SURFACE; }
-    bool IsHighLighted() const { return flags & LFLAG_HIGHLIGHTED; }
+    bool IsEntrance() const { return (flags & LFLAG_ENTRANCE != 0); }
+    bool IsFixedPt() const { return (flags & LFLAG_FIXED != 0); }
+    bool IsExportedPt() const { return (flags & LFLAG_EXPORTED != 0); }
+    bool IsUnderground() const { return (flags & LFLAG_UNDERGROUND != 0); }
+    bool IsSurface() const { return (flags & LFLAG_SURFACE != 0); }
+    bool IsHighLighted() const { return (flags & LFLAG_HIGHLIGHTED != 0); }
 };
 
 class MainFrm : public wxFrame {

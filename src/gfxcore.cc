@@ -803,7 +803,8 @@ void GfxCore::DrawDepthbar()
     glaCoord size = 0;
 
     wxString* strs = new wxString[m_Bands];
-    for (int band = 0; band < m_Bands; band++) {
+    int band;
+    for (band = 0; band < m_Bands; band++) {
         Double z = m_Parent->GetZMin() +
                    m_Parent->GetZExtent() * band / (m_Bands - 1);
         
@@ -829,7 +830,7 @@ void GfxCore::DrawDepthbar()
                       DEPTH_BAR_EXTRA_LEFT_MARGIN,
                   DEPTH_BAR_BLOCK_HEIGHT*(m_Bands - 1) + DEPTH_BAR_MARGIN*4);
 
-    for (int band = 0; band < m_Bands; band++) {
+    for (band = 0; band < m_Bands; band++) {
         if (band < m_Bands - 1) {
             DrawRectangle(m_Parent->GetPen(band),
                           m_Parent->GetPen(band),

@@ -18,8 +18,8 @@
  */
 
 #include <ctype.h>
-#include <debug.h>
 
+#include "debug.h"
 #include "hash.h"
 
 /* some (preferably prime) number for the hashing function */

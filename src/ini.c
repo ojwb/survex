@@ -75,7 +75,7 @@ ini_write(const char *section, const char *var, const char *value)
 #endif
 
 char **
-ini_read(FILE **fh_list, const char *section, const char **vars)
+ini_read(FILE **fh_list, const char *section, const_char_star *vars)
 {
    int n, c;
    char **vals;
@@ -175,12 +175,12 @@ ini_read(FILE **fh_list, const char *section, const char **vars)
 }
 
 char **
-ini_read_hier(FILE **fh_list, const char *section, const char **v)
+ini_read_hier(FILE **fh_list, const char *section, const_char_star *v)
 {
    int i, j;
    char **vals;
    int *to;
-   const char **vars;
+   const_char_star *vars;
 
    SVX_ASSERT(fh_list != NULL);
    SVX_ASSERT(section != NULL);

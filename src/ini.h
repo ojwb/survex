@@ -19,15 +19,17 @@
 
 #include <stdio.h>
 
+typedef const char * const_char_star;
+
 /* fh_list is a NULL terminated array of FILE*-s of ini files
  * section is the section of the ini file to read from
  * vars is a list of variables to read (terminated by NULL)
  * returns a list of values with NULL for "not found" (not terminated)
  */
-char **ini_read(FILE **fh_list, const char *section, const char **vars);
+char **ini_read(FILE **fh_list, const char *section, const_char_star *vars);
 
 /* very similar to ini_read, but recursively tries the section named by
  * the first read parameter until it finds the variable or finds no
  * recursive field
  */
-char **ini_read_hier(FILE **fh_list, const char *section, const char **vars);
+char **ini_read_hier(FILE **fh_list, const char *section, const_char_star *vars);

@@ -139,7 +139,7 @@ compile_error_token(int en)
    s_zero(&p);
    skipblanks();
    while (!isBlank(ch) && !isEol(ch)) {
-      s_catchar(&p, &len, ch);
+      s_catchar(&p, &len, (char)ch);
       nextch();
    }
    compile_error_skip(en, p ? p : "");
@@ -568,7 +568,7 @@ data_file(const char *pth, const char *fnm)
 	    nextch_handling_eol();
 	    while (ch != ',' && ch != ';' && ch != EOF) {
 	       while (isEol(ch)) process_eol();
-	       s_catchar(&dat_fnm, &dat_fnm_len, ch);
+	       s_catchar(&dat_fnm, &dat_fnm_len, (char)ch);
 	       nextch_handling_eol();
 	    }
 	    while (ch != ';' && ch != EOF) {

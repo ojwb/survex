@@ -26,7 +26,6 @@ extern "C" {
 
 #include <stdarg.h>
 
-#include "useful.h"
 #include "osdepend.h"
 #include "osalloc.h"
 
@@ -60,7 +59,7 @@ const char *msg(int en);
 /* Returns persistent copy of message */
 const char *msgPerm(int en);
 /* Kill persistent copy of message */
-#define msgFree(S) NOP
+#define msgFree(S) (void)0
 
 void v_report(int severity, const char *fnm, int line, int en, va_list ap);
 

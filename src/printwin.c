@@ -193,7 +193,7 @@ win_DrawTo(long x, long y)
 
 #define POINTS_PER_INCH 72.0
 #define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
-#define WIN_CROSS_SIZE (2 * scX / POINTS_PER_MM)
+#define WIN_CROSS_SIZE (int)(2 * scX / POINTS_PER_MM)
 
 static void
 win_DrawCross(long x, long y)
@@ -356,7 +356,7 @@ win_NewPage(int pg, int pass, int pagesX, int pagesY)
    if (pass == -1) return;
 
    StartPage(pd);
-   drawticks(clip, 9 * scX / POINTS_PER_MM, x, y);
+   drawticks(clip, int(9 * scX / POINTS_PER_MM), x, y);
 }
 
 static void

@@ -37,6 +37,7 @@
 #include <wx/confbase.h>
 
 #include <float.h>
+#include <functional>
 #include <stack>
 
 #ifdef HAVE_REGEX_H
@@ -47,6 +48,11 @@ extern "C" {
 #  include <rxposix.h>
 # elif defined(HAVE_RX_RXPOSIX_H)
 #  include <rx/rxposix.h>
+# elif !defined(REG_NOSUB)
+// we must be using wxWindows built-in regexp functions
+#  define REG_NOSUB wxRE_NOSUB
+#  define REG_ICASE wxRE_ICASE
+#  define REG_EXTENDED wxRE_EXTENDED
 # endif
 }
 #endif
@@ -234,7 +240,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 #endif
 END_EVENT_TABLE()
 
-class LabelCmp {
+class LabelCmp : public greater<const LabelInfo*> {
     int separator;
 public:
     LabelCmp(int separator_) : separator(separator_) {}
@@ -243,7 +249,7 @@ public:
     }
 };
 
-class LabelPlotCmp {
+class LabelPlotCmp : public greater<const LabelInfo*> {
     int separator;
 public:
     LabelPlotCmp(int separator_) : separator(separator_) {}
