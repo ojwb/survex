@@ -4,7 +4,7 @@
 //  About box handling for Aven.
 //
 //  Copyright (C) 2001-2003 Mark R. Shinwell.
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001,2002,2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -38,37 +38,22 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticText* title = new wxStaticText(this, 502,
-                                           wxString("Aven "VERSION));
-#ifdef AVENGL
-    const GLubyte* gl_vendor = glGetString(GL_VENDOR);
-    const GLubyte* gl_renderer = glGetString(GL_RENDERER);
-    const GLubyte* gl_version = glGetString(GL_VERSION);
-    wxString gl_desc("OpenGL");
-    gl_desc += ' ';
-    gl_desc += wxString(gl_version);
-    gl_desc += " (";
-    gl_desc += wxString(gl_vendor);
-    gl_desc += ' ';
-    gl_desc += wxString(gl_renderer);
-    gl_desc += ')';
-    wxStaticText* opengl = new wxStaticText(this, 520, gl_desc);
-#endif
-    wxStaticText* purpose = new wxStaticText(this, 505,
-	wxString(msg(/*Survey visualisation tool*/209)));
-    wxStaticText* copyright1 = new wxStaticText(this, 503,
-	    wxString::Format(AVEN_COPYRIGHT_MSG, msg(/*&copy;*/0)));
-    wxStaticText* copyright2 = new wxStaticText(this, 504,
-	    wxString::Format(COPYRIGHT_MSG, msg(/*&copy;*/0)));
+    wxBitmap& bm = wxGetApp().GetAboutBitmap();
+    if (bm.Ok()) {
+	wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, bm);
+	horiz->Add(bitmap, 0 /* horizontally unstretchable */, wxALL,
+		   2 /* border width */);
+    }
+    horiz->Add(vert, 0, wxALL, 2);
 
-    wxStaticText* os = new wxStaticText(this, 506,
-					msg(/*Host system type:*/386) +
-					wxString(" ") + wxGetOsDescription());
-    wxStaticText* depth = new wxStaticText(this, 507,
-                          msg(/*Colour depth:*/388) + wxString(" ") +
-                          wxString::Format("%d-%s", wxDisplayDepth(),
-                                           msg(/*bit*/389)));
-    
+    wxString id = wxString("Aven "VERSION);
+    id += '\n';
+    id += msg(/*Survey visualisation tool*/209);
+    wxStaticText* title = new wxStaticText(this, 502, id);
+    wxStaticText* copyright = new wxStaticText(this, 503,
+	    wxString::Format(AVEN_COPYRIGHT_MSG"\n"COPYRIGHT_MSG,
+			     msg(/*&copy;*/0), msg(/*&copy;*/0)));
+
     wxString licence_str;
     wxString l(msg(/*This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.*/219));
     wxClientDC dc(this);
@@ -94,32 +79,61 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 	l = l.substr(a);
     } while (!l.empty());
 
-    wxStaticText* licence = new wxStaticText(this, 506, licence_str);
+    wxStaticText* licence = new wxStaticText(this, 504, licence_str);
     wxButton* close = new wxButton(this, wxID_OK, wxString(msg(/*Close*/204)));
     close->SetDefault();
-
-    wxBitmap& bm = wxGetApp().GetAboutBitmap();
-    if (bm.Ok()) {
-	wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, bm);
-	horiz->Add(bitmap, 0 /* horizontally unstretchable */, wxALL, 2 /* border width */);
-    }
-    horiz->Add(vert, 0, wxALL, 2);
 
     vert->Add(10, 5, 0, wxTOP, 5);
     vert->Add(title, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
-    vert->Add(purpose, 0, wxLEFT | wxRIGHT, 20);
+
+    vert->Add(copyright, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
 
-    vert->Add(copyright1, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(copyright2, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(10, 5, 0, wxTOP, 5);
+    vert->Add(new wxStaticText(this, 505, msg(/*System Information:*/390)),
+	      0, wxLEFT | wxRIGHT, 20);
 
-    vert->Add(os, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(depth, 0, wxLEFT | wxRIGHT, 20);
-#ifdef AVENGL
-    vert->Add(opengl, 0, wxLEFT | wxRIGHT, 20);
+    wxString info(wxGetOsDescription());
+#ifdef AVENGL // FIXME: make this a function in gla-gl.cc
+    info += "\nOpenGL ";
+    info += (const char*)glGetString(GL_VERSION);
+    info += '\n';
+    info += (const char*)glGetString(GL_VENDOR);
+    info += '\n';
+    info += (const char*)glGetString(GL_RENDERER);
+    info += '\n';
+
+    const GLubyte* gl_extensions = glGetString(GL_EXTENSIONS);
+    if (*gl_extensions) {
+	info += gl_extensions;
+	info += '\n';
+    }  
+    GLint red, green, blue;
+    glGetIntegerv(GL_RED_BITS, &red);
+    glGetIntegerv(GL_GREEN_BITS, &green);
+    glGetIntegerv(GL_BLUE_BITS, &blue);
+    GLint max_texture_size;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
+    GLint max_viewport[2];
+    glGetIntegerv(GL_MAX_VIEWPORT_DIMS, max_viewport);
+    GLdouble point_size_range[2];
+    glGetDoublev(GL_POINT_SIZE_RANGE, point_size_range);
+    GLdouble point_size_granularity;
+    glGetDoublev(GL_POINT_SIZE_GRANULARITY, &point_size_granularity);
+    wxString s;
+    s.Printf("R%dG%dB%d\nMax Texture size: %dx%d\nMax Viewport size: %dx%d\nPoint Size %.3f-%.3f (granularity %.3f)",
+	     (int)red, (int)green, (int)blue,
+	     (int)max_texture_size, (int)max_texture_size,
+	     (int)max_viewport[0], (int)max_viewport[1],
+	     point_size_range[0], point_size_range[1],
+	     point_size_granularity);
+    info += s;
 #endif
+    vert->Add(new wxTextCtrl(this, 506, info, wxDefaultPosition,
+			     wxSize(360, 64),
+			     wxTE_MULTILINE|wxTE_READONLY|wxTE_DONTWRAP),
+	      0, wxLEFT | wxRIGHT, 20);
+
     vert->Add(10, 5, 0, wxTOP, 15);
     
     vert->Add(licence, 0, wxLEFT | wxRIGHT, 20);
