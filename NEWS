@@ -2,6 +2,8 @@
   rather than converting to a DXF.  "Convert to DXF" now appears as a
   separate menu item.
 
+* cavern: Fixed bogus errors about matrix not being positive definite.
+
 Changes in 0.98-prerelease1:
 
 * Covariance matrices are symmetric - now only store 6 of the 9 entries.
