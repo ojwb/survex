@@ -16,20 +16,20 @@ base_progs = 3dtodxf cavern printdm printps printpcl printhpgl diffpos extend su
 
 spec = ${PACKAGE}-${VERSION}.spec
 
-RPM_RELEASE = 1
+RELEASE = 1
 
 rpm : dist
 	echo Summary: Cave Surveying Software > ${spec}
 	echo Name: ${PACKAGE} >> ${spec}
 	echo Vendor: The Survex Project >> ${spec}
 	echo Version: ${VERSION} >> ${spec}
-	echo Release: ${RPM_RELEASE} >> ${spec}
+	echo Release: ${RELEASE} >> ${spec}
 	echo Copyright: GPL >> ${spec}
 	#echo Group: Applications/Engineering >> ${spec}
 	echo Group: Applications/Misc >> ${spec}
 	echo Source: http://www.survex.com/software/${PACKAGE}-${VERSION}.tar.gz >> ${spec}
 	echo URL: http://www.survex.com/ >> ${spec}
-	echo Packager: Olly Betts \<olly@survex.com\> >> ${spec}
+	echo "Packager: Olly Betts <olly@survex.com>" >> ${spec}
 	echo BuildRoot: /var/tmp/%{name}-buildroot >> ${spec}
 	echo "" >> ${spec}
 	echo %description >> ${spec}
@@ -79,6 +79,56 @@ rpm : dist
 	echo macrofiles : `rpm --showrc | sed 's/^macrofiles\> *: //p;d'`:`pwd`/rpmmacros > rpmrc
 	#
 	rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc ${spec}
+
+ctrl=deb/tmp/DEBIAN
+ctrl2=deb/tmp2/DEBIAN
+
+debian : dist
+	-rm -rf deb
+	mkdir deb
+	mkdir deb/tmp
+	mkdir deb/tmp2
+	cd deb;\
+	tar zxvf ../${PACKAGE}-${VERSION}.tar.gz;\
+	cd ${PACKAGE}-${VERSION};\
+	./configure --prefix=/usr;\
+	make; make install-strip prefix=`pwd`/../tmp/usr
+	rm -rf deb/${PACKAGE}-${VERSION}
+	mkdir deb/tmp2/usr
+	mkdir deb/tmp2/usr/bin
+	(cd deb/tmp ; tar cf - usr/bin/aven ) | (cd deb/tmp2 ; tar xf -)
+	rm deb/tmp/usr/bin/aven
+	mkdir ${ctrl}
+	echo /usr/share/survex/print.ini > ${ctrl}/conffiles
+	echo Package: ${PACKAGE} > ${ctrl}/control
+	echo Version: ${VERSION}-${RELEASE} >> ${ctrl}/control
+	echo Section: math >> ${ctrl}/control
+	echo Priority: optional >> ${ctrl}/control
+	echo Architecture: i386 >> ${ctrl}/control
+	echo 'Pre-Depends: libc6 (>= 2.1.2)' >> ${ctrl}/control
+	echo Suggests: ${PACKAGE}-aven >> ${ctrl}/control
+	echo Installed-Size: `du -sk deb/tmp/usr|sed 's/[^0-9].*//'` >> ${ctrl}/control
+	echo "Maintainer: Wookey <wookey@survex.com>" >> ${ctrl}/control
+	echo Description: Cave Surveying Software >> ${ctrl}/control
+	sed 's/^/ /' desc.txt >> ${ctrl}/control
+	cp deb_extras/prerm deb_extras/postinst ${ctrl}
+	cd deb/tmp/usr;find * -type f -print | xargs md5sum > ../../../${ctrl}/md5sums
+	dpkg-deb --build deb/tmp .
+	mkdir ${ctrl2}
+	echo Package: ${PACKAGE}-aven > ${ctrl2}/control
+	echo Version: ${VERSION}-${RELEASE} >> ${ctrl2}/control
+	echo Section: math >> ${ctrl2}/control
+	echo Priority: optional >> ${ctrl2}/control
+	echo Architecture: i386 >> ${ctrl2}/control
+	echo 'Pre-Depends: libc6 (>= 2.1.2)' >> ${ctrl2}/control
+	echo Depends: ${PACKAGE}' (= '${VERSION}-${RELEASE}')' >> ${ctrl2}/control
+	echo Installed-Size: `du -sk deb/tmp2/usr|sed 's/[^0-9].*//'` >> ${ctrl2}/control
+	echo "Maintainer: Wookey <wookey@survex.com>" >> ${ctrl2}/control
+	echo Description: Aven viewer for Survex >> ${ctrl2}/control
+	echo " A fancy cave viewer for Survex, written using the GTK-- library." >> ${ctrl2}/control
+	cd deb/tmp2/usr;find * -type f -print | xargs md5sum > ../../../${ctrl2}/md5sums
+	dpkg-deb --build deb/tmp2 .
+	#rm -rf deb
 
 dostxt :
 	$(RM) -rf dostxt_tmp	
