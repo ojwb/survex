@@ -1160,8 +1160,8 @@ void MainFrm::OnExport(wxCommandEvent&)
     free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	wxString fnm = dlg.GetPath();
-	if (!m_Gfx->OnExport(dlg.GetPath())) {
-	    wxGetApp().ReportError(wxString::Format("Couldn't write file `%s'", dlg.GetPath().c_str()));
+	if (!m_Gfx->OnExport(fnm)) {
+	    wxGetApp().ReportError(wxString::Format("Couldn't write file `%s'", fnm.c_str()));
 	}
     }
 }
