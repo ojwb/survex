@@ -31,6 +31,8 @@
 * cavern: added "cylpolar" data style - similar to diving, except the
   tape is measured horizontally rather than along the slope of the leg.
 
+* printps: thinner lines by default (0.1 points rather than 0.5).
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

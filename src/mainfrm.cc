@@ -682,8 +682,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_YMin = ymin;
 
     // Sort the labels.
-    LabelCmp cmp;
-    m_Labels.sort(cmp);
+    m_Labels.sort(LabelCmp());
 
     // Fill the tree of stations and prefixes.
     FillTree();
@@ -691,6 +690,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     // Sort labels so that entrances are displayed in preference,
     // then fixed points, then exported points, then other points.
+    //
     // Also sort by leaf name so that we'll tend to choose labels
     // from different surveys, rather than labels from surveys which
     // are earlier in the list.
