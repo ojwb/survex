@@ -1611,8 +1611,8 @@ bool GfxCore::PointWithinScaleBar(wxPoint point)
 
     return (point.x >= m_ScaleBar.offset_x &&
             point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
-            point.y <= m_YSize - m_ScaleBar.offset_y &&
-            point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT);
+            point.y <= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT &&
+            point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT*2);
 }
 
 void GfxCore::SetCompassFromPoint(wxPoint point)
@@ -1670,9 +1670,7 @@ void GfxCore::SetScaleBarFromOffset(wxCoord dx)
     // Set the scale of the survey, given an offset as to how much the mouse has
     // been dragged over the scalebar since the last scale change.
 
-    Double size_snap = Double(m_ScaleBar.width) / m_Params.scale;
-
-    SetScale((m_ScaleBar.width + dx) / size_snap);
+    SetScale((m_ScaleBar.width + dx) * m_Params.scale / m_ScaleBar.width);
     ForceRefresh();
 }
 
