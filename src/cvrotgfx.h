@@ -1,6 +1,6 @@
 /* cvrotgfx.h */
 
-/* Copyright (C) Olly Betts 1997
+/* Copyright (C) Olly Betts 1997,2001
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

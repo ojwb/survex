@@ -1,5 +1,5 @@
 /* OS dependent filename manipulation routines
- * Copyright (c) Olly Betts 1998-2000
+ * Copyright (c) Olly Betts 1998-2001
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

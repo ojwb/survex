@@ -1,6 +1,6 @@
 /* > message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

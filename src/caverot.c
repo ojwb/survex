@@ -1,6 +1,6 @@
 /* > caverot.c
  * Reads in SURVEX .3d image files & allows quick rotation and examination
- * Copyright (C) 1990,1993-2000 Olly Betts
+ * Copyright (C) 1990,1993-2001 Olly Betts
  * Portions Copyright (C) 1993 Wookey
  *
  * This program is free software; you can redistribute it and/or modify

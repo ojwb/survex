@@ -3,7 +3,7 @@
 /* Converts a .3d file to a DXF file */
 /* Also useful as an example of how to use the img code in your own programs */
 
-/* Copyright (C) 1994-2000 Olly Betts
+/* Copyright (C) 1994-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

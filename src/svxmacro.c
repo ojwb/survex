@@ -1,7 +1,7 @@
 /* > svxmacro.c
  * Function versions of various macros - possibly of use
  * for trying to make smaller executable
- * Copyright (C) 1993,1994,1996 Olly Betts
+ * Copyright (C) 1993,1994,1996,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

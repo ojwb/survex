@@ -1,6 +1,6 @@
 /* > netartic.c
  * Split up network at articulation points
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -171,7 +171,7 @@ uniter:
 	    art = osnew(articulation);
 	    art->next = component_list->artic;
 	    component_list->artic = art;
-#if 1 /*def DEBUG_ARTIC*/
+#ifdef DEBUG_ARTIC
 	    printf("Articulate *-");
 	    print_prefix(stn2->name);
 	    printf("-");
@@ -292,7 +292,7 @@ articulate(void)
 		   stn->leg[i]->l.reverse |= FLAG_ARTICULATION;
 		   reverse_leg(stn->leg[i])->l.reverse |= FLAG_ARTICULATION;
 #endif
-#if 1 /*def DEBUG_ARTIC*/
+#ifdef DEBUG_ARTIC
 	       print_prefix(stn2->name);
 	       printf(" is a special case start articulation point\n");
 #endif

@@ -1,6 +1,6 @@
 /* > datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2000 Olly Betts
+ * Copyright (C) 1991-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
