@@ -1,6 +1,11 @@
 * aven: Fixed grid menu item so that it always correctly reflects whether the
   grid is enabled or not.
 
+* Updates to Catalan, French, Romanian, Slovak, and Spanish translations -
+  these are now up-to-date.
+
+* Fixed Romanian message in English error files.
+
 Changes in 1.0.30:
 
 * aven: Added printing directly from Aven!
