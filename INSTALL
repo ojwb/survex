@@ -1,6 +1,17 @@
-For Unix:
+Installing Survex under Unix
+============================
+
+Like so:
 
 ./configure
 make
+make install
 
-Note: there's no "make install" yet.
+By default `make install' will try to install survex under /usr/local, which
+means you'll need to be root for the `make install' stage.  You can tell
+configure to install survex elsewhere (e.g. under your home directory) like
+so:
+
+./configure --prefix=/home/olly/survex
+make
+make install
