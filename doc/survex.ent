@@ -60,10 +60,18 @@
 <listitem><para>display crosses at stations</para></listitem></varlistentry>
 
 <varlistentry><term>-B, --no-border</term>
-<listitem><para>turn off page border.
-By default, on multi-page printouts dotted borders will be drawn on the edges
-of pages where other pages join to facilitate accurate cutting with
-scissors.  This option disables these dotted borders.
+<listitem><para>turn off the solid border around the edge of the survey.
+Printing to dot-matrix and inkjet printers can be significantly faster without
+this border as the printhead usually doesn't need to move all the way to the
+edge of the paper.
+</para></listitem></varlistentry>
+
+<varlistentry><term>-C, --no-cutlines</term>
+<listitem><para>If a printout takes more than one page, alignment ticks are
+printed where the page corners need to be joined.  By default dash lines are
+also drawn along internal edges to facilitate trimming down the page with
+scissors.  If you have a guillotine, the alignment ticks are sufficient for
+trimming the page and this option allows you to turn off the dashed lines.
 </para></listitem></varlistentry>
 
 <varlistentry><term>-l, --no-legs</term>
@@ -74,9 +82,8 @@ scissors.  This option disables these dotted borders.
 underground survey legs are shown.</para></listitem></varlistentry>
 
 <varlistentry><term>-k, --skip-blanks</term>
-<listitem><para>don't output blank pages
-With this option pages which are blank (apart from the alignment marks)
-will not be printed.  This option implies --no-border.
+<listitem><para>don't output blank pages With this option pages which are blank
+(apart from alignment marks and borders) will not be printed.
 </para></listitem></varlistentry>
 ">
 
@@ -87,7 +94,7 @@ will not be printed.  This option implies --no-border.
 ">
 
 <!entity printer.calibrate "
-<varlistentry><term>-C, --calibrate</term>
+<varlistentry><term>--calibrate</term>
 <listitem><para>print out calibration page
 </para></listitem></varlistentry>
 ">

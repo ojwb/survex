@@ -67,7 +67,7 @@ static bool fShots = fTrue;
 static bool fSurface = fFalse;
 static bool fSkipBlank = fFalse;
 
-bool fNoBorder = fFalse;
+bool fBorder = fTrue, fCutlines = fTrue;
 bool fBlankPage = fFalse;
 
 static img *pimg;
@@ -601,11 +601,12 @@ main(int argc, char **argv)
       {"station-names", no_argument, 0, 'n'},
       {"crosses", no_argument, 0, 'c'},
       {"no-border", no_argument, 0, 'B'},
+      {"no-cutlines", no_argument, 0, 'C'},
       {"no-legs", no_argument, 0, 'l'},
       {"surface", no_argument, 0, 'S'},
       {"skip-blanks", no_argument, 0, 'k'},
       {"output", required_argument, 0, 'o'},
-      {"calibrate", no_argument, 0, 'C'},
+      {"calibrate", no_argument, 0, 2},
       {"help", no_argument, 0, HLP_HELP},
       {"version", no_argument, 0, HLP_VERSION},
       {0, 0, 0, 0}
@@ -625,23 +626,24 @@ main(int argc, char **argv)
       {HLP_ENCODELONG(6),       "display station names"},
       {HLP_ENCODELONG(7),       "display crosses at stations"},
       {HLP_ENCODELONG(8),       "turn off page border"},
-      {HLP_ENCODELONG(9),       "turn off display of survey legs"},
-      {HLP_ENCODELONG(10),      "turn on display of surface survey legs"},
-      {HLP_ENCODELONG(11),      "don't output blank pages (implies --no-border)"},
-      {HLP_ENCODELONG(12),      "set output file"},
-      {HLP_ENCODELONG(13),      "print out calibration page"},
+      {HLP_ENCODELONG(9),       "turn off dashed lines on internal page edges"},
+      {HLP_ENCODELONG(10),      "turn off display of survey legs"},
+      {HLP_ENCODELONG(11),      "turn on display of surface survey legs"},
+      {HLP_ENCODELONG(12),      "don't output blank pages"},
+      {HLP_ENCODELONG(13),      "set output file"},
+      {HLP_ENCODELONG(14),      "print out calibration page"},
       {0, 0}
    };
 
    msg_init(argv);
 
-   ASSERT(help[12].opt == HLP_ENCODELONG(12));
-   ASSERT(help[13].opt == HLP_ENCODELONG(13));
-   ASSERT(help[14].opt == 0);
+   ASSERT(help[13].opt == HLP_ENCODELONG(12));
+   ASSERT(help[14].opt == HLP_ENCODELONG(13));
+   ASSERT(help[15].opt == 0);
    ASSERT(!(pr->flags & PR_FLAG_CALIBRATE && pr->flags & PR_FLAG_NOFILEOUTPUT));
 
-   if (pr->flags & PR_FLAG_NOFILEOUTPUT) help[12] = help[14];
-   if (!(pr->flags & PR_FLAG_CALIBRATE)) help[13] = help[14];
+   if (pr->flags & PR_FLAG_NOFILEOUTPUT) help[13] = help[15];
+   if (!(pr->flags & PR_FLAG_CALIBRATE)) help[14] = help[15];
 
    fnm = NULL;
 
@@ -660,7 +662,10 @@ main(int argc, char **argv)
 	 fCrosses = 1;
 	 break;
        case 'B': /* Border */
-	 fNoBorder = 1;
+	 fBorder = 0;
+	 break;
+       case 'C': /* Cutlines */
+	 fCutlines = 0;
 	 break;
        case 'S': /* Surface */
 	 fSurface = 1;
@@ -668,9 +673,8 @@ main(int argc, char **argv)
        case 'l': /* legs */
 	 fShots = 0;
 	 break;
-       case 'k': /* Print blank pages */
+       case 'k': /* Skip blank pages */
 	 fSkipBlank = 1;
-	 fNoBorder = 1;
 	 break;
        case 'e':
 	 view = ELEV;
@@ -698,7 +702,7 @@ main(int argc, char **argv)
        case 'o':
 	 output_fnm = optarg;
 	 break;
-       case 'C':
+       case 2:
 	 fCalibrate = 1;
 	 fInteractive = fFalse;
 	 break;
@@ -712,8 +716,8 @@ main(int argc, char **argv)
 
       if (argv[optind]) cmdline_too_many_args();
 
-      fCrosses = fNoBorder = fSurface = fSkipBlank = fNoBorder = 0;
-      fLabels = fShots = 1;
+      fCrosses = fSurface = fSkipBlank = 0;
+      fBorder = fLabels = fShots = 1;
       view = PLAN;
       rot = tilt = 0;
       N_Scale = D_Scale = 1.0;
@@ -1045,11 +1049,13 @@ main(int argc, char **argv)
 	 printf(msg166, (int)cPagesPrinted, pages);
       }
       /* don't skip the page with the info box on */
-      if (fSkipBlank && (int)page != (pagesY - 1) * pagesX + 1)
+      if (fSkipBlank && (int)page != (pagesY - 1) * pagesX + 1) {
 	 pass = -1;
-      else
+	 fBlankPage = fTrue;
+      } else {
 	 pass = 0;
-      fBlankPage = fFalse;
+	 fBlankPage = fFalse;
+      }
       for ( ; pass < cPasses; pass++) {
 	 li *pli;
 	 long x, y;
@@ -1140,19 +1146,19 @@ main(int argc, char **argv)
    return EXIT_SUCCESS;
 }
 
-#define fDotBorders 1
 /* Draws in alignment marks on each page or borders on edge pages */
-/* There's nothing like proper code reuse, and this is nothing like... */
 void
 drawticks(border clip, int tsize, int x, int y)
 {
    long i;
    int s = tsize * 4;
    int o = s / 8;
-   pr->MoveTo(clip.x_min, clip.y_min);
-   if (fNoBorder || x) {
+   bool fAtCorner = fFalse;
+   
+   if (x) {
       pr->DrawTo(clip.x_min, clip.y_min + tsize);
-      if (fDotBorders) {
+      if (fCutlines) {
+	 /* dashed left border */
 	 i = (clip.y_max - clip.y_min) -
 	     (tsize + ((clip.y_max - clip.y_min - tsize * 2L) % s) / 2);
 	 for ( ; i > tsize; i -= s) {
@@ -1161,24 +1167,52 @@ drawticks(border clip, int tsize, int x, int y)
 	 }
       }
       pr->MoveTo(clip.x_min, clip.y_max - tsize);
+      pr->DrawTo(clip.x_min, clip.y_max);
+      fAtCorner = fTrue;
+   } else if (fBorder) {
+      /* solid left border */
+      pr->MoveTo(clip.x_min, clip.y_min);
+      pr->DrawTo(clip.x_min, clip.y_max);
+      fAtCorner = fTrue;
+   } else if (x < pagesX - 1) {
+      pr->MoveTo(clip.x_min, clip.y_max - tsize);
+      pr->DrawTo(clip.x_min, clip.y_max);
+      fAtCorner = fTrue;
    }
-   pr->DrawTo(clip.x_min, clip.y_max);
-   if (fNoBorder || y < pagesY - 1) {
+
+   if (y < pagesY - 1) {
+      if (!fAtCorner) pr->MoveTo(clip.x_min, clip.y_max);
       pr->DrawTo(clip.x_min + tsize, clip.y_max);
-      if (fDotBorders) {
+      if (fCutlines) {
+	 /* dashed top border */
 	 i = (clip.x_max - clip.x_min) -
 	     (tsize + ((clip.x_max - clip.x_min - tsize * 2L) % s) / 2);
 	 for ( ; i > tsize; i -= s) {
 	    pr->MoveTo(clip.x_max - (i + o), clip.y_max);
 	    pr->DrawTo(clip.x_max - (i - o), clip.y_max);
-	 }
+	    }
       }
       pr->MoveTo(clip.x_max - tsize, clip.y_max);
+      pr->DrawTo(clip.x_max, clip.y_max);
+      fAtCorner = fTrue;
+   } else if (fBorder) {
+      /* solid top border */
+      if (!fAtCorner) pr->MoveTo(clip.x_min, clip.y_max);
+      pr->DrawTo(clip.x_max, clip.y_max);
+      fAtCorner = fTrue;
+   } else if (y) {
+      pr->MoveTo(clip.x_max - tsize, clip.y_max);
+      pr->DrawTo(clip.x_max, clip.y_max);
+      fAtCorner = fTrue;
+   } else {
+      fAtCorner = fFalse;
    }
-   pr->DrawTo(clip.x_max, clip.y_max);
-   if (fNoBorder || x < pagesX - 1) {
+      
+   if (x < pagesX - 1) {
+      if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_max);
       pr->DrawTo(clip.x_max, clip.y_max - tsize);
-      if (fDotBorders) {
+      if (fCutlines) {
+	 /* dashed right border */
 	 i = (clip.y_max - clip.y_min) -
 	     (tsize + ((clip.y_max - clip.y_min - tsize * 2L) % s) / 2);
 	 for ( ; i > tsize; i -= s) {
@@ -1187,11 +1221,26 @@ drawticks(border clip, int tsize, int x, int y)
 	 }
       }
       pr->MoveTo(clip.x_max, clip.y_min + tsize);
+      pr->DrawTo(clip.x_max, clip.y_min);
+      fAtCorner = fTrue;
+   } else if (fBorder) {
+      /* solid right border */
+      if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_max);
+      pr->DrawTo(clip.x_max, clip.y_min);
+      fAtCorner = fTrue;
+   } else if (x) {
+      pr->MoveTo(clip.x_max, clip.y_min + tsize);
+      pr->DrawTo(clip.x_max, clip.y_min);
+      fAtCorner = fTrue;
+   } else {
+      fAtCorner = fFalse;
    }
-   pr->DrawTo(clip.x_max, clip.y_min);
-   if (fNoBorder || y) {
+
+   if (y) {
+      if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_min);
       pr->DrawTo(clip.x_max - tsize, clip.y_min);
-      if (fDotBorders) {
+      if (fCutlines) {
+	 /* dashed bottom border */
 	 i = (clip.x_max - clip.x_min) -
 	     (tsize + ((clip.x_max - clip.x_min - tsize * 2L) % s) / 2);
 	 for ( ; i > tsize; i -= s) {
@@ -1200,8 +1249,15 @@ drawticks(border clip, int tsize, int x, int y)
 	 }
       }
       pr->MoveTo(clip.x_min + tsize, clip.y_min);
+      pr->DrawTo(clip.x_min, clip.y_min);
+   } else if (fBorder) {
+      /* solid bottom border */
+      if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_min);
+      pr->DrawTo(clip.x_min, clip.y_min);
+   } else if (y < pagesY - 1) {
+      pr->MoveTo(clip.x_min + tsize, clip.y_min);
+      pr->DrawTo(clip.x_min, clip.y_min);
    }
-   pr->DrawTo(clip.x_min, clip.y_min);
 }
 
 static void setting_missing(const char *v)

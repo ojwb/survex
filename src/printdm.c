@@ -244,9 +244,6 @@ dm_NewPage(int pg, int pass, int pagesX, int pagesY)
    passStore = pass;
 
    if (pass == -1) {
-      /* Don't count alignment marks, but do count borders */
-      fBlankPage = fNoBorder
-	 || (x > 0 && y > 0 && x < pagesX - 1 && y < pagesY - 1);
       PlotDot = PlotDotTest; /* setup function ptr */
    } else {
       clip.y_max -= pass * ((long)ylPassDepth * ypLineDepth);

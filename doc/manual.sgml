@@ -93,8 +93,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-03-23 11:36:01 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.85 2002-03-23 11:36:01 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-03-23 20:21:31 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.86 2002-03-23 20:21:31 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1550,11 +1550,9 @@ The units of each quantity may be set with the UNITS command.
 
 <!--FIXME:
 <Para>
-4 CYLPOLAR (Cylindrical Polar) style data is
-included for completeness, since someone may have a use for it.
-Perhaps a Grade 3 survey, or when surveying with a level and stick
-(?). Let me know if you find a use so I can put a better justification
-for it in here! [note - UBSS use it for the old County Clare data]
+Uses for CYLPOLAR:
+Perhaps a Grade 3 survey, or when surveying with a level and stick (?)
+[note - UBSS use it for the old County Clare data]
 </Para>
 -->
 

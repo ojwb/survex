@@ -588,12 +588,7 @@ ps_NewPage(int pg, int pass, int pagesX, int pagesY)
    clip.y_max = clip.y_min + ypPageDepth; /* dm/pcl/ps had -1; */
 
    cur_pass = pass;
-   if (pass == -1) {
-      /* Don't count alignment marks, but do count borders */
-      fBlankPage = fNoBorder
-	 || (x > 0 && y > 0 && x < pagesX - 1 && y < pagesY - 1);
-      return;
-   }
+   if (pass == -1) return;
 
 #ifdef HPGL
    x_org = clip.x_min;
