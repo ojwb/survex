@@ -10,10 +10,12 @@
  * for bounds checking */
 /*#define TOMBSTONES 1*/
 
+#include <stdlib.h>
+
 #include "osdepend.h"
 
 /* OSSIZE_T is to osmalloc, etc what size_t is to malloc, etc */
-#ifdef NO_FLATDOS
+#ifdef HAVE_FAR_POINTERS
 # include "alloc.h"
 # define osfree(p) farfree((p))
 # define xosmalloc(s) farmalloc((s))
