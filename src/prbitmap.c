@@ -139,6 +139,11 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
 
    fh = fopenWithPthAndExt(pth, leaf, NULL, "rb", &fnm);
 
+   if (!fh) {
+      fatalerror(/*Error in format of font file `%s'*/88, leaf);
+      /* FIXME: TRANSLATE - couldn't open it... */      
+   }
+
    if (fread(header, 1, 20, fh) < 20 ||
        memcmp(header, "Svx\nFnt\r\n\xfe\xff", 12) != 0) {
       fatalerror(/*Error in format of font file `%s'*/88, fnm);

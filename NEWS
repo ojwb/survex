@@ -19,6 +19,8 @@
 * cavern: after a bad *data command, ignore survey data until the next
   valid *data command.
 
+* printdm/printpcl: exit cleanly if bitmap font file is missing.
+
 Changes in 0.97-prerelease4:
 
 * Updated Portuguese and German translations.

@@ -964,7 +964,7 @@ cmd_data(void)
 
    /* after a bad *data command ignore survey data until the next
     * *data command to avoid an avalanche of errors */
-   pcs->Style = style_ignore;
+   pcs->Style = data_ignore;
 
    kMac = 6; /* minimum for NORMAL style */
    new_order = osmalloc(kMac * sizeof(reading));
