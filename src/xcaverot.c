@@ -497,6 +497,7 @@ process_step(Display * display, Window mainwin, Window button, GC mygc, GC egc)
 static void
 draw_scalebar(void)
 {
+   char temp[20];
    float l, m, n, o;
 
    if (changedscale) {
@@ -521,6 +522,11 @@ draw_scalebar(void)
 
    XDrawLine(mydisplay, scalebar, scale_gc, 13, 2, 13,
 	     2 + scale * datafactor * sbar);
+   if (sbar<1000)
+     sprintf(temp, "%d m", (int)sbar);
+   else
+     sprintf(temp, "%d km", (int)sbar/1000);
+   XDrawString(mydisplay, mywindow, slab_gc, 8, BUTHEIGHT+5+FONTSPACE, temp, strlen(temp));
 }
 
 /* FIXME: Zoom In -> In / Zoom Out -> Out ??? */
@@ -532,6 +538,7 @@ process_zoom(Display * display, Window mainwin, Window button, GC mygc, GC egc)
    changedscale = 1;
    flip_button(display, mainwin, button, egc, mygc, "Zoom in");
    draw_scalebar();
+   fill_segment_cache();
 }
 
 void
@@ -542,6 +549,7 @@ process_mooz(Display * display, Window mainwin, Window button, GC mygc, GC egc)
    changedscale = 1;
    flip_button(display, mainwin, button, egc, mygc, "Zoom out");
    draw_scalebar();
+   fill_segment_cache();
 }
 
 void
@@ -1219,6 +1227,8 @@ mouse_moved(Display * display, Window window, int mx, int my)
 	 /* mouse moved down */
 	 scale = rotsc_scale * pow(2, -a);
       }
+      changedscale = 1;
+      draw_scalebar();
    }
 
    fill_segment_cache();
@@ -1373,7 +1383,7 @@ main(int argc, char **argv)
    myhint.x = 0;
    myhint.y = 0;
    myhint.width = WidthOfScreen(DefaultScreenOfDisplay(mydisplay))-5;
-   myhint.height = HeightOfScreen(DefaultScreenOfDisplay(mydisplay))-5;
+   myhint.height = HeightOfScreen(DefaultScreenOfDisplay(mydisplay))-25;
    myhint.flags = /* PPosition | */ PSize;
 
    if (have_double_buffering) {
@@ -1459,8 +1469,8 @@ main(int argc, char **argv)
 			  ind_fg, ind_bg);
 #else
    scalebar =
-      XCreateSimpleWindow(mydisplay, mywindow, 0, BUTHEIGHT, 23,
-			  attr.height - (BUTHEIGHT + FONTSPACE + 5), 0, ind_fg,
+      XCreateSimpleWindow(mydisplay, mywindow, 0, BUTHEIGHT+FONTSPACE+10, 23,
+			  attr.height - (BUTHEIGHT + FONTSPACE + 10) -5, 0, ind_fg,
 			  ind_bg);
 #endif
 
@@ -1675,7 +1685,9 @@ main(int argc, char **argv)
 		  press_left_button(myevent.xbutton.x, myevent.xbutton.y);
 		  /* process_focus(mydisplay, mywindow,
 		   * myevent.xbutton.x, myevent.xbutton.y); */
-	       } else if (myevent.xbutton.button == Button2) {
+	       }
+            }
+            else if (myevent.xbutton.button == Button2) {
 		  /* toggle plan/elevation */
 		  if (plan_elev == PLAN) {
 		     switch_to_elevation();
@@ -1686,7 +1698,6 @@ main(int argc, char **argv)
 		  /* translate cave */
 		  press_right_button(myevent.xbutton.x, myevent.xbutton.y);
 	       }
-	    }
 	 } else if (myevent.type == MotionNotify) {
 	    if (myevent.xmotion.window == ind_com) {
 	       int old_angle = (int)view_angle;
@@ -1895,6 +1906,7 @@ main(int argc, char **argv)
       }
       if (redraw) {
 	 perform_redraw();
+         draw_scalebar();
 #ifdef XCAVEROT_BUTTONS
 	 draw_buttons(mydisplay, mywindow, mygc, enter_gc);
 #endif
