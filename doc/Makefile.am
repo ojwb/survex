@@ -14,7 +14,8 @@ other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
 
 manual_sources = manual.sgml cad3d.sgml cavern.sgml caverot.sgml\
  diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml xcaverot.sgml\
- printdm.sgml printhpgl.sgml printpcl.sgml printps.sgml printwin.sgml
+ printdm.sgml printhpgl.sgml printpcl.sgml printps.sgml printwin.sgml\
+ print.ini.sgml
 
 # People can build from CVS without sgmltools v2 or v3 installed but they
 # won't be able to "make dist", which is arguably a good thing
@@ -26,7 +27,8 @@ EXTRA_DIST = manual $(doclist) survex.1.in index.htm.in\
  $(manual_sources) $(other_mans)\
  man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
  man_diffpos.sgml man_extend.sgml man_sorterr.sgml man_xcaverot.sgml\
- man_printdm.sgml man_printhpgl.sgml man_printpcl.sgml man_printps.sgml
+ man_printdm.sgml man_printhpgl.sgml man_printpcl.sgml man_printps.sgml\
+ man_print.ini.sgml
 
 ChngeLog.htm: ../ChangeLog
 	./cl2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../ChangeLog > ChngeLog.htm
