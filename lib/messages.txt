@@ -918,10 +918,10 @@ it: 99 Non ancora implementato! Per favore comunicate agli autori se avete neces
 # Actually, mouse is somewhat imprecise as it could refer to a trackerball
 # or joystick, but mouse is more compact than "pointing device" and usually
 # correct.
-en:100 No mouse detected.
-fr:100 Souris non detect&eacute;e.
-de:100 Keine Maus angeschlossen.
-pt:100 Nenhum mouse detectado.
+en:100 No mouse detected
+fr:100 Souris non detect&eacute;e
+de:100 Keine Maus angeschlossen
+pt:100 Nenhum mouse detectado
 #cata:100 No s'ha detectat cap mouse
 #span:100 No se detect&oacute; ning&uacute;n mouse
 #cata:100 No s'ha detectat cap dispositiu senyalador

@@ -700,17 +700,12 @@ show_help(void)
 	{"Mouse controls:  LEFT : left/right rotates, up/down zooms", FLAG_MOUSE},
 	{"               MIDDLE : up/down tilts", FLAG_MOUSE3},
 	{"                RIGHT : mouse moves cave", FLAG_MOUSE2},
-	{"No mouse detected", FLAG_NOMOUSE},
-#if 0
-      puts(msg(/*No mouse detected.*/100));
-#endif
+	{msgPerm(/*"No mouse detected"*/100), FLAG_NOMOUSE},
 	{"", FLAG_ALWAYS},
 	{"              PRESS  ANY  KEY  TO  CONTINUE", FLAG_ALWAYS},
 	{NULL, 0}
    };
    int i, flags, y;
-
-   buttons = 0;
 
    flags = FLAG_ALWAYS;
    if (mouse_buttons < 0) flags |= FLAG_NOMOUSE;
@@ -739,7 +734,7 @@ show_help(void)
 static void
 wait_for_key_or_mouse(void)
 {
-   int dummy, buttons;
+   int dummy, buttons = 0;
 
    /* wait until key pressed or mouse clicked */
    do {
