@@ -2,6 +2,8 @@
 
 * aven: Fixed memory leak when showing the "About" dialog.
 
+* (MacOS X version): Now installable from a disk image package.
+
 * cavern: Equates are no longer considered when deciding which stations are
   flagged as surface and underground.
 

@@ -1051,12 +1051,12 @@ msg_init(char * const *argv)
 	  * support files - this allows us to test binaries in the build
 	  * tree easily. */
 #if defined(__GNUC__) && defined(__APPLE_CC__)
-	 /* On MacOS X the programs may be installed anywhere, with lib and
-	  * the binaries in the same directory. */
-	 p = use_path(pth, "lib/en.msg");
+	 /* On MacOS X the programs may be installed anywhere, with the
+	  * share directory and the binaries in the same directory. */
+	 p = use_path(pth, "share/survex/en.msg");
 	 if (lstat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
-	    pth_cfg_files = use_path(pth, "lib");
-	    goto macosx_got_lib;
+	    pth_cfg_files = use_path(pth, "share/survex");
+	    goto macosx_got_msg;
 	 }
 	 osfree(p);
 #endif
@@ -1075,7 +1075,7 @@ msg_init(char * const *argv)
 #endif
 	 }
 #if defined(__GNUC__) && defined(__APPLE_CC__)
-macosx_got_lib:
+macosx_got_msg:
 #endif
 	 osfree(p);
       }
