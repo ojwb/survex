@@ -77,6 +77,7 @@ bool fPercent = fFalse;
 bool fQuiet = fFalse; /* just show brief summary + errors */
 static bool fMute = fFalse; /* just show errors */
 bool fSuppress = fFalse; /* only output 3d(3dx) file */
+static bool fLog = fFalse; /* stdout to .log file, suppress .inf file */
 static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */   
 
 nosurveylink *nosurveyhead;
@@ -108,11 +109,12 @@ static const struct option long_opts[] = {
    {"quiet", no_argument, 0, 'q'},
    {"no-auxiliary-files", no_argument, 0, 's'},
    {"warnings-are-errors", no_argument, 0, 'w'},
+   {"log", no_argument, 0, 1},
 #ifdef NEW3DFORMAT
    {"new-format", no_argument, 0, 'x'},
 #endif
 #if (OS==WIN32)
-   {"pause", no_argument, 0, 256},
+   {"pause", no_argument, 0, 2},
 #endif
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
@@ -133,8 +135,9 @@ static struct help_msg help[] = {
    {HLP_ENCODELONG(3),          "only show brief summary (-qq for errors only)"},
    {HLP_ENCODELONG(4),          "do not create .inf or .err files"},
    {HLP_ENCODELONG(5),          "turn warnings into errors"},
+   {HLP_ENCODELONG(6),          "log output to .log file; don't create .inf file"},
 #ifdef NEW3DFORMAT
-   {HLP_ENCODELONG(6),          "output data in chasm's 3dx format"},
+   {HLP_ENCODELONG(7),          "output data in chasm's 3dx format"},
 #endif
  /*{'z',                        "set optimizations for network reduction"},*/
    {0, 0}
@@ -249,15 +252,33 @@ main(int argc, char **argv)
 	 }
 	 /* Lollipops, Parallel legs, Iterate mx, Delta* */
 	 while ((c = *optarg++) != '\0')
-	     if (islower(c)) optimize |= BITA(c);
+	    if (islower(c)) optimize |= BITA(c);
+	 break;
+       case 1:
+	 fLog = fTrue;
 	 break;
 #if (OS==WIN32)
-       case 256:
+       case 2:
 	 atexit(pause_on_exit);
 	 break;
 #endif
        }
       }
+   }
+
+   if (fLog) {
+      char *p;
+      char *fnm;
+      fnm = baseleaf_from_fnm(argv[optind]);
+      p = add_ext(fnm, "log");
+      osfree(fnm);
+      fnm = use_path(fnm_output_base, p);
+      osfree(p);
+
+      if (!freopen(fnm, "w", stdout))
+	 fatalerror(/*Failed to open output file `%s'*/47, fnm);
+
+      osfree(fnm);
    }
 
    if (!fMute) puts(PACKAGE" "VERSION"\n"COPYRIGHT_MSG"\n");
@@ -378,7 +399,8 @@ do_stats(void)
    FILE *fh = NULL;
    long cLoops = cComponents + cLegs - cStns;
 
-   if (!fSuppress && !(msg_errors || (f_warnings_are_errors && msg_warnings)))
+   if (!fLog && !fSuppress &&
+       !(msg_errors || (f_warnings_are_errors && msg_warnings)))
       fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
    else
       if (fMute) return;

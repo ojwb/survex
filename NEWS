@@ -11,6 +11,8 @@
   the original with the sorted version (for use by MS Windows file
   associations).
 
+* cavern: Added --log option to send output to a .log file.
+
 * (MS Windows version): sorterr.exe and 3dtopos.exe were missing;
   improvements to documentation; assorted fixes and improvements to
   file associations.
