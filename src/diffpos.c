@@ -1,5 +1,5 @@
 /* > diffpos.c */
-/* Utility to compare two SURVEX .pos files */
+/* Utility to compare two SURVEX .pos or .3d files */
 /* Copyright (C) 1994,1996,1998,1999,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,9 +21,6 @@
 # include <config.h>
 #endif
 
-/* size of line buffer */
-#define BUFLEN 1024 /* FIXME removed fixed limit */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,6 +28,9 @@
 
 #include "cavern.h" /* just for REAL_EPSILON */
 #include "cmdline.h"
+#include "debug.h"
+#include "filelist.h"
+#include "img.h"
 
 #ifndef sqrd
 # define sqrd(X) ((X)*(X))
@@ -46,8 +46,7 @@
 /* default threshold is 1cm */
 #define DFLT_MAX_THRESHOLD 0.01
 
-static int diff_pos(FILE *fh1, FILE *fh2, double threshold);
-static int read_line(FILE *fh, double *px, double *py, double *pz, char *id);
+static double threshold = DFLT_MAX_THRESHOLD;
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
@@ -63,16 +62,116 @@ static struct help_msg help[] = {
    {0, 0}
 };
 
+/* some (preferably prime) number for the hashing function */
+#define HASH_PRIME 29363
+
+typedef struct station {
+   struct station *next;
+   char *name;
+   img_point pt;
+} station;
+
+static int
+hash_string(const char *p)
+{
+   int hash;
+   ASSERT(p != NULL); /* can't hash NULL */
+/*   printf("HASH `%s' to ",p); */
+   for (hash = 0; *p; p++)
+      hash = (hash * HASH_PRIME + tolower(*(unsigned char*)p)) & 0x7fff;
+/*   printf("%d\n",hash); */
+   return hash;
+}
+
+static station **htab;
+static bool fChanged = fFalse;
+
+static void
+tree_init(void)
+{
+   size_t i;
+   htab = osmalloc(0x2000 * sizeof(int));
+   for (i = 0; i < 0x2000; i++) htab[i] = NULL;
+}
+
+static void
+tree_insert(const char *name, const img_point *pt)
+{
+   int v = hash_string(name) & 0x1fff;
+   station *stn;
+#if 1
+   /* need to allow for duplicate labels ... */
+   for (stn = htab[v]; stn; stn = stn->next) {
+      if (strcmp(stn->name, name) == 0) return; /* found dup */
+   }
+#endif
+   stn = osnew(station);
+   stn->name = osstrdup(name);
+   stn->pt = *pt;
+   stn->next = htab[v];
+   htab[v] = stn;
+}
+
+static void
+tree_remove(const char *name, const img_point *pt)
+{
+   int v = hash_string(name) & 0x1fff;
+   station **prev;
+   station *p;
+   
+   for (prev = &htab[v]; *prev; prev = &((*prev)->next)) {
+      if (strcmp((*prev)->name, name) == 0) break;
+   }
+   
+   if (!*prev) {
+      printf("Added: %s\n", name);
+      fChanged = fTrue;
+      return;
+   }
+   
+   if (fabs(pt->x - (*prev)->pt.x) - threshold > EPSILON ||
+       fabs(pt->y - (*prev)->pt.y) - threshold > EPSILON ||
+       fabs(pt->z - (*prev)->pt.z) - threshold > EPSILON) {
+      printf("Moved by (%3.2f,%3.2f,%3.2f): %s\n",
+	     pt->x - (*prev)->pt.x,
+	     pt->y - (*prev)->pt.y,
+	     pt->z - (*prev)->pt.z,
+	     name);
+      fChanged = fTrue;
+   }
+   
+   osfree((*prev)->name);
+   p = *prev;
+   *prev = p->next;
+   osfree(p);
+}
+
+static int
+tree_check(void)
+{
+   size_t i;
+   for (i = 0; i < 0x2000; i++) {
+      station *p;
+      for (p = htab[i]; p; p = p->next) {
+	 printf("Deleted: %s\n", p->name);
+	 fChanged = fTrue;	 
+      }
+   }
+   return fChanged;
+}
+
 int
 main(int argc, char **argv)
 {
-   double threshold = DFLT_MAX_THRESHOLD;
    char *fnm1, *fnm2;
-   FILE *fh1, *fh2;
+   char *buf;
+   size_t len, buf_len = 256;
+   const char ext3d[] = EXT_SVX_3D;
 
    msg_init(argv[0]);
 
-   cmdline_set_syntax_message("POS_FILE POS_FILE [THRESHOLD]",
+   cmdline_set_syntax_message("FILE1 FILE2 [THRESHOLD]",
+			      "FILE1 and FILE2 can be .pos or .3d files\n" 
 			      "THRESHOLD is the max. ignorable change along "
 			      "any axis in metres (default "
 			      STRING(DFLT_MAX_THRESHOLD)")");
@@ -87,80 +186,132 @@ main(int argc, char **argv)
       threshold = cmdline_double_arg();
    }
 
-   fh1 = fopen(fnm1, "rb");
-   if (!fh1) fatalerror(/*Couldn't open file `%s'*/93, fnm1);
+   tree_init();
 
-   fh2 = fopen(fnm2, "rb");
-   if (!fh2) fatalerror(/*Couldn't open file `%s'*/93, fnm2);
+   buf = osmalloc(buf_len);
 
-   return diff_pos(fh1, fh2, threshold);
-}
+   len = strlen(fnm1);
+   if (len > sizeof(ext3d) && fnm1[len - sizeof(ext3d)] == FNM_SEP_EXT &&
+       strcmp(fnm1 + len - sizeof(ext3d) + 1, ext3d) == 0) {
+      img_point pt;
+      int result;
+      img *pimg = img_open(fnm1, NULL, NULL);
+      if (!pimg) fatalerror(img_error(), fnm1);
 
-typedef enum { Eof, Haveline, Needline } state;
-
-int
-diff_pos(FILE *fh1, FILE *fh2, double threshold)
-{
-   state pos1 = Needline, pos2 = Needline;
-   int result = 0;
-
-   while (1) {
-      double x1, y1, z1, x2, y2, z2;
-      char id1[BUFLEN], id2[BUFLEN];
-
-      if (pos1 == Needline) {
-	 pos1 = Haveline;
-         if (!read_line(fh1, &x1, &y1, &z1, id1)) pos1 = Eof;
-      }
-
-      if (pos2 == Needline) {
-	 pos2 = Haveline;
-         if (!read_line(fh2, &x2, &y2, &z2, id2)) pos2 = Eof;
-      }
-
-      if (pos1 == Eof) {
-	 if (pos2 == Eof) break;
-	 result = 1;
-	 printf("Added: %s (at end of file)\n", id2);
-	 pos2 = Needline;
-      } else if (pos2 == Eof) {
-	 result = 1;
-	 printf("Deleted: %s (at end of file)\n", id1);
-	 pos1 = Needline;
-      } else {
-	 int cmp = strcmp(id1, id2);
-	 if (cmp == 0) {
-	    if (fabs(x1 - x2) - threshold > EPSILON ||
-		fabs(y1 - y2) - threshold > EPSILON ||
-		fabs(z1 - z2) - threshold > EPSILON) {
-	       result = 1;
-	       printf("Moved by (%3.2f,%3.2f,%3.2f): %s\n",
-		      x1 - x2, y1 - y2, z1 - z2, id1);
-	    }
-	    pos1 = pos2 = Needline;
-	 } else {
-	    result = 1;
-	    if (cmp < 0) {
-	       printf("Deleted: %s\n", id1);
-	       pos1 = Needline;
-	    } else {
-	       printf("Added: %s\n", id2);
-	       pos2 = Needline;
-	    }
+      do {
+	 result = img_read_item(pimg, &pt);
+	 switch (result) {
+	  case img_MOVE:
+	  case img_LINE:
+	    break;
+	  case img_LABEL:
+	    tree_insert(pimg->label, &pt);
+	    break;
+	  case img_BAD:
+	    img_close(pimg);
+	    exit(1);
 	 }
-      }
-   }
-   return result;
-}
+      } while (result != img_STOP);
+      
+      img_close(pimg);
+   } else {
+      img_point pt;
 
-static int
-read_line(FILE *fh, double *px, double *py, double *pz, char *id)
-{
-   char buf[BUFLEN];
-   while (1) {
-      if (!fgets(buf, BUFLEN, fh)) return 0;
-      if (sscanf(buf, "(%lf,%lf,%lf )%s", px, py, pz, id) == 4) break;
-      printf("Ignoring line: %s\n", buf);
+      FILE *fh = fopen(fnm1, "rb");
+      if (!fh) fatalerror(/*Couldn't open file `%s'*/93, fnm1);
+
+      while (1) {
+	 size_t off = 0;
+	 if (fscanf(fh, "(%lf,%lf,%lf ) ", &pt.x, &pt.y, &pt.z) != 3) {
+	    int ch;
+	    if (feof(fh)) break;
+	    printf("Skipping first\n");
+	    do {
+	       ch = getc(fh);
+	    } while (ch != EOF && ch != '\n');
+	    /* FIXME */
+	    continue;
+	 }
+	 buf[0] = '\0';
+	 while (!feof(fh)) {
+	    if (!fgets(buf + off, buf_len - off, fh)) {
+	       /* FIXME */
+	       break;
+	    }
+	    off += strlen(buf + off);
+	    if (off && buf[off - 1] == '\n') {
+	       buf[off - 1] = '\0';
+	       break;
+	    }
+	    buf_len += buf_len;
+	    buf = osrealloc(buf, buf_len);
+	 }
+	 tree_insert(buf, &pt);
+      }
+
+      fclose(fh);
    }
-   return 1;
+
+   len = strlen(fnm2);
+   if (len > sizeof(ext3d) && fnm2[len - sizeof(ext3d)] == FNM_SEP_EXT &&
+       strcmp(fnm2 + len - sizeof(ext3d) + 1, ext3d) == 0) {
+      img_point pt;
+      int result;
+      img *pimg = img_open(fnm2, NULL, NULL);
+      if (!pimg) fatalerror(img_error(), fnm2);
+      do {
+	 result = img_read_item(pimg, &pt);
+	 switch (result) {
+	  case img_MOVE:
+	  case img_LINE:
+	    break;
+	  case img_LABEL:
+	    tree_remove(pimg->label, &pt);
+	    break;
+	  case img_BAD:
+	    img_close(pimg);
+	    exit(1);
+	 }
+      } while (result != img_STOP);
+      
+      img_close(pimg);
+   } else {
+      img_point pt;
+
+      FILE *fh = fopen(fnm2, "rb");
+      if (!fh) fatalerror(/*Couldn't open file `%s'*/93, fnm2);
+
+      while (1) {
+	 size_t off = 0;
+	 if (fscanf(fh, "(%lf,%lf,%lf ) ", &pt.x, &pt.y, &pt.z) != 3) {
+	    int ch;
+	    if (feof(fh)) break;
+	    printf("Skipping second\n");
+	    do {
+	       ch = getc(fh);
+	    } while (ch != EOF && ch != '\n');
+	    /* FIXME */
+	    continue;
+	 }
+	 buf[0] = '\0';
+	 while (!feof(fh)) {
+	    if (!fgets(buf + off, buf_len - off, fh)) {
+	       /* FIXME */
+	       break;
+	    }
+	    off += strlen(buf + off);
+	    if (off && buf[off - 1] == '\n') {
+	       buf[off - 1] = '\0';
+	       break;
+	    }
+	    buf_len += buf_len;
+	    buf = osrealloc(buf, buf_len);
+	 }
+	 tree_remove(buf, &pt);
+      }
+
+      fclose(fh);
+   }
+
+   return tree_check() ? EXIT_FAILURE : EXIT_SUCCESS;
 }

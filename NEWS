@@ -5,6 +5,8 @@
   file from a .3d file, and has the added benefit that it sorts names
   with numbers in numerically (i.e. 2 before 10).
 
+* diffpos: the arguments can now be .pos or .3d files, or one of each.
+
 * cavern: improved parsing of unquoted *include/*title strings - used
   to end at the first literal space; now they end at the first BLANK
   character (space, tab, and comma by default).  So the odd case of an

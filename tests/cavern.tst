@@ -136,14 +136,14 @@ for file in $TESTS ; do
     case "$pos" in
     yes)
       if test -n "$VERBOSE" ; then
-        $DIFFPOS ./tmp.pos $srcdir/$file.pos 0 || exit 1
+        $DIFFPOS ./tmp.3d $srcdir/$file.pos || exit 1
       else
-        $DIFFPOS ./tmp.pos $srcdir/$file.pos 0 > /dev/null || exit 1
+        $DIFFPOS ./tmp.3d $srcdir/$file.pos > /dev/null || exit 1
       fi ;;
     no)
-      test -f ./tmp.pos || exit 1 ;;
+      test -f ./tmp.3d || exit 1 ;;
     fail)
-      test -f ./tmp.pos && exit 1 ;;
+      test -f ./tmp.3d && exit 1 ;;
     *)
       echo "Bad value for pos" ; exit 1 ;;
     esac

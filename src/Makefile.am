@@ -66,7 +66,7 @@ xcaverot_SOURCES = xcaverot.c xcvrtbut.c $(ROTSRC)
 xcaverot_CFLAGS = @X_CFLAGS@ -DXCAVEROT
 xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
-diffpos_SOURCES = diffpos.c $(COMMONSRC)
+diffpos_SOURCES = diffpos.c img.c useful.c $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
 3dtopos_SOURCES = 3dtopos.c img.c useful.c $(COMMONSRC)
 extend_SOURCES = extend.c $(COMMONSRC) useful.c img.c
