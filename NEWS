@@ -1,3 +1,22 @@
+Changes in 1.0.33:
+
+* aven,printwin: Fixed bug which would sometimes pick one too few pages
+  vertically resulting in the survey escaping off the top of the topmost
+  pages.
+
+* aven: SVG export fixes: second and subsequent exports had bogus extra "</g>";
+  Fixed to invert all Y coordinates, not just some; Fixed tags for layers.
+
+* aven: Fixed inverted icons.
+
+* aven: Initial window size and position will not straddle monitors if you have
+  multiple monitors connected to one machine (needs wxWidgets 2.5 to work on
+  Unix).
+
+* (Unix version): aven: Fixed initial sizing problems when building with gtk2.
+
+* Minor documentation updates.
+
 Changes in 1.0.32:
 
 * aven: Fixed font sizes in "Print Preview" and printouts.

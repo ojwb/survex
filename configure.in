@@ -8,15 +8,15 @@ AC_PREREQ(2.50)
 AC_INIT(src/cavern.c)
 
 # next line is for make_release
-CHANGELOG_FROM_TAG=v1_0_31
-AM_INIT_AUTOMAKE(survex, 1.0.32)
+CHANGELOG_FROM_TAG=v1_0_32
+AM_INIT_AUTOMAKE(survex, 1.0.33)
 RELEASE=1
 
 AC_SUBST(RELEASE)
 AM_CONFIG_HEADER(config.h)
 
 dnl don't reformat the next line, miniam.pl pulls out the value
-COPYRIGHT_MSG="Copyright %s 1990-2004 Olly Betts"
+COPYRIGHT_MSG="Copyright %s 1990-2005 Olly Betts"
 
 AVEN_COPYRIGHT_MSG="Copyright %s 1999-2002 Mark R. Shinwell"
 
