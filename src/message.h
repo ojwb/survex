@@ -26,6 +26,8 @@ extern "C" {
 
 #include <stdarg.h>
 
+#include <config.h>
+
 #include "useful.h"
 #include "osdepend.h"
 #include "osalloc.h"

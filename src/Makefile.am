@@ -24,7 +24,7 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 
 survex_SOURCES = wrap.c osdepend.c
 
-aven_SOURCES = aven.cc img.c \
+aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc
 
 aven_LDADD = @LIBOBJS@ @WX_LIBS@

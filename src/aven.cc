@@ -23,9 +23,7 @@
 #include "aven.h"
 #include "mainfrm.h"
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "message.h"
 
 #include <assert.h>
 
@@ -35,13 +33,6 @@
 
 IMPLEMENT_APP(Aven)
 
-static const wxCmdLineEntryDesc CMDLINE[] =
-{
-    { wxCMD_LINE_OPTION, "h", "help", "Print command line options" },
-    { wxCMD_LINE_PARAM,  NULL, NULL, "3d file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_NONE }
-};
-
 Aven::Aven() :
     m_Frame(NULL)
 {
@@ -49,17 +40,26 @@ Aven::Aven() :
 
 bool Aven::OnInit()
 {
-    wxCmdLineParser cli(CMDLINE, argc, argv);
+    msg_init(argv[0]);
+
+    static wxCmdLineEntryDesc cmdline[] = {
+        { wxCMD_LINE_OPTION, "h", "help", msgPerm(501) /* Print command line options */ },
+	{ wxCMD_LINE_PARAM,  NULL, NULL, msgPerm(502) /* 3d file */, wxCMD_LINE_VAL_STRING,
+	  wxCMD_LINE_PARAM_OPTIONAL },
+	{ wxCMD_LINE_NONE }
+    };
+
+    wxCmdLineParser cli(cmdline, argc, argv);
     int c = cli.Parse();
     if (c != 0 || cli.Found("h")) {
-        fprintf(stderr, "syntax: %s [3d file]\n", argv[0]);
+        fprintf(stderr, msg(500) /* syntax: %s [3d file] */, argv[0]);
+	fprintf(stderr, "\n");
 	exit(c > 0 ? 1 /* syntax error */ : 0 /* --help */);
     }
 
     wxImage::AddHandler(new wxPNGHandler);
     //--need to sort this!
-    m_AboutBitmap.LoadFile(wxString(DATADIR) + wxCONFIG_PATH_SEPARATOR + 
-			   wxString("survex") + wxCONFIG_PATH_SEPARATOR +
+    m_AboutBitmap.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
 			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
 
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(640, 480));

@@ -1,13 +1,11 @@
-Date: Thu 5th April 2001
+Date: Sat 7th April 2001
 From: Mark
 
 wxaven:
 - get it to build on/for win32
-- check it with wxMotif
+- sort out graphics context problem with wxMotif
 - confusion over semantics of "reverse controls"
 - configure script needs to allow specification of toolkit (GTK/Motif)
-- some code needs a bit of a tidy
 - continuing trouble with accelerator keys
-- internationalisation needs doing
-- tiny change required to code locating about box png file
+- translations need doing
 

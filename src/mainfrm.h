@@ -25,6 +25,7 @@
 
 #include "wx.h"
 #include "gfxcore.h"
+#include "message.h"
 #include <list>
 
 enum {
@@ -116,6 +117,10 @@ class MainFrm : public wxFrame {
     float GetDepthBoundaryBetweenBands(int a, int b);
     int GetDepthColour(float z);
     void CentreDataset(float xmin, float ymin, float zmin);
+
+    wxString GetTabMsg(int key) {
+        wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
+    }
 
 public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);

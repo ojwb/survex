@@ -1992,3 +1992,84 @@ it:197 " a %4.2fm)"
 #ca: 82 Par&agrave;metres dolents a la l&iacute;nia de comandaments
 #es: 82 Par&aacute;metros err&oacute;neos en la l&iacute;nea de comandos
 #it: 82 Parametro della linea dei comandi errato
+
+#
+#  Messages for Aven
+#
+en: 500 syntax: %s [3d file]
+en: 501 Print command line options
+en: 502 3d file
+en: 503 Facing
+en: 504 Elev
+# "m" for "metres": [scale and depth bars]
+en: 505 m
+# "mm" for "millimetres": [scale bar]
+en: 506 mm
+# "cm" for "centimetres": [scale bar]
+en: 507 cm
+# "km" for "kilometres": [scale bar]
+en: 508 km
+en: 509 Visualisation of Survex 3D files
+# A hash (#) indicates where to break the following line in the About box:
+en: 510 This is free software.  Aven is licenced under#the terms of the GNU General Public Licence#version 2, or (at your option) any later version.
+en: 511 Close
+# for the title of the About box:
+en: 512 About
+# Aven menu items.  An '@' goes before the letter of any accelerator key.
+# For the moment the following accelerator keys must NOT be changed in this file (as they
+# have to be hard-coded):
+#   Delete, Left/Right/Up/Down Arrow, ', /, ], [, Return and Space.
+# The string "##" separates the menu text and any accelerator key.
+en: 513 @Open...##Ctrl+O
+en: 514 @Exit
+en: 515 @Start Rotation##Return
+en: 516 S@top Rotation##Space
+en: 517 Speed @Up##Z
+en: 518 S@low Down##X
+en: 519 @Reverse Direction##R
+en: 520 Step Once @Anticlockwise##C
+en: 521 Step Once @Clockwise##V
+en: 522 View @North##N
+en: 523 View @East##E
+en: 524 View @South##S
+en: 525 View @West##W
+en: 526 Shift Survey @Left##Left Arrow
+en: 527 Shift Survey @Right##Right Arrow
+en: 528 Shift Survey @Up##Up Arrow
+en: 529 Shift Survey @Down##Down Arrow
+en: 530 @Plan View##P
+en: 531 Ele@vation View##L
+en: 532 @Higher Viewpoint##'
+en: 533 Lo@wer Viewpoint##/
+en: 534 @Zoom In##]
+en: 535 Zoo@m Out##[
+en: 536 Restore De@fault Settings##Delete
+en: 537 Station @Names##Ctrl+N
+en: 538 @Crosses##Ctrl+X
+en: 539 Survey @Legs##Ctrl+L
+en: 540 @Overlapping Names##O
+en: 541 Co@mpass
+en: 542 Cl@inometer
+en: 543 @Depth Bar
+en: 544 Sc@ale Bar
+en: 545 @Reverse Sense##Ctrl+R
+en: 546 Caverot-Style @Middle Button
+en: 547 @About Aven...
+# Aven menu titles.  An '@' goes before the letter of any accelerator key.
+en: 580 @File
+en: 581 @Rotation
+en: 582 @Orientation
+en: 583 @View
+en: 584 @Controls
+en: 585 @Help
+# More errors:
+en: 600 file not found
+en: 601 out of memory
+en: 602 it's a directory
+en: 603 incorrect 3d file format
+en: 604 Couldn't open 3d file
+en: 605 No legs or stations found in 3d file
+# File->Open dialog:
+en: 606 Select a 3d file to view
+en: 607 Survex 3d files
+en: 608 All files

@@ -22,6 +22,7 @@
 
 #include "gfxcore.h"
 #include "mainfrm.h"
+#include "message.h"
 
 #include <math.h>
 
@@ -569,15 +570,17 @@ void GfxCore::Draw2dIndicators()
     wxString str;
 
     if (m_Compass) {
-        str = wxString::Format("Facing %03d", int(m_PanAngle * 180.0 / M_PI));
+        str = wxString::Format("%s %03d", msg(503) /* Facing */,
+			     int(m_PanAngle * 180.0 / M_PI));
 	m_DrawDC.GetTextExtent(str, &w, &h);
 	m_DrawDC.DrawText(str, pan_centre_x - w/2,
 			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
     }
 
     if (m_Clino) {
-        str = m_TiltAngle == 0 ? wxString("Elev 00") :
-	                         wxString::Format("Elev %+03d", int(m_TiltAngle * 180.0 / M_PI));
+        str = m_TiltAngle == 0 ? wxString::Format("%s 00", msg(504) /* Elev */) :
+	                         wxString::Format("%s %+03d", msg(504) /* Elev */,
+			                          int(m_TiltAngle * 180.0 / M_PI));
 	m_DrawDC.GetTextExtent(str, &w, &h);
 	m_DrawDC.DrawText(str, elev_centre_x - w/2,
 			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
@@ -781,7 +784,7 @@ void GfxCore::DrawDepthbar()
     wxString* strs = new wxString[m_Bands + 1];
     for (int band = 0; band <= m_Bands; band++) {
 	float z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / m_Bands);
-	strs[band] = wxString::Format("%.0fm", z);
+	strs[band] = wxString::Format("%.0f%s", z, msg(505) /* m (as in metres) */);
 	int x, y;
 	m_DrawDC.GetTextExtent(strs[band], &x, &y);
 	if (x > size) {
@@ -857,25 +860,25 @@ void GfxCore::DrawScalebar()
     wxString str;
     wxString str2;
     if (dv < 1.0) {
-        str = "0mm";
+        str = wxString::Format("0%s", msg(506) /* mm */);
 	if (dv < 0.001) {
-	    str2 = wxString::Format("%.02fmm", dv * 10.0);
+	    str2 = wxString::Format("%.02f%s", dv * 10.0, msg(506) /* mm */);
 	}
 	else {
-	    str2 = wxString::Format("%.fmm", dv * 10.0);
+	    str2 = wxString::Format("%.f%s", dv * 10.0, msg(506) /* mm */);
 	}
     }
     else if (dv < 100.0) {
-        str = "0cm";
-	str2 = wxString::Format("%.02fcm", dv);
+        str = wxString::Format("0%s", msg(507) /* cm */);
+	str2 = wxString::Format("%.02f%s", dv, msg(507) /* cm */);
     }
     else if (dv < 100000.0) {
-        str = "0m";
-	str2 = wxString::Format("%.02fm", dv / 100.0);
+        str = wxString::Format("0%s", msg(505) /* m */);
+	str2 = wxString::Format("%.02f%s", dv / 100.0, msg(505) /* m */);
     }
     else {
-        str = "0km";
-        str2 = wxString::Format("%.02fkm", dv / 100000.0);
+        str = wxString::Format("0%s", msg(508) /* km */);
+        str2 = wxString::Format("%.02f%s", dv / 100000.0, msg(508) /* km */);
     }
 
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));

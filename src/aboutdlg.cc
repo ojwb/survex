@@ -22,6 +22,7 @@
 
 #include "aboutdlg.h"
 #include "aven.h"
+#include "message.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -31,18 +32,19 @@ BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
 END_EVENT_TABLE()
 
 AboutDlg::AboutDlg(wxWindow* parent) :
-    wxDialog(parent, 500, wxString("About Aven"))
+    wxDialog(parent, 500, wxString::Format("%s Aven", msg(512) /* About */))
 {
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
     wxStaticText* title = new wxStaticText(this, 502, wxString("Aven ") + wxString(VERSION));
-    wxStaticText* purpose = new wxStaticText(this, 505,
-					     wxString("Visualisation of Survex 3D files"));
+    wxStaticText* purpose = new wxStaticText(this, 505, wxString(msg(509)));
     wxStaticText* copyright1 = new wxStaticText(this, 503, AVEN_COPYRIGHT_MSG);
     wxStaticText* copyright2 = new wxStaticText(this, 504, COPYRIGHT_MSG);
-    wxStaticText* licence = new wxStaticText(this, 506, "This is free software.  Aven is licenced under\nthe terms of the GNU General Public Licence\nversion 2, or (at your option) any later version.");
-    wxButton* close = new wxButton(this, wxID_OK, "Close");
+    wxString licence_str(msg(510)); /* This is free software... */
+    licence_str.Replace("#", "\n");
+    wxStaticText* licence = new wxStaticText(this, 506, licence_str);
+    wxButton* close = new wxButton(this, wxID_OK, wxString(msg(511)) /* Close */);
     close->SetDefault();
 
     wxBitmap& bm = wxGetApp().GetAboutBitmap();
