@@ -123,3 +123,17 @@ commentall?
 
 GPS support (e.g. export survey as GPS coords)
 
+print to an image file (use gd?)
+
+Allow covariances to be specified in cartesian style?
+
+back bearings?
+
+aven grid code -> printer drivers, caverot, and xcaverot too.
+grid crosses option (only draw cross at intersections, not a full grid).
+[(x,y) of a point to go through (easting, northing)
+x spacing, y spacing (default to x spacing)
+orientation (bearing of y-axis?) (defaults to 0)]
+
+printout of current view from aven...
+

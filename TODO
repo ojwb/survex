@@ -16,8 +16,6 @@ section colouring/selective labelling
 clipping - want to select a clip sphere (or maybe cube) centred on
 centre on rotation I think.
 
-printout of current view...
-
 shift-ed keys should move faster (as they do in caverot)
 
 Middle button drag should "resist" at elevation (i.e. angle == 0)...
@@ -36,15 +34,6 @@ little can be seen for part of each rotation).
 
 aven/caverot/xcaverot: if all points share a common prefix then
 default to hiding it?
-
-Date: Fri, 18 Aug 2000
-From: Olly
-
-aven grid code -> printer drivers, caverot, and xcaverot too.
-grid crosses option (only draw cross at intersections, not a full grid).
-[(x,y) of a point to go through (easting, northing)
-x spacing, y spacing (default to x spacing)
-orientation (bearing of y-axis?) (defaults to 0)]
 
 Date: Sat, 03 Mar 2001
 From: Olly
@@ -113,8 +102,6 @@ check skip blank pages works on printer drivers (notably printpcl)
 prog --help and --version ought to work (perhaps both just do --version)
 even if messages can't be found.
 
-back bearings?
-
 one page HTML manual
 
 win install lang??
@@ -163,8 +150,4 @@ improve 3d torture test and try to automate its use if possible.
 caverot: on RISC OS now fall back to using 2 or even just one screen
 bank if we can't find a mode where we can create 3 banks [FIXME: need
 to test this works]
-
-print to an image file (use gd?)
-
-Allow covariances to be specified in cartesian style?
 
