@@ -1871,6 +1871,10 @@ it:215 @Aiuto
 # More cavern messages (sorry, 199 wasn't enough!)
 en:216 Standard deviation must be positive
 #
+en:217 Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')
+#
+en:218 Bad list of pages to print `%s'
+#
 # back to aven...
 #
 # The accelerators must be different within this group
