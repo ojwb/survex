@@ -77,9 +77,9 @@ extern void list_pos( prefix *from ) {
  prefix *p;
  char *fnmPosList;
 # ifdef NO_EXTENSIONS
- fnmPosList=UsePth(pthOutput,POSLIST_FILE);
+ fnmPosList = UsePth( pthOutput, POSLIST_FILE );
 # else
- fnmPosList=AddExt(fnmInput,EXT_SVX_POS);
+ fnmPosList = AddExt( fnmInput, EXT_SVX_POS );
 # endif
  if (fDirectory(fnmPosList))
   fatal(44,wr,fnmPosList,0);
