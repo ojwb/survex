@@ -109,6 +109,22 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_BUTTON(svx_PREVIEW, svxPrintDlg::OnPreview)
 END_EVENT_TABLE()
 
+static const wxString scales[] = {
+    "One page", // FIXME TRANSLATE
+    "25",
+    "50",
+    "100",
+    "250",
+    "500",
+    "1000",
+    "2500",
+    "5000",
+    "10000",
+    "25000",
+    "50000",
+    "100000"
+};
+
 // there are three jobs to do here...
 // User <-> wx - this should possibly be done in a separate file
 svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
@@ -142,22 +158,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     scalebox->Add(new wxStaticText(this, -1,
 				   wxString(msg(/*Scale*/154)) + " 1:"),
 		  0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-    static const wxString choices[] = {
-	"25",
-	"50",
-	"100",
-	"250",
-	"500",
-	"1000",
-	"2500",
-	"5000",
-	"10000",
-	"25000",
-	"50000",
-	"100000"
-    };
-    m_scale = new wxComboBox(this, svx_SCALE, "500", wxDefaultPosition,
-			     wxDefaultSize, 12, choices);
+    m_scale = new wxComboBox(this, svx_SCALE, scales[0], wxDefaultPosition,
+			     wxDefaultSize, sizeof(scales) / sizeof(scales[0]),
+			     scales);
     scalebox->Add(m_scale, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
     v2->Add(scalebox, 0, wxALIGN_RIGHT + wxALL, 0);
     // Make the dummy string wider than any sane value so the sizer
@@ -328,9 +331,13 @@ svxPrintDlg::LayoutToUI(){
     }
     m_bearing->SetValue(m_layout->rot);
     // Do this last as it causes an OnChange message which calls UIToLayout
-    wxString temp;
-    temp << m_layout->Scale;
-    m_scale->SetValue(temp);
+    if (m_layout->Scale != 0) {
+	wxString temp;
+	temp << m_layout->Scale;
+	m_scale->SetValue(temp);
+    } else {
+	m_scale->SetValue(scales[0]);
+    }
 }
 
 void 
@@ -342,9 +349,6 @@ svxPrintDlg::UIToLayout(){
 //    m_layout->SkipBlank = m_blanks->IsChecked();
     m_layout->Raw = !m_infoBox->IsChecked();
     m_layout->Surface = m_surface->IsChecked();
-
-    (m_scale->GetValue()).ToDouble(&(m_layout->Scale));
-    m_layout->Sc = 1000 / m_layout->Scale;
 
     switch(m_aspect->GetSelection()) {
 	case 0: // Plan;
@@ -366,6 +370,17 @@ svxPrintDlg::UIToLayout(){
 	    break;
     }
     m_layout->rot = m_bearing->GetValue();
+
+    (m_scale->GetValue()).ToDouble(&(m_layout->Scale));
+    if (m_layout->Scale == 0.0) {
+	double x = 1000.0 / pick_scale(1, 1);
+
+	/* trim to 2 s.f. (rounding up) */
+	double w = pow(10.0, floor(log10(x) - 1.0));
+	x = ceil(x / w) * w;
+
+	m_layout->Scale = x;
+    }
 }
 
 void
@@ -668,7 +683,7 @@ make_calibration(layout *l) {
       pt.x = 0.001;
       pt.y = 0.05;
       stack(l,img_LABEL, "10cm", &pt);
-      l->Sc = 1000.0;
+      l->Scale = 1.0;
 }
 #endif
 
@@ -882,6 +897,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 	draw_info_box();
     }
 
+    double Sc = 1000 / m_layout->Scale;
+
     if (l->Surface || l->Shots) {
 	for (int i=0; i < m_parent->GetNumDepthBands(); ++i) {
 	    list<PointInfo*>::const_iterator p = m_parent->GetPoints(i);
@@ -891,8 +908,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 		double pz = (*p)->GetZ();
 		double X = px * COS - py * SIN;
 		double Y = (px * SIN + py * COS) * SINT + pz * COST;
-		long xnew = (long)((X * l->Sc + l->xOrg) * l->scX);
-		long ynew = (long)((Y * l->Sc + l->yOrg) * l->scY);
+		long xnew = (long)((X * Sc + l->xOrg) * l->scX);
+		long ynew = (long)((Y * Sc + l->yOrg) * l->scY);
 
 		if ((*p)->IsLine()) {
 		    bool draw = ((*p)->IsSurface() ? l->Surface : l->Shots);
@@ -941,8 +958,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 		double X = px * COS - py * SIN;
 		double Y = (px * SIN + py * COS) * SINT + pz * COST;
 		long xnew, ynew;
-		xnew = (long)((X * l->Sc + l->xOrg) * l->scX);
-		ynew = (long)((Y * l->Sc + l->yOrg) * l->scY);
+		xnew = (long)((X * Sc + l->xOrg) * l->scX);
+		ynew = (long)((Y * Sc + l->yOrg) * l->scY);
 		if (l->Crosses) {
 		    SetColour(PR_COLOUR_CROSS);
 		    DrawCross(xnew, ynew);
@@ -1336,4 +1353,36 @@ svxPrintout::Init(FILE **fh_list, bool fCalibrate)
    m_layout->scX = 1;
    m_layout->scY = 1;
    return NULL;
+}
+
+#define DEF_RATIO (1.0/(double)DEFAULT_SCALE)
+/* return a scale which will make it fit in the desired size */
+double
+svxPrintDlg::pick_scale(int x, int y)
+{
+   double Sc_x, Sc_y;
+#if 0
+   double E;
+#endif
+   /*    pagesY = ceil((image_dy+allow)/PaperDepth)
+    * so (image_dy+allow)/PaperDepth <= pagesY < (image_dy+allow)/PaperDepth+1
+    * so image_dy <= pagesY*PaperDepth-allow < image_dy+PaperDepth
+    * and Sc = image_dy / (yMax-yMin)
+    * so Sc <= (pagesY*PaperDepth-allow)/(yMax-yMin) < Sc+PaperDepth/(yMax-yMin)
+    */
+   Sc_x = Sc_y = DEF_RATIO;
+   if (m_layout->PaperWidth > 0.0 && m_layout->xMax > m_layout->xMin)
+      Sc_x = (x * m_layout->PaperWidth - 19.0) / (m_layout->xMax - m_layout->xMin);
+   if (m_layout->PaperDepth > 0.0 && m_layout->yMax > m_layout->yMin) {
+      double allow = 21.0;
+      if (!m_layout->Raw) allow += (view == EXTELEV ? 30.0 : 40.0);
+      Sc_y = (y * m_layout->PaperDepth - allow) / (m_layout->yMax - m_layout->yMin);
+   }
+
+   Sc_x = min(Sc_x, Sc_y) * 0.99; /* shrink by 1% so we don't cock up */
+#if 0 /* this picks a nice (in some sense) ratio, but is too stingy */
+   E = pow(10.0, floor(log10(Sc_x)));
+   Sc_x = floor(Sc_x / E) * E;
+#endif
+   return Sc_x;
 }
