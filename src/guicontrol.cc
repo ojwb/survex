@@ -135,13 +135,13 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     if (!m_View->ChangingOrientation()) {
 	if (m_DraggingLeft) {
 	    if (m_LastDrag == drag_NONE) {
-		if (m_View->PointWithinCompass(point)) {
+		if (m_View->ShowingCompass() && m_View->PointWithinCompass(point)) {
 		    m_LastDrag = drag_COMPASS;
 		}
-		else if (m_View->PointWithinClino(point)) {
+		else if (m_View->ShowingClino() && m_View->PointWithinClino(point)) {
 		    m_LastDrag = drag_ELEV;
 		}
-		else if (m_View->PointWithinScaleBar(point)) {
+		else if (m_View->ShowingScaleBar() && m_View->PointWithinScaleBar(point)) {
 		    m_LastDrag = drag_SCALE;
 		}
 	    }

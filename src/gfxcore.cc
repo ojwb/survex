@@ -1230,28 +1230,6 @@ void GfxCore::OnSize(wxSizeEvent& event)
         CreateHitTestGrid();
 
         UpdateIndicators();
-        
-#if 0
-#ifdef AVENGL
-        if (GetContext()) {
-            SetCurrent();
-            glViewport(0, 0, m_XSize, m_YSize);
-            SetGLProjection();
-        }
-#else
-#ifndef __WXMOTIF__
-        m_DrawDC.SelectObject(wxNullBitmap);
-#endif
-        if (m_OffscreenBitmap) {
-            delete m_OffscreenBitmap;
-        }
-        m_OffscreenBitmap = new wxBitmap;
-        m_OffscreenBitmap->Create(m_XSize, m_YSize);
-        m_DrawDC.SelectObject(*m_OffscreenBitmap);
-#endif
-
-        RedrawOffscreen();
-#endif
 
         Refresh(false);
     }
@@ -1579,21 +1557,21 @@ bool GfxCore::ShowingClino()
 
 wxCoord GfxCore::GetCompassXPosition()
 {
-    // Return the x-coordinate of the centre of the compass.
+    // Return the x-coordinate of the centre of the compass in window coordinates.
     
     return m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
 }
 
 glaCoord GfxCore::GetClinoXPosition()
 {
-    // Return the x-coordinate of the centre of the compass.
+    // Return the x-coordinate of the centre of the compass in window coordinates.
 
     return m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2;
 }
 
 wxCoord GfxCore::GetIndicatorYPosition()
 {
-    // Return the y-coordinate of the centre of the indicators.
+    // Return the y-coordinate of the centre of the indicators in window coordinates.
 
     return m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
 }
@@ -1852,10 +1830,12 @@ bool GfxCore::ShowingMeasuringLine()
     return (m_there.x != DBL_MAX);
 }
 
-void GfxCore::ToggleFlag(bool* flag)
+void GfxCore::ToggleFlag(bool* flag, bool refresh)
 {
     *flag = !*flag;
-    ForceRefresh();
+    if (refresh) {
+        ForceRefresh();
+    }
 }
 
 int GfxCore::GetNumEntrances()

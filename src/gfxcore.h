@@ -227,7 +227,7 @@ class GfxCore : public GLACanvas {
     wxCoord GetIndicatorYPosition();
     wxCoord GetIndicatorRadius();
 
-    void ToggleFlag(bool* flag);
+    void ToggleFlag(bool* flag, bool refresh = true);
 
 public:
     GfxCore(MainFrm* parent, wxWindow* parent_window, GUIControl* control);
@@ -334,22 +334,22 @@ public:
 
     void ToggleUndergroundLegs() { ToggleFlag(&m_Legs); }
     void ToggleSurfaceLegs() { ToggleFlag(&m_Surface); }
-    void ToggleCompass() { ToggleFlag(&m_Compass); }
-    void ToggleClino() { ToggleFlag(&m_Clino); }
-    void ToggleScaleBar() { ToggleFlag(&m_Scalebar); }
+    void ToggleCompass() { ToggleFlag(&m_Compass, false); UpdateIndicators(); ForceRefresh(); }
+    void ToggleClino() { ToggleFlag(&m_Clino, false); UpdateIndicators(); ForceRefresh(); }
+    void ToggleScaleBar() { ToggleFlag(&m_Scalebar, false); UpdateIndicators(); ForceRefresh(); }
     void ToggleEntrances() { ToggleFlag(&m_Entrances); }
     void ToggleFixedPts() { ToggleFlag(&m_FixedPts); }
     void ToggleExportedPts() { ToggleFlag(&m_ExportedPts); }
     void ToggleGrid() { ToggleFlag(&m_Grid); }
     void ToggleCrosses() { ToggleFlag(&m_Crosses); }
-    void ToggleStationNames() { ToggleFlag(&m_Names); UpdateNames(); ForceRefresh(); }
+    void ToggleStationNames() { ToggleFlag(&m_Names, false); UpdateNames(); ForceRefresh(); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
-    void ToggleDepthBar() { ToggleFlag(&m_Depthbar); }
+    void ToggleDepthBar() { ToggleFlag(&m_Depthbar, false); UpdateIndicators(); ForceRefresh(); }
     void ToggleSurfaceDepth() { ToggleFlag(&m_SurfaceDepth); }
     void ToggleSurfaceDashed() { ToggleFlag(&m_SurfaceDashed); }
-    void ToggleMetric() { ToggleFlag(&m_Metric); }
-    void ToggleDegrees() { ToggleFlag(&m_Degrees); }
-    void ToggleTubes() { ToggleFlag(&m_Tubes); UpdateLegs(); ForceRefresh(); }
+    void ToggleMetric() { ToggleFlag(&m_Metric, false); UpdateIndicators(); ForceRefresh(); }
+    void ToggleDegrees() { ToggleFlag(&m_Degrees, false); UpdateIndicators(); ForceRefresh(); }
+    void ToggleTubes() { ToggleFlag(&m_Tubes, false); UpdateLegs(); ForceRefresh(); }
 
     bool GetMetric() { return m_Metric; }
     bool GetDegrees() { return m_Degrees; }
