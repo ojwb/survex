@@ -3,12 +3,24 @@ require 5.003;
 use strict;
 
 my $os = shift @ARGV;
+my $configure_in = shift @ARGV;
 
 my (%repl, $max_leaf_len, $use_rsp);
 
-eval "&init_$os";
+my $version = '';
+if (open C, "<$configure_in") {
+   while (<C>) {
+      next unless /^AM_INIT_AUTOMAKE\([^,]*,\s*([\d.]+)\)/;
+      $version = $1;
+      last;
+   }
+   close C;
+   eval "&init_$os";
+}
 
-die "Syntax: $0 <platform>\nSupported platforms: borlandc riscos\n" if $@;
+$@ = 1 if $version eq '';
+die "Syntax: $0 <platform> <configure.in>\nSupported platforms: borlandc riscos\n" if $@;
+
 my %var = ();
 
 while (<>) {
@@ -127,7 +139,7 @@ sub init_riscos {
       'LIBOBJS' => 'strcasecmp.o',
       'CRLIB' => '',
       'CROBJX' => 'armrot.o',
-      'CFLAGS' => '-DHAVE_CONFIG_H -IC:,@ -throwback -ffahp -fussy',
+      'CFLAGS' => '-DVERSION='.$version.' -DHAVE_CONFIG_H -IC:,@ -throwback -ffahp -fussy',
       'LDFLAGS' => '',
       'LIBS' => 'C:OSLib.o.OSLib',
       'CC' => 'cc',
@@ -146,7 +158,7 @@ sub init_borlandc {
       'LIBOBJS' => '',
       'CRLIB' => 'graphics.lib mouse.lib',
       'CROBJX' => 'dosrot.obj',
-      'CFLAGS' => '-DHAVE_CONFIG_H -DHAVE_FAR_POINTERS -I. -ml -d -O1 -Ogmpvl -X',
+      'CFLAGS' => '-DVERSION='.$version.' -DHAVE_CONFIG_H -DHAVE_FAR_POINTERS -I. -ml -d -O1 -Ogmpvl -X',
       'LDFLAGS' => '',
       'LIBS' => '',
       'CC' => 'bcc',

@@ -76,6 +76,3 @@
 /* Name of package */
 #define PACKAGE "survex"
 
-/* Version number of package */
-#define VERSION "0.90"
-
