@@ -385,58 +385,89 @@ do_stats(void)
 {
    FILE *fh = NULL;
    long cLoops = cComponents + cLegs - cStns;
-   char buf[1024]; /* FIXME: try to remove static buffer */
 
    if (!fSuppress && !(msg_errors || (f_warnings_are_errors && msg_warnings)))
       fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
+   else
+      if (fMute) return;
 
    if (!fMute) putnl();
 
-   if (cStns == 1)
-      sprintf(buf, msg(/*Survey contains 1 survey station,*/172));
-   else
-      sprintf(buf,
-	      msg(/*Survey contains %ld survey stations,*/173), cStns);
-
-   if (cLegs == 1)
-      sprintf(buf + strlen(buf), msg(/* joined by 1 leg.*/174));
-   else
-      sprintf(buf + strlen(buf),
-	      msg(/* joined by %ld legs.*/175), cLegs);
-
-   if (!fMute) puts(buf);
-   if (fh) fputsnl(buf, fh);
-
-   if (cLoops == 1)
-      sprintf(buf, msg(/*There is 1 loop.*/138));
-   else
-      sprintf(buf, msg(/*There are %ld loops.*/139), cLoops);
-
-   if (!fMute) puts(buf);
-   if (fh) fputsnl(buf, fh);
-
-   if (cComponents != 1) {
-      sprintf(buf,
-	      msg(/*Survey has %ld connected components.*/178), cComponents);
-      if (!fMute) puts(buf);
-      if (fh) fputsnl(buf, fh);
+   if (cStns == 1) {
+      if (!fMute)
+	 fputs(msg(/*Survey contains 1 survey station,*/172), stdout);
+      if (fh)
+	 fputs(msg(/*Survey contains 1 survey station,*/172), fh);
+   } else {
+      if (!fMute)
+	 printf(msg(/*Survey contains %ld survey stations,*/173), cStns);
+      if (fh)
+	 fprintf(fh, msg(/*Survey contains %ld survey stations,*/173), cStns);
    }
 
-   sprintf(buf,
-	   msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
-	   total, totadj);
-   if (!fMute) puts(buf);
-   if (fh) fputsnl(buf, fh);
+   if (cLegs == 1) {
+      if (!fMute)
+	 fputs(msg(/* joined by 1 leg.*/174), stdout);
+      if (fh)
+	 fputs(msg(/* joined by 1 leg.*/174), fh);
+   } else {
+      if (!fMute)
+	 printf(msg(/* joined by %ld legs.*/175), cLegs);
+      if (fh)
+	 fprintf(fh, msg(/* joined by %ld legs.*/175), cLegs);
+   }
 
-   sprintf(buf,
-	   msg(/*Total plan length of survey legs = %7.2fm*/133), totplan);
-   if (!fMute) puts(buf);
-   if (fh) fputsnl(buf, fh);
+   if (!fMute) putnl();
+   if (fh) fputnl(fh);
 
-   sprintf(buf, msg(/*Total vertical length of survey legs = %7.2fm*/134),
-	   totvert);
-   if (!fMute) puts(buf);
-   if (fh) fputsnl(buf, fh);
+   if (cLoops == 1) {
+      if (!fMute)
+	 fputs(msg(/*There is 1 loop.*/138), stdout);
+      if (fh)
+	 fputs(msg(/*There is 1 loop.*/138), fh);
+   } else {
+      if (!fMute)
+	 printf(msg(/*There are %ld loops.*/139), cLoops);
+      if (fh)
+	 fprintf(fh, msg(/*There are %ld loops.*/139), cLoops);
+   }
+
+   if (!fMute) putnl();
+   if (fh) fputnl(fh);
+
+   if (cComponents != 1) {
+      if (!fMute) {
+	 printf(msg(/*Survey has %ld connected components.*/178), cComponents);
+	 putnl();
+      }
+      if (fh) {
+	 fprintf(fh, msg(/*Survey has %ld connected components.*/178), cComponents);
+	 fputnl(fh);
+      }
+   }
+
+   if (!fMute) {
+      printf(msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
+	     total, totadj);
+      putnl();
+      printf(msg(/*Total plan length of survey legs = %7.2fm*/133),
+	     totplan);
+      putnl();
+      printf(msg(/*Total vertical length of survey legs = %7.2fm*/134),
+	     totvert);
+      putnl();
+   }
+   if (fh) {
+      fprintf(fh, msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
+	      total, totadj);
+      fputnl(fh);
+      fprintf(fh, msg(/*Total plan length of survey legs = %7.2fm*/133),
+	      totplan);
+      fputnl(fh);
+      fprintf(fh, msg(/*Total vertical length of survey legs = %7.2fm*/134),
+	      totvert);
+      fputnl(fh);
+   }
 
    do_range(fh, 2, /*Vertical range = %4.2fm (from */135,
 	    /* at %4.2fm to */136, /* at %4.2fm)*/137);
