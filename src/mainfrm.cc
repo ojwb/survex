@@ -1313,7 +1313,9 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
     const TreeData* data = static_cast<const TreeData*>(item);
     if (data) {
 	if (data->IsStation()) {
-	    ShowInfo(data->GetLabel());
+	    const LabelInfo * l = data->GetLabel();
+	    ShowInfo(l);
+	    m_Gfx->SetHere(l->x, l->y, l->z);
 	} else {
 	    m_StnName->SetLabel("");
 	    m_StnCoords->SetLabel("");
@@ -1322,6 +1324,7 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
 	    m_Dist1->SetLabel("");
 	    m_Dist2->SetLabel("");
 	    m_Dist3->SetLabel("");
+	    m_Gfx->SetHere();
 	}
     }
 }
@@ -1333,6 +1336,9 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
     if (data && data->IsStation()) {
 	const LabelInfo* label = data->GetLabel();
 	m_Gfx->CentreOn(label->x, label->y, label->z);
+	m_Gfx->SetThere(label->x, label->y, label->z);
+    } else {
+	m_Gfx->SetThere();
     }
 
     m_Dist1->SetLabel("");

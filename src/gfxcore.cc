@@ -593,20 +593,33 @@ GfxCore::DrawBand(int num_polylines, const int *num_segs, const Point *vertices,
     }
 }
 
+static wxPoint blob[10] = {
+    wxPoint(-1,  2),
+    wxPoint( 1,  2),
+    wxPoint( 2,  1),
+    wxPoint(-2,  1),
+    wxPoint(-2,  0),
+    wxPoint( 2,  0),
+    wxPoint( 2, -1),
+    wxPoint(-2, -1),
+    wxPoint(-1, -2),
+    wxPoint( 2, -2) // (1, -2) for any platform which draws the last dot
+};
+
+static wxPoint ring[9] = {
+    wxPoint(-1,  4),
+    wxPoint( 1,  4),
+    wxPoint( 4,  1),
+    wxPoint( 4, -1),
+    wxPoint( 1, -4),
+    wxPoint(-1, -4),
+    wxPoint(-4, -1),
+    wxPoint(-4,  1),
+    wxPoint(-1,  4)
+};
+
 void GfxCore::RedrawOffscreen()
 {
-    static wxPoint blob[10] = {
-	wxPoint(-1,  2),
-	wxPoint( 1,  2),
-	wxPoint( 2,  1),
-	wxPoint(-2,  1),
-	wxPoint(-2,  0),
-	wxPoint( 2,  0),
-	wxPoint( 2, -1),
-	wxPoint(-2, -1),
-	wxPoint(-1, -2),
-	wxPoint( 2, -2) // (1, -2) for any platform which draws the last dot
-    };
     static wxPoint cross1[2] = {
 	wxPoint(-CROSS_SIZE, -CROSS_SIZE),
 	wxPoint(CROSS_SIZE + 1, CROSS_SIZE + 1) // remove +1 if last dot drawn
@@ -776,14 +789,7 @@ void GfxCore::RedrawOffscreen()
 		    m_DrawDC.DrawLines(2, cross2, x, y);
 		} else {
 		    SetColour(col, true);
-#if 0
-		    m_DrawDC.DrawEllipse(x - HIGHLIGHTED_PT_SIZE,
-					 y - HIGHLIGHTED_PT_SIZE,
-					 HIGHLIGHTED_PT_SIZE * 2,
-					 HIGHLIGHTED_PT_SIZE * 2);
-#else
 		    m_DrawDC.DrawLines(10, blob, x, y);
-#endif
 		}
 	    }
 	}
@@ -855,10 +861,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    dc.SetBrush(*wxTRANSPARENT_BRUSH);
 	    here_x = (int)GridXToScreen(m_here);
 	    here_y = (int)GridYToScreen(m_here);
-	    dc.DrawEllipse(here_x - HIGHLIGHTED_PT_SIZE * 2,
-			   here_y - HIGHLIGHTED_PT_SIZE * 2,
-			   HIGHLIGHTED_PT_SIZE * 4,
-			   HIGHLIGHTED_PT_SIZE * 4);
+	    dc.DrawLines(10, blob, here_x, here_y);
 	}
 	if (m_there.x != DBL_MAX) {
 	    if (here_x == INT_MAX) dc.SetPen(*wxWHITE_PEN);
@@ -868,10 +871,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    if (here_x != INT_MAX) {
 		dc.DrawLine(here_x, here_y, there_x, there_y);
 	    }
-	    dc.DrawEllipse(there_x - HIGHLIGHTED_PT_SIZE,
-		    	   there_y - HIGHLIGHTED_PT_SIZE,
-			   HIGHLIGHTED_PT_SIZE * 2,
-			   HIGHLIGHTED_PT_SIZE * 2);
+	    dc.DrawLines(9, ring, there_x, there_y);
 	}
     }
 
@@ -2471,43 +2471,37 @@ void GfxCore::ForceRefresh()
     Refresh(false);
 }
 
-void GfxCore::RefreshLine(const Point &a1, const Point &b1,
-			  const Point &a2, const Point &b2)
+// How much to allow around the box - this is because of the ring shape
+// at one end of the line.
+#define MARGIN (HIGHLIGHTED_PT_SIZE * 2 + 1)
+void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 {
     // Calculate the minimum rectangle which includes the old and new
     // measuring lines to minimise the redraw time
     int l = INT_MAX, r = INT_MIN, u = INT_MIN, d = INT_MAX;
-    if (a1.x != DBL_MAX) {
-	int x = (int)GridXToScreen(a1);
-	int y = (int)GridYToScreen(a1);
-	l = x - HIGHLIGHTED_PT_SIZE * 4;
-	r = x + HIGHLIGHTED_PT_SIZE * 4;
-	u = y + HIGHLIGHTED_PT_SIZE * 4;
-	d = y - HIGHLIGHTED_PT_SIZE * 4;
+    if (a.x != DBL_MAX) {
+	int x = (int)GridXToScreen(a);
+	int y = (int)GridYToScreen(a);
+	l = x - MARGIN;
+	r = x + MARGIN;
+	u = y + MARGIN;
+	d = y - MARGIN;
     }
-    if (a2.x != DBL_MAX) {
-	int x = (int)GridXToScreen(a2);
-	int y = (int)GridYToScreen(a2);
-	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
-	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
-	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
-	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
+    if (b.x != DBL_MAX) {
+	int x = (int)GridXToScreen(b);
+	int y = (int)GridYToScreen(b);
+	l = min(l, x - MARGIN);
+	r = max(r, x + MARGIN);
+	u = max(u, y + MARGIN);
+	d = min(d, y - MARGIN);
     }
-    if (b1.x != DBL_MAX) {
-	int x = (int)GridXToScreen(b1);
-	int y = (int)GridYToScreen(b1);
-	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
-	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
-	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
-	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
-    }
-    if (b2.x != DBL_MAX) {
-	int x = (int)GridXToScreen(b2);
-	int y = (int)GridYToScreen(b2);
-	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
-	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
-	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
-	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
+    if (c.x != DBL_MAX) {
+	int x = (int)GridXToScreen(c);
+	int y = (int)GridYToScreen(c);
+	l = min(l, x - MARGIN);
+	r = max(r, x + MARGIN);
+	u = max(u, y + MARGIN);
+	d = min(d, y - MARGIN);
     }
     const wxRect R(l, d, r - l, u - d);
     Refresh(false, &R);
@@ -2515,10 +2509,10 @@ void GfxCore::RefreshLine(const Point &a1, const Point &b1,
 
 void GfxCore::SetHere()
 {
-//    if (m_here.x == DBL_MAX) return;
+    if (m_here.x == DBL_MAX) return;
     Point old = m_here;
     m_here.x = DBL_MAX;
-    RefreshLine(old, m_there, m_here, m_there);
+    RefreshLine(old, m_there, m_here);
 }
 
 void GfxCore::SetHere(Double x, Double y, Double z)
@@ -2527,15 +2521,15 @@ void GfxCore::SetHere(Double x, Double y, Double z)
     m_here.x = x;
     m_here.y = y;
     m_here.z = z;
-    RefreshLine(old, m_there, m_here, m_there);
+    RefreshLine(old, m_there, m_here);
 }
 
 void GfxCore::SetThere()
 {
-//    if (m_there.x == DBL_MAX) return;
+    if (m_there.x == DBL_MAX) return;
     Point old = m_there;
     m_there.x = DBL_MAX;
-    RefreshLine(m_here, old, m_here, m_there);
+    RefreshLine(m_here, old, m_there);
 }
 
 void GfxCore::SetThere(Double x, Double y, Double z)
@@ -2544,7 +2538,7 @@ void GfxCore::SetThere(Double x, Double y, Double z)
     m_there.x = x;
     m_there.y = y;
     m_there.z = z;
-    RefreshLine(m_here, old, m_here, m_there);
+    RefreshLine(m_here, old, m_there);
 }
 
 void GfxCore::OnCancelDistLine()

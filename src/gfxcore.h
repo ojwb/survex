@@ -271,8 +271,7 @@ public:
 
     void ForceRefresh();
 
-    void RefreshLine(const Point &a1, const Point &b1,
-		     const Point &a2, const Point &b2);
+    void RefreshLine(const Point &a, const Point &b, const Point &c);
  
     void SetHere();
     void SetHere(Double x, Double y, Double z);
