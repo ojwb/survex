@@ -1,0 +1,311 @@
+/* > cavern.c
+ * SURVEX Cave surveying software: data reduction main and related functions
+ * Copyright (C) 1991-1999 Olly Betts
+ */
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <time.h>
+
+#include "datain.h"
+#include "debug.h"
+#include "validate.h"
+#include "cavern.h"
+#include "message.h"
+#include "filename.h"
+#include "filelist.h"
+#include "osdepend.h"
+#include "img.h"
+#include "netbits.h"
+#include "commands.h"
+#include "cmdline.h"
+#include "network.h"
+#include "listpos.h"
+#include "out.h"
+#include "s.h"
+
+/* For funcs which want to be immune from messing around with different
+ * calling conventions */
+#ifndef CDECL
+# define CDECL
+#endif
+
+/* Globals */
+node *stnlist = NULL;
+settings *pcs;
+prefix *root;
+long cLegs, cStns;
+long cComponents;
+
+#ifndef OUTPUT_TO_CURRENT_DIRECTORY
+char *pthOutput;
+char *fnmInput;
+#endif
+
+FILE *fhErrStat = NULL;
+img *pimgOut = NULL;
+#ifndef NO_PERCENTAGE
+bool fPercent = fFalse;
+#endif
+bool fAscii = fFalse;
+
+real totadj, total, totplan, totvert;
+real min[3], max[3];
+prefix *pfxHi[3], *pfxLo[3];
+
+char *survey_title = NULL;
+int survey_title_len;
+
+bool fExplicitTitle = fFalse;
+
+static void do_stats(void);
+
+static const struct option long_opts[] = {
+   /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+#ifdef NO_PERCENTAGE
+   {"percentage", no_argument, 0, 0},
+   {"no-percentage", no_argument, 0, 0},
+#else
+   {"percentage", no_argument, 0, 'p'},
+   {"no-percentage", no_argument, (int*)&fPercent, 0},
+#endif
+   {"help", no_argument, 0, HLP_HELP},
+   {"version", no_argument, 0, HLP_VERSION},
+   {0, 0, 0, 0}
+};
+
+#define short_opts "pao:"
+
+/* TRANSLATE: FIXME extract help messages to message file */
+static struct help_msg help[] = {
+/*				<-- */
+   {HLP_ENCODELONG(0),          "display percentage progress"},
+   {'a',                        "output ascii variant of .3d file"},
+ /*{'o',                        "set optimizations for network reduction"},*/
+   {0, 0}
+};
+
+extern CDECL int
+main(int argc, char **argv)
+{
+   int d;
+   static clock_t tmCPUStart;
+   static time_t tmUserStart;
+   static double tmCPU, tmUser;
+
+   check_fp_ok(); /* check very early on */
+
+   tmUserStart = time(NULL);
+   tmCPUStart = clock();
+   init_screen();
+
+   pthOutput = NULL;
+
+   ReadErrorFile(argv[0]);
+
+   pcs = osnew(settings);
+   pcs->next = NULL;
+   pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
+
+   /* Set up root of prefix hierarchy */
+   root = osnew(prefix);
+   root->up = root->right = root->down = NULL;
+   root->stn = NULL;
+   root->pos = NULL;
+   root->ident = "\\";
+
+   stnlist = NULL;
+   cLegs = cStns = cComponents = 0;
+   totadj = total = totplan = totvert = 0.0;
+
+   for (d = 0; d <= 2; d++) {
+      min[d] = REAL_BIG;
+      max[d] = -REAL_BIG;
+      pfxHi[d] = pfxLo[d] = NULL;
+   }
+
+   while (1) {
+      extern long optimize; /* defined in network.c */
+      int opt = my_getopt_long(argc, argv, short_opts, long_opts, NULL, help, 1);
+      if (opt == EOF) break;
+      switch (opt) {
+       case 'a':
+	 fAscii = fTrue;
+	 break;
+       case 'p':
+#ifdef COMPAT
+       case 'P':
+#endif
+#ifndef NO_PERCENTAGE
+	 fPercent = 1;
+#endif
+	 break;
+       case 'o': {/* Optimizations level used to solve network */
+	 static int first_opt_o = 0;
+	 int ch;
+	 if (first_opt_o) {
+	    optimize = 0;
+	    first_opt_o = 1;
+	 }
+	 /* Lollipops, Parallel legs, Iterate mx, Delta*, Split stnlist */
+	 while ((ch = *optarg++)) if (islower(ch)) optimize |= BITA(ch);
+	 break;
+       }
+      }
+   }
+
+   out_puts(PACKAGE" "VERSION);
+   out_puts(COPYRIGHT_MSG);
+   putnl();
+
+   /* end of options, now process data files */
+   while (argv[optind]) {
+      const char *fnm = argv[optind];
+
+      if (!fExplicitTitle) {
+	 char *lf;
+	 lf = LfFromFnm(fnm);
+	 if (survey_title) s_catchar(&survey_title, &survey_title_len, ' ');
+	 s_cat(&survey_title, &survey_title_len, lf);
+	 osfree(lf);
+      }
+
+      /* Select defaults settings */
+      default_all(pcs);
+
+      data_file("", fnm); /* first argument is current path */
+      
+      optind++;
+   }
+   
+   validate();
+
+   solve_network(/*stnlist*/); /* Find coordinates of all points */
+   validate();
+#ifdef NEW3DFORMAT
+   cave_close(pimgOut); /* close .3d file */
+#else
+   img_close(pimgOut); /* close .3d file */
+#endif
+   fclose(fhErrStat);
+
+   list_pos(root); /* produce .pos file */
+
+   out_current_action(msg(/*Calculating statistics*/120));
+   do_stats();
+
+   tmCPU = (clock_t)(clock() - tmCPUStart) / (double)CLOCKS_PER_SEC;
+   tmUser = difftime(time(NULL), tmUserStart);
+
+   /* tmCPU is integer, tmUser not - equivalent to (ceil(tmCPU) >= tmUser) */
+   if (tmCPU + 1 > tmUser) {
+      out_printf((msg(/*CPU time used %5.2fs*/140), tmCPU));
+   } else if (tmCPU == 0) {
+      if (tmUser == 0.0) {
+         out_printf((msg(/*Time used %5.2fs*/141), tmUser));
+      } else {
+         out_puts(msg(/*Time used unavailable*/142));
+      }
+   } else {
+      out_printf((msg(/*Time used %5.2fs (%5.2fs CPU time)*/143),
+		  tmUser, tmCPU));
+   }
+
+   out_puts(msg(/*Done.*/144));
+   return error_summary();
+}
+
+static void
+do_range(FILE *fh, int d, int msg1, int msg2, int msg3)
+{
+   char buf [1024];
+   sprintf(buf, msg(msg1), max[d] - min[d]);
+   strcat(buf, sprint_prefix(pfxHi[d]));
+   sprintf(buf + strlen(buf), msg(msg2), max[d]);
+   strcat(buf, sprint_prefix(pfxLo[d]));
+   sprintf(buf + strlen(buf), msg(msg3), min[d]);
+   out_puts(buf);
+   fputsnl(buf, fh);
+}
+
+static void
+do_stats(void)
+{
+   char *fnm;
+   FILE *fh;
+   long cLoops = cComponents + cLegs - cStns;
+   char buf[1024];
+
+#ifdef NO_EXTENSIONS
+   fnm = UsePth(pthOutput, STATS_FILE);
+#else
+   fnm = AddExt(fnmInput, EXT_SVX_STAT);
+#endif
+   fh = safe_fopen(fnm, "w");
+   osfree(fnm);
+
+   out_puts("");
+
+   if (cStns == 1)
+      sprintf(buf, msg(/*Survey contains 1 survey station,*/172));
+   else
+      sprintf(buf,
+	      msg(/*Survey contains %ld survey stations,*/173), cStns);
+
+   if (cLegs == 1)
+      sprintf(buf + strlen(buf), msg(/* joined by 1 leg.*/174));
+   else
+      sprintf(buf + strlen(buf),
+	      msg(/* joined by %ld legs.*/175), cLegs);
+
+   out_puts(buf);
+   fputsnl(buf, fh);
+
+   if (cLoops == 1)
+      sprintf(buf, msg(/*There is 1 loop.*/138));
+   else
+      sprintf(buf, msg(/*There are %ld loops.*/139), cLoops);
+
+   out_puts(buf);
+   fputsnl(buf, fh);
+
+   if (cComponents != 1) {
+      sprintf(buf,
+	      msg(/*Survey has %ld connected components.*/178), cComponents);
+      out_puts(buf);
+      fputsnl(buf, fh);
+   }
+
+   sprintf(buf,
+	   msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
+	   total, totadj);
+   out_puts(buf);
+   fputsnl(buf, fh);
+
+   sprintf(buf,
+	   msg(/*Total plan length of survey legs = %7.2fm*/133), totplan);
+   out_puts(buf);
+   fputsnl(buf, fh);
+
+   sprintf(buf, msg(/*Total vertical length of survey legs = %7.2fm*/134),
+	   totvert);
+   out_puts(buf);
+   fputsnl(buf, fh);
+
+   do_range(fh, 2, /*Vertical range = %4.2fm (from */135,
+	    /* at %4.2fm to */136, /* at %4.2fm)*/137);
+   do_range(fh, 1, /*North-South range = %4.2fm (from */148,
+	    /* at %4.2fm to */196, /* at %4.2fm)*/197);
+   do_range(fh, 0, /*East-West range = %4.2fm (from */149,
+	    /* at %4.2fm to */196, /* at %4.2fm)*/197);
+
+   print_node_stats(fh);
+   /* Also, could give:
+    *  # nodes stations (ie have other than two references or are fixed)
+    *  # fixed stations (list of?)
+    */
+
+   fclose(fh);
+}
