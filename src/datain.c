@@ -358,9 +358,6 @@ data_file(const char *pth, const char *fnm)
 #endif
 
    if (fmt == FMT_DAT) {
-      static reading compass_order[] = {
-	  Fr, To, Tape, Comp, Clino, IgnoreAll
-      };
       short *t;
       int i;
       settings *pcsNew;
@@ -374,7 +371,6 @@ data_file(const char *pth, const char *fnm)
       default_calib(pcs);
 
       pcs->style = STYLE_NORMAL;
-      pcs->ordering = compass_order;
       pcs->units[Q_LENGTH] = METRES_PER_FOOT;
       t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
 
@@ -436,6 +432,12 @@ data_file(const char *pth, const char *fnm)
 
    if (fmt == FMT_DAT) {
       while (!feof(file.fh) && !ferror(file.fh)) {
+	 static reading compass_order[] = {
+	    Fr, To, Tape, Comp, Clino, IgnoreAll
+	 };
+	 static reading compass_order_backsights[] = {
+	    Fr, To, Tape, Comp, Clino, BackComp, BackClino, IgnoreAll
+	 };
 	 /* <Cave name> */
 	 process_bol();
 	 skipline();
@@ -472,20 +474,25 @@ data_file(const char *pth, const char *fnm)
 	 skipblanks();
 	 pcs->z[Q_DECLINATION] = -read_numeric(fFalse, NULL);
 	 get_token();
+	 pcs->ordering = compass_order;
 	 if (strcmp(buffer, "FORMAT") == 0) {
-	     nextch(); /* : */
-	     get_token();
-	     get_token();
+	    nextch(); /* : */
+	    get_token();
+	    if (strlen(buffer) >= 12 && buffer[11] == 'B') {
+	       /* We have backsights for compass and clino */
+	       pcs->ordering = compass_order_backsights;
+	    }
+	    get_token();
 	 }
 	 if (strcmp(buffer, "CORRECTIONS") == 0) {
-	     nextch(); /* : */
-	     pcs->z[Q_BEARING] = -rad(read_numeric(fFalse, NULL));
-	     pcs->z[Q_GRADIENT] = -rad(read_numeric(fFalse, NULL));
-	     pcs->z[Q_LENGTH] = -read_numeric(fFalse, NULL);
+	    nextch(); /* : */
+	    pcs->z[Q_BEARING] = -rad(read_numeric(fFalse, NULL));
+	    pcs->z[Q_GRADIENT] = -rad(read_numeric(fFalse, NULL));
+	    pcs->z[Q_LENGTH] = -read_numeric(fFalse, NULL);
 	 } else {
-	     pcs->z[Q_BEARING] = 0;
-	     pcs->z[Q_GRADIENT] = 0;
-	     pcs->z[Q_LENGTH] = 0;
+	    pcs->z[Q_BEARING] = 0;
+	    pcs->z[Q_GRADIENT] = 0;
+	    pcs->z[Q_LENGTH] = 0;
 	 }
 	 skipline();
 	 process_eol();

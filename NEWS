@@ -1,3 +1,5 @@
+* cavern: now processes compass and clino backsights in Compass DAT files.
+
 * cavern: fixed 3dx output so it actually works with Chasm once more.
 
 * cavern: don't allocate extra space needed for producing 3dx output for
