@@ -1300,11 +1300,13 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
     if (data && data->IsStation()) {
 	LabelInfo* label = data->GetLabel();
 	wxString str;
+	// metric
 	str.Printf(msg(/*  %d E, %d N*/338),
 		   int(label->x + m_Offsets.x),
 		   int(label->y + m_Offsets.y));
 	m_StnCoords->SetLabel(str);
 	m_StnName->SetLabel(label->text);
+	// metric
 	str.Printf("  %s %dm", msg(/*Altitude*/335),
 		   int(label->z + m_Offsets.z));
 	m_StnAlt->SetLabel(str);
@@ -1338,8 +1340,10 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
 
 		str.Printf(msg(/*From %s*/339), label2->text.c_str());
 		m_Dist1->SetLabel(str);
+		// metric
 		str.Printf(msg(/*  H %dm, V %dm*/340), int(d_horiz), int(dz));
 		m_Dist2->SetLabel(str);
+		// metric
 		str.Printf(msg(/*  Dist. %dm, Brg. %03d&deg;*/341),
 			   int(sqrt(dx*dx + dy*dy + dz*dz)), brg);
 		m_Dist3->SetLabel(str);
@@ -1637,10 +1641,12 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
 
     if (label) {
 	wxString str;
+	// metric
 	str.Printf(msg(/*  %d E, %d N*/338), (int)(label->x + m_Offsets.x),
 		   (int) (label->y + m_Offsets.y));
 	m_StnCoords->SetLabel(str);
 	m_StnName->SetLabel(label->text);
+	// metric
 	str.Printf("  %s %dm", msg(/*Altitude*/335),
 		   (int) (label->z + m_Offsets.z));
 	m_StnAlt->SetLabel(str);
@@ -1676,9 +1682,11 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
 		str.Printf(msg(/*From %s*/339), label2->text.c_str());
 		m_Dist1->SetLabel(str);
 
+		// metric
 		str.Printf(msg(/*  H %dm, V %dm*/340), int(d_horiz), int(dz));
 		m_Dist2->SetLabel(str);
 
+		// metric
 		str.Printf(msg(/*  Dist. %dm, Brg. %03d&deg;*/341),
 			   int(sqrt(dx*dx + dy*dy + dz*dz)), brg);
 		m_Dist3->SetLabel(str);

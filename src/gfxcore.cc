@@ -1832,19 +1832,18 @@ void GfxCore::SimpleDrawNames()
 
 void GfxCore::DrawDepthbar()
 {
-    // Draw the depthbar.
-
+    // metric
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
 
     int bands = (m_Lock == lock_NONE || m_Lock == lock_X || m_Lock == lock_Y ||
 		 m_Lock == lock_XY) ? m_Bands-1 : 1;
-    int y = DEPTH_BAR_BLOCK_HEIGHT*bands + DEPTH_BAR_OFFSET_Y;
+    int y = DEPTH_BAR_BLOCK_HEIGHT * bands + DEPTH_BAR_OFFSET_Y;
     int size = 0;
 
     wxString* strs = new wxString[bands + 1];
     for (int band = 0; band <= bands; band++) {
-	Double z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / bands);
+	Double z = m_Parent->GetZMin() + m_Parent->GetZExtent() * band / bands;
 	strs[band] = FormatLength(z, false);
 	int x, y;
 	m_DrawDC.GetTextExtent(strs[band], &x, &y);
@@ -1853,11 +1852,13 @@ void GfxCore::DrawDepthbar()
 	}
     }
 
-    int x_min = m_XSize - DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH - DEPTH_BAR_MARGIN - size;
+    int x_min = m_XSize - DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
+	    - DEPTH_BAR_MARGIN - size;
 
     SetColour(col_BLACK);
     SetColour(col_DARK_GREY, true);
-    m_DrawDC.DrawRectangle(x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
+    m_DrawDC.DrawRectangle(x_min - DEPTH_BAR_MARGIN
+		    	     - DEPTH_BAR_EXTRA_LEFT_MARGIN,
 			   DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
 			   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
 			     DEPTH_BAR_EXTRA_LEFT_MARGIN,
@@ -1867,12 +1868,15 @@ void GfxCore::DrawDepthbar()
 	if (band < bands || bands == 1) {
 	    m_DrawDC.SetPen(m_Parent->GetPen(band));
 	    m_DrawDC.SetBrush(m_Parent->GetBrush(band));
-	    m_DrawDC.DrawRectangle(x_min, y - DEPTH_BAR_BLOCK_HEIGHT,
-				   DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	    m_DrawDC.DrawRectangle(x_min,
+			           y - DEPTH_BAR_BLOCK_HEIGHT,
+				   DEPTH_BAR_BLOCK_WIDTH,
+				   DEPTH_BAR_BLOCK_HEIGHT);
 	}
 
 	m_DrawDC.DrawText(strs[band], x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
-			  y - (FONT_SIZE / 2) - 1 - (bands == 1 ? DEPTH_BAR_BLOCK_HEIGHT/2 : 0));
+			  y - (FONT_SIZE / 2) - 1
+			    - (bands == 1 ? DEPTH_BAR_BLOCK_HEIGHT/2 : 0));
 
 	y -= DEPTH_BAR_BLOCK_HEIGHT;
     }
@@ -1893,6 +1897,7 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 	str = "0";
     }
     else {
+	// metric
 #ifdef SILLY_UNITS
 	if (size_snap < 1e-12) {
 	    str = wxString::Format("%.3gpm", size_snap * 1e12);
