@@ -54,7 +54,7 @@ typedef struct {
 } img_point;
     
 typedef struct {
-   /* members you can access */
+   /* members you can access when reading (don't touch when writing) */
    char *label;
    int flags;
    /* all other members are for internal use only */
