@@ -319,7 +319,6 @@ data_file(const char *pth, const char *fnm)
       file.line = 1;
    }
 
-   /* FIXME: file.filename maybe? */
    if (fPercent) printf("%s:\n", fnm);
 
    using_data_file(file.filename);
