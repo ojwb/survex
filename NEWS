@@ -11,6 +11,9 @@
 * cavern: *fix with two standard deviations (horizontal and vertical)
   was being rejected - fixed.
 
+* cavern: Fixed bug with station "\" appearing in the .err file for
+  a station fixed with error estimates.
+
 * (non-Unix versions): remove path and extension and lower-case program
   name for use in error reporting.
 

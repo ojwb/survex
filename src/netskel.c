@@ -636,8 +636,10 @@ replace_travs(void)
  	    }
 #endif
 
-	    if (nmPrev != stn3->name && !(fEquate && cLegsTrav == 0)) {
+	    /* FIXME: why is an equate at the start of a traverse treated specially? Is it just a lazy way to omit traverses which are *all* equates? */
+	    if (nmPrev != stn3->name && stn3->name->ident[0] && !(fEquate && cLegsTrav == 0)) {
 	       /* (node not part of same stn) &&
+		* (not a link inside a fixed point with error estimates) &&
 		* (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
 	       if (fhErrStat && !fArtic) {
