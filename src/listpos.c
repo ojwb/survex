@@ -123,12 +123,14 @@ node_stat(prefix *p)
 	 warning(/*Station `%s' referred to just once, with an explicit prefix - typo?*/70,
 		 sprint_prefix(p));
       }
-      if (p->min_export > 1) {
-	 error(/*Station `%s' not exported from lowest prefix level*/27,
-	       sprint_prefix(p));
-      } else if (p->min_export == 0 && p->max_export) {
-         error(/*Station `%s' not exported with *EXPORT*/28,
-	       sprint_prefix(p));
+      if (fExportUsed) {
+	 if (p->min_export > 1) {
+	    error(/*Station `%s' not exported from lowest prefix level*/27,
+		  sprint_prefix(p));
+	 } else if (p->min_export == 0 && p->max_export) {
+	    error(/*Station `%s' not exported with *EXPORT*/28,
+		  sprint_prefix(p));
+	 }
       }
    }
 }

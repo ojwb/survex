@@ -797,9 +797,12 @@ equate_list(void)
 }
 
 static void
-export(void)
+cmd_export(void)
 {
-   prefix *pfx = read_prefix(fFalse);
+   prefix *pfx;
+
+   fExportUsed = fTrue;
+   pfx = read_prefix(fFalse);
    do {
       int depth = 0;
       {
@@ -1356,7 +1359,7 @@ handle_command(void)
     case CMD_DATA: data(); break;
     case CMD_DEFAULT: set_default(); break;
     case CMD_EQUATE: equate_list(); break;
-    case CMD_EXPORT: export(); break;
+    case CMD_EXPORT: cmd_export(); break;
     case CMD_FIX: fix_station(); break;
     case CMD_FLAGS: cmd_flags(); break;
     case CMD_INCLUDE: include(); break;

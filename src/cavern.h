@@ -78,6 +78,8 @@ typedef double real; /* so we can change the precision used easily */
 extern char *fnm_output_base;
 extern int fnm_output_base_is_dir;
 
+extern bool fExportUsed;
+
 /* Types */
 
 typedef enum {

@@ -14,7 +14,7 @@ Changes in 0.97-prerelease1:
   deprecated; updated documentation to mention this.
 
 * cavern: added *export command to allow scope of station names to be
-  limited.
+  limited.  If *export is never used, behaviour is as before.
 
 * cavern: added *flags command to allow surface surveys and duplicate
   surveys (to be ignored when calculating the total survey length) to be

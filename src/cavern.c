@@ -59,6 +59,7 @@ settings *pcs;
 prefix *root;
 long cLegs, cStns;
 long cComponents;
+bool fExportUsed = fFalse;
 
 FILE *fhErrStat = NULL;
 img *pimgOut = NULL;
