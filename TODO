@@ -91,11 +91,6 @@ From: Olly
 
 Clean up the sample data and start including it again.
 
-Date: Fri, 18 Aug 2000
-From: Olly
-
-Debian Linux packages.
-
 Date: Thu, 23 Nov 2000
 From: Olly
 
@@ -131,7 +126,7 @@ xcaverot.
 
 cavern: auto declination? NEW_STYLE?
 
-Leandro's sketch output patch?
+Sort out Leandro's sketch output stuff in 3dtodxf
 
 update translations
 
@@ -142,7 +137,7 @@ resolve entries in TODO and BUGS; resolve FIXMEs in code
 check xcaverot/caverot/aven have consistent senses to mouse and keyboard
 controls...
 
-try using labels.c in xcaverot?
+try using labels.c in xcaverot to see if XRegions are better or not?
 
 test diving data with compass omitted (plumbed)
 

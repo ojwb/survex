@@ -35,6 +35,10 @@ if test x"$release" = xyes ; then
       echo make rpm failed
       exit 1
    fi
+   if ! make debian ; then
+      echo make rpm failed
+      exit 1
+   fi
    if ! make dos_doc_zip ; then
       echo make dos_doc_zip failed
       exit 1
