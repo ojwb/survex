@@ -236,6 +236,16 @@ public:
 	wxString l1 = pt1->GetText().AfterLast(separator);
 	wxString l2 = pt2->GetText().AfterLast(separator);
 	return name_cmp(l1, l2, separator) < 0;
+	wxString l1 = pt1->text.AfterLast(separator);
+	wxString l2 = pt2->text.AfterLast(separator);
+	n = name_cmp(l1, l2, separator);
+	if (n) return n < 0;
+	// if leaf names are the same, prefer shorter labels as we can
+	// display more of them
+	n = pt1->text.length() - pt2->text.length();
+	if (n) return n < 0;
+	// make sure that we don't ever compare different label as equal
+	return name_cmp(pt1->text, pt2->text, separator) < 0;
     }
 };
 
