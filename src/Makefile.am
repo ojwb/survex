@@ -29,7 +29,7 @@ survex_SOURCES = wrap.c osdepend.c
 
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
- useful.c
+ useful.c cmdline.c z_getopt.c getopt1.c
 
 if WIN32
 aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@

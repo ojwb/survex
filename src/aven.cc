@@ -23,6 +23,7 @@
 #include "aven.h"
 #include "mainfrm.h"
 
+#include "cmdline.h"
 #include "message.h"
 
 #include <assert.h>
@@ -60,7 +61,39 @@ bool Aven::OnInit()
     // but using FALSE for the penultimate argument and then AddCatalog()
     // if IsOk() doesn't work...
 
+    wxString survey;
+   
+    /* Want --version and a decent --help output, which cmdline does for us */
+#ifndef USE_WXCMDLINE
+    static const struct option long_opts[] = {
+	/* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+	{"survey", required_argument, 0, 's'},
+	{"help", no_argument, 0, HLP_HELP},
+	{"version", no_argument, 0, HLP_VERSION},
+	{0, 0, 0, 0}
+    };
+
+#define short_opts "s:"
+
+    static struct help_msg help[] = {
+	/*			     <-- */
+	{HLP_ENCODELONG(0),          "Only load the sub-survey with this prefix"},
+	{0, 0}
+    };
+
+    cmdline_set_syntax_message("[3D_FILE]", NULL);
+    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
+    while (1) {
+	int opt = cmdline_getopt();
+	if (opt == EOF) break;
+	if (opt == 's') {
+	    survey = optarg;
+	}
+    }
+#else
     static wxCmdLineEntryDesc cmdline[] = {
+	// FIXME - if this code is every reenabled, check this is correct, and also handle it below...
+        { wxCMD_LINE_OPTION, "s", "survey", "Only load the sub-survey with this prefix", wxCMD_LINE_VAL_STRING},
         { wxCMD_LINE_OPTION, "h", "help", msgPerm(/*Display command line options*/201) },
 	{ wxCMD_LINE_PARAM,  NULL, NULL, msgPerm(/*3d file*/119), wxCMD_LINE_VAL_STRING,
 	  wxCMD_LINE_PARAM_OPTIONAL },
@@ -75,6 +108,7 @@ bool Aven::OnInit()
         fprintf(stderr, "[%s]\n", msg(/*3d file*/119));
 	exit(c > 0 ? 1 /* syntax error */ : 0 /* --help */);
     }
+#endif
 
     wxImage::AddHandler(new wxPNGHandler);
 
@@ -83,10 +117,18 @@ bool Aven::OnInit()
 
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(640, 480));
 
+    // FIXME: handle survey
+
+#ifndef USE_WXCMDLINE
+    if (argv[optind]) {
+	m_Frame->OpenFile(wxString(argv[optind]));
+    }
+#else
     if (cli.GetParamCount() == 1) {
         wxString file = cli.GetParam(0);
 	m_Frame->OpenFile(file);
     }
+#endif
 
     m_Frame->Show(true);
 

@@ -8,6 +8,8 @@
 
 * aven: can now load a survey with no legs, only stations.
 
+* aven: --version now works, and --help produces more helpful output.
+
 Changes in 0.98-prerelease4:
 
 * diffpos: list added and deleted stations in sorted order; better

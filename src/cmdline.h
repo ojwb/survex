@@ -17,6 +17,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef CMDLINE_H
+# define CMDLINE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "getopt.h"
 
 struct help_msg {
@@ -45,3 +52,9 @@ double cmdline_double_arg(void);
 #define HLP_ISLONG(N) ((N) <= 0)
 #define HLP_HELP 30000
 #define HLP_VERSION 30001
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
