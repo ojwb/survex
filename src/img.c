@@ -283,6 +283,7 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
 	 result = img_LINE;
 	 break;
        case 6:
+	 result = img_FLAGS;
          pimg->flags = getc(pimg->fh);
          break;
        default:
