@@ -137,7 +137,7 @@ bool Aven::OnInit()
 #else
     loading_file = (cli.GetParamCount() == 1);
 #endif
-    m_SplashScreen = new Splash(loading_file);
+//    m_SplashScreen = new Splash(loading_file);
 
     m_AboutBitmap.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
 			   wxString("icons") + wxCONFIG_PATH_SEPARATOR +
