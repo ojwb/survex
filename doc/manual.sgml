@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-10-25 02:16:28 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.104 2002-10-25 02:16:28 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-10-31 22:45:15 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.105 2002-10-31 22:45:15 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -2974,7 +2974,7 @@ one entrance, through the cave, and out of another entrance:
 13    14     15.40   221    -14
 *end
 
-*end BtoC
+*end BtoC</programlisting>
 
 <Para>
 Note that to avoid needless complication, Survex regards each leg as
