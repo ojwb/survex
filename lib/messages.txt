@@ -313,20 +313,24 @@ it: 25 ROOT &eacute sconsigliato
 en: 26 Prefix `%s' not exported with *EXPORT
 #XXX27
 #XXX28
-en: 29 Reentering an existing prefix level is deprecated (previously entered at %s:%lu)
-#fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute; (d&eacute;j&agrave; utilis&eacute; en: %s:%lu)
-fr: 29 R&eacute;-utiliser un m&ecirc;me pr&eacute;fixe n'est pas recommand&eacute; (d&eacute;j&agrave; utilis&eacute; en: %s:%lu)
+# FIXME: TRANSLATE check amended message fr de pt ca es it
+en: 29 Reentering an existing prefix level is deprecated
+#fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute;
+fr: 29 R&eacute;-utiliser un m&ecirc;me pr&eacute;fixe n'est pas recommand&eacute;
 # deprecated is a wonderful English word lacking a wonderful German
 # equivalent....  errm and do we have a translation for "prefix level"
 # yet?  (rummaging in old mail folders)  apparently not.  Ok.  Would
 # "to introduce a prefix" be a rough equivalent for "to enter a prefix
 # level"?
-de: 29 Erneutes Einf&uuml;hren eines Pr&auml;fix ist veraltet (bereits in %s:%lu eingef&uuml;hrt)
-pt: 29 A re-utiliza&ccedil;&atilde;o de um prefixo &eacute; desaconselhada (utilizado previamente em %s:%lu)
-ca: 29 Reentrar en un nivell de prefix existent ja no s'utilitza (previament entrat a %s:%lu)
-es: 29 Reentrar en un nivel de prefijo existente yo no se usa (previamente entrado en %s:%lu)
-it: 29 Reimmettere un prefisso di livello gi&aacute; esistente &eacute; sconsigliato (gi&aacute; immesso in %s:%lu)
-#XXX30
+de: 29 Erneutes Einf&uuml;hren eines Pr&auml;fix ist veraltet
+pt: 29 A re-utiliza&ccedil;&atilde;o de um prefixo &eacute; desaconselhada
+ca: 29 Reentrar en un nivell de prefix existent ja no s'utilitza
+es: 29 Reentrar en un nivel de prefijo existente yo no se usa
+it: 29 Reimmettere un prefisso di livello gi&aacute; esistente &eacute; sconsigliato
+# FIXME: TRANSLATE fr de pt ca es it
+en: 30 Originally entered here
+# FIXME: is deja close enough to originally?
+fr: 30 D&eacute;j&agrave; utilis&eacute; ici
 # 31 c.f. 10, 32
 en: 31 Found `%s', expecting `PLUMBS'
 fr: 31 Vous avez &eacute;crit `%s'; on attendait `PLUMBS'
@@ -1897,3 +1901,11 @@ it:197 " a %4.2fm)"
 #ca:191 &Eacute;s necessari un fitxer de missatges amb versi&oacute;
 #es:191 Se necessita un fichero de mensages con versi&oacute;n
 #it:191 &Eacute; necessario un file dei messaggi versione
+#en: 29 Reentering an existing prefix level is deprecated (previously entered at %s:%lu)
+##fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute; (d&eacute;j&agrave; utilis&eacute; en: %s:%lu)
+#fr: 29 R&eacute;-utiliser un m&ecirc;me pr&eacute;fixe n'est pas recommand&eacute; (d&eacute;j&agrave; utilis&eacute; en: %s:%lu)
+#de: 29 Erneutes Einf&uuml;hren eines Pr&auml;fix ist veraltet (bereits in %s:%lu eingef&uuml;hrt)
+#pt: 29 A re-utiliza&ccedil;&atilde;o de um prefixo &eacute; desaconselhada (utilizado previamente em %s:%lu)
+#ca: 29 Reentrar en un nivell de prefix existent ja no s'utilitza (previament entrat a %s:%lu)
+#es: 29 Reentrar en un nivel de prefijo existente yo no se usa (previamente entrado en %s:%lu)
+#it: 29 Reimmettere un prefisso di livello gi&aacute; esistente &eacute; sconsigliato (gi&aacute; immesso in %s:%lu)

@@ -406,8 +406,14 @@ check_reentry(prefix *tag)
    if (tag->filename) {
       if (tag->line != file.line ||
 	  strcmp(tag->filename, file.filename) != 0) {
-	 compile_warning(/*Reentering an existing prefix level is deprecated (previously entered at %s:%lu)*/29,
-			 tag->filename, tag->line);
+	 const char *filename_store = file.filename;
+	 unsigned int line_store = file.line;
+	 compile_warning(/*Reentering an existing prefix level is deprecated*/29);
+	 file.filename = tag->filename;
+	 file.line = tag->line;
+	 compile_warning(/*Originally entered here*/30);
+	 file.filename = filename_store;
+	 file.line = line_store;
       }
    } else {
       tag->filename = file.filename;

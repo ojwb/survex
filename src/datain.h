@@ -26,7 +26,7 @@
 
 typedef struct parse {
    FILE *fh;
-   char *filename;
+   const char *filename;
    unsigned int line;
    struct parse *parent;
 #ifdef HAVE_SETJMP
