@@ -275,7 +275,7 @@ win_Pre(int pagesToPrint, const char *title)
    if (!PrintDlgA(&psd)) exit(1);
    pd = psd.hDC;
 
-   logpixelsy = GetDeviceCaps(hDC, LOGPIXELSY);
+   logpixelsy = GetDeviceCaps(pd, LOGPIXELSY);
    font_labels = CreateFont(-MulDiv(fontsize_labels, logpixelsy, 72),
 			    0, 0, 0, FW_NORMAL, 0, 0, 0,
 			    ANSI_CHARSET, OUT_DEFAULT_PRECIS,
