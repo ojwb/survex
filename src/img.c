@@ -131,6 +131,7 @@ static img_errcode img_errno = IMG_NONE;
 #define FILEID "Survex 3D Image File"
 
 #define EXT_PLT "plt"
+#define EXT_XYZ "xyz"
 
 /* Attempt to string paste to ensure we are passed a literal string */
 #define LITLEN(S) (sizeof(S"") - 1)
@@ -247,7 +248,10 @@ img_open_survey(const char *fnm, const char *survey)
 
    /* for version 3 we use label_buf to store the prefix for reuse */
    /* for version -2, 0 value indicates we haven't entered a survey yet */
+   /* for version -4, we store the last station here to detect whether
+    * we MOVE or LINE */
    pimg->label_len = 0;
+   pimg->label_buf[0] = '\0';
 
    pimg->survey = NULL;
    pimg->survey_len = 0;
@@ -277,7 +281,7 @@ img_open_survey(const char *fnm, const char *survey)
       pimg->survey_len = len;
    }
 
-   /* [version -2] pending IMG_LINE ('D') or IMG_MOVE ('M')
+   /* [version -2, -3, -4] pending IMG_LINE or IMG_MOVE - both have 4 added
     * [version -1] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
     * [version 3] not in the middle of turning a LINE into a MOVE
@@ -334,6 +338,10 @@ plt_file:
 	       return pimg;
 	    }
 	    line = getline_alloc(pimg->fh);
+	    if (!line) {
+	       img_errno = IMG_OUTOFMEMORY;
+	       goto error;
+	    }
 	    len = 0;
 	    while (line[len] > 32) ++len;
 	    if (pimg->survey_len != len ||
@@ -344,9 +352,9 @@ plt_file:
 	    q = strchr(line + len, 'C');
 	    if (q && q[1]) {
 		osfree(pimg->title);
-		pimg->title = osstrdup(q + 1);
+		pimg->title = my_strdup(q + 1);
 	    } else if (!pimg->title) {
-		pimg->title = osstrdup(pimg->label);
+		pimg->title = my_strdup(pimg->label);
 	    }
 	    osfree(line);
 	    if (!pimg->title) {
@@ -367,12 +375,87 @@ plt_file:
       }
    }
 
+   if (len > LITLEN(EXT_XYZ) + 1 &&
+       fnm[len - LITLEN(EXT_XYZ) - 1] == FNM_SEP_EXT &&
+       my_strcasecmp(fnm + len - LITLEN(EXT_XYZ), EXT_XYZ) == 0) {
+      long fpos;
+      char *line;
+xyz_file:
+      line = getline_alloc(pimg->fh);
+      if (!line) {
+	 img_errno = IMG_OUTOFMEMORY;
+	 goto error;
+      }
+      /* FIXME: reparse date? */
+      len = strlen(line);
+      if (len > 59) line[59] = '\0';
+      if (len > 45) {
+	 pimg->datestamp = my_strdup(line + 45);
+      } else {
+	 pimg->datestamp = my_strdup(TIMENA);
+      }
+      if (strncmp(line, "  Cave Survey Data Processed by CMAP ",
+		  LITLEN("  Cave Survey Data Processed by CMAP ")) == 0) {
+	 len = 0;
+      } else {
+	 if (len > 45) {
+	    line[45] = '\0';
+	    len = 45;
+	 }
+	 while (len > 2 && line[len - 1] == ' ') --len;
+	 if (len > 2) {
+	    line[len] = '\0';
+	    pimg->title = my_strdup(line + 2);
+	 }
+      }
+      if (len <= 2) pimg->title = baseleaf_from_fnm(fnm);
+      osfree(line);
+      if (!pimg->datestamp || !pimg->title) {
+	 img_errno = IMG_OUTOFMEMORY;
+	 goto error;
+      }
+      line = getline_alloc(pimg->fh);
+      if (!line) {
+	 img_errno = IMG_OUTOFMEMORY;
+	 goto error;
+      }
+      if (line[0] != ' ' || (line[1] != 'S' && line[1] != 'O')) {
+	 img_errno = IMG_BADFORMAT;
+	 goto error;
+      }
+      if (line[1] == 'S') {
+	 pimg->version = -3; /* Station format */
+      } else {
+	 pimg->version = -4; /* Shot format */
+      }
+      osfree(line);
+      line = getline_alloc(pimg->fh);
+      if (!line) {
+	 img_errno = IMG_OUTOFMEMORY;
+	 goto error;
+      }
+      if (line[0] != ' ' || line[1] != '-') {
+	 img_errno = IMG_BADFORMAT;
+	 goto error;
+      }
+      osfree(line);
+      pimg->start = ftell(pimg->fh);
+      return pimg;
+   }
+
    if (fread(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
        memcmp(buf, FILEID"\n", LITLEN(FILEID)) != 0) {
-      if (buf[0] == 'Z' && buf[1] == ' ') {
-	 /* Looks like a Compass .plt file ... */
-	 rewind(pimg->fh);
-	 goto plt_file;
+      if (buf[1] == ' ') {
+	 if (buf[0] == ' ') {
+	    /* Looks like a CMAP .xyz file ... */
+	    rewind(pimg->fh);
+	    goto xyz_file;
+	 } else if (strchr("ZSNF", buf[0])) {
+	    /* Looks like a Compass .plt file ... */
+	    /* Almost certainly it'll start "Z " */
+	    rewind(pimg->fh);
+	    goto plt_file;
+	 }
       }
       if (buf[0] == '(') {
 	 /* Looks like a Survex .pos file ... */
@@ -454,6 +537,8 @@ img_rewind(img *pimg)
 
    /* for version 3 we use label_buf to store the prefix for reuse */
    /* for version -2, 0 value indicates we haven't entered a survey yet */
+   /* for version -4, we store the last station here to detect whether
+    * we MOVE or LINE */
    pimg->label_len = 0;
    return 1;
 }
@@ -520,6 +605,48 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
 
    /* Don't check for write errors now - let img_close() report them... */
    return pimg;
+}
+
+static void
+read_xyz_station_coords(img_point *pt, const char *line)
+{
+   char num[12];
+   memcpy(num, line + 6, 9);
+   num[9] = '\0';
+   pt->x = atof(num) / METRES_PER_FOOT;
+   memcpy(num, line + 15, 9);
+   pt->y = atof(num) / METRES_PER_FOOT;
+   memcpy(num, line + 24, 8);
+   num[8] = '\0';
+   pt->z = atof(num) / METRES_PER_FOOT;
+}
+
+static void
+read_xyz_shot_coords(img_point *pt, const char *line)
+{
+   char num[12];
+   memcpy(num, line + 40, 10);
+   num[10] = '\0';
+   pt->x = atof(num) / METRES_PER_FOOT;
+   memcpy(num, line + 50, 10);
+   pt->y = atof(num) / METRES_PER_FOOT;
+   memcpy(num, line + 60, 9);
+   num[9] = '\0';
+   pt->z = atof(num) / METRES_PER_FOOT;
+}
+
+static void
+subtract_xyz_shot_deltas(img_point *pt, const char *line)
+{
+   char num[12];
+   memcpy(num, line + 15, 9);
+   num[9] = '\0';
+   pt->x -= atof(num) / METRES_PER_FOOT;
+   memcpy(num, line + 24, 8);
+   num[8] = '\0';
+   pt->y -= atof(num) / METRES_PER_FOOT;
+   memcpy(num, line + 32, 8);
+   pt->z -= atof(num) / METRES_PER_FOOT;
 }
 
 static int
@@ -976,7 +1103,7 @@ img_read_item(img *pimg, img_point *p)
       }
 
       return img_LABEL;
-   } else {
+   } else if (pimg->version == -2) {
       /* version -2: Compass .plt file */
       if (pimg->pending > 0) {
 	 /* -1 signals we've entered the first survey we want to
@@ -1015,6 +1142,10 @@ skip_to_N:
 	       /* FALLTHRU */
 	    case 'N':
 	       line = getline_alloc(pimg->fh);
+	       if (!line) {
+		  img_errno = IMG_OUTOFMEMORY;
+		  return img_BAD;
+	       }
 	       while (line[len] > 32) ++len;
 	       if (pimg->survey && pimg->label_len == 0)
 		  pimg->pending = -1;
@@ -1045,6 +1176,10 @@ skip_to_N:
 		  pimg->pending = 0;
 	       }
 	       line = getline_alloc(pimg->fh);
+	       if (!line) {
+		  img_errno = IMG_OUTOFMEMORY;
+		  return img_BAD;
+	       }
 	       if (sscanf(line, "%lf %lf %lf", &p->x, &p->y, &p->z) != 3) {
 		  osfree(line);
 		  if (ferror(pimg->fh)) {
@@ -1054,6 +1189,9 @@ skip_to_N:
 		  }
 		  return img_BAD;
 	       }
+	       p->x /= METRES_PER_FOOT;
+	       p->y /= METRES_PER_FOOT;
+	       p->z /= METRES_PER_FOOT;
 	       q = strchr(line, 'S');
 	       if (!q) {
 		  osfree(line);
@@ -1085,6 +1223,111 @@ skip_to_N:
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	 }
+      }
+   } else {
+      /* version -3 or -4: CMAP .xyz file */
+      char *line = NULL;
+      char *q;
+      size_t len;
+
+      if (pimg->pending) {
+	 /* pending MOVE or LINE or LABEL or STOP */
+	 int r = pimg->pending - 4;
+	 pimg->label = "";
+	 pimg->flags = 0;
+	 if (r == img_LABEL) {
+	    /* nasty magic */
+	    read_xyz_shot_coords(p, pimg->label_buf + 16);
+	    subtract_xyz_shot_deltas(p, pimg->label_buf + 16);
+	    pimg->pending = img_STOP + 4;
+	    return img_MOVE;
+	 }
+	
+	 pimg->pending = 0;
+
+	 if (r == img_STOP) {
+	    /* nasty magic */
+	    read_xyz_shot_coords(p, pimg->label_buf + 16);
+	    return img_LINE;
+	 }
+	 
+	 return r;
+      }
+
+      pimg->label = pimg->label_buf;
+      do {
+	 osfree(line);
+	 if (feof(pimg->fh)) return img_STOP;
+	 line = getline_alloc(pimg->fh);
+	 if (!line) {
+	    img_errno = IMG_OUTOFMEMORY;
+	    return img_BAD;
+	 }
+      } while (line[0] == ' ' || line[0] == '\0');
+      if (line[0] == '\x1a') return img_STOP;
+
+      len = strlen(line);
+      if (pimg->version == -3) {
+	 /* station variant */
+	 if (len < 37) {
+	    osfree(line);
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
+	 memcpy(pimg->label, line, 6);
+	 q = memchr(pimg->label, ' ', 6);
+	 if (!q) q = pimg->label + 6;
+	 *q = '\0';
+
+	 read_xyz_station_coords(p, line);
+	 
+	 /* FIXME: look at prev for lines (line + 32, 5) */
+	 /* FIXME: duplicate stations... */
+	 return img_LABEL;
+      } else {
+	 /* Shot variant */
+	 char old[8], new[8];
+	 if (len < 61) {
+	    osfree(line);
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
+	 
+	 memcpy(old, line, 7);
+	 q = memchr(old, ' ', 7);
+	 if (!q) q = old + 7;
+	 *q = '\0'; 
+	 
+	 memcpy(new, line + 7, 7);
+	 q = memchr(new, ' ', 7);
+	 if (!q) q = new + 7;
+	 *q = '\0'; 
+	 
+	 pimg->flags = img_SFLAG_UNDERGROUND;
+
+	 if (strcmp(old, new) == 0) {
+	    pimg->pending = img_MOVE + 4;
+	    read_xyz_shot_coords(p, line);
+	    strcpy(pimg->label, new);
+	    osfree(line);
+	    return img_LABEL;
+	 }
+	 
+	 if (strcmp(old, pimg->label) == 0) {
+	    pimg->pending = img_LINE + 4;
+	    read_xyz_shot_coords(p, line);
+	    strcpy(pimg->label, new);
+	    osfree(line);
+	    return img_LABEL;
+	 }
+	 
+	 pimg->pending = img_LABEL + 4;
+	 read_xyz_shot_coords(p, line);
+	 strcpy(pimg->label, new);
+	 memcpy(pimg->label + 16, line, 70);
+
+	 osfree(line);
+	 return img_LABEL;
       }
    }
 }

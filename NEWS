@@ -17,8 +17,15 @@ Changes in 1.0.4:
 
 * img routines: img_rewind() now returns a value indicating success/failure.
 
-* improvements to .plt file reading - should now recognise them even without
-  a .plt extension; cope with odd special case.
+* Improvements to .plt file reading, notably that distances in the file are
+  now interpreted as being in feet rather than metres.  Also .plt files should
+  now be recognised even with a different extension, and we cope with an odd
+  special case better.
+
+* Added support for reading CMAP XYZ files.  There are two variants of these
+  - the "shot" format is fully implemented, the "station" format currently
+  just reads the station names and positions - the legs are ignored (sadly
+  the sample files I have do not match the format specification).
 
 * (MacOS X version): aven: aven now builds on MacOS X - we just need to sort
   out packaging now...

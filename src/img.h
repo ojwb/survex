@@ -71,6 +71,8 @@ typedef struct {
 # endif
    long start;
    /* version of file format:
+    *  -4 => CMAP .xyz file, shot format
+    *  -3 => CMAP .xyz file, station format
     *  -2 => Compass .plt file
     *  -1 => .pos file
     *   0 => 0.01 ascii
