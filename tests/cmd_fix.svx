@@ -1,0 +1,11 @@
+*fix A ; generates a warning
+*fix B 0 0 0
+*fix C 0 0 0 1.0
+*fix D 0 0 0 1.0 2.0
+*fix E 0 0 0 1.0 2.0 3.0
+; avoid unused fixed point warnings
+A A0 0 0 0
+B B0 0 0 0
+C C0 0 0 0
+D D0 0 0 0
+E E0 0 0 0
