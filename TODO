@@ -72,12 +72,6 @@ Is this report wrong (2 nodes, 1 leg, and 2 1-nodes)
 *fix 2 0 0 0
 *equate 1 2
 
-This is certainly wrong (2 legs, 1 1-node, and 1 2-node):
-
-*fix 1 0 0 0 10
-1 2 1 0 0
-*fix 2 1 1 1
-
 Date: Mon, 25 Jun 2001
 From: Olly
 
