@@ -437,7 +437,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
    fNoComp = (comp == HUGE_REAL);
    if (!fNoComp) {
       comp *= pcs->units[Q_BEARING];
-      if (comp < (real)0.0 || comp - M_2_PI > EPSILON) {
+      if (comp < (real)0.0 || comp - M_PI * 2.0 > EPSILON) {
 	 compile_warning(/*Suspicious compass reading*/59);
       }
    }
@@ -605,7 +605,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
 
    if (comp != HUGE_REAL) {
       comp *= pcs->units[Q_BEARING];
-      if (comp < (real)0.0 || comp - M_2_PI > EPSILON) {
+      if (comp < (real)0.0 || comp - M_PI * 2.0 > EPSILON) {
 	 compile_warning(/*Suspicious compass reading*/59);
       }
    }
@@ -830,7 +830,7 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
 
    if (comp != HUGE_REAL) {
       comp *= pcs->units[Q_BEARING];
-      if (comp < (real)0.0 || comp - M_2_PI > EPSILON) {
+      if (comp < (real)0.0 || comp - M_PI * 2.0 > EPSILON) {
 	 compile_warning(/*Suspicious compass reading*/59);
       }
    }

@@ -2099,10 +2099,10 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 					ZToScreen(0.0, 0.0, 1.0)), pan_angle);
 
 	m_PanAngle += pan_angle;
-	if (m_PanAngle >= M_2_PI) {
-	    m_PanAngle -= M_2_PI;
+	if (m_PanAngle >= M_PI * 2.0) {
+	    m_PanAngle -= M_PI * 2.0;
 	} else if (m_PanAngle < 0.0) {
-	    m_PanAngle += M_2_PI;
+	    m_PanAngle += M_PI * 2.0;
 	}
 	new_scale *= pow(1.06, 0.08 * dy);
     }
@@ -2135,11 +2135,11 @@ void GfxCore::TurnCave(Double angle)
     m_RotationMatrix = m_Params.rotation.asMatrix();
 
     m_PanAngle += angle;
-    if (m_PanAngle > M_2_PI) {
-	m_PanAngle -= M_2_PI;
+    if (m_PanAngle > M_PI * 2.0) {
+	m_PanAngle -= M_PI * 2.0;
     }
     if (m_PanAngle < 0.0) {
-	m_PanAngle += M_2_PI;
+	m_PanAngle += M_PI * 2.0;
     }
 
 #ifndef AVENGL

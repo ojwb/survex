@@ -68,9 +68,6 @@ typedef long int fpos_t;
 #  define M_PI 3.14159265358979323846264338327950288419716939937510582097494459
 # endif
 #endif
-#ifndef M_2_PI
-# define M_2_PI (2.0 * M_PI)
-#endif
 #ifndef M_PI_2
 # define M_PI_2 (M_PI / 2.0)
 #endif
