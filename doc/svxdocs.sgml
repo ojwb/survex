@@ -89,8 +89,8 @@ where this isn't the case, let me know.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-01 18:00:31 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.43 2001-09-01 18:00:31 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-02 10:47:41 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.44 2001-09-02 10:47:41 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1734,10 +1734,10 @@ stored in a way that can be automatically collated.
 e.g. *DATA Normal from to compass tape clino
 </Para>
 
-<!-- FIXME: CYLPOLAR, LRUD not yet implemented -->
+<!-- FIXME: LRUD not yet implemented -->
 
 <Para>
-&lt;type&gt; = DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|NOSURVEY
+&lt;type&gt; = DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR|NOSURVEY
 </Para>
 
 <Para>
@@ -1765,14 +1765,14 @@ TOPOFIL FROM TO FROMCOUNT TOCOUNT [BACK]BEARING [BACK]GRADIENT
 </Para>
 
 <Para>
+CYLPOLAR FROM TO TAPE [BACK]BEARING FROMDEPTH TODEPTH
+</Para>
+
+<Para>
 NOSURVEY FROM TO
 </Para>
 
 <!--
-<Para>
-CYLPOLAR FROM TO VERTICAL HORIZONTAL [BACK]BEARING
-</Para>
-
 <Para>
 (LRUD STATION [LEFT] [RIGHT] [UP] [DOWN])
 </Para>
