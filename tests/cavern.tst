@@ -1,15 +1,17 @@
 #!/bin/sh
 
+testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
+
 # allow us to run tests standalone more easily
-: ${srcdir=.}
+: ${srcdir="$testdir"}
 
 # force VERBOSE if we're run on a subset of tests
 test -n "$*" && VERBOSE=1
 
-: ${CAVERN=../src/cavern}
-: ${DIFFPOS=../src/diffpos}
+: ${CAVERN="$testdir"/../src/cavern}
+: ${DIFFPOS="$testdir"/../src/diffpos}
 
-SURVEXHOME=$srcdir/../lib
+SURVEXHOME="$testdir"/../lib
 export SURVEXHOME
 
 : ${TESTS=${*-"singlefix singlereffix oneleg midpoint noose cross firststn\
@@ -108,46 +110,46 @@ for file in $TESTS ; do
 
   if test x"$file" != x ; then
     echo $file
-    rm -f ./tmp.*
+    rm -f "$testdir"/tmp.*
     if test -n "$VERBOSE" ; then
       if test x"$pos" = xfail ; then
-        $CAVERN $srcdir/$file.svx --output=./tmp
+        $CAVERN $srcdir/$file.svx --output="$testdir"/tmp
 	# success gives 0, signal (128 + <signal number>)
 	test $? = 1 || exit 1
       else
-        $CAVERN $srcdir/$file.svx --output=./tmp || exit 1
+        $CAVERN $srcdir/$file.svx --output="$testdir"/tmp || exit 1
       fi
     else
       if test -z "$count" ; then
         if test x"$pos" = xfail ; then
-	  $CAVERN $srcdir/$file.svx --output=./tmp > /dev/null
+	  $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > /dev/null
 	  # success gives 0, signal (128 + <signal number>)
 	  test $? = 1 || exit 1
 	else
-          $CAVERN $srcdir/$file.svx --output=./tmp > /dev/null || exit 1
+          $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > /dev/null || exit 1
 	fi
       fi
     fi
     if test -n "$count" ; then
-      warns=`$CAVERN $srcdir/$file.svx --output=./tmp | sed '$!d;$s/^Done./0 /;s/[^0-9]*\([0-9]*\).*/\1/'`
+      warns=`$CAVERN $srcdir/$file.svx --output="$testdir"/tmp | sed '$!d;$s/^Done./0 /;s/[^0-9]*\([0-9]*\).*/\1/'`
       test $? = 0 || exit 1
       test x"$warns" = x"$count" || exit 1
     fi
     case "$pos" in
     yes)
       if test -n "$VERBOSE" ; then
-        $DIFFPOS ./tmp.3d $srcdir/$file.pos || exit 1
+        $DIFFPOS "$testdir"/tmp.3d $srcdir/$file.pos || exit 1
       else
-        $DIFFPOS ./tmp.3d $srcdir/$file.pos > /dev/null || exit 1
+        $DIFFPOS "$testdir"/tmp.3d $srcdir/$file.pos > /dev/null || exit 1
       fi ;;
     no)
-      test -f ./tmp.3d || exit 1 ;;
+      test -f "$testdir"/tmp.3d || exit 1 ;;
     fail)
-      test -f ./tmp.3d && exit 1 ;;
+      test -f "$testdir"/tmp.3d && exit 1 ;;
     *)
       echo "Bad value for pos" ; exit 1 ;;
     esac
-    rm -f ./tmp.*
+    rm -f "$testdir"/tmp.*
   fi
 done
 exit 0
