@@ -150,7 +150,7 @@ djgpp_zip : dostxt
 	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
 	ln -s ../README dostxt_tmp/README.txt
 	# -l means convert LF to CR+LF
-	zip -j -l $(djgpp_zip_name) djgpp_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
+	zip -j -l $(djgpp_zip_name) dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
 mingw : all mingw_iss
