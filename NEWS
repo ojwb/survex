@@ -1,3 +1,8 @@
+* (Unix version): aven: leaving "about" box no longer causes segfault;
+  toggle status bar now works; N/S/E/W selects view rather than moving
+  cave; window close now works; now have ticks on appropriate menu
+  items; fixed problems with rendering (some legs missing!)
+
 Changes in 0.97-prerelease1:
 
 * extend: fixed bug which result in bogus output (added regression test);

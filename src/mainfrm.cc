@@ -20,11 +20,14 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "img.h"
 #include "mainfrm.h"
-#include "config.h"
-
 #include "aven.h"
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "img.h"
 
 #include <float.h>
 
@@ -664,10 +667,8 @@ void MainFrm::OnAbout(wxCommandEvent&)
     wxStaticText* title = new wxStaticText(dlg, 502, wxString("Aven ") + wxString(VERSION));
     wxStaticText* purpose = new wxStaticText(dlg, 505,
 					     wxString("Visualisation of Survex 3D files"));
-    wxStaticText* copyright1 = new wxStaticText(dlg, 503, "(C) Copyright 1999-2001, Mark R. Shinwell");
-    wxStaticText* copyright2 = new wxStaticText(dlg, 504,
-						wxString("Portions from Survex ") +
-						COPYRIGHT_MSG);
+    wxStaticText* copyright1 = new wxStaticText(dlg, 503, AVEN_COPYRIGHT_MSG);
+    wxStaticText* copyright2 = new wxStaticText(dlg, 504, COPYRIGHT_MSG);
     wxStaticText* licence = new wxStaticText(dlg, 506,
 			    "This is free software.  Aven is licenced under the");
     wxStaticText* licence2 = new wxStaticText(dlg, 508,

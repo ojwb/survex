@@ -328,8 +328,8 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(4), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
 	{HLP_ENCODELONG(5), "station marker size (default: "STRING(MARKER_SIZE)")"},
 	{HLP_ENCODELONG(6), "produce an elevation view"},
-	{HLP_ENCODELONG(7), "produce DXF output"},
-	{HLP_ENCODELONG(8), "produce sketch output"},
+	{HLP_ENCODELONG(9), "produce DXF output"},
+	{HLP_ENCODELONG(10), "produce sketch output"},
 	{0,0}
    };
 

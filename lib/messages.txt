@@ -295,7 +295,7 @@ pt: 24 Imposs&iacute;vel abrir arquivo de dados `%s'
 ca: 24 No s'ha pogut obrir el fitxer de dades `%s'
 es: 24 No se pudo abrir el fichero de datos `%s'
 it: 24 Non riesco ad aprire il file dei dati `%s'
-# FIXME: TRANSLATE check fr de pt ca es it
+# FIXME: TRANSLATE check fr de ca es it
 en: 25 ROOT is deprecated
 fr: 25 ROOT n'est plus utilis&eacute;
 de: 25 ROOT ist veraltet
@@ -303,13 +303,16 @@ pt: 25 ROOT descontinuado
 ca: 25 ROOT ja no s'utilitza
 es: 25 ROOT ya no se usa
 it: 25 ROOT &eacute sconsigliato
-# FIXME: TRANSLATE fr de pt ca es it
+# FIXME: TRANSLATE fr de ca es it
 en: 26 Station `%s' not exported high enough
-# FIXME: TRANSLATE fr de pt ca es it
+pt: 26 Base `%s' n&atilde;o foi exportada nos blocos BEGIN/END mais externos
+# FIXME: TRANSLATE fr de ca es it
 en: 27 Station `%s' not exported from lowest prefix level
-# FIXME: TRANSLATE fr de pt ca es it
+pt: 27 Base `%s' n&atilde;o foi exportada no bloco BEGIN/END mais interno
+# FIXME: TRANSLATE fr de ca es it
 en: 28 Station `%s' not exported with *EXPORT
-# FIXME: TRANSLATE check amended message fr de pt ca es it
+pt: 28 Base `%s' n&atilde;o foi exportada em nenhum n&iacute;vel
+# FIXME: TRANSLATE check amended message fr de ca es it
 en: 29 Reentering an existing prefix level is deprecated
 #fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute;
 fr: 29 R&eacute;-utiliser un m&ecirc;me pr&eacute;fixe n'est pas recommand&eacute;
@@ -323,10 +326,11 @@ pt: 29 A re-utiliza&ccedil;&atilde;o de um prefixo &eacute; desaconselhada
 ca: 29 Reentrar en un nivell de prefix existent ja no s'utilitza
 es: 29 Reentrar en un nivel de prefijo existente yo no se usa
 it: 29 Reimmettere un prefisso di livello gi&aacute; esistente &eacute; sconsigliato
-# FIXME: TRANSLATE fr de pt ca es it
+# FIXME: TRANSLATE fr de ca es it
 en: 30 Originally entered here
 # FIXME: is deja close enough to originally?
 fr: 30 D&eacute;j&agrave; utilis&eacute; ici
+pt: 30 Prefixo usado originalmente aqui
 # 31 c.f. 10, 32
 en: 31 Found `%s', expecting `PLUMBS'
 fr: 31 Vous avez &eacute;crit `%s'; on attendait `PLUMBS'
@@ -502,7 +506,7 @@ ca: 51 Lectura del clino superior a 90 graus (valor absolut)
 es: 51 Lectura del clino superior a 90 grados (valor absoluto)
 # "gradi" is correct here (grads would be "gradi quattrocentesimali")
 it: 51 Lettura del clinometro superiore a 90 gradi (valore assoluto)
-# TRANSLATE : check updated fr de pt ca es it
+# TRANSLATE : check updated fr de ca es it
 en: 52 Tried to equate two non-equal fixed stations: `%s' and `%s'
 fr: 52 Essai de rendre &eacute;gaux deux points fixes distincts: `%s' et `%s'
 de: 52 Versuch, zwei verschiedene feste Punkte gleichzusetzen: `%s' und `%s'
@@ -511,7 +515,7 @@ ca: 52 Intent d'igualar dues estacions fixades en coordenades diferents: `%s' i 
 es: 52 Tentativa de igualar dos estaciones fijadas en coordenadas diferentes: `%s' y `%s'
 it: 52 Tentativo di uguagliare due stazioni fisse differenti: `%s' e `%s'
 # "equal" as in: *fix a 1 2 3 / *fix b 1 2 3 / *equate a b
-# TRANSLATE : check updated fr de pt ca es it
+# TRANSLATE : check updated fr de ca es it
 en: 53 Equating two equal fixed points: `%s' and `%s'
 fr: 53 Rend equivalents deux points fixes &eacute;gaux: `%s' et `%s'
 de: 53 Zwei identische Punkte miteinander gleichgesetzt: `%s' und `%s'
@@ -543,8 +547,9 @@ pt: 56 Mais de um comando FIX sem coordenadas
 ca: 56 M&eacute;s d'un comandament FIX sense coordenades
 es: 56 M&aacute;s de un comando FIX sin coordenadas
 it: 56 Pi&uacute; di un comando FIX senza coordinate
-# FIXME: TRANSLATE fr de pt ca es it
+# FIXME: TRANSLATE fr de ca es it
 en: 57 *EXPORT must immediately follow *BEGIN
+pt: 57 *EXPORT deve estar logo ap&oacute;s um *BEGIN
 en: 58 in this line:
 fr: 58 dans cette ligne:
 de: 58 in dieser Zeile:
@@ -593,51 +598,52 @@ it: 62 La distanza &eacute; minore del dislivello
 # neither style nor reading is a keyword in the program
 # 63 complains about a depth gauge reading in normal style, for example
 # GN(3): Ahhhh.  Got it.  Well, it fits already as it is now. :-)
-# TRANSLATE check adapted translation fr de pt ca es it
-# FIXME: TRANSLATE fr de pt ca es it (datum replaced by reading)
-# FIXME: TRANSLATE de pt ca es it (style is not a keyword - replace with a translation of "data style")
+# TRANSLATE check adapted translation fr de ca es it
+# FIXME: TRANSLATE fr de ca es it (datum replaced by reading)
+# FIXME: TRANSLATE de ca es it (style is not a keyword - replace with a translation of "data style")
 en: 63 Reading `%s' not allowed for this data style
 fr: 63 Donn&eacute;e `%s' pas permise pour ce style
 de: 63 Diese Me&szlig;gr&ouml;&szlig;e `%s' ist bei diesem STYLE nicht erlaubt
-pt: 63 Dado `%s' n&atilde;o permitido neste STYLE
+pt: 63 Campo `%s' n&atilde;o &eacute; permitido neste tipo de visada
 ca: 63 Dada `%s' no permesa en aquest STYLE
 es: 63 Dato `%s' no permitido en este STYLE
 it: 63 Dato `%s' non permesso in questo STYLE
 # i.e. not enough readings for the style.
-# FIXME: TRANSLATE fr de pt ca es it (data replaced by readings)
+# FIXME: TRANSLATE fr de ca es it (data replaced by readings)
 en: 64 Too few readings
 fr: 64 Trop peu de donn&eacute;es
 de: 64 Zu wenige Me&szlig;werte
-pt: 64 Poucos dados
+pt: 64 Faltam campos necess&aacute;rios neste tipo de visada
 ca: 64 Massa poques dades
 es: 64 Demasiados pocos datos
 it: 64 Mancano dati
 #ital: 64 Troppo pochi dati
 # e.g. trying to refer to an invalid FNORD data style
 # GN(3): ie unknown STYLE?  ok, rephrasing.
-# FIXME: TRANSLATE fr de pt ca es it (style is not a keyword - translate it?)
+# FIXME: TRANSLATE fr de ca es it (style is not a keyword - translate it?)
 en: 65 Data style `%s' unknown
 fr: 65 STYLE `%s' inconnu
 de: 65 STYLE `%s' unbekannt
-pt: 65 STYLE `%s' com problemas
+pt: 65 Tipo de visada `%s' com problemas
 ca: 65 STYLE `%s' desconegut
 es: 65 STYLE `%s' desconocido
 it: 65 STYLE `%s' sconosciuto
 # The meaning of scorretto is that the STYLE is written wrong but is similar 
 # to a known style.
 #it: 65 STYLE `%s' scorretto
-# FIXME: TRANSLATE fr de pt ca es it
+# FIXME: TRANSLATE fr de ca es it
 en: 66 Station `%s' already exported
+pt: 66 base `%s' j&aacute; foi exportada
 # complains about a situation like trying to define two from stations per leg
-# FIXME: TRANSLATE fr de pt ca es it (datum replaced by reading)
+# FIXME: TRANSLATE fr de ca es it (datum replaced by reading)
 en: 67 Duplicate reading `%s'
 fr: 67 Donn&eacute;es dupliqu&eacute;es `%s'
 de: 67 Me&szlig;wert mehrfach angegeben `%s'
-pt: 67 Dado duplicado `%s'
+pt: 67 Campo `%s' duplicado
 ca: 67 Dada duplicada `%s'
 es: 67 Dato duplicado `%s'
 it: 67 Dati duplicati `%s'
-# FIXME: TRANSLATE check fr de pt ca es it
+# FIXME: TRANSLATE check fr de ca es it
 en: 68 FLAG `%s' unknown
 fr: 68 FLAG `%s' inconnu
 de: 68 FLAG `%s' unbekannt
