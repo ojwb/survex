@@ -343,7 +343,7 @@ void MainFrm::CreateMenuBar()
     filemenu->Append(menu_FILE_OPEN_TERRAIN, GetTabMsg(/*Open @Terrain...*/329));
 #endif
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Exit*/221));
+    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*E@xit*/221));
 
     m_history.UseMenu(filemenu);
     m_history.Load(*wxConfigBase::Get());
@@ -353,7 +353,7 @@ void MainFrm::CreateMenuBar()
     rotmenu->Append(menu_ROTATION_STOP, GetTabMsg(/*S@top Rotation##Space*/231));
     rotmenu->AppendSeparator();
     rotmenu->Append(menu_ROTATION_SPEED_UP, GetTabMsg(/*Speed @Up*/232));
-    rotmenu->Append(menu_ROTATION_SLOW_DOWN, GetTabMsg(/*S@low Down*/233));
+    rotmenu->Append(menu_ROTATION_SLOW_DOWN, GetTabMsg(/*Slow @Down*/233));
     rotmenu->AppendSeparator();
     rotmenu->Append(menu_ROTATION_REVERSE, GetTabMsg(/*@Reverse Direction*/234));
     rotmenu->AppendSeparator();
@@ -372,7 +372,7 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_SHIFT_DOWN, GetTabMsg(/*Shift Survey @Down*/247));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_PLAN, GetTabMsg(/*@Plan View*/248));
-    orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation View*/249));
+    orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation*/249));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(/*@Higher Viewpoint*/250));
     orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*L@ower Viewpoint*/251));
@@ -390,38 +390,38 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*Underground Survey @Legs##Ctrl+L*/272), "", true);
     viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*Sur@face Survey Legs##Ctrl+F*/291), "", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SURFACE_DEPTH, GetTabMsg(/*Depth Colo@urs on Surface Surveys*/292), "", true);
+    viewmenu->Append(menu_VIEW_SURFACE_DEPTH, GetTabMsg(/*@Altitude Colouring on Surface Surveys*/292), "", true);
     viewmenu->Append(menu_VIEW_SURFACE_DASHED, GetTabMsg(/*Da@shed Surface Surveys*/293), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight Fi@xed Points*/295), "", true);
-    viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight Ex&ported Points*/296), "", true);
+    viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight Ex@ported Points*/296), "", true);
     viewmenu->AppendSeparator();
     wxMenu* indmenu = new wxMenu;
-    indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "", true);
-    indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "", true);
+    indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*@Compass*/274), "", true);
+    indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*C@linometer*/275), "", true);
     indmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "", true);
-    indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "", true);
+    indmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*@Scale Bar*/277), "", true);
     viewmenu->Append(menu_VIEW_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
     viewmenu->Append(menu_VIEW_SIDE_PANEL, GetTabMsg(/*Side P@anel*/337), "", true);
 #ifdef AVENGL
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*S@moothed Survey Legs*/298), "", true);
+    viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*Smoo@thed Survey Legs*/298), "", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*Soli@d Surface*/330), "", true);
+    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*Solid Su@rface*/330), "", true);
 #endif
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_METRIC, GetTabMsg(/*Metric*/342), "", true);
-    viewmenu->Append(menu_VIEW_DEGREES, GetTabMsg(/*Degrees*/343), "", true);
+    viewmenu->Append(menu_VIEW_METRIC, GetTabMsg(/*@Metric*/342), "", true);
+    viewmenu->Append(menu_VIEW_DEGREES, GetTabMsg(/*@Degrees*/343), "", true);
 
 #ifdef AVENPRES
     wxMenu* presmenu = new wxMenu;
     presmenu->Append(menu_PRES_CREATE, GetTabMsg(/*@Create...*/311));
     presmenu->AppendSeparator();
     presmenu->Append(menu_PRES_GO, GetTabMsg(/*@Go*/312));
-    presmenu->Append(menu_PRES_GO_BACK, GetTabMsg(/*@Go Back*/318));
+    presmenu->Append(menu_PRES_GO_BACK, GetTabMsg(/*Go @Back*/318));
     presmenu->Append(menu_PRES_RESTART, GetTabMsg(/*Res@tart*/324));
     presmenu->AppendSeparator();
     presmenu->Append(menu_PRES_RECORD, GetTabMsg(/*@Record Position*/313));
@@ -437,7 +437,7 @@ void MainFrm::CreateMenuBar()
     ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
 
     wxMenu* helpmenu = new wxMenu;
-    helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About Aven...*/290));
+    helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About...*/290));
 
     wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE);
     menubar->Append(filemenu, GetTabMsg(/*@File*/210));
@@ -1250,10 +1250,10 @@ void MainFrm::OpenTerrain(const wxString& file)
 void MainFrm::OnOpen(wxCommandEvent&)
 {
 #ifdef __WXMOTIF__
-    wxFileDialog dlg (this, wxString(msg(/*Select a 3D file to view*/206)), "", "",
+    wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
 		      "*.3d", wxOPEN);
 #else
-    wxFileDialog dlg (this, wxString(msg(/*Select a 3D file to view*/206)), "", "",
+    wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
 		      wxString::Format("%s|*.3d|%s|*.plt|%s|*.xyz|%s|*.*",
 				       msg(/*Survex 3d files*/207),
 				       /* FIXME TRANSLATE */
@@ -1271,12 +1271,12 @@ void MainFrm::OnOpen(wxCommandEvent&)
 void MainFrm::OnFileOpenTerrain(wxCommandEvent&)
 {
 #ifdef __WXMOTIF__
-    wxFileDialog dlg (this, wxString(msg(/*Select a terrain file to view*/206)), "", "",
+    wxFileDialog dlg (this, wxString(msg(/*Select a terrain file to view*/228)), "", "",
 		      "*.3d", wxOPEN);
 #else
-    wxFileDialog dlg (this, wxString(msg(/*Select a terrain file to view*/206)), "", "",
+    wxFileDialog dlg (this, wxString(msg(/*Select a terrain file to view*/228)), "", "",
 		      wxString::Format("%s|*.3d|%s|*.*",
-				       msg(/*Terrain files*/207),
+				       msg(/*Terrain files*/229),
 				       msg(/*All files*/208)), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
@@ -1417,10 +1417,10 @@ void MainFrm::ShowInfo(LabelInfo *label)
 		brg_unit = msg(/*grad*/345);
 	    }
 	    if (m_Gfx->m_Metric) {
-		str.Printf(msg(/*  Dist. %d%s, Brg. %03d%s*/341),
+		str.Printf(msg(/*  Dist %d%s, Brg %03d%s*/341),
 			   int(dr), "m", int(brg), brg_unit.c_str());
 	    } else {
-		str.Printf(msg(/*  Dist. %d%s, Brg. %03d%s*/341),
+		str.Printf(msg(/*  Dist %d%s, Brg %03d%s*/341),
 			   int(dr / METRES_PER_FOOT), "ft", int(brg),
 			   brg_unit.c_str());
 	    }

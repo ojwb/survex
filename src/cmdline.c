@@ -167,7 +167,7 @@ static void
 syntax_and_help_pointer(void)
 {
    cmdline_syntax();
-   fprintf(stderr, msg(/*Try `%s --help' for more information.\n*/157),
+   fprintf(stderr, msg(/*Try `%s --help' for more information.&#10;*/157),
 	   msg_appname());
    exit(1);
 }

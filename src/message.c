@@ -1284,7 +1284,8 @@ msg(int en)
       /* this should be the only other message which can be requested before
        * the message file is opened and read... */
       if (!dontextract) return "Out of memory (couldn't find %lu bytes).";
-      return dontextract[4];
+      return dontextract[(/*Out of memory (couldn't find %lu bytes).*/1004)
+			 - 1000];
    }
 
    if (en < 0 || en >= num_msgs) {

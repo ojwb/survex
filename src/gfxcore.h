@@ -181,8 +181,8 @@ class GfxCore : public wxWindow {
 	// For the non-OpenGL version we store the screen coordinates of
 	// each station after the transformation has been applied.
 	wxPoint* vertices;
-#endif
 	int* num_segs;
+#endif
     } m_CrossData;
 
     struct PlotData {

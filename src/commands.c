@@ -380,7 +380,7 @@ cmd_set(void)
       if (root_depr_count < 5) {
 	 compile_warning(/*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
-	    compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+	    compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
       }
    }
 #endif
@@ -443,7 +443,7 @@ check_reentry(prefix *tag)
 	 if (reenter_depr_count < 5) {
 	    compile_warning(/*Reentering an existing prefix level is deprecated*/29);
 	    if (++reenter_depr_count == 5)
-	       compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+	       compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
 	 }
 
 	 file.filename = tag->filename;
@@ -470,7 +470,7 @@ cmd_prefix(void)
    if (prefix_depr_count < 5) {
       compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
       if (++prefix_depr_count == 5)
-	 compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+	 compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
    }
    tag = read_prefix_survey(fFalse, fTrue);
    pcs->Prefix = tag;
@@ -968,7 +968,7 @@ cmd_data(void)
 	 compile_warning(/*`*data %s %c ...' is deprecated - use `*data %s ...' instead*/104,
 			 buffer, ch, buffer);
 	 if (++data_depr_count == 5)
-	    compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+	    compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
       }
       nextch();
    }
@@ -1260,7 +1260,7 @@ cmd_default(void)
    if (default_depr_count < 5) {
       compile_warning(/**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
       if (++default_depr_count == 5)
-	 compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+	 compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
    }
 
    get_token();
@@ -1552,7 +1552,7 @@ handle_command(void)
    switch (cmdtok) {
     case CMD_EXPORT:
       if (!f_export_ok)
-	 compile_error(/**EXPORT must immediately follow *BEGIN*/57);
+	 compile_error(/**EXPORT must immediately follow `*BEGIN <SURVEY>'*/57);
       break;
     case CMD_COPYRIGHT:
     case CMD_DATE:

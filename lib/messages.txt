@@ -841,19 +841,7 @@ pt: 83 Escala para caber em uma p&aacute;gina
 ca: 83 Escala per a encaixar en 1 p&agrave;gina
 es: 83 Escala para encajar en 1 p&aacute;gina
 it: 83 Scala per rientrare in una pagina
-en: 84 Ignoring entire line
-fr: 84 Ignore toute la ligne
-#germ: 84 Ignoriere die gesamte Zeile
-# GN(2): Not _quite_ satisfactory. (1) This is anthropomorphizing again, (2) the
-# grammar is ambiguous --- it could be read as an imperative, `please do
-# ignore the entire line'.  Unfortunately the alternatives that come to
-# mind are worse.  Cf no. old89 below, same problem.
-# GN(3): ho-how.  Right, here's something better.
-de: 84 Gesamte Zeile wird ignoriert
-pt: 84 Ignorando toda a linha
-ca: 84 Ignorant tota la l&iacute;nia
-es: 84 Ignorando toda la l&iacute;nea
-it: 84 Intera linea ignorata
+# XXX 84
 en: 85 Parameter `%s' missing in printer configuration file
 fr: 85 Param&egrave;tres `%s' manquant dans le fichier de configuration de l'imprimante
 de: 85 Parameter `%s' fehlt in der Druckerkonfigurationsdatei
@@ -2060,7 +2048,10 @@ pt:227 N&atilde;o &eacute; poss&iacute;vel calibrar &acirc;ngulos e comprimentos
 ca:227 No es poden calibrar quantitats angulars i de longitud juntes
 es:227 No se pueden calibrar cantidades angulares y de longitud juntas
 it:227 Le quantit&aacute; di lunghezza e angolari non possono essere calibrate insieme
-# XXX228,229
+#
+en:228 Select a terrain file to view
+#
+en:229 Terrain files
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
@@ -2372,8 +2363,8 @@ ca:291 Tirades de topograf&iacute;a de super@f&iacute;cie##Ctrl+F
 es:291 Tiradas de topografia de super@ficie##Ctrl+F
 it:291 Battute topografia di Super@ficie##Ctrl+F
 #
-en:292 Altitude Colo@uring on Surface Surveys
-en-us:292 Altit@ude Coloring on Surface Surveys
+en:292 @Altitude Colouring on Surface Surveys
+en-us:292 @Altitude Coloring on Surface Surveys
 fr:292 Couleur par altit@ude pour les topos de surface
 de:292 H&ouml;hen-F@arben auf Oberfl&auml;chendarstellungen
 pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
@@ -2815,14 +2806,6 @@ pt:502 Removido: %s
 ca:502 Esborrat: %s
 es:502 Borrado: %s
 it:502 Rimosso: %s
-#
-en:503 Ignoring:
-de:503 Ignoriert:
-fr:503 Ignor&eacute;:
-pt:503 Ignorando:
-ca:503 Ignorant:
-es:503 Ignorando:
-it:503 Ignorando:
 #
 # "don't extract" messages - these are compiled into the programs
 #

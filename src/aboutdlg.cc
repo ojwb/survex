@@ -50,7 +50,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 	    wxString::Format(COPYRIGHT_MSG, msg(/*&copy;*/0)));
 
     wxString licence_str;
-    wxString l(msg(/*This is free software.  Aven is licenced under the terms of the GNU General Public Licence version 2, or (at your option) any later version.*/200));
+    wxString l(msg(/*This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.*/200));
     wxClientDC dc(this);
     dc.SetFont(this->GetFont());
     do {

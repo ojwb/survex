@@ -550,3 +550,25 @@ pt:165 Gerando imagens...
 ca:165 Generant imatges...
 es:165 Generando im&aacute;genes...
 it:165 Sto generando le immagini...
+#
+en: 84 Ignoring entire line
+fr: 84 Ignore toute la ligne
+germ: 84 Ignoriere die gesamte Zeile
+# GN(2): Not _quite_ satisfactory. (1) This is anthropomorphizing again, (2) the
+# grammar is ambiguous --- it could be read as an imperative, `please do
+# ignore the entire line'.  Unfortunately the alternatives that come to
+# mind are worse.  Cf no. old89 below, same problem.
+# GN(3): ho-how.  Right, here's something better.
+de: 84 Gesamte Zeile wird ignoriert
+pt: 84 Ignorando toda a linha
+ca: 84 Ignorant tota la l&iacute;nia
+es: 84 Ignorando toda la l&iacute;nea
+it: 84 Intera linea ignorata
+#
+en:503 Ignoring:
+de:503 Ignoriert:
+fr:503 Ignor&eacute;:
+pt:503 Ignorando:
+ca:503 Ignorant:
+es:503 Ignorando:
+it:503 Ignorando:

@@ -128,7 +128,7 @@ EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
 
 BUILT_SOURCES = z_getopt.c
 
-z_getopt.c: getopt.c
+z_getopt.c: getopt.c gettexttomsg.pl
 	./gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
 
 MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile

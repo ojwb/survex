@@ -66,7 +66,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       if (root_depr_count < 5) {
 	 compile_warning(/*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
-	    compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+	    compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
       }
       nextch();
       ptr = root;

@@ -812,7 +812,7 @@ show_help(void)
 	{0, "Mouse controls:  LEFT : left/right rotates, up/down zooms", FLAG_MOUSE},
 	{0, "               MIDDLE : up/down tilts", FLAG_MOUSE3},
 	{0, "                RIGHT : mouse moves cave", FLAG_MOUSE2},
-	{/*"No mouse detected"*/100, NULL, FLAG_NOMOUSE},
+	{/*No mouse detected*/100, NULL, FLAG_NOMOUSE},
 	{0, NULL, FLAG_ALWAYS},
 	{0, "              PRESS  ANY  KEY  TO  CONTINUE", FLAG_ALWAYS},
 	{0, NULL, 0}

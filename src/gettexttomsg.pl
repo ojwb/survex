@@ -70,7 +70,7 @@ while (<>) {
 	    $_ .= <>;
 	}
 	# very crude - doesn't know about comments, etc
-	s!\b_\("(.*?)"\)!"msg(/*$1*/".findmsg($1).")"!gse;
+	s!\b_\("(.*?)"\)!replacement($1)!gse;
     } elsif (/\s*#\s*define\s+_\(/) {
 	$_ = "#include \"message.h\"\n";
     }
@@ -81,20 +81,24 @@ if ($die) {
     die "Not all messages found!\n";
 }
 
-sub findmsg {
+sub replacement {
     my $msg = shift;
     $msg =~ s/\\\n//g;
     $msg =~ s/\\n/\n/g;
     $msg =~ s/\\t/\t/g;
-    unless (exists $revmsgs{$msg}) {
+    my $msgno = "";
+    if (exists $revmsgs{$msg}) {
+	$msgno = $revmsgs{$msg};
+    } else {
 	if (!$die) {
 	    print STDERR "Message(s) not found in message file:\n";
 	    $die = 1;
 	}
 	print STDERR "'$msg'\n";
-	return "";
     }
-    return $revmsgs{$msg};
+    $msg =~ s/\n/&#10;/g;
+    $msg =~ s/\t/&#9;/g;
+    return "msg(/*$msg*/$msgno)";
 }
 
 sub string_to_utf8 {
