@@ -73,7 +73,9 @@ editwrap_LDFLAGS = -mwindows
 
 if WIN32
 aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
+aven_LDFLAGS = @WX_LDFLAGS@
 avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
+avengl_LDFLAGS = @WX_LDFLAGS@
 
 svxeditrc.o: $(srcdir)/svxedit.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
