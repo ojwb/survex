@@ -106,6 +106,7 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
     EVT_MOTION(GfxCore::OnMouseMove)
     EVT_SIZE(GfxCore::OnSize)
     EVT_IDLE(GfxCore::OnTimer)
+    EVT_CHAR(GfxCore::OnKeyPress)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
@@ -175,22 +176,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     }
 #endif
 
-    // Create accelerator table.
-    wxAcceleratorEntry entries[11];
-    entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, menu_ORIENT_DEFAULTS);
-    entries[1].Set(wxACCEL_NORMAL, WXK_UP, menu_ORIENT_SHIFT_UP);
-    entries[2].Set(wxACCEL_NORMAL, WXK_DOWN, menu_ORIENT_SHIFT_DOWN);
-    entries[3].Set(wxACCEL_NORMAL, WXK_LEFT, menu_ORIENT_SHIFT_LEFT);
-    entries[4].Set(wxACCEL_NORMAL, WXK_RIGHT, menu_ORIENT_SHIFT_RIGHT);
-    entries[5].Set(wxACCEL_NORMAL, (int) '\'', menu_ORIENT_HIGHER_VP);
-    entries[6].Set(wxACCEL_NORMAL, (int) '/', menu_ORIENT_LOWER_VP);
-    entries[7].Set(wxACCEL_NORMAL, (int) ']', menu_ORIENT_ZOOM_IN);
-    entries[8].Set(wxACCEL_NORMAL, (int) '[', menu_ORIENT_ZOOM_OUT);
-    entries[9].Set(wxACCEL_NORMAL, WXK_RETURN, menu_ROTATION_START);
-    entries[10].Set(wxACCEL_NORMAL, WXK_SPACE, menu_ROTATION_STOP);
-
-    wxAcceleratorTable accel(11, entries);
-    SetAcceleratorTable(accel);
     SetBackgroundColour(wxColour(0, 0, 0));
 
     // Initialise grid for hit testing.
@@ -2484,7 +2469,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
     }
 }
 
-void GfxCore::OnDisplayOverlappingNames(wxCommandEvent&)
+void GfxCore::OnDisplayOverlappingNames()
 {
     
     m_OverlappingNames = !m_OverlappingNames;
@@ -2499,7 +2484,7 @@ void GfxCore::OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_OverlappingNames);
 }
 
-void GfxCore::OnShowCrosses(wxCommandEvent&)
+void GfxCore::OnShowCrosses()
 {
     m_Crosses = !m_Crosses;
     m_RedrawOffscreen = true;
@@ -2514,7 +2499,7 @@ void GfxCore::OnShowCrossesUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_Crosses);
 }
 
-void GfxCore::OnShowStationNames(wxCommandEvent&)
+void GfxCore::OnShowStationNames()
 {
     m_Names = !m_Names;
     SetScale(m_Params.scale);
@@ -2528,7 +2513,7 @@ void GfxCore::OnShowStationNamesUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_Names);
 }
 
-void GfxCore::OnShowSurveyLegs(wxCommandEvent&) 
+void GfxCore::OnShowSurveyLegs() 
 {
     m_Legs = !m_Legs;
     SetScale(m_Params.scale);
@@ -2542,7 +2527,7 @@ void GfxCore::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_Legs);
 }
 
-void GfxCore::OnMoveEast(wxCommandEvent&) 
+void GfxCore::OnMoveEast() 
 {
     TurnCaveTo(M_PI / 2.0);
 }
@@ -2553,7 +2538,7 @@ void GfxCore::OnMoveEastUpdate(wxUpdateUIEvent& cmd)
                m_Lock != lock_Y && m_Lock != lock_XY);
 }
 
-void GfxCore::OnMoveNorth(wxCommandEvent&) 
+void GfxCore::OnMoveNorth() 
 {
     TurnCaveTo(0.0);
 }
@@ -2564,7 +2549,7 @@ void GfxCore::OnMoveNorthUpdate(wxUpdateUIEvent& cmd)
                m_Lock != lock_X && m_Lock != lock_XY);
 }
 
-void GfxCore::OnMoveSouth(wxCommandEvent&) 
+void GfxCore::OnMoveSouth() 
 {
     TurnCaveTo(M_PI);
 }
@@ -2575,7 +2560,7 @@ void GfxCore::OnMoveSouthUpdate(wxUpdateUIEvent& cmd)
                m_Lock != lock_X && m_Lock != lock_XY);
 }
 
-void GfxCore::OnMoveWest(wxCommandEvent&)
+void GfxCore::OnMoveWest()
 {
     TurnCaveTo(M_PI * 1.5);
 }
@@ -2596,7 +2581,7 @@ void GfxCore::StopTimer()
     m_Timer.Stop();
 }
 
-void GfxCore::OnStartRotation(wxCommandEvent&) 
+void GfxCore::OnStartRotation() 
 {
   //    StartTimer();
     m_Rotating = true;
@@ -2609,13 +2594,13 @@ void GfxCore::OnStartRotationUpdate(wxUpdateUIEvent& cmd)
                 m_Lock == lock_YZ));
 }
 
-void GfxCore::OnToggleRotation(wxCommandEvent& cmd)
+void GfxCore::OnToggleRotation()
 {
     if (m_Rotating) {
-    	OnStopRotation(cmd);
+    	OnStopRotation();
     }
     else {
-    	OnStartRotation(cmd);
+    	OnStartRotation();
     }
 }
 
@@ -2627,7 +2612,7 @@ void GfxCore::OnToggleRotationUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_PlotData != NULL && m_Rotating);
 }
 
-void GfxCore::OnStopRotation(wxCommandEvent&) 
+void GfxCore::OnStopRotation() 
 {
     if (!m_SwitchingToElevation && !m_SwitchingToPlan) {
       //        StopTimer();
@@ -2641,7 +2626,7 @@ void GfxCore::OnStopRotationUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Rotating);
 }
 
-void GfxCore::OnReverseControls(wxCommandEvent&) 
+void GfxCore::OnReverseControls() 
 {
     m_ReverseControls = !m_ReverseControls;
 }
@@ -2652,7 +2637,7 @@ void GfxCore::OnReverseControlsUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_ReverseControls);
 }
 
-void GfxCore::OnReverseDirectionOfRotation(wxCommandEvent&)
+void GfxCore::OnReverseDirectionOfRotation()
 {
     m_RotationStep = -m_RotationStep;
 }
@@ -2662,7 +2647,7 @@ void GfxCore::OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && m_Rotating);
 }
 
-void GfxCore::OnSlowDown(wxCommandEvent&) 
+void GfxCore::OnSlowDown() 
 {
     m_RotationStep /= 1.2f;
     if (m_RotationStep < M_PI/2000.0f) {
@@ -2675,7 +2660,7 @@ void GfxCore::OnSlowDownUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && m_Rotating);
 }
 
-void GfxCore::OnSpeedUp(wxCommandEvent&) 
+void GfxCore::OnSpeedUp() 
 {
     m_RotationStep *= 1.2f;
     if (m_RotationStep > M_PI/8.0f) {
@@ -2688,7 +2673,7 @@ void GfxCore::OnSpeedUpUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && m_Rotating);
 }
 
-void GfxCore::OnStepOnceAnticlockwise(wxCommandEvent&) 
+void GfxCore::OnStepOnceAnticlockwise() 
 {
     TurnCave(M_PI / 18.0);
 }
@@ -2698,7 +2683,7 @@ void GfxCore::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating && m_Lock != lock_POINT);
 }
 
-void GfxCore::OnStepOnceClockwise(wxCommandEvent&) 
+void GfxCore::OnStepOnceClockwise() 
 {
     TurnCave(-M_PI / 18.0);
 }
@@ -2708,7 +2693,7 @@ void GfxCore::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating && m_Lock != lock_POINT);
 }
 
-void GfxCore::OnDefaults(wxCommandEvent&) 
+void GfxCore::OnDefaults() 
 {
     Defaults();
 }
@@ -2765,12 +2750,7 @@ void GfxCore::OnDefaultsUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::OnElevation(wxCommandEvent&)
-{
-    Elevation();
-}
-
-void GfxCore::Elevation() 
+void GfxCore::OnElevation()
 {
     // Switch to elevation view.
 
@@ -2784,7 +2764,7 @@ void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd)
                 !m_SwitchingToElevation && m_Lock == lock_NONE && m_TiltAngle != 0.0);
 }
 
-void GfxCore::OnHigherViewpoint(wxCommandEvent&) 
+void GfxCore::OnHigherViewpoint() 
 {
     // Raise the viewpoint.
 
@@ -2797,7 +2777,7 @@ void GfxCore::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
                m_Lock == lock_NONE);
 }
 
-void GfxCore::OnLowerViewpoint(wxCommandEvent&) 
+void GfxCore::OnLowerViewpoint() 
 {
     // Lower the viewpoint.
 
@@ -2810,12 +2790,7 @@ void GfxCore::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
                m_Lock == lock_NONE);
 }
 
-void GfxCore::OnPlan(wxCommandEvent&)
-{
-    Plan();
-}
-
-void GfxCore::Plan() 
+void GfxCore::OnPlan()
 {
     // Switch to plan view.
 
@@ -2829,7 +2804,7 @@ void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd)
                 !m_SwitchingToPlan && m_Lock == lock_NONE && m_TiltAngle != M_PI / 2.0);
 }
 
-void GfxCore::OnShiftDisplayDown(wxCommandEvent&) 
+void GfxCore::OnShiftDisplayDown() 
 {
     m_Params.display_shift.y += DISPLAY_SHIFT;
     SetScale(m_Params.scale);
@@ -2842,7 +2817,7 @@ void GfxCore::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::OnShiftDisplayLeft(wxCommandEvent&) 
+void GfxCore::OnShiftDisplayLeft() 
 {
     m_Params.display_shift.x -= DISPLAY_SHIFT;
     SetScale(m_Params.scale);
@@ -2855,7 +2830,7 @@ void GfxCore::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::OnShiftDisplayRight(wxCommandEvent&) 
+void GfxCore::OnShiftDisplayRight() 
 {
     m_Params.display_shift.x += DISPLAY_SHIFT;
     SetScale(m_Params.scale);
@@ -2868,7 +2843,7 @@ void GfxCore::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::OnShiftDisplayUp(wxCommandEvent&) 
+void GfxCore::OnShiftDisplayUp() 
 {
     m_Params.display_shift.y -= DISPLAY_SHIFT;
     SetScale(m_Params.scale);
@@ -2881,7 +2856,7 @@ void GfxCore::OnShiftDisplayUpUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL);
 }
 
-void GfxCore::OnZoomIn(wxCommandEvent&) 
+void GfxCore::OnZoomIn() 
 {
     // Increase the scale.
 
@@ -2897,7 +2872,7 @@ void GfxCore::OnZoomInUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
 }
 
-void GfxCore::OnZoomOut(wxCommandEvent&) 
+void GfxCore::OnZoomOut() 
 {
     // Decrease the scale.
 
@@ -3035,7 +3010,7 @@ void GfxCore::OnTimer(wxIdleEvent& event)
 #endif
 }
 
-void GfxCore::OnToggleScalebar(wxCommandEvent&) 
+void GfxCore::OnToggleScalebar() 
 {
     m_Scalebar = !m_Scalebar;
     m_RedrawOffscreen = true;
@@ -3048,7 +3023,7 @@ void GfxCore::OnToggleScalebarUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_Scalebar);
 }
 
-void GfxCore::OnToggleDepthbar(wxCommandEvent&) 
+void GfxCore::OnToggleDepthbar() 
 {
     m_Depthbar = !m_Depthbar;
     m_RedrawOffscreen = true;
@@ -3061,7 +3036,7 @@ void GfxCore::OnToggleDepthbarUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_Depthbar);
 }
 
-void GfxCore::OnViewCompass(wxCommandEvent&) 
+void GfxCore::OnViewCompass() 
 {
     m_Compass = !m_Compass;
     m_RedrawOffscreen = true;
@@ -3074,7 +3049,7 @@ void GfxCore::OnViewCompassUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_Compass);
 }
 
-void GfxCore::OnViewClino(wxCommandEvent&) 
+void GfxCore::OnViewClino() 
 {
     m_Clino = !m_Clino;
     m_RedrawOffscreen = true;
@@ -3088,7 +3063,7 @@ void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_Clino);
 }
 
-void GfxCore::OnShowSurface(wxCommandEvent& cmd)
+void GfxCore::OnShowSurface()
 {
     m_Surface = !m_Surface;
     SetScale(m_Params.scale);
@@ -3096,14 +3071,14 @@ void GfxCore::OnShowSurface(wxCommandEvent& cmd)
     Refresh(false);
 }
 
-void GfxCore::OnShowSurfaceDepth(wxCommandEvent& cmd)
+void GfxCore::OnShowSurfaceDepth()
 {
     m_SurfaceDepth = !m_SurfaceDepth;
     m_RedrawOffscreen = true;
     Refresh(false);
 }
 
-void GfxCore::OnShowSurfaceDashed(wxCommandEvent& cmd)
+void GfxCore::OnShowSurfaceDashed()
 {
     m_SurfaceDashed = !m_SurfaceDashed;
     m_RedrawOffscreen = true;
@@ -3128,7 +3103,7 @@ void GfxCore::OnShowSurfaceDashedUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_SurfaceDashed);
 }
 
-void GfxCore::OnShowEntrances(wxCommandEvent&)
+void GfxCore::OnShowEntrances()
 {
     m_Entrances = !m_Entrances;
     m_RedrawOffscreen = true;
@@ -3143,7 +3118,7 @@ void GfxCore::OnShowEntrancesUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_Entrances);
 }
 
-void GfxCore::OnShowFixedPts(wxCommandEvent&)
+void GfxCore::OnShowFixedPts()
 {
     m_FixedPts = !m_FixedPts;
     m_RedrawOffscreen = true;
@@ -3158,7 +3133,7 @@ void GfxCore::OnShowFixedPtsUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_FixedPts);
 }
 
-void GfxCore::OnShowExportedPts(wxCommandEvent&)
+void GfxCore::OnShowExportedPts()
 {
     m_ExportedPts = !m_ExportedPts;
     m_RedrawOffscreen = true;
@@ -3173,7 +3148,7 @@ void GfxCore::OnShowExportedPtsUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_ExportedPts);
 }
 
-void GfxCore::OnViewGrid(wxCommandEvent&)
+void GfxCore::OnViewGrid()
 {
     m_Grid = !m_Grid;
     m_RedrawOffscreen = true;
@@ -3195,7 +3170,7 @@ void GfxCore::OnIndicatorsUpdate(wxUpdateUIEvent& cmd)
 //
 
 #ifdef AVENGL
-void GfxCore::OnAntiAlias(wxCommandEvent&)
+void GfxCore::OnAntiAlias()
 {
     // Toggle anti-aliasing of survey legs.
 
@@ -3771,7 +3746,7 @@ void GfxCore::SetSolidSurface(bool state)
     Refresh(false);
 }
 
-void GfxCore::OnSolidSurface(wxCommandEvent&)
+void GfxCore::OnSolidSurface()
 {
     terrain_rising = !terrain_rising;
     if (floor_alt == -DBL_MAX)
@@ -3790,3 +3765,61 @@ void GfxCore::OnSolidSurfaceUpdate(wxUpdateUIEvent& ui)
 
 #endif
 
+void GfxCore::OnKeyPress(wxKeyEvent &e)
+{
+    switch (e.m_keyCode) {
+	case '/':
+	    OnLowerViewpoint();
+	    break;
+	case '\'':
+	    OnHigherViewpoint();
+	    break;
+	case 'C': case 'c':
+	    OnStepOnceAnticlockwise();
+	    break;
+	case 'V': case 'v':
+	    OnStepOnceClockwise();
+	    break;
+	case ']': case '}':
+	    OnZoomIn();
+	    break;
+	case '[': case '{':
+	    OnZoomOut();
+	    break;
+	case WXK_DELETE:
+	    OnDefaults();
+	    break;
+	case WXK_RETURN:
+	    OnStartRotation();
+	    break;
+	case WXK_SPACE:
+	    OnStopRotation();
+	    break;
+	case WXK_LEFT:
+	    if (e.m_controlDown)
+		OnStepOnceAnticlockwise();
+	    else
+		OnShiftDisplayLeft();
+	    break;
+	case WXK_RIGHT:
+	    if (e.m_controlDown)
+		OnStepOnceClockwise();
+	    else
+		OnShiftDisplayRight();
+	    break;
+	case WXK_UP:
+	    if (e.m_controlDown)
+		OnHigherViewpoint();
+	    else
+		OnShiftDisplayUp();
+	    break;
+	case WXK_DOWN:
+	    if (e.m_controlDown)
+		OnLowerViewpoint();
+	    else
+		OnShiftDisplayDown();
+	    break;
+	default:
+	    e.Skip();
+    }
+}

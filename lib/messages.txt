@@ -1928,15 +1928,15 @@ fr:234 Direction @Inverse##R
 de:234 @Andere Richtung##R
 pt-br:234 @Reverter Sentido##R
 #
-en:235 Step Once @Anticlockwise##C
-fr:235 Pas &agrave; pas sens in@verse des aiguilles d'une montre##C
-de:235 Schritt im @Gegenuhrzeigersinn##C
-pt-br:235 Um Passo @Hor&aacute;rio##C
+en:235 Step Once @Anticlockwise
+fr:235 Pas &agrave; pas sens in@verse des aiguilles d'une montre
+de:235 Schritt im @Gegenuhrzeigersinn
+pt-br:235 Um Passo @Hor&aacute;rio
 #
-en:236 Step Once @Clockwise##V
-fr:236 Pas &agrave; pas dans le @sens des aiguilles d'une montre##V
-de:236 Schritt im @Uhrzeigersinn##V
-pt-br:236 Um Passo A@ntihor&aacute;rio##V
+en:236 Step Once @Clockwise
+fr:236 Pas &agrave; pas dans le @sens des aiguilles d'une montre
+de:236 Schritt im @Uhrzeigersinn
+pt-br:236 Um Passo A@ntihor&aacute;rio
 #
 # The accelerators must be different within this group
 en:240 View @North##N
@@ -2001,16 +2001,16 @@ es:249 @Alzado##L
 it:249 Pro@filo##L
 #
 # TRANSLATE ca es it
-en:250 @Higher Viewpoint##'
-fr:250 Point de vue plus Ha@ut##'
-de:250 @H&ouml;herer Standort##'
-pt-br:250 Observador Mais @Alto##'
+en:250 @Higher Viewpoint
+fr:250 Point de vue plus Ha@ut
+de:250 @H&ouml;herer Standort
+pt-br:250 Observador Mais @Alto
 #
 # TRANSLATE ca es it
-en:251 Lo@wer Viewpoint##/
-fr:251 Point de vue plus B@as##/
-de:251 Nie@drigerer Standort##/
-pt-br:251 Observador Mais Bai@xo##/
+en:251 Lo@wer Viewpoint
+fr:251 Point de vue plus B@as
+de:251 Nie@drigerer Standort
+pt-br:251 Observador Mais Bai@xo
 #
 en:252 @Zoom In##]
 # fr: or "Agrandir"

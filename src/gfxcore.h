@@ -431,8 +431,6 @@ class GfxCore : public wxWindow {
 
     void Defaults();
     void DefaultParameters();
-    void Plan();
-    void Elevation();
 
     void Repaint();
 
@@ -474,48 +472,48 @@ public:
     bool AtEndOfPres();
 #endif
 
-    void OnDefaults(wxCommandEvent&);
-    void OnPlan(wxCommandEvent&);
-    void OnElevation(wxCommandEvent&);
-    void OnDisplayOverlappingNames(wxCommandEvent&);
-    void OnShowCrosses(wxCommandEvent&);
-    void OnShowStationNames(wxCommandEvent&);
-    void OnShowSurveyLegs(wxCommandEvent&);
-    void OnShowSurface(wxCommandEvent&);
-    void OnShowSurfaceDepth(wxCommandEvent&);
-    void OnShowSurfaceDashed(wxCommandEvent&);
-    void OnMoveEast(wxCommandEvent&);
-    void OnMoveNorth(wxCommandEvent&);
-    void OnMoveSouth(wxCommandEvent&);
-    void OnMoveWest(wxCommandEvent&);
-    void OnStartRotation(wxCommandEvent&);
-    void OnToggleRotation(wxCommandEvent&);
-    void OnStopRotation(wxCommandEvent&);
-    void OnReverseControls(wxCommandEvent&);
-    void OnSlowDown(wxCommandEvent&);
-    void OnSpeedUp(wxCommandEvent&);
-    void OnStepOnceAnticlockwise(wxCommandEvent&);
-    void OnStepOnceClockwise(wxCommandEvent&);
-    void OnHigherViewpoint(wxCommandEvent&);
-    void OnLowerViewpoint(wxCommandEvent&);
-    void OnShiftDisplayDown(wxCommandEvent&);
-    void OnShiftDisplayLeft(wxCommandEvent&);
-    void OnShiftDisplayRight(wxCommandEvent&);
-    void OnShiftDisplayUp(wxCommandEvent&);
-    void OnZoomIn(wxCommandEvent&);
-    void OnZoomOut(wxCommandEvent&);
-    void OnToggleScalebar(wxCommandEvent&);
-    void OnToggleDepthbar(wxCommandEvent&);
-    void OnViewCompass(wxCommandEvent&);
-    void OnViewClino(wxCommandEvent&);
-    void OnViewGrid(wxCommandEvent&);
-    void OnReverseDirectionOfRotation(wxCommandEvent&);
-    void OnShowEntrances(wxCommandEvent&);
-    void OnShowFixedPts(wxCommandEvent&);
-    void OnShowExportedPts(wxCommandEvent&);
+    void OnDefaults();
+    void OnPlan();
+    void OnElevation();
+    void OnDisplayOverlappingNames();
+    void OnShowCrosses();
+    void OnShowStationNames();
+    void OnShowSurveyLegs();
+    void OnShowSurface();
+    void OnShowSurfaceDepth();
+    void OnShowSurfaceDashed();
+    void OnMoveEast();
+    void OnMoveNorth();
+    void OnMoveSouth();
+    void OnMoveWest();
+    void OnStartRotation();
+    void OnToggleRotation();
+    void OnStopRotation();
+    void OnReverseControls();
+    void OnSlowDown();
+    void OnSpeedUp();
+    void OnStepOnceAnticlockwise();
+    void OnStepOnceClockwise();
+    void OnHigherViewpoint();
+    void OnLowerViewpoint();
+    void OnShiftDisplayDown();
+    void OnShiftDisplayLeft();
+    void OnShiftDisplayRight();
+    void OnShiftDisplayUp();
+    void OnZoomIn();
+    void OnZoomOut();
+    void OnToggleScalebar();
+    void OnToggleDepthbar();
+    void OnViewCompass();
+    void OnViewClino();
+    void OnViewGrid();
+    void OnReverseDirectionOfRotation();
+    void OnShowEntrances();
+    void OnShowFixedPts();
+    void OnShowExportedPts();
 #ifdef AVENGL
-    void OnAntiAlias(wxCommandEvent&);
-    void OnSolidSurface(wxCommandEvent&);
+    void OnAntiAlias();
+    void OnSolidSurface();
 #endif
 
     void OnPaint(wxPaintEvent&);
@@ -528,6 +526,8 @@ public:
     void OnRButtonUp(wxMouseEvent& event);
     void OnSize(wxSizeEvent& event);
     void OnTimer(wxIdleEvent& event);
+
+    void OnKeyPress(wxKeyEvent &e);
 
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent&);
     void OnShowCrossesUpdate(wxUpdateUIEvent&);

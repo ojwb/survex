@@ -87,6 +87,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 #endif
 
     EVT_CLOSE(MainFrm::OnClose)
+	
+    EVT_SET_FOCUS(MainFrm::OnSetFocus)
 
     EVT_MENU(menu_ROTATION_START, MainFrm::OnStartRotation)
     EVT_MENU(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotation)
@@ -281,8 +283,8 @@ void MainFrm::CreateMenuBar()
     rotmenu->AppendSeparator();
     rotmenu->Append(menu_ROTATION_REVERSE, GetTabMsg(/*@Reverse Direction##R*/234));
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_STEP_CCW, GetTabMsg(/*Step Once @Anticlockwise##C*/235));
-    rotmenu->Append(menu_ROTATION_STEP_CW, GetTabMsg(/*Step Once @Clockwise##V*/236));
+    rotmenu->Append(menu_ROTATION_STEP_CCW, GetTabMsg(/*Step Once @Anticlockwise*/235));
+    rotmenu->Append(menu_ROTATION_STEP_CW, GetTabMsg(/*Step Once @Clockwise*/236));
 
     wxMenu* orientmenu = new wxMenu;
     orientmenu->Append(menu_ORIENT_MOVE_NORTH, GetTabMsg(/*View @North##N*/240));
@@ -290,16 +292,16 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_MOVE_SOUTH, GetTabMsg(/*View @South##S*/242));
     orientmenu->Append(menu_ORIENT_MOVE_WEST, GetTabMsg(/*View @West##W*/243));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, GetTabMsg(/*Shift Survey @Left##Left Arrow*/244));
-    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, GetTabMsg(/*Shift Survey @Right##Right Arrow*/245));
-    orientmenu->Append(menu_ORIENT_SHIFT_UP, GetTabMsg(/*Shift Survey @Up##Up Arrow*/246));
-    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, GetTabMsg(/*Shift Survey @Down##Down Arrow*/247));
+    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, GetTabMsg(/*Shift Survey @Left*/244));
+    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, GetTabMsg(/*Shift Survey @Right*/245));
+    orientmenu->Append(menu_ORIENT_SHIFT_UP, GetTabMsg(/*Shift Survey @Up*/246));
+    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, GetTabMsg(/*Shift Survey @Down*/247));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_PLAN, GetTabMsg(/*@Plan View##P*/248));
     orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation View##L*/249));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(/*@Higher Viewpoint##'*/250));
-    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*Lo@wer Viewpoint##/*/251));
+    orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(/*@Higher Viewpoint*/250));
+    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*Lo@wer Viewpoint*/251));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_ZOOM_IN, GetTabMsg(/*@Zoom In##]*/252));
     orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253));
@@ -1101,7 +1103,7 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 
 void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 {
-    SetCursor(*wxHOURGLASS_CURSOR);
+    wxBusyCursor hourglass;
     if (LoadData(file, survey)) {
         if (delay) {
             m_Gfx->InitialiseOnNextResize();
@@ -1125,17 +1127,15 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
         m_Splitter->SplitVertically(m_Panel, m_Gfx, x);
 #endif
     }
-    SetCursor(*wxSTANDARD_CURSOR);
 }
 
 #ifdef AVENGL
 void MainFrm::OpenTerrain(const wxString& file)
 {
-    SetCursor(*wxHOURGLASS_CURSOR);
+    wxBusyCursor hourglass;
     if (LoadTerrain(file)) {
     	m_Gfx->InitialiseTerrain();
     }
-    SetCursor(*wxSTANDARD_CURSOR);
 }
 #endif
 

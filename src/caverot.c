@@ -545,11 +545,13 @@ process_key(void) /* and mouse! */
 	    break;
 	  case CURSOR_LEFT:
 	    if (!ctrl_pressed()) break;
+	    iKeycode = 0;
 	    /* FALLTHRU */
 	  case 'C':
 	    degView += degViewStep * Accel; fChanged = fTrue; break;
 	  case CURSOR_RIGHT:
 	    if (!ctrl_pressed()) break;
+	    iKeycode = 0;
 	    /* FALLTHRU */
 	  case 'V':
 	    degView -= degViewStep * Accel; fChanged = fTrue; break;
@@ -562,6 +564,7 @@ process_key(void) /* and mouse! */
 	 switch (iKeycode) {
 	  case CURSOR_UP:
 	    if (!ctrl_pressed()) break;
+	    iKeycode = 0;
 	    /* FALLTHRU */
 	  case '\'': case '@': case '"':
 	    /* shift-' varies with keyboard layout
@@ -576,6 +579,7 @@ process_key(void) /* and mouse! */
 	    break;
 	  case CURSOR_DOWN:
 	    if (!ctrl_pressed()) break;
+	    iKeycode = 0;
 	    /* FALLTHRU */
 	  case '/': case '?':
 	    if (fRevSense) goto tiltdown;
