@@ -77,8 +77,7 @@ visit(node *stn, int back)
    long min;
    int i;
    node *stn2;
-   liv *livTos = NULL, *livTmp;
-   int artic_flag = 0;
+   liv *livTos = NULL;
 #ifdef DEBUG_ARTIC
    printf("visit(%p, %d) called\n", stn, back);
 #endif
@@ -117,9 +116,11 @@ iter:
 #endif
    for (i = 0; i <= 2 && stn->leg[i]; i++) {
       if (stn->leg[i]->l.to->colour == 0) {
-	 livTmp = osnew(liv);
-	 livTmp->next = livTos;
-	 livTos = livTmp;
+	 {
+	     liv *livTmp = osnew(liv);
+	     livTmp->next = livTos;
+	     livTos = livTmp;
+	 }
 	 livTos->dirn = back = reverse_leg_dirn(stn->leg[i]);
 	 stn = stn->leg[i]->l.to;
 	 goto iter;
@@ -134,8 +135,6 @@ uniter:
 		min, stn->colour);
 #endif
 
-	 /* FIXME: hmm, this code looks like it may get called more than once,
-	  * or never - actually it seems to always get called exactly once! */
 #ifdef DEBUG_ARTIC
 	 printf("Putting stn ");
 	 print_prefix(stn->name);
@@ -148,21 +147,20 @@ uniter:
 	 printf(">> %p\n", stn);
 #endif
 
-	 if (artic_flag) {
+	 if (stn->colour < min) {
 	    articulation *art;
 
-	    artic_flag = 0;
+	    min = stn->colour;
+
 	    /* FIXME: note down leg (<-), remove and replace:
 	     *                 /\   /        /\
              * [fixed point(s)]  *-*  -> [..]  )
 	     *                 \/   \        \/
 	     *                stn2 stn
 	     */
-#if 0
 	    /* flag leg as an articulation for loop error reporting */
 	    stn->leg[livTos->dirn]->l.reverse |= FLAG_ARTICULATION;
 	    stn2->leg[i]->l.reverse |= FLAG_ARTICULATION;
-#endif
 	     
 	    /* start new articulation */
 	    component_list->artic->stnlist = artlist;
@@ -180,19 +178,16 @@ uniter:
 #endif
 	 }
 
-	 if (stn2->colour == min) {
-	    artic_flag = 1;
-	 } else if (stn2->colour < min) {
-	    min = stn2->colour;
+	 {
+	     liv *livTmp = livTos;
+	     livTos = livTos->next;
+	     osfree(livTmp);
 	 }
-
 	 stn = stn2;
-	 livTmp = livTos;
-	 livTos = livTos->next;
-	 osfree(livTmp);
       }
    }
    if (livTos) goto uniter;
+
 #ifdef DEBUG_ARTIC
    printf("Putting stn ");
    print_prefix(stn->name);
@@ -208,9 +203,7 @@ articulate(void)
 {
    node *stn, *stnStart;
    int i;
-#ifdef DEBUG_ARTIC
-   ulong cFixed;
-#endif
+   long cFixed;
 
    component_list = NULL;
    artlist = NULL;
@@ -236,9 +229,7 @@ articulate(void)
    }
    stnStart = fixedlist;
    ASSERT2(stnStart,"no fixed points!");
-#ifdef DEBUG_ARTIC
    cFixed = colour;
-#endif
    while (1) {
       int c;
       stn = stnStart;
@@ -284,23 +275,38 @@ articulate(void)
 	 } else if (stn2->colour == 0) {
 	    /* Special case to check if start station is an articulation point
 	     * which it is iff we have to colour from it in more than one dirn
+	     *
+	     * We're looking for articulation legs - these are those where
+	     * colouring from here doesn't reach a fixed point (including
+	     * stn - the fixed point we've started from)
 	     */
-      if (c) {
-	       /* FIXME: stn2 is an articulation point! */
-#if 0
-		   /* flag leg as an articulation for loop error reporting */
-		   stn->leg[i]->l.reverse |= FLAG_ARTICULATION;
-		   reverse_leg(stn->leg[i])->l.reverse |= FLAG_ARTICULATION;
-#endif
+	    long col = visit(stn2, reverse_leg_dirn(stn->leg[i]));
 #ifdef DEBUG_ARTIC
-	       print_prefix(stn2->name);
-	       printf(" is a special case start articulation point\n");
+	    print_prefix(stn->name);
+	    printf(" -> ");
+	    print_prefix(stn2->name);
+	    printf(" col %d cFixed %d\n", col, cFixed);
 #endif
-	       }
+	    if (col > cFixed) c |= 1 << i;
+	 }
+      }
 
-	    c++;
-	    visit(stn2, reverse_leg_dirn(stn->leg[i]));
-	   }
+      if (c) {
+#ifdef DEBUG_ARTIC
+	 print_prefix(stn->name);
+	 printf(" is a special case start articulation point [%d]\n", c);
+#endif
+	 for (i = 0; i <= 2; i++) {
+	    if (TSTBIT(c, i)) {
+	       /* flag leg as an articulation for loop error reporting */		
+	       stn->leg[i]->l.reverse |= FLAG_ARTICULATION;
+	       reverse_leg(stn->leg[i])->l.reverse |= FLAG_ARTICULATION;
+#ifdef DEBUG_ARTIC
+	       print_prefix(stn->leg[i]->l.to->name);
+	       putnl();
+#endif
+	    }
+	 }
       }
 
 #ifdef DEBUG_ARTIC

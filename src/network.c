@@ -600,6 +600,11 @@ replace_subnets(void)
             else
                subdd(&POSD(stn), &POSD(stn2),
 		     &reverse_leg(stn2->leg[dirn2])->d);
+
+	    /* the "rope" of the noose is a new articulation */
+	    stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
+	    reverse_leg(stn2->leg[dirn2])->l.reverse |= FLAG_ARTICULATION;
+
             fix(stn);
          } else {
             stn2 = ptrRed->join1->l.to;
@@ -627,6 +632,13 @@ replace_subnets(void)
             dirn2 = reverse_leg_dirn(ptrRed->join2);
 
             leg = stn3->leg[dirn3];
+
+	    if (leg->l.reverse & FLAG_ARTICULATION) {
+	       ptrRed->join1->l.reverse |= FLAG_ARTICULATION;
+	       stn->leg[dirn]->l.reverse |= FLAG_ARTICULATION;
+	       ptrRed->join2->l.reverse |= FLAG_ARTICULATION;
+	       stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
+	    }
 
             if (fZero(&leg->v))
                e[0] = e[1] = e[2] = 0.0;
@@ -706,7 +718,7 @@ replace_subnets(void)
                        "bad sub-network for D*");
             }
             for (i = 0; i < 3; i++) {
-               linkfor *leg1 = copy_link(leg[i]);
+               linkfor *leg1 = copy_link(leg[i]); /* FIXME: why copy? */
                leg2 = stn[i]->leg[dirn[i]];
                stn2 = leg[i]->l.to;
                adddd(&POSD(stn2), &POSD(stn[i]), &leg1->d);
@@ -723,6 +735,11 @@ replace_subnets(void)
                osfree(leg1);
                osfree(leg2);
                stn[i]->leg[dirn[i]] = leg[i];
+	       /* transfer the articulation status of the radial legs */
+	       if (stnZ->leg[i]->l.reverse & FLAG_ARTICULATION) {
+		  leg[i]->l.reverse |= FLAG_ARTICULATION;
+		  reverse_leg(leg[i])->l.reverse |= FLAG_ARTICULATION;
+	       }
                osfree(stnZ->leg[i]);
                stnZ->leg[i] = NULL;
             }

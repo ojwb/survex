@@ -126,6 +126,6 @@ Check make uninstall works (docs in particular).
 Date: Fri, 16 Feb 2001
 From: Olly
 
-Don't report error stats for articulating traverses; don't split other
-traverses at articulating traverses when reporting error stats.
+Don't split other traverses at articulating traverses when reporting error
+stats.
 

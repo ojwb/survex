@@ -3,6 +3,8 @@ Changes in 0.97-prerelease1:
 * extend: fixed bug which result in bogus output (added regression test);
   produce binary rather than ASCII .3d output.
 
+* cavern: don't report error stats for articulating traverses.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling

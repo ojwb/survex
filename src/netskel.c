@@ -393,7 +393,7 @@ replace_travs(void)
    int cLegsTrav;
    prefix *nmPrev;
    linkfor *leg;
-   /*bool fArtic;*/
+   bool fArtic;
 
    out_current_action(msg(/*Calculating traverses between nodes*/127));
 
@@ -448,13 +448,6 @@ replace_travs(void)
 	       int do_blunder;
 #endif
 	       stn2 = leg->l.to;
-#ifndef BLUNDER_DETECTION
-               if (!fSuppress) {
-		  fprint_prefix(fhErrStat, stn1->name);
-		  fputs(szLink, fhErrStat);
-		  fprint_prefix(fhErrStat, stn2->name);
-	       }
-#endif
 #ifdef NEW3DFORMAT
 	       if (!fUseNewFormat) {
 #endif
@@ -465,7 +458,14 @@ replace_travs(void)
 #ifdef NEW3DFORMAT
 	       }
 #endif
-	       if (1) { /*!(leg->l.reverse & FLAG_ARTICULATION)) {*/
+	       if (!(leg->l.reverse & FLAG_ARTICULATION)) {
+#ifndef BLUNDER_DETECTION
+		  if (!fSuppress) {
+		     fprint_prefix(fhErrStat, stn1->name);
+		     fputs(szLink, fhErrStat);
+		     fprint_prefix(fhErrStat, stn2->name);
+		  }
+#endif
 		  subdd(&e, &POSD(stn2), &POSD(stn1));
 		  subdd(&e, &e, &leg->d);
 		  eTot = sqrdd(e);
@@ -562,7 +562,7 @@ replace_travs(void)
  	 }
 #endif
       }
-      /*fArtic = stn1->leg[i]->l.reverse & FLAG_ARTICULATION;*/
+      fArtic = stn1->leg[i]->l.reverse & FLAG_ARTICULATION;
       osfree(stn1->leg[i]);
       stn1->leg[i] = ptr->join1; /* put old link back in */
 
@@ -575,7 +575,7 @@ replace_travs(void)
 	 int do_blunder;
 	 memcpy(&err, &e, sizeof(d));
 	 do_blunder = (eTot > eTotTheo);
-	 if (!fSuppress) {
+	 if (!fSuppress && !fArtic) {
 	    fputs("\ntraverse ", fhErrStat);
 	    fprint_prefix(fhErrStat, stn1->name);
 	    fputs("->", fhErrStat);
@@ -636,7 +636,7 @@ replace_travs(void)
 	       /* (node not part of same stn) &&
 		* (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
-	       if (!fSuppress) {
+	       if (!fSuppress && !fArtic) {
 		  fprint_prefix(fhErrStat, nmPrev);
 #if PRINT_NAME_PTRS
 		  fprintf(fhErrStat, "[%p|%p]", nmPrev, stn3->name);
@@ -646,7 +646,7 @@ replace_travs(void)
 #endif
 	       nmPrev = stn3->name;
 #if PRINT_NAME_PTRS
-	       if (!fSuppress) fprintf(fhErrStat, "[%p]", nmPrev);
+	       if (!fSuppress && !fArtic) fprintf(fhErrStat, "[%p]", nmPrev);
 #endif
 	       if (!fEquate) {
 		  cLegsTrav++;
@@ -662,7 +662,7 @@ replace_travs(void)
 	       }
 	    } else {
 #if SHOW_INTERNAL_LEGS
-	       if (!fSuppress) fprintf(fhErrStat, "+");
+	       if (!fSuppress && !fArtic) fprintf(fhErrStat, "+");
 #endif
 	       if (lenTot > 0.0) {
 #if DEBUG_INVALID
@@ -706,6 +706,7 @@ replace_travs(void)
 #if PRINT_NETBITS
 	 printf("lenTot increased okay\n");
 #endif
+	 if (!fArtic) {
 	    if (cLegsTrav) {
 	       if (stn2->name != nmPrev) {
 #ifndef BLUNDER_DETECTION
@@ -733,9 +734,10 @@ replace_travs(void)
 #endif
 	       lenTrav += sqrt(lenTot);
 	    }
-	 if (cLegsTrav /*&& !fArtic*/)
+	    if (cLegsTrav && !fArtic)
 	       err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
 			hTot, hTotTheo, vTot, vTotTheo);
+	 }
       }
 
       ptrOld = ptr;
