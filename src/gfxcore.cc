@@ -692,7 +692,9 @@ void GfxCore::Draw2dIndicators()
 				 m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE +
 				 INDICATOR_MARGIN,
 				 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
-				 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2, -tilt, -180 - tilt);
+				 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
+				 -180 - tilt, -tilt); // do not change the order of these two
+	                                              // or the code will fail on Windows
     
 	m_DrawDC.DrawLine(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
 			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_MARGIN,

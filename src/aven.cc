@@ -78,8 +78,12 @@ bool Aven::OnInit()
 
     wxImage::AddHandler(new wxPNGHandler);
     //--need to sort this!
+#ifdef _WIN32
+    m_AboutBitmap.LoadFile("c:\\aven-about.png", wxBITMAP_TYPE_PNG);
+#else
     m_AboutBitmap.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
 			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
+#endif
 
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(640, 480));
 
