@@ -105,10 +105,6 @@ VERSION = @VERSION@
 # If you're porting, don't define any to start with, and define them as
 # needed, using the compiler and linker errors for guidance.
 
-# We expect .c and .h files to be in current directory
-# OPTH and EPTH should be relative to there
-# NB For dos_bc at least, OPTH and EPTH should be left unset
-
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
 #imgtest_SOURCES = imgtest.c imgalone.c
 
