@@ -362,6 +362,10 @@ void MainFrm::CreateToolBar()
 
     wxToolBar* toolbar = wxFrame::CreateToolBar();
 
+#ifndef _WIN32
+    toolbar->SetMargins(5, 5);
+#endif
+
     toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open.png"), "Open a 3D file for viewing");
     toolbar->AddTool(menu_FILE_OPEN_PRES, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
     toolbar->AddSeparator();
