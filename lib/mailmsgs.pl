@@ -4,6 +4,8 @@ use strict;
 
 use integer;
 
+my $version =`sed 's/^AM_INIT.*(.*, *\\([0-9][0-9\\.]*\\)).*/\\1/p;d' ../configure.in`;
+
 my %email = (
  'de' => 'Gerhard Niklasch <nikl@mathematik.tu-muenchen.de>, <niklasch@consol.de>',
  'fr' => 'Eric.Madelaine@sophia.inria.fr',
@@ -22,7 +24,7 @@ for my $lang (sort keys %email) {
    #$email{$lang} = 'olly@mantis.co.uk';
    if (-s "$lang.todo") {
       print "Mailing $lang.todo to $email{$lang}\n";
-      system "mail -s 'Survex: Messages Requiring Translation' \Q$email{$lang}\E < \Q$lang.todo\E";
+      system "mail -s 'Survex $version: Messages Requiring Translation' \Q$email{$lang}\E < \Q$lang.todo\E";
       unlink "$lang.todo";
    } else {
       print "$lang is up to date\n";
