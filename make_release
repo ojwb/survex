@@ -28,7 +28,8 @@ if test x"$rel" = xyes ; then
       exit 1
    fi
    TAG="`sed 's/^CHANGELOG_FROM_TAG=//p;d' configure.in`"
-   if ! cvs log -r$TAG::|./fixchangelog.pl $TAG|$CVS2CL --stdin 2> /dev/null ; then
+   # stderr | grep -v '^cvs server: warning: no revision .*/Attic/'
+   if ! cvs log -r$TAG:: 2> /dev/null|./fixchangelog.pl $TAG|$CVS2CL --stdin 2> /dev/null ; then
       echo Failed to update ChangeLog from CVS
       exit 1
    fi
