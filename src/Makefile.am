@@ -71,10 +71,10 @@ EXTRA_DIST = borlandc/makefile borlandc/config.h\
 
 MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile
 
-borlandc/makefile: Makefile.am $(top_srcdir)/hto/Makefile.am miniam.pl
+borlandc/config.h borlandc/makefile: Makefile.am $(top_srcdir)/hto/Makefile.am miniam.pl
 	cat $(srcdir)/Makefile.am $(top_srcdir)/hto/Makefile.am | $(srcdir)/miniam.pl borlandc $(top_srcdir)/configure.in borlandc/config.h > borlandc/makefile
 
-riscos/makefile: Makefile.am $(top_srcdir)/hto/Makefile.am miniam.pl
+riscos/config.h riscos/makefile: Makefile.am $(top_srcdir)/hto/Makefile.am miniam.pl
 	cat $(srcdir)/Makefile.am $(top_srcdir)/hto/Makefile.am | $(srcdir)/miniam.pl riscos $(top_srcdir)/configure.in riscos/config.h > riscos/makefile
 
 ###########################################################################
