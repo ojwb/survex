@@ -19,11 +19,13 @@ for a in survex-riscos-$VER.zip survex-dos286-$VER.exe; do
 done
 
 WEBDIR="software/$VRP"
-DIR="tartarus.org:/usr/data/www/survex.com/$WEBDIR"
-scp $FILES $DIR
+HOST="tartarus.org"
+DIR="/usr/data/www/survex.com/$WEBDIR"
+ssh tartarus.org mkdir "$DIR"
+scp $FILES "$HOST:$DIR"
 
-DIR="tartarus.org:/usr/data/www/survex.com/docs"
-#mkdir $DIR.tmp
-scp -a doc/manual{,.{sgml,ps,txt,rtf}} $DIR.tmp
-#mv $DIR $DIR.old && mv $DIR.tmp $DIR
-#rm -rf $DIR.old
+DIR="/usr/data/www/survex.com/docs"
+ssh tartarus.org mkdir "$HOST:$DIR.tmp"
+scp -a doc/manual{,.{sgml,ps,txt,rtf}} "$HOST:$DIR.tmp"
+ssh tartarus.org mv "$DIR" "$DIR.old" && ssh tartarus.org mv "$DIR.tmp" "$DIR"
+ssh tartarus.org rm -rf "$RAW.old"
