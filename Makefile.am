@@ -122,7 +122,7 @@ debian : dist
 	sed 's/^/ /' < desc-aven.txt >> ${debct}	
 	# -us and -uc mean don't sign packages
 	cd deb/${PACKAGE}-${VERSION} && debuild -us -uc
-	mv deb/*.deb .
+	mv deb/*.deb deb/*.dsc deb/*.changes deb/*.gz .
 	rm -rf deb
 
 dostxt :
@@ -299,6 +299,7 @@ riscos_doc_zip :
 	 else\
 	  case "$$f" in\
 	   */*.htm|*/*.html) ln -s ../../doc/$$f ../riscos_doc_tmp/$$f,faf ;;\
+	   *.htm|*.html) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,faf ;;\
 	   *.txt) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,fff ;;\
 	   *.rtf) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,c32 ;;\
 	   *.ps) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,ff5 ;;\
