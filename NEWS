@@ -1,6 +1,8 @@
-* Documentation rearranged.  Some sections which covered the same ground
-  have been merged, and the program summaries are now available as man
-  pages under Unix.
+Changes in 0.99-prerelease3:
+
+* Documentation rearranged.  Some sections which covered the same
+  ground have been merged, and the documentation for each program is
+  now available as a man page under Unix.
 
 * (Unix version): Fixed problem incomplete versions being specified in
   debian package dependencies.
@@ -19,7 +21,7 @@ Changes in 0.99-prerelease2:
 
 * (Unix version): Added man pages for 3dtopos and sorterr.
 
-* More minor tweaks to debian packages.
+* (Unix version): More minor tweaks to debian packages.
 
 * Include images with HTML documentation; other minor documentation
   changes.
@@ -153,7 +155,8 @@ Changes in 0.99-prerelease1:
 * French, Brazillian Portuguese, and German translations brought
   almost completely up-to-date.
 
-* Lots of little improvements to debian packages (mostly from Wookey).
+* (Unix version): Lots of little improvements to debian packages
+  (mostly from Wookey).
 
 Changes in 0.98:
 
