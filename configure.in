@@ -27,7 +27,7 @@ esac])
 if test -n "$AVEN" ; then
   AC_PROG_CXX
   dnl aclocal from automake 1.4 doesn't like next line:
-  dnl AM_DEPENDENCIES(CXX)
+  AM_DEPENDENCIES(CXX)
   AC_PROG_CXXCPP
 fi
 
@@ -68,6 +68,14 @@ AC_CHECK_PROGS(STRIP, strip, echo "not stripping ")
 AC_CHECK_LIB(m, sqrt)
 
 AC_PATH_XTRA
+
+PRINTWIN=
+if test -n "$MINGW32$CYGWIN" ; then
+  PRINTWIN=printwin
+  AC_MSG_RESULT(building printwin)
+fi
+
+AC_SUBST(PRINTWIN)
 
 if test x$no_x = xyes; then
   AVEN=

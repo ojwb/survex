@@ -12,9 +12,9 @@ LDADD = @LIBOBJS@
 
 PRINT = printdm printps printpcl printhpgl
 
-EXTRA_PROGRAMS = caverot xcaverot printxbm aven
+EXTRA_PROGRAMS = caverot xcaverot printxbm printwin aven
 bin_PROGRAMS = cavern $(PRINT) diffpos extend survex cad3d @CAVEROT@ \
- @AVEN@
+ @AVEN@ @PRINTWIN@
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c getopt.c getopt1.c
 
@@ -31,13 +31,14 @@ aven_LDADD = @LIBOBJS@ @WX_LIBS@
 aven_CFLAGS = -DSTANDALONE @WX_CFLAGS@
 aven_CXXFLAGS = -DSTANDALONE @WX_CFLAGS@
 
-PRSRC = prcore.c prio.c useful.c img.c ini.c $(COMMONSRC)
+PRSRC = prcore.c prio.c useful.c img.c $(COMMONSRC)
  
-printps_SOURCES = printps.c $(PRSRC)
-printdm_SOURCES = printdm.c $(PRSRC) prbitmap.c
-printpcl_SOURCES = printpcl.c $(PRSRC) prbitmap.c
-printxbm_SOURCES = printxbm.c $(PRSRC) prbitmap.c
-printhpgl_SOURCES = prhpgl.c $(PRSRC)
+printps_SOURCES = printps.c $(PRSRC) ini.c
+printdm_SOURCES = printdm.c $(PRSRC) ini.c prbitmap.c
+printpcl_SOURCES = printpcl.c $(PRSRC) ini.c prbitmap.c
+printxbm_SOURCES = printxbm.c $(PRSRC) ini.c prbitmap.c
+printhpgl_SOURCES = prhpgl.c $(PRSRC) ini.c
+printwin_SOURCES = printwin.c $(PRSRC)
 
 ROTSRC = cvrotimg.c img.c useful.c $(COMMONSRC)
 
