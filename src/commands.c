@@ -191,7 +191,6 @@ read_string(char **pstr, int *plen)
    if (fQuoted) {
       compile_error(/*Missing &quot;*/69);
       skipline();
-      return;
    }
 }
 
@@ -304,9 +303,9 @@ match_units(void)
    if (units == UNITS_NULL) {
       fseek(file.fh, fp, SEEK_SET);
       compile_error(/*Unknown units `%s'*/35, buffer);
-      skipline();
+   } else if (units == UNITS_PERCENT) {
+      NOT_YET;
    }
-   if (units == UNITS_PERCENT) NOT_YET;
    return units;
 }
 
@@ -534,7 +533,6 @@ cmd_end(void)
 	    /* tag mismatch */
 	    compile_error(/*Prefix tag doesn't match BEGIN*/193);
 	 }
-	 skipline();
       } else {
 	 /* close tag omitted; open tag given */
 	 compile_warning(/*Closing prefix omitted from END*/194);
@@ -569,7 +567,6 @@ cmd_fix(void)
 	    compile_error(/*More than one FIX command with no coordinates*/56);
 	 else
 	    compile_warning(/*Same station fixed twice with no coordinates*/61);
-	 skipline();
 	 return;
       }
       compile_warning(/*FIX command with no coordinates - fixing at (0,0,0)*/54);
@@ -646,7 +643,6 @@ cmd_fix(void)
 
    if (x != POS(stn, 0) || y != POS(stn, 1) || z != POS(stn, 2)) {
       compile_error(/*Station already fixed or equated to a fixed point*/46);
-      skipline();
       return;
    }
    compile_warning(/*Station already fixed at the same coordinates*/55);
@@ -709,18 +705,17 @@ cmd_flags(void)
    while (1) {
       int flag;
       get_token();
+      /* If buffer is empty, it could mean end of line, or maybe
+       * some non-letter junk which is better reported later */
+      if (!buffer[0]) return;
+
       flag = match_tok(flagtab, TABSIZE(flagtab));
       /* treat the second NOT in "NOT NOT" as an unknown flag */
       if (flag == FLAGS_UNKNOWN || (fNot && flag == FLAGS_NOT)) {
-         if (buffer[0]) {
-            /* If buffer is empty, it could mean end of line, or maybe
-             * some non-letter junk which is better reported later */
-            compile_error(/*FLAG `%s' unknown*/68, buffer);
-      	    skipline();
-      	 }
-      	 return;
-      }
-      if (flag == FLAGS_NOT) {
+	 compile_error(/*FLAG `%s' unknown*/68, buffer);
+	 /* `*FLAGS NOT BOGUS SURFACE' should probably ignore "NOT BOGUS" */
+	 fNot = fFalse;
+      } else if (flag == FLAGS_NOT) {
          fNot = fTrue;
       } else if (fNot) {
          pcs->flags &= ~BIT(flag);
@@ -747,7 +742,6 @@ cmd_equate(void)
       if (name1 == NULL) {
 	 if (fOnlyOneStn) {
 	    compile_error(/*Only one station in equate list*/33);
-	    skipline();
 	 }
 #ifdef NEW3DFORMAT
 	 if (fUseNewFormat) limb = get_twig(pcs->Prefix);
@@ -774,7 +768,6 @@ cmd_equate(void)
 		     compile_error(/*Tried to equate two non-equal fixed stations: `%s' and `%s'*/52,
 				   s, sprint_prefix(name2));
 		     osfree(s);
-		     skipline();
 		     return;
 		  }
 	       }
@@ -985,7 +978,6 @@ cmd_data(void)
 		       buffer, style_name);
 	 osfree(style_name);
 	 skipline();
-	 osfree(style_name);
 	 return;
       }
 #ifdef SVX_MULTILINEDATA /* NEW_STYLE */
@@ -1006,7 +998,7 @@ cmd_data(void)
 	 cRealData++;
 	 if (cRealData > cData) {
 	    compile_error(/*Too many readings*/);
-	    showandskipline(NULL, -(int)strlen(buffer));
+	    skipline();
 	    osfree(style_name);
 	    return;
 	 }
@@ -1014,11 +1006,9 @@ cmd_data(void)
 #endif
 	 if (mUsed & BIT(d)) {
 	    compile_error(/*Duplicate reading `%s'*/67, buffer);
-	    skipline();
-	    osfree(style_name);
-	    return;
+	 } else {
+	    mUsed |= BIT(d); /* used to catch duplicates */
 	 }
-	 mUsed |= BIT(d); /* used to catch duplicates */
       }
       if (k >= kMac) {
 	 kMac = kMac * 2;
@@ -1031,7 +1021,6 @@ cmd_data(void)
    if ((mUsed | mask_optional[style-1]) != mask[style-1]) {
       osfree(new_order);
       compile_error(/*Too few readings for data style `%s'*/64, style_name);
-      skipline();
       osfree(style_name);
       return;
    }
@@ -1094,8 +1083,7 @@ cmd_units(void)
 
    if (((qmask & LEN_QMASK) && !(BIT(units) & LEN_UMASK)) ||
        ((qmask & ANG_QMASK) && !(BIT(units) & ANG_UMASK))) {
-      compile_error(/*Invalid units for quantity*/37);
-      showandskipline(NULL, -(int)strlen(buffer));
+      compile_error(/*Invalid units `%s' for quantity*/37, buffer);
       return;
    }
    if (qmask & (BIT(Q_LENGTHOUTPUT) | BIT(Q_ANGLEOUTPUT)) ) {
@@ -1170,7 +1158,6 @@ cmd_default(void)
       break;
     default:
       compile_error(/*Unknown setting `%s'*/41, buffer);
-      skipline();
    }
 }
 
@@ -1224,8 +1211,8 @@ cmd_sd(void)
    if (units == UNITS_NULL) return;
    if (((qmask & LEN_QMASK) && !(BIT(units) & LEN_UMASK)) ||
        ((qmask & ANG_QMASK) && !(BIT(units) & ANG_UMASK))) {
-      compile_error(/*Invalid units for quantity*/37);
-      showandskipline(NULL, -(int)strlen(buffer));
+      compile_error(/*Invalid units `%s' for quantity*/37, buffer);
+      skipline();
       return;
    }
 

@@ -293,8 +293,6 @@ data_file(const char *pth, const char *fnm)
 
       if (!isEol(ch)) {
 	 compile_error(/*End of line not blank*/15);
-	 showline(NULL, INT_MAX);
-	 out_puts(msg(/*Ignoring rest of line*/89));
 	 skipline();
       }
 
@@ -483,7 +481,6 @@ data_normal(void)
    } else {
       if (tape < (real)0.0) {
 	 compile_warning(/*Negative tape reading*/60);
-	 showline(NULL, 0);
       }
 
       tape *= pcs->units[Q_LENGTH];
@@ -494,7 +491,6 @@ data_normal(void)
       comp *= pcs->units[Q_BEARING];
       if (comp < (real)0.0 || comp - PI * 2 > EPSILON) {
 	 compile_warning(/*Suspicious compass reading*/59);
-	 showline(NULL, 0);
       }
    }
 
@@ -502,7 +498,6 @@ data_normal(void)
       clin *= pcs->units[Q_GRADIENT];
       if (fabs(clin) - PI / 2 > EPSILON) {
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
-	 showline(NULL, 0);
       }
    }
 
@@ -516,7 +511,6 @@ data_normal(void)
    if (tape < (real)0.0) {
       /* FIXME: different message for topofil? */
       compile_warning(/*Negative adjusted tape reading*/79);
-      showline(NULL, 0);
    }
 
    if ((fPlumbed && clin != (real)0) ||
@@ -524,7 +518,6 @@ data_normal(void)
       /* plumbed */
       if (!fNoComp) {
 	 compile_warning(/*Compass reading given on plumbed leg*/21);
-	 showline(NULL, 0);
       }
 
       dx = dy = (real)0.0;
@@ -725,7 +718,6 @@ data_diving(void)
 
    if (tape < (real)0.0) {
       compile_warning(/*Negative tape reading*/60);
-      showline(NULL, 0);
    }
 
    tape *= pcs->units[Q_LENGTH];
@@ -733,7 +725,6 @@ data_diving(void)
       comp *= pcs->units[Q_BEARING];
       if (comp < (real)0.0 || comp - PI * 2 > EPSILON) {
          compile_warning(/*Suspicious compass reading*/59);
-         showline(NULL, 0);
       }
    }
 
@@ -744,14 +735,12 @@ data_diving(void)
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
       compile_warning(/*Negative adjusted tape reading*/79);
-      showline(NULL, 0);
    }
 
    /* check if tape is less than depth change */
    if (tape < fabs(dz)) {
       /* FIXME: allow margin of error based on variances? */
       compile_warning(/*Tape reading is less than change in depth*/62);
-      showline(NULL, 0);
    }
 
    if (tape == (real)0.0) {

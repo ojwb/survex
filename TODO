@@ -215,3 +215,7 @@ controls.
 
 Default variance for topofil counter? (currently same as that of tape)
 
+For warnings such as "Suspicious compass reading", report the reading
+in question in the error message (in the text form given in the file).
+Also report values when warning about problems with processed readings.
+

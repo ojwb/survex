@@ -55,14 +55,6 @@
 # OL: In English you talk about the *units* of a measurement.  Maybe in other
 #     languages though...
 #
-#37 This is assuming there is _no_ subsequent message naming the culprit
-# quantity.  If there is, make it `die Gr&ouml;&szlig;e', and append its
-# name immediately.  --- Also, it really ought to be singular: 'Unpassende
-# Einheit'... in all the languages.
-#
-# OL: The offending line will probably be displayed with the problem area
-#     highlighted.
-#
 # GN(3): germ: 35 now covers both singular and plural.  In 37, singular
 # looks more appropriate.
 #
@@ -394,15 +386,19 @@ pt: 36 O BEGIN correspondente n&atilde;o tem prefixo
 ca: 36 La instrucci&oacute; BEGIN corresponent no te prefix
 es: 36 La instrucci&oacute;n BEGIN correspondiente no tiene prefijo
 it: 36 Il BEGIN corrispondente non ha prefisso
-#
-en: 37 Invalid units for quantity
-fr: 37 Unit&eacute; incorrecte pour une quantit&eacute;
-de:    37 Unpassende Einheit f&uuml;r diese Gr&ouml;&szlig;e
-de-ch: 37 Unpassende Einheit f&uuml;r diese Gr&ouml;sse
-pt: 37 Unidade inv&aacute;lida para tipo de quantidade
-ca: 37 Unitats inv&agrave;lides per a quantitat
-es: 37 Unidades inv&aacute;lidas para cantidad
-it: 37 Unit&aacute; non valida per questa quantit&aacute;
+# TRANSLATE check addition of `%s': fr de pt ca es it
+# Note: In English you talk about the *units* of a single measurement, but
+# the correct term in other languages may be singular.
+en: 37 Invalid units `%s' for quantity
+fr: 37 Unit&eacute; `%s' incorrecte pour une quantit&eacute;
+# GKN: This is assuming there is _no_ subsequent message naming the culprit
+# quantity.  If there is, make it `die Gr&ouml;&szlig;e', and append its
+# name immediately.de:    37 Unpassende Einheit `%s' f&uuml;r diese Gr&ouml;&szlig;e
+de-ch: 37 Unpassende Einheit `%s' f&uuml;r diese Gr&ouml;sse
+pt: 37 Unidade `%s' inv&aacute;lida para tipo de quantidade
+ca: 37 Unitats `%s' inv&agrave;lides per a quantitat
+es: 37 Unidades `%s' inv&aacute;lidas para cantidad
+it: 37 Unit&aacute; `%s' non valida per questa quantit&aacute;
 # nasty hack - this message is for the .3d img code, and all errors there take
 # a filename parameter - we don't really want it here, so lose it with "%.0s"
 # (which should display 0 characters from the filename) FIXME: sort out this
@@ -851,15 +847,16 @@ pt: 88 Erro no formato do arquivo de fontes `%s'
 ca: 88 Error en el format del fitxer de fonts `%s'
 es: 88 Error en el formato del fichero de fuentes `%s'
 it: 88 Errore nel formato del file dei caratteri `%s'
+#XXX 89
 # cf no. 84.
-en: 89 Ignoring rest of line
-fr: 89 Ignore le restant de la ligne
-#germ: 89 Ignoriere den Rest der Zeile
-de: 89 Rest der Zeile wird ignoriert
-pt: 89 Ignorando o resto da linha
-ca: 89 Ingnorant la resta de la l&iacute;nia
-es: 89 Ignorando el resto de la l&iacute;nea
-it: 89 Resto della linea ignorato
+#en: 89 Ignoring rest of line
+#fr: 89 Ignore le restant de la ligne
+##germ: 89 Ignoriere den Rest der Zeile
+#de: 89 Rest der Zeile wird ignoriert
+#pt: 89 Ignorando o resto da linha
+#ca: 89 Ingnorant la resta de la l&iacute;nia
+#es: 89 Ignorando el resto de la l&iacute;nea
+#it: 89 Resto della linea ignorato
 # Program will exit shortly after printing this
 en: 90 Abnormal termination
 fr: 90 Terminaison anormale
