@@ -2477,9 +2477,9 @@ GfxCore::MoveViewer(double forward, double up, double right)
     Vector3 move = v_forward * forward + v_up * up + v_right * right;
     AddTranslation(-move.getX(), -move.getY(), -move.getZ());
     // Show current position.
-    m_Parent->SetCoords(m_Translation.x + m_Parent->GetXOffset(),
-			m_Translation.y + m_Parent->GetYOffset(),
-			m_Translation.z + m_Parent->GetZOffset());
+    m_Parent->SetCoords(m_Parent->GetXOffset() - m_Translation.x,
+			m_Parent->GetYOffset() - m_Translation.y,
+			m_Parent->GetZOffset() - m_Translation.z);
     ForceRefresh();
 }
 
