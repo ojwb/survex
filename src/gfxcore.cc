@@ -3491,7 +3491,6 @@ void GfxCore::SetThere(Double x, Double y, Double z)
 
 void GfxCore::OnCancelDistLine()
 {
-    SetThere();
     m_Parent->ClearTreeSelection();
 }
 

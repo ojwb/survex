@@ -1237,6 +1237,7 @@ void MainFrm::GetColour(int band, Double& r, Double& g, Double& b) const
 void MainFrm::ClearTreeSelection()
 {
     m_Tree->UnselectAll();
+    m_Gfx->SetThere();
 }
 
 void MainFrm::ClearCoords()
