@@ -44,6 +44,11 @@ Aven::Aven() :
 
 bool Aven::OnInit()
 {
+#ifdef __WXMAC__
+    // Tell wxMac which the About menu item is so it can be put where MacOS
+    // users expect it to be
+    wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
+#endif 
     msg_init(argv);
 
     const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
