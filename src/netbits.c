@@ -16,6 +16,8 @@
 
 node *stn_iter = NULL; /* for FOR_EACH_STN */
 
+/* FIXME: station lists should know how long they are... */
+
 /* insert at head of double-linked list */
 void
 add_stn_to_list(node **list, node *stn) {

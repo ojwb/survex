@@ -6,7 +6,8 @@
 #ifndef CAVERN_H
 #define CAVERN_H
 
-/* the covariance code doesn't yet fully work */
+/* the covariance code doesn't yet fully work - the problems are in
+ * matrix.c I think */
 #define NO_COVARIANCES 1
 
 #include <stdio.h>
