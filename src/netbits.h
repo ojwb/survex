@@ -55,9 +55,6 @@ extern node *stn_iter;
 char *sprint_prefix(prefix *ptr);
 void fprint_prefix(FILE *fh, prefix *ptr);
 
-/* extern for debugging */
-/* extern void print_var(var *a); */
-
 /* r = ab ; r,a,b are variance matrices */
 void mulvv(var *r, const var *a, const var *b);
 
@@ -94,8 +91,9 @@ bool fZero(var *v);
 # define print_var(V) printf("(%f,%f,%f)", (V)[0], (V)[1], (V)[2])
 #else
 # define print_var(V) \
-printf("(%.10f,%.10f,%.10f)\n(%.10f,%.10f,%.10f)\n(%.10f,%.10f,%.10f)\n",\
+printf("/%4.2f,%4.2f,%4.2f\\\n|%4.2f,%4.2f,%4.2f|\n\\%4.2f,%4.2f,%4.2f/\n",\
 (V)[0][0], (V)[0][1], (V)[0][2],\
 (V)[1][0], (V)[1][1], (V)[1][2],\
 (V)[2][0], (V)[2][1], (V)[2][2])
 #endif
+

@@ -293,16 +293,6 @@ sprint_prefix(prefix *ptr)
    return buffer;
 }
 
-#ifndef NO_COVARIANCES
-static void
-print_var(const var *a)
-{
-   printf("/ %4.2f, %4.2f, %4.2f \\\n", (*a)[0][0], (*a)[0][1], (*a)[0][2]);
-   printf("| %4.2f, %4.2f, %4.2f |\n", (*a)[1][0], (*a)[1][1], (*a)[1][2]);
-   printf("\\ %4.2f, %4.2f, %4.2f /\n", (*a)[2][0], (*a)[2][1], (*a)[2][2]);
-}
-#endif
-
 /* r = ab ; r,a,b are variance matrices */
 void
 mulvv(var *r, const var *a, const var *b)
@@ -440,11 +430,11 @@ invert_var(var *inv, const var *v)
 	}
 	if (d > 1E-5) {
 	   printf("original * inverse=\n");
-	   print_var(v);
+	   print_var(*v);
 	   printf("*\n");
-	   print_var(inv);
+	   print_var(*inv);
 	   printf("=\n");
-	   print_var(&p);
+	   print_var(p);
 	   BUG("matrix didn't invert");
 	}
      }
@@ -465,7 +455,7 @@ divdv(d *r, d *a, var *b)
 #else
    var b_inv;
    if (!invert_var(&b_inv, b)) {
-      print_var(b);
+      print_var(*b);
       BUG("covariance matrix is singular");
    }
    mulvd(r, &b_inv, a);
@@ -484,7 +474,7 @@ divvv(var *r, var *a, var *b)
 #else
    var b_inv;
    if (!invert_var(&b_inv, b)) {
-      print_var(b);
+      print_var(*b);
       BUG("covariance matrix is singular");
    }
    mulvv(r, a, &b_inv);
