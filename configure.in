@@ -172,14 +172,13 @@ AC_SUBST(LIBOBJS)
 AC_MSG_CHECKING(for sgmltools v2 or v3)
 case `sgmltools --version 2> /dev/null` in
 *" version "[23]*)
-  sgmltools=yes
-  DOC=doc ;;
+  sgmltools=sgmltools
+  AC_MSG_RESULT(yes) ;;
 *)
-  sgmltools=no
-  DOC= ;;
+  sgmltools='$MISSING sgmltools'
+  AC_MSG_RESULT(no) ;;
 esac
-AC_MSG_RESULT($sgmltools)
-AC_SUBST(DOC)
+AC_SUBST(sgmltools)
 
 dnl extra flags for building with gcc
 if test "$GCC" = yes; then

@@ -1,0 +1,104 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH SURVEX 1 "August 23, 2000"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+survex \- cave survey software
+.SH SYNOPSIS
+.B survex
+.RI [ options ... ] [ <survex data file> ... ]
+.br
+.B cavern
+.RI [ options ... ] [ <survex data file> ... ]
+.br
+.B xcaverot
+.RI [options] [<3d file> ... ]
+.br
+.br
+.B printps
+.RI [options] [<3d file> ... ]
+.br
+.B printhpgl
+.RI [options] [<3d file> ... ]
+.br
+.B printpcl
+.RI [options] [<3d file> ... ]
+.br
+.B printdm
+.RI [options] [<3d file> ... ]
+.br
+.br
+.B extend
+.RI <input 3d file> [<output 3d file>] 
+.br
+.B diffpos
+.RI <3d file> <3d file> [<threshold>]
+.br
+.B 3dtodxf
+.RI [options] [survex 3d file]
+.br
+.B svx2hto
+.RI <survex data file>
+.br
+.B hto2svx
+.RI <survex data file>
+.br
+
+.SH DESCRIPTION
+This manual page documents briefly the
+.B survex
+,
+.B cavern
+,
+.B xcaverot
+,
+.B print(ps|hpgl|pcl|dm)
+,
+.B diffpos
+,
+.B 3dtodxf
+,
+.B svx2hto
+ and
+.B hto2svx
+commands.
+This manual page was written for the Debian GNU/Linux distribution
+because the original program does not have a manual page.
+Instead, it has documentation in sgml, text, html, postscript and rtf formats; see below.
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+\fBSurvex\fP is a suite of programs for processing, displaying and printing cave survey data. 
+.SH OPTIONS
+These programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-').
+A summary of options is included below.
+For a complete description, see the Info files.
+.TP
+.B \-h, \-\-help
+Show summary of options.
+.TP
+.B \-v, \-\-version
+Show version of program.
+.SH SEE ALSO
+Nothing - this feeble manpage is it.
+.br
+The programs are documented fully by the documentation found in
+/usr/docs/survex/.
+.SH AUTHOR
+This manual page was written by Wookey <wookey@survex.com>,
+for the Debian GNU/Linux system (but may be used by others).

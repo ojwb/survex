@@ -2,8 +2,7 @@
 
 EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES
 
-DIST_SUBDIRS = hto src lib doc tests
-SUBDIRS = hto src lib @DOC@ tests
+SUBDIRS = hto src lib doc tests
 
 extra_bin = lib/*.msg lib/pfont.bit
 extra_txt = lib/*.svx lib/print.ini
