@@ -339,7 +339,7 @@ process_key(void) /* and mouse! */
    clock_t old_time;
    static float tsc = 1.0f; /* sane starting value */
 #ifdef ANIMATE
-   static clock_t last_animate=0;
+   static clock_t last_animate = 0;
 #endif
 
    old_time = new_time;
@@ -371,6 +371,7 @@ process_key(void) /* and mouse! */
    }
 #endif
 
+   iKeycode = cvrotgfx_get_key();
    if (shift_pressed()) {
       nStep = 5.0f * nStepsize / sc;
       ZoomFactor = BIG_MAGNIFY_FACTOR;
@@ -386,7 +387,6 @@ process_key(void) /* and mouse! */
 
    if (fRevSense) nStep = -nStep;
 
-   iKeycode = cvrotgfx_get_key();
    if (iKeycode > -1) {
       autotilt = 0;
       if (iKeycode >= 'a' && iKeycode <= 'z')

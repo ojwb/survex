@@ -49,17 +49,18 @@ extern BITMAP *BitMap, *BitMapDraw;
 # endif
 
 # ifdef NO_TEXT
-#  define outtextxy(X, Y, SZ) NOP
+#  define outtextxy(X, Y, S) NOP
 # else
-#  define outtextxy(X, Y, SZ) BLK(\
+#  define outtextxy(X, Y, S) BLK(\
  extern int _cvrotgfx_textcol;\
- textout(BitMapDraw, font, (SZ), (X), (Y), _cvrotgfx_textcol);)
+ textout(BitMapDraw, font, (char *)(S), (X), (Y), _cvrotgfx_textcol);)
 # endif
 # define set_tcolour(X) BLK(extern int _cvrotgfx_textcol; _cvrotgfx_textcol = (X);)
 # define set_gcolour(X) BLK(extern int _cvrotgfx_drawcol; _cvrotgfx_drawcol = (X);)
-# define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, S)
+# define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, (char *)(S))
 
-# define shift_pressed() 0 /* !HACK! */
+/* # define shift_pressed() (key[KEY_LSHIFT] || key[KEY_RSHIFT]) alternative... */
+# define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
 
 #elif (OS==MSDOS)
 
@@ -117,6 +118,8 @@ extern GrContext *BitMap;
 /* !HACK! fix this stuff */
 # ifdef MSC
 #  define shift_pressed() (_bios_keybrd(_KEYBRD_SHIFTSTATUS) & 0x03)
+# elif defined(ALLEGRO)
+#  define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
 # else
 #  define R_SHIFT  0x01
 #  define L_SHIFT  0x02
@@ -155,7 +158,7 @@ extern void cvrotgfx_lineto(int X, int Y);
 #  else
 #   define outtextxy(X, Y, S) BLK(\
  extern int _cvrotgfx_textcol;\
- textout(BitMapDraw, font, (S), (X), (Y), _cvrotgfx_textcol);)
+ textout(BitMapDraw, font, (char *)(S), (X), (Y), _cvrotgfx_textcol);)
 #  endif
 #  define set_tcolour(X) BLK(extern int _cvrotgfx_textcol; _cvrotgfx_textcol = (X);)
 #  define set_gcolour(X) BLK(extern int _cvrotgfx_drawcol; _cvrotgfx_drawcol = (X);)
@@ -174,7 +177,7 @@ extern void cvrotgfx_lineto(int X, int Y);
 
 #elif (OS==RISCOS)
 
-# undef bool /* bloody namespace poluting libraries */
+# undef bool /* bloody namespace polluting libraries */
 # include "oslib/os.h"
 # include "oslib/osbyte.h"
 # include "oslib/osword.h"
