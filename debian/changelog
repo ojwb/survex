@@ -1,3 +1,9 @@
+survex (1.0.7) unstable; urgency=low
+
+  * print*: halted with a failed assertion in 1.0.4-1.0.6.
+
+ -- Wookey <wookey@survex.com>  Mon, 08 Apr 2002 09:48:43 +0100
+
 survex (1.0.6) unstable; urgency=low
 
   * Assorted aven fixes and enhancements.
