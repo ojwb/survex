@@ -129,6 +129,8 @@ public:
     void EndTriangles();
     void BeginPolyline();
     void EndPolyline();
+    void BeginPolygon();
+    void EndPolygon();
     
     void DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& fill_top,
                        glaCoord x0, glaCoord y0, glaCoord w, glaCoord h, bool draw_lines = true);

@@ -390,6 +390,20 @@ void GLACanvas::EndPolyline()
     glEnd();
 }
 
+void GLACanvas::BeginPolygon()
+{
+    // Commence drawing of a polygon.
+
+    glBegin(GL_POLYGON);
+}
+
+void GLACanvas::EndPolygon()
+{
+    // Finish drawing of a polygon.
+    
+    glEnd();
+}
+
 void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
 {
     // Place a vertex for the current object being drawn.
