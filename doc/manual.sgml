@@ -124,8 +124,8 @@ this.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-10-05 18:35:46 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.66 2001-10-05 18:35:46 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-10-06 19:42:01 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.67 2001-10-06 19:42:01 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -380,15 +380,16 @@ Survex printer driver (printwin) which uses the Windows printer
 system.
 </Para>
 
-<Para><!-- FIXME check up to date -->
-The installer creates a Survex group in the start menu containing:
+<Para>
+The installer creates a Survex group in the Programs sub-menu of the
+Start menu containing the following items:
 </Para>
 
 <ItemizedList>
 
 <ListItem><Para>Aven</Para></ListItem>
 
-<ListItem><Para>Survex Help</Para></ListItem>
+<ListItem><Para>Documentation</Para></ListItem>
 
 <ListItem><Para>Uninstall Survex</Para></ListItem>
 
@@ -476,26 +477,28 @@ compatibilty with earlier operating system versions.
 <Sect3><Title>Selecting a Language</Title>
 
 <Para>Survex has extensive internationalisation capabilities.  The
-language used for messages from Survex and most of the library calls it uses
-can be changed.  By default this is picked up from the language the operating
-system is set to use (from the MS Windows <!--FIXME check what this is
-called--> setting, from
-the <systemitem>LANG</systemitem> environment variable on &unix;,
-or from the configured Territory on &riscos;).
-If no setting is found, International English is used.</Para>
+language used for messages from Survex and most of the library calls
+it uses can be changed.  By default this is picked up from the
+language the operating system is set to use (from "Regional Settings"
+in Control Panel on Microsoft Windows, from the
+<systemitem>LANG</systemitem> environment variable on &unix;, from the
+value passed to <systemitem>COUNTRY</systemitem> in
+<filename>CONFIG.SYS</filename> on MSDOS (but this doesn't
+distinguish between the different languages used in a country in most
+cases), or from the configured Territory on &riscos;). If no setting
+is found, or &survexsuite; hasn't been translated into the
+requested language, UK English is used.</Para>
 
 <Para>
-However you may want to override the language manually
-(for example if Survex isn't available in your native language
-you'll want to choose the supported language you speak best).
-You'll also need to use this technique to set a language
-on &msdos; (which has no standard way to set the language).
+However you may want to override the language manually -
+for example if Survex isn't available in your native language
+you'll want to choose the supported language you speak best.
 </Para>
 
 <Para>
 To do this, you set the
 <systemitem>SURVEXLANG</systemitem> environment variable.  Here's a list
-of the currently supported codes:</Para>
+of the code currently supported:</Para>
 
 <informaltable frame="all">
 <tgroup cols="2">

@@ -8,6 +8,9 @@
 * (RISC OS version and 286 DOS version): fixed programs to report
   themselves as part of "Survex" rather than "@PRETTYPACKAGE@".
 
+* (MSDOS version): pick a default language for messages by looking at the
+  currently set country.
+
 Changes in 0.99-prerelease3:
 
 * Documentation rearranged.  Some sections which covered the same

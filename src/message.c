@@ -54,9 +54,9 @@ static jmp_buf jmpbufSignal;
 
 #if (OS==WIN32)
 #include <windows.h>
-#endif
-
-#if (OS==RISCOS)
+#elif (OS==MSDOS)
+#include <dos.h>
+#elif (OS==RISCOS)
 #include "oslib/wimpreadsy.h"
 #endif
 
@@ -337,23 +337,13 @@ default_charset(void)
 #endif
 }
 
-#if (OS==MSDOS || OS==WIN32)
-static int
-xlate_dos_cp850(int unicode)
-{
-   switch (unicode) {
-#include "uni2dos.h"
-   }
-   return 0;
-}
-#endif
-
 /* It seems that Swedish and maybe some other scandanavian languages don't
  * transliterate &auml; to ae - but it seems there may be conflicting views
  * on this...
  */
 #define umlaut_to_e() 1
 
+/* values <= 127 already dealt with */
 static int
 add_unicode(int charset, unsigned char *p, int value)
 {
@@ -431,10 +421,31 @@ add_unicode(int charset, unsigned char *p, int value)
       break;
 #endif
 #if (OS==MSDOS || OS==WIN32)
-   case CHARSET_DOSCP850:
-      value = xlate_dos_cp850(value);
-      if (value) {
-	 *p = value;
+   case CHARSET_DOSCP850: {
+      unsigned char uni2dostab[] = {
+	 255, 173, 189, 156, 207, 190, 221, 245,
+	 249, 184, 166, 174, 170, 240, 169, 238,
+	 248, 241, 253, 252, 239, 230, 244, 250,
+	 247, 251, 167, 175, 172, 171, 243, 168,
+	 183, 181, 182, 199, 142, 143, 146, 128,
+	 212, 144, 210, 211, 222, 214, 215, 216,
+	 209, 165, 227, 224, 226, 229, 153, 158,
+	 157, 235, 233, 234, 154, 237, 232, 225,
+	 133, 160, 131, 198, 132, 134, 145, 135,
+	 138, 130, 136, 137, 141, 161, 140, 139,
+	 208, 164, 149, 162, 147, 228, 148, 246,
+	 155, 151, 163, 150, 129, 236, 231, 152
+      };
+      if (value >= 160 && value < 256) {
+	 *p = (int)uni2dostab[value - 160];
+	 return 1;
+      }
+      if (value == 305) {
+	 *p = 213;
+	 return 1;
+      }
+      if (value == 402) {
+	 *p = 159;
 	 return 1;
       }
       break;
@@ -808,9 +819,10 @@ msg_init(char * const *argv)
 	  case 4: /* Italy */
 	    msg_lang = "it";
 	    break;
-	  case 5: /* Spain */
+	  case 5: /* Spain (or ca) */
 	  case 27: /* Mexico */
-	    msg_lang = "es"; /* or possibly ca for Spain */
+	  case 28: /* LatinAm (or pt_BR) */
+	    msg_lang = "es";
 	    break;
 	  case 6: /* France */
 	  case 18: /* Canada2 */
@@ -825,9 +837,6 @@ msg_init(char * const *argv)
 	  case 48: /* USA */
 	    msg_lang = "en_US";
 	    break;
-	  case 28: /* LatinAm */
-	    msg_lang = "pt_BR"; /* or many other possibilities */
-	    break;	    
 #if 0
 	  case 9: /* Esperanto */
 	  case 10: /* Greece */
@@ -844,6 +853,263 @@ msg_init(char * const *argv)
 	  case 25: /* Russia2 */
 	  case 26: /* Israel */
 #endif	    
+	 }
+#elif (OS==MSDOS)
+	   {
+	      union REGS in, out;
+	      in.x.ax = 0x3800; /* get current country info */
+	      in.x.dx = 0;
+	      intdos(&in, &out);
+	      if (!out.x.cflag) {
+		 /* List of country codes taken from:
+		  * http://www.delorie.com/djgpp/doc/rbinter/it/00/14.html */
+		 /* The mappings here are guesses at best in most cases.
+		  * In a lot of cases we pick a language because we have
+		  * a translation in it, rather than because it's the most
+		  * widely used or understood in that country. */
+		 /* Improvements welcome */
+		 switch (out.x.bx) {
+		  case 1: /* United States */
+		  case 670: /* Saipan / N. Mariana Island */
+		  case 671: /* Guam */
+		  case 680: /* Palau */
+		  case 684: /* American Samoa */
+		  case 691: /* Micronesia */
+		  case 692: /* Marshall Islands */
+		    msg_lang = "en_US";
+		    break;
+		  case 4: /* Canada (English) */
+		  case 27: /* South Africa */
+		  case 44: /* United Kingdom */
+		  case 61: /* International English / Australia */
+		  case 64: /* New Zealand */
+		  case 99: /* Asia (English) */
+		  case 220: /* Gambia */
+		  case 231: /* Liberia */
+		  case 232: /* Sierra Leone */
+		  case 233: /* Ghana */
+		  case 254: /* Kenya */
+		  case 256: /* Uganda */
+		  case 260: /* Zambia */
+		  case 263: /* Zimbabwe */
+		  case 264: /* Namibia */
+		  case 267: /* Botswana */
+		  case 268: /* Swaziland */
+		  case 290: /* St. Helena */
+		  case 297: /* Aruba */
+		  case 350: /* Gibraltar */
+		  case 353: /* Ireland */
+		  case 356: /* Malta */
+		  case 500: /* Falkland Islands */
+		  case 501: /* Belize */
+		  case 592: /* Guyana */
+		  case 672: /* Norfolk Island (Australia) / Christmas Island/Cocos Islands / Antartica */
+		  case 673: /* Brunei Darussalam */
+		  case 674: /* Nauru */
+		  case 675: /* Papua New Guinea */
+		  case 676: /* Tonga Islands */
+		  case 677: /* Solomon Islands */
+		  case 679: /* Fiji */
+		  case 682: /* Cook Islands */
+		  case 683: /* Niue */
+		  case 685: /* Western Samoa */
+		  case 686: /* Kiribati */
+		    /* I believe only some of these are English speaking... */
+		  case 809: /* Antigua and Barbuda / Anguilla / Bahamas / Barbados / Bermuda
+			     British Virgin Islands / Cayman Islands / Dominica
+			     Dominican Republic / Grenada / Jamaica / Montserra
+			     St. Kitts and Nevis / St. Lucia / St. Vincent and Grenadines
+			     Trinidad and Tobago / Turks and Caicos */
+		    msg_lang = "en";
+		    break;
+		  case 2: /* Canadian-French */
+		  case 32: /* Belgium */ /* maybe */
+		  case 33: /* France */
+		  case 213: /* Algeria */
+		  case 216: /* Tunisia */
+		  case 221: /* Senegal */
+		  case 223: /* Mali */
+		  case 225: /* Ivory Coast */
+		  case 226: /* Burkina Faso */
+		  case 227: /* Niger */
+		  case 228: /* Togo */
+		  case 229: /* Benin */
+		  case 230: /* Mauritius */
+		  case 235: /* Chad */
+		  case 236: /* Central African Republic */
+		  case 237: /* Cameroon */
+		  case 241: /* Gabon */
+		  case 242: /* Congo */
+		  case 250: /* Rwhanda */
+		  case 253: /* Djibouti */
+		  case 257: /* Burundi */
+		  case 261: /* Madagascar */
+		  case 262: /* Reunion Island */
+		  case 269: /* Comoros */
+		  case 270: /* Mayotte */
+		  case 352: /* Luxembourg (or de or ...) */
+		  case 508: /* St. Pierre and Miquelon */
+		  case 509: /* Haiti */
+		  case 590: /* Guadeloupe */
+		  case 594: /* French Guiana */
+		  case 596: /* Martinique / French Antilles */
+		  case 678: /* Vanuatu */
+		  case 681: /* Wallis & Futuna */
+		  case 687: /* New Caledonia */
+		  case 689: /* French Polynesia */
+		  case 961: /* Lebanon */
+		    msg_lang = "fr";
+		    break;
+		  case 3: /* Latin America */
+		  case 34: /* Spain */
+		  case 51: /* Peru */
+		  case 52: /* Mexico */
+		  case 53: /* Cuba */
+		  case 54: /* Argentina */
+		  case 56: /* Chile */
+		  case 57: /* Columbia */
+		  case 58: /* Venezuela */
+		  case 63: /* Philippines */
+		  case 240: /* Equatorial Guinea */
+		  case 502: /* Guatemala */
+		  case 503: /* El Salvador */
+		  case 504: /* Honduras */
+		  case 505: /* Nicraragua */
+		  case 506: /* Costa Rica */
+		  case 507: /* Panama */
+		  case 591: /* Bolivia */
+		  case 593: /* Ecuador */
+		  case 595: /* Paraguay */
+		  case 598: /* Uruguay */
+		    msg_lang = "es";
+		    break;
+		  case 39: /* Italy / San Marino / Vatican City */
+		    msg_lang = "it";
+		    break;
+		  case 41: /* Switzerland / Liechtenstein */ /* or fr or ... */
+		    msg_lang = "de_CH";
+		    break;
+		  case 43: /* Austria (DR DOS 5.0) */
+		    msg_lang = "de";
+		    break;
+		  case 49: /* Germany */
+		    msg_lang = "de_DE";
+		    break;
+		  case 55: /* Brazil (not supported by DR DOS 5.0) */
+		    msg_lang = "pt_BR";
+		    break;
+		  case 238: /* Cape Verde Islands */
+		  case 244: /* Angola */
+		  case 245: /* Guinea-Bissau */
+		  case 259: /* Mozambique */
+		  case 351: /* Portugal */
+		    msg_lang = "pt";
+		    break;
+#if 0
+		  case 7: /* Russia */
+		  case 20: /* Egypt */
+		  case 30: /* Greece */
+		  case 31: /* Netherlands */
+		  case 35: /* Bulgaria??? */
+		  case 36: /* Hungary (not supported by DR DOS 5.0) */
+		  case 38: /* Yugoslavia (not supported by DR DOS 5.0) -- obsolete */
+		  case 40: /* Romania */
+		  case 42: /* Czechoslovakia / Tjekia / Slovakia (not supported by DR DOS 5.0) */
+		  case 45: /* Denmark */
+		  case 46: /* Sweden */
+		  case 47: /* Norway */
+		  case 48: /* Poland (not supported by DR DOS 5.0) */
+		  case 60: /* Malaysia */
+		  case 62: /* Indonesia / East Timor */
+		  case 65: /* Singapore */
+		  case 66: /* Thailand (or Taiwan???) */
+		  case 81: /* Japan (DR DOS 5.0, MS-DOS 5.0+) */
+		  case 82: /* South Korea (DR DOS 5.0) */
+		  case 84: /* Vietnam */
+		  case 86: /* China (MS-DOS 5.0+) */
+		  case 88: /* Taiwan (MS-DOS 5.0+) */
+		  case 90: /* Turkey (MS-DOS 5.0+) */
+		  case 91: /* India */
+		  case 92: /* Pakistan */
+		  case 93: /* Afghanistan */
+		  case 94: /* Sri Lanka */
+		  case 98: /* Iran */
+		  case 102: /* ??? (Hebrew MS-DOS 5.0) */
+		  case 112: /* Belarus */
+		  case 200: /* Thailand (PC DOS 6.1+) (reported as 01due to a bug in PC DOS COUNTRY.SYS) */
+		  case 212: /* Morocco */
+		  case 218: /* Libya */
+		  case 222: /* Maruitania */
+		  case 224: /* African Guinea */
+		  case 234: /* Nigeria */
+		  case 239: /* Sao Tome and Principe */
+		  case 243: /* Zaire */
+		  case 246: /* Diego Garcia */
+		  case 247: /* Ascension Isle */
+		  case 248: /* Seychelles */
+		  case 249: /* Sudan */
+		  case 251: /* Ethiopia */
+		  case 252: /* Somalia */
+		  case 255: /* Tanzania */
+		  case 265: /* Malawi */
+		  case 266: /* Lesotho */
+		  case 298: /* Faroe Islands */
+		  case 299: /* Greenland */
+		  case 354: /* Iceland */
+		  case 355: /* Albania */
+		  case 357: /* Cyprus */
+		  case 358: /* Finland */
+		  case 359: /* Bulgaria */
+		  case 370: /* Lithuania (reported as 372 due to a bug in MS-DOS COUNTRY.SYS) */
+		  case 371: /* Latvia (reported as 372 due to a bug in MS-DOS COUNTRY.SYS) */
+		  case 372: /* Estonia */
+		  case 373: /* Moldova */
+		  case 375: /* ??? (MS-DOS 7.10 / Windows98) */
+		  case 380: /* Ukraine */
+		  case 381: /* Serbia / Montenegro */
+		  case 384: /* Croatia */
+		  case 385: /* Croatia (PC DOS 7+) */
+		  case 386: /* Slovenia */
+		  case 387: /* Bosnia-Herzegovina (Latin) */
+		  case 388: /* Bosnia-Herzegovina (Cyrillic) (PC DOS 7+) (reported as 381 due to a bug in PC DOS COUNTRY.SYS) */
+		  case 389: /* FYR Macedonia */
+		  case 421: /* Czech Republic / Tjekia (PC DOS 7+) */
+		  case 422: /* Slovakia (reported as 421 due to a bug in COUNTRY.SYS) */
+		  case 597: /* Suriname (nl) */
+		  case 599: /* Netherland Antilles (nl) */
+		  case 666: /* Russia??? (PTS-DOS 6.51 KEYB) */
+		  case 667: /* Poland??? (PTS-DOS 6.51 KEYB) */
+		  case 668: /* Poland??? (Slavic???) (PTS-DOS 6.51 KEYB) */
+		  case 688: /* Tuvalu */
+		  case 690: /* Tokealu */
+		  case 711: /* ??? (currency = EA$, code pages 437,737,850,852,855,857) */
+		  case 785: /* Arabic (Middle East/Saudi Arabia/etc.) */
+		  case 804: /* Ukraine */
+		  case 850: /* North Korea */
+		  case 852: /* Hong Kong */
+		  case 853: /* Macao */
+		  case 855: /* Cambodia */
+		  case 856: /* Laos */
+		  case 880: /* Bangladesh */
+		  case 886: /* Taiwan (MS-DOS 6.22+) */
+		  case 960: /* Maldives */
+		  case 962: /* Jordan */
+		  case 963: /* Syria / Syrian Arab Republic */
+		  case 964: /* Iraq */
+		  case 965: /* Kuwait */
+		  case 966: /* Saudi Arabia */
+		  case 967: /* Yemen */
+		  case 968: /* Oman */
+		  case 969: /* Yemen??? (Arabic MS-DOS 5.0) */
+		  case 971: /* United Arab Emirates */
+		  case 972: /* Israel (Hebrew) (DR DOS 5.0,MS-DOS 5.0+) */
+		  case 973: /* Bahrain */
+		  case 974: /* Qatar */
+		  case 975: /* Bhutan */
+		  case 976: /* Mongolia */
+		  case 977: /* Nepal */
+		  case 995: /* Myanmar (Burma) */
+#endif
 	 }
 #endif
       }
