@@ -46,8 +46,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 1999-06-06 15:19:42 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.9 1999-06-06 15:19:42 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 1999-06-06 16:05:22 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.10 1999-06-06 16:05:22 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -439,7 +439,7 @@ output version information and exit
 (Actually this isn't quite true yet - caverot, diffpos, extend, and xcaverot
 haven't yet been converted to support these options - they will before
 Survex 1.0.  The HTO filters svx2hto and hto2svx don't either, but they are
-liekyl to be replaced fairly soon.  And finally the "survex" compatibility
+likely to be replaced fairly soon.  And finally the "survex" compatibility
 wrapper doesn't, since it's intended to convert the old syntax to the new).
 </Para>
 
@@ -492,15 +492,6 @@ created: <filename>entrance.3d</filename>,
 <filename>entrance.pos</filename>, <filename>entrance.err</filename>, and
 <filename>entrance.inf</filename>.
 </Para>
-
-<!-- FIXME: we no longer support this - always use mock extensions
-<Para>On systems that do not support extensions, the files can either
-be given 'mock' extensions, or saved under different names. This is
-controlled by whether the compile-time option
-<systemitem/NO_EXTENSIONS/ is defined or not. The standard release is
-compiled to use extensions or mock extensions on all platforms.
-</Para>
--->
 
 <Para>Cavern also gives a range of statistics at the end of a run
 these are the same as the info in the <filename/.inf/ file:</Para>
@@ -580,23 +571,8 @@ them but you'll need to enclose them in quotes like so: <command>cavern
 &quot;Spider Cave&quot;</command></Para>
 
 <!--
-<Sect3><Title>Notes</Title>
-
-<Para>Either '-' or '/' may be used to introduce command line options.
-</Para>
-
-<Para>'/' is not recognised under &unix; as &unix; full pathnames also start
-with '/'
-</Para>
-
 <Para>The command line is processed from left to right.
 </Para>
-
-<Para>The options -Ascii and -Unique apply to a run, not to individual
-survey files and so have to be set before any files are processed.
-</Para>
-
-</Sect3>
 
 <Sect3><Title>Brackets ( ... )</Title>
 
@@ -614,24 +590,6 @@ default settings file, like so:
 <Para>A warning is given if you do not close as many brackets as you
 open, or if you attempt to close brackets that you have not opened.
 </Para>
-
-<Para>cavern &lt;filename&gt;
-</Para>
-
-<Para>Tells cavern to process the survey stored in &lt;filename&gt;.
-(Anything not preceded by a '-' or '/' is assumed to be the filename of a
-survey file).
-</Para>
-
-<Para>cavern -D &lt;filename&gt;
-</Para>
-
-<Para>Tells cavern to process the survey stored in &lt;filename&gt;.
-Generally not required, unless the filename starts with '-' or
-'/' then you can still process it by preceding it with '-D'.
-</Para>
-
-</Sect3>
 
 -->
 
@@ -888,7 +846,7 @@ below. Even if your printer is not standard you should be able get it
 to work by editing these files.
 </Para>
 
-<!-- FIXME: allow scaling for all drives? add - - test-page option? -->
+<!-- FIXME: allow scaling for all drivers? add - - test-page option? -->
 
 <Para>To get plots that are properly to scale from PRINTDM you
 <emphasis/must/ measure the output from <emphasis/your/ printer, and
@@ -966,7 +924,8 @@ will not be printed.
 
 </variablelist>
 
-<!-- FIXME why is this here? -->
+<!-- FIXME why is this here? - hmm perhaps there should be a switch to
+ overide where the output goes? -->
 
 <Para>Under &unix; output may be piped into another command like so:</Para>
 
@@ -1411,26 +1370,120 @@ depth.</Para></listitem>
 
 </Sect3>
 
-<!-- FIXME turn these into commands: -->
-<Sect3><Title>Case</Title>
+<Sect3><Title>CALIBRATE &lt;quantity list&gt; &lt;ZeroError&gt; [&lt;Scale&gt;]</Title>
 
-<Para>cavern -CU,-CL,-!C (Default: -CL)
+<Para>
+- Calibrates instruments:
 </Para>
 
-<Para>Used when comparing station names to see if they are the same point.
-i.e. is 'a1' the same as 'A1'. The default is that they are.
+<Para>
+&lt;quantity&gt; is one of TAPE|COMPASS|CLINO|COUNTER|DEPTH|DECLINATION|X|Y|Z
 </Para>
 
-<Para>-CU: Force case of survey station names to upper
+<Para>
+Several quantities can be given in &lt;quantity list&gt;
 </Para>
 
-<Para>-CL: Force case of survey station names to lower
+<Para>
+Value = ( Reading - ZeroError ) * Scale    (Scale defaults to 1.0)
 </Para>
 
-<Para>-!C: Preserve the case of station names.
+<Para>
+You need to be careful about the sign of the ZeroError. It is
+the amount needed to correct the reading you got to Zero. This
+means that if your tape measure has the end missing, and you are
+using the 30cm mark to take all measurements from, then you can
+correct it with:
 </Para>
 
-<!--
+<programlisting>*CALIBRATE tape +0.3</programlisting>
+
+<Para>If you tape was too long, starting at -20cm (it does happen!)
+then you can correct it with:
+</Para>
+
+<programlisting>*CALIBRATE tape -0.2</programlisting>
+
+<Para>NB ZeroError is irrelevant for Topofil counters, but the command
+set is neater this way!
+</Para>
+
+<Para>
+The magnetic deviation varies from year to year and it is often
+desirable to keep the compass zero error and the magnetic deviation
+separate. cavern calculates the true bearing as follows:
+</Para>
+
+<Para>
+(magnetic bearing) = ((reading)-(compass zero err)) * (compass
+scale factor)
+</Para>
+
+<Para>
+(true bearing) = ((bearing)-(declination zero err))
+</Para>
+
+<Para>
+The scale factor for DECLINATION must be 1.0, otherwise an error
+is given.
+</Para>
+
+<Para>
+The default is all quantities calibrated to scale factor 1.0,
+zero error 0.0
+</Para>
+
+</Sect3>
+
+<Sect3><Title>CASE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><para>*case off|upper|lower</para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<programlisting>
+*begin bobsbit
+; Bob insists on using case sensitive station names
+*case off
+1 2   10.23 106 -02
+2 2a   1.56 092 +10
+2 2A   3.12 034 +02
+2 3    8.64 239 -01
+*end bobsbit</programlisting>
+
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>*case determines how the case of letters in survey names is
+handled.  By default all names are forced to lower case (which gives a case
+insensitive match, but you can tell cavern to force to upper case, or leave
+the case as is (in which case '2a' and '2A' will be regarded as different).
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!-- <VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*end, *prefix</Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
+
+<!-- FIXME - work this text in here or elsewhere
 
 What I mean (though failed to express very well) is that a dataset without
 this information isn't the same dataset (in general anyway).  For example:
@@ -1494,130 +1547,6 @@ allowed it to be changed at any point, rather than being set once for the
 whole run.
 
 -->
-
-</Sect3>
-
-<Sect3><Title>Ninetytoup</Title>
-
-<Para>cavern -N,-!N (Default: -!N)
-</Para>
-
-<Para>Makes cavern read gradients of +/- 90 degrees as UP/DOWN (so it
-will not apply the clino correction to them). This is useful when
-the data has not been converted to have UP and DOWN in it.
-</Para>
-
-</Sect3>
-
-<Sect3><Title>Title</Title>
-
-<Para>cavern -T &lt;title&gt;
-</Para>
-
-<Para>Allows you to set the title used in the <filename/.3d/ file. If
-the title contains spaces, you need to enclose it in quotes
-(&quot;&quot;). Multiple titles are strung together, separated by
-commas. If there are no -T command line options, the title defaults to
-a list of the leafnames of the .svx files processed (with the
-extensions removed).
-</Para>
-
-<Para>e.g.: cavern entrance.svx \data\2ndpart.svx
-</Para>
-
-<Para>would give a surveytitle of 'entrance 2ndpart'.
-</Para>
-
-</Sect3>
-
-<Sect3><Title>Truncation</Title>
-
-<Para>cavern -U&lt;n&gt;,-!U
-</Para>
-
-<Para>Where n is from a positive integer (Default: -!U which disables
-truncation)
-</Para>
-
-<Para>Station names may be of any length in &survexsuite;, but some
-other (older) cave surveying software would only regard the first few
-characters of a name as significant (e.g. "entran" and "entrance"
-might be treated as the same).  To facilitate using data imported from
-such a package &survexsuite; allows you to truncate names to whatever
-length you want.
-</Para>
-
-<Para>Figures for the number of characters which are significant is various
-software packages: Surveyor87/8 used 8, Andy Waddington's SU-BBC used 6,
-while !SU, the Archimedes version, used 8, &survexsuite; used 8 per prefix level up
-to version 0.41, and 12 per prefix level up to 0.73 (more recent version
-removed this rather archaic restriction).
-</Para>
-
-</Sect3>
-
-<Sect3><Title>CALIBRATE &lt;quantity list&gt; &lt;ZeroError&gt; [&lt;Scale&gt;]</Title>
-
-<Para>
-- Calibrates instruments:
-</Para>
-
-<Para>
-&lt;quantity&gt; is one of TAPE|COMPASS|CLINO|COUNTER|DEPTH|DECLINATION|X|Y|Z
-</Para>
-
-<Para>
-Several quantities can be given in &lt;quantity list&gt;
-</Para>
-
-<Para>
-Value = ( Reading - ZeroError ) * Scale    (Scale defaults to 1.0)
-</Para>
-
-<Para>
-You need to be careful about the sign of the ZeroError. It is
-the amount needed to correct the reading you got to Zero. This
-means that if your tape measure has the end missing, and you are
-using the 30cm mark to take all measurements from, then you can
-correct it with:
-</Para>
-
-<programlisting>*CALIBRATE tape +0.3</programlisting>
-
-<Para>If you tape was too long, starting at -20cm (it does happen!)
-then you can correct it with:
-</Para>
-
-<programlisting>*CALIBRATE tape -0.2</programlisting>
-
-<Para>NB ZeroError is irrelevant for Topofil counters, but the command
-set is neater this way!
-</Para>
-
-<Para>
-The magnetic deviation varies from year to year and it is often
-desirable to keep the compass zero error and the magnetic deviation
-separate. cavern calculates the true bearing as follows:
-</Para>
-
-<Para>
-(magnetic bearing) = ((reading)-(compass zero err)) * (compass
-scale factor)
-</Para>
-
-<Para>
-(true bearing) = ((bearing)-(declination zero err))
-</Para>
-
-<Para>
-The scale factor for DECLINATION must be 1.0, otherwise an error
-is given.
-</Para>
-
-<Para>
-The default is all quantities calibrated to scale factor 1.0,
-zero error 0.0
-</Para>
 
 </Sect3>
 
@@ -1788,6 +1717,53 @@ so chosspot.svx will be tried if chosspot is not found.
 
 </Sect3>
 
+<Sect3><Title>INFER</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*infer plumbs on|off</Para></listitem>
+
+</VarListEntry>
+
+<!--
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<programlisting>
+</programlisting>
+
+</listitem>
+
+</VarListEntry>
+-->
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>"*infer plumbs on" tells cavern to interpret gradients of +/- 90
+degrees as UP/DOWN (so it
+will not apply the clino correction to them). This is useful when
+the data has not been converted to have UP and DOWN in it.
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!--
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*end, *prefix</Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
+
+</Sect3>
+
 <Sect3><Title>PREFIX &lt;prefix&gt;</Title>
 
 <Para>
@@ -1939,6 +1915,118 @@ read in the new data. This can be done repeatedly if like. This
 allows you to solve loops sequentially, pinning down ones you
 are sure about first.
 </Para>
+
+</Sect3>
+
+<Sect3><Title>TITLE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*title "&lt;title&gt;"</Para></listitem>
+
+</VarListEntry>
+
+<!--
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<programlisting>
+</programlisting>
+
+</listitem>
+
+</VarListEntry>
+-->
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>*title allows you to set the title used in the
+<filename/.3d/ file. If
+the title contains spaces, you need to enclose it in quotes
+(&quot;&quot;). Multiple titles are strung together, separated by
+commas. If there are no *title commands, the title defaults to
+a list of the leafnames of the .svx files specified on the command line
+(with any paths and extensions removed).</Para>
+<!--
+<Para>e.g.: cavern entrance.svx \data\2ndpart.svx
+</Para>
+
+<Para>would give a surveytitle of 'entrance 2ndpart'.
+</Para>
+-->
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!--
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*end, *prefix</Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>TRUNCATE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*truncate &lt;length&gt;|off</Para></listitem>
+
+</VarListEntry>
+
+<!--
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<programlisting>
+</programlisting>
+
+</listitem>
+
+</VarListEntry>
+-->
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>Station names may be of any length in &survexsuite;, but some
+other (mostly older) cave surveying software only regard the first few
+characters of a name as significant (e.g. "entran" and "entrance"
+might be treated as the same).  To facilitate using data imported from
+such a package &survexsuite; allows you to truncate names to whatever
+length you want (but by default truncation if off).
+</Para>
+
+<Para>Figures for the number of characters which are significant is various
+software packages: Surveyor87/8 used 8, Andy Waddington's SU-BBC used 6,
+while !SU, the Archimedes version, used 8, &survexsuite; used 8 per prefix
+level up to version 0.41, and 12 per prefix level up to 0.73 (more recent
+versions removed this rather archaic restriction).
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!--
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*end, *prefix</Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
 
 </Sect3>
 
