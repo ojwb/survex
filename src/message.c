@@ -466,8 +466,11 @@ msg_init(const char *argv0)
    szAppNameCopy = osstrdup(argv0);
 #else
    /* use the lower-cased leafname on other platforms */
-   szAppNameCopy = leaf_from_fnm(argv0);
-   for (p = szAppNameCopy; *p; p++) *p = tolower(*p);
+   szAppNameCopy = p = leaf_from_fnm(argv0);
+   while (*p) {
+      *p = tolower(*p);
+      p++;
+   }
 #endif
 
    /* Look for env. var. "SURVEXHOME" or the like */
