@@ -141,27 +141,29 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     wxBoxSizer* scalebox = new wxBoxSizer(wxHORIZONTAL);
     scalebox->Add(new wxStaticText(this, -1,
 				   wxString(msg(/*Scale*/154)) + " 1:"),
-		  0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
-    wxString choices[] = {
-	    "25",
-	    "50",
-	    "100",
-	    "250",
-	    "500",
-	    "1000",
-	    "2500",
-	    "5000",
-	    "10000",
-	    "25000",
-	    "50000",
-	    "100000"};
-    m_scale = new wxComboBox(this,svx_SCALE,"500",wxDefaultPosition,wxDefaultSize,12,choices);
-    scalebox->Add(m_scale,1,wxALIGN_LEFT + wxALIGN_CENTER_VERTICAL + wxALL,5);
+		  0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    static const wxString choices[] = {
+	"25",
+	"50",
+	"100",
+	"250",
+	"500",
+	"1000",
+	"2500",
+	"5000",
+	"10000",
+	"25000",
+	"50000",
+	"100000"
+    };
+    m_scale = new wxComboBox(this, svx_SCALE, "500", wxDefaultPosition,
+			     wxDefaultSize, 12, choices);
+    scalebox->Add(m_scale, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
     v2->Add(scalebox, 0, wxALIGN_RIGHT + wxALL, 0);
     // Make the dummy string wider than any sane value so the sizer
     // picks a suitable width...
     m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
-    v2->Add(m_printSize, 0, wxALIGN_LEFT + wxALL, 5);
+    v2->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
     static const wxString radio_choices[] = { msg(/*Plan view*/117), msg(/*Elevation*/118), "Tilted" }; // FIXME TRANSLATE
     m_aspect = new wxRadioBox(this, svx_ASPECT, "Orientation", // FIXME TRANSLATE
 			      wxDefaultPosition, wxDefaultSize, 3, 
@@ -267,16 +269,16 @@ svxPrintDlg::OnPreview(wxCommandEvent& event) {
 	h = w * 6 / 5;
     }
 #endif
-    {
-	// Ensure that we don't make the window bigger than the screen.
-	int disp_w, disp_h;
-	wxDisplaySize(&disp_w, &disp_h);
-	if (w > disp_w) w = disp_w;
-	if (h > disp_h) h = disp_h;
-    }
-    frame->SetSize(w, h);
-
-    frame->Centre(wxBOTH|wxCENTRE_ON_SCREEN);
+    // Ensure that we don't make the window bigger than the screen.
+    // Use wxGetClientDisplayRect() so we don't cover the MS Windows
+    // task bar either.
+    wxRect disp = wxGetClientDisplayRect();
+    if (w > disp.GetWidth()) w = disp.GetWidth();
+    if (h > disp.GetHeight()) h = disp.GetHeight();
+    // Centre the window within the "ClientDisplayRect".
+    int x = disp.GetLeft() + (disp.GetWidth() - w) / 2;
+    int y = disp.GetBottom() + (disp.GetHeight() - h) / 2;
+    frame->SetSize(x, y, w, h);
 
     frame->Show(TRUE);
 }
