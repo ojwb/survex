@@ -895,8 +895,9 @@ replace_trailing_travs(void)
       }
 #endif
       /* update coords of bounding box, ignoring the base positions
-       * of points fixed with error estimates */
-      if (stn1->name->ident) {
+       * of points fixed with error estimates and only counting stations
+       * in underground surveys. */
+      if (stn1->name->ident && TSTBIT(stn1->name->sflags, SFLAGS_UNDERGROUND)) {
 	 for (d = 0; d < 3; d++) {
 	    if (POS(stn1, d) < min[d]) {
 	       min[d] = POS(stn1, d);

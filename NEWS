@@ -22,6 +22,9 @@ Changes in 1.0.8:
 * cavern: fixed handling of omitted clino readings when OMIT is *set to be
   different from MINUS and PLUS (new test omitclino).
 
+* cavern: N-S, E-W, and vertical ranges now only count stations which are in
+  underground surveys.
+
 Changes in 1.0.7:
 
 * print*: halted with a failed assertion in 1.0.4-1.0.6.
