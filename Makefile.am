@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = 1.5 foreign
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
 EXTRA_DIST = $(GNU_FILES) TODO alien.pl survex.iss.in OLDNEWS\
- desc.txt desc-aven.txt survex.spec.in survex.spec
+ desc.txt desc-aven.txt desc-svxedit.txt survex.spec.in survex.spec
 
 SUBDIRS = . lib src doc tests debian
 

@@ -1,3 +1,5 @@
+* (Unix version): distribute desc-svxedit.txt.
+
 Changes in 1.0.26:
 
 * cavern: Fixed interleaved topofil data style - the length was always being
