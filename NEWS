@@ -1,3 +1,10 @@
+Changes in 1.0.6:
+
+* aven: "Reverse Controls" now works as in xcaverot and caverot.
+
+* aven: free rotation mode (engage by pressing control while left dragging,
+  exit with Delete) improved.
+
 Changes in 1.0.5:
 
 * Fixed bug in img_open_survey() which could cause a crash if you tried to
@@ -994,7 +1001,7 @@ Changes in 0.96:
   introduced in 0.96-prerelease 1 - symptoms: messages incorrectly looked
   for in current directory, or just printing "???" and exiting.
 
-* cavern: attempting to *include a non-existant file used to complain:
+* cavern: attempting to *include a non-existent file used to complain:
   "In file included from example.svx:31:" / "cavern: Couldn't open data file
   'bad.svx'" - now complain "example.svx:31: Couldn't open data file
   'bad.svx'".
@@ -1289,7 +1296,7 @@ Changes in 0.92-prerelease4:
 
 * More test cases added to catch any regressions of recent bug fixes
 
-* Include alien.pl in distibution (helper script for compiling with
+* Include alien.pl in distribution (helper script for compiling with
   BorlandC and on RISC OS)
 
 * cavern: tests for zero now use epsilon related tests, apart for on
@@ -1363,7 +1370,7 @@ Changes in 0.92-prerelease1:
 * cavern: When equating two existing stations we need to replace the
   pos of one with the pos of the other.  We used to look down the
   whole station list, now we just look at neighbouring nodes
-  (noticable time saving for large networks with many equates)
+  (noticeable time saving for large networks with many equates)
 
 * cavern: Renamed truncate function in commands.c to avoid clash with
   library truncate function on FreeBSD

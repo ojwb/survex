@@ -1158,8 +1158,7 @@ void GfxCore::RedrawOffscreen()
 	if ((m_Compass || m_Clino) && !m_IndicatorsOff) {
 	    if (m_FreeRotMode) {
 		DrawCompass();
-	    }
-	    else {
+	    } else {
 		Draw2dIndicators();
 	    }
 	}
@@ -2118,27 +2117,29 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
+    if (m_ReverseControls) {
+	dx = -dx;
+	dy = -dy;
+    }
+
     Double pan_angle = (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
 			m_Lock == lock_YZ) ? -M_PI * (Double(dx) / 500.0) : 0.0;
 
     Quaternion q;
     Double new_scale = m_Params.scale;
-    if (control || m_FreeRotMode) {
-	// free rotation starts when Control is down
-
-	if (!m_FreeRotMode) {
-	    m_FreeRotMode = true;
-	}
-
+    // free rotation starts when Control is down
+    if (control) m_FreeRotMode = true;
+	
+    if (m_FreeRotMode) {
 	Double tilt_angle = M_PI * (Double(dy) / 500.0);
 	q.setFromEulerAngles(tilt_angle, 0.0, pan_angle);
-    }
-    else {
+    } else {
 	// left/right => rotate, up/down => scale
 
-	if (m_ReverseControls) {
-	    pan_angle = -pan_angle;
-	}
+//	if (m_ReverseControls) {
+//	    pan_angle = -pan_angle;
+//	    dy = -dy;
+//	}
 
 	q.setFromVectorAndAngle(Vector3(XToScreen(0.0, 0.0, 1.0),
 					YToScreen(0.0, 0.0, 1.0),
@@ -2147,11 +2148,10 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 	m_PanAngle += pan_angle;
 	if (m_PanAngle >= M_PI*2.0) {
 	    m_PanAngle -= M_PI*2.0;
-	}
-	if (m_PanAngle < 0.0) {
+	} else if (m_PanAngle < 0.0) {
 	    m_PanAngle += M_PI*2.0;
 	}
-	new_scale *= pow(1.06, 0.08 * dy * (m_ReverseControls ? -1.0 : 1.0));
+	new_scale *= pow(1.06, 0.08 * dy);
     }
 
     m_Params.rotation = q * m_Params.rotation;
@@ -2207,17 +2207,10 @@ void GfxCore::TurnCaveTo(Double angle)
 void GfxCore::TiltCave(Double tilt_angle)
 {
     // Tilt the cave by a given angle.
-
-    if (m_ReverseControls) {
-	tilt_angle = -tilt_angle;
-    }
-
     if (m_TiltAngle + tilt_angle > M_PI / 2.0) {
-	tilt_angle = (M_PI / 2.0) - m_TiltAngle;
-    }
-
-    if (m_TiltAngle + tilt_angle < -M_PI / 2.0) {
-	tilt_angle = (-M_PI / 2.0) - m_TiltAngle;
+	tilt_angle = M_PI / 2.0 - m_TiltAngle;
+    } else if (m_TiltAngle + tilt_angle < -M_PI / 2.0) {
+	tilt_angle = -M_PI / 2.0 - m_TiltAngle;
     }
 
     m_TiltAngle += tilt_angle;
@@ -2243,6 +2236,8 @@ void GfxCore::HandleTilt(wxPoint point)
     if (!m_FreeRotMode) {
 	int dy = point.y - m_DragStart.y;
 
+	if (m_ReverseControls) dy = -dy;
+
 	TiltCave(M_PI * (Double(-dy) / 500.0));
 
 	m_DragStart = point;
@@ -2259,6 +2254,12 @@ void GfxCore::HandleTranslate(wxPoint point)
     // Find out how far the mouse motion takes us in cave coords.
     Double x = Double(dx / m_Params.scale);
     Double z = Double(-dy / m_Params.scale);
+
+    if (m_ReverseControls) {
+	x = -x;
+	z = -z;
+    }
+
 #ifdef AVENGL
     x *= (m_MaxExtent / m_XSize);
     z *= (m_MaxExtent * 0.75 / m_YSize);
@@ -2596,7 +2597,7 @@ void GfxCore::OnMoveEast()
 
 void GfxCore::OnMoveEastUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT &&
+    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT &&
 	       m_Lock != lock_Y && m_Lock != lock_XY);
 }
 
@@ -2607,7 +2608,7 @@ void GfxCore::OnMoveNorth()
 
 void GfxCore::OnMoveNorthUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT &&
+    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT &&
 	       m_Lock != lock_X && m_Lock != lock_XY);
 }
 
@@ -2618,7 +2619,7 @@ void GfxCore::OnMoveSouth()
 
 void GfxCore::OnMoveSouthUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT &&
+    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT &&
 	       m_Lock != lock_X && m_Lock != lock_XY);
 }
 
@@ -2629,7 +2630,7 @@ void GfxCore::OnMoveWest()
 
 void GfxCore::OnMoveWestUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT &&
+    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT &&
 	       m_Lock != lock_Y && m_Lock != lock_XY);
 }
 
@@ -2651,7 +2652,7 @@ void GfxCore::OnStartRotation()
 
 void GfxCore::OnStartRotationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating &&
+    cmd.Enable(m_PlotData != NULL && !m_Rotating &&
 	       (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
 		m_Lock == lock_YZ));
 }
@@ -2668,7 +2669,7 @@ void GfxCore::OnToggleRotation()
 
 void GfxCore::OnToggleRotationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode &&
+    cmd.Enable(m_PlotData != NULL &&
 	       (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
 		m_Lock == lock_YZ));
     cmd.Check(m_PlotData != NULL && m_Rotating);
@@ -2685,7 +2686,7 @@ void GfxCore::OnStopRotation()
 
 void GfxCore::OnStopRotationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Rotating);
+    cmd.Enable(m_PlotData != NULL && m_Rotating);
 }
 
 void GfxCore::OnReverseControls()
@@ -2695,7 +2696,7 @@ void GfxCore::OnReverseControls()
 
 void GfxCore::OnReverseControlsUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode);
+    cmd.Enable(m_PlotData != NULL);
     cmd.Check(m_ReverseControls);
 }
 
@@ -2742,7 +2743,7 @@ void GfxCore::OnStepOnceAnticlockwise(bool accel)
 
 void GfxCore::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && !m_Rotating && m_Lock != lock_POINT);
 }
 
 void GfxCore::OnStepOnceClockwise(bool accel)
@@ -2752,7 +2753,7 @@ void GfxCore::OnStepOnceClockwise(bool accel)
 
 void GfxCore::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && !m_Rotating && m_Lock != lock_POINT);
 }
 
 void GfxCore::OnDefaults()
@@ -2821,7 +2822,7 @@ void GfxCore::OnElevation()
 
 void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_SwitchingToPlan &&
+    cmd.Enable(m_PlotData != NULL && !m_SwitchingToPlan &&
 		!m_SwitchingToElevation && m_Lock == lock_NONE && m_TiltAngle != 0.0);
 }
 
@@ -2834,7 +2835,7 @@ void GfxCore::OnHigherViewpoint(bool accel)
 
 void GfxCore::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_TiltAngle < M_PI / 2.0 &&
+    cmd.Enable(m_PlotData != NULL && m_TiltAngle < M_PI / 2.0 &&
 	       m_Lock == lock_NONE);
 }
 
@@ -2847,7 +2848,7 @@ void GfxCore::OnLowerViewpoint(bool accel)
 
 void GfxCore::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_TiltAngle > -M_PI / 2.0 &&
+    cmd.Enable(m_PlotData != NULL && m_TiltAngle > -M_PI / 2.0 &&
 	       m_Lock == lock_NONE);
 }
 
@@ -2861,7 +2862,7 @@ void GfxCore::OnPlan()
 
 void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_SwitchingToElevation &&
+    cmd.Enable(m_PlotData != NULL && !m_SwitchingToElevation &&
 		!m_SwitchingToPlan && m_Lock == lock_NONE && m_TiltAngle != M_PI / 2.0);
 }
 
