@@ -3,7 +3,7 @@
 # GPL copyright 1997 to 1999 by Joey Hess.
 #
 # Copyright (C) 2001 Wookey
-# Copyright (C) 2001,2002 Olly Betts
+# Copyright (C) 2001,2002,2003 Olly Betts
 #
 # This is a multibinary package. You to build any of the binary packages
 # independently, via binary-<package> targets.
@@ -21,7 +21,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex WXCONFIG=`test -x /usr/bin/wxgtk-2.3-config && echo /usr/bin/wxgtk-2.3-config || echo /usr/bin/wxgtk-2.2-config`
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex
 	$(MAKE)
 ifeq	($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
 	$(MAKE) check

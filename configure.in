@@ -82,6 +82,8 @@ esac
 AC_SUBST(TESTPROGS)
 )
 
+AC_CANONICAL_HOST
+
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CPP
@@ -107,8 +109,8 @@ AC_PROG_MAKE_SET
 AC_EXEEXT
 AC_OBJEXT
 
-case "$host" in
-*mingw*|*cygwin*) mswindows=yes ;;
+case "$host_os" in
+*mingw*|*cygwin*|windows*) mswindows=yes ;;
 *) mswindows=no ;;
 esac
 
@@ -180,8 +182,13 @@ if test -n "$AVEN"; then
       dnl line above confuses vim's syntax colouring - resync: \`
     fi
   else
-    # prefer 2.2 if we can find it - it's been better tested with Aven...
-    AC_PATH_PROGS(WXCONFIG, [wxgtk-2.2-config wxgtk-config wxgtk-2.3-config])
+    # prefer 2.4 if we can find it - a few things work better with it
+    case "$host" in
+      powerpc-*-darwin*) # this is what wxWindows uses to detect MacOS X
+	AC_PATH_PROGS(WXCONFIG, [wxmac-2.4-config wxmac-config wxmac-2.2-config]) ;;
+      *)
+	AC_PATH_PROGS(WXCONFIG, [wxgtk-2.4-config wxgtk-config wxgtk-2.2-config]) ;;
+    esac
     if test -z "$WXCONFIG" ; then
       dnl see if wx-config exists and is for wxgtk version
       AC_PATH_PROGS(WXCONFIG, [wx-config])
