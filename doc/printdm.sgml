@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>printdm</refentrytitle>
+<refentrytitle>PRINTDM</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -17,7 +17,7 @@
 </cmdsynopsis>
 </refsynopsisdiv>
   
-<refsect1><title>Description</title>
+<refsect1><title>DESCRIPTION</title>
 
 <Para>
 Printdm produces output suitable for most dot-matrix printers, and also
@@ -30,7 +30,9 @@ support IBM's ProPrinter codes.
 
 &printer.config;
 
-<refsect2><Title>Command Line Options</Title>
+</refsect1>
+
+<refsect1><Title>OPTIONS</Title>
 
 <Para>The command line options are:
 </Para>
@@ -41,15 +43,15 @@ support IBM's ProPrinter codes.
 &printer.calibrate;
 </variablelist>
 
-</refsect2>
+</refsect1>
 
-<refsect2><Title>Interactive Use</Title>
+<refsect1><Title>INTERACTIVE USE</Title>
 
 &printer.interactive;
 
-</refsect2>
+</refsect1>
 
-<refsect2><Title>Printer Calibration</Title>
+<refsect1><Title>PRINTER CALIBRATION</Title>
 
 <!-- FIXME: allow scaling for all drivers? -->
 
@@ -83,7 +85,5 @@ particularly necessary for older dot-matrix printers as they vary
 significantly in scaling - even between two printers of the same make
 and model.
 </Para>
-
-</refsect2>
 
 </refsect1>

@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>cavern</refentrytitle>
+<refentrytitle>CAVERN</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -19,36 +19,18 @@
 </cmdsynopsis>
 </refsynopsisdiv>
   
-<refsect1><title>Description</title>
+<refsect1><title>DESCRIPTION</title>
 
-<!--FIXME: Cavern is the &survexsuite; data processing engine.-->
+<Para>Cavern is the &survexsuite; data processing engine.</Para>
 
-<!-- FIXME: brackets implied around each file -->
-
-<!--
-<Para>The command line is processed from left to right.
+<Para>If multiple survey data files are listed on the command line,
+they are processed in order from left to right.  Settings are reset to
+their defaults before processing each file.
 </Para>
 
-<refsect3><Title>Brackets ( ... )</Title>
+</refsect1>
 
-<Para>These allow the user to control the passing of settings from one
-survey file to another. A '(' stores the current settings, which are then
-restored by the corresponding ')'. This means that surrounding a filename by
-brackets stops any settings (*SD values, *DATA styles, Calibration settings
-etc.) changed from 'leaking' out. This also allows you to use your own
-default settings file, like so:
-</Para>
-
-<Para>cavern Defaults ( SomeCave ) ( NewBit )
-</Para>
-
-<Para>A warning is given if you do not close as many brackets as you
-open, or if you attempt to close brackets that you have not opened.
-</Para>
-
--->
-
-<refsect2><Title>Command Line Options</Title>
+<refsect1><Title>OPTIONS</Title>
 
 <VariableList>
 <VarListEntry>
@@ -119,9 +101,9 @@ Chasm application.
 
 </VariableList>
 
-</refsect2>
+</refsect1>
 
-<refsect2><Title>Output</Title>
+<refsect1><Title>OUTPUT</Title>
 
 <Para>Cavern reads in text files containing the survey data
 &svx;) and outputs two files, with the extensions
@@ -177,15 +159,15 @@ used.
 </para></listitem>
 </itemizedlist>
 
-<refsect3><Title>&x3d; - data describing the loop-closed centre line</Title>
+<refsect2><Title>&x3d; - data describing the loop-closed centre line</Title>
 
 <Para>This file contains details of the stations and legs, and any
 flags associated with them.
 </Para>
 
-</refsect3>
+</refsect2>
 
-<refsect3><Title>&err; - loop closure statistics (%age errors, etc)</Title>
+<refsect2><Title>&err; - loop closure statistics (%age errors, etc)</Title>
 
 <Para>This file contains statistics about each traverse in the survey
 which is part of a loop. It includes various statistics for each
@@ -196,25 +178,32 @@ are of lower quality or contain gross errors.
 <!-- FIXME explain the various statistics -->
 </Para>
 
-</refsect3>
-
 </refsect2>
 
-<refsect2><Title>Error Messages</Title>
+</refsect1>
 
-<Para>There are a number of error messages that you may get when processing
-data.  Most of these are self explanatory, and will be caused by typing
-mistakes, or by your survey data not being attached to fixed points. After
-the error message telling you what has gone wrong, the filename
-and line number of the offending line will
-be printed, or the filename if a file couldn't be found.
-<!-- FIXME: gcc format error msgs -->
-<!-- FIXME: stops after N errors -->
+<refsect1><Title>ERROR MESSAGES</Title>
+
+<Para>
+There are a number of error messages that you may get when processing
+data.  Most of these are self explanatory, and will be caused by such
+problems as typing mistakes, or by your survey data not being attached
+to fixed points (in this situation, &survexsuite; will
+list some of the stations that are not connected).
 </Para>
 
-<Para>When surveys are not all connected to fixed points, &survexsuite; will
-list some of the stations that are not connected.</Para>
+<Para>
+Along with the error message, the filename and line number of the offending
+line will be printed (or the filename for errors such as `file not
+found').  The format of the filename and line number is that used by
+gcc, so if your editor can parse errors from gcc, you should be able to
+set it to allow you to jump to the file and line of each error.
+</Para>
 
-</refsect2>
+<Para>
+Cavern will stop after more than 50 errors - this is usually indicative
+of something like an incorrectly data order, and it's not useful to
+deluge the user with error messages.
+</Para>
 
 </refsect1>

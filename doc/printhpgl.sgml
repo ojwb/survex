@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>printhpgl</refentrytitle>
+<refentrytitle>PRINTHPGL</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -17,7 +17,7 @@
 </cmdsynopsis>
 </refsynopsisdiv>
   
-<refsect1><title>Description</title>
+<refsect1><title>DESCRIPTION</title>
 
 <Para>Printhpgl produces output suitable for plotters that support
 Hewlett Packard's <Acronym>HPGL</Acronym>.
@@ -25,7 +25,9 @@ Hewlett Packard's <Acronym>HPGL</Acronym>.
 
 &printer.config;
 
-<refsect2><Title>Command Line Options</Title>
+</refsect1>
+
+<refsect1><Title>OPTIONS</Title>
 
 <Para>The command line options are:
 </Para>
@@ -35,12 +37,10 @@ Hewlett Packard's <Acronym>HPGL</Acronym>.
 &printer.output;
 </variablelist>
 
-</refsect2>
+</refsect1>
 
-<refsect2><Title>Interactive Use</Title>
+<refsect1><Title>INTERACTIVE USE</Title>
 
 &printer.interactive;
-
-</refsect2>
 
 </refsect1>

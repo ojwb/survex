@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>caverot</refentrytitle>
+<refentrytitle>CAVEROT</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -13,14 +13,12 @@
 <cmdsynopsis>
 <command>caverot</command>
 <!-- FIXME: change to use GNU getopt -->
-<arg choice="opt">
-  <option>options</option>
-</arg>
+<arg choice="opt"><option>options</option></arg>
 <arg choice="opt" rep="repeat">.3d file</arg> <!--FIXME-->
 </cmdsynopsis>
 </refsynopsisdiv>
 
-<refsect1><title>Description</title>
+<refsect1><title>DESCRIPTION</title>
 
 <Para>
 Caverot displays &x3d; files on screen and allows you to manipulate
@@ -109,7 +107,7 @@ you watch, this is just your brain being confused, not a bug!
 
 </refsect2>
 
-<refsect2><Title>Mouse control</Title>
+<refsect2><Title>Mouse Control</Title>
 
 <Para>
 The best way to move the cave is with the mouse. If you hold down the

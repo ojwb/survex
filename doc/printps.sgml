@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>printps</refentrytitle>
+<refentrytitle>PRINTPS</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -17,7 +17,7 @@
 </cmdsynopsis>
 </refsynopsisdiv>
 
-<refsect1><title>Description</title>
+<refsect1><title>DESCRIPTION</title>
 
 <Para>
 Printps produces PostScript output for use with PostScript printers
@@ -28,7 +28,9 @@ your printer needs.
 
 &printer.config;
 
-<refsect2><Title>Command Line Options</Title>
+</refsect1>
+
+<refsect1><Title>OPTIONS</Title>
 
 <Para>The command line options are:
 </Para>
@@ -38,12 +40,10 @@ your printer needs.
 &printer.output;
 </variablelist>
 
-</refsect2>
+</refsect1>
 
-<refsect2><Title>Interactive Use</Title>
+<refsect1><Title>INTERACTIVE USE</Title>
 
 &printer.interactive;
-
-</refsect2>
 
 </refsect1>

@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>3dtopos</refentrytitle>
+<refentrytitle>3DTOPOS</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -12,16 +12,14 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>3dtopos</command>
-<arg choice="opt">
-  <option>options</option>
-</arg>
+<arg choice="opt"><option>options</option></arg>
 <arg>.3d file</arg>
 <arg choice="opt">.3d file</arg>
 </cmdsynopsis>
 </refsynopsisdiv>
   
 <refsect1>
-<title>Description</title>
+<title>DESCRIPTION</title>
 
 <Para>
 3dtopos takes a &x3d; file and produces a &pos; file which contains a

@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>cad3d</refentrytitle>
+<refentrytitle>CAD3D</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -13,14 +13,12 @@ and drawing packages
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>cad3d</command>
-<arg choice="opt">
-  <option>options</option>
-</arg>
+<arg choice="opt"><option>options</option></arg>
 <arg>.3d file</arg>
 </cmdsynopsis>
 </refsynopsisdiv>
   
-<refsect1><title>Description</title>
+<refsect1><title>DESCRIPTION</title>
 <!-- FIXME: more info (opts, etc) -->
 
 <para>

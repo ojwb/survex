@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>extend</refentrytitle>
+<refentrytitle>EXTEND</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -17,7 +17,7 @@
 </cmdsynopsis>
 </refsynopsisdiv>
   
-<refsect1><title>Description</title>
+<refsect1><title>DESCRIPTION</title>
 
 <Para>
 Extend starts with the highest station marked as an entrance which

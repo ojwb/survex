@@ -1,6 +1,14 @@
+<refentryinfo>
+<copyright><year>2001</year><holder>Olly Betts</holder></copyright>
+<authorgroup>
+<author><firstname>Olly</firstname<surname>Betts</surname></author>
+</authorgroup>
+</refentryinfo>
+
 <refmeta>
-<refentrytitle>sorterr</refentrytitle>
+<refentrytitle>SORTERR</refentrytitle>
 <manvolnum>1</manvolnum>
+<RefMiscInfo class="copyright">Olly 2001</RefMiscInfo>
 </refmeta>
 
 <refnamediv>
@@ -12,9 +20,7 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>sorterr</command>
-<arg choice="opt">
-  <option>options</option>
-</arg>
+<arg choice="opt"><option>options</option></arg>
 <arg>.err file</arg>
 <arg choice="opt">how many</arg>
 </cmdsynopsis>
@@ -29,7 +35,7 @@
     -r, - -replace                 Replace .err file with resorted version
 -->
   
-<refsect1><title>Description</title>
+<refsect1><title>DESCRIPTION</title>
 
 <Para>
 Sorterr re-sorts a .err file by the specified criterion (or by the
