@@ -1,0 +1,6 @@
+#!/bin/sh
+if test -x /usr/bin/aven ; then
+ exec aven $*
+else
+ exec xcaverot $*
+fi
