@@ -6,6 +6,8 @@ dnl Need autoconf 2.13 or later for 3 argument version of AC_DEFINE
 AC_PREREQ(2.13)
 AC_INIT(src/cavern.c)
 AM_INIT_AUTOMAKE(survex, 0.99)
+RELEASE=3
+AC_SUBST(RELEASE)
 AM_CONFIG_HEADER(config.h)
 
 dnl don't reformat the next line, miniam.pl pulls out the value
@@ -283,6 +285,12 @@ esac])
 
 DOCS_OTHER="manual.rtf manual.txt manual.ps"
 AC_SUBST(DOCS_OTHER)
+
+HTMLFILES="AUTHORS.htm ChngeLog.htm GPL.htm HACKING.htm NEWS.htm OLDNEWS.htm TODO.htm index.htm"
+AC_SUBST(HTMLFILES)
+
+EXTRA_TEXT="AUTHORS COPYING NEWS TODO ChangeLog"
+AC_SUBST(EXTRA_TEXT)
 
 AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 

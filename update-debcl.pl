@@ -16,14 +16,14 @@ while (<C>) {
 }
 close C;
 
-open M, "<Makefile.am" or die $!;
-while (<M>) {
+open C, "<configure.in" or die $!;
+while (<C>) {
    if (/^RELEASE\s*=\s*([0-9][0-9]*)/) {
       $version .= ".$1";
       last;
    }
 }
-close M;
+close C;
 
 open CL, "<debian/changelog" or die $!;
 

@@ -3,8 +3,6 @@
 # We aim to be GNU compliant, but some required files are generated
 AUTOMAKE_OPTIONS = 1.5 foreign
 
-RELEASE = 3
-
 # These files are installed automatically in --gnu mode
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
@@ -18,14 +16,10 @@ DIST_SUBDIRS = $(SUBDIRS)
 extra_bin = lib/*.msg lib/pfont.bit
 extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
-extra_text = AUTHORS COPYING NEWS TODO ChangeLog
 
 # FIXME: need to keep in step with src/Makefile.am
 base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
  extend survex sorterr 3dtopos
-
-HTMLFILES = AUTHORS.htm ChngeLog.htm GPL.htm HACKING.htm NEWS.htm\
- OLDNEWS.htm TODO.htm index.htm
 
 AUTHORS: doc/AUTHORS.htm
 	w3m -dump doc/AUTHORS.htm > AUTHORS
@@ -40,7 +34,7 @@ rpm : dist
 	echo Name: ${PACKAGE} >> ${spec}
 	echo Vendor: The Survex Project >> ${spec}
 	echo Version: ${VERSION} >> ${spec}
-	echo Release: ${RELEASE} >> ${spec}
+	echo Release: @RELEASE@ >> ${spec}
 	echo Copyright: GPL >> ${spec}
 	echo Group: Applications/Misc >> ${spec}
 	echo Source: http://www.survex.com/software/${PACKAGE}-${VERSION}.tar.gz >> ${spec}
@@ -76,7 +70,7 @@ rpm : dist
 	echo >> ${spec}
 	echo %files >> ${spec}
 	echo "%defattr(-,root,root)" >> ${spec}
-	echo %doc ${extra_text} >> ${spec}
+	echo %doc @EXTRA_TEXT@ >> ${spec}
 	echo %doc /usr/doc/${PACKAGE} >> ${spec}
 	echo %doc /usr/man >> ${spec}
 	echo '/usr/bin/[b-zA-Z0-9]*' >> ${spec}
@@ -99,36 +93,6 @@ rpm : dist
 	: #
 	rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc ${spec}
 
-debct=debian/control
-
-dist-hook:
-	echo Source: survex > ${debct}
-	echo Section: math >> ${debct}
-	echo Priority: optional >> ${debct}
-	echo "Maintainer: Wookey <wookey@survex.com>" >> ${debct}
-	echo Standards-Version: 3.1.0 >> ${debct}
-	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
-	echo 'Build-Depends: debhelper (>= 1.1.17), libwxgtk2.2-dev' >> ${debct}
-	echo >> ${debct}
-	echo Package: ${PACKAGE} >> ${debct}
-	echo Architecture: any >> ${debct}
-	echo 'Depends: $${shlibs:Depends}' >> ${debct}
-	echo 'Recommends: survex-aven (= @VERSION@.$(RELEASE))' >> ${debct}
-	echo Description: Cave surveying and mapping software >> ${debct}
-	sed 's/^/ /' < desc.txt >> ${debct}
-	echo >> ${debct}
-	echo Package: survex-aven >> ${debct}
-	echo Architecture: any >> ${debct}
-	echo 'Depends: survex (= @VERSION@.$(RELEASE)), $${shlibs:Depends}' >> ${debct}
-	echo Description: Sophisticated cave survey viewer for Survex >> ${debct}
-	sed 's/^/ /' < desc-aven.txt >> ${debct}
-	: # list of docs
-	rm -f debian/docs
-	for a in `echo ${extra_text}|grep -v COPYING|grep -v ChangeLog` ; do \
-	 echo $a >> debian/docs ; done
-	for a in $(HTMLFILES) @DOCS_OTHER@ manual/ ; do \
-	 echo debian/tmp/usr/doc/survex/$a >> debian/docs ; done
-
 debian : dist
 	: # overkill maybe - we could probably just use this tree
 	: # but then the .deb-s go in the parent directory, plus we get
@@ -145,7 +109,7 @@ debian : dist
 dostxt :
 	$(RM) -rf dostxt_tmp	
 	mkdir dostxt_tmp
-	for a in $(extra_text) ; do ln -s ../$$a dostxt_tmp/$$a.txt ; done
+	for a in @EXTRA_TEXT@ ; do ln -s ../$$a dostxt_tmp/$$a.txt ; done
 	: # rename to 8.3
 	mv dostxt_tmp/ChangeLog.txt dostxt_tmp/Changes.txt
 
@@ -170,7 +134,7 @@ djgpp_zip : dostxt
 	ln -s ../README dostxt_tmp/README.txt
 	: # -l means convert LF to CR+LF
 	zip -j -l ../$(djgpp_zip_name) dostxt_tmp/*.txt
-	cd doc;zip -r -l ../$(djgpp_zip_name) manual $(HTMLFILES)
+	cd doc;zip -r -l ../$(djgpp_zip_name) manual @HTMLFILES@
 	zip -j -l $(djgpp_zip_name) $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
@@ -193,7 +157,7 @@ mingw_iss : dostxt mingwexes
 	$(RM) -rf iss_tmp
 	mkdir iss_tmp
 	cp dostxt_tmp/*.txt $(extra_txt) survex.iss iss_tmp
-	cd doc;cp $(HTMLFILES) ../iss_tmp
+	cd doc;cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
 	cp mingw_extras/*.ico lib/icons/*.png iss_tmp
@@ -227,7 +191,7 @@ borlandc_zip : dostxt
 	ln -s ../README dostxt_tmp/README.txt
 	: # -l means convert LF to CR+LF
 	zip -j -l $(bc_zip_name) dostxt_tmp/*.txt $(extra_txt)
-	cd doc;zip -l -r ../$(bc_zip_name) manual $(HTMLFILES)
+	cd doc;zip -l -r ../$(bc_zip_name) manual @HTMLFILES@
 	$(RM) -rf dostxt_tmp
 
 riscos_zip_name = survex-riscos-@VERSION@.zip
@@ -244,7 +208,7 @@ riscos_zip :
 	cp -r riscos_extras/\!* riscos_tmp
 	for f in $(base_progs) caverot ; do\
 	 ln -s ../../riscos_exes/$$f riscos_tmp/\!Cavern/$$f,ff8 ; done
-	for f in $(extra_text) ; do\
+	for f in @EXTRA_TEXT@ ; do\
 	 b=`echo "$$f" | sed 's!.*/!!'` ;\
 	 type=fff ;\
 	 case "$$f" in\
@@ -260,7 +224,7 @@ riscos_zip :
 	  *.msg) type=ffd ;;\
          esac ;\
 	 ln -s ../../$$f riscos_tmp/\!Cavern/$$b,$$type ; done
-	cd doc && for f in $(HTMLFILES) ; do\
+	cd doc && for f in @HTMLFILES@ ; do\
 	 ln -s ../doc/$$f ../riscos_tmp/$$f,faf ; done
 	mkdir riscos_tmp/manual
 	cd doc && for f in manual/*.htm ; do\

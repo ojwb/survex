@@ -1,6 +1,8 @@
 #!/bin/sh
+
 VER=`sed 's/^AM_INIT_AUTOMAKE(.*, * \([0-9][0-9\.]*\)).*/\1/p;d' configure.in`
-REL=`sed 's/^RELEASE *= *\([0-9][0-9]*\).*/\1/p;d' Makefile.am`
+REL=`sed 's/^RELEASE *= *\([0-9][0-9]*\).*/\1/p;d' configure.in`
+
 VRR=$VER-$REL
 VRD=$VER.$REL
 VRP=$VER-prerelease$REL
