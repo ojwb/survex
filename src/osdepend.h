@@ -113,15 +113,16 @@ typedef short w16;
 
 /***************************************************************************/
 
-/* defaults for things that are the same for most OS */
-
-# ifndef FAR
-#  define FAR /* nothing for sensible OS */
-# endif /* !FAR */
-
-# ifndef Huge
-#  define Huge /* nothing for sensible OS */
+# ifdef HAVE_FAR_POINTERS
+#  define FAR far
+#  define Huge huge
+# else
+/* just lose these on a sensible OS */
+#  define FAR
+#  define Huge
 # endif /* !Huge */
+
+/* defaults for things that are the same for most OS */
 
 # ifndef init_screen
 #  define init_screen() /* ie do nothing special */
