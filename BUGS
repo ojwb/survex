@@ -34,6 +34,8 @@ wxaven for Windows:
 
 - Close button in About box not in correct place
 
+- "[", "]", "'", and "/" accelerators don't work (on Win98).
+
 wxaven for GTK:
 
 - trouble with zooming in too far
