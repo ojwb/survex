@@ -9,6 +9,9 @@ my $pr = 0;
 my $pg = 0;
 my $pb = 0;
 my $prevpos = 0.0;
+my $outputr = "";
+my $outputg = "";
+my $outputb = "";
 while (my $l = <>) {
    if ($l =~ /.*\[(\d\.\d+) color rgbt <(\d\.\d+), (\d\.\d+), (\d\.\d+).*/) {
        if ($prev != $1) {
@@ -18,16 +21,22 @@ while (my $l = <>) {
 	   my $pos = $1;
            while ($pos >= $next) {
                if ($prev == -1.0) {
-                   print "$r $g $b\n";
+	           $outputr = $r;
+	           $outputg = $g;
+	           $outputb = $b;
 	       }
 	       else {
-                   my $dr = ($r - $pr) * ($pos - $next) / ($pos - $prevpos);
-                   my $dg = ($g - $pg) * ($pos - $next) / ($pos - $prevpos);
-                   my $db = ($b - $pb) * ($pos - $next) / ($pos - $prevpos);
-		   my $newr = $r + int($dr);
-		   my $newg = $g + int($dg);
-		   my $newb = $b + int($db);
-		   print "$newr $newg $newb\n";
+	           my $faralong = $next - $prevpos;
+		   my $total = $pos - $prevpos;
+		   my $frac = $faralong / $total;
+
+                   my $newr = $pr + int(($r - $pr) * $frac);
+                   my $newg = $pg + int(($g - $pg) * $frac);
+                   my $newb = $pb + int(($b - $pb) * $frac);
+		   
+		   $outputr = "$outputr, $newr";
+		   $outputg = "$outputg, $newg";
+		   $outputb = "$outputb, $newb";
 	       }
 	       $next += $interval;
 	   }
@@ -39,4 +48,7 @@ while (my $l = <>) {
        $prev = $1;
    }
 }
+print "static const unsigned char REDS[]   = {$outputr};\n";
+print "static const unsigned char GREENS[] = {$outputg};\n";
+print "static const unsigned char BLUES[]  = {$outputb};\n";
 
