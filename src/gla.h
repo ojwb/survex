@@ -152,7 +152,7 @@ public:
                        glaCoord x0, glaCoord y0, glaCoord w, glaCoord h, bool draw_lines = true);
     void DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius);
     void DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start);
-	    void DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* vertices);
+    void DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* vertices);
     
     void DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaCoord radius, int divisions);
     
@@ -176,7 +176,7 @@ public:
     void Transform(Double x, Double y, Double z, Double* x_out, Double* y_out, Double* z_out);
     void ReverseTransform(Double x, Double y, Double* x_out, Double* y_out, Double* z_out);
 
-    int GetFontSize() { return m_FontSize; }
+    int GetFontSize() const { return m_FontSize; }
 
     Double SurveyUnitsAcrossViewport();
 };
