@@ -7,18 +7,14 @@ some shortcuts are missing (space/return/arrowkeys/'/slash/[/]/delete)
  -- only from menus now (although return/space don't work on first attempt!),
     investigations continuing
 
-sometimes stops responding -- FIXED
-
 "nasty bodge in event handling code (I'll explain later)"
 
 Date: Tue, 27 Mar 2001
 From: Mark
 
 wxaven:
-terrible slowness during rotation -- FIXED
 about box layout is crap (awful with motif version); Close button doesn't work
 probs with building on win32
-indicators still need coding -- FIXED
 still confusion over the "reverse controls" command
 configure script needs to allow specification of toolkit
 

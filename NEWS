@@ -6,11 +6,12 @@
   items; fixed problems with rendering (some legs missing!)
 
 * (Unix version): aven: various bugs fixed, 3d file specified on command line
-  now loaded.
+  now loaded; fixed occasional hangs; fixed terrible slowness during
+  rotation; implemented indicators.
 
 * Updated translations: pt de
 
-* Added test cases for *export
+* Added test cases for *export; added other assorted test cases.
 
 Changes in 0.97-prerelease1:
 
