@@ -471,22 +471,6 @@ img_write_item(img *pimg, int code, int flags, const char *s,
       put32((INT32_T)(x * Sc), pimg->fh);
       put32((INT32_T)(y * Sc), pimg->fh);
       put32((INT32_T)(z * Sc), pimg->fh);
-   } else {
-      switch (code) {
-       case img_MOVE:
-	 fprintf(pimg->fh, "move %9.2f %9.2f %9.2f\n", x, y, z);
-	 break;
-       case img_LINE:
-	 fprintf(pimg->fh, "draw %9.2f %9.2f %9.2f\n", x, y, z);
-	 break;
-       case img_CROSS: /* ignore */
-	 break;
-       case img_LABEL:
-	 fprintf(pimg->fh, "name %s %9.2f %9.2f %9.2f\n", s, x, y, z);
-	 break;
-       default:
-	 break;
-      }
    }
 }
 
