@@ -67,9 +67,9 @@ fi
 (
 # for building on mrs30
 if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
-   PATH=/opt/crosstools/bin:$PATH
+   PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:$PATH
 fi
-if ! env CC=i386-pc-msdosdjgpp-gcc LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe \
+if ! env LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe \
  CRLIB=-lalleg CROBJX=dosrot.o ./configure --with-x=no ; then
    echo djgpp configure failed
    exit 1
@@ -95,9 +95,12 @@ if test -d /usr/local/cross-tools/i386-mingw32msvc/bin ; then
    PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
 else
    # debian mingw32 package
-   PATH=/usr/i586-mingw32msvc/bin:$PATH
+   PATH=/usr/i386-mingw32msvc/bin:$PATH
+   CC=/usr/bin/i386-mingw32msvc-gcc
+   export CC
+   CXX=/usr/bin/i386-mingw32msvc-g++
+   export CXX
 fi
-# FIXME: is this all needed?
 if ! env LDFLAGS=-s CAVEROT= ./configure --with-x=no ; then
    echo mingw configure failed
    exit 1
