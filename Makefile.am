@@ -19,15 +19,17 @@ dostxt :
 
 djgpp : all djgpp_zip
 
+djgpp_zip_name = survex-dos-@VERSION@.zip
+
 djgpp_zip : dostxt
 	test -d djgpp_exes || mkdir djgpp_exes
 	for a in $(base_progs) caverot ; do cp src/$$a.exe djgpp_exes ; done
 	for a in hto2svx svx2hto ; do cp hto/$$a.exe djgpp_exes ; done
-	$(RM) svx-dos-@VERSION@.zip
-	zip -j svx-dos-@VERSION@.zip djgpp_exes/*.exe $(extra_bin)\
+	$(RM) $(djgpp_zip_name)
+	zip -j $(djgpp_zip_name) djgpp_exes/*.exe $(extra_bin)\
 	 djgpp_extras/cwsdpmi.exe djgpp_extras/emu387.dxe
 	# -l means convert LF to CR+LF
-	zip -j -l svx-dos-@VERSION@.zip djgpp_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
+	zip -j -l $(djgpp_zip_name) djgpp_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
 # ick - need to build djgpp before mingw to get caverot.exe, but there's
@@ -35,28 +37,34 @@ djgpp_zip : dostxt
 
 mingw : all mingw_zip
 
+mingw_zip_name = survex-win32-@VERSION@.zip
+
 mingw_zip : dostxt
 	echo "Warning: You must build djgpp before mingw for caverot.exe"
 	test -d mingw_exes || mkdir mingw_exes
 	for f in $(base_progs) ; do cp src/$$f.exe mingw_exes ; done
 	for a in hto2svx svx2hto ; do cp hto/$$a.exe mingw_exes ; done
-	$(RM) svx-nt-@VERSION@.zip
-	zip -j svx-nt-@VERSION@.zip mingw_exes/*.exe djgpp_exes/caverot.exe\
+	$(RM) $(mingw_zip_name)
+	zip -j $(mingw_zip_name) mingw_exes/*.exe djgpp_exes/caverot.exe\
 	 $(extra_bin)
 	# -l means convert LF to CR+LF
-	zip -j -l svx-nt-@VERSION@.zip mingw_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
+	zip -j -l $(mingw_zip_name) mingw_extras/*.txt dostxt_tmp/*.txt\
+	 $(extra_txt)
 	$(RM) -rf dostxt_tmp
+
+bc_zip_name = survex-dos286-@VERSION@.zip
 
 borlandc_zip : dostxt
-	$(RM) svx-bcdos-@VERSION@.zip
-	zip -j svx-bcdos-@VERSION@.zip bc_exes/*.exe $(extra_bin)\
-	 bc_extras/*.bgi
+	$(RM) $(bc_zip_name)
+	zip -j $(bc_zip_name) bc_exes/*.exe $(extra_bin) bc_extras/*.bgi
 	# -l means convert LF to CR+LF
-	zip -j -l svx-bcdos-@VERSION@.zip bc_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
+	zip -j -l $(bc_zip_name) bc_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
+riscos_zip_name = survex-riscod-@VERSION@.zip
+
 riscos_zip :
-	$(RM) svx-riscos-@VERSION@.zip
+	$(RM) $(riscos_zip_name)
 	# needs a zip with Darren Salt's patches, which'll hopefully be merged
 	# into the mainstream distribution in future
 	$(RM) -rf riscos_tmp
@@ -71,15 +79,15 @@ riscos_zip :
 	  *.msg) type=ffd ;;\
          esac ;\
 	 ln -s ../$$f riscos_tmp/$$b,$$type ; done
-	./zip-magic -N -j svx-riscos-@VERSION@.zip riscos_tmp/*\
+	./zip-magic -N -j $(riscos_zip_name) riscos_tmp/*\
 	 riscos_extras/*,[0-9a-f][0-9a-f][0-9a-f]
 	$(RM) -rf riscos_tmp
 
 # source code for transfer to the RISC OS/DOS machines for compilation
-alien_src = src$(shell echo "@VERSION@"|sed 's/\./_/g').zip
+alien_src_zip_name = src$(shell echo "@VERSION@"|sed 's/\./_/g').zip
 
 alien_src_zip :
-	$(RM) $(alien_src)
+	$(RM) $(alien_src_zip_name)
 	$(RM) -rf alien_tmp
 	mkdir alien_tmp
 	mkdir alien_tmp/c
@@ -91,21 +99,25 @@ alien_src_zip :
 	ln -s ../src/borlandc/makefile alien_tmp/makefile.mak
 	ln -s ../../src/riscos/config.h alien_tmp/h/config
 	ln -s ../../src/riscos/armrot.s alien_tmp/s/armrot
-	./zip-magic -N -j $(alien_src) alien_tmp src/*.c src/*.h hto/*.c hto/*.h src/riscos/makefile\
-	 src/borlandc/config.h
-	cd alien_tmp && ../zip-magic -N -r ../$(alien_src) *
+	./zip-magic -N -j $(alien_src_zip_name) alien_tmp src/*.c src/*.h\
+	 hto/*.c hto/*.h src/riscos/makefile src/borlandc/config.h
+	cd alien_tmp && ../zip-magic -N -r ../$(alien_src_zip_name) *
 	$(RM) -rf alien_tmp
 
 # FIXME: this is almost duplicated in doc/Makefile.am
 SVXDOCS = svxdocs svxdocs/*.htm svxdocs.rtf svxdocs.txt svxdocs.ps
 
+dos_doc_zip_name = svxdoc-doswin-@VERSION@.zip
+
 dos_doc_zip :
-	$(RM) svxdoc-doswin-@VERSION@.zip
+	$(RM) $(dos_doc_zip_name)
 	# -l means convert LF to CR+LF
-	cd doc && zip -l ../svxdoc-doswin-@VERSION@.zip $(SVXDOCS)
+	cd doc && zip -l ../$(dos_doc_zip_name) $(SVXDOCS)
+
+riscos_doc_zip_name = svxdoc-riscos-@VERSION@.zip
 
 riscos_doc_zip :
-	$(RM) svxdoc-riscos-@VERSION@.zip
+	$(RM) $(riscos_doc_zip_name)
 	$(RM) -rf riscos_doc_tmp
 	mkdir riscos_doc_tmp
 	cd doc && for f in $(SVXDOCS) ; do\
@@ -120,5 +132,5 @@ riscos_doc_zip :
 	  esac;\
 	 fi\
 	done
-	cd riscos_doc_tmp && ../zip-magic -N -r ../svxdoc-riscos-@VERSION@.zip *
+	cd riscos_doc_tmp && ../zip-magic -N -r ../$(riscos_doc_zip_name) *
 	$(RM) -rf riscos_doc_tmp
