@@ -61,7 +61,7 @@ class svxPrintout : public wxPrintout {
     wxColour colour_cross,colour_surface_leg;
 
     long x_t, y_t;
-    double font_scaling;
+    double font_scaling_x, font_scaling_y;
     wxFont * current_font;
 
     int check_intersection(long x_p, long y_p);
@@ -420,7 +420,7 @@ static enum {PLAN, ELEV, TILT, EXTELEV} view = PLAN;
 
 #define DEG "\xB0" /* degree symbol in iso-8859-1 */
 
-static long xpPageWidth, ypPageDepth;
+static int xpPageWidth, ypPageDepth;
 static long MarginLeft, MarginRight, MarginTop, MarginBottom;
 static long x_offset,y_offset;
 static wxFont *font_labels, *font_default;
@@ -429,7 +429,6 @@ static int fontsize, fontsize_labels;
 /* FIXME: allow the font to be set */
 
 static const char *fontname = "Arial", *fontname_labels = "Arial";
-
 
 // wx <-> prcore (calls to print_page etc...)
 svxPrintout::svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupData *data,
@@ -838,29 +837,19 @@ svxPrintout::drawticks(border clip, int tsize, int x, int y)
 bool 
 svxPrintout::OnPrintPage(int pageNum) {
     pdc = GetDC();
-    int w, h;
-    GetPageSizePixels(&w, &h);
-    if (IsPreview()) {
-	wxSize sz = pdc->GetSize();
-	xpPageWidth = sz.GetWidth();
-	ypPageDepth = sz.GetHeight();
-	font_scaling = (double)xpPageWidth / w;
-	int W, H;
-	GetPPIPrinter(&W, &H);
-	font_scaling *= H;
-	GetPPIScreen(&W, &H);
-	font_scaling /= H;
-    } else {
-	xpPageWidth = w;
-	ypPageDepth = h;
-	font_scaling = 1.0;
-    }
-    font_labels->SetPointSize(fontsize_labels);
-    font_default->SetPointSize(fontsize);
+    GetPageSizePixels(&xpPageWidth, &ypPageDepth);
     int PaperWidth, PaperDepth;
     GetPageSizeMM(&PaperWidth, &PaperDepth);
     m_layout->scX = (double)xpPageWidth / PaperWidth;
     m_layout->scY = (double)ypPageDepth / PaperDepth;
+    wxSize ppi = pdc->GetPPI();
+    if (IsPreview()) {
+	wxSize sz = pdc->GetSize();
+	pdc->SetUserScale((double)sz.GetWidth() / xpPageWidth,
+			  (double)sz.GetHeight() / ypPageDepth);
+    }
+    font_scaling_x = xpPageWidth / PaperWidth * 25.4 / 72.0;
+    font_scaling_y = ypPageDepth / PaperDepth * 25.4 / 72.0;
     MarginLeft = m_data->GetMarginTopLeft().x;
     MarginTop = m_data->GetMarginTopLeft().y;
     MarginBottom = m_data->GetMarginBottomRight().y;
@@ -1213,12 +1202,16 @@ svxPrintout::SetColour(int colourcode)
 void
 svxPrintout::WriteString(const char *s)
 {
-    pdc->SetUserScale(font_scaling, font_scaling);
+    double xsc, ysc;
+    pdc->GetUserScale(&xsc, &ysc);
+    pdc->SetUserScale(xsc * font_scaling_x, ysc * font_scaling_y);
     pdc->SetFont(*current_font);
     int w, h;
     if (cur_pass != -1) {
 	pdc->GetTextExtent("My", &w, &h);
-	pdc->DrawText(s, long(x_t / font_scaling), long(y_t / font_scaling) - h);
+	pdc->DrawText(s, 
+		      long(x_t / font_scaling_x),
+		      long(y_t / font_scaling_y) - h);
     } else {
 	pdc->GetTextExtent(s, &w, &h);
 	if ((y_t + h > 0 && y_t - h < clip.y_max - clip.y_min) ||
@@ -1226,7 +1219,7 @@ svxPrintout::WriteString(const char *s)
 	    fBlankPage = fFalse;
 	}
     }
-    pdc->SetUserScale(1.0, 1.0);
+    pdc->SetUserScale(xsc, ysc);
 }
 
 void
