@@ -28,3 +28,10 @@ mode-picker, but not in caverot itself.  Also, the mode caverot tries to
 select by default doesn't work, although caverot seems blissfully unaware of
 the fact. 
 
+Date:    Mon, 02 Nov 1998 09:16:23 +1100
+From:    Michael Lake <Mike.Lake@uts.edu.au>
+
+I noticed from the code that it does look for an 'u' or 'd' or 'q'
+keypress and these work in the program as expected from the code. I
+didn't know this as xcaverot -help etc didn't tell me what keys are
+currently looked at.
