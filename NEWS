@@ -10,6 +10,11 @@ Changes in 0.96-prerelease1:
 * 3dtodxf: added "--grid" option (supplied by Leandro); output file now
   defaults to same name as input file but with a ".dxf" extension.
 
+* caverot: now get accents with MSDOS version.
+
+* cavern: applied patch from Leandro to fix problem with diving and topofil
+  styles.
+
 Changes in 0.95:
 
 * Put aven in a separate RPM package since it depends on a stack of

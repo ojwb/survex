@@ -105,16 +105,22 @@ likely that the user has cocked up the prefix in some way.
 Date: Fri, 18 Aug 2000
 From: Olly
 
+Targets to try to do for 0.96:
+
 * grid patch -> printer drivers, caverot, and xcaverot too.
-  
-* xcaverot: investigate Mike Lake's delayed dragging problem.
-    
-* caverot: see if we can now get accents in messages under DOS.
-    
+
 * Installer program for generating file associations under Windows.
-    
+
 * Update documentation (2 volunteers are currently working on this).
 
 * Clean up the sample data and start including it again.
 
 * Debian Linux packages.
+
+Date: Thu, 23 Nov 2000
+From: Olly
+
+This gives "*** Singular!!!" warning:
+1 2 50000 0 -
+1 2 5 0 -30
+
