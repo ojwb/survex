@@ -16,23 +16,32 @@ base_progs = 3dtodxf cavern printdm printps printpcl printhpgl diffpos extend su
 
 spec = ${PACKAGE}-${VERSION}.spec
 
+RPM_RELEASE = 2
+
 rpm : dist
-	rm -rf BUILD
-	mkdir BUILD
 	echo Summary: Cave Surveying Software > ${spec}
 	echo Name: ${PACKAGE} >> ${spec}
 	echo Vendor: The Survex Project >> ${spec}
 	echo Version: ${VERSION} >> ${spec}
-	echo Release: 1 >> ${spec}
+	echo Release: ${RPM_RELEASE} >> ${spec}
 	echo Copyright: GPL >> ${spec}
 	#echo Group: Applications/Engineering >> ${spec}
 	echo Group: Applications/Misc >> ${spec}
 	echo Source: http://www.survex.com/software/${PACKAGE}-${VERSION}.tar.gz >> ${spec}
-	echo URL: http://www.survex.com/
+	echo URL: http://www.survex.com/ >> ${spec}
+	echo Packager: Olly Betts \<olly@survex.com\> >> ${spec}
 	echo BuildRoot: /var/tmp/%{name}-buildroot >> ${spec}
 	echo "" >> ${spec}
 	echo %description >> ${spec}
 	cat desc.txt >> ${spec}
+	echo "" >> ${spec}
+	echo %package aven >> ${spec}
+	echo Summary: Aven viewer for Survex >> ${spec}
+	echo Group: Applications/Misc >> ${spec}
+	echo Requires: survex = ${VERSION} >> ${spec}
+	echo "" >> ${spec}
+	echo %description aven >> ${spec}
+	echo A fancy cave viewer for Survex, written using the GTK-- library. >> ${spec}
 	echo "" >> ${spec}
 	echo %prep >> ${spec}
 	echo %setup >> ${spec}
@@ -44,7 +53,7 @@ rpm : dist
 	echo %install >> ${spec}
 	echo rm -rf '$$RPM_BUILD_ROOT' >> ${spec}
 	echo mkdir '$$RPM_BUILD_ROOT' >> ${spec}
-	echo make install 'prefix=$$RPM_BUILD_ROOT/usr' >> ${spec}
+	echo make install-strip 'prefix=$$RPM_BUILD_ROOT/usr' >> ${spec}
 	echo "" >> ${spec}
 	echo %clean >> ${spec}
 	echo rm -rf '$$RPM_BUILD_ROOT' >> ${spec}
@@ -54,15 +63,21 @@ rpm : dist
 	echo %doc ${extra_text} >> ${spec}
 	echo %doc /usr/doc/${PACKAGE} >> ${spec}
 	echo %doc /usr/man >> ${spec}
-	echo /usr/bin >> ${spec}
+	echo '/usr/bin/[b-zA-Z0-9]*' >> ${spec}
 	echo /usr/share/${PACKAGE} >> ${spec}
+	echo %files aven >> ${spec}
+	echo "%defattr(-,root,root)" >> ${spec}
+	echo /usr/bin/aven >> ${spec}
+	#
 	echo %_topdir `pwd` > rpmmacros
 	echo %_rpmdir `pwd` >> rpmmacros
 	echo %_sourcedir `pwd` >> rpmmacros
 	echo %_specdir `pwd` >> rpmmacros
 	echo %_srcrpmdir `pwd` >> rpmmacros
 	echo %_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm >> rpmmacros
+	#
 	echo macrofiles : `rpm --showrc | sed 's/^macrofiles\> *: //p;d'`:`pwd`/rpmmacros > rpmrc
+	#
 	rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc ${spec}
 
 dostxt :

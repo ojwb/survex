@@ -1,3 +1,8 @@
+Changes in 0.95:
+
+* Put aven in a separate RPM package since it depends on a stack of
+  libraries which not everyone will want to have to install.
+
 Changes in 0.95-prerelease7:
 
 * Disabled experimental gross-error detection code.
