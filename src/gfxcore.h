@@ -107,7 +107,6 @@ class GfxCore : public GLACanvas {
     bool m_RotationOK;
     LockFlags m_Lock;
     MainFrm* m_Parent;
-    wxWindow * m_ParentWin;
     bool m_DoneFirstShow;
     bool m_RedrawOffscreen;
     int m_Polylines;

@@ -364,7 +364,12 @@ public:
     void OnViewCompass(wxCommandEvent& event) { if (m_Control) m_Control->OnViewCompass(); }
     void OnViewClino(wxCommandEvent& event) { if (m_Control) m_Control->OnViewClino(); }
     void OnViewGrid(wxCommandEvent& event) { if (m_Control) m_Control->OnViewGrid(); }
-    void OnViewFullScreen(wxCommandEvent& event) { if (m_Control) m_Control->OnViewFullScreen(); }
+    void OnViewFullScreen(wxCommandEvent& event) {
+	ViewFullScreen();
+    }
+    void ViewFullScreen() {
+	ShowFullScreen(!IsFullScreen());
+    }
     void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Control) m_Control->OnReverseDirectionOfRotation(); }
     void OnCancelDistLine(wxCommandEvent& event) { if (m_Control) m_Control->OnCancelDistLine(); }
 
