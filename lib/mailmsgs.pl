@@ -16,15 +16,15 @@ my %email = (
  'sk' => 'martinsluka@mac.com'
 );
 
-system "rm *.todo";
+#system "rm *.todo";
 
-system "./makemsgs.pl messages.txt";
+#system "./makemsgs.pl messages.txt";
 
 for my $lang (sort keys %email) {
    #$email{$lang} = 'olly@mantis.co.uk';
    if (-s "$lang.todo") {
       print "Mailing $lang.todo to $email{$lang}\n";
-      system "mail -s 'Survex $version: Messages Requiring Translation' \Q$email{$lang}\E < \Q$lang.todo\E";
+      system "mutt -s 'Survex $version: Messages Requiring Translation' \Q$email{$lang}\E < \Q$lang.todo\E";
       unlink "$lang.todo";
    } else {
       print "$lang is up to date\n";

@@ -32,7 +32,7 @@ TODO: doc/TODO.htm
 	w3m -dump doc/TODO.htm > TODO
 
 rpm : dist
-	: # spec file now produced using AC_OUTPUT
+	: # spec file is produced using AC_OUTPUT
 	echo %_topdir `pwd` > rpmmacros
 	echo %_rpmdir `pwd` >> rpmmacros
 	echo %_sourcedir `pwd` >> rpmmacros
@@ -45,7 +45,7 @@ rpm : dist
 	rm -rf BUILD
 	mkdir BUILD
 	: #
-	rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
+	rpm -bs --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
 
 debian : dist
 	: # overkill maybe - we could probably just use this tree
@@ -111,12 +111,13 @@ mingw_iss :
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
 	cp lib/icons/*.ico lib/icons/*.png iss_tmp
 	: # don't ship pngs for which we ship the ico version
-	cd iss_tmp && for a in \*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
+	for a in iss_tmp/*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
 	cp /opt/rx-win32/bin/librx.dll iss_tmp
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
+	cp doc/manual/*.png iss_tmp/manual
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
 	: # NB keep next line in step with survex.iss.in
 	for a in cs de es fr it; do\

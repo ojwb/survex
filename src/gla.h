@@ -128,7 +128,9 @@ public:
     
     void SetBackgroundColour(float red, float green, float blue);
     void SetColour(const GLAPen& pen, bool set_transparency = false, double rgb_scale = 1.0);
+#if 0 // Unused and won't build on MS Windows
     void SetBlendColour(const GLAPen& pen, bool set_transparency = false, double rgb_scale = 1.0);
+#endif
     void SetPolygonColour(GLAPen& pen, bool front, bool set_transparency = false);
    
     void DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str);

@@ -1,7 +1,7 @@
 //
 //  aventypes.h
 //
-//  Copyright (C) 2001, Mark R. Shinwell.
+//  Copyright (C) 2001-2002 Mark R. Shinwell.
 //  Copyright (C) 2002, Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -23,11 +23,7 @@
 #define aventypes_h
 
 #ifdef AVENGL
-#ifdef _WIN32
-#include <gl/glu.h>
-#else
 #include <GL/glu.h>
-#endif
 typedef GLdouble Double;
 #else
 typedef double Double;

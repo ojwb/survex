@@ -139,6 +139,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Clino = true;
     m_Depthbar = true;
     m_Scalebar = true;
+    m_ReverseControls = false;
     m_LabelGrid = NULL;
     m_Rotating = false;
     m_SwitchingTo = 0;
@@ -237,84 +238,43 @@ void GfxCore::Initialise()
     if (m_Parent->GetYExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_Y);
     if (m_Parent->GetZExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_Z);
 
-    switch (m_Lock) {
-        case lock_X:
-        {
-            // elevation looking along X axis (East)
-            m_PanAngle = M_PI * 1.5;
-
-            Quaternion q;
-            q.setFromEulerAngles(0.0, 0.0, m_PanAngle);
-
-            m_Params.rotation = q * m_Params.rotation;
-            m_RotationOK = false;
-            break;
-        }
-
-        case lock_Y:
-        case lock_XY: // survey is linearface and parallel to the Z axis =>
-                      // display in elevation.
-
-            // elevation looking along Y axis (North)
-            m_Params.rotation.setFromEulerAngles(0.0, 0.0, 0.0);
-            m_RotationOK = false;
-            break;
-
-        case lock_Z:
-        case lock_XZ: // linearface survey parallel to Y axis
-        case lock_YZ: // linearface survey parallel to X axis
-        {
-            // flat survey (zero height range) =>
-            // go into plan view (default orientation).
-            break;
-        }
-
-        case lock_POINT:
-            m_RotationOK = false;
-            m_Crosses = true;
-            break;
-
-        case lock_NONE:
-            break;
-    }
-
     // Scale the survey to a reasonable initial size.
     switch (m_Lock) {
-        case lock_POINT:
-            m_InitialScale = 1.0;
-            break;
-            
-        case lock_YZ:
-            m_InitialScale = Double(m_XSize) / m_Parent->GetXExtent();
-            break;
-            
-        case lock_XZ:
-            m_InitialScale = Double(m_YSize) / m_Parent->GetYExtent();
-            break;
-            
-        case lock_XY:
-            m_InitialScale = Double(m_YSize) / m_Parent->GetZExtent();
-            break;
-            
-        case lock_X:
-            m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
-                             Double(m_XSize) / m_Parent->GetYExtent());
-            break;
-            
-        case lock_Y:
-            m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
-                             Double(m_XSize) / m_Parent->GetXExtent());
-            break;
-            
-        default:
-            m_InitialScale = 1.0;
+	case lock_POINT:
+	    m_RotationOK = false;
+	    m_InitialScale = 1.0;
+	    break;
+	case lock_YZ:
+	    m_InitialScale = Double(m_XSize) / m_Parent->GetXExtent();
+	    break;
+	case lock_XZ:
+	    m_InitialScale = Double(m_YSize) / m_Parent->GetYExtent();
+	    break;
+	case lock_XY:
+	    m_RotationOK = false;
+	    m_InitialScale = Double(m_YSize) / m_Parent->GetZExtent();
+	    break;
+	case lock_X:
+	    m_RotationOK = false;
+	    m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
+				 Double(m_XSize) / m_Parent->GetYExtent());
+	    break;
+	case lock_Y:
+	    m_RotationOK = false;
+	    m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
+				 Double(m_XSize) / m_Parent->GetXExtent());
+	    break;
+	default:
+	    m_InitialScale = min(Double(m_XSize) / m_Parent->GetXExtent(),
+				 Double(m_YSize) / m_Parent->GetYExtent());
     }
-    
+
     m_InitialScale *= .85;
 
     SetScaleInitial(m_InitialScale);
 
     m_HaveData = true;
+    DefaultParameters();
 }
 
 void GfxCore::FirstShow()
@@ -507,7 +467,8 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 void GfxCore::OnPaint(wxPaintEvent& event)
 {
     // Redraw the window.
-    
+
+    // Get a graphics context.
     wxPaintDC dc(this);
 
     assert(GetContext());
@@ -1270,11 +1231,47 @@ void GfxCore::OnSize(wxSizeEvent& event)
 void GfxCore::DefaultParameters()
 {
     // Set default viewing parameters.
-    
-    m_TiltAngle = M_PI_2;
+
+    // If there are no legs (e.g. after loading a .pos file), turn crosses on.
+    if (m_Parent->GetNumLegs() == 0) {
+	m_Crosses = true;
+    }
+
     m_PanAngle = 0.0;
+    m_TiltAngle = M_PI_2;
+    switch (m_Lock) {
+	case lock_X:
+	{
+	    // elevation looking along X axis (East)
+	    m_PanAngle = M_PI * 1.5;
+	    m_TiltAngle = 0.0;
+	    break;
+	}
+
+	case lock_Y:
+	case lock_XY: // survey is linearface and parallel to the Z axis => display in elevation.
+	    // elevation looking along Y axis (North)
+	    m_TiltAngle = 0.0;
+	    break;
+
+	case lock_Z:
+	case lock_XZ: // linearface survey parallel to Y axis
+	case lock_YZ: // linearface survey parallel to X axis
+	{
+	    // flat survey (zero height range) => go into plan view (default orientation).
+	    break;
+	}
+
+	case lock_POINT:
+	    m_Crosses = true;
+	    break;
+
+	case lock_NONE:
+	    break;
+    }
 
     m_Params.rotation.setFromEulerAngles(m_TiltAngle, 0.0, m_PanAngle);
+    m_RotationMatrix = m_Params.rotation.asMatrix();
 
     m_Params.translation.x = 0.0;
     m_Params.translation.y = 0.0;

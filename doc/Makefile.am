@@ -14,9 +14,7 @@ manual_sources = manual.sgml cad3d.sgml cavern.sgml caverot.sgml\
 # People can build from CVS without sgmltools v2 or v3 installed but they
 # won't be able to "make dist", which is arguably a good thing - we don't
 # want tarballs accidentally lacking the documentation.
-EXTRA_DIST = manual @DOCS_OTHER@ survex.1.in index.htm.in\
- index.htm GPL.htm TODO.htm ChngeLog.htm NEWS.htm OLDNEWS.htm\
- AUTHORS.htm HACKING.htm 3dformat.htm\
+EXTRA_DIST = manual @HTMLFILES@ @DOCS_OTHER@ survex.1.in index.htm.in\
  custom.dsl survex.ent\
  caution.png note.png\
  $(manual_sources) $(other_mans)\
@@ -38,8 +36,7 @@ OLDNEWS.htm: ../OLDNEWS
 MAINTAINERCLEANFILES = @DOCS_OTHER@ $(other_mans)\
  ChngeLog.htm NEWS.htm OLDNEWS.htm
 
-pkgdoc_DATA = index.htm GPL.htm TODO.htm ChngeLog.htm\
- NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm @DOCS_OTHER@
+pkgdoc_DATA = @HTMLFILES@ @DOCS_OTHER@
 
 man_MANS = survex.1 $(other_mans)
 

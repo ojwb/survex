@@ -1,2 +1,2 @@
-?package(survex-aven):needs=X11 section=Apps/Math \
+?package(survex-aven):needs=X11 section=Apps/Science \
  title="Aven" command="/usr/bin/aven"

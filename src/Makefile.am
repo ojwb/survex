@@ -105,11 +105,11 @@ aven-rez: aven
 endif
 
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
-aven_CXXFLAGS = @WX_CXXFLAGS@ -DAVEN
+aven_CXXFLAGS = @WX_CXXFLAGS@
 aven_LDFLAGS = @WX_LDFLAGS@
 
-avengl_CFLAGS = @WXGL_CFLAGS@ -DAVENGL
-avengl_CXXFLAGS = @WXGL_CXXFLAGS@ -DAVENGL
+avengl_CFLAGS = @WXGL_CFLAGS@ -DAVEN
+avengl_CXXFLAGS = @WXGL_CXXFLAGS@
 avengl_LDFLAGS = @WX_LDFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
@@ -159,12 +159,12 @@ z_getopt.c: getopt.c gettexttomsg.pl
 	./gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
 
 aven.pal: $(srcdir)/gradient.pov
-	$(srcdir)/gdtconvert <$(srcdir)/gradient.pov >aven.pal
+	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-aven.pal && mv tmp-aven.pal aven.pal
 
 MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile
 
 borlandc/makefile: $(srcdir)/Makefile.am miniam.pl
-	$(srcdir)/miniam.pl borlandc < $(srcdir)/Makefile.am > borlandc/makefile
+	$(srcdir)/miniam.pl borlandc < $(srcdir)/Makefile.am > borlandc/tmp-makefile && mv borlandc/tmp-makefile borlandc/makefile
 
 riscos/makefile: $(srcdir)/Makefile.am miniam.pl
-	$(srcdir)/miniam.pl riscos < $(srcdir)/Makefile.am > riscos/makefile
+	$(srcdir)/miniam.pl riscos < $(srcdir)/Makefile.am > riscos/tmp-makefile && mv riscos/tmp-makefile riscos/makefile

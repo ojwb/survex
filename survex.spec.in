@@ -4,12 +4,14 @@ Name: @PACKAGE@
 Vendor: The Survex Project
 Version: @VERSION@
 Release: @RELEASE@
-Copyright: GPL
+License: GPL
 Group: Applications/Misc
 Source: http://www.survex.com/software/@VERSION@/@PACKAGE@-@VERSION@.tar.gz
 URL: http://www.survex.com/
 Packager: Olly Betts <olly@survex.com>
-BuildRoot: /var/tmp/%{name}-buildroot
+#Can't build with rpm on debian with this next line uncommented:
+#BuildRequires: wxGTK-devel >= 2.4.0
+BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
 @DESC@
@@ -17,7 +19,7 @@ BuildRoot: /var/tmp/%{name}-buildroot
 %package aven
 Summary: Aven viewer for Survex
 Group: Applications/Misc
-Requires: survex = @VERSION@
+Requires: survex = @VERSION@, wxGTK >= 2.4.0
 
 %description aven
 @AVENDESC@
@@ -34,40 +36,44 @@ Requires: survex = @VERSION@
 %setup
 
 %build
+[ "%{buildroot}" = "/" ] && echo "buildroot cannot be /" && exit 1
 ./configure --prefix=/usr
 make
 
 %install
-rm -rf "$RPM_BUILD_ROOT"
-mkdir "$RPM_BUILD_ROOT"
-make install-strip prefix="$RPM_BUILD_ROOT"/usr
+[ "%{buildroot}" = "/" ] && echo "buildroot cannot be /" && exit 1
+[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
+mkdir -p "%{buildroot}"
+make install-strip DESTDIR="%{buildroot}"
 # Rearrange to conform to the FHS
-mv "$RPM_BUILD_ROOT"/usr/doc "$RPM_BUILD_ROOT"/usr/share/doc
-mv "$RPM_BUILD_ROOT"/usr/man "$RPM_BUILD_ROOT"/usr/share/man
+mkdir -p "%{buildroot}"/usr/share/doc
+# Recent Redhat versions (7.3 for e.g.) use /usr/share/doc/@PACKAGE@-@VERSION@ !
+mv "%{buildroot}"/usr/doc/@PACKAGE@ "%{buildroot}"/usr/share/doc/@PACKAGE@-@VERSION@
+mv "%{buildroot}"/usr/man "%{buildroot}"/usr/share/man
 
 %clean
-rm -rf "$RPM_BUILD_ROOT"
+[ "%{buildroot}" = "/" ] && echo "buildroot cannot be /" && exit 1
+[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
+%defattr(-, root, root)
 %doc @EXTRA_TEXT@
-%doc /usr/share/doc/@PACKAGE@
-%doc /usr/share/man/man[^1]*
-%doc /usr/share/man/man1/[b-rt-zA-Z0-9]*
-%doc /usr/share/man/man1/sorterr*
-/usr/bin/[b-rt-zA-Z0-9]*
-/usr/bin/sorterr
-/usr/share/@PACKAGE@/[^i]*
-/usr/share/@PACKAGE@/i[^c]*
-/usr/share/@PACKAGE@/icons/??.png
-/usr/share/@PACKAGE@/icons/???.png
-/usr/share/mime-info
+%doc /usr/share/doc/@PACKAGE@-@VERSION@
+%doc /usr/share/man/
+%exclude /usr/share/man/man1/aven*
+%exclude /usr/share/man/man1/svxedit*
+/usr/bin/*
+%exclude /usr/bin/aven
+%exclude /usr/bin/svxedit
+/usr/share/@PACKAGE@/
+%exclude /usr/share/@PACKAGE@/icons/????*.png
+/usr/share/mime-info/survex.*
 %files aven
-%defattr(-,root,root)
+%defattr(-, root, root)
 %doc /usr/share/man/man1/aven*
 /usr/bin/aven
 /usr/share/@PACKAGE@/icons/????*.png
 %files svxedit
-%defattr(-,root,root)
+%defattr(-, root, root)
 %doc /usr/share/man/man1/svxedit*
 /usr/bin/svxedit

@@ -1,5 +1,10 @@
 # watch control file
 # Run "uscan" to check for upstream updates and more.
+#
+# Unfortunately uupdate doesn't work properly for native packages but at least
+# this gets the latest tarball in an easy way...
+#
+# Need version 2 so directory can be a regexp
+version=2
 # Site		Directory		Pattern			Version	Script
-# FIXME: can directory be a regexp?  "man uscan" doesn't say...
-http://www.survex.com	/software/\\d+\\.[\\d.]+/	survex-(.*)\\.tar\\.gz	debian	uupdate
+http://www.survex.com/download.html	software/[\d\.]*/survex-([\d\.]*).tar.gz	debian	uupdate

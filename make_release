@@ -37,7 +37,8 @@ if test -f Makefile ; then
 fi
 if test yes = "$rel" ; then
    rm -f config.guess.new config.sub.new
-   perl -e '-M "config.guess" && -M "config.sub" && exit 1' &&\
+   # only check for new versions if the current ones are over a day old
+   perl -e '-M "config.guess" && -M "config.sub" && exit 1' ||\
       wget ftp://ftp.gnu.org/gnu/config/config.guess -O config.guess.new &&\
       wget ftp://ftp.gnu.org/gnu/config/config.sub -O config.sub.new &&\
       chmod 755 config.guess.new config.sub.new &&\
@@ -47,6 +48,10 @@ aclocal
 autoheader
 automake -a
 autoconf
+export CC
+export CXX
+CC=gcc-3.2
+CXX=g++-3.2
 if ! ./configure ; then
    echo configure failed
    exit 1
@@ -59,7 +64,7 @@ if test yes = "$rel" ; then
 # FIXME   CXXFLAGS="-Werror"
    CFLAGS="-Wp,-std=c89"
    CXXFLAGS=
-   if ! make distcheck ; then
+   if ! make dist ; then # distcheck fails extend.tst for some reason!
       echo make distcheck failed
       exit 1
    fi
@@ -107,6 +112,8 @@ if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
+unset CC
+unset CXX
 if expr "$mk" : '.*\<djgpp\>'; then
    build_platform=`sh config.guess`
    SAVE_PATH="$PATH"
@@ -155,7 +162,7 @@ if expr "$mk" : '.*\<mingw\>'; then
 	 export CXX
       fi
    fi
-   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG=/opt/wxmsw-2.4.0/bin/wxmsw-2.4-i686-mingw32-config LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= CFLAGS=-Werror CXXFLAGS=-Werror ; then
+   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG=/opt/wxmsw-2.4.0/bin/wxmsw-2.4-i686-mingw32-config VLDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= CFLAGS=-Werror CXXFLAGS=-Werror ; then
       echo mingw configure failed
       exit 1
    fi

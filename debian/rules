@@ -1,8 +1,9 @@
 #!/usr/bin/make -f
-# Based on sample debian/rules that uses debhelper.
+# Based on sample debian/rules that uses debhelper,
 # GPL copyright 1997 to 1999 by Joey Hess.
+#
 # Copyright (C) 2001 Wookey
-# Copyright (C) 2001,2002 Olly Betts
+# Copyright (C) 2001,2002,2003 Olly Betts
 #
 # This is a multibinary package. You to build any of the binary packages
 # independently, via binary-<package> targets.
@@ -16,11 +17,21 @@ export DH_COMPAT=1
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+CFLAGS += -O0
+else
+CFLAGS += -O2
+endif
+ifneq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+STRIP=/bin/echo
+endif
+
 build: build-stamp
 build-stamp:
 	dh_testdir
 
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex
+	# need to use GCC 3.2 to link against wxgtk-2.4
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex CFLAGS=$(CFLAGS) STRIP=$(STRIP) CC=gcc-3.2 CXX=g++-3.2
 	$(MAKE)
 ifeq	($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
 	$(MAKE) check

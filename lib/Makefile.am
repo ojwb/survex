@@ -24,7 +24,8 @@ pkgdata_DATA = default.bit bold.bit print.ini bcra3.svx bcra5.svx $(msg_files)
 
 BUILT_SOURCES = defaultlang.h
 
-# FIXME: shouldn't this be removed automatically?
+# BUILT_SOURCES are automatically removed by maintainer-clean, but we want it
+# removed by distclean
 DISTCLEANFILES = defaultlang.h
 
 $(msg_files) $(hdr_files): messages.txt makemsgs.pl
@@ -32,7 +33,7 @@ $(msg_files) $(hdr_files): messages.txt makemsgs.pl
 
 defaultlang.h:
 	-rm -f defaultlang.h
-	ln -s $(DEFAULTLANG).h defaultlang.h
+	ln -s $(srcdir)/$(DEFAULTLANG).h defaultlang.h
 
 default.bit: default.txt makefont.pl
 	perl makefont.pl default.txt default.bit

@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-10-09 00:51:44 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.3 2002-10-09 00:51:44 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-06-26 02:11:33 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.4 2003-06-26 02:11:33 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -318,6 +318,14 @@ If you don't have root access you will need to build from source
 (see the next section).
 </Para>
 
+<!-- FIXME Add Gnome file association note for Linux/Unix
+<Para>On Microsoft Windows and &riscos; &survexsuite; installs with
+suitable file associations so that you can drive it from the GUI.
+On &unix; and &msdos; you need to drive &survexsuite; from a command-line
+prompt (or set some a filemanager or graphics shell).
+</Para>
+-->
+
 <Sect3><Title>Other versions of &unix;</Title>
 
 <Para>For other &unix; versions you'll need to get the source code
@@ -379,19 +387,12 @@ Start menu containing the following items:
 
 </ItemizedList>
 
-<!-- FIXME
-<Para>On Microsoft Windows and &riscos; &survexsuite; installs with
-suitable file associations so that you can drive it from the GUI.
-On &unix; and &msdos; you need to drive &survexsuite; from a command-line
-prompt (or set some a filemanager or graphics shell).
-</Para>
--->
-
 <Para>
-Icons are installed for &svx;, &x3d;, &err;, and &pos; files.
+Icons are installed for &svx;, &x3d;, &err;, and &pos; files, and also for
+Compass <filename>PLT</filename> files (which Survex can read).
 Double-clicking on a &svx; file processes it to produce a &x3d; file.
 Double-clicking the &x3d; file views it in aven.
-You can also right click on the files to bring up a menu of other possible
+You can also right click on these files to bring up a menu of other possible
 actions:
 </Para>
 
@@ -2839,8 +2840,8 @@ This data demonstrates a number of useful features of &survexsuite;:
 
 <Para>
 Legs can be measured either way round, which allows the use of
-techniques like "leap-frogging", meaning that the legs
-alternate forwards and backwards.
+techniques like "leap-frogging" (which is where legs
+alternate forwards and backwards).
 </Para>
 
 <Para>
@@ -2906,6 +2907,79 @@ can accomplish this like so:
 4 5  2.98  - DOWN
 5 6  9.29 271 -28.5
 *end 163</programlisting>
+
+<Sect2><Title>Specify surface survey data</Title>
+
+<Para>
+Say you have 2 underground surveys and 2 surface ones with 2 fixed reference
+points.  You want to mark the surface surveys so that their length isn't
+included in length statistics, and so that Aven knows to display them
+differently.  To do this you mark surface data with the "surface" flag
+- this is set with "*flags surface" like so:
+<Para>
+
+<programlisting>
+; fixed reference points
+*fix fix_a 12345 56789 1234
+*fix fix_b 23456 67890 1111                                                     
+                                                                                
+; surface data (enclosed in *begin ... *end to stop the *flags command
+; from "leaking" out)
+*begin
+*flags surface
+*include surface1
+*include surface2
+*end                                                                            
+                                                                                
+; underground data
+*include cave1
+*include cave2</programlisting>
+
+<Para>
+You might also have a survey which starts on the surface and heads into a
+cave.  This can be easily handled too - here's an example which goes in
+one entrance, through the cave, and out of another entrance:
+</Para>
+
+<programlisting>
+*begin BtoC
+*title "161b to 161c"
+*date 1990.08.06 ; trip 1990-161c-3 in 1990 logbook
+
+*begin
+*flags surface
+02    01      3.09   249    -08.5
+02    03      4.13   252.5  -26
+*end
+
+04    03      6.00   020    +37
+04    05      3.07   329    -31
+06    05      2.67   203    -40.5
+06    07      2.20   014    +04
+07    08      2.98   032    +04
+08    09      2.73   063.5  +21
+09    10     12.35   059    +15
+
+*begin
+*flags surface
+11    10      4.20   221.5  -11.5
+11    12      5.05   215    +03.5
+11    13      6.14   205    +12.5
+13    14     15.40   221    -14
+*end
+
+*end BtoC</programlisting>
+
+<Para>
+Note that to avoid needless complication, Survex regards each leg as
+being either "surface" or "not surface" - if a leg spans the boundary you'll
+have to call it one or the other.  It's good surveying practice to
+deliberately put a station at the surface/underground interface
+(typically the highest closed contour or drip line) so this generally
+isn't an onerous restriction.
+</Para>
+
+</Sect2>
 
 <Sect2><Title>Specify the ordering and type of data</Title>
 
@@ -3048,7 +3122,8 @@ sure that the special *sd settings only apply to this one leg.
 </Para>
 
 <Para>For more information on the expected errors from radiolocations
-see Compass Points Issue 10.
+see Compass Points Issue 10, available online at
+<ulink url="http://www.chaos.org.uk/survex/cp/CP10/CPoint10.htm">http://www.chaos.org.uk/survex/cp/CP10/CPoint10.htm</ulink>
 </Para>
 
 </Sect2>
@@ -3099,8 +3174,9 @@ instrument error corrections etc. Here is a typical survey file:
 
 <Para>All the lines starting with ';' are comments, which are ignored
 by &survexsuite;. You can also see the use of 'DOWN' for plumbs, and
-*calibrate tape for dealing with a tape length error. (This tape
-was unusual in being too long!).</Para>
+*calibrate tape for dealing with a tape length error (in this case
+the end of the tape had fallen off so measurements were made from the
+20cm point).</Para>
 
 <programlisting>
 *equate chaos.1 triassic.pt3.8
@@ -3289,7 +3365,8 @@ Survex website for download links.
 <Sect2><Title>Overlay a grid</Title>
 
 <Para>Aven is able to display a grid, but this functionality isn't currently
-available in caverot, or the printer drivers.
+available in caverot,
+or the printer drivers.
 You can achieve a similar effect for now by creating a &svx; file
 where the survey legs form a grid.
 </Para>
@@ -3413,6 +3490,38 @@ which you can then inspect with a text editor.
 
 </Sect1>
 -->
+<Sect1><Title>Working with Larry Fish's Compass</Title>
+<?dbhtml filename="compass.htm">
+
+<Para>
+Survex can read Compass survey data - both raw data (.DAT and .MAK
+files) and processed survey data (.PLT and .PLF files).  You can even
+use <command>*include compassfile.dat</command> in a &svx; file and
+it'll work!
+</Para>
+
+<Para>
+One point to note (this tripped us up!): station names in DAT files are
+case sensitive and so Survex reads DAT files with the equivalent of
+<command>*case preserve</command>.  The default in SVX files is
+<command>*case lower</command>.  So this won't work:
+
+<programlisting>
+*fix CE1 0 0 0
+*include datfilewhichusesCE1.dat</programlisting>
+
+Because the CE1 in the *fix is actually interpreted as ce1.  This is
+what you have to do:
+
+<programlisting>
+*begin
+*case preserve
+*fix CE1 0 0 0
+*include datfilewhichusesCE1.dat
+*end</programlisting>
+</Para>
+
+</Sect1>
 
 <Sect1><Title>Mailing List</Title>
 <?dbhtml filename="maillist.htm">
@@ -3432,19 +3541,19 @@ and other information.
 <?dbhtml filename="future.htm">
 
 <Para>
-We plan to bring &survexsuite; to version 1.0, and then start to
-develop version 2 (codenamed &spud;).  &spud; will evolve out of 
-Survex 1.0 - the GUI framework is likely to be based on aven, with
+Now that &survexsuite; has reached version 1.0, we are continuing progress
+towards version 2, in a series of steps, evolving out of 
+Survex 1.0.  The GUI framework is being based on aven, with
 the printer drivers and other utility programs being pulled in
 and integrated into the menus.</Para>
 
 <Para>Aven is built on &wxwindows;, which means that can easily support
-Unix and Microsoft Windows.  Mac support is also possible if anyone
-with Mac expertise is interesting in porting &spud;.  There's no MSDOS
-support in &wxwindows; at present, though it may be added.  Support for RISC
-OS is unlikely.</Para>
+Unix and Microsoft Windows.  Mac support is close to complete (at least
+for OS X).  Support for MSDOS is possible if there's sufficient interest.
+Support for RISC OS is unlikely unless someone very enthusiastic steps
+forward to do the porting work.</Para>
 
-<Para>More information on our plans for &spud; is on the <ulink
+<Para>More information on our plans is on the <ulink
 url="&survexwebsite;">web site</ulink>.
 </Para>
 
@@ -3459,7 +3568,8 @@ welcome comments and suggestions for improvements.</Para>
 <Para>If you want the latest version and don't have net access, please
 enclose a suitably formatted floppy and an SAE.  These days, we'd probably
 struggle to cope with anything other than 3.5" floppies.  &msdos; format is
-easiest for us.</Para>
+easiest for us.  Alternatively, send a blank CDR and we can burn you a
+CD with all the versions on.</Para>
 
 <Address>
 Wookey
@@ -3480,7 +3590,7 @@ Olly Betts
 <City/Cambridge/
 <PostCode/CB4 2SN/
 <Country/UK/
-<Phone/Tel: 01223 513644 (home)/
+<Phone/Tel: 01223 513644 (home and work)/
 <Email/&ollyemail;/
 </Address>
 
