@@ -16,7 +16,7 @@ base_progs = 3dtodxf cavern printdm printps printpcl printhpgl diffpos extend su
 
 spec = ${PACKAGE}-${VERSION}.spec
 
-RPM_RELEASE = 2
+RPM_RELEASE = 3
 
 rpm : dist
 	echo Summary: Cave Surveying Software > ${spec}
