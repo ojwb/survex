@@ -104,7 +104,7 @@ static const struct option long_opts[] = {
    {"no-percentage", no_argument, 0, 0},
 #else
    {"percentage", no_argument, 0, 'p'},
-   {"no-percentage", no_argument, (int*)&fPercent, 0},
+   {"no-percentage", no_argument, 0, 3},
 #endif
    {"output", required_argument, 0, 'o'},
    {"quiet", no_argument, 0, 'q'},
@@ -208,6 +208,11 @@ main(int argc, char **argv)
 	 fPercent = 1;
 #endif
 	 break;
+#ifndef NO_PERCENTAGE
+       case 3:
+	 fPercent = 0;
+	 break;
+#endif
        case 'o': {
 	 /* can be a directory (in which case use basename of leaf input)
 	  * or a file (in which case just trim the extension off) */

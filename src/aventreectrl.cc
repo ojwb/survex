@@ -4,7 +4,7 @@
 //  Tree control used for the survey tree.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2002, Olly Betts
+//  Copyright (C) 2001-2003, Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -36,11 +36,11 @@ END_EVENT_TABLE()
 
 AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     wxTreeCtrl(window_parent, -1, wxDefaultPosition),
-    m_LastItem((wxTreeItemId) -1),
-    m_Enabled(false),
     m_Parent(parent),
-    m_SelValid(false),
-    m_BackgroundColour(GetBackgroundColour())
+    m_Enabled(false),
+    m_LastItem(wxTreeItemId(-1)),
+    m_BackgroundColour(GetBackgroundColour()),
+    m_SelValid(false)
 {
 }
 
@@ -52,7 +52,7 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 	int flags;
 	wxTreeItemId pos = HitTest(event.GetPosition(), flags);
 	if (pos != m_LastItem) {
-	    if (m_LastItem != -1) {
+	    if (m_LastItem != wxTreeItemId(-1)) {
 		SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
 	    }
 	    if (flags & TREE_MASK) {
@@ -71,7 +71,7 @@ void AvenTreeCtrl::SetEnabled(bool enabled)
     m_Enabled = enabled;
 }
 
-void AvenTreeCtrl::OnSelChanged(wxTreeEvent& event)
+void AvenTreeCtrl::OnSelChanged(wxTreeEvent&)
 {
     if (m_Enabled) {
 	m_Parent->TreeItemSelected(GetItemData(GetSelection()));

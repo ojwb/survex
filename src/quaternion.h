@@ -2,7 +2,7 @@
 //  quaternion.h
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
-//  Copyright (C) 2002 Olly Betts
+//  Copyright (C) 2002,2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@ public:
     Quaternion(Double pan, Double tilt, Double rotation_amount) {
 	setFromSphericalPolars(pan, tilt, rotation_amount);
     }
-    Quaternion(Vector3 v, Double rotation_amount) {
-	setFromVectorAndAngle(v, rotation_amount);
+    Quaternion(Vector3 vec, Double rotation_amount) {
+	setFromVectorAndAngle(vec, rotation_amount);
     }
 
     ~Quaternion() {}
@@ -156,8 +156,8 @@ public:
     Vector3 getVector() const { return v; }
     Double getScalar() const { return w; }
 
-    void setVector(const Vector3& v) { this->v = v; }
-    void setScalar(const Double w) { this->w = w; }
+    void setVector(const Vector3& vec) { v = vec; }
+    void setScalar(const Double w_) { w = w_; }
 
     void setFromEulerAngles(Double rotation_x, Double rotation_y, Double rotation_z) {
 	static Double cr, cp, cy, sr, sp, sy, cpcy, spsy;

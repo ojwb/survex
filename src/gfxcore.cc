@@ -4,7 +4,7 @@
 //  Core drawing code for Aven, with both standard 2D and OpenGL functionality.
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2002 Olly Betts
+//  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -809,7 +809,7 @@ void GfxCore::RedrawOffscreen()
     drawtime = timer.Time();
 }
 
-void GfxCore::OnPaint(wxPaintEvent& event)
+void GfxCore::OnPaint(wxPaintEvent&)
 {
     // Redraw the window.
 
@@ -1249,8 +1249,8 @@ void GfxCore::DrawDepthbar()
 	Double z = m_Parent->GetZMin() + m_Parent->GetZExtent() * band
 		/ (m_Bands - 1);
 	strs[band] = FormatLength(z, false);
-	int x, y;
-	m_DrawDC.GetTextExtent(strs[band], &x, &y);
+	int x, dummy;
+	m_DrawDC.GetTextExtent(strs[band], &x, &dummy);
 	if (x > size) {
 	    size = x;
 	}
@@ -1464,7 +1464,7 @@ void GfxCore::OnMButtonDown(wxMouseEvent& event)
     }
 }
 
-void GfxCore::OnMButtonUp(wxMouseEvent& event)
+void GfxCore::OnMButtonUp(wxMouseEvent&)
 {
     if (m_PlotData && m_Lock == lock_NONE) {
 	m_DraggingMiddle = false;
@@ -1484,7 +1484,7 @@ void GfxCore::OnRButtonDown(wxMouseEvent& event)
     }
 }
 
-void GfxCore::OnRButtonUp(wxMouseEvent& event)
+void GfxCore::OnRButtonUp(wxMouseEvent&)
 {
     m_DraggingRight = false;
     m_LastDrag = drag_NONE;

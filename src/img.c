@@ -368,7 +368,7 @@ plt_file:
 	 goto error;
       }
       while (1) {
-	 int ch = getc(pimg->fh);
+	 ch = getc(pimg->fh);
 	 switch (ch) {
 	  case '\x1a':
 	    fseek(pimg->fh, -1, SEEK_CUR);

@@ -1,7 +1,7 @@
 /* new3dout.h
  * Header file for .3dx writing routines
  * Copyright (C) 2000, 2001 Phil Underwood
- * Copyright (C) 2001 Olly Betts
+ * Copyright (C) 2001, 2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,10 +47,6 @@ extern twig *rhizome, *limb;
 
 extern int fUseNewFormat;
 
-void cave_write_stn(node *);
-void cave_write_leg(linkfor *);
-void cave_write_source(const char *source);
-void cave_write_title(const char *, img *);
 img *cave_open_write(const char *, const char *);
 int cave_close(img *);
 int cave_error(void);

@@ -981,7 +981,6 @@ invert_var(var *inv, /*const*/ var *v)
 extern int
 invert_svar(svar *inv, /*const*/ svar *v)
 {
-   int i;
    real det, a, b, c, d, e, f, bcff, efcd, dfbe;
 
 #if 0
@@ -1021,6 +1020,7 @@ invert_svar(svar *inv, /*const*/ svar *v)
     * well save the cycles and not perform this check.
     */
      { /* check that original * inverse = identity matrix */
+	int i;
 	var p;
 	real D = 0;
 	mulss(&p, v, inv);

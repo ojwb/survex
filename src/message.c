@@ -66,6 +66,9 @@ static jmp_buf jmpbufSignal;
 #elif (OS==RISCOS)
 # include "oslib/wimpreadsy.h"
 # include "oslib/territory.h"
+#elif (OS==UNIX)
+# include <sys/types.h>
+# include <sys/stat.h>
 #endif
 
 /* For funcs which want to be immune from messing around with different
@@ -213,12 +216,10 @@ init_signals(void)
 {
    int en;
    if (!setjmp(jmpbufSignal)) {
-#if 0 /* disable these to get a core dump */
       signal(SIGABRT, report_sig); /* abnormal termination eg abort() */
       signal(SIGFPE,  report_sig); /* arithmetic error eg /0 or overflow */
       signal(SIGILL,  report_sig); /* illegal function image eg illegal instruction */
       signal(SIGSEGV, report_sig); /* illegal storage access eg access outside memory limits */
-#endif
 # ifdef SIGSTAK /* only on RISC OS AFAIK */
       signal(SIGSTAK, report_sig); /* stack overflow */
 # endif
@@ -1045,7 +1046,7 @@ msg_init(char * const *argv)
 	 char *p = use_path(pth, "../lib/en.msg");
 	 FILE *f = fopen(p, "r");
 	 if (f) {
-	    close(f);
+	    fclose(f);
 	    pth_cfg_files = use_path(pth, "../lib");
 	 }
 	 osfree(p);
@@ -1207,9 +1208,9 @@ msg_init(char * const *argv)
 	      r.x.cx = 2048;
 	      /* bit 1 is the carry flag */
 	      if (__dpmi_int(0x21, &r) != -1 && !(r.x.flags & 1)) {
-		 unsigned short p;
-		 dosmemget(__tb + 3, 2, &p);
-		 country_code = p;
+		 unsigned short val;
+		 dosmemget(__tb + 3, 2, &val);
+		 country_code = val;
 # else
 	      union REGS r;
 	      r.x.ax = 0x3800; /* get current country info */

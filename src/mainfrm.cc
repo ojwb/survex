@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2001 Mark R. Shinwell
-//  Copyright (C) 2001-2002 Olly Betts
+//  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -65,9 +65,10 @@ class AvenSplitterWindow : public wxSplitterWindow {
 
     public:
 	AvenSplitterWindow(MainFrm *parent_)
-	    : parent(parent_),
-	      wxSplitterWindow(parent_, -1, wxDefaultPosition, wxDefaultSize,
-			       wxSP_3D | wxSP_LIVE_UPDATE) {
+	    : wxSplitterWindow(parent_, -1, wxDefaultPosition, wxDefaultSize,
+			       wxSP_3D | wxSP_LIVE_UPDATE),
+	      parent(parent_)
+	{
 	}
 
 	void OnSplitterDClick(wxSplitterEvent &e) {
@@ -814,13 +815,10 @@ void MainFrm::FillTree()
 		// are the same.
 		// Note that we require a match of a whole number of parts
 		// between dots!
-		size_t pos = 0;
-		while (prefix[pos] == current_prefix[pos]) {
-		    if (prefix[pos] == separator) count = pos + 1;
-		    pos++;
+		for (size_t i = 0; prefix[i] == current_prefix[i]; ++i) {
+		    if (prefix[i] == separator) count = i + 1;
 		}
-	    }
-	    else {
+	    } else {
 		count = prefix.Length() + 1;
 	    }
 
@@ -1310,7 +1308,7 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
     m_Dist3->SetLabel("");
 }
 
-void MainFrm::OnFind(wxCommandEvent& event)
+void MainFrm::OnFind(wxCommandEvent&)
 {
     wxBusyCursor hourglass;
     // Find stations specified by a string or regular expression.
@@ -1409,7 +1407,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
     m_Gfx->SetFocus();
 }
 
-void MainFrm::OnHide(wxCommandEvent& event)
+void MainFrm::OnHide(wxCommandEvent&)
 {
     // Hide any search result highlights.
     m_Found->SetLabel("");
