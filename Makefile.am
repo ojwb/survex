@@ -170,10 +170,13 @@ mingw_iss : dostxt mingwexes
 	# convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n' iss_tmp/help/*
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
-	$(RM) -rf dostxt_tmp	
-	wine "c:/Program\ Files/Inno\ Setup\ 2/ISCC.exe iss_tmp/survex.iss"
+	$(RM) -rf dostxt_tmp
+	-killall Xvfb
+	(Xvfb :9 -screen 0 64x32x8 &)
+	DISPLAY=:9 wine "c:/Program\ Files/Inno\ Setup\ 2/ISCC.exe iss_tmp/survex.iss"
 	mv iss_tmp/Output/*.exe .
 	$(RM) -rf iss_tmp	
+	killall Xvfb
 
 bc_zip_name = survex-dos286-@VERSION@.zip
 
