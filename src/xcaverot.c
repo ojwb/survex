@@ -429,13 +429,14 @@ void
 process_plan(Display * display, Window mainwin, Window button, GC mygc, GC egc)
 {
    flip_button(display, mainwin, button, mygc, egc,
-	       elev_angle == 0.0 ? "Elev" : "Plan");
-   if (elev_angle == 90.0)
-      elev_angle = 0.0;
-   else
-      elev_angle = 90.0;
+	       plan_elev == PLAN ? "Plan" : "Elev");
+   if (plan_elev == PLAN) {
+      switch_to_elevation();
+   } else {
+      switch_to_plan();
+   }
    flip_button(display, mainwin, button, egc, mygc,
-	       elev_angle == 0.0 ? "Elev" : "Plan");
+	       plan_elev == PLAN ? "Plan" : "Elev");
 }
 
 void
