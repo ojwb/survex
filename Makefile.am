@@ -42,6 +42,9 @@ rpm : dist
 	: #
 	echo macrofiles : `rpm --showrc | sed 's/^macrofiles\> *: //p;d'`:`pwd`/rpmmacros > rpmrc
 	: #
+	rm -rf BUILD
+	mkdir BUILD
+	: #
 	rpm -bs --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
 
 debian : dist
