@@ -12,7 +12,7 @@ LDADD = @LIBOBJS@
 PRINT = printdm printps printpcl printhpgl
 
 EXTRA_PROGRAMS = caverot xcaverot printxbm aven
-bin_PROGRAMS = cavern $(PRINT) diffpos extend survex 3dtodxf @CAVEROT@ \
+bin_PROGRAMS = cavern $(PRINT) diffpos extend survex cad3d @CAVEROT@ \
  @AVEN@
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c getopt.c getopt1.c
@@ -53,7 +53,7 @@ xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 diffpos_SOURCES = diffpos.c $(COMMONSRC)
 extend_SOURCES = extend.c $(COMMONSRC) useful.c img.c
 
-3dtodxf_SOURCES = 3dtodxf.c $(COMMONSRC) useful.c img.c
+cad3d_SOURCES = 3dtodxf.c $(COMMONSRC) useful.c img.c
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
 #imgtest_SOURCES = imgtest.c imgalone.c

@@ -172,7 +172,8 @@ showline(const char *dummy, int n)
    i = 0;
    state = 0;
    c = o;
-   while (!isEol(ch)) {
+   /* FIXME: cope with really long lines */
+   while (i < 255 && !isEol(ch)) {
       c--;
       if (c < 0) {
 	 c = n; /* correct thing to do first time, harmless otherwise */

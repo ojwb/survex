@@ -975,7 +975,7 @@ main(int argc, char **argv)
    putnl();
    putnl();
    puts(msg(/*Done.*/144));
-   return error_summary();
+   return EXIT_SUCCESS;
 }
 
 #define fDotBorders 1

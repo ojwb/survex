@@ -286,7 +286,7 @@ concatenate_trav(node *stn, int i)
 
 #ifdef BLUNDER_DETECTION
 /* expected_error is actually squared... */
-/* I've disabled printing if fSuppress is set, but I can't test it PU */
+/* only called if fhErrStat != NULL */
 static void
 do_gross(d e, d v, node *stn1, node *stn2, double expected_error)
 {
@@ -312,7 +312,7 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
    tot = 0;
    for (i = 2; i >= 0; i--) tot += sqrd(e[i] - v[i] * s);
 
-   if (!fSuppress && tot <= expected_error) {
+   if (tot <= expected_error) {
       if (!output) {
 	 fprint_prefix(fhErrStat, name1);
 	 fputs("->", fhErrStat);
@@ -331,7 +331,7 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
       s = sqrt(s);
       s = 1 - s;
       tot = sqrd(cx * s) + sqrd(cy * s) + sqrd(e[2]);
-      if (!fSuppress && tot <= expected_error) {
+      if (tot <= expected_error) {
 	 double newval, oldval;
 	 if (!output) {
 	    fprint_prefix(fhErrStat, name1);
@@ -357,10 +357,10 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
       s = sqrd(nx) + sqrd(ny) + sqrd(cz);
       if (s > 0.0) {
          s = rsqrd / s;
-	 ASSERT(s >= 0.0);
+	 ASSERT(s >= 0);
          s = sqrt(s);
          tot = sqrd(cx - s * nx) + sqrd(cy - s * ny) + sqrd(cz - s * cz);
-	 if (!fSuppress && tot <= expected_error) {
+	 if (tot <= expected_error) {
 	    if (!output) {
 	       fprint_prefix(fhErrStat, name1);
 	       fputs("->", fhErrStat);
@@ -375,7 +375,7 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
 	 }
       }
    }
-   if (output && !fSuppress) fputnl(fhErrStat);
+   if (output) fputnl(fhErrStat);
 }
 #endif
 
@@ -405,13 +405,14 @@ replace_travs(void)
       char buf[256];
 #ifdef NEW3DFORMAT
       if (fUseNewFormat) {
-	fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3DX);
+	 fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3DX);
       } else {
 #endif
       fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3D);
 #ifdef NEW3DFORMAT
       }
 #endif
+      filename_register_output(fnmImg3D);
 
       sprintf(buf, msg(/*Writing out 3d image file `%s'*/121), fnmImg3D);
       out_current_action(buf);
@@ -443,10 +444,6 @@ replace_travs(void)
 	 if (leg && data_here(leg) &&
 	     !(leg->l.reverse & FLAG_REPLACEMENTLEG) && !fZero(&leg->v)) {
 	    if (fixed(stn1)) {
-#ifdef BLUNDER_DETECTION
-	       d err;
-	       int do_blunder;
-#endif
 	       stn2 = leg->l.to;
 #ifdef NEW3DFORMAT
 	       if (!fUseNewFormat) {
@@ -459,8 +456,11 @@ replace_travs(void)
 	       }
 #endif
 	       if (!(leg->l.reverse & FLAG_ARTICULATION)) {
-#ifndef BLUNDER_DETECTION
-		  if (!fSuppress) {
+#ifdef BLUNDER_DETECTION
+		  d err;
+		  int do_blunder;
+#else
+		  if (fhErrStat) {
 		     fprint_prefix(fhErrStat, stn1->name);
 		     fputs(szLink, fhErrStat);
 		     fprint_prefix(fhErrStat, stn2->name);
@@ -468,34 +468,36 @@ replace_travs(void)
 #endif
 		  subdd(&e, &POSD(stn2), &POSD(stn1));
 		  subdd(&e, &e, &leg->d);
-		  eTot = sqrdd(e);
-		  hTot = sqrd(e[0]) + sqrd(e[1]);
-		  vTot = sqrd(e[2]);
+		  if (fhErrStat) {
+		     eTot = sqrdd(e);
+		     hTot = sqrd(e[0]) + sqrd(e[1]);
+		     vTot = sqrd(e[2]);
 #ifndef NO_COVARIANCES
-		  /* FIXME what about covariances? */
-		  eTotTheo = leg->v[0][0] + leg->v[1][1] + leg->v[2][2];
-		  hTotTheo = leg->v[0][0] + leg->v[1][1];
-		  vTotTheo = leg->v[2][2];
+		     /* FIXME what about covariances? */
+		     eTotTheo = leg->v[0][0] + leg->v[1][1] + leg->v[2][2];
+		     hTotTheo = leg->v[0][0] + leg->v[1][1];
+		     vTotTheo = leg->v[2][2];
 #else
-		  eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
-		  hTotTheo = leg->v[0] + leg->v[1];
-		  vTotTheo = leg->v[2];
+		     eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
+		     hTotTheo = leg->v[0] + leg->v[1];
+		     vTotTheo = leg->v[2];
 #endif
 #ifdef BLUNDER_DETECTION
-		  memcpy(&err, &e, sizeof(d));
-		  do_blunder = (eTot > eTotTheo);
-		  if (!fSuppress) {
+		     memcpy(&err, &e, sizeof(d));
+		     do_blunder = (eTot > eTotTheo);
 		     fputs("\ntraverse ", fhErrStat);
 		     fprint_prefix(fhErrStat, stn1->name);
 		     fputs("->", fhErrStat);
 		     fprint_prefix(fhErrStat, stn2->name);
 		     fprintf(fhErrStat, " e=(%.2f, %.2f, %.2f) mag=%.2f %s\n",
-			     e[0], e[1], e[2], sqrt(eTot), (do_blunder ? "suspect:" : "OK"));
-		  }
-		  if (do_blunder) do_gross(err, leg->d, stn1, stn2, eTotTheo);
+			     e[0], e[1], e[2], sqrt(eTot),
+			     (do_blunder ? "suspect:" : "OK"));
+		     if (do_blunder)
+			do_gross(err, leg->d, stn1, stn2, eTotTheo);
 #endif
-		  err_stat(1, sqrt(sqrdd(leg->d)), eTot, eTotTheo,
-			   hTot, hTotTheo, vTot, vTotTheo);
+		     err_stat(1, sqrt(sqrdd(leg->d)), eTot, eTotTheo,
+			      hTot, hTotTheo, vTot, vTotTheo);
+		  }
 	       }
 	    }
 	 }
@@ -575,13 +577,14 @@ replace_travs(void)
 	 int do_blunder;
 	 memcpy(&err, &e, sizeof(d));
 	 do_blunder = (eTot > eTotTheo);
-	 if (!fSuppress && !fArtic) {
+	 if (fhErrStat && !fArtic) {
 	    fputs("\ntraverse ", fhErrStat);
 	    fprint_prefix(fhErrStat, stn1->name);
 	    fputs("->", fhErrStat);
 	    fprint_prefix(fhErrStat, stn2->name);
 	    fprintf(fhErrStat, " e=(%.2f, %.2f, %.2f) mag=%.2f %s\n",
-		    e[0], e[1], e[2], sqrt(eTot), (do_blunder ? "suspect:" : "OK"));
+		    e[0], e[1], e[2], sqrt(eTot),
+		    (do_blunder ? "suspect:" : "OK"));
 	 }
 #endif
 	 while (fTrue) {
@@ -600,14 +603,16 @@ replace_travs(void)
 	    if (data_here(stn1->leg[i])) {
  	       leg = stn1->leg[i];
 #ifdef BLUNDER_DETECTION
-	       if (do_blunder) do_gross(err, leg->d, stn1, stn3, eTotTheo);
+	       if (do_blunder && fhErrStat)
+		  do_gross(err, leg->d, stn1, stn3, eTotTheo);
 #endif
 	       if (reached_end) break;
 	       adddd(&POSD(stn3), &POSD(stn1), &leg->d);
 	    } else {
  	       leg = stn3->leg[k];
 #ifdef BLUNDER_DETECTION
-	       if (do_blunder) do_gross(err, leg->d, stn3, stn1, eTotTheo);
+	       if (do_blunder && fhErrStat)
+		  do_gross(err, leg->d, stn1, stn3, eTotTheo);
 #endif
 	       if (reached_end) break;
 	       subdd(&POSD(stn3), &POSD(stn1), &leg->d);
@@ -636,18 +641,12 @@ replace_travs(void)
 	       /* (node not part of same stn) &&
 		* (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
-	       if (!fSuppress && !fArtic) {
+	       if (fhErrStat && !fArtic) {
 		  fprint_prefix(fhErrStat, nmPrev);
-#if PRINT_NAME_PTRS
-		  fprintf(fhErrStat, "[%p|%p]", nmPrev, stn3->name);
-#endif
 		  fputs(fEquate ? szLinkEq : szLink, fhErrStat);
 	       }
 #endif
 	       nmPrev = stn3->name;
-#if PRINT_NAME_PTRS
-	       if (!fSuppress && !fArtic) fprintf(fhErrStat, "[%p]", nmPrev);
-#endif
 	       if (!fEquate) {
 		  cLegsTrav++;
 		  lenTrav += sqrt(lenTot);
@@ -662,7 +661,7 @@ replace_travs(void)
 	       }
 	    } else {
 #if SHOW_INTERNAL_LEGS
-	       if (!fSuppress && !fArtic) fprintf(fhErrStat, "+");
+	       if (fhErrStat && !fArtic) fprintf(fhErrStat, "+");
 #endif
 	       if (lenTot > 0.0) {
 #if DEBUG_INVALID
@@ -710,11 +709,8 @@ replace_travs(void)
 	    if (cLegsTrav) {
 	       if (stn2->name != nmPrev) {
 #ifndef BLUNDER_DETECTION
-		  if (!fSuppress) {
+		  if (fhErrStat) {
 		     fprint_prefix(fhErrStat, nmPrev);
-#if PRINT_NAME_PTRS
-		     fprintf(fhErrStat, "[%p]", nmPrev);
-#endif
 		     fputs(fEquate ? szLinkEq : szLink, fhErrStat);
 		  }
 #endif
@@ -722,19 +718,14 @@ replace_travs(void)
 	       }
 #if SHOW_INTERNAL_LEGS
 	       else
-		  if (!fSuppress) fputc('+', fhErrStat);
+		  if (fhErrStat) fputc('+', fhErrStat);
 #endif
 #ifndef BLUNDER_DETECTION
-	       if (!fSuppress) {
-		  fprint_prefix(fhErrStat, stn2->name);
-#if PRINT_NAME_PTRS
-		  fprintf(fhErrStat, "[%p]", stn2->name);
-#endif
-	       }
+	       if (fhErrStat) fprint_prefix(fhErrStat, stn2->name);
 #endif
 	       lenTrav += sqrt(lenTot);
 	    }
-	    if (cLegsTrav && !fArtic)
+	    if (cLegsTrav && !fArtic && fhErrStat)
 	       err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
 			hTot, hTotTheo, vTot, vTotTheo);
 	 }

@@ -41,6 +41,7 @@ safe_fopen(const char *fnm, const char *mode)
    if (!f) fatalerror(mode[0] == 'w' ?
 		      /*Failed to open output file `%s'*/47 :
 		      /*Couldn't open data file `%s'*/24, fnm);
+   if (mode[0] == 'w') filename_register_output(fnm);
    return f;
 }
 
@@ -217,12 +218,12 @@ add_ext(const char *fnm, const char *ext)
 }
 
 /* fopen file, found using pth and fnm
- * pfnmUsed used to return filename used to open file (ignored if NULL)
+ * fnmUsed is used to return filename used to open file (ignored if NULL)
  * or NULL if file didn't open
  */
 extern FILE FAR *
-fopenWithPthAndExt(const char * pth, const char * fnm, const char * szExt,
-		   const char * szMode, char **pfnmUsed)
+fopenWithPthAndExt(const char *pth, const char *fnm, const char *ext,
+		   const char *mode, char **fnmUsed)
 {
    char *fnmFull = NULL;
    FILE *fh = NULL;
@@ -233,28 +234,28 @@ fopenWithPthAndExt(const char * pth, const char * fnm, const char * szExt,
 
    /* if appropriate, try it without pth */
    if (fAbs) {
-      fh = fopen_not_dir(fnm, szMode);
+      fh = fopen_not_dir(fnm, mode);
       if (fh) {
-	 if (pfnmUsed) fnmFull = osstrdup(fnm);
+	 if (fnmUsed) fnmFull = osstrdup(fnm);
       } else {
-	 if (szExt && *szExt) {
+	 if (ext && *ext) {
 	    /* we've been given an extension so try using it */
-	    fnmFull = add_ext(fnm, szExt);
-	    fh = fopen_not_dir(fnmFull, szMode);
+	    fnmFull = add_ext(fnm, ext);
+	    fh = fopen_not_dir(fnmFull, mode);
 	 }
       }
    } else {
       /* try using path given - first of all without the extension */
       fnmFull = use_path(pth, fnm);
-      fh = fopen_not_dir(fnmFull, szMode);
+      fh = fopen_not_dir(fnmFull, mode);
       if (!fh) {
-	 if (szExt && *szExt) {
+	 if (ext && *ext) {
 	    /* we've been given an extension so try using it */
 	    char *fnmTmp;
 	    fnmTmp = fnmFull;
-	    fnmFull = add_ext(fnmFull, szExt);
+	    fnmFull = add_ext(fnmFull, ext);
 	    osfree(fnmTmp);
-	    fh = fopen_not_dir(fnmFull, szMode);
+	    fh = fopen_not_dir(fnmFull, mode);
 	 }
       }
    }
@@ -262,8 +263,8 @@ fopenWithPthAndExt(const char * pth, const char * fnm, const char * szExt,
    /* either it opened or didn't. If not, fh == NULL from fopen_not_dir() */
 
    /* free name if it didn't open or name isn't wanted */
-   if (fh == NULL || pfnmUsed == NULL) osfree(fnmFull);
-   if (pfnmUsed) *pfnmUsed = (fh ? fnmFull : NULL);
+   if (fh == NULL || fnmUsed == NULL) osfree(fnmFull);
+   if (fnmUsed) *fnmUsed = (fh ? fnmFull : NULL);
    return fh;
 }
 
@@ -271,9 +272,9 @@ fopenWithPthAndExt(const char * pth, const char * fnm, const char * szExt,
  * native ones (e.g. on Unix dir\file.ext -> dir/file.ext) */
 FILE *
 fopen_portable(const char *pth, const char *fnm, const char *ext,
-	       const char *mode, char **pfnmUsed)
+	       const char *mode, char **fnmUsed)
 {
-   FILE *fh = fopenWithPthAndExt(pth, fnm, ext, mode, pfnmUsed);
+   FILE *fh = fopenWithPthAndExt(pth, fnm, ext, mode, fnmUsed);
    if (fh == NULL) {
 #if (OS==RISCOS) || (OS==UNIX)
       int f_changed = 0;
@@ -317,7 +318,7 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
       *q = '\0';
 #endif
       if (f_changed)
-	 fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, pfnmUsed);
+	 fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
 
 #if (OS==UNIX)
       /* as a last ditch measure, try lowercasing the filename */
@@ -329,11 +330,39 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 	       f_changed = 1;
 	    }
 	 if (f_changed)
-	    fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, pfnmUsed);
+	    fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
       }
 #endif
       osfree(fnm_trans);
 #endif
    }
    return fh;
+}
+
+typedef struct filelist {
+   char *fnm;
+   struct filelist *next;
+} filelist;
+
+static filelist *flhead = NULL;
+
+void
+filename_register_output(const char *fnm)
+{
+   filelist *p = osnew(filelist);
+   p->fnm = osstrdup(fnm);
+   p->next = flhead;
+   flhead = p;
+}
+
+void
+filename_delete_output(void)
+{
+   while (flhead) {
+      filelist *p = flhead;
+      flhead = flhead->next;
+      remove(p->fnm);
+      osfree(p->fnm);
+      osfree(p);
+   }
 }

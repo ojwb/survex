@@ -70,7 +70,7 @@ bool fPercent = fFalse;
 #endif
 bool fAscii = fFalse;
 bool fQuiet = fFalse; /* just show brief summary + errors */
-bool fMute = fFalse; /* just show errors */
+static bool fMute = fFalse; /* just show errors */
 bool fSuppress = fFalse; /* only output 3d(3dx) file */
 
 nosurveylink *nosurveyhead;
@@ -129,6 +129,13 @@ static struct help_msg help[] = {
  /*{'z',                        "set optimizations for network reduction"},*/
    {0, 0}
 };
+
+/* atexit function */
+static void
+delete_output_on_error(void)
+{
+   if (msg_errors) filename_delete_output();
+}
 
 extern CDECL int
 main(int argc, char **argv)
@@ -230,6 +237,8 @@ main(int argc, char **argv)
    out_puts(COPYRIGHT_MSG);
    putnl();
 
+   atexit(delete_output_on_error);
+
    /* end of options, now process data files */
    while (argv[optind]) {
       const char *fnm = argv[optind];
@@ -281,7 +290,7 @@ main(int argc, char **argv)
 #endif
    if (fhErrStat) fclose(fhErrStat);
 
-   if (!fSuppress) list_pos(root); /* produce .pos file */
+   if (!fSuppress && !msg_errors) list_pos(root); /* produce .pos file */
 
    out_current_action(msg(/*Calculating statistics*/120));
    do_stats();
@@ -305,7 +314,13 @@ main(int argc, char **argv)
 
       out_puts(msg(/*Done.*/144));
    }
-   return error_summary();
+   if (msg_warnings || msg_errors) {
+      printf(msg(/*There were %d warning(s) and %d non-fatal error(s).*/16),
+	     msg_warnings, msg_errors);
+      putnl();
+      /* FIXME: if (msg_errors) print "output not produced..."? */
+   }
+   return (msg_errors ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
 static void
@@ -328,7 +343,7 @@ do_stats(void)
    long cLoops = cComponents + cLegs - cStns;
    char buf[1024];
 
-   if (!fSuppress)
+   if (!fSuppress && !msg_errors)
       fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
 
    out_puts("");

@@ -60,18 +60,8 @@ static jmp_buf jmpbufSignal;
 # define CDECL
 #endif
 
-static int cWarnings = 0; /* keep track of how many warnings we've given */
-static int cErrors = 0;   /* and how many (non-fatal) errors */
-
-int
-error_summary(void)
-{
-   fprintf(STDERR,
-           msg(/*There were %d warning(s) and %d non-fatal error(s).*/16),
-	   cWarnings, cErrors);
-   fputnl(STDERR);
-   return (cErrors ? EXIT_FAILURE : EXIT_SUCCESS);
-}
+int msg_warnings = 0; /* keep track of how many warnings we've given */
+int msg_errors = 0;   /* and how many (non-fatal) errors */
 
 /* in case osmalloc() fails before szAppNameCopy is set up */
 static const char *szAppNameCopy = "anonymous program";
@@ -605,11 +595,11 @@ v_report(int severity, const char *fnm, int line, int en, va_list ap)
    /* FIXME: allow "warnings are errors" and/or "errors are fatal" */
    switch (severity) {
     case 0:
-      cWarnings++;
+      msg_warnings++;
       break;
     case 1:
-      cErrors++;
-      if (cErrors == 50)
+      msg_errors++;
+      if (msg_errors == 50)
 	 fatalerror_in_file(fnm, 0, /*Too many errors - giving up*/19);
       break;
     case 2:

@@ -39,19 +39,19 @@
 #define CHARSET_RISCOS31   3
 #define CHARSET_UTF8	   4
 
+extern int msg_warnings; /* keep track of how many warnings we've given */
+extern int msg_errors;   /* and how many (non-fatal) errors */
+
 extern const char *msg_lang;
 
-extern void msg_init(const char *argv0);
+void msg_init(const char *argv0);
 
-extern const char *msg_cfgpth(void);
-
-/* report total warnings and non-fatal errors */
-extern int error_summary(void);
+const char *msg_cfgpth(void);
 
 /* Message may be overwritten by next call */
-extern const char *msg(int en);
+const char *msg(int en);
 /* Returns persistent copy of message */
-extern const char *msgPerm(int en);
+const char *msgPerm(int en);
 /* Kill persistent copy of message */
 #define msgFree(S) NOP
 

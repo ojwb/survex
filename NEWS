@@ -48,6 +48,18 @@ Changes in 0.97-prerelease1:
   had weren't actually useful; if memory is really tight, disable
   non-overlapping labels rather than dying with an error.
 
+* prefer balanced quotes (`...') to unbalanced ('...') in messages.
+
+* cavern: file reading errors now treated as fatal; unattached survey error
+  now fatal.
+
+* survex: syntax errors in command line arguments now fatal.
+
+* cavern: if there are errors, don't produce output files.
+
+* cavern: bug fix: trying to report certain errors in really long lines could
+  cause an internal error.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling

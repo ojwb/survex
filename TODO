@@ -34,12 +34,6 @@ From: Olly
 
 merge "datums" and quantities?
 
-Date: 19 Dec 1998
-From: Olly
-
-If there are errors, we shouldn't produce output files (reconsider some
-errors as warnings if this is done though).
-
 Date: 05 Jan 1999
 From: Wookey
 
@@ -143,7 +137,7 @@ xcaverot.
 
 cavern: auto declination? NEW_STYLE?
 
-Sort out Leandro's sketch output stuff in 3dtodxf
+Sort out Leandro's sketch output stuff in 3dtodxf; rename 3dtodxf
 
 update translations
 

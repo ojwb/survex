@@ -1,6 +1,6 @@
 /* > debug.h
  * SURVEX debugging info control macros
- * Copyright (C) 1993-1996 Olly Betts
+ * Copyright (C) 1993-1996,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,8 +74,6 @@
 #define PRINT_NETBITS 0
 /* puts '+' for legs 'inside' big (>3) nodes */
 #define SHOW_INTERNAL_LEGS 0
-/* print pointer values of names in replace_traverses() */
-#define PRINT_NAME_PTRS 0
 
 /* matrix.c */
 

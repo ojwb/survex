@@ -23,23 +23,23 @@
 #include "useful.h"
 #include "osdepend.h"
 
-extern char * FAR path_from_fnm(const char *fnm);
-extern char * FAR base_from_fnm(const char *fnm);
-extern char * FAR baseleaf_from_fnm(const char *fnm);
-extern char * FAR leaf_from_fnm(const char *fnm);
-extern char * FAR use_path(const char *pth, const char *lf);
-extern char * FAR add_ext(const char *fnm, const char *ext);
+char * FAR path_from_fnm(const char *fnm);
+char * FAR base_from_fnm(const char *fnm);
+char * FAR baseleaf_from_fnm(const char *fnm);
+char * FAR leaf_from_fnm(const char *fnm);
+char * FAR use_path(const char *pth, const char *lf);
+char * FAR add_ext(const char *fnm, const char *ext);
 
-extern FILE FAR *fopenWithPthAndExt(const char *pth, const char *fnm,
-				    const char *szExt, const char *szMode,
-				    char **fnmUsed);
+FILE *fopenWithPthAndExt(const char *pth, const char *fnm, const char *ext,
+			 const char *mode, char **fnmUsed);
 
-extern FILE *fopen_portable(const char *pth, const char *fnm,
-       	    		    const char *ext, const char *mode,
-       	    		    char **pfnmUsed);
+FILE *fopen_portable(const char *pth, const char *fnm, const char *ext,
+		     const char *mode, char **fnmUsed);
 
-extern FILE *safe_fopen(const char *fnm, const char *mode);
-extern FILE *safe_fopen_with_ext(const char *fnm, const char *ext,
-				 const char *mode);
+FILE *safe_fopen(const char *fnm, const char *mode);
+FILE *safe_fopen_with_ext(const char *fnm, const char *ext, const char *mode);
+
+void filename_register_output(const char *fnm);
+void filename_delete_output(void);
 
 #endif /* FILENAME_H */

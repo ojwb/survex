@@ -294,7 +294,6 @@ extern real min[3], max[3];
 extern prefix *pfxHi[3], *pfxLo[3];
 extern bool fAscii;
 extern bool fQuiet; /* just show brief summary + errors */
-extern bool fMute; /* just show errors */
 extern bool fSuppress; /* only output 3d(3dx) file */
 
 /* macros */
