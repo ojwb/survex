@@ -2193,7 +2193,7 @@ void GfxCore::HandleTilt(wxPoint point)
 
 	if (m_ReverseControls) dy = -dy;
 
-	TiltCave(M_PI * (Double(-dy) / 500.0));
+	TiltCave(Double(-dy) * M_PI / 500.0);
 
 	m_DragStart = point;
     }
@@ -2316,7 +2316,8 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	CheckHitTestGrid(point, false);
     }
 
-    // Update coordinate display if in plan view.
+    // Update coordinate display if in plan view, or altitude if in elevation
+    // view.
     if (m_TiltAngle == M_PI_2) {
 	int x = event.GetX() - m_XCentre - m_Params.display_shift.x;
 	int y = -(event.GetY() - m_YCentre - m_Params.display_shift.y);
@@ -2348,10 +2349,20 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 
 	      wxCoord radius = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
 
-	      if (m_Compass && sqrt(dx0*dx0 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
-		  m_LastDrag == drag_COMPASS) {
+	      if (m_LastDrag == drag_NONE) {
+		  if (m_Compass && dx0 * dx0 + dy * dy <= radius * radius)
+		      m_LastDrag = drag_COMPASS;
+		  else if (m_Clino && dx1 * dx1 + dy * dy <= radius * radius)
+		      m_LastDrag = drag_ELEV;
+		  else if (point.x >= m_ScaleBar.offset_x &&
+			   point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
+			   point.y <= m_YSize - m_ScaleBar.offset_y &&
+			   point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT)
+		      m_LastDrag = drag_SCALE;
+	      }
+	      if (m_LastDrag == drag_COMPASS) {
 		  // drag in heading indicator
-		  if (sqrt(dx0*dx0 + dy*dy) <= radius) {
+		  if (dx0 * dx0 + dy * dy <= radius * radius) {
 		      TurnCaveTo(atan2(dx0, dy) - M_PI);
 		      m_MouseOutsideCompass = false;
 		  }
@@ -2360,13 +2371,10 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 				 M_PI_4);
 		      m_MouseOutsideCompass = true;
 		  }
-		  m_LastDrag = drag_COMPASS;
 	      }
-	      else if (m_Clino && sqrt(dx1*dx1 + dy*dy) <= radius &&
-		       m_LastDrag == drag_NONE || m_LastDrag == drag_ELEV) {
+	      else if (m_LastDrag == drag_ELEV) {
 		  // drag in elevation indicator
-		  m_LastDrag = drag_ELEV;
-		  if (dx1 >= 0 && sqrt(dx1*dx1 + dy*dy) <= radius) {
+		  if (dx1 >= 0 && dx1 * dx1 + dy * dy <= radius * radius) {
 		      TiltCave(atan2(dy, dx1) - m_TiltAngle);
 		      m_MouseOutsideElev = false;
 		  }
@@ -2383,14 +2391,8 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		      m_MouseOutsideElev = true;
 		  }
 	      }
-	      else if ((m_LastDrag == drag_NONE &&
-		       point.x >= m_ScaleBar.offset_x &&
-		       point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
-		       point.y <= m_YSize - m_ScaleBar.offset_y &&
-		       point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT) ||
-		       m_LastDrag == drag_SCALE) {
+	      else if (m_LastDrag == drag_SCALE) {
 		  if (point.x >= 0 && point.x <= m_XSize) {
-		      m_LastDrag = drag_SCALE;
 		      //--FIXME: GL fix needed
 
 		      Double size_snap = Double(m_ScaleBar.width) / m_Params.scale;
