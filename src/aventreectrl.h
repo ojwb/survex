@@ -31,6 +31,7 @@ class AvenTreeCtrl : public wxTreeCtrl {
     MainFrm* m_Parent;
     bool m_Enabled;
     wxTreeItemId m_LastItem;
+    wxColour m_BackgroundColour;
     bool m_SelValid;
 
 public:

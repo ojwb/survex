@@ -36,6 +36,7 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     m_Parent(parent),
     m_SelValid(false)
 {
+    m_BackgroundColour = GetBackgroundColour();
 }
 
 void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
@@ -44,14 +45,12 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 	int flags;
 	wxTreeItemId pos = HitTest(event.GetPosition(), flags);
 	if (pos != m_LastItem) {
-	    if (flags &
-		(wxTREE_HITTEST_ONITEMLABEL | wxTREE_HITTEST_ONITEMRIGHT)) {
+	    if (flags & (wxTREE_HITTEST_ONITEMLABEL | wxTREE_HITTEST_ONITEMRIGHT)) {
 		if (m_LastItem != -1) {
 #ifndef __WXGTK__
 		    SetItemBold(m_LastItem, false);
 #else
-		    SetItemBackgroundColour(m_LastItem,
-			    		    wxColour(255, 255, 255));
+		    SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
 #endif
 		}
 #ifndef __WXGTK__
@@ -66,8 +65,7 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 #ifndef __WXGTK__
 		    SetItemBold(m_LastItem, false);
 #else
-		    SetItemBackgroundColour(m_LastItem,
-			    		    wxColour(255, 255, 255));
+		    SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
 #endif
 		}
 		m_Parent->DisplayTreeInfo(NULL);
