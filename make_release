@@ -24,6 +24,10 @@ if test -f Makefile ; then
       exit 1
    fi
 fi
+aclocal
+autoheader
+automake -a
+autoconf
 if ! ./configure ; then
    echo configure failed
    exit 1
