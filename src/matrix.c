@@ -110,6 +110,8 @@
 1996.04.03 fixed a warning
 1998.03.04 covariances - current just a warning that they aren't supported here
 1998.04.06 tidied up in preparation for a real covariance implementation
+1998.04.28 covariances implemented
+1998.05.26 covariances now seem to work
 */
 
 #include "debug.h"
@@ -134,15 +136,26 @@
 static void print_matrix( real FAR *M, real *B );
 #endif
 
-static void choleski( real FAR *M, real *B );
+static void choleski(
+#ifdef NO_COVARIANCES
+		     real FAR *M, real *B
+#else
+		     var FAR *M, d *B
+#endif
+		     );
+
 #ifdef SOR
 static void sor( real FAR *M, real *B );
 #endif
 
+#ifdef NO_COVARIANCES
 /* for M(row,col) col must be <= row, so Y<=X */
 # define M(X,Y) ((real Huge *)M)[((((OSSIZE_T)(X))*((X)+1))>>1)+(Y) ]
               /* +(Y>X?0*printf("row<col (line %d)\n",__LINE__):0) */
 /*#define M_(X,Y) ((real Huge *)M)[((((OSSIZE_T)(Y))*((Y)+1))>>1)+(X) ]*/
+#else
+# define M(X,Y) ((var Huge *)M)[((((OSSIZE_T)(X))*((X)+1))>>1)+(Y) ]
+#endif
 
 static int find_stn_in_tab( node *stn );
 static int add_stn_to_tab( node *stn );
@@ -267,9 +280,9 @@ extern void solve_matrix(void) {
    for (;;) {
       int cColouredNeighbours = 0, cNeighbours = 0;
       stn = stnStart;
-    /* see if this is a fresh component */
-      if (stn->status != statFixed)
-	cComponents++;
+      /* see if this is a fresh component */
+      if (stn->status != statFixed) cComponents++;
+
       for ( i = 0 ; i <= 2 ; i++ ) {
 	 if (stn->leg[i]) {
 	    cNeighbours++;
@@ -296,7 +309,7 @@ extern void solve_matrix(void) {
 	       if (stn->leg[i]->l.to->colour == 0) {
 		  ulong colBefore = colour;
 		  node *stn2;
-		  
+
 		  c++;
 		  visit(stn->leg[i]->l.to);
 		  n = colour-colBefore;
@@ -379,13 +392,38 @@ more:
 #endif
 }
 
+#ifdef NO_COVARIANCES
+# define B_ZERO (real)0.0
+# define M_ZERO (real)0.0
+# define MELT_TYPE real
+# define BELT_TYPE real
+# define MELT_COPY( A, B ) ((A)=(B))
+# define BELT_COPY( A, B ) ((A)=(B))
+#else
+# define B_ZERO d_zero
+# define M_ZERO var_zero
+# define MELT_TYPE var
+# define BELT_TYPE d
+# define MELT_COPY( A, B ) (memcpy((A),(B),sizeof(var)))
+# define BELT_COPY( A, B ) (memcpy((A),(B),sizeof(d)))
+#endif
+
 static void build_matrix(long n, prefix **stn_tab) {
+#ifdef NO_COVARIANCES
    real FAR *M;
    real *B;
+   real e;
+#else
+   var FAR *M;
+   d *B;
+   d d_zero = { 0.0, 0.0, 0.0 };
+   var var_zero = { 0.0, 0.0, 0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.0 };
+   var e;
+   d a;
+#endif
    node *stn;
    int  row, col;
-   int  d;
-   real e, a;
+   int  dim;
 
 #ifdef DEBUG_ARTIC
    printf("# stations %lu\n",n);
@@ -405,8 +443,8 @@ static void build_matrix(long n, prefix **stn_tab) {
    /* release any unused entries in stn_tab (warning: n==0 is bad news) */
    /*  stn_tab=osrealloc(stn_tab,n*ossizeof(prefix*)); */
    /* (OSSIZE_T) cast may be needed if n>=181 */
-   M = osmalloc((OSSIZE_T)((((OSSIZE_T)n*(n+1))>>1))*ossizeof(real));
-   B = osmalloc((OSSIZE_T)(n*ossizeof(real)));
+   M = osmalloc((OSSIZE_T)((((OSSIZE_T)n*(n+1))>>1))*ossizeof(MELT_TYPE));
+   B = osmalloc((OSSIZE_T)(n*ossizeof(BELT_TYPE)));
 
    out_info("");
    if (n == 1)
@@ -416,14 +454,19 @@ static void build_matrix(long n, prefix **stn_tab) {
       out_info(szOut);
    }
 
-   for (d = 2; d >= 0; d-- ) {
-      sprintf( szOut, msg(76), (char)('x'+d) );
+#ifdef NO_COVARIANCES
+   dim = 2;
+#else
+   dim = 0; /* fudge next loop for now */
+#endif
+   for ( ; dim >= 0; dim-- ) {
+      sprintf( szOut, msg(76), (char)('x'+dim) );
       out_current_action(szOut);
       /* Initialise M and B to zero */
       /* might be best to zero "linearly" (!HACK!) */
       for ( row = n-1 ; row >= 0 ; row-- ) {
-	 B[row] = (real)0.0;
-	 for ( col = row ; col >= 0 ; col-- ) M(row,col) = (real)0.0;
+	 BELT_COPY( B[row], B_ZERO );
+	 for ( col = row ; col >= 0 ; col-- ) MELT_COPY( M(row,col), M_ZERO );
       }
 
       /* Construct matrix - Go thru' stn list & add all forward legs to M */
@@ -436,7 +479,7 @@ static void build_matrix(long n, prefix **stn_tab) {
 	 printf(" status? %d, used: %d artic %d colour %d\n",stn->status,
 		(!!stn->leg[2])<<2 | (!!stn->leg[1])<<1 | (!!stn->leg[0]),
 		stn->fArtic, stn->colour );
-	      
+
 	 for ( dirn = 0; dirn <= 2; dirn++ )
  	    if (USED(stn,dirn)) {
 	       printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
@@ -452,70 +495,100 @@ static void build_matrix(long n, prefix **stn_tab) {
 /*          print_prefix(stn->name); putnl(); */
 	    if (fixed(stn)) {
 	       for ( dirn = 2 ; dirn >= 0 ; dirn-- )
-		 if ( USED(stn,dirn) && data_here(stn->leg[dirn]) ) {
+		  if ( USED(stn,dirn) && data_here(stn->leg[dirn]) ) {
 #if DEBUG_MATRIX_BUILD
-		    print_prefix(stn->name);
-		    printf(" - ");
-		    print_prefix(stn->leg[dirn]->l.to->name);
-		    putnl();
+		     print_prefix(stn->name);
+		     printf(" - ");
+		     print_prefix(stn->leg[dirn]->l.to->name);
+		     putnl();
 #endif /* DEBUG_MATRIX_BUILD */
-		    if (!(fixed(stn->leg[dirn]->l.to)) &&
-			stn->leg[dirn]->l.to->status == statFixed) {
-		       t = find_stn_in_tab(stn->leg[dirn]->l.to);
+		     if (!(fixed(stn->leg[dirn]->l.to)) &&
+			 stn->leg[dirn]->l.to->status == statFixed) {
+		        t = find_stn_in_tab(stn->leg[dirn]->l.to);
 #ifdef NO_COVARIANCES
-		       e = stn->leg[dirn]->v[d];
-#else
-		       ASSERT2(0,"fix covariances code!");
-		       e = stn->leg[dirn]->v[d][d]; /* !HACK! covariances */
-#endif
-		       if (e != (real)0.0) {
-			  /* not an equate */
-			  e = ((real)1.0) / e;
-			  a = e * stn->leg[dirn]->d[d];
-			  M(t,t) += e;
-			  B[t] += e * POS(stn,d) + a;
+		        e = stn->leg[dirn]->v[dim];
+		        if (e != (real)0.0) {
+			   /* not an equate */
+			   e = ((real)1.0) / e;
+			   M(t,t) += e;
+			   B[t] += e * ( POS( stn, dim ) + stn->leg[dirn]->d[dim] );
 #if DEBUG_MATRIX_BUILD
-			  printf("--- Dealing with stn fixed at %lf\n",
-				 POS(stn,d));
+			   printf("--- Dealing with stn fixed at %lf\n",
+				  POS(stn,dim));
 #endif /* DEBUG_MATRIX_BUILD */
-		       }
-		    }
-		 }
+		        }
+#else
+		        if (invert_var( &e, &stn->leg[dirn]->v )) {
+			   /* not an equate */
+			   d b;
+			   addvv( &M(t,t), &M(t,t), &e );
+			   adddd( &a, &POSD(stn), &stn->leg[dirn]->d );
+			   mulvd( &b, &e, &a );
+			   adddd( &B[t], &B[t], &b );
+#if DEBUG_MATRIX_BUILD
+			   printf("--- Dealing with stn fixed at (%lf, %lf, %lf)\n",
+			   	  POS(stn,0), POS(stn,1), POS(stn,2));
+#endif /* DEBUG_MATRIX_BUILD */
+		        }
+#endif
+		     }
+		  }
 	    } else {
 	       f = find_stn_in_tab(stn);
 	       for ( dirn = 2 ; dirn >= 0 ; dirn-- )
 		  if ( USED(stn,dirn) && data_here(stn->leg[dirn]) ) {
-#ifdef NO_COVARIANCES
-		     e = stn->leg[dirn]->v[d];
-#else
-		     ASSERT2(0,"fix covariances code!");
-		     e = stn->leg[dirn]->v[d][d]; /* !HACK! covariances */
-#endif
 		     if (fixed(stn->leg[dirn]->l.to)) {
 			/* Ignore equated nodes */
+#ifdef NO_COVARIANCES
+                        e = stn->leg[dirn]->v[dim];
 			if (e != (real)0.0) {
 			   e = ((real)1.0) / e;
-			   a = e * stn->leg[dirn]->d[d];
 			   M(f,f) += e;
-			   B[f] += e * POS(stn->leg[dirn]->l.to,d) - a;
+			   B[f] += e * (POS(stn->leg[dirn]->l.to,dim)
+			                - stn->leg[dirn]->d[dim] );
 			}
+#else
+			if (invert_var( &e, &stn->leg[dirn]->v )) {
+			   d b;
+			   addvv( &M(f,f), &M(f,f), &e );
+			   subdd( &a, &POSD(stn->leg[dirn]->l.to),
+				  &stn->leg[dirn]->d );
+			   mulvd( &b, &e, &a );
+			   adddd( &B[f], &B[f], &b );
+			}
+#endif
 		     } else {
 			if (stn->leg[dirn]->l.to->status == statFixed) {
 			   t = find_stn_in_tab(stn->leg[dirn]->l.to);
 #if DEBUG_MATRIX
-			   printf("Leg %d to %d, var %f, delta %f\n", f, t, e, 
-				  stn->leg[dirn]->d[d]);
+			   printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
+				  stn->leg[dirn]->d[dim]);
 #endif
-			   if (e != (real)0.0 && t != f) {
-			      /* Ignore equated nodes & lollipops */
+			   /* Ignore equated nodes & lollipops */
+#ifdef NO_COVARIANCES
+                           e = stn->leg[dirn]->v[dim];
+			   if (t != f && e != (real)0.0) {
+			      real a;
 			      e = ((real)1.0) / e;
-			      a = e * stn->leg[(dirn)]->d[d];
 			      M(f,f) += e;
-			      B[f] -= a;
 			      M(t,t) += e;
-			      B[t] += a;
 			      if (f < t) M(t,f) -= e; else M(f,t) -= e;
+			      a = e * stn->leg[(dirn)]->d[dim];
+			      B[f] -= a;
+			      B[t] += a;
 			   }
+#else
+			   if (t != f && invert_var( &e, &stn->leg[dirn]->v )) {
+			      var *p;
+			      mulvd( &a, &e, &stn->leg[(dirn)]->d );
+			      addvv( &M(f,f), &M(f,f), &e );
+			      addvv( &M(t,t), &M(t,t), &e );
+			      if (f < t) p = &M(t,f); else p = &M(f,t);
+			      subvv( p, p, &e );
+			      subdd( &B[f], &B[f], &a );
+			      adddd( &B[t], &B[t], &a );
+			   }
+#endif
 			}
 		     }
 		  }
@@ -536,7 +609,14 @@ static void build_matrix(long n, prefix **stn_tab) {
 
       {
 	   int m;
-	   for ( m = n - 1 ; m >= 0 ; m-- ) stn_tab[m]->pos->p[d] = B[m];
+	   for ( m = n - 1 ; m >= 0 ; m-- ) {
+#ifdef NO_COVARIANCES
+	      stn_tab[m]->pos->p[dim] = B[m];
+#else
+	      BELT_COPY( stn_tab[m]->pos->p, B[m] );
+	      ASSERT2( fixed(stn_tab[m]->stn), "setting station coordinates didn't mark it as fixed" );
+#endif
+	   }
 #if EXPLICIT_FIXED_FLAG
 /* broken code? !HACK! */
 	 for( m = n - 1 ; m >= 0 ; m-- ) fix(stn_tab[m]->stn);
@@ -588,10 +668,15 @@ static int add_stn_to_tab( node *stn ) {
 /* Solve MX=B for X by Choleski factorisation */
 /* Note M must be symmetric positive definite */
 /* routine is entitled to scribble on M and B if it wishes */
-static void choleski( real FAR *M, real *B ) {
+static void choleski(
+#ifdef NO_COVARIANCES
+		     real FAR *M, real *B
+#else
+		     var FAR *M, d *B
+#endif
+		     ) {
    int i, j, k;
    long n = n_stn_tab;
-   real V;
 #ifndef NO_PERCENTAGE
    ulong flopsTot, flops = 0, temp = 0;
 #define do_percent(N) BLK(flops+=(N);out_set_percentage((int)((100.0*flops)/flopsTot));)
@@ -602,17 +687,58 @@ static void choleski( real FAR *M, real *B ) {
  /* 3*n*(n-1)/2 + n*(n-1)*(n-2)/3 + n*(n-1)/2 + n + n*(n-1)/2; */
 /* n*(9*n-5 + 2*n*n )/6 ; */
 
+#ifdef MATRIX_PRE_INVERT_DIAGONAL
+   /* !HACK! more efficient if we keep an array of all the elts on the
+    * diagonal pre-inverted to use later
+    * This saves us O(n^2) matrix inversions
+    */
+   var I[n]; /* NB must be dynamic really */
+   if (!invert_var( &I[0], &M(0,0) )) BUG("Can't invert matrix diagonal");
+#endif
+
    for ( j = 1 ; j < n ; j++ ) {
+#ifdef NO_COVARIANCES
+      real V;
       for ( i = 0 ; i < j ; i++ ) {
-	 V = (real)0.0;
+         V = (real)0.0;
 	 for ( k = 0 ; k < i ; k++ )
 	    V += M(i,k) * M(j,k) * M(k,k);
 	 M(j,i) = ( M(j,i) - V ) / M(i,i);
       }
       V = (real)0.0;
       for ( k = 0 ; k < j ; k++ )
-	 V -= M(j,k) * M(j,k) * M(k,k);
-      M(j,j) += V; /* may be best to add M() last for numerical reasons too */
+	 V += M(j,k) * M(j,k) * M(k,k);
+      M(j,j) -= V; /* may be best to add M() last for numerical reasons too */
+#else
+      var V;
+      var var_zero = { 0.0, 0.0, 0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.0 };
+      var t1, t2;
+      for ( i = 0 ; i < j ; i++ ) {
+	 MELT_COPY( V, M_ZERO );
+	 for ( k = 0 ; k < i ; k++ ) {
+	    mulvv( &t1, &M(i,k), &M(j,k) );
+	    mulvv( &t2, &t1, &M(k,k) );
+	    addvv( &V, &V, &t2 );
+	 }
+	 subvv( &V, &M(j,i), &V );
+#ifndef MATRIX_PRE_INVERT_DIAGONAL
+	 divvv( &M(j,i), &V, &M(i,i) );
+#else
+	 mulvv( &M(j,i), &V, &I[i] );
+#endif
+      }
+      MELT_COPY( V, M_ZERO );
+      for ( k = 0 ; k < j ; k++ ) {
+         mulvv( &t1, &M(j,k), &M(k,k) ); /* NB operand order matters for matrices */
+	 mulvv( &t2, &t1, &M(j,k) );
+	 addvv( &V, &V, &t2 );
+      }
+      subvv( &M(j,j), &M(j,j), &V ); /* may be best to add M() last for numerical reasons too */
+#ifdef MATRIX_PRE_INVERT_DIAGONAL
+      if (!invert_var( &I[j], &M(j,j) )) BUG("Can't invert matrix diagonal");
+#endif
+#endif
+
 #ifndef NO_PERCENTAGE
       if (fPercent) {
 	 temp += ((ulong)j + j) + 1ul; /* avoid multiplies */
@@ -623,8 +749,15 @@ static void choleski( real FAR *M, real *B ) {
 
    /* Multiply x by L inverse */
    for ( i = 0 ; i < n - 1 ; i++ ) {
-      for ( j = i + 1 ; j < n ; j++ )
+      for ( j = i + 1 ; j < n ; j++ ) {
+#ifdef NO_COVARIANCES
 	 B[j] -= M(j,i) * B[i];
+#else
+         d tmp;
+         mulvd( &tmp, &M(j,i), &B[i]);
+         subdd( &B[j], &B[j], &tmp );
+#endif
+      }
    }
 
 #ifndef NO_PERCENTAGE
@@ -635,17 +768,39 @@ static void choleski( real FAR *M, real *B ) {
 #endif
 
    /* Multiply x by D inverse */
-   for ( i = 0 ; i < n ; i++ )
+   for ( i = 0 ; i < n ; i++ ) {
+#ifdef NO_COVARIANCES
       B[i] /= M(i,i);
+#else
+      d t;
+      BELT_COPY( t, B[i] );
+#ifndef MATRIX_PRE_INVERT_DIAGONAL
+      divdv( &B[i], &t, &M(i,i) );
+#else
+      muldv( &B[i], &t, &I[i] );
+#endif
+#endif
+   }
+
+#ifdef MATRIX_PRE_INVERT_DIAGONAL
+   release(I);
+#endif
 
 #ifndef NO_PERCENTAGE
    if (fPercent) do_percent((ulong)n);
 #endif
 
- /* Multiply x by (L transpose) inverse */
+   /* Multiply x by (L transpose) inverse */
    for( i = n - 1 ; i > 0 ; i-- ) {
-      for( j = i - 1 ; j >= 0 ; j-- )
+      for( j = i - 1 ; j >= 0 ; j-- ) {
+#ifdef NO_COVARIANCES
   	 B[j] -= M(i,j) * B[i];
+#else
+         d tmp;
+         mulvd( &tmp, &M(i,j), &B[i]);
+         subdd( &B[j], &B[j], &tmp );
+#endif
+      }
    }
 
 #ifndef NO_PERCENTAGE
@@ -674,7 +829,7 @@ static void sor( real FAR *M, real *B ) {
 
 printf("reciprocating diagonal\n");
 
- /* munge diagonal so we can multiply rather than divide */
+   /* munge diagonal so we can multiply rather than divide */
    for ( row = n - 1 ; row >= 0 ; row-- ) {
       M(row,row) = 1 / M(row,row);
       X[row] = 0.0;
