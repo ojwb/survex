@@ -114,9 +114,7 @@ class GLACanvas : public wxWindow {
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
     ~GLACanvas();
-#ifdef FLYFREE
-    Vector3 m_ViewPoint;
-#endif
+
     void FirstShow();
 
     void Clear();
