@@ -77,7 +77,7 @@ bool fPercent = fFalse;
 bool fQuiet = fFalse; /* just show brief summary + errors */
 bool fMute = fFalse; /* just show errors */
 bool fSuppress = fFalse; /* only output 3d(3dx) file */
-static bool fLog = fFalse; /* stdout to .log file, suppress .inf file */
+static bool fLog = fFalse; /* stdout to .log file */
 static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */   
 
 nosurveylink *nosurveyhead;
@@ -354,7 +354,7 @@ main(int argc, char **argv)
    if (fhErrStat) safe_fclose(fhErrStat);
 
    out_current_action(msg(/*Calculating statistics*/120));
-   do_stats();
+   if (!fMute) do_stats();
    if (!fQuiet) {
       /* clock() typically wraps after 72 minutes, but there doesn't seem
        * to be a better way.  Still 72 minutes means some cave!
@@ -392,128 +392,70 @@ main(int argc, char **argv)
 }
 
 static void
-do_range(FILE *fh, int d, int msg1, int msg2, int msg3)
+do_range(int d, int msg1, int msg2, int msg3)
 {
-   if (!fMute) {
-      printf(msg(msg1), max[d] - min[d]);
-      fprint_prefix(stdout, pfxHi[d]);
-      printf(msg(msg2), max[d]);
-      fprint_prefix(stdout, pfxLo[d]);
-      printf(msg(msg3), min[d]);
-      putnl();
-   }
-   if (fh) {
-      fprintf(fh, msg(msg1), max[d] - min[d]);
-      fprint_prefix(fh, pfxHi[d]);
-      fprintf(fh, msg(msg2), max[d]);
-      fprint_prefix(fh, pfxLo[d]);
-      fprintf(fh, msg(msg3), min[d]);
-      fputnl(fh);
-   }
+   printf(msg(msg1), max[d] - min[d]);
+   fprint_prefix(stdout, pfxHi[d]);
+   printf(msg(msg2), max[d]);
+   fprint_prefix(stdout, pfxLo[d]);
+   printf(msg(msg3), min[d]);
+   putnl();
 }
 
 static void
 do_stats(void)
 {
-   FILE *fh = NULL;
    long cLoops = cComponents + cLegs - cStns;
 
-   if (!fLog && !fSuppress &&
-       !(msg_errors || (f_warnings_are_errors && msg_warnings)))
-      fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
-   else
-      if (fMute) return;
-
-   if (!fMute) putnl();
+   putnl();
 
    if (cStns == 1) {
-      if (!fMute)
-	 fputs(msg(/*Survey contains 1 survey station,*/172), stdout);
-      if (fh)
-	 fputs(msg(/*Survey contains 1 survey station,*/172), fh);
+      fputs(msg(/*Survey contains 1 survey station,*/172), stdout);
    } else {
-      if (!fMute)
-	 printf(msg(/*Survey contains %ld survey stations,*/173), cStns);
-      if (fh)
-	 fprintf(fh, msg(/*Survey contains %ld survey stations,*/173), cStns);
+      printf(msg(/*Survey contains %ld survey stations,*/173), cStns);
    }
 
    if (cLegs == 1) {
-      if (!fMute)
-	 fputs(msg(/* joined by 1 leg.*/174), stdout);
-      if (fh)
-	 fputs(msg(/* joined by 1 leg.*/174), fh);
+      fputs(msg(/* joined by 1 leg.*/174), stdout);
    } else {
-      if (!fMute)
-	 printf(msg(/* joined by %ld legs.*/175), cLegs);
-      if (fh)
-	 fprintf(fh, msg(/* joined by %ld legs.*/175), cLegs);
+      printf(msg(/* joined by %ld legs.*/175), cLegs);
    }
 
-   if (!fMute) putnl();
-   if (fh) fputnl(fh);
+   putnl();
 
    if (cLoops == 1) {
-      if (!fMute)
-	 fputs(msg(/*There is 1 loop.*/138), stdout);
-      if (fh)
-	 fputs(msg(/*There is 1 loop.*/138), fh);
+      fputs(msg(/*There is 1 loop.*/138), stdout);
    } else {
-      if (!fMute)
-	 printf(msg(/*There are %ld loops.*/139), cLoops);
-      if (fh)
-	 fprintf(fh, msg(/*There are %ld loops.*/139), cLoops);
+      printf(msg(/*There are %ld loops.*/139), cLoops);
    }
 
-   if (!fMute) putnl();
-   if (fh) fputnl(fh);
+   putnl();
 
    if (cComponents != 1) {
-      if (!fMute) {
-	 printf(msg(/*Survey has %ld connected components.*/178), cComponents);
-	 putnl();
-      }
-      if (fh) {
-	 fprintf(fh, msg(/*Survey has %ld connected components.*/178), cComponents);
-	 fputnl(fh);
-      }
+      printf(msg(/*Survey has %ld connected components.*/178), cComponents);
+      putnl();
    }
 
-   if (!fMute) {
-      printf(msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
-	     total, totadj);
-      putnl();
-      printf(msg(/*Total plan length of survey legs = %7.2fm*/133),
-	     totplan);
-      putnl();
-      printf(msg(/*Total vertical length of survey legs = %7.2fm*/134),
-	     totvert);
-      putnl();
-   }
-   if (fh) {
-      fprintf(fh, msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
-	      total, totadj);
-      fputnl(fh);
-      fprintf(fh, msg(/*Total plan length of survey legs = %7.2fm*/133),
-	      totplan);
-      fputnl(fh);
-      fprintf(fh, msg(/*Total vertical length of survey legs = %7.2fm*/134),
-	      totvert);
-      fputnl(fh);
-   }
+   printf(msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
+	  total, totadj);
+   putnl();
+   printf(msg(/*Total plan length of survey legs = %7.2fm*/133),
+	  totplan);
+   putnl();
+   printf(msg(/*Total vertical length of survey legs = %7.2fm*/134),
+	  totvert);
+   putnl();
 
-   do_range(fh, 2, /*Vertical range = %4.2fm (from */135,
+   do_range(2, /*Vertical range = %4.2fm (from */135,
 	    /* at %4.2fm to */136, /* at %4.2fm)*/137);
-   do_range(fh, 1, /*North-South range = %4.2fm (from */148,
+   do_range(1, /*North-South range = %4.2fm (from */148,
 	    /* at %4.2fm to */196, /* at %4.2fm)*/197);
-   do_range(fh, 0, /*East-West range = %4.2fm (from */149,
+   do_range(0, /*East-West range = %4.2fm (from */149,
 	    /* at %4.2fm to */196, /* at %4.2fm)*/197);
 
-   print_node_stats(fh);
+   print_node_stats();
    /* Also, could give:
     *  # nodes stations (ie have other than two references or are fixed)
     *  # fixed stations (list of?)
     */
-
-   if (fh) safe_fclose(fh);
 }

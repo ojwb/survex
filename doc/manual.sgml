@@ -92,8 +92,8 @@ where this isn't the case, let me know.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-06 21:52:05 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.45 2001-09-06 21:52:05 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-11 21:58:13 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.46 2001-09-11 21:58:13 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -595,8 +595,8 @@ specified and as an all-lower-case filename.
 <Sect2><Title>Cavern Output</Title>
 
 <Para>Cavern reads in text files containing the survey data
-(<filename/.svx/) and outputs three data files, with the following
-extensions: <filename/.3d/, <filename/.err/ and <filename/.inf/.
+(<filename/.svx/) and outputs two files, with the extensions
+<filename/.3d/ and <filename/.err/.
 By default these files are put in the current directory, 
 with the same base filename as the first <filename/.svx/ file read
 (but a different extension).
@@ -605,13 +605,14 @@ You can change the directory and/or base filename using the --output switch.
 </Para>
 
 <Para>E.g. if you process the data file <filename>entrance.svx</filename>
-with the command <command>cavern entrance</command> then three files will be
-created: <filename>entrance.3d</filename>,
-<filename>entrance.err</filename>, and <filename>entrance.inf</filename>.
+with the command <command>cavern entrance</command> then the files
+<filename>entrance.3d</filename> and <filename>entrance.err</filename>
+will be created.
 </Para>
 
-<Para>Cavern also gives a range of statistics at the end of a run
-these are the same as the info in the <filename/.inf/ file:</Para>
+<Para>
+Cavern also gives a range of statistics at the end of a run:
+</Para>
 
 <itemizedlist>
 <listitem><para>The highest and lowest points and the height difference
@@ -655,14 +656,6 @@ flags associated with them.
 including the percentage error in each leg when it is part of a loop. You
 should study this information to determine if any parts of the survey are of
 lower quality or contain gross errors.</Para>
-
-</Sect3>
-
-<Sect3><Title><filename/.inf/ - information on the cave (depth, total length of survey legs, etc)
-</Title>
-
-<Para>This file contains the statistics printed at the end of each survey
-run.</Para>
 
 </Sect3>
 

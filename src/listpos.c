@@ -1,4 +1,4 @@
-/* > listpos.c
+/* listpos.c
  * SURVEX Cave surveying software: stuff to do with stn position output
  * Copyright (C) 1991-2001 Olly Betts
  *
@@ -137,18 +137,15 @@ node_stats(prefix *from)
 #endif
 
 extern void
-print_node_stats(FILE *fh)
+print_node_stats(void)
 {
 #if NODESTAT
    int c;
    node_stats(root);
    for (c = 0; c < icOrderMac; c++) {
       if (cOrder[c] > 0) {
-	 char buf[256];
-	 sprintf(buf, "%4d %d-%s.", cOrder[c], c,
-		 msg(cOrder[c] == 1 ? /*node*/176 : /*nodes*/177));
-	 if (!fMute) puts(buf);
-	 if (fh) fputsnl(buf, fh);
+	 printf("%4d %d-%s.\n", cOrder[c], c,
+		msg(cOrder[c] == 1 ? /*node*/176 : /*nodes*/177));
       }
    }
 #endif

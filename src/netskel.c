@@ -401,10 +401,6 @@ replace_travs(void)
 
    if (!pimg) {
       char *fnm;
-      fnm = add_ext(fnm_output_base, EXT_SVX_STAT);
-      filename_register_output(fnm);
-      osfree(fnm);
-
 #ifdef NEW3DFORMAT
       if (fUseNewFormat) {
 	 fnm = add_ext(fnm_output_base, EXT_SVX_3DX);

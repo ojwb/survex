@@ -1,4 +1,4 @@
-/* > listpos.h
+/* listpos.h
  * SURVEX Cave surveying software: stuff to do with stn position output
  * Copyright (C) 1994,2001 Olly Betts
  *
@@ -17,4 +17,4 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-void print_node_stats(FILE *fh);
+void print_node_stats(void);
