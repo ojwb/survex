@@ -3,6 +3,8 @@
  * Copyright (C) 1993-1998 Olly Betts
  */
 
+/*#define DEBUG 1*/
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -267,8 +269,11 @@ xlate_dos_cp850(int unicode)
 #endif
 
 static int
-add_unicode(int charset, char *p, int value)
+add_unicode(int charset, unsigned char *p, int value)
 {
+#ifdef DEBUG
+   fprintf(stderr, "add_unicode(%d, %p, %d)\n", charset, p, value);
+#endif
    if (value == 0) return 0;
    switch (charset) {
    case CHARSET_USASCII:
@@ -313,8 +318,8 @@ add_unicode(int charset, char *p, int value)
 /* fall back on looking in the current directory */
 static const char *pth_cfg_files = "";
 
-static unsigned char *msg_blk;
 static int num_msgs = 0;
+static char **msg_array = NULL;
 
 static void
 parse_msg_file(int charset_code)
@@ -324,10 +329,21 @@ parse_msg_file(int charset_code)
    const char *lang;
    int i;
    unsigned len;
-   char *p = (char *)msg_blk;
+   unsigned char *p;
+   
+#ifdef DEBUG
+   fprintf(stderr, "parse_msg_file(%d)\n", charset_code);
+#endif
 
    lang = getenv("SURVEXLANG");
+#ifdef DEBUG
+   fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
+#endif
+   
    if (!lang || !*lang) lang = DEFAULTLANG;
+#ifdef DEBUG
+   fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
+#endif
 
 #if 1
    /* backward compatibility - FIXME deprecate? */
@@ -348,6 +364,9 @@ parse_msg_file(int charset_code)
    } else if (strcasecmp(lang, "port") == 0) {
       lang = "pt";
    }
+#endif
+#ifdef DEBUG
+   fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
 #endif
 
    fh = fopenWithPthAndExt(pth_cfg_files, lang, EXT_SVX_MSG, "rb", NULL);
@@ -389,19 +408,24 @@ parse_msg_file(int charset_code)
    len = 0;
    for (i = 16; i < 20; i++) len = (len << 8) | header[i];
 
-   msg_blk = osmalloc(len);
-   if (fread(msg_blk, 1, len, fh) < len) {
+   p = osmalloc(len);
+   if (fread(p, 1, len, fh) < len) {
       /* no point extracting this error - it won't get used once file's read */
       fprintf(STDERR, "Message file truncated?\n");
       exit(EXIT_FAILURE);
    }
    fclose(fh);
 
-   p = (char *)msg_blk;
+#ifdef DEBUG
+   fprintf(stderr, "lang = '%s', num_msgs = %d, len = %d\n", lang, num_msgs, len);
+#endif
+
+   msg_array = osmalloc(sizeof(char *) * num_msgs);
+
    for (i = 0; i < num_msgs; i++) {
-      char *to = p;
+      unsigned char *to = p;
       int ch;
-      /* FIXME note message i is p? */
+      msg_array[i] = (char *)p;
       while ((ch = *p++) != 0) {
 	 /* A byte in the range 0x80-0xbf or 0xf0-0xff isn't valid in
 	  * this state, (0xf0-0xfd mean values > 0xffff) so treat as
@@ -483,9 +507,7 @@ msg(int en)
 {
    static const char *szBadEn = "???";
 
-   const char *p;
-
-   if (!msg_blk) {
+   if (!msg_array) {
       if (en != 1) return szBadEn;
       /* this should be the only message which can be requested before
        * the message file is opened and read... */
@@ -494,11 +516,7 @@ msg(int en)
 
    if (en < 0 || en >= num_msgs) return szBadEn;
 
-   p = (char *)msg_blk;
-   /* skip to en-th message */
-   while (en--) p += strlen(p) + 1;
-
-   return p;
+   return msg_array[en];
 }
 
 /* returns persistent copy of message */
@@ -602,7 +620,7 @@ fatalerror_in_file(const char *fnm, int line, int en, ...)
 typedef struct charset_li {
    struct charset_li *next;
    int code;
-   unsigned char *msg_blk;
+   char **msg_array;
 } charset_li;
 
 static charset_li *charset_head = NULL;
@@ -615,15 +633,19 @@ select_charset(int charset_code)
    int old_charset = charset;
    charset_li *p;
 
-/*   printf( "select_charset(%d), old charset = %d\n", charset_code, charset ); */
-
+#ifdef DEBUG
+   fprintf(stderr, "select_charset(%d), old charset = %d\n", charset_code, charset);
+#endif
+   
    charset = charset_code;
 
    /* check if we've already parsed messages for new charset */
    for (p = charset_head; p; p = p->next) {
-/*      printf("%p: code %d msg_blk %p\n",p,p->code,p->msg_blk); */
+#ifdef DEBUG
+      printf("%p: code %d msg_array %p\n", p, p->code, p->msg_array);
+#endif
       if (p->code == charset) {
-         msg_blk = p->msg_blk;
+         msg_array = p->msg_array;
          return old_charset;
       }
    }
@@ -634,7 +656,7 @@ select_charset(int charset_code)
    /* add to list */
    p = osnew(charset_li);
    p->code = charset;
-   p->msg_blk = msg_blk;
+   p->msg_array = msg_array;
    p->next = charset_head;
    charset_head = p;
 
