@@ -22,11 +22,6 @@
 #ifndef OSDEPEND_H  /* only include once */
 # define OSDEPEND_H
 
-/* Phil's 3dx code uses hypot() - euclidean distance */
-#ifndef HAVE_HYPOT
-# define hypot(X, Y) sqrt(sqrd((double)(X)) + sqrd((double)(Y)))
-#endif
-
 /* OSLib's types.h badly pollutes our namespace, so we kludge it off
  * and then do the vital bits ourselves */
 # if (OS==RISCOS) && !defined(types_H)

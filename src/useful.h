@@ -94,7 +94,11 @@
 /* print a line followed by a newline char to a file */
 #define fputsnl(SZ, FH) BLK(fputs((SZ), (FH)); putc('\n', (FH));)
 #define sqrd(X) ((X) * (X))        /* macro to square things */
-#define radius(X, Y) sqrt(sqrd((double)(X)) + sqrd((double)(Y))) /* euclidean distance */
+
+/* 2D Euclidean distance */
+#ifndef HAVE_HYPOT
+# define hypot(X, Y) sqrt(sqrd((double)(X)) + sqrd((double)(Y)))
+#endif
 #define rad(X) ((M_PI / 180.0) * (X))  /* convert from degrees to radians */
 #define deg(X) ((180.0 / M_PI) * (X))  /* convert from radians to degrees */
 
