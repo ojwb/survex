@@ -56,6 +56,7 @@ static unsigned char acolDraw[] = {
 void setup(void);              /* initialize as required */
 static void parse_command(int argc, char **argv);
 static void show_help(void);   /* displays help screen */
+static void wait_for_key_or_mouse(void);
 void set_defaults(void);       /* reset default values */
 bool process_key(void);        /* read & process keyboard and mouse input */
 void swap_screen(bool);        /* swap displayed screen and drawing screen */
@@ -219,7 +220,6 @@ main(int argc, char **argv)
    cvrotgfx_init();
 
    /* display help screen to give user something to read while we do scaling */
-   /* FIXME: show_help waits for a keypress! */
    show_help();
 
    if (!init_map(xcMac, ycMac)) {
@@ -269,6 +269,9 @@ main(int argc, char **argv)
    /* set base step size according to screen size */
    nStepsize = min(xcMac, ycMac) / 25.0f;
    set_defaults();
+
+   /* still displaying help page so wait here */
+   wait_for_key_or_mouse();
 
      {
 	const char *szPlan;
@@ -559,6 +562,7 @@ process_key(void) /* and mouse! */
 	  start_time = clock();
 	  fChanged = fTrue;
 	  show_help();
+	  wait_for_key_or_mouse();
 	  new_time += (clock() - start_time); /* ignore time user spends viewing help */
 	  /* cruder: new_time = clock(); */
 	  break;
@@ -704,7 +708,7 @@ show_help(void)
 	{"              PRESS  ANY  KEY  TO  CONTINUE", FLAG_ALWAYS},
 	{NULL, 0}
    };
-   int i, buttons, flags, y;
+   int i, flags, y;
 
    buttons = 0;
 
@@ -727,18 +731,25 @@ show_help(void)
    }
 
    cvrotgfx_post_supp_draw();
+
    /* clear keyboard buffer */
-   cvrotgfx_get_key();
+   (void)cvrotgfx_get_key();
+}
+
+static void
+wait_for_key_or_mouse(void)
+{
+   int dummy, buttons;
 
    /* wait until key pressed or mouse clicked */
    do {
-      if (mouse_buttons > 0) cvrotgfx_read_mouse(&i, &i, &buttons);
+      if (mouse_buttons > 0) cvrotgfx_read_mouse(&dummy, &dummy, &buttons);
    } while (cvrotgfx_get_key() < 0 && !buttons);
 }
 
 /***************************************************************************/
 
-void
+static void
 translate_data(coord Xchange, coord Ychange, coord Zchange)
 {
    int c;

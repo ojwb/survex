@@ -12,6 +12,8 @@
 * caverot/xcaverot: Middle button now tilts cave by dragging rather
   than toggling plan/elevation.
 
+* caverot: continue setup in background while help page is displayed.
+
 Changes in 0.97-prerelease3:
 
 * (Unix version): aven: Internationalised; Fixed serious drawing bug
