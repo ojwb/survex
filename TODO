@@ -97,7 +97,8 @@ extract --help messages for translation.
 Date: Wed, 04 Jul 2001
 From: Olly
 
-check skip blank pages works on printer drivers (notably printpcl)
+Implement skip blank pages on printps/printhpgl; check it works on
+printpcl and printdm.
 
 prog --help and --version ought to work (perhaps both just do --version)
 even if messages can't be found.
