@@ -13,6 +13,9 @@ Changes in 1.0.6:
 * aven: reenabled loading of files by drag-and-drop (accidentally disabled
   in 1.0.4 and 1.0.5).
 
+* aven: improved handling of flat surveys (e.g. output of extend, surveys
+  with no clino information).
+
 * aven: removed quite a bit of unused and superfluous code.
 
 * Spell-checked documentation.

@@ -239,9 +239,7 @@ class GfxCore : public wxWindow {
     LabelFlags* m_LabelGrid;
     HighlightedPt* m_HighlightedPts;
     int m_NumHighlightedPts;
-    bool m_DepthbarOff;
-    bool m_ScalebarOff;
-    bool m_IndicatorsOff;
+    bool m_RotationOK;
     LockFlags m_Lock;
     Matrix4 m_RotationMatrix;
     bool m_DraggingLeft;

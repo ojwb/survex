@@ -131,9 +131,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_DraggingMiddle = false;
     m_DraggingRight = false;
     m_Parent = parent;
-    m_DepthbarOff = false;
-    m_ScalebarOff = false;
-    m_IndicatorsOff = false;
+    m_RotationOK = true;
     m_DoneFirstShow = false;
     m_PlotData = NULL;
     m_RedrawOffscreen = false;
@@ -298,24 +296,17 @@ void GfxCore::Initialise()
     }
 
     // Check for flat/linear/point surveys.
-    m_Lock = lock_NONE;
-    m_IndicatorsOff = false;
-    m_DepthbarOff = false;
-    m_ScalebarOff = false;
+    m_RotationOK = true;
 
-    if (m_Parent->GetXExtent() == 0.0) {
-	m_Lock = LockFlags(m_Lock | lock_X);
-    }
-    if (m_Parent->GetYExtent() == 0.0) {
-	m_Lock = LockFlags(m_Lock | lock_Y);
-    }
-    if (m_Parent->GetZExtent() == 0.0) {
-	m_Lock = LockFlags(m_Lock | lock_Z);
-    }
+    m_Lock = lock_NONE;
+    if (m_Parent->GetXExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_X);
+    if (m_Parent->GetYExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_Y);
+    if (m_Parent->GetZExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_Z);
+
     switch (m_Lock) {
 	case lock_X:
 	{
-	    // elevation looking along X axis
+	    // elevation looking along X axis (East)
 	    m_PanAngle = M_PI * 1.5;
 
 	    Quaternion q;
@@ -323,16 +314,16 @@ void GfxCore::Initialise()
 
 	    m_Params.rotation = q * m_Params.rotation;
 	    m_RotationMatrix = m_Params.rotation.asMatrix();
-	    m_IndicatorsOff = true;
+	    m_RotationOK = false;
 	    break;
 	}
 
 	case lock_Y:
-	    // elevation looking along Y axis
+	case lock_XY: // survey is linearface and parallel to the Z axis => display in elevation.
+	    // elevation looking along Y axis (North)
 	    m_Params.rotation.setFromEulerAngles(0.0, 0.0, 0.0);
 	    m_RotationMatrix = m_Params.rotation.asMatrix();
-	    m_TiltAngle = 0.0;
-	    m_IndicatorsOff = true;
+	    m_RotationOK = false;
 	    break;
 
 	case lock_Z:
@@ -340,30 +331,13 @@ void GfxCore::Initialise()
 	case lock_YZ: // linearface survey parallel to X axis
 	{
 	    // flat survey (zero height range) => go into plan view (default orientation).
-	    m_Clino = false;
 	    break;
 	}
 
 	case lock_POINT:
-	    m_DepthbarOff = true;
-	    m_ScalebarOff = true;
-	    m_IndicatorsOff = true;
+	    m_RotationOK = false;
 	    m_Crosses = true;
 	    break;
-
-	case lock_XY:
-	{
-	    // survey is linearface and parallel to the Z axis => display in elevation.
-	    m_PanAngle = M_PI * 1.5;
-
-	    Quaternion q;
-	    q.setFromEulerAngles(0.0, 0.0, m_PanAngle);
-
-	    m_Params.rotation = q * m_Params.rotation;
-	    m_RotationMatrix = m_Params.rotation.asMatrix();
-	    m_IndicatorsOff = true;
-	    break;
-	}
 
 	case lock_NONE:
 	    break;
@@ -377,7 +351,20 @@ void GfxCore::Initialise()
      case lock_POINT:
        m_InitialScale = 1.0;
        break;
+     case lock_YZ:
+       m_InitialScale = Double(m_XSize) / m_Parent->GetXExtent();
+       break;
+     case lock_XZ:
+       m_InitialScale = Double(m_YSize) / m_Parent->GetYExtent();
+       break;
      case lock_XY:
+       m_InitialScale = Double(m_YSize) / m_Parent->GetZExtent();
+       break;
+     case lock_X:
+       m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
+			    Double(m_XSize) / m_Parent->GetYExtent());
+       break;
+     case lock_Y:
        m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
 			    Double(m_XSize) / m_Parent->GetXExtent());
        break;
@@ -823,26 +810,25 @@ void GfxCore::SetScale(Double scale, int what)
 	while (pos != end) {
 	    LabelInfo* label = *pos++;
 
-	    Double x, y, z;
-	    int cx = INT_MAX;
-	    int cy;
+	    if (!((label->IsSurface() && m_Surface) ||
+		  (label->IsUnderground() && m_Legs) ||
+		  (!label->IsSurface() && !label->IsUnderground()))) {
+		/* if this station isn't to be displayed, skip to the next
+		 * (last case is for stns with no legs attached) */
+		continue;
+	    }
+
+	    Double x = label->GetX() + m_Params.translation.x;
+	    Double y = label->GetY() + m_Params.translation.y;
+	    Double z = label->GetZ() + m_Params.translation.z;
+
+	    int cx = (int) (XToScreen(x, y, z) * scale);
+	    cx += m_Params.display_shift.x;
+	    int cy = -(int) (ZToScreen(x, y, z) * scale);
+	    cy += m_Params.display_shift.y;
 
 	    // Calculate screen coordinates.
-	    if ((m_Crosses || m_Names) &&
-		((label->IsSurface() && m_Surface) ||
-		 (label->IsUnderground() && m_Legs))) {
-
-	    x = label->GetX();
-	    y = label->GetY();
-	    z = label->GetZ();
-
-	    x += m_Params.translation.x;
-	    y += m_Params.translation.y;
-	    z += m_Params.translation.z;
-
-	    cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
-	    cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
-
+	    if (m_Crosses || m_Names) {
 		pt->x = cx - CROSS_SIZE;
 		pt->y = cy - CROSS_SIZE;
 
@@ -866,23 +852,7 @@ void GfxCore::SetScale(Double scale, int what)
 	    }
 
 	    //--FIXME
-	    if ((m_FixedPts || m_Entrances || m_ExportedPts) &&
-		((label->IsSurface() && m_Surface) || (label->IsUnderground() && m_Legs) ||
-		 (!label->IsSurface() && !label->IsUnderground() /* for stns with no legs attached */))) {
-
-		if (cx == INT_MAX) {
-	    x = label->GetX();
-	    y = label->GetY();
-	    z = label->GetZ();
-
-	    x += m_Params.translation.x;
-	    y += m_Params.translation.y;
-	    z += m_Params.translation.z;
-
-	    cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
-	    cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
-		}
-
+	    if (m_FixedPts || m_Entrances || m_ExportedPts) {
 		hpt->x = cx;
 		hpt->y = cy;
 		hpt->flags = hl_NONE;
@@ -1041,34 +1011,27 @@ void GfxCore::RedrawOffscreen()
 	    for (int count = 0; count < m_NumHighlightedPts; count++) {
 		HighlightedPt* pt = &m_HighlightedPts[count];
 
-		bool draw = true;
-
 		// When more than one flag is set on a point:
 		// entrance highlighting takes priority over fixed point
 		// highlighting, which in turn takes priority over exported
 		// point highlighting.
 
+		enum AvenColour col;
 		if (m_Entrances && (pt->flags & hl_ENTRANCE)) {
-		    SetColour(col_GREEN);
-		    SetColour(col_GREEN, true);
-		}
-		else if (m_FixedPts && (pt->flags & hl_FIXED)) {
-		    SetColour(col_RED);
-		    SetColour(col_RED, true);
-		}
-		else if (m_ExportedPts && (pt->flags & hl_EXPORTED)) {
-		    SetColour(col_CYAN);
-		    SetColour(col_CYAN, true);
-		}
-		else {
-		    draw = false;
+		    col = col_GREEN;
+		} else if (m_FixedPts && (pt->flags & hl_FIXED)) {
+		    col = col_RED;
+		} else if (m_ExportedPts && (pt->flags & hl_EXPORTED)) {
+		    col = col_CYAN;
+		} else {
+		    continue;
 		}
 
-		if (draw) {
-		    m_DrawDC.DrawEllipse(pt->x + xc, pt->y + yc,
-					 HIGHLIGHTED_PT_SIZE * 2,
-					 HIGHLIGHTED_PT_SIZE * 2);
-		}
+		SetColour(col);
+		SetColour(col, true);
+		m_DrawDC.DrawEllipse(pt->x + xc, pt->y + yc,
+				     HIGHLIGHTED_PT_SIZE * 2,
+				     HIGHLIGHTED_PT_SIZE * 2);
 	    }
 	}
 
@@ -1139,17 +1102,17 @@ void GfxCore::RedrawOffscreen()
 	}
 
 	// Draw scalebar.
-	if (m_Scalebar && !m_ScalebarOff) {
+	if (m_Scalebar) {
 	    DrawScalebar();
 	}
 
 	// Draw depthbar.
-	if (m_Depthbar && !m_DepthbarOff) {
+	if (m_Depthbar) {
 	    DrawDepthbar();
 	}
 
 	// Draw compass or elevation/heading indicators.
-	if ((m_Compass || m_Clino) && !m_IndicatorsOff) {
+	if ((m_Compass && m_RotationOK) || (m_Clino && m_Lock == lock_NONE)) {
 	    if (m_FreeRotMode) {
 		DrawCompass();
 	    } else {
@@ -1266,8 +1229,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	}
 
 	// Draw scalebar.
-	if (m_Scalebar && !m_ScalebarOff) {
-	    glLoadIdentity();
+	if (m_Scalebar) {
 	    DrawScalebar();
 	}
 
@@ -1409,7 +1371,7 @@ wxPoint GfxCore::IndicatorCompassToScreenPan(int angle)
 
 wxPoint GfxCore::IndicatorCompassToScreenElev(int angle)
 {
-    Double theta = (angle * M_PI / 180.0) + m_TiltAngle + M_PI/2.0;
+    Double theta = (angle * M_PI / 180.0) + m_TiltAngle + M_PI_2;
     wxCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     wxCoord x = wxCoord(length * sin(-theta));
     wxCoord y = wxCoord(length * cos(-theta));
@@ -1441,13 +1403,13 @@ void GfxCore::Draw2dIndicators()
     SetColour(col_GREY, true);
     SetColour(col_LIGHT_GREY_2);
 
-    if (m_Compass) {
+    if (m_Compass && m_RotationOK) {
 	m_DrawDC.DrawEllipse(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
 			     m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
 			     INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
 			     INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2);
     }
-    if (m_Clino) {
+    if (m_Clino && m_Lock == lock_NONE) {
 	int tilt = (int) (m_TiltAngle * 180.0 / M_PI);
 	m_DrawDC.DrawEllipticArc(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE +
 				 INDICATOR_MARGIN,
@@ -1474,7 +1436,7 @@ void GfxCore::Draw2dIndicators()
     wxCoord pan_centre_x = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
     wxCoord centre_y = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
     wxCoord elev_centre_x = m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2;
-    if (m_Compass) {
+    if (m_Compass && m_RotationOK) {
 	int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
 	//--FIXME: bodge by Olly to stop wrong tick highlighting
 	if (deg_pan) deg_pan = 360 - deg_pan;
@@ -1488,7 +1450,7 @@ void GfxCore::Draw2dIndicators()
 	    DrawTick(pan_centre_x, centre_y, angle);
 	}
     }
-    if (m_Clino) {
+    if (m_Clino && m_Lock == lock_NONE) {
 	white = m_DraggingLeft && m_LastDrag == drag_ELEV && m_MouseOutsideElev;
 	int deg_elev = (int) (m_TiltAngle * 180.0 / M_PI);
 	for (int angle = 0; angle <= 180; angle += 90) {
@@ -1503,7 +1465,7 @@ void GfxCore::Draw2dIndicators()
     }
 
     // Pan arrow
-    if (m_Compass) {
+    if (m_Compass && m_RotationOK) {
 	wxPoint p1 = IndicatorCompassToScreenPan(0);
 	wxPoint p2 = IndicatorCompassToScreenPan(150);
 	wxPoint p3 = IndicatorCompassToScreenPan(210);
@@ -1518,7 +1480,7 @@ void GfxCore::Draw2dIndicators()
     }
 
     // Elevation arrow
-    if (m_Clino) {
+    if (m_Clino && m_Lock == lock_NONE) {
 	wxPoint p1e = IndicatorCompassToScreenElev(0);
 	wxPoint p2e = IndicatorCompassToScreenElev(150);
 	wxPoint p3e = IndicatorCompassToScreenElev(210);
@@ -1543,7 +1505,7 @@ void GfxCore::Draw2dIndicators()
     m_DrawDC.GetTextExtent(wxString("000"), &width, &h);
     height = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h;
 
-    if (m_Compass) {
+    if (m_Compass && m_RotationOK) {
 	if (m_Degrees) {
 	    str = wxString::Format("%03d", int(m_PanAngle * 180.0 / M_PI));
 	} else {
@@ -1556,7 +1518,7 @@ void GfxCore::Draw2dIndicators()
 	m_DrawDC.DrawText(str, pan_centre_x - w / 2, height - h);
     }
 
-    if (m_Clino) {
+    if (m_Clino && m_Lock == lock_NONE) {
 	int angle;
 	if (m_Degrees) {
 	    angle = int(-m_TiltAngle * 180.0 / M_PI);
@@ -1795,17 +1757,18 @@ void GfxCore::SimpleDrawNames()
 
 void GfxCore::DrawDepthbar()
 {
+    if (m_Parent->GetZExtent() == 0.0) return;
+
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
 
-    int bands = (m_Lock == lock_NONE || m_Lock == lock_X || m_Lock == lock_Y ||
-		 m_Lock == lock_XY) ? m_Bands-1 : 1;
-    int y = DEPTH_BAR_BLOCK_HEIGHT * bands + DEPTH_BAR_OFFSET_Y;
+    int y = DEPTH_BAR_BLOCK_HEIGHT * (m_Bands - 1) + DEPTH_BAR_OFFSET_Y;
     int size = 0;
 
-    wxString* strs = new wxString[bands + 1];
-    for (int band = 0; band <= bands; band++) {
-	Double z = m_Parent->GetZMin() + m_Parent->GetZExtent() * band / bands;
+    wxString* strs = new wxString[m_Bands];
+    for (int band = 0; band < m_Bands; band++) {
+	Double z = m_Parent->GetZMin() + m_Parent->GetZExtent() * band
+		/ (m_Bands - 1);
 	strs[band] = FormatLength(z, false);
 	int x, y;
 	m_DrawDC.GetTextExtent(strs[band], &x, &y);
@@ -1824,10 +1787,10 @@ void GfxCore::DrawDepthbar()
 			   DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
 			   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
 			     DEPTH_BAR_EXTRA_LEFT_MARGIN,
-			   DEPTH_BAR_BLOCK_HEIGHT*bands + DEPTH_BAR_MARGIN*4);
+			   DEPTH_BAR_BLOCK_HEIGHT*(m_Bands - 1) + DEPTH_BAR_MARGIN*4);
 
-    for (int band = (bands == 1 ? 1 : 0); band <= bands; band++) {
-	if (band < bands || bands == 1) {
+    for (int band = 0; band < m_Bands; band++) {
+	if (band < m_Bands - 1) {
 	    m_DrawDC.SetPen(m_Parent->GetPen(band));
 	    m_DrawDC.SetBrush(m_Parent->GetBrush(band));
 	    m_DrawDC.DrawRectangle(x_min,
@@ -1837,8 +1800,7 @@ void GfxCore::DrawDepthbar()
 	}
 
 	m_DrawDC.DrawText(strs[band], x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
-			  y - (FONT_SIZE / 2) - 1
-			    - (bands == 1 ? DEPTH_BAR_BLOCK_HEIGHT/2 : 0));
+			  y - (FONT_SIZE / 2) - 1);
 
 	y -= DEPTH_BAR_BLOCK_HEIGHT;
     }
@@ -1912,6 +1874,8 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 
 void GfxCore::DrawScalebar()
 {
+    if (m_Lock == lock_POINT) return;
+
     // Draw the scalebar.
 
     // Calculate the extent of the survey, in metres across the screen plane.
@@ -1969,6 +1933,7 @@ void GfxCore::DrawScalebar()
 
     bool solid = true;
 #ifdef AVENGL
+    glLoadIdentity();
     glBegin(GL_QUADS);
 #endif
     for (int ix = 0; ix < 10; ix++) {
@@ -2037,7 +2002,7 @@ void GfxCore::DrawSky()
 
 void GfxCore::OnLButtonDown(wxMouseEvent& event)
 {
-    if (m_PlotData && (m_Lock != lock_POINT)) {
+    if (m_PlotData && m_Lock != lock_POINT) {
 	m_DraggingLeft = true;
 	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
 	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y;
@@ -2049,7 +2014,7 @@ void GfxCore::OnLButtonDown(wxMouseEvent& event)
 
 void GfxCore::OnLButtonUp(wxMouseEvent& event)
 {
-    if (m_PlotData && (m_Lock != lock_POINT)) {
+    if (m_PlotData && m_Lock != lock_POINT) {
 	if (event.GetPosition() == m_DragRealStart) {
 	    // just a "click"...
 	    CheckHitTestGrid(m_DragStart, true);
@@ -2116,8 +2081,7 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 	dy = -dy;
     }
 
-    Double pan_angle = (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
-			m_Lock == lock_YZ) ? -M_PI * (Double(dx) / 500.0) : 0.0;
+    Double pan_angle = m_RotationOK ? (Double(dx) * (-M_PI / 500.0)) : 0.0;
 
     Quaternion q;
     Double new_scale = m_Params.scale;
@@ -2125,25 +2089,20 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
     if (control) m_FreeRotMode = true;
 	
     if (m_FreeRotMode) {
-	Double tilt_angle = M_PI * (Double(dy) / 500.0);
+	Double tilt_angle = Double(dy) * (M_PI / 500.0);
 	q.setFromEulerAngles(tilt_angle, 0.0, pan_angle);
     } else {
 	// left/right => rotate, up/down => scale
-
-//	if (m_ReverseControls) {
-//	    pan_angle = -pan_angle;
-//	    dy = -dy;
-//	}
 
 	q.setFromVectorAndAngle(Vector3(XToScreen(0.0, 0.0, 1.0),
 					YToScreen(0.0, 0.0, 1.0),
 					ZToScreen(0.0, 0.0, 1.0)), pan_angle);
 
 	m_PanAngle += pan_angle;
-	if (m_PanAngle >= M_PI*2.0) {
-	    m_PanAngle -= M_PI*2.0;
+	if (m_PanAngle >= M_2_PI) {
+	    m_PanAngle -= M_2_PI;
 	} else if (m_PanAngle < 0.0) {
-	    m_PanAngle += M_PI*2.0;
+	    m_PanAngle += M_2_PI;
 	}
 	new_scale *= pow(1.06, 0.08 * dy);
     }
@@ -2176,11 +2135,11 @@ void GfxCore::TurnCave(Double angle)
     m_RotationMatrix = m_Params.rotation.asMatrix();
 
     m_PanAngle += angle;
-    if (m_PanAngle > M_PI*2.0) {
-	m_PanAngle -= M_PI*2.0;
+    if (m_PanAngle > M_2_PI) {
+	m_PanAngle -= M_2_PI;
     }
     if (m_PanAngle < 0.0) {
-	m_PanAngle += M_PI*2.0;
+	m_PanAngle += M_2_PI;
     }
 
 #ifndef AVENGL
@@ -2201,10 +2160,10 @@ void GfxCore::TurnCaveTo(Double angle)
 void GfxCore::TiltCave(Double tilt_angle)
 {
     // Tilt the cave by a given angle.
-    if (m_TiltAngle + tilt_angle > M_PI / 2.0) {
-	tilt_angle = M_PI / 2.0 - m_TiltAngle;
-    } else if (m_TiltAngle + tilt_angle < -M_PI / 2.0) {
-	tilt_angle = -M_PI / 2.0 - m_TiltAngle;
+    if (m_TiltAngle + tilt_angle > M_PI_2) {
+	tilt_angle = M_PI_2 - m_TiltAngle;
+    } else if (m_TiltAngle + tilt_angle < -M_PI_2) {
+	tilt_angle = -M_PI_2 - m_TiltAngle;
     }
 
     m_TiltAngle += tilt_angle;
@@ -2277,13 +2236,13 @@ void GfxCore::HandleTranslate(wxPoint point)
     m_Params.translation.z += cz;
 
     if (!m_OverlappingNames) {
-	//              m_LabelCacheNotInvalidated = true;//--fixme
+	// m_LabelCacheNotInvalidated = true;//--FIXME
 	m_LabelShift.x = dx;
 	m_LabelShift.y = dy;
-	//      m_LabelCacheExtend.left = (dx < 0) ? m_XSize + dx : 0;
-	//      m_LabelCacheExtend.right = (dx < 0) ? m_XSize : dx;
-	//      m_LabelCacheExtend.top = (dy < 0) ? m_YSize + dy : 0;
-	//      m_LabelCacheExtend.bottom = (dy < 0) ? m_YSize : dy;
+	// m_LabelCacheExtend.left = (dx < 0) ? m_XSize + dx : 0;
+	// m_LabelCacheExtend.right = (dx < 0) ? m_XSize : dx;
+	// m_LabelCacheExtend.top = (dy < 0) ? m_YSize + dy : 0;
+	// m_LabelCacheExtend.bottom = (dy < 0) ? m_YSize : dy;
     }
 
 #ifndef AVENGL
@@ -2356,7 +2315,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
     }
 
     // Update coordinate display if in plan view.
-    if (m_TiltAngle == M_PI / 2.0) {
+    if (m_TiltAngle == M_PI_2) {
 	int x = event.GetX() - m_XCentre - m_Params.display_shift.x;
 	int y = -(event.GetY() - m_YCentre - m_Params.display_shift.y);
 	Matrix4 inverse_rotation = m_Params.rotation.asInverseMatrix();
@@ -2396,7 +2355,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		  }
 		  else {
 		      TurnCaveTo(int(int((atan2(dx0, dy) - M_PI) * 180.0 / M_PI) / 45) *
-				 M_PI/4.0);
+				 M_PI_4);
 		      m_MouseOutsideCompass = true;
 		  }
 		  m_LastDrag = drag_COMPASS;
@@ -2410,11 +2369,11 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		      m_MouseOutsideElev = false;
 		  }
 		  else if (dy >= INDICATOR_MARGIN) {
-		      TiltCave(M_PI/2.0 - m_TiltAngle);
+		      TiltCave(M_PI_2 - m_TiltAngle);
 		      m_MouseOutsideElev = true;
 		  }
 		  else if (dy <= -INDICATOR_MARGIN) {
-		      TiltCave(-M_PI/2.0 - m_TiltAngle);
+		      TiltCave(-M_PI_2 - m_TiltAngle);
 		      m_MouseOutsideElev = true;
 		  }
 		  else {
@@ -2586,13 +2545,12 @@ void GfxCore::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::OnMoveEast()
 {
-    TurnCaveTo(M_PI / 2.0);
+    TurnCaveTo(M_PI_2);
 }
 
 void GfxCore::OnMoveEastUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT &&
-	       m_Lock != lock_Y && m_Lock != lock_XY);
+    cmd.Enable(m_PlotData != NULL && !(m_Lock & lock_Y));
 }
 
 void GfxCore::OnMoveNorth()
@@ -2602,8 +2560,7 @@ void GfxCore::OnMoveNorth()
 
 void GfxCore::OnMoveNorthUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT &&
-	       m_Lock != lock_X && m_Lock != lock_XY);
+    cmd.Enable(m_PlotData != NULL && !(m_Lock & lock_X));
 }
 
 void GfxCore::OnMoveSouth()
@@ -2613,8 +2570,7 @@ void GfxCore::OnMoveSouth()
 
 void GfxCore::OnMoveSouthUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT &&
-	       m_Lock != lock_X && m_Lock != lock_XY);
+    cmd.Enable(m_PlotData != NULL && !(m_Lock & lock_X));
 }
 
 void GfxCore::OnMoveWest()
@@ -2624,8 +2580,7 @@ void GfxCore::OnMoveWest()
 
 void GfxCore::OnMoveWestUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT &&
-	       m_Lock != lock_Y && m_Lock != lock_XY);
+    cmd.Enable(m_PlotData != NULL && !(m_Lock & lock_Y));
 }
 
 void GfxCore::StartTimer()
@@ -2646,35 +2601,22 @@ void GfxCore::OnStartRotation()
 
 void GfxCore::OnStartRotationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_Rotating &&
-	       (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
-		m_Lock == lock_YZ));
+    cmd.Enable(m_PlotData != NULL && !m_Rotating && m_RotationOK);
 }
 
 void GfxCore::OnToggleRotation()
 {
-    if (m_Rotating) {
-	OnStopRotation();
-    }
-    else {
-	OnStartRotation();
-    }
+    m_Rotating = !m_Rotating;
 }
 
 void GfxCore::OnToggleRotationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL &&
-	       (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
-		m_Lock == lock_YZ));
+    cmd.Enable(m_PlotData != NULL && m_RotationOK);
     cmd.Check(m_PlotData != NULL && m_Rotating);
 }
 
 void GfxCore::OnStopRotation()
 {
-    if (!m_SwitchingToElevation && !m_SwitchingToPlan) {
-      //        StopTimer();
-    }
-
     m_Rotating = false;
 }
 
@@ -2757,11 +2699,11 @@ void GfxCore::OnDefaults()
 
 void GfxCore::DefaultParameters()
 {
-    m_TiltAngle = M_PI / 2.0;
+    m_TiltAngle = M_PI_2;
     m_PanAngle = 0.0;
 
 #ifdef AVENGL
-    m_Params.rotation.setFromEulerAngles(m_TiltAngle - M_PI/2.0, 0.0, m_PanAngle);
+    m_Params.rotation.setFromEulerAngles(m_TiltAngle - M_PI_2, 0.0, m_PanAngle);
     m_AntiAlias = false;
     m_SolidSurface = false;
     SetGLAntiAliasing();
@@ -2829,7 +2771,7 @@ void GfxCore::OnHigherViewpoint(bool accel)
 
 void GfxCore::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_TiltAngle < M_PI / 2.0 &&
+    cmd.Enable(m_PlotData != NULL && m_TiltAngle < M_PI_2 &&
 	       m_Lock == lock_NONE);
 }
 
@@ -2842,7 +2784,7 @@ void GfxCore::OnLowerViewpoint(bool accel)
 
 void GfxCore::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_TiltAngle > -M_PI / 2.0 &&
+    cmd.Enable(m_PlotData != NULL && m_TiltAngle > -M_PI_2 &&
 	       m_Lock == lock_NONE);
 }
 
@@ -2857,7 +2799,7 @@ void GfxCore::OnPlan()
 void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_PlotData != NULL && !m_SwitchingToElevation &&
-		!m_SwitchingToPlan && m_Lock == lock_NONE && m_TiltAngle != M_PI / 2.0);
+		!m_SwitchingToPlan && m_Lock == lock_NONE && m_TiltAngle != M_PI_2);
 }
 
 void GfxCore::OnShiftDisplayDown(bool accel)
@@ -2953,7 +2895,7 @@ void GfxCore::OnTimer(wxIdleEvent& event)
     }
     // When switching to plan view...
     if (m_SwitchingToPlan) {
-	if (m_TiltAngle == M_PI / 2.0) {
+	if (m_TiltAngle == M_PI_2) {
 	    m_SwitchingToPlan = false;
 	}
 	TiltCave(M_PI / 30.0);
@@ -3075,7 +3017,7 @@ void GfxCore::OnToggleScalebar()
 
 void GfxCore::OnToggleScalebarUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_ScalebarOff);
+    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
     cmd.Check(m_Scalebar);
 }
 
@@ -3088,7 +3030,7 @@ void GfxCore::OnToggleDepthbar()
 
 void GfxCore::OnToggleDepthbarUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_DepthbarOff);
+    cmd.Enable(m_PlotData != NULL && !(m_Lock && lock_Z));
     cmd.Check(m_Depthbar);
 }
 
@@ -3101,7 +3043,7 @@ void GfxCore::OnViewCompass()
 
 void GfxCore::OnViewCompassUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_IndicatorsOff);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_RotationOK);
     cmd.Check(m_Compass);
 }
 
@@ -3114,8 +3056,7 @@ void GfxCore::OnViewClino()
 
 void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_IndicatorsOff &&
-	       m_Lock == lock_NONE);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock == lock_NONE);
     cmd.Check(m_Clino);
 }
 
