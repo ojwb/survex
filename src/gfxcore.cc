@@ -25,6 +25,7 @@
 #include <config.h>
 #endif
 
+#include <assert.h>
 #include <float.h>
 
 #include "aven.h"
@@ -781,6 +782,7 @@ void GfxCore::RedrawOffscreen()
 					 HIGHLIGHTED_PT_SIZE * 2);
 #else
 		    m_DrawDC.DrawLines(10, blob, x, y);
+#endif
 		}
 	    }
 	}
@@ -803,7 +805,6 @@ void GfxCore::RedrawOffscreen()
     }
 
     m_DrawDC.EndDrawing();
-#endif
     
     drawtime = timer.Time();
 }
@@ -1212,6 +1213,7 @@ void GfxCore::NattyDrawNames()
 		int ymin = (iy >= 2) ? iy - 2 : iy;
 		int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
 		for (int y0 = ymin; y0 <= ymax; y0++) {
+                    assert((ix + y0 * quantised_x) < (quantised_x * quantised_y));
 		    memset((void*) &m_LabelGrid[ix + y0 * quantised_x], 1, len);
 		}
 	    }
