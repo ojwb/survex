@@ -950,6 +950,8 @@ sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku
 en: 84 CLINO and BACKCLINO readings must be of the same type
 #fr: 84 Les mesures de Clino et ClinoInverse doivent &ecirc;tre du m&ecirc;me type
 fr: 84 Les mesures de CLINO et BACKCLINO doivent &ecirc;tre du m&ecirc;me type
+ca: 84 Les lectures de CLINO i BACKCLINO han de ser del mateix tipus
+es: 84 Las lecturas de CLINO y BACKCLINO deben de ser del mismo tipo
 #
 en: 85 Parameter `%s' missing in printer configuration file
 fr: 85 Param&egrave;tres `%s' manquant dans le fichier de configuration de l'imprimante
@@ -1072,10 +1074,14 @@ sk: 97 Bol obdr&zcaron;an&yacute; nezn&aacute;my sign&aacute;l
 en: 98 COMPASS reading and BACKCOMPASS reading disagree by %s degrees
 #fr: 98 Les mesures de Compas et CompasInverse diff&egrave;rent de %s degr&eacute;s
 fr: 98 Les mesures de COMPASS et BACKCOMPASS diff&egrave;rent de %s degr&eacute;s
+ca: 98 Les lectures de COMPASS i BACKCOMPASS difereixen de %s graus
+es: 98 Las lecturas de COMPASS y BACKCOMPASS difieren de %s grados
 #
 en: 99 CLINO reading and BACKCLINO reading disagree by %s degrees
 #fr: 99 Les mesures de Clino et ClinoInverse diff&egrave;rent de %s degr&eacute;s
 fr: 99 Les mesures de CLINO et BACKCLINO diff&egrave;rent de %s degr&eacute;s
+ca: 99 Les lectures de CLINO i BACKCLINO difereixen de %s graus
+es: 99 Las lecturas de CLINO y BACKCLINO difieren de %s grados
 #
 # A computer mouse, not the rodent sort ;)
 # Actually, mouse is somewhat imprecise as it could refer to a trackerball
@@ -2033,6 +2039,9 @@ sk:199 S prefixom sa natiahla iba &ccaron;as&tcaron; merania
 # knots on a diving line, and tie them every "2 feet").
 en:200 *UNITS factor must be non-zero
 fr:200 *UNITS: le facteur doit &ecirc;tre non nul
+ca:200 El factor *UNITS ha de ser diferent de zero
+es:200 El factor de *UNITS debe de ser diferente de cero
+sk:200 *UNITS faktor mus&iacute; by&tcaron; nenulov&yacute;
 #
 # XXX 201
 #
