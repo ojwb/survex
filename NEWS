@@ -1,4 +1,4 @@
-* Standards-Version: 3.5.9.0
+* Standards-Version: 3.5.10.0
 
 * Fixed configure --enable-defaultlang=XX to work.
 
