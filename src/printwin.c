@@ -104,7 +104,7 @@ check_intersection(long x_p, long y_p)
 #define D 2
 #define L 4
 #define R 8      
-   int mask_p, mask_t;
+   int mask_p = 0, mask_t = 0;
    if (x_p < clip.x_min)
       mask_p = L;
    else if (x_p > clip.x_max)
