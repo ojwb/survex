@@ -36,7 +36,7 @@
 #define _STRING(X) #X
 
 /* very small value for comparing floating point numbers with */
-/* (ought to use a real epsilon value) */
+/* FIXME: ought to use a real epsilon value */
 #define EPSILON 0.00001
 
 /* default threshold is 1cm */
