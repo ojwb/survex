@@ -61,9 +61,9 @@
 
 <varlistentry><term>-B, --no-border</term>
 <listitem><para>turn off page border.
-Without this option dotted borders will be drawn on the
-sides where pages join. This is to facilitate accurate cutting with
-scissors.
+By default, on multi-page printouts dotted borders will be drawn on the edges
+of pages where other pages join to facilitate accurate cutting with
+scissors.  This option disables these dotted borders.
 </para></listitem></varlistentry>
 
 <varlistentry><term>-l, --no-legs</term>

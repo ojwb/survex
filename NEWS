@@ -3,6 +3,8 @@ Changes in 1.0.4:
 * extend: used to only keep one name for an equated group of stations in the
   extended .3d file; now keep all the names.
 
+* Minor documentation updates.
+
 Changes in 1.0.3:
 
 * aven: you can now select distances to be displayed in feet (or miles when
