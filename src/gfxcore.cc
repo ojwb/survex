@@ -20,6 +20,10 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#define HEAVEN 5000.0 // altitude of heaven
+
+#include <float.h>
+
 #include "gfxcore.h"
 #include "mainfrm.h"
 #include "message.h"
@@ -989,14 +993,24 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	    glDisable(GL_BLEND);
 	    glEnable(GL_CULL_FACE);
 	    glCullFace(GL_FRONT);
-            glCallList(m_Lists.terrain);
+	    if (floor_alt + m_Parent->GetZOffset() < m_Parent->GetTerrainMaxZ()) {
+	        glCallList(m_Lists.terrain);
+	    } else {
+	        glTranslated(0, 0, floor_alt + m_Parent->GetZOffset() - m_Parent->GetTerrainMaxZ());
+	        glCallList(m_Lists.flat_terrain);
+	    }
 	    glEnable(GL_BLEND);
 
 	    // Topside...
 	    glCullFace(GL_BACK);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    glEnable(GL_TEXTURE_2D);
-	    glCallList(m_Lists.terrain);
+	    if (floor_alt + m_Parent->GetZOffset() < m_Parent->GetTerrainMaxZ()) {
+	        glCallList(m_Lists.terrain);
+	    } else {
+	        glTranslated(0, 0, floor_alt + m_Parent->GetZOffset() - m_Parent->GetTerrainMaxZ());
+	        glCallList(m_Lists.flat_terrain);
+	    }
 	    glDisable(GL_CULL_FACE);
 	    glDisable(GL_BLEND);
 	    glDisable(GL_TEXTURE_2D);
@@ -2713,6 +2727,18 @@ void GfxCore::OnTimer(wxIdleEvent& event)
         SetScale(m_Params.scale);
         Refresh(false);
     }
+
+#ifdef AVENGL
+    if (m_TerrainLoaded && floor_alt > -DBL_MAX && floor_alt <= HEAVEN) {
+        if (terrain_rising) {
+	    floor_alt += 20.0;
+	} else {
+	    floor_alt -= 20.0;
+	}
+        InitialiseTerrain();
+        event.RequestMore();
+    }
+#endif
 }
 
 void GfxCore::OnToggleScalebar(wxCommandEvent&) 
@@ -3176,17 +3202,40 @@ void GfxCore::CreateHitTestGrid()
 
 void GfxCore::InitialiseTerrain()
 {
-    LoadTexture("surface", &m_Textures.surface);
-    LoadTexture("map", &m_Textures.map);
+    CheckGLError("after loading textures");
 
-    CheckGLError("before allocating terrain list");
-    m_Lists.terrain = glGenLists(1);
-    CheckGLError("before creating terrain list");
-    glNewList(m_Lists.terrain, GL_COMPILE);
-    CheckGLError("immediately after creating terrain list");
-    RenderTerrain();
-    glEndList();
-    CheckGLError("after creating terrain list");
+    if (m_TerrainLoaded) {
+        glDeleteLists(m_Lists.map, 1);       
+    } else {
+        LoadTexture("surface", &m_Textures.surface);
+        LoadTexture("map", &m_Textures.map);
+
+        m_Lists.flat_terrain = glGenLists(1);
+	CheckGLError("before creating flat terrain list");
+	glNewList(m_Lists.flat_terrain, GL_COMPILE);
+	CheckGLError("immediately after creating flat terrain list");
+	RenderTerrain(m_Parent->GetTerrainMaxZ() - m_Parent->GetZOffset());
+        glEndList();
+        CheckGLError("after creating flat terrain list");
+
+        floor_alt = HEAVEN;
+        terrain_rising = false;
+    }
+
+    if (floor_alt + m_Parent->GetZOffset() < m_Parent->GetTerrainMaxZ()) {
+        if (m_TerrainLoaded) glDeleteLists(m_Lists.terrain, 1);
+   
+        m_Lists.terrain = glGenLists(1);
+        CheckGLError("before creating terrain list");
+        glNewList(m_Lists.terrain, GL_COMPILE);
+        CheckGLError("immediately after creating terrain list");
+        RenderTerrain(floor_alt);
+        if (floor_alt + m_Parent->GetZOffset() <= m_Parent->GetTerrainMinZ()) {
+	    floor_alt = -DBL_MAX;
+	}
+        glEndList();
+        CheckGLError("after creating terrain list");
+    }
 
     m_Lists.map = glGenLists(1);
     glNewList(m_Lists.map, GL_COMPILE);
@@ -3232,7 +3281,7 @@ void GfxCore::RenderMap()
     CheckGLError("creating map");
 }
 
-void GfxCore::RenderTerrain()
+void GfxCore::RenderTerrain(Double floor_alt)
 {
     // Fill the display list for the terrain surface.
 
@@ -3286,6 +3335,19 @@ void GfxCore::RenderTerrain()
 	    alt2 = m_Parent->GetTerrainHeight(i + 1, j);
 	    alt3 = m_Parent->GetTerrainHeight(i + 1, j + 1);
 	    alt4 = m_Parent->GetTerrainHeight(i, j + 1);
+
+	    if (alt1 < floor_alt) {
+	        alt1 = floor_alt;
+	    }
+	    if (alt2 < floor_alt) {
+	        alt2 = floor_alt;
+	    }
+	    if (alt3 < floor_alt) {
+	        alt3 = floor_alt;
+	    }
+	    if (alt4 < floor_alt) {
+	        alt4 = floor_alt;
+	    }
 
             glNormal3d(alt2 - alt1, alt3 - alt2, 1.0);
 
@@ -3371,7 +3433,12 @@ void GfxCore::LoadTexture(const wxString& file /* with no extension */, GLuint* 
 
 void GfxCore::OnSolidSurface(wxCommandEvent&)
 {
-    m_SolidSurface = !m_SolidSurface;
+    terrain_rising = !terrain_rising;
+    if (floor_alt == -DBL_MAX)
+        floor_alt = m_Parent->GetTerrainMinZ() - m_Parent->GetZOffset();
+    if (floor_alt > HEAVEN)
+        floor_alt = HEAVEN;
+//    m_SolidSurface = !m_SolidSurface;
     Refresh(false);
 }
 
@@ -3382,4 +3449,3 @@ void GfxCore::OnSolidSurfaceUpdate(wxUpdateUIEvent& ui)
 }
 
 #endif
-

@@ -23,6 +23,8 @@
 #ifndef gfxcore_h
 #define gfxcore_h
 
+#include <float.h>
+
 #include "quaternion.h"
 #include "wx.h"
 #include <utility>
@@ -125,6 +127,7 @@ class GfxCore : public wxWindow {
         GLint surface_depth; // all surface data in depth bands
         GLint grid; // the grid
 	GLint terrain; // surface terrain
+	GLint flat_terrain; // flat surface terrain - used for drape effect
 	GLint map; // map overlay
     } m_Lists;
 
@@ -203,6 +206,9 @@ class GfxCore : public wxWindow {
 
     bool m_SolidSurface;
 #endif
+
+    Double floor_alt;
+    bool terrain_rising;
 
     struct GridPointInfo {
         long x; // ] screen coordinates
@@ -411,7 +417,7 @@ class GfxCore : public wxWindow {
 
     void CreateHitTestGrid();
     
-    void RenderTerrain();
+    void RenderTerrain(Double floor_alt);
 
 public:
     GfxCore(MainFrm* parent, wxWindow* parent_window);
