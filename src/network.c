@@ -826,7 +826,7 @@ static void replace_subnets( void ) {
          ASSERT( data_here(stn3->leg[dirn3]) );
       }
 
-      if (IS_NOOSE(ptrRed) {
+      if (IS_NOOSE(ptrRed)) {
          /* noose (hanging-loop) */
          d e;
          linkfor *leg;
@@ -1017,10 +1017,9 @@ static void replace_subnets( void ) {
                stnZ->leg[i]=NULL;
             }
 /*     printf("---%d not fixed %d\n",cBogus,stnZ->status);*/
-           }
+	 }
 
-           cBogus++;
-        }
+	 cBogus++;
       } else {
          BUG("ptrRed has unknown type");
       }
