@@ -2727,7 +2727,9 @@ void
 GfxCore::OnPrint(const wxString &filename, const wxString &title,
 		 const wxString &datestamp)
 {
-    svxPrintDlg p(m_Parent, filename, title, datestamp, m_PanAngle, m_TiltAngle,
-		  m_Names, m_Crosses, m_Legs, m_Surface);
-    p.ShowModal();
+    svxPrintDlg * p;
+    p = new svxPrintDlg(m_Parent, filename, title, datestamp,
+			m_PanAngle, m_TiltAngle,
+			m_Names, m_Crosses, m_Legs, m_Surface);
+    p->Show(TRUE);
 }

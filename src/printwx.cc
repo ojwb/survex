@@ -230,7 +230,7 @@ svxPrintDlg::OnPrint(wxCommandEvent& event) {
     svxPrintout po(m_parent, m_layout, m_parent->GetPageSetupData(), m_File);
     if (pr.Print(this, &po, true)) {
 	// Close the print dialog if printing succeeded.
-	EndModal(wxOK);
+	Destroy();
     }
 }
 
@@ -245,26 +245,37 @@ svxPrintDlg::OnPreview(wxCommandEvent& event) {
 					    m_parent->GetPageSetupData(), m_File),
 			    &pd);
     wxPreviewFrame *frame = new wxPreviewFrame(pv, m_parent, msg(/*Print Preview*/398));
-    frame->Centre(wxBOTH);
     frame->Initialize();
+
+    // Size preview frame so that all of the controlbar and canvas can be seen
+    // if possible.
     int w, h;
-    frame->GetSize(&w, &h);
+    // GetBestSize gives us the width needed to show the whole controlbar.
+    frame->GetBestSize(&w, &h);
 #ifdef __WXMAC__
     // wxMac opens the preview window at minimum size by default.
     // 360x480 is apparently enough to show A4 portrait.
     if (h < 480 || w < 360) {
 	if (h < 480) h = 480;
 	if (w < 360) w = 360;
-	frame->SetSize(w, h);
     }
 #else
     if (h < w) {
-	// By default the preview window opens wide enough, but not anywhere
-	// near tall enough (on wxGTK anyway).
+	// On wxGTK at least, GetBestSize() returns much too small a height.
 	h = w * 6 / 5;
-	frame->SetSize(w, h);
     }
 #endif
+    {
+	// Ensure that we don't make the window bigger than the screen.
+	int disp_w, disp_h;
+	wxDisplaySize(&disp_w, &disp_h);
+	if (w > disp_w) w = disp_w;
+	if (h > disp_h) h = disp_h;
+    }
+    frame->SetSize(w, h);
+
+    frame->Centre(wxBOTH|wxCENTRE_ON_SCREEN);
+
     frame->Show(TRUE);
 }
 
@@ -869,7 +880,7 @@ svxPrintout::OnPrintPage(int pageNum) {
     SINT = sin(rad(l->tilt));
     COST = cos(rad(l->tilt));
 
-    long x, y;
+    long x = 0, y = 0;
     bool pending_move = false;
     bool last_leg_surface = false;
 
