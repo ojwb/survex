@@ -56,6 +56,19 @@ extern void check_var(const var *v) {
    if (bad) print_var(*v);
 }
 
+extern void check_d(const d *d) {
+   int bad = 0;
+   int i;
+
+   for (i = 0; i < 3; i++) {
+      char buf[32];
+      sprintf(buf, "%6.3f", (*d)[i]);
+      if (strstr(buf, "NaN")) printf("*** NaN!!!\n"), bad = 1;
+   }
+
+   if (bad) printf("(%4.2f,%4.2f,%4.2f)\n", (*d)[0], (*d)[1], (*d)[2]);
+}
+
 /* FIXME: station lists should probably know how long they are... */
 
 /* insert at head of double-linked list */
@@ -381,21 +394,26 @@ mulvd(d *r, const var *a, const d *b)
    real tot;
 
    ASSERT(r != b);
+   check_var(a);
+   check_d(b);   
 
    for (i = 0; i < 3; i++) {
       tot = 0;
       for (k = 0; k < 3; k++) tot += (*a)[i][k] * (*b)[k];
       (*r)[i] = tot;
    }
+   check_d(r);
 #endif
 }
 
 /* r = ca ; r,a delta vectors; c real scaling factor  */
 void
 muldc(d *r, const d *a, real c) {
+   check_d(a);   
    (*r)[0] = (*a)[0] * c;
    (*r)[1] = (*a)[1] * c;
    (*r)[2] = (*a)[2] * c;
+   check_d(r);
 }
 
 /* r = ca ; r,a variance matrices; c real scaling factor  */
@@ -410,9 +428,11 @@ mulvc(var *r, const var *a, real c)
 #else
    int i, j;
 
+   check_var(a);
    for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) (*r)[i][j] = (*a)[i][j] * c;
    }
+   check_var(r);
 #endif
 }
 
@@ -420,17 +440,23 @@ mulvc(var *r, const var *a, real c)
 void
 adddd(d *r, const d *a, const d *b)
 {
+   check_d(a);
+   check_d(b);
    (*r)[0] = (*a)[0] + (*b)[0];
    (*r)[1] = (*a)[1] + (*b)[1];
    (*r)[2] = (*a)[2] + (*b)[2];
+   check_d(r);
 }
 
 /* r = a - b ; r,a,b delta vectors */
 void
 subdd(d *r, const d *a, const d *b) {
+   check_d(a);
+   check_d(b);
    (*r)[0] = (*a)[0] - (*b)[0];
    (*r)[1] = (*a)[1] - (*b)[1];
    (*r)[2] = (*a)[2] - (*b)[2];
+   check_d(r);
 }
 
 /* r = a + b ; r,a,b variance matrices */
@@ -445,9 +471,12 @@ addvv(var *r, const var *a, const var *b)
 #else
    int i, j;
 
+   check_var(a);
+   check_var(b);
    for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) (*r)[i][j] = (*a)[i][j] + (*b)[i][j];
    }
+   check_var(r);
 #endif
 }
 
@@ -463,9 +492,12 @@ subvv(var *r, const var *a, const var *b)
 #else
    int i, j;
 
+   check_var(a);
+   check_var(b);
    for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) (*r)[i][j] = (*a)[i][j] - (*b)[i][j];
    }
+   check_var(r);
 #endif
 }
 
