@@ -326,7 +326,7 @@ parse_msg_file(int charset_code)
 {
    FILE *fh;
    unsigned char header[20];
-   const char *lang;
+   /*const*/ char *lang;
    int i;
    unsigned len;
    unsigned char *p;
@@ -371,6 +371,14 @@ parse_msg_file(int charset_code)
 #ifdef DEBUG
    fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
 #endif
+
+   lang = strdup(lang);
+   /* On my RedHat 6.1 Linux box, LANG defaults to en_US - be nice and
+    * handle this... */
+   if (strchr(lang, '_')) {
+      char *under = strchr(lang, '_');
+      *under = '-';
+   }
 
    fh = fopenWithPthAndExt(pth_cfg_files, lang, EXT_SVX_MSG, "rb", NULL);
 
