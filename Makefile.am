@@ -24,14 +24,14 @@ extra_text = AUTHORS COPYING NEWS TODO ChangeLog HACKING OLDNEWS
 base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
  extend survex sorterr 3dtopos
 
-AUTHORS: doc/AUTHORS.html
-	w3m -dump doc/AUTHORS.html > AUTHORS
+AUTHORS: doc/AUTHORS.htm
+	w3m -dump doc/AUTHORS.htm > AUTHORS
 
-TODO: doc/TODO.html
-	w3m -dump doc/TODO.html > TODO
+TODO: doc/TODO.htm
+	w3m -dump doc/TODO.htm > TODO
 
-HACKING: doc/HACKING.html
-	w3m -dump doc/HACKING.html > HACKING
+HACKING: doc/HACKING.htm
+	w3m -dump doc/HACKING.htm > HACKING
 
 spec = ${PACKAGE}-${VERSION}.spec
 
