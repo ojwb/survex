@@ -2382,6 +2382,8 @@ void GfxCore::OnSize(wxSizeEvent& event)
     }
 
     if (m_DoneFirstShow) {
+    	CreateHitTestGrid();
+
 #ifdef AVENGL
         if (GetContext()) {
             SetCurrent();
