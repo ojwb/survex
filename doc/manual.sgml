@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-08-06 22:01:13 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.1 2002-08-06 22:01:13 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-08-28 17:50:32 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.2 2002-08-28 17:50:32 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -339,9 +339,7 @@ if you don't have root access on the machine you wish to install
 
 <Para>
 There's a GUI cave viewer called aven, which needs &wxwindows; to build,
-which in turn needs either Motif or Gtk+.  If installing the required
-libraries is a problem, there's a more basic cave viewer called xcaverot
-which only needs the standard X libraries.
+which in turn needs either Motif or Gtk+.
 </Para>
 
 <!-- FIXME: recommend printps on &UNIX; (or just &linux;)??? -->
@@ -748,10 +746,6 @@ file is looked for with the appropriate extension appended.  So
 <refentry id="caverot">
 <?dbhtml filename="caverot.htm">
 &man.caverot;
-</refentry>
-<refentry id="xcaverot">
-<?dbhtml filename="xcaverot.htm">
-&man.xcaverot;
 </refentry>
 <refentry id="printdm">
 <?dbhtml filename="printdm.htm">
@@ -3280,7 +3274,7 @@ Survex website for download links.
 <Sect2><Title>Overlay a grid</Title>
 
 <Para>Aven is able to display a grid, but this functionality isn't currently
-available in caverot, xcaverot, or the printer drivers.
+available in caverot, or the printer drivers.
 You can achieve a similar effect for now by creating a &svx; file
 where the survey legs form a grid.
 </Para>

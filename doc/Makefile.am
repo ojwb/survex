@@ -6,7 +6,7 @@ other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
  printdm.1 printhpgl.1 printpcl.1 printps.1 print.ini.5 @EXTRA_MANS@
 
 manual_sources = manual.sgml cad3d.sgml cavern.sgml caverot.sgml\
- diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml xcaverot.sgml\
+ diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml\
  printdm.sgml printhpgl.sgml printpcl.sgml printps.sgml printwin.sgml\
  print.ini.sgml
 
@@ -20,7 +20,7 @@ EXTRA_DIST = manual @DOCS_OTHER@ survex.1.in index.htm.in\
  caution.png note.png\
  $(manual_sources) $(other_mans)\
  man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
- man_diffpos.sgml man_extend.sgml man_sorterr.sgml man_xcaverot.sgml\
+ man_diffpos.sgml man_extend.sgml man_sorterr.sgml\
  man_printdm.sgml man_printhpgl.sgml man_printpcl.sgml man_printps.sgml\
  man_print.ini.sgml cl2html.pl news2html.pl version.ent version.ent.in
 
@@ -82,9 +82,6 @@ sorterr.1: $(srcdir)/sorterr.sgml $(srcdir)/man_sorterr.sgml $(srcdir)/survex.en
 
 3dtopos.1: $(srcdir)/3dtopos.sgml $(srcdir)/man_3dtopos.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_3dtopos.sgml > 3dtopos.1
-
-xcaverot.1: $(srcdir)/xcaverot.sgml $(srcdir)/man_xcaverot.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_xcaverot.sgml > xcaverot.1
 
 print.ini.5: $(srcdir)/print.ini.sgml $(srcdir)/man_print.ini.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_print.ini.sgml > print.ini.5

@@ -11,7 +11,7 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  getopt.h hash.h img.h ini.h labels.h listpos.h matrix.h message.h namecmp.h\
  netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h useful.h\
- validate.h whichos.h xrot.h xcvrtbut.h new3dout.h 3ddefs.h \
+ validate.h whichos.h xrot.h new3dout.h 3ddefs.h \
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
  aventypes.h aventreectrl.h guicontrol.h gla.h survey.h paneldlg.h paneldlgpage.h \
  tubeprefs.h prefsdlg.h stnprefs.h legprefs.h gridprefs.h unitsprefs.h ctlprefs.h \
@@ -44,7 +44,7 @@ PRINT = printdm printps printpcl printhpgl
 TESTPROGS = @TESTPROGS@
 
 # printxbm and dump3d are test programs
-EXTRA_PROGRAMS = caverot xcaverot printwin aven avengl dump3d printxbm
+EXTRA_PROGRAMS = caverot printwin aven avengl dump3d printxbm
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern $(PRINT) diffpos extend cad3d sorterr \
  3dtopos @CAVEROT@ @AVEN@ @PRINTWIN@ @TESTPROGS@
@@ -104,11 +104,7 @@ EXTRA_caverot_SOURCES = dosrot.c
 caverot_LDADD = @LIBOBJS@ @CROBJX@ @CRLIB@
 caverot_DEPENDENCIES = @CROBJX@
 
-xcaverot_SOURCES = xcaverot.c xcvrtbut.c $(ROTSRC)
-xcaverot_CFLAGS = @X_CFLAGS@ -DXCAVEROT
-xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
-
-diffpos_SOURCES = diffpos.c namecmp.c img.c useful.c hash.c $(COMMONSRC)
+eiffpos_SOURCES = diffpos.c namecmp.c img.c useful.c hash.c $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
 3dtopos_SOURCES = 3dtopos.c namecmp.c img.c useful.c $(COMMONSRC)
 extend_SOURCES = extend.c $(COMMONSRC) img.c useful.c hash.c
