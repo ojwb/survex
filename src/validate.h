@@ -26,7 +26,6 @@
 
 bool validate(void);
 void dump_node(node *stn);
-void dump_entire_network(void);
 void dump_network(void);
 
 #if (VALIDATE==0)
@@ -36,7 +35,6 @@ void dump_network(void);
 
 #if (DUMP_NETWORK==0)
 # define dump_network() NOP
-# define dump_entire_network() NOP
 #endif
 
 #endif

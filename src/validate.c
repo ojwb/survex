@@ -5,7 +5,7 @@
  *   NB The checks currently done aren't very comprehensive - more will be
  *    added if bugs require them
  *
- *   Copyright (C) 1993,1994,1996,2000 Olly Betts
+ *   Copyright (C) 1993,1994,1996,2000,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -265,16 +265,8 @@ dump_node(node *stn)
    }
 }
 
-#undef dump_entire_network
-extern void
-dump_entire_network(void)
-{
-   node *stn;
-   /* FIXME: this doesn't cover removed stations - iterate prefix tree? */
-   /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
-   for (stn = stnlist; stn; stn = stn->next) dump_node(stn);
-}
-
+/* This doesn't cover removed stations - might be nice to have
+ * dump_entire_network() which iterates prefix tree */
 #undef dump_network
 extern void
 dump_network(void)
