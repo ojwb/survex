@@ -22,7 +22,9 @@ Changes in 1.0.21:
   over an previous version.
 
 * Documentation: really added details of the 3d file format (version 3) -
-  it only got added to the source code before.
+  it only got added to the source code before; in 3dformat doc, added
+  rationale for why we remove 17 characters from prefix before level
+  stripping.
 
 Changes in 1.0.20:
 
