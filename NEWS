@@ -18,6 +18,9 @@
 * aven: reporting errors in a message box wasn't working (wxWindows
   bug).
 
+* cavern: fixed *entrance - it was trying to insist its argument was a
+  survey, not a station.
+
 Changes in 0.97-prerelease7:
 
 * Messages relating to command line options are now translatable.

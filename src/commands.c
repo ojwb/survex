@@ -551,7 +551,7 @@ static void
 cmd_entrance(void)
 {
    /* FIXME: what about stations created by *entrance? */
-   prefix *pfx = read_prefix_survey(fFalse);
+   prefix *pfx = read_prefix_stn(fFalse);
    pfx->sflags |= BIT(SFLAGS_ENTRANCE);
 }
 
