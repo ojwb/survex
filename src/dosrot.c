@@ -1,6 +1,6 @@
 /* dosrot.c
  * Survex cave rotator plot & translate routines for MS-DOS
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2001,2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@
 
 jmp_buf jbEnd; /* store for environment for exiting plot loop */
 
-extern void FAR
+extern void Far
 dosrot_stop(int X, int Y)
 {
    X = X; /* suppress compiler warnings */

@@ -99,10 +99,10 @@ static const char tombstone[TOMBSTONE_SIZE] = "012345\xfftombstone";
 /* malloc with error catching if it fails. Also allows us to write special
  * versions easily eg for DOS EMS or MS Windows.
  */
-void FAR *
+void Far *
 osmalloc(OSSIZE_T size)
 {
-   void FAR *p;
+   void Far *p;
 #ifdef TOMBSTONES
    size += TOMBSTONE_SIZE * 2;
    p = malloc(size);
@@ -121,7 +121,7 @@ osmalloc(OSSIZE_T size)
 }
 
 /* realloc with error catching if it fails. */
-void FAR *
+void Far *
 osrealloc(void *p, OSSIZE_T size)
 {
    /* some pre-ANSI realloc implementations don't cope with a NULL pointer */
@@ -159,7 +159,7 @@ osrealloc(void *p, OSSIZE_T size)
    return p;
 }
 
-char FAR *
+char Far *
 osstrdup(const char *str)
 {
    char *p;
@@ -204,7 +204,7 @@ static int sigReceived;
 # define RETSIGTYPE void
 #endif
 
-static CDECL RETSIGTYPE FAR
+static CDECL RETSIGTYPE Far
 report_sig(int sig)
 {
    sigReceived = sig;

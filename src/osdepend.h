@@ -1,6 +1,6 @@
 /* osdepend.h
  * Contains commonly required OS dependent bits
- * Copyright (C) 1993-2002 Olly Betts
+ * Copyright (C) 1993-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,12 +111,18 @@ double svx_floor(double);
 
 /***************************************************************************/
 
+/* Use "Far" rather than "FAR" to avoid colliding with windows headers
+ * which may "#define FAR far" and "#define far" or something similar.
+ *
+ * Use "Huge" to avoid colliding with "HUGE" which is a pre-ANSI name for
+ * "HUGE_VAL"
+ */
 # ifdef HAVE_FAR_POINTERS
-#  define FAR far
+#  define Far far
 #  define Huge huge
 # else
 /* just lose these on a sensible OS */
-#  define FAR
+#  define Far
 #  define Huge
 # endif /* !Huge */
 

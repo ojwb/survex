@@ -1,6 +1,6 @@
 /* useful.h
  * Lots of oddments that come in handy generally
- * Copyright (C) 1993-2002 Olly Betts
+ * Copyright (C) 1993-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,10 +117,11 @@ extern INT32_T useful_w32;
 # define get16(FH) (fread(&useful_w16, 2, 1, (FH)), useful_w16)
 # define get32(FH) (fread(&useful_w32, 4, 1, (FH)), useful_w32)
 #else
-void FAR useful_put16(INT16_T, FILE *);
-void FAR useful_put32(INT32_T, FILE *);
-INT16_T FAR useful_get16(FILE *);
-INT32_T FAR useful_get32(FILE *);
+/* FIXME: why are these "Far"? */
+void Far useful_put16(INT16_T, FILE *);
+void Far useful_put32(INT32_T, FILE *);
+INT16_T Far useful_get16(FILE *);
+INT32_T Far useful_get32(FILE *);
 
 # define put16(W, FH) useful_put16(W, FH)
 # define put32(W, FH) useful_put32(W, FH)
