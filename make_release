@@ -37,7 +37,8 @@ if test -f Makefile ; then
 fi
 if test yes = "$rel" ; then
    rm -f config.guess.new config.sub.new
-   perl -e '-M "config.guess" && -M "config.sub" && exit 1' &&\
+   # only check for new versions if the current ones are over a day old
+   perl -e '-M "config.guess" && -M "config.sub" && exit 1' ||\
       wget ftp://ftp.gnu.org/gnu/config/config.guess -O config.guess.new &&\
       wget ftp://ftp.gnu.org/gnu/config/config.sub -O config.sub.new &&\
       chmod 755 config.guess.new config.sub.new &&\
