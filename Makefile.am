@@ -104,8 +104,9 @@ alien_src_zip :
 	mkdir alien_tmp/s
 	mkdir alien_tmp/o
 	perl alien.pl src/*.c src/*.h hto/*.c hto/*.h > alien_tmp/ObeyMe,feb
-	ln -s ../src/riscos/stdh alien_tmp
+	ln -s ../src/riscos/stdh/[a-z]* alien_tmp
 	ln -s ../src/borlandc/makefile alien_tmp/makefile.mak
+	ln -s ../src/borlandc/make.bat alien_tmp
 	ln -s ../../src/riscos/config.h alien_tmp/h/config
 	ln -s ../../src/riscos/armrot.s alien_tmp/s/armrot
 	./zip-magic -N -j $(alien_src_zip_name) alien_tmp src/*.c src/*.h\
