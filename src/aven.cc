@@ -281,12 +281,15 @@ static void Toolbar_Quit(GtkWidget*, gpointer data)
 
 static void Toolbar_About(GtkWidget*, gpointer data)
 {
+    // this won't compile with my version of gnome-- - Olly
+#if 0
     vector<string> authors;
     Gnome_About* about = new Gnome_About("Aven", "1.0.0 development",
 					 "(c) Copyright 1999-2000, Mark R. Shinwell.",
 					 authors, "A cave visualisation application for Survex.");
     about->set_position(GTK_WIN_POS_CENTER);
     about->show();
+#endif
 }
 
 // Aven methods:
@@ -947,15 +950,23 @@ void Aven::Elevation()
 
 void Aven::Slower()
 {
-    if (m_RotateAngle > (PI / 180.0)) {
-	m_RotateAngle -= (PI / 360.0);
+    if (fabs(m_RotateAngle) > (PI / 180.0)) {
+	if (m_RotateAngle > 0) {
+	   m_RotateAngle -= (PI / 360.0);
+	} else {
+	   m_RotateAngle += (PI / 360.0);
+	}
     }
 }
 
 void Aven::Faster()
 {
-    if (m_RotateAngle < (10 * PI / 180.0)) {
-	m_RotateAngle += (PI / 360.0);
+    if (fabs(m_RotateAngle) < (10 * PI / 180.0)) {
+	if (m_RotateAngle > 0) {
+	   m_RotateAngle += (PI / 360.0);
+	} else {
+	   m_RotateAngle -= (PI / 360.0);
+	}
     }
 }
 
