@@ -7,6 +7,10 @@
 # include <config.h>
 #endif
 
+#if 0
+# define DEBUG_INVALID
+#endif
+
 #include "debug.h"
 #include "cavern.h"
 #include "filename.h"
@@ -16,6 +20,11 @@
 
 node *stn_iter = NULL; /* for FOR_EACH_STN */
 
+#ifdef NO_COVARIANCES
+extern void check_var(const var *v) {
+   /* FIXME: check it! */
+}
+#else
 #define V(A,B) ((*v)[A][B])
 extern void check_var(const var *v) {
    int bad = 0;
@@ -55,6 +64,7 @@ extern void check_var(const var *v) {
 #endif
    if (bad) print_var(*v);
 }
+#endif
 
 extern void check_d(const d *d) {
    int bad = 0;
@@ -85,6 +95,14 @@ add_stn_to_list(node **list, node *stn) {
 /* remove from double-linked list */
 void
 remove_stn_from_list(node **list, node *stn) {
+#ifdef DEBUG_INVALID
+   /* check station is actually in this list */
+   node *stn_to_remove_is_in_list = *list;
+   while (stn_to_remove_is_in_list != stn) {
+      ASSERT(stn_to_remove_is_in_list);
+      stn_to_remove_is_in_list = stn_to_remove_is_in_list->next;
+   }
+#endif
    ASSERT(list);
    ASSERT(stn);
    /* adjust the iterator if it points to the element we're deleting */
@@ -505,8 +523,19 @@ subvv(var *r, const var *a, const var *b)
 #endif
 }
 
-#ifndef NO_COVARIANCES
 /* inv = v^-1 ; inv,v variance matrices */
+#ifdef NO_COVARIANCES
+extern int
+invert_var(var *inv, const var *v)
+{
+   int i;
+   for (i = 0; i < 3; i++) {
+      if ((*v)[i] < 1E-10) return 0; /* matrix is singular - FIXME use epsilon */
+      (*inv)[i] = 1.0 / (*v)[i];
+   }
+   return 1;
+}
+#else
 extern int
 invert_var(var *inv, const var *v)
 {

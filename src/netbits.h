@@ -85,10 +85,8 @@ void divdv(d *r, const d *a, const var *b);
 /* r = a(b^-1) ; r,a,b variance matrices */
 void divvv(var *r, const var *a, const var *b);
 
-#ifndef NO_COVARIANCES
 /* inv = v^-1 ; inv,v variance matrices */
 int invert_var(var *inv, const var *v);
-#endif
 
 /* Is v zero? */
 bool fZero(const var *v);
