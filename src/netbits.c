@@ -389,14 +389,14 @@ fprint_prefix(FILE *fh, const prefix *ptr)
 }
 
 static char *buffer = NULL;
-static int buffer_len = 256;
+static OSSIZE_T buffer_len = 256;
 
-static size_t
+static OSSIZE_T
 sprint_prefix_(const prefix *ptr)
 {
-   size_t len = 1;
+   OSSIZE_T len = 1;
    if (ptr->up != NULL) {
-      len = sprint_prefix_(ptr->up) + strlen(ptr->indent);
+      len = sprint_prefix_(ptr->up) + strlen(ptr->ident);
       if (ptr->up->up != NULL) len++;
       if (len > buffer_len) {
 	 buffer = osrealloc(buffer, len);
