@@ -57,7 +57,7 @@ useful_get16(FILE *fh)
 extern INT32_T FAR
 useful_get32(FILE *fh)
 {
-   w32 w;
+   INT32_T w;
    fread(&w, 4, 1, fh);
    return w;
 }
@@ -95,9 +95,9 @@ useful_get32(FILE *fh)
 {
    INT32_T w;
    w = getc(fh);
-   w |= (w32)(getc(fh) << 8l);
-   w |= (w32)(getc(fh) << 16l);
-   w |= (w32)(getc(fh) << 24l);
+   w |= (INT32_T)(getc(fh) << 8l);
+   w |= (INT32_T)(getc(fh) << 16l);
+   w |= (INT32_T)(getc(fh) << 24l);
    return w;
 }
 #endif
