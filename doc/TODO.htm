@@ -10,26 +10,41 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 <H2>Bugs</H2>
 
 <ul>
+<li>printdm - put standard scaling in print.ini for canon bj (prod Mark
+to get numbers)
+
+<li>Bigger initial window size or tweaked arrangement of panes? lower
+right pane is too small even at 1024x768 (for inter-station difference).
+I think the answer is to make the lower right pane a fixed height...
+
+<li>If I pull the vertical border to left or right edge of window, I
+lose a pane and don't appear to be able to get it back.  Perhaps "Restore
+panes" menu option if we can't allow the pane to be dragged open
+again...
+
+<li>Find and Hide buttons overlap slightly on wxGtk
+
+<li>Stretch-to-fit of Find and Hide buttons doesn't really make sense...
+
+<li>"Find station" should be case insensitive by default
+
+<li>Shift-ed keys should move faster (as they do in caverot)
+
+<li>Ctrl-Up/Down to tilt; Ctrl-Left/Right to rotate?
+
+<li>scale bar dragging is wrong - e.g. drag scalebar left then
+back to right - on drag right zoom is initially in the wrong direction!
+
+<li>repeated zoom with [ or ] stops on cave but keeps going on scalebar
+
+<li>still get wraparound lines on wxGtk: "random lines" when zooming in a lot on wxaven for GTK (xcaverot too)
+- fix by doing the clipping ourselves?
+
 <li>This gives "*** Singular!!!" warning with DEBUG_INVALID on:
 <pre>
 1 2 50000 0 -
 1 2 5 0 -30
 </pre>
-
-<li>Aven presentation recording crashes if you select the "Finish and
-Save" menu item twice.
-
-<li>Fix aven scaling crash
-
-<li>Load a .pos file and no stations are shown - I think the problem
-is in aven, as img looks to be setting the station "underground" flag...
-
-<li>continuing trouble with accelerator keys:
-
-<ul>
-<li>"[", "]", "'", and "/" accelerators don't work (on MS Windows 98)
-<li>Some keystrokes in the "Search box" are interpreted as accelerators
-</ul>
 
 <li>possible mysterious problem with [ and ] not zooming to screen centre
 
@@ -41,12 +56,7 @@ happened when I upgraded debian and a new libgtk package got
 installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
 [from Olly: installing "locales" package fixes this for me...]
 
-<li>releasing drag over menubar doesn't send event properly
-
 <li>Close button in About box not in correct place (on MS Windows)
-
-<li>"random lines" when zooming in a lot on wxaven for GTK (xcaverot too)
-- fix by doing the clipping ourselves?
 
 </ul>
 
@@ -54,11 +64,7 @@ installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
 
 <ul>
 
-<li>Profile aven (for speed and memory usage)
-
 <li>clino needs resistance around 0
-
-<li>scale bar dragging factor needs slight tweak
 
 <li>finish reverse controls
 
@@ -74,8 +80,6 @@ fixed points)?
 <li>clipping - want to select a clip sphere (or maybe cube) centred on
 centre on rotation I think.
 
-<li>shift-ed keys should move faster (as they do in caverot)
-
 <li>colour by cave (and more generally by sub-prefix):
 "aven --survey 161 --colour-by-sub-prefix all.3d" would result in
 lhroute, rhroute, adrian, etc all getting different colours...
@@ -86,15 +90,6 @@ looks OK
 <li>Redraw time should feed back to step size (so small caves on
 fast puters look sane, and so autorotate keeps an even speed when
 little can be seen for part of each rotation)
-
-<li>glcaverot features - perspective view and depth fogging...
-
-<li>Mark: "surface.png is for a textured landscape -- there needs to be a
-menu option to select the texturing on/off, and this should be the
-texture used. map.png is just a different surface overlay for Loser."
-
-<li>Remould presentation recording into the more usual "New"/"Save
-As"/"Load"/"Save" mould
 
 </ul>
 
@@ -152,10 +147,6 @@ cave with *export to one without...
 
 <li>extract help screen from caverot.c for translation
 
-<li>How to select alternative language on MS Windows - setting env
-vars isn't easy win install lang?? control panel / system / advanced /
-env vars I think...
-
 <li>quotes in messages - translate too? e.g. `XXX' to « XXX ».  Eric
 suggests not in French.
 
@@ -198,7 +189,8 @@ left to right?
 
 <li>cylpolar with dz rather than depth?
 
-<li>survex apt source for survex and survex-aven...
+<!--survex should be on official debian servers soon
+ <li>survex apt source for survex and survex-aven...-->
 
 <li>ISO image?  structure debian packages on it as an apt source.
 autorun for MS Windows?
