@@ -65,8 +65,8 @@ extend_SOURCES = extend.c message.c filename.c useful.c img.c osdepend.c
 
 noinst_DATA = borlandc/makefile riscos/makefile
  
-EXTRA_DIST = borlandc/makefile borlandc/config.h\
- riscos/makefile riscos/config.h riscos/armrot.s\
+EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
+ riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
  riscos/stdh/regnames riscos/stdh/swinames miniam.pl
 
 MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile
