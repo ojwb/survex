@@ -476,7 +476,7 @@ replace_travs(void)
 		  hTot = sqrd(e[0]) + sqrd(e[1]);
 		  vTot = sqrd(e[2]);
 #ifndef NO_COVARIANCES
-		  /* FIXCOV: what about covariances? */
+		  /* FIXME: what about covariances? */
 		  eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
 		  hTotTheo = leg->v[0] + leg->v[1];
 		  vTotTheo = leg->v[2];
@@ -544,7 +544,7 @@ replace_travs(void)
 	 divds(&sc, &e, &stn1->leg[i]->v);
       }
 #ifndef NO_COVARIANCES
-      /* FIXCOV: what about covariances? */
+      /* FIXME: what about covariances? */
       hTotTheo = stn1->leg[i]->v[0] + stn1->leg[i]->v[1];
       vTotTheo = stn1->leg[i]->v[2];
       eTotTheo = hTotTheo + vTotTheo;

@@ -790,6 +790,9 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
 {
    real dx, dy, dz;
    real vx, vy, vz;
+#ifndef NO_COVARIANCES
+   real cxy = 0, cyz = 0, czx = 0;
+#endif
 
    if (pcs->f0Eq && tape == (real)0.0) {
       process_equate(fr, to);
@@ -824,6 +827,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    }
 
    if (tape == (real)0.0) {
+      /* FIXME: this entirely ignores depth readings */
       dx = dy = dz = (real)0.0;
       vx = vy = vz = (real)(var(Q_POS) / 3.0); /* Position error only */
    } else if (comp == HUGE_REAL) {
@@ -836,7 +840,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
       vz = var(Q_POS) / 3.0 + var(Q_LENGTH) * 2 * var(Q_DEPTH)
                               / (var(Q_LENGTH) + var(Q_DEPTH));
    } else {
-      real L2, sinB, cosB, dx2, dy2, dz2, v, V, D2;
+      real L2, sinB, cosB, dz2, D2;
       comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
       comp -= pcs->z[Q_DECLINATION];
       sinB = sin(comp);
@@ -845,30 +849,37 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
       dz2 = dz * dz;
       D2 = L2 - dz2;
       if (D2 <= (real)0.0) {
+	 real vsum = var(Q_LENGTH) + 2 * var(Q_DEPTH);
 	 dx = dy = (real)0.0;
+	 vx = vy = var(Q_POS) / 3.0;
+	 vz = var(Q_POS) / 3.0 + var(Q_LENGTH) * 2 * var(Q_DEPTH) / vsum;
+	 if (dz > 0) {
+	    dz = (dz * var(Q_LENGTH) + tape * 2 * var(Q_DEPTH)) / vsum;
+	 } else {
+	    dz = (dz * var(Q_LENGTH) - tape * 2 * var(Q_DEPTH)) / vsum;
+	 }
       } else {
 	 real D = sqrt(D2);
+	 real F = var(Q_LENGTH) * L2 + 2 * var(Q_DEPTH) * D2;
 	 dx = D * sinB;
 	 dy = D * cosB;
+
+	 vx = var(Q_POS) / 3.0 +
+	    sinB * sinB * F / D2 + var(Q_BEARING) * dy * dy;
+	 vy = var(Q_POS) / 3.0 +
+	    cosB * cosB * F / D2 + var(Q_BEARING) * dx * dx;
+	 vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
+
+#ifndef NO_COVARIANCES
+	 cxy = sinB * cosB * (F / D2 + var(Q_BEARING) * D2);
+	 cyz = -2 * var(Q_DEPTH) * dy / D;
+	 czx = -2 * var(Q_DEPTH) * dx / D;
+#endif
       }
-      V = 2 * dz2 + L2;
-      if (D2 <= V) {
-	 vx = vy = var(Q_POS) / 3.0 + V;
-      } else {
-	 dx2 = dx * dx;
-	 dy2 = dy * dy;
-	 V = var(Q_LENGTH) / L2;
-	 v = dz2 * var(Q_DEPTH) / D2;
-	 vx = var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) +
-	    sinB * sinB * v;
-	 vy = var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) +
-	    cosB * cosB * v;
-      }
-      vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
    }
    addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
 #ifndef NO_COVARIANCES
-		, 0, 0, 0 /* FIXCOV: need covariances */
+		, cxy, cyz, czx
 #endif
 		);
 #ifdef NEW3DFORMAT

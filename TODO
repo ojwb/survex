@@ -121,8 +121,6 @@ check skip blank pages works on printer drivers (notably printpcl)
 prog --help and --version ought to work (perhaps both just do --version)
 even if messages can't be found.
 
-finish implementing covariances in a few places - grep for FIXCOV.
-
 get Phil to fix where it says PHILU...
 
 cylpolar style? Dr, Comp, Dz
