@@ -79,7 +79,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <limits.h> /* FIXME: used? */
 
 #include <sys/time.h> /* for gettimeofday */
 
@@ -122,14 +121,6 @@ float y_stretch = 1.0;
 /* FIXME: was #define FONTNAME "8x13", should be configurable */
 
 #define PIBY180 0.017453293
-
-#ifndef MAXINT
-#define MAXINT 0x7fffffff
-#endif
-
-#ifndef MININT
-#define MININT 0x80000000
-#endif
 
 #if 0
 typedef struct
@@ -785,12 +776,18 @@ static void fill_segment_cache()
     }
 }
 
+/* distance_metric() is a measure of how close we are */
+#if 0
+#define distance_metric(DX, DY) min(abs(DX), abs(DY))
+#else
+#define distance_metric(DX, DY) ((DX)*(DX) + (DY)*(DY))
+#endif
+
 point *find_station(int x, int y, int mask)
 {
    point *p, *q = NULL;
-   /* d_min is some measure of how close we are (e.g. distance squared,
-    * min( dx, dy ), etc) */
-   int d_min = MAXINT;
+   /* Ignore points a really long way away */
+   int d_min = distance_metric(300, 300);
    lid *plid;
 
    if (ppStns == NULL) return NULL;
@@ -802,11 +799,7 @@ point *find_station(int x, int y, int mask)
 	 int d;
 	 int x1 = toscreen_x(p);
 	 int y1 = toscreen_y(p);
-#if 1
-	 d = (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y);
-#else  /* old metric */
-	 d = min(abs(x1 - x), abs(y1 - y));
-#endif
+	 d = distance_metric(x1 - x, y1 - y);
 	 if (d < d_min) {
 	    d_min = d;
 	    q = p;
