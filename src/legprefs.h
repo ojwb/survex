@@ -1,5 +1,5 @@
 //
-//  legprefs.cc
+//  legprefs.h
 //
 //  Preferences page for survey legs.
 //
