@@ -108,6 +108,9 @@ Changes in 0.99-prerelease1:
 
 * French translation brought completely up-to-date.
 
+* Include documentation overview page in all versions (was just in MS
+  Windows version).
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

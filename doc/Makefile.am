@@ -20,8 +20,7 @@ EXTRA_DIST = manual $(doclist) manual.sgml custom.dsl survex.1.in\
 MAINTAINERCLEANFILES = $(doclist)
 CLEANFILES = $(other_mans)
 
-noinstall_DATA = manual
-pkgdoc_DATA = $(doclist)
+pkgdoc_DATA = docindex.htm $(doclist)
 
 man_MANS = survex.1 $(other_mans)
 
@@ -31,14 +30,14 @@ $(other_mans):
 install-data-local:
 	if test -d "$(srcdir)/manual" ; then \
 	  for p in `find "$(srcdir)/manual" -name "*.htm" -type f -print` ; do \
-	    f="`echo $$p | sed -e 's|^.*/||'`"; \
+	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
 	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
 	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
 	  done \
 	else \
 	  if test -d manual ; then \
 	    for p in `find manual -name "*.htm" -type f -print` ; do \
-	      f="`echo $$p | sed -e 's|^.*/||'`"; \
+	      f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
 	      echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
 	      $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
 	    done \
@@ -48,14 +47,14 @@ install-data-local:
 uninstall-local:
 	if test -d "$(srcdir)/manual" ; then \
 	  for p in `find "$(srcdir)/manual" -name "*.htm" -type f -print` ; do \
-	    f="`echo $$p | sed -e 's|^.*/||'`"; \
+	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
 	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
 	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
 	  done \
 	else \
 	  if test -d manual ; then \
 	    for p in `find manual -name "*.htm" -type f -print` ; do \
-	      f="`echo $$p | sed -e 's|^.*/||'`"; \
+	      f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
 	      echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
 	      rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
 	    done \

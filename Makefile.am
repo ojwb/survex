@@ -283,7 +283,7 @@ dos_doc_exe : dos_doc_zip
 dos_doc_zip :
 	$(RM) $(dos_doc_zip_name)
 	# -l means convert LF to CR+LF
-	cd doc && zip -l ../$(dos_doc_zip_name) $(MANUAL)
+	cd doc && zip -l ../$(dos_doc_zip_name) $(MANUAL) docindex.htm
 
 riscos_doc_zip_name = svxdoc-riscos-@VERSION@.zip
 
@@ -291,7 +291,7 @@ riscos_doc_zip :
 	$(RM) $(riscos_doc_zip_name)
 	$(RM) -rf riscos_doc_tmp
 	mkdir riscos_doc_tmp
-	cd doc && for f in $(MANUAL) ; do\
+	cd doc && for f in $(MANUAL) docindex.htm ; do\
 	 if test -d $$f ; then\
 	  mkdir ../riscos_doc_tmp/$$f ;\
 	 else\

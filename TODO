@@ -136,3 +136,8 @@ Find a solution to Thilo's "." problem.
 aven: load a .pos file and no stations are shown - I think the problem
 is in aven, as img looks to be setting the station "underground" flag...
 
+Date: Wed, 19 Sep 2001
+From: Olly
+
+Check images in html docs work.
+
