@@ -221,10 +221,12 @@ static void switch_to_elevation(void);
 static Colormap color_map;
 static XColor colors[128];
 static XColor exact_colors[128];
+#if 0 /* unused */
 static char *surveys[128];
 static char surveymask[128];
-static GC gcs[128];
 static int numsurvey = 0;
+#endif
+static GC gcs[128];
 
 static int dragging_about = 0;	/* whether cave is being dragged with right button */
 static int drag_start_x, drag_start_y;
@@ -253,7 +255,9 @@ color_set_up(Display * display, Window window)
       vals.foreground = colors[i].pixel;
       gcs[i] = XCreateGC(display, window, GCForeground, &vals);
    }
+#if 0 /* unused */
    numsurvey = 0;
+#endif
 }
 
 static void
@@ -264,8 +268,10 @@ flip_button(Display * display, Window mainwin, Window button,
    int width;
    int offset;
 
-   width = XTextWidth(XQueryFont(display, XGContextFromGC(inversegc)),
-		      string, len);
+   XFontStruct * fs;
+   fs = XQueryFont(display, XGContextFromGC(inversegc));
+   width = XTextWidth(fs, string, len);
+   XFreeFontInfo(NULL, fs, 1);
    offset = (BUTWIDTH - width) / 2;
    if (offset < 0)
       offset = 0;
@@ -277,6 +283,8 @@ flip_button(Display * display, Window mainwin, Window button,
    XFlush(display);
 }
 
+#if 0
+/* unused */
 int
 findsurvey(const char *name)
 {
@@ -293,6 +301,7 @@ findsurvey(const char *name)
    surveymask[i] = 1;
    return i;
 }
+#endif
 
 static lid **ppLegs = NULL;
 static lid **ppStns = NULL;
@@ -341,7 +350,9 @@ process_load(Display * display, Window mainwin, Window button, GC mygc, GC egc)
    int count;
 
    flip_button(display, mainwin, button, mygc, egc, "Load");
+#if 0 /* unused */
    numsurvey = 0;
+#endif
 
    /* set up input window */
    enter_window = XCreateSimpleWindow(display, mainwin,
@@ -501,6 +512,7 @@ process_mooz(Display * display, Window mainwin, Window button, GC mygc, GC egc)
    flip_button(display, mainwin, button, egc, mygc, "Zoom out");
 }
 
+#if 0 /* unused */
 void
 process_select(Display * display, Window window, Window button, GC mygc,
 	       GC egc)
@@ -563,6 +575,7 @@ process_select(Display * display, Window window, Window button, GC mygc,
    XDestroyWindow(display, select);
    flip_button(display, window, button, egc, mygc, "Select");
 }
+#endif
 
 void
 draw_ind_elev(Display * display, GC gc, float angle)
@@ -1174,7 +1187,9 @@ draw_buttons(Display * display, Window mainwin, GC mygc, GC egc)
 	       labelling ? "No Label" : "Label");
    flip_button(display, mainwin, butcross, egc, mygc,
 	       crossing ? "No Cross" : "Cross");
+#if 0 /* unused */
    flip_button(display, mainwin, butselect, egc, mygc, "Select");
+#endif
    flip_button(display, mainwin, butquit, egc, mygc, "Quit");
 }
 
@@ -1382,11 +1397,13 @@ main(int argc, char **argv)
    butcross =
       XCreateSimpleWindow(mydisplay, mywindow, BUTWIDTH * 7, 0, BUTWIDTH,
 			  BUTHEIGHT, 2, myforeground, mybackground);
+#if 0 /* unused */
    butselect =
       XCreateSimpleWindow(mydisplay, mywindow, BUTWIDTH * 8, 0, BUTWIDTH,
 			  BUTHEIGHT, 2, myforeground, mybackground);
+#endif
    butquit =
-      XCreateSimpleWindow(mydisplay, mywindow, BUTWIDTH * 9, 0, BUTWIDTH,
+      XCreateSimpleWindow(mydisplay, mywindow, BUTWIDTH * 8, 0, BUTWIDTH,
 			  BUTHEIGHT, 2, myforeground, mybackground);
 #endif
 
@@ -1492,7 +1509,9 @@ main(int argc, char **argv)
    XSelectInput(mydisplay, butplan, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
    XSelectInput(mydisplay, butlabel, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
    XSelectInput(mydisplay, butcross, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+#if 0 /* unused */
    XSelectInput(mydisplay, butselect, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+#endif
    XSelectInput(mydisplay, butquit, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
 #endif
    /* map window to the screen */
@@ -1509,7 +1528,9 @@ main(int argc, char **argv)
    XMapRaised(mydisplay, butplan);
    XMapRaised(mydisplay, butlabel);
    XMapRaised(mydisplay, butcross);
+#if 0 /* unused */
    XMapRaised(mydisplay, butselect);
+#endif
    XMapRaised(mydisplay, butquit);
 #endif
    XMapRaised(mydisplay, ind_com);
@@ -1578,12 +1599,14 @@ main(int argc, char **argv)
                      process_label(mydisplay, mywindow, butlabel, mygc, enter_gc);
                else if (myevent.xbutton.window == butcross)
                      process_cross(mydisplay, mywindow, butcross, mygc, enter_gc);
+#if 0 /* unused */
                else if (myevent.xbutton.window == butselect)
                      process_select(mydisplay, mywindow, butselect, mygc, enter_gc);
+#endif
                else if (myevent.xbutton.window == butquit) {
                      done = 1;
                      break;
-#endif	       
+#endif
 	       } else if (myevent.xbutton.window == ind_elev) {
 		  drag_elevation(myevent.xbutton.x, myevent.xbutton.y);
 	       } else if (myevent.xbutton.window == scalebar) {
