@@ -1,4 +1,6 @@
 #!/usr/bin/perl -w
+require 5.8;
+use bytes;
 use strict;
 
 print "Dir <Obey\$Dir>\n";

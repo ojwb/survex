@@ -3,7 +3,7 @@
 # Makefile for survex support files
 
 check-local:
-	srcdir=$(srcdir) perl $(srcdir)/checkshortcut.pl $(msg_files)
+	srcdir=$(srcdir) LANG=C perl $(srcdir)/checkshortcut.pl $(msg_files)
 
 SUBDIRS = icons
 
@@ -30,17 +30,17 @@ BUILT_SOURCES = defaultlang.h
 DISTCLEANFILES = defaultlang.h
 
 $(msg_files) $(hdr_files): messages.txt makemsgs.pl
-	srcdir=$(srcdir) perl $(srcdir)/makemsgs.pl $(srcdir)/messages.txt
+	srcdir=$(srcdir) LANG=C perl $(srcdir)/makemsgs.pl $(srcdir)/messages.txt
 
 defaultlang.h:
 	-rm -f defaultlang.h
 	ln -s $(srcdir)/$(DEFAULTLANG).h defaultlang.h
 
 default.bit: default.txt makefont.pl
-	perl makefont.pl default.txt default.bit
+	LANG=C perl makefont.pl default.txt default.bit
 
 bold.bit: bold.txt makefont.pl
-	perl makefont.pl bold.txt bold.bit
+	LANG=C perl makefont.pl bold.txt bold.bit
 
 mimedir = $(datadir)/mime-info
 mime_DATA = survex.mime survex.keys

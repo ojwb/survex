@@ -1,4 +1,6 @@
 #!/usr/bin/perl -w
+require 5.8;
+use bytes;
 use strict;
 
 # run on the output of:

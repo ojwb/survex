@@ -1,5 +1,8 @@
 #!/usr/bin/perl -w
+require 5.8;
+use bytes;
 use strict;
+
 my %menu = ();
 my $srcdir = $ENV{'srcdir'} || '';
 $srcdir .= '/' if $srcdir;
