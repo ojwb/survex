@@ -46,7 +46,7 @@ static const int INDICATOR_GAP = 2;
 static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
-static const int CLINO_OFFSET_X = INDICATOR_OFFSET_X + INDICATOR_BOX_SIZE + INDICATOR_GAP;
+static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X + INDICATOR_BOX_SIZE + INDICATOR_GAP;
 static const int DEPTH_BAR_OFFSET_X = 16;
 static const int DEPTH_BAR_EXTRA_LEFT_MARGIN = 2;
 static const int DEPTH_BAR_BLOCK_WIDTH = 20;
@@ -674,8 +674,13 @@ void GfxCore::Draw2dIndicators()
 			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_MARGIN,
 			  m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
 			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN);
+
+	m_DrawDC.DrawLine(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
+			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2,
+			  m_XSize - GetClinoOffset() - INDICATOR_MARGIN,
+			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2);
     }
-	
+    
     // Ticks
     bool white = m_DraggingLeft && m_LastDrag == drag_COMPASS && m_MouseOutsideCompass;
     wxCoord pan_centre_x = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;

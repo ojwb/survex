@@ -1,9 +1,8 @@
-Date: Wed, 02 May 2001
+Date: Thu, 03 May 2001
 From: Mark
 
 wxaven:
 - clino needs resistance around 0
-- move clino across and remove dead pixel
 - scale bar dragging factor needs slight tweak
 - middle button to reset scale bar
 - finish reverse controls
