@@ -25,6 +25,7 @@
 #define mainfrm_h
 
 #include "wx.h"
+#include "wx/docview.h"
 #include "gfxcore.h"
 #include "message.h"
 #include "aventreectrl.h"
@@ -162,6 +163,7 @@ public:
 };
 
 class MainFrm : public wxFrame {
+    wxFileHistory m_history;
     int m_SashPosition;
     list<PointInfo*>* m_Points;
     list<LabelInfo*> m_Labels;
@@ -250,6 +252,7 @@ public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
     ~MainFrm();
 
+    void OnMRUFile(wxCommandEvent& event);
     void OpenFile(const wxString& file, wxString survey = "", bool delay = false);
 #ifdef AVENPRES
     void OnOpenPresUpdate(wxUpdateUIEvent& event);

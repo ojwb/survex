@@ -92,6 +92,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_OPEN_PRES, MainFrm::OnOpenPres)
 #endif
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
+    EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
 
 #ifdef AVENPRES
     EVT_MENU(menu_PRES_CREATE, MainFrm::OnPresCreate)
@@ -342,6 +343,7 @@ void MainFrm::CreateMenuBar()
     filemenu->Append(menu_FILE_OPEN_TERRAIN, GetTabMsg(/*Open @Terrain...*/329));
 #endif
     filemenu->AppendSeparator();
+    m_history.UseMenu(filemenu);
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Exit*/221));
 
     wxMenu* rotmenu = new wxMenu;
@@ -1189,9 +1191,16 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
     }
 }
 
+void MainFrm::OnMRUFile(wxCommandEvent& event)
+{
+    wxString f(m_history.GetHistoryFile(event.GetId() - wxID_FILE1));
+    if (!f.empty()) OpenFile(f);
+}
+
 void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 {
     wxBusyCursor hourglass;
+    m_history.AddFileToHistory(file);
     if (LoadData(file, survey)) {
 	if (delay) {
 	    m_Gfx->InitialiseOnNextResize();
