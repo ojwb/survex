@@ -20,7 +20,7 @@
 #include "debug.h"
 #include "out.h"
 #include "network.h"
-#include "s.h"
+#include "str.h"
 
 static void
 default_grade(settings *s)
@@ -935,6 +935,7 @@ infer(void)
       pcs->f90Up = on;
       break;
     default:
+      BUG("unexpected case");
    }
 }
 
@@ -942,8 +943,29 @@ static void
 truncate(void)
 {
    int truncate;
-   truncate = (int)read_numeric(fFalse); /* FIXME: really want int... */
-   /* FIXME: should be "*truncate off" not "*truncate 0" */
+   /* FIXME: this really is *not* the way to do this */
+   skipblanks();
+   if (toupper(ch) == 'O') {
+      nextch();
+      if (toupper(ch) == 'F') {
+	 nextch();
+	 if (toupper(ch) == 'F') {
+	    truncate = 0;
+	    nextch();
+	 } else {
+	    ch = 'F';
+	    read_numeric(fFalse);
+	    NOT_YET;	       
+	 }
+      } else {
+	 ch = 'O';
+	 read_numeric(fFalse);
+	 NOT_YET;	       
+      }      
+   } else {
+      truncate = (int)read_numeric(fFalse); /* FIXME: really want +ve int... */
+   }
+   /* for backward compatibility, "*truncate 0" means "*truncate off" */
    pcs->Truncate = (truncate < 1) ? INT_MAX : truncate;
 }
 
@@ -960,7 +982,7 @@ handle_command(void)
     case CMD_FIX: fix_station(); break;
     case CMD_INCLUDE: {
        char *pth;
-       pth = PthFromFnm(file.filename);
+       pth = path_from_fnm(file.filename);
        include(pth);
        osfree(pth);
        break;
