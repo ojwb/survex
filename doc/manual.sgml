@@ -46,8 +46,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 1999-06-06 16:05:22 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.10 1999-06-06 16:05:22 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 1999-08-26 12:22:48 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.11 1999-08-26 12:22:48 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -568,7 +568,7 @@ run.</Para>
 
 <Para>If the operating system supports filenames with spaces, you can use
 them but you'll need to enclose them in quotes like so: <command>cavern
-&quot;Spider Cave&quot;</command></Para>
+"Spider Cave"</command></Para>
 
 <!--
 <Para>The command line is processed from left to right.
@@ -1557,11 +1557,11 @@ e.g. *DATA Normal from to compass tape clino
 </Para>
 
 <Para>
-[&quot;DATA NORMAL &lt;ordering with no BACK&gt;&quot; implemented]
+["DATA NORMAL &lt;ordering with no BACK&gt;" implemented]
 </Para>
 
 <Para>
-[&quot;DATA DIVING &lt;ordering&gt;&quot; implemented]
+["DATA DIVING &lt;ordering&gt" implemented]
 </Para>
 
 <Para>
@@ -1612,7 +1612,7 @@ the style is changed to ensure that the order is set correctly.
 </Para>
 
 <Para>
-The &quot;DEPTH&quot; for diving data increases upwards by default
+The "DEPTH" for diving data increases upwards by default
 (so it is actually altitude).  You can use *CALIBRATE with a negative
 scale factor of -1.0 to alter this if you wish.
 </Para>
@@ -1945,7 +1945,7 @@ are sure about first.
 <listitem><Para>*title allows you to set the title used in the
 <filename/.3d/ file. If
 the title contains spaces, you need to enclose it in quotes
-(&quot;&quot;). Multiple titles are strung together, separated by
+(""). Multiple titles are strung together, separated by
 commas. If there are no *title commands, the title defaults to
 a list of the leafnames of the .svx files specified on the command line
 (with any paths and extensions removed).</Para>
@@ -2215,7 +2215,7 @@ This data demonstrates a number of useful features of &survexsuite;:
 
 <Para>
 Legs can be measured either way round, which allows the use of
-techniques like &quot;leap-frogging&quot;, meaning that the legs
+techniques like "leap-frogging", meaning that the legs
 alternate forwards and backwards.
 </Para>
 
@@ -2534,8 +2534,8 @@ by &survexsuite;. You can also see the use of 'DOWN' for plumbs, and
 was unusual in being too long!).</Para>
 
 <programlisting>
-;Survey Name: Chaos - &quot;Bottomless Pit of Eternal Chaos&quot; to
-;         &quot;Redemption&quot; pitch
+;Survey Name: Chaos - "Bottomless Pit of Eternal Chaos" to
+;         "Redemption" pitch
 ;People - Inst: Nick Procter
 ;         Notes: Anthony Day
 ;   Pictures: Anthony Day
@@ -2622,7 +2622,7 @@ removing fixed points.
 <Para>To fix more than one station at known co-ordinates, simply use a *fix
 command for each.  &survexsuite; will check that all stations are connected
 to at least one fixed point (so their co-ordinates can be calculated).
-&quot;Hanging&quot; legs and stations are reported and discarded.  This
+"Hanging" legs and stations are reported and discarded.  This
 means that unconnected sections of data can be fed in and the connections
 added later.
 </Para>
