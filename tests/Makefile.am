@@ -40,4 +40,6 @@ cmd_entrance.svx\
 stnsurvey1.svx stnsurvey2.svx\
 tapelessthandepth.svx longname.svx\
 chinabug.svx chinabug2.svx\
-multinormal.svx multinormal.pos
+multinormal.svx multinormal.pos\
+multidiving.svx multidiving.pos\
+multicartesian.svx multicartesian.pos

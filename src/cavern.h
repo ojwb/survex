@@ -323,7 +323,7 @@ extern bool fSuppress; /* only output 3d(3dx) file */
 #endif
 #define fixed(S) pfx_fixed((S)->name)
 
-/* macros/fns for special chars */
+/* macros for special chars */
 
 #define isEol(c)    (pcs->Translate[(c)] & SPECIAL_EOL)
 #define isBlank(c)  (pcs->Translate[(c)] & SPECIAL_BLANK)

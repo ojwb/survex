@@ -1,0 +1,15 @@
+*fix 1 0 0 0
+*data cartesian station newline easting northing altitude
+1
+  0 1 0
+2 ; test
+  1 0 0 ; test
+3
+
+3
+  0 -1 0
+  ; testing
+4
+  ; testing
+  -1 0 0
+5

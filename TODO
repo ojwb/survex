@@ -284,3 +284,5 @@ extract --help messages for translation.
 prog --help and --version ought to work (perhaps both just do --version)
 even if messages can't be found.
 
+check line numbers with interleaved data (seem to be one too low).
+
