@@ -209,7 +209,10 @@ main(int argc, char **argv)
    /* display help screen to give user something to read while we do scaling */
    show_help();
 
-   init_map();
+   if (!init_map(xcMac, ycMac)) {
+      cvrotgfx_final();
+      exit(EXIT_FAILURE);
+   }
 
    /* can't do this until after we've initialised the graphics */
    scDefault = scale_to_screen(ppLegs, ppStns, xcMac, ycMac, y_stretch);

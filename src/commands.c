@@ -188,36 +188,34 @@ read_string(char **pstr, int *plen)
    }
 }
 
-#define MAX_KEYWORD_LEN 24
+static char *buffer = NULL;
+static size_t buf_len;
 
-static char ucbuffer[MAX_KEYWORD_LEN];
-static char buffer[MAX_KEYWORD_LEN];
+static char *ucbuffer = NULL;
 
 /* read token */
 extern void
 get_token(void)
 {
-   int j = 0;
+   s_zero(&buffer);
+   osfree(ucbuffer);
    skipblanks();
    while (isalpha(ch)) {
-      if (j < MAX_KEYWORD_LEN) {
-	 buffer[j] = ch;
-	 ucbuffer[j] = toupper(ch);
-	 j++;
-      }
+      s_catchar(&buffer, &buf_len, ch);
       nextch();
    }
-   if (j < MAX_KEYWORD_LEN) {
-      buffer[j] = '\0';
-      ucbuffer[j] = '\0';
-   } else {
-      /* if token is too long, change end to "..." - that way it won't
-       * match, but will look sensible in any error message */
-      /* FIXME: this is naff, better to use resizing buffer */
-      strcpy(buffer + MAX_KEYWORD_LEN - 4, "...");
-      strcpy(ucbuffer + MAX_KEYWORD_LEN - 4, "...");
+
+   ucbuffer = osmalloc(buf_len);
+   {
+      int i = -1;
+      do {
+         i++;
+         ucbuffer[i] = toupper(buffer[i]);
+      } while (buffer[i]);
    }
-   /* printf("get_token() got "); puts(buffer); */
+#if 0
+   printf("get_token() got "); puts(buffer);
+#endif
 }
 
 /* match_tok() now uses binary chop
