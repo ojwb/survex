@@ -1,10 +1,5 @@
 #! /bin/sh
 
-# for building on mrs30 - need CVS automake
-if test -d /opt/crosstools/autotools/bin ; then
-   PATH=/opt/crosstools/autotools/bin:$PATH
-fi
-
 rel=yes
 if test x"$1" = x-t ; then
    rel=
@@ -12,6 +7,10 @@ if test x"$1" = x-t ; then
 fi
 mk=${@-src rpm deb doc alien djgpp mingw}
 if test x"$rel" = xyes ; then
+   # Update debian changelog entry if necessary
+   # If it does get updated, then the next check will fail...
+   ./update-debcl.pl
+   # Check everything is checked into CVS
    if ! cvs diff > /dev/null 2> /dev/null ; then
       echo There are changes not checked into CVS - please rectify
       exit 1

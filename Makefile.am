@@ -10,7 +10,7 @@ GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
 EXTRA_DIST = $(GNU_FILES) TODO alien.pl survex.iss.in OLDNEWS
 
-SUBDIRS = lib src doc tests debian
+SUBDIRS = . lib src doc tests debian
 
 # seem to need this for "make distclean" to recurse?!?
 DIST_SUBDIRS = $(SUBDIRS)
@@ -100,18 +100,9 @@ rpm : dist
 	: #
 	rpm -ba --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc ${spec}
 
-debcl=deb/${PACKAGE}-${VERSION}/debian/changelog
-debct=deb/${PACKAGE}-${VERSION}/debian/control
+debct=debian/control
 
-debian : dist
-	-rm -rf deb
-	mkdir deb
-	cd deb && tar zxvf ../${PACKAGE}-${VERSION}.tar.gz
-	echo "${PACKAGE} (${VERSION}.${RELEASE}) unstable; urgency=low" > ${debcl}
-	echo >> ${debcl}
-	echo "  * Dummy changelog - see ChangeLog and NEWS." >> ${debcl}
-	echo >> ${debcl}
-	echo " -- Olly Betts <olly@survex.com>  "`date "+%a, %d %b %Y %X %z"` >> ${debcl}
+dist-hook:
 	echo Source: survex > ${debct}
 	echo Section: math >> ${debct}
 	echo Priority: optional >> ${debct}
@@ -131,7 +122,22 @@ debian : dist
 	echo Architecture: any >> ${debct}
 	echo 'Depends: survex (= @VERSION@.$(RELEASE)), $${shlibs:Depends}' >> ${debct}
 	echo Description: Sophisticated cave survey viewer for Survex >> ${debct}
-	sed 's/^/ /' < desc-aven.txt >> ${debct}	
+	sed 's/^/ /' < desc-aven.txt >> ${debct}
+	: # list of docs
+	rm -f debian/doc
+	for a in `echo ${extra_text}|grep -v COPYING|grep -v ChangeLog` ; do \
+	 echo $a >> debian/doc ; done
+	for a in $(HTMLFILES) @DOCS_OTHER@ manual/ ; do \
+	 echo debian/tmp/usr/doc/survex/$a >> debian/doc ; done
+
+debian : dist
+	: # overkill maybe - we could probably just use this tree
+	: # but then the .deb-s go in the parent directory, plus we get
+	: # lintian moaning about the directory name not having the
+	: # version number
+	-rm -rf deb
+	mkdir deb
+	cd deb && tar zxvf ../${PACKAGE}-${VERSION}.tar.gz
 	: # -us and -uc mean don't sign packages
 	cd deb/${PACKAGE}-${VERSION} && debuild -us -uc
 	mv deb/*.deb deb/*.dsc deb/*.changes deb/*.gz .
@@ -293,8 +299,6 @@ alien_src_zip :
 	cd alien_tmp && ../zip-magic -N -r ../$(alien_src_zip_name) *
 	$(RM) -rf alien_tmp
 
-MANUAL = @DOCS_OTHER@
-
 dos_doc_zip_name = svxdoc-doswin-@VERSION@.zip
 dos_doc_exe_name = svxdoc-doswin-@VERSION@.exe
 
@@ -307,7 +311,7 @@ dos_doc_exe : dos_doc_zip
 dos_doc_zip :
 	$(RM) $(dos_doc_zip_name)
 	: # -l means convert LF to CR+LF
-	cd doc && zip -l ../$(dos_doc_zip_name) $(MANUAL)
+	cd doc && zip -l ../$(dos_doc_zip_name) @DOCS_OTHER@
 
 riscos_doc_zip_name = svxdoc-riscos-@VERSION@.zip
 
@@ -315,7 +319,7 @@ riscos_doc_zip :
 	$(RM) $(riscos_doc_zip_name)
 	$(RM) -rf riscos_doc_tmp
 	mkdir riscos_doc_tmp
-	cd doc && for f in $(MANUAL) ; do\
+	cd doc && for f in @DOCS_OTHER@ ; do\
 	 if test -d $$f ; then\
 	  mkdir ../riscos_doc_tmp/$$f ;\
 	 else\
