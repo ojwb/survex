@@ -208,3 +208,6 @@ Check SIGINT on DOS caverot restores text mode...
 
 Check that --mode-picker works on DJGPP caverot.
 
+If there are errors, existing .pos and .inf files aren't removed, but
+existing .3d and .err files are...
+
