@@ -617,46 +617,26 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
     }
 }
 
-list<PointInfo*>::iterator MainFrm::GetFirstPoint(int band)
+list<PointInfo*>::const_iterator MainFrm::GetPoints(int band)
 {
     assert(band >= 0 && band < NUM_DEPTH_COLOURS);
     return m_Points[band].begin();
 }
 
-bool MainFrm::GetNextPoint(int band, list<PointInfo*>::iterator& pos, float& x, float& y, float& z,
-			   bool& isLine)
+list<PointInfo*>::const_iterator MainFrm::GetPointsEnd(int band)
 {
     assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-    if (pos == m_Points[band].end()) {
-        return false;
-    }
-
-    PointInfo* pt = *pos++;
-    x = pt->x;
-    y = pt->y;
-    z = pt->z;
-    isLine = pt->isLine;
-
-    return (pos != m_Points[band].end());
+    return m_Points[band].end();
 }
 
-list<LabelInfo*>::iterator MainFrm::GetFirstLabel()
+list<LabelInfo*>::const_iterator MainFrm::GetLabels()
 {
     return m_Labels.begin();
 }
 
-bool MainFrm::GetNextLabel(list<LabelInfo*>::iterator& pos, float& x, float& y, float& z,
-			   wxString& text)
+list<LabelInfo*>::const_iterator MainFrm::GetLabelsEnd()
 {
-    if (pos == m_Labels.end()) return false;
-
-    LabelInfo* label = *pos++;
-    x = label->x;
-    y = label->y;
-    z = label->z;
-    text = label->text;
-
-    return (pos != m_Labels.end());
+    return m_Labels.end();
 }
 
 void MainFrm::OpenFile(const wxString& file, bool delay)

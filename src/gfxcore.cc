@@ -49,6 +49,8 @@ static const int TICK_LENGTH = 4;
 static const int DISPLAY_SHIFT = 50;
 static const int TIMER_ID = 0;
 
+#define DELETE_ARRAY(x) { assert(x); delete[] x; }
+
 BEGIN_EVENT_TABLE(GfxCore, wxWindow)
     EVT_PAINT(GfxCore::OnPaint)
     EVT_LEFT_DOWN(GfxCore::OnLButtonDown)
@@ -64,8 +66,9 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent) :
-    wxWindow(parent, 100), m_Timer(this, TIMER_ID), m_InitialisePending(false),
-    m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, false, "Helvetica")
+    wxWindow(parent, 100),
+    m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, false, "Helvetica"), m_Timer(this, TIMER_ID),
+    m_InitialisePending(false)
 {
     m_LastDrag = drag_NONE;
     m_DraggingLeft = false;
@@ -125,19 +128,19 @@ void GfxCore::TryToFreeArrays()
 
     if (m_PlotData) {
         for (int band = 0; band < m_Bands; band++) {
-	    delete[] m_PlotData[band].vertices;
-	    delete[] m_PlotData[band].num_segs;
+	    DELETE_ARRAY(m_PlotData[band].vertices);
+	    DELETE_ARRAY(m_PlotData[band].num_segs);
 	}
 
-	delete[] m_PlotData;
-	delete[] m_Polylines;
-	delete[] m_CrossData.vertices;
-	delete[] m_CrossData.num_segs;
-	delete[] m_Labels;
-	delete[] m_LabelsLastPlotted;
+	DELETE_ARRAY(m_PlotData);
+	DELETE_ARRAY(m_Polylines);
+	DELETE_ARRAY(m_CrossData.vertices);
+	DELETE_ARRAY(m_CrossData.num_segs);
+	DELETE_ARRAY(m_Labels);
+	DELETE_ARRAY(m_LabelsLastPlotted);
 
 	if (m_LabelGrid) {
-	    delete[] m_LabelGrid;
+	    DELETE_ARRAY(m_LabelGrid);
 	}
 	
 	m_PlotData = NULL;
@@ -221,14 +224,17 @@ void GfxCore::SetScale(double scale)
 	    assert(count);
 	    count--; // MainFrm guarantees the first point will be a move.
 
-	    float x, y, z;
-	    bool is_line;
-
 	    m_Polylines[band] = 0;
-	    list<PointInfo*>::iterator pos = m_Parent->GetFirstPoint(band);
-	    bool more = true;
-	    while (more) {
-	        more = m_Parent->GetNextPoint(band, pos, x, y, z, is_line);
+	    list<PointInfo*>::const_iterator pos = m_Parent->GetPoints(band);
+	    list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd(band);
+	    bool first = true;
+	    while (pos != end) {
+ 	        const PointInfo* pti = *pos++;
+
+		float x = pti->GetX();
+		float y = pti->GetY();
+		float z = pti->GetZ();
+		bool is_line = pti->IsLine();
 
 		x += m_Params.translation.x;
 		y += m_Params.translation.y;
@@ -237,6 +243,11 @@ void GfxCore::SetScale(double scale)
 		pt->x = (long) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
 		pt->y = -(long) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
 		pt++;
+
+		if (first) {
+		  first = false;
+		  assert(!is_line);
+		}
 
 		if (!is_line) {
 		    // new polyline
@@ -260,12 +271,15 @@ void GfxCore::SetScale(double scale)
         wxPoint* pt = m_CrossData.vertices;
 	int* count = m_CrossData.num_segs;
 	wxString* labels = m_Labels;
-	list<LabelInfo*>::iterator pos = m_Parent->GetFirstLabel();
+	list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+	list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
 	float x, y, z;
 	wxString text;
-	bool more = true;
-	while (more) {
-	    more = m_Parent->GetNextLabel(pos, x, y, z, text);
+	while (pos != end) {
+	    LabelInfo* label = *pos++;
+	    float x = label->GetX();
+	    float y = label->GetY();
+	    float z = label->GetZ();
 
 	    x += m_Params.translation.x;
 	    y += m_Params.translation.y;
@@ -290,7 +304,7 @@ void GfxCore::SetScale(double scale)
 	    *count++ = 2;
 	    *count++ = 2;
 	    
-	    *labels++ = text;
+	    *labels++ = label->GetText();
 	}
     }
 }
@@ -1048,7 +1062,6 @@ void GfxCore::HandleTilt(wxPoint point)
     // Handle a mouse movement during tilt mode.
 
     if (!m_FreeRotMode) {
-        int dx = point.x - m_DragStart.x;
 	int dy = point.y - m_DragStart.y;
 
 	TiltCave(M_PI * (double(dy) / 500.0));

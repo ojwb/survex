@@ -70,12 +70,24 @@ class PointInfo {
     friend class MainFrm;
     float x, y, z;
     bool isLine; // false => move, true => draw line
+
+public:
+    float GetX() const { return x; }
+    float GetY() const { return y; }
+    float GetZ() const { return z; }
+    bool IsLine() const { return isLine; }
 };
 
 class LabelInfo {
     friend class MainFrm;
     float x, y, z;
     wxString text;
+
+public:
+    float GetX() const { return x; }
+    float GetY() const { return y; }
+    float GetZ() const { return z; }
+    wxString GetText() const { return text; }
 };
 
 class MainFrm : public wxFrame {
@@ -201,12 +213,11 @@ public:
     wxPen GetPen(int band);
     wxBrush GetBrush(int band);
 
-    list<PointInfo*>::iterator GetFirstPoint(int band);
-    bool GetNextPoint(int band, list<PointInfo*>::iterator& pos, float& x, float& y, float& z,
-		      bool& isLine);
+    list<PointInfo*>::const_iterator GetPoints(int band);
+    list<LabelInfo*>::const_iterator GetLabels();
 
-    list<LabelInfo*>::iterator GetFirstLabel();
-    bool GetNextLabel(list<LabelInfo*>::iterator& pos, float& x, float& y, float& z, wxString& text);
+    list<PointInfo*>::const_iterator GetPointsEnd(int band);
+    list<LabelInfo*>::const_iterator GetLabelsEnd();
 
     //bool ProcessEvent(wxEvent&);
 
