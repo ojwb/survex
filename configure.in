@@ -96,7 +96,7 @@ AC_ARG_WITH(wxconfig,
 [WXCONFIG=$with_wxconfig
 ])
 
-if test x$no_x = xno; then
+if test x$no_x != xyes; then
   AC_CHECK_LIB(Xext, XdbeQueryExtension, X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS", ,
                $X_LIBS $X_PRE_LIBS -lX11 -lXext $X_EXTRA_LIBS)
   CAVEROT=xcaverot ${CAVEROT}
