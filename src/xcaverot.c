@@ -1518,7 +1518,11 @@ main(int argc, char **argv)
       int refresh_window = 0;
       update_rotation();
 
-      if (rot == 0 || XPending(mydisplay)) {
+//      if (rot == 0 || XPending(mydisplay)) {
+      if (rot == 0) goto ickybodge;
+      while (XPending(mydisplay)) {
+	 ickybodge:
+
          XNextEvent(mydisplay, &myevent);
 #if 0
          printf("event of type #%d, in window %x\n",myevent.type, (int)myevent.xany.window);
@@ -1754,15 +1758,24 @@ main(int argc, char **argv)
 	 static float old_scale = -1;
 	 static int old_crossing = -1;
 	 static int old_labelling = -1;
+	 static coord old_x_mid;
+	 static coord old_y_mid;
+	 static coord old_z_mid;
 
 	 int redraw = refresh_window;
 
 	 if (old_view_angle != view_angle ||
 	     old_elev_angle != elev_angle ||
+	     old_x_mid != x_mid ||
+	     old_y_mid != y_mid ||
+	     old_z_mid != z_mid ||
 	     old_scale != scale) {
 
 	    old_view_angle = view_angle;
 	    old_elev_angle = elev_angle;
+	    old_x_mid = x_mid;
+	    old_y_mid = y_mid;
+	    old_z_mid = z_mid;
 	    
 	    fill_segment_cache();
 	    redraw = 1;
@@ -1772,8 +1785,7 @@ main(int argc, char **argv)
 	    old_crossing = crossing;
 	    old_labelling = labelling;
 	    redraw = 1;
-	 }
-	 
+	 }	 
 
 	 if (redraw) {
 	    perform_redraw();

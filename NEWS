@@ -1,3 +1,5 @@
+* Improved responsiveness of xcaverot.
+
 Changes in 0.95:
 
 * Put aven in a separate RPM package since it depends on a stack of
