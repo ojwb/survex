@@ -96,7 +96,7 @@ cmdline_help(void)
       }
 
       if (isalnum(opt))
-	 printf("  -%c,", opt);
+	 printf("  -%c%c", opt, longopt ? ',' : ' ');
       else
 	 fputs("     ", stdout);
 
