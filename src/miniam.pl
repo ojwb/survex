@@ -167,7 +167,7 @@ sub init_riscos {
       'EXTRARULES' =>
          "armrot.o: armrot.s\n\tobjasm -ThrowBack -Stamp -quit -CloseExec -from s.armrot -to o.armrot\n\n",
       'exezip' => 'roexe/zip',
-      'copyzip' => 'copy roexe/zip ADFS::0.$.roexe/zip ~c',
+      'movezip' => 'copy roexe/zip ADFS::0.$.roexe/zip d~c',
    );
    $max_leaf_len = 10;
    $use_rsp = 0;
@@ -188,7 +188,7 @@ sub init_borlandc {
       'EXEEXT' => '.exe',
       'EXTRARULES' => '',
       'exezip' => 'bcexe.zip',
-      'copyzip' => 'move bcexe.zip a:',
+      'movezip' => 'move bcexe.zip a:',
    );
    $max_leaf_len = 8;
    $use_rsp = 1;
