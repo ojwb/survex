@@ -389,6 +389,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SHOW_EXPORTED_PTS, MainFrm::OnShowExportedPts)
     EVT_MENU(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNames)
     EVT_MENU(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNames)
+    EVT_MENU(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepth)
     EVT_MENU(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurface)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
     EVT_MENU(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspective)
@@ -440,6 +441,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNamesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurfaceUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNamesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepthUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspectiveUpdate)
     EVT_UPDATE_UI(menu_VIEW_FOG, MainFrm::OnViewFogUpdate)
@@ -631,6 +633,7 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*@Surface Survey Legs##Ctrl+F*/291), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273), "", true);
+    viewmenu->Append(menu_VIEW_COLOUR_BY_DEPTH, "Co&lour by Depth", "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295), "", true);

@@ -65,6 +65,11 @@ class PresentationMark {
     bool is_valid() const { return scale > 0; }
 };
 
+#define COLOUR_BY_NONE 0
+#define COLOUR_BY_DEPTH 1
+#define COLOUR_BY_DATE 2
+#define COLOUR_BY_ERROR 3
+
 #define UPDATE_NONE 0
 #define UPDATE_INDICATORS 1
 #define UPDATE_BLOBS 2
@@ -118,6 +123,7 @@ class GfxCore : public GLACanvas {
     int m_YSize;
     int m_XCentre;
     int m_YCentre;
+    int m_ColourBy;
 
     bool m_HaveData;
     bool m_MouseOutsideCompass;
@@ -154,7 +160,9 @@ class GfxCore : public GLACanvas {
     void SetColourFromHeight(Double z, Double factor);
     void PlaceVertexWithColour(Double x, Double y, Double z,
 			       Double factor = 1.0);
-   
+    void PlaceVertexWithDepthColour(Double x, Double y, Double z,
+				    Double factor = 1.0);
+
     Double GridXToScreen(Double x, Double y, Double z) const;
     Double GridYToScreen(Double x, Double y, Double z) const;
     Double GridXToScreen(const Point &p) const {
@@ -169,6 +177,10 @@ class GfxCore : public GLACanvas {
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
+    void SkinPassage(const list<Vector3> & centreline,
+		     bool current_polyline_is_surface, bool surface, bool tubes,
+		     Double x0, Double y0, Double z0,
+		     Vector3 * u, Vector3 & prev_pt_v, Vector3 & last_right);
     void DrawPolylines(bool tubes, bool surface);
 
     void GenerateDisplayList();
@@ -300,6 +312,8 @@ public:
     bool ShowingOverlappingNames() const { return m_OverlappingNames; }
     bool ShowingCrosses() const { return m_Crosses; }
 
+    bool ColouringBy() const { return m_ColourBy; }
+
     bool HasUndergroundLegs() const;
     bool HasSurfaceLegs() const;
 
@@ -356,14 +370,23 @@ public:
 			      Double factor = 1.0);
     int GetDepthColour(Double z) const;
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
+    void AddPolyline(const list<Vector3> & centreline);
+    void AddPolylineDepth(const list<Vector3> & centreline);
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
 			  const Vector3 &c, const Vector3 &d);
+    void AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b, 
+			       const Vector3 &c, const Vector3 &d);
     void MoveViewer(double forward, double up, double right);
+
+    void (GfxCore::* AddQuad)(const Vector3 &a, const Vector3 &b,
+                              const Vector3 &c, const Vector3 &d);
+    void (GfxCore::* AddPoly)(const list<Vector3> & centreline);
 
     PresentationMark GetView() const;
     void SetView(const PresentationMark & p);
     void PlayPres();
 
+    void SetColourBy(int colour_by);
     bool ExportMovie(const wxString & fnm);
 
 private:

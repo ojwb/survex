@@ -65,6 +65,7 @@ public:
     void OnPlan();
     void OnElevation();
     void OnDisplayOverlappingNames();
+    void OnColourByDepth();
     void OnShowCrosses();
     void OnShowStationNames();
     void OnShowSurveyLegs();
@@ -110,6 +111,7 @@ public:
     void OnKeyPress(wxKeyEvent &e);
 
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent&);
+    void OnColourByDepthUpdate(wxUpdateUIEvent&);
     void OnShowCrossesUpdate(wxUpdateUIEvent&);
     void OnShowStationNamesUpdate(wxUpdateUIEvent&);
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent&);

@@ -104,6 +104,7 @@ enum {
     menu_VIEW_FOG,
     menu_VIEW_FULLSCREEN,
     menu_VIEW_PREFERENCES,
+    menu_VIEW_COLOUR_BY_DEPTH,
     menu_IND_COMPASS,
     menu_IND_CLINO,
     menu_IND_DEPTH_BAR,
@@ -269,6 +270,7 @@ public:
     void OnPlanUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnPlanUpdate(event); }
     void OnElevationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnElevationUpdate(event); }
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnDisplayOverlappingNamesUpdate(event); }
+    void OnColourByDepthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDepthUpdate(event); }
     void OnShowCrossesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowCrossesUpdate(event); }
     void OnShowEntrancesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowEntrancesUpdate(event); }
     void OnShowFixedPtsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowFixedPtsUpdate(event); }
@@ -312,6 +314,7 @@ public:
     void OnPlan(wxCommandEvent&) { if (m_Control) m_Control->OnPlan(); }
     void OnElevation(wxCommandEvent&) { if (m_Control) m_Control->OnElevation(); }
     void OnDisplayOverlappingNames(wxCommandEvent&) { if (m_Control) m_Control->OnDisplayOverlappingNames(); }
+    void OnColourByDepth(wxCommandEvent&) { if (m_Control) m_Control->OnColourByDepth(); }
     void OnShowCrosses(wxCommandEvent&) { if (m_Control) m_Control->OnShowCrosses(); }
     void OnShowEntrances(wxCommandEvent&) { if (m_Control) m_Control->OnShowEntrances(); }
     void OnShowFixedPts(wxCommandEvent&) { if (m_Control) m_Control->OnShowFixedPts(); }

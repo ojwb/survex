@@ -136,6 +136,9 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_ExportedPts = false;
     m_Tubes = false;
     m_Grid = false;
+    m_ColourBy = COLOUR_BY_DEPTH;
+    AddQuad = &GfxCore::AddQuadrilateralDepth;
+    AddPoly = &GfxCore::AddPolylineDepth;
     wxConfigBase::Get()->Read("metric", &m_Metric, true);
     wxConfigBase::Get()->Read("degrees", &m_Degrees, true);
     m_here.x = DBL_MAX;
@@ -786,7 +789,8 @@ void GfxCore::SimpleDrawNames()
 
 void GfxCore::DrawDepthbar()
 {
-    if (m_Parent->GetZExtent() == 0.0) return;
+    if (m_ColourBy != COLOUR_BY_DEPTH || m_Parent->GetZExtent() == 0.0)
+	return;
 
     int y = m_YSize -
 	    (DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1)
@@ -1918,10 +1922,16 @@ void GfxCore::GenerateIndicatorDisplayList()
     }
 }
 
-void GfxCore::SetColourFromHeight(Double z, Double factor)
+void GfxCore::PlaceVertexWithColour(Double x, Double y, Double z, Double factor)
 {
-    // Set the drawing colour based on an altitude.
+    SetColour(GetSurfacePen(), factor); // FIXME : assumes surface pen is white!
+    PlaceVertex(x, y, z);
+}
 
+void GfxCore::PlaceVertexWithDepthColour(Double x, Double y, Double z,
+					 Double factor)
+{
+    // Set the drawing colour based on the altitude.
     Double z_ext = m_Parent->GetZExtent();
 
     // points arising from tubes may be slightly outside the limits...
@@ -1955,13 +1965,7 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
     pen1.Interpolate(pen2, into_band);
 
     SetColour(pen1, factor);
-}
 
-void GfxCore::PlaceVertexWithColour(Double x, Double y, Double z, Double factor)
-{
-    // Set the drawing colour based on an altitude, and then place a vertex.
-
-    SetColourFromHeight(z, factor);
     PlaceVertex(x, y, z);
 }
 
@@ -1991,7 +1995,7 @@ void GfxCore::SplitLineAcrossBands(int band, int band2,
 	IntersectLineWithPlane(p.getX(), p.getY(), p.getZ(),
 			       p2.getX(), p2.getY(), p2.getZ(),
 			       z, x, y);
-	PlaceVertexWithColour(x, y, z, factor);
+	PlaceVertexWithDepthColour(x, y, z, factor);
     }
 }
 
@@ -2016,8 +2020,58 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
     return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2;
 }
 
+void GfxCore::AddPolyline(const list<Vector3> & centreline)
+{
+    BeginPolyline();
+    SetColour(GetSurfacePen());
+    list<Vector3>::const_iterator i = centreline.begin();
+    PlaceVertex(i->getX(), i->getY(), i->getZ());
+    ++i;
+    while (i != centreline.end()) {
+	PlaceVertex(i->getX(), i->getY(), i->getZ());
+	++i;
+    }
+    EndPolyline();
+}
+		
+void GfxCore::AddPolylineDepth(const list<Vector3> & centreline)
+{
+    BeginPolyline();
+    list<Vector3>::const_iterator i, prev_i;
+    i = centreline.begin();
+    int band0 = GetDepthColour(i->getZ());
+    PlaceVertexWithDepthColour(i->getX(), i->getY(), i->getZ());
+    prev_i = i;
+    ++i;
+    while (i != centreline.end()) {
+	int band = GetDepthColour(i->getZ());
+	if (band != band0) {
+	    SplitLineAcrossBands(band0, band, *prev_i, *i);
+	    band0 = band;
+	}
+	PlaceVertexWithDepthColour(i->getX(), i->getY(), i->getZ());
+	prev_i = i;
+	++i;
+    }
+    EndPolyline();
+}
+
 void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			       const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    BeginQuadrilaterals();
+    PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
+    PlaceVertexWithColour(b.getX(), b.getY(), b.getZ(), factor);
+    PlaceVertexWithColour(c.getX(), c.getY(), c.getZ(), factor);
+    PlaceVertexWithColour(d.getX(), d.getY(), d.getZ(), factor);
+    EndQuadrilaterals();
+}
+
+void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
+				    const Vector3 &c, const Vector3 &d)
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
@@ -2035,23 +2089,248 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     // for each depth band...
     BeginPolygon();
 ////    PlaceNormal(normal.getX(), normal.getY(), normal.getZ());
-    PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
+    PlaceVertexWithDepthColour(a.getX(), a.getY(), a.getZ(), factor);
     if (a_band != b_band) {
 	SplitLineAcrossBands(a_band, b_band, a, b, factor);
     }
-    PlaceVertexWithColour(b.getX(), b.getY(), b.getZ(), factor);
+    PlaceVertexWithDepthColour(b.getX(), b.getY(), b.getZ(), factor);
     if (b_band != c_band) {
 	SplitLineAcrossBands(b_band, c_band, b, c, factor);
     }
-    PlaceVertexWithColour(c.getX(), c.getY(), c.getZ(), factor);
+    PlaceVertexWithDepthColour(c.getX(), c.getY(), c.getZ(), factor);
     if (c_band != d_band) {
 	SplitLineAcrossBands(c_band, d_band, c, d, factor);
     }
-    PlaceVertexWithColour(d.getX(), d.getY(), d.getZ(), factor);
+    PlaceVertexWithDepthColour(d.getX(), d.getY(), d.getZ(), factor);
     if (d_band != a_band) {
 	SplitLineAcrossBands(d_band, a_band, d, a, factor);
     }
     EndPolygon();
+}
+
+void
+GfxCore::SkinPassage(const list<Vector3> & centreline,
+		     bool current_polyline_is_surface, bool surface, bool tubes,
+		     Double x0, Double y0, Double z0,
+		     Vector3 * u, Vector3 & prev_pt_v, Vector3 & last_right)
+{
+    // Start a new polyline if we're switching
+    // underground/surface state or if the previous point
+    // was a move.
+    if (centreline.size() > 1) {
+	if (current_polyline_is_surface) {
+	    if (surface) {
+		AddPolyline(centreline);
+	    }
+	} else {
+	    if (!surface && !tubes) {
+		(this->*AddPoly)(centreline);
+	    } else if (tubes) {
+		list<Vector3>::const_iterator i;
+		i = centreline.begin();
+		PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
+		list<Vector3>::size_type segment = 0;
+		while (i != centreline.end()) {
+		    // get the coordinates of this vertex
+		    const Vector3 & pt_v = *i;
+		    ++i;
+
+		    double z_pitch_adjust = 0.0;
+		    bool cover_end = false;
+
+		    Double size;
+
+		    Vector3 right, up;
+
+		    const Vector3 up_v(0.0, 0.0, 1.0);
+
+		    if (segment == 0) {
+			// first segment
+			Double h = sqrd(i->getX() - pt_v.getX()) +
+				   sqrd(i->getY() - pt_v.getY());
+			Double v = sqrd(i->getZ() - pt_v.getZ());
+			if (h + v > 30.0 * 30.0) {
+			    Double scale = 30.0 / sqrt(h + v);
+			    h *= scale;
+			    v *= scale;
+			}
+			size = sqrt(h + v / 9);
+			size /= 4;
+
+			// get the coordinates of the next vertex
+			const Vector3 & next_pt_v = *i;
+
+			// calculate vector from this pt to the next one
+			Vector3 leg_v = pt_v - next_pt_v;
+
+			// obtain a vector in the LRUD plane
+			right = leg_v * up_v;
+			if (right.magnitude() == 0) {
+			    right = last_right;
+			    // obtain a second vector in the LRUD
+			    // plane, perpendicular to the first
+			    up = right * leg_v;
+			} else {
+			    last_right = right;
+			    up = up_v;
+			}
+
+			cover_end = true;
+		    } else if (segment + 1 == centreline.size()) {
+			// last segment
+			Double h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
+			    sqrd(prev_pt_v.getY() - pt_v.getY());
+			Double v = sqrd(prev_pt_v.getZ() - pt_v.getZ());
+			if (h + v > 30.0 * 30.0) {
+			    Double scale = 30.0 / sqrt(h + v);
+			    h *= scale;
+			    v *= scale;
+			}
+			size = sqrt(h + v / 9);
+			size /= 4;
+
+			// calculate vector from the previous pt to this one
+			Vector3 leg_v = prev_pt_v - pt_v;
+
+			// obtain a horizontal vector in the LRUD plane
+			right = leg_v * up_v;
+			if (right.magnitude() == 0) {
+			    right = Vector3(last_right.getX(), last_right.getY(), 0.0);
+			    // Obtain a second vector in the LRUD plane,
+			    // perpendicular to the first.
+			    up = right * leg_v;
+			} else {
+			    last_right = right;
+			    up = up_v;
+			}
+
+			cover_end = true;
+		    } else {
+			// intermediate segment
+			Double h = sqrd(i->getX() - pt_v.getX()) +
+			    sqrd(i->getY() - pt_v.getY());
+			Double v = sqrd(i->getZ() - pt_v.getZ());
+			if (h + v > 30.0 * 30.0) {
+			    Double scale = 30.0 / sqrt(h + v);
+			    h *= scale;
+			    v *= scale;
+			}
+			size = sqrt(h + v / 9);
+			h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
+			    sqrd(prev_pt_v.getY() - pt_v.getY());
+			v = sqrd(prev_pt_v.getZ() - pt_v.getZ());
+			if (h + v > 30.0 * 30.0) {
+			    Double scale = 30.0 / sqrt(h + v);
+			    h *= scale;
+			    v *= scale;
+			}
+			size += sqrt(h + v / 9);
+			size /= 8;
+
+			// Get the coordinates of the next vertex.
+			const Vector3 & next_pt_v = *i;
+
+			// Calculate vectors from this vertex to the
+			// next vertex, and from the previous vertex to
+			// this one.
+			Vector3 leg1_v = prev_pt_v - pt_v;
+			Vector3 leg2_v = pt_v - next_pt_v;
+
+			// Obtain horizontal vectors perpendicular to
+			// both legs, then normalise and average to get
+			// a horizontal bisector.
+			Vector3 r1 = leg1_v * up_v;
+			Vector3 r2 = leg2_v * up_v;
+			r1.normalise();
+			r2.normalise();
+			right = r1 + r2;
+			if (right.magnitude() == 0) {
+			    right = last_right;
+			    up = right * leg1_v;
+			} else {
+			    if (r1.magnitude() == 0) {
+				Vector3 n = leg1_v;
+				n.normalise();
+				z_pitch_adjust = n.getZ();
+				up = Vector3(0, 0, leg1_v.getZ());
+				up = right * up;
+				// Rotate pitch section to minimise the
+				// "tortional stress" - FIXME: use
+				// triangles instead of rectangles?
+				int shift = 0;
+				Double maxdotp, dotp;
+				maxdotp = dot(up - right, u[0]);
+				dotp = dot(up - right, u[1]);
+				if (dotp > maxdotp) { maxdotp = dotp; shift = 1; }
+				dotp = dot(up - right, u[2]);
+				if (dotp > maxdotp) { maxdotp = dotp; shift = 2; }
+				dotp = dot(up - right, u[3]);
+				if (dotp > maxdotp) { maxdotp = dotp; shift = 3; }
+				if (shift) {
+				    if (shift != 2) {
+					Vector3 temp(u[0]);
+					int j = 0;
+					for (int l = 0; l < 3; ++l) {
+					    int k = (j + shift) % 4;
+					    u[j] = u[k];
+					    j = k;
+					}
+					u[j] = temp;
+				    } else {
+					swap(u[0], u[2]);
+					swap(u[1], u[3]);
+				    }
+				}
+			    } else if (r2.magnitude() == 0) {
+				Vector3 n = leg2_v;
+				n.normalise();
+				z_pitch_adjust = n.getZ();
+				up = Vector3(0, 0, leg2_v.getZ());
+				up = right * up;
+			    } else {
+				up = up_v;
+			    }
+			    last_right = right;
+			}
+		    }
+
+		    // Scale the vectors in the LRUD plane appropriately.
+		    right.normalise();
+		    up.normalise();
+
+		    if (z_pitch_adjust != 0) up += Vector3(0, 0, z_pitch_adjust);
+		    right *= size;
+		    up *= size;
+
+		    // Produce coordinates of the corners of the LRUD "plane".
+		    Vector3 v[4];
+		    v[0] = pt_v - right + up;
+		    v[1] = pt_v + right + up;
+		    v[2] = pt_v + right - up;
+		    v[3] = pt_v - right - up;
+
+		    if (segment > 0) {
+			(this->*AddQuad)(v[0], v[1], u[1], u[0]);
+			(this->*AddQuad)(u[2], u[3], v[3], v[2]);
+			(this->*AddQuad)(v[1], v[2], u[2], u[1]);
+			(this->*AddQuad)(v[3], v[0], u[0], u[3]);
+		    }
+
+		    if (cover_end) {
+			(this->*AddQuad)(v[3], v[2], v[1], v[0]);
+		    }
+
+		    prev_pt_v = pt_v;
+		    u[0] = v[0];
+		    u[1] = v[1];
+		    u[2] = v[2];
+		    u[3] = v[3];
+
+		    ++segment;
+		}
+	    }
+	}
+    }
 }
 
 void GfxCore::DrawPolylines(bool tubes, bool surface)
@@ -2088,263 +2367,8 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 		(current_polyline_is_surface != pti.IsSurface());
 
 	    if (changing_ug_state || last_was_move) {
-		// Start a new polyline if we're switching
-		// underground/surface state or if the previous point
-		// was a move.
-		if (centreline.size() > 1) {
-		    if (current_polyline_is_surface) {
-			if (surface) {
-			    BeginPolyline();
-			    SetColour(GetSurfacePen());
-			    list<Vector3>::const_iterator i = centreline.begin();
-			    PlaceVertex(i->getX(), i->getY(), i->getZ());
-			    ++i;
-			    while (i != centreline.end()) {
-				PlaceVertex(i->getX(), i->getY(), i->getZ());
-				++i;
-			    }
-			    EndPolyline();
-			}
-		    } else {
-			if (!surface && !tubes) {
-			    PlaceVertex(x0, y0, z0);
-
-			    BeginPolyline();
-			    list<Vector3>::const_iterator i, prev_i;
-			    i = centreline.begin();
-			    int band0 = GetDepthColour(i->getZ());
-			    PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
-			    prev_i = i;
-			    ++i;
-			    while (i != centreline.end()) {
-				int band = GetDepthColour(i->getZ());
-				if (band != band0) {
-				    SplitLineAcrossBands(band0, band, *prev_i, *i);
-				    band0 = band;
-				}
-				PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
-				prev_i = i;
-				++i;
-			    }
-			    EndPolyline();
-			} else if (tubes) {
-			    list<Vector3>::const_iterator i;
-			    i = centreline.begin();
-			    PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
-			    list<Vector3>::size_type segment = 0;
-			    while (i != centreline.end()) {
-				// get the coordinates of this vertex
-				const Vector3 & pt_v = *i;
-				++i;
-
-				double z_pitch_adjust = 0.0;
-				bool cover_end = false;
-
-				Double size;
-
-				Vector3 right, up;
-
-				const Vector3 up_v(0.0, 0.0, 1.0);
-
-				if (segment == 0) {
-				    // first segment
-				    Double h = sqrd(i->getX() - pt_v.getX()) +
-					       sqrd(i->getY() - pt_v.getY());
-				    Double v = sqrd(i->getZ() - pt_v.getZ());
-				    if (h + v > 30.0 * 30.0) {
-					Double scale = 30.0 / sqrt(h + v);
-					h *= scale;
-					v *= scale;
-				    }
-				    size = sqrt(h + v / 9);
-				    size /= 4;
-
-				    // get the coordinates of the next vertex
-				    const Vector3 & next_pt_v = *i;
-
-				    // calculate vector from this pt to the next one
-				    Vector3 leg_v = pt_v - next_pt_v;
-
-				    // obtain a vector in the LRUD plane
-				    right = leg_v * up_v;
-				    if (right.magnitude() == 0) {
-					right = last_right;
-					// obtain a second vector in the LRUD
-					// plane, perpendicular to the first
-					up = right * leg_v;
-				    } else {
-					last_right = right;
-					up = up_v;
-				    }
-
-				    cover_end = true;
-				} else if (segment + 1 == centreline.size()) {
-				    // last segment
-				    Double h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
-					sqrd(prev_pt_v.getY() - pt_v.getY());
-				    Double v = sqrd(prev_pt_v.getZ() - pt_v.getZ());
-				    if (h + v > 30.0 * 30.0) {
-					Double scale = 30.0 / sqrt(h + v);
-					h *= scale;
-					v *= scale;
-				    }
-				    size = sqrt(h + v / 9);
-				    size /= 4;
-
-				    // calculate vector from the previous pt to this one
-				    Vector3 leg_v = prev_pt_v - pt_v;
-
-				    // obtain a horizontal vector in the LRUD plane
-				    right = leg_v * up_v;
-				    if (right.magnitude() == 0) {
-					right = Vector3(last_right.getX(), last_right.getY(), 0.0);
-					// obtain a second vector in the LRUD plane, perpendicular
-					// to the first
-					up = right * leg_v;
-				    } else {
-					last_right = right;
-					up = up_v;
-				    }
-
-				    cover_end = true;
-				} else {
-				    // intermediate segment
-				    Double h = sqrd(i->getX() - pt_v.getX()) +
-					sqrd(i->getY() - pt_v.getY());
-				    Double v = sqrd(i->getZ() - pt_v.getZ());
-				    if (h + v > 30.0 * 30.0) {
-					Double scale = 30.0 / sqrt(h + v);
-					h *= scale;
-					v *= scale;
-				    }
-				    size = sqrt(h + v / 9);
-				    h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
-					sqrd(prev_pt_v.getY() - pt_v.getY());
-				    v = sqrd(prev_pt_v.getZ() - pt_v.getZ());
-				    if (h + v > 30.0 * 30.0) {
-					Double scale = 30.0 / sqrt(h + v);
-					h *= scale;
-					v *= scale;
-				    }
-				    size += sqrt(h + v / 9);
-				    size /= 8;
-
-				    // get the coordinates of the next vertex
-				    const Vector3 & next_pt_v = *i;
-
-				    // calculate vectors from this vertex to the
-				    // next vertex, and from the previous vertex to
-				    // this one
-				    Vector3 leg1_v = prev_pt_v - pt_v;
-				    Vector3 leg2_v = pt_v - next_pt_v;
-
-				    // obtain horizontal vectors perpendicular to
-				    // both legs, then normalise and average to get
-				    // a horizontal bisector
-				    Vector3 r1 = leg1_v * up_v;
-				    Vector3 r2 = leg2_v * up_v;
-				    r1.normalise();
-				    r2.normalise();
-				    right = r1 + r2;
-				    if (right.magnitude() == 0) {
-					right = last_right;
-					up = right * leg1_v;
-				    } else {
-					if (r1.magnitude() == 0) {
-					    Vector3 n = leg1_v;
-					    n.normalise();
-					    z_pitch_adjust = n.getZ();
-					    up = Vector3(0, 0, leg1_v.getZ());
-					    up = right * up;
-					    // Rotate pitch section to minimise the
-					    // "tortional stress" - FIXME: use
-					    // triangles instead of rectangles?
-					    int shift = 0;
-					    Double maxdotp, dotp;
-					    maxdotp = dot(up - right, u[0]);
-					    dotp = dot(up - right, u[1]);
-					    if (dotp > maxdotp) { maxdotp = dotp; shift = 1; }
-					    dotp = dot(up - right, u[2]);
-					    if (dotp > maxdotp) { maxdotp = dotp; shift = 2; }
-					    dotp = dot(up - right, u[3]);
-					    if (dotp > maxdotp) { maxdotp = dotp; shift = 3; }
-					    if (shift) {
-						if (shift != 2) {
-						    Vector3 temp(u[0]);
-						    int j = 0;
-						    for (int l = 0; l < 3; ++l) {
-							int k = (j + shift) % 4;
-							u[j] = u[k];
-							j = k;
-						    }
-						    u[j] = temp;
-						} else {
-						    swap(u[0], u[2]);
-						    swap(u[1], u[3]);
-						}
-					    }
-					} else if (r2.magnitude() == 0) {
-					    Vector3 n = leg2_v;
-					    n.normalise();
-					    z_pitch_adjust = n.getZ();
-					    up = Vector3(0, 0, leg2_v.getZ());
-					    up = right * up;
-					} else {
-					    up = up_v;
-					}
-					last_right = right;
-				    }
-				}
-
-				// scale the vectors in the LRUD plane appropriately
-				right.normalise();
-				up.normalise();
-
-				if (z_pitch_adjust != 0) up += Vector3(0, 0, z_pitch_adjust);
-				right *= size;
-				up *= size;
-
-				// produce coordinates of the corners of the LRUD "plane"
-				Vector3 v[4];
-				v[0] = pt_v - right + up;
-				v[1] = pt_v + right + up;
-				v[2] = pt_v + right - up;
-				v[3] = pt_v - right - up;
-
-				if (segment > 0) {
-#if 0 // pre-Mark
-				    AddQuadrilateral(u[0], u[1], v[1], v[0]);
-				    AddQuadrilateral(v[3], v[2], u[2], u[3]);
-				    AddQuadrilateral(u[1], u[2], v[2], v[1]);
-				    AddQuadrilateral(u[3], u[0], v[0], v[3]);
-#else
-				    AddQuadrilateral(v[0], v[1], u[1], u[0]);
-				    AddQuadrilateral(u[2], u[3], v[3], v[2]);
-				    AddQuadrilateral(v[1], v[2], u[2], u[1]);
-				    AddQuadrilateral(v[3], v[0], u[0], u[3]);
-#endif
-				}
-
-				if (cover_end) {
-#if 0 // pre-Mark
-				    AddQuadrilateral(v[0], v[1], v[2], v[3]);
-#else
-				    AddQuadrilateral(v[3], v[2], v[1], v[0]);
-#endif
-				}
-
-				prev_pt_v = pt_v;
-				u[0] = v[0];
-				u[1] = v[1];
-				u[2] = v[2];
-				u[3] = v[3];
-
-				++segment;
-			    }
-			}
-		    }
-		}
-
+		SkinPassage(centreline, current_polyline_is_surface, surface,
+			    tubes, x0, y0, z0, u, prev_pt_v, last_right);
 		centreline.clear();
 
 		centreline.push_back(Vector3(x0, y0, z0));
@@ -2366,260 +2390,9 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 	z0 = z;
     }
 
-    // FIXME: C&P from above
-		if (centreline.size() > 1) {
-		    if (current_polyline_is_surface) {
-			if (surface) {
-			    BeginPolyline();
-			    SetColour(GetSurfacePen());
-			    list<Vector3>::const_iterator i = centreline.begin();
-			    PlaceVertex(i->getX(), i->getY(), i->getZ());
-			    ++i;
-			    while (i != centreline.end()) {
-				PlaceVertex(i->getX(), i->getY(), i->getZ());
-				++i;
-			    }
-			    EndPolyline();
-			}
-		    } else {
-			if (!surface && !tubes) {
-			    PlaceVertex(x0, y0, z0);
+    SkinPassage(centreline, current_polyline_is_surface, surface,
+		tubes, x0, y0, z0, u, prev_pt_v, last_right);
 
-			    BeginPolyline();
-			    list<Vector3>::const_iterator i, prev_i;
-			    i = centreline.begin();
-			    int band0 = GetDepthColour(i->getZ());
-			    PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
-			    prev_i = i;
-			    ++i;
-			    while (i != centreline.end()) {
-				int band = GetDepthColour(i->getZ());
-				if (band != band0) {
-				    SplitLineAcrossBands(band0, band, *prev_i, *i);
-				    band0 = band;
-				}
-				PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
-				prev_i = i;
-				++i;
-			    }
-			    EndPolyline();
-			} else if (tubes) {
-			    list<Vector3>::const_iterator i;
-			    i = centreline.begin();
-			    PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
-			    list<Vector3>::size_type segment = 0;
-			    while (i != centreline.end()) {
-				// get the coordinates of this vertex
-				const Vector3 & pt_v = *i;
-				++i;
-
-				double z_pitch_adjust = 0.0;
-				bool cover_end = false;
-
-				Double size;
-
-				Vector3 right, up;
-
-				const Vector3 up_v(0.0, 0.0, 1.0);
-
-				if (segment == 0) {
-				    // first segment
-				    Double h = sqrd(i->getX() - pt_v.getX()) +
-					       sqrd(i->getY() - pt_v.getY());
-				    Double v = sqrd(i->getZ() - pt_v.getZ());
-				    if (h + v > 30.0 * 30.0) {
-					Double scale = 30.0 / sqrt(h + v);
-					h *= scale;
-					v *= scale;
-				    }
-				    size = sqrt(h + v / 9);
-				    size /= 4;
-
-				    // get the coordinates of the next vertex
-				    const Vector3 & next_pt_v = *i;
-
-				    // calculate vector from this pt to the next one
-				    Vector3 leg_v = pt_v - next_pt_v;
-
-				    // obtain a vector in the LRUD plane
-				    right = leg_v * up_v;
-				    if (right.magnitude() == 0) {
-					right = last_right;
-					// obtain a second vector in the LRUD
-					// plane, perpendicular to the first
-					up = right * leg_v;
-				    } else {
-					last_right = right;
-					up = up_v;
-				    }
-
-				    cover_end = true;
-				} else if (segment + 1 == centreline.size()) {
-				    // last segment
-				    Double h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
-					sqrd(prev_pt_v.getY() - pt_v.getY());
-				    Double v = sqrd(prev_pt_v.getZ() - pt_v.getZ());
-				    if (h + v > 30.0 * 30.0) {
-					Double scale = 30.0 / sqrt(h + v);
-					h *= scale;
-					v *= scale;
-				    }
-				    size = sqrt(h + v / 9);
-				    size /= 4;
-
-				    // calculate vector from the previous pt to this one
-				    Vector3 leg_v = prev_pt_v - pt_v;
-
-				    // obtain a horizontal vector in the LRUD plane
-				    right = leg_v * up_v;
-				    if (right.magnitude() == 0) {
-					right = Vector3(last_right.getX(), last_right.getY(), 0.0);
-					// obtain a second vector in the LRUD plane, perpendicular
-					// to the first
-					up = right * leg_v;
-				    } else {
-					last_right = right;
-					up = up_v;
-				    }
-
-				    cover_end = true;
-				} else {
-				    // intermediate segment
-				    Double h = sqrd(i->getX() - pt_v.getX()) +
-					sqrd(i->getY() - pt_v.getY());
-				    Double v = sqrd(i->getZ() - pt_v.getZ());
-				    if (h + v > 30.0 * 30.0) {
-					Double scale = 30.0 / sqrt(h + v);
-					h *= scale;
-					v *= scale;
-				    }
-				    size = sqrt(h + v / 9);
-				    h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
-					sqrd(prev_pt_v.getY() - pt_v.getY());
-				    v = sqrd(prev_pt_v.getZ() - pt_v.getZ());
-				    if (h + v > 30.0 * 30.0) {
-					Double scale = 30.0 / sqrt(h + v);
-					h *= scale;
-					v *= scale;
-				    }
-				    size += sqrt(h + v / 9);
-				    size /= 8;
-
-				    // get the coordinates of the next vertex
-				    const Vector3 & next_pt_v = *i;
-
-				    // calculate vectors from this vertex to the
-				    // next vertex, and from the previous vertex to
-				    // this one
-				    Vector3 leg1_v = prev_pt_v - pt_v;
-				    Vector3 leg2_v = pt_v - next_pt_v;
-
-				    // obtain horizontal vectors perpendicular to
-				    // both legs, then normalise and average to get
-				    // a horizontal bisector
-				    Vector3 r1 = leg1_v * up_v;
-				    Vector3 r2 = leg2_v * up_v;
-				    r1.normalise();
-				    r2.normalise();
-				    right = r1 + r2;
-				    if (right.magnitude() == 0) {
-					right = last_right;
-					up = right * leg1_v;
-				    } else {
-					if (r1.magnitude() == 0) {
-					    Vector3 n = leg1_v;
-					    n.normalise();
-					    z_pitch_adjust = n.getZ();
-					    up = Vector3(0, 0, leg1_v.getZ());
-					    up = right * up;
-					    // Rotate pitch section to minimise the
-					    // "tortional stress" - FIXME: use
-					    // triangles instead of rectangles?
-					    int shift = 0;
-					    Double maxdotp, dotp;
-					    maxdotp = dot(up - right, u[0]);
-					    dotp = dot(up - right, u[1]);
-					    if (dotp > maxdotp) { maxdotp = dotp; shift = 1; }
-					    dotp = dot(up - right, u[2]);
-					    if (dotp > maxdotp) { maxdotp = dotp; shift = 2; }
-					    dotp = dot(up - right, u[3]);
-					    if (dotp > maxdotp) { maxdotp = dotp; shift = 3; }
-					    if (shift) {
-						if (shift != 2) {
-						    Vector3 temp(u[0]);
-						    int j = 0;
-						    for (int l = 0; l < 3; ++l) {
-							int k = (j + shift) % 4;
-							u[j] = u[k];
-							j = k;
-						    }
-						    u[j] = temp;
-						} else {
-						    swap(u[0], u[2]);
-						    swap(u[1], u[3]);
-						}
-					    }
-					} else if (r2.magnitude() == 0) {
-					    Vector3 n = leg2_v;
-					    n.normalise();
-					    z_pitch_adjust = n.getZ();
-					    up = Vector3(0, 0, leg2_v.getZ());
-					    up = right * up;
-					} else {
-					    up = up_v;
-					}
-					last_right = right;
-				    }
-				}
-
-				// scale the vectors in the LRUD plane appropriately
-				right.normalise();
-				up.normalise();
-
-				if (z_pitch_adjust != 0) up += Vector3(0, 0, z_pitch_adjust);
-				right *= size;
-				up *= size;
-
-				// produce coordinates of the corners of the LRUD "plane"
-				Vector3 v[4];
-				v[0] = pt_v - right + up;
-				v[1] = pt_v + right + up;
-				v[2] = pt_v + right - up;
-				v[3] = pt_v - right - up;
-
-				if (segment > 0) {
-#if 0 // pre-Mark
-				    AddQuadrilateral(u[0], u[1], v[1], v[0]);
-				    AddQuadrilateral(v[3], v[2], u[2], u[3]);
-				    AddQuadrilateral(u[1], u[2], v[2], v[1]);
-				    AddQuadrilateral(u[3], u[0], v[0], v[3]);
-#else
-				    AddQuadrilateral(v[0], v[1], u[1], u[0]);
-				    AddQuadrilateral(u[2], u[3], v[3], v[2]);
-				    AddQuadrilateral(v[1], v[2], u[2], u[1]);
-				    AddQuadrilateral(v[3], v[0], u[0], u[3]);
-#endif
-				}
-
-				if (cover_end) {
-#if 0 // pre-Mark
-				    AddQuadrilateral(v[0], v[1], v[2], v[3]);
-#else
-				    AddQuadrilateral(v[3], v[2], v[1], v[0]);
-#endif
-				}
-
-				prev_pt_v = pt_v;
-				u[0] = v[0];
-				u[1] = v[1];
-				u[2] = v[2];
-				u[3] = v[3];
-
-				++segment;
-			    }
-			}
-		    }
-		}
     if (surface) DisableDashedLines();
 }
 
@@ -2681,6 +2454,34 @@ void GfxCore::PlayPres() {
     next_mark = m_Parent->GetPresMark(MARK_FIRST);
     SetView(next_mark);
     next_mark_time = 0; // There already!
+}
+
+void GfxCore::SetColourBy(int colour_by) {
+    bool update_indicators = (m_ColourBy == COLOUR_BY_DEPTH) ||
+			     (colour_by == COLOUR_BY_DEPTH);
+    m_ColourBy = colour_by;
+    switch (colour_by) {
+	case COLOUR_BY_DEPTH:
+	    AddQuad = &GfxCore::AddQuadrilateralDepth;
+	    AddPoly = &GfxCore::AddPolylineDepth;
+	    break;
+	default: // case COLOUR_BY_NONE:
+	    AddQuad = &GfxCore::AddQuadrilateral;
+	    AddPoly = &GfxCore::AddPolyline;
+	    break;
+    }
+
+    DeleteList(m_Lists.underground_legs);
+    m_Lists.underground_legs =
+	CreateList(this, &GfxCore::GenerateDisplayList);
+
+    DeleteList(m_Lists.tubes);
+    m_Lists.tubes =
+	CreateList(this, &GfxCore::GenerateDisplayListTubes);
+
+    if (update_indicators) UpdateIndicators();
+
+    ForceRefresh();
 }
 
 bool GfxCore::ExportMovie(const wxString & fnm)

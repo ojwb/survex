@@ -382,6 +382,21 @@ void GUIControl::OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_View->ShowingOverlappingNames());
 }
 
+void GUIControl::OnColourByDepth()
+{
+    if (m_View->ColouringBy() == COLOUR_BY_DEPTH) {
+	m_View->SetColourBy(COLOUR_BY_NONE);
+    } else {
+	m_View->SetColourBy(COLOUR_BY_DEPTH);
+    }
+}
+
+void GUIControl::OnColourByDepthUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs());
+    cmd.Check(m_View->ColouringBy() == COLOUR_BY_DEPTH);
+}
+
 void GUIControl::OnShowCrosses()
 {
     m_View->ToggleCrosses();
@@ -738,7 +753,8 @@ void GUIControl::OnToggleDepthbar() /* FIXME naming */
 
 void GUIControl::OnToggleDepthbarUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !(m_View->GetLock() && lock_Z));
+    cmd.Enable(m_View->HasData() && !(m_View->GetLock() && lock_Z) &&
+	       m_View->ColouringBy() == COLOUR_BY_DEPTH);
     cmd.Check(m_View->ShowingDepthBar());
 }
 
