@@ -384,7 +384,7 @@ handle_plumb(bool *pfPlumbed)
       {"UP",    CLINO_UP},
       {NULL,    CLINO_NULL}
    };
-   static real clinos[] = {(real)(M_PI/2.0),(real)(-M_PI/2.0),(real)0.0};
+   static real clinos[] = {(real)M_PI_2,(real)(-M_PI_2),(real)0.0};
    clino_tok tok;
 
    skipblanks();
@@ -404,7 +404,7 @@ handle_plumb(bool *pfPlumbed)
       if (toupper(ch) == 'V') {
 	 nextch();
 	 *pfPlumbed = fTrue;
-	 return (!isMinus(chOld) ? M_PI / 2.0 : -M_PI / 2.0);
+	 return (!isMinus(chOld) ? M_PI_2 : -M_PI_2);
       }
 
       if (isOmit(chOld)) {
@@ -437,20 +437,20 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
    fNoComp = (comp == HUGE_REAL);
    if (!fNoComp) {
       comp *= pcs->units[Q_BEARING];
-      if (comp < (real)0.0 || comp - M_PI * 2 > EPSILON) {
+      if (comp < (real)0.0 || comp - M_2_PI > EPSILON) {
 	 compile_warning(/*Suspicious compass reading*/59);
       }
    }
 
    if (!fPlumbed && !fNoClino) {
       clin *= pcs->units[Q_GRADIENT];
-      if (fabs(clin) - M_PI / 2 > EPSILON) {
+      if (fabs(clin) - M_PI_2 > EPSILON) {
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       }
    }
 
    if ((fPlumbed && clin != (real)0) ||
-       (pcs->f90Up && (fabs(clin - M_PI / 2) < EPSILON))) {
+       (pcs->f90Up && (fabs(clin - M_PI_2) < EPSILON))) {
       /* plumbed */
       if (!fNoComp) {
 	 compile_warning(/*Compass reading given on plumbed leg*/21);
@@ -605,7 +605,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
 
    if (comp != HUGE_REAL) {
       comp *= pcs->units[Q_BEARING];
-      if (comp < (real)0.0 || comp - M_PI * 2 > EPSILON) {
+      if (comp < (real)0.0 || comp - M_2_PI > EPSILON) {
 	 compile_warning(/*Suspicious compass reading*/59);
       }
    }
@@ -830,7 +830,7 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
 
    if (comp != HUGE_REAL) {
       comp *= pcs->units[Q_BEARING];
-      if (comp < (real)0.0 || comp - M_PI * 2 > EPSILON) {
+      if (comp < (real)0.0 || comp - M_2_PI > EPSILON) {
 	 compile_warning(/*Suspicious compass reading*/59);
       }
    }

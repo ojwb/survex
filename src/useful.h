@@ -1,6 +1,6 @@
 /* useful.h
  * Lots of oddments that come in handy generally
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,15 @@ typedef long int fpos_t;
 # else
 #  define M_PI 3.14159265358979323846264338327950288419716939937510582097494459
 # endif
+#endif
+#ifndef M_2_PI
+# define M_2_PI (2.0 * M_PI)
+#endif
+#ifndef M_PI_2
+# define M_PI_2 (M_PI / 2.0)
+#endif
+#ifndef M_PI_4
+# define M_PI_4 (M_PI / 4.0)
 #endif
 
 #define MM_PER_INCH 25.4 /* exact value */
