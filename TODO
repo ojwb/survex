@@ -256,7 +256,7 @@ reporting of 'Arithmetic error' as 'Divide by zero', 'Negative root', etc)
 
 Test units in CALIBRATE *directive* work okay
 Tests for case & uniqueness handling
-Test all the commands - units() was buggy
+Test all the commands!
 
 ? Allow F(orward)/B(ack) in data - checked somehow (?)
 

@@ -13,7 +13,7 @@ TESTS="oneleg midpoint noose cross firststn deltastar\
  deltastar2 bug3 calibrate_tape nosurvey nosurvey2\
  cartesian"
 
-NO_POS_TESTS="beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4\
+NO_POS_TESTS="beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
  expobug require"
 
 for file in $TESTS ; do

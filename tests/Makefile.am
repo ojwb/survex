@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-TESTS = diffpos.tst cavern.tst cavfail.tst extend.tst
+TESTS = diffpos.tst cavern.tst cavfail.tst cavwarn.tst extend.tst
 
 EXTRA_DIST = diffpos.tst cavern.tst cavfail.tst extend.tst\
 beginroot.svx\
@@ -12,7 +12,8 @@ deltastar.svx deltastar.pos\
 deltastar2.svx deltastar2.pos\
 firststn.svx firststn.pos\
 break_replace_pfx.svx\
-bug0.svx bug1.svx bug2.svx bug3.svx bug3.pos bug4.svx\
+bug0.svx bug1.svx bug2.svx bug3.svx bug3.pos bug4.svx bug5.svx\
+bug3.pos\
 expobug.svx\
 nosurvey.svx nosurvey.pos\
 nosurvey2.svx nosurvey2.pos\
@@ -25,4 +26,6 @@ begin_no_end.svx end_no_begin.svx end_no_begin_nest.svx\
 require_fail.svx\
 extend.svx extendx.3d\
 revcomplist.svx\
-exporterr1.svx exporterr2.svx exporterr3.svx exporterr4.svx exporterr5.svx
+exporterr1.svx exporterr2.svx exporterr3.svx exporterr4.svx exporterr5.svx\
+hanging_cpt.svx\
+self_loop.svx self_eq_loop.svx
