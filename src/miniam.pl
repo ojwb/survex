@@ -81,7 +81,13 @@ my $progs = expand('bin_PROGRAMS');
 my $t = join " ", map {shorten($_, $max_leaf_len)} split /\s+/, $progs;
 $t =~ s/(\w)\b/$1$repl{'EXEEXT'}/g if $repl{'EXEEXT'};
 print "all: $t\n";
-print "\tzip $repl{exezip} $t\n";
+if ($use_rsp) {
+   create_rsp($t, "t.rsp");
+   print "\tzip $repl{exezip} -\@ < t.rsp\n";
+   print "\t\@del /q t.rsp\n"; # FIXME: msdos specific
+} else {
+   print "\tzip $repl{exezip} $t\n";
+}
 print "\t$repl{movezip}\n\n";
 
 print ".c.$repl{'OBJEXT'}:\n";
@@ -106,23 +112,15 @@ for (sort keys %var) {
 	 print " $x" if $x ne '';
 	 print "\n";
 	 if ($use_rsp) {
-	    my $rsp = "t.rsp";
-	    my $len = 55;
-	    my $redir = ">";	 
-	    while (length $objs > $len) {
-	       $objs =~ s|^(.{1,$len})\s||o;
-	       print "\t\@echo $1 $redir $rsp\n";
-	       $redir = ">>";
-	    }
-	    print "\t\@echo $objs $redir $rsp\n"; # FIXME: @ is msdos specific
+	    create_rsp($objs, "t.rsp");
 	    print "\t$repl{'CC'} -e$exe";
 	    print " $repl{'CFLAGS'}" if $repl{'CFLAGS'} ne '';
 	    print " $ldadd" if $ldadd ne '';
 	    print " $repl{'LDFLAGS'}" if $repl{'LDFLAGS'} ne '';
-	    print " \@$rsp";
+	    print " \@t.rsp";
 	    print " $repl{'LIBS'}" if $repl{'LIBS'} ne '';
 	    print "\n";
-	    print "\t\@del /q $rsp\n"; # FIXME: msdos specific
+	    print "\t\@del /q t.rsp\n"; # FIXME: msdos specific
 	 } else {
 	    print "\t$repl{'CC'} -o $exe";
 	    print " $repl{'CFLAGS'}" if $repl{'CFLAGS'} ne '';
@@ -136,6 +134,18 @@ for (sort keys %var) {
 	 print "\n";
       }      
    }
+}
+
+sub create_rsp {
+   my ($d, $rsp) = @_;
+   my $len = 55;
+   my $redir = ">";	 
+   while (length $d > $len) {
+      $d =~ s|^(.{1,$len})\s||o;
+      print "\t\@echo $1 $redir $rsp\n";
+      $redir = ">>";
+   }
+   print "\t\@echo $d $redir $rsp\n"; # FIXME: @ is msdos specific
 }
 
 sub repl {
