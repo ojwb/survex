@@ -249,7 +249,11 @@ main(int argc, char **argv)
 	 limb = get_twig(root);
 	 firstfilename = osstrdup(fnm);
 	 startingdir = osmalloc(MAXPATHLEN);
+#if (OS==RISCOS)
+	 strcpy(startingdir, "@");
+#else
 	 getcwd(startingdir, MAXPATHLEN);
+#endif
       }
 #endif
       data_file("", fnm); /* first argument is current path */

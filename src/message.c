@@ -462,7 +462,7 @@ parse_msg_file(int charset_code)
       /* If we want UTF8 anyway, we just need to find the start of each
        * message */
       if (charset_code == CHARSET_UTF8) {
-	 p += strlen(p) + 1;
+	 p += strlen((char *)p) + 1;
 	 continue;
       }       
 

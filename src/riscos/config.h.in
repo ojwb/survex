@@ -34,6 +34,12 @@
 /* copyright message */
 #define COPYRIGHT_MSG @COPYRIGHT@
 
+/* signed 32 bit integer type */
+#define INT32_T int
+
+/* signed 16 bit integer type */
+#define INT16_T short
+
 /* strcasecmp define for systems which call it something else */
 #undef strcasecmp
 
