@@ -289,11 +289,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
     assert(GetContext());
 
-    StartDrawing();
-
-    // Clear the background.
-    Clear();
-
     // Make sure we're initialised.
     bool first_time = !m_DoneFirstShow;
     if (first_time) {
@@ -301,6 +296,11 @@ void GfxCore::OnPaint(wxPaintEvent&)
     }
 
     if (m_HaveData) {
+	StartDrawing();
+
+	// Clear the background.
+	Clear();
+
 	// Set up model transformation matrix.
 	SetDataTransform();
 
@@ -356,8 +356,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	}
 */
 
-	drawtime = timer.Time();
-
 	SetIndicatorTransform();
 
 	if (!m_Rotating && !m_SwitchingTo &&
@@ -388,9 +386,11 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	
 	// Draw indicators.
 	DrawList(m_Lists.indicators);
-    }
 
-    FinishDrawing();
+	FinishDrawing();
+
+	drawtime = timer.Time();
+    }
 }
 
 Double GfxCore::GridXToScreen(Double x, Double y, Double z) const
@@ -1122,12 +1122,37 @@ bool GfxCore::Animate()
 	while (t >= next_mark_time) {
 	    t -= next_mark_time;
 	    SetView(next_mark);
+	    PresentationMark prev_mark = next_mark;
 	    next_mark = m_Parent->GetPresMark(MARK_NEXT);
 	    if (!next_mark.is_valid()) {
 		presentation_mode = 0;
 		break;
 	    }
-	    next_mark_time = 3; // FIXME
+
+	    double d = sqrt(sqrd(next_mark.x - prev_mark.x) +
+			    sqrd(next_mark.y - prev_mark.y) +
+			    sqrd(next_mark.z - prev_mark.z));
+	    // FIXME: should ignore component of d which is unseen in
+	    // non-perspective mode?
+	    next_mark_time = sqrd(d / 100);
+	    double a = next_mark.angle - prev_mark.angle;
+	    if (a > 180) {
+		next_mark.angle -= 360;
+		a = 360 - a;
+	    } else if (a < -180) {
+		next_mark.angle += 360;
+		a += 360;
+	    } else {
+		a = fabs(a);
+	    }
+	    next_mark_time += sqrd(a / (M_PI / 3));
+	    double ta = fabs(next_mark.tilt_angle - prev_mark.tilt_angle);
+	    next_mark_time += sqrd(ta / (M_PI / 3));
+	    double s = fabs(log(next_mark.scale) - log(prev_mark.scale));
+	    next_mark_time += sqrd(s / 2);
+	    next_mark_time = sqrt(next_mark_time);
+	    // was: next_mark_time = max(max(d, s / 2), max(a, ta) / (M_PI / 3));
+	    //printf("*** %.6f from (\nd: %.6f\ns: %.6f\na: %.6f\nt: %.6f )\n", next_mark_time, d/100, s/2, a/ (M_PI/3), ta/(M_PI/3));
 	}
 
 	if (presentation_mode) {
@@ -1139,8 +1164,10 @@ bool GfxCore::Animate()
 	    here.y = q * here.y + p * next_mark.y;
 	    here.z = q * here.z + p * next_mark.z;
 	    here.angle = q * here.angle + p * next_mark.angle;
+	    if (here.angle < 0) here.angle += 360;
+	    else if (here.angle >= 360) here.angle -= 360;
 	    here.tilt_angle = q * here.tilt_angle + p * next_mark.tilt_angle;
-	    here.scale = q * here.scale + p * next_mark.scale;
+	    here.scale = exp(q * log(here.scale) + p * log(next_mark.scale));
 	    SetView(here);
 	    next_mark_time -= t;
 	}
@@ -2562,6 +2589,7 @@ bool GfxCore::IsFullScreen() const
     return m_Parent->IsFullScreen();
 }
 
+#ifdef FLYFREE
 void
 GfxCore::MoveViewer(double forward, double up, double right)
 {
@@ -2577,6 +2605,7 @@ GfxCore::MoveViewer(double forward, double up, double right)
     AddTranslation(-move.getX(), -move.getY(), -move.getZ());
     ForceRefresh();
 }
+#endif
 
 PresentationMark GfxCore::GetView() const
 {

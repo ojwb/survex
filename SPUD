@@ -33,8 +33,7 @@ Unix full screen mode needs to allow dialogs to appear over the window
 (e.g. try Ctrl+O while in full screen mode).
 
 smooth wrinkles in presentation code (Add "stop", stop pres on Open or New,
-sort out time proportional to "largest" movement, changing focus on listctrl
-as presentation plays doesn't really work properly)
+changing focus on listctrl as presentation plays doesn't really work properly)
 
 ---
 
