@@ -1,0 +1,49 @@
+[Setup]
+AppName=@PRETTYPACKAGE@
+AppVerName=@PRETTYPACKAGE@ @VERSION@
+DefaultDirName={pf}\@PACKAGE@
+DefaultGroupName=@PRETTYPACKAGE@
+OutputBaseFilename=@PACKAGE@-win32-@VERSION@
+AlwaysCreateUninstallIcon=yes
+AppPublisher=The Survex Project
+AppPublisherURL=http://www.survex.com/
+AppVersion=@VERSION@
+ChangesAssociations=yes
+LicenseFile=COPYING.txt
+Uninstallable=yes
+AppCopyright=Copyright © 2001 Olly Betts
+; WizardImageFile=survey.bmp
+[Dirs]
+Name: "{app}\help"
+
+[Files]
+Source: "*.exe"; DestDir: "{app}"
+Source: "*.msg"; DestDir: "{app}"
+Source: "*.txt"; DestDir: "{app}"
+Source: "*.bit"; DestDir: "{app}"
+Source: "*.ini"; DestDir: "{app}"
+Source: "*.svx"; DestDir: "{app}"
+Source: "*.ico"; DestDir: "{app}"
+Source: "help\*.*"; DestDir: "{app}\help"
+
+[Icons]
+Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"
+Name: "{group}\Survex Help"; Filename: "{app}\help\index.htm"; Comment: "View the help files for survex"
+
+[Registry]
+Root: HKCR; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"
+Root: HKCR; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"
+Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "Survex"
+Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\survex.ico"
+Root: HKCR; Subkey: "survex.source\shell"; ValueType: string; ValueData: "Process"
+Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" ""%1"""
+Root: HKCR; Subkey: "survex.source\shell"; ValueType: string; ValueData: "Open"
+Root: HKCR; Subkey: "survex.source\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""
+Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex"
+Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"
+Root: HKCR; Subkey: "survex.bin\shell"; ValueType: string; ValueData: "Print"
+Root: HKCR; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\printwin.exe"" ""%1"""
+Root: HKCR; Subkey: "survex.bin\shell"; ValueType: string; ValueData: "Extend"
+Root: HKCR; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""
+Root: HKCR; Subkey: "survex.bin\shell"; ValueType: string; ValueData: "Open"
+Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""
