@@ -1783,9 +1783,6 @@ es:205 Acerca de %s
 it:205 Informazioni su %s
 #
 # Aven menu items.  An '@' goes before the letter of any accelerator key.
-# For the moment the following accelerator keys must NOT be changed in this file (as they
-# have to be hard-coded):
-#   Delete, Left/Right/Up/Down Arrow, ', /, ], [, Return and Space.
 # The string "##" separates the menu text and any accelerator key.
 #
 # File->Open dialog:
@@ -1959,25 +1956,25 @@ fr:243 Vue vers l'@Ouest##W
 de:243 Nach @Westen##W
 pt-br:243 Olhar para @Oeste##W
 #
-en:244 Shift Survey @Left##Left Arrow
-fr:244 D&eacute;placement vers la @Gauche##Left Arrow
-de:244 Verschieben nach @links##Left Arrow
-pt-br:244 Mover para @Esquerda##Left Arrow
+en:244 Shift Survey @Left
+fr:244 D&eacute;placement vers la @Gauche
+de:244 Verschieben nach @links
+pt-br:244 Mover para @Esquerda
 #
-en:245 Shift Survey @Right##Right Arrow
-fr:245 D&eacute;placement vers la @Droite##Right Arrow
-de:245 Verschieben nach @rechts##Right Arrow
-pt-br:245 Mover para @Direita##Right Arrow
+en:245 Shift Survey @Right
+fr:245 D&eacute;placement vers la @Droite
+de:245 Verschieben nach @rechts
+pt-br:245 Mover para @Direita
 #
-en:246 Shift Survey @Up##Up Arrow
-fr:246 D&eacute;placement vers le @Haut##Up Arrow
-de:246 Verschieben nach o@ben##Up Arrow
-pt-br:246 Mover para @Cima##Up Arrow
+en:246 Shift Survey @Up
+fr:246 D&eacute;placement vers le @Haut
+de:246 Verschieben nach o@ben
+pt-br:246 Mover para @Cima
 #
-en:247 Shift Survey @Down##Down Arrow
-fr:247 D&eacute;placement vers le @Bas##Down Arrow
-de:247 Verschieben nach @unten##Down Arrow
-pt-br:247 Mover para @Baixo##Down Arrow
+en:247 Shift Survey @Down
+fr:247 D&eacute;placement vers le @Bas
+de:247 Verschieben nach @unten
+pt-br:247 Mover para @Baixo
 #
 # c.f. 117
 en:248 @Plan View##P
