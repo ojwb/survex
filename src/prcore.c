@@ -531,18 +531,29 @@ read_scale(const char *s)
    double val;
 
    val = strtod(s, &p);
-   if (p != s) {
+   if (val > 0 && p != s) {
+      while (isspace(*p)) p++;
       if (*p == '\0') {
-	 /* accept "<number>" as meaning "1:<number>" */
-	 N_Scale = 1;
-	 D_Scale = val;
+	 /* accept "<number>" as meaning "1:<number>" if number > 1
+	  * or "<number>:1" is number < 1 - so all these are the same scale:
+	  * 1:1000
+	  * 1000
+	  * 0.001
+	  */
+	 if (val > 1) {
+	    N_Scale = 1;
+	    D_Scale = val;
+	 } else {
+	    N_Scale = val;
+	    D_Scale = 1;
+	 }
 	 return fTrue;
       }
       if (*p == ':') {
 	 double val2;
 	 optarg = p + 1;
 	 val2 = strtod(optarg, &p);
-	 if (p != optarg) {
+	 if (val2 > 0 && p != optarg) {
 	    while (isspace(*p)) p++;
 	    if (*p == '\0') {
 	       N_Scale = val;
@@ -679,7 +690,8 @@ main(int argc, char **argv)
 	 break;
        case 's':
 	 if (!read_scale(optarg)) {
-	    /* FIXME complain */
+	    fatalerror(/*Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')*/217,
+		       optarg);
 	 }
 	 fInteractive = fFalse;
 	 break;
@@ -921,11 +933,18 @@ main(int argc, char **argv)
       printf(msg(/*Please enter Map Scale = X:Y (default 1:%d)&#10;: */162),
 	     DEFAULT_SCALE);
       fgets(szTmp, sizeof(szTmp), stdin);
-      if (!read_scale(szTmp)) {
+      putnl();
+      if (*szTmp == '\n') {
          N_Scale = 1.0;
          D_Scale = (double)DEFAULT_SCALE;
+      } else if (!read_scale(szTmp)) {
+	 size_t len = strlen(szTmp);
+	 if (len && szTmp[len - 1] == '\n') szTmp[len - 1] = '\0';	 
+	 printf(msg(/*Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')*/217),
+		szTmp);
+	 fOk = fFalse;
+	 continue;
       }
-      putnl();
       printf(msg(/*Using scale %.0f:%.0f*/163), N_Scale, D_Scale);
       putnl();
       Sc = N_Scale * 1000 / D_Scale;
@@ -948,15 +967,17 @@ main(int argc, char **argv)
 
 	 p = szTmp;
 	 while (isspace(*p)) p++;
-
          szPages = osstrdup(p);
          if (*szPages) {
             pages = page = state = 0;
+	    p = szPages + strlen(szPages) - 1;
+	    if (*p == '\n') *p = '\0';
 	    p = szPages;
 	    while (1) {
                page = next_page(&state, &p, pageLim);
                if (state < 0) {
-                  printf("error\n"); /* FIXME? */
+                  printf(msg(/*Bad list of pages to print `%s'*/218), szPages);
+		  putnl();
                   fOk = fFalse;
                   break;
                }
