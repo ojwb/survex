@@ -157,46 +157,46 @@ dxf_start_pass(int layer)
 }
 
 static void
-dxf_move(img_point p)
+dxf_move(const img_point *p)
 {
    p = p;
 }
 
 static void
-dxf_line(img_point p1, img_point p)
+dxf_line(const img_point *p1, const img_point *p)
 {
    fprintf(fh, "0\nLINE\n");
    fprintf(fh, "8\nCentreLine\n"); /* Layer */
-   fprintf(fh, "10\n%6.2f\n", p1.x);
-   fprintf(fh, "20\n%6.2f\n", p1.y);
-   fprintf(fh, "30\n%6.2f\n", p1.z);
-   fprintf(fh, "11\n%6.2f\n", p.x);
-   fprintf(fh, "21\n%6.2f\n", p.y);
-   fprintf(fh, "31\n%6.2f\n", p.z);
+   fprintf(fh, "10\n%6.2f\n", p1->x);
+   fprintf(fh, "20\n%6.2f\n", p1->y);
+   fprintf(fh, "30\n%6.2f\n", p1->z);
+   fprintf(fh, "11\n%6.2f\n", p->x);
+   fprintf(fh, "21\n%6.2f\n", p->y);
+   fprintf(fh, "31\n%6.2f\n", p->z);
 }
 
 static void
-dxf_label(img_point p, const char *s)
+dxf_label(const img_point *p, const char *s)
 {
    /* write station label to dxf file */
    fprintf(fh, "0\nTEXT\n");
    fprintf(fh, "8\nLabels\n"); /* Layer */
-   fprintf(fh, "10\n%6.2f\n", p.x);
-   fprintf(fh, "20\n%6.2f\n", p.y);
-   fprintf(fh, "30\n%6.2f\n", p.z);
+   fprintf(fh, "10\n%6.2f\n", p->x);
+   fprintf(fh, "20\n%6.2f\n", p->y);
+   fprintf(fh, "30\n%6.2f\n", p->z);
    fprintf(fh, "40\n%6.2f\n", text_height);
    fprintf(fh, "1\n%s\n", s);
 }
 
 static void
-dxf_cross(img_point p)
+dxf_cross(const img_point *p)
 {
    /* write station marker to dxf file */
    fprintf(fh, "0\nPOINT\n");
    fprintf(fh, "8\nStations\n"); /* Layer */
-   fprintf(fh, "10\n%6.2f\n", p.x);
-   fprintf(fh, "20\n%6.2f\n", p.y);
-   fprintf(fh, "30\n%6.2f\n", p.z);
+   fprintf(fh, "10\n%6.2f\n", p->x);
+   fprintf(fh, "20\n%6.2f\n", p->y);
+   fprintf(fh, "30\n%6.2f\n", p->z);
 }
 
 static void
@@ -230,21 +230,21 @@ sketch_start_pass(int layer)
 }
 
 static void
-sketch_move(img_point p)
+sketch_move(const img_point *p)
 {
    fprintf(fh, "b()\n");
-   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x * factor, p.y * factor, 0.0);
+   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p->x * factor, p->y * factor, 0.0);
 }
 
 static void
-sketch_line(img_point p1, img_point p)
+sketch_line(const img_point *p1, const img_point *p)
 {
    p1 = p1;
-   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x * factor, p.y * factor, 0.0);
+   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p->x * factor, p->y * factor, 0.0);
 }
 
 static void
-sketch_label(img_point p, const char *s)
+sketch_label(const img_point *p, const char *s)
 {
    fprintf(fh, "fp((0,0,0))\n");
    fprintf(fh, "le()\n");
@@ -256,22 +256,22 @@ sketch_label(img_point p, const char *s)
       if (ch == '\'' || ch == '\\') putc('\\', fh);
       putc(ch, fh);
    }
-   fprintf(fh, "',(%.3f,%.3f))\n", p.x * factor, p.y * factor);
+   fprintf(fh, "',(%.3f,%.3f))\n", p->x * factor, p->y * factor);
 }
 
 static void
-sketch_cross(img_point p)
+sketch_cross(const img_point *p)
 {
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p.x * factor - MARKER_SIZE, p.y * factor - MARKER_SIZE, 0.0);
+	   p->x * factor - MARKER_SIZE, p->y * factor - MARKER_SIZE, 0.0);
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p.x * factor + MARKER_SIZE, p.y * factor + MARKER_SIZE, 0.0);
+	   p->x * factor + MARKER_SIZE, p->y * factor + MARKER_SIZE, 0.0);
    fprintf(fh, "bn()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p.x * factor + MARKER_SIZE, p.y * factor - MARKER_SIZE, 0.0);
+	   p->x * factor + MARKER_SIZE, p->y * factor - MARKER_SIZE, 0.0);
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p.x * factor - MARKER_SIZE, p.y * factor + MARKER_SIZE, 0.0);
+	   p->x * factor - MARKER_SIZE, p->y * factor + MARKER_SIZE, 0.0);
 }
 
 static void
@@ -296,7 +296,7 @@ static void
 plt_header(void)
 {
    size_t i;
-   htab = osmalloc(0x2000 * sizeof(point**));
+   htab = osmalloc(0x2000 * sizeof(point*));
    for (i = 0; i < 0x2000; ++i) htab[i] = NULL;
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
@@ -313,7 +313,7 @@ plt_start_pass(int layer)
 }
 
 static void
-set_name(img_point p, const char *s)
+set_name(const img_point *p, const char *s)
 {
    int hash;
    point *pt;
@@ -322,12 +322,12 @@ set_name(img_point p, const char *s)
       int x[3];
    } u;
 
-   u.x[0] = p.x * 100;
-   u.x[1] = p.y * 100;
-   u.x[2] = p.z * 100;
+   u.x[0] = p->x * 100;
+   u.x[1] = p->y * 100;
+   u.x[2] = p->z * 100;
    hash = (hash_data(u.data, sizeof(int) * 3) & 0x1fff);
    for (pt = htab[hash]; pt; pt = pt->next) {
-      if (pt->p.x == p.x && pt->p.y == p.y && pt->p.z == p.z) {
+      if (pt->p.x == p->x && pt->p.y == p->y && pt->p.z == p->z) {
 	 /* already got name for these coordinates */
 	 /* FIXME: what about multiple names for the same station? */
 	 return;
@@ -336,7 +336,7 @@ set_name(img_point p, const char *s)
 
    pt = osnew(point);
    pt->label = osstrdup(s);
-   pt->p = p;
+   pt->p = *p;
    pt->next = htab[hash];
    htab[hash] = pt;
 
@@ -366,26 +366,26 @@ find_name(const img_point *p)
 }
 
 static void
-plt_move(img_point p)
+plt_move(const img_point *p)
 {
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "M %.3f %.3f %.3f ",
-	   p.y / METRES_PER_FOOT, p.x / METRES_PER_FOOT, p.z / METRES_PER_FOOT);
-   fprintf(fh, "S%s\r\n", find_name(&p));
+	   p->y / METRES_PER_FOOT, p->x / METRES_PER_FOOT, p->z / METRES_PER_FOOT);
+   fprintf(fh, "S%s\r\n", find_name(p));
 }
 
 static void
-plt_line(img_point p1, img_point p)
+plt_line(const img_point *p1, const img_point *p)
 {
    p1 = p1;
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "D %.3f %.3f %.3f ",
-	   p.y / METRES_PER_FOOT, p.x / METRES_PER_FOOT, p.z / METRES_PER_FOOT);
-   fprintf(fh, "S%s\r\n", find_name(&p));
+	   p->y / METRES_PER_FOOT, p->x / METRES_PER_FOOT, p->z / METRES_PER_FOOT);
+   fprintf(fh, "S%s\r\n", find_name(p));
 }
 
 static void
-plt_label(img_point p, const char *s)
+plt_label(const img_point *p, const char *s)
 {
    /* FIXME: also ctrl characters - ought to remap them, not give up */
    if (strchr(s, ' ')) {
@@ -396,7 +396,7 @@ plt_label(img_point p, const char *s)
 }
 
 static void
-plt_cross(img_point p)
+plt_cross(const img_point *p)
 {
    p = p;
 }
@@ -410,7 +410,7 @@ plt_footer(void)
            min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
            min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    /* Yucky DOS "end of textfile" marker */
-   fprintf(fh, "\x1a");
+   putc('\x1a', fh);
 }
 
 #define LEGS 1
@@ -437,11 +437,12 @@ main(int argc, char **argv)
 
    void (*header)(void);
    void (*start_pass)(int);
-   void (*move)(img_point);
-   void (*line)(img_point, img_point);
-   void (*label)(img_point, const char *);
-   void (*cross)(img_point);
+   void (*move)(const img_point *);
+   void (*line)(const img_point *, const img_point *);
+   void (*label)(const img_point *, const char *);
+   void (*cross)(const img_point *);
    void (*footer)(void);
+   const char *mode = "w"; /* default to text output */
 
    /* TRANSLATE */
    static const struct option long_opts[] = {
@@ -571,6 +572,7 @@ main(int argc, char **argv)
    } else {
       char *baseleaf = baseleaf_from_fnm(fnm_3d);
       if (format == FMT_AUTO) format = FMT_DEFAULT;
+      /* note : memory allocated by fnm_out gets leaked in this case... */
       fnm_out = add_ext(baseleaf, extensions[format]);
       osfree(baseleaf);
    }
@@ -596,6 +598,7 @@ main(int argc, char **argv)
       footer = sketch_footer;
       pass = sketch_passes;
       factor = POINTS_PER_MM * 1000.0 / scale;
+      mode = "wb"; /* Binary file output */
       break;
     case FMT_PLT:
       header = plt_header;
@@ -606,6 +609,7 @@ main(int argc, char **argv)
       cross = plt_cross;
       footer = plt_footer;
       pass = plt_passes;
+      mode = "wb"; /* Binary file output */
       break;
     default:
       exit(1);
@@ -614,7 +618,7 @@ main(int argc, char **argv)
    pimg = img_open_survey(fnm_3d, survey);
    if (!pimg) fatalerror(img_error(), fnm_3d);
 
-   fh = safe_fopen(fnm_out, "w");
+   fh = safe_fopen(fnm_out, mode);
 
    if (elevation) {
       s = sin(rad(elev_angle));
@@ -704,14 +708,14 @@ main(int argc, char **argv)
 		  img_close(pimg);
 		  fatalerror(/*Bad 3d image file `%s'*/106, fnm_3d);
 	       }
-	       if ((*pass & LEGS) && legs) line(p1, p);
+	       if ((*pass & LEGS) && legs) line(&p1, &p);
 	       p1 = p;
 	       break;
 	     case img_MOVE:
 #ifdef DEBUG_3DTODXF
 	       printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
 #endif
-	       if ((*pass & LEGS) && legs) move(p);
+	       if ((*pass & LEGS) && legs) move(&p);
 	       fSeenMove = 1;
 	       p1 = p;
 	       break;
@@ -719,8 +723,8 @@ main(int argc, char **argv)
 #ifdef DEBUG_3DTODXF
 	       printf("label `%s' at %9.2f %9.2f %9.2f\n",pimg->label,x,y,z);
 #endif
-	       if ((*pass & LABELS) && labels) label(p, pimg->label);
-	       if ((*pass & STNS) && crosses) cross(p);
+	       if ((*pass & LABELS) && labels) label(&p, pimg->label);
+	       if ((*pass & STNS) && crosses) cross(&p);
 	       break;
 #ifdef DEBUG_3DTODXF
 	     case img_STOP:
