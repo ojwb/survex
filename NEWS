@@ -11,6 +11,8 @@ Changes in 1.0.11:
   (previously it would fail for locales where the decimal character wasn't
   '.').
 
+* extend: fixed to work with PLT files.
+
 Changes in 1.0.10:
 
 * (MS Windows version): aven: fixed assert failure upon turning on station

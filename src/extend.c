@@ -214,8 +214,8 @@ main(int argc, char **argv)
 	 fr = to;
 	 break;
       case img_LABEL:
-	 fr = find_point(&pt);
-	 add_label(fr, pimg->label, pimg->flags);
+	 to = find_point(&pt);
+	 add_label(to, pimg->label, pimg->flags);
 	 break;
       case img_BAD:
 	 (void)img_close(pimg);
