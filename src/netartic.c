@@ -479,17 +479,6 @@ articulate(void)
       component *comp;
       articulation *art;
 
-      /* reverse component list
-       * not quite sure why this is needed, but it is */
-      component *rev = NULL;
-      comp = component_list;
-      while (comp) {
-	 component *tmp = comp->next;
-	 comp->next = rev;
-	 rev = comp;
-	 comp = tmp;
-      }
-      component_list = rev;
 #ifdef DEBUG_ARTIC
       printf("\nDump of %d components:\n", cComponents);
 #endif
