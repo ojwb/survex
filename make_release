@@ -23,6 +23,10 @@ if test x"$rel" = xyes ; then
    if ! test -x $CVS2CL ; then
       CVS2CL=../cvs2cl/cvs2cl.pl
    fi
+   if ! test -x $CVS2CL ; then
+      echo cvs2cl.pl not found
+      exit 1
+   fi
    TAG="`sed 's/^CHANGELOG_FROM_TAG=//p;d' configure.in`"
    if ! cvs log -r$TAG::|./fixchangelog.pl $TAG|$CVS2CL --stdin 2> /dev/null ; then
       echo Failed to update ChangeLog from CVS
