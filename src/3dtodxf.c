@@ -328,6 +328,7 @@ set_name(img_point p, const char *s)
    for (pt = htab[hash]; pt; pt = pt->next) {
       if (pt->p.x == p.x && pt->p.y == p.y && pt->p.z == p.z) {
 	 /* already got name for these coordinates */
+	 /* FIXME: what about multiple names for the same station? */
 	 return;
       }
    }
