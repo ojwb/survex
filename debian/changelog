@@ -1,3 +1,16 @@
+survex (1.0.2) unstable; urgency=low
+
+  * printdm and printpcl now take notice of font_size_labels setting in
+    print.ini etc.
+
+  * Enhancements and bug-fix to handling of Topofil.
+
+  * *FIX with 3 standard deviations but no covariances now works.
+
+  * Updated ca and es internationalisations.
+
+ -- Wookey <wookey@survex.com>  Sun, 17 Mar 2002 12:42:44 +0000
+
 survex (1.0.1) unstable; urgency=low
 
   * Updated pt-br and it internationalisations.
