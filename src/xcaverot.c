@@ -112,7 +112,6 @@ static float scale = 0.1;
 static float zoomfactor = 1.2;
 static float sbar;	/* length of scale bar */
 static float scale_orig;	/* saved state of scale, used in drag re-scale */
-static int changedscale = 1;
 
 static struct {
    int x;
@@ -433,13 +432,11 @@ process_step(Display * display, Window mainwin, Window button, GC mygc, GC egc)
    else if (view_angle < 0)
       view_angle += 360.0;      
    update_rotation();
-   if (!rot) fill_segment_cache();
-   perform_redraw();
    flip_button(display, mainwin, button, egc, mygc, "Step");
 }
 
 static void
-draw_scalebar(void)
+draw_scalebar(int changedscale)
 {
    char temp[20];
    float l, m, n, o;
@@ -459,7 +456,6 @@ draw_scalebar(void)
 
       sbar = (int)o;
 
-      changedscale = 0;
       XClearWindow(mydisplay, scalebar);
    }
 
@@ -481,9 +477,7 @@ process_zoom(Display * display, Window mainwin, Window button, GC mygc, GC egc)
 {
    flip_button(display, mainwin, button, mygc, egc, "Zoom in");
    scale *= zoomfactor;
-   changedscale = 1;
    flip_button(display, mainwin, button, egc, mygc, "Zoom in");
-   fill_segment_cache();
 }
 
 void
@@ -491,9 +485,7 @@ process_mooz(Display * display, Window mainwin, Window button, GC mygc, GC egc)
 {
    flip_button(display, mainwin, button, mygc, egc, "Zoom out");
    scale /= zoomfactor;
-   changedscale = 1;
    flip_button(display, mainwin, button, egc, mygc, "Zoom out");
-   fill_segment_cache();
 }
 
 void
@@ -814,8 +806,6 @@ update_rotation(void)
 	 plan_elev = PLAN;
       else
 	 plan_elev = 0;
-
-      fill_segment_cache();
    }
 
    lastframe.tv_sec = temptime.tv_sec;
@@ -1028,8 +1018,6 @@ switch_to_plan(void)
       if (elev_angle >= 90.0) elev_angle = 90.0;
 
       update_rotation();
-      if (!rot) fill_segment_cache();
-      perform_redraw();
    }
 
    plan_elev = PLAN;
@@ -1048,8 +1036,6 @@ switch_to_elevation(void)
       if (elev_angle * step >= 0.0) elev_angle = 0.0;
 
       update_rotation();
-      if (!rot) fill_segment_cache();
-      perform_redraw();
    }
 
    plan_elev = ELEVATION;
@@ -1147,10 +1133,7 @@ mouse_moved(Display * display, Window window, int mx, int my)
 	 /* mouse moved down */
 	 scale = rotsc_scale * pow(2, a);
       }
-      changedscale = 1;
    }
-
-   fill_segment_cache();
 }
 
 #ifdef XCAVEROT_BUTTONS
@@ -1187,7 +1170,6 @@ drag_compass(int x, int y)
    if (x * x + y * y > indrad * indrad)
       view_angle = ((int)((view_angle + 360 + 22) / 45)) * 45 - 360;
    /* printf("a %f\n", view_angle); */
-   fill_segment_cache();
 }
 
 void
@@ -1209,7 +1191,6 @@ drag_elevation(int x, int y)
 	 elev_angle = -90.0f;
       }
    }
-   fill_segment_cache();
 }
 
 static void
@@ -1219,7 +1200,6 @@ set_defaults(void)
 
    view_angle = 180.0;
    scale = 0.01;
-   changedscale = 1;
    plan_elev = PLAN;
    elev_angle = 90.0;
    rot = 0;
@@ -1256,7 +1236,6 @@ main(int argc, char **argv)
 
    int visdepth;	/* used in Double Buffer setup code */
 
-   int redraw = 1;
    XEvent myevent;
    XSizeHints myhint;
    XGCValues gvalues;
@@ -1432,7 +1411,6 @@ main(int argc, char **argv)
 #endif
 
    set_defaults();
-   fill_segment_cache();
 
    /* print program name at the top */
    XSetStandardProperties(mydisplay, mywindow, title, title,
@@ -1533,12 +1511,11 @@ main(int argc, char **argv)
 #endif
 
    /* Loop through until a q is pressed,
-    * which will cause the application to quit */
-
+    * which will cause the application to quit */    
+    
    done = 0;
    while (done == 0) {
-      redraw = 1;
-
+      int refresh_window = 0;
       update_rotation();
 
       if (rot == 0 || XPending(mydisplay)) {
@@ -1562,10 +1539,7 @@ main(int argc, char **argv)
 #endif
 	    if (myevent.xbutton.button == Button1) {
                if (myevent.xbutton.window == ind_com) {
-                  int old_angle = (int)view_angle;
                   drag_compass(myevent.xbutton.x, myevent.xbutton.y);
-                  if ((int)view_angle == old_angle) 
-                     redraw = 0; 
 #ifdef XCAVEROT_BUTTONS
                } else if (myevent.xbutton.window == butzoom)
                      process_zoom(mydisplay, mywindow, butzoom, mygc, enter_gc);
@@ -1590,10 +1564,7 @@ main(int argc, char **argv)
                      break;
 #endif	       
 	       } else if (myevent.xbutton.window == ind_elev) {
-		  int old_elev = (int)elev_angle;
 		  drag_elevation(myevent.xbutton.x, myevent.xbutton.y);
-		  if (old_elev == (int)elev_angle)
-		     redraw = 0;
 	       } else if (myevent.xbutton.window == scalebar) {
 		  scale_orig = scale;
 	       } else if (myevent.xbutton.window == mywindow) {
@@ -1615,17 +1586,9 @@ main(int argc, char **argv)
 	       }
 	 } else if (myevent.type == MotionNotify) {
 	    if (myevent.xmotion.window == ind_com) {
-	       int old_angle = (int)view_angle;
-	       
 	       drag_compass(myevent.xmotion.x, myevent.xmotion.y);
-	       if ((int)view_angle == old_angle)
-		  redraw = 0;
 	    } else if (myevent.xmotion.window == ind_elev) {
-	       int old_elev = (int)elev_angle;
-	       
 	       drag_elevation(myevent.xmotion.x, myevent.xmotion.y);
-	       if (old_elev == (int)elev_angle)
-		  redraw = 0;
 	    } else if (myevent.xmotion.window == scalebar) {
 	       if (myevent.xmotion.state & Button1Mask)
 		  scale = exp(log(scale_orig)
@@ -1636,7 +1599,6 @@ main(int argc, char **argv)
 			      * (1 - (float)(myevent.xmotion.y - orig.y) / 100)
 			      );
 	       
-	       changedscale = 1;
 	    } else if (myevent.xmotion.window == mywindow) {
 	       /* drag cave about / alter rotation or scale */
 	       
@@ -1688,24 +1650,17 @@ main(int argc, char **argv)
 			      break;
 			    case 127:	/* Delete => restore defaults */
 			      set_defaults();
-                              fill_segment_cache();
 			      break;
 			    case 'q':
 			      done = 1;
 			      break;
 			    case 'u':	/* cave up */
 			      elev_angle += 3.0;
-			      if (elev_angle > 90.0)
-				 elev_angle = 90.0;
-                              fill_segment_cache();
-                              redraw = 1;
+			      if (elev_angle > 90.0) elev_angle = 90.0;
 			      break;
 			    case 'd':	/* cave down */
 			      elev_angle -= 3.0;
-			      if (elev_angle < -90.0)
-				 elev_angle = -90.0;
-                              fill_segment_cache();
-                              redraw = 1;
+			      if (elev_angle < -90.0) elev_angle = -90.0;
 			      break;
 			    case 'l':	/* switch to elevation */
 			      switch_to_elevation();
@@ -1725,70 +1680,40 @@ main(int argc, char **argv)
 			      break;
 			    case '[':	/* zoom out */
 			      scale /= 2.0;
-			      if (scale < 0.001) {
-				 scale = 0.001;
-			      }
-                              changedscale = 1;
-			      fill_segment_cache();
-			      redraw = 1;
+			      if (scale < 0.001) scale = 0.001;
 			      break;
 			    case ']':	/* zoom in */
 			      scale *= 2.0;
-			      if (scale > 0.4) {
-				 scale = 0.4;
-			      }
-                              changedscale = 1;
-			      fill_segment_cache();
-			      redraw = 1;
+			      if (scale > 0.4) scale = 0.4;
 			      break;
 			    case 'r':	/* reverse dirn of rotation */
 			      rot_speed = -rot_speed;
 			      break;
 			    case 'c':	/* rotate one step "clockwise" */
 			      view_angle += rot_speed / 5;
-			      if (view_angle >= 360.0) {
-				 view_angle -= 360.0;
-			      }
-			      fill_segment_cache();
-			      redraw = 1;
+			      if (view_angle >= 360.0) view_angle -= 360.0;
 			      break;
 			    case 'v':	/* rotate one step "anticlockwise" */
 			      view_angle -= rot_speed / 5;
-			      if (view_angle <= 0.0) {
-				 view_angle += 360.0;
-			      }
-			      fill_segment_cache();
-			      redraw = 1;
+			      if (view_angle <= 0.0) view_angle += 360.0;
 			      break;
 			    case '\'':	/* higher viewpoint (?) */
 			      z_mid += Zrad / 7.5;
-			      fill_segment_cache();
-			      redraw = 1;
 			      break;
 			    case '/':	/* lower viewpoint (?) */
 			      z_mid -= Zrad / 7.5;
-			      fill_segment_cache();
-			      redraw = 1;
 			      break;
 			    case 'n':	/* cave north */
 			      view_angle = 0.0;
-			      fill_segment_cache();
-			      redraw = 1;
 			      break;
 			    case 's':	/* cave south */
 			      view_angle = 180.0;
-			      fill_segment_cache();
-			      redraw = 1;
 			      break;
 			    case 'e':	/* cave east */
 			      view_angle = 90.0;
-			      fill_segment_cache();
-			      redraw = 1;
 			      break;
 			    case 'w':	/* cave west */
 			      view_angle = 270.0;
-			      fill_segment_cache();
-			      redraw = 1;
 			      break;
 			   }
 		     }
@@ -1797,7 +1722,6 @@ main(int argc, char **argv)
 		 }
 	     case ConfigureNotify:
 	       
-	       changedscale = 1;
 #if 0	/* rescale to keep view in window */
 	       scale *= min((float)myevent.xconfigure.width /
 			    (float)oldwidth,
@@ -1819,15 +1743,46 @@ main(int argc, char **argv)
 	       XMoveWindow(mydisplay, ind_elev,
 			   myevent.xconfigure.width - (2 * INDWIDTH) - 1, 0);
 	       break;
+	    default: refresh_window = 1;
 	    }
 	 }
       }
-      if (redraw) {
-	 perform_redraw();
-         draw_scalebar();
+
+      {
+	 static float old_view_angle = -1;
+	 static float old_elev_angle = -1;
+	 static float old_scale = -1;
+	 static int old_crossing = -1;
+	 static int old_labelling = -1;
+
+	 int redraw = refresh_window;
+
+	 if (old_view_angle != view_angle ||
+	     old_elev_angle != elev_angle ||
+	     old_scale != scale) {
+
+	    old_view_angle = view_angle;
+	    old_elev_angle = elev_angle;
+	    
+	    fill_segment_cache();
+	    redraw = 1;
+	 }
+
+	 if (old_crossing != crossing || old_labelling != labelling) {
+	    old_crossing = crossing;
+	    old_labelling = labelling;
+	    redraw = 1;
+	 }
+	 
+
+	 if (redraw) {
+	    perform_redraw();
+	    draw_scalebar(old_scale != scale);
 #ifdef XCAVEROT_BUTTONS
-	 draw_buttons(mydisplay, mywindow, mygc, enter_gc);
+	    draw_buttons(mydisplay, mywindow, mygc, enter_gc);
 #endif
+	    old_scale = scale;
+	 }
       }
    }	/* while */
    
