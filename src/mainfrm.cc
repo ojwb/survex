@@ -195,9 +195,9 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 		     true);
     viewmenu->Append(menu_VIEW_SCALE_BAR, "Sc&ale Bar", "Toggle display of the scale bar",
 		     true);
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_STATUS_BAR, "&Status Bar",
-		     "Toggle display of the status bar", true);
+    //    viewmenu->AppendSeparator();
+    //    viewmenu->Append(menu_VIEW_STATUS_BAR, "&Status Bar",
+    //		     "Toggle display of the status bar", true);
 
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->Append(menu_CTL_REVERSE, "&Reverse Sense\tCtrl+R",
@@ -234,8 +234,8 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxAcceleratorTable accel(11, entries);
     SetAcceleratorTable(accel);
 
-    CreateStatusBar(2);
-    SetStatusText("Ready");
+    //CreateStatusBar(2);
+    //SetStatusText("Ready");
 }
 
 MainFrm::~MainFrm()
@@ -317,11 +317,11 @@ bool MainFrm::LoadData(const wxString& file)
     // the data for drawing.
 
     // Load the survey data.
-    SetStatusText(wxString("Attempting to open 3D file ") + file);
+    //SetStatusText(wxString("Attempting to open 3D file ") + file);
 
     img* survey = img_open(file, NULL, NULL);
     if (!survey) {
-        SetStatusText("");
+        //SetStatusText("");
 	wxString svxerr;
 	switch (img_error()) {
 	    case IMG_FILENOTFOUND: svxerr = "file not found"; break;
@@ -333,12 +333,12 @@ bool MainFrm::LoadData(const wxString& file)
 	wxString msg = wxString("Couldn't open 3D file '") + file + wxString("' (") + svxerr +
 	               wxString(").");
 	wxGetApp().ReportError(msg);
-	SetStatusText("Ready");
+	//SetStatusText("Ready");
     }
     else {
         // Create a list of all the leg vertices, counting them and finding the
         // extent of the survey at the same time.
-        SetStatusText(wxString("Parsing ") + file);
+        //SetStatusText(wxString("Parsing ") + file);
  
 	m_NumLegs = 0;
 	m_NumPoints = 0;
@@ -456,7 +456,7 @@ bool MainFrm::LoadData(const wxString& file)
 
 	// Check we've actually loaded some legs or stations!
 	if (m_NumLegs == 0 || m_Labels.size() == 0) {
-	    SetStatusText(wxString(""));
+	    //SetStatusText(wxString(""));
 	    wxString msg = wxString("No legs or stations found in 3D file '") + file +
 	                   wxString("'.");
 	    wxGetApp().ReportError(msg);
@@ -483,7 +483,7 @@ bool MainFrm::LoadData(const wxString& file)
 
 	// Update status bar.
 	wxString numlegs_str = wxString::Format(wxString("%d"), m_NumLegs);
-	SetStatusText(numlegs_str + wxString(" legs loaded from ") + file);
+	//SetStatusText(numlegs_str + wxString(" legs loaded from ") + file);
 	
 	// Update window title.
 	SetTitle(wxString("Aven - [") + file + wxString("]"));

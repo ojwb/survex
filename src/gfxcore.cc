@@ -923,7 +923,7 @@ void GfxCore::OnMButtonUp(wxMouseEvent& event)
 {
     if (m_CaverotMouse) {
         if (m_FreeRotMode) {
-	    m_Parent->SetStatusText("Disabled in free rotation mode.  Reset using Delete.");
+	  //	    m_Parent->SetStatusText("Disabled in free rotation mode.  Reset using Delete.");
 	}
 	else {
 	    // plan/elevation toggle
@@ -975,7 +975,7 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
         // free rotation starts when Control is down
 
         if (!m_FreeRotMode) {
-	    m_Parent->SetStatusText("Free rotation mode.  Switch back using Delete.");
+	  //	    m_Parent->SetStatusText("Free rotation mode.  Switch back using Delete.");
 	    m_FreeRotMode = true;
 	}
 
@@ -1081,7 +1081,7 @@ void GfxCore::HandleTilt(wxPoint point)
 	m_DragStart = point;
     }
     else {
-        m_Parent->SetStatusText("Disabled in free rotation mode.  Reset using Delete.");
+      //        m_Parent->SetStatusText("Disabled in free rotation mode.  Reset using Delete.");
     }
 }
 
