@@ -64,6 +64,9 @@
 
 * extend: fixed to pick start station as documented.
 
+* hto2svx: now produces workable .svx files from the 3 examples HTO
+  files included with the HTO 1.4 specification.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.
