@@ -64,6 +64,9 @@ enum {
     menu_VIEW_SURFACE_DEPTH,
     menu_VIEW_SURFACE_DASHED,
     menu_VIEW_SHOW_OVERLAPPING_NAMES,
+    menu_VIEW_SHOW_ENTRANCES,
+    menu_VIEW_SHOW_FIXED_PTS,
+    menu_VIEW_SHOW_EXPORTED_PTS,
     menu_VIEW_COMPASS,
     menu_VIEW_CLINO,
     menu_VIEW_DEPTH_BAR,
@@ -91,12 +94,18 @@ class LabelInfo {
     friend class MainFrm;
     double x, y, z;
     wxString text;
+    bool isEntrance;
+    bool isFixedPt;
+    bool isExportedPt;
 
 public:
     double GetX() const { return x; }
     double GetY() const { return y; }
     double GetZ() const { return z; }
     wxString GetText() const { return text; }
+    bool IsEntrance() const { return isEntrance; }
+    bool IsFixedPt() const { return isFixedPt; }
+    bool IsExportedPt() const { return isExportedPt; }
 };
 
 class MainFrm : public wxFrame {
@@ -147,6 +156,9 @@ public:
     void OnElevationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnElevationUpdate(event); }
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnDisplayOverlappingNamesUpdate(event); }
     void OnShowCrossesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowCrossesUpdate(event); }
+    void OnShowEntrancesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowEntrancesUpdate(event); }
+    void OnShowFixedPtsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowFixedPtsUpdate(event); }
+    void OnShowExportedPtsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowExportedPtsUpdate(event); }
     void OnShowStationNamesUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowStationNamesUpdate(event); }
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowSurveyLegsUpdate(event); }
     void OnShowSurfaceUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnShowSurfaceUpdate(event); }
@@ -182,6 +194,9 @@ public:
     void OnElevation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnElevation(event); }
     void OnDisplayOverlappingNames(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnDisplayOverlappingNames(event); }
     void OnShowCrosses(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowCrosses(event); }
+    void OnShowEntrances(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowEntrances(event); }
+    void OnShowFixedPts(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowFixedPts(event); }
+    void OnShowExportedPts(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowExportedPts(event); }
     void OnShowStationNames(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowStationNames(event); }
     void OnShowSurveyLegs(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowSurveyLegs(event); }
     void OnShowSurface(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnShowSurface(event); }

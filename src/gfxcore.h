@@ -49,6 +49,13 @@ class GfxCore : public wxWindow {
 	label_CHECK_AGAIN
     };
 
+    enum HighlightFlags {
+        hl_NONE = 0,
+        hl_ENTRANCE = 1,
+        hl_EXPORTED = 2,
+        hl_FIXED = 4
+    };
+
     enum LockFlags {
         lock_NONE = 0,
         lock_X = 1,
@@ -80,7 +87,16 @@ class GfxCore : public wxWindow {
         int drag_start_offset_y;
     } m_ScaleBar;
 
+    struct HighlightedPt {
+        int x;
+        int y;
+        HighlightFlags flags;
+    };
+
     LabelFlags* m_LabelGrid;
+    HighlightedPt* m_HighlightedPts;
+    int m_NumHighlightedPts;
+    bool m_ScaleHighlightedPtsOnly;
     bool m_DepthbarOff;
     bool m_ScalebarOff;
     bool m_IndicatorsOff;
@@ -137,11 +153,17 @@ class GfxCore : public wxWindow {
     bool m_Surface;
     bool m_SurfaceDashed;
     bool m_SurfaceDepth;
+    bool m_Entrances;
+    bool m_FixedPts;
+    bool m_ExportedPts;
     // wxCursor m_StdCursor;
     // wxCursor m_ScaleRotateCursor;
 
     struct pens {
         wxPen black;
+        wxPen yellow;
+        wxPen red;
+        wxPen cyan;
         wxPen turquoise;
         wxPen green;
         wxPen white;
@@ -154,6 +176,9 @@ class GfxCore : public wxWindow {
 
     struct brushes {
         wxBrush black;
+        wxBrush yellow;
+        wxBrush red;
+        wxBrush cyan;
         wxBrush grey;
         wxBrush dgrey;
         wxBrush white;
@@ -257,6 +282,9 @@ public:
     void OnViewCompass(wxCommandEvent&);
     void OnViewClino(wxCommandEvent&);
     void OnReverseDirectionOfRotation(wxCommandEvent&);
+    void OnShowEntrances(wxCommandEvent&);
+    void OnShowFixedPts(wxCommandEvent&);
+    void OnShowExportedPts(wxCommandEvent&);
 
     void OnPaint(wxPaintEvent&);
     void OnMouseMove(wxMouseEvent& event);
@@ -303,6 +331,9 @@ public:
     void OnToggleDepthbarUpdate(wxUpdateUIEvent&);
     void OnViewCompassUpdate(wxUpdateUIEvent&);
     void OnViewClinoUpdate(wxUpdateUIEvent&);
+    void OnShowEntrancesUpdate(wxUpdateUIEvent&);
+    void OnShowExportedPtsUpdate(wxUpdateUIEvent&);
+    void OnShowFixedPtsUpdate(wxUpdateUIEvent&);
 
 private:
     DECLARE_EVENT_TABLE()

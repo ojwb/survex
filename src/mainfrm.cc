@@ -65,6 +65,9 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_ORIENT_DEFAULTS, MainFrm::OnDefaults)
     EVT_MENU(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegs)
     EVT_MENU(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrosses)
+    EVT_MENU(menu_VIEW_SHOW_ENTRANCES, MainFrm::OnShowEntrances)
+    EVT_MENU(menu_VIEW_SHOW_FIXED_PTS, MainFrm::OnShowFixedPts)
+    EVT_MENU(menu_VIEW_SHOW_EXPORTED_PTS, MainFrm::OnShowExportedPts)
     EVT_MENU(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNames)
     EVT_MENU(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNames)
     EVT_MENU(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurface)
@@ -102,6 +105,9 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_ORIENT_DEFAULTS, MainFrm::OnDefaultsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrossesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_ENTRANCES, MainFrm::OnShowEntrancesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_FIXED_PTS, MainFrm::OnShowFixedPtsUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_EXPORTED_PTS, MainFrm::OnShowExportedPtsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNamesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurfaceUpdate)
     EVT_UPDATE_UI(menu_VIEW_SURFACE_DEPTH, MainFrm::OnShowSurfaceDepthUpdate)
@@ -178,6 +184,10 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     viewmenu->Append(menu_VIEW_SURFACE_DASHED, GetTabMsg(/*Dashed Surface Surveys*/293), "unused", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names##O*/273), "Toggle display all station names, whether or not they overlap", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "unused", true);
+    viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight Fi@xed Points*/295), "unused", true);
+    viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight Ex&ported Points*/296), "unused", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "Toggle display of the compass", true);
     viewmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "Toggle display of the clinometer", true);
@@ -367,6 +377,9 @@ bool MainFrm::LoadData(const wxString& file)
 		    label->x = pt.x;
 		    label->y = pt.y;
 		    label->z = pt.z;
+		    label->isEntrance = (survey->flags & img_SFLAG_ENTRANCE);
+		    label->isFixedPt = (survey->flags & img_SFLAG_FIXED);
+		    label->isExportedPt = (survey->flags & img_SFLAG_EXPORTED);
 		    m_Labels.push_back(label);
 		    m_NumCrosses++;
 

@@ -63,6 +63,7 @@ static const int TIMER_ID = 0;
 static const int SCALE_BAR_OFFSET_X = 15;
 static const int SCALE_BAR_OFFSET_Y = 12;
 static const int SCALE_BAR_HEIGHT = 12;
+static const int HIGHLIGHTED_PT_SIZE = 2;
 
 #define DELETE_ARRAY(x) { assert(x); delete[] x; }
 
@@ -115,6 +116,9 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Rotating = false;
     m_SwitchingToPlan = false;
     m_SwitchingToElevation = false;
+    m_Entrances = false;
+    m_FixedPts = false;
+    m_ExportedPts = false;
 
     // Create pens and brushes for drawing.
     m_Pens.black.SetColour(0, 0, 0);
@@ -126,6 +130,9 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Pens.green.SetColour(0, 255, 40);
     m_Pens.indicator1.SetColour(150, 205, 224);
     m_Pens.indicator2.SetColour(114, 149, 160);
+    m_Pens.yellow.SetColour(255, 255, 0);
+    m_Pens.red.SetColour(255, 0, 0);
+    m_Pens.cyan.SetColour(0, 100, 255);
 
     m_Brushes.black.SetColour(0, 0, 0);
     m_Brushes.white.SetColour(255, 255, 255);
@@ -133,6 +140,9 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Brushes.dgrey.SetColour(90, 90, 90);
     m_Brushes.indicator1.SetColour(150, 205, 224);
     m_Brushes.indicator2.SetColour(114, 149, 160);
+    m_Brushes.yellow.SetColour(255, 255, 0);
+    m_Brushes.red.SetColour(255, 0, 0);
+    m_Brushes.cyan.SetColour(0, 100, 255);
 
     SetBackgroundColour(wxColour(0, 0, 0));
 }
@@ -155,6 +165,7 @@ void GfxCore::TryToFreeArrays()
 	}
 
 	DELETE_ARRAY(m_PlotData);
+	DELETE_ARRAY(m_HighlightedPts);
 	DELETE_ARRAY(m_Polylines);
 	DELETE_ARRAY(m_SurfacePolylines);
 	DELETE_ARRAY(m_CrossData.vertices);
@@ -189,6 +200,7 @@ void GfxCore::Initialise()
     m_SurfacePolylines = new int[m_Bands];
     m_CrossData.vertices = new wxPoint[m_Parent->GetNumCrosses() * 4];
     m_CrossData.num_segs = new int[m_Parent->GetNumCrosses() * 2];
+    m_HighlightedPts = new HighlightedPt[m_Parent->GetNumCrosses()];
     m_Labels = new wxString[m_Parent->GetNumCrosses()];
     m_LabelsLastPlotted = new LabelFlags[m_Parent->GetNumCrosses()];
     m_LabelCacheNotInvalidated = false;
@@ -284,6 +296,8 @@ void GfxCore::Initialise()
       double(m_XSize) / (double(MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent())) * 1.1);
 
     // Calculate screen coordinates and redraw.
+    m_ScaleCrossesOnly = false;
+    m_ScaleHighlightedPtsOnly = false;
     SetScale(m_InitialScale);
     m_RedrawOffscreen = true;
     Refresh(false);
@@ -324,7 +338,7 @@ void GfxCore::SetScale(double scale)
         m_Params.scale = m_InitialScale / 20.0;
     }
 
-    if (!m_ScaleCrossesOnly) {
+    if (!m_ScaleCrossesOnly && !m_ScaleHighlightedPtsOnly) {
         for (int band = 0; band < m_Bands; band++) {
 	    wxPoint* pt = m_PlotData[band].vertices;
 	    assert(pt);
@@ -439,12 +453,12 @@ void GfxCore::SetScale(double scale)
 	    }
 	}
     }
-    else {
-        m_ScaleCrossesOnly = false;
-    }
 
-    if (m_Crosses || m_Names) {
-        // Construct polylines for crosses and sort out station names.
+    if (m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) {
+        // Construct polylines for crosses, sort out station names and deal with highlighted points.
+
+        m_NumHighlightedPts = 0;
+	HighlightedPt* hpt = m_HighlightedPts;
         wxPoint* pt = m_CrossData.vertices;
 	int* count = m_CrossData.num_segs;
 	wxString* labels = m_Labels;
@@ -464,26 +478,54 @@ void GfxCore::SetScale(double scale)
 	    int cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
 	    int cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
 
-	    pt->x = cx - CROSS_SIZE;
-	    pt->y = cy - CROSS_SIZE;
-	
-	    pt++;
-	    pt->x = cx + CROSS_SIZE;
-	    pt->y = cy + CROSS_SIZE;
-	    pt++;
-	    pt->x = cx - CROSS_SIZE;
-	    pt->y = cy + CROSS_SIZE;
-	    pt++;
-	    pt->x = cx + CROSS_SIZE;
-	    pt->y = cy - CROSS_SIZE;
-	    pt++;
+	    if (m_Crosses || m_Names) {
+	        pt->x = cx - CROSS_SIZE;
+		pt->y = cy - CROSS_SIZE;
+		
+		pt++;
+		pt->x = cx + CROSS_SIZE;
+		pt->y = cy + CROSS_SIZE;
+		pt++;
+		pt->x = cx - CROSS_SIZE;
+		pt->y = cy + CROSS_SIZE;
+		pt++;
+		pt->x = cx + CROSS_SIZE;
+		pt->y = cy - CROSS_SIZE;
+		pt++;
+		
+		*count++ = 2;
+		*count++ = 2;
 	    
-	    *count++ = 2;
-	    *count++ = 2;
-	    
-	    *labels++ = label->GetText();
+		*labels++ = label->GetText();
+	    }
+
+	    if (m_FixedPts || m_Entrances || m_ExportedPts) {
+		hpt->x = cx;
+		hpt->y = cy;
+		hpt->flags = hl_NONE;
+
+		if (label->IsFixedPt()) {
+		    hpt->flags = HighlightFlags(hpt->flags | hl_FIXED);
+		}
+
+		if (label->IsEntrance()) {
+		    hpt->flags = HighlightFlags(hpt->flags | hl_ENTRANCE);
+		}
+
+		if (label->IsExportedPt()) {
+		    hpt->flags = HighlightFlags(hpt->flags | hl_EXPORTED);
+		}
+
+		if (hpt->flags != hl_NONE) {
+		    hpt++;
+		    m_NumHighlightedPts++;
+		}
+	    }
 	}
     }
+
+    m_ScaleHighlightedPtsOnly = false;
+    m_ScaleCrossesOnly = false;
 }
 
 //
@@ -548,6 +590,41 @@ void GfxCore::RedrawOffscreen()
 	    for (int polyline = 0; polyline < m_Parent->GetNumCrosses() * 2; polyline++) {
 	        m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre, m_YCentre);
 		vertices += *num_segs++;
+	    }
+	}
+
+	// Plot highlighted points.
+	if (m_Entrances || m_FixedPts || m_ExportedPts) {
+	    for (int count = 0; count < m_NumHighlightedPts; count++) {
+	        HighlightedPt* pt = &m_HighlightedPts[count];
+
+		bool draw = true;
+
+		// When more than one flag is set on a point:
+		// entrance highlighting takes priority over fixed point highlighting, which in turn
+		// takes priority over exported point highlighting.
+
+		if (m_Entrances && (pt->flags & hl_ENTRANCE)) {
+		    m_DrawDC.SetPen(m_Pens.yellow);
+		    m_DrawDC.SetBrush(m_Brushes.yellow);
+		}
+		else if (m_FixedPts && (pt->flags & hl_FIXED)) {
+		    m_DrawDC.SetPen(m_Pens.red);
+		    m_DrawDC.SetBrush(m_Brushes.red);
+		}
+		else if (m_ExportedPts && (pt->flags & hl_EXPORTED)) {
+		    m_DrawDC.SetPen(m_Pens.cyan);
+		    m_DrawDC.SetBrush(m_Brushes.cyan);
+		}
+		else {
+		    draw = false;
+		}
+
+		if (draw) {
+		    m_DrawDC.DrawEllipse(pt->x - HIGHLIGHTED_PT_SIZE + m_XCentre,
+					 pt->y - HIGHLIGHTED_PT_SIZE + m_YCentre,
+					 HIGHLIGHTED_PT_SIZE*2, HIGHLIGHTED_PT_SIZE*2);
+		}
 	    }
 	}
 
@@ -1727,6 +1804,9 @@ void GfxCore::DefaultParameters()
     m_Rotating = false;
     m_SwitchingToPlan = false;
     m_SwitchingToElevation = false;
+    m_Entrances = false;
+    m_FixedPts = false;
+    m_ExportedPts = false;
 }
 
 void GfxCore::Defaults()
@@ -2038,4 +2118,49 @@ void GfxCore::OnShowSurfaceDashedUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_PlotData && m_SurfaceLegs && m_Surface);
     cmd.Check(m_SurfaceDashed);
+}
+
+void GfxCore::OnShowEntrances(wxCommandEvent&)
+{
+    m_Entrances = !m_Entrances;
+    m_RedrawOffscreen = true;
+    m_ScaleHighlightedPtsOnly = true;
+    SetScale(m_Params.scale);
+    Refresh(false);
+}
+
+void GfxCore::OnShowEntrancesUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
+    cmd.Check(m_Entrances);
+}
+
+void GfxCore::OnShowFixedPts(wxCommandEvent&)
+{
+    m_FixedPts = !m_FixedPts;
+    m_RedrawOffscreen = true;
+    m_ScaleHighlightedPtsOnly = true;
+    SetScale(m_Params.scale);
+    Refresh(false);
+}
+
+void GfxCore::OnShowFixedPtsUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
+    cmd.Check(m_FixedPts);
+}
+
+void GfxCore::OnShowExportedPts(wxCommandEvent&)
+{
+    m_ExportedPts = !m_ExportedPts;
+    m_RedrawOffscreen = true;
+    m_ScaleHighlightedPtsOnly = true;
+    SetScale(m_Params.scale);
+    Refresh(false);
+}
+
+void GfxCore::OnShowExportedPtsUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
+    cmd.Check(m_ExportedPts);
 }

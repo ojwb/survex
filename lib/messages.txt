@@ -1933,6 +1933,9 @@ it:290 @Informazioni su...
 en:291 Sur@face Survey Legs##Ctrl+F
 en:292 Depth C@olours on Surface Surveys
 en:293 Da@shed Surface Surveys
+en:294 Highlight @Entrances
+en:295 Highlight Fi@xed Points
+en:296 Highlight Ex@ported Points
 #
 ############################################################################
 # the rest are no longer used, but it's possible they may be at some point...
