@@ -1,0 +1,26 @@
+<HTML><HEAD>
+<TITLE>@PACKAGE@ @VERSION@ Documentation</TITLE>
+</HEAD><BODY BGCOLOR=white TEXT=black>
+
+<H1>@PACKAGE@ @VERSION@ Documentation</H1>
+
+<ul>
+<li><A HREF="doc/index.htm">@PACKAGE@ @VERSION@ Manual</A>
+<li><A HREF="NEWS.txt">Details of user visible changes in this and previous versions</A>
+	(<A HREF="OLDNEWS.txt">older changes</A>)
+<li><A HREF="BUGS.txt">List of known bugs</A>
+<li><A HREF="TODO.txt">"To do" list</A>
+<li><A HREF="COPYING.txt">GNU GENERAL PUBLIC LICENSE</A>
+<li><A HREF="AUTHORS.txt">Credits</A>
+</ul>
+
+<H1>Documentation Aimed at Developers</H1>
+
+<ul>
+<li><A HREF="HACKING.txt">Collection of useful information for developers</A>
+<li><A HREF="ZOMBIES.txt">Bugs which we can't reproduce, or believe fixed but without confirmation</A>
+<li><A HREF="Changes.txt">Detailed list of internal changes</A>
+</ul>
+
+</BODY>
+</HTML>

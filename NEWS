@@ -8,6 +8,9 @@
   this doesn't make sense now that root is deprecated, and didn't make
   much sense before to be honest.
 
+* (MS Windows version): added documentation overview page to HTML
+  help.
+
 * Removed 255 character limit on station names in .3d and .3dx files.
 
 Changes in 0.97-prerelease4:

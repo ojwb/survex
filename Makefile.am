@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES survex.iss.in
+EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES survex.iss.in docindex.htm.in
 
 SUBDIRS = hto src lib doc tests debian
 
@@ -145,17 +145,35 @@ djgpp_zip : dostxt
 
 mingw : all mingw_zip
 
-mingw_zip_name = survex-win32-@VERSION@.zip
-
-mingw_zip : dostxt
+mingwexes :
 	test -d mingw_exes || mkdir mingw_exes
 	for f in $(base_progs) printwin ; do cp src/$$f.exe mingw_exes ; done
 	for a in hto2svx svx2hto ; do cp hto/$$a.exe mingw_exes ; done
+
+mingw_zip_name = survex-win32-@VERSION@.zip
+
+mingw_zip : dostxt mingwexes
 	$(RM) $(mingw_zip_name)
 	zip -j $(mingw_zip_name) mingw_exes/*.exe $(extra_bin)
 	# -l means convert LF to CR+LF
 	zip -j -l $(mingw_zip_name) dostxt_tmp/*.txt $(extra_txt) survex.iss
 	$(RM) -rf dostxt_tmp
+
+mingw_iss : dostxt mingwexes
+	$(RM) -rf iss_tmp
+	mkdir iss_tmp
+	cp dostxt_tmp/*.txt $(extra_txt) survex.iss docindex.htm iss_tmp
+	# convert LF to CR+LF
+	perl -p -i -e 's/\n/\r\n' iss_tmp/*
+	mkdir iss_tmp/help
+	cp doc/svxdocs/*.htm iss_tmp/help
+	# convert LF to CR+LF
+	perl -p -i -e 's/\n/\r\n' iss_tmp/help/*
+	cp mingw_exes/*.exe $(extra_bin) iss_tmp
+	$(RM) -rf dostxt_tmp	
+	wine "c:\\Program Files/Inno Setup/compile.exe iss_tmp/survex.iss"
+	mv iss_tmp/Output/*.exe .
+	$(RM) -rf iss_tmp	
 
 bc_zip_name = survex-dos286-@VERSION@.zip
 

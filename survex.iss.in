@@ -11,7 +11,7 @@ AppVersion=@VERSION@
 ChangesAssociations=yes
 LicenseFile=COPYING.txt
 Uninstallable=yes
-AppCopyright=Copyright © 2001 Olly Betts
+AppCopyright=@COPYRIGHT_MSG@
 ; WizardImageFile=survey.bmp
 [Dirs]
 Name: "{app}\help"
@@ -24,11 +24,13 @@ Source: "*.bit"; DestDir: "{app}"
 Source: "*.ini"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
+Source: "*.htm"; DestDir: "{app}"
 Source: "help\*.*"; DestDir: "{app}\help"
 
 [Icons]
 Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"
-Name: "{group}\Survex Help"; Filename: "{app}\help\index.htm"; Comment: "View the help files for survex"
+Name: "{group}\Survex Help"; Filename: "{app}\docindex.htm"; Comment: "View the documentation for survex"
+Name: "{group}\News"; Filename: "{app}\NEWS.txt"; Comment: "View the help files for survex"
 
 [Registry]
 Root: HKCR; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"
@@ -36,7 +38,7 @@ Root: HKCR; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"
 Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "Survex"
 Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\survex.ico"
 Root: HKCR; Subkey: "survex.source\shell"; ValueType: string; ValueData: "Process"
-Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" ""%1"""
+Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" -o ""%1"" ""%1"""
 Root: HKCR; Subkey: "survex.source\shell"; ValueType: string; ValueData: "Open"
 Root: HKCR; Subkey: "survex.source\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""
 Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex"
