@@ -40,7 +40,7 @@ OLDNEWS.htm: ../OLDNEWS
 MAINTAINERCLEANFILES = $(doclist) $(other_mans)
 
 pkgdoc_DATA = index.htm GPL.htm TODO.htm ChngeLog.htm\
- NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist) manual
+ NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist)
 
 man_MANS = survex.1 $(other_mans)
 
@@ -86,7 +86,7 @@ xcaverot.1: $(srcdir)/xcaverot.sgml $(srcdir)/man_xcaverot.sgml $(srcdir)/survex
 print.ini.5: $(srcdir)/print.ini.sgml $(srcdir)/man_print.ini.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_print.ini.sgml > print.ini.5
 
-install-data-local:
+install-data-local: manual
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual; \
 	if test -d manual ; then \
 	  for p in manual/*.htm manual/*.png ; do \
@@ -122,7 +122,7 @@ manual: $(manual_sources) custom.dsl survex.ent
 	@sgmltools@ --backend=html --dsssl-spec=custom.dsl#html manual.sgml
 	cp caution.png note.png manual
 
-# this rule is not used by the build system - it's for "manual" use
+# this rule is not used by the build system - it's for "manual" use (ho ho)
 manual.html: $(manual_sources) custom.dsl survex.ent
 	@sgmltools@ --backend=onehtml --dsssl-spec=custom.dsl#onehtml manual.sgml
 
