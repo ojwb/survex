@@ -728,63 +728,13 @@ data_normal(void)
    }
 }
 
-extern int
-data_diving(void)
+static int
+process_diving(prefix *fr, prefix *to, real tape, real comp,
+	       real frdepth, real todepth, bool fToFirst)
 {
-   prefix *fr = NULL, *to = NULL;
    real dx, dy, dz;
    real vx, vy, vz;
 
-   real tape = 0, comp = 0;
-   real fr_depth = 0, to_depth = 0;
-
-   reading first_stn = End;
-
-   reading *ordering;
-
-   for (ordering = pcs->ordering; ; ordering++) {
-      skipblanks();
-      switch (*ordering) {
-       case Fr:
-	  fr = read_prefix_stn(fFalse);
-	  if (first_stn == End) first_stn = Fr;
-	  break;
-       case To:
-	  to = read_prefix_stn(fFalse);
-	  if (first_stn == End) first_stn = To;
-	  break;
-      case Tape: tape = read_numeric(fFalse); break;
-      case Comp:
-      	  comp = read_numeric(fTrue);
-       	  if (comp == HUGE_REAL) {
-	     if (!isOmit(ch)) {
-		compile_error(/*Expecting numeric field*/9);
-		showandskipline(NULL, 1);
-		return 0;
-	     }
-	     nextch();
-	  }
-	  break;
-      case FrDepth: fr_depth = read_numeric(fFalse); break;
-      case ToDepth: to_depth = read_numeric(fFalse); break;
-      case Ignore: skipword(); break;
-      case IgnoreAll:
-	 skipline();
-	 /* drop through */
-      case End:
-	 goto dataread;
-      default: BUG("Unknown reading in ordering");
-      }
-   }
-
-   dataread:
-
-   if (to == fr) {
-      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
-		    sprint_prefix(to));
-      return 1;
-   }
-   
    if (tape < (real)0.0) {
       compile_warning(/*Negative tape reading*/60);
    }
@@ -799,7 +749,7 @@ data_diving(void)
 
    tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
    /* assuming depths are negative */
-   dz = (to_depth - fr_depth) * pcs->sc[Q_DEPTH];
+   dz = (todepth - frdepth) * pcs->sc[Q_DEPTH];
 
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
@@ -855,7 +805,7 @@ data_diving(void)
       }
       vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
    }
-   addlegbyname(fr, to, (first_stn == To), dx, dy, dz, vx, vy, vz
+   addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
 #ifndef NO_COVARIANCES
 		, 0, 0, 0 /* FIXME: need covariances */
 #endif
@@ -884,54 +834,106 @@ data_diving(void)
 }
 
 extern int
-data_cartesian(void)
+data_diving(void)
 {
    prefix *fr = NULL, *to = NULL;
-   real dx = 0, dy = 0, dz = 0;
+
+   real tape = 0, comp = 0;
+   real frdepth = 0, todepth = 0;
+
+   bool fMulti = fFalse;
 
    reading first_stn = End;
 
    reading *ordering;
 
-   for (ordering = pcs->ordering ; ; ordering++) {
+   again:
+
+   for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr = read_prefix_stn(fFalse);
-	  if (first_stn == End) first_stn = Fr;
-	  break;
+	 fr = read_prefix_stn(fFalse);
+	 if (first_stn == End) first_stn = Fr;
+	 break;
        case To:
-	  to = read_prefix_stn(fFalse);
-	  if (first_stn == End) first_stn = To;
+	 to = read_prefix_stn(fFalse);
+	 if (first_stn == End) first_stn = To;
+	 break;
+       case Station:
+	 fr = to;
+	 to = read_prefix_stn(fFalse);
+	 first_stn = To;
+	 break;
+       case Tape: tape = read_numeric(fFalse); break;
+       case Comp:
+	 comp = read_numeric(fTrue);
+	 if (comp == HUGE_REAL) {
+	    if (!isOmit(ch)) {
+	       compile_error(/*Expecting numeric field*/9);
+	       showandskipline(NULL, 1);
+	       return 0;
+	    }
+	    nextch();
+	 }
+	 break;
+       case FrDepth: frdepth = read_numeric(fFalse); break;
+       case ToDepth: todepth = read_numeric(fFalse); break;
+       case Depth:
+	  frdepth = todepth;
+	  todepth = read_numeric(fFalse);
 	  break;
-       case Dx: dx = read_numeric(fFalse); break;
-       case Dy: dy = read_numeric(fFalse); break;
-       case Dz: dz = read_numeric(fFalse); break;
-       case Ignore:
-	 skipword(); break;
+       case Ignore: skipword(); break;
+       case IgnoreAllAndNewLine:
+	 skipline();
+	 /* fall through */
+       case Newline:
+	 if (fr != NULL) {
+	    int r;
+	    r = process_diving(fr, to, tape, comp, frdepth, todepth,
+			       first_stn == To);
+	    if (!r) skipline();
+	 }
+	 fMulti = fTrue;
+	 while (1) {
+	    process_eol();
+	    process_bol();
+	    if (isData(ch)) break;
+	    if (!isComm(ch)) return 1;
+	 }
+	 break;
        case IgnoreAll:
 	 skipline();
 	 /* fall through */
        case End:
-	 goto dataread;
-       default: BUG("Unknown reading in ordering");
+	 if (!fMulti) {
+	    int r;
+	    r = process_diving(fr, to, tape, comp, frdepth, todepth,
+			       first_stn == To);
+	    process_eol();
+	    return r;
+	 }
+	 while (1) {
+	    process_eol();
+	    process_bol();
+	    if (isData(ch)) break;
+	    if (!isComm(ch)) return 1;
+	 }
+	 goto again;
+      default: BUG("Unknown reading in ordering");
       }
    }
+}
 
-   dataread:
-
-   if (to == fr) {
-      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
-		    sprint_prefix(to));
-      return 1;
-   }
-
+static int
+process_cartesian(prefix *fr, prefix *to, real dx, real dy, real dz,
+		  bool fToFirst)
+{
    dx = (dx * pcs->units[Q_DX] - pcs->z[Q_DX]) * pcs->sc[Q_DX];
    dy = (dy * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
    dz = (dz * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
 
-   addlegbyname(fr, to, (first_stn == To), dx, dy, dz,
-		var(Q_DX), var(Q_DY), var(Q_DZ)
+   addlegbyname(fr, to, fToFirst, dx, dy, dz, var(Q_DX), var(Q_DY), var(Q_DZ)
 #ifndef NO_COVARIANCES
 		, 0, 0, 0 /* FIXME: need covariances */
 #endif
@@ -961,14 +963,18 @@ data_cartesian(void)
 }
 
 extern int
-data_nosurvey(void)
+data_cartesian(void)
 {
    prefix *fr = NULL, *to = NULL;
-   nosurveylink *link;
+   real dx = 0, dy = 0, dz = 0;
+
+   bool fMulti = fFalse;
 
    reading first_stn = End;
 
    reading *ordering;
+
+   again:
 
    for (ordering = pcs->ordering ; ; ordering++) {
       skipblanks();
@@ -981,25 +987,60 @@ data_nosurvey(void)
 	  to = read_prefix_stn(fFalse);
 	  if (first_stn == End) first_stn = To;
 	  break;
+       case Station:
+	  fr = to;
+	  to = read_prefix_stn(fFalse);
+	  first_stn = To;
+	  break;
+       case Dx: dx = read_numeric(fFalse); break;
+       case Dy: dy = read_numeric(fFalse); break;
+       case Dz: dz = read_numeric(fFalse); break;
        case Ignore:
 	 skipword(); break;
+       case IgnoreAllAndNewLine:
+	 skipline();
+	 /* fall through */
+       case Newline:
+	 if (fr != NULL) {
+	    int r;
+	    r = process_cartesian(fr, to, dx, dy, dz, first_stn == To);
+	    if (!r) skipline();
+	 }
+	 fMulti = fTrue;
+	 while (1) {
+	    process_eol();
+	    process_bol();
+	    if (isData(ch)) break;
+	    if (!isComm(ch)) return 1;
+	 }
+	 break;
        case IgnoreAll:
 	 skipline();
 	 /* fall through */
        case End:
-	 goto dataread;
+	 if (!fMulti) {
+	    int r;
+	    r = process_cartesian(fr, to, dx, dy, dz, first_stn == To);
+	    process_eol();
+	    return r;
+	 }
+	 while (1) {
+	    process_eol();
+	    process_bol();
+	    if (isData(ch)) break;
+	    if (!isComm(ch)) return 1;
+	 }
+	 goto again;
        default: BUG("Unknown reading in ordering");
       }
    }
+}
 
-   dataread:
+static int
+process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
+{
+   nosurveylink *link;
 
-   if (to == fr) {
-      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
-		    sprint_prefix(to));
-      return 1;
-   }
-   
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
@@ -1019,7 +1060,7 @@ data_nosurvey(void)
 
    /* add to linked list which is dealt with after network is solved */
    link = osnew(nosurveylink);
-   if (first_stn == To) {
+   if (fToFirst) {
       link->to = StnFromPfx(to);
       link->fr = StnFromPfx(fr);
    } else {
@@ -1029,6 +1070,76 @@ data_nosurvey(void)
    link->next = nosurveyhead;
    nosurveyhead = link;
    return 1;
+}
+
+extern int
+data_nosurvey(void)
+{
+   prefix *fr = NULL, *to = NULL;
+
+   bool fMulti = fFalse;
+
+   reading first_stn = End;
+
+   reading *ordering;
+
+   again:
+
+   for (ordering = pcs->ordering ; ; ordering++) {
+      skipblanks();
+      switch (*ordering) {
+       case Fr:
+	  fr = read_prefix_stn(fFalse);
+	  if (first_stn == End) first_stn = Fr;
+	  break;
+       case To:
+	  to = read_prefix_stn(fFalse);
+	  if (first_stn == End) first_stn = To;
+	  break;
+       case Station:
+	  fr = to;
+	  to = read_prefix_stn(fFalse);
+	  first_stn = To;
+	  break;
+       case Ignore:
+	 skipword(); break;
+       case IgnoreAllAndNewLine:
+	 skipline();
+	 /* fall through */
+       case Newline:
+	 if (fr != NULL) {
+	    int r;
+	    r = process_nosurvey(fr, to, first_stn == To);
+	    if (!r) skipline();
+	 }
+	 fMulti = fTrue;
+	 while (1) {
+	    process_eol();
+	    process_bol();
+	    if (isData(ch)) break;
+	    if (!isComm(ch)) return 1;
+	 }
+	 break;
+       case IgnoreAll:
+	 skipline();
+	 /* fall through */
+       case End:
+	 if (!fMulti) {
+	    int r;
+	    r = process_nosurvey(fr, to, first_stn == To);
+	    process_eol();
+	    return r;
+	 }
+	 while (1) {
+	    process_eol();
+	    process_bol();
+	    if (isData(ch)) break;
+	    if (!isComm(ch)) return 1;
+	 }
+	 goto again;
+       default: BUG("Unknown reading in ordering");
+      }
+   }
 }
 
 /* totally ignore a line of survey data */

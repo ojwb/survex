@@ -137,11 +137,7 @@ typedef char compiletimeassert_reading[IgnoreAll < 32 ? 1 : -1];
 /* FIXME: Cope with any combination which gives enough info ??? */
 
 /* type of a function to read in some data style */
-#ifdef SVX_MULTILINEDATA
-typedef int (*style_fn)(int);
-#else
 typedef int (*style_fn)(void);
-#endif
 
 /* Structures */
 typedef struct Twig twig;
