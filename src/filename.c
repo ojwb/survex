@@ -71,7 +71,10 @@ path_from_fnm(const char *fnm)
 
    lf = strrchr(fnm, FNM_SEP_LEV);
 #ifdef FNM_SEP_LEV2
-   if (!lf) lf = strrchr(fnm, FNM_SEP_LEV2);
+   {
+      const char *lf2 = strrchr(lf + 1, FNM_SEP_LEV2);
+      if (lf2) lf = lf2;
+   }
 #endif
 #ifdef FNM_SEP_DRV
    if (!lf) lf = strrchr(fnm, FNM_SEP_DRV);
@@ -92,9 +95,9 @@ base_from_fnm(const char *fnm)
    
    p = strrchr(fnm, FNM_SEP_EXT);
    /* Trim off any leaf extension, but dirs can have extensions too */
-   if (p && !strrchr(p, FNM_SEP_LEV)
+   if (p && !strchr(p, FNM_SEP_LEV)
 #ifdef FNM_SEP_LEV2
-       && !strrchr(p, FNM_SEP_LEV2)
+       && !strchr(p, FNM_SEP_LEV2)
 #endif
        ) {
       size_t len = (const char *)p - fnm;
@@ -135,18 +138,17 @@ baseleaf_from_fnm(const char *fnm)
 extern char * FAR
 leaf_from_fnm(const char *fnm)
 {
-   char *lf;
+   const char *lf;
    lf = strrchr(fnm, FNM_SEP_LEV);
-   if (lf != NULL
+   if (lf) fnm = lf + 1;
 #ifdef FNM_SEP_LEV2
-       || (lf = strrchr(fnm, FNM_SEP_LEV2)) != NULL
+   lf = strrchr(fnm, FNM_SEP_LEV2);
+   if (lf) fnm = lf + 1;
 #endif
 #ifdef FNM_SEP_DRV
-       || (lf = strrchr(fnm, FNM_SEP_DRV)) != NULL
+   lf = strrchr(fnm, FNM_SEP_DRV);
+   if (lf) fnm = lf + 1;
 #endif
-       ) {
-      return osstrdup(lf + 1);
-   }
    return osstrdup(fnm);
 }
 

@@ -259,7 +259,10 @@ PthFromFnm(const char *fnm)
 
    lf = strrchr(fnm, FNM_SEP_LEV);
 #ifdef FNM_SEP_LEV2
-   if (!lf) lf = strrchr(fnm, FNM_SEP_LEV2);
+   {
+      const char *lf2 = strrchr(lf + 1, FNM_SEP_LEV2);
+      if (lf2) lf = lf2;
+   }
 #endif
 #ifdef FNM_SEP_DRV
    if (!lf) lf = strrchr(fnm, FNM_SEP_DRV);
