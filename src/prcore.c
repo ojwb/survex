@@ -130,7 +130,8 @@
 #include <float.h>
 
 #include "useful.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "version.h"
 #include "filelist.h"
 #include "img.h"
@@ -680,7 +681,9 @@ int main( int argc, sz argv[] ) {
 /*   printf("%s\n",fnm); */
 
    if (fnm==NULL) {
-      printf(msg(157),LfFromFnm(argv[0]));
+      char *leaf = LfFromFnm(argv[0]);
+      printf( msg(157), leaf );
+      free(leaf);
       putnl();
       exit(EXIT_FAILURE);
    }
