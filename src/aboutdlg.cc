@@ -37,7 +37,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION));
+    wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION" "AVENGL));
     wxStaticText* purpose = new wxStaticText(this, 505,
         wxString(msg(/*Visualisation of Survex 3D files*/209)));
     wxStaticText* copyright1 = new wxStaticText(this, 503, AVEN_COPYRIGHT_MSG);

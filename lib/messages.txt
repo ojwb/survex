@@ -1973,6 +1973,7 @@ en:294 Highlight @Entrances
 en:295 Highlight Fi@xed Points
 en:296 Highlight Ex@ported Points
 en:297 @Grid##Ctrl+G
+en:298 S@moothed Survey Legs
 #
 en:300 %s: option `%s' is ambiguous&#10;
 fr:300 %s: l'option `%s' est ambig&uuml;e&#10;

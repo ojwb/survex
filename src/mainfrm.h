@@ -73,36 +73,39 @@ enum {
     menu_VIEW_SCALE_BAR,
     menu_VIEW_STATUS_BAR,
     menu_VIEW_GRID,
+#ifdef AVENGL
+    menu_VIEW_ANTIALIAS,
+#endif
     menu_CTL_REVERSE,
     menu_HELP_ABOUT
 };
 
 class PointInfo {
     friend class MainFrm;
-    double x, y, z;
+    Double x, y, z;
     bool isLine; // false => move, true => draw line
     bool isSurface;
 
 public:
-    double GetX() const { return x; }
-    double GetY() const { return y; }
-    double GetZ() const { return z; }
+    Double GetX() const { return x; }
+    Double GetY() const { return y; }
+    Double GetZ() const { return z; }
     bool IsLine() const { return isLine; }
     bool IsSurface() const { return isSurface; }
 };
 
 class LabelInfo {
     friend class MainFrm;
-    double x, y, z;
+    Double x, y, z;
     wxString text;
     bool isEntrance;
     bool isFixedPt;
     bool isExportedPt;
 
 public:
-    double GetX() const { return x; }
-    double GetY() const { return y; }
-    double GetZ() const { return z; }
+    Double GetX() const { return x; }
+    Double GetY() const { return y; }
+    Double GetZ() const { return z; }
     wxString GetText() const { return text; }
     bool IsEntrance() const { return isEntrance; }
     bool IsFixedPt() const { return isFixedPt; }
@@ -112,12 +115,12 @@ public:
 class MainFrm : public wxFrame {
     list<PointInfo*>* m_Points;
     list<LabelInfo*> m_Labels;
-    double m_XExt;
-    double m_YExt;
-    double m_ZExt;
-    double m_XMin;
-    double m_YMin;
-    double m_ZMin;
+    Double m_XExt;
+    Double m_YExt;
+    Double m_ZExt;
+    Double m_XMin;
+    Double m_YMin;
+    Double m_ZMin;
     int m_NumLegs;
     int m_NumPoints;
     int m_NumCrosses;
@@ -133,12 +136,12 @@ class MainFrm : public wxFrame {
     void ClearPointLists();
     bool LoadData(const wxString& file);
     void SortIntoDepthBands(list<PointInfo*>& points);
-    void IntersectLineWithPlane(double x0, double y0, double z0,
-				double x1, double y1, double z1,
-				double z, double& x, double& y);
-    double GetDepthBoundaryBetweenBands(int a, int b);
-    int GetDepthColour(double z);
-    void CentreDataset(double xmin, double ymin, double zmin);
+    void IntersectLineWithPlane(Double x0, Double y0, Double z0,
+				Double x1, Double y1, Double z1,
+				Double z, Double& x, Double& y);
+    Double GetDepthBoundaryBetweenBands(int a, int b);
+    int GetDepthColour(Double z);
+    void CentreDataset(Double xmin, Double ymin, Double zmin);
 
     wxString GetTabMsg(int key) {
         wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
@@ -194,6 +197,9 @@ public:
     void OnViewGridUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnViewGridUpdate(event); }
     void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnViewClinoUpdate(event); }
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotationUpdate(event); }
+#ifdef AVENGL
+    void OnAntiAliasUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnAntiAliasUpdate(event); }
+#endif
 
     void OnDefaults(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnDefaults(event); }
     void OnPlan(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnPlan(event); }
@@ -233,14 +239,17 @@ public:
     void OnViewClino(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewClino(event); }
     void OnViewGrid(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewGrid(event); }
     void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotation(event); }
+#ifdef AVENGL
+    void OnAntiAlias(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnAntiAlias(event); }
+#endif
     // end of horrible bodges
 
-    double GetXExtent() { return m_XExt; }
-    double GetYExtent() { return m_YExt; }
-    double GetZExtent() { return m_ZExt; }
-    double GetXMin()    { return m_XMin; }
-    double GetYMin()    { return m_YMin; }
-    double GetZMin()    { return m_ZMin; }
+    Double GetXExtent() { return m_XExt; }
+    Double GetYExtent() { return m_YExt; }
+    Double GetZExtent() { return m_ZExt; }
+    Double GetXMin()    { return m_XMin; }
+    Double GetYMin()    { return m_YMin; }
+    Double GetZMin()    { return m_ZMin; }
 
     int GetNumLegs()   { return m_NumLegs; }
     int GetNumPoints() { return m_NumPoints; }
@@ -257,6 +266,8 @@ public:
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
         return m_Brushes[band];
     }
+
+    void GetColour(int band, Double& r, Double& g, Double& b);
 
     wxPen GetSurfacePen() { return m_Pens[NUM_DEPTH_COLOURS]; }
 

@@ -25,23 +25,43 @@
 
 #include "quaternion.h"
 #include "wx.h"
+#ifdef AVENGL
+#ifndef wxUSE_GLCANVAS
+#define wxUSE_GLCANVAS
+#endif
+#include <wx/glcanvas.h>
+#endif
 
 class MainFrm;
 
+#ifdef AVENGL
+class GfxCore : public wxGLCanvas {
+#else
 class GfxCore : public wxWindow {
+#endif
     struct params {
         Quaternion rotation;
-        double scale;
+        Double scale;
         struct {
-	    double x;
-	    double y;
-	    double z;
+	    Double x;
+	    Double y;
+	    Double z;
 	} translation;
         struct {
 	    int x;
 	    int y;
 	} display_shift;
     } m_Params;
+
+#ifdef AVENGL
+    struct {
+        // OpenGL display lists.
+        GLint survey; // all underground data
+        GLint surface; // all surface data
+    } m_Lists;
+
+    bool m_AntiAlias;
+#endif
 
     enum LabelFlags {
         label_NOT_PLOTTED,
@@ -114,12 +134,12 @@ class GfxCore : public wxWindow {
     int* m_Polylines;
     int* m_SurfacePolylines;
     int m_Bands;
-    double m_InitialScale;
+    Double m_InitialScale;
     bool m_FreeRotMode;
-    double m_TiltAngle;
-    double m_PanAngle;
+    Double m_TiltAngle;
+    Double m_PanAngle;
     bool m_Rotating;
-    double m_RotationStep;
+    Double m_RotationStep;
     bool m_ReverseControls;
     bool m_SwitchingToPlan;
     bool m_SwitchingToElevation;
@@ -187,30 +207,30 @@ class GfxCore : public wxWindow {
         wxBrush indicator2;
     } m_Brushes;
 
-    double XToScreen(double x, double y, double z) {
-        return double(x*m_RotationMatrix.get(0, 0) + y*m_RotationMatrix.get(0, 1) +
+    Double XToScreen(Double x, Double y, Double z) {
+        return Double(x*m_RotationMatrix.get(0, 0) + y*m_RotationMatrix.get(0, 1) +
 		     z*m_RotationMatrix.get(0, 2));
     }
 
-    double YToScreen(double x, double y, double z) {
-        return double(x*m_RotationMatrix.get(1, 0) + y*m_RotationMatrix.get(1, 1) +
+    Double YToScreen(Double x, Double y, Double z) {
+        return Double(x*m_RotationMatrix.get(1, 0) + y*m_RotationMatrix.get(1, 1) +
 		     z*m_RotationMatrix.get(1, 2));
     }
 
-    double ZToScreen(double x, double y, double z) {
-        return double(x*m_RotationMatrix.get(2, 0) + y*m_RotationMatrix.get(2, 1) +
+    Double ZToScreen(Double x, Double y, Double z) {
+        return Double(x*m_RotationMatrix.get(2, 0) + y*m_RotationMatrix.get(2, 1) +
 		     z*m_RotationMatrix.get(2, 2));
     }
 
-    double GridXToScreen(double x, double y, double z);
-    double GridYToScreen(double x, double y, double z);
+    Double GridXToScreen(Double x, Double y, Double z);
+    Double GridYToScreen(Double x, Double y, Double z);
 
     wxCoord GetClinoOffset();
-    wxPoint CompassPtToScreen(double x, double y, double z);
+    wxPoint CompassPtToScreen(Double x, Double y, Double z);
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
-    wxString FormatLength(double, bool scalebar = true);
+    wxString FormatLength(Double, bool scalebar = true);
 
-    void SetScale(double scale);
+    void SetScale(Double scale);
     void RedrawOffscreen();
     void TryToFreeArrays();
     void FirstShow();
@@ -228,9 +248,9 @@ class GfxCore : public wxWindow {
     void HandleTilt(wxPoint);
     void HandleTranslate(wxPoint);
 
-    void TiltCave(double tilt_angle);
-    void TurnCave(double angle);
-    void TurnCaveTo(double angle);
+    void TiltCave(Double tilt_angle);
+    void TurnCave(Double angle);
+    void TurnCaveTo(Double angle);
 
     void StartTimer();
     void StopTimer();
@@ -291,6 +311,9 @@ public:
     void OnShowEntrances(wxCommandEvent&);
     void OnShowFixedPts(wxCommandEvent&);
     void OnShowExportedPts(wxCommandEvent&);
+#ifdef AVENGL
+    void OnAntiAlias(wxCommandEvent&);
+#endif
 
     void OnPaint(wxPaintEvent&);
     void OnMouseMove(wxMouseEvent& event);
@@ -341,6 +364,9 @@ public:
     void OnShowEntrancesUpdate(wxUpdateUIEvent&);
     void OnShowExportedPtsUpdate(wxUpdateUIEvent&);
     void OnShowFixedPtsUpdate(wxUpdateUIEvent&);
+#ifdef AVENGL
+    void OnAntiAliasUpdate(wxUpdateUIEvent&);
+#endif
 
 private:
     DECLARE_EVENT_TABLE()

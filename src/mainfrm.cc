@@ -78,6 +78,9 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
     EVT_MENU(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbar)
     EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
+#ifdef AVENGL
+    EVT_MENU(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAlias)
+#endif
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 
@@ -118,6 +121,9 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
     EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
+#ifdef AVENGL
+    EVT_UPDATE_UI(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAliasUpdate)
+#endif
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
 END_EVENT_TABLE()
 
@@ -200,6 +206,10 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     viewmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "Toggle display of the clinometer", true);
     viewmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "Toggle display of the depth bar", true);
     viewmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "Toggle display of the scale bar", true);
+#ifdef AVENGL
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*S@moothed Survey Legs*/298), "unused", true);
+#endif
 
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "Reverse the sense of the orientation controls", true);
@@ -299,12 +309,12 @@ bool MainFrm::LoadData(const wxString& file)
 	// Delete any existing list entries.
 	ClearPointLists();
 
-	double xmin = DBL_MAX;
-	double xmax = -DBL_MAX;
-	double ymin = DBL_MAX;
-	double ymax = -DBL_MAX;
+	Double xmin = DBL_MAX;
+	Double xmax = -DBL_MAX;
+	Double ymin = DBL_MAX;
+	Double ymax = -DBL_MAX;
 	m_ZMin = DBL_MAX;
-	double zmax = -DBL_MAX;
+	Double zmax = -DBL_MAX;
 
 	bool first = true;
 
@@ -427,13 +437,13 @@ bool MainFrm::LoadData(const wxString& file)
     return (survey != NULL);
 }
 
-void MainFrm::CentreDataset(double xmin, double ymin, double zmin)
+void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 {
     // Centre the dataset around the origin.
 
-    double xoff = xmin + (m_XExt / 2.0f);
-    double yoff = ymin + (m_YExt / 2.0f);
-    double zoff = zmin + (m_ZExt / 2.0f);
+    Double xoff = xmin + (m_XExt / 2.0f);
+    Double yoff = ymin + (m_YExt / 2.0f);
+    Double zoff = zmin + (m_ZExt / 2.0f);
     
     for (int band = 0; band < NUM_DEPTH_COLOURS + 1; band++) {
         list<PointInfo*>::iterator pos = m_Points[band].begin();
@@ -455,13 +465,13 @@ void MainFrm::CentreDataset(double xmin, double ymin, double zmin)
     }
 }
 
-int MainFrm::GetDepthColour(double z)
+int MainFrm::GetDepthColour(Double z)
 {
     // Return the (0-based) depth colour band index for a z-coordinate.
     return int(((z - m_ZMin) / (m_ZExt == 0.0f ? 1.0f : m_ZExt)) * (NUM_DEPTH_COLOURS - 1));
 }
 
-double MainFrm::GetDepthBoundaryBetweenBands(int a, int b)
+Double MainFrm::GetDepthBoundaryBetweenBands(int a, int b)
 {
     // Return the z-coordinate of the depth colour boundary between
     // two adjacent depth colour bands (specified by 0-based indices).
@@ -472,14 +482,14 @@ double MainFrm::GetDepthBoundaryBetweenBands(int a, int b)
     return m_ZMin + (m_ZExt * band / (NUM_DEPTH_COLOURS - 1));
 }
 
-void MainFrm::IntersectLineWithPlane(double x0, double y0, double z0,
-				     double x1, double y1, double z1,
-				     double z, double& x, double& y)
+void MainFrm::IntersectLineWithPlane(Double x0, Double y0, Double z0,
+				     Double x1, Double y1, Double z1,
+				     Double z, Double& x, Double& y)
 {
     // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1) with
     // the plane parallel to the xy-plane with z-axis intersection z.
 
-    double t = (z - z0) / (z1 - z0);
+    Double t = (z - z0) / (z1 - z0);
     x = x0 + t*(x1 - x0);
     y = y0 + t*(y1 - y0);
 }
@@ -508,8 +518,8 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 		    int next_band = band + inc;
 
 		    // Determine the z-coordinate of the boundary being intersected.
-		    double split_at_z = GetDepthBoundaryBetweenBands(band, next_band);
-		    double split_at_x, split_at_y;
+		    Double split_at_z = GetDepthBoundaryBetweenBands(band, next_band);
+		    Double split_at_x, split_at_y;
 
 		    // Find the coordinates of the intersection point.
 		    IntersectLineWithPlane(prev_point->x, prev_point->y, prev_point->z,
@@ -603,4 +613,12 @@ void MainFrm::OnAbout(wxCommandEvent&)
     wxDialog* dlg = new AboutDlg(this);
     dlg->Centre();
     dlg->ShowModal();
+}
+
+void MainFrm::GetColour(int band, Double& r, Double& g, Double& b)
+{
+    assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+    r = Double(REDS[band]) / 255.0;
+    g = Double(GREENS[band]) / 255.0;
+    b = Double(BLUES[band]) / 255.0;
 }

@@ -1,7 +1,7 @@
 //
 //  gfxcore.cxx
 //
-//  Core drawing code for Aven.
+//  Core drawing code for Aven, with both standard 2D and OpenGL functionality.
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
 //
@@ -31,10 +31,10 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define MAX(a, b)    (((a) > (b)) ? (a) : (b))
+#define MAX(a, b)     (((a) > (b)) ? (a) : (b))
+#define MAX3(a, b, c) ((a) > (b) ? ((a) > (c) ? (a) : (c)) : ((b) > (c) ? (b) : (c)))
 #define TEXT_COLOUR  wxColour(0, 255, 40)
 #define LABEL_COLOUR wxColour(160, 255, 0)
-//#define LABEL_COLOUR wxColour(175, 4, 214)
 
 #ifdef _WIN32
 static const int FONT_SIZE = 8;
@@ -42,7 +42,7 @@ static const int FONT_SIZE = 8;
 static const int FONT_SIZE = 10;
 #endif
 static const int CROSS_SIZE = 5;
-static const double COMPASS_SIZE = 24.0f;
+static const Double COMPASS_SIZE = 24.0f;
 static const int COMPASS_OFFSET_X = 60;
 static const int COMPASS_OFFSET_Y = 80;
 static const int INDICATOR_BOX_SIZE = 60;
@@ -67,7 +67,11 @@ static const int HIGHLIGHTED_PT_SIZE = 2;
 
 #define DELETE_ARRAY(x) { assert(x); delete[] x; }
 
+#ifdef AVENGL
+BEGIN_EVENT_TABLE(GfxCore, wxGLCanvas)
+#else
 BEGIN_EVENT_TABLE(GfxCore, wxWindow)
+#endif
     EVT_PAINT(GfxCore::OnPaint)
     EVT_LEFT_DOWN(GfxCore::OnLButtonDown)
     EVT_LEFT_UP(GfxCore::OnLButtonUp)
@@ -81,7 +85,11 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent) :
+#ifdef AVENGL
+    wxGLCanvas(parent, 100, wxDefaultPosition, wxSize(640, 480)),
+#else
     wxWindow(parent, 100, wxDefaultPosition, wxSize(640, 480)),
+#endif
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
 	   wxFONTENCODING_ISO8859_1),
     m_InitialisePending(false)
@@ -293,8 +301,8 @@ void GfxCore::Initialise()
 
     // Scale the survey to a reasonable initial size.
     m_InitialScale = m_Lock == lock_POINT ? 1.0 :
-      m_Lock == lock_XY ? double(m_YSize) / double(m_Parent->GetZExtent()) :
-      double(m_XSize) / (double(MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent())) * 1.1);
+      m_Lock == lock_XY ? Double(m_YSize) / Double(m_Parent->GetZExtent()) :
+      Double(m_XSize) / (Double(MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent())) * 1.1);
 
     // Calculate screen coordinates and redraw.
     m_ScaleCrossesOnly = false;
@@ -311,6 +319,11 @@ void GfxCore::FirstShow()
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
 
+#ifdef AVENGL
+    glEnable(GL_DEPTH_TEST);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+#else
     // Create the offscreen bitmap.
     m_OffscreenBitmap.Create(m_XSize, m_YSize);
 
@@ -318,6 +331,7 @@ void GfxCore::FirstShow()
 
     // Set the font.
     m_DrawDC.SetFont(m_Font);
+#endif
 
     m_DoneFirstShow = true;
 
@@ -328,30 +342,10 @@ void GfxCore::FirstShow()
 //  Recalculating methods
 //
 
-void GfxCore::SetScale(double scale)
+void GfxCore::SetScale(Double scale)
 {
     // Fill the plot data arrays with screen coordinates, scaling the survey
     // to a particular absolute scale.
-
-#if 0
-    //--share code!
-    // Calculate the extent of the survey, in metres across the screen plane.
-    double m_across_screen = double(m_XSize / scale);
-
-    // Calculate the length of the scale bar in metres.
-    double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
-    double t = m_across_screen * 0.75 / size_snap;
-    if (t >= 5.0) {
-        size_snap *= 5.0;
-    }
-    else if (t >= 2.0) {
-        size_snap *= 2.0;
-    }
-
-    if (size_snap < 0.1 || size_snap > 20000) {
-        return;
-    }
-#endif
 
     if (scale > m_InitialScale * 2000 || scale < m_InitialScale / 20) {
         return;
@@ -360,7 +354,32 @@ void GfxCore::SetScale(double scale)
     m_Params.scale = scale;
 
     if (!m_ScaleCrossesOnly && !m_ScaleHighlightedPtsOnly) {
+#ifdef AVENGL
+        // With OpenGL we have to make two passes, as OpenGL lists are immutable and
+        // we need the surface and underground data in different lists.
+        for (int pass = 0; pass < 2; pass++) { // 1st pass -> u/g data; 2nd pass -> surface data
+	    //--should delete any old GL list. (only a prob on reinit I think)
+	    if (pass == 0) {
+	        m_Lists.survey = glGenLists(1);
+		glNewList(m_Lists.survey, GL_COMPILE);
+	    }
+	    else {
+	        m_Lists.surface = glGenLists(1);
+		glNewList(m_Lists.surface, GL_COMPILE);
+	    }
+#endif
         for (int band = 0; band < m_Bands; band++) {
+#ifdef AVENGL
+	    Double r, g, b;
+	    //GL: sort out depth colouring on/off (needs another disp list)
+	    if (pass == 0) {
+	        m_Parent->GetColour(band, r, g, b);
+		glColor3d(r, g, b);
+	    }
+	    else {
+	        glColor3d(1.0, 1.0, 1.0);
+	    }
+#else
 	    wxPoint* pt = m_PlotData[band].vertices;
 	    assert(pt);
 	    int* count = m_PlotData[band].num_segs;
@@ -371,23 +390,28 @@ void GfxCore::SetScale(double scale)
 	    assert(scount);
 	    count--;
 	    scount--;
-	    double current_x = 0.0;
-	    double current_y = 0.0;
-	    double current_z = 0.0;
 
 	    m_Polylines[band] = 0;
 	    m_SurfacePolylines[band] = 0;
+#endif
+	    Double current_x = 0.0;
+	    Double current_y = 0.0;
+	    Double current_z = 0.0;
+
 	    list<PointInfo*>::const_iterator pos = m_Parent->GetPoints(band);
 	    list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd(band);
 	    bool first_point = true;
 	    bool last_was_move = true;
 	    bool current_polyline_is_surface = false;
+#ifdef AVENGL
+	    bool line_open = false;
+#endif
 	    while (pos != end) {
  	        const PointInfo* pti = *pos++;
 
-		double x = pti->GetX();
-		double y = pti->GetY();
-		double z = pti->GetZ();
+		Double x = pti->GetX();
+		Double y = pti->GetY();
+		Double z = pti->GetZ();
 		
 		if (pti->IsLine()) {
 		    // We have a leg.
@@ -404,7 +428,14 @@ void GfxCore::SetScale(double scale)
 		    if (changing_ug_state || last_was_move) {
 		        // Start a new polyline if we're switching underground/surface state
 		        // or if the previous point was a move.
-
+#ifdef AVENGL
+			if ((current_polyline_is_surface && pass == 1) ||
+			    (!current_polyline_is_surface && pass == 0)) {
+			    line_open = true;
+			    glBegin(GL_LINE_STRIP);
+			    glVertex3d(current_x, current_y, current_z);
+			}
+#else
 		        wxPoint** dest;
 
 		        if (current_polyline_is_surface) {
@@ -418,9 +449,9 @@ void GfxCore::SetScale(double scale)
 			    dest = &pt;
 			}
 
-			double xp = current_x + m_Params.translation.x;
-			double yp = current_y + m_Params.translation.y;
-			double zp = current_z + m_Params.translation.z;
+			Double xp = current_x + m_Params.translation.x;
+			Double yp = current_y + m_Params.translation.y;
+			Double zp = current_z + m_Params.translation.z;
 
 			(*dest)->x = (long) (XToScreen(xp, yp, zp) * scale) +
 			             m_Params.display_shift.x;
@@ -429,15 +460,29 @@ void GfxCore::SetScale(double scale)
 
 			// Advance the relevant coordinate pointer to the next position.
 			(*dest)++;
+#endif
 		    }
 
+#ifdef AVENGL
+		    if ((current_polyline_is_surface && pass == 1) ||
+			(!current_polyline_is_surface && pass == 0)) {
+		        assert(line_open);
+			glVertex3d(x, y, z);
+			if (pass == 0) {
+			    m_UndergroundLegs = true;
+			}
+			else {
+			    m_SurfaceLegs = true;
+			}
+		    }
+#else
 		    // Add the leg onto the current polyline.
 		    wxPoint** dest = &(current_polyline_is_surface ? spt : pt);
 
 		    // Final coordinate transformations and storage of coordinates.
-		    double xp = x + m_Params.translation.x;
-		    double yp = y + m_Params.translation.y;
-		    double zp = z + m_Params.translation.z;
+		    Double xp = x + m_Params.translation.x;
+		    Double yp = y + m_Params.translation.y;
+		    Double zp = z + m_Params.translation.z;
 
 		    (*dest)->x = (long) (XToScreen(xp, yp, zp) * scale) + m_Params.display_shift.x;
 		    (*dest)->y = -(long) (ZToScreen(xp, yp, zp) * scale) + m_Params.display_shift.y;
@@ -452,10 +497,15 @@ void GfxCore::SetScale(double scale)
 		    else {
 		        (*count)++;
 		    }
-
+#endif
 		    last_was_move = false;
 		}
 		else {
+		    if (line_open) {
+		        glVertex3d(current_x, current_y, current_z);
+		        glEnd();
+			line_open = false;
+		    }
 		    first_point = false;
 		    last_was_move = true;
 		}
@@ -465,16 +515,25 @@ void GfxCore::SetScale(double scale)
 		current_y = y;
 		current_z = z;
 	    }
-
+#ifndef AVENGL
 	    if (!m_UndergroundLegs) {
 	        m_UndergroundLegs = (m_Polylines[band] > 0);
 	    }
 	    if (!m_SurfaceLegs) {
 	        m_SurfaceLegs = (m_SurfacePolylines[band] > 0);
 	    }
+#else
+	    if (line_open) {
+		glEnd();
+	    }
+	}
+
+	glEndList();
+#endif
 	}
     }
 
+#ifndef AVENGL
     if (m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) {
         // Construct polylines for crosses, sort out station names and deal with highlighted points.
 
@@ -488,9 +547,9 @@ void GfxCore::SetScale(double scale)
 	wxString text;
 	while (pos != end) {
 	    LabelInfo* label = *pos++;
-	    double x = label->GetX();
-	    double y = label->GetY();
-	    double z = label->GetZ();
+	    Double x = label->GetX();
+	    Double y = label->GetY();
+	    Double z = label->GetZ();
 
 	    x += m_Params.translation.x;
 	    y += m_Params.translation.y;
@@ -544,7 +603,7 @@ void GfxCore::SetScale(double scale)
 	    }
 	}
     }
-
+#endif
     m_ScaleHighlightedPtsOnly = false;
     m_ScaleCrossesOnly = false;
 }
@@ -557,6 +616,9 @@ void GfxCore::RedrawOffscreen()
 {
     // Redraw the offscreen bitmap.
 
+#ifdef AVENGL
+
+#else
     m_DrawDC.BeginDrawing();
 
     // Clear the background to black.
@@ -687,6 +749,7 @@ void GfxCore::RedrawOffscreen()
     }
 
     m_DrawDC.EndDrawing();
+#endif
 }
 
 void GfxCore::OnPaint(wxPaintEvent& event) 
@@ -696,7 +759,9 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     // Get a graphics context.
     wxPaintDC dc(this);
 
-    const wxRegion& region = GetUpdateRegion();
+#ifdef AVENGL
+    SetCurrent();
+#endif
 
     // Make sure we're initialised.
     if (!m_DoneFirstShow) {
@@ -708,6 +773,52 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         m_RedrawOffscreen = false;
 	RedrawOffscreen();
     }
+
+#ifdef AVENGL
+    if (m_PlotData) {
+        // Clear the background.
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      
+	// Set up projection matrix.
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	double size = MAX3(m_Parent->GetXExtent(), m_Parent->GetYExtent(), m_Parent->GetZExtent()) * 2.0;
+	// Observe that the survey can't "escape" out of the sides of the viewing volume
+	// 'cos it's an orthographic projection.  It can, however, escape out of the front or back;
+	// thus these parameters must be changed according to the scale (which the others must not be,
+	// or else the survey will never appear to change size).
+	glOrtho(-size / 2.0, // left
+		size / 2.0,  // right
+		-size * 0.75 / 2.0, // bottom
+		size * 0.75 / 2.0,  // top
+		-size * m_Params.scale / 2.0, // near
+		size * m_Params.scale / 2.0); // far
+	
+	// Set up model transformation matrix.
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslated(m_Params.display_shift.x, m_Params.display_shift.y, 0.0);
+	glScaled(m_Params.scale, m_Params.scale, m_Params.scale);
+	m_Params.rotation.CopyToOpenGL();
+	glTranslated(m_Params.translation.x, m_Params.translation.z, m_Params.translation.y);
+
+	if (m_Legs) {
+	    // Draw the underground legs.
+	    glCallList(m_Lists.survey);
+	}
+
+	if (m_Surface) {
+	    // Draw the surface legs.
+	    glCallList(m_Lists.surface);
+	}
+	
+	// Flush pipeline and swap buffers.
+	glFlush();
+	SwapBuffers();
+    }
+#else
+    const wxRegion& region = GetUpdateRegion();
 
     dc.BeginDrawing();
 
@@ -727,9 +838,10 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     }
 
     dc.EndDrawing();
+#endif
 }
 
-double GfxCore::GridXToScreen(double x, double y, double z)
+Double GfxCore::GridXToScreen(Double x, Double y, Double z)
 {
     x += m_Params.translation.x;
     y += m_Params.translation.y;
@@ -738,7 +850,7 @@ double GfxCore::GridXToScreen(double x, double y, double z)
     return (XToScreen(x, y, z) * m_Params.scale) + m_Params.display_shift.x + m_XSize/2;
 }
 
-double GfxCore::GridYToScreen(double x, double y, double z)
+Double GfxCore::GridYToScreen(Double x, Double y, Double z)
 {
     x += m_Params.translation.x;
     y += m_Params.translation.y;
@@ -754,11 +866,11 @@ void GfxCore::DrawGrid()
     m_DrawDC.SetPen(m_Pens.red);
 
     // Calculate the extent of the survey, in metres across the screen plane.
-    double m_across_screen = double(m_XSize / m_Params.scale);
+    Double m_across_screen = Double(m_XSize / m_Params.scale);
     // Calculate the length of the scale bar in metres.
     //--move this elsewhere
-    double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
-    double t = m_across_screen * 0.75 / size_snap;
+    Double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
+    Double t = m_across_screen * 0.75 / size_snap;
     if (t >= 5.0) {
         size_snap *= 5.0;
     }
@@ -766,26 +878,26 @@ void GfxCore::DrawGrid()
         size_snap *= 2.0;
     }
 
-    double grid_size = size_snap / 10.0;
-    double edge = grid_size * 2.0;
-    double grid_z = -m_Parent->GetZExtent()/2.0 - grid_size;
-    double left = -m_Parent->GetXExtent()/2.0 - edge;
-    double right = m_Parent->GetXExtent()/2.0 + edge;
-    double bottom = -m_Parent->GetYExtent()/2.0 - edge;
-    double top = m_Parent->GetYExtent()/2.0 + edge;
+    Double grid_size = size_snap / 10.0;
+    Double edge = grid_size * 2.0;
+    Double grid_z = -m_Parent->GetZExtent()/2.0 - grid_size;
+    Double left = -m_Parent->GetXExtent()/2.0 - edge;
+    Double right = m_Parent->GetXExtent()/2.0 + edge;
+    Double bottom = -m_Parent->GetYExtent()/2.0 - edge;
+    Double top = m_Parent->GetYExtent()/2.0 + edge;
     int count_x = (int) ceil((right - left) / grid_size);
     int count_y = (int) ceil((top - bottom) / grid_size);
-    double actual_right = left + count_x*grid_size;
-    double actual_top = bottom + count_y*grid_size;
+    Double actual_right = left + count_x*grid_size;
+    Double actual_top = bottom + count_y*grid_size;
 
     for (int xc = 0; xc <= count_x; xc++) {
-        double x = left + xc*grid_size;
+        Double x = left + xc*grid_size;
         m_DrawDC.DrawLine((int) GridXToScreen(x, bottom, grid_z), (int) GridYToScreen(x, bottom, grid_z),
 			  (int) GridXToScreen(x, actual_top, grid_z), (int) GridYToScreen(x, actual_top, grid_z));
     }
 
     for (int yc = 0; yc <= count_y; yc++) {
-        double y = bottom + yc*grid_size;
+        Double y = bottom + yc*grid_size;
         m_DrawDC.DrawLine((int) GridXToScreen(left, y, grid_z), (int) GridYToScreen(left, y, grid_z),
 			  (int) GridXToScreen(actual_right, y, grid_z),
 			  (int) GridYToScreen(actual_right, y, grid_z));
@@ -797,7 +909,7 @@ wxCoord GfxCore::GetClinoOffset()
     return m_Compass ? CLINO_OFFSET_X : INDICATOR_OFFSET_X;
 }
 
-wxPoint GfxCore::CompassPtToScreen(double x, double y, double z)
+wxPoint GfxCore::CompassPtToScreen(Double x, Double y, Double z)
 {
     return wxPoint(long(-XToScreen(x, y, z)) + m_XSize - COMPASS_OFFSET_X,
 	  	   long(ZToScreen(x, y, z)) + m_YSize - COMPASS_OFFSET_Y);
@@ -805,7 +917,7 @@ wxPoint GfxCore::CompassPtToScreen(double x, double y, double z)
 
 wxPoint GfxCore::IndicatorCompassToScreenPan(int angle)
 {
-    double theta = (angle * M_PI / 180.0) + m_PanAngle;
+    Double theta = (angle * M_PI / 180.0) + m_PanAngle;
     wxCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     wxCoord x = wxCoord(length * sin(theta));
     wxCoord y = wxCoord(length * cos(theta));
@@ -816,7 +928,7 @@ wxPoint GfxCore::IndicatorCompassToScreenPan(int angle)
 
 wxPoint GfxCore::IndicatorCompassToScreenElev(int angle)
 {
-    double theta = (angle * M_PI / 180.0) + m_TiltAngle + M_PI/2.0;
+    Double theta = (angle * M_PI / 180.0) + m_TiltAngle + M_PI/2.0;
     wxCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     wxCoord x = wxCoord(length * sin(-theta));
     wxCoord y = wxCoord(length * cos(-theta));
@@ -827,7 +939,7 @@ wxPoint GfxCore::IndicatorCompassToScreenElev(int angle)
 
 void GfxCore::DrawTick(wxCoord cx, wxCoord cy, int angle_cw)
 {
-    double theta = angle_cw * M_PI / 180.0;
+    Double theta = angle_cw * M_PI / 180.0;
     wxCoord length1 = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     wxCoord length0 = length1 + TICK_LENGTH;
     wxCoord x0 = wxCoord(length0 * sin(theta));
@@ -1167,7 +1279,7 @@ void GfxCore::DrawDepthbar()
 
     wxString* strs = new wxString[bands + 1];
     for (int band = 0; band <= bands; band++) {
-	double z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / bands);
+	Double z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / bands);
 	strs[band] = FormatLength(z, false);
 	int x, y;
 	m_DrawDC.GetTextExtent(strs[band], &x, &y);
@@ -1203,7 +1315,7 @@ void GfxCore::DrawDepthbar()
     delete[] strs;
 }
 
-wxString GfxCore::FormatLength(double size_snap, bool scalebar)
+wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 {
     wxString str;
     bool negative = (size_snap < 0.0);
@@ -1257,11 +1369,11 @@ void GfxCore::DrawScalebar()
     // Draw the scalebar.
 
     // Calculate the extent of the survey, in metres across the screen plane.
-    double m_across_screen = double(m_XSize / m_Params.scale);
+    Double m_across_screen = Double(m_XSize / m_Params.scale);
 
     // Calculate the length of the scale bar in metres.
-    double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
-    double t = m_across_screen * 0.75 / size_snap;
+    Double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
+    Double t = m_across_screen * 0.75 / size_snap;
     if (t >= 5.0) {
         size_snap *= 5.0;
     }
@@ -1281,7 +1393,7 @@ void GfxCore::DrawScalebar()
 
     bool solid = true;
     for (int ix = 0; ix < 10; ix++) {
-        int x = end_x + int(ix * ((double) size / 10.0));
+        int x = end_x + int(ix * ((Double) size / 10.0));
         
 	m_DrawDC.SetPen(solid ? m_Pens.grey : m_Pens.white);
 	m_DrawDC.SetBrush(solid ? m_Brushes.grey : m_Brushes.white);
@@ -1369,11 +1481,11 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
-    double pan_angle = (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
-			m_Lock == lock_YZ) ? -M_PI * (double(dx) / 500.0) : 0.0;
+    Double pan_angle = (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
+			m_Lock == lock_YZ) ? -M_PI * (Double(dx) / 500.0) : 0.0;
 
     Quaternion q;
-    double new_scale = m_Params.scale;
+    Double new_scale = m_Params.scale;
     if (control || m_FreeRotMode) {
         // free rotation starts when Control is down
 
@@ -1382,7 +1494,7 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 	    m_FreeRotMode = true;
 	}
 
-	double tilt_angle = M_PI * (double(dy) / 500.0);
+	Double tilt_angle = M_PI * (Double(dy) / 500.0);
 	q.setFromEulerAngles(tilt_angle, 0.0, pan_angle);
     }
     else {
@@ -1393,6 +1505,7 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
         if (m_ReverseControls) {
 	    pan_angle = -pan_angle;
 	}
+
 	q.setFromVectorAndAngle(Vector3(XToScreen(0.0, 0.0, 1.0),
 					YToScreen(0.0, 0.0, 1.0),
 					ZToScreen(0.0, 0.0, 1.0)), pan_angle);
@@ -1410,15 +1523,19 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
     m_Params.rotation = q * m_Params.rotation;
     m_RotationMatrix = m_Params.rotation.asMatrix();
 
+#ifdef AVENGL
+    m_Params.scale = new_scale;
+#else
     SetScale(new_scale);
-
     m_RedrawOffscreen = true;
+#endif
+
     Refresh(false);
 
     m_DragStart = point;
 }
 
-void GfxCore::TurnCave(double angle)
+void GfxCore::TurnCave(Double angle)
 {
     // Turn the cave around its z-axis by a given angle.
 
@@ -1436,20 +1553,22 @@ void GfxCore::TurnCave(double angle)
         m_PanAngle += M_PI*2.0;
     }
     
+#ifndef AVENGL
     SetScale(m_Params.scale);
-
     m_RedrawOffscreen = true;
+#endif
+
     Refresh(false);
 }
 
-void GfxCore::TurnCaveTo(double angle)
+void GfxCore::TurnCaveTo(Double angle)
 {
     // Turn the cave to a particular pan angle.
 
     TurnCave(angle - m_PanAngle);
 }
 
-void GfxCore::TiltCave(double tilt_angle)
+void GfxCore::TiltCave(Double tilt_angle)
 {
     // Tilt the cave by a given angle.
 
@@ -1468,7 +1587,11 @@ void GfxCore::TiltCave(double tilt_angle)
     m_TiltAngle += tilt_angle;
 
     Quaternion q;
+#ifdef AVENGL
     q.setFromEulerAngles(tilt_angle, 0.0, 0.0);
+#else
+    q.setFromEulerAngles(tilt_angle - M_PI/2.0, 0.0, 0.0);
+#endif
 
     m_Params.rotation = q * m_Params.rotation;
     m_RotationMatrix = m_Params.rotation.asMatrix();
@@ -1486,7 +1609,7 @@ void GfxCore::HandleTilt(wxPoint point)
     if (!m_FreeRotMode) {
 	int dy = point.y - m_DragStart.y;
 
-	TiltCave(M_PI * (double(-dy) / 500.0));
+	TiltCave(M_PI * (Double(-dy) / 500.0));
 
 	m_DragStart = point;
     }
@@ -1500,12 +1623,12 @@ void GfxCore::HandleTranslate(wxPoint point)
     int dy = point.y - m_DragStart.y;
 
     // Find out how far the mouse motion takes us in cave coords.
-    double x = double(dx / m_Params.scale);
-    double z = double(-dy / m_Params.scale);
+    Double x = Double(dx / m_Params.scale);
+    Double z = Double(-dy / m_Params.scale);
     Matrix4 inverse_rotation = m_Params.rotation.asInverseMatrix();
-    double cx = double(inverse_rotation.get(0, 0)*x + inverse_rotation.get(0, 2)*z);
-    double cy = double(inverse_rotation.get(1, 0)*x + inverse_rotation.get(1, 2)*z);
-    double cz = double(inverse_rotation.get(2, 0)*x + inverse_rotation.get(2, 2)*z);
+    Double cx = Double(inverse_rotation.get(0, 0)*x + inverse_rotation.get(0, 2)*z);
+    Double cy = Double(inverse_rotation.get(1, 0)*x + inverse_rotation.get(1, 2)*z);
+    Double cz = Double(inverse_rotation.get(2, 0)*x + inverse_rotation.get(2, 2)*z);
     
     // Update parameters and redraw.
     m_Params.translation.x += cx;
@@ -1655,11 +1778,18 @@ void GfxCore::OnSize(wxSizeEvent& event)
     }
 
     if (m_DoneFirstShow) {
+#ifdef AVENGL
+        if (GetContext()) {
+	    SetCurrent();
+	    glViewport(0, 0, m_XSize, m_YSize);
+        }
+#else
 #ifndef __WXMOTIF__
         m_DrawDC.SelectObject(wxNullBitmap);
 #endif
 	m_OffscreenBitmap.Create(m_XSize, m_YSize);
 	m_DrawDC.SelectObject(m_OffscreenBitmap);
+#endif
         RedrawOffscreen();
 	Refresh(false);
     }
@@ -1828,7 +1958,7 @@ void GfxCore::OnSlowDown(wxCommandEvent&)
 {
     m_RotationStep /= 1.2f;
     if (m_RotationStep < M_PI/2000.0f) {
-        m_RotationStep = (double) M_PI/2000.0f;
+        m_RotationStep = (Double) M_PI/2000.0f;
     }
 }
 
@@ -1841,7 +1971,7 @@ void GfxCore::OnSpeedUp(wxCommandEvent&)
 {
     m_RotationStep *= 1.2f;
     if (m_RotationStep > M_PI/8.0f) {
-        m_RotationStep = (double) M_PI/8.0f;
+        m_RotationStep = (Double) M_PI/8.0f;
     }
 }
 
@@ -1880,7 +2010,11 @@ void GfxCore::DefaultParameters()
     m_TiltAngle = M_PI / 2.0;
     m_PanAngle = 0.0;
 
+#ifdef AVENGL
+    m_Params.rotation.setFromEulerAngles(m_TiltAngle - M_PI/2.0, 0.0, m_PanAngle);
+#else
     m_Params.rotation.setFromEulerAngles(m_TiltAngle, 0.0, m_PanAngle);
+#endif
     m_RotationMatrix = m_Params.rotation.asMatrix();
 
     m_Params.translation.x = 0.0;
@@ -2272,3 +2406,31 @@ void GfxCore::OnViewGridUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_PlotData);
 }
+
+#ifdef AVENGL
+void GfxCore::OnAntiAlias(wxCommandEvent&)
+{
+    SetCurrent();
+
+    m_AntiAlias = !m_AntiAlias;
+
+    if (m_AntiAlias) {
+        glEnable(GL_LINE_SMOOTH);
+        glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+    }
+    else {
+        glDisable(GL_LINE_SMOOTH);
+        glDisable(GL_BLEND);
+    }
+
+    Refresh(false);
+}
+
+void GfxCore::OnAntiAliasUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_PlotData);
+    cmd.Check(m_AntiAlias);
+}
+#endif
