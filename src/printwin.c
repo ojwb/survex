@@ -370,8 +370,9 @@ win_ShowPage(const char *szPageDetails)
 static COLORREF
 to_rgb(const char *var, char *val)
 {
+   unsigned long rgb;
    if (!val) return RGB(0, 0, 0);
-   unsigned long rgb = as_colour(var, val);
+   rgb = as_colour(var, val);
    return RGB((rgb & 0xff0000) >> 16, (rgb & 0xff00) >> 8, rgb & 0xff);
 }
 
