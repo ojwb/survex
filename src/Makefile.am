@@ -29,7 +29,7 @@ aven_SOURCES = aven.cc img.c \
 
 aven_LDADD = @LIBOBJS@ @WX_LIBS@
 aven_CFLAGS = -DSTANDALONE @WX_CFLAGS@
-aven_CXXFLAGS = @WX_CFLAGS@
+aven_CXXFLAGS = -DSTANDALONE @WX_CFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c $(COMMONSRC)
  

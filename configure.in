@@ -80,10 +80,10 @@ fi
 
 if test -n $AVEN; then
   AC_MSG_CHECKING(for wxwindows)
-  if wx-config --version > /dev/null 2> /dev/null ; then
-    WX_LIBS=`wx-config --libs`
+  if wxgtk-config --version > /dev/null 2> /dev/null ; then
+    WX_LIBS=`wxgtk-config --libs`
     AC_SUBST(WX_LIBS)
-    WX_CFLAGS=`wx-config --cflags`
+    WX_CFLAGS=`wxgtk-config --cflags`
     AC_SUBST(WX_CFLAGS)
     AC_MSG_RESULT(found)
     AC_MSG_RESULT(building aven)
