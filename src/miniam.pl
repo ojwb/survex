@@ -2,43 +2,13 @@
 require 5.003;
 use strict;
 
-my $os = shift @ARGV;
-my $configure_in = shift @ARGV;
-
 my (%repl, $max_leaf_len, $use_rsp);
 
-my $package = '';
-my $version = '';
-my $copyright = '';
-if (open C, "<$configure_in") {
-   while (<C>) {
-      if (/^AM_INIT_AUTOMAKE\(\s*([^,]+?)\s*,\s*([\d.]+)\)/) {
-         $package = $1;
-	 $version = $2;
-      } elsif (/^COPYRIGHT_MSG\s*=\s*/) {
-	 ($copyright) = /(".*")/;
-      }
-   }
-   close C;
-   eval "&init_$os";
+my $os = shift @ARGV;
+eval "&init_$os" if defined $os;
+if ($@ || !defined $os) {
+   die "Syntax: $0 <platform>\nSupported platforms: borlandc riscos\n";
 }
-
-my $configh = shift @ARGV;
-$@ = 1 if $version eq '' || $copyright eq '' || !defined $configh;
-die "Syntax: $0 <platform> <configure.in> <config.h>\nSupported platforms: borlandc riscos\n" if $@;
-
-open IN, "<$configh.in" or die $!;
-open OUT, ">$configh.tmp" or die $!;
-while (<IN>) {
-   s/\@VERSION\@/$version/go;
-   s/\@PACKAGE\@/$package/go;
-   s/\@COPYRIGHT\@/$copyright/go;
-   print OUT;
-}
-close IN;
-close OUT;
-unlink $configh;
-rename "$configh.tmp", $configh or die $!;
 
 my %var = ();
 
