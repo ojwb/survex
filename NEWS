@@ -1,6 +1,10 @@
+Changes in 0.92-prerelease6:
+
 * Windows and MSDOS builds were missing 3dtodxf.exe
 
-* Updated French, German, and Portugese translations
+* Updated French, German, Portugese, and Italian translations
+
+* Windows archive for pre5 contained Linux binaries! (except caverot)
 
 Changes in 0.92-prerelease5:
 

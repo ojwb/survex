@@ -98,3 +98,10 @@ something smarter please?  [Probably best to have second file for
 customisations - also checking "~/.survex/print.ini" might be useful
 while we're at it]
 
+Date: 05 Mar 2000
+From: Olly
+
+Covariance matrices are symmetric, so we only need to store 6 of the 9
+entries (but intermediate matrices need the full 9 since the product
+of 2 symmetric matrices isn't necessarily symmetric).
+
