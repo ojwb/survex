@@ -7,21 +7,49 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 </HEAD><BODY BGCOLOR=white TEXT=black>
 <H1>Survex To-Do List</H1>
 
+<H2>Survex 1.0</H2>
+
+<ul>
+
+<li>printdm: put standard scaling in print.ini for canon bj (prod Mark
+to get numbers)
+
+<li>aven: scale bar dragging is wrong - e.g. drag scalebar left then
+back to right - on drag right zoom is initially in the wrong direction!
+
+<li>aven: Recheck menu short-cuts don't clash in each translation (automate?)
+
+<li>Retire survex wrapper (no-survex-wrapper.patch) for version 1.0.
+
+<li>Tree control bug (Mark knows details and is investigating).
+
+<li>Sort out when end of distance rubber band moves; allow it to be
+cancelled.
+
+<li>Look at enabling NT 3.51 support in MS Windows installer.
+
+<li>Look at cleaning out incorrect registry keys installed by older MS
+Windows installers.
+
+<li>Look at installing on NT, etc when not administrator (or disallow
+it for now if we can't get it to work easily).
+
+<li>Finish off manual loose ends.
+
+<li>Check mail backlog...
+
+</ul>
+
 <H2>Bugs</H2>
 
 <ul>
-<li>printdm - put standard scaling in print.ini for canon bj (prod Mark
-to get numbers)
 
 <li>If I pull the vertical border to left or right edge of window, I
 lose a pane and don't appear to be able to get it back.  Perhaps "Restore
 panes" menu option if we can't allow the pane to be dragged open
 again...
 
-<li>Shift-ed keys should move faster (as they do in caverot)
-
-<li>scale bar dragging is wrong - e.g. drag scalebar left then
-back to right - on drag right zoom is initially in the wrong direction!
+<li>Shift-ed keys should move faster in aven/xcaverot (as they do in caverot)
 
 <li>This gives "*** Singular!!!" warning with DEBUG_INVALID on:
 <pre>
@@ -127,8 +155,6 @@ suggests not in French.
 
 <li>extract --help messages for translation.
 
-<li>Check menu short-cuts don't clash in each translation...
-
 </ul>
 
 <H2>Miscellaneous</H2>
@@ -154,8 +180,6 @@ stats.
 <li>caverot: on RISC OS now fall back to using 2 or even just one screen
 bank if we can't find a mode where we can create 3 banks [FIXME: need
 to test this works]
-
-<li>Retire survex wrapper (no-survex-wrapper.patch) for version 1.0.
 
 <li>Allow extend (or printing of extend) to unfold right-left instead of
 left to right?
