@@ -1,3 +1,11 @@
+survex (1.0.9) unstable; urgency=low
+
+  * aven: Fixed jerky start when auto-rotation begins.
+  * cavern: Fixed Direction reading - bug previously made it unusable.
+  * Updates to French, Spanish, Catalan, and Slovak internationalisations.
+
+ -- Wookey <wookey@survex.com>  Fri, 17 May 2002 12:06:48 +0100
+
 survex (1.0.8) unstable; urgency=low
 
   * aven: lots of improvements and fixes - now uses 25% less memory.
