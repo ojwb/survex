@@ -2,10 +2,8 @@
 use strict;
 
 print "*Dir <Obey\$Dir>\n";
-print "*Cdir c\n";
-print "*Cdir h\n";
-print "*Cdir s\n";
-print "*Cdir o\n";
+
+# directories c, h, s, and o are created when the zip file is unpacked
 
 for (@ARGV) {
    s!.*/!!;
@@ -15,3 +13,6 @@ for (@ARGV) {
       print "*Rename $f $_\n";
    }
 }
+
+# AERW suggested adding *Back, but we want to stay in this directory
+# so just running amu works...
