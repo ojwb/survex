@@ -21,6 +21,9 @@
   (bzip2).  It it likely to be slower to uncompress - feedback on whether the
   slowdown is worth the reduction in download size welcome.
 
+* (MS Windows version): Should now install without errors for a non-admin user
+  on MS Windows NT/2000/XP.
+
 * (MS Windows version): Installer should now allow installation on NT 3.51.
 
 * Updated manual (notably added documentation for interleaved data styles).

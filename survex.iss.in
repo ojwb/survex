@@ -44,37 +44,72 @@ Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surve
 Name: "{group}\Documentation"; Filename: "{app}\index.htm"; Comment: "View the documentation for Survex"
 
 [Registry]
-Root: HKCR; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: ".err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: ".pos"; ValueType: string; ValueData: "survex.pos"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\printwin.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: string; ValueData: """{app}\3dtopos.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error"; ValueType: string; ValueData: "Survex Loop Closure Errors"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Sort by Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Sort by Horizontal Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -h ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Sort by Vertical Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -v ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Sort by Percentage Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -p ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Sort by Error per Leg\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -l ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.pos"; ValueType: string; ValueData: "Survex Station Positions"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.pos\DefaultIcon"; ValueType: string; ValueData: "{app}\pos.ico"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.pos\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.log"; ValueType: string; ValueData: "Output Log"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.log\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: ".err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: ".pos"; ValueType: string; ValueData: "survex.pos"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.source\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.source\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.bin\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\printwin.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: string; ValueData: """{app}\3dtopos.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.error"; ValueType: string; ValueData: "Survex Loop Closure Errors"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.error\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.error\shell\Sort by Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.error\shell\Sort by Horizontal Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -h ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.error\shell\Sort by Vertical Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -v ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.error\shell\Sort by Percentage Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -p ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.error\shell\Sort by Error per Leg\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -l ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.pos"; ValueType: string; ValueData: "Survex Station Positions"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.pos\DefaultIcon"; ValueType: string; ValueData: "{app}\pos.ico"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.pos\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.log"; ValueType: string; ValueData: "Output Log"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.log\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+; and now the administrator versions - same as above but "HKCR" and "noerror":
+Root: HKCR; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: ".err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: ".pos"; ValueType: string; ValueData: "survex.pos"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.source\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.source\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.bin\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\printwin.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: string; ValueData: """{app}\3dtopos.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.error"; ValueType: string; ValueData: "Survex Loop Closure Errors"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.error\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.error\shell\Sort by Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.error\shell\Sort by Horizontal Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -h ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.error\shell\Sort by Vertical Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -v ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.error\shell\Sort by Percentage Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -p ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.error\shell\Sort by Error per Leg\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -l ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.pos"; ValueType: string; ValueData: "Survex Station Positions"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.pos\DefaultIcon"; ValueType: string; ValueData: "{app}\pos.ico"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.pos\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.log"; ValueType: string; ValueData: "Output Log"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.log\shell"; ValueType: string; ValueData: "Open"; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue noerror
