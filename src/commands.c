@@ -971,13 +971,13 @@ infer(void)
 }
 
 static void
-truncate(void)
+set_truncate(void)
 {
-   int truncate = 0; /* default is no truncation */
+   int truncate_at = 0; /* default is no truncation */
    /* FIXME: this really is *not* the way to do this */
    skipblanks();
    if (toupper(ch) != 'O') {
-      truncate = (int)read_numeric(fFalse); /* FIXME: really want +ve int... */
+      truncate_at = (int)read_numeric(fFalse); /* FIXME: really want +ve int... */
    } else {
       nextch();
       if (toupper(ch) == 'F') {
@@ -996,7 +996,7 @@ truncate(void)
       }      
    }
    /* for backward compatibility, "*truncate 0" means "*truncate off" */
-   pcs->Truncate = (truncate < 1) ? INT_MAX : truncate;
+   pcs->Truncate = (truncate_at < 1) ? INT_MAX : truncate_at;
 }
 
 extern void
@@ -1033,7 +1033,7 @@ handle_command(void)
     case CMD_SD: set_sd(); break;
     case CMD_SET: set_chars(); break;
     case CMD_TITLE: set_title(); break;
-    case CMD_TRUNCATE: truncate(); break;
+    case CMD_TRUNCATE: set_truncate(); break;
     default:
       compile_error(/*Unknown command in data file - line ignored*/12);
       showandskipline(NULL, strlen(buffer));
