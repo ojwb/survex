@@ -16,6 +16,9 @@ Changes in 0.97-prerelease1:
 * cavern: added *export command to allow scope of station names to be
   limited.
 
+* printer drivers: put "http://www.survex.com/" on printouts in case someone
+  who gets a printout wants to know more about Survex.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling

@@ -257,9 +257,10 @@ draw_info_box(float num, float denom)
    pr->WriteString(szDesc);
    pr->WriteString(msg(/* Driver*/152));
 
-/* Copyright line has been mis-interpreted as refering to survey */
-/* MOVEMM(102, 2); pr->WriteString(COPYRIGHT" Olly Betts 1993-"THIS_YEAR); */
-/* FIXME rewrite message so it's clear... */
+   /* This used to be a copyright line, but it was occasionally
+    * mis-interpreted as us claiming copyright on the survey, so let's
+    * give the website URL instead */
+   MOVEMM(102, 2); pr->WriteString("http://www.survex.com/");
 
    draw_scale_bar(110.0, 17.0, PaperWidth - 118.0, (double)denom / num);
 }
