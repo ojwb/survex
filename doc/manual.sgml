@@ -124,8 +124,8 @@ this.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-10-06 19:42:01 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.67 2001-10-06 19:42:01 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-10-09 16:19:56 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.68 2001-10-09 16:19:56 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -674,7 +674,7 @@ file is looked for with the appropriate extension appended.  So
 &man.printdm;
 </refentry>
 <refentry id="printhpgl">
-<?dbhtml filename="printhpgl.htm">
+<?dbhtml filename="prhpgl.htm">
 &man.printhpgl;
 </refentry>
 <refentry id="printpcl">
