@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-09-19 01:52:40 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.100 2002-09-19 01:52:40 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-09-30 19:56:26 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.101 2002-09-30 19:56:26 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -147,13 +147,14 @@ under the Loser Plateau in Austria (over 11,500 survey legs, and over
 seconds on a low-end <hardware>Pentium</hardware> machine.
 Survex is also used by many other survey projects around the world,
 including the 
-<ulink url="http://milos2.zoo.ox.ac.uk/~oucc/draenen/draenenmain.htm"
+<ulink url="http://www.oucc.org.uk/draenen/draenenmain.htm"
 >Ogof Draenen</ulink> survey, the 
 <ulink url="http://www.easegill.org.uk/">Easegill</ulink> resurvey project,
 the <Acronym/OFD/ survey, the 
-<ulink url="http://milos2.zoo.ox.ac.uk/~oucc/reports/surveys/surveys.htm"
+<!-- url="http://milos2.zoo.ox.ac.uk/~oucc/reports/surveys/surveys.htm" -->
+<ulink url="http://www.oucc.org.uk/reports/surveys/surveys.htm"
 ><Acronym/OUCC/ Picos expeditions</ulink>, and the 
-<ulink url="http://www.survex.com/~erin/">Hong Meigui China
+<ulink url="http://www.hongmeigui.net/">Hong Meigui China
 expeditions</ulink>. <!-- FIXME more? --></Para>
 
 <Para>&survexsuite; is still actively being worked on.  Version 1.0 is
