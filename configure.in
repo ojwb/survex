@@ -63,11 +63,13 @@ AC_PROG_MAKE_SET
 AC_EXEEXT
 AC_OBJEXT
 
-if test -n "$MINGW32$CYGWIN" ; then
-  dnl assume mingw32 or cygwin means littleendian (may not be true for NT
+AC_MINGW32
+
+if test -n "$MINGW32" ; then
+  dnl assume mingw32 means littleendian (may not be true for NT
   dnl on non-intel platforms but ISTR m$ have scrapped that)
   AC_MSG_CHECKING(endian-ness)
-  AC_MSG_RESULT(mingw/cygwin so assuming little endian)
+  AC_MSG_RESULT(mingw so assuming little endian)
   ac_cv_c_bigendian=no
 else
   dnl autoconf doesn't look in the right place to find the endian-ness of
@@ -123,7 +125,7 @@ AC_SUBST(LIBRX)
 AC_PATH_XTRA
 
 PRINTWIN=
-if test -n "$MINGW32$CYGWIN" ; then
+if test -n "$MINGW32" ; then
   PRINTWIN='printwin$(EXEEXT)'
   AC_MSG_RESULT(building printwin)
 fi
@@ -136,13 +138,13 @@ if test x$no_x != xyes; then
   AC_MSG_RESULT(building xcaverot)
 else
   AC_MSG_RESULT([not building xcaverot (X libraries not found or disabled)])
-  if test -z "$MINGW32$CYGWIN" ; then
+  if test -z "$MINGW32" ; then
     AC_MSG_RESULT([not building aven (X libraries not found or disabled)])
     AVEN=
   fi
 fi
 
-AM_CONDITIONAL(WIN32, test -n "$MINGW32$CYGWIN")
+AM_CONDITIONAL(WIN32, test -n "$MINGW32")
 
 if test -n "$AVEN"; then
   AC_ARG_VAR(WXCONFIG, [wxWindows configuration script to use to build Aven])
