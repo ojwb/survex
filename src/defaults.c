@@ -1,6 +1,6 @@
 /* > defaults.c
  * Code to set up defaults of things for Survex
- * Copyright (C) 1991-1996 Olly Betts
+ * Copyright (C) 1991-1997 Olly Betts
  */
 
 /*
@@ -27,7 +27,11 @@
 1996.02.13 removed chars for schwab again (since *set added)
 1996.03.23 Translate is now a pointer, one elt into array
 1996.04.15 SPECIAL_POINT -> SPECIAL_DECIMAL
+1997.08.24 Unique -> Truncate
+1998.03.21 fixed up to compile cleanly on Linux
 */
+
+#include <limits.h>
 
 #include "survex.h"
 #include "error.h"
@@ -44,7 +48,7 @@ extern void default_grade( settings *s ) {
   s->Var[Q_DEPTH]    = (real)sqrd(0.10);     /*depth*/
 }
 
-extern void default_unique( settings *s ) { s->Unique=IDENT_LEN; }
+extern void default_truncate( settings *s ) { s->Truncate = INT_MAX; }
 
 extern void default_ascii( settings *s ) { s->fAscii=fFalse; }
 
