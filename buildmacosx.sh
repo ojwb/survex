@@ -1,5 +1,8 @@
 #!/bin/sh
 #
+# Note: this script requires MacOS X 10.2 or greater, and builds diskimages
+# which require MacOS X 10.1 or greater to install.
+#
 # Run from the unpacked survex-1.0.X directory like so:
 #
 #   ./buildmacosx.sh --install-wx
@@ -63,30 +66,22 @@ if test $sectors -lt 8192 ; then
 fi
 echo "Creating new blank image survex-macosx.dmg of $sectors sectors"
 # This just writes ASCII data to the file until it's the correct size.
-hdiutil create -sectors $sectors survex-macosx -layout NONE
-
-# Get the name of the next available device that can be used for mounting
-# (attaching).
-dev=`hdid -nomount survex-macosx.dmg|tail -1|sed 's!/dev/!!'`
-echo "Constructing new HFS+ filesystem on $dev"
-# This will initialize /dev/r$dev as a HFS Plus volume.
-sudo newfs_hfs -v Survex /dev/r$dev
-# We have to eject (detach) the device.
-# Note: 'hdiutil info' will show what devices are still attached.
-hdiutil eject $dev
+hdiutil create -sectors $sectors survex-macosx -layout NONE -fs HFS+ -volname Survex
 
 echo "Present image to the filesystems for mounting."
 # This will mount the image onto the Desktop.
-hdid survex-macosx.dmg
+# Get the name of the device we mounted it on...
+dev=`hdid survex-macosx.dmg|tail -1|sed 's!/dev/!!'`
 ditto -rsrcFork Survex /Volumes/Survex/Survex
 ditto lib/INSTALL.OSX /Volumes/Survex/INSTALL
-hdiutil eject $dev
+hdiutil detach $dev
 
 version="`sed 's/.*AM_INIT_AUTOMAKE([^,]*, *\([0-9.]*\).*/\1/p;d' configure.in`"
 file="survex-macosx-`echo $version`.dmg"
 echo "Compressing image file survex-macosx.dmg to $file"
-hdiutil convert survex-macosx.dmg -format UDCO -o "$file"
-# Better compression but needs MacOS X 10.1 or above for unpacking:
-#hdiutil convert survex-macosx.dmg -format UDZO -o "$file"
+# This needs MacOS X 10.1 or above for unpacking - change UDZO to UDCO to allow
+# the dmg to be unpacked on 10.0 as well:
+hdiutil convert survex-macosx.dmg -format UDZO -o "$file"
+rm survex-macosx.dmg
 
 echo "$file created successfully."
