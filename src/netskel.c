@@ -477,14 +477,13 @@ replace_travs(void)
 		  vTot = sqrd(e[2]);
 #ifndef NO_COVARIANCES
 		  /* FIXME: what about covariances? */
-		  eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
 		  hTotTheo = leg->v[0] + leg->v[1];
 		  vTotTheo = leg->v[2];
 #else
-		  eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
 		  hTotTheo = leg->v[0] + leg->v[1];
 		  vTotTheo = leg->v[2];
 #endif
+		  eTotTheo = hTotTheo + vTotTheo;
 #ifdef BLUNDER_DETECTION
 		  memcpy(&err, &e, sizeof(d));
 		  do_blunder = (eTot > eTotTheo);
@@ -547,12 +546,11 @@ replace_travs(void)
       /* FIXME: what about covariances? */
       hTotTheo = stn1->leg[i]->v[0] + stn1->leg[i]->v[1];
       vTotTheo = stn1->leg[i]->v[2];
-      eTotTheo = hTotTheo + vTotTheo;
 #else
       hTotTheo = stn1->leg[i]->v[0] + stn1->leg[i]->v[1];
       vTotTheo = stn1->leg[i]->v[2];
-      eTotTheo = hTotTheo + vTotTheo;
 #endif
+      eTotTheo = hTotTheo + vTotTheo;
       cLegsTrav = 0;
       lenTrav = 0.0;
       nmPrev = stn1->name;
