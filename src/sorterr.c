@@ -150,7 +150,7 @@ main(int argc, char **argv)
       int ch;
       if (next == len) {
 	 len += len;
-	 blk = osrealloc(blk, len);
+	 blk = osrealloc(blk, len * ossizeof(trav));
       }
       blk[next].fpos = ftell(fh);
       ch = getc(fh);

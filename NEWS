@@ -1,5 +1,7 @@
 * diffpos: fixed to work on 64bit architectures.
 
+* sorterr: fixed to work with more than 1024 traverses.
+
 Changes in 1.0.11:
 
 * aven: improvements in 1.0.10 to the file type selector only work properly
