@@ -197,7 +197,7 @@ class GfxCore : public wxWindow {
         // Viewing volume parameters: these are all negative!
         Double left;
         Double bottom;
-        Double near;
+        Double nearface;
     } m_Volume;
 
     struct {
@@ -334,12 +334,10 @@ class GfxCore : public wxWindow {
 #else
 	if (background) {
 	    assert(m_Brushes[col].Ok());
-	    wxColour& colour = m_Brushes[col].GetColour();
  	    m_DrawDC.SetBrush(m_Brushes[col]);
 	}
 	else {
 	    assert(m_Pens[col].Ok());
-	    wxColour& colour = m_Pens[col].GetColour();
 	    m_DrawDC.SetPen(m_Pens[col]);
 	}
 #endif

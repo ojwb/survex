@@ -31,7 +31,9 @@
 #include <wx/confbase.h>
 #include <float.h>
 #include <stack>
+#ifdef AVEN_REGEX
 #include <regex.h>
+#endif
 
 const int NUM_DEPTH_COLOURS = 13;
 
@@ -222,9 +224,10 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     m_PresLoaded = false;
     m_Recording = false;
-
+#ifdef AVEN_REGEX
     // Set regular expression syntax.
     re_set_syntax(RE_SYNTAX_POSIX_EXTENDED);
+#endif
 }
 
 MainFrm::~MainFrm()
@@ -1406,6 +1409,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
 {
     // Find stations specified by a string or regular expression.
 
+#ifdef AVEN_REGEX
     wxString str = m_FindBox->GetValue();
     re_pattern_buffer buffer;
     bool regexp = m_RegexpCheckBox->GetValue();
@@ -1476,6 +1480,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
     if (!found) {
         wxGetApp().ReportError(msg(/*No matches were found.*/328));
     }
+#endif 
 }
 
 void MainFrm::OnHide(wxCommandEvent& event)

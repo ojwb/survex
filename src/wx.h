@@ -9,3 +9,4 @@
 #endif
 
 #include "wx/splitter.h"
+#include "wx/treectrl.h"

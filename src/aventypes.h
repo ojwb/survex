@@ -24,6 +24,9 @@
 #include "config.h"
 
 #ifdef AVENGL
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <GL/glu.h>
 #include <GL/glut.h>
 typedef GLdouble Double;

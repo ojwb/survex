@@ -271,7 +271,7 @@ void GfxCore::Initialise()
     // Apply default parameters.
     DefaultParameters();
 
-    // Check for flat/linear/point surveys.
+    // Check for flat/linearface/point surveys.
     m_Lock = lock_NONE;
     m_IndicatorsOff = false;
     m_DepthbarOff = false;
@@ -310,8 +310,8 @@ void GfxCore::Initialise()
             break;
 
         case lock_Z:
-        case lock_XZ: // linear survey parallel to Y axis
-        case lock_YZ: // linear survey parallel to X axis
+        case lock_XZ: // linearface survey parallel to Y axis
+        case lock_YZ: // linearface survey parallel to X axis
         {
             // flat survey (zero height range) => go into plan view (default orientation).
             m_Clino = false;
@@ -327,7 +327,7 @@ void GfxCore::Initialise()
 
         case lock_XY:
         {
-            // survey is linear and parallel to the Z axis => display in elevation.
+            // survey is linearface and parallel to the Z axis => display in elevation.
             m_PanAngle = M_PI * 1.5;
 
             Quaternion q;
@@ -1684,7 +1684,7 @@ void GfxCore::DrawScalebar()
 #ifdef AVENGL
     Double end_x = m_Volume.left + m_ScaleBar.offset_x;
     Double height = (-m_Volume.bottom * 2.0) / 40.0;
-    Double gl_z = m_Volume.near + 1.0; //-- is this OK??
+    Double gl_z = m_Volume.nearface + 1.0; //-- is this OK??
     Double end_y = m_Volume.bottom + m_ScaleBar.offset_y - height;
     Double interval = size / 10.0;
 #else
@@ -2936,7 +2936,7 @@ void GfxCore::SetGLProjection()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     m_MaxExtent = MAX3(m_Parent->GetXExtent(), m_Parent->GetYExtent(), m_Parent->GetZExtent()) * 2.0;
-    m_Volume.near = -m_MaxExtent * m_Params.scale / 2.0;
+    m_Volume.nearface = -m_MaxExtent * m_Params.scale / 2.0;
     double aspect = double(m_YSize) / double(m_XSize);
     m_Volume.bottom = -m_MaxExtent * aspect / 2.0;
     m_Volume.left = -m_MaxExtent / 2.0;
@@ -2948,8 +2948,8 @@ void GfxCore::SetGLProjection()
             -m_Volume.left, // right
             m_Volume.bottom, // bottom
             -m_Volume.bottom,  // top
-            m_Volume.near, // near
-            -m_Volume.near); // far
+            m_Volume.nearface, // near
+            -m_Volume.nearface); // far
 }
 
 void GfxCore::SetModellingTransformation()
