@@ -33,7 +33,7 @@ typedef	char	ObjectTag [TAG_SIZE+1];
 #ifndef __TURBOC__
 typedef	void	(*CallBackPtr) ();
 #else
-typedef	void	(*CallBackPtr) (struct htodesc *, char *);
+typedef	void	(*CallBackPtr) (struct htodesc *, const char *);
 #endif
 
 /* Callback function list */
@@ -76,7 +76,7 @@ typedef struct htodesc {
     int		NestLevel;
     ValStackList ValueStackList;
     int		Num_ValStacks;
-} htodesc, *HTO;
+} *HTO;
 
 extern	HTO	HTO_Open (char *);
 extern	void	HTO_Close (HTO);

@@ -49,7 +49,7 @@ HTO HTO_Open (char *FileName)	/* Open an HTO file */
 
     /* Allocate an HTO descriptor */
 
-    p = (HTO) malloc (sizeof (htodesc));
+    p = (HTO) malloc (sizeof (struct htodesc));
     if (p == NULL)
 	return NULL;
 
@@ -524,7 +524,7 @@ HTO HTO_Create (char *FileName)
 
     /* Allocate an HTO descriptor */
 
-    p = (HTO) malloc (sizeof (htodesc));
+    p = (HTO) malloc (sizeof (struct htodesc));
     if (p == NULL)
 	return NULL;
 

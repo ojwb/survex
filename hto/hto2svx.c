@@ -28,14 +28,14 @@ static void die(const char *msg, const char *a, int b)
   exit(1);
 }
 
-static void postntcallback(HTO p, char *tag)
+static void postntcallback(HTO p, const char *tag)
 {
   p = p;
   tag = tag;
 /*  fprintf(outfd, "nt: %s\n", tag); */
 }
 
-static void posttmcallback(HTO p, char *tag)
+static void posttmcallback(HTO p, const char *tag)
 {
   p = p;
   tag = tag;
@@ -46,7 +46,7 @@ static void posttmcallback(HTO p, char *tag)
 #endif
 }
 
-static void CPcallback(HTO p, char *tag)
+static void CPcallback(HTO p, const char *tag)
 {
   char stn[100], x[32], y[32], z[32];
   tag = tag;
@@ -57,7 +57,7 @@ static void CPcallback(HTO p, char *tag)
   fprintf(outfd, "*fix %s %s %s %s\n", stn, x, y, z);
 }
 
-static void EQVcallback(HTO p, char *tag)
+static void EQVcallback(HTO p, const char *tag)
 {
   char a[100], b[100];
   tag = tag;
@@ -66,7 +66,7 @@ static void EQVcallback(HTO p, char *tag)
   fprintf(outfd, "*equate %s %s\n", a, b);
 }
 
-static void CTcallback(HTO p, char *tag)
+static void CTcallback(HTO p, const char *tag)
 {
   char from[100], to[100], dist[100], bearing[20], incl[20];
   tag = tag;
@@ -78,7 +78,7 @@ static void CTcallback(HTO p, char *tag)
   fprintf(outfd, "%s %s %s %s %s\n", from, to, dist, bearing, incl);
 }
 
-static void PFXcallback(HTO p, char *tag)
+static void PFXcallback(HTO p, const char *tag)
 {
   char prefix[100];
   HTO_GetObjectValue(p, tag, prefix);
