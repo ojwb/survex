@@ -989,6 +989,7 @@ fr:103 Il vous faut calibrer votre imprimante - voir le manuel pour plus de d&ea
 # Or shorter, just have - `siehe Handbuch' for the second half.
 de-de,de-ch:103 Drucker muss kalibriert werden - n&auml;her beschrieben im Handbuch.
 de:         103 Drucker mu&szlig; kalibriert werden - n&auml;her beschrieben im Handbuch.
+pt:103 &Eacute; necess&aacute;rio calibrar a impressora - veja como no manual da mesma.
 #
 #XXX 104
 en:105 Reading in data - please wait...
@@ -1045,12 +1046,13 @@ fr:112 La lecture du fichier .err a &eacute;chou&eacute;
 de:112 .err-Datei konnte nicht interpretiert werden
 pt:112 N&atilde;o foi poss&iacute;vel analisar arquivo de erros (.err)
 # c.f. 16
-# TRANSLATE extra phrase... pt ca es it
+# TRANSLATE extra phrase... ca es it
 en:113 There were %d warning(s) and %d non-fatal error(s) - no output files produced.
 fr:113 Il y a %d avertissement(s) et %d erreur(s) non fatale(s) - aucun fichier n'a &eacute;t&eacute; produit
 de:113 Es gab %d Warnungen und %d nicht-fatale Fehler - keine Ausgabedatei erstellt.
 #Es wurden %d Warnungen und %d nicht-fatale Fehler registriert.
 pt:113 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s) - no output files produced.
+pt:113 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s) - nenhum arquivo de sa&iacute;da criado
 ca:113 Hi havia %d alerta(es) i %d error(s) no fatal(s) - no output files produced.
 es:113 Havia %d alerta(s) y %d error(es) no fatal(es) - no output files produced.
 it:113 Ci sono %d avvertimenti e %d errori non fatali - no output files produced.
@@ -1634,7 +1636,7 @@ en:187 argument `%s' not a number
 fr:187 l'argument `%s' n'est pas un nombre
 de:187 Argument `%s' ist keine Zahl
 pt:187 argumento `%s' n&atilde;o &eacute; um n&uacute;mero
-# TRANSLATE check pt ca es it
+# TRANSLATE check ca es it
 en:188 Expecting `DUPLICATE', `SPLAY', or `SURFACE'
 fr:188 On attendait `DUPLICATE', `SPLAY', ou `SURFACE'
 # NB there is no comma before "oder"
@@ -1643,7 +1645,7 @@ pt:188 `DUPLICATE', `SPLAY' ou `SURFACE' eram esperados
 ca:188 Esperant `DUPLICATE', `SPLAY', o `SURFACE'
 es:188 Esperando `DUPLICATE', `SPLAY', o `SURFACE'
 it:188 Atteso `DUPLICATE', `SPLAY' o `SURFACE'
-# TRANSLATE check pt ca es it
+# TRANSLATE check ca es it
 en:189 Expecting `NOT', `DUPLICATE', `SPLAY', or `SURFACE'
 fr:189 On attendait `NOT', `DUPLICATE', `SPLAY', ou `SURFACE'
 # NB there is no comma before "oder"
