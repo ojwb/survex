@@ -358,6 +358,11 @@ void GUIControl::OnRButtonUp(wxMouseEvent&)
     m_View->DragFinished();
 }
 
+void GUIControl::OnMouseWheel(wxMouseEvent& event) {
+    m_View->TiltCave(event.GetWheelRotation() / 24.0);
+    m_View->ForceRefresh();
+}
+
 void GUIControl::OnDisplayOverlappingNames()
 {
     m_View->ToggleOverlappingNames();

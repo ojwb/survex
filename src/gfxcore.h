@@ -267,6 +267,7 @@ public:
     void OnMButtonUp(wxMouseEvent& event) { m_Control->OnMButtonUp(event); }
     void OnRButtonDown(wxMouseEvent& event) { m_Control->OnRButtonDown(event); }
     void OnRButtonUp(wxMouseEvent& event) { m_Control->OnRButtonUp(event); }
+    void OnMouseWheel(wxMouseEvent& event) { m_Control->OnMouseWheel(event); }
     void OnKeyPress(wxKeyEvent &event) { m_Control->OnKeyPress(event); }
 
     bool Animate();

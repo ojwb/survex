@@ -107,7 +107,7 @@ public:
     void OnMButtonUp(wxMouseEvent& event);
     void OnRButtonDown(wxMouseEvent& event);
     void OnRButtonUp(wxMouseEvent& event);
-
+    void OnMouseWheel(wxMouseEvent& event);
     void OnKeyPress(wxKeyEvent &e);
 
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent&);
