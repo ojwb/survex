@@ -559,7 +559,7 @@ static void
 cmd_fix(void)
 {
    prefix *fix_name;
-   node *stn;
+   node *stn = NULL;
    static node *stnOmitAlready = NULL;
    real x, y, z;
    bool fRef = 0;
@@ -567,7 +567,6 @@ cmd_fix(void)
 
    fix_name = read_prefix_stn(fFalse);
    fix_name->sflags |= BIT(SFLAGS_FIXED);
-   stn = StnFromPfx(fix_name);
 
    fp = ftell(file.fh);
    get_token();
@@ -579,12 +578,13 @@ cmd_fix(void)
    x = read_numeric(fTrue);
    if (x == HUGE_REAL) {
       if (stnOmitAlready) {
-	 if (stn != stnOmitAlready)
+	 if (fix_name != stnOmitAlready->name)
 	    compile_error(/*More than one FIX command with no coordinates*/56);
 	 else
 	    compile_warning(/*Same station fixed twice with no coordinates*/61);
 	 return;
       }
+      stn = StnFromPfx(fix_name);
       compile_warning(/*FIX command with no coordinates - fixing at (0,0,0)*/54);
       x = y = z = (real)0.0;
       stnOmitAlready = stn;
@@ -608,6 +608,7 @@ cmd_fix(void)
 	    }
 	    /* FIXME: covariances... ? */
 	 }
+	 stn = StnFromPfx(fix_name);
 	 if (!fixed(stn)) {
 	    node *fixpt = osnew(node);
 	    prefix *name = osnew(prefix);

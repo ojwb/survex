@@ -30,13 +30,6 @@ Covariance matrices are symmetric, so we only need to store 6 of the 9
 entries (but intermediate matrices need the full 9 since the product
 of 2 symmetric matrices isn't necessarily symmetric).
 
-Date: Fri, 14 Jul 2000
-From: Olly
-
-Sort out output from:
-*fix 1
-*fix 2
-
 Date: 05 Aug 2000
 From: Olly
 
