@@ -11,7 +11,7 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
 
 PRINT = printdm printps printpcl printhpgl
 
-EXTRA_PROGRAMS = caverot xcaverot
+EXTRA_PROGRAMS = caverot xcaverot printxbm
 bin_PROGRAMS = cavern $(PRINT) diffpos extend @CAVEROT@ survex
 
 cavern_SOURCES = cavern.c message.c filename.c listpos.c commands.c\
@@ -26,10 +26,12 @@ PRSRC = prcore.c prio.c message.c filename.c useful.c img.c osdepend.c\
 printps_SOURCES = printps.c $(PRSRC)
 printdm_SOURCES = printdm.c $(PRSRC) prbitmap.c
 printpcl_SOURCES = printpcl.c $(PRSRC) prbitmap.c
+printxbm_SOURCES = printxbm.c $(PRSRC) prbitmap.c
 printhpgl_SOURCES = prhpgl.c $(PRSRC)
 printps_LDADD = @LIBOBJS@
 printdm_LDADD = @LIBOBJS@
 printpcl_LDADD = @LIBOBJS@
+printxbm_LDADD = @LIBOBJS@
 printhpgl_LDADD = @LIBOBJS@
 
 #printmd0_SOURCES = printmd0.c prbitmap.c prcore.c message.c filename.c\
@@ -109,13 +111,15 @@ VERSION = @VERSION@
 # needed, using the compiler and linker errors for guidance.
 
 #BUILT_SOURCES = makefile.bc makefile.ro
+
 noinst_DATA = borlandc/makefile riscos/makefile
  
-EXTRA_DIST = borlandc/makefile borlandc/config.h \
- riscos/makefile riscos/config.h
+EXTRA_DIST = borlandc/makefile borlandc/config.h\
+ riscos/makefile riscos/config.h riscos/armrot.s\
+ riscos/stdh/regnames riscos/stdh/swinames
 
 borlandc/makefile: Makefile.am miniam.pl
 	./miniam.pl borlandc Makefile.am > borlandc/makefile
 
 riscos/makefile: Makefile.am miniam.pl
-	./miniam.pl riscos Makefile.am > borlandc/riscos
+	./miniam.pl riscos Makefile.am > riscos/makefile
