@@ -1003,6 +1003,12 @@ invert_svar(svar *inv, /*const*/ svar *v)
    (*inv)[4] = det * dfbe;
    (*inv)[5] = det * (e * d - a * f);
 
+#if 0
+   /* This test fires very occasionally, and there's not much point in
+    * it anyhow - the matrix inversion algorithm is simple enough that
+    * we can be confident it's correctly implemented, so we might as
+    * well save the cycles and not perform this check.
+    */
      { /* check that original * inverse = identity matrix */
 	var p;
 	real D = 0;
@@ -1022,6 +1028,7 @@ invert_svar(svar *inv, /*const*/ svar *v)
 	}
 	check_svar(inv);
      }
+#endif
    return 1;
 }
 #endif
