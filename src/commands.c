@@ -1201,7 +1201,7 @@ require(void)
    fp = ftell(file.fh);
    while (1) {
       unsigned int have, want;
-      have = strtoul(p, &p, 10);
+      have = (unsigned int)strtoul(p, &p, 10);
       want = read_uint();
       if (have > want) break;
       if (have < want) {
@@ -1209,7 +1209,7 @@ require(void)
 	 char *v;
 	 /* find end of version number */
 	 while (isdigit(ch) || ch == '.') nextch();
-	 len = ftell(file.fh) - fp;
+	 len = (size_t)(ftell(file.fh) - fp);
 	 v = osmalloc(len + 1);
 	 fseek(file.fh, fp, SEEK_SET);
 	 ch = ch_old;

@@ -53,8 +53,7 @@ typedef unsigned char byte;
 #  define NO_STDPRN
 
 /* Phil's 3dx code uses hypot() - euclidean distance */
-#  define hypot(X, Y, Z) \
-	sqrt(sqrd((double)(X)) + sqrd((double)(Y)) + sqrd((double)(Z))
+#  define hypot(X, Y) sqrt(sqrd((double)(X)) + sqrd((double)(Y)))
 
 # elif (OS==MSDOS) || (OS==WIN32)
 

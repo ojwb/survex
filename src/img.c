@@ -320,7 +320,7 @@ img_write_datum(img *pimg, int code, const char *sz,
    if (!pimg) return;
    if (pimg->fBinary) {
       float Sc = (float)100.0; /* Output in cm */
-      long opt = 0;
+      INT32_T opt = 0;
       switch (code) {
        case img_LABEL: /* put a move before each label */
        case img_MOVE:
@@ -338,9 +338,9 @@ img_write_datum(img *pimg, int code, const char *sz,
       }
       if (opt) {
 	 put32(opt, pimg->fh);
-	 put32((long)(x * Sc), pimg->fh);
-	 put32((long)(y * Sc), pimg->fh);
-	 put32((long)(z * Sc), pimg->fh);
+	 put32((INT32_T)(x * Sc), pimg->fh);
+	 put32((INT32_T)(y * Sc), pimg->fh);
+	 put32((INT32_T)(z * Sc), pimg->fh);
       }
       if (code == img_LABEL) {
 	 put32(2, pimg->fh);
@@ -375,7 +375,7 @@ img_close(img *pimg)
    if (pimg) {
       if (pimg->fh) {
 	 /* If writing a binary file, write end of data marker */   
-	 if (pimg->fBinary && !pimg->fRead) put32(-1L, pimg->fh);
+	 if (pimg->fBinary && !pimg->fRead) put32((INT32_T)-1, pimg->fh);
 	 fclose(pimg->fh);
       }
       osfree(pimg);

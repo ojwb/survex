@@ -35,7 +35,7 @@
 #include "img.h"
 
 typedef struct POINT {
-   float x, y, z;
+   double x, y, z;
    char *label;
    unsigned int order;
    struct POINT *next;
@@ -53,10 +53,10 @@ static leg headleg = {NULL, NULL, NULL, 1};
 
 static img *pimg;
 
-static void do_stn(point *, float);
+static void do_stn(point *, double);
 
 static point *
-find_point(float x, float y, float z)
+find_point(double x, double y, double z)
 {
    point *p;
    for (p = headpoint.next; p != NULL; p = p->next) {
@@ -114,11 +114,11 @@ main(int argc, char **argv)
 {
    const char *fnmData, *fnmOutput;
    char szDesc[256];
-   float x, y, z;
+   double x, y, z;
    char sz[256];
    int result;
    point *fr = NULL, *to;
-   float zMax = -FLT_MAX;
+   double zMax = -DBL_MAX;
    point *start = NULL;
    point *p;
 
@@ -204,24 +204,24 @@ main(int argc, char **argv)
 }
 
 static void
-do_stn(point *p, float X)
+do_stn(point *p, double X)
 {
    leg *l, *lp;
-   float dX;
+   double dX;
    img_write_datum(pimg, img_LABEL, p->label, X, 0, p->z);
    l = &headleg;
    while (lp = l, (l = l->next) != NULL) {
       if (!l->fDone) { /* otherwise we extend loops multiple times */
          if (l->to == p) {
             lp->next = l->next; /* unlink FIXME ought to free memory too */
-            dX = (float)radius(l->fr->x - l->to->x, l->fr->y - l->to->y);
+            dX = radius(l->fr->x - l->to->x, l->fr->y - l->to->y);
             img_write_datum(pimg, img_MOVE, NULL, X + dX, 0, l->fr->z);
             img_write_datum(pimg, img_LINE, NULL, X, 0, l->to->z);
             l->fDone = 1;
             do_stn(l->fr, X + dX);
          } else if (l->fr == p) {
             lp->next = l->next; /* unlink FIXME ought to free memory too */
-            dX = (float)radius(l->fr->x - l->to->x, l->fr->y - l->to->y);
+            dX = radius(l->fr->x - l->to->x, l->fr->y - l->to->y);
             img_write_datum(pimg, img_MOVE, NULL, X, 0, l->fr->z);
             img_write_datum(pimg, img_LINE, NULL, X + dX, 0, l->to->z);
             l->fDone = 1;

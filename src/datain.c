@@ -812,7 +812,6 @@ data_cartesian(void)
    prefix *fr_name, *to_name;
    node *fr, *to;
    real dx, dy, dz;
-   real vx, vy, vz;
 
    datum first_stn = End;
 

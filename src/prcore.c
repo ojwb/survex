@@ -515,7 +515,7 @@ read_scale(const char *s)
       if (*p == '\0') {
 	 /* accept "<number>" as meaning "1:<number>" */
 	 N_Scale = 1;
-	 D_Scale = val;
+	 D_Scale = (float)val;
 	 return fTrue;
       }
       if (*p == ':') {
@@ -525,8 +525,8 @@ read_scale(const char *s)
 	 if (p != optarg) {
 	    while (isspace(*p)) p++;
 	    if (*p == '\0') {
-	       N_Scale = val;
-	       D_Scale = val2;
+	       N_Scale = (float)val;
+	       D_Scale = (float)val2;
 	       return fTrue;
 	    }
 	 }

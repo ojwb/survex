@@ -29,6 +29,7 @@
 #include <config.h>
 #endif
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
@@ -58,9 +59,9 @@ main(int argc, char **argv)
    FILE *fh;
    int item;
    int fSeenMove = 0;
-   float x, y, z;
-   float x1, y1, z1;
-   float min_x, min_y, min_z, max_x, max_y, max_z; /* for HEADER section */
+   double x, y, z;
+   double x1, y1, z1;
+   double min_x, min_y, min_z, max_x, max_y, max_z; /* for HEADER section */
    double text_height; /* for station labels */
    double marker_size; /* for station markers */
    double grid; /* grid spacing (or 0 for no grid) */
@@ -283,8 +284,8 @@ main(int argc, char **argv)
    fprintf(fh,"2\nENTITIES\n");
 
    if (grid > 0) {
-      x1 = ((int)(min_x / grid)) * grid + grid;
-      y1 = ((int)(min_y / grid)) * grid + grid;
+      x1 = floor(min_x / grid) * grid + grid;
+      y1 = floor(min_y / grid) * grid + grid;
 #ifdef DEBUG_3DTODXF
       printf("x_min: %d  y_min: %d\n", (int)x1, (int)y1);
 #endif

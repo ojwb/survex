@@ -81,17 +81,17 @@ char *tag;
     /* ltag for station name, 12 for data, 4 for id, 1 for length of name */
     putc(STATION_3D,pimgOut->fh);
     putc(length,pimgOut->fh);
-    put32((long)statcount, pimgOut->fh); /*station ID*/
-    put32((long)((pid->p[0])*100.0), pimgOut->fh); /*X in cm*/
-    put32((long)((pid->p[1])*100.0), pimgOut->fh); /*Y*/
-    put32((long)((pid->p[2])*100.0), pimgOut->fh); /*Z*/
+    put32((INT32_T)statcount, pimgOut->fh); /*station ID*/
+    put32((INT32_T)((pid->p[0])*100.0), pimgOut->fh); /*X in cm*/
+    put32((INT32_T)((pid->p[1])*100.0), pimgOut->fh); /*Y*/
+    put32((INT32_T)((pid->p[2])*100.0), pimgOut->fh); /*Z*/
     putc(ltag,pimgOut->fh);/*length of name*/
     fputs(tag,pimgOut->fh);
     statcount++;
   } else {     /* we've already put this in the file, so just a link is needed*/
     putc(STATLINK_3D,pimgOut->fh);
     putc(0x04,pimgOut->fh);
-    put32((long)(pid->id),pimgOut->fh);
+    put32((INT32_T)(pid->id),pimgOut->fh);
   }
 }
 
@@ -120,7 +120,7 @@ img *cave_open_write(const char *fnm,const char *title)
    fputs("SVX3d", pimg->fh);
    putc(0x00, pimg->fh); /* Major version 0 */
    putc(0x0A, pimg->fh); /* Minor version 10*/
-   put32((long)dummy,pimg->fh); /*dummy number for num of stations: fill later */
+   put32((INT32_T)dummy,pimg->fh); /*dummy number for num of stations: fill later */
    cave_write_title(title,pimg);
    return pimg;
 }
@@ -198,7 +198,7 @@ static void save3d(twig *sticky)
 	  putc(LEG_3D,pimgOut->fh);
 	  put16((short)0x02,pimgOut->fh);
 	  putc(0x04,pimgOut->fh);
-	  put32((long)(error),pimgOut->fh); /* output error in %*100 */
+	  put32((INT32_T)(error),pimgOut->fh); /* output error in %*100 */
 	  cave_write_pos(twiglet->from->pos,twiglet->from);
 	  cave_write_pos(twiglet->to->pos,twiglet->to);
 	}
@@ -293,7 +293,7 @@ void cave_close(img *pimg)
       putc(END_3D,pimg->fh);
       /* and finally write how many stations there are */
       fseek (pimg->fh,7L,SEEK_SET);
-      put32((long)statcount,pimg->fh);
+      put32((INT32_T)statcount,pimg->fh);
       fclose(pimg->fh);
    }
    /*   memory leak, but it doesn't like this for some reason */
