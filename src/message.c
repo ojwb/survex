@@ -269,7 +269,7 @@ default_charset(void)
 #if defined(XCAVEROT) || defined(AVEN)
    return CHARSET_ISO_8859_1;
 #else
-   char *p = getenv("LC_ALL");
+   const char *p = getenv("LC_ALL");
    if (p == NULL || p[0] == '\0') {
       p = getenv("LC_CTYPE");
       if (p == NULL || p[0] == '\0') {
@@ -283,7 +283,7 @@ default_charset(void)
    }
 
    if (p) {
-      char *chset = p;
+      const char *chset = p;
       size_t name_len;
 
       while (*p != '\0' && *p != '@') p++;
