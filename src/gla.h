@@ -148,6 +148,7 @@ public:
     void AddTranslationScreenCoordinates(int dx, int dy);
 
     void Transform(Double x, Double y, Double z, Double* x_out, Double* y_out, Double* z_out);
+    void ReverseTransform(Double x, Double y, Double* x_out, Double* y_out, Double* z_out);
 
     int GetFontSize() { return m_FontSize; }
 

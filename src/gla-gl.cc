@@ -531,6 +531,22 @@ void GLACanvas::Transform(Double x, Double y, Double z, Double* x_out, Double* y
     gluProject(x, y, z, modelview_matrix, projection_matrix, viewport, x_out, y_out, z_out);
 }
 
+void GLACanvas::ReverseTransform(Double x, Double y, Double* x_out, Double* y_out, Double* z_out)
+{
+    // Convert from screen coordinates to data coordinates.
+    
+    // Get transformation matrices, etc.
+    GLdouble modelview_matrix[16];
+    GLdouble projection_matrix[16];
+    GLint viewport[4];
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
+    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    // Perform the projection.
+    gluUnProject(x, y, 0.0, modelview_matrix, projection_matrix, viewport, x_out, y_out, z_out);
+}
+
 Double GLACanvas::SurveyUnitsAcrossViewport()
 {
     // Measure the current viewport in survey units, taking into account the current

@@ -1526,25 +1526,21 @@ void GfxCore::SetCoords(wxPoint point)
     // Update the coordinate or altitude display, given the (x, y) position in
     // window coordinates.  The relevant display is updated depending on
     // whether we're in plan or elevation view.
-/*
-    wxCoord x = point.x - m_XCentre;
-    wxCoord y = -(point.y - m_YCentre);
+
+    Double cx, cy, cz;
+
+    SetDataTransform();
+    ReverseTransform(point.x, point.y, &cx, &cy, &cz);
 
     if (m_TiltAngle == M_PI_2) {
-        Matrix4 inverse_rotation = m_Params.rotation.asInverseMatrix();
-
-        Double cx = Double(inverse_rotation.get(0, 0)*x + inverse_rotation.get(0, 2)*y);
-        Double cy = Double(inverse_rotation.get(1, 0)*x + inverse_rotation.get(1, 2)*y);
-
-        m_Parent->SetCoords(cx / m_Params.scale - m_Params.translation.x + m_Parent->GetXOffset(),
-                            cy / m_Params.scale - m_Params.translation.y + m_Parent->GetYOffset());
+        m_Parent->SetCoords(cx + m_Parent->GetXOffset(), -cy + m_Parent->GetYOffset());
     }
     else if (m_TiltAngle == 0.0) {
-        m_Parent->SetAltitude(y / m_Params.scale - m_Params.translation.z + m_Parent->GetZOffset());
+        m_Parent->SetAltitude(-cz + m_Parent->GetZOffset());
     }
     else {
         m_Parent->ClearCoords();
-    }*/
+    }
 }
 
 bool GfxCore::ChangingOrientation()
