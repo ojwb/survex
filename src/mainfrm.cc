@@ -20,8 +20,6 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#define AVEN_REGEX
-
 #include "mainfrm.h"
 #include "aven.h"
 #include "aboutdlg.h"
@@ -33,14 +31,13 @@
 #include <wx/confbase.h>
 #include <float.h>
 #include <stack>
-#ifdef AVEN_REGEX
+
 #ifndef _WIN32 // FIXME: very much the wrong thing to be testing on...
 # include <regex.h>
 #else
 extern "C" {
 # include <rxposix.h>
 }
-#endif
 #endif
 
 const int NUM_DEPTH_COLOURS = 13;
@@ -460,7 +457,13 @@ void MainFrm::CreateSidePanel()
 
     m_FindButtonSizer = new wxBoxSizer(wxHORIZONTAL);
     m_FindButtonSizer->Add(m_FindBox, 1, wxALL | wxEXPAND, 2);
+#ifdef _WIN32
+    m_FindButtonSizer->Add(m_FindButton, 0, wxALL | wxALIGN_RIGHT, 2);
+#else
+    // GTK+ (and probably Motif) default buttons have a thick external
+    // border we need to allow for
     m_FindButtonSizer->Add(m_FindButton, 0, wxALL | wxALIGN_RIGHT, 6);
+#endif
 
     m_HideButtonSizer = new wxBoxSizer(wxHORIZONTAL);
     m_HideButtonSizer->Add(m_Found, 1, wxALL | wxEXPAND, 2);
@@ -468,8 +471,8 @@ void MainFrm::CreateSidePanel()
 
     m_FindSizer = new wxBoxSizer(wxVERTICAL);
     m_FindSizer->Add(m_FindButtonSizer, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_RegexpCheckBox, 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(m_HideButtonSizer, 0, wxALL | wxEXPAND, 2);
+    m_FindSizer->Add(m_RegexpCheckBox, 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
     //   m_FindSizer->Add(m_MousePtr, 0, wxALL | wxEXPAND, 2);
     m_FindSizer->Add(m_Coords, 0, wxALL | wxEXPAND, 2);
@@ -1431,55 +1434,52 @@ void MainFrm::OnFind(wxCommandEvent& event)
     // Find stations specified by a string or regular expression.
 
     wxString str = m_FindBox->GetValue();
-#ifdef AVEN_REGEX
-    regex_t buffer;
-#endif
     bool regexp = m_RegexpCheckBox->GetValue();
-    int found = 0;
+    int cflags = REG_NOSUB | REG_ICASE;
 
     if (regexp) {
-#ifdef AVEN_REGEX
-        /* REG_ICASE for insensitive */
-        int errcode = regcomp(&buffer, str.c_str(),
-			      REG_EXTENDED|REG_NOSUB);
-        if (errcode) {
-	    size_t len = regerror(errcode, &buffer, NULL, 0);
-	    char *msg = new char[len];
-	    regerror(errcode, &buffer, msg, len);
-            wxGetApp().ReportError(msg);
-	    delete[] msg;
-            return;
-        }
-#endif
+        cflags |= REG_EXTENDED;
+    } else {
+        wxString pat;
+        for (size_t i = 0; i < str.size(); i++) {
+	   char ch = str[i];
+	   // ^ only special at start; $ at end.  But this is simpler...
+	   switch (ch) {
+	    case '^': case '$': case '*': case '.': case '[': case '\\':
+	      pat += '\\';
+	   }
+	   pat += ch;
+	}
+        str = pat;
+    }
+
+    regex_t buffer;
+    int errcode = regcomp(&buffer, str.c_str(), cflags);
+    if (errcode) {
+        size_t len = regerror(errcode, &buffer, NULL, 0);
+	char *msg = new char[len];
+	regerror(errcode, &buffer, msg, len);
+	wxGetApp().ReportError(msg);
+	delete[] msg;
+	return;
     }
 
     m_Gfx->ClearSpecialPoints();
 
     list<LabelInfo*>::iterator pos = m_Labels.begin();
 
+    int found = 0;
     while (pos != m_Labels.end()) {
         LabelInfo* label = *pos++;
         
-        if (regexp) {
-#ifdef AVEN_REGEX
-            if (regexec(&buffer, label->text.c_str(), 0, NULL, 0) == 0) {
-	       m_Gfx->AddSpecialPoint(label->x, label->y, label->z,
-				      col_YELLOW, 1);
-	       found++;
-            }
-#endif
-        } else {
-            if (label->text.Find(str) >= 0) {
-                m_Gfx->AddSpecialPoint(label->x, label->y, label->z,
-				       col_YELLOW, 1);
-                found++;
-            }
-        }
+        if (regexec(&buffer, label->text.c_str(), 0, NULL, 0) == 0) {
+	    m_Gfx->AddSpecialPoint(label->x, label->y, label->z,
+				   col_YELLOW, 1);
+	    found++;
+	}
     }
 
-#ifdef AVEN_REGEX
     if (regexp) regfree(&buffer);
-#endif
 
     m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found)); 
     m_Gfx->DisplaySpecialPoints();
