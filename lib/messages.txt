@@ -2305,6 +2305,7 @@ ca:202 No hi ha dades topogr&agrave;fiques en el fitxer 3d `%s'
 es:202 No hay datos topogr&aacute;ficos en el archivo 3d `%s'
 it:202 Nel file 3D `%s' non ci sono dati di topografia
 sk:202 V 3d s&uacute;bore `%s' nie s&uacute; &uacute;daje
+ro:202 Nu exista date de topografie in fisierul 3d `%s'
 #
 en:203 Facing
 fr:203 Direction
@@ -2314,6 +2315,7 @@ ca:203 Direcci&oacute;
 es:203 Direcci&oacute;n
 it:203 Direzione
 sk:203 Smer
+ro:203 Directie
 #
 en:204 Close
 fr:204 Fermer
@@ -2351,6 +2353,7 @@ ca:206 Selecciona un fitxer 3d per a visualitzar
 es:206 Selecciona un archivo 3d para visualizar
 it:206 Seleziona un file 3D da visualizzare
 sk:206 Vyberte 3D s&uacute;bor k zobrazeniu
+ro:206 Selectati un fisier 3d pentru vizualizare
 #
 en:207 Survex 3d files
 fr:207 Fichiers de donn&eacute;es Survex 3d
@@ -2361,6 +2364,7 @@ ca:207 Fitxers Survex 3d
 es:207 Archivos Survex 3d
 it:207 File Survex 3d
 sk:207 3D s&uacute;bory Survex
+ro:207 Fisier Survex 3d
 #
 en:208 All files
 fr:208 Tous les fichiers
@@ -2371,6 +2375,7 @@ ca:208 Tots els fitxers
 es:208 Todos los archivos
 it:208 Tutti i file
 sk:208 V&scaron;etky s&uacute;bory
+ro:208 Toate fisierele
 #
 # in the about box (summarising the purpose of aven)
 en:209 Survey visualisation tool
@@ -2406,6 +2411,7 @@ ca:212 @Orientaci&oacute;
 es:212 @Orientaci&oacute;n
 it:212 @Orientazione
 sk:212 @Orient&aacute;cia
+ro:212 @Orientare
 #
 en:213 @View
 fr:213 @Vue
@@ -2485,6 +2491,7 @@ ca:222 NEWLINE no pot ser el primer camp
 es:222 NEWLINE no puede ser el primer campo
 it:222 NEWLINE non pu&oacute; essere la prima lettura
 sk:222 NEWLINE nem&ocirc;&zcaron;e by&tcaron; prv&yacute; &uacute;daj
+ro:222 NEWLINE nu poate fi prima lectura
 # error from "*data normal from to tape compass clino newline"
 en:223 NEWLINE can't be the last reading
 fr:223 NEWLINE ne peut pas &ecirc;tre la derni&egrave;re valeur
@@ -2494,6 +2501,7 @@ ca:223 NEWLINE no pot ser el darrer camp
 es:223 NEWLINE no puede ser el &uacute;ltimo campo
 it:223 NEWLINE non pu&oacute; essere l'ultima lettura
 sk:223 NEWLINE nem&ocirc;&zcaron;e by&tcaron; posledn&yacute; &uacute;daj
+ro:223 NEWLINE nu poate fi ultima lectura
 # error from "*data normal station tape compass clino"
 en:224 Interleaved readings, but no NEWLINE
 fr:224 Donn&eacute;es sur plusieurs lignes, mais pas de NEWLINE
@@ -2503,6 +2511,8 @@ ca:224 Camps en m&eacute;s d'una l&iacute;nia, per&ograve; sense NEWLINE
 es:224 Campos en m&aacute;s de una linea, pero sin NEWLINE
 it:224 Letture su pi&uacute; linee, ma nessuna NEWLINE
 sk:224 Vlo&zcaron;en&eacute; &uacute;daje, ale nie NEWLINE
+#ro:224 Lectura ???
+#ro: i don't get the idea here. all the online dictionaries are down!
 # caused by e.g. "*data diving station newline depth tape compass"
 en:225 Reading `%s' must occur before NEWLINE
 fr:225 La donn&eacute;e `%s' doit appara&icirc;tre avant NEWLINE
@@ -2513,6 +2523,7 @@ ca:225 El camp `%s' ha de precedir NEWLINE
 es:225 El campo `%s' tiene que preceder a NEWLINE
 it:225 La lettura `%s' deve precedere NEWLINE
 sk:225 &Uacute;daj `%s' mus&iacute; predch&aacute;dza&tcaron; NEWLINE
+ro:225 Lectura `%s' trebuie sa preceada NEWLINE
 # e.g. "*data normal from to tape newline compass clino"
 en:226 NEWLINE can only be preceded by STATION, DEPTH, and COUNT
 fr:226 NEWLINE ne peut &ecirc; pr&eacute;c&eacute;d&eacute;e que par STATION, DEPTH, et COUNT
@@ -2522,6 +2533,7 @@ ca:226 NEWLINE sols pot ser precedit per STATION, DEPTH, i COUNT
 es:226 NEWLINE solo puede ser precedido por STATION, DEPTH, y COUNT
 it:226 NEWLINE pu&oacute; essere preceduto solamente da STATION, DEPTH e COUNT
 sk:226 NEWLINE m&ocirc;&zcaron;e by&tcaron; zpracovan&eacute; iba pri STATION, DEPTH, a COUNT
+ro:226 en:226 NEWLINE poate fi precedat doar de STATION, DEPTH, si COUNT
 #
 en:227 Can't calibrate angular and length quantities together
 fr:227 On ne peut pas calibrer les angles et les longueurs en m&ecirc;me temps
@@ -2531,6 +2543,7 @@ ca:227 No es poden calibrar quantitats angulars i de longitud juntes
 es:227 No se pueden calibrar cantidades angulares y de longitud juntas
 it:227 Le quantit&aacute; di lunghezza e angolari non possono essere calibrate insieme
 sk:227 Nie je mo&zcaron;n&eacute; nakalibrova&tcaron; uhlov&yacute;&eacute; a d&lacute;&zcaron;kov&eacute; &uacute;daje naraz
+ro:227 Nu pot calibra unghiurile verticale si lungimile in acelasi timp
 #
 en:228 Select a terrain file to view
 fr:228 S&eacute;lectionner un fichier de surface &agrave; visualiser
@@ -2540,6 +2553,8 @@ ca:228 Selecciona un fitxer de terreny per veure
 es:228 Selecciona un archivo de terreno para ver
 it:228 Seleziona un modello digitale del suolo da visualizzare
 sk:228 Vyber s&uacute;bor s povrchom k zobrazeniu
+ro:228 Selectati un model digital al terenului pentru vizualizare
+#ro: i used the italian translation here: terrain file = digital model. was it correct?
 #
 en:229 Terrain files
 fr:229 Fichiers de surface
@@ -2549,6 +2564,7 @@ ca:229 Fitxers de terreny
 es:229 Archivos de terreno
 it:229 File di modelli digitali del suolo
 sk:229 S&uacute;bory s povrchom
+ro:229 Model digital al terenului
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
@@ -2559,6 +2575,7 @@ ca:230 @Comen&ccedil;a la Rotaci&oacute;##Return
 es:230 @Empieza la Rotaci&oacute;n##Return
 it:230 @Avvia la rotazione##Return
 sk:230 @Za&ccaron;a&tcaron; rot&aacute;ciu##Return
+ro:230 @Porneste Rotatia##Return
 #
 en:231 S@top Rotation##Space
 fr:231 @Arr&ecirc;te la rotation##Space
@@ -2568,6 +2585,7 @@ ca:231 @Atura la rotaci&oacute;##Space
 es:231 @Detiene la rotaci&oacute;n##Space
 it:231 @Ferma la rotazione##Space
 sk:231 @Ukon&ccaron;i&tcaron; rot&aacute;ciu##Space
+ro:231 @Opreste rotatia##Space
 #
 en:232 Speed @Up
 fr:232 A@cc&eacute;l&egrave;re
@@ -2577,6 +2595,7 @@ ca:232 Acce@lera la rotaci&oacute;
 es:232 @Accelera la rotaci&oacute;n
 it:232 A@ccelera la rotazione
 sk:232 Z@r&yacute;chli&tcaron; rot&aacute;ciu
+ro:232 @Accelereaza rotatia
 #
 en:233 Slow @Down
 fr:233 @Ralenti
@@ -2586,6 +2605,7 @@ ca:233 @Ralenteix la rotaci&oacute;
 es:233 @Ralentiza la rotaci&oacute;n
 it:233 @Rallenta la rotazione
 sk:233 @Spomali&tcaron; rot&aacute;ciu
+ro:233 @Incetineste rotatia
 #
 en:234 @Reverse Direction
 fr:234 Direction @Inverse
@@ -2596,6 +2616,7 @@ ca:234 @Inverteix el sentit
 es:234 @Invierte el sentido
 it:234 @Inverte la direzione
 sk:234 @Oto&ccaron;i&tcaron; rot&aacute;ciu
+ro:234 @Schimba directia
 #
 en:235 Step Once @Anticlockwise
 fr:235 Pas &agrave; pas sens in@verse des aiguilles d'une montre
@@ -2605,6 +2626,9 @@ ca:235 Un pas en el sentit a@ntihorari
 es:235 Un paso en el senido a@ntihorario
 it:235 Un passo a@ntiorario
 sk:235 Jeden krok proti s@meru ot&aacute;&ccaron;ania hod&iacute;n
+ro:235 Un pas @In sens antiorar
+#ro: antiorar is somehow forced. a genuine translation would sound like 
+#ro: anticlockwise = in sens contrar acelor de ceasornic
 #
 en:236 Step Once @Clockwise
 fr:236 Pas &agrave; pas dans le @sens des aiguilles d'une montre
@@ -2614,6 +2638,7 @@ ca:236 Un pas en el sentit @horari
 es:236 Un paso en el senido @horario
 it:236 Un passo @Orario
 sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
+ro:236 Un pas @In sens orar
 # XXX 237 238 239
 #
 # The accelerators must be different within this group
@@ -2626,6 +2651,7 @@ ca:240 Vista cap al @Nord
 es:240 Vista hacia el @Norte
 it:240 Vista verso @Nord
 sk:240 Poh&lcaron;ad na @sever
+ro:240 Vizualizare spre @Nord
 # View *looking* East
 en:241 View @East
 fr:241 Vue vers l'@Est
@@ -2635,6 +2661,7 @@ ca:241 Vista cap al @Est
 es:241 Vista hacia el @Este
 it:241 Vista verso @Est
 sk:241 Poh&lcaron;ad na @v&yacute;chod
+ro:241 Vizualizare spre @Est
 # View *looking* South
 en:242 View @South
 fr:242 Vue vers le @Sud
@@ -2644,6 +2671,7 @@ ca:242 Vista cap al @Sud
 es:242 Vista hacia el @Sur
 it:242 Vista verso @Sud
 sk:242 Poh&lcaron;ad na @juh
+ro:242 Vizualizare spre @Sud
 # View *looking* West
 en:243 View @West
 fr:243 Vue vers l'@Ouest
@@ -2653,6 +2681,7 @@ ca:243 Vista cap a l'@Oest
 es:243 Vista hacia el @Oeste
 it:243 Vista verso @Ovest
 sk:243 Poh&lcaron;ad na @z&aacute;pad
+ro:243 Vizualizare spre @Vest
 #
 en:244 Shift Survey @Left
 fr:244 D&eacute;placement vers la @Gauche
@@ -2662,6 +2691,7 @@ ca:244 Mou la topograf&iacute;a cap a l'Es@querra
 es:244 Mueve la topografia hacia la iz@quierda
 it:244 Sposta il rilievo a Sin@istra
 sk:244 Posun&uacute;&tcaron; do@lava
+ro:244 Mutati topografia spre @Stanga
 #
 en:245 Shift Survey @Right
 fr:245 D&eacute;placement vers la @Droite
@@ -2671,6 +2701,7 @@ ca:245 Mou la topograf&iacute;a cap a la @Dreta
 es:245 Mueve la topografia hacia la @Derecha
 it:245 Sposta il rilievo a @Destra
 sk:245 Posun&uacute;&tcaron; dop@rava
+ro:245 Mutati topografia spre @Dreapta
 # TRANSLATE pt
 en:246 Shift Survey @Up
 fr:246 D&eacute;placement vers le @Haut
@@ -2681,6 +2712,7 @@ ca:246 Mou la topograf&iacute;a cap A@munt
 es:246 Mueve la topografia hacia Arr@@iba
 it:246 Sposta il rilievo verso l'@Alto
 sk:246 Posun&uacute;&tcaron; do@hora
+ro:246 Mutati topografia @In sus
 # TRANSLATE pt
 en:247 Shift Survey @Down
 fr:247 D&eacute;placement vers le @Bas
@@ -2691,6 +2723,7 @@ ca:247 Mou la topograf&iacute;a cap A@vall
 es:247 Mueve la topografia hacia A@bajo
 it:247 Sposta il @rilievo verso il Basso
 sk:247 Posun&uacute;&tcaron; @dolu
+ro:247 Mutati topografia @In jos
 #
 # c.f. 117
 en:248 @Plan View
@@ -2702,6 +2735,7 @@ ca:248 @Planta
 es:248 @Planta
 it:248 @Pianta
 sk:248 @P&ocirc;dorys
+ro:248 @Plan
 #
 # c.f. 118
 en:249 Ele@vation
@@ -2714,6 +2748,7 @@ ca:249 Al&ccedil;a@t
 es:249 Al@zado
 it:249 Pro@filo
 sk:249 R@ez
+ro:249 @Profil
 #
 en:250 @Higher Viewpoint
 fr:250 Point de vue plus Ha@ut
@@ -2723,6 +2758,7 @@ ca:250 Punt de vista m&eacute;s A@lt
 es:250 Punto de vista m&aacute;s A@lto
 it:250 A@lza il punto di vista
 sk:250 Zv&auml;&ccaron;&scaron;i&tcaron; @n&aacute;klon
+ro:250 @Punct de vizualizare mai inalt
 #
 en:251 L@ower Viewpoint
 fr:251 Point de vue plus B@as
@@ -2732,6 +2768,7 @@ ca:251 Punt de vista m&eacute;s @Baix
 es:251 Punto de vista m&aacute;s Ba@jo
 it:251 A@bbassa il punto di vista
 sk:251 Z@men&scaron;i&tcaron; n&aacute;klon
+ro:251 @Punct de vizualizare mai jos
 #
 en:252 @Zoom In##]
 # fr: or "Agrandir"
@@ -2773,6 +2810,7 @@ ca:254 Restablei@x els predeterminats
 es:254 Restaurar @valores predeterminados
 it:254 Ripristina i @valori predefiniti
 sk:254 Znov@u na v&yacute;chodzie hodnoty
+ro:254 @Restabiliti setarile initiale
 # XXX 255-269
 # The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
@@ -2784,6 +2822,7 @@ ca:270 @Noms d'estaci&oacute;##Ctrl+N
 es:270 @Nombres de estaci&oacute;n##Ctrl+N
 it:270 @Nome di stazione##Ctrl+N
 sk:270 @Men&aacute; bodov##Ctrl+N
+ro:270 @Numele punctelor de statie##Ctrl+N
 #
 en:271 @Crosses##Ctrl+X
 fr:271 @Croisements##Ctrl+X
@@ -2795,6 +2834,7 @@ it:271 @Croci##Ctrl+X
 sk:271 @Kr&iacute;&zcaron;iky##Ctrl+X
 #"Rezy" means cross sections, not crosses
 #sk:271 @Rezy##Ctrl+X
+ro:271 @Cruci##Ctrl+X
 #
 en:272 @Underground Survey Legs##Ctrl+L
 en-us:272 @Underground Shots##Ctrl+L
@@ -2806,6 +2846,7 @@ ca:272 @Tirades Subterr&agrave;nies##Ctrl+L
 es:272 @Tiradas Subterr&aacute;neas##Ctrl+L
 it:272 @Battute del rilievo sotterraneo##Ctrl+L
 sk:272 Z&aacute;mery @pod povrchom##Ctrl+L
+ro:272 @Portiuni subterane al topografiei##Ctrl+L
 # TRANSLATE pt
 en:273 @Overlapping Names
 fr:273 @Superposition des noms
@@ -2816,6 +2857,7 @@ ca:273 Noms @Sobreposats
 es:273 Nombres @Superpuestos
 it:273 Nomi @Sovrapposti
 sk:273 Pr@ekr&yacute;vaj&uacute;ce sa men&aacute;
+ro:273 @Nume suprapuse
 #
 en:274 @Compass
 fr:274 @Compas
@@ -2826,6 +2868,7 @@ ca:274 @Br&uacute;ixola
 es:274 @Br&uacute;jula
 it:274 @Bussola
 sk:274 @Kompas
+ro:274 @Busola
 #
 en:275 C@linometer
 fr:275 C@lino
@@ -2835,6 +2878,7 @@ ca:275 @Clino
 es:275 @Clino
 it:275 @Clinometro
 sk:275 @Sklonomer
+ro:275 @Clinometru
 #
 en:276 @Depth Bar
 fr:276 Barre de controle des @Profondeurs
@@ -2844,6 +2888,7 @@ ca:276 Barra de @Profunditat
 es:276 Barra de @Profundidad
 it:276 Barra di controllo della @Profondit&aacute;
 sk:276 @H&lacute;bkov&eacute; mer&iacute;tko
+ro:276 @Bara de control a adancimii
 #
 en:277 @Scale Bar
 fr:277 Barre de controle des @Echelles
@@ -2854,6 +2899,7 @@ ca:277 Barra d'@Escala
 es:277 Barra de @Escala
 it:277 Barra di controllo della @Scala
 sk:277 @Mer&iacute;tko
+ro:277 @Bara de control a scarii
 #
 # The accelerators must be different within this group
 en:280 @Reverse Sense##Ctrl+R
@@ -2864,6 +2910,7 @@ ca:280 @Inverteix el sentit##Ctrl+R
 es:280 @Invierte el sentido##Ctrl+R
 it:280 @Inverte il senso##Ctrl+R
 sk:280 Obr&aacute;ten&yacute; sme@r##Ctrl+R
+ro:280 @Schimbati sensul##Ctrl+R
 #
 en:281 @Cancel Measuring Line##Escape
 fr:281 @Annule la Ligne de Mesure##Escape
@@ -2873,8 +2920,10 @@ pt:281 @Cancelar linha de medida##Escape
 ca:281 @Cancel.la la lin&iacute;a de mesura##Escape
 es:281 @Cancela la linea de medida##Escape
 it:281 @Cancella la linea di misura##Escape
-sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
 #sk: Netu&scaron;&iacute;m o &ccaron;o ide
+sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
+ro:281 @Anulati linia de masura##Escape
+#ro: to find a better way to express that
 #
 # The accelerators must be different within this group
 # c.f. 205
@@ -2900,6 +2949,7 @@ ca:291 Tirades de topograf&iacute;a de super@f&iacute;cie##Ctrl+F
 es:291 Tiradas de topografia de super@ficie##Ctrl+F
 it:291 Battute topografia di Super@ficie##Ctrl+F
 sk:291 Z&aacute;mery @na povrchu##Ctrl+F
+ro:291 @Portiuni de suprafata ale topografiei##Ctrl+F
 #
 en:292 @Altitude Colouring on Surface Surveys
 en-us:292 @Altitude Coloring on Surface Surveys
@@ -2910,6 +2960,7 @@ ca:292 Colors per @Altitud en topograf&iacute;a de superf&iacute;cie
 es:292 Colores por @Altitud en topografia de superficie
 it:292 Rappresentazione delle @Quote mediante colori
 sk:292 Fare@bnos&tcaron; pod&lcaron;a v&yacute;&scaron;ky pre povrchov&eacute; z&aacute;mery
+ro:292 @Coloreaza in functie de altitudine Topografia de Suprafata
 #
 en:293 @Dashed Surface Surveys
 fr:293 Topos de surface @Hachur&eacute;es
@@ -2920,6 +2971,7 @@ ca:293 T@opograf&iacute;a de superf&iacute;cie amb tra&ccedil; discontinuat
 es:293 T@opografias de superficie con trazo discont&iacute;nuo
 it:293 Superficie topografica @Tratteggiata
 sk:293 &Ccaron;i@arkovan&eacute; povrchov&eacute; z&aacute;mery
+ro:293 @Topografia de suprafata prin linii punctate
 #
 en:294 Highlight @Entrances
 fr:294 Mise en valeur des @entr&egrave;es
@@ -2929,6 +2981,7 @@ ca:294 Marca les @Entrades
 es:294 Marca las @Entradas 
 it:294 Marca gli Ing@ressi
 sk:294 Zv&yacute;razni&tcaron; @vchody
+ro:294 Marcheaza @Intrarile
 #
 en:295 Highlight @Fixed Points
 en-us:295 Highlight Control @Points
@@ -2939,6 +2992,7 @@ ca:295 Marca els @Punts fixats
 es:295 Marca los @Puntos fijados
 it:295 Marca i @Punti fissi
 sk:295 Zv&yacute;razni&tcaron; @fixn&eacute; body
+ro:295 Marcheaza @Punctele Fixe
 #
 en:296 Highlight E@xported Points
 fr:296 Mise de valeur des points ex@port&eacute;s
@@ -2948,6 +3002,7 @@ ca:296 Marca els Punts E@xportats
 es:296 Marca los Puntos E@xportados
 it:296 Marca i punti @Esportati
 sk:296 Zv&yacute;razni&tcaron; e@xportovan&eacute; body
+ro:296 Marcheaza @Punctele Exportate
 #
 en:297 @Grid##Ctrl+G
 fr:297 @Grille##Ctrl+G
@@ -2957,7 +3012,8 @@ ca:297 @Graella##Ctrl+G
 es:297 @Rejilla##Ctrl+G
 it:297 @Griglia##Ctrl+G
 sk:297 @Sie&tcaron;##Ctrl+G
-ro:297 @Gril&abreve;##Ctrl+G
+#ro:297 @Gril&abreve;##Ctrl+G
+ro:297 @Grid##Ctrl+G
 #
 en:298 Smoo@thed Survey Legs
 en-us:298 Smoo@thed Survey Shots
@@ -2969,6 +3025,7 @@ ca:298 Tirades S@uavitzades
 es:298 Tiradas S@uavizadas
 it:298 Battute topografiche @ammorbidite
 sk:298 V@yrovnan&eacute; z&aacute;mery
+ro:298 Elementele topografiei @rotunjite
 #
 en:299 @Indicators
 fr:299 I@ndicateurs
@@ -3104,6 +3161,8 @@ ca:319 Selecciona un nom de fitxer de sortida
 es:319 Selecciona un nombre de archivo de salida
 it:319 Seleziona un file di uscita
 sk:319 Zvoli&tcaron; meno v&yacute;stupn&eacute;ho s&uacute;boru
+ro:319 Selectati un fisier pentru iesire
+#ro: still to check!
 #
 #
 # XXX 325 326 327
@@ -3115,6 +3174,7 @@ ca:328 Recerca infroctuosa.
 es:328 B&uacute;squeda infroctuosa.
 it:328 Nessun elemento trovato.
 sk:328 Ne&uacute;spe&scaron;n&eacute; h&lcaron;adanie.
+ro:328 Nici un element nua fost gasit.
 # number of stations found matching search
 en:331 %d found
 fr:331 %d trouv&eacute;e(s)
@@ -3124,6 +3184,7 @@ ca:331 %d trobades
 es:331 %d encontradas
 it:331 %d trovate
 sk:331 %d n&aacute;jden&yacute;ch
+ro:331 %d gasit
 # "Find stations" button label
 en:332 Find
 fr:332 Chercher
@@ -3144,6 +3205,7 @@ ca:333 Amaga
 es:333 Oculta
 it:333 Nascondi
 sk:333 Schova&tcaron;
+ro:333 Ascunde
 #zh:333 &#38544;&#34255;
 # checkbox for regular expression search
 en:334 Regular expression
@@ -3154,6 +3216,7 @@ ca:334 Expressi&oacute; regular
 es:334 Expressi&oacute;n regular
 it:334 Espressione regolare
 sk:334 Regular expression
+ro:334 Expresie normala
 #
 en:335 Altitude
 fr:335 Altitude
@@ -3173,6 +3236,7 @@ ca:336 Sols es pot visualitzar un fitxer 3d alhora.
 es:336 Solo se puede visualizar un archivo 3d a la vez.
 it:336 &Eacute; possibile visualizzare solamente un file 3D alla volta.
 sk:336 M&ocirc;&zcaron;ete prehliada&tcaron; iba jeden 3D s&uacute;bor
+ro:339 Puteti vizualiza doar un fisier 3d odata
 #
 en:337 @Side Panel
 fr:337 @Vue lat&eacute;rale
@@ -3182,6 +3246,8 @@ ca:337 @Recuadre Lateral
 es:337 @Panel Lateral
 it:337 @Riquadro Laterale
 sk:337 @Postrann&yacute; panel
+ro:337 @Cadran lateral
+#ro: still to check
 # show coordinates (N = North or Northing, E = East or Easting)
 en:338 "  %d E, %d N"
 fr:338 "  %d E, %d N"
@@ -3192,6 +3258,7 @@ ca:338 "  %d E, %d N"
 es:338 "  %d E, %d N"
 it:338 "  %d E, %d N"
 sk:338 "  %d V, %d S"
+ro:338 "  %d E, %d N"
 # Used in Aven:
 #  From <stationname>
 #  H: 123m V: 234m
@@ -3214,7 +3281,8 @@ ca:340 "  H %d%s, V %d%s"
 es:340 "  H %d%s, V %d%s"
 it:340 "  O %d%s, V %d%s"
 sk:340 "  V %d%s, &Scaron; %d%s"
-#
+#ro:340 "  H %d%s, V %d%s" 
+#ro: what means H & V?
 en:341 "  Dist %d%s, Brg %03d%s"
 fr:341 "  Dist %d%s, Azim %03d%s" 
 de:341 "  Dist %d%s, Richt. %03d%s"
@@ -3223,6 +3291,7 @@ ca:341 "  Dist %d%s, Azim %03d%s"
 es:341 "  Dist %d%s, Azim %03d%s"
 it:341 "  Dist %d%s, Azm. %03d%s"
 sk:341 "  Vzd %d%s, Azim %03d%s"
+ro:341 "  Dist %d%s, Azim %03d%s"
 # tickable menu item in View menu
 en:342 @Metric
 fr:342 @M&eacute;trique
@@ -3232,6 +3301,7 @@ ca:342 @Metric
 es:342 @Metrico
 it:342 @Metrico
 sk:342 @Metricky
+ro:342 @Metric
 # tickable menu item in View menu
 en:343 @Degrees
 fr:343 @Degr&eacute;s
@@ -3265,10 +3335,14 @@ es:345 g.cent
 #it:345 gradi centesimali
 it:345 g.cent.
 sk:345 gr&aacute;dy
+ro:345 gr.cent
+#ro: 345 grade centezimale
 #
 en:380 @Print...##Ctrl+P
+ro:380 @Imprimare...##Ctrl+P
 #
 en:381 P@age Setup...
+ro:381 P@age Setup...
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s
@@ -3278,6 +3352,7 @@ ca:500 Mogut per (%3.2f,%3.2f,%3.2f): %s
 es:500 Movido por (%3.2f,%3.2f,%3.2f): %s
 it:500 Spostato da (%3.2f,%3.2f,%3.2f): %s
 sk:500 Posun (%3.2f,%3.2f,%3.2f): %s
+ro:500 Mutat cu (%3.2f,%3.2f,%3.2f): %s
 #
 en:501 Added: %s
 fr:501 Ajout de: %s
@@ -3287,6 +3362,7 @@ ca:501 Afegit: %s
 es:501 A&ntilde;adido: %s
 it:501 Aggiunto: %s
 sk:501 Pridan&eacute;: %s
+ro:501 Adaugat: %s
 #
 en:502 Deleted: %s
 fr:502 Effac&eacute;: %s
@@ -3296,6 +3372,7 @@ ca:502 Esborrat: %s
 es:502 Borrado: %s
 it:502 Rimosso: %s
 sk:502 Zru&scaron;en&eacute;: %s
+ro:502 Eliminat: %s
 #
 # "don't extract" messages - these are compiled into the programs
 #
@@ -3307,6 +3384,7 @@ ca:1000 No s'ha pogut obrir el fitxer de missatge `%s' utilizant el cam&iacute; 
 es:1000 No se ha podido abrir el archivo de mensajes `%s' usando el cam&iacute;no `%s'
 it:1000 Impossibile aprire il file dei messaggi `%s' usando il percorso `%s'
 sk:1000 Ned&aacute; sa otvori&tcaron; s&uacute;bor spr&aacute;v `%s' s pou&zcaron;it&iacute;m cesty `%s'
+ro:1000 Nu pot deschide fisierul mesajelor `%s' folosind calea `%s'
 #
 en:1001 Problem with message file `%s'
 fr:1001 Probl&egrave;me avec le fichier de messages `%s'
@@ -3316,6 +3394,7 @@ ca:1001 Problema amb el fitxer de missatges `%s'
 es:1001 Problema con el archivo de mensajes `%s'
 it:1001 C'&eacute un problema con il file dei messaggi `%s'
 sk:1001 Probl&eacute;m so s&uacute;borom spr&aacute;v `%s'
+ro:1001 Problema cu fisierul mesajelor `%s'
 #
 en:1002 I don't understand this message file version
 fr:1002 Je ne comprends pas cette version de fichier de messages
@@ -3325,6 +3404,7 @@ ca:1002 No comprenc aquesta versi&oacute; del fixter de missatges
 es:1002 No comprendo esta versi&oacute;n del archivo de mensajes
 it:1002 Non riesco a comprendere questo file di messaggi
 sk:1002 Nerozumiem tejto verzii s&uacute;bora spr&aacute;v
+ro:1002 Nu inteleg versiunea acestui fisier de mesaje
 #
 en:1003 Message file truncated?
 fr:1003 Fichier de messages incomplet?
@@ -3334,6 +3414,7 @@ ca:1003 Fitxer de missatges truncat?
 es:1003 Archivo de mensajes truncado?
 it:1003 File dei messaggi troncato?
 sk:1003 S&uacute;bor spr&aacute;v nekompletn&yacute;?
+ro:1003 Fisier de mesaje incomplet
 # same as message 1
 en:1004 Out of memory (couldn't find %lu bytes).
 fr:1004 Plus de m&eacute;moire (%lu octets n&eacute;cessaires, non disponibles).
@@ -3343,3 +3424,4 @@ ca:1004 Mem&ograve;ria insuficient (es necessiten %lu bytes m&eacute;s).
 es:1004 Memoria insuficiente (se necesitan %lu bytes de m&aacute;s).
 it:1004 Memoria insufficiente (ci vorrebbero altri %lu bytes).
 sk:1004 Nedostatok pam&auml;te (ch&yacute;ba %lu bytov).
+ro:1004 Memorie insuficienta (ar trebui inca %lu byti).
