@@ -2676,6 +2676,15 @@ void GfxCore::OnZoomOutUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::OnIdle(wxIdleEvent& event)
 {
+    if (!m_Rotating && !m_SwitchingTo
+#ifdef AVENPRES
+	&& !(m_DoingPresStep >= 0 && m_DoingPresStep <= 100)
+#endif
+#ifdef AVENGL
+        && !(m_TerrainLoaded && floor_alt > -DBL_MAX && floor_alt <= HEAVEN)
+#endif
+       )
+	return;
     // Handle an idle event.
     static double last_t = 0;
     double t = timer.Time() * 1.0e-3;

@@ -1,6 +1,8 @@
 Changes in 1.0.9:
 
-* Fixed Direction reading - bug previously made it unusable.
+* aven: Fixed jerky start when auto-rotation begins.
+
+* cavern: Fixed Direction reading - bug previously made it unusable.
 
 * Updates to Slovak translation.
 
