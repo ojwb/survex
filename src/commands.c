@@ -35,12 +35,17 @@
 #include "out.h"
 #include "readval.h"
 #include "str.h"
+#ifdef NEW3DFORMAT
+#include "new3dout.h"
+#endif
 
 static void
 default_grade(settings *s)
 {
    s->Var[Q_POS] = (real)sqrd(0.10);
    s->Var[Q_LENGTH] = (real)sqrd(0.10);
+   s->Var[Q_COUNT] = (real)sqrd(0.10); /* FIXME ??? */
+   s->Var[Q_DX] = s->Var[Q_DY] = s->Var[Q_DZ] = (real)sqrd(0.10);
    s->Var[Q_BEARING] = (real)sqrd(rad(1.0));
    s->Var[Q_GRADIENT] = (real)sqrd(rad(1.0));
    /* SD of plumbed legs (0.25 degrees?) */
@@ -185,25 +190,32 @@ read_string(char **pstr, int *plen)
 
 #define MAX_KEYWORD_LEN 24
 
+static char ucbuffer[MAX_KEYWORD_LEN];
 static char buffer[MAX_KEYWORD_LEN];
 
-/* read token, giving error 'en' if it is too long and skipping line */
+/* read token */
 extern void
 get_token(void)
 {
    int j = 0;
    skipblanks();
    while (isalpha(ch)) {
-      if (j < MAX_KEYWORD_LEN) buffer[j++] = toupper(ch);
+      if (j < MAX_KEYWORD_LEN) {
+	 buffer[j] = ch;
+	 ucbuffer[j] = toupper(ch);
+	 j++;
+      }
       nextch();
    }
    if (j < MAX_KEYWORD_LEN) {
       buffer[j] = '\0';
+      ucbuffer[j] = '\0';
    } else {
       /* if token is too long, change end to "..." - that way it won't
        * match, but will look sensible in any error message */
       /* FIXME: this is naff, better to use resizing buffer */
       strcpy(buffer + MAX_KEYWORD_LEN - 4, "...");
+      strcpy(ucbuffer + MAX_KEYWORD_LEN - 4, "...");
    }
    /* printf("get_token() got "); puts(buffer); */
 }
@@ -221,7 +233,7 @@ match_tok(const sztok *tab, int tab_size)
    while (a <= b) {
       c = (unsigned)(a + b) / 2;
 /*     printf(" %d",c); */
-      r = strcmp(tab[c].sz, buffer);
+      r = strcmp(tab[c].sz, ucbuffer);
       if (r == 0) return tab[c].tok; /* match */
       if (r < 0)
 	 a = c + 1;
@@ -233,8 +245,8 @@ match_tok(const sztok *tab, int tab_size)
 
 typedef enum {CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_DATA,
    CMD_DEFAULT, CMD_END, CMD_EQUATE, CMD_FIX, CMD_INCLUDE, CMD_INFER,
-   CMD_LRUD, CMD_MEASURE, CMD_PREFIX, CMD_SD, CMD_SET, CMD_SOLVE, CMD_TITLE,
-   CMD_TRUNCATE, CMD_UNITS
+   CMD_LRUD, CMD_MEASURE, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET, CMD_SOLVE,
+   CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
  
 static sztok cmd_tab[] = {
@@ -251,6 +263,7 @@ static sztok cmd_tab[] = {
      {"LRUD",      CMD_LRUD},
      {"MEASURE",   CMD_MEASURE},
      {"PREFIX",    CMD_PREFIX},
+     {"REQUIRE",   CMD_REQUIRE},
      {"SD",        CMD_SD},
      {"SET",       CMD_SET},
      {"SOLVE",     CMD_SOLVE},
@@ -279,10 +292,13 @@ match_units(void)
 	{"YARDS",         UNITS_YARDS },
 	{NULL,            UNITS_NULL }
    };
-   int units;
-   units = match_tok(utab, TABSIZE(utab));
-   if (units == UNITS_NULL)
-      errorjmp(/*Unknown units*/35, strlen(buffer), file.jbSkipLine);
+   long fp = ftell(file.fh);
+   int units = match_tok(utab, TABSIZE(utab));
+   if (units == UNITS_NULL) {
+      fseek(file.fh, fp, SEEK_SET);
+      compile_error(/*Unknown units `%s'*/35, buffer);
+      skipline();
+   }
    if (units == UNITS_PERCENT) NOT_YET;
    return units;
 }
@@ -322,8 +338,10 @@ get_qlist(void)
       if (tok == Q_NULL) break;
       qmask |= BIT(tok);
    }
-   if (qmask == 0)
-      errorjmp(/*Unknown quantity*/34, strlen(buffer), file.jbSkipLine);
+   if (qmask == 0) {
+      compile_error(/*Unknown quantity `%s'*/34, buffer);
+      skipline();
+   }
    return qmask;
 }
 
@@ -350,8 +368,8 @@ set_chars(void)
    get_token();
    mask = match_tok(chartab, TABSIZE(chartab));
    if (!mask) {
-      compile_error(/*Unknown character class '%s'*/42, buffer);
-      showandskipline(NULL, (int)strlen(buffer));
+      compile_error(/*Unknown character class `%s'*/42, buffer);
+      skipline();
       return;
    }
    /* if we're currently using an inherited translation table, allocate a new
@@ -393,6 +411,16 @@ set_prefix(void)
 {
    prefix *tag = read_prefix(fFalse);
    pcs->Prefix = tag;
+#ifdef NEW3DFORMAT
+   if (fUseNewFormat) {
+     limb = get_twig(tag);
+     if (limb->up->sourceval < 1) {
+       osfree(limb->up->source);
+       limb->up->sourceval = 1;
+       limb->up->source = osstrdup(file.filename);
+     }
+   }
+#endif
    compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
    check_reentry(tag);
 }
@@ -416,16 +444,43 @@ begin_block(void)
       pcs->Prefix = tag;
       check_reentry(tag);
    }
+
+#ifdef NEW3DFORMAT
+   if (fUseNewFormat) {
+      limb = get_twig(pcs->Prefix);
+     if (limb->up->sourceval < 5) {
+       osfree(limb->up->source);
+       limb->up->sourceval = 5;
+       limb->up->source = osstrdup(file.filename);
+     }
+    }
+#endif
+}
+
+extern void
+free_settings(settings *pcs) {
+   /* don't free default ordering or ordering used by parent */
+   datum *order = pcs->ordering;
+   if (order != default_order && order != pcs->next->ordering) osfree(order);
+      
+   /* free Translate if not used by parent */
+   if (pcs->Translate != pcs->next->Translate) osfree(pcs->Translate - 1);
+
+   osfree(pcs);
 }
 
 static void
 end_block(void)
 {
    settings *pcsParent;
-   datum *order;
    prefix *tag, *tagBegin;
 
    pcsParent = pcs->next;
+#ifdef NEW3DFORMAT
+   if (fUseNewFormat) {
+     limb=get_twig(pcsParent->Prefix);
+   }
+#endif
 
    if (pcs->begin_lineno == 0) {
       if (pcsParent == NULL) {
@@ -438,26 +493,22 @@ end_block(void)
       return;
    }
 
-   ASSERT(pcsParent);
-   
-   /* don't free default ordering or ordering used by parent */
-   order = pcs->ordering;
-   if (order != default_order && order != pcsParent->ordering) osfree(order);
-      
-   /* free Translate if not used by parent */
-   if (pcs->Translate != pcsParent->Translate) osfree(pcs->Translate - 1);
-
    tagBegin = pcs->tag;
-   
-   osfree(pcs);
+
+   ASSERT(pcsParent);
+   free_settings(pcs);
    pcs = pcsParent;
 
    tag = read_prefix(fTrue); /* need to read using root *before* BEGIN */
    if (tag != tagBegin) {
       if (tag) {
-	 /* tag mismatch */
-	 /* FIXME: *begin / *end foo caught here too */
-	 compile_error(/*Prefix tag doesn't match BEGIN*/193);
+	 if (!tagBegin) {
+	    /* "*begin" / "*end foo" */
+	    compile_error(/*Matching BEGIN tag has no prefix*/36);
+	 } else {
+	    /* tag mismatch */
+	    compile_error(/*Prefix tag doesn't match BEGIN*/193);
+	 }
 	 skipline();
       } else {
 	 /* close tag omitted; open tag given */
@@ -473,10 +524,19 @@ fix_station(void)
    node *stn;
    static node *stnOmitAlready = NULL;
    real x, y, z;
+   bool fRef = 0;
+   long fp;
 
    fix_name = read_prefix(fFalse);
    stn = StnFromPfx(fix_name);
 
+   fp = ftell(file.fh);
+   get_token();
+   if (strcmp(ucbuffer, "REFERENCE") != 0) {
+      if (*ucbuffer) fseek(file.fh, fp, SEEK_SET);
+   } else {
+      fRef = 1;
+   }
    x = read_numeric(fTrue);
    if (x == HUGE_REAL) {
       if (stnOmitAlready) {
@@ -491,15 +551,69 @@ fix_station(void)
       x = y = z = (real)0.0;
       stnOmitAlready = stn;
    } else {
+      real sdx;
       y = read_numeric(fFalse);
       z = read_numeric(fFalse);
+      sdx = read_numeric(fTrue);
+      if (sdx != HUGE_REAL) {
+	 real sdy, sdz;
+	 sdy = read_numeric(fTrue);
+	 if (sdy == HUGE_REAL) {
+	    /* only one variance given */
+	    sdy = sdz = sdx;
+	 } else {
+	    sdz = read_numeric(fFalse);
+	    if (sdz == HUGE_REAL) {
+	       /* two variances given - horizontal & vertical */
+	       sdz = sdy;
+	       sdy = sdx;
+	    }
+	    /* FIXME: covariances... ? */
+	 }
+	 if (!fixed(stn)) {
+	    node *fixpt = osnew(node);
+	    prefix *name = osnew(prefix);
+	    name->ident = ""; /* root has ident[0] == "\" */
+	    fixpt->name = name;
+	    name->pos = osnew(pos);
+	    name->pos->shape = 0;
+	    name->stn = fixpt;
+	    name->up = NULL;
+	    add_stn_to_list(&stnlist, fixpt);	    
+	    POS(fixpt, 0) = x;
+	    POS(fixpt, 1) = y;
+	    POS(fixpt, 2) = z;
+	    fix(fixpt);
+	    addfakeleg(fixpt, stn, 0, 0, 0,
+		       sdx * sdx, sdy * sdy, sdz * sdz
+#ifndef NO_COVARIANCES
+		       , 0, 0, 0
+#endif
+		       );
+	    /* FIXME: unused fixed point warnings don't work for stations
+	     * fixed with sds (though they should) so fRef can be ignored
+	     * for now */
+	 }
+	 return;	 
+      }
    }
+
+   /* suppress "unused fixed point" warnings for this station */
+   if (fRef && fix_name->pos->shape == 0) fix_name->pos->shape = -1;
 
    if (!fixed(stn)) {
       POS(stn, 0) = x;
       POS(stn, 1) = y;
       POS(stn, 2) = z;
       fix(stn);
+#ifdef NEW3DFORMAT
+      if (fUseNewFormat) {
+	  fix_name->twig_link->from = fix_name; /* insert fixed point.. */
+	  fix_name->twig_link->to = NULL;
+	  /*	osfree(fix_name->twig_link->down);
+	   fix_name->twig_link->down = NULL; */
+      }
+#endif
       return;
    }
 
@@ -562,17 +676,22 @@ equate_list(void)
    prefix *name1, *name2;
    bool fOnlyOneStn = fTrue; /* to trap eg *equate entrance.6 */
 
-   name1 = read_prefix(fFalse);
+   name1 = read_prefix_check_implicit(fFalse);
    stn1 = StnFromPfx(name1);
    while (fTrue) {
       stn2 = stn1;
       name2 = name1;
-      name1 = read_prefix(fTrue);
+      name1 = read_prefix_check_implicit(fTrue);
       if (name1 == NULL) {
 	 if (fOnlyOneStn) {
 	    compile_error(/*Only one station in equate list*/33);
 	    skipline();
 	 }
+#ifdef NEW3DFORMAT
+	 if (fUseNewFormat) {
+	     limb=get_twig(pcs->Prefix);
+	 }
+#endif
 	 return;
       }
       
@@ -592,11 +711,11 @@ equate_list(void)
 	       for (d = 2; d >= 0; d--)
 		  if (name1->pos->p[d] != name2->pos->p[d]) {
 		     compile_error(/*Tried to equate two non-equal fixed stations*/52);
-		     showandskipline(NULL, 1);
+		     showandskipline(NULL, 0);
 		     return;
 		  }
 	       compile_warning(/*Equating two equal fixed points*/53);
-	       showline(NULL, 1);
+	       showline(NULL, 0);
 	    }
 
 	    /* stn1 is fixed, so replace all refs to stn2's pos with stn1's */
@@ -624,47 +743,67 @@ equate_list(void)
 static void
 data(void)
 {
-   /* FIXME: also BackComp, BackClino, Dx, Dy, Dz, FrCount, ToCount, Dr */
+   /* FIXME: also BackComp, BackClino, Dr */
    static sztok dtab[] = {
-#ifdef SVX_MULTILINEDATA
+#ifdef SVX_MULTILINEDATA /* NEW_STYLE */
 	{"BACK",         Back },
 #endif
 	{"BEARING",      Comp },
 	{"CLINO",        Clino }, /* alternative name */
 	{"COMPASS",      Comp }, /* alternative name */
+	{"DX",		 Dx },
+	{"DY",		 Dy },
+	{"DZ",		 Dz },
 	{"FROM",         Fr },
+	{"FROMCOUNT",    FrCount },
 	{"FROMDEPTH",    FrDepth },
 	{"GRADIENT",     Clino },
 	{"IGNORE",       Ignore },
 	{"IGNOREALL",    IgnoreAll },
 	{"LENGTH",       Tape },
-#ifdef SVX_MULTILINEDATA
+#ifdef SVX_MULTILINEDATA /* NEW_STYLE */
 	{"NEXT",         Next },
 #endif
 	{"TAPE",         Tape }, /* alternative name */
 	{"TO",           To },
+	{"TOCOUNT",      ToCount },
 	{"TODEPTH",      ToDepth },
 	{NULL,           End }
    };
 
-   static style fn[] = {data_normal, data_diving};
+   static style fn[] = {
+      data_normal,
+      data_normal,
+      data_diving,
+      data_cartesian,
+      data_nosurvey
+   };
 
    /* readings which may be given for each style */
    static ulong mask[] = {
       BIT(Fr) | BIT(To) | BIT(Tape) | BIT(Comp) | BIT(Clino),
-      BIT(Fr) | BIT(To) | BIT(Tape) | BIT(Comp) | BIT(FrDepth) | BIT(ToDepth)
+      BIT(Fr) | BIT(To) | BIT(FrCount) | BIT(ToCount) | BIT(Comp) | BIT(Clino),
+      BIT(Fr) | BIT(To) | BIT(Tape) | BIT(Comp) | BIT(FrDepth) | BIT(ToDepth),
+      BIT(Fr) | BIT(To) | BIT(Dx) | BIT(Dy) | BIT(Dz),
+      BIT(Fr) | BIT(To)
    };
 
    /* readings which may be omitted for each style */
    static ulong mask_optional[] = {
       BIT(Clino),
+      0,
+      BIT(Clino),
+      0,
       0
    };
 
    static sztok styletab[] = {
+	{"CARTESIAN",    STYLE_CARTESIAN },
 	{"DEFAULT",      STYLE_DEFAULT },
 	{"DIVING",       STYLE_DIVING },
 	{"NORMAL",       STYLE_NORMAL },
+	{"NOSURVEY",     STYLE_NOSURVEY },
+        {"TOPOFIL",      STYLE_TOPOFIL },
 	{NULL,           STYLE_UNKNOWN }
    };
 
@@ -684,13 +823,13 @@ data(void)
    }
 
    if (style == STYLE_UNKNOWN) {
-      compile_error(/*Bad STYLE*/65);
-      showandskipline(NULL, (int)strlen(buffer));
+      compile_error(/*STYLE `%s' unknown*/65, buffer);
+      skipline();
       return;
    }
 
    pcs->Style = fn[style - 1];
-#ifdef SVX_MULTILINEDATA
+#ifdef SVX_MULTILINEDATA /* NEW_STYLE */
    m = mask[style - 1] | BIT(Back) | BIT(Next) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
 #else
    m = mask[style - 1] | BIT(Ignore) | BIT(IgnoreAll) | BIT(End);
@@ -710,15 +849,16 @@ data(void)
       if (((m >> d) & 1) == 0) {
 	 /* token not valid for this data style */
 	 compile_error(/*%s: Datum not allowed for this style*/63, buffer);
+	 skipline();
 	 return;
       }
-#ifdef SVX_MULTILINEDATA
+#ifdef SVX_MULTILINEDATA /* NEW_STYLE */
       /* Check for duplicates unless it's a special datum:
        *   IGNORE,NEXT (duplicates allowed)
        *   END,IGNOREALL (not possible)
        */
       if (d == Next && (mUsed & BIT(Back))) {
-	 /* !HACK! "... back ... next ..." not allowed */
+	 /* FIXME: "... back ... next ..." not allowed */
       }
 # define mask_dup_ok (BIT(Ignore) | BIT(End) | BIT(IgnoreAll) | BIT(Next))
       if (!(mask_dup_ok & BIT(d))) {
@@ -730,13 +870,14 @@ data(void)
 	 cRealData++;
 	 if (cRealData > cData) {
 	    compile_error(/*Too many data*/66);
-	    showandskipline(NULL, (int)strlen(buffer));
+	    showandskipline(NULL, -(int)strlen(buffer));
 	    return;
 	 }
 # endif
 #endif
 	 if (mUsed & BIT(d)) {
-	    compile_error(/*Duplicate datum '%s'*/67, buffer);
+	    compile_error(/*Duplicate datum `%s'*/67, buffer);
+	    skipline();
 	    return;
 	 }
 	 mUsed |= BIT(d); /* used to catch duplicates */
@@ -752,6 +893,7 @@ data(void)
    if ((mUsed | mask_optional[style-1]) != mask[style-1]) {
       osfree(new_order);
       compile_error(/*Too few data*/64);
+      skipline();
       return;
    }
 
@@ -779,13 +921,16 @@ units(void)
    int units, quantity;
    ulong qmask, m; /* mask with bit x set to indicate quantity x specified */
    real factor;
+   long fp;
 
    qmask = get_qlist();
+   if (!qmask) return;
    if (qmask == BIT(Q_DEFAULT)) {
       default_units(pcs);
       return;
    }
 
+   fp = ftell(file.fh);
    /* If factor given then read units else units in buffer already */
    factor = read_numeric(fTrue);
    if (factor == HUGE_REAL) {
@@ -794,20 +939,22 @@ units(void)
    } else {
       /* eg check for stuff like: *UNITS LENGTH BOLLOX 3.5 METRES */
       if (*buffer != '\0') {
-	 compile_error(/*Unknown quantity*/34);
-	 showandskipline(NULL, (int)strlen(buffer));
+	 fseek(file.fh, fp, SEEK_SET);
+	 compile_error(/*Unknown quantity `%s'*/34, buffer);
+	 skipline();
 	 return;	 
       }
       get_token();
    }
 
    units = match_units();
+   if (units == UNITS_NULL) return;
    factor *= factor_tab[units];
 
    if (((qmask & LEN_QMASK) && !(BIT(units) & LEN_UMASK)) ||
        ((qmask & ANG_QMASK) && !(BIT(units) & ANG_UMASK))) {
       compile_error(/*Invalid units for quantity*/37);
-      showandskipline(NULL, (int)strlen(buffer));
+      showandskipline(NULL, -(int)strlen(buffer));
       return;
    }
    if (qmask & (BIT(Q_LENGTHOUTPUT) | BIT(Q_ANGLEOUTPUT)) ) {
@@ -824,36 +971,41 @@ calibrate(void)
    ulong qmask, m;
    int quantity;
    qmask = get_qlist();
+   if (!qmask) return;
    if (qmask == BIT(Q_DEFAULT)) {
       default_calib(pcs);
       return;
    }
    /* useful check? */
    if (((qmask & LEN_QMASK)) && ((qmask & ANG_QMASK))) {
-      /* mixed angles/lengths */
+      /* FIXME: mixed angles/lengths */
    }
-   /* check for things with no valid calibration (like station posn) !HACK! */
-#if 0
-   /*FIXME*/ compile_error(/*Unknown instrument*/39);
-   showandskipline(NULL, (int)strlen(buffer));
-   return;
-#endif
+   /* check for things with no valid calibration (like station posn) */
+   if (qmask & (BIT(Q_DEFAULT)|BIT(Q_POS)|BIT(Q_LENGTHOUTPUT)
+		|BIT(Q_ANGLEOUTPUT)|BIT(Q_PLUMB)|BIT(Q_LEVEL))) {
+      compile_error(/*Unknown instrument `%s'*/39, buffer);
+      skipline();
+      return;
+   }
    z = read_numeric(fFalse);
-   sc = read_numeric(fTrue);
-   /* check for declination scale !HACK! */
-#if 0
-   /*FIXME*/
-   compile_error(/*Scale factor must be 1.0 for DECLINATION*/40); showandskipline(NULL, 0);
-#endif
+   sc = read_numeric(fTrue);   
    if (sc == HUGE_REAL) sc = (real)1.0;
-   for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1)
+   /* check for declination scale */
+   /* perhaps "*scale declination XXX" should be "*declination XXX" ? */
+   if ((qmask & BIT(Q_DECLINATION)) && sc != 1.0) {
+      compile_error(/*Scale factor must be 1.0 for DECLINATION*/40);
+      skipline();
+      return;
+   }
+   for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1) {
       if (qmask & m) {
-	 pcs->z[quantity] = pcs->units[quantity]*z;
+	 pcs->z[quantity] = pcs->units[quantity] * z;
 	 pcs->sc[quantity] = sc;
       }
+   }
 }
 
-#define EQ(S) streq(buffer, (S))
+#define EQ(S) streq(ucbuffer, (S))
 static void
 set_default(void)
 {
@@ -867,8 +1019,8 @@ set_default(void)
    } else if (EQ("UNITS")) {
       default_units(pcs);
    } else {
-      compile_error(/*Unknown setting*/41);
-      showandskipline(NULL, (int)strlen(buffer));
+      compile_error(/*Unknown setting `%s'*/41, buffer);
+      skipline();
    }
 }
 #undef EQ
@@ -895,6 +1047,11 @@ include(void)
    data_file(pth, fnm);
 
    root = root_store; /* and restore root */
+#ifdef NEW3DFORMAT
+   if (fUseNewFormat) {
+       limb = get_twig(root);
+   }
+#endif
    file = file_store;
    ch = ch_store;
 
@@ -910,20 +1067,22 @@ set_sd(void)
    ulong qmask, m;
    int quantity;
    qmask = get_qlist();
+   if (!qmask) return;
    if (qmask == BIT(Q_DEFAULT)) {
       default_grade(pcs);
       return;
    }
    sd = read_numeric(fFalse);
    if (sd < (real)0.0) {
-      /* complain about negative sd !HACK! */
+      /* FIXME: complain about negative sd */
    }
    get_token();
    units = match_units();
+   if (units == UNITS_NULL) return;
    if (((qmask & LEN_QMASK) && !(BIT(units) & LEN_UMASK)) ||
        ((qmask & ANG_QMASK) && !(BIT(units) & ANG_UMASK))) {
       compile_error(/*Invalid units for quantity*/37);
-      showandskipline(NULL, (int)strlen(buffer));
+      showandskipline(NULL, -(int)strlen(buffer));
       return;
    }
 
@@ -965,7 +1124,8 @@ case_handling(void)
    if (setting != -1) {
       pcs->Case = setting;
    } else {
-      compile_error(/*Expected `OFF', `UPPER', or `LOWER'*/10, buffer);
+      compile_error(/*Found `%s', expecting `OFF', `UPPER', or `LOWER'*/10,
+		    buffer);
       skipline();
    }
 }
@@ -992,14 +1152,16 @@ infer(void)
    get_token();
    setting = match_tok(infer_tab, TABSIZE(infer_tab));
    if (setting == -1) {
-      compile_error(/*Expecting `PLUMBS'*/31, buffer);
+      compile_error(/*Found `%s', expecting `PLUMBS'*/31, buffer);
       skipline();
+      return;
    }
    get_token();
    on = match_tok(onoff_tab, TABSIZE(onoff_tab));
    if (on == -1) {
-      compile_error(/*Expecting `ON' or `OFF'*/32, buffer);
+      compile_error(/*Found `%s', expecting `ON' or `OFF'*/32, buffer);
       skipline();
+      return;
    }
    
    switch (setting) {
@@ -1019,30 +1181,55 @@ infer(void)
 static void
 set_truncate(void)
 {
-   int truncate_at = 0; /* default is no truncation */
-   /* FIXME: this really is *not* the way to do this */
-   skipblanks();
-   if (toupper(ch) != 'O') {
-      truncate_at = (int)read_numeric(fFalse); /* FIXME: really want +ve int... */
-   } else {
-      nextch();
-      if (toupper(ch) == 'F') {
-	 nextch();
-	 if (toupper(ch) == 'F') {
-	    nextch();
-	 } else {
-	    ch = 'F';
-	    read_numeric(fFalse);
-	    NOT_YET;	       
-	 }
-      } else {
-	 ch = 'O';
-	 read_numeric(fFalse);
-	 NOT_YET;	       
-      }      
+   unsigned int truncate_at = 0; /* default is no truncation */
+   long fp = ftell(file.fh);
+   get_token();
+   if (strcmp(ucbuffer, "OFF") != 0) {
+      if (*ucbuffer) fseek(file.fh, fp, SEEK_SET);
+      truncate_at = read_uint();
    }
    /* for backward compatibility, "*truncate 0" means "*truncate off" */
-   pcs->Truncate = (truncate_at < 1) ? INT_MAX : truncate_at;
+   pcs->Truncate = (truncate_at == 0) ? INT_MAX : truncate_at;
+}
+
+static void
+require(void)
+{
+   static char version[] = VERSION;
+   char *p = version;
+   long fp;
+   char ch_old;
+   skipblanks();
+   ch_old = ch;
+   fp = ftell(file.fh);
+   while (1) {
+      unsigned int have, want;
+      have = strtoul(p, &p, 10);
+      want = read_uint();
+      if (have > want) break;
+      if (have < want) {
+	 size_t i, len;
+	 char *v;
+	 /* find end of version number */
+	 while (isdigit(ch) || ch == '.') nextch();
+	 len = ftell(file.fh) - fp;
+	 v = osmalloc(len + 1);
+	 fseek(file.fh, fp, SEEK_SET);
+	 ch = ch_old;
+	 for (i = 0; i < len; i++) {
+	    v[i] = ch;
+	    nextch();
+	 }
+	 v[i] = '\0';
+	 fatalerror_in_file(file.filename, file.line, /*Survex version %s or greater required to process this survey data.*/2, v);
+      }
+      if (ch != '.') break;
+      nextch();
+      if (!isdigit(ch) || *p != '.') break;
+      p++;
+   }
+   /* skip rest of version number */
+   while (isdigit(ch) || ch == '.') nextch();
 }
 
 extern void
@@ -1069,13 +1256,14 @@ handle_command(void)
     case CMD_UNITS: units(); break;
     case CMD_BEGIN: begin_block(); break;
     case CMD_END: end_block(); break;
+    case CMD_REQUIRE: require(); break;
     case CMD_SOLVE: solve_network(/*stnlist*/); break;
     case CMD_SD: set_sd(); break;
     case CMD_SET: set_chars(); break;
     case CMD_TITLE: set_title(); break;
     case CMD_TRUNCATE: set_truncate(); break;
     default:
-      compile_error(/*Unknown command in data file - line ignored*/12);
-      showandskipline(NULL, strlen(buffer));
-   }  
+      compile_error(/*Unknown command `%s'*/12, buffer);
+      skipline();
+   }
 }

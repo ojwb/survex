@@ -1,6 +1,6 @@
 /* > filelist.h
  * Filenames, extensions, etc used by Survex system
- * Copyright (C) 1993,1994,1996 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,11 @@
 
 # define EXT_SVX_DATA "/svx" /* allows files to be read from DOS discs */
 # define EXT_SVX_3D   "/3d"
+
+#ifdef NEW3DFORMAT
+# define EXT_SVX_3DX  "/3dx"
+#endif
+
 # define EXT_SVX_ERRS "/err"
 # define EXT_SVX_STAT "/inf"
 # define EXT_SVX_POS  "/pos"
@@ -41,6 +46,11 @@
 # define ERRSTAT_FILE "errstats.txt"
 # define STATS_FILE   "stats.txt"
 # define IMAGE_FILE   "image.3d"
+
+#ifdef NEW3DFORMAT
+# define NEW_IMAGE_FILE  "image.3dx"
+#endif
+
 # define POSLIST_FILE "poslist.txt"
 # define MESSAGE_FILE "messages.txt"
 
@@ -48,6 +58,11 @@
 
 # define EXT_SVX_DATA ".svx"
 # define EXT_SVX_3D   ".3d"
+
+#ifdef NEW3DFORMAT
+# define EXT_SVX_3DX  ".3dx"
+#endif
+
 # define EXT_SVX_ERRS ".err"
 # define EXT_SVX_STAT ".inf"
 # define EXT_SVX_POS  ".pos"

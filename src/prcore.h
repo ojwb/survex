@@ -34,7 +34,7 @@ typedef struct {
    const char * (*Name)(void); /* returns "Widgetware printer" or whatever */
    /* A NULL fn ptr is Ok for Init, Alloc, NewPage, ShowPage, Free, Quit */
    /* if Alloc==NULL, it "returns" 1 */
-   void (*Init)(FILE *fh, const char *pth, float *pscX, float *pscY);
+   void (*Init)(FILE **fh_list, const char *pth, float *pscX, float *pscY);
    int  (*Pre)(int pagesToPrint, const char *title);
    void (*NewPage)(int pg, int pass, int pagesX, int pagesY);
    void (*MoveTo)(long x, long y);
@@ -57,3 +57,5 @@ extern int as_bool(char *p);
 extern float as_float(char *p, float min_val, float max_val);
 int as_escstring(char *s);
 char *as_string(char *p);
+
+char **prcore_read_ini(char *section, char **vars);

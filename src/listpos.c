@@ -1,6 +1,6 @@
 /* > listpos.c
  * SURVEX Cave surveying software: stuff to do with stn position output
- * Copyright (C) 1991-1995 Olly Betts
+ * Copyright (C) 1991-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,8 +87,10 @@ p_pos(prefix *p)
 # ifdef PRINT_STN_ORDER
       /* NB this patch from Leandro Dybal Bertoni <LEANDRO@trieste.fapesp.br>
        * will confuse diffpos a lot so is off by default */
+      int shape = p->pos->shape;
+      if (shape < 0) shape = 0;
       fprintf(fhPosList, "%2d (%8.2f, %8.2f, %8.2f ) ",
-	      p->pos->shape, p->pos->p[0], p->pos->p[1], p->pos->p[2]);
+	      shape, p->pos->p[0], p->pos->p[1], p->pos->p[2]);
 # else
       fprintf(fhPosList, "(%8.2f, %8.2f, %8.2f ) ",
 	      p->pos->p[0], p->pos->p[1], p->pos->p[2]);
@@ -109,13 +111,18 @@ node_stat(prefix *p)
    if (p->pos && pfx_fixed(p)) {
       int order;
       order = p->pos->shape;
-      if (!order) warning(/*Unused fixed point '%s'*/73, sprint_prefix(p));
+      if (!order) warning(/*Unused fixed point `%s'*/73, sprint_prefix(p));
+      if (order < 0) order = 0;
       if (order >= icOrderMac) {
 	 int c = order * 2;
 	 cOrder = osrealloc(cOrder, c * ossizeof(int));
 	 while (icOrderMac < c) cOrder[icOrderMac++] = 0;
       }
       cOrder[order]++;
+      if (p->fSuspectTypo) {
+	 warning(/*Station refered to just once, with an explicit prefix - typo?*/70,
+		 sprint_prefix(p));
+      }
    }
 }
 
@@ -140,8 +147,8 @@ print_node_stats(FILE *fh)
 	 char buf[256];
 	 sprintf(buf, "%4d %d-%s.", cOrder[c], c,
 		 msg(cOrder[c] == 1 ? /*node*/176 : /*nodes*/177));
-	 out_puts(buf);
-	 fputsnl(buf, fh);
+	 if (!fQuiet) out_puts(buf);
+	 if (!fSuppress) fputsnl(buf, fh);
       }
    }
 #endif

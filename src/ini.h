@@ -1,6 +1,6 @@
 /* > ini.h
  * .ini file routines
- * Copyright (C) 1995 Olly Betts
+ * Copyright (C) 1995-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,15 @@
 
 #include <stdio.h>
 
-/* section is the section of the ini file to read from
+/* fh_list is a NULL terminated array of FILE*-s of ini files
+ * section is the section of the ini file to read from
  * vars is a list of variables to read (terminated by NULL)
  * returns a list of values with NULL for "not found" (not terminated)
  */
-char **ini_read(FILE *fh, char *section, char **vars);
+char **ini_read(FILE **fh_list, char *section, char **vars);
 
-/* very similar to ini_read, but recursively tries the section indicated
- * by "like=..." until it finds the variable or finds no "like=..."
+/* very similar to ini_read, but recursively tries the section named by
+ * the first read parameter until it finds the variable or finds no
+ * recursive field
  */
-char **ini_read_hier(FILE *fh, char *section, char **vars);
+char **ini_read_hier(FILE **fh_list, char *section, char **vars);

@@ -3,7 +3,7 @@
 /* Converts a .3d file to a DXF file */
 /* Also useful as an example of how to use the img code in your own programs */
 
-/* Copyright (C) 1994,1995,2000 Olly Betts
+/* Copyright (C) 1994-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ main(int argc, char **argv)
    double text_height; /* for station labels */
    double marker_size; /* for station markers */
 
-   /* FIXME TRANSLATE */
+   /* TRANSLATE */
    static const struct option long_opts[] = {
 	/* const char *name; int has_arg (0 no_argument, 1 required, 2 options_*); int *flag; int val */
 	{"no-crosses", no_argument, 0, 'c'},
@@ -79,7 +79,7 @@ main(int argc, char **argv)
 
 #define short_opts "cnlt:m:h"
 
-   /* FIXME TRANSLATE */
+   /* TRANSLATE */
    static struct help_msg help[] = {
 	{HLP_ENCODELONG(0), "do not generate station markers"},
 	{HLP_ENCODELONG(1), "do not generate station labels"},

@@ -1,6 +1,6 @@
 /* > armrot.h
  * Caverot plot & translate headers for RISCOS - armrot.s contains ARM code
- * Copyright (C) 1993,1994,1995,1997 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,6 @@
  */
 
 #define Y_UP 1 /* Arc has Y increasing up screen */
-
-typedef int coord;  /* type of data used once data is read in */
-
-#define COORD_MAX   INT_MAX
-#define COORD_MIN   INT_MIN
 
 #define FIXED_PT_POS   16
 

@@ -1,7 +1,6 @@
 /* > dosrot.h
  * header for caverot plot & translate routines for MS-DOS
- * Copyright (C) 1993-1997 Olly Betts
- * Also for the Atari ST (unfinished)
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-typedef long coord;  /* data type used after data is read in */
-
-#define COORD_MAX   LONG_MAX
-#define COORD_MIN   LONG_MIN
-
 #define FIXED_PT_POS     16 /* position of fixed decimal point in word */
 
 #define RED_3D           (9)  /* colours for 3d view effect */
@@ -37,31 +31,3 @@ typedef long coord;  /* data type used after data is read in */
 #define CURSOR_RIGHT (0x14d)
 #define CURSOR_DOWN  (0x150)
 #define CURSOR_UP    (0x148)
-
-#ifdef NO_FUNC_PTRS
-
-/* really plebby version (needed if fn pointers won't fit in a coord) */
-# define MOVE (coord)1
-# define DRAW (coord)2
-# define STOP (coord)0
-
-#elif defined(HAVE_SETJMP)
-
-/* for speed, store function ptrs in table */
-
-# define MOVE (coord)(cvrotgfx_moveto)
-# define DRAW (coord)(cvrotgfx_lineto)
-# define STOP (coord)(stop)
-
-/* prototype so STOP macro will work */
-extern void stop(int X, int Y);
-
-#else
-
-/* for speed, store function ptrs in table */
-
-# define MOVE (coord)(cvrotgfx_moveto)
-# define DRAW (coord)(cvrotgfx_lineto)
-# define STOP (coord)NULL
-
-#endif

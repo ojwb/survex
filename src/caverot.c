@@ -1,6 +1,6 @@
 /* > caverot.c
  * Reads in SURVEX .3d image files & allows quick rotation and examination
- * Copyright (C) 1990,1993-1997 Olly Betts
+ * Copyright (C) 1990,1993-2000 Olly Betts
  * Portions Copyright (C) 1993 Wookey
  *
  * This program is free software; you can redistribute it and/or modify
@@ -175,13 +175,13 @@ main(int argc, char **argv)
 {
    enum { LEGS, STNS, LABS, DONE } item = LEGS;
 
+   set_codes(MOVE, DRAW, STOP);
+
    msg_init(argv[0]);
 
    puts("Survex cave rotator v"VERSION"\n  "COPYRIGHT_MSG);
 
-/*#include "expire.h"*/
-
-   /* !HACK! check return value */ cvrotgfx_parse_cmdline(&argc, argv);
+   /* FIXME: check return value */ cvrotgfx_parse_cmdline( &argc, argv );
    parse_command(argc, argv);
 
    /* these aren't in set_defaults() 'cos we don't want DELETE to reset them */
@@ -211,7 +211,7 @@ main(int argc, char **argv)
    /* can't do this until after we've initialised the graphics */
    scDefault = scale_to_screen(ppLegs, ppStns);
 
-   /* Check if we've got a flat plot aligned perpedicular to an axis */
+   /* Check if we've got a flat plot aligned perpendicular to an axis */
    locked = 0;
    if (Xrad == 0) locked = 1;
    if (Yrad == 0) locked = 2;
@@ -282,9 +282,8 @@ main(int argc, char **argv)
 	      }
 	      set_tcolour(colText);
 	      sprintf(sz, (elev == 90.0f) ? szPlan : szElev, degView);
-	      text_xy(0, 0, sz); /* outtextxy(8, 0, sz); */
+	      text_xy(0, 0, sz);
 	      draw_scale_bar();
-	      /* fprintf(fhDbug, "Drawing %s view\n", (elev == 90.0f) ? "plan" : "side"); */
 	      cvrotgfx_post_main_draw();
 	   } else {
 	      switch (item) {
@@ -364,7 +363,7 @@ process_key(void) /* and mouse! */
       if (dt < 1) dt = 1;
       tsc = (float)dt * (10.0f / CLOCKS_PER_SEC);
       if (tsc > 1000.0f) {
-	 cvrotgfx_beep(/*!HACK!*/);
+	 cvrotgfx_beep(); /* FIXME: do something more sensible */
 	 tsc = 1000.0f;
       }
       fRedraw = fFalse;
@@ -613,7 +612,7 @@ show_help(void)
 {
    /* help text stored as static array of strings, and printed as graphics
     *  to the screen */
-   /* FIXME: TRANSLATE */
+   /* TRANSLATE */
    static flagged_msg help_msgs[] = {
 	{"                  Z,X : Faster/Slower rotation", FLAG_ALWAYS},
 	{"                    R : [R]everse direction of rotation", FLAG_ALWAYS},
@@ -774,11 +773,8 @@ cmdline_load_files(int argc, char **argv)
    return NULL;
 }
 
-/**************************************************************************/
-/**************************************************************************/
-
 #if (OS==RISCOS)
-/* !HACK! this should really be in "armrot.c" */
+/* FIXME: this should really be in "armrot.c" */
 void
 do_translate(lid *plid, coord dX, coord dY, coord dZ)
 {

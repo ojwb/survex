@@ -166,8 +166,8 @@ sub init_riscos {
       'CC' => 'cc',
       'OBJEXT' => 'o',
       'EXEEXT' => '',
-      'EXTRARULES' => 
-         "armrot.o: armrot.s\n\tobjasm -ThrowBack -Stamp -quit -CloseExec -from s.armrot -to o.armrot\n\n",	 
+      'EXTRARULES' =>
+         "armrot.o: armrot.s\n\tobjasm -ThrowBack -Stamp -quit -CloseExec -from s.armrot -to o.armrot\n\n",
    );
    $max_leaf_len = 10;
    $use_rsp = 0;

@@ -8,7 +8,6 @@ for (@ARGV) {
    my $f = $_;
    if (s!^(.*)\.([chs])$!$2.$1!) {
       $f =~ s!\.!/!;
-#      $f = substr($f, 0, 10);
       print "*Rename $f $_\n";
    }
 }

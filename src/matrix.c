@@ -1,6 +1,6 @@
 /* > matrix.c
  * Matrix building and solving routines
- * Copyright (C) 1993-1999 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,10 +125,12 @@ build_matrix(node *list, long n, pos **stn_tab)
    B = osmalloc((OSSIZE_T)(n * FACTOR * ossizeof(real)));
 
    out_puts("");
-   if (n == 1)
-      out_puts(msg(/*Solving one equation*/78));
-   else {
-      out_printf((msg(/*Solving %d simultaneous equations*/75), n));
+   if (!fQuiet) {
+     if (n == 1)
+       out_puts(msg(/*Solving one equation*/78));
+     else {
+       out_printf((msg(/*Solving %d simultaneous equations*/75), n));
+     }
    }
 
 #ifdef NO_COVARIANCES
@@ -471,7 +473,7 @@ sor(real FAR *M, real *B, long n)
 
    threshold = 0.00001;
 
-   printf("reciprocating diagonal\n"); /*FIXME to msg file */
+   printf("reciprocating diagonal\n"); /* TRANSLATE */
 
    /* munge diagonal so we can multiply rather than divide */
    for (row = n - 1; row >= 0; row--) {
@@ -479,7 +481,7 @@ sor(real FAR *M, real *B, long n)
       X[row] = 0;
    }
 
-   printf("starting iteration\n"); /*FIXME*/
+   printf("starting iteration\n"); /* TRANSLATE */
 
    do {
       /*printf("*");*/
@@ -503,7 +505,7 @@ sor(real FAR *M, real *B, long n)
       BUG("iteration stinks");
    }
 
-   printf("%ld iterations\n", it); /*FIXME*/
+   printf("%ld iterations\n", it); /* TRANSLATE */
 
 #if 0
    putnl();
@@ -520,7 +522,7 @@ sor(real FAR *M, real *B, long n)
    for (row = n - 1; row >= 0; row--) B[row] = X[row];
 
    osfree(X);
-   printf("\ndone\n"); /*FIXME*/
+   printf("\ndone\n"); /* TRANSLATE */
 }
 #endif
 

@@ -1,7 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl
-SUBDIRS = hto src lib doc tests
+EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES
+
+DIST_SUBDIRS = hto src lib doc tests
+SUBDIRS = hto src lib @DOC@ tests
 
 extra_bin = lib/*.msg lib/pfont.bit
 extra_txt = lib/*.svx lib/print.ini

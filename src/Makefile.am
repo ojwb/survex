@@ -5,7 +5,7 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  getopt.h img.h ini.h labels.h listpos.h matrix.h message.h netartic.h\
  netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h uni2dos.h useful.h\
- validate.h whichos.h xrot.h
+ validate.h whichos.h xrot.h new3dout.h
 
 LDADD = @LIBOBJS@
 
@@ -18,7 +18,7 @@ bin_PROGRAMS = cavern $(PRINT) diffpos extend survex 3dtodxf @CAVEROT@ \
 cavern_SOURCES = cavern.c message.c filename.c listpos.c commands.c\
  cmdline.c getopt.c getopt1.c datain.c netskel.c network.c readval.c str.c\
  matrix.c img.c osdepend.c netbits.c useful.c validate.c\
- netartic.c
+ netartic.c new3dout.c
 
 survex_SOURCES = wrap.c osdepend.c
 

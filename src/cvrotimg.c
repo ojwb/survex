@@ -1,7 +1,7 @@
 /* > cvrotimg.c
  * Reads a .3d image file into two linked lists of blocks, suitable for use
  * by caverot.c
- * Copyright (C) 1993-1999 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,11 +31,13 @@
 #include "message.h"
 #include "filelist.h"
 #include "img.h"
-#include "caverot.h"
 #include "cvrotimg.h"
-#if (OS!=UNIX)
+#if (OS != UNIX)
 # include "cvrotgfx.h"
 #endif
+
+coord Xorg, Yorg, Zorg; /* position of centre of survey */
+coord Xrad, Yrad, Zrad; /* "radii" */
 
 /* Allocate a large block of this size for labels rather than malloc-ing
  * each individually so avoiding malloc space overhead.
@@ -48,14 +50,23 @@
 /* Note: data in file in metres. 100.0 below stores to nearest cm */
 static float factor = (float)(100.0/SHRINKAGE);
 
+static coord move = 1, draw = 2, stop = 0;
+
+extern void
+set_codes(coord move_, coord draw_, coord stop_)
+{
+   move = move_;
+   draw = draw_;
+   stop = stop_;
+}
+
 /* add elt and return new list head */
 static lid Huge *
-AddLid(lid Huge *plidHead, point Huge *pData, int datatype)
+AddLid(lid Huge *plidHead, point Huge *pData)
 {
    lid Huge *plidNew, Huge *plid;
    plidNew = osnew(lid);
    plidNew->pData = pData;
-   plidNew->datatype = datatype;
 #if 0
    /* for adding to start */
    plidNew->next = plidHead;
@@ -118,14 +129,14 @@ load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns)
        case img_BAD:
          break;
        case img_MOVE:
-         pLegData[cLeg]._.action = (coord)MOVE;
+         pLegData[cLeg]._.action = move;
     	 pLegData[cLeg].X = (coord)(x * factor);
     	 pLegData[cLeg].Y = (coord)(y * factor);
 	 pLegData[cLeg].Z = (coord)(z * factor);
 	 cLeg++;
     	 break;
        case img_LINE:
-         pLegData[cLeg]._.action = (coord)DRAW;
+         pLegData[cLeg]._.action = draw;
     	 pLegData[cLeg].X = (coord)(x * factor);
     	 pLegData[cLeg].Y = (coord)(y * factor);
 	 pLegData[cLeg].Z = (coord)(z * factor);
@@ -142,8 +153,7 @@ load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns)
       	    p = osmalloc(size);
     	 else {
       	    if (size > left) {
-               /* !HACK! we waste the rest of the block
-                * could realloc it down */
+               /* FIXME: we waste the rest of the block - realloc it down? */
                pBlock = osmalloc(STRINGBLOCKSIZE);
                left = STRINGBLOCKSIZE;
       	    }
@@ -164,14 +174,14 @@ load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns)
        }
       }
       if (cLeg >= cLegMac) {
-         pLegData[cLeg]._.action = (coord)STOP;
-         plidLegHead = AddLid(plidLegHead, pLegData, DATA_LEGS);
+         pLegData[cLeg]._.action = stop;
+         plidLegHead = AddLid(plidLegHead, pLegData);
          pLegData = osmalloc(ossizeof(point) * (cLegMac + 1));
          cLeg = 0;
       }
       if (cStn >= cStnMac) {
          pStnData[cStn]._.str = NULL;
-         plidStnHead = AddLid(plidStnHead, pStnData, DATA_STNS);
+         plidStnHead = AddLid(plidStnHead, pStnData);
          pStnData = osmalloc(ossizeof(point) * (cStnMac + 1));
          cStn = 0;
       }
@@ -179,24 +189,21 @@ load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns)
 
    img_close(pimg);
 
-   pLegData[cLeg]._.action = (coord)STOP;
+   pLegData[cLeg]._.action = stop;
    pStnData[cStn]._.str = NULL;
 
-   *ppLegs = AddLid(plidLegHead, pLegData, DATA_LEGS);
-   *ppStns = AddLid(plidStnHead, pStnData, DATA_STNS);
+   *ppLegs = AddLid(plidLegHead, pLegData);
+   *ppStns = AddLid(plidStnHead, pStnData);
 
    return (result != img_BAD); /* return fTrue iff image was OK */
 }
-
-coord Xorg, Yorg, Zorg; /* position of centre of survey */
-coord Xrad, Yrad, Zrad; /* "radii" */
 
 #define BIG_SCALE 1e3f
 
 static bool
 last_leg(point Huge *p)
 {
-   return (p->_.action == STOP);
+   return (p->_.action == stop);
 }
 
 static bool
@@ -205,10 +212,9 @@ last_stn(point Huge *p)
    return (p->_.str == NULL);
 }
 
-extern int xcMac, ycMac; /* FIXME */
-
 float
-scale_to_screen(lid Huge **pplid, lid Huge **pplid2)
+scale_to_screen(lid Huge **pplid, lid Huge **pplid2,
+		int xcMac, int ycMac, double y_stretch)
 {
    /* run through data to find max & min points */
    coord Xmin, Xmax, Ymin, Ymax, Zmin, Zmax; /* min & max values of co-ords */

@@ -1,6 +1,6 @@
 /* > caverot.h
  * Data structures and #defines for cave rotator
- * Copyright (C) 1993-1995,1997 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,26 +52,7 @@ extern float scDefault;
 
 extern bool fAllNames;
 
-/* Data structures */
-typedef struct {
-   union {
-      coord action; /* plot option for this point - draw/move/endofdata */
-      char *str; /* string for a label */
-   } _;
-   coord X, Y, Z;  /* coordinates */
-} point;
-
-typedef struct LID {
-   int datatype;
-   point Huge *pData;
-   struct LID Huge *next;
-} lid; /* List Item Data */
-
 #include "cvrotimg.h"
-
-/* These are the datatype-s */
-#define DATA_LEGS 0
-#define DATA_STNS 1
 
 #if 0
 typedef struct {

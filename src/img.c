@@ -1,6 +1,6 @@
 /* > img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-1997 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,16 +91,16 @@ put32(long w, FILE *fh)
 static int
 getline(char *buf, size_t len, FILE *fh)
 {
-   /* FIXME len ignored here at present */
    int i = 0;
    int ch;
 
    ch = getc(fh);
-   while (ch != '\n' && ch != '\r' && ch != EOF) {
+   while (ch != '\n' && ch != '\r' && ch != EOF && i < len - 1) {
       buf[i++] = ch;
       ch = getc(fh);
    }
-   if (ch != EOF) { /* remove any further eol chars (for DOS) */
+   if (ch == '\n' || ch == '\r') {
+      /* remove any further eol chars (for DOS text files) */
       do {
 	 ch = getc(fh);
       } while (ch == '\n' || ch == '\r');
@@ -174,7 +174,7 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
    if (!streq(pimg->fBinary ? szTmp + 1 : szTmp, "v0.01")) {
       fclose(pimg->fh);
       osfree(pimg);
-      img_errno = IMG_BADFORMAT; /* FIXME ought to distinguish really */
+      img_errno = IMG_BADFORMAT;
       return NULL;
    }
    /* FIXME sizeof parameter is rather bogus here */
@@ -312,7 +312,7 @@ void
 img_write_datum(img *pimg, int code, const char *sz,
 		float x, float y, float z)
 {
-   if (!pimg) return; /* FIXME: should die */
+   if (!pimg) return;
    if (pimg->fBinary) {
       float Sc = (float)100.0; /* Output in cm */
       long opt = 0;
@@ -368,7 +368,6 @@ void
 img_close(img *pimg)
 {
    if (pimg) {
-      /* FIXME: should complain if pimg is NULL */
       if (pimg->fh) {
 	 /* If writing a binary file, write end of data marker */   
 	 if (pimg->fBinary && !pimg->fRead) put32(-1L, pimg->fh);

@@ -57,7 +57,7 @@
 static const char *hpgl_Name(void);
 static int hpgl_Pre(int pagesToPrint, const char *title);
 static void hpgl_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void hpgl_Init(FILE *fh, const char *pth, float *pscX, float *pscY);
+static void hpgl_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
 static void hpgl_MoveTo(long x, long y);
 static void hpgl_DrawTo(long x, long y);
 static void hpgl_DrawCross(long x, long y);
@@ -98,7 +98,7 @@ static char *fontname, *fontname_labels;
 static const char *ps_Name(void);
 static int ps_Pre(int pagesToPrint, const char *title);
 static void ps_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void ps_Init(FILE *fh, const char *pth, float *pscX, float *pscY);
+static void ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
 static void ps_MoveTo(long x, long y);
 static void ps_DrawTo(long x, long y);
 static void ps_DrawCross(long x, long y);
@@ -411,9 +411,9 @@ ps_ShowPage(const char *szPageDetails)
 /* Initialise HPGL/PS printer routines */
 static void
 #ifdef HPGL
-hpgl_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
+hpgl_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #else
-ps_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
+ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #endif
 {
    char *fnmPrn;
@@ -453,9 +453,9 @@ ps_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
    pth = pth; /* shut-up warning */
 
 #ifdef HPGL
-   vals = ini_read_hier(fh, "hpgl", vars);
+   vals = ini_read_hier(fh_list, "hpgl", vars);
 #else
-   vals = ini_read_hier(fh, "ps", vars);
+   vals = ini_read_hier(fh_list, "ps", vars);
 #endif
 
    if (vals[2]) 

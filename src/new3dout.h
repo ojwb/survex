@@ -1,6 +1,6 @@
-/* > readval.h
- * Header file for routines to read a datum from the current input file
- * Copyright (C) 1991-2000 Olly Betts
+/* > new3dout.h
+ * Header file for .3dx writing routines
+ * Copyright (C) 2000 Phil Underwood
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-extern prefix *read_prefix(bool fOmit);
-extern prefix *read_prefix_check_implicit(bool fOmit);
-extern real read_numeric(bool fOmit);
-extern unsigned int read_uint(void);
+#include <stdio.h>
+#include "cavern.h"
+#include "img.h"
+#include "3ddefs.h"
+
+#ifdef NEW3DFORMAT
+
+void cave_write_stn(node*);
+void cave_write_leg(linkfor*);
+void cave_write_source(const char *source);
+void cave_write_title(const char*, img*);
+img  *cave_open_write(const char*, const char*);
+void cave_close();
+int cave_error(void);
+void create_twig(prefix *pre, const char *fname); /* return a new current_limb... */
+twig *get_twig(prefix *pre); /* return the active twig of a prefix */
+extern char fUseNewFormat;
+
+#endif

@@ -133,7 +133,8 @@ pt:  1 Mem&oacute;ria insuficiente (s&atilde;o necesss&aacute;rios mais %lu byte
 ca:  1 Mem&ograve;ria insuficient (es necessiten %lu bytes m&eacute;s).
 es:  1 Memoria insuficiente (se necesitan %lu bytes de m&aacute;s).
 it:  1 Memoria insufficiente (ci vorrebbero altri %lu bytes).
-#XXX2
+# FIXME: translate fr de pt ca es it
+en:  2 Survex version %s or greater required to process this survey data.
 #XXX3
 # indicates a warning message e.g. "spoon.svx:12: warning: *prefix is deprecated"
 en:  4 warning
@@ -160,13 +161,14 @@ fr:  6 *prefix n'est plus utilis&eacute; - employer *begin et *end &agrave; la p
 de:  6 *prefix ist veraltet - stattdessen *begin und *end verwenden
 pt:  6 *prefix descontinuado - use *begin e *end em seu lugar
 it:  6 *prefix &eacute sconsigliato - usare invece *begin e *end
-en:  7 Character not allowed in station name
-fr:  7 Caract&egrave;re interdit dans un nom de station
-de:  7 Unerlaubtes Zeichen in Me&szlig;punktname
-pt:  7 Caracter n&atilde;o permitido em nome de base
-ca:  7 Car&agrave;cter no perm&egrave;s al nom d'una estaci&oacute;
-es:  7 Car&aacute;cter no permitido en el nombre de una estaci&oacute;n
-it:  7 Carattere non permesso nel nome di stazione
+# FIXME fr de pt ca es it - check addition of `%c' fits with translations, add *set names reference
+en:  7 Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)
+fr:  7 Caract&egrave;re `%c' interdit dans un nom de station
+de:  7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname
+pt:  7 Caracter `%c' n&atilde;o permitido em nome de base
+ca:  7 Car&agrave;cter `%c' no perm&egrave;s al nom d'una estaci&oacute;
+es:  7 Car&aacute;cter `%c' no permitido en el nombre de una estaci&oacute;n
+it:  7 Carattere `%c' non permesso nel nome di stazione
 en:  8 Field may not be omitted
 fr:  8 Champ non optionnel
 de:  8 Eintragung fehlt
@@ -181,7 +183,8 @@ pt:  9 Valor num&eacute;rico esperado
 ca:  9 S'espera un camp numeric
 es:  9 Se espera un campo num&eacute;rico
 it:  9 Questo campo &eacute; numerico
-en: 10 Expecting `OFF', `UPPER', or `LOWER'
+#FIXME translate "Found `%s'," fr ge pt ca es it (c.f. 31 and 32)
+en: 10 Found `%s', expecting `OFF', `UPPER', or `LOWER'
 fr: 10 On attendait `OFF', `UPPER', ou `LOWER'
 # NB there is no comma before "oder"
 de: 10 `OFF', `UPPER' oder `LOWER' erwartet
@@ -196,14 +199,14 @@ pt: 11 Erro no programa! Por favor, comunique aos autores
 ca: 11 Error detectat al programa! Si us plau comunica-ho als autors
 es: 11 Error detectado en el programa! Por favor comun&iacute;calo a los autores
 it: 11 Individuato un errore nel programma! Per favore comunicatelo agli autori
-en: 12 Unknown command in data file - line ignored
-fr: 12 Commande inconnue dans le fichier de donn&eacute;es - ligne ignor&eacute;e
-#germ: 12 Unbekanntes Kommando in der Datendatei, entsprechende Zeile wurde ignoriert
-de: 12 Unbekanntes Kommando in der Datendatei - Zeile wurde ignoriert
-pt: 12 Comando desconhecido no arquivo de dados - linha ignorada
-ca: 12 Comandament desconegut en fitxer de dades - l&iacute;nia ignorada
-es: 12 Comando desconocido en fichero de datos - l&iacute;nea ignorada
-it: 12 Comando sconosciuto nel file dei dati - linea ignorata
+# FIXME check fr de pt ca es it (c.f. old12 at end of file)
+en: 12 Unknown command `%s'
+fr: 12 Commande inconnue `%s'
+de: 12 Unbekanntes Kommando `%s'
+pt: 12 Comando desconhecido `%s'
+ca: 12 Comandament desconegut `%s'
+es: 12 Comando desconocido `%s'
+it: 12 Comando sconosciuto `%s'
 #FIXME translate ca es
 en: 13 Station equated to itself
 fr: 13 Une station ne doit pas &ecirc;tre d&eacute;clar&eacute;e "&eacute;gale" &agrave elle-m&ecirc;me
@@ -297,7 +300,7 @@ it: 24 Non riesco ad aprire il file dei dati '%s'
 #XXX26
 #XXX27
 #XXX28
-# FIXME TRANSLATE
+# FIXME TRANSLATE fr de pt ca es it
 en: 29 Reentering an existing prefix level is deprecated (previously entered at %s:%lu)
 en: 30 Unknown command
 fr: 30 Commande inconnue
@@ -306,15 +309,16 @@ pt: 30 Comando desconhecido
 ca: 30 Comandament desconegut
 es: 30 Comando desconocido
 it: 30 Comando sconosciuto
-# 31 c.f. 10
-en: 31 Expecting `PLUMBS'
+# 31 c.f. 10, 32 FIXME TRANSLATE fr de pt ca es it
+en: 31 Found `%s', expecting `PLUMBS'
 fr: 31 On attendait `PLUMBS'
 de: 31 `PLUMBS' erwartet
 pt: 31 Esperando `PLUMBS'
 ca: 31 Esperant `PLUMBS'
 es: 31 Esperando `PLUMBS'
 it: 31 Atteso `PLUMBS'
-en: 32 Expecting `ON' or `OFF'
+# 32 c.f. 10, 31 FIXME TRANSLATE fr de pt ca es it
+en: 32 Found `%s', expecting `ON' or `OFF'
 fr: 32 On attendait `ON' ou `OFF'
 de: 32 `ON' oder `OFF' erwartet
 pt: 32 Esperando `ON' ou `OFF'
@@ -329,22 +333,27 @@ pt: 33 Somente uma base na lista de equival&ecirc;ncia
 ca: 33 Sols una estaci&oacute; a la llista d'equival&egrave;ncia
 es: 33 Solo una estaci&oacute;n en la lista de equivalencia
 it: 33 Solo una stazione nella lista di equivalenza
-en: 34 Unknown quantity
-fr: 34 Quantit&eacute; inconnue
-de: 34 Unbekannte Gr&ouml;&szlig;e
-pt: 34 Tipo de quantidade desconhecida
-ca: 34 Quantitat desconeguda
-es: 34 Cantidad desconocida
-it: 34 Quantit&aacute; sconosciuta
-en: 35 Unknown units
-fr: 35 Unit&eacute; inconnue
-#germ: 35 Unbekannte Einheiten
-de: 35 Unbekannte Einheit(en)
-pt: 35 Unidade desconhecida
-ca: 35 Unitats desconegudes
-es: 35 Unidades desconocidas
-it: 35 Unit&aacute; sconosciute
-#XXX36
+# FIXME fr de pt ca es it - check addition of `%s' fits with translations
+en: 34 Unknown quantity `%s'
+fr: 34 Quantit&eacute; `%s' inconnue
+de: 34 Unbekannte Gr&ouml;&szlig;e `%s'
+pt: 34 Tipo de quantidade `%s' desconhecida
+ca: 34 Quantitat `%s' desconeguda
+es: 34 Cantidad `%s' desconocida
+it: 34 Quantit&aacute; `%s' sconosciuta
+# FIXME fr de pt ca es it - check addition of `%s' fits with translations
+en: 35 Unknown units `%s'
+fr: 35 Unit&eacute; `%s' inconnue
+#germ: 35 Unbekannte `%s' Einheiten
+de: 35 Unbekannte `%s' Einheit(en)
+pt: 35 Unidade `%s' desconhecida
+ca: 35 Unitats `%s' desconegudes
+es: 35 Unidades `%s' desconocidas
+it: 35 Unit&aacute; `%s' sconosciute
+# FIXME TRANSLATE fr de pt ca es it
+# "*begin" / "*end foo"
+en: 36 Matching BEGIN tag has no prefix
+#
 en: 37 Invalid units for quantity
 fr: 37 Unit&eacute; incorrecte pour une quantit&eacute;
 de: 37 Unpassende Einheit f&uuml;r diese Gr&ouml;&szlig;e
@@ -362,13 +371,14 @@ pt: 38 Mem&oacute;ria insuficiente %.0s
 ca: 38 Mem&ograve;ria insuficient %.0s
 es: 38 Mem&oacute;ria insuficiente %.0s
 it: 38 Memoria insufficiente %.0s
-en: 39 Unknown instrument
-fr: 39 Instrument inconnu
-de: 39 Unbekanntes Instrument
-pt: 39 Instrumento desconhecido
-ca: 39 Instrument desconegut
-es: 39 Instrumento desconocido
-it: 39 Strumento sconosciuto
+# FIXME fr de pt ca es it - check addition of `%s' fits with translations
+en: 39 Unknown instrument `%s'
+fr: 39 Instrument `%s' inconnu
+de: 39 Unbekanntes Instrument `%s'
+pt: 39 Instrumento `%s' desconhecido
+ca: 39 Instrument `%s' desconegut
+es: 39 Instrumento `%s' desconocido
+it: 39 Strumento `%s' sconosciuto
 # DECLINATION is a built-in keyword, so best not to translate
 en: 40 Scale factor must be 1.0 for DECLINATION
 fr: 40 Le facteur d'&eacute;chelle doit &ecirc;tre &eacute;gal &agrave; 1.0 pour DECLINATION
@@ -378,15 +388,16 @@ pt: 40 Fator de escala tem que ser 1.0 para comando DECLINATION
 ca: 40 El factor d'escala ha d'&egrave;sser 1.0 pel comandament DECLINATION
 es: 40 El factor de escala debe ser 1.0 para el comando DECLINATION
 it: 40 Il fattore di scala per il comando DECLINATION deve essere 1.0
-en: 41 Unknown setting
-fr: 41 Param&egrave;tres inconnus
-#germ: 41 Unbekannter Parameter
-de: 41 Unbekannte (ung&uuml;ltige) Einstellung
-pt: 41 Configura&ccedil;&atilde;o desconhecida
-ca: 41 Configuraci&oacute; desconeguda
-es: 41 Configuraci&oacute;n desconocida
-it: 41 Parametro sconosciuto
-#ital: 41 Configurazione sconosciuta
+# FIXME fr de pt ca es it - check addition of `%s' fits with translations
+en: 41 Unknown setting `%s'
+fr: 41 Param&egrave;tres `%s' inconnus
+#germ: 41 Unbekannter Parameter `%s'
+de: 41 Unbekannte (ung&uuml;ltige) Einstellung `%s'
+pt: 41 Configura&ccedil;&atilde;o `%s' desconhecida
+ca: 41 Configuraci&oacute; `%s' desconeguda
+es: 41 Configuraci&oacute;n `%s' desconocida
+it: 41 Parametro `%s' sconosciuto
+#ital: 41 Configurazione `%s' sconosciuta
 en: 42 Unknown character class `%s'
 fr: 42 Classe de caract&egrave;re inconnue `%s'
 de: 42 Unbekannte Zeichenklasse `%s'
@@ -574,13 +585,14 @@ it: 64 Mancano dati
 #ital: 64 Troppo pochi dati
 # e.g. trying to refer to an invalid FNORD data style
 # GN(3): ie unknown STYLE?  ok, rephrasing.
-en: 65 Bad STYLE
-fr: 65 STYLE non reconnu
-de: 65 STYLE unbekannt
-pt: 65 STYLE com problemas
-ca: 65 STYLE no v&agrave;lid
-es: 65 STYLE incorrecto
-it: 65 STYLE scorretto
+# FIXME fr de pt ca es it - check addition of `%s' fits with translations
+en: 65 STYLE `%s' unknown
+fr: 65 STYLE `%s' non reconnu
+de: 65 STYLE `%s' unbekannt
+pt: 65 STYLE `%s' com problemas
+ca: 65 STYLE `%s' no v&agrave;lid
+es: 65 STYLE `%s' incorrecto
+it: 65 STYLE `%s' scorretto
 #XXX66
 # complains about a situation like trying to define two from stations per leg
 en: 67 Duplicate datum '%s'
@@ -606,7 +618,8 @@ pt: 69 Falta &quot;
 ca: 69 Manca &quot;
 es: 69 Falta &quot;
 it: 69 Manca &quot;
-#XXX70
+# FIXME: TRANSLATE: fr de pt ca es it
+en: 70 Station `%s' refered to just once, with an explicit prefix - typo?
 en: 71 The following survey stations are not attached to a fixed point:
 fr: 71 Les stations topo suivantes ne sont pas attach&eacute;s &agrave; des points fixes:
 de: 71 Die folgenden Vermessungspunkte haben keine festen Koordinaten:
@@ -622,13 +635,13 @@ ca: 72 "La topografia no te punts fixats. Tanmateix he fixat %s a (0,0,0)"
 es: 72 "La topografia no tiene puntos fijados. De todos modos he fijado %s en (0,0,0)"
 it: 72 "La topografia non ha punti fissi. Quindi %s &eacute; stata fissata a (0,0,0)"
 # fixed station that is not part of any traverse
-en: 73 "Unused fixed point '%s'"
-fr: 73 "Point fixe non utilis&eacute; '%s'"
-de: 73 "Festpunkt nicht verwendet '%s'"
-pt: 73 "Base posicionada n&atilde;o usada '%s'"
-ca: 73 "Punt fixat no utilitzat '%s'"
-es: 73 "Punto fijado no utilizado '%s'"
-it: 73 "Punto fisso non usato '%s'"
+en: 73 Unused fixed point `%s'
+fr: 73 Point fixe non utilis&eacute; `%s'
+de: 73 Festpunkt nicht verwendet `%s'
+pt: 73 Base posicionada n&atilde;o usada `%s'
+ca: 73 Punt fixat no utilitzat `%s'
+es: 73 Punto fijado no utilizado `%s'
+it: 73 Punto fisso non usato `%s'
 en: 74 Network solved by reduction - no simultaneous equations to solve.
 fr: 74 Syst&egrave;me resolu par r&eacute;duction - pas d'&eacute;quations simultan&eacute;s &agrave; r&eacute;soudre.
 de: 74 Netzausgleichung gel&ouml;st durch Reduktion - kein Gleichungssystem erforderlich.
@@ -684,13 +697,13 @@ ca: 81 Error a l'inicialitzar la placa gr&agrave;fica
 es: 81 Error al inicializar la placa gr&aacute;fica
 it: 81 Errore d'inizializzazione della scheda grafica
 # a bit vague I know
-en: 82 Bad command line parameters
-fr: 82 Mauvais param&egrave;tres dans la ligne de commande
-de: 82 Kommandozeilenparameter unbekannt oder fehlerhaft
-pt: 82 Par&acirc;metros de linha de comando com problemas
-ca: 82 Par&agrave;metres dolents a la l&iacute;nia de comandaments
-es: 82 Par&aacute;metros err&oacute;neos en la l&iacute;nea de comandos
-it: 82 Parametro della linea dei comandi errato
+#en: 82 Bad command line parameters
+#fr: 82 Mauvais param&egrave;tres dans la ligne de commande
+#de: 82 Kommandozeilenparameter unbekannt oder fehlerhaft
+#pt: 82 Par&acirc;metros de linha de comando com problemas
+#ca: 82 Par&agrave;metres dolents a la l&iacute;nia de comandaments
+#es: 82 Par&aacute;metros err&oacute;neos en la l&iacute;nea de comandos
+#it: 82 Parametro della linea dei comandi errato
 en: 83 Scale to fit on 1 page
 fr: 83 Mettre &agrave; l'&eacute;chelle pour tenir en 1 page
 # somewhat clumsily, but anything else would require a subordinate
@@ -745,7 +758,7 @@ de: 88 Formatfehler in der Zeichensatzdatei '%s'
 pt: 88 Erro no formato do arquivo de fontes '%s'
 ca: 88 Error en el format del fitxer de fonts '%s'
 es: 88 Error en el formato del fichero de fuentes '%s'
-#FIXME: "del del" is probably not correct
+#FIXME: "del del" is probably not correct in italian: it
 it: 88 Errore nel formato del del file dei caratteri '%s'
 #ital: 88 Errore nel formato del font file '%s'
 # cf no. 84.
@@ -867,13 +880,13 @@ pt:102 Olhando em dire&ccedil;&atilde;o a %05.1f
 ca:102 Vista en direcci&oacute; %05.1f
 es:102 Vista en direcci&oacute;n %05.1f
 it:102 Vista in direzione %05.1f
-en:103 Syntax: caverot <image file>
-fr:103 Syntaxe: caverot <fichier image>
-de:103 Syntax: caverot <Bilddatei>
-pt:103 Sintaxe: caverot <nome do arquivo de imagem 3d>
-ca:103 Sintaxi: caverot <fitxer imatge>
-es:103 Sintaxis: caverot <fichero imagen>
-it:103 Sintassi: caverot <nome file 3d>
+#en:103 Syntax: caverot <image file>
+#fr:103 Syntaxe: caverot <fichier image>
+#de:103 Syntax: caverot <Bilddatei>
+#pt:103 Sintaxe: caverot <nome do arquivo de imagem 3d>
+#ca:103 Sintaxi: caverot <fitxer imatge>
+#es:103 Sintaxis: caverot <fichero imagen>
+#it:103 Sintassi: caverot <nome file 3d>
 en:104 Attempting to read in 3d image file
 fr:104 Essai de lire un fichier image 3d
 de:104 Versuch, 3D-Bilddatei zu lesen
@@ -1026,13 +1039,7 @@ pt:121 Gravando arquivo de imagem 3d '%s'
 ca:121 Escrivint el fitxer d'imatge 3d '%s'
 es:121 Gravando el fichero de imagen 3d '%s'
 it:121 Sto scrivendo il file d'immagine 3d '%s'
-en:122 Processing data file '%s'
-fr:122 Traitement du fichier de donn&eacute;es '%s'
-de:122 Datendatei '%s' wird bearbeitet
-pt:122 Processando arquivo de dados '%s'
-ca:122 Processant fitxer de dades '%s'
-es:122 Procesando fichero de datos '%s'
-it:122 Sto trattando il file di dati '%s'
+#XXX122
 #XXX123
 #XXX124
 # a trailing traverse is a dead end back to a junction
@@ -1835,3 +1842,18 @@ it:197 " a %4.2fm)"
 #ca:157 Sintaxi: %s [-[!]B<marc>] [-[!]Creus] [-[!]L<noms d'estaci&oacute;>] [-[!]S<tirades>] <fitxer imatge>
 #es:157 Sintaxis: %s [-[!]Borde] [-[!]Cruces] [-[!]L<nombres de estaci&oacute;n>] [-[!]S<tiradas>] <fichero imagen>
 #it:157 Sintassi: %s [-[!]Bordo] [-[!]Croci] [-[!]L<etichette>] [-[!]S<battute>] <file immagine 3d>
+#en: 12 Unknown command in data file - line ignored
+#fr: 12 Commande inconnue dans le fichier de donn&eacute;es - ligne ignor&eacute;e
+##germ: 12 Unbekanntes Kommando in der Datendatei, entsprechende Zeile wurde ignoriert
+#de: 12 Unbekanntes Kommando in der Datendatei - Zeile wurde ignoriert
+#pt: 12 Comando desconhecido no arquivo de dados - linha ignorada
+#ca: 12 Comandament desconegut en fitxer de dades - l&iacute;nia ignorada
+#es: 12 Comando desconocido en fichero de datos - l&iacute;nea ignorada
+#it: 12 Comando sconosciuto nel file dei dati - linea ignorata
+#en:122 Processing data file '%s'
+#fr:122 Traitement du fichier de donn&eacute;es '%s'
+#de:122 Datendatei '%s' wird bearbeitet
+#pt:122 Processando arquivo de dados '%s'
+#ca:122 Processant fitxer de dades '%s'
+#es:122 Procesando fichero de datos '%s'
+#it:122 Sto trattando il file di dati '%s'

@@ -39,7 +39,16 @@ node *stn_iter = NULL; /* for FOR_EACH_STN */
 
 #ifdef NO_COVARIANCES
 extern void check_var(const var *v) {
-   /* FIXME: check it! */
+   int bad = 0;
+   int i;
+
+   for (i = 0; i < 3; i++) {
+      char buf[32];
+      sprintf(buf, "%6.3f", v[i]);
+      if (strstr(buf, "NaN")) printf("*** NaN!!!\n"), bad = 1;
+   }
+   if (bad) print_var(v);
+   return;
 }
 #else
 #define V(A,B) ((*v)[A][B])
@@ -234,6 +243,7 @@ addfakeleg(node *fr, node *to,
 {
    uchar i, j;
    linkfor *leg, *leg2;
+   int shape;
 
    if (fr->name == to->name) {
       /* we have been asked to add a leg with the same node at both ends
@@ -275,8 +285,13 @@ addfakeleg(node *fr, node *to,
    fr->leg[i] = leg;
    to->leg[j] = leg2;
 
-   fr->name->pos->shape++;
-   to->name->pos->shape++;
+   shape = fr->name->pos->shape + 1;
+   if (shape < 1) shape = 1;
+   fr->name->pos->shape = shape;
+
+   shape = to->name->pos->shape + 1;
+   if (shape < 1) shape = 1;
+   to->name->pos->shape = shape;
 }
 
 char
@@ -341,6 +356,9 @@ StnFromPfx(prefix *name)
    stn->name = name;
    if (name->pos == NULL) {
       name->pos = osnew(pos);
+#ifdef NEW3DFORMAT
+      name->pos->id = 0;
+#endif
       name->pos->shape = 0;
       unfix(stn);
    }
@@ -561,7 +579,7 @@ invert_var(var *inv, const var *v)
 {
    int i;
    for (i = 0; i < 3; i++) {
-      if ((*v)[i] < THRESHOLD) return 0; /* matrix is singular - FIXME use epsilon */
+      if ((*v)[i] < THRESHOLD) return 0; /* matrix is singular */
       (*inv)[i] = 1.0 / (*v)[i];
    }
    return 1;
@@ -584,7 +602,7 @@ invert_var(var *inv, const var *v)
 
    if (fabs(det) < THRESHOLD) {
       /* printf("det=%.20f\n", det); */
-      return 0; /* matrix is singular - FIXME use epsilon */
+      return 0; /* matrix is singular */
    }
 
    det = 1 / det;

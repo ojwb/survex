@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*#define BLUNDER_DETECTION 1*/
+#define BLUNDER_DETECTION 1
 
 #if 0
 #define DEBUG_INVALID 1
@@ -41,6 +41,9 @@
 #include "netskel.h"
 #include "network.h"
 #include "out.h"
+#ifdef NEW3DFORMAT
+#include "new3dout.h"
+#endif
 
 #define sqrdd(X) (sqrd((X)[0]) + sqrd((X)[1]) + sqrd((X)[2]))
 
@@ -283,13 +286,15 @@ concatenate_trav(node *stn, int i)
 
 #ifdef BLUNDER_DETECTION
 /* expected_error is actually squared... */
+/* I've disabled printing if fSuppress is set, but I can't test it PU */
 static void
-do_gross(d e, d v, prefix *name1, prefix *name2, double expected_error)
+do_gross(d e, d v, node *stn1, node *stn2, double expected_error)
 {   
    double hsqrd, rsqrd, s, cx, cy, cz;
    double tot;
    int i;
    int output = 0;
+   prefix *name1 = stn1->name, *name2 = stn2->name;
 
 #if 0
 printf( "e = ( %.2f, %.2f, %.2f )", e[0], e[1], e[2] );
@@ -307,13 +312,15 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
    tot = 0;
    for (i = 2; i >= 0; i--) tot += sqrd(e[i] - v[i] * s);
 
-   if (tot <= expected_error) {
+   if ((!fSuppress) && (tot <= expected_error)) {
       if (!output) {
 	 fprint_prefix(fhErrStat, name1);
 	 fputs("->", fhErrStat);
 	 fprint_prefix(fhErrStat, name2);
       }
-      fprintf(fhErrStat, " L: %.2f", tot);
+      fprintf(fhErrStat, " L: %.2f", sqrt(tot));
+      /* checked - works */
+      fprintf(fhErrStat, " (%.2fm -> %.2fm)", sqrt(sqrdd(v)), sqrt(sqrdd(v)) * (1 - s));
       output = 1;
    }
 
@@ -321,16 +328,23 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
    if (s > 0.0) {
       s = hsqrd / s;
       ASSERT(s >= 0.0);
-      s = sqrt(s); /* FIXME: How can s be < 0 ? */
+      s = sqrt(s);
       s = 1 - s;
       tot = sqrd(cx * s) + sqrd(cy * s) + sqrd(e[2]);
-      if (tot <= expected_error) {
+      if ((!fSuppress) && (tot <= expected_error)) {
+	 double newval, oldval;
 	 if (!output) {
 	    fprint_prefix(fhErrStat, name1);
 	    fputs("->", fhErrStat);
 	    fprint_prefix(fhErrStat, name2);
 	 }
-	 fprintf(fhErrStat, " B: %.2f", tot);
+	 fprintf(fhErrStat, " B: %.2f", sqrt(tot));
+	 /* checked - works */
+	 newval = deg(atan2(cx, cy));
+	 if (newval < 0) newval += 360;
+	 oldval = deg(atan2(v[0], v[1]));
+	 if (oldval < 0) oldval += 360;
+	 fprintf(fhErrStat, " (%.2fdeg -> %.2fdeg)", oldval, newval);
 	 output = 1;
       }
    }
@@ -346,18 +360,22 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
 	 ASSERT(s >= 0.0);
          s = sqrt(s);
          tot = sqrd(cx - s * nx) + sqrd(cy - s * ny) + sqrd(cz - s * cz);
-	 if (tot <= expected_error) {
+	 if ((!fSuppress) && (tot <= expected_error)) {
 	    if (!output) {
 	       fprint_prefix(fhErrStat, name1);
 	       fputs("->", fhErrStat);
 	       fprint_prefix(fhErrStat, name2);
 	    }
-	    fprintf(fhErrStat, " G: %.2f", tot);
+	    fprintf(fhErrStat, " G: %.2f", sqrt(tot));
+	    /* checked - works */
+	    fprintf(fhErrStat, " (%.2fdeg -> %.2fdeg)",
+		    deg(atan2(v[2], sqrt(v[0] * v[0] + v[1] * v[1]))),
+		    deg(atan2(cz, sqrt(nx * nx + ny * ny))));
 	    output = 1;
 	 }
       }
    }
-   if (output) fputnl(fhErrStat);
+   if (output && !fSuppress) fputnl(fhErrStat);
 }
 #endif
 
@@ -378,28 +396,40 @@ replace_travs(void)
 
    out_current_action(msg(/*Calculating traverses between nodes*/127));
 
-   if (!fhErrStat)
+   if (!fhErrStat && !fSuppress)
       fhErrStat = safe_fopen_with_ext(fnm_output_base, EXT_SVX_ERRS, "w");
 
    if (!pimgOut) {
       char *fnmImg3D;
       char buf[256];
-
+#ifdef NEW3DFORMAT
+      if (fUseNewFormat) {
+	fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3DX);
+      } else {
+#endif
       fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3D);
+#ifdef NEW3DFORMAT
+      }
+#endif
+
       sprintf(buf, msg(/*Writing out 3d image file '%s'*/121), fnmImg3D);
       out_current_action(buf); /* writing .3d file */
 #ifdef NEW3DFORMAT
-      pimgOut = cave_open_write(fnmImg3D, survey_title);
-      if (!pimgOut) {
-	 fputsnl(fnmImg3D, STDERR);
-	 fatalerror(NULL, 0, cave_error(), fnmImg3D);
-      }
-#else
-      pimgOut = img_open_write(fnmImg3D, survey_title, !fAscii);
-      if (!pimgOut) {
-	 fputsnl(fnmImg3D, STDERR);
-	 fatalerror(img_error(), fnmImg3D);
-      }
+      if (fUseNewFormat) {
+ 	pimgOut = cave_open_write(fnmImg3D, survey_title);
+ 	if (!pimgOut) {
+ 	  fputsnl(fnmImg3D, STDERR);
+ 	  fatalerror(cave_error(), fnmImg3D);
+ 	}
+       } else {
+#endif
+	 pimgOut = img_open_write(fnmImg3D, survey_title, !fAscii);
+         if (!pimgOut) {
+	   fputsnl(fnmImg3D, STDERR);
+	   fatalerror(img_error(), fnmImg3D);
+	 }
+#ifdef NEW3DFORMAT
+       }
 #endif
       osfree(fnmImg3D);
    }
@@ -412,19 +442,27 @@ replace_travs(void)
 	 if (leg && data_here(leg) &&
 	     !(leg->l.reverse & FLAG_REPLACEMENTLEG) && !fZero(&leg->v)) {
 	    if (fixed(stn1)) {
+#ifdef BLUNDER_DETECTION
+	       d err;
+	       int do_blunder;
+#endif
 	       stn2 = leg->l.to;
-	       fprint_prefix(fhErrStat, stn1->name);
-	       fputs(szLink, fhErrStat);
-	       fprint_prefix(fhErrStat, stn2->name);
+#ifndef BLUNDER_DETECTION
+               if (!fSuppress) {
+		 fprint_prefix(fhErrStat, stn1->name);
+		 fputs(szLink, fhErrStat);
+		 fprint_prefix(fhErrStat, stn2->name);
+	       }
+#endif
 #ifdef NEW3DFORMAT
-	       if (stn1->name->pos->id == 0) cave_write_stn(stn1);
-	       if (stn2->name->pos->id == 0) cave_write_stn(stn2);
-	       cave_write_leg(leg);
-#else
+	       if (!fUseNewFormat) {
+#endif
 	       img_write_datum(pimgOut, img_MOVE, NULL,
 			       POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 	       img_write_datum(pimgOut, img_LINE, NULL,
 			       POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
+#ifdef NEW3DFORMAT
+	       }
 #endif
 	       subdd(&e, &POSD(stn2), &POSD(stn1));
 	       subdd(&e, &e, &leg->d);
@@ -440,6 +478,19 @@ replace_travs(void)
 	       eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
 	       hTotTheo = leg->v[0] + leg->v[1];
 	       vTotTheo = leg->v[2];
+#endif
+#ifdef BLUNDER_DETECTION
+	       memcpy(&err, &e, sizeof(d));
+	       do_blunder = (eTot > eTotTheo);
+	       if (!fSuppress) {
+		  fputs("\ntraverse ", fhErrStat);
+		  fprint_prefix(fhErrStat, stn1->name);
+		  fputs("->", fhErrStat);
+		  fprint_prefix(fhErrStat, stn2->name);
+		  fprintf(fhErrStat, " e=(%.2f, %.2f, %.2f) mag=%.2f %s\n",
+			  e[0], e[1], e[2], sqrt(eTot), (do_blunder ? "suspect:" : "OK"));
+	       }
+	       if (do_blunder) do_gross(err, leg->d, stn1, stn2, eTotTheo);
 #endif
 	       err_stat(1, sqrt(sqrdd(leg->d)), eTot, eTotTheo,
 			hTot, hTotTheo, vTot, vTotTheo);
@@ -500,10 +551,12 @@ replace_travs(void)
 	 lenTrav = 0.0;
 	 nmPrev = stn1->name;
 #ifdef NEW3DFORMAT
-	 if (stn1->name->pos->id == 0) cave_write_stn(stn1);
-#else
+ 	 if (!fUseNewFormat) {
+#endif
 	 img_write_datum(pimgOut, img_MOVE, NULL,
 			 POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+#ifdef NEW3DFORMAT
+ 	 }
 #endif
       }
       osfree(stn1->leg[i]);
@@ -518,18 +571,14 @@ replace_travs(void)
 	 int do_blunder;
 	 memcpy(&err, &e, sizeof(d));
 	 do_blunder = (eTot > eTotTheo);
-#if 0
-	 fputs("\ntraverse ", fhErrStat);
-	 fprint_prefix(fhErrStat, stn1->name);
-	 fputs("->", fhErrStat);
-	 fprint_prefix(fhErrStat, stn2->name);
-	 fprintf(fhErrStat, " e=(%.2f, %.2f, %.2f) mag^2=%.2f %s\n",
-		 e[0], e[1], e[2], eTot, (do_blunder ? "suspect:" : "OK"));
-#else
-	 fprintf(fhErrStat, "For next traverse e=(%.2f, %.2f, %.2f) "
-		 "mag^2=%.2f %s\n", e[0], e[1], e[2], eTot,
-		 (do_blunder ? "suspect:" : "OK"));
-#endif
+	 if (!fSuppress) {
+	   fputs("\ntraverse ", fhErrStat);
+	   fprint_prefix(fhErrStat, stn1->name);
+	   fputs("->", fhErrStat);
+	   fprint_prefix(fhErrStat, stn2->name);
+	   fprintf(fhErrStat, " e=(%.2f, %.2f, %.2f) mag=%.2f %s\n",
+		   e[0], e[1], e[2], sqrt(eTot), (do_blunder ? "suspect:" : "OK"));
+	 }
 #endif
 	 while (fTrue) {
 	    int reached_end;
@@ -571,24 +620,29 @@ replace_travs(void)
 	    }
 	    fix(stn3);
 #ifdef NEW3DFORMAT
-	    if (stn3->name->pos->id == 0) cave_write_stn(stn3);
-	    cave_write_leg(leg);
-#else
-	    img_write_datum(pimgOut, img_LINE, NULL,
+ 	    if (!fUseNewFormat) {
+#endif
+ 	    img_write_datum(pimgOut, img_LINE, NULL,
 			    POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
+#ifdef NEW3DFORMAT
+ 	    }
 #endif
 
 	    if (nmPrev != stn3->name && !(fEquate && cLegsTrav == 0)) {
 	       /* (node not part of same stn) &&
 		* (not equate at start of traverse) */
-	       fprint_prefix(fhErrStat, nmPrev);
+#ifndef BLUNDER_DETECTION
+	       if (!fSuppress) {
+		  fprint_prefix(fhErrStat, nmPrev);
 #if PRINT_NAME_PTRS
-	       fprintf(fhErrStat, "[%p|%p]", nmPrev, stn3->name);
+		  fprintf(fhErrStat, "[%p|%p]", nmPrev, stn3->name);
 #endif
-	       fputs(fEquate ? szLinkEq : szLink, fhErrStat);
+		  fputs(fEquate ? szLinkEq : szLink, fhErrStat);
+	       }
+#endif
 	       nmPrev = stn3->name;
 #if PRINT_NAME_PTRS
-	       fprintf(fhErrStat, "[%p]", nmPrev);
+	       if (!fSuppress) fprintf(fhErrStat, "[%p]", nmPrev);
 #endif
 	       if (!fEquate) {
 		  cLegsTrav++;
@@ -604,14 +658,16 @@ replace_travs(void)
 	       }
 	    } else {
 #if SHOW_INTERNAL_LEGS
-	       fprintf(fhErrStat, "+");
+	       if (!fSuppress) fprintf(fhErrStat, "+");
 #endif
 	       if (lenTot > 0.0) {
 #if DEBUG_INVALID
-		  fprintf(stderr, "lenTot = %8.4f ", lenTot);
-		  fprint_prefix(stderr, nmPrev);
-		  fprintf(stderr, " -> ");
-		  fprint_prefix(stderr, stn3->name);
+		  if (!fSuppress) {
+		     fprintf(stderr, "lenTot = %8.4f ", lenTot);
+		     fprint_prefix(stderr, nmPrev);
+		     fprintf(stderr, " -> ");
+		     fprint_prefix(stderr, stn3->name);
+		  }
 #endif
 		  BUG("during calculation of closure errors");
 	       }
@@ -623,11 +679,12 @@ replace_travs(void)
 	 } /* endwhile */
 
 #ifdef NEW3DFORMAT
-	 if (stn2->name->pos->id == 0) cave_write_stn(stn2);
-	 cave_write_leg(leg);
-#else
-	 img_write_datum(pimgOut, img_LINE, NULL,
+ 	 if (!fUseNewFormat) {
+#endif
+ 	 img_write_datum(pimgOut, img_LINE, NULL,
 			 POS(stn2,0), POS(stn2, 1), POS(stn2, 2));
+#ifdef NEW3DFORMAT
+ 	 }
 #endif
 
 #if PRINT_NETBITS
@@ -649,20 +706,27 @@ replace_travs(void)
 #endif
 	 if (cLegsTrav) {
 	    if (stn2->name != nmPrev) {
-	       fprint_prefix(fhErrStat, nmPrev);
+#ifndef BLUNDER_DETECTION
+	       if (!fSuppress) {
+		  fprint_prefix(fhErrStat, nmPrev);
 #if PRINT_NAME_PTRS
-	       fprintf(fhErrStat, "[%p]", nmPrev);
+		  fprintf(fhErrStat, "[%p]", nmPrev);
 #endif
-	       fputs(fEquate ? szLinkEq : szLink, fhErrStat);
-	       if (!fEquate) cLegsTrav++;
+		  fputs(fEquate ? szLinkEq : szLink, fhErrStat);
+	       }
+#endif	       if (!fEquate) cLegsTrav++;
 	    }
 #if SHOW_INTERNAL_LEGS
 	    else
-	       fputc('+', fhErrStat);
+	       if (!fSuppress) fputc('+', fhErrStat);
 #endif
-	    fprint_prefix(fhErrStat, stn2->name);
+#ifndef BLUNDER_DETECTION
+	    if (!fSuppress) {
+	      fprint_prefix(fhErrStat, stn2->name);
 #if PRINT_NAME_PTRS
-	    fprintf(fhErrStat, "[%p]", stn2->name);
+	      fprintf(fhErrStat, "[%p]", stn2->name);
+#endif
+	    }
 #endif
 	    lenTrav += sqrt(lenTot);
 	 }
@@ -677,8 +741,9 @@ replace_travs(void)
    }
 
    /* leave fhErrStat open in case we're asked to close loops again */
+   /* but not if it's not open in the first place */
 #if 0
-   fclose(fhErrStat);
+   if (!fSuppress) fclose(fhErrStat);
 #endif
 }
 
@@ -689,6 +754,7 @@ err_stat(int cLegsTrav, double lenTrav,
 	 double vTot, double vTotTheo)
 {
    double sqrt_eTot;
+   if (!fSuppress) {
    fputnl(fhErrStat);
    sqrt_eTot = sqrt(eTot);
    fprintf(fhErrStat, msg(/*Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). */145),
@@ -702,6 +768,7 @@ err_stat(int cLegsTrav, double lenTrav,
    fprintf(fhErrStat, "H: %f V: %f\n",
 	   sqrt(hTot / hTotTheo), sqrt(vTot / vTotTheo));
    fputnl(fhErrStat);
+  }
 }
 
 #if 0
@@ -757,10 +824,12 @@ replace_trailing_travs(void)
       /* ASSERT(fixed(stn1)); */
       if (fixed(stn1)) {
 #ifdef NEW3DFORMAT
-	 if (stn1->name->pos->id == 0) cave_write_stn(stn1);
-#else
-	 img_write_datum(pimgOut, img_MOVE, NULL,
-			 POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+ 	if (!fUseNewFormat) {
+#endif
+ 	  img_write_datum(pimgOut, img_MOVE, NULL,
+ 			  POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+#ifdef NEW3DFORMAT
+ 	}
 #endif
 
 	 while (1) {
@@ -784,11 +853,12 @@ replace_trailing_travs(void)
 	    fix(stn2);
 	    add_stn_to_list(&stnlist, stn2);
 #ifdef NEW3DFORMAT
-	    if (stn2->name->pos->id == 0) cave_write_stn(stn2);
-	    cave_write_leg(leg);
-#else
-	    img_write_datum(pimgOut, img_LINE, NULL,
+	    if (!fUseNewFormat) {
+#endif
+	      img_write_datum(pimgOut, img_LINE, NULL,
 			    POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
+#ifdef NEW3DFORMAT
+ 	    }
 #endif
 
 	    /* stop if not 2 node */
@@ -804,17 +874,39 @@ replace_trailing_travs(void)
       osfree(ptrOld);
    }
 
+   /* write out connections with no survey data */
+   /* FIXME: PhilU needs to look at this... */
+#ifdef NEW3DFORMAT
+   if (!fUseNewFormat) {
+#endif
+   while (nosurveyhead) {
+      nosurveylink *p = nosurveyhead;
+      if (fixed(p->fr) && fixed(p->to)) {
+	 img_write_datum(pimgOut, img_MOVE, NULL,
+			 POS(p->fr, 0), POS(p->fr, 1), POS(p->fr, 2));
+	 img_write_datum(pimgOut, img_LINE, NULL,
+			 POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
+      }
+      nosurveyhead = p->next;
+      osfree(p);
+   }
+#ifdef NEW3DFORMAT
+   }
+#endif
+
    /* write stations to .3d file and free legs and stations */
    FOR_EACH_STN(stn1, stnlist) {
       if (fixed(stn1)) {
 	 int d;
 	 /* take care of unused fixed points */
 #ifdef NEW3DFORMAT
-	 if (stn1->name->pos->id == 0) cave_write_stn(stn1);      
-#else
+	 if (!fUseNewFormat) {
+#endif
 	 if (stn1->name->stn == stn1)
 	    img_write_datum(pimgOut, img_LABEL, sprint_prefix(stn1->name),
 			    POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+#ifdef NEW3DFORMAT
+	 }
 #endif
 	 /* update coords of bounding box */
 	 for (d = 0; d < 3; d++) {

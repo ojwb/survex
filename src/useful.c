@@ -1,5 +1,5 @@
 /* > useful.c
- * Copyright (C) 1993-1996 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,35 +26,35 @@
 #ifndef WORDS_BIGENDIAN
 
 /* used by macro versions of useful_get<nn> functions */
-w16 useful_w16;
-w32 useful_w32;
+INT16_T useful_w16;
+INT32_T useful_w32;
 
 #if 0 /* these functions aren't needed - macros do the job */
 /* the numbers in the file are little endian, so use fread/fwrite */
 extern void FAR
-useful_put16(w16 w, FILE *fh)
+useful_put16(INT16_T w, FILE *fh)
 {
    fwrite(&w, 2, 1, fh);
 }
 
 #undef useful_put32
 extern void FAR
-useful_put32(w32 w, FILE *fh)
+useful_put32(INT32_T w, FILE *fh)
 {
    fwrite(&w, 4, 1, fh);
 }
 
 #undef useful_get16
-extern w16 FAR
+extern INT16_T FAR
 useful_get16(FILE *fh)
 {
-   w16 w;
+   INT16_T w;
    fread(&w, 2, 1, fh);
    return w;
 }
 
 #undef useful_put32
-extern w32 FAR
+extern INT32_T FAR
 useful_get32(FILE *fh)
 {
    w32 w;
@@ -66,14 +66,14 @@ useful_get32(FILE *fh)
 #else
 
 extern void FAR
-useful_put16(w16 w, FILE *fh)
+useful_put16(INT16_T w, FILE *fh)
 {
    putc((char)(w), fh);
    putc((char)(w >> 8l), fh);
 }
 
 extern void FAR
-useful_put32(w32 w, FILE *fh)
+useful_put32(INT32_T w, FILE *fh)
 {
    putc((char)(w), fh);
    putc((char)(w >> 8l), fh);
@@ -81,19 +81,19 @@ useful_put32(w32 w, FILE *fh)
    putc((char)(w >> 24l), fh);
 }
 
-extern w16 FAR
+extern INT16_T FAR
 useful_get16(FILE *fh)
 {
-   w16 w;
+   INT16_T w;
    w = getc(fh);
-   w |= (w16)(getc(fh) << 8l);
+   w |= (INT16_T)(getc(fh) << 8l);
    return w;
 }
 
-extern w32 FAR
+extern INT32_T FAR
 useful_get32(FILE *fh)
 {
-   w32 w;
+   INT32_T w;
    w = getc(fh);
    w |= (w32)(getc(fh) << 8l);
    w |= (w32)(getc(fh) << 16l);

@@ -1,6 +1,6 @@
 /* > osdepend.h
  * Contains commonly required OS dependent bits
- * Copyright (C) 1993,1994,1996,1997 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,19 +36,12 @@ typedef unsigned char byte;
 
 # if (OS==RISCOS)
 
-typedef long w32;
-typedef short w16;
-
 /*#  include "kernel.h"*/
 #  include "oslib/os.h"
 #  include "oslib/fpemulator.h"
 
 /* Take over screen (clear text window/default colours/cls) */
 #  define init_screen() BLK(xos_writec(26); xos_writec(20); xos_cls();)
-/* Assume we've got working floating-point iff we can read a version number
- * from the fp software or hardware */
-#  define check_fp_ok() BLK(if (xfpemulator_version(NULL) != NULL) fatalerror(NULL, 0, 190);)
-/* BLK(if (!_kernel_fpavailable()) fatalerror(NULL, 0, 190);) */
 
 /* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
 #  define FNM_SEP_LEV '.'
@@ -58,9 +51,6 @@ typedef short w16;
 #  define NO_STDPRN
 
 # elif (OS==MSDOS) || (OS==WIN32)
-
-typedef long w32;
-typedef short w16;
 
 /* FNM_SEP_DRV and FNM_SEP_EXT and FNM_SEP_LEV2 needn't be defined */
 #  define FNM_SEP_LEV '\\'
@@ -85,18 +75,12 @@ extern double svx_floor(double);
 
 # elif (OS==TOS)
 
-typedef long w32;
-typedef short w16;
-
 /* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
 #  define FNM_SEP_LEV '\\'
 #  define FNM_SEP_DRV ':'
 #  define FNM_SEP_EXT '.'
 
 # elif (OS==UNIX)
-
-typedef int w32;  /* int is a safer bet -- e.g. Dec Alpha boxes */
-typedef short w16;
 
 #  ifndef CLOCKS_PER_SEC
 #   define CLOCKS_PER_SEC 1000000 /* nasty hack - true for SunOS anyway */
@@ -110,9 +94,6 @@ typedef short w16;
 #  define NO_STDPRN
 
 # elif (OS==AMIGA)
-
-typedef long w32;  /* check */
-typedef short w16;
 
 /* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
 #  define FNM_SEP_LEV '/'
@@ -141,16 +122,6 @@ typedef short w16;
 # ifndef init_screen
 #  define init_screen() /* ie do nothing special */
 # endif /* !init_screen */
-
-# ifndef check_fp_ok
-#  define check_fp_ok() /* ie do nothing special */
-# endif /* !check_fp_ok */
-
-# if 0
-#  include <assert.h>
-assert(ossizeof(w16)==2);
-assert(ossizeof(w32)==4);
-# endif
 
 /* prototypes for functions in osdepend.c */
 extern bool fAbsoluteFnm(const char *fnm);

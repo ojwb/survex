@@ -1,6 +1,6 @@
 /* > osdepend.c
  * OS dependent functions
- * Copyright (C) 1993-1997 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,8 +85,6 @@ double svx_floor( double v ) {
 
 #elif (OS==UNIX)
 
-/* FIXME handle the shell feature: ~olly/fred or ~/fred ?
- * use $HOME and getpwnam() (or something like that) */
 bool
 fAbsoluteFnm(const char *fnm)
 {
@@ -121,12 +119,18 @@ bool
 fDirectory(const char *fnm)
 {
    int objtype;
-   /* it's a directory iff objtype is 2 or 3 */
+   bool fResult;
+   char *f = osstrdup(fnm);
+   size_t len = strlen(f);
+
+   /* osfile doesn't like a trailing '.' */
+   if (len && f[len - 1] == '.') f[len - 1] = '\0';
+   fResult = (xosfile_read(f, &objtype, NULL, NULL, NULL, NULL) != NULL);
+   osfree(f);
+   /* it's a directory iff (osfile suceeded and objtype is 2 or 3) */
    /* (3 is an image file (for RISC OS 3 and above) but we probably want */
    /* to treat image files as directories) */
-   if (xosfile_read((char*)fnm, &objtype, NULL, NULL, NULL, NULL) != NULL)
-      return fFalse;
-   return (objtype == osfile_IS_DIR || objtype == osfile_IS_IMAGE);
+   return fResult && (objtype == osfile_IS_DIR || objtype == osfile_IS_IMAGE);
 }
 
 #else

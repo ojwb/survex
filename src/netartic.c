@@ -99,6 +99,13 @@ iter:
 	    /* we've found a fixed point */
 	    c = -c;
 	    to->colour = c;
+#ifdef DEBUG_ARTIC
+	    printf("Putting FOUND FIXED stn ");
+	    print_prefix(to->name);
+	    printf(" on artlist\n");
+#endif	 
+	    remove_stn_from_list(&fixedlist, to);
+	    add_stn_to_list(&artlist, to);
 	 }
 	 
 	 if (c && c < min) min = c;
@@ -129,6 +136,11 @@ uniter:
 
 	 /* FIXME: hmm, this code looks like it may get called more than once,
 	  * or never - actually it seems to always get called exactly once! */
+#ifdef DEBUG_ARTIC
+	 printf("Putting stn ");
+	 print_prefix(stn->name);
+	 printf(" on artlist\n");
+#endif	 
 	 remove_stn_from_list(&stnlist, stn);
 	 add_stn_to_list(&artlist, stn);
 
@@ -175,6 +187,11 @@ uniter:
       }
    }
    if (livTos) goto uniter;
+#ifdef DEBUG_ARTIC
+   printf("Putting stn ");
+   print_prefix(stn->name);
+   printf(" on artlist\n");
+#endif	 
    remove_stn_from_list(&stnlist, stn);
    add_stn_to_list(&artlist, stn);
    return min;
@@ -200,6 +217,11 @@ articulate(void)
       if (fixed(stn)) {
 	 colour++;
 	 stn->colour = -colour;
+#ifdef DEBUG_ARTIC
+	 printf("Putting stn ");
+	 print_prefix(stn->name);
+	 printf(" on fixedlist\n");
+#endif	 	 
 	 remove_stn_from_list(&stnlist, stn);
 	 add_stn_to_list(&fixedlist, stn);
       } else {
@@ -241,13 +263,12 @@ articulate(void)
 	 comp->next = component_list;
 	 comp->artic = art;
 	 component_list = comp;
-      }
-
 #ifdef DEBUG_ARTIC
-      print_prefix(stn->name);
-      printf(" [%p] is root of component %ld\n", stn, cComponents);
-      printf(" and colour = %d/%d\n", stn->colour, cFixed);
+	 print_prefix(stn->name);
+	 printf(" [%p] is root of component %ld\n", stn, cComponents);
+	 printf(" and colour = %d/%d\n", stn->colour, cFixed);
 #endif
+      }
 
       c = 0;
       for (i = 0; i <= 2 && stn->leg[i]; i++) {
@@ -260,6 +281,10 @@ articulate(void)
 	     */
 	    if (c) {
 	       /* FIXME: stn is an articulation point! */
+#ifdef DEBUG_ARTIC
+	       print_prefix(stn2->name);
+	       printf(" is a special case start articulation point\n");
+#endif
 	    }
 	    
 	    c++;
@@ -267,6 +292,11 @@ articulate(void)
 	 }
       }
 
+#ifdef DEBUG_ARTIC
+      printf("Putting FIXED stn ");
+      print_prefix(stn->name);
+      printf(" on artlist\n");
+#endif	 
       remove_stn_from_list(&fixedlist, stn);
       add_stn_to_list(&artlist, stn);
 
@@ -295,6 +325,17 @@ articulate(void)
 	articulation *art;
 	node *stn;
 
+	/* reverse component list */
+	component *rev = NULL;
+	comp = component_list;
+	while (comp) {
+	   component *tmp = comp->next;
+	   comp->next = rev;
+	   rev = comp;
+	   comp = tmp;
+	}
+	component_list = rev;
+	
 #ifdef DEBUG_ARTIC
 	printf("\nDump of %d components:\n", cComponents);
 #endif

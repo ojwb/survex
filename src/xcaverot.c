@@ -1,74 +1,32 @@
-/*	xcaverot.c
-
-  X-Windows cave viewing program
-
-  This program is intended to be used in conjunction with the SURVEX program
-  for cave survey data processing. It has been developed in conjunction with
-  SURVEX version 0.20 (Beta).
-
-  Now modified to work with SURVEX version 0.51 - should be backwards
-  compatible.
-
-  use:
-
-        xcaverot [image file] [X-options]
-
-  Copyright 1993 Bill Purvis
-
-   Bill Purvis DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
-   ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
-   Bill Purvis BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
-   ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-   WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-   ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-   SOFTWARE.
-
-  History:
-
-  28.06.93 wrote basic X code
-  30.06.93 use of mouse to select centre-of-focus
-  01.07.93 labels and crosses ?
-
-1994.03.04 hacked around to use img.c to read .3d files [Olly]
-1994.05.17 added changes from Andy Holtsbery
-1994.06.01 should now be able to load image file given on command line [Olly]
-1994.08.13 removed erroneous '*' & check for defined MININT and MAXINT [Olly]
-1995.03.16 labels were being trimmed wrongly so prefix was displayed [Olly]
-1997.01.09 checks argument 1 given before using it [Olly]
-
-  17.04.97 adjusted way labels are drawn [JPNP]
-  18.04.97 added elevation controls [JPNP]
-  20.04.97 compass and elevation indicators, scale bar [JPNP}
-  21.04.97 various little bits [JPNP]
-
-  May 97 JPNP tidied up his code some and added more features:
-              double buffering on Xservers which support it
-	      rotation speed independant of system load
-	      reinstated survey sections in different colours
-	      few other small things
-1997.05.28 rearranged a fair bit, so we can merge with caverot soon [Olly]
-1997.06.02 mostly converted to use cvrotimg [Olly]
-1998.03.04 merged two deviant versions:
->1997.06.03 tweaked to compile [Olly]
->1997.06.10 fixed gcc warning [Olly]
-1998.03.21 fixed up to compile cleanly on Linux
-
-  12.06.97 started reworking in Olly's rearrangements towards merger
-             with caverot, and to use cvrotimg    [JPNP]
-           survey sections now broken again.
-  16.06.97 finished working in Olly's changes.
-           Compiles without warning with gcc. [JPNP]
-           now works out max/min XYZ vals to scale survey on load again [JPNP]
-	   unfinished rotation control buttons half there but not shown [JPNP]
-  17.06.97 adjusted rescaling and non-overlapping labels on window resize[JPNP]
-  23.05.98 Fixes use of gettimeofday() for rotation timing. [JPNP]
-  11.06.99 Adjusted to compile with survex 0.91 [JPNP]
-  05.07.99 Fixed double buffer support on platforms (eg SGI) with multiple
-           visuals available. However the colour allocation needs sorting
-	   out properly. [JPNP]
-  ??.07.99 Crap drawing code fettled on Expo '99, + other improvements. [MRS]
-
-  */
+/* > xcaverot.c
+ * Copyright (C) 1993-2000 Olly Betts, John Pybus, Mark Shinwell,
+ * Leandro Dybal Bertoni, Andy Holtsbery, et al
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *
+ * Based on original code Copyright 1993 Bill Purvis
+ *
+ * Bill Purvis DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
+ * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
+ * Bill Purvis BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
+ * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+ * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+ * SOFTWARE.
+ */
 
 #define XCAVEROT_BUTTONS
 
@@ -91,25 +49,24 @@
 
 #include "cmdline.h"
 #include "useful.h"
-#include "img.h"
 #include "filename.h"
 #include "message.h"
-#include "caverot.h"
 #include "cvrotimg.h"
 
-int xcMac, ycMac;
-float y_stretch = 1.0;
+#define STOP 0
+#define MOVE 1
+#define DRAW 2
 
 /* Width of each button along the top of the window */
 #define BUTWIDTH 60
 #define BUTHEIGHT 25
 
 /* length of cross station marker */
-#define CROSSLENGTH 3 /* FIXME: was 10 check which looks best */
+#define CROSSLENGTH 3
 
 /* Width and height of compass and elevation indicator windows */
 #define FONTSPACE 20
-#define INDWIDTH 100	/* FIXME: allow INDWIDTH to be set dynamically - 50 is nice */
+#define INDWIDTH (indrad * 2.5)
 #define INDDEPTH (INDWIDTH + FONTSPACE)
 
 #define C_IND_ANG 25
@@ -118,32 +75,12 @@ float y_stretch = 1.0;
 #define E_IND_LINE 0.6
 #define E_IND_PTR 0.38
 
-/* radius of compass and clino indicators */
-#define RADIUS ((float)INDWIDTH*.4)
+/* default radius of compass and clino indicators - 20 is good for smaller
+ * screens */
+static double indrad = 40;
 
-/* font to use */
+/* default font to use */
 #define FONTNAME "-adobe-helvetica-medium-r-normal-*-8-*"
-/* FIXME: was #define FONTNAME "8x13", should be configurable */
-
-#define PIBY180 0.017453293
-
-#if 0
-typedef struct {
-   short Option;
-   short survey;
-   coord X;
-   coord Y;
-   coord Z;
-   /*  long padding;
-    * long more_pad; */
-} point;
-
-#define MOVE 1
-#define DRAW 2
-#define STOP 4
-#define LABEL 8
-#define CROSS 16
-#endif
 
 #define PLAN 1	/* values of plan_elev */
 #define ELEVATION 2
@@ -208,7 +145,7 @@ static Window mywindow;
 static Window butzoom, butmooz, butload, butrot, butstep, butquit;
 static Window butplan, butlabel, butcross, butselect;
 #endif
-static Window ind_com, ind_elev, scalebar, rot_but;
+static Window ind_com, ind_elev, scalebar;
 static GC mygc, scale_gc, slab_gc;
 static int oldwidth, oldheight;	/* to adjust scale on window resize */
 static Region label_reg;	/* used to implement non-overlapping labels */
@@ -356,6 +293,8 @@ static lid **ppStns = NULL;
 int
 load_file(const char *name)
 {
+   XWindowAttributes attr;
+
    ppLegs = osmalloc((1 + 1) * sizeof(lid Huge *));
    ppStns = osmalloc((1 + 1) * sizeof(lid Huge *));
 
@@ -365,7 +304,8 @@ load_file(const char *name)
    ppLegs[1] = NULL;
    ppStns[1] = NULL;
 
-   scale = scale_to_screen(ppLegs, ppStns);
+   XGetWindowAttributes(mydisplay, mywindow, &attr);
+   scale = scale_to_screen(ppLegs, ppStns, attr.width, attr.height, 1.0);
    x_mid = Xorg;
    y_mid = Yorg;
    z_mid = Zorg;
@@ -505,7 +445,6 @@ draw_scalebar(void)
    float l, m, n, o;
 
    if (changedscale) {
-
       XWindowAttributes a;
 
       XGetWindowAttributes(mydisplay, scalebar, &a);
@@ -537,7 +476,6 @@ draw_scalebar(void)
 #endif
 }
 
-/* FIXME: Zoom In -> In / Zoom Out -> Out ??? */
 void
 process_zoom(Display * display, Window mainwin, Window button, GC mygc, GC egc)
 {
@@ -622,32 +560,6 @@ process_select(Display * display, Window window, Window button, GC mygc,
 }
 
 void
-draw_rot_but(GC gc)
-{
-   int c;
-   float r = INDDEPTH * 0.75 / (4.0 * 2);
-   float q = INDDEPTH * 0.55 / (8.0);
-
-   c = INDDEPTH / 8.0;
-
-   XDrawArc(mydisplay, rot_but, gc, c - r, c - r, 2.0 * r,
-	    2.0 * r, -90 * 64, 300 * 64);
-
-   XDrawArc(mydisplay, rot_but, gc, c - r, (INDDEPTH * .75 + c)
-	    - r, 2.0 * r, 2.0 * r, -90 * 64, -300 * 64);
-
-   XDrawLine(mydisplay, rot_but, gc, c - r, (INDDEPTH * .25 + c) + q, c,
-	     (INDDEPTH * .25 + c) - q);
-   XDrawLine(mydisplay, rot_but, gc, c, (INDDEPTH * .25 + c) - q, c + r,
-	     (INDDEPTH * .25 + c) + q);
-
-   XDrawLine(mydisplay, rot_but, gc, c - r, (INDDEPTH * .5 + c) - q, c,
-	     (INDDEPTH * .5 + c) + q);
-   XDrawLine(mydisplay, rot_but, gc, c, (INDDEPTH * .5 + c) + q, c + r,
-	     (INDDEPTH * .5 + c) - q);
-}
-
-void
 draw_ind_elev(Display * display, GC gc, float angle)
 {
    char temp[32];
@@ -658,8 +570,8 @@ draw_ind_elev(Display * display, GC gc, float angle)
 
    xm = ym = INDWIDTH / 2;
 
-   sa = sin(angle * PIBY180);
-   ca = cos(angle * PIBY180);
+   sa = sin(rad(angle));
+   ca = cos(rad(angle));
 
 /*printf("%f\n",ca);*/
 
@@ -670,11 +582,11 @@ draw_ind_elev(Display * display, GC gc, float angle)
    XDrawLine(display, ind_elev, gc, xm - q, ym, xm - q + 2 * q * (ca + 0.001),
 	     ym - 2 * q * sa);
    XDrawLine(display, ind_elev, gc, xm - q, ym,
-	     xm - q + E_IND_LEN * q * cos((angle + E_IND_ANG) * PIBY180),
-	     ym - E_IND_LEN * q * sin((angle + E_IND_ANG) * PIBY180));
+	     xm - q + E_IND_LEN * q * cos(rad(angle + E_IND_ANG)),
+	     ym - E_IND_LEN * q * sin(rad(angle + E_IND_ANG)));
    XDrawLine(display, ind_elev, gc, xm - q, ym,
-	     xm - q + E_IND_LEN * q * cos((angle - E_IND_ANG) * PIBY180),
-	     ym - E_IND_LEN * q * sin((angle - E_IND_ANG) * PIBY180));
+	     xm - q + E_IND_LEN * q * cos(rad(angle - E_IND_ANG)),
+	     ym - E_IND_LEN * q * sin(rad(angle - E_IND_ANG)));
 
    sprintf(temp, "%d", (int)angle);
    XDrawString(display, ind_elev, gc, INDWIDTH / 2 - 20, INDDEPTH - 10, temp,
@@ -687,14 +599,14 @@ draw_ind_com(Display * display, GC gc, float angle)
    char temp[32];
    int xm, ym;
    double sa, ca;
-   double rs, rc, r = RADIUS;
+   double rs, rc, r = indrad;
 
    xm = ym = INDWIDTH / 2;
 
-   rs = r * sin(C_IND_ANG * PIBY180);
-   rc = r * cos(C_IND_ANG * PIBY180);
-   sa = sin((angle + 180) * PIBY180);
-   ca = cos((angle + 180) * PIBY180);
+   rs = r * sin(rad(C_IND_ANG));
+   rc = r * cos(rad(C_IND_ANG));
+   sa = sin(rad(angle + 180));
+   ca = cos(rad(angle + 180));
 
    XClearWindow(mydisplay, ind_com);
 
@@ -740,27 +652,6 @@ draw_label(Display * display, Window window, GC gc, int x, int y,
    }
 }
 
-void
-setview(float angle)
-{
-   /* since I no longer attempt to make sure that plan_elev is always
-    * kept up to date by any action which might change the elev_angle
-    * I make sure it's correct here [JPNP]
-    */
-   if (elev_angle == 0.0)
-      plan_elev = ELEVATION;
-   else if (elev_angle == 90.0)
-      plan_elev = PLAN;
-   else
-      plan_elev = 0;
-
-   sx = sin((angle) * PIBY180);
-   cx = cos((angle) * PIBY180);
-   fz = cos(elev_angle * PIBY180);
-   fx = sin(elev_angle * PIBY180) * sx;
-   fy = sin(elev_angle * PIBY180) * -cx;
-}
-
 int
 toscreen_x(point * p)
 {
@@ -799,7 +690,22 @@ fill_segment_cache(void)
 
    x1 = y1 = 0;	/* avoid compiler warning */
 
-   setview(view_angle);
+   /* since I no longer attempt to make sure that plan_elev is always
+    * kept up to date by any action which might change the elev_angle
+    * I make sure it's correct here [JPNP]
+    */
+   if (elev_angle == 0.0)
+      plan_elev = ELEVATION;
+   else if (elev_angle == 90.0)
+      plan_elev = PLAN;
+   else
+      plan_elev = 0;
+
+   sx = sin(rad(view_angle));
+   cx = cos(rad(view_angle));
+   fz = cos(rad(elev_angle));
+   fx = sin(rad(elev_angle)) * sx;
+   fy = sin(rad(elev_angle)) * -cx;
 
    for (group = 0; group < NUM_DEPTH_COLOURS; group++) {
       segment_groups[group].num_segments = 0;
@@ -851,7 +757,7 @@ fill_segment_cache(void)
 #define distance_metric(DX, DY) ((DX)*(DX) + (DY)*(DY))
 #endif
 
-point *
+static point *
 find_station(int x, int y, int mask)
 {
    point *p, *q = NULL;
@@ -860,10 +766,7 @@ find_station(int x, int y, int mask)
    int d_min = distance_metric(300, 300);
    lid *plid;
 
-   if (ppStns == NULL)
-      return NULL;
-
-   setview(view_angle);	/* FIXME: needed? */
+   if (ppStns == NULL) return NULL;
 
    for (plid = ppStns[0]; plid; plid = plid->next) {
       for (p = plid->pData; p->_.str != NULL; p++) {
@@ -963,8 +866,17 @@ redraw_image_dbe(Display * display, Window window, GC gc)
 	    x2 = toscreen_x(p);
 	    y2 = toscreen_y(p);
 	    if (crossing) {
+#if 0 /* + crosses */
                XDrawLine(display, window, gcs[lab_col_ind], x2 - CROSSLENGTH, y2, x2 + CROSSLENGTH, y2);
                XDrawLine(display, window, gcs[lab_col_ind], x2, y2 - CROSSLENGTH, x2, y2 + CROSSLENGTH);
+#else /* x crosses */
+               XDrawLine(display, window, gcs[lab_col_ind],
+			 x2 - CROSSLENGTH, y2 - CROSSLENGTH,
+			 x2 + CROSSLENGTH, y2 + CROSSLENGTH);
+               XDrawLine(display, window, gcs[lab_col_ind],
+			 x2 + CROSSLENGTH, y2 - CROSSLENGTH,
+			 x2 - CROSSLENGTH, y2 + CROSSLENGTH);
+#endif
 	    }
 
 	    if (labelling) {
@@ -984,7 +896,6 @@ redraw_image_dbe(Display * display, Window window, GC gc)
 
    draw_ind_com(display, gc, view_angle);
    draw_ind_elev(display, gc, elev_angle);
-   // FIXME:   draw_rot_but(gc);
 
    if (sbar < 1000)
       sprintf(temp, "%d m", (int)sbar);
@@ -1044,8 +955,8 @@ process_focus(Display * display, Window window, int ix, int iy)
 
    x = (int)((float)(-ix + width) / scale);
    y = (int)((float)(height - iy) / scale);
-   sx = sin(view_angle * PIBY180);
-   cx = cos(view_angle * PIBY180);
+   sx = sin(rad(view_angle));
+   cx = cos(rad(view_angle));
    /* printf("process focus: ix=%d, iy=%d, x=%f, y=%f\n", ix, iy, (double)x, (double)y); */
    /* no distinction between PLAN or ELEVATION in the focus any more */
    /* plan_elev is no longer maintained correctly anyway JPNP 14/06/97 */
@@ -1067,11 +978,11 @@ process_focus(Display * display, Window window, int ix, int iy)
 	  */
 
 	 /*
-	  * fz = cos(elev_angle*PIBY180);
+	  * fz = cos(rad(elev_angle));
 	  */
 	 n1 = sx * fz;
 	 n2 = cx * fz;
-	 n3 = sin(elev_angle * PIBY180);
+	 n3 = rad(sin(elev_angle));
 	 /*
 	  * fx = n3 * sx;
 	  * fy = n3 * -cx;
@@ -1271,9 +1182,9 @@ drag_compass(int x, int y)
    x -= INDWIDTH / 2;
    y -= INDWIDTH / 2;
    /* printf("xm %d, y %d, ", x,y); */
-   view_angle = atan2(-x, y) / PIBY180;
+   view_angle = deg(atan2(-x, y));
    /* snap view_angle to nearest 45 degrees if outside circle */
-   if (x * x + y * y > RADIUS * RADIUS)
+   if (x * x + y * y > indrad * indrad)
       view_angle = ((int)((view_angle + 360 + 22) / 45)) * 45 - 360;
    /* printf("a %f\n", view_angle); */
    fill_segment_cache();
@@ -1286,7 +1197,7 @@ drag_elevation(int x, int y)
    y -= INDWIDTH / 2;
 
    if (x >= 0) {
-      elev_angle = atan2(-y, x) / PIBY180;
+      elev_angle = deg(atan2(-y, x));
    } else {
       /* if the mouse is to the left of the elevation indicator,
        * snap to view from -90, 0 or 90 */
@@ -1357,8 +1268,8 @@ main(int argc, char **argv)
    int temp1, temp2;
    Font font;
 
-   // FIXME:  int indicators = 1;
    char *title;
+   const char *tmp;
 
    msg_init(argv[0]);
 
@@ -1368,6 +1279,8 @@ main(int argc, char **argv)
       /* do nothing */
    }
 
+   set_codes(MOVE, DRAW, STOP);
+   
    /* set up display and foreground/background */
    mydisplay = XOpenDisplay("");
    if (!mydisplay) {
@@ -1476,6 +1389,10 @@ main(int argc, char **argv)
 			  BUTHEIGHT, 2, myforeground, mybackground);
 #endif
 
+   /* allow indrad to be set */
+   tmp = getenv("XCAVEROT_INDICATOR_RADIUS");
+   if (tmp) indrad = atof(tmp);
+
    /* children windows to act as indicators */
    ind_com =
       XCreateSimpleWindow(mydisplay, mywindow, attr.width - INDWIDTH - 1, 0,
@@ -1495,26 +1412,13 @@ main(int argc, char **argv)
                           ind_fg, ind_bg);
 #endif
 
-   rot_but = XCreateSimpleWindow(mydisplay, mywindow, attr.width - INDWIDTH * 2
-				 - 1 - INDDEPTH / 4, 0, INDDEPTH / 4, INDDEPTH,
-				 1, ind_fg, ind_bg);
-
-/*   printf("Window ind_com %d\n", ind_com);   */
-
-/*   printf("Window ind_elev %d\n", ind_elev);  */
-
    /* so we can auto adjust scale on window resize */
    oldwidth = attr.width;
    oldheight = attr.height;
 
-   xcMac = attr.width;
-   ycMac = attr.height;
-
    /* load file */
    load_file(argv[optind]);
-   title = malloc(strlen(hello) + strlen(argv[optind]) + 7);
-   if (!title)
-      exit(1);	// FIXME
+   title = osmalloc(strlen(hello) + strlen(argv[optind]) + 7);
    sprintf(title, "%s - [%s]", hello, argv[optind]);
    optind++;
 
@@ -1550,8 +1454,11 @@ main(int argc, char **argv)
    XChangeGC(mydisplay, scale_gc, GCLineWidth, &gcval);
 
    /* Load the font */
-   font = XLoadFont(mydisplay, FONTNAME);
+   tmp = getenv("XCAVEROT_FONTNAME");
+   if (!tmp) tmp = FONTNAME;
+   font = XLoadFont(mydisplay, tmp);
    XSetFont(mydisplay, mygc, font);
+
    XSetBackground(mydisplay, mygc, mybackground);
    XSetForeground(mydisplay, mygc, myforeground);
    color_set_up(mydisplay, mywindow);
@@ -1615,13 +1522,12 @@ main(int argc, char **argv)
    XMapRaised(mydisplay, ind_com);
    XMapRaised(mydisplay, ind_elev);
    XMapRaised(mydisplay, scalebar);
-   /*  XMapRaised (mydisplay, rot_but); */
 
    /* Display menu strings */
 
    gettimeofday(&lastframe, NULL);
 
-#ifdef XCAVEROT_BUTTONS	// FIXME: !?!
+#ifdef XCAVEROT_BUTTONS	/* FIXME: !?! */
    XNextEvent(mydisplay, &myevent);
    draw_buttons(mydisplay, mywindow, mygc, enter_gc);
 #endif

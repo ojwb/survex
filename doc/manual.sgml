@@ -45,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2000-08-21 22:23:19 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.15 2000-08-21 22:23:19 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2000-08-24 17:55:09 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.16 2000-08-24 17:55:09 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -64,8 +64,8 @@ ZIPfile</a>
 
 <Sect1><Title>Introduction</Title>
 
-<Para>&survexsuite; is a multi-platform open-source cave survey package. It
-currently runs on &unix;, Windows 95/98/NT, &msdos;, and Acorn &riscos;
+<Para>&survexsuite; is a multi-platform open-source cave surveying package.
+It currently runs on &unix;, Windows 95/98/NT, &msdos;, and Acorn &riscos;
 machines.  Windows 3.1 users can use the &msdos; version, or may be able to
 run Windows 95/98/NT version with Win32s installed (though we've not tried
 this).</Para>
@@ -80,7 +80,7 @@ us and we will try to help.</Para>
 survey-production tool. This focus on facilities and structure means that
 less attention has so far been given to the user interface so it does not
 yet have nice menus, on-line help etc. - you will have to read the
-instructions first! A version with windows and menus is in preparation.</Para>
+instructions first! Version 2.0 will have windows and menus.</Para>
 
 <Para>We are well aware that not everyone has access to super hardware
 - often surveying projects are run on little or no budget and any
@@ -114,6 +114,33 @@ has an unfortunate tendency to lag slightly behind the capabilities of the
 software. The latest version is now available on the web at <ulink
 url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
 </Para>
+
+<Sect2><Title>Other Documentation</Title>
+
+<Para>
+NEWS / NEWS.txt - this file contains a list of changes of interest to
+&survexsuite; users, broken down by version number.  When upgrading, it's
+wise to check this file for information on what has change since the version
+you were previously using.
+</Para>
+
+<Para>
+BUGS / BUGS.txt - a list of known bugs.
+</Para>
+
+<Para>
+TODO / TODO.txt - changes and enhancements that need doing.
+</Para>
+
+<Para>
+ChangeLog / CHANGES.txt - this is a much more detailed list of changes.
+It's aimed at developers rather than end users.
+</Para>
+
+<!-- FIXME: other text files... -->
+
+</Sect2>
+
 </Sect1>
 
 <Sect1><Title>Getting Started</Title>
@@ -218,41 +245,16 @@ joining it, e.g. at a T-junction. And so on.</Para>
 
 </Sect1>
 
-<!--
-<Sect1><Title>The Documentation comes in these parts</Title>
-
-<Para>
-Survex.doc - Overview and basic instructions on how to use the
-package.
-</Para>
-
-<Para>
-Changes.txt - changes list for recent versions, and details of
-installation changes.
-</Para>
-
-<Para>
-For &survexsuite; v0.70 both Caverot and the printer drivers have had
-a great deal of work done on them to improve functionality, remove
-memory limitations, and make the system easier to use. Survex itself
-has had some relatively minor changes in response to user requests. An
-extra utility <command>extend</command> has been created as an aid to
-making Extended elevation plots. And of course a number of bugs have
-been stamped.
-</Para>
-</Sect1>
-
--->
-
 <Sect1><Title>Using &survexsuite;</Title>
 <?dbhtml filename="using.htm">
 
-<!-- FIXME rewrite this -->
+<!--
 <Para>A complete specification of the &survexsuite; program commands is in
 the commands appendix. This will tell you exactly what &survexsuite; can and
 cannot do, however it is not easy to get an overall view of how to use the
 program from that so below are general comments on the basic concepts of
 &survexsuite; and typical ways of using the program.</Para>
+-->
 
 <Para>&survexsuite; is currently command-based. There are three sections:
 </Para>
@@ -687,14 +689,6 @@ give you the help again.  <keycap/Escape/ lets you out.
 </Sect2>
 
 <Sect2><Title>Colours and multiple data files</Title>
-
-<warning>
-<Para>This feature is an interim measure until the new <filename/.3d/ format
-is implemented, which will allow more intelligent and dynamic selection of
-what to plot and in what colour. Thus it is a bit basic, but it works
-very well as far as it goes.
-</Para>
-</warning>
 
 <Para>Caverot can read in multiple data files and display them in separate
 colours.
@@ -1570,7 +1564,7 @@ e.g. *DATA Normal from to compass tape clino
 
 <Para>
 &lt;type&gt; = NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR (|LRUD
-for LRUD data, etc
+for LRUD data, etc)
 </Para>
 
 <Para>
@@ -2355,7 +2349,7 @@ data), then an error is given.
 </Para>
 
 <Para>
-2. [Not implemented] Similarly, for TOPOFIL data &lt;FromCount&gt;
+2. [Not implemented, although the style is] Similarly, for TOPOFIL data &lt;FromCount&gt;
 may be replaced by an &lt;OMIT&gt; (default '-') if the reading
 is the same as the previous &lt;ToCount&gt;. If this is the first
 line of Topofil data, then an error is given. (It is best if both
@@ -2365,7 +2359,7 @@ data style).
 </Para>
 
 <Para>
-3. [Not implemented] CARTESIAN data are relative to TRUE North
+3. CARTESIAN data are relative to TRUE North
 not MAGNETIC North (i.e. they are unaffected by the calibration
 of DECLINATION). Also x is Easting, y is Northing, and z is height.
 This convention has been chosen because it gives right-handed
@@ -2719,7 +2713,7 @@ character (which is not permitted in a name by default), then the command:
 *SET NAMES ?\</programlisting>
 
 <Para>
-specifies that question mark '?' and '\' are permitted in station names.
+specifies that question marks and backslashes are permitted in station names.
 A-Z, a-z, and 0-9 are always permitted. '_' is also permitted by default,
 but isn't in this example.
 </Para>
@@ -2857,57 +2851,17 @@ without recompiling the program.</Para>
 <Sect1><Title>Future Developments</Title>
 <?dbhtml filename="future.htm">
 
-<Sect2><Title>Soon</Title>
-
 <Para>
-OS-level printer driver, so drivers for Windows, &riscos; etc can
-be used.
+We plan to bring &survexsuite; to version 1.0, and then start to develop
+version 2.0.  Work on 1.0 will continue, but only bug-fixing and minor new
+features.  More information on these plans is on the
+<ulink url="&survexwebsite;">web site</ulink>.
 </Para>
 
-<Para>
-More enhancements to caverot, including a control panel, and colouring
-and labelling by survey.
-</Para>
+</Sect1>
 
-<Para>
-Gross error detection - thorough facilities for identifying dodgy
-data.
-</Para>
-
-<Para>
-Most of the other features in the spec but not yet implemented
-will appear soon.
-</Para>
-
-<Para>
-We now have a Java-based package for full solid-modelling of caves.
-This allows editable cross-section to be entered around the skeleton
-and joined to make a complete <Acronym/VRML/ model viewable with a suitable
-browser. This will be integrated with &survexsuite; soon.
-</Para>
-
-<Para>
-A prototype program for processing digitised passage wall data
-is now working.  This will hopefully be releasable in the not
-too distant future, and will be the next major step in making
-&survexsuite; into a complete survey production tool.
-</Para>
-</sect2>
-
-<sect2><title>Later</title>
-
-<Para>
-Some development of a general <Acronym/GUI/-based version has already taken
-place and eventually a graphical front-end will be included to
-make the programs much easier to use.  A working prototype has
-been written for the Archimedes desktop, and this will be ported
-to Microsoft Windows, X-windows, Macintosh etc.  (probably in
-that order). 
-</Para>
-
-</sect2>
-
-<Sect2><title>Contacting the authors</title>
+<Sect1><title>Contacting the authors</title>
+<?dbhtml filename="contact.htm">
 
 <Para>We'd be delighted to hear how you get on with &survexsuite; and
 welcome comments and suggestions for improvements.</Para>
@@ -2952,8 +2906,6 @@ c/o James Hickson,
 <Country>UK</Country>
 </Address>
 
-</Sect2>
-
 <Sect2><title>Donations</title>
 
 <Para>Monetary donations are welcome, but if you want a more personal way to
@@ -2965,32 +2917,6 @@ it.</Para>
 programmer and want to help out there's plenty to do, so feel free to join
 in.</Para>
 </Sect2>
-<!--
-
-<Para>
-We have put a lot of effort into this project, and we hope you
-will like the result enough to use it.  The program is freely-distributable
-provided no profit is made.  A *small* charge may be made for
-disk and postage.  You may use our code as part of another program
-provided: 
-</Para>
-
-<Para>
- (a) You do not charge for your program either.
-</Para>
-
-<Para>
- (b) You acknowledge our contribution in the credits.  It would be
-polite to tell us and send us a copy.
-</Para>
-
-<Para>
-We are not asking for money, but would appreciate the occasional
-donation of 5 or 10 pounds if you think it is worth it, to help
-cover our costs and provide encouragement.
-</Para>
-
--->
 
 </Sect1>
 

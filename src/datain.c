@@ -1,6 +1,6 @@
 /* > datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-1998 Olly Betts
+ * Copyright (C) 1991-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,6 +139,7 @@ skipline(void)
 }
 
 /* display current line, marking n chars (n == INT_MAX => to end of line)
+ * if n < 0 count backwards instead of forwards
  *
  * fpLineStart
  * v
@@ -156,6 +157,10 @@ showline(const char *dummy, int n)
    dummy = dummy; /* suppress warning */
    out_puts(msg(/*in this line:*/58));
    fpCur = ftell(file.fh);
+   if (n < 0) {
+      n = -n;
+      fpCur -= n;
+   }
    o = (int)(fpCur - fpLineStart - 1);
    fseek(file.fh, fpLineStart, SEEK_SET);
    nextch();
@@ -187,7 +192,7 @@ showline(const char *dummy, int n)
    sz[i] = '\0';
    out_puts(sz);
    n = min(n, i - o); /* cope with n==INT_MAX, or indeed just too big */
-   if (n /*&& o + n < 80 !HACK!*/) {
+   if (n) {
       memset(sz, ' ', o);
       memset(sz + o, '^', n);
       sz[o + n] = '\0';
@@ -203,18 +208,16 @@ data_file(const char *pth, const char *fnm)
 #ifndef NO_PERCENTAGE
    volatile long int filelen;
 #endif
+#ifdef NEW3DFORMAT
+   twig *temp;
+#endif
 
    file.fh = fopen_portable(pth, fnm, EXT_SVX_DATA, "rb", &file.filename);
    if (file.fh == NULL) {
       compile_error(/*Couldn't open data file '%s'*/24, fnm);
-      /* print "ignoring..." maybe !HACK! */
       return;
    }
    
-#if 0
-   sprintf(out_buf, msg(/*Processing data file '%s'*/122), fnm);
-   out_current_action(out_buf);
-#endif
    out_set_fnm(fnm); /* FIXME: file.filename maybe? */
 
    using_data_file(file.filename);
@@ -242,6 +245,7 @@ data_file(const char *pth, const char *fnm)
 #endif
    
    while (!feof(file.fh)) {
+      int eolchar;
       /* Note start of line for error reporting */
       fpLineStart = ftell(file.fh);
 #ifndef NO_PERCENTAGE
@@ -254,8 +258,16 @@ data_file(const char *pth, const char *fnm)
 
       if (isData(ch)) {
 	 /* style function returns 0 => error, so start next line */
+#ifdef NEW3DFORMAT
+	 temp = limb;
+#endif
 	 if (!(pcs->Style)()) {
 	    skipline();
+#ifdef NEW3DFORMAT
+	    /* we have just created a very naughty twiglet, and it must be punished*/
+	    osfree(limb);
+	    limb = temp;
+#endif
 	    continue;
 	 }
       } else if (isKeywd(ch)) {
@@ -264,18 +276,28 @@ data_file(const char *pth, const char *fnm)
       }
 
       skipblanks();
+
+      if (isComm(ch)) while (!isEol(ch)) nextch();
+
       if (!isEol(ch)) {
-	 if (!isComm(ch)) {
-	    compile_error(/*End of line not blank*/15);
-	    showline(NULL, INT_MAX);
-	    out_puts(msg(/*Ignoring rest of line*/89));
-	 }
+	 compile_error(/*End of line not blank*/15);
+	 showline(NULL, INT_MAX);
+	 out_puts(msg(/*Ignoring rest of line*/89));
 	 skipline();
       }
 
-      /* FIXME need to cope with "\r"-only end of lines - this will work
-       * for Unix and DOS text files though (RISC OS is the same as UNIX) */
-      if (ch == '\n') file.line++;
+      file.line++;
+      /* skip any different eol characters so we get line counts correct on
+       * DOS text files and similar, but don't count several adjacent blank
+       * lines as one */
+      eolchar = ch;
+      while (ch != EOF) {
+	 nextch();
+	 if (ch == eolchar || !isEol(ch)) {
+	    ungetc(ch, file.fh);
+	    break;
+	 }
+      }
    }
 
 #ifndef NO_PERCENTAGE
@@ -283,30 +305,14 @@ data_file(const char *pth, const char *fnm)
 #endif
 
    if (pcs->begin_lineno) {
-      /* FIXME: can't give filename as it is freed by data_file() -
-       * perhaps this code should be pushed into data_file.  Then
-       * it would also work for files specified on the command line...
-       */
       error_in_file(file.filename, pcs->begin_lineno,
 		    /*BEGIN with no matching END in this file*/23);
       skipline();
       /* Implicitly close any unclosed BEGINs from this file */
       do {
-	 /* FIXME: same code as in end_block() in commands.c - pull out into function */
-	 datum *order;
 	 settings *pcsParent = pcs->next;
 	 ASSERT(pcsParent);
-   
-	 /* don't free default ordering or ordering used by parent */
-	 order = pcs->ordering;
-	 if (order != default_order && order != pcsParent->ordering)
-	    osfree(order);
-      
-	 /* free Translate if not used by parent */
-	 if (pcs->Translate != pcsParent->Translate)
-	    osfree(pcs->Translate - 1);
-
-	 osfree(pcs);
+	 free_settings(pcs);
 	 pcs = pcsParent;
       } while (pcs->begin_lineno);
    }
@@ -322,6 +328,7 @@ data_file(const char *pth, const char *fnm)
    /* osfree(file.filename); */
 }
 
+/* tape/compass/clino and topofil (fromcount/tocount/compass/clino) */
 extern int
 data_normal(void)
 {
@@ -334,9 +341,12 @@ data_normal(void)
    real cxy, cyz, czx;
 #endif
 
-   real tape, comp, clin;
-   bool fNoComp, fPlumbed = fFalse;
-   bool fNoClino;
+#ifdef NEW3DFORMAT
+   twig *twiglet;
+#endif
+
+   real tape, comp, clin, frcount, tocount;
+   bool fNoComp, fNoClino, fTopofil = fFalse, fPlumbed = fFalse;
    
    datum *ordering;
    
@@ -351,6 +361,8 @@ data_normal(void)
        case Fr: fr_name = read_prefix(fFalse); break;
        case To: to_name = read_prefix(fFalse); break;
        case Tape: tape = read_numeric(fFalse); break;
+       case FrCount: frcount = read_numeric(fFalse); break;
+       case ToCount: tocount = read_numeric(fFalse); fTopofil = fTrue; break;
        case Comp: {
 	  comp = read_numeric(fTrue);
 	  if (comp == HUGE_REAL) {
@@ -383,6 +395,7 @@ data_normal(void)
 	     
 	     skipblanks();
 	     if (isalpha(ch)) {
+		long fp = ftell(file.fh);
 		get_token();
 		tok = match_tok(clino_tab, TABSIZE(clino_tab));
 		if (tok != CLINO_NULL) {
@@ -390,6 +403,7 @@ data_normal(void)
 		   clin = clinos[tok];
 		   break;
 		}
+		fseek(file.fh, fp, SEEK_SET);
 	     } else if (isSign(ch)) {
 		int chOld = ch;
 		nextch();
@@ -428,6 +442,21 @@ data_normal(void)
    
    dataread:
 
+#ifdef NEW3DFORMAT
+   /* new twiglet and insert into twig tree */
+   if (fUseNewFormat) {
+      twiglet = osnew(twig);
+      twiglet->from = fr_name;
+      twiglet->to = to_name;
+      twiglet->down = twiglet->right = NULL;
+      twiglet->source = twiglet->drawings
+	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
+      twiglet->up = limb->up;
+      limb->right = twiglet;
+      limb = twiglet;
+   }
+#endif
+
 #if 0
    print_prefix(fr_name);
    printf("->");
@@ -435,12 +464,17 @@ data_normal(void)
    printf(" %.2f %.2f %.2f\n",tape,comp,clin);
 #endif
 	    
-   if (tape < (real)0.0) {
-      compile_warning(/*Negative tape reading*/60);
-      showline(NULL, 0);
-   }
+   if (fTopofil) {
+      frcount *= pcs->units[Q_COUNT];
+      tocount *= pcs->units[Q_COUNT];
+   } else {
+      if (tape < (real)0.0) {
+	 compile_warning(/*Negative tape reading*/60);
+	 showline(NULL, 0);
+      }
 
-   tape *= pcs->units[Q_LENGTH];
+      tape *= pcs->units[Q_LENGTH];
+   }
 
    fNoComp = (comp == HUGE_REAL);
    if (!fNoComp) {
@@ -458,36 +492,26 @@ data_normal(void)
 	 showline(NULL, 0);
       }
    }
-
-#if 0
-   printf("fPlumbed %d fNoClino %d\n",fPlumbed,fNoClino);
-   printf("clin %.2f\n",clin);
-#endif
-
-#if DEBUG_DATAIN
-   /* out of date! */
-   printf("### %4.2f %4.2f %4.2f\n", tape, comp, clin);
-   printf("leng %f, bear %f, grad %f\n",
-	  pcs->length_units, pcs->bearing_units, pcs->gradient_units);
-   printf("tz %f, tsc %f, cz %f, csc %f, iz %f, isc %f, decz %f\n",
-	  pcs->tape_zero, pcs->tape_sc, pcs->comp_zero, pcs->comp_sc,
-	  pcs->clin_zero, pcs->clin_sc, pcs->decl_zero);
-#endif
-
-   tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
-
+   
+   if (fTopofil) {
+      tape = (tocount - frcount) * pcs->sc[Q_COUNT];
+   } else {
+      tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
+   }
+   
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
+      /* FIXME: different message for topofil? */
       compile_warning(/*Negative adjusted tape reading*/79);
       showline(NULL, 0);
    }
-   
+
    if ((fPlumbed && clin != (real)0) ||
        (pcs->f90Up && (fabs(clin - PI / 2) < EPSILON))) {
       /* plumbed */
       if (!fNoComp) {
 	 compile_warning(/*Compass reading given on plumbed leg*/21);
-	 showline(NULL, INT_MAX);
+	 showline(NULL, 0);
       }
 
       dx = dy = (real)0.0;
@@ -495,7 +519,7 @@ data_normal(void)
       vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
       vz = var(Q_POS) / 3.0 + var(Q_LENGTH);
 #ifndef NO_COVARIANCES
-      cxy = cyz = czx = (real)0.0; /* !HACK! do this properly */
+      cxy = cyz = czx = (real)0.0; /* FIXME: do this properly */
 #endif
    } else {
       /* clino */
@@ -573,8 +597,10 @@ printf("clin %.2f\n",clin);
 	 if (!fNoClino)
 	    vz = (var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var(Q_GRADIENT));
 	 else
-	    vz = (var(Q_POS) / 3.0 + L2 * (real)0.1); /* FIXME: covariances? */
+	    vz = (var(Q_POS) / 3.0 + L2 * (real)0.1);
 	 /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
+	 /* usual covariance formulae are fine in no clino case since
+	  * dz = 0 so value of var(Q_GRADIENT) is ignored */
 	 cxy = sinB * cosB * (var(Q_LENGTH) * cosG2 + var(Q_GRADIENT) * dz2)
 	       - var(Q_BEARING) * dx * dy;
 	 czx = var(Q_LENGTH) * sinB * sinGcosG - var(Q_GRADIENT) * dx * dz;
@@ -601,6 +627,16 @@ printf("clin %.2f\n",clin);
 	  , cyz, czx, cxy
 #endif
 	  );
+
+#ifdef NEW3DFORMAT
+   /* record pre-fettling deltas */
+   if (fUseNewFormat) {
+      twiglet->delta[0] = dx;
+      twiglet->delta[1] = dy;
+      twiglet->delta[2] = dz;
+   }
+#endif
+
    return 1;
 }
 
@@ -613,6 +649,10 @@ data_diving(void)
 
    real tape, comp;
    real fr_depth, to_depth;
+
+#ifdef NEW3DFORMAT
+   twig *twiglet;
+#endif
 
    datum *ordering;
   
@@ -636,6 +676,21 @@ data_diving(void)
    }
 
    dataread:
+
+#ifdef NEW3DFORMAT
+   /*new twiglet and insert into twig tree*/
+   if (fUseNewFormat) {
+      twiglet = osnew(twig);
+      twiglet->from = fr_name;
+      twiglet->to = to_name;
+      twiglet->down = twiglet->right = NULL;
+      twiglet->source = twiglet->drawings
+	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
+      twiglet->up = limb->up;
+      limb->right = twiglet;
+      limb = twiglet;
+   }
+#endif
 
    if (tape < (real)0.0) {
       compile_warning(/*Negative tape reading*/60);
@@ -703,7 +758,144 @@ data_diving(void)
    addleg(StnFromPfx(fr_name), StnFromPfx(to_name), dx, dy, dz, vx, vy, vz);
 #else
    addleg(StnFromPfx(fr_name), StnFromPfx(to_name), dx, dy, dz,
-	  vx, vy, vz, 0, 0, 0); /* !HACK! need covariances */
+	  vx, vy, vz, 0, 0, 0); /* FIXME: need covariances */
 #endif
+#ifdef NEW3DFORMAT
+   /* record pre-fettling deltas */
+   if (fUseNewFormat) {
+      twiglet->delta[0] = dx;
+      twiglet->delta[1] = dy;
+      twiglet->delta[2] = dz;
+   }
+#endif
+
+   return 1;
+}
+
+extern int
+data_cartesian(void)
+{
+   prefix *fr_name, *to_name;
+   real dx, dy, dz;
+   real vx, vy, vz;
+
+#ifdef NEW3DFORMAT
+   twig *twiglet;
+#endif
+
+   datum *ordering;
+
+   for (ordering = pcs->ordering ; ; ordering++) {
+      skipblanks();
+      switch (*ordering) {
+       case Fr: fr_name = read_prefix(fFalse); break;
+       case To: to_name = read_prefix(fFalse); break;
+       case Dx: dx = read_numeric(fFalse); break;
+       case Dy: dy = read_numeric(fFalse); break;
+       case Dz: dz = read_numeric(fFalse); break;
+       case Ignore:
+	 skipword(); break;
+       case IgnoreAll:
+	 skipline();
+	 /* fall through */
+       case End:
+	 goto dataread;
+       default: BUG("Unknown datum in ordering");
+      }
+   }
+   
+   dataread:
+
+#ifdef NEW3DFORMAT
+   /* new twiglet and insert into twig tree */
+   if (fUseNewFormat) {
+      twiglet = osnew(twig);
+      twiglet->from = fr_name;
+      twiglet->to = to_name;
+      twiglet->down = twiglet->right = NULL;
+      twiglet->source = twiglet->drawings
+	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
+      twiglet->up = limb->up;
+      limb->right = twiglet;
+      limb = twiglet;
+   }
+#endif
+
+   dx = (dx * pcs->units[Q_DX] - pcs->z[Q_DX]) * pcs->sc[Q_DX];
+   dy = (dy * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
+   dz = (dz * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
+
+   addleg(StnFromPfx(fr_name), StnFromPfx(to_name), dx, dy, dz, 
+	  var(Q_DX), var(Q_DY), var(Q_DZ)
+#ifndef NO_COVARIANCES
+	  , 0, 0, 0
+#endif
+	  );
+
+#ifdef NEW3DFORMAT
+   /* record pre-fettling deltas */
+   if (fUseNewFormat) {
+      twiglet->delta[0] = dx;
+      twiglet->delta[1] = dy;
+      twiglet->delta[2] = dz;
+   }
+#endif
+
+   return 1;
+}
+
+extern int
+data_nosurvey(void)
+{
+   prefix *fr_name, *to_name;
+   nosurveylink *link;
+
+#ifdef NEW3DFORMAT
+   twig *twiglet;
+#endif
+
+   datum *ordering;
+
+   for (ordering = pcs->ordering ; ; ordering++) {
+      skipblanks();
+      switch (*ordering) {
+       case Fr: fr_name = read_prefix(fFalse); break;
+       case To: to_name = read_prefix(fFalse); break;
+       case Ignore:
+	 skipword(); break;
+       case IgnoreAll:
+	 skipline();
+	 /* fall through */
+       case End:
+	 goto dataread;
+       default: BUG("Unknown datum in ordering");
+      }
+   }
+   
+   dataread:
+
+#ifdef NEW3DFORMAT
+   /* new twiglet and insert into twig tree */
+   if (fUseNewFormat) {
+      twiglet = osnew(twig);
+      twiglet->from = fr_name;
+      twiglet->to = to_name;
+      twiglet->down = twiglet->right = NULL;
+      twiglet->source = twiglet->drawings
+	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
+      twiglet->up = limb->up;
+      limb->right = twiglet;
+      limb = twiglet;
+      /* FIXME: check with PhilU what to do here... */
+      twiglet->delta[0] = twiglet->delta[1] = twiglet->delta[2] = 0;
+   }
+#endif
+
+   /* add to linked list which is dealt with after network is solved */
+   link = osnew(nosurveylink);
+   link->fr = StnFromPfx(fr_name);
+   link->to = StnFromPfx(to_name);
+   link->next = nosurveyhead;
+   nosurveyhead = link;
    return 1;
 }

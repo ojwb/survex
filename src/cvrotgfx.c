@@ -23,16 +23,16 @@
 
 #include "message.h"
 
-/* number of screen banks to use (only used for RISCOS currently) */
-#define nBanks 3
-
 #include "cvrotgfx.h"
 
 int colText, colHelp;
 static int fSwapScreen;
 
-int mouse_buttons = -3; /*!HACK! special value => "not yet initialised" */
+int mouse_buttons = -3; /* special value => "not yet initialised" */
 static int bank = 0;
+
+/* number of screen banks to use (only used for RISCOS currently) */
+static int nBanks = 3;
 
 int _cvrotgfx_textcol, _cvrotgfx_drawcol;
 
@@ -256,12 +256,13 @@ cvrotgfx_init(void)
    y_stretch *= (float)(((float)xcMac / ycMac) * (350.0 / 640.0) * 1.3);
 #elif defined(JLIB)
    screen_set_video_mode();
-   /* !HACK! this func is intended to remove the pointer to prevent problems */
-   /* when plotting over it, and may not actually hide the pointer :(        */
+   /* mouse_hide_pointer is intended to remove the pointer to prevent
+    * problems when plotting over it, and may not actually hide the
+    * pointer - but it's the best we can do */
    mouse_hide_pointer();
 
-   screen_put_pal(255, 0xff, 0xff, 0xff); /*!HACK!*/
-   screen_put_pal(0, 0, 0, 0); /*!HACK!*/
+   screen_put_pal(255, 0xff, 0xff, 0xff); /*FIXME*/
+   screen_put_pal(0, 0, 0, 0); /*FIXME*/
 
    /* initialise screen sized buffer */
    BitMap = buff_init(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -334,19 +335,6 @@ cvrotgfx_init(void)
 	 res = set_gfx_mode(c, w, h, 0, 0);
       } while (res);
    }
-#if 0
-   /*!HACK! may have "not initialised" problems -- this is a quick fix */
-   BitMapDraw = screen;
-#endif
-#if 0
-   /* test res */
-   if (res) {
-      allegro_exit();
-      printf("bad mode select 2\n");
-      printf("%s\n", allegro_error);
-      exit(1);
-   }
-#endif
    text_mode(-1); /* don't paint in text background */
    BitMap = create_bitmap(SCREEN_W, SCREEN_H);
    /* check that initialisation was OK */
@@ -392,7 +380,7 @@ cvrotgfx_init(void)
 
    /* Creates a bitmap 'context' in system memory, allocating memory for us */
    BitMap = GrCreateContext(GrScreenX() + 1, GrScreenY() + 1, NULL, NULL);
-   if (!BitMap) exit(1); /* !HACK! */
+   if (!BitMap) exit(1); /* FIXME */
    mode = GrCurrentVideoMode();
    colText = colHelp = (1 << ((int)(mode->bpp))) - 1;
    _cvrotgfx_drawcol = 1;
@@ -455,7 +443,8 @@ cvrotgfx_init(void)
     case PC3270:
       break;
     case IBM8514:
-      colText = colHelp = 255; /* guess city !HACK! */
+      /* FIXME: total guess - don't have access to an IBM8514 */
+      colText = colHelp = 255;
       break;
     default:
       /* unknown graphics card */
@@ -482,18 +471,21 @@ cvrotgfx_init(void)
    mouse_buttons = -2;
 #elif defined(JLIB)
    mouse_buttons = -1;
-   /* !HACK! can't distinguish no mouse from no driver */
-   if (mouse_present() == MOUSE_PRESENT)
-      mouse_buttons = MOUSE_NUM_BUTTONS; /* !HACK! this is max # of buttons */
+   /* With jlib we can't distinguish no mouse from no driver */
+   if (mouse_present() == MOUSE_PRESENT) {
+      /* With jlib we can't count the buttons, so assume max # of buttons */
+      mouse_buttons = MOUSE_NUM_BUTTONS;
+   }
 #elif defined(ALLEGRO)
    /* mouse initialised above */
 #elif defined(__DJGPP__)
    mouse_buttons = -1;
-   /* !HACK! can't distinguish no mouse from no driver */
+   /* With Grx we can't distinguish no mouse from no driver */
    if (GrMouseDetect()) {
       GrMouseEventMode(1);
       GrMouseInit(); /* not actually needed, but call for neatness */
-      mouse_buttons = 3; /* !HACK! assume 3 buttons */
+      /* With Grx we can't count the buttons, so assume 3 */
+      mouse_buttons = 3;
    }
 #else
    mouse_buttons = init_ms_mouse();
@@ -637,7 +629,7 @@ fclose(fh);
    return keycode & 0xff;
 }
 #else
-/* !HACK! use _bios_keybd() instead? */
+/* FIXME: use _bios_keybd() instead? */
 /* returns a keycode - if enhanced keycode then 0x100 added; -1 if none */
 int
 cvrotgfx_get_key(void)
@@ -677,7 +669,7 @@ cvrotgfx_lineto(int X, int Y)
 # elif defined(ALLEGRO)
    line(BitMapDraw, last_x, last_y, X, Y, _cvrotgfx_drawcol);
 # else
-   GrLine(last_x, last_y, X, Y, 15); /* 15 is colour !HACK! */
+   GrLine(last_x, last_y, X, Y, 15); /* FIXME: 15 is colour */
 # endif
    last_x = X; last_y = Y;
 }
@@ -706,8 +698,7 @@ int
 cvrotgfx_init(void)
 {
    extern void fastline_init(void); /* initialise fast lines routines */
-   /* FIXME: Acorn C sez 2x "Warning implicit cast (to 'int') overflow": */
-   oswordpointer_bbox_block bbox = {{}, 1, 0x8000, 0x8000, 0x7fff, 0x7fff };
+   oswordpointer_bbox_block bbox = {{}, 1, -32768, -32768, 0x7fff, 0x7fff };
    extern float y_stretch;
    extern int xcMac, ycMac;
    int mode, modeAlt, modeBest;
@@ -736,39 +727,45 @@ cvrotgfx_init(void)
    modeBest = -1;
    cPixelsBest = 0;
    cColsBest = 0;
-   for (mode = val_list[0]; mode >= 0; mode--) {
-      if (xos_check_mode_valid((os_mode)mode, &modeAlt, NULL, NULL) != NULL)
-	 continue;
-      /* modeAlt is -1 for no such mode, -2 for not feasible */
-      if (modeAlt >= 0) {
-         int mode_flags;
-	 /* Check we can draw lines (ie graphics, non-teletext, non-gap) */
-         os_read_mode_variable((os_mode)mode, os_MODEVAR_MODE_FLAGS, &mode_flags);
-	 if ((mode_flags & 7) == 0) {
-	    int screen_size;
-            os_read_mode_variable((os_mode)mode, os_MODEVAR_SCREEN_SIZE, &screen_size);
-	    /* check we have enough memory for nBanks banks */
-	    if (screen_size * nBanks <= scrmem) {
-	       int x, y;
-               os_read_mode_variable((os_mode)mode, os_MODEVAR_XWIND_LIMIT, &x);
-               os_read_mode_variable((os_mode)mode, os_MODEVAR_YWIND_LIMIT, &y);
-	       cPixels = x * y;
-	       if (cPixels >= cPixelsBest) {
-		  os_read_mode_variable((os_mode)mode, os_MODEVAR_NCOLOUR, &cCols);
-		  if (
-		      (cCols == 63) /* need 256 colours for fastlinedraw */
-#if 0
-		      (cCols == 1) /* need 2 colours for older version of fastlinedraw */
-#endif
-		      && (cPixels > cPixelsBest || cCols > cColsBest)) {
-		     modeBest = mode;
-		     cPixelsBest = cPixels;
-		     cColsBest = cCols;
+   for (nBanks = 3; modeBest == -1 && nBanks > 1; nBanks--) {
+      for (mode = val_list[0]; mode >= 0; mode--) {
+	 if (xos_check_mode_valid((os_mode)mode, &modeAlt, NULL, NULL) != NULL)
+	   continue;
+	 /* modeAlt is -1 for no such mode, -2 for not feasible */
+	 if (modeAlt >= 0) {
+	    int mode_flags;
+	    /* Check we can draw lines (ie graphics, non-teletext, non-gap) */
+	    os_read_mode_variable((os_mode)mode, os_MODEVAR_MODE_FLAGS, &mode_flags);
+	    if ((mode_flags & 7) == 0) {
+	       int screen_size;
+	       os_read_mode_variable((os_mode)mode, os_MODEVAR_SCREEN_SIZE, &screen_size);
+	       /* check we have enough memory for nBanks banks */
+	       if (screen_size * nBanks <= scrmem) {
+		  int x, y;
+		  os_read_mode_variable((os_mode)mode, os_MODEVAR_XWIND_LIMIT, &x);
+		  os_read_mode_variable((os_mode)mode, os_MODEVAR_YWIND_LIMIT, &y);
+		  cPixels = x * y;
+		  if (cPixels >= cPixelsBest) {
+		     os_read_mode_variable((os_mode)mode, os_MODEVAR_NCOLOUR, &cCols);
+		     if (
+			 (cCols == 63) /* need 256 colours for fastlinedraw */
+# if 0
+			 (cCols == 1) /* need 2 colours for older version of fastlinedraw */
+# endif
+			 && (cPixels > cPixelsBest || cCols > cColsBest)) {
+			modeBest = mode;
+			cPixelsBest = cPixels;
+			cColsBest = cCols;
+		     }
 		  }
 	       }
 	    }
 	 }
       }
+   }
+   if (modeBest == -1) {
+      /* FIXME: actually we probably don't have enough video memory assigned */
+      fatalerror(/*Error initialising graphics card*/81);      
    }
    xos_set_mode(), xos_writec(modeBest);
    /* defaults: */
@@ -781,22 +778,16 @@ cvrotgfx_init(void)
     case 15:
       colText = colHelp = 7; break;
    }
-   fSwapScreen = 1; /* may want to turn off if we haven't enough memory */
-/*   swap_screen(1); !HACK! may need to sort this out... */
-/*   xos_cls(); */ /* and clear the other bank too... */
+   fSwapScreen = (nBanks > 1);
 
    /* make cursor keys return values */
-/*   xos_byte(osbyte_INTERPRETATION_ARROWS, 1, 0, NULL, NULL); */
    xosbyte_write(osbyte_INTERPRETATION_ARROWS, 1);
    /* make escape like normal keys */
    xosbyte_write(osbyte_VAR_ESCAPE_CHAR, 0);
-/*   xos_byte(osbyte_VAR_ESCAPE_CHAR, 0, 0, NULL, NULL);*/
    /* infinite mouse bounding box */
    xoswordpointer_set_bbox(&bbox);
-/*   _kernel_osword(0x15, (int*)mausblk); */
    /* turn off mouse pointer */
    xosbyte_write(osbyte_SELECT_POINTER, 0);
-/*   _kernel_osbyte(106, 0, 0); */
    /* limits for fastline drawing routines */
    os_read_vdu_variables((os_vdu_var_list*)&var_list2, val_list);
    xcMac = val_list[0] + 1;
@@ -808,7 +799,6 @@ cvrotgfx_init(void)
    ycMacOS = ycMac << eigY;
    y_stretch *= (float)(int)(1 << eigX) / (float)(int)(1 << eigY);
    /* set origin to centre of screen +/- adjustment for labels */
-/*   bbc_origin((xcMacOS >> 1) + 8, (ycMacOS >> 1) + 8);*/
    {
       int v;
       xos_set_graphics_origin();
@@ -834,7 +824,8 @@ cvrotgfx_init(void)
 int
 cvrotgfx_pre_main_draw(void)
 {
-   xosbyte_write(osbyte_OUTPUT_SCREEN_BANK, bank); /* drawn bank */
+   if (fSwapScreen)
+      xosbyte_write(osbyte_OUTPUT_SCREEN_BANK, bank); /* drawn bank */
    xos_cls();
    return 1;
 }
@@ -844,9 +835,10 @@ cvrotgfx_pre_main_draw(void)
 int
 cvrotgfx_post_main_draw(void)
 {
-   xosbyte_write(osbyte_DISPLAY_SCREEN_BANK, bank); /* shown bank */
-/*   bank ^= 1; */
-   bank = (bank % nBanks) + 1; /* change written-to bank */
+   if (fSwapScreen) {
+      xosbyte_write(osbyte_DISPLAY_SCREEN_BANK, bank); /* shown bank */
+      bank = (bank % nBanks) + 1; /* change written-to bank */
+   }
    return 1;
 }
 

@@ -1,6 +1,6 @@
 /* > ini.c
  * .ini file routines
- * Copyright (C) 1995 Olly Betts
+ * Copyright (C) 1995-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 /* says when two distinct strings hash to same value */
 #define REPORT_COLLISION
 
-/* !HACK!-ish - good enough for testing */
+/* good enough for testing */
 #define strcasecmp(x,y) strcmp((x),(y))
 
 char *
@@ -88,16 +88,13 @@ ini_write(const char *section, const char *var, const char *value)
 #endif
 
 char **
-ini_read(FILE *fh, char *section, char **vars)
+ini_read(FILE **fh_list, char *section, char **vars)
 {
    int n, c;
    char **vals;
-   int *hash_tab, hash;
-   char *p, *var, *val;
-   char buf[1024];
-   int fInSection;
+   int *hash_tab;
 
-   ASSERT(fh != NULL);
+   ASSERT(fh_list != NULL);
    ASSERT(section != NULL);
    ASSERT(vars != NULL);
 
@@ -120,65 +117,78 @@ ini_read(FILE *fh, char *section, char **vars)
 
    ASSERT(c == n); /* counted vars[] twice and got different answers! */
 
-   fInSection = 0;
-   rewind(fh);
    while (1) {
-      if (feof(fh)) {
-         /* if (fWrite) { insert_section(); insert_lines(); fDone=1; } */
-         break;
-      }
+      char *p, *var, *val;
+      char buf[1024];
+      int hash;
 
-      /* read line and sort out terminator */
-      if (!fgets(buf, 1024, fh)) break;
-      p = strpbrk(buf, "\n\r");
-      if (p) *p = '\0';
-
-      /* skip blank lines */
-      if (buf[0] == '\0') continue;
-
-      /* deal with a section heading */
-      if (buf[0] == '[' && buf[strlen(buf) - 1] == ']') {
-	 buf[strlen(buf) - 1] = '\0';
-         if (fInSection) {
-	    /* if (fWrite) { insert_lines(); fDone=1; } */
-	    break; /* now leaving the section we wanted, so stop */
-	 }
-/*         printf("[%s] [%s]\n", section, buf + 1);*/
-	 if (!strcasecmp(section, buf + 1)) fInSection = 1;
-         continue;
-      }
-
-      if (!fInSection) continue;
-
-      p = strchr(buf, '=');
-      if (!p) continue; /* non-blank line with no = sign! */
+      int fInSection = 0;
       
-      *p = '\0';
-      var = buf;
-      val = p + 1;
+      FILE *fh = *fh_list++;
 
-      /* hash the variable name and see if it's in the list passed in */
-      hash = hash_string(var);
-      for (c = n - 1; c >= 0; c--) {
-         if (hash == hash_tab[c]) {
-            if (strcasecmp(var, vars[c]) == 0) {
-               /* if (fWrite) { replace_line(); hash_tab[c]=-1; } else */
-               vals[c] = osstrdup(val);
-            } else {
+      if (!fh) break;
+      rewind(fh);
+      while (1) {
+	 if (feof(fh)) {
+	    /* if (fWrite) { insert_section(); insert_lines(); fDone=1; } */
+	    break;
+	 }
+
+	 /* read line and sort out terminator */
+	 if (!fgets(buf, 1024, fh)) break;
+	 p = strpbrk(buf, "\n\r");
+	 if (p) *p = '\0';
+
+	 /* skip blank lines */
+	 if (buf[0] == '\0') continue;
+
+	 /* deal with a section heading */
+	 if (buf[0] == '[' && buf[strlen(buf) - 1] == ']') {
+	    buf[strlen(buf) - 1] = '\0';
+	    if (fInSection) {
+	       /* if (fWrite) { insert_lines(); fDone=1; } */
+	       /* now leaving wanted section, so stop on this file */
+	       break;
+	    }
+	    /*         printf("[%s] [%s]\n", section, buf + 1);*/
+	    if (!strcasecmp(section, buf + 1)) fInSection = 1;
+	    continue;
+	 }
+
+	 if (!fInSection) continue;
+
+	 p = strchr(buf, '=');
+	 if (!p) continue; /* non-blank line with no = sign! */
+      
+	 *p = '\0';
+	 var = buf;
+	 val = p + 1;
+
+	 /* hash the variable name and see if it's in the list passed in */
+	 hash = hash_string(var);
+	 for (c = n - 1; c >= 0; c--) {
+	    if (hash == hash_tab[c]) {
+	       if (strcasecmp(var, vars[c]) == 0) {
+		  /* if (fWrite) { replace_line(); hash_tab[c]=-1; } else */
+		  vals[c] = osstrdup(val);
+		  /* set to value hash can't generate to ignore further matches */
+		  hash_tab[c] = -1;
+	       } else {
 #ifdef REPORT_COLLISION
-               printf("`%s' and `%s' both hash to %d!\n",var,vars[c],hash);
+		  printf("`%s' and `%s' both hash to %d!\n",var,vars[c],hash);
 #endif
-            }
-         }
+	       }
+	    }
+	 }
       }
    }
-
+      
    free(hash_tab);
    return vals;
 }
 
 char **
-ini_read_hier(FILE *fh, char *section, char **vars)
+ini_read_hier(FILE **fh_list, char *section, char **vars)
 {
    int i, j;
    char **x;
@@ -187,12 +197,12 @@ ini_read_hier(FILE *fh, char *section, char **vars)
    int first = 1;
    int *to = NULL;
 
-   ASSERT(fh != NULL);
+   ASSERT(fh_list != NULL);
    ASSERT(section != NULL);
    ASSERT(vars != NULL);
 
    do {
-      x = ini_read(fh, section, vars);
+      x = ini_read(fh_list, section, vars);
       if (!x) {
          if (!first) {
             free(vals);

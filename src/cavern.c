@@ -40,6 +40,13 @@
 #include "str.h"
 #include "validate.h"
 
+#ifdef NEW3DFORMAT
+#include "new3dout.h"
+#ifndef MAXPATHLEN
+#define MAXPATHLEN 1024
+#endif
+#endif
+
 /* For funcs which want to be immune from messing around with different
  * calling conventions */
 #ifndef CDECL
@@ -59,6 +66,11 @@ img *pimgOut = NULL;
 bool fPercent = fFalse;
 #endif
 bool fAscii = fFalse;
+bool fQuiet = fFalse; /* just show brief summary + errors */
+bool fMute = fFalse; /* just show errors */
+bool fSuppress = fFalse; /* only output 3d(3dx) file */
+
+nosurveylink *nosurveyhead;
 
 real totadj, total, totplan, totvert;
 real min[3], max[3];
@@ -84,19 +96,33 @@ static const struct option long_opts[] = {
    {"no-percentage", no_argument, (int*)&fPercent, 0},
 #endif
    {"output", required_argument, 0, 'o'},
+   {"quiet", no_argument, 0, 'q'},
+   {"no-auxiliary-files", no_argument, 0, 's'},
+#ifdef NEW3DFORMAT
+   {"new-format", no_argument, 0, 'x'},
+#endif
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "pao:z:"
+#ifdef NEW3DFORMAT
+#define short_opts "pxao:qsz:"
+#else
+#define short_opts "pao:qsz:"
+#endif
 
-/* TRANSLATE: FIXME extract help messages to message file */
+/* TRANSLATE extract help messages to message file */
 static struct help_msg help[] = {
 /*				<-- */
    {HLP_ENCODELONG(0),          "display percentage progress"},
    {'a',                        "output ascii variant of .3d file"},
    {HLP_ENCODELONG(2),          "set location for output files"},
+   {HLP_ENCODELONG(3),          "only show brief summary (-qq for errors only)"},
+   {HLP_ENCODELONG(4),          "do not create .pos, .inf, or .err files"},
+#ifdef NEW3DFORMAT
+   {HLP_ENCODELONG(5),          "output data in 3dx format"},
+#endif
  /*{'z',                        "set optimizations for network reduction"},*/
    {0, 0}
 };
@@ -108,8 +134,6 @@ main(int argc, char **argv)
    static clock_t tmCPUStart;
    static time_t tmUserStart;
    static double tmCPU, tmUser;
-
-   check_fp_ok(); /* check very early on */
 
    tmUserStart = time(NULL);
    tmCPUStart = clock();
@@ -127,6 +151,9 @@ main(int argc, char **argv)
    root->stn = NULL;
    root->pos = NULL;
    root->ident = "\\";
+   root->fSuspectTypo = fFalse;
+
+   nosurveyhead = NULL;
 
    stnlist = NULL;
    cLegs = cStns = cComponents = 0;
@@ -166,6 +193,19 @@ main(int argc, char **argv)
 	 }
 	 break;
        }
+#ifdef NEW3DFORMAT
+       case 'x': {
+	 fUseNewFormat = 1;
+	 break;
+       }
+#endif
+       case 'q':
+	 if (fQuiet) fMute = 1;
+	 fQuiet = 1;
+	 break;
+       case 's':
+	 fSuppress = 1;
+	 break;
        case 'z': {
 	 /* Control which network optimisations are used (development tool) */
 	 static int first_opt_z = 1;
@@ -200,7 +240,18 @@ main(int argc, char **argv)
 
       /* Select defaults settings */
       default_all(pcs);
-
+#ifdef NEW3DFORMAT
+      /* we need to get the filename of the first one for our base_source */
+      /* and also run_file */
+      if (fUseNewFormat) {
+	 create_twig(root, fnm);
+	 rhizome = root->twig_link;
+	 limb = get_twig(root);
+	 firstfilename = osstrdup(fnm);
+	 startingdir = osmalloc(MAXPATHLEN);
+	 getcwd(startingdir, MAXPATHLEN);
+      }
+#endif
       data_file("", fnm); /* first argument is current path */
       
       optind++;
@@ -210,50 +261,56 @@ main(int argc, char **argv)
 
    solve_network(/*stnlist*/); /* Find coordinates of all points */
    validate();
-#ifdef NEW3DFORMAT
-   cave_close(pimgOut); /* close .3d file */
-#else
-   img_close(pimgOut); /* close .3d file */
-#endif
-   if (fhErrStat) fclose(fhErrStat); /* FIXME: only NULL if we're meddling? */
 
-   list_pos(root); /* produce .pos file */
+#ifdef NEW3DFORMAT
+   if (fUseNewFormat) {
+     cave_close(pimgOut); /* this actually does all the writing */
+   } else {
+#endif
+     img_close(pimgOut); /* close .3d file */
+#ifdef NEW3DFORMAT
+   }
+#endif
+   if (fhErrStat) fclose(fhErrStat);
+
+   if (!fSuppress) list_pos(root); /* produce .pos file */
 
    out_current_action(msg(/*Calculating statistics*/120));
    do_stats();
+   if (!fQuiet) {
+      tmCPU = (clock_t)(clock() - tmCPUStart) / (double)CLOCKS_PER_SEC;
+      tmUser = difftime(time(NULL), tmUserStart);
 
-   tmCPU = (clock_t)(clock() - tmCPUStart) / (double)CLOCKS_PER_SEC;
-   tmUser = difftime(time(NULL), tmUserStart);
-
-   /* tmCPU is integer, tmUser not - equivalent to (ceil(tmCPU) >= tmUser) */
-   if (tmCPU + 1 > tmUser) {
-      out_printf((msg(/*CPU time used %5.2fs*/140), tmCPU));
-   } else if (tmCPU == 0) {
-      if (tmUser == 0.0) {
-         out_printf((msg(/*Time used %5.2fs*/141), tmUser));
+      /* tmCPU is integer, tmUser not - equivalent to (ceil(tmCPU) >= tmUser) */
+      if (tmCPU + 1 > tmUser) {
+         out_printf((msg(/*CPU time used %5.2fs*/140), tmCPU));
+      } else if (tmCPU == 0) {
+         if (tmUser == 0.0) {
+            out_printf((msg(/*Time used %5.2fs*/141), tmUser));
+	 } else {
+            out_puts(msg(/*Time used unavailable*/142));
+	 }
       } else {
-         out_puts(msg(/*Time used unavailable*/142));
+	 out_printf((msg(/*Time used %5.2fs (%5.2fs CPU time)*/143),
+		    tmUser, tmCPU));
       }
-   } else {
-      out_printf((msg(/*Time used %5.2fs (%5.2fs CPU time)*/143),
-		  tmUser, tmCPU));
-   }
 
-   out_puts(msg(/*Done.*/144));
+      out_puts(msg(/*Done.*/144));
+   }
    return error_summary();
 }
 
 static void
 do_range(FILE *fh, int d, int msg1, int msg2, int msg3)
 {
-   char buf [1024];
+   char buf[1024];
    sprintf(buf, msg(msg1), max[d] - min[d]);
    strcat(buf, sprint_prefix(pfxHi[d]));
    sprintf(buf + strlen(buf), msg(msg2), max[d]);
    strcat(buf, sprint_prefix(pfxLo[d]));
    sprintf(buf + strlen(buf), msg(msg3), min[d]);
-   out_puts(buf);
-   fputsnl(buf, fh);
+   if (!fMute) out_puts(buf);
+   if (!fSuppress) fputsnl(buf, fh);
 }
 
 static void
@@ -263,7 +320,8 @@ do_stats(void)
    long cLoops = cComponents + cLegs - cStns;
    char buf[1024];
 
-   fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
+   if (!fSuppress)
+      fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
 
    out_puts("");
 
@@ -279,39 +337,39 @@ do_stats(void)
       sprintf(buf + strlen(buf),
 	      msg(/* joined by %ld legs.*/175), cLegs);
 
-   out_puts(buf);
-   fputsnl(buf, fh);
+   if (!fMute) out_puts(buf);
+   if (!fSuppress) fputsnl(buf, fh);
 
    if (cLoops == 1)
       sprintf(buf, msg(/*There is 1 loop.*/138));
    else
       sprintf(buf, msg(/*There are %ld loops.*/139), cLoops);
 
-   out_puts(buf);
-   fputsnl(buf, fh);
+   if (!fMute) out_puts(buf);
+   if (!fSuppress) fputsnl(buf, fh);
 
    if (cComponents != 1) {
       sprintf(buf,
 	      msg(/*Survey has %ld connected components.*/178), cComponents);
-      out_puts(buf);
-      fputsnl(buf, fh);
+      if (!fMute) out_puts(buf);
+      if (!fSuppress) fputsnl(buf, fh);
    }
 
    sprintf(buf,
 	   msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
 	   total, totadj);
-   out_puts(buf);
-   fputsnl(buf, fh);
+   if (!fMute) out_puts(buf);
+   if (!fSuppress) fputsnl(buf, fh);
 
    sprintf(buf,
 	   msg(/*Total plan length of survey legs = %7.2fm*/133), totplan);
-   out_puts(buf);
-   fputsnl(buf, fh);
+   if (!fMute) out_puts(buf);
+   if (!fSuppress) fputsnl(buf, fh);
 
    sprintf(buf, msg(/*Total vertical length of survey legs = %7.2fm*/134),
 	   totvert);
-   out_puts(buf);
-   fputsnl(buf, fh);
+   if (!fMute) out_puts(buf);
+   if (!fSuppress) fputsnl(buf, fh);
 
    do_range(fh, 2, /*Vertical range = %4.2fm (from */135,
 	    /* at %4.2fm to */136, /* at %4.2fm)*/137);
@@ -326,5 +384,5 @@ do_stats(void)
     *  # fixed stations (list of?)
     */
 
-   fclose(fh);
+   if (!fSuppress) fclose(fh);
 }

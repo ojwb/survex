@@ -1,3 +1,71 @@
+* cavern: *fix with error values (one for same all round, two for horizontal
+  and vertical, three for x, y, z)
+
+* Fixed RISC OS not treating "foo." as a directory
+
+* Improved behaviour when sgmltools not installed
+
+* cavern: Merged patches for generating .3dx files for chasm
+
+* Miscellaneous code tidying
+
+* Moved unresolvable issues from BUGS to ZOMBIES
+
+* cavern: Fixed articulation code bug (handling of some cases of components
+  with multiple fixed points); added regression test
+
+* cavern: "*begin" / "*end foo" now gives more explicit error
+
+* cavern: More work on gross error detection
+
+* xcaverot: you can now set environmental variables XCAVEROT_FONTNAME,
+  XCAVEROT_INDICATOR_RADIUS
+
+* extend: now starts from highest station with only one leg.  If no such
+  station exists then revert to the previous behaviour of starting from
+  the highest station (but complain if we have no legs at all).
+
+* cavern: line numbers now correct for .svx files with Mac style lineends
+
+* cavern: improved error reporting in several cases
+
+* caverot: on RISC OS now fall back to using 2 or even just one screen
+  bank if we can't find a mode where we can create 3 banks [FIXME: need
+  to test this works]
+
+* cavern: added data styles "TOPOFIL" (like tape/compass/clino but with a
+  counter instead of the tape), "CARTESIAN" (dx, dy, dz), and "NOSURVEY"
+  (for unsurveyed connections between surveys)
+
+* cavern: can now suppress "unused fixed point" error on a station by
+  station basis by using: "*fix <station> reference <coords>"
+
+* cavern: new command "*require <version>" to allow survey data to specify
+  the minimum survex version required to process it
+
+* print*: now search multiple print.ini files so you can override settings
+  in the shipped file rather than having to modify it.  Search order is:
+  ~/.survex/print.ini (unix only), $SURVEXHOME/myprint.ini,
+  $SURVEXHOME/print.ini
+
+* Changed xcaverot rotation/zoom to be the same way round as caverot
+
+* diffpos, extend, xcaverot, caverot: Now use cmdline library to parse
+  command line arguments and so support --help, --version, etc.
+
+* hto2svx, svx2hto, and survex wrapper now all support --help and --version
+
+* `configure --disable-aven' now disables building of aven
+
+* caverot: on RISC OS fall back to using 2 or just 1 screen bank if there's
+  not enough video memory allocated for 3.
+
+* Documentation brought more up to date.
+
+* If a station is only referenced once, and that reference is in a *equate
+  and with an explicit prefix (e.g. "*equate 1 possibletypo.6"), a warning
+  is issued.
+
 Changes in 0.94-prerelease2:
 
 * Added test for "cavern would segfault in articulate() on second *solve"
@@ -5,15 +73,15 @@ Changes in 0.94-prerelease2:
 
 Changes in 0.94-prerelease1:
 
-* Fix for bug reported by Leandro - cavern would segfault in articulate() on
-  second *solve
+* cavern: Fix for bug reported by Leandro - cavern would segfault in
+  articulate() on second *solve
 
-* Applied xcaverot patches from Leandro: fix menu buttons, keyboard
+* xcaverot: Applied patches from Leandro: fix menu buttons, keyboard
   shortcuts, colour of station markers, scalebar length and text display,
   mouse right-button "cave drag", centre-button "plan/elevation switch",
   zoom in/out menu button
 
-* Fixed "matrix wouldn't invert" problem with certain datasets;
+* cavern: Fixed "matrix wouldn't invert" problem with certain datasets;
   added regression test (bug2)
 
 * Check for sgmltools v3 (sgmltools-lite) as well as v2

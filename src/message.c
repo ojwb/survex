@@ -47,9 +47,8 @@ static jmp_buf jmpbufSignal;
 # endif
 #endif
 
-/* This is the name of the default language -- set like this so folks can
- * add (for eg) -DDEFAULTLANG="fr" to UFLG in the makefile
- * FIXME - update wrt automake/autoconf
+/* This is the name of the default language.  Add -DDEFAULTLANG to CFLAGS
+ * e.g. with `CFLAGS="-DDEFAULTLANG=fr" ./configure'
  */
 #ifndef DEFAULTLANG
 # define DEFAULTLANG "en"
@@ -204,7 +203,7 @@ init_signals(void)
 {
    int en;
    if (!setjmp(jmpbufSignal)) {
-#if 0 /* FIXME: disable for now so we get a core dump */
+#if 1 /* disable these to get a core dump */
       signal(SIGABRT, report_sig); /* abnormal termination eg abort() */
       signal(SIGFPE,  report_sig); /* arithmetic error eg /0 or overflow */
       signal(SIGILL,  report_sig); /* illegal function image eg illegal instruction */
@@ -231,6 +230,9 @@ init_signals(void)
    default:      en=97; break;
    }
    fputsnl(msg(en), STDERR);
+#if 0
+   /* Not useful to display errno - it's just left from the last library
+    * call which failed... */
    if (errno >= 0) {
 # ifdef HAVE_STRERROR
       fputsnl(strerror(errno), STDERR);
@@ -244,6 +246,7 @@ init_signals(void)
       fprintf(STDERR, "error code %d\n", errno);
 # endif
    }
+#endif
    /* Any signals apart from SIGINT and SIGTERM suggest a bug */
    if (sigReceived != SIGINT && sigReceived != SIGTERM)
       fatalerror(/*Bug in program detected! Please report this to the authors*/11);
@@ -262,12 +265,12 @@ static int default_charset( void ) {
    return CHARSET_ISO_8859_1;
 #elif (OS==RISCOS)
 /* RISCOS 3.1 and above CHARSET_RISCOS31 (ISO_8859_1 + extras in 128-159)
- * RISCOS < 3.1 is ISO_8859_1 !HACK! */
+ * FIXME: RISCOS < 3.1 is ISO_8859_1 */
    return CHARSET_RISCOS31;
 #elif (OS==MSDOS)
    return CHARSET_DOSCP850;
 #else
-   return CHARSET_ISO_8859_1; /* Look at env var CHARSET ? !HACK! */
+   return CHARSET_ISO_8859_1; /* FIXME: Look at env var CHARSET ? */
 #endif
 }
 
@@ -386,6 +389,9 @@ parse_msg_file(int charset_code)
    fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
 #endif
 
+   /* On Mandrake LANG defaults to C */
+   if (strcmp(lang, "C") == 0) lang = "en";
+   
    lang = osstrdup(lang);
    /* On my RedHat 6.1 Linux box, LANG defaults to en_US - be nice and
     * handle this... */
@@ -574,7 +580,7 @@ v_report(int severity, const char *fnm, int line, int en, va_list ap)
    vfprintf(STDERR, msg(en), ap);
    fputnl(STDERR);
    
-   /* FIXME allow "warnings are errors" and/or "errors are fatal" */
+   /* FIXME: allow "warnings are errors" and/or "errors are fatal" */
    switch (severity) {
     case 0:
       cWarnings++;

@@ -1,6 +1,6 @@
 /* > useful.h
  * Lots of oddments that come in handy generally
- * Copyright (C) 1993-1996 Olly Betts
+ * Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,10 @@
 /* only include once */
 #ifndef USEFUL_H
 #define USEFUL_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <stdlib.h> /* for Borland C which #defines max() & min() there */
 #include <stdio.h>
@@ -54,7 +58,7 @@ typedef long int fpos_t;
 /* Deals with TurboC & maybe others. The format string is ignored,
  * and some default used instead.
  */
-/* still something of a !HACK! */
+/* FIXME: still something of a hack */
 #ifndef HAVE_STRFTIME
 # define strftime(SZ, LENSZ, FMT, LOCALTIME) BLK(strncpy((SZ), asctime((LOCALTIME)), LENSZ);\
                                                  (SZ)[(LENSZ) - 1] = '\0';)
@@ -134,15 +138,15 @@ typedef long int fpos_t;
 #include "message.h"
 
 /* useful_XXX() are defined in useful.c */
-extern void FAR useful_put16(w16, FILE *);
-extern void FAR useful_put32(w32, FILE *);
-extern w16 FAR useful_get16(FILE *);
-extern w32 FAR useful_get32(FILE *);
+extern void FAR useful_put16(INT16_T, FILE *);
+extern void FAR useful_put32(INT32_T, FILE *);
+extern INT16_T FAR useful_get16(FILE *);
+extern INT32_T FAR useful_get32(FILE *);
 extern int FAR useful_getline(char *buf, OSSIZE_T len, FILE *fh);
 
 #ifndef WORDS_BIGENDIAN
-extern w16 useful_w16;
-extern w32 useful_w32;
+extern INT16_T useful_w16;
+extern INT32_T useful_w32;
 
 # define useful_put16(W, FH) BLK(useful_w16 = (W); fwrite(&useful_w16, 2, 1, (FH));)
 # define useful_put32(W, FH) BLK(useful_w32 = (W); fwrite(&useful_w32, 4, 1, (FH));)

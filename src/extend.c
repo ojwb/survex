@@ -36,6 +36,7 @@
 typedef struct POINT {
    float x, y, z;
    char *label;
+   unsigned int order;
    struct POINT *next;
 } point;
 
@@ -45,11 +46,9 @@ typedef struct LEG {
    int fDone;
 } leg;
 
-static point headpoint = {0, 0, 0, NULL, NULL};
-static leg headleg = {NULL, NULL, NULL, 1};
+static point headpoint = {0, 0, 0, NULL, 0, NULL};
 
-static float zMax = -99999999;
-static point *start = NULL;
+static leg headleg = {NULL, NULL, NULL, 1};
 
 static img *pimg;
 
@@ -59,18 +58,19 @@ static point *
 find_point(float x, float y, float z)
 {
    point *p;
-   for (p = headpoint.next; p != NULL; p = p->next)
-      if (x == p->x && y == p->y && z == p->z) return p;
+   for (p = headpoint.next; p != NULL; p = p->next) {
+      if (x == p->x && y == p->y && z == p->z) {
+	 p->order++;
+	 return p;
+      }
+   }
 
    p = osmalloc(ossizeof(point));
    p->x = x;
    p->y = y;
    p->z = z;
    p->label = "<none>";
-   if (z > zMax) {
-      zMax = z;
-      start = p;
-   }
+   p->order = 1;
    p->next = headpoint.next;
    headpoint.next = p;
    return p;
@@ -116,8 +116,10 @@ main(int argc, char **argv)
    float x, y, z;
    char sz[256];
    int result;
-   point *fr, *to;
-   fr = NULL;
+   point *fr = NULL, *to;
+   float zMax = -FLT_MAX;
+   point *start = NULL;
+   point *p;
 
    msg_init(argv[0]);
 
@@ -171,6 +173,26 @@ main(int argc, char **argv)
 
    img_close(pimg);
 
+   /* start at the highest 1-node */
+   for (p = headpoint.next; p != NULL; p = p->next) {
+      if (p->order == 1 && p->z > zMax) {
+	 start = p;
+	 zMax = p->z;
+      }
+   }
+   /* of course we may have no 1-nodes... */
+   if (start == NULL) {
+      for (p = headpoint.next; p != NULL; p = p->next) {
+	 if (p->z > zMax && p->order != 0) {
+	    start = p;
+	    zMax = p->z;
+	 }
+      }
+      if (start == NULL) {
+	 fprintf(stderr, "No legs in input .3d file\n"); /* TRANSLATE */
+	 return EXIT_FAILURE;
+      }
+   }
    strcat(szDesc, " (extended)");
    pimg = img_open_write(fnmOutput, szDesc, fFalse);/* text file for now*/
 

@@ -63,7 +63,7 @@
 static const char newline_tabs[] = "\n\t\t\t\t";
 
 static int argc;
-static char *const *argv;
+static char * const *argv;
 static const char *shortopts;
 static const struct option *longopts;
 static int *longind;
@@ -120,7 +120,7 @@ cmdline_help(void)
       puts(help->msg);
       help++;
    }
-   /* FIXME: translate */
+   /* TRANSLATE */
    puts("      --help\t\t\tdisplay this help and exit\n"
 	"      --version\t\t\toutput version information and exit");
 
@@ -128,6 +128,7 @@ cmdline_help(void)
       putnl();
       puts(extra_msg);
    }
+
    exit(0);
 }
 
@@ -150,13 +151,14 @@ cmdline_syntax(void)
    if (min_args) {
       int i = min_args;
       while (i--) fputs(" FILE", stdout);
-   } else {
-      if (max_args) fputs(" [FILE]", stdout);
    }
-   if (max_args == -1) fputs("...", stdout);
-   
-   /* FIXME: not quite right - "..." means an indefinite number */
-   if (max_args > min_args) fputs("...", stdout);
+   if (max_args == -1) {
+      if (!min_args) fputs(" [FILE]", stdout);
+      fputs("...", stdout);
+   } else if (max_args > min_args) {
+      int i = max_args - min_args;
+      while (i--) fputs(" [FILE]", stdout);
+   }
    putnl();
 }
 
@@ -231,10 +233,7 @@ cmdline_init(int argc_, char *const *argv_, const char *shortopts_,
 	     const struct help_msg *help_,
 	     int min_args_, int max_args_)
 {
-   if (!argv0) {
-      argv0 = argv_[0];
-      /* FIXME: tidy up argv0 (remove path and extension) */
-   }
+   if (!argv0) argv0 = argv_[0];
 
    argc = argc_;
    argv = argv_;
@@ -254,11 +253,11 @@ cmdline_getopt(void)
    if (opt == EOF) {
       /* check minimum # of args given - if not give syntax message */
       if (argc - optind < min_args) {
-	 /* FIXME: TRANSLATE */
+	 /* TRANSLATE */
 	 fprintf(stderr, "%s: too few arguments\n", argv0);
 	 opt = '?';
       } else if (max_args >= 0 && argc - optind > max_args) {
-	 /* FIXME: TRANSLATE */
+	 /* TRANSLATE */
 	 fprintf(stderr, "%s: too many arguments\n", argv0);
 	 opt = '?';
       }
@@ -270,7 +269,7 @@ cmdline_getopt(void)
       /* getopt displays a message for us (unless we set opterr to 0) */
       /* FIXME: set opterr to 0 so we can translate messages? */
       cmdline_syntax();
-      /* FIXME: translate */
+      /* TRANSLATE */
       fprintf(stderr, "Try `%s --help' for more information.\n", argv0);
       exit(1);
     case HLP_VERSION: /* --version */

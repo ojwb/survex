@@ -16,13 +16,6 @@ From: Leandro Dybal Bertoni <dybal@upe.org.br>
 
 Sort .err file by error (the segment with the grossest error first)
 
-Date: Wed, 09 Sep 1998 15:10:12 +0100
-From: Wookey <wookey@aleph1.co.uk>
-
-allow disabling of specific warnings - e.g. loads of 'unused fixed point'
-errors you get from putting in a load of GPS fixes.  Or way to indicate
-a particular fixed point is not necessarily intended to be used.
-
 Date: 13 Dec 1998
 From: Olly
 
@@ -46,12 +39,6 @@ Point out in documentation that file structure and survey structure don't
 have to be the same.  And in particular that folder/directory names can be
 different.
 
-Date: 05 Jan 1999
-From: Wookey
-
-A STYLE for 'connections' (with no TCC info) for feeding in surface data,
-hydrological connections, etc.
-
 Date: 04 Mar 1999
 From: Olly
 
@@ -63,17 +50,6 @@ From: Olly
 
 Articulation point code: ideally the articulation point code should allow
 further network reductions to happen after splitting at articulation points.
-
-Date: 23 Jul 1999
-From: Olly
-
-Replace str with dyn-string from gcc/binutils
-
-Date: 24 Aug 1999
-From: Olly
-
-RISC OS caverot should probably fall back to using 2 or even just one screen
-bank if it can't find a mode where 3 works.
 
 Date: 20 Feb 2000
 From: Olly
@@ -89,29 +65,12 @@ then get it update this template and mail it to lsm@execpc.com (with
 the subject 'add' (even for updates)) would ensure things were kept up
 to date.
 
-Date: 25 Feb 2000
-From: Wookey
-
-If you do 'make install' it replaces your print.ini with the new
-default one, which is a pain in the bum (loses your selected printer,
-and new defintions you might have made, etc). Can we make it do
-something smarter please?  [Probably best to have second file for
-customisations - also checking "~/.survex/print.ini" might be useful
-while we're at it]
-
 Date: 05 Mar 2000
 From: Olly
 
 Covariance matrices are symmetric, so we only need to store 6 of the 9
 entries (but intermediate matrices need the full 9 since the product
 of 2 symmetric matrices isn't necessarily symmetric).
-
-Date: Wed, 08 Mar 2000 18:29:09 EST
-From: Mike Yocum <myocum@mis.net>
-
-svx092pre5 [...] did produce an error file much longer than whatever
-version I ran before.  [Previous version deleted so unable to discover
-what it was.]
 
 Date: Sun, 09 Jul 2000
 From: Olly
@@ -130,4 +89,21 @@ From: Olly
 
 Make *begin/*prefix reentry warning store ptr to file struct in tag, and
 call compile_warning twice, second time with msg "Previously entered here".
+
+Date: 05 Aug 2000
+From: Olly
+
+Sort out gross error detection code
+
+Date: Wed, 16 Aug 2000
+From: Gavin Lowe <gavin.lowe@mcs.le.ac.uk>
+
+If a survey leg or an *equate command refers to a station using a
+(non-empty) prefix, and that station doesn't otherwise exist, then it's
+likely that the user has cocked up the prefix in some way.
+
+Date: Fri, 18 Aug 2000
+From: Olly
+
+xcaverot should ideally be able to load multiple .3d files...
 

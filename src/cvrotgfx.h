@@ -56,7 +56,7 @@ extern BITMAP *BitMap, *BitMapDraw;
 # define CVROTGFX_RBUT 2 /* mask for right mouse button (if present) */
 # define CVROTGFX_MBUT 4 /* mask for middle mouse button (if present) */
 
-# define cvrotgfx_beep() NOP /* !HACK! */
+# define cvrotgfx_beep() NOP /* FIXME: can't allegro beep? */
 
 # ifdef NO_MOUSE_SUPPORT
 /* emulate a dead mouse */
@@ -130,7 +130,7 @@ extern GrContext *BitMap;
 
 # define cvrotgfx_beep() sound(256) /* 256 is frequency */
 
-/* !HACK! fix this stuff */
+/* FIXME: fix this stuff */
 # ifdef MSC
 #  define shift_pressed() (_bios_keybrd(_KEYBRD_SHIFTSTATUS) & 0x03)
 # elif defined(ALLEGRO)
@@ -162,8 +162,8 @@ extern void cvrotgfx_lineto(int X, int Y);
 #  define set_gcolour(X) _setcolor(X)
 #  define text_xy(X, Y, S) outtextxy((X) * 12, (Y) * 12, S)
 # elif defined(JLIB)
-#  define outtextxy(X, Y, S) buff_draw_string(BitMap, (S), (X), (Y), 15); /*15 is colour !HACK!*/
-#  define set_tcolour(X) /* !!HACK!! */
+#  define outtextxy(X, Y, S) buff_draw_string(BitMap, (S), (X), (Y), 15); /*15 is colour FIXME*/
+#  define set_tcolour(X) NOP /* FIXME */
 #  define set_gcolour(X) BLK(extern int _cvrotgfx_drawcol; _cvrotgfx_drawcol = (X);)
 #  define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, (S))
 #  define far
@@ -179,9 +179,9 @@ extern void cvrotgfx_lineto(int X, int Y);
 #  define set_gcolour(X) BLK(extern int _cvrotgfx_drawcol; _cvrotgfx_drawcol = (X);)
 #  define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, S)
 # elif defined(__DJGPP__)
-#  define outtextxy(X, Y, S) GrTextXY((X), (Y), (S), 15, 0) /* !HACK! 15 and 0 are colours */
-#  define set_tcolour(X) /* !!HACK!! */
-#  define set_gcolour(X) /* !!HACK!! */
+#  define outtextxy(X, Y, S) GrTextXY((X), (Y), (S), 15, 0) /* FIXME 15 and 0 are colours */
+#  define set_tcolour(X) NOP /* FIXME */
+#  define set_gcolour(X) NOP /* FIXME */
 #  define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, S)
 # else
 #  define set_tcolour(X) setcolor(X)

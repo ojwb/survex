@@ -1,7 +1,7 @@
 /* > datain.h
  * Header file for code that...
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1994,1996,1997 Olly Betts
+ * Copyright (C) 1994-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,7 @@
  */
 
 #ifdef HAVE_SETJMP
-#include <setjmp.h>
-#define errorjmp(EN, A, JB) BLK(\
- compile_error(EN); showandskipline(NULL, (A)); longjmp((JB), 1);)
-#else
-#define errorjmp(EN, A, JB) BLK(\
- compile_error(EN); showandskipline(NULL, (A)); exit(1);)
-/* FIXME: sort out above to exit in a more friendly way */
+# include <setjmp.h>
 #endif
 
 #include <stdio.h> /* for FILE */
@@ -55,17 +49,10 @@ extern void showline(const char *dummy, int n);
 extern void showandskipline(const char *dummy, int n);
 
 /* style functions */
-#ifdef NEW_STYLE /* FIXME: sort this out */
-extern int data_normal(int /*action*/);
-extern int data_diving(int /*action*/);
-#else
 extern int data_normal(void);
 extern int data_diving(void);
-#endif
-
-#define STYLE_START 0
-#define STYLE_READDATA 1
-#define STYLE_END 2
+extern int data_cartesian(void);
+extern int data_nosurvey(void);
 
 void compile_warning(int en, ...);
 void compile_error(int en, ...);

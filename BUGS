@@ -1,20 +1,3 @@
-Date: Sat, 11 Apr 1998 14:04:25 +0200
-From: immoh <immoh@donau.de>
-
-Another remark: Did you know that you can crash CAVEROT by setting the
-scale factor to very large or very small values (probably larger/smaller
-than MIN/MAXFLOAT)?! This would be worth an error catch....
-[Seems to be fixed by newer allegro version, let me know if you still get
-problems - Olly]
-
-Date: Wed, 09 Sep 1998 15:10:12 +0100
-From: Wookey <wookey@aleph1.co.uk>
-
-On a PC Card:
-[In DJGPP+Allegro caverot] the help screen flashes up and then
-disappears - this is probably our problem, not yours (the VESA 2 support being
-relatively new) :-)
-
 Date: 17 Sep 1998 17:49:36 GMT
 From: Olly <olly@muscat.co.uk>
 
@@ -30,23 +13,6 @@ I noticed from the code that it does look for an 'u' or 'd' or 'q'
 keypress and these work in the program as expected from the code. I
 didn't know this as xcaverot -help etc didn't tell me what keys are
 currently looked at.
-
-Date: Thu, 21 Jan 1999 11:09:49 GMT
-From: Peter Wilton-Jones <P.G.G.Wilton-jones@Bradford.ac.uk>
-
-I still get that random memory error [from cavern.exe, 0.90 alpha5, win95]
-(Wookey is unable to reproduce this - Peter thinks it might be dodgy
-hardware).
-
-Date: Mon, 15 Feb 1999 11:12:24 PST
-From: Bill Nasby <bnasby@island.net>
-
-[Running caverot] my screen "freezes" with no image, and I'm forced to
-restart the computer to get the screen back. [win95, 0.90 alpha (5 or
-earlier)]
-
-(Maybe an allegro problem - I've upgraded to allegro 3.1 to see if that
-cures the problem).  PWJ suggests the graphics card might be the problem.
 
 Date: Mon, 22 Feb 1999 08:58:53 GMT
 From: <jep@redestb.es> Josep Guarro
@@ -74,13 +40,7 @@ From: Wookey <wookey@aleph1.co.uk>
 
 On RISC OS: `cavern --output=3Ddir.' results in files such as
 `3Ddir./3d' being created.
-
 [Olly: I think fDirectory() isn't spotting `3Ddir.' as a directory -
 workaround is to use `3Ddir' instead which does work]
-
-Date: Wed, 08 Mar 2000 21:38:25 GMT
-From: Brian Clipstone <brian@bclipstone.freeserve.co.uk>
-
-[in 0.92pre6, allegro version] CAVEROT Keys :- Delete, U & D and the
-cursor keys do not work.
+[2000-07-24 Olly: Believed fixed, needs testing]
 

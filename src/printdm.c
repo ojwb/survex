@@ -50,7 +50,7 @@ static void Post(void);
 #ifdef XBM
 static const char *xbm_Name(void);
 static void xbm_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void xbm_Init(FILE *fh, const char *pth, float *pscX, float *pscY);
+static void xbm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
 static void xbm_ShowPage(const char *szPageDetails);
 
 static int xbm_page_no = 0;
@@ -78,7 +78,7 @@ static bool fPCLVTab = fTrue;
 
 static const char *pcl_Name(void);
 static void pcl_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void pcl_Init(FILE *fh, const char *pth, float *pscX, float *pscY);
+static void pcl_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
 static void pcl_ShowPage(const char *szPageDetails);
 
 /*device pcl = {*/
@@ -103,7 +103,7 @@ static bool fIBM = fFalse;
 
 static const char *dm_Name(void);
 static void dm_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY);
+static void dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
 static void dm_ShowPage(const char *szPageDetails);
 
 /*device dm = {*/
@@ -392,11 +392,11 @@ dm_ShowPage(const char *szPageDetails)
 /* Initialise DM/PCL printer routines */
 static void 
 #ifdef XBM
-xbm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
+xbm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #elif defined(PCL)
-pcl_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
+pcl_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #else
-dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
+dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #endif
 {
    char *fnmPrn;
@@ -444,12 +444,12 @@ dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
    char **vals;
 
 #ifdef XBM
-   vals = ini_read_hier(fh, "xbm", vars);
+   vals = ini_read_hier(fh_list, "xbm", vars);
 #elif defined(PCL)
-   vals = ini_read_hier(fh, "pcl", vars);
+   vals = ini_read_hier(fh_list, "pcl", vars);
 #else
-   vals = ini_read_hier(fh, "dm", vars);
-/*   vals = ini_read_hier(fh, "bj", vars);*/
+   vals = ini_read_hier(fh_list, "dm", vars);
+/*   vals = ini_read_hier(fh_list, "bj", vars);*/
 #endif
 
    if (vals[2]) 

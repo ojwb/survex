@@ -49,7 +49,8 @@
 #define COPYRIGHT "\xA9" /* specially defined degree symbol */
 /* also #define COPYRIGHT "(C)" will work */
 
-static long default_scale = 500; /* 1:<default_scale> is the default */
+/* 1:<DEFAULT_SCALE> is the default scale */
+#define DEFAULT_SCALE 500
 
 static const char *szDesc;
 
@@ -104,7 +105,7 @@ float PaperWidth, PaperDepth;
 /* MaxLength mm long. The scaling in use is 1:scale */
 static void draw_scale_bar(double x, double y, double MaxLength, double scale);
 
-#define DEF_RATIO (1.0/(double)default_scale)
+#define DEF_RATIO (1.0/(double)DEFAULT_SCALE)
 /* return a scale which will make it fit in the desired size */
 static float
 PickAScale(int x, int y)
@@ -346,7 +347,7 @@ getanswer(char *szReplies)
       putchar(*reply);
    }
    fputs(") : ", stdout);
-   /* !HACK! this isn't what we want, as buffered IO means we wait until
+   /* FIXME: this isn't what we want, as buffered IO means we wait until
     * return is pressed, then if nothing is recognised, return is taken
     * to mean default */
    do {
@@ -501,10 +502,43 @@ next_page(int *pstate, char **q, int pageLim)
    return 0;
 }
 
+static float N_Scale = 1, D_Scale = DEFAULT_SCALE;
+
+static bool
+read_scale(const char *s)
+{	      
+   char *p;
+   double val;
+	 
+   val = strtod(s, &p);
+   if (p != s) {
+      if (*p == '\0') {
+	 /* accept "<number>" as meaning "1:<number>" */
+	 N_Scale = 1;
+	 D_Scale = val;
+	 return fTrue;
+      }
+      if (*p == ':') {
+	 double val2;
+	 optarg = p + 1;
+	 val2 = strtod(optarg, &p);
+	 if (p != optarg) {
+	    while (isspace(*p)) p++;
+	    if (*p == '\0') {
+	       N_Scale = val;
+	       D_Scale = val2;
+	       return fTrue;
+	    }
+	 }
+      }
+   }
+   return fFalse;
+}
+
 int main(int argc, char **argv)
 {
    bool fOk;
-   float N_Scale = 1, D_Scale = 500, Sc = 0;
+   float Sc = 0;
    unsigned int page, pages;
    char *fnm;
    int cPasses, pass;
@@ -517,7 +551,7 @@ int main(int argc, char **argv)
    const char *msg166, *msg167;
    int old_charset;
 
-   /* FIXME TRANSLATE */
+   /* TRANSLATE */
    static const struct option long_opts[] = {
       /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
       {"elevation", no_argument, 0, 'e'},
@@ -537,7 +571,7 @@ int main(int argc, char **argv)
 
 #define short_opts "epb:t:s:ncBlk"
    
-   /* FIXME TRANSLATE */
+   /* TRANSLATE */
    static struct help_msg help[] = {
 /*				<-- */
       {HLP_ENCODELONG(0),       "select elevation"},
@@ -594,26 +628,12 @@ int main(int argc, char **argv)
 	 tilt = cmdline_int_arg();
 	 fInteractive = fFalse;
 	 break;
-       case 's': {
-	 char *p;
-	 double val;
-	 /* FIXME: pull this code out and use it for the user input case too
-	  * - also accept "<number>" as meaning "1:<number>" */
-	 val = strtod(optarg, &p);
-	 if (p != optarg) {
-	    N_Scale = val;
-	    if (*p == ':') {
-	       optarg = p + 1;
-	       val = strtod(optarg, &p);
-	       if (p != optarg) {
-		  D_Scale = val;
-		  fInteractive = fFalse;
-		  break;
-	       }
-	    }
+       case 's':
+	 if (!read_scale(optarg)) {
+	    /* FIXME complain? */	    
 	 }
-	 /* FIXME complain */
-       }
+	 fInteractive = fFalse;
+	 break;
       }
    }
 
@@ -630,12 +650,34 @@ int main(int argc, char **argv)
    if (!pimg) fatalerror(img_error(), fnm);
    
    if (pr->Init) {
+      FILE *fh_list[4];
+      FILE **p = fh_list;
       FILE *fh;
-      const char *pth_cfg = msg_cfgpth();
+      const char *pth_cfg;
+
+      /* ini files searched in this order:
+       * ~/.survex/print.ini [unix only]
+       * $SURVEXHOME/myprint.ini
+       * $SURVEXHOME/print.ini [must exist]
+       */
+
+#if (OS==UNIX)
+      pth_cfg = getenv("HOME");
+      if (pth_cfg) {
+	 fh = fopenWithPthAndExt(pth_cfg, ".survex/"PRINT_INI, NULL, "rb",
+				 NULL);
+	 if (fh) *p++ = fh;
+      }
+#endif
+      pth_cfg = msg_cfgpth();
+      fh = fopenWithPthAndExt(pth_cfg, "my"PRINT_INI, NULL, "rb", NULL);
+      if (fh) *p++ = fh;
       fh = fopenWithPthAndExt(pth_cfg, PRINT_INI, NULL, "rb", NULL);
       if (!fh) fatalerror(/*Couldn't open data file '%s'*/24, fnm);
-      pr->Init(fh, pth_cfg, &scX, &scY);
-      fclose(fh);
+      *p++ = fh;
+      *p = NULL;
+      pr->Init(fh_list, pth_cfg, &scX, &scY);
+      for (p = fh_list; *p; p++) fclose(*p);
    }
 
    if (fInteractive) {
@@ -692,8 +734,8 @@ int main(int argc, char **argv)
    while (fnm) {
       /* first time around pimg is already open... */
       if (!pimg) {
-	 /* FIXME for multiple files, which title and datestamp to use...? */
-	 pimg = img_open(fnm, title, szDateStamp);
+	 /* for multiple files use title and datestamp from the first */
+	 pimg = img_open(fnm, NULL, NULL);
 	 if (!pimg) fatalerror(img_error(), fnm);
       }
       if (!read_in_data()) fatalerror(/*Bad 3d image file '%s'*/106, fnm);
@@ -729,11 +771,11 @@ int main(int argc, char **argv)
    if (fInteractive) do {
       putnl();
       printf(msg(/*Please enter Map Scale = X:Y (default 1:%d)&#10;: */162),
-	     default_scale);
+	     DEFAULT_SCALE);
       fgets(szTmp, sizeof(szTmp), stdin);
-      if (sscanf(szTmp, "%f:%f", &N_Scale, &D_Scale) < 2) {
+      if (!read_scale(szTmp)) {
          N_Scale = 1;
-         D_Scale = (float)default_scale;
+         D_Scale = (float)DEFAULT_SCALE;
       }
       putnl();
       printf(msg(/*Using scale %.0f:%.0f*/163), N_Scale, D_Scale);
@@ -772,7 +814,7 @@ int main(int argc, char **argv)
                   break;
                }
                if (page == 0) break;
-/*               printf("page %d\n", page);*/  /*!HACK!*/
+/*               printf("page %d\n", page);*/  /*FIXME*/
                pages++;
             }
          } else {

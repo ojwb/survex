@@ -402,13 +402,16 @@ remove_subnets(void)
 		    
 		    /* FIXME: ought to handle cases when some legs are
 		     * equates, but handle as a special case maybe? */
-		    if (!invert_var(&invAB, &legAB->v)) break; /* FIXME */
-		    if (!invert_var(&invBC, &legBC->v)) break; /* FIXME */
-		    if (!invert_var(&invCA, &legCA->v)) break; /* FIXME */
+		    if (!invert_var(&invAB, &legAB->v)) break;
+		    if (!invert_var(&invBC, &legBC->v)) break;
+		    if (!invert_var(&invCA, &legCA->v)) break;
 
 		    addvv(&sum, &legBC->v, &legCA->v);
 		    addvv(&tmp, &sum, &legAB->v);
-		    if (!invert_var(&inv, &tmp)) break; /* FIXME: impossible - loop of zero variance */
+		    if (!invert_var(&inv, &tmp)) {
+		       /* impossible - loop of zero variance */
+		       BUG("loop of zero variance found");
+		    }
 		    
 		    /* AZBZ */
 		    /* done above: addvv(&sum, &legBC->v, &legCA->v); */
@@ -463,6 +466,7 @@ remove_subnets(void)
 		    nameZ->pos->shape = 3;
 		    nameZ->stn = stnZ;
 		    nameZ->up = NULL;
+		    nameZ->fSuspectTypo = fFalse;
 		    unfix(stnZ);
 		    add_stn_to_list(&stnlist, stnZ);
 		    legAZ->l.to = stnZ;

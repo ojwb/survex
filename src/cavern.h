@@ -24,6 +24,7 @@
  * desirable to disable this for small memory machines */
 
 /* #define NO_COVARIANCES 1 */
+#define NEW3DFORMAT
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,7 +59,7 @@ typedef double real; /* so we can change the precision used easily */
 # define UNFIXED_VAL HUGE_VAL /* if p[0]==UNFIXED_VAL, station is unfixed */
 #endif
 
-#define NOT_YET fatalerror(99) /* FIXME: say what's not implemented? */
+#define NOT_YET fatalerror(99)
 
 #define SPECIAL_EOL       0x001
 #define SPECIAL_BLANK     0x002
@@ -116,7 +117,6 @@ typedef enum {
 /* assert(IgnoreAll<32); */
 /* Dr, Comp, Dz give CYLPOL style */
 /* Cope with any combination which gives enough info ??? */
-/* typedef enum {NORMAL,CARTES,DIVING,TOPFIL,CYLPOL} style; */
 
 /* type of a function to read in some data style */
 #ifdef SVX_MULTILINEDATA
@@ -126,6 +126,7 @@ typedef int (*style)(void);
 #endif
 
 /* Structures */
+typedef struct Twig twig;
 
 /* station name */
 typedef struct Prefix {
@@ -135,6 +136,14 @@ typedef struct Prefix {
    char *ident;
    const char *filename;
    unsigned int line;
+   /* If a survey leg or an *equate command refers to a station using a
+    * prefix, and that station isn't refered to elsewhere, it's likely
+    * that the user has cocked up the prefix in some way.
+    */
+   bool fSuspectTypo;
+#ifdef NEW3DFORMAT
+   twig *twig_link;
+#endif
 } prefix;
 
 /* variance */
@@ -184,13 +193,31 @@ typedef struct Pos {
 #if EXPLICIT_FIXED_FLAG
    uchar fFixed; /* flag indicating if station is a fixed point */
 #endif
+#ifdef NEW3DFORMAT
+  long id;
+#endif
 } pos;
 
-#define STYLE_DEFAULT -1
-#define STYLE_UNKNOWN 0
-#define STYLE_NORMAL  1
-#define STYLE_DIVING  2
-/*#define STYLE_MAX     2*/
+#ifdef NEW3DFORMAT
+struct Twig {
+  struct Twig *up, *down, *right;
+  struct Prefix *to, *from;
+  d delta;
+  int count;
+  short int sourceval;
+  /* pointers to some random data bits... */
+  char *date, *drawings, *tape, *instruments, *source;
+};
+#endif
+
+#define STYLE_DEFAULT   -1
+#define STYLE_UNKNOWN    0
+#define STYLE_NORMAL     1
+#define STYLE_TOPOFIL    2
+#define STYLE_DIVING     3
+#define STYLE_CARTESIAN  4
+#define STYLE_NOSURVEY   5
+/*#define STYLE_MAX     6*/
 
 /*
 typedef struct Inst {
@@ -223,6 +250,13 @@ extern prefix *root;
 extern node *stnlist;
 extern unsigned long optimize;
 
+#ifdef NEW3DFORMAT
+/* these are the root and the current part of the twig structure, respectively*/
+extern twig *rhizome, *limb;
+extern char *startingdir, *basepath, *firstfilename;
+extern char fUseNewFormat; /* note defined in new3dout.h */
+#endif
+
 extern char *survey_title;
 extern int survey_title_len;
 
@@ -239,6 +273,9 @@ extern real totadj, total, totplan, totvert;
 extern real min[3], max[3];
 extern prefix *pfxHi[3], *pfxLo[3];
 extern bool fAscii;
+extern bool fQuiet; /* just show brief summary + errors */
+extern bool fMute; /* just show errors */
+extern bool fSuppress; /* only output 3d(3dx) file */
 
 /* macros */
 
@@ -286,5 +323,12 @@ extern bool fAscii;
 #define isData(c)   (pcs->Translate[(c)] & (SPECIAL_OMIT | SPECIAL_ROOT|\
    SPECIAL_SEPARATOR | SPECIAL_NAMES | SPECIAL_DECIMAL | SPECIAL_PLUS |\
    SPECIAL_MINUS))
+
+typedef struct nosurveylink {
+   node *fr, *to;
+   struct nosurveylink *next;
+} nosurveylink;
+
+extern nosurveylink *nosurveyhead;
 
 #endif /* CAVERN_H */
