@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = BUGS
+EXTRA_DIST = BUGS alien.pl
 SUBDIRS = hto src lib doc tests
 
 extra_bin = lib/*.msg lib/pfont.bit
