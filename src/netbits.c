@@ -83,6 +83,7 @@ static void check_var(/*const*/ var *v) {
 #endif
 
 #if 0
+   /* don't check this - it isn't always the case! */
    if (fabs(V(0,1) - V(1,0)) > THRESHOLD ||
        fabs(V(0,2) - V(2,0)) > THRESHOLD ||
        fabs(V(1,2) - V(2,1)) > THRESHOLD)
@@ -127,12 +128,15 @@ static void check_svar(/*const*/ svar *v) {
       printf("*** Singular!!!\n"), bad = 1;
 #endif
 
+#if 0
+   /* don't check this - it isn't always the case! */
    if ((*v)[0] <= 0.0 || (*v)[1] <= 0.0 || (*v)[2] <= 0.0)
       printf("*** Not positive definite (diag <= 0)!!!\n"), bad = 1;
    if (sqrd((*v)[3]) >= (*v)[0]*(*v)[1] ||
        sqrd((*v)[4]) >= (*v)[0]*(*v)[2] ||
        sqrd((*v)[5]) >= (*v)[1]*(*v)[2])
       printf("*** Not positive definite (off diag^2 >= diag product)!!!\n"), bad = 1;
+#endif
    if (bad) print_svar(*v);
 }
 #endif
@@ -156,6 +160,7 @@ void
 add_stn_to_list(node **list, node *stn) {
    ASSERT(list);
    ASSERT(stn);
+   ASSERT(stn_iter != stn); /* if it does, we're still on a list... */
 #if 0
    printf("add_stn_to_list(%p, [%p] ", list, stn);
    if (stn->name) print_prefix(stn->name);
