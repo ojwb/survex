@@ -22,14 +22,12 @@
 #ifndef aventypes_h
 #define aventypes_h
 
-#include <config.h>
-
 #ifdef AVENGL
 #ifdef _WIN32
-#include <windows.h>
-#endif
+#include <gl/glu.h>
+#else
 #include <GL/glu.h>
-#include <GL/glut.h>
+#endif
 typedef GLdouble Double;
 #else
 typedef double Double;

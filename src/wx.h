@@ -13,8 +13,8 @@
 #include "wx/dnd.h"
 
 #ifdef AVENGL
-#ifndef wxUSE_GLCANVAS
-#define wxUSE_GLCANVAS
+#if !wxUSE_GLCANVAS
+#error wxWindows must be built with wxUSE_GLCANVAS set to 1
 #endif
 #include <wx/glcanvas.h>
 #endif

@@ -20,11 +20,13 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "winprefs.h"
 #include "message.h"
 #include "mainfrm.h"
-
-#include <wx/statline.h>
 
 static const wxWindowID ID_WIN_PREFS = 5011;
 static const wxWindowID ID_WIN_SIDE_PANEL = 4000;

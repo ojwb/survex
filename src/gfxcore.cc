@@ -21,6 +21,10 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <float.h>
 
 #include "aven.h"
@@ -33,20 +37,12 @@
 #include <wx/confbase.h>
 #include <wx/image.h>
 
-#define HEAVEN 5000.0 // altitude of heaven
-#define INTERPOLATE(a, b, t) ((a) + (((b) - (a)) * Double(t) / 100.0))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MAX3(a, b, c) ((a) > (b) ? MAX(a, c) : MAX(b, c))
-#define LABEL_COLOUR wxColour(160, 255, 0)
 
 // Values for m_SwitchingTo
 #define PLAN 1
 #define ELEVATION 2
-
-#ifdef AVENGL
-static void* LABEL_FONT = GLUT_BITMAP_HELVETICA_10;
-static const Double SURFACE_ALPHA = 0.6;
-#endif
 
 #ifdef _WIN32
 static const int FONT_SIZE = 8;

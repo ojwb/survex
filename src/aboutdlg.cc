@@ -20,17 +20,13 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "aboutdlg.h"
-#include "aven.h"
-#include "message.h"
-
-#ifdef AVENGL
-#include <GL/gl.h>
-#endif
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "aboutdlg.h"
+#include "aven.h"
+#include "message.h"
 
 #include <sys/utsname.h>
 

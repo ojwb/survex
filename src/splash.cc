@@ -20,6 +20,10 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "splash.h"
 #include <wx/image.h>
 #include <wx/confbase.h>
@@ -71,5 +75,3 @@ void Splash::SetProgress(int pos)
         m_Gauge->Refresh(false);
     }
 }
-
-

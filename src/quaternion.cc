@@ -20,10 +20,14 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "matrix4.h"
 #include "quaternion.h"
 
-#include <stdio.h>
+//#include <stdio.h>
 #include <math.h>
 #include <assert.h>
 

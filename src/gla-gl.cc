@@ -20,8 +20,12 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "gla.h"
-#include <GL/gl.h>
+#include <GL/glut.h>
 
 #ifdef GLA_DEBUG
 // Important: CHECK_GL_ERROR must not be called within a glBegin()/glEnd() pair

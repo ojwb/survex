@@ -21,9 +21,15 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "matrix4.h"
 
+#ifdef DEBUG
 #include <stdio.h>
+#endif
 #include <assert.h>
 
 Matrix4::Matrix4()
@@ -106,7 +112,7 @@ Matrix4 operator*(const Matrix4& left, const Matrix4& right)
     return m;
 }
 
-#if 0
+#ifdef DEBUG
 void Matrix4::print() const
 {
     const double* d = data;
