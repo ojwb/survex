@@ -112,32 +112,7 @@ case "$host" in
 *) mswindows=no ;;
 esac
 
-if test yes = "$mswindows" ; then
-  dnl assume mingw32 means littleendian (may not be true for NT
-  dnl on non-intel platforms but ISTR m$ have scrapped that)
-  AC_MSG_CHECKING(endian-ness)
-  AC_MSG_RESULT(mingw so assuming little endian)
-  ac_cv_c_bigendian=no
-else
-  dnl autoconf doesn't look in the right place to find the endian-ness of
-  dnl a djgpp crosscompiler
-  dnl See if machine/endian.h defines the BYTE_ORDER macro.
-  AC_MSG_CHECKING(endian-ness from machine/endian.h)
-  AC_TRY_COMPILE([#include <machine/endian.h>], [
-  #if !BYTE_ORDER || !BIG_ENDIAN || !LITTLE_ENDIAN
-   bogus endian macros
-  #endif],
-  dnl It does; now see whether it defined to BIG_ENDIAN or not.
-  AC_MSG_RESULT(found)
-  AC_TRY_COMPILE([#include <machine/endian.h>], [
-  #if BYTE_ORDER != BIG_ENDIAN
-   not big endian
-  #endif], ac_cv_c_bigendian=yes, ac_cv_c_bigendian=no),
-  AC_MSG_RESULT(not found)
-  dnl if that didn't work, try usual autoconf tests
-  AC_C_BIGENDIAN
-  )
-fi
+AC_C_BIGENDIAN
 
 AC_ARG_VAR(STRIP, [Command for discarding symbols from object files])
 AC_PATH_TOOL(STRIP, strip, [echo "not stripping "])
