@@ -1,4 +1,4 @@
-Cave Surveying Software.  Multiplatform.  Can reduce arbitrarily complex
-datasets (large caves, multiple caves).  Fast cave viewer.  Most printers
-supported.  Many related tools for survey drawing/data conversion.
-Development and further platform ports are ongoing.
+A software suite to process, view, and print cave survey data. Survex is
+cross-platform (Unix, MS Windows, DOS, RISCOS), and supports English,
+French, German, Potuguese, Catalan, and Spanish. It can deal with extremely
+large and complex datasets and can read survey data from many sources.
