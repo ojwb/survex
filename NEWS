@@ -4,8 +4,11 @@ Changes in 0.99-prerelease3:
   ground have been merged, and the documentation for each program is
   now available as a man page under Unix.
 
-* (Unix version): Fixed problem incomplete versions being specified in
-  debian package dependencies.
+* (Unix version): Fixed problem with incomplete versions being
+  specified in debian package dependencies.
+
+* (Unix version): Fixed problems with not having librx on Linux (it's
+  now built into libc).
 
 Changes in 0.99-prerelease2:
 
@@ -1072,130 +1075,3 @@ Changes in 0.91:
 
 * Removed superfluous containing directory for RISC OS documentation
 
-Changes in 0.90:
-
-* caverot: MSDOS Allegro mode-picker now reappears if an invalid mode
-  is chosen (caverot used to unhelpfully exit in this case).
-
-* caverot: Fixed cursor keys and delete in MSDOS Allegro version
-
-* fixed problem with US English messages
-
-* text files in DOS/Win32 zips now have ".txt" extension and DOS
-  end-of-lines
-
-* 3dtodxf: Leandro Dybal Bertoni has made major improvements to
-  DXF output
-
-* caverot: Right and Middle mouse button functions were swapped under
-  RISC OS
-
-* caverot: BorlandC (pre-386) version wasn't erasing screen between redraws
-
-* HTML version of documentation now has a hyperlinked table of
-  contents
-
-Changes in 0.90 beta3:
-
-* cavern: output files now go in current directory rather than the
-  same directory where the first .svx file is found.  You can set a
-  different directory using the "--output" command line option, which
-  can point to a directory or a file.
-
-* cavern: "*truncate off" rather than "*truncate 0"
-
-* survex: added wrapper to convert survex invocation into cavern invocation
-
-* hto filters moved into separate subdirectory of source distribution
-
-* cavern: fixed bug which included stations with 4 or more connections
-  in the .3d file several times
-
-* added "miniam.pl" which generates makefiles for BorlandC and RISC OS
-
-* printdm/printpcl: weren't showing text - problem with new format
-  font file
-
-* check for old SURVEXLANG codes (engi, fren, germ, ...) now case
-  insensitive
-
-Changes in 0.90 beta2:
-
-* xcaverot: Fixed to handle > 2048 stations/legs
-
-* Spanish and Catalan translations updated (only French left to do)
-
-Changes in 0.90 beta1:
-
-* German, Italian, and Portuguese translations updated
-
-* Linux binaries now supplied (x86 RPM)
-
-* Documentation brought largely up to date
-
-In 0.90 alpha5:
-
-* cavern: comment parsing fix
-
-* cavern: network reduction bug fixed
-
-* new messages extracted for translation
-
-* printps: much smaller postscript output
-
-* printps: real circles in postscript output
-
-* nicer infobox on printouts
-
-* caverot: help page improved
-
-* scale units on printout bug fixed
-
-In 0.90 alpha4:
-
-* printps: made postscript bounding box slightly larger
-
-* printps: tweaked postscript output to reduce size (5% smaller for
-  Kaninchenhoehle)
-
-In 0.90 alpha3:
-
-* fixed bogus "Error writing printer output" message from printer drivers
-
-* minor cosmetic fixes to printer drivers
-
-* printps: added postscript bounding box
-
-* printps: fixed extra "%"s in postscript output
-
-* cavern: removed stray debug messages added in 0.90 alpha2
-
-In 0.90 alpha2:
-
-* cavern: fixed memory allocation bug (affected *include and *title)
-
-In 0.90 alpha1:
-
-* cavern: Halt after 50 errors to save swamping user
-
-* now use GNU getopt to parse command line options
-
-* cavern: -f and @ removed
-
-* cavern: -n, -t and -u replaced by *-commands
-
-* source code tidied up considerably
-
-* new format message files - now internally use unicode (in UTF-8) and
-  should be faster and smaller
-
-* new format font file for printdm/printpcl (faster and smaller)
-
-* cavern: GCC format error/warning messages to allow clicking on
-  messages to jump to the problem line in editors which support it
-  (e.g. GNU emacs and jed)
-
-* Now uses GNU automake under Unix which makes my life a lot easier and also
-  provides "make install"
-
-* xcaverot: now checks for failing to open the X display
