@@ -810,7 +810,7 @@ void MainFrm::CreateSidePanel()
     image_list->Add(wxGetApp().LoadIcon("survey-tree"));
     image_list->Add(wxGetApp().LoadIcon("pres-tree"));
     m_Notebook->SetImageList(image_list);
-    m_Notebook->AddPage(m_Panel, msg(/*Tree*/376), true, 0);
+    m_Notebook->AddPage(m_Panel, msg(/*Surveys*/376), true, 0);
     m_Notebook->AddPage(m_PresPanel, msg(/*Presentation*/377), false, 1);
 
     m_Splitter->Initialize(m_Gfx);
