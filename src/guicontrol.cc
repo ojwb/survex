@@ -30,7 +30,8 @@
 #include <wx/confbase.h>
 
 const int DISPLAY_SHIFT = 10;
-const double FLYFREE_SHIFT = 0.5;
+const double FLYFREE_SHIFT = 0.2;
+const double ROTATE_STEP = 2.0 * M_PI / 180.0;
 
 GUIControl::GUIControl()
 {
@@ -532,7 +533,7 @@ void GUIControl::OnSpeedUpUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnStepOnceAnticlockwise(bool accel)
 {
-    m_View->TurnCave(accel ? 5.0 * M_PI / 18.0 : M_PI / 18.0);
+    m_View->TurnCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
     m_View->ForceRefresh();
 }
 
@@ -543,7 +544,7 @@ void GUIControl::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnStepOnceClockwise(bool accel)
 {
-    m_View->TurnCave(accel ? 5.0 * -M_PI / 18.0 : -M_PI / 18.0);
+    m_View->TurnCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
     m_View->ForceRefresh();
 }
 
@@ -577,7 +578,7 @@ void GUIControl::OnElevationUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnHigherViewpoint(bool accel)
 {
     // Raise the viewpoint.
-    m_View->TiltCave(accel ? 5.0 * M_PI / 18.0 : M_PI / 18.0);
+    m_View->TiltCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
     m_View->ForceRefresh();
 }
 
@@ -589,8 +590,8 @@ void GUIControl::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnLowerViewpoint(bool accel)
 {
     // Lower the viewpoint.
-    m_View->TiltCave(accel ? 5.0 * -M_PI / 18.0 : -M_PI / 18.0);
-    m_View->ForceRefresh(); /* FIXME check if necessary */
+    m_View->TiltCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
+    m_View->ForceRefresh();
 }
 
 void GUIControl::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
