@@ -68,6 +68,7 @@ static void hpgl_ShowPage(const char *szPageDetails);
 device printer = {
    hpgl_Name,
    hpgl_Init,
+   NULL, /* Charset */
    hpgl_Pre,
    hpgl_NewPage,
    hpgl_MoveTo,
@@ -100,12 +101,11 @@ static const char *fontname, *fontname_labels;
 # define PS_TS 9 /* size of alignment 'ticks' on multipage printouts */
 # define PS_CROSS_SIZE 2 /* length of cross arms (in points!) */
 
-#define fontname_symbol "Symbol"
-
 static const char *ps_Name(void);
 static int ps_Pre(int pagesToPrint, const char *title);
 static void ps_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
+static int CharsetLatin1(void);
 static void ps_MoveTo(long x, long y);
 static void ps_DrawTo(long x, long y);
 static void ps_DrawCross(long x, long y);
@@ -119,6 +119,7 @@ static void ps_Quit(void);
 device printer = {
    ps_Name,
    ps_Init,
+   CharsetLatin1,
    ps_Pre,
    ps_NewPage,
    ps_MoveTo,
@@ -209,15 +210,6 @@ ps_WriteString(const char *s)
    while (*s) {
       ch = *s++;
       switch (ch) {
-       case 0xB0:
-	 /* degree symbol - FIXME: font encoding for other chars? */
-         prio_print("\\312");
-         break;
-       case 0xA9:
-	 /* (C) symbol (symbol font) */
-	 /* FIXME: (C) in labels will come out at the wrong size... */
-         prio_printf(") S Z (\\323) S %c (", current_font_code);
-         break;
        case '(': case ')': case '\\': /* need to escape these characters */
          prio_putc('\\');
          prio_putc(ch);
@@ -325,23 +317,135 @@ ps_Pre(int pagesToPrint, const char *title)
       prio_putc(' ');
       prio_print(fontname_labels);
    }
-   prio_putc(' ');
-   prio_print(fontname_symbol);
    prio_putc('\n');
 
+   /* this code adapted from a2ps */
+   prio_print("%%BeginResource: encoding ISO88591Encoding\n");
+   prio_print("/ISO88591Encoding [");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/space /exclam /quotedbl /numbersign\n");
+   prio_print("/dollar /percent /ampersand /quoteright\n");
+   prio_print("/parenleft /parenright /asterisk /plus\n");
+   prio_print("/comma /minus /period /slash\n");
+   prio_print("/zero /one /two /three\n");
+   prio_print("/four /five /six /seven\n");
+   prio_print("/eight /nine /colon /semicolon\n");
+   prio_print("/less /equal /greater /question\n");
+   prio_print("/at /A /B /C /D /E /F /G\n");
+   prio_print("/H /I /J /K /L /M /N /O\n");
+   prio_print("/P /Q /R /S /T /U /V /W\n");
+   prio_print("/X /Y /Z /bracketleft\n");
+   prio_print("/backslash /bracketright /asciicircum /underscore\n");
+   prio_print("/quoteleft /a /b /c /d /e /f /g\n");
+   prio_print("/h /i /j /k /l /m /n /o\n");
+   prio_print("/p /q /r /s /t /u /v /w\n");
+   prio_print("/x /y /z /braceleft\n");
+   prio_print("/bar /braceright /asciitilde /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/.notdef /.notdef /.notdef /.notdef\n");
+   prio_print("/space /exclamdown /cent /sterling\n");
+   prio_print("/currency /yen /brokenbar /section\n");
+   prio_print("/dieresis /copyright /ordfeminine /guillemotleft\n");
+   prio_print("/logicalnot /hyphen /registered /macron\n");
+   prio_print("/degree /plusminus /twosuperior /threesuperior\n");
+   prio_print("/acute /mu /paragraph /bullet\n");
+   prio_print("/cedilla /onesuperior /ordmasculine /guillemotright\n");
+   prio_print("/onequarter /onehalf /threequarters /questiondown\n");
+   prio_print("/Agrave /Aacute /Acircumflex /Atilde\n");
+   prio_print("/Adieresis /Aring /AE /Ccedilla\n");
+   prio_print("/Egrave /Eacute /Ecircumflex /Edieresis\n");
+   prio_print("/Igrave /Iacute /Icircumflex /Idieresis\n");
+   prio_print("/Eth /Ntilde /Ograve /Oacute\n");
+   prio_print("/Ocircumflex /Otilde /Odieresis /multiply\n");
+   prio_print("/Oslash /Ugrave /Uacute /Ucircumflex\n");
+   prio_print("/Udieresis /Yacute /Thorn /germandbls\n");
+   prio_print("/agrave /aacute /acircumflex /atilde\n");
+   prio_print("/adieresis /aring /ae /ccedilla\n");
+   prio_print("/egrave /eacute /ecircumflex /edieresis\n");
+   prio_print("/igrave /iacute /icircumflex /idieresis\n");
+   prio_print("/eth /ntilde /ograve /oacute\n");
+   prio_print("/ocircumflex /otilde /odieresis /divide\n");
+   prio_print("/oslash /ugrave /uacute /ucircumflex\n");
+   prio_print("/udieresis /yacute /thorn /ydieresis\n");
+   prio_print("] def\n");
+   prio_print("%%EndResource\n");
+   
    prio_printf("%%%%BoundingBox: 0 0 %ld %ld\n",
 	       xpPageWidth + (long)(2.0 * MarginLeft * POINTS_PER_MM),
 	       ypPageDepth + (long)((10.0 + 2.0 * MarginBottom) * POINTS_PER_MM));
    /* FIXME is this a level 1 feature?   prio_print("%%PageOrder: Ascend\n"); */
    prio_printf("%%%%Pages: %d\n", pagesToPrint);
 
-   /* F switches to text font; N - font for labels (Names); Z - symbol font */
-   prio_printf("/F {/%s findfont %d scalefont setfont} def\n",
-	       fontname, (int)fontsize);
-   prio_printf("/N {/%s findfont %d scalefont setfont} def\n",
-	       fontname_labels, (int)fontsize_labels);
-   prio_printf("/Z {/%s findfont %d scalefont setfont} def\n",
-               fontname_symbol, (int)fontsize);
+   /* this code adapted from a2ps */
+   prio_print(
+"/reencode {\n" /* def */
+"dup length 5 add dict begin\n"
+"{\n" /* forall */
+"1 index /FID ne\n"
+"{ def }{ pop pop } ifelse\n"
+"} forall\n"
+"/Encoding exch def\n"
+
+/* Use the font's bounding box to determine the ascent, descent,
+ * and overall height; don't forget that these values have to be
+ * transformed using the font's matrix.
+ * We use `load' because sometimes BBox is executable, sometimes not.
+ * Since we need 4 numbers an not an array avoid BBox from being executed
+ */
+"/FontBBox load aload pop\n"
+"FontMatrix transform /Ascent exch def pop\n"
+"FontMatrix transform /Descent exch def pop\n"
+"/FontHeight Ascent Descent sub def\n"
+
+/* Define these in case they're not in the FontInfo (also, here
+ * they're easier to get to.
+ */
+"/UnderlinePosition 1 def\n"
+"/UnderlineThickness 1 def\n"
+    
+/* Get the underline position and thickness if they're defined. */
+"currentdict /FontInfo known {\n"
+"FontInfo\n"
+      
+"dup /UnderlinePosition known {\n"
+"dup /UnderlinePosition get\n"
+"0 exch FontMatrix transform exch pop\n"
+"/UnderlinePosition exch def\n"
+"} if\n"
+      
+"dup /UnderlineThickness known {\n"
+"/UnderlineThickness get\n"
+"0 exch FontMatrix transform exch pop\n"
+"/UnderlineThickness exch def\n"
+"} if\n"
+      
+"} if\n"
+"currentdict\n"
+"end\n"
+"} bind def\n");
+   
+   prio_printf("/txt ISO88591Encoding /%s findfont reencode definefont pop\n",
+	       fontname);
+   prio_printf("/lab ISO88591Encoding /%s findfont reencode definefont pop\n",
+	       fontname_labels);
+
+   /* F switches to text font; N - font for labels (Names) */
+   prio_printf("/F {/txt findfont %d scalefont setfont} def\n", (int)fontsize);
+   prio_printf("/N {/lab findfont %d scalefont setfont} def\n",
+	       (int)fontsize_labels);
    prio_print("F\n");
 
    /* Postscript definition for drawing a cross */
@@ -546,6 +650,12 @@ ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 }
 
 #ifndef HPGL
+static int
+CharsetLatin1(void)
+{
+   return CHARSET_ISO_8859_1;
+}
+
 static void
 ps_Quit(void)
 {

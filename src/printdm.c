@@ -46,6 +46,7 @@
 
 static int Pre(int pagesToPrint, const char *title);
 static void Post(void);
+static int CharsetLatin1(void);
 
 #ifdef XBM
 static const char *xbm_Name(void);
@@ -59,6 +60,7 @@ static int xbm_page_no = 0;
 device printer = {
    xbm_Name,
    xbm_Init,
+   CharsetLatin1,
    Pre,
    xbm_NewPage,
    MoveTo,
@@ -85,6 +87,7 @@ static void pcl_ShowPage(const char *szPageDetails);
 device printer = {
    pcl_Name,
    pcl_Init,
+   CharsetLatin1,
    Pre,
    pcl_NewPage,
    MoveTo,
@@ -110,6 +113,7 @@ static void dm_ShowPage(const char *szPageDetails);
 device printer = {
    dm_Name,
    dm_Init,
+   NULL, /*CharsetLatin1,*/
    Pre,
    dm_NewPage,
    MoveTo,
@@ -377,6 +381,7 @@ dm_ShowPage(const char *szPageDetails)
 #elif defined(PCL)
       prio_print("\x1b*rB\n\n"); /* End graphics */
       prio_print("\x1b(s0p20h12v0s3t2Q"); /* select a narrow-ish font */
+      prio_print("\x1b(0N"); /* iso-8859-1 encoding */
       prio_print(szPageDetails);
       prio_putc('\x0c');
 #else
@@ -529,6 +534,14 @@ dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
    prio_open(fnmPrn);
    osfree(fnmPrn);
 }
+
+#if defined(PCL) || defined(XBM)
+static int
+CharsetLatin1(void)
+{
+   return CHARSET_ISO_8859_1;
+}
+#endif
 
 static int
 Pre(int pagesToPrint, const char *title)

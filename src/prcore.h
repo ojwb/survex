@@ -35,6 +35,7 @@ typedef struct {
    /* A NULL fn ptr is Ok for Init, Alloc, NewPage, ShowPage, Free, Quit */
    /* if Alloc==NULL, it "returns" 1 */
    void (*Init)(FILE **fh_list, const char *pth, float *pscX, float *pscY);
+   int  (*Charset)(void);
    int  (*Pre)(int pagesToPrint, const char *title);
    void (*NewPage)(int pg, int pass, int pagesX, int pagesY);
    void (*MoveTo)(long x, long y);
