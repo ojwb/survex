@@ -33,6 +33,7 @@
 #include <wx/image.h>
 #include <wx/cmdline.h>
 #include <wx/confbase.h>
+#include <wx/gdicmn.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -116,7 +117,17 @@ bool Aven::OnInit()
 			   wxString("icons") + wxCONFIG_PATH_SEPARATOR +
 			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
 
-    m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(640, 480));
+    // Obtain the screen size.
+    int width;
+    int height;
+    wxDisplaySize(&width, &height);
+
+    // Calculate a reasonable size for our window.
+    int our_width = int(width * 0.75);
+    int our_height = int(our_width * 0.75);
+
+    // Create the main window.
+    m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(our_width, our_height));
 
 #ifndef USE_WXCMDLINE
     if (argv[optind]) {

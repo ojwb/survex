@@ -1078,7 +1078,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
         int x;
         int y;
         GetSize(&x, &y);
-        m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 4);
+        m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 5);
 #endif
     }
     SetCursor(*wxSTANDARD_CURSOR);
