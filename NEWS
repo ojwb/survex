@@ -1,7 +1,11 @@
+Changes in 0.95-prerelease6:
+
 * Updated all translations.
 
 * Fixed another logic error in "only mentioned once in *equate with explicit
   prefix" check.
+
+* Minor fixes to get MSDOS (djgpp) and MS Windows (mingw) builds working.
 
 Changes in 0.95-prerelease5:
 
