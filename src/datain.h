@@ -11,7 +11,7 @@
 #else
 #define errorjmp(EN, A, JB) BLK(\
  compile_error(EN); showandskipline(NULL, (A)); exit(1);)
-/* FIXME sort out above to exit in a more friendly way */
+/* FIXME: sort out above to exit in a more friendly way */
 #endif
 
 #include <stdio.h> /* for FILE */
