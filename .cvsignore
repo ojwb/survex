@@ -8,6 +8,8 @@ config.h.in
 config.log
 config.status
 configure
+config.guess
+config.sub
 bc_exes
 djgpp_exes
 mingw_exes
@@ -26,6 +28,7 @@ survex-aven_*.deb
 svxdoc-doswin-*.zip
 svxdoc-riscos-*.zip
 survex-*.spec
+survex.iss
 ChangeLog
 BUILD
 rpmrc

@@ -1,0 +1,3 @@
+IconSprites <Obey$Dir>.!Sprites
+RMEnsure MemAlloc 0.00 RMLoad <Survex$Dir>.MemAlloc
+Run <Obey$Dir>.!RunImage

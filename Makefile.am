@@ -146,6 +146,8 @@ djgpp_zip : dostxt
 	$(RM) $(djgpp_zip_name)
 	zip -j $(djgpp_zip_name) djgpp_exes/*.exe $(extra_bin)\
 	 djgpp_extras/cwsdpmi.exe djgpp_extras/emu387.dxe
+	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
+	ln -s ../README dostxt_tmp/README.txt
 	# -l means convert LF to CR+LF
 	zip -j -l $(djgpp_zip_name) djgpp_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
@@ -198,6 +200,8 @@ borlandc_exe : borlandc_zip
 borlandc_zip : dostxt
 	$(RM) $(bc_zip_name)
 	zip -j $(bc_zip_name) bc_exes/*.exe $(extra_bin) bc_extras/*.bgi
+	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
+	ln -s ../README dostxt_tmp/README.txt
 	# -l means convert LF to CR+LF
 	zip -j -l $(bc_zip_name) bc_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
@@ -210,7 +214,10 @@ riscos_zip :
 	# into the mainstream distribution in future
 	$(RM) -rf riscos_tmp
 	mkdir riscos_tmp
-	cp -r riscos_extras/* riscos_tmp
+	ln -s ../README.ros riscos_tmp/\!ReadMe,fff
+	# "cp -r riscos_extras riscos_tmp" but avoid CVS directories
+	cd riscos_extras; tar --exclude CVS -cf - . | (cd ../riscos_tmp ; tar xf)	
+	cp -r riscos_extras/\!* riscos_tmp
 	for f in $(base_progs) caverot ; do\
 	 ln -s ../../riscos_exes/$$f riscos_tmp/\!Cavern/$$f,ff8 ; done
 	for f in $(extra_text) ; do\

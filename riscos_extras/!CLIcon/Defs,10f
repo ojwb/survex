@@ -1,0 +1,226 @@
+V2
+Name:Basic
+Sprites:Basic
+Flags:%00010000
+Command:*If "%1"="CLK" Then Unset CLIcon$Temp Else Set CLIcon$Temp -load %0;!Basic <CLIcon$Temp>
+Purpose:Easy access to Basic interpreter
+Author:Olly Betts
+Version:0.02
+HotKey:|B
+
+Name:PC
+Sprites:Snail
+Flags:%00010001
+Command:$<PC$Dir>.EmulatePC %0
+Purpose:Runs the PC emulator
+Author:Olly Betts
+Version:0.01
+
+Name:BasDef
+Sprites:file_ffb
+Flags:%00010101
+Command:>LISTIFDEF|M;Basic -load %0
+Purpose:Lists a Basic program's PROCs & FNs
+Author:Olly Betts
+Version:0.01
+
+Name:Emacs
+Sprites:Emacs
+Flags:%00010001
+Command:Emacs %0
+Purpose:Loads a file into Emacs text editor
+Author:Olly Betts
+Version:0.01
+
+Name:Twin
+Sprites:Twin
+Flags:%00010001
+Command:Twin %0
+Purpose:Load a file into Twin editor
+Author:Olly Betts
+Version:0.01
+
+Name:Saver
+Sprites:NoSave,Saver
+Flags:%00011011
+Command:SetEval CLIconSaver NOT(<CLIconSaver>+0);If CLIconSaver Then VDUSaver Else VDUSaver 0;£CLIconSaver
+Purpose:Easy control of RKL's screen saver
+Author:Olly Betts
+Version:0.01
+HotKey:|S
+
+Name:More
+Sprites:More
+Flags:%00010100
+Command:^M:%0
+Purpose:Displays files as text in paged mode
+Author:Olly Betts
+Version:0.02
+Types:Text
+
+Name:Magnfy
+Sprites:EyeGlass
+Flags:%00011000
+Command:Run adfs::Pooh.$.Applns.!Magnifier
+HotKey:|M
+
+Name:SetDir
+Sprites:Pistol
+Flags:%00001101
+Command:Dir %0
+Purpose:Sets the current directory
+Author:Olly Betts
+Version:0.01
+
+Name:EX
+Sprites:FriedEgg
+Flags:%00001001
+Command:EX %0
+
+Name:Load
+Sprites:Fork
+Flags:%00010101
+Command:Load %0
+Purpose:Perform default Load action on file
+Author:Olly Betts
+Version:0.01
+
+Name:BEdit
+Sprites:BEdit
+Flags:%00010001
+Command:>EDIT|M;If "%1"="CLK" Then Basic Else Basic -load %0
+Purpose:Easy access to Basic editor
+Author:Olly Betts
+Version:0.01
+HotKey:|E
+
+Name:Trash
+Sprites:Trash,Trash2
+Flags:%00100011
+Command:If "<Trash$Dir>"="" Then Error "Trash$Dir is not set - it should be set to the directory where trashed files are to be stored";CDir <Trash$Dir>;If "%1"="" Then Expand Filer_OpenDir <Trash$Dir> Else Copy "%0" <Trash$Dir>.* ~A~CD~F~L~N~P~QR~S~T~V
+Purpose:Emulation of RKL's !Trash utility
+Author:Olly Betts
+Version:0.01
+HotKey:|T
+
+Name:Run
+Sprites:default
+Flags:%00110101
+Command:Run %0 { > <Scrap$File> };UnPC <Scrap$File> <CLIcon$ScrapDir>.Output;^#*:<CLIcon$ScrapDir>.Output
+
+Name:Clip
+Sprites:scissors
+Flags:%00100000
+Command:If "%1"="CLK" Then Set CLIcon$Cmd Filer_OpenDir <Clip$Dir> Else Set CLIcon$Cmd Copy %0 <Clip$Dir>.* ~A~C~DF~QR~S~T~V;!<CLIcon$Cmd>
+
+Name:Name
+Sprites:Face
+Flags:%00100101
+Command:^#:%0
+Purpose:Gives savebox with incore filename
+Author:Olly
+
+Name:SprCln
+Sprites:FishTank
+Flags:%00110101
+Command:SprClean %0 <Scrap$File>;^#*:<Scrap$File>
+Purpose:To cleanse sprite files
+Author:Olly
+
+Name:SprFnt
+Sprites:SprFnt
+Flags:%00110101
+Command:Spr2SysFnt %0 <Scrap$File>;^#*:<Scrap$File>
+
+Name:FntSpr
+Sprites:FntSpr
+Flags:%00110101
+Command:SysFnt2Spr %0 <Scrap$File>;^#*:<Scrap$File>
+
+Name:Access
+Sprites:Unlock,Access
+Flags:%00100001
+Init:Set CLIcon$Access$Lock 0
+Command:Run CLIconFS:Access %0 %1;!<CLIcon$Cmd>;Unset CLIcon$Cmd
+Purpose:Allows easy (un)locking of files
+Author:Olly Betts
+HotKey:|A
+
+Name:BasTxt
+Sprites:BasTx2,BasTxt
+Flags:%00110000
+Init:Set CLIcon$BasTxt$Nos 0
+Command:Run CLIconFS:BasTxt %0 %1;!<CLIcon$Cmd>;Unset CLIcon$Cmd
+Purpose:Basic <-> Text file conversion
+Author:Olly Betts
+Version:0.02
+HotKey:|L
+
+Name:Bas
+Sprites:Bas
+Flags:%00110101
+Command:SetType %0 Basic
+
+Name:cc
+Sprites:cc
+Flags:%00110101
+Command:cc %0
+
+Name:ToText
+Sprites:file_fff
+Flags:%00110101
+Command:SetType %0 Text
+Purpose:Sets the type of a file to text
+Author:Olly Betts
+Version:0.01
+
+Name:Zap
+Sprites:Zap
+Flags:%00000101
+Help:Drag a file, directory or application here to delete it - even if it is locked!
+Command:Confirm;Hourglass On;If "<Result>"="y" Then Wipe %0 F~C~VR;Hourglass Off
+Purpose:Very dangerous file deletion
+Author:Olly Betts
+Version:0.01
+
+Name:Icons
+Sprites:Icons
+Flags:%00110101
+Command:IconSprites %0
+Purpose:Merges sprites with the Wimp's pool
+Author:Olly Betts
+Version:0.01
+
+Name:Dump
+Sprites:Dump
+Flags:%00110100
+Command:*Dump %0 { > <Scrap$File> };SetType <Scrap$File> Text;UnPC <Scrap$File> <CLIcon$ScrapDir>.Text;Remove <Scrap$File>;^^*:<CLIcon$ScrapDir>.Text
+Purpose:*Dump a file into a text editor
+Author:Olly Betts
+Version:0.01
+Types:Data
+
+Name:Open
+Sprites:Open
+Flags:%00101100
+Help:Drag an application directory here to open it
+Command:Filer_OpenDir %0
+Purpose:Opens application directories
+Author:Olly Betts
+Version:0.01
+
+Name:Print
+Sprites:Printout
+Flags:%00110101
+Command:*Print %0 { > printer: };*Echo <12> { > printer: }
+Purpose:Prints out files as text
+Author:Olly Betts
+Version:0.01
+
+Name:CLIconFS
+Sprites:CLIconFS
+Flags:%00011010
+Command:Filer_OpenDir CLIconFS:
+Purpose:Desktop filer for CLIconFS
+Author:Olly Betts
+Version:0.01
