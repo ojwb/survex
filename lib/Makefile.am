@@ -2,6 +2,9 @@
 
 # Makefile for survex support files
 
+dist-hook:
+	perl $(srcdir)/checkshortcut.pl $(msg_files)
+
 SUBDIRS = icons
 
 msg_files = ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg\
@@ -17,10 +20,10 @@ pkgdata_DATA = pfont.bit print.ini bcra3.svx bcra5.svx $(msg_files)
 
 BUILT_SOURCES = defaultlang.h
 
-# does $(msgs_files) here work?
+# does $(msg_files) here work?
 ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg es.msg fr.msg it.msg pt.msg pt_BR.msg\
  ca.h de.h de_CH.h de_DE.h en.h en_US.h es.h fr.h it.h pt.h pt_BR.h : messages.txt makemsgs.pl
-	perl makemsgs.pl messages.txt
+	perl $(srcdir)/makemsgs.pl $(srcdir)/messages.txt
 
 defaultlang.h:
 	-rm -f defaultlang.h
