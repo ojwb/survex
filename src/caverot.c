@@ -848,7 +848,7 @@ static const struct option long_opts[] = {
 
 #define short_opts "c:"CVROTGFX_SHORTOPTS
 
-/* TRANSLATE: FIXME extract help messages to message file */
+/* TRANSLATE: extract help messages to message file */
 static struct help_msg help[] = {
 /*				<-- */
    CVROTGFX_HELP(0)

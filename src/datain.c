@@ -359,7 +359,7 @@ data_file(const char *pth, const char *fnm)
    pcs->begin_lineno = begin_lineno_store;
 
    if (ferror(file.fh) || (fclose(file.fh) == EOF))
-      fatalerror(/*Error reading file*/18); /* FIXME: name */
+      fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 
    file = file_store;
 
@@ -468,7 +468,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
-      /* FIXME: different message for topofil? */
+      /* TRANSLATE different message for topofil? */
       compile_warning(/*Negative adjusted tape reading*/79);
    }
 
@@ -484,7 +484,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
       vz = var(Q_POS) / 3.0 + var(Q_LENGTH);
 #ifndef NO_COVARIANCES
-      cxy = cyz = czx = (real)0.0; /* FIXME: do this properly */
+      cxy = cyz = czx = (real)0.0; /* FIXCOV: do this properly */
 #endif
    } else {
       /* clino */
@@ -831,7 +831,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    }
    addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
 #ifndef NO_COVARIANCES
-		, 0, 0, 0 /* FIXME: need covariances */
+		, 0, 0, 0 /* FIXCOV: need covariances */
 #endif
 		);
 #ifdef NEW3DFORMAT
@@ -983,7 +983,7 @@ process_cartesian(prefix *fr, prefix *to, real dx, real dy, real dz,
 
    addlegbyname(fr, to, fToFirst, dx, dy, dz, var(Q_DX), var(Q_DY), var(Q_DZ)
 #ifndef NO_COVARIANCES
-		, 0, 0, 0 /* FIXME: need covariances */
+		, 0, 0, 0 /* FIXCOV: need covariances */
 #endif
 		);
 
@@ -1099,7 +1099,7 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
       twiglet->up = limb->up;
       limb->right = twiglet;
       limb = twiglet;
-      /* FIXME: check with PhilU what to do here... */
+      /* PHILU: what should we do here? */
       twiglet->delta[0] = twiglet->delta[1] = twiglet->delta[2] = 0;
    }
 #endif

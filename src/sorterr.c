@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include "cmdline.h"
+#include "message.h"
 #include "osalloc.h"
 
 static const struct option long_opts[] = {
@@ -123,10 +124,7 @@ main(int argc, char **argv)
    if (argv[optind]) howmany = atoi(argv[optind]);
 
    fh = fopen(fnm, "rb");
-   if (!fh) {
-      printf("Can't open file `%s'\n", fnm);
-      exit(1);
-   }
+   if (!fh) fatalerror(/*Couldn't open file `%s'*/93, fnm);
 
    /* 4 line paragraphs, separated by blank lines...
     * 041.verhall.12 - 041.verhall.13

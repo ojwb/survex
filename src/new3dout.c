@@ -184,7 +184,7 @@ cave_write_source(const char *source)
 {
   /* create a relative path, given an absolute dir, and an absolute file */
   /* part 1. find where they differ */
-  /* FIXME: temp bodge */
+  /* PHILU: temp bodge */
   if (fAbsoluteFnm(source)) {
     /* strip source down to just a file name... */
     if (strncmp(source, basesource, strlen(basesource)) != 0) {
@@ -333,7 +333,7 @@ cave_close(img *pimg)
       put32((INT32_T)statcount, pimg->fh);
       fclose(pimg->fh);
    }
-   /* FIXME: don't understand this comment - suspect it's out of date - Olly
+   /* PHILU: don't understand this comment - suspect it's out of date - Olly
     * memory leak, but it doesn't like this for some reason */
    osfree(pimg);
 }

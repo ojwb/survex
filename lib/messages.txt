@@ -890,7 +890,15 @@ pt: 92 Instru&ccedil;&atilde;o ilegal
 ca: 92 Instrucci&oacute; il.legal
 es: 92 Instrucci&oacute;n ilegal
 it: 92 Istruzione illegale
-# XXX93
+# TRANSLATE check fr de pt ca es it
+en: 93 Couldn't open file `%s'
+fr: 93 Ne peut pas ouvrir le fichier `%s'
+de: 93 Konnte Daten nicht &ouml;ffnen oder finden `%s'
+pt: 93 Imposs&iacute;vel abrir arquivo `%s'
+ca: 93 No s'ha pogut obrir el fitxer `%s'
+es: 93 No se pudo abrir el fichero `%s'
+it: 93 Non riesco ad aprire il file `%s'
+#
 en: 94 Bad memory access
 fr: 94 Mauvais acc&eacute;s m&eacute;moire
 de: 94 Fehler beim Speicherzugriff

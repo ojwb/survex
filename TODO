@@ -287,9 +287,6 @@ even if messages can't be found.
 
 check line numbers with interleaved data (seem to be one too low).
 
-cylpolar style? Dr, Comp, Dz; back bearings? cope with any combination
-of readings which gives enough info ???
-
 Maybe station lists should know how long they are?
 
 What about a better collating order for stations?  But rather than
@@ -326,4 +323,14 @@ check borlandc version to see if bios_keybrd is better or worse...
 translate diffpos, sorterr, etc
 
 tests for direction - should direction work in non-interleaved data?
+
+finish implementing covariances in a few places - grep for FIXCOV.
+
+get Phil to fix where it says PHILU...
+
+cylpolar style? Dr, Comp, Dz
+
+back bearings?
+
+cope with any combination of readings which gives enough info ???
 

@@ -86,16 +86,13 @@ main(int argc, char **argv)
       optarg = argv[optind];
       threshold = cmdline_double_arg();
    }
+
    fh1 = fopen(fnm1, "rb");
-   if (!fh1) {
-      printf("Can't open file `%s'\n", fnm1);
-      exit(1);
-   }
+   if (!fh1) fatalerror(/*Couldn't open file `%s'*/93, fnm1);
+
    fh2 = fopen(fnm2, "rb");
-   if (!fh2) {
-      printf("Can't open file `%s'\n", fnm2);
-      exit(1);
-   }
+   if (!fh2) fatalerror(/*Couldn't open file `%s'*/93, fnm2);
+
    return diff_pos(fh1, fh2, threshold);
 }
 

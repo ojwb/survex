@@ -481,7 +481,7 @@ replace_travs(void)
 		     hTot = sqrd(e[0]) + sqrd(e[1]);
 		     vTot = sqrd(e[2]);
 #ifndef NO_COVARIANCES
-		     /* FIXME: what about covariances? */
+		     /* FIXCOV: what about covariances? */
 		     eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
 		     hTotTheo = leg->v[0] + leg->v[1];
 		     vTotTheo = leg->v[2];
@@ -552,7 +552,7 @@ replace_travs(void)
 	    divds(&sc, &e, &stn1->leg[i]->v);
 	 }
 #ifndef NO_COVARIANCES
-	 /* FIXME: what about covariances? */
+	 /* FIXCOV: what about covariances? */
 	 hTotTheo = stn1->leg[i]->v[0] + stn1->leg[i]->v[1];
 	 vTotTheo = stn1->leg[i]->v[2];
 	 eTotTheo = hTotTheo + vTotTheo;
@@ -867,7 +867,7 @@ replace_trailing_travs(void)
    }
 
    /* write out connections with no survey data */
-   /* FIXME: PhilU needs to look at this... */
+   /* PHILU: look at this... */
 #ifdef NEW3DFORMAT
    if (!fUseNewFormat) {
 #endif

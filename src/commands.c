@@ -607,7 +607,7 @@ cmd_fix(void)
 	       sdz = sdy;
 	       sdy = sdx;
 	    }
-	    /* FIXME: covariances... ? */
+	    /* FIXCOV: covariances... ? */
 	 }
 	 stn = StnFromPfx(fix_name);
 	 if (!fixed(stn)) {
@@ -890,7 +890,6 @@ cmd_export(void)
 static void
 cmd_data(void)
 {
-   /* FIXME: also BackComp, BackClino, Dr */
    static sztok dtab[] = {
 	{"ALTITUDE",	 Dz },
 	{"BEARING",      Comp },
