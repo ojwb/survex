@@ -1,4 +1,4 @@
-* Standards-Version: 3.6.0
+* Standards-Version: 3.6.0 / Fixed lintian warning / Tidied up debian/rules.
 
 * Fixed configure --enable-defaultlang=XX to work.
 
