@@ -179,9 +179,9 @@ pt:  8 Campo n&atilde;o pode ser omitido
 ca:  8 Camp que no es pot ometre
 es:  8 Campo que no puede ser omitido
 it:  8 Questo campo non pu&oacute; essere omesso
-#en:  9 Expecting numeric field
-#fr:  9 On attendait une valeur num&eacute;rique
+#
 en:  9 Expecting numeric field, found `%s'
+fr:  9 On attendait une valeur num&eacute;rique, on a trouv&eacute; `%s'
 de:  9 Zahl erwartet, `%s' gelesen
 pt-br:  9 Esperando valor num&eacute;rico, encontrado `%s'
 ca:  9 S'espera un camp num&egrave;ric, trobat `%s'
@@ -222,9 +222,8 @@ ca: 13 Estaci&oacute; `%s' igualada a ella mateixa
 es: 13 Estacio&acute;n `%s' igualada a si misma
 it: 13 Stazione `%s' uguagliata a se stessa
 # c.f. 21 and 59
-# was en: 14 Compass reading may not be omitted here
-#fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici
 en: 14 Compass reading may not be omitted except on plumbed legs
+fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise, sauf sur les vis&eacute;es verticales
 de-de,de-ch: 14 Kompassablesung darf nur bei Lotstrecken weggelassen werden
 de:     14 Kompa&szlig;ablesung darf nur bei Lotstrecken weggelassen werden
 pt-br: 14 Azimute n&atilde;o pode ser omitido exceto em visadas em prumo
@@ -620,8 +619,9 @@ es: 57 *EXPORT debe seguir inmediatamente a *BEGIN <TOPOGRAF&Iacute;A>'
 it: 57 *EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'
 # cf 162
 en: 58 "Plot what (n=station names, c=crosses, l=legs, s=surface) (default &quot;%s&quot;)&#10;: "
+fr: 58 "Que dessiner (n=noms de station, c=croix, l=segments, s=surface) (defaut &quot;%s&quot;)&#10;: "
 de: 58 "Was plotten? (n=Stationsnamen, c=Kreuze, l=Strecken, s=Oberfl&auml;che) (Default &quot;%s&quot;)&#10;: "
-pt-br:58 "O qu&ecirc; plotar? (n=nomes de bases, c=marcas de bases, l=visadas, s=superf&iacute;cie) (default &quot;%s&quot;)&#10;:"
+pt-br: 58 "O qu&ecirc; plotar? (n=nomes de bases, c=marcas de bases, l=visadas, s=superf&iacute;cie) (default &quot;%s&quot;)&#10;:"
 ca: 58 "Que s'ha de plotejar? (n=noms d'estaci&oacute;, c=creus, l=tirades, s=superf&iacute;cie) (per defecte &quot;%s&quot;)&#10;: "
 es: 58 "Que hay que plotear? (n=nombres de estaci&oacute;n, c=cruces, l=tiradas, s=superf&iacute;cie) (por defecto &quot;%s&quot;)&#10;: "
 it: 58 "Disegna cosa (n=nomi delle stazioni, c=croci, l=battute, s=superficie) (default &quot;%s&quot;)&#10;: "
@@ -1013,6 +1013,7 @@ es:103 Es necesario calibrar la impresora - ver el manual para detalles.
 it:103 &Eacute; necessario calibrare la stampante - consultare il manuale per i dettagli
 #
 en:104 `*data %s %c ...' is deprecated - use `*data %s ...' instead
+fr:104 `*data %s %c ...' est obsololete - utiliser plutot `*data %s ...'
 de:104 `*data %s %c ...' ist veraltet - stattdessen `*data %s ...' verwenden
 pt:104 `*data %s %c ...' obsoleto - use `*data %s ...' no lugar
 ca:104 `*data %s %c ...' obsolet - utilitza `*data %s ...' en el seu lloc
@@ -1529,6 +1530,9 @@ es:164 "P&aacute;ginas a imprimir:&#10;(RETURN para todas; 'n' para uma, 'm-n', 
 it:164 "Pagine da stampare:&#10;(RETURN per tuttr; 'n' per una pagina 'm-n', 'm-', '-n' per un intervallo)&#10;: "
 # e.g. "Printing to `somefile.ps'..." / "Printing to `Laserjet4 on amachine...'
 en:165 Printing to `%s'...
+fr:165 Impression vers `%s'...
+ca:165 Imprimint a `%s'
+es:165 Imprimiendo en `%s'
 #
 en:166 Page %d of %d
 fr:166 Page %d sur %d
@@ -1785,12 +1789,11 @@ pt:197 " a %4.2fm)"
 ca:197 " a %4.2fm)"
 es:197 " en %4.2fm)"
 it:197 " a %4.2fm)"
-# Old versions
-#en:198 Expecting date
-#fr:198 On attendait une date
+#
 en:198 Expecting date, found `%s'
+fr:198 On attendait une date, on a trouv&eacute; `%s'
 de:198 Datum erwartet, `%s' gelesen
-pt-br: 198 Esperando data, encontrado `%s'
+pt-br:198 Esperando data, encontrado `%s'
 ca:198 Esperant dada, trobat `%s'
 es:198 Esperando dato, encontrado `%s'
 it:198 Attesa una data, trovato `%s'
@@ -1953,6 +1956,7 @@ it:215 @Aiuto
 #
 # More cavern messages (sorry, 199 wasn't enough!)
 en:216 Standard deviation must be positive
+fr:216 La d&eacute;viation standard doit &ecirc;tre positive
 de:216 Standardabweichung mu&szlig; positiv sein
 de-de,de-ch:216 Standardabweichung muss positiv sein
 pt-br:216 Desvio-padr&atilde;o deve ser positivo
@@ -1961,6 +1965,7 @@ es:216 La desviaci&oacute;n est&aacute;ndard tiene que ser positiva
 it:216 La deviazione standard deve essere positiva
 #
 en:217 Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')
+fr:217 Echelle incorrecte `%s' (syntaxes correctes: `1:500', `500', ou `0.002')
 de:217 Ma&szlig;stab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
 # (no de-de entry here!)
 de-ch:217 Massstab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
@@ -1970,6 +1975,7 @@ es:217 Escala err&oacute;nea `%s' (esperando por ej. `1:500', `500', o `0.002')
 it:217 Scala errata `%s' (valori di esempio `1:500', `500', or `0.002')
 #
 en:218 Bad list of pages to print `%s'
+fr:218 Liste de pages &agrave; imprimer incorrecte `%s'
 de:218 Liste zu druckender Seiten `%s' ist fehlerhaft
 pt-br:218 Lista de p&aacute;ginas a imprimir com problemas: `%s'
 ca:218 Llista de p&agrave;gines a imprimir err&ograve;nia: `%s'
@@ -1977,6 +1983,7 @@ es:218 Lista de p&aacute;ginas a imprimir err&oacute;nea: `%s'
 it:218 Lista di pagine da stampare `%s' errata
 #
 en:219 Reading `%s' duplicates previous reading(s)
+fr:219 La valeur `%s' fait doublon avec une ou des valeur(s) pr&eacute;c&eacute;dante(s)
 # de has the reverse singular/plural arrangement :)
 # (i.e., singular has the final -n, plural doesn't)
 de:219 Eintrag `%s' wiederholt fr&uuml;here(n)
@@ -2006,6 +2013,7 @@ it:221 @Esci
 # back to cavern
 # error from "*data normal newline from to tape compass clino"
 en:222 NEWLINE can't be the first reading
+fr:222 NEWLINE ne peut pas &ecirc;tre la premi&egrave;re valeur
 de:222 NEWLINE kann nicht der erste Eintrag sein
 pt:222 NEWLINE n&atilde;o pode ser o primeiro valor
 ca:222 NEWLINE no pot ser el primer camp
@@ -2013,6 +2021,7 @@ es:222 NEWLINE no puede ser el primer campo
 it:222 NEWLINE non pu&oacute; essere la prima lettura
 # error from "*data normal from to tape compass clino newline"
 en:223 NEWLINE can't be the last reading
+fr:223 NEWLINE ne peut pas &ecirc;tre la derni&egrave;re valeur
 de:223 NEWLINE kann nicht der letzte Eintrag sein
 pt:223 NEWLINE n&atilde;o pode ser o &uacute;ltimo valor
 ca:223 NEWLINE no pot ser el darrer camp
@@ -2020,6 +2029,7 @@ es:223 NEWLINE no puede ser el &uacute;ltimo campo
 it:223 NEWLINE non pu&oacute; essere l'ultima lettura
 # error from "*data normal station tape compass clino"
 en:224 Interleaved readings, but no NEWLINE
+fr:224 Donn&eacute;es sur plusieurs lignes, mais pas de NEWLINE
 de:224 Abwechselnde Eintr&auml;ge, aber kein NEWLINE
 pt:224 Valores em mais de uma linha sem NEWLINE
 ca:224 Camps en m&eacute;s d'una l&iacute;nia, per&ograve; sense NEWLINE
@@ -2027,6 +2037,7 @@ es:224 Campos en m&aacute;s de una linea, pero sin NEWLINE
 it:224 Letture su pi&uacute; linee, ma nessuna NEWLINE
 # caused by e.g. "*data diving station newline depth tape compass"
 en:225 Reading `%s' must occur before NEWLINE
+fr:225 La donn&eacute;e `%s' doit appara&icirc;tre avant NEWLINE
 de:225     Eintrag `%s' mu&szlig; vor NEWLINE kommen
 de-de,de-ch:225 Eintrag `%s' muss vor NEWLINE kommen
 pt:225 Valor `%s' deve estar antes do NEWLINE
@@ -2035,6 +2046,7 @@ es:225 El campo `%s' tiene que preceder a NEWLINE
 it:225 La lettura `%s' deve precedere NEWLINE
 # e.g. "*data normal from to tape newline compass clino"
 en:226 NEWLINE can only be preceded by STATION, DEPTH, and COUNT
+fr:226 NEWLINE ne peut &ecirc; pr&eacute;c&eacute;d&eacute;e que par STATION, DEPTH, et COUNT
 de:226 Vor NEWLINE kann nur STATION, DEPTH oder COUNT stehen
 pt:226 NEWLINE s&oacute; pode ser precedido por STATION, DEPTH e COUNT
 ca:226 NEWLINE sols pot ser precedit per STATION, DEPTH, i COUNT
@@ -2042,6 +2054,7 @@ es:226 NEWLINE solo puede ser precedido por STATION, DEPTH, y COUNT
 it:226 NEWLINE pu&oacute; essere preceduto solamente da STATION, DEPTH e COUNT
 #
 en:227 Can't calibrate angular and length quantities together
+fr:227 On ne peut pas calibrer les angles et les longueurs en m&ecirc;me temps
 de:227 Winkel und L&auml;ngen k&ouml;nnen nicht gleichzeitig kalibriert werden
 pt:227 N&atilde;o &eacute; poss&iacute;vel calibrar &acirc;ngulos e comprimentos ao mesmo tempo
 ca:227 No es poden calibrar quantitats angulars i de longitud juntes
@@ -2070,7 +2083,7 @@ en:232 Speed @Up
 fr:232 A@cc&eacute;l&egrave;re
 de:232 @Schneller
 pt-br:232 @Aumentar Velocidade
-ca:232 A@ccelera la rotaci&oacute;
+ca:232 Acce@lera la rotaci&oacute;
 es:232 @Accelera la rotaci&oacute;n
 it:232 A@ccelera la rotazione
 #
@@ -2153,21 +2166,23 @@ en:245 Shift Survey @Right
 fr:245 D&eacute;placement vers la @Droite
 de:245 Verschieben nach @rechts
 pt-br:245 Mover para @Direita
-ca:245 Mou la topograf&iacute;a cap a la D@reta
-es:245 Mueve la topografia hacia la De@recha
+ca:245 Mou la topograf&iacute;a cap a la @Dreta
+es:245 Mueve la topografia hacia la @Derecha
 it:245 Sposta il rilievo a @Destra
-#
+# TRANSLATE pt
 en:246 Shift Survey @Up
 fr:246 D&eacute;placement vers le @Haut
 de:246 Verschieben nach o@ben
+pt:246 Shift Sur@vey Up
 pt-br:246 Mover para @Cima
 ca:246 Mou la topograf&iacute;a cap A@munt
-es:246 Mueve la topografia hacia Arri@ba
+es:246 Mueve la topografia hacia Arr@@iba
 it:246 Sposta il rilievo verso l'@Alto
-#
+# TRANSLATE pt
 en:247 Shift Survey @Down
 fr:247 D&eacute;placement vers le @Bas
 de:247 Verschieben nach @unten
+pt:247 Shift Surve@y Down
 pt-br:247 Mover para @Baixo
 ca:247 Mou la topograf&iacute;a cap A@vall
 es:247 Mueve la topografia hacia A@bajo
@@ -2198,15 +2213,15 @@ en:250 @Higher Viewpoint
 fr:250 Point de vue plus Ha@ut
 de:250 @H&ouml;herer Standort
 pt-br:250 Observador Mais @Alto
-ca:250 Punt de vista m&eacute;s @Alt
-es:250 Punto de vista m&aacute;s @Alto
+ca:250 Punt de vista m&eacute;s A@lt
+es:250 Punto de vista m&aacute;s A@lto
 it:250 A@lza il punto di vista
 #
 en:251 L@ower Viewpoint
 fr:251 Point de vue plus B@as
 de:251 Nie@drigerer Standort
 pt-br:251 Observador Mais Bai@xo
-ca:251 Punt de vista m&eacute;s Bai@x
+ca:251 Punt de vista m&eacute;s @Baix
 es:251 Punto de vista m&aacute;s Ba@jo
 it:251 A@bbassa il punto di vista
 #
@@ -2218,7 +2233,7 @@ de-ch:252 @Vergr&ouml;ssern##]
 # pt or "Ampliar"
 pt:252 @Aumentar##]
 pt-br:252 Aproxi@mar##]
-ca:252 @Apropa##]
+ca:252 @Apropar##]
 #es or "Aumentar"
 es:252 @Ampliar##]
 # it: or "Ingrandisci"
@@ -2231,12 +2246,13 @@ de:253 Ver@kleinern##[
 # pt or "Reduzir"
 pt:253 @Diminuir##[
 pt-br:253 Afas@tar##[
-ca:253 @Redueix##[
+ca:253 @Reduir##[
 es:253 @Reducir##[
 # it: or "Riduci"
 it:253 Zoo@m indietro##[
 #
 en:254 Restore De@fault Settings
+en-us:254 Restore Defaul@t Settings
 fr:254 @Restaurer les valeurs par d&eacute;faut
 de:254 Voreinstellungen w@iederherstellen
 pt:254 @Usar valores pr&eacute;-definidos
@@ -2272,10 +2288,11 @@ pt:272 @Visadas Subterr&acirc;neas##Ctrl+L
 ca:272 @Tirades Subterr&agrave;nies##Ctrl+L
 es:272 @Tiradas Subterr&aacute;neas##Ctrl+L
 it:272 @Battute del rilievo sotterraneo##Ctrl+L
-#
+# TRANSLATE pt
 en:273 @Overlapping Names
 fr:273 @Superposition des noms
 de:273 &Uuml;ber@lappende Namen
+pt:273 Overlapping Name@s
 pt-br:273 Nomes @Sobrepostos
 ca:273 Noms @Sobreposats
 es:273 Nombres @Superpuestos
@@ -2325,6 +2342,7 @@ es:280 @Invierte el sentido##Ctrl+R
 it:280 @Inverte il senso##Ctrl+R
 #
 en:281 @Cancel Measuring Line##Escape
+fr:281 @Annule la Ligne de Mesure##Escape
 de:281     Me&szlig;linie @abschalten##Escape
 de-de,de-ch:281 Messlinie @abschalten##Escape
 pt:281 @Cancelar linha de medida##Escape
@@ -2353,10 +2371,10 @@ pt:291 Visadas de Super@f&iacute;cie##Ctrl+F
 ca:291 Tirades de topograf&iacute;a de super@f&iacute;cie##Ctrl+F
 es:291 Tiradas de topografia de super@ficie##Ctrl+F
 it:291 Battute topografia di Super@ficie##Ctrl+F
-# TRANSLATE fr "Depth Colours" -> "Altitude Colouring"
+#
 en:292 Altitude Colo@uring on Surface Surveys
 en-us:292 Altit@ude Coloring on Surface Surveys
-fr:292 C@ouleur par profondeur pour les topos de surface
+fr:292 Couleur par altit@ude pour les topos de surface
 de:292 H&ouml;hen-F@arben auf Oberfl&auml;chendarstellungen
 pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
 ca:292 Colors per @Altitud en topograf&iacute;a de superf&iacute;cie
@@ -2364,12 +2382,13 @@ es:292 Colores por @Altitud en topografia de superficie
 it:292 Rappresentazione delle @Quote mediante colori
 #
 en:293 Da@shed Surface Surveys
+en-us:293 Das@hed Surface Surveys
 fr:293 Topos de surface @Hachur&eacute;es
 de-de,de-ch:293 Gestrichelte @Oberfl&auml;chenmessz&uuml;ge
 de:          293 Gestrichelte @Oberfl&auml;chenme&szlig;z&uuml;ge
 pt:293 Topografias de Superf&iacute;cie @Tracejadas
-ca:293 Topograf&iacute;a de @superf&iacute;cie amb tra&ccedil; discontinuat
-es:293 Topografias de @superficie con trazo discont&iacute;nuo
+ca:293 T@opograf&iacute;a de superf&iacute;cie amb tra&ccedil; discontinuat
+es:293 T@opografias de superficie con trazo discont&iacute;nuo
 it:293 Superficie topografica @Tratteggiata
 #
 en:294 Highlight @Entrances
@@ -2381,7 +2400,7 @@ es:294 Marca las @Entradas
 it:294 Marca gli Ing@ressi
 #
 en:295 Highlight Fi@xed Points
-en-us:295 Highlight Co@ntrol Points
+en-us:295 Highlight Contro@l Points
 fr:295 Mise en valeur des points Fi@xes
 de:295 Fi@xpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
@@ -2399,21 +2418,21 @@ it:296 Marca i punti @Esportati
 #
 en:297 @Grid##Ctrl+G
 fr:297 @Grille##Ctrl+G
-de:297 @Gitter##Ctrl+G
+de:297 Gi@tter##Ctrl+G
 pt:297 @Grade##Ctrl+G
 ca:297 @Graella##Ctrl+G
 es:297 @Rejilla##Ctrl+G
 it:297 @Griglia##Ctrl+G
 #
-en:298 S@moothed Survey Legs
-en-us:298 S@moothed Survey Shots
+en:298 Smoo@thed Survey Legs
+en-us:298 Smoo@thed Survey Shots
 fr:298 @Lissage des segments topographiques
 de-de,de-ch:298 Gegl&auml;ttete @Messz&uuml;ge
 de:298          Gegl&auml;ttete @Me&szlig;z&uuml;ge
 pt:298 Visadas S@uavizadas 
 ca:298 Tirades S@uavitzades
 es:298 Tiradas S@uavizadas
-it:298 @Battute topografiche ammorbidite
+it:298 Battute topografiche @ammorbidite
 #
 en:299 @Indicators
 fr:299 @Indicateurs
@@ -2562,7 +2581,7 @@ en:316 Er@ase All Positions
 fr:316 Effacement de @toutes les positions
 de:316 Alle P@ositionen l&ouml;schen
 pt:316 Remover @Todas as Posi&ccedil;&otilde;es
-ca:316 Esborra @totes les posicions
+ca:316 Esborra totes les @posicions
 es:316 Borra @todas las posiciones
 it:316 Cancella @Tuttle le posizioni
 #
@@ -2629,7 +2648,7 @@ fr:324 Red&eacute;@marrage
 de:324 @Neustart
 pt:324 Rei@niciar
 ca:324 Re@iniciar
-es:324 Re@iniciar
+es:324 Rei@niciar
 it:324 Ri@parte
 # XXX325 326 327
 en:328 No matches were found.
@@ -2648,15 +2667,16 @@ ca:329 Obrir @Terreny...
 es:329 Abrir @Terreno...
 it:329 Apri Modello Digitale @Terrestre
 #
-en:330 Soli@d Surface
-fr:330 Surface Soli@de
+en:330 Solid Su@rface
+fr:330 Surface S@olide
 de:330 @Durchgezogene Oberfl&auml;che
 pt:330 Superf&iacute;cie S&oacute;@lida
 ca:330 Superf&iacute;cie S&ograve;li@da
 es:330 Superficie S&oacute;li@da
-it:330 Superficie So@lida
+it:330 Superficie S@olida
 # number of stations found matching search
 en:331 %d found
+fr:331 %d trouv&eacute;e(s)
 de:331 %d gefunden
 pt-br:331 %d bases encontradas
 ca:331 %d trobades
@@ -2664,6 +2684,7 @@ es:331 %d encontradas
 it:331 %d trovate
 # "Find stations" button label
 en:332 Find
+fr:332 Chercher
 de:332 Suchen
 pt-br:332 Procurar
 ca:332 Troba
@@ -2671,6 +2692,7 @@ es:332 Encuentra
 it:332 Trova
 # "Hide stations" button label
 en:333 Hide
+fr:333 Masquer
 de:333 Unterdr&uuml;cken
 pt-br:333 Esconder
 ca:333 Amaga
@@ -2678,6 +2700,7 @@ es:333 Oculta
 it:333 Nascondi
 # checkbox for regular expression search
 en:334 Regular expression
+fr:334 Expression r&eacute;guli&egrave;re
 de:334 Regul&auml;rer Ausdruck
 pt-br:334 Express&atilde;o regular
 ca:334 Expressi&oacute; regular
@@ -2693,6 +2716,7 @@ es:335 Altitud
 it:335 Quota
 # error if you try to drag multiple files to the aven window
 en:336 You may only view one 3d file at a time.
+fr:336 Vous ne pouvez afficher qu'un fichier 3d &agrave; la fois
 de:336 Es kann nur eine 3D-Datei zugleich angezeigt werden.
 pt:336 S&oacute; &eacute; poss&iacute;vel examinar um arquivo 3d de cada vez
 ca:336 Sols es pot visualitzar un fitxer 3d alhora.
@@ -2700,6 +2724,7 @@ es:336 Solo se puede visualizar un archivo 3d a la vez.
 it:336 &Eacute; possibile visualizzare solamente un file 3D alla volta.
 #
 en:337 Side P@anel
+fr:337 Vue lat&eacute;rale
 de:337 Seitliches @Kontrollfeld
 pt:337 P@ainel lateral
 ca:337 Recuadre @Lateral
@@ -2718,9 +2743,8 @@ it:338 "  %d E, %d N"
 #  From <stationname>
 #  H: 123m V: 234m
 #  Dist: 456m  Brg: 200
-# TRANSLATE fr (check translation adapted from elsewhere)
 en:339 From %s
-fr:339 De %s
+fr:339 Depuis %s
 de:339 Von %s aus
 pt:339 De %s
 ca:339 Des de %s
@@ -2728,6 +2752,7 @@ es:339 Desde %s
 it:339 Da %s
 #
 en:340 "  H %dm, V %dm"
+fr:340 "  H %dm, V %dm"
 de:340 "  H %dm, V %dm"
 pt:340 "  H %dm, V %dm"
 ca:340 "  H %dm, V %dm"
@@ -2735,6 +2760,7 @@ es:340 "  H %dm, V %dm"
 it:340 "  O %dm, V %dm"
 #
 en:341 "  Dist %dm, Brg %03d&deg;"
+fr:341 "  Dist %dm, Azim %03d&deg;" 
 de:341 "  Dist %dm, Richt. %03d&deg;"
 pt:341 "  Dist %dm, Azim %03d&deg;"
 ca:341 "  Dist %dm, Azim %03d&deg;" 
@@ -2742,14 +2768,18 @@ es:341 "  Dist %dm, Azim %03d&deg;"
 it:341 "  Dist %dm, Azm. %03d&deg;"
 # tickable menu item in View menu
 en:342 @Metric
+fr:342 @M&eacute;trique
+de:342 Metris@ch
+ca:342 @Metric
+es:342 @Metrico
 # tickable menu item in View menu
 en:343 @Degrees
 fr:343 @Degr&eacute;s
 de:343 @Grad
-pt:343 @Graus
-ca:343 @Graus
+pt:343 G@raus
+ca:343 G@raus
 es:343 @Grados
-it:343 @Gradi
+it:343 Gra@di
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

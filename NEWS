@@ -5,7 +5,8 @@ Changes in 1.0.3:
 * print*: added "Printing to `XXX'..." message to say where output is being
   written.
 
-* Minor corrections to Catalan translation.
+* Updated French translation; minor updates to other translations (mostly
+  sorting out clashing menu shortcuts in aven).
 
 Changes in 1.0.2:
 
