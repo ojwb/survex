@@ -74,17 +74,17 @@ skipline(FILE *fh)
 }
 
 static void
-printline(FILE *fh)
+printline(FILE *fh, FILE *fh_out)
 {
    int ch;
    do {
       ch = getc(fh);
-      if (ch != EOF && ch != '\r' && ch != '\n') putchar(ch);
+      if (ch != EOF && ch != '\r' && ch != '\n') putc(ch, fh_out);
    } while (ch != '\n' && ch != EOF);
-   putchar('\n');
+   putc('\n', fh_out);
    if (ch == EOF) {
       printf("Couldn't parse .err file\n");
-      exit(1);   
+      exit(1);
    }
 }
 
