@@ -20,6 +20,7 @@ dostxt :
 djgpp : all djgpp_zip
 
 djgpp_zip : dostxt
+	test -d djgpp_exes || mkdir djgpp_exes
 	for a in $(base_progs) caverot ; do cp src/$$a.exe djgpp_exes ; done
 	for a in hto2svx svx2hto ; do cp hto/$$a.exe djgpp_exes ; done
 	$(RM) svx-dos-@VERSION@.zip
@@ -29,18 +30,21 @@ djgpp_zip : dostxt
 	zip -j -l svx-dos-@VERSION@.zip djgpp_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
-# ick - need to build djgpp before mingw32 to get caverot.exe...
+# ick - need to build djgpp before mingw to get caverot.exe, but there's
+# no easy fix I can think of...
 
-mingw32 : all mingw32_zip
+mingw : all mingw_zip
 
-mingw32_zip : dostxt
-	for f in $(base_progs) ; do cp src/$$f.exe mingw32_exes ; done
-	for a in hto2svx svx2hto ; do cp hto/$$a.exe mingw32_exes ; done
+mingw_zip : dostxt
+	echo "Warning: You must build djgpp before mingw for caverot.exe"
+	test -d mingw_exes || mkdir mingw_exes
+	for f in $(base_progs) ; do cp src/$$f.exe mingw_exes ; done
+	for a in hto2svx svx2hto ; do cp hto/$$a.exe mingw_exes ; done
 	$(RM) svx-nt-@VERSION@.zip
-	zip -j svx-nt-@VERSION@.zip mingw32_exes/*.exe djgpp_exes/caverot.exe\
+	zip -j svx-nt-@VERSION@.zip mingw_exes/*.exe djgpp_exes/caverot.exe\
 	 $(extra_bin)
 	# -l means convert LF to CR+LF
-	zip -j -l svx-nt-@VERSION@.zip mingw32_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
+	zip -j -l svx-nt-@VERSION@.zip mingw_extras/*.txt dostxt_tmp/*.txt $(extra_txt)
 	$(RM) -rf dostxt_tmp
 
 borlandc_zip : dostxt
