@@ -72,7 +72,7 @@ class GLAPen {
     friend class GLACanvas; // allow direct access to components
 
     double components[3]; // red, green, blue
-    
+
 public:
     GLAPen();
     ~GLAPen();
@@ -144,11 +144,11 @@ public:
     void SetVolumeDiameter(glaCoord diameter);
     void SetDataTransform();
     void SetIndicatorTransform();
-    
+
     glaList CreateList(GfxCore*, void (GfxCore::*generator)());
     void DeleteList(glaList l);
     void DrawList(glaList l);
- 
+
     void SetBackgroundColour(float red, float green, float blue);
     void SetColour(const GLAPen& pen, double rgb_scale);
     void SetColour(const GLAPen& pen);
@@ -157,7 +157,7 @@ public:
     void DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str);
     void DrawIndicatorText(int x, int y, const wxString& str);
     void GetTextExtent(const wxString& str, int * x_ext, int * y_ext);
-    
+
     void BeginQuadrilaterals();
     void EndQuadrilaterals();
     void BeginLines();
@@ -172,7 +172,7 @@ public:
     void EndPolygon();
     void BeginBlobs();
     void EndBlobs();
-    
+
     void DrawRectangle(gla_colour edge, gla_colour fill,
                        glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
     void DrawShadedRectangle(const GLAPen & fill_bot, const GLAPen & fill_top,
@@ -180,15 +180,15 @@ public:
     void DrawCircle(gla_colour edge, gla_colour fill, glaCoord cx, glaCoord cy, glaCoord radius);
     void DrawSemicircle(gla_colour edge, gla_colour fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start);
     void DrawTriangle(gla_colour edge, gla_colour fill, GLAPoint* vertices);
-    
+
     void DrawBlob(glaCoord x, glaCoord y, glaCoord z);
     void DrawRing(glaCoord x, glaCoord y);
- 
+
     void PlaceVertex(glaCoord x, glaCoord y, glaCoord z);
     void PlaceIndicatorVertex(glaCoord x, glaCoord y);
 
     void PlaceNormal(glaCoord x, glaCoord y, glaCoord z);
-    
+
     void EnableDashedLines();
     void DisableDashedLines();
 

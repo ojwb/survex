@@ -75,7 +75,7 @@ class PresentationMark {
 #define UPDATE_NONE 0
 #define UPDATE_INDICATORS 1
 #define UPDATE_BLOBS 2
- 
+
 class GfxCore : public GLACanvas {
     struct params {
 	Double scale;
@@ -146,7 +146,7 @@ class GfxCore : public GLACanvas {
 
     wxStopWatch timer;
     long drawtime;
-    
+
     GLAPen * m_Pens;
 
 #define PLAYING 1
@@ -161,7 +161,7 @@ class GfxCore : public GLACanvas {
 
     void UpdateQuaternion();
     void UpdateIndicators();
-    
+
     void SetColourFromHeight(Double z, Double factor);
     void PlaceVertexWithColour(Double x, Double y, Double z,
 			       Double factor = 1.0);
@@ -243,7 +243,7 @@ public:
     void ForceRefresh();
 
     void RefreshLine(const Point& a, const Point& b, const Point& c);
- 
+
     void SetHere();
     void SetHere(Double x, Double y, Double z);
     void SetThere();
@@ -276,17 +276,17 @@ public:
 
     bool ShowingCompass() const;
     bool ShowingClino() const;
-    
+
     bool PointWithinCompass(wxPoint point) const;
     bool PointWithinClino(wxPoint point) const;
     bool PointWithinScaleBar(wxPoint point) const;
-    
+
     void SetCompassFromPoint(wxPoint point);
     void SetClinoFromPoint(wxPoint point);
     void SetScaleBarFromOffset(wxCoord dx);
-    
+
     void RedrawIndicators();
-    
+
     void StartRotation();
     void ToggleRotation();
     void StopRotation();
@@ -294,11 +294,11 @@ public:
     void ReverseRotation();
     void RotateSlower(bool accel);
     void RotateFaster(bool accel);
-    
+
     void SwitchToElevation();
     void SwitchToPlan();
     bool ChangingOrientation() const;
-    
+
     bool ShowingPlan() const;
     bool ShowingElevation() const;
     bool ShowingMeasuringLine() const;
@@ -312,7 +312,7 @@ public:
 
     double GetScale() const { return m_Params.scale; }
     void SetScale(Double scale);
-    
+
     bool ShowingStationNames() const { return m_Names; }
     bool ShowingOverlappingNames() const { return m_OverlappingNames; }
     bool ShowingCrosses() const { return m_Crosses; }
@@ -358,7 +358,7 @@ public:
     bool GetMetric() const { return m_Metric; }
     bool GetDegrees() const { return m_Degrees; }
     bool GetTubes() const { return m_Tubes; }
-    
+
     bool CheckHitTestGrid(wxPoint& point, bool centre);
 
     void ClearTreeSelection();
@@ -378,9 +378,9 @@ public:
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
     void AddPolyline(const list<Vector3> & centreline);
     void AddPolylineDepth(const list<Vector3> & centreline);
-    void AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
+    void AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			  const Vector3 &c, const Vector3 &d);
-    void AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b, 
+    void AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 			       const Vector3 &c, const Vector3 &d);
     void MoveViewer(double forward, double up, double right);
 
