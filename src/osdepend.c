@@ -20,6 +20,7 @@
            added our own versions of ceil and floor for DJGPP
 1997.02.15 turned on DJGPP ceil/floor kludge
 1997.06.05 const added
+1997.08.24 merged
 */
 
 #include <string.h>
@@ -30,7 +31,7 @@
 #if (OS==RISCOS)
 
 bool fAbsoluteFnm( const char *fnm ) {
- return strchr(fnm,':') /* filename contains a ':' */
+   return strchr(fnm,':') /* filename contains a ':' */
      || (fnm[0]=='-' && strchr(fnm+1,'-')) /* temporary filing system */
      || (fnm[0]=='<' && strchr(fnm+1,'>')) /* System var eg <My$Dir>.File */
      || (fnm[1]=='.' && strchr("$&%@\\",fnm[0]));
@@ -53,17 +54,17 @@ bool fAmbiguousFnm( const char *fnm ) {
 /* NB for Wooks: "c:fred" isn't relative. Eg "c:\data\c:fred" won't work */
 
 bool fAbsoluteFnm( const char *fnm ) {
- return (fnm[1]==':' && isalpha(fnm[0]) ) /* <drive letter>: */
-     || (fnm[0]=='\\');                   /* Root */
+   return (fnm[1]==':' && isalpha(fnm[0]) ) /* <drive letter>: */
+       || (fnm[0]=='\\');                   /* Root */
 }
 
 /* DOS treats .\fred as ambiguous, so we should */
 bool fAmbiguousFnm( const char *fnm ) {
- fnm=fnm;
- return fFalse;
+   fnm = fnm;
+   return fFalse;
 #if 0
- return (strncmp(fnm,"..\\",3)==0)        /* Parent directory */
-     || (fnm[0]=='.' && fnm[1]=='\\');    /* Currently Selected Directory */
+   return (strncmp(fnm,"..\\",3)==0)        /* Parent directory */
+       || (fnm[0]=='.' && fnm[1]=='\\');    /* Currently Selected Directory */
 #endif
 }
 
@@ -118,9 +119,9 @@ bool fAbsoluteFnm( const char *fnm ) {
 }
 
 bool fAmbiguousFnm( const char *fnm ) {
- return fFalse;
+   return fFalse;
 #if 0
- return (strncmp(fnm,"../",3)==0); /* Parent directory */
+   return (strncmp(fnm,"../",3)==0); /* Parent directory */
 #endif
 }
 
@@ -137,9 +138,9 @@ bool fAmbiguousFnm( const char *fnm ) {
 # include <stdio.h>
 
 bool fDirectory( const char *fnm ) {
- struct stat buf;
- stat( fnm, &buf );
- return ((buf.st_mode & S_IFMT) == S_IFDIR);
+   struct stat buf;
+   stat( fnm, &buf );
+   return ((buf.st_mode & S_IFMT) == S_IFDIR);
 }
 
 #elif (OS==RISCOS)
@@ -147,13 +148,13 @@ bool fDirectory( const char *fnm ) {
 # include "oslib/osfile.h"
 
 bool fDirectory( const char *fnm ) {
- int objtype;
- /* it's a directory iff objtype is 2 or 3 */
- /* (3 is an image file (for RISC OS 3 and above) but we probably want */
- /* to treat image files as directories) */
- if (xosfile_read( fnm, &objtype, NULL, NULL, NULL, NULL ) != NULL)
-    return fFalse;
- return (objtype == osfile_IS_DIR || objtype == osfile_IS_IMAGE);
+   int objtype;
+   /* it's a directory iff objtype is 2 or 3 */
+   /* (3 is an image file (for RISC OS 3 and above) but we probably want */
+   /* to treat image files as directories) */
+   if (xosfile_read( fnm, &objtype, NULL, NULL, NULL, NULL ) != NULL)
+      return fFalse;
+   return (objtype == osfile_IS_DIR || objtype == osfile_IS_IMAGE);
 }
 
 #else
