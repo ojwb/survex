@@ -124,9 +124,8 @@ cmdline_help(void)
       puts(help->msg);
       help++;
    }
-   /* TRANSLATE */
-   puts("      --help\t\t\tdisplay this help and exit\n"
-	"      --version\t\t\toutput version information and exit");
+   printf("      --help\t\t\t%s\n", msg(/*display this help and exit*/150));
+   printf("      --version\t\t\t%s\n", msg(/*output version information and exit*/151));
 
    if (extra_msg) {
       putnl();
@@ -146,7 +145,7 @@ void
 cmdline_syntax(void)
 {
    printf("\n%s: %s", msg(/*Syntax*/49), argv0);
-   if (help->opt) fputs(" [OPTION]...", stdout);
+   if (help->opt) printf(" [%s]...", msg(/*OPTION*/153));
    if (args_msg) {
       putchar(' ');
       puts(args_msg);
@@ -154,14 +153,14 @@ cmdline_syntax(void)
    }
    if (min_args) {
       int i = min_args;
-      while (i--) fputs(" FILE", stdout);
+      while (i--) printf(" %s", msg(/*FILE*/124));
    }
    if (max_args == -1) {
-      if (!min_args) fputs(" [FILE]", stdout);
+      if (!min_args) printf(" [%s]", msg(/*FILE*/124));
       fputs("...", stdout);
    } else if (max_args > min_args) {
       int i = max_args - min_args;
-      while (i--) fputs(" [FILE]", stdout);
+      while (i--) printf(" [%s]", msg(/*FILE*/124));
    }
    putnl();
 }
@@ -184,13 +183,15 @@ cmdline_int_arg(void)
    result = strtol(optarg, &endptr, 10);
 
    if (errno == ERANGE || result > INT_MAX || result < INT_MIN) {
-      fprintf(stderr, "%s: numeric argument `%s' out of range\n",
-      	      argv0, optarg);
+      fprintf(stderr, "%s: ", argv0);
+      fprintf(stderr, msg(/*numeric argument `%s' out of range*/185), optarg);
+      fputnl(stderr);
       cmdline_syntax();
       exit(1);
    } else if (*optarg == '\0' || *endptr != '\0') {
-      fprintf(stderr, "%s: argument `%s' not an integer\n",
-      	      argv0, optarg);
+      fprintf(stderr, "%s: ", argv0);
+      fprintf(stderr, msg(/*argument `%s' not an integer*/186), optarg);
+      fputnl(stderr);
       cmdline_syntax();
       exit(1);
    }
@@ -209,12 +210,15 @@ cmdline_double_arg(void)
    result = strtod(optarg, &endptr);
 
    if (errno == ERANGE) {
-      fprintf(stderr, "%s: numeric argument `%s' out of range\n",
-      	      argv0, optarg);
+      fprintf(stderr, "%s: ", argv0);
+      fprintf(stderr, msg(/*numeric argument `%s' out of range*/185), optarg);
+      fputnl(stderr);
       cmdline_syntax();
       exit(1);
    } else if (*optarg == '\0' || *endptr != '\0') {
-      fprintf(stderr, "%s: argument `%s' not a number\n", argv0, optarg);
+      fprintf(stderr, "%s: ", argv0);
+      fprintf(stderr, msg(/*argument `%s' not a number*/187), optarg);
+      fputnl(stderr);
       cmdline_syntax();
       exit(1);
    }
@@ -227,8 +231,9 @@ cmdline_float_arg(void)
 {
    double result = cmdline_double_arg();
    if (fabs(result) > FLT_MAX) {
-      fprintf(stderr, "%s: numeric argument `%s' out of range\n",
-      	      argv0, optarg);
+      fprintf(stderr, "%s: ", argv0);
+      fprintf(stderr, msg(/*numeric argument `%s' out of range*/185), optarg);
+      fputnl(stderr);
       cmdline_syntax();
       exit(1);
    }
@@ -259,14 +264,12 @@ cmdline_getopt(void)
    int opt = getopt_long(argc, argv, shortopts, longopts, longind);
 
    if (opt == EOF) {
-      /* check minimum # of args given - if not give syntax message */
+      /* check valid # of args given - if not give syntax message */
       if (argc - optind < min_args) {
-	 /* TRANSLATE */
-	 fprintf(stderr, "%s: too few arguments\n", argv0);
+	 fprintf(stderr, "%s: %s\n", argv0, msg(/*too few arguments*/122));
 	 opt = '?';
       } else if (max_args >= 0 && argc - optind > max_args) {
-	 /* TRANSLATE */
-	 fprintf(stderr, "%s: too many arguments\n", argv0);
+	 fprintf(stderr, "%s: %s\n", argv0, msg(/*too many arguments*/123));
 	 opt = '?';
       }
    }
@@ -274,11 +277,10 @@ cmdline_getopt(void)
    switch (opt) {
     case ':': /* parameter missing */
     case '?': /* unknown opt, ambiguous match, or extraneous param */
-      /* getopt displays a message for us (unless we set opterr to 0) */
-      /* FIXME: set opterr to 0 so we can translate messages? */
+      /* getopt displays a message for us */
       cmdline_syntax();
-      /* TRANSLATE */
-      fprintf(stderr, "Try `%s --help' for more information.\n", argv0);
+      fprintf(stderr, msg(/*Try `%s --help' for more information.\n*/157),
+	      argv0);
       exit(1);
     case HLP_VERSION: /* --version */
       cmdline_version();

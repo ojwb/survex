@@ -1,3 +1,5 @@
+* Messages relating to command line options are now translatable.
+
 Changes in 0.97-prerelease6:
 
 * (MS Windows version): aven: if there are problems opening the

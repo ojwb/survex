@@ -808,7 +808,7 @@ parse_command(int argc, char **argv)
    char *p;
    int col_idx = 0;
 
-   cmdline_set_syntax_message("3D_FILE...", NULL);
+   cmdline_set_syntax_message("3D_FILE...", NULL); /* TRANSLATE */
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
    while (1) {
       int opt = cmdline_getopt();

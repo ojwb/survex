@@ -16,7 +16,7 @@ EXTRA_PROGRAMS = caverot xcaverot printxbm printwin aven
 bin_PROGRAMS = cavern $(PRINT) diffpos extend survex cad3d @CAVEROT@ \
  @AVEN@ @PRINTWIN@
 
-COMMONSRC = cmdline.c message.c filename.c osdepend.c getopt.c getopt1.c
+COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
 
 cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
  readval.c str.c matrix.c img.c netbits.c useful.c validate.c netartic.c \
@@ -81,7 +81,13 @@ noinst_DATA = borlandc/makefile riscos/makefile
  
 EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
  riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
- riscos/stdh/regnames riscos/stdh/swinames miniam.pl aven.rc aven.ico
+ riscos/stdh/regnames riscos/stdh/swinames miniam.pl aven.rc aven.ico\
+ getopt.c gettexttomsg.pl
+
+BUILT_SOURCES = z_getopt.c
+
+z_getopt.c: getopt.c
+	./gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
 
 MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile
 
