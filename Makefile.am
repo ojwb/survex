@@ -16,7 +16,7 @@ extra_text = BUGS AUTHORS COPYING NEWS TODO ChangeLog HACKING OLDNEWS ZOMBIES
 
 # FIXME: need to keep in step with src/Makefile.am
 base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
- extend survex sorterr 3dtopos
+ extend sorterr 3dtopos
 
 spec = ${PACKAGE}-${VERSION}.spec
 
