@@ -175,7 +175,7 @@ case `sgmltools --version 2> /dev/null` in
   sgmltools=sgmltools
   AC_MSG_RESULT(yes) ;;
 *)
-  sgmltools='$MISSING sgmltools'
+  sgmltools=$MISSING' sgmltools'
   AC_MSG_RESULT(no) ;;
 esac
 AC_SUBST(sgmltools)
