@@ -47,4 +47,4 @@ multicartesian.svx multicartesian.pos\
 multinosurv.svx multinosurv.pos\
 multinormalbad.svx multibug.svx\
 cmd_title.svx cmd_titlebad.svx\
-cmd_dummy.svx
+cmd_dummy.svx cmd_infer.svx cmd_infer.pos
