@@ -4,7 +4,7 @@ pkgdocdir = $(prefix)/doc/@PACKAGE@
 
 doclist = @DOCS_OTHER@
 
-other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 \
+other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
  printdm.1 printhpgl.1 printpcl.1 printps.1 @EXTRA_MANS@
 
 #can produce man page syntax summary from --help something like

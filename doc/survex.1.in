@@ -51,6 +51,9 @@ survex \- cave survey software
 .B 3dtopos
 [\fIOPTION\fR]... \fI3DFILE\fR [\fI3DFILE\fR]
 .br
+.B sorterr
+[\fIOPTION\fR]... \fI3DFILE\fR [\fI3DFILE\fR]
+.br
 .B survex
 [\fIOPTION\fR]... \fISVX_FILE\fR...
 .br
@@ -69,6 +72,7 @@ This manual page documents briefly the
 \fBdiffpos\fP,
 \fBcad3d\fP,
 \fB3dtopos\fP,
+\fBsorterr\fP,
 and
 \fBsurvex\fP
 commands.

@@ -4,6 +4,8 @@
 * printps/printhpgl/printwin: fixed typo which made --skip-blanks get
   it wrong in some rare cases.
 
+* (Unix version): Added man pages for 3dtopos and sorterr.
+
 Changes in 0.99-prerelease1:
 
 * Major clean-up of Survex Manual; renamed from "svxdocs" to "manual".
