@@ -264,6 +264,7 @@ win_Pre(int pagesToPrint, const char *title)
 {
    PRINTDLGA psd;
    DOCINFO info;
+   int logpixelsy;
 
    pagesToPrint = pagesToPrint; /* suppress compiler warning */
 
@@ -274,14 +275,17 @@ win_Pre(int pagesToPrint, const char *title)
    if (!PrintDlgA(&psd)) exit(1);
    pd = psd.hDC;
 
-   font_labels = CreateFont(-fontsize_labels, 0, 0, 0, FW_NORMAL, 0, 0, 0,
+   logpixelsy = GetDeviceCaps(hDC, LOGPIXELSY);
+   font_labels = CreateFont(-MulDiv(fontsize_labels, logpixelsy, 72),
+			    0, 0, 0, FW_NORMAL, 0, 0, 0,
 			    ANSI_CHARSET, OUT_DEFAULT_PRECIS,
 			    CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
 			    FF_DONTCARE | DEFAULT_PITCH, "Arial");   
-   font_default = CreateFont(-fontsize, 0, 0, 0, FW_NORMAL, 0, 0, 0,
-		   	  ANSI_CHARSET, OUT_DEFAULT_PRECIS,
-			  CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-			  FF_DONTCARE | DEFAULT_PITCH, "Arial");   
+   font_default = CreateFont(-MulDiv(fontsize, logpixelsy, 72),
+			     0, 0, 0, FW_NORMAL, 0, 0, 0,
+			     ANSI_CHARSET, OUT_DEFAULT_PRECIS,
+			     CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+			     FF_DONTCARE | DEFAULT_PITCH, "Arial");   
    font_old = SelectObject(pd, font_labels);
    GetTextMetrics(pd, &tm_labels);
    SelectObject(pd, font_default);
