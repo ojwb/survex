@@ -94,3 +94,9 @@
 /* Version number of package */
 #define VERSION "@VERSION@"
 
+/* Name of package (capitalised) */
+#define PRETTYPACKAGE "@PRETTYPACKAGE@"
+
+/* Version number of package (comma-separated) */
+#define COMMAVERSION @COMMAVERSION@
+
