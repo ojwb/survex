@@ -296,6 +296,9 @@ data_file(const char *pth, const char *fnm)
 {
    int begin_lineno_store;
    parse file_store;
+#ifdef COMPASS_DAT
+   reading * tmp_ordering = pcs->ordering;
+#endif
 
    {
       char *filename;
@@ -341,6 +344,23 @@ data_file(const char *pth, const char *fnm)
    }
 #endif
 
+#ifdef COMPASS_DAT
+   {
+      reading compass_order[] = {
+	  Fr, To, Tape, Comp, Clino, IgnoreAll, End
+      };
+      short *t;
+      int i;
+      pcs->ordering = compass_order;
+      pcs->units[Q_LENGTH] = METRES_PER_FOOT;
+      t = pcs->Translate;
+      for (i = 33; i < 127; i++) t[i] |= SPECIAL_NAMES;
+      for (i = 128; i < 256; i++) t[i] |= SPECIAL_NAMES;
+      pcs->Case = OFF;
+      pcs->infer = 7; /* FIXME: BIT(EQUATES)|BIT(EXPORTS)|BIT(PLUMBS); */
+   }
+#endif
+
 #ifdef HAVE_SETJMP_H
    /* errors in nested functions can longjmp here */
    if (setjmp(file.jbSkipLine)) {
@@ -349,6 +369,76 @@ data_file(const char *pth, const char *fnm)
 #endif
 
    while (!feof(file.fh) && !ferror(file.fh)) {
+#ifdef COMPASS_DAT
+      /* <Cave name> */
+      process_bol();
+      skipline();
+      process_eol();
+      /* SURVEY NAME: <Short name> */
+      get_token();
+      get_token();
+      /* if (ch != ':') ... */
+      nextch();
+      skipblanks();
+      get_token();
+      skipline();
+      process_eol();
+      /* SURVEY DATE: 7 10 79  COMMENT:<Long name> */
+      get_token();
+      get_token();
+      /* if (ch != ':') ... */
+      nextch();
+      skipline();
+      process_eol();
+      /* SURVEY TEAM: */
+      get_token();
+      get_token();
+      skipline();
+      process_eol();
+      /* <Survey team> */
+      nextch();
+      skipline();
+      process_eol();
+      /* DECLINATION: 1.00  FORMAT: DDDDLUDRADLN  CORRECTIONS: 2.00 3.00 4.00 */
+      get_token();
+      nextch(); /* : */
+      skipblanks();
+      pcs->z[Q_DECLINATION] = -read_numeric(fFalse, NULL);
+      get_token();
+      if (strcmp(buffer, "FORMAT") == 0) {
+	  nextch(); /* : */
+	  get_token();
+	  get_token();
+      }
+      if (strcmp(buffer, "CORRECTIONS") == 0) {
+	  nextch(); /* : */
+	  pcs->z[Q_BEARING] = -read_numeric(fFalse, NULL);
+	  pcs->z[Q_GRADIENT] = -read_numeric(fFalse, NULL);
+	  pcs->z[Q_LENGTH] = -read_numeric(fFalse, NULL);
+      } else {
+	  pcs->z[Q_BEARING] = 0;
+	  pcs->z[Q_GRADIENT] = 0;
+	  pcs->z[Q_LENGTH] = 0;
+      }
+      skipline();
+      process_eol();
+      /* BLANK LINE */
+      process_bol();
+      process_eol();
+      /* heading line */
+      get_token();
+      skipline();
+      process_eol();
+      /* BLANK LINE */
+      process_bol();
+      process_eol();
+      while (!feof(file.fh) && ch != '\x0c') {
+	  process_bol();
+	  (void)data_normal();
+      }
+      skipline();
+      process_eol();
+#else
       if (!process_non_data_line()) {
 	 int r;
 #ifdef NEW3DFORMAT
@@ -383,7 +473,12 @@ data_file(const char *pth, const char *fnm)
 	 }
 #endif
       }
+#endif
    }
+
+#ifdef COMPASS_DAT
+   pcs->ordering = tmp_ordering;
+#endif
 
    /* don't allow *BEGIN at the end of a file, then *EXPORT in the
     * including file */
