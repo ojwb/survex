@@ -19,3 +19,5 @@ window close doesn't work
 
 sometimes stops responding
 
+"nasty bodge in event handling code (I'll explain later)"
+
