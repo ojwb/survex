@@ -1129,6 +1129,99 @@ data_cartesian(void)
    }
 }
 
+static int
+process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
+		 real frdepth, real todepth, bool fToFirst)
+{
+   real dx, dy, dz;
+   real vx, vy, vz;
+#ifndef NO_COVARIANCES
+   real cxy = 0;
+#endif
+
+   if (pcs->f0Eq && tape == (real)0.0) {
+      if (frdepth != todepth) {
+	 /* FIXME: warn! */
+      }
+      process_equate(fr, to);
+      return 1;
+   }
+   
+   if (tape < (real)0.0) {
+      compile_warning(/*Negative tape reading*/60);
+   }
+
+   tape *= pcs->units[Q_LENGTH];
+   if (comp != HUGE_REAL) {
+      comp *= pcs->units[Q_BEARING];
+      if (comp < (real)0.0 || comp - M_PI * 2 > EPSILON) {
+         compile_warning(/*Suspicious compass reading*/59);
+      }
+   }
+
+   tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
+   /* assuming depths are negative */
+   dz = (todepth - frdepth) * pcs->sc[Q_DEPTH];
+
+   /* adjusted tape is negative -- probably the calibration is wrong */
+   if (tape < (real)0.0) {
+      compile_warning(/*Negative adjusted tape reading*/79);
+   }
+
+   if (comp == HUGE_REAL) {
+      /* plumb */
+      dx = dy = (real)0.0;
+      vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
+      vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
+   } else {
+      real sinB, cosB;
+      comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+      comp -= pcs->z[Q_DECLINATION];
+
+      sinB = sin(comp);
+      cosB = cos(comp);
+
+      dx = tape * sinB;
+      dy = tape * cosB;
+
+      vx = var(Q_POS) / 3.0 +
+	 var(Q_LENGTH) * sinB * sinB + var(Q_BEARING) * dy * dy;
+      vy = var(Q_POS) / 3.0 +
+	 var(Q_LENGTH) * cosB * cosB + var(Q_BEARING) * dx * dx;
+      vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
+
+#ifndef NO_COVARIANCES
+      cxy = (var(Q_LENGTH) - var(Q_BEARING) * tape * tape) * sinB * cosB;
+#endif
+   }
+   addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
+#ifndef NO_COVARIANCES
+		, cxy, 0, 0
+#endif
+		);
+#ifdef NEW3DFORMAT
+   if (fUseNewFormat) {
+      /*new twiglet and insert into twig tree*/
+      twig *twiglet = osnew(twig);
+      twiglet->from = fr;
+      twiglet->to = to;
+      twiglet->down = twiglet->right = NULL;
+      twiglet->source = twiglet->drawings
+	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
+      twiglet->up = limb->up;
+      limb->right = twiglet;
+      limb = twiglet;
+
+      /* record pre-fettling deltas */
+      twiglet->delta[0] = dx;
+      twiglet->delta[1] = dy;
+      twiglet->delta[2] = dz;
+   }
+#endif
+
+   return 1;
+}
+
 extern int
 data_cylpolar(void)
 {
@@ -1283,99 +1376,6 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
    link->flags = pcs->flags;
    link->next = nosurveyhead;
    nosurveyhead = link;
-   return 1;
-}
-
-static int
-process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
-		 real frdepth, real todepth, bool fToFirst)
-{
-   real dx, dy, dz;
-   real vx, vy, vz;
-#ifndef NO_COVARIANCES
-   real cxy = 0;
-#endif
-
-   if (pcs->f0Eq && tape == (real)0.0) {
-      if (frdepth != todepth) {
-	 /* FIXME: warn! */
-      }
-      process_equate(fr, to);
-      return 1;
-   }
-   
-   if (tape < (real)0.0) {
-      compile_warning(/*Negative tape reading*/60);
-   }
-
-   tape *= pcs->units[Q_LENGTH];
-   if (comp != HUGE_REAL) {
-      comp *= pcs->units[Q_BEARING];
-      if (comp < (real)0.0 || comp - M_PI * 2 > EPSILON) {
-         compile_warning(/*Suspicious compass reading*/59);
-      }
-   }
-
-   tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
-   /* assuming depths are negative */
-   dz = (todepth - frdepth) * pcs->sc[Q_DEPTH];
-
-   /* adjusted tape is negative -- probably the calibration is wrong */
-   if (tape < (real)0.0) {
-      compile_warning(/*Negative adjusted tape reading*/79);
-   }
-
-   if (comp == HUGE_REAL) {
-      /* plumb */
-      dx = dy = (real)0.0;
-      vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
-      vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
-   } else {
-      real sinB, cosB;
-      comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
-      comp -= pcs->z[Q_DECLINATION];
-
-      sinB = sin(comp);
-      cosB = cos(comp);
-
-      dx = tape * sinB;
-      dy = tape * cosB;
-
-      vx = var(Q_POS) / 3.0 +
-	 var(Q_LENGTH) * sinB * sinB + var(Q_BEARING) * dy * dy;
-      vy = var(Q_POS) / 3.0 +
-	 var(Q_LENGTH) * cosB * cosB + var(Q_BEARING) * dx * dx;
-      vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
-
-#ifndef NO_COVARIANCES
-      cxy = (var(Q_LENGTH) - var(Q_BEARING) * tape * tape) * sinB * cosB;
-#endif
-   }
-   addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
-#ifndef NO_COVARIANCES
-		, cxy, 0, 0
-#endif
-		);
-#ifdef NEW3DFORMAT
-   if (fUseNewFormat) {
-      /*new twiglet and insert into twig tree*/
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-
-      /* record pre-fettling deltas */
-      twiglet->delta[0] = dx;
-      twiglet->delta[1] = dy;
-      twiglet->delta[2] = dz;
-   }
-#endif
-
    return 1;
 }
 
