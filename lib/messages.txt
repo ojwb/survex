@@ -1,0 +1,1803 @@
+# New style Survex messages file using HTML/SGML-style accents
+#
+# Note that there are a few gaps in the numbering.  Also, the messages
+# are not always numbered such that related messages are together.
+# Sorry.
+#
+# I'm gradually adding comments to indicate the context.  If you are
+# unsure, it's best to ask rather than risk a wrong guess.
+#
+# Trailing spaces are stripped unless quoted, so don't worry about them.
+#
+# port: 178(components)
+#
+# Eric's queries:
+#
+#- Error type, message headers:
+#  I still hesitate between 2 styles:
+#      "Survex: Erreur fatale: ..."
+#      "Erreur fatale &agrave; l'&eacute;x&eacute;cution de Survex: ..."
+#  The second is perhaps more correct, I prefer the first one for conciseness.
+#
+#- "Warning"
+#  I don't like Francois's "Impr&eacute;cision"
+#  The official translation is "Avertissement", I will use it even if
+#  it sounds somewhat formal.
+#
+#- "plumbed leg" (21)
+#  --> vis&eacute;e plomb&eacute;e
+#  This is difficult to translate literally... It should refer to a
+#  notion properly defined in the (french version of the) documentation!
+#
+# OL: It means a leg measured with a plumb (a weight on a string) in case
+#     you weren't clear on that.  Or is it an expression problem rather
+#     than a comprehension one?
+#
+# Eric: Well, essentially yes. And if I understand correctly, you would use
+# it also for an horizontal shot on a lake surface, ... Well "vis&eacute;e plomb&eacute;e"
+# is as good as the english wording.
+#
+# Ol: Oops.  That needs fixing.
+#
+#- traverses, trailing traverses...
+#  I have chosen the terminology used by toporobot: "sequence"..
+#  I'm not sure if this is technicaly correct.
+#  Are those messages useful for the end-user, anyhow?
+#
+# OL: Not really.  They do let them know that something is happening though.
+#
+# portugese:
+# 20,195
+#
+# gerhard's queries from GN(2):
+#
+# It occurs to me that you might want an Austrian/Swiss version too...
+# replacing all the &szlig;'s with ordinary double ss.
+#
+# OL: I'll leave it for now, but we'll probably go for German dialects in
+# the future, so I'll leave that comment in here.
+#
+# I'll presume that a station becomes (known to survex as) a branching point
+# only by virtue of its appearance in a proper EQUATE list...
+# Hence a station being mentioned in an improper one is not yet a branching
+# point.
+#
+# OL: Actually, Survex "knows" a survey station to be a branching point
+#     if you give it as one end of more than two legs/equates.
+#     In general, try not to use a word which means "branch point".
+#
+#35: sure you want a plural here? _One_ wrong unit is probable enough to cause
+# this message...
+#
+# OL: In English you talk about the *units* of a measurement.  Maybe in other
+#     languages though...
+#
+#37 This is assuming there is _no_ subsequent message naming the culprit
+# quantity.  If there is, make it `die Gr&ouml;&szlig;e', and append its
+# name immediately.  --- Also, it really ought to be singular: 'Unpassende
+# Einheit'... in all the languages.
+#
+# OL: The offending line will probably be displayed with the problem area
+#     highlighted.
+#
+# GN(3): germ: 35 now covers both singular and plural.  In 37, singular
+# looks more appropriate.
+#
+#41 What kind of settings?  Parameters like magnetic declination?  Are you
+# trying to say that the _name_ is unknown, or that a meaningless _value_
+# was offered for a known name?  In the former case, use the following:
+#
+# Ol: A setting is something you can default.  Like ALL, GRADE, CALIBRATE,
+#     DATA, UNITS
+# GN(3): I'm not quite happy with `Parameter', but can't think of a better
+# translation of `setting'.
+#
+## germ:107 %a,%Y.%m.%d %H:%M:%S %Z
+##  No, I'm not translating this. ;-)  Actually yes, I should:
+#germ:107 %a,%d.%m.%Y %H:%M:%S %Z
+# If you want to follow me here, MAKE SURE the date is entered
+# or issued in THIS order!
+# B*gger the Americans who want to impose their funny Year-Month-Day
+# arrangement on us...    ;-)
+#
+# OL: Actually US folks use the brain dead Month/Day/Year which means that
+# 1/12/94 could be January or December.  The year.month.day convention is
+# international and unambiguous.  It's definitely not US-centric.  I'm in
+# favour of it anyway.
+# GN(3): Well it's logical and in keeping with having the larger chunks first
+# in all sorts of quantities (time is money;-)... but there's no sign of
+# this convention being even occasionally adopted in German-speaking areas.
+#
+# When you pass from `Guten Tag' to `Hello', do you also pass from `Sie' to
+# `Du'?  ;-)  --- would change the form of the verb too, beware.
+#
+# OL: I don't know what the standard conventions for computer programs are.
+# You've got more idea, so choose and let me know.  "Hello" is used if the C
+# library returns "unknown" for the current time, between 10pm and midnight,
+# or if you compile with NO_NICEHELLO.
+#
+#en:  0 0.81
+#en-us:  0 0.81
+#fr:  0 0.81
+#de:  0 0.81
+#pt:  0 0.81
+#ca:  0 0.81
+#es:  0 0.81
+#it:  0 0.81
+en:  1 Out of memory (couldn't find %lu bytes).
+# octets -- slightly bad notation since (being pedantic) bytes don't necessarily
+# have 8 bits, but it's the common expression.
+fr:  1 Plus de m&eacute;moire (%lu octets n&eacute;cessaires, non disponibles).
+de:  1 Zuwenig Speicherplatz (konnte %lu Bytes nicht finden).
+pt:  1 Mem&oacute;ria insuficiente (s&atilde;o necesss&aacute;rios mais %lu bytes).
+ca:  1 Mem&ograve;ria insuficient (es necessiten %lu bytes m&eacute;s).
+es:  1 Memoria insuficiente (se necesitan %lu bytes de m&aacute;s).
+it:  1 Memoria insufficiente (ci vorrebbero altri %lu bytes).
+#XXX2
+#XXX3
+# indicates a warning message e.g. "spoon.svx:12: warning: *prefix is deprecated"
+en:  4 warning
+fr:  4 avertissement
+de:  4 Warnung
+pt:  4 alerta
+ca:  4 alerta
+es:  4 alerta
+it:  4 avvertimento
+#FIXME translate
+en:  5 "In file included from "
+# we really want the filename/line number at the end (so error parsing editors
+# can follow), so the natural translation:
+#"In von %s:%d: aus eingelesener Datei"
+# isn't ideal.  This is "clumsy but workable":
+de:  5 "In eingelesener Datei ausgehend von "
+pt:  5 "No arquivo inclu&iacute;do em "
+ca:  5 "Al fitxer incl&ograve;s des de "
+es:  5 "En el fichero incluido desde "
+it:  5 "Nel file inserito da "
+#XXX6
+en:  7 Character not allowed in station name
+fr:  7 Caract&egrave;re interdit dans un nom de station
+de:  7 Unerlaubtes Zeichen in Me&szlig;punktname
+pt:  7 Caracter n&atilde;o permitido em nome de base
+ca:  7 Car&agrave;cter no perm&egrave;s al nom d'una estaci&oacute;
+es:  7 Car&aacute;cter no permitido en el nombre de una estaci&oacute;n
+it:  7 Carattere non permesso nel nome di stazione
+en:  8 Field may not be omitted
+fr:  8 Champ non optionnel
+de:  8 Eintragung fehlt
+pt:  8 Campo n&atilde;o pode ser omitido
+ca:  8 Camp que no es pot ometre
+es:  8 Campo que no puede ser omitido
+it:  8 Questo campo non pu&oacute; essere omesso
+en:  9 Expecting numeric field
+fr:  9 On attendait une valeur num&eacute;rique
+de:  9 Zahl erwartet
+pt:  9 Valor num&eacute;rico esperado
+ca:  9 S'espera un camp numeric
+es:  9 Se espera un campo num&eacute;rico
+it:  9 Questo campo &eacute; numerico
+# FIXME translate
+en: 10 Expecting `OFF', `UPPER', or `LOWER'
+# NB there is no comma before "oder"
+de: 10 `OFF', `UPPER' oder `LOWER' erwartet
+pt: 10 Esperando `OFF', `UPPER' ou `LOWER'
+ca: 10 Esperant `OFF', `UPPER', o `LOWER'
+es: 10 Esperando `OFF', `UPPER', o `LOWER'
+it: 10 Atteso `OFF', `UPPER' o `LOWER'
+en: 11 Bug in program detected! Please report this to the authors
+fr: 11 Bug d&eacute;tect&eacute; dans le programme! Signaler ce message &agrave; l'auteur S.V.P.
+de: 11 Fehler im Programm, bitte informieren Sie die Programmierer dar&uuml;ber
+pt: 11 Erro no programa! Por favor, comunique aos autores
+ca: 11 Error detectat al programa! Si us plau comunica-ho als autors
+es: 11 Error detectado en el programa! Por favor comun&iacute;calo a los autores
+it: 11 Individuato un errore nel programma! Per favore comunicatelo agli autori
+en: 12 Unknown command in data file - line ignored
+fr: 12 Commande inconnue dans le fichier de donn&eacute;es - ligne ignor&eacute;e
+#germ: 12 Unbekanntes Kommando in der Datendatei, entsprechende Zeile wurde ignoriert
+de: 12 Unbekanntes Kommando in der Datendatei - Zeile wurde ignoriert
+pt: 12 Comando desconhecido no arquivo de dados - linha ignorada
+ca: 12 Comandament desconegut en fitxer de dades - l&iacute;nia ignorada
+es: 12 Comando desconocido en fichero de datos - l&iacute;nea ignorada
+it: 12 Comando sconosciuto nel file dei dati - linea ignorata
+#XXX13
+en: 14 Compass reading may not be omitted here
+fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici
+de: 14 Kompa&szlig;ablesung darf nicht weggelassen werden
+pt: 14 Azimute n&atilde;o pode ser omitido aqui
+ca: 14 La lectura de la br&uacute;ixola no es pot ometre aqu&iacute;
+es: 14 La lectura de la br&uacute;jula no se puede omitir aqu&iacute;
+it: 14 La lettura della bussola non pu&oacute; essere omessa qui
+en: 15 End of line not blank
+fr: 15 Fin de ligne non vide
+de: 15 Ende der Zeile ist nicht leer
+pt: 15 Final da linha n&atilde;o est&aacute; em branco
+ca: 15 Fi de l&iacute;nia no buit
+es: 15 Fin de l&iacute;nea no vacio
+it: 15 Fine della linea non vuota
+#
+en: 16 There were %d warning(s) and %d non-fatal error(s).
+fr: 16 Il y a %d avertissement(s) et %d erreur(s) non fatale(s).
+de: 16 Es gab %d Warnungen und %d nicht-fatale Fehler.
+#Es wurden %d Warnungen und %d nicht-fatale Fehler registriert.
+pt: 16 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s).
+ca: 16 Hi havia %d alerta(es) i %d error(s) no fatal(s).
+es: 16 Havia %d alerta(s) y %d error(es) no fatal(es).
+it: 16 Ci sono %d avvertimenti e %d errori non fatali.
+#
+# pipe here means a Unix pipe, which transfers data between two programs
+# -- probably best not to translate it
+en: 17 Couldn't open pipe: `%s'
+fr: 17 Ne peut pas ouvrir le `pipe': `%s'
+de: 17 Konnte `Pipe' nicht &ouml;ffnen: `%s'
+pt: 17 Imposs&iacute;vel abrir `pipe': `%s'
+ca: 17 No s'ha pogut obrir el `pipe': `%s'
+es: 17 No se pudo abrir el `pipe': `%s'
+it: 17 Il piping non pu&oacute; essere eseguito: `%s'
+# FIXME: translations for 18 19
+en: 18 Error reading file
+de: 18 Fehler beim Einlesen der Datei
+pt: 18 Erro lendo arquivo
+ca: 18 Error llegint el fitxer
+es: 18 Error leyendo el fichero
+it: 18 Errore nella lettura del file
+en: 19 Too many errors - giving up
+#anthropomorphising version: de: 19 Zu viele Fehler - ich gebe auf
+de: 19 Abbruch wegen zu vieler Fehler
+#pt: 19 Erros em excesso - desistindo!
+pt: 19 Erros em excesso - desistindo
+ca: 19 Massa errors - proc&eacute;s abandonat
+es: 19 Demasiados errores - proceso abandonado
+it: 19 Troppi errori - processo interrotto
+#XXX20
+en: 21 Compass reading given on plumbed leg
+en-us: 21 Compass reading given on plumbed shot
+fr: 21 Lecture d'azimut donn&eacute;e sur une vis&eacute;e 'plomb&eacute;e'
+de: 21 Kompa&szlig;ablesung f&uuml;r geloteten Schacht angegeben
+pt: 21 Azimute fornecido numa visada vertical
+ca: 21 Lectura de br&uacute;ixola en una tirada vertical
+es: 21 Lectura de br&uacute;jula en una tirada vertical
+it: 21 Lettura della bussola in una battuta verticale
+#XXX22
+#XXX23
+en: 24 Couldn't open data file '%s'
+fr: 24 Ne peut pas ouvrir le fichier de donn&eacute;es '%s'
+de: 24 Konnte Datendatei nicht &ouml;ffnen oder finden '%s'
+pt: 24 Imposs&iacute;vel abrir arquivo de dados '%s'
+ca: 24 No s'ha pogut obrir el fitxer de dades '%s'
+es: 24 No se pudo abrir el fichero de datos '%s'
+it: 24 Non riesco ad aprire il file dei dati '%s'
+#XXX25
+#XXX26
+#XXX27
+#XXX28
+#XXX29
+en: 30 Unknown command
+fr: 30 Commande inconnue
+de: 30 Unbekannter Befehl
+pt: 30 Comando desconhecido
+ca: 30 Comandament desconegut
+es: 30 Comando desconocido
+it: 30 Comando sconosciuto
+# FIXME translate 31 and 32
+# 31 c.f. 10
+en: 31 Expecting `PLUMBS'
+de: 31 `PLUMBS' erwartet
+pt: 31 Esperando `PLUMBS'
+ca: 31 Esperant `PLUMBS'
+es: 31 Esperando `PLUMBS'
+it: 31 Atteso `PLUMBS'
+en: 32 Expecting `ON' or `OFF'
+de: 32 `ON' oder `OFF' erwartet
+pt: 32 Esperando `ON' ou `OFF'
+ca: 32 Esperant `ON' o `OFF'
+es: 32 Esperando `ON' o `OFF'
+it: 32 Atteso `ON' o `OFF'
+en: 33 Only one station in equate list
+fr: 33 Une seule station dans une liste d'&eacute;quivalences
+de: 33 Nur ein Me&szlig;punkt im EQUATE - Befehl angegeben
+#germ: 33 Nur ein Me&szlig;punkt in EQUATE Liste
+pt: 33 Somente uma base na lista de equival&ecirc;ncia
+ca: 33 Sols una estaci&oacute; a la llista d'equival&egrave;ncia
+es: 33 Solo una estaci&oacute;n en la lista de equivalencia
+it: 33 Solo una stazione nella lista di equivalenza
+en: 34 Unknown quantity
+fr: 34 Quantit&eacute; inconnue
+de: 34 Unbekannte Gr&ouml;&szlig;e
+pt: 34 Tipo de quantidade desconhecida
+ca: 34 Quantitat desconeguda
+es: 34 Cantidad desconocida
+it: 34 Quantit&aacute; sconosciuta
+en: 35 Unknown units
+fr: 35 Unit&eacute; inconnue
+#germ: 35 Unbekannte Einheiten
+de: 35 Unbekannte Einheit(en)
+pt: 35 Unidade desconhecida
+ca: 35 Unitats desconegudes
+es: 35 Unidades desconocidas
+it: 35 Unit&aacute; sconosciute
+#XXX36
+en: 37 Invalid units for quantity
+fr: 37 Unit&eacute; incorrecte pour une quantit&eacute;
+de: 37 Unpassende Einheit f&uuml;r diese Gr&ouml;&szlig;e
+pt: 37 Unidade inv&aacute;lida para tipo de quantidade
+ca: 37 Unitats inv&agrave;lides per a quantitat
+es: 37 Unidades inv&aacute;lidas para cantidad
+it: 37 Unit&aacute; non valida per questa quantit&aacute;
+# nasty hack - this message is for the .3d img code, and all errors there take
+# a filename parameter - we don't really want it here, so lose it with "%.0s"
+# (which should display 0 characters from the filename) FIXME: sort out this
+en: 38 Out of memory %.0s
+fr: 38 Plus de m&eacute;moire %.0s
+de: 38 Nicht genug Speicher vorhanden %.0s
+pt: 38 Mem&oacute;ria insuficiente %.0s
+ca: 38 Mem&ograve;ria insuficient %.0s
+es: 38 Mem&oacute;ria insuficiente %.0s
+it: 38 Memoria insufficiente %.0s
+en: 39 Unknown instrument
+fr: 39 Instrument inconnu
+de: 39 Unbekanntes Instrument
+pt: 39 Instrumento desconhecido
+ca: 39 Instrument desconegut
+es: 39 Instrumento desconocido
+it: 39 Strumento sconosciuto
+# DECLINATION is a built-in keyword, so best not to translate
+en: 40 Scale factor must be 1.0 for DECLINATION
+fr: 40 Le facteur d'&eacute;chelle doit &ecirc;tre &eacute;gal &agrave; 1.0 pour DECLINATION
+de: 40 Skalenfaktor f&uuml;r die DECLINATION mu&szlig; 1.0 sein
+# GN(3): improved word ordering
+pt: 40 Fator de escala tem que ser 1.0 para comando DECLINATION
+ca: 40 El factor d'escala ha d'&egrave;sser 1.0 pel comandament DECLINATION
+es: 40 El factor de escala debe ser 1.0 para el comando DECLINATION
+it: 40 Il fattore di scala per il comando DECLINATION deve essere 1.0
+en: 41 Unknown setting
+fr: 41 Param&egrave;tres inconnus
+#germ: 41 Unbekannter Parameter
+de: 41 Unbekannte (ung&uuml;ltige) Einstellung
+pt: 41 Configura&ccedil;&atilde;o desconhecida
+ca: 41 Configuraci&oacute; desconeguda
+es: 41 Configuraci&oacute;n desconocida
+it: 41 Parametro sconosciuto
+#ital: 41 Configurazione sconosciuta
+# FIXME translate 42
+en: 42 Unknown character class `%s'
+de: 42 Unbekannte Zeichenklasse `%s'
+pt: 42 Classe de caracteres desconhecida: `%s'
+ca: 42 Classe de car&agrave;cter desconeguda `%s'
+es: 42 Clase de car&aacute;cter desconocida `%s'
+it: 42 Carattere sconosciuto classe `%s'
+en: 43 No survey data
+fr: 43 Pas de donn&eacute;es topo
+de: 43 Keine Vermessungsdaten vorhanden
+pt: 43 Nenhum dado topogr&aacute;fico
+ca: 43 Cap dada de topo
+es: 43 Ning&uacute;n dato de topo
+it: 43 Mancano i dati topografici
+en: 44 Filename '%s' refers to directory
+fr: 44 Nom de fichier '%s' relatif &agrave; un r&eacute;pertoire
+# sounds ugly, but is correct, and I can't think of a replacement
+de: 44 Dateiname '%s' bezeichnet ein Verzeichnis
+pt: 44 Nome de arquivo '%s' referencia diret&oacute;rio ao inv&eacute;s de arquivo
+ca: 44 Nom de fitxer '%s' referit a un directori
+es: 44 Nombre de fichero '%s' referido a un directorio
+it: 44 Il nome del file '%s' corrisponde ad una directory
+en: 45 Survey not all connected to fixed stations
+fr: 45 Relev&eacute;s topo pas tous reli&eacute;s &agrave; des points fixes
+de: 45 Teile der Vermessung sind nicht an feste Punkte angeschlossen
+pt: 45 Topografia n&atilde;o completamente conectada a bases posicionadas
+ca: 45 La topografia no es pas completament connectada a estacions fixes
+es: 45 La topografia no est&aacute; completamente conectada a estaciones fijas
+it: 45 La topografia non &eacute; completamente connessa alle stazioni fisse
+en: 46 Station already fixed or equated to a fixed point
+fr: 46 Station d&eacute;j&agrave; d&eacute;clar&eacute; fix&eacute;e ou &eacute;quivalente &agrave; un point fix&eacute;
+de: 46 Me&szlig;punkt ist schon fest oder gleich einem festen Punkt
+pt: 46 Base j&aacute; posicionada
+ca: 46 Estaci&oacute; ja fixada o igualada a un punt fixat
+es: 46 Estaci&oacute;n ya fijada o igualada a un punto fijado
+it: 46 Stazione gi&aacute; fissata o uguagliata ad un punto fisso
+en: 47 Failed to open output file '%s'
+fr: 47 N'a pas r&eacute;ussi &agrave; ouvrir le fichier de sortie '%s'
+de: 47 Konnte Ausgabedatei nicht &ouml;ffnen '%s'
+pt: 47 N&atilde;o foi poss&iacute;vel abrir arquivo de sa&iacute;da '%s'
+ca: 47 No s'ha pogut obrir el fitxer de sortida '%s'
+es: 47 No se pudo abrir el fichero de salida '%s'
+it: 47 Non riesco ad aprire il file di uscita '%s'
+en: 48 Failed to close output file
+fr: 48 N'a pas r&eacute;ussi &agrave; fermer le fichier de sortie
+de: 48 Konnte Ausgabedatei nicht schlie&szlig;en
+pt: 48 N&atilde;o foi poss&iacute;vel fechar arquivo de sa&iacute;da
+ca: 48 No s'ha pogut tancar el fitxer de sortida
+es: 48 No se pudo cerrar el fichero de salida
+it: 48 Non riesco a chiudere il file d'uscita
+en: 49 Syntax
+fr: 49 Syntaxe
+de: 49 Syntax
+pt: 49 Sintaxe
+ca: 49 Sintaxi
+es: 49 Sintaxis
+it: 49 Sintassi
+en: 50 Survey leg with same station ('%s') at both ends - typing error?
+en-us: 50 Survey shot with same station ('%s') at both ends - typing error?
+fr: 50 Vis&eacute;e avec 2 extr&eacute;mit&eacute;s identiques ('%s') - erreur de frappe?
+de: 50 Me&szlig;strecke von einem Punkt ('%s') zu sich selbst - Tippfehler?
+pt: 50 Visada com mesma base em ambas as pontas ('%s') ('%s') - erro de digita&ccedil;&atilde;o ?
+ca: 50 Tirada amb la mateixa estaci&oacute; a ambdues puntes ('%s') - error de transcripci&oacute;?
+es: 50 Tirada con la misma estaci&oacute;n en ambas puntas ('%s') - error de transcripci&oacute;n?
+it: 50 Alle estremit&aacute; di una battuta c'&eacute; la stessa stazione ('%s') - Errore di trascrizione?
+en: 51 Clino reading over 90 degrees (absolute value)
+en-us: 51 Clino over 90 degrees (absolute value)
+fr: 51 Lecture de clino sup&egrave;rieure &agrave; 90 degr&eacute;s (en value absolue)
+# GN (2): `Grad' *is* `degree'.  The decimal grades are called `Neugrad'
+# when necessary to avoid confusion.  While surface surveyors here use
+# these per default, cavers rarely do.
+#germ: 51 Streckenneigung &uuml;bertrifft 90 Grad (Absolutwert)
+de: 51 Neigungseintrag &uuml;bertrifft 90 Grad (Absolutwert)
+pt: 51 Inclina&ccedil;&atilde;o maior que 90 graus em valor absoluto
+ca: 51 Lectura del clino superior a 90 graus (valor absolut)
+es: 51 Lectura del clino superior a 90 grados (valor absoluto)
+it: 51 Lettura del clinometro superiore a 90 gradi (valore assoluto)
+en: 52 Tried to equate two non-equal fixed stations
+fr: 52 Essai de rendre &eacute;gaux deux points fixes distincts
+de: 52 Versuch, zwei verschiedene feste Punkte gleichzusetzen
+pt: 52 Tentativa de igualar duas bases posicionadas em coordenadas diferentes
+ca: 52 Intent d'igualar dues estacions fixades en coordenades diferents
+es: 52 Tentativa de igualar dos estaciones fijadas en coordenadas diferentes
+it: 52 Tentativo di uguagliare due stazioni fisse differenti
+# "equal" as in: *fix a 1 2 3 / *fix b 1 2 3 / *equate a b
+en: 53 Equating two equal fixed points
+fr: 53 Rend equivalents deux points fixes &eacute;gaux
+de: 53 Zwei identische Punkte miteinander gleichgesetzt
+pt: 53 Igualando duas bases posicionadas nas mesmas coordenadas
+ca: 53 Igualant dues estacions fixades a les mateixes coordenades
+es: 53 Igualando dos estaciones fijadas en las mismas coordenadas
+it: 53 Uguagliate due stazioni fisse identiche
+# " *fix a " gives this message:
+en: 54 FIX command with no coordinates - fixing at (0,0,0)
+fr: 54 Commande FIX sans coordonn&eacute;es - fix&eacute; &agrave; (0,0,0)
+de: 54 FIX-Befehl ohne Koordinatenwerte, wurde auf (0,0,0) gesetzt
+pt: 54 Comando FIX sem coordenadas - atribuindo (0,0,0)
+ca: 54 Comandament FIX sense coordenades - es fixar&aacute; a (0,0,0)
+es: 54 Comando FIX sin coordenades - se fijar&aacute; en (0,0,0)
+it: 54 Comando FIX senza coordinate - fissato a (0,0,0)
+# *fix a 1 2 3 / *fix a 1 2 3
+en: 55 Station already fixed at the same coordinates
+fr: 55 Station d&eacute;j&agrave; fix&eacute;e aux m&ecirc;me coordonn&eacute;es
+#germ: 55 Me&szlig;punkt schon auf diese Koordinaten festgelegt
+de: 55 Me&szlig;punkt schon auf die gleichen Koordinaten festgelegt
+pt: 55 Base j&aacute; posicionada nessas coordenadas
+ca: 55 Estaci&oacute; fixada previament a les mateixes coordenades
+es: 55 Estaci&oacute;n fijada previamente en las mismas coordenadas
+it: 55 Stazione gi&aacute; fissata alle stesse coordinate
+en: 56 More than one FIX command with no coordinates
+fr: 56 Plusieurs commandes FIX sans coordonn&eacute;es
+de: 56 Mehr als ein FIX-Befehl ohne Koordinaten
+pt: 56 Mais de um comando FIX sem coordenadas
+ca: 56 M&eacute;s d'un comandament FIX sense coordenades
+es: 56 M&aacute;s de un comando FIX sin coordenadas
+it: 56 Pi&uacute; di un comando FIX senza coordinate
+#XXX57
+en: 58 in this line:
+fr: 58 dans cette ligne:
+de: 58 in dieser Zeile:
+pt: 58 na linha:
+ca: 58 en aquesta l&iacute;nia:
+es: 58 en esta l&iacute;nea:
+it: 58 in questa linea:
+# Suspicious means something like 410 degrees or -20 degrees
+en: 59 Suspicious compass reading
+fr: 59 Lecture de compas suspecte
+de: 59 Seltsamer Kompa&szlig;wert
+pt: 59 Azimute suspeito
+ca: 59 Lectura de br&uacute;ixola sospitosa
+es: 59 Lectura de br&uacute;jula sospechosa
+it: 59 Lettura della bussola sospetta
+en: 60 Negative tape reading
+fr: 60 Lecture de longueur n&eacute;gative
+#germ: 60 Negative Streckenl&auml;nge
+de: 60 Negativer L&auml;ngeneintrag
+pt: 60 Dist&acirc;ncia negativa
+ca: 60 Lectura de longitut negativa
+es: 60 Lectura de longitud negativa
+it: 60 Distanza negativa
+en: 61 Same station fixed twice with no coordinates
+fr: 61 M&ecirc;me station fix&eacute;e deux fois sans coordon&eacute;es
+de: 61 Gleicher Punkt zweimal ohne Koordinaten angegeben
+pt: 61 Mesma base posicionada duas vezes sem coordenadas
+ca: 61 La mateixa estaci&oacute; ha estat fixada dos cops sense coordenades
+es: 61 La misma estaci&oacute;n se fij&oacute; dos veces sin coordenadas
+it: 61 La stessa stazione &eacute; stata fissata due volte senza coordinate
+# 62 means that the data fed in said this.
+# It could be a gross error (e.g. the decimal point is missing from
+# the depth gauge reading) or it could just be due to random error on
+# a near vertical leg
+en: 62 Tape reading is less than change in depth
+fr: 62 Lecture de longeur inf&eacute;rieure &agrave; la diff&eacute;rence de profondeur
+# GN (2): Note that a change in depth becomes a `change in height' in German
+#germ: 62 Streckenl&auml;nge ist kleiner als H&ouml;henunterschied
+de: 62 L&auml;ngeneintrag ist kleiner als H&ouml;henunterschied
+pt: 62 Dist&acirc;ncia menor que mudan&ccedil;a de profundidade
+ca: 62 Lectura de longitut inferior a la difer&egrave;ncia de profunditats
+es: 62 Lectura de longitud inferior a la diferencia de profundidades
+it: 62 La distanza &eacute; minore del dislivello
+# a data "style" is something like NORMAL, DIVING, etc.
+# a "datum" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
+# neither style nor datum is a keyword in the program
+# 63 complains about a depth gauge reading in normal style, for example
+# GN(3): Ahhhh.  Got it.  Well, it fits already as it is now. :-)
+en: 63 %s: Datum not allowed for this style
+fr: 63 %s: Donn&eacute;e pas permise pour ce style
+de: 63 %s: Diese Me&szlig;gr&ouml;&szlig;e ist bei diesem STYLE nicht erlaubt
+pt: 63 %s: Dado n&atilde;o permitido neste STYLE
+ca: 63 %s: Dada no permesa en aquest STYLE
+es: 63 %s: Dato no permitido en este STYLE
+it: 63 %s: Dato non permesso in questo STYLE
+# i.e. not enough "datums" for the style.  I need to pick a better word than datum really
+en: 64 Too few data
+fr: 64 Trop peu de donn&eacute;es
+de: 64 Zu wenige Me&szlig;werte
+pt: 64 Poucos dados
+ca: 64 Massa poques dades
+es: 64 Demasiados pocos datos
+it: 64 Mancano dati
+#ital: 64 Troppo pochi dati
+# e.g. trying to refer to an invalid FNORD data style
+# GN(3): ie unknown STYLE?  ok, rephrasing.
+en: 65 Bad STYLE
+fr: 65 STYLE non reconnu
+de: 65 STYLE unbekannt
+pt: 65 STYLE com problemas
+ca: 65 STYLE no v&agrave;lid
+es: 65 STYLE incorrecto
+it: 65 STYLE scorretto
+#XXX66
+# complains about a situation like trying to define two from stations per leg
+en: 67 Duplicate datum '%s'
+fr: 67 Donn&eacute;es dupliqu&eacute;es '%s'
+de: 67 Me&szlig;wert mehrfach angegeben '%s'
+pt: 67 Dado duplicado '%s'
+ca: 67 Dada duplicada '%s'
+es: 67 Dato duplicado '%s'
+it: 67 Dati duplicati '%s'
+# complain about a reading of the "Phreakometer dripstance" which survex knows nothing about
+# GN(3): that was a good one eh?  (pat pat)  ;-)  ok it fits now.
+en: 68 Unknown datum
+fr: 68 Donn&eacute;e non reconnue
+de: 68 Unbekannte Me&szlig;gr&ouml;&szlig;e
+pt: 68 Dado desconhecido
+ca: 68 Dada desconeguda
+es: 68 Dato desconocido
+it: 68 Dato sconosciuto
+en: 69 Missing &quot;
+fr: 69 &quot; uml;manquant
+de: 69 &quot; uml;fehlt
+pt: 69 Falta &quot;
+ca: 69 Manca &quot;
+es: 69 Falta &quot;
+it: 69 Manca &quot;
+#XXX70
+en: 71 The following survey stations are not attached to a fixed point:
+fr: 71 Les stations topo suivantes ne sont pas attach&eacute;s &agrave; des points fixes:
+de: 71 Die folgenden Vermessungspunkte haben keine festen Koordinaten:
+pt: 71 As seguintes bases n&atilde;o est&atilde;o conectadas a uma base posicionada:
+ca: 71 Les seg&uuml;ents estacions no s&oacute;n conectades a un punt fixe:
+es: 71 Las siguientes estaciones no est&aacute;n conectadas a un punto fijo:
+it: 71 Le seguenti stazioni non sono connesse ad un punto fisso:
+en: 72 "Survey has no fixed points. Therefore I've fixed %s at (0,0,0)"
+fr: 72 "La topo n'a pas de points fixes. Par cons&eacute;quent j'ai fix&eacute; %s &agrave; (0,0,0)"
+de: 72 "Vermessung hat keine Festpunkte. %s wurde als Nullpunkt (0,0,0) gew&auml;hlt"
+pt: 72 "Topografia sem bases posicionadas. Assim %s foi posicionada em (0,0,0)"
+ca: 72 "La topografia no te punts fixats. Tanmateix he fixat %s a (0,0,0)"
+es: 72 "La topografia no tiene puntos fijados. De todos modos he fijado %s en (0,0,0)"
+it: 72 "La topografia non ha punti fissi. Quindi %s &eacute; stata fissata a (0,0,0)"
+# fixed station that is not part of any traverse
+en: 73 "Unused fixed point '%s'"
+fr: 73 "Point fixe non utilis&eacute; '%s'"
+de: 73 "Festpunkt nicht verwendet '%s'"
+pt: 73 "Base posicionada n&atilde;o usada '%s'"
+ca: 73 "Punt fixat no utilitzat '%s'"
+es: 73 "Punto fijado no utilizado '%s'"
+it: 73 "Punto fisso non usato '%s'"
+en: 74 Network solved by reduction - no simultaneous equations to solve.
+fr: 74 Syst&egrave;me resolu par r&eacute;duction - pas d'&eacute;quations simultan&eacute;s &agrave; r&eacute;soudre.
+de: 74 Netzausgleichung gel&ouml;st durch Reduktion - kein Gleichungssystem erforderlich.
+pt: 74 Coordenadas j&aacute; calculadas - nenhum sistema de equa&ccedil;&otilde;es para resolver.
+ca: 74 Xarxa resolta per reducci&oacute; - cap sistema d'equacions per resoldre.
+es: 74 Red resuelta por reducci&oacute;n - ning&uacute;n sistema de ecuaciones por resolver.
+it: 74 Rete risolta per riduzione - nessun sistema da risolvere.
+en: 75 Solving %d simultaneous equations
+fr: 75 R&eacute;soud un syst&egrave;me de %d &eacute;quations
+de: 75 L&ouml;se System mit %d Gleichungen und Unbekannten
+pt: 75 Resolvendo sistema de %d equa&ccedil;&otilde;es
+ca: 75 Resolent un sistema de %d equacions
+es: 75 Resolviendo un sistema de %d ecuaciones
+it: 75 Sto risolvendo un sistema di %d equazioni
+# %c is 'x', 'y' or 'z'
+# GN(3): ah, this changes something.  I'm also reverting to present tense,
+# to maintain the distinction made in the English versions eg as opposed to 74.
+en: 76 Solving to find %c coordinates
+fr: 76 R&eacute;soud pour trouver %c coordonn&eacute;es
+de: 76 Aufl&ouml;sen nach den %c-Koordinaten
+pt: 76 Resolvendo para encontrar coordenadas %c
+ca: 76 Resolent per trobar coordenades %c
+es: 76 Resolviendo para encontrar coordenadas %c
+it: 76 Sto risolvendo per trovare le coordinate %c
+# 77 not used at present, but likely to be useful
+# engi: 77 " not fixed"
+# engu: 77 " not fixed"
+# fren: 77 " non d&eacute;finis"
+# germ: 77 " nicht angegeben"
+# port: 77 " n&atilde;o posicionada(s)"
+# cata: 77 " no fixat"
+# span: 77 " no fijado"
+# ital: 77 " non fissato"
+en: 78 Solving one equation
+fr: 78 R&eacute;soud une &eacute;quation
+de: 78 Eine Gleichung wird gel&ouml;st
+pt: 78 Resolvendo uma equa&ccedil;&atilde;o
+ca: 78 Resolent una equaci&oacute;
+es: 78 Resolviendo una ecuaci&oacute;n
+it: 78 Sto risolvendo una equazione
+en: 79 Negative adjusted tape reading
+fr: 79 Lecture de longueur corrig&eacute;e n&eacute;gative
+de: 79 Negative korrigierte Streckenl&auml;nge
+pt: 79 Dist&acirc;ncia ajustada negativa
+ca: 79 Dist&agrave;ncia ajustada negativa
+es: 79 Distancia ajustada negativa
+it: 79 Distanza corretta negativa
+en: 81 Error initialising graphics card
+fr: 81 Erreur &agrave; l'initialisation de la carte graphique
+de: 81 Fehler bei der Initialisierung der Graphikkarte
+pt: 81 Erro inicializando placa de v&iacute;deo
+ca: 81 Error a l'inicialitzar la placa gr&agrave;fica
+es: 81 Error al inicializar la placa gr&aacute;fica
+it: 81 Errore d'inizializzazione della scheda grafica
+# a bit vague I know
+en: 82 Bad command line parameters
+fr: 82 Mauvais param&egrave;tres dans la ligne de commande
+de: 82 Kommandozeilenparameter unbekannt oder fehlerhaft
+pt: 82 Par&acirc;metros de linha de comando com problemas
+ca: 82 Par&agrave;metres dolents a la l&iacute;nia de comandaments
+es: 82 Par&aacute;metros err&oacute;neos en la l&iacute;nea de comandos
+it: 82 Parametro della linea dei comandi errato
+# FIXME TRANSLATE 83
+en: 83 Scale to fit on 1 page
+# somewhat clumsily, but anything else would require a subordinate
+# clause and become much longer:
+de: 83 Ma&szlig;stab f&uuml;r Zeichnung auf 1 Seite
+pt: 83 Escala para caber em uma p&aacute;gina
+ca: 83 Escala per a encaixar en 1 p&agrave;gina
+es: 83 Escala para encajar en 1 p&aacute;gina
+it: 83 Scala per rientrare in una pagina
+en: 84 Ignoring entire line
+fr: 84 Ignore la ligne en enti&egrave;rement
+#germ: 84 Ignoriere die gesamte Zeile
+# GN(2): Not _quite_ satisfactory. (1) This is anthropomorhizing again, (2) the
+# grammar is ambiguous --- it could be read as an imperative, `please do
+# ignore the entire line'.  Unfortunately the alternatives that come to
+# mind are worse.  Cf no. 89 below, same problem.
+# GN(3): ho-how.  Right, here's something better.
+de: 84 Gesamte Zeile wird ignoriert
+pt: 84 Ignorando toda a linha
+ca: 84 Ignorant tota la l&iacute;nia
+es: 84 Ignorando toda la l&iacute;nea
+it: 84 Intera linea ignorata
+en: 85 Mistake in printer configuration file
+fr: 85 Erreur dans le fichier de configuration de l'imprimante
+de: 85 Fehler in der Druckerkonfigurationsdatei
+pt: 85 Erro em arquivo de configura&ccedil;&atilde;o de impressora
+ca: 85 Error al fitxer de configuraci&oacute; de l'impresora
+es: 85 Error en el fichero de configuraci&oacute;n de la impresora
+it: 85 Errore nel file di configurazione della stampante
+en: 86 No data in 3d Image file
+fr: 86 Pas de donn&eacute;es dans le fichier image 3d
+de: 86 Keine Daten in der 3D-Bilddatei
+pt: 86 N&atilde;o h&aacute; dados no arquivo de imagem 3d
+ca: 86 No hi ha dades al fitxer d'imatge 3d
+es: 86 No hay datos en el fichero de imagen 3d
+it: 86 Nessun dato nel file immagine 3d
+en: 87 Error writing printer output
+fr: 87 Erreur &agrave; l'&eacute;criture du fichier &agrave; imprimer
+# no we aren't printing yet, _because_ we couldn't even finish writing the
+# file that was to be printed
+# OL: not necessarily the case, as it might go wrong during printout
+# GN(3): ok reverting to previous version here
+de: 87 Fehler beim Schreiben oder Drucken der Ausgabedatei
+#germ: 87 Fehler beim Schreiben der Drucker-Ausgabedatei
+pt: 87 Erro ao imprimir
+ca: 87 Error a l'escriure la sortida a impresora
+es: 87 Error al escribir la salida a impresora
+it: 87 Errore nella scrittura del file per la stampa
+en: 88 Error in format of font file '%s'
+fr: 88 Erreur dans le format du fichier de fontes '%s'
+de: 88 Formatfehler in der Zeichensatzdatei '%s'
+pt: 88 Erro no formato do arquivo de fontes '%s'
+ca: 88 Error en el format del fitxer de fonts '%s'
+es: 88 Error en el formato del fichero de fuentes '%s'
+#FIXME: "del del" is probably not correct
+it: 88 Errore nel formato del del file dei caratteri '%s'
+#ital: 88 Errore nel formato del font file '%s'
+# cf no. 84.
+en: 89 Ignoring rest of line
+fr: 89 Ignore le restant de la ligne
+#germ: 89 Ignoriere den Rest der Zeile
+de: 89 Rest der Zeile wird ignoriert
+pt: 89 Ignorando o resto da linha
+ca: 89 Ingnorant la resta de la l&iacute;nia
+es: 89 Ignorando el resto de la l&iacute;nea
+it: 89 Resto della linea ignorato
+# Program will exit shortly after printing this
+en: 90 Abnormal termination
+fr: 90 Terminaison anormale
+de: 90 Programmabbruch
+pt: 90 Finaliza&ccedil;&atilde;o anormal
+ca: 90 Finalitzaci&oacute; anormal
+es: 90 Finalizaci&oacute;n anormal
+it: 90 Terminazione anormale
+en: 91 Arithmetic error
+fr: 91 Erreur arithm&eacute;tique
+de: 91 Arithmetik-Fehler
+pt: 91 Erro aritm&eacute;tico
+ca: 91 Error aritm&egrave;tic
+es: 91 Error aritm&eacute;tico
+it: 91 Errore aritmetico
+# Something is badly wrong -- the CPU tried to execute bad opcodes -- corrupted program?
+en: 92 Illegal instruction
+fr: 92 Instruction ill&eacute;gale
+#germ: 92 Illegale Instruktion
+de: 92 Illegaler CPU-Befehlscode
+pt: 92 Instru&ccedil;&atilde;o ilegal
+ca: 92 Instrucci&oacute; il.legal
+es: 92 Instrucci&oacute;n ilegal
+it: 92 Istruzione illegale
+# Ctrl-C or Ctrl-Break or something like that
+en: 93 Interrupt received
+fr: 93 Interruption re&ccedil;ue
+de: 93 Unterbrechung erhalten
+# You can say `Interrupt erhalten'.  There are some very strange
+# words in computer users' German...
+pt: 93 Interrup&ccedil;&atilde;o recebida
+ca: 93 Interrupci&oacute; rebuda
+es: 93 Interrupci&oacute;n recibida
+it: 93 Esecuzione interrotta
+#ital: 93 Interruzione ricevuta
+en: 94 Bad memory access
+fr: 94 Mauvais acc&eacute;s m&eacute;moire
+de: 94 Fehler beim Speicherzugriff
+pt: 94 Erro de acesso &agrave; mem&oacute;ria
+ca: 94 Acc&egrave;s a mem&ograve;ria dolent
+es: 94 Acceso a memoria err&oacute;neo
+it: 94 Accesso alla memoria errato
+# Something like Unix has kill-ed your process
+en: 95 Termination requested
+fr: 95 Terminaison demand&eacute;e
+#germ: 95 Programmende gem&auml;&szlig; Befehl
+de: 95 Signal zum Beenden erhalten
+# GN(3): This should be appropriate under UNIces or similar; under Doze or
+# Windoze, users would hit some nasty buttons anyway, not leaving survex a
+# chance to comment on the fact...
+pt: 95 Finaliza&ccedil;&atilde;o solicitada
+ca: 95 Finalitzaci&oacute; sol.licitada
+es: 95 Terminaci&oacute;n solicitada
+it: 95 Esecuzione interrotta su richiesta
+#ital: 95 Terminazione richiesta
+en: 96 Stack overflow
+fr: 96 La pile a d&eacute;bord&eacute;
+de: 96 Stack-&Uuml;berlauf
+pt: 96 Estouro de pilha
+ca: 96 Desbordament de la pila
+es: 96 Desbordamiento de la pila
+it: 96 Stack troppo pieno
+en: 97 Unknown signal received
+fr: 97 Signal inconnu re&ccedil;u
+de: 97 Unbekanntes Signal erhalten
+pt: 97 Sinal desconhecido recebido
+ca: 97 S'ha rebut un senyal desconegut
+es: 97 Se ha recibido una se&ntilde;al desconocida
+it: 97 Ricevuto segnale sconosciuto
+en: 99 Not yet implemented! Please let the authors know if you badly need this feature
+fr: 99 Pas encore implement&eacute;! Faites savoir aux auteurs si vous avez vraiment besoin de cette fonctionnalit&eacute; S.V.P.
+de: 99 Dies ist noch nicht implementiert. Wenn Sie es wirklich brauchen, sollten Sie die Autoren informieren
+pt: 99 N&atilde;o implementado ainda! Por favor, avise os autores caso voc&ecirc; realmente precise desta fun&ccedil;&atilde;o
+ca: 99 Encara no implementat! Si us plau, feu saber als autors si realment necessiteu aquesta funci&oacute;
+es: 99 Todavia no implementado! Por favor, comunique a los autores si realmente necesita esta funci&oacute;n
+it: 99 Non ancora implementato! Per favore comunicate agli autori se avete necessit&aacute; di questa funzione
+# A computer mouse, not the rodent sort ;)
+# Actually, mouse is somewhat imprecise as it could refer to a trackerball
+# or joystick, but mouse is more compact than "pointing device" and usually
+# correct.
+en:100 No mouse detected.
+fr:100 Souris non detect&eacute;e.
+de:100 Keine Maus angeschlossen.
+pt:100 Nenhum mouse detectado.
+#cata:100 No s'ha detectat cap mouse
+#span:100 No se detect&oacute; ning&uacute;n mouse
+#cata:100 No s'ha detectat cap dispositiu senyalador
+#span:100 No se detect&oacute; ning&uacute;n dispositivo se&ntilde;alador
+ca:100 No s'ha detectat cap ratol&iacute;
+es:100 No se detect&oacute; ning&uacute;n rat&oacute;n
+it:100 Non ho trovato il mouse
+# Cf no. 159 below.
+en:101 Plan, %05.1f up screen
+fr:101 Plan, %05.1f en haut de l'&eacute;cran
+#germ:101 Plan, oben auf dem Bildschirm = Richtung %05.1f
+de:101 Grundri&szlig;, oben auf dem Bildschirm = Richtung %05.1f
+pt:101 Planta, %05.1f no topo da tela
+ca:101 Planta, %05.1f a dalt la pantalla
+es:101 Planta, %05.1f arriba la pantalla
+it:101 Pianta, %05.1f cima schermo
+# cf 116 below -- this is used by caverot, 116 by printer drivers
+# also this means looking in the direction, 116 gives a plane
+en:102 View towards %05.1f
+fr:102 Vue en direction de %05.1f
+#germ:102 Blick in Richtung %05.1f
+de:102 Aufri&szlig;, Blick in Richtung %05.1f
+pt:102 Olhando em dire&ccedil;&atilde;o a %05.1f
+ca:102 Vista en direcci&oacute; %05.1f
+es:102 Vista en direcci&oacute;n %05.1f
+it:102 Vista in direzione %05.1f
+en:103 Syntax: caverot <image file>
+fr:103 Syntaxe: caverot <fichier image>
+de:103 Syntax: caverot <Bilddatei>
+pt:103 Sintaxe: caverot <nome do arquivo de imagem 3d>
+ca:103 Sintaxi: caverot <fitxer imatge>
+es:103 Sintaxis: caverot <fichero imagen>
+it:103 Sintassi: caverot <nome file 3d>
+en:104 Attempting to read in 3d image file
+fr:104 Essai de lire un fichier image 3d
+de:104 Versuch, 3D-Bilddatei zu lesen
+pt:104 Tentando ler arquivo de imagem 3d
+ca:104 Intentant de llegir un fitxer d'imatge 3d
+es:104 Intentando leer un fichero de imagen 3d
+it:104 Tentativo di lettura nel file immagine 3d
+en:105 Reading in data - please wait...
+fr:105 Lecture de donn&eacute;es - attendez S.V.P. ...
+de:105 Daten werden eingelesen - bitte warten...
+pt:105 Lendo dados - por favor, aguarde...
+ca:105 Llegint dades, espereu si us plau...
+es:105 Leyendo datos, espere por favor...
+it:105 Sto leggendo i dati - attendere per favore...
+# Probably not a .3D file.  caverot autoexec.bat would give this
+en:106 Bad 3d image file '%s'
+fr:106 Mauvais fichier image 3d '%s'
+de:106 3D-Bilddatei '%s' ist fehlerhaft
+pt:106 Arquivo de imagem 3d '%s' com problemas
+ca:106 Fitxer d'imatge 3d '%s' dolent
+es:106 Fichero de imagen 3d '%s' err&oacute;neo
+it:106 File immagine 3d '%s' errato
+# This is the date format string used to timestamp .3d files internally
+# Probably best to keep it the same for all translations
+en:107 %a,%Y.%m.%d %H:%M:%S %Z
+fr:107 %a,%Y.%m.%d %H:%M:%S %Z
+de:107 %a,%Y.%m.%d %H:%M:%S %Z
+pt:107 %a,%Y.%m.%d %H:%M:%S %Z
+ca:107 %a,%Y.%m.%d %H:%M:%S %Z
+es:107 %a,%Y.%m.%d %H:%M:%S %Z
+it:107 %a,%Y.%m.%d %H:%M:%S %Z
+# put in .3d file if we can't read the date/time
+en:108 Date and time not available.
+fr:108 Date et heure non disponibles.
+de:108 Datum und Uhrzeit nicht feststellbar.
+pt:108 Data e hora n&atilde;o dispon&iacute;vel.
+ca:108 Data i hora no disponibles.
+es:108 Fecha y hora no disponibles.
+it:108 Data e ora non disponibili.
+#ital:108 Data e ora mancanti.
+# Could we have a Bavarian version too: `Gr&uuml;&szlig; Gott' (for all times
+# of the day), and for the Swiss: `Gr&uuml;ezi'...   ;-)
+# 109 is used 12 midnight -> 12 noon
+en:109 Good morning
+fr:109 Bonjour
+de:109 Guten Morgen
+pt:109 Bom dia
+ca:109 Bon dia
+es:109 Buenos dias
+it:109 Buon giorno
+# 110 is used 12 noon -> 6pm
+en:110 Good afternoon
+fr:110 Bonjour
+de:110 Guten Tag
+pt:110 Boa tarde
+ca:110 Bona tarda
+es:110 Buenas tardes
+it:110 Buona sera
+# 111 is used 6pm -> 10pm
+en:111 Good evening
+fr:111 Bonsoir
+de:111 Guten Abend
+pt:111 Boa noite
+ca:111 Bona nit
+es:111 Buenas noches
+it:111 Buona sera
+#ital:111 Buona notte
+# 112 is used 10pm -> midnight, if the time can't be found, or if compiled with NO_NICEHELLO
+en:112 Hello
+en-us:112 Howdy
+fr:112 Salut
+de:112 Hallo
+ca:112 Hola
+es:112 Hola
+# And for the Austrians: `Servus'
+pt:112 Ol&aacute;
+it:112 Ciao
+# "hello" ", welcome to..." "SURVEX vX.YZ"
+# GN(3): ooops, where did that capital-W come from?  And the preposition is
+# unsuitable in this context.
+en:113 , welcome to...
+fr:113 , bienvenu dans...
+#germ:113 , Willkommen zu...
+de:113 , willkommen bei...
+pt:113 , bem-vindo ao...
+ca:113 , benvinguts a...
+es:113 , bienvenidos a...
+it:113 , benvenuto in...
+en:114 Version
+fr:114 Version
+de:114 Version
+pt:114 Vers&atilde;o
+ca:114 Versi&oacute;
+es:114 Versi&oacute;n
+it:114 Versione
+en:115 North
+fr:115 Nord
+de:115 Norden
+pt:115 Norte
+ca:115 Nord
+es:115 Norte
+it:115 Nord
+# "Elevation on" 020 <-> 200 degrees
+en:116 Elevation on
+en-us:116 Profile on
+fr:116 El&eacute;vation sur
+de:116 Aufri&szlig; auf die Ebene
+pt:116 Perfil em
+ca:116 Al&ccedil;at en
+es:116 Alzado en
+it:116 Profilo in direzione
+#ital:116 Profilo su
+en:117 Plan view
+fr:117 Vue en plan
+#germ:117 Plan
+de:117 Grundri&szlig;
+pt:117 Planta
+ca:117 Planta
+es:117 Planta
+it:117 Pianta
+en:118 Elevation
+en-us:118 Profile
+fr:118 El&eacute;vation
+de:118 Aufri&szlig;
+pt:118 Perfil
+ca:118 Al&ccedil;at
+es:118 Alzado
+it:118 profilo
+# 119 not used from 0.90 alpha5 onwards
+en:119 SCALE     %.0f:%.0f
+fr:119 &Eacute;CHELLE   %.0f:%.0f
+#fren:119 ECHELLE   %.0f:%.0f
+de:119 Ma&szlig;stab   %.0f:%.0f
+#germ:119 MASSSTAB  %.0f:%.0f
+pt:119 ESCALA    %.0f:%.0f
+ca:119 ESCALA    %.0f:%.0f
+es:119 ESCALA    %.0f:%.0f
+it:119 SCALA     %.0f:%.0f
+en:120 Calculating statistics
+fr:120 Calcul des statistiques
+de:120 Statistik wird berechnet
+pt:120 Calculando estat&iacute;sticas
+ca:120 Calculant estad&iacute;stiques
+es:120 Calculando estad&iacute;sticas
+it:120 Sto calcolando le statistiche
+en:121 Writing out 3d image file '%s'
+fr:121 Ecriture du fichier 3d '%s'
+de:121 3D-Bilddatei '%s' wird abgespeichert
+pt:121 Gravando arquivo de imagem 3d '%s'
+ca:121 Escrivint el fitxer d'imatge 3d '%s'
+es:121 Gravando el fichero de imagen 3d '%s'
+it:121 Sto scrivendo il file d'immagine 3d '%s'
+en:122 Processing data file '%s'
+fr:122 Traitement fichier de donn&eacute;es '%s'
+de:122 Datendatei '%s' wird bearbeitet
+pt:122 Processando arquivo de dados '%s'
+ca:122 Processant fitxer de dades '%s'
+es:122 Procesando fichero de datos '%s'
+it:122 Sto trattando il file di dati '%s'
+#XXX123
+#XXX124
+# a trailing traverse is a dead end back to a junction
+en:125 Removing trailing traverses
+fr:125 Enl&egrave;ve les s&eacute;quences extr&eacute;males
+#germ:125 Entferne Blindg&auml;nge
+de:125 Einseitig angeschlossene Me&szlig;z&uuml;ge werden entfernt
+pt:125 Removendo seq&uuml;&ecirc;ncias de ponta
+ca:125 Esborrant les seq&uuml;&egrave;ncies terminals
+es:125 Borrando las secuencias terminales
+it:125 Sto rimuovendo le traverse terminali
+#ital:125 Sto rimuovendo i rami morti
+en:126 Concatenating traverses between nodes
+fr:126 Connecte les s&eacute;quences entre noeuds
+de:126 Me&szlig;z&uuml;ge zwischen Abzweigungen werden verbunden
+pt:126 Concatenando seq&uuml;&ecirc;ncias entre nodos
+ca:126 Connectant seq&uuml;&egrave;ncies entre nodes
+es:126 Conectando secuencias entre nodos
+it:126 So connettendo le traverse fra i nodi
+en:127 Calculating traverses between nodes
+fr:127 Calcule les s&eacute;quences entre noeuds
+de:127 Me&szlig;z&uuml;ge zwischen Abzweigungen werden berechnet
+pt:127 Calculando seq&uuml;&ecirc;ncias entre nodos
+ca:127 Calculant seq&uuml;&egrave;ncies entre nodes
+es:127 Calculando secuencias entre nodos
+it:127 Sto calcolando le traverse fra i nodi
+en:128 Calculating trailing traverses
+fr:128 Calcule les s&eacute;quences terminales
+de:128 Einseitig angeschlossene Me&szlig;z&uuml;ge werden berechnet
+pt:128 Calculando seq&uuml;&ecirc;ncias de ponta
+ca:128 Calculant les seq&uuml;&egrave;ncies terminals
+es:128 Calculando las secuencias terminales
+it:128 Sto calcolando le traverse terminali
+en:129 Simplifying network
+fr:129 Simplification de r&eacute;seau
+de:129 Netzwerk wird vereinfacht
+pt:129 Simplificando rede de visadas
+ca:129 Simplificant la xarxa
+es:129 Simplificando la red
+it:129 Sto semplificando la rete
+en:130 Calculating network
+fr:130 Calcul du r&eacute;seau
+de:130 Netzwerk wird ausgeglichen
+pt:130 Calculando rede de visadas
+ca:130 Calculant la xarxa
+es:130 Calculando la red
+it:130 Sto calcolando la rete
+#XXX131
+en:132 Total length of survey legs = %7.2fm (%7.2fm adjusted)
+en-us:132 Total length of survey shots = %7.2fm (%7.2fm adjusted)
+fr:132 Longueur totale de la topo = %7.2fm (%7.2fm adjust&eacute;)
+de:132 Gesamtl&auml;nge der Me&szlig;strecken = %7.2fm (%7.2fm ausgeglichen)
+pt:132 Desenvolvimento linear das visadas = %7.2fm (%7.2fm corrigidos)
+ca:132 Longitut total de les tirades de topo = %7.2fm (%7.2fm corregit)
+es:132 Longitud total de las tiradas de topo = %7.2fm (%7.2fm corregido)
+it:132 Sviluppo spaziale = %7.2fm (%7.2fm corretto)
+#ital:132 Lunghezza totale dei tiri = %7.2fm (%7.2fm corretto)
+en:133 Total plan length of survey legs = %7.2fm
+en-us:133 Total plan length of survey shots = %7.2fm
+fr:133 Longueur totale en projection horizontale = %7.2fm
+de:133 Gesamte Horizontall&auml;nge der Me&szlig;strecken = %7.2fm
+pt:133 Desenvolvimento horizontal das visadas = %7.2fm
+ca:133 Longitut total en projecci&oacute; horitzontal = %7.2fm
+es:133 Longitud total en proyecci&oacute;n horizontal = %7.2fm
+it:133 Sviluppo planimetrico = %7.2fm
+#ital:133 Lunghezza totale in pianta = %7.2fm
+en:134 Total vertical length of survey legs = %7.2fm
+en-us:134 Total vertical length of survey shots = %7.2fm
+fr:134 Longueur totale verticale = %7.2fm
+de:134 Gesamte Vertikall&auml;nge der Me&szlig;strecken = %7.2fm
+pt:134 Desenvolvimento vertical das visadas = %7.2fm
+ca:134 Longitut vertical total de les tirades de topo = %7.2fm
+es:134 Longitud vertical total de las tiradas de topo = %7.2fm
+it:134 Totale delle componenti verticali delle battute = %7.2fm
+# <135> <station name> <136> <station name> <137>
+# numbers are altitudes of highest and lowest stations
+# GN(3): ok adapting the preposition to context
+# OOOOPS, cf 148/149 below!
+en:135 "Vertical range = %4.2fm (from "
+fr:135 "Interval vertical = %4.2fm (de "
+#germ:135 "H"ohenerstreckung = %4.2fm (von "
+de:135 "Vertikale Erstreckung = %4.2fm (von "
+pt:135 "Desn&iacute;vel = %4.2fm (de "
+ca:135 "Desnivell total = %4.2fm (des de "
+es:135 "Desnivel total = %4.2fm (desde "
+it:135 "Dislivello totale = %4.2fm (da "
+# for many translations, 196/197 will be the same as 136/137
+en:136 " at %4.2fm to "
+fr:136 " &agrave; %4.2fm jusqu'&agrave; "
+#germ:136 " bei %4.2fm bis "
+de:136 " auf %4.2fm bis "
+pt:136 " a %4.2fm a "
+ca:136 " a %4.2fm a "
+es:136 " en %4.2fm a "
+it:136 " a %4.2fm a "
+en:137 " at %4.2fm)"
+fr:137 " &agrave; %4.2fm)"
+#germ:137 " bei %4.2fm)"
+de:137 " auf %4.2fm)"
+pt:137 " a %4.2fm)"
+ca:137 " a %4.2fm)"
+es:137 " en %4.2fm)"
+it:137 " a %4.2fm)"
+en:138 There is 1 loop.
+fr:138 Il y a 1 bouclage.
+# GN(2): There _is_ a technical term for this which I fail to remember at the moment. (139 too)
+de:138 Es gibt eine Ringverbindung.
+pt:138 H&aacute; 1 loop.
+ca:138 Hi ha 1 bucle.
+es:138 Hay 1 bucle.
+it:138 C'&eacute; una poligonale chiusa.
+en:139 There are %ld loops.
+fr:139 Il y a %ld bouclages.
+de:139 Es gibt %ld Ringverbindungen.
+pt:139 H&aacute; %ld loops.
+ca:139 Hi ha %ld bucles.
+es:139 Hay %ld bucles.
+it:139 Ci sono %ld poligonali chiuse.
+en:140 CPU time used %5.2fs
+# CPU isn't CPU in French
+fr:140 Temps CPU utilis&eacute; %5.2fs
+de:140 Ben&ouml;tigte Rechenzeit (CPU) %5.2fs
+pt:140 Tempo de CPU gasto %5.2fs
+ca:140 Temps de CPU utilitzat %5.2fs
+es:140 Tiempo de CPU utilizado %5.2fs
+it:140 Tempo CPU utilizzato %5.2fs
+en:141 Time used %5.2fs
+fr:141 Temps utilis&eacute; %5.2fs
+de:141 Ben&ouml;tigte Zeit %5.2fs
+pt:141 Tempo gasto %5.2fs
+ca:141 Temps utilitzat %5.2fs
+es:141 Tiempo utilizado %5.2fs
+it:141 Tempo totale %5.2fs
+en:142 Time used unavailable
+fr:142 Temps utilis&eacute; non disponible
+de:142 Ben&ouml;tigte Zeit nicht feststellbar
+pt:142 Tempo gasto n&atilde;o dispon&iacute;vel
+ca:142 Temps utilitzat no disponible
+es:142 Tiempo utilizado no disponible
+it:142 Tempo totale non disponibile
+en:143 Time used %5.2fs (%5.2fs CPU time)
+fr:143 Temps utilis&eacute; %5.2fs (%5.2fs temps CPU)
+de:143 Ben&ouml;tigte Zeit %5.2fs (%5.2fs CPU-Zeit)
+pt:143 Tempo gasto %5.2fs (tempo de CPU %5.2fs)
+ca:143 Temps utilitzat %5.2fs (%5.2fs temps CPU)
+es:143 Tiempo utilizado %5.2fs (%5.2fs tiempo CPU)
+it:143 Tempo totale %5.2fs (tempo CPU %5.2fs)
+en:144 Done.
+fr:144 Termin&eacute;.
+de:144 Fertig.
+pt:144 Feito.
+ca:144 Fet.
+es:144 Hecho.
+it:144 Fatto.
+en:145 "Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). "
+en-us:145 "Original length%7.2fm (%3d shots), moved%7.2fm (%5.2fm/shot). "
+fr:145 "Longueur originale%7.2fm (%3d vis&eacute;es), r&eacute;duit &agrave;%7.2fm (%5.2fm/vis&eacute;es). "
+de:145 "Urspr&uuml;ngliche L&auml;nge%7.2fm (%3d Strecken), ver&auml;ndert um%7.2fm (%5.2fm/Me&szlig;strecke). "
+pt:145 "Desenvolvimento Original%7.2fm (%3d visadas), deslocado%7.2fm (%5.2fm/visada). "
+ca:145 "Longitut original%7.2fm (%3d tirades), reduits %7.2fm (%5.2fm/tirada). "
+es:145 "Longitud original%7.2fm (%3d tiradas), reducidos %7.2fm (%5.2fm/tirada). "
+it:145 "Lunghezza originale%7.2fm (%3d battute), ridotta%7.2fm (%5.2fm/battuta). "
+en:146 Error%7.2f%%
+fr:146 Erreur%7.2f%%
+de:146 Fehler%7.2f%%
+pt:146 Erro%7.2f%%
+ca:146 Error%7.2f%%
+es:146 Error%7.2f%%
+it:146 Errore%7.2f%%
+# Here N/A means "Not Applicable" -- it means the traverse has zero length, so error per metre
+# is meaningless
+# There should be 4 spaces between "Error" and "N/A" so that it lines up with the numbers in
+# the message above.
+en:147 Error    N/A
+fr:147 Erreur    N/A
+de:147 Fehler (sinnlose(r) Wert(e))
+pt:147 Erro    N/A
+ca:147 Error    N/A
+es:147 Error    N/A
+it:147 Errore    N/A
+# <148> <station name> <196> <station name> <197>
+# similar to <135> <station name> <136> <station name> <137>
+en:148 "North-South range = %4.2fm (from "
+fr:148 "Interval Nord-Sud = %4.2fm (de "
+de:148 "Nord-S&uuml;d-Erstreckung = %4.2fm (von "
+pt:148 "Extens&atilde;o Norte-Sul = %4.2fm (de "
+ca:148 "Extensi&oacute; Nord-Sud = %4.2fm (des de "
+es:148 "Extensi&oacute;n Norte-Sur = %4.2fm (desde "
+it:148 "Estensione Nord-Sud = %4.2fm (da "
+# <149> <station name> <196> <station name> <197>
+en:149 "East-West range = %4.2fm (from "
+fr:149 "Interval Est-Ouest = %4.2fm (de "
+de:149 "Ost-West-Erstreckung = %4.2fm (von "
+pt:149 "Extens&atilde;o Leste-Oeste = %4.2fm (de "
+ca:149 "Extensi&oacute; Est-Oest = %4.2fm (des de "
+es:149 "Extensi&oacute;n Este-Oeste = %4.2fm (desde "
+it:149 "Estensione Est-Ovest = %4.2fm (da "
+# 150 not used from 0.90 alpha5 onwards
+# This is used on printouts of plan views, and gives the bearing up the page
+# (so if North is across the page, 270 is "UP PAGE"
+en:150 UP PAGE   %03d%s
+fr:150 EN HAUT DE PAGE %03d%s
+de:150 OBEN      %03d%s
+pt:150 TOPO DA P&Aacute;GINA %03d%s
+ca:150 A DALT LA PAGINA %03d%s
+es:150 ARRIBA LA PAGINA %03d%s
+it:150 ALTO DELLA PAGINA %03d%s
+# 151 not used from 0.90 alpha5 onwards
+# This is used on printouts of elevations
+# It gives the bearing we're looking in the direction of
+en:151 VIEW      %03d%s
+fr:151 VUE       %03d%s
+de:151 ANSICHT   %03d%s
+pt:151 VISTA     %03d%s
+ca:151 VISTA     %03d%s
+es:151 VISTA     %03d%s
+it:151 VISTA     %03d%s
+# As in "printer driver"
+en:152 " Driver"
+fr:152 " 'driver'"
+de:152 " Treiber"
+pt:152 " Driver"
+ca:152 " Driver"
+es:152 " Driver"
+it:152 " Driver"
+# 153 not used from 0.90 alpha5 onwards
+en:153 Scale (%.0f%s)
+fr:153 &Eacute;chelle (%.0f%s)
+de:153 Ma&szlig;stab (%.0f%s)
+pt:153 Escala (%.0f%s)
+ca:153 Escala (%.0f%s)
+es:153 Escala (%.0f%s)
+it:153 Scala (%.0f%s)
+en:154 Scale
+fr:154 &Eacute;chelle
+de:154 Ma&szlig;stab
+pt:154 Escala
+ca:154 Escala
+es:154 Escala
+it:154 Scala
+en:155 Continue
+fr:155 Encore
+de:155 Weiter
+pt:155 Continua
+ca:155 Continua
+es:155 Continua
+it:155 Continua
+en:156 Exiting.
+fr:156 Arr&ecirc;t.
+de:156 Ende.
+pt:156 Saindo.
+ca:156 Sortint.
+es:156 Saliendo.
+it:156 Fine.
+#XXX157
+en:158 "Plan or Elevation"
+en-us:158 "Plan or Elevation (profile)"
+fr:158 "Plan ou Elevation"
+#germ:158 "Plan oder Aufri&szlig;"
+de:158 "Grundri&szlig; oder Aufri&szlig;"
+pt:158 "Planta or Eleva&ccedil;&atilde;o"
+ca:158 "Planta o Al&ccedil;at"
+es:158 "Planta o Alzado"
+it:158 "Pianta o profilo"
+# cf 51
+en:159 "Bearing up page (degrees): "
+fr:159 "Azimut haut de page (degr&eacute;s): "
+de:159 "Richtung nach oben auf der Seite (Grad): "
+pt:159 "Dire&ccedil;&atilde;o no topo da p&aacute;gina (graus): "
+ca:159 "Azimut de la p&agrave;gina a dalt (graus): "
+es:159 "Azimut de la pagina arriba (grados): "
+it:159 "Azimut della cima della pagina (gradi): "
+en:160 "View towards: "
+fr:160 "Vue en direction de: "
+de:160 "Blick in Richtung: "
+pt:160 "Vista olhando para: "
+ca:160 "Vista cap a: "
+es:160 "Vista hacia: "
+it:160 "Vista verso: "
+#
+en:161 "Tilt (degrees): "
+fr:161 "Basculement (degr&eacute;s): "
+# I would have written "Blickneigung" or something like that, but this
+# would have made the sign convention even more counterintuitive.
+de:161 "Neigung (Grad): "
+pt:161 "Inclina&ccedil;&atilde;o (graus): "
+ca:161 "Inclinaci&oacute; (graus): "
+es:161 "Inclinaci&oacute;n (grados): "
+it:161 "Inclinazione (gradi): "
+#
+en:162 "Please enter Map Scale = X:Y (default 1:%d)&#10;: "
+fr:162 "S.V.P. entrez l'&eacute;chelle de la carte = X:Y (1:%d par d&eacute;faut)&#10;: "
+de:162 "Bitte den Ma&szlig;stab = X:Y eingeben (Default 1:%d)&#10;: "
+pt:162 "Por favor, entre escala do mapa = X:Y (default 1:%d)&#10;: "
+ca:162 "Si us plau, entreu l'escala del mapa = X:Y (per defecte 1:%d)&#10;: "
+es:162 "Por favor, entrar la escala del mapa = X:Y (por defecto 1:%d)&#10;: "
+it:162 "Per favore, immettere la scala della carta = X:Y (default 1:%d)&#10;: "
+en:163 Using scale %.0f:%.0f
+fr:163 &Agrave; l'&eacute;chelle %.0f:%.0f
+de:163 Verwendeter Ma&szlig;stab %.0f:%.0f
+pt:163 Usando escala %.0f:%.0f
+ca:163 Utilitzant l'escala %.0f:%.0f
+es:163 Utilizando la escala %.0f:%.0f
+it:163 Scala utilizzata %.0f:%.0f
+en:164 "Print which pages?&#10;(RETURN for all; 'n' for one page, 'm-n', 'm-', '-n' for a range)&#10;: "
+fr:164 "Imprimer quelles pages?&#10;(RETURN pour toutes; n pour 1 page; 'm-n', 'm-', '-n' pour une s&eacute;lection)&#10;: "
+#germ:164 "Drucke welche Seiten?&#10;(RETURN f&uuml;r alle; 'n' f&uuml;r eine Seite, 'm-n', 'm-', '-n' f&uuml;r entsprechende Abschnitte)&#10;: "
+de:164 "Welche Seite(n) drucken?&#10;(RETURN f&uuml;r alle; 'n' f&uuml;r eine Seite, 'm-n', 'm-', '-n' f&uuml;r entsprechende Abschnitte)&#10;: "
+pt:164 "P&aacute;ginas a imprimir:&#10;(RETURN para todas; 'n' para uma, 'm-n', 'm-', '-n' para um intervalo)&#10;: "
+ca:164 "P&agrave;gines a imprimir:&#10;(RETURN per a totes; 'n' per una, 'm-n', 'm-', '-n' per intervals)&#10;: "
+es:164 "P&aacute;ginas a imprimir:&#10;(RETURN para todas; 'n' para uma, 'm-n', 'm-', '-n' para un intervalo)&#10;: "
+it:164 "Pagine da stampare:&#10;(RETURN per tuttr; 'n' per una pagina 'm-n', 'm-', '-n' per un intervallo)&#10;: "
+en:165 Generating images...
+fr:165 Cr&eacute;e les images...
+de:165 Bild wird erzeugt...
+pt:165 Gerando imagens...
+ca:165 Generant imatges...
+es:165 Generando im&aacute;genes...
+it:165 Sto generando le immagini...
+en:166 Page %d of %d
+fr:166 Page %d sur %d
+de:166 Seite %d von %d
+pt:166 P&aacute;gina %d de %d
+ca:166 P&agrave;gina %d de %d
+es:166 P&aacute;gina %d de %d
+it:166 Pagina %d di %d
+en:167 Survey '%s'   Page %d (of %d)   Processed on %s
+fr:167 Topo '%s'   Page %d (sur %d)   En cours sur %s
+de:167 Vermessung '%s'   Seite %d (von %d)   Berechnung von Seite %s
+pt:167 Topografia '%s'   P&aacute;gina %d (of %d)   Processada em %s
+ca:167 Topo '%s'   P&agrave;gina %d (de %d)   Processada en %s
+es:167 Topo '%s'   P&aacute;gina %d (de %d)   Procesada en %s
+it:167 Topografia '%s'   Pagina %d (di %d)   In corso su %s
+# This is used on printouts of plan views, and gives the bearing up the page
+# (so if North is across the page to the right, 270 is "Up page"
+en:168 Up page
+fr:168 En haut de page
+de:168 Oben
+pt:168 Topo da p&aacute;gina
+ca:168 A dalt la pagina 
+es:168 Arriba la pagina
+it:168 Alto della pagina
+# This is used on printouts of elevations
+# It gives the bearing we're looking in the direction of
+en:169 View
+fr:169 Vue
+de:169 Ansicht
+pt:169 Vista
+ca:169 Vista
+es:169 Vista
+it:169 Vista
+en:170 This will need %d pages (%dx%d).
+fr:170 Cela prendra %d pages (%dx%d).
+de:170 Dies ben&ouml;tigt %d Seiten (%dx%d).
+pt:170 Ser&atilde;o necess&aacute;rias %d p&aacute;ginas (%dx%d).
+ca:170 Seran necess&agrave;ries %d p&agrave;gines (%dx%d).
+es:170 Ser&aacute;n necesarias %d p&aacute;ginas (%dx%d).
+it:170 Saranno necessarie %d pagine (%dx%d).
+en:171 This will need 1 page.
+fr:171 Cela prendra 1 page.
+de:171 Dies ben&ouml;tigt eine Seite.
+pt:171 Ser&aacute; necess&aacute;ria somente uma p&aacute;gina.
+ca:171 Ser&agrave; necess&agrave;ria 1 p&agrave;gina.
+es:171 Ser&aacute; necesaria 1 p&aacute;gina.
+it:171 Sar&aacute; necessaria una pagina.
+en:172 Survey contains 1 survey station,
+fr:172 La topo contient 1 station,
+de:172 Vermessung enth&auml;lt 1 Verzweigungspunkt,
+pt:172 Topografia cont&eacute;m somente uma base,
+ca:172 La topo cont&eacute; 1 estaci&oacute;,
+es:172 La topo contiene 1 estaci&oacute;n,
+it:172 La topografia contiene una stazione,
+en:173 Survey contains %ld survey stations,
+fr:173 La topo contient %ld stations,
+de:173 Vermessung enth&auml;lt %ld Verzweigungspunkte,
+pt:173 Topografia cont&eacute;m %ld bases,
+ca:173 La topo cont&eacute; %ld estacions,
+es:173 La topo contiene %ld estaciones,
+it:173 La topografia contiene %ld stazioni,
+en:174 " joined by 1 leg."
+en-us:174 " joined by 1 shot."
+fr:174 " connect&eacute;es par 1 vis&eacute;."
+de:174 " verbunden durch eine Me&szlig;strecke."
+pt:174 " unidas por uma &uacute;nica visada."
+ca:174 " unides per 1 tirada."
+es:174 " unidas por 1 tirada."
+it:174 " unite per una battuta."
+en:175 " joined by %ld legs."
+en-us:175 " joined by %ld shots."
+fr:175 " connect&eacute;es par %ld vis&eacute;es."
+de:175 " verbunden durch %ld Strecken."
+pt:175 " unidas por %ld visadas."
+ca:175 " unides per %ld tirades."
+es:175 " unidas por %ld tiradas."
+it:175 " unite per %ld battute."
+# node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
+en:176 node
+fr:176 n&oelig;ud
+de:176 Verzweigungspunkt
+pt:176 nodo
+ca:176 node
+es:176 nodo
+it:176 nodo
+en:177 nodes
+fr:177 n&oelig;uds
+de:177 Verzweigungspunkte
+pt:177 nodos
+ca:177 nodes
+es:177 nodos
+it:177 nodi
+# connected component in the graph theory sense
+# It means there are %ld bits of survey with no connections between them
+# This message is only used if there are more than 1
+en:178 Survey has %ld connected components.
+fr:178 La topo contient %ld composants connect&eacute;s.
+de:178 Netzwerk hat %ld zusammenh&auml;ngende Teile.
+pt:178 Topografia tem %ld componentes interligados.
+ca:178 La topo cont&eacute; %ld components connectats.
+es:178 La topo contiene %ld componentes conectados.
+it:178 La topografia contiene %ld componenti connesse.
+# menu commands for (ynq) style choices (may become menu entries later)
+en:180 yes
+fr:180 oui
+de:180 ja
+pt:180 sim
+ca:180 si
+es:180 si
+it:180 si
+en:181 no
+fr:181 non
+de:181 nein
+pt:181 n&atilde;o
+ca:181 no
+es:181 no
+it:181 no
+en:182 quit
+fr:182 sortir
+de:182 verlassen
+# or `aufh&ouml;ren'.  These are parts of menus, right?  as in `yes,no,abort'?
+# In fact, `verlassen' is only appropriate when you want to quit the whole
+# program.  If you just want to abort an action, it ought to be `Abbruch'.
+# Yes this is a noun not a verb, but that's what's commonly used.
+#port:182 sair
+#If this one is part of a (yes,no,quit) selection based on the first letter, it
+#is better to use this message (even if it isn't usual):
+pt:182 abortar
+ca:182 abortar
+es:182 abortar
+it:182 annulla
+en:183 plan
+fr:183 plan
+#germ:183 Plan
+de:183 Grundri&szlig;
+pt:183 planta
+ca:183 planta
+es:183 planta
+it:183 pianta
+en:184 elevation
+en-us:184 elevation (profile)
+fr:184 &eacute;l&eacute;vation
+de:184 Aufri&szlig;
+pt:184 eleva&ccedil;&atilde;o
+ca:184 al&ccedil;at
+es:184 alzado
+it:184 profilo
+en:190 Floating Point Emulator not loaded.
+fr:190 L'&eacute;mulateur de virgule flotante n'est pas charg&eacute;.
+de:190 Gleitkomma-Emulator nicht geladen.
+pt:190 Emulador de ponto flutuante n&atilde;o carregado.
+ca:190 Emulador de punt flotant no carregat.
+es:190 Emulador de punto flotante no cargado.
+it:190 Emulatore di coprocessore matematico non caricato.
+# 191 is followed by the version number of this file,
+# which should (basically) be the same as that of the program
+en:191 Need message file with version
+fr:191 Besoin d'un fichier de messages avec version
+de:191 Ben&ouml;tige Meldungsdatei in Version
+pt:191 Necess&aacute;rio arquivo de mensagens com vers&atilde;o
+ca:191 &Eacute;s necessari un fitxer de missatges amb versi&oacute;
+es:191 Se necessita un fichero de mensages con versi&oacute;n
+it:191 &Eacute; necessario un file dei messaggi versione
+en:192 No matching BEGIN
+fr:192 BEGIN manquant
+de:192 Kein entsprechendes BEGIN
+pt:192 N&atilde;o h&aacute; BEGIN correspondente
+ca:192 Manca el BEGIN corresponent
+es:192 Falta el BEGIN correspondiente
+it:192 Manca il BEGIN corrispondente
+# *BEGIN <prefix> and *END <prefix> should have the same <prefix> if it's
+# given at all
+en:193 Prefix tag doesn't match BEGIN
+fr:193 Le pr&eacute;fixe du END ne correspond pas &agrave; celui du BEGIN
+de:193 Pr&auml;fix pa&szlig;t nicht zu BEGIN
+pt:193 Prefixo n&atilde;o corresponde ao do BEGIN
+ca:193 El prefix no correspon al del BEGIN
+es:193 El prefijo no se corresponde con el de BEGIN
+it:193 Il prefisso non corrisponde con il BEGIN
+en:194 Closing prefix omitted from END
+fr:194 Pr&eacute;fixe manquant dans le END
+de:194 Pr&auml;fix vor END fehlt
+pt:194 Prefixo omitido no END
+ca:194 Prefix om&egrave;s al END
+es:194 Prefijo omitido en END
+it:194 Prefisso omesso in END
+# heading line for .pos file
+# please try to ensure the ','s (or at least the columns) are in the same place
+en:195 ( Easting, Northing, Altitude )
+fr:195 ( X (Est), Y (Nord), Altitude )
+de:195 ( Rechtsw.,Hochwert, H&ouml;he )
+pt:195 ( Leste,   Norte,    Altura   )
+ca:195 ( Est X  , Nord Y  , Altitut Z)
+es:195 ( Este X , Norte Y , Altitud Z)
+it:195 ( Est (X), Nord (Y), Quota  Z )
+# for many translations, 196/197 will be the same as 136/137
+en:196 " at %4.2fm to "
+fr:196 " &agrave; %4.2fm jusqu'&agrave; "
+de:196 " bei %4.2fm bis "
+pt:196 " a %4.2fm a "
+ca:196 " a %4.2fm a "
+es:196 " en %4.2fm a "
+it:196 " a %4.2fm a "
+en:197 " at %4.2fm)"
+fr:197 " &agrave; %4.2fm)"
+de:197 " bei %4.2fm)"
+pt:197 " a %4.2fm)"
+ca:197 " a %4.2fm)"
+es:197 " en %4.2fm)"
+it:197 " a %4.2fm)"
+############################################################################
+# the rest are no longer used, but it's possible they may be at some point...
+############################################################################
+#en:200 This is a beta-test version of Survex.  As such it has many shortfalls, and undoubtably more than a few bugs.  It has now passed its best-before date and we recommend that you obtain a more recent version.
+#en-us:200 This is a beta-test version of Survex.  As such it has many shortfalls, and undoubtably more than a few bugs.  It has now passed its freshness date and we recommend that you obtain a more recent version.
+#fr:200 Ceci est une version beta-test de Survex.  Il lui manque un certain nombre de facilit&eacute;s, et elle contient certainement quelques bugs. Elle a maintenant pass&eacute; sa date de p&eacute;remption! Vous devriez en acqu&eacute;rir une version plus r&eacute;cente.
+#de:200 Dies ist eine Beta-Testversion von Survex; sie enth&auml;lt noch manche Fehler und ist nicht auf dem neuesten Stand.  Wir empfehlen, die neueste Version von Survex zu verwenden.
+#pt:200 Est&aacute; &eacute; uma vers&atilde;o beta-teste do Survex. Ela tem portanto v&aacute;rias inconveni&ecirc;ncias e sem d&uacute;vida alguns erros. O per&iacute;odo de teste j&aacute; expirou e recomendamos que se obtenha uma vers&atilde;o mais recente.
+#ca:200 Aquesta &eacute;s una versi&oacute; beta-test de Survex. Aixi que per tant te v&agrave;ries petites faltes, i indubtablement mes d'un bug. Es tracta d'una versi&oacute; ja caducada i us recomanem que n'obtingueu una de m&eacute;s recent.
+#es:200 Esta es una versi&oacute;n beta-test de Survex. As&iacute; que contiene algunos peque&ntilde;os fallos, y indudablemente mas de alg&uacute;n bug. Se trata de una versi&oacute;n ya caducada y le recomendamos que obtenga una de m&aacute;s reciente.
+#it:200 Questa &eacute; una versione beta di Survex. Contiene molti inconvenienti, e senza dubbio pi&uacute; di un errore. Adesso &eacute; scaduta e raccomandiamo di procurare una versione pi&uacute; recente.
+#en:201 Do you want to continue?
+#fr:201 Voulez vous continuer?
+#de:201 Wollen Sie weitermachen ?
+#pt:201 Deseja continuar ?
+#ca:201 Desitjeu continuar ?
+#es:201 Desea continuar ?
+#it:201 Vuoi continuare ?
+#en:202 Do you want to stop?
+#fr:202 Voulez vous arr&ecirc;ter?
+#de:202 Wollen Sie aufh&ouml;ren ?
+#pt:202 Deseja parar ?
+#ca:202 Desitjeu parar ?
+#es:202 Desea parar ?
+#it:202 Vuoi uscire ?
+#en: 10 Data filename expected after -D
+#fr: 10 Nom d'un fichier de donn&eacute;es attendue apr&egrave;s -D
+#de: 10 Name einer Datendatei erwartet nach -D
+#pt: 10 Nome de arquivo esperado ap&oacute;s -D
+#ca: 10 S'espera un nom de fitxer de dades despr&eacute;s de -D
+#es: 10 Se espera un nombre de fichero de datos despu&eacute;s de -D
+#it: 10 Ci deve essere un nome di file dopo -D
+# The phrasing of 18 is similar to that of 10
+#en: 18 Command filename expected after -F
+#fr: 18 Nom d'un fichier de commandes attendue apr&egrave;s -F
+#de: 18 Name einer Befehlsdatei erwartet nach -F
+#pt: 18 Nome de arquivo de comandos esperado ap&oacute;s -F
+#ca: 18 S'espera un nom de fitxer de comandaments despr&eacute;s de -F
+#es: 18 Se espera un nombre de fichero de comandos despu&eacute;s de -F
+#it: 18 Ci deve essere un file di comandi dopo -F
+#en: 19 Special characters list expected after -S
+#fr: 19 Liste de caracte&egrave;res sp&eacute;ciaux attendue apr&egrave;s -S
+#de: 19 Liste der Sonderzeichen erwartet nach -S
+#pt: 19 Lista de caracteres especiais esperada ap&oacute;s -S
+#ca: 19 S'espera una llista de car&agrave;cters especials despr&eacute;s de -S
+#es: 19 Se espera una lista de car&aacute;cteres especiales despu&eacute;s de -S
+#it: 19 Ci deve essere una lista di caratteri speciali dopo -S
+# There's been a `(', but there's no `)'
+#en: 20 Unmatched `('
+#fr: 20 `(' non referm&eacute;e
+#de: 20 `(' ohne entsprechendes `)'
+#pt: 20 `(' n&atilde;o pareado (`)' correspondente n&atilde;o encontrado)
+#ca: 20 `(' Desaparellat
+#es: 20 `(' Desapareado
+#it: 20 C'&eacute; una `(' di troppo
+#
+# "Command file" phrase -- c.f. 18
+#en: 22 Couldn't open command file
+#fr: 22 Ne peut pas ouvrir le fichier de commande
+#de: 22 Konnte Befehlsdatei nicht &ouml;ffnen oder finden
+#pt: 22 Imposs&iacute;vel abrir arquivo de comandos
+#ca: 22 No s'ha pogut obrir el fitxer de comandaments
+#es: 22 No se pudo abrir el fichero de comandos
+#it: 22 Non riesco ad aprire il file dei comandi
+# "Command file" phrase -- c.f. 18
+#en: 23 Couldn't close command file
+#fr: 23 Ne peut pas fermer le fichier de commande
+#de: 23 Konnte Befehlsdatei nicht schlie&szlig;en
+#pt: 23 Imposs&iacute;vel fechar arquivo de comandos
+#ca: 23 No s'ha pogut tancar el fitxer de comandaments
+#es: 23 No se pudo cerrar el fichero de comandos
+#it: 23 Non riesco a chiudere il file dei comandi
+#en: 26 Command too long
+#fr: 26 Commande trop longue
+#de: 26 Befehl zu lang
+#pt: 26 Comando longo demais
+#ca: 26 Comandament massa llarg
+#es: 26 Comando demasiado largo
+#it: 26 Comando troppo lungo
+# options means command line options
+#en: 27 Not a boolean option - `!' prefix not meaningful
+#fr: 27 N'est pas une option bool&eacute;enne - '!' pr&eacute;fix non significatif
+#de: 27 Keine Boolesche Option - `!' nicht sinnvoll
+## or, if negation is the only Boolean operation under consideration, more simply:
+## germ: 27 Keine Ja/Nein-Option - `!' nicht sinnvoll
+#pt: 27 Op&ccedil;&atilde;o n&atilde;o booleana - prefixo '!' sem significado
+#ca: 27 No &eacute;s pas una opci&oacute; booleana - `!' prefix no significatiu
+#es: 27 No es una opci&oacute;n booleana - `!' prefijo no significativo
+#it: 27 Non &eacute; un'opzione booleana - `!' prefisso senza significato
+#en: 28 Expected U or L
+#fr: 28 U ou L attendus
+## Hier optional
+#de: 28 Hier U oder L erwartet
+#pt: 28 U ou L esperado
+#ca: 28 S'espera U o L
+#es: 28 Se espera U o L
+#it: 28 Si aspetta U o L
+#en: 29 Syntax: -U<uniqueness> where uniqueness > 0
+#fr: 29 Syntaxe: -U<caract&egrave;res uniques> o&ugrave; caract&egrave;res uniques > 0
+## GN(2): If it's not too long, the correct expression
+## would be <Anzahl signifikanter Zeichen> , which in turn could bear being
+## abbreviated to <Anz.sign.Zeichen> if the full term is somewhere in the
+## documentation.
+#de: 29 Syntax: -U<Signifikanz> wobei Signifikanz > 0
+#pt: 29 Sintaxe: -U<unicidade> onde unicidade > 0
+#ca: 29 Sintaxi: -U<unicitat> on unicitat > 0
+#es: 29 Sintaxis: -U<unicidad> donde unicidad > 0
+#it: 29 Sintassi: -U<unici> dove unici > 0
+#not used:
+#en: 31 Missing (
+#fr: 31 ( manquante
+#de: 31 ( fehlt
+#pt: 31 Falta (
+#ca: 31 Manca (
+#es: 31 Falta (
+#it: 31 Manca una (
+#en: 49 No command line arguments given. See docs for syntax.
+#fr: 49 Pas d'arguments sur la ligne de commande. Voir doc pour la syntaxe.
+#de: 49 Keine Argumente in der Befehlszeile angegeben. Syntax siehe Dokumentation.
+#pt: 49 Argumentos de linha de comando n&atilde;o fornecidos. Veja sintaxe na documenta&ccedil;&atilde;o.
+#ca: 49 No s'han donat pas arguments a la l&iacute;nia de comandaments. Veure la documentaci&oacute; per la sintaxi.
+#es: 49 No se han dado argumentos en la l&iacute;nea de comandos. Ver la documentaci&oacute;n para la sintaxis.
+#it: 49 Non ci sono argomenti nella linea di comandi. Leggere la documentazione per la sintassi.
+## cf 64
+# 66 is no longer used -- if you have given too many, there must be a duplicate so you'll get
+# error message 67
+#engi: 66 Too many data
+#engu: 66 Too many data
+#fren: 66 Trop de donn&eacute;es
+#germ: 66 Zu viele Me&szlig;werte
+#port: 66 Dados demais
+#cata: 66 Massa dades
+#span: 66 Demasiados datos
+#ital: 66 Troppi dati
+# 70 no longer used
+#engi: 70 The following survey stations (and maybe others) are not attached to a fixed point:
+#engu: 70 The following survey stations (and maybe others) are not attached to a fixed point:
+#fren: 70 Les stations topo suivantes (et peut-&eacute;tre d'autres) ne sont pas attach&eacute;s &agrave; des points fixes:
+#germ: 70 Die folgenden Vermessungspunkte (und m&ouml;glicherweise weitere) haben keine festen Koordinaten:
+#port: 70 As seguintes bases (e talvez outras) n&atilde;o est&atilde;o conectadas a uma base posicionada:
+#cata: 70 Les seg&uuml;ents estacions (i potser altres) no s&oacute;n conectades a un punt fixe:
+#span: 70 Las siguientes estaciones (y quiz&aacute;s otras) no est&aacute;n conectadas a un punto fijo:
+#ital: 70 Le seguenti stazioni (e forse altre) non sono connesse ad un punto fisso:
+#engi: 72 "Survey has no fixed points, but is connected. Therefore I've fixed %s at (0,0,0)"
+#engu: 72 "Survey has no fixed points, but is connected. Therefore I've fixed %s at (0,0,0)"
+#fren: 72 "La topo n'a pas de points fixes mais est connect&eacute;e. Par cons&eacute;quent j'ai fix&eacute; %s &agrave; (0,0,0)"
+#germ: 72 "Vermessung hat keine Festpunkte, ist aber zusammenh&auml;ngend. %s wurde als Nullpunkt (0,0,0) gew&auml;hlt"
+#port: 72 "Topografia sem bases posicionadas, mas conexa. Assim %s foi posicionada (0,0,0)"
+#cata: 72 "La topografia no te punts fixats, per&ograve; est&agrave; connectada. Tanmateix he fixat %s a (0,0,0)"
+#span: 72 "La topografia no tiene puntos fijados, pero est&aacute; conectada. De todos modos he fijado %s en (0,0,0)"
+#ital: 72 "La topografia non ha punti fissi ma &eacute; connessa. Quindi %s &eacute; stata fissata a (0,0,0)"
+#en: 83 Skipping bad command line option&#10;
+#fr: 83 Mauvaise option sur la ligne de commande, ignor&eacute;e&#10;
+#de: 83 Unbekannte Kommandozeilenoption wurde ignoriert&#10;
+#pt: 83 Ignorando op&ccedil;&atilde;o de linha de comando com problemas&#10;
+#ca: 83 Ignorant opci&oacute; dolenta a la l&iacute;nia de comandaments
+#es: 83 Ignorando opci&oacute;n err&oacute;nea en la l&iacute;nea de comandos
+#it: 83 Parametro errato nella linea di comandi ignorato
+#engi: [Incorrect if survey not all connected]
+#engu: [Incorrect if survey not all connected]
+#fren: [Incorrect si la topo n'est pas enti&egrave;rement connect&eacute;e]
+#germ: [Nicht korrekt, falls die Me&szlig;z&uuml;ge nicht alle verbunden sind]
+#port: [Incorreto se topografia n&atilde;o conexa]
+#cata: [Incorrecte si la topografia no est&aacute; tota connectada]
+#span: [Incorrecto si la topografia no est&aacute; toda conectada]
+#ital: [Non corretto se la topografia non &eacute; interamente connessa]
+#en: 25 Couldn't close data file
+#fr: 25 Ne peut pas fermer le fichier de donn&eacute;es
+#de: 25 Konnte Datendatei nicht schlie&szlig;en
+#pt: 25 Imposs&iacute;vel fechar arquivo de dados
+#ca: 25 No s'ha pogut tancar el fitxer de dades
+#es: 25 No se pudo cerrar el fichero de datos
+#it: 25 Non riesco a chiudere il file dei dati
+#en:  2 "Fatal error from %s: "
+#fr:  2 "%s: Erreur fatale: "
+#de:  2 "Fataler Fehler von %s: "
+#pt:  2 "Erro fatal encontrado por %s: "
+#ca:  2 "Error fatal a %s: "
+#es:  2 "Error fatal en %s: "
+#it:  2 "Errore fatale per %s: "
+#en:  3 "Error from %s: "
+#fr:  3 "%s: Erreur: "
+#de:  3 "Fehler von %s: "
+#pt:  3 "Erro encontrado por %s: "
+#ca:  3 "Error a %s: "
+#es:  3 "Error en %s: "
+#it:  3 "Errore per %s: "
+#en:  4 "Warning from %s: "
+#fr:  4 "%s: Avertissement: "
+#de:  4 "Warnung von %s: "
+#pt:  4 "Alerta de %s: "
+#ca:  4 "Alerta a %s: "
+#es:  4 "Alerta en %s: "
+#it:  4 "Avvertimento da %s: "
+#en:  5 "Error message file has incorrect format&#10;"
+#fr:  5 "Le fichier de messages d'erreurs a un format incorrect&#10;"
+#de:  5 Fehlermeldungsdatei hat falsches Format&#10;
+#pt:  5 "Arquivo de mensagens formatado incorretamente&#10;"
+#ca:  5 "El fitxer de missatges d'errors te un format incorrecte&#10;"
+#es:  5 "El fichero de mensages de errores tiene un formato incorrecto&#10;"
+#it:  5 "Il file dei messaggi d'errore ha un formato scorretto&#10;"
+#en:  6 "Negative error numbers are not allowed&#10;"
+#fr:  6 "Num&eacute;ros d'erreur n&eacute;gatifs non accept&eacute;s&#10;"
+#de:  6 "Negative Fehlermeldungsnummern gibt es nicht&#10;"
+#pt:  6 "Desvio padr&atilde;o n&atilde;o pode ser negativo&#10;"
+#ca:  6 "N&uacute;meros d'error negatius no s&oacute;n acceptats&#10;"
+#es:  6 "N&uacute;meros de error negativos no son aceptados&#10;"
+#it:  6 "I numeri d'errore negativi non sono accettati&#10;"
+# ASCII nul (i.e. '\0', CHR$(0), ...)
+# (This is unlikely to happen on most machines, but ANSI C says it can)
+#en: 57 Apparent nul padding at end of file
+#fr: 57 Apparement, remplissage par des 'nul' &agrave; la fin du fichier
+#de: 57 &Uuml;berfl&uuml;ssige NUL-Codes am Ende der Datei
+#pt: 57 Arquivo aparentemente termina em branco
+#ca: 57 Aparentment el final del fitxer &eacute;s reomplert amb el car&agrave;cter nul
+#es: 57 Aparentemente el final est&aacute; relleno con el car&aacute;cter nulo
+##cata: 57 Aparentment el final del fitxer &eacute;s reomplert de 0
+##span: 57 Aparentemente el final est&aacute; relleno de 0
+#it: 57 Apparente fine del file con caratteri nul
+#en: 13 Control character in data file
+#fr: 13 Caract&egrave;re de controle dans les donn&eacute;es
+##Eric suggests this, but a non-alphabetic character isn't the same as a control character
+##fren: 13 Caract&egrave;re non alphab&eacute;tique dans le fichier de donn&eacute;es
+#de: 13 Kontrollzeichen in Datendatei
+#pt: 13 Caracter de controle no arquivo de dados
+#ca: 13 Car&agrave;cter de control al fitxer de dades
+#es: 13 Car&aacute;cter de control en el fichero de datos
+#it: 13 Carattere di controllo nel file dei dati
+#en:123 Back to data file '%s'
+#fr:123 Retour au fichier de donn&eacute;es '%s'
+#de:123 Zur&uuml;ck zu Datendatei '%s'
+#pt:123 De volta ao arquivo de dados '%s'
+#ca:123 Retorn al fitxer de dades '%s'
+#es:123 Regreso al fichero de datos '%s'
+#it:123 Ritorno al file dei dati '%s'
+#en:124 End of data file '%s'
+#fr:124 Fin du fichier de donn&eacute;es '%s'
+#de:124 Ende der Datendatei '%s'
+#pt:124 Final do arquivo de dados '%s'
+#ca:124 Fi del fitxer de dades '%s'
+#es:124 Fin del fichero de datos '%s'
+#it:124 Fine del file dei dati '%s'
+# names are now only truncated if you ask for them to be
+# so a warning makes little sense
+#en: 42 Station name truncated
+#fr: 42 Nom de poste troqu&eacute;
+#de: 42 Me&szlig;punktname zu lang, abgeschnitten
+#pt: 42 Nome de base truncado
+#ca: 42 Nom d'estaci&oacute; truncat
+#es: 42 Nombre de estaci&oacute;n truncado
+#it: 42 Nome della stazione troncato
+#en: 36 Unknown argument to DEFAULT
+#fr: 36 Argument inconnu pour DEFAULT
+#de: 36 Unbekanntes Argument f&uuml;r DEFAULT-Wert
+#pt: 36 Argumento desconhecido para comando DEFAULT
+#ca: 36 Argument desconegut per DEFAULT
+#es: 36 Argumento desconocido para DEFAULT
+#it: 36 Argomento sconosciuto in DEFAULT
+#en: 32 Filename too long
+#fr: 32 Nom de fichier trop long
+#de: 32 Dateiname zu lang
+#pt: 32 Nome de arquivo longo demais
+#ca: 32 Nom de fitxer massa llarg
+#es: 32 Nombre de fichero demasiado largo
+#it: 32 Il nome del file &eacute; troppo lungo
+# Labels are station names
+#en:157 Syntax: %s [-[!]Border] [-[!]Crosses] [-[!]Labels] [-[!]Shots] <Image file>
+#fr:157 Syntaxe: %s [-[!]Border] [-[!]Crosses] [-[!]Labels] [-[!]Shots] <fichier image>
+#de:157 Syntax: %s [-[!]Border] [-[!]Crosses] [-[!]Labels] [-[!]Shots] <Image file>&#10;Syntax: %s [-[!]Rand] [-[!]Kreuze] [-[!]Namen] [-[!]Strecken] <Bilddatei>
+#pt:157 Sintaxe: %s [-[!]Border] [-[!]Crosses] [-[!]Labels] [-[!]Shots] <nome do arquivo de imagem 3d>
+#ca:157 Sintaxi: %s [-[!]B<marc>] [-[!]Creus] [-[!]L<noms d'estaci&oacute;>] [-[!]S<tirades>] <fitxer imatge>
+#es:157 Sintaxis: %s [-[!]Borde] [-[!]Cruces] [-[!]L<nombres de estaci&oacute;n>] [-[!]S<tiradas>] <fichero imagen>
+#it:157 Sintassi: %s [-[!]Bordo] [-[!]Croci] [-[!]L<etichette>] [-[!]S<battute>] <file immagine 3d>

@@ -1,0 +1,13 @@
+;BCRA Grade 3 specification file
+
+;tape error
+*SD tape     0.15 metres   ;95% of readings are within 0.5m (3 S.D.)
+
+;compass error
+*SD compass  3.33 degrees  ;95% of readings are within 10 degrees (3 S.D.)
+
+;clino error
+*SD clino    3.33 degrees  ;95% of readings are within 10 degrees (3 S.D.)
+
+;station position error
+*SD position 0.15 metres   ;95% of positions are within 0.1m (3 S.D.)
