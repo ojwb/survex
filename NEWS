@@ -1,3 +1,6 @@
+* (Unix version): Fixed problem incomplete versions being specified in
+  debian package dependencies.
+
 Changes in 0.99-prerelease2:
 
 * aven: fixed bug which caused occasional crash during mouse movement;
