@@ -288,7 +288,9 @@ static point **htab;
 static void
 plt_header(void)
 {
+   size_t i;
    htab = osmalloc(0x2000 * sizeof(point**));
+   for (i = 0; i < 0x2000; ++i) htab[i] = NULL;
 }
 
 static void

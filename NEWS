@@ -1,3 +1,7 @@
+Changes in 1.0.3:
+
+* cad3d: fixed bug which caused --plt to crash on some platforms.
+
 Changes in 1.0.2:
 
 * printdm/printpcl/printwin: take notice of font_size_labels setting in
