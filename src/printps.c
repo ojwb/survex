@@ -1,6 +1,6 @@
 /* > printps.c & prnthpgl.c */
 /* Device dependent part of Survex Postscript printer/HPGL plotter driver */
-/* Copyright (C) 1993-1996 Olly Betts
+/* Copyright (C) 1993-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
