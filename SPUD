@@ -1,13 +1,21 @@
 Still to do to aven 1.1.*:
 
-Make crosses work again!
+Make crosses work again! (use texture mapping?  or coord transforms on
+the cross size?)
+
+Make grid work again!
 
 Blobs are a bit inefficient - want BlobsBegin() and ...End() and a
 SetBlobColour() call; also pass all blobs of the same colour together.
 
+Make blobs round (use antialised blobs with an alpha threshold).
+
 Draw the measuring line directly onto the front buffer, so we can remove it
 with a copy from the back buffer and redraw it in the new position without a
 re-render.
+
+Round the measuring line coords so the ring is a nice shape?  Or just antialias
+the ring, there blob and line?
 
 Sort out odd textured font spacing niggles...
 
@@ -15,6 +23,12 @@ Process all pending input before rerendering to improve responsiveness.
 
 Check timing code - we need to glFinish to ensure it's all drawn, and that
 may be needed to get meaningful timing info.
+
+"smooth" (anti-aliased) lines option.
+
+perspective vs survey size - is there an issue?
+
+sort out date colouring cleanly.  also error colouring, etc.
 
 ---
 
