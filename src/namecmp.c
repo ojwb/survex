@@ -29,66 +29,51 @@
 int
 name_cmp(const char *a, const char *b)
 {
-   const char *dot_a = strchr(a, '.');
-   const char *dot_b = strchr(b, '.');
+   while (1) {
+      int cha = *a, chb = *b;
 
-   if (dot_a) {
-      if (dot_b) {
-	 size_t len_a = dot_a - a;
-	 size_t len_b = dot_b - b;
-	 int res = memcmp(a, b, len_a < len_b ? len_a : len_b);
-	 if (res == 0) res = len_a - len_b;
+      /* done if end of either first string */
+      if (!cha || !chb) return cha - chb;
+
+      /* check for end of non-numeric prefix */
+      if (isdigit(cha)) {
+	 /* sort numbers numerically and before non-numbers */
+	 const char *sa, *sb, *ea, *eb;
+	 int res;
+
+	 if (!isdigit(chb)) return chb == '.' ? 1 : -1;
+
+	 sa = a;
+	 while (*sa == '0') sa++;
+	 ea = sa;
+	 while (isdigit(*ea)) ea++;
+
+	 sb = b;
+	 while (*sb == '0') sb++;
+	 eb = sb;
+	 while (isdigit(*eb)) eb++;
+
+	 /* shorter sorts first */
+	 res = (ea - sa) - (eb - sb);
+	 /* same length, all digits, so memcmp() sorts numerically */
+	 if (!res) res = memcmp(sa, sb, ea - sa);
+	 /* more leading zeros sorts first */
+	 if (!res) res = (sb - b) - (sa - a);
 	 if (res) return res;
-	 return name_cmp(dot_a + 1, dot_b + 1);
+
+	 /* if numbers match, sort by suffix */
+	 a = ea;
+	 b = eb;
+	 continue;
       }
-      return -1;
-   }
 
-   if (dot_b) return 1;
-   
-   repeat:
+      if (cha != chb) {
+	 if (cha == '.') return -1;
+	 if (isdigit(chb) || chb == '.') return 1;
+	 return cha - chb;
+      }
 
-   /* skip common prefix */
-   while (*a && !isdigit(*a) && *a == *b) {
       a++;
       b++;
    }
-
-   if (!*a) {
-      if (*b) return -1;
-      return 0;
-   }
-
-   if (!*b) return 1;
-
-   if (isdigit(a[0])) {
-      /* sort numbers numerically and before non-numbers */
-      const char *sa, *sb, *ea, *eb;
-      int res;
-
-      if (!isdigit(b[0])) return -1;
-
-      sa = a;
-      while (*sa == '0') sa++;
-      ea = sa;
-      while (isdigit(*ea)) ea++;
-
-      sb = b;
-      while (*sb == '0') sb++;
-      eb = sb;
-      while (isdigit(*eb)) eb++;
-
-      res = (ea - sa) - (eb - sb); /* shorter sorts first */
-      if (!res) res = memcmp(sa, sb, ea - sa); /* same length, all digits, so memcmp() sorts numerically */
-      if (!res) res = (sb - b) - (sa - a); /* more leading zeros sorts first */
-      if (res) return res;
-
-      /* if numbers match, sort by suffix */
-      a = ea;
-      b = eb;
-      goto repeat;
-   }
-
-   if (isdigit(b[0])) return 1;
-   return strcmp(a, b);
 }

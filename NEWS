@@ -92,6 +92,8 @@
   just stations in, so all programs which can read .3d files can also
   now read .pos files.
 
+* 3dtopos: minor improvements to sort order.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.
