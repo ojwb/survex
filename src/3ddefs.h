@@ -1,4 +1,4 @@
-/* > 3ddefs.h
+/* 3ddefs.h
  * Symbolic constants for .3dx files
  * Copyright (C) 2000 Phil Underwood
  *
@@ -17,7 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* Below are the "magic" numbers for my new file type... */
+/* Below are the "magic" numbers for Phil Underwood's ".3dx" file format
+ * as used by Chasm */
 
 #define STATION_3D 0x02
 #define STATLINK_3D 0x08
