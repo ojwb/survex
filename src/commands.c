@@ -655,6 +655,8 @@ cmd_fix(void)
 		  /* covariances given */
 		  cyz = read_numeric(fFalse);
 		  czx = read_numeric(fFalse);
+	       } else {
+		  cxy = 0;
 	       }
 	    }
 	 }

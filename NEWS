@@ -8,6 +8,8 @@ Changes in 1.0.2:
 
 * cavern: *INFER EQUATES and *DATA TOPOFIL now work together correctly.
 
+* cavern: *FIX with 3 standard deviations but no covariances now works.
+
 * (Mac OS X version): command line programs now build.  We're working on Aven.
 
 * Updates to the Catalan and Spanish translations.
