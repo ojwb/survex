@@ -77,3 +77,11 @@ as previously reported even though the setting not to use it is still
 there - I do not understand what is going on, but it may have more to
 do with interactions with the lpr dystem than survex itself....
 
+Date: 25 Jan 2000
+From: Mark Shinwell
+
+[Aven known bugs]
+- closing window doesn't work
+- slow response of toolbar highlighting during constant rotation
+- redraw errors after obscuration by other windows
+
