@@ -8,17 +8,22 @@ AC_INIT(src/cavern.c)
 AM_INIT_AUTOMAKE(survex, 0.99)
 AM_CONFIG_HEADER(config.h)
 
-dnl keep this on two lines like this - miniam.pl relies on this
-AC_DEFINE(COPYRIGHT_MSG,
-"Copyright (C) 1990-2001 Olly Betts", [Copyright Message])
+dnl don't reformat the next line, miniam.pl pulls out the value
+COPYRIGHT_MSG="Copyright (C) 1990-2001 Olly Betts"
 
-AC_DEFINE(AVEN_COPYRIGHT_MSG,
-"Copyright (C) 1999-2001 Mark R. Shinwell", [Copyright Message for Aven])
+AVEN_COPYRIGHT_MSG="Copyright (C) 1999-2001 Mark R. Shinwell"
+
+AC_DEFINE_UNQUOTED(COPYRIGHT_MSG, "$COPYRIGHT_MSG", [Copyright Message])
+AC_DEFINE_UNQUOTED(AVEN_COPYRIGHT_MSG, "$AVEN_COPYRIGHT_MSG",
+		   [Copyright Message for Aven])
+
+AC_SUBST(COPYRIGHT_MSG)
+AC_SUBST(AVEN_COPYRIGHT_MSG)
 
 dnl set PRETTYPACKAGE to PACKAGE with the first character capitalised
 PRETTYPACKAGE=`echo "$PACKAGE"|cut -b1|tr 'a-z' 'A-Z'``echo "$PACKAGE"|cut -b2-`
 AC_DEFINE_UNQUOTED(PRETTYPACKAGE, "$PRETTYPACKAGE",
-                   [Name of package (capitalised)])
+		   [Name of package (capitalised)])
 AC_SUBST(PRETTYPACKAGE)
 
 dnl set COMMAVERSION to VERSION with the dots replaced by commas -

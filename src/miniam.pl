@@ -15,8 +15,7 @@ if (open C, "<$configure_in") {
       if (/^AM_INIT_AUTOMAKE\(\s*([^,]+?)\s*,\s*([\d.]+)\)/) {
          $package = $1;
 	 $version = $2;
-      } elsif (/^AC_DEFINE\(COPYRIGHT_MSG,/) {
-         $_ = <C>;
+      } elsif (/^COPYRIGHT_MSG\s*=\s*/) {
 	 ($copyright) = /(".*")/;
       }
    }

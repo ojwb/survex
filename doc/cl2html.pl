@@ -5,7 +5,7 @@ use strict;
 # cvs2cl --separate-header --no-wrap
 
 my $title = 'ChangeLog';
-$title = "ARGV[1] $title" if defined $ARGV[1];
+$title = "$ARGV[0] $title" if defined $ARGV[0];
   
 print <<END;
 <HTML><HEAD>

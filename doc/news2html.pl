@@ -4,7 +4,7 @@ use strict;
 # run on a NEWS file
 
 my $title = 'Summary of User-Visible Changes';
-$title .= "in ARGV[1]" if defined $ARGV[1];
+$title .= "in $ARGV[0]" if defined $ARGV[0];
   
 print <<END;
 <HTML><HEAD>
