@@ -243,6 +243,7 @@ class GfxCore : public wxWindow {
     MainFrm* m_Parent;
     wxPoint m_DragStart;
     wxPoint m_DragRealStart;
+    wxPoint m_DragLast;
     wxBitmap m_OffscreenBitmap;
     wxMemoryDC m_DrawDC;
     bool m_DoneFirstShow;

@@ -2417,8 +2417,10 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
                       m_LastDrag = drag_SCALE;
                       //--FIXME: GL fix needed
 
-                      SetScale(m_Params.scale * pow(1.06, 0.01 *
-                                                    (-m_DragStart.x + point.x)));
+		      Double size_snap = Double(m_ScaleBar.width) / m_Params.scale;
+		      int dx = point.x - m_DragLast.x;
+
+                      SetScale((m_ScaleBar.width + dx) / size_snap);
                       m_RedrawOffscreen = true;
                       Refresh(false);
                   }
@@ -2461,6 +2463,8 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
             }
         }
     }
+
+    m_DragLast = point;
 }
 
 void GfxCore::OnSize(wxSizeEvent& event) 
