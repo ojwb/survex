@@ -1,19 +1,12 @@
 survex (1.0.2) unstable; urgency=low
 
-  * printdm and printpcl now take notice of font_size_labels setting in
-    print.ini etc.
-
+  * printdm and printpcl now obey font_size_labels setting in print.ini etc.
   * Enhancements and bug-fix to handling of Topofil.
-
   * *FIX with 3 standard deviations but no covariances now works.
-
-  * cad3d: added --plt option to produce crude approximation to Compass .plt
+  * cad3d: new --plt option produces crude approximation to Compass .plt
     files - should be good enough for reading into Carto.
-
+  * img library now reads Compass .plt files as if they were .3d files.
   * Updated ca and es internationalisations.
-
-  * img library enhanced to allow Compass .plt files to be read as if they
-    were .3d files.
 
  -- Wookey <wookey@survex.com>  Sun, 17 Mar 2002 12:42:44 +0000
 
