@@ -108,7 +108,7 @@ main(int argc, char **argv)
 
    msg_init(argv[0]);
 
-   cmdline_set_syntax_message("3D_FILE [HOW MANY]", NULL); /* TRANSLATE */
+   cmdline_set_syntax_message("ERR_FILE [HOW MANY]", NULL); /* TRANSLATE */
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
    while (1) {
       int opt = cmdline_getopt();
