@@ -444,68 +444,67 @@ replace_travs(void)
 	 linkfor *leg = stn1->leg[i];
 	 if (leg && data_here(leg) &&
 	     !(leg->l.reverse & FLAG_REPLACEMENTLEG) && !fZeros(&leg->v)) {
-	    if (fixed(stn1)) {
-	       stn2 = leg->l.to;
-	       if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
-		  stn1->name->sflags |= BIT(SFLAGS_SURFACE);
-		  stn2->name->sflags |= BIT(SFLAGS_SURFACE);
-	       } else {
-		  stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-		  stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	       }
+	    ASSERT(fixed(stn1));
+	    stn2 = leg->l.to;
+	    if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+	       stn1->name->sflags |= BIT(SFLAGS_SURFACE);
+	       stn2->name->sflags |= BIT(SFLAGS_SURFACE);
+	    } else {
+	       stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	       stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	    }
 #ifdef NEW3DFORMAT
-	       if (!fUseNewFormat) {
+	    if (!fUseNewFormat) {
 #endif
 	       img_write_item(pimgOut, img_MOVE, 0, NULL,
 			      POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 	       img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 #ifdef NEW3DFORMAT
+	    }
+#endif
+	    if (!(leg->l.reverse & FLAG_ARTICULATION)) {
+#ifdef BLUNDER_DETECTION
+	       delta err;
+	       int do_blunder;
+#else
+	       if (fhErrStat) {
+		  fprint_prefix(fhErrStat, stn1->name);
+		  fputs(szLink, fhErrStat);
+		  fprint_prefix(fhErrStat, stn2->name);
 	       }
 #endif
-	       if (!(leg->l.reverse & FLAG_ARTICULATION)) {
-#ifdef BLUNDER_DETECTION
-		  delta err;
-		  int do_blunder;
-#else
-		  if (fhErrStat) {
-		     fprint_prefix(fhErrStat, stn1->name);
-		     fputs(szLink, fhErrStat);
-		     fprint_prefix(fhErrStat, stn2->name);
-		  }
-#endif
-		  subdd(&e, &POSD(stn2), &POSD(stn1));
-		  subdd(&e, &e, &leg->d);
-		  if (fhErrStat) {
-		     eTot = sqrdd(e);
-		     hTot = sqrd(e[0]) + sqrd(e[1]);
-		     vTot = sqrd(e[2]);
+	       subdd(&e, &POSD(stn2), &POSD(stn1));
+	       subdd(&e, &e, &leg->d);
+	       if (fhErrStat) {
+		  eTot = sqrdd(e);
+		  hTot = sqrd(e[0]) + sqrd(e[1]);
+		  vTot = sqrd(e[2]);
 #ifndef NO_COVARIANCES
-		     /* FIXCOV: what about covariances? */
-		     eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
-		     hTotTheo = leg->v[0] + leg->v[1];
-		     vTotTheo = leg->v[2];
+		  /* FIXCOV: what about covariances? */
+		  eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
+		  hTotTheo = leg->v[0] + leg->v[1];
+		  vTotTheo = leg->v[2];
 #else
-		     eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
-		     hTotTheo = leg->v[0] + leg->v[1];
-		     vTotTheo = leg->v[2];
+		  eTotTheo = leg->v[0] + leg->v[1] + leg->v[2];
+		  hTotTheo = leg->v[0] + leg->v[1];
+		  vTotTheo = leg->v[2];
 #endif
 #ifdef BLUNDER_DETECTION
-		     memcpy(&err, &e, sizeof(d));
-		     do_blunder = (eTot > eTotTheo);
-		     fputs("\ntraverse ", fhErrStat);
-		     fprint_prefix(fhErrStat, stn1->name);
-		     fputs("->", fhErrStat);
-		     fprint_prefix(fhErrStat, stn2->name);
-		     fprintf(fhErrStat, " e=(%.2f, %.2f, %.2f) mag=%.2f %s\n",
-			     e[0], e[1], e[2], sqrt(eTot),
-			     (do_blunder ? "suspect:" : "OK"));
-		     if (do_blunder)
-			do_gross(err, leg->d, stn1, stn2, eTotTheo);
+		  memcpy(&err, &e, sizeof(d));
+		  do_blunder = (eTot > eTotTheo);
+		  fputs("\ntraverse ", fhErrStat);
+		  fprint_prefix(fhErrStat, stn1->name);
+		  fputs("->", fhErrStat);
+		  fprint_prefix(fhErrStat, stn2->name);
+		  fprintf(fhErrStat, " e=(%.2f, %.2f, %.2f) mag=%.2f %s\n",
+			  e[0], e[1], e[2], sqrt(eTot),
+			  (do_blunder ? "suspect:" : "OK"));
+		  if (do_blunder)
+		     do_gross(err, leg->d, stn1, stn2, eTotTheo);
 #endif
-		     err_stat(1, sqrt(sqrdd(leg->d)), eTot, eTotTheo,
-			      hTot, hTotTheo, vTot, vTotTheo);
-		  }
+		  err_stat(1, sqrt(sqrdd(leg->d)), eTot, eTotTheo,
+			   hTot, hTotTheo, vTot, vTotTheo);
 	       }
 	    }
 	 }
@@ -513,8 +512,6 @@ replace_travs(void)
    }
 
    while (ptr != NULL) {
-      bool fFixed;
-
       /* work out where traverse should be reconnected */
       linkfor *leg = ptr->join1;
       leg = reverse_leg(leg);
@@ -533,46 +530,46 @@ replace_travs(void)
       print_prefix(stn2->name);
       printf("<%p>\n", stn2);
 #endif
-      /*  ASSERT( fixed(stn1) );
-	  ASSERT2( fixed(stn2), "stn2 not fixed in replace_travs"); */
+
+      ASSERT(fixed(stn1));
+      ASSERT(fixed(stn2));
+
       /* calculate scaling factors for error distribution */
-      fFixed = fixed(stn1);
-      if (fFixed) {
-	 eTot = 0.0;
-	 hTot = vTot = 0.0;
-	 ASSERT(data_here(stn1->leg[i]));
-	 if (fZeros(&stn1->leg[i]->v)) {
-	    sc[0] = sc[1] = sc[2] = 0.0;
-	 } else {
-	    subdd(&e, &POSD(stn2), &POSD(stn1));
-	    subdd(&e, &e, &stn1->leg[i]->d);
-	    eTot = sqrdd(e);
-	    hTot = sqrd(e[0]) + sqrd(e[1]);
-	    vTot = sqrd(e[2]);
-	    divds(&sc, &e, &stn1->leg[i]->v);
-	 }
+      eTot = 0.0;
+      hTot = vTot = 0.0;
+      ASSERT(data_here(stn1->leg[i]));
+      if (fZeros(&stn1->leg[i]->v)) {
+	 sc[0] = sc[1] = sc[2] = 0.0;
+      } else {
+	 subdd(&e, &POSD(stn2), &POSD(stn1));
+	 subdd(&e, &e, &stn1->leg[i]->d);
+	 eTot = sqrdd(e);
+	 hTot = sqrd(e[0]) + sqrd(e[1]);
+	 vTot = sqrd(e[2]);
+	 divds(&sc, &e, &stn1->leg[i]->v);
+      }
 #ifndef NO_COVARIANCES
-	 /* FIXCOV: what about covariances? */
-	 hTotTheo = stn1->leg[i]->v[0] + stn1->leg[i]->v[1];
-	 vTotTheo = stn1->leg[i]->v[2];
-	 eTotTheo = hTotTheo + vTotTheo;
+      /* FIXCOV: what about covariances? */
+      hTotTheo = stn1->leg[i]->v[0] + stn1->leg[i]->v[1];
+      vTotTheo = stn1->leg[i]->v[2];
+      eTotTheo = hTotTheo + vTotTheo;
 #else
-	 hTotTheo = stn1->leg[i]->v[0] + stn1->leg[i]->v[1];
-	 vTotTheo = stn1->leg[i]->v[2];
-	 eTotTheo = hTotTheo + vTotTheo;
+      hTotTheo = stn1->leg[i]->v[0] + stn1->leg[i]->v[1];
+      vTotTheo = stn1->leg[i]->v[2];
+      eTotTheo = hTotTheo + vTotTheo;
 #endif
-	 cLegsTrav = 0;
-	 lenTrav = 0.0;
-	 nmPrev = stn1->name;
+      cLegsTrav = 0;
+      lenTrav = 0.0;
+      nmPrev = stn1->name;
 #ifdef NEW3DFORMAT
- 	 if (!fUseNewFormat) {
+      if (!fUseNewFormat) {
 #endif
-	    img_write_item(pimgOut, img_MOVE, 0, NULL,
+	 img_write_item(pimgOut, img_MOVE, 0, NULL,
 			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 #ifdef NEW3DFORMAT
- 	 }
-#endif
       }
+#endif
+
       fArtic = stn1->leg[i]->l.reverse & FLAG_ARTICULATION;
       osfree(stn1->leg[i]);
       stn1->leg[i] = ptr->join1; /* put old link back in */
@@ -580,146 +577,144 @@ replace_travs(void)
       osfree(stn2->leg[j]);
       stn2->leg[j] = ptr->join2; /* and the other end */
 
-      if (fFixed) {
 #ifdef BLUNDER_DETECTION
-	 delta err;
-	 int do_blunder;
-	 memcpy(&err, &e, sizeof(d));
-	 do_blunder = (eTot > eTotTheo);
-	 if (fhErrStat && !fArtic) {
-	    fputs("\ntraverse ", fhErrStat);
-	    fprint_prefix(fhErrStat, stn1->name);
-	    fputs("->", fhErrStat);
-	    fprint_prefix(fhErrStat, stn2->name);
-	    fprintf(fhErrStat, " e=(%.2f, %.2f, %.2f) mag=%.2f %s\n",
-		    e[0], e[1], e[2], sqrt(eTot),
-		    (do_blunder ? "suspect:" : "OK"));
+      delta err;
+      int do_blunder;
+      memcpy(&err, &e, sizeof(d));
+      do_blunder = (eTot > eTotTheo);
+      if (fhErrStat && !fArtic) {
+	 fputs("\ntraverse ", fhErrStat);
+	 fprint_prefix(fhErrStat, stn1->name);
+	 fputs("->", fhErrStat);
+	 fprint_prefix(fhErrStat, stn2->name);
+	 fprintf(fhErrStat, " e=(%.2f, %.2f, %.2f) mag=%.2f %s\n",
+		 e[0], e[1], e[2], sqrt(eTot),
+		 (do_blunder ? "suspect:" : "OK"));
+      }
+#endif
+      while (fTrue) {
+	 int reached_end;
+	 
+	 fEquate = fTrue;
+	 /* get next node in traverse
+	  * should have stn3->leg[k]->l.to == stn1 */
+	 stn3 = stn1->leg[i]->l.to;
+	 k = reverse_leg_dirn(stn1->leg[i]);
+	 ASSERT2(stn3->leg[k]->l.to == stn1,
+		 "reverse leg doesn't reciprocate");
+	 
+	 reached_end = (stn3 == stn2 && k == j);
+	 
+	 if (data_here(stn1->leg[i])) {
+	    leg = stn1->leg[i];
+#ifdef BLUNDER_DETECTION
+	    if (do_blunder && fhErrStat)
+	       do_gross(err, leg->d, stn1, stn3, eTotTheo);
+#endif
+	    if (!reached_end)
+	       adddd(&POSD(stn3), &POSD(stn1), &leg->d);
+	 } else {
+	    leg = stn3->leg[k];
+#ifdef BLUNDER_DETECTION
+	    if (do_blunder && fhErrStat)
+	       do_gross(err, leg->d, stn1, stn3, eTotTheo);
+#endif
+	    if (!reached_end)
+	       subdd(&POSD(stn3), &POSD(stn1), &leg->d);
+	 }
+	 
+	 lenTot = sqrdd(leg->d);
+	 
+	 if (!reached_end) {
+	    add_stn_to_list(&stnlist, stn3);
+	    if (!fZeros(&leg->v)) {
+	       fEquate = fFalse;
+	       mulsd(&e, &leg->v, &sc);
+	       adddd(&POSD(stn3), &POSD(stn3), &e);
+	    }
+	    fix(stn3);
+	 } else {
+	    if (!fZeros(&leg->v)) fEquate = fFalse;
+	 }
+	 
+	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+	    stn1->name->sflags |= BIT(SFLAGS_SURFACE);
+	    stn3->name->sflags |= BIT(SFLAGS_SURFACE);
+	 } else {
+	    stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	    stn3->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	 }
+#ifdef NEW3DFORMAT
+	 if (!fUseNewFormat) {
+#endif
+	    img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
+			   POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
+#ifdef NEW3DFORMAT
 	 }
 #endif
-	 while (fTrue) {
-	    int reached_end;
 
-  	    fEquate = fTrue;
-	    /* get next node in traverse
-	     * should have stn3->leg[k]->l.to == stn1 */
-	    stn3 = stn1->leg[i]->l.to;
-	    k = reverse_leg_dirn(stn1->leg[i]);
-	    ASSERT2(stn3->leg[k]->l.to == stn1,
-		    "reverse leg doesn't reciprocate");
-
-	    reached_end = (stn3 == stn2 && k == j);
-
-	    if (data_here(stn1->leg[i])) {
- 	       leg = stn1->leg[i];
-#ifdef BLUNDER_DETECTION
-	       if (do_blunder && fhErrStat)
-		  do_gross(err, leg->d, stn1, stn3, eTotTheo);
-#endif
-	       if (!reached_end)
-		  adddd(&POSD(stn3), &POSD(stn1), &leg->d);
-	    } else {
- 	       leg = stn3->leg[k];
-#ifdef BLUNDER_DETECTION
-	       if (do_blunder && fhErrStat)
-		  do_gross(err, leg->d, stn1, stn3, eTotTheo);
-#endif
-	       if (!reached_end)
-		  subdd(&POSD(stn3), &POSD(stn1), &leg->d);
-	    }
-
-	    lenTot = sqrdd(leg->d);
-
-	    if (!reached_end) {
-	       add_stn_to_list(&stnlist, stn3);
-	       if (!fZeros(&leg->v)) {
-		  fEquate = fFalse;
-		  mulsd(&e, &leg->v, &sc);
-		  adddd(&POSD(stn3), &POSD(stn3), &e);
-	       }
-	       fix(stn3);
-	    } else {
-	       if (!fZeros(&leg->v)) fEquate = fFalse;
-	    }
-	       
-	    if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
-	       stn1->name->sflags |= BIT(SFLAGS_SURFACE);
-	       stn3->name->sflags |= BIT(SFLAGS_SURFACE);
-	    } else {
-	       stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	       stn3->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	    }
-#ifdef NEW3DFORMAT
- 	    if (!fUseNewFormat) {
-#endif
-	       img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
-			      POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
-#ifdef NEW3DFORMAT
- 	    }
-#endif
-
-	    /* FIXME: equate at the start of a traverse treated specially
-	     * - what about equates at end? */	    
-	    if (nmPrev != stn3->name && !(fEquate && cLegsTrav == 0)) {
-	       /* (node not part of same stn) &&
-		* (not equate at start of traverse) */
+	 /* FIXME: equate at the start of a traverse treated specially
+	  * - what about equates at end? */	    
+	 if (nmPrev != stn3->name && !(fEquate && cLegsTrav == 0)) {
+	    /* (node not part of same stn) &&
+	     * (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
-	       if (fhErrStat && !fArtic) {
-		  if (!nmPrev->ident[0]) {
+	    if (fhErrStat && !fArtic) {
+	       if (!nmPrev->ident[0]) {
+		  /* FIXME: not ideal */
+		  fputs("<fixed point>", fhErrStat);
+	       } else {
+		  fprint_prefix(fhErrStat, nmPrev);
+	       }
+	       fputs(fEquate ? szLinkEq : szLink, fhErrStat);
+	       if (reached_end) {
+		  if (!stn3->name->ident[0]) {
 		     /* FIXME: not ideal */
 		     fputs("<fixed point>", fhErrStat);
 		  } else {
-		     fprint_prefix(fhErrStat, nmPrev);
+		     fprint_prefix(fhErrStat, stn3->name);
 		  }
-		  fputs(fEquate ? szLinkEq : szLink, fhErrStat);
-		  if (reached_end) {
-		     if (!stn3->name->ident[0]) {
-			/* FIXME: not ideal */
-			fputs("<fixed point>", fhErrStat);
-		     } else {
-			fprint_prefix(fhErrStat, stn3->name);
-		     }
-		  }
-	       }
-#endif
-	       nmPrev = stn3->name;
-	       if (!fEquate) {
-		  cLegsTrav++;
-		  lenTrav += sqrt(lenTot);
-	       } else if (lenTot > 0.0) {
-#if DEBUG_INVALID
-		  fprintf(stderr, "lenTot = %8.4f ", lenTot);
-		  fprint_prefix(stderr, nmPrev);
-		  fprintf(stderr, " -> ");
-		  fprint_prefix(stderr, stn3->name);
-#endif
-		  BUG("during calculation of closure errors");
-	       }
-	    } else {
-#if SHOW_INTERNAL_LEGS
-	       if (fhErrStat && !fArtic) fprintf(fhErrStat, "+");
-#endif
-	       if (lenTot > 0.0) {
-#if DEBUG_INVALID
-		  fprintf(stderr, "lenTot = %8.4f ", lenTot);
-		  fprint_prefix(stderr, nmPrev);
-		  fprintf(stderr, " -> ");
-		  fprint_prefix(stderr, stn3->name);
-#endif
-		  BUG("during calculation of closure errors");
 	       }
 	    }
-	    if (reached_end) break;
-
-	    i = k ^ 1; /* flip direction for other leg of 2 node */
-
-	    stn1 = stn3;
-	 } /* endwhile */
-
-	 if (cLegsTrav && !fArtic && fhErrStat)
-	    err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
-		     hTot, hTotTheo, vTot, vTotTheo);
-      }
-
+#endif
+	    nmPrev = stn3->name;
+	    if (!fEquate) {
+	       cLegsTrav++;
+	       lenTrav += sqrt(lenTot);
+	    } else if (lenTot > 0.0) {
+#if DEBUG_INVALID
+	       fprintf(stderr, "lenTot = %8.4f ", lenTot);
+	       fprint_prefix(stderr, nmPrev);
+	       fprintf(stderr, " -> ");
+	       fprint_prefix(stderr, stn3->name);
+#endif
+	       BUG("during calculation of closure errors");
+	    }
+	 } else {
+#if SHOW_INTERNAL_LEGS
+	    if (fhErrStat && !fArtic) fprintf(fhErrStat, "+");
+#endif
+	    if (lenTot > 0.0) {
+#if DEBUG_INVALID
+	       fprintf(stderr, "lenTot = %8.4f ", lenTot);
+	       fprint_prefix(stderr, nmPrev);
+	       fprintf(stderr, " -> ");
+	       fprint_prefix(stderr, stn3->name);
+#endif
+	       BUG("during calculation of closure errors");
+	    }
+	 }
+	 if (reached_end) break;
+	 
+	 i = k ^ 1; /* flip direction for other leg of 2 node */
+	 
+	 stn1 = stn3;
+      } /* endwhile */
+      
+      if (cLegsTrav && !fArtic && fhErrStat)
+	 err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
+		  hTot, hTotTheo, vTot, vTotTheo);
+   
       ptrOld = ptr;
       ptr = ptr->next;
       osfree(ptrOld);
@@ -778,7 +773,6 @@ replace_trailing_travs(void)
    node *stn1, *stn2;
    linkfor *leg;
    int i;
-   bool fNotAttached = fFalse;
 
    out_current_action(msg(/*Calculating trailing traverses*/128));
 
@@ -806,59 +800,57 @@ replace_trailing_travs(void)
 	 stn1->leg[j] = stn1->leg[i];
       }
       stn1->leg[i] = ptrTrail->join1;
-      /* ASSERT(fixed(stn1)); */
-      if (fixed(stn1)) {
+      ASSERT(fixed(stn1));
+#ifdef NEW3DFORMAT
+      if (!fUseNewFormat) {
+#endif
+	 img_write_item(pimgOut, img_MOVE, 0, NULL,
+			POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+#ifdef NEW3DFORMAT
+      }
+#endif
+
+      while (1) {
+	 int j;
+	 leg = stn1->leg[i];
+	 stn2 = leg->l.to;
+	 j = reverse_leg_dirn(leg);
+	 if (data_here(leg)) {
+	    adddd(&POSD(stn2), &POSD(stn1), &leg->d);
+#if 0
+	    printf("Adding leg (%f, %f, %f)\n", leg->d[0], leg->d[1], leg->d[2]);
+#endif
+	 } else {
+	    leg = stn2->leg[j];
+	    subdd(&POSD(stn2), &POSD(stn1), &leg->d);
+#if 0
+	    printf("Subtracting reverse leg (%f, %f, %f)\n", leg->d[0], leg->d[1], leg->d[2]);
+#endif
+	 }
+
+	 fix(stn2);
+	 add_stn_to_list(&stnlist, stn2);
+	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+	    stn1->name->sflags |= BIT(SFLAGS_SURFACE);
+	    stn2->name->sflags |= BIT(SFLAGS_SURFACE);
+	 } else {
+	    stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	    stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	 }
 #ifdef NEW3DFORMAT
 	 if (!fUseNewFormat) {
 #endif
-	    img_write_item(pimgOut, img_MOVE, 0, NULL,
-			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+	    img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
+			   POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 #ifdef NEW3DFORMAT
- 	 }
-#endif
-
-	 while (1) {
-	    int j;
-	    leg = stn1->leg[i];
-	    stn2 = leg->l.to;
-	    j = reverse_leg_dirn(leg);
-	    if (data_here(leg)) {
-	       adddd(&POSD(stn2), &POSD(stn1), &leg->d);
-#if 0
-	       printf("Adding leg (%f, %f, %f)\n", leg->d[0], leg->d[1], leg->d[2]);
-#endif
-	    } else {
-	       leg = stn2->leg[j];
-	       subdd(&POSD(stn2), &POSD(stn1), &leg->d);
-#if 0
-	       printf("Subtracting reverse leg (%f, %f, %f)\n", leg->d[0], leg->d[1], leg->d[2]);
-#endif
-	    }
-
-	    fix(stn2);
-	    add_stn_to_list(&stnlist, stn2);
-	    if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
-	       stn1->name->sflags |= BIT(SFLAGS_SURFACE);
-	       stn2->name->sflags |= BIT(SFLAGS_SURFACE);
-	    } else {
-	       stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	       stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	    }
-#ifdef NEW3DFORMAT
-	    if (!fUseNewFormat) {
-#endif
-	       img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
-			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
-#ifdef NEW3DFORMAT
- 	    }
-#endif
-
-	    /* stop if not 2 node */
-	    if (!two_node(stn2)) break;
-
-	    stn1 = stn2;
-	    i = j ^ 1; /* flip direction for other leg of 2 node */
 	 }
+#endif
+
+	 /* stop if not 2 node */
+	 if (!two_node(stn2)) break;
+
+	 stn1 = stn2;
+	 i = j ^ 1; /* flip direction for other leg of 2 node */
       }
 
       ptrOld = ptrTrail;
@@ -871,9 +863,10 @@ replace_trailing_travs(void)
 #ifdef NEW3DFORMAT
    if (!fUseNewFormat) {
 #endif
-   while (nosurveyhead) {
-      nosurveylink *p = nosurveyhead;
-      if (fixed(p->fr) && fixed(p->to)) {
+      while (nosurveyhead) {
+	 nosurveylink *p = nosurveyhead;
+	 ASSERT(fixed(p->fr));
+	 ASSERT(fixed(p->to));
 	 if (TSTBIT(p->flags, FLAGS_SURFACE)) {
 	    p->fr->name->sflags |= BIT(SFLAGS_SURFACE);
 	    p->to->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -885,21 +878,20 @@ replace_trailing_travs(void)
 			POS(p->fr, 0), POS(p->fr, 1), POS(p->fr, 2));
 	 img_write_item(pimgOut, img_LINE, p->flags, NULL,
 			POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
+	 nosurveyhead = p->next;
+	 osfree(p);
       }
-      nosurveyhead = p->next;
-      osfree(p);
-   }
 #ifdef NEW3DFORMAT
    }
 #endif
 
    /* write stations to .3d file and free legs and stations */
    FOR_EACH_STN(stn1, stnlist) {
-      if (fixed(stn1)) {
-	 int d;
-	 /* take care of unused fixed points */
+      int d;
+      ASSERT(fixed(stn1));
+      /* take care of unused fixed points */
 #ifdef NEW3DFORMAT
-	 if (!fUseNewFormat) {
+      if (!fUseNewFormat) {
 #endif	 
 	 if (stn1->name->stn == stn1) {
 	    int sf = stn1->name->sflags & SFLAGS_MASK;
@@ -908,48 +900,35 @@ replace_trailing_travs(void)
 			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 	 }
 #ifdef NEW3DFORMAT
-	 }
+      }
 #endif
-	 /* update coords of bounding box, ignoring the base positions
-	  * of points fixed with error estimates */
-	 if (stn1->name->ident[0]) {
-	    for (d = 0; d < 3; d++) {
-	       if (POS(stn1, d) < min[d]) {
-		  min[d] = POS(stn1, d);
-		  pfxLo[d] = stn1->name;
-	       }
-	       if (POS(stn1, d) > max[d]) {
-		  max[d] = POS(stn1, d);
-		  pfxHi[d] = stn1->name;
-	       }
+      /* update coords of bounding box, ignoring the base positions
+       * of points fixed with error estimates */
+      if (stn1->name->ident[0]) {
+	 for (d = 0; d < 3; d++) {
+	    if (POS(stn1, d) < min[d]) {
+	       min[d] = POS(stn1, d);
+	       pfxLo[d] = stn1->name;
+	    }
+	    if (POS(stn1, d) > max[d]) {
+	       max[d] = POS(stn1, d);
+	       pfxHi[d] = stn1->name;
 	    }
 	 }
-
-	 d = stn1->name->shape;
-	 if (d < 0) {
-	    /* "*fix STN reference ..." sets order negative to suppress the
-	     * unused fixed point warning */
-	    stn1->name->shape = -1 - d;
-	 } else if (d <= 1) {
-	    if (d == 0 ||
-		(stn1->leg[0] && !stn1->leg[0]->l.to->name->ident[0])) {
-	       /* Unused fixed points without and with error estimates */
-	       warning(/*Unused fixed point `%s'*/73,
-		       sprint_prefix(stn1->name));
-	    }
+      }
+      
+      d = stn1->name->shape;
+      if (d < 0) {
+	 /* "*fix STN reference ..." sets order negative to suppress the
+	  * unused fixed point warning */
+	 stn1->name->shape = -1 - d;
+      } else if (d <= 1) {
+	 if (d == 0 ||
+	     (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident[0])) {
+	    /* Unused fixed points without and with error estimates */
+	    warning(/*Unused fixed point `%s'*/73,
+		    sprint_prefix(stn1->name));
 	 }
-      } else {
-	 if (!fNotAttached) {
-	    fNotAttached = fTrue;
-	    /* Actually this error is fatal, but we want to list the survey
-	     * stations which aren't connected, so we report it as an error
-	     * and die later...
-	     */
-	    error(/*Survey not all connected to fixed stations*/45);
-	    puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
-	 }
-	 puts(sprint_prefix(stn1->name));
-	 cComponents++; /* adjust component count */
       }
       for (i = 0; i <= 2; i++) {
 	 leg = stn1->leg[i];
@@ -962,8 +941,8 @@ replace_trailing_travs(void)
 	    iB = reverse_leg_dirn(leg);
 	    legRev = stnB->leg[iB];
 	    ASSERT2(legRev->l.to == stn1, "leg doesn't reciprocate");
-	    if (fixed(stn1) &&
-		!(leg->l.flags &
+	    ASSERT(fixed(stn1));
+	    if (!(leg->l.flags &
 		  (BIT(FLAGS_DUPLICATE)|BIT(FLAGS_SPLAY)|
 		   BIT(FLAGS_SURFACE)))) {
 	       /* check not an equating leg */
@@ -982,7 +961,6 @@ replace_trailing_travs(void)
 	 }
       }
    }
-   if (fNotAttached) exit(EXIT_FAILURE);
 
    /* The station position is attached to the name, so we leave the names and
     * positions in place - they can then be picked up if we have a *solve

@@ -547,8 +547,8 @@ replace_subnets(void)
          leg = ptrRed->join2; leg = reverse_leg(leg);
          stn4 = leg->l.to; dirn4 = reverse_leg_dirn(leg);
 
-         ASSERT(!(fixed(stn3) && !fixed(stn4)));
-         ASSERT(!(!fixed(stn3) && fixed(stn4)));
+         ASSERT(fixed(stn3));
+	 ASSERT(fixed(stn4));
          ASSERT(data_here(stn3->leg[dirn3]));
       }
 
@@ -557,63 +557,58 @@ replace_subnets(void)
 	 node *stn;
          delta e;
          linkfor *leg;
-         if (fixed(stn3)) {
-	    int zero;
-	    ASSERT(fixed(stn4)); /* either both or neither fixed */
+	 int zero;
 
-            leg = stn3->leg[dirn3];
-            stn2 = ptrRed->join1->l.to;
-            dirn2 = reverse_leg_dirn(ptrRed->join1);
+         ASSERT(fixed(stn3));
+	 ASSERT(fixed(stn4));
 
-	    zero = fZeros(&leg->v);
-            if (!zero) {
+	 leg = stn3->leg[dirn3];
+	 stn2 = ptrRed->join1->l.to;
+	 dirn2 = reverse_leg_dirn(ptrRed->join1);
+
+	 zero = fZeros(&leg->v);
+	 if (!zero) {
+	    delta tmp;
+	    subdd(&e, &POSD(stn4), &POSD(stn3));
+	    subdd(&tmp, &e, &leg->d);
+	    divds(&e, &tmp, &leg->v);
+	 }
+	 if (data_here(ptrRed->join1)) {
+	    adddd(&POSD(stn2), &POSD(stn3), &ptrRed->join1->d);
+	    if (!zero) {
 	       delta tmp;
-               subdd(&e, &POSD(stn4), &POSD(stn3));
-               subdd(&tmp, &e, &leg->d);
-               divds(&e, &tmp, &leg->v);
-            }
-            if (data_here(ptrRed->join1)) {
-               adddd(&POSD(stn2), &POSD(stn3), &ptrRed->join1->d);
-	       if (!zero) {
-		  delta tmp;
-		  mulsd(&tmp, &ptrRed->join1->v, &e);
-		  adddd(&POSD(stn2), &POSD(stn2), &tmp);
-	       }
-            } else {
-               subdd(&POSD(stn2), &POSD(stn3), &stn2->leg[dirn2]->d);
-               if (!zero) {
-		  delta tmp;
-		  mulsd(&tmp, &stn2->leg[dirn2]->v, &e);
-		  adddd(&POSD(stn2), &POSD(stn2), &tmp);
-	       }
-            }
-            fix(stn2);
-            dirn2 = (dirn2 + 2) % 3; /* point back at stn again */
-            stn = stn2->leg[dirn2]->l.to;
+	       mulsd(&tmp, &ptrRed->join1->v, &e);
+	       adddd(&POSD(stn2), &POSD(stn2), &tmp);
+	    }
+	 } else {
+	    subdd(&POSD(stn2), &POSD(stn3), &stn2->leg[dirn2]->d);
+	    if (!zero) {
+	       delta tmp;
+	       mulsd(&tmp, &stn2->leg[dirn2]->v, &e);
+	       adddd(&POSD(stn2), &POSD(stn2), &tmp);
+	    }
+	 }
+	 fix(stn2);
+	 dirn2 = (dirn2 + 2) % 3; /* point back at stn again */
+	 stn = stn2->leg[dirn2]->l.to;
 #if 0
-            printf("Replacing noose with stn...stn4 = \n");
-            print_prefix(stn->name); putnl();
-            print_prefix(stn2->name); putnl();
-            print_prefix(stn3->name); putnl();
-            print_prefix(stn4->name); putnl();
+	 printf("Replacing noose with stn...stn4 = \n");
+	 print_prefix(stn->name); putnl();
+	 print_prefix(stn2->name); putnl();
+	 print_prefix(stn3->name); putnl();
+	 print_prefix(stn4->name); putnl();
 #endif
-            if (data_here(stn2->leg[dirn2]))
-               adddd(&POSD(stn), &POSD(stn2), &stn2->leg[dirn2]->d);
-            else
-               subdd(&POSD(stn), &POSD(stn2),
-		     &reverse_leg(stn2->leg[dirn2])->d);
+	 if (data_here(stn2->leg[dirn2]))
+	    adddd(&POSD(stn), &POSD(stn2), &stn2->leg[dirn2]->d);
+	 else
+	    subdd(&POSD(stn), &POSD(stn2), &reverse_leg(stn2->leg[dirn2])->d);
 
-	    /* the "rope" of the noose is a new articulation */
-	    stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
-	    reverse_leg(stn2->leg[dirn2])->l.reverse |= FLAG_ARTICULATION;
+	 /* the "rope" of the noose is a new articulation */
+	 stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
+	 reverse_leg(stn2->leg[dirn2])->l.reverse |= FLAG_ARTICULATION;
 
-            fix(stn);
-         } else {
-            stn2 = ptrRed->join1->l.to;
-            dirn2 = reverse_leg_dirn(ptrRed->join1);
-            dirn2 = (dirn2 + 2) % 3; /* point back at stn again */
-            stn = stn2->leg[dirn2]->l.to;
-         }
+	 fix(stn);
+
 	 add_stn_to_list(&stnlist, stn);
 	 add_stn_to_list(&stnlist, stn2);
 
@@ -626,62 +621,63 @@ replace_subnets(void)
 	 node *stn;
          delta e, e2;
          linkfor *leg;
-
+	 int dirn;
+	 
 	 stn = ptrRed->join1->l.to;
 	 stn2 = ptrRed->join2->l.to;
-         if (fixed(stn3)) {
-	    int dirn;
-	    ASSERT(fixed(stn4)); /* either both or neither fixed */
-            dirn = reverse_leg_dirn(ptrRed->join1);
-            dirn2 = reverse_leg_dirn(ptrRed->join2);
+         ASSERT(fixed(stn3));
+	 ASSERT(fixed(stn4));
 
-            leg = stn3->leg[dirn3];
+	 dirn = reverse_leg_dirn(ptrRed->join1);
+	 dirn2 = reverse_leg_dirn(ptrRed->join2);
 
-	    if (leg->l.reverse & FLAG_ARTICULATION) {
-	       ptrRed->join1->l.reverse |= FLAG_ARTICULATION;
-	       stn->leg[dirn]->l.reverse |= FLAG_ARTICULATION;
-	       ptrRed->join2->l.reverse |= FLAG_ARTICULATION;
-	       stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
-	    }
+	 leg = stn3->leg[dirn3];
 
-            if (fZeros(&leg->v))
-               e[0] = e[1] = e[2] = 0.0;
-            else {
-	       delta tmp;
-               subdd(&e, &POSD(stn4), &POSD(stn3));
-               subdd(&tmp, &e, &leg->d);
-               divds(&e, &tmp, &leg->v);
-            }
+	 if (leg->l.reverse & FLAG_ARTICULATION) {
+	    ptrRed->join1->l.reverse |= FLAG_ARTICULATION;
+	    stn->leg[dirn]->l.reverse |= FLAG_ARTICULATION;
+	    ptrRed->join2->l.reverse |= FLAG_ARTICULATION;
+	    stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
+	 }
 
-            if (data_here(ptrRed->join1)) {
-               leg = ptrRed->join1;
-               adddd(&POSD(stn), &POSD(stn3), &leg->d);
-            } else {
-               leg = stn->leg[dirn];
-               subdd(&POSD(stn), &POSD(stn3), &leg->d);
-            }
-            mulsd(&e2, &leg->v, &e);
-            adddd(&POSD(stn), &POSD(stn), &e2);
+	 if (fZeros(&leg->v))
+	    e[0] = e[1] = e[2] = 0.0;
+	 else {
+	    delta tmp;
+	    subdd(&e, &POSD(stn4), &POSD(stn3));
+	    subdd(&tmp, &e, &leg->d);
+	    divds(&e, &tmp, &leg->v);
+	 }
 
-            if (data_here(ptrRed->join2)) {
-               leg = ptrRed->join2;
-               adddd(&POSD(stn2), &POSD(stn4), &leg->d);
-            } else {
-               leg = stn2->leg[dirn2];
-               subdd(&POSD(stn2), &POSD(stn4), &leg->d);
-            }
-            mulsd(&e2, &leg->v, &e);
-            subdd(&POSD(stn2), &POSD(stn2), &e2);
-            fix(stn);
-            fix(stn2);
+	 if (data_here(ptrRed->join1)) {
+	    leg = ptrRed->join1;
+	    adddd(&POSD(stn), &POSD(stn3), &leg->d);
+	 } else {
+	    leg = stn->leg[dirn];
+	    subdd(&POSD(stn), &POSD(stn3), &leg->d);
+	 }
+	 mulsd(&e2, &leg->v, &e);
+	 adddd(&POSD(stn), &POSD(stn), &e2);
+
+	 if (data_here(ptrRed->join2)) {
+	    leg = ptrRed->join2;
+	    adddd(&POSD(stn2), &POSD(stn4), &leg->d);
+	 } else {
+	    leg = stn2->leg[dirn2];
+	    subdd(&POSD(stn2), &POSD(stn4), &leg->d);
+	 }
+	 mulsd(&e2, &leg->v, &e);
+	 subdd(&POSD(stn2), &POSD(stn2), &e2);
+	 fix(stn);
+	 fix(stn2);
 #if 0
-            printf("Replacing parallel with stn...stn4 = \n");
-            print_prefix(stn->name); putnl();
-            print_prefix(stn2->name); putnl();
-            print_prefix(stn3->name); putnl();
-            print_prefix(stn4->name); putnl();
+	 printf("Replacing parallel with stn...stn4 = \n");
+	 print_prefix(stn->name); putnl();
+	 print_prefix(stn2->name); putnl();
+	 print_prefix(stn3->name); putnl();
+	 print_prefix(stn4->name); putnl();
 #endif
-         }
+
 	 add_stn_to_list(&stnlist, stn);
 	 add_stn_to_list(&stnlist, stn2);
 
@@ -712,58 +708,37 @@ replace_subnets(void)
 	 dirn[2] = reverse_leg_dirn(stnZ->leg[2]);
 	 /*print_prefix(stnZ->name);printf(" %p\n",(void*)stnZ);*/
 
-         if (fixed(stnZ)) {
-            for (i = 0; i < 3; i++) {
-               ASSERT2(fixed(stn[i]), "stn not fixed for D*");
-               ASSERT2(data_here(stn[i]->leg[dirn[i]]),
-	               "data not on leg for D*");
-               ASSERT2(stn[i]->leg[dirn[i]]->l.to == stnZ,
-                       "bad sub-network for D*");
-            }
-            for (i = 0; i < 3; i++) {
-               leg = stn[i]->leg[dirn[i]];
-               stn2 = legs[i]->l.to;
-               adddd(&POSD(stn2), &POSD(stn[i]), &legs[i]->d);
-               if (!fZeros(&leg->v)) {
-		  delta e, tmp;
-                  subdd(&e, &POSD(stnZ), &POSD(stn[i]));
-                  subdd(&e, &e, &leg->d);
-                  divds(&tmp, &e, &leg->v);
-                  mulsd(&e, &legs[i]->v, &tmp);
-		  adddd(&POSD(stn2), &POSD(stn2), &e);
-               }
-               fix(stn2);
-	       add_stn_to_list(&stnlist, stn2);
-               osfree(leg);
-               stn[i]->leg[dirn[i]] = legs[i];
-	       /* transfer the articulation status of the radial legs */
-	       if (stnZ->leg[i]->l.reverse & FLAG_ARTICULATION) {
-		  legs[i]->l.reverse |= FLAG_ARTICULATION;
-		  reverse_leg(legs[i])->l.reverse |= FLAG_ARTICULATION;
-	       }
-               osfree(stnZ->leg[i]);
-               stnZ->leg[i] = NULL;
-            }
-/*printf("---%f %f %f\n",POS(stnZ, 0), POS(stnZ, 1), POS(stnZ, 2));*/
-         } else { /* not fixed case */
-            for (i = 0; i < 3; i++) {
-               ASSERT2(!fixed(stn[i]), "stn fixed for D*");
-               ASSERT2(data_here(stn[i]->leg[dirn[i]]),
-                       "data not on leg for D*");
-               ASSERT2(stn[i]->leg[dirn[i]]->l.to == stnZ,
-                       "bad sub-network for D*");
-            }
-            for (i = 0; i < 3; i++) {
-/*print_prefix(stn[i]->name);putnl();*/
-               leg = stn[i]->leg[dirn[i]];
-               stn2 = legs[i]->l.to;
-	       add_stn_to_list(&stnlist, stn2);
-               osfree(leg);
-               stn[i]->leg[dirn[i]] = legs[i];
-               osfree(stnZ->leg[i]);
-               /* stnZ->leg[i] = NULL; */
-            }
+	 for (i = 0; i < 3; i++) {
+	    ASSERT2(fixed(stn[i]), "stn not fixed for D*");
+	    ASSERT2(data_here(stn[i]->leg[dirn[i]]), "data not on leg for D*");
+	    ASSERT2(stn[i]->leg[dirn[i]]->l.to == stnZ,
+		    "bad sub-network for D*");
 	 }
+	 for (i = 0; i < 3; i++) {
+	    leg = stn[i]->leg[dirn[i]];
+	    stn2 = legs[i]->l.to;
+	    adddd(&POSD(stn2), &POSD(stn[i]), &legs[i]->d);
+	    if (!fZeros(&leg->v)) {
+	       delta e, tmp;
+	       subdd(&e, &POSD(stnZ), &POSD(stn[i]));
+	       subdd(&e, &e, &leg->d);
+	       divds(&tmp, &e, &leg->v);
+	       mulsd(&e, &legs[i]->v, &tmp);
+	       adddd(&POSD(stn2), &POSD(stn2), &e);
+	    }
+	    fix(stn2);
+	    add_stn_to_list(&stnlist, stn2);
+	    osfree(leg);
+	    stn[i]->leg[dirn[i]] = legs[i];
+	    /* transfer the articulation status of the radial legs */
+	    if (stnZ->leg[i]->l.reverse & FLAG_ARTICULATION) {
+	       legs[i]->l.reverse |= FLAG_ARTICULATION;
+	       reverse_leg(legs[i])->l.reverse |= FLAG_ARTICULATION;
+	    }
+	    osfree(stnZ->leg[i]);
+	    stnZ->leg[i] = NULL;
+	 }
+/*printf("---%f %f %f\n",POS(stnZ, 0), POS(stnZ, 1), POS(stnZ, 2));*/
 	 remove_stn_from_list(&stnlist, stnZ);
 	 osfree(stnZ->name);
 	 osfree(stnZ);

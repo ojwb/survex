@@ -338,6 +338,11 @@ articulate(void)
       if (!stnStart) break;
    }
 
+   osfree(dirn_stack);
+   dirn_stack = NULL;
+   osfree(min_stack);
+   min_stack = NULL;
+
    if (artlist) {
       articulation *art = osnew(articulation);
       art->stnlist = artlist;
@@ -352,6 +357,26 @@ articulate(void)
       component_list = comp;
       articulation_list = NULL;
    }
+   
+   if (stnlist) {
+      /* Actually this error is fatal, but we want to list the survey
+       * stations which aren't connected, so we report it as an error
+       * and die after listing them...
+       */
+      bool fNotAttached = fFalse;
+      error(/*Survey not all connected to fixed stations*/45);
+      FOR_EACH_STN(stn, stnlist) {
+	 if (stn->name->ident[0]) {
+	    if (!fNotAttached) {
+	       fNotAttached = fTrue;
+	       puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
+	    }
+	    puts(sprint_prefix(stn->name));
+	 }
+      }
+      exit(EXIT_FAILURE);
+   }
+   
    {
       component *comp;
       articulation *art;
@@ -424,12 +449,8 @@ articulate(void)
    }
 
 #ifdef DEBUG_ARTIC
-   /* highlight unfixed bits */
    FOR_EACH_STN(stn, stnlist) {
-      if (!fixed(stn)) {
-	 print_prefix(stn->name);
-	 printf(" [%p] UNFIXED\n", stn);
-      }
+      ASSERT(fixed(stn));
    }
 #endif
 #if 1 /*def DEBUG_ARTIC*/
@@ -528,9 +549,4 @@ articulate(void)
       }
    }
 #endif
-
-   osfree(dirn_stack);
-   osfree(min_stack);
-   dirn_stack = NULL;
-   min_stack = NULL;
 }
