@@ -30,36 +30,27 @@
 
 static bool isSwapped = false;
 
-inline void fnt_swab_short(unsigned short *x) {
-    if (isSwapped)
-	*x = ((*x >>  8) & 0x00FF) | 
-	     ((*x <<  8) & 0xFF00) ;
-}
-
-inline void fnt_swab_int ( unsigned int *x )
-{
-    if (isSwapped)
-	*x = ((*x >> 24) & 0x000000FF) | 
-	     ((*x >>  8) & 0x0000FF00) | 
-	     ((*x <<  8) & 0x00FF0000) | 
-	     ((*x << 24) & 0xFF000000) ;
-}
-
 inline unsigned char fnt_readByte(FILE *fd) {
     return (unsigned char)getc(fd);
 }
 
 inline unsigned short fnt_readShort(FILE *fd) {
     unsigned short x;
-    fread(&x, sizeof(unsigned short), 1, fd);
-    fnt_swab_short(&x);
+    if (isSwapped) {
+	x = getc(fd) | (getc(fd) << 8);
+    } else {
+	x = (getc(fd) << 8) | getc(fd);
+    }
     return x;
 }
 
 inline unsigned int fnt_readInt(FILE *fd) {
     unsigned int x;
-    fread(&x, sizeof(unsigned int), 1, fd);
-    fnt_swab_int(&x);
+    if (isSwapped) {
+	x = getc(fd) | (getc(fd) << 8) | (getc(fd) << 16) | (getc(fd) << 24);
+    } else {
+	x = (getc(fd) << 24) | (getc(fd) << 16) | (getc(fd) << 8) | getc(fd);
+    }
     return x;
 }
 
@@ -78,13 +69,12 @@ fntTexFont::load(const char *fname)
 
     unsigned char magic[4];
 
-    if (fread(&magic, sizeof(unsigned int), 1, fd) != 1) {
+    if (fread(&magic, 4, 1, fd) != 1) {
 	fprintf(stderr, "'%s' an empty file!\n", fname);
 	return false;
     }
 
-    char cookie[4] = { '\xff', 't', 'x', 'f' };
-    if (memcmp(magic, cookie, 4) != 0) {
+    if (memcmp(magic, "\xfftxf", 4) != 0) {
 	fprintf(stderr, "'%s' is not a 'txf' font file.\n", fname);
 	return false;
     }
