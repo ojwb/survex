@@ -1609,6 +1609,9 @@ void MainFrm::OnFind(wxCommandEvent& event)
     regfree(&buffer);
 
     m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found));
+#ifdef _WIN32
+    m_Found->Refresh();
+#endif
     m_Gfx->DisplaySpecialPoints();
 
 #if 0

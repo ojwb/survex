@@ -187,6 +187,10 @@ GfxCore::~GfxCore()
 {
     TryToFreeArrays();
 
+    if (m_OffscreenBitmap) {
+        delete m_OffscreenBitmap;
+    }
+
 #ifndef AVENGL
     DELETE_ARRAY(m_Pens);
     DELETE_ARRAY(m_Brushes);
