@@ -2,8 +2,6 @@
 
 pkgdocdir = @PKGDOCDIR@
 
-doclist = @DOCS_OTHER@
-
 other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
  printdm.1 printhpgl.1 printpcl.1 printps.1 print.ini.5 @EXTRA_MANS@
 
@@ -15,7 +13,7 @@ manual_sources = manual.sgml cad3d.sgml cavern.sgml caverot.sgml\
 # People can build from CVS without sgmltools v2 or v3 installed but they
 # won't be able to "make dist", which is arguably a good thing - we don't
 # want tarballs accidentally lacking the documentation.
-EXTRA_DIST = manual $(doclist) survex.1.in index.htm.in\
+EXTRA_DIST = manual @DOCS_OTHER@ survex.1.in index.htm.in\
  index.htm GPL.htm TODO.htm ChngeLog.htm NEWS.htm OLDNEWS.htm\
  AUTHORS.htm HACKING.htm\
  custom.dsl survex.ent\
@@ -35,11 +33,11 @@ NEWS.htm: ../NEWS
 OLDNEWS.htm: ../OLDNEWS
 	./news2html.pl < ../OLDNEWS > OLDNEWS.htm
 
-MAINTAINERCLEANFILES = $(doclist) $(other_mans)\
+MAINTAINERCLEANFILES = @DOCS_OTHER@ $(other_mans)\
  ChngeLog.htm NEWS.htm OLDNEWS.htm
 
 pkgdoc_DATA = index.htm GPL.htm TODO.htm ChngeLog.htm\
- NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist)
+ NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm @DOCS_OTHER@
 
 man_MANS = survex.1 $(other_mans)
 
@@ -105,7 +103,7 @@ maintainer-clean-local:
 	rm -rf manual "$(srcdir)/manual"
 
 distclean-local:
-	-test . != "$(srcdir)" && rm -f manual.sgml
+	-test . != "$(srcdir)" && rm -f manual.sgml manual @DOCS_OTHER@
 
 # manual depends on config.h so it gets rebuilt when the version number is
 # bumped
