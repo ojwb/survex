@@ -18,7 +18,7 @@ update size of Austria data, speeds to a modern benchmark?
 section on "design philosophy"
 -->
 
-<Article Status="draft">
+<Article Status="draft" id=index>
  <ArtHeader>
   <Title>&survexsuite; 0.90 Documentation</Title>
   <AuthorGroup>
@@ -46,8 +46,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 1999-02-28 11:53:57 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.5 1999-02-28 11:53:57 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 1999-05-17 20:23:59 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.6 1999-05-17 20:23:59 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -66,10 +66,10 @@ ZIPfile</a>
 <Sect1><Title>Introduction</Title>
 
 <Para>&survexsuite; is a multi-platform open-source cave survey package. It
-currently runs on &msdos;, &unix;, and Acorn &riscos; machines. The &msdos;
-version works under Windows, but soon we should have a native Win32 console
-version (which will run on Windows 95, Windows 98, Windows NT, and probably
-Windows 3.1 with Win32s).</Para>
+currently runs on &unix;, Windows 95/98/NT, &msdos;, and Acorn &riscos;
+machines.  Windows 3.1 users can use the &msdos; version, or may be able to
+run Windows 95/98/NT version with Win32s installed (though we've not tried
+this).</Para>
 
 <Para>Porting to other platforms should be fairly easy.  The graphics
 code in caverot will be most work - the rest only requires an ANSI C
@@ -143,8 +143,9 @@ is unpack the sources, then simply type <command>./configure</command>
 followed by <command>make</command> to build the programs and then
 <command>make install</command> to install them.</Para>
 
-<Para>We may supply pre-compiled versions for the more popular &unix;
-platforms in future (Linux is an obvious candidate).</Para>
+<Para>We also supply a pre-compiled version for x86 Linux machines in RPM
+format.</Para>
+
 </Sect3>
 
 <Sect3><Title>Windows 95, Windows 98 and Windows NT</Title>
@@ -179,7 +180,7 @@ if it's needed.</Para>
 machines. You might wonder why - the reason is that many surveying
 projects have little or no budget and can acquire such machines for
 free. This version is suitable for caves up to medium size - a few
-thousand stations which typically equates to a few kilometers of
+thousand stations which typically equates to a few kilometres of
 survey.  A very loopy cave may need more memory.
 </Para>
 
@@ -321,7 +322,7 @@ these in case they are of use to someone.
 
 <Sect1><Title>Environment variables</Title>
 
-<!-- FIXME bad style -->
+<!-- FIXME: bad style -->
 
 <Sect2><Title>Language</Title>
 
@@ -632,38 +633,6 @@ slower processing.</Para>
 
 </Sect3>
 
-<!--
-
-<Sect3><Title>Command Files</Title>
-
-<important><Para>The use of command files is deprecated, and we are shortly
-going to start phasing them out. At present they are needed for a few
-esoteric tasks - these will become possible with resorting to using command
-files.</Para></important>
-
-<Para>For more complex tasks you can use command files (.svc), for which the
-syntax is:
-</Para>
-
-<Para>survex -F&lt;command filename&gt;
-
-There is an alternative form of "-F", but it does not work in the standard
-&msdos; version and is deprecated:
-</Para>
-
-<Para>survex @ &lt;command filename&gt;
-</Para>
-
-<Para>This is equivalent to the contents of the file being on the
-command line, but allows a command line effectively longer than the OS
-maximum, and allows it to be stored in a file. In a command file,
-tabs, linefeeds and carriage returns are treated as spaces.
-</Para>
-
-</Sect3>
-
--->
-
 </Sect2>
 
 </Sect1>
@@ -718,27 +687,28 @@ give you the help again.  <keycap/Escape/ lets you out.
 
 <Sect2><Title>Colours and multiple data files</Title>
 
+<warning>
+<Para>This feature is an interim measure until the new <filename/.3d/ format
+is implemented, which will allow more intelligent and dynamic selection of
+what to plot and in what colour. Thus it is a bit basic, but it works
+very well as far as it goes.
+</Para>
+</warning>
+
 <Para>Caverot can read in multiple data files and display them in separate
 colours.
 </Para>
 
-<Para>The syntax is given above. E.g. caverot -c2,6 cave.3d surface.3d,
-which would display cave in colour 2 and surface in colour 6. You do not have
-to give colours, in which case it will just use some random ones and
-probably look horrible.
-</Para>
+<Para>The syntax is given above. E.g. <command/caverot -c2,6 cave.3d
+surface.3d/ would display <filename/cave.3d/ in colour 2 and
+<filename/surface.3d/ in colour 6. You do not have to give colours, in which
+case it will just use some random ones and probably look horrible.</Para>
 
 <Para>Colour values range between 0 (black) and 255 (probably white). You
 will have to experiment to find which ones are which. There is a limit of
 about 15 colour values at present - more are silently ignored, and whatever
 value happens to be in memory off the end of the array is used for the
 colour if you give more than 15 <filename/.3d/ files.
-</Para>
-
-<Para>This feature is an interim measure until the new <filename/.3d/ format
-is implemented which will allow more intelligent and dynamic selection of
-what to plot and in what colour. Thus it is a bit basic, but it does work
-very well.
 </Para>
 
 <Para>Note that there is no perspective in the view. This means that
@@ -856,10 +826,9 @@ pin, but some old printers will not support it.  PRINTDM should also
 work with IBM ProPrinters.
 </Para>
 
-<Para>PRINTPCL for printers that use Hewlett Packard's PCL (Printer Control
-Language), which means Deskjets, Laserjets (i.e. most Inkjets and Laser
-printers).
-</Para>
+<Para>PRINTPCL for printers that use Hewlett Packard's <Acronym/PCL/
+(Printer Control Language), which means Deskjets, Laserjets (i.e. most
+Inkjets and Laser printers). </Para>
 
 <Para>PRINTPS for Postscript printers and plotters.
 </Para>
@@ -872,6 +841,8 @@ sets various features for each printer. See 'Printer Settings'
 below. Even if your printer is not standard you should be able get it
 to work by editing these files.
 </Para>
+
+<!-- FIXME: allow scaling for all drives? add - - test-page option? -->
 
 <Para>To get plots that are properly to scale from PRINTDM you
 <emphasis/must/ measure the output from <emphasis/your/ printer, and
@@ -892,9 +863,9 @@ PRN the device name.  Do <emphasis>not</emphasis> use COPY without the
 with &msdos;, and there is nothing we can do about it.</Para>
 </caution>
 
-<Para>If you send output straight to the printer, by putting PRN or LPT1 in
-the configuration file, then this problem should not occur.
-</Para>
+<Para>If you send output straight to the printer, by putting <filename/PRN/
+or <filename/LPT1/ in the configuration file, then this problem should not
+occur.</Para>
 
 <Para>printps produces text files as output, and so should be unaffected by
 this.
@@ -907,7 +878,7 @@ this.
 <Para>The syntax of the commands is the same in each case. For example:
 </Para>
 
-<!-- FIXME this is now wrong -->
+<!-- FIXME: this is now wrong -->
 
 <Para><command>printdm [-[!]Border] [-[!]Crosses] [-[!]Labels]
 [-[!]Shots] &lt;image filename&gt;</command>
@@ -1942,7 +1913,7 @@ DEG|DEGREES|GRADS|MILS|MINUTES
 <Para>(360 degrees = 400 grads (also known as Mils))
 </Para>
 
-<Para>Defaults are: Meters, Degrees, Degrees respectively.
+<Para>Defaults are: Metres, Degrees, Degrees respectively.
 </Para>
 
 <Para>[Percentage gradient not yet implemented]
@@ -2866,15 +2837,6 @@ We are not asking for money, but would appreciate the occasional
 donation of 5 or 10 pounds if you think it is worth it, to help
 cover our costs and provide encouragement.
 </Para>
-
-<Para>
-Thanks,
-</Para>
-
-<Para>
-Wook and Olly, 1997.01.20
-</Para>
-
 </Sect1>
 
 </Article>
