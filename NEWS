@@ -4,11 +4,11 @@
 * aven: survey pane now gets initial focus so you no longer have to
   click on it before key presses are recognised.
 
-* (MS Windows version): fixed problems with some keys being impossible
-  to enter in search box, or not being recognised in survey pane.
+* (MS Windows version): aven: fixed problems with some keys being
+  impossible to enter in search box, or not being recognised in survey
+  pane.
 
-* (MS DOS version): Ctrl + Arrow key would also be interpreted as
-  unadorned Arrow key.
+* (MS DOS version): caverot: Shift and/or Ctrl + Arrow keys now works.
 
 * aven: Close button in About box is now always right in the bottom right
   corner.

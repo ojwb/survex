@@ -521,7 +521,18 @@ cvrotgfx_get_key(void)
    {FILE*f=fopen("key.log","a");if(f){fprintf(f,"%04x\n",keycode);fclose(f);}}
 #endif
    /* check for cursor keys/delete/end - these give enhanced DOS key codes (+ 0x100) */
-   if (keycode && (keycode & 0xff) == 0) return (keycode >> 8) | 0x100;
+   switch (keycode >> 8) {
+    case KEY_DEL:
+    case KEY_HOME:
+    case KEY_END:
+    case KEY_PGUP:
+    case KEY_PGDN:
+    case KEY_LEFT:
+    case KEY_RIGHT:
+    case KEY_UP:
+    case KEY_DOWN:
+      return (keycode >> 8) | 0x100;
+   }
    /* otherwise throw away scan code */
    return keycode & 0xff;
 }
