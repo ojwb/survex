@@ -4,6 +4,8 @@ From: Olly
 Bugs in wxaven:
 
 some shortcuts are missing (space/return/arrowkeys/'/slash/[/]/delete)
+ -- only from menus now (although return/space don't work on first attempt!),
+    investigations continuing
 
 sometimes stops responding
 
