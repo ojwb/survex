@@ -35,10 +35,11 @@ if test $sectors -lt 8192 ; then
   sectors=8192
 fi
 echo "Creating new blank image survex-macosx.dmg of $sectors sectors"
-# This just writes ASCII data to the file until its the correct size.
+# This just writes ASCII data to the file until it's the correct size.
 hdiutil create -sectors $sectors survex-macosx -layout NONE
 
-# Get the name of the next available device that can be used for mounting (attaching).
+# Get the name of the next available device that can be used for mounting
+# (attaching).
 dev=`hdid -nomount survex-macosx.dmg|tail -1|sed 's!/dev/!!'`
 echo "Constructing new HFS+ filesystem on $dev"
 # This will initialize /dev/r$dev as a HFS Plus volume.
