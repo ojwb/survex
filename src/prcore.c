@@ -612,7 +612,7 @@ main(int argc, char **argv)
       {HLP_ENCODELONG(8),       "turn off page border"},
       {HLP_ENCODELONG(9),       "turn off display of survey legs"},
       {HLP_ENCODELONG(10),      "turn on display of surface survey legs"},
-      {HLP_ENCODELONG(11),      "don't output blank pages"},
+      {HLP_ENCODELONG(11),      "don't output blank pages (implies --no-border)"},
       {HLP_ENCODELONG(12),      "set output file"},
       {0, 0}
    };
@@ -647,6 +647,7 @@ main(int argc, char **argv)
 	 break;
        case 'k': /* Print blank pages */
 	 fSkipBlank = 1;
+	 fNoBorder = 1;
 	 break;
        case 'e':
 	 view = ELEV;

@@ -60,6 +60,8 @@
 * cavern: fixed reporting of node stats for stations fixed with error
   estimates.
 
+* printdm/printpcl: --skip-blanks now forces --no-border.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.
