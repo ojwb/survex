@@ -61,8 +61,9 @@ bool Aven::OnInit()
     wxCmdLineParser cli(cmdline, argc, argv);
     int c = cli.Parse();
     if (c != 0 || cli.Found("h")) {
-        fprintf(stderr, "%s: %s [%s]\n",
-		msg(/*Syntax*/49), argv[0], msg(/*3d file*/119));
+	// write in two goes to avoid msg() overwriting its buffer on 2nd call
+        fprintf(stderr, "%s: %s ", msg(/*Syntax*/49), argv[0]);
+        fprintf(stderr, "[%s]\n", msg(/*3d file*/119));
 	exit(c > 0 ? 1 /* syntax error */ : 0 /* --help */);
     }
 
