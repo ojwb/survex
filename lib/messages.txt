@@ -2270,8 +2270,8 @@ ca:271 @Creus##Ctrl+X
 es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
 #
-en:272 Underground Survey @Legs##Ctrl+L
-en-us:272 Underground @Shots##Ctrl+L
+en:272 @Underground Survey Legs##Ctrl+L
+en-us:272 @Underground Shots##Ctrl+L
 fr:272 @Vis&eacute;es sous terre##Ctrl+L
 de:272 @Strecken##Ctrl+L
 de:272 @Strecken unter Grund##Ctrl+L
@@ -2353,8 +2353,8 @@ es:290 @Acerca de...
 it:290 @Informazioni su...
 #
 # here pt = pt-br ...
-en:291 Sur@face Survey Legs##Ctrl+F
-en-us:291 Sur@face Shots##Ctrl+F
+en:291 @Surface Survey Legs##Ctrl+F
+en-us:291 @Surface Shots##Ctrl+F
 fr:291 Segments de topo en Sur@face##Ctrl+F
 de-de,de-ch:291 Messz&uuml;ge Ober@fl&auml;che##Ctrl+F
 de:          291 Me&szlig;z&uuml;ge Ober@fl&auml;che##Ctrl+F
@@ -2372,8 +2372,7 @@ ca:292 Colors per @Altitud en topograf&iacute;a de superf&iacute;cie
 es:292 Colores por @Altitud en topografia de superficie
 it:292 Rappresentazione delle @Quote mediante colori
 #
-en:293 Da@shed Surface Surveys
-en-us:293 Das@hed Surface Surveys
+en:293 @Dashed Surface Surveys
 fr:293 Topos de surface @Hachur&eacute;es
 de-de,de-ch:293 Gestrichelte @Oberfl&auml;chenmessz&uuml;ge
 de:          293 Gestrichelte @Oberfl&auml;chenme&szlig;z&uuml;ge
@@ -2390,8 +2389,8 @@ ca:294 Marca les @Entrades
 es:294 Marca las @Entradas 
 it:294 Marca gli Ing@ressi
 #
-en:295 Highlight Fi@xed Points
-en-us:295 Highlight Contro@l Points
+en:295 Highlight @Fixed Points
+en-us:295 Highlight @Control Points
 fr:295 Mise en valeur des points Fi@xes
 de:295 Fi@xpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
@@ -2399,7 +2398,7 @@ ca:295 Marca els @Punts fixats
 es:295 Marca los @Puntos fijados
 it:295 Marca i @Punti fissi
 #
-en:296 Highlight Ex@ported Points
+en:296 Highlight E@xported Points
 fr:296 Mise de valeur des points ex@port&eacute;s
 de:296 Ex@portierte Punkte hervorheben
 pt:296 Destacar Bases Ex@portadas
@@ -2714,13 +2713,13 @@ ca:336 Sols es pot visualitzar un fitxer 3d alhora.
 es:336 Solo se puede visualizar un archivo 3d a la vez.
 it:336 &Eacute; possibile visualizzare solamente un file 3D alla volta.
 #
-en:337 Side P@anel
-fr:337 Vue lat&eacute;rale
-de:337 Seitliches @Kontrollfeld
-pt:337 P@ainel lateral
-ca:337 Recuadre @Lateral
-es:337 Panel @Lateral
-it:337 Riquadro @Laterale
+en:337 @Side Panel
+fr:337 @Vue lat&eacute;rale
+de:337 @Seitliches Kontrollfeld
+pt:337 @Painel lateral
+ca:337 @Recuadre Lateral
+es:337 @Panel Lateral
+it:337 @Riquadro Laterale
 # show coordinates (N = North or Northing, E = East or Easting)
 en:338 "  %d E, %d N"
 fr:338 "  %d E, %d N"
@@ -2760,17 +2759,17 @@ it:341 "  Dist %d%s, Azm. %03d%s"
 # tickable menu item in View menu
 en:342 @Metric
 fr:342 @M&eacute;trique
-de:342 Metris@ch
+de:342 @Metrisch
 ca:342 @Metric
 es:342 @Metrico
 # tickable menu item in View menu
 en:343 @Degrees
 fr:343 @Degr&eacute;s
 de:343 @Grad
-pt:343 G@raus
-ca:343 G@raus
+pt:343 @Graus
+ca:343 @Graus
 es:343 @Grados
-it:343 Gra@di
+it:343 @Gradi
 # a degree sign...
 en:344 &deg;
 fr:344 &deg;

@@ -9,6 +9,9 @@ Changes in 1.0.8:
 
 * aven: settings for "Metric" and "Degrees" are preserved between runs.
 
+* aven: moved some menu items from "View" to "Controls" as they probably
+  belong there and the "View" menu was getting out of hand.
+
 * print*: improved output when --no-border is used.
 
 * printpcl/printdm: Added new .ini setting "font_bitmap" which allows the user
