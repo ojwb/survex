@@ -17,6 +17,8 @@
 * (Unix version): Improved test for needing librx - before it was used
   if it was present, even if it wasn't needed.
 
+* (Unix version): Minor debian tweaks.
+
 Changes in 0.99-prerelease3:
 
 * Documentation rearranged.  Some sections which covered the same

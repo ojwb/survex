@@ -60,6 +60,7 @@ binary-common: build install
 #	dh_installmime
 #	dh_installinit
 #	dh_installcron
+	dh_dhelp
 	gzip -9 debian/tmp/usr/share/man/man1/*
 	mkdir -p debian/survex-aven/usr/share/man/man1
 	mv debian/tmp/usr/share/man/man1/aven.1.gz debian/survex-aven/usr/share/man/man1

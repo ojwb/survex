@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 EXTRA_DIST = copyright copyright.in docs survex-aven.files doc-base \
- rules survex-aven.menu watch control changelog
+ rules survex-aven.menu watch control changelog dhelp
 
 CLEANFILES = control docs
 
@@ -10,7 +10,7 @@ control: Makefile $(top_srcdir)/desc.txt $(top_srcdir)/desc-aven.txt
 	echo Section: math >> control
 	echo Priority: optional >> control
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
-	echo Standards-Version: 3.1.0 >> control
+	echo Standards-Version: 3.5.6.0 >> control
 	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
 	echo 'Build-Depends: debhelper (>= 1.1.17), libwxgtk2.2-dev' >> control
 	echo >> control
