@@ -1,3 +1,8 @@
+* caverot/xcaverot: Ctrl + Arrow keys is now the preferred way to
+  rotate and tilt (easier to remember than "C"/"V" and "'"/"/").
+
+* xcaverot: Shift-ed movement keys now work faster as in caverot.
+
 Changes in 0.99-prerelease6:
 
 * aven: fixed bogus lines caused by coordinate wrap-around; fixed

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  *
- * Original license on code Copyright 1993 Bill Purvis:
+ * Original licence on code Copyright 1993 Bill Purvis:
  *
  * Bill Purvis DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
  * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -119,7 +119,7 @@ static double datafactor = 100.0;
 static double scale_default;
 
 static double scale; /* factor to scale view on screen by */
-static double zoomfactor = 1.2;
+static double zoomfactor = 1.06;
 static double sbar; /* length of scale bar */
 
 /* position of original click in pointer drags */
@@ -1437,33 +1437,56 @@ main(int argc, char **argv)
 		    KeySym mykey;
 		    int i;
 		    XKeyEvent *key_event = (XKeyEvent *) & myevent;
-
+		    double shift_factor = 1.0;
+		    if (key_event->state & ShiftMask) shift_factor = 5.0;
 		    switch (key_event->keycode) {
 		     case 100:
-		       x_mid -= cv * 20 / scale;
-		       y_mid -= sv * 20 / scale;
+		       if (key_event->state & ControlMask) {
+			  /* rotate one step "anticlockwise" */
+			  view_angle += fabs(rot_speed) * shift_factor / 5;
+			  break;			  
+		       }
+		       x_mid -= cv * 20 * shift_factor / scale;
+		       y_mid -= sv * 20 * shift_factor / scale;
 		       break;
 
 		     case 102:
-		       x_mid += cv * 20 / scale;
-		       y_mid += sv * 20 / scale;
+		       if (key_event->state & ControlMask) {
+			  /* rotate one step "clockwise" */
+			  view_angle -= fabs(rot_speed) * shift_factor / 5;
+			  break;
+		       }
+		       x_mid += cv * 20 * shift_factor / scale;
+		       y_mid += sv * 20 * shift_factor / scale;
 		       break;
 
 		     case 98:
+		       if (key_event->state & ControlMask) {
+			  /* higher viewpoint */
+			  elev_angle += 3.0 * shift_factor;
+			  if (elev_angle > 90.0) elev_angle = 90.0;
+			  break;
+		       }
 		       if (plan_elev == PLAN) {
-			   x_mid -= sv * 20 / scale;
-			   y_mid += cv * 20 / scale;
+			   x_mid -= sv * 20 * shift_factor / scale;
+			   y_mid += cv * 20 * shift_factor / scale;
 		       } else {
-			   z_mid -= 20 / scale;
+			   z_mid -= 20 * shift_factor / scale;
 		       }
 		       break;
 
 		     case 104:
+		       if (key_event->state & ControlMask) {
+			  /* lower viewpoint */
+			  elev_angle -= 3.0 * shift_factor;
+			  if (elev_angle < -90.0) elev_angle = -90.0;
+			  break;
+		       }
 		       if (plan_elev == PLAN) {
-			   x_mid += sv * 20 / scale;
-			   y_mid -= cv * 20 / scale;
+			   x_mid += sv * 20 * shift_factor / scale;
+			   y_mid -= cv * 20 * shift_factor / scale;
 		       } else {
-			   z_mid += 20 / scale;
+			   z_mid += 20 * shift_factor / scale;
 		       }
 		       break;
 
@@ -1522,31 +1545,35 @@ main(int argc, char **argv)
 			      if (fabs(rot_speed) < 0.1)
 				 rot_speed = rot_speed > 0 ? 0.1 : -0.1;
 			      break;
+			    case '{':	/* zoom out */
+			      scale /= zoomfactor;
+			      /* FALLTHRU */
 			    case '[':	/* zoom out */
-			    case '{':
 			      scale /= zoomfactor;
 			      break;
+			    case '}':	/* zoom in */
+			      scale *= zoomfactor;
+			      /* FALLTHRU */
 			    case ']':	/* zoom in */
-			    case '}':
 			      scale *= zoomfactor;
 			      break;
 			    case 'r':	/* reverse dirn of rotation */
 			      rot_speed = -rot_speed;
 			      break;
 			    case 'c':	/* rotate one step "anticlockwise" */
-			      view_angle += fabs(rot_speed) / 5;
+			      view_angle += fabs(rot_speed) * shift_factor / 5;
 			      break;
 			    case 'v':	/* rotate one step "clockwise" */
-			      view_angle -= fabs(rot_speed) / 5;
+			      view_angle -= fabs(rot_speed) * shift_factor / 5;
 			      break;
 			    case '\'':	/* higher viewpoint */
 			    case '@': case '"': /* alternate shifted forms */
-			      elev_angle += 3.0;
+			      elev_angle += 3.0 * shift_factor;
 			      if (elev_angle > 90.0) elev_angle = 90.0;
 			      break;
 			    case '/':	/* lower viewpoint */
 			    case '?':
-			      elev_angle -= 3.0;
+			      elev_angle -= 3.0 * shift_factor;
 			      if (elev_angle < -90.0) elev_angle = -90.0;
 			      break;
 			    case 'n':	/* cave north */
@@ -1570,7 +1597,6 @@ main(int argc, char **argv)
 		    break;
 		 }
 	     case ConfigureNotify:
-
 #if 0	/* rescale to keep view in window */
 	       scale *= min((double)myevent.xconfigure.width /
 			    (double)oldwidth,

@@ -217,7 +217,7 @@ cvrotgfx_init(void)
    /* set language for Allegro messages */
    p = osmalloc(10 + strlen(msg_lang));
    sprintf(p, "language=%s", msg_lang);
-   q = strchr(p, '-');
+   q = strchr(p + 9, '_');
    if (q) *q = 0;
    set_config_data(p, strlen(p));
    osfree(p);

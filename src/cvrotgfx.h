@@ -76,6 +76,7 @@ extern BITMAP *BitMap, *BitMapDraw;
 # define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, (char *)(S))
 /* # define shift_pressed() (key[KEY_LSHIFT] || key[KEY_RSHIFT]) alternative... */
 # define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
+# define ctrl_pressed() (key_shifts & KB_CTRL_FLAG)
 
 #elif (OS==MSDOS)
 
@@ -112,16 +113,23 @@ extern BITMAP *BitMap, *BitMapDraw;
 
 # ifdef MSC
 #  define shift_pressed() (_bios_keybrd(_KEYBRD_SHIFTSTATUS) & 0x03)
+/* FIXME guess... #  define ctrl_pressed() (_bios_keybrd(_KEYBRD_SHIFTSTATUS) & 0x0c) */
 # elif defined(ALLEGRO)
 #  define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
+#  define ctrl_pressed() (key_shifts & KB_CTRL_FLAG)
 # else
-#  define R_SHIFT  0x01
-#  define L_SHIFT  0x02
+#  define R_SHIFT 0x01
+#  define L_SHIFT 0x02
+/* FIXME 
+#  define R_CTRL  0x04
+#  define L_CTRL  0x08
+*/
 #  ifndef _KEYBRD_SHIFTSTATUS
 #   define _KEYBRD_SHIFTSTATUS 2 /* for DJGPP */
 #  endif
 /* use function 2 to determine if shift keys are depressed */
 #  define shift_pressed() (bioskey(_KEYBRD_SHIFTSTATUS) & (R_SHIFT | L_SHIFT))
+#  define ctrl_pressed() (bioskey(_KEYBRD_SHIFTSTATUS) & (R_CTRL | L_CTRL))
 # endif
 
 # ifdef MSC
@@ -171,6 +179,9 @@ void text_xy(int x, int y, const char *str);
 # define set_gcolour(X) (ol_setcol((X)))
 # define set_tcolour(X) (xos_set_gcol(), xos_writec(0), xos_writec((X)))
 # define shift_pressed() (osbyte_read(osbyte_VAR_KEYBOARD_STATE) & 0x08)
+/* FIXME: guess
+# define ctrl_pressed() (osbyte_read(osbyte_VAR_KEYBOARD_STATE) & 0x04)
+*/
 
 # define cvrotgfx_beep() xos_bell()
 
@@ -190,6 +201,7 @@ extern BITMAP *BitMap, *BitMapDraw;
 # define cvrotgfx_beep() NOP /*sound(256)*/ /* 256 is frequency */
 
 # define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
+# define ctrl_pressed() (key_shifts & KB_CTRL_FLAG)
 
 void cvrotgfx_moveto(int X, int Y);
 void cvrotgfx_lineto(int X, int Y);

@@ -542,15 +542,26 @@ process_key(void) /* and mouse! */
 	    degViewStep /= 1.2;
 	    if (degViewStep <= 0.1) degViewStep = 0.1;
 	    break;
-	  case 'C': degView += degViewStep * Accel; fChanged = fTrue; break;
-	  case 'V': degView -= degViewStep * Accel; fChanged = fTrue; break;
+	  case CURSOR_LEFT:
+	    if (!ctrl_pressed()) break;
+	    /* FALLTHRU */
+	  case 'C':
+	    degView += degViewStep * Accel; fChanged = fTrue; break;
+	  case CURSOR_RIGHT:
+	    if (!ctrl_pressed()) break;
+	    /* FALLTHRU */
+	  case 'V':
+	    degView -= degViewStep * Accel; fChanged = fTrue; break;
 	  case 'R': fRevRot = !fRevRot; break;
 	  case ' ':            fRotating = fFalse; break;
 	  case RETURN_KEY:     fRotating = fTrue; break;
-	 }
+	 }	 
       }
       if (locked == 0) {
 	 switch (iKeycode) {
+	  case CURSOR_UP:
+	    if (!ctrl_pressed()) break;
+	    /* FALLTHRU */
 	  case '\'': case '@': case '"':
 	    /* shift-' varies with keyboard layout
 	     * so check both '@' (UK) and '"' (US) */
@@ -562,6 +573,9 @@ process_key(void) /* and mouse! */
 	       fChanged = fTrue;
 	    }
 	    break;
+	  case CURSOR_DOWN:
+	    if (!ctrl_pressed()) break;
+	    /* FALLTHRU */
 	  case '/': case '?':
 	    if (fRevSense) goto tiltdown;
 	    tiltup:
@@ -764,8 +778,8 @@ show_help(void)
 	{0, "                  Z,X : Faster/Slower rotation", FLAG_ALWAYS},
 	{0, "                    R : [R]everse direction of rotation", FLAG_ALWAYS},
 	{0, "          Enter,Space : Start/Stop auto-rotation", FLAG_ALWAYS},
-	{0, "                  C,V : Rotate cave one step (anti)clockwise", FLAG_ALWAYS},
-	{0, "                  ',/ : Higher/Lower viewpoint", FLAG_ALWAYS},
+	{0, "  Ctrl + Cursor <-,-> : Rotate cave one step (anti)clockwise", FLAG_ALWAYS},
+	{0, "Ctrl + Cursor Up,Down : Higher/Lower viewpoint", FLAG_ALWAYS},
 	{0, "                  ],[ : Zoom In/Out", FLAG_ALWAYS},
 	{0, "                  U,D : Set view to [U]p/[D]own", FLAG_ALWAYS},
 	{0, "              N,S,E,W : Set view to [N]orth/[S]outh/[E]ast/[W]est", FLAG_ALWAYS},

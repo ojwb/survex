@@ -168,8 +168,8 @@ mouse - <keycap/Shift/ helps here as it accelerates all movements:
 <keycap/Z/, <keycap/X/ : Faster/Slower Rotation
 <keycap/R/: Reverse direction of rotation
 <keycap/Enter/, <keycap/Space/: Start and stop auto-rotation
-<keycap/C/, <keycap/V/: Rotate cave one step clockwise/anti-clockwise
-<keycap/'/ , <keycap>/</keycap>: Higher/Lower Viewpoint
+<keycap/Ctrl-Cursor Left/, <keycap/Ctrl-Cursor Right/: Rotate cave one step clockwise/anti-clockwise
+<keycap/Ctrl-Cursor Up/ , <keycap>Ctrl-Cursor Down</keycap>: Higher/Lower Viewpoint
 <keycap/]/ , <keycap/[/: Zoom in/Out
 <keycap/U/, <keycap/D/: Set view to Up/Down
 <keycap/N/, <keycap/S/, <keycap/E/, <keycap/W/: Set view to North, South, East, West
