@@ -48,6 +48,7 @@ typedef struct {
    int fLinePending; /* for old style text format files */
    int fRead;        /* fTrue for reading, fFalse for writing */
 # endif
+   long start;
    /* version of file format (0 => 0.01 ascii, 1 => 0.01 binary,
     * 2 => byte actions and flags) */
    int version;
@@ -94,6 +95,13 @@ int img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz);
  */
 void img_write_datum(img *pimg, int code, const char *sz,
 		     float x, float y, float z);
+
+/* rewind a .3d file opened for reading so the data can be read in
+ * several passes
+ * pimg is a pointer to an img struct returned by img_open()
+ */
+void img_rewind(img *pimg);
+
 /* Close a .3d file
  * pimg is a pointer to an img struct returned by img_open() or
  *   img_open_write()

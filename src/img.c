@@ -194,7 +194,14 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
    pimg->fLinePending = fFalse; /* not in the middle of a 'LINE' command */
    pimg->fRead = fTrue; /* reading from this file */
    img_errno = IMG_NONE;
+   pimg->start = ftell(pimg->fh);
    return pimg;
+}
+
+void
+img_rewind(img *pimg)
+{
+   fseek(pimg->fh, pimg->start, SEEK_SET);
 }
 
 img *
