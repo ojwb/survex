@@ -2286,7 +2286,7 @@ it:227 Le quantit&aacute; di lunghezza e angolari non possono essere calibrate i
 sk:227 Nie je mo&zcaron;n&eacute; nakalibrova&tcaron; uhlov&yacute;&eacute; a d&lacute;&zcaron;kov&eacute; &uacute;daje naraz
 #
 en:228 Select a terrain file to view
-fr:228 S&eacute;lectionner un fichier de surface &aagrave; visualiser
+fr:228 S&eacute;lectionner un fichier de surface &agrave; visualiser
 de:228 Gel&auml;ndedatei zur Ansicht w&auml;hlen
 ca:228 Selecciona un fitxer de terreny per veure
 es:228 Selecciona un archivo de terreno para ver
