@@ -44,15 +44,17 @@ bool Aven::OnInit()
 {
     msg_init(argv[0]);
 
-    static wxLocale wx_locale;    
-    if (!wx_locale.Init(msg_lang, msg_lang, msg_lang, FALSE, TRUE)) {
-       if (msg_lang2) {
-	  wx_locale.Init(msg_lang2, msg_lang2, msg_lang2, FALSE, TRUE);
-       }
+    static wxLocale wx_locale;
+    if (strcmp(msg_lang, "en") != 0 && strcmp(msg_lang, "en_US") != 0 &&
+	!wx_locale.Init(msg_lang, msg_lang, msg_lang, TRUE, TRUE)) {
+        if (msg_lang2) {
+	    wx_locale.Init(msg_lang2, msg_lang2, msg_lang2, TRUE, TRUE);
+        }
     }
-    // Add the catalog like this to avoid getting a warning box from
-    // wxWindows if wxstd isn't translated to the requested language
-    if (wx_locale.IsOk()) wx_locale.AddCatalog("wxstd");
+
+    // wxLocale::Init() gives an error box if it doesn't find the catalog,
+    // but using FALSE for the penultimate argument and then AddCatalog()
+    // if IsOk() doesn't work...
 
     static wxCmdLineEntryDesc cmdline[] = {
         { wxCMD_LINE_OPTION, "h", "help", msgPerm(/*Display command line options*/201) },
