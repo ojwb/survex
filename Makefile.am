@@ -89,7 +89,8 @@ djgpp_zip : dostxt
 	ln -s ../src/svxedit dostxt_tmp/svxedit.tcl
 	: # -l means convert LF to CR+LF
 	: # FIXME: really include dostxt too on DOS?
-	zip -9 -j -l $(djgpp_zip_name) dostxt_tmp/*.txt $(extra_txt)
+	zip -9 -j -l $(djgpp_zip_name) dostxt_tmp/*.txt dostxt_tmp/svxedit.tcl\
+	 $(extra_txt)
 	cd doc;zip -l ../$(djgpp_zip_name) manual/*.htm @HTMLFILES@
 	cd doc;zip ../$(djgpp_zip_name) manual/*.png
 	$(RM) -rf dostxt_tmp
@@ -103,7 +104,7 @@ mingw_iss :
 	for f in $(base_progs) aven printwin ; do cp src/$$f.exe mingw_exes ; done
 	cp src/svxedit iss_tmp/svxedit.tcl
 	cp $(extra_txt) survex.iss iss_tmp
-	: # so the can display the license
+	: # so the installer can display the license
 	cp COPYING iss_tmp/COPYING.txt
 	cd doc;cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF

@@ -305,7 +305,7 @@ case $tcl_platform(platform) {
     set xth(gui,efont) {fixed 10 roman}
   }
   windows {
-    set xth(gui,efont) "Courier 12 roman"
+    set xth(gui,efont) "Courier 10 roman"
   }
   macintosh {
   }
