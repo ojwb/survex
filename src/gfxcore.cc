@@ -2935,3 +2935,13 @@ void GfxCore::RestartPres()
     m_PresIterator = m_Presentation.begin();
     PresGo();
 }
+
+bool GfxCore::AtStartOfPres()
+{
+   return (m_PresIterator == ++(m_Presentation.begin()));
+}
+
+bool GfxCore::AtEndOfPres()
+{
+   return (m_PresIterator == m_Presentation.end());
+}

@@ -391,6 +391,9 @@ public:
     void PresGoBack();
     void RestartPres();
 
+    bool AtStartOfPres();
+    bool AtEndOfPres();
+
     void OnDefaults(wxCommandEvent&);
     void OnPlan(wxCommandEvent&);
     void OnElevation(wxCommandEvent&);

@@ -206,10 +206,12 @@ public:
     ~MainFrm();
 
     void OpenFile(const wxString& file, wxString survey = "");
+    void OnOpenPresUpdate(wxUpdateUIEvent& event);
 
     void OnOpen(wxCommandEvent& event);
     void OnOpenPres(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
+
     void OnPresCreate(wxCommandEvent& event);
     void OnPresGo(wxCommandEvent& event);
     void OnPresGoBack(wxCommandEvent& event);
@@ -218,6 +220,16 @@ public:
     void OnPresRecord(wxCommandEvent& event);
     void OnPresErase(wxCommandEvent& event);
     void OnPresEraseAll(wxCommandEvent& event);
+
+    void OnPresCreateUpdate(wxUpdateUIEvent& event);
+    void OnPresGoUpdate(wxUpdateUIEvent& event);
+    void OnPresGoBackUpdate(wxUpdateUIEvent& event);
+    void OnPresFinishUpdate(wxUpdateUIEvent& event);
+    void OnPresRestartUpdate(wxUpdateUIEvent& event);
+    void OnPresRecordUpdate(wxUpdateUIEvent& event);
+    void OnPresEraseUpdate(wxUpdateUIEvent& event);
+    void OnPresEraseAllUpdate(wxUpdateUIEvent& event);
+
     void OnAbout(wxCommandEvent& event);
     void OnClose(wxCloseEvent&);
 

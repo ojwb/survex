@@ -49,12 +49,22 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_PRES_CREATE, MainFrm::OnPresCreate)
     EVT_MENU(menu_PRES_GO, MainFrm::OnPresGo)
     EVT_MENU(menu_PRES_GO_BACK, MainFrm::OnPresGoBack)
-
     EVT_MENU(menu_PRES_RESTART, MainFrm::OnPresRestart)
     EVT_MENU(menu_PRES_RECORD, MainFrm::OnPresRecord)
     EVT_MENU(menu_PRES_FINISH, MainFrm::OnPresFinish)
     EVT_MENU(menu_PRES_ERASE, MainFrm::OnPresErase)
     EVT_MENU(menu_PRES_ERASE_ALL, MainFrm::OnPresEraseAll)
+
+    EVT_UPDATE_UI(menu_FILE_OPEN_PRES, MainFrm::OnOpenPresUpdate)
+
+    EVT_UPDATE_UI(menu_PRES_CREATE, MainFrm::OnPresCreateUpdate)
+    EVT_UPDATE_UI(menu_PRES_GO, MainFrm::OnPresGoUpdate)
+    EVT_UPDATE_UI(menu_PRES_GO_BACK, MainFrm::OnPresGoBackUpdate)
+    EVT_UPDATE_UI(menu_PRES_RESTART, MainFrm::OnPresRestartUpdate)
+    EVT_UPDATE_UI(menu_PRES_RECORD, MainFrm::OnPresRecordUpdate)
+    EVT_UPDATE_UI(menu_PRES_FINISH, MainFrm::OnPresFinishUpdate)
+    EVT_UPDATE_UI(menu_PRES_ERASE, MainFrm::OnPresEraseUpdate)
+    EVT_UPDATE_UI(menu_PRES_ERASE_ALL, MainFrm::OnPresEraseAllUpdate)
 
     EVT_CLOSE(MainFrm::OnClose)
 
@@ -1111,4 +1121,49 @@ void MainFrm::OnOpenPres(wxCommandEvent& event)
 	m_PresLoaded = true;
 	m_Recording = false;
     }
+}
+
+void MainFrm::OnOpenPresUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_File != "");
+}
+
+void MainFrm::OnPresCreateUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(!m_PresLoaded && m_File != "");
+}
+
+void MainFrm::OnPresGoUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_PresLoaded && !m_Recording && !m_Gfx->AtEndOfPres());
+}
+
+void MainFrm::OnPresGoBackUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_PresLoaded && !m_Recording && !m_Gfx->AtStartOfPres());
+}
+
+void MainFrm::OnPresFinishUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_PresLoaded && m_Recording);
+}
+
+void MainFrm::OnPresRestartUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_PresLoaded && !m_Recording && !m_Gfx->AtStartOfPres());
+}
+
+void MainFrm::OnPresRecordUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_PresLoaded && m_Recording);
+}
+
+void MainFrm::OnPresEraseUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_PresLoaded && m_Recording); //--Pres: FIXME
+}
+
+void MainFrm::OnPresEraseAllUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(m_PresLoaded && m_Recording); //--Pres: FIXME
 }
