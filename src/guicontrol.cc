@@ -34,11 +34,9 @@ const double FLYFREE_SHIFT = 0.2;
 const double ROTATE_STEP = 2.0;
 
 GUIControl::GUIControl()
+    : dragging(NO_DRAG)
 {
     m_View = NULL;
-    m_DraggingLeft = false;
-    m_DraggingMiddle = false;
-    m_DraggingRight = false;
     m_ReverseControls = false;
     m_LastDrag = drag_NONE;
 }
@@ -55,7 +53,7 @@ void GUIControl::SetView(GfxCore* view)
 
 bool GUIControl::MouseDown()
 {
-    return m_DraggingLeft || m_DraggingMiddle || m_DraggingRight;
+    return (dragging != NO_DRAG);
 }
 
 void GUIControl::HandleTilt(wxPoint point)
@@ -209,61 +207,67 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     m_View->SetCoords(point);
 
     if (!m_View->ChangingOrientation()) {
-	if (m_DraggingLeft) {
-	    if (m_LastDrag == drag_NONE) {
-		if (m_View->ShowingCompass() &&
-                    m_View->PointWithinCompass(point)) {
-		    m_LastDrag = drag_COMPASS;
-		} else if (m_View->ShowingClino() &&
-                         m_View->PointWithinClino(point)) {
-		    m_LastDrag = drag_ELEV;
-		} else if (m_View->ShowingScaleBar() &&
-                         m_View->PointWithinScaleBar(point)) {
-		    m_LastDrag = drag_SCALE;
+	switch (dragging) {
+	    case LEFT_DRAG:
+		if (m_LastDrag == drag_NONE) {
+		    if (m_View->ShowingCompass() &&
+			m_View->PointWithinCompass(point)) {
+			m_LastDrag = drag_COMPASS;
+		    } else if (m_View->ShowingClino() &&
+			     m_View->PointWithinClino(point)) {
+			m_LastDrag = drag_ELEV;
+		    } else if (m_View->ShowingScaleBar() &&
+			     m_View->PointWithinScaleBar(point)) {
+			m_LastDrag = drag_SCALE;
+		    }
 		}
-	    }
 
-	    if (m_LastDrag == drag_COMPASS) {
-		// drag in heading indicator
-		m_View->SetCompassFromPoint(point);
-	    } else if (m_LastDrag == drag_ELEV) {
-		// drag in clinometer
-		m_View->SetClinoFromPoint(point);
-	    } else if (m_LastDrag == drag_SCALE) {
-		// FIXME: check why there was a check here for x being inside
-		// the window
-	        m_View->SetScaleBarFromOffset(point.x - m_DragLast.x);
-	    } else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
-		m_LastDrag = drag_MAIN;
-                if (event.ShiftDown()) {
-		    HandleScaleRotate(point);
-                } else {
-		    HandleTiltRotate(point);
-                }
-	    }
-	} else if (m_DraggingMiddle) {
-            if (event.ShiftDown()) {
-	        HandleTilt(point);
-            } else {
-		HandleScale(point);
-            }
-	} else if (m_DraggingRight) {
-	    if ((m_LastDrag == drag_NONE && m_View->PointWithinScaleBar(point)) || m_LastDrag == drag_SCALE) {
-	    /* FIXME
-		  if (point.x < 0) point.x = 0;
-		  if (point.y < 0) point.y = 0;
-		  if (point.x > m_XSize) point.x = m_XSize;
-		  if (point.y > m_YSize) point.y = m_YSize;
-		  m_LastDrag = drag_SCALE;
-		  int x_inside_bar = m_DragStart.x - m_ScaleBar.drag_start_offset_x;
-		  int y_inside_bar = m_YSize - m_ScaleBar.drag_start_offset_y - m_DragStart.y;
-		  m_ScaleBar.offset_x = point.x - x_inside_bar;
-		  m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
-		  m_View->ForceRefresh(); */
-	    } else {
-		m_LastDrag = drag_MAIN;
-		HandleTranslate(point);
-	    }
+		if (m_LastDrag == drag_COMPASS) {
+		    // drag in heading indicator
+		    m_View->SetCompassFromPoint(point);
+		} else if (m_LastDrag == drag_ELEV) {
+		    // drag in clinometer
+		    m_View->SetClinoFromPoint(point);
+		} else if (m_LastDrag == drag_SCALE) {
+		    // FIXME: check why there was a check here for x being inside
+		    // the window
+		    m_View->SetScaleBarFromOffset(point.x - m_DragLast.x);
+		} else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
+		    m_LastDrag = drag_MAIN;
+		    if (event.ShiftDown()) {
+			HandleScaleRotate(point);
+		    } else {
+			HandleTiltRotate(point);
+		    }
+		}
+		break;
+	    case MIDDLE_DRAG:
+		if (event.ShiftDown()) {
+		    HandleTilt(point);
+		} else {
+		    HandleScale(point);
+		}
+		break;
+	    case RIGHT_DRAG:
+		if ((m_LastDrag == drag_NONE && m_View->PointWithinScaleBar(point)) || m_LastDrag == drag_SCALE) {
+		/* FIXME
+		      if (point.x < 0) point.x = 0;
+		      if (point.y < 0) point.y = 0;
+		      if (point.x > m_XSize) point.x = m_XSize;
+		      if (point.y > m_YSize) point.y = m_YSize;
+		      m_LastDrag = drag_SCALE;
+		      int x_inside_bar = m_DragStart.x - m_ScaleBar.drag_start_offset_x;
+		      int y_inside_bar = m_YSize - m_ScaleBar.drag_start_offset_y - m_DragStart.y;
+		      m_ScaleBar.offset_x = point.x - x_inside_bar;
+		      m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
+		      m_View->ForceRefresh(); */
+		} else {
+		    m_LastDrag = drag_MAIN;
+		    HandleTranslate(point);
+		}
+		break;
+	    case NO_DRAG:
+		break;
 	}
     }
 
@@ -273,7 +277,7 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 void GUIControl::OnLButtonDown(wxMouseEvent& event)
 {
     if (m_View->HasData() && m_View->GetLock() != lock_POINT) {
-	m_DraggingLeft = true;
+	dragging = LEFT_DRAG;
 
 	/* FIXME
 	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
@@ -299,7 +303,7 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 	m_View->ReleaseMouse();
 
 	m_LastDrag = drag_NONE;
-	m_DraggingLeft = false;
+	dragging = NO_DRAG;
 
         m_View->DragFinished();
 
@@ -310,7 +314,7 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 void GUIControl::OnMButtonDown(wxMouseEvent& event)
 {
     if (m_View->HasData() && m_View->GetLock() == lock_NONE) {
-	m_DraggingMiddle = true;
+	dragging = MIDDLE_DRAG;
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
 
         const wxCursor CURSOR(wxCURSOR_MAGNIFIER);
@@ -322,7 +326,7 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
 void GUIControl::OnMButtonUp(wxMouseEvent&)
 {
     if (m_View->HasData() && m_View->GetLock() == lock_NONE) {
-	m_DraggingMiddle = false;
+	dragging = NO_DRAG;
 	m_View->ReleaseMouse();
         m_View->DragFinished();
 
@@ -338,7 +342,7 @@ void GUIControl::OnRButtonDown(wxMouseEvent& event)
 /* FIXME	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
 	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y; */
 
-	m_DraggingRight = true;
+	dragging = RIGHT_DRAG;
 
       //  const wxCursor CURSOR(wxCURSOR_HAND);
       //  m_View->SetCursor(CURSOR);
@@ -351,7 +355,7 @@ void GUIControl::OnRButtonUp(wxMouseEvent&)
     m_LastDrag = drag_NONE;
     m_View->ReleaseMouse();
 
-    m_DraggingRight = false;
+    dragging = NO_DRAG;
 
     RestoreCursor();
 

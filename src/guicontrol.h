@@ -32,9 +32,7 @@ class GfxCore;
 class GUIControl {
     GfxCore* m_View;
     
-    bool m_DraggingLeft;
-    bool m_DraggingMiddle;
-    bool m_DraggingRight;
+    enum { NO_DRAG = 0, LEFT_DRAG, MIDDLE_DRAG, RIGHT_DRAG } dragging;
 
     wxPoint m_DragStart;
     wxPoint m_DragRealStart;
