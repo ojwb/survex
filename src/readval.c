@@ -149,7 +149,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       } else {
 	 prefix *ptrPrev = NULL;
 	 int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
-	 while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
+	 while (ptr && (cmp = strcmp(ptr->ident, name))>0) {
 	    ptrPrev = ptr;
 	    ptr = ptr->right;
 	 }
