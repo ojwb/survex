@@ -2,18 +2,20 @@
 
 * (MS Windows version): aven: Loading file on start-up now works!
 
-* aven: Escape cancels distance measuring line.
-
 * aven: Side Panel can now be dragged or toggled shut and then reopened
-  again.
-
-* aven: fixed problems with selection handling in survey tree.
-
-* aven: suppress distance measuring line during auto-rotation and animated
-  tilting.
+  again; double-clicking on the divider now maximises the survey window rather
+  than the side panel.
 
 * aven: .3d files can now be loaded using "drag and drop" from MS Windows
   Explorer, and X filemanagers which support XDND (e.g. Konqueror).
+
+* aven: fixed problems with selection handling in survey tree.
+
+* aven: Escape cancels distance measuring line; suppress distance measuring
+  line during auto-rotation and animated tilting.
+
+* aven: entrance blobs now green to distinguish them from stations matching
+  search.
 
 * cavern: Fixed handling of interleaved nosurvey data.
 

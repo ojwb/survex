@@ -36,7 +36,6 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     m_Parent(parent),
     m_SelValid(false)
 {
-
 }
 
 void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)

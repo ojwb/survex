@@ -1735,7 +1735,6 @@ pt:199 Carregue apenas a sub-topografia com prefixo
 #
 #  Messages for Aven
 #
-#en:200 This is free software.  Aven is licenced under the terms of the GNU General Public Licence version 2, or (at your option) any later version.
 en:200 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.
 en-us:200 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 fr:200 Ce programme est un logiciel libre; vous pouvez le redistribuer et/ou le modifier conform&eacute;ment aux dispositions de la Licence Publique G&eacute;n&eacute;rale GNU, telle que publi&eacute;e par la Free Software Foundation; version 2 de la licence, ou encore (&agrave; votre choix) toute version ult&eacute;rieure.
@@ -2386,10 +2385,9 @@ de:336 Es kann nur eine 3D-Datei zugleich angezeigt werden.
 en:337 Side P@anel
 de:337 Seitliches @Kontrollfeld
 # show coordinates (N = North or Northing, E = East or Easting)
-# TRANSLATE de (which is better translation?)
 en:338 "  %d E, %d N"
 fr:338 "  %d E, %d N"
-#de:338 "  %d O, %d N" ?
+#alternatively de:338 "  %d O, %d N", but H/R is consistent with headings in pos files
 de:338 "  %d H, %d R"
 pt:338 "  %d L, %d N"
 ca:338 "  %d E, %d N"
@@ -2400,14 +2398,19 @@ it:338 "  %d E, %d N"
 #  H: 123m V: 234m
 #  Dist: 456m  Brg: 200
 # TRANSLATE fr pt ca es it (check translation adapted from elsewhere)
-en:339 From
-fr:339 De
-# FIXME: "Von %s aus" better
-de:339 Von
-pt:339 De
-ca:339 Des de
-es:339 Desde
-it:339 Da
+en:339 From %s
+fr:339 De %s
+de:339 Von %s aus
+pt:339 De %s
+ca:339 Des de %s
+es:339 Desde %s
+it:339 Da %s
+#
+en:340 "  H %dm, V %dm"
+de:340 "  H %dm, V %dm"
+#
+en:341 "  Dist %dm, Brg %03d&deg;"
+de:341 "  Dist %dm, Richt. %03d&deg;"
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

@@ -49,16 +49,31 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxStaticText* copyright2 = new wxStaticText(this, 504,
 	    wxString::Format(COPYRIGHT_MSG, msg(/*&copy;*/0)));
 
-    wxString licence_str(msg(/*This is free software.  Aven is licenced under the terms of the GNU General Public Licence version 2, or (at your option) any later version.*/200));
-    unsigned int wrap = 42;
-    while (wrap < licence_str.length()) {
-	if (licence_str[wrap] == ' ') {
-	   licence_str.SetChar(wrap, '\n');
-	   wrap += 42;
+    wxString licence_str;
+    wxString l(msg(/*This is free software.  Aven is licenced under the terms of the GNU General Public Licence version 2, or (at your option) any later version.*/200));
+    wxClientDC dc(this);
+    dc.SetFont(this->GetFont());
+    do {
+	unsigned int a = 72;
+	if (a >= l.length()) {
+	    a = l.length();
+	} else {
+	    while (a > 1 && l[a] != ' ') --a;
 	}
-	wrap++;
-    }
 
+	while (a > 1) {
+	    wxCoord w, h;
+	    dc.GetTextExtent(l.substr(0, a), &w, &h);
+	    if (w <= 380) break;
+	    do { --a; } while (a > 1 && l[a] != ' ');
+	} 
+
+	if (!licence_str.empty()) licence_str += '\n';
+	licence_str += l.substr(0, a);
+	if (a < l.length() && l[a] == ' ') ++a;
+	l = l.substr(a);
+    } while (!l.empty());
+    
     wxStaticText* licence = new wxStaticText(this, 506, licence_str);
     wxButton* close = new wxButton(this, wxID_OK, wxString(msg(/*Close*/204)));
     close->SetDefault();
@@ -70,14 +85,15 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     }
     horiz->Add(vert, 0, wxALL, 2);
 
-    vert->Add(title, 0, wxLEFT | wxRIGHT | wxTOP, 20);
+    vert->Add(10, 5, 0, wxTOP, 5);
+    vert->Add(title, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
     vert->Add(purpose, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
     vert->Add(copyright1, 0, wxLEFT | wxRIGHT, 20);
-    vert->Add(copyright2, 0, wxLEFT | wxBOTTOM | wxRIGHT, 20);
-    vert->Add(10, 5, 0, wxTOP, 5);
-    vert->Add(licence, 0, wxLEFT | wxRIGHT | wxBOTTOM, 20);
+    vert->Add(copyright2, 0, wxLEFT | wxRIGHT, 20);
+    vert->Add(10, 5, 0, wxTOP, 15);
+    vert->Add(licence, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 1, wxALIGN_BOTTOM | wxTOP, 5);
 
     wxBoxSizer* bottom = new wxBoxSizer(wxHORIZONTAL);

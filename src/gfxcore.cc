@@ -45,7 +45,7 @@ static const Double SURFACE_ALPHA = 0.6;
 #ifdef _WIN32
 static const int FONT_SIZE = 8;
 #else
-static const int FONT_SIZE = 10;
+static const int FONT_SIZE = 9;
 #endif
 static const int CROSS_SIZE = 5;
 static const Double COMPASS_SIZE = 24.0f;
@@ -1077,8 +1077,8 @@ void GfxCore::RedrawOffscreen()
 		// takes priority over exported point highlighting.
 
 		if (m_Entrances && (pt->flags & hl_ENTRANCE)) {
-		    SetColour(col_YELLOW);
-		    SetColour(col_YELLOW, true);
+		    SetColour(col_GREEN);
+		    SetColour(col_GREEN, true);
 		}
 		else if (m_FixedPts && (pt->flags & hl_FIXED)) {
 		    SetColour(col_RED);

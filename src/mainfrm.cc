@@ -504,7 +504,6 @@ void MainFrm::CreateToolBar()
 void MainFrm::CreateSidePanel()
 {
     m_Splitter = new AvenSplitterWindow(this);
-    //m_Splitter->SetMinimumPaneSize(20);
 
     m_Panel = new wxPanel(m_Splitter);
     m_Tree = new AvenTreeCtrl(this, m_Panel);
@@ -946,7 +945,6 @@ void MainFrm::FillTree()
 		// Append the new item to the tree and set this as the current branch.
 		current_id = m_Tree->AppendItem(current_id, bit);
 		m_Tree->SetItemData(current_id, new TreeData(NULL));
-
 		prefix = prefix.Mid(next_dot + 1);
 	    } while (next_dot != -1);
 	}
@@ -957,8 +955,10 @@ void MainFrm::FillTree()
 				current_prefix.StartsWith(prefix) &&
 				(current_prefix[prefix.Length()] == '.' || prefix == ""));
 	    if (!ascent_only) {
-		// Find out how much of the current prefix and the new prefix are the same.
-		// Note that we require a match of a whole number of parts between dots!
+		// Find out how much of the current prefix and the new prefix
+		// are the same.
+		// Note that we require a match of a whole number of parts
+		// between dots!
 		size_t pos = 0;
 		while (prefix[pos] == current_prefix[pos]) {
 		    if (prefix[pos] == '.') count = pos + 1;
@@ -969,7 +969,8 @@ void MainFrm::FillTree()
 		count = prefix.Length() + 1;
 	    }
 
-	    // Extract the part of the current prefix after the bit (if any) which has matched.
+	    // Extract the part of the current prefix after the bit (if any)
+	    // which has matched.
 	    // This gives the prefixes to ascend over.
 	    wxString prefixes_ascended = current_prefix.Mid(count);
 
@@ -997,7 +998,8 @@ void MainFrm::FillTree()
 		    // Add the current tree ID to the stack.
 		    previous_ids.push(current_id);
 
-		    // Append the new item to the tree and set this as the current branch.
+		    // Append the new item to the tree and set this as the
+		    // current branch.
 		    current_id = m_Tree->AppendItem(current_id, bit);
 		    m_Tree->SetItemData(current_id, new TreeData(NULL));
 
@@ -1089,8 +1091,8 @@ void MainFrm::IntersectLineWithPlane(Double x0, Double y0, Double z0,
 				     Double x1, Double y1, Double z1,
 				     Double z, Double& x, Double& y)
 {
-    // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1) with
-    // the plane parallel to the xy-plane with z-axis intersection z.
+    // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1)
+    // with the plane parallel to the xy-plane with z-axis intersection z.
 
     Double t = (z - z0) / (z1 - z0);
     x = x0 + t*(x1 - x0);
@@ -1120,7 +1122,8 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 		for (int band = col1; band != col2; band += inc) {
 		    int next_band = band + inc;
 
-		    // Determine the z-coordinate of the boundary being intersected.
+		    // Determine the z-coordinate of the boundary being
+		    // intersected.
 		    Double split_at_z = GetDepthBoundaryBetweenBands(band, next_band);
 		    Double split_at_x, split_at_y;
 
@@ -1156,8 +1159,8 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 	    m_Points[col2].push_back(point);
 	}
 	else {
-	    // The first point, a surface point, or another move: put it in the correct list
-	    // according to depth.
+	    // The first point, a surface point, or another move: put it in the
+	    // correct list according to depth.
 	    assert(point->isSurface || !point->isLine);
 	    int band = GetDepthColour(point->z);
 	    m_Points[band].push_back(point);
@@ -1296,12 +1299,13 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
     if (data && data->IsStation()) {
 	LabelInfo* label = data->GetLabel();
 	wxString str;
-	str.Printf(msg(/*  %d E, %d N*/338), (int)(label->x + m_Offsets.x),
-		   (int)(label->y + m_Offsets.y));
+	str.Printf(msg(/*  %d E, %d N*/338),
+		   int(label->x + m_Offsets.x),
+		   int(label->y + m_Offsets.y));
 	m_StnCoords->SetLabel(str);
 	m_StnName->SetLabel(label->text);
 	str.Printf("  %s %dm", msg(/*Altitude*/335),
-		   (int) (label->z + m_Offsets.z));
+		   int(label->z + m_Offsets.z));
 	m_StnAlt->SetLabel(str);
 	m_Gfx->SetHere(label->x, label->y, label->z);
 
@@ -1331,11 +1335,12 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
 		    brg += 360;
 		}
 
-		m_Dist1->SetLabel(wxString(msg(/*From*/339)) + ' ' +
-				  label2->text);
-		str.Printf("  H: %dm, V: %dm", (int) d_horiz, (int) dz);
+		str.Printf(msg(/*From %s*/339), label2->text.c_str());
+		m_Dist1->SetLabel(str);
+		str.Printf(msg(/*  H %dm, V %dm*/340), int(d_horiz), int(dz));
 		m_Dist2->SetLabel(str);
-		str.Printf("  Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
+		str.Printf(msg(/*  Dist. %dm, Brg. %03d&deg;*/341),
+			   int(sqrt(dx*dx + dy*dy + dz*dz)), brg);
 		m_Dist3->SetLabel(str);
 		m_Gfx->SetThere(x0, y0, z0);
 	    } else {
@@ -1664,11 +1669,12 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
 		    brg += 360;
 		}
 
-		m_Dist1->SetLabel(wxString(msg(/*From*/339)) + ' ' +
-				  label2->text);
-		str.Printf("  H: %dm, V: %dm", (int) d_horiz, (int) dz);
+		str.Printf(msg(/*From %s*/339), label2->text.c_str());
+		m_Dist1->SetLabel(str);
+		str.Printf(msg(/*  H %dm, V %dm*/340), int(d_horiz), int(dz));
 		m_Dist2->SetLabel(str);
-		str.Printf("  Dist: %dm Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
+		str.Printf(msg(/*  Dist. %dm, Brg. %03d&deg;*/341),
+			   int(sqrt(dx*dx + dy*dy + dz*dz)), brg);
 		m_Dist3->SetLabel(str);
 		m_Gfx->SetThere(x0, y0, z0);
 	    }
