@@ -123,10 +123,6 @@ bool Aven::OnInit()
 
     wxImage::AddHandler(new wxPNGHandler);
 
-    m_AboutBitmap.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
-			   wxString("icons") + wxCONFIG_PATH_SEPARATOR +
-			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
-
     // Obtain the screen size.
     int width;
     int height;

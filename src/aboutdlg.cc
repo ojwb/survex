@@ -28,7 +28,10 @@
 #include "aboutdlg.h"
 #include "aven.h"
 #include "message.h"
+
 #include <stdio.h> // for popen
+
+#include <wx/confbase.h>
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
 END_EVENT_TABLE()
@@ -39,10 +42,14 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
-    wxBitmap& bm = wxGetApp().GetAboutBitmap();
-    if (bm.Ok()) {
-	wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, bm);
-	horiz->Add(bitmap, 0 /* horizontally unstretchable */, wxALL,
+    if (!bitmap.Ok()) {
+	bitmap.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
+			wxString("icons") + wxCONFIG_PATH_SEPARATOR +
+			wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
+    }
+    if (bitmap.Ok()) {
+	wxStaticBitmap* static_bitmap = new wxStaticBitmap(this, 501, bitmap);
+	horiz->Add(static_bitmap, 0 /* horizontally unstretchable */, wxALL,
 		   2 /* border width */);
     }
     horiz->Add(vert, 0, wxALL, 2);
@@ -118,9 +125,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     info += wxVERSION_STRING;
     info += '\n';
     int bpp = wxDisplayDepth();
-    wxString s;
-    s.Printf("Display Depth: %d bpp", bpp);
-    info += s;
+    info += wxString::Format("Display Depth: %d bpp", bpp);
     if (wxColourDisplay()) info += " (colour)";
 
 #ifdef AVENGL // FIXME: make this a function in gla-gl.cc
@@ -180,7 +185,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     bottom->Add(5, 5, 1);
     bottom->Add(ok, 0, wxRIGHT | wxBOTTOM, 15);
     vert->Add(bottom, 0, wxEXPAND | wxLEFT | wxRIGHT, 0);
-    vert->SetMinSize(0, bm.GetHeight());
+    vert->SetMinSize(0, bitmap.GetHeight());
 
     SetAutoLayout(true);
     SetSizer(horiz);

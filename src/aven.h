@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2002,2003 Olly Betts
+//  Copyright (C) 2002,2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -43,7 +43,6 @@ class MainFrm;
 
 class Aven : public wxApp {
     MainFrm* m_Frame;
-    wxBitmap m_AboutBitmap;
 
 public:
     Aven();
@@ -51,7 +50,6 @@ public:
     virtual bool OnInit();
 
     void ReportError(const wxString&);
-    wxBitmap& GetAboutBitmap() { return m_AboutBitmap; }
 #ifdef PREFS
     const wxBitmap LoadPreferencesIcon(const wxString& icon) const;
 #endif
