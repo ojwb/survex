@@ -55,3 +55,11 @@ svx092pre5 [...] did produce an error file much longer than whatever
 version I ran before.  [Previous version deleted so unable to discover
 what it was.]
 
+Date: Fri, 08 Dec 2000
+From: Olly
+
+[directx caverot is now eclipsed by winaven]
+directx caverot: redraw after switching away and back code seems to kill
+program; resolutions (use desktop res?); windowed mode doesn't work;
+command line switches don't seem to work...
+

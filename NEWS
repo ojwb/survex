@@ -1,7 +1,17 @@
-* cavern: "is this a directory" test on RISC OS would never say "yes".
+* cavern (RISC OS version): "is this a directory" test would never say
+  "yes".
 
-* caverot: cursor keys and delete had stopped working in MSDOS caverot
-  (due to changes in allegro graphics library) - fixed.
+* caverot: (MSDOS version) cursor keys and delete had stopped working (due
+  to changes in allegro graphics library) - fixed.
+
+* xcaverot: Zoom in and out with keyboard now behaves exactly like clicking
+  on buttons; Removed unused "select" button; Fixed significant memory leak.
+
+* aven: (MS Windows version) Mark Shinwell has written a Microsoft Windows
+  version of aven, which is better in almost every way than the directx
+  version of caverot (and we're working to fix the few shortfalls), so we've
+  shelved directx caverot and are now including aven instead with the MS
+  Windows version.
 
 Changes in 0.96-prerelease3:
 

@@ -9,7 +9,7 @@ currently looked at.
 Date: 25 Jan 2000
 From: Mark Shinwell
 
-[Aven known bugs]
+[Unix Aven known bugs]
 
 closing window doesn't work
 
@@ -28,4 +28,5 @@ On RISC OS: `cavern --output=3Ddir.' results in files such as
 [Olly: I think fDirectory() isn't spotting `3Ddir.' as a directory -
 workaround is to use `3Ddir' instead which does work]
 [2000-07-24 Olly: Believed fixed, needs testing]
+[2001-01-25 Olly: wasn't fixed, but should be now - needs testing again]
 

@@ -100,9 +100,10 @@ From: Olly
 
 Targets to try to do for 0.96:
 
-* grid patch -> printer drivers, caverot, and xcaverot too.
+* grid patch -> printer drivers, caverot, aven, and xcaverot too.
 
-* Installer program for generating file associations under Windows.
+* Installer program for generating file associations under Windows (or maybe
+fullblown installer?)
 
 * Update documentation (2 volunteers are currently working on this).
 
@@ -113,16 +114,9 @@ Targets to try to do for 0.96:
 Date: Thu, 23 Nov 2000
 From: Olly
 
-This gives "*** Singular!!!" warning:
+This gives "*** Singular!!!" warning with DEBUG_INVALID on:
 1 2 50000 0 -
 1 2 5 0 -30
-
-Date: Fri, 08 Dec 2000
-From: Olly
-
-directx caverot: redraw after switching away and back code seems to kill
-program; resolutions (use desktop res?); windowed mode doesn't work;
-command line switches don't seem to work...
 
 Date: Tue, 12 Dec 2000
 From: Olly
