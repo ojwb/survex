@@ -14,10 +14,10 @@ other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
 
 # People can build from CVS without sgmltools v2 or v3 installed but they
 # won't be able to "make dist", which is arguably a good thing
-EXTRA_DIST = manual $(doclist) manual.sgml custom.dsl survex.1.in\
- index.htm.in\
+EXTRA_DIST = manual $(doclist) manual.sgml custom.dsl survex.1.in index.htm.in\
  index.htm COPYING.htm TODO.htm ChngeLog.htm NEWS.htm OLDNEWS.htm\
- AUTHORS.htm HACKING.htm
+ AUTHORS.htm HACKING.htm\
+ caution.png note.png
 
 ChngeLog.htm: ../ChangeLog
 	./cl2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../ChangeLog > ChngeLog.htm
@@ -32,7 +32,8 @@ MAINTAINERCLEANFILES = $(doclist)
 CLEANFILES = $(other_mans)
 
 pkgdoc_DATA = index.htm COPYING.htm TODO.htm ChngeLog.htm\
- NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist)
+ NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist)\
+ caution.png note.png
 
 man_MANS = survex.1 $(other_mans)
 

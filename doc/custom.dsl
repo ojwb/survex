@@ -14,14 +14,16 @@
     (define %shade-verbatim% #t)
     (define %use-id-as-filename% #t)
 
-    (define %graphic-default-extension% "gif")
+    (define %graphic-default-extension% ".png")
     (define %admon-graphics% #t)
     (define %gentext-nav-tblwidth% "100%")
+
+    ;; expect admon images in the same directory
+    (define %admon-graphics-path% "")
 
     (define %generate-article-toc% #t)
     (define %generate-article-titlepage-on-separate-page% #t)
     (define %generate-article-toc-on-titlepage% #f)
-
 </style-specification-body>
 </style-specification>
 

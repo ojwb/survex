@@ -8,6 +8,8 @@
 
 * More minor tweaks to debian packages.
 
+* Include images with HTML documentation.
+
 Changes in 0.99-prerelease1:
 
 * Major clean-up of Survex Manual; renamed from "svxdocs" to "manual".
