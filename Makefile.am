@@ -128,6 +128,7 @@ riscos_doc_zip :
 	   */*.htm|*/*.html) ln -s ../../doc/$$f ../riscos_doc_tmp/$$f,faf ;;\
 	   *.txt) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,fff ;;\
 	   *.rtf) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,c32 ;;\
+	   *.ps) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,ff5 ;;\
 	   *) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,ffd ;;\
 	  esac;\
 	 fi\
