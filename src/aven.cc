@@ -36,7 +36,8 @@
 #include <signal.h>
 
 #include <wx/image.h>
-#ifdef wxUSE_DISPLAY // wxDisplay was added in wx 2.5
+#if wxUSE_DISPLAY // wxDisplay was added in wx 2.5; but it may not be built
+		  // for mingw (because the header seems to be missing).
 #include <wx/display.h>
 #endif
 
@@ -126,7 +127,7 @@ bool Aven::OnInit()
     // Obtain the screen size.
     int x, y;
     int width, height;
-#ifdef wxUSE_DISPLAY // wxDisplay was added in wx 2.5
+#if wxUSE_DISPLAY // wxDisplay was added in wx 2.5
     wxRect geom = wxDisplay().GetGeometry();
     x = geom.x;
     y = geom.y;
