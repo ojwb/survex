@@ -154,8 +154,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_FixedPts = false;
     m_ExportedPts = false;
     m_Grid = false;
-    m_Metric = true;
-    m_Degrees = true;
+    wxConfigBase::Get()->Read("metric", &m_Metric, true);
+    wxConfigBase::Get()->Read("degrees", &m_Degrees, true);
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
 #ifdef AVENPRES
@@ -219,7 +219,7 @@ void GfxCore::TryToFreeArrays()
 	DELETE_ARRAY(m_Polylines);
 	DELETE_ARRAY(m_SurfacePolylines);
 	DELETE_ARRAY(m_CrossData.vertices);
-#ifndef AVENGL
+#ifdef AVENGL
 	DELETE_ARRAY(m_CrossData.num_segs);
 #endif
 	DELETE_ARRAY(m_Labels);
@@ -3159,6 +3159,8 @@ void GfxCore::OnIndicatorsUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnToggleMetric()
 {
     m_Metric = !m_Metric;
+    wxConfigBase::Get()->Write("metric", m_Metric);
+    wxConfigBase::Get()->Flush();
     Refresh();
 }
 
@@ -3171,6 +3173,8 @@ void GfxCore::OnToggleMetricUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnToggleDegrees()
 {
     m_Degrees = !m_Degrees;
+    wxConfigBase::Get()->Write("degrees", m_Degrees);
+    wxConfigBase::Get()->Flush();
     Refresh();
 }
 

@@ -4,8 +4,10 @@ Changes in 1.0.8:
   to the speed of redraw, so aven behaves in a similar way independent of the
   speed of the computer or size of the survey.
 
-* aven: provide list of the 9 most recently used files, which is preserved
-  between runs of the program.
+* aven: provide list of up to 9 most recently loaded files (preserved between
+  runs of the program).
+
+* aven: settings for "Metric" and "Degrees" are preserved between runs.
 
 * print*: Improved output when --no-border is used.
 
