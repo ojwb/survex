@@ -98,7 +98,7 @@ static void bo(char *tag, int lno)
   marked = 0;
 }
 
-static void eo()
+static void eo(void)
 {
   if (marked)
     HTO_EndObject(outfd);

@@ -414,8 +414,8 @@ mulvv(var *r, const var *a, const var *b)
    int i, j, k;
    real tot;
 
-   ASSERT(r != a);
-   ASSERT(r != b);
+   ASSERT((const var *)r != a);
+   ASSERT((const var *)r != b);
 
    check_var(a);
    check_var(b);
@@ -446,7 +446,7 @@ mulvd(d *r, const var *a, const d *b)
    int i, k;
    real tot;
 
-   ASSERT(r != b);
+   ASSERT((const d*)r != b);
    check_var(a);
    check_d(b);   
 
@@ -574,7 +574,7 @@ invert_var(var *inv, const var *v)
    int i, j;
    real det = 0;
 
-   ASSERT(inv != v);
+   ASSERT((const var *)inv != v);
 
    check_var(v);
    for (i = 0; i < 3; i++) {

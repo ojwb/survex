@@ -97,7 +97,7 @@ base_from_fnm(const char *fnm)
        && !strrchr(p, FNM_SEP_LEV2)
 #endif
        ) {
-      size_t len = p - fnm;
+      size_t len = (const char *)p - fnm;
 
       p = osmalloc(len + 1);
       memcpy(p, fnm, len);
@@ -124,7 +124,7 @@ baseleaf_from_fnm(const char *fnm)
 #endif
    
    q = strrchr(p, FNM_SEP_EXT);
-   if (q) len = q - p; else len = strlen(p);
+   if (q) len = (const char *)q - p; else len = strlen(p);
 
    q = osmalloc(len + 1);
    memcpy(q, p, len);

@@ -194,13 +194,13 @@ coord Xrad, Yrad, Zrad; /* "radii" */
 #define BIG_SCALE 1e3f
 
 static bool
-last_leg(point *p)
+last_leg(point Huge *p)
 {
    return (p->_.action == STOP);
 }
 
 static bool
-last_stn(point *p)
+last_stn(point Huge *p)
 {
    return (p->_.str == NULL);
 }
@@ -216,7 +216,7 @@ scale_to_screen(lid Huge **pplid, lid Huge **pplid2)
    point Huge *p;
    lid Huge *plid;
    bool fData = 0;
-   bool (*checkendfn)(point *) = last_leg;
+   bool (*checkendfn)(point Huge *) = last_leg;
 
    /* if no data, return BIG_SCALE as scale factor */
    if (!pplid || !*pplid) {

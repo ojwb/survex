@@ -61,7 +61,7 @@ void remove_stn_from_list(node **list, node *stn);
 /* Need stn_iter so we can adjust iterator if the stn it points to is deleted */
 extern node *stn_iter;
 #define FOR_EACH_STN(S,L) \
- for (stn_iter = (L); ((S) = stn_iter);\
+ for (stn_iter = (L); ((S) = stn_iter) != NULL;\
  stn_iter = ((S) == stn_iter) ? stn_iter->next : stn_iter)
 
 #define print_prefix(N) fprint_prefix(stdout, (N))
