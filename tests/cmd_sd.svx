@@ -14,8 +14,9 @@
 *sd compass 10 degrees
 *sd clino 1 grads
 *sd compass clino 5 degs
-*sd clino declination compass 3 mils
-*sd declination 3 minutes
+*sd clino compass 3 mils
+;*sd clino declination compass 3 mils
+;*sd declination 3 minutes
 
 *sd dx 2 feet
 *sd dy 2 feet

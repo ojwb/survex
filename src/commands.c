@@ -320,14 +320,18 @@ get_qlist(unsigned long mask_bad)
    int tok;
    filepos fp;
 
+   char default_buf[8] = "";
    while (1) {
       get_pos(&fp);
       get_token();
       tok = match_tok(qtab, TABSIZE(qtab));
       /* bail out if we reach the table end with no match */
       if (tok == Q_NULL) break;
+      /* Preserve original case version of DeFAUlt token for error reports */
+      if (tok == Q_DEFAULT) strcpy(default_buf, buffer);
       qmask |= BIT(tok);
       if (qmask != BIT(Q_DEFAULT) && (qmask & mask_bad)) {
+	 if (qmask & mask_bad & BIT(Q_DEFAULT)) strcpy(buffer, default_buf);
 	 compile_error(/*Unknown instrument `%s'*/39, buffer);
 	 skipline();
 	 return 0;
