@@ -1,7 +1,8 @@
 * aven: fixed bogus lines caused by coordinate wrap-around; fixed
   problem in repeated zoom with [ or ]; tweaked layout and auto-sizing
   of left panel; station search now case insensitive; regexp search
-  enabled.
+  enabled; fixed obscure crash in search highlighting; added "rubber band"
+  between measured stations.
 
 * cavern: more intelligent and less verbose reporting of errors in nested
   included files (inspired by GCC 3.0).

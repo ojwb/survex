@@ -32,11 +32,15 @@
 #include <float.h>
 #include <stack>
 
-#ifndef _WIN32 // FIXME: very much the wrong thing to be testing on...
+#ifdef HAVE_REGEX_H
 # include <regex.h>
 #else
 extern "C" {
-# include <rxposix.h>
+# ifdef HAVE_RXPOSIX_H
+#  include <rxposix.h>
+# elif defined(HAVE_RX_RXPOSIX_H)
+#  include <rx/rxposix.h>
+# endif
 }
 #endif
 
@@ -213,8 +217,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     SetIcon(wxIcon("aaaaaAven")); // the peculiar name is so that the icon is the first in the file
                                   // (required by Windows for this type of icon)
 #endif
-
-    m_HighlightedPtValid = false;
 
     InitialisePensAndBrushes();
     CreateMenuBar();
@@ -425,6 +427,12 @@ void MainFrm::CreateToolBar()
                      "Go back one presentation step");
     toolbar->AddTool(menu_PRES_GO, TOOLBAR_BITMAP("pres-go.png"), "Go forwards one presentation step");
 #endif
+
+#if 0 // FIXME: maybe...
+    m_FindBox = new wxTextCtrl(toolbar, -1, "");
+    toolbar->AddControl(m_FindBox);
+#endif
+
     toolbar->Realize();
 }
 
@@ -440,8 +448,8 @@ void MainFrm::CreateSidePanel()
 
     m_FindBox = new wxTextCtrl(m_FindPanel, -1, "");
     m_FindButton = new wxButton(m_FindPanel, button_FIND, msg(/*Find*/332));
-    m_FindButton->SetDefault();
-    m_FindPanel->SetDefaultItem(m_FindButton);
+///    m_FindButton->SetDefault();
+///    m_FindPanel->SetDefaultItem(m_FindButton);
     m_HideButton = new wxButton(m_FindPanel, button_HIDE, msg(/*Hide*/333));
     m_RegexpCheckBox = new wxCheckBox(m_FindPanel, -1,
 		                      msg(/*Regular expression*/334));
@@ -1090,8 +1098,6 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 {
     SetCursor(*wxHOURGLASS_CURSOR);
     if (LoadData(file, survey)) {
-        m_HighlightedPtValid = false;
-
         if (delay) {
             m_Gfx->InitialiseOnNextResize();
         }
@@ -1215,13 +1221,7 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
         m_StnName->SetLabel(label->text);
         str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
         m_StnAlt->SetLabel(str);
-        if (m_HighlightedPtValid) {
-            m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
-            m_HighlightedPtValid = false;
-        }
-        m_HighlightedPt = m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_WHITE);
-        m_Gfx->DisplaySpecialPoints();
-        m_HighlightedPtValid = true;
+        m_Gfx->SetHere(label->x, label->y, label->z);
 
         wxTreeItemData* sel_wx;
         bool sel = m_Tree->GetSelectionData(&sel_wx);
@@ -1254,6 +1254,7 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
                 m_Dist2->SetLabel(str);
                 str.Printf("   Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
                 m_Dist3->SetLabel(str);
+	        m_Gfx->SetThere(x0, y0, z0);
             }
         }
     }
@@ -1261,10 +1262,7 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
         m_StnName->SetLabel("");
         m_StnCoords->SetLabel("");
         m_StnAlt->SetLabel("");
-        if (m_HighlightedPtValid) {
-            m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
-            m_HighlightedPtValid = false;
-        }
+        m_Gfx->SetHere();
         m_Dist1->SetLabel("");
         m_Dist2->SetLabel("");
         m_Dist3->SetLabel("");
@@ -1508,8 +1506,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
         LabelInfo* label = *pos++;
         
         if (regexec(&buffer, label->text.c_str(), 0, NULL, 0) == 0) {
-	    m_Gfx->AddSpecialPoint(label->x, label->y, label->z,
-				   col_YELLOW, 1);
+	    m_Gfx->AddSpecialPoint(label->x, label->y, label->z);
 	    found++;
 	}
     }
@@ -1546,22 +1543,49 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
         m_StnName->SetLabel(label->text);
         str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
         m_StnAlt->SetLabel(str);
-        if (m_HighlightedPtValid) {
-            m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
-            m_HighlightedPtValid = false;
-        }
-        m_HighlightedPt = m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_WHITE);
+        m_Gfx->SetHere(label->x, label->y, label->z);
         m_Gfx->DisplaySpecialPoints();
-        m_HighlightedPtValid = true;
+
+        wxTreeItemData* sel_wx;
+        bool sel = m_Tree->GetSelectionData(&sel_wx);
+        if (sel) {
+	    TreeData* data = (TreeData*) sel_wx;
+
+            if (data->IsStation()) {
+                LabelInfo* label2 = data->GetLabel();
+                assert(label2);
+        
+                Double x0 = label2->x;
+                Double x1 = label->x;
+                Double dx = x1 - x0;
+                Double y0 = label2->y;
+                Double y1 = label->y;
+                Double dy = y1 - y0;
+                Double z0 = label2->z;
+                Double z1 = label->z;
+                Double dz = z1 - z0;
+
+                Double d_horiz = sqrt(dx*dx + dy*dy);
+
+                int brg = int(atan2(dx, dy) * 180.0 / M_PI);
+                if (brg < 0) {
+                    brg += 360;
+                }
+                
+                m_Dist1->SetLabel(wxString("From ") + label2->text);
+                str.Printf("   H: %dm, V: %dm", (int) d_horiz, (int) dz);
+                m_Dist2->SetLabel(str);
+                str.Printf("   Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
+                m_Dist3->SetLabel(str);
+	        m_Gfx->SetThere(x0, y0, z0);
+            }
+        }
     }
     else {
         m_StnName->SetLabel("");
         m_StnCoords->SetLabel("");
         m_StnAlt->SetLabel("");
-        if (m_HighlightedPtValid) {
-            m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
-            m_HighlightedPtValid = false;
-        }
+        m_Gfx->SetHere();
         m_Dist1->SetLabel("");
         m_Dist2->SetLabel("");
         m_Dist3->SetLabel("");

@@ -201,8 +201,6 @@ class MainFrm : public wxFrame {
     wxString m_File;
     bool m_PresLoaded;
     bool m_Recording;
-    bool m_HighlightedPtValid;
-    list<SpecialPoint>::iterator m_HighlightedPt;
 
     struct {
         Double x, y, z;

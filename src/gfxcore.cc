@@ -87,7 +87,7 @@ const ColourTriple COLOURS[] = {
     { 0, 100, 255 }    // cyan
 };
 
-#define DELETE_ARRAY(x) { assert(x); delete[] x; }
+#define DELETE_ARRAY(x) do { assert(x); delete[] x; } while (0)
 
 #define HITTEST_SIZE 20
 
@@ -155,6 +155,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_Grid = false;
     m_DoingPresStep = -1;
 
+    m_here.x = m_there.x = DBL_MAX;
+   
 #ifdef AVENGL
     m_AntiAlias = false;
     m_SolidSurface = false;
@@ -1040,6 +1042,9 @@ void GfxCore::RedrawOffscreen()
 #endif
         }
 
+        long xc = m_XCentre - HIGHLIGHTED_PT_SIZE;
+        long yc = m_YCentre - HIGHLIGHTED_PT_SIZE;
+       
         // Plot highlighted points.
         if (m_Entrances || m_FixedPts || m_ExportedPts) {
             for (int count = 0; count < m_NumHighlightedPts; count++) {
@@ -1068,9 +1073,9 @@ void GfxCore::RedrawOffscreen()
                 }
 
                 if (draw) {
-                    m_DrawDC.DrawEllipse(pt->x - HIGHLIGHTED_PT_SIZE + m_XCentre,
-                                         pt->y - HIGHLIGHTED_PT_SIZE + m_YCentre,
-                                         HIGHLIGHTED_PT_SIZE*2, HIGHLIGHTED_PT_SIZE*2);
+                    m_DrawDC.DrawEllipse(pt->x + xc, pt->y + yc,
+                                         HIGHLIGHTED_PT_SIZE * 2,
+					 HIGHLIGHTED_PT_SIZE * 2);
                 }
             }
         }
@@ -1086,14 +1091,44 @@ void GfxCore::RedrawOffscreen()
         }
 
         // Draw any special points.
-        list<SpecialPoint>::iterator sp_iter = m_SpecialPoints.begin();
-        while (sp_iter != m_SpecialPoints.end()) {
-            SpecialPoint p = *sp_iter++;
-            SetColour(p.colour);
-            SetColour(p.colour, true);
-            m_DrawDC.DrawEllipse((long) p.screen_x + m_XCentre - HIGHLIGHTED_PT_SIZE * p.size,
-                                 (long) p.screen_y + m_YCentre - HIGHLIGHTED_PT_SIZE * p.size,
-                                 HIGHLIGHTED_PT_SIZE * p.size * 2, HIGHLIGHTED_PT_SIZE * p.size * 2);
+        SetColour(col_YELLOW);
+        SetColour(col_YELLOW, true);
+        list<SpecialPoint>::iterator sp;
+        for (sp = m_SpecialPoints.begin(); sp != m_SpecialPoints.end(); ++sp) {
+            m_DrawDC.DrawEllipse(sp->screen_x + xc, sp->screen_y + yc,
+                                 HIGHLIGHTED_PT_SIZE * 2,
+				 HIGHLIGHTED_PT_SIZE * 2);
+        }
+
+        // Draw "here" and "there"
+	if (m_here.x != DBL_MAX) {
+	    SetColour(col_WHITE);
+	    m_DrawDC.SetBrush(*wxTRANSPARENT_BRUSH);
+	    Double xp = m_here.x + m_Params.translation.x;
+	    Double yp = m_here.y + m_Params.translation.y;
+	    Double zp = m_here.z + m_Params.translation.z;
+	    long here_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.x;
+	    long here_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.y;
+	    xc -= HIGHLIGHTED_PT_SIZE;
+	    yc -= HIGHLIGHTED_PT_SIZE;
+	    m_DrawDC.DrawEllipse(here_x + xc, here_y + yc,
+				 HIGHLIGHTED_PT_SIZE * 4,
+				 HIGHLIGHTED_PT_SIZE * 4);
+	    SetColour(col_WHITE, true);        
+	    if (m_there.x != DBL_MAX) {
+		Double xp = m_there.x + m_Params.translation.x;
+		Double yp = m_there.y + m_Params.translation.y;
+		Double zp = m_there.z + m_Params.translation.z;
+		long there_x = (long) (XToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.x;
+		long there_y = -(long) (ZToScreen(xp, yp, zp) * m_Params.scale) + m_Params.display_shift.y;
+	        xc += HIGHLIGHTED_PT_SIZE;
+	        yc += HIGHLIGHTED_PT_SIZE;
+		m_DrawDC.DrawEllipse(there_x + xc, there_y + yc,
+				     HIGHLIGHTED_PT_SIZE * 2,
+				     HIGHLIGHTED_PT_SIZE * 2);
+		m_DrawDC.DrawLine(here_x + m_XCentre, here_y + m_YCentre,
+				  there_x + m_XCentre, there_y + m_YCentre);
+	    }
         }
 
         // Draw scalebar.
@@ -2316,8 +2351,8 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
                   }
                   m_LastDrag = drag_COMPASS;
               }
-              else if (m_Clino && sqrt(dx1*dx1 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
-                  m_LastDrag == drag_ELEV) {
+              else if (m_Clino && sqrt(dx1*dx1 + dy*dy) <= radius &&
+		       m_LastDrag == drag_NONE || m_LastDrag == drag_ELEV) {
                   // drag in elevation indicator
                   m_LastDrag = drag_ELEV;
                   if (dx1 >= 0 && sqrt(dx1*dx1 + dy*dy) <= radius) {
@@ -3369,16 +3404,7 @@ void GfxCore::ClearSpecialPoints()
     DisplaySpecialPoints();
 }
 
-void GfxCore::DeleteSpecialPoint(list<SpecialPoint>::iterator pos)
-{
-    // Delete an individual special point and redraw the display.
-
-    m_SpecialPoints.erase(pos);
-    DisplaySpecialPoints();
-}
-
-list<SpecialPoint>::iterator GfxCore::AddSpecialPoint(Double x, Double y, Double z, AvenColour colour,
-                                                      int size)
+void GfxCore::AddSpecialPoint(Double x, Double y, Double z)
 {
     // Add a new special point.
 
@@ -3386,11 +3412,7 @@ list<SpecialPoint>::iterator GfxCore::AddSpecialPoint(Double x, Double y, Double
     p.x = x;
     p.y = y;
     p.z = z;
-    p.colour = colour;
-    p.size = size;
     m_SpecialPoints.push_back(p);
-
-    return --(m_SpecialPoints.end());
 }
 
 void GfxCore::DisplaySpecialPoints()
@@ -3402,6 +3424,38 @@ void GfxCore::DisplaySpecialPoints()
     Refresh(false);
 }
 
+void GfxCore::SetHere()
+{
+    m_here.x = DBL_MAX;
+    m_RedrawOffscreen = true;
+    Refresh(false);
+}
+
+void GfxCore::SetHere(Double x, Double y, Double z)
+{
+    m_here.x = x;
+    m_here.y = y;
+    m_here.z = z;
+    m_RedrawOffscreen = true;
+    Refresh(false);
+}
+
+void GfxCore::SetThere()
+{
+    m_there.x = DBL_MAX;
+    m_RedrawOffscreen = true;
+    Refresh(false);
+}
+
+void GfxCore::SetThere(Double x, Double y, Double z)
+{
+    m_there.x = x;
+    m_there.y = y;
+    m_there.z = z;
+    m_RedrawOffscreen = true;
+    Refresh(false);
+}
+    
 void GfxCore::CreateHitTestGrid()
 {
     // Clear hit-test grid.
@@ -3439,7 +3493,7 @@ void GfxCore::CreateHitTestGrid()
 	    point.y = cy_real;
             point.label = label;
 
-	    m_PointGrid[grid_x + grid_y*HITTEST_SIZE].push_back(point);
+	    m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(point);
         }
     }
 
@@ -3716,4 +3770,3 @@ void GfxCore::OnSolidSurfaceUpdate(wxUpdateUIEvent& ui)
 }
 
 #endif
-

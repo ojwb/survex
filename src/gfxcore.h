@@ -318,7 +318,11 @@ class GfxCore : public wxWindow {
 
     struct {
         Double x, y, z;
-    } m_SpecialPt;
+    } m_here;
+
+    struct {
+        Double x, y, z;
+    } m_there;
 
     bool m_ScaleSpecialPtsOnly;
 
@@ -434,10 +438,13 @@ public:
     void InitialiseTerrain();
 
     void ClearSpecialPoints();
-    void DeleteSpecialPoint(list<SpecialPoint>::iterator pos);
-    list<SpecialPoint>::iterator AddSpecialPoint(Double x, Double y, Double z, AvenColour colour = col_YELLOW,
-						 int magnification = 2);
+    void AddSpecialPoint(Double x, Double y, Double z);
     void DisplaySpecialPoints();
+
+    void SetHere();
+    void SetHere(Double x, Double y, Double z);
+    void SetThere();
+    void SetThere(Double x, Double y, Double z);
 
     void CentreOn(Double x, Double y, Double z);
 

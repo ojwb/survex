@@ -94,16 +94,23 @@ AC_CHECK_PROGS(STRIP, strip, echo "not stripping ")
 
 AC_CHECK_LIB(m, sqrt)
 
-dnl On Linux, regex routines are included in recent version of libc
+dnl On Linux, regex routines are included in recent versions of libc
 dnl so check if we need -lrx
 dnl FIXME - probably ought to favour RX over GNU regex in libc if given
-dnl the choice...
-dnl FIXME - check for header name to include...
+dnl the choice, but if we have RX and glibc with regex, then it's tricky
+dnl to work out that we (I think) want HAVE_RXPOSIX_H and LIBRX=-lrx
 LIBRX=
-AC_MSG_CHECKING(for regcomp)
-AC_TRY_LINK_FUNC(regcomp,
-  AC_MSG_RESULT(found),
-  AC_MSG_RESULT(not found) AC_CHECK_LIB(rx, regcomp, LIBRX=-lrx))
+AC_CHECK_HEADERS(regex.h rxposix.h rx/rxposix.h,
+  [AC_MSG_CHECKING(for regcomp)
+  AC_TRY_LINK_FUNC(regcomp,
+    [AC_MSG_RESULT(found)],
+    [AC_MSG_RESULT(not found)
+    AC_CHECK_LIB(rx, regcomp, LIBRX=-lrx)])
+  break],
+
+  [AC_MSG_RESULT(not building aven)
+  AVEN=])
+
 AC_SUBST(LIBRX)
 
 AC_PATH_XTRA
@@ -112,6 +119,7 @@ WXCONFIG=wxgtk-config
 if test x$no_x = xyes; then
   WXCONFIG=
 fi
+
 PRINTWIN=
 if test -n "$MINGW32$CYGWIN" ; then
   PRINTWIN='printwin$(EXEEXT)'
