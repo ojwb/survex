@@ -95,13 +95,6 @@ From: Olly
 
 Sort out gross error detection code
 
-Date: Wed, 16 Aug 2000
-From: Gavin Lowe <gavin.lowe@mcs.le.ac.uk>
-
-If a survey leg or an *equate command refers to a station using a
-(non-empty) prefix, and that station doesn't otherwise exist, then it's
-likely that the user has cocked up the prefix in some way.
-
 Date: Fri, 18 Aug 2000
 From: Olly
 

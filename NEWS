@@ -1,3 +1,11 @@
+Changes in 0.96-prerelease2:
+
+* caverot: (MSDOS version) --mode-picker now recognised anywhere on command
+  line (had to be last previously).
+
+* caverot: (MSDOS version) messages from Allegro library now
+  internationalised.
+
 Changes in 0.96-prerelease1:
 
 * xcaverot: Improved responsiveness; can now load multiple .3d files from
