@@ -27,7 +27,8 @@
 #include <time.h>
 #include <ctype.h>
 
-#ifndef STANDALONE
+#include "img.h"
+#ifdef IMG_HOSTED
 # include "useful.h"
 # include "message.h"
 # include "filename.h"
@@ -35,13 +36,15 @@
 # define TIMENA msg(/*Date and time not available.*/108)
 # define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
 #else
+# define INT32_T long
 # define TIMENA "Time not available."
 # define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
 # define EXT_SVX_3D "3d"
 # define xosmalloc(L) malloc((L))
+# define xosrealloc(L,S) realloc((L),(S))
 # define osfree(P) free((P))
 # define ossizeof(T) sizeof(T)
-/* in non-standalone mode, this tests if a filename refers to a directory */
+/* in IMG_HOSTED mode, this tests if a filename refers to a directory */
 # define fDirectory(X) 0
 /* open file FNM with mode MODE, maybe using path PTH and/or extension EXT */
 /* path isn't used in img.c, but EXT is */
@@ -76,14 +79,13 @@ put32(long w, FILE *fh)
 }
 
 #endif
-#include "img.h"
 
 unsigned int img_output_version = 2;
 
 #define TMPBUFLEN 256
 static char tmpbuf[TMPBUFLEN];
 
-#ifndef STANDALONE
+#ifdef IMG_HOSTED
 static enum {
    IMG_NONE = 0,
    IMG_FILENOTFOUND = /*Couldn't open data file `%s'*/24,
@@ -120,7 +122,7 @@ getline(char *buf, size_t len, FILE *fh)
    return i;
 }
 
-#ifdef STANDALONE
+#ifndef IMG_HOSTED
 img_errcode
 img_error(void)
 {

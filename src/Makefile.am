@@ -10,6 +10,8 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
 
 LDADD = @LIBOBJS@
 
+INCLUDES = -DIMG_HOSTED
+
 PRINT = printdm printps printpcl printhpgl
 
 EXTRA_PROGRAMS = caverot xcaverot printxbm printwin aven

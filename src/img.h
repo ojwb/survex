@@ -26,7 +26,7 @@ extern "C" {
 
 #include <stdio.h>
 
-# ifndef STANDALONE
+# ifdef IMG_HOSTED
 #  include "useful.h"
 # endif
 
@@ -60,7 +60,7 @@ typedef struct {
    /* all other members are for internal use only */
    FILE *fh;          /* file handle of image file */
    size_t buf_len;
-# ifndef STANDALONE
+# ifdef IMG_HOSTED
    bool fLinePending; /* for old style text format files */
    bool fRead;        /* fTrue for reading, fFalse for writing */
 # else
@@ -92,7 +92,7 @@ img *img_open(const char *fnm, char *title_buf, char *date_buf);
  * NB only the original .3d file format has an ASCII variant
  * Returns pointer to an img struct or NULL
  */
-# ifndef STANDALONE
+# ifdef IMG_HOSTED
 img *img_open_write(const char *fnm, char *title_buf, bool fBinary);
 # else
 img *img_open_write(const char *fnm, char *title_buf, int fBinary);
@@ -129,7 +129,7 @@ void img_rewind(img *pimg);
 void img_close(img *pimg);
 
 /* Codes returned by img_error */
-# ifdef STANDALONE
+# ifndef IMG_HOSTED
 typedef enum {
    IMG_NONE = 0, IMG_FILENOTFOUND, IMG_OUTOFMEMORY,
    IMG_CANTOPENOUT, IMG_BADFORMAT, IMG_DIRECTORY
