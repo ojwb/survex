@@ -144,8 +144,8 @@ typedef struct Node {
    struct Prefix *name;
    struct Link *leg[3];
    struct Node *prev, *next;
-   uchar fArtic; /* Is this an articulation point? */
-   unsigned long colour;
+   /* uchar fArtic; */ /* Is this an articulation point? */
+   long colour;
 } node;
 
 /* station position */
