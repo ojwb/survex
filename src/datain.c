@@ -72,6 +72,13 @@ get_pos(void)
    return result;
 }
 
+void
+push_back(int c)
+{
+   if (c != EOF && ungetc(c, file.fh) == EOF)
+      fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
+}
+
 static void
 error_list_parent_files(void)
 {
@@ -264,7 +271,7 @@ process_eol(void)
    while (ch != EOF) {
       nextch();
       if (ch == eolchar || !isEol(ch)) {
-	 ungetc(ch, file.fh);
+	 push_back(ch);
 	 break;
       }
    }
@@ -748,7 +755,7 @@ data_normal(void)
 	    process_bol();
 	    if (isData(ch)) break;
 	    if (!isComm(ch)) {
-	       ungetc(ch, file.fh);
+	       push_back(ch);
 	       return 1;
 	    }
 	 }
@@ -980,7 +987,7 @@ data_diving(void)
 	    process_bol();
 	    if (isData(ch)) break;
 	    if (!isComm(ch)) {
-	       ungetc(ch, file.fh);
+	       push_back(ch);
 	       return 1;
 	    }
 	 }
@@ -1098,7 +1105,7 @@ data_cartesian(void)
 	    process_bol();
 	    if (isData(ch)) break;
 	    if (!isComm(ch)) {
-	       ungetc(ch, file.fh);
+	       push_back(ch);
 	       return 1;
 	    }
 	 }
@@ -1214,7 +1221,7 @@ data_nosurvey(void)
 	       process_bol();
 	    } while (isComm(ch));
 	    if (!isData(ch)) {
-	       ungetc(ch, file.fh);
+	       push_back(ch);
 	       return 1;
 	    }
 	    goto again;
@@ -1225,7 +1232,7 @@ data_nosurvey(void)
 	    process_bol();
 	    if (isData(ch)) break;
 	    if (!isComm(ch)) {
-	       ungetc(ch, file.fh);
+	       push_back(ch);
 	       return 1;
 	    }
 	 }
