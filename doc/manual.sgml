@@ -34,7 +34,11 @@ level sump fudge:
 nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in height across the sump
 *end
 
-``Quick start'' section - lead people through entering and processing
+``Quick start'' section
+
+- install (by OS): unpacking, configuration (language, where support files live)
+
+- lead people through entering and processing
 a sample survey.  Take examples from surveying books and real surveys.
 
 
@@ -103,8 +107,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-11-22 16:50:28 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.7 2003-11-22 16:50:28 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2004-03-30 02:03:51 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.8 2004-03-30 02:03:51 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -126,9 +130,9 @@ manual.
 <Para>&survexsuite; is a multi-platform open-source cave surveying
 package.
 Version 1.1
-currently runs on &unix;, and Microsoft Windows 95/NT and
-successors.
-We're working on a version for MacOS X, and investigating support for various
+currently runs on &unix;, Microsoft Windows 95/NT and
+successors, and MacOS X.
+We're investigating support for various
 palmtop devices.
 Version 1.0 has fewer features, but also runs of &msdos; and &riscos; machines.
 </Para>

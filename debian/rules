@@ -3,7 +3,7 @@
 # GPL copyright 1997 to 1999 by Joey Hess.
 #
 # Copyright (C) 2001 Wookey
-# Copyright (C) 2001,2002,2003 Olly Betts
+# Copyright (C) 2001,2002,2003,2004 Olly Betts
 #
 # This is a multibinary package. You can build any of the binary packages
 # independently, via binary-<package> targets.
@@ -30,8 +30,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-	# need to use GCC 3.2 to link against wxgtk-2.4
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex1.1 CFLAGS=$(CFLAGS) STRIP=$(STRIP) CC=gcc-3.2 CXX=g++-3.2 --datadir=/usr/share/survex1.1 --program-suffix=-1.1
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex CFLAGS=$(CFLAGS) STRIP=$(STRIP)
 	$(MAKE)
 ifeq	($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
 	$(MAKE) check

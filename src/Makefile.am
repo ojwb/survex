@@ -106,7 +106,7 @@ AVEN_REZ = aven-rez
 aven-rez: aven
 	`@WXCONFIG@ --rezflags` aven
 	touch aven-rez
- 
+
 install-exec-hook:
 	`@WXCONFIG@ --rezflags` $(bindir)/aven
 else !MACOSX
@@ -125,7 +125,7 @@ AVEN_REZ =
 install-exec-hook:
 
 endif !AVEN
- 
+
 noinst_SCRIPTS = $(AVEN_REZ)
 MOSTLYCLEANFILES = $(AVEN_REZ)
 

@@ -3,7 +3,7 @@
  * Also useful as an example of how to use the img code in your own programs
  */
 
-/* Copyright (C) 1994-2003 Olly Betts
+/* Copyright (C) 1994-2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,8 +69,8 @@ static const char *survey = NULL;
 static void
 dxf_header(void)
 {
-   fprintf(fh, "0\nSECTION\n");
-   fprintf(fh, "2\nHEADER\n");
+   fprintf(fh, "0\nSECTION\n"
+	       "2\nHEADER\n");
    fprintf(fh, "9\n$EXTMIN\n"); /* lower left corner of drawing */
    fprintf(fh, "10\n%#-.6f\n", min_x); /* x */
    fprintf(fh, "20\n%#-.6f\n", min_y); /* y */
@@ -83,10 +83,30 @@ dxf_header(void)
    fprintf(fh, "9\n$PDSIZE\n40\n%6.2f\n", marker_size); /* marker size */
    fprintf(fh, "0\nENDSEC\n");
 
-   fprintf(fh, "0\nSECTION\n");
-   fprintf(fh, "2\nTABLES\n");
-   fprintf(fh, "0\nTABLE\n");
-   fprintf(fh, "2\nLAYER\n");
+   fprintf(fh, "0\nSECTION\n"
+	       "2\nTABLES\n");
+   fprintf(fh, "0\nTABLE\n" /* Define CONTINUOUS and DASHED line types. */
+	       "2\nLTYPE\n"
+	       "70\n10\n"
+	       "0\nLTYPE\n"
+	       "2\nCONTINUOUS\n"
+	       "70\n64\n"
+	       "3\nContinuous\n"
+	       "72\n65\n"
+	       "73\n0\n"
+	       "40\n0.0\n"
+	       "0\nLTYPE\n"
+	       "2\nDASHED\n"
+	       "70\n64\n"
+	       "3\nDashed\n"
+	       "72\n65\n"
+	       "73\n2\n"
+	       "40\n2.5\n"
+	       "49\n1.25\n"
+	       "49\n-1.25\n"
+	       "0\nENDTAB\n");
+   fprintf(fh, "0\nTABLE\n"
+	       "2\nLAYER\n");
    fprintf(fh, "70\n10\n"); /* max # off layers in this DXF file : 10 */
    /* First Layer: CentreLine */
    fprintf(fh, "0\nLAYER\n2\nCentreLine\n");
@@ -103,6 +123,21 @@ dxf_header(void)
    fprintf(fh, "70\n64\n"); /* shows layer is referenced by entities */
    fprintf(fh, "62\n7\n"); /* color: kept the same used by SpeleoGen */
    fprintf(fh, "6\nCONTINUOUS\n"); /* linetype */
+   /* Next Layer: Surface */
+   fprintf(fh, "0\nLAYER\n2\nSurface\n");
+   fprintf(fh, "70\n64\n"); /* shows layer is referenced by entities */
+   fprintf(fh, "62\n5\n"); /* color */
+   fprintf(fh, "6\nDASHED\n"); /* linetype */
+   /* Next Layer: SurfaceStations */
+   fprintf(fh, "0\nLAYER\n2\nSurfaceStations\n");
+   fprintf(fh, "70\n64\n"); /* shows layer is referenced by entities */
+   fprintf(fh, "62\n7\n"); /* color */
+   fprintf(fh, "6\nCONTINUOUS\n"); /* linetype */
+   /* Next Layer: SurfaceLabels */
+   fprintf(fh, "0\nLAYER\n2\nSurfaceLabels\n");
+   fprintf(fh, "70\n64\n"); /* shows layer is referenced by entities */
+   fprintf(fh, "62\n7\n"); /* color */
+   fprintf(fh, "6\nCONTINUOUS\n"); /* linetype */
    if (grid > 0) {
       /* Next Layer: Grid */
       fprintf(fh, "0\nLAYER\n2\nGrid\n");
@@ -110,11 +145,11 @@ dxf_header(void)
       fprintf(fh, "62\n7\n"); /* color: kept the same used by SpeleoGen */
       fprintf(fh, "6\nCONTINUOUS\n"); /* linetype */
    }
-   fprintf(fh, "0\nENDTAB\n");
-   fprintf(fh, "0\nENDSEC\n");
+   fprintf(fh, "0\nENDTAB\n"
+	       "0\nENDSEC\n");
 
-   fprintf(fh, "0\nSECTION\n");
-   fprintf(fh, "2\nENTITIES\n");
+   fprintf(fh, "0\nSECTION\n"
+	       "2\nENTITIES\n");
 
    if (grid > 0) {
       double x, y;
@@ -159,14 +194,14 @@ dxf_start_pass(int layer)
 static void
 dxf_move(const img_point *p)
 {
-   p = p;
+   p = p; /* unused */
 }
 
 static void
-dxf_line(const img_point *p1, const img_point *p)
+dxf_line(const img_point *p1, const img_point *p, bool fSurface)
 {
    fprintf(fh, "0\nLINE\n");
-   fprintf(fh, "8\nCentreLine\n"); /* Layer */
+   fprintf(fh, fSurface ? "8\nSurface\n" : "8\nCentreLine\n"); /* Layer */
    fprintf(fh, "10\n%6.2f\n", p1->x);
    fprintf(fh, "20\n%6.2f\n", p1->y);
    fprintf(fh, "30\n%6.2f\n", p1->z);
@@ -176,11 +211,11 @@ dxf_line(const img_point *p1, const img_point *p)
 }
 
 static void
-dxf_label(const img_point *p, const char *s)
+dxf_label(const img_point *p, const char *s, bool fSurface)
 {
    /* write station label to dxf file */
    fprintf(fh, "0\nTEXT\n");
-   fprintf(fh, "8\nLabels\n"); /* Layer */
+   fprintf(fh, fSurface ? "8\nSurfaceLabels\n" : "8\nLabels\n"); /* Layer */
    fprintf(fh, "10\n%6.2f\n", p->x);
    fprintf(fh, "20\n%6.2f\n", p->y);
    fprintf(fh, "30\n%6.2f\n", p->z);
@@ -189,11 +224,11 @@ dxf_label(const img_point *p, const char *s)
 }
 
 static void
-dxf_cross(const img_point *p)
+dxf_cross(const img_point *p, bool fSurface)
 {
    /* write station marker to dxf file */
    fprintf(fh, "0\nPOINT\n");
-   fprintf(fh, "8\nStations\n"); /* Layer */
+   fprintf(fh, fSurface ? "8\nSurfaceStations\n" : "8\nStations\n"); /* Layer */
    fprintf(fh, "10\n%6.2f\n", p->x);
    fprintf(fh, "20\n%6.2f\n", p->y);
    fprintf(fh, "30\n%6.2f\n", p->z);
@@ -237,15 +272,17 @@ sketch_move(const img_point *p)
 }
 
 static void
-sketch_line(const img_point *p1, const img_point *p)
+sketch_line(const img_point *p1, const img_point *p, bool fSurface)
 {
-   p1 = p1;
+   fSurface = fSurface; /* unused */
+   p1 = p1; /* unused */
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p->x * factor, p->y * factor, 0.0);
 }
 
 static void
-sketch_label(const img_point *p, const char *s)
+sketch_label(const img_point *p, const char *s, bool fSurface)
 {
+   fSurface = fSurface; /* unused */
    fprintf(fh, "fp((0,0,0))\n");
    fprintf(fh, "le()\n");
    fprintf(fh, "Fn('Times-Roman')\n");
@@ -260,8 +297,9 @@ sketch_label(const img_point *p, const char *s)
 }
 
 static void
-sketch_cross(const img_point *p)
+sketch_cross(const img_point *p, bool fSurface)
 {
+   fSurface = fSurface; /* unused */
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
 	   p->x * factor - MARKER_SIZE, p->y * factor - MARKER_SIZE, 0.0);
@@ -378,9 +416,10 @@ plt_move(const img_point *p)
 }
 
 static void
-plt_line(const img_point *p1, const img_point *p)
+plt_line(const img_point *p1, const img_point *p, bool fSurface)
 {
-   p1 = p1;
+   fSurface = fSurface; /* unused */
+   p1 = p1; /* unused */
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "D %.3f %.3f %.3f ",
 	   p->y / METRES_PER_FOOT, p->x / METRES_PER_FOOT, p->z / METRES_PER_FOOT);
@@ -389,8 +428,9 @@ plt_line(const img_point *p1, const img_point *p)
 }
 
 static void
-plt_label(const img_point *p, const char *s)
+plt_label(const img_point *p, const char *s, bool fSurface)
 {
+   fSurface = fSurface; /* unused */
    /* FIXME: also ctrl characters - ought to remap them, not give up */
    if (strchr(s, ' ')) {
       fprintf(stderr, "PLT format can't cope with spaces in station names\n");
@@ -400,9 +440,10 @@ plt_label(const img_point *p, const char *s)
 }
 
 static void
-plt_cross(const img_point *p)
+plt_cross(const img_point *p, bool fSurface)
 {
-   p = p;
+   fSurface = fSurface; /* unused */
+   p = p; /* unused */
 }
 
 static void
@@ -442,9 +483,9 @@ main(int argc, char **argv)
    void (*header)(void);
    void (*start_pass)(int);
    void (*move)(const img_point *);
-   void (*line)(const img_point *, const img_point *);
-   void (*label)(const img_point *, const char *);
-   void (*cross)(const img_point *);
+   void (*line)(const img_point *, const img_point *, bool);
+   void (*label)(const img_point *, const char *, bool);
+   void (*cross)(const img_point *, bool);
    void (*footer)(void);
    const char *mode = "w"; /* default to text output */
 
@@ -712,7 +753,8 @@ main(int argc, char **argv)
 		  img_close(pimg);
 		  fatalerror(/*Bad 3d image file `%s'*/106, fnm_3d);
 	       }
-	       if ((*pass & LEGS) && legs) line(&p1, &p);
+	       if ((*pass & LEGS) && legs)
+		  line(&p1, &p, pimg->flags & img_FLAG_SURFACE);
 	       p1 = p;
 	       break;
 	     case img_MOVE:
@@ -727,8 +769,14 @@ main(int argc, char **argv)
 #ifdef DEBUG_CAD3D
 	       printf("label `%s' at %9.2f %9.2f %9.2f\n",pimg->label,x,y,z);
 #endif
-	       if ((*pass & LABELS) && labels) label(&p, pimg->label);
-	       if ((*pass & STNS) && crosses) cross(&p);
+	       /* Use !UNDERGROUND as the criterion - we want stations where
+		* a surface and underground survey meet to be in the
+		* underground layer */
+	       if ((*pass & LABELS) && labels)
+		  label(&p, pimg->label,
+			!(pimg->flags & img_SFLAG_UNDERGROUND));
+	       if ((*pass & STNS) && crosses)
+		  cross(&p, !(pimg->flags & img_SFLAG_UNDERGROUND));
 	       break;
 #ifdef DEBUG_CAD3D
 	     case img_STOP:

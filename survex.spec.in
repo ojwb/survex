@@ -45,11 +45,11 @@ make
 [ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
 mkdir -p "%{buildroot}"
 make install-strip DESTDIR="%{buildroot}"
-# Rearrange to conform to the FHS
-mkdir -p "%{buildroot}"/usr/share/doc
-# Recent Redhat versions (7.3 for e.g.) use /usr/share/doc/@PACKAGE@-@VERSION@ !
-mv "%{buildroot}"/usr/doc/@PACKAGE@ "%{buildroot}"/usr/share/doc/@PACKAGE@-@VERSION@
+# Rearrange to conform to the FHS.
 mv "%{buildroot}"/usr/man "%{buildroot}"/usr/share/man
+# Move docs back into build tree to keep rpmbuild happy by letting
+# it do the installing.
+mv "%{buildroot}"/usr/doc/@PACKAGE@ ./built-docs
 
 %clean
 [ "%{buildroot}" = "/" ] && echo "buildroot cannot be /" && exit 1
@@ -58,7 +58,7 @@ mv "%{buildroot}"/usr/man "%{buildroot}"/usr/share/man
 %files
 %defattr(-, root, root)
 %doc @EXTRA_TEXT@
-%doc /usr/share/doc/@PACKAGE@-@VERSION@
+%doc built-docs/*
 %doc /usr/share/man/
 %exclude /usr/share/man/man1/aven*
 %exclude /usr/share/man/man1/svxedit*

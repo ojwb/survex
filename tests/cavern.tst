@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2003 Olly Betts
+# Copyright (C) 1999-2004 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 
 : ${CAVERN="$testdir"/../src/cavern}
 : ${DIFFPOS="$testdir"/../src/diffpos}
+: ${CAD3D="$testdir"/../src/cad3d}
 
 : ${TESTS=${*-"singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
@@ -52,7 +53,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
  notentranceorexport inferunknown inferexports bad_units_factor\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
- lech level 2fixbug declination.dat ignore.dat"}}
+ lech level 2fixbug declination.dat ignore.dat dot17 3dcorner surfequate"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -180,6 +181,9 @@ for file in $TESTS ; do
   2fixbug) pos=no; warn=0 ;;
   declination.dat) pos=yes; warn=0 ;;
   ignore.dat) pos=yes; warn=0 ;;
+  dot17) pos=yes; warn=0 ;;
+  3dcorner) pos=yes; warn=0 ;;
+  surfequate) pos=dxf; warn=0 ;;
   *) file='' ;;
   esac
 
@@ -188,10 +192,12 @@ for file in $TESTS ; do
     case "$file" in
     *.*)
       input="$srcdir/$file"
-      posfile="$srcdir/`echo \"$file\"|sed 's/\.[^.]*$/.pos/'`" ;;
+      posfile="$srcdir/`echo \"$file\"|sed 's/\.[^.]*$/.pos/'`"
+      dxffile="$srcdir/`echo \"$file\"|sed 's/\.[^.]*$/.dxf/'`" ;;
     *)
       input="$srcdir/$file.svx"
-      posfile="$srcdir/$file.pos" ;;
+      posfile="$srcdir/$file.pos"
+      dxffile="$srcdir/$file.dxf" ;;
     esac
     rm -f tmp.*
     $CAVERN "$input" --output=tmp > tmp.out
@@ -222,6 +228,14 @@ for file in $TESTS ; do
         $DIFFPOS tmp.3d "$posfile" || exit 1
       else
         $DIFFPOS tmp.3d "$posfile" > /dev/null || exit 1
+      fi ;;
+    dxf)
+      if test -n "$VERBOSE" ; then
+        $CAD3D tmp.3d tmp.dxf || exit 1
+	diff tmp.dxf "$dxffile" || exit 1
+      else
+        $CAD3D tmp.3d tmp.dxf > /dev/null || exit 1
+	cmp -s tmp.dxf "$dxffile" || exit 1
       fi ;;
     no)
       test -f tmp.3d || exit 1 ;;

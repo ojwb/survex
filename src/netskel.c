@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2003 Olly Betts
+ * Copyright (C) 1991-2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -638,17 +638,18 @@ replace_travs(void)
 	    fix(stn3);
 	 }
 
-	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
-	    stn1->name->sflags |= BIT(SFLAGS_SURFACE);
-	    stn3->name->sflags |= BIT(SFLAGS_SURFACE);
-	 } else {
-	    stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	    stn3->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	 }
+	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
+	     if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+		stn1->name->sflags |= BIT(SFLAGS_SURFACE);
+		stn3->name->sflags |= BIT(SFLAGS_SURFACE);
+	     } else {
+		stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+		stn3->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	     }
+
 #ifdef CHASM3DX
-	 if (!fUseNewFormat) {
+	    if (!fUseNewFormat) {
 #endif
-	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	       SVX_ASSERT(!fEquate);
 	       SVX_ASSERT(!fZeros(&leg->v));
 	       if (leg->meta) {
@@ -661,10 +662,10 @@ replace_travs(void)
 	       img_write_item(pimg, img_LINE, leg->l.flags,
 			      sprint_prefix(leg_pfx),
 			      POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
-	    }
 #ifdef CHASM3DX
-	 }
+	    }
 #endif
+	 }
 
 	 /* FIXME: equate at the start of a traverse treated specially
 	  * - what about equates at end? */
@@ -819,12 +820,14 @@ replace_trailing_travs(void)
 
 	 fix(stn2);
 	 add_stn_to_list(&stnlist, stn2);
-	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
-	    stn1->name->sflags |= BIT(SFLAGS_SURFACE);
-	    stn2->name->sflags |= BIT(SFLAGS_SURFACE);
-	 } else {
-	    stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	    stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
+	     if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+		stn1->name->sflags |= BIT(SFLAGS_SURFACE);
+		stn2->name->sflags |= BIT(SFLAGS_SURFACE);
+	     } else {
+		stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+		stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	     }
 	 }
 #ifdef CHASM3DX
 	 if (!fUseNewFormat) {

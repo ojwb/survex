@@ -106,6 +106,12 @@ esac])
 if test -n "$AVEN" ; then
   AC_PROG_CXX
   AC_PROG_CXXCPP
+else
+  dnl We don't want to fail to build Survex just because there's no C++
+  dnl compiler installed, so we need to invoke AC_PROG_CXX conditionally.
+  dnl This bodge is required in order to do that...
+  am__fastdepCXX_TRUE='#'
+  am__fastdepCXX_FALSE=
 fi
 
 AC_LANG_C

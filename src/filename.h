@@ -27,12 +27,12 @@ extern "C" {
 #include "useful.h"
 #include "osdepend.h"
 
-char * FAR path_from_fnm(const char *fnm);
-char * FAR base_from_fnm(const char *fnm);
-char * FAR baseleaf_from_fnm(const char *fnm);
-char * FAR leaf_from_fnm(const char *fnm);
-char * FAR use_path(const char *pth, const char *lf);
-char * FAR add_ext(const char *fnm, const char *ext);
+char * Far path_from_fnm(const char *fnm);
+char * Far base_from_fnm(const char *fnm);
+char * Far baseleaf_from_fnm(const char *fnm);
+char * Far leaf_from_fnm(const char *fnm);
+char * Far use_path(const char *pth, const char *lf);
+char * Far add_ext(const char *fnm, const char *ext);
 
 FILE *fopenWithPthAndExt(const char *pth, const char *fnm, const char *ext,
 			 const char *mode, char **fnmUsed);

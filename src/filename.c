@@ -1,5 +1,5 @@
 /* OS dependent filename manipulation routines
- * Copyright (c) Olly Betts 1998-2002
+ * Copyright (c) Olly Betts 1998-2003
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ fopen_not_dir(const char *fnm, const char *mode)
    return fopen(fnm, mode);
 }
 
-extern char * FAR
+extern char * Far
 path_from_fnm(const char *fnm)
 {
    char *pth;
@@ -173,7 +173,7 @@ baseleaf_from_fnm(const char *fnm)
    return q;
 }
 
-extern char * FAR
+extern char * Far
 leaf_from_fnm(const char *fnm)
 {
    const char *lf;
@@ -191,7 +191,7 @@ leaf_from_fnm(const char *fnm)
 }
 
 /* Make fnm from pth and lf, inserting an FNM_SEP_LEV if appropriate */
-extern char * FAR
+extern char * Far
 use_path(const char *pth, const char *lf)
 {
    char *fnm;
@@ -227,7 +227,7 @@ use_path(const char *pth, const char *lf)
 }
 
 /* Add ext to fnm, inserting an FNM_SEP_EXT if appropriate */
-extern char * FAR
+extern char * Far
 add_ext(const char *fnm, const char *ext)
 {
    char * fnmNew;
@@ -258,7 +258,7 @@ add_ext(const char *fnm, const char *ext)
  * fnmUsed is used to return filename used to open file (ignored if NULL)
  * or NULL if file didn't open
  */
-extern FILE FAR *
+extern FILE Far *
 fopenWithPthAndExt(const char *pth, const char *fnm, const char *ext,
 		   const char *mode, char **fnmUsed)
 {

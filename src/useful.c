@@ -1,5 +1,5 @@
 /* useful.c
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2001,2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,21 +31,21 @@ INT32_T useful_w32;
 
 #if 0 /* these functions aren't needed - macros do the job */
 /* the numbers in the file are little endian, so use fread/fwrite */
-extern void FAR
+extern void Far
 useful_put16(INT16_T w, FILE *fh)
 {
    fwrite(&w, 2, 1, fh);
 }
 
 #undef useful_put32
-extern void FAR
+extern void Far
 useful_put32(INT32_T w, FILE *fh)
 {
    fwrite(&w, 4, 1, fh);
 }
 
 #undef useful_get16
-extern INT16_T FAR
+extern INT16_T Far
 useful_get16(FILE *fh)
 {
    INT16_T w;
@@ -54,7 +54,7 @@ useful_get16(FILE *fh)
 }
 
 #undef useful_put32
-extern INT32_T FAR
+extern INT32_T Far
 useful_get32(FILE *fh)
 {
    INT32_T w;
@@ -65,14 +65,14 @@ useful_get32(FILE *fh)
 
 #else
 
-extern void FAR
+extern void Far
 useful_put16(INT16_T w, FILE *fh)
 {
    putc((char)(w), fh);
    putc((char)(w >> 8l), fh);
 }
 
-extern void FAR
+extern void Far
 useful_put32(INT32_T w, FILE *fh)
 {
    putc((char)(w), fh);
@@ -81,7 +81,7 @@ useful_put32(INT32_T w, FILE *fh)
    putc((char)(w >> 24l), fh);
 }
 
-extern INT16_T FAR
+extern INT16_T Far
 useful_get16(FILE *fh)
 {
    INT16_T w;
@@ -90,7 +90,7 @@ useful_get16(FILE *fh)
    return w;
 }
 
-extern INT32_T FAR
+extern INT32_T Far
 useful_get32(FILE *fh)
 {
    INT32_T w;

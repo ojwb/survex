@@ -19,14 +19,13 @@ for a in survex-riscos-$VER.zip survex-dos286-$VER.exe; do
 done
 
 WEBDIR="software/$VRP"
-DIR="/export/survex/www/$WEBDIR"
-mkdir $DIR
-for a in $FILES ; do
-   cp $a $DIR/ || echo "File '$a' missing"
-done
+HOST="tartarus.org"
+DIR="/usr/data/www/survex.com/$WEBDIR"
+ssh tartarus.org mkdir "$DIR"
+scp $FILES "$HOST:$DIR"
 
-DIR="/export/survex/www/docs"
-mkdir $DIR.tmp
-cp -a doc/manual{,.{sgml,ps,txt,rtf}} $DIR.tmp
-mv $DIR $DIR.old && mv $DIR.tmp $DIR
-rm -rf $DIR.old
+DIR="/usr/data/www/survex.com/docs"
+ssh tartarus.org mkdir "$DIR.tmp"
+scp -pr doc/manual{,.{sgml,ps,txt,rtf}} "$HOST:$DIR.tmp"
+ssh tartarus.org mv "$DIR" "$DIR.old" \&\& mv "$DIR.tmp" "$DIR"
+ssh tartarus.org rm -rf "$DIR.old"

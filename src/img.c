@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2003 Olly Betts
+ * Copyright (C) 1993-2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -762,12 +762,13 @@ img_read_item(img *pimg, img_point *p)
 	 if (opt < 15) {
 	    /* 1-14 mean trim that many levels from current prefix */
 	    int c;
-	    if (pimg->label_len <= 16) {
+	    if (pimg->label_len <= 17) {
 	       /* zero prefix using "0" */
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	    }
-	    c = pimg->label_len - 16 - 1;
+	    /* extra - 1 because label_len points to one past the end */
+	    c = pimg->label_len - 17 - 1;
 	    while (pimg->label_buf[c] != '.' || --opt > 0) {
 	       if (--c < 0) {
 		  /* zero prefix using "0" */
