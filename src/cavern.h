@@ -57,19 +57,21 @@ typedef double real; /* so we can change the precision used easily */
 # define UNFIXED_VAL HUGE_VAL /* if p[0]==UNFIXED_VAL, station is unfixed */
 #endif
 
-#define SPECIAL_EOL       0x001
-#define SPECIAL_BLANK     0x002
-#define SPECIAL_KEYWORD   0x004
-#define SPECIAL_COMMENT   0x008
-#define SPECIAL_OMIT      0x010
+#define SPECIAL_EOL		0x0001
+#define SPECIAL_BLANK		0x0002
+#define SPECIAL_KEYWORD		0x0004
+#define SPECIAL_COMMENT		0x0008
+#define SPECIAL_OMIT		0x0010
 #ifndef NO_DEPRECATED
-#define SPECIAL_ROOT      0x020
+#define SPECIAL_ROOT		0x0020
 #endif
-#define SPECIAL_SEPARATOR 0x040
-#define SPECIAL_NAMES     0x080
-#define SPECIAL_DECIMAL   0x100
-#define SPECIAL_MINUS     0x200
-#define SPECIAL_PLUS      0x400
+#define SPECIAL_SEPARATOR	0x0040
+#define SPECIAL_NAMES		0x0080
+#define SPECIAL_DECIMAL		0x0100
+#define SPECIAL_MINUS		0x0200
+#define SPECIAL_PLUS		0x0400
+#define SPECIAL_OPEN		0x0800
+#define SPECIAL_CLOSE		0x1000
 
 extern char *fnm_output_base;
 extern int fnm_output_base_is_dir;
