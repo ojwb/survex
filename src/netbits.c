@@ -205,7 +205,7 @@ remove_stn_from_list(node **list, node *stn) {
 /* Create (uses osmalloc) a forward leg containing the data in leg, or
  * the reversed data in the reverse of leg, if leg doesn't hold data
  */
-extern linkfor *
+linkfor *
 copy_link(linkfor *leg)
 {
    linkfor *legOut;
@@ -237,7 +237,7 @@ copy_link(linkfor *leg)
 /* Adds to the forward leg `leg', the data in leg2, or the reversed data
  * in the reverse of leg2, if leg2 doesn't hold data
  */
-extern linkfor *
+linkfor *
 addto_link(linkfor *leg, const linkfor *leg2)
 {
    if (data_here(leg2)) {
@@ -249,6 +249,36 @@ addto_link(linkfor *leg, const linkfor *leg2)
    }
    addss(&leg->v, &leg->v, &((linkfor *)leg2)->v);
    return leg;
+}
+
+/* Add a leg between names *fr_name and *to_name */
+void
+addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
+	     real dx, real dy, real dz,
+	     real vx, real vy, real vz
+#ifndef NO_COVARIANCES
+	     , real cyz, real czx, real cxy
+#endif
+	     )
+{
+   node *to, *fr;
+   if (to_name == fr_name) {
+      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
+		    sprint_prefix(to_name));
+      return;
+   }   
+   if (fToFirst) {
+      to = StnFromPfx(to_name);
+      fr = StnFromPfx(fr_name);
+   } else {
+      fr = StnFromPfx(fr_name);
+      to = StnFromPfx(to_name);
+   }
+   addleg(fr, to, dx, dy, dz, vx, vy, vz
+#ifndef NO_COVARIANCES
+	  , cyz, czx, cxy
+#endif
+	  );
 }
 
 /* Add a leg between existing stations *fr and *to
@@ -273,6 +303,7 @@ addleg(node *fr, node *to,
 }
 
 /* Add a 'fake' leg (not counted) between existing stations *fr and *to
+ * (which *must* be different)
  * If either node is a three node, then it is split into two
  * and the data structure adjusted as necessary
  */
@@ -288,15 +319,9 @@ addfakeleg(node *fr, node *to,
    int i, j;
    linkfor *leg, *leg2;
    int shape;
-
-   if (fr->name == to->name) {
-      /* we have been asked to add a leg with the same node at both ends
-       * - give an error */
-      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
-		    sprint_prefix(fr->name));
-      /* We can't easily add the leg as freeleg() can't cope */
-      return;
-   }
+   /* we have been asked to add a leg with the same node at both ends
+    * - this should be trapped by the caller */
+   ASSERT(fr->name != to->name);
 
    leg = osnew(linkfor);
    leg2 = (linkfor*)osnew(linkrev);

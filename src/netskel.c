@@ -112,9 +112,10 @@ solve_network(void /*node *stnlist*/)
       }
 
       /* New stations are pushed onto the head of the list, so the
-       * first station added is the last in the list */
+       * first station added is the last in the list. */
       FOR_EACH_STN(stn, stnlist) stnFirst = stn;
 
+      ASSERT2(stnFirst->leg[0], "no fixed stns, but we've got a zero node!");
       ASSERT2(stnFirst, "no stations left in net!");
       stn = stnFirst;
       printf(msg(/*Survey has no fixed points. Therefore I've fixed %s at (0,0,0)*/72),

@@ -24,6 +24,13 @@ linkfor *addto_link(linkfor *leg, const linkfor *leg2);
 
 char freeleg(node **stnptr);
 
+void addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
+		  real dx, real dy, real dz, real vx, real vy, real vz
+#ifndef NO_COVARIANCES
+		  , real cyz, real czx, real cxy
+#endif
+		  );
+
 void addleg(node *fr, node *to,
 	    real dx, real dy, real dz, real vx, real vy, real vz
 #ifndef NO_COVARIANCES

@@ -277,7 +277,10 @@ From: Olly
 
 check skip blank pages works on printer drivers (notably printpcl)
 
-resolve the odd fixed point warning from this:
+Check LC_CTYPE for charset?
 
-A A 1 0 0
+extract --help messages for translation.
+
+prog --help and --version ought to work (perhaps both just do --version)
+even if messages can't be found.
 

@@ -117,6 +117,7 @@ static bool fRevRot = fFalse; /* auto-rotate backwards */
 static float elev;             /* angle of elevation of viewpoint */
 static float nStepsize;        /* stepsize for movements */
 static bool f3D;              /* flag indicating red/green 3d view mode */
+static bool fOverlap; /* are overlapping labels pruned? may be disabled when memory is tight */
 int xcMac, ycMac;            /* screen size in plot units (==pixels usually) */
 #if 1
 #ifdef Y_UP
@@ -268,12 +269,10 @@ main(int argc, char **argv)
    signal(SIGINT, handle_sig);
 #endif
    
+   fOverlap = init_map(xcMac, ycMac);
+
    /* display help screen to give user something to read while we do scaling */
    show_help();
-
-   if (!init_map(xcMac, ycMac)) {
-      /* FIXME: warn that overlapping labels are disabled */
-   }
 
    {
       int c;
@@ -449,10 +448,11 @@ lap_timer(bool want_time)
       /* better to be paranoid */
       if (dt < 1) dt = 1;
       lap_time = (double)dt / CLOCKS_PER_SEC;
-      if (lap_time > 60.0) {
-	 cvrotgfx_beep(); /* FIXME: do something more sensible */
-	 lap_time = 60.0;
-      }
+      /* put a ceiling on the time so motion is at least controllable.
+       * 1.0 sec ceiling means cave will rotate in <=30 degree steps
+       * at default speed.
+       */
+      if (lap_time > 1.0) lap_time = 1.0;
    }
    return lap_time;
 }
@@ -719,6 +719,7 @@ process_key(void) /* and mouse! */
 #define FLAG_MOUSE2 4|FLAG_MOUSE
 #define FLAG_MOUSE3 8|FLAG_MOUSE
 #define FLAG_NOMOUSE 16
+#define FLAG_OVERLAP 32
 
 typedef struct {
    int mesg_no;
@@ -753,7 +754,7 @@ show_help(void)
 	{0, "               Ctrl-X : Toggle display of crosses ([X]s) at stations", FLAG_ALWAYS},
 	{0, "               Ctrl-L : Toggle display of survey [L]egs", FLAG_ALWAYS},
 	{0, "               Ctrl-A : Toggle display of [A]ll/skeleton when moving", FLAG_ALWAYS},
-	{0, "                    O : Toggle display of non-overlapping/all names", FLAG_ALWAYS},
+	{0, "                    O : Toggle display of non-overlapping/all names", FLAG_OVERLAP},
 	{0, "               Ctrl-R : Reverse sense of controls", FLAG_ALWAYS},
 	{0, "               ESCAPE : Quit program", FLAG_ALWAYS},
 	{0, "             Shift accelerates all movement keys", FLAG_ALWAYS},
@@ -775,6 +776,7 @@ show_help(void)
    if (mouse_buttons >= 1) flags |= FLAG_MOUSE;
    if (mouse_buttons >= 2) flags |= FLAG_MOUSE2;
    if (mouse_buttons >= 3) flags |= FLAG_MOUSE3;
+   if (fOverlap) flags |= FLAG_OVERLAP;
 
    /* display help text over currently displayed image */
    cvrotgfx_pre_supp_draw();

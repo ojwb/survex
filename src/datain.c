@@ -397,7 +397,6 @@ data_normal(void)
    /* Horrible hack this, rewrite when I get the chance */
    /* It's getting better incrementally */
    prefix *fr_name = NULL, *to_name = NULL;
-   node *fr, *to;
    real dx, dy, dz;
    real vx, vy, vz;
 #ifndef NO_COVARIANCES
@@ -628,18 +627,11 @@ printf("clin %.2f\n",clin);
    printf("Just before addleg, vx = %f\n", vx);
 #endif
    /*printf("dx,dy,dz = %.2f %.2f %.2f\n\n", dx, dy, dz);*/
-   if (first_stn == To) {
-      to = StnFromPfx(to_name);
-      fr = StnFromPfx(fr_name);
-   } else {
-      fr = StnFromPfx(fr_name);
-      to = StnFromPfx(to_name);
-   }
-   addleg(fr, to, dx, dy, dz, vx, vy, vz
+   addlegbyname(fr_name, to_name, (first_stn == To), dx, dy, dz, vx, vy, vz
 #ifndef NO_COVARIANCES
-	  , cyz, czx, cxy
+		, cyz, czx, cxy
 #endif
-	  );
+		);
 
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
@@ -668,7 +660,6 @@ extern int
 data_diving(void)
 {
    prefix *fr_name = NULL, *to_name = NULL;
-   node *fr, *to;
    real dx, dy, dz;
    real vx, vy, vz;
 
@@ -716,6 +707,12 @@ data_diving(void)
 
    dataread:
 
+   if (to_name == fr_name) {
+      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
+		    sprint_prefix(to_name));
+      return 1;
+   }
+   
    if (tape < (real)0.0) {
       compile_warning(/*Negative tape reading*/60);
    }
@@ -786,18 +783,11 @@ data_diving(void)
       }
       vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
    }
-   if (first_stn == To) {
-      to = StnFromPfx(to_name);
-      fr = StnFromPfx(fr_name);
-   } else {
-      fr = StnFromPfx(fr_name);
-      to = StnFromPfx(to_name);
-   }
-#ifdef NO_COVARIANCES
-   addleg(fr, to, dx, dy, dz, vx, vy, vz);
-#else
-   addleg(fr, to, dx, dy, dz, vx, vy, vz, 0, 0, 0); /* FIXME: need covariances */
+   addlegbyname(fr_name, to_name, (first_stn == To), dx, dy, dz, vx, vy, vz
+#ifndef NO_COVARIANCES
+		, 0, 0, 0 /* FIXME: need covariances */
 #endif
+		);
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
       /*new twiglet and insert into twig tree*/
@@ -825,7 +815,6 @@ extern int
 data_cartesian(void)
 {
    prefix *fr_name = NULL, *to_name = NULL;
-   node *fr, *to;
    real dx = 0, dy = 0, dz = 0;
 
    reading first_stn = End;
@@ -859,22 +848,22 @@ data_cartesian(void)
 
    dataread:
 
+   if (to_name == fr_name) {
+      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
+		    sprint_prefix(to_name));
+      return 1;
+   }
+
    dx = (dx * pcs->units[Q_DX] - pcs->z[Q_DX]) * pcs->sc[Q_DX];
    dy = (dy * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
    dz = (dz * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
 
-   if (first_stn == To) {
-      to = StnFromPfx(to_name);
-      fr = StnFromPfx(fr_name);
-   } else {
-      fr = StnFromPfx(fr_name);
-      to = StnFromPfx(to_name);
-   }
-   addleg(fr, to, dx, dy, dz, var(Q_DX), var(Q_DY), var(Q_DZ)
+   addlegbyname(fr_name, to_name, (first_stn == To), dx, dy, dz,
+		var(Q_DX), var(Q_DY), var(Q_DZ)
 #ifndef NO_COVARIANCES
-	  , 0, 0, 0
+		, 0, 0, 0 /* FIXME: need covariances */
 #endif
-	  );
+		);
 
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
@@ -933,6 +922,12 @@ data_nosurvey(void)
 
    dataread:
 
+   if (to_name == fr_name) {
+      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
+		    sprint_prefix(to_name));
+      return 1;
+   }
+   
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
       /* new twiglet and insert into twig tree */
