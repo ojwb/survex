@@ -214,7 +214,7 @@ main(int argc, char **argv)
       }
    } while (result != img_STOP);
 
-   desc = osmalloc(strlen(pimg->title) + strlen(" (extended)") + 1);
+   desc = osmalloc(strlen(pimg->title) + 11 + 1);
    strcpy(desc, pimg->title);
    strcat(desc, " (extended)");
 

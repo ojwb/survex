@@ -46,6 +46,10 @@
 
 * `program --version' now works even if message file can't be found.
 
+* print*: Detect .3d files produced by extend and handle them more
+  appropriately (don't ask for view or bearing, and modify info box
+  on printout).
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

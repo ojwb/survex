@@ -59,8 +59,7 @@ typedef struct LI {
 } li;
 
 static li *pliHead, **ppliEnd = &pliHead;
-static bool fPlan = fTrue;
-static bool fTilt;
+static enum {PLAN, ELEV, TILT, EXTELEV} view = PLAN;
 
 static bool fLabels = fFalse;
 static bool fCrosses = fFalse;
@@ -165,17 +164,28 @@ static void
 draw_info_box(float num, float denom)
 {
    char *p;
-
+   int boxwidth = 60;
+   int boxheight = 30;
+    
+   if (view != EXTELEV) {
+      boxwidth = 100;
+      boxheight = 40;
+      MOVEMM(60,40);
+      DRAWMM(60, 0);
+      MOVEMM(0, 30); DRAWMM(60, 30);
+   }
+   
    MOVEMM(0, 0);
-   DRAWMM(0, 40);
-   DRAWMM(100, 40);
-   DRAWMM(100, 0);
+   DRAWMM(0, boxheight);
+   DRAWMM(boxwidth, boxheight);
+   DRAWMM(boxwidth, 0);
    DRAWMM(0, 0);
 
-   MOVEMM(60,40);
-   DRAWMM(60, 0);
+   MOVEMM(0, 20); DRAWMM(60, 20);
+   MOVEMM(0, 10); DRAWMM(60, 10);
 
-   if (fPlan) {
+   switch (view) {
+    case PLAN: {
       long ax, ay, bx, by, cx, cy, dx, dy;
       int c;
 
@@ -208,7 +218,12 @@ draw_info_box(float num, float denom)
 	 for (c = 3; c <= 360; c += 3)
 	    DRAWMM(80.0 + RADIUS * sin(rad(c)), 20.0 + RADIUS * cos(rad(c)));
       }
-   } else {
+
+      MOVEMM(5, 23);
+      pr->WriteString(msg(/*Plan view*/117));
+      break;
+    }
+    case ELEV: case TILT:
       MOVEMM(62, 33);
       pr->WriteString(msg(/*Elevation on*/116));
 
@@ -224,38 +239,40 @@ draw_info_box(float num, float denom)
       MOVEMM(65, 20); pr->WriteString(szTmp);
       sprintf(szTmp, "%03d"DEG, (rot + 90) % 360);
       MOVEMM(85, 20); pr->WriteString(szTmp);
+
+      MOVEMM(5, 23);
+      pr->WriteString(msg(/*Elevation*/118));
+      break;
+    case EXTELEV:
+      MOVEMM(5, 13);
+      pr->WriteString(msg(/*Extended elevation*/191));
+      break;
    }
 
-   MOVEMM(5, 33); pr->WriteString(title);
-
-   MOVEMM(0, 30); DRAWMM(60, 30);
-
-   MOVEMM(5, 23);
-   pr->WriteString(msg(fPlan ? /*Plan view*/117 : /*Elevation*/118));
-
-   MOVEMM(0, 20); DRAWMM(60, 20);
+   MOVEMM(5, boxheight - 7); pr->WriteString(title);
 
    strcpy(szTmp, msg(/*Scale*/154));
    p = szTmp + strlen(szTmp);
    sprintf(p, " %.0f:%.0f", num, denom);
-   MOVEMM(5, 13); pr->WriteString(szTmp);
+   MOVEMM(5, boxheight - 27); pr->WriteString(szTmp);
 
-   MOVEMM(0, 10); DRAWMM(60, 10);
-
-   strcpy(szTmp, msg(fPlan ? /*Up page*/168 : /*View*/169));
-   p = szTmp + strlen(szTmp);
-   sprintf(p, " %03d"DEG, rot);
-   MOVEMM(5, 3); pr->WriteString(szTmp);
+   if (view != EXTELEV) {
+      strcpy(szTmp, msg(view == PLAN ? /*Up page*/168 : /*View*/169));
+      p = szTmp + strlen(szTmp);
+      sprintf(p, " %03d"DEG, rot);
+      MOVEMM(5, 3); pr->WriteString(szTmp);
+   }
 
    sprintf(szTmp, "Survex "VERSION" %s %s", szDesc, msg(/*Driver*/152));
-   MOVEMM(102, 8); pr->WriteString(szTmp);
+   MOVEMM(boxwidth + 2, 8); pr->WriteString(szTmp);
 
    /* This used to be a copyright line, but it was occasionally
     * mis-interpreted as us claiming copyright on the survey, so let's
     * give the website URL instead */
-   MOVEMM(102, 2); pr->WriteString("http://www.survex.com/");
+   MOVEMM(boxwidth + 2, 2); pr->WriteString("http://www.survex.com/");
 
-   draw_scale_bar(110.0, 17.0, PaperWidth - 118.0, (double)denom / num);
+   draw_scale_bar(boxwidth + 10.0, 17.0, PaperWidth - boxwidth - 18.0,
+		  (double)denom / num);
 }
 
 /* Draw fancy scale bar with bottom left at (x,y) (both in mm) and at most */
@@ -397,12 +414,16 @@ stack(int tag, const char *s, const img_point *p)
    pli = osnew(li);
    pli->tag = tag;
    pli->to.x = p->x * COS - p->y * SIN;
-   if (fPlan) {
-      pli->to.y = p->x * SIN + p->y * COS;
-   } else if (fTilt) {
-      pli->to.y = (p->x * SIN + p->y * COS) * SINT + p->z * COST;
-   } else {
-      pli->to.y = p->z;
+   switch (view) {
+    case PLAN:
+       pli->to.y = p->x * SIN + p->y * COS;
+       break;
+    case TILT:
+       pli->to.y = (p->x * SIN + p->y * COS) * SINT + p->z * COST;
+       break;
+    case ELEV: case EXTELEV:
+       pli->to.y = p->z;
+       break;
    }
    if (pli->to.x > xMax) xMax = pli->to.x;
    if (pli->to.x < xMin) xMin = pli->to.x;
@@ -628,11 +649,11 @@ main(int argc, char **argv)
 	 fSkipBlank = 1;
 	 break;
        case 'e':
-	 fPlan = fFalse;
+	 view = ELEV;
 	 fInteractive = fFalse;
 	 break;
        case 'p':
-	 fPlan = fTrue;
+	 view = PLAN;
 	 fInteractive = fFalse;
 	 break;
        case 'b':
@@ -666,8 +687,18 @@ main(int argc, char **argv)
     * rather than asking lots of questions then failing */
    pimg = img_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error(), fnm);
-   title = pimg->title;
-   datestamp = pimg->datestamp;
+
+   /* Copy strings so they're valid after the 3d file is closed... */
+   title = osstrdup(pimg->title);
+   datestamp = osstrdup(pimg->datestamp);
+
+   if (strlen(title) > 11 &&
+       strcmp(title + strlen(title) - 11, " (extended)") == 0) {
+      title[strlen(title) - 11] = '\0';
+      view = EXTELEV;
+      rot = 0;
+      tilt = 0;
+   }
 
    if (pr->Init) {
       FILE *fh_list[4];
@@ -709,7 +740,7 @@ main(int argc, char **argv)
       for (pfh = fh_list; *pfh; pfh++) (void)fclose(*pfh);
    }
 
-   if (fInteractive) {
+   if (fInteractive && view != EXTELEV) {
       char szReplies[3];
       szReplies[0] = *msg(/*plan*/183);
       szReplies[1] = *msg(/*elevation*/184);
@@ -717,12 +748,13 @@ main(int argc, char **argv)
       /* "Plan or Elevation (pe) : " */
       fputs(msg(/*Plan or Elevation*/158), stdout);
       putchar(' ');
-      fPlan = (getanswer(szReplies) != 1); /* 1 is elevation */
+      view = PLAN;
+      if (getanswer(szReplies) == 1) view = ELEV;
    }
 
-   if (fInteractive) {
+   if (fInteractive && view != EXTELEV) {
       do {
-         printf(msg(fPlan ? /*Bearing up page (degrees): */159:
+         printf(msg(view == PLAN ? /*Bearing up page (degrees): */159:
 		    /*View towards: */160));
          fgets(szTmp, sizeof(szTmp), stdin);
       } while (*szTmp >= 32 && sscanf(szTmp, "%d", &rot) < 1);
@@ -735,7 +767,7 @@ main(int argc, char **argv)
    SIN = (float)sin(rad(rot));
    COS = (float)cos(rad(rot));
 
-   if (!fPlan) {
+   if (view == ELEV) {
       if (fInteractive) {
          do {
             printf(msg(/*Tilt (degrees): */161));
@@ -747,7 +779,7 @@ main(int argc, char **argv)
             printf("%d\n", tilt);
          }
       }
-      fTilt = (tilt != 0);
+      if (tilt != 0) view = TILT;
       SINT = (float)sin(rad(tilt));
       COST = (float)cos(rad(tilt));
    }

@@ -516,7 +516,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     // Load the survey data.
 
-    img* survey = img_open_survey(file, NULL, NULL, prefix.c_str());
+    img* survey = img_open_survey(file, prefix.c_str());
     if (!survey) {
         wxString m = wxString::Format(msg(img_error()), file.c_str());
         wxGetApp().ReportError(m);
@@ -714,7 +714,7 @@ bool MainFrm::LoadTerrain(const wxString& file)
 {
     // Load terrain data from a 3D file (temporary bodge).
 
-    img* survey = img_open_survey(file, NULL, NULL, "");
+    img* survey = img_open_survey(file, "");
     if (!survey) {
         wxString m = wxString::Format(msg(img_error()), file.c_str());
         wxGetApp().ReportError(m);

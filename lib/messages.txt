@@ -1601,7 +1601,8 @@ es:189 Esperando `NOT', `DUPLICATE', `SPLAY', o `SURFACE'
 it:189 Atteso `NOT', `DUPLICATE', `SPLAY' o `SURFACE'
 # TRANSLATE
 en:190 Station `%s' referred to by *entrance or *export but never used
-# XXX191
+# TRANSLATE
+en:191 Extended elevation
 # c.f. 22
 en:192 No matching BEGIN
 fr:192 BEGIN manquant
