@@ -1017,8 +1017,8 @@ msg_init(char * const *argv)
    }
 #endif
 
-   /* shortcut --version so you can check the version number when the correct
-    * message file can't be found... */
+   /* shortcut --version so you can check the version number even when the
+    * correct message file can't be found... */
    if (argv[1] && strcmp(argv[1], "--version") == 0) {
       cmdline_version();
       exit(0);
@@ -1033,18 +1033,19 @@ msg_init(char * const *argv)
 	 free_pth = fTrue;
       }
       if (pth[0]) {
-	 /* If we're run with an explicit path, check if "../lib" from
-	  * the program's path is a directory, and if so look there for
+	 /* If we're run with an explicit path, check if "../lib/en.msg"
+	  * from the program's path exists, and if so look there for
 	  * support files - this allows us to test binaries in the build
 	  * tree easily. */
 	 /* May also be useful on MacOS X where the programs may be
 	  * installed anywhere... */
-	 char *p = use_path(pth, "../lib");
-	 if (fDirectory(p)) {
-	    pth_cfg_files = p;
-	 } else {
-	    osfree(p);
+	 char *p = use_path(pth, "../lib/en.msg");
+	 FILE *f = fopen(p, "r");
+	 if (f) {
+	    close(f);
+	    pth_cfg_files = use_path(pth, "../lib");
 	 }
+	 osfree(p);
       }
       if (free_pth) osfree(pth);
 #else
