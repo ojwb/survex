@@ -128,8 +128,12 @@ pt:  1 Mem&oacute;ria insuficiente (s&atilde;o necesss&aacute;rios mais %lu byte
 ca:  1 Mem&ograve;ria insuficient (es necessiten %lu bytes m&eacute;s).
 es:  1 Memoria insuficiente (se necesitan %lu bytes de m&aacute;s).
 it:  1 Memoria insufficiente (ci vorrebbero altri %lu bytes).
-# FIXME: translate fr de it
+# FIXME: translate fr it
 en:  2 Survex version %s or greater required to process this survey data.
+# Gerhard: (this replaces the idea of "greater" with "newer" because it sounds
+# more natural.  Feel free to write "h&ouml;her" instead of "neuer",
+# but I would advise against it.)
+de:  2 Survex Version %s oder neuer ist zum Verarbeiten dieser Daten erforderlich.
 pt:  2 Para processar estes dados &eacute; necess&acute;ria a vers&atilde;o %s (ou posterior) do Survex.
 ca:  2 Per processar aquestes dades topogr&agrave;fiques es requereix la versi&oacute; %s de Survex (o superior).
 es:  2 Para procesar estos datos topogr&aacute;ficos se requiere la versi&oacute;n %s de Survex (o superior).
@@ -184,11 +188,13 @@ pt:  9 Valor num&eacute;rico esperado
 ca:  9 S'espera un camp numeric
 es:  9 Se espera un campo num&eacute;rico
 it:  9 Questo campo &eacute; numerico
-#FIXME translate "Found `%s'," fr ge it (c.f. 31 and 32)
+#FIXME translate "Found `%s'," fr it (c.f. 31 and 32)
 en: 10 Found `%s', expecting `OFF', `UPPER', or `LOWER'
 fr: 10 On attendait `OFF', `UPPER', ou `LOWER'
+# Gerhard: "`%s' gelesen" means "have read `%s'" - "gefunden", the literal
+# equivalent, doesn't sound quite right here
 # NB there is no comma before "oder"
-de: 10 `OFF', `UPPER' oder `LOWER' erwartet
+de: 10 `%s' gelesen, `OFF', `UPPER' oder `LOWER' erwartet
 pt: 10 Encontrado `%s' quando `OFF', `UPPER' ou `LOWER' eram esperados
 ca: 10 Trobat %s', esperant `OFF', `UPPER', o `LOWER'
 es: 10 Encontrado %', esperando `OFF', `UPPER', o `LOWER'
@@ -200,11 +206,12 @@ pt: 11 Erro no programa! Por favor, comunique aos autores
 ca: 11 Error detectat al programa! Si us plau comunica-ho als autors
 es: 11 Error detectado en el programa! Por favor comun&iacute;calo a los autores
 it: 11 Individuato un errore nel programma! Per favore comunicatelo agli autori
-# FIXME translate check fr de it (c.f. old12 at end of file)
+# FIXME translate check fr it (c.f. old12 at end of file)
 en: 12 Unknown command `%s'
 fr: 12 Commande inconnue `%s'
-#de: message 30 used to translate this as "Unbekannter Befehl"...
-de: 12 Unbekanntes Kommando `%s'
+# Gerhard says "Kommando" and "Befehl" are equally valid translations - use
+# Befehl to be consistency.
+de: 12 Unbekanntes Befehl `%s'
 pt: 12 Comando desconhecido `%s'
 ca: 12 Comandament desconegut `%s'
 es: 12 Comando desconocido `%s'
@@ -306,24 +313,30 @@ it: 24 Non riesco ad aprire il file dei dati '%s'
 #XXX26
 #XXX27
 #XXX28
-# FIXME TRANSLATE fr de it
+# FIXME TRANSLATE fr it
 en: 29 Reentering an existing prefix level is deprecated (previously entered at %s:%lu)
+# deprecated is a wonderful English word lacking a wonderful German
+# equivalent....  errm and do we have a translation for "prefix level"
+# yet?  (rummaging in old mail folders)  apparently not.  Ok.  Would
+# "to introduce a prefix" be a rough equivalent for "to enter a prefix
+# level"?
+de: 29 Erneutes Einf&uuml;hren eines Pr&auml;fix ist veraltet (bereits in %s:%lu eingef&uuml;hrt)
 pt: 29 A re-utiliza&ccedil;&atilde;o de um prefixo &eacute; desaconselhada (utilizado previamente em %s:%lu)
 ca: 29 Reentrar en un nivell de prefix existent ja no s'utilitza (previament entrat a %s:%lu)
 es: 29 Reentrar en un nivel de prefijo existente yo no se usa (previamente entrado en %s:%lu)
 #XXX30
-# 31 c.f. 10, 32 FIXME TRANSLATE fr de it
+# 31 c.f. 10, 32 FIXME TRANSLATE fr it
 en: 31 Found `%s', expecting `PLUMBS'
 fr: 31 On attendait `PLUMBS'
-de: 31 `PLUMBS' erwartet
+de: 31 `%s' gelesen, `PLUMBS' erwartet
 pt: 31 Encontrado `%s' quando `PLUMBS' era esperado
 ca: 31 Trobat `%s', esperant `PLUMBS'
 es: 31 Encontrado `%s', esperando `PLUMBS'
 it: 31 Atteso `PLUMBS'
-# 32 c.f. 10, 31 FIXME TRANSLATE fr de it
+# 32 c.f. 10, 31 FIXME TRANSLATE fr it
 en: 32 Found `%s', expecting `ON' or `OFF'
 fr: 32 On attendait `ON' ou `OFF'
-de: 32 `ON' oder `OFF' erwartet
+de: 32 `%s' gelesen, `ON' oder `OFF' erwartet
 pt: 32 Encontrado `%s' quando `ON' ou `OFF' eram esperados
 ca: 32 Trobat `%s', esperant `ON' o `OFF'
 es: 32 Encontrado `%s', esperando `ON' o `OFF'
@@ -336,7 +349,7 @@ pt: 33 Somente uma base na lista de equival&ecirc;ncia
 ca: 33 Sols una estaci&oacute; a la llista d'equival&egrave;ncia
 es: 33 Solo una estaci&oacute;n en la lista de equivalencia
 it: 33 Solo una stazione nella lista di equivalenza
-# FIXME fr de it - check addition of `%s' fits with translations
+# FIXME fr it - check addition of `%s' fits with translations
 en: 34 Unknown quantity `%s'
 fr: 34 Quantit&eacute; `%s' inconnue
 de: 34 Unbekannte Gr&ouml;&szlig;e `%s'
@@ -344,18 +357,19 @@ pt: 34 Tipo de quantidade `%s' desconhecida
 ca: 34 Quantitat `%s' desconeguda
 es: 34 Cantidad `%s' desconocida
 it: 34 Quantit&aacute; `%s' sconosciuta
-# FIXME fr de it - check addition of `%s' fits with translations
+# FIXME fr it - check addition of `%s' fits with translations
 en: 35 Unknown units `%s'
 fr: 35 Unit&eacute; `%s' inconnue
-#germ: 35 Unbekannte `%s' Einheiten
-de: 35 Unbekannte `%s' Einheit(en)
+#germ: 35 Unbekannte Einheiten `%s'
+de: 35 Unbekannte Einheit(en) `%s'
 pt: 35 Unidade `%s' desconhecida
 ca: 35 Unitats `%s' desconegudes
 es: 35 Unidades `%s' desconocidas
 it: 35 Unit&aacute; `%s' sconosciute
-# FIXME TRANSLATE fr de it
+# FIXME TRANSLATE fr it
 # "*begin" / "*end foo"
 en: 36 Matching BEGIN tag has no prefix
+de: 36 Zugeh&oouml;riges BEGIN hatte keine Pr&auml;fix
 pt: 36 O BEGIN correspondente n&atilde;o tem prefixo 
 ca: 36 La instrucci&oacute; BEGIN corresponent no te prefix
 es: 36 La instrucci&oacute;n BEGIN correspondiente no tiene prefijo
@@ -377,7 +391,7 @@ pt: 38 Mem&oacute;ria insuficiente %.0s
 ca: 38 Mem&ograve;ria insuficient %.0s
 es: 38 Mem&oacute;ria insuficiente %.0s
 it: 38 Memoria insufficiente %.0s
-# FIXME fr de it - check addition of `%s' fits with translations
+# FIXME fr it - check addition of `%s' fits with translations
 en: 39 Unknown instrument `%s'
 fr: 39 Instrument `%s' inconnu
 de: 39 Unbekanntes Instrument `%s'
@@ -394,7 +408,7 @@ pt: 40 Fator de escala tem que ser 1.0 para comando DECLINATION
 ca: 40 El factor d'escala ha d'&egrave;sser 1.0 pel comandament DECLINATION
 es: 40 El factor de escala debe ser 1.0 para el comando DECLINATION
 it: 40 Il fattore di scala per il comando DECLINATION deve essere 1.0
-# FIXME fr de it - check addition of `%s' fits with translations
+# FIXME fr it - check addition of `%s' fits with translations
 en: 41 Unknown setting `%s'
 fr: 41 Param&egrave;tres `%s' inconnus
 #germ: 41 Unbekannter Parameter `%s'
@@ -592,7 +606,7 @@ it: 64 Mancano dati
 #ital: 64 Troppo pochi dati
 # e.g. trying to refer to an invalid FNORD data style
 # GN(3): ie unknown STYLE?  ok, rephrasing.
-# FIXME fr de it - check addition of `%s' fits with translations
+# FIXME fr it - check addition of `%s' fits with translations
 en: 65 STYLE `%s' unknown
 fr: 65 STYLE `%s' non reconnu
 de: 65 STYLE `%s' unbekannt
@@ -617,8 +631,9 @@ pt: 69 Falta &quot;
 ca: 69 Manca &quot;
 es: 69 Falta &quot;
 it: 69 Manca &quot;
-# FIXME: TRANSLATE: fr de ca es it
+# FIXME: TRANSLATE: fr ca es it
 en: 70 Station `%s' referred to just once, with an explicit prefix - typo?
+de: 70 Station `%s' nur einmal erw&auml;hnt, mit explizitem Pr&auml;fix - Tippfehler?
 pt: 70 Base `%s' utilizada apenas uma vez, e com um prefixo expl&iacute;cito - erro de digita&ccedil;&atilde;o?
 en: 71 The following survey stations are not attached to a fixed point:
 fr: 71 Les stations topo suivantes ne sont pas attach&eacute;s &agrave; des points fixes:
