@@ -70,10 +70,14 @@ if WIN32
 aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
 avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 
+svxeditrc.o: $(srcdir)/svxedit.rc
+	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
+
+editwrap_LDADD = svxeditrc.o
+
 # FIXME: should use wxconfig or similar to get includes
 avenrc.o: $(srcdir)/aven.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $$pwd/avenrc.o aven.rc
-
 else
 aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
 avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
