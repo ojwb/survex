@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2002, Olly Betts
+//  Copyright (C) 2002,2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,11 +21,12 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/* Note: this header needs to be safe to include from C code */
+
 #ifndef aven_h
 #define aven_h
 
 #include <stdarg.h>
-#include "splash.h"
 
 extern
 #ifdef __cplusplus
@@ -39,6 +40,7 @@ void aven_v_report(int severity, const char *fnm, int line, int en,
 #include "wx.h"
 
 class MainFrm;
+class Splash;
 
 class Aven : public wxApp {
     MainFrm* m_Frame;
