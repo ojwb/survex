@@ -36,42 +36,6 @@
 1998.03.22 autoconf-ed
 */
 
-#if (OS==MSDOS)
-# ifdef MSC
-#  include <graph.h>
-#  define cleardevice() _clearscreen(_GCLEARSCREEN)
-#  define outtextxy(X,Y,SZ) BLK(_moveto(X,Y);_outgtext(SZ);)
-#  define set_tcolour(X) _setcolor(X)
-#  define set_gcolour(X) _setcolor(X)
-#  define text_xy(X,Y,S) outtextxy((X)*12,(Y)*12,S)
-# elif defined(JLIB)
-#  include "jlib.h"
-#  define cleardevice() buff_clear(BitMap)
-#  define outtextxy(X,Y,SZ) buff_draw_string(BitMap,(SZ),(X),(Y),15); /*15 is colour !HACK!*/
-#  define set_tcolour(X) /* !!HACK!! */
-#  define set_gcolour(X) BLK( extern int colDraw; colDraw = (X); )
-#  define text_xy(X,Y,S) outtextxy(12+(X)*12,12+(Y)*12,(S))
-#  define far
-# elif defined(__DJGPP__)
-#  include "grx20.h"
-#  define cleardevice() GrClearContext(0)
-#  define outtextxy(X,Y,SZ) GrTextXY((X),(Y),(SZ),15,0) /* !HACK! 14 and 0 are colours */
-#  define set_tcolour(X) /* !!HACK!! */
-#  define set_gcolour(X) /* !!HACK!! */
-#  define text_xy(X,Y,S) outtextxy(12+(X)*12,12+(Y)*12,S)
-# else
-#  include <graphics.h>
-#  define set_tcolour(X) setcolor(X)
-#  define set_gcolour(X) setcolor(X)
-#  define text_xy(X,Y,S) outtextxy((X)*12,(Y)*12,S)
-# endif
-# undef  Y_UP /* PC has increasing Y down screen */
-#elif (OS==TOS)
-# include <vdi.h>
-extern struct param_block vdi_ptr;
-# define Y_UP
-#endif
-
 typedef long coord;  /* data type used after data is read in */
 
 #define COORD_MAX   LONG_MAX
@@ -105,13 +69,8 @@ typedef long coord;  /* data type used after data is read in */
 
 /* for speed, store function ptrs in table */
 
-# ifdef MSC
-#  define MOVE  (coord)(_moveto)
-#  define DRAW  (coord)(_lineto)
-# else
-#  define MOVE  (coord)(moveto)
-#  define DRAW  (coord)(lineto)
-# endif
+# define MOVE  (coord)(cvrotgfx_moveto)
+# define DRAW  (coord)(cvrotgfx_lineto)
 # define STOP  (coord)(stop)
 
 /* prototype so STOP macro will work */
@@ -121,21 +80,8 @@ extern void stop( int X, int Y );
 
 /* for speed, store function ptrs in table */
 
-# ifdef MSC
-#  define MOVE  (coord)(_moveto)
-#  define DRAW  (coord)(_lineto)
-# else
-#  define MOVE  (coord)(moveto)
-#  define DRAW  (coord)(lineto)
-# endif
+# define MOVE  (coord)(cvrotgfx_moveto)
+# define DRAW  (coord)(cvrotgfx_lineto)
 # define STOP  (coord)NULL
 
-#endif
-
-#ifdef __DJGPP__
-#ifdef JLIB
-extern buffer_rec *BitMap;
-#endif
-extern void moveto( int X, int Y );
-extern void lineto( int X, int Y );
 #endif

@@ -58,18 +58,7 @@
 extern point Huge * pData;
 
 /* Use macros to simplify code  */
-# define drawcross(x,y) BLK( _moveto((x)-CS,(y)-CS); _lineto((x)+CS,(y)+CS); _moveto((x)-CS,(y)+CS); _lineto((x)+CS,(y)-CS); )
-
-#if (OS==MSDOS)
-# ifndef MSC
-#  define _moveto(X,Y) moveto((X),(Y))
-#  define _lineto(X,Y) lineto((X),(Y))
-# endif
-#elif (OS==TOS)
-static int last_x=0,last_y=0;
-# define _moveto(X,Y) BLK( last_x=(X); last_y=(Y); )
-# define _lineto(X,Y) BLK( int x=(X),y=(Y); v_line(last_x,last_y,x,y); last_x=x; last_y=y; )
-#endif
+#define drawcross(x,y) BLK(cvrotgfx_moveto((x)-CS,(y)-CS); cvrotgfx_lineto((x)+CS,(y)+CS); cvrotgfx_moveto((x)-CS,(y)+CS); cvrotgfx_lineto((x)+CS,(y)-CS); )
 
 /* Cross size */
 #define CS 3
@@ -78,9 +67,9 @@ static int last_x=0,last_y=0;
 
 /* really plebby version (needed if fn pointers won't fit in a coord) */
 # define INIT() NOP /* do nothing */
-# define COND(p) ((p)->Option!=STOP)
+# define COND(p) ((p)->_.action!=STOP)
 
-# define DO_PLOT(p,X,Y) if ((p)->Option==DRAW) _lineto((X),(Y)); else _moveto((X),(Y))
+# define DO_PLOT(p,X,Y) if ((p)->_.action==DRAW) cvrotgfx_lineto((X),(Y)); else cvrotgfx_moveto((X),(Y))
 
 #elif defined(HAVE_SETJMP)
 
@@ -89,11 +78,11 @@ static int last_x=0,last_y=0;
 
 # define INIT() if (!setjmp(jbEnd)) NOP; else return /* store env; return after jmp */
 # define COND(p) fTrue /* never exit loop by condition failing */
-# define DO_PLOT(p,X,Y) (((void(*)(int,int))((p)->Option))( (X), (Y) ))
+# define DO_PLOT(p,X,Y) (((void(*)(int,int))((p)->_.action))( (X), (Y) ))
 
 jmp_buf jbEnd; /* store for environment for exiting plot loop */
 
-extern void far stop( int X, int Y ) {
+extern void FAR stop( int X, int Y ) {
    X=X; Y=Y; /* suppress compiler warnings */
    longjmp(jbEnd,1); /* return to setjmp() and return 1 & so exit function */
 }
@@ -102,8 +91,8 @@ extern void far stop( int X, int Y ) {
 
 /* uses function pointers, but not setjmp */
 # define INIT() NOP /* do nothing */
-# define COND(p) ((p)->Option!=STOP)
-# define DO_PLOT(p,X,Y) (((void(*)(int,int))((p)->Option))( (X), (Y) ))
+# define COND(p) ((p)->_.action!=STOP)
+# define DO_PLOT(p,X,Y) (((void(*)(int,int))((p)->_.action))( (X), (Y) ))
 
 #endif
 
@@ -153,11 +142,23 @@ void plot_plan (point Huge *p,
 
 /**************************************************************************/
 
-void do_translate ( lid Huge *plid, coord dX, coord dY, coord dZ ) {
+void do_translate( lid Huge *plid, coord dX, coord dY, coord dZ ) {
    point Huge *p;
    for ( ; plid ; plid=plid->next ) {
       p=plid->pData;
-      for ( ; p->Option!=STOP && p->Option!=(coord)-1 ; p++ ) {
+      for ( ; p->_.action!=STOP; p++ ) {
+      	 p->X += dX;
+         p->Y += dY;
+   	 p->Z += dZ;
+      }
+   }
+}
+
+void do_translate_stns( lid Huge *plid, coord dX, coord dY, coord dZ ) {
+   point Huge *p;
+   for ( ; plid ; plid=plid->next ) {
+      p=plid->pData;
+      for ( ; p->_.str; p++ ) {
       	 p->X += dX;
          p->Y += dY;
    	 p->Z += dZ;
@@ -169,7 +170,7 @@ void do_translate ( lid Huge *plid, coord dX, coord dY, coord dZ ) {
 void splot (point Huge *p,
      	    coord x1, coord x2, coord y1, coord y2, coord y3, int fixpt ) {
    int X,Y;   /* screen plot position */
-   for ( ; p->Option!=(coord)-1 ; p++ ) {
+   for ( ; p->_.str; p++ ) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X*x1 + p->Y*x2) >> fixpt)           + (xcMac>>1);
       Y = (int)((p->X*y1 + p->Y*y2 + p->Z*y3) >> fixpt) + (ycMac>>1);
@@ -181,7 +182,7 @@ void splot (point Huge *p,
 void splot_no_tilt (point Huge *p, coord x1, coord x2, coord y3,
                     int fixpt ) {
    int X,Y;   /* screen plot position */
-   for ( ; p->Option!=(coord)-1 ; p++ ) {
+   for ( ; p->_.str; p++ ) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X*x1 + p->Y*x2) >> fixpt) + (xcMac>>1);
       Y = (int)((p->Z*y3) >> fixpt)           + (ycMac>>1);
@@ -193,7 +194,7 @@ void splot_no_tilt (point Huge *p, coord x1, coord x2, coord y3,
 void splot_plan (point Huge *p,
      		 coord x1, coord x2, coord y1, coord y2, int fixpt ) {
    int X,Y;   /* screen plot position */
-   for ( ; p->Option!=(coord)-1 ; p++ ) {
+   for ( ; p->_.str; p++ ) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X*x1 + p->Y*x2) >> fixpt) + (xcMac>>1);
       Y = (int)((p->X*y1 + p->Y*y2) >> fixpt) + (ycMac>>1);
@@ -205,14 +206,13 @@ void splot_plan (point Huge *p,
 void lplot (point Huge *p,
      	    coord x1, coord x2, coord y1, coord y2, coord y3, int fixpt ) {
    int X,Y;   /* screen plot position */
-   for ( ; p->Option!=(coord)-1 ; p++ ) {
+   for ( ; p->_.str; p++ ) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X*x1 + p->Y*x2) >> fixpt);
       if ( (X<0 ? -X : X) > (xcMac>>1) ) continue;
       Y = (int)((p->X*y1 + p->Y*y2 + p->Z*y3) >> fixpt);
       if ( (Y<0 ? -Y : Y) > (ycMac>>1) ) continue;
-      if (p->Option)
-         fancy_label( (char*)(p->Option), X, Y );
+      if (p->_.str) fancy_label( p->_.str, X, Y );
 /*         outtextxy( X, Y, (char*)(p->Option) ); */
    }
 }
@@ -221,14 +221,13 @@ void lplot (point Huge *p,
 void lplot_no_tilt (point Huge *p, coord x1, coord x2, coord y3,
                     int fixpt ) {
    int X,Y;   /* screen plot position */
-   for ( ; p->Option!=(coord)-1 ; p++ ) {
+   for ( ; p->_.str; p++ ) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X*x1 + p->Y*x2) >> fixpt);
       if ( (X<0 ? -X : X) > (xcMac>>1) ) continue;
       Y = (int)((p->Z*y3) >> fixpt);
       if ( (Y<0 ? -Y : Y) > (ycMac>>1) ) continue;
-      if (p->Option)
-         fancy_label( (char*)(p->Option), X, Y );
+      if (p->_.str) fancy_label( p->_.str, X, Y );
 /*         outtextxy( X, Y, (char*)(p->Option) ); */
    }
 }
@@ -237,32 +236,13 @@ void lplot_no_tilt (point Huge *p, coord x1, coord x2, coord y3,
 void lplot_plan (point Huge *p,
      		 coord x1, coord x2, coord y1, coord y2, int fixpt ) {
    int X,Y;   /* screen plot position */
-   for ( ; p->Option!=(coord)-1 ; p++ ) {
+   for ( ; p->_.str; p++ ) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X*x1 + p->Y*x2) >> fixpt);
       if ( (X<0 ? -X : X) > (xcMac>>1) ) continue;
       Y = (int)((p->X*y1 + p->Y*y2) >> fixpt);
       if ( (Y<0 ? -Y : Y) > (ycMac>>1) ) continue;
-      if (p->Option)
-         fancy_label( (char*)(p->Option), X, Y );
+      if (p->_.str) fancy_label( (char*)(p->_.str), X, Y );
 /*         outtextxy( X, Y, (char*)(p->Option) ); */
    }
 }
-
-#ifdef __DJGPP__
-static int last_x=0, last_y=0;
-extern void moveto( int X, int Y ) {
-   last_x=X;
-   last_y=Y;
-}
-
-extern void lineto( int X, int Y ) {
-#ifdef JLIB
-   extern int colDraw; /*!HACK! */
-   buff_draw_line(BitMap,last_x,last_y,X,Y,colDraw);
-#else
-   GrLine(last_x,last_y,X,Y,15); /* 15 is colour !HACK! */
-#endif
-   last_x=X; last_y=Y;
-}
-#endif
