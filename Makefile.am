@@ -8,7 +8,7 @@ RELEASE = 1
 # These files are installed automatically in --gnu mode
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
-EXTRA_DIST = $(GNU_FILES) OLDNEWS HACKING TODO alien.pl ZOMBIES survex.iss.in
+EXTRA_DIST = $(GNU_FILES) OLDNEWS HACKING TODO alien.pl survex.iss.in
 
 SUBDIRS = lib src doc tests debian
 
@@ -18,7 +18,7 @@ DIST_SUBDIRS = $(SUBDIRS)
 extra_bin = lib/*.msg lib/pfont.bit
 extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
-extra_text = AUTHORS COPYING NEWS TODO ChangeLog HACKING OLDNEWS ZOMBIES
+extra_text = AUTHORS COPYING NEWS TODO ChangeLog HACKING OLDNEWS
 
 # FIXME: need to keep in step with src/Makefile.am
 base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
@@ -26,9 +26,6 @@ base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
 
 AUTHORS: doc/AUTHORS.html
 	w3m -dump doc/AUTHORS.html > AUTHORS
-
-#NEWS: doc/NEWS.html
-#	w3m -dump doc/NEWS.html > NEWS
 
 TODO: doc/TODO.html
 	w3m -dump doc/TODO.html > TODO

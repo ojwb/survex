@@ -1,0 +1,216 @@
+<HTML><HEAD>
+<TITLE>Survex To-Do List</TITLE>
+<STYLE type="text/css"><!--
+BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
+-->
+</STYLE>
+</HEAD><BODY BGCOLOR=white TEXT=black>
+<H1>Survex To-Do List</H1>
+
+<H2>Bugs</H2>
+
+<ul>
+<li>This gives "*** Singular!!!" warning with DEBUG_INVALID on:
+<pre>
+1 2 50000 0 -
+1 2 5 0 -30
+</pre>
+
+<li>After *solve, reused points get written to the .3d file again.  This
+is pretty harmless, but untidy.
+
+<li>Aven presentation recording crashes if you select the "Finish and
+Save" menu item twice.
+
+<li>Fix aven scaling crash
+
+<li>Load a .pos file and no stations are shown - I think the problem
+is in aven, as img looks to be setting the station "underground" flag...
+
+</ul>
+
+<H2>Aven</H2>
+
+<ul>
+
+<li>Profile aven (for speed and memory usage)
+
+<li>clino needs resistance around 0
+
+<li>scale bar dragging factor needs slight tweak
+
+<li>finish reverse controls
+
+<li>possible mysterious problem with [ and ] not zooming to screen centre
+
+<li>suppress warning box if wxWindows doesn't have translations in requested
+language (doesn't appear to be possible)
+
+<li>continuing trouble with accelerator keys
+
+<li>Accents in menus were working but suddenly stopped - I think this
+happened when I upgraded debian and a new libgtk package got
+installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
+
+<li>releasing drag over menubar doesn't send event properly
+
+<li>Close button in About box not in correct place (on MS Windows)
+
+<li>"[", "]", "'", and "/" accelerators don't work (on MS Windows 98)
+
+<li>trouble with zooming in too far on wxaven for GTK (xcaverot too)
+
+<li>by default put crosses on those points with no legs attached (unused
+fixed points)?
+
+<li>click on station to centre; type in station to centre
+
+<li>label junctions/dead ends?
+
+<li>colour by traverse
+
+<li>section colouring/selective labelling
+
+<li>clipping - want to select a clip sphere (or maybe cube) centred on
+centre on rotation I think.
+
+<li>shift-ed keys should move faster (as they do in caverot)
+
+<li>colour by cave (and more generally by sub-prefix):
+"aven --survey 161 --colour-by-sub-prefix all.3d" would result in
+lhroute, rhroute, adrian, etc all getting different colours...
+
+<li>check on monochrome displays - especially that depth colouring
+looks OK
+
+<li>Redraw time should feed back to step size (so small caves on
+fast puters look sane, and so autorotate keeps an even speed when
+little can be seen for part of each rotation)
+
+<li>glcaverot features - perspective view and depth fogging...
+
+<li>Mark: "surface.png is for a textured landscape -- there needs to be a
+menu option to select the texturing on/off, and this should be the
+texture used. map.png is just a different surface overlay for Loser."
+
+<li>Remould presentation recording into the more usual "New"/"Save
+As"/"Load"/"Save" mould
+
+</ul>
+
+<H2>Printing</H2>
+
+<ul>
+
+<li>Check skip blank pages works on print*...
+
+<li>/etc/survex/example.print.ini ?
+
+</ul>
+
+<H2>Documentation</H2>
+
+<ul>
+
+<li>doc/manual.sgml has version number (0.99 currently) hardcoded.
+
+<li>Make images in html docs work.
+
+<li>man pages from sgml source shared with manual - see:
+/usr/share/debhelper/dh_make/debian/manpage.sgml.ex
+
+<li>Platform specific versions of docs?
+
+<li>Put more terms in terminology in docs ? trip, instrument, ...
+
+</ul>
+
+<H2>Survex file format</H2>
+
+<ul>
+
+<li>flag legs as "skeletal" or something? (i.e. not in the cave passage) -
+e.g. a radiolocation leg from one passage to another isn't surface,
+but it isn't in the cave itself either (it's through rock).  You could
+just call it surface but maybe later we want to use the surface
+flag to produce points for a surface triangulation...
+
+<li>?outlaw prefixes on stations in data legs (as Todd has lobbied for)
+and then the prefix of a leg == prefix of each end...?
+
+<li>comma separated dates in *date?
+
+<li>Allow "*exportall" or similar?  Leandro's point about "maze caves" -
+just saying "don't use *export" is unhelpful if someone connects a
+cave with *export to one without...
+
+<li>Find a solution to Thilo's "." problem.
+
+</ul>
+
+<H2>Internationalisation</H2>
+
+<ul>
+
+<li>update translations
+
+<li>extract help screen from caverot.c for translation
+
+<li>How to select alternative language on MS Windows - setting env
+vars isn't easy win install lang??
+
+<li>quotes in messages - translate too? e.g. `XXX' to « XXX ».  Eric
+suggests not in French.
+
+<li>extract --help messages for translation.
+
+<li>Check menu short-cuts don't clash in translation...
+
+</ul>
+
+<H2>Miscellaneous</H2>
+
+<ul>
+
+<li>chase up zombies again?
+
+<li>resolve entries in TODO; resolve FIXMEs in code
+
+<li>Default variance for topofil counter? (currently same as that of tape)
+
+<li>Rather than forming a linked list of components, solve each as it is
+identified?  Beware of issues like those that revcomplist test checks.
+
+<li>Don't split other traverses at articulating traverses when reporting error
+stats.
+
+<li>test diving data with compass omitted (plumbed)
+
+<li>tests for direction - should direction work in non-interleaved data?
+
+<li>improve 3d torture test and try to automate its use if possible.
+
+<li>caverot: on RISC OS now fall back to using 2 or even just one screen
+bank if we can't find a mode where we can create 3 banks [FIXME: need
+to test this works]
+
+<li>Retire survex wrapper (no-survex-wrapper.patch) for version 1.0.
+
+<li>Allow extend (or printing of extend) to unfold right-left instead of
+left to right?
+
+<li>cylpolar with dz rather than depth?
+
+<li>debian changelog?
+
+<li>survex apt source for survex, survex-aven, and wxgtk2.2 so apt-get
+survex will work on potato...
+
+<li>ISO image?  structure debian packages on it as an apt source.
+autorun for MS Windows?
+
+<li>CAD fuer hoehlen excel conversion macros?
+
+</ul>
+
+</BODY></HTML>

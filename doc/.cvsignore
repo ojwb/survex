@@ -7,8 +7,6 @@ manual.ps
 manual.rtf
 manual.txt
 index.htm
-NEWS.html
-OLDNEWS.html
-ChangeLog.html
-HACKING.html
-TODO.html
+NEWS.htm
+OLDNEWS.htm
+ChangeLog.htm

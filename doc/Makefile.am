@@ -16,22 +16,22 @@ other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 \
 # won't be able to "make dist", which is arguably a good thing
 EXTRA_DIST = manual $(doclist) manual.sgml custom.dsl survex.1.in\
  index.htm.in \
- index.htm COPYING.html TODO.html ChangeLog.html NEWS.html OLDNEWS.html
+ index.htm COPYING.htm TODO.htm ChngeLog.htm NEWS.htm OLDNEWS.htm
 
-ChangeLog.html: ../ChangeLog
-	./cl2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../ChangeLog > ChangeLog.html
+ChngeLog.htm: ../ChangeLog
+	./cl2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../ChangeLog > ChngeLog.htm
 
-NEWS.html: ../NEWS
-	./news2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../NEWS > NEWS.html
+NEWS.htm: ../NEWS
+	./news2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../NEWS > NEWS.htm
 
-OLDNEWS.html: ../OLDNEWS
-	./news2html.pl < ../OLDNEWS > OLDNEWS.html
+OLDNEWS.htm: ../OLDNEWS
+	./news2html.pl < ../OLDNEWS > OLDNEWS.htm
 
 MAINTAINERCLEANFILES = $(doclist)
 CLEANFILES = $(other_mans)
 
-pkgdoc_DATA = index.htm COPYING.html TODO.html ChangeLog.html\
- NEWS.html OLDNEWS.html $(doclist)
+pkgdoc_DATA = index.htm COPYING.htm TODO.htm ChngeLog.htm\
+ NEWS.htm OLDNEWS.htm $(doclist)
 
 man_MANS = survex.1 $(other_mans)
 
@@ -76,9 +76,8 @@ uninstall-local:
 manual: manual.sgml custom.dsl
 	@sgmltools@ --backend=html --dsssl-spec=custom.dsl#html manual.sgml
 
-manual.htm: manual.sgml custom.dsl
+manual.html: manual.sgml custom.dsl
 	@sgmltools@ --backend=onehtml --dsssl-spec=custom.dsl#onehtml manual.sgml
-	mv -f manual.html manual.htm
 
 manual.rtf: manual.sgml
 	@sgmltools@ --backend=rtf manual.sgml
