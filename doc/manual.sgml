@@ -92,8 +92,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-05-13 10:17:44 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.93 2002-05-13 10:17:44 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-05-13 16:26:23 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.94 2002-05-13 16:26:23 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -2364,14 +2364,14 @@ To utilise this command fully you need to understand what a
 <emphasis>standard deviation</emphasis> is.
 It gives a value to the 'spread' of the errors
 in a measurement. Assuming that these are normally distributed
-we can say that 99.74% of the actual lengths will fall within three
+we can say that 95.44% of the actual lengths will fall within two
 standard deviations of the measured length. i.e. a tape SD of
-0.167 metres means that the actual length of a tape measurement
-is within + or - 0.5 metres of the recorded value 99.74% of the time.
+0.25 metres means that the actual length of a tape measurement
+is within + or - 0.5 metres of the recorded value 95.44% of the time.
 So if the measurement is 7.34m then the actual length is very
 likely to be between 6.84m and 7.84m. This example corresponds
 to BCRA grade 3. Note that this is just one interpretation of
-the BCRA standard, taking the permitted error values as 3SD 99.74%
+the BCRA standard, taking the permitted error values as 2SD 95.44%
 confidence limits. If you want to take the readings as being some
 other limit (e.g. 1SD = 68.26%) then you will need to change the BCRA3
 and BCRA5 files accordingly. This issue is explored in more

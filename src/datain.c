@@ -495,8 +495,8 @@ handle_compass(real *p_var, real comp, real backcomp)
 	 real diff = comp - backcomp;
 	 real adj = fabs(diff) > M_PI ? M_PI : 0;
 	 diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
-	 if (sqrd(diff / 3.0) > var + var(Q_BACKBEARING)) {
-	    /* fore and back readings differ by more than 3 sds */
+	 if (sqrd(diff / 2.0) > var + var(Q_BACKBEARING)) {
+	    /* fore and back readings differ by more than 2 sds */
 	    warn_readings_differ(/*Compass reading and back compass reading disagree by %s degrees*/98, diff);
 	 }
 	 comp = (comp / var + backcomp / var(Q_BACKBEARING));

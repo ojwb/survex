@@ -75,6 +75,12 @@ Changes in 1.0.8:
 * cavern: removed the ill-thought-out and never implemented LENGTHOUTPUT
   and ANGLEOUTPUT quantities.
 
+* cavern: resolved mismatch between bcra5.svx and the default SDs, and the
+  odd values in bcra3.svx.  We are now interpreting the BCRA limits as 2
+  standard deviations (previously bcra5.svx used 3 sds, bcra3 used 3.33 sds for
+  tape and position, and .75 sds for compass and clino, and cavern used 1 sd
+  by default).
+
 * ChangeLog now only includes entries since the previous release (the full file
   is 220K or so, and of interest to very few people).  MSDOS and MS Windows
   versions now comfortably fit on a 1.44M floppy once again.
