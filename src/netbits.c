@@ -504,6 +504,9 @@ freeleg(node **stnptr)
    leg2->l.to = oldstn;
    leg2->l.reverse = 0;
 
+   /* NB this preserves pos->stn->leg[0] to point to the "real" fixed point
+    * for stations fixed with error estimates
+    */
    stn->leg[0] = oldstn->leg[0];
    /* correct reverse leg */
    reverse_leg(stn->leg[0])->l.to = stn;

@@ -83,6 +83,7 @@ node_stat(prefix *p)
       ASSERT(pfx_fixed(p));
 
       order = p->shape;
+
       if (order >= icOrderMac) {
 	 int c = order * 2;
 	 cOrder = osrealloc(cOrder, c * ossizeof(int));

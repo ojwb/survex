@@ -922,6 +922,13 @@ replace_trailing_travs(void)
 		    sprint_prefix(stn1->name));
 	 }
       }
+
+      /* For stations fixed with error estimates, we need to ignore the leg to
+       * the "real" fixed point in the node stats.
+       */
+      if (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident[0])
+	 stn1->name->shape--;
+
       for (i = 0; i <= 2; i++) {
 	 leg = stn1->leg[i];
 	 /* only want to think about forwards legs */

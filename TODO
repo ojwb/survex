@@ -109,18 +109,6 @@ stats.
 
 *fix with datums etc
 
-"*fix 1 0 0 0 1 1 1" gives:
-
-Survey contains 1 survey station, joined by 0 legs.
-
-There are 0 loops.
-
-[...]
-
-1 1-node.
-
-I would expect "1 0-node."
-
 Date: Sun, 22 Jul 2001
 From: Olly
 

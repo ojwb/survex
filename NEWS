@@ -57,6 +57,9 @@
 
 * cavern: round coordinates to nearest cm when writing .3d file.
 
+* cavern: fixed reporting of node stats for stations fixed with error
+  estimates.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.
