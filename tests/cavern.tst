@@ -14,7 +14,7 @@ TESTS="singlefix oneleg midpoint noose cross firststn deltastar\
  cartesian"
 
 NO_POS_TESTS="beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
- expobug require export includecomment"
+ expobug require export export2 includecomment"
 
 for file in $TESTS ; do
   echo $file
