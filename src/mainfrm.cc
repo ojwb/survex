@@ -122,7 +122,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 END_EVENT_TABLE()
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
-    wxFrame(NULL, 101, title, pos, size), m_Gfx(NULL), m_StatusBar(NULL), m_FileToLoad("")
+    wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
+    m_Gfx(NULL), m_StatusBar(NULL), m_FileToLoad("")
 {
     m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS+1];
     m_Pens = new wxPen[NUM_DEPTH_COLOURS+1];

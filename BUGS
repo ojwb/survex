@@ -20,7 +20,6 @@ installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
 - releasing drag over menubar doesn't send event properly...
 
 wxaven for Windows:
-- flicker on resize
 - slow plotting of labels
 - icon not set correctly on frame
 - Close button in About box not in correct place
