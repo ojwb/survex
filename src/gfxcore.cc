@@ -2148,8 +2148,7 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 	    if (!surface && !tubes) {
 		(this->*AddPoly)(centreline);
 	    } else if (tubes) {
-		list<Vector3>::const_iterator i;
-		i = centreline.begin();
+		list<Vector3>::const_iterator i = centreline.begin();
 		PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
 		list<Vector3>::size_type segment = 0;
 		while (i != centreline.end()) {
@@ -2167,6 +2166,7 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 		    const Vector3 up_v(0.0, 0.0, 1.0);
 
 		    if (segment == 0) {
+			assert(i != centreline.end());
 			// first segment
 			Double h = sqrd(i->getX() - pt_v.getX()) +
 				   sqrd(i->getY() - pt_v.getY());
@@ -2228,6 +2228,7 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 
 			cover_end = true;
 		    } else {
+			assert(i != centreline.end());
 			// intermediate segment
 			Double h = sqrd(i->getX() - pt_v.getX()) +
 			    sqrd(i->getY() - pt_v.getY());
@@ -2361,7 +2362,7 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 		    right.normalise();
 		    up.normalise();
 
-		    if (z_pitch_adjust != 0) up += Vector3(0, 0, z_pitch_adjust);
+		    if (z_pitch_adjust != 0) up += Vector3(0, 0, fabs(z_pitch_adjust));
 		    right *= size;
 		    up *= size;
 
