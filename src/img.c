@@ -1060,14 +1060,6 @@ img_read_item(img *pimg, img_point *p)
 	    goto ascii_again;
 	 pimg->label += pimg->survey_len + 1;
       }
-      /* skip whitespace to end of line */
-      {
-	 int ch;
-	 do {
-	    ch = getc(pimg->fh);
-	 } while (isspace((unsigned char)ch));
-	 if (ch != EOF) ungetc(ch, pimg->fh);
-      }
 
       return result;
    } else if (pimg->version == -1) {
