@@ -6,6 +6,9 @@ survex (1.0.23) unstable; urgency=low
   * Prefer wxWindows 2.4 if it's available (closes: bug#183158).
   * Disabled experimental support for Chinese (LANG=zh) - it isn't currently
     working and makes the printer drivers unusable when LANG is set to zh.
+  * Changed Section from math to science.
+  * Changed Priority from optional to extra (we clearly should be optional).
+  * Standards-Version: 3.5.8.0 (support DEB_BUILD_OPTIONS).
 
  -- Wookey <wookey@survex.com>  Tue, 04 Mar 2003 20:54:17 +0000
 

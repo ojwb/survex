@@ -8,10 +8,10 @@ MAINTAINERCLEANFILES = control
 
 control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $(srcdir)/../desc-aven.txt
 	echo Source: survex > control
-	echo Section: math >> control
-	echo Priority: optional >> control
+	echo Section: science >> control
+	echo Priority: extra >> control
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
-	echo Standards-Version: 3.5.6.0 >> control
+	echo Standards-Version: 3.5.8.0 >> control
 	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
 	echo 'Build-Depends: debhelper (>= 1.1.17), libwxgtk2.4-dev' >> control
 	echo >> control

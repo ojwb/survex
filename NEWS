@@ -13,6 +13,8 @@ Changes in 1.0.23:
   working and makes the printer drivers unusable on Chinese versions of MS
   Windows.
 
+* (Unix version): tweaked debian packaging.
+
 Changes in 1.0.22:
 
 * aven: Fixed handling of extended elevations (and other flat surveys) -
