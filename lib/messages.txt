@@ -2113,6 +2113,8 @@ de:280 Richtung @umkehren##Ctrl+R
 pt-br:280 @Inverter Sentido##Ctrl+R
 #
 en:281 @Cancel Measuring Line##Escape
+de:281     Me&szlig;linie @abschalten##Escape
+de-de,de-ch:281 Messlinie @abschalten##Escape
 #
 # The accelerators must be different within this group
 # c.f. 205
