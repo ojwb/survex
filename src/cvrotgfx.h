@@ -120,16 +120,13 @@ extern BITMAP *BitMap, *BitMapDraw;
 # else
 #  define R_SHIFT 0x01
 #  define L_SHIFT 0x02
-/* Guesses:
-#  define R_CTRL  0x04
-#  define L_CTRL  0x08
-*/
+#  define EITHER_CTRL  0x04
 #  ifndef _KEYBRD_SHIFTSTATUS
 #   define _KEYBRD_SHIFTSTATUS 2 /* for DJGPP */
 #  endif
-/* use function 2 to determine if shift keys are depressed */
+/* use function 2 to determine if shift or ctrl keys are depressed */
 #  define shift_pressed() (bioskey(_KEYBRD_SHIFTSTATUS) & (R_SHIFT | L_SHIFT))
-#  define ctrl_pressed() (bioskey(_KEYBRD_SHIFTSTATUS) & (R_CTRL | L_CTRL))
+#  define ctrl_pressed() (bioskey(_KEYBRD_SHIFTSTATUS) & EITHER_CTRL)
 # endif
 
 # ifdef MSC
