@@ -17,7 +17,7 @@ Changes between 1.0.25 and 1.1.0:
 * aven: Search moved onto the toolbar, and we now use the status bar for
   coordinates, distances, etc to make better use of screen space.
 
-* aven: Full screen mode (F11) - needs more work though.
+* aven: Full screen mode (F11).
 
 * aven: Context sensitive cursor shape - needs more work.
 
