@@ -19,3 +19,6 @@ terrible slowness during rotation
 about box layout is crap (awful with motif version); Close button doesn't work
 probs with building on win32
 indicators still need coding
+still confusion over the "reverse controls" command
+configure script needs to allow specification of toolkit
+
