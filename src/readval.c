@@ -172,7 +172,7 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 	    newptr->stn = NULL;
 	    newptr->up = back_ptr;
 	    newptr->filename = NULL;
-	    newptr->fSuspectTypo = !fImplicitPrefix;
+	    newptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
 	    ptr = newptr;
 	    fNew = fTrue;
 #ifdef NEW3DFORMAT

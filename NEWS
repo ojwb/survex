@@ -1,5 +1,8 @@
 * Updated all translations apart from Italian.
 
+* Fixed another logic error in "only mentioned once in *equate with explicit
+  prefix" check.
+
 Changes in 0.95-prerelease5:
 
 * If no stations are fixed, the first station mentioned is supposed to be.
