@@ -14,7 +14,7 @@ SUBDIRS = . lib src doc tests debian
 # seem to need this for "make distclean" to recurse?!?
 DIST_SUBDIRS = $(SUBDIRS)
 
-extra_bin = lib/*.msg lib/pfont.bit
+extra_bin = lib/*.msg lib/default.bit lib/bold.bit
 extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
 
@@ -138,7 +138,7 @@ djgpp_zip : dostxt
 	ln -s ../README dostxt_tmp/README.txt
 	: # -l means convert LF to CR+LF
 	: # FIXME: really include dostxt too on DOS?
-	zip -j -l $(djgpp_zip_name) dostxt_tmp/*.txt $(extra_txt)
+	zip -9 -j -l $(djgpp_zip_name) dostxt_tmp/*.txt $(extra_txt)
 	cd doc;zip -l ../$(djgpp_zip_name) manual/*.htm @HTMLFILES@
 	cd doc;zip ../$(djgpp_zip_name) manual/*.png
 	$(RM) -rf dostxt_tmp
