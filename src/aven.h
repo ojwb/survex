@@ -40,12 +40,12 @@ void aven_v_report(int severity, const char *fnm, int line, int en,
 #include "wx.h"
 
 class MainFrm;
-class Splash;
+//class Splash;
 
 class Aven : public wxApp {
     MainFrm* m_Frame;
     wxBitmap m_AboutBitmap;
-    Splash* m_SplashScreen;
+  //  Splash* m_SplashScreen;
 
 public:
     Aven();
@@ -58,7 +58,7 @@ public:
     const wxBitmap LoadPreferencesIcon(const wxString& icon) const;
 #endif
     const wxBitmap LoadIcon(const wxString& icon /* no extension */) const;
-    Splash* GetSplashScreen() const { return m_SplashScreen; }
+    //Splash* GetSplashScreen() const { return m_SplashScreen; }
 };
 
 DECLARE_APP(Aven)

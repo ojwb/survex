@@ -28,7 +28,7 @@
 #include "mainfrm.h"
 #include "aven.h"
 #include "aboutdlg.h"
-#include "splash.h"
+//#include "splash.h"
 
 #include "message.h"
 #include "img.h"
@@ -669,6 +669,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	return false;
     }
 
+#if 0
     Splash* splash = wxGetApp().GetSplashScreen();
     long file_size;
     {
@@ -677,6 +678,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	file_size = ftell(survey->fh);
 	fseek(survey->fh, pos, SEEK_SET);
     }
+#endif
 
     m_File = file;
 
@@ -717,11 +719,13 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     int result;
     int items = 0;
     do {
+#if 0
 	if (splash && (items % 200 == 0)) {
 	    long pos = ftell(survey->fh);
 	    int progress = int((double(pos) / double(file_size)) * 100.0);
 	    splash->SetProgress(progress);
 	}
+#endif
 
 	img_point pt;
 	result = img_read_item(survey, &pt);
@@ -1056,13 +1060,13 @@ void MainFrm::OnMRUFile(wxCommandEvent& event)
 void MainFrm::OpenFile(const wxString& file, wxString survey)
 {
     wxBusyCursor hourglass;
-
+#if 0
     Splash* splash = wxGetApp().GetSplashScreen();
     
     if (splash) {
 	splash->SetProgress(0);
     }
-
+#endif
     if (LoadData(file, survey)) {
 	if (wxIsAbsolutePath(file)) {
 	    m_history.AddFileToHistory(file);

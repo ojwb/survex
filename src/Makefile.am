@@ -18,9 +18,9 @@ noinst_HEADERS = cavern.h commands.h cmdline.h\
  prbitmap.h prcore.h prio.h readval.h str.h useful.h\
  validate.h whichos.h new3dout.h 3ddefs.h \
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
- aventypes.h aventreectrl.h guicontrol.h gla.h survey.h splash.h
+ aventypes.h aventreectrl.h guicontrol.h gla.h survey.h
 
-# paneldlg.h paneldlgpage.h \
+# splash.h paneldlg.h paneldlgpage.h \
 # tubeprefs.h prefsdlg.h stnprefs.h legprefs.h gridprefs.h unitsprefs.h \
 # ctlprefs.h indicatorprefs.h winprefs.h
 
@@ -66,10 +66,9 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc \
- guicontrol.cc splash.cc aven.pal \
- gla-gl.cc
+ guicontrol.cc gla-gl.cc aven.pal
 
-# paneldlg.cc paneldlgpage.cc prefsdlg.cc \
+# splash.cc paneldlg.cc paneldlgpage.cc prefsdlg.cc \
 # tubeprefs.cc stnprefs.cc legprefs.cc ctlprefs.cc gridprefs.cc unitsprefs.cc \
 # indicatorprefs.cc winprefs.cc
 

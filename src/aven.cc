@@ -177,8 +177,10 @@ bool Aven::OnInit()
     m_Frame->SetFocus();
 #endif
 
+#if 0
     delete m_SplashScreen;
     m_SplashScreen = NULL;
+#endif
     
     return true;
 }
