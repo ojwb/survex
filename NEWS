@@ -1,4 +1,14 @@
-* Improved responsiveness of xcaverot.
+Changes in 0.96-prerelease1:
+
+* xcaverot: Improved responsiveness; can now load multiple .3d files from
+  command line; set defaults (press DELETE) now defaults scale that which
+  fits the whole survey on the screen.
+
+* Fixed bug in DOS and Windows versions with handling of paths containing a
+  mixture of "/" and "\".
+
+* 3dtodxf: added "--grid" option (supplied by Leandro); output file now
+  defaults to same name as input file but with a ".dxf" extension.
 
 Changes in 0.95:
 

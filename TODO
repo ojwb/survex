@@ -19,7 +19,7 @@ Sort .err file by error (the segment with the grossest error first)
 Date: 13 Dec 1998
 From: Olly
 
-Tidy up: message.c, xcaverot.c, cave.c
+Tidy up: message.c, cave.c
 
 Date: 15 Dec 1998
 From: Olly
@@ -105,10 +105,16 @@ likely that the user has cocked up the prefix in some way.
 Date: Fri, 18 Aug 2000
 From: Olly
 
-xcaverot should ideally be able to load multiple .3d files...
+* grid patch -> printer drivers, caverot, and xcaverot too.
+  
+* xcaverot: investigate Mike Lake's delayed dragging problem.
+    
+* caverot: see if we can now get accents in messages under DOS.
+    
+* Installer program for generating file associations under Windows.
+    
+* Update documentation (2 volunteers are currently working on this).
 
-Date: Thu, 19 Oct 2000
-From: Ray Duffy
+* Clean up the sample data and start including it again.
 
-elevations from 3dtodxf
-
+* Debian Linux packages.
