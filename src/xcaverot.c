@@ -1,3 +1,4 @@
+/* FIXME: Zoom In -> In / Zoom Out -> Out ??? */
 /*	xcaverot.c
 
   X-Windows cave viewing program
@@ -66,6 +67,7 @@
   05.07.99 Fixed double buffer support on platforms (eg SGI) with multiple
            visuals available. However the colour allocation needs sorting
 	   out properly. [JPNP]
+  ??.07.99 Crap drawing code fettled on Expo '99, + other improvements. [MRS]
 
   */
 
@@ -73,16 +75,37 @@
 # include <config.h>
 #endif
 
+#include <ctype.h>
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
+#include <limits.h> /* FIXME: used? */
+
+#include <sys/time.h> /* for gettimeofday */
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
+
+#include <X11/extensions/Xdbe.h> /* for double buffering support */
+
+#include "useful.h"
+#include "img.h"
+#include "filename.h"
+#include "message.h"
+#include "caverot.h"
+#include "cvrotimg.h"
+
 int xcMac, ycMac;
 float y_stretch = 1.0;
 
 /* Width of each button along the top of the window */
 #define BUTWIDTH 60
-#define BUTHEIGHT 25
+#define BUTHEIGHT 25 /* FIXME: MRS has 50 */
 
 /* Width and height of compass and elevation indicator windows */
 #define FONTSPACE 20
-#define INDWIDTH 100 /* FIXME: allow INDWIDTH to be set dynamically */
+#define INDWIDTH 100 /* FIXME: allow INDWIDTH to be set dynamically - 50 is nice */
 #define INDDEPTH (INDWIDTH + FONTSPACE)
 
 #define C_IND_ANG 25
@@ -95,25 +118,10 @@ float y_stretch = 1.0;
 #define RADIUS ((float)INDWIDTH*.4)
 
 /* font to use */
-#define FONTNAME "8x13"
+#define FONTNAME "-adobe-helvetica-medium-r-normal-*-8-*"
+/* FIXME: was #define FONTNAME "8x13", should be configurable */
 
 #define PIBY180 0.017453293
-
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/time.h>   /* for gettimeofday */
-
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/keysym.h>
-#include <X11/extensions/Xdbe.h>   /* for double buffering support */
-
-#include "useful.h"
-#include "img.h"
-#include "filename.h"
-#include "message.h"
-#include "caverot.h"
 
 #ifndef MAXINT
 #define MAXINT 0x7fffffff
@@ -145,8 +153,23 @@ typedef struct
 #define PLAN 1               /* values of plan_elev */
 #define ELEVATION 2
 
-/* static point *pdata = NULL; */
-/* static int npoints; */
+#define NUM_DEPTH_COLOURS 10   /* number of depth colour bands */
+
+typedef struct {
+    /* A group of segments to be drawn in the same colour. */
+
+    int num_segments;              /* number of segments */
+    XSegment segments[20000];      /* array of line segments, fixed limit temporary hack */
+} SegmentGroup;
+
+static SegmentGroup   segment_groups[NUM_DEPTH_COLOURS];
+
+/* use double buffering in the rendering if server supports it */
+static int have_double_buffering;
+static XdbeBackBuffer backbuf;
+static XdbeSwapInfo backswapinfo;
+static XVisualInfo *visinfo;
+static XSetWindowAttributes dbwinattr;
 
 /* scale all data by this to fit in coord data type */
 /* Note: data in file in metres. 100.0 below stores to nearest cm */
@@ -164,8 +187,6 @@ static struct {
   int y;
 } orig;                 /* position of original click in pointer drags */
 
-
-
 static float view_angle = 180.0; /* viewed from this bearing */
                                  /* subtract 180 for bearing up page */
 static float elev_angle = 0.0;
@@ -182,25 +203,21 @@ static int xoff, yoff;  /* offsets at which survey is plotted in window */
 static coord x_mid;
 static coord y_mid;
 static coord z_mid;
+static float z_col_scale;
 
 static Display *mydisplay;
 static Window mywindow;
+#ifdef XCAVEROT_BUTTONS
 static Window butzoom, butmooz, butload, butrot, butstep, butquit;
 static Window butplan, butlabel, butcross, butselect;
+#endif
 static Window ind_com, ind_elev, scalebar, rot_but;
 static GC mygc, scale_gc, slab_gc;
 static int oldwidth, oldheight; /* to adjust scale on window resize */
 static Region label_reg; /* used to implement non-overlapping labels */
 
-/* use double buffering in the rendering if server supports it */
-static int dbuff;
-static XdbeBackBuffer backbuff;
-static XdbeSwapInfo backswapinfo;
-static XVisualInfo *visinfo;
-static XSetWindowAttributes dbwinattr;
-
 static XFontStruct *fontinfo;   /* info on the font used in labeling */
-static char hello[] = "X-Caverot";
+static char hello[] = "XCaverot";
 
 static unsigned long black,white;
 
@@ -208,13 +225,23 @@ static int lab_col_ind = 19; /* Hack to get labels in sensible colour JPNP */
 static int fontheight, slashheight;       /* JPNP */
 
 static char *ncolors[] = { "black",
+#if 0
   "BlanchedAlmond", "BlueViolet",
   "CadetBlue1", "CornflowerBlue", "DarkGoldenrod", "DarkGreen",
   "DarkKhaki", "DarkOliveGreen1", "DarkOrange", "DarkOrchid",
+#else
+  "Orange", "BlueViolet",
+  "violet", "purple", "blue", "cyan",
+  "green", "yellowgreen", "yellow", "orange", "orange red", "red",
+#endif
   "DarkSalmon", "DarkSeaGreen", "DarkSlateBlue", "DarkSlateGray",
   "DarkViolet", "DeepPink", "DeepSkyBlue", "DodgerBlue",
   "ForestGreen", "GreenYellow",
+#if 0
   "HotPink", "IndianRed", "LawnGreen",
+#else
+  "red", "green", "blue",
+#endif
   "LemonChiffon", "LightBlue", "LightCoral",
   "LightGoldenrod", "LightGoldenrodYellow", "LightGray", "LightPink",
   "LightSalmon", "LightSeaGreen", "LightSkyBlue", "LightSlateBlue",
@@ -248,6 +275,16 @@ static char *surveys[128];
 static char surveymask[128];
 static GC gcs[128];
 static int numsurvey = 0;
+
+static int dragging_about = 0; /* whether cave is being dragged with right button */
+static int drag_start_x, drag_start_y;
+static float x_mid_orig, y_mid_orig, z_mid_orig; /* original posns b4 drag */
+static int rotsc_start_x, rotsc_start_y;
+static int rotating_and_scaling = 0;        /* whether left button is depressed */
+static float rotsc_angle;                   /* rotn b4 drag w/ left button */
+static float rotsc_scale;                   /* scale b4 drag w/ left button */
+static int drag_start_xoff, drag_start_yoff; /* original posns b4 drag */
+static float sx,cx,fx,fy,fz;
 
 /* Create a set of colors from named colors */
 
@@ -316,6 +353,9 @@ int load_file(const char *name) {
    x_mid = Xorg;
    y_mid = Yorg;
    z_mid = Zorg;
+
+   z_col_scale = ((float) (NUM_DEPTH_COLOURS - 1)) / (2 * Zrad);
+
    return 1;
 }
 
@@ -432,6 +472,43 @@ void process_step(Display *display, Window mainwin, Window button,
    flip_button(display, mainwin, button, egc, mygc, "Step");
 }
 
+static void draw_scalebar(void)
+{
+  float l,m,n,o;
+
+  if (changedscale) {
+
+    XWindowAttributes a;
+
+    XGetWindowAttributes(mydisplay, scalebar, &a);
+
+    l = (float)(a.height-4)/(datafactor*scale);
+
+    m = log10(l) ;
+
+    n = pow(10,floor(m));         /* Ouch did I really do all this ;-) JPNP */
+
+    o = (m-floor(m) < log10(5) ? n : 5*n );
+
+    sbar = (int)o;
+
+    changedscale =0;
+    XClearWindow(mydisplay, scalebar);
+  }
+ /* printf("%f\t%f\t%f\t%f\n", l,m,n,o); */
+
+  XDrawLine(mydisplay, scalebar, scale_gc, 13, 2, 13, 2 + scale*datafactor*sbar);
+#if 0
+  /* FIXME: this bit is elsewhere in MRS's version */
+  char temp[20];
+  if (sbar<1000)
+    sprintf(temp, "%d m", (int)sbar);
+  else
+    sprintf(temp, "%d km", (int)sbar/1000);
+  XDrawString(mydisplay, mainwin, slab_gc, 8, BUTHEIGHT + FONTSPACE, temp, strlen(temp));
+#endif
+}
+
 void process_zoom(Display *display, Window mainwin, Window button,
 		  GC mygc, GC egc)
 {
@@ -439,6 +516,7 @@ void process_zoom(Display *display, Window mainwin, Window button,
    scale *= zoomfactor;
    changedscale = 1;
    flip_button(display, mainwin, button, egc, mygc, "Zoom in");
+   draw_scalebar();
 }
 
 void process_mooz(Display *display, Window mainwin, Window button,
@@ -448,6 +526,7 @@ void process_mooz(Display *display, Window mainwin, Window button,
    scale /= zoomfactor;
    changedscale = 1;
    flip_button(display, mainwin, button, egc, mygc, "Zoom out");
+   draw_scalebar();
 }
 
 void process_select(Display *display, Window window, Window button, GC mygc, GC egc)
@@ -599,49 +678,13 @@ void draw_ind_com( Display *display, GC gc, float angle ) {
   XDrawString(display, ind_com, gc, INDWIDTH/2-20, INDDEPTH-10, temp, strlen(temp));
 }
 
-void draw_scalebar(Window mainwin)
-{
-  char temp[20];
-  float l,m,n,o;
-
-  if (changedscale) {
-
-    XWindowAttributes a;
-
-    XGetWindowAttributes(mydisplay, scalebar, &a);
-
-    l = (float)(a.height-4)/(datafactor*scale);
-
-    m = log10(l) ;
-
-    n = pow(10,floor(m));         /* Ouch did I really do all this ;-) JPNP */
-
-    o = (m-floor(m) < log10(5) ? n : 5*n );
-
-    sbar = (int)o;
-
-    changedscale =0;
-  }
- /* printf("%f\t%f\t%f\t%f\n", l,m,n,o); */
-
-  XClearWindow(mydisplay, scalebar);
-
-  XDrawLine(mydisplay, scalebar, scale_gc, 13, 2, 13, 2 + scale*datafactor*sbar);
-
-  if (sbar<1000)
-    sprintf(temp, "%d m", (int)sbar);
-  else
-    sprintf(temp, "%d km", (int)sbar/1000);
-  XDrawString(mydisplay, mainwin, slab_gc, 8, BUTHEIGHT + FONTSPACE, temp, strlen(temp));
-}
-
 void
 draw_label(Display *display, Window window, GC gc, int x, int y, const char *string, int length)
 {
   XRectangle r;
   int strwidth;
   /*int width=1000, height=700;*/ /* nasty hack doesn't work if screen resize
-			       * should be fixed ! JPNP */
+			       * should be fixed ! JPNP  (FIXME)*/
   int width = oldwidth;
   int height = oldheight;
   strwidth = XTextWidth( fontinfo, string, length );
@@ -659,8 +702,6 @@ draw_label(Display *display, Window window, GC gc, int x, int y, const char *str
   }
 }
 
-static float sx,cx,fx,fy,fz;
-
 void setview( float angle ) {
   /* since I no longer attempt to make sure that plan_elev is always
    * kept up to date by any action which might change the elev_angle
@@ -677,11 +718,13 @@ void setview( float angle ) {
   fy = sin(elev_angle*PIBY180) * -cx;
 }
 
-int toscreen_x( point *p ) {
+int toscreen_x(point *p)
+{
    return (((p->X - x_mid) * -cx + (p->Y - y_mid) * -sx) * scale) + xoff;
 }
 
-int toscreen_y( point *p ) {
+int toscreen_y(point *p)
+{
    int y;
    switch (plan_elev) {
     case PLAN:
@@ -695,7 +738,65 @@ int toscreen_y( point *p ) {
    return yoff - y;
 }
 
-point *find_station( int x, int y, int mask)
+static void fill_segment_cache()
+{
+    /* Calculate positions of all line segments and put them in the cache. */
+
+    lid *plid;
+    int group;
+
+    coord x1, y1;
+
+    if (ppLegs == NULL) return;
+
+    x1 = y1 = 0; /* avoid compiler warning */
+
+    setview(view_angle);
+
+    for (group = 0; group < NUM_DEPTH_COLOURS; group++) {
+        segment_groups[group].num_segments = 0;
+    }
+
+    for (plid = ppLegs[0]; plid; plid = plid->next) {
+      point *p;
+      for (p = plid->pData; p->_.action != STOP; p++) {
+        switch (p->_.action) {
+            case MOVE:
+	        x1 = toscreen_x(p);
+	        y1 = toscreen_y(p);
+	        break;
+
+            case DRAW: { 
+                XSegment *segment;
+                SegmentGroup *group;
+    
+                /* calculate colour */
+                int depth = (int) ((float) (- p->Z + Zorg + Zrad) * z_col_scale);
+	        if (depth < 0) { // FIXME:
+		   printf("!!! depth = %d\n", depth);
+		   depth = 0;
+		} else if (depth >= NUM_DEPTH_COLOURS) {
+		   printf("!!! depth = %d\n", depth);
+		   depth = NUM_DEPTH_COLOURS - 1;
+		}
+                /* store coordinates */
+                group = &segment_groups[depth];
+                segment = &(group->segments[group->num_segments++]);
+
+                /* observe the order of the following lines before modifying */
+                segment->x1 = x1;
+                segment->y1 = y1;
+	        segment->x2 = x1 = toscreen_x(p);
+	        segment->y2 = y1 = toscreen_y(p);
+
+    	        break;
+            }
+        }
+      }
+    }
+}
+
+point *find_station(int x, int y, int mask)
 {
    point *p, *q = NULL;
    /* d_min is some measure of how close we are (e.g. distance squared,
@@ -730,86 +831,79 @@ point *find_station( int x, int y, int mask)
    return q;
 }
 
+static void update_rotation()
+{
+   /* calculate amount of rotation by how long since last redraw
+    * to keep a constant speed no matter how long between redraws */
+   struct timeval temptime;
+   gettimeofday(&temptime, NULL);
+
+   if (rot) {
+      float timefact = (temptime.tv_sec - lastframe.tv_sec);
+      timefact += (temptime.tv_usec - lastframe.tv_usec)/1000000.0;
+      view_angle += rot_speed * timefact;
+
+      while (view_angle > 180.0)
+	 view_angle -= 360.0;
+      while (view_angle <= -180.0)
+	 view_angle += 360.0;
+      
+      if (elev_angle == 0.0) plan_elev=ELEVATION;
+      else if (elev_angle == 90.0) plan_elev=PLAN;
+      else plan_elev=0;
+      
+      fill_segment_cache();
+   }
+
+   lastframe.tv_sec  = temptime.tv_sec;
+   lastframe.tv_usec = temptime.tv_usec;
+}
+
 void redraw_image(Display *display, Window window, GC gc)
 {
-  coord x1=0, y1=0, x2=0, y2=0;
-  XWindowAttributes a;
-  int width, height;
-  int srvy = 0; /*FIXME: JPNP had 1 - check */
-  lid *plid;
-  struct timeval temptime;
-  float timefact;
+    XdbeSwapInfo info;
+    info.swap_window = window;
+    info.swap_action = XdbeBackground;
 
-  if (ppStns == NULL && ppLegs == NULL) return;
+    XdbeSwapBuffers(display, &info, 1);
+}
 
-  /* XClearWindow(display, window); */
-  XGetWindowAttributes(display, window, &a);
-  height = a.height;
-  width = a.width;
-  xoff = width / 2;
-  yoff = height / 2;
+void redraw_image_dbe(Display* display, Window window, GC gc)
+{
+   /* Draw the cave into a window (strictly, the second buffer). */
 
-  /* use double buffering if supported */
-  if (dbuff)
-    window = backbuff;
-  else
-    XClearWindow(display, window);
+   coord x1, y1, x2, y2;
+   // FIXME: XWindowAttributes a;
+   // FIXME: int width, height;
+   int srvy = 0; /*FIXME: JPNP had 1 - check */
+   lid *plid;
 
-  label_reg = XCreateRegion();
+   char temp[32];
+   // FIXME:   int clip_left = 0, clip_right = 800, clip_top = 0, clip_bottom = 600;
+   int group;
 
-  /* calculate amount of rotation by how long since last redraw
-   * to keep a constant speed no matter how long between redraws */
-  gettimeofday(&temptime, NULL);
-  if (rot) {
-     timefact = (temptime.tv_sec - lastframe.tv_sec);
-     timefact += (temptime.tv_usec - lastframe.tv_usec)/1000000.0;
-     view_angle += rot_speed * timefact;
-  }
-  lastframe.tv_sec  = temptime.tv_sec;
-  lastframe.tv_usec = temptime.tv_usec;
+   x1 = y1 = 0; /* avoid compiler warning */
 
-  while (view_angle > 180.0)
-    view_angle -= 360.0;
-  while (view_angle <= -180.0)
-    view_angle += 360.0;
+   if (ppStns == NULL && ppLegs == NULL) return;
 
-  setview( view_angle );
-
-  /* printf("height=%d, width=%d, xoff=%d, yoff=%d\n", height, width, xoff, yoff); */
-   for (plid = ppLegs[0]; plid; plid = plid->next) {
-      point *p;
-      for (p = plid->pData; p->_.action != STOP; p++) {
-	 switch (p->_.action) {
-	  case MOVE:
-	    /* srvy = p->survey; */
-	    x1 = toscreen_x( p );
-	    y1 = toscreen_y( p );
-	    break;
-	  case DRAW:
-	    x2 = toscreen_x( p );
-	    y2 = toscreen_y( p );
-	    /* if (surveymask[srvy]) */
-	    XDrawLine( display, window, gcs[srvy], x1, y1, x2, y2 );
-	    /*printf( "draw line from %d,%d to %d,%d\n", x1, y1, x2, y2 );*/
-	    x1 = x2;
-	    y1 = y2;	/* for continuous drawing */
-	    break;
-	 }
-      }
+   for (group = 0; group < NUM_DEPTH_COLOURS; group++) {
+      SegmentGroup* group_ptr = &segment_groups[group];
+      XDrawSegments(display, window, gcs[3+group], group_ptr->segments, group_ptr->num_segments);
    }
-   
+
+   label_reg = XCreateRegion();
+
    if ((crossing || labelling) /*&& surveymask[p->survey]*/) {
-      point *p;
       for (plid = ppStns[0]; plid; plid = plid->next) {
-	 for ( p = plid->pData; p->_.str != NULL; p++ ) {
+	 point *p;
+	 for (p = plid->pData; p->_.str != NULL; p++) {
 	    x2 = toscreen_x( p );
 	    y2 = toscreen_y( p );
 	    if (crossing) {
-	       XDrawLine( display, window, gcs[srvy],
-			 x2-10, y2, x2+10, y2 );
-	       XDrawLine( display, window, gcs[srvy],
-			 x2, y2-10, x2, y2+10 );
+	       XDrawLine(display, window, gcs[srvy], x2-10, y2, x2+10, y2);
+	       XDrawLine(display, window, gcs[srvy], x2, y2-10, x2, y2+10);
 	    }
+
 	    if (labelling) {
 	       char *q;
 	       q = p->_.str;
@@ -819,18 +913,60 @@ void redraw_image(Display *display, Window window, GC gc)
 	       /* XDrawString(display,window,gcs[p->survey],x2+10,y2, q, strlen(q)); */
 	    }
 	 }
-      }   
+      }
    }
    
-/*   XDestroyRegion( label_reg ); */
-   draw_ind_com( display, gc, view_angle );
-   draw_ind_elev( display, gc, elev_angle );
-   draw_scalebar(window);
-   draw_rot_but(gc);
+   XDestroyRegion(label_reg);
+
+   draw_ind_com(display, gc, view_angle);
+   draw_ind_elev(display, gc, elev_angle);
+   // FIXME:   draw_rot_but(gc);
+
+   if (sbar<1000)
+      sprintf(temp, "%d m", (int)sbar);
+   else
+      sprintf(temp, "%d km", (int)sbar/1000);
+   // FIXME: add BUTHEIGHT to FONTSPACE if buttons on
+   XDrawString(mydisplay, window, slab_gc, 8, FONTSPACE, temp, strlen(temp));
+}
+
+static void
+perform_redraw(void)
+{
+   if (have_double_buffering) {
+      redraw_image_dbe(mydisplay, (Window) backbuf, mygc);
+      redraw_image(mydisplay, mywindow, mygc);
+   } else {
+      redraw_image_dbe(mydisplay, mywindow, mygc);
+   }
+}
+
+#if 0
+int x() {
+   /* XClearWindow(display, window); */
+  XGetWindowAttributes(display, window, &a);
+  height = a.height;
+  width = a.width;
+  xoff = width / 2;
+  yoff = height / 2;
+
+  /* use double buffering if supported */
+  if (have_double_buffering)
+    window = backbuff;
+  else
+    XClearWindow(display, window);
+
+  label_reg = XCreateRegion();
+
+  setview( view_angle );
+
+
+   
    XFlush(display);
    /* if we're using double buffering now is the time to swap buffers */
-   if (dbuff) XdbeSwapBuffers(display, &backswapinfo, 1);
+   if (have_double_buffering) XdbeSwapBuffers(display, &backswapinfo, 1);
 }
+#endif
 
 void process_focus(Display *display, Window window, int ix, int iy)
 {
@@ -906,11 +1042,153 @@ void process_focus(Display *display, Window window, int ix, int iy)
   /*printf("x_mid, y_mid moved to %lf,%lf\n", (double)x_mid, (double)y_mid);*/
 }
 
+static void
+switch_to_plan(void)
+{
+    /* Switch to plan view. */
+
+    float x = elev_angle;
+
+    while (elev_angle != 90.0) {
+	elev_angle = x;
+        update_rotation();
+        if (!rot) fill_segment_cache();
+	redraw_image_dbe(mydisplay, (Window) backbuf, mygc);
+	redraw_image(mydisplay, mywindow, mygc);
+
+	x += 5.0;
+        if (x > 90.0) {
+	    x = 90.0;
+	}
+    } 
+
+    plan_elev = PLAN;
+    elev_angle = 90.0;
+}
+
+static void
+switch_to_elevation(void)
+{
+    /* Switch to elevation view. */
+
+    float x = elev_angle;
+    int going_up = (x < 0.0);
+    float step = going_up ? 5.0 : -5.0;
+    int done = 0;
+
+    while (!done) {
+	elev_angle = x;
+        update_rotation();
+        if (!rot) fill_segment_cache();
+	redraw_image_dbe(mydisplay, (Window) backbuf, mygc);
+	redraw_image(mydisplay, mywindow, mygc);
+
+	x += step;
+
+	done = (going_up ? (x >= 0.0) : (x <= 0.0));
+    } 
+
+    plan_elev = ELEVATION;
+    elev_angle = 0.0;
+}
+
+/* a sensible way of navigating about the cave */
+
+static void press_left_button(int x, int y) {
+  rotsc_start_x = x;
+  rotsc_start_y = y;
+  rotating_and_scaling = 1;
+  rotsc_angle = view_angle;
+  rotsc_scale = scale;
+}
+
+static void press_right_button(int x, int y)
+{
+  drag_start_xoff = xoff;
+  drag_start_yoff = yoff;
+  dragging_about = 1; 
+  drag_start_x = x;
+  drag_start_y = y;  
+  x_mid_orig = x_mid;
+  y_mid_orig = y_mid;
+  z_mid_orig = z_mid;
+}
+
+static void release_left_button() {
+  rotating_and_scaling = 0;
+}
+
+static void release_right_button() {
+  dragging_about = 0;
+}
+
+static void
+mouse_moved(Display* display, Window window, int mx, int my)
+{
+    if (dragging_about) {
+	float x, y;
+	int dx, dy;
+
+	/* get offset moved */
+	dx = mx - drag_start_x;
+	dy = my - drag_start_y;
+
+/*	xoff = drag_start_xoff + dx; */
+/*	yoff = drag_start_yoff + dy; */
+ 
+	x = (int)((float)(dx) / scale);
+	y = (int)((float)(dy) / scale);
+
+	if (plan_elev == PLAN) {
+	    x_mid = x_mid_orig + (x * cx + y * sx);
+	    y_mid = y_mid_orig + (x * sx - y * cx);
+	} else {
+	    z_mid = z_mid_orig + y;
+	    x_mid = x_mid_orig + (x * cx);
+	    y_mid = y_mid_orig + (x * sx);
+	}
+    } else if (rotating_and_scaling) {
+	double a;
+
+	int dx = mx - rotsc_start_x;
+	int dy = my - rotsc_start_y;
+
+	/* L-R => rotation */
+	view_angle = rotsc_angle + (((float) dx) / 2.5);
+
+	while (view_angle < 0.0) view_angle += 360.0;
+	while (view_angle >= 360.0) view_angle -= 360.0;
+
+        /*dy = -dy;*/
+
+	/* U-D => scaling */
+	if (fabs((float) dy) <= 1.0) {
+	    a = 0.0;
+	} else {
+	    a = log(fabs((float) dy)) / 3;
+	}
+
+	if (dy <= 0) {
+	    /* mouse moved up or back to starting pt */
+	    scale = rotsc_scale * pow(2, a);
+	} else if (dy > 0) {
+	    /* mouse moved down */
+	    scale = rotsc_scale * pow(2, -a);
+	}
+    }
+
+    fill_segment_cache();
+}
+
+#if 0 // FIXME
 void draw_string(Window win, int x, int y, char *str)
 {
    XDrawImageString(mydisplay, win, mygc, x, y, str, strlen(str));
 }
+#endif
 
+#ifdef XCAVEROT_BUTTONS
+// FIXME:
 void draw_buttons(Display *display, Window mainwin, GC mygc, GC egc) {
    flip_button(display, mainwin, butload, egc, mygc, "Load");
    flip_button(display, mainwin, butrot,  egc, mygc, rot ? "Stop" : "Rotate");
@@ -923,6 +1201,7 @@ void draw_buttons(Display *display, Window mainwin, GC mygc, GC egc) {
    flip_button(display, mainwin, butselect, egc, mygc, "Select");
    flip_button(display, mainwin, butquit, egc, mygc, "Quit");
 }
+#endif
 
 void drag_compass( int x, int y )
 {
@@ -935,6 +1214,7 @@ void drag_compass( int x, int y )
    if (x*x + y*y > RADIUS * RADIUS)
       view_angle = ((int)((view_angle + 360 + 22) / 45 ))*45 - 360;
    /* printf("a %f\n", view_angle); */
+   fill_segment_cache();
 }
 
 void drag_elevation( int x, int y )
@@ -955,6 +1235,25 @@ void drag_elevation( int x, int y )
          elev_angle = -90.0f;
       }
    }
+   fill_segment_cache();
+}
+
+static void
+set_defaults(void)
+{
+    XWindowAttributes a;
+
+    view_angle = 180.0;
+    scale = 0.01;
+    changedscale = 1;
+    plan_elev = PLAN;
+    elev_angle = 90.0;
+    rot = 0;
+    rot_speed = 75.0; /* rotation speed in degrees per second */
+
+    XGetWindowAttributes(mydisplay, mywindow, &a);
+    xoff = a.width / 2;
+    yoff = a.height / 2;
 }
 
 int main( int argc, char **argv )
@@ -966,7 +1265,8 @@ int main( int argc, char **argv )
 
   int visdepth; /* used in Double Buffer setup code */
 
-  GC enter_gc;
+  int redraw = 1;
+   // FIXME: GC enter_gc;
   XEvent myevent;
   XSizeHints myhint;
   XGCValues gvalues;
@@ -976,11 +1276,16 @@ int main( int argc, char **argv )
   int done;
   int temp1,temp2;
   Font font;
-
+   // FIXME:  int indicators = 1;
+  char *title;
+ 
   msg_init(argv[0]);
 
-  view_angle = 180;
-  elev_angle = 90.0;
+  /* check command line argument(s) */
+  if (argc != 2) {
+      fprintf(stderr, "Syntax: %s <.3d file>\n", argv[0]);
+      return 1;
+  }
 
   /* set up display and foreground/background */
   mydisplay = XOpenDisplay("");
@@ -990,68 +1295,71 @@ int main( int argc, char **argv )
   }
 
   myscreen = DefaultScreen (mydisplay);
-  white = mybackground = ind_bg = WhitePixel (mydisplay, myscreen);
-  black = myforeground = ind_fg = BlackPixel (mydisplay, myscreen);
+  black = mybackground = BlackPixel(mydisplay, myscreen);
+  white = myforeground = WhitePixel(mydisplay, myscreen);
 
-  dbuff = XdbeQueryExtension(mydisplay, &temp1, &temp2);
+  ind_bg = black;
+  ind_fg = white;
+   
+  have_double_buffering = XdbeQueryExtension(mydisplay, &temp1, &temp2);
 
-  /* dbuff = 0; */
+  if (have_double_buffering) {
+     /* Get info about visuals supporting DBE */
+     XVisualInfo vinfo;
+     XdbeScreenVisualInfo *svi;
+     int idx = 0;
 
-  if (dbuff) { /* Get info about visuals supporting DBE */
-    XVisualInfo vinfo;
-    XdbeScreenVisualInfo *svi;
-    int idx = 0;
-    svi = XdbeGetVisualInfo(mydisplay, NULL, &idx);
-    vinfo.visualid = svi->visinfo->visual;
-    visdepth = svi->visinfo->depth;
-    visinfo = XGetVisualInfo(mydisplay, VisualIDMask, &vinfo, &idx);
+     svi = XdbeGetVisualInfo(mydisplay, NULL, &idx);
+     vinfo.visualid = svi->visinfo->visual;
+     visdepth = svi->visinfo->depth;
+     visinfo = XGetVisualInfo(mydisplay, VisualIDMask, &vinfo, &idx);
 #if 0
-    printf("visinfo->depth: %d\n", visinfo->depth);
-    printf("visID, %x - %x\n", vinfo.visualid, visinfo->visualid);
+     printf("visinfo->depth: %d\n", visinfo->depth);
+     printf("visID, %x - %x\n", vinfo.visualid, visinfo->visualid);
 #endif
   }
 
-  /* create a window with a size of 1000 x 700 */
+  /* create a window with a size such that it fits on the screen */
   myhint.x = 0;
   myhint.y = 0;
-  myhint.width = 1000;
-  myhint.height = 700;
-  myhint.flags = /* PPosition |*/
-                 PSize;
+  myhint.width = WidthOfScreen(DefaultScreenOfDisplay(mydisplay));
+  myhint.height = HeightOfScreen(DefaultScreenOfDisplay(mydisplay));
+  myhint.flags = /* PPosition |*/ PSize;
 
-  if (dbuff) { /* if double buffering is supported we cannot rely on the
-		  default visual being one that is supported so we must
-		  explicitly set it to one that we have been told is. */
-    /* we need a new colormap for the visual since it won't necessarily
-     * have one. */
-    color_map = XCreateColormap(mydisplay, DefaultRootWindow(mydisplay),
-			   visinfo->visual, AllocNone);
-    dbwinattr.border_pixel = myforeground;
-    dbwinattr.background_pixel = mybackground;
-    dbwinattr.colormap = color_map;
-    mywindow = XCreateWindow(mydisplay, DefaultRootWindow (mydisplay),
-			     myhint.x, myhint.y, myhint.width, myhint.height,
-			     5, visinfo->depth, InputOutput, visinfo->visual,
-			     CWBorderPixel | CWBackPixel | CWColormap,
-			     &dbwinattr);
+  if (have_double_buffering) {
+     /* if double buffering is supported we cannot rely on the
+      * default visual being one that is supported so we must
+      * explicitly set it to one that we have been told is. */
+     /* we need a new colormap for the visual since it won't necessarily
+      * have one. */
+     color_map = XCreateColormap(mydisplay, DefaultRootWindow(mydisplay),
+				 visinfo->visual, AllocNone);
+     dbwinattr.border_pixel = myforeground;
+     dbwinattr.background_pixel = mybackground;
+     dbwinattr.colormap = color_map;
+     mywindow = XCreateWindow(mydisplay, DefaultRootWindow (mydisplay),
+			      myhint.x, myhint.y, myhint.width, myhint.height,
+			      5, visinfo->depth, InputOutput, visinfo->visual,
+			      CWBorderPixel | CWBackPixel | CWColormap,
+			      &dbwinattr);
   } else {
-    color_map = DefaultColormap(mydisplay,0);
-    mywindow = XCreateSimpleWindow (mydisplay,
-				    DefaultRootWindow (mydisplay),
-				    myhint.x, myhint.y, myhint.width, myhint.height,
-				    5, myforeground, mybackground);
+     color_map = DefaultColormap(mydisplay,0);
+     mywindow = XCreateSimpleWindow (mydisplay,
+				     DefaultRootWindow (mydisplay),
+				     myhint.x, myhint.y, myhint.width, myhint.height,
+				     5, myforeground, mybackground);
   }
 
   XGetWindowAttributes(mydisplay, mywindow, &attr);
 
   /* set up double buffering on the window */
-  if (dbuff) {
-    backbuff =  XdbeAllocateBackBufferName(mydisplay, mywindow,
-					  XdbeBackground);
-   backswapinfo.swap_window = mywindow;
-   backswapinfo.swap_action = XdbeBackground;
+  if (have_double_buffering) {
+     backbuf = XdbeAllocateBackBufferName(mydisplay, mywindow, XdbeBackground);
+     backswapinfo.swap_window = mywindow;
+     backswapinfo.swap_action = XdbeBackground;
   }
 
+#ifdef XCAVEROT_BUTTONS
   /* create children windows that will act as menu buttons */
   butload = XCreateSimpleWindow (mydisplay,mywindow,
 				 0,0,BUTWIDTH,BUTHEIGHT,2,myforeground,mybackground);
@@ -1073,15 +1381,20 @@ int main( int argc, char **argv )
 				   BUTWIDTH*8,0,BUTWIDTH,BUTHEIGHT,2,myforeground,mybackground);
   butquit = XCreateSimpleWindow (mydisplay,mywindow,
 				 BUTWIDTH*9,0,BUTWIDTH,BUTHEIGHT,2,myforeground,mybackground);
-  /*  printf("Main window %d\n", mywindow);  */
+#endif
 
   /* children windows to act as indicators */
   ind_com = XCreateSimpleWindow(mydisplay, mywindow, attr.width - INDWIDTH-1,0,
   				INDWIDTH, INDDEPTH, 1, ind_fg, ind_bg);
   ind_elev = XCreateSimpleWindow(mydisplay, mywindow, attr.width - INDWIDTH*2 -1 , 0,
   				 INDWIDTH, INDDEPTH, 1, ind_fg, ind_bg);
+#if 0
   scalebar = XCreateSimpleWindow(mydisplay, mywindow, 0, BUTHEIGHT+5+FONTSPACE, 23, attr.height - (BUTHEIGHT
 				 +FONTSPACE+5), 0, ind_fg, ind_bg);
+#else
+  scalebar = XCreateSimpleWindow(mydisplay, mywindow, 0, BUTHEIGHT, 23, attr.height -
+				 (BUTHEIGHT + FONTSPACE + 5), 0, ind_fg, ind_bg);
+#endif
 
   rot_but = XCreateSimpleWindow(mydisplay, mywindow, attr.width - INDWIDTH*2
 				- 1 - INDDEPTH/4, 0, INDDEPTH/4, INDDEPTH, 1,
@@ -1098,6 +1411,14 @@ int main( int argc, char **argv )
   xcMac = attr.width;
   ycMac = attr.height;
 
+  /* load file */
+  load_file(argv[1]);
+  title = malloc(strlen(hello) + strlen(argv[1]) + 7);
+  if (!title) exit(1); // FIXME
+  sprintf(title, "%s - [%s]", hello, argv[1]);
+  argc--;
+  argv++;
+#if 0
   /* try to open file if we've been given one */
   if (argv[1] && argv[1][0]!='\0' && argv[1][0]!='-') {
      /* if it loaded okay then discard the command line argument */
@@ -1106,41 +1427,54 @@ int main( int argc, char **argv )
         argv++;
      }
   }
+#endif
 
 #if 0 /* FIXME: JPNP coide */
   /* set scale to fit cave in screen */
-  scale = 0.6 * min((float)oldwidth/(x_max-x_min+1),
-		    min( (float)oldheight/(y_max-y_min+1),
-			 (float)oldheight/(z_max-z_min+1) )  );
+  scale = 0.6 * min((float)oldwidth/(xRad * 2 + 1),
+		    min( (float)oldheight/(yRad * 2 + 1),
+			 (float)oldheight/(zRad * 2 + 1) )  );
 
 
 #endif
+
+  set_defaults();
+  fill_segment_cache();
+
   /* print program name at the top */
-  XSetStandardProperties (mydisplay, mywindow, hello, hello,
-			  None, argv, argc, &myhint);
+  XSetStandardProperties(mydisplay, mywindow, title, title,
+			 None, argv, argc, &myhint);
 
   /* set up foreground/backgrounds and set up colors */
   mygc = XCreateGC (mydisplay, mywindow, 0, 0);
   gvalues.foreground = myforeground;
   gvalues.background = mybackground;
+#if 0 // FIXME
   enter_gc = XCreateGC(mydisplay,butzoom, 0, 0);
+#endif
   scale_gc = XCreateGC(mydisplay,mywindow, 0, 0);
   slab_gc = XCreateGC(mydisplay,mywindow, 0, 0);
 
-  gcval.line_width =2;
+  XSetForeground(mydisplay, scale_gc, white);
+  XSetForeground(mydisplay, slab_gc, white);
+  gcval.line_width = 2;
 
   XChangeGC(mydisplay, scale_gc, GCLineWidth ,&gcval);
 
-  /* Load up a font called FONTNAME (was 8x16 originally) */
+  /* Load the font */
   font = XLoadFont(mydisplay,FONTNAME);
   XSetFont(mydisplay,mygc,font);
+#if 0 // FIXME
   XSetFont(mydisplay,enter_gc,font);
+#endif
   XSetBackground (mydisplay, mygc, mybackground);
   XSetForeground (mydisplay, mygc, myforeground);
+#if 0 // FIXME
   XSetBackground (mydisplay,enter_gc,myforeground);
   XSetForeground (mydisplay,enter_gc,mybackground);
-
+#endif
   color_set_up(mydisplay, mywindow);
+  XSetFont(mydisplay,gcs[lab_col_ind],font);
 
   /* Get height value for font to use in label positioning JPNP 26/3/97 */
   fontinfo = XQueryFont(mydisplay, XGContextFromGC(gcs[0]) );
@@ -1157,10 +1491,10 @@ int main( int argc, char **argv )
      fontheight = slashheight = 10;
   }
 
-  /* Ask for input from the mouse and keyboard */
+  /* Enable the events we want */
   XSelectInput (mydisplay, mywindow,
-		ButtonPressMask | KeyPressMask | ExposureMask
-		| StructureNotifyMask
+		ButtonPressMask | KeyPressMask | ExposureMask | ButtonReleaseMask |
+		ButtonMotionMask | StructureNotifyMask
 		);
   XSelectInput (mydisplay, ind_com, ButtonPressMask | ButtonMotionMask);
   XSelectInput (mydisplay, ind_elev, ButtonPressMask | ButtonMotionMask);
@@ -1171,6 +1505,7 @@ int main( int argc, char **argv )
 
   /* Map children windows to the screen */
 
+#ifdef XCAVEROT_BUTTONS
   XMapRaised (mydisplay, butload);
   XMapRaised (mydisplay, butrot);
   XMapRaised (mydisplay, butstep);
@@ -1181,6 +1516,7 @@ int main( int argc, char **argv )
   XMapRaised (mydisplay, butcross);
   XMapRaised (mydisplay, butselect);
   XMapRaised (mydisplay, butquit);
+#endif
   XMapRaised (mydisplay, ind_com);
   XMapRaised (mydisplay, ind_elev);
   XMapRaised (mydisplay, scalebar);
@@ -1190,25 +1526,44 @@ int main( int argc, char **argv )
 
   gettimeofday(&lastframe, NULL);
 
+#ifdef XCAVEROT_BUTTONS // FIXME: !?!
   XNextEvent(mydisplay,&myevent);
   draw_buttons(mydisplay, mywindow, mygc, enter_gc);
+#endif
 
-  /* Loop through until a q is press when the cursor is in
-     the window, which will cause the application to quit */
+  /* Loop through until a q is pressed,
+     which will cause the application to quit */
 
   done = 0;
   while (done == 0)
     {
+      redraw = 1;
+
+      update_rotation();
+
       if (rot == 0 || XPending(mydisplay))
 	{
 	  XNextEvent (mydisplay, &myevent);
 	  /* printf("event of type #%d, in window %x\n",myevent.type, (int)myevent.xany.window);
 	   */
 
-	  if (myevent.type == ButtonPress)
+	  if (myevent.type == ButtonRelease) {
+            if (myevent.xbutton.button == Button1) {  
+              /* left button released */
+              release_left_button();
+            }
+	    else if (myevent.xbutton.button == Button3) {
+	      /* right button has been released => stop dragging cave about */
+	      release_right_button();
+	    }
+	  }
+	  else if (myevent.type == ButtonPress)
 	    {
 	      orig.x = myevent.xbutton.x;
 	      orig.y = myevent.xbutton.y;
+	      if (myevent.xbutton.button == Button1) {
+		 if (myevent.xbutton.window == ind_com) {
+#ifdef XCAVEROT_BUTTONS
 	      if (myevent.xbutton.subwindow == butzoom)
 		process_zoom(mydisplay, mywindow, butzoom, mygc, enter_gc);
 	      else if (myevent.xbutton.subwindow == butmooz)
@@ -1235,28 +1590,55 @@ int main( int argc, char **argv )
                 }
 	      else if (myevent.xbutton.window == ind_com)
                 {
-		  drag_compass(myevent.xbutton.x, myevent.xbutton.y);
+#endif
+		   int old_angle = (int) view_angle;
+		   drag_compass(myevent.xbutton.x, myevent.xbutton.y);
+		   if ((int) view_angle == old_angle) redraw = 0;
 		}
 	      else if (myevent.xbutton.window == ind_elev)
 		{
-		  drag_elevation(myevent.xbutton.x, myevent.xbutton.y);
+		   int old_elev = (int) elev_angle;
+		   drag_elevation(myevent.xbutton.x, myevent.xbutton.y);
+		   if (old_elev == (int) elev_angle) redraw = 0;
 		}
 	      else if (myevent.xbutton.window == scalebar)
 		{
-		  scale_orig = scale;
+		   scale_orig = scale;
+		   draw_scalebar();
 		}
-	      else if (myevent.xbutton.window == mywindow)
-		process_focus(mydisplay, mywindow,
-			      myevent.xbutton.x, myevent.xbutton.y);
+	      else if (myevent.xbutton.window == mywindow) {
+                  press_left_button(myevent.xbutton.x, myevent.xbutton.y);
+		 /* process_focus(mydisplay, mywindow,
+				  myevent.xbutton.x, myevent.xbutton.y); */
+	      }
+	      else if (myevent.xbutton.button == Button2) {
+		  /* toggle plan/elevation */
+		  if (plan_elev == PLAN) {
+		      switch_to_elevation();
+		  }
+		  else {
+		      switch_to_plan();
+		  }
+	      }
+	      else if (myevent.xbutton.button == Button3) {
+		  /* translate cave */
+		  press_right_button(myevent.xbutton.x, myevent.xbutton.y);
+		    
+		 }
+	      }
+	      }
 	    }
 	  if (myevent.type == MotionNotify)
 	    {
-	    if (myevent.xmotion.window == ind_com)
-	        drag_compass(myevent.xmotion.x, myevent.xmotion.y);
-	    if (myevent.xmotion.window == ind_elev)
-	        drag_elevation(myevent.xmotion.x, myevent.xmotion.y);
-	    if (myevent.xmotion.window == scalebar)
-	      {
+	       if (myevent.xmotion.window == ind_com) {
+		  int old_angle = (int) view_angle;
+		  drag_compass(myevent.xmotion.x, myevent.xmotion.y);
+		  if ((int) view_angle == old_angle) redraw = 0;
+	       } else if (myevent.xmotion.window == ind_elev) {
+		  int old_elev = (int) elev_angle;
+		  drag_elevation(myevent.xmotion.x, myevent.xmotion.y);
+		  if (old_elev == (int) elev_angle) redraw = 0;
+	       } else if (myevent.xmotion.window == scalebar) {
 		if (myevent.xmotion.state & Button1Mask)
 		  scale = exp(log(scale_orig)
 			      +(float)(myevent.xmotion.y - orig.y)/(250)
@@ -1267,6 +1649,12 @@ int main( int argc, char **argv )
 			      );
 
 		changedscale=1;
+		  draw_scalebar();
+		}
+	      else if (myevent.xmotion.window == mywindow) {
+		/* drag cave about / alter rotation or scale */
+
+		mouse_moved(mydisplay, mywindow, myevent.xmotion.x, myevent.xmotion.y);
 	      }
 	    }
 	  if (myevent.xany.window == mywindow)
@@ -1278,35 +1666,142 @@ int main( int argc, char **argv )
 		    char text[10];
 		    KeySym mykey;
 		    int i;
+		    XKeyEvent* key_event = (XKeyEvent*) &myevent;
 
-		    i = XLookupString ((XKeyEvent *)&myevent,
-				       text, 10, &mykey, 0);
-		    if (i == 1)
-		      switch (text[0])
+		    switch (key_event->keycode) {
+		     case 100:
+		       xoff += 20;
+		       break;
+		       
+		     case 102:
+		       xoff -= 20;
+		       break;
+		       
+		     case 98:
+		       yoff += 20;
+		       break;
+
+		     case 104:
+		       yoff -= 20;
+		       break;
+		       
+		     default: {
+		      i = XLookupString(key_event, text, 10, &mykey, 0);
+		      if (i == 1)
+		       switch (tolower(text[0]))
 			{
-			case 'q':
-			  done = 1;
-			  break;
-			case 'u':
-			  elev_angle += 3.0;
-			  if (elev_angle > 90.0 ) elev_angle = 90.0;
-			  break;
-			case 'd':
-			  elev_angle -= 3.0;
-			  if (elev_angle < -90.0) elev_angle = -90.0;
-			  break;
-			case 'r':
-			  rot_speed = - rot_speed;
-			  break;
-			case 'f':
-			  rot_speed *= 1.08;
-			  break;
-			case 's':
-			  rot_speed /= 1.08;
-			  break;
+			 case 13: /* Return => start rotating */
+			   rot = 1;
+			   break;
+			 case 32: /* Space => stop rotating */
+			   rot = 0;
+			   break;
+			 case 14: /* Ctrl+N => toggle labels (station names) */
+			   labelling = !labelling;
+			   break;
+			 case 24: /* Ctrl+X => toggle crosses */
+			   crossing = !crossing;
+			   break;
+			 case 127: /* Delete => restore defaults */
+			   set_defaults();
+			   break;
+			 case 'q':
+			   done = 1;
+			   break;
+			 case 'u': /* cave up */
+			   elev_angle += 3.0;
+			   if (elev_angle > 90.0 ) elev_angle = 90.0;
+			   break;
+			 case 'd': /* cave down */
+			   elev_angle -= 3.0;
+			   if (elev_angle < -90.0) elev_angle = -90.0;
+			   break;
+			 case 'l': /* switch to elevation */
+			   switch_to_elevation();
+			   break;
+			 case 'p': /* switch to plan */
+			   switch_to_plan();
+			   break;
+			 case 'z': /* rotn speed down */
+			   rot_speed = rot_speed / 1.5;
+			   if (fabs(rot_speed) < 0.1)
+			      rot_speed = rot_speed > 0 ? 0.1 : -0.1;
+			   break;
+			 case 'x': /* rotn speed up */
+			   rot_speed = rot_speed * 1.5;
+			   if (fabs(rot_speed) > 720)
+			      rot_speed = rot_speed > 0 ? 720 : -720;
+			   break;
+			 case '[': /* zoom out */
+			   scale /= 2.0;
+			   if (scale < 0.001) {
+			      scale = 0.001;
+			   }
+			   fill_segment_cache();
+			   redraw = 1;
+			   break;
+			 case ']': /* zoom in */
+			   scale *= 2.0;
+			   if (scale > 0.4) {
+			      scale = 0.4;
+			   }
+			   fill_segment_cache();
+			   redraw = 1;
+			   break;
+			 case 'r': /* reverse dirn of rotation */
+			   rot_speed = -rot_speed;
+			   break;
+			 case 'c': /* rotate one step "clockwise" */
+			   // FIXME: view_angle += rot_step;
+			   if (view_angle >= 360.0) {
+			      view_angle -= 360.0;
+			   }
+			   fill_segment_cache();
+			   redraw = 1;
+			   break;
+			 case 'v': /* rotate one step "anticlockwise" */
+			   // FIXME: view_angle -= rot_step;
+			   if (view_angle <= 0.0) {
+			      view_angle += 360.0;
+			   }
+			   fill_segment_cache();
+			   redraw = 1;
+			   break;
+			 case '\'': /* higher viewpoint (?) */
+			   z_mid += Zrad / 7.5;
+			   fill_segment_cache();
+			   redraw = 1;
+			   break;
+			 case '/': /* lower viewpoint (?) */
+			   z_mid -= Zrad / 7.5;
+			   fill_segment_cache();
+			   redraw = 1;
+			   break;
+			 case 'n': /* cave north */
+			   view_angle = 0.0;
+			   fill_segment_cache();
+			   redraw = 1;
+			   break;
+			 case 's': /* cave south */
+			   view_angle = 180.0;
+			   fill_segment_cache();
+			   redraw = 1;
+			   break;
+			 case 'e': /* cave east */
+			   view_angle = 90.0;
+			   fill_segment_cache();
+			   redraw = 1;
+			   break;
+			 case 'w': /* cave west */
+			   view_angle = 270.0;
+			   fill_segment_cache();
+			   redraw = 1;
+			   break;
 			}
-		    break;
-		  } /* case  */
+		     }
+		    }
+		     break;
+		  } 
 	          case ConfigureNotify:
 
 		  changedscale  = 1;
@@ -1330,17 +1825,19 @@ int main( int argc, char **argv )
 		  XMoveWindow(mydisplay, ind_com, myevent.xconfigure.width-INDWIDTH-1, 0);
 		  XMoveWindow(mydisplay, ind_elev, myevent.xconfigure.width-(2*INDWIDTH)-1, 0);
 
+		  draw_scalebar();
 		  break;
-		} /* switch */
-	    } /* end if */
+		}
 	}
-      redraw_image(mydisplay, mywindow, mygc);
-      draw_buttons(mydisplay, mywindow, mygc, enter_gc);
+       if (redraw) {
+	  perform_redraw();
+	  // FIXME: draw_buttons(mydisplay, mywindow, mygc, enter_gc);
+       }
     } /* while */
 
-  /* Free up and clean up the windows created */
-  XFreeGC (mydisplay, mygc);
-  XDestroyWindow (mydisplay, mywindow);
-  XCloseDisplay (mydisplay);
-  exit(0);
+   /* Free up and clean up the windows created */
+   XFreeGC (mydisplay, mygc);
+   XDestroyWindow (mydisplay, mywindow);
+   XCloseDisplay (mydisplay);
+   exit(0);
 }
