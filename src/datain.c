@@ -51,6 +51,11 @@ parse file /* = { NULL, NULL, 0, fFalse, NULL } */ ;
 
 bool f_export_ok;
 
+static real value[Fr - 1];
+#define VAL(N) value[(N)-1]
+static real variance[Fr - 1];
+#define VAR(N) variance[(N)-1]
+
 static filepos fpLineStart;
 
 void
@@ -250,6 +255,52 @@ process_non_data_line(void)
    return fTrue;
 }
 
+static void
+read_reading(reading r, bool f_optional)
+{
+   int n_readings;
+   q_quantity q;
+   VAL(r) = read_numeric(f_optional, &n_readings);
+   switch (r) {
+      case Tape: q = Q_LENGTH; break;
+      case Comp: q = Q_BEARING; break;
+      case BackComp: q = Q_BACKBEARING; break;
+      case Clino: q = Q_GRADIENT; break;
+      case BackClino: q = Q_BACKGRADIENT; break;
+      case FrDepth: case ToDepth: q = Q_DEPTH; break;
+      case Dx: q = Q_DX; break;
+      case Dy: q = Q_DY; break;
+      case Dz: q = Q_DZ; break;
+      case FrCount: case ToCount: q = Q_COUNT; break;
+      default: BUG("Unexpected case");
+   }
+   VAR(r) = var(q);
+   if (n_readings > 1) VAR(r) /= sqrt(n_readings);
+}
+
+static void
+read_reading_or_omit(reading r)
+{
+   int n_readings;
+   q_quantity q;
+   VAL(r) = read_numeric_or_omit(&n_readings);
+   switch (r) {
+      case Tape: q = Q_LENGTH; break;
+      case Comp: q = Q_BEARING; break;
+      case BackComp: q = Q_BACKBEARING; break;
+      case Clino: q = Q_GRADIENT; break;
+      case BackClino: q = Q_BACKGRADIENT; break;
+      case FrDepth: case ToDepth: q = Q_DEPTH; break;
+      case Dx: q = Q_DX; break;
+      case Dy: q = Q_DY; break;
+      case Dz: q = Q_DZ; break;
+      case FrCount: case ToCount: q = Q_COUNT; break;
+      default: BUG("Unexpected case");
+   }
+   VAR(r) = var(q);
+   if (n_readings > 1) VAR(r) /= sqrt(n_readings);
+}
+
 extern void
 data_file(const char *pth, const char *fnm)
 {
@@ -333,14 +384,14 @@ data_file(const char *pth, const char *fnm)
 	    BUG("bad style");
 	 }
 	 /* style function returns 0 => error */
-	 if (!r) {
 #ifdef NEW3DFORMAT
+	 if (!r) {
 	    /* we have just created a very naughty twiglet, and it must be
 	     * punished */
 	    osfree(limb);
 	    limb = temp;
-#endif
 	 }
+#endif
       }
    }
 
@@ -455,33 +506,35 @@ warn_readings_differ(int msg, real diff)
 }
 
 static bool
-handle_comp_units(real *p_comp, real *p_backcomp)
+handle_comp_units(void)
 {
    bool fNoComp = fTrue;
-   if (*p_comp != HUGE_REAL) {
+   if (VAL(Comp) != HUGE_REAL) {
       fNoComp = fFalse;
-      *p_comp *= pcs->units[Q_BEARING];
-      if (*p_comp < (real)0.0 || *p_comp - M_PI * 2.0 > EPSILON) {
+      VAL(Comp) *= pcs->units[Q_BEARING];
+      if (VAL(Comp) < (real)0.0 || VAL(Comp) - M_PI * 2.0 > EPSILON) {
 	 compile_warning(/*Suspicious compass reading*/59);
-	 *p_comp = mod2pi(*p_comp);
+	 VAL(Comp) = mod2pi(VAL(Comp));
       }
    }
-   if (*p_backcomp != HUGE_REAL) {
+   if (VAL(BackComp) != HUGE_REAL) {
       fNoComp = fFalse;
-      *p_backcomp *= pcs->units[Q_BACKBEARING];
-      if (*p_backcomp < (real)0.0 || *p_backcomp - M_PI * 2.0 > EPSILON) {
+      VAL(BackComp) *= pcs->units[Q_BACKBEARING];
+      if (VAL(BackComp) < (real)0.0 || VAL(BackComp) - M_PI * 2.0 > EPSILON) {
 	 /* FIXME: different message for BackComp? */
 	 compile_warning(/*Suspicious compass reading*/59);
-	 *p_backcomp = mod2pi(*p_backcomp);
+	 VAL(BackComp) = mod2pi(VAL(BackComp));
       }
    }
    return fNoComp;
 }
 
 static real
-handle_compass(real *p_var, real comp, real backcomp)
+handle_compass(real *p_var)
 {
-   real var = var(Q_BEARING);
+   real var = VAR(Comp);
+   real comp = VAL(Comp);
+   real backcomp = VAL(BackComp);
    if (comp != HUGE_REAL) {
       comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
       comp -= pcs->z[Q_DECLINATION];
@@ -495,17 +548,17 @@ handle_compass(real *p_var, real comp, real backcomp)
 	 real diff = comp - backcomp;
 	 real adj = fabs(diff) > M_PI ? M_PI : 0;
 	 diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
-	 if (sqrd(diff / 2.0) > var + var(Q_BACKBEARING)) {
+	 if (sqrd(diff / 2.0) > var + VAR(Q_BACKBEARING)) {
 	    /* fore and back readings differ by more than 2 sds */
 	    warn_readings_differ(/*Compass reading and back compass reading disagree by %s degrees*/98, diff);
 	 }
-	 comp = (comp / var + backcomp / var(Q_BACKBEARING));
-	 var = (var + var(Q_BACKBEARING)) / 4;
+	 comp = (comp / var + backcomp / VAR(BackClino));
+	 var = (var + VAR(BackClino)) / 4;
 	 comp *= var;
 	 comp += adj;
       } else {
 	 comp = backcomp;
-	 var = var(Q_BACKBEARING);
+	 var = VAR(BackClino);
       }
    }
    *p_var = var;
@@ -513,10 +566,14 @@ handle_compass(real *p_var, real comp, real backcomp)
 }
 
 static int
-process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
-	       real backcomp, real backclin,
-	       bool fToFirst, clino_type ctype, clino_type backctype)
+process_normal(prefix *fr, prefix *to, bool fToFirst,
+	       clino_type ctype, clino_type backctype)
 {
+   real tape = VAL(Tape);
+   real comp = VAL(Comp);
+   real clin = VAL(Clino);
+   real backclin = VAL(BackClino);
+
    real dx, dy, dz;
    real vx, vy, vz;
 #ifndef NO_COVARIANCES
@@ -531,7 +588,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       compile_warning(/*Negative adjusted tape reading*/79);
    }
 
-   fNoComp = handle_comp_units(&comp, &backcomp);
+   fNoComp = handle_comp_units();
 
    if (ctype == CTYPE_READING) {
       real diff_from_abs90;
@@ -584,7 +641,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	 dz = (backclin < (real)0.0) ? tape : -tape;
       }
       vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
-      vz = var(Q_POS) / 3.0 + var(Q_LENGTH);
+      vz = var(Q_POS) / 3.0 + VAR(Tape);
 #ifndef NO_COVARIANCES
       /* Correct values - no covariances in this case! */
       cxy = cyz = czx = (real)0.0;
@@ -612,27 +669,27 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	 /* take into account variance in LEVEL case */
 	 real var_clin = var(Q_LEVEL);
 	 real var_comp;
-	 comp = handle_compass(&var_comp, comp, backcomp);
+	 real comp = handle_compass(&var_comp);
 	 /* ctype != CTYPE_READING is LEVEL case */
 	 if (ctype == CTYPE_READING) {
 	    clin = (clin - pcs->z[Q_GRADIENT]) * pcs->sc[Q_GRADIENT];
-	    var_clin = var(Q_GRADIENT);
+	    var_clin = VAR(Clino);
 	 }
 	 if (backctype == CTYPE_READING) {
 	    backclin = (backclin - pcs->z[Q_BACKGRADIENT])
 	       * pcs->sc[Q_BACKGRADIENT];
 	    if (ctype == CTYPE_READING) {
 	       if (sqrd((clin + backclin) / 3.0) >
-		     var_clin + var(Q_BACKGRADIENT)) {
+		     var_clin + VAR(BackClino)) {
 		  /* fore and back readings differ by more than 3 sds */
 		  warn_readings_differ(/*Clino reading and back clino reading disagree by %s degrees*/99, clin + backclin);
 	       }
-	       clin = (clin / var_clin - backclin / var(Q_BACKGRADIENT));
-	       var_clin = (var_clin + var(Q_BACKGRADIENT)) / 4;
+	       clin = (clin / var_clin - backclin / VAR(BackClino));
+	       var_clin = (var_clin + VAR(BackClino)) / 4;
 	       clin *= var_clin;
 	    } else {
 	       clin = -backclin;
-	       var_clin = var(Q_BACKGRADIENT);
+	       var_clin = VAR(BackClino);
 	    }
 	 }
 
@@ -655,7 +712,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 #endif
 	 dx2 = dx * dx;
 	 L2 = tape * tape;
-	 V = var(Q_LENGTH) / L2;
+	 V = VAR(Tape) / L2;
 	 dy2 = dy * dy;
 	 cosG2 = cosG * cosG;
 	 sinGcosG = sin(clin) * cosG;
@@ -686,10 +743,10 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	 }
 	 /* usual covariance formulae are fine in no clino case since
 	  * dz = 0 so value of var_clin is ignored */
-	 cxy = sinB * cosB * (var(Q_LENGTH) * cosG2 + var_clin * dz2)
+	 cxy = sinB * cosB * (VAR(Tape) * cosG2 + var_clin * dz2)
 	       - var_comp * dx * dy;
-	 czx = var(Q_LENGTH) * sinB * sinGcosG - var_clin * dx * dz;
-	 cyz = var(Q_LENGTH) * cosB * sinGcosG - var_clin * dy * dz;
+	 czx = VAR(Tape) * sinB * sinGcosG - var_clin * dx * dz;
+	 cyz = VAR(Tape) * cosB * sinGcosG - var_clin * dy * dz;
 #if 0
 	 printf("vx = %6.3f, vy = %6.3f, vz = %6.3f\n", vx, vy, vz);
 	 printf("cxy = %6.3f, cyz = %6.3f, czx = %6.3f\n", cxy, cyz, czx);
@@ -733,23 +790,26 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 }
 
 static int
-process_diving(prefix *fr, prefix *to, real tape, real comp, real backcomp,
-	       real frdepth, real todepth, bool fToFirst, bool fDepthChange)
+process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 {
+   real tape = VAL(Tape);
+
    real dx, dy, dz;
    real vx, vy, vz;
 #ifndef NO_COVARIANCES
    real cxy = 0, cyz = 0, czx = 0;
 #endif
 
-   handle_comp_units(&comp, &backcomp);
+   handle_comp_units();
 
    /* depth gauge readings increase upwards with default calibration */
    if (fDepthChange) {
-      SVX_ASSERT(frdepth == 0.0);
-      dz = (todepth * pcs->units[Q_DEPTH] - pcs->z[Q_DEPTH]) * pcs->sc[Q_DEPTH];
+      SVX_ASSERT(VAL(FrDepth) == 0.0);
+      dz = VAL(ToDepth) * pcs->units[Q_DEPTH] - pcs->z[Q_DEPTH];
+      dz *= pcs->sc[Q_DEPTH];
    } else {
-      dz = (todepth - frdepth) * pcs->units[Q_DEPTH] * pcs->sc[Q_DEPTH];
+      dz = VAL(ToDepth) - VAL(FrDepth);
+      dz *= pcs->units[Q_DEPTH] * pcs->sc[Q_DEPTH];
    }
 
    /* adjusted tape is negative -- probably the calibration is wrong */
@@ -766,37 +826,44 @@ process_diving(prefix *fr, prefix *to, real tape, real comp, real backcomp,
    if (tape == (real)0.0 && dz == 0.0) {
       dx = dy = dz = (real)0.0;
       vx = vy = vz = (real)(var(Q_POS) / 3.0); /* Position error only */
-   } else if (comp == HUGE_REAL && backcomp == HUGE_REAL) {
+   } else if (VAL(Comp) == HUGE_REAL &&
+	      VAL(BackComp) == HUGE_REAL) {
       /* plumb */
       dx = dy = (real)0.0;
       if (dz < 0) tape = -tape;
-      dz = (dz * var(Q_LENGTH) + tape * 2 * var(Q_DEPTH))
-	 / (var(Q_LENGTH) * 2 * var(Q_DEPTH));
+      /* FIXME: Should use FrDepth sometimes... */
+      dz = (dz * VAR(Tape) + tape * 2 * VAR(ToDepth))
+	 / (VAR(Tape) * 2 * VAR(ToDepth));
       vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
-      vz = var(Q_POS) / 3.0 + var(Q_LENGTH) * 2 * var(Q_DEPTH)
-			      / (var(Q_LENGTH) + var(Q_DEPTH));
+      /* FIXME: Should use FrDepth sometimes... */
+      vz = var(Q_POS) / 3.0 + VAR(Tape) * 2 * VAR(ToDepth)
+			      / (VAR(Tape) + VAR(ToDepth));
    } else {
       real L2, sinB, cosB, dz2, D2;
       real var_comp;
-      comp = handle_compass(&var_comp, comp, backcomp);
+      real comp = handle_compass(&var_comp);
       sinB = sin(comp);
       cosB = cos(comp);
       L2 = tape * tape;
       dz2 = dz * dz;
       D2 = L2 - dz2;
       if (D2 <= (real)0.0) {
-	 real vsum = var(Q_LENGTH) + 2 * var(Q_DEPTH);
+	 /* FIXME: Should use FrDepth sometimes... */
+	 real vsum = VAR(Tape) + 2 * VAR(ToDepth);
 	 dx = dy = (real)0.0;
 	 vx = vy = var(Q_POS) / 3.0;
-	 vz = var(Q_POS) / 3.0 + var(Q_LENGTH) * 2 * var(Q_DEPTH) / vsum;
+	 /* FIXME: Should use FrDepth sometimes... */
+	 vz = var(Q_POS) / 3.0 + VAR(Tape) * 2 * VAR(ToDepth) / vsum;
 	 if (dz > 0) {
-	    dz = (dz * var(Q_LENGTH) + tape * 2 * var(Q_DEPTH)) / vsum;
+	    /* FIXME: Should use FrDepth sometimes... */
+	    dz = (dz * VAR(Tape) + tape * 2 * VAR(ToDepth)) / vsum;
 	 } else {
-	    dz = (dz * var(Q_LENGTH) - tape * 2 * var(Q_DEPTH)) / vsum;
+	    dz = (dz * VAR(Tape) - tape * 2 * VAR(ToDepth)) / vsum;
 	 }
       } else {
 	 real D = sqrt(D2);
-	 real F = var(Q_LENGTH) * L2 + 2 * var(Q_DEPTH) * D2;
+	 /* FIXME: Should use FrDepth sometimes... */
+	 real F = VAR(Tape) * L2 + 2 * VAR(ToDepth) * D2;
 	 dx = D * sinB;
 	 dy = D * cosB;
 
@@ -804,12 +871,14 @@ process_diving(prefix *fr, prefix *to, real tape, real comp, real backcomp,
 	    sinB * sinB * F / D2 + var_comp * dy * dy;
 	 vy = var(Q_POS) / 3.0 +
 	    cosB * cosB * F / D2 + var_comp * dx * dx;
-	 vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
+	 /* FIXME: Should use FrDepth sometimes... */
+	 vz = var(Q_POS) / 3.0 + 2 * VAR(ToDepth);
 
 #ifndef NO_COVARIANCES
 	 cxy = sinB * cosB * (F / D2 + var_comp * D2);
-	 cyz = -2 * var(Q_DEPTH) * dy / D;
-	 czx = -2 * var(Q_DEPTH) * dx / D;
+	 /* FIXME: Should use FrDepth sometimes... */
+	 cyz = -2 * VAR(ToDepth) * dy / D;
+	 czx = -2 * VAR(ToDepth) * dx / D;
 #endif
       }
    }
@@ -842,14 +911,13 @@ process_diving(prefix *fr, prefix *to, real tape, real comp, real backcomp,
 }
 
 static int
-process_cartesian(prefix *fr, prefix *to, real dx, real dy, real dz,
-		  bool fToFirst)
+process_cartesian(prefix *fr, prefix *to, bool fToFirst)
 {
-   dx = (dx * pcs->units[Q_DX] - pcs->z[Q_DX]) * pcs->sc[Q_DX];
-   dy = (dy * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
-   dz = (dz * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
+   real dx = (VAL(Dx) * pcs->units[Q_DX] - pcs->z[Q_DX]) * pcs->sc[Q_DX];
+   real dy = (VAL(Dy) * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
+   real dz = (VAL(Dz) * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
 
-   addlegbyname(fr, to, fToFirst, dx, dy, dz, var(Q_DX), var(Q_DY), var(Q_DZ)
+   addlegbyname(fr, to, fToFirst, dx, dy, dz, VAR(Dx), VAR(Dy), VAR(Dz)
 #ifndef NO_COVARIANCES
 		, 0, 0, 0
 #endif
@@ -882,7 +950,6 @@ extern int
 data_cartesian(void)
 {
    prefix *fr = NULL, *to = NULL;
-   real dx = 0, dy = 0, dz = 0;
 
    bool fMulti = fFalse;
 
@@ -896,21 +963,21 @@ data_cartesian(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr = read_prefix_stn(fFalse, fTrue);
-	  if (first_stn == End) first_stn = Fr;
-	  break;
+	 fr = read_prefix_stn(fFalse, fTrue);
+	 if (first_stn == End) first_stn = Fr;
+	 break;
        case To:
-	  to = read_prefix_stn(fFalse, fTrue);
-	  if (first_stn == End) first_stn = To;
-	  break;
+	 to = read_prefix_stn(fFalse, fTrue);
+	 if (first_stn == End) first_stn = To;
+	 break;
        case Station:
-	  fr = to;
-	  to = read_prefix_stn(fFalse, fFalse);
-	  first_stn = To;
-	  break;
-       case Dx: dx = read_numeric(fFalse); break;
-       case Dy: dy = read_numeric(fFalse); break;
-       case Dz: dz = read_numeric(fFalse); break;
+	 fr = to;
+	 to = read_prefix_stn(fFalse, fFalse);
+	 first_stn = To;
+	 break;
+       case Dx: case Dy: case Dz:
+	 read_reading(*ordering, fFalse);
+	 break;
        case Ignore:
 	 skipword(); break;
        case IgnoreAllAndNewLine:
@@ -919,7 +986,7 @@ data_cartesian(void)
        case Newline:
 	 if (fr != NULL) {
 	    int r;
-	    r = process_cartesian(fr, to, dx, dy, dz, first_stn == To);
+	    r = process_cartesian(fr, to, first_stn == To);
 	    if (!r) skipline();
 	 }
 	 fMulti = fTrue;
@@ -938,7 +1005,7 @@ data_cartesian(void)
 	 /* fall through */
        case End:
 	 if (!fMulti) {
-	    int r = process_cartesian(fr, to, dx, dy, dz, first_stn == To);
+	    int r = process_cartesian(fr, to, first_stn == To);
 	    process_eol();
 	    return r;
 	 }
@@ -953,23 +1020,28 @@ data_cartesian(void)
 }
 
 static int
-process_cylpolar(prefix *fr, prefix *to, real tape, real comp, real backcomp,
-		 real frdepth, real todepth, bool fToFirst, bool fDepthChange)
+process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 {
+   real tape = VAL(Tape);
+   real frdepth = VAL(FrDepth);
+   real todepth = VAL(ToDepth);
+
    real dx, dy, dz;
    real vx, vy, vz;
 #ifndef NO_COVARIANCES
    real cxy = 0;
 #endif
 
-   handle_comp_units(&comp, &backcomp);
+   handle_comp_units();
 
    /* depth gauge readings increase upwards with default calibration */
    if (fDepthChange) {
-      SVX_ASSERT(frdepth == 0.0);
-      dz = (todepth * pcs->units[Q_DEPTH] - pcs->z[Q_DEPTH]) * pcs->sc[Q_DEPTH];
+      SVX_ASSERT(VAL(FrDepth) == 0.0);
+      dz = VAL(ToDepth) * pcs->units[Q_DEPTH] - pcs->z[Q_DEPTH];
+      dz *= pcs->sc[Q_DEPTH];
    } else {
-      dz = (todepth - frdepth) * pcs->units[Q_DEPTH] * pcs->sc[Q_DEPTH];
+      dz = VAL(ToDepth) - VAL(FrDepth);
+      dz *= pcs->units[Q_DEPTH] * pcs->sc[Q_DEPTH];
    }
 
    /* adjusted tape is negative -- probably the calibration is wrong */
@@ -977,15 +1049,16 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp, real backcomp,
       compile_warning(/*Negative adjusted tape reading*/79);
    }
 
-   if (comp == HUGE_REAL && backcomp == HUGE_REAL) {
+   if (VAL(Comp) == HUGE_REAL && VAL(BackComp) == HUGE_REAL) {
       /* plumb */
       dx = dy = (real)0.0;
       vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
-      vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
+      /* FIXME: Should use FrDepth sometimes... */
+      vz = var(Q_POS) / 3.0 + 2 * VAR(ToDepth);
    } else {
       real sinB, cosB;
       real var_comp;
-      comp = handle_compass(&var_comp, comp, backcomp);
+      real comp = handle_compass(&var_comp);
       sinB = sin(comp);
       cosB = cos(comp);
 
@@ -993,13 +1066,14 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp, real backcomp,
       dy = tape * cosB;
 
       vx = var(Q_POS) / 3.0 +
-	 var(Q_LENGTH) * sinB * sinB + var_comp * dy * dy;
+	 VAR(Tape) * sinB * sinB + var_comp * dy * dy;
       vy = var(Q_POS) / 3.0 +
-	 var(Q_LENGTH) * cosB * cosB + var_comp * dx * dx;
-      vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
+	 VAR(Tape) * cosB * cosB + var_comp * dx * dx;
+      /* FIXME: Should use FrDepth sometimes... */
+      vz = var(Q_POS) / 3.0 + 2 * VAR(ToDepth);
 
 #ifndef NO_COVARIANCES
-      cxy = (var(Q_LENGTH) - var_comp * tape * tape) * sinB * cosB;
+      cxy = (VAR(Tape) - var_comp * tape * tape) * sinB * cosB;
 #endif
    }
    addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
@@ -1038,16 +1112,17 @@ data_normal(void)
    prefix *fr = NULL, *to = NULL;
    reading first_stn = End;
 
-   real tape = 0, comp = HUGE_VAL, backcomp = HUGE_VAL, frcount = 0, tocount = 0;
-   real clin, backclin;
-   real frdepth = 0, todepth = 0;
-
    bool fTopofil = fFalse, fMulti = fFalse;
    bool fRev;
    clino_type ctype, backctype;
    bool fDepthChange;
 
    reading *ordering;
+
+   VAL(Tape) = 0;
+   VAL(Comp) = VAL(BackComp) = HUGE_VAL;
+   VAL(FrCount) = VAL(ToCount) = 0;
+   VAL(FrDepth) = VAL(ToDepth) = 0;
 
    again:
 
@@ -1057,7 +1132,7 @@ data_normal(void)
 
    /* ordering may omit clino reading, so set up default here */
    /* this is also used if clino reading is the omit character */
-   backclin = clin = (real)0.0;
+   VAL(Clino) = VAL(BackClino) = 0;
 
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
@@ -1092,31 +1167,32 @@ data_normal(void)
 	  nextch();
 	  break;
        case Tape:
-	  tape = read_numeric(fFalse);
-	  if (tape < (real)0.0) compile_warning(/*Negative tape reading*/60);
+	  read_reading(Tape, fFalse);
+	  if (VAL(Tape) < (real)0.0)
+	     compile_warning(/*Negative tape reading*/60);
 	  break;
        case Count:
-	  frcount = tocount;
-	  tocount = read_numeric(fFalse);
+	  VAL(FrCount) = VAL(ToCount);
+	  read_reading(ToCount, fFalse);
 	  break;
        case FrCount:
-	  frcount = read_numeric(fFalse);
+	  read_reading(FrCount, fFalse);
 	  break;
        case ToCount:
-	  tocount = read_numeric(fFalse);
+	  read_reading(ToCount, fFalse);
 	  fTopofil = fTrue;
 	  break;
        case Comp:
-	  comp = read_numeric_or_omit();
+	  read_reading_or_omit(Comp);
 	  break;
        case BackComp:
-	  backcomp = read_numeric_or_omit();
+	  read_reading_or_omit(BackComp);
 	  break;
        case Clino:
-	  clin = read_numeric(fTrue);
-	  if (clin == HUGE_REAL) {
-	     clin = handle_plumb(&ctype);
-	     if (clin != HUGE_REAL) break;
+	  read_reading(Clino, fTrue);
+	  if (VAL(Clino) == HUGE_REAL) {
+	     VAL(Clino) = handle_plumb(&ctype);
+	     if (VAL(Clino) != HUGE_REAL) break;
 	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
 	     process_eol();
 	     return 0;
@@ -1124,10 +1200,10 @@ data_normal(void)
 	  ctype = CTYPE_READING;
 	  break;
        case BackClino:
-	  backclin = read_numeric(fTrue);
-	  if (backclin == HUGE_REAL) {
-	     backclin = handle_plumb(&backctype);
-	     if (backclin != HUGE_REAL) break;
+	  read_reading(BackClino, fTrue);
+	  if (VAL(BackClino) == HUGE_REAL) {
+	     VAL(BackClino) = handle_plumb(&backctype);
+	     if (VAL(BackClino) != HUGE_REAL) break;
 	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
 	     process_eol();
 	     return 0;
@@ -1135,19 +1211,19 @@ data_normal(void)
 	  backctype = CTYPE_READING;
 	  break;
        case FrDepth:
-	  frdepth = read_numeric(fFalse);
+	  read_reading(FrDepth, fFalse);
 	  break;
        case ToDepth:
-	  todepth = read_numeric(fFalse);
+	  read_reading(ToDepth, fFalse);
 	  break;
        case Depth:
-	  frdepth = todepth;
-	  todepth = read_numeric(fFalse);
+	  VAL(FrDepth) = VAL(ToDepth);
+	  read_reading(ToDepth, fFalse);
 	  break;
        case DepthChange:
 	  fDepthChange = fTrue;
-	  frdepth = 0;
-	  todepth = read_numeric(fFalse);
+	  VAL(FrDepth) = 0;
+	  read_reading(ToDepth, fFalse);
 	  break;
        case Ignore:
 	  skipword();
@@ -1163,35 +1239,35 @@ data_normal(void)
 	   	fr = to;
 	    	to = t;
 	     }
-	     if (fTopofil) tape = tocount - frcount;
+	     if (fTopofil)
+		VAL(Tape) = VAL(ToCount) - VAL(FrCount);
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
-	     if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
+	     if (pcs->f0Eq && VAL(Tape) == (real)0.0 &&
+		 VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		goto inferred_equate;
 	     }
 	     if (fTopofil) {
-		tape *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
+		VAL(Tape) *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
 	     } else {
-		tape *= pcs->units[Q_LENGTH];
-		tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
+		VAL(Tape) *= pcs->units[Q_LENGTH];
+		VAL(Tape) -= pcs->z[Q_LENGTH];
+		VAL(Tape) *= pcs->sc[Q_LENGTH];
 	     }
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
-		r = process_normal(fr, to, tape, comp, clin,
-				   backcomp, backclin,
-				   (first_stn == To) ^ fRev, ctype, backctype);
+		r = process_normal(fr, to, (first_stn == To) ^ fRev,
+				   ctype, backctype);
 		break;
 	      case STYLE_DIVING:
-		r = process_diving(fr, to, tape, comp, backcomp,
-				   frdepth, todepth,
-	       			   (first_stn == To) ^ fRev, fDepthChange);
+		r = process_diving(fr, to, (first_stn == To) ^ fRev,
+				   fDepthChange);
 		break;
 	      case STYLE_CYLPOLAR:
-		r = process_cylpolar(fr, to, tape, comp, backcomp,
-				     frdepth, todepth,
-				     (first_stn == To) ^ fRev, fDepthChange);
+		r = process_cylpolar(fr, to, (first_stn == To) ^ fRev,
+				     fDepthChange);
 		break;
 	      default:
 		BUG("bad style");
@@ -1221,36 +1297,35 @@ data_normal(void)
 		fr = to;
 		to = t;
 	     }
-	     if (fTopofil) tape = tocount - frcount;
+	     if (fTopofil) VAL(Tape) = VAL(ToCount) - VAL(FrCount);
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
-	     if (pcs->f0Eq && tape == (real)0.0 && frdepth == todepth) {
+	     if (pcs->f0Eq && VAL(Tape) == (real)0.0 &&
+		 VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		process_eol();
 		return 1;
 	     }
 	     if (fTopofil) {
-		tape *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
+		VAL(Tape) *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
 	     } else {
-		tape *= pcs->units[Q_LENGTH];
-		tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
+		VAL(Tape) *= pcs->units[Q_LENGTH];
+		VAL(Tape) -= pcs->z[Q_LENGTH];
+		VAL(Tape) *= pcs->sc[Q_LENGTH];
 	     }
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
-		r = process_normal(fr, to, tape, comp, clin,
-				   backcomp, backclin,
-				   (first_stn == To) ^ fRev, ctype, backctype);
+		r = process_normal(fr, to, (first_stn == To) ^ fRev,
+				   ctype, backctype);
 		break;
 	      case STYLE_DIVING:
-		r = process_diving(fr, to, tape, comp, backcomp,
-				   frdepth, todepth,
-	       			   (first_stn == To) ^ fRev, fDepthChange);
+		r = process_diving(fr, to, (first_stn == To) ^ fRev,
+				   fDepthChange);
 		break;
 	      case STYLE_CYLPOLAR:
-		r = process_cylpolar(fr, to, tape, comp, backcomp,
-				     frdepth, todepth,
-				     (first_stn == To) ^ fRev, fDepthChange);
+		r = process_cylpolar(fr, to, (first_stn == To) ^ fRev,
+				     fDepthChange);
 		break;
 	      default:
 		BUG("bad style");

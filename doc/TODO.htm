@@ -21,6 +21,23 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 
 <li>img.c: eliminate duplicate img_LABELs when reading .PLT files.
 
+<li>multiple readings:
+<p>
+average bearings specially - they don't average like normal numbers
+<p>
+%age gradients should probably average the same as angle gradients
+<p>
+Document - works like so:
+<pre>
+*set open {
+*set close }
+*calibrate compass {000.5 001.0 001.25}
+1 2 10.23 {000 001} -02
+2 3 {10.16 10.17} 127 {+06 +05}
+3 4 11.98 007 {+03 +03}
+</pre>
+Implemented as extension to number format so any suitable numeric value to be
+repeated.
 </ul>
 
 <H2>Aven</H2>
@@ -109,17 +126,6 @@ and then the prefix of a leg == prefix of each end...?
 <li>Find a solution to Thilo's "." problem.
 
 <li>LRUD?
-
-<li>multiple readings - perhaps like so:
-<pre>
-*calibrate compass {000.5 001.0 001.25}
-1 2 10.23 {000 001} -02
-2 3 {10.16 10.17} 127 {+06 +05}
-3 4 11.98 007 {+03 +03}
-</pre>
-Implement as extension to number format?  Then we can easily
-allow any suitable numeric value to be repeated, but bear in mind that bearings
-don't average like normal numbers...
 </ul>
 
 <H2>Internationalisation and Localisation</H2>

@@ -138,11 +138,13 @@ typedef int compiletimeassert_sflags5[BIT(SFLAGS_FIXED) == img_SFLAG_FIXED ? 1 :
 
 /* enumeration of field types */
 typedef enum {
-   End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
-   FrDepth, ToDepth, DepthChange, Dx, Dy, Dz, FrCount, ToCount, Dir,
-   Station, Depth, Count, Newline, IgnoreAllAndNewLine,
-   Ignore, IgnoreAll
+   End = 0, Tape, Comp, Clino, BackComp, BackClino,
+   FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount,
+   /* Up to here are readings used in datain.c */
+   Fr, To, Station, Depth, DepthChange, Count, Dir,
+   Newline, IgnoreAllAndNewLine, Ignore, IgnoreAll
 } reading;
+// Tape Comp Clino BackComp BackClino FrDepth ToDepth Dx Dy Dz FrCount ToCount
 
 /* if IgnoreAll is >= 32, the compiler will choke on this */
 typedef char compiletimeassert_reading[IgnoreAll < 32 ? 1 : -1];
@@ -338,6 +340,8 @@ extern bool fSuppress; /* only output 3d(3dx) file */
 #define isDecimal(c) (pcs->Translate[(c)] & SPECIAL_DECIMAL)
 #define isMinus(c)  (pcs->Translate[(c)] & SPECIAL_MINUS)
 #define isPlus(c)   (pcs->Translate[(c)] & SPECIAL_PLUS)
+#define isOpen(c)   (pcs->Translate[(c)] & SPECIAL_OPEN)
+#define isClose(c)  (pcs->Translate[(c)] & SPECIAL_CLOSE)
 
 #define isSign(c)   (pcs->Translate[(c)] & (SPECIAL_PLUS | SPECIAL_MINUS))
 #define isData(c)   (pcs->Translate[(c)] & (SPECIAL_OMIT | SPECIAL_ROOT|\

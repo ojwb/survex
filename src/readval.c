@@ -41,9 +41,9 @@
 
 int root_depr_count = 0;
 
-/* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
+/* if prefix is omitted: if f_optional return NULL, otherwise use longjmp */
 static prefix *
-read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
+read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 {
    prefix *back_ptr, *ptr;
    char *name;
@@ -104,7 +104,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       }
       if (i == 0) {
 	 osfree(name);
-	 if (!fOmit) {
+	 if (!f_optional) {
 	    if (isEol(ch)) {
 	       if (fSurvey) {
 		  compile_error_skip(/*Expecting survey name*/89);
@@ -181,7 +181,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 }
       }
       depth++;
-      fOmit = fFalse; /* disallow after first level */
+      f_optional = fFalse; /* disallow after first level */
    } while (isSep(ch));
    /* don't warn about a station that is refered to twice */
    if (!fNew) ptr->sflags &= ~BIT(SFLAGS_SUSPECTTYPO);
@@ -240,38 +240,37 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    return ptr;
 }
 
-/* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
+/* if prefix is omitted: if f_optional return NULL, otherwise use longjmp */
 extern prefix *
-read_prefix_survey(bool fOmit, bool fAllowRoot)
+read_prefix_survey(bool f_optional, bool fAllowRoot)
 {
-   return read_prefix_(fOmit, fTrue, fFalse, fAllowRoot);
+   return read_prefix_(f_optional, fTrue, fFalse, fAllowRoot);
 }
 
-/* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
+/* if prefix is omitted: if f_optional return NULL, otherwise use longjmp */
 extern prefix *
-read_prefix_stn(bool fOmit, bool fAllowRoot)
+read_prefix_stn(bool f_optional, bool fAllowRoot)
 {
-   return read_prefix_(fOmit, fFalse, fFalse, fAllowRoot);
+   return read_prefix_(f_optional, fFalse, fFalse, fAllowRoot);
 }
 
-/* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
+/* if prefix is omitted: if f_optional return NULL, otherwise use longjmp */
 /* Same as read_prefix_stn but implicit checks are made */
 extern prefix *
-read_prefix_stn_check_implicit(bool fOmit, bool fAllowRoot)
+read_prefix_stn_check_implicit(bool f_optional, bool fAllowRoot)
 {
-   return read_prefix_(fOmit, fFalse, fTrue, fAllowRoot);
+   return read_prefix_(f_optional, fFalse, fTrue, fAllowRoot);
 }
 
-/* if numeric expr is omitted: if fOmit return HUGE_REAL, else longjmp */
-extern real
-read_numeric(bool fOmit)
+/* if numeric expr is omitted: if f_optional return HUGE_REAL, else longjmp */
+static real
+read_number(bool f_optional)
 {
    bool fPositive, fDigits = fFalse;
    real n = (real)0.0;
    filepos fp;
    int ch_old;
 
-   skipblanks();
    get_pos(&fp);
    ch_old = ch;
    fPositive = !isMinus(ch);
@@ -298,7 +297,7 @@ read_numeric(bool fOmit)
    if (fDigits) return (fPositive ? n : -n);
 
    /* didn't read a valid number.  If it's optional, reset filepos & return */
-   if (fOmit) {
+   if (f_optional) {
       set_pos(&fp);
       return HUGE_REAL;
    }
@@ -312,11 +311,39 @@ read_numeric(bool fOmit)
    return 0.0; /* for brain-fried compilers */
 }
 
+extern real
+read_numeric(bool f_optional, int *p_n_readings)
+{
+   size_t n_readings = 0;
+   real tot = (real)0.0;
+
+   skipblanks();
+   if (!isOpen(ch)) {
+      real r = read_number(f_optional);
+      if (p_n_readings) *p_n_readings = (r == HUGE_REAL ? 0 : 1);
+      return r;
+   }
+   nextch();
+
+   skipblanks();
+   do {
+      tot += read_number(fFalse);
+      ++n_readings;
+      skipblanks();
+   } while (!isClose(ch));
+   nextch();
+
+   if (p_n_readings) *p_n_readings = n_readings;
+   /* FIXME: special averaging for bearings ... */
+   /* And for percentage gradient */
+   return tot / n_readings;
+}
+
 /* read numeric expr or omit (return HUGE_REAL); else longjmp */
 extern real
-read_numeric_or_omit(void)
+read_numeric_or_omit(int *p_n_readings)
 {
-   real v = read_numeric(fTrue);
+   real v = read_numeric(fTrue, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
 	 compile_error_token(/*Expecting numeric field, found `%s'*/9);

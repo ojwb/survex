@@ -4,6 +4,10 @@
 * extend: try to extend along a survey, and make breaks where other surveys
   join.
 
+* cavern: Number reading code reworked to allow repeat readings to be
+  supported, but the actual repeat reading code is currently disabled,
+  and everything should work exactly as before.
+
 * Experimental support for Chinese (LANG=zh) - only a few messages are
   currently translated.
 

@@ -116,8 +116,10 @@ default_translate(settings *s)
    t['.'] |= SPECIAL_DECIMAL;
    t['-'] |= SPECIAL_MINUS;
    t['+'] |= SPECIAL_PLUS;
+#if 0 /* FIXME */
    t['{'] |= SPECIAL_OPEN;
    t['}'] |= SPECIAL_CLOSE;
+#endif
 }
 
 static void
@@ -374,7 +376,7 @@ cmd_set(void)
 {
    static sztok chartab[] = {
 	{"BLANK",     SPECIAL_BLANK },
-	{"CLOSE",     SPECIAL_CLOSE },
+/*FIXME	{"CLOSE",     SPECIAL_CLOSE }, */
 	{"COMMENT",   SPECIAL_COMMENT },
 	{"DECIMAL",   SPECIAL_DECIMAL },
 	{"EOL",       SPECIAL_EOL }, /* EOL won't work well */
@@ -382,7 +384,7 @@ cmd_set(void)
 	{"MINUS",     SPECIAL_MINUS },
 	{"NAMES",     SPECIAL_NAMES },
 	{"OMIT",      SPECIAL_OMIT },
-	{"OPEN",      SPECIAL_OPEN },
+/*FIXME	{"OPEN",      SPECIAL_OPEN }, */
 	{"PLUS",      SPECIAL_PLUS },
 #ifndef NO_DEPRECATED
 	{"ROOT",      SPECIAL_ROOT },
@@ -617,6 +619,7 @@ cmd_fix(void)
    node *stn = NULL;
    static node *stnOmitAlready = NULL;
    real x, y, z;
+   int nx, ny, nz;
    bool fRef = 0;
    filepos fp;
 
@@ -631,11 +634,11 @@ cmd_fix(void)
       if (*ucbuffer) set_pos(&fp);
    }
 
-   x = read_numeric(fTrue);
+   x = read_numeric(fTrue, &nx);
    if (x == HUGE_REAL) {
       /* If the end of the line isn't blank, read a number after all to
        * get a more helpful error message */
-      if (!isEol(ch) && !isComm(ch)) x = read_numeric(fFalse);
+      if (!isEol(ch) && !isComm(ch)) x = read_numeric(fFalse, &nx);
    }
    if (x == HUGE_REAL) {
       if (stnOmitAlready) {
@@ -652,28 +655,28 @@ cmd_fix(void)
       stnOmitAlready = stn;
    } else {
       real sdx;
-      y = read_numeric(fFalse);
-      z = read_numeric(fFalse);
-      sdx = read_numeric(fTrue);
+      y = read_numeric(fFalse, &ny);
+      z = read_numeric(fFalse, &nz);
+      sdx = read_numeric(fTrue, NULL);
       if (sdx != HUGE_REAL) {
 	 real sdy, sdz;
 	 real cxy = 0, cyz = 0, czx = 0;
-	 sdy = read_numeric(fTrue);
+	 sdy = read_numeric(fTrue, NULL);
 	 if (sdy == HUGE_REAL) {
 	    /* only one variance given */
 	    sdy = sdz = sdx;
 	 } else {
-	    sdz = read_numeric(fTrue);
+	    sdz = read_numeric(fTrue, NULL);
 	    if (sdz == HUGE_REAL) {
 	       /* two variances given - horizontal & vertical */
 	       sdz = sdy;
 	       sdy = sdx;
 	    } else {
-	       cxy = read_numeric(fTrue);
+	       cxy = read_numeric(fTrue, NULL);
 	       if (cxy != HUGE_REAL) {
 		  /* covariances given */
-		  cyz = read_numeric(fFalse);
-		  czx = read_numeric(fFalse);
+		  cyz = read_numeric(fFalse, NULL);
+		  czx = read_numeric(fFalse, NULL);
 	       } else {
 		  cxy = 0;
 	       }
@@ -1214,7 +1217,7 @@ cmd_units(void)
       return;
    }
 
-   factor = read_numeric(fTrue);
+   factor = read_numeric(fTrue, NULL);
    if (factor == 0.0) {
       compile_error_skip(/**UNITS factor must be non-zero*/200);
       return;
@@ -1254,8 +1257,8 @@ cmd_calibrate(void)
       return;
    }
 
-   z = read_numeric(fFalse);
-   sc = read_numeric(fTrue);
+   z = read_numeric(fFalse, NULL);
+   sc = read_numeric(fTrue, NULL);
    if (sc == HUGE_REAL) sc = (real)1.0;
    /* check for declination scale */
    /* perhaps "*calibrate declination XXX" should be "*declination XXX" ? */
@@ -1358,7 +1361,7 @@ cmd_sd(void)
       default_grade(pcs);
       return;
    }
-   sd = read_numeric(fFalse);
+   sd = read_numeric(fFalse, NULL);
    if (sd <= (real)0.0) {
       compile_error_skip(/*Standard deviation must be positive*/48);
       return;
