@@ -36,7 +36,7 @@
 const int NUM_DEPTH_COLOURS = 13;
 
 #define TOOLBAR_BITMAP(file) wxBitmap(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR + wxString(file),\
-				      wxBITMAP_TYPE_PNG)
+                                      wxBITMAP_TYPE_PNG)
 
 static const unsigned char REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255, 230};
 static const unsigned char GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0, 230};
@@ -185,13 +185,47 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
                                   // (required by Windows for this type of icon)
 #endif
 
+    InitialisePensAndBrushes();
+    CreateMenuBar();
+    CreateAcceleratorTable();
+    CreateToolBar();
+    CreateSidePanel();
+
+#ifdef __X__
+    int x;
+    int y;
+    GetSize(&x, &y);
+    // X seems to require a forced resize.
+    SetSize(-1, -1, x, y);
+#endif
+
+    m_PresLoaded = false;
+    m_Recording = false;
+
+    // Set regular expression syntax.
+    re_set_syntax(RE_SYNTAX_POSIX_EXTENDED);
+}
+
+MainFrm::~MainFrm()
+{
+    ClearPointLists();
+    delete[] m_Points;
+}
+
+void MainFrm::InitialisePensAndBrushes()
+{
     m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS+1];
     m_Pens = new wxPen[NUM_DEPTH_COLOURS+1];
     m_Brushes = new wxBrush[NUM_DEPTH_COLOURS+1];
     for (int pen = 0; pen < NUM_DEPTH_COLOURS+1; pen++) {
-	m_Pens[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
-	m_Brushes[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
+        m_Pens[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
+        m_Brushes[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
     }
+}
+
+void MainFrm::CreateMenuBar()
+{
+    // Create the menus and the menu bar.
 
     // The status bar messages aren't internationalised, 'cos there ain't any
     // status bar at the moment! ;-)
@@ -290,6 +324,60 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
+}
+
+void MainFrm::CreateToolBar()
+{
+    // Create the toolbar.
+
+    wxToolBar* toolbar = wxFrame::CreateToolBar();
+
+    toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open.png"), "Open a 3D file for viewing");
+    toolbar->AddTool(menu_FILE_OPEN_PRES, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation.png"), wxNullBitmap, true,
+                     -1, -1, NULL, "Toggle rotation");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_ORIENT_PLAN, TOOLBAR_BITMAP("plan.png"), "Switch to plan view");
+    toolbar->AddTool(menu_ORIENT_ELEVATION, TOOLBAR_BITMAP("elevation.png"), "Switch to elevation view");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_ORIENT_DEFAULTS, TOOLBAR_BITMAP("defaults.png"), "Restore default view");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_VIEW_SHOW_NAMES, TOOLBAR_BITMAP("names.png"), wxNullBitmap, true,
+                     -1, -1, NULL, "Show station names");
+    toolbar->AddTool(menu_VIEW_SHOW_CROSSES, TOOLBAR_BITMAP("crosses.png"), wxNullBitmap, true,
+                     -1, -1, NULL, "Show crosses on stations");
+    toolbar->AddTool(menu_VIEW_SHOW_ENTRANCES, TOOLBAR_BITMAP("entrances.png"), wxNullBitmap, true,
+                     -1, -1, NULL, "Highlight entrances");
+    toolbar->AddTool(menu_VIEW_SHOW_FIXED_PTS, TOOLBAR_BITMAP("fixed-pts.png"), wxNullBitmap, true,
+                     -1, -1, NULL, "Highlight fixed points");
+    toolbar->AddTool(menu_VIEW_SHOW_EXPORTED_PTS, TOOLBAR_BITMAP("exported-pts.png"), wxNullBitmap, true,
+                     -1, -1, NULL, "Highlight exported stations");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_VIEW_SHOW_LEGS, TOOLBAR_BITMAP("ug-legs.png"), wxNullBitmap, true,
+                     -1, -1, NULL, "Show underground surveys");
+    toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs.png"), wxNullBitmap, true,
+                     -1, -1, NULL, "Show surface surveys");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_PRES_CREATE, TOOLBAR_BITMAP("pres-create.png"),
+                     "Create a new presentation");
+    toolbar->AddTool(menu_PRES_RECORD, TOOLBAR_BITMAP("pres-record.png"),
+                     "Record a presentation step");
+    toolbar->AddTool(menu_PRES_FINISH, TOOLBAR_BITMAP("pres-finish.png"),
+                     "Finish this presentation and save it to disk");
+    toolbar->AddSeparator();
+    toolbar->AddTool(menu_PRES_RESTART, TOOLBAR_BITMAP("pres-restart.png"),
+                     "Go to the start of the presentation");
+    toolbar->AddTool(menu_PRES_GO_BACK, TOOLBAR_BITMAP("pres-go-back.png"),
+                     "Go back one presentation step");
+    toolbar->AddTool(menu_PRES_GO, TOOLBAR_BITMAP("pres-go.png"), "Go forwards one presentation step");
+
+    toolbar->Realize();
+}
+
+void MainFrm::CreateAcceleratorTable()
+{
+    // Create the accelerator key table.
 
     wxAcceleratorEntry entries[11];
     entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, menu_ORIENT_DEFAULTS);
@@ -306,53 +394,12 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     wxAcceleratorTable accel(11, entries);
     SetAcceleratorTable(accel);
+}
 
-    // Create toolbar.
-    wxToolBar* toolbar = CreateToolBar();
-    toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open.png"), "Open a 3D file for viewing");
-    toolbar->AddTool(menu_FILE_OPEN_PRES, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
-    toolbar->AddSeparator();
-    toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation.png"), wxNullBitmap, true,
-		     -1, -1, NULL, "Toggle rotation");
-    toolbar->AddSeparator();
-    toolbar->AddTool(menu_ORIENT_PLAN, TOOLBAR_BITMAP("plan.png"), "Switch to plan view");
-    toolbar->AddTool(menu_ORIENT_ELEVATION, TOOLBAR_BITMAP("elevation.png"), "Switch to elevation view");
-    toolbar->AddSeparator();
-    toolbar->AddTool(menu_ORIENT_DEFAULTS, TOOLBAR_BITMAP("defaults.png"), "Restore default view");
-    toolbar->AddSeparator();
-    toolbar->AddTool(menu_VIEW_SHOW_NAMES, TOOLBAR_BITMAP("names.png"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show station names");
-    toolbar->AddTool(menu_VIEW_SHOW_CROSSES, TOOLBAR_BITMAP("crosses.png"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show crosses on stations");
-    toolbar->AddTool(menu_VIEW_SHOW_ENTRANCES, TOOLBAR_BITMAP("entrances.png"), wxNullBitmap, true,
-		     -1, -1, NULL, "Highlight entrances");
-    toolbar->AddTool(menu_VIEW_SHOW_FIXED_PTS, TOOLBAR_BITMAP("fixed-pts.png"), wxNullBitmap, true,
-		     -1, -1, NULL, "Highlight fixed points");
-    toolbar->AddTool(menu_VIEW_SHOW_EXPORTED_PTS, TOOLBAR_BITMAP("exported-pts.png"), wxNullBitmap, true,
-		     -1, -1, NULL, "Highlight exported stations");
-    toolbar->AddSeparator();
-    toolbar->AddTool(menu_VIEW_SHOW_LEGS, TOOLBAR_BITMAP("ug-legs.png"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show underground surveys");
-    toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs.png"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show surface surveys");
-    toolbar->AddSeparator();
-    toolbar->AddTool(menu_PRES_CREATE, TOOLBAR_BITMAP("pres-create.png"),
-		     "Create a new presentation");
-    toolbar->AddTool(menu_PRES_RECORD, TOOLBAR_BITMAP("pres-record.png"),
-		     "Record a presentation step");
-    toolbar->AddTool(menu_PRES_FINISH, TOOLBAR_BITMAP("pres-finish.png"),
-		     "Finish this presentation and save it to disk");
-    toolbar->AddSeparator();
-    toolbar->AddTool(menu_PRES_RESTART, TOOLBAR_BITMAP("pres-restart.png"),
-		     "Go to the start of the presentation");
-    toolbar->AddTool(menu_PRES_GO_BACK, TOOLBAR_BITMAP("pres-go-back.png"),
-		     "Go back one presentation step");
-    toolbar->AddTool(menu_PRES_GO, TOOLBAR_BITMAP("pres-go.png"), "Go forwards one presentation step");
-
-    toolbar->Realize();
-
+void MainFrm::CreateSidePanel()
+{
     m_Splitter = new wxSplitterWindow(this, -1, wxDefaultPosition, wxDefaultSize,
-      				      wxSP_3D | wxSP_LIVE_UPDATE);
+                                      wxSP_3D | wxSP_LIVE_UPDATE);
     m_Panel = new wxPanel(m_Splitter);
     m_Tree = new AvenTreeCtrl(this, m_Panel);
     m_FindPanel = new wxPanel(m_Panel);
@@ -406,26 +453,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     m_Gfx = new GfxCore(this, m_Splitter);
 
     m_Splitter->Initialize(m_Gfx);
-
-#ifdef __X__
-    int x;
-    int y;
-    GetSize(&x, &y);
-    // X seems to require a forced resize.
-    SetSize(-1, -1, x, y);
-#endif
-
-    m_PresLoaded = false;
-    m_Recording = false;
-
-    // Set regular expression syntax.
-    re_set_syntax(RE_SYNTAX_POSIX_EXTENDED);
-}
-
-MainFrm::~MainFrm()
-{
-    ClearPointLists();
-    delete[] m_Points;
 }
 
 void MainFrm::ClearPointLists()
@@ -434,18 +461,18 @@ void MainFrm::ClearPointLists()
 
     for (int band = 0; band < NUM_DEPTH_COLOURS + 1; band++) {
         list<PointInfo*>::iterator pos = m_Points[band].begin();
-	list<PointInfo*>::iterator end = m_Points[band].end();
-	while (pos != end) {
-	    PointInfo* point = *pos++;
-	    delete point;
-	}
-	m_Points[band].clear();
+        list<PointInfo*>::iterator end = m_Points[band].end();
+        while (pos != end) {
+            PointInfo* point = *pos++;
+            delete point;
+        }
+        m_Points[band].clear();
     }
 
     list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
         LabelInfo* label = *pos++;
-	delete label;
+        delete label;
     }
     m_Labels.clear();
 }
@@ -460,9 +487,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     img* survey = img_open_survey(file, NULL, NULL, prefix.c_str());
     if (!survey) {
-	wxString m = wxString::Format(msg(img_error()), file.c_str());
-	wxGetApp().ReportError(m);
-	return false;
+        wxString m = wxString::Format(msg(img_error()), file.c_str());
+        wxGetApp().ReportError(m);
+        return false;
     }
 
     m_File = file;
@@ -499,120 +526,120 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     int result;
     do {
-	img_point pt;
-	result = img_read_item(survey, &pt);
-	switch (result) {
+        img_point pt;
+        result = img_read_item(survey, &pt);
+        switch (result) {
             case img_MOVE:
-	    case img_LINE:
-	    {
-		m_NumPoints++;
+            case img_LINE:
+            {
+                m_NumPoints++;
 
-		// Update survey extents.
-		if (pt.x < xmin) xmin = pt.x;
-		if (pt.x > xmax) xmax = pt.x;
-		if (pt.y < ymin) ymin = pt.y;
-		if (pt.y > ymax) ymax = pt.y;
-		if (pt.z < m_ZMin) m_ZMin = pt.z;
-		if (pt.z > zmax) zmax = pt.z;
+                // Update survey extents.
+                if (pt.x < xmin) xmin = pt.x;
+                if (pt.x > xmax) xmax = pt.x;
+                if (pt.y < ymin) ymin = pt.y;
+                if (pt.y > ymax) ymax = pt.y;
+                if (pt.z < m_ZMin) m_ZMin = pt.z;
+                if (pt.z > zmax) zmax = pt.z;
 
-		PointInfo* info = new PointInfo;
-		info->x = pt.x;
-		info->y = pt.y;
-		info->z = pt.z;
+                PointInfo* info = new PointInfo;
+                info->x = pt.x;
+                info->y = pt.y;
+                info->z = pt.z;
 
-		if (result == img_LINE) {
-		    // Set flags to say this is a line rather than a move
-		    m_NumLegs++;
-		    info->isLine = true;
-		    info->isSurface = (survey->flags & img_FLAG_SURFACE);
-		} else {
-		    info->isLine = false;
-		}
+                if (result == img_LINE) {
+                    // Set flags to say this is a line rather than a move
+                    m_NumLegs++;
+                    info->isLine = true;
+                    info->isSurface = (survey->flags & img_FLAG_SURFACE);
+                } else {
+                    info->isLine = false;
+                }
 
-		// Store this point in the list.
-		points.push_back(info);
+                // Store this point in the list.
+                points.push_back(info);
 
-		break;
-	    }
+                break;
+            }
 
-	    case img_LABEL:
-	    {
-		LabelInfo* label = new LabelInfo;
-		label->text = survey->label;
-		label->x = pt.x;
-		label->y = pt.y;
-		label->z = pt.z;
-		label->flags = survey->flags;
-		if (label->IsEntrance()) {
-		    m_NumEntrances++;
-		}
-		if (label->IsFixedPt()) {
-		    m_NumFixedPts++;
-		}
-		if (label->IsExportedPt()) {
-		    m_NumExportedPts++;
-		}
-		m_Labels.push_back(label);
-		m_NumCrosses++;
+            case img_LABEL:
+            {
+                LabelInfo* label = new LabelInfo;
+                label->text = survey->label;
+                label->x = pt.x;
+                label->y = pt.y;
+                label->z = pt.z;
+                label->flags = survey->flags;
+                if (label->IsEntrance()) {
+                    m_NumEntrances++;
+                }
+                if (label->IsFixedPt()) {
+                    m_NumFixedPts++;
+                }
+                if (label->IsExportedPt()) {
+                    m_NumExportedPts++;
+                }
+                m_Labels.push_back(label);
+                m_NumCrosses++;
 
-		break;
-	    }
+                break;
+            }
 
-	    case img_BAD:
-	    {
-		m_Labels.clear();
+            case img_BAD:
+            {
+                m_Labels.clear();
 
-		// FIXME: Do we need to reset all these? - Olly
-		m_NumLegs = 0;
-		m_NumPoints = 0;
-		m_NumExtraLegs = 0;
-		m_NumCrosses = 0;
-		m_NumFixedPts = 0;
-		m_NumExportedPts = 0;
-		m_NumEntrances = 0;
+                // FIXME: Do we need to reset all these? - Olly
+                m_NumLegs = 0;
+                m_NumPoints = 0;
+                m_NumExtraLegs = 0;
+                m_NumCrosses = 0;
+                m_NumFixedPts = 0;
+                m_NumExportedPts = 0;
+                m_NumEntrances = 0;
 
-		m_ZMin = DBL_MAX;
+                m_ZMin = DBL_MAX;
 
-	        img_close(survey);
+                img_close(survey);
 
-		wxString m = wxString::Format(msg(img_error()), file.c_str());
-		wxGetApp().ReportError(m);
-		return false;		    
-	    }
-		
-	    default:
-		break;
-	}
+                wxString m = wxString::Format(msg(img_error()), file.c_str());
+                wxGetApp().ReportError(m);
+                return false;               
+            }
+                
+            default:
+                break;
+        }
     } while (result != img_STOP);
 
     img_close(survey);
 
     // Check we've actually loaded some legs or stations!
     if (m_NumLegs == 0 && m_Labels.empty()) {
-	wxString m = wxString::Format(msg(/*No survey data in 3d file `%s'*/202), file.c_str());
-	wxGetApp().ReportError(m);
-	return false;
+        wxString m = wxString::Format(msg(/*No survey data in 3d file `%s'*/202), file.c_str());
+        wxGetApp().ReportError(m);
+        return false;
     }
 
     if (points.empty()) {
-	// No legs, so get survey extents from stations
-	list<LabelInfo*>::const_iterator i;
-	for (i = m_Labels.begin(); i != m_Labels.end(); ++i) {
-	    if ((*i)->x < xmin) xmin = (*i)->x;
-	    if ((*i)->x > xmax) xmax = (*i)->x;
-	    if ((*i)->y < ymin) ymin = (*i)->y;
-	    if ((*i)->y > ymax) ymax = (*i)->y;
-	    if ((*i)->z < m_ZMin) m_ZMin = (*i)->z;
-	    if ((*i)->z > zmax) zmax = (*i)->z;
-	}
+        // No legs, so get survey extents from stations
+        list<LabelInfo*>::const_iterator i;
+        for (i = m_Labels.begin(); i != m_Labels.end(); ++i) {
+            if ((*i)->x < xmin) xmin = (*i)->x;
+            if ((*i)->x > xmax) xmax = (*i)->x;
+            if ((*i)->y < ymin) ymin = (*i)->y;
+            if ((*i)->y > ymax) ymax = (*i)->y;
+            if ((*i)->z < m_ZMin) m_ZMin = (*i)->z;
+            if ((*i)->z > zmax) zmax = (*i)->z;
+        }
     } else {
-	// Delete any trailing move.	
-	PointInfo* pt = points.back();
-	if (!pt->isLine) {
-	    m_NumPoints--;
-	    points.pop_back();
-	    delete pt;
-	}
+        // Delete any trailing move.    
+        PointInfo* pt = points.back();
+        if (!pt->isLine) {
+            m_NumPoints--;
+            points.pop_back();
+            delete pt;
+        }
     }
 
     m_XExt = xmax - xmin;
@@ -656,107 +683,107 @@ void MainFrm::FillTree()
     while (pos != m_Labels.end()) {
         LabelInfo* label = *pos++;
 
-	// Determine the current prefix.
-	wxString prefix = label->GetText().BeforeLast('.');
+        // Determine the current prefix.
+        wxString prefix = label->GetText().BeforeLast('.');
 
-	// Determine if we're still on the same prefix.
-	if (prefix == current_prefix) {
-	    // no need to fiddle with branches...
-	}
-	// If not, then see if we've descended to a new prefix.
-	else if (prefix.Length() > current_prefix.Length() && prefix.StartsWith(current_prefix) &&
-		 (prefix[current_prefix.Length()] == '.' || current_prefix == "")) {
-  	    // We have, so start as many new branches as required.
-	    int current_prefix_length = current_prefix.Length();
-	    current_prefix = prefix;
-	    if (current_prefix_length != 0) {
-	        prefix = prefix.Mid(current_prefix_length + 1);
-	    }
-	    int next_dot;
-	    do {
-	        // Extract the next bit of prefix.
- 	        next_dot = prefix.Find('.');
+        // Determine if we're still on the same prefix.
+        if (prefix == current_prefix) {
+            // no need to fiddle with branches...
+        }
+        // If not, then see if we've descended to a new prefix.
+        else if (prefix.Length() > current_prefix.Length() && prefix.StartsWith(current_prefix) &&
+                 (prefix[current_prefix.Length()] == '.' || current_prefix == "")) {
+            // We have, so start as many new branches as required.
+            int current_prefix_length = current_prefix.Length();
+            current_prefix = prefix;
+            if (current_prefix_length != 0) {
+                prefix = prefix.Mid(current_prefix_length + 1);
+            }
+            int next_dot;
+            do {
+                // Extract the next bit of prefix.
+                next_dot = prefix.Find('.');
 
-		wxString bit = next_dot == -1 ? prefix : prefix.Left(next_dot);
-		assert(bit != "");
+                wxString bit = next_dot == -1 ? prefix : prefix.Left(next_dot);
+                assert(bit != "");
 
-		// Add the current tree ID to the stack.
-	        previous_ids.push(current_id);
+                // Add the current tree ID to the stack.
+                previous_ids.push(current_id);
 
-		// Append the new item to the tree and set this as the current branch.
-		current_id = m_Tree->AppendItem(current_id, bit);
-		m_Tree->SetItemData(current_id, new TreeData(NULL));
+                // Append the new item to the tree and set this as the current branch.
+                current_id = m_Tree->AppendItem(current_id, bit);
+                m_Tree->SetItemData(current_id, new TreeData(NULL));
 
-		prefix = prefix.Mid(next_dot + 1);
-	    } while (next_dot != -1);
-	}
-	// Otherwise, we must have moved up, and possibly then down again.
-	else {
-	    int count = 0;
-	    bool ascent_only = (prefix.Length() < current_prefix.Length() && current_prefix.StartsWith(prefix) &&
-				(current_prefix[prefix.Length()] == '.' || prefix == ""));
-	    if (!ascent_only) {
-		// Find out how much of the current prefix and the new prefix are the same.
-		// Note that we require a match of a whole number of parts between dots!
-		int pos = 0;
-		while (prefix[pos] == current_prefix[pos]) {
-		    if (prefix[pos] == '.') count = pos + 1;
-		    pos++;
-		}
-	    }
-	    else {
-	        count = prefix.Length() + 1;
-	    }
+                prefix = prefix.Mid(next_dot + 1);
+            } while (next_dot != -1);
+        }
+        // Otherwise, we must have moved up, and possibly then down again.
+        else {
+            int count = 0;
+            bool ascent_only = (prefix.Length() < current_prefix.Length() && current_prefix.StartsWith(prefix) &&
+                                (current_prefix[prefix.Length()] == '.' || prefix == ""));
+            if (!ascent_only) {
+                // Find out how much of the current prefix and the new prefix are the same.
+                // Note that we require a match of a whole number of parts between dots!
+                int pos = 0;
+                while (prefix[pos] == current_prefix[pos]) {
+                    if (prefix[pos] == '.') count = pos + 1;
+                    pos++;
+                }
+            }
+            else {
+                count = prefix.Length() + 1;
+            }
 
-	    // Extract the part of the current prefix after the bit (if any) which has matched.
-	    // This gives the prefixes to ascend over.
-	    wxString prefixes_ascended = current_prefix.Mid(count);
+            // Extract the part of the current prefix after the bit (if any) which has matched.
+            // This gives the prefixes to ascend over.
+            wxString prefixes_ascended = current_prefix.Mid(count);
 
-	    // Count the number of prefixes to ascend over.
-	    int num_prefixes = prefixes_ascended.Freq('.') + 1;
+            // Count the number of prefixes to ascend over.
+            int num_prefixes = prefixes_ascended.Freq('.') + 1;
 
-	    // Reverse up over these prefixes.
-	    for (int i = 1; i <= num_prefixes; i++) {
-	        current_id = previous_ids.top();
-	        previous_ids.pop();
-	    }
+            // Reverse up over these prefixes.
+            for (int i = 1; i <= num_prefixes; i++) {
+                current_id = previous_ids.top();
+                previous_ids.pop();
+            }
 
-	    if (!ascent_only) {
-	        // Now extract the bit of new prefix.
-	        wxString new_prefix = prefix.Mid(count);
-	       
-		// Add branches for this new part.
-		int next_dot;
-		while (1) {
-		    // Extract the next bit of prefix.
-		    next_dot = new_prefix.Find('.');
+            if (!ascent_only) {
+                // Now extract the bit of new prefix.
+                wxString new_prefix = prefix.Mid(count);
+               
+                // Add branches for this new part.
+                int next_dot;
+                while (1) {
+                    // Extract the next bit of prefix.
+                    next_dot = new_prefix.Find('.');
 
-		    wxString bit = next_dot == -1 ? new_prefix : new_prefix.Left(next_dot);
+                    wxString bit = next_dot == -1 ? new_prefix : new_prefix.Left(next_dot);
 
-		    // Add the current tree ID to the stack.
-		    previous_ids.push(current_id);
+                    // Add the current tree ID to the stack.
+                    previous_ids.push(current_id);
 
-		    // Append the new item to the tree and set this as the current branch.
-		    current_id = m_Tree->AppendItem(current_id, bit);
-		    m_Tree->SetItemData(current_id, new TreeData(NULL));
+                    // Append the new item to the tree and set this as the current branch.
+                    current_id = m_Tree->AppendItem(current_id, bit);
+                    m_Tree->SetItemData(current_id, new TreeData(NULL));
 
-		    if (next_dot == -1) {
-		        break;
-		    }
+                    if (next_dot == -1) {
+                        break;
+                    }
 
-		    new_prefix = new_prefix.Mid(next_dot + 1);
-		}
-	    }
+                    new_prefix = new_prefix.Mid(next_dot + 1);
+                }
+            }
 
-	    current_prefix = prefix;
-	}
+            current_prefix = prefix;
+        }
 
-	// Now add the leaf
-	wxString bit = label->GetText().AfterLast('.');
-	assert(bit != "");
-	wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
-	m_Tree->SetItemData(id, new TreeData(label));
-	SetTreeItemColour(id, label);
+        // Now add the leaf
+        wxString bit = label->GetText().AfterLast('.');
+        assert(bit != "");
+        wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
+        m_Tree->SetItemData(id, new TreeData(label));
+        SetTreeItemColour(id, label);
     }
 }
 
@@ -783,21 +810,21 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
     
     for (int band = 0; band < NUM_DEPTH_COLOURS + 1; band++) {
         list<PointInfo*>::iterator pos = m_Points[band].begin();
-	list<PointInfo*>::iterator end = m_Points[band].end();
-	while (pos != end) {
-	    PointInfo* point = *pos++;
-	    point->x -= xoff;
-	    point->y -= yoff;
-	    point->z -= zoff;
-	}
+        list<PointInfo*>::iterator end = m_Points[band].end();
+        while (pos != end) {
+            PointInfo* point = *pos++;
+            point->x -= xoff;
+            point->y -= yoff;
+            point->z -= zoff;
+        }
     }
 
     list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
         LabelInfo* label = *pos++;
-	label->x -= xoff;
-	label->y -= yoff;
-	label->z -= zoff;
+        label->x -= xoff;
+        label->y -= yoff;
+        label->z -= zoff;
     }
 }
 
@@ -819,8 +846,8 @@ Double MainFrm::GetDepthBoundaryBetweenBands(int a, int b)
 }
 
 void MainFrm::IntersectLineWithPlane(Double x0, Double y0, Double z0,
-				     Double x1, Double y1, Double z1,
-				     Double z, Double& x, Double& y)
+                                     Double x1, Double y1, Double z1,
+                                     Double z, Double& x, Double& y)
 {
     // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1) with
     // the plane parallel to the xy-plane with z-axis intersection z.
@@ -839,64 +866,64 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
     PointInfo* prev_point = NULL;
     while (pos != points.end()) {
         PointInfo* point = *pos++;
-	assert(point);
+        assert(point);
 
-	// If this is a leg, then check if it intersects a depth
-	// colour boundary.
-	if (prev_point && point->isLine) {
-	    int col1 = GetDepthColour(prev_point->z);
-	    int col2 = GetDepthColour(point->z);
-	    if (col1 != col2) {
-	        // The leg does cross at least one boundary, so split it as
-		// many times as required...
-	        int inc = (col1 > col2) ? -1 : 1;
-		for (int band = col1; band != col2; band += inc) {
-		    int next_band = band + inc;
+        // If this is a leg, then check if it intersects a depth
+        // colour boundary.
+        if (prev_point && point->isLine) {
+            int col1 = GetDepthColour(prev_point->z);
+            int col2 = GetDepthColour(point->z);
+            if (col1 != col2) {
+                // The leg does cross at least one boundary, so split it as
+                // many times as required...
+                int inc = (col1 > col2) ? -1 : 1;
+                for (int band = col1; band != col2; band += inc) {
+                    int next_band = band + inc;
 
-		    // Determine the z-coordinate of the boundary being intersected.
-		    Double split_at_z = GetDepthBoundaryBetweenBands(band, next_band);
-		    Double split_at_x, split_at_y;
+                    // Determine the z-coordinate of the boundary being intersected.
+                    Double split_at_z = GetDepthBoundaryBetweenBands(band, next_band);
+                    Double split_at_x, split_at_y;
 
-		    // Find the coordinates of the intersection point.
-		    IntersectLineWithPlane(prev_point->x, prev_point->y, prev_point->z,
-					   point->x, point->y, point->z,
-					   split_at_z, split_at_x, split_at_y);
-		    
-		    // Create a new leg only as far as this point.
-		    PointInfo* info = new PointInfo;
-		    info->x = split_at_x;
-		    info->y = split_at_y;
-		    info->z = split_at_z;
-		    info->isLine = true;
-		    info->isSurface = point->isSurface;
-		    m_Points[band].push_back(info);
+                    // Find the coordinates of the intersection point.
+                    IntersectLineWithPlane(prev_point->x, prev_point->y, prev_point->z,
+                                           point->x, point->y, point->z,
+                                           split_at_z, split_at_x, split_at_y);
+                    
+                    // Create a new leg only as far as this point.
+                    PointInfo* info = new PointInfo;
+                    info->x = split_at_x;
+                    info->y = split_at_y;
+                    info->z = split_at_z;
+                    info->isLine = true;
+                    info->isSurface = point->isSurface;
+                    m_Points[band].push_back(info);
 
-		    // Create a move to this point in the next band.
-		    info = new PointInfo;
-		    info->x = split_at_x;
-		    info->y = split_at_y;
-		    info->z = split_at_z;
-		    info->isLine = false;
-		    info->isSurface = point->isSurface;
-		    m_Points[next_band].push_back(info);
-		    
-		    m_NumExtraLegs++;
-		    m_NumPoints += 2;
-		}
-	    }
+                    // Create a move to this point in the next band.
+                    info = new PointInfo;
+                    info->x = split_at_x;
+                    info->y = split_at_y;
+                    info->z = split_at_z;
+                    info->isLine = false;
+                    info->isSurface = point->isSurface;
+                    m_Points[next_band].push_back(info);
+                    
+                    m_NumExtraLegs++;
+                    m_NumPoints += 2;
+                }
+            }
 
-	    // Add the last point of the (possibly split) leg.
-	    m_Points[col2].push_back(point);
-	}
-	else {
-	    // The first point, a surface point, or another move: put it in the correct list
-	    // according to depth.
-	    assert(point->isSurface || !point->isLine);
-	    int band = GetDepthColour(point->z);
-	    m_Points[band].push_back(point);
-	}
+            // Add the last point of the (possibly split) leg.
+            m_Points[col2].push_back(point);
+        }
+        else {
+            // The first point, a surface point, or another move: put it in the correct list
+            // according to depth.
+            assert(point->isSurface || !point->isLine);
+            int band = GetDepthColour(point->z);
+            m_Points[band].push_back(point);
+        }
 
-	prev_point = point;
+        prev_point = point;
     }
 }
 
@@ -905,19 +932,19 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
     SetCursor(*wxHOURGLASS_CURSOR);
     if (LoadData(file, survey)) {
         if (delay) {
-	    m_Gfx->InitialiseOnNextResize();
-	}
-	else {
-	    m_Gfx->Initialise();
-	}
+            m_Gfx->InitialiseOnNextResize();
+        }
+        else {
+            m_Gfx->Initialise();
+        }
 
-	m_Panel->Show(true);
-	int x;
-	int y;
-	GetSize(&x, &y);
-	m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 4);
+        m_Panel->Show(true);
+        int x;
+        int y;
+        GetSize(&x, &y);
+        m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 4);
 
-	m_HighlightedPtValid = false;
+        m_HighlightedPtValid = false;
     }
     SetCursor(*wxSTANDARD_CURSOR);
 }
@@ -930,12 +957,12 @@ void MainFrm::OnOpen(wxCommandEvent&)
 {
 #ifdef __WXMOTIF__
     wxFileDialog dlg (this, wxString(msg(/*Select a 3D file to view*/206)), "", "",
-		      "*.3d", wxOPEN);
+                      "*.3d", wxOPEN);
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select a 3D file to view*/206)), "", "",
-		      wxString::Format("%s|*.3d|%s|*.*",
-				       msg(/*Survex 3d files*/207),
-				       msg(/*All files*/208)), wxOPEN);
+                      wxString::Format("%s|*.3d|%s|*.*",
+                                       msg(/*Survex 3d files*/207),
+                                       msg(/*All files*/208)), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
         OpenFile(dlg.GetPath(), "", false);
@@ -985,65 +1012,65 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
     
     if (data && data->IsStation()) {
         LabelInfo* label = data->GetLabel();
-	wxString str;
-	str.Printf("   %d N, %d E", (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
-	m_StnCoords->SetLabel(str);
-	m_StnName->SetLabel(label->text);
-	str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
-	m_StnAlt->SetLabel(str);
-	if (m_HighlightedPtValid) {
-	    m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
-	    m_HighlightedPtValid = false;
-	}
-	m_HighlightedPt = m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_WHITE);
-	m_Gfx->DisplaySpecialPoints();
-	m_HighlightedPtValid = true;
+        wxString str;
+        str.Printf("   %d N, %d E", (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
+        m_StnCoords->SetLabel(str);
+        m_StnName->SetLabel(label->text);
+        str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
+        m_StnAlt->SetLabel(str);
+        if (m_HighlightedPtValid) {
+            m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
+            m_HighlightedPtValid = false;
+        }
+        m_HighlightedPt = m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_WHITE);
+        m_Gfx->DisplaySpecialPoints();
+        m_HighlightedPtValid = true;
 
-	wxTreeItemData* sel_wx;
-	bool sel = m_Tree->GetSelectionData(&sel_wx);
-	if (sel) {
-	    data = (TreeData*) sel_wx;
+        wxTreeItemData* sel_wx;
+        bool sel = m_Tree->GetSelectionData(&sel_wx);
+        if (sel) {
+            data = (TreeData*) sel_wx;
 
-	    if (data->IsStation()) {
-	        LabelInfo* label2 = data->GetLabel();
-		assert(label2);
-	
-		Double x0 = label2->x;
-		Double x1 = label->x;
-		Double dx = x1 - x0;
-		Double y0 = label2->y;
-		Double y1 = label->y;
-		Double dy = y1 - y0;
-		Double z0 = label2->z;
-		Double z1 = label->z;
-		Double dz = z1 - z0;
+            if (data->IsStation()) {
+                LabelInfo* label2 = data->GetLabel();
+                assert(label2);
+        
+                Double x0 = label2->x;
+                Double x1 = label->x;
+                Double dx = x1 - x0;
+                Double y0 = label2->y;
+                Double y1 = label->y;
+                Double dy = y1 - y0;
+                Double z0 = label2->z;
+                Double z1 = label->z;
+                Double dz = z1 - z0;
 
-		Double d_horiz = sqrt(dx*dx + dy*dy);
+                Double d_horiz = sqrt(dx*dx + dy*dy);
 
-		int brg = int(atan2(dx, dy) * 180.0 / M_PI);
-		if (brg < 0) {
-		    brg += 360;
-		}
-		
-		m_Dist1->SetLabel(wxString("From ") + label2->text);
-		str.Printf("   H: %dm, V: %dm", (int) d_horiz, (int) dz);
-		m_Dist2->SetLabel(str);
-		str.Printf("   Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
-		m_Dist3->SetLabel(str);
-	    }
-	}
+                int brg = int(atan2(dx, dy) * 180.0 / M_PI);
+                if (brg < 0) {
+                    brg += 360;
+                }
+                
+                m_Dist1->SetLabel(wxString("From ") + label2->text);
+                str.Printf("   H: %dm, V: %dm", (int) d_horiz, (int) dz);
+                m_Dist2->SetLabel(str);
+                str.Printf("   Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
+                m_Dist3->SetLabel(str);
+            }
+        }
     }
     else if (!data) {
         m_StnName->SetLabel("");
         m_StnCoords->SetLabel("");
-	m_StnAlt->SetLabel("");
-	if (m_HighlightedPtValid) {
-	    m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
-	    m_HighlightedPtValid = false;
-	}
-	m_Dist1->SetLabel("");
-	m_Dist2->SetLabel("");
-	m_Dist3->SetLabel("");
+        m_StnAlt->SetLabel("");
+        if (m_HighlightedPtValid) {
+            m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
+            m_HighlightedPtValid = false;
+        }
+        m_Dist1->SetLabel("");
+        m_Dist2->SetLabel("");
+        m_Dist3->SetLabel("");
     }
 }
 
@@ -1053,7 +1080,7 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
     
     if (data && data->IsStation()) {
         LabelInfo* label = data->GetLabel();
-	m_Gfx->CentreOn(label->x, label->y, label->z);
+        m_Gfx->CentreOn(label->x, label->y, label->z);
     }
 
     m_Dist1->SetLabel("");
@@ -1065,23 +1092,23 @@ void MainFrm::OnPresCreate(wxCommandEvent& event)
 {
 #ifdef __WXMOTIF__
     wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
-		      "*.avp", wxSAVE);
+                      "*.avp", wxSAVE);
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
-		      wxString::Format("%s|*.avp|%s|*.*",
-				       msg(/*Aven presentations*/320),
-				       msg(/*All files*/208)), wxSAVE);
+                      wxString::Format("%s|*.avp|%s|*.*",
+                                       msg(/*Aven presentations*/320),
+                                       msg(/*All files*/208)), wxSAVE);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
         m_PresFP = fopen(dlg.GetPath().c_str(), "w");
-	assert(m_PresFP); //--Pres: FIXME
+        assert(m_PresFP); //--Pres: FIXME
 
-	// Update window title.
-	SetTitle(wxString("Aven - [") + m_File + wxString(msg(/*] - Recording Presentation*/323)));
+        // Update window title.
+        SetTitle(wxString("Aven - [") + m_File + wxString(msg(/*] - Recording Presentation*/323)));
 
-	//--Pres: FIXME: discard existing one
-	m_PresLoaded = true;
-	m_Recording = true;
+        //--Pres: FIXME: discard existing one
+        m_PresLoaded = true;
+        m_Recording = true;
     }
 }
 
@@ -1140,23 +1167,23 @@ void MainFrm::OnOpenPres(wxCommandEvent& event)
 {
 #ifdef __WXMOTIF__
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      "*.avp", wxSAVE);
+                      "*.avp", wxSAVE);
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      wxString::Format("%s|*.avp|%s|*.*",
-				       msg(/*Aven presentations*/320),
-				       msg(/*All files*/208)), wxOPEN);
+                      wxString::Format("%s|*.avp|%s|*.*",
+                                       msg(/*Aven presentations*/320),
+                                       msg(/*All files*/208)), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
         m_PresFP = fopen(dlg.GetPath(), "rb");
-	assert(m_PresFP); //--Pres: FIXME
+        assert(m_PresFP); //--Pres: FIXME
 
-	m_Gfx->LoadPres(m_PresFP);
+        m_Gfx->LoadPres(m_PresFP);
 
-	fclose(m_PresFP);
+        fclose(m_PresFP);
 
-	m_PresLoaded = true;
-	m_Recording = false;
+        m_PresLoaded = true;
+        m_Recording = false;
     }
 }
 
@@ -1207,29 +1234,33 @@ void MainFrm::OnPresEraseAllUpdate(wxUpdateUIEvent& event)
 
 void MainFrm::OnFind(wxCommandEvent& event)
 {
+    // Find stations specified by a string or regular expression.
+
     wxString str = m_FindBox->GetValue();
     re_pattern_buffer buffer;
     bool regexp = m_RegexpCheckBox->GetValue();
+    bool found = false;
 
     if (regexp) {
         buffer.translate = NULL;
-	buffer.fastmap = new char[256];
-	buffer.allocated = 0;
-	buffer.buffer = NULL;
-	buffer.can_be_null = 0;
-	buffer.no_sub = 0;
+        buffer.fastmap = new char[256];
+        buffer.allocated = 0;
+        buffer.buffer = NULL;
+        buffer.can_be_null = 0;
+        buffer.no_sub = 0;
 
-	const char* error = re_compile_pattern(str.c_str(), str.Length(), &buffer);
+        const char* error = re_compile_pattern(str.c_str(), str.Length(), &buffer);
     
-	if (error) {
-	    wxGetApp().ReportError("Regular expression compilation failed (perhaps your syntax was incorrect)");
-	    return;
-	}
+        if (error) {
+            wxGetApp().ReportError(
+                msg(/*Regular expression compilation failed (perhaps your syntax was incorrect).*/325));
+            return;
+        }
 
-	if (re_compile_fastmap(&buffer) != 0) {
-	    wxGetApp().ReportError("Regular expression compilation (stage 2) failed.");
-	    return;
-	}
+        if (re_compile_fastmap(&buffer) != 0) {
+            wxGetApp().ReportError(msg(/*Regular expression compilation (stage 2) failed.*/326));
+            return;
+        }
     }
 
     m_Gfx->ClearSpecialPoints();
@@ -1238,30 +1269,32 @@ void MainFrm::OnFind(wxCommandEvent& event)
 
     while (pos != m_Labels.end()) {
         LabelInfo* label = *pos++;
-	
-	if (regexp) {
-	    re_registers regs;
-	    int ret = re_search(&buffer, label->text.c_str(), label->text.Length(), 0, label->text.Length(),
-				NULL);
+        
+        if (regexp) {
+            re_registers regs;
+            int ret = re_search(&buffer, label->text.c_str(), label->text.Length(), 0, label->text.Length(),
+                                NULL);
 
-	    switch (ret) {
-	        case -2:
-		    wxGetApp().ReportError("Regular expression search failed.");
-		    return;
+            switch (ret) {
+                case -2:
+                    wxGetApp().ReportError(msg(/*Regular expression search failed.*/327));
+                    return;
 
-	        case -1:
-	            break;
+                case -1:
+                    break;
 
-	        default:
-	            m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_YELLOW, 1);
-	            break;
-	    }
-	}
-	else {
-	    if (label->text.Contains(str)) {
-	        m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_YELLOW, 1);
-	    }
-	}
+                default:
+                    m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_YELLOW, 1);
+                    found = true;
+                    break;
+            }
+        }
+        else {
+            if (label->text.Contains(str)) {
+                m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_YELLOW, 1);
+                found = true;
+            }
+        }
     }
 
     if (regexp) {
@@ -1269,6 +1302,10 @@ void MainFrm::OnFind(wxCommandEvent& event)
     }
 
     m_Gfx->DisplaySpecialPoints();
+
+    if (!found) {
+        wxGetApp().ReportError(msg(/*No matches were found.*/328));
+    }
 }
 
 void MainFrm::OnHide(wxCommandEvent& event)

@@ -2135,6 +2135,10 @@ en:321 Open @Presentation...
 en:322 Select a presentation to open
 en:323 ] - Recording Presentation
 en:324 Res@tart
+en:325 Regular expression compilation failed (perhaps your syntax was incorrect).
+en:326 Regular expression compilation (stage 2) failed.
+en:327 Regular expression search failed.
+en:328 No matches were found.
 #
 # "don't extract" messages - these are compiled into the programs
 #

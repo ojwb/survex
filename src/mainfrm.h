@@ -206,6 +206,12 @@ class MainFrm : public wxFrame {
         wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
     }
 
+    void InitialisePensAndBrushes();
+    void CreateMenuBar();
+    void CreateToolBar();
+    void CreateAcceleratorTable();
+    void CreateSidePanel();
+
 public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
     ~MainFrm();
