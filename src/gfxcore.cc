@@ -1387,6 +1387,12 @@ void GfxCore::DragFinished()
 
 void GfxCore::SetCoords(wxPoint point)
 {
+    // We can't work out 2D coordinates from a perspective view
+    if (GetPerspective()) {
+	m_Parent->ClearCoords();
+	return;
+    }
+
     // Update the coordinate or altitude display, given the (x, y) position in
     // window coordinates.  The relevant display is updated depending on
     // whether we're in plan or elevation view.
