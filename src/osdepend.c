@@ -1,6 +1,6 @@
 /* osdepend.c
  * OS dependent functions
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,13 @@ fDirectory(const char *fnm)
 #endif
        ) return 1;
    if (stat(fnm, &buf) != 0) return 0;
+#ifdef S_ISDIR
+   /* POSIX way */
+   return S_ISDIR(buf.st_mode);
+#else
+   /* BSD way */
    return ((buf.st_mode & S_IFMT) == S_IFDIR);
+#endif
 }
 
 #elif (OS==RISCOS)
