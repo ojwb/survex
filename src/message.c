@@ -338,7 +338,6 @@ parse_msg_file(int charset_code)
 {
    FILE *fh;
    unsigned char header[20];
-   /*const*/ char *lang;
    int i;
    unsigned len;
    unsigned char *p;
@@ -347,83 +346,84 @@ parse_msg_file(int charset_code)
    fprintf(stderr, "parse_msg_file(%d)\n", charset_code);
 #endif
 
-   lang = getenv("SURVEXLANG");
+   msg_lang = getenv("SURVEXLANG");
 #ifdef DEBUG
    fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
 #endif
    
-   if (!lang || !*lang) {
-      lang = getenv("LANG");
-      if (!lang || !*lang) lang = DEFAULTLANG;
+   if (!msg_lang || !*msg_lang) {
+      msg_lang = getenv("LANG");
+      if (!msg_lang || !*msg_lang) msg_lang = DEFAULTLANG;
    }
 #ifdef DEBUG
-   fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
+   fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
 #endif
 
 #if 1
    /* backward compatibility - FIXME deprecate? */
-   if (strcasecmp(lang, "engi") == 0) {
-      lang = "en";
-   } else if (strcasecmp(lang, "engu") == 0) {
-      lang = "en-us";
-   } else if (strcasecmp(lang, "fren") == 0) {
-      lang = "fr";
-   } else if (strcasecmp(lang, "germ") == 0) {
-      lang = "de";
-   } else if (strcasecmp(lang, "ital") == 0) {
-      lang = "it";
-   } else if (strcasecmp(lang, "span") == 0) {
-      lang = "es";
-   } else if (strcasecmp(lang, "cata") == 0) {
-      lang = "ca";
-   } else if (strcasecmp(lang, "port") == 0) {
-      lang = "pt";
+   if (strcasecmp(msg_lang, "engi") == 0) {
+      msg_lang = "en";
+   } else if (strcasecmp(msg_lang, "engu") == 0) {
+      msg_lang = "en-us";
+   } else if (strcasecmp(msg_lang, "fren") == 0) {
+      msg_lang = "fr";
+   } else if (strcasecmp(msg_lang, "germ") == 0) {
+      msg_lang = "de";
+   } else if (strcasecmp(msg_lang, "ital") == 0) {
+      msg_lang = "it";
+   } else if (strcasecmp(msg_lang, "span") == 0) {
+      msg_lang = "es";
+   } else if (strcasecmp(msg_lang, "cata") == 0) {
+      msg_lang = "ca";
+   } else if (strcasecmp(msg_lang, "port") == 0) {
+      msg_lang = "pt";
    }
 #endif
 #ifdef DEBUG
-   fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
+   fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
 #endif
 
    /* On Mandrake LANG defaults to C */
-   if (strcmp(lang, "C") == 0) lang = "en";
-   
-   lang = osstrdup(lang);
-   /* On my RedHat 6.1 Linux box, LANG defaults to en_US - be nice and
-    * handle this... */
-   if (strchr(lang, '_')) {
+   if (strcmp(msg_lang, "C") == 0) msg_lang = "en";
+
+   if (strchr(msg_lang, '_')) {
+      char *lang = osstrdup(msg_lang);
+      /* On RedHat 6.1 Linux, LANG defaults to en_US */
       char *under = strchr(lang, '_');
       *under++ = '-';
       while (*under) {
 	 *under = tolower(*under);
 	 under++;
       }
+      msg_lang = lang;
    }
 
-   fh = fopenWithPthAndExt(pth_cfg_files, lang, EXT_SVX_MSG, "rb", NULL);
+   fh = fopenWithPthAndExt(pth_cfg_files, msg_lang, EXT_SVX_MSG, "rb", NULL);
 
    if (!fh) {
       /* e.g. if 'en-COCKNEY' is unknown, see if we know 'en' */
-      if (strlen(lang) > 3 && lang[2] == '-') {
+      if (strlen(msg_lang) > 3 && msg_lang[2] == '-') {
 	 char lang_generic[3];
-         lang_generic[0] = lang[0];
-         lang_generic[1] = lang[1];
+         lang_generic[0] = msg_lang[0];
+         lang_generic[1] = msg_lang[1];
 	 lang_generic[2] = '\0';
 	 fh = fopenWithPthAndExt(pth_cfg_files, lang_generic, EXT_SVX_MSG,
 				 "rb", NULL);
+	 if (fh) msg_lang = osstrdup(lang_generic);
       }
    }
 
    if (!fh) {
       /* no point extracting this error, as it won't get used if file opens */
       fprintf(STDERR, "Can't open message file '%s' using path '%s'\n",
-	      lang, pth_cfg_files);
+	      msg_lang, pth_cfg_files);
       exit(EXIT_FAILURE);
    }
 
    if (fread(header, 1, 20, fh) < 20 ||
        memcmp(header, "Svx\nMsg\r\n\xfe\xff", 12) != 0) {
       /* no point extracting this error, as it won't get used if file opens */
-      fprintf(STDERR, "Problem with message file '%s'\n", lang);
+      fprintf(STDERR, "Problem with message file '%s'\n", msg_lang);
       exit(EXIT_FAILURE);
    }
 
@@ -447,7 +447,7 @@ parse_msg_file(int charset_code)
    fclose(fh);
 
 #ifdef DEBUG
-   fprintf(stderr, "lang = '%s', num_msgs = %d, len = %d\n", lang, num_msgs, len);
+   fprintf(stderr, "msg_lang = '%s', num_msgs = %d, len = %d\n", msg_lang, num_msgs, len);
 #endif
 
    msg_array = osmalloc(sizeof(char *) * num_msgs);

@@ -1,6 +1,6 @@
 /* > message.h
  * Function prototypes for message.c
- * Copyright (C) 1998 Olly Betts
+ * Copyright (C) 1998-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@
 
 /* name of current application */
 extern const char *szAppNameCopy;
+
+extern const char *msg_lang;
 
 extern void msg_init(const char *argv0);
 
