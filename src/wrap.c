@@ -1,4 +1,4 @@
-/* > wrap.c
+/* wrap.c
  * Translate pre-0.90 survex invocation into 0.90 or later cavern invocation
  * Copyright (C) 1999,2001 Olly Betts
  *
@@ -571,12 +571,12 @@ main(int argc, char **argv)
 
    if (argv[1]) {
        if (strcmp(argv[1], "--version") == 0) {
-	   puts(PACKAGE" "VERSION);
+	   puts(PRETTYPACKAGE" "VERSION);
 	   exit(0);
        }
 
        if (strcmp(argv[1], "--help") == 0) {
-	   printf(PACKAGE" "VERSION"\n\n"
+	   printf(PRETTYPACKAGE" "VERSION"\n\n"
 "Syntax: %s [OPTION]... FILE...\n\n"
 "This is a compatibility wrapper to help users convert from survex to cavern.\n"
 "You should run cavern in preference - this wrapper will be removed at some\n"

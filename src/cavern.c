@@ -290,7 +290,7 @@ main(int argc, char **argv)
       osfree(fnm);
    }
 
-   if (!fMute) puts(PACKAGE" "VERSION"\n"COPYRIGHT_MSG);
+   if (!fMute) puts(PRETTYPACKAGE" "VERSION"\n"COPYRIGHT_MSG);
 
    atexit(delete_output_on_error);
 
