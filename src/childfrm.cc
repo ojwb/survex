@@ -40,7 +40,7 @@ ChildFrm::ChildFrm(wxDocument* doc, wxView* view, wxDocParentFrame* parent, wxWi
     wxDocChildFrame(doc, view, parent, id, title, wxDefaultPosition, wxSize(640, 480)),
     m_Gfx((AvenDoc*) doc, this)
 {
-    BuildMenuBar();
+    SetMenuBar(BuildMenuBar());
     SetAccelerators();
 
     // Create the drawing area.
@@ -162,7 +162,7 @@ wxMenu* ChildFrm::BuildHelpMenu()
     return menu;
 }
 
-void ChildFrm::BuildMenuBar()
+wxMenuBar* ChildFrm::BuildMenuBar()
 {
     wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE);
 
@@ -172,8 +172,6 @@ void ChildFrm::BuildMenuBar()
     menubar->Append(BuildViewMenu(), wxGetApp().GetTabMsg(/*@View*/213));
     menubar->Append(BuildControlsMenu(), wxGetApp().GetTabMsg(/*@Controls*/214));
     menubar->Append(BuildHelpMenu(), wxGetApp().GetTabMsg(/*@Help*/215));
-
-    SetMenuBar(menubar);
 }
 
 void ChildFrm::SetAccelerators()

@@ -53,11 +53,12 @@ bool AvenView::OnCreate(wxDocument* doc, long flags)
 	int y;
 	m_Gfx->GetSize(&x, &y);
 	m_Gfx->SetSize(-1, -1, x, y);
+	wxGetApp().GetMainFrame()->SetFullMenuBar();
     }
     else {
         // Create a new child frame.
         m_Frame = new ChildFrm(doc, this, wxGetApp().GetMainFrame(), -1, "Aven");
- 
+
 
 #ifdef __X__
 	// X seems to require a forced resize.

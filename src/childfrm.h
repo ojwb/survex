@@ -30,20 +30,22 @@ class ChildFrm : public wxDocChildFrame {
     GfxCore m_Gfx;
     bool m_GfxInited;
 
-    wxMenu* BuildFileMenu();
-    wxMenu* BuildRotationMenu();
-    wxMenu* BuildOrientationMenu();
-    wxMenu* BuildViewMenu();
-    wxMenu* BuildControlsMenu();
-    wxMenu* BuildHelpMenu();
-
-    void BuildMenuBar();
     void SetAccelerators();
 
 public:
     ChildFrm(wxDocument* doc, wxView* view, wxDocParentFrame* parent, wxWindowID id,
 	     const wxString& title);
     ~ChildFrm();
+
+    //-- this *must* be sorted out after the doc/view fiasco is done
+    static wxMenu* BuildFileMenu();
+    static wxMenu* BuildRotationMenu();
+    static wxMenu* BuildOrientationMenu();
+    static wxMenu* BuildViewMenu();
+    static wxMenu* BuildControlsMenu();
+    static wxMenu* BuildHelpMenu();
+
+    static wxMenuBar* BuildMenuBar();
 
     void InitialiseGfx(); // call only after loading survey data into the document
     void OnCommand(wxCommandEvent& event);

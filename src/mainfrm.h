@@ -24,6 +24,7 @@
 #define mainfrm_h
 
 #include "wx.h"
+#include "childfrm.h"
 
 class MainFrm : public wxDocParentFrame {
     wxMenu* BuildFileMenu();
@@ -38,6 +39,8 @@ public:
     void OnOpen(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+
+    void SetFullMenuBar();
 
 private:
     DECLARE_EVENT_TABLE()
