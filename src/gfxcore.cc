@@ -114,8 +114,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
 	   wxFONTENCODING_ISO8859_1),
     m_InitialisePending(false)
 {
-    tiltangle_intial = M_PI_2;
-    panangle_initial = 0.0;
     m_OffscreenBitmap = NULL;
     m_LastDrag = drag_NONE;
     m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
@@ -240,11 +238,6 @@ void GfxCore::Initialise()
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
 
-    // If there are no legs (e.g. after loading a .pos file), turn crosses on.
-    if (m_Parent->GetNumLegs() == 0) {
-	m_Crosses = true;
-    }
-
     // Check for flat/linear/point surveys.
     m_RotationOK = true;
 
@@ -256,6 +249,7 @@ void GfxCore::Initialise()
     // Scale the survey to a reasonable initial size.
     switch (m_Lock) {
      case lock_POINT:
+       m_RotationOK = false;
        m_InitialScale = 1.0;
        break;
      case lock_YZ:
@@ -265,13 +259,16 @@ void GfxCore::Initialise()
        m_InitialScale = Double(m_YSize) / m_Parent->GetYExtent();
        break;
      case lock_XY:
+       m_RotationOK = false;
        m_InitialScale = Double(m_YSize) / m_Parent->GetZExtent();
        break;
      case lock_X:
+       m_RotationOK = false;
        m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
 			    Double(m_XSize) / m_Parent->GetYExtent());
        break;
      case lock_Y:
+       m_RotationOK = false;
        m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
 			    Double(m_XSize) / m_Parent->GetXExtent());
        break;
@@ -1505,7 +1502,7 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 
     if (control) {
 	// For now...
-	TiltCave(Double(-dy) * M_PI / 500.0);
+	if (m_RotationOK) TiltCave(Double(-dy) * M_PI / 500.0);
     } else {
 	SetScale(m_Params.scale *= pow(1.06, 0.08 * dy));
     }
@@ -2029,15 +2026,19 @@ void GfxCore::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::OnDefaults()
 {
-    m_TiltAngle = M_PI_2;
+    // If there are no legs (e.g. after loading a .pos file), turn crosses on.
+    if (m_Parent->GetNumLegs() == 0) {
+	m_Crosses = true;
+    }
+
     m_PanAngle = 0.0;
+    m_TiltAngle = M_PI_2;
     switch (m_Lock) {
 	case lock_X:
 	{
 	    // elevation looking along X axis (East)
 	    m_PanAngle = M_PI * 1.5;
 	    m_TiltAngle = 0.0;
-	    m_RotationOK = false;
 	    break;
 	}
 
@@ -2045,7 +2046,6 @@ void GfxCore::OnDefaults()
 	case lock_XY: // survey is linearface and parallel to the Z axis => display in elevation.
 	    // elevation looking along Y axis (North)
 	    m_TiltAngle = 0.0;
-	    m_RotationOK = false;
 	    break;
 
 	case lock_Z:
@@ -2057,7 +2057,6 @@ void GfxCore::OnDefaults()
 	}
 
 	case lock_POINT:
-	    m_RotationOK = false;
 	    m_Crosses = true;
 	    break;
 
@@ -2083,7 +2082,6 @@ void GfxCore::OnDefaults()
     m_ExportedPts = false;
     m_Grid = false;
     SetScale(m_InitialScale);
-    DefaultParameters();
     ForceRefresh();
 }
 
