@@ -1,5 +1,8 @@
 Changes in 1.0.10:
 
+* aven: only add a file to the list of recently used files if it was opened
+  successfully.
+
 * Fixed potential problem when reading or writing a 3d file which couldn't
   be opened.
 
@@ -7,7 +10,7 @@ Changes in 1.0.10:
 
 * Better handling of PLT files which have a D command before any M command.
 
-* Updates to German translation.
+* Updates to German and Italian translations.
 
 Changes in 1.0.9:
 
