@@ -3,6 +3,9 @@ Changes in 1.0.16:
 * (MS Windows Version): Really fixed bug introduced in 1.0.14 which often stops
   programs from finding the message files.
 
+* (MS Windows Version): Remove any existing "Open" file association for .svx
+  files.
+
 Changes in 1.0.15:
 
 * (MS Windows Version): Fixed bug introduced in 1.0.14 which often stops
