@@ -68,6 +68,9 @@ rpm : dist
 	echo rm -rf '$$RPM_BUILD_ROOT' >> ${spec}
 	echo mkdir '$$RPM_BUILD_ROOT' >> ${spec}
 	echo make install-strip 'prefix=$$RPM_BUILD_ROOT/usr' >> ${spec}
+	: # Conform to the FHS
+	echo mv '$$RPM_BUILD_ROOT'/usr/doc '$$RPM_BUILD_ROOT'/usr/share/doc
+	echo mv '$$RPM_BUILD_ROOT'/usr/man '$$RPM_BUILD_ROOT'/usr/share/man
 	echo >> ${spec}
 	echo %clean >> ${spec}
 	echo rm -rf '$$RPM_BUILD_ROOT' >> ${spec}
@@ -75,8 +78,8 @@ rpm : dist
 	echo %files >> ${spec}
 	echo "%defattr(-,root,root)" >> ${spec}
 	echo %doc @EXTRA_TEXT@ >> ${spec}
-	echo %doc /usr/doc/${PACKAGE} >> ${spec}
-	echo %doc /usr/man >> ${spec}
+	echo %doc /usr/share/doc/${PACKAGE} >> ${spec}
+	echo %doc /usr/share/man >> ${spec}
 	echo '/usr/bin/[b-zA-Z0-9]*' >> ${spec}
 	echo /usr/share/${PACKAGE} >> ${spec}
 	echo %files aven >> ${spec}

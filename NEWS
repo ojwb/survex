@@ -4,6 +4,10 @@ Changes in 1.0.9:
 
 * cavern: Fixed Direction reading - bug previously made it unusable.
 
+* (Unix version): RPMs now have the docs in /usr/share/doc and the man pages
+  in /usr/share/man to conform with the FHS (and where RedHat packages put
+  them).
+
 * Updates to French and Slovak translations.
 
 Changes in 1.0.8:
