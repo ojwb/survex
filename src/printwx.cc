@@ -1,6 +1,6 @@
 /* printwx.c */
 /* Device dependent part of Survex wxWindows driver */
-/* Copyright (C) 1993-2003,2004 Olly Betts
+/* Copyright (C) 1993-2003,2004,2005 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -134,33 +134,33 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf)
 	: wxDialog(parent, -1, wxString(msg(/*Print*/399))),
+	  m_layout(parent->GetPageSetupData()),
 	  m_File(filename), m_parent(parent)
 {
-    m_layout = new layout;
-    m_layout->Labels = labels;
-    m_layout->Crosses = crosses;
-    m_layout->Shots = legs;
-    m_layout->Surface = surf;
-    m_layout->datestamp = osstrdup(datestamp.c_str());
+    m_layout.Labels = labels;
+    m_layout.Crosses = crosses;
+    m_layout.Shots = legs;
+    m_layout.Surface = surf;
+    m_layout.datestamp = osstrdup(datestamp.c_str());
     if (title.length() > 11 &&
 	title.substr(title.length() - 11) == " (extended)") {
-	m_layout->title = osstrdup(title.substr(0, title.length() - 11).c_str());
-	m_layout->view = layout::EXTELEV;
-	m_layout->rot = int(deg(angle) + .001);
-	if (m_layout->rot != 0 && m_layout->rot != 180) m_layout->rot = 0;
-	m_layout->tilt = 0;
+	m_layout.title = osstrdup(title.substr(0, title.length() - 11).c_str());
+	m_layout.view = layout::EXTELEV;
+	m_layout.rot = int(deg(angle) + .001);
+	if (m_layout.rot != 0 && m_layout.rot != 180) m_layout.rot = 0;
+	m_layout.tilt = 0;
     } else {
 	// FIXME rot and tilt shouldn't be integers, but for now add a small
 	// fraction before forcing to int as otherwise plan view ends up being
 	// 89 degrees!
-	m_layout->title = osstrdup(title.c_str());
-	m_layout->tilt = int(deg(tilt_angle) + .001);
-	if (m_layout->tilt == 90) {
-	    m_layout->view = layout::PLAN;
-	} else if (m_layout->tilt == 0) {
-	    m_layout->view = layout::ELEV;
+	m_layout.title = osstrdup(title.c_str());
+	m_layout.tilt = int(deg(tilt_angle) + .001);
+	if (m_layout.tilt == 90) {
+	    m_layout.view = layout::PLAN;
+	} else if (m_layout.tilt == 0) {
+	    m_layout.view = layout::ELEV;
 	} else {
-	    m_layout->view = layout::TILT;
+	    m_layout.view = layout::TILT;
 	}
     }
 
@@ -187,7 +187,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     // Make the dummy string wider than any sane value and use that to
     // fix the width of the control so the sizers allow space for bigger
     // page layouts.
-    m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE);
+    m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
     v2->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
 
     { // this isn't the "too wide" bit...
@@ -207,7 +207,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
     }
     
-    if (m_layout->view != layout::EXTELEV) {
+    if (m_layout.view != layout::EXTELEV) {
 	wxBoxSizer * planelevsizer = new wxBoxSizer(wxHORIZONTAL);
 	planelevsizer->Add(new wxButton(this, svx_PLAN, "Plan"),
 			   0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
@@ -248,21 +248,18 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     v1->Add(h2, 0, wxALIGN_RIGHT|wxALL, 5);
     
-    LayoutToUI();
-
     SetAutoLayout(true);
     SetSizer(v1);
     v1->Fit(this);
     v1->SetSizeHints(this);
 
+    LayoutToUI();
     SomethingChanged();
 }
 
 svxPrintDlg::~svxPrintDlg() {
-    osfree(m_layout->title);
-    osfree(m_layout->datestamp);
-    delete m_layout;
-    m_layout = NULL;
+    osfree(m_layout.title);
+    osfree(m_layout.datestamp);
 }
 
 void 
@@ -270,7 +267,7 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
     SomethingChanged();
     wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
     wxPrinter pr(&pd);
-    svxPrintout po(m_parent, m_layout, m_parent->GetPageSetupData(), m_File);
+    svxPrintout po(m_parent, &m_layout, m_parent->GetPageSetupData(), m_File);
     if (pr.Print(this, &po, true)) {
 	// Close the print dialog if printing succeeded.
 	Destroy();
@@ -282,9 +279,9 @@ svxPrintDlg::OnPreview(wxCommandEvent&) {
     SomethingChanged();
     wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
     wxPrintPreview* pv;
-    pv = new wxPrintPreview(new svxPrintout(m_parent, m_layout,
+    pv = new wxPrintPreview(new svxPrintout(m_parent, &m_layout,
 					    m_parent->GetPageSetupData(), m_File),
-			    new svxPrintout(m_parent, m_layout,
+			    new svxPrintout(m_parent, &m_layout,
 					    m_parent->GetPageSetupData(), m_File),
 			    &pd);
     wxPreviewFrame *frame = new wxPreviewFrame(pv, m_parent, msg(/*Print Preview*/398));
@@ -349,42 +346,35 @@ svxPrintDlg::SomethingChanged() {
     UIToLayout();
     // Update the bounding box.
     RecalcBounds();
-    if (m_layout->xMax >= m_layout->xMin) { 
-	wxPageSetupDialogData* data = m_parent->GetPageSetupData();
-	// get print details...
-	m_layout->PaperWidth = data->GetPaperSize().GetWidth() - 
-	    data->GetMarginBottomRight().x - data->GetMarginTopLeft().x;
-	m_layout->PaperDepth = data->GetPaperSize().GetHeight() - 
-	    data->GetMarginBottomRight().y - data->GetMarginTopLeft().y;
-	m_layout->pages_required();
-	m_layout->pages = m_layout->pagesX * m_layout->pagesY;
-	m_printSize->SetLabel(wxString::Format(msg(/*%d pages (%dx%d)*/257), m_layout->pages, m_layout->pagesX, m_layout->pagesY));
+    if (m_layout.xMax >= m_layout.xMin) { 
+	m_layout.pages_required();
+	m_printSize->SetLabel(wxString::Format(msg(/*%d pages (%dx%d)*/257), m_layout.pages, m_layout.pagesX, m_layout.pagesY));
     }
 }
 
 void 
 svxPrintDlg::LayoutToUI(){
-    m_names->SetValue(m_layout->Labels);
-    m_legs->SetValue(m_layout->Shots);
-    m_stations->SetValue(m_layout->Crosses);
-    m_borders->SetValue(m_layout->Border);
-//    m_blanks->SetValue(m_layout->SkipBlank);
-    m_infoBox->SetValue(!m_layout->Raw);
-    m_surface->SetValue(m_layout->Surface);
-    m_tilt->SetValue(m_layout->tilt);
+    m_names->SetValue(m_layout.Labels);
+    m_legs->SetValue(m_layout.Shots);
+    m_stations->SetValue(m_layout.Crosses);
+    m_borders->SetValue(m_layout.Border);
+//    m_blanks->SetValue(m_layout.SkipBlank);
+    m_infoBox->SetValue(!m_layout.Raw);
+    m_surface->SetValue(m_layout.Surface);
+    m_tilt->SetValue(m_layout.tilt);
     // FIXME is EXTELEV disable both buttons and tilt and rot spinctrls
     // FIXME: enable both buttons
-    if (m_layout->tilt > 89) {
+    if (m_layout.tilt > 89) {
 	// FIXME: disable Plan button
-    } else if (m_layout->tilt == 0) {
+    } else if (m_layout.tilt == 0) {
 	// FIXME: disable Elevation button
     }
 
-    m_bearing->SetValue(m_layout->rot);
+    m_bearing->SetValue(m_layout.rot);
     // Do this last as it causes an OnChange message which calls UIToLayout
-    if (m_layout->Scale != 0) {
+    if (m_layout.Scale != 0) {
 	wxString temp;
-	temp << m_layout->Scale;
+	temp << m_layout.Scale;
 	m_scale->SetValue(temp);
     } else {
 	m_scale->SetValue(scales[0]);
@@ -393,82 +383,76 @@ svxPrintDlg::LayoutToUI(){
 
 void 
 svxPrintDlg::UIToLayout(){
-    m_layout->Labels = m_names->IsChecked();
-    m_layout->Shots = m_legs->IsChecked();
-    m_layout->Crosses = m_stations->IsChecked();
-    m_layout->Border = m_borders->IsChecked();
-//    m_layout->SkipBlank = m_blanks->IsChecked();
-    m_layout->Raw = !m_infoBox->IsChecked();
-    m_layout->Surface = m_surface->IsChecked();
+    m_layout.Labels = m_names->IsChecked();
+    m_layout.Shots = m_legs->IsChecked();
+    m_layout.Crosses = m_stations->IsChecked();
+    m_layout.Border = m_borders->IsChecked();
+//    m_layout.SkipBlank = m_blanks->IsChecked();
+    m_layout.Raw = !m_infoBox->IsChecked();
+    m_layout.Surface = m_surface->IsChecked();
 
-    if (m_layout->view != layout::EXTELEV) {
-	m_layout->tilt = m_tilt->GetValue();
-	if (m_layout->tilt == 90) {
-	    m_layout->view = layout::PLAN;
-	} else if (m_layout->tilt == 0) {
-	    m_layout->view = layout::ELEV;
+    if (m_layout.view != layout::EXTELEV) {
+	m_layout.tilt = m_tilt->GetValue();
+	if (m_layout.tilt == 90) {
+	    m_layout.view = layout::PLAN;
+	} else if (m_layout.tilt == 0) {
+	    m_layout.view = layout::ELEV;
 	} else {
-	    m_layout->view = layout::TILT;
+	    m_layout.view = layout::TILT;
 	}
-	m_layout->rot = m_bearing->GetValue();
+	m_layout.rot = m_bearing->GetValue();
     }
 
-    (m_scale->GetValue()).ToDouble(&(m_layout->Scale));
-    if (m_layout->Scale == 0.0) {
-	double x = 1000.0 / m_layout->pick_scale(1, 1);
-
-	/* trim to 2 s.f. (rounding up) */
-	double w = pow(10.0, floor(log10(x) - 1.0));
-	x = ceil(x / w) * w;
-
-	m_layout->Scale = x;
+    (m_scale->GetValue()).ToDouble(&(m_layout.Scale));
+    if (m_layout.Scale == 0.0) {
+	m_layout.pick_scale(1, 1);
     }
 }
 
 void
 svxPrintDlg::RecalcBounds()
 {
-    m_layout->yMax = m_layout->xMax = -DBL_MAX;
-    m_layout->yMin = m_layout->xMin = DBL_MAX;
+    m_layout.yMax = m_layout.xMax = -DBL_MAX;
+    m_layout.yMin = m_layout.xMin = DBL_MAX;
 
     double SIN,COS,SINT,COST;
-    SIN = sin(rad(m_layout->rot));
-    COS = cos(rad(m_layout->rot));
-    SINT = sin(rad(m_layout->tilt));
-    COST = cos(rad(m_layout->tilt));
+    SIN = sin(rad(m_layout.rot));
+    COS = cos(rad(m_layout.rot));
+    SINT = sin(rad(m_layout.tilt));
+    COST = cos(rad(m_layout.tilt));
 
-    if (m_layout->Surface || m_layout->Shots) {
+    if (m_layout.Surface || m_layout.Shots) {
 	for (int i=0; i < NUM_DEPTH_COLOURS; ++i) {
 	    list<PointInfo*>::const_iterator p = m_parent->GetPoints(i);
 	    while (p != m_parent->GetPointsEnd(i)) {
 		double x = (*p)->GetX();
 		double y = (*p)->GetY();
 		double z = (*p)->GetZ();
-		if ((*p)->IsSurface() ? m_layout->Surface : m_layout->Shots) {
+		if ((*p)->IsSurface() ? m_layout.Surface : m_layout.Shots) {
 		    double X = x * COS - y * SIN;
-		    if (X > m_layout->xMax) m_layout->xMax = X;
-		    if (X < m_layout->xMin) m_layout->xMin = X;
+		    if (X > m_layout.xMax) m_layout.xMax = X;
+		    if (X < m_layout.xMin) m_layout.xMin = X;
 		    double Y = (x * SIN + y * COS) * SINT + z * COST;
-		    if (Y > m_layout->yMax) m_layout->yMax = Y;
-		    if (Y < m_layout->yMin) m_layout->yMin = Y;
+		    if (Y > m_layout.yMax) m_layout.yMax = Y;
+		    if (Y < m_layout.yMin) m_layout.yMin = Y;
 		}
 		++p;
 	    }
 	}
     }
-    if (m_layout->Labels || m_layout->Crosses) {
+    if (m_layout.Labels || m_layout.Crosses) {
 	list<LabelInfo*>::const_iterator label = m_parent->GetLabels();
 	while (label != m_parent->GetLabelsEnd()) {
 	    double x = (*label)->GetX();
 	    double y = (*label)->GetY();
 	    double z = (*label)->GetZ();
-	    if (m_layout->Surface || (*label)->IsUnderground()) {
+	    if (m_layout.Surface || (*label)->IsUnderground()) {
 		double X = x * COS - y * SIN;
-		if (X > m_layout->xMax) m_layout->xMax = X;
-		if (X < m_layout->xMin) m_layout->xMin = X;
+		if (X > m_layout.xMax) m_layout.xMax = X;
+		if (X < m_layout.xMin) m_layout.xMin = X;
 		double Y = (x * SIN + y * COS) * SINT + z * COST;
-		if (Y > m_layout->yMax) m_layout->yMax = Y;
-		if (Y < m_layout->yMin) m_layout->yMin = Y;
+		if (Y > m_layout.yMax) m_layout.yMax = Y;
+		if (Y < m_layout.yMin) m_layout.yMin = Y;
 	    }
 	    ++label;
 	}

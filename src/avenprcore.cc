@@ -1,6 +1,6 @@
 /* avenprcore.c
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2002,2004 Olly Betts
+ * Copyright (C) 1993-2002,2004,2005 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -43,14 +43,20 @@
 #include "avenprcore.h"
 #include "debug.h"
 
-layout::layout()
+layout::layout(wxPageSetupDialogData* data)
 	: Labels(false), Crosses(false), Shots(true), Surface(false),
 	  SkipBlank(false), Border(true), Cutlines(true), Raw(false),
 	  title(NULL), datestamp(NULL), Scale(0), rot(0), tilt(0),
-	  view(PLAN), scX(1), scY(1), xMin(0), xMax(1), yMin(0), yMax(1),
-	  PaperWidth(1), PaperDepth(1), pagesX(1), pagesY(1), pages(1),
-	  xOrg(0), yOrg(0), footer(NULL)
+	  view(PLAN), scX(1), scY(1), xMin(0), xMax(-1), yMin(0), yMax(-1),
+	  pagesX(1), pagesY(1), pages(1), xOrg(0), yOrg(0), footer(NULL)
 {
+    // Get paper size information.
+    PaperWidth = data->GetPaperSize().GetWidth() - 
+	data->GetMarginBottomRight().x - data->GetMarginTopLeft().x;
+    PaperDepth = data->GetPaperSize().GetHeight() - 
+	data->GetMarginBottomRight().y - data->GetMarginTopLeft().y;
+    // Allow for the 10mm footer.
+    PaperDepth -= 10;
 }
 
 void
@@ -85,6 +91,8 @@ layout::pages_required() {
     paper_centre_y = 20 + (pagesY * PaperDepth) / 2;
     image_centre_y = Sc * (yMax + yMin) / 2;
     yOrg = paper_centre_y - image_centre_y;
+
+    pages = pagesX * pagesY;
 }
 
 static void setting_missing(const char *v)
@@ -283,14 +291,11 @@ as_escstring(const char *v, char *s)
 
 #define DEF_RATIO (1.0/(double)DEFAULT_SCALE)
 
-/* return a scale which will make it fit in the desired size */
-double
+/* pick a scale which will make it fit in the desired size */
+void
 layout::pick_scale(int x, int y)
 {
    double Sc_x, Sc_y;
-#if 0
-   double E;
-#endif
    /*    pagesY = ceil((image_dy+allow)/PaperDepth)
     * so (image_dy+allow)/PaperDepth <= pagesY < (image_dy+allow)/PaperDepth+1
     * so image_dy <= pagesY*PaperDepth-allow < image_dy+PaperDepth
@@ -308,10 +313,15 @@ layout::pick_scale(int x, int y)
 
    Sc_x = min(Sc_x, Sc_y) * 0.99; /* shrink by 1% so we don't cock up */
 #if 0 /* this picks a nice (in some sense) ratio, but is too stingy */
-   E = pow(10.0, floor(log10(Sc_x)));
+   double E = pow(10.0, floor(log10(Sc_x)));
    Sc_x = floor(Sc_x / E) * E;
 #endif
-   return Sc_x;
+
+   double Scale_exact = 1000.0 / Sc_x;
+
+   /* trim to 2 s.f. (rounding up) */
+   double w = pow(10.0, floor(log10(Scale_exact) - 1.0));
+   Scale = ceil(Scale_exact / w) * w;
 }
 
 #if 0

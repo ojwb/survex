@@ -1,7 +1,7 @@
 /* printwx.h */
 /* Device dependent part of Survex wxWindows driver */
 /* Copyright (C) 2004 Philip Underwood
- * Copyright (C) 2004 Olly Betts
+ * Copyright (C) 2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 #include "wx.h"
 #include <wx/dialog.h>
 
+#include "avenprcore.h"
+
 enum {
 	svx_PRINT = 1200,
 	svx_PREVIEW,
@@ -39,7 +41,6 @@ enum {
 };
 
 class MainFrm;
-struct layout;
 class wxComboBox;
 class wxStaticText;
 class wxSpinCtrl;
@@ -48,7 +49,7 @@ class wxSpinEvent;
 
 class svxPrintDlg : public wxDialog {
 protected:
-	layout* m_layout;
+	layout m_layout;
 	wxComboBox* m_scale;
 	wxStaticText* m_printSize;
 	wxStaticText* m_tilttext;

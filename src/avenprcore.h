@@ -1,6 +1,6 @@
 /* avenprcore.h
  * Header file for printer independent parts of Survex printer drivers
- * Copyright (C) 1994-2002,2004 Olly Betts
+ * Copyright (C) 1994-2002,2004,2005 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,6 +17,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+#ifndef survex_included_avenprcore_h
+#define survex_included_avenprcore_h
 
 #include "img.h"
 
@@ -69,11 +72,11 @@ public:
     double xOrg, yOrg;
     const char* footer;
 
-    layout();
+    layout(wxPageSetupDialogData* data);
 #if 0
     void make_calibration();
 #endif
-    double pick_scale(int x, int y);
+    void pick_scale(int x, int y);
     void pages_required();
 };
 
@@ -92,4 +95,6 @@ class MainFrm;
 void print_all(MainFrm *m_parent, layout *l, device *pri);
 void print_page(MainFrm *m_parent, layout *l, int page, int pass, int cPasses);
 int next_page(int *pstate, char **q, int pageLim);
+#endif
+
 #endif
