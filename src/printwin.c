@@ -338,7 +338,7 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 	 double *pscX, double *pscY, bool fCalibrate)
 {
    PRINTDLGA psd;
-   LPDEVNAMES *dn;
+   LPDEVNAMES dn;
    static const char *vars[] = {
       "like",
       "font_size_labels",
