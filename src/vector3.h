@@ -4,6 +4,7 @@
 //  C++ class for 3-element vectors
 //
 //  Copyright (C) 2000-2002, Mark R. Shinwell.
+//  Copyright (C) 2002 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -35,7 +36,7 @@ public:
     Vector3(double, double, double);
     ~Vector3();
 
-    void Save(FILE* fp) { //--Pres: FIXME
+    void Save(FILE* fp) const { //--Pres: FIXME
 	fwrite(&x, sizeof(double), 1, fp);
 	fwrite(&y, sizeof(double), 1, fp);
 	fwrite(&z, sizeof(double), 1, fp);
@@ -47,11 +48,11 @@ public:
 	fread(&z, sizeof(double), 1, fp);
     }
 
-    double getX() { return x; }
-    double getY() { return y; }
-    double getZ() { return z; }
+    double getX() const { return x; }
+    double getY() const { return y; }
+    double getZ() const { return z; }
 
-    double magnitude();
+    double magnitude() const;
     void normalise();
 
     void set(double, double, double);
