@@ -41,6 +41,10 @@ Changes in 0.97-prerelease5:
 
 * Added test of *solve command.
 
+* cavern: Added commands *date, *team, *instrument, *copyright -
+  currently these are ignored, but they provide a place to put data
+  when importing/exporting, and will be processed in future versions.
+
 Changes in 0.97-prerelease4:
 
 * Updated Portuguese and German translations.

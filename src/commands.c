@@ -249,17 +249,20 @@ match_tok(const sztok *tab, int tab_size)
 }
 
 typedef enum {
-   CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_DATA, CMD_DEFAULT,
-   CMD_END, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE, CMD_INFER,
-   CMD_LRUD, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET,
-   CMD_SOLVE, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
+   CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_COPYRIGHT,
+   CMD_DATA, CMD_DATE, CMD_DEFAULT, CMD_END, CMD_EQUATE, CMD_EXPORT,
+   CMD_FIX, CMD_FLAGS, CMD_INCLUDE, CMD_INFER, CMD_INSTRUMENT,
+   CMD_LRUD, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET, CMD_SOLVE,
+   CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
 
 static sztok cmd_tab[] = {
      {"BEGIN",     CMD_BEGIN},
      {"CALIBRATE", CMD_CALIBRATE},
      {"CASE",      CMD_CASE},
+     {"COPYRIGHT", CMD_COPYRIGHT},
      {"DATA",      CMD_DATA},
+     {"DATE",      CMD_DATE},
      {"DEFAULT",   CMD_DEFAULT},
      {"END",       CMD_END},
      {"EQUATE",    CMD_EQUATE},
@@ -267,6 +270,7 @@ static sztok cmd_tab[] = {
      {"FIX",       CMD_FIX},
      {"FLAGS",     CMD_FLAGS},
      {"INCLUDE",   CMD_INCLUDE},
+     {"INSTRUMENT",CMD_INSTRUMENT},
      {"INFER",     CMD_INFER},
      {"LRUD",      CMD_LRUD},
      {"PREFIX",    CMD_PREFIX},
@@ -274,6 +278,7 @@ static sztok cmd_tab[] = {
      {"SD",        CMD_SD},
      {"SET",       CMD_SET},
      {"SOLVE",     CMD_SOLVE},
+     {"TEAM",      CMD_TEAM},
      {"TITLE",     CMD_TITLE},
      {"TRUNCATE",  CMD_TRUNCATE},
      {"UNITS",     CMD_UNITS},
@@ -1406,6 +1411,10 @@ handle_command(void)
     case CMD_CALIBRATE: cmd_calibrate(); break;
     case CMD_CASE: cmd_case(); break;
     case CMD_DATA: cmd_data(); break;
+    case CMD_COPYRIGHT: case CMD_DATE: case CMD_INSTRUMENT: case CMD_TEAM:
+      /* just ignore these for now */
+      skipline();
+      break;
     case CMD_DEFAULT: cmd_default(); break;
     case CMD_EQUATE: cmd_equate(); break;
     case CMD_EXPORT: cmd_export(); break;
