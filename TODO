@@ -182,8 +182,6 @@ From: Olly
 
 check skip blank pages works on printer drivers (notably printpcl)
 
-Check LC_CTYPE for charset?
-
 extract --help messages for translation.
 
 prog --help and --version ought to work (perhaps both just do --version)

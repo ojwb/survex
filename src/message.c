@@ -256,21 +256,34 @@ default_charset(void)
    return CHARSET_DOSCP850;
 #elif (OS==WIN32)
 # ifdef AVEN
-   return CHARSET_WINCP1252;
+#  define CODEPAGE GetACP()
 # else
-   switch (GetConsoleOutputCP()) {
+#  define CODEPAGE GetConsoleOutputCP()
+# endif
+   switch (CODEPAGE) {
     case 1252: return CHARSET_WINCP1252;
     case 850: return CHARSET_DOSCP850;
    }
    return CHARSET_USASCII;
-# endif
 #elif (OS==UNIX)
 #if defined(XCAVEROT) || defined(AVEN)
    return CHARSET_ISO_8859_1;
 #else
-   char *p = strchr(msg_lang, '.');
+   char *p = getenv("LC_ALL");
+   if (p == NULL || p[0] == '\0') {
+      p = getenv("LC_CTYPE");
+      if (p == NULL || p[0] == '\0') {
+	 p = msg_lang;
+      }
+   }
+
    if (p) {
-      char *chset = ++p;
+      char *q = strchr(p, '.');
+      if (q) p = q + 1;
+   }
+
+   if (p) {
+      char *chset = p;
       size_t name_len;
 
       while (*p != '\0' && *p != '@') p++;

@@ -4,6 +4,9 @@
 * 3dtopos: removed hardcoded limit on number of stations (was 100000);
   better error reporting.
 
+* Further tweaks to charset handling - look at LC_* as well as LANG;
+  Check GUI codepage under MS Windows.
+
 Changes in 0.98-prerelease3:
 
 * cavern/3dtopos: cavern no longer produces .pos files - they're
