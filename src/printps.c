@@ -454,7 +454,7 @@ hpgl_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #endif
 {
-   const char *fnmPrn;
+   char *fnmPrn;
    static const char *vars[] = {
       "like",
       "output",
@@ -507,9 +507,6 @@ ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
    fOriginInCentre = as_bool(vars[5], vals[5]);
    PaperDepth -= 10; /* Allow 10mm for footer */
    osfree(vals);
-
-   /* name and size of font to use for text */
-   fontname = as_string(vals);
 
    *pscX = *pscY = (float)(HPGL_UNITS_PER_MM);
    xpPageWidth = (long)(HPGL_UNITS_PER_MM * (double)PaperWidth);
