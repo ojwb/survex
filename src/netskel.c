@@ -41,9 +41,6 @@
 #include "netskel.h"
 #include "network.h"
 #include "out.h"
-#ifdef NEW3DFORMAT
-#include "new3dout.h"
-#endif
 
 #define sqrdd(X) (sqrd((X)[0]) + sqrd((X)[1]) + sqrd((X)[2]))
 

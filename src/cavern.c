@@ -50,7 +50,6 @@
 #  endif
 #endif
 
-#include "new3dout.h"
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 1024
 #endif
