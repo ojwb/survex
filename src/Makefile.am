@@ -7,6 +7,8 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h uni2dos.h useful.h\
  validate.h whichos.h xrot.h
 
+LDADD = @LIBOBJS@
+
 PRINT = printdm printps printpcl printhpgl
 
 EXTRA_PROGRAMS = caverot xcaverot printxbm aven
@@ -22,7 +24,7 @@ survex_SOURCES = wrap.c osdepend.c
 
 aven_SOURCES = aven.cc cvrotimg.c img.c useful.c osdepend.c filename.c\
  message.c
-aven_LDADD = @GTKMM_LIBS@ -lgnomemm
+aven_LDADD = @LIBOBJS@ @GTKMM_LIBS@ -lgnomemm
 aven_CFLAGS = @GTKMM_CFLAGS@
 aven_CXXFLAGS = @GTKMM_CFLAGS@
 
@@ -34,11 +36,6 @@ printdm_SOURCES = printdm.c $(PRSRC) prbitmap.c
 printpcl_SOURCES = printpcl.c $(PRSRC) prbitmap.c
 printxbm_SOURCES = printxbm.c $(PRSRC) prbitmap.c
 printhpgl_SOURCES = prhpgl.c $(PRSRC)
-printps_LDADD = @LIBOBJS@
-printdm_LDADD = @LIBOBJS@
-printpcl_LDADD = @LIBOBJS@
-printxbm_LDADD = @LIBOBJS@
-printhpgl_LDADD = @LIBOBJS@
 
 #printmd0_SOURCES = printmd0.c prbitmap.c prcore.c message.c filename.c\
 # useful.c img.c osdepend.c
@@ -47,12 +44,12 @@ ROTSRC = cvrotimg.c img.c useful.c osdepend.c filename.c message.c
 
 caverot_SOURCES = caverot.c $(ROTSRC) rotplot.c labels.c cvrotgfx.c
 EXTRA_caverot_SOURCES = dosrot.c
-caverot_LDADD = @CROBJX@ @CRLIB@
+caverot_LDADD = @LIBOBJS@ @CROBJX@ @CRLIB@
 caverot_DEPENDENCIES = @CROBJX@
 
 xcaverot_SOURCES = xcaverot.c $(ROTSRC)
 xcaverot_CFLAGS = @X_CFLAGS@
-xcaverot_LDADD = @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
+xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
 # next line is actually superfluous to automake (but riscos/bc hack needs it)
 diffpos_SOURCES = diffpos.c
