@@ -383,13 +383,13 @@ articulate(void)
 
    {
       component *comp;
-      articulation *art;
 
 #ifdef DEBUG_ARTIC
       printf("\nDump of %d components:\n", cComponents);
 #endif
       for (comp = component_list; comp; comp = comp->next) {
 	 node *list = NULL, *listend = NULL;
+	 articulation *art;
 #ifdef DEBUG_ARTIC
 	 printf("Component:\n");
 #endif
