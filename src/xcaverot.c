@@ -46,6 +46,12 @@
 	      rotation speed independant of system load
 	      reinstated survey sections in different colours
 	      few other small things
+1997.05.28 rearranged a fair bit, so we can merge with caverot soon [Olly]
+1997.06.02 mostly converted to use cvrotimg [Olly]
+1998.03.04 merged two deviant versions:
+>1997.06.03 tweaked to compile [Olly]
+>1997.06.10 fixed gcc warning [Olly]
+1998.03.21 fixed up to compile cleanly on Linux
 
   12.06.97 started reworking in Olly's rearrangements towards merger
              with caverot, and to use cvrotimg    [JPNP]
@@ -63,7 +69,6 @@
 
   */
 
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -77,7 +82,7 @@ float y_stretch = 1.0;
 
 /* Width and height of compass and elevation indicator windows */
 #define FONTSPACE 20
-#define INDWIDTH 100
+#define INDWIDTH 100 /* FIXME: allow INDWIDTH to be set dynamically */
 #define INDDEPTH (INDWIDTH + FONTSPACE)
 
 #define C_IND_ANG 25
@@ -86,21 +91,17 @@ float y_stretch = 1.0;
 #define E_IND_LINE 0.6
 #define E_IND_PTR 0.38
 
+/* radius of compass and clino indicators */
 #define RADIUS ((float)INDWIDTH*.4)
 
 /* font to use */
 #define FONTNAME "8x13"
 
-/*d #define YOFF 350 */
-
-/*d #define TRUE 1
-#define FALSE 0*/
-
 #define PIBY180 0.017453293
 
-#include <string.h>
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/time.h>   /* for gettimeofday */
 
 #include <X11/Xlib.h>
@@ -121,8 +122,6 @@ float y_stretch = 1.0;
 #ifndef MININT
 #define MININT 0x80000000
 #endif
-
-/* typedef int coord;  gone to xrot.h */
 
 #if 0
 typedef struct
@@ -149,22 +148,16 @@ typedef struct
 /* static point *pdata = NULL; */
 /* static int npoints; */
 
-
 /* scale all data by this to fit in coord data type */
 /* Note: data in file in metres. 100.0 below stores to nearest cm */
 static float datafactor = (float)100.0;
 
 /* factor to scale view on screen by */
 static float scale = 0.1;
-
 static float zoomfactor = 1.2;
-
 static float sbar;     /* length of scale bar */
 static float scale_orig;    /* saved state of scale, used in drag re-scale*/
 static int changedscale = 1;
-
-
-/* static int scale_y; */
 
 static struct {
   int x;
@@ -186,12 +179,6 @@ static int labelling = 0;
 static struct timeval lastframe;
 
 static int xoff, yoff;  /* offsets at which survey is plotted in window */
-static coord x_min=MAXINT;
-static coord x_max=MININT;
-static coord y_min=MAXINT;
-static coord y_max=MININT;
-static coord z_min=MAXINT;
-static coord z_max=MININT;
 static coord x_mid;
 static coord y_mid;
 static coord z_mid;
@@ -202,7 +189,7 @@ static Window butzoom, butmooz, butload, butrot, butstep, butquit;
 static Window butplan, butlabel, butcross, butselect;
 static Window ind_com, ind_elev, scalebar, rot_but;
 static GC mygc, scale_gc, slab_gc;
-static int oldwidth,oldheight; /* to adjust scale on window resize */
+static int oldwidth, oldheight; /* to adjust scale on window resize */
 static Region label_reg; /* used to implement non-overlapping labels */
 
 /* use double buffering in the rendering if server supports it */
@@ -216,9 +203,6 @@ static XFontStruct *fontinfo;   /* info on the font used in labeling */
 static char hello[] = "X-Caverot";
 
 static unsigned long black,white;
-
-
-
 
 static int lab_col_ind = 19; /* Hack to get labels in sensible colour JPNP */
 static int fontheight, slashheight;       /* JPNP */
@@ -257,7 +241,6 @@ static char *ncolors[] = { "black",
   "gray12", "gray24", "gray36",
   "gray48", "gray60", "gray73", "gray82", "gray97", NULL };
 
-
 static Colormap color_map;
 static XColor colors[128];
 static XColor exact_colors[128];
@@ -268,231 +251,73 @@ static int numsurvey = 0;
 
 /* Create a set of colors from named colors */
 
-static void color_set_up( Display *display, Window window )
+static void color_set_up(Display *display, Window window)
 {
-  int i;
-  XGCValues vals;
+   int i;
+   XGCValues vals;
 
-  /* color_map = DefaultColormap(display,0);*/
+   /* color_map = DefaultColormap(display,0);*/
 
-  /* get the colors from the color map for the colors named */
-  for ( i=0; ncolors[i]; i++ )
-    {
+   /* get the colors from the color map for the colors named */
+   for ( i = 0; ncolors[i]; i++ ) {
       XAllocNamedColor( display, color_map, ncolors[i],
 		        &exact_colors[i], &colors[i] );
       vals.foreground = colors[i].pixel;
       gcs[i] = XCreateGC( display, window, GCForeground, &vals );
-    }
-  numsurvey = 0;
+   }
+   numsurvey = 0;
 }
 
-static void flip_button( Display *display, Window mainwin, Window button,
-		 GC normalgc, GC inversegc, char *string )
-{
-  XClearWindow(display, button);
-  XFillRectangle(display, button, normalgc, 0, 0, BUTWIDTH, BUTHEIGHT);
-  XDrawImageString(display, button, inversegc, BUTWIDTH/4, 20, string, strlen(string));
-  XFlush(display);
+static void flip_button(Display *display, Window mainwin, Window button,
+                        GC normalgc, GC inversegc, char *string) {
+   int len = strlen(string);
+   int width;
+   int offset;
+   width = XTextWidth(XQueryFont(display, XGContextFromGC(inversegc)),
+		      string, len);
+   offset = (BUTWIDTH - width) / 2;
+   if (offset < 0) offset = 0;
+   /* for old behaviour, offset = BUTWIDTH/4 */
+
+   XClearWindow(display, button);
+   XFillRectangle(display, button, normalgc, 0, 0, BUTWIDTH, BUTHEIGHT);
+   XDrawImageString(display, button, inversegc, offset, 20, string, len);
+   XFlush(display);
 }
 
-int findsurvey( char *name )
-{
-  int i;
+int findsurvey(const char *name) {
+   int i;
 
-  for ( i=0; i<numsurvey; i++ )
-    if (strcmp(surveys[i], name) == 0)
-      return i;
-  i = numsurvey;
-  if (ncolors[i+1])
-    numsurvey++;
-  surveys[i] = (char *)osmalloc(strlen(name)+1);
-  strcpy(surveys[i], name);
-  surveymask[i] = 1;
-  return i;
-}
-
-void update_limits(point *p)
-{
-  if (p->X < x_min)
-    x_min = p->X;
-  if (p->X > x_max)
-    x_max = p->X;
-  if (p->Y < y_min)
-    y_min = p->Y;
-  if (p->Y > y_max)
-    y_max = p->Y;
-  if (p->Z < z_min)
-    z_min = p->Z;
-  if (p->Z > z_max)
-    z_max = p->Z;
+   for (i = 0; i < numsurvey; i++)
+      if (strcmp(surveys[i], name) == 0)
+         return i;
+   i = numsurvey;
+   if (ncolors[i+1])
+      numsurvey++;
+   surveys[i] = (char *)osmalloc(strlen(name) + 1);
+   strcpy(surveys[i], name);
+   surveymask[i] = 1;
+   return i;
 }
 
 static lid **ppLegs=NULL;
 static lid **ppStns=NULL;
 
+int load_file(const char *name) {
+   ppLegs = osmalloc((1 + 1) * sizeof(lid Huge *));
+   ppStns = osmalloc((1 + 1) * sizeof(lid Huge *));
 
-int load_file( const char *name )
-{
-  point *p;
+   /* load data into memory */
+   if (!load_data(name, ppLegs, ppStns))  return 0;   
+   ppLegs[1] = NULL;
+   ppStns[1] = NULL;
 
-  ppLegs = osmalloc((1 + 1) * sizeof(lid *));
-  ppStns = osmalloc((1 + 1) * sizeof(lid *));
-  /* load data into memory */
-  if (!load_data( name, ppLegs, ppStns) )  return 0;
-  ppLegs[1] = NULL;
-  ppStns[1] = NULL;
-  /* find limits of station positions */
-  for ( p = ppLegs[0]->pData; p->_.action != STOP; p++ ) update_limits(p);
-  for ( p = ppStns[0]->pData; p->_.str != NULL; p++ ) update_limits(p);
-
-  x_mid = (x_min + x_max) / 2;
-  y_mid = (y_min + y_max) / 2;
-  z_mid = (z_min + z_max) / 2;
-
-  return 1;
+   scale = scale_to_screen(ppLegs, ppStns);
+   x_mid = Xorg;
+   y_mid = Yorg;
+   z_mid = Zorg;
+   return 1;
 }
-
-#if 0
-/*
- fDialog is non-zero iff we're being called from a dialog box
- If set, then an error is reported by copying the error string back into
- the dialog box
-*/
-point *load_data(char *name, int fDialog)
- {
- img *pimg;
- char sz[256], *p=NULL;
- float x, y, z;
- long c, cMac; /* count of points and ceiling for same */
- int srvy, result;
- point *pData;
-
- pimg=img_open( name, NULL, NULL );
- if (pimg==NULL)
-   {
-   if (fDialog)
-       strcpy(name, "File not found or not a Survex image file");
-   return NULL;
-   }
-
- x_min = MAXINT;
- x_max = MININT;
- y_min = MAXINT;
- y_max = MININT;
- z_min = MAXINT;
- z_max = MININT;
-
- srvy = 0;	/* default survey number */
- surveymask[0] = 1;	/* enable default survey display */
-
- c=0;
- cMac=2048; /* say */
-
- /* get some memory to put the data in */
- pData = osmalloc(ossizeof(point)*cMac);
-
- do
-  {
-  if (p)
-    { /* last item was a label, which we store in the next point */
-    p[sizeof(point)-1] = 0;
-    strcpy((char *)(pData+c), p);
-    p = NULL;
-    }
-  else
-    {
-    result=img_read_datum( pimg, sz, &x, &y, &z );
-    switch (result)
-     {
-     case img_BAD:
-      strcpy(name, "Bad Image File");
-      break;
-     case img_MOVE:
-      pData[c].Option = (coord)MOVE;
-      break;
-     case img_LINE:
-      pData[c].Option = (coord)DRAW;
-      break;
-     case img_CROSS:
-      pData[c].Option = (coord)CROSS;
-      break;
-     case img_LABEL:
-      pData[c].Option=LABEL;
-      p = strrchr( sz, '.' );  /* strchr( sz, '.' ); */
-      if (p) {
-	*p='\0';
-	/* p=sz;*/
-      } else {
-	/* p=sz;*/
-      }
-      srvy = findsurvey(sz); /* findsurvey(p); */
-      if (p) *p='.';
-      p=sz;
-      /* Now p!=NULL so we store the label on the next pass of the loop */
-      break;
-     }
-
-    pData[c].X = (coord)(x*datafactor);
-    pData[c].Y = (coord)(y*datafactor);
-    pData[c].Z = (coord)(z*datafactor);
-    pData[c].survey = srvy;
-    update_limits(pData+c);
-    }
-
-  c++;
-
-  if (c>=cMac)
-   {
-   long cMacNew;
-   point *pDataNew;
-   cMacNew = cMac<<1;
-   /* make sure we don't overflow OSSIZE_T
-    * (eg asking DOS malloc for 65536 gets 0) */
-   while ((OSSIZE_T)(ossizeof(point)*cMacNew)<(OSSIZE_T)(ossizeof(point)*cMac))
-    {
-    cMacNew-=16;
-    if (cMacNew<=cMac)
-     break; /* gets caught in next while loop */
-    }
-   while (fTrue)
-    {
-    pDataNew=xosrealloc(pData,ossizeof(point)*cMacNew);
-    if (pDataNew!=NULL)
-     break;
-    cMacNew-=16;
-    if (cMacNew<=cMac)
-     {
-     osfree(pData); /* free memory to give us some breathing space */
-     exit(1); /* out of memory */
-     }
-    }
-   pData=pDataNew;
-   cMac=cMacNew;
-   }
-  } while (result!=img_BAD && result!=img_STOP);
-
- img_close(pimg);
-
- pData[c].Option=(coord)STOP;
-
- if (result==img_BAD)
-   return NULL;
-
- x_mid = (x_min + x_max) / 2;
- y_mid = (y_min + y_max) / 2;
- z_mid = (z_min + z_max) / 2;
-
- /*
- printf("x_min=%d, y_min=%d, z_min=%d\n", x_min, y_min, z_min);
- printf("x_max=%d, y_max=%d, z_min=%d\n", x_max, y_max, z_max);
- printf("x_mid=%d, y_mid=%d, z_mid=%d\n", x_mid, y_mid, z_mid);
- */
-
- return pData;
- }
-
-#endif
-
 
 void process_load(Display *display, Window mainwin, Window button,
 		  GC mygc, GC egc)
@@ -549,14 +374,9 @@ void process_load(Display *display, Window mainwin, Window button,
       /* Clear everything out of the buffers and reset */
       XFlush(display);
       if (!load_file( string )) {
-	strcpy( string, "File not found or not a Survex image file" );
-	break;
+         strcpy(string, "File not found or not a Survex image file");
+    	 break;
       }
-#if 0
-      pdata = load_data( string, 1 ); /* changed by Olly */
-      if (pdata != NULL)              /* changed by Olly */
-	break;
-#endif
       XClearWindow(display, enter_window);
       XDrawString(display, enter_window, enter_gc,
 		  10, 25, string, strlen(string));
@@ -570,64 +390,64 @@ void process_load(Display *display, Window mainwin, Window button,
 void process_plan(Display *display, Window mainwin, Window button,
 		  GC mygc, GC egc)
 {
-  flip_button(display, mainwin, button, mygc, egc, elev_angle==0.0 ? "Elev" : "Plan");
-  if (elev_angle == 90.0) { elev_angle = 0.0; }
-       else { elev_angle = 90.0; }
-  flip_button(display, mainwin, button, egc, mygc, elev_angle==0.0 ? "Elev" : "Plan");
+   flip_button(display, mainwin, button, mygc, egc, elev_angle==0.0 ? "Elev" : "Plan");
+   if (elev_angle == 90.0)
+      elev_angle = 0.0;
+   else
+      elev_angle = 90.0;
+   flip_button(display, mainwin, button, egc, mygc, elev_angle==0.0 ? "Elev" : "Plan");
 }
 
 void process_label(Display *display, Window mainwin, Window button,
-		  GC mygc, GC egc)
+                   GC mygc, GC egc)
 {
-  flip_button(display, mainwin, button, mygc, egc, labelling ? "No Label" : "Label");
-  labelling = (labelling == 0);
-  flip_button(display, mainwin, button, egc, mygc, labelling ? "No Label" : "Label");
+   flip_button(display, mainwin, button, mygc, egc, labelling ? "No Label" : "Label");
+   labelling = !labelling;
+   flip_button(display, mainwin, button, egc, mygc, labelling ? "No Label" : "Label");
 }
 
 void process_cross(Display *display, Window mainwin, Window button,
 		  GC mygc, GC egc)
 {
-  flip_button(display, mainwin, button, mygc, egc, crossing ? "No Cross" : "Cross");
-  crossing = (crossing == 0);
-  flip_button(display, mainwin, button, egc, mygc, crossing ? "No Cross" : "Cross");
+   flip_button(display, mainwin, button, mygc, egc, crossing ? "No Cross" : "Cross");
+   crossing = !crossing;
+   flip_button(display, mainwin, button, egc, mygc, crossing ? "No Cross" : "Cross");
 }
 
 void process_rot(Display *display, Window mainwin, Window button,
 		  GC mygc, GC egc)
 {
-  flip_button(display, mainwin, button, mygc, egc, rot ? "Stop" : "Rotate");
-  rot = (rot == 0);
-
-  gettimeofday(&lastframe,NULL);
-  flip_button(display, mainwin, button, egc, mygc, rot ? "Stop" : "Rotate");
+   flip_button(display, mainwin, button, mygc, egc, rot ? "Stop" : "Rotate");
+   rot = !rot;
+   gettimeofday(&lastframe, NULL);
+   flip_button(display, mainwin, button, egc, mygc, rot ? "Stop" : "Rotate");
 }
 
 void process_step(Display *display, Window mainwin, Window button,
 		  GC mygc, GC egc)
 {
-  flip_button(display, mainwin, button, mygc, egc, "Step");
-  view_angle += 3.0;
-  if (view_angle >= 360.0)
-    view_angle = 0.0;
-  flip_button(display, mainwin, button, egc, mygc, "Step");
+   flip_button(display, mainwin, button, mygc, egc, "Step");
+   view_angle += 3.0;
+   if (view_angle >= 360.0) view_angle = 0.0;
+   flip_button(display, mainwin, button, egc, mygc, "Step");
 }
 
 void process_zoom(Display *display, Window mainwin, Window button,
 		  GC mygc, GC egc)
 {
-  flip_button(display, mainwin, button, mygc, egc, "Zoom in");
-  scale *= zoomfactor;
-  changedscale = 1;
-  flip_button(display, mainwin, button, egc, mygc, "Zoom in");
+   flip_button(display, mainwin, button, mygc, egc, "Zoom in");
+   scale *= zoomfactor;
+   changedscale = 1;
+   flip_button(display, mainwin, button, egc, mygc, "Zoom in");
 }
 
 void process_mooz(Display *display, Window mainwin, Window button,
 		  GC mygc, GC egc)
 {
-  flip_button(display, mainwin, button, mygc, egc, "Zoom out");
-  scale /= zoomfactor;
-  changedscale = 1;
-  flip_button(display, mainwin, button, egc, mygc, "Zoom out");
+   flip_button(display, mainwin, button, mygc, egc, "Zoom out");
+   scale /= zoomfactor;
+   changedscale = 1;
+   flip_button(display, mainwin, button, egc, mygc, "Zoom out");
 }
 
 void process_select(Display *display, Window window, Window button, GC mygc, GC egc)
@@ -636,8 +456,7 @@ void process_select(Display *display, Window window, Window button, GC mygc, GC 
   XEvent event;
   int n, wid, ht, x, y, i;
 
-
-  flip_button(display, window, button, mygc, egc, "select");
+  flip_button(display, window, button, mygc, egc, "Select");
   for (n=1; n*n*5 < numsurvey; n++)
     ;
   ht = n * 5 * 20;
@@ -679,16 +498,16 @@ void process_select(Display *display, Window window, Window button, GC mygc, GC 
 
 	  x = e->x;
 	  y = e->y;
-	  printf("select: x=%d, y=%d\n", x, y);
+	  /*printf("select: x=%d, y=%d\n", x, y);*/
 	  i = 0;
 	  while (x > 130)
 	    {
 	      x -= 130;
 	      i += n*5;
-	      printf("adjust: x=%d, i=%d\n", x, i);
+	      /*printf("adjust: x=%d, i=%d\n", x, i);*/
 	    }
 	  i += (y / 20);
-	  printf("final i=%d\n", i);
+	  /*printf("final i=%d\n", i);*/
 	  if (i >= numsurvey)
 	    break;
 	  if (x >= 12 && x < 22)
@@ -696,7 +515,7 @@ void process_select(Display *display, Window window, Window button, GC mygc, GC 
 	}
     }
   XDestroyWindow(display, select);
-  flip_button(display, window, button, egc, mygc, "select");
+  flip_button(display, window, button, egc, mygc, "Select");
 }
 
 void draw_rot_but(GC gc)
@@ -724,7 +543,6 @@ void draw_rot_but(GC gc)
 	    (INDDEPTH*.5+c)-q);
 }
 
-
 void draw_ind_elev( Display *display, GC gc, float angle )
 {
   char temp[32];
@@ -750,14 +568,11 @@ void draw_ind_elev( Display *display, GC gc, float angle )
   XDrawLine(display, ind_elev, gc, xm-q, ym, xm-q + E_IND_LEN*q*cos((angle-E_IND_ANG)*PIBY180),
 	    ym - E_IND_LEN*q*sin((angle-E_IND_ANG)*PIBY180));
 
-
   sprintf(temp, "%d", (int)angle);
   XDrawString(display, ind_elev, gc, INDWIDTH/2-20, INDDEPTH-10, temp, strlen(temp));
-
 }
 
-void draw_ind_com(Display *display, GC gc, float angle)
-{
+void draw_ind_com( Display *display, GC gc, float angle ) {
   char temp[32];
   int xm,ym;
   double sa, ca;
@@ -782,13 +597,12 @@ void draw_ind_com(Display *display, GC gc, float angle)
 
   sprintf(temp, "%03d", 180-(int)angle);
   XDrawString(display, ind_com, gc, INDWIDTH/2-20, INDDEPTH-10, temp, strlen(temp));
-
 }
 
 void draw_scalebar(Window mainwin)
 {
   char temp[20];
-  float l,m,n,o,p;
+  float l,m,n,o;
 
   if (changedscale) {
 
@@ -804,13 +618,11 @@ void draw_scalebar(Window mainwin)
 
     o = (m-floor(m) < log10(5) ? n : 5*n );
 
-    p = o*100/l;
-
     sbar = (int)o;
 
     changedscale =0;
   }
- /* printf("%f\t%f\t%f\t%f\t%f\n", l,m,n,o,p); */
+ /* printf("%f\t%f\t%f\t%f\n", l,m,n,o); */
 
   XClearWindow(mydisplay, scalebar);
 
@@ -823,7 +635,8 @@ void draw_scalebar(Window mainwin)
   XDrawString(mydisplay, mainwin, slab_gc, 8, BUTHEIGHT + FONTSPACE, temp, strlen(temp));
 }
 
-void draw_label(Display *display,Window  window, GC gc,int x,int  y, char *string,int length)
+void
+draw_label(Display *display, Window window, GC gc, int x, int y, const char *string, int length)
 {
   XRectangle r;
   int strwidth;
@@ -831,7 +644,7 @@ void draw_label(Display *display,Window  window, GC gc,int x,int  y, char *strin
 			       * should be fixed ! JPNP */
   int width = oldwidth;
   int height = oldheight;
-  strwidth = XTextWidth( fontinfo , string, length);
+  strwidth = XTextWidth( fontinfo, string, length );
 
   if (x<width && y<height && x+strwidth>0 && y+fontheight>0){
 
@@ -842,7 +655,6 @@ void draw_label(Display *display,Window  window, GC gc,int x,int  y, char *strin
       r.height=fontheight;
       XUnionRectWithRegion(&r,label_reg,label_reg);
       XDrawString(display,window,gc,x,y, string, length);
-
     }
   }
 }
@@ -850,7 +662,7 @@ void draw_label(Display *display,Window  window, GC gc,int x,int  y, char *strin
 static float sx,cx,fx,fy,fz;
 
 void setview( float angle ) {
-  /* since I know longer attempt to make sure that plane_elev is always
+  /* since I no longer attempt to make sure that plan_elev is always
    * kept up to date by any action which might change the elev_angle
    * I make sure it's correct here [JPNP]
    */
@@ -885,45 +697,46 @@ int toscreen_y( point *p ) {
 
 point *find_station( int x, int y, int mask)
 {
-  point *p, *q=NULL;
-  /* d_min is some measure of how close we are (e.g. distance squared,
-   * min( dx, dy ), etc) */
-  int d_min = MAXINT;
+   point *p, *q = NULL;
+   /* d_min is some measure of how close we are (e.g. distance squared,
+    * min( dx, dy ), etc) */
+   int d_min = MAXINT;
+   lid *plid;
 
-  if (ppStns == NULL)
-      return NULL;
+   if (ppStns == NULL) return NULL;
 
+   setview(view_angle); /* FIXME: needed? */
 
-  for (p=ppStns[0]->pData; p->_.str != NULL; p++)
-    {
-      int d;
-      int x1 = toscreen_x( p );
-      int y1 = toscreen_y( p );
+   for (plid = ppStns[0]; plid; plid = plid->next) {
+      for (p = plid->pData; p->_.str != NULL; p++) {
+	 int d;
+	 int x1 = toscreen_x(p);
+	 int y1 = toscreen_y(p);
 #if 1
-      d = (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y);
+	 d = (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y);
 #else  /* old metric */
-      d = min( abs(x1 - x), abs(y1 - y) );
+	 d = min(abs(x1 - x), abs(y1 - y));
 #endif
-      if (d < d_min) {
-	d_min = d;
-	q = p;
+	 if (d < d_min) {
+	    d_min = d;
+	    q = p;
+	 }
       }
     }
-
-  printf( "near %d, %d, station %s was found\nat %d, %d\t\t%d, %d, %d\n",
-	  x, y, q->_.str, toscreen_x(q), toscreen_y(q), q->X, q->Y, q->Z );
-  /*printf("at %d, %d, station %d was found\n%d, %d\t\t%d, %d, %d\n", x,y,q,xs,ys,q->X,q->Y,q->Z);*/
-  return q;
+#if 0
+   printf( "near %d, %d, station %s was found\nat %d, %d\t\t%d, %d, %d\n",
+           x, y, q->_.str, toscreen_x(q), toscreen_y(q), q->X, q->Y, q->Z );
+#endif
+   return q;
 }
-
 
 void redraw_image(Display *display, Window window, GC gc)
 {
-  point *p;
   coord x1=0, y1=0, x2=0, y2=0;
   XWindowAttributes a;
   int width, height;
-  int srvy=1;
+  int srvy = 0; /*FIXME: JPNP had 1 - check */
+  lid *plid;
   struct timeval temptime;
   float timefact;
 
@@ -947,12 +760,11 @@ void redraw_image(Display *display, Window window, GC gc)
   /* calculate amount of rotation by how long since last redraw
    * to keep a constant speed no matter how long between redraws */
   gettimeofday(&temptime, NULL);
-  if (rot)
-    {
-      timefact = (temptime.tv_sec - lastframe.tv_sec);
-      timefact += (temptime.tv_usec - lastframe.tv_usec)/1000000.0;
-      view_angle += rot_speed * timefact;
-    }
+  if (rot) {
+     timefact = (temptime.tv_sec - lastframe.tv_sec);
+     timefact += (temptime.tv_usec - lastframe.tv_usec)/1000000.0;
+     view_angle += rot_speed * timefact;
+  }
   lastframe.tv_sec  = temptime.tv_sec;
   lastframe.tv_usec = temptime.tv_usec;
 
@@ -964,181 +776,90 @@ void redraw_image(Display *display, Window window, GC gc)
   setview( view_angle );
 
   /* printf("height=%d, width=%d, xoff=%d, yoff=%d\n", height, width, xoff, yoff); */
-  for ( p = ppLegs[0]->pData; p->_.action != STOP; p++ ) {
-    switch (p->_.action) {
-    case MOVE:
-      /*  srvy = p->survey;  */
-      x1 = toscreen_x( p );
-      y1 = toscreen_y( p );
-      break;
-    case DRAW:
-      x2 = toscreen_x( p );
-      y2 = toscreen_y( p );
-      /*   if (surveymask[srvy]) */
-      XDrawLine( display, window, gcs[0], x1, y1, x2, y2 );
-      /*printf( "draw line from %d,%D to %d,%d\n", x1, y1, x2, y2 );*/
-      x1 = x2;
-      y1 = y2;	/* for continuous drawing */
-      break;
-    }
-  }
-
-  if ((crossing || labelling) /*&& surveymask[p->survey]*/) {
-      for ( p = ppStns[0]->pData; p->_.str != NULL; p++ ) {
-	x2 = toscreen_x( p );
-	y2 = toscreen_y( p );
-	if (crossing) {
-	  XDrawLine( display, window, gcs[srvy],
-		     x2-10, y2, x2+10, y2 );
-	  XDrawLine( display, window, gcs[srvy],
-		     x2, y2-10, x2, y2+10 );
-	}
-
-	if (labelling) {
-	  char *q;
-	  q = p->_.str;
-	  draw_label( display, window, gcs[lab_col_ind],
-		      x2, y2 + slashheight, q, strlen(q) );
-            /* XDrawString(display,window,gcs[lab_col_ind],x2,y2+slashheight, q, strlen(q)); */
-	  /* XDrawString(display,window,gcs[p->survey],x2+10,y2, q, strlen(q)); */
-	}
+   for (plid = ppLegs[0]; plid; plid = plid->next) {
+      point *p;
+      for (p = plid->pData; p->_.action != STOP; p++) {
+	 switch (p->_.action) {
+	  case MOVE:
+	    /* srvy = p->survey; */
+	    x1 = toscreen_x( p );
+	    y1 = toscreen_y( p );
+	    break;
+	  case DRAW:
+	    x2 = toscreen_x( p );
+	    y2 = toscreen_y( p );
+	    /* if (surveymask[srvy]) */
+	    XDrawLine( display, window, gcs[srvy], x1, y1, x2, y2 );
+	    /*printf( "draw line from %d,%d to %d,%d\n", x1, y1, x2, y2 );*/
+	    x1 = x2;
+	    y1 = y2;	/* for continuous drawing */
+	    break;
+	 }
       }
-  }
-
-#if 0
-  for (p=pdata; p->Option != STOP; p++)
-    {
-      if (p->Option == MOVE)
-	{
-	  srvy = p->survey;
-	  x1 = (( p->X - x_mid ) * -cx + ( p->Y - y_mid ) * -sx ) * scale;
-	  if (plan_elev) {
-	    if (plan_elev  == PLAN)
-	      y1 = ((p->X - x_mid ) * sx - ( p->Y - y_mid ) * cx ) * scale;
-	    else
-              y1 = ( p->Z - z_mid ) * scale;
-	  }
-	  else
-	    y1 = ( (p->X - x_mid ) * fx + ( p->Y - y_mid) * fy
-		   + (p->Z - z_mid) * fz ) * scale;
-
-	}
-      else if (p->Option == DRAW)
-	{
-	  x2 = (( p->X - x_mid ) * -cx + ( p->Y - y_mid ) * -sx ) * scale;
-	  if (plan_elev) {
-	    if (plan_elev == PLAN)
-	      y2 = ((p->X - x_mid ) * sx - ( p->Y - y_mid ) * cx ) * scale;
-	    else
-	      y2 = ( p->Z - z_mid ) * scale;
-	  }
-	  else
-	    y2 = ( (p->X - x_mid ) * fx + ( p->Y - y_mid) * fy
-		   + (p->Z - z_mid) * fz ) * scale;
-	  if (surveymask[srvy])
-	    XDrawLine(display, window, gcs[srvy], x1+xoff, yoff-y1, x2+xoff, yoff-y2);
-	  /* printf("draw line from %d,%D to %d,%d\n",
-	     x1+xoff, y1+yoff, x2+xoff, y2+yoff);*/
-	  x1 = x2;
-	  y1 = y2;	/* for continuous drawing */
-	  z1 = z2;
-	}
-      else if (p->Option == LABEL)
-	{
-	  if (crossing) {
-
-
-	    x2 = (( p->X - x_mid ) * -cx + ( p->Y - y_mid ) * -sx ) * scale;
-	    if (plan_elev) {
-	      if (plan_elev == PLAN)
-	        y2 = ((p->X - x_mid ) * sx - ( p->Y - y_mid ) * cx ) * scale;
-	      else
-	        y2 = ( p->Z - z_mid ) * scale;
+   }
+   
+   if ((crossing || labelling) /*&& surveymask[p->survey]*/) {
+      point *p;
+      for (plid = ppStns[0]; plid; plid = plid->next) {
+	 for ( p = plid->pData; p->_.str != NULL; p++ ) {
+	    x2 = toscreen_x( p );
+	    y2 = toscreen_y( p );
+	    if (crossing) {
+	       XDrawLine( display, window, gcs[srvy],
+			 x2-10, y2, x2+10, y2 );
+	       XDrawLine( display, window, gcs[srvy],
+			 x2, y2-10, x2, y2+10 );
 	    }
-	    else
-	      y2 = ( (p->X - x_mid ) * fx + ( p->Y - y_mid) * fy
-		     + (p->Z - z_mid) * fz ) * scale;
-	    srvy = p->survey;
-	    if (surveymask[srvy])
-	      {
-		XDrawLine(display, window, gcs[srvy],
-			  x2+xoff-10,yoff-y2,x2+xoff+10,yoff-y2);
-		XDrawLine(display, window, gcs[srvy],
-			  x2+xoff,yoff-y2-10,x2+xoff,yoff-y2+10);
-	      }
-	  }
-
-	  if (labelling) {
-	    char *q;
-
-	    x2 = (( p->X - x_mid ) * -cx + ( p->Y - y_mid ) * -sx ) * scale;
-	    if (plan_elev) {
-	      if (plan_elev == PLAN)
-		y2 = ((p->X - x_mid ) * sx - ( p->Y - y_mid ) * cx ) * scale;
-	      else
-		y2 = ( p->Z - z_mid ) * scale;
+	    if (labelling) {
+	       char *q;
+	       q = p->_.str;
+	       draw_label( display, window, gcs[lab_col_ind],
+			  x2, y2 + slashheight, q, strlen(q) );
+	       /* XDrawString(display,window,gcs[lab_col_ind],x2,y2+slashheight, q, strlen(q)); */
+	       /* XDrawString(display,window,gcs[p->survey],x2+10,y2, q, strlen(q)); */
 	    }
-	    else
-	      y2 = ( (p->X - x_mid ) * fx + ( p->Y - y_mid) * fy
-		     + (p->Z - z_mid) * fz ) * scale;
-	    srvy = p->survey;
-	    p++;
-	    q = (char *)p;
-	    if (surveymask[srvy])
-	      draw_label(display,window,gcs[srvy],x2+xoff+0,yoff-y2+slashheight, q, strlen(q));
-	    /* XDrawString(display,window,gcs[lab_col_ind],x2+xoff+0,yoff-y2+slashheight, q, strlen(q)); */
-	    /* XDrawString(display,window,gcs[srvy],x2+xoff+10,yoff-y2, q, strlen(q)); */
-	  }
-	}
-    }
-#endif
-
-  XDestroyRegion(label_reg);
-  draw_ind_com(display, gc ,view_angle);
-  draw_ind_elev(display, gc, elev_angle);
-  draw_scalebar(window);
-  draw_rot_but(gc);
-  XFlush(display);
-  /* if we're using double buffering now is the time to swap buffers */
-  if (dbuff) XdbeSwapBuffers(display, &backswapinfo, 1);
+	 }
+      }   
+   }
+   
+/*   XDestroyRegion( label_reg ); */
+   draw_ind_com( display, gc, view_angle );
+   draw_ind_elev( display, gc, elev_angle );
+   draw_scalebar(window);
+   draw_rot_but(gc);
+   XFlush(display);
+   /* if we're using double buffering now is the time to swap buffers */
+   if (dbuff) XdbeSwapBuffers(display, &backswapinfo, 1);
 }
 
 void process_focus(Display *display, Window window, int ix, int iy)
 {
-  /* int height, width; */
-  float x, y /*, sx, cx*/ ;
-  /* XWindowAttributes a; */
-  point* q;
-  /*float x1, y1;*/
+  int height, width;
+  float x, y, sx, cx;
+  XWindowAttributes a;
+  point *q;
 
-  /* XGetWindowAttributes(display, window, &a);  */
-  /* height = a.height / 2;   */
-  /* width = a.width / 2;  */
+  XGetWindowAttributes(display, window, &a);
+  height = a.height / 2;
+  width = a.width / 2;
 
-  /* x = (int)((float)(-ix + width) / scale); */
-  /* y = (int)((float)(height - iy) / scale); */
-  /* sx = sin(view_angle*PIBY180); */
-  /* cx = cos(view_angle*PIBY180); */
+  x = (int)((float)(-ix + width) / scale);
+  y = (int)((float)(height - iy) / scale);
+  sx = sin(view_angle*PIBY180);
+  cx = cos(view_angle*PIBY180);
   /* printf("process focus: ix=%d, iy=%d, x=%lf, y=%lf\n", ix, iy, (double)x, (double)y);*/
   /* no distinction between PLAN or ELEVATION in the focus any more */
   /* plan_elev is no longer maintained correctly anyway JPNP 14/06/97 */
-  /*
-  if (plan_elev == PLAN)
-    {
+  if (plan_elev == PLAN) {
       x_mid += x * cx + y * sx;
       y_mid += x * sx - y * cx;
-    }
-  else if (plan_elev ==ELEVATION)
-    {
+  } else if (plan_elev == ELEVATION) {
       z_mid += y;
       x_mid += x * cx;
       y_mid += x * sx;
-    }
-  else
- */
-    {
-      if ( (q=find_station(ix,iy,MOVE & DRAW /*& LABEL*/)) != NULL) {
-	float n1, n2, n3, /* fx, fy, fz,*/ j1, j2, j3, i1, i2, i3;
+  } else {
+      if ( (q=find_station(ix,iy,MOVE | DRAW /*| LABEL*/)) != NULL) {
+        float n1, n2, n3, j1, j2, j3, i1, i2, i3;
         /*
 	x_mid = q->X;
 	y_mid = q->Y;
@@ -1175,10 +896,10 @@ void process_focus(Display *display, Window window, int ix, int iy)
 	x_mid = q->X + x*i1 + y*j1;
         y_mid = q->Y + x*i2 + y*j2;
         z_mid = q->Z + x*i3 + y*j3;
-
+#if 0
 	printf("vector (%f,%f,%f)\n", x*i1 + y*j1, x*i2 + y*j2, x*i3 + y*j3);
 	printf("x_mid, y_mid moved to %d,%d,%d\n", x_mid, y_mid, z_mid);
-
+#endif
        }
     }
 
@@ -1187,66 +908,53 @@ void process_focus(Display *display, Window window, int ix, int iy)
 
 void draw_string(Window win, int x, int y, char *str)
 {
-  XDrawImageString(mydisplay, win, mygc, x, y, str, strlen(str));
+   XDrawImageString(mydisplay, win, mygc, x, y, str, strlen(str));
 }
 
-void draw_buttons( void )
-{
-  draw_string(butload, BUTWIDTH/4, 20, "Load");
-  draw_string(butrot , BUTWIDTH/4, 20, rot ? "Stop" : "Rotate");
-  draw_string(butstep, BUTWIDTH/4, 20, "Step");
-  draw_string(butzoom, BUTWIDTH/4, 20, "Zoom in");
-  draw_string(butmooz, BUTWIDTH/4, 20, "Zoom out");
-  draw_string(butplan, BUTWIDTH/4, 20, elev_angle==0.0 ? "Elev" :(elev_angle==90.0 ? "Plan": "Tilt"));
-  draw_string(butlabel,BUTWIDTH/4, 20, labelling ? "No Label" : "Label");
-  draw_string(butcross,BUTWIDTH/4, 20, crossing ? "No Cross" : "Cross");
-  draw_string(butselect,BUTWIDTH/4,20, "Select");
-  draw_string(butquit, BUTWIDTH/4, 20, "Quit");
+void draw_buttons(Display *display, Window mainwin, GC mygc, GC egc) {
+   flip_button(display, mainwin, butload, egc, mygc, "Load");
+   flip_button(display, mainwin, butrot,  egc, mygc, rot ? "Stop" : "Rotate");
+   flip_button(display, mainwin, butstep, egc, mygc, "Step");
+   flip_button(display, mainwin, butzoom, egc, mygc, "Zoom in");
+   flip_button(display, mainwin, butmooz, egc, mygc, "Zoom out");
+   flip_button(display, mainwin, butplan, egc, mygc, plan_elev==ELEVATION ? "Elev" :(plan_elev==PLAN ? "Plan": "Tilt"));
+   flip_button(display, mainwin, butlabel, egc, mygc, labelling ? "No Label" : "Label");
+   flip_button(display, mainwin, butcross, egc, mygc, crossing ? "No Cross" : "Cross");
+   flip_button(display, mainwin, butselect, egc, mygc, "Select");
+   flip_button(display, mainwin, butquit, egc, mygc, "Quit");
 }
 
 void drag_compass( int x, int y )
 {
-  /* printf("x %d, y %d, ", x,y);*/
-
-  x -= INDWIDTH/2;
-  y -= INDWIDTH/2;
-
-  /* printf("xm %d, y %d, ", x,y);*/
-
-  /* view_angle =   atan((-x)/(y?y:0.01))/PIBY180 + (y<0 ? 180.0 : 0.0); */
-  view_angle = atan2( -x, y ) / PIBY180;
-  /* snap view_angle to nearest 45 degrees if outside circle */
-  if (x*x + y*y > RADIUS * RADIUS)
-     view_angle = ((int)((view_angle + 360 + 22) / 45 ))*45 - 360;
-
-  /* printf("a %f\n", view_angle);*/
+   /* printf("x %d, y %d, ", x,y);*/
+   x -= INDWIDTH/2;
+   y -= INDWIDTH/2;
+   /* printf("xm %d, y %d, ", x,y);*/
+   view_angle = atan2( -x, y ) / PIBY180;
+   /* snap view_angle to nearest 45 degrees if outside circle */
+   if (x*x + y*y > RADIUS * RADIUS)
+      view_angle = ((int)((view_angle + 360 + 22) / 45 ))*45 - 360;
+   /* printf("a %f\n", view_angle); */
 }
 
 void drag_elevation( int x, int y )
 {
-  x -= INDWIDTH*(1-E_IND_PTR)/2;
-  y -= INDWIDTH/2;
+   x -= INDWIDTH*(1-E_IND_PTR)/2;
+   y -= INDWIDTH/2;
 
-  if (x >= 0) {
-     elev_angle = atan2( -y, x )/PIBY180;
+   if (x >= 0) {
+      elev_angle = atan2( -y, x )/PIBY180;
    } else {
-     /* if the mouse is to the left of the elevation indicator,
-      * snap to view from -90, 0 or 90 */
-     if ( abs( y ) < INDWIDTH*E_IND_PTR/2 ) {
-	elev_angle = 0.0f;
+      /* if the mouse is to the left of the elevation indicator,
+       * snap to view from -90, 0 or 90 */
+      if ( abs( y ) < INDWIDTH*E_IND_PTR/2 ) {
+         elev_angle = 0.0f;
       } else if (y<0) {
          elev_angle = 90.0f;
       } else {
-	elev_angle = -90.0f;
+         elev_angle = -90.0f;
       }
    }
-
-  /*
-  elev_angle = atan((-y)/(x?x:0.01))/PIBY180;
-
-  if (x < 0)
-    elev_angle = ( y*(y<0?-1:1)<INDWIDTH*E_IND_PTR/2  ?  0.0  :  (y<=0 ? 90 : -90));
-  */
 }
 
 int main( int argc, char **argv )
@@ -1260,34 +968,34 @@ int main( int argc, char **argv )
 
   GC enter_gc;
   XEvent myevent;
-  /*r KeySym mykey; */
   XSizeHints myhint;
   XGCValues gvalues;
   /* XComposeStatus cs; */
-  /*r char string[20]; */
-  /*r char newstring[20];*/
-  /*r int nchar;*/
-  /*r int count; */
   int myscreen;
   unsigned long myforeground, mybackground, ind_fg, ind_bg;
-  /*r int i;*/
-  /*r char text[10]; */
   int done;
   int temp1,temp2;
   Font font;
+
+  msg_init(argv[0]);
 
   view_angle = 180;
   elev_angle = 90.0;
 
   /* set up display and foreground/background */
   mydisplay = XOpenDisplay("");
+  if (!mydisplay) {
+     printf("Unable to open display!\n");
+     exit(1);
+  }
+
   myscreen = DefaultScreen (mydisplay);
   white = mybackground = ind_bg = WhitePixel (mydisplay, myscreen);
   black = myforeground = ind_fg = BlackPixel (mydisplay, myscreen);
 
   dbuff = XdbeQueryExtension(mydisplay, &temp1, &temp2);
 
-  //  dbuff = 0;
+  /* dbuff = 0; */
 
   if (dbuff) { /* Get info about visuals supporting DBE */
     XVisualInfo vinfo;
@@ -1373,7 +1081,7 @@ int main( int argc, char **argv )
   ind_elev = XCreateSimpleWindow(mydisplay, mywindow, attr.width - INDWIDTH*2 -1 , 0,
   				 INDWIDTH, INDDEPTH, 1, ind_fg, ind_bg);
   scalebar = XCreateSimpleWindow(mydisplay, mywindow, 0, BUTHEIGHT+5+FONTSPACE, 23, attr.height - (BUTHEIGHT
-												   +FONTSPACE +5), 0, ind_fg, ind_bg);
+				 +FONTSPACE+5), 0, ind_fg, ind_bg);
 
   rot_but = XCreateSimpleWindow(mydisplay, mywindow, attr.width - INDWIDTH*2
 				- 1 - INDDEPTH/4, 0, INDDEPTH/4, INDDEPTH, 1,
@@ -1387,21 +1095,26 @@ int main( int argc, char **argv )
   oldwidth = attr.width;
   oldheight = attr.height;
 
+  xcMac = attr.width;
+  ycMac = attr.height;
+
   /* try to open file if we've been given one */
   if (argv[1] && argv[1][0]!='\0' && argv[1][0]!='-') {
-      /* if it loaded okay then discard the command line argument */
-      if (load_file(argv[1])) {
-          argc--;
-          argv++;
-      }
+     /* if it loaded okay then discard the command line argument */
+     if (load_file( argv[1] )) {
+        argc--;
+        argv++;
+     }
   }
 
+#if 0 /* FIXME: JPNP coide */
   /* set scale to fit cave in screen */
   scale = 0.6 * min((float)oldwidth/(x_max-x_min+1),
 		    min( (float)oldheight/(y_max-y_min+1),
 			 (float)oldheight/(z_max-z_min+1) )  );
 
 
+#endif
   /* print program name at the top */
   XSetStandardProperties (mydisplay, mywindow, hello, hello,
 			  None, argv, argc, &myhint);
@@ -1430,18 +1143,19 @@ int main( int argc, char **argv )
   color_set_up(mydisplay, mywindow);
 
   /* Get height value for font to use in label positioning JPNP 26/3/97 */
-  fontinfo  = XQueryFont(mydisplay, XGContextFromGC(gcs[0]) );
+  fontinfo = XQueryFont(mydisplay, XGContextFromGC(gcs[0]) );
   if (fontinfo) {
     fontheight = (fontinfo->max_bounds).ascent;
     if (fontinfo->per_char != NULL)
       slashheight = fontinfo->per_char['\\'].ascent;
     else /* use this guess if no individual info is available */
-      slashheight = (fontinfo->max_bounds).ascent;
+      slashheight = fontheight;
 
     /* printf("fontheight: %d\n",fontheight); */
-  }  /* if something goes wrong use an arbitrary value */
-  else  fontheight = slashheight = 10;
-
+  } else {
+     /* if something goes wrong use an arbitrary value */
+     fontheight = slashheight = 10;
+  }
 
   /* Ask for input from the mouse and keyboard */
   XSelectInput (mydisplay, mywindow,
@@ -1477,10 +1191,7 @@ int main( int argc, char **argv )
   gettimeofday(&lastframe, NULL);
 
   XNextEvent(mydisplay,&myevent);
-
-  /*  printf("event of type #%d, in window %d\n",myevent.type, myevent.xany.window);  */
-
-  draw_buttons();
+  draw_buttons(mydisplay, mywindow, mygc, enter_gc);
 
   /* Loop through until a q is press when the cursor is in
      the window, which will cause the application to quit */
@@ -1532,7 +1243,6 @@ int main( int argc, char **argv )
 		}
 	      else if (myevent.xbutton.window == scalebar)
 		{
-		  /*scale_y = myevent.xbutton.y;*/
 		  scale_orig = scale;
 		}
 	      else if (myevent.xbutton.window == mywindow)
@@ -1625,7 +1335,7 @@ int main( int argc, char **argv )
 	    } /* end if */
 	}
       redraw_image(mydisplay, mywindow, mygc);
-      draw_buttons();
+      draw_buttons(mydisplay, mywindow, mygc, enter_gc);
     } /* while */
 
   /* Free up and clean up the windows created */
