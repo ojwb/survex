@@ -31,6 +31,7 @@ Source: "*.ini"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
+Source: "*.tcl"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}\icons"
 Source: "manual\*.*"; DestDir: "{app}\manual"
 ; NB keep these lines in step with Makefile.am
@@ -41,6 +42,7 @@ Source: "fr\wxstd.mo"; DestDir: "{app}\fr"
 Source: "it\wxstd.mo"; DestDir: "{app}\it"
 
 [Icons]
+Name: "{group}\SvxEdit"; Filename: "{app}\svxedit.tcl"; Comment: "Enter survey data"
 Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"
 Name: "{group}\Documentation"; Filename: "{app}\index.htm"; Comment: "View the documentation for Survex"
 

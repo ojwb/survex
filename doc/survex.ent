@@ -31,6 +31,7 @@
 <!entity man.printps SYSTEM "printps.sgml">
 <!entity man.printwin SYSTEM "printwin.sgml">
 <!entity man.sorterr SYSTEM "sorterr.sgml">
+<!entity man.svxedit SYSTEM "svxedit.sgml">
 <!entity man.xcaverot SYSTEM "xcaverot.sgml">
 <!entity man.print.ini SYSTEM "print.ini.sgml">
 

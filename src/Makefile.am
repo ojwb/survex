@@ -46,6 +46,7 @@ EXTRA_PROGRAMS = caverot xcaverot printwin aven avengl dump3d printxbm
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern $(PRINT) diffpos extend cad3d sorterr \
  3dtopos @CAVEROT@ @AVEN@ @PRINTWIN@ @TESTPROGS@
+bin_SCRIPTS = svxedit
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
 

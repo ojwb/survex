@@ -1,5 +1,9 @@
 Changes in 1.0.14:
 
+* svxedit: This is a Survex data entry editor from the therion team.  It needs
+  tcl and wish installed - for MS Windows an installer is available for free
+  from Activeware.
+
 * Improved handling of Compass PLT files and CMAP xyz files - no longer change
   dots to spaces in survey and station names - instead use a space as the
   separator between survey name and station name.

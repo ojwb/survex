@@ -1,0 +1,24 @@
+<refmeta>
+<refentrytitle>svxedit</refentrytitle>
+<manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname>svxedit</refname>
+<refpurpose>enter survey data
+</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis>
+<command>svxedit</command>
+<!-- <arg choice="opt">options</arg> -->
+<arg choice="opt" rep="repeat">survex data file</arg>
+</cmdsynopsis>
+</refsynopsisdiv>
+  
+<refsect1><title>Description</title>
+
+<Para>SvxEdit allows you to enter and edit survey data.</Para>
+
+</refsect1>

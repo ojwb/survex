@@ -1,0 +1,2536 @@
+#!/usr/bin/wish
+##
+## svxedit --
+##
+##     Survex svx files editor.
+##
+## Copyright (C) 2002 Stacho Mudrak
+## 
+##
+## -------------------------------------------------------------------- 
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+## --------------------------------------------------------------------
+
+
+
+
+
+
+
+
+set xth(debug) 0
+
+
+
+set xth(destroyed) 0
+set xth(prj,name) "therion"
+set xth(prj,title) "therion user interface"
+set xth(gui,main) ".xth"
+set xth(gui,about) ".xth_about"
+set xth(gui,message) ".xthmsg"
+set xth(gui,minsize) {480 300}
+
+set xth(encodings) { iso8859-1 iso8859-2 iso8859-5 iso8859-7 utf-8 }
+set xth(length_units) {m cm in ft yd}
+set xth(angle_units) {deg min grad}
+set xth(scrap_projections) {plan elevation extended none}
+set xth(point_types) {station label pillar stalactite stalacmite}
+set xth(line_types) {wall break contour}
+set xth(app,te,filetypes) {    
+  {{Therion files}       {.th}}    
+  {{Text files}       {.txt}}    
+  {{All files}       {*}}    
+}
+set xth(app,te,fileext) {.th}
+
+set xth(app,me,filetypes) {    
+  {{Therion 2D files}       {.th2}}    
+  {{Therion files}       {.th}}    
+  {{Scrap files}       {.scrap}}    
+  {{All files}       {*}}    
+}
+
+set xth(icmds) {survey}
+set xth(cmds) {scrap data grade line area map}
+set dfs {6s}                    
+set dfss {4s}                    
+set dfuf {6.1fx {-}}             
+set dfdf {+6.2fx {-}}            
+set dfcf {6.2fx {-}}             
+set dfccf {8.2f {-}}            
+set dfgf {{6.1fx} {up down -}} 
+set xth(datafmts) [list \
+  "unknown      $dfs" \
+  "station      $dfss" \
+  "from         $dfss" \
+  "to           $dfss" \
+  "compass      $dfuf" \
+  "backcompass  $dfuf" \
+  "bearing      $dfuf" \
+  "backbearing  $dfuf" \
+  "tape         $dfcf" \
+  "length       $dfcf" \
+  "count        $dfccf" \
+  "counter      $dfccf" \
+  "fromcount    $dfccf" \
+  "tocount      $dfccf" \
+  "fromcounter  $dfccf" \
+  "tocounter    $dfccf" \
+  "gradient     $dfgf" \
+  "clino        $dfgf" \
+  "backgradient $dfgf" \
+  "backclino    $dfgf" \
+  "depth        $dfdf" \
+  "fromdepth    $dfdf" \
+  "todepth      $dfdf" \
+  "depthchange  $dfdf" \
+  "dx           $dfcf" \
+  "dy           $dfcf" \
+  "dz           $dfcf" \
+  "northing     $dfcf" \
+  "easting      $dfcf" \
+  "altitude     $dfcf" \
+]
+
+set xth(app,active) ""
+set xth(app,list) {}
+set xth(app,all,relw) -1
+set xth(app,all,wmwd) 180
+set xth(app,all,wpsw) 1
+
+set xth(app,fencoding) iso8859-2
+set xth(app,sencoding) iso8859-2
+
+# autodetect some options
+frame .def
+scrollbar .def.scrollbar
+text .def.text
+label .def.label
+
+set xth(gui,sbwidth) [.def.scrollbar cget -width]
+set xth(gui,sbwidthb) [.def.scrollbar cget -borderwidth]
+set xth(gui,lfont) [.def.label cget -font]
+set xth(gui,efont) [.def.text cget -font]
+set xth(gui,ecolorbg) black
+set xth(gui,ecolorfg) green
+set xth(gui,ecolorselbg) green
+set xth(gui,ecolorselfg) black
+set xth(gui,selfg) white
+set xth(gui,selbg) darkBlue
+set xth(gui,etabsize) 2
+set xth(gui,controlk) Ctrl
+
+destroy .def
+# end of options autodetection
+
+# map editor settings
+set xth(gui,me,scrap,psize) 4
+set xth(gui,me,point,psize) 4
+set xth(gui,me,point,cpsize) 5
+set xth(gui,me,line,psize) 4
+set xth(gui,me,line,cpsize) 4
+set xth(gui,me,line,spsize) 5
+
+# platform dependend settings
+case $tcl_platform(platform) {
+  unix {
+    set xth(gui,sbwidth) 9
+    set xth(gui,sbwidthb) 1
+    set xth(gui,lfont) "Helvetica 12"
+    set xth(gui,efont) {fixed 14 roman bold}
+    set xth(gui,platform) unix
+    set xth(gui,cursor) top_left_arrow
+  }
+  windows {
+    set xth(gui,efont) "Courier 16 roman bold"
+    set xth(gui,platform) windows
+    set xth(gui,cursor) arrow
+  }
+  macintosh {
+    set xth(gui,controlk) Cmd
+    set xth(gui,platform) macintosh
+    set xth(gui,cursor) arrow
+  }
+}
+# end of platform dependend settings
+
+set xth(about,info) "xtherion v1.0 beta\n \u00A9 2002 Stacho Mudrak"
+set xth(about,image_data) {
+R0lGODlhwACQAOcAAAAAAAAAVQAAqgAA/wAkAAAkVQAkqgAk/wBJAABJVQBJ
+qgBJ/wBtAABtVQBtqgBt/wCSAACSVQCSqgCS/wC2AAC2VQC2qgC2/wDbAADb
+VQDbqgDb/wD/AAD/VQD/qgD//yQAACQAVSQAqiQA/yQkACQkVSQkqiQk/yRJ
+ACRJVSRJqiRJ/yRtACRtVSRtqiRt/ySSACSSVSSSqiSS/yS2ACS2VSS2qiS2
+/yTbACTbVSTbqiTb/yT/ACT/VST/qiT//0kAAEkAVUkAqkkA/0kkAEkkVUkk
+qkkk/0lJAElJVUlJqklJ/0ltAEltVUltqklt/0mSAEmSVUmSqkmS/0m2AEm2
+VUm2qkm2/0nbAEnbVUnbqknb/0n/AEn/VUn/qkn//20AAG0AVW0Aqm0A/20k
+AG0kVW0kqm0k/21JAG1JVW1Jqm1J/21tAG1tVW1tqm1t/22SAG2SVW2Sqm2S
+/222AG22VW22qm22/23bAG3bVW3bqm3b/23/AG3/VW3/qm3//5IAAJIAVZIA
+qpIA/5IkAJIkVZIkqpIk/5JJAJJJVZJJqpJJ/5JtAJJtVZJtqpJt/5KSAJKS
+VZKSqpKS/5K2AJK2VZK2qpK2/5LbAJLbVZLbqpLb/5L/AJL/VZL/qpL//7YA
+ALYAVbYAqrYA/7YkALYkVbYkqrYk/7ZJALZJVbZJqrZJ/7ZtALZtVbZtqrZt
+/7aSALaSVbaSqraS/7a2ALa2Vba2qra2/7bbALbbVbbbqrbb/7b/ALb/Vbb/
+qrb//9sAANsAVdsAqtsA/9skANskVdskqtsk/9tJANtJVdtJqttJ/9ttANtt
+Vdttqttt/9uSANuSVduSqtuS/9u2ANu2Vdu2qtu2/9vbANvbVdvbqtvb/9v/
+ANv/Vdv/qtv///8AAP8AVf8Aqv8A//8kAP8kVf8kqv8k//9JAP9JVf9Jqv9J
+//9tAP9tVf9tqv9t//+SAP+SVf+Sqv+S//+2AP+2Vf+2qv+2///bAP/bVf/b
+qv/b////AP//Vf//qv///yH+CHh0aGVyaW9uACwAAAAAwACQAAAI/gABCBxI
+sKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTqlzJ
+sqXLjyRiloj5sqbNlDJJlJg586bPnxx1liiSpKjRJD2BKl0KUWfRNm0kQW1T
+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
+GRAAOw==
+====
+}
+
+
+
+
+
+
+
+# file extensions
+set xth(app,te,filetypes) {    
+  {{Survex files}       {.svx}}    
+  {{All files}       {*}}    
+}
+set xth(app,te,fileext) {.svx}
+
+# command indenting
+set xth(icmds) {}
+set xth(cmds) {}
+set xth(cmd,*begin) 2
+set xth(endcmd,*begin) "*end"
+set xth(cmd,*end) -2
+set xth(endcmd,*end) ""
+
+# application titles
+set xth(prj,name) "svxedit"
+set xth(prj,title) "survex source editor"
+set xth(about,info) "svxedit v@VERSION@ (beta)\n \u00A9 2002 Stacho Mudrak"
+
+# fonts :-)
+case $tcl_platform(platform) {
+  unix {
+    set xth(gui,lfont) "Helvetica 10"
+    set xth(gui,efont) {fixed 10 roman}
+  }
+  windows {
+    set xth(gui,efont) "Courier 12 roman"
+  }
+  macintosh {
+  }
+}
+
+
+
+
+
+
+
+set xth(about,image_id) [image create photo -data $xth(about,image_data)]
+
+proc xth_about_status {str} {
+    global xth
+    set xth(about,status) $str
+    update idletasks
+}
+
+
+proc xth_about_show {btnid} {
+    global xth
+    if {[winfo exists $xth(gui,about)]} xth_about_hide
+    xth_about_status ""
+    set w $xth(gui,about)
+    toplevel $w -relief raised -bg black -bd 3 -cursor $xth(gui,cursor)
+    wm transient $w
+    wm withdraw $w
+    set sw [winfo screenwidth .]
+    set sh [winfo screenheight .]
+    wm overrideredirect $w 1
+    label $w.image -bd 0 -relief sunken -background black -fg white -image $xth(about,image_id)
+    pack $w.image -side top -expand 1 -fill both
+    label $w.status -relief flat -background black -foreground white \
+    	-textvariable xth(about,status) -font $xth(gui,lfont) -anchor center
+    pack $w.status -side top -expand 1 -fill both
+    label $w.info -bd 0 -relief sunken -background black -fg white -textvariable xth(about,info) \
+      -font $xth(gui,lfont) -anchor center
+    pack $w.info -side top -expand 1 -fill both -pady 5
+    if {$btnid} {
+      button $w.close -text "Close" -font $xth(gui,lfont) -anchor center \
+        -command xth_about_hide -width 5
+      pack $w.close -side top -fill none -anchor center -pady 5
+      focus $w.close
+    }
+    wm geometry $xth(gui,about) -$sw-$sh
+    wm deiconify $xth(gui,about)
+    update idletasks
+    set x [expr {($sw - [winfo width $xth(gui,about)])/2}]
+    set y [expr {($sh - [winfo height $xth(gui,about)])/2}]
+    wm geometry $xth(gui,about) +$x+$y
+    $w configure -bg black
+    $w.image configure -image $xth(about,image_id)
+    $w.info configure -textvariable xth(about,info)
+    update idletasks
+}
+
+
+proc xth_about_hide {} {
+  global xth
+  destroy $xth(gui,about)
+  focus $xth(gui,main)
+}
+
+
+
+
+
+
+
+# prepare the syntax commands
+foreach cmd $xth(icmds) {
+  set xth(cmd,$cmd) 2
+  set xth(cmd,end$cmd) -2
+}
+
+foreach cmd $xth(cmds) {
+  set xth(cmd,$cmd) 1
+  set xth(endcmd,$cmd) end$cmd
+  set xth(cmd,end$cmd) -1
+}
+
+foreach datafmt $xth(datafmts) {
+  set qt [lindex $datafmt 0]
+  set xth(datafmt,$qt,format) [lindex $datafmt 1]
+  set xth(datafmt,$qt,special) [lindex $datafmt 2]
+}
+
+
+
+
+
+
+
+package require BWidget
+
+# create xth window
+wm withdraw .
+xth_about_show 0
+toplevel $xth(gui,main)
+wm withdraw $xth(gui,main)
+wm protocol $xth(gui,main) WM_DELETE_WINDOW "xth_exit"
+wm title $xth(gui,main) $xth(prj,name)
+wm geometry $xth(gui,main) [format "%dx%d+0+0" [lindex $xth(gui,minsize) 0] \
+  [lindex $xth(gui,minsize) 1]]
+wm minsize $xth(gui,main) [lindex $xth(gui,minsize) 0] \
+  [lindex $xth(gui,minsize) 1]
+update idletasks
+bind $xth(gui,main) <Configure> { 
+  catch {xth_app_place $xth(app,active)}
+}
+
+set xth(gui,clock) "00:00"
+
+# redefine some public key bindigs
+bind Text <Control-Key-o> "#"
+bind Text <Control-Key-a> "#"
+bind Text <Control-Key-i> "#"
+bind Text <Control-Key-s> "#"
+bind Text <Control-Key-w> "#"
+bind Text <Control-Key-q> "#"
+bind Text <Control-Key-x> "#"
+bind Text <Control-Key-n> "#"
+bind Text <Control-Key-p> "#"
+bind Text <Control-Key-c> "#"
+bind Text <Control-Key-v> "#"
+bind Text <Control-Key-f> "#"
+bind Text <Control-Key-h> "#"
+set xth(gui,bind,text_tab) [bind Text <Tab>]
+set xth(gui,bind,text_return) [bind Text <Return>]
+bind Text <Tab> "#"
+bind Text <Return> "#"
+
+
+
+
+
+
+
+
+
+proc xth_status_bar {aname widg stext} {
+
+  global xth
+  set sbar $xth(gui,$aname).sf.sbar
+  set xth(gui,sbar,$widg,exp) 0  
+  bind $widg <FocusIn> "+ if {\$xth(gui,sbar,$widg,exp) == 0} {set xth(gui,sbar,$widg,exp) 1; set xth(gui,sbar,$widg,otext) \[$sbar cget -text\]; $sbar configure -text \"$stext\"}"
+  bind $widg <Enter> "+ if {\$xth(gui,sbar,$widg,exp) == 0} {set xth(gui,sbar,$widg,exp) 1; set xth(gui,sbar,$widg,otext) \[$sbar cget -text\]; $sbar configure -text \"$stext\"}"
+  bind $widg <FocusOut> "+ if {\$xth(gui,sbar,$widg,exp) == 1} {$sbar configure -text \$xth(gui,sbar,$widg,otext); set xth(gui,sbar,$widg,exp) 0}"
+  bind $widg <Leave> "+ if {\$xth(gui,sbar,$widg,exp) == 1} {$sbar configure -text \$xth(gui,sbar,$widg,otext); set xth(gui,sbar,$widg,exp) 0}"
+  
+}
+
+proc xth_status_bar_push aname {
+  global xth
+  set sbar $xth(gui,$aname).sf.sbar
+  if {![info exists xth(gui,sbar,$aname)]} {
+    set xth(gui,sbar,$aname) [$sbar cget -text]
+  } else {
+    set xth(gui,sbar,$aname) [lappend $xth(gui,sbar,$aname) [$sbar cget -text]]
+  }
+}
+
+
+proc xth_status_bar_pop aname {
+  global xth
+  set sbar $xth(gui,$aname).sf.sbar
+  if {! [info exists xth(gui,sbar,$aname)]} {
+    set xth(gui,sbar,$aname) ""
+  } else {
+    $sbar configure -text [lindex $xth(gui,sbar,$aname) 0]
+    set xth(gui,sbar,$aname) [lreplace $xth(gui,sbar,$aname) 0 0]
+  }
+}
+
+
+proc xth_status_bar_status {aname txt} {
+  global xth
+  set sbar $xth(gui,$aname).sf.sbar
+  $sbar configure -text $txt
+  update idletasks
+}
+
+
+
+
+
+
+
+
+
+proc xth_scroll_showcmd {sbar cmd} {
+  global xth
+  set xth(scroll,$sbar,show) $cmd
+  set xth(scroll,$sbar,open) 0
+}
+
+proc xth_scroll_hidecmd {sbar cmd} {
+  global xth
+  set xth(scroll,$sbar,hide) $cmd
+  set xth(scroll,$sbar,open) 0
+}
+
+proc xth_scroll {sbar first last} {
+  global xth
+  if {[expr $first == 0.0] && [expr $last == 1.0]} {
+    if {$xth(scroll,$sbar,open) == 1} {
+      set xth(scroll,$sbar,open) 0
+      eval $xth(scroll,$sbar,hide)
+      update idletasks
+    }
+  } else {
+    if {$xth(scroll,$sbar,open) == 0} {
+      set xth(scroll,$sbar,open) 1
+      eval $xth(scroll,$sbar,show)
+      update idletasks
+    }
+    $sbar set $first $last
+  }
+}
+
+
+
+
+
+
+
+set hm "$xth(gui,main).hmenu"
+set xth(gui,menu,help) $hm
+
+menu $hm -tearoff 0
+$hm add command -label "About..." -underline 0 -font $xth(gui,lfont) \
+  -command {
+    xth_about_show 1
+    xth_about_status $xth(prj,title)
+  }
+
+
+
+
+
+
+
+set xth(ctrl,all,number) 0
+
+proc xth_ctrl_create {aname} {
+
+  global xth
+  
+  set cf $xth(gui,$aname).af.ctrl  
+    
+  canvas $cf.c -yscrollcommand "xth_scroll $cf.sv" \
+    -highlightthickness 0
+  scrollbar $cf.sv -orient vert  -command "$cf.c yview" -takefocus 0 \
+    -width $xth(gui,sbwidth) -borderwidth $xth(gui,sbwidthb)
+
+  grid columnconf $cf 0 -weight 1
+  grid rowconf $cf 0 -weight 1
+  xth_scroll_showcmd $cf.sv "grid $cf.sv -row 0 -column 1 -sticky nsew; update idletasks; xth_ctrl_reshape te"
+  xth_scroll_hidecmd $cf.sv "grid forget $cf.sv; update idletasks; xth_ctrl_reshape te"
+  grid $cf.c -row 0 -column 0 -sticky nsew
+  
+  set xth(ctrl,$aname,number) 0
+  set xth(ctrl,$aname,list) {}
+}
+
+proc xth_ctrl_add {aname cname title} {
+  
+  global xth
+  
+  incr xth(ctrl,$aname,number)
+  incr xth(ctrl,all,number)
+  lappend xth(ctrl,$aname,list) $cname
+  set cn $xth(ctrl,$aname,number)
+  set cf $xth(gui,$aname).af.ctrl  
+  
+  set ccf $cf.cf$cn
+  frame $ccf
+  frame $ccf.f 
+  set cid [$cf.c create window 0 0 -window $ccf -anchor nw]
+  set xth(ctrl,$aname,$cname) $ccf.f
+  set xth(ctrl,$aname,$cname,frm) $ccf
+  set xth(ctrl,$aname,$cname,pos) $cn
+  set xth(ctrl,$aname,$cname,max) 1
+  set xth(ctrl,$aname,$cname,menu) .xth_popup$xth(ctrl,all,number)
+  set xth(ctrl,$aname,$cn) $cid 
+  
+  menu .xth_popup$xth(ctrl,all,number) -tearoff 0
+  button $ccf.rb -text "$title" -command "xth_ctrl_minmax $aname $cname" \
+    -font $xth(gui,lfont) -bg #aaaaaa \
+    -fg white -bg darkBlue -activebackground lightBlue \
+    -anchor w -relief flat \
+    -takefocus 0
+  bind $ccf.rb <Button-3> "tk_popup .xth_popup$xth(ctrl,all,number) %X %Y"
+  xth_status_bar $aname $ccf.rb "Show or hide this control panel"
+  
+  pack $ccf.rb -side top -fill x -expand 1
+  pack $ccf.f -expand yes -fill both
+
+  xth_ctrl_reshape $aname
+}
+
+
+proc xth_ctrl_finish {aname} {
+
+  global xth  
+
+  foreach ct $xth(ctrl,$aname,list) {
+    set cmn $xth(ctrl,$aname,$ct,menu)
+    foreach oct $xth(ctrl,$aname,list) {
+      if {[string compare $ct $oct] != 0} {
+        $cmn add command -label [$xth(ctrl,$aname,$oct,frm).rb cget -text] \
+          -command "xth_ctrl_replace $aname $ct $oct" -font $xth(gui,lfont)
+      }
+    }
+  }
+
+}
+
+
+proc xth_ctrl_reshape {aname} {
+  
+  global xth
+  set cn $xth(ctrl,$aname,number)
+  set cnv $xth(gui,$aname).af.ctrl.c  
+  
+  # position the windows
+  set height 0
+  set width [winfo width $cnv]
+  for {set i 1} {$i <= $cn} {incr i} {
+    set cid $xth(ctrl,$aname,$i)
+    set cw [$cnv itemcget $cid -window]
+    $cnv coord $cid 0 $height
+    $cnv itemconfigure $cid -width $width
+    incr height [winfo height $cw]
+  }
+
+  $cnv configure -scrollregion "0 0 $width $height"
+}
+
+proc xth_ctrl_minmax {aname cname} {
+
+  global xth
+
+  set cmm $xth(ctrl,$aname,$cname,max)
+  if {$cmm == 1} {
+    pack forget $xth(ctrl,$aname,$cname)
+    $xth(ctrl,$aname,$cname,frm).rb configure -relief raised
+    set cmm 0
+  } else {
+    pack $xth(ctrl,$aname,$cname) -expand yes -fill both
+    $xth(ctrl,$aname,$cname,frm).rb configure -relief flat
+    set cmm 1
+  }
+  set xth(ctrl,$aname,$cname,max) $cmm
+  
+  update idletasks
+  xth_ctrl_reshape $aname
+}
+
+proc xth_ctrl_replace {aname ccname dcname} {
+  
+  global xth
+
+  set cnv $xth(gui,$aname).af.ctrl.c
+  set p1 $xth(ctrl,$aname,$ccname,pos)
+  set p2 $xth(ctrl,$aname,$dcname,pos)
+  
+  set xth(ctrl,$aname,$ccname,pos) $p2
+  set xth(ctrl,$aname,$dcname,pos) $p1
+  $cnv itemconfigure $xth(ctrl,$aname,$p1) \
+    -window $xth(ctrl,$aname,$dcname,frm)
+  $cnv itemconfigure $xth(ctrl,$aname,$p2) \
+    -window $xth(ctrl,$aname,$ccname,frm)
+    
+  update idletasks
+  xth_ctrl_reshape $aname
+  
+}
+
+proc xth_ctrl_minimize {aname cname} {
+  global xth
+  set xth(ctrl,$aname,$cname,max) 1
+  xth_ctrl_minmax $aname $cname
+}
+
+proc xth_ctrl_maximize {aname cname} {
+  global xth
+  set xth(ctrl,$aname,$cname,max) 0
+  xth_ctrl_minmax $aname $cname
+}
+
+
+
+
+
+
+
+
+proc xth_app_move_panel {aname xx} {
+  global xth
+  if {$xth(app,$aname,wpsw) == 1} {
+    set xth(app,$aname,relw) [expr [winfo width $xth(gui,main)] - $xx + $xth(app,$aname,wrtx)]; 
+  } else {
+    set xth(app,$aname,relw) [expr $xx - $xth(app,$aname,wrtx)]; 
+  }
+  xth_app_place $aname
+}
+
+
+proc xth_app_create {aname title} {
+  
+  global xth
+  
+  set aw "$xth(gui,main).$aname"
+  set xth(gui,$aname) $aw
+  set xth(app,list) [concat $xth(app,list) $aname]
+  if {![info exists xth(app,$aname,relw)]} {
+    set xth(app,$aname,relw) $xth(app,all,relw)
+  }
+  if {![info exists xth(app,$aname,wpsw)]} {
+    set xth(app,$aname,wpsw) $xth(app,all,wpsw)
+  }
+  if {![info exists xth(app,$aname,wmwd)]} {
+    set xth(app,$aname,wmwd) $xth(app,all,wmwd)
+  }
+  
+  # create and configure application frames
+  frame $aw
+  frame $aw.af
+  frame $aw.af.apps
+  frame $aw.af.ctrl
+  frame $aw.af.lrhn -borderwidth 2 -relief raised -cursor sb_h_double_arrow
+  xth_status_bar $aname $aw.af.lrhn "Drag to resize control panel."
+
+  frame $aw.sf
+  set sbar $aw.sf.sbar
+  label $sbar -text "" -anchor w -relief sunken -font $xth(gui,lfont)
+  pack $sbar -side left -fill both -expand 1
+  
+  bind $aw.af.lrhn <Configure> "set xth(app,$aname,wwid) \[winfo width $xth(gui,main)\]; set xth(app,$aname,wrtx) \[winfo rootx $xth(gui,main)]; xth_ctrl_reshape $aname"
+  bind $aw.af.lrhn <B1-Motion> "xth_app_move_panel $aname %X"
+  
+  set amn $aw.menu
+  menu $amn -tearoff 0
+  set xth($aname,menu) $amn
+  
+  set fmn $amn.file
+  menu $fmn -tearoff 0
+  $amn add cascade -label "File" -underline 0 -menu $fmn -font $xth(gui,lfont)
+  set xth($aname,menu,file) $fmn
+  
+  set xth($aname,title) $title
+  set xth($aname,wtitle) [string tolower $title]
+
+  pack $aw.af -expand yes -fill both
+  pack $aw.sf -side bottom -fill x
+
+  set fr $xth(app,$aname,relw)
+  set minfr $xth(app,$aname,wmwd)
+  set lrhny [expr [winfo height $xth(gui,main)] - 64]
+  if {$fr < $minfr} {
+    set fr $minfr
+  } elseif {$fr > ([winfo width $xth(gui,main)] - $xth(app,$aname,wmwd))} {
+    set fr [expr {([winfo width $xth(gui,main)] - $xth(app,$aname,wmwd))}]
+  }
+  set xth(app,$aname,relw) $fr
+  set fr [expr 1.0 - $fr / double([winfo width $xth(gui,main)])]
+  
+  if {$xth(app,$aname,wpsw) == 1} {
+    place $aw.af.apps -relx 0 -rely 0 -relheight 1 -relwidth $fr
+    place $aw.af.ctrl -relx $fr -rely 0 -relheight 1 -relwidth [expr 1.0 - $fr]
+    place $aw.af.lrhn -relx $fr -y $lrhny -width 8 -height 8 -anchor center
+  } else {
+    place $aw.af.ctrl -relx 0 -rely 0 -relheight 1 -relwidth $fr
+    place $aw.af.apps -relx $fr -rely 0 -relheight 1 -relwidth [expr 1.0 - $fr]
+    place $aw.af.lrhn -relx $fr -y $lrhny -width 8 -height 8 -anchor center
+  }
+  
+  xth_ctrl_create $aname
+  
+}
+
+
+proc xth_app_clock {} {
+  global xth
+  set xth(gui,clock) [clock format [clock seconds] -format "%H:%M"]
+  after 15000 xth_app_clock
+}
+
+
+proc xth_app_place {aname} {
+  
+  global xth
+  set aw "$xth(gui,main).$aname"
+
+  set fr $xth(app,$aname,relw)
+  set minfr $xth(app,$aname,wmwd)
+  if {$fr < $minfr} {
+    set fr $minfr
+  } elseif {$fr > ([winfo width $xth(gui,main)] - $xth(app,$aname,wmwd))} {
+    set fr [expr {([winfo width $xth(gui,main)] - $xth(app,$aname,wmwd))}]
+  }
+  set xth(app,$aname,relw) $fr
+  set fr [expr 1.0 - $fr / double([winfo width $xth(gui,main)])]
+
+  set lrhny [expr [winfo height $xth(gui,main)] - 64]
+  
+  if {$xth(app,$aname,wpsw) == 1} {
+    place configure $aw.af.apps -relx 0 -relwidth $fr
+    place configure $aw.af.ctrl -relx $fr -relwidth [expr 1.0 - $fr]
+    place configure $aw.af.lrhn -relx $fr -y $lrhny
+  } else {
+    place configure $aw.af.apps -relx [expr 1.0 - $fr] -relwidth $fr
+    place configure $aw.af.ctrl -relx 0 -relwidth [expr 1.0 - $fr]
+    place configure $aw.af.lrhn -relx [expr 1.0 - $fr] -y $lrhny
+  }
+
+  xth_ctrl_reshape $aname   
+}
+
+proc xth_app_switch {} {
+
+  global xth
+  
+  set aname $xth(app,active)
+  
+  if {$xth(app,$aname,wpsw) == 1} {
+    set xth(app,$aname,wpsw) 0
+  } else {
+    set xth(app,$aname,wpsw) 1
+  }
+  
+  xth_app_place $aname
+}
+
+
+proc xth_app_finish {} {
+
+  global xth
+  
+  # add Window menu to each menu
+  set m "$xth(gui,main).wmenu"
+  menu $m -tearoff 0
+  set i 0
+  
+  set xth(gui,menu,window) $m
+
+  foreach aname $xth(app,list) {
+
+    if {[llength $xth(app,list)] > 1} {
+      set i [expr $i + 1]
+      $m add command -label $xth($aname,title) -accelerator "F$i" \
+        -command "xth_app_show $aname" -font $xth(gui,lfont)
+      bind $xth(gui,main) <F$i> "xth_app_show $aname"
+    }
+    
+    # add clock to aname
+    set clockbar $xth(gui,$aname).sf.clockbar
+    label $clockbar -textvariable xth(gui,clock) -anchor center \
+      -relief sunken -font $xth(gui,lfont) -width 5
+    pack $clockbar -side left
+
+  }
+  if {[llength $xth(app,list)] > 1} {
+    $m add separator
+  }
+  $m add command -label "Switch panels" -underline 1 \
+      -command "xth_app_switch" -font $xth(gui,lfont)
+
+  if {$xth(debug)} {
+    set dm "$xth(gui,main).dmenu"
+    menu $dm -tearoff 0
+  
+    $dm add command -label "Refresh procs" -underline 0 -command {
+      source te_sdata.tcl
+      source me_cmds.tcl
+      source me_cmds2.tcl
+    } -font $xth(gui,lfont)
+    $dm add command -label "Screen dump" -underline 0 -command {
+      after 5000 {xwd -out screendump -frame}
+    } -font $xth(gui,lfont)
+    $dm add separator
+    $dm add command -label "Show command console" -underline 1 \
+      -command "wm deiconify .; wm transient . $xth(gui,main)" -font $xth(gui,lfont)
+    $dm add command -label "Hide command console" -underline 1 \
+      -command "wm withdraw ." -font $xth(gui,lfont)
+  }
+
+  bind $xth(gui,main) <Control-Key-q> "xth_exit"
+  bind $xth(gui,main) <Control-Key-o> xth_app_control_o 
+  bind $xth(gui,main) <Control-Key-w> xth_app_control_w
+  bind $xth(gui,main) <Control-Key-s> xth_app_control_s 
+  bind $xth(gui,main) <Control-Key-z> xth_app_control_z
+  bind $xth(gui,main) <Control-Key-y> xth_app_control_y 
+  bind $xth(gui,main) <Control-Key-p> xth_app_control_p 
+  bind $xth(gui,main) <Control-Key-l> xth_app_control_l 
+  bind $xth(gui,main) <Control-Key-d> xth_app_control_d
+  bind $xth(gui,main) <Key-Escape> xth_app_escape 
+  foreach aname $xth(app,list) {
+    $xth($aname,menu) add cascade -label "Window" -menu $m -underline 0 \
+      -font $xth(gui,lfont)
+    if $xth(debug) {
+      $xth($aname,menu) add cascade -label "Debug" -menu $dm -underline 0 \
+        -font $xth(gui,lfont)
+    }
+    $xth($aname,menu,file) add separator
+    case $xth(gui,platform) {
+      macintosh {
+	$xth($aname,menu,file) add command -label "Quit" -underline 0 \
+	  -command "xth_exit" -font $xth(gui,lfont) \
+	  -accelerator "$xth(gui,controlk)-q"
+      }
+      default {
+	$xth($aname,menu,file) add command -label "Exit" -underline 1 \
+	  -command "xth_exit" -font $xth(gui,lfont) \
+	  -accelerator "$xth(gui,controlk)-q"
+      }
+    }
+    $xth($aname,menu) add cascade -label "Help" -menu $xth(gui,menu,help) \
+      -underline 0  -font $xth(gui,lfont)
+  }  
+
+}
+
+proc xth_app_title {aname} {
+  
+  global xth
+  
+  # set the application menu
+  set ofn ""
+  if {[info exists xth($aname,open_file)]} {
+    set ofn $xth($aname,open_file)
+  }
+  if {[string length $xth($aname,wtitle)] > 0} {
+    set atit " $xth($aname,wtitle)"
+  } else {
+    set atit ""
+  }
+  if {[string length $ofn] > 0} {
+    wm title $xth(gui,main) "$xth(prj,name)$atit - $xth($aname,open_file)"
+  } else {
+    wm title $xth(gui,main) "$xth(prj,name)$atit"
+  }
+}
+
+proc xth_app_control_o {} {
+
+  global xth
+
+  # puts $xth(app,active)  
+  switch $xth(app,active) {
+    te  {xth_te_open_file 1 {} 1}
+    me  {xth_me_open_file 1 {} 1}
+  }
+}  
+
+proc xth_app_control_w {} {
+
+  global xth
+
+  # puts $xth(app,active)  
+  switch $xth(app,active) {
+    me  {xth_me_close_file}
+  }
+}  
+
+proc xth_app_control_s {} {
+
+  global xth
+
+  # puts $xth(app,active)  
+  switch $xth(app,active) {
+    me  {xth_me_save_file 0}
+  }
+}  
+
+
+proc xth_app_control_z {} {
+
+  global xth
+
+  # puts $xth(app,active)  
+  switch $xth(app,active) {
+    me  {xth_me_unredo_undo}
+  }
+  
+}  
+
+proc xth_app_control_y {} {
+
+  global xth
+
+  # puts $xth(app,active)  
+  switch $xth(app,active) {
+    me  {xth_me_unredo_redo}
+  }
+}  
+
+proc xth_app_control_p {} {
+  global xth
+  switch $xth(app,active) {
+    me  {xth_me_cmds_set_mode 1}
+  }
+}  
+
+
+proc xth_app_control_d {} {
+  global xth
+  switch $xth(app,active) {
+    me  {xth_me_cmds_delete {}}
+  }
+}  
+
+
+proc xth_app_control_l {} {
+  global xth
+  switch $xth(app,active) {
+    me  {xth_me_cmds_create_line {} 1 "" "" ""}
+  }
+}  
+
+
+proc xth_app_escape {} {
+  global xth
+  switch $xth(app,active) {
+    me  {xth_me_cmds_set_mode 0}
+  }
+}
+
+
+proc xth_app_show {aname} {
+
+  global xth
+  
+  if {$xth(app,active) != ""} {
+    pack forget $xth(gui,$xth(app,active))
+  }
+
+  set xth(app,active) $aname
+  pack $xth(gui,$aname) -expand yes -fill both
+
+  xth_app_title $aname
+
+  $xth(gui,main) configure -menu $xth($aname,menu)
+  
+  regexp {([0-9]+)x([0-9]+)} [winfo geometry $xth(gui,main)] geom xsize ysize
+
+  if {($xsize < [lindex $xth(gui,minsize) 0]) || \
+      ($ysize < [lindex $xth(gui,minsize) 1])} {
+    if {($xsize < [lindex $xth(gui,minsize) 0])} {
+      set xsize [lindex $xth(gui,minsize) 0]
+    }
+    if {($ysize < [lindex $xth(gui,minsize) 1])} {
+      set ysize [lindex $xth(gui,minsize) 1]
+    }
+    set ogeom [winfo geometry $xth(gui,main)]
+    regsub $geom $ogeom [format "%sx%s" $xsize $ysize] ngeom
+    wm geometry $xth(gui,main) $ngeom
+  }
+
+  update idletasks  
+  xth_ctrl_reshape $aname
+}
+
+
+proc xth_exit {} {
+
+  global xth
+
+  # save all open text editor files
+  if {![info exists xth(te,flist)]} {
+    set xth(te,flist) {}
+  }
+  
+  foreach cfid $xth(te,flist) {
+    if {[xth_te_before_close_file $cfid yesnocancel] == 0} {
+      return
+    }
+  }
+  
+  if {[info exists xth(me,fopen)]} {
+    if {$xth(me,fopen) == 1} {
+      if {[xth_me_before_close_file yesnocancel] == 0} {
+        return
+      }
+    }
+  }
+
+  destroy .    
+  
+}
+
+
+proc xth_app_normalize {} {
+  global xth
+  set twd [expr int(0.8 * [winfo screenwidth $xth(gui,main)])]
+  if {$twd < [lindex $xth(gui,minsize) 0]} {
+    set twd [lindex $xth(gui,minsize) 0]
+  }
+  set thg [expr int(0.8 * [winfo screenheight $xth(gui,main)])]
+  if {$thg < [lindex $xth(gui,minsize) 1]} {
+    set thg [lindex $xth(gui,minsize) 1]
+  }
+  set tpx [expr int(0.5 * ([winfo screenwidth $xth(gui,main)] - $twd))]
+  set tpy [expr int(0.5 * ([winfo screenheight $xth(gui,main)] - $thg))]
+  wm geometry $xth(gui,main) [format "%dx%d+%d+%d" $twd $thg $tpx $tpy]
+  update
+  regexp {([0-9]+)x([0-9]+)\+([0-9]+)\+([0-9]+)} [winfo geometry $xth(gui,main)] geom xsize ysize xshft yshft
+  wm geometry $xth(gui,main) [format "%dx%d" [expr $twd - $xshft + $tpx] \
+    [expr $thg - $yshft + $tpy] $tpx $tpy]
+  update
+}
+
+proc xth_app_clipboard {ev} {
+  global xth
+  set w [focus -lastfor $xth(gui,main)]
+  if {[winfo ismapped $w]} {
+    switch $ev {
+      cut {
+         event generate $w <<Cut>>
+      }
+      copy {
+         event generate $w <<Copy>>
+      }
+      paste {
+         event generate $w <<Paste>>
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+xth_about_status "loading text editor..."
+
+if {[string equal -nocase $xth(prj,name) svxedit]} {
+  xth_app_create te {}
+} else {
+  xth_app_create te "Text Editor"
+}
+
+xth_ctrl_add te files "Files"
+xth_ctrl_add te sdata "Data table"
+xth_ctrl_finish te
+
+set xth(te,open_file_encoding) $xth(app,fencoding)
+
+set xth(te,bind,text_tab) {
+  if { [string equal [%W cget -state] "normal"] } {
+    xth_te_insert_tab %W
+    break
+  }
+}
+
+set xth(te,bind,text_return) {
+  regexp {(\d+)\.} [%W index insert] dum cln
+  set spcs ""
+  regexp {^\s+} [%W get $cln.0 $cln.end] spcs
+  set spcsc [string length $spcs]
+  set indct [string length [xth_te_get_indent %W $cln.0 1]]
+  if {$spcsc == $indct} {
+  } elseif {$spcsc > $indct} {
+    %W delete $cln.0 $cln.[expr $spcsc - $indct]
+  } elseif {$spcsc < $indct} {
+    %W insert $cln.0 [format \x25[expr $indct - $spcsc]s " "]
+  }
+  xth_te_insert_text %W "\n[xth_te_get_indent %W [expr $cln + 1].0 0]"
+}
+
+
+proc xth_te_insert_text {w s} {
+    if {[string equal $s ""] || [string equal [$w cget -state] "disabled"]} {
+	return
+    }
+    set compound 0
+    catch {
+	if {[$w compare sel.first <= insert] \
+		&& [$w compare sel.last >= insert]} {
+            set oldSeparator [$w cget -autoseparators]
+            if { $oldSeparator } {
+                $w configure -autoseparators 0
+                $w edit separator
+                set compound 1
+            }
+	    $w delete sel.first sel.last
+	}
+    }
+    $w insert insert $s
+    $w see insert
+    if { $compound && $oldSeparator } {
+        $w edit separator
+        $w configure -autoseparators 1
+    }
+}
+
+
+proc xth_te_insert_tab W {
+  global xth
+  regexp {\.(\d+)} [$W index insert] dum col
+  set nsp [expr $xth(gui,etabsize) - ($col % $xth(gui,etabsize))]
+  xth_te_insert_text $W  [format \x25$nsp\s " "]
+  focus $W
+}
+
+
+proc xth_te_sdata_enable {w} {
+  global xth
+  if {[string length $w] < 1} {
+    set w $xth(ctrl,te,sdata)
+  }
+  set chlist [winfo children $w]
+  if {[llength $chlist] > 0} {
+    foreach sdw $chlist {
+      catch {$sdw configure -state normal}
+      catch {xth_te_sdata_enable $sdw}
+    }
+  }
+}
+
+proc xth_te_sdata_disable {w} {
+  global xth
+  if {[string length $w] < 1} {
+    set w $xth(ctrl,te,sdata)
+  }
+  set chlist [winfo children $w]
+  if {[llength $chlist] > 0} {
+    foreach sdw $chlist {
+      catch {$sdw configure -state disabled}
+      catch {xth_te_sdata_disable $sdw}
+    }
+  }
+}
+
+
+set xth(te,flist) {}
+set xth(te,fcurr) -1
+set xth(te,fltid) 0
+
+# create position bar
+set pbar $xth(gui,te).sf.pbar
+label $pbar -text "1.0" -width 8 -relief sunken -font $xth(gui,lfont)
+pack $pbar -side left
+
+
+# file control
+frame $xth(ctrl,te,files).fl
+set flbox $xth(ctrl,te,files).fl.flbox 
+listbox $flbox -height 6 -selectmode single -takefocus 1 \
+  -yscrollcommand "xth_scroll $xth(ctrl,te,files).fl.sv" \
+  -xscrollcommand "xth_scroll $xth(ctrl,te,files).fl.sh" \
+  -font $xth(gui,lfont) -exportselection no \
+  -selectborderwidth 1
+
+scrollbar $xth(ctrl,te,files).fl.sv -orient vert  -command "$flbox yview" \
+  -takefocus 0 -width $xth(gui,sbwidth) -borderwidth $xth(gui,sbwidthb)
+scrollbar $xth(ctrl,te,files).fl.sh -orient horiz  -command "$flbox xview" \
+  -takefocus 0 -width $xth(gui,sbwidth) -borderwidth $xth(gui,sbwidthb)
+frame $xth(ctrl,te,files).ef
+
+  
+bind $flbox <<ListboxSelect>> "xth_te_show_file \[lindex \[%W curselection\] 0\]"
+
+grid columnconf $xth(ctrl,te,files).fl 0 -weight 1
+grid rowconf $xth(ctrl,te,files).fl 0 -weight 1
+grid $flbox -column 0 -row 0 -sticky news
+xth_scroll_showcmd $xth(ctrl,te,files).fl.sv "grid $xth(ctrl,te,files).fl.sv -column 1 -row 0 -sticky news"
+xth_scroll_hidecmd $xth(ctrl,te,files).fl.sv "grid forget $xth(ctrl,te,files).fl.sv"
+xth_scroll_showcmd $xth(ctrl,te,files).fl.sh "grid $xth(ctrl,te,files).fl.sh -column 0 -row 1 -sticky news"
+xth_scroll_hidecmd $xth(ctrl,te,files).fl.sh "grid forget $xth(ctrl,te,files).fl.sh"
+xth_status_bar te $flbox "Switch open files."
+grid columnconf $xth(ctrl,te,files) 0 -weight 1
+grid $xth(ctrl,te,files).fl -column 0 -row 0 -sticky news
+if {![string equal -nocase $xth(prj,name) svxedit]} {
+grid $xth(ctrl,te,files).ef -column 0 -row 1 -sticky news
+}
+Label $xth(ctrl,te,files).ef.ecl -text Encoding -anchor e -font $xth(gui,lfont) -state disabled
+ComboBox $xth(ctrl,te,files).ef.ecb -values $xth(encodings) \
+  -textvariable xth(te,open_file_encoding) \
+  -font $xth(gui,lfont) -height 4 -command xth_te_set_encoding \
+  -state disabled
+Button $xth(ctrl,te,files).ef.chb -text "Change to" -anchor e -font $xth(gui,lfont) -padx 1 -state disabled -command xth_te_set_encoding
+Label $xth(ctrl,te,files).ef.cel -text "" -anchor w -padx 2 -font $xth(gui,lfont) -state disabled
+#grid columnconf $xth(ctrl,te,files).ef 0 -weight 0
+grid columnconf $xth(ctrl,te,files).ef 1 -weight 1
+grid $xth(ctrl,te,files).ef.ecl -column 0 -row 0 -sticky news
+grid $xth(ctrl,te,files).ef.cel -column 1 -row 0 -sticky news
+grid $xth(ctrl,te,files).ef.chb -column 0 -row 1 -sticky news
+grid $xth(ctrl,te,files).ef.ecb -column 1 -row 1 -sticky ew
+xth_status_bar te $xth(ctrl,te,files).ef "To set file encoding, type encoding name and press <Change> button."
+
+frame $xth(gui,te).af.apps.ff -bg $xth(gui,ecolorbg)
+pack $xth(gui,te).af.apps.ff -fill both -expand yes
+
+
+
+# table control
+Button $xth(ctrl,te,sdata).sfb -text "Scan data format" \
+  -font $xth(gui,lfont) -state disabled
+xth_status_bar te $xth(ctrl,te,sdata).sfb \
+  "Scan data format and rebuild survey data insertion tool."
+
+checkbutton $xth(ctrl,te,sdata).sfs -text "Enter station names" -anchor w \
+  -font $xth(gui,lfont) -variable xth(te,sdata,es) -state disabled
+xth_status_bar te $xth(ctrl,te,sdata).sfs \
+  "Check if you want to insert station names for each shot."
+
+frame $xth(ctrl,te,sdata).sdf
+
+button $xth(ctrl,te,sdata).taf -text "Auto format selection" \
+  -font $xth(gui,lfont) -state disabled
+xth_status_bar te $xth(ctrl,te,sdata).taf "Format selection to given table."
+
+grid columnconf $xth(ctrl,te,sdata) 0 -weight 1
+grid $xth(ctrl,te,sdata).sfb -column 0 -row 0 -sticky nsew
+grid $xth(ctrl,te,sdata).sdf -column 0 -row 1 -sticky nsew
+grid $xth(ctrl,te,sdata).sfs -column 0 -row 2 -sticky nsew
+grid $xth(ctrl,te,sdata).taf -column 0 -row 3 -sticky nsew
+
+
+
+proc xth_te_show_file {fidx} {
+
+  global xth
+  
+  if {$xth(te,fcurr) >= 0} {
+    pack forget $xth(te,[lindex $xth(te,flist) $xth(te,fcurr)],frame)
+  }
+  
+  if {$fidx < 0} {
+    set fidx 0
+  }
+  if {$fidx >= [llength $xth(te,flist)]} {
+    set fidx [expr [llength $xth(te,flist)] - 1]
+  }
+  
+  set xth(te,fcurr) $fidx
+  if {$xth(te,fcurr) >= 0} {
+    set cfid [lindex $xth(te,flist) $xth(te,fcurr)]
+    pack $xth(te,$cfid,frame) -expand yes -fill both
+    $xth(ctrl,te,files).fl.flbox delete $xth(te,fcurr)
+    $xth(ctrl,te,files).fl.flbox insert $xth(te,fcurr) "[expr $xth(te,fcurr) + 1]. $xth(te,$cfid,name) ($xth(te,$cfid,path))"
+    $xth(ctrl,te,files).fl.flbox see $fidx
+    $xth(ctrl,te,files).fl.flbox selection clear 0 end
+    $xth(ctrl,te,files).fl.flbox selection set $fidx $fidx
+    focus $xth(te,[lindex $xth(te,flist) $xth(te,fcurr)],frame).txt
+    set xth(te,open_file) $xth(te,$cfid,name)
+    # set xth(te,open_file_encoding) $xth(te,$cfid,encoding)
+    $xth(ctrl,te,files).ef.cel configure -text $xth(te,$cfid,encoding)
+    $xth(ctrl,te,files).ef.ecl configure -state normal
+    $xth(ctrl,te,files).ef.ecb configure -state normal
+    $xth(ctrl,te,files).ef.chb configure -state normal
+    $xth(ctrl,te,files).ef.cel configure -state normal
+    $xth(te,menu) entryconfigure Edit -state normal
+    $xth(te,menu,file) entryconfigure "Save" -state normal
+    $xth(te,menu,file) entryconfigure "Save as" -state normal
+    $xth(te,menu,file) entryconfigure "Save all" -state normal
+    $xth(te,menu,file) entryconfigure "Close" -state normal
+    if {[llength $xth(te,flist)] > 1} {
+      $xth(te,menu,file) entryconfigure "Next" -state normal
+      $xth(te,menu,file) entryconfigure "Previous" -state normal
+    } else {
+      $xth(te,menu,file) entryconfigure "Next" -state disabled
+      $xth(te,menu,file) entryconfigure "Previous" -state disabled
+    }
+    xth_te_sdata_enable ""
+  } else {
+    set xth(te,open_file) ""
+    set xth(te,open_file_encoding) $xth(app,fencoding)
+    $xth(te,menu,file) entryconfigure "Save" -state disabled
+    $xth(te,menu,file) entryconfigure "Save as" -state disabled
+    $xth(te,menu,file) entryconfigure "Save all" -state disabled
+    $xth(te,menu,file) entryconfigure "Close" -state disabled
+    $xth(te,menu,file) entryconfigure "Next" -state disabled
+    $xth(te,menu,file) entryconfigure "Previous" -state disabled
+    $xth(ctrl,te,files).ef.ecl configure -state disabled
+    $xth(ctrl,te,files).ef.ecb configure -state disabled
+    $xth(ctrl,te,files).ef.chb configure -state disabled
+    $xth(ctrl,te,files).ef.cel configure -state disabled -text ""
+    xth_te_sdata_disable ""
+    $xth(te,menu) entryconfigure Edit -state disabled
+  }
+  xth_app_title te
+  
+}
+
+
+proc xth_te_set_encoding {} {
+
+  global xth
+ 
+  if {$xth(te,fcurr) >= 0} {
+    # convert encoding into system's one
+    set rxp "\\s+($xth(te,open_file_encoding))\\s+"
+    if {[regexp -nocase $rxp $xth(encodings) dum temp]} {
+      set xth(te,open_file_encoding) $temp
+      set xth(te,[lindex $xth(te,flist) $xth(te,fcurr)],encoding) $temp
+      $xth(ctrl,te,files).ef.cel configure -text $temp
+    } else {
+      MessageDlg $xth(gui,message) -parent $xth(gui,main) \
+        -icon error -type ok \
+        -message "uknown encoding -- $xth(te,open_file_encoding)" \
+        -font $xth(gui,lfont)
+    }
+  }
+}
+
+proc xth_te_switch_file {fdr} {
+  global xth
+  set cf $xth(te,fcurr)
+  if {$cf != -1} {
+    incr cf $fdr
+    if {$cf < 0} {
+      set cf [expr [llength $xth(te,flist)] - 1]
+    }
+    if {$cf >= [llength $xth(te,flist)]} {
+      set cf 0
+    }
+    xth_te_show_file $cf
+  }
+}
+
+
+proc xth_te_create_file {} {
+
+  global xth
+  
+  # create file variables
+  incr xth(te,fltid)
+  set cfid $xth(te,fltid)
+  set xth(te,$cfid,name) [format "noname%02d$xth(app,te,fileext)" $cfid]
+  set xth(te,$cfid,path) [file join [pwd] $xth(te,$cfid,name)]
+  set xth(te,$cfid,newf) 1
+  set xth(te,$cfid,encoding) $xth(app,fencoding)
+  set xth(te,$cfid,frame) $xth(gui,te).af.apps.ff.file$cfid
+  set cfr $xth(te,$cfid,frame)
+
+  # create the frame and bind the events
+  frame $cfr
+  text $cfr.txt  -font $xth(gui,efont) -bg $xth(gui,ecolorbg) \
+    -fg $xth(gui,ecolorfg) -insertbackground $xth(gui,ecolorfg) \
+    -yscrollcommand "$cfr.sv set" \
+    -xscrollcommand "$cfr.sh set" \
+    -relief sunken \
+    -selectbackground $xth(gui,ecolorselbg) \
+    -selectforeground $xth(gui,ecolorselfg) \
+    -selectborderwidth 0 \
+    -wrap none 
+  set xth(te,$cfid,otext) [$cfr.txt get 1.0 end]
+  scrollbar $cfr.sv -orient vert  -command "$cfr.txt yview" \
+    -takefocus 0 -width $xth(gui,sbwidth) -borderwidth $xth(gui,sbwidthb)
+  scrollbar $cfr.sh -orient horiz  -command "$cfr.txt xview" \
+    -takefocus 0 -width $xth(gui,sbwidth) -borderwidth $xth(gui,sbwidthb)
+  bind $cfr.txt <Tab> $xth(te,bind,text_tab)
+  bind $cfr.txt <Return> $xth(te,bind,text_return)
+  bind $cfr.txt <<xthPositionChange>> "xth_te_update_position $cfr.txt"
+  bind $cfr.txt <Key> "+ event generate $cfr.txt <<xthPositionChange>> -when tail"
+  bind $cfr.txt <Button-1> "+ event generate $cfr.txt <<xthPositionChange>> -when tail"
+  bind $cfr.txt <Control-Key-1> "xth_te_show_file 0"
+  bind $cfr.txt <Control-Key-2> "xth_te_show_file 1"
+  bind $cfr.txt <Control-Key-3> "xth_te_show_file 2"
+  bind $cfr.txt <Control-Key-4> "xth_te_show_file 3"
+  bind $cfr.txt <Control-Key-5> "xth_te_show_file 4"
+  bind $cfr.txt <Control-Key-6> "xth_te_show_file 5"
+  bind $cfr.txt <Control-Key-7> "xth_te_show_file 6"
+  bind $cfr.txt <Control-Key-8> "xth_te_show_file 7"
+  bind $cfr.txt <Control-Key-9> "xth_te_show_file 8"
+  bind $cfr.txt <Control-Key-0> "xth_te_show_file 9"
+  bind $cfr.txt <Control-Key-n> "xth_te_switch_file 1"
+  bind $cfr.txt <Control-Key-p> "xth_te_switch_file -1"
+  bind $cfr.txt <Control-Key-w> "xth_te_close_file"
+  bind $cfr.txt <Control-Key-a> "xth_te_select_all"
+  bind $cfr.txt <Control-Key-i> "xth_te_auto_indent"
+  bind $cfr.txt <Control-Key-s> "xth_te_save_file 0 $cfid"
+  bind $cfr.txt <Destroy> "xth_te_before_close_file $cfid yesno"  
+#  if {$xth(gui,bindclip) == 1} {
+    bind $cfr.txt <Control-Key-x> "tk_textCut $cfr.txt"
+    bind $cfr.txt <Control-Key-c> "tk_textCopy $cfr.txt"
+    bind $cfr.txt <Control-Key-v> "tk_textPaste $cfr.txt"
+#  }
+    
+  grid columnconf $cfr 0 -weight 1
+  grid rowconf $cfr 0 -weight 1
+  grid $cfr.txt -column 0 -row 0 -sticky news
+  grid $cfr.sv -column 1 -row 0 -sticky news
+  grid $cfr.sh -column 0 -row 1 -sticky news
+  
+  
+  # add file to list and listbox
+  set xth(te,flist) [linsert $xth(te,flist) end $cfid]
+  $xth(ctrl,te,files).fl.flbox insert end "[llength $xth(te,flist)]. $xth(te,$cfid,name) ($xth(te,$cfid,path))"
+  
+  xth_te_show_file [expr [llength $xth(te,flist)] - 1]
+}
+
+
+# xth_te_read_file --
+#
+# return list containing
+# {success name encoding text}
+
+proc xth_te_read_file {pth} {
+
+  global errorInfo xth
+
+  set curenc utf-8
+  set nm [file tail $pth]
+  set encspc 0
+  set flnn 0
+  set success 1
+  set txt ""
+  if {[catch {set fid [open $pth r]}]} {
+    set success 0
+    set nm $errorInfo
+    return [list $success $nm $curenc $txt]
+  }
+  fconfigure $fid -encoding $curenc
+  while {[eof $fid] != 1} {
+    gets $fid fln
+    # replace tabs
+    regsub -all {\t} $fln "  " fln
+    incr flnn
+    if {[regexp {^\s*encoding\s+(\S+)\s*$} $fln encln enc]} {
+      if {$encspc} {
+        set success 0
+        set nm "$pth \[$flnn\] -- multiple encoding commands in file"
+        break
+      }
+      set encspc 1
+      set rxp "\\s+($enc)\\s+"
+      set validenc [regexp -nocase $rxp $xth(encodings) dum curenc]
+      if {$validenc == 0} {
+        set success 0
+        set nm "$pth \[$flnn\] -- unknown encoding -- $enc"
+        break
+      }
+      fconfigure $fid -encoding $curenc
+    } else {
+#      if {$encspc == 0} {
+#        if {[regexp {^\s*[^\#]+} $fln]} {
+#          set success 0
+#          set nm "$pth \[$flnn\] -- encoding command expected"
+#          break
+#        }
+#      }
+      append txt "$fln\n"
+    }
+  }
+  close $fid
+  return [list $success $nm $curenc $txt]
+  
+}  
+
+
+# xth_te_write_file --
+#
+# return list containing
+# {success name}
+
+proc xth_te_write_file {pth enc txt} {
+
+  global errorInfo xth
+
+  set curenc utf-8
+  set nm [file tail $pth]
+  set success 1
+  if {[catch {set fid [open $pth w]}]} {
+    set success 0
+    set nm $errorInfo
+    return [list $success $nm]
+  }
+  
+  fconfigure $fid -encoding $curenc
+  if {![string equal $xth(prj,name) svxedit]} {
+    puts $fid "encoding  $enc"
+  }
+  fconfigure $fid -encoding $enc
+  puts -nonewline $fid $txt
+  close $fid
+  return [list $success $nm]
+  
+}
+
+
+proc xth_te_destroy_file {} {
+
+  global xth
+
+  if {$xth(te,fcurr) >= 0} {
+  
+
+    # delete file from list and listbox and destroy windows
+    set tempcurr $xth(te,fcurr)
+    set cfid [lindex $xth(te,flist) $tempcurr]
+    pack forget $xth(te,$cfid,frame)
+    set xth(te,flist) [lreplace $xth(te,flist) $xth(te,fcurr) $xth(te,fcurr)]
+    $xth(ctrl,te,files).fl.flbox delete $tempcurr    
+    set xth(te,fcurr) -1
+
+    # set other window to be active
+    xth_te_show_file $tempcurr
+    
+    # destroy variable
+    unset xth(te,$cfid,name)
+    unset xth(te,$cfid,path)
+    unset xth(te,$cfid,newf)
+    unset xth(te,$cfid,encoding)
+    unset xth(te,$cfid,frame)
+    unset xth(te,$cfid,otext)
+  }  
+  
+}
+
+
+proc xth_load_file {fname fline} {
+  global xth
+  # now let's open file fname
+  
+  # check if not open exists
+  for {set fid 0} {$fid < [llength $xth(te,flist)]} {incr fid} {
+    if {[string equal $fname $xth(te,[lindex $xth(te,flist) $fid],path)]} {
+      xth_te_show_file $fid
+      return 1
+    }
+  }
+  
+  # read the file
+  xth_status_bar_push te
+  xth_status_bar_status te "Opening $fname ..."
+  
+  set fdata [xth_te_read_file $fname]
+  if {[lindex $fdata 0] == 0} {
+      MessageDlg $xth(gui,message) -parent $xth(gui,main) \
+        -icon error -type ok \
+        -message [lindex $fdata 1] \
+        -font $xth(gui,lfont)
+      xth_status_bar_pop te
+      return 0
+  }
+  
+  # show the file
+  xth_te_create_file
+  set cfid [lindex $xth(te,flist) $xth(te,fcurr)]
+  set xth(te,$cfid,name) [lindex $fdata 1]
+  set xth(te,$cfid,path) $fname
+  set xth(te,$cfid,newf) 0
+  set xth(te,$cfid,encoding) [lindex $fdata 2]
+  $xth(ctrl,te,files).ef.cel configure -text [lindex $fdata 2]
+  regsub -all {\s*$} [lindex $fdata 3] "" ftext
+  xth_te_insert_text $xth(te,$cfid,frame).txt "$ftext\n"
+  set xth(te,$cfid,otext) [$xth(te,$cfid,frame).txt get 1.0 end]
+  xth_te_show_file $xth(te,fcurr)
+  $xth(te,$cfid,frame).txt mark set insert "$fline.0"
+  $xth(te,$cfid,frame).txt see insert
+  
+  xth_status_bar_pop te
+  return 1
+}
+
+proc xth_te_open_file {dialogid fname fline} {
+
+  global xth
+  
+  if {$dialogid} {
+    set fname [tk_getOpenFile -filetypes $xth(app,te,filetypes) \
+      -parent $xth(gui,main) \
+      -initialfile $fname -defaultextension $xth(app,te,fileext)]
+  }
+  
+  if {[string length $fname] == 0} {
+    return 0
+  }
+  
+  return [xth_load_file $fname $fline]
+}
+
+proc xth_te_before_close_file {cfid btns} {
+  global xth
+  set ftext [$xth(te,$cfid,frame).txt get 1.0 end]
+  if {[string compare $xth(te,$cfid,otext) $ftext] != 0} {    
+    set wtd [MessageDlg $xth(gui,message) -parent $xth(gui,main) \
+      -icon question -type $btns\
+      -message "File $xth(te,$cfid,path) is not saved. Save it now?" \
+      -font $xth(gui,lfont)]
+    switch $wtd {
+      0 {
+        if {[xth_te_save_file 0 $cfid] == 0} {
+          return 0
+        }
+      }
+      1 {}
+      default {return 0}
+    }
+  }
+  return 1
+}
+
+proc xth_te_close_file {} {
+
+  global xth
+  
+  if {$xth(te,fcurr) < 0} {
+    return
+  }
+  set cfid [lindex $xth(te,flist) $xth(te,fcurr)]
+  if {[xth_te_before_close_file $cfid yesnocancel]} {
+    xth_te_destroy_file
+    return 1
+  } else {
+    return 0
+  }
+  
+}
+
+proc xth_te_save_file {dialogid cfid} {
+
+  global xth
+  
+  if {[llength $xth(te,flist)] == 0} {
+    return 0
+  }
+
+  set fid [lsearch -exact $xth(te,flist) $cfid]
+  if {$fid == -1} {
+    return 0
+  }
+  
+  set cfid [lindex $xth(te,flist) $fid]
+  
+  # let's check if we need to save
+  set ftext [$xth(te,$cfid,frame).txt get 1.0 end]
+  if {! $dialogid} {
+    if {[string compare $xth(te,$cfid,otext) $ftext] == 0} {
+        return 1
+    }
+  }
+  
+  xth_status_bar_push te
+  
+  if {$xth(te,$cfid,newf)} {
+    set dialogid 1
+  }
+
+  set fname $xth(te,$cfid,path)
+  set ofname $fname
+  if {$dialogid} {
+    set fname [tk_getSaveFile -filetypes $xth(app,te,filetypes) \
+      -parent $xth(gui,main) \
+      -initialfile [file tail $fname] -initialdir [file dirname $fname] \
+      -defaultextension $xth(app,te,fileext)]
+  }
+  
+  if {[string length $fname] == 0} {
+    return 0
+  }
+  
+  # save the file
+  xth_status_bar_status te "Saving $fname ..."
+  set fdata [xth_te_write_file $fname $xth(te,$cfid,encoding) $ftext]
+  if {[lindex $fdata 0] == 0} {
+      MessageDlg $xth(gui,message) -parent $xth(gui,main) \
+        -icon error -type ok \
+        -message [lindex $fdata 1] \
+        -font $xth(gui,lfont)
+      xth_status_bar_pop te
+      return
+  }
+  
+  set xth(te,$cfid,otext) $ftext
+  set xth(te,$cfid,newf) 0
+  
+  # if SaveAs, then redisplay the file
+  if {$dialogid} {
+    if {[string compare $ofname $fname] != 0} {
+      set xth(te,$cfid,name) [lindex $fdata 1]
+      set xth(te,$cfid,path) $fname
+      xth_te_show_file $fid
+    }
+  }  
+
+  xth_status_bar_pop te
+  return 1
+    
+}
+
+proc xth_te_save_all {} {
+
+  global xth
+  set ocur $xth(te,fcurr)
+  foreach cfid $xth(te,flist) {
+    xth_te_save_file 0 $cfid
+  }
+  xth_te_show_file $ocur
+  
+}
+
+
+proc xth_te_update_position {W} {
+  global xth
+  $xth(gui,te).sf.pbar configure -text [$W index insert]
+}
+
+
+proc xth_te_text_select_all {txt} {
+    $txt tag add sel 1.0 end
+}
+
+
+proc xth_te_select_all {} {
+  global xth
+  if {$xth(te,fcurr) > -1} {
+    set cfid [lindex $xth(te,flist) $xth(te,fcurr)]
+    $xth(te,$cfid,frame).txt tag add sel 1.0 end
+  }
+}
+
+
+$xth(te,menu,file) add command -label "New" -command xth_te_create_file \
+  -font $xth(gui,lfont) -underline 0
+$xth(te,menu,file) add command -label "Open" -underline 0 \
+  -accelerator "$xth(gui,controlk)-o" \
+  -font $xth(gui,lfont) -command {xth_te_open_file 1 {} 1}
+$xth(te,menu,file) add command -label "Save" -underline 0 \
+  -accelerator "$xth(gui,controlk)-s" -state disabled \
+  -font $xth(gui,lfont) -command {
+    if {$xth(te,fcurr) >= 0} {
+      xth_te_save_file 0 [lindex $xth(te,flist) $xth(te,fcurr)]
+    }
+  }
+$xth(te,menu,file) add command -label "Save as" -underline 5 \
+  -font $xth(gui,lfont) -state disabled -command {
+    if {$xth(te,fcurr) >= 0} {
+      xth_te_save_file 1 [lindex $xth(te,flist) $xth(te,fcurr)]
+    }
+  }
+$xth(te,menu,file) add command -label "Save all" -underline 6 \
+  -font $xth(gui,lfont) -state disabled -command xth_te_save_all
+$xth(te,menu,file) add command -state disabled -label "Close" -underline 0 \
+  -accelerator "$xth(gui,controlk)-w" \
+  -font $xth(gui,lfont) \
+  -command "xth_te_close_file"
+
+$xth(te,menu,file) add separator
+$xth(te,menu,file) add command -state disabled -label "Next" \
+  -accelerator "$xth(gui,controlk)-n" \
+  -font $xth(gui,lfont) -command "xth_te_switch_file 1" -underline 1
+$xth(te,menu,file) add command -state disabled -label "Previous" \
+  -accelerator "$xth(gui,controlk)-p" \
+  -font $xth(gui,lfont) -command "xth_te_switch_file -1" -underline 0
+  
+set xth(te,menu,edit) $xth(te,menu).edit
+menu $xth(te,menu,edit) -tearoff 0
+$xth(te,menu) add cascade -label "Edit" -state disabled \
+  -font $xth(gui,lfont) -menu $xth(te,menu,edit) -underline 0
+$xth(te,menu,edit) add command -label "Select all" -font $xth(gui,lfont) \
+  -accelerator "$xth(gui,controlk)-a" -command "xth_te_select_all"
+$xth(te,menu,edit) add command -label "Auto indent" -font $xth(gui,lfont) \
+  -command "xth_te_auto_indent" -accelerator "$xth(gui,controlk)-i"
+$xth(te,menu,edit) add separator
+$xth(te,menu,edit) add command -label "Cut" -font $xth(gui,lfont) \
+  -accelerator "$xth(gui,controlk)-x" -command "xth_app_clipboard cut"
+$xth(te,menu,edit) add command -label "Copy" -font $xth(gui,lfont) \
+  -accelerator "$xth(gui,controlk)-c" -command "xth_app_clipboard copy"
+$xth(te,menu,edit) add command -label "Paste" -font $xth(gui,lfont) \
+  -accelerator "$xth(gui,controlk)-v" -command "xth_app_clipboard paste"
+
+proc xth_te_get_indent {w i cilc} {
+
+  global xth
+  set indls ""
+  set cmdls ""
+  set cmd0s ""
+  set cmdl 0
+  regexp {(\d+)\.} $i dum cln
+  set line0 [$w get $cln.0 $cln.end]
+  regexp {\S+} $line0 cmd0s
+  if {[info exists xth(cmd,$cmd0s)]} {
+    set cmd0 $xth(cmd,$cmd0s)
+  } else {
+    set cmd0 0
+  }
+  set sln [expr $cln - 1]
+  set line1 [$w get $sln.0 $sln.end]
+  set linel $line1
+  set hasl 0
+  set escan 0
+  while {($sln > 1) && (! $hasl)} {
+    incr sln -1
+    if {[regexp {\S} $linel]} {
+      set cline [$w get $sln.0 $sln.end]
+      if {[regexp {\\\s*$} $cline]} {
+        set linel $cline
+      } else {
+        set hasl 1
+      }
+    } else {
+      set linel [$w get $sln.0 $sln.end]
+    }
+  }
+  regexp {\S+} $linel cmdls
+  if {[info exists xth(cmd,$cmdls)]} {
+    set cmdl $xth(cmd,$cmdls)
+    set endcmdls $xth(endcmd,$cmdls)
+  } else {
+    set cmdl 0
+  }
+  regexp {^\s+} $linel indls
+  set indl [string length $indls]
+  set bsl1 [regexp {\\\s*$} $line1]
+  
+  # preskenuje prikazy nad
+  #puts "cilc |$cilc|\nindl |$indl|\ncmd0 |$cmd0|\ncmd0s |$cmd0s|\ncmdl |$cmdl|\ncmdls |$cmdls|\n"
+  if {$cmdl == 1} {
+#    puts "$cln. cilc |$cilc|"
+    set cmdcomct 0
+    set cmdcomctfi 1
+    set enddetect 0
+    set set_cmd_counts {
+      regexp {\S+} $slns cmdcomx
+#      puts "$cmdls ?? $cmdcomx"
+      if {[string compare $endcmdls $cmdcomx] == 0} {
+        set endscan 1
+        set enddetect 1
+      } elseif {[string compare $cmdls $cmdcomx] == 0} {
+        if {! $cmdcomctfi} {
+          if {$cmdcomct} {
+            set endscan 1
+          }
+          incr cmdcomct
+        } else {
+          set cmdcomctfi 0
+        }
+      }
+    }
+    set sln [expr $cln - 1]
+    set slns $line1
+    set endscan 0
+    while {($sln > 1) && (!$endscan)} {
+      incr sln -1
+      if {[regexp {\S} $slns]} {
+        set clns [$w get $sln.0 $sln.end]
+        if {[regexp {(.*)\\\s*$} $clns dum vlns]} {
+          set slns "$vlns$slns"
+        } else {
+          eval $set_cmd_counts
+          set slns $clns
+        }
+      } else {
+        set slns [$w get $sln.0 $sln.end]
+      }
+    }
+    if {!$enddetect} {
+      eval $set_cmd_counts
+    }
+ #   puts $cmdcomct
+    if {$cmdcomct > 0} {
+      set cmdl 0
+    }
+  }
+  # koniec scanovania
+  
+  if {$bsl1} {
+    set ind [expr $indl + 2 * $xth(gui,etabsize)]
+  } else {
+    set ind $indl
+    if {$cmdl > 0} {
+      incr ind $xth(gui,etabsize)
+    } 
+    if {$cilc && ($cmd0 < 0)} {
+      incr ind -$xth(gui,etabsize)
+    } 
+  }
+  
+  if {$ind > 0} {
+    return [format %$ind\s " "]
+  } else {
+    return ""
+  }
+}
+
+proc xth_te_auto_indent {} {
+
+  global xth
+  if {$xth(te,fcurr) < 0} {
+    return
+  }
+  set cfid [lindex $xth(te,flist) $xth(te,fcurr)]
+  set W $xth(te,$cfid,frame).txt
+  set rngs [$W tag ranges sel]
+  set fln 1
+  set tln -1
+  regexp {(\d+)\.} [lindex $rngs 0] dum fln
+  regexp {(\d+)\.} [lindex $rngs 1] dum tln
+  xth_status_bar_push te
+  for {set cln $fln} {$cln < $tln} {incr cln} {
+    xth_status_bar_status te "Processing line $cln ..."
+    $W see $cln.0
+    set spcs ""
+    regexp {^\s+} [$W get $cln.0 $cln.end] spcs
+    set spcsc [string length $spcs]
+    set indct [string length [xth_te_get_indent $W $cln.0 1]]
+    if {$spcsc == $indct} {
+    } elseif {$spcsc > $indct} {
+      $W delete $cln.0 $cln.[expr $spcsc - $indct]
+    } elseif {$spcsc < $indct} {
+      $W insert $cln.0 [format \x25[expr $indct - $spcsc]s " "]
+    }
+  }
+  $W see insert
+  # $W tag remove sel 1.0 end
+  xth_status_bar_pop te
+}
+
+
+proc xth_te_text_auto_indent {W} {
+
+  set rngs [$W tag ranges sel]
+  set fln 1
+  set tln -1
+  regexp {(\d+)\.} [lindex $rngs 0] dum fln
+  regexp {(\d+)\.} [lindex $rngs 1] dum tln
+  for {set cln $fln} {$cln < $tln} {incr cln} {
+    $W see $cln.0
+    set spcs ""
+    regexp {^\s+} [$W get $cln.0 $cln.end] spcs
+    set spcsc [string length $spcs]
+    set indct [string length [xth_te_get_indent $W $cln.0 1]]
+    if {$spcsc == $indct} {
+    } elseif {$spcsc > $indct} {
+      $W delete $cln.0 $cln.[expr $spcsc - $indct]
+    } elseif {$spcsc < $indct} {
+      $W insert $cln.0 [format \x25[expr $indct - $spcsc]s " "]
+    }
+  }
+  $W see insert
+  
+}
+
+
+
+
+
+
+
+proc xth_te_sdata_scan {} {
+
+  global xth
+  if {$xth(te,fcurr) < 0} {
+    return [list [expr 2 * $xth(gui,etabsize)] {from to compass clino tape}]
+  }
+  
+  set w $xth(te,[lindex $xth(te,flist) $xth(te,fcurr)],frame).txt  
+
+  # let's find the index
+  set seli [$w tag ranges sel]
+  if {[llength $seli] > 0} {
+    set i [lindex $seli 0]
+  } else {
+    set i [$w index insert]
+  }
+  
+  regexp {(\d+)\.} $i dum cln
+  incr cln
+  set i [$w index $cln.0]
+  regexp {(\d+)\.} $i dum cln
+    
+  set dind [format \x25[expr 2 * $xth(gui,etabsize)]s " "]
+  set dqts {from to compass clino tape}
+  set scan_data {
+    if {[regexp {(\s*)data\s+\w+\s+(.*)} $slns dum dind dqts]} {
+      set endscan 1
+    }
+  }
+  set sln $cln
+  set slns ""
+  set endscan 0
+  while {($sln > 1) && (!$endscan)} {
+    incr sln -1
+    if {[regexp {\S} $slns]} {
+      set clns [$w get $sln.0 $sln.end]
+      if {[regexp {(.*)\\\s*$} $clns dum vlns]} {
+        set slns "$vlns$slns"
+      } else {
+        eval $scan_data
+        set slns $clns
+      }
+    } else {
+      set slns [$w get $sln.0 $sln.end]
+    }
+  }
+  if {!$endscan} {
+    eval $scan_data
+  }
+  
+  return [list [string length $dind] $dqts]     
+}
+
+
+proc xth_te_sdata_buid {qts indc} {
+
+  global xth
+  set cf $xth(ctrl,te,sdata).sdf
+  catch {destroy $cf}
+  frame $cf 
+  grid $cf -in $xth(ctrl,te,sdata) -column 0 -row 1 -sticky nsew
+  grid columnconf $cf 0 -weight 0
+  grid columnconf $cf 1 -weight 1
+  grid columnconf $cf 2 -weight 0
+
+  set nent 0
+  set invd 0
+  set sent 0
+  set grow 0
+  foreach qtt $qts {
+    switch $qtt {
+      newline {
+        if {(!$invd) && ($nent > 0)} {
+          frame $cf.nlf
+          grid columnconf $cf.nlf 0 -weight 1
+          grid columnconf $cf.nlf 1 -weight 1
+          Button $cf.nlf.s$grow -text "Start series" -font $xth(gui,lfont)
+          Button $cf.nlf.b$grow -text "Break series" -font $xth(gui,lfont)
+          grid $cf.nlf.s$grow -column 0 -row 0 -sticky news
+          grid $cf.nlf.b$grow -column 1 -row 0 -sticky news
+          grid $cf.nlf -in $cf -column 0 -columnspan 3 -row $grow \
+            -sticky news
+          set xth(te,sdata,invd,ssb) $cf.nlf.s$grow
+          set xth(te,sdata,invd,bsb) $cf.nlf.b$grow
+          set xth(te,sdata,invd,ent) $nent
+          set invd 1
+          incr grow
+        }
+      }
+      default {
+        # zistime typ
+        if {[info exists xth(datafmt,$qtt,format)]} {
+          set tqtt $qtt
+        } else {
+          set tqtt "unknown"
+        }
+        set xth(te,sdata,$nent,qtt) $tqtt
+        set xth(te,sdata,$nent,format) $xth(datafmt,$tqtt,format)
+        set xth(te,sdata,$nent,cvalue) ""
+        set xth(te,sdata,$nent,special) $xth(datafmt,$tqtt,special)
+        set xth(te,sdata,$nent,de) $cf.de$grow
+        set xth(te,sdata,$nent,fe) $cf.fe$grow
+        set xth(te,sdata,$nent,nextde) $cf.de$grow
+        set xth(te,sdata,$nent,nextvde) $cf.de$grow
+        Label $cf.l$grow -text $qtt -anchor e -font $xth(gui,lfont)
+        Entry $cf.de$grow -font $xth(gui,lfont) \
+          -textvariable xth(te,sdata,$nent,cvalue)
+        Entry $cf.fe$grow -font $xth(gui,lfont) -width 6 \
+          -textvariable xth(te,sdata,$nent,format)
+        bind $cf.de$grow <<xthFocusTo>> "focus $cf.de$grow; $cf.de$grow icursor 0; $cf.de$grow selection range 0 end"
+        bind $cf.de$grow <Key-Tab> "event generate \$xth(te,sdata,$nent,nextde) <<xthFocusTo>> -when tail"
+        bind $cf.de$grow <Key-Return> "event generate \$xth(te,sdata,$nent,nextvde) <<xthFocusTo>> -when tail"
+        bind $cf.de$grow <Key-KP_Enter> "event generate \$xth(te,sdata,$nent,nextvde) <<xthFocusTo>> -when tail"
+        grid $cf.l$grow -in $cf -column 0 -row $grow -sticky news
+        grid $cf.de$grow -in $cf  -column 1 -row $grow -sticky news
+        grid $cf.fe$grow -in $cf  -column 2 -row $grow -sticky news
+        incr grow
+        incr nent
+      }
+    }
+  }
+  
+  set xth(te,sdata,nent) $nent
+  set xth(te,sdata,indc) $indc
+  set xth(te,sdata,invd) $invd
+  
+  xth_te_sdata_bind
+}
+
+
+proc xth_te_sdata_incr_station {ss} {
+  set rv $ss
+  if {[regexp {\d+$} $ss xx]} {
+    regsub {\d+$} $ss [expr $xx + 1] rv
+    return $rv
+  }
+  return $rv
+}
+
+proc xth_te_sdata_incr {} {
+
+  global xth
+  if {$xth(te,sdata,incr,station) != -1} {
+    set xth(te,sdata,$xth(te,sdata,incr,station),cvalue) \
+      [xth_te_sdata_incr_station \
+      $xth(te,sdata,$xth(te,sdata,incr,station),cvalue)]
+  } else {
+    if {$xth(te,sdata,incr,from) != -1} {
+      if {$xth(te,sdata,incr,to) != -1} {
+        set xth(te,sdata,$xth(te,sdata,incr,from),cvalue) \
+            $xth(te,sdata,$xth(te,sdata,incr,to),cvalue)
+      }
+    }
+    if {$xth(te,sdata,incr,to) != -1} {
+      set xth(te,sdata,$xth(te,sdata,incr,to),cvalue) \
+        [xth_te_sdata_incr_station \
+        $xth(te,sdata,$xth(te,sdata,incr,to),cvalue)]
+    }    
+  }
+  
+}
+
+
+proc xth_te_sdata_bind {} {
+
+  global xth
+
+  if {! [info exists xth(te,sdata,nent)]} {
+    return
+  } elseif {$xth(te,sdata,nent) < 1} {
+    return
+  }
+
+  set xth(te,sdata,incr,station) -1
+  set xth(te,sdata,incr,from) -1
+  set xth(te,sdata,incr,to) -1
+  for {set i 0} {$i < $xth(te,sdata,nent)} {incr i} {
+    if {$i != [expr $xth(te,sdata,nent) - 1]} {
+      set xth(te,sdata,$i,nextde) $xth(te,sdata,[expr $i + 1],de)
+      set xth(te,sdata,$i,nextvde) $xth(te,sdata,[expr $i + 1],de)
+    } else {
+      set xth(te,sdata,$i,nextde) $xth(te,sdata,0,de)
+      set xth(te,sdata,$i,nextvde) $xth(te,sdata,0,de)
+    }
+    set sx [lsearch {from to station} $xth(te,sdata,$i,qtt)]
+    if {$sx != -1} {
+      set xth(te,sdata,incr,[lindex {from to station} $sx]) $i
+    }
+  }
+  
+  if {! $xth(te,sdata,es)} {
+    for {set i 0} {$i < $xth(te,sdata,nent)} {incr i} {
+      if {[lsearch {station from to} $xth(te,sdata,$i,qtt)] == -1} {
+        for {set j 1} {$j < $xth(te,sdata,nent)} {incr j} {
+          set jj [expr ($i + $j) % $xth(te,sdata,nent)]
+          if {[lsearch {station from to} $xth(te,sdata,$jj,qtt)] == -1} {
+            set xth(te,sdata,$i,nextvde) $xth(te,sdata,$jj,de)
+            set j $xth(te,sdata,nent)
+          }
+        }
+      }
+    }  
+  }
+  
+  # now let's bind enter keys
+  if {$xth(te,sdata,invd)} {
+    set wtw1 ""
+    set wtw2 ""
+    set clw ""
+    for {set iet 0} {$iet < $xth(te,sdata,nent)} {incr iet} {
+      if {$iet < $xth(te,sdata,invd,ent)} {
+        append wtw1 " \$xth(te,sdata,$iet,cvalue)"
+      } else {
+        append wtw2 " \$xth(te,sdata,$iet,cvalue)"
+      }
+      if {[lsearch {from to station} $xth(te,sdata,$iet,qtt)] == -1} {
+        append clw "set xth(te,sdata,$iet,cvalue) \"\"\n"
+      }
+    }
+    set enter_cmd "xth_te_sdata_insert \"$wtw2\" 2 insert\nxth_te_sdata_insert \"$wtw1\" 1 insert\nxth_te_sdata_incr\n$clw"
+    append enter_cmd "event generate \$xth(te,sdata,[expr $xth(te,sdata,nent) - 1],nextvde) <<xthFocusTo>> -when tail"
+    bind $xth(te,sdata,[expr $xth(te,sdata,nent) - 1],de) <Return> $enter_cmd
+    bind $xth(te,sdata,[expr $xth(te,sdata,nent) - 1],de) <KP_Enter> $enter_cmd
+
+    set enter_cmd "xth_te_sdata_insert \"$wtw1\" 1 insert\nxth_te_sdata_incr\n$clw"
+    append enter_cmd "event generate \$xth(te,sdata,[expr $xth(te,sdata,nent) - 1],nextvde) <<xthFocusTo>> -when tail"
+    $xth(te,sdata,invd,ssb) configure -command $enter_cmd
+
+    set enter_cmd "xth_te_sdata_insert \"break\" 3 insert\n$clw"
+    append enter_cmd "event generate \$xth(te,sdata,0,de) <<xthFocusTo>> -when tail"
+    $xth(te,sdata,invd,bsb) configure -command $enter_cmd
+    
+  } else {
+    set wtw ""
+    set clw ""
+    for {set iet 0} {$iet < $xth(te,sdata,nent)} {incr iet} {
+      append wtw " \$xth(te,sdata,$iet,cvalue)"
+      if {[lsearch {from to station} $xth(te,sdata,$iet,qtt)] == -1} {
+        append clw "set xth(te,sdata,$iet,cvalue) \"\"\n"
+      }
+    }
+    set enter_cmd "xth_te_sdata_insert \"$wtw\" 0 insert\nxth_te_sdata_incr\n$clw"
+    append enter_cmd "event generate \$xth(te,sdata,[expr $xth(te,sdata,nent) - 1],nextvde) <<xthFocusTo>> -when tail"
+    bind $xth(te,sdata,[expr $xth(te,sdata,nent) - 1],de) <Return> $enter_cmd
+    bind $xth(te,sdata,[expr $xth(te,sdata,nent) - 1],de) <KP_Enter> $enter_cmd
+  }  
+}
+
+
+$xth(ctrl,te,sdata).sfb configure -command {
+  set dil [xth_te_sdata_scan]
+  xth_te_sdata_buid [lindex $dil 1] [lindex $dil 0] 
+}
+
+
+$xth(ctrl,te,sdata).sfs configure -command xth_te_sdata_bind
+
+
+proc xth_te_sdata_insert {data invd iidx} {
+
+  global xth
+  if {$xth(te,fcurr) < 0} {
+    return
+  }
+
+  if {! [info exists xth(te,sdata,nent)]} {
+    return
+  } elseif {$xth(te,sdata,nent) < 1} {
+    return
+  }
+
+  set w $xth(te,[lindex $xth(te,flist) $xth(te,fcurr)],frame).txt
+  set xth(me,sdata,err_notenought) 0
+
+  set err 0
+  if {$xth(gui,etabsize) > 0} {
+    set tabspc [format \x25$xth(gui,etabsize)s " "]
+  } else {
+    set tabspc "  "
+  }
+  set sent 0
+  set eent $xth(te,sdata,nent)
+  switch $invd {
+    1 {
+      set eent $xth(te,sdata,invd,ent)
+    }
+    2 {
+      set sent $xth(te,sdata,invd,ent)
+    }
+  }
+  
+  set txt ""
+  set fst ""
+  set iet $sent
+  set tmp $data
+  set ldata {}
+  while {[string length $tmp] > 0} {
+    if {[regexp {\S+} $tmp itm]} {
+      lappend ldata $itm
+    }
+    regsub {\s*\S*\s*} $tmp {} tmp
+  }
+  if {([llength $ldata] < $eent) && (!$xth(te,sdata,invd))} {
+    set xth(me,sdata,err_notenought) 1
+  }
+  foreach itm $ldata {
+    set postwrt 0
+    set tobreak 0
+    if {$iet < $eent} {
+      if {[lsearch -exact $xth(te,sdata,$iet,special) $itm] != -1} {
+        set postwrt 1
+      } else {
+        set curfmt $xth(te,sdata,$iet,format)
+        set extfmt 0
+        if {[regsub {fx(\s*)$} $curfmt {f\1} curfmt]} {
+          set extfmt 1
+        }
+        puts "$itm -> $fst\x25$curfmt"
+        if {[catch {append txt [format "$fst\x25$curfmt" $itm]}]} {
+          set postwrt 1
+          puts "error"
+          set err 1
+        } elseif {$extfmt == 1} {
+          if {[regexp {\.?0+\s*$} $txt txtextend]} {
+            set teel [string length $txtextend]
+            regsub {\.?0+\s*$} $txt [format \x25[expr $teel]s " "] txt
+          }
+        }
+      }
+    } else {
+      # ak je dlhsie, uz neformatuj
+      puts $data
+      set unfdata $data
+      for {set ufi 0} {$ufi < $eent} {incr ufi} {
+        regsub {^\s*\S+\s*} $unfdata "" unfdata
+      }
+      append txt $fst $unfdata
+      # append txt [format $fst\x25$xth(datafmt,unknown,format) $itm]
+      # set err 1
+      set tobreak 1
+    }
+    
+      
+    if {$postwrt == 1} {
+      if {[regexp {(\d+)\.?(\d*)} $xth(te,sdata,$iet,format) dum nfln nzadc]} {
+        set nitm $itm
+        if {[string length nzadc] > 0} {
+          append nitm [format \x25[expr $nzadc + 1]s " "]
+        }
+        append txt [format $fst\x25[expr $nfln]s $nitm]
+      } else {
+        append txt [format $fst\x25$xth(datafmt,unknown,format) $itm]
+      }
+    }
+    
+    set fst $tabspc  
+    incr iet
+    if {$tobreak} {
+      break
+    }
+  }
+  
+  set cind $xth(te,sdata,indc)
+  if {($invd == 2) && (!$err)} {
+    if {[regexp {\d+} $xth(te,sdata,0,format) plusindc]} {
+      incr cind [expr $plusindc + 1]
+    } else {
+      incr cind [expr 2 * $xth(gui,etabsize)]
+    }
+  }
+  
+  if {($invd == 3) || $err} {
+    set txt $data
+    regsub {^\s+} $txt "" txt
+    regsub {\s+$} $txt "" txt
+  }
+  
+  if {$cind > 0} {
+    set txt [format \x25[expr $cind + [string length $txt]]s $txt]  
+  }
+  
+  if {[string compare $iidx insert] == 0} {
+    xth_te_insert_text $w "\n$txt"
+  } else {
+    $w insert $iidx $txt
+  }
+  return $err
+  
+}
+
+
+proc xth_te_sdata_auto_format {} {
+
+  global xth
+  if {$xth(te,fcurr) < 0} {
+    return
+  }
+
+  if {! [info exists xth(te,sdata,nent)]} {
+    return
+  } elseif {$xth(te,sdata,nent) < 1} {
+    return
+  }
+  
+  set w $xth(te,[lindex $xth(te,flist) $xth(te,fcurr)],frame).txt
+  set s [$w tag ranges sel]
+  if {[llength $s] < 2} {
+    return
+  }
+  
+  set eline -1
+  set sline 0
+  regexp {(\d+)\.} [lindex $s 0] dum sline 
+  regexp {(\d+)\.} [lindex $s 1] dum eline 
+  # $w tag remove sel 1.0 end
+  set ict 1
+  for {set cline $sline} {$cline <= $eline} {incr cline} {
+    set txt [$w get $cline.0 $cline.end]
+    if {[regexp {\S+} $txt]} {
+      set orig [$w get $cline.0 $cline.end]
+      $w delete $cline.0 $cline.end
+      if {$xth(te,sdata,invd)} {
+        set formatres [xth_te_sdata_insert $txt $ict $cline.0]
+        if {$formatres == 0} {
+          if {$ict == 1} {
+            set ict 2
+          } else {
+            set ict 1
+          }
+        } else {
+          if {[regexp {^\s*break\s*$} $txt]} {
+            set xth(me,sdata,err_notenought) 0
+            set ict 1
+          }
+        }
+      } else {
+        set formatres [xth_te_sdata_insert $txt 0 $cline.0]
+      }
+      # an error occured
+      if {$formatres || $xth(me,sdata,err_notenought)} {
+        puts "inserting >>$orig<<"
+        $w delete $cline.0 $cline.end
+        $w insert $cline.0 $orig
+      }
+    }
+  }
+  $w see insert
+}
+
+
+
+
+
+
+
+$xth(ctrl,te,sdata).taf configure -command xth_te_sdata_auto_format
+xth_te_sdata_buid {from to tape compass clino} [expr 2 * $xth(gui,etabsize)] 
+xth_te_sdata_disable ""
+
+
+
+
+
+
+
+xth_app_finish
+xth_app_show [lindex $xth(app,list) 0]
+
+xth_app_clock
+
+encoding system [string tolower $xth(app,sencoding)]
+xth_about_hide
+wm deiconify $xth(gui,main)
+xth_app_normalize
+foreach fname $argv {
+  xth_load_file $fname 1
+}

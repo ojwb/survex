@@ -22,6 +22,14 @@ Requires: survex = @VERSION@
 %description aven
 @AVENDESC@
 
+%package svxedit
+Summary: SvxEdit survey data editor for Survex
+Group: Applications/Misc
+Requires: survex = @VERSION@
+
+%description svxedit
+Experimental.
+
 %prep
 %setup
 
@@ -45,9 +53,12 @@ rm -rf "$RPM_BUILD_ROOT"
 %doc @EXTRA_TEXT@
 %doc /usr/share/doc/@PACKAGE@
 %doc /usr/share/man
-/usr/bin/[b-zA-Z0-9]*
+/usr/bin/[b-rt-zA-Z0-9]*
+/usr/bin/sorterr
 /usr/share/@PACKAGE@
 %files aven
 %defattr(-,root,root)
 /usr/bin/aven
-
+%files svxedit
+%defattr(-,root,root)
+/usr/bin/svxedit

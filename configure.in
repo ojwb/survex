@@ -362,4 +362,4 @@ AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files]
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  tests/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
  doc/version.ent debian/copyright src/borlandc/config.h src/riscos/config.h
- survex.spec)
+ survex.spec src/svxedit)

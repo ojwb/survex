@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-07-14 17:15:52 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.98 2002-07-14 17:15:52 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-09-14 23:24:03 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.99 2002-09-14 23:24:03 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -402,7 +402,7 @@ actions:
   <VariableList>
   <VarListEntry><Term>Open</Term>
   <ListItem><Para>
-  Load file into Notepad
+  Load file into SvxEdit
   </Para></ListItem>
   </VarListEntry>
   <VarListEntry><Term>Process</Term>
@@ -744,6 +744,14 @@ file is looked for with the appropriate extension appended.  So
 <refentry id="cavern">
 <?dbhtml filename="cavern.htm">
 &man.cavern;
+</refentry>
+<refentry id="svxedit">
+<?dbhtml filename="svxedit.htm">
+&man.svxedit;
+</refentry>
+<refentry id="aven">
+<?dbhtml filename="aven.htm">
+&man.aven;
 </refentry>
 <refentry id="caverot">
 <?dbhtml filename="caverot.htm">

@@ -86,6 +86,7 @@ djgpp_zip : dostxt
 	 djgpp_extras/cwsdpmi.exe djgpp_extras/emu387.dxe
 	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
 	ln -s ../README dostxt_tmp/README.txt
+	ln -s ../src/svxedit dostxt_tmp/svxedit.tcl
 	: # -l means convert LF to CR+LF
 	: # FIXME: really include dostxt too on DOS?
 	zip -9 -j -l $(djgpp_zip_name) dostxt_tmp/*.txt $(extra_txt)
@@ -100,6 +101,7 @@ mingw_iss :
 	mkdir iss_tmp
 	mkdir mingw_exes
 	for f in $(base_progs) aven printwin ; do cp src/$$f.exe mingw_exes ; done
+	cp src/svxedit iss_tmp/svxedit.tcl
 	cp $(extra_txt) survex.iss iss_tmp
 	: # so the can display the license
 	cp COPYING iss_tmp/COPYING.txt

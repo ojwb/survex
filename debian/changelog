@@ -1,5 +1,8 @@
 survex (1.0.14) unstable; urgency=low
 
+  * svxedit: This is a Survex data entry editor from the therion team.  It
+    currently experimental needs tcl and wish installed, so is it its own
+    package: survex-svxedit.
   * Improved handling of Compass PLT files and CMAP xyz files.
   * aven: when picking non-overlapping labels, show a slight preference to
     shorter labels with the aim of displaying more labels.
@@ -18,7 +21,7 @@ survex (1.0.14) unstable; urgency=low
     once again.  Added regression test for this.
   * Updated documentation.
 
- -- Wookey <wookey@survex.com>  Sat, 14 Sep 2002 15:26:23 +0100
+ -- Wookey <wookey@survex.com>  Sun, 15 Sep 2002 00:11:05 +0100
 
 survex (1.0.13) unstable; urgency=low
 
