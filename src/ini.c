@@ -101,7 +101,7 @@ ini_read(FILE **fh_list, char *section, char **vars)
    /* count how many variables to look up */
    n = 0;
    while (vars[n]) n++;
-   
+
    hash_tab = malloc(n * sizeof(int));
    vals = malloc(n * sizeof(char*));
    if (!hash_tab || !vals) {
@@ -123,7 +123,7 @@ ini_read(FILE **fh_list, char *section, char **vars)
       int hash;
 
       int fInSection = 0;
-      
+
       FILE *fh = *fh_list++;
 
       if (!fh) break;
@@ -159,7 +159,7 @@ ini_read(FILE **fh_list, char *section, char **vars)
 
 	 p = strchr(buf, '=');
 	 if (!p) continue; /* non-blank line with no = sign! */
-      
+
 	 *p = '\0';
 	 var = buf;
 	 val = p + 1;
@@ -182,7 +182,7 @@ ini_read(FILE **fh_list, char *section, char **vars)
 	 }
       }
    }
-      
+
    free(hash_tab);
    return vals;
 }

@@ -161,8 +161,13 @@ typedef struct {
    struct Node *to;
    /* bits 0..1 = reverse leg number; bit7 is fFullLeg */
    /* bit6 = fReplacementLeg (by reduction rules) */
+   /* bit5 = articulation leg (i.e. carries no error) */
    uchar reverse;
 } linkcommon;
+#define FLAG_DATAHERE 0x80
+#define FLAG_REPLACEMENTLEG 0x40
+/*#define FLAG_ARTICULATION 0x20 not used at the moment */
+#define MASK_REVERSEDIRN 0x03
 
 /* reverse leg - deltas & vars stored on other dirn */
 typedef struct LinkRev {
@@ -238,7 +243,7 @@ typedef struct Settings {
    real Var[Q_MAC];
    real z[Q_MAC];
    real sc[Q_MAC];
-   real units[Q_MAC];   
+   real units[Q_MAC];
    datum *ordering;
    int begin_lineno; /* 0 means no block started in this file */
    struct Settings *next;
@@ -276,12 +281,9 @@ extern bool fSuppress; /* only output 3d(3dx) file */
 #define POSD(S) ((S)->name->pos->p)
 #define USED(S, L) ((S)->leg[(L)] != NULL)
 
-#define FLAG_DATAHERE 128
-#define FLAG_REPLACEMENTLEG 64
-
 #define data_here(L) ((L)->l.reverse & FLAG_DATAHERE)
-#define reverse_leg_dirn(L) ((L)->l.reverse & 0x03)
-#define reverse_leg(L) ((L)->l.to->leg[((L)->l.reverse & 0x03)])
+#define reverse_leg_dirn(L) ((L)->l.reverse & MASK_REVERSEDIRN)
+#define reverse_leg(L) ((L)->l.to->leg[reverse_leg_dirn(L)])
 
 #if EXPLICIT_FIXED_FLAG
 # define pfx_fixed(N) ((N)->pos->fFixed)

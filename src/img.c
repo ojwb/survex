@@ -221,7 +221,7 @@ img_open_write(const char *fnm, char *szTitle, bool fBinary)
       fputs("Bv0.01\n", pimg->fh); /* binary file format version number */
    else
       fputs("v0.01\n", pimg->fh); /* file format version number */
-   
+
    fputsnl(szTitle, pimg->fh);
    tm = time(NULL);
    if (tm == (time_t)-1) {
@@ -374,7 +374,7 @@ img_close(img *pimg)
 {
    if (pimg) {
       if (pimg->fh) {
-	 /* If writing a binary file, write end of data marker */   
+	 /* If writing a binary file, write end of data marker */
 	 if (pimg->fBinary && !pimg->fRead) put32((INT32_T)-1, pimg->fh);
 	 fclose(pimg->fh);
       }

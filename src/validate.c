@@ -206,7 +206,7 @@ validate_station_list(void)
 	       print_prefix(stn->name);
 	       printf("' [%p], leg %d reciprocates via station '", stn, d);
 	       print_prefix(stn2->name);
-	       if (data_here(stn->leg[d])) 
+	       if (data_here(stn->leg[d]))
 		  printf("' - data on both legs\n");
 	       else
 		  printf("' - data on neither leg\n");
@@ -267,7 +267,7 @@ dump_node(node *stn)
 
 #undef dump_entire_network
 extern void
-dump_entire_network(void) 
+dump_entire_network(void)
 {
    node *stn;
    /* FIXME: this doesn't cover removed stations - iterate prefix tree? */
@@ -275,7 +275,7 @@ dump_entire_network(void)
    for (stn = stnlist; stn; stn = stn->next) dump_node(stn);
 }
 
-#undef dump_network 
+#undef dump_network
 extern void
 dump_network(void)
 {

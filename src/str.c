@@ -37,7 +37,7 @@ s_cat(char **pstr, int *plen, char *s)
       *plen = (new_len + 32) & ~3;
       *pstr = osrealloc(*pstr, *plen);
    }
-   
+
    strcpy(*pstr + len, s);
 }
 
@@ -57,7 +57,7 @@ s_catchar(char **pstr, int *plen, char ch)
       *plen = (new_len + 32) & ~3;
       *pstr = osrealloc(*pstr, *plen);
    }
-   
+
    (*pstr)[len] = ch;
    (*pstr)[len + 1] = '\0';
 }

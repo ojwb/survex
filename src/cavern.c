@@ -257,10 +257,10 @@ main(int argc, char **argv)
       }
 #endif
       data_file("", fnm); /* first argument is current path */
-      
+
       optind++;
    }
-   
+
    validate();
 
    solve_network(/*stnlist*/); /* Find coordinates of all points */

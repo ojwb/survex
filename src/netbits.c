@@ -177,7 +177,7 @@ copy_link(linkfor *leg)
 #if 1
 # ifndef NO_COVARIANCES
    check_var(&(leg->v));
-     {	
+     {
 	int i, j;
 	for (i = 0; i < 3; i++) {
 	   for (j = 0; j < 3; j++) legOut->v[i][j] = leg->v[i][j];
@@ -282,7 +282,7 @@ addfakeleg(node *fr, node *to,
    leg->v[2] = vz;
 #endif
    leg2->l.reverse = i;
-   leg->l.reverse = (j | 0x80);
+   leg->l.reverse = j | FLAG_DATAHERE;
 
    fr->leg[i] = leg;
    to->leg[j] = leg2;
@@ -332,7 +332,7 @@ freeleg(node **stnptr)
 #else
    leg->v[0] = leg->v[1] = leg->v[2] = (real)0.0;
 #endif
-   leg->l.reverse = (1 | 0x80);
+   leg->l.reverse = 1 | FLAG_DATAHERE;
 
    leg2->l.to = oldstn;
    leg2->l.reverse = 0;
@@ -468,7 +468,7 @@ mulvd(d *r, const var *a, const d *b)
 
    ASSERT((const d*)r != b);
    check_var(a);
-   check_d(b);   
+   check_d(b);
 
    for (i = 0; i < 3; i++) {
       tot = 0;
@@ -482,7 +482,7 @@ mulvd(d *r, const var *a, const d *b)
 /* r = ca ; r,a delta vectors; c real scaling factor  */
 void
 muldc(d *r, const d *a, real c) {
-   check_d(a);   
+   check_d(a);
    (*r)[0] = (*a)[0] * c;
    (*r)[1] = (*a)[1] * c;
    (*r)[2] = (*a)[2] * c;

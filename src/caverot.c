@@ -244,7 +244,7 @@ main(int argc, char **argv)
 	const char *szElev;
 
 	fRedraw = fTrue;
-	 
+
 	szPlan = msgPerm(/*Plan, %05.1f up screen*/101);
 	szElev = msgPerm(/*View towards %05.1f*/102);
 
@@ -657,14 +657,14 @@ show_help(void)
 	{"                RIGHT : mouse moves cave", FLAG_MOUSE2},
 	{"No mouse detected", FLAG_NOMOUSE},
 #if 0
-      puts(msg(/*No mouse detected.*/100));      
+      puts(msg(/*No mouse detected.*/100));
 #endif
 	{"", FLAG_ALWAYS},
 	{"              PRESS  ANY  KEY  TO  CONTINUE", FLAG_ALWAYS},
 	{NULL, 0}
    };
    int i, buttons, flags, y;
-   
+
    buttons = 0;
 
    flags = FLAG_ALWAYS;
@@ -672,7 +672,7 @@ show_help(void)
    if (mouse_buttons >= 1) flags |= FLAG_MOUSE;
    if (mouse_buttons >= 2) flags |= FLAG_MOUSE2;
    if (mouse_buttons >= 3) flags |= FLAG_MOUSE3;
-   
+
    /* display help text over currently displayed image */
    cvrotgfx_pre_supp_draw();
    set_tcolour(colHelp);
@@ -688,7 +688,7 @@ show_help(void)
    cvrotgfx_post_supp_draw();
    /* clear keyboard buffer */
    cvrotgfx_get_key();
-   
+
    /* wait until key pressed or mouse clicked */
    do {
       if (mouse_buttons > 0) cvrotgfx_read_mouse(&i, &i, &buttons);
@@ -753,14 +753,14 @@ parse_command(int argc, char **argv)
 	     if (*p != ',') break;
 	     p++;
 	  }
-	  break;	   
+	  break;
        }
       }
    }
 
    putnl();
    puts(msg(/*Reading in data - please wait...*/105));
-   
+
    p = cmdline_load_files(argc - optind, argv + optind);
    if (p) {
       printf(msg(/*Bad 3d image file '%s'*/106), p);

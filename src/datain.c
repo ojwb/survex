@@ -220,14 +220,14 @@ data_file(const char *pth, const char *fnm)
       compile_error(/*Couldn't open data file '%s'*/24, fnm);
       return;
    }
-   
+
    out_set_fnm(fnm); /* FIXME: file.filename maybe? */
 
    using_data_file(file.filename);
 
    begin_lineno_store = pcs->begin_lineno;
    pcs->begin_lineno = 0;
-   
+
 #ifndef NO_PERCENTAGE
    /* Try to find how long the file is...
     * However, under ANSI fseek( ..., SEEK_END) may not be supported */
@@ -239,14 +239,14 @@ data_file(const char *pth, const char *fnm)
 #endif
 
    file.line = 1;
-   
+
 #ifdef HAVE_SETJMP
    /* errors in nested functions can longjmp here */
    if (setjmp(file.jbSkipLine)) {
-      /* do nothing special */ 
+      /* do nothing special */
    }
 #endif
-   
+
    while (!feof(file.fh)) {
       int eolchar;
       /* Note start of line for error reporting */
@@ -321,10 +321,10 @@ data_file(const char *pth, const char *fnm)
    }
 
    pcs->begin_lineno = begin_lineno_store;
-      
+
    if (ferror(file.fh) || (fclose(file.fh) == EOF))
       compile_error(/*Error reading file*/18);
-   
+
    /* set_current_fnm(""); not correct if filenames are nested */
 
    /* don't free this - it may be pointed to by prefix.file */
@@ -342,7 +342,7 @@ data_normal(void)
    real dx, dy, dz;
    real vx, vy, vz;
 #ifndef NO_COVARIANCES
-   real cxy, cyz, czx;   
+   real cxy, cyz, czx;
 #endif
 
    datum first_stn = End;
@@ -353,9 +353,9 @@ data_normal(void)
 
    real tape, comp, clin, frcount, tocount;
    bool fNoComp, fNoClino, fTopofil = fFalse, fPlumbed = fFalse;
-   
+
    datum *ordering;
-   
+
    /* ordering may omit clino reading, so set up default here */
    /* this is also used if clino reading is the omit character */
    clin = (real)0.0; /* no clino reading, so assume 0 with large sd */
@@ -404,7 +404,7 @@ data_normal(void)
 	     };
 	     static real clinos[] = {(real)(PI/2.0),(real)(-PI/2.0),(real)0.0};
 	     clino_tok tok;
-	     
+
 	     skipblanks();
 	     if (isalpha(ch)) {
 		long fp = ftell(file.fh);
@@ -425,14 +425,14 @@ data_normal(void)
 		   clin = (!isMinus(chOld) ? PI / 2.0 : -PI / 2.0);
 		   break;
 		}
-		
+
 		if (isOmit(chOld)) {
 		   clin = (real)0.0; /* no clino reading, so assume 0 with large sd */
 		   /* default reading is set up above, but overwritten */
 		   break;
 		}
 	     }
-	     
+
 	     compile_error(/*Expecting numeric field*/9);
 	     showandskipline(NULL, 1);
 	     return 0;
@@ -451,7 +451,7 @@ data_normal(void)
        default: BUG("Unknown datum in ordering");
       }
    }
-   
+
    dataread:
 
 #ifdef NEW3DFORMAT
@@ -475,7 +475,7 @@ data_normal(void)
    print_prefix(to_name);
    printf(" %.2f %.2f %.2f\n",tape,comp,clin);
 #endif
-	    
+
    if (fTopofil) {
       frcount *= pcs->units[Q_COUNT];
       tocount *= pcs->units[Q_COUNT];
@@ -504,13 +504,13 @@ data_normal(void)
 	 showline(NULL, 0);
       }
    }
-   
+
    if (fTopofil) {
       tape = (tocount - frcount) * pcs->sc[Q_COUNT];
    } else {
       tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
    }
-   
+
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
       /* FIXME: different message for topofil? */
@@ -589,9 +589,9 @@ printf("clin %.2f\n",clin);
 #ifdef NO_COVARIANCES
 	 /* take into account variance in LEVEL case */
 	 v = dz2 * var(fPlumbed ? Q_LEVEL : Q_GRADIENT);
-	 vx = (var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) + 
+	 vx = (var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) +
 	       (.5 + sinB * sinB * cosG2) * v);
-	 vy = (var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) + 
+	 vy = (var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) +
 	       (.5 + cosB * cosB * cosG2) * v);
 	 if (!fNoClino)
 	    vz = (var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var(Q_GRADIENT));
@@ -602,9 +602,9 @@ printf("clin %.2f\n",clin);
 #else
 	 /* take into account variance in LEVEL case */
 	 v = dz2 * var(fPlumbed ? Q_LEVEL : Q_GRADIENT);
-	 vx = var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) + 
+	 vx = var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) +
 	    (sinB * sinB * v);
-	 vy = var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) + 
+	 vy = var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) +
 	    (cosB * cosB * v);
 	 if (!fNoClino)
 	    vz = (var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var(Q_GRADIENT));
@@ -677,7 +677,7 @@ data_diving(void)
 #endif
 
    datum *ordering;
-  
+
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
       switch (*ordering) {
@@ -777,7 +777,7 @@ data_diving(void)
 	 v = dz2 * var(Q_DEPTH) / D2;
 	 vx = var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) +
 	    sinB * sinB * v;
-	 vy = var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) + 
+	 vy = var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) +
 	    cosB * cosB * v;
       }
       vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
@@ -845,7 +845,7 @@ data_cartesian(void)
        default: BUG("Unknown datum in ordering");
       }
    }
-   
+
    dataread:
 
 #ifdef NEW3DFORMAT
@@ -926,7 +926,7 @@ data_nosurvey(void)
        default: BUG("Unknown datum in ordering");
       }
    }
-   
+
    dataread:
 
 #ifdef NEW3DFORMAT

@@ -263,7 +263,7 @@ draw_scale_bar(void)
 		     (coord)0,
 		     (coord)(1L << FIXED_PT_POS),
 		     FIXED_PT_POS);
-	
+
 	y_org = -y_org;
 	pCompass[1] = (coord)(x_org + x_rad * COSD(elev_last - 160.0));
 	pCompass[3] = (coord)(y_org - y_rad * SIND(elev_last - 160.0));
@@ -273,7 +273,7 @@ draw_scale_bar(void)
 	pCompass[11] = (coord)(y_org - y_rad * SIND(elev_last + 160.0));
 	pCompass[13] = pCompass[1];
 	pCompass[15] = pCompass[3];
-	
+
 	plot_no_tilt((point Huge *)pCompass,
 		     (coord)(1L << FIXED_PT_POS),
 		     (coord)0,

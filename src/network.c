@@ -78,7 +78,7 @@ remove_subnets(void)
    bool fMore = fTrue;
 
    ptrRed = NULL;
-   
+
    out_current_action(msg(/*Simplifying network*/129));
 
    while (fMore) {
@@ -230,7 +230,7 @@ remove_subnets(void)
 			  if (!invert_var(&newleg->v, &sum)) {
 			     ASSERT2(0, "matrix singular in parallel legs replacement");
 			  }
-			  
+
 			  mulvd(&temp, &inv1, &newleg->d);
 			  mulvd(&temp2, &inv2, &newleg2->d);
 			  adddd(&temp, &temp, &temp2);
@@ -346,7 +346,7 @@ remove_subnets(void)
 			legAB = copy_link(stn->leg[dirn]);
 			legBC = copy_link(stn2->leg[dirn2]);
 			legCA = copy_link(stn3->leg[dirn3]);
-			dirn = (0 + 1 + 2 - dirn 
+			dirn = (0 + 1 + 2 - dirn
 				- reverse_leg_dirn(stn3->leg[dirn3]));
 			dirn2 = (dirn2 + 2) % 3;
 			dirn3 = (dirn3 + 1) % 3;
@@ -362,7 +362,7 @@ remove_subnets(void)
 		     }
 		  }
 	       }
-		  
+
 	       ASSERT(three_node(stn2));
 	       ASSERT(three_node(stn3));
 
@@ -399,7 +399,7 @@ remove_subnets(void)
 		    var invAB, invBC, invCA, tmp, sum, inv;
 		    var sumAZBZ, sumBZCZ, sumCZAZ;
 		    d temp, temp2;
-		    
+
 		    /* FIXME: ought to handle cases when some legs are
 		     * equates, but handle as a special case maybe? */
 		    if (!invert_var(&invAB, &legAB->v)) break;
@@ -412,7 +412,7 @@ remove_subnets(void)
 		       /* impossible - loop of zero variance */
 		       BUG("loop of zero variance found");
 		    }
-		    
+
 		    /* AZBZ */
 		    /* done above: addvv(&sum, &legBC->v, &legCA->v); */
 		    mulvv(&tmp, &sum, &inv);
@@ -498,7 +498,7 @@ remove_subnets(void)
 #endif
 		    ptrRed = trav;
 		    fMore = fTrue;
-		    
+
 		    remove_stn_from_list(&stnlist, stn);
 		    remove_stn_from_list(&stnlist, stn2);
 		    remove_stn_from_list(&stnlist, stn3);
@@ -506,7 +506,7 @@ remove_subnets(void)
 		    stn5->leg[dirn5] = legBZ;
 		    stn6->leg[dirn6] = legCZ;
 		 }
-	       
+
 	    }
 	    nodeltastar:;
 	 }
@@ -540,12 +540,12 @@ replace_subnets(void)
 #endif
 
       if (!IS_DELTASTAR(ptrRed)) {
-	 
+
          leg = ptrRed->join1; leg = reverse_leg(leg);
          stn3 = leg->l.to; dirn3 = reverse_leg_dirn(leg);
          leg = ptrRed->join2; leg = reverse_leg(leg);
          stn4 = leg->l.to; dirn4 = reverse_leg_dirn(leg);
-	 
+
          ASSERT(!(fixed(stn3) && !fixed(stn4)));
          ASSERT(!(!fixed(stn3) && fixed(stn4)));
          ASSERT(data_here(stn3->leg[dirn3]));
@@ -562,7 +562,7 @@ replace_subnets(void)
             leg = stn3->leg[dirn3];
             stn2 = ptrRed->join1->l.to;
             dirn2 = reverse_leg_dirn(ptrRed->join1);
-	    
+
 	    zero = fZero(&leg->v);
             if (!zero) {
 	       d tmp;
@@ -667,7 +667,7 @@ replace_subnets(void)
          }
 	 add_stn_to_list(&stnlist, stn);
 	 add_stn_to_list(&stnlist, stn2);
-	 
+
          osfree(stn3->leg[dirn3]);
 	 stn3->leg[dirn3] = ptrRed->join1;
          osfree(stn4->leg[dirn4]);

@@ -1,3 +1,5 @@
+Changes in 0.96:
+
 * (MSDOS and MS Windows versions): fixed bug in message file handling
   introduced in 0.96-prerelease 1 - symptoms: messages incorrectly looked
   for in current directory, or just printing "???" and exiting.

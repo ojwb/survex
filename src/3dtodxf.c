@@ -97,7 +97,7 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(4), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
 	{HLP_ENCODELONG(5), "station marker size (default: "STRING(MARKER_SIZE)")"},
 	{HLP_ENCODELONG(6), "produce an elevation view"},
-	{0,0} 
+	{0,0}
    };
 
 #ifndef STANDALONE
@@ -120,7 +120,7 @@ main(int argc, char **argv)
    /* exactly two arguments must be given */
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 2, 2);
 #endif /* XXX */
-   while (1) {      
+   while (1) {
       int opt = cmdline_getopt();
       if (opt == EOF) break;
       switch (opt) {
@@ -160,7 +160,7 @@ main(int argc, char **argv)
 	 printf("Internal Error: 'getopt' returned '%c' %d\n", opt, opt);
 #endif
       }
-   } 	 
+   }
 
    fnm3D = argv[optind++];
    if (argv[optind]) {
@@ -174,7 +174,7 @@ main(int argc, char **argv)
    pimg = img_open(fnm3D, szTitle, szDateStamp);
    if (!pimg) {
 #ifndef STANDALONE
-      fatalerror(img_error(), fnm3D); 
+      fatalerror(img_error(), fnm3D);
 #else
       printf("Bad .3d file\n");
       exit(1);
@@ -186,13 +186,13 @@ main(int argc, char **argv)
 #ifdef DEBUG_3DTODXF
    printf("3d file title `%s'\n",szTitle);
    printf("Creation time `%s'\n",szDateStamp);
-#endif 
+#endif
 
    if (elevation) {
        s = sin(rad(elev_angle));
        c = cos(rad(elev_angle));
    }
-    
+
    /* Get drawing corners */
    min_x = min_y = min_z = FLT_MAX;
    max_x = max_y = max_z = -FLT_MAX;
@@ -214,10 +214,10 @@ main(int argc, char **argv)
          if (y < min_y) min_y = y;
          if (y > max_y) max_y = y;
          if (z < min_z) min_z = z;
-         if (z > max_z) max_z = z;    
+         if (z > max_z) max_z = z;
          break;
       }
-   } while (item != img_STOP);   
+   } while (item != img_STOP);
    img_close(pimg);
 
    if (grid > 0) {
@@ -232,11 +232,11 @@ main(int argc, char **argv)
       min_x = min_y = min_z = 0;
       max_x = max_y = max_z = 0;
    }
-   
+
    pimg = img_open(fnm3D, szTitle, szDateStamp);
 
    /* Header */
-   fprintf(fh,"0\nSECTION\n");  
+   fprintf(fh,"0\nSECTION\n");
    fprintf(fh,"2\nHEADER\n");
    fprintf(fh,"9\n$EXTMIN\n"); /* lower left corner of drawing */
    fprintf(fh,"10\n%#-.6f\n", min_x); /* x */
@@ -248,7 +248,7 @@ main(int argc, char **argv)
    fprintf(fh,"30\n%#-.6f\n", max_z); /* max z */
    fprintf(fh,"9\n$PDMODE\n70\n3\n"); /* marker style as CROSS */
    fprintf(fh,"9\n$PDSIZE\n40\n%6.2f\n", marker_size); /* marker size */
-   fprintf(fh,"0\nENDSEC\n");  
+   fprintf(fh,"0\nENDSEC\n");
 
    fprintf(fh,"0\nSECTION\n");
    fprintf(fh,"2\nTABLES\n");
@@ -290,7 +290,7 @@ main(int argc, char **argv)
       printf("x_min: %d  y_min: %d\n", (int)x1, (int)y1);
 #endif
       while (x1 < max_x) {
-	 /* horizontal line */      
+	 /* horizontal line */
          fprintf(fh,"0\nLINE\n");
          fprintf(fh,"8\nGrid\n"); /* Layer */
          fprintf(fh,"10\n%6.2f\n",x1);
@@ -302,7 +302,7 @@ main(int argc, char **argv)
 	 x1 += grid;
       }
       while (y1 < max_y) {
-         /* vertical line */      
+         /* vertical line */
          fprintf(fh,"0\nLINE\n");
          fprintf(fh,"8\nGrid\n"); /* Layer */
          fprintf(fh,"10\n%6.2f\n",min_x);
@@ -399,7 +399,7 @@ main(int argc, char **argv)
             fprintf(fh,"10\n%6.2f\n",x);
             fprintf(fh,"20\n%6.2f\n",y);
             fprintf(fh,"30\n%6.2f\n",z);
-         }    
+         }
          break;
 #ifdef DEBUG_3DTODXF
        case img_STOP:

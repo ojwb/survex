@@ -216,7 +216,7 @@ cave_open_write(const char *fnm, char *szTitle, bool fBinary)
       fputs("Bv0.01\n", pcave->fh); /* binary file format version number */
    else
       fputs("v0.01\n", pcave->fh); /* file format version number */
-   
+
    fputsnl(szTitle, pcave->fh);
    tm = time(NULL);
    if (tm == (time_t)-1) {
@@ -367,7 +367,7 @@ void
 cave_close(cave *pcave)
 {
    if (pcave->fh) {
-      /* If writing a binary file, write end of data marker */   
+      /* If writing a binary file, write end of data marker */
       if (pcave->fBinary && !pcave->fRead) put32(-1L, pcave->fh);
       fclose(pcave->fh);
    }

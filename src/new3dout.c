@@ -60,7 +60,7 @@ void cave_write_title (const char *title, img *pimg)
   fputs(title,pimg->fh);
 }
 
-void cave_write_stn(node *nod)   
+void cave_write_stn(node *nod)
 {
     nod = nod; /* avoid compiler warnings */
 }
@@ -131,7 +131,7 @@ printf("A cave error has occured. Hmmm\n");
 return 0;
 }
 
-void cave_write_leg(linkfor *leg)    
+void cave_write_leg(linkfor *leg)
 {
     leg = leg; /* avoid compiler warnings */
 }

@@ -34,7 +34,7 @@ extern "C" {
 #include "filename.h"
 #include "message.h"
 #include "caverot.h" // for LITTLE_MAGNIFY_FACTOR, etc
-#include "cvrotimg.h"    
+#include "cvrotimg.h"
 };
 
 static const int NCOLS = 13;
@@ -62,7 +62,7 @@ class Aven : public Gtk::Window {
     float m_RotateAngle;
     bool m_SwitchToPlan;
     bool m_SwitchToElevation;
-    
+
     lid* m_RawLegs[2];
     lid* m_RawStns[2];
     int m_NumLines[NCOLS];
@@ -71,7 +71,7 @@ class Aven : public Gtk::Window {
     float elev_angle;
 
     GdkColor black, red;
-    
+
     struct _line {
         coord* x0;
         coord* y0;
@@ -87,9 +87,9 @@ class Aven : public Gtk::Window {
     };
 
     _line m_Lines[NCOLS];
-    
+
     bool m_ForceUseOrig;
-    
+
     int total_xshift, total_yshift;
     float sx, cx, fx, fy, fz;
     float m_Scale, m_Scale2;
@@ -111,20 +111,20 @@ class Aven : public Gtk::Window {
     float m_AngleOrig;
 
     GdkColor cols[NCOLS];
-    
+
     double RotationAngleFromXOffset(int);
-    
+
     void AllocColour(GdkColor*, float, float, float);
 
 public:
     Aven(string name);
     virtual ~Aven();
-    
+
     bool Contributes(int x0, int y0, int x1, int y1,
                      int clip_x0, int clip_y0, int clip_x1, int clip_y1);
 
     void Open(void*);
-    
+
     gint ExposeEvent(GdkEventExpose* event);
     gint ButtonPressEvent(GdkEventButton* event);
     gint ButtonReleaseEvent(GdkEventButton* event);
@@ -134,7 +134,7 @@ public:
 
     void EnableWorkProc();
     void DisableWorkProc();
-    
+
     int toscreen_x(coord X, coord Y, coord Z, float scale=-1.0)
     {
        if (scale==-1.0) scale = m_Scale;
@@ -146,11 +146,11 @@ public:
        if (scale==-1.0) scale = m_Scale;
        int y= int(((X - x_mid) * fx + (Y - y_mid) * fy
                       + (Z - z_mid) * fz) * scale);
-                       
+
 
        return -y;
     }
-    
+
     void Draw(GdkPixmap* window, GdkGC* gc, int x0, int y0, int x1, int y1,
               float scale,
               int bx0, int by0, int bx1, int by1,

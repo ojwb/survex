@@ -506,10 +506,10 @@ static float N_Scale = 1, D_Scale = DEFAULT_SCALE;
 
 static bool
 read_scale(const char *s)
-{	      
+{
    char *p;
    double val;
-	 
+
    val = strtod(s, &p);
    if (p != s) {
       if (*p == '\0') {
@@ -570,7 +570,7 @@ int main(int argc, char **argv)
    };
 
 #define short_opts "epb:t:s:ncBlk"
-   
+
    /* TRANSLATE */
    static struct help_msg help[] = {
 /*				<-- */
@@ -630,7 +630,7 @@ int main(int argc, char **argv)
 	 break;
        case 's':
 	 if (!read_scale(optarg)) {
-	    /* FIXME complain? */	    
+	    /* FIXME complain? */
 	 }
 	 fInteractive = fFalse;
 	 break;
@@ -648,7 +648,7 @@ int main(int argc, char **argv)
     * rather than asking lots of questions then failing */
    pimg = img_open(fnm, title, szDateStamp);
    if (!pimg) fatalerror(img_error(), fnm);
-   
+
    if (pr->Init) {
       FILE *fh_list[4];
       FILE **p = fh_list;
@@ -730,7 +730,7 @@ int main(int argc, char **argv)
 
    xMax = yMax = -(FLT_MAX / 10.0f); /* any (sane) value will beat this */
    xMin = yMin = FLT_MAX; /* ditto */
-   
+
    while (fnm) {
       /* first time around pimg is already open... */
       if (!pimg) {
@@ -746,15 +746,15 @@ int main(int argc, char **argv)
 
    /* can't have been any data */
    if (xMax < xMin || yMax < yMin) fatalerror(/*No data in 3d Image file*/86);
-   
+
    {
       double w, x;
       x = 1000.0 / PickAScale(1, 1);
-      
+
       /* trim to 2 s.f. (rounding up) */
       w = pow(10.0, floor(log10(x) - 1.0));
       x = ceil(x / w) * w;
-      
+
       fputs(msg(/*Scale to fit on 1 page*/83), stdout);
       printf(" = 1:%.0f\n", x);
       if (N_Scale == 0.0) {
@@ -831,7 +831,7 @@ int main(int argc, char **argv)
    /* note down so we can switch to printer charset */
    msg166 = msgPerm(/*Page %d of %d*/166);
    select_charset(CHARSET_USASCII); /* FIXME could do better and find out what charset actually is */
-   
+
    /* used in printer's native charset in footer */
    msg167 = msgPerm(/*Survey '%s'   Page %d (of %d)   Processed on %s*/167);
 

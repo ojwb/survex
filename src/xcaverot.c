@@ -454,7 +454,7 @@ process_step(Display * display, Window mainwin, Window button, GC mygc, GC egc)
    if (view_angle >= 360.0)
       view_angle -= 360.0;
    else if (view_angle < 0)
-      view_angle += 360.0;      
+      view_angle += 360.0;
    update_rotation();
    flip_button(display, mainwin, button, egc, mygc, "Step");
 }
@@ -746,7 +746,7 @@ fill_segment_cache(void)
 
 		  /* calculate colour */
 		  int depth = (int)((float)(-p->Z + Zorg + Zrad) * z_col_scale);
-	       
+
 		  if (depth < 0) {
 		      depth = 0;
 		  } else if (depth >= NUM_DEPTH_COLOURS) {
@@ -761,7 +761,7 @@ fill_segment_cache(void)
 		  segment->y1 = y1;
 		  segment->x2 = x1 = toscreen_x(p);
 		  segment->y2 = y1 = toscreen_y(p);
-		  
+
 		  break;
 	       }
 	    }
@@ -1296,7 +1296,7 @@ main(int argc, char **argv)
    }
 
    set_codes(MOVE, DRAW, STOP);
-   
+
    /* set up display and foreground/background */
    mydisplay = XOpenDisplay("");
    if (!mydisplay) {
@@ -1423,7 +1423,7 @@ main(int argc, char **argv)
       XCreateSimpleWindow(mydisplay, mywindow, 0, BUTHEIGHT + FONTSPACE + 10,
 			  23, attr.height - (BUTHEIGHT + FONTSPACE + 10) - 5,
 			  0, ind_fg, ind_bg);
-#else 
+#else
    scalebar =
       XCreateSimpleWindow(mydisplay, mywindow, 0, FONTSPACE,
                           23, attr.height - 5, 0,
@@ -1436,7 +1436,7 @@ main(int argc, char **argv)
 
    title = osmalloc(strlen(hello) + strlen(argv[optind]) + 7);
    sprintf(title, "%s - [%s]", hello, argv[optind]);
-    
+
    /* load file(s) -- FIXME: report errors (i.e. when load_file returns 0) */
    while (argv[optind]) {
       load_file(argv[optind++], 0);
@@ -1547,8 +1547,8 @@ main(int argc, char **argv)
 #endif
 
    /* Loop through until a q is pressed,
-    * which will cause the application to quit */    
-    
+    * which will cause the application to quit */
+
    done = 0;
    while (done == 0) {
       int refresh_window = 0;
@@ -1559,7 +1559,7 @@ main(int argc, char **argv)
 #else
       if (rot == 0) goto ickybodge;
       while (XPending(mydisplay)) {
-	 ickybodge:	      
+	 ickybodge:
 #endif
          XNextEvent(mydisplay, &myevent);
 #if 0
@@ -1642,10 +1642,10 @@ main(int argc, char **argv)
 		  scale = exp(log(scale_orig)
 			      * (1 - (float)(myevent.xmotion.y - orig.y) / 100)
 			      );
-	       
+
 	    } else if (myevent.xmotion.window == mywindow) {
 	       /* drag cave about / alter rotation or scale */
-	       
+
 	       mouse_moved(mydisplay, mywindow, myevent.xmotion.x,
 			   myevent.xmotion.y);
 	    }
@@ -1657,24 +1657,24 @@ main(int argc, char **argv)
 		    KeySym mykey;
 		    int i;
 		    XKeyEvent *key_event = (XKeyEvent *) & myevent;
-		    
+
 		    switch (key_event->keycode) {
 		     case 100:
 		       xoff += 20;
 		       break;
-		       
+
 		     case 102:
 		       xoff -= 20;
 		       break;
-		       
+
 		     case 98:
 		       yoff += 20;
 		       break;
-		       
+
 		     case 104:
 		       yoff -= 20;
 		       break;
-		       
+
 		     default:{
 			i = XLookupString(key_event, text, 10, &mykey, 0);
 			if (i == 1)
@@ -1763,7 +1763,7 @@ main(int argc, char **argv)
 		    break;
 		 }
 	     case ConfigureNotify:
-	       
+
 #if 0	/* rescale to keep view in window */
 	       scale *= min((float)myevent.xconfigure.width /
 			    (float)oldwidth,
@@ -1775,11 +1775,11 @@ main(int argc, char **argv)
 #endif
 	       oldwidth = myevent.xconfigure.width;
 	       oldheight = myevent.xconfigure.height;
-	       
+
 	       XResizeWindow(mydisplay, scalebar, 23,
 			     myevent.xconfigure.height - BUTHEIGHT - FONTSPACE -
 			     5);
-	       
+
 	       XMoveWindow(mydisplay, ind_com,
 			   myevent.xconfigure.width - INDWIDTH - 1, 0);
 	       XMoveWindow(mydisplay, ind_elev,
@@ -1819,7 +1819,7 @@ main(int argc, char **argv)
 	    old_x_mid = x_mid;
 	    old_y_mid = y_mid;
 	    old_z_mid = z_mid;
-	    
+
 	    fill_segment_cache();
 	    redraw = 1;
 	 }
@@ -1828,7 +1828,7 @@ main(int argc, char **argv)
 	    old_crossing = crossing;
 	    old_labelling = labelling;
 	    redraw = 1;
-	 }	 
+	 }
 
 	 if (redraw) {
 	    perform_redraw();
@@ -1840,7 +1840,7 @@ main(int argc, char **argv)
 	 }
       }
    }	/* while */
-   
+
    /* Free up and clean up the windows created */
    XFreeGC(mydisplay, mygc);
    XDestroyWindow(mydisplay, mywindow);

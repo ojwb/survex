@@ -163,7 +163,7 @@ static void
 read_string(char **pstr, int *plen)
 {
    bool fQuoted = fFalse;
-   
+
    s_zero(pstr);
 
    skipblanks();
@@ -248,7 +248,7 @@ typedef enum {CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_DATA,
    CMD_LRUD, CMD_MEASURE, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET, CMD_SOLVE,
    CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
- 
+
 static sztok cmd_tab[] = {
      {"BEGIN",     CMD_BEGIN},
      {"CALIBRATE", CMD_CALIBRATE},
@@ -462,7 +462,7 @@ free_settings(settings *pcs) {
    /* don't free default ordering or ordering used by parent */
    datum *order = pcs->ordering;
    if (order != default_order && order != pcs->next->ordering) osfree(order);
-      
+
    /* free Translate if not used by parent */
    if (pcs->Translate != pcs->next->Translate) osfree(pcs->Translate - 1);
 
@@ -540,7 +540,7 @@ fix_station(void)
    x = read_numeric(fTrue);
    if (x == HUGE_REAL) {
       if (stnOmitAlready) {
-	 if (stn != stnOmitAlready) 
+	 if (stn != stnOmitAlready)
 	    compile_error(/*More than one FIX command with no coordinates*/56);
 	 else
 	    compile_warning(/*Same station fixed twice with no coordinates*/61);
@@ -579,7 +579,7 @@ fix_station(void)
 	    name->pos->shape = 0;
 	    name->stn = fixpt;
 	    name->up = NULL;
-	    add_stn_to_list(&stnlist, fixpt);	    
+	    add_stn_to_list(&stnlist, fixpt);
 	    POS(fixpt, 0) = x;
 	    POS(fixpt, 1) = y;
 	    POS(fixpt, 2) = z;
@@ -594,7 +594,7 @@ fix_station(void)
 	     * fixed with sds (though they should) so fRef can be ignored
 	     * for now */
 	 }
-	 return;	 
+	 return;
       }
    }
 
@@ -694,7 +694,7 @@ equate_list(void)
 #endif
 	 return;
       }
-      
+
       if (name1 == name2) {
 	 /* catch something like *equate "fred fred" */
 	 compile_warning(/*Station equated to itself*/13);
@@ -859,7 +859,7 @@ data(void)
       }
 # define mask_dup_ok (BIT(Ignore) | BIT(End) | BIT(IgnoreAll) | BIT(Next))
       if (!(mask_dup_ok & BIT(d))) {
-#else 
+#else
       /* check for duplicates unless it's IGNORE (duplicates allowed) */
       /* or End/IGNOREALL (not possible) */
       if (d != Ignore && d != End && d != IgnoreAll) {
@@ -886,7 +886,7 @@ data(void)
       new_order[k++] = d;
 #define mask_done (BIT(End) | BIT(IgnoreAll))
    } while (!(mask_done & BIT(d)));
-      
+
    if ((mUsed | mask_optional[style-1]) != mask[style-1]) {
       osfree(new_order);
       compile_error(/*Too few data*/64);
@@ -898,7 +898,7 @@ data(void)
    if (pcs->ordering != default_order &&
        !(pcs->next && pcs->next->ordering == pcs->ordering))
       osfree(pcs->ordering);
-      
+
    pcs->ordering = new_order;
 }
 
@@ -939,7 +939,7 @@ units(void)
 	 fseek(file.fh, fp, SEEK_SET);
 	 compile_error(/*Unknown quantity `%s'*/34, buffer);
 	 skipline();
-	 return;	 
+	 return;
       }
       get_token();
    }
@@ -985,7 +985,7 @@ calibrate(void)
       return;
    }
    z = read_numeric(fFalse);
-   sc = read_numeric(fTrue);   
+   sc = read_numeric(fTrue);
    if (sc == HUGE_REAL) sc = (real)1.0;
    /* check for declination scale */
    /* perhaps "*scale declination XXX" should be "*declination XXX" ? */
@@ -1007,7 +1007,7 @@ static void
 set_default(void)
 {
    compile_warning(/**default is deprecated - use *calibrate/data/style/units with argument DEFAULT instead*/20);
-   get_token(); 
+   get_token();
    if (EQ("CALIBRATE")) {
       default_calib(pcs);
    } else if (EQ("DATA")) {
@@ -1040,7 +1040,7 @@ include(void)
    file_store = file;
    file.parent = &file_store;
    ch_store = ch;
-   
+
    data_file(pth, fnm);
 
    root = root_store; /* and restore root */
@@ -1111,7 +1111,7 @@ static sztok case_tab[] = {
      {"TOUPPER",  LOWER},
      {NULL,       -1}
 };
-   
+
 static void
 case_handling(void)
 {
@@ -1134,13 +1134,13 @@ static sztok infer_tab[] = {
      {"PLUMBS",     1},
      {NULL,      0}
 };
-   
+
 static sztok onoff_tab[] = {
      {"OFF", 0},
      {"ON",  1},
      {NULL,       -1}
 };
-   
+
 static void
 infer(void)
 {
@@ -1160,7 +1160,7 @@ infer(void)
       skipline();
       return;
    }
-   
+
    switch (setting) {
 #if 0
     case 2:

@@ -39,7 +39,7 @@ data_here(linkfor *leg)
 extern uchar
 reverse_leg_dirn(linkfor *leg)
 {
-   return leg->l.reverse & 0x03;
+   return leg->l.reverse & MASK_REVERSEDIRN;
 }
 #endif
 

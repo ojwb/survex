@@ -19,7 +19,7 @@
 
 #include "getopt.h"
 
-struct help_msg { 
+struct help_msg {
    int opt;
    char *msg;
 };

@@ -46,7 +46,7 @@ traverse_prefix_tree(prefix *from, void (*fn)(prefix *))
 
    p = from->down;
    if (!p) return;
-     
+
    while (1) {
       fn(p);
       if (p->down) {

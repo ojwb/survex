@@ -199,7 +199,7 @@ main(int argc, char **argv)
 
    do_stn(start, 0.0f); /* only does highest connected component currently */
    img_close(pimg);
-   
+
    return EXIT_SUCCESS;
 }
 

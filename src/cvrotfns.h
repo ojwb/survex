@@ -294,7 +294,7 @@ void init_graphics(void) {
 
 /*!HACK!*/ screen_put_pal(255,0xff,0xff,0xff);
 /*!HACK!*/ screen_put_pal(0,0,0,0);
-   
+
  /* initialise screen sized buffer */
  BitMap = buff_init(SCREEN_WIDTH,SCREEN_HEIGHT);
  /* check that initialisation was OK */

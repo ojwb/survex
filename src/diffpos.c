@@ -96,32 +96,32 @@ main(int argc, char **argv)
 }
 
 typedef enum { Eof, Haveline, Needline } state;
-   
+
 int
 diff_pos(FILE *fh1, FILE *fh2, double threshold)
 {
    state pos1 = Needline, pos2 = Needline;
    int result = 0;
-   
+
    while (1) {
       double x1, y1, z1, x2, y2, z2;
       char id1[BUFLEN], id2[BUFLEN];
-      
+
       if (pos1 == Needline) {
 	 pos1 = Haveline;
          if (!read_line(fh1, &x1, &y1, &z1, id1)) pos1 = Eof;
       }
-      
+
       if (pos2 == Needline) {
 	 pos2 = Haveline;
          if (!read_line(fh2, &x2, &y2, &z2, id2)) pos2 = Eof;
       }
-      
+
       if (pos1 == Eof) {
 	 if (pos2 == Eof) break;
 	 result = 1;
 	 printf("Added: %s (at end of file)\n", id2);
-	 pos2 = Needline;	 
+	 pos2 = Needline;
       } else if (pos2 == Eof) {
 	 result = 1;
 	 printf("Deleted: %s (at end of file)\n", id1);

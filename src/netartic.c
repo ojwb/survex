@@ -94,7 +94,7 @@ iter:
       if (i != back) {
 	 node *to = stn->leg[i]->l.to;
 	 long c = to->colour;
-      
+
 	 if (c < 0) {
 	    /* we've found a fixed point */
 	    c = -c;
@@ -103,11 +103,11 @@ iter:
 	    printf("Putting FOUND FIXED stn ");
 	    print_prefix(to->name);
 	    printf(" on artlist\n");
-#endif	 
+#endif
 	    remove_stn_from_list(&fixedlist, to);
 	    add_stn_to_list(&artlist, to);
 	 }
-	 
+
 	 if (c && c < min) min = c;
       }
    }
@@ -140,7 +140,7 @@ uniter:
 	 printf("Putting stn ");
 	 print_prefix(stn->name);
 	 printf(" on artlist\n");
-#endif	 
+#endif
 	 remove_stn_from_list(&stnlist, stn);
 	 add_stn_to_list(&artlist, stn);
 
@@ -148,24 +148,30 @@ uniter:
 	 printf(">> %p\n", stn);
 #endif
 
-	 if (artic_flag) {	    
+	 if (artic_flag) {
 	    articulation *art;
-	    
+
 	    artic_flag = 0;
-	    /* DO: note down leg (<-), remove and replace:
+	    /* FIXME: note down leg (<-), remove and replace:
 	     *                 /\   /        /\
              * [fixed point(s)]  *-*  -> [..]  )
 	     *                 \/   \        \/
 	     *                stn2 stn
 	     */
+#if 0
+	    /* flag leg as an articulation for loop error reporting */
+	    stn->leg[livTos->dirn]->l.reverse |= FLAG_ARTICULATION;
+	    stn2->leg[i]->l.reverse |= FLAG_ARTICULATION;
+#endif
+	     
 	    /* start new articulation */
 	    component_list->artic->stnlist = artlist;
 	    artlist = NULL;
-	    
+
 	    art = osnew(articulation);
 	    art->next = component_list->artic;
 	    component_list->artic = art;
-#ifdef DEBUG_ARTIC
+#if 1 /*def DEBUG_ARTIC*/
 	    printf("Articulate *-");
 	    print_prefix(stn2->name);
 	    printf("-");
@@ -191,7 +197,7 @@ uniter:
    printf("Putting stn ");
    print_prefix(stn->name);
    printf(" on artlist\n");
-#endif	 
+#endif
    remove_stn_from_list(&stnlist, stn);
    add_stn_to_list(&artlist, stn);
    return min;
@@ -209,7 +215,7 @@ articulate(void)
    component_list = NULL;
    artlist = NULL;
    fixedlist = NULL;
-   
+
    /* find articulation points and components */
    colour = 0;
    stnStart = NULL;
@@ -221,7 +227,7 @@ articulate(void)
 	 printf("Putting stn ");
 	 print_prefix(stn->name);
 	 printf(" on fixedlist\n");
-#endif	 	 
+#endif
 	 remove_stn_from_list(&stnlist, stn);
 	 add_stn_to_list(&fixedlist, stn);
       } else {
@@ -239,10 +245,10 @@ articulate(void)
 
       /* see if this is a fresh component - it may not be, we may be
        * processing the other way from a fixed point cut-line */
-      if (stn->colour < 0) {	 
+      if (stn->colour < 0) {
 	 component *comp;
 	 articulation *art;
-	 
+
 #ifdef DEBUG_ARTIC
 	 printf("new component\n");
 #endif
@@ -254,7 +260,7 @@ articulate(void)
 	  * to start a new one - we should start a new one for a fixed point
 	  * cut-line I think */
 	 if (component_list) component_list->artic->stnlist = artlist;
-	 
+
 	 art = osnew(articulation);
 	 art->next = NULL;
 	 artlist = NULL;
@@ -280,13 +286,18 @@ articulate(void)
 	     * which it is iff we have to colour from it in more than one dirn
 	     */
 	    if (c) {
-	       /* FIXME: stn is an articulation point! */
-#ifdef DEBUG_ARTIC
+	       /* FIXME: stn2 is an articulation point! */
+#if 0
+	       /* flag leg as an articulation for loop error reporting */
+	       stn->leg[i]->l.reverse |= FLAG_ARTICULATION;
+	       reverse_leg(stn->leg[i])->l.reverse |= FLAG_ARTICULATION;
+#endif
+#if 1 /*def DEBUG_ARTIC*/
 	       print_prefix(stn2->name);
 	       printf(" is a special case start articulation point\n");
 #endif
 	    }
-	    
+
 	    c++;
 	    visit(stn2, reverse_leg_dirn(stn->leg[i]));
 	 }
@@ -296,7 +307,7 @@ articulate(void)
       printf("Putting FIXED stn ");
       print_prefix(stn->name);
       printf(" on artlist\n");
-#endif	 
+#endif
       remove_stn_from_list(&fixedlist, stn);
       add_stn_to_list(&artlist, stn);
 
@@ -335,7 +346,7 @@ articulate(void)
 	   comp = tmp;
 	}
 	component_list = rev;
-	
+
 #ifdef DEBUG_ARTIC
 	printf("\nDump of %d components:\n", cComponents);
 #endif
@@ -370,7 +381,7 @@ articulate(void)
 	   FOR_EACH_STN(stn, list) {
 	      printf("MX: %c %p (", fixed(stn)?'*':' ', stn);
 	      print_prefix(stn->name);
-	      printf(")\n");	      
+	      printf(")\n");
 	   }
 #endif
 	   solve_matrix(list);
@@ -379,7 +390,7 @@ articulate(void)
 	   FOR_EACH_STN(stn, list) {
 	      printf("%c %p (", fixed(stn)?'*':' ', stn);
 	      print_prefix(stn->name);
-	      printf(")\n");	      
+	      printf(")\n");
 	   }
 #endif
 	   listend->next = stnlist;

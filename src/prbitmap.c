@@ -59,7 +59,7 @@ DrawLineDots(long x, long y, long x2, long y2)
       dx = -dx;
       xs = -1;
    }
-   
+
    dy = y2 - y;
    if (dy > 0) {
       ys = 1;
@@ -67,7 +67,7 @@ DrawLineDots(long x, long y, long x2, long y2)
       dy = -dy;
       ys = -1;
    }
-   
+
    (PlotDot)(x, y);
    if (dx > dy) {
       d = (dy << 1) - dx;
@@ -168,7 +168,7 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
    /* len and #chars are really the same info, so double check to avoid
     * a buffer overrun - FIXME this isn't a sensible way for this to work */
    len = (len / 8) + 31;
-   if (max_def_char > len) max_def_char = len;   
+   if (max_def_char > len) max_def_char = len;
    fclose(fh);
 }
 

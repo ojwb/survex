@@ -37,7 +37,7 @@
 # define LONGJMP(JB) exit(1)
 #endif
 
-/* ident_cmp returns -ve for <, 0 for =, +ve for > (like strcmp) */     
+/* ident_cmp returns -ve for <, 0 for =, +ve for > (like strcmp) */
 #if 1
 # define ident_cmp strcmp
 #else
@@ -130,7 +130,7 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 
       name[i++]='\0';
       name = osrealloc(name, i);
-     
+
       back_ptr = ptr;
       ptr = ptr->down;
       if (ptr == NULL) {

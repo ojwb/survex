@@ -83,14 +83,14 @@ solve_matrix(node *list)
     */
    stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(pos*)));
    n_stn_tab = 0;
-   
+
    FOR_EACH_STN(stn, list) {
       if (!fixed(stn)) add_stn_to_tab(stn);
    }
 
    /* FIXME: release any unused entries in stn_tab ? */
    /* stn_tab = osrealloc(stn_tab, n_stn_tab * ossizeof(pos*)); */
-   
+
    build_matrix(list, n_stn_tab, stn_tab);
 #if DEBUG_MATRIX
    FOR_EACH_STN(stn, list) {
@@ -176,7 +176,7 @@ build_matrix(node *list, long n, pos **stn_tab)
 	       printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
 		      stn->leg[dirn]->v[0], stn->leg[dirn]->l.reverse);
 #else
-	       printf("Leg %d, vx=%f, reverse=%d, to ", dirn,		      
+	       printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
 		      stn->leg[dirn]->v[0][0], stn->leg[dirn]->l.reverse);
 #endif
 	       print_prefix(stn->leg[dirn]->l.to->name);
@@ -286,9 +286,9 @@ build_matrix(node *list, long n, pos **stn_tab)
 			      M(t * FACTOR + i, t * FACTOR + j) += e[i][j];
 			   }
 			   for (j = 0; j < 3; j++) {
-			      if (f < t) 
+			      if (f < t)
 				 M(t * FACTOR + i, f * FACTOR + j) -= e[i][j];
-			      else 
+			      else
 				 M(f * FACTOR + i, t * FACTOR + j) -= e[i][j];
 			   }
 			   B[f * FACTOR + i] -= a[i];

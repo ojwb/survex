@@ -92,7 +92,7 @@ extern char *
 base_from_fnm(const char *fnm)
 {
    char *p;
-   
+
    p = strrchr(fnm, FNM_SEP_EXT);
    /* Trim off any leaf extension, but dirs can have extensions too */
    if (p && !strchr(p, FNM_SEP_LEV)
@@ -117,7 +117,7 @@ baseleaf_from_fnm(const char *fnm)
    const char *p;
    char *q;
    size_t len;
-   
+
    p = fnm;
    q = strrchr(p, FNM_SEP_LEV);
    if (q) p = q + 1;
@@ -125,7 +125,7 @@ baseleaf_from_fnm(const char *fnm)
    q = strrchr(p, FNM_SEP_LEV2);
    if (q) p = q + 1;
 #endif
-   
+
    q = strrchr(p, FNM_SEP_EXT);
    if (q) len = (const char *)q - p; else len = strlen(p);
 

@@ -166,7 +166,7 @@ ps_DrawTo(long x, long y)
    if (strlen(rbuf) < strlen(abuf))
       prio_print(rbuf);
    else
-      prio_print(abuf);      
+      prio_print(abuf);
 }
 
 static void
@@ -458,7 +458,7 @@ ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
    vals = ini_read_hier(fh_list, "ps", vars);
 #endif
 
-   if (vals[2]) 
+   if (vals[2])
       fnmPrn = as_string(vals[2]);
    else
       fnmPrn = as_string(vals[1]);

@@ -126,12 +126,12 @@ printf("osrealloc (in truep=%p truesize=%d)\n",p,true_size);
       if (memcmp(p + sizeof(size_t), tombstone + sizeof(size_t),
 		 TOMBSTONE_SIZE - sizeof(size_t)) != 0) {
 	 printf("start tombstone for block %p, size %d corrupted!",
-		p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);      
+		p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);
       }
       if (memcmp(p + true_size - TOMBSTONE_SIZE, tombstone,
 		 TOMBSTONE_SIZE) != 0) {
 	 printf("end tombstone for block %p, size %d corrupted!",
-		p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);      
+		p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);
       }
       p = realloc(p, size);
       if (p == NULL) outofmem(size);
@@ -172,12 +172,12 @@ printf("osfree truep=%p truesize=%d\n",p,true_size);
    if (memcmp(p + sizeof(size_t), tombstone + sizeof(size_t),
 	      TOMBSTONE_SIZE - sizeof(size_t)) != 0) {
       printf("start tombstone for block %p, size %d corrupted!",
-	     p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);      
+	     p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);
    }
    if (memcmp(p + true_size - TOMBSTONE_SIZE, tombstone,
 	      TOMBSTONE_SIZE) != 0) {
       printf("end tombstone for block %p, size %d corrupted!",
-	     p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);      
+	     p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);
    }
    free(p);
 }
@@ -343,7 +343,7 @@ parse_msg_file(int charset_code)
    int i;
    unsigned len;
    unsigned char *p;
-   
+
 #ifdef DEBUG
    fprintf(stderr, "parse_msg_file(%d)\n", charset_code);
 #endif
@@ -352,7 +352,7 @@ parse_msg_file(int charset_code)
 #ifdef DEBUG
    fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
 #endif
-   
+
    if (!msg_lang || !*msg_lang) {
       msg_lang = getenv("LANG");
       if (!msg_lang || !*msg_lang) msg_lang = DEFAULTLANG;
@@ -464,7 +464,7 @@ parse_msg_file(int charset_code)
       if (charset_code == CHARSET_UTF8) {
 	 p += strlen((char *)p) + 1;
 	 continue;
-      }       
+      }
 
       while ((ch = *p++) != 0) {
 	 /* A byte in the range 0x80-0xbf or 0xf0-0xff isn't valid in
@@ -475,7 +475,7 @@ parse_msg_file(int charset_code)
 	 if (ch >= 0xc0 && ch < 0xf0) {
 	    int ch1 = *p;
 	    if ((ch1 & 0xc0) != 0x80) goto resync;
-	       
+
 	    if (ch < 0xe0) {
 	       /* 2 byte sequence */
 	       ch = ((ch & 0x1f) << 6) | (ch1 & 0x3f);
@@ -488,9 +488,9 @@ parse_msg_file(int charset_code)
 	       p += 2;
 	    }
 	 }
-	    
+
          resync:
-	    
+
 	 if (ch < 127) {
 	    *to++ = (char)ch;
 	 } else {
@@ -580,7 +580,7 @@ v_report(int severity, const char *fnm, int line, int en, va_list ap)
       if (line) fprintf(STDERR, ":%d", line);
    } else {
       fputs(szAppNameCopy, STDERR);
-   }   
+   }
    fputs(": ", STDERR);
 
    if (severity == 0) {
@@ -590,7 +590,7 @@ v_report(int severity, const char *fnm, int line, int en, va_list ap)
 
    vfprintf(STDERR, msg(en), ap);
    fputnl(STDERR);
-   
+
    /* FIXME: allow "warnings are errors" and/or "errors are fatal" */
    switch (severity) {
     case 0:
@@ -682,7 +682,7 @@ select_charset(int charset_code)
 #ifdef DEBUG
    fprintf(stderr, "select_charset(%d), old charset = %d\n", charset_code, charset);
 #endif
-   
+
    charset = charset_code;
 
    /* check if we've already parsed messages for new charset */

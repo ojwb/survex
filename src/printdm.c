@@ -265,7 +265,7 @@ dm_NewPage(int pg, int pass, int pagesX, int pagesY)
 #endif
 
       drawticks(edge, 9, x, y);
-   }   
+   }
 #ifdef XBM
    xbm_page_no = pg;
 #endif
@@ -292,8 +292,8 @@ dm_ShowPage(const char *szPageDetails)
 		  "\"* c #000000\",\n"
 		  "/* pixels */\n",
 		  xbm_page_no, xpPageWidth, ypPageDepth);
-   
-   
+
+
    for (y = ypPageDepth - 1; y >= 0; y--) {
       prio_putc('\"');
       prio_putbuf(bitmap[y], xpPageWidth);
@@ -309,7 +309,7 @@ dm_ShowPage(const char *szPageDetails)
    for (y = ylThisPassDepth - 1; y >= 0; y--) {
       /* Scan in from right end to last used byte, then stop */
       last = ((xpPageWidth + 7) >> 3) - 1;
-      while (last >= 0 && !bitmap[y][last]) last--;      
+      while (last >= 0 && !bitmap[y][last]) last--;
 
       first = 0;
       if (fPCLHTab) {
@@ -320,7 +320,7 @@ dm_ShowPage(const char *szPageDetails)
 
 	    /* firstMin is the threshold above which a horiz tab saves bytes */
 	    if (first < firstMin) first = 0;
-	 }	 
+	 }
 
 	 if (first) prio_printf("\x1b*b%dX", first * 8);
       }
@@ -390,7 +390,7 @@ dm_ShowPage(const char *szPageDetails)
 }
 
 /* Initialise DM/PCL printer routines */
-static void 
+static void
 #ifdef XBM
 xbm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #elif defined(PCL)
@@ -452,7 +452,7 @@ dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 /*   vals = ini_read_hier(fh_list, "bj", vars);*/
 #endif
 
-   if (vals[2]) 
+   if (vals[2])
       fnmPrn = as_string(vals[2]);
    else
       fnmPrn = as_string(vals[1]);

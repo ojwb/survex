@@ -48,16 +48,16 @@
 /*
  * bad command line give:
  * <problem>
- * 
+ *
  * <short syntax>
- * 
+ *
  * --help gives:
  * <version>
- * 
+ *
  * <short syntax>
  *
  * <table>
- * 
+ *
  * <blurb>
  *
  * --version gives:
@@ -149,7 +149,7 @@ cmdline_version(void)
 
 void
 cmdline_syntax(void)
-{  
+{
    printf("\n%s: %s", SYNTAX, argv0);
    if (help->opt) fputs(" [OPTION]...", stdout);
    if (args_msg) {
@@ -183,7 +183,7 @@ cmdline_int_arg(void)
 {
    long result;
    char *endptr;
-   
+
    errno = 0;
 
    result = strtol(optarg, &endptr, 10);
@@ -197,7 +197,7 @@ cmdline_int_arg(void)
       cmdline_syntax();
       exit(1);
    }
-   
+
    return (int)result;
 }
 
@@ -206,7 +206,7 @@ cmdline_double_arg(void)
 {
    double result;
    char *endptr;
-   
+
    errno = 0;
 
    result = strtod(optarg, &endptr);
@@ -220,13 +220,13 @@ cmdline_double_arg(void)
       cmdline_syntax();
       exit(1);
    }
-   
+
    return result;
 }
 
 float
 cmdline_float_arg(void)
-{    
+{
    double result = cmdline_double_arg();
    if (fabs(result) > FLT_MAX) {
       fprintf(stderr, "%s: numeric argument `%s' out of range\n", argv0, optarg);

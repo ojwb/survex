@@ -68,7 +68,7 @@ COLOR_DEPTH_16
 COLOR_DEPTH_8
 #endif
 END_COLOR_DEPTH_LIST
-    
+
 /* Allegro (with DJGPP, Unix, or mingw) */
 BITMAP *BitMap, *BitMapDraw;
 
@@ -174,7 +174,7 @@ init_ms_mouse(void)
    intdosx(&inregs, &outregs, &segregs);
    vector = (((unsigned long)segregs.es) << 16) + (unsigned long)outregs.x.bx;
    byte = (unsigned char)*(long far*)vector;
-   
+
    /* vector empty or -> iret */
    if ((vector == 0ul) || (byte == 0xcf)) return -2; /* No mouse driver */
 
@@ -266,7 +266,7 @@ cvrotgfx_init(void)
    void force_redraw(void) {
       fRedraw = fTrue;
    }
-    
+
    char *p, *q;
 
    /* set language for Allegro messages */
@@ -329,7 +329,7 @@ cvrotgfx_init(void)
 	 clear(screen);
 	 install_timer();
 	 set_gui_colors();
-	 
+
 	 if (!gfx_mode_select(&c, &w, &h)) {
 	    allegro_exit();
 	    printf("bad mode select\n");
@@ -769,7 +769,7 @@ cvrotgfx_init(void)
    }
    if (modeBest == -1) {
       /* FIXME: actually we probably don't have enough video memory assigned */
-      fatalerror(/*Error initialising graphics card*/81);      
+      fatalerror(/*Error initialising graphics card*/81);
    }
    xos_set_mode(), xos_writec(modeBest);
    /* defaults: */
