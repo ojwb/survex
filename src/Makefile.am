@@ -33,10 +33,13 @@ aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc
 
+avengl_SOURCES = $(aven_SOURCES)
+
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
 
 if WIN32
 aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@
+avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@
 
 # FIXME: should use wxconfig or similar to get includes
 avenrc.o: aven.rc
@@ -44,11 +47,16 @@ avenrc.o: aven.rc
 
 else
 aven_LDADD = @LIBOBJS@ @WX_LIBS@
+avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@
 endif
 
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN -O2
 aven_LDFLAGS = -lrx
+
+avengl_CFLAGS = @WX_CFLAGS@ -DAVEN
+avengl_CXXFLAGS = @WX_CFLAGS@ -DAVEN -O2
+avengl_LDFLAGS = -lrx
 
 PRSRC = prcore.c prio.c useful.c img.c $(COMMONSRC)
  
