@@ -759,7 +759,7 @@ void GfxCore::SetScale(Double scale)
     m_Params.scale = scale;
 
 #ifdef AVENGL
-    assert(0);
+    return;//-- needs to be "assert" once everything is sorted out
 #endif
 
     Double m_00 = m_RotationMatrix.get(0, 0) * scale;
@@ -2110,8 +2110,10 @@ void GfxCore::TiltCave(Double tilt_angle)
 
     m_Params.rotation = q * m_Params.rotation;
     m_RotationMatrix = m_Params.rotation.asMatrix();
-    
+
+#ifndef AVENGL
     SetScale(m_Params.scale);
+#endif
     
     m_RedrawOffscreen = true;
     Refresh(false);
@@ -2306,6 +2308,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
                   if (point.x >= 0 && point.x <= m_XSize) {
                       m_LastDrag = drag_SCALE;
                       //--FIXME: GL fix needed
+
                       SetScale(m_Params.scale * pow(1.06, 0.01 *
                                                     (-m_DragStart.x + point.x)));
                       m_RedrawOffscreen = true;
