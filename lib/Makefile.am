@@ -24,6 +24,10 @@ pkgdata_DATA = default.bit bold.bit print.ini bcra3.svx bcra5.svx $(msg_files)
 
 BUILT_SOURCES = defaultlang.h
 
+# BUILT_SOURCES are automatically removed by maintainer-clean, but we want it
+# removed by distclean
+DISTCLEANFILES = defaultlang.h
+
 $(msg_files) $(hdr_files): messages.txt makemsgs.pl
 	perl $(srcdir)/makemsgs.pl $(srcdir)/messages.txt
 
