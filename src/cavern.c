@@ -200,9 +200,9 @@ main(int argc, char **argv)
       pfxHi[d] = pfxLo[d] = NULL;
    }
 
+   /* at least one argument must be given */
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
    while (1) {
-      /* at least one argument must be given */
       int opt = cmdline_getopt();
       if (opt == EOF) break;
       switch (opt) {

@@ -68,6 +68,8 @@ main(int argc, char **argv)
    char *fnm1, *fnm2;
    FILE *fh1, *fh2;
 
+   msg_init(argv[0]);
+
    cmdline_set_syntax_message("POS_FILE POS_FILE [THRESHOLD]",
 			      "THRESHOLD is the max. ignorable change along "
 			      "any axis in metres (default "

@@ -15,8 +15,8 @@ INCLUDES = -DIMG_HOSTED
 PRINT = printdm printps printpcl printhpgl
 
 EXTRA_PROGRAMS = caverot xcaverot printxbm printwin aven
-bin_PROGRAMS = cavern $(PRINT) diffpos extend survex cad3d @CAVEROT@ \
- @AVEN@ @PRINTWIN@
+bin_PROGRAMS = cavern $(PRINT) diffpos extend survex cad3d sorterr \
+ @CAVEROT@ @AVEN@ @PRINTWIN@
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
 
@@ -66,6 +66,7 @@ xcaverot_CFLAGS = @X_CFLAGS@ -DXCAVEROT
 xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
 diffpos_SOURCES = diffpos.c $(COMMONSRC)
+sorterr_SOURCES = sorterr.c $(COMMONSRC)
 extend_SOURCES = extend.c $(COMMONSRC) useful.c img.c
 
 cad3d_SOURCES = 3dtodxf.c $(COMMONSRC) useful.c img.c
