@@ -72,6 +72,9 @@ Is this report wrong (2 nodes, 1 leg, and 2 1-nodes)
 *fix 2 0 0 0
 *equate 1 2
 
+No - we'll define leg count to include equates, but need to document
+this...
+
 Date: Mon, 25 Jun 2001
 From: Olly
 
@@ -86,7 +89,7 @@ Date: Wed, 04 Jul 2001
 From: Olly
 
 Implement skip blank pages on printps/printhpgl; check it works on
-printpcl and printdm.
+printpcl and printdm (does on printxbm).
 
 win install lang??
 

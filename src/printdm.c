@@ -295,13 +295,12 @@ dm_ShowPage(const char *szPageDetails)
       prio_printf("/* XPM */\n"
 		  "static char *page%d[] = {\n"
 		  "/* width height num_colors chars_per_pixel */\n"
-		  "\"%d %d 1 1\",\n"
+		  "\"%d %d 2 1\",\n"
 		  "/* colors */\n"
 		  "\". c #ffffff\",\n"
 		  "\"* c #000000\",\n"
 		  "/* pixels */\n",
 		  xbm_page_no, xpPageWidth, ypPageDepth);
-
 
    for (y = ypPageDepth - 1; y >= 0; y--) {
       prio_putc('\"');
