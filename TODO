@@ -265,3 +265,10 @@ Tests these commands:
   *fix 1 0 0 0
   *fix 2 0 0 0
   *equate 1 2
+
+Specify prefix level explicitly here:
+en: 26 Station `%s' must be exported in a higher level
+en: 27 Station `%s' not exported from lowest prefix level
+
+szlig new orthography...
+

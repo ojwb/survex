@@ -308,8 +308,6 @@ main(int argc, char **argv)
 	{"text-height", required_argument, 0, 't'},
 	{"marker-size", required_argument, 0, 'm'},
 	{"elevation", required_argument, 0, 'e'},
-	{"htext", required_argument, 0, 't'},
-	{"msize", required_argument, 0, 'm'},
         {"dxf", no_argument, 0, 'D'},
         {"sketch", no_argument, 0, 'S'},
 	{"help", no_argument, 0, HLP_HELP},
@@ -317,8 +315,8 @@ main(int argc, char **argv)
 	{0,0,0,0}
    };
 
-#define short_opts "cnlg:t:m:h"
-
+#define short_opts "cnlg:t:m:eDSh"
+	
    /* TRANSLATE */
    static struct help_msg help[] = {
 	{HLP_ENCODELONG(0), "do not generate station markers"},
@@ -328,8 +326,8 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(4), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
 	{HLP_ENCODELONG(5), "station marker size (default: "STRING(MARKER_SIZE)")"},
 	{HLP_ENCODELONG(6), "produce an elevation view"},
-	{HLP_ENCODELONG(9), "produce DXF output"},
-	{HLP_ENCODELONG(10), "produce sketch output"},
+	{HLP_ENCODELONG(7), "produce DXF output"},
+	{HLP_ENCODELONG(8), "produce sketch output"},
 	{0,0}
    };
 
@@ -560,6 +558,7 @@ main(int argc, char **argv)
 	    }
 	 } while (item != img_STOP);
       }
+      pass++;
    }
    img_close(pimg);
    footer();

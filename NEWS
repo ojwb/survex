@@ -1,15 +1,15 @@
-* cad3d: Fixed output from `cad3d --help'.
+* cad3d: Fixed output from `--help'; -e, -D, -S short options now work;
+  fixed infinite loop bug.
 
 * (Unix version): aven: leaving "about" box no longer causes segfault;
   toggle status bar now works; N/S/E/W selects view rather than moving
   cave; window close now works; now have ticks on appropriate menu
-  items; fixed problems with rendering (some legs missing!)
+  items; fixed problems with rendering (some legs missing!); 3d file
+  specified on command line now loaded; fixed occasional hangs; fixed
+  terrible slowness during rotation; implemented indicators; various
+  other bugs fixed.
 
-* (Unix version): aven: various bugs fixed, 3d file specified on command line
-  now loaded; fixed occasional hangs; fixed terrible slowness during
-  rotation; implemented indicators.
-
-* Updated translations: pt de
+* Updated translations: pt de it (and fr partially)
 
 * Added tests for most commands and various other cases.
 

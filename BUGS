@@ -1,5 +1,6 @@
 Date: Thu, 29 Mar 2001
 From: Mark
+
 wxaven:
 - about box layout needs attention
 - Close button in about box doesn't work
@@ -12,3 +13,4 @@ wxaven:
 - internationalisation needs doing
 - tiny change required to code locating about box png file
 - toggling status bar on requires window resize for correct operation
+
