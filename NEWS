@@ -1,3 +1,11 @@
+* Default srcdir if not set so we can easily run a test standalone
+
+* Turned some debug code off in matrix.c
+
+* Created netartic.h
+
+Changes in 0.92 prerelease 1:
+
 * Caverot help screen incorrectly documented tilt as '/' and ':' - actually
   it's on '/' and ''' (single quote)
 
