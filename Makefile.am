@@ -72,8 +72,7 @@ mingw_iss :
 	cd doc;cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
-	for f in $(base_progs) printwin editwrap ; do cp src/$$f.exe iss_tmp ; done
-	cp src/avengl.exe iss_tmp/aven.exe
+	for f in $(base_progs) aven printwin editwrap ; do cp src/$$f.exe iss_tmp ; done
 	cp lib/icons/*.ico lib/icons/*.png iss_tmp
 	: # don't ship pngs for which we ship the ico version
 	for a in iss_tmp/*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done

@@ -51,7 +51,7 @@ PRINT = printdm printps printpcl printhpgl
 TESTPROGS = @TESTPROGS@
 
 # printxbm and dump3d are test programs
-EXTRA_PROGRAMS = printwin aven avengl dump3d printxbm editwrap
+EXTRA_PROGRAMS = printwin aven dump3d printxbm editwrap
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern $(PRINT) diffpos extend cad3d sorterr \
  3dtopos @AVEN@ @WINPROGS@ @TESTPROGS@
@@ -66,13 +66,12 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc \
- guicontrol.cc splash.cc aven.pal
+ guicontrol.cc splash.cc aven.pal \
+ gla-gl.cc
 
 # paneldlg.cc paneldlgpage.cc prefsdlg.cc \
 # tubeprefs.cc stnprefs.cc legprefs.cc ctlprefs.cc gridprefs.cc unitsprefs.cc \
 # indicatorprefs.cc winprefs.cc
-
-avengl_SOURCES = $(aven_SOURCES) gla-gl.cc
 
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
 
@@ -80,8 +79,8 @@ editwrap_SOURCES = editwrap.c
 editwrap_LDFLAGS = -mwindows
 
 if WIN32
-aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
-avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
+#aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
+aven_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 
 svxeditrc.o: $(srcdir)/svxedit.rc svxedit.ico
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
@@ -92,8 +91,8 @@ editwrap_LDADD = svxeditrc.o
 avenrc.o: $(srcdir)/aven.rc aven.ico
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o $$pwd/avenrc.o aven.rc
 else
-aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
-avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
+#aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
+aven_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 endif
 
 if MACOSX
@@ -104,13 +103,13 @@ aven-rez: aven
 	touch aven-rez
 endif
 
-aven_CFLAGS = @WX_CFLAGS@ -DAVEN
-aven_CXXFLAGS = @WX_CXXFLAGS@
-aven_LDFLAGS = @WX_LDFLAGS@
+#aven_CFLAGS = @WX_CFLAGS@ -DAVEN
+#aven_CXXFLAGS = @WX_CXXFLAGS@
+#aven_LDFLAGS = @WX_LDFLAGS@
 
-avengl_CFLAGS = @WXGL_CFLAGS@ -DAVEN
-avengl_CXXFLAGS = @WXGL_CXXFLAGS@
-avengl_LDFLAGS = @WX_LDFLAGS@
+aven_CFLAGS = @WXGL_CFLAGS@ -DAVEN
+aven_CXXFLAGS = @WXGL_CXXFLAGS@
+aven_LDFLAGS = @WX_LDFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
  

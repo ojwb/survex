@@ -128,7 +128,7 @@ if expr "$mk" : '.*\<mingw\>'; then
    for a in /usr/i586-mingw32msvc/bin/wxmsw-2.4-i586-mingw32msvc-config /opt/wxmsw-2.4.0/bin/wxmsw-2.4-i686-mingw32-config ; do
       test -x "$a" && wxc="$a"
    done
-   if ! ./configure --enable-opengl --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG="$wxc" LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= CFLAGS=-Werror CXXFLAGS=-Werror ; then
+   if ! ./configure --host=mingw32 --build="$build_platform" WXCONFIG="$wxc" LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CFLAGS=-Werror CXXFLAGS=-Werror ; then
       echo mingw configure failed
       exit 1
    fi

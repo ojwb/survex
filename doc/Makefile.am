@@ -43,12 +43,6 @@ man_MANS = survex.1 $(other_mans)
 aven.1: $(srcdir)/aven.sgml $(srcdir)/man_aven.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_aven.sgml > aven.1
 
-avengl.1: aven.1
-	cp aven.1 avengl.1
-
-# FIXME: this is a bodge:
-DISTCLEANFILES = aven.1 avengl.1
-
 cad3d.1: $(srcdir)/cad3d.sgml $(srcdir)/man_cad3d.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_cad3d.sgml > cad3d.1
 
