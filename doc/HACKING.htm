@@ -89,35 +89,20 @@ sh build-djgpp.sh
 <P>Then you need to build and install the allegro graphics library:
 
 <P><A
-HREF="http://prdownloads.sourceforge.net/alleg/allegro-3.9.38.tar.gz"
->http://prdownloads.sourceforge.net/alleg/allegro-3.9.38.tar.gz</A>
+HREF="http://prdownloads.sourceforge.net/alleg/allegro-4.0.1.tar.gz"
+>http://prdownloads.sourceforge.net/alleg/allegro-4.0.1.tar.gz</A>
 
-<P>And follow the instructions for building using a cross-compiler is
-readme.dj.  In 3.9.38 these boil down to this (the patch turns off use
-of sincos which isn't supported by djgpp 2.02 it seems - you may not
-need it, but it isn't harmful):
+<P>And follow the instructions for building using a cross-compiler which
+you can find starting from readme.txt.  In 4.0.1 these boil down to:
 
 <pre>
-cd allegro-3.9.38
-./fix.sh djgpp
-patch -p0 &lt;&lt;END
---- src/rotate.c~	Thu Sep 13 20:33:59 2001
-+++ src/rotate.c	Fri Oct  5 11:29:55 2001
-@@ -715,7 +715,7 @@
-    if (angle &gt;= 0x800000)
-       angle -= 0x1000000;
- 
--   #ifdef ALLEGRO_DJGPP
-+   #if 0 /*def ALLEGRO_DJGPP*/
-       /* Faster way to obtain both sin and cos with one call under djgpp.
- 	 Todo: Do other platforms support this? (not watcom, mingw or msvc)
-       */
-END
+cd allegro-4.0.1
+./fix.sh djgpp --quick
 NATIVEPATH=$PATH
 export NATIVEPATH
-PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
 DJDIR=/opt/crosstools/i386-pc-msdosdjgpp
 export DJDIR
+PATH=$DJDIR/bin:/opt/crosstools/bin:$PATH
 CROSSCOMPILE=1
 export CROSSCOMPILE
 make
@@ -157,11 +142,12 @@ patches if you get this to work.
 <P>Wookey currently builds this with a rather elderly BorlandC++ 3.1.
 BorlandC++ 5.5 can be downloaded for free, but it appears to only compile to
 32 bit code.  You can also download TurboC version 2, which might do the job
-(I've not tried yet).
+(I've not tried).
 
 <P>You can build a suitable source archive for this version using
 `make alien_src_zip' on the source distribution on a Unix box (you need to
-have run `./configure' first).
+have run `./configure' first).  Then unzip the src&lt;version&gt;.zip file
+produced on the MSDOS machine and run <code>make.bat</code>.
 
 <H3>RISC OS</H3>
 
