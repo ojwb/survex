@@ -104,7 +104,12 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     m_Scale = 1.0;
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
     m_SphereCreated = false;
-    SetVolumeCoordinates(-1, 1, -1, 1, -1, 1);
+    SetVolumeCoordinates(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+    quadric = gluNewQuadric();
+    CHECK_GL_ERROR("GLACanvas", "gluNewQuadric");
+    if (!quadric) {
+	abort(); // FIXME need to cope somehow
+    }
 }
 
 GLACanvas::~GLACanvas()
@@ -113,10 +118,18 @@ GLACanvas::~GLACanvas()
 
     if (m_SphereCreated) {
         glDeleteLists(m_SphereList, 1);
-
         CHECK_GL_ERROR("~GLACanvas", "glDeleteLists");
     }
+
+    gluDeleteQuadric(quadric);
+    CHECK_GL_ERROR("~GLACanvas", "gluDeleteQuadric");
 }
+
+#if 0
+bool GLACanvas::Show(bool f) {
+    wxGLCanvas::Show(f);
+}
+#endif
 
 void GLACanvas::Clear()
 {
@@ -243,7 +256,8 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
     glScaled(m_Scale, m_Scale, m_Scale);
     CHECK_GL_ERROR("SetDataTransform", "glScaled");
-    glRotated(-90.0, 1.0, 0.0, 0.0); // get axes the correct way around (z upwards, y into screen)
+    // Get axes the correct way around (z upwards, y into screen)
+    glRotated(-90.0, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
     m_Rotation.CopyToOpenGL();
     CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
@@ -301,8 +315,8 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
     SetCurrent();
 
     glaList l = glGenLists(1);
-    assert(l != 0);
     CHECK_GL_ERROR("CreateList", "glGenLists");
+    assert(l != 0);
     
     glNewList(l, GL_COMPILE);
     CHECK_GL_ERROR("CreateList", "glNewList");
@@ -498,28 +512,27 @@ void GLACanvas::DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaC
 
     SetColour(pen);
 
+#if 0
     if (!m_SphereCreated) {
         m_SphereCreated = true;
 
         m_SphereList = glGenLists(1);
         CHECK_GL_ERROR("DrawSphere", "glGenLists");
+	assert(m_SphereList != 0);
         glNewList(m_SphereList, GL_COMPILE);
         CHECK_GL_ERROR("DrawSphere", "glNewList");
-    
-        GLUquadric* quadric = gluNewQuadric();
-        assert(quadric);
         gluSphere(quadric, 1.0, divisions, divisions);
         CHECK_GL_ERROR("DrawSphere", "gluSphere");
-
         glEndList();
         CHECK_GL_ERROR("DrawSphere", "glEndList");
     }
+#endif
 
     glTranslated(x, y, z);
     CHECK_GL_ERROR("DrawSphere", "glTranslated");
     glScalef(radius, radius, radius);
     CHECK_GL_ERROR("DrawSphere", "glScalef");
-    glCallList(m_SphereList);
+//    glCallList(m_SphereList);
     CHECK_GL_ERROR("DrawSphere", "glCallList");
     glScalef(1.0 / radius, 1.0 / radius, 1.0 / radius);
     CHECK_GL_ERROR("DrawSphere", "glScalef");
@@ -532,7 +545,8 @@ void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& top,
                               bool draw_lines)
 {
     // Draw a filled rectangle with an edge in the indicator plane.
-    // (x0, y0) specify the bottom-left corner of the rectangle and (w, h) the size.
+    // (x0, y0) specify the bottom-left corner of the rectangle and (w, h) the
+    // size.
 
     BeginQuadrilaterals();
     SetColour(fill);
@@ -558,10 +572,6 @@ void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy,
 {
     // Draw a filled circle with an edge.
     
-    GLUquadric* quadric = gluNewQuadric();
-
-    assert(quadric);
-
     cx += radius;
     cy -= radius;
     
@@ -580,12 +590,9 @@ void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy,
 void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start)
 {
     // Draw a filled semicircle with an edge.
-    // The semicircle extends from "start" deg to "start"+180 deg (increasing clockwise, 0 deg upwards).
+    // The semicircle extends from "start" deg to "start"+180 deg (increasing
+    // clockwise, 0 deg upwards).
     
-    GLUquadric* quadric = gluNewQuadric();
-
-    assert(quadric);
-
     cx += radius;
     cy -= radius;
 
@@ -603,8 +610,7 @@ void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord
 
 void GLACanvas::DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* points)
 {
-    // Draw a filled triangle with an edge.  The fill is in the z=0 plane
-    // whilst the edge is in the z=5 plane.
+    // Draw a filled triangle with an edge.
     
     SetColour(fill);
     BeginTriangles();
@@ -618,7 +624,6 @@ void GLACanvas::DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* points)
     PlaceVertex(points[0].GetX(), points[0].GetY(), 0.0);
     PlaceVertex(points[1].GetX(), points[1].GetY(), 0.0);
     PlaceVertex(points[2].GetX(), points[2].GetY(), 0.0);
-
     EndPolyline();
 }
 

@@ -93,12 +93,18 @@ class GLACanvas : public wxWindow {
 
     bool m_SphereCreated;
     GLuint m_SphereList;
+
+    GLUquadric* quadric;
     
     void SetViewportAndProjection();
     
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
     ~GLACanvas();
+
+#if 0
+    bool Show(bool f);
+#endif
 
     void Clear();
     void StartDrawing();
