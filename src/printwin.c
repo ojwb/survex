@@ -410,6 +410,7 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    colour_frame = to_rgb(vars[4], vals[4]);
    colour_leg = to_rgb(vars[5], vals[5]);
    colour_cross = to_rgb(vars[6], vals[6]);
+   colour_surface_leg = to_rgb(vars[7], vals[7]);
 
    memset(&psd, 0, sizeof(PRINTDLGA));
    psd.lStructSize = 66;
