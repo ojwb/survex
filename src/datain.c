@@ -272,7 +272,9 @@ read_reading(reading r, bool f_optional)
       case Dy: q = Q_DY; break;
       case Dz: q = Q_DZ; break;
       case FrCount: case ToCount: q = Q_COUNT; break;
-      default: BUG("Unexpected case");
+      default:
+	q = Q_NULL; /* Suppress compiler warning */; 
+	BUG("Unexpected case");
    }
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
@@ -282,12 +284,14 @@ static void
 read_bearing_or_omit(reading r)
 {
    int n_readings;
-   q_quantity q;
+   q_quantity q = Q_NULL;
    VAL(r) = read_numeric_or_omit(&n_readings);
    switch (r) {
       case Comp: q = Q_BEARING; break;
       case BackComp: q = Q_BACKBEARING; break;
-      default: BUG("Unexpected case");
+      default:
+	q = Q_NULL; /* Suppress compiler warning */; 
+	BUG("Unexpected case");
    }
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
@@ -650,6 +654,7 @@ data_file(const char *pth, const char *fnm)
 	       r = data_ignore();
 	       break;
 	     default:
+	       r = 0; /* avoid warning */
 	       BUG("bad style");
 	    }
 	    /* style function returns 0 => error */
@@ -1585,6 +1590,7 @@ data_normal(void)
 				     fDepthChange);
 		break;
 	      default:
+		r = 0; /* avoid warning */
 		BUG("bad style");
 	     }
 	     if (!r) skipline();
@@ -1665,6 +1671,7 @@ data_normal(void)
 				     fDepthChange);
 		break;
 	      default:
+		r = 0; /* Suppress compiler warning */; 
 		BUG("bad style");
 	     }
 	     process_eol();
