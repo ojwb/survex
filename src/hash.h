@@ -17,6 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int hash_string(const char *p);
 int hash_lc_string(const char *p);
 int hash_data(const char *p, size_t len);
+
+#ifdef __cplusplus
+}
+#endif

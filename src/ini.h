@@ -1,6 +1,6 @@
 /* ini.h
  * .ini file routines
- * Copyright (C) 1995-2001 Olly Betts
+ * Copyright (C) 1995-2001,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 
 /* fh_list is a NULL terminated array of FILE*-s of ini files
@@ -31,3 +35,7 @@ char **ini_read(FILE **fh_list, const char *section, const char **vars);
  * recursive field
  */
 char **ini_read_hier(FILE **fh_list, const char *section, const char **vars);
+
+#ifdef __cplusplus
+}
+#endif
