@@ -455,7 +455,7 @@ Changes in 1.0.8:
 
 * cavern: implemented "*units clino percent".
 
-* cavern: added "*infer export on".  Any stations seen while this is on will
+* cavern: added "*infer exports on".  Any stations seen while this is on will
   have the necessary *export-s inferred when accessed from outside their
   own survey.  This allows linking a survey which uses *export to one which
   doesn't.  It's also useful for a maze cave where so many stations can
