@@ -176,6 +176,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SIDE_PANEL, MainFrm::OnViewSidePanel)
     EVT_MENU(menu_VIEW_METRIC, MainFrm::OnToggleMetric)
     EVT_MENU(menu_VIEW_DEGREES, MainFrm::OnToggleDegrees)
+    EVT_MENU(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspective)
     EVT_MENU(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreen)
 #ifdef AVENGL
     EVT_MENU(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubes)
@@ -226,6 +227,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLineUpdate)
     EVT_UPDATE_UI(menu_VIEW_METRIC, MainFrm::OnToggleMetricUpdate)
     EVT_UPDATE_UI(menu_VIEW_DEGREES, MainFrm::OnToggleDegreesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspectiveUpdate)
     EVT_UPDATE_UI(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreenUpdate)
 #ifdef AVENGL
     EVT_UPDATE_UI(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubesUpdate)
@@ -421,6 +423,8 @@ void MainFrm::CreateMenuBar()
 #else
     viewmenu-> Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
 #endif
+    viewmenu->Append(menu_VIEW_PERSPECTIVE, GetTabMsg(/*@Perspective*/237), "", true);
+    viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode##F11*/356), "", true);
 #ifdef PREFDLG
     viewmenu->AppendSeparator();

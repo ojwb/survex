@@ -4,6 +4,7 @@
 //  Header file for the GLA abstraction layer.
 //
 //  Copyright (C) 2002 Mark R. Shinwell.
+//  Copyright (C) 2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -105,7 +106,7 @@ class GLACanvas : public wxWindow {
     GLuint m_SphereList;
     GLUquadric* m_Quadric;
     
-    void SetViewportAndProjection();
+    Double SetViewportAndProjection();
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
     ~GLACanvas();
@@ -181,5 +182,10 @@ public:
     int GetFontSize() const { return m_FontSize; }
 
     Double SurveyUnitsAcrossViewport();
+
+    void TogglePerspective() { m_Perspective = !m_Perspective; }
+    bool GetPerspective() const { return m_Perspective; }
+
+    bool m_Perspective;
 };
 

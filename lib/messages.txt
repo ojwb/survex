@@ -2380,7 +2380,9 @@ ca:236 Un pas en el sentit @horari
 es:236 Un paso en el senido @horario
 it:236 Un passo @Orario
 sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
-# XXX 237 238 239
+#
+en:237 @Perspective
+# XXX 238 239
 #
 # The accelerators must be different within this group
 # View *looking* North

@@ -146,6 +146,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_ExportedPts = false;
     m_Tubes = false;
     m_Grid = false;
+    m_Perspective = false;
     wxConfigBase::Get()->Read("metric", &m_Metric, true);
     wxConfigBase::Get()->Read("degrees", &m_Degrees, true);
     m_here.x = DBL_MAX;
@@ -945,7 +946,7 @@ void GfxCore::DrawScalebar()
 {
     // Draw the scalebar.
     
-    if (m_Lock == lock_POINT) return;
+    if (m_Lock == lock_POINT || m_Perspective) return;
 
     // Calculate how many metres of survey are currently displayed across the screen.
     Double across_screen = SurveyUnitsAcrossViewport();
@@ -1157,6 +1158,7 @@ void GfxCore::DefaultParameters()
     m_ExportedPts = false;
     m_Grid = false;
     m_Tubes = false;
+    m_Perspective = false; 
 }
 
 void GfxCore::Defaults()

@@ -340,6 +340,7 @@ public:
     void ToggleMetric() { ToggleFlag(&m_Metric, false); UpdateIndicators(); ForceRefresh(); }
     void ToggleDegrees() { ToggleFlag(&m_Degrees, false); UpdateIndicators(); ForceRefresh(); }
     void ToggleTubes() { ToggleFlag(&m_Tubes, false); ForceRefresh(); }
+    void TogglePerspective() { GLACanvas::TogglePerspective(); UpdateIndicators(); ForceRefresh(); }
 
     bool GetMetric() const { return m_Metric; }
     bool GetDegrees() const { return m_Degrees; }

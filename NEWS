@@ -19,6 +19,8 @@ Changes between 1.0.26 and 1.1.0:
 
 * aven: Full screen mode (F11).
 
+* aven: Perspective view.
+
 * aven: Context sensitive cursor shape - needs more work.
 
 * aven: Mouse actions changed (hopefully they're now more natural, but

@@ -769,6 +769,17 @@ void GUIControl::OnIndicatorsUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_View->HasData());
 }
 
+void GUIControl::OnViewPerspective()
+{
+    m_View->TogglePerspective();
+}
+
+void GUIControl::OnViewPerspectiveUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+    cmd.Check(m_View->GetPerspective());
+}
+
 void GUIControl::OnToggleMetric()
 {
     m_View->ToggleMetric();

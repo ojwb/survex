@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2002 Olly Betts
+//  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -150,18 +150,20 @@ public:
     void OnIndicatorsUpdate(wxUpdateUIEvent&);
     void OnCancelDistLineUpdate(wxUpdateUIEvent&);
 
+    void OnViewPerspective();
+    void OnViewPerspectiveUpdate(wxUpdateUIEvent& cmd);
+
     void OnToggleMetric();
     void OnToggleMetricUpdate(wxUpdateUIEvent& cmd);
-	
+
     void OnToggleDegrees();
     void OnToggleDegreesUpdate(wxUpdateUIEvent& cmd);
-    
+   
     void OnToggleTubes();
     void OnToggleTubesUpdate(wxUpdateUIEvent& cmd);
-    
+   
     void OnViewFullScreenUpdate(wxUpdateUIEvent&);
     void OnViewFullScreen();
 };
 
 #endif
-

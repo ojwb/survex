@@ -104,6 +104,7 @@ enum {
     menu_VIEW_METRIC,
     menu_VIEW_DEGREES,
     menu_VIEW_SHOW_TUBES,
+    menu_VIEW_PERSPECTIVE,
     menu_VIEW_FULLSCREEN,
     menu_PRES_CREATE,
     menu_PRES_GO,
@@ -322,6 +323,7 @@ public:
     void OnViewCompassUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewCompassUpdate(event); }
     void OnViewGridUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewGridUpdate(event); }
     void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewClinoUpdate(event); }
+    void OnViewPerspectiveUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewPerspectiveUpdate(event); }
     void OnViewFullScreenUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewFullScreenUpdate(event); }
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnReverseDirectionOfRotationUpdate(event); }
     void OnCancelDistLineUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnCancelDistLineUpdate(event); }
@@ -363,6 +365,7 @@ public:
     void OnViewCompass(wxCommandEvent&) { if (m_Control) m_Control->OnViewCompass(); }
     void OnViewClino(wxCommandEvent&) { if (m_Control) m_Control->OnViewClino(); }
     void OnViewGrid(wxCommandEvent&) { if (m_Control) m_Control->OnViewGrid(); }
+    void OnViewPerspective(wxCommandEvent&) { if (m_Control) m_Control->OnViewPerspective(); }
     void OnViewFullScreen(wxCommandEvent&) {
 	ViewFullScreen();
     }

@@ -130,6 +130,7 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
     m_SphereCreated = false;
     SetVolumeCoordinates(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+    m_Perspective = false;
 }
 
 GLACanvas::~GLACanvas()
@@ -234,7 +235,7 @@ void GLACanvas::SetVolumeCoordinates(glaCoord left, glaCoord right,
     m_Volume.top = top;
 }
 
-void GLACanvas::SetViewportAndProjection()
+Double GLACanvas::SetViewportAndProjection()
 {
     // Set viewport.  The width and height go to zero when the panel is dragged
     // right across so we clamp them to be at least 1 to avoid errors from the
@@ -253,10 +254,22 @@ void GLACanvas::SetViewportAndProjection()
     glLoadIdentity();
     CHECK_GL_ERROR("SetViewportAndProjection", "glLoadIdentity");
     assert(m_Scale != 1.0);
-    glOrtho(m_Volume.left / m_Scale, m_Volume.right / m_Scale,
-	    m_Volume.bottom / m_Scale * aspect, m_Volume.top / m_Scale * aspect,
-            1.0, m_Volume.back - m_Volume.front + 1.0);
-    CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
+    aspect /= m_Scale;
+
+    Double near_plane = (m_Volume.right - m_Volume.left) / m_Scale;
+    near_plane /= (2 * tan(25.0 * M_PI / 180.0));
+
+    if (m_Perspective) {
+	glFrustum(m_Volume.left / m_Scale, m_Volume.right / m_Scale,
+		  m_Volume.bottom * aspect, m_Volume.top * aspect,
+		  near_plane, m_Volume.back - m_Volume.front + near_plane);
+	CHECK_GL_ERROR("SetViewportAndProjection", "glFrustum");
+    } else {
+	glOrtho(m_Volume.left / m_Scale, m_Volume.right / m_Scale,
+		m_Volume.bottom * aspect, m_Volume.top * aspect,
+		near_plane, m_Volume.back - m_Volume.front + near_plane);
+	CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
+    }
 
     glEnable(GL_DEPTH_TEST);
     CHECK_GL_ERROR("SetViewportAndProjection", "glEnable GL_DEPTH_TEST");
@@ -268,6 +281,8 @@ void GLACanvas::SetViewportAndProjection()
     // Save viewport info.
     glGetIntegerv(GL_VIEWPORT, viewport);
     CHECK_GL_ERROR("SetViewportAndProjection", "glGetIntegerv");
+
+    return near_plane;
 }
 
 void GLACanvas::StartDrawing()
@@ -330,12 +345,12 @@ void GLACanvas::SetDataTransform()
 {
     // Set the modelview transform for drawing data.
     
-    SetViewportAndProjection();
+    Double near_plane = SetViewportAndProjection();
     glMatrixMode(GL_MODELVIEW);
     CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
-    glTranslated(0.0, 0.0, -1.0 + m_Volume.front);
+    glTranslated(0.0, 0.0, m_Volume.front - near_plane);
     CHECK_GL_ERROR("SetDataTransform", "glTranslated");
     // Get axes the correct way around (z upwards, y into screen)
     glRotated(-90.0, 1.0, 0.0, 0.0);
