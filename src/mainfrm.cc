@@ -1128,7 +1128,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 #endif
 
     // Update window title.
-    SetTitle(wxString("Aven - [") + file + wxString("]"));
+    SetTitle(wxString(APP_NAME" - [") + file + wxString("]"));
     m_File = file;
 
     return true;

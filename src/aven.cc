@@ -133,7 +133,7 @@ bool Aven::OnInit()
     int our_height = int(our_width * 0.75);
 
     // Create the main window.
-    m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(our_width, our_height));
+    m_Frame = new MainFrm(APP_NAME, wxPoint(50, 50), wxSize(our_width, our_height));
 
     if (argv[optind]) {
 	m_Frame->OpenFile(wxString(argv[optind]), survey);
@@ -149,7 +149,7 @@ bool Aven::OnInit()
 void Aven::ReportError(const wxString& msg)
 {
     AvenAllowOnTop ontop(m_Frame);
-    wxMessageBox(msg, "Aven", wxOK | wxCENTRE | wxICON_EXCLAMATION);
+    wxMessageBox(msg, APP_NAME, wxOK | wxCENTRE | wxICON_EXCLAMATION);
 }
 
 // called to report errors by message.c

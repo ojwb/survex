@@ -37,7 +37,7 @@ BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
 END_EVENT_TABLE()
 
 AboutDlg::AboutDlg(wxWindow* parent) :
-    wxDialog(parent, 500, wxString::Format(msg(/*About %s*/205), "Aven"))
+    wxDialog(parent, 500, wxString::Format(msg(/*About %s*/205), APP_NAME))
 {
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
@@ -54,8 +54,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     }
     horiz->Add(vert, 0, wxALL, 2);
 
-    wxString id = wxString("Aven "VERSION);
-    id += '\n';
+    wxString id = wxString(APP_NAME" "VERSION"\n");
     id += msg(/*Survey visualisation tool*/209);
     wxStaticText* title = new wxStaticText(this, 502, id);
     wxStaticText* copyright = new wxStaticText(this, 503,

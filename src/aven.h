@@ -28,6 +28,8 @@
 
 #include <stdarg.h>
 
+#define APP_NAME "Aven"
+
 extern
 #ifdef __cplusplus
  "C"
