@@ -165,7 +165,7 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
    }
 
    getline(szTmp, ossizeof(szTmp), pimg->fh); /* id string */
-   if (strcmp(szTmp, "Survex 3D Image File") == 0) {
+   if (strcmp(szTmp, "Survex 3D Image File") != 0) {
       fclose(pimg->fh);
       osfree(pimg);
       img_errno = IMG_BADFORMAT;
@@ -175,7 +175,7 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
    getline(szTmp, ossizeof(szTmp), pimg->fh); /* file format version */
    pimg->fBinary = (tolower(*szTmp) == 'b'); /* binary file iff B/b prefix */
    /* knock off the 'B' or 'b' if it's there */
-   if (strcmp(pimg->fBinary ? szTmp + 1 : szTmp, "v0.01") == 0) {
+   if (strcmp(pimg->fBinary ? szTmp + 1 : szTmp, "v0.01") != 0) {
       fclose(pimg->fh);
       osfree(pimg);
       img_errno = IMG_BADFORMAT;
