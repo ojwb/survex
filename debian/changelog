@@ -1,3 +1,9 @@
+survex (1.0.23) unstable; urgency=low
+
+  * New release
+
+ -- Wookey <wookey@survex.com>  Tue, 04 Mar 2003 20:54:17 +0000
+
 survex (1.0.22) unstable; urgency=low
 
   * aven: Fixed handling of extended elevations (and other flat surveys).

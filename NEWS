@@ -1,3 +1,5 @@
+Changes in 1.0.23:
+
 * Documentation: include 3d v3 file format description on MS Windows, MS DOS,
   and RISC OS too; include PNG graphics for manual on MS Windows; minor updates
   to manual.
