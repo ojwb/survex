@@ -269,7 +269,8 @@ main(int argc, char **argv)
    signal(SIGINT, handle_sig);
 #endif
    
-   fOverlap = init_map(xcMac, ycMac);
+   fOverlap = labels_init(xcMac, ycMac);
+   labels_plotall(fAllNames);
 
    /* display help screen to give user something to read while we do scaling */
    show_help();
@@ -339,7 +340,7 @@ main(int argc, char **argv)
 	      fRedraw = fFalse;
 	      while (degView >= 360) degView -= 360;
 	      while (degView < 0) degView += 360;
-	      clear_map();
+	      labels_reset();
 	      cvrotgfx_pre_main_draw();
 	      if (f3D) {
 #if 0
@@ -598,7 +599,11 @@ process_key(void) /* and mouse! */
        case 'E': degView = 90; fChanged = fTrue; break;
        case 'W': degView = 270; fChanged = fTrue; break;
        case DELETE_KEY:  set_defaults(); fChanged = fTrue; break;
-       case 'O':   fAllNames = !fAllNames; fChanged = fNames; break;
+       case 'O':
+	 fAllNames = !fAllNames;
+	 labels_plotall(fAllNames);
+	 fChanged = fNames;
+	 break;
 /*       case 'I':   get_view_details(); fChanged=fTrue; break; */
        case CURSOR_UP:
          if (elev == 90.0f)

@@ -36,7 +36,7 @@
         EXPORT  |fastline_init|, |do_translate|, |do_translate_stns|
         EXPORT  |ol_setcol|
 
-        IMPORT  |fancy_label|
+        IMPORT  |labels_plot|
 ; some reg names
 
 opt RN 0
@@ -432,7 +432,7 @@ plot_label
         MOV     r8,r14
         MOV     r10,r12
         MOV     r9,r3
-        BL      fancy_label
+        BL      labels_plot
         MOV     r3,r9
         MOV     r12,r10
         TST     r0,#0

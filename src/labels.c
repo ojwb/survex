@@ -25,16 +25,16 @@
 #include "osalloc.h"
 #include "labels.h"
 
-#include "caverot.h" /* only for fAllNames - FIXME: try to eliminate */
-
 static char *map = NULL;
 static unsigned int width, height;
 static unsigned int size;
 
 static unsigned int x_mid, y_mid;
 
+static bool fAllNames = fFalse;
+
 int
-init_map(unsigned int w, unsigned int h)
+labels_init(unsigned int w, unsigned int h)
 {
    x_mid = w / 2u;
    y_mid = h / 2u;
@@ -52,9 +52,15 @@ init_map(unsigned int w, unsigned int h)
 }
 
 void
-clear_map(void)
+labels_reset(void)
 {
    if (map) memset(map, 0, size);       
+}
+
+void
+labels_plotall(bool plot_all)
+{
+   fAllNames = plot_all;
 }
 
 #if (OS==RISCOS)
@@ -65,7 +71,7 @@ clear_map(void)
 #endif
 
 int
-fancy_label(const char *label, int x, int y)
+labels_plot(const char *label, int x, int y)
 {
    if (map && !fAllNames) {
       unsigned int X, Y; /* use unsigned so we can test for <0 for free */

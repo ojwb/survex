@@ -196,7 +196,7 @@ lplot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
       if ((X < 0 ? -X : X) <= (xcMac >> 1)) {
 	 int Y = (int)((p->X * y1 + p->Y * y2 + p->Z * y3) >> fixpt);
 	 if ((Y < 0 ? -Y : Y) <= (ycMac >> 1)) {
-	    if (fancy_label(p->_.str, X, Y)) {
+	    if (labels_plot(p->_.str, X, Y)) {
 	       outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
 			 p->_.str);
 	    }
@@ -216,7 +216,7 @@ lplot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
       if ((X < 0 ? -X : X) <= (xcMac >> 1) ) {
 	 int Y = (int)((p->Z * y3) >> fixpt);
 	 if ((Y < 0 ? -Y : Y) <= (ycMac >> 1) ) {
-	    if (fancy_label(p->_.str, X, Y)) {
+	    if (labels_plot(p->_.str, X, Y)) {
 	       outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
 			 p->_.str);
 	    }
@@ -236,7 +236,7 @@ lplot_plan(point Huge *p, coord x1, coord x2, coord y1, coord y2, int fixpt)
       if ((X < 0 ? -X : X) <= (xcMac >> 1)) {
 	 int Y = (int)((p->X * y1 + p->Y * y2) >> fixpt);
 	 if ((Y < 0 ? -Y : Y) <= (ycMac >> 1)) {
-	    if (fancy_label(p->_.str, X, Y)) {
+	    if (labels_plot(p->_.str, X, Y)) {
 	       outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
 			 p->_.str);
 	    }

@@ -120,7 +120,9 @@ node_stat(prefix *p)
 	 warning(/*Station `%s' referred to just once, with an explicit prefix - typo?*/70,
 		 sprint_prefix(p));
       }
-      /* FIXME: what about export violations in hanging surveys? */
+      /* Don't need to worry about export violations in hanging surveys -
+       * if there are hanging surveys then we give up in
+       * replace_trailing_travs() and never get here... */
       if (fExportUsed) {
 #if 0
 	 printf("L min %d max %d pfx %s\n",

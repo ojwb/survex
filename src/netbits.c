@@ -151,8 +151,6 @@ static void check_d(/*const*/ delta *d) {
    if (bad) printf("(%4.2f,%4.2f,%4.2f)\n", (*d)[0], (*d)[1], (*d)[2]);
 }
 
-/* FIXME: station lists should probably know how long they are... */
-
 /* insert at head of double-linked list */
 void
 add_stn_to_list(node **list, node *stn) {
