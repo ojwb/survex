@@ -52,6 +52,9 @@
 
 * (Unix version): fixed minor flaws in man pages.
 
+* cavern: removed dummy *lrud command which was added for tunnel but
+  isn't used by tunnel.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

@@ -221,7 +221,7 @@ typedef enum {
    CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_COPYRIGHT,
    CMD_DATA, CMD_DATE, CMD_DEFAULT, CMD_END, CMD_ENTRANCE, CMD_EQUATE,
    CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE, CMD_INFER, CMD_INSTRUMENT,
-   CMD_LRUD, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET, CMD_SOLVE,
+   CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET, CMD_SOLVE,
    CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
 
@@ -242,7 +242,6 @@ static sztok cmd_tab[] = {
      {"INCLUDE",   CMD_INCLUDE},
      {"INFER",     CMD_INFER},
      {"INSTRUMENT",CMD_INSTRUMENT},
-     {"LRUD",      CMD_LRUD},
      {"PREFIX",    CMD_PREFIX},
      {"REQUIRE",   CMD_REQUIRE},
      {"SD",        CMD_SD},
@@ -1429,7 +1428,6 @@ static cmd_fn cmd_funcs[] = {
    cmd_include,
    cmd_infer,
    skipline, /*cmd_instrument,*/
-   skipline, /*cmd_lrud,*/
    cmd_prefix,
    cmd_require,
    cmd_sd,
@@ -1441,9 +1439,6 @@ static cmd_fn cmd_funcs[] = {
    cmd_units
 };
 
-/* Just ignore *lrud for now so Tunnel can put it in */
-/* FIXME: except that tunnel keeps x-sections in a separate file... */
- 
 extern void
 handle_command(void)
 {
