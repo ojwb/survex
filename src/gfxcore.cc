@@ -413,6 +413,13 @@ void GfxCore::SetScale(Double scale)
     DrawGrid();
 #endif
 
+    Double m_00 = m_RotationMatrix.get(0, 0);
+    Double m_01 = m_RotationMatrix.get(0, 1);
+    Double m_02 = m_RotationMatrix.get(0, 2);
+    Double m_20 = m_RotationMatrix.get(2, 0);
+    Double m_21 = m_RotationMatrix.get(2, 1);
+    Double m_22 = m_RotationMatrix.get(2, 2);
+
     if (!m_ScaleCrossesOnly && !m_ScaleHighlightedPtsOnly && !m_ScaleSpecialPtsOnly) {
 
         // Invalidate hit-test grid.
@@ -532,10 +539,8 @@ void GfxCore::SetScale(Double scale)
                         Double yp = current_y + m_Params.translation.y;
                         Double zp = current_z + m_Params.translation.z;
 
-                        (*dest)->x = (long) (XToScreen(xp, yp, zp) * scale) +
-                                     m_Params.display_shift.x;
-                        (*dest)->y = -(long) (ZToScreen(xp, yp, zp) * scale) +
-                                     m_Params.display_shift.y;
+                        (*dest)->x = (long) ((xp*m_00 + yp*m_01 + zp*m_02) * scale);
+                        (*dest)->y = -(long) ((xp*m_20 + yp*m_21 + zp*m_22) * scale);
 
                         // Advance the relevant coordinate pointer to the next position.
                         (*dest)++;
@@ -564,8 +569,8 @@ void GfxCore::SetScale(Double scale)
                     Double yp = y + m_Params.translation.y;
                     Double zp = z + m_Params.translation.z;
 
-                    (*dest)->x = (long) (XToScreen(xp, yp, zp) * scale) + m_Params.display_shift.x;
-                    (*dest)->y = -(long) (ZToScreen(xp, yp, zp) * scale) + m_Params.display_shift.y;
+                    (*dest)->x = (long) ((xp*m_00 + yp*m_01 + zp*m_02) * scale);
+                    (*dest)->y = -(long) ((xp*m_20 + yp*m_21 + zp*m_22) * scale);
 
                     // Advance the relevant coordinate pointer to the next position.
                     (*dest)++;
@@ -784,7 +789,8 @@ void GfxCore::RedrawOffscreen()
                 int* num_segs = m_PlotData[band].num_segs; //-- sort out the polyline stuff!!
                 wxPoint* vertices = m_PlotData[band].vertices;
                 for (int polyline = 0; polyline < m_Polylines[band]; polyline++) {
-                    m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre, m_YCentre);
+                    m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre + m_Params.display_shift.x,
+		                       m_YCentre + m_Params.display_shift.y);
                     vertices += *num_segs++;
                 }
             }
