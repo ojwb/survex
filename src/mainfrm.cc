@@ -853,7 +853,8 @@ void MainFrm::FillTree()
         // Otherwise, we must have moved up, and possibly then down again.
         else {
             int count = 0;
-            bool ascent_only = (prefix.Length() < current_prefix.Length() && current_prefix.StartsWith(prefix) &&
+            bool ascent_only = (prefix.Length() < current_prefix.Length() &&
+	                        current_prefix.StartsWith(prefix) &&
                                 (current_prefix[prefix.Length()] == '.' || prefix == ""));
             if (!ascent_only) {
                 // Find out how much of the current prefix and the new prefix are the same.

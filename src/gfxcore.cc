@@ -288,7 +288,12 @@ void GfxCore::Initialise()
     // Apply default parameters.
     DefaultParameters();
 
-    // Check for flat/linearface/point surveys.
+    // If there are no legs (e.g. after loading a .pos file), turn crosses on.
+    if (m_Parent->GetNumLegs() == 0) {
+        m_Crosses = true;
+    }
+
+    // Check for flat/linear/point surveys.
     m_Lock = lock_NONE;
     m_IndicatorsOff = false;
     m_DepthbarOff = false;
@@ -2454,7 +2459,7 @@ void GfxCore::OnShowCrosses(wxCommandEvent&)
 
 void GfxCore::OnShowCrossesUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT && m_Parent->GetNumLegs() > 0);
     cmd.Check(m_Crosses);
 }
 
