@@ -155,7 +155,7 @@ if expr "$mk" : '.*\<mingw\>'; then
 	 export CXX
       fi
    fi
-   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG=`pwd`/mingw_extras/wxmsw-config LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= CFLAGS=-Werror CXXFLAGS=-Werror ; then
+   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG=/opt/wxmsw-2.4.0/bin/wxmsw-2.4-i686-mingw32-config LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= CFLAGS=-Werror CXXFLAGS=-Werror ; then
       echo mingw configure failed
       exit 1
    fi
