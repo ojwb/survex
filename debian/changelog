@@ -1,3 +1,9 @@
+survex (1.0.1) unstable; urgency=low
+
+  * Updated pt-br and it internationalisations.
+
+ -- Wookey <wookey@survex.com>  Thu, 31 Jan 2002 06:15:26 +0000
+
 survex (1.0.0) unstable; urgency=low
 
   * Compiling gfxcore.cc often causes an ICE in GCC 2.95, so if the compile
