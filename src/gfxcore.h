@@ -117,6 +117,7 @@ class GfxCore : public wxWindow {
         Double scale;
         Double pan_angle;
         Double tilt_angle;
+	bool solid_surface;
     };
 
 #ifdef AVENGL
@@ -234,6 +235,7 @@ class GfxCore : public wxWindow {
     bool m_DraggingRight;
     MainFrm* m_Parent;
     wxPoint m_DragStart;
+    wxPoint m_DragRealStart;
     wxBitmap m_OffscreenBitmap;
     wxMemoryDC m_DrawDC;
     bool m_DoneFirstShow;
@@ -352,6 +354,7 @@ class GfxCore : public wxWindow {
     void SetTerrainColour(Double);
     void LoadTexture(const wxString& file, GLuint* texture);
     void RenderMap();
+    void SetSolidSurface(bool);
 #endif
 
     Double XToScreen(Double x, Double y, Double z) {
@@ -371,6 +374,8 @@ class GfxCore : public wxWindow {
 
     Double GridXToScreen(Double x, Double y, Double z);
     Double GridYToScreen(Double x, Double y, Double z);
+
+    void CheckHitTestGrid(wxPoint& point, bool centre);
 
     wxCoord GetClinoOffset();
     wxPoint CompassPtToScreen(Double x, Double y, Double z);

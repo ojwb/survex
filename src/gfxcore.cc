@@ -20,8 +20,6 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#define HEAVEN 5000.0 // altitude of heaven
-
 #include <float.h>
 
 #include "gfxcore.h"
@@ -32,6 +30,7 @@
 #include <wx/confbase.h>
 #include <wx/image.h>
 
+#define HEAVEN 5000.0 // altitude of heaven
 #define INTERPOLATE(a, b, t) ((a) + (((b) - (a)) * Double(t) / 100.0))
 #define MAX3(a, b, c) ((a) > (b) ? ((a) > (c) ? (a) : (c)) : ((b) > (c) ? (b) : (c)))
 #define TEXT_COLOUR  wxColour(0, 255, 40)
@@ -1769,13 +1768,18 @@ void GfxCore::OnLButtonDown(wxMouseEvent& event)
         m_DraggingLeft = true;
         m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
         m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y;
-        m_DragStart = wxPoint(event.GetX(), event.GetY());
+        m_DragStart = m_DragRealStart = wxPoint(event.GetX(), event.GetY());
     }
 }
 
 void GfxCore::OnLButtonUp(wxMouseEvent& event)
 {
     if (m_PlotData && (m_Lock != lock_POINT)) {
+        if (event.GetPosition() == m_DragRealStart) {
+            // just a "click"...
+            CheckHitTestGrid(m_DragStart, true);
+        }
+	
         m_LastDrag = drag_NONE;
         m_DraggingLeft = false;
         const wxRect r(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 - INDICATOR_GAP,
@@ -2006,49 +2010,55 @@ void GfxCore::HandleTranslate(wxPoint point)
     m_DragStart = point;
 }
 
+void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
+{
+#ifndef AVENGL
+    if (!m_HitTestGridValid) {
+        CreateHitTestGrid();
+    }
+    
+    int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
+    int grid_y = (point.y * (HITTEST_SIZE - 1)) / m_YSize;
+    bool done = false;
+    int square = grid_x + grid_y * HITTEST_SIZE;
+    list<GridPointInfo>::iterator iter = m_PointGrid[square].begin();
+    while (!done && iter != m_PointGrid[square].end()) {
+        GridPointInfo& info = *iter++;
+
+        //-- FIXME: check types
+        int x0 = info.x;
+	int y0 = info.y;
+	int x1 = point.x;
+	int y1 = point.y;
+
+	int dx = x1 - x0;
+	int dy = y1 - y0;
+
+        if (int(sqrt(dx*dx + dy*dy)) <= 4.0) {
+	    m_Parent->SetMouseOverStation(info.label);
+	    if (centre) {
+	        CentreOn(info.label->GetX(), info.label->GetY(), info.label->GetZ());
+            }
+	    done = true;
+	}
+    }
+
+    if (!done) {
+        m_Parent->SetMouseOverStation(NULL);
+    }
+#endif
+}
+
 void GfxCore::OnMouseMove(wxMouseEvent& event)
 {
-    // Mouse motion event handler.
+   // Mouse motion event handler.
 
     wxPoint point = wxPoint(event.GetX(), event.GetY());
 
-#if 0
-//---FIXME
     // Check hit-test grid (only if no buttons are pressed).
     if (!event.LeftIsDown() && !event.MiddleIsDown() && !event.RightIsDown()) {
-        if (!m_HitTestGridValid) {
-            CreateHitTestGrid();
-        }
-        
-        int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
-        int grid_y = (point.y * (HITTEST_SIZE - 1)) / m_YSize;
-        bool done = false;
-        int square = grid_x + grid_y * HITTEST_SIZE;
-        list<GridPointInfo>::iterator iter = m_PointGrid[square].begin();
-        while (!done && iter != m_PointGrid[square].end()) {
-            GridPointInfo& info = *iter++;
-    
-            //-- FIXME: check types
-            int x0 = info.x;
-    	    int y0 = info.y;
-    	    int x1 = point.x;
-    	    int y1 = point.y;
-    
-    	    int dx = x1 - x0;
-    	    int dy = y1 - y0;
-    
-            if (int(sqrt(dx*dx + dy*dy)) <= 4.0) {
-    	        m_Parent->SetMouseOverStation(info.label);
-    	        done = true;
-    	    }
-        }
-
-	if (!done) {
-            m_Parent->SetMouseOverStation(NULL);
-	}
+        CheckHitTestGrid(point, false);
     }
-#endif
-
 
     // Update coordinate display if in plan view.
     if (m_TiltAngle == M_PI / 2.0) {
@@ -3027,6 +3037,12 @@ void GfxCore::RecordPres(FILE* fp)
     d.pan_angle = m_PanAngle;
     d.tilt_angle = m_TiltAngle;
 
+#ifdef AVENGL
+    d.solid_surface = m_SolidSurface && (floor_alt <= HEAVEN);
+#else
+    d.solid_surface = false;
+#endif
+
     fwrite(&d, sizeof(PresData), 1, fp);
 
     m_Params.rotation.Save(fp);
@@ -3067,6 +3083,10 @@ void GfxCore::PresGoto(PresData& d, Quaternion& q)
     m_PresStep.to.scale = d.scale;
     m_PresStep.to.pan_angle = d.pan_angle;
     m_PresStep.to.tilt_angle = d.tilt_angle;
+
+#ifdef AVENGL
+    SetSolidSurface(d.solid_surface);
+#endif
 
     m_DoingPresStep = 0;
 }
@@ -3431,6 +3451,20 @@ void GfxCore::LoadTexture(const wxString& file /* with no extension */, GLuint* 
     CheckGLError("creating texture '" + file + "'");
 }
 
+void GfxCore::SetSolidSurface(bool state)
+{
+    terrain_rising = !state;
+
+    if (state) {
+        floor_alt = HEAVEN;
+    }
+    else {
+        floor_alt = m_Parent->GetTerrainMinZ() - m_Parent->GetZOffset();
+    }
+
+    Refresh(false);
+}
+
 void GfxCore::OnSolidSurface(wxCommandEvent&)
 {
     terrain_rising = !terrain_rising;
@@ -3449,3 +3483,4 @@ void GfxCore::OnSolidSurfaceUpdate(wxUpdateUIEvent& ui)
 }
 
 #endif
+
