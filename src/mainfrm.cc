@@ -57,7 +57,7 @@ const int NUM_DEPTH_COLOURS = 13; // up to 13
     wxCONFIG_PATH_SEPARATOR + wxString("icons") + wxCONFIG_PATH_SEPARATOR + \
     wxString(file), wxBITMAP_TYPE_PNG)
 
-#include "aven.pal"
+#include "avenpal.h"
 
 class AvenSplitterWindow : public wxSplitterWindow {
     MainFrm *parent;
