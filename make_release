@@ -26,6 +26,10 @@ if test -f Makefile ; then
       exit 1
    fi
 fi
+if test x"$release" = xyes ; then
+   wget ftp://ftp.gnu.org/gnu/config/config.guess
+   wget ftp://ftp.gnu.org/gnu/config/config.sub
+fi
 aclocal
 autoheader
 automake -a
