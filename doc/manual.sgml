@@ -107,8 +107,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-09-15 00:46:02 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.114 2003-09-15 00:46:02 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2005-01-12 00:46:25 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.115 2005-01-12 00:46:25 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -313,8 +313,9 @@ are using, so there is a separate section below for each platform.</Para>
 
 <Para>
 We supply pre-compiled versions for x86 &linux; machines in RPM format
-(suitable for Redhat, Mandrake, and some other distributions)
-and dpkg format (suitable for Debian and Debian-derived distributions).
+(suitable for Redhat, Mandrake, and some other distributions).
+Survex Debian packages are available from Debian mirror sites in
+the usual way.
 </Para>
 
 <Para>
@@ -353,10 +354,8 @@ if you don't have root access on the machine you wish to install
 
 <Para>
 There's a GUI cave viewer called aven, which needs &wxwindows; to build,
-which in turn needs either Motif or Gtk+.
-If installing the required
-libraries is a problem, there's a more basic cave viewer called xcaverot
-which only needs the standard X libraries.
+which in turn needs Gtk+ (or Motif or just X11, but we only regularly
+test with the Gtk+ version).
 </Para>
 
 <!-- FIXME: recommend printps on &UNIX; (or just &linux;)??? -->
