@@ -270,35 +270,39 @@ cvrotgfx_init(void)
    }
 
    if (mode_picker) {
-      res = set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
-      if (res) {
-	 allegro_exit();
-	 printf("bad mode select 0\n");
-	 printf("%s\n", allegro_error);
-	 exit(1);
-      }
-      setup_mouse();
-      install_keyboard();
-      clear(screen);
-      install_timer();
-      set_gui_colors();
-      
-      if (!gfx_mode_select(&c, &w, &h)) {
-	 allegro_exit();
-	 printf("bad mode select\n");
-	 printf("%s\n", allegro_error);
-	 exit(1);
-      }
-      remove_timer();
-      remove_mouse();
-      remove_keyboard();
-/*   set_palette(desktop_palette); */
-      res = set_gfx_mode(c, w, h, 0, 0);
+      do {
+	 res = set_gfx_mode(GFX_VGA, 320, 200, 0, 0);
+	 if (res) {
+	    allegro_exit();
+	    printf("bad mode select 0\n");
+	    printf("%s\n", allegro_error);
+	    exit(1);
+	 }
+	 setup_mouse();
+	 install_keyboard();
+	 clear(screen);
+	 install_timer();
+	 set_gui_colors();
+	 
+	 if (!gfx_mode_select(&c, &w, &h)) {
+	    allegro_exit();
+	    printf("bad mode select\n");
+	    printf("%s\n", allegro_error);
+	    exit(1);
+	 }
+	 remove_timer();
+	 remove_mouse();
+	 remove_keyboard();
+	 /*   set_palette(desktop_palette); */
+	 /* try and select the requested resolution - retry if not valid */
+	 res = set_gfx_mode(c, w, h, 0, 0);
+      } while (res);
    }
 #if 0
    /*!HACK! may have "not initialised" problems -- this is a quick fix */
    BitMapDraw = screen;
 #endif
+#if 0
    /* test res */
    if (res) {
       allegro_exit();
@@ -306,6 +310,7 @@ cvrotgfx_init(void)
       printf("%s\n", allegro_error);
       exit(1);
    }
+#endif
    text_mode(-1); /* don't paint in text background */
    BitMap = create_bitmap(SCREEN_W, SCREEN_H);
    /* check that initialisation was OK */
@@ -584,7 +589,16 @@ cvrotgfx_get_key(void)
    keycode = readkey();
    /* flush the keyboard buffer to stop key presses backing up */
    clear_keybuf();
-   return keycode & 0xff; /* !HACK! better to use scan code in higher bits? */
+#if 0
+{FILE *fh = fopen("key.log", "a");
+fprintf(fh, "%04x\n", keycode);
+fclose(fh);
+}
+#endif
+   /* check for cursor keys/delete/end - these give enhanced DOS key codes (+ 0x100) */
+   if (keycode && (keycode & 0xff) == 0) return (keycode >> 8) | 0x100;
+   /* otherwise throw away scan code */
+   return keycode & 0xff;
 }
 #else
 /* !HACK! use _bios_keybd() instead? */
