@@ -111,7 +111,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 END_EVENT_TABLE()
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
-    wxFrame(NULL, 101, title, pos, size), m_Gfx(NULL), m_StatusBar(NULL)
+    wxFrame(NULL, 101, title, pos, size), m_Gfx(NULL), m_StatusBar(NULL), m_FileToLoad("")
 {
     m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS];
     m_Pens = new wxPen[NUM_DEPTH_COLOURS];
@@ -243,6 +243,9 @@ void MainFrm::OnPaint(wxPaintEvent&) //-- sort this out!
 {
     if (!m_Gfx) {
         m_Gfx = new GfxCore(this);
+	if (m_FileToLoad != wxString("")) {
+	    OpenFile(m_FileToLoad, true);
+	}
     }
 }
 
@@ -635,6 +638,25 @@ bool MainFrm::GetNextLabel(list<LabelInfo*>::iterator& pos, float& x, float& y, 
     return (pos != m_Labels.end());
 }
 
+void MainFrm::OpenFile(const wxString& file, bool delay)
+{
+    if (m_Gfx) {
+        SetCursor(*wxHOURGLASS_CURSOR);
+        if (LoadData(file)) {
+	    if (!delay) {
+                m_Gfx->Initialise();
+	    }
+	    else {
+	        m_Gfx->InitialiseOnNextResize();
+	    }
+	}
+        SetCursor(*wxSTANDARD_CURSOR);
+    }
+    else {
+        m_FileToLoad = file;
+    }
+}
+
 //
 //  UI event handlers
 //
@@ -644,10 +666,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
     wxFileDialog dlg (this, "Select a 3D file to view", "", "",
 		      "Survex 3D files|*.3d|All files|*.*", wxOPEN);
     if (dlg.ShowModal() == wxID_OK) {
-        SetCursor(*wxHOURGLASS_CURSOR);
-        LoadData(dlg.GetPath());
-	m_Gfx->Initialise();
-        SetCursor(*wxSTANDARD_CURSOR);
+        OpenFile(dlg.GetPath());
     }
 }
 

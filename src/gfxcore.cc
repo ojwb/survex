@@ -51,7 +51,7 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent) :
-    wxWindow(parent, 100), m_Timer(this, TIMER_ID),
+    wxWindow(parent, 100), m_Timer(this, TIMER_ID), m_InitialisePending(false),
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, false, "Helvetica")
 {
     m_DraggingLeft = false;
@@ -144,7 +144,7 @@ void GfxCore::Initialise()
     // Scale the survey to a reasonable initial size.
     m_InitialScale = double(m_XSize) / (double(MAX(m_Parent->GetXExtent(),
 						   m_Parent->GetYExtent())) * 1.1);
-
+    
     for (int band = 0; band < m_Bands; band++) {
         m_PlotData[band].vertices = new wxPoint[m_Parent->GetNumPoints()];
 	m_PlotData[band].num_segs = new int[m_Parent->GetNumLegs()];
@@ -282,18 +282,11 @@ void GfxCore::RedrawOffscreen()
     // Redraw the offscreen bitmap.
 
     m_DrawDC.BeginDrawing();
-  
-    if (!m_DoneFirstShow) {
-        FirstShow();
-    }
 
     // Clear the background to black.
     m_DrawDC.SetPen(m_Pens.black);
-    // m_DrawDC.SetWindowOrg(0, 0);
     m_DrawDC.SetBrush(m_Brushes.black);
     m_DrawDC.DrawRectangle(0, 0, m_XSize, m_YSize);
-	
-    //m_DrawDC.SetWindowOrg(-m_XCentre, -m_YCentre);
 
     if (m_PlotData) {
         // Draw the legs.
@@ -933,6 +926,12 @@ void GfxCore::OnSize(wxSizeEvent& event)
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
 
+    if (m_InitialisePending) {
+        Initialise();
+	m_InitialisePending = false;
+	m_DoneFirstShow = true;
+    }
+
     if (m_DoneFirstShow) {
         m_DrawDC.SelectObject(wxNullBitmap);
 	m_OffscreenBitmap.Create(m_XSize, m_YSize);
@@ -1185,6 +1184,7 @@ void GfxCore::Defaults()
     m_SwitchingToElevation = false;
 
     m_RedrawOffscreen = true;
+
     Refresh(false);
 }
 

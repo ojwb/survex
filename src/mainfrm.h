@@ -91,6 +91,7 @@ class MainFrm : public wxFrame {
     GfxCore* m_Gfx;
     wxPen* m_Pens;
     wxBrush* m_Brushes;
+    wxString m_FileToLoad;
     wxStatusBar* m_StatusBar; // NULL if status bar shown, otherwise pointer to hidden bar.
 
     void ClearPointLists();
@@ -106,6 +107,8 @@ class MainFrm : public wxFrame {
 public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
     ~MainFrm();
+
+    void OpenFile(const wxString& file, bool delay_gfx_init = false);
 
     void OnOpen(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);

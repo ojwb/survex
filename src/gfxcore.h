@@ -103,6 +103,7 @@ class GfxCore : public wxWindow {
     wxTimer m_Timer;
     PlotData* m_PlotData;
     wxString* m_Labels;
+    bool m_InitialisePending;
 
     struct pens {
         wxPen black;
@@ -168,6 +169,7 @@ public:
     ~GfxCore();
 
     void Initialise();
+    void InitialiseOnNextResize() { m_InitialisePending = true; }
 
     void OnDefaults(wxCommandEvent&);
     void OnPlan(wxCommandEvent&);

@@ -30,9 +30,17 @@
 #include <assert.h>
 
 #include <wx/image.h>
+#include <wx/cmdline.h>
 #include <wx/confbase.h>
 
 IMPLEMENT_APP(Aven)
+
+static const wxCmdLineEntryDesc CMDLINE[] =
+{
+    { wxCMD_LINE_OPTION, "h", "help", "Print command line options" },
+    { wxCMD_LINE_PARAM,  NULL, NULL, "3d file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_NONE }
+};
 
 Aven::Aven() :
     m_Frame(NULL)
@@ -41,6 +49,13 @@ Aven::Aven() :
 
 bool Aven::OnInit()
 {
+    wxCmdLineParser cli(CMDLINE, argc, argv);
+    int c = cli.Parse();
+    if (c != 0 || cli.Found("h")) {
+        fprintf(stderr, "syntax: %s [3d file]\n", argv[0]);
+	exit(c > 0 ? 1 /* syntax error */ : 0 /* --help */);
+    }
+
     wxImage::AddHandler(new wxPNGHandler);
     //--need to sort this!
     m_AboutBitmap.LoadFile(wxString(DATADIR) + wxCONFIG_PATH_SEPARATOR + 
@@ -48,6 +63,12 @@ bool Aven::OnInit()
 			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
 
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(640, 480));
+
+    if (cli.GetParamCount() == 1) {
+        wxString file = cli.GetParam(0);
+	m_Frame->OpenFile(file);
+    }
+
     m_Frame->Show(true);
 
     return true;
