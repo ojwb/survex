@@ -8,6 +8,11 @@ config.h.in
 config.log
 config.status
 configure
+src*_*.zip
 stamp-h
 stamp-h.in
 survex-*.tar.gz
+svx-bcdos-*.zip
+svx-dos-*.zip
+svx-nt-*.zip
+svx-riscos-*.zip
