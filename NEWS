@@ -23,6 +23,9 @@
 
 * Minor documentation updates.
 
+* Distinguish between a "bad" .3d file and one which has a newer
+  revision of the format than we understand.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

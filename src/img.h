@@ -152,7 +152,7 @@ int img_close(img *pimg);
 typedef enum {
    IMG_NONE = 0, IMG_FILENOTFOUND, IMG_OUTOFMEMORY,
    IMG_CANTOPENOUT, IMG_BADFORMAT, IMG_DIRECTORY,
-   IMG_READERROR, IMG_WRITEERROR
+   IMG_READERROR, IMG_WRITEERROR, IMG_TOONEW
 } img_errcode;
 
 /* Read the error code

@@ -1031,7 +1031,9 @@ pt:113 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s) - no output file
 ca:113 Hi havia %d alerta(es) i %d error(s) no fatal(s) - no output files produced.
 es:113 Havia %d alerta(s) y %d error(es) no fatal(es) - no output files produced.
 it:113 Ci sono %d avvertimenti e %d errori non fatali - no output files produced.
-# XXX 114
+# TRANSLATE
+en:114 File `%s' has a newer format than this program can understand
+#
 en:115 North
 fr:115 Nord
 de:115 Norden

@@ -95,7 +95,8 @@ static enum {
    IMG_CANTOPENOUT  = /*Failed to open output file `%s'*/47,
    IMG_BADFORMAT    = /*Bad 3d image file `%s'*/106,
    IMG_READERROR    = /*Error reading from file `%s'*/109,
-   IMG_WRITEERROR   = /*Error writing to file `%s'*/110
+   IMG_WRITEERROR   = /*Error writing to file `%s'*/110,
+   IMG_TOONEW       = /*File `%s' has a newer format than this program can understand*/114
 } img_errno = IMG_NONE;
 #else
 static img_errcode img_errno = IMG_NONE;
@@ -184,9 +185,13 @@ img_open_survey(const char *fnm, char *title_buf, char *date_buf,
    /* knock off the 'B' or 'b' if it's there */
    if (strcmp(tmpbuf + pimg->version, "v0.01") == 0) {
       pimg->flags = 0;
-   } else if (pimg->version == 0 && tmpbuf[0] == 'v' &&
-	      (tmpbuf[1] >= '2' || tmpbuf[1] <= '3') &&
-	      tmpbuf[2] == '\0') {
+   } else if (pimg->version == 0 && tmpbuf[0] == 'v') {
+      if (tmpbuf[1] < '2' || tmpbuf[1] > '3' || tmpbuf[2] != '\0') {
+	 fclose(pimg->fh);
+	 osfree(pimg);
+	 img_errno = IMG_TOONEW;
+	 return NULL;	 
+      }
       pimg->version = tmpbuf[1] - '0';
    } else {
       fclose(pimg->fh);
