@@ -7,7 +7,12 @@ pkgdocdir = $(prefix)/doc/@PACKAGE@
 doclist = svxdocs.rtf svxdocs.txt svxdocs.ps # svxdocs.html
 
 other_mans = 3dtodxf.1 cavern.1 diffpos.1 extend.1 hto2svx.1 \
- printdm.1 printhpgl.1 printpcl.1 printps.1 svx2hto.1
+ printdm.1 printhpgl.1 printpcl.1 printps.1 svx2hto.1 @EXTRA_MANS@
+
+#can produce man page syntax summary from --help something like
+#SURVEXHOME=lib src/xcaverot --help | grep -i ^syntax |
+#sed 's!^[^ ]* \(.*/\)\?!!;s!^!.B !;s! !
+# !;s!\([A-Za-z0-9][A-Za-z0-9_]*\)!\\fI\1\\fR!g;s!\\fI!!;s!\\fR!!'
 
 # People can build from CVS without sgmltools v2 or v3 installed but they
 # won't be able to "make dist", which is arguably a good thing
@@ -24,8 +29,8 @@ $(other_mans):
 	ln -s $(srcdir)/survex.1 $@
 
 install-data-local:
-	if test -d "$$(srcdir)/svxdocs" ; then \
-	  for p in `find "$$(srcdir)/svxdocs" -name *.htm -type f -print` ; do \
+	if test -d "$(srcdir)/svxdocs" ; then \
+	  for p in `find "$(srcdir)/svxdocs" -name *.htm -type f -print` ; do \
 	    f="`echo $$p | sed -e 's|^.*/||'`"; \
 	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
 	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
@@ -40,8 +45,8 @@ install-data-local:
 	fi
 
 uninstall-local:
-	if test -d "$$(srcdir)/svxdocs" ; then \
-	  for p in `find "$$(srcdir)/svxdocs" -name *.htm -type f -print` ; do \
+	if test -d "$(srcdir)/svxdocs" ; then \
+	  for p in `find "$(srcdir)/svxdocs" -name *.htm -type f -print` ; do \
 	    f="`echo $$p | sed -e 's|^.*/||'`"; \
 	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
 	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \

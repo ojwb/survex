@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH SURVEX 1 "August 23, 2000"
+.TH SURVEX 1 "2001-02-28"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -19,75 +19,75 @@
 survex \- cave survey software
 .SH SYNOPSIS
 .B survex
-.RI [ options ... ] [ <survex data file> ... ]
+[\fIOPTION\fR]... \fISVX_FILE\fR...
 .br
 .B cavern
-.RI [ options ... ] [ <survex data file> ... ]
+[\fIOPTION\fR]... \fISVX_FILE\fR...
 .br
 .B xcaverot
-.RI [options] [<3d file> ... ]
+[\fIOPTION\fR]... \fI3DFILE\fR...
 .br
 .br
 .B printps
-.RI [options] [<3d file> ... ]
+[\fIOPTION\fR]... \fI3DFILE\fR...
 .br
 .B printhpgl
-.RI [options] [<3d file> ... ]
+[\fIOPTION\fR]... \fI3DFILE\fR...
 .br
 .B printpcl
-.RI [options] [<3d file> ... ]
+[\fIOPTION\fR]... \fI3DFILE\fR...
 .br
 .B printdm
-.RI [options] [<3d file> ... ]
+[\fIOPTION\fR]... \fI3DFILE\fR...
 .br
 .br
 .B extend
-.RI <input 3d file> [<output 3d file>] 
+\fIINPUT_3DFILE\fR [\fIOUTPUT_3DFILE\fR]
 .br
 .B diffpos
-.RI <3d file> <3d file> [<threshold>]
+\fI3DFILE\fR \fI3DFILE\fR [\fITHRESHOLD\fR]
 .br
 .B 3dtodxf
-.RI [options] [survex 3d file]
+[\fIOPTION\fR]... \fI3DFILE\fR [\fI3DFILE\fR]
 .br
 .B svx2hto
-.RI <survex data file>
+[\fIHTO_FILE\fR [\fISVX_FILE\fR]]
 .br
 .B hto2svx
+\fISVX_FILE\fR [\fIHTO_FILE\fR]
 .RI <survex data file>
 .br
 
 .SH DESCRIPTION
-This manual page documents briefly the
-.B survex
-,
-.B cavern
-,
-.B xcaverot
-,
-.B print(ps|hpgl|pcl|dm)
-,
-.B diffpos
-,
-.B 3dtodxf
-,
-.B svx2hto
- and
-.B hto2svx
-commands.
-This manual page was written for the Debian GNU/Linux distribution
-because the original program does not have a manual page.
-Instead, it has documentation in sgml, text, html, postscript and rtf formats; see below.
+
+\fBSurvex\fP is a suite of programs for processing, displaying, and printing
+cave survey data.
+
 .PP
+This manual page documents briefly the
+\fBsurvex\fP,
+\fBcavern\fP,
+\fBxcaverot\fP,
+\fBaven\fP,
+\fBprint(ps|hpgl|pcl|dm)\fP,
+\fBdiffpos\fP,
+\fB3dtodxf\fP,
+\fBsvx2hto\fP,
+and
+\fBhto2svx\fP
+commands.
+.PP
+This manual page is just a pointer - Survex has documentation in sgml, text,
+html, postscript and rtf formats; see below.
+
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
 .\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
 .\" respectively.
-\fBSurvex\fP is a suite of programs for processing, displaying and printing cave survey data. 
 .SH OPTIONS
 These programs follow the usual GNU command line syntax, with long
-options starting with two dashes (`-').
-A summary of options is included below.
-For a complete description, see the Info files.
+options starting with two dashes (`--').
+A summary of common options is included below.
+For a complete description, see the full documentation.
 .TP
 .B \-h, \-\-help
 Show summary of options.
@@ -95,10 +95,9 @@ Show summary of options.
 .B \-v, \-\-version
 Show version of program.
 .SH SEE ALSO
-Nothing - this feeble manpage is it.
-.br
-The programs are documented fully by the documentation found in
-/usr/docs/survex/.
+.\" Nothing - this feeble manpage is it.
+These programs are described fully by the documentation found in
+/usr/share/doc/survex or /usr/docs/survex
 .SH AUTHOR
-This manual page was written by Wookey <wookey@survex.com>,
-for the Debian GNU/Linux system (but may be used by others).
+This manual page was written by Wookey <wookey@survex.com> and amended by
+Olly Betts <olly@survex.com>

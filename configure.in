@@ -95,6 +95,9 @@ AC_LANG_C
 AC_SUBST(CAVEROT)
 AC_SUBST(AVEN)
 
+EXTRA_MANS=`echo $CAVEROT $AVEN | sed 's/\>/.1/g'`
+AC_SUBST(EXTRA_MANS)
+
 dnl caverot libraries...
 AC_SUBST(CRLIB)
 dnl caverot platform specific sources...
