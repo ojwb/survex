@@ -34,10 +34,6 @@
 #include "img.h"
 #include "namecmp.h"
 
-#ifndef sqrd
-# define sqrd(X) ((X)*(X))
-#endif
-
 /* macro to just convert argument to a string */
 #define STRING(X) _STRING(X)
 #define _STRING(X) #X
