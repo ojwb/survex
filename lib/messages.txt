@@ -907,7 +907,7 @@ it: 92 Istruzione illegale
 # TRANSLATE check ca es it
 en: 93 Couldn't open file `%s'
 fr: 93 Ne peut pas ouvrir le fichier `%s'
-de: 93 Datei `%s' nicht gefunden oder kein Zugriffsrecht
+de: 93 Konnte Datei `%s' nicht &ouml;ffnen
 pt: 93 Imposs&iacute;vel abrir arquivo `%s'
 ca: 93 No s'ha pogut obrir el fitxer `%s'
 es: 93 No se pudo abrir el fichero `%s'
@@ -2294,6 +2294,7 @@ de:319 Name der Ausgabedatei w&auml;hlen
 pt:319 Escolha um nome de arquivo de sa&iacute;da
 en:320 Aven presentations
 fr:320 Pr&eacute;sentations Aven
+de:320 Aven Pr&auml;sentationen
 pt:320 Apresenta&ccedil;&otilde;es Aven
 en:321 Open @Presentation...
 fr:321 Ouvrir une @Pr&eacute;sentation
@@ -2352,7 +2353,7 @@ fr:502 Effac&eacute;: %s
 de:502 Entfernt: %s
 pt:502 Removido: %s
 en:503 Ignoring:
-de:503 Ignoriere:
+de:503 Ignoriert:
 fr:503 Ignor&eacute;:
 pt:503 Ignorando:
 #
