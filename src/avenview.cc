@@ -45,7 +45,7 @@ bool AvenView::OnCreate(wxDocument* doc, long flags)
 
     if (m_First) {
         // The first survey opened should sit inside the "parent" frame window.
-        // Unfortunately, the f*cking toolkit seems to hinder this.
+        // Unfortunately, wxWindows seems to hinder this.
 
         wxWindow* parent = wxGetApp().GetMainFrame();
 	m_Gfx = new GfxCore((AvenDoc*) doc, parent);
@@ -58,7 +58,6 @@ bool AvenView::OnCreate(wxDocument* doc, long flags)
     else {
         // Create a new child frame.
         m_Frame = new ChildFrm(doc, this, wxGetApp().GetMainFrame(), -1, "Aven");
-
 
 #ifdef __X__
 	// X seems to require a forced resize.

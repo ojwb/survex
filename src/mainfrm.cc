@@ -84,13 +84,13 @@ void MainFrm::OnAbout(wxCommandEvent& event)
 
 void MainFrm::SetFullMenuBar()
 {
-  printf("sfmb\n");
-  //for (int i = 0; i < 6; i++) { GetMenuBar()->Remove(i); }
+    GetMenuBar()->Remove(1);
+    GetMenuBar()->Remove(0);
+
     GetMenuBar()->Append(ChildFrm::BuildFileMenu(), wxGetApp().GetTabMsg(/*@File*/210));
     GetMenuBar()->Append(ChildFrm::BuildRotationMenu(), wxGetApp().GetTabMsg(/*@Rotation*/211));
     GetMenuBar()->Append(ChildFrm::BuildOrientationMenu(), wxGetApp().GetTabMsg(/*@Orientation*/212));
     GetMenuBar()->Append(ChildFrm::BuildViewMenu(), wxGetApp().GetTabMsg(/*@View*/213));
     GetMenuBar()->Append(ChildFrm::BuildControlsMenu(), wxGetApp().GetTabMsg(/*@Controls*/214));
     GetMenuBar()->Append(ChildFrm::BuildHelpMenu(), wxGetApp().GetTabMsg(/*@Help*/215));
-
 }
