@@ -566,7 +566,7 @@ msgPerm(int en)
 }
 
 #ifdef AVEN
-#include "wx.h".
+#include "wx.h"
 #endif
 
 void
