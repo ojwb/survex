@@ -151,7 +151,7 @@ void GLACanvas::FirstShow()
 {
     SetCurrent();
     m_Quadric = gluNewQuadric();
-    CHECK_GL_ERROR("GLACanvas", "gluNewQuadric");
+    CHECK_GL_ERROR("FirstShow", "gluNewQuadric");
     if (!m_Quadric) {
 	abort(); // FIXME need to cope somehow
     }
@@ -164,8 +164,6 @@ void GLACanvas::FirstShow()
     CHECK_GL_ERROR("FirstShow", "glColorMaterial GL_FRONT");
     glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
     CHECK_GL_ERROR("FirstShow", "glColorMaterial GL_BACK");
-    glEnable(GL_DEPTH_TEST);
-    CHECK_GL_ERROR("FirstShow", "glEnable GL_DEPTH_TEST");
 }
 
 void GLACanvas::Clear()
@@ -212,10 +210,10 @@ void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
     Double x, y, z;
     gluUnProject(0.0, 0.0, 0.0, modelview_matrix, projection_matrix, viewport,
                  &x0, &y0, &z0);
-    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject 1");
+    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject");
     gluUnProject(dx, -dy, 0.0, modelview_matrix, projection_matrix, viewport,
                  &x, &y, &z);
-    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject 2");
+    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject (2)");
 
     // Apply the translation.
     AddTranslation(x - x0, y - y0, z - z0);
@@ -242,11 +240,11 @@ void GLACanvas::SetViewportAndProjection()
     // right across so we clamp them to be at least 1 to avoid errors from the
     // opengl calls below.
     wxSize size = GetSize();
-    int width = max(size.GetWidth(), 1);
-    int height = max(size.GetHeight(), 1);
-    double aspect = double(height) / double(width);
+    int window_width = max(size.GetWidth(), 1);
+    int window_height = max(size.GetHeight(), 1);
+    double aspect = double(window_height) / double(window_width);
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, window_width, window_height);
     CHECK_GL_ERROR("SetViewportAndProjection", "glViewport");
 
     // Set projection.
@@ -254,15 +252,18 @@ void GLACanvas::SetViewportAndProjection()
     CHECK_GL_ERROR("SetViewportAndProjection", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetViewportAndProjection", "glLoadIdentity");
-    assert(m_Scale != 0.0);
-    glOrtho(m_Volume.left, m_Volume.right,
-	    m_Volume.bottom * aspect, m_Volume.top * aspect,
-            m_Volume.front * 3.0 * m_Scale, m_Volume.back * 3.0 * m_Scale);
+    assert(m_Scale != 1.0);
+    glOrtho(m_Volume.left / m_Scale, m_Volume.right / m_Scale,
+	    m_Volume.bottom / m_Scale * aspect, m_Volume.top / m_Scale * aspect,
+            1.0, m_Volume.back - m_Volume.front + 1.0);
     CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
+
+    glEnable(GL_DEPTH_TEST);
+    CHECK_GL_ERROR("SetViewportAndProjection", "glEnable GL_DEPTH_TEST");
 
     // Save projection info.
     glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
-    CHECK_GL_ERROR("AddTranslationScreenCoordinates", "glGetDoublev");
+    CHECK_GL_ERROR("SetViewportAndProjection", "glGetDoublev");
 
     // Save viewport info.
     glGetIntegerv(GL_VIEWPORT, viewport);
@@ -290,11 +291,10 @@ void GLACanvas::EnableSmoothPolygons()
     //GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0 };
     //wxSize size = GetSize();
     //double aspect = double(size.GetWidth()) / double(size.GetHeight());
-    assert(m_Scale != 0.0);
 #if 0
     GLfloat light_position[] = { m_Volume.right - 5.0,
                                  m_Volume.top / aspect - 5.0,
-                                 m_Volume.front * 3.0 * m_Scale + 5.0,
+                                 m_Volume.front * 3.0 + 5.0,
                                  0.0 };
 #endif
     
@@ -335,9 +335,8 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
-    assert(m_Scale != 0.0);
-    glScaled(m_Scale, m_Scale, m_Scale);
-    CHECK_GL_ERROR("SetDataTransform", "glScaled");
+    glTranslated(0.0, 0.0, -1.0 + m_Volume.front);
+    CHECK_GL_ERROR("SetDataTransform", "glTranslated");
     // Get axes the correct way around (z upwards, y into screen)
     glRotated(-90.0, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
@@ -353,26 +352,28 @@ void GLACanvas::SetDataTransform()
 
 void GLACanvas::SetIndicatorTransform()
 {
-    // Set the modelview transform for drawing indicators.
-    
+    // Set the modelview transform and projection for drawing indicators.
     wxSize size = GetSize();
-    
-    double aspect = double(size.GetWidth()) / double(size.GetHeight());
-    double width = m_Volume.right - m_Volume.left;
-    double height = (m_Volume.top / aspect) - (m_Volume.bottom / aspect);
+    int window_width = max(size.GetWidth(), 1);
+    int window_height = max(size.GetHeight(), 1);
 
+    // No modelview transform
     glMatrixMode(GL_MODELVIEW);
     CHECK_GL_ERROR("SetIndicatorTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity");
-    assert(m_Scale != 0.0);
-    glTranslated(0.0, 0.0, -m_Volume.front * 2.5 * m_Scale);
-    CHECK_GL_ERROR("SetIndicatorTransform", "glTranslated");
-    glScaled(width / size.GetWidth(), height / size.GetHeight(), 1.0);
-    CHECK_GL_ERROR("SetIndicatorTransform", "glScaled");
 
-    glDepthMask(false);
-    CHECK_GL_ERROR("SetIndicatorTransform", "glDepthMask");
+    glDisable(GL_DEPTH_TEST);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_DEPTH_TEST");
+
+    // And just a simple 2D projection
+    glMatrixMode(GL_PROJECTION);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glMatrixMode");
+    glLoadIdentity();
+    CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity (2)");
+    gluOrtho2D(-window_width / 2, window_width / 2,
+	       -window_height / 2, window_height / 2);
+    CHECK_GL_ERROR("SetIndicatorTransform", "gluOrtho2D");
 }
 
 void GLACanvas::FinishDrawing()
@@ -724,16 +725,16 @@ void GLACanvas::DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* points)
     
     SetColour(fill);
     BeginTriangles();
-    PlaceVertex(points[0].GetX(), points[0].GetY(), 0.0);
-    PlaceVertex(points[1].GetX(), points[1].GetY(), 0.0);
-    PlaceVertex(points[2].GetX(), points[2].GetY(), 0.0);
+    PlaceIndicatorVertex(points[0].GetX(), points[0].GetY());
+    PlaceIndicatorVertex(points[1].GetX(), points[1].GetY());
+    PlaceIndicatorVertex(points[2].GetX(), points[2].GetY());
     EndTriangles();
 
     SetColour(edge);
     BeginPolyline();
-    PlaceVertex(points[0].GetX(), points[0].GetY(), 0.0);
-    PlaceVertex(points[1].GetX(), points[1].GetY(), 0.0);
-    PlaceVertex(points[2].GetX(), points[2].GetY(), 0.0);
+    PlaceIndicatorVertex(points[0].GetX(), points[0].GetY());
+    PlaceIndicatorVertex(points[1].GetX(), points[1].GetY());
+    PlaceIndicatorVertex(points[2].GetX(), points[2].GetY());
     EndPolyline();
 }
 
@@ -752,13 +753,13 @@ void GLACanvas::EnableDashedLines()
     glLineStipple(1, 0x3333);
     CHECK_GL_ERROR("EnableDashedLines", "glLineStipple");
     glEnable(GL_LINE_STIPPLE);
-    CHECK_GL_ERROR("EnableDashedLines", "glEnable");
+    CHECK_GL_ERROR("EnableDashedLines", "glEnable GL_LINE_STIPPLE");
 }
 
 void GLACanvas::DisableDashedLines()
 {
     glDisable(GL_LINE_STIPPLE);
-    CHECK_GL_ERROR("DisableDashedLines", "glDisable");
+    CHECK_GL_ERROR("DisableDashedLines", "glDisable GL_LINE_STIPPLE");
 }
 
 void GLACanvas::Transform(Double x, Double y, Double z,
@@ -791,4 +792,3 @@ Double GLACanvas::SurveyUnitsAcrossViewport()
     assert(m_Scale != 0.0);
     return (m_Volume.right - m_Volume.left) / m_Scale;
 }
-
