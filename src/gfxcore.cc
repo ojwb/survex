@@ -499,13 +499,19 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 void GfxCore::OnPaint(wxPaintEvent& event)
 {
     // Redraw the window.
+    
+    SetCurrent();
 
     // Make sure we're initialised.
+    if (m_InitialisePending) {
+        Initialise();
+        m_InitialisePending = false;
+    }
+
     if (!m_DoneFirstShow) {
         FirstShow();
     }
 
-    SetCurrent();
     StartDrawing();
 
     // Clear the background.
@@ -1200,12 +1206,6 @@ void GfxCore::OnSize(wxSizeEvent& event)
     }
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
-
-    if (m_InitialisePending) {
-        Initialise();
-        m_InitialisePending = false;
-        m_DoneFirstShow = true;
-    }
 
     if (m_DoneFirstShow) {
         // FIXME: copied from NattyDrawNames()
