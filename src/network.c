@@ -11,6 +11,13 @@
  * similar in here (at first glance anyway)
  */
 
+
+#if 0
+# define DEBUG_INVALID 1
+# define VALIDATE 1
+# define DUMP_NETWORK 1
+#endif
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -126,8 +133,10 @@ solve_network(void /*node *stnlist*/)
 
    if (!stn) {
       node *stnFirst = NULL;
-      FOR_EACH_STN(stn)
+      FOR_EACH_STN(stn) {
+	 /* check stn isn't removed (though as things stand it won't be) */
 	 if (stn->status) stnFirst = stn;
+      }
 
       ASSERT2(stnFirst, "no stations left in net!");
       stn = stnFirst;
@@ -402,6 +411,9 @@ remove_subnets(void)
 #else
 	       trav->join3 = NULL;
 #endif
+#if PRINT_NETBITS
+	       printf("remove noose\n");
+#endif
 	       ptrRed = trav;
 	       fMore = fTrue;
 	    }
@@ -409,7 +421,9 @@ remove_subnets(void)
       }
 
       if (optimize & BITA('p')) {
-	 /*printf("replacing parallel legs\n");*/
+#if PRINT_NETBITS
+	 printf("replacing parallel legs\n");
+#endif
 	 FOR_EACH_STN( stn ) {
 	    /*
 	     *  :
@@ -515,6 +529,9 @@ remove_subnets(void)
 	       trav->type = 0; /* PARALLEL */
 #else
 	       trav->join3 = trav->join1;
+#endif
+#if PRINT_NETBITS
+	       printf("remove parallel\n");
 #endif
 	       ptrRed = trav;
 	       fMore = fTrue;
@@ -684,9 +701,9 @@ remove_subnets(void)
 		    stnZ->leg[1]->l.reverse = dirn5;
 		    stnZ->leg[2]->l.to = stn6;
 		    stnZ->leg[2]->l.reverse = dirn6;
-		    addto_link( legAZ , stn4->leg[dirn4] );
-		    addto_link( legBZ , stn5->leg[dirn5] );
-		    addto_link( legCZ , stn6->leg[dirn6] );
+		    addto_link(legAZ , stn4->leg[dirn4]);
+		    addto_link(legBZ , stn5->leg[dirn5]);
+		    addto_link(legCZ , stn6->leg[dirn6]);
 		    /* stack stuff */
 		    trav->join1 = stn4->leg[dirn4];
 		    trav->join2 = stn5->leg[dirn5];
@@ -694,6 +711,9 @@ remove_subnets(void)
 		    trav->next = ptrRed;
 #ifdef EXPLICIT_STACKRED_TYPE
 		    trav->type = 2; /* DELTASTAR */
+#endif
+#if PRINT_NETBITS
+		    printf("remove delta*\n");
 #endif
 		    ptrRed = trav;
 		    fMore = fTrue;
@@ -732,11 +752,21 @@ replace_subnets(void)
 
    while (ptrRed != NULL) {
       /*  printf("replace_subnets() type %d\n", ptrRed->type);*/
+
+#if PRINT_NETBITS
+      printf("replace_subnets\n");
+      if (IS_NOOSE(ptrRed)) printf("isnoose\n");
+      if (IS_PARALLEL(ptrRed)) printf("isparallel\n");
+      if (IS_DELTASTAR(ptrRed)) printf("isdelta*\n");
+#endif
+
       if (!IS_DELTASTAR(ptrRed)) {
+	 
          leg = ptrRed->join1; leg = reverse_leg(leg);
          stn3 = leg->l.to; dirn3 = reverse_leg_dirn(leg);
          leg = ptrRed->join2; leg = reverse_leg(leg);
          stn4 = leg->l.to; dirn4 = reverse_leg_dirn(leg);
+	 
          ASSERT(!(fixed(stn3) && !fixed(stn4)));
          ASSERT(!(!fixed(stn3) && fixed(stn4)));
          ASSERT(data_here(stn3->leg[dirn3]));

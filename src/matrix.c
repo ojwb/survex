@@ -3,6 +3,11 @@
  * Copyright (C) 1993-1998 Olly Betts
  */
 
+#if 0
+# define DEBUG_INVALID 1
+# define DEBUG_ARTIC
+#endif
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -14,8 +19,6 @@
 #include "netbits.h"
 #include "matrix.h"
 #include "out.h"
-
-/* #define DEBUG_ARTIC */
 
 #undef PRINT_MATRICES
 #define PRINT_MATRICES 0
@@ -57,7 +60,7 @@ static void build_matrix(long n, prefix **stn_tab);
 
 static long n_stn_tab;
 
-static prefix **stn_tab; /* pos ** instead? */
+static prefix **stn_tab; /* FIXME: use pos ** instead */
 static long n;
 
 static ulong colour;
@@ -79,6 +82,11 @@ visit(node *stn)
 iter:
    colour++;
    stn->colour = colour;
+#ifdef DEBUG_ARTIC
+   printf("visit: stn [%p] ", stn);
+   print_prefix(stn->name);
+   printf(" set to colour %d\n", colour);
+#endif
    min = colour;
    for (i = 0; i <= 2; i++) {
       if (stn->leg[i]) {
@@ -122,6 +130,11 @@ visit_count(node *stn, ulong max)
    if (stn->fArtic) return;
    j_s = (uchar*)osmalloc((OSSIZE_T)max);
 iter:
+#ifdef DEBUG_ARTIC
+   printf("visit_count: stn [%p] ", stn);
+   print_prefix(stn->name);
+   printf("\n");
+#endif
    for (i = 0; i <= 2; i++) {
       if (stn->leg[i]) {
 	 stn2 = stn->leg[i]->l.to;
@@ -149,6 +162,7 @@ uniter:
    return;
 }
 
+#if 1
 extern void
 solve_matrix(void)
 {
@@ -213,7 +227,6 @@ solve_matrix(void)
 		  printf("visited %lu nodes\n", n);
 #endif
 		  if (n == 0) continue;
-		  /* !HACK! special case for n==1? */
 		  osfree(stn_tab);
 
 		  /* we just need n to be a reasonable estimate >= the number
@@ -258,7 +271,7 @@ more:
 	  * which it is iff we have to colour from it in more than one dirn
 	  */
 	 if (c > 1) stn->fArtic = fTrue;
-#if 0
+#ifdef DEBUG_ARTIC
 	 FOR_EACH_STN(stn) {
 	    printf("%ld - ", stn->colour);
 	    print_prefix(stn->name);
@@ -278,15 +291,39 @@ more:
       stnStart = stn;
    }
    osfree(stn_tab);
-#if 0
+#ifdef DEBUG_ARTIC
    FOR_EACH_STN(stn) { /* high-light unfixed bits */
       if (stn->status && !fixed(stn)) {
-	 printf("UNFIXED (status %d) [%p]\n", stn->status, stn);
 	 print_prefix(stn->name);
+	 printf(" UNFIXED (status %d) [%p]\n", stn->status, stn);
       }
    }
 #endif
 }
+#else
+extern void
+solve_matrix(void)
+{
+   node *stn;
+   n = 0;
+   FOR_EACH_STN(stn) {
+      if (!fixed(stn)) n++;
+   }
+   if (n == 0) return;
+
+   /* we just need n to be a reasonable estimate >= the number
+    * of stations left after reduction. If memory is
+    * plentiful, we can be crass.
+    */
+   stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(prefix*)));
+   
+   FOR_EACH_STN(stn) {
+      if (!fixed(stn)) add_stn_to_tab(stn);
+   }
+
+   build_matrix(n_stn_tab, stn_tab);
+}
+#endif
 
 #ifdef NO_COVARIANCES
 # define B_ZERO (real)0.0
@@ -497,7 +534,7 @@ build_matrix(long n, prefix **stn_tab)
 #endif
 
 #ifdef SOR
-      /* defined in network.c, may be altered by -o<letters> on command line */
+      /* defined in network.c, may be altered by -z<letters> on command line */
       if (optimize & BITA('i'))
 	 sor(M,B);
       else
@@ -509,10 +546,18 @@ build_matrix(long n, prefix **stn_tab)
 	 for (m = (int)(n - 1); m >= 0; m--) {
 #ifdef NO_COVARIANCES
 	    stn_tab[m]->pos->p[dim] = B[m];
+	    if (dim == 0) {
+	       ASSERT2(pfx_fixed(stn_tab[m]),
+		       "setting station coordinates didn't mark pos as fixed");
+	       ASSERT2(fixed(stn_tab[m]->stn),
+		       "setting station coordinates didn't mark stn as fixed");
+	    }
 #else
 	    BELT_COPY(stn_tab[m]->pos->p, B[m]);
+	    ASSERT2(pfx_fixed(stn_tab[m]),
+		    "setting station coordinates didn't mark pos as fixed");
 	    ASSERT2(fixed(stn_tab[m]->stn),
-		    "setting station coordinates didn't mark it as fixed");
+		    "setting station coordinates didn't mark stn as fixed");
 #endif
 	 }
 #if EXPLICIT_FIXED_FLAG
