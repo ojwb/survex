@@ -1,0 +1,180 @@
+<HTML><HEAD>
+<TITLE>Survex Hacker's Guide</TITLE>
+<STYLE type="text/css"><!--
+BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
+-->
+</STYLE>
+</HEAD><BODY BGCOLOR=white TEXT=black>
+<H1>Hacking Survex</H1>
+
+<p>(That's hacking in the "tinkering with code" sense, not in the
+"breaking into other people's computer systems" sense).
+
+<p>This is currently a random collection of notes that need to be written
+down while I remember.  With time it should evolve into a more
+coherent document.  If you have any questions which this should answer
+but doesn't then ask me and I'll add them.
+
+<H2>Network code debugging</H2>
+
+<P>You can pick which network simplifications are attempted using "-z"
+with an argument listing code letters.  So:
+
+<ul>
+<li>-z=    no special simplifications (articulation still performed)
+<li>-z=l   remove "lollipops"
+<li>-z=p   remove parallel legs
+<li>-z=d   convert deltas to stars
+</ul>
+
+<P>And you can combine these in any combination:
+
+<ul>
+<li>-z=lp  remove "lollipops" and parallel legs
+<li>-z=lpd remove "lollipops" and parallel legs; convert deltas to stars
+</ul>
+
+<P>"-z=lpd" is the default (in 0.99 at least - more transformations may
+conceivably be added in future, although the simple common cases are
+already covered).
+
+<H2>Developing on Unix Platforms</H2>
+
+<P>You'll need an unreleased version on automake from their CVS server. I
+recommend checking out the a snapshot at date "Wed Oct 18 15:11:27
+2000" as I've used this version a lot and it's fairly solid.
+
+<P><A HREF="http://sources.redhat.com/automake/"
+>http://sources.redhat.com/automake</A>
+
+<H2>Building on Non-Unix Platforms</H2>
+
+<H3>DJGPP (MSDOS for 386 or better)</H3>
+
+<P>Currently I build this with a Linux hosted cross-compiler.  I built
+this myself mostly following instructions from:
+
+<P><A
+HREF="http://www.objsw.com/CrossGCC/">http://www.objsw.com/CrossGCC/</A>
+
+<P>I suggest using binutils-2.10 rather than binutils-2.9.1.  The newer version
+includes the patch they supply, so the instructions boil down to this
+sequence of commands:
+
+<pre>
+bash
+mkdir ~/djcross
+cd ~/djcross
+wget ftp://ftp.objsw.com/pub/crossgcc/build-djgpp.sh
+mkdir tars
+cd tars
+# can't get it to build with djcrx203
+wget ftp://ftp.simtel.net/pub/simtelnet/gnu/djgpp/v2/old/djcrx202.zip
+# can't get 2.95.3 to build
+wget http://sunsite.org.uk/gnu/gcc/gcc-2.95.2.tar.gz
+# can't get 2.10.1 to build
+wget http://sunsite.org.uk/gnu/binutils/binutils-2.10.tar.gz
+cd ..
+patch -l build-djgpp.sh &lt;&lt;END
+26c26
+&lt; binutils=binutils-2.9.1
+---
+&gt; binutils=binutils-2.10
+97c97
+&lt;       patch -p1 &lt;\$patches/\$binutilsdiff
+---
+&gt;       #patch -p1 &lt;\$patches/\$binutilsdiff
+END
+sh build-djgpp.sh
+</pre>
+
+<P>Then you need to build and install the allegro graphics library:
+
+<P><A
+HREF="http://sunsite.dk/allegro/allegro-3.9.34.tar.gz">http://sunsite.dk/allegro/allegro-3.9.34.tar.gz</A>
+
+<P>And follow the instructions for building using a cross-compiler is
+readme.dj.
+
+<P>Building under DOS in a native djgpp environment will probably require
+tinkering.  Best bet is either to install bash and use the current
+configure script, or perhaps simpler to modify miniam.pl to generate a
+suitable makefile.  I'm happy to help if you want to try this, and
+I'll incorporate patches provided they're fairly clean.
+
+<H3>Mingw (MS Windows)</H3>
+
+<P>Currently I build this with a Linux hosted cross-compiler.  I use
+the packaged cross-compiler in the debian testing/unstable distribution.
+You can probably install these on other distributions using alien to
+convert them to RPMs or similar.  Alternatively, before that
+I used to use pre-built binaries for gcc 2.95.2 obtained from:
+
+<P><A HREF="http://www.devolution.com/~slouken/SDL/Xmingw32/"
+>http://www.devolution.com/~slouken/SDL/Xmingw32/</A>
+
+<P>Building on Windows in a native mingw environment will probably
+require tinkering.  Best bet is probably to install bash and use the
+current configure script.  I'm happy to help if you want to try this,
+and I'll incorporate patches provided they're fairly clean.
+
+<P>Building on Windows with MSVC/BorlandC/Watcom/... is likely to be more
+work, but could be a worthwhile project.  I'd suggest patching the
+perl script miniam.pl to generate a suitable makefile.  Again, send
+patches if you get this to work.
+
+<H3>MSDOS for 286 and earlier (BorlandC)</H3>
+
+<P>Wookey currently builds this with a rather elderly BorlandC++ 3.1.
+BorlandC++ 5.5 can be downloaded for free, but it appears to only compile to
+32 bit code.  You can also download TurboC version 2, which might do the job
+(I've not tried yet).
+
+<P>You can build a suitable source archive for this version using
+`make alien_src_zip' on the source distribution on a Unix box (you need to
+have run `./configure' first).
+
+<H3>RISC OS</H3>
+
+<P>We now build this with Acorn C V5.  It will probably still build with
+Acorn C V4.  You also need to get and install OSLib from:
+
+<P><A HREF="http://www.arcade.demon.co.uk/oslib/homepage.html"
+>http://www.arcade.demon.co.uk/oslib/homepage.html</A>
+
+<P>You can build a suitable source archive for compiling the RISC OS version by
+running `make alien_src_zip' on the source distribution on a Unix box (you
+need to have run `./configure' first).  However for this you'll need a
+specially tweaked version of zip to create the zip file with the correct
+RISC OS file types. I can supply this on request.  You need to put it in the
+top level of the source tree and call it `zip-magic'.
+
+<P>You'll probably need to use Acorn's Make Utility (`amu') to build - the GNU
+make 1.02 port doesn't seem up to the job.
+
+<P>To build, create a fresh directory (or empty one) and unpack the contents of
+srcN_NN.zip into it (using !SparkFS or similar).  Then double-click on
+`!ObeyMe' in the unpacked directory to rename the source files into c and h
+subdirectories.  Then double-click on `!MakeMe' to build survex.
+
+
+<H2>SURVEXHOME environmental variable</H2>
+
+<P>Survex needs various support files.  Under UNIX the path to the
+support files needs to be built into the programs, but this causes a
+problem if the support files need to be installed elsewhere for some
+reason and the programs can't be rebuilt.  To get around this problem,
+you can define an environmental variable SURVEXHOME to point to a
+directory in which to look for support files.
+
+<P>This mechanism may sometimes useful on other operating systems.
+
+<P>Under UNIX, use "setenv SURVEXHOME /home/user/survex" (csh)
+or "SURVEXHOME=/home/user/survex ; export SURVEXHOME" (sh).
+
+<P>For DOS, put SET SURVEXHOME=C:\SURVEX in your AUTOEXEC.BAT file
+
+<P>For RISC OS put *Set SURVEXHOME ADFS::4.$.Survex.!Survex into your
+Boot !Run or !DeskTop
+
+</BODY></HTML>
