@@ -35,4 +35,4 @@ control: Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $(srcdir)/.
 	echo 'Recommends: survex (= ${VERSION})' >> control
 	echo Description: Survey data editor for Survex >> control
 	: # sed 's/^/ /' < $(srcdir)/../desc-svxedit.txt >> control
-	echo Experimental. >> control
+	echo ' Experimental.' >> control
