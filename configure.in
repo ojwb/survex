@@ -180,7 +180,8 @@ if test -n "$AVEN"; then
       dnl line above confuses vim's syntax colouring - resync: \`
     fi
   else
-    AC_PATH_PROGS(WXCONFIG, [wxgtk-config wxgtk-2.2-config])
+    # prefer 2.2 if we can find it - it's been better tested with Aven...
+    AC_PATH_PROGS(WXCONFIG, [wxgtk-2.2-config wxgtk-config wxgtk-2.3-config])
     if test -z "$WXCONFIG" ; then
       dnl see if wx-config exists and is for wxgtk version
       AC_PATH_PROGS(WXCONFIG, [wx-config])
