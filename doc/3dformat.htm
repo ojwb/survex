@@ -83,9 +83,15 @@ length, which is encoded as follows:
 0x000100fd-0xffffffff
 </ul>
 
-Return station at the coordinates
-given, and update current position to coordinates given (FIXME: check this).
-The updated contents of the label buffer give the survey stations full name.
+The rationale for this encoding is that station and survey names are usually
+much less than 253 characters.  However, the Survex philosophy is not to impose
+arbitrary limits.  By using a variable length encoding, we get the
+compactness benefits of encoding the length in a single byte, but avoid the
+need to impose a hard limit of the length of station and survey names.<P>
+
+Return station at the coordinates given, and update current position to
+coordinates given (FIXME: check this).  The updated contents of the label
+buffer give the survey stations full name.
 
 <li> 0x80-0xbf &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
 &lt;z coord&gt; : leg flags are (N &amp; 0x1f):
