@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001-2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -259,6 +259,8 @@ public:
     void OnClose(wxCloseEvent&);
 
     void OnSetFocus(wxFocusEvent &) { if (m_Gfx) m_Gfx->SetFocus(); }
+
+    void OnPrintUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
 
     // temporary bodges until event handling problem is sorted out:
     void OnDefaultsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnDefaultsUpdate(event); }
