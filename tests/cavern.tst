@@ -3,7 +3,8 @@
 # allow us to run tests standalone more easily
 if test "x$srcdir" = "x" ; then srcdir=. ; fi
 
-TESTS="oneleg midpoint noose cross break_replace_pfx deltastar deltastar2 bug0"
+TESTS="oneleg midpoint noose cross break_replace_pfx deltastar deltastar2\
+ bug0 bug1"
 
 for file in $TESTS ; do
   echo $file

@@ -11,5 +11,6 @@ deltastar.svx deltastar.pos\
 deltastar2.svx deltastar2.pos\
 break_replace_pfx.svx break_replace_pfx.pos\
 bug0.svx bug0.pos\
+bug1.svx bug1.pos\
 delatenda.pos delatendb.pos delatend.out\
 addatenda.pos addatendb.pos addatend.out
