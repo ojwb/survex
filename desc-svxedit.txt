@@ -1,0 +1,2 @@
+Experimental cave survey data entry editor for Survex.  Packaged separately
+as it requires TCL to be installed, and a text editor may be used instead.
