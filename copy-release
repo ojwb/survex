@@ -8,9 +8,9 @@ VRD=$VER
 VRP=$VER
 
 FILES="survex-$VRR.src.rpm\
- survex_${VRD}_i386.deb survex-aven_${VRD}_i386.deb survex-svxedit_${VRD}_all.deb\
- survex-$VER.tar.gz survex-dos-$VER.exe survex-win32-$VER.exe\
- svxdoc-doswin-$VER.exe svxdoc-riscos-$VER.zip"
+ survex_${VRD}_i386.deb\
+ survex-$VER.tar.gz survex-win32-$VER.exe\
+ svxdoc-doswin-$VER.exe"
 
 for a in survex-riscos-$VER.zip survex-dos286-$VER.exe; do
    if test -f $a ; then
