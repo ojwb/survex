@@ -2,6 +2,9 @@
 
 * (MS DOS versions): now supply self-extracting zip archives.
 
+* (MS Windows version): after running cavern, wait for a key press
+  before closing the window.
+
 Changes in 0.97-prerelease6:
 
 * (MS Windows version): aven: if there are problems opening the

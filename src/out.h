@@ -17,8 +17,3 @@
  */
 
 #define out_current_action(S) if(fQuiet)(void)0;else printf("\n%s...\n", (S))
-/* unfortunately we'll have to remember to double bracket ... */
-#define out_printf(X) do{printf X;putchar('\n');}while(0)
-#define out_puts(S) puts((S))
-#define out_set_percentage(P) printf("%d%%\r", (int)(P))
-#define out_set_fnm(S) if (!fPercent) (void)0; else printf("%s:\n", (S))

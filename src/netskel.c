@@ -117,7 +117,9 @@ solve_network(void /*node *stnlist*/)
 
       ASSERT2(stnFirst, "no stations left in net!");
       stn = stnFirst;
-      out_printf((msg(/*Survey has no fixed points. Therefore I've fixed %s at (0,0,0)*/72), sprint_prefix(stn->name)));
+      printf(msg(/*Survey has no fixed points. Therefore I've fixed %s at (0,0,0)*/72),
+	     sprint_prefix(stn->name));
+      putnl();
       POS(stn,0) = (real)0.0;
       POS(stn,1) = (real)0.0;
       POS(stn,2) = (real)0.0;
@@ -946,9 +948,9 @@ replace_trailing_travs(void)
 	     * and die later...
 	     */
 	    error(/*Survey not all connected to fixed stations*/45);
-	    out_puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
+	    puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
 	 }
-	 out_puts(sprint_prefix(stn1->name));
+	 puts(sprint_prefix(stn1->name));
 	 cComponents++; /* adjust component count */
       }
       for (i = 0; i <= 2; i++) {

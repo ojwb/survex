@@ -119,19 +119,21 @@ build_matrix(node *list)
    int dim;
 
    if (n_stn_tab == 0) {
-      out_puts(msg(/*Network solved by reduction - no simultaneous equations to solve.*/74));
+      if (!fQuiet)
+	 puts(msg(/*Network solved by reduction - no simultaneous equations to solve.*/74));
       return;
    }
    /* (OSSIZE_T) cast may be needed if n_stn_tab>=181 */
    M = osmalloc((OSSIZE_T)((((OSSIZE_T)n_stn_tab * FACTOR * (n_stn_tab * FACTOR + 1)) >> 1)) * ossizeof(real));
    B = osmalloc((OSSIZE_T)(n_stn_tab * FACTOR * ossizeof(real)));
 
-   out_puts("");
    if (!fQuiet) {
+     putnl();
      if (n_stn_tab == 1)
-       out_puts(msg(/*Solving one equation*/78));
+       puts(msg(/*Solving one equation*/78));
      else {
-       out_printf((msg(/*Solving %d simultaneous equations*/75), n_stn_tab));
+       printf(msg(/*Solving %d simultaneous equations*/75), n_stn_tab);
+       putnl();
      }
    }
 
@@ -398,7 +400,7 @@ choleski(real FAR *M, real *B, long n)
    int i, j, k;
 #ifndef NO_PERCENTAGE
    unsigned long flopsTot, flops = 0, temp = 0;
-#define do_percent(N) BLK(flops += (N); out_set_percentage((int)((100.0 * flops) / flopsTot));)
+#define do_percent(N) BLK(flops += (N); printf("%d%%\r", (int)((100.0 * flops) / flopsTot));)
 #endif
 
    /* calc as double so we don't overflow a unsigned long with intermediate results */

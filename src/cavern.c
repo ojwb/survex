@@ -113,6 +113,9 @@ static const struct option long_opts[] = {
 #ifdef NEW3DFORMAT
    {"new-format", no_argument, 0, 'x'},
 #endif
+#ifdef NEW3DFORMAT
+   {"pause", no_argument, 0, 256},
+#endif
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
@@ -139,13 +142,22 @@ static struct help_msg help[] = {
    {0, 0}
 };
 
-/* atexit function */
+/* atexit functions */
 static void
 delete_output_on_error(void)
 {
    if (msg_errors || (f_warnings_are_errors && msg_warnings))
       filename_delete_output();
 }
+
+#if (OS==WIN32)
+static void
+pause_on_exit(void)
+{
+   while (_kbhit()) _getch();
+   _getch();
+}
+#endif
 
 extern CDECL int
 main(int argc, char **argv)
@@ -244,13 +256,16 @@ main(int argc, char **argv)
 	 while ((c = *optarg++) != '\0')
 	     if (islower(c)) optimize |= BITA(ch);
 	 break;
+#if (OS==WIN32)
+       case 256:
+	 atexit(pause_on_exit);
+	 break;
+#endif
        }
       }
    }
 
-   out_puts(PACKAGE" "VERSION);
-   out_puts(COPYRIGHT_MSG);
-   putnl();
+   if (!fMute) puts(PACKAGE" "VERSION"\n"COPYRIGHT_MSG"\n");
 
    atexit(delete_output_on_error);
 
@@ -319,19 +334,19 @@ main(int argc, char **argv)
 
       /* tmCPU is integer, tmUser not - equivalent to (ceil(tmCPU) >= tmUser) */
       if (tmCPU + 1 > tmUser) {
-         out_printf((msg(/*CPU time used %5.2fs*/140), tmCPU));
+         printf(msg(/*CPU time used %5.2fs*/140), tmCPU);
       } else if (tmCPU == 0) {
          if (tmUser == 0.0) {
-            out_printf((msg(/*Time used %5.2fs*/141), tmUser));
+            printf(msg(/*Time used %5.2fs*/141), tmUser);
 	 } else {
-            out_puts(msg(/*Time used unavailable*/142));
+            fputs(msg(/*Time used unavailable*/142), stdout);
 	 }
       } else {
-	 out_printf((msg(/*Time used %5.2fs (%5.2fs CPU time)*/143),
-		    tmUser, tmCPU));
+	 printf(msg(/*Time used %5.2fs (%5.2fs CPU time)*/143), tmUser, tmCPU);
       }
+      putnl();
 
-      out_puts(msg(/*Done.*/144));
+      puts(msg(/*Done.*/144));
    }
    if (msg_warnings || msg_errors) {
       printf(msg(/*There were %d warning(s) and %d non-fatal error(s).*/16),
@@ -375,7 +390,7 @@ do_stats(void)
    if (!fSuppress && !(msg_errors || (f_warnings_are_errors && msg_warnings)))
       fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
 
-   out_puts("");
+   if (!fMute) putnl();
 
    if (cStns == 1)
       sprintf(buf, msg(/*Survey contains 1 survey station,*/172));
@@ -389,7 +404,7 @@ do_stats(void)
       sprintf(buf + strlen(buf),
 	      msg(/* joined by %ld legs.*/175), cLegs);
 
-   if (!fMute) out_puts(buf);
+   if (!fMute) puts(buf);
    if (fh) fputsnl(buf, fh);
 
    if (cLoops == 1)
@@ -397,30 +412,30 @@ do_stats(void)
    else
       sprintf(buf, msg(/*There are %ld loops.*/139), cLoops);
 
-   if (!fMute) out_puts(buf);
+   if (!fMute) puts(buf);
    if (fh) fputsnl(buf, fh);
 
    if (cComponents != 1) {
       sprintf(buf,
 	      msg(/*Survey has %ld connected components.*/178), cComponents);
-      if (!fMute) out_puts(buf);
+      if (!fMute) puts(buf);
       if (fh) fputsnl(buf, fh);
    }
 
    sprintf(buf,
 	   msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
 	   total, totadj);
-   if (!fMute) out_puts(buf);
+   if (!fMute) puts(buf);
    if (fh) fputsnl(buf, fh);
 
    sprintf(buf,
 	   msg(/*Total plan length of survey legs = %7.2fm*/133), totplan);
-   if (!fMute) out_puts(buf);
+   if (!fMute) puts(buf);
    if (fh) fputsnl(buf, fh);
 
    sprintf(buf, msg(/*Total vertical length of survey legs = %7.2fm*/134),
 	   totvert);
-   if (!fMute) out_puts(buf);
+   if (!fMute) puts(buf);
    if (fh) fputsnl(buf, fh);
 
    do_range(fh, 2, /*Vertical range = %4.2fm (from */135,

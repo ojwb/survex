@@ -260,7 +260,7 @@ dump_node(node *stn)
 	 printf("  leg %d -> stn [%p] rev %d ", d, stn->leg[d]->l.to,
 		reverse_leg_dirn(stn->leg[d]));
 	 print_prefix(stn->leg[d]->l.to->name);
-	 printf("\n");
+	 putnl();
       }
    }
 }

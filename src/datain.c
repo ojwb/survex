@@ -133,7 +133,7 @@ showandskipline(const char *dummy, int n)
 {
    showline(dummy, n);
    skipline();
-   out_puts(msg(/*Ignoring entire line*/84));
+   puts(msg(/*Ignoring entire line*/84));
 }
 
 extern void
@@ -158,7 +158,7 @@ showline(const char *dummy, int n)
    int state;
    long fpCur;
    dummy = dummy; /* suppress warning */
-   out_puts(msg(/*in this line:*/58));
+   puts(msg(/*in this line:*/58));
    fpCur = ftell(file.fh);
    if (n < 0) {
       n = -n;
@@ -194,13 +194,13 @@ showline(const char *dummy, int n)
       nextch();
    }
    sz[i] = '\0';
-   out_puts(sz);
+   puts(sz);
    n = min(n, i - o); /* cope with n==INT_MAX, or indeed just too big */
    if (n) {
       memset(sz, ' ', o);
       memset(sz + o, '^', n);
       sz[o + n] = '\0';
-      out_puts(sz);
+      puts(sz);
    }
    fseek(file.fh, fpCur, SEEK_SET);
 }
@@ -230,7 +230,8 @@ data_file(const char *pth, const char *fnm)
       file.line = 1;
    }
 
-   out_set_fnm(fnm); /* FIXME: file.filename maybe? */
+   /* FIXME: file.filename maybe? */
+   if (fPercent) printf("%s:\n", fnm);
 
    using_data_file(file.filename);
 
@@ -260,7 +261,7 @@ data_file(const char *pth, const char *fnm)
       fpLineStart = ftell(file.fh);
 #ifndef NO_PERCENTAGE
       /* print %age of file done */
-      if (filelen > 0) out_set_percentage((int)(100 * fpLineStart / filelen));
+      if (filelen > 0) printf("%d%%\r", (int)(100 * fpLineStart / filelen));
 #endif
 
       nextch();

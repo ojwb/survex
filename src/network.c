@@ -755,7 +755,7 @@ replace_subnets(void)
                        "bad sub-network for D*");
             }
             for (i = 0; i < 3; i++) {
-/*print_prefix(stn[i]->name);printf("\n");*/
+/*print_prefix(stn[i]->name);putnl();*/
                leg2 = stn[i]->leg[dirn[i]];
                stn2 = leg[i]->l.to;
 	       add_stn_to_list(&stnlist, stn2);
