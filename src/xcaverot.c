@@ -180,7 +180,7 @@ static float view_angle = 180.0;	/* viewed from this bearing */
 
 				 /* subtract 180 for bearing up page */
 static float elev_angle = 0.0;
-static float rot_speed = +75;	/* rotation speed degrees per second */
+static float rot_speed;	/* rotation speed degrees per second */
 
 static int plan_elev;
 static int rot = 0;
@@ -866,7 +866,7 @@ update_rotation()
    gettimeofday(&temptime, NULL);
 
    if (rot) {
-      float timefact = (temptime.tv_sec - lastframe.tv_sec);
+      double timefact = (temptime.tv_sec - lastframe.tv_sec);
 
       timefact += (temptime.tv_usec - lastframe.tv_usec) / 1000000.0;
       view_angle += rot_speed * timefact;
@@ -1080,24 +1080,16 @@ switch_to_plan(void)
 {
    /* Switch to plan view. */
 
-   float x = elev_angle;
-
    while (elev_angle != 90.0) {
-      elev_angle = x;
-      update_rotation();
-      if (!rot)
-	 fill_segment_cache();
-      perform_redraw();
-      redraw_image(mydisplay, mywindow, mygc);
+      elev_angle += 5.0;
+      if (elev_angle >= 90.0) elev_angle = 90.0;
 
-      x += 5.0;
-      if (x > 90.0) {
-	 x = 90.0;
-      }
+      update_rotation();
+      if (!rot) fill_segment_cache();
+      perform_redraw();
    }
 
    plan_elev = PLAN;
-   elev_angle = 90.0;
 }
 
 static void
@@ -1105,25 +1097,19 @@ switch_to_elevation(void)
 {
    /* Switch to elevation view. */
 
-   float x = elev_angle;
-   int going_up = (x < 0.0);
+   int going_up = (elev_angle < 0.0);
    float step = going_up ? 5.0 : -5.0;
-   int done = 0;
 
-   while (!done) {
-      elev_angle = x;
+   while (elev_angle != 0.0) {
+      elev_angle += step;
+      if (elev_angle * step >= 0.0) elev_angle = 0.0;
+
       update_rotation();
-      if (!rot)
-	 fill_segment_cache();
+      if (!rot) fill_segment_cache();
       perform_redraw();
-
-      x += step;
-
-      done = (going_up ? (x >= 0.0) : (x <= 0.0));
    }
 
    plan_elev = ELEVATION;
-   elev_angle = 0.0;
 }
 
 /* a sensible way of navigating about the cave */
@@ -1294,7 +1280,7 @@ set_defaults(void)
    plan_elev = PLAN;
    elev_angle = 90.0;
    rot = 0;
-   rot_speed = 75.0;	/* rotation speed in degrees per second */
+   rot_speed = 15;	/* rotation speed in degrees per second */
 
    XGetWindowAttributes(mydisplay, mywindow, &a);
    xoff = a.width / 2;
@@ -1676,210 +1662,210 @@ main(int argc, char **argv)
 		  press_right_button(myevent.xbutton.x, myevent.xbutton.y);
 	       }
 	    }
-	 }
-      }
-      if (myevent.type == MotionNotify) {
-	 if (myevent.xmotion.window == ind_com) {
-	    int old_angle = (int)view_angle;
-
-	    drag_compass(myevent.xmotion.x, myevent.xmotion.y);
-	    if ((int)view_angle == old_angle)
-	       redraw = 0;
-	 } else if (myevent.xmotion.window == ind_elev) {
-	    int old_elev = (int)elev_angle;
-
-	    drag_elevation(myevent.xmotion.x, myevent.xmotion.y);
-	    if (old_elev == (int)elev_angle)
-	       redraw = 0;
-	 } else if (myevent.xmotion.window == scalebar) {
-	    if (myevent.xmotion.state & Button1Mask)
-	       scale = exp(log(scale_orig)
-			   + (float)(myevent.xmotion.y - orig.y) / (250)
-		  );
-	    else
-	       scale = exp(log(scale_orig)
-			   * (1 - (float)(myevent.xmotion.y - orig.y) / 100)
-		  );
-
-	    changedscale = 1;
-	    draw_scalebar();
-	 } else if (myevent.xmotion.window == mywindow) {
-	    /* drag cave about / alter rotation or scale */
-
-	    mouse_moved(mydisplay, mywindow, myevent.xmotion.x,
-			myevent.xmotion.y);
-	 }
-      }
-      if (myevent.xany.window == mywindow) {
-	 switch (myevent.type) {
-	 case KeyPress:
-	 {
-	    char text[10];
-	    KeySym mykey;
-	    int i;
-	    XKeyEvent *key_event = (XKeyEvent *) & myevent;
-
-	    switch (key_event->keycode) {
-	    case 100:
-	       xoff += 20;
-	       break;
-
-	    case 102:
-	       xoff -= 20;
-	       break;
-
-	    case 98:
-	       yoff += 20;
-	       break;
-
-	    case 104:
-	       yoff -= 20;
-	       break;
-
-	    default:{
-	       i = XLookupString(key_event, text, 10, &mykey, 0);
-	       if (i == 1)
-		  switch (tolower(text[0])) {
-		  case 13:	/* Return => start rotating */
-		     rot = 1;
-		     break;
-		  case 32:	/* Space => stop rotating */
-		     rot = 0;
-		     break;
-		  case 14:	/* Ctrl+N => toggle labels (station names) */
-		     labelling = !labelling;
-		     break;
-		  case 24:	/* Ctrl+X => toggle crosses */
-		     crossing = !crossing;
-		     break;
-		  case 127:	/* Delete => restore defaults */
-		     set_defaults();
-		     break;
-		  case 'q':
-		     done = 1;
-		     break;
-		  case 'u':	/* cave up */
-		     elev_angle += 3.0;
-		     if (elev_angle > 90.0)
-			elev_angle = 90.0;
-		     break;
-		  case 'd':	/* cave down */
-		     elev_angle -= 3.0;
-		     if (elev_angle < -90.0)
-			elev_angle = -90.0;
-		     break;
-		  case 'l':	/* switch to elevation */
-		     switch_to_elevation();
-		     break;
-		  case 'p':	/* switch to plan */
-		     switch_to_plan();
-		     break;
-		  case 'z':	/* rotn speed down */
-		     rot_speed = rot_speed / 1.5;
-		     if (fabs(rot_speed) < 0.1)
-			rot_speed = rot_speed > 0 ? 0.1 : -0.1;
-		     break;
-		  case 'x':	/* rotn speed up */
-		     rot_speed = rot_speed * 1.5;
-		     if (fabs(rot_speed) > 720)
-			rot_speed = rot_speed > 0 ? 720 : -720;
-		     break;
-		  case '[':	/* zoom out */
-		     scale /= 2.0;
-		     if (scale < 0.001) {
-			scale = 0.001;
-		     }
-		     fill_segment_cache();
-		     redraw = 1;
-		     break;
-		  case ']':	/* zoom in */
-		     scale *= 2.0;
-		     if (scale > 0.4) {
-			scale = 0.4;
-		     }
-		     fill_segment_cache();
-		     redraw = 1;
-		     break;
-		  case 'r':	/* reverse dirn of rotation */
-		     rot_speed = -rot_speed;
-		     break;
-		  case 'c':	/* rotate one step "clockwise" */
-		     // FIXME: view_angle += rot_step;
-		     if (view_angle >= 360.0) {
-			view_angle -= 360.0;
-		     }
-		     fill_segment_cache();
-		     redraw = 1;
-		     break;
-		  case 'v':	/* rotate one step "anticlockwise" */
-		     // FIXME: view_angle -= rot_step;
-		     if (view_angle <= 0.0) {
-			view_angle += 360.0;
-		     }
-		     fill_segment_cache();
-		     redraw = 1;
-		     break;
-		  case '\'':	/* higher viewpoint (?) */
-		     z_mid += Zrad / 7.5;
-		     fill_segment_cache();
-		     redraw = 1;
-		     break;
-		  case '/':	/* lower viewpoint (?) */
-		     z_mid -= Zrad / 7.5;
-		     fill_segment_cache();
-		     redraw = 1;
-		     break;
-		  case 'n':	/* cave north */
-		     view_angle = 0.0;
-		     fill_segment_cache();
-		     redraw = 1;
-		     break;
-		  case 's':	/* cave south */
-		     view_angle = 180.0;
-		     fill_segment_cache();
-		     redraw = 1;
-		     break;
-		  case 'e':	/* cave east */
-		     view_angle = 90.0;
-		     fill_segment_cache();
-		     redraw = 1;
-		     break;
-		  case 'w':	/* cave west */
-		     view_angle = 270.0;
-		     fill_segment_cache();
-		     redraw = 1;
-		     break;
-		  }
+	 } else if (myevent.type == MotionNotify) {
+	    if (myevent.xmotion.window == ind_com) {
+	       int old_angle = (int)view_angle;
+	       
+	       drag_compass(myevent.xmotion.x, myevent.xmotion.y);
+	       if ((int)view_angle == old_angle)
+		  redraw = 0;
+	    } else if (myevent.xmotion.window == ind_elev) {
+	       int old_elev = (int)elev_angle;
+	       
+	       drag_elevation(myevent.xmotion.x, myevent.xmotion.y);
+	       if (old_elev == (int)elev_angle)
+		  redraw = 0;
+	    } else if (myevent.xmotion.window == scalebar) {
+	       if (myevent.xmotion.state & Button1Mask)
+		  scale = exp(log(scale_orig)
+			      + (float)(myevent.xmotion.y - orig.y) / (250)
+			      );
+	       else
+		  scale = exp(log(scale_orig)
+			      * (1 - (float)(myevent.xmotion.y - orig.y) / 100)
+			      );
+	       
+	       changedscale = 1;
+	       draw_scalebar();
+	    } else if (myevent.xmotion.window == mywindow) {
+	       /* drag cave about / alter rotation or scale */
+	       
+	       mouse_moved(mydisplay, mywindow, myevent.xmotion.x,
+			   myevent.xmotion.y);
 	    }
-	    }
-	    break;
 	 }
-	 case ConfigureNotify:
-
-	    changedscale = 1;
+	 if (myevent.xany.window == mywindow) {
+	    switch (myevent.type) {
+	     case KeyPress:
+		 {
+		    char text[10];
+		    KeySym mykey;
+		    int i;
+		    XKeyEvent *key_event = (XKeyEvent *) & myevent;
+		    
+		    switch (key_event->keycode) {
+		     case 100:
+		       xoff += 20;
+		       break;
+		       
+		     case 102:
+		       xoff -= 20;
+		       break;
+		       
+		     case 98:
+		       yoff += 20;
+		       break;
+		       
+		     case 104:
+		       yoff -= 20;
+		       break;
+		       
+		     default:{
+			i = XLookupString(key_event, text, 10, &mykey, 0);
+			if (i == 1)
+			   switch (tolower(text[0])) {
+			    case 13:	/* Return => start rotating */
+			      rot = 1;
+			      gettimeofday(&lastframe, NULL);
+			      break;
+			    case 32:	/* Space => stop rotating */
+			      rot = 0;
+			      break;
+			    case 14:	/* Ctrl+N => toggle labels (station names) */
+			      labelling = !labelling;
+			      break;
+			    case 24:	/* Ctrl+X => toggle crosses */
+			      crossing = !crossing;
+			      break;
+			    case 127:	/* Delete => restore defaults */
+			      set_defaults();
+			      break;
+			    case 'q':
+			      done = 1;
+			      break;
+			    case 'u':	/* cave up */
+			      elev_angle += 3.0;
+			      if (elev_angle > 90.0)
+				 elev_angle = 90.0;
+			      break;
+			    case 'd':	/* cave down */
+			      elev_angle -= 3.0;
+			      if (elev_angle < -90.0)
+				 elev_angle = -90.0;
+			      break;
+			    case 'l':	/* switch to elevation */
+			      switch_to_elevation();
+			      break;
+			    case 'p':	/* switch to plan */
+			      switch_to_plan();
+			      break;
+			    case 'z':	/* rotn speed down */
+			      rot_speed = rot_speed / 1.5;
+			      if (fabs(rot_speed) < 0.1)
+				 rot_speed = rot_speed > 0 ? 0.1 : -0.1;
+			      break;
+			    case 'x':	/* rotn speed up */
+			      rot_speed = rot_speed * 1.5;
+			      if (fabs(rot_speed) > 720)
+				 rot_speed = rot_speed > 0 ? 720 : -720;
+			      break;
+			    case '[':	/* zoom out */
+			      scale /= 2.0;
+			      if (scale < 0.001) {
+				 scale = 0.001;
+			      }
+			      fill_segment_cache();
+			      redraw = 1;
+			      break;
+			    case ']':	/* zoom in */
+			      scale *= 2.0;
+			      if (scale > 0.4) {
+				 scale = 0.4;
+			      }
+			      fill_segment_cache();
+			      redraw = 1;
+			      break;
+			    case 'r':	/* reverse dirn of rotation */
+			      rot_speed = -rot_speed;
+			      break;
+			    case 'c':	/* rotate one step "clockwise" */
+			      // FIXME: view_angle += rot_step;
+			      if (view_angle >= 360.0) {
+				 view_angle -= 360.0;
+			      }
+			      fill_segment_cache();
+			      redraw = 1;
+			      break;
+			    case 'v':	/* rotate one step "anticlockwise" */
+			      // FIXME: view_angle -= rot_step;
+			      if (view_angle <= 0.0) {
+				 view_angle += 360.0;
+			      }
+			      fill_segment_cache();
+			      redraw = 1;
+			      break;
+			    case '\'':	/* higher viewpoint (?) */
+			      z_mid += Zrad / 7.5;
+			      fill_segment_cache();
+			      redraw = 1;
+			      break;
+			    case '/':	/* lower viewpoint (?) */
+			      z_mid -= Zrad / 7.5;
+			      fill_segment_cache();
+			      redraw = 1;
+			      break;
+			    case 'n':	/* cave north */
+			      view_angle = 0.0;
+			      fill_segment_cache();
+			      redraw = 1;
+			      break;
+			    case 's':	/* cave south */
+			      view_angle = 180.0;
+			      fill_segment_cache();
+			      redraw = 1;
+			      break;
+			    case 'e':	/* cave east */
+			      view_angle = 90.0;
+			      fill_segment_cache();
+			      redraw = 1;
+			      break;
+			    case 'w':	/* cave west */
+			      view_angle = 270.0;
+			      fill_segment_cache();
+			      redraw = 1;
+			      break;
+			   }
+		     }
+		    }
+		    break;
+		 }
+	     case ConfigureNotify:
+	       
+	       changedscale = 1;
 #if 0	/* rescale to keep view in window */
-	    scale *= min((float)myevent.xconfigure.width /
-			 (float)oldwidth,
-			 (float)myevent.xconfigure.height / (float)oldheight);
+	       scale *= min((float)myevent.xconfigure.width /
+			    (float)oldwidth,
+			    (float)myevent.xconfigure.height / (float)oldheight);
 #else /* keep in mind aspect ratio to make resizes associative */
-	    scale *= min(3.0 * (float)myevent.xconfigure.width,
-			 4.0 * (float)myevent.xconfigure.height) /
-	       min(3.0 * (float)oldwidth, 4.0 * (float)oldheight);
+	       scale *= min(3.0 * (float)myevent.xconfigure.width,
+			    4.0 * (float)myevent.xconfigure.height) /
+		  min(3.0 * (float)oldwidth, 4.0 * (float)oldheight);
 #endif
-	    oldwidth = myevent.xconfigure.width;
-	    oldheight = myevent.xconfigure.height;
-
-	    XResizeWindow(mydisplay, scalebar, 23,
-			  myevent.xconfigure.height - BUTHEIGHT - FONTSPACE -
-			  5);
-
-	    XMoveWindow(mydisplay, ind_com,
-			myevent.xconfigure.width - INDWIDTH - 1, 0);
-	    XMoveWindow(mydisplay, ind_elev,
-			myevent.xconfigure.width - (2 * INDWIDTH) - 1, 0);
-
-	    draw_scalebar();
-	    break;
+	       oldwidth = myevent.xconfigure.width;
+	       oldheight = myevent.xconfigure.height;
+	       
+	       XResizeWindow(mydisplay, scalebar, 23,
+			     myevent.xconfigure.height - BUTHEIGHT - FONTSPACE -
+			     5);
+	       
+	       XMoveWindow(mydisplay, ind_com,
+			   myevent.xconfigure.width - INDWIDTH - 1, 0);
+	       XMoveWindow(mydisplay, ind_elev,
+			   myevent.xconfigure.width - (2 * INDWIDTH) - 1, 0);
+	       
+	       draw_scalebar();
+	       break;
+	    }
 	 }
       }
       if (redraw) {
@@ -1887,7 +1873,7 @@ main(int argc, char **argv)
 	 // FIXME: draw_buttons(mydisplay, mywindow, mygc, enter_gc);
       }
    }	/* while */
-
+   
    /* Free up and clean up the windows created */
    XFreeGC(mydisplay, mygc);
    XDestroyWindow(mydisplay, mywindow);
