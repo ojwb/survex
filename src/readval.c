@@ -343,6 +343,11 @@ read_string(char **pstr, int *plen)
 	 if (quote) {
 	    compile_error(/*Missing &quot;*/69);
 	    skipline();
+	 } else {
+	    if (!*pstr || !(*pstr)[0]) {
+	       compile_error(/*Expecting string field*/121);
+	       skipline();
+	    }
 	 }
 	 return;
       }

@@ -1066,7 +1066,9 @@ pt:120 Calculando estat&iacute;sticas
 ca:120 Calculant estad&iacute;stiques
 es:120 Calculando estad&iacute;sticas
 it:120 Sto calcolando le statistiche
-# XXX121
+# TRANSLATE fr de pt ca es it
+# c.f. 9
+en:121 Expecting string field
 # TRANSLATE
 en:122 too few arguments
 # TRANSLATE

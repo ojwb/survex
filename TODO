@@ -148,7 +148,17 @@ stats.
 
 *fix with datums etc
 
-Check leg, loop, and node stats when points are fixed with sds...
+"*fix 1 0 0 0 1 1 1" gives:
+
+Survey contains 1 survey station, joined by 0 legs.
+
+There are 0 loops.
+
+[...]
+
+1 1-node.
+
+I would expect "1 0-node."
 
 Date: Fri, 20 Jul 2001
 From: Olly
@@ -161,7 +171,7 @@ From: Olly
 test diving data with compass omitted (plumbed)
 
 Tests these commands:
- DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET TITLE
+ DATA FLAGS INFER LRUD (deprecated) SD SET
 
 tests for direction - should direction work in non-interleaved data?
 

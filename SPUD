@@ -121,3 +121,5 @@ leg and station "comments":
 comment can be omitted "-" or not present if at end of line...?
 commentall?
 
+GPS support (e.g. export survey as GPS coords)
+

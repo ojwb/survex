@@ -1,0 +1,13 @@
+; test that some mistakes are caught
+*title unquoted multiword
+*begin survey
+*title "missing quote
+*fix 1 0 0 0
+1 2 1 0 0
+*end survey
+
+*begin survey2
+*title
+*fix a 0 0 0
+a b 1 0 0
+*end survey2

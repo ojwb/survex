@@ -29,56 +29,59 @@ export SURVEXHOME
  stnsurvey1 stnsurvey2 stnsurvey3\
  tapelessthandepth longname chinabug chinabug2\
  multinormal multinormignall multidiving multicartesian multinosurv\
- multinormalbad multibug"}}
+ multinormalbad multibug\
+ cmd_title cmd_titlebad"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
-  count=
+  warn=
+  # how many errors to expect
+  error=
   case "$file" in
-  singlefix) pos=yes ; count=1;;
-  singlereffix) pos=yes ; count=0 ;;
-  oneleg) pos=yes ; count=0 ;;
-  midpoint) pos=yes ; count=0 ;;
-  noose) pos=yes ; count=0 ;;
-  cross) pos=yes ; count=0 ;;
-  firststn) pos=yes ; count=0 ;;
-  deltastar) pos=yes ; count=0 ;;
-  deltastar2) pos=yes ; count=0 ;;
-  bug3) pos=yes ; count=0 ;;
-  calibrate_tape) pos=yes ; count=0 ;;
-  nosurvey) pos=yes ; count=0 ;;
-  nosurvey2) pos=yes ; count=0 ;;
-  cartesian) pos=yes ; count=0 ;;
-  lengthunits) pos=yes ; count=0 ;;
-  angleunits) pos=yes ; count=0 ;;
-  cmd_truncate) pos=yes ; count=0 ;;
-  cmd_case) pos=yes ; count=0 ;;
-  cmd_fix) pos=yes ; count=1 ;;
-  cmd_solve) pos=yes ; count=0 ;;
-  cmd_entrance) pos=no ; count=0 ;;
+  singlefix) pos=yes ; warn=1;;
+  singlereffix) pos=yes ; warn=0 ;;
+  oneleg) pos=yes ; warn=0 ;;
+  midpoint) pos=yes ; warn=0 ;;
+  noose) pos=yes ; warn=0 ;;
+  cross) pos=yes ; warn=0 ;;
+  firststn) pos=yes ; warn=0 ;;
+  deltastar) pos=yes ; warn=0 ;;
+  deltastar2) pos=yes ; warn=0 ;;
+  bug3) pos=yes ; warn=0 ;;
+  calibrate_tape) pos=yes ; warn=0 ;;
+  nosurvey) pos=yes ; warn=0 ;;
+  nosurvey2) pos=yes ; warn=0 ;;
+  cartesian) pos=yes ; warn=0 ;;
+  lengthunits) pos=yes ; warn=0 ;;
+  angleunits) pos=yes ; warn=0 ;;
+  cmd_truncate) pos=yes ; warn=0 ;;
+  cmd_case) pos=yes ; warn=0 ;;
+  cmd_fix) pos=yes ; warn=1 ;;
+  cmd_solve) pos=yes ; warn=0 ;;
+  cmd_entrance) pos=no ; warn=0 ;;
   beginroot) pos=no ;;
-  revcomplist) pos=no ; count=0 ;;
-  break_replace_pfx) pos=no ; count=0 ;;
-  bug0) pos=no ; count=0 ;;
-  bug1) pos=no ; count=0 ;;
-  bug2) pos=no ; count=0 ;;
-  bug4) pos=no ; count=0 ;;
-  bug5) pos=no ; count=0 ;;
-  expobug) pos=no ; count=0 ;;
-  require) pos=no ; count=0 ;;
-  export) pos=no ; count=0 ;;
-  export2) pos=no ; count=0 ;;
-  includecomment) pos=no ; count=0 ;;
-  self_loop) pos=fail ; count=0 ;;
-  self_eq_loop) pos=no ; count=1 ;;
-  reenterwarn) pos=no ; count=2 ;;
-  cmd_default) pos=no ; count=3 ;;
-  singlereffixerr) pos=no ; count=0 ;;
-  cmd_prefix) pos=no ; count=1 ;;
-  singlefixerr) pos=no ; count=1 ;;
-  tapelessthandepth) pos=no ; count=1 ;;
-  chinabug2) pos=no ; count=0 ;;
-  longname) pos=no ; count=0 ;;
+  revcomplist) pos=no ; warn=0 ;;
+  break_replace_pfx) pos=no ; warn=0 ;;
+  bug0) pos=no ; warn=0 ;;
+  bug1) pos=no ; warn=0 ;;
+  bug2) pos=no ; warn=0 ;;
+  bug4) pos=no ; warn=0 ;;
+  bug5) pos=no ; warn=0 ;;
+  expobug) pos=no ; warn=0 ;;
+  require) pos=no ; warn=0 ;;
+  export) pos=no ; warn=0 ;;
+  export2) pos=no ; warn=0 ;;
+  includecomment) pos=no ; warn=0 ;;
+  self_loop) pos=fail ; warn=0 ;;
+  self_eq_loop) pos=no ; warn=1 ;;
+  reenterwarn) pos=no ; warn=2 ;;
+  cmd_default) pos=no ; warn=3 ;;
+  singlereffixerr) pos=no ; warn=0 ;;
+  cmd_prefix) pos=no ; warn=1 ;;
+  singlefixerr) pos=no ; warn=1 ;;
+  tapelessthandepth) pos=no ; warn=1 ;;
+  chinabug2) pos=no ; warn=0 ;;
+  longname) pos=no ; warn=0 ;;
   chinabug) pos=fail ;;
   begin_no_end) pos=fail ;;
   end_no_begin) pos=fail ;;
@@ -101,13 +104,15 @@ for file in $TESTS ; do
   stnsurvey1) pos=fail ;;
   stnsurvey2) pos=fail ;;
   stnsurvey3) pos=fail ;;
-  multinormal) pos=yes ; count=0 ;;
-  multinormignall) pos=yes ; count=0 ;;
-  multidiving) pos=yes ; count=0 ;;
-  multicartesian) pos=yes ; count=0 ;;
-  multinosurv) pos=yes ; count=0 ;;
+  multinormal) pos=yes ; warn=0 ;;
+  multinormignall) pos=yes ; warn=0 ;;
+  multidiving) pos=yes ; warn=0 ;;
+  multicartesian) pos=yes ; warn=0 ;;
+  multinosurv) pos=yes ; warn=0 ;;
   multinormalbad) pos=fail ;;
-  multibug) pos=no ; count=0 ;;
+  multibug) pos=no ; warn=0 ;;
+  cmd_title) pos=no ; warn=0 ;;
+  cmd_titlebad) pos=fail ; error=3 ;;
   *) file='' ;;
   esac
 
@@ -123,21 +128,25 @@ for file in $TESTS ; do
         $CAVERN $srcdir/$file.svx --output="$testdir"/tmp || exit 1
       fi
     else
-      if test -z "$count" ; then
-        if test x"$pos" = xfail ; then
-	  $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > /dev/null
-	  # success gives 0, signal (128 + <signal number>)
-	  test $? = 1 || exit 1
-	else
-          $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > /dev/null || exit 1
-	fi
+      if test x"$pos" = xfail ; then
+        $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > "$testdir"/tmp.out
+	# success gives 0, signal (128 + <signal number>)
+	test $? = 1 || exit 1
+      else
+        $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > "$testdir"/tmp.out || exit 1
       fi
     fi
-    if test -n "$count" ; then
-      warns=`$CAVERN $srcdir/$file.svx --output="$testdir"/tmp | sed '$!d;$s/^Done./0 /;s/[^0-9]*\([0-9]*\).*/\1/'`
-      test $? = 0 || exit 1
-      test x"$warns" = x"$count" || exit 1
+    if test -n "$warn" ; then
+      test -f "$testdir"/tmp.out || $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > "$testdir"/tmp.out
+      w=`sed '$!d;$s/^Done./0 /;s/[^0-9]*\([0-9]*\).*/\1/' "$testdir"/tmp.out`
+      test x"$w" = x"$warn" || exit 1
     fi
+    if test -n "$error" ; then
+      test -f "$testdir"/tmp.out || $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > "$testdir"/tmp.out
+      e=`sed '$!d;$s/^Done./0 /;s/.*\([0-9][0-9]*\).*/\1/' "$testdir"/tmp.out`
+      test x"$e" = x"$error" || exit 1
+    fi
+
     case "$pos" in
     yes)
       if test -n "$VERBOSE" ; then
