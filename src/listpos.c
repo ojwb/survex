@@ -89,7 +89,6 @@ p_pos(prefix *p)
       /* NB this patch from Leandro Dybal Bertoni <LEANDRO@trieste.fapesp.br>
        * will confuse diffpos a lot so is off by default */
       int shape = p->pos->shape;
-      if (shape < 0) shape = 0;
       fprintf(fhPosList, "%2d (%8.2f, %8.2f, %8.2f ) ",
 	      shape, p->pos->p[0], p->pos->p[1], p->pos->p[2]);
 # else
@@ -110,10 +109,7 @@ static void
 node_stat(prefix *p)
 {
    if (p->pos && pfx_fixed(p)) {
-      int order;
-      order = p->pos->shape;
-      if (!order) warning(/*Unused fixed point `%s'*/73, sprint_prefix(p));
-      if (order < 0) order = 0;
+      int order = p->pos->shape;
       if (order >= icOrderMac) {
 	 int c = order * 2;
 	 cOrder = osrealloc(cOrder, c * ossizeof(int));

@@ -293,11 +293,11 @@ addfakeleg(node *fr, node *to,
    to->leg[j] = leg2;
 
    shape = fr->name->pos->shape + 1;
-   if (shape < 1) shape = 1;
+   if (shape < 1) shape = 1 - shape;
    fr->name->pos->shape = shape;
 
    shape = to->name->pos->shape + 1;
-   if (shape < 1) shape = 1;
+   if (shape < 1) shape = 1 - shape;
    to->name->pos->shape = shape;
 }
 

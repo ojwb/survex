@@ -14,6 +14,9 @@ Changes in 0.97-prerelease4:
 
 * caverot: continue setup in background while help page is displayed.
 
+* cavern: unused fix point warnings now work for stations fixed with
+  error estimates; added test cases for this.
+
 Changes in 0.97-prerelease3:
 
 * (Unix version): aven: Internationalised; Fixed serious drawing bug

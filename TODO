@@ -213,3 +213,5 @@ Check that --mode-picker works on DJGPP caverot.
 Check xcaverot/caverot/aven have consistent senses to mouse and keyboard
 controls.
 
+Default variance for topofil counter? (currently same as that of tape)
+

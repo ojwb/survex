@@ -13,7 +13,6 @@ deltastar2.svx deltastar2.pos\
 firststn.svx firststn.pos\
 break_replace_pfx.svx\
 bug0.svx bug1.svx bug2.svx bug3.svx bug3.pos bug4.svx bug5.svx\
-bug3.pos\
 expobug.svx\
 nosurvey.svx nosurvey.pos\
 nosurvey2.svx nosurvey2.pos\
@@ -30,7 +29,9 @@ exporterr1.svx exporterr2.svx exporterr3.svx exporterr4.svx exporterr5.svx\
 exporterr6.svx exporterr1b.svx exporterr2b.svx exporterr3b.svx exporterr6b.svx\
 hanging_cpt.svx\
 self_loop.svx self_eq_loop.svx badinc.svx badinc2.svx export.svx export2.svx\
-singlefix.svx singlefix.pos includecomment.svx reenterwarn.svx\
+singlefix.svx singlefix.pos singlereffix.svx singlereffix.pos\
+singlefixerr.svx singlefixerr.pos singlereffixerr.svx singlereffixerr.pos\
+includecomment.svx reenterwarn.svx\
 angleunits.svx angleunits.pos\
 lengthunits.svx lengthunits.pos\
 cmd_default.svx cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\

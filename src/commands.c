@@ -44,7 +44,7 @@ default_grade(settings *s)
 {
    s->Var[Q_POS] = (real)sqrd(0.10);
    s->Var[Q_LENGTH] = (real)sqrd(0.10);
-   s->Var[Q_COUNT] = (real)sqrd(0.10); /* FIXME ??? */
+   s->Var[Q_COUNT] = (real)sqrd(0.10);
    s->Var[Q_DX] = s->Var[Q_DY] = s->Var[Q_DZ] = (real)sqrd(0.10);
    s->Var[Q_BEARING] = (real)sqrd(rad(1.0));
    s->Var[Q_GRADIENT] = (real)sqrd(rad(1.0));
@@ -616,9 +616,8 @@ cmd_fix(void)
 		       , 0, 0, 0
 #endif
 		       );
-	    /* FIXME: unused fixed point warnings don't work for stations
-	     * fixed with sds (though they should) so fRef can be ignored
-	     * for now */
+	    /* suppress "unused fixed point" warnings for this station */
+	    if (fRef) fix_name->pos->shape = -1 - fix_name->pos->shape;
 	 }
 	 return;
       }

@@ -904,15 +904,32 @@ replace_trailing_travs(void)
 #ifdef NEW3DFORMAT
 	 }
 #endif
-	 /* update coords of bounding box */
-	 for (d = 0; d < 3; d++) {
-	    if (POS(stn1, d) < min[d]) {
-	       min[d] = POS(stn1, d);
-	       pfxLo[d] = stn1->name;
+	 /* update coords of bounding box, ignoring the base positions
+	  * of points fixed with error estimates */
+	 if (stn1->name->ident[0]) {
+	    for (d = 0; d < 3; d++) {
+	       if (POS(stn1, d) < min[d]) {
+		  min[d] = POS(stn1, d);
+		  pfxLo[d] = stn1->name;
+	       }
+	       if (POS(stn1, d) > max[d]) {
+		  max[d] = POS(stn1, d);
+		  pfxHi[d] = stn1->name;
+	       }
 	    }
-	    if (POS(stn1, d) > max[d]) {
-	       max[d] = POS(stn1, d);
-	       pfxHi[d] = stn1->name;
+	 }
+
+	 d = stn1->name->pos->shape;
+	 if (d < 0) {
+	    /* "*fix STN reference ..." sets order negative to suppress the
+	     * unused fixed point warning */
+	    stn1->name->pos->shape = -1 - d;
+	 } else if (d <= 1) {
+	    if (d == 0 ||
+		(stn1->leg[0] && !stn1->leg[0]->l.to->name->ident[0])) {
+	       /* Unused fixed points without and with error estimates */
+	       warning(/*Unused fixed point `%s'*/73,
+		       sprint_prefix(stn1->name));
 	    }
 	 }
       } else {

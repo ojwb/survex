@@ -9,10 +9,11 @@
 SURVEXHOME=$srcdir/../lib
 export SURVEXHOME
 
-: ${TESTS="singlefix oneleg midpoint noose cross firststn deltastar\
- deltastar2 bug3 calibrate_tape nosurvey nosurvey2\
+: ${TESTS="singlefix singlereffix oneleg midpoint noose cross firststn\
+ deltastar deltastar2 bug3 calibrate_tape nosurvey nosurvey2\
  cartesian lengthunits angleunits cmd_truncate cmd_case"}
 
+# FIXME need to fixup TESTS handling to cope with this...
 NO_POS_TESTS="beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
  expobug require export export2 includecomment"
 
