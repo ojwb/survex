@@ -121,8 +121,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-16 00:05:14 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.49 2001-09-16 00:05:14 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-16 00:14:52 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.50 2001-09-16 00:14:52 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -948,10 +948,12 @@ displayed. In the top right is a compass pointer, and in the bottom right is
 an angle of tilt pointer.
 </Para>
 
+<!-- FIXME:
 <Para>Note that Extended Elevations (which are always totally flat
 east-west) are noticed by caverot, and it will prevent their being
 rotated, as this is meaningless.
 </Para>
+-->
 
 </Sect2>
 
@@ -1247,11 +1249,12 @@ specific tasks.</Para>
 </Para>
 
 <Para>extend takes a &x3d; file and generates an extend elevation from
-it.  It starts with the
-highest deadend station in the survey (or the highest station if there
-are no deadends) which is put on the left, then folds each leg out
-individually to the right, breaking loops arbitrarily (usually at
-junctions).</Para>
+it.  It starts with the highest station marked as an entrance which
+has at least one underground survey leg attached to it.  If there are
+no such stations, the highest deadend station in the survey (or the
+highest station if there are no deadends) is used.  Extend puts the#
+first station on the left, then folds each leg out individually to the right,
+breaking loops arbitrarily (usually at junctions).</Para>
 
 <Para>
 This approach suffices for simple caves or sections of cave.

@@ -221,30 +221,39 @@ main(int argc, char **argv)
 
    (void)img_close(pimg);
 
-   /* start at the highest 1-node */
+   /* start at the highest entrance with some legs attached */
    for (p = headpoint.next; p != NULL; p = p->next) {
-      if (p->order == 1 && p->p.z > zMax) {
+      if (p->order > 0 && (p->flags & img_SFLAG_ENTRANCE) && p->p.z > zMax) {
 	 start = p;
 	 zMax = p->p.z;
       }
    }
-   /* of course we may have no 1-nodes... */
    if (start == NULL) {
+      /* if no entrances with legs, start at the highest 1-node */
       for (p = headpoint.next; p != NULL; p = p->next) {
-	 if (p->order != 0 && p->p.z > zMax) {
+	 if (p->order == 1 && p->p.z > zMax) {
 	    start = p;
 	    zMax = p->p.z;
 	 }
       }
+      /* of course we may have no 1-nodes... */
       if (start == NULL) {
-	 /* There are no legs - just pick the highest station... */
 	 for (p = headpoint.next; p != NULL; p = p->next) {
-	    if (p->p.z > zMax) {
+	    if (p->order != 0 && p->p.z > zMax) {
 	       start = p;
 	       zMax = p->p.z;
 	    }
 	 }
-	 if (!start) fatalerror(/*No survey data*/43);
+	 if (start == NULL) {
+	    /* There are no legs - just pick the highest station... */
+	    for (p = headpoint.next; p != NULL; p = p->next) {
+	       if (p->p.z > zMax) {
+		  start = p;
+		  zMax = p->p.z;
+	       }
+	    }
+	    if (!start) fatalerror(/*No survey data*/43);
+	 }
       }
    }
    pimg = img_open_write(fnm_out, desc, fTrue);
