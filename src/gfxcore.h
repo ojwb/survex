@@ -67,7 +67,9 @@ class GfxCore : public wxWindow {
 
     struct PlotData {
         wxPoint* vertices;
+        wxPoint* surface_vertices;
         int* num_segs;
+        int* surface_num_segs;
     };
 
     struct {
@@ -94,6 +96,7 @@ class GfxCore : public wxWindow {
     bool m_DoneFirstShow;
     bool m_RedrawOffscreen;
     int* m_Polylines;
+    int* m_SurfacePolylines;
     int m_Bands;
     double m_InitialScale;
     bool m_FreeRotMode;

@@ -1868,7 +1868,8 @@ es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
 #
 # TRANSLATE CHECK fr ca es it
-en:272 Survey @Legs##Ctrl+L
+# TRANSLATION NEEDS REDOING: en-us fr de pt ca es it [added "Underground"]
+en:272 Underground Survey @Legs##Ctrl+L
 en-us:272 @Shots##Ctrl+L
 fr:272 @Vis&eacute;es##Ctrl+L
 de:272 @Strecken##Ctrl+L
@@ -1926,6 +1927,11 @@ pt-br:290 @Sobre...
 ca:290 @A prop&ograve;sit de...
 es:290 @Acerca de...
 it:290 @Informazioni su...
+#
+# TRANSLATE en-us fr de pt pt-br ca es it
+en:291 Sur@face Survey Legs##Ctrl+F
+en:292 Depth Colours on Surface Surveys
+en:293 Dashed Surface Surveys
 #
 ############################################################################
 # the rest are no longer used, but it's possible they may be at some point...

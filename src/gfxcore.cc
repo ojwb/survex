@@ -150,10 +150,13 @@ void GfxCore::TryToFreeArrays()
         for (int band = 0; band < m_Bands; band++) {
 	    DELETE_ARRAY(m_PlotData[band].vertices);
 	    DELETE_ARRAY(m_PlotData[band].num_segs);
+	    DELETE_ARRAY(m_PlotData[band].surface_vertices);
+	    DELETE_ARRAY(m_PlotData[band].surface_num_segs);
 	}
 
 	DELETE_ARRAY(m_PlotData);
 	DELETE_ARRAY(m_Polylines);
+	DELETE_ARRAY(m_SurfacePolylines);
 	DELETE_ARRAY(m_CrossData.vertices);
 	DELETE_ARRAY(m_CrossData.num_segs);
 	DELETE_ARRAY(m_Labels);
@@ -178,9 +181,10 @@ void GfxCore::Initialise()
 
     TryToFreeArrays();
 
-    m_Bands = m_Parent->GetNumDepthBands();
+    m_Bands = m_Parent->GetNumDepthBands(); // last band is surface data
     m_PlotData = new PlotData[m_Bands];
     m_Polylines = new int[m_Bands];
+    m_SurfacePolylines = new int[m_Bands];
     m_CrossData.vertices = new wxPoint[m_Parent->GetNumCrosses() * 4];
     m_CrossData.num_segs = new int[m_Parent->GetNumCrosses() * 2];
     m_Labels = new wxString[m_Parent->GetNumCrosses()];
@@ -190,6 +194,8 @@ void GfxCore::Initialise()
     for (int band = 0; band < m_Bands; band++) {
         m_PlotData[band].vertices = new wxPoint[m_Parent->GetNumPoints()];
 	m_PlotData[band].num_segs = new int[m_Parent->GetNumLegs()];
+        m_PlotData[band].surface_vertices = new wxPoint[m_Parent->GetNumPoints()];
+	m_PlotData[band].surface_num_segs = new int[m_Parent->GetNumLegs()];
     }
 
     // Apply default parameters.
@@ -316,42 +322,92 @@ void GfxCore::SetScale(double scale)
 	    assert(pt);
 	    int* count = m_PlotData[band].num_segs;
 	    assert(count);
+	    wxPoint* spt = m_PlotData[band].surface_vertices;
+	    assert(spt);
+	    int* scount = m_PlotData[band].surface_num_segs;
+	    assert(scount);
 	    count--; // MainFrm guarantees the first point will be a move.
+	    scount--;
+	    int current_surface_x = INT_MAX;
+	    int current_surface_y;
 
 	    m_Polylines[band] = 0;
+	    m_SurfacePolylines[band] = 0;
 	    list<PointInfo*>::const_iterator pos = m_Parent->GetPoints(band);
 	    list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd(band);
 	    bool first = true;
+	    bool last_was_surface = false;
 	    while (pos != end) {
  	        const PointInfo* pti = *pos++;
 
-		double x = pti->GetX();
-		double y = pti->GetY();
-		double z = pti->GetZ();
-		bool is_line = pti->IsLine();
+		if (!pti->IsSurface()) {
+		    double x = pti->GetX();
+		    double y = pti->GetY();
+		    double z = pti->GetZ();
+		    bool is_line = pti->IsLine();
 
-		x += m_Params.translation.x;
-		y += m_Params.translation.y;
-		z += m_Params.translation.z;
+		    x += m_Params.translation.x;
+		    y += m_Params.translation.y;
+		    z += m_Params.translation.z;
 
-		pt->x = (long) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
-		pt->y = -(long) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
-		pt++;
+		    pt->x = (long) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
+		    pt->y = -(long) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
+		    if (!is_line) {
+		        current_surface_x = pt->x;
+			current_surface_y = pt->y;
+		    }
+		    pt++;
+		    
+		    if (first) {
+		        first = false;
+			assert(!is_line);
+		    }
 
-		if (first) {
-		  first = false;
-		  assert(!is_line);
+		    if (!is_line || last_was_surface) {
+		        // new polyline
+		        *++count = 1;
+		        m_Polylines[band]++;
+		    }
+		    else if (is_line) {
+		        // still part of the same polyline => increment count of vertices
+		        // for this polyline.
+		        (*count)++;
+		    }
+
+		    last_was_surface = false;
 		}
+		else {
+		    assert(pti->IsLine());
+		    assert(current_surface_x != INT_MAX);
 
-		if (!is_line) {
-		    // new polyline
-		    *++count = 1;
-		    m_Polylines[band]++;
-		}
-		else if (is_line) {
-		    // still part of the same polyline => increment count of vertices
-		    // for this polyline.
-		    (*count)++;
+		    if (!last_was_surface) {
+		        spt->x = current_surface_x;
+			spt->y = current_surface_y;
+			spt++;
+			*++scount = 1;
+			m_SurfacePolylines[band]++;
+
+			last_was_surface = true;
+		    }
+		    else {
+		        double x = pti->GetX();
+			double y = pti->GetY();
+			double z = pti->GetZ();
+
+			x += m_Params.translation.x;
+			y += m_Params.translation.y;
+			z += m_Params.translation.z;
+
+			spt->x = (long) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
+			spt->y = -(long) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
+	
+		        current_surface_x = spt->x;
+			current_surface_y = spt->y;
+			spt++;
+			(*scount)++;
+
+			last_was_surface = true;
+		    }
 		}
 	    }
 	}
@@ -420,7 +476,7 @@ void GfxCore::RedrawOffscreen()
     m_DrawDC.DrawRectangle(0, 0, m_XSize, m_YSize);
 
     if (m_PlotData) {
-        // Draw the legs.
+        // Draw underground legs.
         if (m_Legs) {
 	    for (int band = 0; band < m_Bands; band++) {
 	        m_DrawDC.SetPen(m_Parent->GetPen(band));
@@ -433,6 +489,18 @@ void GfxCore::RedrawOffscreen()
 	    }
 	}
 
+	// Draw surface legs.
+        if (m_Legs) {
+	    for (int band = 0; band < m_Bands; band++) {
+	        m_DrawDC.SetPen(m_Parent->GetSurfacePen());
+		int* num_segs = m_PlotData[band].surface_num_segs; //-- sort out the polyline stuff!!
+		wxPoint* vertices = m_PlotData[band].surface_vertices;
+		for (int polyline = 0; polyline < m_SurfacePolylines[band]; polyline++) {
+       		    m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre, m_YCentre);
+		    vertices += *num_segs++;
+		}
+	    }
+	}
 
 	// Draw crosses.
 	if (m_Crosses) {
@@ -877,7 +945,7 @@ void GfxCore::DrawDepthbar()
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
 
     int bands = (m_Lock == lock_NONE || m_Lock == lock_X || m_Lock == lock_Y ||
-		 m_Lock == lock_XY) ? m_Bands : 1;
+		 m_Lock == lock_XY) ? m_Bands-1 : 1;
     int y = DEPTH_BAR_BLOCK_HEIGHT*bands + DEPTH_BAR_OFFSET_Y;
     int size = 0;
 
@@ -1199,7 +1267,7 @@ void GfxCore::HandleTilt(wxPoint point)
     if (!m_FreeRotMode) {
 	int dy = point.y - m_DragStart.y;
 
-	TiltCave(M_PI * (double(dy) / 500.0));
+	TiltCave(M_PI * (double(-dy) / 500.0));
 
 	m_DragStart = point;
     }

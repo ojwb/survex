@@ -60,6 +60,9 @@ enum {
     menu_VIEW_SHOW_LEGS,
     menu_VIEW_SHOW_CROSSES,
     menu_VIEW_SHOW_NAMES,
+    menu_VIEW_SHOW_SURFACE,
+    menu_VIEW_SURFACE_DEPTH,
+    menu_VIEW_SURFACE_DASHED,
     menu_VIEW_SHOW_OVERLAPPING_NAMES,
     menu_VIEW_COMPASS,
     menu_VIEW_CLINO,
@@ -74,12 +77,14 @@ class PointInfo {
     friend class MainFrm;
     double x, y, z;
     bool isLine; // false => move, true => draw line
+    bool isSurface;
 
 public:
     double GetX() const { return x; }
     double GetY() const { return y; }
     double GetZ() const { return z; }
     bool IsLine() const { return isLine; }
+    bool IsSurface() const { return isSurface; }
 };
 
 class LabelInfo {
@@ -225,6 +230,9 @@ public:
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
         return m_Brushes[band];
     }
+
+    wxPen GetSurfacePen() { return m_Pens[NUM_DEPTH_COLOURS]; }
+    wxBrush GetSurfaceBrush() { return m_Brushes[NUM_DEPTH_COLOURS]; }
 
     list<PointInfo*>::const_iterator GetPoints(int band) {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);

@@ -31,9 +31,9 @@
 
 const int NUM_DEPTH_COLOURS = 13;
 
-static const unsigned char REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255};
-static const unsigned char GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0};
-static const unsigned char BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0};
+static const unsigned char REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255, 230};
+static const unsigned char GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0, 230};
+static const unsigned char BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0, 230};
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
@@ -112,10 +112,10 @@ END_EVENT_TABLE()
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size), m_Gfx(NULL), m_StatusBar(NULL), m_FileToLoad("")
 {
-    m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS];
-    m_Pens = new wxPen[NUM_DEPTH_COLOURS];
-    m_Brushes = new wxBrush[NUM_DEPTH_COLOURS];
-    for (int pen = 0; pen < NUM_DEPTH_COLOURS; pen++) {
+    m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS+1];
+    m_Pens = new wxPen[NUM_DEPTH_COLOURS+1];
+    m_Brushes = new wxBrush[NUM_DEPTH_COLOURS+1];
+    for (int pen = 0; pen < NUM_DEPTH_COLOURS+1; pen++) {
 	m_Pens[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
 	m_Brushes[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
     }
@@ -164,7 +164,12 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxMenu* viewmenu = new wxMenu;
     viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "Toggle display of survey station names", true);
     viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "Toggle display of crosses at survey stations", true);
-    viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*Survey @Legs##Ctrl+L*/272), "Toggle display of survey legs", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*Underground Survey @Legs##Ctrl+L*/272), "Toggle display of survey legs", true);
+    viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*Sur@face Survey Legs##Ctrl+F*/291), "unused", true);
+    viewmenu->AppendSeparator();
+    viewmenu->Append(menu_VIEW_SURFACE_DEPTH, GetTabMsg(/*Depth Colours on Surface Surveys*/292), "unused", true);
+    viewmenu->Append(menu_VIEW_SURFACE_DASHED, GetTabMsg(/*Dashed Surface Surveys*/293), "unused", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names##O*/273), "Toggle display all station names, whether or not they overlap", true);
     viewmenu->AppendSeparator();
@@ -248,7 +253,7 @@ void MainFrm::ClearPointLists()
 {
     // Free memory occupied by the contents of the point and label lists.
 
-    for (int band = 0; band < NUM_DEPTH_COLOURS; band++) {
+    for (int band = 0; band < NUM_DEPTH_COLOURS + 1; band++) {
         list<PointInfo*>::iterator pos = m_Points[band].begin();
 	list<PointInfo*>::iterator end = m_Points[band].end();
 	while (pos != end) {
@@ -365,6 +370,22 @@ bool MainFrm::LoadData(const wxString& file)
 		    else {
 		        info->isLine = false;
 		    }
+		    
+		    info->isSurface = (survey->flags & img_FLAG_SURFACE);
+
+		    /*
+		    if (info->isSurface && info->isLine) {
+		        if (points.size() > 1) {
+			    PointInfo* p = points.back();
+			    // if (!p->isLine) {
+			        PointInfo* q = new PointInfo;
+				memcpy(q, p, sizeof(PointInfo));
+				q->isSurface = true;
+				points.push_back(q);
+				m_NumPoints++;
+				//}
+			}
+			}*/
 
 		    // Store this point in the list.
 		    points.push_back(info);
@@ -446,7 +467,7 @@ void MainFrm::CentreDataset(double xmin, double ymin, double zmin)
     double yoff = ymin + (m_YExt / 2.0f);
     double zoff = zmin + (m_ZExt / 2.0f);
     
-    for (int band = 0; band < NUM_DEPTH_COLOURS; band++) {
+    for (int band = 0; band < NUM_DEPTH_COLOURS + 1; band++) {
         list<PointInfo*>::iterator pos = m_Points[band].begin();
 	list<PointInfo*>::iterator end = m_Points[band].end();
 	while (pos != end) {
@@ -508,7 +529,7 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 
 	// If this is a leg, then check if it intersects a depth
 	// colour boundary.
-	if (prev_point && (point->isLine)) {
+	if (prev_point && point->isLine/* && !point->isSurface*/) {
 	    int col1 = GetDepthColour(prev_point->z);
 	    int col2 = GetDepthColour(point->z);
 	    if (col1 != col2) {
@@ -552,10 +573,21 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 	    m_Points[col2].push_back(point);
 	}
 	else {
-	    // The first point, or another move: put it in the correct list
+	    // The first point, a surface point, or another move: put it in the correct list
 	    // according to depth.
-	    assert(!point->isLine);
-	    int band = GetDepthColour(point->z);
+	    assert(point->isSurface || !point->isLine);
+	    int band = /*point->isSurface ? NUM_DEPTH_COLOURS :*/ GetDepthColour(point->z);
+	    /*	    if (point->isSurface) {
+	        if (m_Points[band].empty()) {
+		    PointInfo* info = new PointInfo;
+		    info->x = 0.0;
+		    info->y = 0.0;
+		    info->z = 0.0;
+		    info->isLine = false;
+		    info->isSurface = true;
+		    m_Points[band].push_back(info);
+		}
+		}*/
 	    m_Points[band].push_back(point);
 
 	}
