@@ -113,11 +113,10 @@ bool Aven::OnInit()
     wxImage::AddHandler(new wxPNGHandler);
 
     m_AboutBitmap.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
+			   wxString("icons") + wxCONFIG_PATH_SEPARATOR +
 			   wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
 
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(640, 480));
-
-    // FIXME: handle survey
 
 #ifndef USE_WXCMDLINE
     if (argv[optind]) {

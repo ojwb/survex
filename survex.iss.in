@@ -13,8 +13,10 @@ LicenseFile=COPYING.txt
 Uninstallable=yes
 AppCopyright=@COPYRIGHT_MSG@
 ; WizardImageFile=survey.bmp
+
 [Dirs]
 Name: "{app}\manual"
+Name: "{app}\icons"
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"
@@ -25,7 +27,7 @@ Source: "*.ini"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
-Source: "*.png"; DestDir: "{app}"
+Source: "*.png"; DestDir: "{app}\icons"
 Source: "manual\*.*"; DestDir: "{app}\manual"
 
 [Icons]
