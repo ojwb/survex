@@ -138,31 +138,6 @@ AC_PATH_TOOL(STRIP, strip, [echo "not stripping "])
 
 AC_CHECK_LIB(m, sqrt)
 
-LIBRX=
-if test -n "$AVEN" ; then
-  dnl On Linux, regex routines are included in recent versions of libc
-  dnl so check if we need -lrx
-  dnl FIXME - probably ought to favour RX over GNU regex in libc if given
-  dnl the choice, but if we have RX and glibc with regex, then it's tricky
-  dnl to work out that we (I think) want HAVE_RXPOSIX_H and LIBRX=-lrx
-  rx_ok=no
-  AC_CHECK_HEADERS(regex.h rxposix.h rx/rxposix.h,
-    [AC_MSG_CHECKING(for regcomp)
-    AC_TRY_LINK_FUNC(regcomp,
-      [AC_MSG_RESULT(found)],
-      [AC_MSG_RESULT(not found)
-      AC_CHECK_LIB(rx, regcomp, LIBRX=-lrx)])
-    rx_ok=yes
-    break])
-
-  if test yes != "$rx_ok"; then
-    AC_MSG_RESULT([not building aven (no regex library found)])
-    AVEN=
-  fi 
-fi
-
-AC_SUBST(LIBRX)
-
 AC_PATH_XTRA
 
 WINPROGS=
@@ -384,14 +359,14 @@ if test yes = "$GCC"; then
     AM_CFLAGS="$AM_CFLAGS -Wall -Wunused -Wpointer-arith\
       -Wwrite-strings -Wcast-align"
     AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wunused -Wpointer-arith\
-      -Wmissing-prototypes -Wwrite-strings -Wcast-align"
+      -Wwrite-strings -Wcast-align"
   else
     AM_CFLAGS="$AM_CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith\
       -Wmissing-prototypes -Wwrite-strings -Wredundant-decls -Wnested-externs\
       -Wcast-align"
     dnl -W causes problems with wxWindows
     AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wunused -Wshadow -Wpointer-arith\
-      -Wmissing-prototypes -Wwrite-strings -Wcast-align"
+      -Wwrite-strings -Wcast-align"
   fi
   dnl too many complaints from headers, etc: -Wconversion
 fi

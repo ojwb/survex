@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2003 Olly Betts
+ * Copyright (C) 1991-2003,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -257,7 +257,7 @@ main(int argc, char **argv)
 	 }
 	 /* Lollipops, Parallel legs, Iterate mx, Delta* */
 	 while ((c = *optarg++) != '\0')
-	    if (islower(c)) optimize |= BITA(c);
+	    if (islower((unsigned char)c)) optimize |= BITA(c);
 	 break;
        case 1:
 	 fLog = fTrue;
@@ -345,7 +345,7 @@ main(int argc, char **argv)
       /* this actually does all the writing */
       if (!cave_close(pimg)) {
 	 char *fnm = add_ext(fnm_output_base, EXT_SVX_3DX);
-	 fatalerror_in_file(fnm, 0, /*Error writing to file*/111);
+	 fatalerror(/*Error writing to file `%s'*/110, fnm);
       }
    } else {
 #endif

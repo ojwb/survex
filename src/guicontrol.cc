@@ -825,6 +825,7 @@ void GUIControl::OnViewGrid()
 void GUIControl::OnViewGridUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData());
+    cmd.Check(m_View->ShowingGrid());
 }
 
 void GUIControl::OnIndicatorsUpdate(wxUpdateUIEvent& cmd)

@@ -5,7 +5,6 @@ AppVerName=@PRETTYPACKAGE@ @VERSION@
 DefaultDirName={pf}\@PRETTYPACKAGE@
 DefaultGroupName=@PRETTYPACKAGE@
 OutputBaseFilename=@PACKAGE@-win32-@VERSION@
-AlwaysCreateUninstallIcon=yes
 AppPublisher=The Survex Project
 AppPublisherURL=http://www.survex.com/
 AppVersion=@VERSION@
@@ -14,9 +13,22 @@ LicenseFile=COPYING.txt
 Uninstallable=yes
 AppCopyright=@COPYRIGHT_MSG_ASCII@
 ; WizardImageFile=survey.bmp
-Compression=bzip/9
-; We require only features which work on NT 3.51 too so install there too
-MinVersion=4,3.51
+SolidCompression=yes
+MinVersion=4,4
+ShowLanguageDialog=auto
+
+[Languages]
+Name: "en"; MessagesFile: "compiler:Default.isl"
+Name: "ca"; MessagesFile: "compiler:Languages/Catalan.isl"
+Name: "cs"; MessagesFile: "compiler:Languages/Czech.isl"
+;Name: "nl"; MessagesFile: "compiler:Languages/Dutch.isl"
+Name: "fr"; MessagesFile: "compiler:Languages/French.isl"
+Name: "de"; MessagesFile: "compiler:Languages/German.isl"
+;Name: "no"; MessagesFile: "compiler:Languages/Norwegian.isl"
+;Name: "pl"; MessagesFile: "compiler:Languages/Polish.isl"
+Name: "pt"; MessagesFile: "compiler:Languages/PortugueseStd.isl"
+;Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl"
+;Name: "??"; MessagesFile: "compiler:Languages/Slovenian.isl"
 
 [Dirs]
 Name: "{app}\manual"
@@ -25,15 +37,15 @@ Name: "{app}\icons"
 [Files]
 Source: "*.exe"; DestDir: "{app}"
 Source: "*.dll"; DestDir: "{app}"
-Source: "*.msg"; DestDir: "{app}"
 Source: "*.bit"; DestDir: "{app}"
-Source: "*.ini"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
-Source: "*.htm"; DestDir: "{app}"
 Source: "*.tcl"; DestDir: "{app}"
 Source: "*.txf"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}\icons"
+Source: "*.ini"; DestDir: "{app}"
+Source: "*.msg"; DestDir: "{app}"
+Source: "*.htm"; DestDir: "{app}"
 Source: "manual\*.*"; DestDir: "{app}\manual"
 ; NB keep these lines in step with Makefile.am
 Source: "cs\wxstd.mo"; DestDir: "{app}\cs"
@@ -46,6 +58,7 @@ Source: "it\wxstd.mo"; DestDir: "{app}\it"
 Name: "{group}\SvxEdit"; Filename: "{app}\editwrap.exe"; Comment: "Enter survey data"
 Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"
 Name: "{group}\Documentation"; Filename: "{app}\index.htm"; Comment: "View the documentation for Survex"
+Name: "{group}\Uninstall Survex"; Filename: "{uninstallexe}"
 
 [Registry]
 ; Support for loading Compass Plot files

@@ -25,7 +25,7 @@
 #define mainfrm_h
 
 #include <wx.h>
-#include <wx/docview.h>
+#include <wx/docview.h> // for m_FileHistory
 #include <wx/listctrl.h>
 #include <wx/notebook.h>
 #include "gfxcore.h"

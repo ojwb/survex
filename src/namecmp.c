@@ -1,6 +1,6 @@
 /* namecmp.c */
 /* Ordering function for station names */
-/* Copyright (C) 1991-2002 Olly Betts
+/* Copyright (C) 1991-2002,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ int
 name_cmp(const char *a, const char *b, int separator)
 {
    while (1) {
-      int cha = *a, chb = *b;
+      int cha = (unsigned char)*a, chb = (unsigned char)*b;
 
       /* done if end of either first string */
       if (!cha || !chb) return cha - chb;

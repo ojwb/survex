@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003 Mark R. Shinwell
-//  Copyright (C) 2001-2004 Olly Betts
+//  Copyright (C) 2001-2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@
 #include <config.h>
 #endif
 
-//#define NDEBUG 1
 #include <assert.h>
 #include <float.h>
 
@@ -49,7 +48,7 @@
 #define PLAN 1
 #define ELEVATION 2
 
-const int NUM_DEPTH_COLOURS = 13; // up to 13
+const int NUM_DEPTH_COLOURS = 13;
 
 #include "avenpal.h"
 
@@ -754,11 +753,10 @@ void GfxCore::NattyDrawNames()
 	bool reject = true;
 
 	if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
-	    char* test = &m_LabelGrid[ix + iy * quantised_x];
+	    char * test = &m_LabelGrid[ix + iy * quantised_x];
 	    int len = str.Length() * dv + 1;
 	    reject = (ix + len >= quantised_x);
 	    int i = 0;
-
 	    while (!reject && i++ < len) {
 		reject = *test++;
 	    }
@@ -1030,15 +1028,15 @@ void GfxCore::OnSize(wxSizeEvent& event)
 
     wxSize size = event.GetSize();
 
+    if (size.GetWidth() < 0 || size.GetHeight() < 0) {
+	// Before things are fully initialised, we sometimes get a bogus
+	// resize message...
+	// FIXME have changes in mainfrm cured this?  It still happens with
+	// 1.0.32 and wxGtk 2.5.2 (load a file from the command line).
+	return;
+    }
     m_XSize = size.GetWidth();
     m_YSize = size.GetHeight();
-    if (m_XSize < 0 || m_YSize < 0) {
-	//-- FIXME when does this happen (if ever)?  Can't reproduce on
-	// wxGtk at least...
-	//printf("negative resize?!\n");
-	m_XSize = 640;
-	m_YSize = 480;
-    }
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
 
@@ -1258,46 +1256,42 @@ bool GfxCore::Animate()
     return true;
 }
 
-void GfxCore::RefreshLine(const Point &a1, const Point &b1,
-			  const Point &a2, const Point &b2)
+// How much to allow around the box - this is because of the ring shape
+// at one end of the line.
+static const int HIGHLIGHTED_PT_SIZE = 2; // FIXME: tie in to blob and ring size
+#define MARGIN (HIGHLIGHTED_PT_SIZE * 2 + 1)
+void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 {
-    (void)a1; (void)b1; (void)a2; (void)b2;
-    ForceRefresh(); //--FIXME
 #if 0
+    (void)a; (void)b; (void)c;
+    ForceRefresh(); //--FIXME
+#else
     // Calculate the minimum rectangle which includes the old and new
     // measuring lines to minimise the redraw time
     int l = INT_MAX, r = INT_MIN, u = INT_MIN, d = INT_MAX;
-    if (a1.x != DBL_MAX) {
-	int x = (int)GridXToScreen(a1);
-	int y = (int)GridYToScreen(a1);
-	l = x - HIGHLIGHTED_PT_SIZE * 4;
-	r = x + HIGHLIGHTED_PT_SIZE * 4;
-	u = y + HIGHLIGHTED_PT_SIZE * 4;
-	d = y - HIGHLIGHTED_PT_SIZE * 4;
+    if (a.x != DBL_MAX) {
+	int x = (int)GridXToScreen(a);
+	int y = (int)GridYToScreen(a);
+	l = x - MARGIN;
+	r = x + MARGIN;
+	u = y + MARGIN;
+	d = y - MARGIN;
     }
-    if (a2.x != DBL_MAX) {
-	int x = (int)GridXToScreen(a2);
-	int y = (int)GridYToScreen(a2);
-	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
-	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
-	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
-	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
+    if (b.x != DBL_MAX) {
+	int x = (int)GridXToScreen(b);
+	int y = (int)GridYToScreen(b);
+	l = min(l, x - MARGIN);
+	r = max(r, x + MARGIN);
+	u = max(u, y + MARGIN);
+	d = min(d, y - MARGIN);
     }
-    if (b1.x != DBL_MAX) {
-	int x = (int)GridXToScreen(b1);
-	int y = (int)GridYToScreen(b1);
-	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
-	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
-	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
-	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
-    }
-    if (b2.x != DBL_MAX) {
-	int x = (int)GridXToScreen(b2);
-	int y = (int)GridYToScreen(b2);
-	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
-	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
-	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
-	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
+    if (c.x != DBL_MAX) {
+	int x = (int)GridXToScreen(c);
+	int y = (int)GridYToScreen(c);
+	l = min(l, x - MARGIN);
+	r = max(r, x + MARGIN);
+	u = max(u, y + MARGIN);
+	d = min(d, y - MARGIN);
     }
     const wxRect R(l, d, r - l, u - d);
     Refresh(false, &R);
@@ -1306,10 +1300,10 @@ void GfxCore::RefreshLine(const Point &a1, const Point &b1,
 
 void GfxCore::SetHere()
 {
-//    if (m_here.x == DBL_MAX) return;
+    if (m_here.x == DBL_MAX) return;
     Point old = m_here;
     m_here.x = DBL_MAX;
-    RefreshLine(old, m_there, m_here, m_there);
+    RefreshLine(old, m_there, m_here);
 }
 
 void GfxCore::SetHere(Double x, Double y, Double z)
@@ -1318,15 +1312,15 @@ void GfxCore::SetHere(Double x, Double y, Double z)
     m_here.x = x;
     m_here.y = y;
     m_here.z = z;
-    RefreshLine(old, m_there, m_here, m_there);
+    RefreshLine(old, m_there, m_here);
 }
 
 void GfxCore::SetThere()
 {
-//    if (m_there.x == DBL_MAX) return;
+    if (m_there.x == DBL_MAX) return;
     Point old = m_there;
     m_there.x = DBL_MAX;
-    RefreshLine(m_here, old, m_here, m_there);
+    RefreshLine(m_here, old, m_there);
 }
 
 void GfxCore::SetThere(Double x, Double y, Double z)
@@ -1335,7 +1329,7 @@ void GfxCore::SetThere(Double x, Double y, Double z)
     m_there.x = x;
     m_there.y = y;
     m_there.z = z;
-    RefreshLine(m_here, old, m_here, m_there);
+    RefreshLine(m_here, old, m_there);
 }
 
 void GfxCore::CreateHitTestGrid()
@@ -1573,11 +1567,12 @@ void GfxCore::SetCompassFromPoint(wxPoint point)
     wxCoord dy = point.y - GetIndicatorYPosition();
     wxCoord radius = GetIndicatorRadius();
 
+    double angle = deg(atan2(double(dx), double(dy))) - 180.0;
     if (dx * dx + dy * dy <= radius * radius) {
-	TurnCaveTo(deg(atan2((double)dx, (double)dy)) - 180.0);
+	TurnCaveTo(angle);
 	m_MouseOutsideCompass = false;
     } else {
-	TurnCaveTo(int((deg(atan2((double)dx, (double)dy)) - 180.0) / 45.0) * 45.0);
+	TurnCaveTo(int(angle / 45.0) * 45.0);
 	m_MouseOutsideCompass = true;
     }
 
@@ -1595,7 +1590,7 @@ void GfxCore::SetClinoFromPoint(wxPoint point)
     glaCoord radius = GetIndicatorRadius();
 
     if (dx >= 0 && dx * dx + dy * dy <= radius * radius) {
-	TiltCave(deg(atan2(dy, dx)) - m_TiltAngle);
+	TiltCave(deg(atan2(double(dy), double(dx))) - m_TiltAngle);
 	m_MouseOutsideElev = false;
     } else if (dy >= INDICATOR_MARGIN) {
 	TiltCave(90.0 - m_TiltAngle);
@@ -1731,7 +1726,7 @@ void GfxCore::SwitchToPlan()
 	    break;
 
 	case PLAN:
-	    // a second order to switch takes us there right away
+	    // A second order to switch takes us there right away
 	    TiltCave(90.0 - m_TiltAngle);
 	    m_SwitchingTo = 0;
 	    ForceRefresh();

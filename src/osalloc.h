@@ -1,6 +1,6 @@
 /* osalloc.h
  * Function prototypes for OS dep. malloc etc - funcs in error.c
- * Copyright (C) 1996,1997,2001,2003 Olly Betts
+ * Copyright (C) 1996,1997,2001,2003,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,10 @@
 
 #ifndef OSALLOC_H /* only include once */
 #define OSALLOC_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* define TOMBSTONES to enable tombstones on malloc blocks
  * for bounds checking */
@@ -57,5 +61,9 @@ void osfree(void *p);
 void Far *osmalloc(OSSIZE_T);
 void Far *osrealloc(void *, OSSIZE_T);
 char Far *osstrdup(const char *str);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

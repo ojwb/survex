@@ -1,6 +1,6 @@
 /* osdepend.c
  * OS dependent functions
- * Copyright (C) 1993-2003 Olly Betts
+ * Copyright (C) 1993-2003,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ fAbsoluteFnm(const char *fnm)
 {
    /* <drive letter>: or \<path> or /<path>
     * or \\<host>\... or //<host>/... */
-   unsigned char ch = *(unsigned const char*)fnm;
+   unsigned char ch = (unsigned char)*fnm;
    return ((fnm[1] == ':' && isalpha(ch)) || ch == '\\' || ch == '/');
 }
 

@@ -1,6 +1,6 @@
 /* cmdline.c
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998-2001,2003 Olly Betts
+ * Copyright (C) 1998-2001,2003,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@ cmdline_help(void)
 	 opt = o->val;
       }
 
-      if (isalnum(opt))
+      if (isalnum((unsigned char)opt))
 	 printf("  -%c%c", opt, longopt ? ',' : ' ');
       else
 	 fputs("     ", stdout);

@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003 Olly Betts
+ * Copyright (C) 1991-2003,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -553,10 +553,12 @@ extern void
 free_settings(settings *p) {
    /* don't free default ordering or ordering used by parent */
    reading *order = p->ordering;
-   if (order != default_order && order != p->next->ordering) osfree(order);
+   if (order != default_order && (!p->next || order != p->next->ordering))
+      osfree(order);
 
    /* free Translate if not used by parent */
-   if (p->Translate != p->next->Translate) osfree(p->Translate - 1);
+   if (!p->next || p->Translate != p->next->Translate)
+      osfree(p->Translate - 1);
 
    /* free meta is not used by parent, or in this block */
    if (p->meta && p->meta != p->next->meta && p->meta->ref_count == 0)
@@ -819,7 +821,7 @@ cmd_equate(void)
       name1 = read_prefix_stn_check_implicit(fTrue, fTrue);
       if (name1 == NULL) {
 	 if (fOnlyOneStn) {
-	    compile_error_skip(/*Only one station in equate list*/33);
+	    compile_error_skip(/*Only one station in EQUATE command*/33);
 	 }
 #ifdef CHASM3DX
 	 if (fUseNewFormat) limb = get_twig(pcs->Prefix);

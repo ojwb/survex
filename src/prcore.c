@@ -1,6 +1,6 @@
 /* prcore.c
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2002 Olly Betts
+ * Copyright (C) 1993-2002,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1485,7 +1485,7 @@ as_escstring(const char *v, char *s)
 		     break;
 		  }
 		  /* \<capital letter> -> Ctrl-<letter> */
-		  if (isupper(c)) {
+		  if (isupper((unsigned char)c)) {
 		     c -= '@';
 		     break;
 		  }

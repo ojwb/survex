@@ -40,7 +40,7 @@ aven-gfxcore.o: gfxcore.cc
 	$h $(aven_CXXFLAGS) $(CXXFLAGS) $t \
 	 || $h `echo $(aven_CXXFLAGS) $(CXXFLAGS)|sed 's/-O2/-O/g'` $t \
 	 || $h `echo $(aven_CXXFLAGS) $(CXXFLAGS)|sed 's/-O2*//g'` $t
- 
+
 LDADD = @LIBOBJS@
 
 INCLUDES = -DIMG_HOSTED
@@ -78,8 +78,8 @@ editwrap_SOURCES = editwrap.c
 editwrap_LDFLAGS = -mwindows
 
 if WIN32
-#aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
-aven_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@ @MOVIE_LIBS@
+#aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@
+aven_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @MOVIE_LIBS@
 
 svxeditrc.o: $(srcdir)/svxedit.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
@@ -90,8 +90,8 @@ editwrap_LDADD = svxeditrc.o
 avenrc.o: $(srcdir)/aven.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o $$pwd/avenrc.o aven.rc
 else
-#aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
-aven_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@ @MOVIE_LIBS@
+#aven_LDADD = @LIBOBJS@ @WX_LIBS@
+aven_LDADD = @LIBOBJS@ @WXGL_LIBS@ @MOVIE_LIBS@
 endif
 
 # If we're building aven on MacOS X, we need to bind resources to aven after
@@ -138,7 +138,7 @@ aven_CXXFLAGS = @WXGL_CXXFLAGS@ $(AM_CXXFLAGS)
 aven_LDFLAGS = @WX_LDFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
- 
+
 printps_SOURCES = printps.c $(PRSRC)
 printdm_SOURCES = printdm.c $(PRSRC) prbitmap.c
 printpcl_SOURCES = printpcl.c $(PRSRC) prbitmap.c

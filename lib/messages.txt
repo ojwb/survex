@@ -3284,6 +3284,8 @@ sk:379 sever
 en:390 System Information:
 it:390 Informazioni sul Sistema:
 # 
+# "%s" is replaced by the invalid expression
+en:404 Invalid regular expression: %s
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

@@ -1,4 +1,4 @@
-Changes between 1.0.26 and 1.1.0:
+Changes between 1.0.32 and 1.1.0:
 
 * NOTE: Survex 1.1.X releases are development snapshots made available for
   the purposes of allowing wider testing and getting more user feedback.  Once
@@ -13,6 +13,9 @@ Changes between 1.0.26 and 1.1.0:
   larger passages).  Use of real LRUD data coming soon...
 
 * aven: Depth colouring is now continuously varying.
+
+* aven: Colour by depth can now be turned off (and there's the start of a
+  framework for properly implementing colour by date, error, etc).
 
 * aven: Find stations moved onto the toolbar and now uses a simple wildcarded
   match (? matches any character, * matches any number of characters).
@@ -32,21 +35,133 @@ Changes between 1.0.26 and 1.1.0:
 * aven: Added "presentations" which allow you to set up fly-through paths
   and load/save/run them.
 
+* aven: A presentation can be exported as a movie file.
+
 * aven: Added Save screenshot facility.
 
 * aven: Depth fogging option.
-
-* aven: If a survey has surface legs but no underground legs, default to
-  showing the surface legs.
-
-* aven: Colour by depth can now be turned off (and there's the start of a
-  framework for properly implementing colour by date, error, etc).
 
 * aven: Added Smooth Lines option.
 
 * aven: Added Textured Walls option.
 
+* aven: If a survey has surface legs but no underground legs, default to
+  showing the surface legs.
+
 * cavern: Dates given to *date are now stored in the 3d file.
+
+Changes in 1.0.32:
+
+* aven: Fixed font sizes in "Print Preview" and printouts.
+
+* aven: In the print setup dialog, replaced "Orientation" radio buttons with
+  "Plan" and "Elevation" buttons.
+
+* aven: Fixed info box on printouts of elevations, tilted views, and
+  extend elevations.
+
+* aven: Added "fit on one page" option, and make it the default.
+
+* aven: Reorder "Cancel", "Preview", "Print" buttons and make "Print" the
+  default button.
+
+* aven: Read settings back from the print dialog when the "Print" button is
+  pressed (was only done for "Preview" previously).
+
+* aven: Sorted out the initial size of the "Print Preview" window.
+
+* aven: Fixed the window manager's close button on the "Print Preview" window
+  - previously this was being ignored.
+
+* aven: Sorted out initial survey scaling when loading a survey at startup.
+
+* aven: Fixed the measuring line to work better when the survey tree is
+  manipulated with keys.  Tweaked redrawing of the measuring line to be a
+  smidgen more efficient.  Fixed the blob and ring size which were one
+  pixel too small on Windows.
+
+* aven: Added "System Information:" section to the "About" dialog to hold
+  information useful when reporting bugs.  Currently it contains the wxWindows
+  version, OS version, and colour depth information.
+
+* aven: Changed the "About" dialog's "Close" button to be "OK" for consistency
+  with pretty much every other application.
+
+* aven: Added "File->Export as..." which integrates cad3d's functionality
+  within aven.
+
+* aven: Updated a few icons.
+
+* cad3d: Added SVG export support from John Pybus
+
+* (Unix version): Fixed to allow compilation with GCC 3.4
+
+* (MS Windows version): Upgrade to using innosetup 4 for the installer
+  (we were using innosetup 2).  This results in a much smaller download
+  and the installer now translates itself into the currently set language.
+  The installer will no longer work on Windows NT 3.51, but I seriously
+  doubt anyone is still using that...
+
+* Updates to German translation.
+
+Changes in 1.0.31:
+
+* (MS Windows version): Fixed problems with the new printing code by building
+  with a newer version of wxWindows (2.5.2 instead of 2.4.1).
+
+* aven: Fixed grid menu item so that it always correctly reflects whether the
+  grid is enabled or not.
+
+* aven: Minor improvements to appearance of a few toolbar icons.
+
+* Updates to Catalan, French, Italian, Romanian, Slovak, and Spanish
+  translations.
+
+* cavern: Fixed Romanian message which was appearing in English .err files.
+
+Changes in 1.0.30:
+
+* aven: Added printing directly from Aven!
+
+* aven: Fixed memory leak when showing the "About" dialog.
+
+* (MacOS X version): Now installable from a disk image package.
+
+* cavern: Equates are no longer considered when deciding which stations are
+  flagged as surface and underground.
+
+* Romanian translation mostly completed.
+
+* (Unix version): Debian: Minor packaging tweaks.
+
+Changes in 1.0.29:
+
+* cad3d: Fixed problem with DXF files which stopped them loading with some
+  drawing packages (introduced in 1.0.27).
+
+* aven: Changed File->Exit to File->Quit.
+
+* Removed some unused messages from the message files.
+
+* (Unix version): Fixed SRPMs to build on RedHat 9 and Fedora Core 1 (patch
+  from John Pybus).
+
+* Romanian translation started.
+
+* (Unix version): Debian: Fixed new lintian warnings about missing quotes in
+  menu files.
+
+Changes in 1.0.28:
+
+* Fixed 3d file reading code to fix incorrect unpacking of compressed station
+  names in a rare case.  Also checked other rare cases work correctly.
+
+Changes in 1.0.27:
+
+* cad3d: DXF output now puts surface legs, stations, and labels in separate
+  layers.
+
+* (Unix version): distribute desc-svxedit.txt.
 
 Changes in 1.0.26:
 
@@ -467,7 +582,7 @@ Changes in 1.0.8:
 
 * cavern: implemented "*units clino percent".
 
-* cavern: added "*infer export on".  Any stations seen while this is on will
+* cavern: added "*infer exports on".  Any stations seen while this is on will
   have the necessary *export-s inferred when accessed from outside their
   own survey.  This allows linking a survey which uses *export to one which
   doesn't.  It's also useful for a maze cave where so many stations can

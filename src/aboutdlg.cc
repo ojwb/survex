@@ -28,6 +28,7 @@
 #include "aboutdlg.h"
 #include "aven.h"
 #include "message.h"
+#include <stdio.h> // for popen
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
 END_EVENT_TABLE()
@@ -80,8 +81,8 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     } while (!l.empty());
 
     wxStaticText* licence = new wxStaticText(this, 504, licence_str);
-    wxButton* close = new wxButton(this, wxID_OK, wxString(msg(/*Close*/204)));
-    close->SetDefault();
+    wxButton* ok = new wxButton(this, wxID_OK, wxGetTranslation("OK"));
+    ok->SetDefault();
 
     vert->Add(10, 5, 0, wxTOP, 5);
     vert->Add(title, 0, wxLEFT | wxRIGHT, 20);
@@ -93,7 +94,35 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     vert->Add(new wxStaticText(this, 505, msg(/*System Information:*/390)),
 	      0, wxLEFT | wxRIGHT, 20);
 
+#ifdef unix
+    // On Unix, wx reports the OS that we were *built* on, which may have
+    // be a different OS or kernel version to what we're running on.
+    wxString info;
+    {
+	char buf[80];
+	FILE *f = popen("uname -s -r", "r");
+	if (f) {
+	    size_t c = fread(buf, 1, sizeof(buf), f);
+	    if (c > 0) {
+		if (buf[c - 1] == '\n') --c;
+		info = wxString(buf, c);
+	    }
+	    fclose(f);
+	}
+	if (info.empty()) info = wxGetOsDescription();
+    }
+#else
     wxString info(wxGetOsDescription());
+#endif
+    info += '\n';
+    info += wxVERSION_STRING;
+    info += '\n';
+    int bpp = wxDisplayDepth();
+    wxString s;
+    s.Printf("Display Depth: %d bpp", bpp);
+    info += s;
+    if (wxColourDisplay()) info += " (colour)";
+
 #ifdef AVENGL // FIXME: make this a function in gla-gl.cc
     const char *p = (const char*)glGetString(GL_VERSION);
     // If OpenGL isn't initialised, p may be NULL.
@@ -143,13 +172,13 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 	      0, wxLEFT | wxRIGHT, 20);
 
     vert->Add(10, 5, 0, wxTOP, 15);
-    
+
     vert->Add(licence, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 1, wxALIGN_BOTTOM | wxTOP, 5);
 
     wxBoxSizer* bottom = new wxBoxSizer(wxHORIZONTAL);
     bottom->Add(5, 5, 1);
-    bottom->Add(close, 0, wxRIGHT | wxBOTTOM, 15);
+    bottom->Add(ok, 0, wxRIGHT | wxBOTTOM, 15);
     vert->Add(bottom, 0, wxEXPAND | wxLEFT | wxRIGHT, 0);
     vert->SetMinSize(0, bm.GetHeight());
 

@@ -1,6 +1,6 @@
 /* osdepend.h
  * Contains commonly required OS dependent bits
- * Copyright (C) 1993-2003 Olly Betts
+ * Copyright (C) 1993-2003,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,19 +22,19 @@
 #ifndef OSDEPEND_H  /* only include once */
 # define OSDEPEND_H
 
-/* OSLib's types.h badly pollutes our namespace, so we kludge it off
- * and then do the vital bits ourselves */
-# if (OS==RISCOS) && !defined(types_H)
-#  define types_H
-typedef unsigned int bits;
-typedef unsigned char byte;
-#  define UNKNOWN 1
-# endif
-
 # include "whichos.h"
 # include "ostypes.h"
 
 # if (OS==RISCOS)
+
+/* OSLib's types.h badly pollutes our namespace, so we kludge it off
+ * and then do the vital bits ourselves */
+#  ifndef types_H
+#   define types_H
+typedef unsigned int bits;
+typedef unsigned char byte;
+#   define UNKNOWN 1
+#  endif
 
 #  include "oslib/os.h"
 

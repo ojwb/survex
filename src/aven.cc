@@ -54,7 +54,14 @@ bool Aven::OnInit()
     // users expect it to be
     wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
     // wxMac is supposed to remove this magic command line option (which
-    // Finder passes), but it doesn't seem too...
+    // Finder passes), but the code in 2.4.2 is bogus.  It just decrements
+    // argc rather than copying argv down.  But luckily it also fails to
+    // set argv[argc] to NULL so we can just recalculate argc, then remove
+    // the -psn_* switch ourselves.
+    if (argv[argc]) {
+	argc = 1;
+	while (argv[argc]) ++argc;
+    }
     if (argc > 1 && strncmp(argv[1], "-psn_", 5) == 0) {
 	--argc;
 	memmove(argv + 1, argv + 2, argc * sizeof(char *));
@@ -85,8 +92,9 @@ bool Aven::OnInit()
 
     wxString survey;
 
-    /* Want --version and a decent --help output, which cmdline does for us */
-#ifndef USE_WXCMDLINE
+    /* Want --version and a decent --help output, which cmdline does for us.
+     * wxCmdLine is much less good.
+     */
     static const struct option long_opts[] = {
 	/* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
 	{"survey", required_argument, 0, 's'},
@@ -105,44 +113,15 @@ bool Aven::OnInit()
 
     cmdline_set_syntax_message("[3d file]", NULL);
     cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
-    while (1) {
+    while (true) {
 	int opt = cmdline_getopt();
 	if (opt == EOF) break;
 	if (opt == 's') {
 	    survey = optarg;
 	}
     }
-#else
-    static wxCmdLineEntryDesc cmdline[] = {
-	// FIXME - if this code is ever reenabled, check this is correct, and also handle it below...
-	{ wxCMD_LINE_OPTION, "s", "survey", "only load the sub-survey with this prefix", wxCMD_LINE_VAL_STRING},
-	{ wxCMD_LINE_OPTION, "h", "help", msgPerm(/*display this help and exit*/150) },
-	{ wxCMD_LINE_PARAM,  NULL, NULL, msgPerm(/*3d file*/119), wxCMD_LINE_VAL_STRING,
-	  wxCMD_LINE_PARAM_OPTIONAL },
-	{ wxCMD_LINE_NONE }
-    };
-
-    wxCmdLineParser cli(cmdline, argc, argv);
-    int c = cli.Parse();
-    if (c != 0 || cli.Found("h")) {
-	// write in two goes to avoid msg() overwriting its buffer on 2nd call
-	fprintf(stderr, "%s: %s ", msg(/*Syntax*/49), argv[0]);
-	fprintf(stderr, "[%s]\n", msg(/*3d file*/119));
-	exit(c > 0 ? 1 /* syntax error */ : 0 /* --help */);
-    }
-#endif
 
     wxImage::AddHandler(new wxPNGHandler);
-
-    bool loading_file = false;
-#ifndef USE_WXCMDLINE
-    if (argv[optind]) {
-        loading_file = true;
-    }
-#else
-    loading_file = (cli.GetParamCount() == 1);
-#endif
-//    m_SplashScreen = new Splash(loading_file);
 
     m_AboutBitmap.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
 			   wxString("icons") + wxCONFIG_PATH_SEPARATOR +
@@ -160,27 +139,14 @@ bool Aven::OnInit()
     // Create the main window.
     m_Frame = new MainFrm("Aven", wxPoint(50, 50), wxSize(our_width, our_height));
 
-#ifndef USE_WXCMDLINE
     if (argv[optind]) {
 	m_Frame->OpenFile(wxString(argv[optind]), survey);
     }
-#else
-    if (cli.GetParamCount() == 1) {
-	wxString file = cli.GetParam(0);
-	m_Frame->OpenFile(file, survey);
-    }
-#endif
 
     m_Frame->Show(true);
 #ifdef _WIN32
     m_Frame->SetFocus();
 #endif
-
-#if 0
-    delete m_SplashScreen;
-    m_SplashScreen = NULL;
-#endif
-    
     return true;
 }
 

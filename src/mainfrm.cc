@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2004 Olly Betts
+//  Copyright (C) 2001-2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -37,28 +37,15 @@
 
 #include <wx/confbase.h>
 #include <wx/image.h>
+#include <wx/imaglist.h>
+#include <wx/regex.h>
 
 #include <float.h>
 #include <functional>
 #include <stack>
 #include <vector>
 
-#ifdef HAVE_REGEX_H
-# include <regex.h>
-#else
-extern "C" {
-# ifdef HAVE_RXPOSIX_H
-#  include <rxposix.h>
-# elif defined(HAVE_RX_RXPOSIX_H)
-#  include <rx/rxposix.h>
-# elif !defined(REG_NOSUB)
-// we must be using wxWindows built-in regexp functions
-#  define REG_NOSUB wxRE_NOSUB
-#  define REG_ICASE wxRE_ICASE
-#  define REG_EXTENDED wxRE_EXTENDED
-# endif
-}
-#endif
+using namespace std;
 
 #define TOOLBAR_BITMAP(file) wxBitmap(wxString(msg_cfgpth()) + \
     wxCONFIG_PATH_SEPARATOR + wxString("icons") + wxCONFIG_PATH_SEPARATOR + \
@@ -442,8 +429,8 @@ END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_TEXT_ENTER(textctrl_FIND, MainFrm::OnFind)
-    EVT_MENU(button_FIND, MainFrm::OnFind)
-    EVT_MENU(button_HIDE, MainFrm::OnHide)
+    EVT_BUTTON(button_FIND, MainFrm::OnFind)
+    EVT_BUTTON(button_HIDE, MainFrm::OnHide)
     EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
 
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
@@ -671,7 +658,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     int widths[3] = { 150, -1 /* variable width */, -1 };
     GetStatusBar()->SetStatusWidths(3, widths);
 
-#ifdef __X__
+#ifdef __X__ // wxMotif or wxX11
     int x;
     int y;
     GetSize(&x, &y);
@@ -946,7 +933,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     }
 
 #if 0
-    Splash* splash = wxGetApp().GetSplashScreen();
     long file_size;
     {
 	long pos = ftell(survey->fh);
@@ -992,10 +978,10 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     int items = 0;
     do {
 #if 0
-	if (splash && (items % 200 == 0)) {
+	if (items % 200 == 0) {
 	    long pos = ftell(survey->fh);
 	    int progress = int((double(pos) / double(file_size)) * 100.0);
-	    splash->SetProgress(progress);
+	    // SetProgress(progress);
 	}
 #endif
 
@@ -1027,7 +1013,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		    }
 		}
 
-		// Add this point in the list.
+		// Add this point to the list.
 		points.push_back(PointInfo(pt.x, pt.y, pt.z, (result == img_LINE), is_surface));
 		break;
 	    }
@@ -1326,13 +1312,6 @@ void MainFrm::OnMRUFile(wxCommandEvent& event)
 void MainFrm::OpenFile(const wxString& file, wxString survey)
 {
     wxBusyCursor hourglass;
-#if 0
-    Splash* splash = wxGetApp().GetSplashScreen();
-
-    if (splash) {
-	splash->SetProgress(0);
-    }
-#endif
     if (LoadData(file, survey)) {
 	if (wxIsAbsolutePath(file)) {
 	    m_history.AddFileToHistory(file);
@@ -1350,7 +1329,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 
 	int x;
 	int y;
-	GetSize(&x, &y);
+	GetClientSize(&x, &y);
 	if (x < 600)
 	    x /= 3;
 	else if (x < 1000)
@@ -1359,8 +1338,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 	    x /= 5;
 
 	m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
-
-	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
+	m_SashPosition = x; // Save width of panel.
 
 	m_Gfx->SetFocus();
     }
@@ -1383,32 +1361,32 @@ void MainFrm::OnOpen(wxCommandEvent&)
     wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
 		      "*.3d", wxOPEN);
 #else
-    wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
-		      wxString::Format("%s|*.3d"
+    wxFileDialog dlg(this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
+		     wxString::Format("%s|*.3d"
 #ifdef FILEDIALOG_MULTIGLOBS
-				       ";*.3D"
+				      ";*.3D"
 #endif
 #ifdef FILEDIALOG_MULTIGLOBS
-				       "|%s|*.plt;*.plf"
+				      "|%s|*.plt;*.plf"
 #ifndef _WIN32
-				       ";*.PLT;*.PLF"
+				      ";*.PLT;*.PLF"
 #endif
 #else
-				       "|%s|*.pl?" // not ideal...
+				      "|%s|*.pl?" // not ideal...
 #endif
-			      	       "|%s|*.xyz"
+				      "|%s|*.xyz"
 #ifdef FILEDIALOG_MULTIGLOBS
 #ifndef _WIN32
-				       ";*.XYZ"
+				      ";*.XYZ"
 #endif
 #endif
-				       "|%s|%s",
-				       msg(/*Survex 3d files*/207),
-				       msg(/*Compass PLT files*/324),
-				       msg(/*CMAP XYZ files*/325),
-				       msg(/*All files*/208),
-				       wxFileSelectorDefaultWildcardStr
-				       ), wxOPEN);
+				      "|%s|%s",
+				      msg(/*Survex 3d files*/207),
+				      msg(/*Compass PLT files*/324),
+				      msg(/*CMAP XYZ files*/325),
+				      msg(/*All files*/208),
+				      wxFileSelectorDefaultWildcardStr),
+		     wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
@@ -1595,7 +1573,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 			      int(dz), "m");
 	    } else {
 		hv_str.Printf(msg(/*H %d%s, V %d%s*/340),
-		  	      int(d_horiz / METRES_PER_FOOT), "ft",
+			      int(d_horiz / METRES_PER_FOOT), "ft",
 			      int(dz / METRES_PER_FOOT), "ft");
 	    }
 	    wxString brg_unit;
@@ -1628,7 +1606,9 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
     const TreeData* data = static_cast<const TreeData*>(item);
     if (data) {
 	if (data->IsStation()) {
-	    ShowInfo(data->GetLabel());
+	    const LabelInfo * l = data->GetLabel();
+	    ShowInfo(l);
+	    m_Gfx->SetHere(l->x, l->y, l->z);
 	} else {
 	    ClearCoords();
 	    m_Gfx->SetHere();
@@ -1643,6 +1623,9 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
     if (data && data->IsStation()) {
 	const LabelInfo* label = data->GetLabel();
 	m_Gfx->CentreOn(label->x, label->y, label->z);
+	m_Gfx->SetThere(label->x, label->y, label->z);
+    } else {
+	m_Gfx->SetThere();
     }
 
     // ClearCoords(); // FIXME or update or ?
@@ -1859,19 +1842,19 @@ void MainFrm::OnFind(wxCommandEvent&)
     wxBusyCursor hourglass;
     // Find stations specified by a string or regular expression.
 
-    wxString str = m_FindBox->GetValue();
-    int cflags = REG_NOSUB;
+    wxString pattern = m_FindBox->GetValue();
+    int re_flags = wxRE_NOSUB;
 
     if (true /* case insensitive */) {
-	cflags |= REG_ICASE;
+	re_flags |= wxRE_ICASE;
     }
 
     if (false /*m_RegexpCheckBox->GetValue()*/) {
-	cflags |= REG_EXTENDED;
+	re_flags |= wxRE_EXTENDED;
     } else if (true /* simple glob-style */) {
 	wxString pat;
-	for (size_t i = 0; i < str.size(); i++) {
-	   char ch = str[i];
+	for (size_t i = 0; i < pattern.size(); i++) {
+	   char ch = pattern[i];
 	   // ^ only special at start; $ at end.  But this is simpler...
 	   switch (ch) {
 	    case '^': case '$': case '.': case '[': case '\\':
@@ -1888,11 +1871,12 @@ void MainFrm::OnFind(wxCommandEvent&)
 	      pat += ch;
 	   }
 	}
-	str = pat;
+	pattern = pat;
+	re_flags |= wxRE_BASIC;
     } else {
 	wxString pat;
-	for (size_t i = 0; i < str.size(); i++) {
-	   char ch = str[i];
+	for (size_t i = 0; i < pattern.size(); i++) {
+	   char ch = pattern[i];
 	   // ^ only special at start; $ at end.  But this is simpler...
 	   switch (ch) {
 	    case '^': case '$': case '*': case '.': case '[': case '\\':
@@ -1900,23 +1884,21 @@ void MainFrm::OnFind(wxCommandEvent&)
 	   }
 	   pat += ch;
 	}
-	str = pat;
+	pattern = pat;
+	re_flags |= wxRE_BASIC;
     }
 
     if (!true /* !substring */) {
 	// FIXME "0u" required to avoid compilation error with g++-3.0
-	if (str.empty() || str[0u] != '^') str = '^' + str;
-	if (str[str.size() - 1] != '$') str = str + '$';
+	if (pattern.empty() || pattern[0u] != '^') pattern = '^' + pattern;
+	if (pattern[pattern.size() - 1] != '$') pattern += '$';
     }
 
-    regex_t buffer;
-    int errcode = regcomp(&buffer, str.c_str(), cflags);
-    if (errcode) {
-	size_t len = regerror(errcode, &buffer, NULL, 0);
-	char *msg = new char[len];
-	regerror(errcode, &buffer, msg, len);
-	wxGetApp().ReportError(msg);
-	delete[] msg;
+    wxRegEx regex;
+    if (!regex.Compile(pattern, re_flags)) {
+	wxString m;
+	m.Printf(msg(/*Invalid regular expression: %s*/404), pattern.c_str());
+	wxGetApp().ReportError(m);
 	return;
     }
 
@@ -1926,7 +1908,7 @@ void MainFrm::OnFind(wxCommandEvent&)
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;
 
-	if (regexec(&buffer, label->text.c_str(), 0, NULL, 0) == 0) {
+	if (regex.Matches(label->text)) {
 	    label->flags |= LFLAG_HIGHLIGHTED;
 	    found++;
 	} else {
@@ -1934,7 +1916,6 @@ void MainFrm::OnFind(wxCommandEvent&)
 	}
     }
 
-    regfree(&buffer);
 
     m_NumHighlighted = found;
 // FIXME:    m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found));
