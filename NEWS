@@ -44,6 +44,8 @@
 * cavern: use *title only if at top of survey tree, else generate
   title from filename(s).
 
+* `program --version' now works even if message file can't be found.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

@@ -325,7 +325,7 @@ main(int argc, char **argv)
    char *fnm1, *fnm2;
    const char *survey = NULL;   
 
-   msg_init(argv[0]);
+   msg_init(argv);
 
    cmdline_set_syntax_message("FILE1 FILE2 [THRESHOLD]",
 			      "FILE1 and FILE2 can be .pos or .3d files\n" 

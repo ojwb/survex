@@ -163,7 +163,7 @@ main(int argc, char **argv)
    point *p;
    const char *survey = NULL;
 
-   msg_init(argv[0]);
+   msg_init(argv);
 
    cmdline_set_syntax_message("INPUT_3D_FILE [OUTPUT_3D_FILE]", NULL);
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);

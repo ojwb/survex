@@ -28,6 +28,7 @@ extern "C" {
 
 #include <config.h>
 
+#include "cmdline.h"
 #include "useful.h"
 #include "osdepend.h"
 #include "osalloc.h"
@@ -53,9 +54,10 @@ extern int msg_errors;   /* and how many (non-fatal) errors */
 extern const char *msg_lang;
 extern const char *msg_lang2;
 
-void msg_init(const char *argv0);
+void msg_init(char *const *argv);
 
 const char *msg_cfgpth(void);
+const char *msg_appname(void);
 
 /* Message may be overwritten by next call */
 const char *msg(int en);

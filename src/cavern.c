@@ -172,7 +172,7 @@ main(int argc, char **argv)
    tmCPUStart = clock();
    init_screen();
 
-   msg_init(argv[0]);
+   msg_init(argv);
 
    pcs = osnew(settings);
    pcs->next = NULL;

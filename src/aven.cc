@@ -47,7 +47,7 @@ Aven::Aven() :
 
 bool Aven::OnInit()
 {
-    msg_init(argv[0]);
+    msg_init(argv);
 
     static wxLocale wx_locale;
     if (strcmp(msg_lang, "en") != 0 && strcmp(msg_lang, "en_US") != 0 &&

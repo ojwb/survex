@@ -596,7 +596,7 @@ main(int argc, char **argv)
       {0, 0}
    };
 
-   msg_init(argv[0]);
+   msg_init(argv);
 
    fnm = NULL;
 

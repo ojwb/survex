@@ -56,7 +56,7 @@ main(int argc, char **argv)
    int code;
    const char *survey = NULL;
 
-   msg_init(argv[0]);
+   msg_init(argv);
 
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 1);
    while (1) {

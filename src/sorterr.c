@@ -115,7 +115,7 @@ main(int argc, char **argv)
    FILE *fh_out = stdout;
    char *fnm_out = NULL;
 
-   msg_init(argv[0]);
+   msg_init(argv);
 
    cmdline_set_syntax_message("ERR_FILE [HOW MANY]", NULL); /* TRANSLATE */
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);

@@ -231,7 +231,7 @@ main(int argc, char **argv)
 
    set_codes(MOVE, DRAW, STOP);
 
-   msg_init(argv[0]);
+   msg_init(argv);
 
    puts("Survex cave rotator v"VERSION"\n  "COPYRIGHT_MSG);
 

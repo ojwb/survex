@@ -680,28 +680,42 @@ msg_cfgpth(void)
    return pth_cfg_files;
 }
 
+const char *
+msg_appname(void)
+{
+   return appname_copy;
+}
+
 void
-msg_init(const char *argv0)
+msg_init(char * const *argv)
 {
    char *p;
+   ASSERT(argv);
 
 #ifdef HAVE_SIGNAL
    init_signals();
 #endif
-   /* Point to argv0 itself so we report a more helpful error if the code to work
-    * out the clean appname generates a signal */
-   appname_copy = argv0;
+   /* Point to argv[0] itself so we report a more helpful error if the
+    * code to work out the clean appname generates a signal */
+   appname_copy = argv[0];
 #if (OS == UNIX)
    /* use name as-is on Unix - programs run from path get name as supplied */
-   appname_copy = osstrdup(argv0);
+   appname_copy = osstrdup(argv[0]);
 #else
    /* use the lower-cased leafname on other platforms */
-   appname_copy = p = leaf_from_fnm(argv0);
+   appname_copy = p = leaf_from_fnm(argv[0]);
    while (*p) {
       *p = tolower(*p);
       p++;
    }
 #endif
+
+   /* shortcut --version so you can check the version number when the correct
+    * message file can't be found... */
+   if (argv[1] && strcmp(argv[1], "--version") == 0) {
+      cmdline_version();
+      exit(0);
+   }
 
    /* Look for env. var. "SURVEXHOME" or the like */
    p = getenv("SURVEXHOME");
@@ -712,9 +726,9 @@ msg_init(const char *argv0)
       /* under Unix, we compile in the configured path */
       pth_cfg_files = DATADIR "/" PACKAGE;
 #else
-   } else if (argv0) {
+   } else if (argv[0]) {
       /* else try the path on argv[0] */
-      pth_cfg_files = path_from_fnm(argv0);
+      pth_cfg_files = path_from_fnm(argv[0]);
 #endif
    }
 
