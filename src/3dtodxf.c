@@ -1,18 +1,9 @@
 /* > 3dtodxf.c */
 
 /* Converts a .3d file to a DXF file */
-/* Useful as an example of how to use the img code from your own programs */
+/* Also useful as an example of how to use the img code in your own programs */
 
 /* Copyright (C) 1994,1995 Olly Betts */
-
-/*
-1994.09.28 written using imgtest.c as a base
-1995.01.15 fettled
-1995.01.26 check files open OK
-1995.02.18 tweaked a bit
-1995.03.21 minor tweaks
-1995.03.25 more fettling; added img_error call
-*/
 
 /* Tell img.h to work in standalone mode */
 /* #define STANDALONE */
@@ -43,14 +34,13 @@
 int main( int argc, char *argv[] ) {
    char szTitle[256], szDateStamp[256], szName[256];
    char *fnm3D, *fnmDXF;
-   const char *pthMe;
    unsigned char labels, crosses, legs;
    img *pimg;
    FILE *fh;
    int item;
    int fSeenMove=0;
-   float x1=FLT_MAX,y1=FLT_MAX,z1=FLT_MAX;
-   float x,y,z;
+   float x, y, z;
+   float x1, y1, z1;
    float min_x, min_y, min_z, max_x, max_y, max_z; /* for HEADER section */
    double text_height; /* for station labels */
    double marker_size; /* for station markers */
@@ -61,6 +51,8 @@ int main( int argc, char *argv[] ) {
 	{"no-crosses", no_argument, 0, 'c'},
 	{"no-station-names", no_argument, 0, 'n'},
 	{"no-legs", no_argument, 0, 'l'},
+	{"text-height", required_argument, 0, 't'},
+	{"marker-size", required_argument, 0, 'm'},
 	{"htext", required_argument, 0, 't'},
 	{"msize", required_argument, 0, 'm'},
 	{"help", no_argument, 0, HLP_HELP},
@@ -79,10 +71,9 @@ int main( int argc, char *argv[] ) {
 	{HLP_ENCODELONG(4), "station marker size (default: 0.8)"},
 	{0,0} 
    };
-   int min_args = 1;
 
 #ifndef STANDALONE
-   pthMe = ReadErrorFile(argv[0]);
+   msg_init(argv[0]);
 #endif
 
    /* Defaults */
@@ -92,8 +83,10 @@ int main( int argc, char *argv[] ) {
    text_height = TEXT_HEIGHT;
    marker_size = MARKER_SIZE;
 
-   while (1) {
-      int opt = my_getopt_long(argc, argv, short_opts, long_opts, NULL, help, min_args);
+   /* exactly two arguments must be given */
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 2, 2);
+   while (1) {      
+      int opt = cmdline_getopt();
       if (opt == EOF) break;
       switch (opt) {
        case 'c': /* Crosses */
@@ -106,42 +99,38 @@ int main( int argc, char *argv[] ) {
 	 legs = 0;
 	 break;
        case 't': /* Text height */
-	 text_height = strtod(optarg,NULL);  /* FIXME check for trailing garbage... */
+	 text_height = cmdline_float_arg();
 #ifdef DEBUG_3DTODXF
 	 printf("Text Height: '%s' input, converted to %6.2f\n", optarg, text_height);
 #endif
 	 break;
        case 'm': /* Marker size */
-	 marker_size = strtod(optarg,NULL);
+	 marker_size = cmdline_float_arg();
 #ifdef DEBUG_3DTODXF
 	 printf("Marker Size: '%s', converted to %6.2f\n", optarg, marker_size);
 #endif
 	 break;
+#ifdef DEBUG_3DTODXF
        default:
-	 printf("Internal Error: 'getopt' returned %c %d\n",opt, opt); /* <<<<< create message in messages.txt ? */ 
+	 printf("Internal Error: 'getopt' returned %c %d\n",opt, opt);
+#endif
       }
    } 	 
 
    fnm3D=argv[optind++];
    fnmDXF=argv[optind++];
 
-   pimg=img_open( fnm3D, szTitle, szDateStamp );
+   pimg = img_open(fnm3D, szTitle, szDateStamp);
    if (!pimg) {
 #ifndef STANDALONE
-	fatalerror(img_error(), fnm3D); 
+      fatalerror(img_error(), fnm3D); 
 #else
-	printf("Bad .3d file\n");
-#endif
-   }
-   fh=fopen(fnmDXF,"w");
-   if (!fh) {
-#ifndef STANDALONE
-      fatalerror(/*failed to open file*/47,fnmDXF);
-#else
-      printf("Couldn't open output file '%s'\n",fnmDXF);
-#endif
+      printf("Bad .3d file\n");
       exit(1);
+#endif
    }
+
+   fh = safe_fopen(fnmDXF, "w");
 
 #ifdef DEBUG_3DTODXF
    printf("3d file title `%s'\n",szTitle);
@@ -149,34 +138,30 @@ int main( int argc, char *argv[] ) {
 #endif 
 
    /* Get drawing corners */
-   min_x = min_y = min_z = max_x = max_y = max_z = 0;
+   min_x = min_y = min_z = FLT_MAX;
+   max_x = max_y = max_z = FLT_MIN;
    do {
-      item=img_read_datum( pimg, szName, &x, &y, &z );
+      item = img_read_datum(pimg, szName, &x, &y, &z);
       switch (item) {
-       case img_LINE:
-         if (x1 < min_x) min_x = x1;
-	 if (x1 > max_x) max_x = x1;
-         if (y1 < min_y) min_y = y1;
-	 if (y1 > max_y) max_y = y1;
-	 if (z1 < min_z) min_z = z1;
-	 if (z1 > max_z) max_z = z1;
+       case img_MOVE: case img_LINE: case img_CROSS:
          if (x < min_x) min_x = x;
          if (x > max_x) max_x = x;
          if (y < min_y) min_y = y;
          if (y > max_y) max_y = y;
          if (z < min_z) min_z = z;
          if (z > max_z) max_z = z;    
-         x1=x; y1=y; z1=z;
          break;
-       case img_MOVE:
-         x1=x; y1=y; z1=z;
-         break;                    
-       default:
-	 break;
       }
-   } while (item!=img_STOP);    
-   img_close(pimg);  
-   pimg=img_open( fnm3D, szTitle, szDateStamp );
+   } while (item != img_STOP);   
+   img_close(pimg);
+
+   /* handle empty file gracefully */
+   if (min_x > max_x) {
+      min_x = min_y = min_z = 0;
+      max_x = max_y = max_z = 0;
+   }
+   
+   pimg = img_open(fnm3D, szTitle, szDateStamp);
 
    /* Header */
    fprintf(fh,"0\nSECTION\n");  
@@ -218,17 +203,21 @@ int main( int argc, char *argv[] ) {
 
    fprintf(fh,"0\nSECTION\n");
    fprintf(fh,"2\nENTITIES\n");
+
+   x1 = y1 = z1 = 0; /* avoid compiler warning */
+
    do {
-      item=img_read_datum( pimg, szName, &x, &y, &z );
+      item = img_read_datum(pimg, szName, &x, &y, &z);
       switch (item) {
        case img_BAD:
 #ifndef STANDALONE
+         img_close(pimg);
          fatalerror(/*bad 3d file*/106,fnm3D);
 #else
          printf("Bad .3d image file\n");
-#endif
-         img_close(pimg);
          exit(1);
+#endif
+	 break;
        case img_LINE:
 #ifdef DEBUG_3DTODXF
          printf("line to %9.2f %9.2f %9.2f\n",x,y,z);
@@ -254,7 +243,7 @@ int main( int argc, char *argv[] ) {
 #ifdef DEBUG_3DTODXF
          printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
 #endif
-         fSeenMove=1;
+         fSeenMove = 1;
          x1=x; y1=y; z1=z;
          break;
        case img_CROSS:
@@ -285,13 +274,11 @@ int main( int argc, char *argv[] ) {
             printf("label `%s' at %9.2f %9.2f %9.2f\n",szName,x,y,z);
 #endif
          break;
-       case img_STOP:
 #ifdef DEBUG_3DTODXF
+       case img_STOP:
          printf("stop\n");
-#endif
          break;
        default:
-#ifdef DEBUG_3DTODXF
          printf("other info tag (code %d) ignored\n",item);
 #endif
       }
