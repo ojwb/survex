@@ -601,8 +601,7 @@ ps_NewPage(int pg, int pass, int pagesX, int pagesY)
       y_org += ypPageDepth / 2;
    }
 #else
-   /* page number - not really much use though. (? => no text numbering) */
-/*   prio_printf("%%%%Page: ? %d\n", pg);*/
+   /* page number - first value can be a non-numeric string */
    prio_printf("%%%%Page: %d %d\n", pg, pg);
    /* set the line width */
    prio_printf("%.1f setlinewidth\n", LineWidth);
@@ -795,6 +794,8 @@ hpgl_DrawTo(long x, long y)
    }
 }
 
+#define CS HPGL_CROSS_SIZE
+#define CS2 (2 * HPGL_CROSS_SIZE)
 static void
 hpgl_DrawCross(long x, long y)
 {
@@ -803,20 +804,18 @@ hpgl_DrawCross(long x, long y)
       /* SM plots a symbol at each point, but it isn't very convenient here   */
       /* We can write PDPR%d,%dPR%d,%d... but the HP7475A manual doesn't say  */
       /* clearly if this will work on older plotters (such as the HP9872)     */
-#define CS HPGL_CROSS_SIZE
-#define CS2 (2 * HPGL_CROSS_SIZE)
       prio_printf("PD;PR%d,%d;PR%d,%d;PU%d,0;PD%d,%d;PU%d,%d;PA;",
 		  CS, CS,  -CS2, -CS2,  CS2, /*0,*/  -CS2, CS2,  CS, -CS);
-#undef CS
-#undef CS2
       if (fNewLines) prio_putc('\n');
    } else {
-      if ((x + PS_CROSS_SIZE > clip.x_min && x - PS_CROSS_SIZE < clip.x_max) ||
-	  (y + PS_CROSS_SIZE > clip.y_min && y - PS_CROSS_SIZE < clip.y_max)) {
+      if ((x + CS > clip.x_min && x - CS < clip.x_max) ||
+	  (y + CS > clip.y_min && y - CS < clip.y_max)) {
 	 fBlankPage = fFalse;
       }
    }
 }
+#undef CS
+#undef CS2
 
 static void
 hpgl_WriteString(const char *s)
