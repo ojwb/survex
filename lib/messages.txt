@@ -189,9 +189,9 @@ pt:  9 Valor num&eacute;rico esperado
 ca:  9 S'espera un camp numeric
 es:  9 Se espera un campo num&eacute;rico
 it:  9 Questo campo &eacute; numerico
-#FIXME translate "Found `%s'," fr (c.f. 31 and 32)
+# 10 c.f. 31, 32
 en: 10 Found `%s', expecting `OFF', `UPPER', or `LOWER'
-fr: 10 On attendait `OFF', `UPPER', ou `LOWER'
+fr: 10 Vous avez &eacute;crit `%s'; on attendait `OFF', `UPPER', ou `LOWER'
 # Gerhard: "`%s' gelesen" means "have read `%s'" - "gefunden", the literal
 # equivalent, doesn't sound quite right here
 # NB there is no comma before "oder"
@@ -314,7 +314,8 @@ it: 24 Non riesco ad aprire il file dei dati '%s'
 #XXX27
 #XXX28
 en: 29 Reentering an existing prefix level is deprecated (previously entered at %s:%lu)
-fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute; (d&eacute;j&agrave; utilis&eacute; en: %s:%lu)
+#fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute; (d&eacute;j&agrave; utilis&eacute; en: %s:%lu)
+fr: 29 R&eacute;-utiliser un m&ecirc;me pr&eacute;fixe n'est pas recommand&eacute; (d&eacute;j&agrave; utilis&eacute; en: %s:%lu)
 # deprecated is a wonderful English word lacking a wonderful German
 # equivalent....  errm and do we have a translation for "prefix level"
 # yet?  (rummaging in old mail folders)  apparently not.  Ok.  Would
@@ -326,17 +327,17 @@ ca: 29 Reentrar en un nivell de prefix existent ja no s'utilitza (previament ent
 es: 29 Reentrar en un nivel de prefijo existente yo no se usa (previamente entrado en %s:%lu)
 it: 29 Reimmettere un prefisso di livello gi&aacute; esistente &eacute; sconsigliato (gi&aacute; immesso in %s:%lu)
 #XXX30
-# 31 c.f. 10, 32 FIXME TRANSLATE fr
+# 31 c.f. 10, 32
 en: 31 Found `%s', expecting `PLUMBS'
-fr: 31 On attendait `PLUMBS'
+fr: 31 Vous avez &eacute;crit `%s'; on attendait `PLUMBS'
 de: 31 `%s' gelesen, `PLUMBS' erwartet
 pt: 31 Encontrado `%s' quando `PLUMBS' era esperado
 ca: 31 Trobat `%s', esperant `PLUMBS'
 es: 31 Encontrado `%s', esperando `PLUMBS'
 it: 31 Trovato `%s', atteso `PLUMBS'
-# 32 c.f. 10, 31 FIXME TRANSLATE fr
+# 32 c.f. 10, 31
 en: 32 Found `%s', expecting `ON' or `OFF'
-fr: 32 On attendait `ON' ou `OFF'
+fr: 32 Vous avez &eacute;crit `%s'; on attendait `ON' ou `OFF'
 de: 32 `%s' gelesen, `ON' oder `OFF' erwartet
 pt: 32 Encontrado `%s' quando `ON' ou `OFF' eram esperados
 ca: 32 Trobat `%s', esperant `ON' o `OFF'
