@@ -852,13 +852,15 @@ set_default(void)
 #undef EQ
 
 static void
-include(char *pth)
+include(void)
 {
-   char *fnm = NULL;
+   char *pth, *fnm = NULL;
    int fnm_len;
    parse file_store;
    prefix *root_store;
    int ch_store;
+
+   pth = path_from_fnm(file.filename);
 
    read_string(&fnm, &fnm_len);
 
@@ -874,6 +876,7 @@ include(char *pth)
    ch = ch_store;
 
    s_free(&fnm);
+   osfree(pth);
 }
 
 static void
@@ -1030,13 +1033,7 @@ handle_command(void)
     case CMD_DEFAULT: set_default(); break;
     case CMD_EQUATE: equate_list(); break;
     case CMD_FIX: fix_station(); break;
-    case CMD_INCLUDE: {
-       char *pth;
-       pth = path_from_fnm(file.filename);
-       include(pth);
-       osfree(pth);
-       break;
-    }
+    case CMD_INCLUDE: include(); break;
     case CMD_INFER: infer(); break;
     case CMD_LRUD: {
        /* just ignore *lrud for now so Tunnel can put it in */
