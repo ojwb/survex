@@ -372,6 +372,8 @@ public:
     Double GetYOffset() { return m_Offsets.y; }
     Double GetZOffset() { return m_Offsets.z; }
 
+    void SetMouseOverStation(LabelInfo* label);
+
     list<PointInfo*>::const_iterator GetPoints(int band) {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
         return m_Points[band].begin();

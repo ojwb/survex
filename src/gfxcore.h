@@ -81,6 +81,8 @@ class SpecialPoint {
 #endif
 };
 
+class LabelInfo;
+
 extern const ColourTriple COLOURS[]; // defined in gfxcore.cc
 
 #ifdef AVENGL
@@ -193,6 +195,12 @@ class GfxCore : public wxWindow {
     } m_Volume;
 #endif
 
+    struct GridPointInfo {
+        long x; // ] screen coordinates
+	long y; // ]
+	LabelInfo* label;
+    };
+
     list<SpecialPoint> m_SpecialPoints;
     list<pair<PresData, Quaternion> > m_Presentation;
     list<pair<PresData, Quaternion> >::iterator m_PresIterator;
@@ -247,7 +255,7 @@ class GfxCore : public wxWindow {
     wxPoint m_LabelShift;
     wxTimer m_Timer;
     PlotData* m_PlotData;
-    wxString* m_Labels;
+    LabelInfo** m_Labels;
     bool m_InitialisePending;
     enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV, drag_SCALE } m_LastDrag;
     bool m_MouseOutsideCompass;
@@ -262,6 +270,7 @@ class GfxCore : public wxWindow {
     bool m_ExportedPts;
     bool m_Grid;
     int m_NumCrosses;
+    list<GridPointInfo>* m_PointGrid;
 
     int m_DoingPresStep;
     struct step_params {

@@ -80,6 +80,8 @@ const ColourTriple COLOURS[] = {
 
 #define DELETE_ARRAY(x) { assert(x); delete[] x; }
 
+#define HITTEST_SIZE 20
+
 #ifdef AVENGL
 BEGIN_EVENT_TABLE(GfxCore, wxGLCanvas)
 #else
@@ -161,6 +163,9 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     SetBackgroundColour(wxColour(0, 0, 0));
 
     fflush(stdout);
+
+    // Initialise grid for hit testing.
+    m_PointGrid = new list<GridPointInfo>[HITTEST_SIZE * HITTEST_SIZE];
 }
 
 GfxCore::~GfxCore()
@@ -171,6 +176,8 @@ GfxCore::~GfxCore()
     DELETE_ARRAY(m_Pens);
     DELETE_ARRAY(m_Brushes);
 #endif
+
+    delete[] m_PointGrid;
 }
 
 void GfxCore::TryToFreeArrays()
@@ -231,7 +238,7 @@ void GfxCore::Initialise()
 
     m_CrossData.num_segs = new int[m_Parent->GetNumCrosses() * 2];
     m_HighlightedPts = new HighlightedPt[m_Parent->GetNumCrosses()];
-    m_Labels = new wxString[m_Parent->GetNumCrosses()];
+    m_Labels = new LabelInfo*[m_Parent->GetNumCrosses()];
     m_LabelsLastPlotted = new LabelFlags[m_Parent->GetNumCrosses()];
     m_LabelCacheNotInvalidated = false;
     
@@ -580,7 +587,12 @@ void GfxCore::SetScale(Double scale)
         }
     }
 
-    if ((m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) && !m_ScaleSpecialPtsOnly) {
+    // Clear hit-test grid.
+    for (int i = 0; i < HITTEST_SIZE * HITTEST_SIZE; i++) {
+        m_PointGrid[i].clear();
+    }
+
+    if (/*(m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) &&*/ !m_ScaleSpecialPtsOnly) {
         // Construct polylines for crosses, sort out station names and deal with highlighted points.
 
         m_NumHighlightedPts = 0;
@@ -592,7 +604,7 @@ void GfxCore::SetScale(Double scale)
         wxPoint* pt = m_CrossData.vertices;
         int* count = m_CrossData.num_segs;
 #endif
-        wxString* labels = m_Labels;
+        LabelInfo** labels = m_Labels;
         list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
         list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
         wxString text;
@@ -609,16 +621,34 @@ void GfxCore::SetScale(Double scale)
 
             pt++;
 
-            *labels++ = label->GetText();
+            *labels++ = label;
 
             m_NumCrosses++;
 #else
+            // Calculate screen coordinates.
             x += m_Params.translation.x;
             y += m_Params.translation.y;
             z += m_Params.translation.z;
 
             int cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
             int cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
+
+	    int cx_real = cx + m_XCentre;
+	    int cy_real = cy + m_YCentre;
+
+	    // Add to hit-test grid.
+	    if (cx_real >= 0 && cx_real < m_XSize && cy_real >= 0 && cy_real < m_YSize) {
+	        int grid_x = (cx_real * (HITTEST_SIZE - 1)) / m_XSize;
+	        int grid_y = (cy_real * (HITTEST_SIZE - 1)) / m_YSize;
+
+  	        GridPointInfo point;
+	        point.x = cx_real;
+	        point.y = cy_real;
+                point.label = label;
+
+	        m_PointGrid[grid_x + grid_y*HITTEST_SIZE].push_back(point);
+            }
+
             if ((m_Crosses || m_Names) &&
                 ((label->IsSurface() && m_Surface) ||
                  (label->IsUnderground() && m_Legs))) {
@@ -639,7 +669,7 @@ void GfxCore::SetScale(Double scale)
                 *count++ = 2;
                 *count++ = 2;
             
-                *labels++ = label->GetText();
+                *labels++ = label;
 
                 m_NumCrosses++;
             }
@@ -1318,7 +1348,7 @@ void GfxCore::NattyDrawNames()
         memset((void*) m_LabelGrid, 0, buffer_size * sizeof(LabelFlags));
     }
 
-    wxString* label = m_Labels;
+    LabelInfo** label = m_Labels;
     LabelFlags* last_plot = m_LabelsLastPlotted;
 #ifdef AVENGL
     Double3* pt = m_CrossData.vertices;
@@ -1368,7 +1398,7 @@ void GfxCore::NattyDrawNames()
             (m_LabelCacheNotInvalidated && *last_plot == label_CHECK_AGAIN) ||
             !m_LabelCacheNotInvalidated) {
                 
-            wxString str = *label;
+            wxString str = (*label)->GetText();
 
 #ifdef _DEBUG
             if (m_LabelCacheNotInvalidated && *last_plot == label_CHECK_AGAIN) {
@@ -1448,7 +1478,7 @@ void GfxCore::SimpleDrawNames()
     // from NattyDrawNames() to draw names known not to overlap.
 
 #ifndef AVENGL
-    wxString* label = m_Labels;
+    LabelInfo** label = m_Labels;
     wxPoint* pt = m_CrossData.vertices;
 
     LabelFlags* last_plot = m_LabelsLastPlotted;
@@ -1458,7 +1488,7 @@ void GfxCore::SimpleDrawNames()
 
         if ((m_LabelCacheNotInvalidated && *last_plot == label_PLOTTED) ||
             !m_LabelCacheNotInvalidated) {
-            m_DrawDC.DrawText(*label, pt->x + m_XCentre,
+            m_DrawDC.DrawText((*label)->GetText(), pt->x + m_XCentre,
                               pt->y + m_YCentre + CROSS_SIZE - FONT_SIZE);
         }
         
@@ -1931,6 +1961,31 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 
     wxPoint point = wxPoint(event.GetX(), event.GetY());
 
+    // Check hit-test grid.
+    int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
+    int grid_y = (point.y * (HITTEST_SIZE - 1)) / m_YSize;
+    bool done = false;
+    int square = grid_x + grid_y * HITTEST_SIZE;
+    list<GridPointInfo>::iterator iter = m_PointGrid[square].begin();
+    while (!done && iter != m_PointGrid[square].end()) {
+        GridPointInfo& info = *iter++;
+
+        //-- FIXME: check types
+        int x0 = info.x;
+	int y0 = info.y;
+	int x1 = point.x;
+	int y1 = point.y;
+
+	int dx = x1 - x0;
+	int dy = y1 - y0;
+
+        if (int(sqrt(dx*dx + dy*dy)) < 10.0) {
+	    m_Parent->SetMouseOverStation(info.label);
+	    done = true;
+	}
+    }
+
+    // Update coordinate display if in plan view.
     if (m_TiltAngle == M_PI / 2.0) {
         int x = event.GetX() - m_XCentre - m_Params.display_shift.x;
         int y = -(event.GetY() - m_YCentre - m_Params.display_shift.y);

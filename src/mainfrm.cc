@@ -1314,3 +1314,23 @@ void MainFrm::OnHide(wxCommandEvent& event)
 
     m_Gfx->ClearSpecialPoints();
 }
+
+void MainFrm::SetMouseOverStation(LabelInfo* label)
+{
+    //-- FIXME: share with code above
+
+    wxString str;
+    str.Printf("   %d N, %d E", (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
+    m_StnCoords->SetLabel(str);
+    m_StnName->SetLabel(label->text);
+    str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
+    m_StnAlt->SetLabel(str);
+    if (m_HighlightedPtValid) {
+        m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
+        m_HighlightedPtValid = false;
+    }
+    m_HighlightedPt = m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_WHITE);
+    m_Gfx->DisplaySpecialPoints();
+    m_HighlightedPtValid = true;
+}
+
