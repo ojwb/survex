@@ -25,8 +25,8 @@ Changes in 1.0.14:
 * Reading of ASCII 3d files now copes with MSDOS/MS Windows line endings
   once again.  Added regression test for this.
 
-* Programs run from the command line on MS Windows now find messages without
-  SURVEXHOME needing to be set.
+* (MS Windows Version): Programs run from the command line now find message
+  files without SURVEXHOME needing to be set.
 
 * Updated documentation.
 

@@ -1049,6 +1049,17 @@ msg_init(char * const *argv)
 	 osfree(p);
       }
       if (free_pth) osfree(pth);
+#elif (OS==WIN32)
+      DWORD len = GetModuleFileName(NULL, NULL, 0) + 1;
+      if (len) {
+	 char *buf = osmalloc(len);
+	 GetModuleFileName(NULL, buf, len);
+	 char *modname = buf;
+	 /* Strange Win32 nastiness - strip prefix "\\?\" if present */
+	 if (strncmp(modname, "\\\\?\\", 4) == 0) modname += 4;
+	 pth_cfg_files = path_from_fnm(p);
+	 osfree(buf);
+      }
 #else
       /* Get the path to the support files from argv[0] */
       pth_cfg_files = path_from_fnm(argv[0]);
