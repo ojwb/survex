@@ -123,7 +123,9 @@ class MainFrm : public wxFrame {
     wxPen* m_Pens;
     wxBrush* m_Brushes;
     wxString m_FileToLoad;
-    wxStatusBar* m_StatusBar; // NULL if status bar shown, otherwise pointer to hidden bar.
+    int m_NumEntrances;
+    int m_NumFixedPts;
+    int m_NumExportedPts;
 
     void ClearPointLists();
     bool LoadData(const wxString& file);
@@ -228,9 +230,6 @@ public:
     void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotation(event); }
     // end of horrible bodges
 
-    void OnToggleStatusbar(wxCommandEvent& event);
-    void OnToggleStatusbarUpdate(wxUpdateUIEvent& event);
-
     double GetXExtent() { return m_XExt; }
     double GetYExtent() { return m_YExt; }
     double GetZExtent() { return m_ZExt; }
@@ -253,6 +252,10 @@ public:
     }
 
     wxPen GetSurfacePen() { return m_Pens[NUM_DEPTH_COLOURS]; }
+
+    int GetNumFixedPts() { return m_NumFixedPts; }
+    int GetNumExportedPts() { return m_NumExportedPts; }
+    int GetNumEntrances() { return m_NumEntrances; }
 
     list<PointInfo*>::const_iterator GetPoints(int band) {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);

@@ -98,3 +98,22 @@ void Aven::ReportError(const wxString& msg)
     wxMessageBox(msg, "Aven", wxOK | wxCENTRE | wxICON_EXCLAMATION);
 }
 
+// called to report errors by message.c
+extern "C" void
+aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
+{
+   wxString m;
+   if (fnm) {
+      m = fnm;
+      if (line) m += wxString::Format(":%d", line);
+      m += ": ";
+   }
+
+   if (severity == 0) {
+      m += msg(/*warning*/4);
+      m += ": ";
+   }
+
+   m += wxString::FormatV(msg(en), ap);
+   wxGetApp().ReportError(m);
+}

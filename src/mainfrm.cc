@@ -77,7 +77,6 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_CLINO, MainFrm::OnViewClino)
     EVT_MENU(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbar)
     EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
-    EVT_MENU(menu_VIEW_STATUS_BAR, MainFrm::OnToggleStatusbar)
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 
@@ -117,13 +116,13 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_CLINO, MainFrm::OnViewClinoUpdate)
     EVT_UPDATE_UI(menu_VIEW_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
     EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
-    EVT_UPDATE_UI(menu_VIEW_STATUS_BAR, MainFrm::OnToggleStatusbarUpdate)
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
 END_EVENT_TABLE()
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
-    m_Gfx(NULL), m_StatusBar(NULL), m_FileToLoad("")
+    m_Gfx(NULL), m_FileToLoad(""), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0)
+    
 {
     m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS+1];
     m_Pens = new wxPen[NUM_DEPTH_COLOURS+1];
@@ -167,7 +166,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation View##L*/249), "Switch to elevation view");
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(/*@Higher Viewpoint##'*/250), "Raise the angle of viewing");
-    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*Lo@wer Viewpoint##/*/251), "Lower the angle of viewing");
+    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*Lo@wer Viewpoint##/ */251), "Lower the angle of viewing");
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_ZOOM_IN, GetTabMsg(/*@Zoom In##]*/252), "Zoom further into the survey");
     orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253), "Zoom further out from the survey");
@@ -194,9 +193,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     viewmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "Toggle display of the clinometer", true);
     viewmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "Toggle display of the depth bar", true);
     viewmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "Toggle display of the scale bar", true);
-    //    viewmenu->AppendSeparator();
-    //    viewmenu->Append(menu_VIEW_STATUS_BAR, "&Status Bar",
-    //		     "Toggle display of the status bar", true);
 
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "Reverse the sense of the orientation controls", true);
@@ -229,9 +225,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxAcceleratorTable accel(11, entries);
     SetAcceleratorTable(accel);
 
-    //CreateStatusBar(2);
-    //SetStatusText("Ready");
-
     m_Gfx = new GfxCore(this);
 
 #ifdef __X__
@@ -241,7 +234,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     GetSize(&x, &y);
     SetSize(-1, -1, x, y);
 #endif
-
 }
 
 MainFrm::~MainFrm()
@@ -249,24 +241,6 @@ MainFrm::~MainFrm()
     ClearPointLists();
     delete[] m_Points;
 }
-#if 0
-bool MainFrm::ProcessEvent(wxEvent& event)
-{
-    bool result = false;
-
-    // Dispatch certain command events down to the child drawing area window.
-    if (m_Gfx && event.IsCommandEvent() && event.GetId() >= menu_ROTATION_START &&
-        event.GetId() <= menu_CTL_REVERSE) {
-	result = m_Gfx->ProcessEvent(event);
-    }
-
-    if (!result) { // child didn't process event
-        return wxEvtHandler::ProcessEvent(event);
-    }
-
-    return true;
-}
-#endif
 
 void MainFrm::ClearPointLists()
 {
@@ -297,24 +271,23 @@ bool MainFrm::LoadData(const wxString& file)
     // the data for drawing.
 
     // Load the survey data.
-    //SetStatusText(wxString("Attempting to open 3D file ") + file);
 
     img* survey = img_open(file, NULL, NULL);
     if (!survey) {
-        //SetStatusText("");
 	wxString m = wxString::Format(msg(img_error()), file.c_str());
 	wxGetApp().ReportError(m);
-	//SetStatusText("Ready");
     }
     else {
         // Create a list of all the leg vertices, counting them and finding the
         // extent of the survey at the same time.
-        //SetStatusText(wxString("Parsing ") + file);
  
 	m_NumLegs = 0;
 	m_NumPoints = 0;
 	m_NumExtraLegs = 0;
 	m_NumCrosses = 0;
+	m_NumFixedPts = 0;
+	m_NumExportedPts = 0;
+	m_NumEntrances = 0;
 
 	// Delete any existing list entries.
 	ClearPointLists();
@@ -327,7 +300,6 @@ bool MainFrm::LoadData(const wxString& file)
 	double zmax = -DBL_MAX;
 
 	bool first = true;
-	bool last_was_move = false;
 
 	list<PointInfo*> points;
 
@@ -381,6 +353,15 @@ bool MainFrm::LoadData(const wxString& file)
 		    label->isEntrance = (survey->flags & img_SFLAG_ENTRANCE);
 		    label->isFixedPt = (survey->flags & img_SFLAG_FIXED);
 		    label->isExportedPt = (survey->flags & img_SFLAG_EXPORTED);
+		    if (label->isEntrance) {
+		        m_NumEntrances++;
+		    }
+		    if (label->isFixedPt) {
+		        m_NumFixedPts++;
+		    }
+		    if (label->isExportedPt) {
+		        m_NumExportedPts++;
+		    }
 		    m_Labels.push_back(label);
 		    m_NumCrosses++;
 
@@ -405,7 +386,6 @@ bool MainFrm::LoadData(const wxString& file)
 
 	// Check we've actually loaded some legs or stations!
 	if (m_NumLegs == 0 && m_Labels.empty()) {
-	    //SetStatusText(wxString(""));
 	    wxString m = wxString::Format(msg(/*No survey data in 3d file `%s'*/202), file.c_str());
 	    wxGetApp().ReportError(m);
 	    return false;
@@ -429,10 +409,6 @@ bool MainFrm::LoadData(const wxString& file)
 	// Centre the dataset around the origin.
 	CentreDataset(xmin, ymin, m_ZMin);
 
-	// Update status bar.
-	wxString numlegs_str = wxString::Format(wxString("%d"), m_NumLegs);
-	//SetStatusText(numlegs_str + wxString(" legs loaded from ") + file);
-	
 	// Update window title.
 	SetTitle(wxString("Aven - [") + file + wxString("]"));
     }
@@ -510,7 +486,7 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 
 	// If this is a leg, then check if it intersects a depth
 	// colour boundary.
-	if (prev_point && point->isLine/* && !point->isSurface*/) {
+	if (prev_point && point->isLine) {
 	    int col1 = GetDepthColour(prev_point->z);
 	    int col2 = GetDepthColour(point->z);
 	    if (col1 != col2) {
@@ -559,20 +535,8 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 	    // The first point, a surface point, or another move: put it in the correct list
 	    // according to depth.
 	    assert(point->isSurface || !point->isLine);
-	    int band = /*point->isSurface ? NUM_DEPTH_COLOURS :*/ GetDepthColour(point->z);
-	    /*	    if (point->isSurface) {
-	        if (m_Points[band].empty()) {
-		    PointInfo* info = new PointInfo;
-		    info->x = 0.0;
-		    info->y = 0.0;
-		    info->z = 0.0;
-		    info->isLine = false;
-		    info->isSurface = true;
-		    m_Points[band].push_back(info);
-		}
-		}*/
+	    int band = GetDepthColour(point->z);
 	    m_Points[band].push_back(point);
-
 	}
 
 	prev_point = point;
@@ -628,44 +592,4 @@ void MainFrm::OnAbout(wxCommandEvent&)
     wxDialog* dlg = new AboutDlg(this);
     dlg->Centre();
     dlg->ShowModal();
-}
-
-void MainFrm::OnToggleStatusbar(wxCommandEvent&)
-{
-    if (!m_StatusBar) {
-        m_StatusBar = GetStatusBar();
-	SetStatusBar(NULL);
-    }
-    else {
-        SetStatusBar(m_StatusBar);
-        m_StatusBar = NULL;
-    }
-
-    wxSizeEvent ev(GetSize());
-    OnSize(ev);
-}
-
-void MainFrm::OnToggleStatusbarUpdate(wxUpdateUIEvent& event)
-{
-    event.Check(!m_StatusBar);
-}
-
-// called to report errors by message.c
-extern "C" void
-aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
-{
-   wxString m;
-   if (fnm) {
-      m = fnm;
-      if (line) m += wxString::Format(":%d", line);
-      m += ": ";
-   }
-
-   if (severity == 0) {
-      m += msg(/*warning*/4);
-      m += ": ";
-   }
-
-   m += wxString::FormatV(msg(en), ap);
-   wxGetApp().ReportError(m);
 }

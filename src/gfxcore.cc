@@ -2131,7 +2131,7 @@ void GfxCore::OnShowEntrances(wxCommandEvent&)
 
 void GfxCore::OnShowEntrancesUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData && (m_Parent->GetNumEntrances() > 0));
     cmd.Check(m_Entrances);
 }
 
@@ -2146,7 +2146,7 @@ void GfxCore::OnShowFixedPts(wxCommandEvent&)
 
 void GfxCore::OnShowFixedPtsUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData && (m_Parent->GetNumFixedPts() > 0));
     cmd.Check(m_FixedPts);
 }
 
@@ -2161,6 +2161,6 @@ void GfxCore::OnShowExportedPts(wxCommandEvent&)
 
 void GfxCore::OnShowExportedPtsUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData && (m_Parent->GetNumExportedPts() > 0));
     cmd.Check(m_ExportedPts);
 }
