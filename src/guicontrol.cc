@@ -31,7 +31,7 @@
 
 const int DISPLAY_SHIFT = 10;
 const double FLYFREE_SHIFT = 0.2;
-const double ROTATE_STEP = 2.0 * M_PI / 180.0;
+const double ROTATE_STEP = 2.0;
 
 GUIControl::GUIControl()
 {
@@ -65,7 +65,7 @@ void GUIControl::HandleTilt(wxPoint point)
 
     if (m_ReverseControls != m_View->GetPerspective()) dy = -dy;
 
-    m_View->TiltCave(Double(-dy) * M_PI / 500.0);
+    m_View->TiltCave(Double(-dy) * 0.36);
 
     m_DragStart = point;
 
@@ -77,7 +77,7 @@ void GUIControl::HandleTranslate(wxPoint point)
     // Handle a mouse movement during translation mode.
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
-    
+ 
     if (m_ReverseControls) {
 	dx = -dx;
 	dy = -dy;
@@ -125,10 +125,10 @@ void GUIControl::HandleTiltRotate(wxPoint point)
 	dy = -dy;
     }
 
-    // left/right => rotate, up/down => tilt
-    m_View->TurnCave(m_View->CanRotate() ?
-                     (Double(dx) * (M_PI / -500.0)) : 0.0);
-    m_View->TiltCave(Double(-dy) * M_PI / 1000.0);
+    // left/right => rotate, up/down => tilt.
+    // Make tilt less sensitive than rotate as that feels better.
+    m_View->TurnCave(m_View->CanRotate() ? (Double(dx) * -0.36) : 0.0);
+    m_View->TiltCave(Double(-dy) * 0.18);
 
     m_View->ForceRefresh();
 
@@ -146,7 +146,7 @@ void GUIControl::HandleScaleRotate(wxPoint point)
 	dy = -dy;
     }
 
-    Double pan_angle = m_View->CanRotate() ? (Double(dx) * (-M_PI / 500.0)) : 0.0;
+    Double pan_angle = m_View->CanRotate() ? (Double(dx) * -0.36) : 0.0;
 
     // left/right => rotate, up/down => scale
     m_View->TurnCave(pan_angle);
@@ -417,7 +417,7 @@ void GUIControl::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnMoveEast()
 {
-    m_View->TurnCaveTo(M_PI_2);
+    m_View->TurnCaveTo(90.0);
     m_View->ForceRefresh();
 }
 
@@ -439,7 +439,7 @@ void GUIControl::OnMoveNorthUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnMoveSouth()
 {
-    m_View->TurnCaveTo(M_PI);
+    m_View->TurnCaveTo(180.0);
     m_View->ForceRefresh();
 }
 
@@ -450,7 +450,7 @@ void GUIControl::OnMoveSouthUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnMoveWest()
 {
-    m_View->TurnCaveTo(M_PI * 1.5);
+    m_View->TurnCaveTo(270.0);
     m_View->ForceRefresh();
 }
 

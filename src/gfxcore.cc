@@ -484,7 +484,7 @@ wxPoint GfxCore::CompassPtToScreen(Double x, Double y, Double z) const
 
 GLAPoint GfxCore::IndicatorCompassToScreenPan(int angle) const
 {
-    Double theta = (angle * M_PI / 180.0) + m_PanAngle;
+    Double theta = rad(angle + m_PanAngle);
     glaCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     glaCoord x = glaCoord(length * sin(theta));
     glaCoord y = glaCoord(length * cos(theta));
@@ -495,7 +495,7 @@ GLAPoint GfxCore::IndicatorCompassToScreenPan(int angle) const
 
 GLAPoint GfxCore::IndicatorCompassToScreenElev(int angle) const
 {
-    Double theta = (angle * M_PI / 180.0) + m_TiltAngle + M_PI_2;
+    Double theta = rad(angle + m_TiltAngle + 90.0);
     glaCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     glaCoord x = glaCoord(length * sin(-theta));
     glaCoord y = glaCoord(length * cos(-theta));
@@ -506,7 +506,7 @@ GLAPoint GfxCore::IndicatorCompassToScreenElev(int angle) const
 
 void GfxCore::DrawTick(wxCoord cx, wxCoord cy, int angle_cw)
 {
-    Double theta = angle_cw * M_PI / 180.0;
+    Double theta = rad(angle_cw);
     wxCoord length1 = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     wxCoord length0 = length1 + TICK_LENGTH;
     wxCoord x0 = wxCoord(length0 * sin(theta));
@@ -532,8 +532,8 @@ void GfxCore::Draw2dIndicators()
 		   INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN);
     }
     if (m_Clino && m_Lock == lock_NONE) {
-	glaCoord tilt = (glaCoord) (m_TiltAngle * 180.0 / M_PI);
-	glaCoord start = fabs(-tilt - 90.0);
+	glaCoord tilt = (glaCoord)m_TiltAngle;
+	glaCoord start = tilt + 90;
 	DrawSemicircle(col_LIGHT_GREY_2, col_GREY,
 		       m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
 		       INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
@@ -565,7 +565,7 @@ void GfxCore::Draw2dIndicators()
     int elev_centre_x = m_XSize - INDICATOR_BOX_SIZE / 2 - GetClinoOffset();
 
     if (m_Compass && m_RotationOK) {
-	int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
+	int deg_pan = (int) m_PanAngle;
 	//--FIXME: bodge by Olly to stop wrong tick highlighting
 	if (deg_pan) deg_pan = 360 - deg_pan;
 	for (int angle = deg_pan; angle <= 315 + deg_pan; angle += 45) {
@@ -580,7 +580,7 @@ void GfxCore::Draw2dIndicators()
 
     if (m_Clino && m_Lock == lock_NONE) {
 	white = false; /* FIXME m_DraggingLeft && m_LastDrag == drag_ELEV && m_MouseOutsideElev; */
-	int deg_elev = (int) (m_TiltAngle * 180.0 / M_PI);
+	int deg_elev = int(m_TiltAngle);
 	for (int angle = 0; angle <= 180; angle += 90) {
 	    if (deg_elev == angle - 90) {
 		SetColour(col_GREEN);
@@ -628,9 +628,9 @@ void GfxCore::Draw2dIndicators()
 
     if (m_Compass && m_RotationOK) {
 	if (m_Degrees) {
-	    str = wxString::Format("%03d", int(m_PanAngle * 180.0 / M_PI));
+	    str = wxString::Format("%03d", int(m_PanAngle));
 	} else {
-	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / M_PI));
+	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / 180.0));
 	}       
 	GetTextExtent(str, &w, &h);
 	DrawIndicatorText(pan_centre_x + width / 2 - w, height, str);
@@ -642,9 +642,9 @@ void GfxCore::Draw2dIndicators()
     if (m_Clino && m_Lock == lock_NONE) {
 	int angle;
 	if (m_Degrees) {
-	    angle = int(-m_TiltAngle * 180.0 / M_PI);
+	    angle = int(-m_TiltAngle);
 	} else {
-	    angle = int(-m_TiltAngle * 200.0 / M_PI);
+	    angle = int(-m_TiltAngle * 200.0 / 180.0);
 	}       
 	str = angle ? wxString::Format("%+03d", angle) : wxString("00");
 	GetTextExtent(str, &w, &h);
@@ -1050,12 +1050,12 @@ void GfxCore::DefaultParameters()
     }
 
     m_PanAngle = 0.0;
-    m_TiltAngle = M_PI_2;
+    m_TiltAngle = 90.0;
     switch (m_Lock) {
 	case lock_X:
 	{
 	    // elevation looking along X axis (East)
-	    m_PanAngle = M_PI * 1.5;
+	    m_PanAngle = 270.0;
 	    m_TiltAngle = 0.0;
 	    break;
 	}
@@ -1086,7 +1086,7 @@ void GfxCore::DefaultParameters()
     SetTranslation(0.0, 0.0, 0.0);
 
     m_Surface = false;
-    m_RotationStep = M_PI / 6.0;
+    m_RotationStep = 30.0;
     m_Rotating = false;
     m_SwitchingTo = 0;
     m_Entrances = false;
@@ -1133,8 +1133,8 @@ bool GfxCore::Animate()
 	    t -= next_mark_time;
 	    SetView(next_mark);
 	    PresentationMark prev_mark = next_mark;
-	    if (prev_mark.angle < 0) prev_mark.angle += M_PI * 2;
-	    else if (prev_mark.angle >= M_PI * 2) prev_mark.angle -= M_PI * 2;
+	    if (prev_mark.angle < 0) prev_mark.angle += 360.0;
+	    else if (prev_mark.angle >= 360.0) prev_mark.angle -= 360.0;
 	    next_mark = m_Parent->GetPresMark(MARK_NEXT);
 	    if (!next_mark.is_valid()) {
 		presentation_mode = 0;
@@ -1152,23 +1152,24 @@ bool GfxCore::Animate()
 	    // non-perspective mode?
 	    next_mark_time = sqrd(d / 100);
 	    double a = next_mark.angle - prev_mark.angle;
-	    if (a > M_PI) {
-		next_mark.angle -= M_PI * 2;
-		a = M_PI * 2 - a;
-	    } else if (a < -M_PI) {
-		next_mark.angle += M_PI * 2;
-		a += M_PI * 2;
+	    if (a > 180.0) {
+		next_mark.angle -= 360.0;
+		a = 360.0 - a;
+	    } else if (a < -180.0) {
+		next_mark.angle += 360.0;
+		a += 360.0;
 	    } else {
 		a = fabs(a);
 	    }
-	    next_mark_time += sqrd(a / (M_PI / 3));
+	    next_mark_time += sqrd(a / 60.0);
 	    double ta = fabs(next_mark.tilt_angle - prev_mark.tilt_angle);
-	    next_mark_time += sqrd(ta / (M_PI / 3));
+	    next_mark_time += sqrd(ta / 60.0);
 	    double s = fabs(log(next_mark.scale) - log(prev_mark.scale));
 	    next_mark_time += sqrd(s / 2);
 	    next_mark_time = sqrt(next_mark_time);
-	    // was: next_mark_time = max(max(d, s / 2), max(a, ta) / (M_PI / 3));
-	    //printf("*** %.6f from (\nd: %.6f\ns: %.6f\na: %.6f\nt: %.6f )\n", next_mark_time, d/100, s/2, a/ (M_PI/3), ta/(M_PI/3));
+	    // was: next_mark_time = max(max(d, s / 2), max(a, ta) / 60);
+	    //printf("*** %.6f from (\nd: %.6f\ns: %.6f\na: %.6f\nt: %.6f )\n",
+	    //       next_mark_time, d/100, s/2, a/60, ta/60);
 	}
 
 	if (presentation_mode) {
@@ -1177,18 +1178,18 @@ bool GfxCore::Animate()
 	    double q = 1 - p;
 	    PresentationMark here = GetView();
 	    if (next_mark.angle < 0) {
-		if (here.angle >= next_mark.angle + M_PI * 2)
-		    here.angle -= M_PI * 2;
-	    } else if (next_mark.angle >= M_PI * 2) {
-		if (here.angle <= next_mark.angle - M_PI * 2)
-		    here.angle += M_PI * 2;
+		if (here.angle >= next_mark.angle + 360.0)
+		    here.angle -= 360.0;
+	    } else if (next_mark.angle >= 360.0) {
+		if (here.angle <= next_mark.angle - 360.0)
+		    here.angle += 360.0;
 	    }
 	    here.x = q * here.x + p * next_mark.x;
 	    here.y = q * here.y + p * next_mark.y;
 	    here.z = q * here.z + p * next_mark.z;
 	    here.angle = q * here.angle + p * next_mark.angle;
-	    if (here.angle < 0) here.angle += M_PI * 2;
-	    else if (here.angle >= M_PI * 2) here.angle -= M_PI * 2;
+	    if (here.angle < 0) here.angle += 360.0;
+	    else if (here.angle >= 360.0) here.angle -= 360.0;
 	    here.tilt_angle = q * here.tilt_angle + p * next_mark.tilt_angle;
 	    here.scale = exp(q * log(here.scale) + p * log(next_mark.scale));
 	    SetView(here);
@@ -1203,19 +1204,19 @@ bool GfxCore::Animate()
 
     if (m_SwitchingTo == PLAN) {
 	// When switching to plan view...
-	TiltCave(M_PI_2 * t);
-	if (m_TiltAngle == M_PI_2) {
+	TiltCave(90.0 * t);
+	if (m_TiltAngle == 90.0) {
 	    m_SwitchingTo = 0;
 	}
     } else if (m_SwitchingTo == ELEVATION) {
 	// When switching to elevation view...
-	if (fabs(m_TiltAngle) < M_PI_2 * t) {
+	if (fabs(m_TiltAngle) < 90.0 * t) {
 	    m_SwitchingTo = 0;
 	    TiltCave(-m_TiltAngle);
 	} else if (m_TiltAngle < 0.0) {
-	    TiltCave(M_PI_2 * t);
+	    TiltCave(90.0 * t);
 	} else {
-	    TiltCave(-M_PI_2 * t);
+	    TiltCave(-90.0 * t);
 	}
     }
 
@@ -1346,8 +1347,8 @@ void GfxCore::UpdateQuaternion()
     // Produce the rotation quaternion from the pan and tilt angles.
     Vector3 v1(0.0, 0.0, 1.0);
     Vector3 v2(1.0, 0.0, 0.0);
-    Quaternion q1(v1, m_PanAngle);
-    Quaternion q2(v2, m_TiltAngle);
+    Quaternion q1(v1, rad(m_PanAngle));
+    Quaternion q2(v2, rad(m_TiltAngle));
 
     // care: quaternion multiplication is not commutative!
     Quaternion rotation = q2 * q1;
@@ -1371,10 +1372,10 @@ void GfxCore::TurnCave(Double angle)
     // Turn the cave around its z-axis by a given angle.
 
     m_PanAngle += angle;
-    if (m_PanAngle >= M_PI * 2.0) {
-	m_PanAngle -= M_PI * 2.0;
+    if (m_PanAngle >= 360.0) {
+	m_PanAngle -= 360.0;
     } else if (m_PanAngle < 0.0) {
-	m_PanAngle += M_PI * 2.0;
+	m_PanAngle += 360.0;
     }
 
     m_HitTestGridValid = false;
@@ -1392,10 +1393,10 @@ void GfxCore::TurnCaveTo(Double angle)
 void GfxCore::TiltCave(Double tilt_angle)
 {
     // Tilt the cave by a given angle.
-    if (m_TiltAngle + tilt_angle > M_PI_2) {
-	tilt_angle = M_PI_2 - m_TiltAngle;
-    } else if (m_TiltAngle + tilt_angle < -M_PI_2) {
-	tilt_angle = -M_PI_2 - m_TiltAngle;
+    if (m_TiltAngle + tilt_angle > 90.0) {
+	tilt_angle = 90.0 - m_TiltAngle;
+    } else if (m_TiltAngle + tilt_angle < -90.0) {
+	tilt_angle = -90.0 - m_TiltAngle;
     }
 
     m_TiltAngle += tilt_angle;
@@ -1438,7 +1439,7 @@ void GfxCore::SetCoords(wxPoint point)
     SetDataTransform();
     ReverseTransform(point.x, m_YSize - point.y, &cx, &cy, &cz);
 
-    if (m_TiltAngle == M_PI_2) {
+    if (m_TiltAngle == 90.0) {
 	m_Parent->SetCoords(cx + m_Parent->GetXOffset(),
 			    cy + m_Parent->GetYOffset());
     } else if (m_TiltAngle == 0.0) {
@@ -1540,11 +1541,10 @@ void GfxCore::SetCompassFromPoint(wxPoint point)
     wxCoord radius = GetIndicatorRadius();
 
     if (dx * dx + dy * dy <= radius * radius) {
-	TurnCaveTo(atan2((double)dx, (double)dy) - M_PI);
+	TurnCaveTo(deg(atan2((double)dx, (double)dy)) - 180.0);
 	m_MouseOutsideCompass = false;
-    }
-    else {
-	TurnCaveTo(int(int((atan2((double)dx, (double)dy) - M_PI) * 180.0 / M_PI) / 45) * M_PI_4);
+    } else {
+	TurnCaveTo(int((deg(atan2((double)dx, (double)dy)) - 180.0) / 45.0) * 45.0);
 	m_MouseOutsideCompass = true;
     }
 
@@ -1562,18 +1562,15 @@ void GfxCore::SetClinoFromPoint(wxPoint point)
     glaCoord radius = GetIndicatorRadius();
     
     if (dx >= 0 && dx * dx + dy * dy <= radius * radius) {
-	TiltCave(atan2(dy, dx) - m_TiltAngle);
+	TiltCave(deg(atan2(dy, dx)) - m_TiltAngle);
 	m_MouseOutsideElev = false;
-    }
-    else if (dy >= INDICATOR_MARGIN) {
-	TiltCave(M_PI_2 - m_TiltAngle);
+    } else if (dy >= INDICATOR_MARGIN) {
+	TiltCave(90.0 - m_TiltAngle);
 	m_MouseOutsideElev = true;
-    }
-    else if (dy <= -INDICATOR_MARGIN) {
-	TiltCave(-M_PI_2 - m_TiltAngle);
+    } else if (dy <= -INDICATOR_MARGIN) {
+	TiltCave(-90.0 - m_TiltAngle);
 	m_MouseOutsideElev = true;
-    }
-    else {
+    } else {
 	TiltCave(-m_TiltAngle);
 	m_MouseOutsideElev = true;
     }
@@ -1649,8 +1646,8 @@ void GfxCore::RotateSlower(bool accel)
     // Decrease the speed of rotation, optionally by an increased amount.
 
     m_RotationStep /= accel ? 1.44 : 1.2;
-    if (m_RotationStep < M_PI / 180.0) {
-	m_RotationStep = (Double) M_PI / 180.0;
+    if (m_RotationStep < 1.0) {
+	m_RotationStep = 1.0;
     }
 }
 
@@ -1659,8 +1656,8 @@ void GfxCore::RotateFaster(bool accel)
     // Increase the speed of rotation, optionally by an increased amount.
 
     m_RotationStep *= accel ? 1.44 : 1.2;
-    if (m_RotationStep > 2.5 * M_PI) {
-	m_RotationStep = (Double) 2.5 * M_PI;
+    if (m_RotationStep > 450.0) {
+	m_RotationStep = 450.0;
     }
 }
 
@@ -1702,7 +1699,7 @@ void GfxCore::SwitchToPlan()
 
 	case PLAN:
 	    // a second order to switch takes us there right away
-	    TiltCave(M_PI_2 - m_TiltAngle);
+	    TiltCave(90.0 - m_TiltAngle);
 	    m_SwitchingTo = 0;
 	    ForceRefresh();
     }
@@ -1712,21 +1709,21 @@ bool GfxCore::CanRaiseViewpoint() const
 {
     // Determine if the survey can be viewed from a higher angle of elevation.
     
-    return (m_TiltAngle < M_PI_2);
+    return (m_TiltAngle < 90.0);
 }
 
 bool GfxCore::CanLowerViewpoint() const
 {
     // Determine if the survey can be viewed from a lower angle of elevation.
 
-    return (m_TiltAngle > -M_PI_2);
+    return (m_TiltAngle > -90.0);
 }
 
 bool GfxCore::ShowingPlan() const
 {
     // Determine if the survey is in plan view.
     
-    return (m_TiltAngle == M_PI_2);
+    return (m_TiltAngle == 90.0);
 }
 
 bool GfxCore::ShowingElevation() const
@@ -2621,10 +2618,10 @@ bool GfxCore::IsFullScreen() const
 void
 GfxCore::MoveViewer(double forward, double up, double right)
 {
-    double cT = cos(m_TiltAngle);
-    double sT = sin(m_TiltAngle);
-    double cP = cos(m_PanAngle);
-    double sP = sin(m_PanAngle);
+    double cT = cos(rad(m_TiltAngle));
+    double sT = sin(rad(m_TiltAngle));
+    double cP = cos(rad(m_PanAngle));
+    double sP = sin(rad(m_PanAngle));
     Vector3 v_forward(cT * sP, cT * cP, -sT);
     Vector3 v_up(- sT * sP, - sT * cP, cT);
     double cT2_sT2 = cT * cT - sT * sT;

@@ -33,6 +33,7 @@
 #include "img.h"
 #include "namecmp.h"
 #include "filename.h"
+#include "useful.h"
 
 #include <wx/confbase.h>
 
@@ -206,10 +207,10 @@ class AvenListCtrl: public wxListCtrl {
 	    if (!use_default_name || fnm.empty()) {
 #ifdef __WXMOTIF__
 		wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", fnm,
-				  "*.avp", wxSAVE|wxOVERWRITE_PROMPT);
+				  "*.fly", wxSAVE|wxOVERWRITE_PROMPT);
 #else
 		wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", fnm,
-				  wxString::Format("%s|*.avp|%s|%s",
+				  wxString::Format("%s|*.fly|%s|%s",
 						   msg(/*Aven presentations*/320),
 						   msg(/*All files*/208),
 						   wxFileSelectorDefaultWildcardStr),
@@ -1412,7 +1413,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	    Double d_horiz = sqrt(dx*dx + dy*dy);
 	    Double dr = sqrt(dx*dx + dy*dy + dz*dz);
 
-	    Double brg = atan2(dx, dy) * 180.0 / M_PI;
+	    Double brg = deg(atan2(dx, dy));
 	    if (brg < 0) brg += 360;
 
 	    wxString from_str;
@@ -1503,10 +1504,10 @@ void MainFrm::OnPresOpen(wxCommandEvent& event)
     }
 #ifdef __WXMOTIF__
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      "*.avp", wxSAVE);
+		      "*.fly", wxSAVE);
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      wxString::Format("%s|*.avp|%s|%s",
+		      wxString::Format("%s|*.fly|%s|%s",
 				       msg(/*Aven presentations*/320),
 				       msg(/*All files*/208),
 				       wxFileSelectorDefaultWildcardStr),

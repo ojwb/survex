@@ -31,6 +31,7 @@
 
 #include "gla.h"
 #include "message.h"
+#include "useful.h"
 
 #ifndef USE_FNT
 // Some WIN32 stupidity which causes mingw to fail to link for some reason;
@@ -354,7 +355,7 @@ void GLACanvas::SetDataTransform()
 
     Double near_plane = 1.0;
     if (m_Perspective) {
-	Double lr = near_plane * tan(25.0 * M_PI / 180.0);
+	Double lr = near_plane * tan(rad(25.0));
 	Double far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
 	Double tb = lr * aspect;
 	glFrustum(-lr, lr, -tb, tb, near_plane, far_plane);
