@@ -1,3 +1,10 @@
+survex (1.0.25) unstable; urgency=low
+
+  * Updated config.guess and config.sub (closes: bug#186687).
+  * Added missing Build-Depends on xlibs-dev.
+
+ -- Wookey <wookey@survex.com>  Sun, 30 Mar 2003 22:25:29 +0100
+
 survex (1.0.24) unstable; urgency=low
 
   * cavern: fixed LEVEL (broken since around 1.0.8) and added test case.

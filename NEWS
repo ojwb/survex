@@ -1,3 +1,12 @@
+Changes in 1.0.25:
+
+* (MacOS X version): hopefully fixed building of aven.
+
+* (Unix version): updated config.guess and config.sub so should build out of
+  the box on more Unix platforms.
+
+* (Unix version): added missing Build-Depends on xlibs-dev.
+  
 Changes in 1.0.24:
 
 * cavern: fixed LEVEL (broken since around 1.0.8) and added test case.
