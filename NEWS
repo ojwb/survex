@@ -1,3 +1,5 @@
+Changes in 0.99-prerelease9:
+
 * aven: Side Panel can now be dragged or toggled shut and then reopened
   again; double-clicking on the divider now maximises the survey window rather
   than the side panel.

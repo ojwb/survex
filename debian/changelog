@@ -1,3 +1,9 @@
+survex (0.99.9) unstable; urgency=low
+
+  * Aven updates
+
+ -- Wookey <wookey@survex.com>  Sat, 15 Dec 2001 14:27:00 +0000
+
 survex (0.99.8) unstable; urgency=low
 
   * New release - now compiles under GCC3.0 so should build on hppa
