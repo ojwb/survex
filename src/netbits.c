@@ -181,7 +181,9 @@ void addfakeleg( node *fr, node *to,
 char freeleg(node **stnptr) {
    node *stn, *oldstn;
    linkfor *leg, *leg2;
+#ifndef NO_COVARIANCES
    int i, j;
+#endif
 
    stn=*stnptr;
 
@@ -296,7 +298,7 @@ static void print_var( const var *a ) {
    printf( "\\ %4.2f, %4.2f, %4.2f /\n", (*a)[2][0], (*a)[2][1], (*a)[2][2] );
 }
 #endif
-		 
+
 /* r = ab ; r,a,b are variance matrices */
 void mulvv( var *r, const var *a, const var *b ) {
 #ifdef NO_COVARIANCES
@@ -416,7 +418,7 @@ extern int invert_var( var *inv, const var *v ) {
       }
    }
 #undef B
-   
+
      {
 	var p;
 	real d = 0;
