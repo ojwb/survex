@@ -529,7 +529,7 @@ wxPoint GfxCore::IndicatorCompassToScreenPan(int angle)
 
 wxPoint GfxCore::IndicatorCompassToScreenElev(int angle)
 {
-    double theta = (angle * M_PI / 180.0) - m_TiltAngle + M_PI/2.0;
+    double theta = (angle * M_PI / 180.0) + m_TiltAngle + M_PI/2.0;
     wxCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     wxCoord x = wxCoord(length * sin(-theta));
     wxCoord y = wxCoord(length * cos(-theta));
@@ -603,7 +603,7 @@ void GfxCore::Draw2dIndicators()
         white = m_DraggingLeft && m_LastDrag == drag_ELEV && m_MouseOutsideElev;
 	int deg_elev = (int) (m_TiltAngle * 180.0 / M_PI);
 	for (int angle = 0; angle <= 180; angle += 90) {
-	    if (-deg_elev == angle - 90) {
+	    if (deg_elev == angle - 90) {
 	        m_DrawDC.SetPen(m_Pens.green);
 	    }
 	    else {
@@ -664,7 +664,7 @@ void GfxCore::Draw2dIndicators()
     }
 
     if (m_Clino) {
-        int angle = int(m_TiltAngle * 180.0 / M_PI);
+        int angle = int(-m_TiltAngle * 180.0 / M_PI);
 	str = angle ? wxString::Format("%+03d", angle) : wxString("00");
 	m_DrawDC.GetTextExtent(str, &w, &h);
 	m_DrawDC.DrawText(str, elev_centre_x + width / 2 - w, height);
@@ -1270,15 +1270,15 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		  // drag in elevation indicator
 		  m_LastDrag = drag_ELEV;
 		  if (dx1 >= 0 && sqrt(dx1*dx1 + dy*dy) <= radius) {
-		      TiltCave(atan2(-dy, dx1) - m_TiltAngle);
+		      TiltCave(atan2(dy, dx1) - m_TiltAngle);
 		      m_MouseOutsideElev = false;
 		  }
 		  else if (dy >= INDICATOR_MARGIN) {
-		      TiltCave(-M_PI/2.0 - m_TiltAngle);
+		      TiltCave(M_PI/2.0 - m_TiltAngle);
 		      m_MouseOutsideElev = true;
 		  }
 		  else if (dy <= -INDICATOR_MARGIN) {
-		      TiltCave(M_PI/2.0 - m_TiltAngle);
+		      TiltCave(-M_PI/2.0 - m_TiltAngle);
 		      m_MouseOutsideElev = true;
 		  }
 		  else {
