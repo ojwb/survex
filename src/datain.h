@@ -30,36 +30,34 @@
 #endif
 
 typedef struct {
-  FILE *fh;
+   FILE *fh;
 #ifdef HAVE_SETJMP
-  jmp_buf jbSkipLine;
+   jmp_buf jbSkipLine;
 #endif
 } parse;
-extern int  ch;
-/*extern FILE *fh;*/
+
+extern int ch;
 extern parse file;
 
 #define nextch() (ch=getc(file.fh))
 
-extern uchar buffer[];
-
 extern void skipblanks(void);
 
 /* reads complete data file */
-extern void data_file( const char *pth, const char *fnm );
+extern void data_file(const char *pth, const char *fnm);
 
-extern void UsingDataFile( sz fnmUsed );
-extern void skipline( void );
-extern void showline( const char *dummy, int n );
-extern void showandskipline( const char *dummy, int n );
+extern void UsingDataFile(const char *fnmUsed);
+extern void skipline(void);
+extern void showline(const char *dummy, int n);
+extern void showandskipline(const char *dummy, int n);
 
 /* style functions */
 #ifdef NEW_STYLE /* !HACK! */
-extern void data_normal( int /*action*/ );
-extern void data_diving( int /*action*/ );
+extern void data_normal(int /*action*/);
+extern void data_diving(int /*action*/);
 #else
-extern void data_normal( void );
-extern void data_diving( void );
+extern void data_normal(void);
+extern void data_diving(void);
 #endif
 
 #define STYLE_START    0

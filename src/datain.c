@@ -113,12 +113,13 @@
 1998.03.21 fixed up to compile cleanly on Linux
 1998.05.27 fettled to work with NO_COVARIANCES
 1998.06.09 data filenames now converted from Unix/DOS format if necessary
+1998.11.11 added *lrud (ignored for now)
 */
 
 #include <limits.h>
 
 #include "debug.h"
-#include "survex.h"
+#include "cavein.h"
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
@@ -137,53 +138,52 @@
 
 #define PRINT_COMMENT 0
 
-#define var(I)   (pcs->Var[(I)])
+#define var(I) (pcs->Var[(I)])
 
 /* global defns */
-int  ch;
+int ch;
 parse file;
-uchar buffer[COMMAND_BUFFER_LEN];
 
 static bool fNullPaddedEOF(void);
 static long fpLineStart;
 
 /* used in commline.c and (here) in datain.c */
 /* Used to note where to put output files */
-extern void UsingDataFile( sz fnmUsed ) {
-  /* extern sz pthOutput, fnmInput; no in survex.h */
-  if (pthOutput==NULL) {
-    sz sz;
-    pthOutput=PthFromFnm(fnmUsed);
-    fnmInput=osstrdup(fnmUsed);
-    /* Trim of any leaf extension, but directories can have extensions too */
-    sz=strrchr(fnmInput,FNM_SEP_EXT);
-    if (sz!=NULL) {
-      char *szLev;
-      szLev=strrchr(sz,FNM_SEP_LEV);
+extern void UsingDataFile(const char *fnm) {
+   /* pthOutput, fnmInput declared in survex.h */
+   if (!pthOutput) {
+      char *sz;
+      pthOutput = PthFromFnm(fnm);
+      fnmInput = osstrdup(fnm);
+      /* Trim of any leaf extension, but directories can have extensions too */
+      sz = strrchr(fnmInput, FNM_SEP_EXT);
+      if (sz) {
+	 char *szLev;
+	 szLev = strrchr(sz, FNM_SEP_LEV);
 #ifdef FNM_SEP_LEV2
-      if (!szLev)
-        szLev=strrchr(sz,FNM_SEP_LEV2);
+	 if (!szLev) szLev = strrchr(sz, FNM_SEP_LEV2);
 #endif
-      if (!szLev)
-        *sz='\0'; /* trim off any leaf extension */
-    }
-  }
+	 if (!szLev) *sz = '\0'; /* trim off any leaf extension */
+      }
+   }
+}
+
+static void skipword(void) {
+   while (!isBlank(ch) && !isEol(ch)) nextch();
 }
 
 extern void skipblanks(void) {
-  while (isBlank(ch))
-    nextch();
+   while (isBlank(ch)) nextch();
 }
 
-extern void showandskipline( const char *dummy, int n ) {
-  showline(dummy,n);
-  skipline();
+extern void showandskipline(const char *dummy, int n) {
+   showline(dummy, n);
+   skipline();
+   out_info(msg(84));
 }
 
-extern void skipline( void ) {
-  while (!isEol(ch))
-    nextch();
-  out_info(msg(84));
+extern void skipline(void) {
+   while (!isEol(ch)) nextch();
 }
 
 /* display current line, marking n chars (n==INT_MAX => to end of line)
@@ -193,54 +193,54 @@ extern void skipline( void ) {
  * 12  13   7.5& 120 -34
  *              ^ftell()
  */
-extern void showline( const char *dummy, int n ) {
+extern void showline(const char *dummy, int n) {
 #if 1
-  char sz[256];
-  int ch;
-  int i,o,c;
-  int state;
-  long fpCur;
-  dummy=dummy; /* suppress warning */
-  out_info(msg(58));
-  fpCur=ftell(file.fh);
-  o=(int)(fpCur-fpLineStart-1);
-  fseek(file.fh,fpLineStart,SEEK_SET);
-  nextch();
-  i=0;
-  state=0;
-  c=o;
-  while (!isEol(ch)) {
-    c--;
-    if (c<0) {
-      c=n; /* correct thing to do first time, harmless otherwise */
-      state++;
-    }
-    if (ch=='\t')
-      ch=' '; /* turn tabs into a single space for simplicity */
-    if (ch<' '||ch==127) {
-      /* ctrl char other than tab */
-      sz[i++]='^';
-      sz[i++]=ch<' '?ch+64:'?';
-      /* and adjust o or n to take account of extra character */
-      switch (state) {
-        case 0: o++; break;
-        case 1: if (n<INT_MAX) n++; break;
-        default: break;
+   char sz[256];
+   int ch;
+   int i, o, c;
+   int state;
+   long fpCur;
+   dummy = dummy; /* suppress warning */
+   out_info(msg(58));
+   fpCur = ftell(file.fh);
+   o = (int)(fpCur - fpLineStart - 1);
+   fseek(file.fh, fpLineStart, SEEK_SET);
+   nextch();
+   i = 0;
+   state = 0;
+   c = o;
+   while (!isEol(ch)) {
+      c--;
+      if (c<0) {
+	 c = n; /* correct thing to do first time, harmless otherwise */
+	 state++;
       }
-    } else
-      sz[i++]=ch;
-    nextch();
-  }
-  sz[i]='\0';
-  out_info(sz);
-  n=min(n,i-o); /* cope with n==INT_MAX, or indeed just too big */
-  if (n /*&& o+n<80 !HACK!*/) {
-    memset(sz, ' ', o);
-    memset(sz+o, '^', n);
-    sz[o+n]='\0';
-    out_info(sz);
-  }
-  fseek(file.fh,fpCur,SEEK_SET);
+      /* turn tabs into a single space for simplicity */
+      if (ch == '\t') ch=' ';
+      if (ch < ' ' || ch == 127) {
+	 /* ctrl char other than tab */
+	 sz[i++] = '^';
+	 sz[i++] = ch < ' ' ? ch + 64 : '?';
+      /* and adjust o or n to take account of extra character */
+	 switch (state) {
+	  case 0: o++; break;
+	  case 1: if (n < INT_MAX) n++; break;
+	  default: break;
+	 }
+      } else
+	 sz[i++]=ch;
+      nextch();
+   }
+   sz[i] = '\0';
+   out_info(sz);
+   n = min(n, i - o); /* cope with n==INT_MAX, or indeed just too big */
+   if (n /*&& o + n < 80 !HACK!*/) {
+      memset(sz, ' ', o);
+      memset(sz + o, '^', n);
+      sz[o + n] = '\0';
+      out_info(sz);
+   }
+   fseek(file.fh, fpCur, SEEK_SET);
 #else
   char sz[256];
   char *p;
@@ -305,29 +305,6 @@ extern void showline( const char *dummy, int n ) {
 }
 
 extern void data_file( const char *pth, const char *fnm ) {
-  typedef enum {CMD_NULL=-1, CMD_CALIBRATE, CMD_DATA, CMD_DEFAULT,
-    CMD_EQUATE, CMD_FIX, CMD_GRADE, CMD_HALT, CMD_INCLUDE, CMD_MEASURE,
-    CMD_PREFIX, CMD_UNITS, CMD_BEGIN, CMD_END, CMD_SOLVE, CMD_SD, CMD_SET
-  } cmds;
-  static sztok cmd_tab[] = {
-    {"BEGIN",     CMD_BEGIN},
-    {"CALIBRATE", CMD_CALIBRATE},
-    {"DATA",      CMD_DATA},
-    {"DEFAULT",   CMD_DEFAULT},
-    {"END",       CMD_END},
-    {"EQUATE",    CMD_EQUATE},
-    {"FIX",       CMD_FIX},
-    {"GRADE",     CMD_GRADE},
-    {"HALT",      CMD_HALT},
-    {"INCLUDE",   CMD_INCLUDE},
-    {"MEASURE",   CMD_MEASURE},
-    {"PREFIX",    CMD_PREFIX},
-    {"SD",        CMD_SD},
-    {"SET",       CMD_SET},
-    {"SOLVE",     CMD_SOLVE},
-    {"UNITS",     CMD_UNITS},
-    {NULL,        CMD_NULL}
-  };
 #ifndef NO_PERCENTAGE
   long int filelen;
 #endif
@@ -386,24 +363,24 @@ extern void data_file( const char *pth, const char *fnm ) {
   out_current_action(out_buf);
   out_set_fnm(fnm); /* fnmUsed maybe?  !HACK! */
 
-  UsingDataFile( fnmUsed );
+  UsingDataFile(fnmUsed);
 
 #ifndef NO_PERCENTAGE
-  /* Try to find how long the file is...
-   * However, under ANSI fseek( ..., SEEK_END) may not be supported */
-  if (fPercent) {
-    filelen=( fseek(file.fh,0l,SEEK_END) ? -1l : ftell(file.fh) ); /* -1l => dunno */
-    rewind( file.fh ); /* reset file ptr to start & clear any error state */
-  } else
-    filelen=0;
+   /* Try to find how long the file is...
+    * However, under ANSI fseek( ..., SEEK_END) may not be supported */
+   filelen = 0;
+   if (fPercent) {
+      if (fseek(file.fh, 0l, SEEK_END) == 0) filelen = ftell(file.fh);
+      rewind(file.fh); /* reset file ptr to start & clear any error state */
+   }
 #endif
 
 #ifdef HAVE_SETJMP
-  if (setjmp(file.jbSkipLine)) /* errors in nested functions can longjmp here */
-    { /* do nothing special */ }
+   if (setjmp(file.jbSkipLine)) /* errors in nested functions can longjmp here */
+     { /* do nothing special */ }
 #endif
 
-  while (!feof(file.fh)) {
+   while (!feof(file.fh)) {
     fpLineStart=ftell(file.fh); /* Note start of line for error reporting */
 #ifndef NO_PERCENTAGE
     if (filelen>0) /* print %age of file done */
@@ -414,37 +391,10 @@ extern void data_file( const char *pth, const char *fnm ) {
     skipblanks();
 
     if (isData(ch))
-      (pcs->Style)(); /* call function */
+       (pcs->Style)(); /* call function */
     else if (isKeywd(ch)) {
-      nextch();
-      get_token(12);
-      switch (match_tok(cmd_tab,TABSIZE(cmd_tab),(sz)buffer)) {
-        case CMD_CALIBRATE: calibrate(); break;
-        case CMD_DATA: data(); break;
-        case CMD_DEFAULT: set_default(); break;
-        case CMD_EQUATE: equate_list(); break;
-        case CMD_FIX: fix_station(); break;
-        case CMD_GRADE: NOT_YET; break;
-        case CMD_HALT: NOT_YET; break;
-        case CMD_INCLUDE: {
-          sz pth;
-          pth=PthFromFnm(fnmUsed);
-          include(pth);
-          osfree(pth);
-          sprintf(out_buf,msg(123),fnm); /* back to file '..' */
-          out_info(out_buf);
-          break;
-        }
-        case CMD_MEASURE: NOT_YET; break;
-        case CMD_PREFIX: set_prefix(); break;
-        case CMD_UNITS: units(); break;
-        case CMD_BEGIN: begin_block(); break;
-        case CMD_END: end_block(); break;
-        case CMD_SOLVE: solve_network(/*stnlist*/); break;
-        case CMD_SD: set_sd(); break;
-        case CMD_SET: set_chars(); break;
-        default: error(12,showandskipline,NULL,strlen((sz)buffer));
-      }
+       nextch();
+       handle_command(fnmUsed, fnm);
     }
 
     skipblanks();
@@ -456,9 +406,7 @@ extern void data_file( const char *pth, const char *fnm ) {
           error( ( iscntrl(ch) ? 13 : 15 ) ,showline,NULL,INT_MAX);
         out_info(msg(89)); /* "Ignoring rest of line" */
       }
-      nextch();
-      while (!isEol(ch))
-        nextch();
+      skipline();
     }
   }
 
@@ -471,15 +419,14 @@ extern void data_file( const char *pth, const char *fnm ) {
 }
 
 static bool fNullPaddedEOF(void) {
-  long fp=ftell(file.fh);
-  int ch;
-  bool f;
-  nextch();
-  while (ch=='\0' && !feof(file.fh))
-    nextch();
-  f=feof(file.fh);
-  fseek(file.fh,fp,SEEK_SET);
-  return f;
+   long fp = ftell(file.fh);
+   int ch;
+   bool f;
+   nextch();
+   while (ch == '\0' && !feof(file.fh)) nextch();
+   f = feof(file.fh);
+   fseek(file.fh, fp, SEEK_SET);
+   return f;
 }
 
 extern void data_normal( void ) {
@@ -539,7 +486,7 @@ extern void data_normal( void ) {
           static real clinos[] = {(real)(PI/2.0),(real)(-PI/2.0),(real)0.0};
           clino_tok tok;
           get_token(9);
-          tok=match_tok(clino_tab,TABSIZE(clino_tab),(char*)buffer);
+          tok = match_tok(clino_tab, TABSIZE(clino_tab));
           if (tok!=CLINO_NULL) {
             fPlumbed=fTrue;
             clin=clinos[tok];
@@ -566,8 +513,8 @@ extern void data_normal( void ) {
         }
         break;
       }
-      case Ignore:    while (!isBlank(ch) && !isEol(ch)) nextch(); break;
-      case IgnoreAll: while (!isEol(ch)) nextch(); goto dataread;
+      case Ignore: skipword(); break;
+      case IgnoreAll: skipline(); goto dataread;
       case End:   goto dataread;
       default: BUG("Unknown datum in ordering");
     }
@@ -734,8 +681,8 @@ extern void data_diving( void ) {
       case Comp:  comp=read_numeric(fFalse); break;
       case FrDepth: fr_depth=read_numeric(fFalse); break;
       case ToDepth: to_depth=read_numeric(fFalse); break;
-      case Ignore:    while (!isBlank(ch) && !isEol(ch)) nextch(); break;
-      case IgnoreAll: while (!isEol(ch)) nextch(); goto dataread;
+      case Ignore: skipword(); break;
+      case IgnoreAll: skipline(); goto dataread;
       case End:   goto dataread;
       default: BUG("Unknown datum in ordering");
     }
