@@ -70,6 +70,8 @@
 
   */
 
+#define XCAVEROT_BUTTONS
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -260,6 +262,9 @@ static char *ncolors[] = { "black",
    "gray12", "gray24", "gray36",
    "gray48", "gray60", "gray73", "gray82", "gray97", NULL
 };
+
+static void switch_to_plan(void);
+static void switch_to_elevation(void);
 
 static Colormap color_map;
 static XColor colors[128];
@@ -1881,7 +1886,9 @@ main(int argc, char **argv)
       }
       if (redraw) {
 	 perform_redraw();
+#ifdef XCAVEROT_BUTTONS
 	 draw_buttons(mydisplay, mywindow, mygc, enter_gc);
+#endif
       }
    }	/* while */
    
