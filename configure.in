@@ -276,7 +276,7 @@ AC_ARG_ENABLE(profiling,
   *) AC_MSG_ERROR(bad value ${enableval} for --enable-profiling) ;;
 esac])
 
-DOCS_OTHER="manual.rtf manual.txt manual.ps manual.htm"
+DOCS_OTHER="manual.rtf manual.txt manual.ps"
 AC_SUBST(DOCS_OTHER)
 
 AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
