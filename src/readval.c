@@ -83,7 +83,7 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
    int i;
    bool fNew;
    bool fImplicitPrefix = fTrue;
-   int depth = 0;
+   int depth = -1;
 
    skipblanks();
    if (isRoot(ch)) {
@@ -145,7 +145,7 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 	 ptr->stn = NULL;
 	 ptr->up = back_ptr;
 	 ptr->filename = NULL;
-	 ptr->exported = 0;
+	 ptr->min_export = ptr->max_export = 0;
 	 /* FIXME: what if foo.1 is a station as well as a prefix?!? */
 	 ptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
 	 back_ptr->down = ptr;
@@ -176,7 +176,7 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 	    newptr->stn = NULL;
 	    newptr->up = back_ptr;
 	    newptr->filename = NULL;
-	    newptr->exported = 0;
+  	    newptr->min_export = newptr->max_export = 0;
 	    newptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
 	    ptr = newptr;
 	    fNew = fTrue;
@@ -185,12 +185,6 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 	       create_twig(ptr,file.filename);
 	    }
 #endif
-	 } else {
-	    /* OK, police the export level */
-	    if (ptr->exported < depth) {
-	       compile_error(/*"Prefix `%s' not exported."*/26,
-			     sprint_prefix(ptr));
-	    }
 	 }
       }
       depth++;
@@ -198,6 +192,22 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
    } while (isSep(ch));
    /* don't warn about a station that is refered to twice */
    if (!fNew) ptr->fSuspectTypo = fFalse;
+   /* check the export level */
+#if 0
+   printf("R min %d max %d depth %d pfx %s\n",
+	  ptr->min_export, ptr->max_export, depth, sprint_prefix(ptr));
+#endif
+   if (ptr->min_export == 0) {
+      if (depth > ptr->max_export) ptr->max_export = depth;
+   } else if (ptr->max_export < depth) {
+      compile_error(/*Station `%s' not exported high enough*/26,
+		    sprint_prefix(ptr));
+#if 0
+      printf(" *** pfx %s warning not exported enough depth %d "
+             "ptr->max_export %d\n", sprint_prefix(ptr),
+	     depth, ptr->max_export);
+#endif
+   }
    return ptr;
 }
 

@@ -58,6 +58,8 @@ parse file = {
    NULL
 };
 
+bool f_export_ok;
+
 static long fpLineStart;
 
 static void
@@ -269,10 +271,13 @@ data_file(const char *pth, const char *fnm)
       skipblanks();
 
       if (isData(ch)) {
-	 /* style function returns 0 => error, so start next line */
+	 f_export_ok = fFalse;
+
 #ifdef NEW3DFORMAT
 	 temp = limb;
 #endif
+
+	 /* style function returns 0 => error, so start next line */
 	 if (!(pcs->Style)()) {
 	    skipline();
 #ifdef NEW3DFORMAT
@@ -311,6 +316,10 @@ data_file(const char *pth, const char *fnm)
 	 }
       }
    }
+
+   /* don't allow *BEGIN at the end of a file, then *EXPORT in the
+    * including file */
+   f_export_ok = fFalse;
 
 #ifndef NO_PERCENTAGE
    if (fPercent) putnl();

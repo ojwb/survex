@@ -466,7 +466,7 @@ remove_subnets(void)
 		    nameZ->pos->shape = 3;
 		    nameZ->stn = stnZ;
 		    nameZ->up = NULL;
-		    nameZ->exported = 0;
+		    nameZ->min_export = nameZ->max_export = 0;
 		    nameZ->fSuspectTypo = fFalse;
 		    unfix(stnZ);
 		    add_stn_to_list(&stnlist, stnZ);

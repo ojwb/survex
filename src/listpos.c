@@ -1,6 +1,6 @@
 /* > listpos.c
  * SURVEX Cave surveying software: stuff to do with stn position output
- * Copyright (C) 1991-2000 Olly Betts
+ * Copyright (C) 1991-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,6 +122,13 @@ node_stat(prefix *p)
       if (p->fSuspectTypo) {
 	 warning(/*Station `%s' referred to just once, with an explicit prefix - typo?*/70,
 		 sprint_prefix(p));
+      }
+      if (p->min_export > 1) {
+	 error(/*Station `%s' not exported from lowest prefix level*/27,
+	       sprint_prefix(p));
+      } else if (p->min_export == 0 && p->max_export) {
+         error(/*Station `%s' not exported with *EXPORT*/28,
+	       sprint_prefix(p));
       }
    }
 }

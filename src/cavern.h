@@ -138,13 +138,19 @@ typedef struct Prefix {
    char *ident;
    const char *filename;
    unsigned int line;
-   /* how many levels above is this prefix accessable (0 == parent only) */
-   int exported;
+   /* if (min_export == 0) then max_export is max # levels above is this
+    * prefix is used (and so needs to be exported) (0 == parent only)
+    * if (min_export > 0) then max_export is max # levels above this
+    * prefix has been exported, and min_export is how far down the exports
+    * have got (if min_export > 1 after a run, this prefix hasn't been
+    * exported from below enough) */
+   uchar max_export;
+   uchar min_export;
    /* If a survey leg or an *equate command refers to a station using a
     * prefix, and that station isn't refered to elsewhere, it's likely
     * that the user has cocked up the prefix in some way.
     */
-   bool fSuspectTypo;
+   uchar fSuspectTypo;
 #ifdef NEW3DFORMAT
    twig *twig_link;
 #endif

@@ -591,7 +591,7 @@ fix_station(void)
 	    name->pos->shape = 0;
 	    name->stn = fixpt;
 	    name->up = NULL;
-	    name->exported = 0;
+	    name->min_export = name->max_export = 0;
 	    add_stn_to_list(&stnlist, fixpt);
 	    POS(fixpt, 0) = x;
 	    POS(fixpt, 1) = y;
@@ -756,11 +756,9 @@ equate_list(void)
 static void
 export(void)
 {
-   while (1) {
-      prefix *pfx = read_prefix(fTrue);
+   prefix *pfx = read_prefix(fFalse);
+   do {
       int depth = 0;
-      /* FIXME: empty export OK? probably... */
-      if (pfx == NULL) break;
       {
          prefix *p = pfx;
 	 while (p != NULL && p != pcs->Prefix) {
@@ -776,17 +774,29 @@ export(void)
          /* FIXME: *export \ or similarly bogus shit */
          NOT_YET;
       }
-      if (depth < pfx->exported + 1) {
-         /* FIXME: warning already exported */
-         printf("*** warning already exported depth %d pfx->exported %d\n", depth, pfx->exported);
-      } else if (depth > pfx->exported + 1) {
-         /* FIXME: not exported enough */
-         printf("*** warning not exported enough depth %d pfx->exported %d\n", depth, pfx->exported);
+#if 0
+      printf("C min %d max %d depth %d pfx %s\n",
+	     pfx->min_export, pfx->max_export, depth, sprint_prefix(pfx));
+#endif
+      if (pfx->min_export == 0) {
+         /* not encountered *export for this name before */
+         if (pfx->max_export > depth) {
+	    compile_error(/*Station `%s' not exported high enough*/26,
+			  sprint_prefix(pfx));
+         }
+         pfx->min_export = pfx->max_export = depth;
       } else {
-         pfx->exported++;
-	 printf("*** exporting %s to %d\n", sprint_prefix(pfx), pfx->exported);
+         if (pfx->min_export - 1 > depth) {
+	    compile_error(/*Station `%s' not exported high enough*/26,
+			  sprint_prefix(pfx));
+         } else if (pfx->min_export - 1 < depth) {
+	    compile_error(/*Station `%s' already exported*/66,
+			  sprint_prefix(pfx));
+         }
+         pfx->min_export = depth;
       }
-   }
+      pfx = read_prefix(fTrue);
+   } while (pfx);
 }
 
 static void
@@ -1286,8 +1296,18 @@ require(void)
 extern void
 handle_command(void)
 {
+   int cmdtok;
    get_token();
-   switch (match_tok(cmd_tab, TABSIZE(cmd_tab))) {
+   cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
+
+   if (cmdtok == CMD_EXPORT) {
+      if (!f_export_ok)
+	 compile_error(/**EXPORT must immediately follow *BEGIN*/57);
+   } else {
+      f_export_ok = (cmdtok == CMD_BEGIN);
+   }
+
+   switch (cmdtok) {
     case CMD_CALIBRATE: calibrate(); break;
     case CMD_CASE: case_handling(); break;
     case CMD_DATA: data(); break;
