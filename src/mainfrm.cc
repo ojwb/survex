@@ -36,6 +36,7 @@
 #include "useful.h"
 
 #include <wx/confbase.h>
+#include <wx/image.h>
 
 #include <float.h>
 #include <functional>
@@ -1295,8 +1296,11 @@ void MainFrm::OnScreenshot(wxCommandEvent&)
     if (dlg.ShowModal() == wxID_OK) {
 	static bool png_handled = false;
 	if (!png_handled) {
+#if 0 // FIXME : enable this is we allow other export formats...
+	    ::wxInitAllImageHandlers();
+#else
 	    wxImage::AddHandler(new wxPNGHandler);
-	    // or ::wxInitAllImageHandlers();
+#endif
 	    png_handled = true;
 	}
 	if (!m_Gfx->SaveScreenshot(dlg.GetPath(), wxBITMAP_TYPE_PNG)) {

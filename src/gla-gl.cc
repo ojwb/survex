@@ -26,6 +26,7 @@
 #endif
 
 #include <wx/confbase.h>
+#include <wx/image.h>
 
 #include <algorithm>
 
