@@ -129,6 +129,7 @@ splitting up, as it's rather slow to recompile.
 1996.08.04 H: and V: error values were incorrectly transposed
 1997.07.16 added gross error detection code
 1997.08.24 covariance code
+1998.06.15 fettled
 */
 
 /*
@@ -151,25 +152,30 @@ yucky divdv( &d, &d, &v ) code.  Oh well, at least it seems to work.
 
 static void print_var( const var v ) {
 #ifdef NO_COVARIANCES
-   printf("(%f,%f,%f)",v[0],v[1],v[2]);
+   printf("(%f,%f,%f)", v[0], v[1], v[2]);
 #else
    int i;
-   for ( i = 0; i < 3; i ++ )
-     printf("(%f,%f,%f)\n",v[i][0],v[i][1],v[i][2]);
+   for (i = 0; i < 3; i++) printf("(%f,%f,%f)\n", v[i][0], v[i][1], v[i][2]);
 #endif
 }
 
 #define sqrdd(X) (sqrd((X)[0])+sqrd((X)[1])+sqrd((X)[2]))
 
 typedef struct Stack {
- struct Link     *join1, *join2;
- struct Stack    *next;
+   struct Link *join1, *join2;
+   struct Stack *next;
 } stack;
 
+#define IS_NOOSE(SR) ((SR)->type == 1)
+#define IS_PARALLEL(SR) ((SR)->type == 0)
+#define IS_DELTASTAR(SR) ((SR)->type == 2)
+
 typedef struct StackRed {
- struct Link     *join1, *join2, *join3;
- uchar           type; /* 1 => noose, 0 => parallel legs, 2 => delta-star */
- struct StackRed *next;
+   struct Link *join1, *join2, *join3;
+   /* !HACK! type field is superfluous, can infer info from join values... */
+   /* e.g. join3 == NULL for noose, join3 == join1 for ||, otherwise D* */
+   int type; /* 1 => noose, 0 => parallel legs, 2 => delta-star */
+   struct StackRed *next;
 } stackRed;
 
 typedef struct StackTr {
@@ -479,7 +485,7 @@ static void remove_subnets( void ) {
      stn4->leg[dirn4]=newleg2;
 
      trav->next = ptrRed;
-     trav->type=1;
+     trav->type = 1; /* NOOSE */
      ptrRed = trav;
      fMore=fTrue;
     }
@@ -591,7 +597,7 @@ static void remove_subnets( void ) {
      stn4->leg[dirn4]=newleg2;
 
      trav->next = ptrRed;
-     trav->type=0;
+     trav->type = 0; /* PARALLEL */
      ptrRed = trav;
      fMore=fTrue;
     }
@@ -685,8 +691,7 @@ static void remove_subnets( void ) {
      stn5=stn2->leg[dirn2]->l.to;
      stn6=stn3->leg[dirn3]->l.to;
 
-     if (stn4==stn2 || stn4==stn3 || stn5==stn3)
-      break;
+     if (stn4==stn2 || stn4==stn3 || stn5==stn3) break;
 
      dirn4=reverse_leg(stn->leg[dirn]);
      dirn5=reverse_leg(stn2->leg[dirn2]);
@@ -773,7 +778,7 @@ static void remove_subnets( void ) {
       trav->join2=stn5->leg[dirn5];
       trav->join3=stn6->leg[dirn6];
       trav->next = ptrRed;
-      trav->type=2;
+      trav->type = 2; /* DELTASTAR */
       ptrRed = trav;
       fMore=fTrue;
 
@@ -797,248 +802,258 @@ static void remove_subnets( void ) {
 }
 
 static void replace_subnets( void ) {
- stackRed *ptrOld;
- node *stn,*stn2,*stn3,*stn4;
- int dirn,dirn2,dirn3,dirn4;
- linkfor *leg;
- unsigned long cBogus=0; /* how many invented stations? */
+   stackRed *ptrOld;
+   node *stn, *stn2, *stn3, *stn4;
+   int dirn, dirn2, dirn3, dirn4;
+   linkfor *leg;
+   unsigned long cBogus=0; /* how many invented stations? */
 
- /* help to catch bad accesses */
- stn=stn2=stn3=stn4=NULL;
- dirn=dirn2=dirn3=dirn4=0;
+   /* help to catch bad accesses */
+   stn = stn2 = stn3 = stn4 = NULL;
+   dirn = dirn2 = dirn3 = dirn4 = 0;
 
- out_current_action(msg(130));
+   out_current_action(msg(130));
 
- while (ptrRed!=NULL) {
-/*  printf("replace_subnets() type %d\n",ptrRed->type);*/
-  if (ptrRed->type<2) {
-   leg=ptrRed->join1; leg=leg->l.to->leg[reverse_leg(leg)];
-   stn3=leg->l.to; dirn3=reverse_leg(leg);
-   leg=ptrRed->join2; leg=leg->l.to->leg[reverse_leg(leg)];
-   stn4=leg->l.to; dirn4=reverse_leg(leg);
-   ASSERT( !(fixed(stn3)&&!fixed(stn4)) );
-   ASSERT( !(!fixed(stn3)&&fixed(stn4)) );
-   ASSERT( data_here(stn3->leg[dirn3]) );
-  }
-
-  switch (ptrRed->type) {
-   default: BUG("ptrRed->type out of range");
-   case 1: { /* noose (hanging-loop) */
-    d e;
-    linkfor *leg;
-    if (fixed(stn3)) { /* NB either both or neither fixed */
-     leg=stn3->leg[dirn3];
-     stn2=ptrRed->join1->l.to;
-     dirn2=reverse_leg(ptrRed->join1);
-
-     if (fZero(&leg->v))
-      e[0]=e[1]=e[2]=0.0;
-     else {
-      subdd( &e, &POSD(stn4), &POSD(stn3) );
-      subdd( &e, &e, &leg->d );
-      divdv( &e, &e, &leg->v );
-     }
-     if (data_here(ptrRed->join1)) {
-      mulvd( &e, &ptrRed->join1->v, &e );
-      adddd( &POSD(stn2), &POSD(stn3), &ptrRed->join1->d );
-      adddd( &POSD(stn2), &POSD(stn2), &e );
-     } else {
-      mulvd( &e, &stn2->leg[dirn2]->v, &e );
-      subdd( &POSD(stn2), &POSD(stn3), &stn2->leg[dirn2]->d );
-      adddd( &POSD(stn2), &POSD(stn2), &e );
-     }
-     stn2->status=statFixed;
-     fix(stn2);
-     dirn2 = (dirn2+2)%3; /* point back at stn again */
-     stn = stn2->leg[dirn2]->l.to;
-#if 0
-     printf("Replacing noose with stn...stn4 = \n");
-     print_prefix(stn->name); putnl();  print_prefix(stn2->name); putnl();
-     print_prefix(stn3->name); putnl(); print_prefix(stn4->name); putnl();
-#endif
-     if (data_here(stn2->leg[dirn2]))
-      adddd( &POSD(stn), &POSD(stn2), &stn2->leg[dirn2]->d );
-     else
-      subdd( &POSD(stn), &POSD(stn2),
-                                &stn->leg[reverse_leg(stn2->leg[dirn2])]->d );
-     stn->status=statFixed;
-     fix(stn);
-    } else {
-     stn2=ptrRed->join1->l.to;
-     dirn2=reverse_leg(ptrRed->join1);
-     stn2->status=statInNet;
-     dirn2 = (dirn2+2)%3; /* point back at stn again */
-     stn = stn2->leg[dirn2]->l.to;
-     stn->status=statInNet;
-    }
-
-    osfree(stn3->leg[dirn3]); stn3->leg[dirn3]=ptrRed->join1;
-    osfree(stn4->leg[dirn4]); stn4->leg[dirn4]=ptrRed->join2;
-    break;
-   }
-   case 0: { /* parallel legs */
-    d e, e2;
-    linkfor *leg;
-    if (fixed(stn3)) { /* NB either both or neither fixed */
-     stn=ptrRed->join1->l.to;
-     dirn=reverse_leg(ptrRed->join1);
-
-     stn2=ptrRed->join2->l.to;
-     dirn2=reverse_leg(ptrRed->join2);
-
-     leg=stn3->leg[dirn3];
-
-     if (fZero(&leg->v))
-      e[0]=e[1]=e[2]=0.0;
-     else {
-      subdd( &e, &POSD(stn4), &POSD(stn3) );
-      subdd( &e, &e, &leg->d );
-      divdv( &e, &e, &leg->v );
-     }
-
-     if (data_here(ptrRed->join1)) {
-      leg=ptrRed->join1;
-      adddd( &POSD(stn), &POSD(stn3), &leg->d );
-     } else {
-      leg=stn->leg[dirn];
-      subdd( &POSD(stn), &POSD(stn3), &leg->d );
-     }
-     mulvd( &e2, &leg->v, &e );
-     adddd( &POSD(stn), &POSD(stn), &e2 );
-
-     if (data_here(ptrRed->join2)) {
-      leg=ptrRed->join2;
-      adddd( &POSD(stn2), &POSD(stn4), &leg->d );
-     } else {
-      leg=stn2->leg[dirn2];
-      subdd( &POSD(stn2), &POSD(stn4), &leg->d );
-     }
-     mulvd( &e2, &leg->v, &e );
-     subdd( &POSD(stn2), &POSD(stn2), &e2 );
-     stn->status=statFixed;
-     stn2->status=statFixed;
-     fix(stn);
-     fix(stn2);
-#if 0
-     printf("Replacing parallel with stn...stn4 = \n");
-     print_prefix(stn->name); putnl();  print_prefix(stn2->name); putnl();
-     print_prefix(stn3->name); putnl(); print_prefix(stn4->name); putnl();
-#endif
-    } else {
-     stn=ptrRed->join1->l.to;
-     stn->status = statInNet;
-
-     stn2=ptrRed->join2->l.to;
-     stn2->status = statInNet;
-    }
-    osfree(stn3->leg[dirn3]); stn3->leg[dirn3]=ptrRed->join1;
-    osfree(stn4->leg[dirn4]); stn4->leg[dirn4]=ptrRed->join2;
-    break;
-   }
-   case 2: {
-    d e;
-    linkfor *leg1, *leg2;
-    node *stnZ;
-    node *stn[3];
-    int dirn[3];
-    linkfor *leg[3];
-    int i;
-    linkfor *legX;
-
-    leg[0]=ptrRed->join1;
-    leg[1]=ptrRed->join2;
-    leg[2]=ptrRed->join3;
-
-    /* work out ends as we don't bother stacking them */
-    legX=leg[0]->l.to->leg[reverse_leg(leg[0])];
-    stn[0]=legX->l.to; dirn[0]=reverse_leg(legX);
-    stnZ=stn[0]->leg[dirn[0]]->l.to;
-    stn[1]=stnZ->leg[1]->l.to; dirn[1]=reverse_leg(stnZ->leg[1]);
-    stn[2]=stnZ->leg[2]->l.to; dirn[2]=reverse_leg(stnZ->leg[2]);
-/*print_prefix(stnZ->name);printf(" %p status %d\n",(void*)stnZ,stnZ->status);*/
-
-    if (fixed(stnZ)) {
-     for(i=0;i<3;i++) {
-      ASSERT2( fixed(stn[i]), "stn not fixed for D*");
-      ASSERT2( data_here(stn[i]->leg[dirn[i]]), "data not on leg for D*");
-      ASSERT2( stn[i]->leg[dirn[i]]->l.to==stnZ, "bad sub-network for D*");
-     }
-     for( i=0 ; i<3 ; i++) {
-      leg2=stn[i]->leg[dirn[i]];
-      leg1=copy_link(leg[i]);
-      stn2=leg[i]->l.to;
-      if (fZero(&leg2->v))
-       e[0]=e[1]=e[2]=0.0;
-      else {
-       subdd( &e, &POSD(stnZ), &POSD(stn[i]) );
-       subdd( &e, &e, &leg2->d );
-       divdv( &e, &e, &leg2->v );
-       mulvd( &e, &leg1->v, &e );
+   while (ptrRed != NULL) {
+      /*  printf("replace_subnets() type %d\n",ptrRed->type);*/
+      if (!IS_DELTASTAR(ptrRed)) {
+         leg=ptrRed->join1; leg=leg->l.to->leg[reverse_leg(leg)];
+         stn3=leg->l.to; dirn3=reverse_leg(leg);
+         leg=ptrRed->join2; leg=leg->l.to->leg[reverse_leg(leg)];
+         stn4=leg->l.to; dirn4=reverse_leg(leg);
+         ASSERT( !(fixed(stn3)&&!fixed(stn4)) );
+         ASSERT( !(!fixed(stn3)&&fixed(stn4)) );
+         ASSERT( data_here(stn3->leg[dirn3]) );
       }
-      adddd( &POSD(stn2), &POSD(stn[i]), &leg1->d );
-      adddd( &POSD(stn2), &POSD(stn2), &e );
-      stn2->status=statFixed;
-      fix(stn2);
-      osfree(leg1);
-      osfree(leg2);
-      stn[i]->leg[dirn[i]]=leg[i];
-      osfree(stnZ->leg[i]);
-      stnZ->leg[i]=NULL;
-     }
+
+      if (IS_NOOSE(ptrRed) {
+         /* noose (hanging-loop) */
+         d e;
+         linkfor *leg;
+         if (fixed(stn3)) {
+            /* NB either both or neither fixed */
+            leg=stn3->leg[dirn3];
+            stn2=ptrRed->join1->l.to;
+            dirn2=reverse_leg(ptrRed->join1);
+
+            if (fZero(&leg->v))
+               e[0]=e[1]=e[2]=0.0;
+            else {
+               subdd( &e, &POSD(stn4), &POSD(stn3) );
+               subdd( &e, &e, &leg->d );
+               divdv( &e, &e, &leg->v );
+            }
+            if (data_here(ptrRed->join1)) {
+               mulvd( &e, &ptrRed->join1->v, &e );
+               adddd( &POSD(stn2), &POSD(stn3), &ptrRed->join1->d );
+               adddd( &POSD(stn2), &POSD(stn2), &e );
+            } else {
+               mulvd( &e, &stn2->leg[dirn2]->v, &e );
+               subdd( &POSD(stn2), &POSD(stn3), &stn2->leg[dirn2]->d );
+               adddd( &POSD(stn2), &POSD(stn2), &e );
+            }
+            stn2->status=statFixed;
+            fix(stn2);
+            dirn2 = (dirn2+2)%3; /* point back at stn again */
+            stn = stn2->leg[dirn2]->l.to;
+#if 0
+            printf("Replacing noose with stn...stn4 = \n");
+            print_prefix(stn->name); putnl();
+            print_prefix(stn2->name); putnl();
+            print_prefix(stn3->name); putnl();
+            print_prefix(stn4->name); putnl();
+#endif
+            if (data_here(stn2->leg[dirn2]))
+               adddd(&POSD(stn), &POSD(stn2), &stn2->leg[dirn2]->d);
+            else
+               subdd(&POSD(stn), &POSD(stn2),
+                     &stn->leg[reverse_leg(stn2->leg[dirn2])]->d);
+            stn->status=statFixed;
+            fix(stn);
+         } else {
+            stn2=ptrRed->join1->l.to;
+            dirn2=reverse_leg(ptrRed->join1);
+            stn2->status=statInNet;
+            dirn2 = (dirn2+2)%3; /* point back at stn again */
+            stn = stn2->leg[dirn2]->l.to;
+            stn->status=statInNet;
+         }
+
+         osfree(stn3->leg[dirn3]);
+         stn3->leg[dirn3]=ptrRed->join1;
+         osfree(stn4->leg[dirn4]);
+         stn4->leg[dirn4]=ptrRed->join2;
+      } else if (IS_PARALLEL(ptrRed)) {
+         /* parallel legs */
+         d e, e2;
+         linkfor *leg;
+         if (fixed(stn3)) {
+            /* NB either both or neither fixed */
+            stn=ptrRed->join1->l.to;
+            dirn=reverse_leg(ptrRed->join1);
+
+            stn2=ptrRed->join2->l.to;
+            dirn2=reverse_leg(ptrRed->join2);
+
+            leg=stn3->leg[dirn3];
+
+            if (fZero(&leg->v))
+               e[0]=e[1]=e[2]=0.0;
+            else {
+               subdd( &e, &POSD(stn4), &POSD(stn3) );
+               subdd( &e, &e, &leg->d );
+               divdv( &e, &e, &leg->v );
+            }
+
+            if (data_here(ptrRed->join1)) {
+               leg=ptrRed->join1;
+               adddd( &POSD(stn), &POSD(stn3), &leg->d );
+            } else {
+               leg=stn->leg[dirn];
+               subdd( &POSD(stn), &POSD(stn3), &leg->d );
+            }
+            mulvd( &e2, &leg->v, &e );
+            adddd( &POSD(stn), &POSD(stn), &e2 );
+
+            if (data_here(ptrRed->join2)) {
+               leg=ptrRed->join2;
+               adddd( &POSD(stn2), &POSD(stn4), &leg->d );
+            } else {
+               leg=stn2->leg[dirn2];
+               subdd( &POSD(stn2), &POSD(stn4), &leg->d );
+            }
+            mulvd( &e2, &leg->v, &e );
+            subdd( &POSD(stn2), &POSD(stn2), &e2 );
+            stn->status=statFixed;
+            stn2->status=statFixed;
+            fix(stn);
+            fix(stn2);
+#if 0
+            printf("Replacing parallel with stn...stn4 = \n");
+            print_prefix(stn->name); putnl();
+            print_prefix(stn2->name); putnl();
+            print_prefix(stn3->name); putnl();
+            print_prefix(stn4->name); putnl();
+#endif
+         } else {
+            stn=ptrRed->join1->l.to;
+            stn->status = statInNet;
+
+            stn2=ptrRed->join2->l.to;
+            stn2->status = statInNet;
+         }
+         osfree(stn3->leg[dirn3]); stn3->leg[dirn3]=ptrRed->join1;
+         osfree(stn4->leg[dirn4]); stn4->leg[dirn4]=ptrRed->join2;
+      } else if (IS_DELTASTAR(ptrRed)) {
+         d e;
+         linkfor *leg1, *leg2;
+         node *stnZ;
+         node *stn[3];
+         int dirn[3];
+         linkfor *leg[3];
+         int i;
+         linkfor *legX;
+
+         leg[0]=ptrRed->join1;
+         leg[1]=ptrRed->join2;
+         leg[2]=ptrRed->join3;
+
+         /* work out ends as we don't bother stacking them */
+         legX=leg[0]->l.to->leg[reverse_leg(leg[0])];
+         stn[0]=legX->l.to;
+         dirn[0]=reverse_leg(legX);
+         stnZ=stn[0]->leg[dirn[0]]->l.to;
+         stn[1]=stnZ->leg[1]->l.to; dirn[1]=reverse_leg(stnZ->leg[1]);
+         stn[2]=stnZ->leg[2]->l.to; dirn[2]=reverse_leg(stnZ->leg[2]);
+     /*print_prefix(stnZ->name);printf(" %p status %d\n",(void*)stnZ,stnZ->status);*/
+
+         if (fixed(stnZ)) {
+            for (i = 0; i < 3; i++) {
+               ASSERT2(fixed(stn[i]), "stn not fixed for D*");
+               ASSERT2(data_here(stn[i]->leg[dirn[i]]),
+	               "data not on leg for D*");
+               ASSERT2(stn[i]->leg[dirn[i]]->l.to == stnZ,
+                       "bad sub-network for D*");
+            }
+            for (i = 0; i < 3; i++) {
+               leg2=stn[i]->leg[dirn[i]];
+               leg1=copy_link(leg[i]);
+               stn2=leg[i]->l.to;
+               if (fZero(&leg2->v))
+                  e[0]=e[1]=e[2]=0.0;
+               else {
+                  subdd( &e, &POSD(stnZ), &POSD(stn[i]) );
+                  subdd( &e, &e, &leg2->d );
+                  divdv( &e, &e, &leg2->v );
+                  mulvd( &e, &leg1->v, &e );
+               }
+               adddd( &POSD(stn2), &POSD(stn[i]), &leg1->d );
+               adddd( &POSD(stn2), &POSD(stn2), &e );
+               stn2->status=statFixed;
+               fix(stn2);
+               osfree(leg1);
+               osfree(leg2);
+               stn[i]->leg[dirn[i]]=leg[i];
+               osfree(stnZ->leg[i]);
+               stnZ->leg[i]=NULL;
+            }
 /*printf("---%d %f %f %f %d\n",cBogus,POS(stnZ,0),POS(stnZ,1),POS(stnZ,2),stnZ->status);*/
-    } else { /* not fixed case */
-     for(i=0;i<3;i++) {
-      ASSERT2( !fixed(stn[i]), "stn fixed for D*");
-      ASSERT2( data_here(stn[i]->leg[dirn[i]]), "data not on leg for D*");
-      ASSERT2( stn[i]->leg[dirn[i]]->l.to==stnZ, "bad sub-network for D*");
-     }
-     for( i=0 ; i<3 ; i++) {
+         } else { /* not fixed case */
+            for (i = 0; i < 3; i++) {
+               ASSERT2(!fixed(stn[i]), "stn fixed for D*");
+               ASSERT2(data_here(stn[i]->leg[dirn[i]]),
+                       "data not on leg for D*");
+               ASSERT2(stn[i]->leg[dirn[i]]->l.to == stnZ,
+                       "bad sub-network for D*");
+            }
+            for (i = 0; i < 3; i++) {
 /*print_prefix(stn[i]->name);printf(" status %d\n",stn[i]->status);*/
-      leg2=stn[i]->leg[dirn[i]];
-      stn2=leg[i]->l.to;
-      stn2->status=statInNet;
-      osfree(leg2);
-      stn[i]->leg[dirn[i]]=leg[i];
-      osfree(stnZ->leg[i]);
-      stnZ->leg[i]=NULL;
-     }
+               leg2=stn[i]->leg[dirn[i]];
+               stn2=leg[i]->l.to;
+               stn2->status=statInNet;
+               osfree(leg2);
+               stn[i]->leg[dirn[i]]=leg[i];
+               osfree(stnZ->leg[i]);
+               stnZ->leg[i]=NULL;
+            }
 /*     printf("---%d not fixed %d\n",cBogus,stnZ->status);*/
-    }
+           }
 
-    cBogus++;
-    break;
+           cBogus++;
+        }
+      } else {
+         BUG("ptrRed has unknown type");
+      }
+
+      ptrOld=ptrRed;
+      ptrRed=ptrRed->next;
+      osfree(ptrOld);
    }
-  }
 
-  ptrOld=ptrRed;
-  ptrRed=ptrRed->next;
-  osfree(ptrOld);
- }
-
- if (cBogus) {
-  int cBogus2=0;
-  node **pstnPrev;
-  pstnPrev=&stnlist;
-  /* this loop could stop when it has found cBogus, but continue for now as
-   * it's a useful sanity check
-   */
-  for( stn=stnlist ; stn /*cBogus*/ ; stn=stn->next ) {
-/*    ASSERT2(stn,"bogus station count is wrong");*/
-    if (stn->status && stn->name->up==NULL && stn->name->ident[0]=='\0') {
-/*      printf(":::%d %f %f %f %d\n",cBogus2,POS(stn,0),POS(stn,1),POS(stn,2),stn->status);*/
-      *pstnPrev=stn->next;
-      osfree(stn->name);
-      osfree(stn);
-      cBogus2++;
-/*      cBogus--;*/
-    } else {
-      pstnPrev=&(stn->next);
-/*      if (stn->status==0 && stn->name->up==NULL && stn->name->ident[0]=='\0')
-        printf("::: hmm\n");*/
+   if (cBogus) {
+    int cBogus2=0;
+    node **pstnPrev;
+    pstnPrev=&stnlist;
+    /* this loop could stop when it has found cBogus, but continue for now as
+     * it's a useful sanity check
+     */
+    for( stn=stnlist ; stn /*cBogus*/ ; stn=stn->next ) {
+  /*    ASSERT2(stn,"bogus station count is wrong");*/
+      if (stn->status && stn->name->up==NULL && stn->name->ident[0]=='\0') {
+  /*      printf(":::%d %f %f %f %d\n",cBogus2,POS(stn,0),POS(stn,1),POS(stn,2),stn->status);*/
+        *pstnPrev=stn->next;
+        osfree(stn->name);
+        osfree(stn);
+        cBogus2++;
+  /*      cBogus--;*/
+      } else {
+        pstnPrev=&(stn->next);
+  /*      if (stn->status==0 && stn->name->up==NULL && stn->name->ident[0]=='\0')
+          printf("::: hmm\n");*/
+      }
     }
-  }
-  ASSERT2(cBogus==cBogus2,"bogus station count is wrong");
- }
+    ASSERT2(cBogus==cBogus2,"bogus station count is wrong");
+   }
 }
 
 #ifdef BLUNDER_DETECTION
