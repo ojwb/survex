@@ -9,7 +9,7 @@ int strcasecmp(const char *s1, const char *s2) {
    do {
       c1 = *s1++;
       c2 = *s2++;
-   } while (c1 && toupper(c1) != toupper(c2));
+   } while (c1 && toupper(c1) == toupper(c2));
    /* now calculate real difference */
    return c1 - c2;
 }
