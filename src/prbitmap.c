@@ -6,10 +6,11 @@
 # include <config.h>
 #endif
 
+#include <ctype.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <ctype.h>
+#include <string.h>
 
 #include "useful.h"
 #include "filename.h"
@@ -121,7 +122,7 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
    dppY = DPP(dpiY);
 /* printf("Debug info: dpp x=%d, y=%d\n\n",dppX,dppY); */
 
-   fnm = UsePth(pth, leaf);
+   fnm = use_path(pth, leaf);
    fh = safe_fopen(fnm, "rb");
    osfree(fnm);
 
@@ -153,7 +154,6 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
     * a buffer overrun - FIXME this isn't a sensible way for this to work */
    len = (len / 8) + 31;
    if (max_def_char > len) max_def_char = len;   
-
    fclose(fh);
 }
 
@@ -161,9 +161,9 @@ static void
 WriteLetter(int ch, long X, long Y)
 {
    int x, y, x2, y2, t;
-/*   printf("*** writeletter( %c, %ld, %ld )\n",ch,X,Y); */
+/*   printf("*** writeletter( %c, %ld, %ld )\n",ch,X,Y);*/
    for (y = 7; y >= 0; y--) {
-      t = font[(ch - 32) * 8 + y];
+      t = font[(ch - 32) * 8 + 7 - y];
       for (x = 0; x < 8; x++) {
          if (t & 1) {
 	    /* plot mega-pixel */
@@ -179,10 +179,10 @@ WriteLetter(int ch, long X, long Y)
 extern void
 WriteString(const char *s)
 {
-   unsigned char ch = *s++;
-   while (ch >= 32) {
+   int ch;
+   unsigned const char *p = (unsigned const char *)s;
+   while ((ch = *p++) >= 32) {
       if (ch <= max_def_char) WriteLetter(ch, xLast, yLast);
-      ch = *s++;
       xLast += (long)CHAR_SPACING * dppX;
    }
 }
