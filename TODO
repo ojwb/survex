@@ -8,7 +8,8 @@ From: Leandro Dybal Bertoni <dybal@upe.org.br>
 Sort .err file by error (the segment with the grossest error first)
 
 Date: Mon, 02 Nov 1998 09:16:23 +1100
-From: Michael Lake <Mike.Lake@uts.edu.au>
+Subject: caverot/xcaverot/aven
+From: Michael Lake <Mike.Lake@uts.edu.au>, wookey, olly
 
 [Document xcaverot keys somewhere]
 pan view - cursor keys
@@ -26,31 +27,35 @@ r - reverse direction of autorotation
 c/v - rotate one step
 '// - higher/lower viewpoint
 n/s/e/w/u/d - view cave from north/south/east/west/above/below
-missing: O (overlapping labels), ^A (lazy redraw during drags) ^L (no
-legs), ^R (reverse sense of controls), escape vs q...
+
+xcaverot missing: O (overlapping labels), ^A (lazy redraw during drags) ^L
+(no legs), ^R (reverse sense of controls), escape vs q...
+
+check xcaverot/caverot/aven have consistent senses to mouse and keyboard
+controls; shift-ed keys in xcaverot should move faster...
+
+switch_to_(plan|elevation) in xcaverot should animate.
+
+Merge in Mark's new version of aven (which uses wxwindows)
+
+caverot: by default put crosses on those points with no legs attached
+
+caverot: click on station to centre; type in station to centre
+
+caverot: improve 3d torture test and try to automate its use if possible.
+
+try using labels.c in xcaverot to see if XRegions are better or not?
 
 Date: 15 Dec 1998
 From: Olly
 
 merge "datums" and quantities?
 
-Date: 05 Jan 1999
-From: Wookey
-
-Point out in documentation that file structure and survey structure don't
-have to be the same.  And in particular that folder/directory names can be
-different.
-
 Date: 21 Jul 1999
 From: Olly
 
 Articulation point code: ideally the articulation point code should allow
 further network reductions to happen after splitting at articulation points.
-
-Date: 20 Feb 2000
-From: Olly
-
-Sort out INSTALL.DOS and mingw_extras/INSTALL.txt
 
 Date: 24 Feb 2000
 From: Wookey
@@ -95,11 +100,6 @@ crosses option (only draw cross at intersections, not a full grid).
 Date: Fri, 18 Aug 2000
 From: Olly
 
-Update documentation (2 volunteers are currently working on this).
-
-Date: Fri, 18 Aug 2000
-From: Olly
-
 Clean up the sample data and start including it again.
 
 Date: Thu, 23 Nov 2000
@@ -117,44 +117,34 @@ stats.
 
 Date: Sat, 03 Mar 2001
 From: Olly
+Subject: documentation
+
+Update documentation (2 volunteers are currently working on this).
 
 Document *require, *export, *flags, plumbed diving legs,
 easting/northing/altitude vs dx/dy/dz (waiting until changes to docs come
 back to avoid trying to patch a modified version...)
 
+Point out in documentation that file structure and survey structure don't
+have to be the same.  And in particular that folder/directory names can be
+different.
+
+duncs comment on rewording docs on where files are looked for...
+
+Sort out INSTALL.DOS and mingw_extras/INSTALL.txt
+
 Date: Sat, 03 Mar 2001
 From: Olly
 
-Merge in Mark's new version of aven (which uses wxwindows)
-
-caverot: by default put crosses on those points with no legs attached
-
-caverot: click on station to centre; type in station to centre
-
-caverot: make suite of unusual .3d files to test (e.g. empty, no labels,
-no lines, no stations, no x/y/z dimension, etc) for testing aven, caverot,
-xcaverot.
-
 cavern: auto declination? NEW_STYLE?
 
-Sort out Leandro's sketch output stuff in 3dtodxf; rename 3dtodxf
+Sort out Leandro's sketch output stuff in cad3d
 
 update translations
 
 chase up zombies
 
-resolve entries in TODO and BUGS; resolve FIXMEs in code
-
-check xcaverot/caverot/aven have consistent senses to mouse and keyboard
-controls...
-
-try using labels.c in xcaverot to see if XRegions are better or not?
+resolve entries in TODO; resolve FIXMEs in code
 
 test diving data with compass omitted (plumbed)
-
-duncs comment on rewording docs on where files are looked for...
-
-shift-ed keys in xcaverot should move faster...
-
-switch_to_(plan|elevation) in xcaverot should animate.
 

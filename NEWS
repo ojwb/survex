@@ -60,6 +60,8 @@ Changes in 0.97-prerelease1:
 * cavern: bug fix: trying to report certain errors in really long lines could
   cause an internal error.
 
+* 3dtodxf: renamed to cad3d since it can now produce DXF or sketch format.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling
