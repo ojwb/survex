@@ -23,8 +23,13 @@ if test x"$rel" = xyes ; then
    if ! test -x $CVS2CL ; then
       CVS2CL=../cvs2cl/cvs2cl.pl
    fi
+   if ! test -x $CVS2CL ; then
+      echo cvs2cl.pl not found
+      exit 1
+   fi
    TAG="`sed 's/^CHANGELOG_FROM_TAG=//p;d' configure.in`"
-   if ! cvs log -r$TAG::|./fixchangelog.pl $TAG|$CVS2CL --stdin 2> /dev/null ; then
+   # stderr | grep -v '^cvs server: warning: no revision .*/Attic/'
+   if ! cvs log -r$TAG:: 2> /dev/null|./fixchangelog.pl $TAG|$CVS2CL --stdin 2> /dev/null ; then
       echo Failed to update ChangeLog from CVS
       exit 1
    fi
@@ -47,9 +52,9 @@ fi
 autoreconf --force -i
 export CC
 export CXX
-CC=gcc-3.2
-CXX=g++-3.2
-if ! ./configure --enable-opengl ; then
+CC=gcc
+CXX=g++
+if ! ./configure ; then
    echo configure failed
    exit 1
 fi
@@ -124,8 +129,8 @@ if expr "$mk" : '.*\<mingw\>'; then
 	 export CXX
       fi
    fi
-   wxc=wxmsw-2.4-config
-   for a in /usr/i586-mingw32msvc/bin/wxmsw-2.4-i586-mingw32msvc-config /opt/wxmsw-2.4.0/bin/wxmsw-2.4-i686-mingw32-config ; do
+   wxc=wxmsw-2.5-config
+   for a in /usr/i586-mingw32msvc/bin/wxmsw-2.5-i586-mingw32msvc-config ; do
       test -x "$a" && wxc="$a"
    done
    LDFLAGS=
@@ -134,7 +139,7 @@ if expr "$mk" : '.*\<mingw\>'; then
       LDFLAGS=-L/opt/rx-win32/lib
       CPPFLAGS=-I/opt/rx-win32/include
    fi
-   if ! ./configure --host=mingw32 --build="$build_platform" WXCONFIG="$WXCONFIG" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" CFLAGS=-Werror CXXFLAGS=-Werror ; then
+   if ! ./configure --host=mingw32 --build="$build_platform" WXCONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" CFLAGS=-Werror CXXFLAGS=-Werror ; then
       echo mingw configure failed
       exit 1
    fi
