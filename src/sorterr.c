@@ -243,9 +243,14 @@ main(int argc, char **argv)
 
    if (fnm_out) {
       safe_fclose(fh_out);
-#if (OS!=UNIX)
-      /* UNIX rename atomically replaces - other OSes are less useful */
-      /* FIXME: WIN32 needs this - haven't actually checked others. */
+#if (OS!=UNIX) && !defined(__DJGPP__)
+      /* UNIX rename atomically replaces, so doesn't need this.
+       * DJGPP "removes destination first if it exists" according to docs
+       *    (testing confirms this) so doesn't need this.
+       * BorlandC won't overwrite (from tests) so needs this code
+       * WIN32 won't overwrite (from tests) so needs this code.
+       * RISC OS won't overwrite on some filing systems, so needs this code.
+       */
       remove(fnm);
 #endif
       rename(fnm_out, fnm);
