@@ -427,6 +427,7 @@ handle_plumb(clino_type *p_ctype)
 
 static int
 process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
+	       real backcomp, real backclin,
 	       bool fToFirst, clino_type ctype, clino_type backctype)
 {
    real dx, dy, dz;
@@ -443,30 +444,69 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       compile_warning(/*Negative adjusted tape reading*/79);
    }
 
-   fNoComp = (comp == HUGE_REAL);
-   if (!fNoComp) {
+   fNoComp = fTrue;
+   if (comp != HUGE_REAL) {
+      fNoComp = fFalse;
       comp *= pcs->units[Q_BEARING];
       if (comp < (real)0.0 || comp - M_PI * 2.0 > EPSILON) {
 	 compile_warning(/*Suspicious compass reading*/59);
       }
    }
-
-   if (ctype == CLINO_READING) {
-      clin *= pcs->units[Q_GRADIENT];
-      if (fabs(clin) - M_PI_2 > EPSILON) {
-	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
+   if (backcomp != HUGE_REAL) {
+      fNoComp = fFalse;
+      /* FIXME: different units for BackComp? */
+      backcomp *= pcs->units[Q_BEARING];
+      if (backcomp < (real)0.0 || backcomp - M_PI * 2.0 > EPSILON) {
+	 /* FIXME: different message for BackComp? */
+	 compile_warning(/*Suspicious compass reading*/59);
       }
    }
 
-   if (ctype == CLINO_PLUMB ||
-       (pcs->f90Up && (fabs(clin - M_PI_2) < EPSILON))) {
+   if (ctype == CLINO_READING) {
+      real diff_from_abs90;
+      clin *= pcs->units[Q_GRADIENT];
+      diff_from_abs90 = fabs(clin) - M_PI_2;
+      if (diff_from_abs90 > EPSILON) {
+	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
+      } else if (pcs->f90Up && diff_from_abs90 > -EPSILON) {
+	 ctype = CLINO_PLUMB;
+      }
+   }
+
+   if (backctype == CLINO_READING) {
+      real diff_from_abs90;
+      /* FIXME: different units for BackClino? */
+      backclin *= pcs->units[Q_GRADIENT];
+      diff_from_abs90 = fabs(backclin) - M_PI_2;
+      if (diff_from_abs90 > EPSILON) {
+	 /* FIXME: different message for BackClino? */
+	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
+      } else if (pcs->f90Up && diff_from_abs90 > -EPSILON) {
+	 backctype = CLINO_PLUMB;
+      }
+   }
+
+   if (ctype != CLINO_OMIT && backctype != CLINO_OMIT && ctype != backctype) {
+      /* Bad combinations */
+      compile_error(21/*FIXME*/);
+   }
+
+   if (ctype == CLINO_PLUMB || backctype == CLINO_PLUMB) {
       /* plumbed */
       if (!fNoComp) {
+	 /* FIXME: Different message for BackCompass */
 	 compile_warning(/*Compass reading given on plumbed leg*/21);
       }
 
       dx = dy = (real)0.0;
-      dz = (clin > (real)0.0) ? tape : -tape;
+      if (ctype != CLINO_OMIT) {
+	 if (backctype != CLINO_OMIT && (clin > 0) == (backclin > 0)) {
+	    compile_error(/*FIXME*/21);
+	 }
+	 dz = (clin > (real)0.0) ? tape : -tape;
+      } else {
+	 dz = (backclin < (real)0.0) ? tape : -tape;
+      }
       vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
       vz = var(Q_POS) / 3.0 + var(Q_LENGTH);
 #ifndef NO_COVARIANCES
@@ -474,6 +514,8 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       cxy = cyz = czx = (real)0.0;
 #endif
    } else {
+      /* Each of ctype and backctype are either CLINO_READING/CLINO_HORIZ
+       * or CLINO_OMIT */
       /* clino */
       real L2, cosG, LcosG, cosG2, sinB, cosB, dx2, dy2, dz2, v, V;
       if (fNoComp) {
@@ -492,11 +534,48 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 #endif
       } else {
 	 real sinGcosG;
-	 comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
-	 comp -= pcs->z[Q_DECLINATION];
-	 /* LEVEL case */
-	 if (ctype == CLINO_READING)
+	 real var_comp = var(Q_BEARING);
+	 /* take into account variance in LEVEL case */
+	 real var_clin = var(Q_LEVEL);
+	 if (comp != HUGE_REAL) {
+	    comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+	    comp -= pcs->z[Q_DECLINATION];
+	 }
+	 if (backcomp != HUGE_REAL) {
+	    /* FIXME: different calibration? */
+	    backcomp = (backcomp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+	    backcomp -= pcs->z[Q_DECLINATION];
+	    if (comp != HUGE_REAL) {
+	       /* FIXME: complain if fabs(comp - backcomp + M_PI) (mod (M_PI*2))
+		* is too large */
+	       /* FIXME: weighted averages if variances can be different */
+	       comp = (comp + backcomp - M_PI) / 2.0;
+	       var_comp /= 2;
+	    } else {
+	       /* FIXME: if variances can be different
+		* set var_comp to back variance */
+	       comp = backcomp - M_PI;
+	    }
+	 }
+	 /* ctype != CLINO_READING is LEVEL case */
+	 if (ctype == CLINO_READING) {
 	    clin = (clin - pcs->z[Q_GRADIENT]) * pcs->sc[Q_GRADIENT];
+	    var_clin = var(Q_GRADIENT);
+	 }
+	 /* FIXME: Separate units and calib for BackClino? */
+	 if (backctype == CLINO_READING) {
+	    backclin = (backclin - pcs->z[Q_GRADIENT]) * pcs->sc[Q_GRADIENT];
+	    if (ctype == CLINO_READING) {
+	       /* FIXME: complain if fabs(clin + backclin) is too large */
+	       /* FIXME: weighted averages if variances can be different */
+	       clin = (clin - backclin) / 2;
+	       var_clin /= 2;
+	    } else {
+	       clin = -backclin;
+	       /* FIXME: if backclin var can differ... */
+	       var_clin = var(Q_GRADIENT);
+	    }
+	 }
 
 #if DEBUG_DATAIN
 	 printf("    %4.2f %4.2f %4.2f\n", tape, comp, clin);
@@ -522,37 +601,36 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	 cosG2 = cosG * cosG;
 	 sinGcosG = sin(clin) * cosG;
 	 dz2 = dz * dz;
-	 /* take into account variance in LEVEL case */
-	 v = dz2 * var(ctype == CLINO_READING ? Q_GRADIENT : Q_LEVEL);
+	 v = dz2 * var_clin;
 #ifdef NO_COVARIANCES
-	 vx = (var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) +
+	 vx = (var(Q_POS) / 3.0 + dx2 * V + dy2 * var_comp +
 	       (.5 + sinB * sinB * cosG2) * v);
-	 vy = (var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) +
+	 vy = (var(Q_POS) / 3.0 + dy2 * V + dx2 * var_comp +
 	       (.5 + cosB * cosB * cosG2) * v);
-	 if (ctype == CLINO_OMIT) {
+	 if (ctype == CLINO_OMIT && backctype == CLINO_OMIT) {
 	    /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
-	    vz = (var(Q_POS) / 3.0 + L2 * (real)0.1);
+	    vz = var(Q_POS) / 3.0 + L2 * (real)0.1;
 	 } else {
-	    vz = (var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var(Q_GRADIENT));
+	    vz = var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var_clin;
 	 }
 	 /* for Surveyor87 errors: vx=vy=vz=var(Q_POS)/3.0; */
 #else
-	 vx = var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) +
+	 vx = var(Q_POS) / 3.0 + dx2 * V + dy2 * var_comp +
 	    (sinB * sinB * v);
-	 vy = var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) +
+	 vy = var(Q_POS) / 3.0 + dy2 * V + dx2 * var_comp +
 	    (cosB * cosB * v);
-	 if (ctype == CLINO_OMIT) {
+	 if (ctype == CLINO_OMIT && backctype == CLINO_OMIT) {
 	    /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
-	    vz = (var(Q_POS) / 3.0 + L2 * (real)0.1);
+	    vz = var(Q_POS) / 3.0 + L2 * (real)0.1;
 	 } else {
-	    vz = (var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var(Q_GRADIENT));
+	    vz = var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var_clin;
 	 }
 	 /* usual covariance formulae are fine in no clino case since
-	  * dz = 0 so value of var(Q_GRADIENT) is ignored */
-	 cxy = sinB * cosB * (var(Q_LENGTH) * cosG2 + var(Q_GRADIENT) * dz2)
-	       - var(Q_BEARING) * dx * dy;
-	 czx = var(Q_LENGTH) * sinB * sinGcosG - var(Q_GRADIENT) * dx * dz;
-	 cyz = var(Q_LENGTH) * cosB * sinGcosG - var(Q_GRADIENT) * dy * dz;
+	  * dz = 0 so value of var_clin is ignored */
+	 cxy = sinB * cosB * (var(Q_LENGTH) * cosG2 + var_clin * dz2)
+	       - var_comp * dx * dy;
+	 czx = var(Q_LENGTH) * sinB * sinGcosG - var_clin * dx * dz;
+	 cyz = var(Q_LENGTH) * cosB * sinGcosG - var_clin * dy * dz;
 #if 0
 	 printf("vx = %6.3f, vy = %6.3f, vz = %6.3f\n", vx, vy, vz);
 	 printf("cxy = %6.3f, cyz = %6.3f, czx = %6.3f\n", cxy, cyz, czx);
@@ -1054,6 +1132,7 @@ data_normal(void)
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
 		r = process_normal(fr, to, tape, comp, clin,
+				   backcomp, backclin,
 				   (first_stn == To) ^ fRev, ctype, backctype);
 		break;
 	      case STYLE_DIVING:
@@ -1110,6 +1189,7 @@ data_normal(void)
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
 		r = process_normal(fr, to, tape, comp, clin,
+				   backcomp, backclin,
 				   (first_stn == To) ^ fRev, ctype, backctype);
 		break;
 	      case STYLE_DIVING:

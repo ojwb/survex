@@ -35,7 +35,7 @@ export SURVEXHOME
  cmd_title cmd_titlebad cmd_dummy cmd_infer\
  cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
  plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar
- newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino"}}
+ newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -147,6 +147,7 @@ for file in $TESTS ; do
   infereqtopofil) pos=yes ; warn=0 ;;
   3sdfixbug) pos=yes ; warn=0 ;;
   omitclino) pos=yes ; warn=0 ;;
+  back) pos=yes; warn=0 ;;
   *) file='' ;;
   esac
 

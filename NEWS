@@ -28,13 +28,16 @@ Changes in 1.0.8:
 * printpcl/printdm: Added new .ini setting "font_bitmap" which allows the user
   to choose between alternative fonts.  Current we supply "default" and "bold".
 
-* cavern: added support for BackCompass and BackClino (FIXME: not finished).
+* cavern: added support for BackCompass and BackClino (FIXME: mostly working
+  for NORMAL data style, but not finished).
 
 * cavern: fixed handling of omitted clino readings when OMIT is *set to be
   different from MINUS and PLUS (new test omitclino).
 
 * cavern: N-S, E-W, and vertical ranges now only count stations which are in
   underground surveys.
+
+* cavern: *infer plumbs wasn't inferring -90 to be DOWN - fixed.
 
 * Slovak translation added; updated de, ca, es.
 

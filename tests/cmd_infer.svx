@@ -21,6 +21,26 @@
 *end
 
 *begin
+*begin
+*calibrate clino -90
+1 D2 1 0 -90 ; corrected to 1 D2 1 0 0
+*infer plumbs on
+D3 1 1 - -90 ; corrected to D3 1 1 - down
+*infer plumbs off
+1 D4 1 0 -90 ; corrected to 1 D4 1 0 0
+*begin
+*infer plumbs on
+D5 1 1 - -90 ; corrected to D5 1 1 - down
+*end
+1 D6 1 0 -90 ; corrected to 1 D6 1 0 0
+*infer plumbs on
+*begin
+*infer plumbs off
+1 D7 1 0 -90 ; corrected to 1 D7 1 0 0
+*end
+D8 1 1 - -90 ; corrected to D8 1 1 - down
+*end
+
 *calibrate tape -1
 
 1 A 0 0 0 ; corrected to 1 A 1 0 0
