@@ -392,6 +392,7 @@ public:
 
     void OnViewSidePanelUpdate(wxUpdateUIEvent& event);
     void OnViewSidePanel(wxCommandEvent& event);
+    void ToggleSidePanel();
 
     Double GetXExtent() const { return m_XExt; }
     Double GetYExtent() const { return m_YExt; }

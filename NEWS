@@ -4,6 +4,9 @@
 
 * aven: Escape cancels distance measuring line.
 
+* aven: Side Panel can now be dragged or toggled shut and then reopened
+  again.
+
 * aven: fixed problems with selection handling in survey tree.
 
 * aven: suppress distance measuring line during auto-rotation and animated

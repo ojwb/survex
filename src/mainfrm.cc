@@ -54,6 +54,34 @@ static const unsigned char REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 
 static const unsigned char GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0, 230};
 static const unsigned char BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0, 230};
 
+class AvenSplitterWindow : public wxSplitterWindow {
+    MainFrm *parent;
+
+    public:
+	AvenSplitterWindow(MainFrm *parent_)
+	    : parent(parent_),
+	      wxSplitterWindow(parent_, -1, wxDefaultPosition, wxDefaultSize,
+			       wxSP_3D | wxSP_LIVE_UPDATE) {
+	}
+
+	void OnSplitterDClick(wxSplitterEvent &e) {
+	    parent->ToggleSidePanel();
+	}
+	
+    private:
+	DECLARE_EVENT_TABLE()
+};
+
+BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
+    // The docs say "EVT_SPLITTER_DOUBLECLICKED" but the headers say
+    // "EVT_SPLITTER_DCLICK"
+#ifdef EVT_SPLITTER_DOUBLECLICKED
+    EVT_SPLITTER_DOUBLECLICKED(-1, AvenSplitterWindow::OnSplitterDClick)
+#else
+    EVT_SPLITTER_DCLICK(-1, AvenSplitterWindow::OnSplitterDClick)
+#endif
+END_EVENT_TABLE()
+
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_BUTTON(button_FIND, MainFrm::OnFind)
     EVT_BUTTON(button_HIDE, MainFrm::OnHide)
@@ -248,7 +276,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 {
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
-    // (required by Windows for this type of icon)
+    // (required by Microsoft Windows for this type of icon)
     SetIcon(wxIcon("aaaaaAven"));
 #endif
 
@@ -475,10 +503,8 @@ void MainFrm::CreateToolBar()
 
 void MainFrm::CreateSidePanel()
 {
-    m_Splitter = new wxSplitterWindow(this, -1, wxDefaultPosition,
-				      wxDefaultSize,
-				      wxSP_3D | wxSP_LIVE_UPDATE);
-    m_Splitter->SetMinimumPaneSize(20);
+    m_Splitter = new AvenSplitterWindow(this);
+    //m_Splitter->SetMinimumPaneSize(20);
 
     m_Panel = new wxPanel(m_Splitter);
     m_Tree = new AvenTreeCtrl(this, m_Panel);
@@ -1165,6 +1191,8 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	    x /= 5;
 
 	m_Splitter->SplitVertically(m_Panel, m_Gfx, x);
+
+	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
 #endif
     }
 }
@@ -1257,7 +1285,7 @@ void MainFrm::ClearCoords()
 void MainFrm::SetCoords(Double x, Double y)
 {
     wxString str;
-    str.Printf(msg(/*  %d N, %d E*/338), (int) y, (int) x);
+    str.Printf(msg(/*  %d E, %d N*/338), (int)x, (int)y);
     m_Coords->SetLabel(str);
 }
 
@@ -1268,7 +1296,8 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
     if (data && data->IsStation()) {
 	LabelInfo* label = data->GetLabel();
 	wxString str;
-	str.Printf(msg(/*  %d N, %d E*/338), (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
+	str.Printf(msg(/*  %d E, %d N*/338), (int)(label->x + m_Offsets.x),
+		   (int)(label->y + m_Offsets.y));
 	m_StnCoords->SetLabel(str);
 	m_StnName->SetLabel(label->text);
 	str.Printf("  %s %dm", msg(/*Altitude*/335),
@@ -1599,7 +1628,8 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
 
     if (label) {
 	wxString str;
-	str.Printf(msg(/*  %d N, %d E*/338), (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
+	str.Printf(msg(/*  %d E, %d N*/338), (int)(label->x + m_Offsets.x),
+		   (int) (label->y + m_Offsets.y));
 	m_StnCoords->SetLabel(str);
 	m_StnName->SetLabel(label->text);
 	str.Printf("  %s %dm", msg(/*Altitude*/335),
@@ -1657,6 +1687,11 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
 
 void MainFrm::OnViewSidePanel(wxCommandEvent&)
 {
+    ToggleSidePanel();
+}
+
+void MainFrm::ToggleSidePanel()
+{
     // Toggle display of the side panel.
 
     assert(m_Gfx);
@@ -1667,6 +1702,7 @@ void MainFrm::OnViewSidePanel(wxCommandEvent&)
     }
     else {
 	m_Panel->Show(true);
+	m_Gfx->Show(true);
 	m_Splitter->SplitVertically(m_Panel, m_Gfx, m_SashPosition);
     }
 }
