@@ -1,6 +1,6 @@
 * cavern: fixed LEVEL (broken since around 1.0.8) and added test case.
 
-* cavern: corrected handling of declination in Compass DAT files.
+* cavern: corrected handling of declination in Compass DAT files and added test   case; also added tests for other aspects of Compass DAT file reading.
 
 * (Unix version): fixed compilation problems with aven and getopt.h on MacOS X
   (and probably some other Unix versions).

@@ -1,4 +1,21 @@
 #!/bin/sh
+#
+# Survex test suite - cavern tests
+# Copyright (C) 1999-2003 Olly Betts
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
@@ -35,7 +52,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
  notentranceorexport inferunknown inferexports bad_units_factor\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
- lech level"}}
+ lech level declination.dat ignore.dat"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -160,36 +177,46 @@ for file in $TESTS ; do
   gettokennullderef) pos=fail ;;
   lech) pos=no; warn=0 ;;
   level) pos=yes; warn=0 ;;
+  declination.dat) pos=yes; warn=0 ;;
+  ignore.dat) pos=yes; warn=0 ;;
   *) file='' ;;
   esac
 
   if test -n "$file" ; then
     echo "$file"
+    case "$file" in
+    *.*)
+      input="$srcdir/$file"
+      posfile="$srcdir/`echo \"$file\"|sed 's/\.[^.]*$/.pos/'`" ;;
+    *)
+      input="$srcdir/$file.svx"
+      posfile="$srcdir/$file.pos" ;;
+    esac
     rm -f tmp.*
     if test -n "$VERBOSE" ; then
       if test fail = "$pos" ; then
-        $CAVERN $srcdir/$file.svx --output=tmp
+        $CAVERN "$input" --output=tmp
 	# success gives 0, signal (128 + <signal number>)
 	test $? = 1 || exit 1
       else
-        $CAVERN $srcdir/$file.svx --output=tmp || exit 1
+        $CAVERN "$input" --output=tmp || exit 1
       fi
     else
       if test fail = "$pos" ; then
-        $CAVERN $srcdir/$file.svx --output=tmp > tmp.out
+        $CAVERN "$input" --output=tmp > tmp.out
 	# success gives 0, signal (128 + <signal number>)
 	test $? = 1 || exit 1
       else
-        $CAVERN $srcdir/$file.svx --output=tmp > tmp.out || exit 1
+        $CAVERN "$input" --output=tmp > tmp.out || exit 1
       fi
     fi
     if test -n "$warn" ; then
-      test -f tmp.out || $CAVERN $srcdir/$file.svx --output=tmp > tmp.out
+      test -f tmp.out || $CAVERN "$input" --output=tmp > tmp.out
       w=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*\([0-9]*\).*/\1/' tmp.out`
       test x"$w" = x"$warn" || exit 1
     fi
     if test -n "$error" ; then
-      test -f tmp.out || $CAVERN $srcdir/$file.svx --output=tmp > tmp.out
+      test -f tmp.out || $CAVERN "$input" --output=tmp > tmp.out
       e=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*[0-9][0-9]*[^0-9][^0-9]*\([0-9][0-9]*\).*/\1/;s/\(.*[^0-9].*\)/0/' tmp.out`
       test x"$e" = x"$error" || exit 1
     fi
@@ -197,9 +224,9 @@ for file in $TESTS ; do
     case "$pos" in
     yes)
       if test -n "$VERBOSE" ; then
-        $DIFFPOS tmp.3d $srcdir/$file.pos || exit 1
+        $DIFFPOS tmp.3d "$posfile" || exit 1
       else
-        $DIFFPOS tmp.3d $srcdir/$file.pos > /dev/null || exit 1
+        $DIFFPOS tmp.3d "$posfile" > /dev/null || exit 1
       fi ;;
     no)
       test -f tmp.3d || exit 1 ;;

@@ -73,4 +73,5 @@ back.svx back.pos\
 notentranceorexport.svx inferunknown.svx inferexports.svx\
 bad_units_factor.svx percent_gradient.svx percent_gradient.pos dotinsurvey.svx\
 2fixbug.svx leandroclino.svx leandroclino.pos lowsd.svx revdir.svx revdir.pos\
-gettokennullderef.svx lech.svx level.svx level.pos
+gettokennullderef.svx lech.svx level.svx level.pos\
+declination.dat declination.pos ignore.dat ignore.pos

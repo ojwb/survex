@@ -1,4 +1,21 @@
 #!/bin/sh
+#
+# Survex test suite - compare 2 versions of cavern on a dataset
+# Copyright (C) 1999-2003 Olly Betts
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
@@ -17,16 +34,15 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${TESTS=${*-""}}
 
 for file in $TESTS ; do
-  
   if test -n "$file" ; then
     echo "$file"
     rm -f tmp.* tmp_orig.*
     if test -n "$VERBOSE" ; then
-      $CAVERN_ORIG $file --output=tmp_orig | tee tmp_orig.out || exit 1
-      $CAVERN $file --output=tmp | tee tmp.out || exit 1
+      $CAVERN_ORIG "$file" --output=tmp_orig | tee tmp_orig.out || exit 1
+      $CAVERN "$file" --output=tmp | tee tmp.out || exit 1
     else
-      $CAVERN_ORIG $file --output=tmp_orig > tmp_orig.out || exit 1
-      $CAVERN $file --output=tmp > tmp.out || exit 1
+      $CAVERN_ORIG "$file" --output=tmp_orig > tmp_orig.out || exit 1
+      $CAVERN "$file" --output=tmp > tmp.out || exit 1
     fi
     warn_orig=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*\([0-9]*\).*/\1/' tmp_orig.out`
     warn=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*\([0-9]*\).*/\1/' tmp.out`
