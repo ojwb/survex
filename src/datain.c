@@ -425,6 +425,11 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 
    bool fNoComp;
 
+   if (pcs->f0Eq && tape == (real)0.0) {
+      process_equate(fr, to);
+      return 1;
+   }
+
 #if 0
    print_prefix(fr);
    printf("->");
@@ -756,6 +761,11 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    real dx, dy, dz;
    real vx, vy, vz;
 
+   if (pcs->f0Eq && tape == (real)0.0) {
+      process_equate(fr, to);
+      return 1;
+   }
+   
    if (tape < (real)0.0) {
       compile_warning(/*Negative tape reading*/60);
    }

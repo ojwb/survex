@@ -654,50 +654,6 @@ cmd_fix(void)
    compile_warning(/*Station already fixed at the same coordinates*/55);
 }
 
-/* helper function for replace_pfx */
-static void
-replace_pfx_(node *stn, node *from, pos *pos_replace, pos *pos_with)
-{
-   int d;
-   stn->name->pos = pos_with;
-   for (d = 0; d < 3; d++) {
-      linkfor *leg = stn->leg[d];
-      node *to;
-      if (!leg) break;
-      to = leg->l.to;
-      if (to == from) continue;
-
-      if (fZeros(data_here(leg) ? &leg->v : &reverse_leg(leg)->v))
-	 replace_pfx_(to, stn, pos_replace, pos_with);
-   }
-}
-
-/* We used to iterate over the whole station list (inefficient) - now we
- * just look at any neighbouring nodes to see if they are equated */
-static void
-replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
-{
-   pos *pos_replace;
-   ASSERT(pfx_replace);
-   ASSERT(pfx_with);
-   pos_replace = pfx_replace->pos;
-   ASSERT(pos_replace != pfx_with->pos);
-
-   replace_pfx_(pfx_replace->stn, NULL, pos_replace, pfx_with->pos);
-
-#if DEBUG_INVALID
-   {
-      node *stn;
-      FOR_EACH_STN(stn, stnlist) {
-	 ASSERT(stn->name->pos != pos_replace);
-      }
-   }
-#endif
-
-   /* free the (now-unused) old pos */
-   osfree(pos_replace);
-}
-
 static void
 cmd_flags(void)
 {
@@ -720,7 +676,7 @@ cmd_flags(void)
       /* treat the second NOT in "NOT NOT" as an unknown flag */
       if (flag == FLAGS_UNKNOWN || (fNot && flag == FLAGS_NOT)) {
 	 compile_error(/*FLAG `%s' unknown*/68, buffer);
-	 /* `*FLAGS NOT BOGUS SURFACE' should probably ignore "NOT BOGUS" */
+	 /* Recover from `*FLAGS NOT BOGUS SURFACE' by ignoring "NOT BOGUS" */
 	 fNot = fFalse;
       } else if (flag == FLAGS_NOT) {
          fNot = fTrue;
@@ -736,63 +692,23 @@ cmd_flags(void)
 static void
 cmd_equate(void)
 {
-   node *stn1, *stn2;
    prefix *name1, *name2;
    bool fOnlyOneStn = fTrue; /* to trap eg *equate entrance.6 */
 
    name1 = read_prefix_stn_check_implicit(fFalse, fTrue);
-   stn1 = StnFromPfx(name1);
    while (fTrue) {
-      stn2 = stn1;
       name2 = name1;
       name1 = read_prefix_stn_check_implicit(fTrue, fTrue);
       if (name1 == NULL) {
-	 if (fOnlyOneStn) {
-	    compile_error(/*Only one station in equate list*/33);
-	 }
+	 if (fOnlyOneStn) compile_error(/*Only one station in equate list*/33);
 #ifdef NEW3DFORMAT
 	 if (fUseNewFormat) limb = get_twig(pcs->Prefix);
 #endif
 	 return;
       }
 
-      if (name1 == name2) {
-	 /* catch something like *equate "fred fred" */
-	 compile_warning(/*Station `%s' equated to itself*/13,
-			 sprint_prefix(name1));
-	 /* FIXME: this won't catch: "*equate fred jim fred" */
-      }
+      process_equate(name1, name2);
       fOnlyOneStn = fFalse;
-      stn1 = StnFromPfx(name1);
-      /* equate nodes if not already equated */
-      if (name1->pos != name2->pos) {
-	 if (fixed(stn1)) {
-	    if (fixed(stn2)) {
-	       /* both are fixed, but let them off iff their coordinates match */
-	       char *s = osstrdup(sprint_prefix(name1));
-	       int d;
-	       for (d = 2; d >= 0; d--) {
-		  if (name1->pos->p[d] != name2->pos->p[d]) {
-		     compile_error(/*Tried to equate two non-equal fixed stations: `%s' and `%s'*/52,
-				   s, sprint_prefix(name2));
-		     osfree(s);
-		     return;
-		  }
-	       }
-	       compile_warning(/*Equating two equal fixed points: `%s' and `%s'*/53,
-			       s, sprint_prefix(name2));
-	       osfree(s);
-	    }
-
-	    /* stn1 is fixed, so replace all refs to stn2's pos with stn1's */
-	    replace_pfx(name2, name1);
-	 } else {
-	    /* stn1 isn't fixed, so replace all refs to its pos with stn2's */
-	    replace_pfx(name1, name2);
-	 }
-
-	 addequate(stn1, stn2);
-      }
    }
 }
 
@@ -1333,9 +1249,7 @@ cmd_case(void)
 }
 
 static sztok infer_tab[] = {
-#if 0 /* FIXME allow EQUATES to be inferred too */
      {"EQUATES",    2},
-#endif
      {"PLUMBS",     1},
      {NULL,      0}
 };
@@ -1367,11 +1281,9 @@ cmd_infer(void)
    }
 
    switch (setting) {
-#if 0
     case 2:
       pcs->f0Eq = on;
       break;
-#endif
     case 1:
       pcs->f90Up = on;
       break;

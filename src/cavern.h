@@ -260,7 +260,7 @@ typedef struct Inst {
 /* various settings preserved by *BEGIN and *END */
 typedef struct Settings {
    unsigned int Truncate;
-/*   bool f0Eq;*/
+   bool f0Eq;
    bool f90Up;
    enum {OFF, LOWER, UPPER} Case;
    style_fn Style;

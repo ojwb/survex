@@ -31,7 +31,7 @@ void addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
 #endif
 		  );
 
-void addequate(node *fr, node *to);
+void process_equate(prefix *name1, prefix *name2);
 
 void addfakeleg(node *fr, node *to,
 		real dx, real dy, real dz, real vx, real vy, real vz
