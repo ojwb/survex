@@ -471,14 +471,14 @@ es: 32 Encontrado `%s', esperando `ON' o `OFF'
 it: 32 Trovato `%s', atteso `ON' o `OFF'
 sk: 32 Zisten&eacute; `%s', predpokladan&eacute; `ON' alebo `OFF'
 ro: 32 S-a gasit `%s' in loc de `ON' sau `OFF'
-# TRANSLATE de pt (reworded to say "EQUATE command" not "equate list").
+# TRANSLATE pt (reworded to say "EQUATE command" not "equate list").
 # EQUATE is a command name, so shouldn't be translated.  I've attempted to
 # update de, but my language skills aren't great...
 en: 33 Only one station in EQUATE command
 fr: 33 Une seule station dans une commande EQUATE
 # was fr: 33 Une seule station dans une liste d'&eacute;quivalences
-de-de,de-ch: 33 Nur ein Messpunkt im EQUATE - Befehl angegeben
-de:          33 Nur ein Me&szlig;punkt im EQUATE - Befehl angegeben
+de-de,de-ch: 33 Nur ein Messpunkt im EQUATE-Befehl angegeben
+de:          33 Nur ein Me&szlig;punkt im EQUATE-Befehl angegeben
 #germ: 33 Nur ein Me&szlig;punkt in EQUATE Liste
 pt: 33 Somente uma base na lista de equival&ecirc;ncia
 ca: 33 Sols una estaci&oacute; a la ordre EQUATE
@@ -2386,6 +2386,7 @@ ro:208 Toate fisierele
 # in the about box (summarising the purpose of aven)
 en:209 Survey visualisation tool
 fr:209 Outil de visualisation de topographies
+de:209 Visualisierungswerkzeug f&uuml;r Vermessungsdaten
 ca:209 Eina per visualitzar topografies
 es:209 Herramienta para visualizar topografias
 it:209 Strumento di visualizzazione rilievi
@@ -3416,6 +3417,7 @@ ro:345 gr.cent
 # cf 400
 en:380 @Print...##Ctrl+P
 fr:380 @Imprimer...##Ctrl+P
+de:380 @Drucken...##Ctrl+P
 ca:380 @Imprimir...##Ctrl+P
 es:380 @Imprimir...##Ctrl+P
 it:380 @Stampa...##Ctrl+P
@@ -3424,6 +3426,7 @@ ro:380 @Imprimare...##Ctrl+P
 # TRANSLATE pt
 en:381 P@age Setup...
 fr:381 @Configurer la page...
+de:381 @Seite einrichten...
 ca:381 @Configuraci&oacute; de la p&agrave;gina...
 es:381 @Configuraci&oacute;n de la p&aacute;gina...
 pt:381 Pa@ge Setup...
@@ -3451,6 +3454,7 @@ ro:399 Imprimare
 # cf 399
 en:400 &amp;Print
 fr:400 &amp;Imprimer
+de:400 &amp;Drucken
 ca:400 &amp;Imprimir
 es:400 &amp;Imprimir
 it:400 &amp;Stampa
@@ -3459,6 +3463,7 @@ ro:400 &amp;Imprimare
 # TRANSLATE sk
 en:401 Pre&amp;view
 fr:401 &amp;Pr&eacute;visualiser
+de:401 &amp;Voransicht
 ca:401 &amp;Previsualitza
 es:401 &amp;Previsualiza
 it:401 Ante&amp;prima di stampa
@@ -3468,6 +3473,7 @@ ro:401 &amp;Vizualizare pre-imprimare
 #
 en:402 &amp;Cancel
 fr:402 &amp;Annuler
+de:402 &amp;Abbrechen
 ca:402 &amp;Anul&middot;la
 es:402 &amp;Anula
 it:402 &amp;Annulla
