@@ -856,6 +856,10 @@ cmd_data(void)
 {
    static sztok dtab[] = {
 	{"ALTITUDE",	 Dz },
+	{"BACKBEARING",  BackComp },
+	{"BACKCLINO",    BackClino }, /* alternative name */
+	{"BACKCOMPASS",  BackComp }, /* alternative name */
+	{"BACKGRADIENT", BackClino },
 	{"BEARING",      Comp },
 	{"CLINO",        Clino }, /* alternative name */
 	{"COMPASS",      Comp }, /* alternative name */
@@ -887,11 +891,13 @@ cmd_data(void)
 #define MASK_stns BIT(Fr) | BIT(To) | BIT(Station)
 #define MASK_tape BIT(Tape) | BIT(FrCount) | BIT(ToCount) | BIT(Count)
 #define MASK_dpth BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(DepthChange)
+#define MASK_comp BIT(Comp) | BIT(BackComp)
+#define MASK_clin BIT(Clino) | BIT(BackClino)
 
-#define MASK_NORMAL MASK_stns | BIT(Dir) | MASK_tape | BIT(Comp) | BIT(Clino)
-#define MASK_DIVING MASK_stns | BIT(Dir) | MASK_tape | BIT(Comp) | MASK_dpth
+#define MASK_NORMAL MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_clin
+#define MASK_DIVING MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
 #define MASK_CARTESIAN MASK_stns | BIT(Dx) | BIT(Dy) | BIT(Dz)
-#define MASK_CYLPOLAR  MASK_stns | BIT(Dir) | MASK_tape | BIT(Comp) | MASK_dpth
+#define MASK_CYLPOLAR  MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
 #define MASK_NOSURVEY MASK_stns
 
    /* readings which may be given for each style */
@@ -901,7 +907,7 @@ cmd_data(void)
 
    /* readings which may be omitted for each style */
    static const unsigned long mask_optional[] = {
-      BIT(Dir) | BIT(Clino),
+      BIT(Dir) | BIT(Clino) | BIT(BackClino),
       BIT(Dir),
       0,
       BIT(Dir),
@@ -1013,6 +1019,8 @@ cmd_data(void)
 	    skipline();
 	    return;
 	 } else {
+	    /* Check for previously listed readings which are incompatible
+	     * with this one - e.g. Count vs FrCount */
 	    bool fBad = fFalse;
 	    switch (d) {
 	     case Station:
@@ -1116,10 +1124,17 @@ cmd_data(void)
    printf("mUsed = 0x%x\n", mUsed);
 #endif
 
+   /* Check the supplied readings form a sufficient set. */
    if (mUsed & (BIT(Fr) | BIT(To)))
       mUsed |= BIT(Station);
    else if (TSTBIT(mUsed, Station))
       mUsed |= BIT(Fr) | BIT(To);
+
+   if (mUsed & (BIT(Comp) | BIT(BackComp)))
+      mUsed |= BIT(Comp) | BIT(BackComp);
+
+   if (mUsed & (BIT(Clino) | BIT(BackClino)))
+      mUsed |= BIT(Clino) | BIT(BackClino);
 
    if (mUsed & (BIT(FrDepth) | BIT(ToDepth)))
       mUsed |= BIT(Depth) | BIT(DepthChange);

@@ -67,4 +67,5 @@ baddatacylpolar.svx bugdz.svx bugdz.pos badnewline.svx\
 badquantities.svx imgoffbyone.svx imgoffbyone.pos\
 infereqtopofil.svx infereqtopofil.pos\
 3sdfixbug.svx 3sdfixbug.pos\
-extend2names.svx  extend2namesx.3d
+extend2names.svx extend2namesx.3d\
+omitclino.svx omitclino.pos

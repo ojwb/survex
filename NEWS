@@ -9,10 +9,15 @@ Changes in 1.0.8:
 
 * aven: settings for "Metric" and "Degrees" are preserved between runs.
 
-* print*: Improved output when --no-border is used.
+* print*: improved output when --no-border is used.
 
 * printpcl/printdm: Added new .ini setting "font_bitmap" which allows the user
   to choose between alternative fonts.  Current we supply "default" and "bold".
+
+* cavern: added support for BackCompass and BackClino (FIXME: not finished).
+
+* cavern: fixed handling of omitted clino readings when OMIT is *set to be
+  different from MINUS and PLUS (new test omitclino).
 
 Changes in 1.0.7:
 

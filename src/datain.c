@@ -47,6 +47,8 @@
 
 int ch;
 
+typedef enum {CLINO_OMIT, CLINO_READING, CLINO_PLUMB, CLINO_HORIZ} clino_type;
+
 /* Don't explicitly initialise as we can't set the jmp_buf - this has
  * static scope so will be initialised like this anyway */
 parse file /* = { NULL, NULL, 0, fFalse, NULL } */ ;
@@ -370,7 +372,7 @@ data_file(const char *pth, const char *fnm)
 }
 
 static real
-handle_plumb(bool *pfPlumbed)
+handle_plumb(clino_type *p_ctype)
 {
    typedef enum {
       CLINO_NULL=-1, CLINO_UP, CLINO_DOWN, CLINO_LEVEL
@@ -384,7 +386,7 @@ handle_plumb(bool *pfPlumbed)
       {"UP",    CLINO_UP},
       {NULL,    CLINO_NULL}
    };
-   static real clinos[] = {(real)M_PI_2,(real)(-M_PI_2),(real)0.0};
+   static real clinos[] = {(real)M_PI_2, (real)(-M_PI_2), (real)0.0};
    clino_tok tok;
 
    skipblanks();
@@ -394,7 +396,7 @@ handle_plumb(bool *pfPlumbed)
       get_token();
       tok = match_tok(clino_tab, TABSIZE(clino_tab));
       if (tok != CLINO_NULL) {
-	 *pfPlumbed = fTrue;
+	 *p_ctype = (clinos[tok] == CLINO_LEVEL ? CLINO_HORIZ : CLINO_PLUMB);
 	 return clinos[tok];
       }
       set_pos(&fp);
@@ -403,22 +405,29 @@ handle_plumb(bool *pfPlumbed)
       nextch();
       if (toupper(ch) == 'V') {
 	 nextch();
-	 *pfPlumbed = fTrue;
+	 *p_ctype = CLINO_PLUMB;
 	 return (!isMinus(chOld) ? M_PI_2 : -M_PI_2);
       }
 
       if (isOmit(chOld)) {
-	 *pfPlumbed = fFalse;
+	 *p_ctype = CLINO_OMIT;
 	 /* no clino reading, so assume 0 with large sd */
 	 return (real)0.0;
       }
+   } else if (isOmit(ch)) {
+      /* OMIT char may not be a SIGN char too so we need to check here as
+       * well as above... */
+      nextch();
+      *p_ctype = CLINO_OMIT;
+      /* no clino reading, so assume 0 with large sd */
+      return (real)0.0;
    }
    return HUGE_REAL;
 }
 
 static int
 process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
-	       bool fToFirst, bool fNoClino, bool fPlumbed)
+	       bool fToFirst, clino_type ctype, clino_type backctype)
 {
    real dx, dy, dz;
    real vx, vy, vz;
@@ -442,14 +451,14 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       }
    }
 
-   if (!fPlumbed && !fNoClino) {
+   if (ctype == CLINO_READING) {
       clin *= pcs->units[Q_GRADIENT];
       if (fabs(clin) - M_PI_2 > EPSILON) {
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       }
    }
 
-   if ((fPlumbed && clin != (real)0) ||
+   if (ctype == CLINO_PLUMB ||
        (pcs->f90Up && (fabs(clin - M_PI_2) < EPSILON))) {
       /* plumbed */
       if (!fNoComp) {
@@ -486,12 +495,8 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 	 comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
 	 comp -= pcs->z[Q_DECLINATION];
 	 /* LEVEL case */
-	 if (!fPlumbed && !fNoClino)
+	 if (ctype == CLINO_READING)
 	    clin = (clin - pcs->z[Q_GRADIENT]) * pcs->sc[Q_GRADIENT];
-/*
-printf("fPlumbed %d fNoClino %d\n",fPlumbed,fNoClino);
-printf("clin %.2f\n",clin);
-*/
 
 #if DEBUG_DATAIN
 	 printf("    %4.2f %4.2f %4.2f\n", tape, comp, clin);
@@ -517,31 +522,31 @@ printf("clin %.2f\n",clin);
 	 cosG2 = cosG * cosG;
 	 sinGcosG = sin(clin) * cosG;
 	 dz2 = dz * dz;
-#ifdef NO_COVARIANCES
 	 /* take into account variance in LEVEL case */
-	 v = dz2 * var(fPlumbed ? Q_LEVEL : Q_GRADIENT);
+	 v = dz2 * var(ctype == CLINO_READING ? Q_GRADIENT : Q_LEVEL);
+#ifdef NO_COVARIANCES
 	 vx = (var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) +
 	       (.5 + sinB * sinB * cosG2) * v);
 	 vy = (var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) +
 	       (.5 + cosB * cosB * cosG2) * v);
-	 if (!fNoClino)
-	    vz = (var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var(Q_GRADIENT));
-	 else
+	 if (ctype == CLINO_OMIT) {
+	    /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
 	    vz = (var(Q_POS) / 3.0 + L2 * (real)0.1);
-	 /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
+	 } else {
+	    vz = (var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var(Q_GRADIENT));
+	 }
 	 /* for Surveyor87 errors: vx=vy=vz=var(Q_POS)/3.0; */
 #else
-	 /* take into account variance in LEVEL case */
-	 v = dz2 * var(fPlumbed ? Q_LEVEL : Q_GRADIENT);
 	 vx = var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) +
 	    (sinB * sinB * v);
 	 vy = var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) +
 	    (cosB * cosB * v);
-	 if (!fNoClino)
-	    vz = (var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var(Q_GRADIENT));
-	 else
+	 if (ctype == CLINO_OMIT) {
+	    /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
 	    vz = (var(Q_POS) / 3.0 + L2 * (real)0.1);
-	 /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
+	 } else {
+	    vz = (var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var(Q_GRADIENT));
+	 }
 	 /* usual covariance formulae are fine in no clino case since
 	  * dz = 0 so value of var(Q_GRADIENT) is ignored */
 	 cxy = sinB * cosB * (var(Q_LENGTH) * cosG2 + var(Q_GRADIENT) * dz2)
@@ -551,9 +556,6 @@ printf("clin %.2f\n",clin);
 #if 0
 	 printf("vx = %6.3f, vy = %6.3f, vz = %6.3f\n", vx, vy, vz);
 	 printf("cxy = %6.3f, cyz = %6.3f, czx = %6.3f\n", cxy, cyz, czx);
-#endif
-#if 0
-	 cxy = cyz = czx = (real)0.0; /* for now */
 #endif
 #endif
 #if DEBUG_DATAIN_1
@@ -910,13 +912,13 @@ data_normal(void)
    prefix *fr = NULL, *to = NULL;
    reading first_stn = End;
 
-   real tape = 0, comp = 0, frcount = 0, tocount = 0;
-   real clin;
+   real tape = 0, comp = 0, backcomp = 0, frcount = 0, tocount = 0;
+   real clin, backclin;
    real frdepth = 0, todepth = 0;
 
    bool fTopofil = fFalse, fMulti = fFalse;
    bool fRev;
-   bool fNoClino, fPlumbed;
+   bool ctype, backctype;
    bool fDepthChange;
 
    reading *ordering;
@@ -924,13 +926,12 @@ data_normal(void)
    again:
 
    fRev = fFalse;
-   fPlumbed = fFalse;
+   ctype = backctype = CLINO_OMIT;
    fDepthChange = fFalse;
 
    /* ordering may omit clino reading, so set up default here */
    /* this is also used if clino reading is the omit character */
-   clin = (real)0.0; /* no clino reading, so assume 0 with large sd */
-   fNoClino = fTrue;
+   backclin = clin = (real)0.0;
 
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
@@ -980,17 +981,32 @@ data_normal(void)
        case Comp:
 	  comp = read_numeric_or_omit();
 	  break;
+       case BackComp:
+	  backcomp = read_numeric_or_omit();
+	  break;
        case Clino:
 	  clin = read_numeric(fTrue);
 	  if (clin == HUGE_REAL) {
-	     clin = handle_plumb(&fPlumbed);
+	     clin = handle_plumb(&ctype);
 	     if (clin != HUGE_REAL) break;
 	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
 	     process_eol();
 	     return 0;
 	  }
-	  /* we've got a real clino reading, so clear the flag */
-	  fNoClino = fFalse;
+	  ctype = CLINO_READING;
+	  break;
+       case BackClino:
+	  backclin = read_numeric(fTrue);
+	  if (backclin == HUGE_REAL) {
+	     /* FIXME: how should special readings for Clino and BackClino
+	      * interact? */
+	     backclin = handle_plumb(&backctype);
+	     if (backclin != HUGE_REAL) break;
+	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
+	     process_eol();
+	     return 0;
+	  }
+	  backctype = CLINO_READING;
 	  break;
        case FrDepth:
 	  frdepth = read_numeric(fFalse);
@@ -1038,7 +1054,7 @@ data_normal(void)
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
 		r = process_normal(fr, to, tape, comp, clin,
-				   (first_stn == To) ^ fRev, fNoClino, fPlumbed);
+				   (first_stn == To) ^ fRev, ctype, backctype);
 		break;
 	      case STYLE_DIVING:
 		r = process_diving(fr, to, tape, comp, frdepth, todepth,
@@ -1094,7 +1110,7 @@ data_normal(void)
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
 		r = process_normal(fr, to, tape, comp, clin,
-				   (first_stn == To) ^ fRev, fNoClino, fPlumbed);
+				   (first_stn == To) ^ fRev, ctype, backctype);
 		break;
 	      case STYLE_DIVING:
 		r = process_diving(fr, to, tape, comp, frdepth, todepth,
