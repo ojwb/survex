@@ -1,6 +1,6 @@
 /* > img.h
  * Header file for routines to read and write Survex ".3d" image files
- * Copyright (C) Olly Betts 1993,1994,1997
+ * Copyright (C) Olly Betts 1993,1994,1997,2001
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,20 +31,30 @@
 # define img_CROSS  2
 # define img_LABEL  3
 # define img_SCALE  4 /* ignore this one for now */
+# define img_FLAGS  5
 
-/* internal structure -- don't access members directly */
+# define img_FLAG_SURFACE   0x01
+# define img_FLAG_DUPLICATE 0x02
+
 typedef struct {
+   /* members you can access */
+   int flags;
+   /* all other members are for internal use only */
    FILE *fh;          /* file handle of image file */
 # ifndef STANDALONE
-   bool fBinary;      /* fTrue for binary file format, fFalse for ASCII */
    bool fLinePending; /* for old style text format files */
    bool fRead;        /* fTrue for reading, fFalse for writing */
 # else
-   int fBinary;      /* fTrue for binary file format, fFalse for ASCII */
    int fLinePending; /* for old style text format files */
    int fRead;        /* fTrue for reading, fFalse for writing */
 # endif
+   /* version of file format (0 => 0.01 ascii, 1 => 0.01 binary,
+    * 2 => byte actions and flags) */
+   int version;
 } img;
+
+/* Which version of the file format to output (defaults to newest) */
+extern unsigned int img_output_version;
 
 /* Open a .3d file for input
  * fnm is the filename
@@ -59,6 +69,7 @@ img *img_open(const char *fnm, char *szTitle, char *szDateStamp);
  * szTitle is the title
  * fBinary == 0 for ASCII .3d file
  *         != 0 for binary .3d file
+ * NB only the original .3d file format has an ASCII variant
  * Returns pointer to an img struct or NULL
  */
 # ifndef STANDALONE

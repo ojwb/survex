@@ -635,7 +635,14 @@ pt: 67 Dado duplicado `%s'
 ca: 67 Dada duplicada `%s'
 es: 67 Dato duplicado `%s'
 it: 67 Dati duplicati `%s'
-#XXX68
+# FIXME: TRANSLATE check fr de pt ca es it
+en: 68 FLAG `%s' unknown
+fr: 68 FLAG `%s' inconnu
+de: 68 FLAG `%s' unbekannt
+pt: 68 FLAG `%s' com problemas
+ca: 68 FLAG `%s' desconegut
+es: 68 FLAG `%s' desconocido
+it: 68 FLAG `%s' sconosciuto
 en: 69 Missing &quot;
 fr: 69 &quot; manquant
 de: 69 &quot; uml;fehlt

@@ -16,6 +16,14 @@ Changes in 0.97-prerelease1:
 * cavern: added *export command to allow scope of station names to be
   limited.
 
+* cavern: added *flags command to allow surface surveys and duplicate
+  surveys (to be ignored when calculating the total survey length) to be
+  indicated.
+
+* new version of 3d file format which can store flags and is slightly more
+  compact.  NB New programs can load old .3d files, but old programs can't
+  load new .3d files.
+
 * cavern: compass can be omitted on legs in diving data to indicate a plumbed
   leg.  In this case the tape and depth gauge readings are combined to give
   the length of the leg.

@@ -100,11 +100,16 @@ typedef enum {
 #define ANG_QMASK (BIT(Q_BEARING) | BIT(Q_GRADIENT) | BIT(Q_PLUMB) |\
    BIT(Q_LEVEL) | BIT(Q_DECLINATION) | BIT(Q_ANGLEOUTPUT))
 
+/* if you add/change the order, check factor_tab in commands.c */
 typedef enum {
    UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS,
    UNITS_DEGS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES, UNITS_MAC
 } u_units;
-/* if you add/change the order, check factor_tab in commands.c */
+
+/* don't reorder these values! */
+typedef enum {
+   FLAGS_NOT = -2, FLAGS_UNKNOWN = -1, FLAGS_SURFACE, FLAGS_DUPLICATE
+} flags;
 
 /* enumeration of field types */
 typedef enum {
@@ -173,6 +178,10 @@ typedef struct {
    /* bit6 = fReplacementLeg (by reduction rules) */
    /* bit5 = articulation leg (i.e. carries no error) */
    uchar reverse;
+   /* flags - e.g. surface, duplicate survey
+    * only used if (FLAG_DATAHERE & !FLAG_REPLACEMENTLEG)
+    */
+   uchar flags;
 } linkcommon;
 #define FLAG_DATAHERE 0x80
 #define FLAG_REPLACEMENTLEG 0x40
@@ -256,6 +265,7 @@ typedef struct Settings {
    real units[Q_MAC];
    datum *ordering;
    int begin_lineno; /* 0 means no block started in this file */
+   int flags;
    struct Settings *next;
 } settings;
 

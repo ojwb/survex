@@ -455,6 +455,10 @@ replace_travs(void)
 			       POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 	       img_write_datum(pimgOut, img_LINE, NULL,
 			       POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
+	       if (leg->l.flags) {
+	          img_write_datum(pimgOut, img_FLAGS, (char *)&leg->l.flags,
+	                          0, 0, 0);
+	       }
 #ifdef NEW3DFORMAT
 	       }
 #endif
@@ -626,6 +630,10 @@ replace_travs(void)
 #ifdef NEW3DFORMAT
  	    if (!fUseNewFormat) {
 #endif
+	    if (leg->l.flags) {
+	       img_write_datum(pimgOut, img_FLAGS, (char *)&leg->l.flags,
+	                       0, 0, 0);
+	    }
  	    img_write_datum(pimgOut, img_LINE, NULL,
 			    POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
 #ifdef NEW3DFORMAT
@@ -683,6 +691,10 @@ replace_travs(void)
 #ifdef NEW3DFORMAT
  	 if (!fUseNewFormat) {
 #endif
+	 if (leg->l.flags) {
+	    img_write_datum(pimgOut, img_FLAGS, (char *)&leg->l.flags,
+	                    0, 0, 0);
+	 }
  	 img_write_datum(pimgOut, img_LINE, NULL,
 			 POS(stn2,0), POS(stn2, 1), POS(stn2, 2));
 #ifdef NEW3DFORMAT
@@ -860,8 +872,12 @@ replace_trailing_travs(void)
 #ifdef NEW3DFORMAT
 	    if (!fUseNewFormat) {
 #endif
-	      img_write_datum(pimgOut, img_LINE, NULL,
-			    POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
+	       if (leg->l.flags) {
+	          img_write_datum(pimgOut, img_FLAGS, (char *)&leg->l.flags,
+	                          0, 0, 0);
+	       }
+	       img_write_datum(pimgOut, img_LINE, NULL,
+			       POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 #ifdef NEW3DFORMAT
  	    }
 #endif
@@ -889,6 +905,7 @@ replace_trailing_travs(void)
       if (fixed(p->fr) && fixed(p->to)) {
 	 img_write_datum(pimgOut, img_MOVE, NULL,
 			 POS(p->fr, 0), POS(p->fr, 1), POS(p->fr, 2));
+	 /* FIXME: flags? */
 	 img_write_datum(pimgOut, img_LINE, NULL,
 			 POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
       }
@@ -944,7 +961,7 @@ replace_trailing_travs(void)
 	    iB = reverse_leg_dirn(leg);
 	    legRev = stnB->leg[iB];
 	    ASSERT2(legRev->l.to == stn1, "leg doesn't reciprocate");
-	    if (fixed(stn1)) {
+	    if (fixed(stn1) && !(leg->l.flags & BIT(FLAGS_DUPLICATE))) {
 	       /* check not an equating leg */
 	       if (!fZero(&leg->v)) {
 		  totadj += sqrt(sqrd(POS(stnB, 0) - POS(stn1, 0)) +

@@ -2,24 +2,10 @@ From: anon
 
 allow valid range for an instrument to be specified...
 
-From: anon
-
-cave length...
-
-Date: Tue, 17 Feb 98 18:10:51 GMT
-From: Andy Waddington <Survex@pennine.demon.co.uk>
-
-Ought to have a way of saying "Down" for diving legs too.
-
 Date: Tue, 08 Sep 1998 17:52:52 -0300
 From: Leandro Dybal Bertoni <dybal@upe.org.br>
 
 Sort .err file by error (the segment with the grossest error first)
-
-Date: 13 Dec 1998
-From: Olly
-
-Tidy up: message.c, cave.c
 
 Date: 15 Dec 1998
 From: Olly

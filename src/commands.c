@@ -145,6 +145,12 @@ default_calib(settings *s)
    }
 }
 
+static void
+default_flags(settings *s)
+{
+   s->flags = 0;
+}
+
 extern void
 default_all(settings *s)
 {
@@ -157,6 +163,7 @@ default_all(settings *s)
    default_grade(s);
    default_units(s);
    default_calib(s);
+   default_flags(s);
 }
 
 static void
@@ -243,7 +250,7 @@ match_tok(const sztok *tab, int tab_size)
 
 typedef enum {
    CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_DATA, CMD_DEFAULT,
-   CMD_END, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_INCLUDE, CMD_INFER,
+   CMD_END, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE, CMD_INFER,
    CMD_LRUD, CMD_MEASURE, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET,
    CMD_SOLVE, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
@@ -258,6 +265,7 @@ static sztok cmd_tab[] = {
      {"EQUATE",    CMD_EQUATE},
      {"EXPORT",    CMD_EXPORT},
      {"FIX",       CMD_FIX},
+     {"FLAGS",     CMD_FLAGS},
      {"INCLUDE",   CMD_INCLUDE},
      {"INFER",     CMD_INFER},
      {"LRUD",      CMD_LRUD},
@@ -682,6 +690,41 @@ replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
 
    /* free the (now-unused) old pos */
    osfree(pos_replace);
+}
+
+static void
+cmd_flags(void)
+{
+   static sztok flagtab[] = {
+	{"DUPLICATE", FLAGS_DUPLICATE },
+	{"NOT",	      FLAGS_NOT },
+	{"SURFACE",   FLAGS_SURFACE },
+	{NULL,        FLAGS_UNKNOWN }
+   };
+   bool fNot = fFalse;
+   while (1) {
+      int flag;
+      get_token();
+      flag = match_tok(flagtab, TABSIZE(flagtab));
+      /* treat the second NOT in "NOT NOT" as an unknown flag */
+      if (flag == FLAGS_UNKNOWN || (fNot && flag == FLAGS_NOT)) {
+         if (buffer[0]) {
+            /* If buffer is empty, it could mean end of line, or maybe
+             * some non-letter junk which is better reported later */
+            compile_error(/*FLAG `%s' unknown*/68, buffer);
+      	    skipline();
+      	 }
+      	 return;
+      }
+      if (flag == FLAGS_NOT) {
+         fNot = fTrue;
+      } else if (fNot) {
+         pcs->flags &= ~BIT(flag);
+         fNot = fFalse;
+      } else {
+         pcs->flags |= BIT(flag);
+      }
+   }
 }
 
 static void
@@ -1315,11 +1358,12 @@ handle_command(void)
     case CMD_EQUATE: equate_list(); break;
     case CMD_EXPORT: export(); break;
     case CMD_FIX: fix_station(); break;
+    case CMD_FLAGS: cmd_flags(); break;
     case CMD_INCLUDE: include(); break;
     case CMD_INFER: infer(); break;
     case CMD_LRUD: {
        /* just ignore *lrud for now so Tunnel can put it in */
-       /* FIXME warn? */
+       /* FIXME: except that tunnel keeps x-sections in a separate file... */
        skipline();
        break;
     }

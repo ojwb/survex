@@ -284,6 +284,8 @@ addfakeleg(node *fr, node *to,
    leg2->l.reverse = i;
    leg->l.reverse = j | FLAG_DATAHERE;
 
+   leg->l.flags = pcs->flags;
+
    fr->leg[i] = leg;
    to->leg[j] = leg2;
 
@@ -333,6 +335,7 @@ freeleg(node **stnptr)
    leg->v[0] = leg->v[1] = leg->v[2] = (real)0.0;
 #endif
    leg->l.reverse = 1 | FLAG_DATAHERE;
+   leg->l.flags = pcs->flags;
 
    leg2->l.to = oldstn;
    leg2->l.reverse = 0;

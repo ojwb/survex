@@ -84,10 +84,30 @@ put32(long w, FILE *fh)
    putc((char)(w >> 16l), fh);
    putc((char)(w >> 24l), fh);
 }
+
+#endif
+#include "img.h"
+
+unsigned int img_output_version = 1;
+
+#define lenSzTmp 256
+static char szTmp[lenSzTmp];
+
+#ifndef STANDALONE
+static enum {
+   IMG_NONE = 0,
+   IMG_FILENOTFOUND = /*Couldn't open data file '%s'*/24,
+   IMG_OUTOFMEMORY  = /*Out of memory %.0s*/38,
+   IMG_DIRECTORY    = /*Filename '%s' refers to directory*/44,
+   IMG_CANTOPENOUT  = /*Failed to open output file '%s'*/47,
+   IMG_BADFORMAT    = /*Bad 3d image file '%s'*/106
+} img_errno = IMG_NONE;
+#else
+static img_errcode img_errno = IMG_NONE;
 #endif
 
-/* this reads a line from a stream to a buffer. Any eol chars are removed */
-/* from the file and the length of the string including '\0' returned */
+/* Read a line from a stream to a buffer. Any eol chars are removed
+ * from the file and the length of the string excluding '\0' is returned */
 static int
 getline(char *buf, size_t len, FILE *fh)
 {
@@ -107,26 +127,8 @@ getline(char *buf, size_t len, FILE *fh)
       ungetc(ch, fh); /* we don't want it, so put it back */
    }
    buf[i] = '\0';
-   return (i + 1);
+   return i;
 }
-
-#include "img.h"
-
-#define lenSzTmp 256
-static char szTmp[lenSzTmp];
-
-#ifndef STANDALONE
-static enum {
-   IMG_NONE = 0,
-   IMG_FILENOTFOUND = /*Couldn't open data file '%s'*/24,
-   IMG_OUTOFMEMORY  = /*Out of memory %.0s*/38,
-   IMG_DIRECTORY    = /*Filename '%s' refers to directory*/44,
-   IMG_CANTOPENOUT  = /*Failed to open output file '%s'*/47,
-   IMG_BADFORMAT    = /*Bad 3d image file '%s'*/106
-} img_errno = IMG_NONE;
-#else
-static img_errcode img_errno = IMG_NONE;
-#endif
 
 #ifdef STANDALONE
 img_errcode
@@ -174,9 +176,13 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
    }
 
    getline(szTmp, ossizeof(szTmp), pimg->fh); /* file format version */
-   pimg->fBinary = (tolower(*szTmp) == 'b'); /* binary file iff B/b prefix */
+   pimg->version = (tolower(*szTmp) == 'b'); /* binary file iff B/b prefix */
    /* knock off the 'B' or 'b' if it's there */
-   if (strcmp(pimg->fBinary ? szTmp + 1 : szTmp, "v0.01") != 0) {
+   if (strcmp(szTmp + pimg->version, "v0.01") == 0) {
+      pimg->flags = 0;
+   } else if (pimg->version == 0 && strcmp(szTmp, "v2") == 0) {
+      pimg->version = 2;
+   } else {
       fclose(pimg->fh);
       osfree(pimg);
       img_errno = IMG_BADFORMAT;
@@ -188,6 +194,7 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
    pimg->fLinePending = fFalse; /* not in the middle of a 'LINE' command */
    pimg->fRead = fTrue; /* reading from this file */
    img_errno = IMG_NONE;
+printf("*** version %d\n", pimg->version);
    return pimg;
 }
 
@@ -217,11 +224,16 @@ img_open_write(const char *fnm, char *szTitle, bool fBinary)
 
    /* Output image file header */
    fputs("Survex 3D Image File\n", pimg->fh); /* file identifier string */
-   if (fBinary)
-      fputs("Bv0.01\n", pimg->fh); /* binary file format version number */
-   else
-      fputs("v0.01\n", pimg->fh); /* file format version number */
-
+   if (img_output_version < 2) {
+      pimg->version = fBinary ? 1 : 0;
+      if (fBinary)
+         fputs("Bv0.01\n", pimg->fh); /* binary file format version number */
+      else
+         fputs("v0.01\n", pimg->fh); /* file format version number */
+   } else {
+      pimg->version = 2;
+      fprintf(pimg->fh, "v%d\n", pimg->version); /* file format version no. */
+   }
    fputsnl(szTitle, pimg->fh);
    tm = time(NULL);
    if (tm == (time_t)-1) {
@@ -231,7 +243,6 @@ img_open_write(const char *fnm, char *szTitle, bool fBinary)
       strftime(szTmp, lenSzTmp, TIMEFMT, localtime(&tm));
       fputsnl(szTmp, pimg->fh);
    }
-   pimg->fBinary = fBinary;
    pimg->fRead = fFalse; /* writing to this file */
    img_errno = IMG_NONE;
    return pimg;
@@ -242,12 +253,17 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
 {
    static float x = 0.0f, y = 0.0f, z = 0.0f;
    int result;
-   if (pimg->fBinary) {
+   if (pimg->version > 0) {
       long opt;
       again: /* label to goto if we get a cross */
-      opt = get32(pimg->fh);
+      if (pimg->version == 1) {
+         opt = get32(pimg->fh);
+      } else {
+         opt = getc(pimg->fh);
+      }
+printf("*** opt %d\n", opt);
       switch (opt) {
-       case -1:
+       case -1: case 255:
 	 return img_STOP; /* end of data marker */
        case 1:
 	 (void)get32(pimg->fh);
@@ -263,10 +279,14 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
 	 goto done;
        case 4:
 	 result = img_MOVE;
+         pimg->flags = 0;
 	 break;
        case 5:
 	 result = img_LINE;
 	 break;
+       case 6:
+         pimg->flags = getc(pimg->fh);
+         break;
        default:
 	 return img_BAD;
       }
@@ -319,7 +339,7 @@ img_write_datum(img *pimg, int code, const char *sz,
 		float x, float y, float z)
 {
    if (!pimg) return;
-   if (pimg->fBinary) {
+   if (pimg->version > 0) {
       float Sc = (float)100.0; /* Output in cm */
       INT32_T opt = 0;
       switch (code) {
@@ -330,21 +350,35 @@ img_write_datum(img *pimg, int code, const char *sz,
        case img_LINE:
 	 opt = 5;
 	 break;
-      case img_CROSS:
+       case img_CROSS:
 	 opt = 1;
 	 break;
+       case img_FLAGS:
+         if (pimg->version > 1) {
+            putc(6, pimg->fh);
+            putc(*sz, pimg->fh);
+            return;
+         }
        case img_SCALE: /* fprintf( pimg->fh, "scale %9.2f\n", x ); */
        default: /* ignore for now */
 	 break;
       }
       if (opt) {
-	 put32(opt, pimg->fh);
+	 if (pimg->version == 1) {
+	    put32(opt, pimg->fh);
+	 } else {
+	    putc(opt, pimg->fh);
+	 }
 	 put32((INT32_T)(x * Sc), pimg->fh);
 	 put32((INT32_T)(y * Sc), pimg->fh);
 	 put32((INT32_T)(z * Sc), pimg->fh);
       }
       if (code == img_LABEL) {
-	 put32(2, pimg->fh);
+	 if (pimg->version == 1) {
+	    put32(2, pimg->fh);
+	 } else {
+	    putc(2, pimg->fh);
+	 }
 	 fputsnl(sz, pimg->fh);
       }
    } else {
@@ -376,7 +410,13 @@ img_close(img *pimg)
    if (pimg) {
       if (pimg->fh) {
 	 /* If writing a binary file, write end of data marker */
-	 if (pimg->fBinary && !pimg->fRead) put32((INT32_T)-1, pimg->fh);
+	 if (pimg->version > 0 && !pimg->fRead) {
+	    if (pimg->version == 1) {
+	       put32((INT32_T)-1, pimg->fh);
+	    } else {
+	       putc('\xff', pimg->fh);
+	    }
+	 }
 	 fclose(pimg->fh);
       }
       osfree(pimg);
