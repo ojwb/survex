@@ -36,7 +36,6 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, wxGetApp().GetAboutBitmap());
     wxStaticText* title = new wxStaticText(this, 502, wxString("Aven ") + wxString(VERSION));
     wxStaticText* purpose = new wxStaticText(this, 505,
 					     wxString("Visualisation of Survex 3D files"));
@@ -46,7 +45,11 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxButton* close = new wxButton(this, wxID_OK, "Close");
     close->SetDefault();
 
-    horiz->Add(bitmap, 0, wxALL, 2);
+    wxBitmap& bm = wxGetApp().GetAboutBitmap();
+    if (bm.Ok()) {
+        wxStaticBitmap* bitmap = new wxStaticBitmap(this, 501, bm);
+        horiz->Add(bitmap, 0, wxALL, 2);
+    }
     horiz->Add(vert, 1, wxEXPAND | wxALL, 2);
 
     vert->Add(title, 0, wxLEFT | wxRIGHT | wxTOP, 20);
