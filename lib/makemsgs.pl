@@ -54,6 +54,9 @@ while (<>) {
    my ($langs, $msgno, $dummy, $msg) = /^([-\w,]+):\s*(\d+)\s+("?)(.*)\3/;
 
    if ($msgno != $curmsg) {
+       if ($msgno < $curmsg) {
+	   print STDERR "Warning: message number jumps back from $curmsg to $msgno\n";
+       }
        $raw{$curmsg} = $raw;
        $raw = '';
        $curmsg = $msgno;
@@ -77,8 +80,14 @@ while (<>) {
    my $utf8 = string_to_utf8($msg);
    for (split /,/, $langs) {
       if ($msgno >= $dontextract_threshold) {
+	 if (${$dontextract{$_}}[$msgno - $dontextract_threshold]) {
+	     print STDERR "Warning: already had message $msgno for language $_\n";
+	 }
 	 ${$dontextract{$_}}[$msgno - $dontextract_threshold] = $utf8;
       } else {
+	 if (${$msgs{$_}}[$msgno]) {
+	     print STDERR "Warning: already had message $msgno for language $_\n";
+	 }
 	 ${$msgs{$_}}[$msgno] = $utf8;
       }
    }

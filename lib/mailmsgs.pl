@@ -13,7 +13,8 @@ my %email = (
 # 'es' => 'nobody@localhost',
  'ca' => 'jep@redestb.es',
  'pt' => 'leandro@dybal.eti.br',
- 'sk' => 'martinsluka@mac.com'
+ 'sk' => 'martinsluka@mac.com',
+ 'ro' => 'cristif@geo.unibuc.ro'
 );
 
 #system "rm *.todo";
