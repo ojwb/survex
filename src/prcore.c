@@ -594,7 +594,7 @@ main(int argc, char **argv)
       {"surface", no_argument, 0, 'S'},
       {"skip-blanks", no_argument, 0, 'k'},
       {"output", required_argument, 0, 'o'},
-      {"calibrate", required_argument, 0, 'C'},
+      {"calibrate", no_argument, 0, 'C'},
       {"help", no_argument, 0, HLP_HELP},
       {"version", no_argument, 0, HLP_VERSION},
       {0, 0, 0, 0}
