@@ -5,10 +5,8 @@ the cross size?)
 
 Make grid work again!
 
-Blobs are a bit inefficient - want BlobsBegin() and ...End() and a
-SetBlobColour() call; also pass all blobs of the same colour together.
-
-Make blobs round (use antialised blobs with an alpha threshold).
+Make blobs round (use antialised blobs with an alpha threshold)?  But we
+need to work out how to get the centred...
 
 Draw the measuring line directly onto the front buffer, so we can remove it
 with a copy from the back buffer and redraw it in the new position without a
@@ -16,8 +14,6 @@ re-render.
 
 Round the measuring line coords so the ring is a nice shape?  Or just antialias
 the ring, there blob and line?
-
-Sort out odd textured font spacing niggles...
 
 Process all pending input before rerendering to improve responsiveness.
 
@@ -30,7 +26,8 @@ perspective vs survey size - is there an issue?
 
 sort out date colouring cleanly.  also error colouring, etc.
 
-texture mapped fonts: seems to be a minor alignment bug - investigate.
+texture mapped fonts: seems to be a minor alignment bug which gives spacing
+inconsitencies - investigate.
 
 ---
 

@@ -177,6 +177,12 @@ void GLACanvas::FirstShow()
     CHECK_GL_ERROR("FirstShow", "glColorMaterial GL_FRONT");
     glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
     CHECK_GL_ERROR("FirstShow", "glColorMaterial GL_BACK");
+    //glEnable(GL_POINT_SMOOTH);
+    //CHECK_GL_ERROR("FirstShow", "glEnable GL_POINT_SMOOTH");
+    glPointSize(4);
+    CHECK_GL_ERROR("FirstShow", "glPointSize");
+    //glAlphaFunc(GL_GREATER, 0.5f);
+    //CHECK_GL_ERROR("FirstShow", "glAlphaFunc");
 
 #ifdef USE_FNT
     // Load font
@@ -648,23 +654,33 @@ void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
     PlaceVertex(x, y, 0.0);
 }
 
-void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z, glaCoord radius)
+void GLACanvas::BeginBlobs()
 {
-    // Draw a sphere centred on a particular point.
-
-    glPointSize(radius * 2);
-    CHECK_GL_ERROR("DrawBlob", "glPointSize");
-
+    // Commence drawing of a set of blobs.
+    //glEnable(GL_ALPHA_TEST);
+    //CHECK_GL_ERROR("BeginBlobs", "glEnable GL_ALPHA_TEST");
     glBegin(GL_POINTS);
-    PlaceVertex(x, y, z);
-    glEnd();
-    CHECK_GL_ERROR("DrawBlob", "GL_POINTS");
 }
 
-void GLACanvas::DrawRing(glaCoord x, glaCoord y, glaCoord radius)
+void GLACanvas::EndBlobs()
+{
+    // Finish drawing of a set of blobs.
+    glEnd();
+    CHECK_GL_ERROR("EndBlobs", "GL_POINTS");
+    //glDisable(GL_ALPHA_TEST);
+    //CHECK_GL_ERROR("EndBlobs", "glDisable GL_ALPHA_TEST");
+}
+
+void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
+{
+    // Draw a marker (ideally a circle, but a square for now).
+    PlaceVertex(x, y, z);
+}
+
+void GLACanvas::DrawRing(glaCoord x, glaCoord y)
 {
     // Draw an unfilled circle
-    
+    const Double radius = 4; 
     assert(m_Quadric);
     glTranslated(x, y, 0.0);
     CHECK_GL_ERROR("DrawRing", "glTranslated");

@@ -78,7 +78,6 @@ static const int TICK_LENGTH = 4;
 static const int SCALE_BAR_OFFSET_X = 15;
 static const int SCALE_BAR_OFFSET_Y = 12;
 static const int SCALE_BAR_HEIGHT = 12;
-static const int HIGHLIGHTED_PT_SIZE = 2;
 
 static const gla_colour TEXT_COLOUR = col_GREEN;
 static const gla_colour HERE_COLOUR = col_WHITE;
@@ -371,7 +370,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    if (m_here.x != DBL_MAX) {
 		Double dummy;
 		Transform(m_here.x, m_here.y, m_here.z, &hx, &hy, &dummy);
-		DrawRing(hx, hy, HIGHLIGHTED_PT_SIZE * 2);
+		DrawRing(hx, hy);
 	    }
 	    if (m_there.x != DBL_MAX) {
 		Double tx, ty;
@@ -383,7 +382,9 @@ void GfxCore::OnPaint(wxPaintEvent&)
 		    PlaceIndicatorVertex(tx, ty);
 		    EndLines();
 		}
-		DrawBlob(tx, ty, 0.0, HIGHLIGHTED_PT_SIZE);
+		BeginBlobs();
+		DrawBlob(tx, ty, 0.0);
+		EndBlobs();
 	    }
 	}
 	
@@ -1743,14 +1744,46 @@ void GfxCore::GenerateDisplayListSurface()
     DrawPolylines(false, true);
 }
 
+// Plot crosses and/or blobs.
 void GfxCore::GenerateBlobsDisplayList()
 {
-    // Plot crosses and/or blobs.
-    if (!(m_Crosses || m_Entrances || m_FixedPts || m_ExportedPts ||
-	  m_Parent->GetNumHighlightedPts())) return;
+    if (m_Crosses) {
+	// Plot crosses.
+	list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+	SetColour(col_LIGHT_GREY);
+	BeginLines();
+	while (pos != m_Parent->GetLabelsEnd()) {
+	    const LabelInfo* label = *pos++;
 
-    list<LabelInfo*>::const_reverse_iterator pos = m_Parent->GetRevLabels();
-    while (pos != m_Parent->GetRevLabelsEnd()) {
+	    if (!((m_Surface && label->IsSurface()) ||
+			(m_Legs && label->IsUnderground()) ||
+			(!label->IsSurface() && !label->IsUnderground()))) {
+		// if this station isn't to be displayed, skip to the next
+		// (last case is for stns with no legs attached)
+		continue;
+	    }
+
+	    Double x, y, z;
+	    //Transform(label->GetX(), label->GetY(), label->GetZ(), &x, &y, &z);
+	    x = label->GetX(); y = label->GetY(); z = label->GetZ();
+
+	    PlaceVertex(x - 2, y - 2, z);
+	    PlaceVertex(x + 2, y + 2, z);
+	    PlaceVertex(x - 2, y + 2, z);
+	    PlaceVertex(x + 2, y - 2, z);
+	}
+	EndLines();
+    }
+
+    if (!(m_Entrances || m_FixedPts || m_ExportedPts ||
+	  m_Parent->GetNumHighlightedPts()))
+	return;
+
+    // Plot blobs.
+    gla_colour prev_col = col_BLACK; // not a colour used for blobs
+    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+    BeginBlobs();
+    while (pos != m_Parent->GetLabelsEnd()) {
 	const LabelInfo* label = *pos++;
 
 	// When more than one flag is set on a point:
@@ -1758,9 +1791,6 @@ void GfxCore::GenerateBlobsDisplayList()
 	// which takes priority over fixed point
 	// highlighting, which in turn takes priority over exported
 	// point highlighting.
-
-	gla_colour col;
-	enum {BLOB, CROSS} shape = BLOB;
 
 	if (!((m_Surface && label->IsSurface()) ||
 	      (m_Legs && label->IsUnderground()) ||
@@ -1770,6 +1800,8 @@ void GfxCore::GenerateBlobsDisplayList()
 	    continue;
 	}
 
+	gla_colour col;
+
 	if (label->IsHighLighted()) {
 	    col = col_YELLOW;
 	} else if (m_Entrances && label->IsEntrance()) {
@@ -1778,36 +1810,18 @@ void GfxCore::GenerateBlobsDisplayList()
 	    col = col_RED;
 	} else if (m_ExportedPts && label->IsExportedPt()) {
 	    col = col_TURQUOISE;
-	} else if (m_Crosses) {
-	    col = col_LIGHT_GREY;
-	    shape = CROSS;
 	} else {
 	    continue;
 	}
 
-/*
-	Double x3 = label->GetX() + m_Params.translation.x;
-	Double y3 = label->GetY() + m_Params.translation.y;
-	Double z3 = label->GetZ() + m_Params.translation.z;
-
-	// Calculate screen coordinates, and check if the point is
-	// visible - this is faster, and avoids coordinate
-	// wrap-around problems
-	int x = (int) (x3 * m_00 + y3 * m_01 + z3 * m_02) + m_XCentre;
-	if (x < -CROSS_SIZE || x >= m_XSize + CROSS_SIZE) continue;
-	int y = -(int) (x3 * m_20 + y3 * m_21 + z3 * m_22) + m_YCentre;
-	if (y < -CROSS_SIZE || y >= m_YSize + CROSS_SIZE) continue;
-
-	SetColour(col);
-	*/
-	if (shape == CROSS) {
-	   // m_DrawDC.DrawLines(2, cross1, x, y);
-	   // m_DrawDC.DrawLines(2, cross2, x, y);
-	} else {
+	// Stations are sorted by blob type, so colour changes are infrequent.
+	if (col != prev_col) {
 	    SetColour(col);
-	    DrawBlob(label->GetX(), label->GetY(), label->GetZ(), HIGHLIGHTED_PT_SIZE);
+	    prev_col = col;
 	}
+	DrawBlob(label->GetX(), label->GetY(), label->GetZ());
     }
+    EndBlobs();
 }
 
 void GfxCore::GenerateIndicatorDisplayList()
