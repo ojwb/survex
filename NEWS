@@ -14,13 +14,15 @@
 * cavern: improved error reporting when an invalid value is given for a
   DIRECTION reading.
 
+* cavern: fixed "singular matrix" error when very low SDs were specified.
+
 * Updated documentation.
 
 Changes in 1.0.13:
 
 * aven: Fixed bug which caused the occasional spurious leg to be shown
   connecting arbitrary stations.
- 
+
 * extend: try to extend along a survey, and make breaks where other surveys
   join.
 
@@ -39,7 +41,7 @@ Changes in 1.0.12:
 
 * Fixed handling of iso-8859-2 character set and MS Windows code page 1250
   (both cover Eastern European languages).
- 
+
 * (MS Windows Version): install file associations for Compass .plt and .plf
   files and for CMAP .xyz files.  Also install the file icon for .plt and
   .plf files in case Compass isn't installed (thanks to Larry Fish for

@@ -932,8 +932,10 @@ void MainFrm::IntersectLineWithPlane(Double x0, Double y0, Double z0,
     assert(z1 - z0 != 0.0);
 
     Double t = (z - z0) / (z1 - z0);
-    x = x0 + t*(x1 - x0);
-    y = y0 + t*(y1 - y0);
+    assert(0.0 <= t && t <= 1.0);
+
+    x = x0 + t * (x1 - x0);
+    y = y0 + t * (y1 - y0);
 }
 
 void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)

@@ -622,6 +622,7 @@ draw_label(Window window, GC gc, int x, int y,
 
       if (x >= oldwidth || y >= oldheight || y + fontheight <= 0) return;
 
+      /* FIXME: should cache strwidth for each label for efficiency */
       strwidth = XTextWidth(fontinfo, string, length);
 
       if (x + strwidth <= 0) return;
