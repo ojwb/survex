@@ -1,4 +1,4 @@
-/* > message.h
+/* message.h
  * Function prototypes for message.c
  * Copyright (C) 1998-2001 Olly Betts
  *
@@ -47,6 +47,7 @@ extern "C" {
 #define CHARSET_UTF8	    4
 #define CHARSET_WINCP1252   5
 #define CHARSET_ISO_8859_15 6
+#define CHARSET_DOSCP437    7
 
 extern int msg_warnings; /* keep track of how many warnings we've given */
 extern int msg_errors;   /* and how many (non-fatal) errors */

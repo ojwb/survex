@@ -19,6 +19,12 @@
 * (MS DOS version): caverot: default to 320x200 when running under
   Microsoft Windows 2000 and XP as we already do on NT.
 
+* (MS DOS version): fixed problem when running on DOS outside MS Windows.
+
+* (MS DOS version): detect current codepage rather than assuming it's 850.
+  We now support codepages 437 and 850 (the common ones) - for other
+  codepages we fall back to using 7-bit ASCII.
+
 Changes in 0.99-prerelease7:
 
 * (MS Windows version): aven was missing from 0.99-prerelease6

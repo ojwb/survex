@@ -58,6 +58,8 @@ static jmp_buf jmpbufSignal;
 #include <dos.h>
 # ifdef __DJGPP__
 #  include <dpmi.h>
+#  include <go32.h>
+#  include <sys/movedata.h>
 # endif
 #elif (OS==RISCOS)
 # include "oslib/wimpreadsy.h"
@@ -256,7 +258,22 @@ default_charset(void)
 
    return CHARSET_RISCOS31;
 #elif (OS==MSDOS)
-   return CHARSET_DOSCP850;
+   __dpmi_regs r;
+   r.x.ax = 0x6501;
+   r.x.bx = 0xffff;
+   r.x.dx = 0xffff;
+   /* Use DJGPP's transfer buffer (which is at least 2K) */
+   r.x.es = __tb >> 4;
+   r.x.di = __tb & 0x0f;
+   r.x.cx = 2048;
+   /* bit 1 is the carry flag */
+   if (__dpmi_int(0x21, &r) != -1 && r.x.flags & 1 == 0) {
+      unsigned short p;
+      dosmemget(__tb + 5, 2, &p);
+      if (p == 437) return CHARSET_DOSCP437;
+      if (p == 850) return CHARSET_DOSCP850;
+   }
+   return CHARSET_USASCII;
 #elif (OS==WIN32)
 # ifdef AVEN
 #  define CODEPAGE GetACP()
@@ -423,6 +440,62 @@ add_unicode(int charset, unsigned char *p, int value)
       }
       break;
 #endif
+#if (OS==MSDOS)
+   case CHARSET_DOSCP437: {
+      unsigned char uni2dostab[] = {
+	  255, 173, 155, 156,   0, 157,   0,   0,
+	    0,   0, 166, 174, 170,   0,   0,   0,
+	  248, 241, 253,   0,   0, 230,   0, 250,
+	    0,   0, 167, 175, 172, 171,   0, 168,
+	    0,   0,   0,   0, 142, 143, 146, 128,
+	    0, 144,   0,   0,   0,   0,   0,   0,
+	    0, 165,   0,   0,   0,   0, 153,   0,
+	    0,   0,   0,   0, 154,   0,   0, 225,
+	  133, 160, 131,   0, 132, 134, 145, 135,
+	  138, 130, 136, 137, 141, 161, 140, 139,
+	    0, 164, 149, 162, 147,   0, 148, 246,
+	    0, 151, 163, 150, 129,   0,   0, 152,
+      };
+      if (value >= 160 && value < 256) {
+	 int ch = (int)uni2dostab[value - 160]
+	 if (!ch) break;
+	 *p = ch;
+	 return 1;
+      }
+#if 0
+      switch (value) {
+	  case 8359: *p = 158; return 1; /* PESETA SIGN */
+	  case 402: *p = 159; return 1; /* LATIN SMALL LETTER F WITH HOOK */
+	  case 8976: *p = 169; return 1; /* REVERSED NOT SIGN */
+	  case 945: *p = 224; return 1; /* GREEK SMALL LETTER ALPHA */
+	  case 915: *p = 226; return 1; /* GREEK CAPITAL LETTER GAMMA */
+	  case 960: *p = 227; return 1; /* GREEK SMALL LETTER PI */
+	  case 931: *p = 228; return 1; /* GREEK CAPITAL LETTER SIGMA */
+	  case 963: *p = 229; return 1; /* GREEK SMALL LETTER SIGMA */
+	  case 964: *p = 231; return 1; /* GREEK SMALL LETTER TAU */
+	  case 934: *p = 232; return 1; /* GREEK CAPITAL LETTER PHI */
+	  case 920: *p = 233; return 1; /* GREEK CAPITAL LETTER THETA */
+	  case 937: *p = 234; return 1; /* GREEK CAPITAL LETTER OMEGA */
+	  case 948: *p = 235; return 1; /* GREEK SMALL LETTER DELTA */
+	  case 8734: *p = 236; return 1; /* INFINITY */
+	  case 966: *p = 237; return 1; /* GREEK SMALL LETTER PHI */
+	  case 949: *p = 238; return 1; /* GREEK SMALL LETTER EPSILON */
+	  case 8745: *p = 239; return 1; /* INTERSECTION */
+	  case 8801: *p = 240; return 1; /* IDENTICAL TO */
+	  case 8805: *p = 242; return 1; /* GREATER-THAN OR EQUAL TO */
+	  case 8804: *p = 243; return 1; /* LESS-THAN OR EQUAL TO */
+	  case 8992: *p = 244; return 1; /* TOP HALF INTEGRAL */
+	  case 8993: *p = 245; return 1; /* BOTTOM HALF INTEGRAL */
+	  case 8776: *p = 247; return 1; /* ALMOST EQUAL TO */
+	  case 8729: *p = 249; return 1; /* BULLET OPERATOR */
+	  case 8730: *p = 251; return 1; /* SQUARE ROOT */
+	  case 8319: *p = 252; return 1; /* SUPERSCRIPT LATIN SMALL LETTER N */
+	  case 9632: *p = 254; return 1; /* BLACK SQUARE */
+      }
+#endif
+      break;
+   }
+#endif
 #if (OS==MSDOS || OS==WIN32)
    case CHARSET_DOSCP850: {
       unsigned char uni2dostab[] = {
@@ -443,14 +516,16 @@ add_unicode(int charset, unsigned char *p, int value)
 	 *p = (int)uni2dostab[value - 160];
 	 return 1;
       }
-      if (value == 305) {
+#if 0
+      if (value == 305) { /* LATIN SMALL LETTER DOTLESS I */
 	 *p = 213;
 	 return 1;
       }
-      if (value == 402) {
+      if (value == 402) { /* LATIN SMALL LETTER F WITH HOOK */
 	 *p = 159;
 	 return 1;
       }
+#endif
       break;
    }
 #endif
@@ -859,31 +934,35 @@ msg_init(char * const *argv)
 	   {
 	      int country_code;
 # ifdef __DJGPP__
-	      int sel;
-	      int seg = __dpmi_allocate_dos_memory(3, &sel);
-	      if (seg != -1) {
-		 __dpmi_regs r;
-		 r.x.ax = 0x3800;
-		 r.d.edx = seg;
-		 if (__dpmi_int(0x21, &r) != -1 && !r.x.flags) {
-		    country_code = r.x.bx;
+	      __dpmi_regs r;
+	      r.x.ax = 0x6501;
+	      r.x.bx = 0xffff;
+	      r.x.dx = 0xffff;
+	      /* Use DJGPP's transfer buffer (which is at least 2K) */
+	      r.x.es = __tb >> 4;
+	      r.x.di = __tb & 0x0f;
+	      r.x.cx = 2048;
+	      /* bit 1 is the carry flag */
+	      if (__dpmi_int(0x21, &r) != -1 && r.x.flags & 1 == 0) {
+		 unsigned short p;
+	         dosmemget(__tb + 3, 2, &p);
+	         country_code = p;
 # else
 	      union REGS r;
 	      r.x.ax = 0x3800; /* get current country info */
 	      r.x.dx = 0;
 	      intdos(&r, &r);
 	      if (!r.x.cflag) {
-		 if (1) {
-		    country_code = r.x.bx;
+		 country_code = r.x.bx;
 # endif
-		    /* List of country codes taken from:
-		     * http://www.delorie.com/djgpp/doc/rbinter/it/00/14.html */
-		    /* The mappings here are guesses at best in most cases.
-		     * In a lot of cases we pick a language because we have
-		     * a translation in it, rather than because it's the most
-		     * widely used or understood in that country. */
-		    /* Improvements welcome */
-		    switch (country_code) {
+		 /* List of country codes taken from:
+		  * http://www.delorie.com/djgpp/doc/rbinter/it/00/14.html */
+		 /* The mappings here are guesses at best in most cases.
+		  * In a lot of cases we pick a language because we have
+		  * a translation in it, rather than because it's the most
+		  * widely used or understood in that country. */
+		 /* Improvements welcome */
+		 switch (country_code) {
 		     case 1: /* United States */
 		     case 670: /* Saipan / N. Mariana Island */
 		     case 671: /* Guam */
@@ -891,8 +970,8 @@ msg_init(char * const *argv)
 		     case 684: /* American Samoa */
 		     case 691: /* Micronesia */
 		     case 692: /* Marshall Islands */
-		       msg_lang = "en_US";
-		       break;
+			 msg_lang = "en_US";
+			 break;
 		     case 4: /* Canada (English) */
 		     case 27: /* South Africa */
 		     case 44: /* United Kingdom */
@@ -929,14 +1008,14 @@ msg_init(char * const *argv)
 		     case 683: /* Niue */
 		     case 685: /* Western Samoa */
 		     case 686: /* Kiribati */
-		       /* I believe only some of these are English speaking... */
+			 /* I believe only some of these are English speaking... */
 		     case 809: /* Antigua and Barbuda / Anguilla / Bahamas / Barbados / Bermuda
-				British Virgin Islands / Cayman Islands / Dominica
-				Dominican Republic / Grenada / Jamaica / Montserra
-				St. Kitts and Nevis / St. Lucia / St. Vincent and Grenadines
-				Trinidad and Tobago / Turks and Caicos */
-		       msg_lang = "en";
-		       break;
+				  British Virgin Islands / Cayman Islands / Dominica
+				  Dominican Republic / Grenada / Jamaica / Montserra
+				  St. Kitts and Nevis / St. Lucia / St. Vincent and Grenadines
+				  Trinidad and Tobago / Turks and Caicos */
+			 msg_lang = "en";
+			 break;
 		     case 2: /* Canadian-French */
 		     case 32: /* Belgium */ /* maybe */
 		     case 33: /* France */
@@ -973,8 +1052,8 @@ msg_init(char * const *argv)
 		     case 687: /* New Caledonia */
 		     case 689: /* French Polynesia */
 		     case 961: /* Lebanon */
-		       msg_lang = "fr";
-		       break;
+			 msg_lang = "fr";
+			 break;
 		     case 3: /* Latin America */
 		     case 34: /* Spain */
 		     case 51: /* Peru */
@@ -996,30 +1075,30 @@ msg_init(char * const *argv)
 		     case 593: /* Ecuador */
 		     case 595: /* Paraguay */
 		     case 598: /* Uruguay */
-		       msg_lang = "es";
-		       break;
+			 msg_lang = "es";
+			 break;
 		     case 39: /* Italy / San Marino / Vatican City */
-		       msg_lang = "it";
-		       break;
+			 msg_lang = "it";
+			 break;
 		     case 41: /* Switzerland / Liechtenstein */ /* or fr or ... */
-		       msg_lang = "de_CH";
-		       break;
+			 msg_lang = "de_CH";
+			 break;
 		     case 43: /* Austria (DR DOS 5.0) */
-		       msg_lang = "de";
-		       break;
+			 msg_lang = "de";
+			 break;
 		     case 49: /* Germany */
-		       msg_lang = "de_DE";
-		       break;
+			 msg_lang = "de_DE";
+			 break;
 		     case 55: /* Brazil (not supported by DR DOS 5.0) */
-		       msg_lang = "pt_BR";
-		       break;
+			 msg_lang = "pt_BR";
+			 break;
 		     case 238: /* Cape Verde Islands */
 		     case 244: /* Angola */
 		     case 245: /* Guinea-Bissau */
 		     case 259: /* Mozambique */
 		     case 351: /* Portugal */
-		       msg_lang = "pt";
-		       break;
+			 msg_lang = "pt";
+			 break;
 #if 0
 		     case 7: /* Russia */
 		     case 20: /* Egypt */
@@ -1125,11 +1204,7 @@ msg_init(char * const *argv)
 		     case 977: /* Nepal */
 		     case 995: /* Myanmar (Burma) */
 #endif
-		    }
-		 }		 
-# ifdef __DJGPP__
-		 (void)__dpmi_free_dos_memory(sel);
-# endif
+		 }
 	      }
 	   }
 #endif

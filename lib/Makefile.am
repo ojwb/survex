@@ -23,6 +23,7 @@ ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg es.msg fr.msg it.msg pt.msg p
 	perl makemsgs.pl messages.txt
 
 defaultlang.h:
+	-rm -f defaultlang.h
 	ln -s $(DEFAULTLANG).h defaultlang.h
 
 pfont.bit: pfont.txt makefont.pl
