@@ -146,7 +146,7 @@ main(int argc, char **argv)
 	 len += len;
 	 blk = osrealloc(blk, len);
       }
-      CHECK(blk[next].fpos = ftell(fh));
+      blk[next].fpos = ftell(fh);
       ch = getc(fh);
       if (ch == EOF) break;
       skipline(fh);
@@ -215,7 +215,7 @@ main(int argc, char **argv)
       char *base = base_from_fnm(fnm);
       fnm_out = add_ext(base, "tmp");
       osfree(base);
-      fh_out = safe_fopen(fnm_out, "tmp", "wb");
+      fh_out = safe_fopen(fnm_out, "wb");
    }
 
    do {
