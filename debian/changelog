@@ -1,3 +1,11 @@
+survex (1.0.28) unstable; urgency=low
+
+  * Fixed 3d file reading code to fix incorrect unpacking of compressed
+    station names in a rare case.  Also checked other rare cases work
+    correctly.
+
+ -- Wookey <wookey@survex.com>  Mon, 08 Mar 2004 20:54:03 +0000
+
 survex (1.0.27) unstable; urgency=low
 
   * cad3d: DXF output now puts surface legs, stations, and labels in separate
