@@ -144,15 +144,15 @@ validate_station_list(void)
    node *stn, *stn2;
    int d, d2;
 
-   ASSERT(!stnlist || !stnlist->prev);
+   SVX_ASSERT(!stnlist || !stnlist->prev);
    /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
    for (stn = stnlist; stn; stn = stn->next) {
       bool fGap = fFalse;
 #if 0
       printf("V [%p]<-[%p]->[%p] ", stn->prev, stn, stn->next); print_prefix(stn->name); putnl();
 #endif
-      ASSERT(stn->prev == NULL || stn->prev->next == stn);
-      ASSERT(stn->next == NULL || stn->next->prev == stn);
+      SVX_ASSERT(stn->prev == NULL || stn->prev->next == stn);
+      SVX_ASSERT(stn->next == NULL || stn->next->prev == stn);
       for (d = 0; d <= 2; d++) {
 	 if (!stn->leg[d]) {
 	    fGap = fTrue;
@@ -164,7 +164,7 @@ validate_station_list(void)
 	       fOk = fFalse;
 	    }
 	    stn2 = stn->leg[d]->l.to;
-	    ASSERT(stn2);
+	    SVX_ASSERT(stn2);
 #if 0
 	    if (stn->status && !stn2->status) {
 	       printf("*** Station '");

@@ -367,8 +367,8 @@ getanswer(char *szReplies)
 {
    int ch;
    char *reply;
-   ASSERT2(szReplies, "NULL pointer passed");
-   ASSERT2(*szReplies, "list of possible replies is empty");
+   SVX_ASSERT2(szReplies, "NULL pointer passed");
+   SVX_ASSERT2(*szReplies, "list of possible replies is empty");
    putchar('(');
    putchar(*szReplies);
    for (reply = szReplies + 1; *reply; reply++) {
@@ -504,7 +504,7 @@ next_page(int *pstate, char **q, int pageLim)
    if (*pstate > 0) {
       /* doing a range */
       (*pstate)++;
-      ASSERT(*p == '-');
+      SVX_ASSERT(*p == '-');
       p++;
       while (isspace((unsigned char)*p)) p++;
       if (sscanf(p, "%u%n", &page, &c) > 0) {
@@ -659,10 +659,10 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
-   ASSERT(help[14].opt == HLP_ENCODELONG(14));
-   ASSERT(help[15].opt == HLP_ENCODELONG(15));
-   ASSERT(help[16].opt == 0);
-   ASSERT(!(pr->flags & PR_FLAG_CALIBRATE && pr->flags & PR_FLAG_NOFILEOUTPUT));
+   SVX_ASSERT(help[14].opt == HLP_ENCODELONG(14));
+   SVX_ASSERT(help[15].opt == HLP_ENCODELONG(15));
+   SVX_ASSERT(help[16].opt == 0);
+   SVX_ASSERT(!(pr->flags & PR_FLAG_CALIBRATE && pr->flags & PR_FLAG_NOFILEOUTPUT));
 
    if (pr->flags & PR_FLAG_NOFILEOUTPUT) help[14] = help[16];
    if (!(pr->flags & PR_FLAG_CALIBRATE)) help[15] = help[16];
@@ -1066,7 +1066,7 @@ main(int argc, char **argv)
       } else {
 	 page = next_page(&state, &p, pageLim);
       }
-      ASSERT(state >= 0); /* errors should have been caught above */
+      SVX_ASSERT(state >= 0); /* errors should have been caught above */
       if (page == 0) break;
       cPagesPrinted++;
       if (pages > 1) {
@@ -1491,7 +1491,7 @@ as_escstring(const char *v, char *s)
 	 if (pass) *q++ = c;
       }
       if (fSyntax) {
-	 ASSERT(pass == 0);
+	 SVX_ASSERT(pass == 0);
 	 setting_bad_value(v, s);
       }
    }

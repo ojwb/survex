@@ -48,10 +48,10 @@
 #endif
 
 /* assert macro, which calls BUG() if it fails */
-#define ASSERT(E) if (E) {} else BUG("assert("#E") failed")
+#define SVX_ASSERT(E) if (E) {} else BUG("assert("#E") failed")
 
 /* assert macro, which calls BUG() if it fails */
-#define ASSERT2(E, M) if (E) {} else BUG("assert("#E") failed - "M)
+#define SVX_ASSERT2(E, M) if (E) {} else BUG("assert("#E") failed - "M)
 
 /* datain.c */
 

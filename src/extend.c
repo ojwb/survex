@@ -80,7 +80,7 @@ find_prefix(const char *prefix)
    pfx *p;
    int hash;
 
-   ASSERT(prefix);
+   SVX_ASSERT(prefix);
 
    hash = hash_string(prefix) & 0x1fff;
    for (p = htab[hash]; p; p = p->next) {

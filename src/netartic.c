@@ -79,7 +79,7 @@ visit(node *stn, int back)
    long min_colour;
    int i;
    unsigned long tos = 0;
-   ASSERT(dirn_stack && min_stack);
+   SVX_ASSERT(dirn_stack && min_stack);
 #ifdef DEBUG_ARTIC
    printf("visit(%p, %d) called\n", stn, back);
 #endif
@@ -96,7 +96,7 @@ iter:
 	 node *to = stn->leg[i]->l.to;
 	 long col = to->colour;
 	 if (col == 0) {
-	    ASSERT(tos < cMaxVisits);
+	    SVX_ASSERT(tos < cMaxVisits);
 	    dirn_stack[tos] = back;
 	    min_stack[tos] = min_colour;
 	    tos++;
@@ -104,7 +104,7 @@ iter:
 	    stn = to;
 	    goto iter;
 uniter:
-	    ASSERT(tos > 0);
+	    SVX_ASSERT(tos > 0);
 	    --tos;
 	    i = reverse_leg_dirn(stn->leg[back]);
 	    to = stn;
@@ -174,9 +174,9 @@ uniter:
       }
    }
 
-   ASSERT(!stn->leg[0] || stn->leg[0]->l.to->colour > 0);
-   ASSERT(!stn->leg[1] || stn->leg[1]->l.to->colour > 0);
-   ASSERT(!stn->leg[2] || stn->leg[2]->l.to->colour > 0);
+   SVX_ASSERT(!stn->leg[0] || stn->leg[0]->l.to->colour > 0);
+   SVX_ASSERT(!stn->leg[1] || stn->leg[1]->l.to->colour > 0);
+   SVX_ASSERT(!stn->leg[2] || stn->leg[2]->l.to->colour > 0);
 
    if (tos > 0) goto uniter;
 
@@ -226,7 +226,7 @@ articulate(void)
    min_stack = osmalloc(cMaxVisits * sizeof(long));
 
    stnStart = fixedlist;
-   ASSERT2(stnStart,"no fixed points!");
+   SVX_ASSERT2(stnStart,"no fixed points!");
    cFixed = colour;
    while (1) {
       int c;
@@ -393,12 +393,12 @@ articulate(void)
 #ifdef DEBUG_ARTIC
 	 printf("Component:\n");
 #endif
-	 ASSERT(comp->artic);
+	 SVX_ASSERT(comp->artic);
 	 for (art = comp->artic; art; art = art->next) {
 #ifdef DEBUG_ARTIC
 	    printf("  Articulation (%p):\n", art->stnlist);
 #endif
-	    ASSERT(art->stnlist);
+	    SVX_ASSERT(art->stnlist);
 	    if (listend) {
 	       listend->next = art->stnlist;
 	       art->stnlist->prev = listend;
@@ -538,6 +538,6 @@ articulate(void)
    }
 #endif
    FOR_EACH_STN(stn, stnlist) {
-      ASSERT(fixed(stn));
+      SVX_ASSERT(fixed(stn));
    }
 }

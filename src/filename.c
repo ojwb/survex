@@ -47,7 +47,7 @@ extern FILE *
 safe_fopen(const char *fnm, const char *mode)
 {
    FILE *f;
-   ASSERT(mode[0] == 'w'); /* only expect to be used for writing */
+   SVX_ASSERT(mode[0] == 'w'); /* only expect to be used for writing */
    if (fDirectory(fnm))
       fatalerror(/*Filename `%s' refers to directory*/44, fnm);
 
@@ -64,7 +64,7 @@ safe_fopen(const char *fnm, const char *mode)
 extern void
 safe_fclose(FILE *f)
 {
-   ASSERT(f);
+   SVX_ASSERT(f);
    /* NB: use of | rather than || - we always want to call fclose() */
    if (ferror(f) | (fclose(f) == EOF)) {
       filelist *p;
@@ -380,7 +380,7 @@ void
 filename_register_output(const char *fnm)
 {
    filelist *p = osnew(filelist);
-   ASSERT(fnm);
+   SVX_ASSERT(fnm);
    p->fnm = osstrdup(fnm);
    p->fh = NULL;
    p->next = flhead;
@@ -391,7 +391,7 @@ static void
 filename_register_output_with_fh(const char *fnm, FILE *fh)
 {
    filelist *p = osnew(filelist);
-   ASSERT(fnm);
+   SVX_ASSERT(fnm);
    p->fnm = osstrdup(fnm);
    p->fh = fh;
    p->next = flhead;

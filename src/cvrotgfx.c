@@ -226,7 +226,7 @@ cvrotgfx_init(void)
     *    #define shift_pressed() (poll_keyboard(), key_shifts & KB_SHIFT_FLAG)
     * Ensure that this isn't one of those platforms...
     */
-   ASSERT(!keyboard_needs_poll());
+   SVX_ASSERT(!keyboard_needs_poll());
 
    res = allegro_init();
    /* test for res != 0, but never the case ATM */

@@ -191,7 +191,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 
    if (fNew) {
       /* fNew means SFLAGS_SURVEY is currently set */
-      ASSERT(TSTBIT(ptr->sflags, SFLAGS_SURVEY));
+      SVX_ASSERT(TSTBIT(ptr->sflags, SFLAGS_SURVEY));
       if (!fSurvey) {
 	 ptr->sflags &= ~BIT(SFLAGS_SURVEY);
 	 if (pcs->f_infer_exports) ptr->min_export = USHRT_MAX;
@@ -220,7 +220,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       int level;
       for (level = ptr->max_export + 1; level; level--) {
 	 survey = survey->up;
-	 ASSERT(survey);
+	 SVX_ASSERT(survey);
       }
       s = osstrdup(sprint_prefix(survey));
       if (survey->filename) {

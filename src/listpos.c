@@ -88,7 +88,7 @@ node_stat(prefix *p)
       }
    } else {
       int order;
-      ASSERT(pfx_fixed(p));
+      SVX_ASSERT(pfx_fixed(p));
 
       order = p->shape;
 
@@ -118,7 +118,7 @@ node_stat(prefix *p)
 	    const char *filename_store = file.filename;
 	    unsigned int line_store = file.line;
 	    prefix *where = p->up;
-	    ASSERT(where);
+	    SVX_ASSERT(where);
 	    s = osstrdup(sprint_prefix(where));
 	    /* Report better when station called 2.1 for example */
 	    while (!where->filename && where->up) where = where->up;

@@ -160,13 +160,13 @@ tree_check(void)
       names = osmalloc(c_added * ossizeof(char *));
       for (i = 0; i < c_added; i++) {
 	 added *old;
-	 ASSERT(added_list);
+	 SVX_ASSERT(added_list);
 	 names[i] = added_list->name;
 	 old = added_list;
 	 added_list = old->next;
 	 osfree(old);
       }
-      ASSERT(added_list == NULL);
+      SVX_ASSERT(added_list == NULL);
       qsort(names, c_added, sizeof(char *), cmp_pname);
       for (i = 0; i < c_added; i++) {
 	 printf(msg(/*Added: %s*/501), names[i]);

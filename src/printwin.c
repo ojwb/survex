@@ -31,7 +31,7 @@
 #include <float.h>
 #include <limits.h>
 
-#include "debug.h" /* for BUG and ASSERT */
+#include "debug.h" /* for BUG and SVX_ASSERT */
 #include "filelist.h"
 #include "filename.h"
 #include "ini.h"
@@ -152,7 +152,7 @@ check_intersection(long x_p, long y_p)
       double v = (double)(x_p - xpPageWidth) / (x_p - x_t);
       return v >= 0 && v <= 1;
    }
-   ASSERT(mask_t & L);
+   SVX_ASSERT(mask_t & L);
    {
       double v = (double)x_p / (x_p - x_t);
       return v >= 0 && v <= 1;

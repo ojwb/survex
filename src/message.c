@@ -997,7 +997,7 @@ void
 msg_init(char * const *argv)
 {
    char *p;
-   ASSERT(argv);
+   SVX_ASSERT(argv);
 
 #ifdef HAVE_SIGNAL
    init_signals();
@@ -1493,7 +1493,7 @@ msg_init(char * const *argv)
 const char *
 msg(int en)
 {
-   /* NB can't use ASSERT here! */
+   /* NB can't use SVX_ASSERT here! */
    static char badbuf[256];
    if (en >= 1000 && en < 1000 + N_DONTEXTRACTMSGS)
       return dontextract[en - 1000];

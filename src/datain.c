@@ -358,7 +358,7 @@ data_file(const char *pth, const char *fnm)
       /* Implicitly close any unclosed BEGINs from this file */
       do {
 	 settings *pcsParent = pcs->next;
-	 ASSERT(pcsParent);
+	 SVX_ASSERT(pcsParent);
 	 free_settings(pcs);
 	 pcs = pcsParent;
       } while (pcs->begin_lineno);
@@ -746,7 +746,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp, real backcomp,
 
    /* depth gauge readings increase upwards with default calibration */
    if (fDepthChange) {
-      ASSERT(frdepth == 0.0);
+      SVX_ASSERT(frdepth == 0.0);
       dz = (todepth * pcs->units[Q_DEPTH] - pcs->z[Q_DEPTH]) * pcs->sc[Q_DEPTH];
    } else {
       dz = (todepth - frdepth) * pcs->units[Q_DEPTH] * pcs->sc[Q_DEPTH];
@@ -966,7 +966,7 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp, real backcomp,
 
    /* depth gauge readings increase upwards with default calibration */
    if (fDepthChange) {
-      ASSERT(frdepth == 0.0);
+      SVX_ASSERT(frdepth == 0.0);
       dz = (todepth * pcs->units[Q_DEPTH] - pcs->z[Q_DEPTH]) * pcs->sc[Q_DEPTH];
    } else {
       dz = (todepth - frdepth) * pcs->units[Q_DEPTH] * pcs->sc[Q_DEPTH];

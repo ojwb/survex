@@ -92,7 +92,7 @@ default_translate(settings *s)
       memcpy(t - 1, s->Translate - 1, sizeof(short) * 257);
       s->Translate = t;
    }
-/*  ASSERT(EOF==-1);*/ /* important, since we rely on this */
+/*  SVX_ASSERT(EOF==-1);*/ /* important, since we rely on this */
    t = s->Translate;
    for (i = -1; i <= 255; i++) t[i] = 0;
    for (i = '0'; i <= '9'; i++) t[i] |= SPECIAL_NAMES;
@@ -577,7 +577,7 @@ cmd_end(void)
 
    tagBegin = pcs->tag;
 
-   ASSERT(pcsParent);
+   SVX_ASSERT(pcsParent);
    free_settings(pcs);
    pcs = pcsParent;
 
@@ -818,7 +818,7 @@ report_missing_export(prefix *pfx, int depth)
    int i;
    for (i = depth + 1; i; i--) {
       survey = survey->up;
-      ASSERT(survey);
+      SVX_ASSERT(survey);
    }
    s = osstrdup(sprint_prefix(survey));
    if (survey->filename) {
@@ -850,10 +850,10 @@ cmd_export(void)
 	    p = p->up;
 	 }
 	 /* Something like: *export \foo, but we've excluded use of root */
-	 ASSERT(p);
+	 SVX_ASSERT(p);
       }
       /* *export \ or similar bogus stuff */
-      ASSERT(depth);
+      SVX_ASSERT(depth);
 #if 0
       printf("C min %d max %d depth %d pfx %s\n",
 	     pfx->min_export, pfx->max_export, depth, sprint_prefix(pfx));
@@ -1101,7 +1101,7 @@ cmd_data(void)
 	 }
       }
       if (k && new_order[k - 1] == IgnoreAll) {
-	 ASSERT(d == Newline);
+	 SVX_ASSERT(d == Newline);
 	 k--;
 	 d = IgnoreAllAndNewLine;
       }
@@ -1176,7 +1176,7 @@ cmd_data(void)
 
    if (((mUsed &~ BIT(Newline)) | mask_optional[style]) != mask[style]) {
       /* Test should only fail with too few bits set, not too many */
-      ASSERT((((mUsed &~ BIT(Newline)) | mask_optional[style])
+      SVX_ASSERT((((mUsed &~ BIT(Newline)) | mask_optional[style])
 	      &~ mask[style]) == 0);
       compile_error_skip(/*Too few readings for data style `%s'*/64, style_name);
       osfree(style_name);

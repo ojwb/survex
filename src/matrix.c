@@ -317,7 +317,7 @@ build_matrix(node *list)
 #ifdef NO_COVARIANCES
 	    stn_tab[m]->p[dim] = B[m];
 	    if (dim == 0) {
-	       ASSERT2(pos_fixed(stn_tab[m]),
+	       SVX_ASSERT2(pos_fixed(stn_tab[m]),
 		       "setting station coordinates didn't mark pos as fixed");
 	    }
 #else
@@ -325,7 +325,7 @@ build_matrix(node *list)
 	    for (i = 0; i < 3; i++) {
 	       stn_tab[m]->p[i] = B[m * FACTOR + i];
 	    }
-	    ASSERT2(pos_fixed(stn_tab[m]),
+	    SVX_ASSERT2(pos_fixed(stn_tab[m]),
 		    "setting station coordinates didn't mark pos as fixed");
 #endif
 	 }

@@ -29,7 +29,7 @@ int
 hash_string(const char *p)
 {
    int hash;
-   ASSERT(p);
+   SVX_ASSERT(p);
    for (hash = 0; *p; p++)
       hash = (hash * HASH_PRIME + *(const unsigned char*)p) & 0x7fff;
    return hash;
@@ -39,7 +39,7 @@ int
 hash_lc_string(const char *p)
 {
    int hash;
-   ASSERT(p);
+   SVX_ASSERT(p);
    for (hash = 0; *p; p++)
       hash = (hash * HASH_PRIME + tolower(*(const unsigned char*)p)) & 0x7fff;
    return hash;
@@ -49,7 +49,7 @@ int
 hash_data(const char *p, size_t len)
 {
    int hash;
-   ASSERT(p);
+   SVX_ASSERT(p);
    for (hash = 0; len--; p++)
       hash = (hash * HASH_PRIME + *(const unsigned char*)p) & 0x7fff;
    return hash;

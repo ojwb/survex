@@ -158,9 +158,9 @@ static void check_d(/*const*/ delta *d) {
 /* insert at head of double-linked list */
 void
 add_stn_to_list(node **list, node *stn) {
-   ASSERT(list);
-   ASSERT(stn);
-   ASSERT(stn_iter != stn); /* if it does, we're still on a list... */
+   SVX_ASSERT(list);
+   SVX_ASSERT(stn);
+   SVX_ASSERT(stn_iter != stn); /* if it does, we're still on a list... */
 #if 0
    printf("add_stn_to_list(%p, [%p] ", list, stn);
    if (stn->name) print_prefix(stn->name);
@@ -175,8 +175,8 @@ add_stn_to_list(node **list, node *stn) {
 /* remove from double-linked list */
 void
 remove_stn_from_list(node **list, node *stn) {
-   ASSERT(list);
-   ASSERT(stn);
+   SVX_ASSERT(list);
+   SVX_ASSERT(stn);
 #if 0
    printf("remove_stn_from_list(%p, [%p] ", list, stn);
    if (stn->name) print_prefix(stn->name);
@@ -188,7 +188,7 @@ remove_stn_from_list(node **list, node *stn) {
 	node *stn_to_remove_is_in_list = *list;
 	validate();
 	while (stn_to_remove_is_in_list != stn) {
-	   ASSERT(stn_to_remove_is_in_list);
+	   SVX_ASSERT(stn_to_remove_is_in_list);
 	   stn_to_remove_is_in_list = stn_to_remove_is_in_list->next;
 	}
      }
@@ -218,7 +218,7 @@ copy_link(linkfor *leg)
       for (d = 2; d >= 0; d--) legOut->d[d] = leg->d[d];
    } else {
       leg = reverse_leg(leg);
-      ASSERT(data_here(leg));
+      SVX_ASSERT(data_here(leg));
       for (d = 2; d >= 0; d--) legOut->d[d] = -leg->d[d];
    }
 #if 1
@@ -247,7 +247,7 @@ addto_link(linkfor *leg, const linkfor *leg2)
       adddd(&leg->d, &leg->d, &((linkfor *)leg2)->d);
    } else {
       leg2 = reverse_leg(leg2);
-      ASSERT(data_here(leg2));
+      SVX_ASSERT(data_here(leg2));
       subdd(&leg->d, &leg->d, &((linkfor *)leg2)->d);
    }
    addss(&leg->v, &leg->v, &((linkfor *)leg2)->v);
@@ -268,7 +268,7 @@ addleg_(node *fr, node *to,
    int shape;
    /* we have been asked to add a leg with the same node at both ends
     * - this should be trapped by the caller */
-   ASSERT(fr->name != to->name);
+   SVX_ASSERT(fr->name != to->name);
 
    leg = osnew(linkfor);
    leg2 = (linkfor*)osnew(linkrev);
@@ -369,10 +369,10 @@ static void
 replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
 {
    pos *pos_replace;
-   ASSERT(pfx_replace);
-   ASSERT(pfx_with);
+   SVX_ASSERT(pfx_replace);
+   SVX_ASSERT(pfx_with);
    pos_replace = pfx_replace->pos;
-   ASSERT(pos_replace != pfx_with->pos);
+   SVX_ASSERT(pos_replace != pfx_with->pos);
 
    replace_pfx_(pfx_replace->stn, NULL, pos_replace, pfx_with->pos);
 
@@ -380,7 +380,7 @@ replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
    {
       node *stn;
       FOR_EACH_STN(stn, stnlist) {
-	 ASSERT(stn->name->pos != pos_replace);
+	 SVX_ASSERT(stn->name->pos != pos_replace);
       }
    }
 #endif
@@ -543,11 +543,11 @@ StnFromPfx(prefix *name)
 extern void
 fprint_prefix(FILE *fh, const prefix *ptr)
 {
-   ASSERT(ptr);
+   SVX_ASSERT(ptr);
    if (ptr->up != NULL) {
       fprint_prefix(fh, ptr->up);
       if (ptr->up->up != NULL) fputc('.', fh);
-      ASSERT(ptr->ident);
+      SVX_ASSERT(ptr->ident);
       fputs(ptr->ident, fh);
    }
 }
@@ -560,7 +560,7 @@ sprint_prefix_(const prefix *ptr)
 {
    OSSIZE_T len = 1;
    if (ptr->up != NULL) {
-      ASSERT(ptr->ident);
+      SVX_ASSERT(ptr->ident);
       len = sprint_prefix_(ptr->up) + strlen(ptr->ident);
       if (ptr->up->up != NULL) len++;
       if (len > buffer_len) {
@@ -576,7 +576,7 @@ sprint_prefix_(const prefix *ptr)
 extern char *
 sprint_prefix(const prefix *ptr)
 {
-   ASSERT(ptr);
+   SVX_ASSERT(ptr);
    if (!buffer) buffer = osmalloc(buffer_len);
    *buffer = '\0';
    sprint_prefix_(ptr);
@@ -596,8 +596,8 @@ mulvv(var *r, /*const*/ var *a, /*const*/ var *b)
    int i, j, k;
    real tot;
 
-   ASSERT((/*const*/ var *)r != a);
-   ASSERT((/*const*/ var *)r != b);
+   SVX_ASSERT((/*const*/ var *)r != a);
+   SVX_ASSERT((/*const*/ var *)r != b);
 
    check_var(a);
    check_var(b);
@@ -629,8 +629,8 @@ mulss(var *r, /*const*/ svar *a, /*const*/ svar *b)
    real tot;
 
 #if 0
-   ASSERT((/*const*/ var *)r != a);
-   ASSERT((/*const*/ var *)r != b);
+   SVX_ASSERT((/*const*/ var *)r != a);
+   SVX_ASSERT((/*const*/ var *)r != b);
 #endif
 
    check_svar(a);
@@ -663,9 +663,9 @@ smulvs(svar *r, /*const*/ var *a, /*const*/ svar *b)
    real tot;
 
 #if 0
-   ASSERT((/*const*/ var *)r != a);
+   SVX_ASSERT((/*const*/ var *)r != a);
 #endif
-   ASSERT((/*const*/ svar *)r != b);
+   SVX_ASSERT((/*const*/ svar *)r != b);
 
    check_var(a);
    check_svar(b);
@@ -703,7 +703,7 @@ mulvd(delta *r, /*const*/ var *a, /*const*/ delta *b)
    int i, k;
    real tot;
 
-   ASSERT((/*const*/ delta*)r != b);
+   SVX_ASSERT((/*const*/ delta*)r != b);
    check_var(a);
    check_d(b);
 
@@ -729,7 +729,7 @@ mulsd(delta *r, /*const*/ svar *v, /*const*/ delta *b)
    int i, j;
    real tot;
 
-   ASSERT((/*const*/ delta*)r != b);
+   SVX_ASSERT((/*const*/ delta*)r != b);
    check_svar(v);
    check_d(b);
 
@@ -912,7 +912,7 @@ invert_var(var *inv, /*const*/ var *v)
    int i, j;
    real det = 0;
 
-   ASSERT((/*const*/ var *)inv != v);
+   SVX_ASSERT((/*const*/ var *)inv != v);
 
    check_var(v);
    for (i = 0; i < 3; i++) {
@@ -974,7 +974,7 @@ invert_svar(svar *inv, /*const*/ svar *v)
    real det, a, b, c, d, e, f, bcff, efcd, dfbe;
 
 #if 0
-   ASSERT((/*const*/ var *)inv != v);
+   SVX_ASSERT((/*const*/ var *)inv != v);
 #endif
 
    check_svar(v);

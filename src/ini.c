@@ -54,7 +54,7 @@ osstrdup(char *s)
    return t;
 }
 #include <assert.h>
-#define ASSERT(M) assert(M)
+#define SVX_ASSERT(M) assert(M)
 #endif
 
 #if 0
@@ -81,9 +81,9 @@ ini_read(FILE **fh_list, const char *section, const char **vars)
    char **vals;
    int *hash_tab;
 
-   ASSERT(fh_list != NULL);
-   ASSERT(section != NULL);
-   ASSERT(vars != NULL);
+   SVX_ASSERT(fh_list != NULL);
+   SVX_ASSERT(section != NULL);
+   SVX_ASSERT(vars != NULL);
 
    /* count how many variables to look up */
    n = 0;
@@ -102,7 +102,7 @@ ini_read(FILE **fh_list, const char *section, const char **vars)
       vals[c] = NULL;
    }
 
-   ASSERT(c == n); /* counted vars[] twice and got different answers! */
+   SVX_ASSERT(c == n); /* counted vars[] twice and got different answers! */
 
    while (1) {
       char *p, *var, *val;
@@ -182,9 +182,9 @@ ini_read_hier(FILE **fh_list, const char *section, const char **v)
    int *to;
    const char **vars;
 
-   ASSERT(fh_list != NULL);
-   ASSERT(section != NULL);
-   ASSERT(v != NULL);
+   SVX_ASSERT(fh_list != NULL);
+   SVX_ASSERT(section != NULL);
+   SVX_ASSERT(v != NULL);
 
    vals = ini_read(fh_list, section, v);
    if (!vals) return NULL;

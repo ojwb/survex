@@ -81,7 +81,7 @@ scount(twig *twiglet)
 
   if (twiglet->from) return 1;
 
-  ASSERT(twiglet->to);
+  SVX_ASSERT(twiglet->to);
 
   lib = twiglet->down;
   twiglet->count = 0;

@@ -38,7 +38,7 @@
 #include "prbitmap.h"
 #include "prio.h"
 #include "filelist.h"
-#include "debug.h" /* for BUG and ASSERT */
+#include "debug.h" /* for BUG and SVX_ASSERT */
 #include "prcore.h"
 #include "ini.h"
 
@@ -257,7 +257,7 @@ dm_NewPage(int pg, int pass, int pagesX, int pagesY)
 	 ylThisPassDepth = (ylPageDepth - 1) % ylPassDepth + 1;
       } else {
 	 long y_min_new = clip.y_max - (long)ylPassDepth * ypLineDepth + 1;
-	 ASSERT(y_min_new >= clip.y_min);
+	 SVX_ASSERT(y_min_new >= clip.y_min);
 	 clip.y_min = y_min_new;
 	 ylThisPassDepth = ylPassDepth;
       }

@@ -59,7 +59,7 @@
  * to work as intended
  */
 # define fputsnl(S, FH) do {fputs((S), (FH)); putc('\n', (FH));} while(0)
-# define ASSERT(X)
+# define SVX_ASSERT(X)
 
 static long
 get32(FILE *fh)
@@ -650,8 +650,8 @@ subtract_xyz_shot_deltas(img_point *pt, const char *line)
 static int
 read_coord(FILE *fh, img_point *pt)
 {
-   ASSERT(fh);
-   ASSERT(pt);
+   SVX_ASSERT(fh);
+   SVX_ASSERT(pt);
    pt->x = get32(fh) / 100.0;
    pt->y = get32(fh) / 100.0;
    pt->z = get32(fh) / 100.0;
@@ -1374,7 +1374,7 @@ write_v3label(img *pimg, int opt, const char *s)
       if (s[len] == '.') dot = len + 1;
    }
 
-   ASSERT(len <= pimg->label_len);
+   SVX_ASSERT(len <= pimg->label_len);
    n = pimg->label_len - len;
    if (len == 0) {
       if (pimg->label_len) putc(0, pimg->fh);
@@ -1450,7 +1450,7 @@ img_write_item(img *pimg, int code, int flags, const char *s,
    } else {
       size_t len;
       INT32_T opt = 0;
-      ASSERT(pimg->version > 0);
+      SVX_ASSERT(pimg->version > 0);
       switch (code) {
        case img_LABEL:
 	 if (pimg->version == 1) {

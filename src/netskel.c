@@ -112,8 +112,8 @@ solve_network(void /*node *stnlist*/)
        * first station added is the last in the list. */
       FOR_EACH_STN(stn, stnlist) stnFirst = stn;
 
-      ASSERT2(stnFirst->leg[0], "no fixed stns, but we've got a zero node!");
-      ASSERT2(stnFirst, "no stations left in net!");
+      SVX_ASSERT2(stnFirst->leg[0], "no fixed stns, but we've got a zero node!");
+      SVX_ASSERT2(stnFirst, "no stations left in net!");
       stn = stnFirst;
       printf(msg(/*Survey has no fixed points. Therefore I've fixed %s at (0,0,0)*/72),
 	     sprint_prefix(stn->name));
@@ -237,7 +237,7 @@ concatenate_trav(node *stn, int i)
    trav->join1 = stn->leg[i];
 
    j = reverse_leg_dirn(stn->leg[i]);
-   ASSERT(j == 0 || j == 1);
+   SVX_ASSERT(j == 0 || j == 1);
 
    newleg = copy_link(stn->leg[i]);
 
@@ -327,7 +327,7 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
    s = sqrd(cx) + sqrd(cy);
    if (s > 0.0) {
       s = hsqrd / s;
-      ASSERT(s >= 0.0);
+      SVX_ASSERT(s >= 0.0);
       s = sqrt(s);
       s = 1 - s;
       tot = sqrd(cx * s) + sqrd(cy * s) + sqrd(e[2]);
@@ -357,7 +357,7 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
       s = sqrd(nx) + sqrd(ny) + sqrd(cz);
       if (s > 0.0) {
 	 s = rsqrd / s;
-	 ASSERT(s >= 0);
+	 SVX_ASSERT(s >= 0);
 	 s = sqrt(s);
 	 tot = sqrd(cx - s * nx) + sqrd(cy - s * ny) + sqrd(cz - s * cz);
 	 if (tot <= expected_error) {
@@ -432,8 +432,8 @@ replace_travs(void)
 	 linkfor *leg = stn1->leg[i];
 	 if (leg && data_here(leg) &&
 	     !(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
-	    ASSERT(fixed(stn1));
-	    ASSERT(!fZeros(&leg->v));
+	    SVX_ASSERT(fixed(stn1));
+	    SVX_ASSERT(!fZeros(&leg->v));
 
 	    stn2 = leg->l.to;
 	    if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
@@ -522,13 +522,13 @@ replace_travs(void)
       printf("<%p>\n", stn2);
 #endif
 
-      ASSERT(fixed(stn1));
-      ASSERT(fixed(stn2));
+      SVX_ASSERT(fixed(stn1));
+      SVX_ASSERT(fixed(stn2));
 
       /* calculate scaling factors for error distribution */
       eTot = 0.0;
       hTot = vTot = 0.0;
-      ASSERT(data_here(stn1->leg[i]));
+      SVX_ASSERT(data_here(stn1->leg[i]));
       if (fZeros(&stn1->leg[i]->v)) {
 	 sc[0] = sc[1] = sc[2] = 0.0;
       } else {
@@ -591,7 +591,7 @@ replace_travs(void)
 	  * should have stn3->leg[k]->l.to == stn1 */
 	 stn3 = stn1->leg[i]->l.to;
 	 k = reverse_leg_dirn(stn1->leg[i]);
-	 ASSERT2(stn3->leg[k]->l.to == stn1,
+	 SVX_ASSERT2(stn3->leg[k]->l.to == stn1,
 		 "reverse leg doesn't reciprocate");
 
 	 reached_end = (stn3 == stn2 && k == j);
@@ -641,8 +641,8 @@ replace_travs(void)
 	 if (!fUseNewFormat) {
 #endif
 	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
-	       ASSERT(!fEquate);
-	       ASSERT(!fZeros(&leg->v));
+	       SVX_ASSERT(!fEquate);
+	       SVX_ASSERT(!fZeros(&leg->v));
 	       img_write_item(pimg, img_LINE, leg->l.flags,
 			      sprint_prefix(leg_pfx),
 			      POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
@@ -779,7 +779,7 @@ replace_trailing_travs(void)
 	 stn1->leg[j] = stn1->leg[i];
       }
       stn1->leg[i] = ptrTrail->join1;
-      ASSERT(fixed(stn1));
+      SVX_ASSERT(fixed(stn1));
 #ifdef NEW3DFORMAT
       if (!fUseNewFormat) {
 #endif
@@ -824,7 +824,7 @@ replace_trailing_travs(void)
 	 if (!fUseNewFormat) {
 #endif
 	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
-	       ASSERT(!fZeros(&leg->v));
+	       SVX_ASSERT(!fZeros(&leg->v));
 	       img_write_item(pimg, img_LINE, leg->l.flags,
 			      sprint_prefix(leg_pfx),
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
@@ -851,8 +851,8 @@ replace_trailing_travs(void)
 #endif
       while (nosurveyhead) {
 	 nosurveylink *p = nosurveyhead;
-	 ASSERT(fixed(p->fr));
-	 ASSERT(fixed(p->to));
+	 SVX_ASSERT(fixed(p->fr));
+	 SVX_ASSERT(fixed(p->to));
 	 if (TSTBIT(p->flags, FLAGS_SURFACE)) {
 	    p->fr->name->sflags |= BIT(SFLAGS_SURFACE);
 	    p->to->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -875,7 +875,7 @@ replace_trailing_travs(void)
    /* write stations to .3d file and free legs and stations */
    FOR_EACH_STN(stn1, stnlist) {
       int d;
-      ASSERT(fixed(stn1));
+      SVX_ASSERT(fixed(stn1));
       /* take care of unused fixed points */
 #ifdef NEW3DFORMAT
       if (!fUseNewFormat) {
@@ -940,8 +940,8 @@ replace_trailing_travs(void)
 	    stnB = leg->l.to;
 	    iB = reverse_leg_dirn(leg);
 	    legRev = stnB->leg[iB];
-	    ASSERT2(legRev->l.to == stn1, "leg doesn't reciprocate");
-	    ASSERT(fixed(stn1));
+	    SVX_ASSERT2(legRev->l.to == stn1, "leg doesn't reciprocate");
+	    SVX_ASSERT(fixed(stn1));
 	    if (!(leg->l.flags &
 		  (BIT(FLAGS_DUPLICATE)|BIT(FLAGS_SPLAY)|
 		   BIT(FLAGS_SURFACE)))) {

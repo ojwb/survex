@@ -107,7 +107,7 @@ remove_subnets(void)
 	       stn2 = stn->leg[dirn]->l.to;
 	       if (fixed(stn2)) continue;
 
-	       ASSERT(three_node(stn2));
+	       SVX_ASSERT(three_node(stn2));
 
 	       dirn2 = reverse_leg_dirn(stn->leg[dirn]);
 	       dirn2 = (dirn2 + 1) % 3;
@@ -192,7 +192,7 @@ remove_subnets(void)
 	       /* stn == stn2 => noose */
 	       if (fixed(stn2) || stn == stn2) continue;
 
-	       ASSERT(three_node(stn2));
+	       SVX_ASSERT(three_node(stn2));
 
 	       stn3 = stn->leg[dirn]->l.to;
 	       /* 3 parallel legs (=> nothing else) so leave */
@@ -216,7 +216,7 @@ remove_subnets(void)
 		    var prod;
 		    delta temp, temp2;
 		    addss(&sum, &newleg->v, &newleg2->v);
-		    ASSERT2(!fZeros(&sum), "loop of zero variance found");
+		    SVX_ASSERT2(!fZeros(&sum), "loop of zero variance found");
 		    mulss(&prod, &newleg->v, &newleg2->v);
 		    mulsd(&temp, &newleg2->v, &newleg->d);
 		    mulsd(&temp2, &newleg->v, &newleg2->d);
@@ -260,9 +260,9 @@ remove_subnets(void)
 	       (dump_node)(stn); (dump_node)(stn2); (dump_node)(stn3); (dump_node)(stn4);
 	       printf("dirns = %d %d %d %d\n", dirn, dirn2, dirn3, dirn4);
 #endif
-	       ASSERT2(stn3->leg[dirn3]->l.to == stn, "stn3 end of || doesn't recip");
-	       ASSERT2(stn4->leg[dirn4]->l.to == stn2, "stn4 end of || doesn't recip");
-	       ASSERT2(stn->leg[(dirn+1)%3]->l.to == stn2 && stn->leg[(dirn + 2) % 3]->l.to == stn2, "|| legs aren't");
+	       SVX_ASSERT2(stn3->leg[dirn3]->l.to == stn, "stn3 end of || doesn't recip");
+	       SVX_ASSERT2(stn4->leg[dirn4]->l.to == stn2, "stn4 end of || doesn't recip");
+	       SVX_ASSERT2(stn->leg[(dirn+1)%3]->l.to == stn2 && stn->leg[(dirn + 2) % 3]->l.to == stn2, "|| legs aren't");
 
 	       /* remove stn and stn2 (already discarded triple parallel) */
 	       /* so stn!=stn4 <=> stn2!=stn3 */
@@ -368,8 +368,8 @@ remove_subnets(void)
 		  }
 	       }
 
-	       ASSERT(three_node(stn2));
-	       ASSERT(three_node(stn3));
+	       SVX_ASSERT(three_node(stn2));
+	       SVX_ASSERT(three_node(stn3));
 
 	       stn4 = stn->leg[dirn]->l.to;
 	       stn5 = stn2->leg[dirn2]->l.to;
@@ -389,9 +389,9 @@ remove_subnets(void)
 	       (dump_node)(stn5);
 	       (dump_node)(stn6);
 #endif
-	       ASSERT(stn4->leg[dirn4]->l.to == stn);
-	       ASSERT(stn5->leg[dirn5]->l.to == stn2);
-	       ASSERT(stn6->leg[dirn6]->l.to == stn3);
+	       SVX_ASSERT(stn4->leg[dirn4]->l.to == stn);
+	       SVX_ASSERT(stn5->leg[dirn5]->l.to == stn2);
+	       SVX_ASSERT(stn6->leg[dirn6]->l.to == stn3);
 
 	       trav = osnew(stackRed);
 		 {
@@ -556,9 +556,9 @@ replace_subnets(void)
 	 leg = ptrRed->join2; leg = reverse_leg(leg);
 	 stn4 = leg->l.to; dirn4 = reverse_leg_dirn(leg);
 
-	 ASSERT(fixed(stn3));
-	 ASSERT(fixed(stn4));
-	 ASSERT(data_here(stn3->leg[dirn3]));
+	 SVX_ASSERT(fixed(stn3));
+	 SVX_ASSERT(fixed(stn4));
+	 SVX_ASSERT(data_here(stn3->leg[dirn3]));
       }
 
       if (IS_NOOSE(ptrRed)) {
@@ -568,8 +568,8 @@ replace_subnets(void)
 	 linkfor *leg;
 	 int zero;
 
-	 ASSERT(fixed(stn3));
-	 ASSERT(fixed(stn4));
+	 SVX_ASSERT(fixed(stn3));
+	 SVX_ASSERT(fixed(stn4));
 
 	 leg = stn3->leg[dirn3];
 	 stn2 = ptrRed->join1->l.to;
@@ -634,8 +634,8 @@ replace_subnets(void)
 
 	 stn = ptrRed->join1->l.to;
 	 stn2 = ptrRed->join2->l.to;
-	 ASSERT(fixed(stn3));
-	 ASSERT(fixed(stn4));
+	 SVX_ASSERT(fixed(stn3));
+	 SVX_ASSERT(fixed(stn4));
 
 	 dirn = reverse_leg_dirn(ptrRed->join1);
 	 dirn2 = reverse_leg_dirn(ptrRed->join2);
@@ -711,7 +711,7 @@ replace_subnets(void)
 	 stn[0] = leg->l.to;
 	 dirn[0] = reverse_leg_dirn(leg);
 	 stnZ = stn[0]->leg[dirn[0]]->l.to;
-	 ASSERT(fixed(stnZ));
+	 SVX_ASSERT(fixed(stnZ));
 	 stn[1] = stnZ->leg[1]->l.to;
 	 dirn[1] = reverse_leg_dirn(stnZ->leg[1]);
 	 stn[2] = stnZ->leg[2]->l.to;
@@ -719,12 +719,12 @@ replace_subnets(void)
 	 /*print_prefix(stnZ->name);printf(" %p\n",(void*)stnZ);*/
 
 	 for (i = 0; i < 3; i++) {
-	    ASSERT2(fixed(stn[i]), "stn not fixed for D*");
+	    SVX_ASSERT2(fixed(stn[i]), "stn not fixed for D*");
 
 	    leg = stn[i]->leg[dirn[i]];
 
-	    ASSERT2(data_here(leg), "data not on leg for D*");
-	    ASSERT2(leg->l.to == stnZ, "bad sub-network for D*");
+	    SVX_ASSERT2(data_here(leg), "data not on leg for D*");
+	    SVX_ASSERT2(leg->l.to == stnZ, "bad sub-network for D*");
 
 	    stn2 = legs[i]->l.to;
 

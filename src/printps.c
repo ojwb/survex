@@ -38,7 +38,7 @@
 #include "message.h"
 #include "prio.h"
 #include "filelist.h"
-#include "debug.h" /* for BUG and ASSERT */
+#include "debug.h" /* for BUG and SVX_ASSERT */
 #include "prcore.h"
 #include "ini.h"
 
@@ -214,7 +214,7 @@ check_intersection(long x_p, long y_p)
 		 (x_p - x_t);
       return v >= 0 && v <= ypPageDepth;
    }
-   ASSERT(mask_t & L);
+   SVX_ASSERT(mask_t & L);
    {
       double v = (double)(x_p * y_t - x_t * y_p) / (x_p - x_t);
       return v >= 0 && v <= ypPageDepth;
