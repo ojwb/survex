@@ -258,7 +258,12 @@ class AvenListCtrl: public wxListCtrl {
 	}
 	bool Load(const wxString &fnm) {
 	    FILE * fh_pres = fopen(fnm.c_str(), "r");
-	    if (!fh_pres) return false;
+	    if (!fh_pres) {
+		wxString m;
+		m.Printf(msg(/*Couldn't open file `%s'*/93), fnm.c_str());
+		wxGetApp().ReportError(m);
+		return false;
+	    }
 	    DeleteAllItems();
 	    long item = 0;
 	    while (!feof(fh_pres)) {
@@ -273,11 +278,12 @@ class AvenListCtrl: public wxListCtrl {
 		    buf[i] = 0;
 		    double x, y, z, a, t, s;
 		    if (sscanf(buf, "%lf %lf %lf %lf %lf %lf", &x, &y, &z, &a, &t, &s) != 6) {
-			// FIXME bad file - moan
-		    } else {
-			AddMark(item, PresentationMark(x, y, z, a, t, s));
-			++item;
+			DeleteAllItems();
+			wxGetApp().ReportError(wxString::Format(msg(/*Error in format of presentation file `%s'*/323), fnm.c_str()));
+			return false;
 		    }
+		    AddMark(item, PresentationMark(x, y, z, a, t, s));
+		    ++item;
 		}
 	    }
 	    fclose(fh_pres);
@@ -570,7 +576,7 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
-    filemenu->Append(menu_FILE_SCREENSHOT, GetTabMsg(/*@Screenshot...*/238));
+    filemenu->Append(menu_FILE_SCREENSHOT, GetTabMsg(/*@Screenshot...*/201));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*E@xit*/221));
 
@@ -612,18 +618,14 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault Settings*/254));
 
     wxMenu* presmenu = new wxMenu;
-    presmenu->Append(menu_PRES_NEW, "&New");
-    // FIXME : wxGTK seems to copy the accelerator from File->Open (!?!)
-    presmenu->Append(menu_PRES_OPEN, "&Open...");
-    presmenu->Append(menu_PRES_SAVE, "&Save");
-    presmenu->Append(menu_PRES_SAVE_AS, "Save &As...");
+    presmenu->Append(menu_PRES_NEW, GetTabMsg(/*@New Presentation*/311));
+    presmenu->Append(menu_PRES_OPEN, GetTabMsg(/*@Open Presentation...*/312));
+    presmenu->Append(menu_PRES_SAVE, GetTabMsg(/*@Save Presentation*/313));
+    presmenu->Append(menu_PRES_SAVE_AS, GetTabMsg(/*Save Presentation @As...*/314));
     presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_MARK, "&Mark");
-    presmenu->Append(menu_PRES_RUN, "&Run");
-    presmenu->Append(menu_PRES_EXPORT_MOVIE, "&Export as Movie...");
-    // GetTabMsg(/*@Record State*/381));
-    // GetTabMsg(/*R@un Presentation*/382));
-    // GetTabMsg(/*Re@hearse Timings*/383));
+    presmenu->Append(menu_PRES_MARK, GetTabMsg(/*@Mark*/315));
+    presmenu->Append(menu_PRES_RUN, GetTabMsg(/*@Play*/316));
+    presmenu->Append(menu_PRES_EXPORT_MOVIE, GetTabMsg(/*@Export as Movie...*/317));
 
     wxMenu* viewmenu = new wxMenu;
 #ifndef PREFDLG
@@ -638,7 +640,7 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*@Surface Survey Legs##Ctrl+F*/291), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273), "", true);
-    viewmenu->Append(menu_VIEW_COLOUR_BY_DEPTH, "Co&lour by Depth", "", true);
+    viewmenu->Append(menu_VIEW_COLOUR_BY_DEPTH, GetTabMsg(/*Co@lour by Depth*/292), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295), "", true);
@@ -648,9 +650,9 @@ void MainFrm::CreateMenuBar()
     viewmenu-> Append(menu_VIEW_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
 #endif
     viewmenu->Append(menu_VIEW_PERSPECTIVE, GetTabMsg(/*@Perspective*/237), "", true);
-    viewmenu->Append(menu_VIEW_TEXTURED, "Textured Walls", "", true);
-    viewmenu->Append(menu_VIEW_FOG, "Fog", "", true);
-    viewmenu->Append(menu_VIEW_SMOOTH_LINES, "Smooth Lines", "", true);
+    viewmenu->Append(menu_VIEW_TEXTURED, GetTabMsg(/*Textured @Walls*/238), "", true);
+    viewmenu->Append(menu_VIEW_FOG, GetTabMsg(/*Fade @Distant Objects*/239), "", true);
+    viewmenu->Append(menu_VIEW_SMOOTH_LINES, GetTabMsg(/*@Smoothed Survey Legs*/298), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode##F11*/356), "", true);
 #ifdef PREFDLG
@@ -687,7 +689,7 @@ void MainFrm::CreateMenuBar()
 #ifndef PREFDLG
     menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
 #endif
-    menubar->Append(presmenu, GetTabMsg(/*@Presentation*/317));
+    menubar->Append(presmenu, GetTabMsg(/*@Presentation*/216));
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
 }
@@ -702,6 +704,7 @@ void MainFrm::CreateToolBar()
     toolbar->SetMargins(5, 5);
 #endif
 
+    // FIXME: TRANSLATE tooltips
     toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open.png"), "Open a 3D file for viewing");
     toolbar->AddTool(menu_PRES_OPEN, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
     toolbar->AddSeparator();
@@ -777,9 +780,9 @@ void MainFrm::CreateSidePanel()
     m_PresPanel = new wxPanel(m_Notebook);
 
     m_PresList = new AvenListCtrl(m_PresPanel, m_Gfx);
-    m_PresList->InsertColumn(0, "Northing");//msg(/*State*/378));
-    m_PresList->InsertColumn(1, "Easting");//msg(/*Auto*/379));
-//    m_PresList->InsertColumn(2, msg(/*Delay*/380));
+    // FIXME swap order of Northing and Easting (here *and* elsewhere)
+    m_PresList->InsertColumn(0, msg(/*Northing*/379));
+    m_PresList->InsertColumn(1, msg(/*Easting*/378));
 //    m_PresList->SetColumnWidth(0, 100);
   //  m_PresList->SetColumnWidth(1, 40);
     //m_PresList->SetColumnWidth(2, 40);
@@ -1277,9 +1280,8 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #endif
 				       "|%s|%s",
 				       msg(/*Survex 3d files*/207),
-				       /* FIXME TRANSLATE */
-				       "Compass PLT files",
-				       "CMAP XYZ files",
+				       msg(/*Compass PLT files*/324),
+				       msg(/*CMAP XYZ files*/325),
 				       msg(/*All files*/208),
 				       wxFileSelectorDefaultWildcardStr
 				       ), wxOPEN);
@@ -1292,7 +1294,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 void MainFrm::OnScreenshot(wxCommandEvent&)
 {
     char *baseleaf = baseleaf_from_fnm(m_File.c_str());
-    wxFileDialog dlg (this, wxString("Save Screenshot"), "",
+    wxFileDialog dlg (this, msg(/*Save Screenshot*/321), "",
 		      wxString(baseleaf) + ".png",
 		      "*.png", wxSAVE|wxOVERWRITE_PROMPT);
     free(baseleaf);
@@ -1329,8 +1331,8 @@ void MainFrm::OnQuit(wxCommandEvent&)
 {
     if (m_PresList->Modified()) {
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
-	if (wxMessageBox("The current presentation has been modified.  Abandon unsaved changes?",
-			 "Modified Presentation",
+	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
+			 msg(/*Modified Presentation*/326),
 			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
 	    return;
 	}
@@ -1342,8 +1344,8 @@ void MainFrm::OnClose(wxCloseEvent&)
 {
     if (m_PresList->Modified()) {
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
-	if (wxMessageBox("The current presentation has been modified.  Abandon unsaved changes?",
-			 "Modified Presentation",
+	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
+			 msg(/*Modified Presentation*/326),
 			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
 	    return;
 	}
@@ -1522,8 +1524,8 @@ void MainFrm::OnPresNew(wxCommandEvent&)
 {
     if (m_PresList->Modified()) {
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
-	if (wxMessageBox("The current presentation has been modified.  Abandon unsaved changes?",
-			 "Modified Presentation",
+	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
+			 msg(/*Modified Presentation*/326),
 			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
 	    return;
 	}
@@ -1535,8 +1537,8 @@ void MainFrm::OnPresOpen(wxCommandEvent&)
 {
     if (m_PresList->Modified()) {
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
-	if (wxMessageBox("The current presentation has been modified.  Abandon unsaved changes?",
-			 "Modified Presentation",
+	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
+			 msg(/*Modified Presentation*/326),
 			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
 	    return;
 	}
@@ -1554,9 +1556,6 @@ void MainFrm::OnPresOpen(wxCommandEvent&)
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	if (!m_PresList->Load(dlg.GetPath())) {
-	    wxString m = wxString::Format("Could not open presentation `%s'.",
-					  dlg.GetPath().c_str());
-	    wxGetApp().ReportError(m);
 	    return;
 	}
 	// FIXME : keep a history of loaded/saved presentations, like we do for

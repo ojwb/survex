@@ -2070,9 +2070,10 @@ es:200 El factor de *UNITS debe de ser diferente de cero
 it:200 Il fattore *UNITS deve essere diverso da zero
 sk:200 *UNITS faktor mus&iacute; by&tcaron; nenulov&yacute;
 #
-# XXX 201
-#
 #  Messages for Aven
+# TRANSLATE ca es pt
+en:201 @Screenshot...
+ca,es,pt:201 S@creenshot...
 #
 en:202 No survey data in 3d file `%s'
 fr:202 Pas de donn&eacute;es topo dans le fichier 3d `%s'
@@ -2210,7 +2211,15 @@ es:215 A@yuda
 it:215 @Aiuto
 sk:215 @Help
 #
-# XXX 216 217 218
+en:216 @Presentation
+de:216 @Pr&auml;sentation
+fr:216 @Pr&eacute;sentation
+pt:216 A@presenta&ccedil;&atilde;o  
+ca:216 @Presentaci&oacute;
+es:216 @Presentaci&oacute;n
+it:216 @Presentazione
+sk:216 Pre@zent&aacute;cia
+# XXX 217 218
 #
 en:219 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.
 en-us:219 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -2385,8 +2394,11 @@ en:237 @Perspective
 ca,de,es,it:237 Perspecti@ve
 fr,pt,sk:237 Pe@rspective
 #
-en:238 @Screenshot...
-# XXX 239
+en:238 Textured @Walls
+# TRANSLATE de fr
+en:239 Fade @Distant Objects
+en-us:239 @Fade Distant Objects
+de,fr:239 @Fade Distant Objects
 #
 # The accelerators must be different within this group
 # View *looking* North
@@ -2643,7 +2655,7 @@ es:281 @Cancela la linea de medida##Escape
 it:281 @Cancella la linea di misura##Escape
 sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
 #sk: Netu&scaron;&iacute;m o &ccaron;o ide
-#
+# XXX 282 283 284 285 286 287 288 289
 # The accelerators must be different within this group
 # c.f. 205
 en:290 @About...
@@ -2667,7 +2679,11 @@ ca:291 Tirades de topograf&iacute;a de @superf&iacute;cie##Ctrl+F
 es:291 Tiradas de topografia de @superficie##Ctrl+F
 it:291 Battute topografia di @Superficie##Ctrl+F
 sk:291 Z&aacute;mery @na povrchu##Ctrl+F
-# XXX 292 293
+# TRANSLATE fr de
+en:292 Co@lour by Depth
+en-us:292 Co@lor by Depth
+fr,de:292 Colour by @Depth
+# XXX 293
 #
 en:294 Highlight @Entrances
 fr:294 Mise en valeur des @entr&egrave;es
@@ -2706,8 +2722,8 @@ es:297 @Rejilla##Ctrl+G
 it:297 @Griglia##Ctrl+G
 sk:297 @Sie&tcaron;##Ctrl+G
 #
-en:298 Smoo@thed Survey Legs
-en-us:298 Smoo@thed Survey Shots
+en:298 Smoot@hed Survey Legs
+en-us:298 Smoothe@d Survey Shots
 fr:298 @Lissage des segments topographiques
 de-de,de-ch:298 Gegl&auml;ttete @Messz&uuml;ge
 de:298          Gegl&auml;ttete @Me&szlig;z&uuml;ge
@@ -2831,79 +2847,28 @@ es:310 %s: opci&oacute;n inv&aacute;lida -- %c&#10;
 it:310 %s: opzione non valida -- %c&#10;
 sk:310 %s: nespr&aacute;vna mo&zcaron;nos&tcaron; -- %c&#10;
 #
-# here pt = pt-br ...
-en:311 @Create...
-fr:311 @Creation...
-de:311 Neue @Pr&auml;sentation...
-pt:311 @Criar...
-ca:311 @Crea...
-es:311 @Crea...
-it:311 @Crea...
-sk:311 @Vytvori&tcaron;...
+en:311 @New Presentation
+de:311 @Neue Pr&auml;sentation
 #
-en:312 @Go
-fr:312 @D&eacute;marrage
-de:312 @Vorf&uuml;hren
-pt:312 @Ir para
-ca:312 @Anar
-es:312 @Ir
-it:312 @Vai
-sk:312 @Go
+en:312 Open @Presentation...
+fr:312 Ouvrir une @Pr&eacute;sentation
+de:312 @Pr&auml;sentation &ouml;ffnen...
+pt:312 Abrir A@presenta&ccedil;&atilde;o
+ca:312 Obrir @Presentaci&oacute;...
+es:312 Abrir @Presentaci&oacute;n...
+it:312 Apri @Presentazione
+sk:312 Otvori&tcaron; @prezent&aacute;ciu...
 #
-en:313 @Record Position
-fr:313 @Sauvegarde de la position
-de:313 Position @aufzeichnen
-pt:313 G@ravar Posi&ccedil;&atilde;o
-ca:313 @Registra la posici&oacute;
-es:313 @Registra la posici&oacute;n
-it:313 @Registra la posizione
-sk:313 @Z&aacute;znam poz&iacute;cie
+en:313 @Save Presentation
 #
-en:314 @Finish and Save
-fr:314 @Fin avec sauvegarde
-de:314 A@bschlie&szlig;en und abspeichern
-de-ch:314 A@bschliessen und abspeichern
-pt:314 @Finalizar e Salvar
-ca:314 @Finalitza i Guarda
-es:314 @Finaliza y Guarda
-it:314 @Finisci e Salva
-sk:314 @Ukon&ccaron;i&tcaron; a ulo&zcaron;i&tcaron;
+en:314 Save Presentation @As...
 #
-en:315 @Erase Last Position
-fr:315 @Effacement de la derni&egrave;re position
-de:315 Letzte Position @l&ouml;schen
-pt:315 R@emover &Uacute;ltima Posi&ccedil;&atilde;o   
-ca:315 @Esborra la &uacute;ltima posici&oacute;
-es:315 @Borra la &uacute;ltima posici&oacute;n
-it:315 Cancella l'@Ultima posizione
-sk:315 V@ymaza&tcaron; posledn&uacute; polohu
+en:315 @Mark
 #
-en:316 Er@ase All Positions
-fr:316 Effacement de @toutes les positions
-de:316 Alle P@ositionen l&ouml;schen
-pt:316 Remover @Todas as Posi&ccedil;&otilde;es
-ca:316 Esborra totes les @posicions
-es:316 Borra @todas las posiciones
-it:316 Cancella @Tuttle le posizioni
-sk:316 Vym@aza&tcaron; v&scaron;etky poz&iacute;cie
+en:316 Pla@y
 #
-en:317 @Presentation
-de:317 @Pr&auml;sentation
-fr:317 @Pr&eacute;sentation
-pt:317 A@presenta&ccedil;&atilde;o  
-ca:317 @Presentaci&oacute;
-es:317 @Presentaci&oacute;n
-it:317 @Presentazione
-sk:317 Pre@zent&aacute;cia
-#
-en:318 Go @Back
-fr:318 @Retour
-de:318 @Zur&uuml;ck
-pt:318 @Voltar
-ca:318 @Torna enrrera
-es:318 @Vuelve atr&aacute;s
-it:318 Torna @Indietro
-sk:318 @Nasp&auml;&tcaron;
+en:317 @Export as Movie...
+# XXX 318
 #
 en:319 Select an output filename
 fr:319 S&eacute;lection d'un nom de fichier de sortie
@@ -2922,15 +2887,8 @@ ca:320 Presentacions Aven
 es:320 Presentaciones Aven
 it:320 Presentazione Aven
 sk:320 Prezent&aacute;cie programu Aven
-#
-en:321 Open @Presentation...
-fr:321 Ouvrir une @Pr&eacute;sentation
-de:321 @Pr&auml;sentation &ouml;ffnen...
-pt:321 Abrir A@presenta&ccedil;&atilde;o
-ca:321 Obrir @Presentaci&oacute;...
-es:321 Abrir @Presentaci&oacute;n...
-it:321 Apri @Presentazione
-sk:321 Otvori&tcaron; @prezent&aacute;ciu...
+# title of the save dialog
+en:321 Save Screenshot
 #
 en:322 Select a presentation to open
 fr:322 Slectionner une pr&eacute;sentation &agrave; ouvrir
@@ -2940,27 +2898,18 @@ ca:322 Selecciona una presentaci&oacute; per obrir
 es:322 Selecciona una presentaci&oacute;n para abrir
 it:322 Seleziona una presentazione da aprire
 sk:322 Vybra&tcaron; prezent&aacute;ciu pre otvorenie
+# cf 88
+en:323 Error in format of presentation file `%s'
+# "Compass" as in Larry Fish's cave surveying package, so probably shouldn't
+# be translated
+en:324 Compass PLT files
+# "CMAP" is Bob Thrun's cave surveying package.
+en:325 CMAP XYZ files
+# title of message box
+en:326 Modified Presentation
+# and the question in that box
+en:327 "The current presentation has been modified.  Abandon unsaved changes?
 #
-en:323 Recording Presentation
-fr:323 Enregistrement d'une pr&eacute;sentation
-de:323 Pr&auml;sentation wird aufgezeichnet
-# or, somewhat in radio broadcasting lingo,
-# de:323 Aufzeichnung l&auml;uft
-pt:323 Gravando Apresenta&ccedil;&atilde;o
-ca:323 Gravant Presentaci&oacute;
-es:323 Grabando Presentaci&oacute;n
-it:323 Registra Presentazione
-sk:323 Z&aacute;znam prezent&aacute;cie
-#
-en:324 Res@tart
-fr:324 Red&eacute;@marrage
-de:324 @Neustart
-pt:324 Rei@niciar
-ca:324 Re@iniciar
-es:324 Rei@niciar
-it:324 Ri@parte
-sk:324 @Re&scaron;tart
-# XXX 325 326 327
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
 de:328 Kein Treffer gefunden.
@@ -2969,7 +2918,7 @@ ca:328 Recerca infroctuosa.
 es:328 B&uacute;squeda infroctuosa.
 it:328 Nessun elemento trovato.
 sk:328 Ne&uacute;spe&scaron;n&eacute; h&lcaron;adanie.
-#
+# UNUSED
 en:329 Open @Terrain...
 fr:329 Ouverture d'un @Terrain...
 de:329 Gel&auml;nde@modell &ouml;ffnen...
@@ -2978,7 +2927,7 @@ ca:329 Obrir @Terreny...
 es:329 Abrir @Terreno...
 it:329 Apri Modello Digitale @Terrestre
 sk:329 Otvori&tcaron; digit&aacute;lny model @ter&eacute;nu
-#
+# UNUSED
 en:330 Solid Su@rface
 fr:330 Surface S@olide
 de:330 @Durchgezogene Oberfl&auml;che
@@ -3025,7 +2974,7 @@ ca:334 Expressi&oacute; regular
 es:334 Expressi&oacute;n regular
 it:334 Espressione regolare
 sk:334 Regular expression
-#
+# cf 195
 en:335 Altitude
 fr:335 Altitude
 de:335 H&ouml;he    
@@ -3056,7 +3005,7 @@ sk:337 @Postrann&yacute; panel
 en:338 "  %d E, %d N"
 fr:338 "  %d E, %d N"
 #alternatively de:338 "  %d O, %d N", but H/R is consistent with headings in pos files
-de:338 "  %d H, %d R"
+de: "  %d H, %d R"
 pt:338 "  %d L, %d N"
 ca:338 "  %d E, %d N"
 es:338 "  %d E, %d N"
@@ -3135,7 +3084,7 @@ sk:345 gr&aacute;dy
 #
 # TRANSLATE ca es
 en:346 Passage @Tubes##Ctrl+T
-ca,es:346 Passage T@ubes##Ctrl+T
+ca,es:346 P@assage Tubes##Ctrl+T
 #
 en:347 @Preferences...
 en:348 Draw passage walls
@@ -3147,9 +3096,10 @@ en:353 Highlight stations which are exported
 en:354 Mark survey stations with their names
 en:355 Allow names to overlap on the display (faster)
 #
-# TRANSLATE sk
+# TRANSLATE de pt-br sk
 en:356 Full Screen @Mode##F11
-pt-br,sk:356 F@ull Screen Mode##F11
+de,pt-br:356 Full S@creen Mode##F11
+sk:356 F@ull Screen Mode##F11
 #
 en:357 Display underground survey legs
 en:358 Display surface survey legs
@@ -3176,22 +3126,29 @@ en:375 %s: %d E, %d N, %dft altitude
 # labels for tabbed side panel:
 en:376 Tree
 en:377 Presentation
-#
-# headings for presentation state list:
-en:378 State
-en:379 Auto
-en:380 Delay
-#
-# for presentation menu:
-en:381 @Record State
-en:382 R@un Presentation
-en:383 Re@hearse Timings
-# XXX 384 385
+# cf 195
+# TRANSLATE fr de pt ca es it sk
+en:378 Easting
+fr:378 Est
+de:378 Rechtswert
+pt:378 Leste
+ca:378 Est
+es:378 Este
+it:378 Est
+sk:378 v&yacute;chod
+# cf 195
+en:379 Northing
+fr:379 Nord
+de:379 Hochwert
+pt:379 Norte
+ca:379 Nord
+es:379 Norte
+it:379 Nord
+sk:379 sever
+# XXX 378 379 380
+# XXX 381 382 383 384 385 386 387 388 389
 # for about box:
-en:386 Host system type:
-# XXX 387
-en:388 Colour depth:
-en:389 bit
+en:390 System Information:
 # 
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s

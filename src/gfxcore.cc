@@ -2549,7 +2549,8 @@ bool GfxCore::ExportMovie(const wxString & fnm)
     mpeg = new MovieMaker();
 
     if (!mpeg->Open(fnm.c_str(), width, height)) {
-	fprintf(stderr, "could not open %s\n", fnm.c_str());
+	// FIXME : sort out reporting actual errors from ffmpeg library
+	wxGetApp().ReportError(wxString::Format(msg(/*Error writing to file `%s'*/110), fnm.c_str()));
 	delete mpeg;
 	mpeg = 0;
 	return false;

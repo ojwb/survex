@@ -641,3 +641,86 @@ ca:293 T@opograf&iacute;a de superf&iacute;cie amb tra&ccedil; discontinuat
 es:293 T@opografias de superficie con trazo discont&iacute;nuo
 it:293 Superficie topografica @Tratteggiata
 sk:293 &Ccaron;i@arkovan&eacute; povrchov&eacute; z&aacute;mery
+#
+en:323 Recording Presentation
+fr:323 Enregistrement d'une pr&eacute;sentation
+de:323 Pr&auml;sentation wird aufgezeichnet
+# or, somewhat in radio broadcasting lingo,
+# de:323 Aufzeichnung l&auml;uft
+pt:323 Gravando Apresenta&ccedil;&atilde;o
+ca:323 Gravant Presentaci&oacute;
+es:323 Grabando Presentaci&oacute;n
+it:323 Registra Presentazione
+sk:323 Z&aacute;znam prezent&aacute;cie
+#en:324 Res@tart
+#fr:324 Red&eacute;@marrage
+#de:324 @Neustart
+#pt:324 Rei@niciar
+#ca:324 Re@iniciar
+#es:324 Rei@niciar
+#it:324 Ri@parte
+#sk:324 @Re&scaron;tart
+# here pt = pt-br ...
+en:311 @Create...
+fr:311 @Creation...
+de:311 Neue @Pr&auml;sentation...
+pt:311 @Criar...
+ca:311 @Crea...
+es:311 @Crea...
+it:311 @Crea...
+sk:311 @Vytvori&tcaron;...
+#
+en:312 @Go
+fr:312 @D&eacute;marrage
+de:312 @Vorf&uuml;hren
+pt:312 @Ir para
+ca:312 @Anar
+es:312 @Ir
+it:312 @Vai
+sk:312 @Go
+#
+en:313 @Record Position
+fr:313 @Sauvegarde de la position
+de:313 Position @aufzeichnen
+pt:313 G@ravar Posi&ccedil;&atilde;o
+ca:313 @Registra la posici&oacute;
+es:313 @Registra la posici&oacute;n
+it:313 @Registra la posizione
+sk:313 @Z&aacute;znam poz&iacute;cie
+#
+en:314 @Finish and Save
+fr:314 @Fin avec sauvegarde
+de:314 A@bschlie&szlig;en und abspeichern
+de-ch:314 A@bschliessen und abspeichern
+pt:314 @Finalizar e Salvar
+ca:314 @Finalitza i Guarda
+es:314 @Finaliza y Guarda
+it:314 @Finisci e Salva
+sk:314 @Ukon&ccaron;i&tcaron; a ulo&zcaron;i&tcaron;
+#
+en:315 @Erase Last Position
+fr:315 @Effacement de la derni&egrave;re position
+de:315 Letzte Position @l&ouml;schen
+pt:315 R@emover &Uacute;ltima Posi&ccedil;&atilde;o   
+ca:315 @Esborra la &uacute;ltima posici&oacute;
+es:315 @Borra la &uacute;ltima posici&oacute;n
+it:315 Cancella l'@Ultima posizione
+sk:315 V@ymaza&tcaron; posledn&uacute; polohu
+#
+en:316 Er@ase All Positions
+fr:316 Effacement de @toutes les positions
+de:316 Alle P@ositionen l&ouml;schen
+pt:316 Remover @Todas as Posi&ccedil;&otilde;es
+ca:316 Esborra totes les @posicions
+es:316 Borra @todas las posiciones
+it:316 Cancella @Tuttle le posizioni
+sk:316 Vym@aza&tcaron; v&scaron;etky poz&iacute;cie
+#
+en:318 Go @Back
+fr:318 @Retour
+de:318 @Zur&uuml;ck
+pt:318 @Voltar
+ca:318 @Torna enrrera
+es:318 @Vuelve atr&aacute;s
+it:318 Torna @Indietro
+sk:318 @Nasp&auml;&tcaron;
