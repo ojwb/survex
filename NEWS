@@ -17,6 +17,9 @@ Changes in 0.97-prerelease3:
 * cavern: Improved reporting of missing *export-s; added 2 more
   *export tests.
 
+* Stopped trapping SIGINT (ctrl-C) or SIGTERM (Ctrl-\ on Unix) as we
+  can't do anything useful.
+
 Changes in 0.97-prerelease2:
 
 * cad3d: Fixed output from `--help'; -e, -D, -S short options now work;

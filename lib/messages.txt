@@ -1606,6 +1606,7 @@ it:205 Informazioni su %s
 en:206 Select a 3d file to view
 en:207 Survex 3d files
 en:208 All files
+ca:208 Tots els fitxers
 #
 en:209 Visualisation of Survex 3D files
 #
