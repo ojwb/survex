@@ -195,7 +195,7 @@ class GfxCore : public GLACanvas {
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
-    void DrawPolylines(bool depth_colour, int num_polylines,
+    void DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
 		       const int *num_points, const Point *vertices);
 
     void SetScaleInitial(Double scale);

@@ -1860,7 +1860,7 @@ void GfxCore::ForceRefresh()
 void GfxCore::GenerateDisplayListSurface()
 {
     assert(m_PlotData);
-    DrawPolylines(m_SurfaceDepth, m_SurfacePolylines,
+    DrawPolylines(m_SurfaceDepth, false, m_SurfacePolylines,
 	          m_PlotData->surface_num_segs, m_PlotData->surface_vertices);
 }
 
@@ -1903,7 +1903,7 @@ void GfxCore::GenerateDisplayList()
 
         // Draw underground legs.
         if (m_Legs) {
-	    DrawPolylines(true, m_Polylines,
+	    DrawPolylines(true, m_Tubes, m_Polylines,
 			  m_PlotData->num_segs, m_PlotData->vertices); 
         }
     }
@@ -2136,7 +2136,7 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     EndPolygon();
 }
 
-void GfxCore::DrawPolylines(bool depth_colour, int num_polylines,
+void GfxCore::DrawPolylines(bool depth_colour, bool tubes, int num_polylines,
 			    const int* num_points, const Point* vertices)
 {
     // Draw a set of polylines.
@@ -2185,7 +2185,7 @@ void GfxCore::DrawPolylines(bool depth_colour, int num_polylines,
 
 	EndPolyline();
 
-	if (!m_Tubes) continue;
+	if (!tubes) continue;
 
         Double size = 1;
         
