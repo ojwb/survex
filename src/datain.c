@@ -511,7 +511,8 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
       vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
       vz = var(Q_POS) / 3.0 + var(Q_LENGTH);
 #ifndef NO_COVARIANCES
-      cxy = cyz = czx = (real)0.0; /* FIXCOV: do this properly */
+      /* Correct values - no covariances in this case! */
+      cxy = cyz = czx = (real)0.0;
 #endif
    } else {
       /* clino */

@@ -1,0 +1,10 @@
+; check that closure of plumbed legs doesn't depend on orientation
+*fix A 3 4 10
+*fix B 0 5 10
+*fix D 0 0 0
+
+A U 0 0 0
+U D 10.00 - down
+
+B V 0 0 0
+V D 10.00 - down
