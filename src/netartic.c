@@ -51,11 +51,11 @@ typedef struct component {
    articulation *artic;
 } component;
 
-static component *component_list = NULL;
+static component *component_list;
 
-static node *artlist = NULL;
+static node *artlist;
 
-static node *fixedlist = NULL;
+static node *fixedlist;
 
 /* list item visit */
 /* FIXME: we shouldn't malloc each and every LIV separately! */
@@ -189,6 +189,10 @@ articulate(void)
    ulong cFixed;
 #endif
 
+   component_list = NULL;
+   artlist = NULL;
+   fixedlist = NULL;
+   
    /* find articulation points and components */
    colour = 0;
    stnStart = NULL;
