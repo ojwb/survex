@@ -29,6 +29,34 @@ nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in hei
 ``Quick start'' section - lead people through entering and processing
 a sample survey.  Take examples from surveying books and real surveys.
 
+3dtopos...
+
+there's a new
+utility - 3dtopos - which takes a .3d file and produces a .pos file
+
+<Para>This file contains a list of all the station positions (ordered x,y,z
+[East, North, Up]) with complete names.
+
+
+the stations are sorted such that numbers occur in the correct order
+(so ``2'' before ``10'').  3dtopos even sorts numbers with a prefix
+and/or suffix, so you'd get:
+
+040.sv8
+040.sv8a
+040.sv8b
+040.sv8c
+040.sv9
+040.sv10
+040.sv11
+40_entrance_tag
+40b_entrance_tag
+
+The intention is to give the order you'd expect, so if you find examples
+where this isn't the case, let me know.
+
+</Sect3>
+
 -->
 
 <Article Status="draft" id=index>
@@ -56,11 +84,11 @@ a sample survey.  Take examples from surveying books and real surveys.
    </Author>
   </AuthorGroup>
   <copyright>
-   <year>1998</year>
+   <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-07-11 19:30:31 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.32 2001-07-11 19:30:31 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-07-20 23:55:13 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.33 2001-07-20 23:55:13 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -70,18 +98,16 @@ a sample survey.  Take examples from surveying books and real surveys.
  </ArtHeader>
 
 <!--
-This document also available for download as <a
-href="ftp://ftp.chaos.org.uk/svxdoc.zip">Text (29K ZIPfile)</a>, or a <a
-href="ftp://ftp.chaos.org.uk/SVXDOCWD.ZIP">Microsoft Word Document (54K
-ZIPfile</a>
+This document also available for download in <a
+href="http://www.survex.com/docs.html">various formats</a>.
 -->
 
 <Sect1><Title>Introduction</Title>
 
 <Para>&survexsuite; is a multi-platform open-source cave surveying
 package.  It currently runs on &unix;, Microsoft Windows 95/98/NT/2000/ME,
-&msdos;, and Acorn &riscos; machines.  Windows 3.1 users can use the
-&msdos; version, or may be able to run Windows 95/98/NT version with
+&msdos;, and Acorn &riscos; machines.  MS Windows 3.1 users can use the
+&msdos; version, or may be able to run the MS Windows version with
 Win32s installed (though we've not tried this).</Para>
 
 <Para>Porting to other platforms should be fairly easy.  The graphics
@@ -375,11 +401,13 @@ automatically when you install.
 
 <ItemizedList>
 
-<ListItem><Para> diffpos: compares two <filename/.pos/ files. It was
-originally written as a debugging aid, but you may find it useful.  It
-will tell you about stations which are in one file but not the other, and
+<ListItem><Para> diffpos: compares the positions of stations in two
+<filename/.3d/ files.
+It will tell you about stations which are in one file but not the other, and
 you can specify a tolerance by which each station's position is allowed
-to vary.  </Para></ListItem>
+to vary.  For backward compatibility it will also read the
+<filename>.pos</filename> files produced by earlier versions of cavern.
+</Para></ListItem>
 
 <ListItem><Para> extend: simplistic Extended Elevation processor. It
 takes a <filename/.3d/ file and squashes it flat. It starts with the
@@ -561,22 +589,23 @@ specified and as an all-lower-case filename.
 <Para>Cavern reads in text files containing the survey data
 (<filename/.svx/) and outputs four data files, with the following
 extensions, further explained below: <filename/.3d/,
-<filename/.pos/, <filename/.err/ and <filename/.inf/</Para>
+<filename/.err/ and <filename/.inf/</Para>
 
 <Sect2><Title>Cavern Output</Title>
 
-<Para>When you run cavern, four output files are created.  By default these
-are output to the current directory, but you can change this using the
---output switch. <!-- FIXME: link --> The output files have the same base
-filename as the first <filename/.svx/ file read, but the extension is
-changed.
+<Para>When you run cavern, three output files are created.  By default these
+are output to the current directory, 
+with the same base
+filename as the first <filename/.svx/ file read (but a different
+extension).
+You can change the directory and/or base filename using the --output switch.
+<!-- FIXME: link --> 
 </Para>
 
 <Para>E.g. if you process the data file <filename>entrance.svx</filename>
-with the command <command>cavern entrance</command> then four files will be
+with the command <command>cavern entrance</command> then three files will be
 created: <filename>entrance.3d</filename>,
-<filename>entrance.pos</filename>, <filename>entrance.err</filename>, and
-<filename>entrance.inf</filename>.
+<filename>entrance.err</filename>, and <filename>entrance.inf</filename>.
 </Para>
 
 <Para>Cavern also gives a range of statistics at the end of a run
@@ -608,18 +637,9 @@ out either side, a three-node is a T-junction etc
 
 <Sect3><Title><filename/.3d/ - data describing the loop-closed centre line</Title>
 
-<Para>This file contains a long list of line and cross positions.  This
-file is binary by default as it is much quicker to write out and read back
-in. It can be written out as text if you want using the -a option.
+<Para>This file contains details of the stations and legs, and any
+flags associated with them.
 </Para>
-
-</Sect3>
-
-<Sect3><Title><filename/.pos/ - a list of all survey stations with coordinates</Title>
-
-<Para>This file contains a list of all the station positions (ordered x,y,z
-[East, North, Up]) with complete names.  The stations are sorted
-alphabetically, in prefix order.</Para>
 
 </Sect3>
 
@@ -1412,6 +1432,13 @@ I will have to do some sums...
 <!--
 <Para>BEGIN, CALIBRATE, DATA, DEFAULT, END, EQUATE, FIX, GRADE,
 INCLUDE, PREFIX, SD, SET, SOLVE, UNITS</Para>
+*copyright
+*date
+*entrance
+*export - better example
+*instrument
+*team
+INFER
 -->
 
 <Para>The commands are documented in a common format:
@@ -1658,6 +1685,49 @@ allowed it to be changed at any point, rather than being set once for the
 whole run.
 
 -->
+
+</Sect3>
+
+<Sect3><Title>COPYRIGHT</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*copyright &lt;date&gt; &lt;text&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<programlisting>
+*begin littlebit
+*copyright 1983 CUCC
+1 2 10.23 106 -02
+2 3  1.56 092 +10
+*end littlebit</programlisting>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>*copyright allow the copyright information to be
+stored in a way that can be automatically collated.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*end, *prefix</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
 
 </Sect3>
 
