@@ -175,7 +175,10 @@ AC_SUBST(LIBOBJS)
 
 AC_MSG_CHECKING(for sgmltools v2 or v3)
 case `sgmltools --version 2> /dev/null` in
-*" version "[23]*)
+*" version 2"*)
+  sgmltools=sgmltools
+  AC_MSG_RESULT(yes) ;;
+*" version 3"*)
   sgmltools=sgmltools
   AC_MSG_RESULT(yes) ;;
 *)
