@@ -9,6 +9,7 @@
 SURVEXHOME=$srcdir/../lib
 export SURVEXHOME
 
+: ${TESTS=$*}
 : ${TESTS="extend"}
 
 for file in $TESTS ; do

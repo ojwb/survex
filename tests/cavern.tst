@@ -9,6 +9,7 @@
 SURVEXHOME=$srcdir/../lib
 export SURVEXHOME
 
+: ${TESTS=$*}
 : ${TESTS="singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey nosurvey2\
  cartesian lengthunits angleunits cmd_truncate cmd_case cmd_fix cmd_solve\

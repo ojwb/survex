@@ -5,6 +5,7 @@
 
 : ${DIFFPOS=../src/diffpos}
 
+: ${TESTS=$*}
 : ${TESTS="delatend addatend"}
 
 for file in $TESTS ; do
