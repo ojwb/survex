@@ -17,6 +17,7 @@ riscos_exes
 src*_*.zip
 stamp-h
 stamp-h.in
+stamp-h1
 survex-*.tar.gz
 survex-win32-*.zip
 survex-dos-*.zip
