@@ -16,6 +16,7 @@
 #include "cavern.h"
 #include "filename.h"
 #include "message.h"
+#include "netartic.h"
 #include "netbits.h"
 #include "matrix.h"
 #include "out.h"

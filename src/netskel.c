@@ -4,8 +4,6 @@
  * Copyright (C) 1991-1999 Olly Betts
  */
 
-extern void articulate(void); /* FIXME: */
-
 /*#define BLUNDER_DETECTION 1*/
 
 #if 0
@@ -26,8 +24,8 @@ extern void articulate(void); /* FIXME: */
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
+#include "netartic.h"
 #include "netbits.h"
-#include "matrix.h"
 #include "netskel.h"
 #include "network.h"
 #include "out.h"
