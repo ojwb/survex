@@ -64,16 +64,16 @@ static int fPercent = -1, fAscii = 0;
 #define STDERR stdout
 
 static void
-wr(const char *msg)
+wr(const char *s)
 {
-   if (msg) puts(msg);
+   if (s) puts(s);
 }
 
 static void
-fatal(const char *msg, void (*fn)(const char *), const char *szArg)
+fatal(const char *s, void (*fn)(const char *), const char *arg)
 {
-   fprintf(STDERR, "\nFatal error from survex: %s\n", msg);
-   if (fn) (fn)(szArg);
+   fprintf(STDERR, "\nFatal error from survex: %s\n", s);
+   if (fn) (fn)(arg);
    exit(EXIT_FAILURE);
 }
 
@@ -181,8 +181,8 @@ AddExt(const char *fnm, const char *ext)
  * or NULL if file didn't open
  */
 static FILE *
-fopenWithPthAndExt(const char * pth, const char * fnm, const char * szExt,
-		   const char * szMode, char **pfnmUsed)
+fopenWithPthAndExt(const char * pth, const char * fnm, const char * ext,
+		   const char * mode, char **pfnmUsed)
 {
    char *fnmFull = NULL;
    FILE *fh = NULL;
@@ -193,31 +193,31 @@ fopenWithPthAndExt(const char * pth, const char * fnm, const char * szExt,
 
    /* if appropriate, try it without pth */
    if (fAbs) {
-      fh = fopen_not_dir(fnm, szMode);
+      fh = fopen_not_dir(fnm, mode);
       if (fh) {
 	 if (pfnmUsed) {
 	    fnmFull = xmalloc(strlen(fnm) + 1);
 	    strcpy(fnmFull, fnm);
 	 }
       } else {
-	 if (szExt && *szExt) {
+	 if (ext && *ext) {
 	    /* we've been given an extension so try using it */
-	    fnmFull = AddExt(fnm, szExt);
-	    fh = fopen_not_dir(fnmFull, szMode);
+	    fnmFull = AddExt(fnm, ext);
+	    fh = fopen_not_dir(fnmFull, mode);
 	 }
       }
    } else {
       /* try using path given - first of all without the extension */
       fnmFull = UsePth(pth, fnm);
-      fh = fopen_not_dir(fnmFull, szMode);
+      fh = fopen_not_dir(fnmFull, mode);
       if (!fh) {
-	 if (szExt && *szExt) {
+	 if (ext && *ext) {
 	    /* we've been given an extension so try using it */
 	    char *fnmTmp;
 	    fnmTmp = fnmFull;
-	    fnmFull = AddExt(fnmFull, szExt);
+	    fnmFull = AddExt(fnmFull, ext);
 	    free(fnmTmp);
-	    fh = fopen_not_dir(fnmFull, szMode);
+	    fh = fopen_not_dir(fnmFull, mode);
 	 }
       }
    }
@@ -264,7 +264,7 @@ static void checkmode(void (*fn)(const char *), const char * arg);
 static void skipopt(const char * s);
 
 #define TITLE_LEN 80
-static char szSurveyTitle[TITLE_LEN];
+static char SurveyTitle[TITLE_LEN];
 
 static Mode mode;
 
@@ -272,7 +272,7 @@ static void process_command_line(int argc, char **argv) {
   int j;
   mode=COMMAND;
 
-  *szSurveyTitle='\0';
+  *SurveyTitle='\0';
 
   if (argc<2)
     fatal("No arguments given", NULL, NULL);
@@ -292,7 +292,9 @@ include(const char *fnm)
    add_to_list(p);
 }
 
-static const char *datafile(const char *fnm, const char *pth) {
+static const char *
+datafile(const char *fnm, const char *pth)
+{
    /* if no pth treat fnm as absolute */
    if (pth != NULL && *pth != '\0' && !fAbsoluteFnm(fnm)) {
       char *f = UsePth(pth, fnm);
@@ -312,19 +314,21 @@ static const char *datafile(const char *fnm, const char *pth) {
    return "";
 }
 
-static const char *process_command_mode(const char *string, const char *pth) {
+static const char *
+process_command_mode(const char *string, const char *pth)
+{
   char ch;
-  const char *sz = string;
-  ch = *(sz++);
+  const char *s = string;
+  ch = *(s++);
   if (strchr(SWITCH_SYMBOLS,ch)!=NULL) {
     char chOpt;
     int fSwitch=fTrue;
-    chOpt=toupper(*sz);
-    sz++;
+    chOpt=toupper(*s);
+    s++;
     if (chOpt=='!') {
       fSwitch=fFalse;
-      chOpt=toupper(*sz);
-      sz++;
+      chOpt=toupper(*s);
+      s++;
       if (strchr("DFST",chOpt)) {
         /* negating these option doesn't make sense */
 	fatal("Not a boolean option - `!' prefix not meaningful",
@@ -337,7 +341,7 @@ static const char *process_command_mode(const char *string, const char *pth) {
         break;
       case 'C': /* Case */
         if (fSwitch) {
-          chOpt=*sz++;
+          chOpt=*s++;
           switch (toupper(chOpt)) {
 	   case 'U':
              add_to_list("*case toupper\n");
@@ -379,12 +383,12 @@ static const char *process_command_mode(const char *string, const char *pth) {
         if (fSwitch) {
 	  char *p;
           int ln = 0;
-          ch = *(sz++); /* if we have no digits, ln=0 & error is given */
+          ch = *(s++); /* if we have no digits, ln=0 & error is given */
           while (isdigit(ch)) {
             ln = ln * 10 + (ch - '0');
-            ch = *(sz++);
+            ch = *(s++);
           }
-          sz--;
+          s--;
 	  if (ln < 1) {
 	    fatal("Syntax: -U<uniqueness> where uniqueness > 0",
 	          skipopt, string);
@@ -411,37 +415,39 @@ static const char *process_command_mode(const char *string, const char *pth) {
         mode=COMMAND_FILENAME;
         break;
       default: /* assume it is a filename of a data file */
-        sz=datafile(sz-1,pth);
+        s = datafile(s - 1, pth);
         break;
     }
   }
-  return sz;
+  return s;
 }
 
-static void process_command(const char * string, const char * pth) {
-  const char * sz = string;
-/*  printf("%d >%s<\n",mode,sz); */
-  while (*sz) {
+static void
+process_command(const char * string, const char * pth)
+{
+  const char *s = string;
+/*  printf("%d >%s<\n",mode,s); */
+  while (*s) {
     switch (mode) {
       case COMMAND:
-        sz=process_command_mode(sz,pth);
+        s = process_command_mode(s, pth);
         break;
       case SVX_FILE:
-        sz=datafile(sz,pth);
+        s = datafile(s, pth);
         mode=COMMAND;
         break;
       case COMMAND_FILENAME:
         mode = COMMAND;
-        command_file(pth, sz);
-        sz = "";
+        command_file(pth, s);
+        s = "";
         break;
       case TITLE: {
 	 /* Survey title */
 	 char *p;
-	 p = xmalloc(strlen(sz) + 11);
-	 sprintf(p, "*title \"%s\"\n", sz);
+	 p = xmalloc(strlen(s) + 11);
+	 sprintf(p, "*title \"%s\"\n", s);
 	 add_to_list(p);
-	 sz+=strlen(sz); /* advance past it */
+	 s += strlen(s); /* advance past it */
 	 mode=COMMAND;
 	 break;
       }
@@ -452,7 +458,9 @@ static void process_command(const char * string, const char * pth) {
 #define COMMAND_BUFFER_LEN 256
 static char buffer[COMMAND_BUFFER_LEN];
 
-static void command_file(const char * pth, const char * fnm) {
+static void
+command_file(const char *pth, const char *fnm)
+{
   FILE *fh;
   int   ch;
   char  cmdbuf[COMMAND_BUFFER_LEN];
@@ -515,28 +523,32 @@ static void command_file(const char * pth, const char * fnm) {
   free(path);
 }
 
-static void checkmode(void (*fn)(const char *), const char * arg) {
-  const char *msg;
+static void
+checkmode(void (*fn)(const char *), const char * arg)
+{
+  const char *s;
   switch (mode) {
     case SVX_FILE:
-      msg = "Data filename expected after -D";
+      s = "Data filename expected after -D";
       break;
     case COMMAND_FILENAME:
-      msg = "Command filename expected after -F";
+      s = "Command filename expected after -F";
       break;
 #if 0
    case SPECIAL_CHARS:
-      msg = "Special characters list expected after -S";
+      s = "Special characters list expected after -S";
       break;
 #endif
     default:
       return;
   }
-  fatal(msg, fn, arg);
+  fatal(s, fn, arg);
 }
 
-static void skipopt(const char * sz) {
-   if (sz) puts(sz);
+static void
+skipopt(const char *s)
+{
+   if (s) puts(s);
    puts("Skipping bad command line option");
 }
 
@@ -547,7 +559,8 @@ static void skipopt(const char * sz) {
 #endif
 
 int
-main(int argc, char **argv) {
+main(int argc, char **argv)
+{
    char *args[7];
    int i;
 #ifndef HAVE_EXECV
