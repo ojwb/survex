@@ -25,9 +25,7 @@ typedef int coord;  /* type of data used once data is read in */
 #define CURSOR_DOWN   138
 #define CURSOR_UP     139
 
-#define QUOTE          39
-#define SHIFT_QUOTE   '\"'
-#define SHIFT_3       0x9C
+/* #define SHIFT_3       0x9C */
 
 #define MOVE 4 /* OS_Plot,4,x,y moves to (x,y) */
 #define DRAW 5 /* OS_Plot,5,x,y draws to (x,y) */

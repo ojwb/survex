@@ -23,8 +23,6 @@ typedef long coord;  /* data type used after data is read in */
 #define CURSOR_RIGHT (0x14d)
 #define CURSOR_DOWN  (0x150)
 #define CURSOR_UP    (0x148)
-#define SHIFT_QUOTE      '@'  /* UK keyboards only I think !HACK! */
-#define QUOTE           (39)
 
 #ifdef NO_FUNC_PTRS
 
