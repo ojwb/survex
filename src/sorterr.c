@@ -215,7 +215,7 @@ main(int argc, char **argv)
       char *base = base_from_fnm(fnm);
       fnm_out = add_ext(base, "tmp");
       osfree(base);
-      fh_out = safe_fopen(fnm_out, "wb");
+      fh_out = safe_fopen(fnm_out, "w");
    }
 
    do {
@@ -234,6 +234,11 @@ main(int argc, char **argv)
 
    if (fnm_out) {
       fclose(fh_out);
+#if (OS!=UNIX)
+      /* UNIX rename atomically replaces - other OSes are less useful */
+      /* FIXME: WIN32 needs this - haven't actually checked others. */
+      remove(fnm);
+#endif
       rename(fnm_out, fnm);
    }
 
