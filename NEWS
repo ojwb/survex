@@ -1,3 +1,9 @@
+Changes in 0.95-prerelease5:
+
+* If no stations are fixed, the first station mentioned is supposed to be.
+  But on some platforms (e.g. x86 Linux) the second station was being used
+  instead (regression test firststn).
+
 Changes in 0.95-prerelease4:
 
 * Fixed typo which prevented documentation from installing.

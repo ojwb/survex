@@ -76,7 +76,7 @@ ident_cmp(const char *a, const char *b)
 static prefix *
 read_prefix_(bool fOmit, bool fSuspectTypo)
 {
-   prefix *back_ptr,*ptr;
+   prefix *back_ptr, *ptr;
    char *name;
    size_t name_len = 32;
    int i;

@@ -9,6 +9,7 @@ noose.svx noose.pos\
 cross.svx cross.pos\
 deltastar.svx deltastar.pos\
 deltastar2.svx deltastar2.pos\
+firststn.svx firststn.pos\
 break_replace_pfx.svx break_replace_pfx.pos\
 bug0.svx bug0.pos\
 bug1.svx bug1.pos\

@@ -335,11 +335,14 @@ data_normal(void)
    /* Horrible hack this, rewrite when I get the chance */
    /* It's getting better incrementally */
    prefix *fr_name, *to_name;
+   node *fr, *to;
    real dx, dy, dz;
    real vx, vy, vz;
 #ifndef NO_COVARIANCES
-   real cxy, cyz, czx;
+   real cxy, cyz, czx;   
 #endif
+
+   datum first_stn = End;
 
 #ifdef NEW3DFORMAT
    twig *twiglet;
@@ -358,8 +361,14 @@ data_normal(void)
    for (ordering = pcs->ordering ; ; ordering++) {
       skipblanks();
       switch (*ordering) {
-       case Fr: fr_name = read_prefix(fFalse); break;
-       case To: to_name = read_prefix(fFalse); break;
+       case Fr:
+	  fr_name = read_prefix(fFalse);
+	  if (first_stn == End) first_stn = Fr;
+	  break;
+       case To:
+	  to_name = read_prefix(fFalse);
+	  if (first_stn == End) first_stn = To;
+	  break;
        case Tape: tape = read_numeric(fFalse); break;
        case FrCount: frcount = read_numeric(fFalse); break;
        case ToCount: tocount = read_numeric(fFalse); fTopofil = fTrue; break;
@@ -622,7 +631,14 @@ printf("clin %.2f\n",clin);
    printf("Just before addleg, vx = %f\n", vx);
 #endif
    /*printf("dx,dy,dz = %.2f %.2f %.2f\n\n", dx, dy, dz);*/
-   addleg(StnFromPfx(fr_name), StnFromPfx(to_name), dx, dy, dz, vx, vy, vz
+   if (first_stn == To) {
+       to = StnFromPfx(to_name);
+       fr = StnFromPfx(fr_name);
+   } else {
+       fr = StnFromPfx(fr_name);
+       to = StnFromPfx(to_name);
+   }
+   addleg(fr, to, dx, dy, dz, vx, vy, vz
 #ifndef NO_COVARIANCES
 	  , cyz, czx, cxy
 #endif
@@ -644,11 +660,14 @@ extern int
 data_diving(void)
 {
    prefix *fr_name, *to_name;
+   node *fr, *to;
    real dx, dy, dz;
    real vx, vy, vz;
 
    real tape, comp;
    real fr_depth, to_depth;
+
+   datum first_stn = End;
 
 #ifdef NEW3DFORMAT
    twig *twiglet;
@@ -659,8 +678,14 @@ data_diving(void)
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
       switch (*ordering) {
-      case Fr: fr_name = read_prefix(fFalse); break;
-      case To: to_name = read_prefix(fFalse); break;
+       case Fr:
+	  fr_name = read_prefix(fFalse);
+	  if (first_stn == End) first_stn = Fr;
+	  break;
+       case To:
+	  to_name = read_prefix(fFalse);
+	  if (first_stn == End) first_stn = To;
+	  break;
       case Tape: tape = read_numeric(fFalse); break;
       case Comp: comp = read_numeric(fFalse); break;
       case FrDepth: fr_depth = read_numeric(fFalse); break;
@@ -754,11 +779,17 @@ data_diving(void)
       }
       vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
    }
+   if (first_stn == To) {
+       to = StnFromPfx(to_name);
+       fr = StnFromPfx(fr_name);
+   } else {
+       fr = StnFromPfx(fr_name);
+       to = StnFromPfx(to_name);
+   }
 #ifdef NO_COVARIANCES
-   addleg(StnFromPfx(fr_name), StnFromPfx(to_name), dx, dy, dz, vx, vy, vz);
+   addleg(fr, to, dx, dy, dz, vx, vy, vz);
 #else
-   addleg(StnFromPfx(fr_name), StnFromPfx(to_name), dx, dy, dz,
-	  vx, vy, vz, 0, 0, 0); /* FIXME: need covariances */
+   addleg(fr, to, dx, dy, dz, vx, vy, vz, 0, 0, 0); /* FIXME: need covariances */
 #endif
 #ifdef NEW3DFORMAT
    /* record pre-fettling deltas */
@@ -776,8 +807,11 @@ extern int
 data_cartesian(void)
 {
    prefix *fr_name, *to_name;
+   node *fr, *to;
    real dx, dy, dz;
    real vx, vy, vz;
+
+   datum first_stn = End;
 
 #ifdef NEW3DFORMAT
    twig *twiglet;
@@ -788,8 +822,14 @@ data_cartesian(void)
    for (ordering = pcs->ordering ; ; ordering++) {
       skipblanks();
       switch (*ordering) {
-       case Fr: fr_name = read_prefix(fFalse); break;
-       case To: to_name = read_prefix(fFalse); break;
+       case Fr:
+	  fr_name = read_prefix(fFalse);
+	  if (first_stn == End) first_stn = Fr;
+	  break;
+       case To:
+	  to_name = read_prefix(fFalse);
+	  if (first_stn == End) first_stn = To;
+	  break;
        case Dx: dx = read_numeric(fFalse); break;
        case Dy: dy = read_numeric(fFalse); break;
        case Dz: dz = read_numeric(fFalse); break;
@@ -825,8 +865,14 @@ data_cartesian(void)
    dy = (dy * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
    dz = (dz * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
 
-   addleg(StnFromPfx(fr_name), StnFromPfx(to_name), dx, dy, dz, 
-	  var(Q_DX), var(Q_DY), var(Q_DZ)
+   if (first_stn == To) {
+       to = StnFromPfx(to_name);
+       fr = StnFromPfx(fr_name);
+   } else {
+       fr = StnFromPfx(fr_name);
+       to = StnFromPfx(to_name);
+   }
+   addleg(fr, to, dx, dy, dz, var(Q_DX), var(Q_DY), var(Q_DZ)
 #ifndef NO_COVARIANCES
 	  , 0, 0, 0
 #endif
@@ -848,6 +894,7 @@ extern int
 data_nosurvey(void)
 {
    prefix *fr_name, *to_name;
+   node *fr, *to;
    nosurveylink *link;
 
 #ifdef NEW3DFORMAT
@@ -859,8 +906,14 @@ data_nosurvey(void)
    for (ordering = pcs->ordering ; ; ordering++) {
       skipblanks();
       switch (*ordering) {
-       case Fr: fr_name = read_prefix(fFalse); break;
-       case To: to_name = read_prefix(fFalse); break;
+       case Fr:
+	  fr_name = read_prefix(fFalse);
+	  fr = StnFromPfx(fr_name);
+	  break;
+       case To:
+	  to_name = read_prefix(fFalse);
+	  to = StnFromPfx(to_name);
+	  break;
        case Ignore:
 	 skipword(); break;
        case IgnoreAll:
@@ -893,8 +946,8 @@ data_nosurvey(void)
 
    /* add to linked list which is dealt with after network is solved */
    link = osnew(nosurveylink);
-   link->fr = StnFromPfx(fr_name);
-   link->to = StnFromPfx(to_name);
+   link->fr = fr;
+   link->to = to;
    link->next = nosurveyhead;
    nosurveyhead = link;
    return 1;
