@@ -75,7 +75,6 @@ img *pimg = NULL;
 #ifndef NO_PERCENTAGE
 bool fPercent = fFalse;
 #endif
-bool fAscii = fFalse;
 bool fQuiet = fFalse; /* just show brief summary + errors */
 static bool fMute = fFalse; /* just show errors */
 bool fSuppress = fFalse; /* only output 3d(3dx) file */
@@ -131,7 +130,6 @@ static const struct option long_opts[] = {
 static struct help_msg help[] = {
 /*				<-- */
    {HLP_ENCODELONG(0),          "display percentage progress"},
-   {'a',                        "output ascii variant of .3d file"},
    {HLP_ENCODELONG(2),          "set location for output files"},
    {HLP_ENCODELONG(3),          "only show brief summary (-qq for errors only)"},
    {HLP_ENCODELONG(4),          "do not create .inf or .err files"},
@@ -206,9 +204,6 @@ main(int argc, char **argv)
       int opt = cmdline_getopt();
       if (opt == EOF) break;
       switch (opt) {
-       case 'a':
-	 fAscii = fTrue;
-	 break;
        case 'p':
 #ifndef NO_PERCENTAGE
 	 fPercent = 1;

@@ -427,7 +427,7 @@ replace_travs(void)
 	 }
       } else {
 #endif
-	 pimg = img_open_write(fnmImg3D, survey_title, !fAscii);
+	 pimg = img_open_write(fnmImg3D, survey_title, fTrue);
          if (!pimg) {
 	    fputsnl(fnmImg3D, STDERR);
 	    fatalerror(img_error(), fnmImg3D);

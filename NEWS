@@ -13,6 +13,8 @@
 * cavern: Fixed typo which prevented *instrument from being recognised
   as a valid command.
 
+* cavern: removed option to produce ascii .3d files.
+
 * print*: Added --output command line option to override the output
   setting in the .ini file.
 

@@ -46,7 +46,7 @@
 
 static char *output_to = NULL;
 
-static int fPercent = -1, fAscii = 0;
+static int fPercent = -1;
 
 #define COMMAND_FILE_COMMENT_CHAR ';'
 
@@ -336,8 +336,7 @@ process_command_mode(const char *string, const char *pth)
       }
     }
     switch (chOpt) {
-      case 'A': /* Ascii */
-        fAscii = fSwitch;
+      case 'A': /* Ascii */ /* ignore nowadays */
         break;
       case 'C': /* Case */
         if (fSwitch) {
@@ -561,7 +560,7 @@ skipopt(const char *s)
 int
 main(int argc, char **argv)
 {
-   char *args[7];
+   char *args[6];
    int i;
 #ifndef HAVE_EXECV
    char *cmd, *p;
@@ -605,10 +604,6 @@ main(int argc, char **argv)
    /* ick: honour -P or -!P if specified, else use new default on no %ages */
    if (fPercent == 1) {
       static char arg[] = "--percentage";
-      args[i++] = arg;
-   }
-   if (fAscii) {
-      static char arg[] = "--ascii";
       args[i++] = arg;
    }
    if (output_to) {
