@@ -70,8 +70,14 @@ sub shorten {
    return $exe;
 }
 
-my $progs = $var{'bin_PROGRAMS'};
-$progs =~ s|\$\((\w+)\)|$var{$1}|eg;
+sub expand {
+   my $v = shift;
+   $v = $var{$v};
+   $v =~ s|\$\((\w+)\)|expand($1)|eg;
+   return $v;
+}
+
+my $progs = expand('bin_PROGRAMS');
 
 my $t = join " ", map {shorten($_, $max_leaf_len)} split /\s+/, $progs;
 $t =~ s/(\w)\b/$1$repl{'EXEEXT'}/g if $repl{'EXEEXT'};
@@ -84,26 +90,16 @@ print $repl{'EXTRARULES'};
 		
 for (sort keys %var) {
    if (/^(\w+)_SOURCES/) {
-      my $prog = $1;      
+      my $prog = $1;
       if ($progs =~ /\b\Q$prog\E\b/) {
          my $exe = shorten($prog, $max_leaf_len) . $repl{'EXEEXT'};
 
-         my $sources = $var{$_};
-
+         my $sources = expand($_);
+	 
          my $ldadd = $var{$prog.'_LDADD'} || $var{'LDADD'} || '';
-         my $extra;
 
-#	 $extra = $var{"EXTRA_$_"};
-#	 $sources .= " " . $extra if defined $extra;
-
-#         $extra = $repl{"LIBOBJS"};
-#	 $sources .= " " . $extra if defined $extra;
-
-	 $sources =~ s|\$\((\w+)\)|$var{$1}|eg;
 	 my $objs = $sources;
 	 $objs =~ s/\.[cs]\b/.$repl{'OBJEXT'}/g;
-	 # expand vars
-	 s|\$\((\w+)\)|$var{$1}|eg;
 	 print "$exe: $objs";
 	 my $x = join " ", grep /\.$repl{'OBJEXT'}$/, split /\s+/, $ldadd;
 	 print " $x" if $x ne '';
