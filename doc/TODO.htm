@@ -59,16 +59,19 @@ it depends on the redraw?
 
 <ul>
 
-<li> aven: "Print" from the print dialog doesn't do the same thing as "Print"
-  from the preview dialog under wxGTK (the latter works, but the former
-  doesn't).
+<li>aven: Finish adding calls to msg() so messages can be translated.
 
-<li> aven: Selecting "Landscape" in "File-&gt;Page Setup" doesn't change the
-  orientation in the preview window.  Paper size is also ignored.
+<li>aven: tilt and rot should be floating point values, not integers...
 
-<li> aven: Finish adding calls to msg() so messages can be translated.
+<li>aven: Implement "print clipped to what's in the window".
 
-<li> aven: Implement "print clipped to what's in the window".
+<li>aven: the preview window should display all the pages in one window,
+    arranged in an nxm grid (do this by overriding CreateCanvas and
+    CreateControlBar on wxPreviewFrame).
+    The user should be able to enable/disable
+    pages by clicking on them (or on checkboxes next to them?)  It would
+    also be nice to be able to drag the survey around so that page breaks
+    can be moved to the least awkward positions...
 
 <li>Check skip blank pages works (checked printps)...
 

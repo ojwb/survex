@@ -5,6 +5,7 @@
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
 //  Copyright (C) 2001-2003,2004 Olly Betts
+//  Copyright (C) 2004 Philip Underwood
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -1150,11 +1151,11 @@ void MainFrm::OnPrint(wxCommandEvent&)
 
 void MainFrm::OnPageSetup(wxCommandEvent&)
 {
-    m_pageSetupData = m_printData;
+    m_pageSetupData.SetPrintData(m_printData);
 
     wxPageSetupDialog pageSetupDialog(this, &m_pageSetupData);
     pageSetupDialog.ShowModal();
-   
+
     m_printData = pageSetupDialog.GetPageSetupData().GetPrintData();
     m_pageSetupData = pageSetupDialog.GetPageSetupData();
 }

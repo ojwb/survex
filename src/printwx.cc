@@ -206,15 +206,25 @@ svxPrintDlg::~svxPrintDlg() {
 
 void 
 svxPrintDlg::OnPrint(wxCommandEvent& event) {
-    wxPrinter* pr = new wxPrinter();;
-    pr->Print(this, new svxPrintout(m_parent, m_layout, m_parent->GetPageSetupData(), m_File), false);
+    wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
+    wxPrinter pr(&pd);
+    svxPrintout po(m_parent, m_layout, m_parent->GetPageSetupData(), m_File);
+    if (pr.Print(this, &po, true)) {
+	// Close the print dialog if printing succeeded.
+	EndModal(wxOK);
+    }
 }
 
 void 
 svxPrintDlg::OnPreview(wxCommandEvent& event) {
     OnChange(event);
-    wxPrintPreview* pv = new wxPrintPreview(new svxPrintout(m_parent, m_layout, m_parent->GetPageSetupData(), m_File),
-					    new svxPrintout(m_parent, m_layout, m_parent->GetPageSetupData(), m_File));
+    wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
+    wxPrintPreview* pv;
+    pv = new wxPrintPreview(new svxPrintout(m_parent, m_layout,
+					    m_parent->GetPageSetupData(), m_File),
+			    new svxPrintout(m_parent, m_layout,
+					    m_parent->GetPageSetupData(), m_File),
+			    &pd);
     wxPreviewFrame *frame = new wxPreviewFrame(pv, m_parent, "Print Preview");
     frame->Centre(wxBOTH);
     frame->Initialize();
@@ -1077,7 +1087,6 @@ svxPrintout::check_intersection(long x_p, long y_p)
 void
 svxPrintout::MoveTo(long x, long y)
 {
-//    printf("M(%ld,%ld)\n", x, y);
     x_t = x_offset + x - clip.x_min;
     y_t = y_offset + clip.y_max - y;
 }
@@ -1085,13 +1094,11 @@ svxPrintout::MoveTo(long x, long y)
 void
 svxPrintout::DrawTo(long x, long y)
 {
-//    printf("D(%ld,%ld)\n", x, y);
     long x_p = x_t, y_p = y_t;
     x_t = x_offset + x - clip.x_min;
     y_t = y_offset + clip.y_max - y;
     if (cur_pass != -1) {
 	pdc->DrawLine(x_p,y_p,x_t,y_t);
-//	printf("(%ld, %ld) -> (%ld, %ld)\n", x_p, y_p, x_t, y_t);
     } else {
 	if (check_intersection(x_p, y_p)) fBlankPage = fFalse;
     }
