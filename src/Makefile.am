@@ -15,10 +15,11 @@ EXTRA_PROGRAMS = caverot xcaverot printxbm aven
 bin_PROGRAMS = cavern $(PRINT) diffpos extend survex 3dtodxf @CAVEROT@ \
  @AVEN@
 
-cavern_SOURCES = cavern.c message.c filename.c listpos.c commands.c\
- cmdline.c getopt.c getopt1.c datain.c netskel.c network.c readval.c str.c\
- matrix.c img.c osdepend.c netbits.c useful.c validate.c\
- netartic.c new3dout.c
+COMMONSRC = cmdline.c message.c filename.c osdepend.c getopt.c getopt1.c
+
+cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
+ readval.c str.c matrix.c img.c netbits.c useful.c validate.c netartic.c \
+ new3dout.c $(COMMONSRC)
 
 survex_SOURCES = wrap.c osdepend.c
 
@@ -28,8 +29,7 @@ aven_LDADD = @LIBOBJS@ @GTKMM_LIBS@ -lgnomemm
 aven_CFLAGS = @GTKMM_CFLAGS@
 aven_CXXFLAGS = @GTKMM_CFLAGS@
 
-PRSRC = prcore.c prio.c message.c filename.c useful.c img.c osdepend.c\
- ini.c getopt.c getopt1.c cmdline.c
+PRSRC = prcore.c prio.c useful.c img.c ini.c $(COMMONSRC)
  
 printps_SOURCES = printps.c $(PRSRC)
 printdm_SOURCES = printdm.c $(PRSRC) prbitmap.c
@@ -37,7 +37,7 @@ printpcl_SOURCES = printpcl.c $(PRSRC) prbitmap.c
 printxbm_SOURCES = printxbm.c $(PRSRC) prbitmap.c
 printhpgl_SOURCES = prhpgl.c $(PRSRC)
 
-ROTSRC = cvrotimg.c img.c useful.c osdepend.c filename.c message.c cmdline.c
+ROTSRC = cvrotimg.c img.c useful.c $(COMMONSRC)
 
 caverot_SOURCES = caverot.c $(ROTSRC) rotplot.c labels.c cvrotgfx.c
 EXTRA_caverot_SOURCES = dosrot.c
@@ -49,12 +49,10 @@ xcaverot_CFLAGS = @X_CFLAGS@
 xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
 # next line is actually superfluous to automake (but riscos/bc hack needs it)
-diffpos_SOURCES = diffpos.c cmdline.c message.c
-extend_SOURCES = extend.c message.c filename.c useful.c img.c osdepend.c\
- cmdline.c
+diffpos_SOURCES = diffpos.c $(COMMONSRC)
+extend_SOURCES = extend.c $(COMMONSRC) useful.c img.c
 
-3dtodxf_SOURCES = 3dtodxf.c message.c getopt.c getopt1.c img.c filename.c\
- useful.c osdepend.c cmdline.c
+3dtodxf_SOURCES = 3dtodxf.c $(COMMONSRC) useful.c img.c
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
 #imgtest_SOURCES = imgtest.c imgalone.c
