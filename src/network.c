@@ -142,7 +142,7 @@ yucky divdv( &d, &d, &v ) code.  Oh well, at least it seems to work.
 #include <stddef.h>
 #include "validate.h"
 #include "debug.h"
-#include "survex.h"
+#include "cavein.h"
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
@@ -189,7 +189,9 @@ typedef struct StackTr {
 static char *szLink  =" - ";
 static char *szLinkEq=" = "; /* use this one for equates */
 
-long optimize=27; /* set by commline.c */
+/* can be altered by -o<letters> in commline.c */
+long optimize = BIT('l'-'a') | BIT('p'-'a') | BIT('d'-'a') | BIT('s'-'a');
+/* Lollipops, Parallel legs, Iterate mx, Delta*, Split stnlist */
 
 #if 0
 #define fprint_prefix( FH, NAME ) BLK( (fprint_prefix)( (FH), (NAME) ); fprintf( (FH), " [%p]", (void*)(NAME) ); )
@@ -248,7 +250,7 @@ extern void solve_network( void /*node *stnlist*/ ) {
  remove_trailing_travs();                         validate(); dump_network();
  remove_travs();                                  validate(); dump_network();
  pstnPrev=&stnlistfull; /* do it anyway to suppress warning */
- if (optimize & 16) {
+ if (optimize & BIT('s'-'a')) {
   /* partition station list, so we can ignore stations already removed */
   stn=stnlist;
   stnlist=NULL;
@@ -268,7 +270,7 @@ extern void solve_network( void /*node *stnlist*/ ) {
  remove_subnets();                                validate(); dump_network();
  solve_matrix();                                  validate(); dump_network();
  replace_subnets();                               validate(); dump_network();
- if (optimize & 16) {
+ if (optimize & BIT('s'-'a')) {
   /* combine partitions to form original station list (order is changed) */
   *pstnPrev=stnlist;
   stnlist=stnlistfull;
@@ -424,7 +426,7 @@ static void remove_subnets( void ) {
 
  while (fMore) {
   fMore=fFalse;
-  if (optimize & 1) {
+  if (optimize & BIT('s'-'l')) {
    /*      _
           ( )
            * stn
@@ -494,7 +496,7 @@ static void remove_subnets( void ) {
    }
   }
 
-  if (optimize & 2) {
+  if (optimize & BIT('p'-'a')) {
 /*printf("replacing parallel legs\n");*/
    FOR_EACH_STN( stn ) {
     /*
@@ -607,7 +609,7 @@ static void remove_subnets( void ) {
 /*printf("done replacing parallel legs\n");*/
   }
 
-  if (optimize & 8) {
+  if (optimize & BIT('d'-'a')) {
    node *stn5, *stn6;
    int dirn5, dirn6, dirn0;
    linkfor *legAB, *legBC, *legCA;
@@ -627,7 +629,7 @@ static void remove_subnets( void ) {
          :       :
     */
     if (stn->status && !fixed(stn) && shape(stn)==3) {
-     for( dirn0=0 ; ; dirn0++ ) {
+     for (dirn0 = 0; ; dirn0++) {
       if (dirn0>=3)
        goto nodeltastar; /* continue outer loop */
       dirn=dirn0;
@@ -1038,7 +1040,7 @@ static void replace_subnets( void ) {
     /* this loop could stop when it has found cBogus, but continue for now as
      * it's a useful sanity check
      */
-    for( stn=stnlist ; stn /*cBogus*/ ; stn=stn->next ) {
+    for (stn = stnlist; stn /*cBogus*/; stn = stn->next) {
   /*    ASSERT2(stn,"bogus station count is wrong");*/
       if (stn->status && stn->name->up==NULL && stn->name->ident[0]=='\0') {
   /*      printf(":::%d %f %f %f %d\n",cBogus2,POS(stn,0),POS(stn,1),POS(stn,2),stn->status);*/
@@ -1152,16 +1154,15 @@ static void replace_travs( void ) {
  if (!fhErrStat) {
   char *fnmErrStat;
 #ifdef NO_EXTENSIONS
-  fnmErrStat=UsePth(pthOutput,ERRSTAT_FILE);
+  fnmErrStat = UsePth(pthOutput, ERRSTAT_FILE);
 #else
-  fnmErrStat=AddExt(fnmInput,EXT_SVX_ERRS);
+  fnmErrStat = AddExt(fnmInput, EXT_SVX_ERRS);
 #endif
   if (fDirectory(fnmErrStat))
-   fatal(44,wr,fnmErrStat,0);
+   fatal(44, wr, fnmErrStat, 0);
   else {
-   fhErrStat=fopen(fnmErrStat,"w");
-   if ( !fhErrStat )
-    fatal(47,wr,fnmErrStat,0);
+   fhErrStat = fopen(fnmErrStat,"w");
+   if (!fhErrStat) fatal(47, wr, fnmErrStat, 0);
   }
   osfree(fnmErrStat);
  }
@@ -1169,15 +1170,19 @@ static void replace_travs( void ) {
  if (!pimgOut) {
   char *fnmImg3D;
 #ifdef NO_EXTENSIONS
-  fnmImg3D=UsePth(pthOutput,IMAGE_FILE);
+  fnmImg3D = UsePth(pthOutput, IMAGE_FILE);
 #else
-  fnmImg3D=AddExt(fnmInput,EXT_SVX_3D);
+  fnmImg3D = AddExt(fnmInput, EXT_SVX_3D);
 #endif
-  sprintf(out_buf,msg(121),fnmImg3D);
+  sprintf(out_buf, msg(121), fnmImg3D);
   out_current_action(out_buf); /* writing .3d file */
-  pimgOut=img_open_write( fnmImg3D, szSurveyTitle, !pcs->fAscii );
-  if (pimgOut==NULL)
-   fatal( img_error(), wr, fnmImg3D, 0 );
+#ifdef NEW3DFORMAT
+  pimgOut = cave_open_write(fnmImg3D, szSurveyTitle);
+  if (!pimgOut) fatal(cave_error(), wr, fnmImg3D, 0);
+#else
+  pimgOut = img_open_write(fnmImg3D, szSurveyTitle, !pcs->fAscii);
+  if (!pimgOut) fatal(img_error(), wr, fnmImg3D, 0);
+#endif
   free(fnmImg3D);
  }
 
@@ -1185,18 +1190,24 @@ static void replace_travs( void ) {
  FOR_EACH_STN(stn1) {
   if (stn1->status) {
    int i;
-   for( i=0 ; i<=2 ; i++ ) {
+   for (i = 0; i <= 2; i++) {
     linkfor *leg=stn1->leg[i];
     if (leg && data_here(leg) && !(leg->l.reverse & 64) && !fZero(&leg->v)) {
      if (fixed(stn1)) {
-      stn2=leg->l.to;
-      fprint_prefix( fhErrStat, stn1->name );
-      fputs( szLink, fhErrStat );
-      fprint_prefix( fhErrStat, stn2->name );
+      stn2 = leg->l.to;
+      fprint_prefix(fhErrStat, stn1->name);
+      fputs(szLink, fhErrStat);
+      fprint_prefix(fhErrStat, stn2->name);
+#ifdef NEW3DFORMAT
+      if (stn1->name->pos->id == 0) cave_write_stn(stn1);
+      if (stn2->name->pos->id == 0) cave_write_stn(stn2);
+      cave_write_leg(leg);
+#else
       img_write_datum( pimgOut, img_MOVE, NULL,
                        POS(stn1,0), POS(stn1,1), POS(stn1,2) );
       img_write_datum( pimgOut, img_LINE, NULL,
                        POS(stn2,0), POS(stn2,1), POS(stn2,2) );
+#endif
       subdd( &e, &POSD(stn2), &POSD(stn1) );
       subdd( &e, &e, &leg->d );
       eTot = sqrdd( e );
@@ -1263,8 +1274,12 @@ static void replace_travs( void ) {
    cLegsTrav=0;
    lenTrav=0.0;
    nmPrev=stn1->name;
+#ifdef NEW3DFORMAT
+   if (stn1->name->pos->id == 0) cave_write_stn(stn1);
+#else
    img_write_datum( pimgOut, img_MOVE, NULL,
                     POS(stn1,0),  POS(stn1,1),  POS(stn1,2)  );
+#endif
   }
   osfree(stn1->leg[i]); stn1->leg[i]=ptr->join1; /* put old link back in */
   osfree(stn2->leg[j]); stn2->leg[j]=ptr->join2; /* and the other end */
@@ -1320,8 +1335,13 @@ static void replace_travs( void ) {
 	lenTot+=sqrdd( leg->d );
 	stn3->status=statFixed;
 	fix(stn3);
+#ifdef NEW3DFORMAT
+	if (stn3->name->pos->id == 0) cave_write_stn(stn3);
+	cave_write_leg(leg);
+#else
 	img_write_datum(pimgOut, img_LINE, NULL,
 			POS(stn3,0), POS(stn3,1), POS(stn3,2));
+#endif
 
 	if (nmPrev!=stn3->name && !(fEquate && cLegsTrav==0)) {
 	   /* (node not part of same stn) && (not equate at start of traverse) */
@@ -1361,8 +1381,13 @@ static void replace_travs( void ) {
 	stn1=stn3;
      } /* endwhile */
 
+#ifdef NEW3DFORMAT
+   if (stn2->name->pos->id == 0) cave_write_stn(stn2);
+   cave_write_leg(leg);
+#else
    img_write_datum( pimgOut, img_LINE, NULL,
                     POS(stn2,0),  POS(stn2,1),  POS(stn2,2)  );
+#endif
 
 #if PRINT_NETBITS
    printf("Reached fixed or non-2node station\n");
@@ -1443,8 +1468,7 @@ static void deletenode(node *stn) {
  /* release any legs attached - reverse legs will be released since any */
  /* attached nodes aren't attached to fixed points */
  int d;
- for( d=0; d<=2; d++ )
-  osfree(stn->leg[d]); /* ignored if NULL */
+ for (d = 0; d <= 2; d++) osfree(stn->leg[d]); /* ignored if NULL */
  /* could delete prefix now... but this (slight) fudge is easier... */
  stn->name->stn=NULL;
  /* and release node itself */
@@ -1474,31 +1498,40 @@ static void replace_trailing_travs( void ) {
   stn1->leg[i]=ptrTrail->join1;
 /*  ASSERT(fixed(stn1)); */
   if (fixed(stn1)) {
+#ifdef NEW3DFORMAT
+   if (stn1->name->pos->id == 0) cave_write_stn(stn1);
+#else
    img_write_datum( pimgOut, img_MOVE, NULL,
                     POS(stn1,0),  POS(stn1,1),  POS(stn1,2)  );
+#endif
 
    while (i!=BAD_DIRN) {
     stn2=stn1->leg[i]->l.to;
-    j=reverse_leg(stn1->leg[i]);
+    leg = stn1->leg[i];
+    j=reverse_leg(leg);
     if (data_here(stn1->leg[i])) {
-     adddd( &POSD(stn2), &POSD(stn1), &stn1->leg[i]->d );
+     adddd( &POSD(stn2), &POSD(stn1), &leg->d );
 #if 0
-     printf("Adding leg (%f,%f,%f)\n",
-            stn1->leg[i]->d[0],stn1->leg[i]->d[1],stn1->leg[i]->d[2]);
+     printf("Adding leg (%f,%f,%f)\n", leg->d[0], leg->d[1], leg->d[2]);
 #endif
     } else {
-     subdd( &POSD(stn2), &POSD(stn1), &stn2->leg[j]->d );
+     leg = stn2->leg[j];
+     subdd( &POSD(stn2), &POSD(stn1), &leg->d );
 #if 0
-     printf("Subtracting reverse leg (%f,%f,%f)\n",
-            stn2->leg[j]->d[0],stn2->leg[j]->d[1],stn2->leg[j]->d[2]);
+     printf("Subtracting reverse leg (%f,%f,%f)\n", leg->d[0], leg->d[1], leg->d[2]);
 #endif
     }
 
     stn2->status=statFixed; /*stn1->status*/
 /*   if (()!=statDudEq) */
     fix(stn2);
+#ifdef NEW3DFORMAT
+    if (stn2->name->pos->id == 0) cave_write_stn(stn2);
+    cave_write_leg(leg);
+#else
     img_write_datum( pimgOut, img_LINE, NULL,
                      POS(stn2,0),  POS(stn2,1),  POS(stn2,2)  );
+#endif
     stn1=stn2;
     i=BAD_DIRN;
     FOLLOW_TRAV(stn2, j, i );
@@ -1511,11 +1544,16 @@ static void replace_trailing_travs( void ) {
  }
 
  /* write stations to .3d file and free legs and stations */
- for( stn1=stnlist ; stn1 ; stn1=stn2 ) {
+ for (stn1 = stnlist; stn1; stn1 = stn2) {
   if (fixed(stn1)) {
    int d;
+#ifdef NEW3DFORMAT
+   /* take care of unused fixed points */
+   if (stn1->name->pos->id == 0) cave_write_stn(stn1);      
+#else
    img_write_datum( pimgOut, img_LABEL, sprint_prefix(stn1->name),
                     POS(stn1,0), POS(stn1,1), POS(stn1,2) );
+#endif
    /* update coords of bounding box */
    for ( d=0 ; d<3 ; d++ ) {
     if (POS(stn1,d) < min[d]) { min[d]=POS(stn1,d); pfxLo[d]=stn1->name; }
@@ -1530,7 +1568,7 @@ static void replace_trailing_travs( void ) {
    out_info(sprint_prefix(stn1->name));
   }
   stn2=stn1->next;
-  for( i=0 ; i<=2 ; i++ ) {
+  for (i = 0; i <= 2; i++) {
    linkfor *leg, *legRev;
    leg=stn1->leg[i];
    /* only want to think about forwards legs */
@@ -1559,7 +1597,7 @@ static void replace_trailing_travs( void ) {
    }
   }
  }
- for( stn1=stnlist ; stn1 ; stn1=stn2 ) {
+ for (stn1 = stnlist; stn1; stn1 = stn2) {
   stn2=stn1->next;
   stn1->name->stn=NULL;
   osfree(stn1);
