@@ -11,6 +11,7 @@
 #define NODESTAT 1
 
 #include "cavern.h"
+#include "datain.h"
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
@@ -19,10 +20,6 @@
 #include "out.h"
 
 static void p_pos(prefix *);
-#if NODESTAT
-static void node_stats(prefix *from);
-static void node_stat(prefix *p);
-#endif
 
 /* Traverse prefix tree depth first starting at from, and
  * calling function fn at each node */
@@ -57,11 +54,7 @@ static FILE *fhPosList;
 extern void
 list_pos(prefix *from)
 {
-   char *fnmPosList;
-
-   fnmPosList = AddExt(fnm_output_base, EXT_SVX_POS);
-   fhPosList = safe_fopen(fnmPosList, "w");
-   osfree(fnmPosList);
+   fhPosList = safe_fopen_with_ext(fnm_output_base, EXT_SVX_POS, "w");
 
    /* Output headings line */
    fputsnl(msg(/*( Easting, Northing, Altitude )*/195), fhPosList);

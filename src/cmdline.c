@@ -9,8 +9,10 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "cmdline.h"
+#include "filename.h"
 
 /* It might be useful to be able to disable all long options on small
  * platforms like pre-386 DOS and some PDAs...
@@ -23,7 +25,7 @@
  * bad command line give:
  * <problem>
  * 
- * <short synatx>
+ * <short syntax>
  * 
  * --help gives:
  * <version>
@@ -94,7 +96,7 @@ display_help(const struct help_msg *help, const struct option *opts)
       puts(help->msg);
       help++;
    }
-   /* FIXME TRANSLATE */
+   /* FIXME: translate */
    puts("      --help\t\t\tdisplay this help and exit\n"
 	"      --version\t\t\toutput version information and exit");
  
@@ -120,7 +122,7 @@ my_getopt_long(int argc, char *const *argv, const char *shortopts,
 {
    int opt;
    
-   argv0 = argv[0]; /* FIXME tidy up argv0 (remove path and extension) */
+   argv0 = argv[0]; /* FIXME: tidy up argv0 (remove path and extension) */
    
    opt = getopt_long(argc, argv, shortopts, longopts, longind);
 
