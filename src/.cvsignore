@@ -3,6 +3,7 @@ Makefile
 Makefile.in
 z_getopt.c
 aven
+avengl
 cavern
 printdm
 printps
