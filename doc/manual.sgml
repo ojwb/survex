@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-06-25 23:59:28 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.109 2003-06-25 23:59:28 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-06-26 16:45:00 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.110 2003-06-26 16:45:00 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -124,10 +124,11 @@ manual.
 <Sect2><Title>About &survexsuite;</Title>
 
 <Para>&survexsuite; is a multi-platform open-source cave surveying
-package.  It currently runs on &unix;, Microsoft Windows 95/NT and
-successors, &msdos;, and Acorn &riscos; machines.  We're working on
-a version for MacOS X, and investigating support for various palmtop
-devices.
+package.
+currently runs on &unix;, Microsoft Windows 95/NT and
+successors, &msdos;, and Acorn &riscos; machines.
+We're working on a version for MacOS X, and investigating support for various
+palmtop devices.
 </Para>
 
 <Para>We are well aware that not everyone has access to super hardware
@@ -3557,8 +3558,8 @@ and integrated into the menus.</Para>
 
 <Para>Aven is built on &wxwindows;, which means that can easily support
 Unix and Microsoft Windows.  Mac support is close to complete (at least
-for OS X).  Support for MSDOS is possible if there's sufficient interest.
-Support for RISC OS is unlikely unless someone very enthusiastic steps
+for OS X).  Support for &msdos; is possible if there's sufficient interest.
+Support for &riscos; is unlikely unless someone very enthusiastic steps
 forward to do the porting work.</Para>
 
 <Para>More information on our plans is on the <ulink

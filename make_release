@@ -44,10 +44,7 @@ if test yes = "$rel" ; then
       chmod 755 config.guess.new config.sub.new &&\
       mv config.guess.new config.guess && mv config.sub.new config.sub
 fi
-aclocal
-autoheader
-automake -a
-autoconf
+autoreconf --force -i
 export CC
 export CXX
 CC=gcc-3.2

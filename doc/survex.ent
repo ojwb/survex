@@ -105,10 +105,13 @@ underground survey legs are shown.</para></listitem></varlistentry>
 When you run the printer driver you will be asked if you want a
 plan or elevation (enter <keycap/P/, or <keycap/E/) - the default is
 plan. Then enter values for the desired plot view. These values
-correspond to those displayed in the top left hand corner when using
-caverot. You would usually use CAVEROT to pick the best view and then
+correspond to those displayed in the bottom right hand corner when using
+Aven (or the top right when using caverot).
+You would usually use
+Aven or caverot
+to pick the best view and then
 note the angles before running the Printer Driver. This will
-eventually be integrated.
+be integrated soon.
 </Para>
 
 <Para>
