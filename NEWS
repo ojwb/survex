@@ -7,6 +7,10 @@
 * (MacOS X version): detect MacOS X and look for MacOS X build of wxWindows;
   automatically add resource fork to aven binary.
 
+* Disabled experimental support for Chinese (LANG=zh) - it isn't currently
+  working and makes the printer drivers unusable on Chinese versions of MS
+  Windows.
+
 Changes in 1.0.22:
 
 * aven: Fixed handling of extended elevations (and other flat surveys) -
