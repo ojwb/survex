@@ -36,9 +36,8 @@ sub shorten {
 
 my $progs = $var{'bin_PROGRAMS'};
 $progs =~ s|\$\((\w+)\)|$var{$1}|eg;
-$progs = join " ", map {shorten($_, $max_leaf_len)} split /\s+/, $progs;
 
-my $t = $progs;
+my $t = join " ", map {shorten($_, $max_leaf_len)} split /\s+/, $progs;
 $t =~ s/(\w)\b/$1$repl{'EXEEXT'}/g if $repl{'EXEEXT'};
 print "all: $t\n\n";
 
@@ -51,7 +50,7 @@ for (sort keys %var) {
    if (/^(\w+)_SOURCES/) {
       my $prog = $1;      
       if ($progs =~ /\b\Q$prog\E\b/) {
-         my $exe = $prog . $repl{'EXEEXT'};
+         my $exe = shorten($prog, $max_leaf_len) . $repl{'EXEEXT'};
 
          my $sources = $var{$_};
 
@@ -69,7 +68,10 @@ for (sort keys %var) {
 	 $objs =~ s/\.[cs]\b/.$repl{'OBJEXT'}/g;
 	 # expand vars
 	 s|\$\((\w+)\)|$var{$1}|eg;
-	 print "$exe: $objs\n";
+	 print "$exe: $objs";
+	 my $x = join " ", grep /\.$repl{'OBJEXT'}$/, split /\s+/, $ldadd;
+	 print " $x" if $x ne '';
+	 print "\n";
 	 if ($use_rsp) {
 	    my $rsp = "t.rsp";
 	    my $len = 55;
