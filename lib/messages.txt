@@ -2103,6 +2103,7 @@ sk:200 *UNITS faktor mus&iacute; by&tcaron; nenulov&yacute;
 # TRANSLATE ca es pt
 en:201 @Screenshot...
 ca,es,pt:201 S@creenshot...
+it:201 @Cattura schermo...
 #
 en:202 No survey data in 3d file `%s'
 fr:202 Pas de donn&eacute;es topo dans le fichier 3d `%s'
@@ -2430,14 +2431,17 @@ it:236 Un passo @Orario
 sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
 # TRANSLATE ca de es fr it pt sk
 en:237 @Perspective
-ca,de,es,it:237 Perspecti@ve
+ca,de,es:237 Perspecti@ve
 fr,pt,sk:237 Pe@rspective
+it:237 Prospetti@va
 #
 en:238 Textured @Walls
+it:238 @Pareti con texture
 # TRANSLATE de fr
 en:239 Fade @Distant Objects
 en-us:239 @Fade Distant Objects
 de,fr:239 @Fade Distant Objects
+it:239 @Sbiadisce gli oggetti distanti
 #
 # The accelerators must be different within this group
 # View *looking* North
@@ -2725,6 +2729,7 @@ sk:291 Z&aacute;mery @na povrchu##Ctrl+F
 en:292 Co@lour by Depth
 en-us:292 Co@lor by Depth
 fr,de:292 Colour by @Depth
+it:292 Colori secondo profondit&aacute;
 # XXX 293
 #
 en:294 Highlight @Entrances
@@ -2904,6 +2909,7 @@ ro:310 %s: op&tcedil;iune invalid&abreve; -- %c&#10;
 #
 en:311 @New Presentation
 de:311 @Neue Pr&auml;sentation
+it:311 @Nuova PResentazione
 #
 en:312 Open @Presentation...
 fr:312 Ouvrir une @Pr&eacute;sentation
@@ -2915,14 +2921,19 @@ it:312 Apri @Presentazione
 sk:312 Otvori&tcaron; @prezent&aacute;ciu...
 #
 en:313 @Save Presentation
+it:313 @Salva Presentazione
 #
 en:314 Save Presentation @As...
+it:314 Salva Presentazione @come...
 #
 en:315 @Mark
+it:315 @Segna
 #
 en:316 Pla@y
+it:316 @Visualizza
 #
 en:317 @Export as Movie...
+it:317 @Esporta come Animazione...
 # XXX 318
 #
 en:319 Select an output filename
@@ -2944,6 +2955,7 @@ it:320 Presentazione Aven
 sk:320 Prezent&aacute;cie programu Aven
 # title of the save dialog
 en:321 Save Screenshot
+it:321 Salva Schermo catturato
 #
 en:322 Select a presentation to open
 fr:322 Slectionner une pr&eacute;sentation &agrave; ouvrir
@@ -2955,15 +2967,20 @@ it:322 Seleziona una presentazione da aprire
 sk:322 Vybra&tcaron; prezent&aacute;ciu pre otvorenie
 # cf 88
 en:323 Error in format of presentation file `%s'
+it:323 Errore nel formato del file di presentazione `%s'
 # "Compass" as in Larry Fish's cave surveying package, so probably shouldn't
 # be translated
 en:324 Compass PLT files
+it:324 File Compass PLT
 # "CMAP" is Bob Thrun's cave surveying package.
 en:325 CMAP XYZ files
+it:325 File CMAP XYZ
 # title of message box
 en:326 Modified Presentation
+it:326 Presentazione Modificata
 # and the question in that box
 en:327 The current presentation has been modified.  Abandon unsaved changes?
+it:327 La presentazione corrente &eacute; stata modificata. Abbandonare i cambiamenti non salvati?
 #
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
@@ -3144,47 +3161,106 @@ sk:345 gr&aacute;dy
 # TRANSLATE ca es
 en:346 Passage @Tubes##Ctrl+T
 ca,es:346 P@assage Tubes##Ctrl+T
+it:346 Passaggi come @Tubi##Ctrl+T
 #
 en:347 @Preferences...
+it:347 @Preferenze...
+#
 en:348 Draw passage walls
+it:348 Disegna le pareti
+#
 en:349 Estimate LRUD readings based on heuristics
+it:349 Stima lel letture DSSS con ragionamento euristico
+#
 en:350 Mark survey stations with crosses
+it:350 Segna le stazioni con croci
+#
 en:351 Highlight stations marked as entrances
+it:351 Evidenzia le stazioni segnate come ingressi
+#
 en:352 Highlight stations marked as fixed points
+it:352 Evidenzia le stazioni segnate come punti fissi
+#
 en:353 Highlight stations which are exported
+it:353 Evidenzia le stazioni che sono esportate
+#
 en:354 Mark survey stations with their names
+it:354 Segna le stazioni con i loro nomi
+#
 en:355 Allow names to overlap on the display (faster)
+it:355 Permetti che i nomi si sovrappongano (pi&acute; veloce)
+#
 #
 # TRANSLATE de pt-br sk
 en:356 Full Screen @Mode##F11
 de,pt-br:356 Full S@creen Mode##F11
+it:356 @Modo schermo pieno##F11
 sk:356 F@ull Screen Mode##F11
 #
 en:357 Display underground survey legs
+it:357 Mostra i tiri del rilievo sotteraneo
+#
 en:358 Display surface survey legs
+it:358 Mostra i tiri del rilievo di superficie
+#
 en:359 Colour surface surveys by depth
+it:359 Colora i rilievi superficiali per la profondit&aacute;
+#
 en:360 Draw surface legs with dashed lines
+it:360 Disegna i tiri in superficie con linee tratteggiate
+#
 en:361 Draw a grid
+it:361 Disegna una griglia
+#
 en:362 metric units
+it:362 metri
+#
 en:363 imperial units
+it:363 unit&aacute; inglesi
+#
 en:364 degrees
+it:364 gradi sessagesimali
+#
 en:365 grads
+it:365 gradi decimali
+#
 en:366 Display measurements in
+it:366 Mostra le distanze in
+#
 en:367 Display angles in
+it:367 Mostra gli angoli in
+#
 en:368 Reverse the sense of the controls
+it:368 Inverte il senso dei controlli
+#
 en:369 Display scale bar
+it:369 Mostra la scala
+#
 en:370 Display depth bar
+it:370 Mostra barra delle profondit&aacute;
+#
 en:371 Display compass
+it:371 Mostra bussola
+#
 en:372 Display clinometer
+it:372 Mostra clinometro
+#
 en:373 Display side panel
+it:373 Mostra pannello laterale
 #
 # for status bar:
 en:374 %s: %d E, %d N, %dm altitude
+it:374 %s: %d E, %d N, %dm quota
+#
 en:375 %s: %d E, %d N, %dft altitude
+it:375 %s: %d E, %d N, %dft quota
 #
 # labels for tabbed side panel:
 en:376 Surveys
+it:376 Rilievi
+#
 en:377 Presentation
+it:377 Presentazione
 # cf 195
 en:378 Easting
 fr:378 Est
@@ -3206,6 +3282,7 @@ sk:379 sever
 # XXX 380 381 382 383 384 385 386 387 388 389
 # for about box:
 en:390 System Information:
+it:390 Informazioni sul Sistema:
 # 
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
