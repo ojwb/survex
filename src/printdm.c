@@ -309,17 +309,17 @@ dm_ShowPage(const char *szPageDetails)
       while (last >= 0 && !bitmap[y][last]) last--;      
 
       first = 0;
-      /* if HTab works and there's least one nonzero byte */
-      if (!fNoPCLHTab && last > firstMin) {
-	 /* Scan in from left end to first used byte, then stop */
-         while (!bitmap[y][first]) first++;
-      }
+      if (!fNoPCLHTab) {
+	 /* Check there are enough bytes that an htab can save space */
+	 if (last > firstMin) {
+	    /* Scan in from left end to first used byte, then stop */
+	    while (!bitmap[y][first]) first++;
 
-      /* firstMin is the threshold at which a horiz tab saves bytes */
-      if (first >= firstMin) {
-	 prio_printf("\x1b*b%dX", first * 8);
-      } else {
-	 first = 0;
+	    /* firstMin is the threshold above which a horiz tab saves bytes */
+	    if (first < firstMin) first = 0;
+	 }	 
+
+	 if (first) prio_printf("\x1b*b%dX", first * 8);
       }
 
       /* need blank lines (last==-1) for PCL dump ... (sigh) */
