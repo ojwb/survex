@@ -329,10 +329,11 @@ read_numeric_or_omit(void)
 
 /* Don't skip blanks, variable error code */
 static unsigned int
-read_uint_internal(int errmsg)
+read_uint_internal(int errmsg, filepos *fp)
 {
-   unsigned int n = 0;
+   unsigned int n = 0;   
    if (!isdigit(ch)) {
+      if (fp) set_pos(fp);
       compile_error_token(errmsg);
       LONGJMP(file.jbSkipLine);
    }
@@ -347,7 +348,7 @@ extern unsigned int
 read_uint(void)
 {
    skipblanks();
-   return read_uint_internal(/*Expecting numeric field, found `%s'*/9);
+   return read_uint_internal(/*Expecting numeric field, found `%s'*/9, NULL);
 }
 
 extern void
@@ -394,15 +395,18 @@ extern void
 read_date(void)
 {
    int y = 0, m = 0, d = 0;
+   filepos fp;
 
    skipblanks();
-   y = read_uint_internal(/*Expecting date, found `%s'*/198);
+
+   get_pos(&fp);
+   y = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
    if (ch == '.') {
       nextch();
-      m = read_uint_internal(/*Expecting date, found `%s'*/198);
+      m = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
       if (ch == '.') {
 	 nextch();
-	 d = read_uint_internal(/*Expecting date, found `%s'*/198);
+	 d = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
       }
    }
 }

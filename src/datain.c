@@ -127,7 +127,7 @@ compile_error_token(int en)
       s_catchar(&p, &len, ch);
       nextch();
    }
-   compile_error(en, p);
+   compile_error(en, p ? p : "");
    osfree(p);
    skipline();
 }
