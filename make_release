@@ -47,8 +47,8 @@ fi
 autoreconf --force -i
 export CC
 export CXX
-CC=gcc-3.2
-CXX=g++-3.2
+CC=gcc
+CXX=g++
 if ! ./configure ; then
    echo configure failed
    exit 1
