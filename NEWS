@@ -35,15 +35,16 @@ Changes in 0.98-prerelease1:
 
 * Added support for Latin9 (iso-8859-15) character set.
 
-* aven: added optional grid.
+* printps/printpcl/printwin: Improved handling of accents on printouts.
+
+* aven: added optional grid; dashed surface survey now the default;
+  Indicators moved to submenu of View menu.
 
 * aven: reporting errors in a message box wasn't working (wxWindows
   bug).
 
 * cavern: fixed *entrance - it was trying to insist its argument was a
   survey, not a station.
-
-* printps/printpcl/printwin: Improved handling of accents on printouts.
 
 * cavern: a leg with the same station at both ends now causes an error
   rather than just a warning.
@@ -52,7 +53,7 @@ Changes in 0.98-prerelease1:
 
 * cavern: allow interleaved data formats.
 
-* sorterr: new utility for resorting .err files by various criteria.
+* sorterr: new utility for sorting .err files by various criteria.
 
 * xcaverot: buttons now size to widest label; added --pda switch to
   turn off less useful buttons for use on small screens (such as the
