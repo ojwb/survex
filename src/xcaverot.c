@@ -66,7 +66,7 @@
 
 /* Width and height of compass and elevation indicator windows */
 #define FONTSPACE 20
-#define INDWIDTH (indrad * 2.5)
+#define INDWIDTH ((int)(indrad * 2.5))
 #define INDDEPTH (INDWIDTH + FONTSPACE)
 
 #define C_IND_ANG 25
@@ -1261,11 +1261,10 @@ main(int argc, char **argv)
 			       &dbwinattr);
    } else {
       color_map = DefaultColormap(mydisplay, 0);
-      mywindow = XCreateSimpleWindow(mydisplay,
-				     DefaultRootWindow(mydisplay),
-				     myhint.x, myhint.y, myhint.width,
-				     myhint.height, 5, myforeground,
-				     mybackground);
+      mywindow = XCreateSimpleWindow(mydisplay, DefaultRootWindow(mydisplay),
+				     myhint.x, myhint.y,
+				     myhint.width, myhint.height,
+				     5, myforeground, mybackground);
    }
 
    XGetWindowAttributes(mydisplay, mywindow, &attr);
@@ -1277,6 +1276,7 @@ main(int argc, char **argv)
       backswapinfo.swap_window = mywindow;
       backswapinfo.swap_action = XdbeBackground;
    }
+
 #ifdef XCAVEROT_BUTTONS
    /* create children windows that will act as menu buttons */
    butload = XCreateSimpleWindow(mydisplay, mywindow,
