@@ -5,6 +5,10 @@
   2.2.9 where this doesn't work).  Fixed to work as well as possible on 2.2.9,
   and as intended on 2.3.
 
+* aven: fixed so that loading PLT files works regardless of the current locale
+  (previously it would fail for locales where the decimal character wasn't
+  '.').
+
 Changes in 1.0.10:
 
 * (MS Windows version): aven: fixed assert failure upon turning on station
