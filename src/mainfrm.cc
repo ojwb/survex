@@ -88,7 +88,6 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 
     EVT_CLOSE(MainFrm::OnClose)
     EVT_SET_FOCUS(MainFrm::OnSetFocus)
-    EVT_DROP_FILES(MainFrm::OnDropFiles)
 
     EVT_MENU(menu_ROTATION_START, MainFrm::OnStartRotation)
     EVT_MENU(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotation)
@@ -218,17 +217,39 @@ public:
     bool IsStation() { return m_Label != NULL; }
 };
 
+class DnDFile : public wxFileDropTarget {
+    public:
+	DnDFile(MainFrm *parent) : m_Parent(parent) { }
+	virtual bool OnDropFiles(wxCoord, wxCoord,
+			const wxArrayString &filenames);
+
+    private:
+	MainFrm * m_Parent;
+};
+
+bool
+DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
+{
+    // Load a survey file by drag-and-drop.
+    assert(filenames.GetCount() > 0);
+
+    if (filenames.GetCount() != 1) {
+	wxGetApp().ReportError(msg(/*You may only view one 3d file at a time.*/336));
+	return FALSE;
+    }
+    
+    m_Parent->OpenFile(filenames[0]);
+    return TRUE;
+}
+
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
     m_Gfx(NULL), m_FileToLoad(""), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0)
-    
 {
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
     // (required by Windows for this type of icon)
     SetIcon(wxIcon("aaaaaAven"));
-
-    DragAcceptFiles(true);
 #endif
 
     InitialisePensAndBrushes();
@@ -246,6 +267,8 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     m_PresLoaded = false;
     m_Recording = false;
+
+    SetDropTarget(new DnDFile(this));
 }
 
 MainFrm::~MainFrm()
@@ -1118,20 +1141,6 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
     }
 }
 
-void MainFrm::OnDropFiles(wxDropFilesEvent& event)
-{
-    // Load a survey file by drag-and-drop.
-
-    assert(event.GetNumberOfFiles() > 0);
-
-    if (event.GetNumberOfFiles() == 1) {
-        OpenFile((event.GetFiles())[0], "", false);
-    }
-    else {
-        wxGetApp().ReportError(msg(/*You may only view one 3d file at a time.*/336));
-    }
-}
-
 void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 {
     wxBusyCursor hourglass;
@@ -1186,7 +1195,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
                                        msg(/*All files*/208)), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
-        OpenFile(dlg.GetPath(), "", false);
+        OpenFile(dlg.GetPath());
 	SetFocus();
     }
 }
@@ -1242,13 +1251,13 @@ void MainFrm::ClearTreeSelection()
 
 void MainFrm::ClearCoords()
 {
-    m_Coords->SetLabel("   -");
+    m_Coords->SetLabel("");
 }
 
 void MainFrm::SetCoords(Double x, Double y)
 {
     wxString str;
-    str.Printf("At: %d N, %d E", (int) y, (int) x);
+    str.Printf(msg(/*  %d N, %d E*/338), (int) y, (int) x);
     m_Coords->SetLabel(str);
 }
 
@@ -1259,10 +1268,10 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
     if (data && data->IsStation()) {
         LabelInfo* label = data->GetLabel();
         wxString str;
-        str.Printf("   %d N, %d E", (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
+        str.Printf(msg(/*  %d N, %d E*/338), (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
         m_StnCoords->SetLabel(str);
         m_StnName->SetLabel(label->text);
-        str.Printf("   %s: %dm", msg(/*Altitude*/335),
+        str.Printf("  %s %dm", msg(/*Altitude*/335),
 		   (int) (label->z + m_Offsets.z));
         m_StnAlt->SetLabel(str);
         m_Gfx->SetHere(label->x, label->y, label->z);
@@ -1293,10 +1302,11 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
                     brg += 360;
                 }
                 
-                m_Dist1->SetLabel(wxString("From ") + label2->text);
-                str.Printf("   H: %dm, V: %dm", (int) d_horiz, (int) dz);
+                m_Dist1->SetLabel(wxString(msg(/*From*/339)) + ' ' +
+				  label2->text);
+                str.Printf("  H: %dm, V: %dm", (int) d_horiz, (int) dz);
                 m_Dist2->SetLabel(str);
-                str.Printf("   Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
+                str.Printf("  Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
                 m_Dist3->SetLabel(str);
 	        m_Gfx->SetThere(x0, y0, z0);
             } else {
@@ -1589,10 +1599,10 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
 
     if (label) {
         wxString str;
-        str.Printf("   %d N, %d E", (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
+        str.Printf(msg(/*  %d N, %d E*/338), (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
         m_StnCoords->SetLabel(str);
         m_StnName->SetLabel(label->text);
-        str.Printf("   %s: %dm", msg(/*Altitude*/335),
+        str.Printf("  %s %dm", msg(/*Altitude*/335),
 		   (int) (label->z + m_Offsets.z));
         m_StnAlt->SetLabel(str);
         m_Gfx->SetHere(label->x, label->y, label->z);
@@ -1624,10 +1634,11 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
                     brg += 360;
                 }
                 
-                m_Dist1->SetLabel(wxString("From ") + label2->text);
-                str.Printf("   H: %dm, V: %dm", (int) d_horiz, (int) dz);
+                m_Dist1->SetLabel(wxString(msg(/*From*/339)) + ' ' +
+				  label2->text);
+                str.Printf("  H: %dm, V: %dm", (int) d_horiz, (int) dz);
                 m_Dist2->SetLabel(str);
-                str.Printf("   Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
+                str.Printf("  Dist: %dm Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
                 m_Dist3->SetLabel(str);
 	        m_Gfx->SetThere(x0, y0, z0);
             }

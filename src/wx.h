@@ -10,3 +10,4 @@
 
 #include "wx/splitter.h"
 #include "wx/treectrl.h"
+#include "wx/dnd.h"

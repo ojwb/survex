@@ -26,6 +26,7 @@
 BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
     EVT_MOTION(AvenTreeCtrl::OnMouseMove)
     EVT_TREE_SEL_CHANGED(-1, AvenTreeCtrl::OnSelChanged)
+    EVT_CHAR(AvenTreeCtrl::OnKeyPress)
 END_EVENT_TABLE()
 
 AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
@@ -97,3 +98,11 @@ void AvenTreeCtrl::UnselectAll()
     wxTreeCtrl::UnselectAll();
 }
 
+void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
+{
+    if (e.m_keyCode == WXK_ESCAPE) {
+	m_Parent->ClearTreeSelection();
+    } else {
+	e.Skip();
+    }
+}

@@ -41,6 +41,7 @@ public:
 
     void OnMouseMove(wxMouseEvent& event);
     void OnSelChanged(wxTreeEvent& event);
+    void OnKeyPress(wxKeyEvent &e);
 
     bool GetSelectionData(wxTreeItemData**);
 

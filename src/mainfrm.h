@@ -256,9 +256,7 @@ public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
     ~MainFrm();
 
-    void OnDropFiles(wxDropFilesEvent&);
-
-    void OpenFile(const wxString& file, wxString survey = "", bool delay = true);
+    void OpenFile(const wxString& file, wxString survey = "", bool delay = false);
 #ifdef AVENPRES
     void OnOpenPresUpdate(wxUpdateUIEvent& event);
 #endif
