@@ -30,7 +30,7 @@ nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in hei
 
 <Article Status="draft" id=index>
  <ArtHeader>
-  <Title>&survexsuite; 0.97 Documentation</Title>
+  <Title>&survexsuite; 0.98 Documentation</Title>
   <AuthorGroup>
    <Author>
     <FirstName/Olly/
@@ -56,8 +56,8 @@ nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in hei
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-06-26 17:37:06 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.30 2001-06-26 17:37:06 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-06-29 09:57:12 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.31 2001-06-29 09:57:12 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
