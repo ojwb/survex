@@ -20,6 +20,15 @@
 <!ENTITY pos "<filename>.pos</filename>">
 ]>
 <!--
+3dfile title:
+defaults to a list of the leafnames of the &svx; files specified on the
+command line (with any paths and extensions removed).
+
+e.g.: cavern entrance.svx \data\2ndpart.svx
+
+would give a surveytitle of 'entrance 2ndpart'.
+
+
 FIXME todo:
 mark-up of Windows Windows NT etc?
 section on "design philosophy"
@@ -123,8 +132,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-16 03:03:20 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.52 2001-09-16 03:03:20 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-16 17:45:29 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.53 2001-09-16 17:45:29 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1447,22 +1456,6 @@ I will have to do some sums...
 (by default - this can be changed using the <command/set/ command).
 </Para>
 
-<!--
-<Para>BEGIN, CALIBRATE, DATA, DEFAULT, END, EQUATE, FIX, GRADE,
-INCLUDE, PREFIX, SD, SET, SOLVE, UNITS</Para>
-*copyright
-*date
-*entrance
-(could be inferred from surface/ug join, but better to specify because
-of caves with no surf svy and also situations in which multiple
-surveys leave an entrance)
-
-*export - better example
-*instrument
-*team
-INFER
--->
-
 <Para>The commands are documented in a common format:
 </Para>
 
@@ -1843,23 +1836,30 @@ DEFAULT
 </Para>
 
 <Para>
-NORMAL FROM TO LENGTH [BACK]BEARING [BACK]GRADIENT
+NORMAL FROM TO LENGTH <!--[BACK]-->BEARING <!--[BACK]-->GRADIENT
 </Para>
 
 <Para>
-DIVING FROM TO LENGTH [BACK]BEARING FROMDEPTH TODEPTH
+DIVING FROM TO LENGTH <!--[BACK]-->BEARING FROMDEPTH TODEPTH
 </Para>
 
 <Para>
 CARTESIAN FROM TO NORTHING EASTING ALTITUDE
+<!--FIXME: dx dy dz-->
+</Para>
+
+<Note><Para>
+Cartesian data are relative to <emphasis>true</emphasis> North not
+<emphasis>magnetic</emphasis> North (i.e. they are unaffected by
+<command>*calibrate declination</command>).
+</Para></Note>
+
+<Para>
+TOPOFIL FROM TO FROMCOUNT TOCOUNT <!--[BACK]-->BEARING <!--[BACK]-->GRADIENT
 </Para>
 
 <Para>
-TOPOFIL FROM TO FROMCOUNT TOCOUNT [BACK]BEARING [BACK]GRADIENT
-</Para>
-
-<Para>
-CYLPOLAR FROM TO TAPE [BACK]BEARING FROMDEPTH TODEPTH
+CYLPOLAR FROM TO TAPE <!--[BACK]-->BEARING FROMDEPTH TODEPTH
 </Para>
 
 <Para>
@@ -1878,7 +1878,7 @@ and IGNOREALL may be used last to ignore the rest of the line.
 </Para>
 
 <Para>
-The "DEPTH" for diving data increases upwards by default
+DEPTH for diving data and cylpolar data increases upwards by default
 (so it is actually altitude).  You can use *CALIBRATE with a negative
 scale factor of -1.0 to alter this if you wish.
 </Para>
@@ -1887,7 +1887,101 @@ scale factor of -1.0 to alter this if you wish.
 The default is *DATA Normal From To Tape Compass Clino
 </Para>
 
+<Para>
+The units of each quantity may be set with the UNITS command.
+</Para>
+
+<!-- FIXME:
+Originally proposed feature - interleaved style makes this less useful:
+In DIVING data, either &lt;FromDepth&gt; or &lt;ToDepth&gt; may be
+replaced by an &lt;OMIT&gt; (default '-') if the respective survey
+station is mentioned in the previous line (assuming there is no
+change of depth gauge/water level). If the survey station does not
+appear in the previous line (or this is the first line of diving
+data), then an error is given.
+-->
+
+<!-- FIXME: plumbed diving legs -->
+
+<!--
+Originally proposed feature - interleaved style makes this less useful:
+Similarly, for TOPOFIL data &lt;FromCount&gt;
+may be replaced by an &lt;OMIT&gt; (default '-') if the reading
+is the same as the previous &lt;ToCount&gt;. If this is the first
+line of Topofil data, then an error is given. (It is best if both
+readings are input, rather than just the difference between them,
+to aid tracking down incorrect legs. If you do not agree, use NORMAL
+data style).
+-->
+
+<!--FIXME:
+<Para>
+4 CYLPOLAR (Cylindrical Polar) style data is
+included for completeness, since someone may have a use for it.
+Perhaps a Grade 3 survey, or when surveying with a level and stick
+(?). Let me know if you find a use so I can put a better justification
+for it in here!
+</Para>
+-->
+
 </listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>DATE</Title>
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*date &lt;year&gt;[.&lt;month&gt;[.&lt;day&gt;]][-&lt;year&gt;[.&lt;month&gt;[.&lt;day&gt;]]]</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*date 2001</programlisting>
+
+<programlisting>
+*date 2000.10</programlisting>
+
+<programlisting>
+*date 1987.07.27</programlisting>
+
+<programlisting>
+*date 1985.08.12-1985.08.13</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid at the start of a *begin/*end block.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*date specifies the date that the survey was done.  A range of dates
+can be specified (useful for overnight or multi-day surveying trips).
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *instrument, *team</Para></listitem>
 
 </VarListEntry>
 
@@ -1991,7 +2085,14 @@ Closes a block started by *begin.
 <listitem><Para>
 *entrance sets the <emphasis>entrance</emphasis> flag for a station.
 This information is used by aven to allow entrances to be highlighted.
-</Para></listitem>
+</Para>
+
+<!-- FIXME:
+(could be inferred from surface/ug join, but better to specify because
+of caves with no surf svy (or no underground survey) 
+and also situations in which multiple surveys leave through an entrance)
+-->
+</listitem>
 
 </VarListEntry>
 
@@ -2079,6 +2180,7 @@ disagree, you can always use one of the other methods!
 
 <VarListEntry><Term>Example</Term>
 
+<!-- FIXME better example -->
 <listitem>
 <Para>
 <programlisting>
@@ -2189,9 +2291,12 @@ In this sort of situation, specify "REFERENCE" after the station name
 in the FIX command to suppress this warning for a particular station.
 </Para>
 
-<Para>
-Note: (x=Easting y=Northing z=Altitude)
-</Para>
+<Note><Para>
+X is Easting, Y is Northing, and Z is altitude.
+This convention has been chosen because it gives right-handed
+axes, such that plotting x and y on a graph gives North up the
+page.
+</Para></Note>
 
 </VarListEntry>
 
@@ -2407,6 +2512,57 @@ being applied to them.
 
 </VarListEntry>
 -->
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>INSTRUMENT</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*instrument &lt;instrument&gt; &lt;identifier&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*instrument compass "CUCC 2"
+*instrument clino "CUCC 2"
+*instrument tape "CUCC Fisco Ranger open reel"</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid at the start of a *begin/*end block.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*instrument specifies the particular instruments used to perform a
+survey.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *date, *team</Para></listitem>
+
+</VarListEntry>
 
 </VariableList>
 
@@ -2718,44 +2874,86 @@ have been formed by the extensions.
 
 </Sect3>
 
+<Sect3><Title>TEAM</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*team &lt;person&gt; &lt;role&gt;...</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*team "Nick Proctor" compass clino tape
+*team "Anthony Day" notes pictures tape
+</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid at the start of a *begin/*end block.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*team specifies the people involved in a survey and what role they
+filled during that trip.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *date, *instrument</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
 <Sect3><Title>TITLE</Title>
 
 <VariableList>
 
 <VarListEntry><Term>Syntax</Term>
 
-<listitem><Para>*title "&lt;title&gt;"</Para></listitem>
+<listitem><Para>*title &lt;title&gt;</Para></listitem>
 
 </VarListEntry>
 
-<!--
 <VarListEntry><Term>Example</Term>
 
 <listitem>
 <programlisting>
-</programlisting>
+*title Dreamtime</programlisting>
 
+<programlisting>
+*title "Mission Impossible"</programlisting>
 </listitem>
 
 </VarListEntry>
--->
 
 <VarListEntry><Term>Description</Term>
 
-<listitem><Para>*title allows you to set the title used in the
-&x3d; file. If
-the title contains spaces, you need to enclose it in quotes
-(""). Multiple titles are strung together, separated by
-commas. If there are no *title commands, the title defaults to
-a list of the leafnames of the &svx; files specified on the command line
-(with any paths and extensions removed).</Para>
-<!--
-<Para>e.g.: cavern entrance.svx \data\2ndpart.svx
+<listitem><Para>*title allows you to set the descriptive title for a survey.
+If the title contains spaces, you need to enclose it in quotes ("").
+If there is no *title command, the title defaults to the survey name
+given in the *begin command.
 </Para>
-
-<Para>would give a surveytitle of 'entrance 2ndpart'.
-</Para>
--->
 </listitem>
 
 </VarListEntry>
@@ -2784,7 +2982,7 @@ a list of the leafnames of the &svx; files specified on the command line
 
 </VarListEntry>
 
-<!--
+<!-- FIXME:
 <VarListEntry><Term>Example</Term>
 
 <listitem>
@@ -2830,17 +3028,42 @@ versions removed this rather archaic restriction).
 
 </Sect3>
 
-<Sect3><Title>UNITS &lt;quantity list&gt; [&lt;factor&gt;] &lt;unit&gt;</Title>
+<Sect3><Title>UNITS</Title>
 
-<!-- FIXME: or `*units default' -->
+<VariableList>
 
-<Para>e.g. *Units tape metres
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>
+*units &lt;quantity list&gt; [&lt;factor&gt;] &lt;unit&gt;
 </Para>
+<Para>
+*units default
+</Para></listitem>
 
-<Para>*units X Y Z 1000 metres ; data given as kilometres
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*units tape metres</programlisting>
+
+<programlisting>
+*units compass clino grads</programlisting>
+
+<programlisting>
+*units dx dy dz 1000 metres ; data given as kilometres</programlisting>
 </Para>
+</listitem>
 
-<Para>&lt;quantity&gt; is one of
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+&lt;quantity&gt; is one of
 TAPE|LENGTH|COMPASS|BEARING|CLINO|GRADIENT|COUNTER|DEPTH|DECLINATION|X|Y|Z
 </Para>
 
@@ -2857,23 +3080,11 @@ the instrument or the measurement.
 
 <!-- FIXME: are these correct?
   and dx,dy,dz -> easting/northing/altitude in preference -->
-<Para>TAPE, LENGTH, COUNTER, COUNT, DEPTH, dX, dY, dZ, X,Y,Z,
-LENGTHOUTPUT in YARDS|FEET|METRIC|METRES|METERS
+<Para>TAPE, LENGTH, COUNTER, COUNT, DEPTH, dX, dY, dZ, <!-- FIXME: X,Y,Z,-->
+<!--LENGTHOUTPUT--> in YARDS|FEET|METRIC|METRES|METERS
 </Para>
 
-<Para>CLINO, GRADIENT in DEG|DEGREES|GRADS|MILS|PERCENT|PERCENTAGE
-</Para>
-
-<Para>COMPASS, DECLINATION, BEARING, ANGLEOUTPUT in
-DEG|DEGREES|GRADS|MILS|MINUTES
-</Para>
-
-<Para>(360 degrees = 400 grads (also known as Mils))
-</Para>
-
-<Para>Defaults are: Metres, Degrees, Degrees respectively.
-</Para>
-
+<!-- FIXME
 <Para>[Percentage gradient not yet implemented]
 </Para>
 
@@ -2888,6 +3099,32 @@ any angles output.
 <Para>The units used are those last set. (The units of any output are
 displayed with it).
 </Para>
+-->
+
+<Para>CLINO, GRADIENT in DEG|DEGREES|GRADS|MILS<!--|PERCENT|PERCENTAGE-->
+</Para>
+
+<Para>COMPASS, DECLINATION, BEARING, <!--ANGLEOUTPUT--> in
+DEG|DEGREES|GRADS|MILS|MINUTES
+</Para>
+
+<Para>(360 degrees = 400 grads (also known as Mils))
+</Para>
+
+<Para>Defaults are: Metres, Degrees, Degrees respectively.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*calibrate</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
 
 </Sect3>
 
@@ -3014,6 +3251,7 @@ number, and enter the data like so:
 
 <programlisting>
 *begin 163
+*export 1
 2 1 26.60 222  17.5
 2 3 10.85 014   7
 2 4  7.89 254 -11
@@ -3032,7 +3270,9 @@ can accomplish this like so:
 
 <programlisting>
 *equate P163 163.1
+*entrance P163
 *begin 163
+*export 1
 2 1 26.60 222  17.5
 2 3 10.85 014   7
 2 4  7.89 254 -11
@@ -3042,93 +3282,8 @@ can accomplish this like so:
 
 <Sect2><Title>Specify the ordering and type of data</Title>
 
-<Sect3><Title>Ordering</Title>
-
-<Para>The *DATA command is used to specify the ordering</Para>
-
-</Sect3>
-
-<Sect3><Title>Type</Title>
-
-<Para>Stylename Data items required
-</Para>
-
-<Para>
-Normal/SphPolar &lt;FromStn&gt; &lt;ToStn&gt; &lt;Length&gt; &lt;Bearing&gt;
-&lt;Gradient&gt;
-</Para>
-
-<Para>
-Diving &lt;FromStn&gt; &lt;ToStn&gt; &lt;Length&gt; &lt;Bearing&gt;
-&lt;FromDepth&gt; &lt;ToDepth&gt;
-</Para>
-
-<Para>
-[These styles are not yet implemented]
-</Para>
-
-<Para>
-Cartesian &lt;FromStn&gt; &lt;ToStn&gt; &lt;dx&gt; &lt;dy&gt;
-&lt;dz&gt;
-</Para>
-
-<Para>
-Topofil &lt;FromStn&gt; &lt;ToStn&gt; &lt;FromCount&gt; &lt;ToCount&gt;
-&lt;Bearing&gt; &lt;Gradient&gt;
-</Para>
-
-<Para>
-CylPolar &lt;FromStn&gt; &lt;ToStn&gt; &lt;VerticalLength&gt;
-&lt;PlanLength&gt; &lt;Bearing&gt;
-</Para>
-
-<Para>
-The units of each quantity may be set with the UNITS command.
-</Para>
-
-<Sect4><Title>Notes:</Title>
-
-<Para>
-1. [This feature is not implemented, although the style is.] In
-DIVING data, either &lt;FromDepth&gt; or &lt;ToDepth&gt; may be
-replaced by an &lt;OMIT&gt; (default '-') if the respective survey
-station is mentioned in the previous line (assuming there is no
-change of depth gauge/water level). If the survey station does not
-appear in the previous line (or this is the first line of diving
-data), then an error is given.
-<!-- FIXME: plumbed diving legs -->
-</Para>
-
-<Para>
-2. [Not implemented, although the style is] Similarly, for TOPOFIL data &lt;FromCount&gt;
-may be replaced by an &lt;OMIT&gt; (default '-') if the reading
-is the same as the previous &lt;ToCount&gt;. If this is the first
-line of Topofil data, then an error is given. (It is best if both
-readings are input, rather than just the difference between them,
-to aid tracking down incorrect legs. If you do not agree, use NORMAL
-data style).
-</Para>
-
-<Para>
-3. CARTESIAN data are relative to TRUE North
-not MAGNETIC North (i.e. they are unaffected by the calibration
-of DECLINATION). Also x is Easting, y is Northing, and z is height.
-This convention has been chosen because it gives right-handed
-axes, such that plotting x and y on a graph gives North up the
-page.
-</Para>
-
-<Para>
-4 CYLPOLAR (Cylindrical Polar) style data is
-included for completeness, since someone may have a use for it.
-Perhaps a Grade 3 survey, or when surveying with a level and stick
-(?). Let me know if you find a use so I can put a better justification
-for it in here!
-</Para>
-
-</Sect4>
-
-</Sect3>
+<Para>The *DATA command is used to specify the data style, and the
+order in which the readings are given.</Para>
 
 </Sect2>
 
@@ -3244,21 +3399,20 @@ vertical positioning may be much less well known. E.g: we have a
 radiolocation of about 50m depth +/- 20m and horizontal accuracy of
 +/- 8m. Over 50m the +/-8m is equivalent to an angle of 9 degrees, so
 that is the expected plumb error. 20m is the expected error in the
-length. To get the equivalent SD we assume that 95% of readings will
+length. To get the equivalent SD we assume that 99.74% of readings will
 be within 3 standard deviations of the error value. Thus we divide the
 expected errors by 3 to get the SD we should specify:
 </Para>
 
 <programlisting>
 *begin
-*sd length 6.67
+*sd length 6.67 metres
 *sd plumb 3 degrees
 surface underground 50 - down
-*end
-</programlisting>
+*end</programlisting>
 
 <Para>
-The reason we wrap the radiolocation leg in a *begin/*end block to make
+We wrap the radiolocation leg in a *begin/*end block to make
 sure that the special *sd settings only apply to this one leg.
 </Para>
 
@@ -3281,15 +3435,18 @@ is of this type.
 
 <!-- FIXME: we do now have a data style more suited to theodolite,
   though we don't do turned angles -->
-<Para>Theodolite data is not yet explicitly catered to. You will need
-to convert it into equivalent compass and tape legs, or some
-other accepted format to process it. Note that if there is no
-vertical info in your theodolite data then you should use the
-SD commands to specify very low accuracy (High SD) in the vertical,
-but very high accuracy (low SD) in the horizontal and length info,
-so that the points will move in the vertical plane as required,
-but not in the horizontal, if the end points are fixed, or the
-survey is part of a loop.
+<Para>
+Theodolite data with turned angles is not yet explicitly catered
+for, so for now you will need to convert it into equivalent legs in
+another style - normal or cylpolar are likely to be the best choices.
+</Para>
+
+<Para>
+If there is no vertical info in your theodolite data then you should
+use the cylpolar style and use *sd command to specify very low
+accuracy (high SD) in the depth so that the points will move in the
+vertical plane as required if the end points are fixed or the survey
+is part of a loop.
 </Para>
 
 </Sect2>
@@ -3317,36 +3474,37 @@ by &survexsuite;. You can also see the use of 'DOWN' for plumbs, and
 was unusual in being too long!).</Para>
 
 <programlisting>
-;Survey Name: Chaos - "Bottomless Pit of Eternal Chaos" to
-;         "Redemption" pitch
-;People - Inst: Nick Procter
-;         Notes: Anthony Day
-;   Pictures: Anthony Day
-;         Tape: Both
-;Date: 11 July 1996
-;Instrument Set: 2
+*equate chaos.1 triassic.pt3.8
+*equate chaos.2 triassic.pt3.9
+
+*begin chaos
+*title "Bottomless Pit of Eternal Chaos to Redemption pitch"
+*date 1996.07.11
+*team "Nick Proctor" compass clino tape
+*team "Anthony Day" notes pictures tape
+*instrument compass "CUCC 2"
+*instrument clino "CUCC 2"
 ;Calibration: Cairn-Rock 071 072 071,  -22 -22 -22
 ;       Rock-Cairn 252 251 252,  +21 +21 +21
 ;Calibration at 161d entrance from cairn nr entrance to
 ;prominent rock edge lower down. This is different from
 ;calibration used for thighs survey of 5 July 1996
-;
-;
-;From  to  Tape Compass Clino
-*equate chaos.1 triassic.pt3.8
-*equate chaos.2 triassic.pt3.9
-*begin chaos
+
+*export 1 2
+
 ;Tape is 20cm too short
 *calibrate tape +0.2
+
 1 2 9.48 208 +08
 2 3 9.30 179 -23
 3 4 2.17 057 +09
 5 4 10.13 263 +78
 5 6 2.10 171 -73
 7 6 7.93 291 +75
+*begin
 *calibrate tape 0
 8 7 35.64 262 +86 ;true length measured for this leg
-*calibrate tape +0.2
+*end
 8 9 24.90 - DOWN
 10 9 8.61 031 -43
 10 11 2.53 008 -34
@@ -3368,11 +3526,10 @@ was unusual in being too long!).</Para>
 <Sect2><Title>Join surveys together</Title>
 
 <Para>Once you have more than one survey you need to specify how they
-link together. You can do this in two basic ways. Either just
-use the name of the joining station at one end of the joining
-leg, or, more usually, use a *equate command to specify that one
-station has two names (one name for each survey at the joining
-point).
+link together. To do this use *export to make the stations to be
+joined accessible in the enclosing survey, then *equate in the
+enclosing survey to join them together.
+<!-- FIXME example -->
 </Para>
 
 </Sect2>
@@ -3386,11 +3543,13 @@ for some ideas of ways to go about it.
 
 <Sect3><Title>Fixed Points (Control Points)</Title>
 
+<!-- FIXME move most of this to *fix ? -->
+
 <Para>The command:
 </Para>
 
 <programlisting>
-*fix 1.entrance.1    0  0  1780</programlisting>
+*fix entrance.1    0  0  1780</programlisting>
 
 <Para>fixes station 1 of the entrance survey at the co-ordinates 0
 (east-west),0 (north-south), 1780 (altitude).
@@ -3399,13 +3558,16 @@ for some ideas of ways to go about it.
 <Para>If there are no fixed points specified, &survexsuite; will fix the
 first station mentioned at (0,0,0).  This allows sub-sections of a large
 survey to be processed separately, without the need to keep putting in and
-removing fixed points.
+removing fixed points. <!-- FIXME - don't want to encourage people to do
+this really -->
 </Para>
 
 <Para>To fix more than one station at known co-ordinates, simply use a *fix
-command for each.  &survexsuite; will check that all stations are connected
-to at least one fixed point (so their co-ordinates can be calculated).
+command for each.  &survexsuite; will check that all stations are connected to
+at least one fixed point (and so all station co-ordinates can be calculated).
 </Para>
+
+<!-- FIXME fix with error estimates -->
 
 </Sect3>
 
@@ -3413,7 +3575,7 @@ to at least one fixed point (so their co-ordinates can be calculated).
 
 <Para>Suppose you have two separate bits of surveying which were done on the
 same trip.  So the calibration details, etc. are the same for both.  But you
-want to give a different prefix to the two sections.  This is easily
+want to give a different survey name to the two sections.  This is easily
 achieved like so:
 </Para>
 
@@ -3435,6 +3597,7 @@ achieved like so:
 
 <Sect2><Title>Add surface topology</Title>
 
+<!-- FIXME rewrite this - put DEM support in aven -->
 <Para>This process is not yet automated. It is possible to generate
 a mesh or contours overlaying your area by various means. Some
 details of several methods are given in the BCRA Cave Surveying
@@ -3453,12 +3616,10 @@ deal of memory.
 
 <Sect2><Title>Overlay a grid</Title>
 
-<Para>This is another aspect awaiting automation. For now you need to
-examine the plot produced by caverot to determine the area you
-need your grid to cover and create a suitable &survexsuite; file yourself.
-If you already have a mesh then a section of this can be used
-for the grid, so that it gives surface shape if viewed from the
-side.
+<Para>Aven is able to display a grid, but this functionality isn't
+available in caverot, xcaverot, or the printer drivers.
+You can achieve a similar effect for now by creating a &svx; file
+where the survey legs form a grid.
 </Para>
 
 </Sect2>
@@ -3502,6 +3663,7 @@ you use
 <Para>to specify that ',' is now the decimal separator instead of '.'.
 </Para>
 
+<!-- FIXME
 <Para>Note that there are plenty of ways you can use this facility to
 completely confuse the software, as it may not be able to work out what is
 going on, or it may simply be ambiguous. It can cope with some ambiguity (e.g.
@@ -3509,6 +3671,7 @@ the '-' character is used both for 'MINUS' and for 'OMIT'), but there are
 limits. If you have a dataset that you can not make &survexsuite;
 understand, then send it to us, and we will see what can be done.
 </Para>
+-->
 
 </Sect3>
 
@@ -3535,27 +3698,19 @@ site.</Para> <!--FIXME: more info-->
 <Sect2><Title>See errors and warnings that have gone off the screen</Title>
 
 <Para>When you run &survexsuite; it will process the specified survey data
-files in order, giving status information and errors, as well as
-percentage-done info as it goes along, finishing off with its usual set of
-statistics. You do not have to have very many files or errors before
-information that you might want to see gets pushed off the top of the
-screen. The number of errors and warnings given at the end of the run will
-allow you to determine whether you missed any error messages.
+files in order, reporting any warnings and errors.  If there are no
+errors, the output files are written and various statistics about the
+survey are displayed. If there are a lot of warnings or errors, they can
+scroll off the screen and it's not always possible to scroll back to
+read them.
 </Para>
 
-<Para>The best way to see all the text is to redirect &survexsuite;'s
-output to a file, which you can do like so (which works for &msdos;,
-&unix;, and &riscos;):
+<Para>The easiest way to see all the text is to use <command>cavern
+--log</command> to redirect output to a <filename>.log</filename> file,
+which you can then inspect with a text editor.
 </Para>
 
-<para><command/cavern cavename &gt; tmpfile/
-</para>
-
-<para>where 'tmpfile' is the name of the file you want the output to go
-into. You can then look at the contents of the output file to see what
-errors were generated. The last filename mentioned before an error is the
-name of the file in which the error was encountered.
-</para>
+<!-- <command/cavern cavename &gt; tmpfile/ -->
 
 </Sect2>
 
@@ -3606,6 +3761,7 @@ the error message telling you what has gone wrong, the filename
 and line number of the offending line will
 be printed, or the filename if a file couldn't be found.
 <!-- FIXME: gcc format error msgs -->
+<!-- FIXME: stops after N errors -->
 </Para>
 
 <Para>When surveys are not all connected to fixed points, &survexsuite; will
