@@ -1,3 +1,5 @@
+Changes in 0.99-prerelease5:
+
 * aven: improved initial sizing of window; "Toggle rotation" toolbar
   icon now works; handle files with only stations better; presentation
   code disabled for 1.0; releasing mouse over menubar now ends drag;
