@@ -2104,6 +2104,35 @@ void GfxCore::PlaceVertexWithColour(Double x, Double y, Double z, Double factor)
     PlaceVertex(x, y, z);
 }
 
+static const Vector3 light(1.0, 1.0, 1.0);
+
+void GfxCore::AddRectangle(const Vector3 &a, const Vector3 &b, 
+			   const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    int a_band, b_band, c_band, d_band;
+    // FIXME: Get bands for a, b, c, d
+    a_band = b_band = c_band = d_band = 0;
+    PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
+    if (a_band != b_band) {
+	// FIXME: Add vertices
+    }
+    PlaceVertexWithColour(b.getX(), b.getY(), b.getZ(), factor);
+    if (b_band != c_band) {
+	// FIXME: Add vertices
+    }
+    PlaceVertexWithColour(c.getX(), c.getY(), c.getZ(), factor);
+    if (c_band != d_band) {
+	// FIXME: Add vertices
+    }
+    PlaceVertexWithColour(d.getX(), d.getY(), d.getZ(), factor);
+    if (d_band != a_band) {
+	// FIXME: Add vertices
+    }
+}
+
 void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num_points, const Point* vertices)
 {
     // Draw a set of polylines.
@@ -2127,7 +2156,7 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 
         Double size = 1;
         
-        Vector3 v_prev[4];
+        Vector3 u[4];
         Vector3 prev_pt_v;
 
 	Vector3 right, up;
@@ -2251,8 +2280,8 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 			// FIXME: total bodge for particular case - want to permute
 			// vertices to minimise the tortional "stress" - perhaps even
 			// using triangles instead of rectangles...
-			swap(v_prev[0], v_prev[2]);
-			swap(v_prev[1], v_prev[3]);
+			swap(u[0], u[2]);
+			swap(u[1], u[3]);
 #endif
 		    } else if (r2.magnitude() == 0) {
 			Vector3 n = leg2_v;
@@ -2282,67 +2311,30 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 	    v[2] = pt_v + right - up;
 	    v[3] = pt_v - right - up;
             
-            const Vector3 light(1.0, 1.0, 1.0);
-
             if (segment > 0) {
                 BeginQuadrilaterals();
 
-		Vector3 normal = (v[0] - v_prev[1]) * (v[1] - v_prev[0]);
-		normal.normalise();
-                Double factor;
-                factor = dot(normal, light) * .3 + .7;
-                PlaceVertexWithColour(v[0].getX(), v[0].getY(), v[0].getZ(), factor);
-                PlaceVertexWithColour(v_prev[0].getX(), v_prev[0].getY(), v_prev[0].getZ(), factor);
-                PlaceVertexWithColour(v_prev[1].getX(), v_prev[1].getY(), v_prev[1].getZ(), factor);
-                PlaceVertexWithColour(v[1].getX(), v[1].getY(), v[1].getZ(), factor);
-
-		normal = (v[2] - v_prev[3]) * (v[3] - v_prev[2]);
-		normal.normalise();
-                factor = dot(normal, light) * .3 + .7;
-                PlaceVertexWithColour(v[3].getX(), v[3].getY(), v[3].getZ(), factor);
-                PlaceVertexWithColour(v[2].getX(), v[2].getY(), v[2].getZ(), factor);
-                PlaceVertexWithColour(v_prev[2].getX(), v_prev[2].getY(), v_prev[2].getZ(), factor);
-                PlaceVertexWithColour(v_prev[3].getX(), v_prev[3].getY(), v_prev[3].getZ(), factor);
-
-		normal = (v[1] - v_prev[2]) * (v[2] - v_prev[1]);
-		normal.normalise();
-                factor = dot(normal, light) * .3 + .7;
-                PlaceVertexWithColour(v_prev[1].getX(), v_prev[1].getY(), v_prev[1].getZ(), factor);
-                PlaceVertexWithColour(v_prev[2].getX(), v_prev[2].getY(), v_prev[2].getZ(), factor);
-                PlaceVertexWithColour(v[2].getX(), v[2].getY(), v[2].getZ(), factor);
-                PlaceVertexWithColour(v[1].getX(), v[1].getY(), v[1].getZ(), factor);
-
-		normal = (v[3] - v_prev[0]) * (v[0] - v_prev[3]);
-		normal.normalise();
-                factor = dot(normal, light) * .3 + .7;
-                PlaceVertexWithColour(v_prev[3].getX(), v_prev[3].getY(), v_prev[3].getZ(), factor);
-                PlaceVertexWithColour(v_prev[0].getX(), v_prev[0].getY(), v_prev[0].getZ(), factor);
-                PlaceVertexWithColour(v[0].getX(), v[0].getY(), v[0].getZ(), factor);
-                PlaceVertexWithColour(v[3].getX(), v[3].getY(), v[3].getZ(), factor);
+		AddRectangle(v[0], u[0], u[1], v[1]);
+		AddRectangle(v[3], v[2], u[2], u[3]);
+		AddRectangle(u[1], u[2], v[2], v[1]);
+		AddRectangle(u[3], u[0], v[0], v[3]);
                 
                 EndQuadrilaterals();
             }
 
             if (cover_end) {
-                Vector3 normal = up * right;
-		normal.normalise();
-                Double factor = dot(normal, light) * .3 + .7;
-                
                 BeginQuadrilaterals();
 
-                PlaceVertexWithColour(v[0].getX(), v[0].getY(), v[0].getZ(), factor);
-                PlaceVertexWithColour(v[1].getX(), v[1].getY(), v[1].getZ(), factor);
-                PlaceVertexWithColour(v[2].getX(), v[2].getY(), v[2].getZ(), factor);
-                PlaceVertexWithColour(v[3].getX(), v[3].getY(), v[3].getZ(), factor);
+                AddRectangle(v[0], v[1], v[2], v[3]);
                 
                 EndQuadrilaterals();
             }
 
             prev_pt_v = pt_v;
-            v_prev[0] = v[0];
-            v_prev[1] = v[1];
-            v_prev[2] = v[2];
-            v_prev[3] = v[3];
+            u[0] = v[0];
+            u[1] = v[1];
+            u[2] = v[2];
+            u[3] = v[3];
         }
     }
 }

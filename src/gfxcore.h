@@ -369,6 +369,8 @@ public:
 
     void DragFinished();
 
+    void AddRectangle(const Vector3 &a, const Vector3 &b, 
+		      const Vector3 &c, const Vector3 &d);
 private:
     DECLARE_EVENT_TABLE()
 };
