@@ -31,33 +31,33 @@ rpm : dist
 	echo URL: http://www.survex.com/ >> ${spec}
 	echo "Packager: Olly Betts <olly@survex.com>" >> ${spec}
 	echo BuildRoot: /var/tmp/%{name}-buildroot >> ${spec}
-	echo "" >> ${spec}
+	echo >> ${spec}
 	echo %description >> ${spec}
 	cat desc.txt >> ${spec}
-	echo "" >> ${spec}
+	echo >> ${spec}
 	echo %package aven >> ${spec}
 	echo Summary: Aven viewer for Survex >> ${spec}
 	echo Group: Applications/Misc >> ${spec}
 	echo Requires: survex = ${VERSION} >> ${spec}
-	echo "" >> ${spec}
+	echo >> ${spec}
 	echo %description aven >> ${spec}
-	echo A fancy cave viewer for Survex, written using the wxWindows library. >> ${spec}
-	echo "" >> ${spec}
+	cat desc-aven.txt >> ${spec}
+	echo >> ${spec}
 	echo %prep >> ${spec}
 	echo %setup >> ${spec}
-	echo "" >> ${spec}
+	echo >> ${spec}
 	echo %build >> ${spec}
 	echo ./configure --prefix=/usr >> ${spec}
 	echo make >> ${spec}
-	echo "" >> ${spec}
+	echo >> ${spec}
 	echo %install >> ${spec}
 	echo rm -rf '$$RPM_BUILD_ROOT' >> ${spec}
 	echo mkdir '$$RPM_BUILD_ROOT' >> ${spec}
 	echo make install-strip 'prefix=$$RPM_BUILD_ROOT/usr' >> ${spec}
-	echo "" >> ${spec}
+	echo >> ${spec}
 	echo %clean >> ${spec}
 	echo rm -rf '$$RPM_BUILD_ROOT' >> ${spec}
-	echo "" >> ${spec}
+	echo >> ${spec}
 	echo %files >> ${spec}
 	echo "%defattr(-,root,root)" >> ${spec}
 	echo %doc ${extra_text} >> ${spec}
@@ -88,13 +88,31 @@ debian : dist
 	cd deb && tar zxvf ../${PACKAGE}-${VERSION}.tar.gz
 	cp -a debian deb/${PACKAGE}-${VERSION}
 	echo "${PACKAGE} (${VERSION}.${RELEASE}) unstable; urgency=low" > ${debcl}
-	echo "" >> ${debcl}
+	echo >> ${debcl}
 	echo "  * Dummy changelog - see ChangeLog and NEWS." >> ${debcl}
-	echo "" >> ${debcl}
+	echo >> ${debcl}
 	echo " -- Olly Betts <olly@survex.com>  "`date "+%a, %d %b %Y %X %z"` >> ${debcl}
+	echo Source: survex > debian/control
+	echo Section: math >> debian/control
+	echo Priority: optional >> debian/control
+	echo "Maintainer: Wookey <wookey@survex.com>" >> debian/control
+	echo Standards-Version: 3.0.1 >> debian/control
+	echo >> debian/control
+	echo Package: ${PACKAGE} >> debian/control
+	echo Architecture: any >> debian/control
+	echo 'Depends: ${shlibs:Depends}' >> debian/control
+	echo Description: Cave survey software >> debian/control
+	sed 's/^/ /' < desc.txt >> debian/control
+	echo >> debian/control
+	echo Package: survex-aven >> debian/control
+	echo Architecture: any >> debian/control
+	echo 'Depends: ${shlibs:Depends}' >> debian/control
+	echo Description: Aven viewer for Survex >> debian/control
+	sed 's/^/ /' < desc-aven.txt >> debian/control	
 	cd deb/${PACKAGE}-${VERSION} && debuild
 	mv deb/*.deb .
 	rm -rf deb
+	rm debian/control
 
 dostxt :
 	$(RM) -rf dostxt_tmp	
