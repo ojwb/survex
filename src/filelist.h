@@ -50,8 +50,6 @@
 # define EXT_SVX_STAT "/inf"
 # define EXT_SVX_POS  "/pos"
 
-# define DOOMDAY_H    "<Survex$Dir>.h.doomday"
-
 #elif (OS==MSDOS || OS==TOS)
 
 # define ERRSTAT_FILE "ERRSTATS.TXT"
@@ -72,8 +70,6 @@
 # define EXT_SVX_ERRS ".ERR"
 # define EXT_SVX_STAT ".INF"
 # define EXT_SVX_POS  ".POS"
-
-# define DOOMDAY_H    "DOOMDAY.H"
 
 #elif (OS==UNIX)
 
@@ -96,8 +92,6 @@
 # define EXT_SVX_STAT ".inf"
 # define EXT_SVX_POS  ".pos"
 
-# define DOOMDAY_H    "doomday.h"
-
 #elif (OS==AMIGA)
 
 # define ERRSTAT_FILE "errstats.txt"
@@ -118,8 +112,6 @@
 # define EXT_SVX_ERRS ".err"
 # define EXT_SVX_STAT ".inf"
 # define EXT_SVX_POS  ".pos"
-
-# define DOOMDAY_H    "doomday.h"
 
 #else
 # error Do not know operating system 'OS'
