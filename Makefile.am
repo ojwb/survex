@@ -171,7 +171,7 @@ mingw_iss : dostxt mingwexes
 	perl -p -i -e 's/\n/\r\n' iss_tmp/help/*
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
 	$(RM) -rf dostxt_tmp	
-	wine "c:\\Program Files/Inno Setup/compile.exe iss_tmp/survex.iss"
+	wine "c:/Program\ Files/Inno\ Setup\ 2/ISCC.exe iss_tmp/survex.iss"
 	mv iss_tmp/Output/*.exe .
 	$(RM) -rf iss_tmp	
 
