@@ -8,6 +8,8 @@
 # define DEBUG_ARTIC
 #endif
 
+#define DEBUG_ARTIC
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -20,79 +22,7 @@
 #include "matrix.h"
 #include "out.h"
 
-static ulong colour;
-
-/* list item visit */
-/* FIXME: we could pack min and dirn into one ulong which would still allow
- * 2^30 stations.  Also we shouldn't malloc each and every LIV separately */
-typedef struct LIV { struct LIV *next; ulong min; uchar dirn; } liv;
-
-/* The goto iter/uniter avoids using recursion which could lead to stack
- * overflow.  Instead we use a linked list which will probably use
- * much less memory on most compilers.
- */
-
-static ulong
-visit(node *stn)
-{
-   ulong min;
-   int i;
-   node *stn2;
-   liv *livTos = NULL, *livTmp;
-iter:
-   stn->colour = ++colour;
-#ifdef DEBUG_ARTIC
-   printf("visit: stn [%p] ", stn);
-   print_prefix(stn->name);
-   printf(" set to colour %d\n", colour);
-#endif
-   min = colour;
-   for (i = 0; i <= 2 && stn->leg[i]; i++) {
-      if (stn->leg[i]->l.to->colour == 0) {
-	 livTmp = osnew(liv);
-	 livTmp->next = livTos;
-	 livTos = livTmp;
-	 livTos->min = min;
-	 livTos->dirn = reverse_leg_dirn(stn->leg[i]);
-	 stn = stn->leg[i]->l.to;
-	 goto iter;
-uniter:
-	 i = reverse_leg_dirn(stn->leg[livTos->dirn]);
-	 stn2 = stn->leg[livTos->dirn]->l.to;
-	 /* DO: remove stn from stnlist */
-	 /* DO: add stn to component list */
-	 if (livTos->min <= min) {
-	    if (stn2->colour <= min) {
-	       /* DO: note down leg (<-), remove and replace:
-		*                 /\   /        /\
-		* [fixed point(s)]  *-*  -> [..]  )
-		*                 \/   \        \/
-		* DO: start new articulation
-		*/
-	       printf("Articulate ");
-	       print_prefix(stn->name)
-	       printf(" - ");
-	       print_prefix(stn2->name)
-	       printf(" -...\n");
-	       stn2->fArtic = fTrue;
-	    }
-	    min = livTos->min;
-	 }
-	 stn = stn2;
-	 livTmp = livTos;
-	 livTos = livTos->next;
-	 osfree(livTmp);
-      } else if (stn->leg[i]->l.to->colour < min) {
-	 min = stn->leg[i]->l.to->colour;
-	 /* FIXME: hmm, min may be reduced on way back out or way in - is
-	  * that OK? */
-      }
-   }
-   if (livTos) goto uniter;
-   return min;
-}
-
-/* We want to split stations list into a list of components, each of which
+/* We want to split station list into a list of components, each of which
  * consists of a list of "articulations" - the first has all the fixed points
  * in that component, and the others attach sequentially to produce the whole
  * component
@@ -108,14 +38,143 @@ typedef struct component {
    articulation *artic;
 } component;
 
-component *component_list = NULL;
+static component *component_list = NULL;
+
+static node *artlist = NULL;
+
+static node *fixedlist = NULL;
+
+/* list item visit */
+/* FIXME: we shouldn't malloc each and every LIV separately! */
+typedef struct LIV {
+   struct LIV *next;
+   uchar dirn;
+} liv;
+
+/* The goto iter/uniter avoids using recursion which could lead to stack
+ * overflow.  Instead we use a linked list which will probably use
+ * much less memory on most compilers.
+ */
+
+static long colour;
+
+static ulong
+visit(node *stn, int back)
+{
+   long min;
+   int i;
+   node *stn2;
+   liv *livTos = NULL, *livTmp;
+   int artic_flag = 0;
+#ifdef DEBUG_ARTIC
+   printf("visit(%p, %d) called\n", stn, back);
+#endif
+
+iter:
+   min = ++colour;
+#ifdef DEBUG_ARTIC
+   printf("visit: stn [%p] ", stn);
+   print_prefix(stn->name);
+   printf(" set to colour %d -> min ", colour);
+#endif
+   for (i = 0; i <= 2 && stn->leg[i]; i++) {
+      if (i != back) {
+	 long c = stn->leg[i]->l.to->colour;
+      
+	 if (c < 0) {
+	    /* we've found a fixed point */
+	    c = -c;
+	    stn->leg[i]->l.to->colour = c;
+	    /* move it onto the normal stnlist - FIXME: we can avoid this
+	     * step by removing the need to remove stn from a list - store
+	     * a dummy node in the list head, then just reknit in the add_
+	     * routine... */
+	    remove_stn_from_list(&fixedlist, stn);
+	    add_stn_to_list(&stnlist, stn);
+	 }
+	 
+	 if (c && c < min) min = c;
+      }
+   }
+   stn->colour = min;
+#ifdef DEBUG_ARTIC
+   printf("%d\n", min);
+#endif
+   for (i = 0; i <= 2 && stn->leg[i]; i++) {
+      if (stn->leg[i]->l.to->colour == 0) {
+	 livTmp = osnew(liv);
+	 livTmp->next = livTos;
+	 livTos = livTmp;
+	 livTos->dirn = back = reverse_leg_dirn(stn->leg[i]);
+	 stn = stn->leg[i]->l.to;
+	 goto iter;
+uniter:
+	 i = reverse_leg_dirn(stn->leg[livTos->dirn]);
+	 stn2 = stn->leg[livTos->dirn]->l.to;
+
+#ifdef DEBUG_ARTIC
+	 printf("unwind: stn [%p] ", stn2);
+	 print_prefix(stn2->name);
+	 printf(" colour %d, min %d, station after %d\n", stn2->colour,
+		min, stn->colour);
+#endif
+
+	 /* FIXME: hmm, this code looks like it may get called more than once,
+	  * or never - actually it seems to always get called exactly once! */
+	 remove_stn_from_list(&stnlist, stn);
+	 add_stn_to_list(&artlist, stn);
+
+	 printf(">> %p\n", stn);
+	 
+	 if (artic_flag) {	    
+	    articulation *art;
+	    
+	    artic_flag = 0;
+	    /* DO: note down leg (<-), remove and replace:
+	     *                 /\   /        /\
+             * [fixed point(s)]  *-*  -> [..]  )
+	     *                 \/   \        \/
+	     *                stn2 stn
+	     */
+	    /* start new articulation */
+	    component_list->artic->stnlist = artlist;
+	    artlist = NULL;
+	    
+	    art = osnew(articulation);
+	    art->next = component_list->artic;
+	    component_list->artic = art;
+/*
+	    printf("Articulate *-");
+	    print_prefix(stn2->name);
+	    printf("-");
+	    print_prefix(stn->name);
+	    printf("-...\n");
+ */
+	 }
+
+	 if (stn2->colour == min) {
+	    artic_flag = 1;
+	 } else if (stn2->colour < min) {
+	    min = stn2->colour;
+	 }
+
+	 stn = stn2;
+	 livTmp = livTos;
+	 livTos = livTos->next;
+	 osfree(livTmp);
+      }
+   }
+   if (livTos) goto uniter;
+   remove_stn_from_list(&stnlist, stn);
+   add_stn_to_list(&artlist, stn);
+   return min;
+}
 
 extern void
 articulate(void)
 {
    node *stn, *stnStart;
    node *matrixlist = NULL;
-   node *fixedlist = NULL;
    int i;
 #ifdef DEBUG_ARTIC
    ulong cFixed;
@@ -125,9 +184,10 @@ articulate(void)
    colour = 0;
    stnStart = NULL;
    FOR_EACH_STN(stn, stnlist) {
-      stn->fArtic = fFalse;
+      /* stn->fArtic = fFalse; */
       if (fixed(stn)) {
-	 stn->colour = ++colour;
+	 colour++;
+	 stn->colour = -colour;
 	 remove_stn_from_list(&stnlist, stn);
 	 add_stn_to_list(&fixedlist, stn);
       } else {
@@ -142,33 +202,62 @@ articulate(void)
    while (1) {
       int c;
       stn = stnStart;
-#if 0
+
       /* see if this is a fresh component - it may not be, we may be
        * processing the other way from a fixed point cut-line */
-      /* FIXME: recode to not use status */
-      if (stn->status != statFixed) cComponents++;
-#endif
+      if (stn->colour < 0) {	 
+	 component *comp;
+	 articulation *art;
+	 
+	 printf("new component\n");
+	 stn->colour = -stn->colour; /* fixed points are negative until we colour from them */
+	 cComponents++;
+
+	 /* FIXME: logic to count components isn't the same as the logic
+	  * to start a new one - we should start a new one for a fixed point
+	  * cut-line I think */
+	 if (component_list) component_list->artic->stnlist = artlist;
+	 
+	 art = osnew(articulation);
+	 art->next = NULL;
+	 artlist = NULL;
+
+	 comp = osnew(component);
+	 comp->next = component_list;
+	 comp->artic = art;
+	 component_list = comp;
+      }
 
 #ifdef DEBUG_ARTIC
       print_prefix(stn->name);
       printf(" [%p] is root of component %ld\n", stn, cComponents);
-      dump_node(stn);
       printf(" and colour = %d/%d\n", stn->colour, cFixed);
-/*      if (cNeighbours == 0) printf("0-node\n");*/
 #endif
-      
+
       c = 0;
       for (i = 0; i <= 2 && stn->leg[i]; i++) {
 	 node *stn2 = stn->leg[i]->l.to;
-	 if (stn2->colour == 0) {
+	 if (stn2->colour < 0) {
+	    stn2->colour = -stn2->colour;
+	 } else if (stn2->colour == 0) {
+	    ulong n;
 	    ulong colBefore = colour;
+
+	    /* Special case to check if start station is an articulation point
+	     * which it is iff we have to colour from it in more than one dirn
+	     */
+	    if (c) {
+	       /* stn2->fArtic = fTrue; */
+	    }
 	    
 	    c++;
-	    visit(stn2);
+	    visit(stn2, reverse_leg_dirn(stn->leg[i]));
 	    n = colour - colBefore;
 #ifdef DEBUG_ARTIC
 	    printf("visited %lu nodes\n", n);
 #endif
+	    
+#if 0 /* FIXME: */
 	    if (n == 0) continue;
 	    /* Solve chunk of net from stn in dirn i up to stations
 	     * with fArtic set or fixed() true - hmm fixed() test
@@ -193,13 +282,15 @@ more:
 		  stn2->fArtic = fFalse;
 	       }
 	    }
+#endif
 	 }
       }
-      /* Special case to check if start station is an articulation point
-       * which it is iff we have to colour from it in more than one dirn
-       */
-      if (c > 1) stn->fArtic = fTrue;
-#ifdef DEBUG_ARTIC
+
+      remove_stn_from_list(&fixedlist, stn);
+      add_stn_to_list(&artlist, stn);
+
+#if 0 /* def DEBUG_ARTIC */
+      printf("station colours:\n");
       FOR_EACH_STN(stn, stnlist) {
 	 printf("%ld - ", stn->colour);
 	 print_prefix(stn->name);
@@ -212,12 +303,49 @@ more:
 #endif
 	 break;
       }
-      for (stn = stnlist; stn->colour != stnStart->colour - 1; stn = stn->next) {
-	 ASSERT2(stn,"ran out of coloured fixed points");
-      }
-      stnStart = stn;
+      stnStart = fixedlist;
+      if (!stnStart) break;
    }
-#ifdef DEBUG_ARTIC
+   if (component_list) component_list->artic->stnlist = artlist;
+   /* if (artlist) component_list->artic->stnlist = artlist; */
+
+     {
+	component *comp;
+	articulation *art;
+	node *stn;
+
+	printf("\nDump of %d components:\n", cComponents);
+	for (comp = component_list; comp; comp = comp->next) {
+	   node *list = NULL, *listend = NULL;
+	   printf("Component:\n");
+	   for (art = comp->artic; art; art = art->next) {
+	      printf("  Articulation (%p):\n", art->stnlist);
+	      if (listend) {
+		 listend->next = art->stnlist;
+	      } else {
+		 list = art->stnlist;
+	      }
+		 
+	      FOR_EACH_STN(stn, art->stnlist) {
+		 printf("    %d %p (", stn->colour, stn);
+		 print_prefix(stn->name);
+		 printf(")\n");
+		 listend = stn;
+	      }
+	   }
+	   FOR_EACH_STN(stn, list) {
+	      printf("MX: %c %p (", fixed(stn)?'*':' ', stn);
+	      print_prefix(stn->name);
+	      printf(")\n");	      
+	   }
+	   solve_matrix(list);
+	   listend = stnlist;
+	   stnlist = list;
+	}
+	printf("\n");
+     }
+   
+#if 0 /*def DEBUG_ARTIC*/
    FOR_EACH_STN(stn, stnlist) { /* high-light unfixed bits */
       if (stn->status && !fixed(stn)) {
 	 print_prefix(stn->name);
