@@ -102,32 +102,23 @@ uninstall-local:
 maintainer-clean-local:
 	rm -rf manual "$(srcdir)/manual"
 
-distclean-local:
-	-test . != "$(srcdir)" && rm -rf manual.sgml manual @DOCS_OTHER@
+# manual, etc depend on configure.in so they get rebuilt when the
+# version number is bumped
 
-# manual depends on config.h so it gets rebuilt when the version number is
-# bumped
-
-manual: $(manual_sources) custom.dsl survex.ent ../config.h
-	-test . != "$(srcdir)" && ln -s $(srcdir)/manual.sgml manual.sgml
-	@sgmltools@ --backend=html --dsssl-spec='$(srcdir)/custom.dsl#html' \
-		manual.sgml
-	cp $(srcdir)/caution.png $(srcdir)/note.png manual
+manual: $(manual_sources) custom.dsl survex.ent ../configure.in
+	@sgmltools@ --backend=html --dsssl-spec='custom.dsl#html' manual.sgml
+	cp caution.png note.png manual
 
 # this rule is not used by the build system - it's for "manual" use (ho ho)
-manual.html: $(manual_sources) custom.dsl survex.ent ../config.h
-	-test . != "$(srcdir)" && ln -s $(srcdir)/manual.sgml manual.sgml
+manual.html: $(manual_sources) custom.dsl survex.ent ../configure.in
 	@sgmltools@ --backend=onehtml \
-	   --dsssl-spec='$(srcdir)/custom.dsl#onehtml' manual.sgml
+		--dsssl-spec='custom.dsl#onehtml' manual.sgml
 
-manual.rtf: $(manual_sources) survex.ent ../config.h
-	-test . != "$(srcdir)" && ln -s $(srcdir)/manual.sgml manual.sgml
+manual.rtf: $(manual_sources) survex.ent ../configure.in
 	@sgmltools@ --backend=rtf manual.sgml
 
-manual.txt: $(manual_sources) survex.ent ../config.h
-	-test . != "$(srcdir)" && ln -s $(srcdir)/manual.sgml manual.sgml
+manual.txt: $(manual_sources) survex.ent ../configure.in
 	@sgmltools@ --backend=txt manual.sgml
 
-manual.ps: $(manual_sources) survex.ent ../config.h
-	-test . != "$(srcdir)" && ln -s $(srcdir)/manual.sgml manual.sgml
+manual.ps: $(manual_sources) survex.ent ../configure.in
 	@sgmltools@ --backend=ps manual.sgml
