@@ -4,6 +4,10 @@
 * Much more rigorous checking for operating system errors when reading
   and writing files.
 
+* survex: conversion wrapper doesn't use --output unless it is actually
+  needed, and displays corresponding cavern command line, and (if
+  appropriate) file.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

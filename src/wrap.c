@@ -44,6 +44,7 @@
 # include <unistd.h>
 #endif
 
+static int output_to_command_file = 0;
 static char *output_to = NULL;
 
 static int fPercent = -1;
@@ -476,6 +477,7 @@ command_file(const char *pth, const char *fnm)
   if (!output_to) {
      output_to = xmalloc(strlen(fnmUsed) + 1);
      strcpy(output_to, fnmUsed);
+     output_to_command_file = 1;
   }
   free(fnmUsed); /* not needed now */
 
@@ -607,21 +609,51 @@ main(int argc, char **argv)
       args[i++] = arg;
    }
    if (output_to) {
-      static char arg[] = "--output";
-      args[i++] = arg;
-      args[i++] = output_to;
+      /* Only need --output if there was a command file, or we're processing
+       * a .svx file which is in a different directory */
+      if (output_to_command_file
+	  || strchr(output_to, FNM_SEP_LEV)
+#ifdef FNM_SEP_LEV2
+	  || strchr(output_to, FNM_SEP_LEV2)
+#endif
+#ifdef FNM_SEP_DRV
+	  || strchr(output_to, FNM_SEP_DRV)
+#endif
+	  ) {
+	 static char arg[] = "--output";
+	 args[i++] = arg;
+	 args[i++] = output_to;
+      }
    }
    /* don't bother with temporary file if there's only one file to process */
    if (head == tail && strncmp(head->line, "*include \"", 10) == 0) {
       char *p = xmalloc(strlen(head->line + 10) + 1);
       strcpy(p, head->line + 10);
-      args[i++] = p;
       /* knock off quote and \n */
       p[strlen(p) - 2] = '\0';
+      args[i++] = p;
+      args[i] = NULL;
+
+      puts("Run cavern as:\n");
+
+      i = 0;
+      while (args[i]) {
+         /* may need to quote arguments, but for now just quote arguments with
+          * spaces and let the user sort out anything else */
+	 if (i) putchar(' ');
+         if (strchr(args[i], ' ')) {
+	    printf("\"%s\"", args[i]);
+	 } else {
+	    fputs(args[i], stdout);
+	 }
+         i++;
+      }
+      putchar('\n');
    } else {
       FILE *fout;
       static char arg[] = MYTMP;
       args[i++] = arg;
+      args[i] = NULL;
 
       fout = fopen(MYTMP, "w");
       if (!fout) {
@@ -633,26 +665,33 @@ main(int argc, char **argv)
 	    "; Process this file using the command line:\n"
 	    ";", fout);
 
+      puts("Run cavern as:\n");
+
       i = 0;
       while (args[i]) {
          /* may need to quote arguments, but for now just quote arguments with
           * spaces and let the user sort out anything else */
-         if (strchr(args[i], ' '))
+	 if (i) putchar(' ');
+         if (strchr(args[i], ' ')) {
 	    fprintf(fout, " \"%s\"", args[i]);
-         else
+	    printf("\"%s\"", args[i]);
+	 } else {
 	    fprintf(fout, " %s", args[i]);
+	    fputs(args[i], stdout);
+	 }
          i++;
       }
       fputs("\n\n", fout);
+      puts("\n\nwhere "MYTMP" contains:\n");
 
       while (head) {
          fputs(head->line, fout);
+         fputs(head->line, stdout);
          head = head->next;
       }
 
       fclose(fout);
    }
-   args[i] = NULL;
 
 #ifdef HAVE_EXECV
    return execvp(args[0], args);
