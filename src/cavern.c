@@ -324,7 +324,7 @@ main(int argc, char **argv)
 #endif
       }
 #endif
-      data_file("", fnm); /* first argument is current path */
+      data_file(NULL, fnm); /* first argument is current path */
 
       optind++;
    }

@@ -305,7 +305,13 @@ data_file(const char *pth, const char *fnm)
 
    {
       char *filename;
-      FILE *fh = fopen_portable(pth, fnm, EXT_SVX_DATA, "rb", &filename);
+      FILE *fh;
+      if (!pth) {
+	 /* file specified on command line - don't do special translation */
+	 fh = fopenWithPthAndExt(pth, fnm, EXT_SVX_DATA, "rb", &filename);
+      } else {
+	 fh = fopen_portable(pth, fnm, EXT_SVX_DATA, "rb", &filename);
+      }
 
       if (fh == NULL) {
 	 compile_error(/*Couldn't open data file `%s'*/24, fnm);
