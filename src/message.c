@@ -213,7 +213,8 @@ safe_fopen:      like fopen, but returns NULL for directories under all OS
 #include <errno.h>
 
 #include "whichos.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "osdepend.h"
 #include "filelist.h"
 #include "debug.h"
@@ -230,10 +231,10 @@ static jmp_buf jmpbufSignal;
 #endif
 
 /* This is the name of the default language -- set like this so folks can
- * add (for eg) -DDEFAULTLANG="fren" to UFLG in the makefile
+ * add (for eg) -DDEFAULTLANG="fr" to UFLG in the makefile
  */
 #ifndef DEFAULTLANG
-# define DEFAULTLANG "engi"
+# define DEFAULTLANG "en"
 #endif
 
 #define STDERR stdout
@@ -401,13 +402,132 @@ CHARSET_RISCOS31 !HCAK!
 #endif
 }
 
-static const char *pthMe=NULL, *lfErrs=NULL;
-static char prefix[5];
+static const char *pthMe = NULL, *lfErrs = NULL;
+static char prefix[32];
 static int prefix_len;
+
+static char prefix_root[32];
+static int prefix_root_len;
+
+static int add_unicode(int charset, char *p, int value) {
+   if (value == 0) return 0;
+   if (charset == CHARSET_ISO_8859_1 && value < 256) {
+      *p = value;
+      return 1;
+   }
+   return 0;   
+}
+
+static int decode_entity(const char *entity, size_t len) {
+   unsigned long value = 0;
+   int i;
+   for (i = 0; i < 4 && i < len; i++) value = (value<<8) | entity[i];
+   switch (value) {
+    case 'nbsp': return 160;
+    case 'iexc': return 161;
+    case 'cent': return 162;
+    case 'poun': return 163;
+    case 'curr': return 164;
+    case 'yen': return 165;
+    case 'brvb': return 166;
+    case 'sect': return 167;
+    case 'uml': return 168;
+    case 'copy': return 169;
+    case 'ordf': return 170;
+    case 'laqu': return 171;
+    case 'not': return 172;
+    case 'shy': return 173;
+    case 'reg': return 174;
+    case 'macr': return 175;
+    case 'deg': return 176;
+    case 'plus': return 177;
+    case 'sup2': return 178;
+    case 'sup3': return 179;
+    case 'acut': return 180;
+    case 'micr': return 181;
+    case 'para': return 182;
+    case 'midd': return 183;
+    case 'cedi': return 184;
+    case 'sup1': return 185;
+    case 'ordm': return 186;
+    case 'raqu': return 187;
+#if 0
+    case 'frac': return 188;
+    case 'frac': return 189;
+    case 'frac': return 190;
+#endif
+    case 'ique': return 191;
+    case 'Agra': return 192;
+    case 'Aacu': return 193;
+    case 'Acir': return 194;
+    case 'Atil': return 195;
+    case 'Auml': return 196;
+    case 'Arin': return 197;
+    case 'AEli': return 198;
+    case 'Cced': return 199;
+    case 'Egra': return 200;
+    case 'Eacu': return 201;
+    case 'Ecir': return 202;
+    case 'Euml': return 203;
+    case 'Igra': return 204;
+    case 'Iacu': return 205;
+    case 'Icir': return 206;
+    case 'Iuml': return 207;
+    case 'ETH': return 208;
+    case 'Ntil': return 209;
+    case 'Ogra': return 210;
+    case 'Oacu': return 211;
+    case 'Ocir': return 212;
+    case 'Otil': return 213;
+    case 'Ouml': return 214;
+    case 'time': return 215;
+    case 'Osla': return 216;
+    case 'Ugra': return 217;
+    case 'Uacu': return 218;
+    case 'Ucir': return 219;
+    case 'Uuml': return 220;
+    case 'Yacu': return 221;
+    case 'THOR': return 222;
+    case 'szli': return 223;
+    case 'agra': return 224;
+    case 'aacu': return 225;
+    case 'acir': return 226;
+    case 'atil': return 227;
+    case 'auml': return 228;
+    case 'arin': return 229;
+    case 'aeli': return 230;
+    case 'cced': return 231;
+    case 'egra': return 232;
+    case 'eacu': return 233;
+    case 'ecir': return 234;
+    case 'euml': return 235;
+    case 'igra': return 236;
+    case 'iacu': return 237;
+    case 'icir': return 238;
+    case 'iuml': return 239;
+    case 'eth': return 240;
+    case 'ntil': return 241;
+    case 'ogra': return 242;
+    case 'oacu': return 243;
+    case 'ocir': return 244;
+    case 'otil': return 245;
+    case 'ouml': return 246;
+    case 'divi': return 247;
+    case 'osla': return 248;
+    case 'ugra': return 249;
+    case 'uacu': return 250;
+    case 'ucir': return 251;
+    case 'uuml': return 252;
+    case 'yacu': return 253;
+    case 'thor': return 254;
+    case 'yuml': return 255;
+   }
+   return 0;
+}
 
 static void parse_msg_file( int charset_code ) {
   FILE *fh;
-  char estr[256], line[256];
+  char estr[512], line[512];
   int en;
   int c;
   bool fQuoted;
@@ -632,26 +752,19 @@ printf("opened error file\n");
   }
 
   while (!feof( fh )) {
-#ifndef ERRC
-    const char *p, *q;
+    char *p;
+    char *q;
+    int exact;
     getline( line, ossizeof(line), fh );
-    if (strncmp( line, prefix, prefix_len ) == 0) {
-      long val = strtol( line+prefix_len, &q, 0);
+    if ((exact = (strncmp(line, prefix, prefix_len) == 0)) ||
+	(prefix_root_len && strncmp(line, prefix_root, prefix_root_len) == 0)) {
+      long val;
+      val = strtol( line + (exact?prefix_len:prefix_root_len), &q, 0);
       if (val < 0 || val > (unsigned long)INT_MAX) {
         fprintf( STDERR, erg[3], szAppNameCopy );
         fprintf( STDERR, erg[ (errno==ERANGE) ? 5 : 6 ] );
-#else /* ERRC */
-    char *q;
-    getline(line,ossizeof(line),fh);
-    if (strncmp(line,prefix,prefix_len)==0) {
-      long val=strtol(line+prefix_len,&q,0);
-      if (val<0 || val>(unsigned long)INT_MAX) {
-        fprintf(STDERR, erg[3], szAppNameCopy);
-        fprintf(STDERR,erg[ (errno==ERANGE)?5:6 ]);
-#endif /* ERRC */
         exit(EXIT_FAILURE);
       }
-#ifndef ERRC
       en = (int)val;
       while (isspace(*q)) q++;
 
@@ -669,133 +782,47 @@ printf("opened error file\n");
       while (*q) {
          if (*q == '&') {
             if (*(q+1) == '#') {
-	       if (isdigit(*(q+2))) {
+	       if (isdigit(q[2])) {
                   unsigned long value = strtoul( q+2, &q, 10);
               	  if (*q == ';') q++;
-              	  /* add entity number value at estr[c] */
+		  if (value < 127) {
+		     estr[c++] = value;
+		  } else {
+		     c += add_unicode(charset_code, estr+c, value);
+		  }
               	  continue;
                }
-            } else if (isalnum(*q+1)) { /* or isalpha? !HACK! */
-               const char *entity;
+            } else if (isalnum(q[1])) { /* or isalpha? !HACK! */
+               /*const*/ char *entity;
                int entity_len;
+	       int len;
                entity = q+1;
                q += 2;
                while (isalnum(*q)) q++;
                entity_len = q - entity;
 	       if (*q == ';') q++;
-	       if (/* add entity "entity" at estr[c] ok*/) continue;
+	       len = add_unicode(charset_code, estr+c, decode_entity(entity, entity_len));
+	       if (len) {
+		  c += len;
+		  continue;
+	       }
 	       q = entity - 1;
-#else /* ERRC */
-      en=(int)val;
-      while (isspace(*q))
-        q++;
-      fQuoted=(*q=='\"');
-      if (fQuoted)
-        q++;
-      c=0;
-      while (*q && !(fQuoted && *q=='\"') ) {
-        if (*q=='\'' || *q=='`') /* convert `` and '' to left/right " */ {
-          if (*q==*(q+1)) {
-#ifndef NO_TEX
-            estr[c++] = ( *q=='`' ? chOpenQuotes : chCloseQuotes );
-#else
-            estr[c++] = '\"';
-#endif /* !NO_TEX */
-            q+=2;
-            continue;
-          }
-        }
-        if (*q!='\\')
-          estr[c++]=*q;
-        else {
-          q++;
-          switch (*q) {
-            case 'n': /* '\n' */
-              estr[c++]='\n';
-              break;
-            case '\0': /* \ at end of line, so concatenate lines */
-              getline(line,ossizeof(line),fh);
-              if (strncmp(line,prefix,prefix_len)!=0) { /* bad format */
-                fprintf(STDERR, erg[3], szAppNameCopy);
-                fprintf(STDERR,erg[5]);
-                exit(EXIT_FAILURE);
-              }
-              q=line+prefix_len;
-              continue;
-#ifndef NO_TEX
-            default: {
-              char *p;
-              int i, accent;
-              p=strchr(szSingles,*q);
-              if (p && szSingTab) {
-                estr[c++]=szSingTab[p-szSingles];
-                break;
-              }
-              p=strchr(szAccents,*q);
-              if (!p) {
-                if (*q!='\\')
-                  estr[c++]='\\';
-                break; /* \\ becomes \ and \<unknown> is not translated */
-              }
-              accent=p-szAccents;
-              q++;
-              p=strchr(szLetters,*q);
-              if (!p) {
-                estr[c++]='\\';
-                estr[c++]=szAccents[accent];
-                break;
-              }
-              i=p-szLetters;
-              if (pszTable[accent] && i<strlen(pszTable[accent])) {
-                char ch;
-                ch=pszTable[accent][i];
-                if (ch!=32) {
-                  estr[c++]=ch;
-                  break;
-                }
-              }
-              estr[c++]='\\';
-              estr[c++]=szAccents[accent];
-              estr[c++]=szLetters[i];
-#endif /* ERRC */
             }
-#ifndef ERRC
          }
          if (*q < 32 || *q >= 127) {
-            printf( STDERR, "Warning: literal character '%c' (value %d) "
-                    "in message %d\n", *q, (int)*q, en );
+            fprintf(STDERR, "Warning: literal character '%c' (value %d) "
+                    "in message %d\n", *q, (int)*q, en);
          }
 	 estr[c++] = *q++;
-#else /* ERRC */
-#endif /* !NO_TEX */
-          }
-        }
-        q++;
-#endif /* ERRC */
       }
-#ifndef ERRC
       estr[c] = '\0';
-#endif /* not ERRC */
 
-#ifndef ERRC
       if (en >= enMac) {
          int enTmp;
          enTmp = enMac;
          enMac = enMac<<1;
          erg = osrealloc( erg, enMac * ossizeof(char*) );
          while (enTmp < enMac) erg[enTmp++] = szBadEn;
-#else /* ERRC */
-      if (!fQuoted) /* if string wasn't quoted, trim off spaces... */
-        while (c>0 && estr[c-1]==' ')
-          c--;
-      estr[c]='\0';
-      if (en>=enMac) {
-        int enTmp;
-        enTmp=enMac;
-        enMac=enMac<<1;
-        erg = osrealloc(erg, enMac * ossizeof(char*) );
-        for ( ; enTmp < enMac ; enTmp++ ) erg[enTmp] = szBadEn;
-#endif /* ERRC */
       }
       erg[en] = osstrdup(estr);
 /*printf("Error number %d: %s\n",en,erg[en]);*/
@@ -807,35 +834,76 @@ printf("opened error file\n");
 extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvVar,
 				       const char *szLangVar, const char *argv0,
 				       const char *lfErrFile ) {
-  int  c;
-  char *szTmp;
+   int  c;
+   char *szTmp;
 
-  lfErrs = osstrdup(lfErrFile);
+   lfErrs = osstrdup(lfErrFile);
 #ifdef HAVE_SIGNAL
-  init_signals();
+   init_signals();
 #endif
-  /* This code *should* be completely bomb-proof :) even if strcpy()
-   * generates a signal
-   */
-  szAppNameCopy=szAppName; /* ... in case the osstrdup() fails */
-  szAppNameCopy=osstrdup(szAppName);
+   /* This code *should* be completely bomb-proof even if strcpy
+    * generates a signal
+    */
+   szAppNameCopy = szAppName; /* ... in case the osstrdup() fails */
+   szAppNameCopy = osstrdup(szAppName);
 
-  /* Look for env. var. "SURVEXHOME" or the like */
-  if (szEnvVar && *szEnvVar && (szTmp=getenv(szEnvVar))!=NULL && *szTmp) {
-    pthMe = osstrdup(szTmp);
-  } else if (argv0) /* else try the path on argv[0] */
-    pthMe = PthFromFnm(argv0);
-  else /* otherwise, forget it - go for the current directory */
-    pthMe = "";
-
-  /* Look for env. var. "SURVEXLANG" or the like */
-  if ((szTmp=getenv(szLangVar))==0 || !*szTmp)
-    szTmp=DEFAULTLANG;
-  for( c=0 ; c<4 && szTmp[c] ; c++ )
-    prefix[c]=tolower(szTmp[c]);
-  prefix[c++]=':';
-  prefix[c]='\0';
-  prefix_len=strlen(prefix);
+   /* Look for env. var. "SURVEXHOME" or the like */
+   if (szEnvVar && *szEnvVar && (szTmp=getenv(szEnvVar))!=NULL && *szTmp) {
+      pthMe = osstrdup(szTmp);
+   } else if (argv0) {
+      /* else try the path on argv[0] */
+      pthMe = PthFromFnm(argv0);
+   } else {
+      /* otherwise, forget it - go for the current directory */
+      pthMe = "";
+   }
+   
+   /* Look for env. var. "SURVEXLANG" or the like */
+   if ((szTmp=getenv(szLangVar))==0 || !*szTmp) {
+      szTmp = DEFAULTLANG;
+   }
+   for (c = 0 ; c < 4 && szTmp[c] ; c++) prefix[c] = tolower(szTmp[c]);
+   prefix[c] = '\0';
+   if (c == 4) {
+      if (strcmp(prefix, "engi") == 0) {
+	 strcpy(prefix, "en");
+      } else if (strcmp(prefix, "engu") == 0) {
+	 strcpy(prefix, "en-us");	   
+      } else if (strcmp(prefix, "fren") == 0) {
+	 strcpy(prefix, "fr");	   
+      } else if (strcmp(prefix, "germ") == 0) {
+	 strcpy(prefix, "de");	   
+      } else if (strcmp(prefix, "ital") == 0) {
+	 strcpy(prefix, "it");	   
+      } else if (strcmp(prefix, "span") == 0) {
+	 strcpy(prefix, "es");	   
+      } else if (strcmp(prefix, "cata") == 0) {
+	 strcpy(prefix, "ca");	   
+      } else if (strcmp(prefix, "port") == 0) {
+	 strcpy(prefix, "pt");	   
+      } else {
+	 while (szTmp[c] && c < sizeof(prefix)) {
+	    prefix[c] = tolower(szTmp[c]);
+	    c++;
+	 }
+	 prefix[c] = '\0';
+      }
+   }
+   strcat(prefix, ":");
+   prefix_len = strlen(prefix);
+   
+   /* If the language is something like "en-us", fallback to "en" if we don't
+    * have an entry for en-us */
+   szTmp = strchr(prefix, '-');
+   if (szTmp) {
+      c = szTmp - prefix;
+      memcpy(prefix_root, prefix, c);
+      prefix_root[c++] = ':';
+      prefix_root[c] = '\0';
+      prefix_root_len = strlen(prefix_root);
+   } else {
+      prefix_root_len = 0;
+   }
 
   select_charset(default_charset());
 
@@ -860,29 +928,31 @@ extern const char *msgPerm( int en ) /* returns persistent copy of message */ {
   return ( (en<0||en>=enMac) ? szBadEn : erg[en] );
 }
 
-static void FAR errdisp( int en, void (*fn)( const char *, int ), const char *szArg, int n,
+static void FAR errdisp( int en, void (*fn)( const char *, int ), const char *arg, int n,
                          int type ) {
-  fputnl( STDERR );
-  fprintf( STDERR, erg[type], szAppNameCopy );
-  fputs( msg(en), STDERR);
-  fputnl( STDERR );
-  if (fn)
-    (fn)( szArg, n );
+   fputnl( STDERR );
+   fputnl( STDERR );
+   fprintf( STDERR, erg[type], szAppNameCopy );
+   fputs( msg(en), STDERR);
+   fputnl( STDERR );
+   if (fn) (fn)(arg, n);
+/*   if (fn) (fn)( (arg ? arg : "(null)"), n);*/
 }
 
 extern void FAR warning( int en, void (*fn)( const char *, int ), const char *szArg, int n ) {
-  cWarnings++; /* And another notch in the bedpost... */
-  errdisp( en, fn, szArg, n, 4 );
+   cWarnings++;
+   errdisp( en, fn, szArg, n, 4 );
 }
 
 extern void FAR error( int en, void (*fn)( const char *, int ), const char *szArg, int n ) {
-  cErrors++; /* non-fatal errors now return... */
-  errdisp( en, fn, szArg, n, 3 );
+   cErrors++;
+   errdisp( en, fn, szArg, n, 3 );
+   /* non-fatal errors now return... */
 }
 
 extern void FAR fatal( int en, void (*fn)( const char *, int ), const char *szArg, int n ) {
-  errdisp( en, fn, szArg, n, 2 );
-  exit(EXIT_FAILURE);
+   errdisp( en, fn, szArg, n, 2 );
+   exit(EXIT_FAILURE);
 }
 
 #if 1
