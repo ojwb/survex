@@ -755,11 +755,9 @@ static void
 fill_segment_cache(void)
 {
    int group;
-   for (group = 0; group < NUM_DEPTH_COLOURS; group++) {
+   for (group = 0; group <= NUM_DEPTH_COLOURS; group++) {
       segment_groups[group].num_segments = 0;
    }
-
-   if (ppLegs == NULL || (!legs && !surf)) return;
 
    /* since I no longer attempt to make sure that plan_elev is always
     * kept up to date by any action which might change the elev_angle
@@ -777,8 +775,8 @@ fill_segment_cache(void)
    se = sin(rad(elev_angle));
    ce = cos(rad(elev_angle));
 
-   if (legs) add_to_segment_cache(ppLegs, 0);
-   if (surf) add_to_segment_cache(ppSLegs, 1);
+   if (ppLegs && legs) add_to_segment_cache(ppLegs, 0);
+   if (ppSLegs && surf) add_to_segment_cache(ppSLegs, 1);
 }
 
 /* distance_metric() is a measure of how close we are */
@@ -873,7 +871,7 @@ redraw_image_dbe(Display * display, Window window, GC gc)
 
    if (ppStns == NULL && ppLegs == NULL && ppSLegs == NULL) return;
 
-   for (group = 0; group < NUM_DEPTH_COLOURS; group++) {
+   for (group = 0; group <= NUM_DEPTH_COLOURS; group++) {
       SegmentGroup *group_ptr = &segment_groups[group];
 
       XDrawSegments(display, window, gcs[3 + group], group_ptr->segments,
@@ -1738,28 +1736,27 @@ main(int argc, char **argv)
 	     old_x_mid != x_mid ||
 	     old_y_mid != y_mid ||
 	     old_z_mid != z_mid ||
-	     old_scale != scale) {
+	     old_scale != scale ||
+	     old_legs != legs ||
+	     old_surf != surf) {
 
 	    old_view_angle = view_angle;
 	    old_elev_angle = elev_angle;
 	    old_x_mid = x_mid;
 	    old_y_mid = y_mid;
 	    old_z_mid = z_mid;
-
+	    old_legs = legs;
+	    old_surf = surf;
 	    fill_segment_cache();
 	    redraw = 1;
 	 }
 
 	 if (old_crossing != crossing ||
 	     old_labelling != labelling ||
-	     old_allnames != allnames ||
-	     old_legs != legs ||
-	     old_surf != surf) {
+	     old_allnames != allnames) {
 	    old_crossing = crossing;
 	    old_labelling = labelling;
 	    old_allnames = allnames;
-	    old_legs = legs;
-	    old_surf = surf;
 	    redraw = 1;
 	 }
 

@@ -32,6 +32,8 @@
 
 * cavern: give a more helpful error on empty "*export" or "*prefix".
 
+* xcaverot: Fixed display of surface legs and related minor issues.
+
 Changes in 0.97-prerelease4:
 
 * Updated Portuguese and German translations.
