@@ -12,7 +12,7 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
 PRINT = printdm printps printpcl printhpgl
 
 EXTRA_PROGRAMS = caverot xcaverot printxbm
-bin_PROGRAMS = cavern $(PRINT) diffpos extend @CAVEROT@ survex
+bin_PROGRAMS = cavern $(PRINT) diffpos extend survex z3dtodxf @CAVEROT@
 
 cavern_SOURCES = cavern.c message.c filename.c listpos.c commands.c\
  cmdline.c getopt.c getopt1.c datain.c network.c readval.c str.c\
@@ -51,8 +51,8 @@ xcaverot_LDADD = @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 diffpos_SOURCES = diffpos.c
 extend_SOURCES = extend.c message.c filename.c useful.c img.c osdepend.c
 
-#3dtodxf_SOURCES = 3dtodxf.c
-#3dtodxf_LDADD = imgalone.o
+z3dtodxf_SOURCES = 3dtodxf.c message.c getopt.c getopt1.c img.c filename.c\
+ useful.c osdepend.c cmdline.c
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
 #imgtest_SOURCES = imgtest.c imgalone.c
@@ -116,7 +116,7 @@ noinst_DATA = borlandc/makefile riscos/makefile
  
 EXTRA_DIST = borlandc/makefile borlandc/config.h\
  riscos/makefile riscos/config.h riscos/armrot.s\
- riscos/stdh/regnames riscos/stdh/swinames
+ riscos/stdh/regnames riscos/stdh/swinames miniam.pl
 
 borlandc/makefile: Makefile.am miniam.pl
 	./miniam.pl borlandc Makefile.am > borlandc/makefile
