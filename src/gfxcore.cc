@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003 Mark R. Shinwell
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001-2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -1084,12 +1084,14 @@ void GfxCore::DefaultParameters()
 
     m_Params.rotation.setFromEulerAngles(m_TiltAngle, 0.0, m_PanAngle);
 
-    m_Params.translation.x = 0.0;
-    m_Params.translation.y = 0.0;
-    m_Params.translation.z = 0.0;
+    m_Params.translation.x = -m_Parent->GetXMin() - m_Parent->GetXExtent() / 2;
+    m_Params.translation.y = -m_Parent->GetYMin() - m_Parent->GetYExtent() / 2;
+    m_Params.translation.z = -m_Parent->GetZMin() - m_Parent->GetZExtent() / 2;
 
     SetRotation(m_Params.rotation);
-    SetTranslation(0.0, 0.0, 0.0);
+    SetTranslation(m_Params.translation.x,
+		   m_Params.translation.y,
+		   m_Params.translation.z);
 
     m_Surface = false;
     m_RotationStep = M_PI / 400.0; // FIXME temp bodge (was 6.0)
@@ -1374,10 +1376,9 @@ void GfxCore::SetCoords(wxPoint point)
     ReverseTransform(point.x, m_YSize - point.y, &cx, &cy, &cz);
 
     if (m_TiltAngle == M_PI_2) {
-	m_Parent->SetCoords(cx + m_Parent->GetXOffset(),
-			    cy + m_Parent->GetYOffset());
+	m_Parent->SetCoords(cx, cy);
     } else if (m_TiltAngle == 0.0) {
-	m_Parent->SetAltitude(cz + m_Parent->GetZOffset());
+	m_Parent->SetAltitude(cz);
     } else {
 	m_Parent->ClearCoords();
     }
@@ -1847,15 +1848,14 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
 {
     // Set the drawing colour based on an altitude.
    
+    z -= m_Parent->GetZMin();
     Double z_ext = m_Parent->GetZExtent();
 
     // points arising from tubes may be slightly outside the limits...
-    if (z < -z_ext * 0.5) z = -z_ext * 0.5;
-    if (z > z_ext * 0.5) z = z_ext * 0.5;
+    if (z < 0) z = 0;
+    if (z > z_ext) z = z_ext;
 
-    Double z_offset = z + z_ext * 0.5;
-
-    Double how_far = z_offset / z_ext;
+    Double how_far = z / z_ext;
     assert(how_far >= 0.0);
     assert(how_far <= 1.0);
 
@@ -1866,10 +1866,10 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
     const GLAPen& pen2 = GetPen(next_band);
     
     Double interval = z_ext / (GetNumDepthBands() - 1);
-    Double into_band = z_offset / interval - band;
+    Double into_band = z / interval - band;
    
-//    printf("%g z_offset=%g interval=%g band=%d\n", into_band,
-//	    z_offset, interval, band);
+//    printf("%g z=%g interval=%g band=%d\n", into_band,
+//	    z, interval, band);
     // FIXME: why do we need to clamp here?  Is it because the walls can
     // extend further up/down than the centre-line?
     if (into_band < 0.0) into_band = 0.0;
@@ -1924,7 +1924,7 @@ int GfxCore::GetDepthColour(Double z) const
 {
     // Return the (0-based) depth colour band index for a z-coordinate.
     Double z_ext = m_Parent->GetZExtent();
-    z += z_ext / 2;
+    z -= m_Parent->GetZMin();
     return int((z / (z_ext == 0.0 ? 1.0 : z_ext)) * (GetNumDepthBands() - 1));
 }
 
@@ -1938,7 +1938,7 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
 
     int band = (a > b) ? a : b; // boundary N lies on the bottom of band N.
     Double z_ext = m_Parent->GetZExtent();
-    return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2;
+    return (z_ext * band / (GetNumDepthBands() - 1)) + m_Parent->GetZMin();
 }
 
 void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b, 

@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003 Mark R. Shinwell
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001-2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -177,6 +177,8 @@ class MainFrm : public wxFrame {
     Double m_XExt;
     Double m_YExt;
     Double m_ZExt;
+    Double m_XMin;
+    Double m_YMin;
     Double m_ZMin;
     int m_NumLegs;
     int m_NumPoints;
@@ -210,14 +212,9 @@ class MainFrm : public wxFrame {
     bool m_Recording;
 #endif
 
-    struct {
-	Double x, y, z;
-    } m_Offsets;
-
     void SetTreeItemColour(LabelInfo* label);
     void FillTree();
     bool LoadData(const wxString& file, wxString prefix = "");
-    void CentreDataset(Double xmin, Double ymin, Double zmin);
 
     wxString GetTabMsg(int key) {
 	wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
@@ -380,8 +377,9 @@ public:
     Double GetXExtent() const { return m_XExt; }
     Double GetYExtent() const { return m_YExt; }
     Double GetZExtent() const { return m_ZExt; }
+    Double GetXMin() const { return m_XMin; }
+    Double GetYMin() const { return m_YMin; }
     Double GetZMin() const { return m_ZMin; }
-    Double GetZMax() const { return m_ZMin + m_ZExt; }
 
     int GetNumLegs() const { return m_NumLegs; }
     int GetNumPoints() const { return m_NumPoints; } // FIXME: unused
@@ -398,10 +396,6 @@ public:
     void ClearCoords();
     void SetCoords(Double x, Double y);
     void SetAltitude(Double z);
-
-    Double GetXOffset() const { return m_Offsets.x; }
-    Double GetYOffset() const { return m_Offsets.y; }
-    Double GetZOffset() const { return m_Offsets.z; }
 
     void SetMouseOverStation(LabelInfo* label);
 
