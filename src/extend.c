@@ -1,6 +1,6 @@
 /* > extend.c
  * Produce an extended elevation
- * Copyright (C) 1995,1996,1997 Olly Betts
+ * Copyright (C) 1995,1996,1997,1998 Olly Betts
  */
 
 /*
@@ -14,6 +14,7 @@
            Description copied across from .3d file and " (extended)" appended
 1996.05.06 find_point now sticks new stations on head of list
 1997.01.30 added return to main
+1998.03.04 added const
 */
 
 #include <stdio.h>
@@ -83,13 +84,13 @@ static void add_label(point*p,char*label) {
 }
 
 int main( int argc, char **argv ) {
-   char *fnmData=argv[1], *fnmOutput;
+   const char *fnmData = argv[1], *fnmOutput;
    char szDesc[256];
    float x,y,z;
    char sz[256];
    int result;
    point *fr, *to;
-   fr=NULL;
+   fr = NULL;
 
    ReadErrorFile( "Elevation Extender", "SURVEXHOME", "SURVEXLANG", argv[0],
                   MESSAGE_FILE );
@@ -103,8 +104,8 @@ int main( int argc, char **argv ) {
    fnmOutput = ( argc==2 ? AddExt("extend",EXT_SVX_3D) : argv[2] );
 
    /* try to open image file, and check it has correct header */
-   pimg=img_open( fnmData, szDesc, NULL );
-   if (pimg==NULL)
+   pimg = img_open( fnmData, szDesc, NULL );
+   if (pimg == NULL)
       fatal(img_error(),wr,fnmData,0);
 
    putnl();
