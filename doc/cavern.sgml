@@ -12,10 +12,8 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>cavern</command>
-<arg choice="opt" rep="repeat">
-  <option>option</option>
-</arg>
-<arg rep="repeat">survex data file</arg> <!--FIXME-->
+<arg choice="opt">options</arg>
+<arg choice="req" rep="repeat">survex data file</arg> <!--FIXME-->
 </cmdsynopsis>
 </refsynopsisdiv>
   

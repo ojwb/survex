@@ -12,8 +12,8 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>diffpos</command>
-<arg>.3d file</arg>
-<arg>.3d file</arg>
+<arg choice="req">&nbsp;.3d file</arg>
+<arg choice="req">.3d file</arg>
 <arg choice="opt">threshold</arg>
 </cmdsynopsis>
 </refsynopsisdiv>

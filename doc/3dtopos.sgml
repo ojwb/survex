@@ -12,8 +12,8 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>3dtopos</command>
-<arg choice="opt"><option>options</option></arg>
-<arg>.3d file</arg>
+<arg choice="opt">options</arg>
+<arg choice="req">.3d file</arg>
 <arg choice="opt">.pos file</arg>
 </cmdsynopsis>
 </refsynopsisdiv>

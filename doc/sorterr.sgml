@@ -12,14 +12,12 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>sorterr</command>
-<arg choice="opt"><option>options</option></arg>
-<arg>.err file</arg>
+<arg choice="opt">options</arg>
+<arg choice="req">.err file</arg>
 <arg choice="opt">how many</arg>
 </cmdsynopsis>
 </refsynopsisdiv>
-<!--  
-  Syntax: sorterr [OPTION]... ERR_FILE [HOW MANY]
-  
+<!-- FIXME: 
     -h, - -horizontal              Sort by horizontal error factor
     -v, - -vertical                Sort by vertical error factor
     -p, - -percentage              Sort by percentage error

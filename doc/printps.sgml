@@ -12,8 +12,8 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>printps</command>
-<arg choice="opt"><option>options</option></arg>
-<arg choice="opt" rep="repeat">.3d file</arg> <!--FIXME-->
+<arg choice="opt">options</arg>
+<arg choice="req" rep="repeat">.3d file</arg>
 </cmdsynopsis>
 </refsynopsisdiv>
 

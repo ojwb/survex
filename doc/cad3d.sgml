@@ -5,16 +5,17 @@
 
 <refnamediv>
 <refname>cad3d</refname>
-<refpurpose>convert a &x3d; file into formats which can be read by CAD
-and drawing packages
+<refpurpose>convert a &survexsuite; &x3d; file into formats which can be read
+by CAD and drawing packages
 </refpurpose>
 </refnamediv>
 
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>cad3d</command>
-<arg choice="opt"><option>options</option></arg>
-<arg>.3d file</arg>
+<arg choice="opt">options</arg>
+<arg choice="req">.3d file</arg>
+<arg choice="opt">output file</arg>
 </cmdsynopsis>
 </refsynopsisdiv>
   
@@ -22,7 +23,9 @@ and drawing packages
 <!-- FIXME: more info (opts, etc) -->
 
 <para>
-Cad3d can currently output DXF or Sketch files.
+Cad3d can currently output DXF or Sketch files for import into CAD packages.
+It can also produce a crude cut-down version of a Compass .plt file, which
+is suitable for importing into Carto (and little else).
 </para>
 
 <Para>An alternative to cad3d is SpeleoGen, which can be found in the

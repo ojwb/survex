@@ -12,7 +12,8 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>xcaverot</command>
-<arg choice="opt" rep="repeat">.3d file</arg>
+<arg choice="opt">options</arg>
+<arg choice="req" rep="repeat">.3d file</arg>
 </cmdsynopsis>
 </refsynopsisdiv>
 
