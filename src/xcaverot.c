@@ -1295,6 +1295,7 @@ main(int argc, char **argv)
 
    /* XWindowChanges ch; */
    XGCValues gcval;
+   GC enter_gc;
 
    int visdepth;	/* used in Double Buffer setup code */
 
@@ -1356,8 +1357,8 @@ main(int argc, char **argv)
    /* create a window with a size such that it fits on the screen */
    myhint.x = 0;
    myhint.y = 0;
-   myhint.width = WidthOfScreen(DefaultScreenOfDisplay(mydisplay));
-   myhint.height = HeightOfScreen(DefaultScreenOfDisplay(mydisplay));
+   myhint.width = WidthOfScreen(DefaultScreenOfDisplay(mydisplay))-5;
+   myhint.height = HeightOfScreen(DefaultScreenOfDisplay(mydisplay))-5;
    myhint.flags = /* PPosition | */ PSize;
 
    if (have_double_buffering) {
@@ -1371,10 +1372,11 @@ main(int argc, char **argv)
       dbwinattr.border_pixel = myforeground;
       dbwinattr.background_pixel = mybackground;
       dbwinattr.colormap = color_map;
+      dbwinattr.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask | KeyPressMask | KeyReleaseMask | ButtonMotionMask | PointerMotionMask;
       mywindow = XCreateWindow(mydisplay, DefaultRootWindow(mydisplay),
 			       myhint.x, myhint.y, myhint.width, myhint.height,
 			       5, visinfo->depth, InputOutput, visinfo->visual,
-			       CWBorderPixel | CWBackPixel | CWColormap,
+			       CWBorderPixel | CWBackPixel | CWColormap | CWDontPropagate,
 			       &dbwinattr);
    } else {
       color_map = DefaultColormap(mydisplay, 0);
@@ -1499,10 +1501,12 @@ main(int argc, char **argv)
 
    /* set up foreground/backgrounds and set up colors */
    mygc = XCreateGC(mydisplay, mywindow, 0, 0);
+
    gvalues.foreground = myforeground;
    gvalues.background = mybackground;
    scale_gc = XCreateGC(mydisplay, mywindow, 0, 0);
    slab_gc = XCreateGC(mydisplay, mywindow, 0, 0);
+   enter_gc = XCreateGC(mydisplay, mywindow, 0, 0);
 
    XSetForeground(mydisplay, scale_gc, white);
    XSetForeground(mydisplay, slab_gc, white);
@@ -1517,6 +1521,10 @@ main(int argc, char **argv)
    XSetForeground(mydisplay, mygc, myforeground);
    color_set_up(mydisplay, mywindow);
    XSetFont(mydisplay, gcs[lab_col_ind], font);
+
+   XSetForeground(mydisplay, enter_gc, black);
+   XSetBackground(mydisplay, enter_gc, white);
+   XChangeGC(mydisplay, enter_gc, GCLineWidth, &gcval);
 
    /* Get height value for font to use in label positioning JPNP 26/3/97 */
    fontinfo = XQueryFont(mydisplay, XGContextFromGC(gcs[0]));
@@ -1535,12 +1543,23 @@ main(int argc, char **argv)
 
    /* Enable the events we want */
    XSelectInput(mydisplay, mywindow,
-		ButtonPressMask | KeyPressMask | ExposureMask |
-		ButtonReleaseMask | ButtonMotionMask | StructureNotifyMask);
+		ButtonPressMask | KeyPressMask | KeyReleaseMask | ExposureMask |
+		ButtonReleaseMask | ButtonMotionMask | StructureNotifyMask | FocusChangeMask);
    XSelectInput(mydisplay, ind_com, ButtonPressMask | ButtonMotionMask);
    XSelectInput(mydisplay, ind_elev, ButtonPressMask | ButtonMotionMask);
    XSelectInput(mydisplay, scalebar, ButtonPressMask | ButtonMotionMask);
-
+#ifdef XCAVEROT_BUTTONS
+   XSelectInput(mydisplay, butload, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+   XSelectInput(mydisplay, butrot, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+   XSelectInput(mydisplay, butstep, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+   XSelectInput(mydisplay, butzoom, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+   XSelectInput(mydisplay, butmooz, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+   XSelectInput(mydisplay, butplan, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+   XSelectInput(mydisplay, butlabel, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+   XSelectInput(mydisplay, butcross, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+   XSelectInput(mydisplay, butselect, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+   XSelectInput(mydisplay, butquit, ButtonPressMask | ButtonReleaseMask | ButtonMotionMask);
+#endif
    /* map window to the screen */
    XMapRaised(mydisplay, mywindow);
 
@@ -1582,10 +1601,10 @@ main(int argc, char **argv)
       update_rotation();
 
       if (rot == 0 || XPending(mydisplay)) {
-	 XNextEvent(mydisplay, &myevent);
-	 /* printf("event of type #%d, in window %x\n",myevent.type, (int)myevent.xany.window);
-	  */
-
+         XNextEvent(mydisplay, &myevent);
+#if 0
+         printf("event of type #%d, in window %x\n",myevent.type, (int)myevent.xany.window);
+#endif
 	 if (myevent.type == ButtonRelease) {
 	    if (myevent.xbutton.button == Button1) {
 	       /* left button released */
@@ -1597,49 +1616,40 @@ main(int argc, char **argv)
 	 } else if (myevent.type == ButtonPress) {
 	    orig.x = myevent.xbutton.x;
 	    orig.y = myevent.xbutton.y;
-	    if (myevent.xbutton.button == Button1) {
-	       if (myevent.xbutton.window == ind_com) {
-#ifdef XCAVEROT_BUTTONS
-		  if (myevent.xbutton.subwindow == butzoom)
-		     process_zoom(mydisplay, mywindow, butzoom, mygc,
-				  enter_gc);
-		  else if (myevent.xbutton.subwindow == butmooz)
-		     process_mooz(mydisplay, mywindow, butmooz, mygc,
-				  enter_gc);
-		  else if (myevent.xbutton.subwindow == butload)
-		     process_load(mydisplay, mywindow, butload, mygc,
-				  enter_gc);
-		  else if (myevent.xbutton.subwindow == butrot)
-		     process_rot(mydisplay, mywindow, butrot, mygc, enter_gc);
-		  else if (myevent.xbutton.subwindow == butstep)
-		     process_step(mydisplay, mywindow, butstep, mygc,
-				  enter_gc);
-		  else if (myevent.xbutton.subwindow == butplan)
-		     process_plan(mydisplay, mywindow, butplan, mygc,
-				  enter_gc);
-		  else if (myevent.xbutton.subwindow == butlabel)
-		     process_label(mydisplay, mywindow, butlabel, mygc,
-				   enter_gc);
-		  else if (myevent.xbutton.subwindow == butcross)
-		     process_cross(mydisplay, mywindow, butcross, mygc,
-				   enter_gc);
-		  else if (myevent.xbutton.subwindow == butselect)
-		     process_select(mydisplay, mywindow, butselect, mygc,
-				    enter_gc);
-
-		  else if (myevent.xbutton.subwindow == butquit) {
-		     done = 1;
-		     break;
-		  }
+#if 0
+            printf("ButtonPress: x=%d, y=%d, window=%x\n",orig.x,orig.y,(int)myevent.xbutton.subwindow);
 #endif
-		  int old_angle = (int)view_angle;
-
-		  drag_compass(myevent.xbutton.x, myevent.xbutton.y);
-		  if ((int)view_angle == old_angle)
-		     redraw = 0;
+	    if (myevent.xbutton.button == Button1) {
+               if (myevent.xbutton.window == ind_com) {
+                  int old_angle = (int)view_angle;
+                  drag_compass(myevent.xbutton.x, myevent.xbutton.y);
+                  if ((int)view_angle == old_angle) 
+                     redraw = 0; 
+#ifdef XCAVEROT_BUTTONS
+               } else if (myevent.xbutton.window == butzoom)
+                     process_zoom(mydisplay, mywindow, butzoom, mygc, enter_gc);
+               else if (myevent.xbutton.window == butmooz)
+                     process_mooz(mydisplay, mywindow, butmooz, mygc, enter_gc);
+               else if (myevent.xbutton.window == butload)
+                     process_load(mydisplay, mywindow, butload, mygc, enter_gc);
+               else if (myevent.xbutton.window == butrot)
+                     process_rot(mydisplay, mywindow, butrot, mygc, enter_gc);
+               else if (myevent.xbutton.window == butstep)
+                     process_step(mydisplay, mywindow, butstep, mygc, enter_gc);
+               else if (myevent.xbutton.window == butplan)
+                     process_plan(mydisplay, mywindow, butplan, mygc, enter_gc);
+               else if (myevent.xbutton.window == butlabel)
+                     process_label(mydisplay, mywindow, butlabel, mygc, enter_gc);
+               else if (myevent.xbutton.window == butcross)
+                     process_cross(mydisplay, mywindow, butcross, mygc, enter_gc);
+               else if (myevent.xbutton.window == butselect)
+                     process_select(mydisplay, mywindow, butselect, mygc, enter_gc);
+               else if (myevent.xbutton.window == butquit) {
+                     done = 1;
+                     break;
+#endif	       
 	       } else if (myevent.xbutton.window == ind_elev) {
 		  int old_elev = (int)elev_angle;
-
 		  drag_elevation(myevent.xbutton.x, myevent.xbutton.y);
 		  if (old_elev == (int)elev_angle)
 		     redraw = 0;
@@ -1870,7 +1880,7 @@ main(int argc, char **argv)
       }
       if (redraw) {
 	 perform_redraw();
-	 // FIXME: draw_buttons(mydisplay, mywindow, mygc, enter_gc);
+	 draw_buttons(mydisplay, mywindow, mygc, enter_gc);
       }
    }	/* while */
    
