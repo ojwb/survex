@@ -53,13 +53,16 @@
 # include <config.h>
 #endif
 
+int xcMac, ycMac;
+float y_stretch = 1.0;
+
 /* Width of each button along the top of the window */
 #define BUTWIDTH 60
 #define BUTHEIGHT 25
 #define FONTSPACE 20
 
 /* Width and height of compass and elevation indicator windows */
-#define INDWIDTH 100
+#define INDWIDTH 50
 #define INDDEPTH (INDWIDTH + FONTSPACE)
 
 #define C_IND_ANG 25
@@ -91,7 +94,7 @@
 #include "filename.h"
 #include "message.h"
 #include "caverot.h"
-#include "cvrotimg.h"
+/* #include "cvrotimg.h" */
 
 #ifndef MAXINT
 #define MAXINT 0x7fffffff
@@ -138,15 +141,19 @@ static int crossing = 0;
 static int labelling = 0;
 
 static int xoff, yoff;  /* offsets at which survey is plotted in window */
+
+#if 0
 static coord x_min=0;
 static coord x_max=0;
 static coord y_min=0;
 static coord y_max=0;
 static coord z_min=0;
 static coord z_max=0;
+#endif
 static coord x_mid;
 static coord y_mid;
 static coord z_mid;
+
 static Window mywindow;
 static Window butzoom, butmooz, butload, butrot, butstep, butquit;
 static Window butplan, butlabel, butcross, butselect;
@@ -255,6 +262,7 @@ int findsurvey( char *name ) {
    return i;
 }
 
+#if 0
 void update_limits( point *p ) {
   if (p->X < x_min)
     x_min = p->X;
@@ -269,17 +277,24 @@ void update_limits( point *p ) {
   if (p->Z > z_max)
     z_max = p->Z;
 }
+#endif
 
 static lid Huge **ppLegs=NULL;
 static lid Huge **ppStns=NULL;
 
-int load_file( const char *name ) {
+int load_file(const char *name) {
    ppLegs = osmalloc((1 + 1) * sizeof(lid Huge *));
    ppStns = osmalloc((1 + 1) * sizeof(lid Huge *));
+
    /* load data into memory */
-   if (!load_data( name, ppLegs, ppStns) )  return 0;
+   if (!load_data(name, ppLegs, ppStns))  return 0;   
    ppLegs[1] = NULL;
    ppStns[1] = NULL;
+
+   scale = scale_to_screen(ppLegs, ppStns);
+   x_mid = Xorg;
+   y_mid = Yorg;
+   z_mid = Zorg;
    return 1;
 #if 0
  x_min = MAXINT;
@@ -943,6 +958,9 @@ int main( int argc, char **argv ) {
   /* so we can auto adjust scale on window resize */
   oldwidth = attr.width;
   oldheight = attr.height;
+
+  xcMac = attr.width;
+  ycMac = attr.height;
 
   /* try to open file if we've been given one */
   if (argv[1] && argv[1][0]!='\0' && argv[1][0]!='-') {
