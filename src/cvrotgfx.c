@@ -699,7 +699,7 @@ cvrotgfx_init(void)
    /* limits for OS routines (used for text) */
    xcMacOS = xcMac << eigX;
    ycMacOS = ycMac << eigY;
-   y_stretch *= (double)(1ul << eigX) / (1ul << eigY);
+   y_stretch *= (double)(1 << eigX) / (double)(1 << eigY);
    /* set origin to centre of screen +/- adjustment for labels */
    {
       int v;
