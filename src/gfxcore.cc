@@ -265,17 +265,17 @@ void GfxCore::SetScale(double scale)
 	    long cx = (long) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
 	    long cy = -(long) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
 
-	    pt->x = cx;
+	    pt->x = cx - CROSS_SIZE;
 	    pt->y = cy - CROSS_SIZE;
 	    pt++;
-	    pt->x = cx;
+	    pt->x = cx + CROSS_SIZE;
 	    pt->y = cy + CROSS_SIZE;
 	    pt++;
 	    pt->x = cx - CROSS_SIZE;
-	    pt->y = cy;
+	    pt->y = cy + CROSS_SIZE;
 	    pt++;
 	    pt->x = cx + CROSS_SIZE;
-	    pt->y = cy;
+	    pt->y = cy - CROSS_SIZE;
 	    pt++;
 	    
 	    *count++ = 2;
