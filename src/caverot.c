@@ -316,7 +316,11 @@ main(int argc, char **argv)
      }
 }
 
+/* magic macro needed so Allegro can automagically parse the command-line
+ * into argc and argv on MS Windows */
+#ifdef ALLEGRO
 END_OF_MAIN()
+#endif
 
 /***************************************************************************/
 
