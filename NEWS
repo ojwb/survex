@@ -1,10 +1,17 @@
+Changes in 1.0.31:
+
+* (MS Windows version): Fixed problems with the new printing code by building
+  with a newer version of wxWindows (2.5.2 instead of 2.4.1).
+
 * aven: Fixed grid menu item so that it always correctly reflects whether the
   grid is enabled or not.
 
-* Updates to Catalan, French, Romanian, Slovak, and Spanish translations -
-  these are now up-to-date.
+* aven: Minor improvements to a few toolbar icons.
 
-* Fixed Romanian message in English error files.
+* Updates to Catalan, French, Italian, Romanian, Slovak, and Spanish
+  translations.
+
+* cavern: Fixed Romanian message which was appearing in English .err files.
 
 Changes in 1.0.30:
 
