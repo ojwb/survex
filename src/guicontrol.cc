@@ -81,7 +81,11 @@ void GUIControl::HandleTranslate(wxPoint point)
 	dy = -dy;
     }
 
+#ifndef FLYFREE
     m_View->TranslateCave(dx, dy);
+#else
+    m_View->MoveViewer(0, dy, dx);
+#endif
     m_DragStart = point;
 }
 
@@ -97,8 +101,12 @@ void GUIControl::HandleScale(wxPoint point)
 	dy = -dy;
     }
 
+#ifndef FLYFREE
     m_View->SetScale(m_View->GetScale() * pow(1.06, 0.08 * dy));
     m_View->ForceRefresh();
+#else
+    m_View->MoveViewer(dy, 0, 0);
+#endif
 
     m_DragStart = point;
 }
@@ -602,7 +610,11 @@ void GUIControl::OnPlanUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayDown(bool accel)
 {
+#ifndef FLYFREE
     m_View->TranslateCave(0, accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT);
+#else
+    m_View->MoveViewer(0, accel ? -5.0 : -1.0, 0);
+#endif
 }
 
 void GUIControl::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
@@ -612,7 +624,11 @@ void GUIControl::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayLeft(bool accel)
 {
+#ifndef FLYFREE
     m_View->TranslateCave(accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT, 0);
+#else
+    m_View->MoveViewer(0, 0, accel ? -5.0 : -1.0);
+#endif
 }
 
 void GUIControl::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
@@ -622,7 +638,11 @@ void GUIControl::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayRight(bool accel)
 {
+#ifndef FLYFREE
     m_View->TranslateCave(accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT, 0);
+#else
+    m_View->MoveViewer(0, 0, accel ? 5.0 : 1.0);
+#endif
 }
 
 void GUIControl::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
@@ -632,7 +652,11 @@ void GUIControl::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayUp(bool accel)
 {
+#ifndef FLYFREE
     m_View->TranslateCave(0, accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT);
+#else
+    m_View->MoveViewer(0, accel ? 5.0 : 1.0, 0);
+#endif
 }
 
 void GUIControl::OnShiftDisplayUpUpdate(wxUpdateUIEvent& cmd)
@@ -646,10 +670,10 @@ void GUIControl::OnZoomIn(bool accel)
 
 #ifndef FLYFREE
     m_View->SetScale(m_View->GetScale() * (accel ? 1.1236 : 1.06));
-#else
-    m_View->MoveViewer(accel ? 5.0 : 1.0);
-#endif
     m_View->ForceRefresh();
+#else
+    m_View->MoveViewer(accel ? 5.0 : 1.0, 0, 0);
+#endif
 }
 
 void GUIControl::OnZoomInUpdate(wxUpdateUIEvent& cmd)
@@ -663,10 +687,10 @@ void GUIControl::OnZoomOut(bool accel)
 
 #ifndef FLYFREE
     m_View->SetScale(m_View->GetScale() / (accel ? 1.1236 : 1.06));
-#else
-    m_View->MoveViewer(accel ? -5.0 : -1.0);
-#endif
     m_View->ForceRefresh();
+#else
+    m_View->MoveViewer(accel ? -5.0 : -1.0, 0, 0);
+#endif
 }
 
 void GUIControl::OnZoomOutUpdate(wxUpdateUIEvent& cmd)

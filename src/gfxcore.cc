@@ -221,8 +221,8 @@ void GfxCore::Initialise()
     m_HaveData = true;
 
 #ifdef FLYFREE
-    m_ViewPoint = Vector3(0, 0, m_Parent->GetZExtent());
-    m_Perspective = true;
+    AddTranslation(0, 0, -m_Parent->GetZExtent());
+    TogglePerspective();
 #endif
 }
 

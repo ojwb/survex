@@ -362,12 +362,18 @@ public:
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
 			  const Vector3 &c, const Vector3 &d);
 #ifdef FLYFREE
-    void MoveViewer(double distance) {
-	Vector3 direction(cos(m_TiltAngle) * sin(m_PanAngle),
-			  cos(m_TiltAngle) * cos(m_PanAngle),
-			  -sin(m_TiltAngle));
-	direction *= distance;
-	m_ViewPoint += direction;
+    void MoveViewer(double forward, double up, double right) {
+	double cT = cos(m_TiltAngle);
+	double sT = sin(m_TiltAngle);
+	double cP = cos(m_PanAngle);
+	double sP = sin(m_PanAngle);
+	Vector3 v_forward(cT * sP, cT * cP, -sT);
+	Vector3 v_up(- sT * sP, - sT * cP, cT);
+	// v_forward and v_up are unit vectors and perpendicular
+	// so their cross product is also a unit vector
+	Vector3 v_right = v_forward * v_up;
+	Vector3 move = v_forward * forward + v_up * up + v_right * right;
+	AddTranslation(-move.getX(), -move.getY(), -move.getZ());
 	ForceRefresh();
     }
 #endif

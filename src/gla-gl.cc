@@ -357,22 +357,15 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
 #ifndef FLYFREE
     glTranslated(0.0, 0.0, -0.5 * m_VolumeDiameter - near_plane);
-    CHECK_GL_ERROR("SetDataTransform", "glTranslated");
-    // Get axes the correct way around (z upwards, y into screen)
-    glRotated(-90.0, 1.0, 0.0, 0.0);
-    CHECK_GL_ERROR("SetDataTransform", "glRotated");
-    m_Rotation.CopyToOpenGL();
-    CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
 #else
     glTranslated(0.0, 0.0, - near_plane);
+#endif
+    CHECK_GL_ERROR("SetDataTransform", "glTranslated");
     // Get axes the correct way around (z upwards, y into screen)
     glRotated(-90.0, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
     m_Rotation.CopyToOpenGL();
     CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
-    glTranslated(-m_ViewPoint.getX(), -m_ViewPoint.getY(), -m_ViewPoint.getZ());
-    CHECK_GL_ERROR("SetDataTransform", "glTranslated");
-#endif
     glTranslated(m_Translation.x, m_Translation.y, m_Translation.z);
     CHECK_GL_ERROR("SetDataTransform", "glTranslated");
 
