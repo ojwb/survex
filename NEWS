@@ -15,6 +15,9 @@
 
 * cavern: removed option to produce ascii .3d files.
 
+* cavern: on error, remove any existing .inf file for consistency with
+  .3d and .err files.
+
 * print*: Added --output command line option to override the output
   setting in the .ini file.
 

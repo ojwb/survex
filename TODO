@@ -16,9 +16,6 @@ resolve entries in TODO; resolve FIXMEs in code
 
 use "highest" title
 
-If there are errors, existing .inf file isn't removed, but
-existing .3d and .err files are...
-
 Default variance for topofil counter? (currently same as that of tape)
 
 complain about *export-ing or *entrance-ing fictional stations

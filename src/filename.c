@@ -364,7 +364,7 @@ filename_delete_output(void)
    while (flhead) {
       filelist *p = flhead;
       flhead = flhead->next;
-      remove(p->fnm);
+      (void)remove(p->fnm);
       osfree(p->fnm);
       osfree(p);
    }
