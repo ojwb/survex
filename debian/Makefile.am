@@ -6,12 +6,12 @@ EXTRA_DIST = copyright copyright.in survex-aven.files doc-base \
 
 MAINTAINERCLEANFILES = control
 
-control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $(srcdir)/../desc-aven.txt
+control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $(srcdir)/../desc-aven.txt $(srcdir)/../desc-svxedit.txt
 	echo Source: survex > control
 	echo Section: science >> control
 	echo Priority: extra >> control
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
-	echo Standards-Version: 3.5.10.0 >> control
+	echo Standards-Version: 3.6.0 >> control
 	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
 	echo 'Build-Depends: debhelper (>= 1.1.17), xlibs-dev, libwxgtk2.4-dev, gcc-3.2, g++-3.2' >> control
 	echo >> control
