@@ -6,6 +6,8 @@ Changes in 1.0.8:
 
 * aven: provide list of the 9 most recently used files.
 
+* print*: Improved output when --no-border is used.
+
 Changes in 1.0.7:
 
 * print*: halted with a failed assertion in 1.0.4-1.0.6.

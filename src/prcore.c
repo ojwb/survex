@@ -175,11 +175,13 @@ draw_info_box(double num, double denom)
       MOVEMM(0, 30); DRAWMM(60, 30);
    }
 
-   MOVEMM(0, 0);
-   DRAWMM(0, boxheight);
+   MOVEMM(0, boxheight);
    DRAWMM(boxwidth, boxheight);
    DRAWMM(boxwidth, 0);
-   DRAWMM(0, 0);
+   if (!fBorder) {
+      DRAWMM(0, 0);
+      DRAWMM(0, boxheight);
+   }
 
    MOVEMM(0, 20); DRAWMM(60, 20);
    MOVEMM(0, 10); DRAWMM(60, 10);
@@ -194,8 +196,8 @@ draw_info_box(double num, double denom)
 
       ax = (long)((80 - 15 * sin(rad(000.0 + rot))) * scX);
       ay = (long)((20 + 15 * cos(rad(000.0 + rot))) * scY);
-      bx = (long)((80 - 07 * sin(rad(180.0 + rot))) * scX);
-      by = (long)((20 + 07 * cos(rad(180.0 + rot))) * scY);
+      bx = (long)((80 -  7 * sin(rad(180.0 + rot))) * scX);
+      by = (long)((20 +  7 * cos(rad(180.0 + rot))) * scY);
       cx = (long)((80 - 15 * sin(rad(160.0 + rot))) * scX);
       cy = (long)((20 + 15 * cos(rad(160.0 + rot))) * scY);
       dx = (long)((80 - 15 * sin(rad(200.0 + rot))) * scX);
@@ -1154,10 +1156,17 @@ drawticks(border clip, int tsize, int x, int y)
    int s = tsize * 4;
    int o = s / 8;
    bool fAtCorner = fFalse;
-   
-   if (x) {
-      pr->DrawTo(clip.x_min, clip.y_min + tsize);
-      if (fCutlines) {
+   if (x == 0 && fBorder) {
+      /* solid left border */
+      pr->MoveTo(clip.x_min, clip.y_min);
+      pr->DrawTo(clip.x_min, clip.y_max);
+      fAtCorner = fTrue;
+   } else {
+      if (x > 0 || y > 0) {
+	 pr->MoveTo(clip.x_min, clip.y_min);
+	 pr->DrawTo(clip.x_min, clip.y_min + tsize);
+      }
+      if (x > 0 && fCutlines) {
 	 /* dashed left border */
 	 i = (clip.y_max - clip.y_min) -
 	     (tsize + ((clip.y_max - clip.y_min - tsize * 2L) % s) / 2);
@@ -1166,52 +1175,52 @@ drawticks(border clip, int tsize, int x, int y)
 	    pr->DrawTo(clip.x_min, clip.y_max - (i - o));
 	 }
       }
-      pr->MoveTo(clip.x_min, clip.y_max - tsize);
-      pr->DrawTo(clip.x_min, clip.y_max);
-      fAtCorner = fTrue;
-   } else if (fBorder) {
-      /* solid left border */
-      pr->MoveTo(clip.x_min, clip.y_min);
-      pr->DrawTo(clip.x_min, clip.y_max);
-      fAtCorner = fTrue;
-   } else if (x < pagesX - 1) {
-      pr->MoveTo(clip.x_min, clip.y_max - tsize);
-      pr->DrawTo(clip.x_min, clip.y_max);
-      fAtCorner = fTrue;
+      if (x > 0 || y < pagesY - 1) {
+	 pr->MoveTo(clip.x_min, clip.y_max - tsize);
+	 pr->DrawTo(clip.x_min, clip.y_max);
+	 fAtCorner = fTrue;
+      }
    }
 
-   if (y < pagesY - 1) {
+   if (y == pagesY - 1 && fBorder) {
+      /* solid top border */
       if (!fAtCorner) pr->MoveTo(clip.x_min, clip.y_max);
-      pr->DrawTo(clip.x_min + tsize, clip.y_max);
-      if (fCutlines) {
+      pr->DrawTo(clip.x_max, clip.y_max);
+      fAtCorner = fTrue;
+   } else {
+      if (y < pagesY - 1 || x > 0) {
+	 if (!fAtCorner) pr->MoveTo(clip.x_min, clip.y_max);
+	 pr->DrawTo(clip.x_min + tsize, clip.y_max);
+      }
+      if (y < pagesY - 1 && fCutlines) {
 	 /* dashed top border */
 	 i = (clip.x_max - clip.x_min) -
 	     (tsize + ((clip.x_max - clip.x_min - tsize * 2L) % s) / 2);
 	 for ( ; i > tsize; i -= s) {
 	    pr->MoveTo(clip.x_max - (i + o), clip.y_max);
 	    pr->DrawTo(clip.x_max - (i - o), clip.y_max);
-	    }
+	 }
       }
-      pr->MoveTo(clip.x_max - tsize, clip.y_max);
-      pr->DrawTo(clip.x_max, clip.y_max);
-      fAtCorner = fTrue;
-   } else if (fBorder) {
-      /* solid top border */
-      if (!fAtCorner) pr->MoveTo(clip.x_min, clip.y_max);
-      pr->DrawTo(clip.x_max, clip.y_max);
-      fAtCorner = fTrue;
-   } else if (y) {
-      pr->MoveTo(clip.x_max - tsize, clip.y_max);
-      pr->DrawTo(clip.x_max, clip.y_max);
+      if (y < pagesY - 1 || x < pagesX - 1) {
+	 pr->MoveTo(clip.x_max - tsize, clip.y_max);
+	 pr->DrawTo(clip.x_max, clip.y_max);
+	 fAtCorner = fTrue;
+      } else {
+	 fAtCorner = fFalse;
+      }
+   }
+
+   if (x == pagesX - 1 && fBorder) {
+      /* solid right border */
+      if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_max);
+      pr->DrawTo(clip.x_max, clip.y_min);
       fAtCorner = fTrue;
    } else {
-      fAtCorner = fFalse;
-   }
-      
-   if (x < pagesX - 1) {
-      if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_max);
-      pr->DrawTo(clip.x_max, clip.y_max - tsize);
-      if (fCutlines) {
+      if (x < pagesX - 1 || y < pagesY - 1) {
+	 if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_max);
+	 pr->DrawTo(clip.x_max, clip.y_max - tsize);
+      }
+      if (x < pagesX - 1 && fCutlines) {
 	 /* dashed right border */
 	 i = (clip.y_max - clip.y_min) -
 	     (tsize + ((clip.y_max - clip.y_min - tsize * 2L) % s) / 2);
@@ -1220,26 +1229,25 @@ drawticks(border clip, int tsize, int x, int y)
 	    pr->DrawTo(clip.x_max, clip.y_min + (i - o));
 	 }
       }
-      pr->MoveTo(clip.x_max, clip.y_min + tsize);
-      pr->DrawTo(clip.x_max, clip.y_min);
-      fAtCorner = fTrue;
-   } else if (fBorder) {
-      /* solid right border */
-      if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_max);
-      pr->DrawTo(clip.x_max, clip.y_min);
-      fAtCorner = fTrue;
-   } else if (x) {
-      pr->MoveTo(clip.x_max, clip.y_min + tsize);
-      pr->DrawTo(clip.x_max, clip.y_min);
-      fAtCorner = fTrue;
-   } else {
-      fAtCorner = fFalse;
+      if (x < pagesX - 1 || y > 0) {
+	 pr->MoveTo(clip.x_max, clip.y_min + tsize);
+	 pr->DrawTo(clip.x_max, clip.y_min);
+	 fAtCorner = fTrue;
+      } else {
+	 fAtCorner = fFalse;
+      }
    }
 
-   if (y) {
+   if (y == 0 && fBorder) {
+      /* solid bottom border */
       if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_min);
-      pr->DrawTo(clip.x_max - tsize, clip.y_min);
-      if (fCutlines) {
+      pr->DrawTo(clip.x_min, clip.y_min);
+   } else {
+      if (y > 0 || x < pagesX - 1) {
+	 if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_min);
+	 pr->DrawTo(clip.x_max - tsize, clip.y_min);
+      }
+      if (y > 0 && fCutlines) {
 	 /* dashed bottom border */
 	 i = (clip.x_max - clip.x_min) -
 	     (tsize + ((clip.x_max - clip.x_min - tsize * 2L) % s) / 2);
@@ -1248,15 +1256,10 @@ drawticks(border clip, int tsize, int x, int y)
 	    pr->DrawTo(clip.x_min + (i - o), clip.y_min);
 	 }
       }
-      pr->MoveTo(clip.x_min + tsize, clip.y_min);
-      pr->DrawTo(clip.x_min, clip.y_min);
-   } else if (fBorder) {
-      /* solid bottom border */
-      if (!fAtCorner) pr->MoveTo(clip.x_max, clip.y_min);
-      pr->DrawTo(clip.x_min, clip.y_min);
-   } else if (y < pagesY - 1) {
-      pr->MoveTo(clip.x_min + tsize, clip.y_min);
-      pr->DrawTo(clip.x_min, clip.y_min);
+      if (y > 0 || x > 0) {
+	 pr->MoveTo(clip.x_min + tsize, clip.y_min);
+	 pr->DrawTo(clip.x_min, clip.y_min);
+      }
    }
 }
 
