@@ -1,4 +1,4 @@
-/* > extend.c
+/* extend.c
  * Produce an extended elevation
  * Copyright (C) 1995-2001 Olly Betts
  *
@@ -95,7 +95,6 @@ find_point(const img_point *pt)
    point *p;
    for (p = headpoint.next; p != NULL; p = p->next) {
       if (pt->x == p->p.x && pt->y == p->p.y && pt->z == p->p.z) {
-	 p->order++;
 	 return p;
       }
    }
@@ -103,7 +102,7 @@ find_point(const img_point *pt)
    p = osmalloc(ossizeof(point));
    p->p = *pt;
    p->label = "<none>";
-   p->order = 1;
+   p->order = 0;
    p->next = headpoint.next;
    p->flags = 0;
    headpoint.next = p;
@@ -114,6 +113,8 @@ static void
 add_leg(point *fr, point *to, const char *prefix, int flags)
 {
    leg *l;
+   fr->order++;
+   to->order++;
    l = osmalloc(ossizeof(leg));
    l->fr = fr;
    l->to = to;
@@ -230,14 +231,20 @@ main(int argc, char **argv)
    /* of course we may have no 1-nodes... */
    if (start == NULL) {
       for (p = headpoint.next; p != NULL; p = p->next) {
-	 if (p->p.z > zMax && p->order != 0) {
+	 if (p->order != 0 && p->p.z > zMax) {
 	    start = p;
 	    zMax = p->p.z;
 	 }
       }
       if (start == NULL) {
-	 fprintf(stderr, "No legs in input .3d file\n"); /* TRANSLATE */
-	 return EXIT_FAILURE;
+	 /* There are no legs - just pick the highest station... */
+	 for (p = headpoint.next; p != NULL; p = p->next) {
+	    if (p->p.z > zMax) {
+	       start = p;
+	       zMax = p->p.z;
+	    }
+	 }
+	 if (!start) fatalerror(/*No survey data*/43);
       }
    }
    pimg = img_open_write(fnm_out, desc, fTrue);

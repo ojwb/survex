@@ -62,6 +62,8 @@
 
 * printdm/printpcl: --skip-blanks now forces --no-border.
 
+* extend: fixed to pick start station as documented.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.
