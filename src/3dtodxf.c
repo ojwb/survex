@@ -15,83 +15,137 @@
 */
 
 /* Tell img.h to work in standalone mode */
-#define STANDALONE
+/* #define STANDALONE */
 
 /* #define DEBUG_3DTODXF */
+
+#ifdef HAVE_CONFIG_h
+#include <config.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
 #include "img.h"
+#include "getopt.h"
+#include "useful.h"
+#include "cmdline.h"
+
+#ifndef STANDALONE
+#include "message.h"
+#endif
+
+#define TEXT_HEIGHT	0.6	
+#define MARKER_SIZE	0.8
 
 int main( int argc, char *argv[] ) {
    char szTitle[256], szDateStamp[256], szName[256];
-   char *fnm3D, *fnmDXF, *fnmNew;
+   char *fnm3D, *fnmDXF;
+   const char *pthMe;
+   unsigned char labels, crosses, legs;
    img *pimg;
    FILE *fh;
    int item;
    int fSeenMove=0;
    float x1=FLT_MAX,y1=FLT_MAX,z1=FLT_MAX;
    float x,y,z;
-   float min_x, min_y, min_z, max_x, max_y, max_z; // for HEADER section
+   float min_x, min_y, min_z, max_x, max_y, max_z; /* for HEADER section */
+   double text_height; /* for station labels */
+   double  marker_size; /* for station markers */
 
-   if (argc!=3) {
-      printf("Syntax: %s <.3d file> <DXF file>\n",argv[0]);
-      exit(1);
-   }
+   /* FIXME TRANSLATE */
+   static const struct option long_opts[] = {
+	/* const char *name; int has_arg (0 no_argument, 1 required, 2 options_*); int *flag; int val */
+	{"no-crosses", no_argument, 0, 'c'},
+	{"no-station-names", no_argument, 0, 'n'},
+	{"no-legs", no_argument, 0, 'l'},
+	{"htext", required_argument, 0, 't'},
+	{"msize", required_argument, 0, 'm'},
+	{"help", no_argument, 0, HLP_HELP},
+	{0,0,0,0}
+   };
 
-   fnm3D=argv[1];
-   fnmDXF=argv[2];
+#define short_opts "cnlt:m:h"
+
+   /* FIXME TRANSLATE */
+   static struct help_msg help[] = {
+	{HLP_ENCODELONG(0), "do not generate station markers"},
+	{HLP_ENCODELONG(1), "do not generate station labels"},
+	{HLP_ENCODELONG(2), "do not generate the survey legs"},
+	{HLP_ENCODELONG(3), "station labels text height (defult: 0.6)"},
+	{HLP_ENCODELONG(4), "station marker size (default: 0.8)"},
+	{0,0} 
+   };
+   int min_args = 1;
+
+#ifndef STANDALONE
+   pthMe = ReadErrorFile(argv[0]);
+#endif
+
+   /* Defaults */
+   crosses = 1;
+   labels = 1;
+   legs = 1;
+   text_height = TEXT_HEIGHT;
+   marker_size = MARKER_SIZE;
+
+   while (1) {
+      int opt = my_getopt_long(argc, argv, short_opts, long_opts, NULL, help, min_args);
+      if (opt == EOF) break;
+      switch (opt) {
+       case 'c': /* Crosses */
+         crosses = 0;
+         break;
+       case 'n': /* Labels */
+	 labels = 0;
+	 break;
+       case 'l': /* Legs */
+	 legs = 0;
+	 break;
+       case 't': /* Text height */
+	 text_height = strtod(optarg,NULL);  /* FIXME check for trailing garbage... */
+#ifdef DEBUG
+	printf("Text Height: '%s' input, converted to %6.2f\n", optarg, text_height);
+#endif
+	 break;
+       case 'm': /* Marker size */
+	 marker_size = strtod(optarg,NULL);
+#ifdef DEBUG
+	printf("Marker Size: '%s', converted to %6.2f\n", optarg, marker_size);
+#endif
+	 break;
+       default:
+	 printf("Internal Error: 'getopt' returned %c %d\n",opt, opt); /* <<<<< create message in messages.txt ? */ 
+      }
+   } 	 
+
+   fnm3D=argv[optind++];
+   fnmDXF=argv[optind++];
 
    pimg=img_open( fnm3D, szTitle, szDateStamp );
    if (!pimg) {
-      static char *reasons[]={
-         "No error",
-         "File not found",
-         "Out of memory",
-         "Can't open for output",
-         "File has incorrect format",
-         "It's a directory"
-      };
-      if (img_error()==1) {
-	 // Try again with .3D extension
-	 fnmNew=(char *)malloc(strlen(fnm3D)+3);
-	 if (!fnmNew) {
-		printf("Not enough memory");
-		exit(1);
-	 }
-	 strcpy(fnmNew, fnm3D);
-	 strcat(fnmNew,".3D");
-         pimg=img_open( fnmNew, szTitle, szDateStamp );
-	 if (!pimg) {
-            printf("Couldn't open input .3d file '%s'\n",fnm3D);
-            printf("Reason was: %s\n",reasons[img_error()]);
-	    free(fnmNew);
-            exit(1);
- 	 }
-	 else {
-	    fnm3D = fnmNew;
-	 } 
-      }
-      else {
-      	printf("Couldn't open input .3d file '%s'\n",fnm3D);
-      	printf("Reason was: %s\n",reasons[img_error()]);
-      	exit(1);
-      }
+#ifndef STANDALONE
+	fatalerror(img_error(), fnm3D); 
+#else
+	printf("Bad .3d file\n");
+#endif
    }
-
    fh=fopen(fnmDXF,"w");
    if (!fh) {
+#ifndef STANDALONE
+      fatalerror(/*failed to open file*/47,fnmDXF);
+#else
       printf("Couldn't open output file '%s'\n",fnmDXF);
-      if (!fnmNew) free(fnmNew);
+#endif
       exit(1);
    }
 
+#ifdef STANDALONE /* create these messages in msessages.txt ? */
    printf("3d file title `%s'\n",szTitle);
    printf("Creation time `%s'\n",szDateStamp);
+#endif 
 
-// begin New LAYER Stuff   
-   // Get drawing corners
+   /* Get drawing corners */
    min_x = min_y = min_z = max_x = max_y = max_z = 0;
    do {
       item=img_read_datum( pimg, szName, &x, &y, &z );
@@ -120,50 +174,56 @@ int main( int argc, char *argv[] ) {
    } while (item!=img_STOP);    
    img_close(pimg);  
    pimg=img_open( fnm3D, szTitle, szDateStamp );
-   // Header
+
+   /* Header */
    fprintf(fh,"0\nSECTION\n");  
    fprintf(fh,"2\nHEADER\n");
-   fprintf(fh,"9\n$EXTMIN\n"); // lower left corner of drawing
-   fprintf(fh,"10\n%#-.6f\n", min_x); // x
-   fprintf(fh,"20\n%#-.6f\n", min_y); // y
-   fprintf(fh,"30\n%#-.6f\n", min_z); // min z
-   fprintf(fh,"9\n$EXTMAX\n"); // upper right corner of drawing
-   fprintf(fh,"10\n%#-.6f\n", max_x); // x
-   fprintf(fh,"20\n%#-.6f\n", max_y); // y
-   fprintf(fh,"30\n%#-.6f\n", max_z); // max z
+   fprintf(fh,"9\n$EXTMIN\n"); /* lower left corner of drawing */
+   fprintf(fh,"10\n%#-.6f\n", min_x); /* x */
+   fprintf(fh,"20\n%#-.6f\n", min_y); /* y */
+   fprintf(fh,"30\n%#-.6f\n", min_z); /* min z */
+   fprintf(fh,"9\n$EXTMAX\n"); /* upper right corner of drawing */
+   fprintf(fh,"10\n%#-.6f\n", max_x); /* x */
+   fprintf(fh,"20\n%#-.6f\n", max_y); /* y */
+   fprintf(fh,"30\n%#-.6f\n", max_z); /* max z */
+   fprintf(fh,"9\n$PDMODE\n70\n3\n"); /* marker style as CROSS */
+   fprintf(fh,"9\n$PDSIZE\n40\n%6.2f\n", marker_size); /* marker size */
    fprintf(fh,"0\nENDSEC\n");  
 
    fprintf(fh,"0\nSECTION\n");
    fprintf(fh,"2\nTABLES\n");
    fprintf(fh,"0\nTABLE\n");
    fprintf(fh,"2\nLAYER\n");
-   fprintf(fh,"70\n10\n"); // max # off layers in this DXF file : 10 
-   // First Layer: CentreLine
+   fprintf(fh,"70\n10\n"); /* max # off layers in this DXF file : 10 */
+   /* First Layer: CentreLine */
    fprintf(fh,"0\nLAYER\n2\nCentreLine\n");
-   fprintf(fh,"70\n64\n"); // shows the layer is referenced by entities
-   fprintf(fh,"62\n5\n"); // color: kept the same used by SpeleoGen
-   fprintf(fh,"6\nCONTINUOUS\n"); // linetype
-   // Next Layer: Stations
+   fprintf(fh,"70\n64\n"); /* shows layer is referenced by entities */
+   fprintf(fh,"62\n5\n"); /* color: kept the same used by SpeleoGen */
+   fprintf(fh,"6\nCONTINUOUS\n"); /* linetype */
+   /* Next Layer: Stations */
    fprintf(fh,"0\nLAYER\n2\nStations\n");
-   fprintf(fh,"70\n64\n"); // shows the layer is referenced by entities
-   fprintf(fh,"62\n7\n"); // color: kept the same used by SpeleoGen
-   fprintf(fh,"6\nCONTINUOUS\n"); // linetype
-   // Next Layer: Labels
+   fprintf(fh,"70\n64\n"); /* shows layer is referenced by entities */
+   fprintf(fh,"62\n7\n"); /* color: kept the same used by SpeleoGen */
+   fprintf(fh,"6\nCONTINUOUS\n"); /* linetype */
+   /* Next Layer: Labels */
    fprintf(fh,"0\nLAYER\n2\nLabels\n");
-   fprintf(fh,"70\n64\n"); // shows the layer is referenced by entities
-   fprintf(fh,"62\n7\n"); // color: kept the same used by SpeleoGen
-   fprintf(fh,"6\nCONTINUOUS\n"); // linetype
+   fprintf(fh,"70\n64\n"); /* shows layer is referenced by entities */
+   fprintf(fh,"62\n7\n"); /* color: kept the same used by SpeleoGen */
+   fprintf(fh,"6\nCONTINUOUS\n"); /* linetype */
    fprintf(fh,"0\nENDTAB\n");
    fprintf(fh,"0\nENDSEC\n");
-// end New LAYER Stuff
 
    fprintf(fh,"0\nSECTION\n");
-   fprintf(fh,"002\nENTITIES\n");
+   fprintf(fh,"2\nENTITIES\n");
    do {
       item=img_read_datum( pimg, szName, &x, &y, &z );
       switch (item) {
        case img_BAD:
+#ifndef STANDALONE
+         fatalerror(/*bad 3d file*/106,fnm3D);
+#else
          printf("Bad .3d image file\n");
+#endif
          img_close(pimg);
          exit(1);
        case img_LINE:
@@ -171,21 +231,20 @@ int main( int argc, char *argv[] ) {
          printf("line to %9.2f %9.2f %9.2f\n",x,y,z);
 #endif
          if (!fSeenMove) {
-            printf("Something is wrong -- img_LINE before any img_MOVE!\n");
+            printf("Something is wrong -- img_LINE before any img_MOVE!\n"); /* <<<<<<< create message in messages.txt ? */
             img_close(pimg);
-	    if (!fnmNew) free(fnmNew);
             exit(1);
          }
-         fprintf(fh,"000\nLINE\n");
-// begin New Layer Stuff
-         fprintf(fh,"8\nCentreLine\n");
-// end New Layer Stuff
-         fprintf(fh,"010\n%6.2f\n",x1);
-         fprintf(fh,"020\n%6.2f\n",y1);
-         fprintf(fh,"030\n%6.2f\n",z1);
-         fprintf(fh,"011\n%6.2f\n",x);
-         fprintf(fh,"021\n%6.2f\n",y);
-         fprintf(fh,"031\n%6.2f\n",z);
+	 if (legs) {
+            fprintf(fh,"0\nLINE\n");
+            fprintf(fh,"8\nCentreLine\n"); /* Layer */
+            fprintf(fh,"10\n%6.2f\n",x1);
+            fprintf(fh,"20\n%6.2f\n",y1);
+            fprintf(fh,"30\n%6.2f\n",z1);
+            fprintf(fh,"11\n%6.2f\n",x);
+            fprintf(fh,"21\n%6.2f\n",y);
+            fprintf(fh,"31\n%6.2f\n",z);
+	 }
          x1=x; y1=y; z1=z;
          break;
        case img_MOVE:
@@ -201,8 +260,24 @@ int main( int argc, char *argv[] ) {
 #endif
          break;
        case img_LABEL:
+	 if (labels) { // write station labels to dxf file
+            fprintf(fh,"0\nTEXT\n");
+            fprintf(fh,"8\nLabels\n"); // Layer
+            fprintf(fh,"10\n%6.2f\n",x);
+            fprintf(fh,"20\n%6.2f\n",y);
+            fprintf(fh,"30\n%6.2f\n",z);
+            fprintf(fh,"40\n%6.2f\n", text_height);
+            fprintf(fh,"1\n%s\n",szName);
+	 }
+         if (crosses) { // write station markers to dxf file
+            fprintf(fh,"0\nPOINT\n");
+            fprintf(fh,"8\nStations\n"); // Layer
+            fprintf(fh,"10\n%6.2f\n",x);
+            fprintf(fh,"20\n%6.2f\n",y);
+            fprintf(fh,"30\n%6.2f\n",z);
+         }    
 #ifdef DEBUG_3DTODXF
-         printf("label `%s' at %9.2f %9.2f %9.2f\n",szName,x,y,z);
+            printf("label `%s' at %9.2f %9.2f %9.2f\n",szName,x,y,z);
 #endif
          break;
        case img_STOP:
@@ -211,13 +286,12 @@ int main( int argc, char *argv[] ) {
 #endif
          break;
        default:
-         printf("other info tag (code %d) ignored\n",item);
+         printf("other info tag (code %d) ignored\n",item); /* <<<<< cerate message in messages.txt ? */
       }
    } while (item!=img_STOP);
    img_close(pimg);
    fprintf(fh,"000\nENDSEC\n");
    fprintf(fh,"000\nEOF\n");
    fclose(fh);
-   if (!fnmNew) free(fnmNew);
    return 0;
 }
