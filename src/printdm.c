@@ -87,6 +87,7 @@
 1996.10.01 is_ibm now defaults to fFalse if not specified
 1997.01.16 now look for [dm] or [pcl] in .ini file
 1998.03.21 fixed up to compile cleanly on Linux
+1998.03.30 patch from Wookey: report fontfile filename in case of bad format
 */
 
 #include <stdio.h>
@@ -99,7 +100,8 @@
 #include <limits.h>
 
 #include "useful.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "prio.h"
 #include "filelist.h"
 #include "debug.h" /* for BUG and ASSERT */
@@ -175,7 +177,7 @@ static long xLast,yLast;
 
 static int dppX,dppY; /* dots (device pixels) per pixel (char defn pixels) */
 
-static void ReadFont( sz fnm, int dpiX, int dpiY );
+static void ReadFont( const char *fnm, int dpiX, int dpiY );
 
 static OSSIZE_T lenLine; /* number of chars in each line */
 
@@ -423,14 +425,14 @@ static void dm_ShowPage( const char *szPageDetails ) {
    putchar(' ');
    if (passStore==passMax-1) {
 #ifdef PCL
-      prio_printf( "\x1b*rB\n\n" ); /* End graphics */
-      prio_printf( "\x1b(s0p20h12v0s3t2Q" ); /* select a narrow-ish font */
-      prio_printf( szPageDetails );
+      prio_print( "\x1b*rB\n\n" ); /* End graphics */
+      prio_print( "\x1b(s0p20h12v0s3t2Q" ); /* select a narrow-ish font */
+      prio_print( szPageDetails );
       prio_putc( '\x0c' );
 #else
       prio_putpstr( &prn.fnt_sml );
       prio_putc( '\n' );
-      prio_printf( szPageDetails );
+      prio_print( szPageDetails );
       prio_putpstr( &prn.fmfd );
       prio_putpstr( &prn.rst );
 #endif
@@ -529,9 +531,9 @@ static void dm_Init( FILE *fh, const char *pth, float *pscX, float *pscY ) {
 
    fnm=UsePth(pth,FNMFONT);
    if (fPCL)
-      ReadFont(fnm,dpi,dpi);
+      ReadFont( fnm, dpi, dpi );
    else { /* Note: (*pscX) & (*pscY) are in device_dots / mm */
-      ReadFont(fnm, (int)((*pscX)*MM_PER_INCH), (int)((*pscY)*MM_PER_INCH) );
+      ReadFont( fnm, (int)((*pscX)*MM_PER_INCH), (int)((*pscY)*MM_PER_INCH) );
    }
    osfree(fnm);
 
@@ -621,16 +623,16 @@ static void DrawCross( long x, long y ) {
 
 static char font[MAX_DEF_CHAR+1][8];
 
-static void ReadFont( sz fnm, int dpiX, int dpiY ) {
+static void ReadFont( const char *fnm, int dpiX, int dpiY ) {
    FILE *fh;
-   int ch,y,x,b;
+   int ch, y, x, b;
 
-   dppX=DPP(dpiX); /* dots (printer pixels) per pixel (char defn pixels) */
-   dppY=DPP(dpiY);
+   dppX = DPP(dpiX); /* dots (printer pixels) per pixel (char defn pixels) */
+   dppY = DPP(dpiY);
 /* printf("Debug info: dpp x=%d, y=%d\n\n",dppX,dppY); */
-   fh=safe_fopen(fnm,"rb");
+   fh = safe_fopen(fnm,"rb");
    if (!fh)
-      fatal(24,wr,fnm,0);
+      fatal(24,wr,fnm,0); /* couldn't open font file */
    for( ch=' ' ; ch<=MAX_DEF_CHAR ; ch++ ) {
       for( y=0 ; y<8 ; y++ ) {
          do {
@@ -643,7 +645,7 @@ static void ReadFont( sz fnm, int dpiX, int dpiY ) {
             b=fgetc(fh);
          }
          if (b!='\n' && b!='\r')
-            fatal(88,NULL,NULL,0);
+            fatal(88,wr,fnm,0); /* error in format of font file */
       }
    }
    fclose(fh);
