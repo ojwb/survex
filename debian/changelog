@@ -1,7 +1,21 @@
+survex (1.0.4) unstable; urgency=low
+
+  * extend: now keep all names for an equated group of stations.
+  * cad3d: if an output filename is given, use its extension to pick the
+    default output format.
+  * aven: movement with keyboard is now accelerated by Shift as in caverot.
+  * print*: --no-borders fixed to work as documented; --no-cutlines added to
+    turn off the dashed lines where pages join on multi-page printouts.
+  * Improvements to .plt file reading.
+  * Added support for reading CMAP XYZ files.
+  * Documentation updates.
+
+ -- Wookey <wookey@survex.com>  Mon, 01 Apr 2002 23:23:07 +0100
+
 survex (1.0.3) unstable; urgency=low
 
-  * aven: support for feet and grads
-  * aven: show altitude of mouse pointer when in elevation view
+  * aven: support for feet and grads.
+  * aven: show altitude of mouse pointer when in elevation view.
   * print*: say where output is being sent.
   * Updated fr internationalisation; minor updates to other languages.
 
