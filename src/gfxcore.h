@@ -104,6 +104,7 @@ class GfxCore : public wxWindow {
     PlotData* m_PlotData;
     wxString* m_Labels;
     bool m_InitialisePending;
+    enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV } m_LastDrag;
 
     struct pens {
         wxPen black;

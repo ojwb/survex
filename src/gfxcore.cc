@@ -59,6 +59,7 @@ GfxCore::GfxCore(MainFrm* parent) :
     wxWindow(parent, 100), m_Timer(this, TIMER_ID), m_InitialisePending(false),
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, false, "Helvetica")
 {
+    m_LastDrag = drag_NONE;
     m_DraggingLeft = false;
     m_DraggingMiddle = false;
     m_DraggingRight = false;
@@ -417,7 +418,7 @@ wxPoint GfxCore::IndicatorCompassToScreenElev(int angle)
     wxCoord x = wxCoord(length * sin(-theta));
     wxCoord y = wxCoord(length * cos(-theta));
 
-    return wxPoint(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - x,
+    return wxPoint(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - INDICATOR_GAP - x,
 		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2 - y);
 }
 
@@ -431,11 +432,15 @@ void GfxCore::Draw2dIndicators()
 			 m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
 			 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
 			 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2);
-    m_DrawDC.DrawEllipse(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 + INDICATOR_MARGIN -
-			   INDICATOR_GAP,
-			 m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-			 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
-			 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2);
+    m_DrawDC.DrawEllipticArc(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 +
+			       INDICATOR_MARGIN - INDICATOR_GAP,
+			     m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
+			     INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
+			     INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2, -90, 90);
+    m_DrawDC.DrawLine(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - INDICATOR_GAP,
+		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_MARGIN,
+		      m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - INDICATOR_GAP,
+		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN);
 
     // Pan arrow
     wxPoint p1 = IndicatorCompassToScreenPan(0);
@@ -455,7 +460,7 @@ void GfxCore::Draw2dIndicators()
     wxPoint p1e = IndicatorCompassToScreenElev(0);
     wxPoint p2e = IndicatorCompassToScreenElev(150);
     wxPoint p3e = IndicatorCompassToScreenElev(210);
-    wxPoint pce(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5,
+    wxPoint pce(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - INDICATOR_GAP,
 	        m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2);
     wxPoint pts1e[3] = { p2e, p1e, pce };
     wxPoint pts2e[3] = { p3e, p1e, pce };
@@ -477,7 +482,8 @@ void GfxCore::Draw2dIndicators()
 
     str = wxString::Format("Elev %03d", int(m_TiltAngle * 180.0 / M_PI));
     m_DrawDC.GetTextExtent(str, &w, &h);
-    m_DrawDC.DrawText(str, m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - w/2,
+    m_DrawDC.DrawText(str, m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 -
+		        INDICATOR_GAP - w/2,
 		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
 }
 
@@ -765,6 +771,7 @@ void GfxCore::OnLButtonDown(wxMouseEvent& event)
 
 void GfxCore::OnLButtonUp(wxMouseEvent& event)
 {
+    m_LastDrag = drag_NONE;
     m_DraggingLeft = false;
 }
 
@@ -989,7 +996,46 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 
     if (!m_SwitchingToPlan && !m_SwitchingToElevation) {
         if (m_DraggingLeft) {
-	    HandleScaleRotate(event.ControlDown(), point);
+	  if (!m_FreeRotMode) {
+	      wxCoord x0 = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
+	      wxCoord x1 = wxCoord(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 -
+				   INDICATOR_GAP);
+	      wxCoord y = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
+
+	      wxCoord dx0 = point.x - x0;
+	      wxCoord dx1 = point.x - x1;
+	      wxCoord dy = point.y - y;
+
+	      wxCoord radius = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
+
+	      if (sqrt(dx0*dx0 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
+		  m_LastDrag == drag_COMPASS) {
+		  // drag in heading indicator
+		  m_LastDrag = drag_COMPASS;
+		  TurnCaveTo(atan2(-dx0, dy) - M_PI);
+	      }
+	      else if (sqrt(dx1*dx1 + dy*dy) <= radius && m_LastDrag == drag_NONE ||
+		  m_LastDrag == drag_ELEV) {
+		  // drag in elevation indicator
+		  m_LastDrag = drag_ELEV;
+		  if (dx1 >= 0) {
+		      TiltCave(atan2(-dy, dx1) - m_TiltAngle);
+		  }
+		  else if (dy >= 0) {
+		      TiltCave(-M_PI/2.0 - m_TiltAngle);
+		  }
+		  else {
+		      TiltCave(M_PI/2.0 - m_TiltAngle);
+		  }
+	      }
+	      else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
+		  m_LastDrag = drag_MAIN;
+		  HandleScaleRotate(event.ControlDown(), point);
+	      }
+	  }
+	  else {
+	      HandleScaleRotate(event.ControlDown(), point);
+	  }
 	}
 	else if (m_DraggingMiddle) {
 	    HandleTilt(point);
