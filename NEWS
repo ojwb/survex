@@ -1,5 +1,8 @@
 * printps/printhpgl/printwin: --skip-blanks fixed.
 
+* printhpgl: fixed paper size for A1 landscape (was actually A2
+  portrait!)
+
 * (MSDOS version): graphics in HTML manual were corrupted (by being
   packed as text).
 
