@@ -1076,6 +1076,8 @@ data_normal(void)
 	  first_stn = To;
 	  break;
        case Dir:
+	  /* FIXME: use get_token so we can give a better error if the user
+	   * gives a word rather than "F" or "B" */
 	  switch(toupper(ch)) {
 	   case 'F':
 	     break;
@@ -1087,6 +1089,7 @@ data_normal(void)
 	     process_eol();
 	     return 0;
 	  }
+	  nextch();
 	  break;
        case Tape:
 	  tape = read_numeric(fFalse);
