@@ -927,6 +927,11 @@ void GfxCore::DrawDepthbar()
 wxString GfxCore::FormatLength(double size_snap)
 {
     wxString str;
+    bool negative = (size_snap < 0.0);
+
+    if (negative) {
+        size_snap = -size_snap;
+    }
 
     if (size_snap == 0.0) {
         str = "0";
@@ -965,7 +970,7 @@ wxString GfxCore::FormatLength(double size_snap)
 	}
     }
 
-    return str;
+    return negative ? str : wxString("-") + str;
 }
 
 void GfxCore::DrawScalebar()
