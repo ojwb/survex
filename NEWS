@@ -1,3 +1,8 @@
+Changes in 1.0.17:
+
+* (MS Windows Version): Fix "Open in SvxEdit" to work.  If tcl isn't install
+  this action now falls back to using notepad.
+
 Changes in 1.0.16:
 
 * (MS Windows Version): Really fixed bug introduced in 1.0.14 which often stops

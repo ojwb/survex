@@ -40,6 +40,8 @@ main(int /* argc */, char **argv)
    p = strrchr(buf, '\\');
    if (p) ++p; else p = buf;
    strcpy(p, "svxedit.tcl");
-   ShellExecute(NULL, NULL, buf, argv[1], NULL, SW_SHOWNORMAL);
+   if (ShellExecute(NULL, NULL, buf, argv[1], NULL, SW_SHOWNORMAL) <= 32) {
+       ShellExecute(NULL, NULL, "notepad", argv[1], NULL, SW_SHOWNORMAL);
+   }
    return 0; 
 }
