@@ -961,7 +961,8 @@ replace_trailing_travs(void)
 	    iB = reverse_leg_dirn(leg);
 	    legRev = stnB->leg[iB];
 	    ASSERT2(legRev->l.to == stn1, "leg doesn't reciprocate");
-	    if (fixed(stn1) && !(leg->l.flags & BIT(FLAGS_DUPLICATE))) {
+	    if (fixed(stn1) &&
+		!(leg->l.flags & (BIT(FLAGS_DUPLICATE)|BIT(FLAGS_SURFACE)))) {
 	       /* check not an equating leg */
 	       if (!fZero(&leg->v)) {
 		  totadj += sqrt(sqrd(POS(stnB, 0) - POS(stn1, 0)) +
