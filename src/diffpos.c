@@ -22,7 +22,7 @@
 #endif
 
 /* size of line buffer */
-#define BUFLEN 256
+#define BUFLEN 1024 /* FIXME removed fixed limit */
 
 #include <stdio.h>
 #include <stdlib.h>
