@@ -129,6 +129,8 @@ class GfxCore : public wxWindow {
     enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV, drag_SCALE } m_LastDrag;
     bool m_MouseOutsideCompass;
     bool m_MouseOutsideElev;
+    // wxCursor m_StdCursor;
+    // wxCursor m_ScaleRotateCursor;
 
     struct pens {
         wxPen black;

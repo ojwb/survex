@@ -79,6 +79,8 @@ GfxCore::GfxCore(MainFrm* parent) :
     wxWindow(parent, 100),
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
 	   wxFONTENCODING_ISO8859_1),
+    //    m_StdCursor(wxCURSOR_ARROW),
+    //    m_ScaleRotateCursor("/home/mark/Development/survex/cursors/scrot.xbm"),
     m_Timer(this, TIMER_ID),
     m_InitialisePending(false)
 {
@@ -218,11 +220,13 @@ void GfxCore::Initialise()
 
 	    m_Params.rotation = q * m_Params.rotation;
 	    m_RotationMatrix = m_Params.rotation.asMatrix();
+	    m_IndicatorsOff = true;
 	    break;
 	}
 
         case lock_Y:
   	    // elevation looking along Y axis: this is the default orientation.
+ 	    m_IndicatorsOff = true;
 	    break;
 
         case lock_Z:
@@ -236,12 +240,15 @@ void GfxCore::Initialise()
 
 	    m_Params.rotation = q * m_Params.rotation;
 	    m_RotationMatrix = m_Params.rotation.asMatrix();
+
+	    m_Clino = false;
 	
-	    m_DepthbarOff = true;
+	    //	    m_DepthbarOff = true;
 	    break;
 	}
 
         case lock_POINT:
+
   	    m_DepthbarOff = true;
 	    m_ScalebarOff = true;
 	    m_IndicatorsOff = true;
@@ -250,13 +257,21 @@ void GfxCore::Initialise()
 
         case lock_XY:
 	    // survey is linear and parallel to the Z axis => display in elevation.
+	    m_PanAngle = M_PI * 1.5;
+
+	    Quaternion q;
+	    q.setFromEulerAngles(0.0, 0.0, m_PanAngle);
+
+	    m_Params.rotation = q * m_Params.rotation;
+	    m_RotationMatrix = m_Params.rotation.asMatrix();
+	    m_IndicatorsOff = true;
 	    break;
     }
 
     // Scale the survey to a reasonable initial size.
     m_InitialScale = m_Lock == lock_POINT ? 1.0 :
-                               double(m_XSize) / (double(MAX(m_Parent->GetXExtent(),
-			       m_Parent->GetYExtent())) * 1.1);
+      m_Lock == lock_XY ? double(m_YSize) / double(m_Parent->GetZExtent()) :
+      double(m_XSize) / (double(MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent())) * 1.1);
 
     // Calculate screen coordinates and redraw.
     SetScale(m_InitialScale);
@@ -474,6 +489,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     if (!m_DoneFirstShow) {
         FirstShow();
     }
+    // Handle a mouse movement during scale/rotate mode.
 
     // Redraw the offscreen bitmap if it's out of date.
     if (m_RedrawOffscreen) {
@@ -498,6 +514,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 
         dc.Blit(x, y, width, height, &m_DrawDC, x, y);
 
+    // Handle a mouse movement during scale/rotate mode.
 	iter++;
     }
 
@@ -864,12 +881,14 @@ void GfxCore::DrawDepthbar()
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
 
-    int y = DEPTH_BAR_BLOCK_HEIGHT*m_Bands + DEPTH_BAR_OFFSET_Y;
+    int bands = (m_Lock == lock_NONE || m_Lock == lock_X || m_Lock == lock_Y ||
+		 m_Lock == lock_XY) ? m_Bands : 1;
+    int y = DEPTH_BAR_BLOCK_HEIGHT*bands + DEPTH_BAR_OFFSET_Y;
     int size = 0;
 
-    wxString* strs = new wxString[m_Bands + 1];
-    for (int band = 0; band <= m_Bands; band++) {
-	double z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / m_Bands);
+    wxString* strs = new wxString[bands + 1];
+    for (int band = 0; band <= bands; band++) {
+	double z = m_Parent->GetZMin() + (m_Parent->GetZExtent() * band / bands);
 	strs[band] = wxString::Format("%.0fm", z);
 	int x, y;
 	m_DrawDC.GetTextExtent(strs[band], &x, &y);
@@ -886,10 +905,10 @@ void GfxCore::DrawDepthbar()
 			   DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
 			   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
 			     DEPTH_BAR_EXTRA_LEFT_MARGIN,
-			   DEPTH_BAR_BLOCK_HEIGHT*m_Bands + DEPTH_BAR_MARGIN*4);
+			   DEPTH_BAR_BLOCK_HEIGHT*bands + DEPTH_BAR_MARGIN*4);
 
-    for (int band = 0; band <= m_Bands; band++) {
-        if (band < m_Bands) {
+    for (int band = (bands == 1 ? 1 : 0); band <= bands; band++) {
+        if (band < bands || bands == 1) {
 	    m_DrawDC.SetPen(m_Parent->GetPen(band));
 	    m_DrawDC.SetBrush(m_Parent->GetBrush(band));
 	    m_DrawDC.DrawRectangle(x_min, y - DEPTH_BAR_BLOCK_HEIGHT,
@@ -897,7 +916,7 @@ void GfxCore::DrawDepthbar()
 	}
 
 	m_DrawDC.DrawText(strs[band], x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
-			  y - (FONT_SIZE / 2) - 1);
+			  y - (FONT_SIZE / 2) - 1 - (bands == 1 ? DEPTH_BAR_BLOCK_HEIGHT/2 : 0));
 
 	y -= DEPTH_BAR_BLOCK_HEIGHT;
     }
@@ -1011,6 +1030,7 @@ void GfxCore::OnLButtonUp(wxMouseEvent& event)
 		       INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
 		       INDICATOR_BOX_SIZE);
 	m_RedrawOffscreen = true;
+	//	SetCursor(m_StdCursor);
 	Refresh(false, &r);
     }
 }
@@ -1050,7 +1070,8 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
-    double pan_angle = m_Lock == lock_NONE ? -M_PI * (double(dx) / 500.0) : 0.0;
+    double pan_angle = (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
+			m_Lock == lock_YZ) ? -M_PI * (double(dx) / 500.0) : 0.0;
 
     Quaternion q;
     double new_scale = m_Params.scale;
@@ -1067,6 +1088,9 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
     }
     else {
         // left/right => rotate, up/down => scale
+
+      //	SetCursor(m_ScaleRotateCursor);
+
         if (m_ReverseControls) {
 	    pan_angle = -pan_angle;
 	}
@@ -1326,6 +1350,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
 
 void GfxCore::OnDisplayOverlappingNames(wxCommandEvent&)
 {
+    
     m_OverlappingNames = !m_OverlappingNames;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
@@ -1387,7 +1412,8 @@ void GfxCore::OnMoveEast(wxCommandEvent&)
 
 void GfxCore::OnMoveEastUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT &&
+	       m_Lock != lock_Y && m_Lock != lock_XY);
 }
 
 void GfxCore::OnMoveNorth(wxCommandEvent&) 
@@ -1397,7 +1423,8 @@ void GfxCore::OnMoveNorth(wxCommandEvent&)
 
 void GfxCore::OnMoveNorthUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT &&
+	       m_Lock != lock_X && m_Lock != lock_XY);
 }
 
 void GfxCore::OnMoveSouth(wxCommandEvent&) 
@@ -1407,7 +1434,8 @@ void GfxCore::OnMoveSouth(wxCommandEvent&)
 
 void GfxCore::OnMoveSouthUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT &&
+	       m_Lock != lock_X && m_Lock != lock_XY);
 }
 
 void GfxCore::OnMoveWest(wxCommandEvent&)
@@ -1417,7 +1445,8 @@ void GfxCore::OnMoveWest(wxCommandEvent&)
 
 void GfxCore::OnMoveWestUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock != lock_POINT &&
+	       m_Lock != lock_Y && m_Lock != lock_XY);
 }
 
 void GfxCore::StartTimer()
@@ -1438,7 +1467,9 @@ void GfxCore::OnStartRotation(wxCommandEvent&)
 
 void GfxCore::OnStartRotationUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating && m_Lock != lock_POINT);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_Rotating &&
+	       (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
+		m_Lock == lock_YZ));
 }
 
 void GfxCore::OnStopRotation(wxCommandEvent&) 
@@ -1817,6 +1848,7 @@ void GfxCore::OnViewClino(wxCommandEvent&)
 
 void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd) 
 {
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_IndicatorsOff);
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_IndicatorsOff &&
+	       m_Lock == lock_NONE);
     cmd.Check(m_Clino);
 }

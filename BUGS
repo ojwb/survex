@@ -1,46 +1,23 @@
-Date: Sat, 07 Apr 2001
+Date: Tue, 01 May 2001
 From: Mark
 
 wxaven:
-
-- get it to build on/for win32
-
 - confusion over semantics of "reverse controls"
-
-- continuing trouble with accelerator keys
-
-wxaven with Motif:
-
-- need to resize window to get any display at all
-
-- about box is resizable
-
-- flicker on window resize
-
-Date: Mon, 09 Apr 2001
-From: Olly
-
-wxaven:
-
+- depth bar needs to change num of decimal places
 - dragging scale bar should change scale, not move scale bar!
+- elevation indicator
 
-- status bar?
-
-- "Alt-F, Ctrl-Z" changes hotkey for File->Open from Ctrl-O to Ctrl-Z !?!
-
-Date: Wed, 11 Apr 2001
-From: Olly
-
-wxaven:
-
+wxaven problems with unknown solution:
+- continuing trouble with accelerator keys
 - Accents in menus were working but suddenly stopped - I think this
 happened when I upgraded debian and a new libgtk package got
-installed...
+installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
 
-Date: Sun, 21 Apr 2001
-From: Olly
+wxaven for Windows:
+- doesn't run (crash on startup)
 
-wxaven:
-
-- Provide a toolbar?
+wxaven with Motif:
+- need to resize window to get any display at all
+- about box is resizable
+- flicker on window resize
 
