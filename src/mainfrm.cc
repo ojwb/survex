@@ -119,6 +119,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 
     EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
+    EVT_UPDATE_UI(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_STOP, MainFrm::OnStopRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_SPEED_UP, MainFrm::OnSpeedUpUpdate)
     EVT_UPDATE_UI(menu_ROTATION_SLOW_DOWN, MainFrm::OnSlowDownUpdate)
@@ -372,7 +373,9 @@ void MainFrm::CreateToolBar()
 #endif
 
     toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open.png"), "Open a 3D file for viewing");
+#ifdef AVENPRES
     toolbar->AddTool(menu_FILE_OPEN_PRES, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
+#endif
     toolbar->AddSeparator();
     toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation.png"), wxNullBitmap, true,
                      -1, -1, NULL, "Toggle rotation");
