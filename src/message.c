@@ -255,11 +255,6 @@ init_signals(void)
 }
 #endif
 
-#define CHARSET_BAD       -1
-#define CHARSET_USASCII    0
-#define CHARSET_ISO_8859_1 1
-#define CHARSET_DOSCP850   2
-#define CHARSET_RISCOS31   3
 static int default_charset( void ) {
 #ifdef ISO8859_1
    return CHARSET_ISO_8859_1;
@@ -294,7 +289,7 @@ add_unicode(int charset, unsigned char *p, int value)
    if (value == 0) return 0;
    switch (charset) {
    case CHARSET_USASCII:
-      if (value < 128) {
+      if (value < 0x80) {
 	 *p = value;
 	 return 1;
       }
@@ -303,7 +298,7 @@ add_unicode(int charset, unsigned char *p, int value)
 #if (OS==RISCOS)
    case CHARSET_RISCOS31: /* RISC OS 3.1 has a few extras in 128-159 */
 #endif
-      if (value < 256) {
+      if (value < 0x100) {
 	 *p = value;
 	 return 1;
       }
@@ -461,6 +456,14 @@ parse_msg_file(int charset_code)
       unsigned char *to = p;
       int ch;
       msg_array[i] = (char *)p;
+
+      /* If we want UTF8 anyway, we just need to find the start of each
+       * message */
+      if (charset_code == CHARSET_UTF8) {
+	 p += strlen(p) + 1;
+	 continue;
+      }       
+
       while ((ch = *p++) != 0) {
 	 /* A byte in the range 0x80-0xbf or 0xf0-0xff isn't valid in
 	  * this state, (0xf0-0xfd mean values > 0xffff) so treat as

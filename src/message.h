@@ -32,6 +32,13 @@
 # include "Mnemosyne.mnemosyn.h"
 #endif
 
+#define CHARSET_BAD       -1
+#define CHARSET_USASCII    0
+#define CHARSET_ISO_8859_1 1
+#define CHARSET_DOSCP850   2
+#define CHARSET_RISCOS31   3
+#define CHARSET_UTF8	   4
+
 /* name of current application */
 extern const char *szAppNameCopy;
 

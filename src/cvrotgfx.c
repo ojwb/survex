@@ -365,6 +365,7 @@ cvrotgfx_init(void)
       }
    }
 /*   set_mouse_range(INT_MIN, INT_MIN, INT_MAX, INT_MAX); */
+   select_charset(CHARSET_UTF8);
 #elif defined(__DJGPP__)
    const GrVideoMode *mode;
 /*	    GrSetMode(GR_width_height_color_graphics, x, y, c);
