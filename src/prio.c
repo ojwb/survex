@@ -19,10 +19,8 @@
 
 #if (OS==MSDOS)
 /* Make DJGPP v2 use register struct-s compatible with v1 and BorlandC */
-# if defined(__DJGPP__)
-#  if (__DJGPP__ >= 2)
-#   define _NAIVE_DOS_REGS
-#  endif
+# if defined(__DJGPP__) && (__DJGPP__ >= 2)
+#  define _NAIVE_DOS_REGS
 # endif
 # include <dos.h>
 #endif
