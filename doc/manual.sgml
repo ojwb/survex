@@ -124,8 +124,8 @@ this.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-10-04 10:56:12 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.64 2001-10-04 10:56:12 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-10-04 23:56:26 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.65 2001-10-04 23:56:26 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -3080,8 +3080,10 @@ understand, then send it to us, and we will see what can be done.
 
 </Sect3>
 
-<!-- can't seem to find the CfH convertor - it's probably no longer
-useful anyway...
+<!--
+ Nobody seems to have the CfH convertor...
+ but it's probably no longer useful anyway
+
 <Sect3><Title>Other Converters</Title>
 
 <Para>We have an Excel 5 macro for converting The Lotus 123 spreadsheets
@@ -3092,7 +3094,6 @@ These will normally be available via the
 </Para>
 
 </Sect3>
-
 -->
 
 </Sect2>
