@@ -7,10 +7,10 @@
 #undef HAVE_DOPRNT
 
 /* Define if you have the strftime function.  */
-#define HAVE_STRFTIME
+#define HAVE_STRFTIME 1
 
 /* Define if you have the vprintf function.  */
-#define HAVE_VPRINTF
+#define HAVE_VPRINTF 1
 
 /* Define as the return type of signal handlers (int or void).  */
 #define RETSIGTYPE void
@@ -44,40 +44,40 @@
 #undef strcasecmp
 
 /* Define if you have the difftime function.  */
-#define HAVE_DIFFTIME
+#define HAVE_DIFFTIME 1
 
 /* Define if you have the mktime function.  */
-#define HAVE_MKTIME
+#define HAVE_MKTIME 1
 
 /* Define if you have the perror function.  */
-#define HAVE_PERROR
+#define HAVE_PERROR 1
 
 /* Define if you have the popen function.  */
 #undef HAVE_POPEN
 
 /* Define if you have the setjmp function.  */
-#define HAVE_SETJMP
+#define HAVE_SETJMP 1
 
 /* Define if you have the signal function.  */
-#define HAVE_SIGNAL
+#define HAVE_SIGNAL 1
 
 /* Define if you have the strdup function.  */
 #undef HAVE_STRDUP
 
 /* Define if you have the strerror function.  */
-#define HAVE_STRERROR
+#define HAVE_STRERROR 1
 
 /* Define if you have the strtod function.  */
-#define HAVE_STRTOD
+#define HAVE_STRTOD 1
 
 /* Define if you have the strtol function.  */
-#define HAVE_STRTOL
+#define HAVE_STRTOL 1
 
 /* Define if you have the <limits.h> header file.  */
-#define HAVE_LIMITS_H
+#define HAVE_LIMITS_H 1
 
 /* Define if you have the <string.h> header file.  */
-#define HAVE_STRING_H
+#define HAVE_STRING_H 1
 
 /* Define if you have the m library (-lm).  */
 #undef HAVE_LIBM
