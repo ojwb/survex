@@ -164,7 +164,8 @@ noinst_DATA = borlandc/makefile riscos/makefile
  
 EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
  riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
- riscos/stdh/regnames riscos/stdh/swinames miniam.pl aven.rc aven.png aven.ico\
+ riscos/stdh/regnames riscos/stdh/swinames miniam.pl aven.rc svxedit.rc\
+ aven.png aven.ico\
  svxedit.png svxedit.ico getopt.c png2winicon gettexttomsg.pl
 
 BUILT_SOURCES = z_getopt.c aven.pal
