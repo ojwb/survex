@@ -33,7 +33,7 @@
 #include "datain.h" /* for compile_error */
 #include "validate.h" /* for compile_error */
 
-#define THRESHOLD (REAL_EPSILON * 1000) // 100 was too small
+#define THRESHOLD (REAL_EPSILON * 1000) /* 100 was too small */
 
 node *stn_iter = NULL; /* for FOR_EACH_STN */
 

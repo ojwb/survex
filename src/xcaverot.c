@@ -1770,7 +1770,7 @@ main(int argc, char **argv)
       }
 
 #ifdef MARKS_BODGE
-      // Discard all events.
+      /* Discard all events. */
       XSync(mydisplay, True);
 #endif
 
