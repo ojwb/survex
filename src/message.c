@@ -262,7 +262,7 @@ static int
 xlate_dos_cp850(int unicode)
 {
    switch (unicode) {
-#include "unicode-to-dos-cp-default.tab"
+#include "uni2dos.h"
    }
    return 0;
 }
@@ -323,28 +323,28 @@ parse_msg_file(int charset_code)
    const char *lang;
    int i;
    unsigned len;
-   char *p = msg_blk;
+   char *p = (char *)msg_blk;
 
    lang = getenv("SURVEXLANG");
    if (!lang || !*lang) lang = DEFAULTLANG;
 
 #if 1
    /* backward compatibility - FIXME deprecate? */
-   if (strcmp(lang, "engi") == 0) {
+   if (strcasecmp(lang, "engi") == 0) {
       lang = "en";
-   } else if (strcmp(lang, "engu") == 0) {
+   } else if (strcasecmp(lang, "engu") == 0) {
       lang = "en-us";
-   } else if (strcmp(lang, "fren") == 0) {
+   } else if (strcasecmp(lang, "fren") == 0) {
       lang = "fr";
-   } else if (strcmp(lang, "germ") == 0) {
+   } else if (strcasecmp(lang, "germ") == 0) {
       lang = "de";
-   } else if (strcmp(lang, "ital") == 0) {
+   } else if (strcasecmp(lang, "ital") == 0) {
       lang = "it";
-   } else if (strcmp(lang, "span") == 0) {
+   } else if (strcasecmp(lang, "span") == 0) {
       lang = "es";
-   } else if (strcmp(lang, "cata") == 0) {
+   } else if (strcasecmp(lang, "cata") == 0) {
       lang = "ca";
-   } else if (strcmp(lang, "port") == 0) {
+   } else if (strcasecmp(lang, "port") == 0) {
       lang = "pt";
    }
 #endif
@@ -395,7 +395,7 @@ parse_msg_file(int charset_code)
    }
    fclose(fh);
 
-   p = msg_blk;
+   p = (char *)msg_blk;
    for (i = 0; i < num_msgs; i++) {
       char *to = p;
       int ch;
@@ -462,7 +462,7 @@ ReadErrorFile(const char *argv0)
 #else
    } else if (argv0) {
       /* else try the path on argv[0] */
-      pthMe = PthFromFnm(argv0);
+      pthMe = path_from_fnm(argv0);
    } else {
       /* otherwise, forget it - go for the current directory */
       pthMe = "";
@@ -491,7 +491,7 @@ msg(int en)
 
    if (en < 0 || en >= num_msgs) return szBadEn;
 
-   p = msg_blk;
+   p = (char *)msg_blk;
    /* skip to en-th message */
    while (en--) p += strlen(p) + 1;
 
