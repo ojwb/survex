@@ -254,9 +254,6 @@ class GfxCore : public wxWindow {
     void NattyDrawNames();
     void SimpleDrawNames();
 
-    void Defaults();
-    void DefaultParameters();
-
     void Repaint();
 
     void CreateHitTestGrid();

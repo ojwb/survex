@@ -114,6 +114,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
 	   wxFONTENCODING_ISO8859_1),
     m_InitialisePending(false)
 {
+    tiltangle_intial = M_PI_2;
+    panangle_initial = 0.0;
     m_OffscreenBitmap = NULL;
     m_LastDrag = drag_NONE;
     m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
@@ -238,9 +240,6 @@ void GfxCore::Initialise()
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
 
-    // Apply default parameters.
-    DefaultParameters();
-
     // If there are no legs (e.g. after loading a .pos file), turn crosses on.
     if (m_Parent->GetNumLegs() == 0) {
 	m_Crosses = true;
@@ -253,46 +252,6 @@ void GfxCore::Initialise()
     if (m_Parent->GetXExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_X);
     if (m_Parent->GetYExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_Y);
     if (m_Parent->GetZExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_Z);
-
-    switch (m_Lock) {
-	case lock_X:
-	{
-	    // elevation looking along X axis (East)
-	    m_PanAngle = M_PI * 1.5;
-
-	    Quaternion q;
-	    q.setFromEulerAngles(0.0, 0.0, m_PanAngle);
-
-	    m_Params.rotation = q * m_Params.rotation;
-	    m_RotationMatrix = m_Params.rotation.asMatrix();
-	    m_RotationOK = false;
-	    break;
-	}
-
-	case lock_Y:
-	case lock_XY: // survey is linearface and parallel to the Z axis => display in elevation.
-	    // elevation looking along Y axis (North)
-	    m_Params.rotation.setFromEulerAngles(0.0, 0.0, 0.0);
-	    m_RotationMatrix = m_Params.rotation.asMatrix();
-	    m_RotationOK = false;
-	    break;
-
-	case lock_Z:
-	case lock_XZ: // linearface survey parallel to Y axis
-	case lock_YZ: // linearface survey parallel to X axis
-	{
-	    // flat survey (zero height range) => go into plan view (default orientation).
-	    break;
-	}
-
-	case lock_POINT:
-	    m_RotationOK = false;
-	    m_Crosses = true;
-	    break;
-
-	case lock_NONE:
-	    break;
-    }
 
     // Scale the survey to a reasonable initial size.
     switch (m_Lock) {
@@ -322,9 +281,8 @@ void GfxCore::Initialise()
     }
     m_InitialScale *= .85;
 
-    // Calculate screen coordinates and redraw.
-    SetScaleInitial(m_InitialScale);
-    ForceRefresh();
+    // Apply default parameters.
+    OnDefaults();
 }
 
 void GfxCore::FirstShow()
@@ -353,107 +311,105 @@ void GfxCore::SetScaleInitial(Double scale)
 {
     SetScale(scale);
 
-    if (true) {
-	// Invalidate hit-test grid.
-	m_HitTestGridValid = false;
+    // Invalidate hit-test grid.
+    m_HitTestGridValid = false;
 
-	for (int band = 0; band < m_Bands; band++) {
-	    Point* pt = m_PlotData[band].vertices;
-	    assert(pt);
-	    int* count = m_PlotData[band].num_segs;
-	    assert(count);
-	    Point* spt = m_PlotData[band].surface_vertices;
-	    assert(spt);
-	    int* scount = m_PlotData[band].surface_num_segs;
-	    assert(scount);
-	    count--;
-	    scount--;
+    for (int band = 0; band < m_Bands; band++) {
+	Point* pt = m_PlotData[band].vertices;
+	assert(pt);
+	int* count = m_PlotData[band].num_segs;
+	assert(count);
+	Point* spt = m_PlotData[band].surface_vertices;
+	assert(spt);
+	int* scount = m_PlotData[band].surface_num_segs;
+	assert(scount);
+	count--;
+	scount--;
 
-	    m_Polylines[band] = 0;
-	    m_SurfacePolylines[band] = 0;
-	    Double x, y, z;
+	m_Polylines[band] = 0;
+	m_SurfacePolylines[band] = 0;
+	Double x, y, z;
 
-	    list<PointInfo*>::iterator pos = m_Parent->GetPointsNC(band);
-	    list<PointInfo*>::iterator end = m_Parent->GetPointsEndNC(band);
-	    bool first_point = true;
-	    bool last_was_move = true;
-	    bool current_polyline_is_surface = false;
-	    while (pos != end) {
-		PointInfo* pti = *pos++;
+	list<PointInfo*>::iterator pos = m_Parent->GetPointsNC(band);
+	list<PointInfo*>::iterator end = m_Parent->GetPointsEndNC(band);
+	bool first_point = true;
+	bool last_was_move = true;
+	bool current_polyline_is_surface = false;
+	while (pos != end) {
+	    PointInfo* pti = *pos++;
 
-		if (pti->IsLine()) {
-		    // We have a leg.
+	    if (pti->IsLine()) {
+		// We have a leg.
 
-		    assert(!first_point); // The first point must always be a move.
-		    bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
-		    // Record new underground/surface state.
-		    current_polyline_is_surface = pti->IsSurface();
+		assert(!first_point); // The first point must always be a move.
+		bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
+		// Record new underground/surface state.
+		current_polyline_is_surface = pti->IsSurface();
 
-		    if (changing_ug_state || last_was_move) {
-			// Start a new polyline if we're switching
-			// underground/surface state or if the previous point
-			// was a move.
-			Point** dest;
+		if (changing_ug_state || last_was_move) {
+		    // Start a new polyline if we're switching
+		    // underground/surface state or if the previous point
+		    // was a move.
+		    Point** dest;
 
-			if (current_polyline_is_surface) {
-			    m_SurfacePolylines[band]++;
-			    // initialise number of vertices for next polyline
-			    *(++scount) = 1;
-			    dest = &spt;
-			}
-			else {
-			    m_Polylines[band]++;
-			    // initialise number of vertices for next polyline
-			    *(++count) = 1;
-			    dest = &pt;
-			}
-
-			(*dest)->x = x;
-			(*dest)->y = y;
-			(*dest)->z = z;
-
-			// Advance the relevant coordinate pointer to the next
-			// position.
-			(*dest)++;
+		    if (current_polyline_is_surface) {
+			m_SurfacePolylines[band]++;
+			// initialise number of vertices for next polyline
+			*(++scount) = 1;
+			dest = &spt;
+		    }
+		    else {
+			m_Polylines[band]++;
+			// initialise number of vertices for next polyline
+			*(++count) = 1;
+			dest = &pt;
 		    }
 
-		    // Add the leg onto the current polyline.
-		    Point** dest = &(current_polyline_is_surface ? spt : pt);
-
-		    (*dest)->x = x = pti->GetX();
-		    (*dest)->y = y = pti->GetY();
-		    (*dest)->z = z = pti->GetZ();
+		    (*dest)->x = x;
+		    (*dest)->y = y;
+		    (*dest)->z = z;
 
 		    // Advance the relevant coordinate pointer to the next
 		    // position.
 		    (*dest)++;
+		}
 
-		    // Increment the relevant vertex count.
-		    if (current_polyline_is_surface) {
-			(*scount)++;
-		    }
-		    else {
-			(*count)++;
-		    }
-		    last_was_move = false;
+		// Add the leg onto the current polyline.
+		Point** dest = &(current_polyline_is_surface ? spt : pt);
+
+		(*dest)->x = x = pti->GetX();
+		(*dest)->y = y = pti->GetY();
+		(*dest)->z = z = pti->GetZ();
+
+		// Advance the relevant coordinate pointer to the next
+		// position.
+		(*dest)++;
+
+		// Increment the relevant vertex count.
+		if (current_polyline_is_surface) {
+		    (*scount)++;
 		}
 		else {
-		    first_point = false;
-		    last_was_move = true;
-
-		    // Save the current coordinates for the next time around
-		    // the loop.
-		    x = pti->GetX();
-		    y = pti->GetY();
-		    z = pti->GetZ();
+		    (*count)++;
 		}
+		last_was_move = false;
 	    }
-	    if (!m_UndergroundLegs) {
-		m_UndergroundLegs = (m_Polylines[band] > 0);
+	    else {
+		first_point = false;
+		last_was_move = true;
+
+		// Save the current coordinates for the next time around
+		// the loop.
+		x = pti->GetX();
+		y = pti->GetY();
+		z = pti->GetZ();
 	    }
-	    if (!m_SurfaceLegs) {
-		m_SurfaceLegs = (m_SurfacePolylines[band] > 0);
-	    }
+	}
+	if (!m_UndergroundLegs) {
+	    m_UndergroundLegs = (m_Polylines[band] > 0);
+	}
+	if (!m_SurfaceLegs) {
+	    m_SurfaceLegs = (m_SurfacePolylines[band] > 0);
 	}
     }
 }
@@ -2073,13 +2029,41 @@ void GfxCore::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::OnDefaults()
 {
-    Defaults();
-}
-
-void GfxCore::DefaultParameters()
-{
     m_TiltAngle = M_PI_2;
     m_PanAngle = 0.0;
+    switch (m_Lock) {
+	case lock_X:
+	{
+	    // elevation looking along X axis (East)
+	    m_PanAngle = M_PI * 1.5;
+	    m_TiltAngle = 0.0;
+	    m_RotationOK = false;
+	    break;
+	}
+
+	case lock_Y:
+	case lock_XY: // survey is linearface and parallel to the Z axis => display in elevation.
+	    // elevation looking along Y axis (North)
+	    m_TiltAngle = 0.0;
+	    m_RotationOK = false;
+	    break;
+
+	case lock_Z:
+	case lock_XZ: // linearface survey parallel to Y axis
+	case lock_YZ: // linearface survey parallel to X axis
+	{
+	    // flat survey (zero height range) => go into plan view (default orientation).
+	    break;
+	}
+
+	case lock_POINT:
+	    m_RotationOK = false;
+	    m_Crosses = true;
+	    break;
+
+	case lock_NONE:
+	    break;
+    }
 
     m_Params.rotation.setFromEulerAngles(m_TiltAngle, 0.0, m_PanAngle);
     m_RotationMatrix = m_Params.rotation.asMatrix();
@@ -2098,14 +2082,8 @@ void GfxCore::DefaultParameters()
     m_FixedPts = false;
     m_ExportedPts = false;
     m_Grid = false;
-}
-
-void GfxCore::Defaults()
-{
-    // Restore default scale, rotation and translation parameters.
-
-    DefaultParameters();
     SetScale(m_InitialScale);
+    DefaultParameters();
     ForceRefresh();
 }
 
