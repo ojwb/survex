@@ -5,7 +5,7 @@
 # Copyright (C) 2001 Wookey
 # Copyright (C) 2001,2002,2003 Olly Betts
 #
-# This is a multibinary package. You to build any of the binary packages
+# This is a multibinary package. You can build any of the binary packages
 # independently, via binary-<package> targets.
 
 # Uncomment this to turn on verbose mode.
@@ -31,7 +31,7 @@ build-stamp:
 	dh_testdir
 
 	# need to use GCC 3.2 to link against wxgtk-2.4
-	./configure --enable-opengl --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex CFLAGS=$(CFLAGS) STRIP=$(STRIP) CC=gcc-3.2 CXX=g++-3.2
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex1.1 CFLAGS=$(CFLAGS) STRIP=$(STRIP) CC=gcc-3.2 CXX=g++-3.2 --datadir=/usr/share/survex1.1 --program-suffix=-1.1
 	$(MAKE)
 ifeq	($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
 	$(MAKE) check
@@ -76,13 +76,6 @@ binary-common: build install
 #	dh_installinit
 #	dh_installcron
 	gzip -9 debian/tmp/usr/share/man/man1/*
-	mkdir -p debian/survex-aven/usr/share/man/man1
-	mkdir -p debian/survex-svxedit/usr/share/man/man1
-	mv debian/tmp/usr/share/man/man1/aven.1.gz debian/survex-aven/usr/share/man/man1
-	mv debian/tmp/usr/share/man/man1/svxedit.1.gz debian/survex-svxedit/usr/share/man/man1
-# oddly /usr/bin/svxedit gets into survex and survex-svxedit otherwise
-# FIXME - this can't be the correct way to do this, can it?
-	rm -f debian/tmp/usr/bin/svxedit
 #	dh_installinfo
 #	dh_undocumented
 	dh_installchangelogs

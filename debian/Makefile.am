@@ -6,32 +6,17 @@ EXTRA_DIST = copyright copyright.in survex-aven.files doc-base \
 
 MAINTAINERCLEANFILES = control
 
-control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $(srcdir)/../desc-aven.txt
-	echo Source: survex > control
+control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt
+	echo Source: survex1.1 > control
 	echo Section: science >> control
 	echo Priority: extra >> control
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
-	echo Standards-Version: 3.5.10.0 >> control
+	echo Standards-Version: 3.6.0 >> control
 	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
-	echo 'Build-Depends: debhelper (>= 1.1.17), xlibs-dev, libwxgtk2.4-dev, gcc-3.2, g++-3.2' >> control
+	echo 'Build-Depends: debhelper (>= 1.1.17), xlibs-dev, libwxgtk2.4-dev, libglut3-dev, gcc-3.2, g++-3.2' >> control
 	echo >> control
-	echo Package: ${PACKAGE} >> control
+	echo 'Package: ${PACKAGE}' >> control
 	echo Architecture: any >> control
 	echo 'Depends: $${shlibs:Depends}' >> control
-	echo 'Recommends: survex-aven (= ${VERSION})' >> control
-	echo 'Suggests: survex-svxedit (= ${VERSION})' >> control
-	echo Description: Cave surveying and mapping software >> control
+	echo 'Description: Cave surveying and mapping software (development branch)' >> control
 	sed 's/^$$/./;s/^/ /' < $(srcdir)/../desc.txt >> control
-	echo >> control
-	echo Package: survex-aven >> control
-	echo Architecture: any >> control
-	echo 'Depends: survex (= ${VERSION}), $${shlibs:Depends}' >> control
-	echo Description: Sophisticated cave survey viewer for Survex >> control
-	sed 's/^$$/./;s/^/ /' < $(srcdir)/../desc-aven.txt >> control
-	echo >> control
-	echo Package: survex-svxedit >> control
-	echo Architecture: all >> control
-	echo 'Depends: tk8.4|wish, bwidget' >> control
-	echo 'Recommends: survex (= ${VERSION})' >> control
-	echo Description: Survey data editor for Survex >> control
-	sed 's/^$$/./;s/^/ /' < $(srcdir)/../desc-svxedit.txt >> control
