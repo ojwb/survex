@@ -1156,6 +1156,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #endif
     if (dlg.ShowModal() == wxID_OK) {
         OpenFile(dlg.GetPath(), "", false);
+	SetFocus();
     }
 }
 
