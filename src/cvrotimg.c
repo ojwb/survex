@@ -1,7 +1,7 @@
 /* > cvrotimg.c
  * Reads a .3d image file into two linked lists of blocks, suitable for use
  * by caverot.c
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ coord Xrad, Yrad, Zrad; /* "radii" */
 
 /* scale all data by this to fit in coord data type */
 /* Note: data in file in metres. 100.0 below stores to nearest cm */
-static float factor = (float)(100.0/SHRINKAGE);
+static float factor = (float)(100.0 / SHRINKAGE);
 
 static coord move = 1, draw = 2, stop = 0;
 
@@ -62,7 +62,7 @@ set_codes(coord move_, coord draw_, coord stop_)
 
 /* add elt and return new list head */
 static lid Huge *
-AddLid(lid Huge *plidHead, point Huge *pData)
+add_lid(lid Huge *plidHead, point Huge *pData)
 {
    lid Huge *plidNew, Huge *plid;
    plidNew = osnew(lid);
@@ -175,13 +175,13 @@ load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns)
       }
       if (cLeg >= cLegMac) {
          pLegData[cLeg]._.action = stop;
-         plidLegHead = AddLid(plidLegHead, pLegData);
+         plidLegHead = add_lid(plidLegHead, pLegData);
          pLegData = osmalloc(ossizeof(point) * (cLegMac + 1));
          cLeg = 0;
       }
       if (cStn >= cStnMac) {
          pStnData[cStn]._.str = NULL;
-         plidStnHead = AddLid(plidStnHead, pStnData);
+         plidStnHead = add_lid(plidStnHead, pStnData);
          pStnData = osmalloc(ossizeof(point) * (cStnMac + 1));
          cStn = 0;
       }
@@ -192,8 +192,8 @@ load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns)
    pLegData[cLeg]._.action = stop;
    pStnData[cStn]._.str = NULL;
 
-   *ppLegs = AddLid(plidLegHead, pLegData);
-   *ppStns = AddLid(plidStnHead, pStnData);
+   *ppLegs = add_lid(plidLegHead, pLegData);
+   *ppStns = add_lid(plidStnHead, pStnData);
 
    return (result != img_BAD); /* return fTrue iff image was OK */
 }
@@ -217,7 +217,9 @@ scale_to_screen(lid Huge **pplid, lid Huge **pplid2,
 		int xcMac, int ycMac, double y_stretch)
 {
    /* run through data to find max & min points */
-   coord Xmin, Xmax, Ymin, Ymax, Zmin, Zmax; /* min & max values of co-ords */
+
+   /* min & max values of co-ords */
+   coord Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;
    coord Radius; /* radius of plan */
    point Huge *p;
    lid Huge *plid;
@@ -232,7 +234,8 @@ scale_to_screen(lid Huge **pplid, lid Huge **pplid2,
 
    if (!pplid || !*pplid) return (BIG_SCALE);
 
-   Xmin = Xmax = Ymin = Ymax = Zmin = Zmax = 0; /* suppress compiler warning */
+   /* suppress compiler warning */
+   Xmin = Xmax = Ymin = Ymax = Zmin = Zmax = 0;
 
 xxx:
    for ( ; *pplid; pplid++) {

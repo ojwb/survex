@@ -1,6 +1,6 @@
 /* > filename.h
  * Function prototypes for filename.c
- * Copyright (C) 1998-2000 Olly Betts
+ * Copyright (C) 1998-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,13 +23,6 @@
 #include "useful.h"
 #include "osdepend.h"
 
-#if 0
-#define PthFromFnm path_from_fnm
-#define LfFromFnm leaf_from_fnm
-#define UsePth use_path
-#define AddExt add_ext
-#endif
-
 extern char * FAR path_from_fnm(const char *fnm);
 extern char * FAR base_from_fnm(const char *fnm);
 extern char * FAR baseleaf_from_fnm(const char *fnm);
@@ -41,8 +34,9 @@ extern FILE FAR *fopenWithPthAndExt(const char *pth, const char *fnm,
 				    const char *szExt, const char *szMode,
 				    char **fnmUsed);
 
-extern FILE *fopen_portable(const char *pth, const char *fnm, const char *ext,
-			    const char *mode, char **pfnmUsed);
+extern FILE *fopen_portable(const char *pth, const char *fnm,
+       	    		    const char *ext, const char *mode,
+       	    		    char **pfnmUsed);
 
 extern FILE *safe_fopen(const char *fnm, const char *mode);
 extern FILE *safe_fopen_with_ext(const char *fnm, const char *ext,

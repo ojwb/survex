@@ -1,6 +1,6 @@
 /* > prcore.c
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,12 +103,13 @@ float PaperWidth, PaperDepth;
 
 /* draw fancy scale bar with bottom left at (x,y) (both in mm) and at most */
 /* MaxLength mm long. The scaling in use is 1:scale */
-static void draw_scale_bar(double x, double y, double MaxLength, double scale);
+static void draw_scale_bar(double x, double y, double MaxLength,
+       	    		   double scale);
 
 #define DEF_RATIO (1.0/(double)DEFAULT_SCALE)
 /* return a scale which will make it fit in the desired size */
 static float
-PickAScale(int x, int y)
+pick_scale(int x, int y)
 {
    double Sc_x, Sc_y;
 #if 0
@@ -135,7 +136,7 @@ PickAScale(int x, int y)
 }
 
 static void
-PagesRequired(float Sc)
+pages_required(float Sc)
 {
    float image_dx, image_dy;
    float image_centre_x, image_centre_y;
@@ -167,12 +168,18 @@ PagesRequired(float Sc)
 }
 
 static void
-DrawInfoBox(float num, float denom)
+draw_info_box(float num, float denom)
 {
    char *p;
 
-   MOVEMM(0, 0); DRAWMM(0, 40); DRAWMM(100, 40); DRAWMM(100, 0); DRAWMM(0, 0);
-   MOVEMM(60,40); DRAWMM(60, 0);
+   MOVEMM(0, 0);
+   DRAWMM(0, 40);
+   DRAWMM(100, 40);
+   DRAWMM(100, 0);
+   DRAWMM(0, 0);
+
+   MOVEMM(60,40);
+   DRAWMM(60, 0);
 
    if (fPlan) {
       long ax, ay, bx, by, cx, cy, dx, dy;
@@ -365,7 +372,7 @@ getanswer(char *szReplies)
 }
 
 static bool
-DescribeLayout(int x, int y)
+describe_layout(int x, int y)
 {
    char szReplies[4];
    int answer;
@@ -535,7 +542,8 @@ read_scale(const char *s)
    return fFalse;
 }
 
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
    bool fOk;
    float Sc = 0;
@@ -553,7 +561,10 @@ int main(int argc, char **argv)
 
    /* TRANSLATE */
    static const struct option long_opts[] = {
-      /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+      /* const char *name;
+       * int has_arg (0 no_argument, 1 required_*, 2 optional_*);
+       * int *flag;
+       * int val; */
       {"elevation", no_argument, 0, 'e'},
       {"plan", no_argument, 0, 'p'},
       {"bearing", required_argument, 0, 'b'},
@@ -754,7 +765,7 @@ int main(int argc, char **argv)
 
    {
       double w, x;
-      x = 1000.0 / PickAScale(1, 1);
+      x = 1000.0 / pick_scale(1, 1);
 
       /* trim to 2 s.f. (rounding up) */
       w = pow(10.0, floor(log10(x) - 1.0));
@@ -766,10 +777,10 @@ int main(int argc, char **argv)
          N_Scale = 1;
          D_Scale = (float)x;
          Sc = N_Scale * 1000 / D_Scale;
-         PagesRequired(Sc);
+         pages_required(Sc);
       } else if (!fInteractive) {
          Sc = N_Scale * 1000 / D_Scale;
-         PagesRequired(Sc);
+         pages_required(Sc);
       }
    }
 
@@ -786,8 +797,8 @@ int main(int argc, char **argv)
       printf(msg(/*Using scale %.0f:%.0f*/163), N_Scale, D_Scale);
       putnl();
       Sc = N_Scale * 1000 / D_Scale;
-      PagesRequired(Sc);
-      fOk = DescribeLayout(pagesX, pagesY);
+      pages_required(Sc);
+      fOk = describe_layout(pagesX, pagesY);
    } while (!fOk);
 
    pageLim = pagesX * pagesY;
@@ -881,7 +892,7 @@ int main(int argc, char **argv)
 
          if ((int)page == (pagesY - 1) * pagesX + 1) {
 	    if (pr->SetFont) pr->SetFont(PR_FONT_DEFAULT);
-            DrawInfoBox(N_Scale, D_Scale);
+            draw_info_box(N_Scale, D_Scale);
 	 }
 
 	 if (pr->SetFont) pr->SetFont(PR_FONT_LABELS);

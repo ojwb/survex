@@ -421,12 +421,12 @@ set_prefix(void)
    pcs->Prefix = tag;
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
-     limb = get_twig(tag);
-     if (limb->up->sourceval < 1) {
-       osfree(limb->up->source);
-       limb->up->sourceval = 1;
-       limb->up->source = osstrdup(file.filename);
-     }
+      limb = get_twig(tag);
+      if (limb->up->sourceval < 1) {
+      	 osfree(limb->up->source);
+       	 limb->up->sourceval = 1;
+       	 limb->up->source = osstrdup(file.filename);
+      }
    }
 #endif
    compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
@@ -440,7 +440,6 @@ begin_block(void)
    settings *pcsNew;
 
    pcsNew = osnew(settings);
-/*   memcpy(pcsNew, pcs, ossizeof(settings)); */
    *pcsNew = *pcs; /* copy contents */
    pcsNew->begin_lineno = file.line;
    pcsNew->next = pcs;
@@ -456,12 +455,12 @@ begin_block(void)
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
       limb = get_twig(pcs->Prefix);
-     if (limb->up->sourceval < 5) {
-       osfree(limb->up->source);
-       limb->up->sourceval = 5;
-       limb->up->source = osstrdup(file.filename);
-     }
-    }
+      if (limb->up->sourceval < 5) {
+       	 osfree(limb->up->source);
+       	 limb->up->sourceval = 5;
+       	 limb->up->source = osstrdup(file.filename);
+      }
+   }
 #endif
 }
 
@@ -485,9 +484,7 @@ end_block(void)
 
    pcsParent = pcs->next;
 #ifdef NEW3DFORMAT
-   if (fUseNewFormat) {
-     limb=get_twig(pcsParent->Prefix);
-   }
+   if (fUseNewFormat) limb = get_twig(pcsParent->Prefix);
 #endif
 
    if (pcs->begin_lineno == 0) {
@@ -617,10 +614,12 @@ fix_station(void)
       fix(stn);
 #ifdef NEW3DFORMAT
       if (fUseNewFormat) {
-	  fix_name->twig_link->from = fix_name; /* insert fixed point.. */
-	  fix_name->twig_link->to = NULL;
-	  /*	osfree(fix_name->twig_link->down);
-	   fix_name->twig_link->down = NULL; */
+	 fix_name->twig_link->from = fix_name; /* insert fixed point.. */
+	 fix_name->twig_link->to = NULL;
+#if 0
+	 osfree(fix_name->twig_link->down);
+	 fix_name->twig_link->down = NULL;
+#endif
       }
 #endif
       return;
@@ -697,9 +696,7 @@ equate_list(void)
 	    skipline();
 	 }
 #ifdef NEW3DFORMAT
-	 if (fUseNewFormat) {
-	     limb=get_twig(pcs->Prefix);
-	 }
+	 if (fUseNewFormat) limb = get_twig(pcs->Prefix);
 #endif
 	 return;
       }
@@ -1047,7 +1044,7 @@ calibrate(void)
    }
 }
 
-#define EQ(S) streq(ucbuffer, (S))
+#define EQ(S) (strcmp(ucbuffer, (S)) == 0)
 static void
 set_default(void)
 {

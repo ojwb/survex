@@ -63,32 +63,36 @@ static jmp_buf jmpbufSignal;
 static int cWarnings = 0; /* keep track of how many warnings we've given */
 static int cErrors = 0;   /* and how many (non-fatal) errors */
 
-extern int error_summary(void) {
-   fprintf(STDERR, msg(/*There were %d warning(s) and %d non-fatal error(s).*/16),
+int
+error_summary(void)
+{
+   fprintf(STDERR,
+           msg(/*There were %d warning(s) and %d non-fatal error(s).*/16),
 	   cWarnings, cErrors);
    fputnl(STDERR);
    return (cErrors ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
 /* in case osmalloc() fails before szAppNameCopy is set up */
-const char *szAppNameCopy = "anonymous program";
+static const char *szAppNameCopy = "anonymous program";
 
 /* error code for failed osmalloc and osrealloc calls */
 static void
 outofmem(OSSIZE_T size)
 {
-   fatalerror(/*Out of memory (couldn't find %lu bytes).*/1, (unsigned long)size);
+   fatalerror(/*Out of memory (couldn't find %lu bytes).*/1,
+              (unsigned long)size);
 }
 
 #ifdef TOMBSTONES
 #define TOMBSTONE_SIZE 16
-static char tombstone[TOMBSTONE_SIZE] = "012345\xfftombstone";
+static const char tombstone[TOMBSTONE_SIZE] = "012345\xfftombstone";
 #endif
 
 /* malloc with error catching if it fails. Also allows us to write special
  * versions easily eg for DOS EMS or MS Windows.
  */
-extern void FAR *
+void FAR *
 osmalloc(OSSIZE_T size)
 {
    void FAR *p;
@@ -100,7 +104,7 @@ osmalloc(OSSIZE_T size)
 #endif
    if (p == NULL) outofmem(size);
 #ifdef TOMBSTONES
-printf("osmalloc truep=%p truesize=%d\n",p,size);
+   printf("osmalloc truep=%p truesize=%d\n", p, size);
    memcpy(p, tombstone, TOMBSTONE_SIZE);
    memcpy(p + size - TOMBSTONE_SIZE, tombstone, TOMBSTONE_SIZE);
    *(size_t *)p = size;
@@ -110,7 +114,7 @@ printf("osmalloc truep=%p truesize=%d\n",p,size);
 }
 
 /* realloc with error catching if it fails. */
-extern void FAR *
+void FAR *
 osrealloc(void *p, OSSIZE_T size)
 {
    /* some pre-ANSI realloc implementations don't cope with a NULL pointer */
@@ -122,7 +126,7 @@ osrealloc(void *p, OSSIZE_T size)
       size += TOMBSTONE_SIZE * 2;
       p -= TOMBSTONE_SIZE;
       true_size = *(size_t *)p;
-printf("osrealloc (in truep=%p truesize=%d)\n",p,true_size);
+      printf("osrealloc (in truep=%p truesize=%d)\n", p, true_size);
       if (memcmp(p + sizeof(size_t), tombstone + sizeof(size_t),
 		 TOMBSTONE_SIZE - sizeof(size_t)) != 0) {
 	 printf("start tombstone for block %p, size %d corrupted!",
@@ -135,7 +139,7 @@ printf("osrealloc (in truep=%p truesize=%d)\n",p,true_size);
       }
       p = realloc(p, size);
       if (p == NULL) outofmem(size);
-printf("osrealloc truep=%p truesize=%d\n",p,size);
+      printf("osrealloc truep=%p truesize=%d\n", p, size);
       memcpy(p, tombstone, TOMBSTONE_SIZE);
       memcpy(p + size - TOMBSTONE_SIZE, tombstone, TOMBSTONE_SIZE);
       *(size_t *)p = size;
@@ -148,7 +152,7 @@ printf("osrealloc truep=%p truesize=%d\n",p,size);
    return p;
 }
 
-extern void FAR *
+void FAR *
 osstrdup(const char *str)
 {
    char *p;
@@ -161,14 +165,14 @@ osstrdup(const char *str)
 
 /* osfree is usually just a macro in osalloc.h */
 #ifdef TOMBSTONES
-extern void
+void
 osfree(void *p)
 {
    int true_size;
    if (!p) return;
    p -= TOMBSTONE_SIZE;
    true_size = *(size_t *)p;
-printf("osfree truep=%p truesize=%d\n",p,true_size);
+   printf("osfree truep=%p truesize=%d\n", p, true_size);
    if (memcmp(p + sizeof(size_t), tombstone + sizeof(size_t),
 	      TOMBSTONE_SIZE - sizeof(size_t)) != 0) {
       printf("start tombstone for block %p, size %d corrupted!",
@@ -193,7 +197,9 @@ static int sigReceived;
 # define RETSIGTYPE void
 #endif
 
-static CDECL RETSIGTYPE FAR report_sig( int sig ) {
+static CDECL RETSIGTYPE FAR
+report_sig(int sig)
+{
    sigReceived = sig;
    longjmp(jmpbufSignal, 1);
 }
@@ -218,16 +224,16 @@ init_signals(void)
    }
 
    switch (sigReceived) {
-   case SIGABRT: en = /*Abnormal termination*/90; break;
-   case SIGFPE:  en = /*Arithmetic error*/91; break;
-   case SIGILL:  en = /*Illegal instruction*/92; break;
-   case SIGINT:  en = /*Interrupt received*/93; break;
-   case SIGSEGV: en = /*Bad memory access*/94; break;
-   case SIGTERM: en = /*Termination requested*/95; break;
+      case SIGABRT: en = /*Abnormal termination*/90; break;
+      case SIGFPE:  en = /*Arithmetic error*/91; break;
+      case SIGILL:  en = /*Illegal instruction*/92; break;
+      case SIGINT:  en = /*Interrupt received*/93; break;
+      case SIGSEGV: en = /*Bad memory access*/94; break;
+      case SIGTERM: en = /*Termination requested*/95; break;
 # ifdef SIGSTAK
-   case SIGSTAK: en = /*Stack overflow*/96; break;
+      case SIGSTAK: en = /*Stack overflow*/96; break;
 # endif
-   default:      en = /*Unknown signal received*/97; break;
+      default:      en = /*Unknown signal received*/97; break;
    }
    fputsnl(msg(en), STDERR);
 #if 0
@@ -255,7 +261,9 @@ init_signals(void)
 }
 #endif
 
-static int default_charset( void ) {
+static int
+default_charset(void)
+{
 #ifdef ISO8859_1
    return CHARSET_ISO_8859_1;
 #elif (OS==RISCOS)
@@ -382,7 +390,8 @@ parse_msg_file(int charset_code)
    }
 #endif
 #ifdef DEBUG
-   fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
+   fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang,
+           msg_lang ? msg_lang : "(null)");
 #endif
 
    /* On Mandrake LANG defaults to C */
@@ -416,7 +425,7 @@ parse_msg_file(int charset_code)
    }
 
    if (!fh) {
-      /* no point extracting this error, as it won't get used if file opens */
+      /* no point extracting this error as it won't get used if file opens */
       fprintf(STDERR, "Can't open message file '%s' using path '%s'\n",
 	      msg_lang, pth_cfg_files);
       exit(EXIT_FAILURE);
@@ -424,13 +433,13 @@ parse_msg_file(int charset_code)
 
    if (fread(header, 1, 20, fh) < 20 ||
        memcmp(header, "Svx\nMsg\r\n\xfe\xff", 12) != 0) {
-      /* no point extracting this error, as it won't get used if file opens */
+      /* no point extracting this error as it won't get used if file opens */
       fprintf(STDERR, "Problem with message file '%s'\n", msg_lang);
       exit(EXIT_FAILURE);
    }
 
    if (header[12] != 0) {
-      /* no point extracting this error, as it won't get used if file opens */
+      /* no point extracting this error as it won't get used if file opens */
       fprintf(STDERR, "I don't understand this message file version\n");
       exit(EXIT_FAILURE);
    }
@@ -442,14 +451,15 @@ parse_msg_file(int charset_code)
 
    p = osmalloc(len);
    if (fread(p, 1, len, fh) < len) {
-      /* no point extracting this error - it won't get used once file's read */
+      /* no point extracting this error - translation will never be used */
       fprintf(STDERR, "Message file truncated?\n");
       exit(EXIT_FAILURE);
    }
    fclose(fh);
 
 #ifdef DEBUG
-   fprintf(stderr, "msg_lang = '%s', num_msgs = %d, len = %d\n", msg_lang, num_msgs, len);
+   fprintf(stderr, "msg_lang = '%s', num_msgs = %d, len = %d\n", msg_lang,
+           num_msgs, len);
 #endif
 
    msg_array = osmalloc(sizeof(char *) * num_msgs);
@@ -494,7 +504,7 @@ parse_msg_file(int charset_code)
 	 if (ch < 127) {
 	    *to++ = (char)ch;
 	 } else {
-            /* FIXME this rather assumes a 2 byte UTF-8 code never
+            /* FIXME: this rather assumes a 2 byte UTF-8 code never
              * transliterates to more than 2 characters */
 	    to += add_unicode(charset_code, to, ch);
 	 }
@@ -541,8 +551,9 @@ msg_init(const char *argv0)
    select_charset(default_charset());
 }
 
-/* message may be overwritten by next call (but not in current implementation) */
-extern const char *
+/* message may be overwritten by next call
+ * (but not in current implementation) */
+const char *
 msg(int en)
 {
    /* NB can't use ASSERT here! */
@@ -566,7 +577,7 @@ msg(int en)
 }
 
 /* returns persistent copy of message */
-extern const char *
+const char *
 msgPerm(int en)
 {
    return msg(en);
@@ -680,7 +691,8 @@ select_charset(int charset_code)
    charset_li *p;
 
 #ifdef DEBUG
-   fprintf(stderr, "select_charset(%d), old charset = %d\n", charset_code, charset);
+   fprintf(stderr, "select_charset(%d), old charset = %d\n", charset_code,
+           charset);
 #endif
 
    charset = charset_code;

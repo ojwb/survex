@@ -2,7 +2,7 @@
  * Header file for
  * Reads a .3d image file into two linked lists of blocks, suitable for use
  * by caverot.c
- * Copyright (C) 1994-2000 Olly Betts
+ * Copyright (C) 1994-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,8 @@ typedef struct LID {
 
 extern void set_codes(coord move_, coord draw_, coord stop_);
 
-extern bool load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns);
+extern bool load_data(const char *fnmData, lid Huge **ppLegs,
+       	    	      lid Huge **ppStns);
 
 extern float scale_to_screen(lid Huge **pplid, lid Huge **pplid2,
 			     int xcMac, int ycMac, double y_stretch);

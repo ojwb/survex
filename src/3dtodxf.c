@@ -1,7 +1,7 @@
-/* > 3dtodxf.c */
-
-/* Converts a .3d file to a DXF file */
-/* Also useful as an example of how to use the img code in your own programs */
+/* > 3dtodxf.c
+ * Converts a .3d file to a DXF file
+ * Also useful as an example of how to use the img code in your own programs
+ */
 
 /* Copyright (C) 1994-2001 Olly Betts
  *
@@ -20,9 +20,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* Tell img.h to work in standalone mode */
-/* #define STANDALONE */
-
 /* #define DEBUG_3DTODXF */
 
 #ifdef HAVE_CONFIG_H
@@ -39,9 +36,7 @@
 #include "useful.h"
 #include "cmdline.h"
 
-#ifndef STANDALONE
 #include "message.h"
-#endif
 
 /* default values - can be overridden with --htext and --msize respectively */
 #define TEXT_HEIGHT	0.6
@@ -100,26 +95,17 @@ main(int argc, char **argv)
 	{0,0}
    };
 
-#ifndef STANDALONE
    msg_init(argv[0]);
-#endif
 
    /* Defaults */
    crosses = 1;
    labels = 1;
    legs = 1;
-#ifndef XXX
    grid = 0;
-#endif /* not XXX */
    text_height = TEXT_HEIGHT;
    marker_size = MARKER_SIZE;
 
-#ifndef XXX
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
-#else /* XXX */
-   /* exactly two arguments must be given */
-   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 2, 2);
-#endif /* XXX */
    while (1) {
       int opt = cmdline_getopt();
       if (opt == EOF) break;
@@ -172,14 +158,7 @@ main(int argc, char **argv)
    }
 
    pimg = img_open(fnm3D, szTitle, szDateStamp);
-   if (!pimg) {
-#ifndef STANDALONE
-      fatalerror(img_error(), fnm3D);
-#else
-      printf("Bad .3d file\n");
-      exit(1);
-#endif
-   }
+   if (!pimg) fatalerror(img_error(), fnm3D);
 
    fh = safe_fopen(fnmDXF, "w");
 
@@ -330,13 +309,8 @@ main(int argc, char **argv)
 
       switch (item) {
        case img_BAD:
-#ifndef STANDALONE
          img_close(pimg);
          fatalerror(/*Bad 3d image file '%s'*/106, fnm3D);
-#else
-         printf("Bad .3d image file\n");
-         exit(1);
-#endif
 	 break;
        case img_LINE:
 #ifdef DEBUG_3DTODXF
@@ -346,13 +320,8 @@ main(int argc, char **argv)
 #ifdef DEBUG_3DTODXF
             printf("Something is wrong -- img_LINE before any img_MOVE!\n"); /* <<<<<<< create message in messages.txt ? */
 #endif
-#ifndef STANDALONE
 	    img_close(pimg);
 	    fatalerror(/*Bad 3d image file '%s'*/106, fnm3D);
-#else
-	    printf("Bad .3d image file\n");
-	    exit(1);
-#endif
          }
 	 if (legs) {
             fprintf(fh,"0\nLINE\n");

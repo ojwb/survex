@@ -1,6 +1,6 @@
 /* > osdepend.c
  * OS dependent functions
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,15 @@
 
 #if (OS==RISCOS)
 
-/* strange but true, a system variable reference works in a filename with fopen */
-/* (less strange, but as true, so does a temporary filing system) */
+/* Strange but true: a system variable reference works in a filename with
+ * fopen()!
+ * Less strange, but just as true: so does a temporary filing system */
 bool
 fAbsoluteFnm(const char *fnm)
 {
    return strchr(fnm, ':') /* filename contains a ':' */
-     || (fnm[0] == '-' && strchr(fnm + 1, '-')) /* temporary filing system */
-     || (fnm[0] == '<' && strchr(fnm + 1, '>')) /* System var eg <My$Dir>.File */
+     || (fnm[0] == '-' && strchr(fnm + 1, '-')) /* temp filing system */
+     || (fnm[0] == '<' && strchr(fnm + 1, '>')) /* sysvar eg <X$Dir>.File */
      || (fnm[1] == '.' && strchr("$&%@\\", fnm[0]));
    /* root, URD, lib, CSD, previous CSD */
 }
@@ -47,18 +48,21 @@ fAbsoluteFnm(const char *fnm)
 bool
 fAbsoluteFnm(const char *fnm)
 {
-   /* <drive letter>: or \<path> or /<path> or \\<host>\... or //<host>/... */
+   /* <drive letter>: or \<path> or /<path>
+    * or \\<host>\... or //<host>/... */
    unsigned char ch = *(unsigned const char*)fnm;
    return ((fnm[1] == ':' && isalpha(ch)) || ch == '\\' || ch == '/');
 }
 
 #ifdef __DJGPP__
-/* DJGPP's ceil and floor are bugged if FP is emulated, so do it ourselves */
-/* (the problem is stack corruption if memory serves) */
+/* DJGPP's ceil and floor are buggy if FP is emulated, so do it ourselves
+ * (the problem is stack corruption if memory serves) */
 #include <limits.h>
 /* These only work for doubles which fit in a long but that's OK for the
  * uses we make of ceil and floor */
-double svx_ceil(double v) {
+double
+svx_ceil(double v)
+{
    double r;
    if (v < LONG_MIN || v > LONG_MAX) {
       printf("Value out of range in svx_ceil\n");
@@ -70,7 +74,9 @@ double svx_ceil(double v) {
    return r;
 }
 
-double svx_floor( double v ) {
+double
+svx_floor(double v)
+{
    double r;
    if (v < LONG_MIN || v > LONG_MAX) {
       printf("Value out of range in svx_floor\n");

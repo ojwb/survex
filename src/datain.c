@@ -219,7 +219,7 @@ data_file(const char *pth, const char *fnm)
    {
       char *filename;
       FILE *fh = fopen_portable(pth, fnm, EXT_SVX_DATA, "rb", &filename);
-       
+
       if (fh == NULL) {
 	 compile_error(/*Couldn't open data file '%s'*/24, fnm);
 	 return;
@@ -379,8 +379,8 @@ handle_plumb(bool *pfPlumbed)
 	 return (!isMinus(chOld) ? PI / 2.0 : -PI / 2.0);
       }
 
-      if (isOmit(chOld)) {	
-	 *pfPlumbed = fFalse;      
+      if (isOmit(chOld)) {
+	 *pfPlumbed = fFalse;
 	 /* no clino reading, so assume 0 with large sd */
 	 return (real)0.0;
       }
@@ -760,6 +760,7 @@ data_diving(void)
 
    /* check if tape is less than depth change */
    if (tape < fabs(dz)) {
+      /* FIXME: allow margin of error based on variances? */
       compile_warning(/*Tape reading is less than change in depth*/62);
       showline(NULL, 0);
    }

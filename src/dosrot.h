@@ -70,4 +70,3 @@ extern void stop(int X, int Y);
 # define STOP (coord)NULL
 
 #endif
-

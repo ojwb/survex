@@ -1,6 +1,6 @@
 /* > out.h
  * Header file for output stuff
- * Copyright (C) Olly Betts 2000
+ * Copyright (C) Olly Betts 2000,2001
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -16,9 +16,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#define out_current_action(SZ) if (fQuiet) NOP; else printf("\n%s...\n", (SZ))
+#define out_current_action(S) if(fQuiet)(void)0;else printf("\n%s...\n", (S))
 /* unfortunately we'll have to remember to double bracket ... */
 #define out_printf(X) do{printf X;putchar('\n');}while(0)
-#define out_puts(SZ) puts((SZ))
+#define out_puts(S) puts((S))
 #define out_set_percentage(P) printf("%d%%\r", (int)(P))
-#define out_set_fnm(SZ) if (!fPercent) NOP; else printf("%s:\n", (SZ))
+#define out_set_fnm(S) if (!fPercent) (void)0; else printf("%s:\n", (S))

@@ -1,6 +1,6 @@
 /* > cmdline.c
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998-2000 Olly Betts
+ * Copyright (C) 1998-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include "cmdline.h"
 #include "filename.h"
 
+/* FIXME: */
 #if 0
 #include "message.h"
 #define SYNTAX msg(/*Syntax*/49)
@@ -189,11 +190,13 @@ cmdline_int_arg(void)
    result = strtol(optarg, &endptr, 10);
 
    if (errno == ERANGE || result > INT_MAX || result < INT_MIN) {
-      fprintf(stderr, "%s: numeric argument `%s' out of range\n", argv0, optarg);
+      fprintf(stderr, "%s: numeric argument `%s' out of range\n",
+      	      argv0, optarg);
       cmdline_syntax();
       exit(1);
    } else if (*optarg == '\0' || *endptr != '\0') {
-      fprintf(stderr, "%s: argument `%s' not an integer\n", argv0, optarg);
+      fprintf(stderr, "%s: argument `%s' not an integer\n",
+      	      argv0, optarg);
       cmdline_syntax();
       exit(1);
    }
@@ -212,7 +215,8 @@ cmdline_double_arg(void)
    result = strtod(optarg, &endptr);
 
    if (errno == ERANGE) {
-      fprintf(stderr, "%s: numeric argument `%s' out of range\n", argv0, optarg);
+      fprintf(stderr, "%s: numeric argument `%s' out of range\n",
+      	      argv0, optarg);
       cmdline_syntax();
       exit(1);
    } else if (*optarg == '\0' || *endptr != '\0') {
@@ -229,7 +233,8 @@ cmdline_float_arg(void)
 {
    double result = cmdline_double_arg();
    if (fabs(result) > FLT_MAX) {
-      fprintf(stderr, "%s: numeric argument `%s' out of range\n", argv0, optarg);
+      fprintf(stderr, "%s: numeric argument `%s' out of range\n",
+      	      argv0, optarg);
       cmdline_syntax();
       exit(1);
    }

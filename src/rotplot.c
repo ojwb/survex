@@ -201,7 +201,8 @@ draw_scale_bar(void)
    maxlen = .96 * ycMac / (sc_last * fabs((double)y_stretch));
    /* fprintf(stderr, "maxlen = %g\n", maxlen); */
 
-   /* the (double) cast would seem to be totally superfluous, but seems to cure a DJGPP bug
+   /* The (double) cast would seem to be totally superfluous,
+    * but seems to cure a DJGPP bug
     * (hmm, this could be the DJGPP floor()/ceil() bug) */
    len = pow(10.0, floor((double)log10(maxlen)));
    /* fprintf(stderr, "len = %g\n", len); */

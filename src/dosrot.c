@@ -1,6 +1,6 @@
 /* > dosrot.c
  * Survex cave rotator plot & translate routines for MS-DOS
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,13 +27,15 @@
 
 extern point Huge *pData;
 
-/* Use macros to simplify code  */
-#define drawcross(x, y)\
- BLK(cvrotgfx_moveto((x) - CS, (y) - CS); cvrotgfx_lineto((x) + CS, (y) + CS);\
-     cvrotgfx_moveto((x) - CS, (y) + CS); cvrotgfx_lineto((x) + CS, (y) - CS);)
-
 /* Cross size */
 #define CS 3
+
+/* Use macros to simplify code  */
+#define drawcross(x, y)\
+ BLK(cvrotgfx_moveto((x) - CS, (y) - CS);\
+     cvrotgfx_lineto((x) + CS, (y) + CS);\
+     cvrotgfx_moveto((x) - CS, (y) + CS);\
+     cvrotgfx_lineto((x) + CS, (y) - CS);)
 
 #ifdef NO_FUNC_PTRS
 

@@ -1,6 +1,6 @@
 /* > useful.h
  * Lots of oddments that come in handy generally
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,8 +56,8 @@ typedef long int fpos_t;
  */
 /* FIXME: still something of a hack */
 #ifndef HAVE_STRFTIME
-# define strftime(SZ, LENSZ, FMT, LOCALTIME) BLK(strncpy((SZ), asctime((LOCALTIME)), LENSZ);\
-                                                 (SZ)[(LENSZ) - 1] = '\0';)
+# define strftime(S, L, F, T) \
+ BLK(strncpy((S), asctime((T)), L); (S)[(L) - 1] = '\0';)
 #endif
 
 /* Return max/min of two numbers (if not defined already) */
@@ -84,19 +84,12 @@ typedef long int fpos_t;
 /* DJGPP needs these: */
 
 #ifndef EXIT_FAILURE
-# define EXIT_FAILURE 1 /* in fact FAILURE_EXIT_STATUS or ? - check! */
+# define EXIT_FAILURE 1 /* FIXME: in fact FAILURE_EXIT_STATUS or ? check! */
 #endif /* !EXIT_FAILURE */
 
 #ifndef EXIT_SUCCESS
 # define EXIT_SUCCESS 0
 #endif /* !EXIT_SUCCESS */
-
-#if 0
-/* now resize buffers to cope with arbitrary length filenames */
-#ifndef FILENAME_MAX
-# define FILENAME_MAX 1024 /* lots (hopefully) */
-#endif /* !FILENAME_MAX */
-#endif
 
 #ifndef SEEK_SET
 # define SEEK_SET 0
@@ -123,9 +116,8 @@ typedef long int fpos_t;
 #define radius(X, Y) sqrt(sqrd((double)(X)) + sqrd((double)(Y))) /* euclidean distance */
 #define rad(X) ((PI / 180.0) * (X))  /* convert from degrees to radians */
 #define deg(X) ((180.0 / PI) * (X))  /* convert from radians to degrees */
-#define streq(sz1,sz2) (!(strcmp(sz1, sz2))) /* test equality of strings */
 
-/* macro to just convert argument to a string */
+/* macro to convert argument to a string literal */
 #define STRING(X) _STRING(X)
 #define _STRING(X) #X
 

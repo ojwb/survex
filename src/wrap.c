@@ -1,6 +1,6 @@
 /* > wrap.c
  * Translate pre-0.90 survex invocation into 0.90 or later cavern invocation
- * Copyright (C) 1999 Olly Betts
+ * Copyright (C) 1999,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* This isn't at all pretty, but it has a limited purpose and lifespan, so I'm
- * not going to invest a lot of time in it...
+/* This isn't at all pretty, but it has a limited purpose and lifespan,
+ * so I'm not going to invest a lot of time in it...
  */
 
 #ifdef HAVE_CONFIG_H
@@ -67,29 +67,21 @@ static void wr(char *msg) {
    if (msg) puts(msg);
 }
 
-static void errdisp(char *msg, void (*fn)( char * ), char*szArg, char *type ) {
+static void
+errdisp(char *msg, void (*fn)(char *), char *szArg, char *type)
+{
   putc('\n', STDERR);
-  fprintf( STDERR, "%s from survex: ", type);
-  fprintf( STDERR, "%s\n", msg );
+  fprintf(STDERR, "%s from survex: ", type);
+  fprintf(STDERR, "%s\n", msg);
   if (fn) (fn)(szArg);
 }
 
-#if 0
-static void warning(char *en, void (*fn)( char * ), char*szArg) {
-  cWarnings++; /* And another notch in the bedpost... */
-  errdisp( en, fn, szArg, 4 );
-}
-#endif
-
-static void error(char *en, void (*fn)( char * ), char*szArg) {
-#if 0
-   cErrors++; /* non-fatal errors now return... */
-#endif
-  errdisp( en, fn, szArg, "Error" );
+static void error(char *en, void (*fn)(char *), char *szArg) {
+  errdisp(en, fn, szArg, "Error");
 }
 
-static void fatal(char *en, void (*fn)( char * ), char*szArg) {
-  errdisp( en, fn, szArg, "Fatal Error" );
+static void fatal(char *en, void (*fn)(char *), char *szArg) {
+  errdisp(en, fn, szArg, "Fatal Error");
   exit(EXIT_FAILURE);
 }
 
@@ -383,7 +375,7 @@ static char *process_command_mode( char *string, char *pth ) {
         fPercent = fSwitch;
         break;
 #if 0
-       /* -S never implemented */
+      /* -S was never implemented */
       case 'S': /* Special Characters */
         mode=SPECIAL_CHARS;
         break;
@@ -394,14 +386,17 @@ static char *process_command_mode( char *string, char *pth ) {
       case 'U': /* Unique */
         if (fSwitch) {
 	  char *p;
-          int ln=0;
-          ch=*(sz++); /* if we have no digits, ln=0 & error is given */
+          int ln = 0;
+          ch = *(sz++); /* if we have no digits, ln=0 & error is given */
           while (isdigit(ch)) {
-            ln=ln*10+(ch-'0');
-            ch=*(sz++);
+            ln = ln * 10 + (ch - '0');
+            ch = *(sz++);
           }
           sz--;
-	  if (ln < 1) error("Syntax: -U<uniqueness> where uniqueness > 0",skipopt,string);
+	  if (ln < 1) {
+	    error("Syntax: -U<uniqueness> where uniqueness > 0",
+	          skipopt, string);
+	  }
 	  p = xmalloc(32);
 	  sprintf(p, "*truncate %d\n", ln);
 	  add_to_list(p);
@@ -658,16 +653,5 @@ main(int argc, char **argv) {
       i++;
    }
    return system(cmd);
-#endif
-#if 0
-   /* printf("return from execv = %d, errno = %d\n", res, errno); */
-   fputs(args[0], stdout);
-   i = 1;
-   while (args[i]) {
-      putchar(' ');
-      fputs(args[i++], stdout);
-   }
-   putchar('\n');
-   return 0;
 #endif
 }

@@ -1,6 +1,6 @@
 /* > osdepend.h
  * Contains commonly required OS dependent bits
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,8 @@ typedef unsigned char byte;
 /* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
 #  define FNM_SEP_LEV '.'
 #  define FNM_SEP_DRV ':'
-/* "." in DOS filenames is translated to "/" by DOSFS and some other software.
- * We follow this defacto convention */
+/* "." in DOS filenames is translated to "/" by DOSFS and some other
+ * software, and we follow this defacto convention */
 #  define FNM_SEP_EXT '/'
 
 #  define NO_STDPRN
@@ -71,7 +71,7 @@ typedef unsigned char byte;
 #   ifdef floor
 #    undef floor
 #   endif
-/* DJGPP's ceil and floor are bugged if FP is emulated, so do it ourselves */
+/* DJGPP's ceil and floor are buggy if FP is emulated, so do it ourselves */
 #   define ceil(X) svx_ceil((X))
 #   define floor(X) svx_floor((X))
 extern double svx_ceil(double);

@@ -1,6 +1,6 @@
 /* > img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
  */
 
 /* Function list
-img_open:        opens image file, reads header into img struct
-img_open_write:  opens new image file & writes header
-img_read_datum:  reads image data item in binary or ascii
-img_write_datum: writes image data item in binary or ascii
+img_open:        opens image file
+img_open_write:  opens new image file and writes header
+img_read_datum:  reads item from image file
+img_write_datum: writes item to image file
 img_close:       close image file
 img_error:       gives message number of error if img_open* returned NULL
                  [may be overwritten by calls to msg()]
@@ -56,7 +56,6 @@ img_error:       gives message number of error if img_open* returned NULL
 /* open file FNM with mode MODE, maybe using path PTH and/or extension EXT */
 /* path isn't used in img.c, but EXT is */
 # define fopenWithPthAndExt(PTH,FNM,EXT,MODE,X) fopen(FNM,MODE)
-# define streq(S1, S2) (!strcmp((S1), (S2)))
 # define fFalse 0
 # define fTrue 1
 # define bool int
@@ -166,7 +165,7 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
    }
 
    getline(szTmp, ossizeof(szTmp), pimg->fh); /* id string */
-   if (!streq(szTmp, "Survex 3D Image File")) {
+   if (strcmp(szTmp, "Survex 3D Image File") == 0) {
       fclose(pimg->fh);
       osfree(pimg);
       img_errno = IMG_BADFORMAT;
@@ -176,7 +175,7 @@ img_open(const char *fnm, char *szTitle, char *szDateStamp)
    getline(szTmp, ossizeof(szTmp), pimg->fh); /* file format version */
    pimg->fBinary = (tolower(*szTmp) == 'b'); /* binary file iff B/b prefix */
    /* knock off the 'B' or 'b' if it's there */
-   if (!streq(pimg->fBinary ? szTmp + 1 : szTmp, "v0.01")) {
+   if (strcmp(pimg->fBinary ? szTmp + 1 : szTmp, "v0.01") == 0) {
       fclose(pimg->fh);
       osfree(pimg);
       img_errno = IMG_BADFORMAT;
@@ -287,20 +286,21 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
       } else {
 	 /* Stop if nothing found */
 	 if (fscanf(pimg->fh, "%s", szTmp) < 1) return img_STOP;
-	 if (streq(szTmp, "move"))
+	 if (strcmp(szTmp, "move") == 0)
 	    result = img_MOVE;
-	 else if (streq(szTmp, "draw"))
+	 else if (strcmp(szTmp, "draw") == 0)
 	    result = img_LINE;
-	 else if (streq(szTmp, "line")) {
-	    pimg->fLinePending = fTrue; /* flag to process second triplet as LINE */
+	 else if (strcmp(szTmp, "line") == 0) {
+	    /* set flag to indicate to process second triplet as LINE */
+	    pimg->fLinePending = fTrue;
 	    result = img_MOVE;
-	 } else if (streq(szTmp, "cross")) {
+	 } else if (strcmp(szTmp, "cross") == 0) {
 	    if (fscanf(pimg->fh, "%f%f%f", px, py, pz) < 3) return img_BAD;
 	    goto ascii_again;
-	 } else if (streq(szTmp, "name")) {
+	 } else if (strcmp(szTmp, "name") == 0) {
 	    if (fscanf(pimg->fh,"%s", sz) < 1) return img_BAD;
 	    result = img_LABEL;
-	 } else if (streq(szTmp, "scale")) {
+	 } else if (strcmp(szTmp, "scale") == 0) {
 	    if (fscanf(pimg->fh,"%f", px) < 1) return img_BAD;
 	    *py = *pz = *px;
 	    return img_SCALE;
