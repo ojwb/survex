@@ -1,6 +1,6 @@
 /* rotplot.c */
 
-/* Copyright (C) Olly Betts 1994-1997
+/* Copyright (C) Olly Betts 1994-1997,2001
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,47 +134,38 @@ set_view(float sc, float theta, float elev)
 }
 
 extern void
-draw_view_legs(lid Huge *plid)
+draw_view_legs(point Huge *p)
 {
    if (fPlan) {
-      for ( ; plid; plid = plid->next)
-	 plot_plan(plid->pData, x1, x2, y1_sigh, y2, fixed_pt_pos);
+      plot_plan(p, x1, x2, y1_sigh, y2, fixed_pt_pos);
    } else if (y1_sigh == 0 && y2 == 0) {
-      for ( ; plid; plid = plid->next)
-	 plot_no_tilt(plid->pData, x1, x2, y3, fixed_pt_pos);
+      plot_no_tilt(p, x1, x2, y3, fixed_pt_pos);
    } else {
-      for ( ; plid; plid = plid->next)
-	 plot(plid->pData, x1, x2, y1_sigh, y2, y3, fixed_pt_pos);
+      plot(p, x1, x2, y1_sigh, y2, y3, fixed_pt_pos);
    }
 }
 
 extern void
-draw_view_stns(lid Huge *plid)
+draw_view_stns(point Huge *p)
 {
    if (fPlan) {
-      for ( ; plid; plid = plid->next)
-	 splot_plan(plid->pData, x1, x2, y1_sigh, y2, fixed_pt_pos);
+      splot_plan(p, x1, x2, y1_sigh, y2, fixed_pt_pos);
    } else if (y1_sigh == 0 && y2 == 0) {
-      for ( ; plid; plid = plid->next)
-	 splot_no_tilt(plid->pData, x1, x2, y3, fixed_pt_pos);
+      splot_no_tilt(p, x1, x2, y3, fixed_pt_pos);
    } else {
-      for ( ; plid; plid = plid->next)
-	 splot(plid->pData, x1, x2, y1_sigh, y2, y3, fixed_pt_pos);
+      splot(p, x1, x2, y1_sigh, y2, y3, fixed_pt_pos);
    }
 }
 
 extern void
-draw_view_labs(lid Huge *plid)
+draw_view_labs(point Huge *p)
 {
    if (fPlan) {
-      for ( ; plid; plid = plid->next)
-	 lplot_plan(plid->pData, x1, x2, y1_sigh, y2, fixed_pt_pos);
+      lplot_plan(p, x1, x2, y1_sigh, y2, fixed_pt_pos);
    } else if (y1_sigh == 0 && y2 == 0) {
-      for ( ; plid; plid = plid->next)
-	 lplot_no_tilt(plid->pData, x1, x2, y3, fixed_pt_pos);
+      lplot_no_tilt(p, x1, x2, y3, fixed_pt_pos);
    } else {
-      for ( ; plid; plid = plid->next)
-	 lplot(plid->pData, x1, x2, y1_sigh, y2, y3, fixed_pt_pos);
+      lplot(p, x1, x2, y1_sigh, y2, y3, fixed_pt_pos);
    }
 }
 

@@ -33,7 +33,7 @@
         EXPORT  |plot|,  |plot_no_tilt|,  |plot_plan|
         EXPORT  |splot|, |splot_no_tilt|, |splot_plan|
         EXPORT  |lplot|, |lplot_no_tilt|, |lplot_plan|
-        EXPORT  |fastline_init|, |do_trans|
+        EXPORT  |fastline_init|, |do_translate|, |do_translate_stns|
         EXPORT  |ol_setcol|
 
         IMPORT  |fancy_label|
@@ -286,22 +286,23 @@ lplot_plan_loop
         BNE     lplot_plan_loop
         LDMFD   sp!,{r4-r12,pc}^
 
-        DCB     "do_trans", 0
+        DCB     "do_translate", 0
         DCB     &00, &00, &00              ;align
-        DCD     &ff00000C
+        DCD     &ff000010
 
-|do_trans|
+|do_translate|
+|do_translate_stns|
         STMFD   sp!,{x,y,z,r14}
         MOV     r14,r0
-do_trans_loop
+do_translate_loop
         LDMIA   r14,{r0,x,y,z}
-        TEQ     r0,#0 ; exit if option is 0 (which NULL pointer on ARM)
+        TEQ     r0,#0 ; exit if option is 0 (which is NULL pointer on ARM)
         ADDNE   x,x,r1
         ADDNE   y,y,r2
         ADDNE   z,z,r3
         ADDNE   r14,r14,#4 ; option is unchanged, so skip it
         STMNEIA r14!,{x,y,z}
-        BNE     do_trans_loop
+        BNE     do_translate_loop
         LDMFD   sp!,{x,y,z,pc}^
 
 ;ppData

@@ -120,8 +120,8 @@ int cAnimate = 0;
 int incAnimate = 1;
 #endif
 
-static lid Huge **ppLegs = NULL;
-static lid Huge **ppStns = NULL;
+static point Huge **ppLegs = NULL;
+static point Huge **ppStns = NULL;
 
 static void
 draw_legs(void)
@@ -214,14 +214,24 @@ main(int argc, char **argv)
       exit(EXIT_FAILURE);
    }
 
-   /* can't do this until after we've initialised the graphics */
-   scDefault = scale_to_screen(ppLegs, ppStns, xcMac, ycMac, y_stretch);
+   {
+      int c;
+      point lower, upper;
+       
+      reset_limits(&lower, &upper);
+      
+      for (c = 0; ppLegs[c]; c++)
+	 update_limits(&lower, &upper, ppLegs[c], ppStns[c]);
+
+      /* can't do this until after we've initialised the graphics */
+      scDefault = scale_to_screen(&lower, &upper, xcMac, ycMac, y_stretch);
+   }
 
    /* Check if we've got a flat plot aligned perpendicular to an axis */
    locked = 0;
-   if (Xrad == 0) locked = 1;
-   if (Yrad == 0) locked = 2;
-   if (Zrad == 0) locked = 3;
+   if (Xrad == 0) locked |= 1;
+   if (Yrad == 0) locked |= 2;
+   if (Zrad == 0) locked |= 4;
    switch (locked) {
     case 1:
       degView = 90;
@@ -231,11 +241,15 @@ main(int argc, char **argv)
       degView = 0;
       elev = 0.0f; /* elevation looking along Y axis */
       break;
-    case 3:
+    case 4:
+      locked = 3;
       degView = 0;
       elev = 90.0f; /* plan */
       break;
-    default: break; /* avoid compiler warning */
+    default:
+      /* don't bother locking it if it's linear or a single point */
+      locked = 0;
+      break;
    }
 
    /* set base step size according to screen size */
@@ -778,8 +792,8 @@ static char *
 cmdline_load_files(int argc, char **argv)
 {
    int c;
-   ppLegs = osmalloc((argc + 1) * sizeof(lid Huge *));
-   ppStns = osmalloc((argc + 1) * sizeof(lid Huge *));
+   ppLegs = osmalloc((argc + 1) * sizeof(point Huge *));
+   ppStns = osmalloc((argc + 1) * sizeof(point Huge *));
    /* load data into memory */
    for (c = 0; c < argc; c++) {
       if (!load_data(argv[c], ppLegs + c, ppStns + c)) return argv[c];
@@ -788,14 +802,3 @@ cmdline_load_files(int argc, char **argv)
    ppStns[argc] = NULL;
    return NULL;
 }
-
-#if (OS==RISCOS)
-/* FIXME: this should really be in "armrot.c" */
-void
-do_translate(lid *plid, coord dX, coord dY, coord dZ)
-{
-   /* do_trans is an ARM code routine in armrot.s */
-   extern do_trans(point*, coord, coord, coord);
-   for ( ; plid; plid = plid->next) do_trans(plid->pData, dX, dY, dZ);
-}
-#endif

@@ -1,6 +1,6 @@
 /* rotplot.h */
 
-/* Copyright (C) Olly Betts 1994
+/* Copyright (C) Olly Betts 1994,2001
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  */
 
 extern void set_view(float sc, float theta, float z);
-extern void draw_view_legs(lid Huge *plid);
-extern void draw_view_stns(lid Huge *plid);
-extern void draw_view_labs(lid Huge *plid);
+extern void draw_view_legs(point Huge *p);
+extern void draw_view_stns(point Huge *p);
+extern void draw_view_labs(point Huge *p);
 extern void draw_scale_bar(void);

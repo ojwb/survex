@@ -17,6 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-int init_map(unsigned int w, unsigned int h)
+int init_map(unsigned int w, unsigned int h);
 void clear_map(void);
 int fancy_label(const char *label, int x, int y);

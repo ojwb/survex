@@ -305,8 +305,8 @@ findsurvey(const char *name)
 }
 #endif
 
-static lid **ppLegs = NULL;
-static lid **ppStns = NULL;
+static point **ppLegs = NULL;
+static point **ppStns = NULL;
 
 int
 load_file(const char *name, int replace)
@@ -316,8 +316,8 @@ load_file(const char *name, int replace)
    if (!replace && ppLegs) {
       while (ppLegs[blocks]) blocks++;
    }
-   ppLegs = osrealloc(ppLegs, (blocks + 2) * sizeof(lid Huge *));
-   ppStns = osrealloc(ppStns, (blocks + 2) * sizeof(lid Huge *));
+   ppLegs = osrealloc(ppLegs, (blocks + 2) * sizeof(point Huge *));
+   ppStns = osrealloc(ppStns, (blocks + 2) * sizeof(point Huge *));
 
    /* load data into memory */
    if (!load_data(name, ppLegs + blocks, ppStns + blocks)) {
@@ -327,8 +327,20 @@ load_file(const char *name, int replace)
    ppLegs[blocks + 1] = ppStns[blocks + 1] = NULL;
 
    XGetWindowAttributes(mydisplay, mywindow, &attr);
-   scale = scale_to_screen(ppLegs, ppStns, attr.width, attr.height, 1.0);
-   scale_default = scale;
+   
+   {
+      int c;
+      point lower, upper;
+       
+      reset_limits(&lower, &upper);
+      
+      for (c = 0; ppLegs[c]; c++)
+	 update_limits(&lower, &upper, ppLegs[c], ppStns[c]);
+
+      scale_default = scale_to_screen(&lower, &upper,
+				      attr.width, attr.height, 1.0);
+   }
+   scale = scale_default;
    x_mid = Xorg;
    y_mid = Yorg;
    z_mid = Zorg;
@@ -358,13 +370,13 @@ process_load(Display * display, Window mainwin, Window button, GC mygc, GC egc)
 
    /* set up input window */
    enter_window = XCreateSimpleWindow(display, mainwin,
-				      340, 200, 300, 100, 3, black, white);
+				      340, 200, 300, 100, 3, white, black);
    enter_gc = mygc;
    XMapRaised(display, enter_window);
    XClearWindow(display, enter_window);
    XSelectInput(display, enter_window, ButtonPressMask | KeyPressMask);
 
-   for (;;) {
+   while (1) {
       /* reset everything */
       XDrawString(display, enter_window, mygc, 10, 50, "Enter file name", 15);
       XFlush(display);
@@ -372,31 +384,31 @@ process_load(Display * display, Window mainwin, Window button, GC mygc, GC egc)
       key = 0;
 
       /* accept input from the user */
-      do {
+      while (1) {
 	 XNextEvent(display, &enter_event);
-	 count = XLookupString((XKeyEvent *) & enter_event, text, 10, &key, 0);
-	 text[count] = '\0';
-	 if (key != XK_Return)
-	    strcat(string, text);
-	 XClearWindow(display, enter_window);
-	 XDrawString(display, enter_window, mygc,
-		     10, 50, "Enter file name", 15);
-	 XFlush(display);
-	 XDrawString(display, enter_window, enter_gc,
-		     100, 75, string, strlen(string));
+	 if (enter_event.type == KeyPress) {
+	     count = XLookupString((XKeyEvent *) & enter_event, text, 10,
+				   &key, 0);
+	     if (key == XK_Return) break;
+	     text[count] = '\0';
+	     strcat(string, text);
+	     XClearWindow(display, enter_window);
+	     XDrawString(display, enter_window, mygc,
+			 10, 50, "Enter file name", 15);
+	     XFlush(display);
+	     XDrawString(display, enter_window, enter_gc,
+			 100, 75, string, strlen(string));
+	     XFlush(display);
+	 }
       }
-      while (key != XK_Return && enter_event.type == KeyPress);
 
-      /* Clear everything out of the buffers and reset */
-      XFlush(display);
-      if (!load_file(string, 1)) {
-	 strcpy(string, "File not found or not a Survex image file");
-	 break;
-      }
+      if (load_file(string, 1)) break;
+
+      strcpy(string, "File not found or not a Survex image file");
       XClearWindow(display, enter_window);
       XDrawString(display, enter_window, enter_gc,
 		  10, 25, string, strlen(string));
-   }	/* End of for (;;) */
+   }
 
    XDestroyWindow(display, enter_window);
 
@@ -699,8 +711,7 @@ toscreen_y(point * p)
 static void
 fill_segment_cache(void)
 {
-   lid **pp;
-   lid *plid;
+   point **pp;
    int group;
 
    coord x1, y1;
@@ -731,41 +742,39 @@ fill_segment_cache(void)
    }
 
    for (pp = ppLegs; *pp; pp++) {
-      for (plid = *pp; plid; plid = plid->next) {
-	 point *p;
+      point *p;
+      for (p = *pp; p->_.action != STOP; p++) {
+	 switch (p->_.action) {
+	   case MOVE:
+	    x1 = toscreen_x(p);
+	    y1 = toscreen_y(p);
+	    break;
 
-	 for (p = plid->pData; p->_.action != STOP; p++) {
-	    switch (p->_.action) {
-	       case MOVE:
-	          x1 = toscreen_x(p);
-		  y1 = toscreen_y(p);
-	          break;
+	   case DRAW: {
+	    XSegment *segment;
+	    SegmentGroup *group;
 
-	       case DRAW: {
-		  XSegment *segment;
-		  SegmentGroup *group;
+	    /* calculate colour */
+	    int depth = (int)((float)(-p->Z + Zorg + Zrad) * z_col_scale);
 
-		  /* calculate colour */
-		  int depth = (int)((float)(-p->Z + Zorg + Zrad) * z_col_scale);
-
-		  if (depth < 0) {
-		      depth = 0;
-		  } else if (depth >= NUM_DEPTH_COLOURS) {
-		      depth = NUM_DEPTH_COLOURS - 1;
-		  }
-		  /* store coordinates */
-		  group = &segment_groups[depth];
-		  segment = &(group->segments[group->num_segments++]);
-
-		  /* observe the order of the following lines before modifying */
-		  segment->x1 = x1;
-		  segment->y1 = y1;
-		  segment->x2 = x1 = toscreen_x(p);
-		  segment->y2 = y1 = toscreen_y(p);
-
-		  break;
-	       }
+	    if (depth < 0) {
+	       depth = 0;
+	    } else if (depth >= NUM_DEPTH_COLOURS) {
+	       depth = NUM_DEPTH_COLOURS - 1;
 	    }
+
+	    /* store coordinates */
+	    group = &segment_groups[depth];
+	    segment = &(group->segments[group->num_segments++]);
+
+	    /* observe the order of the following lines before modifying */
+	    segment->x1 = x1;
+	    segment->y1 = y1;
+	    segment->x2 = x1 = toscreen_x(p);
+	    segment->y2 = y1 = toscreen_y(p);
+
+	    break;
+	   }
 	 }
       }
    }
@@ -781,28 +790,24 @@ fill_segment_cache(void)
 static point *
 find_station(int x, int y, int mask)
 {
+   point **pp;
    point *p, *q = NULL;
 
    /* Ignore points a really long way away */
    int d_min = distance_metric(300, 300);
 
-   lid **pp;
-   lid *plid;
-
    if (ppStns == NULL) return NULL;
 
    for (pp = ppStns; *pp; pp++) {
-      for (plid = *pp; plid; plid = plid->next) {
-         for (p = plid->pData; p->_.str != NULL; p++) {
-	    int d;
-	    int x1 = toscreen_x(p);
-	    int y1 = toscreen_y(p);
+      for (p = *pp; p->_.str != NULL; p++) {
+	 int d;
+	 int x1 = toscreen_x(p);
+	 int y1 = toscreen_y(p);
 
-	    d = distance_metric(x1 - x, y1 - y);
-	    if (d < d_min) {
-		d_min = d;
-		q = p;
-	    }
+	 d = distance_metric(x1 - x, y1 - y);
+	 if (d < d_min) {
+	    d_min = d;
+	    q = p;
 	 }
       }
    }
@@ -862,7 +867,6 @@ redraw_image_dbe(Display * display, Window window, GC gc)
    /* Draw the cave into a window (strictly, the second buffer). */
 
    coord x1, y1, x2, y2;
-   lid *plid;
 
    char temp[32];
    int group;
@@ -882,37 +886,32 @@ redraw_image_dbe(Display * display, Window window, GC gc)
    label_reg = XCreateRegion();
 
    if ((crossing || labelling) /*&& surveymask[p->survey] */ ) {
-      lid **pp;
+      point **pp;
       for (pp = ppStns; *pp; pp++) {
-	 for (plid = *pp; plid; plid = plid->next) {
-       	    point *p;
-
-	    for (p = plid->pData; p->_.str != NULL; p++) {
-	       x2 = toscreen_x(p);
-	       y2 = toscreen_y(p);
-	       if (crossing) {
+	 point *p;
+	 for (p = *pp; p->_.str != NULL; p++) {
+	    x2 = toscreen_x(p);
+	    y2 = toscreen_y(p);
+	    if (crossing) {
 #if 0 /* + crosses */
-		  XDrawLine(display, window, gcs[lab_col_ind], x2 - CROSSLENGTH, y2, x2 + CROSSLENGTH, y2);
-		  XDrawLine(display, window, gcs[lab_col_ind], x2, y2 - CROSSLENGTH, x2, y2 + CROSSLENGTH);
+	       XDrawLine(display, window, gcs[lab_col_ind], x2 - CROSSLENGTH, y2, x2 + CROSSLENGTH, y2);
+	       XDrawLine(display, window, gcs[lab_col_ind], x2, y2 - CROSSLENGTH, x2, y2 + CROSSLENGTH);
 #else /* x crosses */
-		  XDrawLine(display, window, gcs[lab_col_ind],
-			    x2 - CROSSLENGTH, y2 - CROSSLENGTH,
-			    x2 + CROSSLENGTH, y2 + CROSSLENGTH);
-		  XDrawLine(display, window, gcs[lab_col_ind],
-			    x2 + CROSSLENGTH, y2 - CROSSLENGTH,
-			    x2 - CROSSLENGTH, y2 + CROSSLENGTH);
+	       XDrawLine(display, window, gcs[lab_col_ind],
+			 x2 - CROSSLENGTH, y2 - CROSSLENGTH,
+			 x2 + CROSSLENGTH, y2 + CROSSLENGTH);
+	       XDrawLine(display, window, gcs[lab_col_ind],
+			 x2 + CROSSLENGTH, y2 - CROSSLENGTH,
+			 x2 - CROSSLENGTH, y2 + CROSSLENGTH);
 #endif
-	       }
+	    }
 
-	       if (labelling) {
-		  char *q;
-
-		  q = p->_.str;
-		  draw_label(display, window, gcs[lab_col_ind],
-			     x2, y2 + slashheight, q, strlen(q));
-	          /* XDrawString(display,window,gcs[lab_col_ind],x2,y2+slashheight, q, strlen(q)); */
-	          /* XDrawString(display,window,gcs[p->survey],x2+10,y2, q, strlen(q)); */
-	       }
+	    if (labelling) {
+	       char *q = p->_.str;
+	       draw_label(display, window, gcs[lab_col_ind],
+			  x2, y2 + slashheight, q, strlen(q));
+	       /* XDrawString(display,window,gcs[lab_col_ind],x2,y2+slashheight, q, strlen(q)); */
+	       /* XDrawString(display,window,gcs[p->survey],x2+10,y2, q, strlen(q)); */
 	    }
 	 }
       }
@@ -1395,9 +1394,14 @@ main(int argc, char **argv)
    title = osmalloc(strlen(hello) + strlen(argv[optind]) + 7);
    sprintf(title, "%s - [%s]", hello, argv[optind]);
 
-   /* load file(s) -- FIXME: report errors (i.e. when load_file returns 0) */
+   /* load file(s) */
    while (argv[optind]) {
-      load_file(argv[optind++], 0);
+      if (!load_file(argv[optind], 0)) {
+	 printf("File `%s' not found or not a Survex image file\n",
+		argv[optind]);
+	 exit(1);
+      }
+      optind++;
    }
 
    set_defaults();

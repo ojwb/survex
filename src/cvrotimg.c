@@ -39,11 +39,6 @@
 coord Xorg, Yorg, Zorg; /* position of centre of survey */
 coord Xrad, Yrad, Zrad; /* "radii" */
 
-/* Allocate a large block of this size for labels rather than malloc-ing
- * each individually so avoiding malloc space overhead.
- * If not defined, use osmalloc() */
-#define STRINGBLOCKSIZE 8192
-
 #define SHRINKAGE 1 /* shrink all data by this to fit in 16 bits */
 
 /* scale all data by this to fit in coord data type */
@@ -60,56 +55,56 @@ set_codes(coord move_, coord draw_, coord stop_)
    stop = stop_;
 }
 
-/* add elt and return new list head */
-static lid Huge *
-add_lid(lid Huge *plidHead, point Huge *pData)
-{
-   lid Huge *plidNew, Huge *plid;
-   plidNew = osnew(lid);
-   plidNew->pData = pData;
-#if 0
-   /* for adding to start */
-   plidNew->next = plidHead;
-   return;
-#endif
-   plidNew->next = NULL;
-   if (!plidHead) return plidNew; /* first elt, so it is the head */
-   plid = plidHead;
-   while (plid->next) plid = plid->next;
-   plid->next = plidNew; /* otherwise add to end and return existing head */
-   return plidHead;
-}
-
 extern bool
-load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns)
+load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
 {
    float x, y, z;
    char sz[256];
    int result;
    img *pimg;
-   char *p;
-#ifdef STRINGBLOCKSIZE
-   char *pBlock = osmalloc(STRINGBLOCKSIZE);
-   int left = STRINGBLOCKSIZE;
-#endif
 
-   point Huge *pLegData; /* pointer to start of current leg data block */
-   point Huge *pStnData; /* pointer to start of current station data block */
-   lid Huge *plidLegHead = NULL; /* head of leg data linked list */
-   lid Huge *plidStnHead = NULL; /* head of leg data linked list */
+   point Huge *pLegData;
+   point Huge *pStnData;
 
-   /* 0 <= c < cMac */
-   OSSIZE_T cLeg, cLegMac; /* counter and ceiling for reading in leg data */
-   OSSIZE_T cStn, cStnMac; /* counter and ceiling for reading in stn data */
+   /* Make 2 passes - one to work out exactly how much space to allocate,
+    * the second to actually read the data.  Disk caching should make this
+    * fairly efficient and it means we can use every last scrap of memory
+    */
+
+   OSSIZE_T c_legs = 0; /* actually the number of MOVEs and DRAWs */
+   OSSIZE_T c_stns = 0;
+   OSSIZE_T c_totlabel = 0;
+   OSSIZE_T c_leg, c_stn;
+   char *p, *p_end;
 
    /* try to open image file, and check it has correct header */
    pimg = img_open(fnmData, NULL, NULL);
-   if (!pimg) fatalerror(img_error(), fnmData);
+   if (!pimg) {
+      return fFalse;
+   }
 
-   cLeg = 0;
-   cLegMac = 2048; /* say */
-   cStn = 0;
-   cStnMac = 2048;
+   do {
+      result = img_read_datum(pimg, sz, &x, &y, &z);
+      switch (result) {
+       case img_MOVE:
+       case img_LINE:
+    	 c_legs++;
+    	 break;
+       case img_CROSS:
+         /* Use labels to position crosses too - newer format .3d files don't
+     	  * have crosses in */
+    	 break;
+       case img_LABEL:
+	 c_stns++;
+	 c_totlabel += strlen(sz) + 1;
+	 break;
+       case img_BAD:
+	 img_close(pimg);
+	 return fFalse;
+      }
+   } while (result != img_STOP);
+
+   img_rewind(pimg);
 
    /* get some memory to put the data in */
    /* blocks are: (all entries are coords)
@@ -120,160 +115,138 @@ load_data(const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns)
     *
     * <opt> is <LINE> or <DATA> for leg data, or -> label for station data
     */
-   pLegData = osmalloc(ossizeof(point) * (cLegMac + 1));
-   pStnData = osmalloc(ossizeof(point) * (cStnMac + 1));
+   pLegData = osmalloc(ossizeof(point) * c_legs + 1);
+   pStnData = osmalloc(ossizeof(point) * c_stns + 1);
+   p = osmalloc(c_totlabel);
+   p_end = p + c_totlabel;
 
+   c_leg = c_stn = 0;
+#if 0
+   printf("%p %p\n%d %d\n%d %d\n", p, p_end, c_leg, c_legs, c_stn, c_stns);
+#endif
    do {
       result = img_read_datum(pimg, sz, &x, &y, &z);
       switch (result) {
-       case img_BAD:
-         break;
        case img_MOVE:
-         pLegData[cLeg]._.action = move;
-    	 pLegData[cLeg].X = (coord)(x * factor);
-    	 pLegData[cLeg].Y = (coord)(y * factor);
-	 pLegData[cLeg].Z = (coord)(z * factor);
-	 cLeg++;
+	 if (c_leg >= c_legs) return fFalse;
+         pLegData[c_leg]._.action = move;
+    	 pLegData[c_leg].X = (coord)(x * factor);
+    	 pLegData[c_leg].Y = (coord)(y * factor);
+	 pLegData[c_leg].Z = (coord)(z * factor);
+	 c_leg++;
     	 break;
        case img_LINE:
-         pLegData[cLeg]._.action = draw;
-    	 pLegData[cLeg].X = (coord)(x * factor);
-    	 pLegData[cLeg].Y = (coord)(y * factor);
-	 pLegData[cLeg].Z = (coord)(z * factor);
-    	 cLeg++;
+	 if (c_leg >= c_legs) return fFalse;
+         pLegData[c_leg]._.action = draw;
+    	 pLegData[c_leg].X = (coord)(x * factor);
+    	 pLegData[c_leg].Y = (coord)(y * factor);
+	 pLegData[c_leg].Z = (coord)(z * factor);
+    	 c_leg++;
     	 break;
        case img_CROSS:
          /* Use labels to position crosses too - newer format .3d files don't
      	  * have crosses in */
     	 break;
        case img_LABEL: {
-         int size = strlen(sz) + 1;
-#ifdef STRINGBLOCKSIZE
-         if (size > STRINGBLOCKSIZE)
-      	    p = osmalloc(size);
-    	 else {
-      	    if (size > left) {
-               /* FIXME: we waste the rest of the block - realloc it down? */
-               pBlock = osmalloc(STRINGBLOCKSIZE);
-               left = STRINGBLOCKSIZE;
-      	    }
-      	    p = pBlock;
-      	    pBlock += size;
-      	    left -= size;
-    	 }
-#else
-         p = osmalloc(size);
-#endif
-         strcpy(p, sz);
-    	 pStnData[cStn]._.str = p;
-    	 pStnData[cStn].X = (coord)(x * factor);
-   	 pStnData[cStn].Y = (coord)(y * factor);
-    	 pStnData[cStn].Z = (coord)(z * factor);
-    	 cStn++;
+	 int size = strlen(sz) + 1;
+	 if (p + size > p_end) return fFalse;
+	 if (c_stn >= c_stns) return fFalse;
+	 strcpy(p, sz);
+    	 pStnData[c_stn]._.str = p;
+    	 pStnData[c_stn].X = (coord)(x * factor);
+   	 pStnData[c_stn].Y = (coord)(y * factor);
+    	 pStnData[c_stn].Z = (coord)(z * factor);
+    	 c_stn++;
+	 p += size;
 	 break;
        }
+       case img_BAD:
+	 img_close(pimg);
+	 return fFalse;
       }
-      if (cLeg >= cLegMac) {
-         pLegData[cLeg]._.action = stop;
-         plidLegHead = add_lid(plidLegHead, pLegData);
-         pLegData = osmalloc(ossizeof(point) * (cLegMac + 1));
-         cLeg = 0;
-      }
-      if (cStn >= cStnMac) {
-         pStnData[cStn]._.str = NULL;
-         plidStnHead = add_lid(plidStnHead, pStnData);
-         pStnData = osmalloc(ossizeof(point) * (cStnMac + 1));
-         cStn = 0;
-      }
-   } while (result != img_BAD && result != img_STOP);
+   } while (result != img_STOP);
 
    img_close(pimg);
 
-   pLegData[cLeg]._.action = stop;
-   pStnData[cStn]._.str = NULL;
+#if 0
+   printf("%p %p\n%d %d\n%d %d\n", p, p_end, c_leg, c_legs, c_stn, c_stns);
+#endif
+   if (p != p_end) return fFalse;
+   if (c_leg != c_legs) return fFalse;
+   pLegData[c_leg]._.action = stop;
+   if (c_stn != c_stns) return fFalse;
+   pStnData[c_stn]._.str = NULL;
 
-   *ppLegs = add_lid(plidLegHead, pLegData);
-   *ppStns = add_lid(plidStnHead, pStnData);
+   *ppLegs = pLegData;
+   *ppStns = pStnData;
 
-   return (result != img_BAD); /* return fTrue iff image was OK */
+   return fTrue; /* return fTrue iff image was OK */
+}
+
+void
+reset_limits(point *pmin, point *pmax)
+{
+   pmin->X = pmin->Y = pmin->Z = 0x7fffffff;
+   pmax->X = pmax->Y = pmax->Z = 0x80000000;
+}
+
+void
+update_limits(point *pmin, point *pmax, point Huge *pLegs, point Huge *pStns)
+{
+   /* run through data to find max & min coords */
+   if (pLegs) {
+      point Huge *p;
+      for (p = pLegs ; p->_.action != stop; p++) {
+	 if (p->X < pmin->X) pmin->X = p->X;
+	 if (p->X > pmax->X) pmax->X = p->X;
+	 if (p->Y < pmin->Y) pmin->Y = p->Y;
+	 if (p->Y > pmax->Y) pmax->Y = p->Y;
+	 if (p->Z < pmin->Z) pmin->Z = p->Z;
+	 if (p->Z > pmax->Z) pmax->Z = p->Z;
+      }
+   }
+   if (pStns) {
+      point Huge *p;
+      for (p = pStns ; p->_.str; p++) {
+	 if (p->X < pmin->X) pmin->X = p->X;
+	 if (p->X > pmax->X) pmax->X = p->X;
+	 if (p->Y < pmin->Y) pmin->Y = p->Y;
+	 if (p->Y > pmax->Y) pmax->Y = p->Y;
+	 if (p->Z < pmin->Z) pmin->Z = p->Z;
+	 if (p->Z > pmax->Z) pmax->Z = p->Z;
+      }
+   }
+   return;
 }
 
 #define BIG_SCALE 1e3f
 
-static bool
-last_leg(point Huge *p)
-{
-   return (p->_.action == stop);
-}
-
-static bool
-last_stn(point Huge *p)
-{
-   return (p->_.str == NULL);
-}
-
 float
-scale_to_screen(lid Huge **pplid, lid Huge **pplid2,
-		int xcMac, int ycMac, double y_stretch)
+scale_to_screen(const point *pmin, const point *pmax, int xcMac, int ycMac,
+		double y_stretch)
 {
-   /* run through data to find max & min points */
+   float Radius; /* "radius" of plan */
 
-   /* min & max values of co-ords */
-   coord Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;
-   coord Radius; /* radius of plan */
-   point Huge *p;
-   lid Huge *plid;
-   bool fData = 0;
-   bool (*checkendfn)(point Huge *) = last_leg;
-
-   /* if no data, return BIG_SCALE as scale factor */
-   if (!pplid || !*pplid) {
-      pplid = pplid2;
-      pplid2 = NULL;
+   if (pmin->X > pmax->X) {
+      /* no data */
+      Xorg = Yorg = Zorg = 0;
+      Xrad = Yrad = Zrad = 0;
+   } else {
+      /* centre survey in each (spatial) dimension */
+      Xorg = (pmin->X + pmax->X) / 2;
+      Yorg = (pmin->Y + pmax->Y) / 2;
+      Zorg = (pmin->Z + pmax->Z) / 2;
+      Xrad = (pmax->X - pmin->X) / 2;
+      Yrad = (pmax->Y - pmin->Y) / 2;
+      Zrad = (pmax->Z - pmin->Z) / 2;
    }
 
-   if (!pplid || !*pplid) return (BIG_SCALE);
+   Radius = radius(Xrad, Yrad);
 
-   /* suppress compiler warning */
-   Xmin = Xmax = Ymin = Ymax = Zmin = Zmax = 0;
+   if (Zrad > Radius) Radius = Zrad;
 
-xxx:
-   for ( ; *pplid; pplid++) {
-      plid = *pplid;
-      p = plid->pData;
+   if (Radius == 0) return (BIG_SCALE);
 
-      if (!p || checkendfn(p)) continue;
-
-      if (!fData) {
-         Xmin = Xmax = p->X;
-         Ymin = Ymax = p->Y;
-         Zmin = Zmax = p->Z;
-         fData = 1;
-      }
-
-      for ( ; plid; plid = plid->next) {
-         p = plid->pData;
-         for ( ; !checkendfn(p); p++) {
-            if (p->X < Xmin) Xmin = p->X; else if (p->X > Xmax) Xmax = p->X;
-            if (p->Y < Ymin) Ymin = p->Y; else if (p->Y > Ymax) Ymax = p->Y;
-            if (p->Z < Zmin) Zmin = p->Z; else if (p->Z > Zmax) Zmax = p->Z;
-         }
-      }
-   }
-   if (pplid2) {
-      pplid = pplid2;
-      pplid2 = NULL;
-      checkendfn = last_stn;
-      goto xxx;
-   }
-   /* centre survey in each (spatial) dimension */
-   Xorg = (Xmin + Xmax)/2; Yorg = (Ymin + Ymax)/2; Zorg = (Zmin + Zmax)/2;
-   Xrad = (Xmax - Xmin)/2; Yrad = (Ymax - Ymin)/2; Zrad = (Zmax - Zmin)/2;
-   Radius = (coord)radius(Xrad, Yrad);
-
-   if (Radius == 0 && Zrad == 0) return (BIG_SCALE);
-
-   return ((0.5f * 0.99f
-	    * min((float)xcMac, (float)ycMac / (float)fabs(y_stretch)))
-	   / (float)(max(Radius, Zrad)));
+   return min((float)xcMac, (float)ycMac / (float)fabs(y_stretch)) * .99
+	  / (Radius * 2);
 }

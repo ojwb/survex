@@ -34,19 +34,17 @@ typedef struct {
    coord X, Y, Z;  /* coordinates */
 } point;
 
- /* List Item Data */
-typedef struct LID {
-   point Huge *pData;
-   struct LID Huge *next;
-} lid;
+void set_codes(coord move_, coord draw_, coord stop_);
 
-extern void set_codes(coord move_, coord draw_, coord stop_);
+bool load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns);
 
-extern bool load_data(const char *fnmData, lid Huge **ppLegs,
-       	    	      lid Huge **ppStns);
+void reset_limits(point *pmin, point *pmax);
 
-extern float scale_to_screen(lid Huge **pplid, lid Huge **pplid2,
-			     int xcMac, int ycMac, double y_stretch);
+void update_limits(point *pmin, point *pmax,
+		   point Huge *pLegs, point Huge *pStns);
+
+float scale_to_screen(const point *pmin, const point *pmax,
+		      int xcMac, int ycMac, double y_stretch);
 
 extern coord Xorg, Yorg, Zorg; /* position of centre of survey */
 extern coord Xrad, Yrad, Zrad; /* "radii" */

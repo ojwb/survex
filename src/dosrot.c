@@ -25,8 +25,6 @@
 #include "useful.h"
 #include "labels.h"
 
-extern point Huge *pData;
-
 /* Cross size */
 #define CS 3
 
@@ -83,11 +81,12 @@ plot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
 {
    int X, Y; /* screen plot position */
    INIT();
-   for ( ; COND(p); p++) {
+   while (COND(p)) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
       Y = (int)((p->X * y1 + p->Y * y2 + p->Z * y3) >> fixpt) + (ycMac >> 1);
       DO_PLOT(p, X, Y);
+      p++;
    }
 }
 
@@ -99,11 +98,12 @@ plot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
 {
    int X, Y; /* screen plot position */
    INIT();
-   for ( ; COND(p); p++) {
+   while (COND(p)) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
       Y = (int)((p->Z * y3) >> fixpt) + (ycMac >> 1);
       DO_PLOT(p, X, Y);
+      p++;
    }
 }
 
@@ -115,41 +115,36 @@ plot_plan(point Huge *p, coord x1, coord x2, coord y1, coord y2, int fixpt)
 {
    int X, Y; /* screen plot position */
    INIT();
-   for ( ; COND(p); p++) {
+   while (COND(p)) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
       Y = (int)((p->X * y1 + p->Y * y2) >> fixpt) + (ycMac >> 1);
       DO_PLOT(p, X, Y);
+      p++;
    }
 }
 
 /**************************************************************************/
 
 void
-do_translate(lid Huge *plid, coord dX, coord dY, coord dZ)
+do_translate(point Huge *p, coord dX, coord dY, coord dZ)
 {
-   point Huge *p;
-   for ( ; plid; plid = plid->next) {
-      p = plid->pData;
-      for ( ; p->_.action != STOP; p++) {
-      	 p->X += dX;
-         p->Y += dY;
-   	 p->Z += dZ;
-      }
+   while (p->_.action != STOP) {
+      p->X += dX;
+      p->Y += dY;
+      p->Z += dZ;
+      p++;
    }
 }
 
 void
-do_translate_stns(lid Huge *plid, coord dX, coord dY, coord dZ)
+do_translate_stns(point Huge *p, coord dX, coord dY, coord dZ)
 {
-   point Huge *p;
-   for ( ; plid; plid = plid->next) {
-      p = plid->pData;
-      for ( ; p->_.str; p++) {
-      	 p->X += dX;
-         p->Y += dY;
-   	 p->Z += dZ;
-      }
+   while (p->_.str) {
+      p->X += dX;
+      p->Y += dY;
+      p->Z += dZ;
+      p++;
    }
 }
 
@@ -159,11 +154,12 @@ splot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
       int fixpt)
 {
    int X, Y; /* screen plot position */
-   for ( ; p->_.str; p++) {
+   while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
       Y = (int)((p->X * y1 + p->Y * y2 + p->Z * y3) >> fixpt) + (ycMac >> 1);
       drawcross(X, Y);
+      p++;
    }
 }
 
@@ -172,11 +168,12 @@ void
 splot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
 {
    int X, Y; /* screen plot position */
-   for ( ; p->_.str; p++) {
+   while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
       Y = (int)((p->Z * y3) >> fixpt) + (ycMac >> 1);
       drawcross(X, Y);
+      p++;
    }
 }
 
@@ -185,11 +182,12 @@ void
 splot_plan(point Huge *p, coord x1, coord x2, coord y1, coord y2, int fixpt)
 {
    int X, Y; /* screen plot position */
-   for ( ; p->_.str; p++) {
+   while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X * x1 + p->Y * x2) >> fixpt) + (xcMac >> 1);
       Y = (int)((p->X * y1 + p->Y * y2) >> fixpt) + (ycMac >> 1);
       drawcross(X, Y);
+      p++;
    }
 }
 
@@ -199,7 +197,7 @@ lplot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
       int fixpt)
 {
    int X, Y; /* screen plot position */
-   for ( ; p->_.str; p++) {
+   while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X * x1 + p->Y * x2) >> fixpt);
       if ((X < 0 ? -X : X) > (xcMac >> 1)) continue;
@@ -209,6 +207,7 @@ lplot(point Huge *p, coord x1, coord x2, coord y1, coord y2, coord y3,
          outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
                    p->_.str);
       }
+      p++;
    }
 }
 
@@ -217,7 +216,7 @@ void
 lplot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
 {
    int X, Y; /* screen plot position */
-   for ( ; p->_.str; p++) {
+   while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X * x1 + p->Y * x2) >> fixpt);
       if ((X < 0 ? -X : X) > (xcMac >> 1) ) continue;
@@ -227,6 +226,7 @@ lplot_no_tilt(point Huge *p, coord x1, coord x2, coord y3, int fixpt)
          outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
                    p->_.str);
       }
+      p++;
    }
 }
 
@@ -235,7 +235,7 @@ void
 lplot_plan(point Huge *p, coord x1, coord x2, coord y1, coord y2, int fixpt)
 {
    int X, Y; /* screen plot position */
-   for ( ; p->_.str; p++) {
+   while (p->_.str) {
       /* calc positions and shift right get screen co-ords */
       X = (int)((p->X * x1 + p->Y * x2) >> fixpt);
       if ((X < 0 ? -X : X) > (xcMac >> 1)) continue;
@@ -245,5 +245,6 @@ lplot_plan(point Huge *p, coord x1, coord x2, coord y1, coord y2, int fixpt)
          outtextxy(X + (unsigned)xcMac / 2u, Y + (unsigned)ycMac / 2u,
                    p->_.str);
       }
+      p++;
    }
 }

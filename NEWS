@@ -40,6 +40,8 @@ Changes in 0.97-prerelease1:
 
 * cavern: bug fix: "*prefix \" or "*begin \" would cause an internal error.
 
+* xcaverot: "load" button now works.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling

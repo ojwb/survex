@@ -1,6 +1,6 @@
 /* > caverot.h
  * Data structures and #defines for cave rotator
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,12 +90,8 @@ void lplot_plan(point Huge *pData,
                 coord x1, coord x2, coord y1, coord y2, int fixpt);
 
 /* translate whole cave */
-void do_translate(lid Huge *plid, coord dX, coord dY, coord dZ);
-#if (OS==RISCOS)
-#define do_translate_stns do_translate
-#else
-void do_translate_stns(lid Huge *plid, coord dX, coord dY, coord dZ);
-#endif
+void do_translate(point Huge *p, coord dX, coord dY, coord dZ);
+void do_translate_stns(point Huge *p, coord dX, coord dY, coord dZ);
 
 extern int xcMac, ycMac; /* screen size in plot units (==pixels usually) */
 extern float y_stretch; /* multiplier for y to correct aspect ratio */
