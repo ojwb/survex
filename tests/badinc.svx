@@ -1,2 +1,2 @@
-; include of a non-existant file
-*include non_existant_file
+; include of a nonexistent file
+*include nonexistent_file
