@@ -22,11 +22,13 @@
 
 #include "ctlprefs.h"
 #include "gridprefs.h"
+#include "indicatorprefs.h"
 #include "legprefs.h"
 #include "prefsdlg.h"
 #include "stnprefs.h"
 #include "tubeprefs.h"
 #include "unitsprefs.h"
+#include "winprefs.h"
 
 PrefsDlg::PrefsDlg(wxWindow* parent) : PanelDlg(parent, 1000, "Preferences")
 {
@@ -36,14 +38,23 @@ PrefsDlg::PrefsDlg(wxWindow* parent) : PanelDlg(parent, 1000, "Preferences")
     StnPrefs* stnprefs = new StnPrefs(this);
     TubePrefs* tubeprefs = new TubePrefs(this);
     UnitsPrefs* unitsprefs = new UnitsPrefs(this);
+    IndicatorPrefs* indicatorprefs = new IndicatorPrefs(this);
+    WinPrefs* winprefs = new WinPrefs(this);
 
     list<PanelDlgPage*> pages;
     pages.push_back(stnprefs);
     pages.push_back(legprefs);
     pages.push_back(tubeprefs);
+    pages.push_back(indicatorprefs);
     pages.push_back(gridprefs);
     pages.push_back(ctlprefs);
     pages.push_back(unitsprefs);
+    pages.push_back(winprefs);
+
+    list<PanelDlgPage*>::iterator iter = pages.begin();
+    while (iter != pages.end()) {
+        (*iter++)->Hide();
+    }
 
     SetPages(pages);
 }

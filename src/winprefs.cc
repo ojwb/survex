@@ -1,7 +1,7 @@
 //
-//  ctlprefs.cc
+//  winprefs.cc
 //
-//  Preferences page for mouse control options.
+//  Preferences page for window-related options.
 //
 //  Copyright (C) 2002 Mark R. Shinwell
 //
@@ -20,38 +20,38 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "ctlprefs.h"
+#include "winprefs.h"
 #include "message.h"
 
 #include <wx/statline.h>
 
-static const wxWindowID ID_CTL_PREFS = 5004;
-static const wxWindowID ID_CTL_REVERSE = 2000;
+static const wxWindowID ID_WIN_PREFS = 5011;
+static const wxWindowID ID_WIN_SIDE_PANEL = 4000;
 
-CtlPrefs::CtlPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_CTL_PREFS)
+WinPrefs::WinPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_WIN_PREFS)
 {
-    wxCheckBox* reverse = new wxCheckBox(this, ID_CTL_REVERSE, msg(/*Reverse the sense of the controls*/368));
+    wxCheckBox* side_panel = new wxCheckBox(this, ID_WIN_SIDE_PANEL, msg(/*Display side panel*/373));
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
-    sizer->Add(reverse, 0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 0);
+    sizer->Add(side_panel, 0 /* not vertically stretchable */, wxALIGN_TOP);
 
     SetAutoLayout(true);
     SetSizer(sizer);
 }
 
-CtlPrefs::~CtlPrefs()
+WinPrefs::~WinPrefs()
 {
 
 }
 
-const wxString CtlPrefs::GetName()
+const wxString WinPrefs::GetName()
 {
-    return "Control";
+    return "Windows";
 }
 
-const wxBitmap CtlPrefs::GetIcon()
+const wxBitmap WinPrefs::GetIcon()
 {
-    return wxGetApp().LoadPreferencesIcon("ctl");
+    return wxGetApp().LoadPreferencesIcon("window");
 }
 

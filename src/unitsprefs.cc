@@ -25,38 +25,42 @@
 
 #include <wx/statline.h>
 
-static const wxWindowID ID_UNITS_PREFS = 1005;
+static const wxWindowID ID_UNITS_PREFS = 5005;
+static const wxWindowID ID_UNITS_METRIC = 2000;
+static const wxWindowID ID_UNITS_IMPERIAL = 2001;
+static const wxWindowID ID_UNITS_DEGREES = 2002;
+static const wxWindowID ID_UNITS_GRADS = 2003;
+static const wxWindowID ID_UNITS_LINE1 = 2004;
+static const wxWindowID ID_UNITS_LABEL1 = 2005;
+static const wxWindowID ID_UNITS_LABEL2 = 2006;
 
 UnitsPrefs::UnitsPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_UNITS_PREFS)
 {
-#if 0
-    wxCheckBox* show_crosses = new wxCheckBox(this, ID_STN_CROSSES, msg(/*Mark survey stations with crosses*/350));
-    wxCheckBox* hi_ents = new wxCheckBox(this, ID_STN_HI_ENTS, msg(/*Highlight stations marked as entrances*/351));
-    wxCheckBox* hi_fixed = new wxCheckBox(this, ID_STN_HI_FIXED,
-                                          msg(/*Highlight stations marked as fixed points*/352));
-    wxCheckBox* hi_xpts = new wxCheckBox(this, ID_STN_HI_XPTS, msg(/*Highlight stations which are exported*/353));
-    wxCheckBox* names = new wxCheckBox(this, ID_STN_NAMES, msg(/*Mark survey stations with their names*/354));
-    wxCheckBox* overlapping = new wxCheckBox(this, ID_STN_OVERLAPPING,
-                                             msg(/*Allow names to overlap on the display (faster)*/355));
+    wxRadioButton* metric = new wxRadioButton(this, ID_UNITS_METRIC, msg(/*metric units*/362),
+                                              wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+    wxRadioButton* imperial = new wxRadioButton(this, ID_UNITS_IMPERIAL, msg(/*imperial units*/363));
+    wxRadioButton* degrees = new wxRadioButton(this, ID_UNITS_DEGREES, msg(/*degrees*/364),
+                                               wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+    wxRadioButton* grads = new wxRadioButton(this, ID_UNITS_GRADS, msg(/*grads*/365));
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
-    sizer->Add(show_crosses, 0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 0);
+    sizer->Add(new wxStaticText(this, ID_UNITS_LABEL1, msg(/*Display measurements in*/366)),
+               0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 4);
+    sizer->Add(metric, 0, wxALIGN_TOP | wxLEFT, 32);
+    sizer->Add(10, 4);
+    sizer->Add(imperial, 0, wxALIGN_TOP | wxLEFT, 32);
     sizer->Add(10, 8);
-    sizer->Add(new wxStaticLine(this, ID_STN_LINE1), 0, wxEXPAND | wxRIGHT, 16);
+    sizer->Add(new wxStaticLine(this, ID_UNITS_LINE1), 0, wxEXPAND | wxRIGHT, 16);
     sizer->Add(10, 8);
-    sizer->Add(hi_ents, 0, wxALIGN_TOP | wxBOTTOM, 4);
-    sizer->Add(hi_fixed, 0, wxALIGN_TOP | wxBOTTOM, 4);
-    sizer->Add(hi_xpts, 0, wxALIGN_TOP | wxBOTTOM, 0);
-    sizer->Add(10, 8);
-    sizer->Add(new wxStaticLine(this, ID_STN_LINE2), 0, wxEXPAND | wxRIGHT, 16);
-    sizer->Add(10, 8);
-    sizer->Add(names, 0, wxALIGN_TOP | wxBOTTOM, 4);
-    sizer->Add(overlapping, 0, wxALIGN_TOP | wxLEFT, 32);
+    sizer->Add(new wxStaticText(this, ID_UNITS_LABEL2, msg(/*Display angles in*/367)),
+               0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 4);
+    sizer->Add(degrees, 0, wxALIGN_TOP | wxLEFT, 32);
+    sizer->Add(10, 4);
+    sizer->Add(grads, 0, wxALIGN_TOP | wxLEFT, 32);
 
     SetAutoLayout(true);
     SetSizer(sizer);
-#endif
 }
 
 UnitsPrefs::~UnitsPrefs()

@@ -7,6 +7,7 @@ icon_DATA = elevation.png open.png pres-go-back.png pres-restart.png \
                ug-legs.png fixed-pts.png exported-pts.png open-pres.png \
                names.png solid-surface.png aven-about.png pres-finish.png \
 	       tubes.png \
-	       tubesprefs.png stationsprefs.png
+	       tubesprefs.png stationsprefs.png indicatorprefs.png \
+	       windowprefs.png
 
 EXTRA_DIST = $(icon_DATA)

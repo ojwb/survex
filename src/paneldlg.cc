@@ -42,8 +42,7 @@ BEGIN_EVENT_TABLE(PanelDlg, wxDialog)
     EVT_COMMAND_RANGE(ID_PAGE_BASE_IMG, ID_PAGE_BASE_IMG_END, wxEVT_COMMAND_BUTTON_CLICKED, PanelDlg::OnPageChange)
 END_EVENT_TABLE()
 
-PanelDlg::PanelDlg(wxWindow* parent, wxWindowID id, const wxString& title) :
-    wxDialog(parent, id, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
+PanelDlg::PanelDlg(wxWindow* parent, wxWindowID id, const wxString& title) : wxDialog(parent, id, title)
 {
 }
 
@@ -58,11 +57,11 @@ void PanelDlg::PositionPage()
     wxSize button_size = wxButton::GetDefaultSize();
 
     m_CurrentPage->SetSizeHints(-1, -1,
-                                DIALOG_WIDTH - EDGE_MARGIN*2 - SCROLLED_WIN_WIDTH,
-                                DIALOG_HEIGHT - EDGE_MARGIN_V*3 - button_size.GetHeight());
-    m_CurrentPage->SetSize(SCROLLED_WIN_WIDTH + EDGE_MARGIN*2, EDGE_MARGIN,
-                           DIALOG_WIDTH - EDGE_MARGIN*2 - SCROLLED_WIN_WIDTH,
-                           DIALOG_HEIGHT - EDGE_MARGIN_V*3 - button_size.GetHeight());
+                                DIALOG_WIDTH - EDGE_MARGIN*3 - SCROLLED_WIN_WIDTH,
+                                DIALOG_HEIGHT - EDGE_MARGIN_V*4 - button_size.GetHeight());
+    m_CurrentPage->SetSize(SCROLLED_WIN_WIDTH + EDGE_MARGIN*3, EDGE_MARGIN_V*2,
+                           DIALOG_WIDTH - EDGE_MARGIN*3 - SCROLLED_WIN_WIDTH,
+                           DIALOG_HEIGHT - EDGE_MARGIN_V*4 - button_size.GetHeight());
 }
 
 void PanelDlg::OnPageChange(wxCommandEvent& event)
@@ -102,9 +101,9 @@ void PanelDlg::SetPages(list<PanelDlgPage*> pages)
     // Get the background colour and calculate a "darker" version of it.
     wxColour col = page_panel->GetBackgroundColour();
     
-    unsigned char r = (unsigned char)(double(col.Red()) * 0.4);
-    unsigned char g = (unsigned char)(double(col.Green()) * 0.4);
-    unsigned char b = (unsigned char)(double(col.Blue()) * 0.4);
+    unsigned char r = (unsigned char)(double(col.Red()) * 0.5);
+    unsigned char g = (unsigned char)(double(col.Green()) * 0.5);
+    unsigned char b = (unsigned char)(double(col.Blue()) * 0.5);
 
     col.Set(r, g, b);
 
@@ -164,6 +163,7 @@ void PanelDlg::SetPages(list<PanelDlgPage*> pages)
     assert(first_page);
     m_CurrentPage = first_page;
     PositionPage();
+    m_CurrentPage->Show();
 
     // Set a reasonable size and centre the dialog with respect to the parent window.
     SetSize(DIALOG_WIDTH, DIALOG_HEIGHT);

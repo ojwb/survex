@@ -3160,6 +3160,23 @@ en:353 Highlight stations which are exported
 en:354 Mark survey stations with their names
 en:355 Allow names to overlap on the display (faster)
 en:356 @Full Screen Mode
+en:357 Display underground survey legs
+en:358 Display surface survey legs
+en:359 Colour surface surveys by depth
+en:360 Draw surface legs with dashed lines
+en:361 Draw a grid
+en:362 metric units
+en:363 imperial units
+en:364 degrees
+en:365 grads
+en:366 Display measurements in
+en:367 Display angles in
+en:368 Reverse the sense of the controls
+en:369 Display scale bar
+en:370 Display depth bar
+en:371 Display compass
+en:372 Display clinometer
+en:373 Display side panel
 
 =======
 # for diffpos:

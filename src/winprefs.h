@@ -1,7 +1,7 @@
 //
-//  ctlprefs.cc
+//  winprefs.h
 //
-//  Preferences page for mouse control options.
+//  Preferences page for window-related options.
 //
 //  Copyright (C) 2002 Mark R. Shinwell
 //
@@ -20,38 +20,21 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "ctlprefs.h"
-#include "message.h"
+#ifndef winprefs_h
+#define winprefs_h
 
-#include <wx/statline.h>
+#include "paneldlgpage.h"
+#include "aven.h"
 
-static const wxWindowID ID_CTL_PREFS = 5004;
-static const wxWindowID ID_CTL_REVERSE = 2000;
+class WinPrefs : public PanelDlgPage {
 
-CtlPrefs::CtlPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_CTL_PREFS)
-{
-    wxCheckBox* reverse = new wxCheckBox(this, ID_CTL_REVERSE, msg(/*Reverse the sense of the controls*/368));
+public:
+    WinPrefs(wxWindow* parent);
+    virtual ~WinPrefs();
 
-    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+    const wxString GetName();
+    const wxBitmap GetIcon();
+};
 
-    sizer->Add(reverse, 0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 0);
-
-    SetAutoLayout(true);
-    SetSizer(sizer);
-}
-
-CtlPrefs::~CtlPrefs()
-{
-
-}
-
-const wxString CtlPrefs::GetName()
-{
-    return "Control";
-}
-
-const wxBitmap CtlPrefs::GetIcon()
-{
-    return wxGetApp().LoadPreferencesIcon("ctl");
-}
+#endif
 

@@ -26,37 +26,18 @@
 #include <wx/statline.h>
 
 static const wxWindowID ID_GRID_PREFS = 1002;
+static const wxWindowID ID_GRID_SHOW = 2000;
 
 GridPrefs::GridPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_GRID_PREFS)
 {
-#if 0
-    wxCheckBox* show_crosses = new wxCheckBox(this, ID_STN_CROSSES, msg(/*Mark survey stations with crosses*/350));
-    wxCheckBox* hi_ents = new wxCheckBox(this, ID_STN_HI_ENTS, msg(/*Highlight stations marked as entrances*/351));
-    wxCheckBox* hi_fixed = new wxCheckBox(this, ID_STN_HI_FIXED,
-                                          msg(/*Highlight stations marked as fixed points*/352));
-    wxCheckBox* hi_xpts = new wxCheckBox(this, ID_STN_HI_XPTS, msg(/*Highlight stations which are exported*/353));
-    wxCheckBox* names = new wxCheckBox(this, ID_STN_NAMES, msg(/*Mark survey stations with their names*/354));
-    wxCheckBox* overlapping = new wxCheckBox(this, ID_STN_OVERLAPPING,
-                                             msg(/*Allow names to overlap on the display (faster)*/355));
+    wxCheckBox* show_grid = new wxCheckBox(this, ID_GRID_SHOW, msg(/*Draw a grid*/361));
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
-    sizer->Add(show_crosses, 0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 0);
-    sizer->Add(10, 8);
-    sizer->Add(new wxStaticLine(this, ID_STN_LINE1), 0, wxEXPAND | wxRIGHT, 16);
-    sizer->Add(10, 8);
-    sizer->Add(hi_ents, 0, wxALIGN_TOP | wxBOTTOM, 4);
-    sizer->Add(hi_fixed, 0, wxALIGN_TOP | wxBOTTOM, 4);
-    sizer->Add(hi_xpts, 0, wxALIGN_TOP | wxBOTTOM, 0);
-    sizer->Add(10, 8);
-    sizer->Add(new wxStaticLine(this, ID_STN_LINE2), 0, wxEXPAND | wxRIGHT, 16);
-    sizer->Add(10, 8);
-    sizer->Add(names, 0, wxALIGN_TOP | wxBOTTOM, 4);
-    sizer->Add(overlapping, 0, wxALIGN_TOP | wxLEFT, 32);
+    sizer->Add(show_grid, 0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 0);
 
     SetAutoLayout(true);
     SetSizer(sizer);
-#endif
 }
 
 GridPrefs::~GridPrefs()

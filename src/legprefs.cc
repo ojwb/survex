@@ -26,37 +26,34 @@
 #include <wx/statline.h>
 
 static const wxWindowID ID_LEG_PREFS = 1003;
+static const wxWindowID ID_LEG_UG_LEGS = 2000;
+static const wxWindowID ID_LEG_SURF_LEGS = 2001;
+static const wxWindowID ID_LEG_COLOUR_SURFACE = 2002;
+static const wxWindowID ID_LEG_DASHED_SURFACE = 2003;
+static const wxWindowID ID_LEG_LINE = 2004;
 
 LegPrefs::LegPrefs(wxWindow* parent) : PanelDlgPage(parent, ID_LEG_PREFS)
 {
-#if 0
-    wxCheckBox* show_crosses = new wxCheckBox(this, ID_STN_CROSSES, msg(/*Mark survey stations with crosses*/350));
-    wxCheckBox* hi_ents = new wxCheckBox(this, ID_STN_HI_ENTS, msg(/*Highlight stations marked as entrances*/351));
-    wxCheckBox* hi_fixed = new wxCheckBox(this, ID_STN_HI_FIXED,
-                                          msg(/*Highlight stations marked as fixed points*/352));
-    wxCheckBox* hi_xpts = new wxCheckBox(this, ID_STN_HI_XPTS, msg(/*Highlight stations which are exported*/353));
-    wxCheckBox* names = new wxCheckBox(this, ID_STN_NAMES, msg(/*Mark survey stations with their names*/354));
-    wxCheckBox* overlapping = new wxCheckBox(this, ID_STN_OVERLAPPING,
-                                             msg(/*Allow names to overlap on the display (faster)*/355));
+    wxCheckBox* ug_legs = new wxCheckBox(this, ID_LEG_UG_LEGS, msg(/*Display underground survey legs*/357));
+    wxCheckBox* surf_legs = new wxCheckBox(this, ID_LEG_SURF_LEGS, msg(/*Display surface survey legs*/358));
+    wxCheckBox* col_surface = new wxCheckBox(this, ID_LEG_COLOUR_SURFACE,
+                                             msg(/*Colour surface surveys by depth*/359));
+    wxCheckBox* dashed_surface = new wxCheckBox(this, ID_LEG_DASHED_SURFACE,
+                                                msg(/*Draw surface legs with dashed lines*/360));
 
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
-    sizer->Add(show_crosses, 0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 0);
+    sizer->Add(ug_legs, 0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 0);
     sizer->Add(10, 8);
-    sizer->Add(new wxStaticLine(this, ID_STN_LINE1), 0, wxEXPAND | wxRIGHT, 16);
+    sizer->Add(new wxStaticLine(this, ID_LEG_LINE), 0, wxEXPAND | wxRIGHT, 16);
     sizer->Add(10, 8);
-    sizer->Add(hi_ents, 0, wxALIGN_TOP | wxBOTTOM, 4);
-    sizer->Add(hi_fixed, 0, wxALIGN_TOP | wxBOTTOM, 4);
-    sizer->Add(hi_xpts, 0, wxALIGN_TOP | wxBOTTOM, 0);
-    sizer->Add(10, 8);
-    sizer->Add(new wxStaticLine(this, ID_STN_LINE2), 0, wxEXPAND | wxRIGHT, 16);
-    sizer->Add(10, 8);
-    sizer->Add(names, 0, wxALIGN_TOP | wxBOTTOM, 4);
-    sizer->Add(overlapping, 0, wxALIGN_TOP | wxLEFT, 32);
+    sizer->Add(surf_legs, 0 /* not vertically stretchable */, wxALIGN_TOP | wxBOTTOM, 4);
+    sizer->Add(col_surface, 0, wxALIGN_TOP | wxLEFT, 32);
+    sizer->Add(10, 4);
+    sizer->Add(dashed_surface, 0, wxALIGN_TOP | wxLEFT, 32);
 
     SetAutoLayout(true);
     SetSizer(sizer);
-#endif
 }
 
 LegPrefs::~LegPrefs()
