@@ -255,9 +255,8 @@ static sztok cmd_tab[] = {
      {NULL,        CMD_NULL}
 };
 
-/* NB match_units *doesn't* call get_token, so do it yourself if approp. */
 static int
-match_units(void)
+get_units(void)
 {
    static sztok utab[] = {
 	{"DEGREES",       UNITS_DEGS },
@@ -274,7 +273,9 @@ match_units(void)
 	{"YARDS",         UNITS_YARDS },
 	{NULL,            UNITS_NULL }
    };
-   int units = match_tok(utab, TABSIZE(utab));
+   int units;
+   get_token();
+   units = match_tok(utab, TABSIZE(utab));
    if (units == UNITS_NULL) {
       compile_error(/*Unknown units `%s'*/35, buffer);
    } else if (units == UNITS_PERCENT) {
@@ -314,17 +315,24 @@ get_qlist(void)
    };
    unsigned long qmask = 0;
    int tok;
+   filepos fp;
+
    while (1) {
+      get_pos(&fp);
       get_token();
       tok = match_tok(qtab, TABSIZE(qtab));
       /* bail out if we reach the table end with no match */
       if (tok == Q_NULL) break;
       qmask |= BIT(tok);
    }
+
    if (qmask == 0) {
       compile_error(/*Unknown quantity `%s'*/34, buffer);
-      skipline();
+      skipline();      
+   } else {
+      set_pos(&fp);
    }
+
    return qmask;
 }
 
@@ -1053,7 +1061,6 @@ cmd_units(void)
    int units, quantity;
    unsigned long qmask, m; /* mask with bit x set to indicate quantity x specified */
    real factor;
-   filepos fp;
 
    qmask = get_qlist();
    if (!qmask) return;
@@ -1062,24 +1069,14 @@ cmd_units(void)
       return;
    }
 
-   get_pos(&fp);
    /* If factor given then read units else units in buffer already */
    factor = read_numeric(fTrue);
    if (factor == HUGE_REAL) {
       factor = (real)1.0;
       /* If factor given then read units else units in buffer already */
-   } else {
-      /* eg check for stuff like: *UNITS LENGTH BOLLOX 3.5 METRES */
-      if (*buffer != '\0') {
-	 set_pos(&fp);
-	 compile_error(/*Unknown quantity `%s'*/34, buffer);
-	 skipline();
-	 return;
-      }
-      get_token();
    }
 
-   units = match_units();
+   units = get_units();
    if (units == UNITS_NULL) return;
    factor *= factor_tab[units];
 
@@ -1122,7 +1119,7 @@ cmd_calibrate(void)
    sc = read_numeric(fTrue);
    if (sc == HUGE_REAL) sc = (real)1.0;
    /* check for declination scale */
-   /* perhaps "*scale declination XXX" should be "*declination XXX" ? */
+   /* perhaps "*calibrate declination XXX" should be "*declination XXX" ? */
    if (TSTBIT(qmask, Q_DECLINATION) && sc != 1.0) {
       compile_error(/*Scale factor must be 1.0 for DECLINATION*/40);
       skipline();
@@ -1215,8 +1212,7 @@ cmd_sd(void)
    if (sd < (real)0.0) {
       /* FIXME: complain about negative sd */
    }
-   get_token();
-   units = match_units();
+   units = get_units();
    if (units == UNITS_NULL) return;
    if (((qmask & LEN_QMASK) && !TSTBIT(LEN_UMASK, units)) ||
        ((qmask & ANG_QMASK) && !TSTBIT(ANG_UMASK, units))) {
