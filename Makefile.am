@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-RELEASE = 3
+RELEASE = 4
 
 EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES survex.iss.in
 
