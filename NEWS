@@ -1,3 +1,17 @@
+* Short usage information now directs user to "--help"
+
+* "*infer" wasn't working due to mismatch of internal token values
+
+* message.c: Corrected use of strdup to osstrdup (strdup isn't portable)
+
+* print.ini: tidied up comments about font size and line width for printps
+
+* printps.c: Line width now set correctly for all pages with ghostview
+
+* configure.in: fixed wording of one of the endian-ness checks
+
+* BUGS, TODO: added new problem reports
+
 Changes in 0.92-prerelease3:
 
 * xcaverot: made switching between plan and elevation work more smoothly
