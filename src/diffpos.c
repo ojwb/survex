@@ -72,6 +72,11 @@ typedef struct station {
    img_point pt;
 } station;
 
+typedef struct added {
+   struct added *next;
+   char *name;
+} added;
+
 static int
 hash_string(const char *p)
 {
@@ -92,6 +97,9 @@ cmp_pname(const void *a, const void *b)
 
 static station **htab;
 static bool fChanged = fFalse;
+
+static added *added_list = NULL;;
+OSSIZE_T c_added = 0;
 
 static void
 tree_init(void)
@@ -131,7 +139,11 @@ tree_remove(const char *name, const img_point *pt)
    }
    
    if (!*prev) {
-      printf("Added: %s\n", name);
+      added *add = osnew(added);
+      add->name = osstrdup(name);
+      add->next = added_list;
+      added_list = add;
+      c_added++;
       fChanged = fTrue;
       return;
    }
@@ -159,6 +171,26 @@ tree_check(void)
    size_t c = 0;
    char **names;
    size_t i;
+
+   if (c_added) {
+      names = osmalloc(c_added * ossizeof(char *));
+      for (i = 0; i < c_added; i++) {
+	 added *old;
+	 ASSERT(added_list);
+	 names[i] = added_list->name;
+	 old = added_list;
+	 added_list = old->next;
+	 osfree(old);
+      }
+      ASSERT(added_list == NULL);
+      qsort(names, c_added, sizeof(char *), cmp_pname);
+      for (i = 0; i < c_added; i++) {
+	 printf("Added: %s\n", names[i]);
+	 osfree(names[i]);
+      }
+      osfree(names);
+   }
+
    for (i = 0; i < 0x2000; i++) {
       station *p;
       for (p = htab[i]; p; p = p->next) c++;
@@ -173,7 +205,7 @@ tree_check(void)
    }
    qsort(names, c, sizeof(char *), cmp_pname);
    for (i = 0; i < c; i++) {
-      printf("Deleted: %s\n", names[c]);
+      printf("Deleted: %s\n", names[i]);
    }
    return fTrue;
 }

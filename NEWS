@@ -1,5 +1,5 @@
-* diffpos: list deleted stations in sorted order; better error
-  reporting.
+* diffpos: list added and deleted stations in sorted order; better
+  error reporting.
 
 * 3dtopos: removed hardcoded limit on number of stations (was 100000);
   better error reporting.
