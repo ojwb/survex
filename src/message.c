@@ -275,7 +275,7 @@ default_charset(void)
 #else
    union REGS r;
    struct SREGS s = { 0 };
-   
+
    unsigned char buf[48];
    r.x.ax = 0x6501;
    r.x.bx = 0xffff;
@@ -846,6 +846,8 @@ msg_init(char * const *argv)
       if (!msg_lang || !*msg_lang) {
 #if (OS==WIN32)
 	 LCID locid;
+#elif (OS==RISCOS)
+         territory_t t;
 #endif
 #ifdef DEFAULTLANG
 	 msg_lang = STRING(DEFAULTLANG);
@@ -900,7 +902,7 @@ msg_init(char * const *argv)
 	    }
 	 }
 #elif (OS==RISCOS)
-	 switch (xterritory_number()) {
+         if (!xterritory_number(&t)) switch (t) {
 	  case 1: /* UK */
 	  case 2: /* Master */
 	  case 3: /* Compact */
