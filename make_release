@@ -28,6 +28,10 @@ if ! make dos_doc_zip ; then
    echo make dos_doc_zip failed
    exit 1
 fi
+if ! make distclean ; then
+   echo make distclean failed
+   exit 1
+fi
 if ! env CC=i386-pc-msdosdjgpp-gcc LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe \
  CRLIB=-lalleg CROBJX=dosrot.o ./configure --with-x=no ; then
    echo djgpp configure failed
