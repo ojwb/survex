@@ -218,14 +218,24 @@ svxPrintDlg::OnPreview(wxCommandEvent& event) {
     wxPreviewFrame *frame = new wxPreviewFrame(pv, m_parent, "Print Preview");
     frame->Centre(wxBOTH);
     frame->Initialize();
-    // By default the preview window opens wide enough, but not anywhere near
-    // tall enough (on wxGTK anyway)
     int w, h;
     frame->GetSize(&w, &h);
+#ifdef __WXMAC__
+    // wxMac opens the preview window at minimum size by default.
+    // 360x480 is apparently enough to show A4 portrait.
+    if (h < 480 || w < 360) {
+	if (h < 480) h = 480;
+	if (w < 360) w = 360;
+	frame->SetSize(w, h);
+    }
+#else
     if (h < w) {
+	// By default the preview window opens wide enough, but not anywhere
+	// near tall enough (on wxGTK anyway).
 	h = w * 6 / 5;
 	frame->SetSize(w, h);
     }
+#endif
     frame->Show(TRUE);
 }
 
