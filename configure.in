@@ -16,9 +16,9 @@ AC_SUBST(RELEASE)
 AM_CONFIG_HEADER(config.h)
 
 dnl don't reformat the next line, miniam.pl pulls out the value
-COPYRIGHT_MSG="Copyright %s 1990-2002 Olly Betts"
+COPYRIGHT_MSG="Copyright %s 1990-2003 Olly Betts"
 
-AVEN_COPYRIGHT_MSG="Copyright %s 1999-2002 Mark R. Shinwell"
+AVEN_COPYRIGHT_MSG="Copyright %s 1999-2003 Mark R. Shinwell"
 
 AC_DEFINE_UNQUOTED(COPYRIGHT_MSG, "$COPYRIGHT_MSG", [Copyright Message])
 AC_DEFINE_UNQUOTED(AVEN_COPYRIGHT_MSG, "$AVEN_COPYRIGHT_MSG",
@@ -26,6 +26,12 @@ AC_DEFINE_UNQUOTED(AVEN_COPYRIGHT_MSG, "$AVEN_COPYRIGHT_MSG",
 
 AC_SUBST(COPYRIGHT_MSG)
 AC_SUBST(AVEN_COPYRIGHT_MSG)
+
+dnl for use in text files rather than C/C++ code (e.g. debian/copyright)
+COPYRIGHT_MSG_ASCII="`echo \"$COPYRIGHT_MSG\"|sed 's/%s/(C)/g'`"
+AVEN_COPYRIGHT_MSG_ASCII="`echo \"$AVEN_COPYRIGHT_MSG\"|sed 's/%s/(C)/g'`"
+AC_SUBST(COPYRIGHT_MSG_ASCII)
+AC_SUBST(AVEN_COPYRIGHT_MSG_ASCII)
 
 dnl set PRETTYPACKAGE to PACKAGE with the first character capitalised
 PRETTYPACKAGE="`echo \"$PACKAGE\"|cut -b1|tr 'a-z' 'A-Z'``echo \"$PACKAGE\"|cut -b2-`"
