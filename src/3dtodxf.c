@@ -64,6 +64,9 @@ main(int argc, char **argv)
    double text_height; /* for station labels */
    double marker_size; /* for station markers */
    double grid; /* grid spacing (or 0 for no grid) */
+   int elevation = 0;
+   double elev_angle = 0;
+   double s = 0, c = 0;
 
    /* TRANSLATE */
    static const struct option long_opts[] = {
@@ -74,6 +77,7 @@ main(int argc, char **argv)
 	{"grid", optional_argument, 0, 'g'},
 	{"text-height", required_argument, 0, 't'},
 	{"marker-size", required_argument, 0, 'm'},
+	{"elevation", required_argument, 0, 'e'},
 	{"htext", required_argument, 0, 't'},
 	{"msize", required_argument, 0, 'm'},
 	{"help", no_argument, 0, HLP_HELP},
@@ -81,7 +85,7 @@ main(int argc, char **argv)
 	{0,0,0,0}
    };
 
-#define short_opts "cnlig:t:m:h"
+#define short_opts "cnlg:t:m:h"
 
    /* TRANSLATE */
    static struct help_msg help[] = {
@@ -91,6 +95,7 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(3), "generate grid (default: "STRING(GRID_SPACING)"m)"},
 	{HLP_ENCODELONG(4), "station labels text height (default: "STRING(TEXT_HEIGHT)")"},
 	{HLP_ENCODELONG(5), "station marker size (default: "STRING(MARKER_SIZE)")"},
+	{HLP_ENCODELONG(6), "produce an elevation view"},
 	{0,0} 
    };
 
@@ -102,15 +107,26 @@ main(int argc, char **argv)
    crosses = 1;
    labels = 1;
    legs = 1;
+#ifndef XXX
    grid = 0;
+#endif /* not XXX */
    text_height = TEXT_HEIGHT;
    marker_size = MARKER_SIZE;
 
+#ifndef XXX
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
+#else /* XXX */
+   /* exactly two arguments must be given */
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 2, 2);
+#endif /* XXX */
    while (1) {      
       int opt = cmdline_getopt();
       if (opt == EOF) break;
       switch (opt) {
+       case 'e': /* Elevation */
+	 elevation = 1;
+	 elev_angle = cmdline_double_arg();
+         break;
        case 'c': /* Crosses */
          crosses = 0;
          break;
@@ -140,7 +156,7 @@ main(int argc, char **argv)
 	 break;
 #ifdef DEBUG_3DTODXF
        default:
-	 printf("Internal Error: 'getopt' returned %c %d\n",opt, opt);
+	 printf("Internal Error: 'getopt' returned '%c' %d\n", opt, opt);
 #endif
       }
    } 	 
@@ -171,11 +187,25 @@ main(int argc, char **argv)
    printf("Creation time `%s'\n",szDateStamp);
 #endif 
 
+   if (elevation) {
+       s = sin(rad(elev_angle));
+       c = cos(rad(elev_angle));
+   }
+    
    /* Get drawing corners */
    min_x = min_y = min_z = FLT_MAX;
    max_x = max_y = max_z = -FLT_MAX;
    do {
       item = img_read_datum(pimg, szName, &x, &y, &z);
+
+      if (elevation) {
+	  double xnew = x * c - y * s;
+	  double znew = - x * s - y * c;
+	  y = z;
+	  z = znew;
+	  x = xnew;
+      }
+
       switch (item) {
        case img_MOVE: case img_LINE: case img_LABEL:
          if (x < min_x) min_x = x;
@@ -285,8 +315,18 @@ main(int argc, char **argv)
    }
 
    x1 = y1 = z1 = 0; /* avoid compiler warning */
+
    do {
       item = img_read_datum(pimg, szName, &x, &y, &z);
+
+      if (elevation) {
+	  double xnew = x * c - y * s;
+	  double znew = - x * s - y * c;
+	  y = z;
+	  z = znew;
+	  x = xnew;
+      }
+
       switch (item) {
        case img_BAD:
 #ifndef STANDALONE
