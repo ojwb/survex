@@ -241,8 +241,24 @@ int main(int argc, char **argv)
   time_t tm;
   struct tm *clk;
 
-  if (argc < 2 || argc > 3)
-    die("usage: svx2hto infile [outfile]", NULL, 0);
+  if (argv[1]) {
+    if (strcmp(argv[1], "--version") == 0) {
+      printf("%s - "PACKAGE" "VERSION"\n", argv[0]);
+      exit(0);
+    }
+
+    if (strcmp(argv[1], "--help") == 0) {
+      printf("%s - "PACKAGE" "VERSION"\n\n"
+	     "Syntax: %s SVX_FILE [HTO_FILE]\n\n", argv[0], argv[0]);
+      puts("HTO_FILE defaults to SVX_FILE but with extension changed to .hto");
+      exit(0);
+    }
+  }
+
+  if (argc < 2 || argc > 3) {
+    printf("Syntax: %s SVX_FILE [HTO_FILE]\n", argv[0]);
+    exit(1);
+  }
   strcpy(infn, argv[1]);
   if (argc == 2)
     {

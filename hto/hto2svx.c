@@ -86,10 +86,33 @@ static void PFXcallback(HTO p, char *tag)
 int main(int argc, char **argv)
 {
   char infn[MAXPATHLEN], outfn[MAXPATHLEN];
-/*
+#if 0
   struct stat stb;
-*/
+#endif
 
+  if (argv[1]) {
+    if (strcmp(argv[1], "--version") == 0) {
+      printf("%s - "PACKAGE" "VERSION"\n", argv[0]);
+      exit(0);
+    }
+
+    if (strcmp(argv[1], "--help") == 0) {
+      printf("%s - "PACKAGE" "VERSION"\n\n"
+	     "Syntax: %s [HTO_FILE [SVX_FILE]]\n\n", argv[0], argv[0]);
+      fputs(
+"HTO_FILE defaults to stdin\n"
+"SVX_FILE defaults to HTO_FILE but with extension changed to .svx, or if\n"
+"HTO_FILE omitted, to stdout\n"
+"SVX_FILE = `-' means write to stdout\n", stdout);
+      exit(0);
+    }
+  }
+
+  if (argc > 3) {
+    printf("Syntax: %s [HTO_FILE [SVX_FILE]]\n", argv[0]);
+    exit(1);
+  }
+    
   if (argc > 1)
     strcpy(infn, argv[1]);
   else
@@ -97,7 +120,8 @@ int main(int argc, char **argv)
   strcpy(outfn, infn);
   if (argc > 2)
     strcpy(outfn, argv[2]);
-/*  if (infn[0])
+#if 0
+  if (infn[0])
     {
       if (stat(infn, &stb) < 0)
 	{
@@ -106,7 +130,7 @@ int main(int argc, char **argv)
 	    die("unable to find input file: %s", argv[1], 0);
 	}
     }
-*/
+#endif
   in = HTO_Open(infn);
 
   if (in == NULL)
