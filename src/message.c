@@ -1110,6 +1110,9 @@ msg_init(char * const *argv)
 		  case 976: /* Mongolia */
 		  case 977: /* Nepal */
 		  case 995: /* Myanmar (Burma) */
+		 }
+	      }
+	   }
 #endif
 	 }
 #endif
