@@ -1,3 +1,7 @@
+* (RISC OS Version): fixed automatic detection of language.
+
+* Italian translation updated.
+
 Changes in 0.99-prerelease9:
 
 * aven: Side Panel can now be dragged or toggled shut and then reopened

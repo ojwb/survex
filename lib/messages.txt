@@ -121,7 +121,7 @@ it:  2 Questi dati di topografia possono essere trattati da Survex versione %s o
 # In file included from area.svx:12,
 #                  from cave.svx:3:
 # passage.svx:17: <some error or warning>
-# TRANSLATE ca es it
+# TRANSLATE ca es 
 en:  3 "from "
 fr:  3 "depuis "
 de:  3 "von "
@@ -175,14 +175,12 @@ es:  8 Campo que no puede ser omitido
 it:  8 Questo campo non pu&oacute; essere omesso
 #en:  9 Expecting numeric field
 #fr:  9 On attendait une valeur num&eacute;rique
-#de:  9 Zahl erwartet
-#pt:  9 Valor num&eacute;rico esperado
 #ca:  9 S'espera un camp numeric
 #es:  9 Se espera un campo num&eacute;rico
-#it:  9 Questo campo &eacute; numerico
 en:  9 Expecting numeric field, found `%s'
 de:  9 Zahl erwartet, `%s' gelesen
 pt-br:  9 Esperando valor num&eacute;rico, encontrado `%s'
+it:  9 Questo campo &eacute; numerico, trovato `%s'
 # 10 c.f. 31, 32, 131
 en: 10 Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'
 fr: 10 Vous avez &eacute;crit `%s'; on attendait `PRESERVE', `TOUPPER', ou `TOLOWER'
@@ -210,7 +208,7 @@ pt: 12 Comando desconhecido `%s'
 ca: 12 Comandament desconegut `%s'
 es: 12 Comando desconocido `%s'
 it: 12 Comando sconosciuto `%s'
-# TRANSLATE ca es it (check insertion of `%s' (station name) ok)
+# TRANSLATE ca es (check insertion of `%s' (station name) ok)
 en: 13 Station `%s' equated to itself
 fr: 13 Station `%s' ne doit pas &ecirc;tre d&eacute;clar&eacute;e "&eacute;gale" &agrave elle-m&ecirc;me
 de: 13 Station `%s' mit sich selbst gleichgesetzt
@@ -221,16 +219,13 @@ it: 13 Stazione `%s' uguagliata a se stessa
 # c.f. 21 and 59
 # was en: 14 Compass reading may not be omitted here
 #fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici
-#de-de,de-ch: 14 Kompassablesung darf nicht weggelassen werden
-#de:     14 Kompa&szlig;ablesung darf nicht weggelassen werden
-#pt: 14 Azimute n&atilde;o pode ser omitido aqui
 #ca: 14 La lectura de la br&uacute;ixola no es pot ometre aqu&iacute;
 #es: 14 La lectura de la br&uacute;jula no se puede omitir aqu&iacute;
-#it: 14 La lettura della bussola non pu&oacute; essere omessa qui
 en: 14 Compass reading may not be omitted except on plumbed legs
 de-de,de-ch: 14 Kompassablesung darf nur bei Lotstrecken weggelassen werden
 de:     14 Kompa&szlig;ablesung darf nur bei Lotstrecken weggelassen werden
 pt-br: 14 Azimute n&atilde;o pode ser omitido exceto em visadas em prumo
+it: 14 La lettura della bussola non pu&oacute; essere omessa qui eccettto che nelle battute verticali
 #
 en: 15 End of line not blank
 fr: 15 Fin de ligne non vide
@@ -336,17 +331,21 @@ en: 26 Station `%s' not exported from survey `%s'
 fr: 26 La station `%s' n'est pas export&eacute;e de la topographie `%s'
 de: 26 Station `%s' nicht aus Vermessung `%s' exportiert
 pt: 26 Base `%s' n&atilde;o exportada da topo `%s'
+it: 26 La stazione `%s' non &eacute; stata esportata dal rilievo `%s'
+#
 en: 27 `%s' can't be both a station and a survey
 fr: 27 `%s' ne peut &ecirc;tre &agrave; la fois une station et une topographie
 de-de,de-ch: 27 `%s' kann nicht ein Messpunkt und eine Vermessung sein
 de:     27 `%s' kann nicht ein Me&szlig;punkt und eine Vermessung sein
 pt: 27 `%s' n&atilde;o pode ser nome de base e de topografia ao mesmo tempo
+it: 27 `%s' non pu&ograve; essere contemporaneamente una stazione e un rilievo
 # c.f. 89
 en: 28 Expecting station name
 fr: 28 On attendait un nom de station
 de-de,de-ch: 28 Messpunktname erwartet
 de:     28 Me&szlig;punktname erwartet
 pt: 28 Esperando nome de base
+it: 28 Manca il nome della stazione
 # FIXME: perhaps use "survey" instead of "prefix level"?
 # TRANSLATE ca es (amended message)
 en: 29 Reentering an existing prefix level is deprecated
@@ -421,7 +420,7 @@ pt: 36 O BEGIN correspondente n&atilde;o tem prefixo
 ca: 36 La instrucci&oacute; BEGIN corresponent no te prefix
 es: 36 La instrucci&oacute;n BEGIN correspondiente no tiene prefijo
 it: 36 Il BEGIN corrispondente non ha prefisso
-# TRANSLATE ca es it (check addition of `%s')
+# TRANSLATE ca es (check addition of `%s')
 # Note: In English you talk about the *units* of a single measurement, but
 # the correct term in other languages may be singular.
 en: 37 Invalid units `%s' for quantity
@@ -603,7 +602,6 @@ it: 56 Pi&uacute; di un comando FIX senza coordinate
 # 1 2 1.23 045 -6
 # *export 2
 # *end fred
-# TRANSLATE it
 en: 57 *EXPORT must immediately follow `*BEGIN <SURVEY>'
 fr: 57 *EXPORT doit suivre imm&eacute;diatement `*BEGIN <SURVEY>'
 de-de,de-ch: 57 *EXPORT muss unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
@@ -614,6 +612,7 @@ it: 57 *EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'
 en: 58 "Plot what (n=station names, c=crosses, l=legs, s=surface) (default &quot;%s&quot;)&#10;: "
 de: 58 "Was plotten? (n=Stationsnamen, c=Kreuze, l=Strecken, s=Oberfl&auml;che) (Default &quot;%s&quot;)&#10;: "
 pt-br:58 "O qu&ecirc; plotar? (n=nomes de bases, c=marcas de bases, l=visadas, s=superf&iacute;cie) (default &quot;%s&quot;)&#10;:"
+it: 58 "Disegna cosa (n=nomi delle stazioni, c=croci, l=battute, s=superficie) (default &quot;%s&quot;)&#10;: "
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
 fr: 59 Lecture de compas suspecte
@@ -659,7 +658,6 @@ it: 62 La distanza &eacute; minore del dislivello
 # TRANSLATE ca es (check adapted translation - "datum" changed to
 # "reading"; addition of style name; style is not a keyword, so should
 # be replaced with a translation of "data style")
-# TRANSLATE it (style is not a keyword, so should be replaced with a translation of "data style")
 en: 63 Reading `%s' not allowed in data style `%s'
 fr: 63 Donn&eacute;e `%s' incorrecte pour le style de donn&eacute;es `%s'
 de-de:   63 Diese Messgr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
@@ -668,9 +666,9 @@ de: 63 Diese Me&szlig;gr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlau
 pt: 63 Campo `%s' n&atilde;o &eacute; permitido em tipo de visada `%s'
 ca: 63 Dada `%s' no permesa en aquest STYLE `%s'
 es: 63 Dato `%s' no permitido en este STYLE `%s'
-it: 63 Dato `%s' non permesso nello STYLE `%s'
+it: 63 Dato `%s' non permesso nel tipo di dati `%s'
 # i.e. not enough readings for the style.
-# TRANSLATE ca es it (data replaced by readings)
+# TRANSLATE ca es (data replaced by readings)
 en: 64 Too few readings for data style `%s'
 fr: 64 Trop peu de donn&eacute;es pour le style de donn&eacute;es `%s'
 de-de,de-ch: 64 Zu wenige Messwerte f&uuml;r Datenformat `%s'
@@ -678,18 +676,18 @@ de:     64 Zu wenige Me&szlig;werte f&uuml;r Datenformat `%s'
 pt: 64 Faltam campos necess&aacute;rios ao tipo de visada `%s'
 ca: 64 Massa poques dades
 es: 64 Demasiados pocos datos
-it: 64 Mancano dati per lo STYLE `%s'
+it: 64 Mancano dati per il tipo di dati `%s'
 #ital: 64 Troppo pochi dati
 # e.g. trying to refer to an invalid FNORD data style
 # GN(3): ie unknown STYLE?  ok, rephrasing.
-# TRANSLATE ca es it (style is not a keyword - translate it)
+# TRANSLATE ca es (style is not a keyword - translate it)
 en: 65 Data style `%s' unknown
 fr: 65 Style de donn&eacute;es `%s' inconnu
 de: 65 Datenformat `%s' unbekannt
 pt: 65 Tipo de visada `%s' desconhecido
 ca: 65 STYLE `%s' desconegut
 es: 65 STYLE `%s' desconocido
-it: 65 STYLE `%s' sconosciuto
+it: 65 Tipo di dati `%s' sconosciuto
 # The meaning of scorretto is that the STYLE is written wrong but is similar 
 # to a known style.
 #it: 65 STYLE `%s' scorretto
@@ -816,14 +814,15 @@ pt: 81 Erro inicializando placa de v&iacute;deo
 ca: 81 Error a l'inicialitzar la placa gr&agrave;fica
 es: 81 Error al inicializar la placa gr&aacute;fica
 it: 81 Errore d'inizializzazione della scheda grafica
-# TRANSLATE ca es it ("has invalid value")
+# TRANSLATE ca es ("has invalid value")
 en: 82 Parameter `%s' has invalid value `%s' in printer configuration file
 fr: 82 Le param&egrave;tre `%s' a une valeur incorrecte `%s' dans le fichier de configuration de l'imprimante
 de: 82 Parameter `%s' hat ung&uuml;ltigen Wert `%s' in der Druckerkonfigurationsdatei
 pt: 82 Par&acirc;metro `%s' tem valor inv&aacute;lido `%s' em arquivo de configura&ccedil;&atilde;o de impressora
 ca: 82 Par&agrave;metres `%s' has invalid value `%s' al fitxer de configuraci&oacute; de l'impresora
 es: 82 Par&aacute;metros `%s' has invalid value `%s' en el fichero de configuraci&oacute;n de la impresora
-it: 82 Parametro `%s' has invalid value `%s' nel file di configurazione della stampante
+it: 82 Parametro `%s' ha un valore `%s' non valido nel file di configurazione della stampante
+#
 en: 83 Scale to fit on 1 page
 fr: 83 Mettre &agrave; l'&eacute;chelle pour tenir en 1 page
 # somewhat clumsily, but anything else would require a subordinate
@@ -847,14 +846,15 @@ pt: 84 Ignorando toda a linha
 ca: 84 Ignorant tota la l&iacute;nia
 es: 84 Ignorando toda la l&iacute;nea
 it: 84 Intera linea ignorata
-# TRANSLATE ca es it (I've made a stab)
+# TRANSLATE ca es (I've made a stab)
 en: 85 Parameter `%s' missing in printer configuration file
 fr: 85 Param&egrave;tres `%s' manquant dans le fichier de configuration de l'imprimante
 de: 85 Parameter `%s' fehlt in der Druckerkonfigurationsdatei
 pt: 85 Falta par&acirc;metro `%s' em arquivo de configura&ccedil;&atilde;o de impressora
 ca: 85 Par&agrave;metres `%s' manca al fitxer de configuraci&oacute; de l'impresora
 es: 85 Par&aacute;metros `%s' falta en el fichero de configuraci&oacute;n de la impresora
-it: 85 Parametro `%s' manca nel file di configurazione della stampante
+it: 85 Il parametro `%s' manca nel file di configurazione della stampante
+#
 en: 86 No data in 3d Image file
 fr: 86 Pas de donn&eacute;es dans le fichier image 3d
 de: 86 Keine Daten in der 3D-Bilddatei
@@ -886,6 +886,7 @@ en: 89 Expecting survey name
 fr: 89 On attendait un nom de topographie
 de: 89 Name einer Vermessung erwartet
 pt: 89 Esperando nome de topografia
+it: 89 Manca il nome del rilievo
 # Program will exit shortly after printing this
 en: 90 Abnormal termination
 fr: 90 Terminaison anormale
@@ -910,7 +911,7 @@ pt: 92 Instru&ccedil;&atilde;o ilegal
 ca: 92 Instrucci&oacute; il.legal
 es: 92 Instrucci&oacute;n ilegal
 it: 92 Istruzione illegale
-# TRANSLATE ca es it
+# TRANSLATE ca es
 en: 93 Couldn't open file `%s'
 fr: 93 Ne peut pas ouvrir le fichier `%s'
 de: 93 Konnte Datei `%s' nicht &ouml;ffnen
@@ -931,6 +932,7 @@ en: 95 Further uses of this deprecated feature will not be reported
 fr: 95 Cette functionnalit&eacute; n'est plus utilis&eacute;e; les usages ult&eacute;rieurs ne seront pas signal&eacute;s.
 de: 95 Weitere Vorkommen dieser veralteten Funktionalit&auml;t werden nicht gemeldet werden
 pt: 95 Futuros usos deste recurso desaconselhado n&atilde;o ser&atilde;o reportados
+it: 95 Usi futuri di questa funzionalit&aacute; non pi&uacute; usata non verranno segnalati
 #
 en: 96 Stack overflow
 fr: 96 D&eacute;bordement de pile
@@ -996,9 +998,11 @@ fr:103 Il vous faut calibrer votre imprimante - voir le manuel pour plus de d&ea
 de-de,de-ch:103 Drucker muss kalibriert werden - n&auml;her beschrieben im Handbuch.
 de:         103 Drucker mu&szlig; kalibriert werden - n&auml;her beschrieben im Handbuch.
 pt:103 &Eacute; necess&aacute;rio calibrar a impressora - veja como no manual da mesma.
+it: 103 E' necessario calibrare la stampante - consultare il manuale per i dettagli
 #
 en:104 `*data %s %c ...' is deprecated - use `*data %s ...' instead
 de:104 `*data %s %c ...' ist veraltet - stattdessen `*data %s ...' verwenden
+it:104 `*data %s %c ...' &eacute; una funzionalit&aacute; non pi&uacute; usata - usare `*data %s ...'
 #
 en:105 Reading in data - please wait...
 fr:105 Lecture de donn&eacute;es - attendez S.V.P. ...
@@ -1037,23 +1041,27 @@ en:109 Error reading from file `%s'
 fr:109 Erreur &agrave; la lecture du fichier `%s'
 de:109 Fehler beim Lesen der Datei `%s'
 pt:109 Erro lendo arquivo `%s'
+it:109 Errore nella lettura del file `%s'
 #
 en:110 Error writing to file `%s'
 fr:110 Erreur &agrave; l'&eacute;criture du fichier `%s'
 de:110 Fehler beim Schreiben in die Datei `%s'
 pt:110 Erro escrevendo no arquivo `%s'
+it:110 Errore nella scrittura del file `%s'
 #
 en:111 Error writing to file
 fr:111 Erreur &agrave; l'&eacute;criture du fichier
 de:111 Fehler beim Schreiben in eine Datei
 pt:111 Erro escrevendo em arquivo
+it:111 Errore nella scrittura del file
 #
 en:112 Couldn't parse .err file
 fr:112 La lecture du fichier .err a &eacute;chou&eacute;
 de:112 .err-Datei konnte nicht interpretiert werden
 pt:112 N&atilde;o foi poss&iacute;vel analisar arquivo de erros (.err)
+it:112 Non posso analizzare il file .err degli errori
 # c.f. 16
-# TRANSLATE ca es it (extra phrase...)
+# TRANSLATE ca es (extra phrase...)
 en:113 There were %d warning(s) and %d non-fatal error(s) - no output files produced.
 fr:113 Il y a %d avertissement(s) et %d erreur(s) non fatale(s) - aucun fichier n'a &eacute;t&eacute; produit
 de:113 Es gab %d Warnungen und %d nicht-fatale Fehler - keine Ausgabedatei erstellt.
@@ -1062,12 +1070,13 @@ pt:113 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s) - no output file
 pt:113 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s) - nenhum arquivo de sa&iacute;da criado
 ca:113 Hi havia %d alerta(es) i %d error(s) no fatal(s) - no output files produced.
 es:113 Havia %d alerta(s) y %d error(es) no fatal(es) - no output files produced.
-it:113 Ci sono %d avvertimenti e %d errori non fatali - no output files produced.
+it:113 Ci sono %d avvertimenti e %d errori non fatali - nessun file prodotto.
 #
 en:114 File `%s' has a newer format than this program can understand
 fr:114 Le fichier `%s' a un format plus r&eacute;cent que ce que ce
 de:114 Datei `%s' ist in einem neueren Format, als dieses Programm verstehen kann
 pt:114 Arquivo `%s' tem um formato mais novo do que este programa consegue entender
+it:114 Il file `%s' &eacute; ha un nuovo formato che questo programma non pu&oacute; capire
 #
 en:115 North
 fr:115 Nord
@@ -1127,21 +1136,25 @@ en:121 Expecting string field
 fr:121 On attendait une chaine de caract&egrave;res dans ce champ
 de:121 Textfeld erwartet
 pt:121 Esperando cadeia de caracteres
+it:121 Questo &eacute; un campo di tipo stringa
 #
 en:122 too few arguments
 fr:122 pas assez d'arguments
 de:122 zu wenige Argumente
 pt:122 n&uacute;mero de argumentos insuficiente
+it:122 Numero di parametri insufficiente
 #
 en:123 too many arguments
 fr:123 trop d'arguments
 de:123 zu viele Argumente
 pt:123 n&uacute;mero de argumentos excessivo
+it:123 Troppi parametri
 #
 en:124 FILE
 fr:124 FICHIER
 de:124 DATEI
 pt:124 ARQUIVO
+it:124 FILE
 # a trailing traverse is a dead end back to a junction
 en:125 Removing trailing traverses
 fr:125 Enl&egrave;ve les s&eacute;quences terminales
@@ -1359,12 +1372,14 @@ en:150 display this help and exit
 fr:150 montrer ce message d'aide et quitter
 de:150 Diese Hilfemeldung anzeigen und Beenden
 pt:150 exibir esta mensagem e sair              
+it:150 mostra questo aiuto ed esce
 # description of --verbose option
 #
 en:151 output version information and exit
 fr:151 affiche les informations sur la version et termine
 de:151 Versionsinformation ausgeben und beenden
 pt:151 exibir n&uacute;mero de vers&atilde;o e sair
+it:151 Mostra informazioni sulla versione ed esce
 # As in "printer driver"
 en:152 Driver
 fr:152 pilote
@@ -1379,6 +1394,7 @@ en:153 OPTION
 fr:153 OPTION
 de:153 OPTION
 pt:153 OP&Ccedil;&Atilde;O 
+it:153 OPZIONI
 #
 en:154 Scale
 fr:154 &Eacute;chelle
@@ -1402,7 +1418,7 @@ pt:156 Saindo.
 ca:156 Sortint.
 es:156 Saliendo.
 it:156 Fine.
-# TRANSLATE es it
+# TRANSLATE es
 en:157 Try `%s --help' for more information.&#10;
 fr:157 Pour en savoir davantage, faites: `%s --help'&#10;
 de:157 Versuchen Sie `%s --help' f&uuml;r weitere Informationen.&#10;
@@ -1411,6 +1427,7 @@ pt:157 Tenta `%s --help' para mais informa&ccedil;&atilde;o.&#10;
 pt-br:157 Tente `%s --help' para maiores informa&ccedil;&otilde;es.&#10;
 es:157 Pruebe `%s --help' para m&aacute;s informaci&oacute;n.&#10;
 it:157 Usare `%s --help' per ulteriori informazioni.&#10;
+#or it:157 Usare `%s --aiuto' per ulteriori informazioni.&#10;
 #
 en:158 Plan or Elevation
 en-us:158 Plan or Elevation (profile)
@@ -1633,17 +1650,20 @@ en:185 numeric argument `%s' out of range
 fr:185 argument num&eacute;rique `%s' hors limite
 de:185 numerisches Argument `%s' nicht im erlaubten Bereich
 pt:185 argumento num&eacute;rico `%s' fora dos limites
+it:185 argomento numerico `%s' al di fuori dell'intervallo consentito
 #
 en:186 argument `%s' not an integer
 fr:186 l'argument `%s' n'est pas un entier
 de:186 Argument `%s' ist nicht ganzzahlig
 pt:186 argumento `%s' n&atilde;o &eacute; um n&uacute;mero inteiro
+it:186 L'argomento `%s' non &eacute; un intero
 #
 en:187 argument `%s' not a number
 fr:187 l'argument `%s' n'est pas un nombre
 de:187 Argument `%s' ist keine Zahl
 pt:187 argumento `%s' n&atilde;o &eacute; um n&uacute;mero
-# TRANSLATE ca es it
+it:187 L'argomento `%s' non &eacute; un numero
+# TRANSLATE ca es
 en:188 Expecting `DUPLICATE', `SPLAY', or `SURFACE'
 fr:188 On attendait `DUPLICATE', `SPLAY', ou `SURFACE'
 # NB there is no comma before "oder"
@@ -1652,7 +1672,7 @@ pt:188 `DUPLICATE', `SPLAY' ou `SURFACE' eram esperados
 ca:188 Esperant `DUPLICATE', `SPLAY', o `SURFACE'
 es:188 Esperando `DUPLICATE', `SPLAY', o `SURFACE'
 it:188 Atteso `DUPLICATE', `SPLAY' o `SURFACE'
-# TRANSLATE ca es it
+# TRANSLATE ca es
 en:189 Expecting `NOT', `DUPLICATE', `SPLAY', or `SURFACE'
 fr:189 On attendait `NOT', `DUPLICATE', `SPLAY', ou `SURFACE'
 # NB there is no comma before "oder"
@@ -1667,11 +1687,13 @@ fr:190 La station `%s' est cit&eacute;e dans un *entrance ou *export mais n'est 
 de-de,de-ch:190 Messpunkt `%s' in *entrance oder *export erw&auml;hnt, aber nie verwendet
 de:190      Me&szlig;punkt `%s' in *entrance oder *export erw&auml;hnt, aber nie verwendet
 pt:190 Base `%s' referenciada por *entrance ou *export mas nunca usada
+it:190 Stazione `%s' referenziata da *entrance o *export ma mai usata
 #
 en:191 Extended elevation
 fr:191 Coupe d&eacute;velopp&eacute;e
 de:191 Abwicklung
 pt:191 Perfil retificado
+it:191 Profilo longitudinale
 # c.f. 22
 en:192 No matching BEGIN
 fr:192 BEGIN manquant
@@ -1727,11 +1749,13 @@ it:197 " a %4.2fm)"
 en:198 Expecting date, found `%s'
 de:198 Datum erwartet, `%s' gelesen
 pt-br: 198 Esperando data, encontrado `%s'
+it:198 Attesa una data, trovato `%s'
 #
 en:199 Only load the sub-survey with prefix
 fr:199 Ne charge que la partie de topo avec le prefixe
 de:199 Nur Teilvermessung mit Pr&auml;fix laden
 pt:199 Carregue apenas a sub-topografia com prefixo
+it:199 Carica un sotto-rilievo con prefisso
 #
 #  Messages for Aven
 #
@@ -1743,7 +1767,7 @@ pt:200 Este programa &eacute; um software de livre distribui&ccedil;&atilde;o, q
 es:200 Este programa es software libre. Puede redistribuirlo y/o modificarlo bajo los t&eacute;rminos de la Licencia P&uacute;blica General de GNU seg&uacute;n es publicada por la Free Software Foundation, bien de la versi&oacute; 2 de dicha Licencia o bien (seg&uacute;n su elecci&oacute;n) de cualquier versi&oacute;n posterior.
 it:200 Questo programma &egrave; software libero; &egrave; lecito redistribuirlo o modificarlo secondo i termini della Licenza Pubblica Generica GNU come &egrave; pubblicata dalla Free Software Foundation; o la versione 2 della licenza o (a propria scelta) una versione successiva.
 #
-# TRANSLATE ca es it
+# TRANSLATE ca es
 en:201 Display command line options
 fr:201 Affiche les options de la ligne de commande
 de:201 Befehlszeilenoptionen anzeigen
@@ -1756,11 +1780,13 @@ en:202 No survey data in 3d file `%s'
 fr:202 Pas de donn&eacute;es topo dans le fichier 3d `%s'
 de:202 Keine Vermessungsdaten in 3D-Datei `%s'
 pt:202 N&atilde;o h&aacute; dados de topografia no arquivo 3d `%s'
+it:202 Nel file 3D `%s' non ci sono dati di topografia
 #
 en:203 Facing
 fr:203 Direction
 de:203 Blickrichtung
 pt:203 Olhando para
+it:203 Direzione
 #
 en:204 Close
 fr:204 Fermer
@@ -1789,8 +1815,9 @@ en:206 Select a 3d file to view
 fr:206 S&eacute;lectionner un fichier 3d &agrave; visualiser
 de:206 3D-Datei zur Ansicht w&auml;hlen
 pt-br:206 Selecione um arquivo 3d para ser visualizado
+it:206 Seleziona un file 3D da visualizzare
 #
-# TRANSLATE es it
+# TRANSLATE es
 en:207 Survex 3d files
 fr:207 Fichiers de donn&eacute;es Survex 3d
 de:207 Survex 3D-Dateien
@@ -1815,6 +1842,7 @@ en:209 Visualisation of Survex 3D files
 fr:209 Visualisation de fichiers Survex 3D
 de:209 Visualisierung von Survex 3D-Dateien
 pt-br:209 Visualiza&ccedil;&atilde;o de arquivos 3d do Survex
+it:209 Visualizzazione di file survex 3D
 #
 # Aven menu titles.  An '@' goes before the letter of any accelerator key.
 # The accelerators must be different within this group
@@ -1875,16 +1903,19 @@ en:216 Standard deviation must be positive
 de:216 Standardabweichung mu&szlig; positiv sein
 de-de,de-ch:216 Standardabweichung muss positiv sein
 pt-br:216 Desvio-padr&atilde;o deve ser positivo
+it:216 La deviazione standard deve essere positiva
 #
 en:217 Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')
 de:217 Ma&szlig;stab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
 # (no de-de entry here!)
 de-ch:217 Massstab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
 pt-br:217 Escala com problemas: `%s' (esperando algo como `1:500', `500' ou `0.002')
+it:217 Scala errata `%s' (valori di esempio `1:500', `500', or `0.002')
 #
 en:218 Bad list of pages to print `%s'
 de:218 Liste zu druckender Seiten `%s' ist fehlerhaft
 pt-br:218 Lista de p&aacute;ginas a imprimir com problemas: `%s'
+it:218 Lista di pagine da stampare `%s' errata
 #XXX219
 #
 # back to aven...
@@ -1920,78 +1951,94 @@ en:230 @Start Rotation##Return
 fr:230 @D&eacute;marre la rotation##Return
 de:230 @Rotation starten##Return
 pt-br:230 @Iniciar Rota&ccedil;&atilde;o##Return
+it:230 @Avvia la rotazione##Return
 #
 en:231 S@top Rotation##Space
 fr:231 @Arr&ecirc;te la rotation##Space
 de:231 Rotation an@halten##Space
 pt-br:231 @Parar Rota&ccedil;&atilde;o##Space
+it:231 @Ferma la rotazione##Space
 #
 en:232 Speed @Up
 fr:232 A@cc&eacute;l&egrave;re
 de:232 @Schneller
 pt-br:232 @Aumentar Velocidade
+it:232 A@ccelera la rotazione
 #
 en:233 Slow @Down
 fr:233 @Ralenti
 de:233 @Langsamer
 pt-br:233 @Diminuir Velocidade
+it:233 @Rallenta la rotazione
 #
 en:234 @Reverse Direction
 fr:234 Direction @Inverse
 de:234 @Andere Richtung
 #pt-br:234 @Reverter Sentido
 pt-br:234 @Inverter Sentido
+it:234 @Inverte la direzione
 #
 en:235 Step Once @Anticlockwise
 fr:235 Pas &agrave; pas sens in@verse des aiguilles d'une montre
 de:235 Schritt im @Gegenuhrzeigersinn
-pt-br:235 Um Passo @Hor&aacute;rio
+pt-br:235 Um Passo A@ntihor&aacute;rio
+it:235 Un passo a@ntiorario
 #
 en:236 Step Once @Clockwise
 fr:236 Pas &agrave; pas dans le @sens des aiguilles d'une montre
 de:236 Schritt im @Uhrzeigersinn
-pt-br:236 Um Passo A@ntihor&aacute;rio
+pt-br:236 Um Passo @Hor&aacute;rio
+it:236 Un passo @Orario
 #
 # The accelerators must be different within this group
+# View *looking* North
 en:240 View @North
 fr:240 Vue vers le @Nord
 de:240 Nach @Norden
 pt-br:240 Olhar para @Norte
-#
+it:240 Vista verso @Nord
+# View *looking* East
 en:241 View @East
 fr:241 Vue vers l'@Est
 de:241 Nach @Osten
 pt-br:241 Olhar para @Leste
-#
+it:241 Vista verso @Est
+# View *looking* South
 en:242 View @South
 fr:242 Vue vers le @Sud
 de:242 Nach @S&uuml;den
 pt-br:242 Olhar para @Sul
-#
+it:242 Vista verso @Sud
+# View *looking* West
 en:243 View @West
 fr:243 Vue vers l'@Ouest
 de:243 Nach @Westen
 pt-br:243 Olhar para @Oeste
+it:243 Vista verso @Ovest
 #
 en:244 Shift Survey @Left
 fr:244 D&eacute;placement vers la @Gauche
 de:244 Verschieben nach @links
 pt-br:244 Mover para @Esquerda
+it:244 Sposta il rilievo a Sin@istra
 #
 en:245 Shift Survey @Right
 fr:245 D&eacute;placement vers la @Droite
 de:245 Verschieben nach @rechts
 pt-br:245 Mover para @Direita
+it:245 Sposta il rilievo a @Destra
 #
 en:246 Shift Survey @Up
 fr:246 D&eacute;placement vers le @Haut
 de:246 Verschieben nach o@ben
 pt-br:246 Mover para @Cima
+it:246 Sposta il rilievo verso l' @Alto
 #
 en:247 Shift Survey @Down
 fr:247 D&eacute;placement vers le @Bas
 de:247 Verschieben nach @unten
 pt-br:247 Mover para @Baixo
+it:247 Sposta il rilievo verso il Bass@o
 #
 # c.f. 117
 en:248 @Plan View
@@ -2018,11 +2065,13 @@ en:250 @Higher Viewpoint
 fr:250 Point de vue plus Ha@ut
 de:250 @H&ouml;herer Standort
 pt-br:250 Observador Mais @Alto
+it:250 A@lza il punto di vista
 #
 en:251 Lo@wer Viewpoint
 fr:251 Point de vue plus B@as
 de:251 Nie@drigerer Standort
 pt-br:251 Observador Mais Bai@xo
+it:251 A@bbassa il punto di vista
 #
 en:252 @Zoom In##]
 # fr: or "Agrandir"
@@ -2061,7 +2110,7 @@ es:254 Restaurar @valores predeterminados
 it:254 Ripristina i @valori predefiniti
 #
 # The accelerators must be different within this group
-# TRANSLATE ca es it
+# TRANSLATE ca es
 en:270 Station @Names##Ctrl+N
 fr:270 @Noms de station##Ctrl+N
 de:270     Me&szlig;punkt@namen##Ctrl+N
@@ -2069,7 +2118,7 @@ de-de,de-ch:270 Messpunkt@namen##Ctrl+N
 pt:270 @Nomes de base##Ctrl+N
 ca:270 @Noms d'estaci&oacute;##Ctrl+N
 es:270 @Nombres de estaci&oacute;n##Ctrl+N
-it:270 @Nomes di stazione##Ctrl+N
+it:270 @Nome di stazione##Ctrl+N
 #
 en:271 @Crosses##Ctrl+X
 fr:271 @Croisements##Ctrl+X
@@ -2079,7 +2128,7 @@ ca:271 @Creus##Ctrl+X
 es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
 #
-# TRANSLATE ca es it (added "Underground")
+# TRANSLATE ca es (added "Underground")
 en:272 Underground Survey @Legs##Ctrl+L
 en-us:272 Underground @Shots##Ctrl+L
 fr:272 @Vis&eacute;es sous terre##Ctrl+L
@@ -2088,12 +2137,13 @@ de:272 @Strecken unter Grund##Ctrl+L
 pt:272 @Visadas Subterr&acirc;neas##Ctrl+L
 ca:272 @Tirades##Ctrl+L
 es:272 @Tiradas##Ctrl+L
-it:272 @Battute##Ctrl+L
+it:272 @Battute del rilievo sotterraneo##Ctrl+L
 #
 en:273 @Overlapping Names
 fr:273 @Superposition des noms
 de:273 &Uuml;ber@lappende Namen
 pt-br:273 Nomes @Sobrepostos
+it:273 Nomi @Sovrapposti
 #
 en:274 @Compass
 fr:274 @Compas
@@ -2116,18 +2166,21 @@ en:276 @Depth Bar
 fr:276 Barre de controle des @Profondeurs
 de:276 @Tiefenskala
 pt-br:276 Barra de @Profundidade
+it:276 Barra di controllo della @Profondit&aacute;
 #
 en:277 @Scale Bar
 fr:277 Barre de controle des @Echelles
 de:277 @Ma&szlig;stab
 de-ch:277 @Massstab
 pt-br:277 Barra de @Escala
+it:277 Barra di controllo della S@cala
 #
 # The accelerators must be different within this group
 en:280 @Reverse Sense##Ctrl+R
 fr:280 Sens @Inverse##Ctrl+R
 de:280 Richtung @umkehren##Ctrl+R
 pt-br:280 @Inverter Sentido##Ctrl+R
+it:280 @Inverte il senso##Ctrl+R
 #
 en:281 @Cancel Measuring Line##Escape
 de:281     Me&szlig;linie @abschalten##Escape
@@ -2151,42 +2204,60 @@ fr:291 Segments de topo en Sur@face##Ctrl+F
 de-de,de-ch:291 Messz&uuml;ge Ober@fl&auml;che##Ctrl+F
 de:          291 Me&szlig;z&uuml;ge Ober@fl&auml;che##Ctrl+F
 pt:291 Visadas de Su@perf&iacute;cie##Ctrl+P
-en:292 Depth Colo@urs on Surface Surveys
+it:291 Battute topografia di @Superficie##Ctrl+F
+# TRANSLATE fr de "Depth Colours" -> "Altitude Colours"
+en:292 Altitude Colo@urs on Surface Surveys
+en-us:292 Altit@ude Colors on Surface Surveys
 fr:292 C@ouleur par profondeur pour les topos de surface
 de:292 Tiefen-F@arben auf Oberfl&auml;chendarstellungen
 pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
+it:292 Rappresentazione delle @Quote mediante colori
+#
 en:293 Da@shed Surface Surveys
 fr:293 Topos de surface @Hachur&eacute;es
 de-de,de-ch:293 Gestrichelte @Oberfl&auml;chenmessz&uuml;ge
 de:          293 Gestrichelte @Oberfl&auml;chenme&szlig;z&uuml;ge
 pt:293 Topografias de Superf&iacute;cie @Tracejadas
+it:293 Superficie topografica @Tratteggiata
+#
 en:294 Highlight @Entrances
 fr:294 Mise en valeur des @entr&egrave;es
 de:294 @Eing&auml;nge hervorheben
 pt:294 Destacar @Entradas
+it:294 Marca gli I@ngressi
+#
 en:295 Highlight Fi@xed Points
 en-us:295 Highlight Co@ntrol Points
 fr:295 Mise en valeur des points Fi@xes
 de:295 Fi@xpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
+it:295 Marca i @Punti fissi
+#
 en:296 Highlight Ex@ported Points
 fr:296 Mise de valeur des points ex@port&eacute;s
 de:296 Ex@portierte Punkte hervorheben
 pt:296 Destacar Bases Ex@portadas
+it:296 Marca i punti @Esportati
+#
 en:297 @Grid##Ctrl+G
 fr:297 @Grille##Ctrl+G
 de:297 @Gitter##Ctrl+G
 pt:297 @Grade##Ctrl+G
+it:297 @Griglia##Ctrl+G
+#
 en:298 S@moothed Survey Legs
 en-us:298 S@moothed Survey Shots
 fr:298 @Lissage des segments topographiques
 de-de,de-ch:298 Geg@l&auml;ttete Messz&uuml;ge
 de:298          Geg@l&auml;ttete Me&szlig;z&uuml;ge
 pt:298 Visadas S@uavizadas 
+it:298 Battute topografiche ammorbidite
+#
 en:299 @Indicators
 fr:299 @Indicateurs
 de:299 @Richtungsanzeiger
 pt:299 @Indicadores
+it:299 @Indicatori
 #
 en:300 %s: option `%s' is ambiguous&#10;
 fr:300 %s: l'option `%s' est ambig&uuml;e&#10;
@@ -2286,90 +2357,126 @@ en:311 @Create...
 fr:311 @Creation...
 de:311 @Neue Pr&auml;sentation...
 pt:311 @Criar...
+it:311 @Crea...
+#
 en:312 @Go
 fr:312 @D&eacute;marrage
 de:312 @Vorf&uuml;hren
 pt:312 @Ir para
+it:312 @Vai
+#
 en:313 @Record Position
 fr:313 Sauvega@rde de la position
 de:313 Position @aufzeichnen
 pt:313 G@ravar Posi&ccedil;&atilde;o
+it:313 @Registra la posizione
+#
 en:314 @Finish and Save
 fr:314 @Fin avec sauvegarde
 de:314 @Abschlie&szlig;en und abspeichern
 de-ch:314 @Abschliessen und abspeichern
 pt:314 @Finalizar e Salvar
+it:314 @Finisci e Salva
+#
 en:315 @Erase Last Position
 fr:315 @Effacement de la derni&egrave;re position
 de:315 Letzte Position @l&ouml;schen
 pt:315 R@emover &Uacute;ltima Posi&ccedil;&atilde;o   
+it:315 Cancella l'@Ultima posizione
+#
 en:316 Er@ase All Positions
 fr:316 Effacement de @toutes les positions
 de:316 @Alle Positionen l&ouml;schen
 pt:316 Remover @Todas as Posi&ccedil;&otilde;es
+it:316 Cancella @Tuttle le posizioni
+#
 en:317 @Presentation
 de:317 @Pr&auml;sentation
 fr:317 @Pr&eacute;sentation
 pt:317 @Apresenta&ccedil;&atilde;o  
+it:317 @Presentazione
+#
 en:318 Go @Back
 fr:318 @Retour
 de:318 @Zur&uuml;ck
 pt:318 @Voltar
+it:318 Torna @Indietro
+#
 en:319 Select an output filename
 fr:319 S&eacute;lection d'un nom de fichier de sortie
 de:319 Name der Ausgabedatei w&auml;hlen
 pt:319 Escolha um nome de arquivo de sa&iacute;da
+it:319 Seleziona un file di uscita
+#
 en:320 Aven presentations
 fr:320 Pr&eacute;sentations Aven
 de:320 Aven Pr&auml;sentationen
 pt:320 Apresenta&ccedil;&otilde;es Aven
+it:320 Presentazione Aven
+#
 en:321 Open @Presentation...
 fr:321 Ouvrir une @Pr&eacute;sentation
 de:321 @Pr&auml;sentation &ouml;ffnen...
 pt:321 Abrir @Apresenta&ccedil;&atilde;o
+it:321 Apri @Presentazione
+#
 en:322 Select a presentation to open
 fr:322 Slectionner une pr&eacute;sentation &agrave; ouvrir
 de:322 Zu &ouml;ffnende Pr&auml;sentation ausw&auml;hlen
 pt:322 Escolha uma apresenta&ccedil;&atilde;o para abrir
+it:322 Seleziona una presentazione da aprire
+#
 en:323 Recording Presentation
 fr:323 Enregistrement d'une pr&eacute;sentation
 de:323 Pr&auml;sentation wird aufgezeichnet
 # or, somewhat in radio broadcasting lingo,
 # de:323 Aufzeichnung l&auml;uft
 pt:323 Gravando Apresenta&ccedil;&atilde;o
+it:323 Registra Presentazione
+#
 en:324 Res@tart
 fr:324 Re@d&eacute;marrage
 de:324 @Neustart
 pt:324 Re@iniciar
+it:324 Ripar@te
 #XXX 325 326 327
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
 de:328 Kein Treffer gefunden.
 pt:328 Nada foi encontrado.
+it:328 Nessun elemento trovato   
+#
 en:329 Open @Terrain...
 fr:329 Ouverture d'un @Terrain...
 de:329 Gel&auml;nde@modell &ouml;ffnen...
 pt:329 Abrir @Terreno...
+it:329 Apri Modello Digitale @Terrestre
+#
 en:330 So@lid Surface
 fr:330 Surface So@lide
 de:330 @Durchgezogene Oberfl&auml;che
 pt:330 Superf&iacute;cie S&oacute;@lida
+it:330 Superficie So@lida
 # number of stations found matching search
 en:331 %d found
 de:331 %d gefunden
 pt-br:331 %d bases encontradas
+it:331 %d trovate
 # "Find stations" button label
 en:332 Find
 de:332 Suchen
 pt-br:332 Procurar
+it:332 Trova
 # "Hide stations" button label
 en:333 Hide
 de:333 Unterdr&uuml;cken
 pt-br:333 Esconder
+it:333 Nascondi
 # checkbox for regular expression search
 en:334 Regular expression
 de:334 Regul&auml;rer Ausdruck
 pt-br:334 Express&atilde;o regular
+it:334 Espressione regolare
 #
 en:335 Altitude
 fr:335 Altitude
@@ -2416,18 +2523,25 @@ en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s
 de:500 Verschoben um (%3.2f,%3.2f,%3.2f): %s
 pt:500 Movido por (%3.2f,%3.2f,%3.2f): %s
+it:500 Spostato da (%3.2f,%3.2f,%3.2f): %s
+#
 en:501 Added: %s
 fr:501 Ajout de: %s
 de:501 Hinzugef&uuml;gt: %s
 pt:501 Acrescentado: %s
+it:501 Aggiunto: %s
+#
 en:502 Deleted: %s
 fr:502 Effac&eacute;: %s
 de:502 Entfernt: %s
 pt:502 Removido: %s
+it:502 Rimosso: %s
+#
 en:503 Ignoring:
 de:503 Ignoriert:
 fr:503 Ignor&eacute;:
 pt:503 Ignorando:
+it:503 Ignorando:
 #
 # "don't extract" messages - these are compiled into the programs
 #
