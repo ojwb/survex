@@ -11,7 +11,7 @@ export SURVEXHOME
 
 : ${TESTS="singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey nosurvey2\
- cartesian lengthunits angleunits cmd_truncate cmd_case
+ cartesian lengthunits angleunits cmd_truncate cmd_case\
  beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
  expobug require export export2 includecomment\
  self_loop self_eq_loop reenterwarn cmd_default cmd_prefix\
