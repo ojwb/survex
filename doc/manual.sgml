@@ -107,8 +107,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-09-06 18:29:02 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.112 2003-09-06 18:29:02 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-09-06 18:40:23 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.113 2003-09-06 18:40:23 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -531,8 +531,8 @@ just a matter of opening the archive with
 <application>!SparkPlug</application>,
 <application>!SparkFS</application>, or
 similar and dragging the contents to where you want them installed.
-This version works with RISC OS 3.1 or newer.  We are unable to test
-compatibility with earlier operating system versions.
+This version is known to work with RISC OS 3.1 or newer.  We are unable to test
+compatibility with earlier versions of RISC OS.
 </Para>
 
 </Sect3>
@@ -541,7 +541,7 @@ compatibility with earlier operating system versions.
 
 <Sect2><Title>Configuration</Title>
 
-<Sect3><Title>Selecting a Language</Title>
+<Sect3><Title>Selecting Your Preferred Language</Title>
 
 <Para>Survex has extensive internationalisation capabilities.  The
 language used for messages from Survex and most of the library calls
@@ -559,13 +559,13 @@ requested language, UK English is used.</Para>
 <Para>
 However you may want to override the language manually -
 for example if Survex isn't available in your native language
-you'll want to choose the supported language you speak best.
+you'll want to choose the supported language you understand best.
 </Para>
 
 <Para>
 To do this, you set the
 <systemitem>SURVEXLANG</systemitem> environment variable.  Here's a list
-of the code currently supported:</Para>
+of the codes currently supported:</Para>
 
 <informaltable frame="all">
 <tgroup cols="2">
@@ -603,7 +603,8 @@ command prompt.</Para></ListItem>
  <VarListEntry><Term>Microsoft Windows</Term>
    <ListItem><Para>
 For MS Windows 95 and 98 (and probably ME), you'll need to add a line to
-<filename>AUTOEXEC.BAT</filename> as for MSDOS (see above).
+<filename>AUTOEXEC.BAT</filename> as for MSDOS (see above).  You need to
+reboot for the change to take effect.
 </Para>
 
 <Para>For MS Windows NT4, 2000, and XP, you should proceed as follows
@@ -961,7 +962,7 @@ the names using the *truncate command.
 or [&lt;MINUS&gt;|&lt;PLUS&gt;] &lt;DECIMAL&gt; &lt;dec fraction&gt;
 </Para>
 
-<Para>
+<Para><!-- FIXME: put informal description first -->
 i.e. optional PLUS or MINUS sign in front, with
 optional DECIMAL character (default '.'), which may be
 embedded, leading or trailing. No spaces are allowed between the
@@ -1173,7 +1174,7 @@ scale factor)
 
 <Para>
 The scale factor for DECLINATION must be 1.0, otherwise an error
-is given.
+is given. <!-- FIXME: practical example for declination -->
 </Para>
 
 <Para>
@@ -1949,8 +1950,10 @@ disagree, you can always use one of the other methods!
 If the position is omitted it defaults to (0,0,0). <!-- which allows
 sub-sections of a large survey to be easily processed separately.
  FIXME - don't want to encourage people to do this really -->
-The standard errors default to zero (fix station exactly). cavern will complain
-if you attempt to fix the same survey station twice.
+The standard errors default to zero (fix station exactly). cavern will
+give an error if you attempt to fix the same survey station twice
+at different coordinates, or a warning if you fix it twice with matching
+coordinates.
 </Para>
 
 <Para>
@@ -2150,7 +2153,8 @@ case, unzip it with "unzip -L" and unix cavern will process it).
 </Para>
 
 <Para>
-The depth to which you can include files may be limited by the operating system
+The depth to which you can nest
+include files may be limited by the operating system
 you use.  Usually the limit is fairly high (>30), but if you want to be able to
 process your dataset with &survexsuite; on any supported platform, it
 would be prudent not to go overboard with nested include files.
@@ -2398,7 +2402,7 @@ check this list -->
 
 <Para>
 &lt;standard deviation&gt; must include units and thus is typically
-'0.05 metres', or 0.02 degrees. See *units below for full list
+"0.05 metres", or "0.02 degrees". See *units below for full list
 of valid units.
 </Para>
 
@@ -2580,7 +2584,7 @@ for situations where you have some new surveys adding extensions
 to an already drawn-up survey which you wish to avoid completely
 redrawing. You can read in the old data, use *SOLVE to fix it, and then
 read in the new data.  Then old stations will be in the same
-positions as there are in existing drawn up survey, even if new loops
+positions as they are in the existing drawn up survey, even if new loops
 have been formed by the extensions.
 </Para></listitem>
 
@@ -2839,6 +2843,7 @@ in DEG|DEGREES|GRADS|MILS|MINUTES
 
 </Sect1>
 
+<!-- FIXME rename to "Cookbook"? -->
 <Sect1><Title>Contents of &svx; files: How do I?</Title>
 <?dbhtml filename="svxhowto.htm">
 
@@ -3025,6 +3030,8 @@ clino, but with a plumb of some sort, then it is useful to distinguish
 them in this way so that any clino adjustment is not applied to
 these values.
 </Para>
+
+FIXME: paste in section from mail to list
 
 <Para>
 Note that a similar effect can be achieved by using the "*infer plumbs" command

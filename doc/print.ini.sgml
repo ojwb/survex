@@ -124,7 +124,7 @@ pcl_generic_a4 and pcl_modern_a4.</Para>
 
 <Para>Note that if you are using a PCL printer the defaults are set
 not to use advanced printer features for compatibility. If you want to
-try these (equivalent to HP laserjet III or later), then you should
+try these (equivalent to HP Laserjet III or later), then you should
 use the modern_pcl_a4 printer definition (see below for how to do this).
 This will enable horizontal and vertical tabbing.
 </Para>
