@@ -320,41 +320,16 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_ZMin = DBL_MAX;
     Double zmax = -DBL_MAX;
 
-    bool first = true;
-
     list<PointInfo*> points;
 
     int result;
-    bool pending_move = false;
-    img_point mv;
     do {
 	img_point pt;
-	switch (result = img_read_item(survey, &pt)) {
+	result = img_read_item(survey, &pt);
+	switch (result) {
+            case img_MOVE:
 	    case img_LINE:
 	    {
-		if (pending_move) {
-		    pending_move = false;
-
-		    m_NumPoints++;
-
-		    // Update survey extents.
-		    if (mv.x < xmin) xmin = mv.x;
-		    if (mv.x > xmax) xmax = mv.x;
-		    if (mv.y < ymin) ymin = mv.y;
-		    if (mv.y > ymax) ymax = mv.y;
-		    if (mv.z < m_ZMin) m_ZMin = mv.z;
-		    if (mv.z > zmax) zmax = mv.z;
-
-		    PointInfo* info = new PointInfo;
-		    info->x = mv.x;
-		    info->y = mv.y;
-		    info->z = mv.z;
-
-		    info->isLine = false;
-
-		    // Store this point in the list.
-		    points.push_back(info);			
-		}
 		m_NumPoints++;
 
 		// Update survey extents.
@@ -370,27 +345,23 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		info->y = pt.y;
 		info->z = pt.z;
 
-		// Set flags to say this is a line rather than a move
-		m_NumLegs++;
-		info->isLine = true;
-		info->isSurface = (survey->flags & img_FLAG_SURFACE);
+		if (result == img_LINE) {
+		    // Set flags to say this is a line rather than a move
+		    m_NumLegs++;
+		    info->isLine = true;
+		    info->isSurface = (survey->flags & img_FLAG_SURFACE);
+		} else {
+		    info->isLine = false;
+		}
 
 		// Store this point in the list.
 		points.push_back(info);
 
 		break;
 	    }
-	    /* FALL THRU */
-
-            case img_MOVE:
-	    {
-		pending_move = true;
-		mv = pt;
-		break;
-	    }
 
 	    case img_LABEL:
-	     {
+	    {
 		LabelInfo* label = new LabelInfo;
 		label->text = survey->label;
 		label->x = pt.x;
@@ -438,9 +409,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	    default:
 		break;
 	}
-
-	first = false;
-
     } while (result != img_STOP);
 
     img_close(survey);
