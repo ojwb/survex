@@ -1171,6 +1171,10 @@ void GfxCore::TiltCave(double tilt_angle)
 {
     // Tilt the cave by a given angle.
 
+    if (m_ReverseControls) {
+        tilt_angle = -tilt_angle;
+    }
+
     if (m_TiltAngle + tilt_angle > M_PI / 2.0) {
         tilt_angle = (M_PI / 2.0) - m_TiltAngle;
     }

@@ -2,7 +2,6 @@ Date: Tue, 01 May 2001
 From: Mark
 
 wxaven:
-- confusion over semantics of "reverse controls"
 - dragging scale bar should change scale, not move scale bar!
 - elevation indicator
 
