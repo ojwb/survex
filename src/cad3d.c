@@ -1,5 +1,5 @@
-/* 3dtodxf.c
- * Converts a .3d file to a DXF file, or other CAD-like formats
+/* cad3d.c
+ * Converts a .3d file to CAD-like formats (DXF, Sketch) and also Compass PLT.
  * Also useful as an example of how to use the img code in your own programs
  */
 
@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* #define DEBUG_3DTODXF */
+/* #define DEBUG_CAD3D */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -120,7 +120,7 @@ dxf_header(void)
       double x, y;
       x = floor(min_x / grid) * grid + grid;
       y = floor(min_y / grid) * grid + grid;
-#ifdef DEBUG_3DTODXF
+#ifdef DEBUG_CAD3D
       printf("x_min: %f  y_min: %f\n", x, y);
 #endif
       while (x < max_x) {
@@ -524,13 +524,13 @@ main(int argc, char **argv)
 	 break;
        case 't': /* Text height */
 	 text_height = cmdline_double_arg();
-#ifdef DEBUG_3DTODXF
+#ifdef DEBUG_CAD3D
 	 printf("Text Height: `%s' input, converted to %6.2f\n", optarg, text_height);
 #endif
 	 break;
        case 'm': /* Marker size */
 	 marker_size = cmdline_double_arg();
-#ifdef DEBUG_3DTODXF
+#ifdef DEBUG_CAD3D
 	 printf("Marker Size: `%s', converted to %6.2f\n", optarg, marker_size);
 #endif
 	 break;
@@ -546,7 +546,7 @@ main(int argc, char **argv)
        case 's':
 	 survey = optarg;
 	 break;
-#ifdef DEBUG_3DTODXF
+#ifdef DEBUG_CAD3D
        default:
 	 printf("Internal Error: 'getopt' returned '%c' %d\n", opt, opt);
 #endif
@@ -698,11 +698,11 @@ main(int argc, char **argv)
 	       fatalerror(/*Bad 3d image file `%s'*/106, fnm_3d);
 	       break;
 	     case img_LINE:
-#ifdef DEBUG_3DTODXF
+#ifdef DEBUG_CAD3D
 	       printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
 #endif
 	       if (!fSeenMove) {
-#ifdef DEBUG_3DTODXF
+#ifdef DEBUG_CAD3D
 		  printf("Something is wrong -- img_LINE before any img_MOVE!\n");
 #endif
 		  img_close(pimg);
@@ -712,7 +712,7 @@ main(int argc, char **argv)
 	       p1 = p;
 	       break;
 	     case img_MOVE:
-#ifdef DEBUG_3DTODXF
+#ifdef DEBUG_CAD3D
 	       printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
 #endif
 	       if ((*pass & LEGS) && legs) move(&p);
@@ -720,13 +720,13 @@ main(int argc, char **argv)
 	       p1 = p;
 	       break;
 	     case img_LABEL:
-#ifdef DEBUG_3DTODXF
+#ifdef DEBUG_CAD3D
 	       printf("label `%s' at %9.2f %9.2f %9.2f\n",pimg->label,x,y,z);
 #endif
 	       if ((*pass & LABELS) && labels) label(&p, pimg->label);
 	       if ((*pass & STNS) && crosses) cross(&p);
 	       break;
-#ifdef DEBUG_3DTODXF
+#ifdef DEBUG_CAD3D
 	     case img_STOP:
 	       printf("stop\n");
 	       break;

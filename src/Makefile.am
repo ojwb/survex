@@ -108,7 +108,7 @@ sorterr_SOURCES = sorterr.c $(COMMONSRC)
 3dtopos_SOURCES = 3dtopos.c namecmp.c img.c useful.c $(COMMONSRC)
 extend_SOURCES = extend.c $(COMMONSRC) img.c useful.c hash.c
 
-cad3d_SOURCES = 3dtodxf.c $(COMMONSRC) useful.c img.c hash.c
+cad3d_SOURCES = cad3d.c $(COMMONSRC) useful.c img.c hash.c
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
 #imgtest_SOURCES = imgtest.c imgalone.c
