@@ -318,14 +318,17 @@ it: 25 ROOT &eacute; sconsigliato
 # 1 2 1.23 045 -6
 # *end inner
 # *end outer
-# FIXME: TRANSLATE fr ca es de it
+# FIXME: TRANSLATE ca es de it
 en: 26 Station `%s' not exported from survey `%s'
+fr: 26 La station `%s' n'est pas export&eacute;e de la topographie `%s'
 pt: 26 Base `%s' n&atilde;o exportada da topo `%s'
-# FIXME: TRANSLATE fr de pt ca es it
+# FIXME: TRANSLATE de pt ca es it
 en: 27 `%s' can't be both a station and a survey
-# FIXME: TRANSLATE fr de pt ca es it
+fr: 27 `%s' ne peut &ecirc;tre &agrave; la fois une station et une topographie
+# FIXME: TRANSLATE de pt ca es it
 # c.f. 89
 en: 28 Expecting station name
+fr: 28 On attendait un nom de station
 # FIXME: perhaps use "survey" instead of "prefix level"?
 # FIXME: TRANSLATE check amended message fr ca es
 en: 29 Reentering an existing prefix level is deprecated
@@ -583,8 +586,9 @@ it: 56 Pi&uacute; di un comando FIX senza coordinate
 # 1 2 1.23 045 -6
 # *export 2
 # *end fred
-# FIXME: TRANSLATE fr ca es CHECK de pt it
+# FIXME: TRANSLATE ca es CHECK de pt it
 en: 57 *EXPORT must immediately follow `*BEGIN <SURVEY>'
+fr: 57 *EXPORT doit suivre imm&eacute;diatement `*BEGIN <SURVEY>'
 de-de,de-ch: 57 *EXPORT muss unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
 de:     57 *EXPORT mu&szlig; unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
 pt: 57 *EXPORT deve estar logo ap&oacute;s um `*BEGIN <TOPO>'
@@ -681,8 +685,9 @@ it: 65 STYLE `%s' sconosciuto
 # *export 1
 # 1 2 1.24 045 -6
 # *end example
-# FIXME: TRANSLATE fr ca es
+# FIXME: TRANSLATE ca es
 en: 66 Station `%s' already exported
+fr: 66 Station `%s' d&eacute;j&agrave; export&eacute;e
 de: 66 Station `%s' bereits exportiert
 pt: 66 Base `%s' j&aacute; foi exportada
 it: 66 Stazione `%s' gi&aacute; esportata
@@ -863,9 +868,10 @@ pt: 88 Erro no formato do arquivo de fontes `%s'
 ca: 88 Error en el format del fitxer de fonts `%s'
 es: 88 Error en el formato del fichero de fuentes `%s'
 it: 88 Errore nel formato del file dei caratteri `%s'
-# FIXME: TRANSLATE fr de pt ca es it
+# FIXME: TRANSLATE de pt ca es it
 # c.f. 28
 en: 89 Expecting survey name
+fr: 89 On attendait un nom de topographie
 # Program will exit shortly after printing this
 en: 90 Abnormal termination
 fr: 90 Terminaison anormale
@@ -906,8 +912,9 @@ pt: 94 Erro de acesso &agrave; mem&oacute;ria
 ca: 94 Acc&egrave;s a mem&ograve;ria dolent
 es: 94 Acceso a memoria err&oacute;neo
 it: 94 Accesso alla memoria errato
-# TRANSLATE fr de pt ca es it
+# TRANSLATE de pt ca es it
 en: 95 No further uses of this deprecated feature will be reported
+fr: 95 Cette functionnalit&eacute; n'est plus utilis&eacute;e les usages ult&eacute;rieurs ne seront pas signal&eacute;s.
 #
 en: 96 Stack overflow
 fr: 96 D&eacute;bordement de pile
@@ -1015,12 +1022,16 @@ it:108 Data e ora non disponibili.
 #ital:108 Data e ora mancanti.
 # TRANSLATE
 en:109 Error reading from file `%s'
+fr:109 Erreur &agrave; la lecture du fichier `%s'
 # TRANSLATE
 en:110 Error writing to file `%s'
+fr:110 Erreur &agrave; l'&eacute;criture du fichier `%s'
 # TRANSLATE
 en:111 Error writing to file
+fr:111 Erreur &agrave; l'&eacute;criture du fichier
 # TRANSLATE
 en:112 Couldn't parse .err file
+fr:112 La lecture du fichier .err a &eacute;chou&eacute;
 # c.f. 16
 # TRANSLATE extra phrase...
 en:113 There were %d warning(s) and %d non-fatal error(s) - no output files produced.
@@ -1033,6 +1044,7 @@ es:113 Havia %d alerta(s) y %d error(es) no fatal(es) - no output files produced
 it:113 Ci sono %d avvertimenti e %d errori non fatali - no output files produced.
 # TRANSLATE
 en:114 File `%s' has a newer format than this program can understand
+fr:114 Le fichier `%s' a un format plus r&eacute;cent que ce que ce
 #
 en:115 North
 fr:115 Nord
@@ -1086,15 +1098,19 @@ pt:120 Calculando estat&iacute;sticas
 ca:120 Calculant estad&iacute;stiques
 es:120 Calculando estad&iacute;sticas
 it:120 Sto calcolando le statistiche
-# TRANSLATE fr de pt ca es it
+# TRANSLATE de pt ca es it
 # c.f. 9
 en:121 Expecting string field
+fr:121 On attendait une chaine de caract&egrave;res dans ce champ
 # TRANSLATE
 en:122 too few arguments
+fr:122 pas assez d'arguments
 # TRANSLATE
 en:123 too many arguments
+fr:123 trop d'arguments
 # TRANSLATE
 en:124 FILE
+fr:124 FICHIER
 # a trailing traverse is a dead end back to a junction
 en:125 Removing trailing traverses
 fr:125 Enl&egrave;ve les s&eacute;quences terminales
@@ -1312,8 +1328,9 @@ en:150 display this help and exit
 fr:150 montrer ce message d'aide et quitter
 de:150 Diese Hilfemeldung anzeigen und Beenden
 # description of --verbose option
-# TRANSLATE: fr de pt ca es it
+# TRANSLATE: de pt ca es it
 en:151 output version information and exit
+fr:151 affiche les informations sur la version et termine
 # As in "printer driver"
 en:152 Driver
 fr:152 pilote
@@ -1577,10 +1594,13 @@ es:184 alzado
 it:184 profilo
 # TRANSLATE
 en:185 numeric argument `%s' out of range
+fr:185 argument num&eacute;rique `%s' hors limite
 # TRANSLATE
 en:186 argument `%s' not an integer
+fr:186 l'argument `%s' n'est pas un entier
 # TRANSLATE
 en:187 argument `%s' not a number
+fr:187 l'argument `%s' n'est pas un nombre
 # TRANSLATE check
 en:188 Expecting `DUPLICATE', `SPLAY', or `SURFACE'
 fr:188 On attendait `DUPLICATE', `SPLAY', ou `SURFACE'
@@ -1601,8 +1621,10 @@ es:189 Esperando `NOT', `DUPLICATE', `SPLAY', o `SURFACE'
 it:189 Atteso `NOT', `DUPLICATE', `SPLAY' o `SURFACE'
 # TRANSLATE
 en:190 Station `%s' referred to by *entrance or *export but never used
+fr:190 La station `%s' est cit&eacute;e dans un *entrance ou *export mais n'est jamais utilis&eacute;e
 # TRANSLATE
 en:191 Extended elevation
+fr:191 Coupe d&eacute;velopp&eacute;e
 # c.f. 22
 en:192 No matching BEGIN
 fr:192 BEGIN manquant
@@ -1654,6 +1676,7 @@ es:197 " en %4.2fm)"
 it:197 " a %4.2fm)"
 # TRANSLATE
 en:198 Expecting date
+fr:198 On attendait une date
 # TRANSLATE
 en:199 Only load the sub-survey with prefix
 #
@@ -1678,13 +1701,15 @@ ca:201 Mostra les opcions de la l&iacute;nia de comanda
 es:201 Mostrar opciones en l&iacute;nea de comandos
 it:201 Mostra le opzioni della riga di comando
 #
-# TRANSLATE fr ca es it
+# TRANSLATE ca es it
 en:202 No survey data in 3d file `%s'
+fr:202 Pas de donn&eacute;es topo dans le fichier 3d `%s'
 de:202 Keine Vermessungsdaten in 3D-Datei `%s'
 pt:202 N&atilde;o h&aacute; dados de topografia no arquivo 3d `%s'
 #
-# TRANSLATE fr ca es it
+# TRANSLATE ca es it
 en:203 Facing
+fr:203 Direction
 de:203 Blickrichtung
 pt:203 Olhando para
 #
@@ -1714,8 +1739,9 @@ it:205 Informazioni su %s
 # The string "##" separates the menu text and any accelerator key.
 #
 # File->Open dialog:
-# TRANSLATE fr pt ca es it
+# TRANSLATE pt ca es it
 en:206 Select a 3d file to view
+fr:206 S&eacute;lectionner un fichier 3d &agrave; visualiser
 de:206 3D-Datei zur Ansicht w&auml;hlen
 pt-br:206 Selecione um arquivo 3d para ser visualizado
 #
@@ -1740,8 +1766,9 @@ es:208 Todos los archivos
 it:208 Tutti i file
 #
 # in the about box (summarising the purpose of aven)
-# TRANSLATE fr pt ca es it
+# TRANSLATE pt ca es it
 en:209 Visualisation of Survex 3D files
+fr:209 Visualisation de fichiers Survex 3D
 de:209 Visualisierung von Survex 3D-Dateien
 pt-br:209 Visualiza&ccedil;&atilde;o de arquivos 3d do Survex
 #
@@ -1818,63 +1845,78 @@ it:221 @Esci
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
+fr:230 @D&eacute;marre la rotation##Return
 de:230 @Rotation starten##Return
 pt-br:230 @Iniciar Rota&ccedil;&atilde;o##Return
 #
 en:231 S@top Rotation##Space
+fr:231 @Arr&ecirc;te la rotation##Space
 de:231 Rotation an@halten##Space
 pt-br:231 @Parar Rota&ccedil;&atilde;o##Space
 #
 en:232 Speed @Up##Z
+fr:232 A@cc&eacute;l&egrave;re##Z
 de:232 @Schneller##Z
 pt-br:232 @Aumentar Velocidade##Z
 #
 en:233 Slow @Down##X
+fr:233 @Ralenti##X
 de:233 @Langsamer##X
 pt-br:233 @Diminuir Velocidade##X
 #
 en:234 @Reverse Direction##R
+fr:234 Direction @Inverse##R
 de:234 @Andere Richtung##R
 pt-br:234 @Reverter Sentido##R
 #
 en:235 Step Once @Anticlockwise##C
+fr:235 Pas &agrave; pas sens inverse des aiguilles d'une montre##C
 de:235 Schritt im @Gegenuhrzeigersinn##C
 pt-br:235 Um Passo @Hor&aacute;rio##C
 #
 en:236 Step Once @Clockwise##V
+fr:236 Pas &agrave; pas dans le sens des aiguilles d'une montre##V
 de:236 Schritt im @Uhrzeigersinn##V
 pt-br:236 Um Passo A@ntihor&aacute;rio##V
 #
 # The accelerators must be different within this group
 en:240 View @North##N
+fr:240 Vue vers le @Nord##N
 de:240 Nach @Norden##N
 pt-br:240 Olhar para @Norte##N
 #
 en:241 View @East##E
+fr:241 Vue vers l'@Est##E
 de:241 Nach @Osten##E
 pt-br:241 Olhar para @Leste##E
 #
 en:242 View @South##S
+fr:242 Vue vers le @Sud##S
 de:242 Nach @S&uuml;den##S
 pt-br:242 Olhar para @Sul##S
 #
 en:243 View @West##W
+fr:243 Vue vers l'@Ouest##W
 de:243 Nach @Westen##W
 pt-br:243 Olhar para @Oeste##W
 #
 en:244 Shift Survey @Left##Left Arrow
+fr:244 D&eacute;placement vers la @Gauche##Left Arrow
 de:244 Verschieben nach @links##Left Arrow
 pt-br:244 Mover para @Esquerda##Left Arrow
 #
 en:245 Shift Survey @Right##Right Arrow
+fr:245 D&eacute;placement vers la @Droite##Right Arrow
 de:245 Verschieben nach @rechts##Right Arrow
 pt-br:245 Mover para @Direita##Right Arrow
 #
 en:246 Shift Survey @Up##Up Arrow
+fr:246 D&eacute;placement vers le @Haut##Up Arrow
 de:246 Verschieben nach o@ben##Up Arrow
 pt-br:246 Mover para @Cima##Up Arrow
 #
 en:247 Shift Survey @Down##Down Arrow
+fr:247 D&eacute;placement vers le @Bas##Down Arrow
 de:247 Verschieben nach @unten##Down Arrow
 pt-br:247 Mover para @Baixo##Down Arrow
 #
@@ -1899,13 +1941,15 @@ ca:249 @Al&ccedil;at##L
 es:249 @Alzado##L
 it:249 Pro@filo##L
 #
-# TRANSLATE fr ca es it
+# TRANSLATE ca es it
 en:250 @Higher Viewpoint##'
+fr:250 Point de vue plus H@aut##'
 de:250 @H&ouml;herer Standort##'
 pt-br:250 Observador Mais @@Alto##'
 #
-# TRANSLATE fr ca es it
+# TRANSLATE ca es it
 en:251 Lo@wer Viewpoint##/
+fr:251 Point de vue plus Ba@s##/
 de:251 Nie@drigerer Standort##/
 pt-br:251 Observador Mais @Baixo##/
 #
@@ -1956,8 +2000,8 @@ ca:270 @Noms d'estaci&oacute;##Ctrl+N
 es:270 @Nombres de estaci&oacute;n##Ctrl+N
 it:270 @Nomes di stazione##Ctrl+N
 #
-# TRANSLATE fr
 en:271 @Crosses##Ctrl+X
+fr:271 @Croisements##Ctrl+X
 de:271 Kreu@ze##Ctrl+X
 pt-br:271 @Marcas de base##Ctrl+X
 ca:271 @Creus##Ctrl+X
@@ -1965,9 +2009,9 @@ es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
 #
 # TRANSLATE CHECK fr ca es it
-# TRANSLATION NEEDS REDOING: en-us fr de pt ca es it [added "Underground"]
+# TRANSLATION NEEDS REDOING: fr de pt ca es it [added "Underground"]
 en:272 Underground Survey @Legs##Ctrl+L
-en-us:272 @Shots##Ctrl+L
+en-us:272 Underground @Shots##Ctrl+L
 fr:272 @Vis&eacute;es##Ctrl+L
 de:272 @Strecken##Ctrl+L
 pt:272 @Visadas##Ctrl+L
@@ -1975,8 +2019,9 @@ ca:272 @Tirades##Ctrl+L
 es:272 @Tiradas##Ctrl+L
 it:272 @Battute##Ctrl+L
 #
-# TRANSLATE fr ca es it
+# TRANSLATE ca es it
 en:273 @Overlapping Names##O
+fr:273 Superp@osition des noms##O
 de:273 &Uuml;ber@lappende Namen##O
 pt-br:273 Nomes @Sobrepostos##O
 #
@@ -1997,20 +2042,23 @@ ca:275 Cl@ino
 es:275 Cl@ino
 it:275 Cl@inometro
 #
-# TRANSLATE fr ca es it
+# TRANSLATE ca es it
 en:276 @Depth Bar
+fr:276 Barre de controle des Profon@deurs
 de:276 @Tiefenskala
 pt-br:276 Barra de @Profundidade
 #
-# TRANSLATE fr ca es it
+# TRANSLATE ca es it
 en:277 Sc@ale Bar
+fr:277 Barre de controle des Ec@helles
 de:277 @Ma&szlig;stab
 de-ch:277 @Massstab
 pt-br:277 Barra de @Escala
 #
 # The accelerators must be different within this group
-# TRANSLATE fr ca es it
+# TRANSLATE ca es it
 en:280 @Reverse Sense##Ctrl+R
+fr:280 Sens @Inverse##Ctrl+R
 de:280 Richtung @umkehren##Ctrl+R
 pt-br:280 @Inverter Sentido##Ctrl+R
 #
@@ -2025,16 +2073,28 @@ ca:290 @A prop&ograve;sit de...
 es:290 @Acerca de...
 it:290 @Informazioni su...
 #
-# TRANSLATE en-us fr de pt pt-br ca es it
+# TRANSLATE de pt pt-br ca es it
 en:291 Sur@face Survey Legs##Ctrl+F
+en:291 Sur@face Shots##Ctrl+F
+fr:291 Segments de topo en Sur@face##Ctrl+F
 en:292 Depth C@olours on Surface Surveys
+fr:292 C@ouleur par profondeur pour les topos de surface
 en:293 Da@shed Surface Surveys
+fr:293 Topos de surface @Hachur&eacute;es
 en:294 Highlight @Entrances
+fr:294 Mise en valeur des @entr&egrave;es
 en:295 Highlight Fi@xed Points
+en:295 Highlight Co@ntrol Points
+fr:295 Mise en valeur des points Fi@xes
 en:296 Highlight Ex@ported Points
+fr:296 Mise de valeur des points ex@port&eacute;s
 en:297 @Grid##Ctrl+G
+fr:297 @Grille##Ctrl+G
 en:298 S@moothed Survey Legs
+en-us:298 S@moothed Survey Shots
+fr:298 @Lissage des segments topographiques
 en:299 @Indicators
+fr:299 @Indicateurs
 #
 en:300 %s: option `%s' is ambiguous&#10;
 fr:300 %s: l'option `%s' est ambig&uuml;e&#10;
@@ -2129,43 +2189,71 @@ ca:310 %s: l'opci&oacute; no &eacute;s v&agrave;lida -- %c&#10;
 es:310 %s: opci&oacute;n inv&aacute;lida -- %c&#10;
 it:310 %s: opzione non valida -- %c&#10;
 #
-# TRANSLATE en-us fr de pt pt-br ca es it
+# TRANSLATE de pt pt-br ca es it
 en:311 @Create...
+fr:311 @Creation...
 en:312 @Go
+fr:312 @D&eacute;marrage
 en:313 @Record Position
+fr:313 Sauvega@rde de la position
 en:314 @Finish and Save
+fr:314 @Fin avec sauvegarde
 en:315 @Erase Last Position
+fr:315 @Effacement de la derni&egrave;re position
 en:316 Er@ase All Positions
+fr:316 Effacement de @toutes les positions
 en:317 @Presentation
+fr:317 @Pr&eacute;sentation
 en:318 Go @Back
+fr:318 @Retour
 en:319 Select an output filename
+fr:319 S&eacute;lection d'un nom de fichier de sortie
 en:320 Aven presentations
+fr:320 Pr&eacute;sentations Aven
 en:321 Open @Presentation...
+fr:321 Ouvrir une @Pr&eacute;sentation
 en:322 Select a presentation to open
+fr:322 Slectionner une pr&eacute;sentation &agrave; ouvrir
 en:323 ] - Recording Presentation
+fr:323 ] - Enregistrement d'une pr&eacute;sentation
 en:324 Res@tart
+fr:324 Re@d&eacute;marrage
 en:325 Regular expression compilation failed (perhaps your syntax was incorrect).
+fr:325 Echec de la compilation d'une expression r&eacute;guli&egrave;re (peut-&ecirc;tre erreur de syntaxe)
 en:326 Regular expression compilation (stage 2) failed.
+fr:326 Echec de la compilation d'une expression r&eacute;guli&egrave;re (&agrave; l'&eacute;tape 2)
 en:327 Regular expression search failed.
+fr:327 Expression r&eacute;guli&egrave;re non trouv&eacute;e
+# TRANSLATE fr
 en:328 No matches were found.
 en:329 Open @Terrain...
+fr:329 Ouverture d'un @Terrain
 en:330 So@lid Surface
+fr:330 Surface So@lide
 #
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
+fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s
 en:501 Added: %s
+fr:501 Ajout de: %s
 en:502 Deleted: %s
+fr:502 Effac&eacute;: %s
 en:503 Ignoring:
+fr:503 Ignor&eacute;:
 #
 # "don't extract" messages - these are compiled into the programs
 #
 en:1000 Can't open message file `%s' using path `%s'
+fr:1000 Impossible d'ouvrir le fichier `%s' en utilisant le chemin `%s'
 #
 en:1001 Problem with message file `%s'
+fr:1001 Probl&egrave;me avec le fichier de messages `%s'
 #
 en:1002 I don't understand this message file version
+fr:1002 Je ne comprends pas cette version de fichier de messages
 #
 en:1003 Message file truncated?
+fr:1003 Fichier de messages incomplet?
 #
 en:1004 Out of memory (couldn't find %lu bytes).
 fr:1004 Plus de m&eacute;moire (%lu octets n&eacute;cessaires, non disponibles).
