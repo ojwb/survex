@@ -1050,25 +1050,33 @@ calibrate(void)
    }
 }
 
-#define EQ(S) (strcmp(ucbuffer, (S)) == 0)
 static void
 set_default(void)
 {
+   static sztok defaulttab[] = {
+      { "CALIBRATE", CMD_CALIBRATE },
+      { "DATA",      CMD_DATA },
+      { "UNITS",     CMD_UNITS },
+      { NULL,        CMD_NULL }
+   };
    compile_warning(/**default is deprecated - use *calibrate/data/style/units with argument DEFAULT instead*/20);
    get_token();
-   if (EQ("CALIBRATE")) {
+   switch (match_tok(defaulttab, TABSIZE(defaulttab))) {
+    case CMD_CALIBRATE:
       default_calib(pcs);
-   } else if (EQ("DATA")) {
+      break;
+    case CMD_DATA:
       default_style(pcs);
       default_grade(pcs);
-   } else if (EQ("UNITS")) {
+      break;
+    case CMD_UNITS:
       default_units(pcs);
-   } else {
+      break;
+    default:
       compile_error(/*Unknown setting `%s'*/41, buffer);
       skipline();
    }
 }
-#undef EQ
 
 static void
 include(void)

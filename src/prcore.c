@@ -677,19 +677,20 @@ main(int argc, char **argv)
 #if (OS==UNIX)
       pth_cfg = getenv("HOME");
       if (pth_cfg) {
-	 fh = fopenWithPthAndExt(pth_cfg, ".survex/"PRINT_INI, NULL, "rb",
+	 fh = fopenWithPthAndExt(pth_cfg, ".survex/print", EXT_INI, "rb",
 				 NULL);
 	 if (fh) *p++ = fh;
       }
       pth_cfg = msg_cfgpth();
-      fh = fopenWithPthAndExt(NULL, "/etc/survex/"PRINT_INI, NULL, "rb", NULL);
+      fh = fopenWithPthAndExt(NULL, "/etc/survex/print", EXT_INI, "rb",
+      	   		      NULL);
       if (fh) *p++ = fh;
 #else
       pth_cfg = msg_cfgpth();
-      fh = fopenWithPthAndExt(pth_cfg, "my"PRINT_INI, NULL, "rb", NULL);
+      fh = fopenWithPthAndExt(pth_cfg, "myprint", EXT_INI, "rb", NULL);
       if (fh) *p++ = fh;
 #endif
-      fh = fopenWithPthAndExt(pth_cfg, PRINT_INI, NULL, "rb", NULL);
+      fh = fopenWithPthAndExt(pth_cfg, "print", EXT_INI, "rb", NULL);
       if (!fh) fatalerror(/*Couldn't open data file '%s'*/24, fnm);
       *p++ = fh;
       *p = NULL;

@@ -125,27 +125,24 @@ typedef long int fpos_t;
 #include "filename.h"
 #include "message.h"
 
-/* useful_XXX() are defined in useful.c */
-extern void FAR useful_put16(INT16_T, FILE *);
-extern void FAR useful_put32(INT32_T, FILE *);
-extern INT16_T FAR useful_get16(FILE *);
-extern INT32_T FAR useful_get32(FILE *);
-extern int FAR useful_getline(char *buf, OSSIZE_T len, FILE *fh);
-
 #ifndef WORDS_BIGENDIAN
 extern INT16_T useful_w16;
 extern INT32_T useful_w32;
 
-# define useful_put16(W, FH) BLK(useful_w16 = (W); fwrite(&useful_w16, 2, 1, (FH));)
-# define useful_put32(W, FH) BLK(useful_w32 = (W); fwrite(&useful_w32, 4, 1, (FH));)
-# define useful_get16(FH) (fread(&useful_w16, 2, 1, (FH)), useful_w16)
-# define useful_get32(FH) (fread(&useful_w32, 4, 1, (FH)), useful_w32)
-#endif
+# define put16(W, FH) BLK(INT16_T w = (W); fwrite(&w, 2, 1, (FH));)
+# define put32(W, FH) BLK(INT32_T w = (W); fwrite(&w, 4, 1, (FH));)
+# define get16(FH) (fread(&useful_w16, 2, 1, (FH)), useful_w16)
+# define get32(FH) (fread(&useful_w32, 4, 1, (FH)), useful_w32)
+#else
+extern void FAR useful_put16(INT16_T, FILE *);
+extern void FAR useful_put32(INT32_T, FILE *);
+extern INT16_T FAR useful_get16(FILE *);
+extern INT32_T FAR useful_get32(FILE *);
 
-#define put16(W, FH) useful_put16(W, FH)
-#define put32(W, FH) useful_put32(W, FH)
-#define get16(FH) useful_get16(FH)
-#define get32(FH) useful_get32(FH)
-#define getline(SZ, L, FH) useful_getline((SZ), (L), (FH))
+# define put16(W, FH) useful_put16(W, FH)
+# define put32(W, FH) useful_put32(W, FH)
+# define get16(FH) useful_get16(FH)
+# define get32(FH) useful_get32(FH)
+#endif
 
 #endif /* !USEFUL_H */

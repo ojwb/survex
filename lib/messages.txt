@@ -111,14 +111,6 @@
 # library returns "unknown" for the current time, between 10pm and midnight,
 # or if you compile with NO_NICEHELLO.
 #
-#en:  0 0.81
-#en-us:  0 0.81
-#fr:  0 0.81
-#de:  0 0.81
-#pt:  0 0.81
-#ca:  0 0.81
-#es:  0 0.81
-#it:  0 0.81
 en:  1 Out of memory (couldn't find %lu bytes).
 # octets -- slightly bad notation since (being pedantic) bytes don't necessarily
 # have 8 bits, but it's the common expression.

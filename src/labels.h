@@ -1,6 +1,6 @@
 /* > labels.h
  * Clever non-overlapping label plotting code
- * Copyright (C) 1996 Olly Betts
+ * Copyright (C) 1996,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-void init_map(void);
+int init_map(unsigned int w, unsigned int h)
 void clear_map(void);
-void fancy_label(const char *label, int x, int y);
+int fancy_label(const char *label, int x, int y);

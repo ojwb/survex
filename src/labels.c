@@ -1,6 +1,6 @@
 /* > labels.c
  * Clever non-overlapping label plotting code
- * Copyright (C) 1995,1996,1997 Olly Betts
+ * Copyright (C) 1995,1996,1997,2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,41 +22,60 @@
 #endif
 
 #include <string.h>
-#include "filename.h"
-#include "message.h"
-#include "caverot.h"
-#include "cvrotgfx.h"
+#include "osalloc.h"
 #include "labels.h"
 
-#if (OS==MSDOS) || (OS==UNIX) || (OS==WIN32)
-# define really_plot(S, X, Y) outtextxy((X) + (unsigned)xcMac / 2u,\
-                                        (Y) + (unsigned)ycMac / 2u, (S))
-#endif
+#include "caverot.h" /* only for fAllNames - FIXME: try to eliminate */
 
 static char **map;
 static int width, height;
 
-extern int xcMac, ycMac;
+static unsigned int x_mid, y_mid;
 
-void
-init_map(void)
+int
+init_map(unsigned int w, unsigned int h)
 {
    int i;
-   width = (unsigned)xcMac / 4u;
-   height = (unsigned)ycMac / 4u;
+   x_mid = w / 2u;
+   y_mid = h / 2u;
+   width = w / 4u;
+   height = h / 4u;
    map = osmalloc(height * ossizeof(void*));
-   if (!map) exit(1);
+   if (!map) return 0;
+#ifdef __TURBOC__
+   /* under 16 bit MSDOS compilers, allocate each line separately to avoid
+    * problems if we exceed the segment size */
    for (i = 0; i < height; i++) {
-      map[i] = osmalloc(width * ossizeof(char));
-      if (!map[i]) exit(1);
+      map[i] = osmalloc(width);
+      if (!map[i]) {
+         while (--i >= 0) osfree(map[i]);
+         osfree(map);
+         return 0;
+      }
    }
+#else
+   /* otherwise allocate in one block so we can zero with one memset() */
+   map[0] = osmalloc(width * height);
+   if (!map[0]) {
+      osfree(map);
+      return 0;
+   }
+   for (i = 1; i < height; i++) {
+      map[i] = map[i - 1] + width;
+   }
+#endif
+   return 1;
 }
 
 void
 clear_map(void)
 {
+#ifdef __TURBOC__
    int i;
    for (i = 0; i < height; i++) memset(map[i], 0, width);
+#else
+   memset(map[0], 0, width * height);
+#endif
 }
 
 #if (OS==RISCOS)
@@ -66,23 +85,20 @@ clear_map(void)
 # pragma no_check_stack
 #endif
 
-void
+int
 fancy_label(const char *label, int x, int y)
 {
-#ifndef really_plot
-   extern void really_plot(const char * /*label*/, int /*x*/, int /*y*/);
-#endif
    if (!fAllNames) {
       unsigned int X, Y; /* use unsigned so we can test for <0 for free */
       int len, l, m;
-      X = (unsigned)(x + (unsigned)xcMac / 2u) / 4u;
-      if (X >= width) return;
-      Y = (unsigned)(y + (unsigned)ycMac / 2u) / 4u;
-      if (Y >= height) return;
+      X = (unsigned)(x + x_mid) / 4u;
+      if (X >= width) return 0;
+      Y = (unsigned)(y + y_mid) / 4u;
+      if (Y >= height) return 0;
       len = (strlen(label) * 2) + 1;
       if (X + len >= width) len = width - X; /* or 'return' to right clip */
       for (l = len - 1; l >= 0; l--)
-	 if (map[Y][X + l]) return;
+	 if (map[Y][X + l]) return 0;
       l = Y - 2;
       if (l < 0) l = 0;
       m = Y + 2;
@@ -90,7 +106,7 @@ fancy_label(const char *label, int x, int y)
       for ( ; l <= m; l++)
          memset(map[l] + X, 1, len);
    }
-   really_plot(label, x, y);
+   return 1;
 }
 
 #if (OS==RISCOS)

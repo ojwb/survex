@@ -1,29 +1,19 @@
-; >  s.armrot
-; Copyright (C) Olly Betts 1990,1993,1994,1995,1997
+; > s.armrot
+; Copyright (C) Olly Betts 1990,1993,1994,1995,1997,2001
 ;
-; 1990       Original written on expo for BASIC + ARM code version
-; 1993       Added assembler 'glue' to allow calling from C
-; 1993.08.12 pRaw_data -> pData
-; 1994.03.17 added obvious speed-up
-; 1994.03.19 added my fast line drawing routines
-; 1994.03.22 fixed centring for any screen mode
-; 1994.03.23 tidied up initialisation code
-;            added crosses
-;            added some crap clipping - seems to help
-; 1994.03.24 better clipping added
-; 1994.03.28 pData passed rather than global
-;            added separate routines to plot crosses
-;            added separate routines to plot labels
-; 1994.03.29 fixed scaling on labels
-; 1994.04.07 fixed do_translate
-; 1994.04.16 throw away labels off left and bottom (commented out)
-; 1994.04.17 properly throw away labels off all sides
-; 1994.09.11 recoded for 1bpp modes
-; 1994.09.15 fixed point pos changed from 16 to 18
-; 1994.09.23 implemented sliding point
-; 1995.03.18 tweaked plot_label
-; 1995.03.23 eig shifts are now done at the last moment
-; 1997.05.29 STOP option is now 0 not -1
+; This program is free software; you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation; either version 2 of the License, or
+; (at your option) any later version.
+;
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License
+; along with this program; if not, write to the Free Software
+; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ;
 ;***************************************************************************
 ;
@@ -44,7 +34,6 @@
         EXPORT  |splot|, |splot_no_tilt|, |splot_plan|
         EXPORT  |lplot|, |lplot_no_tilt|, |lplot_plan|
         EXPORT  |fastline_init|, |do_trans|
-        EXPORT  |really_plot|
         EXPORT  |ol_setcol|
 
         IMPORT  |fancy_label|
@@ -429,38 +418,34 @@ plot_cross
 ; /E r0 -> label (or NULL); r1,r2 are coordinates - (0,0) is centre of screen
 ; /X corrupts r0-r2,r8-r10 (opt, XS, YS, x, y, z)
 plot_label
-        MOV     r8,r14
-        MOVS    r14,r1
-        RSBMI   r14,r14,#0    ; r14=ABS(X)
+        MOVS    r8,r1
+        RSBMI   r8,r8,#0    ; r8=ABS(X)
         LDR     r9,xclabmax
-        CMP     r14,r9
-        MOVGTS  pc,r8
-        MOVS    r14,r2
-        RSBMI   r14,r14,#0    ; r14=ABS(Y)
+        CMP     r8,r9
+        MOVGTS  pc,r14
+        MOVS    r8,r2
+        RSBMI   r8,r8,#0    ; r8=ABS(Y)
         LDR     r9,yclabmax
-        CMP     r14,r9
+        CMP     r8,r9
+        MOVGES  pc,r14
+        MOV     r8,r14
         MOV     r10,r12
         MOV     r9,r3
-        BLLT    fancy_label
+        BL      fancy_label
         MOV     r3,r9
         MOV     r12,r10
-;        STR     r1,last_x
-;        STR     r2,last_y
-;        MOVNE   r1,r1,ASL #2 ; !HACK!
-;        MOVNE   r2,r2,ASL #2 ; !HACK!
-        MOVS    pc,r8
-
-really_plot
-        MOVS    r12,r0
+        TST     r0,#0
+        MOVEQS  pc,r8
+        MOVS    r14,r0
         LDRNE   r0,xeig
         MOVNE   r1,r1,ASL r0
         LDRNE   r0,yeig
         MOVNE   r2,r2,ASL r0
         MOVNE   r0,#4
         SWINE   OS_Plot
-        MOVNE   r0,r12
+        MOVNE   r0,r14
         SWINE   OS_Write0
-        MOVS    pc,r14
+        MOVS    pc,r8
 
 fastmove
         STR     r1,last_x

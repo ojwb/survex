@@ -101,32 +101,3 @@ useful_get32(FILE *fh)
    return w;
 }
 #endif
-
-/* this reads a line from a stream to a buffer. Any eol chars are removed
- * from the file and the length of the string including '\0' returned
- */
-extern int FAR
-useful_getline(char *buf, OSSIZE_T len, FILE *fh)
-{
-   int i = 0;
-   int ch;
-
-   ch = getc(fh);
-   while (ch != '\n' && ch != '\r' && ch != EOF) {
-      if (i >= len - 1) {
-         printf("LINE TOO LONG!\n"); /* FIXME */
-         exit(1);
-      }
-      buf[i++] = ch;
-      ch = getc(fh);
-   }
-   if (ch != EOF) {
-      /* remove any further eol chars (for DOS) */
-      do {
-         ch = fgetc(fh);
-      } while (ch == '\n' || ch == '\r');
-      ungetc(ch, fh); /* we don't want it, so put it back */
-   }
-   buf[i] = '\0';
-   return (i + 1);
-}

@@ -84,6 +84,7 @@ put32(long w, FILE *fh)
    putc((char)(w >> 16l), fh);
    putc((char)(w >> 24l), fh);
 }
+#endif
 
 /* this reads a line from a stream to a buffer. Any eol chars are removed */
 /* from the file and the length of the string including '\0' returned */
@@ -108,7 +109,7 @@ getline(char *buf, size_t len, FILE *fh)
    buf[i] = '\0';
    return (i + 1);
 }
-#endif
+
 #include "img.h"
 
 #define lenSzTmp 256
