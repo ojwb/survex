@@ -97,8 +97,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-11-13 09:32:06 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.73 2001-11-13 09:32:06 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-11-15 18:44:21 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.74 2001-11-15 18:44:21 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1212,7 +1212,7 @@ stored in a way that can be automatically collated.
 
 <VarListEntry><Term>Syntax</Term>
 
-<listitem><Para>*data &lt;type&gt; &lt;ordering&gt;</Para></listitem>
+<listitem><Para>*data &lt;style&gt; &lt;ordering&gt;</Para></listitem>
 
 </VarListEntry>
 
@@ -1223,6 +1223,11 @@ stored in a way that can be automatically collated.
 <programlisting>
 *data normal from to compass tape clino</programlisting>
 </Para>
+
+<Para>
+<programlisting>
+*data normal station ignoreall newline compass tape clino</programlisting>
+</Para>
 </listitem>
 
 </VarListEntry>
@@ -1230,27 +1235,34 @@ stored in a way that can be automatically collated.
 <VarListEntry><Term>Description</Term>
 
 <listitem><Para>
-&lt;type&gt; = DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR|NOSURVEY
+&lt;style&gt; = DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR|NOSURVEY
 </Para>
 
 <Para>
 &lt;ordering&gt; = A selection from one the following:
 </Para>
 
-<Para>
-DEFAULT
-</Para>
+<VariableList>
 
-<Para>
-NORMAL FROM TO LENGTH <!--[BACK]-->BEARING <!--[BACK]-->GRADIENT
-</Para>
+<VarListEntry><Term>DEFAULT</Term>
+<listitem><Para></Para></listitem>
+</VarListEntry>
 
-<Para>
-DIVING FROM TO LENGTH <!--[BACK]-->BEARING FROMDEPTH TODEPTH DZ
-</Para>
+<VarListEntry><Term>NORMAL</Term>
+<listitem><Para>
+FROM TO TAPE <!--[BACK]-->COMPASS <!--[BACK]-->CLINO
+</Para></listitem>
+</VarListEntry>
 
-<Para>
-CARTESIAN FROM TO NORTHING EASTING ALTITUDE
+<VarListEntry><Term>DIVING</Term>
+<listitem><Para>
+FROM TO TAPE <!--[BACK]-->COMPASS FROMDEPTH TODEPTH DZ
+</Para></listitem>
+</VarListEntry>
+
+<VarListEntry><Term>CARTESIAN</Term>
+<listitem><Para>
+FROM TO NORTHING EASTING ALTITUDE
 <!--FIXME: dx dy dz-->
 </Para>
 
@@ -1259,27 +1271,35 @@ Cartesian data are relative to <emphasis>true</emphasis> North not
 <emphasis>magnetic</emphasis> North (i.e. they are unaffected by
 <command>*calibrate declination</command>).
 </Para></Note>
+</VarListEntry>
 
-<Para>
-TOPOFIL FROM TO FROMCOUNT TOCOUNT <!--[BACK]-->BEARING <!--[BACK]-->GRADIENT
-</Para>
+<VarListEntry><Term>TOPOFIL</Term>
+<listitem><Para>
+FROM TO FROMCOUNT TOCOUNT <!--[BACK]-->COMPASS <!--[BACK]-->CLINO
+</Para></listitem>
+</VarListEntry>
 
-<Para>
-CYLPOLAR FROM TO TAPE <!--[BACK]-->BEARING FROMDEPTH TODEPTH DZ
-</Para>
+<VarListEntry><Term>CYLPOLAR</Term>
+<listitem><Para>
+FROM TO TAPE <!--[BACK]-->COMPASS FROMDEPTH TODEPTH DZ
+</Para></listitem>
+</VarListEntry>
 
-<Para>
-NOSURVEY FROM TO
-</Para>
+<VarListEntry><Term>NOSURVEY</Term>
+<listitem><Para>
+FROM TO
+</Para></listitem>
+</VarListEntry>
 
 <!-- FIXME: LRUD not yet implemented
 <Para>
 (LRUD STATION [LEFT] [RIGHT] [UP] [DOWN])
 </Para>
 -->
+</VariableList>
 
 <Para>
-Also, IGNORE skips a field (it may be used any number of times),
+IGNORE skips a field (it may be used any number of times),
 and IGNOREALL may be used last to ignore the rest of the line.
 </Para>
 
@@ -1287,6 +1307,10 @@ and IGNOREALL may be used last to ignore the rest of the line.
 DEPTH for diving data and cylpolar data increases upwards by default
 (so it is actually altitude).  You can use *CALIBRATE with a negative
 scale factor of -1.0 to alter this if you wish.
+</Para>
+
+<Para>
+LENGTH is a synonym for TAPE; BEARING for COMPASS; GRADIENT for CLINO; COUNT for COUNTER.<!--FIXME : others?-->
 </Para>
 
 <Para>
@@ -1326,7 +1350,7 @@ data style).
 included for completeness, since someone may have a use for it.
 Perhaps a Grade 3 survey, or when surveying with a level and stick
 (?). Let me know if you find a use so I can put a better justification
-for it in here!
+for it in here! [note - UBSS use it for the old County Clare data]
 </Para>
 -->
 

@@ -1,3 +1,4 @@
+; @configure_input@
 [Setup]
 AppName=@PRETTYPACKAGE@
 AppVerName=@PRETTYPACKAGE@ @VERSION@

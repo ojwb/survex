@@ -39,7 +39,8 @@ NEWS.htm: ../NEWS
 OLDNEWS.htm: ../OLDNEWS
 	./news2html.pl < ../OLDNEWS > OLDNEWS.htm
 
-MAINTAINERCLEANFILES = $(doclist) $(other_mans)
+MAINTAINERCLEANFILES = $(doclist) $(other_mans)\
+ ChngeLog.htm NEWS.htm OLDNEWS.htm
 
 pkgdoc_DATA = index.htm GPL.htm TODO.htm ChngeLog.htm\
  NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist)
@@ -119,6 +120,10 @@ uninstall-local:
 	  done \
 	fi
 	-rmdir $(DESTDIR)$(pkgdocdir)/manual
+
+maintainer-clean-local:
+	test -d manual && rm -rf manual
+	test -d "$(srcdir)/manual" && rm -rf "$(srcdir)/manual"
 
 manual: $(manual_sources) custom.dsl survex.ent
 	@sgmltools@ --backend=html --dsssl-spec=custom.dsl#html manual.sgml

@@ -99,8 +99,7 @@ if expr "$mk" : '.*\<djgpp\>'; then
    if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
       PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
    fi
-   if ! env LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe \
-    CRLIB=-lalleg CROBJX=dosrot.o ./configure --with-x=no --disable-aven; then
+   if ! ./configure --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o ; then
       echo djgpp configure failed
       exit 1
    fi
@@ -140,7 +139,7 @@ if expr "$mk" : '.*\<mingw\>'; then
 	 export CXX
       fi
    fi
-   if ! env LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= ./configure --with-x=no --with-wxconfig=`pwd`/mingw_extras/wxmsw-config ; then
+   if ! ./configure --with-x=no WXCONFIG=`pwd`/mingw_extras/wxmsw-config LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= ; then
       echo mingw configure failed
       exit 1
    fi
