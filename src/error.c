@@ -139,8 +139,31 @@
 1996.02.19 fixed 2 sizeof() to ossizeof()
 1996.03.22 fettled layout
 1996.05.05 added CDECL
+1997.01.19 started code to support multiple charsets at once
+1997.01.22 finished off up charset code (merged in tex.h):
+>1993.11.20 created
+>1993.11.26 moved chOpenQuotes and chCloseQuotes to here too
+>1994.03.13 characters 128-159 translated to \xXX codes to placate compilers
+>1994.03.23 added caveat comment about top-bit-set characters
+>1994.12.03 added -DISO8859_1 to makefile to force iso-8859-1
+>1995.02.14 changed "char foo[]=" to "char *foo="
+>1996.02.10 pszTable is now an array of char *, which can be NULL
+>	   szSingTab can also be NULL
 1997.06.05 added const
+1998.03.04 more const
+1998.03.21 fixed up to compile cleanly on Linux
 */
+
+/* Beware: This file contains top-bit-set characters (160-255), so be     */
+/* careful of mailers, ascii ftp, etc                                     */
+
+/* Tables for TeX style accented chars, etc for use with Survex           */
+/* Copyright (C) Olly Betts 1993-1996                                     */
+
+/* NB if (as in TeX) \o and \O mean slashed-o and slashed-O, we can't
+ * have \oe and \OE for linked-oe and linked-OE without cleverer code.
+ * Therefore, I've changed slashed-o and slashed-O to \/o and \/O.
+ */
 
 /*
 Function List
@@ -183,8 +206,10 @@ safe_fopen:      like fopen, but returns NULL for directories under all OS
 #include "debug.h"
 #include "version.h"
 
+#if 0
 #ifndef NO_TEX
 # include "tex.h" /* Will define NO_TEX if no special character set */
+#endif
 #endif
 
 /* This is the name of the default language -- set like this so folks can
@@ -205,7 +230,7 @@ safe_fopen:      like fopen, but returns NULL for directories under all OS
 /* These are English versions of messages which might be needed before the
  * alternative language version has been read from the message file.
  */
-static char *  ergBootstrap[]={
+static sz  ergBootstrap[]={
    "",
    "Out of memory (couldn't find %ul bytes).\n",
    "\nFatal error from %s: ",
@@ -216,15 +241,15 @@ static char *  ergBootstrap[]={
    NULL /* NULL marks end of list */
 };
 
-static char *  *erg=ergBootstrap;
+static sz  *erg=ergBootstrap;
 static int enMac=32; /* Initially, grows automatically */
-static char *  szBadEn="???";
+static sz  szBadEn="???";
 
 static int cWarnings=0; /* to keep track of how many warnings we've given */
 static int cErrors=0;   /* and how many (non-fatal) errors */
 
-extern int error_summary( void ) {
-   fprintf( STDERR, msg(16), cWarnings, cErrors );
+extern int error_summary(void) {
+   fprintf(STDERR,msg(16),cWarnings,cErrors);
    fputnl(STDERR);
    return ( cErrors ? EXIT_FAILURE : EXIT_SUCCESS );
 }
@@ -237,7 +262,7 @@ extern FILE *safe_fopen( const char *fnm, const char *mode ) {
 }
 
 /* error code for failed osmalloc and osrealloc calls */
-static void outofmem( OSSIZE_T size ) {
+static void outofmem(OSSIZE_T size) {
    fprintf( STDERR, erg[2], szAppNameCopy );
    fprintf( STDERR, erg[1], (unsigned long)size );
    exit(EXIT_FAILURE);
@@ -248,26 +273,26 @@ static void outofmem( OSSIZE_T size ) {
  */
 extern void FAR * osmalloc( OSSIZE_T size ) {
    void FAR *p;
-   p = xosmalloc( size );
-   if (p == NULL)
+   p=xosmalloc( size );
+   if (p==NULL)
       outofmem(size);
    return p;
 }
 
 /* realloc with error catching if it fails. */
 extern void FAR * osrealloc( void *p, OSSIZE_T size ) {
-   p = xosrealloc( p, size );
-   if (p == NULL)
+   p=xosrealloc(p,size);
+   if (p==NULL)
       outofmem(size);
    return p;
 }
 
-extern void FAR * osstrdup( const char *str ) {
+extern void FAR * osstrdup( const char *sz ) {
    char *p;
    int len;
-   len = strlen(str) + 1;
-   p = osmalloc(len);
-   memcpy( p, str, len );
+   len=strlen(sz)+1;
+   p=osmalloc(len);
+   memmove(p,sz,len);
    return p;
 }
 
@@ -284,8 +309,8 @@ static jmp_buf jmpbufSignal;
 static int sigReceived;
 
 static CDECL void FAR report_sig( int sig ) {
-   sigReceived = sig;
-   longjmp( jmpbufSignal, 1 );
+   sigReceived=sig;
+   longjmp(jmpbufSignal,1);
 }
 
 static void init_signals( void ) {
@@ -334,57 +359,251 @@ static void init_signals( void ) {
 #endif /* !defined(NO_SIGNAL) */
 
 /* write string and nl to STDERR */
-extern void wr( const char *str, int n ) {
-   n = n; /* suppress warning */
-   fputsnl( str, STDERR );
+extern void wr( const char *sz, int n ) {
+   n=n; /* suppress warning */
+   fputsnl(sz,STDERR);
 }
 
-extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvVar,
-				 const char *szLangVar, const char *argv0,
-				 const char *lfErrs ) {
-  FILE *fh;
-  char estr[256], line[256], prefix[5];
-  int  en;
-  int  c;
-  bool fQuoted;
-  const char *pthMe;
-  char *szTmp;
-#ifndef NO_SIGNAL
-  init_signals();
+#define CHARSET_BAD       -1
+#define CHARSET_USASCII    0
+#define CHARSET_ISO_8859_1 1
+#define CHARSET_DOSCP850   2
+#define CHARSET_RISCOS31   3
+static int default_charset( void ) {
+#ifdef ISO8859_1
+   return CHARSET_ISO_8859_1;
+#elif (OS==RISCOS)
+/*
+RISCOS 3.1 and above
+CHARSET_RISCOS31 !HCAK!
+*/
+   return CHARSET_ISO_8859_1;
+#elif (OS==MSDOS)
+   return CHARSET_DOSCP850;
+#else
+   return CHARSET_ISO_8859_1; /*!HACK!*/
 #endif
-  /* This code *should* be completely bomb-proof :) even if strcpy()
-   * generates a signal
-   */
-  szAppNameCopy = szAppName; /* ... in case the osstrdup() fails */
-  szAppNameCopy = osstrdup(szAppName);
+}
 
-  /* Look for env. var. "SURVEXHOME" or the like */
-  if (szEnvVar && *szEnvVar && (szTmp=getenv(szEnvVar))!=0 && *szTmp) {
-    pthMe=osstrdup(szTmp);
-  } else if (argv0) /* else try the path on argv[0] */
-    pthMe=PthFromFnm(argv0);
-  else /* otherwise, forget it - go for the current directory */
-    pthMe="";
+static const char *pthMe=NULL, *lfErrs=NULL;
+static char prefix[5];
+static int prefix_len;
 
- /* Look for env. var. "SURVEXLANG" or the like */
-  if ((szTmp=getenv(szLangVar))==0 || !*szTmp)
-    szTmp=DEFAULTLANG;
-  for( c=0 ; c<4 && szTmp[c] ; c++ )
-    prefix[c]=tolower(szTmp[c]);
-  prefix[c++]=':';
-  prefix[c]='\0';
+static void ParseErrorFile( int charset_code ) {
+  FILE *fh;
+  char estr[256], line[256];
+  int en;
+  int c;
+  bool fQuoted;
+#ifndef NO_TEX
+  char chOpenQuotes, chCloseQuotes;
+  char *szSingles;
+  char *szSingTab;
+  char *szAccents;
+  char *szLetters;
+  char **pszTable;
 
+  switch (charset_code) {
+     case CHARSET_USASCII: {
+        /* US ASCII */
+	chOpenQuotes = '\"';
+	chCloseQuotes = '\"';
+	szSingles = "";
+	szSingTab = NULL;
+        szAccents = "";
+	szLetters = "";
+	pszTable = NULL;
+	break;
+     }
+     case CHARSET_ISO_8859_1: {
+        /* ISO 8859/1 (Latin 1) */
+        static char *my_pszTable[]={
+	 "àèòÀìùÈÌÒÙ",
+	 "áéóÁíúÉÍÓÚýÝ",
+	 "âêôÂîûÊÎÔÛ",
+	 "äëöÄïüËÏÖÜÿ",
+	 "ã õÃ    Õ   ñÑ",
+	 NULL,
+	 NULL,
+	 NULL,
+	 NULL,
+	 NULL,
+	 NULL,
+	 "              ç",
+	 "               Ç",
+	 NULL,
+	 "ª º",
+	 "åæ",
+	 "   Å  Æ",
+	 "                  ß",
+	 NULL,
+	 NULL,
+	 "  ø     Ø"
+	};
+	chOpenQuotes = '\"';
+	chCloseQuotes = '\"';
+	szSingles = "";
+	szSingTab = NULL;
+        szAccents = "`'^\"~=.uvHtcCdbaAsOo/";
+	szLetters = "aeoAiuEIOUyYnNcCwWs";
+	pszTable = my_pszTable;
+	break;
+     }
+     case CHARSET_RISCOS31: {
+        /* Archimedes RISC OS 3.1 and above
+         * ISO 8859/1 (Latin 1) + extensions in 128-159 */
+	static char *my_pszTable[]={
+	 "àèòÀìùÈÌÒÙ",
+	 "áéóÁíúÉÍÓÚýÝ",
+	 "âêôÂîûÊÎÔÛ\x86\x85    \x82\x81",
+	 "äëöÄïüËÏÖÜÿ",
+	 "ã õÃ    Õ   ñÑ",
+	 NULL,
+	 NULL,
+	 NULL,
+	 NULL,
+	 NULL,
+	 NULL,
+	 "              ç",
+	 "               Ç",
+	 NULL,
+	 "ª º",
+	 "åæ",
+	 "   Å  Æ",
+	 "                  ß",
+	 "      \x9a",
+	 " \x9b",
+	 "  ø     Ø"
+	};
+	chOpenQuotes='\x94';
+	chCloseQuotes='\x95';
+	szSingles="";
+        szSingTab=NULL;
+        szAccents="`'^\"~=.uvHtcCdbaAsOo/";
+        szLetters="aeoAiuEIOUyYnNcCwWs";
+	pszTable = my_pszTable;
+	break;
+     }
+     case CHARSET_DOSCP850: {
+        /* MS DOS - Code page 850 */
+	static char *my_pszTable[]={
+ 	 "\x85\x8A\x95·\x8D\x97Ô ãëìí",
+	 " \x82¢µ¡£\x90Öàé",
+	 "\x83\x88\x93¶\x8C\x96Ò×âê",
+	 "\x84\x89\x94\x8E\x8B\x81ÓØ\x99\x9A\x98",
+	 "Æ äÇ    å   ¤¥",
+	 NULL,
+	 NULL,
+	 NULL,
+	 NULL,
+	 NULL,
+	 NULL,
+	 "              \x87",
+	 "               \x80",
+	 NULL,
+	 "¦ §",
+	 "\x86\x91",
+	 "   \x8F  \x92",
+	 "                  á",
+	 NULL,
+	 NULL,
+	 "  \x9B     \x9D"
+ 	};
+	chOpenQuotes='\"';
+	chCloseQuotes='\"';
+	szSingles="lLij";
+	szSingTab="  Õ";
+	szAccents="`'^\"~=.uvHtcCdbaAsOo/";
+	szLetters="aeoAiuEIOUyYnNcCwWs";
+	pszTable = my_pszTable;
+ 	break;
+     }
+#if 0
+/* MS DOS - PC-8 (code page 437?) */
+static char chOpenQuotes='\"', chCloseQuotes='\"';
+static char *szSingles="";
+static char *szSingTab=NULL;
+static char *szAccents="`'^\"~=.uvHtcCdbaAsOo/";
+static char *szLetters="aeoAiuEIOUyYnNcCwWs";
+static char *pszTable[]={
+ "\x85\x8A\x95 \x8D\x97",
+ " \x82¢ ¡£\x90",
+ "\x83\x88\x93 \x8C\x96",
+ "\x84\x89\x94\x8E\x8B\x81  \x99\x9A\x98",
+ "            ¤¥",
+ NULL,
+ NULL,
+ NULL,
+ NULL,
+ NULL,
+ NULL,
+ "              \x87",
+ "               \x80",
+ NULL,
+ "¦ §",
+ "\x86\x91",
+ "   \x8F  \x92",
+ "                  á",
+ NULL,
+ NULL,
+ NULL
+};
+
+#elif 0
+/* MS DOS - PC-8 Denmark/Norway */
+static char chOpenQuotes='\"', chCloseQuotes='\"';
+static char *szSingles="";
+static char *szSingTab=NULL;
+static char *szAccents="`'^\"~=.uvHtcCdbaAsOo/";
+static char *szLetters="aeoAiuEIOUyYnNcCwWs";
+static char *pszTable[]={
+ "\x85\x8A\x95 \x8D\x97",
+ " \x82¢ ¡£\x90     ¬",
+ "\x83\x88\x93 \x8C\x96",
+ "\x84\x89\x94\x8E\x8B\x81  \x99\x9A\x98",
+ "© ¦ª    §   ¤¥",
+ NULL,
+ NULL,
+ NULL,
+ NULL,
+ NULL,
+ NULL,
+ "              \x87",
+ "               \x80",
+ NULL,
+ NULL,
+ "\x86\x91",
+ "   \x8F  \x92",
+ "                  á",
+ NULL,
+ NULL,
+ NULL
+};
+#elif 0
+/* No special chars... */
+# define NO_TEX
+#endif
+default: /*!HACK! do something -- no_tex variable version of NO_TEX ? */
+printf("oops, bad charset...\n");
+(void)0;
+  }
+#endif
+
+printf("opening error file\n");
+printf("(%s %s)\n",pthMe,lfErrs);
   fh=fopenWithPthAndExt( pthMe, lfErrs, "", "rb", NULL );
+printf("opened error file\n");
   if (!fh) {
     /* no point extracting this error, as it won't get used if file opens */
-    fprintf(STDERR, erg[3], szAppName );
+    fprintf(STDERR, erg[3], szAppNameCopy );
     fprintf(STDERR, "Can't open error message file '%s' using path '%s'\n",
             lfErrs,pthMe);
     exit(EXIT_FAILURE);
   }
 
   { /* copy bootstrap erg[] which'll get overwritten by file entries */
-    char * *ergMalloc;
+    sz *ergMalloc;
+    erg = ergBootstrap;
     ergMalloc=osmalloc( enMac*ossizeof(char*) );
     for ( en=0 ; erg[en] ; en++ )
       ergMalloc[en]=erg[en]; /* NULL marks end of list */
@@ -396,10 +615,10 @@ extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvV
   while (!feof( fh )) {
     char *q;
     getline(line,ossizeof(line),fh);
-    if (strncmp(line,prefix,strlen(prefix))==0) {
-      long val=strtol(line+strlen(prefix),&q,0);
+    if (strncmp(line,prefix,prefix_len)==0) {
+      long val=strtol(line+prefix_len,&q,0);
       if (val<0 || val>(unsigned long)INT_MAX) {
-        fprintf(STDERR, erg[3], szAppName);
+        fprintf(STDERR, erg[3], szAppNameCopy);
         fprintf(STDERR,erg[ (errno==ERANGE)?5:6 ]);
         exit(EXIT_FAILURE);
       }
@@ -432,12 +651,12 @@ extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvV
               break;
             case '\0': /* \ at end of line, so concatenate lines */
               getline(line,ossizeof(line),fh);
-              if (strncmp(line,prefix,strlen(prefix))!=0) { /* bad format */
-                fprintf(STDERR, erg[3], szAppName);
+              if (strncmp(line,prefix,prefix_len)!=0) { /* bad format */
+                fprintf(STDERR, erg[3], szAppNameCopy);
                 fprintf(STDERR,erg[5]);
                 exit(EXIT_FAILURE);
               }
-              q=line+strlen(prefix);
+              q=line+prefix_len;
               continue;
 #ifndef NO_TEX
             default: {
@@ -495,16 +714,53 @@ extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvV
       }
       erg[en]=osmalloc(c+1);
       strcpy(erg[en],estr); /* !HACK! osstrdup? */
-      /* printf("Error number %d: %s\n",en,erg[en]); */
+/*printf("Error number %d: %s\n",en,erg[en]);*/
     }
   }
   fclose( fh );
-  if (erg[0]==szBadEn) { /* no point extracting this error */
+}
+
+extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvVar,
+				       const char *szLangVar, const char *argv0,
+				       const char *lfErrFile ) {
+  int  c;
+  char *szTmp;
+
+  lfErrs = osstrdup(lfErrFile);
+#ifndef NO_SIGNAL
+  init_signals();
+#endif
+  /* This code *should* be completely bomb-proof :) even if strcpy()
+   * generates a signal
+   */
+  szAppNameCopy=szAppName; /* ... in case the osstrdup() fails */
+  szAppNameCopy=osstrdup(szAppName);
+
+  /* Look for env. var. "SURVEXHOME" or the like */
+  if (szEnvVar && *szEnvVar && (szTmp=getenv(szEnvVar))!=NULL && *szTmp) {
+    pthMe = osstrdup(szTmp);
+  } else if (argv0) /* else try the path on argv[0] */
+    pthMe = PthFromFnm(argv0);
+  else /* otherwise, forget it - go for the current directory */
+    pthMe = "";
+
+  /* Look for env. var. "SURVEXLANG" or the like */
+  if ((szTmp=getenv(szLangVar))==0 || !*szTmp)
+    szTmp=DEFAULTLANG;
+  for( c=0 ; c<4 && szTmp[c] ; c++ )
+    prefix[c]=tolower(szTmp[c]);
+  prefix[c++]=':';
+  prefix[c]='\0';
+  prefix_len=strlen(prefix);
+
+  select_charset(default_charset());
+
+  if (erg[0]==szBadEn) {
     fprintf(STDERR, erg[3], szAppName );
+    /* no point extracting this message */
     fprintf(STDERR, "No messages in language '%s'\n",prefix);
     exit(EXIT_FAILURE);
   }
-
   if (strcmp(MESSAGE_VERSION_MIN,erg[0])>0 || strcmp(VERSION,erg[0])<0)
     /* a little tacky, but'll work */
     fatal(191,wr,MESSAGE_VERSION_MIN" - "VERSION,0);
@@ -520,11 +776,12 @@ extern const char *msgPerm( int en ) /* returns persistent copy of message */ {
   return ( (en<0||en>=enMac) ? szBadEn : erg[en] );
 }
 
-static void FAR errdisp( int en, void (*fn)( const char*, int ), const char *szArg, int n,
+static void FAR errdisp( int en, void (*fn)( const char *, int ), const char *szArg, int n,
                          int type ) {
   fputnl( STDERR );
   fprintf( STDERR, erg[type], szAppNameCopy );
-  fprintf( STDERR, "%s\n", msg(en) );
+  fputs( msg(en), STDERR);
+  fputnl( STDERR );
   if (fn)
     (fn)( szArg, n );
 }
@@ -544,33 +801,33 @@ extern void FAR fatal( int en, void (*fn)( const char *, int ), const char *szAr
   exit(EXIT_FAILURE);
 }
 
-extern const char * FAR PthFromFnm( const char *fnm) {
-   char *pth;
-   const char *lf;
-   int lenpth;
+extern char * FAR PthFromFnm( const char * fnm ) {
+  sz  pth;
+  const char *lf;
+  int lenpth;
 
-   lf = strrchr( fnm, FNM_SEP_LEV );
+  lf=strrchr( fnm, FNM_SEP_LEV );
 #ifdef FNM_SEP_LEV2
-   if (!lf)
-      lf = strrchr( fnm, FNM_SEP_LEV2 );
+  if (!lf)
+    lf=strrchr( fnm, FNM_SEP_LEV2 );
 #endif
 #ifdef FNM_SEP_DRV
-   if (!lf)
-      lf=strrchr( fnm, FNM_SEP_DRV );
+  if (!lf)
+    lf=strrchr( fnm, FNM_SEP_DRV );
 #endif
-   if (!lf)
-      lf=fnm-1;
+  if (!lf)
+    lf=fnm-1;
 
-   lenpth = (int)(lf - fnm + 1);
-   pth = osmalloc( lenpth + 1 );
-   strncpy( pth, fnm, lenpth );
-   pth[lenpth] = '\0';
+  lenpth=(int)(lf-fnm+1);
+  pth=osmalloc(lenpth+1);
+  strncpy( pth, fnm, lenpth );
+  pth[lenpth]='\0';
 
-   return pth;
+  return pth;
 }
 
-extern const char * FAR LfFromFnm( const char * fnm ) {
-  char * lf;
+extern char * FAR LfFromFnm( const char *fnm ) {
+  const char * lf;
   if ((lf=strrchr( fnm, FNM_SEP_LEV ))!=NULL)
     return lf+1;
 #ifdef FNM_SEP_LEV2
@@ -585,8 +842,8 @@ extern const char * FAR LfFromFnm( const char * fnm ) {
 }
 
 /* Make fnm from pth and lf, inserting an FNM_SEP_LEV if appropriate */
-extern const char * FAR UsePth( const char * pth, const char * lf ) {
-  char * fnm;
+extern char * FAR UsePth( const char *pth, const char *lf ) {
+  sz fnm;
   int len = strlen(pth), lenTotal;
   bool fAddSep = fFalse;
 
@@ -603,10 +860,10 @@ extern const char * FAR UsePth( const char * pth, const char * lf ) {
 #endif
         fAddSep=fTrue;
         lenTotal++;
-#ifdef FNM_SEP_LEV2
+#ifdef FNM_SEP_DRV
       }
 #endif
-#ifdef FNM_SEP_DRV
+#ifdef FNM_SEP_LEV2
     }
 #endif
   }
@@ -620,8 +877,8 @@ extern const char * FAR UsePth( const char * pth, const char * lf ) {
 }
 
 /* Add ext to fnm, inserting an FNM_SEP_EXT if appropriate */
-extern const char * FAR AddExt( const char * fnm, const char * ext ) {
-  char * fnmNew;
+extern char * FAR AddExt( const char *fnm, const char *ext ) {
+  sz fnmNew;
   int len=strlen(fnm), lenTotal;
 #ifdef FNM_SEP_EXT
   bool fAddSep=fFalse;
@@ -648,12 +905,12 @@ extern const char * FAR AddExt( const char * fnm, const char * ext ) {
  * or NULL if file didn't open
  */
 extern FILE FAR * fopenWithPthAndExt( const char * pth, const char * fnm, const char * szExt, const char * szMode,
-                                      const char **pfnmUsed ) {
-  const char *fnmFull = NULL;
-  FILE *fh = NULL;
+                                      char **pfnmUsed ) {
+  const char *fnmFull=NULL;
+  FILE *fh=NULL;
   bool fAbs;
   /* if no pth treat fnm as absolute */
-  fAbs = (pth == NULL || *pth == '\0' || fAbsoluteFnm(fnm));
+  fAbs=(pth==NULL || *pth=='\0' || fAbsoluteFnm(fnm));
 
   /* if appropriate, try it without pth */
   if (fAbs || fAmbiguousFnm(fnm)) {
@@ -679,10 +936,10 @@ extern FILE FAR * fopenWithPthAndExt( const char * pth, const char * fnm, const 
       if (szExt && *szExt) {
         /* we've been given an extension so try using it */
         const char *fnmTmp;
-        fnmTmp = fnmFull;
-        fnmFull = AddExt( fnmFull, szExt );
+        fnmTmp=fnmFull;
+        fnmFull=AddExt( fnmFull, szExt );
         osfree(fnmTmp);
-        fh = safe_fopen( fnmFull, szMode );
+        fh=safe_fopen( fnmFull, szMode );
       }
     }
   }
@@ -694,3 +951,50 @@ extern FILE FAR * fopenWithPthAndExt( const char * pth, const char * fnm, const 
     *pfnmUsed = (fh ? fnmFull : NULL);
   return fh;
 }
+
+#if 1
+/* Code to support switching character set at runtime (e.g. for a printer
+ * driver to support different character sets on screen and on the printer)
+ */
+typedef struct charset_li {
+   struct charset_li *next;
+   int code;
+   char **erg;
+} charset_li;
+
+static charset_li *charset_head = NULL;
+
+static int charset = CHARSET_BAD;
+
+int select_charset( int charset_code ) {
+   int old_charset = charset;
+   charset_li *p;
+
+   printf( "select_charset(%d), old charset = %d\n", charset_code, charset );
+
+   charset = charset_code;
+
+   /* check if we've already parsed messages for new charset */
+   for( p = charset_head ; p ; p = p->next ) {
+      printf("%p: code %d erg %p\n",p,p->code,p->erg);
+      if (p->code == charset) {
+         erg = p->erg;
+         goto found;
+      }
+   }
+
+   /* nope, got to reparse message file */
+   ParseErrorFile( charset_code );
+
+   /* add to list */
+   p = osnew(charset_li);
+/*   p = osmalloc(256); */
+   p->code = charset;
+   p->erg = erg;
+   p->next = charset_head;
+   charset_head = p;
+
+   found:
+   return old_charset;
+}
+#endif
