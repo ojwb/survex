@@ -1220,7 +1220,7 @@ void MainFrm::OnFind(wxCommandEvent& event)
 	const char* error = re_compile_pattern(str.c_str(), str.Length(), &buffer);
     
 	if (error) {
-	    wxGetApp().ReportError("Regular expression compilation (stage 1) failed.");
+	    wxGetApp().ReportError("Regular expression compilation failed (perhaps your syntax was incorrect)");
 	    return;
 	}
 
