@@ -333,7 +333,7 @@ main(int argc, char **argv)
 
    solve_network(/*stnlist*/); /* Find coordinates of all points */
    validate();
-
+   
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
       cave_close(pimg); /* this actually does all the writing */
@@ -343,7 +343,7 @@ main(int argc, char **argv)
 #ifdef NEW3DFORMAT
    }
 #endif
-   if (fhErrStat) fclose(fhErrStat);
+   if (fhErrStat) safe_fclose(fhErrStat);
 
    out_current_action(msg(/*Calculating statistics*/120));
    do_stats();

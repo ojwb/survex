@@ -724,7 +724,6 @@ replace_travs(void)
    }
 
    /* Leave fhErrStat open in case we're asked to close loops again... */
-   /* if (!fSuppress) fclose(fhErrStat); */
 }
 
 static void
