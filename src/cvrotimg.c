@@ -127,10 +127,6 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
 	    }
 	 }
     	 break;
-       case img_CROSS:
-         /* Use labels to position crosses too - newer format .3d files don't
-     	  * have crosses in */
-    	 break;
        case img_LABEL:
 	 c_stns++;
 	 c_totlabel += strlen(pimg->label) + 1;
@@ -203,10 +199,6 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
 	    }
 	 }
 	 mv = pt;
-    	 break;
-       case img_CROSS:
-         /* Use labels to position crosses too - newer format .3d files don't
-     	  * have crosses in */
     	 break;
        case img_LABEL: {
 	 int size = strlen(pimg->label) + 1;

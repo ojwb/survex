@@ -456,10 +456,6 @@ read_in_data(void)
 	 p_move = p;
 	 fMove = fTrue;
          break;
-       case img_CROSS:
-         /* use img_LABEL to posn CROSS - newer .3d files don't have
-          * img_CROSS anyway */
-         break;
        case img_LABEL:
 	 if (fSurface || (pimg->flags & img_SFLAG_UNDERGROUND)) {
 	    stack(img_CROSS, &p);

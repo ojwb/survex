@@ -164,10 +164,6 @@ main(int argc, char **argv)
 	    add_leg(fr, to, pimg->flags);
          fr = to;
          break;
-      case img_CROSS:
-         /* Use labels to position crosses too - newer format .3d files
-          * don't have crosses in */
-         break;
       case img_LABEL:
          fr = find_point(&pt);
          add_label(fr, pimg->label, pimg->flags);

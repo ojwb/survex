@@ -536,11 +536,6 @@ main(int argc, char **argv)
 	       fSeenMove = 1;
 	       p1 = p;
 	       break;
-#ifdef DEBUG_3DTODXF
-	     case img_CROSS:
-	       printf("cross at %9.2f %9.2f %9.2f\n",x,y,z);
-	       break;
-#endif
 	     case img_LABEL:
 #ifdef DEBUG_3DTODXF
 	       printf("label `%s' at %9.2f %9.2f %9.2f\n",pimg->label,x,y,z);
