@@ -343,14 +343,20 @@ main(int argc, char **argv)
 static void
 do_range(FILE *fh, int d, int msg1, int msg2, int msg3)
 {
-   char buf[1024];
-   sprintf(buf, msg(msg1), max[d] - min[d]);
-   strcat(buf, sprint_prefix(pfxHi[d]));
-   sprintf(buf + strlen(buf), msg(msg2), max[d]);
-   strcat(buf, sprint_prefix(pfxLo[d]));
-   sprintf(buf + strlen(buf), msg(msg3), min[d]);
-   if (!fMute) out_puts(buf);
-   if (fh) fputsnl(buf, fh);
+   if (!fMute) {
+      printf(msg(msg1), max[d] - min[d]);
+      fprint_prefix(stdout, pfxHi[d]);
+      printf(msg(msg2), max[d]);
+      fprint_prefix(stdout, pfxLo[d]);
+      printf(msg(msg3), min[d]);
+   }
+   if (fh) {
+      fprintf(fh, msg(msg1), max[d] - min[d]);
+      fprint_prefix(fh, pfxHi[d]);
+      fprintf(fh, msg(msg2), max[d]);
+      fprint_prefix(fh, pfxLo[d]);
+      fprintf(fh, msg(msg3), min[d]);
+   }
 }
 
 static void
@@ -358,7 +364,7 @@ do_stats(void)
 {
    FILE *fh = NULL;
    long cLoops = cComponents + cLegs - cStns;
-   char buf[1024];
+   char buf[1024]; /* FIXME: try to remove static buffer */
 
    if (!fSuppress && !(msg_errors || (f_warnings_are_errors && msg_warnings)))
       fh = safe_fopen_with_ext(fnm_output_base, EXT_SVX_STAT, "w");
