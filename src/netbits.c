@@ -1,4 +1,4 @@
-/* > netbits.c
+/* netbits.c
  * Miscellaneous primitive network routines for Survex
  * Copyright (C) 1992-2001 Olly Betts
  *
@@ -547,6 +547,7 @@ fprint_prefix(FILE *fh, const prefix *ptr)
    if (ptr->up != NULL) {
       fprint_prefix(fh, ptr->up);
       if (ptr->up->up != NULL) fputc('.', fh);
+      ASSERT(ptr->ident);
       fputs(ptr->ident, fh);
    }
 }
@@ -559,6 +560,7 @@ sprint_prefix_(const prefix *ptr)
 {
    OSSIZE_T len = 1;
    if (ptr->up != NULL) {
+      ASSERT(ptr->ident);
       len = sprint_prefix_(ptr->up) + strlen(ptr->ident);
       if (ptr->up->up != NULL) len++;
       if (len > buffer_len) {

@@ -1,4 +1,4 @@
-/* > netartic.c
+/* netartic.c
  * Split up network at articulation points
  * Copyright (C) 1993-2001 Olly Betts
  *
@@ -370,7 +370,7 @@ articulate(void)
       bool fNotAttached = fFalse;
       error(/*Survey not all connected to fixed stations*/45);
       FOR_EACH_STN(stn, stnlist) {
-	 if (stn->name->ident[0]) {
+	 if (stn->name->ident) {
 	    if (!fNotAttached) {
 	       fNotAttached = fTrue;
 	       puts(msg(/*The following survey stations are not attached to a fixed point:*/71));

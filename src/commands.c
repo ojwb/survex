@@ -1,4 +1,4 @@
-/* > commands.c
+/* commands.c
  * Code for directives
  * Copyright (C) 1991-2001 Olly Betts
  *
@@ -643,7 +643,7 @@ cmd_fix(void)
 	 if (!fixed(stn)) {
 	    node *fixpt = osnew(node);
 	    prefix *name = osnew(prefix);
-	    name->ident = ""; /* root has ident[0] == "\" */
+	    name->ident = NULL;
 	    name->shape = 0;
 	    fixpt->name = name;
 	    name->pos = osnew(pos);

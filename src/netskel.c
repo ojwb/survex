@@ -1,4 +1,4 @@
-/* > netskel.c
+/* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
  * Copyright (C) 1991-2001 Olly Betts
@@ -658,7 +658,7 @@ replace_travs(void)
 	     * (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
 	    if (fhErrStat && !fArtic) {
-	       if (!nmPrev->ident[0]) {
+	       if (!nmPrev->ident) {
 		  /* FIXME: not ideal */
 		  fputs("<fixed point>", fhErrStat);
 	       } else {
@@ -666,7 +666,7 @@ replace_travs(void)
 	       }
 	       fputs(fEquate ? szLinkEq : szLink, fhErrStat);
 	       if (reached_end) {
-		  if (!stn3->name->ident[0]) {
+		  if (!stn3->name->ident) {
 		     /* FIXME: not ideal */
 		     fputs("<fixed point>", fhErrStat);
 		  } else {
@@ -880,7 +880,7 @@ replace_trailing_travs(void)
 #ifdef NEW3DFORMAT
       if (!fUseNewFormat) {
 #endif	 
-	 if (stn1->name->stn == stn1 && stn1->name->ident[0]) {
+	 if (stn1->name->stn == stn1 && stn1->name->ident) {
 	    int sf = stn1->name->sflags & SFLAGS_MASK;
 	    if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
 	    img_write_item(pimg, img_LABEL, sf, sprint_prefix(stn1->name),
@@ -891,7 +891,7 @@ replace_trailing_travs(void)
 #endif
       /* update coords of bounding box, ignoring the base positions
        * of points fixed with error estimates */
-      if (stn1->name->ident[0]) {
+      if (stn1->name->ident) {
 	 for (d = 0; d < 3; d++) {
 	    if (POS(stn1, d) < min[d]) {
 	       min[d] = POS(stn1, d);
@@ -911,7 +911,7 @@ replace_trailing_travs(void)
 	 stn1->name->shape = -1 - d;
       } else if (d <= 1) {
 	 if (d == 0 ||
-	     (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident[0])) {
+	     (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident)) {
 	    /* Unused fixed points without and with error estimates */
 	    warning(/*Unused fixed point `%s'*/73,
 		    sprint_prefix(stn1->name));
@@ -921,7 +921,7 @@ replace_trailing_travs(void)
       /* For stations fixed with error estimates, we need to ignore the leg to
        * the "real" fixed point in the node stats.
        */
-      if (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident[0])
+      if (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident)
 	 stn1->name->shape--;
 
       for (i = 0; i <= 2; i++) {

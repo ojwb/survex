@@ -1,4 +1,4 @@
-/* > network.c
+/* network.c
  * Survex network reduction - find patterns and apply network reductions
  * Copyright (C) 1991-2001 Olly Betts
  *
@@ -470,7 +470,7 @@ remove_subnets(void)
 		    mulsc(&legCZ->v, &sum, 0.5);
 
 		    nameZ = osnew(prefix);
-		    nameZ->ident = ""; /* root has ident[0] == "\" */
+		    nameZ->ident = NULL;
 		    nameZ->shape = 3;
 		    stnZ = osnew(node);
 		    stnZ->name = nameZ;
