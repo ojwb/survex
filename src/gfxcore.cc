@@ -516,7 +516,7 @@ wxPoint GfxCore::CompassPtToScreen(double x, double y, double z)
 
 wxPoint GfxCore::IndicatorCompassToScreenPan(int angle)
 {
-    double theta = (angle * M_PI / 180.0) - m_PanAngle;
+    double theta = (angle * M_PI / 180.0) + m_PanAngle;
     wxCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     wxCoord x = wxCoord(length * sin(theta));
     wxCoord y = wxCoord(length * cos(theta));
@@ -1251,11 +1251,11 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		  m_LastDrag == drag_COMPASS) {
 		  // drag in heading indicator
 		  if (sqrt(dx0*dx0 + dy*dy) <= radius) {
-		      TurnCaveTo(atan2(-dx0, dy) - M_PI);
+		      TurnCaveTo(atan2(dx0, dy) - M_PI);
 		      m_MouseOutsideCompass = false;
 		  }
 		  else {
-		      TurnCaveTo(int(int((atan2(-dx0, dy) - M_PI) * 180.0 / M_PI) / 45) *
+		      TurnCaveTo(int(int((atan2(dx0, dy) - M_PI) * 180.0 / M_PI) / 45) *
 				 M_PI/4.0);
 		      m_MouseOutsideCompass = true;
 		  }
