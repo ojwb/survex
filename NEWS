@@ -17,6 +17,8 @@ Changes in 1.0.11:
 
 * extend: fixed to work correctly with PLT files.
 
+* Updates to Italian translation.
+
 Changes in 1.0.10:
 
 * (MS Windows version): aven: fixed assert failure upon turning on station
