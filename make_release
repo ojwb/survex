@@ -18,8 +18,10 @@ if ! ./configure ; then
    echo configure failed
    exit 1
 fi
-if ! make distcheck ; then
-   echo make distcheck failed
+# make distcheck fails - cvs version of automake doesn't clean up all the
+# files it creates...
+if ! make dist ; then
+   echo make dist failed
    exit 1
 fi
 if ! make dos_doc_zip ; then
