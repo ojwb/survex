@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-10-23 02:48:13 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.103 2002-10-23 02:48:13 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-10-25 02:16:28 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.104 2002-10-25 02:16:28 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -318,6 +318,14 @@ If you don't have root access you will need to build from source
 (see the next section).
 </Para>
 
+<!-- FIXME Add Gnome file association note for Linux/Unix
+<Para>On Microsoft Windows and &riscos; &survexsuite; installs with
+suitable file associations so that you can drive it from the GUI.
+On &unix; and &msdos; you need to drive &survexsuite; from a command-line
+prompt (or set some a filemanager or graphics shell).
+</Para>
+-->
+
 <Sect3><Title>Other versions of &unix;</Title>
 
 <Para>For other &unix; versions you'll need to get the source code
@@ -381,19 +389,12 @@ Start menu containing the following items:
 
 </ItemizedList>
 
-<!-- FIXME
-<Para>On Microsoft Windows and &riscos; &survexsuite; installs with
-suitable file associations so that you can drive it from the GUI.
-On &unix; and &msdos; you need to drive &survexsuite; from a command-line
-prompt (or set some a filemanager or graphics shell).
-</Para>
--->
-
 <Para>
-Icons are installed for &svx;, &x3d;, &err;, and &pos; files.
+Icons are installed for &svx;, &x3d;, &err;, and &pos; files, and also for
+Compass <filename>PLT</filename> files (which Survex can read).
 Double-clicking on a &svx; file processes it to produce a &x3d; file.
 Double-clicking the &x3d; file views it in aven.
-You can also right click on the files to bring up a menu of other possible
+You can also right click on these files to bring up a menu of other possible
 actions:
 </Para>
 
