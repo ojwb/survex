@@ -9,15 +9,26 @@
 SURVEXHOME=$srcdir/../lib
 export SURVEXHOME
 
-TESTS="oneleg midpoint noose cross firststn break_replace_pfx deltastar\
- deltastar2 bug0 bug1 bug2 bug3 bug4 calibrate_tape expobug nosurvey nosurvey2\
- cartesian require beginroot"
+TESTS="oneleg midpoint noose cross firststn deltastar\
+ deltastar2 bug3 calibrate_tape nosurvey nosurvey2\
+ cartesian"
+
+NO_POS_TESTS="beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4\
+ expobug require"
 
 for file in $TESTS ; do
   echo $file
   rm -f ./tmp.*
   $CAVERN $srcdir/$file.svx --output=./tmp > /dev/null || exit 1
   $DIFFPOS ./tmp.pos $srcdir/$file.pos 0 > /dev/null || exit 1
+  rm -f ./tmp.*
+done
+
+for file in $NO_POS_TESTS ; do
+  echo $file
+  rm -f ./tmp.*
+  $CAVERN $srcdir/$file.svx --output=./tmp > /dev/null || exit 1
+  test -f ./tmp.pos || exit 1
   rm -f ./tmp.*
 done
 exit 0
