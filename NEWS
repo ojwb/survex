@@ -41,6 +41,9 @@
 
 * cavern: complain about *export after a *begin without an argument.
 
+* cavern: use *title only if at top of survey tree, else generate
+  title from filename(s).
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

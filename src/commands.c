@@ -1272,7 +1272,9 @@ cmd_sd(void)
 static void
 cmd_title(void)
 {
-   if (!fExplicitTitle) {
+   if (!fExplicitTitle && pcs->Prefix == root) {
+       /* If we don't have an explicit title yet, and we're currently in the
+	* root prefix, use this title explicitly. */
       fExplicitTitle = fTrue;
       read_string(&survey_title, &survey_title_len);
    } else {
