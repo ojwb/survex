@@ -37,6 +37,7 @@
 #endif
 
 class MainFrm;
+class PointInfo;
 
 #ifdef AVENGL
 struct Double3 {
@@ -290,6 +291,7 @@ class GfxCore : public wxWindow {
     list<GridPointInfo>* m_PointGrid;
     bool m_HitTestGridValid;
     bool m_TerrainLoaded;
+    list<PointInfo> m_PointCache;
 
     int m_DoingPresStep;
     struct step_params {

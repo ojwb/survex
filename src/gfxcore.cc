@@ -195,6 +195,8 @@ void GfxCore::TryToFreeArrays()
     // Free up any memory allocated for arrays.
 
     if (m_PlotData) {
+  	m_PointCache.clear();
+    
         for (int band = 0; band < m_Bands; band++) {
             DELETE_ARRAY(m_PlotData[band].vertices);
             DELETE_ARRAY(m_PlotData[band].num_segs);
@@ -491,6 +493,7 @@ void GfxCore::SetScaleInitial(Double scale)
 #ifdef AVENGL
             bool line_open = false;
 #endif
+            PointInfo* prev_pti = NULL;
             while (pos != end) {
                 PointInfo* pti = *pos++;
 
@@ -536,6 +539,10 @@ void GfxCore::SetScaleInitial(Double scale)
                         (*dest)->x = (long) ((current_x*m_00 + current_y*m_01 + current_z*m_02) * scale);
                         (*dest)->y = -(long) ((current_x*m_20 + current_y*m_21 + current_z*m_22) * scale);
 
+                        PointInfo pti_new = *prev_pti;
+		        pti_new.SetDestination(*dest);
+	                m_PointCache.push_back(pti_new);
+		    
                         // Advance the relevant coordinate pointer to the next position.
                         (*dest)++;
 #endif
@@ -566,6 +573,11 @@ void GfxCore::SetScaleInitial(Double scale)
                     (*dest)->x = (long) ((current_x*m_00 + current_y*m_01 + current_z*m_02) * scale);
                     (*dest)->y = -(long) ((current_x*m_20 + current_y*m_21 + current_z*m_22) * scale);
 
+                    PointInfo pti_new = *pti;
+		    pti_new.SetDestination(*dest);
+	            m_PointCache.push_back(pti_new);
+		    prev_pti = pti;
+
                     // Advance the relevant coordinate pointer to the next position.
                     (*dest)++;
 
@@ -595,6 +607,8 @@ void GfxCore::SetScaleInitial(Double scale)
                     current_x = pti->GetX() + m_Params.translation.x;
                     current_y = pti->GetY() + m_Params.translation.y;
                     current_z = pti->GetZ() + m_Params.translation.z;
+
+		    prev_pti = pti;
                 }
             }
 #ifndef AVENGL
@@ -745,7 +759,7 @@ void GfxCore::SetScale(Double scale)
     m_Params.scale = scale;
 
 #ifdef AVENGL
-    DrawGrid();
+    assert(0);
 #endif
 
     Double m_00 = m_RotationMatrix.get(0, 0) * scale;
@@ -759,148 +773,19 @@ void GfxCore::SetScale(Double scale)
 
         // Invalidate hit-test grid.
 	m_HitTestGridValid = false;
-    
-#ifdef AVENGL
-        // With OpenGL we have to make three passes, as OpenGL lists are immutable and
-        // we need the surface and underground data in different lists.  The third pass is
-        // so we get different lists for surface data split into depth bands, and not split like that.
-        // This isn't a problem as this routine is only called once in the OpenGL version and it
-        // contains very little in the way of calculations for this version.
-        for (int pass = 0; pass < 3; pass++) { // 1st pass -> u/g data; 2nd pass -> surface (uniform);
-                                               // 3rd pass -> surface (w/depth colouring)
-            //--should delete any old GL list. (only a prob on reinit I think)
-            if (pass == 0) {
-		CheckGLError("before allocating survey list");
-                m_Lists.survey = glGenLists(1);
-		CheckGLError("immediately after allocating survey list");
-                glNewList(m_Lists.survey, GL_COMPILE);
-		CheckGLError("creating survey list");
-            }
-            else if (pass == 1) {
-                m_Lists.surface = glGenLists(1);
-                glNewList(m_Lists.surface, GL_COMPILE);
-		CheckGLError("creating surface-nodepth list");
-            }
-            else {
-                m_Lists.surface_depth = glGenLists(1);
-                glNewList(m_Lists.surface_depth, GL_COMPILE);
-		CheckGLError("creating surface-depth list");
-            }
-#endif
-        for (int band = 0; band < m_Bands; band++) {
-#ifdef AVENGL
-            Double r, g, b;
-            if (pass == 0 || pass == 2) {
-                m_Parent->GetColour(band, r, g, b);
-                glColor3d(r, g, b);
-		CheckGLError("setting survey colour");
-            }
-            else {
-                glColor3d(1.0, 1.0, 1.0);
-		CheckGLError("setting surface survey colour");
-            }
-#else
-            wxPoint* pt = m_PlotData[band].vertices;
-            assert(pt);
-            wxPoint* spt = m_PlotData[band].surface_vertices;
-            assert(spt);
-#endif
-            Double current_x;
-            Double current_y;
-            Double current_z;
 
-            list<PointInfo*>::const_iterator pos = m_Parent->GetPoints(band);
-            list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd(band);
-            bool last_was_move = true;
-            bool current_polyline_is_surface = false;
-#ifdef AVENGL
-            bool line_open = false;
-#endif
-            while (pos != end) {
-                const PointInfo* pti = *pos++;
+        // Recalculate all points.
+        list<PointInfo>::const_iterator pos = m_PointCache.begin();
+        list<PointInfo>::const_iterator end = m_PointCache.end();
+        while (pos != end) {
+            const PointInfo& pti = *pos++;
 
-                if (pti->IsLine()) {
-                    // We have a leg.
+            double x = pti.GetX() + m_Params.translation.x;
+            double y = pti.GetY() + m_Params.translation.y;
+            double z = pti.GetZ() + m_Params.translation.z;
 
-                    // Record new underground/surface state.
-                    current_polyline_is_surface = pti->IsSurface();
-
-                    if (pti->IsChangingUGState() || pti->LastWasMove()) {
-                        // Start a new polyline if we're switching underground/surface state
-                        // or if the previous point was a move.
-#ifdef AVENGL
-                        if ((current_polyline_is_surface && pass > 0) ||
-                            (!current_polyline_is_surface && pass == 0)) {
-                            line_open = true;
-                            glBegin(GL_LINE_STRIP);
-                            glVertex3d(current_x, current_y, current_z);
-			    CheckGLError("survey leg vertex");
-                        }
-#else
-                        wxPoint** dest = &(current_polyline_is_surface ? spt : pt);
-
-                        (*dest)->x = (long) (current_x*m_00 + current_y*m_01 + current_z*m_02);
-                        (*dest)->y = -(long) (current_x*m_20 + current_y*m_21 + current_z*m_22);
-
-                        // Advance the relevant coordinate pointer to the next position.
-                        (*dest)++;
-#endif
-                    }
-
-#ifdef AVENGL
-                    if ((current_polyline_is_surface && pass > 0) ||
-                        (!current_polyline_is_surface && pass == 0)) {
-                        assert(line_open);
-                        glVertex3d(x, y, z);
-			CheckGLError("survey leg vertex");
-                        if (pass == 0) {
-                            m_UndergroundLegs = true;
-                        }
-                        else {
-                            m_SurfaceLegs = true;
-                        }
-                    }
-#else
-                    // Add the leg onto the current polyline.
-                    wxPoint** dest = &(current_polyline_is_surface ? spt : pt);
-
-                    // Final coordinate transformations and storage of coordinates.
-                    current_x = pti->GetX() + m_Params.translation.x;
-                    current_y = pti->GetY() + m_Params.translation.y;
-                    current_z = pti->GetZ() + m_Params.translation.z;
-
-                    (*dest)->x = (long) (current_x*m_00 + current_y*m_01 + current_z*m_02);
-                    (*dest)->y = -(long) (current_x*m_20 + current_y*m_21 + current_z*m_22);
-
-                    // Advance the relevant coordinate pointer to the next position.
-                    (*dest)++;
-#endif
-                }
-                else {
-#ifdef AVENGL
-                    if (line_open) {
-                        //glVertex3d(current_x, current_y, current_z);
-                        glEnd();
-			CheckGLError("closing survey leg strip");
-                        line_open = false;
-                    }
-#endif
-                    // Save the current coordinates for the next time around the loop.
-                    current_x = pti->GetX() + m_Params.translation.x;
-                    current_y = pti->GetY() + m_Params.translation.y;
-                    current_z = pti->GetZ() + m_Params.translation.z;
-                }
-            }
-#ifdef AVENGL
-            if (line_open) {
-                glEnd();
-		CheckGLError("closing survey leg strip (2)");
-            }
-        }
-
-        glEndList();
-	CheckGLError("ending survey leg list");
-#endif
+            pti.GetDestination()->x = (long) (x*m_00 + y*m_01 + z*m_02);
+            pti.GetDestination()->y = -(long) (x*m_20 + y*m_21 + z*m_22);
         }
     }
 

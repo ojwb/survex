@@ -115,6 +115,7 @@ class PointInfo {
     bool isSurface;
     bool isChangingUGState;
     bool lastWasMove;
+    wxPoint* dest;
 
 public:
     Double GetX() const { return x; }
@@ -128,6 +129,9 @@ public:
 
     void SetLastWasMove(bool b) { lastWasMove = b; }
     bool LastWasMove() const { return lastWasMove; }
+
+    void SetDestination(wxPoint* p) { dest = p; }
+    wxPoint* GetDestination() const { return dest; }
 };
 
 class LabelInfo {
