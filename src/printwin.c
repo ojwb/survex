@@ -274,11 +274,11 @@ win_Pre(int pagesToPrint, const char *title)
    if (!PrintDlgA(&psd)) exit(1);
    pd = psd.hDC;
 
-   font_labels = CreateFont(fontsize_labels, 0, 0, 0, FW_NORMAL, 0, 0, 0,
+   font_labels = CreateFont(-fontsize_labels, 0, 0, 0, FW_NORMAL, 0, 0, 0,
 			    ANSI_CHARSET, OUT_DEFAULT_PRECIS,
 			    CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
 			    FF_DONTCARE | DEFAULT_PITCH, "Arial");   
-   font_default = CreateFont(fontsize, 0, 0, 0, FW_NORMAL, 0, 0, 0,
+   font_default = CreateFont(-fontsize, 0, 0, 0, FW_NORMAL, 0, 0, 0,
 		   	  ANSI_CHARSET, OUT_DEFAULT_PRECIS,
 			  CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
 			  FF_DONTCARE | DEFAULT_PITCH, "Arial");   
