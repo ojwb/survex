@@ -98,11 +98,6 @@ From: Olly
 Implement skip blank pages on printps/printhpgl; check it works on
 printpcl and printdm.
 
-prog --help and --version ought to work (perhaps both just do --version)
-even if messages can't be found.
-
-one page HTML manual
-
 win install lang??
 
 glcaverot?
