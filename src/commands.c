@@ -190,7 +190,7 @@ get_token(void)
       } while (buffer[i]);
    }
 #if 0
-   printf("get_token() got "); puts(buffer);
+   printf("get_token() got `%s'\n", buffer);
 #endif
 }
 
@@ -232,7 +232,9 @@ static sztok cmd_tab[] = {
      {"COPYRIGHT", CMD_COPYRIGHT},
      {"DATA",      CMD_DATA},
      {"DATE",      CMD_DATE},
+#ifndef NO_DEPRECATED
      {"DEFAULT",   CMD_DEFAULT},
+#endif
      {"END",       CMD_END},
      {"ENTRANCE",  CMD_ENTRANCE},
      {"EQUATE",    CMD_EQUATE},
@@ -242,7 +244,9 @@ static sztok cmd_tab[] = {
      {"INCLUDE",   CMD_INCLUDE},
      {"INFER",     CMD_INFER},
      {"INSTRUMENT",CMD_INSTRUMENT},
+#ifndef NO_DEPRECATED
      {"PREFIX",    CMD_PREFIX},
+#endif
      {"REQUIRE",   CMD_REQUIRE},
      {"SD",        CMD_SD},
      {"SET",       CMD_SET},
