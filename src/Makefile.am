@@ -45,6 +45,7 @@ caverot_LDADD = @CROBJX@ @CRLIB@
 caverot_DEPENDENCIES = @CROBJX@
 
 xcaverot_SOURCES = xcaverot.c $(ROTSRC)
+xcaverot_CFLAGS = @X_CFLAGS@
 xcaverot_LDADD = @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
 # next line is actually superfluous to automake (but riscos/bc hack needs it)
