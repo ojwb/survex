@@ -8,6 +8,9 @@
 
 * cavern: fixed clino readings to work in interleaved data.
 
+* cavern: improved error reporting when an invalid value is given for a
+  DIRECTION reading.
+
 * Updated documentation.
 
 Changes in 1.0.13:
