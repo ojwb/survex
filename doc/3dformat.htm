@@ -1,0 +1,101 @@
+<HTML><HEAD>
+<TITLE>Survex 3d Format Specification</TITLE>
+<STYLE type="text/css"><!--
+BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
+-->
+</STYLE>
+</HEAD><BODY BGCOLOR=white TEXT=black>
+<H1>Warning - Very Provisional</H1>
+
+This is the <b>first draft</b> of this specification, and I've had to reverse
+engineer it from the code.  It may be incorrect in places, and I certain
+there's a lot of knowledge this document assumes, especially if you aren't
+familiar with Survex.
+
+<H1>Survex 3d Format Specification</H1>
+
+<P>If you're writing in C or C++ it's <b>strongly</b> recommended that you use
+the img routine provided with Survex to read and write 3d files.  Doing so
+means that you can take advantage of any revisions to the 3d format by simply
+rebuilding your software with the updated img routines, rather than having to
+update your own code.  It also allows you to read a sub-set of the data in
+the file, restricted by Survey prefix.</P>
+
+<P>This document only describes the most recent revision of the 3d format
+(version 3), which is produced by Survex versions 0.97 and later.</P>
+
+<H2>File Header</H2>
+
+<P>This consists of:
+
+<ul>
+<li> File ID: the string "Survex 3D Image File" followed by a linefeed (decimal 10, hex x0a)
+<li> File format version: "v3" followed by a linefeed.  Valid values for
+older format versions are ("v0.01", "Bv0.01", "bv0.01", "v2").  Newer versions
+will be "v4", "v5", ..., "v10", "v11", etc.
+<li> Survey title: A string followed by a linefeed.  There's no length limit on this string.
+<li> Timestamp.  This is intended to be the time the file was generated, rather
+than the time the survey data was collected.  The easiest way to generate this
+is with the strftime() format "%a,%Y.%m.%d %H:%M:%S %Z" if you have access to
+strftime().  An example timestamp is "Sun,2002.03.17 14:01:07 GMT".
+</ul>
+
+<H2>Items</H2>
+
+<P>Following the header are a number of items.  The last item must be a 0x00
+byte when the current label is empty, which marks the end of the data.  The
+first byte of an item indentifies what it is:
+
+<ul>
+<li> 0x00 : if the current label is empty, signifies the end of the data
+in the 3d file; if the current label isn't empty, make it empty.
+<li> 0x01-0x0e : trim the last 17 characters of the current label, then
+trim back N-1 (i.e. 0-13) dots ("."), removing "." and everything after
+it.  It's incorrect if the label ends up empty, or you attempt to trim more
+label than there is.
+<li> 0x0f &lt;x coord&gt; &lt;y coord&gt; &lt;z coord&gt; : set current
+position to the coordinates given.  Coordinates are 4 bytes little-endian
+signed integers representing values in centimetres (0.01 metres).
+<li> 0x10-0x1f : remove N-15 (i.e. 1-16) characters from the current label.
+It's incorrect if the label ends up empty, or you attempt to trim more
+label than there is.
+<li> 0x20-0x3f &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
+&lt;z coord&gt; : leg flags are (N &amp; 0x1f):
+<ul>
+<li> 0x01 : Leg is above ground 
+<li> 0x02 : Leg duplicates data in another leg (e.g. resurvey along a passage to tie into a known station)
+<li> 0x04 : Leg is a splay shot in a chamber (radial shots from a central point)
+<li> 0x08 : Reserved
+<li> 0x10 : Reserved
+</ul>
+Append label to the current label buffer.  The length of label is given by
+length, which is encoded as follows:
+<ul>
+<li> 0-253 - byte 0x00-0xfd
+<li> 254-65789 - byte 0xfe 2 byte little-endian unsigned integer len-254
+0x0000-0xffff
+<li> 65790 and greater - byte 0xff 4 byte little-endian unsigned integer len
+0x000100fd-0xffffffff
+</ul>
+Return leg from current position to coordinates given, and update current
+position to coordinates given.  The label gives the survey that the leg is
+in.
+<li> 0x40-0x5f &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
+&lt;z coord&gt; : station flags are (N &amp; 0x1f):
+<ul>
+<li> 0x01 : Station is on an above ground leg
+<li> 0x02 : Station is on an underground leg (both may be true at an entrance)
+<li> 0x04 : Station is marked as an entrance (with *entrance)
+<li> 0x08 : Station is exported (i.e. may be used as a connection point to
+other surveys)
+<li> 0x10 : Station is a fixed point (control point)
+</ul>
+
+Append label to the current label buffer.  Return station at the coordinates
+given, and update current position to coordinates given (FIXME: check this).
+The label gives the survey stations full name.
+<li> 0x60-0xff : Reserved
+</ul>
+
+<P>Olly Betts 2002-03-17</P>
+</BODY></HTML>
