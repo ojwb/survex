@@ -17,6 +17,8 @@ Changes in 0.97-prerelease4:
 * cavern: unused fix point warnings now work for stations fixed with
   error estimates; added test cases for this.
 
+* testsuite: Enhanced many existing tests to check for warnings.
+
 Changes in 0.97-prerelease3:
 
 * (Unix version): aven: Internationalised; Fixed serious drawing bug

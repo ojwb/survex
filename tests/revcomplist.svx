@@ -1,7 +1,7 @@
 ; netartic.c *does* need to reverse the component list
 *fix A 0 0 0
 *fix B 2 2 2
-*fix C 1 1 1
+*fix C reference 1 1 1
 *equate D B
 D F 1.00 000 0
 F G 1.00 000 0

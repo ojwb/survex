@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-TESTS = diffpos.tst cavern.tst cavfail.tst cavwarn.tst extend.tst
+TESTS = diffpos.tst cavern.tst extend.tst
 
-EXTRA_DIST = diffpos.tst cavern.tst cavfail.tst extend.tst\
+EXTRA_DIST = diffpos.tst cavern.tst extend.tst\
 beginroot.svx\
 oneleg.svx oneleg.pos\
 midpoint.svx midpoint.pos\
