@@ -41,11 +41,13 @@
 #include "validate.h"
 
 #ifdef NEW3DFORMAT
-#if OS != RISCOS && OS != MSDOS
-#include <unistd.h> /* for getcwd() */
-#endif
-#if OS == MSDOS && defined(__TURBOC__)
-#include <dir.h> /* for getcwd() */
+# if OS != RISCOS
+/* include header for getcwd() */
+#  if OS == MSDOS && defined(__TURBOC__)
+#   include <dir.h>
+#  else
+#   include <unistd.h>
+#  endif
 #endif
 
 #include "new3dout.h"
