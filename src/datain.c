@@ -293,6 +293,17 @@ read_bearing_or_omit(reading r)
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
 }
 
+/* For reading Compass MAK files which have a freeform syntax */
+static void
+nextch_handling_eol(void)
+{
+   nextch();
+   while (isEol(ch)) {
+      process_eol();
+      nextch();
+   }
+}
+
 #define LITLEN(S) (sizeof(S"") - 1)
 #define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
 			(F)[(L) - LITLEN(E) - 1] == FNM_SEP_EXT &&\
@@ -529,7 +540,7 @@ data_file(const char *pth, const char *fnm)
 	 pcs = pcsParent;
       }					  
    } else if (fmt == FMT_MAK) {
-      nextch();
+      nextch_handling_eol();
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 if (ch == '#') {
 	    /* include a file */
@@ -537,14 +548,15 @@ data_file(const char *pth, const char *fnm)
 	    char *pth = path_from_fnm(file.filename);
 	    char *fnm = NULL;
 	    int fnm_len;
-	    nextch();
+	    nextch_handling_eol();
 	    while (ch != ',' && ch != ';' && ch != EOF) {
+	       while (isEol(ch)) process_eol();
 	       s_catchar(&fnm, &fnm_len, ch);
-	       nextch();
+	       nextch_handling_eol();
 	    }
 	    while (ch != ';' && ch != EOF) {
 	       prefix *name;
-	       nextch();
+	       nextch_handling_eol();
 	       name = read_prefix_stn(fTrue, fFalse);
 	       if (name) {
 		  skipblanks();
@@ -553,20 +565,20 @@ data_file(const char *pth, const char *fnm)
 		     node *stn;
 		     real x, y, z;
 		     name->sflags |= BIT(SFLAGS_FIXED);
-		     nextch();
+		     nextch_handling_eol();
 		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
 			    ch != '.' && ch != ']' && ch != EOF) {
-			nextch();
+			nextch_handling_eol();
 		     }
 		     x = read_numeric(fFalse, NULL);
 		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
 			    ch != '.' && ch != ']' && ch != EOF) {
-			nextch();
+			nextch_handling_eol();
 		     }
 		     y = read_numeric(fFalse, NULL);
 		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
 			    ch != '.' && ch != ']' && ch != EOF) {
-			nextch();
+			nextch_handling_eol();
 		     }
 		     z = read_numeric(fFalse, NULL);
 		     stn = StnFromPfx(name);
@@ -583,16 +595,17 @@ data_file(const char *pth, const char *fnm)
 			   compile_warning(/*Station already fixed at the same coordinates*/55);
 			}
 		     }
-		     while (ch != ']' && ch != EOF) nextch();
+		     while (ch != ']' && ch != EOF) nextch_handling_eol();
 		     if (ch == ']') {
-			nextch();
+			nextch_handling_eol();
 			skipblanks();
 		     }
 		  } else {
 		     /* FIXME: link station - ignore for now */
 		     /* FIXME: perhaps issue warning? */
 		  }
-		  while (ch != ',' && ch != ';' && ch != EOF) nextch();
+		  while (ch != ',' && ch != ';' && ch != EOF)
+		     nextch_handling_eol();
 	       }
 	    }
 	    if (fnm) {
@@ -603,7 +616,7 @@ data_file(const char *pth, const char *fnm)
 	    }
 	 } else {
 	    /* FIXME: also check for % and $ later */
-	    nextch();
+	    nextch_handling_eol();
 	 }
       }
       {
