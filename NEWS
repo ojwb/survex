@@ -1,3 +1,5 @@
+Changes in 0.92-prerelease3:
+
 * xcaverot: made switching between plan and elevation work more smoothly
 
 * xcaverot: fixed poor handling of keypresses when rotating
