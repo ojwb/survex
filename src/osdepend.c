@@ -121,7 +121,12 @@ fDirectory(const char *fnm)
        || fnm[strlen(fnm) - 1] == FNM_SEP_LEV2
 #endif
        ) return 1;
+#if (OS == UNIX)
+   /* On Unix, dereference any symlinks we might encounter */
+   if (lstat(fnm, &buf) != 0) return 0;
+#else
    if (stat(fnm, &buf) != 0) return 0;
+#endif
 #ifdef S_ISDIR
    /* POSIX way */
    return S_ISDIR(buf.st_mode);
@@ -142,7 +147,7 @@ fDirectory(const char *fnm)
    if (!fnm[0] || fnm[strlen(fnm) - 1] == '.') return 1;
    if (xosfile_read((char*)fnm, &objtype, NULL, NULL, NULL, NULL) != NULL)
       return 0;
-   /* it's a directory iff (objtype is 2 or 3) */
+   /* It's a directory iff (objtype is 2 or 3) */
    /* (3 is an image file (for RISC OS 3 and above) but we probably want */
    /* to treat image files as directories) */
    return (objtype == osfile_IS_DIR || objtype == osfile_IS_IMAGE);
