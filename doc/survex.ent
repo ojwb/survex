@@ -1,7 +1,6 @@
 <!ENTITY ollyemail "olly@survex.com">
 <!ENTITY wookeyemail "wookey@survex.com">
 <!ENTITY survexwebsite "http://www.survex.com/">
-<!ENTITY djgppwebsite "http://www.delorie.com/djgpp/">
 <!ENTITY unix "UNIX">
 <!ENTITY chasm "Chasm">
 <!ENTITY linux "Linux">
@@ -22,7 +21,6 @@
 <!entity man.3dtopos SYSTEM "3dtopos.sgml">
 <!entity man.cad3d SYSTEM "cad3d.sgml">
 <!entity man.cavern SYSTEM "cavern.sgml">
-<!entity man.caverot SYSTEM "caverot.sgml">
 <!entity man.diffpos SYSTEM "diffpos.sgml">
 <!entity man.extend SYSTEM "extend.sgml">
 <!entity man.printdm SYSTEM "printdm.sgml">
@@ -32,7 +30,6 @@
 <!entity man.printwin SYSTEM "printwin.sgml">
 <!entity man.sorterr SYSTEM "sorterr.sgml">
 <!entity man.svxedit SYSTEM "svxedit.sgml">
-<!entity man.xcaverot SYSTEM "xcaverot.sgml">
 <!entity man.print.ini SYSTEM "print.ini.sgml">
 
 <!entity printer.options "
@@ -105,10 +102,13 @@ underground survey legs are shown.</para></listitem></varlistentry>
 When you run the printer driver you will be asked if you want a
 plan or elevation (enter <keycap/P/, or <keycap/E/) - the default is
 plan. Then enter values for the desired plot view. These values
-correspond to those displayed in the top left hand corner when using
-caverot. You would usually use CAVEROT to pick the best view and then
+correspond to those displayed in the bottom right hand corner when using
+Aven.
+You would usually use
+Aven
+to pick the best view and then
 note the angles before running the Printer Driver. This will
-eventually be integrated.
+be integrated soon.
 </Para>
 
 <Para>

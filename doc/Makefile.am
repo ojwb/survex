@@ -6,7 +6,7 @@ other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
  printdm.1 printhpgl.1 printpcl.1 printps.1 print.ini.5 svxedit.1 \
  @EXTRA_MANS@
 
-manual_sources = manual.sgml cad3d.sgml cavern.sgml caverot.sgml\
+manual_sources = manual.sgml cad3d.sgml cavern.sgml\
  diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml\
  printdm.sgml printhpgl.sgml printpcl.sgml printps.sgml printwin.sgml\
  print.ini.sgml svxedit.sgml
@@ -54,9 +54,6 @@ cad3d.1: $(srcdir)/cad3d.sgml $(srcdir)/man_cad3d.sgml $(srcdir)/survex.ent
 
 cavern.1: $(srcdir)/cavern.sgml $(srcdir)/man_cavern.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_cavern.sgml > cavern.1
-
-caverot.1: $(srcdir)/caverot.sgml $(srcdir)/man_caverot.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_caverot.sgml > caverot.1
 
 diffpos.1: $(srcdir)/diffpos.sgml $(srcdir)/man_diffpos.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_diffpos.sgml > diffpos.1

@@ -51,80 +51,6 @@ docbook-to-man, and w3m.
 
 <H2>Building on Non-Unix Platforms</H2>
 
-<H3>DJGPP (MSDOS for 386 or better)</H3>
-
-<P>Currently I build this with a Linux hosted cross-compiler.  I built
-this myself mostly following instructions from:
-
-<P><A
-HREF="http://www.objsw.com/CrossGCC/">http://www.objsw.com/CrossGCC/</A>
-
-<P>I suggest using binutils-2.10 rather than binutils-2.9.1.  The newer version
-includes the patch they supply, so the instructions boil down to this
-sequence of commands:
-
-<pre>
-bash
-mkdir ~/djcross
-cd ~/djcross
-wget ftp://ftp.objsw.com/pub/crossgcc/build-djgpp.sh
-mkdir tars
-cd tars
-# can't get it to build with djcrx203
-wget ftp://ftp.simtel.net/pub/simtelnet/gnu/djgpp/v2/old/djcrx202.zip
-# can't get 2.95.3 to build
-wget http://sunsite.org.uk/gnu/gcc/gcc-2.95.2.tar.gz
-# can't get 2.10.1 to build
-wget http://sunsite.org.uk/gnu/binutils/binutils-2.10.tar.gz
-cd ..
-patch -l build-djgpp.sh &lt;&lt;END
-26c26
-&lt; binutils=binutils-2.9.1
----
-&gt; binutils=binutils-2.10
-97c97
-&lt;       patch -p1 &lt;\$patches/\$binutilsdiff
----
-&gt;       #patch -p1 &lt;\$patches/\$binutilsdiff
-END
-sh build-djgpp.sh
-</pre>
-
-<P>Then you need to build and install the
-<A HREF="http://www.talula.demon.co.uk/allegro/">Allegro graphics library</A>:
-
-<P><A
-HREF="http://prdownloads.sourceforge.net/alleg/allegro-4.0.1.tar.gz"
->http://prdownloads.sourceforge.net/alleg/allegro-4.0.1.tar.gz</A>
-
-<P>Allegro 4.0.2 has been released, but the list of changes doesn't show
-anything relevant to the routines caverot uses, so I've not bothered to
-upgrade.
-
-<P>And follow the instructions for building using a cross-compiler which
-you can find starting from readme.txt.  In 4.0.1 these boil down to:
-
-<pre>
-cd allegro-4.0.1
-./fix.sh djgpp --quick
-NATIVEPATH=$PATH
-export NATIVEPATH
-DJDIR=/opt/crosstools/i386-pc-msdosdjgpp
-export DJDIR
-PATH=$DJDIR/bin:/opt/crosstools/bin:$PATH
-CROSSCOMPILE=1
-export CROSSCOMPILE
-make
-make install
-PATH=$NATIVEPATH
-</pre>
-
-<P>Building Survex under DOS in a native djgpp environment will require
-some tinkering.  Best bet is either to install bash and use the current
-configure script, or perhaps simpler to modify miniam.pl to generate a
-suitable makefile.  I'm happy to help if you want to try this, and
-I'll incorporate patches provided they're fairly clean.
-
 <H3>Mingw (Microsoft Windows)</H3>
 
 <P>Currently I build this with a Linux hosted cross-compiler.  I use
@@ -145,40 +71,5 @@ and I'll incorporate patches provided they're fairly clean.
 work, but could be a worthwhile project.  I'd suggest patching the
 perl script miniam.pl to generate a suitable makefile.  Again, send
 patches if you get this to work.
-
-<H3>MSDOS for 286 and earlier (BorlandC)</H3>
-
-<P>Wookey currently builds this with a rather elderly BorlandC++ 3.1.
-BorlandC++ 5.5 can be downloaded for free, but it appears to only compile to
-32 bit code.  You can also download TurboC version 2, which might do the job
-(I've not tried).
-
-<P>You can build a suitable source archive for this version using
-`make alien_src_zip' on the source distribution on a Unix box (you need to
-have run `./configure' first).  Then unzip the src&lt;version&gt;.zip file
-produced on the MSDOS machine and run <code>make.bat</code>.
-
-<H3>RISC OS</H3>
-
-<P>We now build this with Acorn C V5.  It will probably still build with
-Acorn C V4.  You also need to get and install OSLib from:
-
-<P><A HREF="http://www.arcade.demon.co.uk/oslib/homepage.html"
->http://www.arcade.demon.co.uk/oslib/homepage.html</A>
-
-<P>You can build a suitable source archive for compiling the RISC OS version by
-running `make alien_src_zip' on the source distribution on a Unix box (you
-need to have run `./configure' first).  However for this you'll need a
-specially tweaked version of zip to create the zip file with the correct
-RISC OS file types. I can supply this on request.  You need to put it in the
-top level of the source tree and call it `zip-magic'.
-
-<P>You'll probably need to use Acorn's Make Utility (`amu') to build - the GNU
-make 1.02 port doesn't seem up to the job.
-
-<P>To build, create a fresh directory (or empty one) and unpack the contents of
-srcN_NN.zip into it (using !SparkFS or similar).  Then double-click on
-`!ObeyMe' in the unpacked directory to rename the source files into c and h
-subdirectories.  Then double-click on `!MakeMe' to build survex.
 
 </BODY></HTML>
