@@ -156,7 +156,7 @@ sub init_riscos {
       'CRLIB' => '',
       'CROBJX' => 'armrot.o',
       # REAL_EPSILON might be ok as 1e-11...
-      'CFLAGS' => '-DREAL_EPSILON=1e-10 -DHAVE_CONFIG_H -IC:,@ -throwback -ffahp -fussy',
+      'CFLAGS' => '-DREAL_EPSILON=1e-10 -DHAVE_CONFIG_H -DIMG_HOSTED -IC:,@ -throwback -ffahp -fussy',
       'LDFLAGS' => '',
       'LIBS' => 'C:OSLib.o.OSLib',
       'CC' => 'cc',
@@ -175,7 +175,7 @@ sub init_borlandc {
       'LIBOBJS' => '',
       'CRLIB' => 'graphics.lib mouse.lib',
       'CROBJX' => 'dosrot.obj',
-      'CFLAGS' => '-DHAVE_CONFIG_H -DHAVE_FAR_POINTERS -I. -ml -d -O1 -Ogmpvl -X',
+      'CFLAGS' => '-DHAVE_CONFIG_H -DHAVE_FAR_POINTERS -DIMG_HOSTED -I. -ml -d -O1 -Ogmpvl -X',
       'LDFLAGS' => '',
       'LIBS' => '',
       'CC' => 'bcc',
