@@ -170,9 +170,23 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     }
 #endif
 
-    SetBackgroundColour(wxColour(0, 0, 0));
+    // Create accelerator table.
+    wxAcceleratorEntry entries[11];
+    entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, menu_ORIENT_DEFAULTS);
+    entries[1].Set(wxACCEL_NORMAL, WXK_UP, menu_ORIENT_SHIFT_UP);
+    entries[2].Set(wxACCEL_NORMAL, WXK_DOWN, menu_ORIENT_SHIFT_DOWN);
+    entries[3].Set(wxACCEL_NORMAL, WXK_LEFT, menu_ORIENT_SHIFT_LEFT);
+    entries[4].Set(wxACCEL_NORMAL, WXK_RIGHT, menu_ORIENT_SHIFT_RIGHT);
+    entries[5].Set(wxACCEL_NORMAL, (int) '\'', menu_ORIENT_HIGHER_VP);
+    entries[6].Set(wxACCEL_NORMAL, (int) '/', menu_ORIENT_LOWER_VP);
+    entries[7].Set(wxACCEL_NORMAL, (int) ']', menu_ORIENT_ZOOM_IN);
+    entries[8].Set(wxACCEL_NORMAL, (int) '[', menu_ORIENT_ZOOM_OUT);
+    entries[9].Set(wxACCEL_NORMAL, WXK_RETURN, menu_ROTATION_START);
+    entries[10].Set(wxACCEL_NORMAL, WXK_SPACE, menu_ROTATION_STOP);
 
-    fflush(stdout);
+    wxAcceleratorTable accel(11, entries);
+    SetAcceleratorTable(accel);
+    SetBackgroundColour(wxColour(0, 0, 0));
 
     // Initialise grid for hit testing.
     m_PointGrid = new list<GridPointInfo>[HITTEST_SIZE * HITTEST_SIZE];

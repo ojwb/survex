@@ -241,7 +241,6 @@ class MainFrm : public wxFrame {
     void InitialisePensAndBrushes();
     void CreateMenuBar();
     void CreateToolBar();
-    void CreateAcceleratorTable();
     void CreateSidePanel();
 
 public:

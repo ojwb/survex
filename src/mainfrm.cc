@@ -31,9 +31,7 @@
 #include <wx/confbase.h>
 #include <float.h>
 #include <stack>
-#ifdef AVEN_REGEX
 #include <regex.h>
-#endif
 
 const int NUM_DEPTH_COLOURS = 13;
 
@@ -211,7 +209,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     InitialisePensAndBrushes();
     CreateMenuBar();
-    CreateAcceleratorTable();
     CreateToolBar();
     CreateSidePanel();
 
@@ -256,7 +253,9 @@ void MainFrm::CreateMenuBar()
     // status bar at the moment! ;-)
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220), "Open a Survex 3D file for viewing");
+#ifdef AVENPRES
     filemenu->Append(menu_FILE_OPEN_PRES, GetTabMsg(/*Open @Presentation...*/321), "unused");
+#endif
 #ifdef AVENGL
     filemenu->Append(menu_FILE_OPEN_TERRAIN, GetTabMsg(/*Open @Terrain...*/329), "unused");
 #endif
@@ -314,6 +313,8 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight Fi@xed Points*/295), "unused", true);
     viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight Ex&ported Points*/296), "unused", true);
     viewmenu->AppendSeparator();
+
+#ifdef AVENPRES
     wxMenu* presmenu = new wxMenu;
     presmenu->Append(menu_PRES_CREATE, GetTabMsg(/*@Create...*/311), "unused", false);
     presmenu->AppendSeparator();
@@ -326,6 +327,8 @@ void MainFrm::CreateMenuBar()
     presmenu->AppendSeparator();
     presmenu->Append(menu_PRES_ERASE, GetTabMsg(/*@Erase Last Position*/315), "unused", false);
     presmenu->Append(menu_PRES_ERASE_ALL, GetTabMsg(/*Er@ase All Positions*/316), "unused", false);
+#endif
+
     wxMenu* indmenu = new wxMenu;
     indmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "Toggle display of the compass", true);
     indmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "Toggle display of the clinometer", true);
@@ -350,7 +353,9 @@ void MainFrm::CreateMenuBar()
     menubar->Append(rotmenu, GetTabMsg(/*@Rotation*/211));
     menubar->Append(orientmenu, GetTabMsg(/*@Orientation*/212));
     menubar->Append(viewmenu, GetTabMsg(/*@View*/213));
+#ifdef AVENPRES
     menubar->Append(presmenu, GetTabMsg(/*@Presentation*/317));
+#endif
     menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
@@ -398,6 +403,8 @@ void MainFrm::CreateToolBar()
                      -1, -1, NULL, "Show solid surface");
     toolbar->AddSeparator();
 #endif
+
+#ifdef AVENPRES
     toolbar->AddTool(menu_PRES_CREATE, TOOLBAR_BITMAP("pres-create.png"),
                      "Create a new presentation");
     toolbar->AddTool(menu_PRES_RECORD, TOOLBAR_BITMAP("pres-record.png"),
@@ -410,29 +417,8 @@ void MainFrm::CreateToolBar()
     toolbar->AddTool(menu_PRES_GO_BACK, TOOLBAR_BITMAP("pres-go-back.png"),
                      "Go back one presentation step");
     toolbar->AddTool(menu_PRES_GO, TOOLBAR_BITMAP("pres-go.png"), "Go forwards one presentation step");
-
+#endif
     toolbar->Realize();
-}
-
-void MainFrm::CreateAcceleratorTable()
-{
-    // Create the accelerator key table.
-
-    wxAcceleratorEntry entries[11];
-    entries[0].Set(wxACCEL_NORMAL, WXK_DELETE, menu_ORIENT_DEFAULTS);
-    entries[1].Set(wxACCEL_NORMAL, WXK_UP, menu_ORIENT_SHIFT_UP);
-    entries[2].Set(wxACCEL_NORMAL, WXK_DOWN, menu_ORIENT_SHIFT_DOWN);
-    entries[3].Set(wxACCEL_NORMAL, WXK_LEFT, menu_ORIENT_SHIFT_LEFT);
-    entries[4].Set(wxACCEL_NORMAL, WXK_RIGHT, menu_ORIENT_SHIFT_RIGHT);
-    entries[5].Set(wxACCEL_NORMAL, (int) '\'', menu_ORIENT_HIGHER_VP);
-    entries[6].Set(wxACCEL_NORMAL, (int) '/', menu_ORIENT_LOWER_VP);
-    entries[7].Set(wxACCEL_NORMAL, (int) ']', menu_ORIENT_ZOOM_IN);
-    entries[8].Set(wxACCEL_NORMAL, (int) '[', menu_ORIENT_ZOOM_OUT);
-    entries[9].Set(wxACCEL_NORMAL, WXK_RETURN, menu_ROTATION_START);
-    entries[10].Set(wxACCEL_NORMAL, WXK_SPACE, menu_ROTATION_STOP);
-
-    wxAcceleratorTable accel(11, entries);
-    SetAcceleratorTable(accel);
 }
 
 void MainFrm::CreateSidePanel()
@@ -490,6 +476,7 @@ void MainFrm::CreateSidePanel()
     m_PanelSizer->SetSizeHints(m_Panel);
 
     m_Gfx = new GfxCore(this, m_Splitter);
+    m_Gfx->SetFocus();
 
     m_Splitter->Initialize(m_Gfx);
 }
@@ -1414,7 +1401,6 @@ void MainFrm::OnFind(wxCommandEvent& event)
 {
     // Find stations specified by a string or regular expression.
 
-#ifdef AVEN_REGEX
     wxString str = m_FindBox->GetValue();
     re_pattern_buffer buffer;
     bool regexp = m_RegexpCheckBox->GetValue();
@@ -1485,7 +1471,8 @@ void MainFrm::OnFind(wxCommandEvent& event)
     if (!found) {
         wxGetApp().ReportError(msg(/*No matches were found.*/328));
     }
-#endif 
+
+    m_Gfx->SetFocus();
 }
 
 void MainFrm::OnHide(wxCommandEvent& event)
