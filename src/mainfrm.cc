@@ -45,7 +45,7 @@ extern "C" {
 }
 #endif
 
-const int NUM_DEPTH_COLOURS = 13;
+const int NUM_DEPTH_COLOURS = 13; // up to 13
 
 #define TOOLBAR_BITMAP(file) wxBitmap(wxString(msg_cfgpth()) + \
     wxCONFIG_PATH_SEPARATOR + wxString("icons") + wxCONFIG_PATH_SEPARATOR + \
@@ -976,7 +976,7 @@ Double MainFrm::GetDepthBoundaryBetweenBands(int a, int b)
     assert((a == b - 1) || (a == b + 1));
 
     int band = (a > b) ? a : b; // boundary N lies on the bottom of band N.
-    return m_ZMin + (m_ZExt * band / (NUM_DEPTH_COLOURS - 1));
+    return m_ZMin + (m_ZExt * band / (NUM_DEPTH_COLOURS == 1 ? 1 : NUM_DEPTH_COLOURS - 1));
 }
 
 void MainFrm::IntersectLineWithPlane(Double x0, Double y0, Double z0,
@@ -1114,7 +1114,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 //
 
 #undef FILEDIALOG_MULTIGLOBS
-// MS Windows "*.abc;*.def" natively; wxGtk supports them as of 2.3
+// MS Windows supports "*.abc;*.def" natively; wxGtk supports them as of 2.3
 #if defined(_WIN32) || (wxMAJOR_VERSION > 2) || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
 # define FILEDIALOG_MULTIGLOBS
 #endif

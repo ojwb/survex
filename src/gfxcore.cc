@@ -2236,25 +2236,34 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
             if (segment > 0) {
                 BeginQuadrilaterals();
 
-                SetColour(pen, true, 1.0);
+		const Vector3 light(1.0, 1.0, 1.0);
+		Vector3 normal = (v1 - v2_prev) * (v2 - v1_prev);
+		normal.normalise();
+                SetColour(pen, true, dot(normal, light) * .375 + .625);
                 PlaceVertex(v1.getX(), v1.getY(), v1.getZ());
                 PlaceVertex(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ());
                 PlaceVertex(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ());
                 PlaceVertex(v2.getX(), v2.getY(), v2.getZ());
 
-                SetColour(pen, true, 0.25);
+		normal = (v3 - v4_prev) * (v4 - v3_prev);
+		normal.normalise();
+                SetColour(pen, true, dot(normal, light) * .375 + .625);
                 PlaceVertex(v4.getX(), v4.getY(), v4.getZ());
                 PlaceVertex(v3.getX(), v3.getY(), v3.getZ());
                 PlaceVertex(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ());
                 PlaceVertex(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ());
 
-                SetColour(pen, true, 0.5);
+		normal = (v2 - v3_prev) * (v3 - v2_prev);
+		normal.normalise();
+                SetColour(pen, true, dot(normal, light) * .375 + .625);
                 PlaceVertex(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ());
                 PlaceVertex(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ());
                 PlaceVertex(v3.getX(), v3.getY(), v3.getZ());
                 PlaceVertex(v2.getX(), v2.getY(), v2.getZ());
 
-                SetColour(pen, true, 0.75);
+		normal = (v4 - v1_prev) * (v1 - v4_prev);
+		normal.normalise();
+                SetColour(pen, true, dot(normal, light) * .375 + .625);
                 PlaceVertex(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ());
                 PlaceVertex(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ());
                 PlaceVertex(v1.getX(), v1.getY(), v1.getZ());
