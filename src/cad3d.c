@@ -290,14 +290,16 @@ typedef struct point {
    struct point *next;
 } point;
 
+#define HTAB_SIZE 0x2000
+
 static point **htab;
 
 static void
 plt_header(void)
 {
    size_t i;
-   htab = osmalloc(0x2000 * ossizeof(point *));
-   for (i = 0; i < 0x2000; ++i) htab[i] = NULL;
+   htab = osmalloc(HTAB_SIZE * ossizeof(point *));
+   for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
            min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
@@ -322,10 +324,10 @@ set_name(const img_point *p, const char *s)
       int x[3];
    } u;
 
-   u.x[0] = p->x * 100;
-   u.x[1] = p->y * 100;
-   u.x[2] = p->z * 100;
-   hash = (hash_data(u.data, sizeof(int) * 3) & 0x1fff);
+   u.x[0] = (int)(p->x * 100);
+   u.x[1] = (int)(p->y * 100);
+   u.x[2] = (int)(p->z * 100);
+   hash = (hash_data(u.data, sizeof(int) * 3) & (HTAB_SIZE - 1));
    for (pt = htab[hash]; pt; pt = pt->next) {
       if (pt->p.x == p->x && pt->p.y == p->y && pt->p.z == p->z) {
 	 /* already got name for these coordinates */
@@ -354,10 +356,10 @@ find_name(const img_point *p)
    } u;
    SVX_ASSERT(p);
 
-   u.x[0] = p->x * 100;
-   u.x[1] = p->y * 100;
-   u.x[2] = p->z * 100;
-   hash = (hash_data(u.data, sizeof(int) * 3) & 0x1fff);
+   u.x[0] = (int)(p->x * 100);
+   u.x[1] = (int)(p->y * 100);
+   u.x[2] = (int)(p->z * 100);
+   hash = (hash_data(u.data, sizeof(int) * 3) & (HTAB_SIZE - 1));
    for (pt = htab[hash]; pt; pt = pt->next) {
       if (pt->p.x == p->x && pt->p.y == p->y && pt->p.z == p->z)
 	 return pt->label;

@@ -180,7 +180,7 @@ ini_read_hier(FILE **fh_list, const char *section, const char **v)
    int i, j;
    char **vals;
    int *to;
-   const char **vars;
+   char **vars;
 
    SVX_ASSERT(fh_list != NULL);
    SVX_ASSERT(section != NULL);

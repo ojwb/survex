@@ -1442,7 +1442,7 @@ write_v3label(img *pimg, int opt, const char *s)
       putc(n, pimg->fh);
    } else if (n < 0xffff + 0xfe) {
       putc(0xfe, pimg->fh);
-      put16(n - 0xfe, pimg->fh);
+      put16((short)(n - 0xfe), pimg->fh);
    } else {
       putc(0xff, pimg->fh);
       put32(n, pimg->fh);

@@ -182,7 +182,7 @@ get_token(void)
    osfree(ucbuffer);
    skipblanks();
    while (isalpha(ch)) {
-      s_catchar(&buffer, &buf_len, ch);
+      s_catchar(&buffer, &buf_len, (char)ch);
       nextch();
    }
 

@@ -352,7 +352,7 @@ ps_WriteString(const char *s)
    } else {
       int fs = (current_font_code == 'F' ? fontsize : fontsize_labels);
       if ((y_t + 3 * fs / 4 > clip.y_min && y_t - fs / 4 < clip.y_max) ||
-	  (x_t < clip.x_max && x_t + strlen(s) * fs > clip.x_min)) {
+	  (x_t < clip.x_max && x_t + (long)strlen(s) * fs > clip.x_min)) {
 	 fBlankPage = fFalse;
       }
    }
@@ -939,7 +939,7 @@ hpgl_WriteString(const char *s)
    } else {
 #define CHAR_SIZE (6 * HPGL_UNITS_PER_MM) /* Guesstimate of character size */
       if ((y_t + CHAR_SIZE > clip.y_min && y_t < clip.y_max) ||
-	  (x_t < clip.x_max && x_t + strlen(s) * CHAR_SIZE > clip.x_min)) {
+	  (x_t < clip.x_max && x_t + (long)strlen(s) * CHAR_SIZE > clip.x_min)) {
 	 fBlankPage = fFalse;
       }
    }
