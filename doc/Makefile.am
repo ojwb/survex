@@ -32,8 +32,7 @@ MAINTAINERCLEANFILES = $(doclist)
 CLEANFILES = $(other_mans)
 
 pkgdoc_DATA = index.htm COPYING.htm TODO.htm ChngeLog.htm\
- NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist)\
- caution.png note.png
+ NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist)
 
 man_MANS = survex.1 $(other_mans)
 
@@ -43,14 +42,14 @@ $(other_mans):
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual; \
 	if test -d "$(srcdir)/manual" ; then \
-	  for p in `find "$(srcdir)/manual" -name "*.htm" -type f -print` ; do \
+	  for p in $(srcdir)/manual/*.htm $(srcdir)/manual/*.png ; do \
 	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
 	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
 	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
 	  done \
 	else \
 	  if test -d manual ; then \
-	    for p in `find manual -name "*.htm" -type f -print` ; do \
+	    for p in manual/*.htm manual/*.png ; do \
 	      f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
 	      echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
 	      $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
@@ -60,23 +59,25 @@ install-data-local:
 
 uninstall-local:
 	if test -d "$(srcdir)/manual" ; then \
-	  for p in `find "$(srcdir)/manual" -name "*.htm" -type f -print` ; do \
+	  for p in $(srcdir)/manual/*.htm $(srcdir)/manual/*.png ; do
 	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
 	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
 	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
 	  done \
 	else \
 	  if test -d manual ; then \
-	    for p in `find manual -name "*.htm" -type f -print` ; do \
+	    for p in manual/*.htm manual/*.png ; do \
 	      f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
 	      echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
 	      rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
 	    done \
 	  fi \
 	fi
+	-rmdir $(DESTDIR)$(pkgdocdir)/manual
 
 manual: manual.sgml custom.dsl
 	@sgmltools@ --backend=html --dsssl-spec=custom.dsl#html manual.sgml
+	cp caution.png note.png manual
 
 manual.html: manual.sgml custom.dsl
 	@sgmltools@ --backend=onehtml --dsssl-spec=custom.dsl#onehtml manual.sgml
