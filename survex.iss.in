@@ -20,6 +20,7 @@ Name: "{app}\icons"
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"
+Source: "*.dll"; DestDir: "{app}"
 Source: "*.msg"; DestDir: "{app}"
 Source: "*.txt"; DestDir: "{app}"
 Source: "*.bit"; DestDir: "{app}"
