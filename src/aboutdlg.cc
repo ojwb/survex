@@ -4,7 +4,7 @@
 //  About box handling for Aven.
 //
 //  Copyright (C) 2001-2003 Mark R. Shinwell.
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001,2002,2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -38,13 +38,12 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticText* title = new wxStaticText(this, 502,
-                                           wxString("Aven "VERSION));
-    wxStaticText* purpose = new wxStaticText(this, 505,
-	wxString(msg(/*Survey visualisation tool*/209)));
-    wxStaticText* copyright1 = new wxStaticText(this, 503,
+    wxStaticText* title = new wxStaticText(this, 502, "Aven "VERSION);
+    wxStaticText* purpose = new wxStaticText(this, 503,
+	    wxString(msg(/*Survey visualisation tool*/209)));
+    wxStaticText* copyright1 = new wxStaticText(this, 504,
 	    wxString::Format(AVEN_COPYRIGHT_MSG, msg(/*&copy;*/0)));
-    wxStaticText* copyright2 = new wxStaticText(this, 504,
+    wxStaticText* copyright2 = new wxStaticText(this, 505,
 	    wxString::Format(COPYRIGHT_MSG, msg(/*&copy;*/0)));
 
     wxString licence_str;
@@ -72,7 +71,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 	l = l.substr(a);
     } while (!l.empty());
 
-    wxStaticText* licence = new wxStaticText(this, 506, licence_str);
+    wxStaticText* licence = new wxStaticText(this, 508, licence_str);
     wxButton* ok = new wxButton(this, wxID_OK, wxGetTranslation("OK"));
     ok->SetDefault();
 
@@ -92,7 +91,40 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     vert->Add(copyright1, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(copyright2, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 15);
-    
+
+    vert->Add(new wxStaticText(this, 506, msg(/*System Information:*/390)),
+	      0, wxLEFT | wxRIGHT, 20);
+
+#ifdef unix
+    // On Unix, wx reports the OS that we were *built* on, which may have
+    // be a different OS or kernel version to what we're running on.
+    wxString info;
+    {
+	char buf[80];
+	FILE *f = popen("uname -s -r", "r");
+	if (f) {
+	    size_t c = fread(buf, 1, sizeof(buf), f);
+	    if (c > 0) {
+		if (buf[c - 1] == '\n') --c;
+		info = wxString(buf, c);
+	    }
+	    fclose(f);
+	}
+	if (info.empty()) info = wxGetOsDescription();
+    }
+#else
+    wxString info(wxGetOsDescription());
+#endif
+    info += '\n';
+    info += wxVERSION_STRING;
+    // Use a readonly multiline text edit for the system info so users can
+    // easily cut and paste it into an email when reporting bugs.
+    vert->Add(new wxTextCtrl(this, 507, info, wxDefaultPosition,
+			     wxSize(360, 64), wxTE_MULTILINE|wxTE_READONLY),
+	      0, wxLEFT | wxRIGHT, 20);
+
+    vert->Add(10, 5, 0, wxTOP, 15);
+
     vert->Add(licence, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 1, wxALIGN_BOTTOM | wxTOP, 5);
 
