@@ -13,6 +13,8 @@
 * Fixed typo which prevented *instrument from being recognised as a
   valid command.
 
+* Minor documentation updates.
+
 Changes in 0.98-prerelease3:
 
 * cavern/3dtopos: cavern no longer produces .pos files - they're
