@@ -3,7 +3,7 @@
 //
 //  C++ class for 3-element vectors
 //
-//  Copyright (C) 2000-2001, Mark R. Shinwell.
+//  Copyright (C) 2000-2002, Mark R. Shinwell.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -71,6 +71,7 @@ public:
     friend Vector3 operator*(const double, const Vector3&);
     friend Vector3 operator*(const Vector3&, const Vector3&); // cross product
     friend Vector3 operator+(const Vector3&, const Vector3&);
+    friend Vector3 operator-(const Vector3&, const Vector3&);
     friend double dot(const Vector3&, const Vector3&);
 };
 
