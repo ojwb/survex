@@ -25,28 +25,12 @@
 </style-specification-body>
 </style-specification>
 
-<style-specification id="onepage" use="docbook">
+<style-specification id="onehtml" use="html">
 <style-specification-body> 
     ;;
-    ;;  Much the same as above except all in one file
+    ;;  Same as above except all in one file
     ;;
     (define nochunks #t)
-    (define %html-manifest% #f)
-    (define %use-id-as-filename% #f)
-
-    (define %html-ext% ".html")
-;    (define %body-attr% '())
-;    (define %shade-verbatim% #t)
-    ;; (define %use-id-as-filename% #t)
-
-;    (define %graphic-default-extension% "gif")
-;    (define %admon-graphics% #t)
-;    (define %gentext-nav-tblwidth% "100%")
-
-;    (define %generate-article-toc% #t)
-    ;; (define %generate-article-titlepage-on-separate-page% #t)
-    ;; (define %generate-article-toc-on-titlepage% #f)
-
 </style-specification-body>
 </style-specification>
 

@@ -62,8 +62,9 @@ uninstall-local:
 svxdocs: svxdocs.sgml custom.dsl
 	@sgmltools@ --backend=html --dsssl-spec=custom.dsl#html svxdocs.sgml
 
-svxdocs.html: svxdocs.sgml custom.dsl
-	@sgmltools@ --backend=html --dsssl-spec=custom.dsl#onepage svxdocs.sgml
+svxdocs.htm: svxdocs.sgml custom.dsl
+	@sgmltools@ --backend=onehtml --dsssl-spec=custom.dsl#onehtml svxdocs.sgml
+	mv -f svxdocs.html svxdocs.htm
 
 svxdocs.rtf: svxdocs.sgml
 	@sgmltools@ --backend=rtf svxdocs.sgml
