@@ -465,6 +465,7 @@ public:
     void OnMoveSouth(wxCommandEvent&);
     void OnMoveWest(wxCommandEvent&);
     void OnStartRotation(wxCommandEvent&);
+    void OnToggleRotation(wxCommandEvent&);
     void OnStopRotation(wxCommandEvent&);
     void OnReverseControls(wxCommandEvent&);
     void OnSlowDown(wxCommandEvent&);
@@ -516,6 +517,7 @@ public:
     void OnMoveSouthUpdate(wxUpdateUIEvent&);
     void OnMoveWestUpdate(wxUpdateUIEvent&);
     void OnStartRotationUpdate(wxUpdateUIEvent&);
+    void OnToggleRotationUpdate(wxUpdateUIEvent&);
     void OnStopRotationUpdate(wxUpdateUIEvent&);
     void OnReverseControlsUpdate(wxUpdateUIEvent&);
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent&);

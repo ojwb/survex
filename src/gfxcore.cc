@@ -2551,6 +2551,24 @@ void GfxCore::OnStartRotationUpdate(wxUpdateUIEvent& cmd)
                 m_Lock == lock_YZ));
 }
 
+void GfxCore::OnToggleRotation(wxCommandEvent& cmd)
+{
+    if (m_Rotating) {
+    	OnStopRotation(cmd);
+    }
+    else {
+    	OnStartRotation(cmd);
+    }
+}
+
+void GfxCore::OnToggleRotationUpdate(wxUpdateUIEvent& cmd) 
+{
+    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode &&
+               (m_Lock == lock_NONE || m_Lock == lock_Z || m_Lock == lock_XZ ||
+                m_Lock == lock_YZ));
+    cmd.Check(m_PlotData != NULL && m_Rotating);
+}
+
 void GfxCore::OnStopRotation(wxCommandEvent&) 
 {
     if (!m_SwitchingToElevation && !m_SwitchingToPlan) {

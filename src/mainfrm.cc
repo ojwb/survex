@@ -74,6 +74,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_CLOSE(MainFrm::OnClose)
 
     EVT_MENU(menu_ROTATION_START, MainFrm::OnStartRotation)
+    EVT_MENU(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotation)
     EVT_MENU(menu_ROTATION_STOP, MainFrm::OnStopRotation)
     EVT_MENU(menu_ROTATION_SPEED_UP, MainFrm::OnSpeedUp)
     EVT_MENU(menu_ROTATION_SLOW_DOWN, MainFrm::OnSlowDown)
