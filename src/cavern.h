@@ -300,7 +300,6 @@ extern bool fSuppress; /* only output 3d(3dx) file */
 
 #define POS(S, D) ((S)->name->pos->p[(D)])
 #define POSD(S) ((S)->name->pos->p)
-#define USED(S, L) ((S)->leg[(L)] != NULL)
 
 #define data_here(L) ((L)->l.reverse & FLAG_DATAHERE)
 #define reverse_leg_dirn(L) ((L)->l.reverse & MASK_REVERSEDIRN)

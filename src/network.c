@@ -84,6 +84,9 @@ remove_subnets(void)
    while (fMore) {
       fMore = fFalse;
       if (optimize & BITA('l')) {
+#if PRINT_NETBITS
+	 printf("replacing lollipops\n");
+#endif
          /*      _
 	  *     ( )
 	  *      * stn
@@ -294,7 +297,9 @@ remove_subnets(void)
 	 int dirn5, dirn6, dirn0;
 	 linkfor *legAB, *legBC, *legCA;
 	 linkfor *legAZ, *legBZ, *legCZ;
-	 /*printf("replacing delta with star\n");*/
+#if PRINT_NETBITS
+	 printf("replacing deltas with stars\n");
+#endif
 	 FOR_EACH_STN(stn, stnlist) {
 	    /*    printf("*");*/
 	    /*
@@ -702,6 +707,7 @@ replace_subnets(void)
          stn[0] = leg->l.to;
          dirn[0] = reverse_leg_dirn(leg);
          stnZ = stn[0]->leg[dirn[0]]->l.to;
+	 ASSERT(fixed(stnZ));
          stn[1] = stnZ->leg[1]->l.to;
 	 dirn[1] = reverse_leg_dirn(stnZ->leg[1]);
          stn[2] = stnZ->leg[2]->l.to;
@@ -710,20 +716,30 @@ replace_subnets(void)
 
 	 for (i = 0; i < 3; i++) {
 	    ASSERT2(fixed(stn[i]), "stn not fixed for D*");
-	    ASSERT2(data_here(stn[i]->leg[dirn[i]]), "data not on leg for D*");
-	    ASSERT2(stn[i]->leg[dirn[i]]->l.to == stnZ,
-		    "bad sub-network for D*");
-	 }
-	 for (i = 0; i < 3; i++) {
+
 	    leg = stn[i]->leg[dirn[i]];
+
+	    ASSERT2(data_here(leg), "data not on leg for D*");
+	    ASSERT2(leg->l.to == stnZ, "bad sub-network for D*");
+
 	    stn2 = legs[i]->l.to;
-	    adddd(&POSD(stn2), &POSD(stn[i]), &legs[i]->d);
+
+	    if (data_here(legs[i])) {
+	       adddd(&POSD(stn2), &POSD(stn[i]), &legs[i]->d);
+	    } else {
+	       subdd(&POSD(stn2), &POSD(stn[i]), &reverse_leg(legs[i])->d);
+	    }
+
 	    if (!fZeros(&leg->v)) {
 	       delta e, tmp;
 	       subdd(&e, &POSD(stnZ), &POSD(stn[i]));
 	       subdd(&e, &e, &leg->d);
 	       divds(&tmp, &e, &leg->v);
-	       mulsd(&e, &legs[i]->v, &tmp);
+	       if (data_here(legs[i])) {
+		  mulsd(&e, &legs[i]->v, &tmp);
+	       } else {
+		  mulsd(&e, &reverse_leg(legs[i])->v, &tmp);
+	       }
 	       adddd(&POSD(stn2), &POSD(stn2), &e);
 	    }
 	    fix(stn2);
