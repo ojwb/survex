@@ -103,6 +103,16 @@ BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
 #endif
 END_EVENT_TABLE()
 
+// Write a value without trailing zeros after the decimal point.
+static void write_double(double d, FILE * fh) {
+    char buf[64];
+    sprintf(buf, "%.21f", d);
+    size_t l = strlen(buf);
+    while (l > 1 && buf[l - 1] == '0') --l;
+    if (l > 1 && buf[l - 1] == '.') --l;
+    fwrite(buf, l, 1, fh);
+}
+
 class AvenListCtrl: public wxListCtrl {
     GfxCore * gfx;
     list<PresentationMark> entries;
@@ -228,8 +238,18 @@ class AvenListCtrl: public wxListCtrl {
 	    list<PresentationMark>::const_iterator i;
 	    for (i = entries.begin(); i != entries.end(); ++i) {
 		const PresentationMark &p = *i;
-		fprintf(fh_pres, "%.21f %.21f %.21f %.21f %.21f %.21f\n",
-			p.x, p.y, p.z, p.angle, p.tilt_angle, p.scale);
+		write_double(p.x, fh_pres);
+		putc(' ', fh_pres);
+		write_double(p.y, fh_pres);
+		putc(' ', fh_pres);
+		write_double(p.z, fh_pres);
+		putc(' ', fh_pres);
+		write_double(p.angle, fh_pres);
+		putc(' ', fh_pres);
+		write_double(p.tilt_angle, fh_pres);
+		putc(' ', fh_pres);
+		write_double(p.scale, fh_pres);
+		putc('\n', fh_pres);
 	    }
 	    fclose(fh_pres);
 	    filename = fnm;
