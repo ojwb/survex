@@ -1,3 +1,5 @@
+Changes in 1.0.14:
+
 * Improved handling of Compass PLT files and CMAP xyz files - no longer change
   dots to spaces in survey and station names - instead use a space as the
   separator between survey name and station name.
