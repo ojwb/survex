@@ -657,7 +657,8 @@ int main(int argc, char **argv)
 
       /* ini files searched in this order:
        * ~/.survex/print.ini [unix only]
-       * $SURVEXHOME/myprint.ini
+       * /etc/survex/print.ini [unix only]
+       * $SURVEXHOME/myprint.ini [not unix]
        * $SURVEXHOME/print.ini [must exist]
        */
 
@@ -668,10 +669,14 @@ int main(int argc, char **argv)
 				 NULL);
 	 if (fh) *p++ = fh;
       }
-#endif
+      pth_cfg = msg_cfgpth();
+      fh = fopenWithPthAndExt(NULL, "/etc/survex/"PRINT_INI, NULL, "rb", NULL);
+      if (fh) *p++ = fh;
+#else
       pth_cfg = msg_cfgpth();
       fh = fopenWithPthAndExt(pth_cfg, "my"PRINT_INI, NULL, "rb", NULL);
       if (fh) *p++ = fh;
+#endif
       fh = fopenWithPthAndExt(pth_cfg, PRINT_INI, NULL, "rb", NULL);
       if (!fh) fatalerror(/*Couldn't open data file '%s'*/24, fnm);
       *p++ = fh;
