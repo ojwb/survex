@@ -43,7 +43,7 @@ dnl set COMMAVERSION to VERSION with the dots replaced by commas -
 dnl e.g. "0,99" or "1,0,22"
 COMMAVERSION="`echo \"$VERSION\"|tr '.' ','`"
 AC_DEFINE_UNQUOTED(COMMAVERSION, $COMMAVERSION,
-                   [Version number of package (comma-separated)])
+		   [Version number of package (comma-separated)])
 AC_SUBST(COMMAVERSION)
 
 PKGDOCDIR='${prefix}/doc/${PACKAGE}'
@@ -76,7 +76,7 @@ AC_DEFINE_UNQUOTED(DEFAULTLANG, [$enableval], [Default language for messages])
 ]
 )
 AC_SUBST(DEFAULTLANG)
-    
+
 AC_ARG_ENABLE(testprogs,
 [  --enable-testprogs Enable building of various test harness programs],
 [case "$enableval" in
@@ -182,11 +182,11 @@ if test -n "$AVEN"; then
       dnl see if wx-config exists and is for the correct version
       AC_PATH_PROGS(WXCONFIG, [wx-config])
       if test -n "$WXCONFIG" ; then
-        if (exec >&5 2>&5;$WXCONFIG --cflags|grep -e -D"$wxdef";exit $?) then
-          :
+	if (exec >&5 2>&5;$WXCONFIG --cflags|grep -e -D"$wxdef";exit $?) then
+	  :
 	else
 	  WXCONFIG=
-        fi
+	fi
       fi
     fi
     if test -z "$WXCONFIG" ; then
@@ -218,7 +218,7 @@ dnl      yes)
 	   WXGL_CXXFLAGS="-DAVENGL $WX_CXXFLAGS"
 	   AC_SUBST(WXGL_CXXFLAGS)
 	   AC_MSG_RESULT(enabling OpenGL functionality for Aven)
-dnl	        ;;
+dnl		;;
 dnl      no) ;;
 dnl      *) AC_MSG_ERROR(bad value $enableval for --enable-opengl) ;;
 dnl    esac])
@@ -400,7 +400,7 @@ AC_SUBST_FILE(SVXEDITDESC)
 SVXEDITDESC=desc-svxedit.txt
 
 dnl don't define DATADIR if building for MS Windows - it won't be used, and
-dnl can conflict with DATADIR typedef in objidl.h 
+dnl can conflict with DATADIR typedef in objidl.h
 if test no = "$mswindows"; then
   AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 fi
