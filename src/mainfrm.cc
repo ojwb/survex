@@ -28,6 +28,7 @@
 #include "mainfrm.h"
 #include "aven.h"
 #include "aboutdlg.h"
+#include "splash.h"
 
 #include "message.h"
 #include "img.h"
@@ -69,8 +70,19 @@ class AvenSplitterWindow : public wxSplitterWindow {
 	}
 
 	void OnSplitterDClick(wxSplitterEvent &e) {
+#if wxMAJOR_VERSION > 2 || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
+	    e.Veto();
+#endif
+#if defined(__UNIX__) && wxMAJOR_VERSION == 2 && wxMINOR_VERSION == 3 && wxRELEASE_NUMBER <= 4
+	    parent->m_SashPosition = GetSashPosition(); // save width of panel
+	    // Calling Unsplit from OnSplitterDClick() doesn't work in debian
+	    // wxGtk 2.3.3.2 (which calls itself 2.3.4) - it does work from CVS
+	    // prior to the actual 2.3.4 though - FIXME: monitor this
+	    // situation...
+	    SetSashPosition(0);
+#else
 	    parent->ToggleSidePanel();
-	    e.Skip();
+#endif
 	}
 	
     private:
@@ -329,7 +341,7 @@ void MainFrm::InitialisePensAndBrushes()
     m_Brushes = new wxBrush[NUM_DEPTH_COLOURS + 1];
     for (int pen = 0; pen < NUM_DEPTH_COLOURS + 1; ++pen) {
 	m_Pens[pen].SetColour(REDS[pen] / 255.0, GREENS[pen] / 255.0, BLUES[pen] / 255.0);
-        m_Pens[pen].SetAlpha(1.0);
+	m_Pens[pen].SetAlpha(1.0);
 	m_Brushes[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
     }
 }
@@ -493,16 +505,16 @@ void MainFrm::CreateToolBar()
 #ifdef AVENGL
     toolbar->AddSeparator();
     toolbar->AddTool(menu_VIEW_SHOW_TUBES, TOOLBAR_BITMAP("tubes.png"), wxNullBitmap, true,
-                     -1, -1, NULL, "Show passage tubes");
+		     -1, -1, NULL, "Show passage tubes");
 #endif
 
     toolbar->AddSeparator();
     m_FindBox = new wxTextCtrl(toolbar, -1, "");
     toolbar->AddControl(m_FindBox);
     toolbar->AddTool(button_FIND, TOOLBAR_BITMAP("find.png"),
-                     "Search for station name");
+		     "Search for station name");
     toolbar->AddTool(button_HIDE, TOOLBAR_BITMAP("hideresults.png"),
-                     "Hide search results");
+		     "Hide search results");
 
     toolbar->Realize();
 }
@@ -513,8 +525,8 @@ void MainFrm::CreateSidePanel()
 
 #if 0
     m_Notebook = new wxNotebook(m_Splitter, 400, wxDefaultPosition,
-                                wxDefaultSize,
-                                wxNB_BOTTOM | wxNB_LEFT);
+				wxDefaultSize,
+				wxNB_BOTTOM | wxNB_LEFT);
     m_Notebook->Show(false);
     
     m_Panel = new wxPanel(m_Notebook);
@@ -601,7 +613,7 @@ void MainFrm::CreateSidePanel()
     m_PresPanel = new wxPanel(m_Notebook);
 
     m_PresList = new wxListCtrl(m_PresPanel, 401, wxDefaultPosition,
-                                wxDefaultSize, wxLC_EDIT_LABELS | wxLC_REPORT);
+				wxDefaultSize, wxLC_EDIT_LABELS | wxLC_REPORT);
     m_PresList->InsertColumn(0, msg(/*State*/378));
     m_PresList->InsertColumn(1, msg(/*Auto*/379));
     m_PresList->InsertColumn(2, msg(/*Delay*/380));
@@ -704,15 +716,15 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     int result;
     int items = 0;
     do {
-        if (splash && (items % 200 == 0)) {
-            long pos = ftell(survey->fh);
-            int progress = int((double(pos) / double(file_size)) * 100.0);
-            splash->SetProgress(progress);
-        }
+	if (splash && (items % 200 == 0)) {
+	    long pos = ftell(survey->fh);
+	    int progress = int((double(pos) / double(file_size)) * 100.0);
+	    splash->SetProgress(progress);
+	}
 
 	img_point pt;
 	result = img_read_item(survey, &pt);
-        items++;
+	items++;
 	switch (result) {
 	    case img_MOVE:
 	    case img_LINE:
@@ -1050,7 +1062,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
     Splash* splash = wxGetApp().GetSplashScreen();
     
     if (splash) {
-        splash->SetProgress(0);
+	splash->SetProgress(0);
     }
 
     if (LoadData(file, survey)) {
@@ -1099,7 +1111,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 
 #undef FILEDIALOG_MULTIGLOBS
 // MS Windows supports "*.abc;*.def" natively; wxGtk supports them as of 2.3
-#if defined(_WIN32) || (wxMAJOR_VERSION > 2) || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
+#if defined(_WIN32) || wxMAJOR_VERSION > 2 || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
 # define FILEDIALOG_MULTIGLOBS
 #endif
 
@@ -1114,7 +1126,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #ifdef FILEDIALOG_MULTIGLOBS
 				       ";*.3D"
 #endif
-#ifdef FILEDIALOG_MULTIGLOBS 
+#ifdef FILEDIALOG_MULTIGLOBS
 				       "|%s|*.plt;*.plf"
 #ifndef _WIN32
 				       ";*.PLT;*.PLF"
@@ -1128,14 +1140,14 @@ void MainFrm::OnOpen(wxCommandEvent&)
 				       ";*.XYZ"
 #endif
 #endif
-                                       "|%s|%s",
-                                       msg(/*Survex 3d files*/207),
-                                       /* FIXME TRANSLATE */
-                                       "Compass PLT files",
-                                       "CMAP XYZ files",
-                                       msg(/*All files*/208),
-                                       wxFileSelectorDefaultWildcardStr
-                                       ), wxOPEN);
+				       "|%s|%s",
+				       msg(/*Survex 3d files*/207),
+				       /* FIXME TRANSLATE */
+				       "Compass PLT files",
+				       "CMAP XYZ files",
+				       msg(/*All files*/208),
+				       wxFileSelectorDefaultWildcardStr
+				       ), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
@@ -1203,7 +1215,8 @@ void MainFrm::SetAltitude(Double z)
 {
     wxString str;
     if (m_Gfx->GetMetric()) {
-	str.Printf("  %s %dm", msg(/*Altitude*/335),                                               int(z));
+	str.Printf("  %s %dm", msg(/*Altitude*/335),
+		   int(z));
     } else {
 	str.Printf("  %s %dft", msg(/*Altitude*/335),
 		   int(z / METRES_PER_FOOT));
@@ -1219,13 +1232,13 @@ void MainFrm::ShowInfo(const LabelInfo *label)
     wxString str;
     if (m_Gfx->GetMetric()) {
 	str.Printf(msg(/*%s: %d E, %d N, %dm altitude*/374),
-                   label->text.GetData(),
+		   label->text.GetData(),
 		   int(label->x + m_Offsets.x),
 		   int(label->y + m_Offsets.y),
-                   int(label->z + m_Offsets.z));
+		   int(label->z + m_Offsets.z));
     } else {
 	str.Printf(msg(/*%s: %d E, %d N, %dft altitude*/375),
-                   label->text.GetData(),
+		   label->text.GetData(),
 		   int((label->x + m_Offsets.x) / METRES_PER_FOOT),
 		   int((label->y + m_Offsets.y) / METRES_PER_FOOT),
 		   int((label->z + m_Offsets.z) / METRES_PER_FOOT));
@@ -1270,10 +1283,10 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	    Double brg = atan2(dx, dy) * 180.0 / M_PI;
 	    if (brg < 0) brg += 360;
 
-            wxString from_str;
+	    wxString from_str;
 	    from_str.Printf(msg(/*From %s*/339), label2->text.c_str());
 
-            wxString hv_str;
+	    wxString hv_str;
 	    if (m_Gfx->GetMetric()) {
 		hv_str.Printf(msg(/*H %d%s, V %d%s*/340),
 			      int(d_horiz), "m",
@@ -1293,15 +1306,15 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	    }
 	    if (m_Gfx->GetMetric()) {
 		str.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
-                           from_str.c_str(), hv_str.c_str(),
+			   from_str.c_str(), hv_str.c_str(),
 			   int(dr), "m", int(brg), brg_unit.c_str());
 	    } else {
 		str.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
-                           from_str.c_str(), hv_str.c_str(),
+			   from_str.c_str(), hv_str.c_str(),
 			   int(dr / METRES_PER_FOOT), "ft", int(brg),
 			   brg_unit.c_str());
 	    }
-            GetStatusBar()->SetStatusText(str, 2);
+	    GetStatusBar()->SetStatusText(str, 2);
 	    m_Gfx->SetThere(x0, y0, z0);
 	} else {
 	    m_Gfx->SetThere(); // FIXME: not in SetMouseOverStation version?
@@ -1352,7 +1365,7 @@ void MainFrm::OnPresCreate(wxCommandEvent& event)
 		      wxString::Format("%s|*.avp|%s|%s",
 				       msg(/*Aven presentations*/320),
 				       msg(/*All files*/208),
-                                       wxFileSelectorDefaultWildcardStr),
+				       wxFileSelectorDefaultWildcardStr),
 		      wxSAVE);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
@@ -1430,7 +1443,7 @@ void MainFrm::OnOpenPres(wxCommandEvent& event)
 		      wxString::Format("%s|*.avp|%s|%s",
 				       msg(/*Aven presentations*/320),
 				       msg(/*All files*/208),
-                                       wxFileSelectorDefaultWildcardStr),
+				       wxFileSelectorDefaultWildcardStr),
 		      wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
@@ -1639,8 +1652,7 @@ void MainFrm::ToggleSidePanel()
     if (m_Splitter->IsSplit()) {
 	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
 	m_Splitter->Unsplit(m_Panel);
-    }
-    else {
+    } else {
 #if 0
 	m_Notebook->Show(true);
 	m_Gfx->Show(true);
@@ -1663,4 +1675,3 @@ bool MainFrm::ShowingSidePanel()
 {
     return m_Splitter->IsSplit();
 }
-
