@@ -30,6 +30,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "cmdline.h"
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
@@ -209,7 +210,7 @@ main(int argc, char **argv)
    show_help();
 
    /* can't do this until after we've initialised the graphics */
-   scDefault = scale_to_screen(ppLegs, ppStns);
+   scDefault = scale_to_screen(ppLegs, ppStns, xcMac, ycMac, y_stretch);
 
    /* Check if we've got a flat plot aligned perpendicular to an axis */
    locked = 0;
@@ -726,7 +727,9 @@ static struct help_msg help[] = {
 static void
 parse_command(int argc, char **argv)
 {
+   char *p;
    int col_idx = 0;
+
    cmdline_set_syntax_message("[OPTIONS...] 3D_FILE...", NULL);
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
    while (1) {

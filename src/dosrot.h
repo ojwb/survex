@@ -31,3 +31,32 @@
 #define CURSOR_RIGHT (0x14d)
 #define CURSOR_DOWN  (0x150)
 #define CURSOR_UP    (0x148)
+
+#ifdef NO_FUNC_PTRS
+
+/* really plebby version (needed if fn pointers won't fit in a coord) */
+# define MOVE (coord)1
+# define DRAW (coord)2
+# define STOP (coord)0
+
+#elif defined(HAVE_SETJMP)
+
+/* for speed, store function ptrs in table */
+
+# define MOVE (coord)(cvrotgfx_moveto)
+# define DRAW (coord)(cvrotgfx_lineto)
+# define STOP (coord)(stop)
+
+/* prototype so STOP macro will work */
+extern void stop(int X, int Y);
+
+#else
+
+/* for speed, store function ptrs in table */
+
+# define MOVE (coord)(cvrotgfx_moveto)
+# define DRAW (coord)(cvrotgfx_lineto)
+# define STOP (coord)NULL
+
+#endif
+    
