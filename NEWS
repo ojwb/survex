@@ -16,6 +16,10 @@ Changes in 0.97-prerelease1:
 * cavern: added *export command to allow scope of station names to be
   limited.
 
+* cavern: compass can be omitted on legs in diving data to indicate a plumbed
+  leg.  In this case the tape and depth gauge readings are combined to give
+  the length of the leg.
+
 * cavern: *begin/*prefix reentry warning now gives the original location as
   a separate warning so smart editors will allow you to click on it to jump
   to that file and line.

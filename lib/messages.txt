@@ -310,9 +310,11 @@ ca: 25 ROOT ja no s'utilitza
 es: 25 ROOT ya no se usa
 it: 25 ROOT &eacute sconsigliato
 # FIXME: TRANSLATE fr de pt ca es it
-en: 26 Prefix `%s' not exported with *EXPORT
-#XXX27
-#XXX28
+en: 26 Station `%s' not exported high enough
+# FIXME: TRANSLATE fr de pt ca es it
+en: 27 Station `%s' not exported from lowest prefix level
+# FIXME: TRANSLATE fr de pt ca es it
+en: 28 Station `%s' not exported with *EXPORT
 # FIXME: TRANSLATE check amended message fr de pt ca es it
 en: 29 Reentering an existing prefix level is deprecated
 #fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute;
@@ -545,7 +547,8 @@ pt: 56 Mais de um comando FIX sem coordenadas
 ca: 56 M&eacute;s d'un comandament FIX sense coordenades
 es: 56 M&aacute;s de un comando FIX sin coordenadas
 it: 56 Pi&uacute; di un comando FIX senza coordinate
-#XXX57
+# FIXME: TRANSLATE fr de pt ca es it
+en: 57 *EXPORT must immediately follow *BEGIN
 en: 58 in this line:
 fr: 58 dans cette ligne:
 de: 58 in dieser Zeile:
@@ -622,7 +625,8 @@ it: 65 STYLE `%s' sconosciuto
 # The meaning of scorretto is that the STYLE is written wrong but is similar 
 # to a known style.
 #it: 65 STYLE `%s' scorretto
-#XXX66
+# FIXME: TRANSLATE fr de pt ca es it
+en: 66 Station `%s' already exported
 # complains about a situation like trying to define two from stations per leg
 en: 67 Duplicate datum `%s'
 fr: 67 Donn&eacute;es dupliqu&eacute;es `%s'

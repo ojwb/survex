@@ -715,7 +715,17 @@ data_diving(void)
 	  if (first_stn == End) first_stn = To;
 	  break;
       case Tape: tape = read_numeric(fFalse); break;
-      case Comp: comp = read_numeric(fFalse); break;
+      case Comp:
+      	  comp = read_numeric(fTrue);
+       	  if (comp == HUGE_REAL) {
+	     if (!isOmit(ch)) {
+		compile_error(/*Expecting numeric field*/9);
+		showandskipline(NULL, 1);
+		return 0;
+	     }
+	     nextch();
+	  }
+	  break;
       case FrDepth: fr_depth = read_numeric(fFalse); break;
       case ToDepth: to_depth = read_numeric(fFalse); break;
       case Ignore: skipword(); break;
@@ -751,10 +761,12 @@ data_diving(void)
    }
 
    tape *= pcs->units[Q_LENGTH];
-   comp *= pcs->units[Q_BEARING];
-   if (comp < (real)0.0 || comp - PI * 2 > EPSILON) {
-      compile_warning(/*Suspicious compass reading*/59);
-      showline(NULL, 0);
+   if (comp != HUGE_REAL) {
+      comp *= pcs->units[Q_BEARING];
+      if (comp < (real)0.0 || comp - PI * 2 > EPSILON) {
+         compile_warning(/*Suspicious compass reading*/59);
+         showline(NULL, 0);
+      }
    }
 
    tape = (tape - pcs->z[Q_LENGTH]) * pcs->sc[Q_LENGTH];
@@ -777,6 +789,15 @@ data_diving(void)
    if (tape == (real)0.0) {
       dx = dy = dz = (real)0.0;
       vx = vy = vz = (real)(var(Q_POS) / 3.0); /* Position error only */
+   } else if (comp == HUGE_REAL) {
+      /* plumb */
+      dx = dy = (real)0.0;
+      if (dz < 0) tape = -tape;
+      dz = (dz * var(Q_LENGTH) + tape * 2 * var(Q_DEPTH))
+         / (var(Q_LENGTH) * 2 * var(Q_DEPTH));
+      vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
+      vz = var(Q_POS) / 3.0 + var(Q_LENGTH) * 2 * var(Q_DEPTH)
+                              / (var(Q_LENGTH) + var(Q_DEPTH));
    } else {
       real L2, sinB, cosB, dx2, dy2, dz2, v, V, D2;
       comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
