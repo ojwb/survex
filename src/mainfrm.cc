@@ -70,7 +70,9 @@ class AvenSplitterWindow : public wxSplitterWindow {
 	}
 
 	void OnSplitterDClick(wxSplitterEvent &e) {
+#if wxMAJOR_VERSION > 2 || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
 	    e.Veto();
+#endif
 #if defined(__UNIX__) && wxMAJOR_VERSION == 2 && wxMINOR_VERSION == 3 && wxRELEASE_NUMBER <= 4
 	    parent->m_SashPosition = GetSashPosition(); // save width of panel
 	    // Calling Unsplit from OnSplitterDClick() doesn't work in debian
@@ -1083,7 +1085,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 
 #undef FILEDIALOG_MULTIGLOBS
 // MS Windows "*.abc;*.def" natively; wxGtk supports them as of 2.3
-#if defined(_WIN32) || (wxMAJOR_VERSION > 2) || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
+#if defined(_WIN32) || wxMAJOR_VERSION > 2 || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
 # define FILEDIALOG_MULTIGLOBS
 #endif
 
