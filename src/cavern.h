@@ -1,6 +1,6 @@
 /* > cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-1999 Olly Betts
+ * Copyright (C) 1991-2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,9 @@
 #ifndef CAVERN_H
 #define CAVERN_H
 
-/* Using covariances increases the memory required somewhat - may be desirable
- * to disable this for small memory machines */
+/* Using covariances increases the memory required somewhat - may be
+ * desirable to disable this for small memory machines */
+
 /* #define NO_COVARIANCES 1 */
 
 #include <stdio.h>
@@ -34,9 +35,9 @@
 #include "useful.h"
 #include "img.h"
 
-/* set this to 1 to force an explicit fixed flag to be used in each pos
- * struct, rather than using p[0]==UNFIXED_VAL to indicate unfixed-ness.
- * This is maybe slightly faster, but uses more memory (definitely).
+/* Set EXPLICIT_FIXED_FLAG to 1 to force an explicit fixed flag to be used
+ * in each pos struct, rather than using p[0]==UNFIXED_VAL to indicate
+ * unfixed-ness.  This may be slightly faster, but uses more memory.
  */
 #ifndef EXPLICIT_FIXED_FLAG
 # define EXPLICIT_FIXED_FLAG 0
@@ -78,10 +79,12 @@ extern int fnm_output_base_is_dir;
 
 /* Types */
 
-typedef enum { Q_NULL = -1, Q_DEFAULT, Q_LENGTH, Q_DEPTH,
-  Q_DX, Q_DY, Q_DZ, Q_LENGTHOUTPUT,
-  Q_COUNT, Q_BEARING, Q_ANGLEOUTPUT,
-  Q_GRADIENT, Q_DECLINATION, Q_POS, Q_PLUMB, Q_LEVEL, Q_MAC } q_quantity;
+typedef enum {
+   Q_NULL = -1, Q_DEFAULT, Q_LENGTH, Q_DEPTH,
+   Q_DX, Q_DY, Q_DZ, Q_LENGTHOUTPUT,
+   Q_COUNT, Q_BEARING, Q_ANGLEOUTPUT,
+   Q_GRADIENT, Q_DECLINATION, Q_POS, Q_PLUMB, Q_LEVEL, Q_MAC
+} q_quantity;
 
 /* unsigned long to cope with 16-bit int-s */
 #define BIT(N) (1UL << (N))
@@ -94,19 +97,24 @@ typedef enum { Q_NULL = -1, Q_DEFAULT, Q_LENGTH, Q_DEPTH,
 #define ANG_QMASK (BIT(Q_BEARING) | BIT(Q_GRADIENT) | BIT(Q_PLUMB) |\
    BIT(Q_LEVEL) | BIT(Q_DECLINATION) | BIT(Q_ANGLEOUTPUT))
 
-typedef enum { UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS,
-  UNITS_DEGS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES, UNITS_MAC } u_units;
+typedef enum {
+   UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS,
+   UNITS_DEGS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES, UNITS_MAC
+} u_units;
 /* if you add/change the order, check factor_tab in commands.c */
 
 /* enumeration of field types */
-typedef enum { End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
+typedef enum {
+   End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
    FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount, Dr,
 #ifdef SVX_MULTILINEDATA
    Next, Back,
 #endif
-   Ignore, IgnoreAll } datum;
+   Ignore, IgnoreAll
+} datum;
+
 /* assert(IgnoreAll<32); */
-/* dr, Comp, dz give CYLPOL style */
+/* Dr, Comp, Dz give CYLPOL style */
 /* Cope with any combination which gives enough info ??? */
 /* typedef enum {NORMAL,CARTES,DIVING,TOPFIL,CYLPOL} style; */
 
