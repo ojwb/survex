@@ -1,26 +1,28 @@
-/*
-     Based on:
-     PLIB - A Suite of Portable Game Libraries
-     Copyright (C) 1998,2002  Steve Baker
- 
-     This library is free software; you can redistribute it and/or
-     modify it under the terms of the GNU Library General Public
-     License as published by the Free Software Foundation; either
-     version 2 of the License, or (at your option) any later version.
- 
-     This library is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-     Library General Public License for more details.
- 
-     You should have received a copy of the GNU Library General Public
-     License along with this library; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- 
-     For further information visit http://plib.sourceforge.net
-
-     $Id: fnt.cc,v 1.1.2.6 2004-03-02 12:28:58 olly Exp $
-*/
+//
+//  fnt.cc
+//
+//  Draw text using texture mapped fonts.
+//
+//  Copyright (C) 2003,2004 Olly Betts
+//
+//     Based on code from PLIB - http://plib.sourceforge.net
+//     Copyright (C) 1998,2002  Steve Baker
+//     Relicensed under the GNU GPL as permitted by the GNU LGPL
+//
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 2 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//
 
 #include "fnt.h"
 
