@@ -1,12 +1,16 @@
 #! /bin/sh
 
+set -e
+
+rm -rf riscos_exes
+mkdir riscos_exes
 cd riscos_exes
-rm *
 unzip ../roexe.zip 
 cd ..
 
+rm -rf bc_exes
+mkdir bc_exes
 cd bc_exes
-rm *.exe
 unzip ../bcexe.zip
 # Olly's MSDOS installation suffers from a Y2K problem and thinks it's 1980
 touch *.exe
