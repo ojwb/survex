@@ -60,6 +60,7 @@ typedef struct {
    /* all other members are for internal use only */
    FILE *fh;          /* file handle of image file */
    size_t buf_len;
+   size_t label_len;
 # ifdef IMG_HOSTED
    bool fLinePending; /* for old style text format files */
    bool fRead;        /* fTrue for reading, fFalse for writing */

@@ -29,10 +29,11 @@
 
 #include "img.h"
 #ifdef IMG_HOSTED
-# include "useful.h"
-# include "message.h"
-# include "filename.h"
+# include "debug.h"
 # include "filelist.h"
+# include "filename.h"
+# include "message.h"
+# include "useful.h"
 # define TIMENA msg(/*Date and time not available.*/108)
 # define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
 #else
@@ -57,6 +58,7 @@
  * to work as intended
  */
 # define fputsnl(S, FH) do {fputs((S), (FH)); putc('\n', (FH));} while(0)
+# define ASSERT(X)
 
 static long
 get32(FILE *fh)
@@ -80,7 +82,7 @@ put32(long w, FILE *fh)
 
 #endif
 
-unsigned int img_output_version = 2;
+unsigned int img_output_version = 3;
 
 #define TMPBUFLEN 256
 static char tmpbuf[TMPBUFLEN];
@@ -180,8 +182,10 @@ img_open(const char *fnm, char *title_buf, char *date_buf)
    /* knock off the 'B' or 'b' if it's there */
    if (strcmp(tmpbuf + pimg->version, "v0.01") == 0) {
       pimg->flags = 0;
-   } else if (pimg->version == 0 && strcmp(tmpbuf, "v2") == 0) {
-      pimg->version = 2;
+   } else if (pimg->version == 0 && tmpbuf[0] == 'v' &&
+	      (tmpbuf[1] >= '2' || tmpbuf[1] <= '3') &&
+	      tmpbuf[2] == '\0') {
+      pimg->version = tmpbuf[1] - '0';
    } else {
       fclose(pimg->fh);
       osfree(pimg);
@@ -194,6 +198,10 @@ img_open(const char *fnm, char *title_buf, char *date_buf)
    pimg->fRead = fTrue; /* reading from this file */
    img_errno = IMG_NONE;
    pimg->start = ftell(pimg->fh);
+
+   /* for version 3 we use label to store the prefix for reuse */
+   pimg->label_len = 0;
+
    return pimg;
 }
 
@@ -201,6 +209,13 @@ void
 img_rewind(img *pimg)
 {
    fseek(pimg->fh, pimg->start, SEEK_SET);
+   
+   pimg->fLinePending = fFalse; /* not in the middle of a 'LINE' command */
+
+   img_errno = IMG_NONE;
+   
+   /* for version 3 we use label to store the prefix for reuse */
+   pimg->label_len = 0;
 }
 
 img *
@@ -208,6 +223,8 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
 {
    time_t tm;
    img *pimg;
+
+   fBinary = fBinary;
 
    if (fDirectory(fnm)) {
       img_errno = IMG_DIRECTORY;
@@ -238,13 +255,10 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    /* Output image file header */
    fputs("Survex 3D Image File\n", pimg->fh); /* file identifier string */
    if (img_output_version < 2) {
-      pimg->version = fBinary ? 1 : 0;
-      if (fBinary)
-         fputs("Bv0.01\n", pimg->fh); /* binary file format version number */
-      else
-         fputs("v0.01\n", pimg->fh); /* file format version number */
+      pimg->version = 1;
+      fputs("Bv0.01\n", pimg->fh); /* binary file format version number */
    } else {
-      pimg->version = 2;
+      pimg->version = (img_output_version > 2) ? 3 : 2;
       fprintf(pimg->fh, "v%d\n", pimg->version); /* file format version no. */
    }
    fputsnl(title_buf, pimg->fh);
@@ -258,17 +272,111 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    }
    pimg->fRead = fFalse; /* writing to this file */
    img_errno = IMG_NONE;
+
+   /* for version 3 we use label to store the prefix for reuse */
+   pimg->label[0] = '\0';
+   pimg->label_len = 0;
+
    return pimg;
 }
 
 int
 img_read_item(img *pimg, img_point *p)
 {
-   static double x = 0.0, y = 0.0, z = 0.0;
-   static long opt_lookahead = 0;
    int result;
    pimg->flags = 0;
-   if (pimg->version > 0) {
+
+   if (pimg->version == 3) {
+      int opt;
+      again3: /* label to goto if we get a prefix */
+      opt = getc(pimg->fh);
+      switch (opt >> 6) {
+       case 0:
+	 if (opt == 0) {
+	    if (!pimg->label_len) return img_STOP; /* end of data marker */
+	    pimg->label_len = 0;
+	    goto again3;
+	 }
+	 if (opt < 15) {
+	    /* 1-14 mean trim that many levels from current prefix */
+	    int c;
+	    /* zero prefix using "0" */
+	    if (pimg->label_len <= 16) {
+	       img_errno = IMG_BADFORMAT;
+	       return img_BAD;
+	    }
+	    c = pimg->label_len - 16;
+	    opt &= 0x07;
+	    while (pimg->label[c] != '.' || --opt > 0) {
+	       if (--c < 0) {
+		  /* zero prefix using "0" */
+		  img_errno = IMG_BADFORMAT;
+		  return img_BAD;
+	       }
+	    }
+	    c++;
+	    pimg->label[c] = '\0';
+	    pimg->label_len = c;
+	    goto again3;
+	 }
+	 if (opt == 15) {
+	    result = img_MOVE;
+	    break;
+	 }
+	 /* 16-31 mean remove (n - 15) characters from the prefix */
+	 pimg->label_len -= (opt - 15);
+	 /* zero prefix using 0 */
+	 if (pimg->label_len <= 0) {
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
+	 goto again3;
+       case 1: case 2: {
+	 char *q;
+	 size_t len;
+
+	 pimg->flags = (int)opt & 0x3f;
+	 result = opt & 0x40 ? img_LABEL : img_LINE;
+
+	 len = getc(pimg->fh);
+	 if (len == 0xfe) {
+	    len += get16(pimg->fh);
+	 } else if (len == 0xff) {
+	    len = get32(pimg->fh);
+	    if (len < 0xfe + 0xffff) {
+	       img_errno = IMG_BADFORMAT;
+	       return img_BAD;
+	    }
+	 }
+
+	 q = pimg->label + pimg->label_len;
+	 pimg->label_len += len;
+	 if (pimg->label_len >= pimg->buf_len) {
+	    pimg->label = xosrealloc(pimg->label, pimg->label_len + 1);
+	    if (!pimg->label) {
+	       img_errno = IMG_OUTOFMEMORY;
+	       return img_BAD;
+	    }
+	    pimg->buf_len = pimg->label_len + 1;
+	 }
+	 if (len && fread(q, len, 1, pimg->fh) != 1) {
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
+	 q[len] = '\0';
+	 break;
+       }
+       default:
+	 img_errno = IMG_BADFORMAT;
+	 return img_BAD;
+      }
+      p->x = get32(pimg->fh) / 100.0;
+      p->y = get32(pimg->fh) / 100.0;
+      p->z = get32(pimg->fh) / 100.0;
+      return result;
+   } else if (pimg->version > 0) {
+      static long opt_lookahead = 0;
+      static double x = 0.0, y = 0.0, z = 0.0;
       long opt;
       again: /* label to goto if we get a cross */
       if (pimg->version == 1) {
@@ -294,11 +402,17 @@ img_read_item(img *pimg, img_point *p)
 	 int ch;
 	 result = img_LABEL;
 	 ch = getc(pimg->fh);
-	 if (ch == EOF) return img_BAD;
+	 if (ch == EOF) {
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
 	 if (ch != '\\') ungetc(ch, pimg->fh);
 	 fgets(pimg->label, 257, pimg->fh);
 	 q = pimg->label + strlen(pimg->label) - 1;
-	 if (*q != '\n') return img_BAD;
+	 if (*q != '\n') {
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
 	 /* Ignore empty labels in some .3d files (caused by a bug) */
 	 if (q == pimg->label) goto again;
 	 *q = '\0';
@@ -324,7 +438,10 @@ img_read_item(img *pimg, img_point *p)
 	    }
 	    pimg->buf_len = len + 1;
 	 }
-	 if (fread(pimg->label, len, 1, pimg->fh) != 1) return img_BAD;
+	 if (fread(pimg->label, len, 1, pimg->fh) != 1) {
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
 	 break;
        }
        case 4:
@@ -343,17 +460,24 @@ img_read_item(img *pimg, img_point *p)
 	    char *q;
 	    pimg->flags = (int)opt & 0x3f;
 	    result = img_LABEL;
-	    if (!fgets(pimg->label, 257, pimg->fh)) return img_BAD;
+	    if (!fgets(pimg->label, 257, pimg->fh)) {
+	       img_errno = IMG_BADFORMAT;
+	       return img_BAD;
+	    }
 	    q = pimg->label + strlen(pimg->label) - 1;
 	    /* Ignore empty-labels in some .3d files (caused by a bug) */
 	    if (q == pimg->label) goto again;
-	    if (*q != '\n') return img_BAD;
+	    if (*q != '\n') {
+	       img_errno = IMG_BADFORMAT;
+	       return img_BAD;
+	    }
 	    *q = '\0';
 	    break;
 	  }
 	  case 0xc0:
 	    /* use this for an extra leg or station flag if we need it */
 	  default:
+	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
 	 }
 	 break;
@@ -367,9 +491,9 @@ img_read_item(img *pimg, img_point *p)
       p->z = z;
 
       if (result == img_MOVE && pimg->version == 1) {
-	 /* peek at next code and see if it's img_LABEL */
+	 /* peek at next code and see if it's an old-style label */
 	 opt_lookahead = get32(pimg->fh);
-	 if (opt_lookahead == img_LABEL) return img_read_item(pimg, p);
+	 if (opt_lookahead == 2) return img_read_item(pimg, p);
       }
 
       return result;
@@ -391,27 +515,106 @@ img_read_item(img *pimg, img_point *p)
 	    pimg->fLinePending = fTrue;
 	    result = img_MOVE;
 	 } else if (strcmp(tmpbuf, "cross") == 0) {
-	    if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3)
+	    if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) {
+	       img_errno = IMG_BADFORMAT;	       
 	       return img_BAD;
+	    }
 	    goto ascii_again;
 	 } else if (strcmp(tmpbuf, "name") == 0) {
 	    int ch;
 	    ch = getc(pimg->fh);
-	    if (ch == EOF) return img_BAD;
+	    if (ch == EOF) {
+	       img_errno = IMG_BADFORMAT;
+	       return img_BAD;
+	    }
 	    if (ch != '\\') ungetc(ch, pimg->fh);
 	    if (fscanf(pimg->fh, "%256s", pimg->label) < 1 ||
 		strlen(pimg->label) == 256) {
+	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	    }
 	    result = img_LABEL;
-	 } else
+	 } else {
+	    img_errno = IMG_BADFORMAT;
 	    return img_BAD; /* unknown keyword */
+	 }
       }
 
-      if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3)
+      if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) {
+	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
+      }
+
       return result;
    }
+}
+
+static void
+write_v3label(img *pimg, int opt, const char *s)
+{
+   size_t len, n, dot;
+
+   /* find length of common prefix */
+   dot = 0;
+   for (len = 0; s[len] == pimg->label[len] && s[len] != '\0'; len++) {
+      if (s[len] == '.') dot = len + 1;
+   }
+
+   ASSERT(len <= pimg->label_len);
+   n = pimg->label_len - len;
+   if (len == 0) {
+      if (pimg->label_len) putc(0, pimg->fh);
+   } else if (n <= 16) {
+      if (n) putc(n + 15, pimg->fh);
+   } else if (dot == 0) {
+      if (pimg->label_len) putc(0, pimg->fh);
+      len = 0;      
+   } else {
+      const char *p = pimg->label + dot;
+      n = 1;
+      for (len = pimg->label_len - dot - 17; len; len--) {
+	 if (*p++ == '.') n++;
+      }
+      if (n <= 14) {
+	 putc(n, pimg->fh);
+	 len = dot;
+      } else {
+	 if (pimg->label_len) putc(0, pimg->fh);
+	 len = 0;
+      }
+   }
+
+   n = strlen(s + len);
+   putc(opt, pimg->fh);
+   if (n < 0xfe) {
+      putc(n, pimg->fh);
+   } else if (n < 0xffff + 0xfe) {
+      putc(0xfe, pimg->fh);
+      put16(n - 0xfe, pimg->fh);
+   } else {
+      putc(0xff, pimg->fh);
+      put32(n, pimg->fh);
+   }
+   fwrite(s + len, n, 1, pimg->fh);
+
+   n += len;
+   pimg->label_len = n;
+   if (n >= pimg->buf_len) {
+      char *p = xosrealloc(pimg->label, n + 1);
+      if (p) {
+	 pimg->label = p;
+	 pimg->buf_len = n + 1;
+      } else {
+	 /* can't store this station, so just reset to no prefix */
+	 if (pimg->label_len) {
+	    /* can't here... putc(0, pimg->fh); */
+	    abort();
+	    pimg->label[0] = '\0';
+	    pimg->label_len = 0;
+	 }
+      }
+   }
+   memcpy(pimg->label + len, s + len, n - len + 1);
 }
 
 void
@@ -419,10 +622,33 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	       double x, double y, double z)
 {
    if (!pimg) return;
-   if (pimg->version > 0) {
-      double Sc = 100.0; /* Output in cm */
+   if (pimg->version == 3) {
+      int opt = 0;
+      switch (code) {
+       case img_LABEL:
+	 write_v3label(pimg, 0x40 | flags, s);
+	 opt = 0;
+	 break;
+       case img_MOVE:
+	 opt = 15;
+	 break;
+       case img_LINE:
+	 write_v3label(pimg, 0x80 | flags, s ? s : "");
+	 opt = 0;
+	 break;
+       case img_CROSS: /* ignore */
+       default: /* ignore for now */
+	 return;
+      }
+      if (opt) putc(opt, pimg->fh);
+      /* Output in cm */
+      put32((INT32_T)(x * 100.0), pimg->fh);
+      put32((INT32_T)(y * 100.0), pimg->fh);
+      put32((INT32_T)(z * 100.0), pimg->fh);
+   } else {
       size_t len;
       INT32_T opt = 0;
+      ASSERT(pimg->version > 0);
       switch (code) {
        case img_LABEL:
 	 if (pimg->version == 1) {
@@ -452,8 +678,7 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	 break;
        case img_LINE:
          if (pimg->version > 1) {
-	    opt = 0x80;
-	    opt |= (flags & 0x3f);
+	    opt = 0x80 | (flags & 0x3f);
 	    break;
          }
 	 opt = 5;
@@ -468,9 +693,10 @@ img_write_item(img *pimg, int code, int flags, const char *s,
       } else {
 	 if (opt) putc(opt, pimg->fh);
       }
-      put32((INT32_T)(x * Sc), pimg->fh);
-      put32((INT32_T)(y * Sc), pimg->fh);
-      put32((INT32_T)(z * Sc), pimg->fh);
+      /* Output in cm */
+      put32((INT32_T)(x * 100.0), pimg->fh);
+      put32((INT32_T)(y * 100.0), pimg->fh);
+      put32((INT32_T)(z * 100.0), pimg->fh);
    }
 }
 
@@ -479,12 +705,19 @@ img_close(img *pimg)
 {
    if (pimg) {
       if (pimg->fh) {
-	 /* If writing a binary file, write end of data marker */
-	 if (pimg->version > 0 && !pimg->fRead) {
-	    if (pimg->version == 1) {
+	 /* write end of data marker */
+	 if (!pimg->fRead) {
+	    switch (pimg->version) {
+	     case 1:
 	       put32((INT32_T)-1, pimg->fh);
-	    } else {
+	       break;
+	     case 2:
 	       putc(0, pimg->fh);
+	       break;
+	     case 3:
+	       if (pimg->label_len) putc(0, pimg->fh);
+	       putc(0, pimg->fh);
+	       break;
 	    }
 	 }
 	 fclose(pimg->fh);
