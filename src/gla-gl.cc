@@ -35,6 +35,9 @@
 // For glutBitmapLength()
 #define GLUT_API_VERSION 4
 #include <GL/glut.h>
+#ifdef FREEGLUT
+#include <GL/freeglut_ext.h>
+#endif
 
 using namespace std;
 
@@ -481,11 +484,16 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
     // Draw a text string on the current buffer in the current font.
     glRasterPos3d(x, y, z);
     CHECK_GL_ERROR("DrawText", "glRasterPos3d");
-    
+
+#ifdef FREEGLUT
+    glutBitmapString(m_Font, (const unsigned char *)str.c_str());
+    CHECK_GL_ERROR("DrawText", "glutBitmapString");
+#else
     for (int pos = 0; pos < str.Length(); pos++) {
         glutBitmapCharacter(m_Font, int(str[pos]));
         CHECK_GL_ERROR("DrawText", "glutBitmapCharacter");
     }
+#endif
 }
 
 void GLACanvas::DrawIndicatorText(glaCoord x, glaCoord y, const wxString& str)
