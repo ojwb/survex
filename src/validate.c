@@ -33,7 +33,7 @@
 #include "validate.h"
 
 /* maximum absolute value allowed for a coordinate of a fixed station */
-#define MAX_POS 1000000.0
+#define MAX_POS 10000000.0
 
 static bool validate_prefix_tree(void);
 static bool validate_prefix_subtree(prefix *pfx);
@@ -147,13 +147,22 @@ validate_station_list(void)
    ASSERT(!stnlist || !stnlist->prev);
    /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
    for (stn = stnlist; stn; stn = stn->next) {
+      bool fGap = fFalse;
 #if 0
       printf("V [%p]<-[%p]->[%p] ", stn->prev, stn, stn->next); print_prefix(stn->name); putnl();
 #endif
       ASSERT(stn->prev == NULL || stn->prev->next == stn);
       ASSERT(stn->next == NULL || stn->next->prev == stn);
       for (d = 0; d <= 2; d++) {
-	 if (stn->leg[d]) {
+	 if (!stn->leg[d]) {
+	    fGap = fTrue;
+	 } else {
+	    if (fGap) {
+	       printf("*** Station '");
+	       print_prefix(stn->name);
+	       printf("', leg %d is used, but an earlier leg isn't\n", d);
+	       fOk = fFalse;
+	    }
 	    stn2 = stn->leg[d]->l.to;
 	    ASSERT(stn2);
 #if 0
