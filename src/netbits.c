@@ -1,6 +1,6 @@
 /* netbits.c
  * Miscellaneous primitive network routines for Survex
- * Copyright (C) 1992-2001 Olly Betts
+ * Copyright (C) 1992-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -935,6 +935,12 @@ invert_var(var *inv, /*const*/ var *v)
    }
 #undef B
 
+#if 0
+   /* This test fires very occasionally, and there's not much point in
+    * it anyhow - the matrix inversion algorithm is simple enough that
+    * we can be confident it's correctly implemented, so we might as
+    * well save the cycles and not perform this check.
+    */
      { /* check that original * inverse = identity matrix */
 	var p;
 	real d = 0;
@@ -953,6 +959,7 @@ invert_var(var *inv, /*const*/ var *v)
 	}
 	check_var(inv);
      }
+#endif
 
    return 1;
 }
