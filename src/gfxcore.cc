@@ -35,6 +35,7 @@
 #include "message.h"
 #include "useful.h"
 #include "guicontrol.h"
+#include "moviemaker.h"
 
 #include <wx/confbase.h>
 #include <wx/image.h>
@@ -144,6 +145,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Lists.surface_legs = 0;
     m_Lists.indicators = 0;
     presentation_mode = 0;
+    mpeg = NULL;
 
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
@@ -1112,11 +1114,19 @@ bool GfxCore::Animate()
     }
 
     static double last_t = 0;
-    double t = timer.Time() * 1.0e-3;
-    if (t == 0) t = 0.001;
-    else if (t > 1.0) t = 1.0;
-    if (last_t > 0) t = (t + last_t) / 2;
-    last_t = t;
+    double t;
+    if (mpeg) {
+	glReadPixels(0, 0, mpeg->GetWidth(), mpeg->GetHeight(), GL_RGB,
+		     GL_UNSIGNED_BYTE, (GLvoid *)mpeg->GetBuffer());
+	mpeg->AddFrame();
+	t = 1.0 / 25.0; // 25 frames per second
+    } else {
+	t = timer.Time() * 1.0e-3;
+	if (t == 0) t = 0.001;
+	else if (t > 1.0) t = 1.0;
+	if (last_t > 0) t = (t + last_t) / 2;
+	last_t = t;
+    }
 
     if (presentation_mode == PLAYING) {
 	while (t >= next_mark_time) {
@@ -1126,6 +1136,10 @@ bool GfxCore::Animate()
 	    next_mark = m_Parent->GetPresMark(MARK_NEXT);
 	    if (!next_mark.is_valid()) {
 		presentation_mode = 0;
+		if (mpeg) {
+		    delete mpeg;
+		    mpeg = 0;
+		}
 		break;
 	    }
 
@@ -2635,4 +2649,27 @@ void GfxCore::PlayPres() {
     next_mark = m_Parent->GetPresMark(MARK_FIRST);
     SetView(next_mark);
     next_mark_time = 0; // There already!
+}
+
+bool GfxCore::ExportMovie(const wxString & fnm)
+{
+    int width;
+    int height;
+    GetSize(&width, &height);
+    // Round up to next multiple of 4 or screengrab is skewed
+    width = (width + 3) &~ 3;
+    // Round up to next multiple of 2 (reqd by ffmpeg)
+    height += (height & 1);
+
+    mpeg = new MovieMaker(width, height);
+
+    if (!mpeg->Open(fnm.c_str())) {
+	fprintf(stderr, "could not open %s\n", fnm.c_str());
+	delete mpeg;
+	mpeg = 0;
+	return false;
+    }
+    
+    PlayPres();
+    return true;
 }

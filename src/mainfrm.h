@@ -70,6 +70,7 @@ enum {
     menu_PRES_SAVE_AS,
     menu_PRES_MARK,
     menu_PRES_RUN,
+    menu_PRES_EXPORT_MOVIE,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
     menu_ROTATION_TOGGLE,
@@ -240,6 +241,7 @@ public:
     void OnPresSaveAsUpdate(wxUpdateUIEvent& event);
     void OnPresMarkUpdate(wxUpdateUIEvent& event);
     void OnPresRunUpdate(wxUpdateUIEvent& event);
+    void OnPresExportMovieUpdate(wxUpdateUIEvent& event);
     //void OnFileOpenTerrainUpdate(wxUpdateUIEvent& event);
 
     void OnFind(wxCommandEvent& event);
@@ -257,6 +259,7 @@ public:
     void OnPresSaveAs(wxCommandEvent& event);
     void OnPresMark(wxCommandEvent& event);
     void OnPresRun(wxCommandEvent& event);
+    void OnPresExportMovie(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
 
     void OnAbout(wxCommandEvent& event);

@@ -48,6 +48,7 @@ public:
 };
 
 class LabelInfo;
+class MovieMaker;
 
 class PresentationMark {
     public:
@@ -140,7 +141,9 @@ class GfxCore : public GLACanvas {
     int presentation_mode; // for now, 0 => off, PLAYING => continuous play
     PresentationMark next_mark;
     double next_mark_time;
- 
+
+    MovieMaker * mpeg;
+
     void UpdateQuaternion();
     void UpdateIndicators();
     
@@ -357,6 +360,8 @@ public:
     PresentationMark GetView() const;
     void SetView(const PresentationMark & p);
     void PlayPres();
+
+    bool ExportMovie(const wxString & fnm);
 
 private:
     DECLARE_EVENT_TABLE()

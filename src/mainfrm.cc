@@ -325,6 +325,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_PRES_SAVE_AS, MainFrm::OnPresSaveAs)
     EVT_MENU(menu_PRES_MARK, MainFrm::OnPresMark)
     EVT_MENU(menu_PRES_RUN, MainFrm::OnPresRun)
+    EVT_MENU(menu_PRES_EXPORT_MOVIE, MainFrm::OnPresExportMovie)
 
     EVT_UPDATE_UI(menu_PRES_NEW, MainFrm::OnPresNewUpdate)
     EVT_UPDATE_UI(menu_PRES_OPEN, MainFrm::OnPresOpenUpdate)
@@ -332,6 +333,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_PRES_SAVE_AS, MainFrm::OnPresSaveAsUpdate)
     EVT_UPDATE_UI(menu_PRES_MARK, MainFrm::OnPresMarkUpdate)
     EVT_UPDATE_UI(menu_PRES_RUN, MainFrm::OnPresRunUpdate)
+    EVT_UPDATE_UI(menu_PRES_EXPORT_MOVIE, MainFrm::OnPresExportMovieUpdate)
 
     EVT_CLOSE(MainFrm::OnClose)
     EVT_SET_FOCUS(MainFrm::OnSetFocus)
@@ -580,13 +582,14 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault Settings*/254));
 
     wxMenu* presmenu = new wxMenu;
-    presmenu->Append(menu_PRES_NEW, "New");
-    presmenu->Append(menu_PRES_OPEN, "Open");
-    presmenu->Append(menu_PRES_SAVE, "Save");
-    presmenu->Append(menu_PRES_SAVE_AS, "Save As");
+    presmenu->Append(menu_PRES_NEW, "&New");
+    presmenu->Append(menu_PRES_OPEN, "&Open...");
+    presmenu->Append(menu_PRES_SAVE, "&Save");
+    presmenu->Append(menu_PRES_SAVE_AS, "Save &As...");
     presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_MARK, "Mark");
-    presmenu->Append(menu_PRES_RUN, "Run");
+    presmenu->Append(menu_PRES_MARK, "&Mark");
+    presmenu->Append(menu_PRES_RUN, "&Run");
+    presmenu->Append(menu_PRES_EXPORT_MOVIE, "&Export as Movie...");
     // GetTabMsg(/*@Record State*/381));
     // GetTabMsg(/*R@un Presentation*/382));
     // GetTabMsg(/*Re@hearse Timings*/383));
@@ -1520,6 +1523,13 @@ void MainFrm::OnPresRun(wxCommandEvent& event)
     m_Gfx->PlayPres();
 }
 
+void MainFrm::OnPresExportMovie(wxCommandEvent& event)
+{
+    if (!m_Gfx->ExportMovie("test.mpg")) {
+	wxMessageBox("Bad Movie!");
+    }
+}
+
 PresentationMark MainFrm::GetPresMark(int which)
 {
     return m_PresList->GetPresMark(which);
@@ -1556,6 +1566,11 @@ void MainFrm::OnPresMarkUpdate(wxUpdateUIEvent& event)
 }
 
 void MainFrm::OnPresRunUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(!m_PresList->Empty());
+}
+
+void MainFrm::OnPresExportMovieUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(!m_PresList->Empty());
 }
