@@ -85,7 +85,7 @@ int invert_var(var *inv, const var *v);
 #endif
 
 /* Is v zero? */
-bool fZero(var *v);
+bool fZero(const var *v);
 
 #ifdef NO_COVARIANCES
 # define print_var(V) printf("(%f,%f,%f)", (V)[0], (V)[1], (V)[2])
