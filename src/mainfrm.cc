@@ -3,7 +3,7 @@
 //
 //  Main frame handling for Aven.
 //
-//  Copyright (C) 2000-2001, Mark R. Shinwell.
+//  Copyright (C) 2000-2001 Mark R. Shinwell
 //  Copyright (C) 2001-2002 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 #include "namecmp.h"
 
 #include <wx/confbase.h>
+
 #include <float.h>
 #include <stack>
 
@@ -49,7 +50,7 @@ extern "C" {
 }
 #endif
 
-const int NUM_DEPTH_COLOURS = 13;
+const int NUM_DEPTH_COLOURS = 13; // up to 13
 
 #define TOOLBAR_BITMAP(file) wxBitmap(wxString(msg_cfgpth()) + \
     wxCONFIG_PATH_SEPARATOR + wxString("icons") + wxCONFIG_PATH_SEPARATOR + \
@@ -1100,7 +1101,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #ifdef FILEDIALOG_MULTIGLOBS
 				       ";*.3D"
 #endif
-#ifdef FILEDIALOG_MULTIGLOBS 
+#ifdef FILEDIALOG_MULTIGLOBS
 				       "|%s|*.plt;*.plf"
 #ifndef _WIN32
 				       ";*.PLT;*.PLF"
