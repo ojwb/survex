@@ -208,3 +208,7 @@ en: 27 Station `%s' not exported from lowest prefix level
 
 szlig new orthography...
 
+flag legs as "skeletal" or something? (i.e. not in the cave passage) -
+e.g. a radiolocation leg isn't surface, but it isn't in the cave
+itself either.  You could just call it surface though...
+

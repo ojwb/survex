@@ -39,9 +39,9 @@ while (<>) {
    
    # en:  0 0.81 the message
    # en-us: 0 0.81 " the message "
-   my ($lang, $msgno, $dummy, $msg) = /^([-\w]+):\s*(\d+)\s+("?)(.*)\3/;
+   my ($langs, $msgno, $dummy, $msg) = /^([-\w,]+):\s*(\d+)\s+("?)(.*)\3/;
 
-   unless (defined $lang) {
+   unless (defined $langs) {
       chomp;
       print STDERR "Warning: Bad line: \"$_\"\n";
       next;
@@ -51,11 +51,14 @@ while (<>) {
       print STDERR "Warning: literal character in message $msgno\n";
    }
 
-   ${$msgs{$lang}}[$msgno] = string_to_utf8($msg);
+   my $utf8 = string_to_utf8($msg);
+   for (split /,/, $langs) {
+      ${$msgs{$_}}[$msgno] = $utf8;
+   }
 }
 
 my $lang;
-my @langs = sort keys %msgs;
+my @langs = sort grep ! /-\*$/, keys %msgs;
 
 my $num_msgs = -1;
 foreach $lang (@langs) {

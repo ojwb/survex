@@ -1,4 +1,4 @@
-Date: Sat 7th April 2001
+Date: Sat, 07 Apr 2001
 From: Mark
 
 wxaven:
@@ -11,3 +11,11 @@ wxaven with Motif:
 - need to resize window to get any display at all
 - about box is resizable
 - flicker on window resize
+
+Date: Mon, 09 Apr 2001
+From: Olly
+
+- dragging scale bar should change scale, not move scale bar!
+- label on clino shouldn't move between -01, 00, and +01
+- where did the status bar go?
+

@@ -40,12 +40,6 @@
 #
 # gerhard's queries from GN(2):
 #
-# It occurs to me that you might want an Austrian/Swiss version too...
-# replacing all the &szlig;'s with ordinary double ss.
-#
-# OL: I'll leave it for now, but we'll probably go for German dialects in
-# the future, so I'll leave that comment in here.
-#
 # I'll presume that a station becomes (known to survex as) a branching point
 # only by virtue of its appearance in a proper EQUATE list...
 # Hence a station being mentioned in an improper one is not yet a branching
@@ -156,7 +150,8 @@ fr:  7 Caract&egrave;re `%c' interdit dans un nom de station (cf *SET NAMES pour
 # shorter, but not as good:
 #de:  7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname (erlaubte Zeichen mit
 #*SET NAMES definieren)
-de:  7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname (erlaubte Zeichen k&ouml;nnen mit *SET NAMES definiert werden)
+de-de,de-ch:  7 Unerlaubtes Zeichen `%c' in Messpunktname (erlaubte Zeichen k&ouml;nnen mit *SET NAMES definiert werden)
+de:           7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname (erlaubte Zeichen k&ouml;nnen mit *SET NAMES definiert werden)
 pt:  7 Caracter `%c' n&atilde;o permitido em nome de base (use *SET NAMES para configurar os cararcteres permitidos)
 ca:  7 Car&agrave;cter `%c' no perm&egrave;s al nom d'una estaci&oacute; (utilitza *SET NAMES per definir els car&agrave;cters permesos)
 es:  7 Car&aacute;cter `%c' no permitido en el nombre de una estaci&oacute;n (utiliza *SET NAMES para definir los caracteres permitidos)
@@ -211,7 +206,8 @@ es: 13 Estacio&acute;n igualada a si misma
 it: 13 Stazione uguagliata a se stessa
 en: 14 Compass reading may not be omitted here
 fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici
-de: 14 Kompa&szlig;ablesung darf nicht weggelassen werden
+de-de,de-ch: 14 Kompassablesung darf nicht weggelassen werden
+de:     14 Kompa&szlig;ablesung darf nicht weggelassen werden
 pt: 14 Azimute n&atilde;o pode ser omitido aqui
 ca: 14 La lectura de la br&uacute;ixola no es pot ometre aqu&iacute;
 es: 14 La lectura de la br&uacute;jula no se puede omitir aqu&iacute;
@@ -268,7 +264,8 @@ it: 20 *DEFAULT &eacute sconsigliato - usare invece *CALIBRATE/DATA/UNITS con ar
 en: 21 Compass reading given on plumbed leg
 en-us: 21 Compass reading given on plumbed shot
 fr: 21 Lecture d'azimut donn&eacute;e sur une vis&eacute;e 'plomb&eacute;e'
-de: 21 Kompa&szlig;ablesung f&uuml;r geloteten Schacht angegeben
+de-de,de-ch: 21 Kompassablesung f&uuml;r geloteten Schacht angegeben
+de:     21 Kompa&szlig;ablesung f&uuml;r geloteten Schacht angegeben
 pt: 21 Azimute fornecido numa visada vertical
 ca: 21 Lectura de br&uacute;ixola en una tirada vertical
 es: 21 Lectura de br&uacute;jula en una tirada vertical
@@ -384,7 +381,8 @@ es: 32 Encontrado `%s', esperando `ON' o `OFF'
 it: 32 Trovato `%s', atteso `ON' o `OFF'
 en: 33 Only one station in equate list
 fr: 33 Une seule station dans une liste d'&eacute;quivalences
-de: 33 Nur ein Me&szlig;punkt im EQUATE - Befehl angegeben
+de-de,de-ch: 33 Nur ein Messpunkt im EQUATE - Befehl angegeben
+de:          33 Nur ein Me&szlig;punkt im EQUATE - Befehl angegeben
 #germ: 33 Nur ein Me&szlig;punkt in EQUATE Liste
 pt: 33 Somente uma base na lista de equival&ecirc;ncia
 ca: 33 Sols una estaci&oacute; a la llista d'equival&egrave;ncia
@@ -392,7 +390,8 @@ es: 33 Solo una estaci&oacute;n en la lista de equivalencia
 it: 33 Solo una stazione nella lista di equivalenza
 en: 34 Unknown quantity `%s'
 fr: 34 Quantit&eacute; `%s' inconnue
-de: 34 Unbekannte Gr&ouml;&szlig;e `%s'
+de:    34 Unbekannte Gr&ouml;&szlig;e `%s'
+de-ch: 34 Unbekannte Gr&ouml;sse `%s'
 pt: 34 Tipo de quantidade `%s' desconhecida
 ca: 34 Quantitat `%s' desconeguda
 es: 34 Cantidad `%s' desconocida
@@ -420,7 +419,8 @@ it: 36 Il BEGIN corrispondente non ha prefisso
 #
 en: 37 Invalid units for quantity
 fr: 37 Unit&eacute; incorrecte pour une quantit&eacute;
-de: 37 Unpassende Einheit f&uuml;r diese Gr&ouml;&szlig;e
+de:    37 Unpassende Einheit f&uuml;r diese Gr&ouml;&szlig;e
+de-ch: 37 Unpassende Einheit f&uuml;r diese Gr&ouml;sse
 pt: 37 Unidade inv&aacute;lida para tipo de quantidade
 ca: 37 Unitats inv&agrave;lides per a quantitat
 es: 37 Unidades inv&aacute;lidas para cantidad
@@ -445,8 +445,9 @@ it: 39 Strumento `%s' sconosciuto
 # DECLINATION is a built-in keyword, so best not to translate
 en: 40 Scale factor must be 1.0 for DECLINATION
 fr: 40 Le facteur d'&eacute;chelle doit &ecirc;tre &eacute;gal &agrave; 1.0 pour DECLINATION
-de: 40 Skalenfaktor f&uuml;r die DECLINATION muss 1.0 sein
 # GN(3): improved word ordering
+de-de,de-ch: 40 Skalenfaktor f&uuml;r die DECLINATION muss 1.0 sein
+de:          40 Skalenfaktor f&uuml;r die DECLINATION mu&szlig; 1.0 sein
 pt: 40 Fator de escala tem que ser 1.0 para comando DECLINATION
 ca: 40 El factor d'escala ha d'&egrave;sser 1.0 pel comandament DECLINATION
 es: 40 El factor de escala debe ser 1.0 para el comando DECLINATION
@@ -490,7 +491,8 @@ es: 45 La topografia no est&aacute; completamente conectada a estaciones fijas
 it: 45 La topografia non &eacute; completamente connessa alle stazioni fisse
 en: 46 Station already fixed or equated to a fixed point
 fr: 46 Station d&eacute;j&agrave; d&eacute;clar&eacute; fixe ou &eacute;quivalente &agrave; un point fixe
-de: 46 Me&szlig;punkt ist schon fest oder gleich einem festen Punkt
+de-de,de-ch: 46 Messpunkt ist schon fest oder gleich einem festen Punkt
+de:     46 Me&szlig;punkt ist schon fest oder gleich einem festen Punkt
 pt: 46 Base j&aacute; posicionada
 ca: 46 Estaci&oacute; ja fixada o igualada a un punt fixat
 es: 46 Estaci&oacute;n ya fijada o igualada a un punto fijado
@@ -506,6 +508,7 @@ it: 47 Non riesco ad aprire il file di uscita `%s'
 #en: 48 Failed to close output file
 #fr: 48 N'a pas r&eacute;ussi &agrave; fermer le fichier de sortie
 #de: 48 Konnte Ausgabedatei nicht schlie&szlig;en
+#de-ch: 48 Konnte Ausgabedatei nicht schliessen
 #pt: 48 N&atilde;o foi poss&iacute;vel fechar arquivo de sa&iacute;da
 #ca: 48 No s'ha pogut tancar el fitxer de sortida
 #es: 48 No se pudo cerrar el fichero de salida
@@ -520,7 +523,8 @@ it: 49 Sintassi
 en: 50 Survey leg with same station (`%s') at both ends - typing error?
 en-us: 50 Survey shot with same station (`%s') at both ends - typing error?
 fr: 50 Vis&eacute;e avec 2 extr&eacute;mit&eacute;s identiques (`%s') - erreur de frappe?
-de: 50 Me&szlig;strecke von einem Punkt (`%s') zu sich selbst - Tippfehler?
+de-de,de-ch: 50 Messstrecke von einem Punkt (`%s') zu sich selbst - Tippfehler?
+de:     50 Me&szlig;strecke von einem Punkt (`%s') zu sich selbst - Tippfehler?
 pt: 50 Visada com mesma base em ambas as pontas (`%s') - erro de digita&ccedil;&atilde;o?
 ca: 50 Tirada amb la mateixa estaci&oacute; a ambdues puntes (`%s') - error de transcripci&oacute;?
 es: 50 Tirada con la misma estaci&oacute;n en ambas puntas (`%s') - error de transcripci&oacute;n?
@@ -570,7 +574,8 @@ it: 54 Comando FIX senza coordinate - fissato a (0,0,0)
 en: 55 Station already fixed at the same coordinates
 fr: 55 Station d&eacute;j&agrave; fix&eacute;e aux m&ecirc;me coordonn&eacute;es
 #germ: 55 Me&szlig;punkt schon auf diese Koordinaten festgelegt
-de: 55 Me&szlig;punkt schon auf die gleichen Koordinaten festgelegt
+de-de,de-ch: 55 Messpunkt schon auf die gleichen Koordinaten festgelegt
+de:     55 Me&szlig;punkt schon auf die gleichen Koordinaten festgelegt
 pt: 55 Base j&aacute; posicionada nessas coordenadas
 ca: 55 Estaci&oacute; fixada previament a les mateixes coordenades
 es: 55 Estaci&oacute;n fijada previamente en las mismas coordenadas
@@ -590,7 +595,8 @@ it: 56 Pi&uacute; di un comando FIX senza coordinate
 # *end fred
 # FIXME: TRANSLATE fr ca es
 en: 57 *EXPORT must immediately follow *BEGIN
-de: 57 *EXPORT muss unmittelbar auf *BEGIN folgen
+de-de,de-ch: 57 *EXPORT muss unmittelbar auf *BEGIN folgen
+de:     57 *EXPORT mu&szlig; unmittelbar auf *BEGIN folgen
 pt: 57 *EXPORT deve estar logo ap&oacute;s um *BEGIN
 it: 57 *EXPORT deve seguire *BEGIN
 en: 58 in this line:
@@ -603,7 +609,8 @@ it: 58 in questa linea:
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
 fr: 59 Lecture de compas suspecte
-de: 59 Seltsamer Kompa&szlig;wert
+de-de,de-ch: 59 Seltsamer Kompasswert
+de:          59 Seltsamer Kompa&szlig;wert
 pt: 59 Azimute suspeito
 ca: 59 Lectura de br&uacute;ixola sospitosa
 es: 59 Lectura de br&uacute;jula sospechosa
@@ -647,7 +654,8 @@ it: 62 La distanza &eacute; minore del dislivello
 # FIXME: addition of style name: ca es
 en: 63 Reading `%s' not allowed in data style `%s'
 fr: 63 Donn&eacute;e `%s' pas permise pour le style de donn&eacute;es `%s'
-de: 63 Diese Me&szlig;gr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
+de-de,de-ch: 63 Diese Messgr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
+de:     63 Diese Me&szlig;gr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
 pt: 63 Campo `%s' n&atilde;o &eacute; permitido em tipo de visada `%s'
 ca: 63 Dada `%s' no permesa en aquest STYLE `%s'
 es: 63 Dato `%s' no permitido en este STYLE `%s'
@@ -656,7 +664,8 @@ it: 63 Dato `%s' non permesso nello STYLE `%s'
 # FIXME: TRANSLATE ca es it (data replaced by readings)
 en: 64 Too few readings for data style `%s'
 fr: 64 Trop peu de donn&eacute;es pour le style de donn&eacute;es `%s'
-de: 64 Zu wenige Me&szlig;werte f&uuml;r Datenformat `%s'
+de-de,de-ch: 64 Zu wenige Messwerte f&uuml;r Datenformat `%s'
+de:     64 Zu wenige Me&szlig;werte f&uuml;r Datenformat `%s'
 pt: 64 Faltam campos necess&aacute;rios ao tipo de visada `%s'
 ca: 64 Massa poques dades
 es: 64 Demasiados pocos datos
@@ -694,7 +703,8 @@ fr: 67 Donn&eacute;es dupliqu&eacute;es `%s'
 # to "Me&szlig;gr&ouml;&szlig;e")  apply to the German term as well --
 # a from station of a leg isn't a "Me&szlig;gr&ouml;&szlig;e" either
 # by any stretch of the imagination.
-de: 67 Me&szlig;gr&ouml;&szlig;e `%s' mehrfach angegeben
+de-de,de-ch: 67 Messgr&ouml;&szlig;e `%s' mehrfach angegeben
+de:     67 Me&szlig;gr&ouml;&szlig;e `%s' mehrfach angegeben
 pt: 67 Campo `%s' duplicado
 ca: 67 Dada duplicada `%s'
 es: 67 Dato duplicado `%s'
@@ -808,6 +818,7 @@ en: 83 Scale to fit on 1 page
 fr: 83 Mettre &agrave; l'&eacute;chelle pour tenir en 1 page
 # somewhat clumsily, but anything else would require a subordinate
 # clause and become much longer:
+de-ch: 83   Massstab f&uuml;r Zeichnung auf 1 Seite
 de: 83 Ma&szlig;stab f&uuml;r Zeichnung auf 1 Seite
 pt: 83 Escala para caber em uma p&aacute;gina
 ca: 83 Escala per a encaixar en 1 p&agrave;gina
@@ -965,6 +976,7 @@ en:101 Plan, %05.1f up screen
 fr:101 Plan, %05.1f en haut de l'&eacute;cran
 #germ:101 Plan, oben auf dem Bildschirm = Richtung %05.1f
 de:101 Grundri&szlig;, oben auf dem Bildschirm = Richtung %05.1f
+de-ch:  101 Grundriss, oben auf dem Bildschirm = Richtung %05.1f
 pt:101 Planta, %05.1f no topo da tela
 ca:101 Planta, %05.1f a dalt la pantalla
 es:101 Planta, %05.1f arriba la pantalla
@@ -975,6 +987,7 @@ en:102 View towards %05.1f
 fr:102 Vue en direction de %05.1f
 #germ:102 Blick in Richtung %05.1f
 de:102 Aufri&szlig;, Blick in Richtung %05.1f
+de-ch:102   Aufriss, Blick in Richtung %05.1f
 pt:102 Olhando em dire&ccedil;&atilde;o a %05.1f
 ca:102 Vista en direcci&oacute; %05.1f
 es:102 Vista en direcci&oacute;n %05.1f
@@ -1039,6 +1052,7 @@ en:116 Elevation on
 en-us:116 Profile on
 fr:116 El&eacute;vation sur
 de:116 Aufri&szlig; auf die Ebene
+de-ch:116   Aufriss auf die Ebene
 pt:116 Perfil em
 ca:116 Al&ccedil;at en
 es:116 Alzado en
@@ -1047,7 +1061,8 @@ it:116 Profilo in direzione
 en:117 Plan view
 fr:117 Vue en plan
 #germ:117 Plan
-de:117 Grundri&szlig;
+de:117    Grundri&szlig;
+de-ch:117 Grundriss
 pt:117 Planta
 ca:117 Planta
 es:117 Planta
@@ -1055,7 +1070,8 @@ it:117 Pianta
 en:118 Elevation
 en-us:118 Profile
 fr:118 El&eacute;vation
-de:118 Aufri&szlig;
+de:118    Aufri&szlig;
+de-ch:118 Aufriss
 pt:118 Perfil
 ca:118 Al&ccedil;at
 es:118 Alzado
@@ -1082,7 +1098,8 @@ it:121 Sto scrivendo il file d'immagine 3d `%s'
 en:125 Removing trailing traverses
 fr:125 Enl&egrave;ve les s&eacute;quences terminales
 #germ:125 Entferne Blindg&auml;nge
-de:125 Einseitig angeschlossene Me&szlig;z&uuml;ge werden entfernt
+de-de,de-ch:125 Einseitig angeschlossene Messz&uuml;ge werden entfernt
+de:125     Einseitig angeschlossene Me&szlig;z&uuml;ge werden entfernt
 pt:125 Removendo seq&uuml;&ecirc;ncias de ponta
 ca:125 Esborrant les seq&uuml;&egrave;ncies terminals
 es:125 Borrando las secuencias terminales
@@ -1090,21 +1107,24 @@ it:125 Sto rimuovendo le traverse terminali
 #ital:125 Sto rimuovendo i rami morti
 en:126 Concatenating traverses between nodes
 fr:126 Connecte les s&eacute;quences entre noeuds
-de:126 Me&szlig;z&uuml;ge zwischen Abzweigungen werden verbunden
+de-de,de-ch:126 Messz&uuml;ge zwischen Abzweigungen werden verbunden
+de:126     Me&szlig;z&uuml;ge zwischen Abzweigungen werden verbunden
 pt:126 Concatenando seq&uuml;&ecirc;ncias entre nodos
 ca:126 Connectant seq&uuml;&egrave;ncies entre nodes
 es:126 Conectando secuencias entre nodos
 it:126 So connettendo le traverse fra i nodi
 en:127 Calculating traverses between nodes
 fr:127 Calcule les s&eacute;quences entre noeuds
-de:127 Me&szlig;z&uuml;ge zwischen Abzweigungen werden berechnet
+de-de,de-ch:127 Messz&uuml;ge zwischen Abzweigungen werden berechnet
+de:127     Me&szlig;z&uuml;ge zwischen Abzweigungen werden berechnet
 pt:127 Calculando seq&uuml;&ecirc;ncias entre nodos
 ca:127 Calculant seq&uuml;&egrave;ncies entre nodes
 es:127 Calculando secuencias entre nodos
 it:127 Sto calcolando le traverse fra i nodi
 en:128 Calculating trailing traverses
 fr:128 Calcule les s&eacute;quences terminales
-de:128 Einseitig angeschlossene Me&szlig;z&uuml;ge werden berechnet
+de-de,de-ch:128 Einseitig angeschlossene Messz&uuml;ge werden berechnet
+de:128     Einseitig angeschlossene Me&szlig;z&uuml;ge werden berechnet
 pt:128 Calculando seq&uuml;&ecirc;ncias de ponta
 ca:128 Calculant les seq&uuml;&egrave;ncies terminals
 es:128 Calculando las secuencias terminales
@@ -1127,7 +1147,8 @@ it:130 Sto calcolando la rete
 en:132 Total length of survey legs = %7.2fm (%7.2fm adjusted)
 en-us:132 Total length of survey shots = %7.2fm (%7.2fm adjusted)
 fr:132 Longueur totale de la topo = %7.2fm (%7.2fm adjust&eacute;)
-de:132 Gesamtl&auml;nge der Me&szlig;strecken = %7.2fm (%7.2fm ausgeglichen)
+de-de,de-ch:132 Gesamtl&auml;nge der Messstrecken = %7.2fm (%7.2fm ausgeglichen)
+de:132     Gesamtl&auml;nge der Me&szlig;strecken = %7.2fm (%7.2fm ausgeglichen)
 pt:132 Desenvolvimento linear das visadas = %7.2fm (%7.2fm corrigidos)
 ca:132 Longitut total de les tirades de topo = %7.2fm (%7.2fm corregit)
 es:132 Longitud total de las tiradas de topo = %7.2fm (%7.2fm corregido)
@@ -1136,7 +1157,8 @@ it:132 Sviluppo spaziale = %7.2fm (%7.2fm corretto)
 en:133 Total plan length of survey legs = %7.2fm
 en-us:133 Total plan length of survey shots = %7.2fm
 fr:133 Longueur totale en projection horizontale = %7.2fm
-de:133 Gesamte Horizontall&auml;nge der Me&szlig;strecken = %7.2fm
+de-de,de-ch:133 Gesamte Horizontall&auml;nge der Messstrecken = %7.2fm
+de:133     Gesamte Horizontall&auml;nge der Me&szlig;strecken = %7.2fm
 pt:133 Desenvolvimento horizontal das visadas = %7.2fm
 ca:133 Longitut total en projecci&oacute; horitzontal = %7.2fm
 es:133 Longitud total en proyecci&oacute;n horizontal = %7.2fm
@@ -1145,7 +1167,8 @@ it:133 Sviluppo planimetrico = %7.2fm
 en:134 Total vertical length of survey legs = %7.2fm
 en-us:134 Total vertical length of survey shots = %7.2fm
 fr:134 Longueur totale verticale = %7.2fm
-de:134 Gesamte Vertikall&auml;nge der Me&szlig;strecken = %7.2fm
+de-de,de-ch:134 Gesamte Vertikall&auml;nge der Messstrecken = %7.2fm
+de:134     Gesamte Vertikall&auml;nge der Me&szlig;strecken = %7.2fm
 pt:134 Desenvolvimento vertical das visadas = %7.2fm
 ca:134 Longitut vertical total de les tirades de topo = %7.2fm
 es:134 Longitud vertical total de las tiradas de topo = %7.2fm
@@ -1233,7 +1256,8 @@ it:144 Fatto.
 en:145 "Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). "
 en-us:145 "Original length%7.2fm (%3d shots), moved%7.2fm (%5.2fm/shot). "
 fr:145 "Longueur originale%7.2fm (%3d vis&eacute;es), r&eacute;duit &agrave;%7.2fm (%5.2fm/vis&eacute;es). "
-de:145 "Urspr&uuml;ngliche L&auml;nge%7.2fm (%3d Strecken), ver&auml;ndert um%7.2fm (%5.2fm/Me&szlig;strecke). "
+de-de,de-ch:145 "Urspr&uuml;ngliche L&auml;nge%7.2fm (%3d Strecken), ver&auml;ndert um%7.2fm (%5.2fm/Messstrecke). "
+de:145          "Urspr&uuml;ngliche L&auml;nge%7.2fm (%3d Strecken), ver&auml;ndert um%7.2fm (%5.2fm/Me&szlig;strecke). "
 pt:145 "Desenvolvimento Original%7.2fm (%3d visadas), deslocado%7.2fm (%5.2fm/visada). "
 ca:145 "Longitut original%7.2fm (%3d tirades), reduits %7.2fm (%5.2fm/tirada). "
 es:145 "Longitud original%7.2fm (%3d tiradas), reducidos %7.2fm (%5.2fm/tirada). "
@@ -1285,6 +1309,7 @@ it:152 Driver
 #XXX 153
 en:154 Scale
 fr:154 &Eacute;chelle
+de-ch:154   Massstab
 de:154 Ma&szlig;stab
 pt:154 Escala
 ca:154 Escala
@@ -1310,6 +1335,7 @@ en-us:158 Plan or Elevation (profile)
 fr:158 Plan ou Elevation
 #germ:158 Plan oder Aufri&szlig;
 de:158 Grundri&szlig; oder Aufri&szlig;
+de-ch:158 Grundriss oder Aufriss
 pt:158 Planta or Eleva&ccedil;&atilde;o
 ca:158 Planta o Al&ccedil;at
 es:158 Planta o Alzado
@@ -1342,6 +1368,7 @@ it:161 "Inclinazione (gradi): "
 #
 en:162 "Please enter Map Scale = X:Y (default 1:%d)&#10;: "
 fr:162 "S.V.P. entrez l'&eacute;chelle de la carte = X:Y (1:%d par d&eacute;faut)&#10;: "
+de-ch:162   "Bitte den Massstab = X:Y eingeben (Default 1:%d)&#10;: "
 de:162 "Bitte den Ma&szlig;stab = X:Y eingeben (Default 1:%d)&#10;: "
 pt:162 "Por favor, entre escala do mapa = X:Y (default 1:%d)&#10;: "
 ca:162 "Si us plau, entreu l'escala del mapa = X:Y (per defecte 1:%d)&#10;: "
@@ -1349,7 +1376,8 @@ es:162 "Por favor, entrar la escala del mapa = X:Y (por defecto 1:%d)&#10;: "
 it:162 "Per favore, immettere la scala della carta = X:Y (default 1:%d)&#10;: "
 en:163 Using scale %.0f:%.0f
 fr:163 &Agrave; l'&eacute;chelle %.0f:%.0f
-de:163 Verwendeter Ma&szlig;stab %.0f:%.0f
+de-ch:163 Verwendeter Massstab %.0f:%.0f
+de:163    Verwendeter Ma&szlig;stab %.0f:%.0f
 pt:163 Usando escala %.0f:%.0f
 ca:163 Utilitzant l'escala %.0f:%.0f
 es:163 Utilizando la escala %.0f:%.0f
@@ -1432,7 +1460,8 @@ it:173 La topografia contiene %ld stazioni,
 en:174 " joined by 1 leg."
 en-us:174 " joined by 1 shot."
 fr:174 " connect&eacute;es par 1 vis&eacute;."
-de:174 " verbunden durch eine Me&szlig;strecke."
+de:174    " verbunden durch eine Me&szlig;strecke."
+de-ch:174 " verbunden durch eine Messstrecke."
 pt:174 " unidas por uma &uacute;nica visada."
 ca:174 " unides per 1 tirada."
 es:174 " unidas por 1 tirada."
@@ -1502,7 +1531,8 @@ it:182 annulla
 en:183 plan
 fr:183 plan
 #germ:183 Plan
-de:183 Grundri&szlig;
+de:183    Grundri&szlig;
+de-ch:183 Grundriss
 pt:183 planta
 ca:183 planta
 es:183 planta
@@ -1511,6 +1541,7 @@ en:184 elevation
 en-us:184 elevation (profile)
 fr:184 &eacute;l&eacute;vation
 de:184 Aufri&szlig;
+de-ch:184 Aufriss
 pt:184 eleva&ccedil;&atilde;o
 ca:184 al&ccedil;at
 es:184 alzado
@@ -1528,7 +1559,8 @@ it:192 Manca il BEGIN corrispondente
 # given at all
 en:193 Prefix tag doesn't match BEGIN
 fr:193 Le pr&eacute;fixe du END ne correspond pas &agrave; celui du BEGIN
-de:193 Pr&auml;fix pa&szlig;t nicht zu BEGIN
+de-de,de-ch:193 Pr&auml;fix passt nicht zu BEGIN
+de:193     Pr&auml;fix pa&szlig;t nicht zu BEGIN
 pt:193 Prefixo n&atilde;o corresponde ao do BEGIN
 ca:193 El prefix no correspon al del BEGIN
 es:193 El prefijo no se corresponde con el de BEGIN
@@ -1564,6 +1596,106 @@ pt:197 " a %4.2fm)"
 ca:197 " a %4.2fm)"
 es:197 " en %4.2fm)"
 it:197 " a %4.2fm)"
+
+#
+#  Messages for Aven
+#
+en:501 Display command line options
+#
+en:502 3d file
+fr:502 fichier image 3d
+de:502 3D-Bilddatei
+pt:502 Arquivo de imagem 3d
+ca:502 Fitxer d'imatge 3d
+es:502 Fichero de imagen 3d
+it:502 File immagine 3d
+#
+en:503 Facing
+# Umm, the "I" in SI means these are *already* internationalised...
+# "m" for "metres": [scale and depth bars]
+#en: 505 m
+# "mm" for "millimetres": [scale bar]
+#en: 506 mm
+# "cm" for "centimetres": [scale bar]
+#en: 507 cm
+# "km" for "kilometres": [scale bar]
+#en: 508 km
+en:509 Visualisation of Survex 3D files
+# this needs to be hard wrapped (for now at least)
+en:510 This is free software.  Aven is licenced under\nthe terms of the GNU General Public Licence\nversion 2, or (at your option) any later version.
+en:511 Close
+# for the title of the About box (c.f. 547)
+en:512 About %s
+# Aven menu items.  An '@' goes before the letter of any accelerator key.
+# For the moment the following accelerator keys must NOT be changed in this file (as they
+# have to be hard-coded):
+#   Delete, Left/Right/Up/Down Arrow, ', /, ], [, Return and Space.
+# The string "##" separates the menu text and any accelerator key.
+
+# The accelerators must be different within this group
+en:513 @Open...##Ctrl+O
+en:514 @Exit
+
+# The accelerators must be different within this group
+en:515 @Start Rotation##Return
+en:516 S@top Rotation##Space
+en:517 Speed @Up##Z
+en:518 S@low Down##X
+en:519 @Reverse Direction##R
+en:520 Step Once @Anticlockwise##C
+en:521 Step Once @Clockwise##V
+
+# The accelerators must be different within this group
+en:522 View @North##N
+en:523 View @East##E
+en:524 View @South##S
+en:525 View @West##W
+en:526 Shift Survey @Left##Left Arrow
+en:527 Shift Survey @Right##Right Arrow
+en:528 Shift Survey @Up##Up Arrow
+en:529 Shift Survey @Down##Down Arrow
+en:530 @Plan View##P
+en:531 Ele@vation View##L
+en:532 @Higher Viewpoint##'
+en:533 Lo@wer Viewpoint##/
+en:534 @Zoom In##]
+en:535 Zoo@m Out##[
+en:536 Restore De@fault Settings##Delete
+
+# The accelerators must be different within this group
+en:537 Station @Names##Ctrl+N
+en:538 @Crosses##Ctrl+X
+en:539 Survey @Legs##Ctrl+L
+en:540 @Overlapping Names##O
+en:541 Co@mpass
+en:542 Cl@inometer
+en:543 @Depth Bar
+en:544 Sc@ale Bar
+
+# The accelerators must be different within this group
+en:545 @Reverse Sense##Ctrl+R
+en:546 Caverot-Style @Middle Button
+
+# c.f. 512
+# The accelerators must be different within this group
+en:547 @About Aven...
+
+# Aven menu titles.  An '@' goes before the letter of any accelerator key.
+# The accelerators must be different within this group
+en:580 @File
+en:581 @Rotation
+en:582 @Orientation
+en:583 @View
+en:584 @Controls
+en:585 @Help
+
+# ick, filename gets appended to this...
+en:605 No legs or stations found in 3d file
+# File->Open dialog:
+en:606 Select a 3d file to view
+en:607 Survex 3d files
+en:608 All files
+
 ############################################################################
 # the rest are no longer used, but it's possible they may be at some point...
 ############################################################################
@@ -1992,84 +2124,3 @@ it:197 " a %4.2fm)"
 #ca: 82 Par&agrave;metres dolents a la l&iacute;nia de comandaments
 #es: 82 Par&aacute;metros err&oacute;neos en la l&iacute;nea de comandos
 #it: 82 Parametro della linea dei comandi errato
-
-#
-#  Messages for Aven
-#
-en: 500 syntax: %s [3d file]
-en: 501 Print command line options
-en: 502 3d file
-en: 503 Facing
-en: 504 Elev
-# "m" for "metres": [scale and depth bars]
-en: 505 m
-# "mm" for "millimetres": [scale bar]
-en: 506 mm
-# "cm" for "centimetres": [scale bar]
-en: 507 cm
-# "km" for "kilometres": [scale bar]
-en: 508 km
-en: 509 Visualisation of Survex 3D files
-# A hash (#) indicates where to break the following line in the About box:
-en: 510 This is free software.  Aven is licenced under#the terms of the GNU General Public Licence#version 2, or (at your option) any later version.
-en: 511 Close
-# for the title of the About box:
-en: 512 About
-# Aven menu items.  An '@' goes before the letter of any accelerator key.
-# For the moment the following accelerator keys must NOT be changed in this file (as they
-# have to be hard-coded):
-#   Delete, Left/Right/Up/Down Arrow, ', /, ], [, Return and Space.
-# The string "##" separates the menu text and any accelerator key.
-en: 513 @Open...##Ctrl+O
-en: 514 @Exit
-en: 515 @Start Rotation##Return
-en: 516 S@top Rotation##Space
-en: 517 Speed @Up##Z
-en: 518 S@low Down##X
-en: 519 @Reverse Direction##R
-en: 520 Step Once @Anticlockwise##C
-en: 521 Step Once @Clockwise##V
-en: 522 View @North##N
-en: 523 View @East##E
-en: 524 View @South##S
-en: 525 View @West##W
-en: 526 Shift Survey @Left##Left Arrow
-en: 527 Shift Survey @Right##Right Arrow
-en: 528 Shift Survey @Up##Up Arrow
-en: 529 Shift Survey @Down##Down Arrow
-en: 530 @Plan View##P
-en: 531 Ele@vation View##L
-en: 532 @Higher Viewpoint##'
-en: 533 Lo@wer Viewpoint##/
-en: 534 @Zoom In##]
-en: 535 Zoo@m Out##[
-en: 536 Restore De@fault Settings##Delete
-en: 537 Station @Names##Ctrl+N
-en: 538 @Crosses##Ctrl+X
-en: 539 Survey @Legs##Ctrl+L
-en: 540 @Overlapping Names##O
-en: 541 Co@mpass
-en: 542 Cl@inometer
-en: 543 @Depth Bar
-en: 544 Sc@ale Bar
-en: 545 @Reverse Sense##Ctrl+R
-en: 546 Caverot-Style @Middle Button
-en: 547 @About Aven...
-# Aven menu titles.  An '@' goes before the letter of any accelerator key.
-en: 580 @File
-en: 581 @Rotation
-en: 582 @Orientation
-en: 583 @View
-en: 584 @Controls
-en: 585 @Help
-# More errors:
-en: 600 file not found
-en: 601 out of memory
-en: 602 it's a directory
-en: 603 incorrect 3d file format
-en: 604 Couldn't open 3d file
-en: 605 No legs or stations found in 3d file
-# File->Open dialog:
-en: 606 Select a 3d file to view
-en: 607 Survex 3d files
-en: 608 All files
