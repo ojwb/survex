@@ -674,7 +674,7 @@ process_normal(prefix *fr, prefix *to, real tape, real comp, real clin,
 }
 
 static int
-process_diving(prefix *fr, prefix *to, real tape, real comp,
+process_diving(prefix *fr, prefix *to, real tape, real comp, real backcomp,
 	       real frdepth, real todepth, bool fToFirst, bool fDepthChange)
 {
    real dx, dy, dz;
@@ -686,6 +686,14 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    if (comp != HUGE_REAL) {
       comp *= pcs->units[Q_BEARING];
       if (comp < (real)0.0 || comp - M_PI * 2.0 > EPSILON) {
+	 compile_warning(/*Suspicious compass reading*/59);
+      }
+   }
+   if (backcomp != HUGE_REAL) {
+      /* FIXME: different units for BackComp? */
+      backcomp *= pcs->units[Q_BEARING];
+      if (backcomp < (real)0.0 || backcomp - M_PI * 2.0 > EPSILON) {
+	 /* FIXME: different message for BackComp? */
 	 compile_warning(/*Suspicious compass reading*/59);
       }
    }
@@ -712,7 +720,7 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
    if (tape == (real)0.0 && dz == 0.0) {
       dx = dy = dz = (real)0.0;
       vx = vy = vz = (real)(var(Q_POS) / 3.0); /* Position error only */
-   } else if (comp == HUGE_REAL) {
+   } else if (comp == HUGE_REAL && backcomp == HUGE_REAL) {
       /* plumb */
       dx = dy = (real)0.0;
       if (dz < 0) tape = -tape;
@@ -723,8 +731,25 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
 			      / (var(Q_LENGTH) + var(Q_DEPTH));
    } else {
       real L2, sinB, cosB, dz2, D2;
-      comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
-      comp -= pcs->z[Q_DECLINATION];
+      real var_comp = var(Q_BEARING);
+      if (comp != HUGE_REAL) {
+	 comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+	 comp -= pcs->z[Q_DECLINATION];
+      }
+      if (backcomp != HUGE_REAL) {
+	 /* FIXME: back units/calib/etc */
+	 backcomp = (backcomp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+	 backcomp -= pcs->z[Q_DECLINATION];
+      }
+      if (comp != HUGE_REAL) {
+	 if (backcomp != HUGE_REAL) {
+	    comp = (comp + backcomp) / 2;
+	    var_comp = var_comp / 2;
+	 }
+      } else {
+	 comp = backcomp;
+      }
+	    
       sinB = sin(comp);
       cosB = cos(comp);
       L2 = tape * tape;
@@ -747,13 +772,13 @@ process_diving(prefix *fr, prefix *to, real tape, real comp,
 	 dy = D * cosB;
 
 	 vx = var(Q_POS) / 3.0 +
-	    sinB * sinB * F / D2 + var(Q_BEARING) * dy * dy;
+	    sinB * sinB * F / D2 + var_comp * dy * dy;
 	 vy = var(Q_POS) / 3.0 +
-	    cosB * cosB * F / D2 + var(Q_BEARING) * dx * dx;
+	    cosB * cosB * F / D2 + var_comp * dx * dx;
 	 vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
 
 #ifndef NO_COVARIANCES
-	 cxy = sinB * cosB * (F / D2 + var(Q_BEARING) * D2);
+	 cxy = sinB * cosB * (F / D2 + var_comp * D2);
 	 cyz = -2 * var(Q_DEPTH) * dy / D;
 	 czx = -2 * var(Q_DEPTH) * dx / D;
 #endif
@@ -899,7 +924,7 @@ data_cartesian(void)
 }
 
 static int
-process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
+process_cylpolar(prefix *fr, prefix *to, real tape, real comp, real backcomp,
 		 real frdepth, real todepth, bool fToFirst, bool fDepthChange)
 {
    real dx, dy, dz;
@@ -911,6 +936,14 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
    if (comp != HUGE_REAL) {
       comp *= pcs->units[Q_BEARING];
       if (comp < (real)0.0 || comp - M_PI * 2.0 > EPSILON) {
+	 compile_warning(/*Suspicious compass reading*/59);
+      }
+   }
+   if (backcomp != HUGE_REAL) {
+      /* FIXME: different units for BackComp? */
+      backcomp *= pcs->units[Q_BEARING];
+      if (backcomp < (real)0.0 || backcomp - M_PI * 2.0 > EPSILON) {
+	 /* FIXME: different message for BackComp? */
 	 compile_warning(/*Suspicious compass reading*/59);
       }
    }
@@ -928,15 +961,31 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
       compile_warning(/*Negative adjusted tape reading*/79);
    }
 
-   if (comp == HUGE_REAL) {
+   if (comp == HUGE_REAL && backcomp == HUGE_REAL) {
       /* plumb */
       dx = dy = (real)0.0;
       vx = vy = var(Q_POS) / 3.0 + dz * dz * var(Q_PLUMB);
       vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
    } else {
       real sinB, cosB;
-      comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
-      comp -= pcs->z[Q_DECLINATION];
+      real var_comp = var(Q_BEARING);
+      if (comp != HUGE_REAL) {
+	 comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+	 comp -= pcs->z[Q_DECLINATION];
+      }
+      if (backcomp != HUGE_REAL) {
+	 /* FIXME: back units/calib/etc */
+	 backcomp = (backcomp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
+	 backcomp -= pcs->z[Q_DECLINATION];
+      }
+      if (comp != HUGE_REAL) {
+	 if (backcomp != HUGE_REAL) {
+	    comp = (comp + backcomp) / 2;
+	    var_comp = var_comp / 2;
+	 }
+      } else {
+	 comp = backcomp;
+      }
 
       sinB = sin(comp);
       cosB = cos(comp);
@@ -945,13 +994,13 @@ process_cylpolar(prefix *fr, prefix *to, real tape, real comp,
       dy = tape * cosB;
 
       vx = var(Q_POS) / 3.0 +
-	 var(Q_LENGTH) * sinB * sinB + var(Q_BEARING) * dy * dy;
+	 var(Q_LENGTH) * sinB * sinB + var_comp * dy * dy;
       vy = var(Q_POS) / 3.0 +
-	 var(Q_LENGTH) * cosB * cosB + var(Q_BEARING) * dx * dx;
+	 var(Q_LENGTH) * cosB * cosB + var_comp * dx * dx;
       vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
 
 #ifndef NO_COVARIANCES
-      cxy = (var(Q_LENGTH) - var(Q_BEARING) * tape * tape) * sinB * cosB;
+      cxy = (var(Q_LENGTH) - var_comp * tape * tape) * sinB * cosB;
 #endif
    }
    addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
@@ -1136,11 +1185,13 @@ data_normal(void)
 				   (first_stn == To) ^ fRev, ctype, backctype);
 		break;
 	      case STYLE_DIVING:
-		r = process_diving(fr, to, tape, comp, frdepth, todepth,
+		r = process_diving(fr, to, tape, comp, backcomp,
+				   frdepth, todepth,
 	       			   (first_stn == To) ^ fRev, fDepthChange);
 		break;
 	      case STYLE_CYLPOLAR:
-		r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
+		r = process_cylpolar(fr, to, tape, comp, backcomp,
+				     frdepth, todepth,
 				     (first_stn == To) ^ fRev, fDepthChange);
 		break;
 	      default:
@@ -1193,11 +1244,13 @@ data_normal(void)
 				   (first_stn == To) ^ fRev, ctype, backctype);
 		break;
 	      case STYLE_DIVING:
-		r = process_diving(fr, to, tape, comp, frdepth, todepth,
+		r = process_diving(fr, to, tape, comp, backcomp,
+				   frdepth, todepth,
 	       			   (first_stn == To) ^ fRev, fDepthChange);
 		break;
 	      case STYLE_CYLPOLAR:
-		r = process_cylpolar(fr, to, tape, comp, frdepth, todepth,
+		r = process_cylpolar(fr, to, tape, comp, backcomp,
+				     frdepth, todepth,
 				     (first_stn == To) ^ fRev, fDepthChange);
 		break;
 	      default:
