@@ -104,6 +104,74 @@ BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
 #endif
 END_EVENT_TABLE()
 
+class EditMarkDlg : public wxDialog {
+    wxTextCtrl * easting, * northing, * altitude;
+    wxTextCtrl * angle, * tilt_angle, * scale;
+public:
+    EditMarkDlg(wxWindow* parent, const PresentationMark & p)
+	: wxDialog(parent, 500, wxString("Edit Waypoint"))
+    {
+	easting = new wxTextCtrl(this, 601, wxString::Format("%.3f", p.x));
+	northing = new wxTextCtrl(this, 602, wxString::Format("%.3f", p.y)); 
+	altitude = new wxTextCtrl(this, 603, wxString::Format("%.3f", p.z));
+	angle = new wxTextCtrl(this, 604, wxString::Format("%.3f", p.angle));
+	tilt_angle = new wxTextCtrl(this, 605, wxString::Format("%.3f", p.tilt_angle)); 
+	scale = new wxTextCtrl(this, 606, wxString::Format("%.3f", p.scale));
+	
+	wxBoxSizer * coords = new wxBoxSizer(wxHORIZONTAL);
+	coords->Add(new wxStaticText(this, 610, "("), 0, wxALIGN_CENTRE_VERTICAL);
+	coords->Add(easting, 1);
+	coords->Add(new wxStaticText(this, 611, ","), 0, wxALIGN_CENTRE_VERTICAL);
+	coords->Add(northing, 1);
+	coords->Add(new wxStaticText(this, 612, ","), 0, wxALIGN_CENTRE_VERTICAL);
+	coords->Add(altitude, 1);
+	coords->Add(new wxStaticText(this, 613, ")"), 0, wxALIGN_CENTRE_VERTICAL);
+	wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
+	vert->Add(coords, 0, wxALL, 8);
+	wxBoxSizer * r2 = new wxBoxSizer(wxHORIZONTAL);
+	r2->Add(new wxStaticText(this, 614, "Bearing: "), 0, wxALIGN_CENTRE_VERTICAL);
+	r2->Add(angle);
+	vert->Add(r2, 0, wxALL, 8);
+	wxBoxSizer * r3 = new wxBoxSizer(wxHORIZONTAL);
+	r3->Add(new wxStaticText(this, 615, "Elevation: "), 0, wxALIGN_CENTRE_VERTICAL);
+	r3->Add(tilt_angle);
+	vert->Add(r3, 0, wxALL, 8);
+	wxBoxSizer * r4 = new wxBoxSizer(wxHORIZONTAL);
+	r4->Add(new wxStaticText(this, 616, "Scale: "), 0, wxALIGN_CENTRE_VERTICAL);
+	r4->Add(scale);
+	r4->Add(new wxStaticText(this, 617, " (unused in perspective view)"),
+		0, wxALIGN_CENTRE_VERTICAL);
+	vert->Add(r4, 0, wxALL, 8);
+
+	wxBoxSizer * r5 = new wxBoxSizer(wxHORIZONTAL);
+	wxButton* cancel = new wxButton(this, wxID_CANCEL, wxString("Cancel"));
+	r5->Add(cancel, 0, wxALL, 8);
+	wxButton* ok = new wxButton(this, wxID_OK, wxString("OK"));
+	ok->SetDefault();
+	r5->Add(ok, 0, wxALL, 8);
+	vert->Add(r5, 0, wxALL|wxALIGN_RIGHT);
+
+	SetAutoLayout(true);
+	SetSizer(vert);
+
+	vert->Fit(this);
+	vert->SetSizeHints(this);
+    } 
+    PresentationMark GetMark() const {
+	double x, y, z, a, t, s;
+	x = atof(easting->GetValue().c_str());
+	y = atof(northing->GetValue().c_str());
+	z = atof(altitude->GetValue().c_str());
+	a = atof(angle->GetValue().c_str());
+	t = atof(tilt_angle->GetValue().c_str());
+	s = atof(scale->GetValue().c_str());
+	return PresentationMark(x, y, z, a, t, s);
+    }
+
+private:
+    DECLARE_EVENT_TABLE()
+};
+
 // Write a value without trailing zeros after the decimal point.
 static void write_double(double d, FILE * fh) {
     char buf[64];
@@ -117,7 +185,7 @@ static void write_double(double d, FILE * fh) {
 class AvenPresList : public wxListCtrl {
     MainFrm * mainfrm;
     GfxCore * gfx;
-    list<PresentationMark> entries;
+    vector<PresentationMark> entries;
     long current_item;
     bool modified;
     wxString filename;
@@ -125,7 +193,7 @@ class AvenPresList : public wxListCtrl {
     public:
 	AvenPresList(MainFrm * mainfrm_, wxWindow * parent, GfxCore * gfx_)
 	    : wxListCtrl(parent, listctrl_PRES, wxDefaultPosition, wxDefaultSize,
-			 wxLC_EDIT_LABELS | wxLC_REPORT),
+			 wxLC_REPORT|wxLC_VIRTUAL),
 	      mainfrm(mainfrm_), gfx(gfx_), current_item(-1), modified(false)
 	    {
 		InsertColumn(0, msg(/*Easting*/378));
@@ -143,17 +211,13 @@ class AvenPresList : public wxListCtrl {
 	    } else if (current_item > item) {
 		--current_item;
 	    }
-	    list<PresentationMark>::iterator i = entries.begin();
-	    while (item > 0) {
-		++i;
-		if (i == entries.end()) return;
-		--item;
-	    }
-	    entries.erase(i);
+	    entries.erase(entries.begin() + item);
+	    SetItemCount(entries.size());
 	    modified = true;
 	}
 	void OnDeleteAllItems(wxListEvent& event) {
 	    entries.clear();
+	    SetItemCount(entries.size());
 	    filename = "";
 	    modified = false;
 	}
@@ -178,28 +242,22 @@ class AvenPresList : public wxListCtrl {
 	void OnActivated(wxListEvent& event) {
 	    // Jump to this view.
 	    long item = event.GetIndex();
-	    list<PresentationMark>::const_iterator i = entries.begin();
-	    while (item > 0) {
-		++i;
-		if (i == entries.end()) return;
-		--item;
-	    }
-	    gfx->SetView(*i);
+	    gfx->SetView(entries[item]);
 	}
 	void OnFocused(wxListEvent& event) {
 	    current_item = event.GetIndex();
 	}
+	void OnRightClick(wxListEvent& event) {
+	    long item = event.GetIndex();
+	    EditMarkDlg edit(mainfrm, entries[item]);
+	    if (edit.ShowModal() == wxID_OK) {
+		entries[item] = edit.GetMark();
+	    }
+	}
 	void OnChar(wxKeyEvent& event) {
 	    if (event.GetKeyCode() == WXK_INSERT) {
 		if (event.m_controlDown) {
-		    long c = current_item;
-		    list<PresentationMark>::const_iterator i = entries.begin();
-		    while (c > 0) {
-			++i;
-			if (i == entries.end()) return;
-			--c;
-		    }
-		    AddMark(current_item, *i);
+		    AddMark(current_item, entries[current_item]);
 		} else {
 		    AddMark(current_item);
 		}
@@ -211,25 +269,27 @@ class AvenPresList : public wxListCtrl {
 	    AddMark(item, gfx->GetView());
 	}
 	void AddMark(long item, const PresentationMark & mark) {
-	    list<PresentationMark>::iterator i;
-	    if (item == -1) {
-		item = entries.size();
-		i = entries.end();
-	    } else {
-		long c = item;
-		i = entries.begin();
-		while (c > 0) {
-		    if (i == entries.end()) return;
-		    ++i;
-		    --c;
-		}
-	    }
-	    entries.insert(i, mark);
-	    long tmp = InsertItem(item, wxString::Format("%ld", (long)mark.x));
-	    SetItemData(tmp, item);
-	    SetItem(item, 1, wxString::Format("%ld", (long)mark.y));
-	    SetItem(item, 2, wxString::Format("%ld", (long)mark.z));
+	    if (item == -1) item = entries.size();
+	    entries.insert(entries.begin() + item, mark);
+	    SetItemCount(entries.size());
 	    modified = true;
+	}
+	virtual wxString OnGetItemText(long item, long column) const {
+	    if (item < 0 || item >= (long)entries.size()) return "";
+	    const PresentationMark & p = entries[item];
+	    double v;
+	    switch (column) {
+		case 0: v = p.x; break;
+		case 1: v = p.y; break;
+		case 2: v = p.z; break;
+#if 0
+		case 3: v = p.angle; break;
+		case 4: v = p.tilt_angle; break;
+		case 5: v = p.scale; break;
+#endif
+		default: return "";
+	    }
+	    return wxString::Format("%ld", (long)v);
 	}
 	void Save(bool use_default_name) {
 	    wxString fnm = filename;
@@ -255,7 +315,7 @@ class AvenPresList : public wxListCtrl {
 		wxGetApp().ReportError(wxString::Format(msg(/*Error writing to file `%s'*/110), fnm.c_str()));
 		return;
 	    }
-	    list<PresentationMark>::const_iterator i;
+	    vector<PresentationMark>::const_iterator i;
 	    for (i = entries.begin(); i != entries.end(); ++i) {
 		const PresentationMark &p = *i;
 		write_double(p.x, fh_pres);
@@ -313,17 +373,11 @@ class AvenPresList : public wxListCtrl {
 	bool Modified() const { return modified; }
 	bool Empty() const { return entries.empty(); }
 	PresentationMark GetPresMark(int which) {
-	    list<PresentationMark>::iterator i = entries.begin();
 	    long item = current_item;
 	    if (which == MARK_FIRST) {
 		item = 0;
 	    } else if (which == MARK_NEXT) {
-		long c = ++item;
-		while (c > 0) {
-		    if (i == entries.end()) break;
-		    ++i;
-		    --c;
-		}
+		++item;
 	    }
 	    if (item != current_item) {
 		// Move the focus
@@ -334,8 +388,8 @@ class AvenPresList : public wxListCtrl {
 		wxListCtrl::SetItemState(item, wxLIST_STATE_FOCUSED,
 					 wxLIST_STATE_FOCUSED);
 	    }
-	    if (i == entries.end()) return PresentationMark();
-	    return *i;
+	    if (item == (long)entries.size()) return PresentationMark();
+	    return entries[item];
 	}
 
     private:
@@ -344,6 +398,9 @@ class AvenPresList : public wxListCtrl {
 	DECLARE_EVENT_TABLE()
 };
 
+BEGIN_EVENT_TABLE(EditMarkDlg, wxDialog)
+END_EVENT_TABLE()
+
 BEGIN_EVENT_TABLE(AvenPresList, wxListCtrl)
     EVT_LIST_BEGIN_LABEL_EDIT(listctrl_PRES, AvenPresList::OnBeginLabelEdit)
     EVT_LIST_DELETE_ITEM(listctrl_PRES, AvenPresList::OnDeleteItem)
@@ -351,6 +408,7 @@ BEGIN_EVENT_TABLE(AvenPresList, wxListCtrl)
     EVT_LIST_KEY_DOWN(listctrl_PRES, AvenPresList::OnListKeyDown)
     EVT_LIST_ITEM_ACTIVATED(listctrl_PRES, AvenPresList::OnActivated)
     EVT_LIST_ITEM_FOCUSED(listctrl_PRES, AvenPresList::OnFocused)
+    EVT_LIST_ITEM_RIGHT_CLICK(listctrl_PRES, AvenPresList::OnRightClick)
     EVT_CHAR(AvenPresList::OnChar)
 END_EVENT_TABLE()
 
