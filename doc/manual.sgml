@@ -46,8 +46,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 1999-08-26 12:22:48 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.11 1999-08-26 12:22:48 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 1999-08-26 15:49:30 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.12 1999-08-26 15:49:30 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -2889,43 +2889,6 @@ that order).
 </Para>
 
 </sect2>
-
-<sect2><title>Thankyous</title>
-
-<Para>
-Major thanks are due to the following people (sadly this isn't a very
-complete list):
-</Para>
-
-<Para>Mark Fearon, Bill Purvis, and Andy Waddinton for spotting and solving
-minor problems in previous releases, and to Bill Purvis, Devon Bowen, and
-John Pybus for their work on xcaverot.  Iain Miller also deserves a mention
-for letting us play with his very interconnected survey data from
-<Acronym/OFD/.  Andy Holtsbery kindly fixed a few problems with xcaverot due
-to changes in other files. Also &cucc; for a great deal of testing in
-Austria over the last 6 years.</Para>
-<!-- FIXME: reorganise the above and mention more people (Martin Heller,
-John Halleck, Sean and Patrick, Leandro, ...) -->
-
-<Para>
-We must thank these people for their work on the Translations:
-</Para>
-
-<ItemizedList>
-<ListItem><Para>Eric Madelaine/Francois Dani French</Para></ListItem>
-<ListItem><Para>Gerhard Niklasch/Jens Rasch German</Para></ListItem>
-<ListItem><Para>Leandro Dybal Bertoni Portuguese</Para></ListItem>
-<ListItem><Para>Josep Guarro Catalan and Spanish</Para></ListItem>
-<ListItem><Para>Roberto Maugeri (Zoom) Italian</Para></ListItem>
-</ItemizedList>
-
-<Para>
-Also, a big thanks to everyone who has reported bugs and problems,
-and suggested improvements. I will not list you all, as I would only
-forget someone.
-</Para>
-
-</Sect2>
 
 <Sect2><title>Contacting the authors</title>
 
