@@ -168,7 +168,7 @@ public:
 class MainFrm : public wxFrame {
     wxFileHistory m_history;
     int m_SashPosition;
-    list<PointInfo*>* m_Points;
+    list<PointInfo*> points;
     list<LabelInfo*> m_Labels;
     Double m_XExt;
     Double m_YExt;
@@ -216,14 +216,6 @@ class MainFrm : public wxFrame {
     void FillTree();
     void ClearPointLists();
     bool LoadData(const wxString& file, wxString prefix = "");
-    void SortIntoDepthBands(list<PointInfo*>& points);
-public: // FIXME bodge for now
-    void IntersectLineWithPlane(Double x0, Double y0, Double z0,
-				Double x1, Double y1, Double z1,
-				Double z, Double& x, Double& y);
-    Double GetDepthBoundaryBetweenBands(int a, int b);
-    int GetDepthColour(Double z);
-private: // FIXME unbodge
     void CentreDataset(Double xmin, Double ymin, Double zmin);
 
     wxString GetTabMsg(int key) {
@@ -422,24 +414,12 @@ public:
 
     void SetMouseOverStation(LabelInfo* label);
 
-    list<PointInfo*>::iterator GetPointsNC(int band) const {
-	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-	return m_Points[band].begin();
+    list<PointInfo*>::const_iterator GetPoints() const {
+	return points.begin();
     }
 
-    list<PointInfo*>::iterator GetPointsEndNC(int band) const {
-	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-	return m_Points[band].end();
-    }
-
-    list<PointInfo*>::const_iterator GetPoints(int band) const {
-	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-	return m_Points[band].begin();
-    }
-
-    list<PointInfo*>::const_iterator GetPointsEnd(int band) const {
-	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
-	return m_Points[band].end();
+    list<PointInfo*>::const_iterator GetPointsEnd() const {
+	return points.end();
     }
 
     list<LabelInfo*>::const_iterator GetLabels() const {

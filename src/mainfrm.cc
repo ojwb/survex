@@ -299,14 +299,12 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 MainFrm::~MainFrm()
 {
     ClearPointLists();
-    delete[] m_Points;
     delete[] m_Pens;
     delete[] m_Brushes;
 }
 
 void MainFrm::InitialisePensAndBrushes()
 {
-    m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS + 1];
     m_Pens = new GLAPen[NUM_DEPTH_COLOURS + 1];
     m_Brushes = new wxBrush[NUM_DEPTH_COLOURS + 1];
     for (int pen = 0; pen < NUM_DEPTH_COLOURS + 1; ++pen) {
@@ -549,17 +547,7 @@ void MainFrm::CreateSidePanel()
 
 void MainFrm::ClearPointLists()
 {
-    // Free memory occupied by the contents of the point and label lists.
-
-    for (int band = 0; band < NUM_DEPTH_COLOURS + 1; band++) {
-	list<PointInfo*>::iterator pos = m_Points[band].begin();
-	list<PointInfo*>::iterator end = m_Points[band].end();
-	while (pos != end) {
-	    PointInfo* point = *pos++;
-	    delete point;
-	}
-	m_Points[band].clear();
-    }
+    // Free memory occupied by the contents of the label lists.
 
     list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
@@ -622,7 +610,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_ZMin = DBL_MAX;
     Double zmax = -DBL_MAX;
 
-    list<PointInfo*> points;
+    points.clear();
 
     int result;
     do {
@@ -765,9 +753,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // from different surveys, rather than labels from surveys which
     // are earlier in the list.
     m_Labels.sort(LabelPlotCmp(separator));
-
-    // Sort out depth colouring boundaries (before centering dataset!)
-    SortIntoDepthBands(points);
 
     // Centre the dataset around the origin.
     CentreDataset(xmin, ymin, m_ZMin);
@@ -938,129 +923,20 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
     Double yoff = m_Offsets.y = ymin + (m_YExt / 2.0);
     Double zoff = m_Offsets.z = zmin + (m_ZExt / 2.0);
 
-    for (int band = 0; band < NUM_DEPTH_COLOURS + 1; band++) {
-	list<PointInfo*>::iterator pos = m_Points[band].begin();
-	list<PointInfo*>::iterator end = m_Points[band].end();
-	while (pos != end) {
-	    PointInfo* point = *pos++;
-	    point->x -= xoff;
-	    point->y -= yoff;
-	    point->z -= zoff;
-	}
+    list<PointInfo*>::iterator pos = points.begin();
+    while (pos != points.end()) {
+	PointInfo* point = *pos++;
+	point->x -= xoff;
+	point->y -= yoff;
+	point->z -= zoff;
     }
 
-    list<LabelInfo*>::iterator pos = m_Labels.begin();
-    while (pos != m_Labels.end()) {
-	LabelInfo* label = *pos++;
+    list<LabelInfo*>::iterator lpos = m_Labels.begin();
+    while (lpos != m_Labels.end()) {
+	LabelInfo* label = *lpos++;
 	label->x -= xoff;
 	label->y -= yoff;
 	label->z -= zoff;
-    }
-}
-
-int MainFrm::GetDepthColour(Double z)
-{
-    // Return the (0-based) depth colour band index for a z-coordinate.
-    return int(((z - m_ZMin) / (m_ZExt == 0.0 ? 1.0 : m_ZExt)) * (NUM_DEPTH_COLOURS - 1));
-}
-
-Double MainFrm::GetDepthBoundaryBetweenBands(int a, int b)
-{
-    // Return the z-coordinate of the depth colour boundary between
-    // two adjacent depth colour bands (specified by 0-based indices).
-
-    assert((a == b - 1) || (a == b + 1));
-
-    int band = (a > b) ? a : b; // boundary N lies on the bottom of band N.
-    return m_ZMin + (m_ZExt * band / (NUM_DEPTH_COLOURS == 1 ? 1 : NUM_DEPTH_COLOURS - 1));
-}
-
-void MainFrm::IntersectLineWithPlane(Double x0, Double y0, Double z0,
-				     Double x1, Double y1, Double z1,
-				     Double z, Double& x, Double& y)
-{
-    // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1)
-    // with the plane parallel to the xy-plane with z-axis intersection z.
-    assert(z1 - z0 != 0.0);
-
-    Double t = (z - z0) / (z1 - z0);
-    assert(0.0 <= t && t <= 1.0);
-
-    x = x0 + t * (x1 - x0);
-    y = y0 + t * (y1 - y0);
-}
-
-void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
-{
-    // Split legs which cross depth colouring boundaries and classify all
-    // points into the correct depth bands.
-
-    list<PointInfo*>::iterator pos = points.begin();
-    PointInfo* prev_point = NULL;
-    while (pos != points.end()) {
-	PointInfo* point = *pos++;
-	assert(point);
-
-	// If this is a leg, then check if it intersects a depth
-	// colour boundary.
-	if (point->isLine) {
-	    assert(prev_point);
-#if 0
-	    int col1 = GetDepthColour(prev_point->z);
-	    int col2 = GetDepthColour(point->z);
-	    if (col1 != col2) {
-		// The leg does cross at least one boundary, so split it as
-		// many times as required...
-		int inc = (col1 > col2) ? -1 : 1;
-		for (int band = col1; band != col2; band += inc) {
-		    int next_band = band + inc;
-
-		    // Determine the z-coordinate of the boundary being
-		    // intersected.
-		    Double split_at_z = GetDepthBoundaryBetweenBands(band, next_band);
-		    Double split_at_x, split_at_y;
-
-		    // Find the coordinates of the intersection point.
-		    IntersectLineWithPlane(prev_point->x, prev_point->y, prev_point->z,
-					   point->x, point->y, point->z,
-					   split_at_z, split_at_x, split_at_y);
-
-		    // Create a new leg only as far as this point.
-		    PointInfo* info = new PointInfo;
-		    info->x = split_at_x;
-		    info->y = split_at_y;
-		    info->z = split_at_z;
-		    info->isLine = true;
-		    info->isSurface = point->isSurface;
-		    m_Points[band].push_back(info);
-
-		    // Create a move to this point in the next band.
-		    info = new PointInfo;
-		    info->x = split_at_x;
-		    info->y = split_at_y;
-		    info->z = split_at_z;
-		    info->isLine = false;
-		    info->isSurface = point->isSurface;
-		    m_Points[next_band].push_back(info);
-
-		    m_NumExtraLegs++;
-		    m_NumPoints += 2;
-		}
-	    }
-#endif
-
-	    // Add the last point of the (possibly split) leg.
-	    int col2 = 0;
-	    m_Points[col2].push_back(point);
-	}
-	else {
-	    // The first point, a surface point, or another move: put it in the
-	    // correct list according to depth.
-	    int band = 0; //GetDepthColour(point->z);
-	    m_Points[band].push_back(point);
-	}
-
-	prev_point = point;
     }
 }
 

@@ -181,23 +181,18 @@ void GfxCore::TryToFreeArrays()
     // Free up any memory allocated for arrays.
 
     if (m_PlotData) {
-        for (int band = 0; band < m_Bands; band++) {
-            DELETE_ARRAY(m_PlotData[band].vertices);
-            DELETE_ARRAY(m_PlotData[band].num_segs);
-            DELETE_ARRAY(m_PlotData[band].surface_vertices);
-            DELETE_ARRAY(m_PlotData[band].surface_num_segs);
-        }
+	DELETE_ARRAY(m_PlotData->vertices);
+	DELETE_ARRAY(m_PlotData->num_segs);
+	DELETE_ARRAY(m_PlotData->surface_vertices);
+	DELETE_ARRAY(m_PlotData->surface_num_segs);
 
-        DELETE_ARRAY(m_PlotData);
-        DELETE_ARRAY(m_Polylines);
-        DELETE_ARRAY(m_SurfacePolylines);
+        delete m_PlotData;
+        m_PlotData = NULL;
 
         if (m_LabelGrid) {
             DELETE_ARRAY(m_LabelGrid);
             m_LabelGrid = NULL;
         }
-
-        m_PlotData = NULL;
     }
 }
 
@@ -217,20 +212,14 @@ void GfxCore::Initialise()
 
     m_DoneFirstShow = false;
 
-    m_Bands = m_Parent->GetNumDepthBands(); // last band is surface data
-    m_PlotData = new PlotData[m_Bands];
-    m_Polylines = new int[m_Bands];
-    m_SurfacePolylines = new int[m_Bands];
+    m_Bands = m_Parent->GetNumDepthBands();
+    
+    m_PlotData = new PlotData;
+    m_PlotData->vertices = new Point[m_Parent->GetNumPoints()];
+    m_PlotData->num_segs = new int[m_Parent->GetNumLegs()];
+    m_PlotData->surface_vertices = new Point[m_Parent->GetNumPoints()];
+    m_PlotData->surface_num_segs = new int[m_Parent->GetNumLegs()];
 
-    for (int band = 0; band < m_Bands; band++) {
-        m_PlotData[band].vertices = new Point[m_Parent->GetNumPoints()];
-        m_PlotData[band].num_segs = new int[m_Parent->GetNumLegs()];
-        m_PlotData[band].surface_vertices = new Point[m_Parent->GetNumPoints()];
-        m_PlotData[band].surface_num_segs = new int[m_Parent->GetNumLegs()];
-    }
-
-    m_UndergroundLegs = false;
-    m_SurfaceLegs = false;
     m_Tubes = false;
 
     m_HitTestGridValid = false;
@@ -352,109 +341,101 @@ void GfxCore::FirstShow()
 void GfxCore::SetScaleInitial(Double scale)
 {
     GfxCore::SetScale(scale);
-	
-    for (int band = 0; band < m_Bands; band++) {
-        Point* pt = m_PlotData[band].vertices;
-        assert(pt);
-        int* count = m_PlotData[band].num_segs;
-        assert(count);
-        Point* spt = m_PlotData[band].surface_vertices;
-        assert(spt);
-        int* scount = m_PlotData[band].surface_num_segs;
-        assert(scount);
-        count--;
-        scount--;
 
-        m_Polylines[band] = 0;
-        m_SurfacePolylines[band] = 0;
+    assert(m_PlotData);
+    Point* pt = m_PlotData->vertices;
+    assert(pt);
+    int* count = m_PlotData->num_segs;
+    assert(count);
+    Point* spt = m_PlotData->surface_vertices;
+    assert(spt);
+    int* scount = m_PlotData->surface_num_segs;
+    assert(scount);
+    count--;
+    scount--;
 
-        Double x, y, z;
+    m_Polylines = 0;
+    m_SurfacePolylines = 0;
 
-        list<PointInfo*>::iterator pos = m_Parent->GetPointsNC(band);
-        list<PointInfo*>::iterator end = m_Parent->GetPointsEndNC(band);
-        bool first_point = true;
-        bool last_was_move = true;
-        bool current_polyline_is_surface = false;
-        
-        while (pos != end) {
-            PointInfo* pti = *pos++;
+    Double x, y, z;
 
-            if (pti->IsLine()) {
-                // We have a leg.
+    list<PointInfo*>::const_iterator pos = m_Parent->GetPoints();
+    list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd();
+    bool first_point = true;
+    bool last_was_move = true;
+    bool current_polyline_is_surface = false;
+    
+    while (pos != end) {
+	PointInfo* pti = *pos++;
 
-                assert(!first_point); // The first point must always be a move.
-                bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
-                // Record new underground/surface state.
-                current_polyline_is_surface = pti->IsSurface();
+	if (pti->IsLine()) {
+	    // We have a leg.
 
-                if (changing_ug_state || last_was_move) {
-                    // Start a new polyline if we're switching
-                    // underground/surface state or if the previous point
-                    // was a move.
+	    assert(!first_point); // The first point must always be a move.
+	    bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
+	    // Record new underground/surface state.
+	    current_polyline_is_surface = pti->IsSurface();
 
-                    Point** dest;
+	    if (changing_ug_state || last_was_move) {
+		// Start a new polyline if we're switching
+		// underground/surface state or if the previous point
+		// was a move.
 
-                    if (current_polyline_is_surface) {
-                        m_SurfacePolylines[band]++;
-                        // initialise number of vertices for next polyline
-                        *(++scount) = 1;
-                        dest = &spt;
-                    }
-                    else {
-                        m_Polylines[band]++;
-                        // initialise number of vertices for next polyline
-                        *(++count) = 1;
-                        dest = &pt;
-                    }
+		Point** dest;
 
-                    (*dest)->x = x;
-                    (*dest)->y = y;
-                    (*dest)->z = z;
+		if (current_polyline_is_surface) {
+		    m_SurfacePolylines++;
+		    // initialise number of vertices for next polyline
+		    *(++scount) = 1;
+		    dest = &spt;
+		}
+		else {
+		    m_Polylines++;
+		    // initialise number of vertices for next polyline
+		    *(++count) = 1;
+		    dest = &pt;
+		}
 
-                    // Advance the relevant coordinate pointer to the next
-                    // position.
-                    (*dest)++;
-                }
+		(*dest)->x = x;
+		(*dest)->y = y;
+		(*dest)->z = z;
 
-                // Add the leg onto the current polyline.
-                Point** dest = &(current_polyline_is_surface ? spt : pt);
-
-                (*dest)->x = x = pti->GetX();
-                (*dest)->y = y = pti->GetY();
-                (*dest)->z = z = pti->GetZ();
-
-                // Advance the relevant coordinate pointer to the next
-                // position.
-                (*dest)++;
-
-                // Increment the relevant vertex count.
-                if (current_polyline_is_surface) {
-                    (*scount)++;
-                }
-                else {
-                    (*count)++;
-                }
-
-                last_was_move = false;
-            }
-            else {
-		first_point = false;
-		last_was_move = true;
-
-		// Save the current coordinates for the next time around
-		// the loop.
-		x = pti->GetX();
-		y = pti->GetY();
-		z = pti->GetZ();
+		// Advance the relevant coordinate pointer to the next
+		// position.
+		(*dest)++;
 	    }
-        }
 
-        if (!m_UndergroundLegs) {
-            m_UndergroundLegs = (m_Polylines[band] > 0);
-        }
-        if (!m_SurfaceLegs) {
-            m_SurfaceLegs = (m_SurfacePolylines[band] > 0);
-        }
+	    // Add the leg onto the current polyline.
+	    Point** dest = &(current_polyline_is_surface ? spt : pt);
+
+	    (*dest)->x = x = pti->GetX();
+	    (*dest)->y = y = pti->GetY();
+	    (*dest)->z = z = pti->GetZ();
+
+	    // Advance the relevant coordinate pointer to the next
+	    // position.
+	    (*dest)++;
+
+	    // Increment the relevant vertex count.
+	    if (current_polyline_is_surface) {
+		(*scount)++;
+	    }
+	    else {
+		(*count)++;
+	    }
+
+	    last_was_move = false;
+	}
+	else {
+	    first_point = false;
+	    last_was_move = true;
+
+	    // Save the current coordinates for the next time around
+	    // the loop.
+	    x = pti->GetX();
+	    y = pti->GetY();
+	    z = pti->GetZ();
+	}
     }
 }
 
@@ -591,7 +572,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     FinishDrawing();
 }
 
-Double GfxCore::GridXToScreen(Double x, Double y, Double z)
+Double GfxCore::GridXToScreen(Double x, Double y, Double z) const
 {
     return 0.0;
 
@@ -603,7 +584,7 @@ Double GfxCore::GridXToScreen(Double x, Double y, Double z)
     return (XToScreen(x, y, z) * m_Params.scale) + m_XCentre;*/
 }
 
-Double GfxCore::GridYToScreen(Double x, Double y, Double z)
+Double GfxCore::GridYToScreen(Double x, Double y, Double z) const
 {
     return 0.0;
 
@@ -1878,29 +1859,9 @@ void GfxCore::ForceRefresh()
 
 void GfxCore::GenerateDisplayListSurface()
 {
-    // Generate the display list for the surface survey legs.
-    
-    int start;
-    int end;
-    int inc;
-
-    if (m_TiltAngle >= 0.0) {
-        start = 0;
-        end = m_Bands;
-        inc = 1;
-    }
-    else {
-        start = m_Bands - 1;
-        end = -1;
-        inc = -1;
-    }
-
-    for (int band = start; band != end; band += inc) {
-        GLAPen& pen = m_SurfaceDepth ? m_Parent->GetPen(band) : m_Parent->GetSurfacePen();
-                
-        DrawPolylines(pen, m_SurfacePolylines[band], m_PlotData[band].surface_num_segs,
-                      m_PlotData[band].surface_vertices);
-    }
+    assert(m_PlotData);
+    DrawPolylines(m_SurfaceDepth, m_SurfacePolylines,
+	          m_PlotData->surface_num_segs, m_PlotData->surface_vertices);
 }
 
 void GfxCore::GenerateDisplayList()
@@ -1942,24 +1903,8 @@ void GfxCore::GenerateDisplayList()
 
         // Draw underground legs.
         if (m_Legs) {
-            int start;
-            int end;
-            int inc;
-
-            if (m_TiltAngle >= 0.0) {
-                start = 0;
-                end = m_Bands;
-                inc = 1;
-            } else {
-                start = m_Bands - 1;
-                end = -1;
-                inc = -1;
-            }
-
-            for (int band = start; band != end; band += inc) {
-                DrawPolylines(m_Parent->GetPen(band),
-                              m_Polylines[band], m_PlotData[band].num_segs, m_PlotData[band].vertices); 
-            }
+	    DrawPolylines(true, m_Polylines,
+			  m_PlotData->num_segs, m_PlotData->vertices); 
         }
     }
     
@@ -2105,29 +2050,40 @@ void GfxCore::PlaceVertexWithColour(Double x, Double y, Double z, Double factor)
 
 static const Vector3 light(1.0, 1.0, 1.0);
 
-void GfxCore::SplitLineAcrossBands(int band, int band2, const Vector3 &p, const Vector3 &p2,
-		   Double factor)
+void GfxCore::SplitLineAcrossBands(int band, int band2,
+				   const Vector3 &p, const Vector3 &p2,
+				   Double factor)
 {
     int step = (band < band2) ? 1 : -1;
     for (int i = band; i != band2; i += step) {
 	Double x, y, z;
 	z = GetDepthBoundaryBetweenBands(i, i + step);
-	m_Parent->IntersectLineWithPlane(p.getX(), p.getY(), p.getZ(),
-		p2.getX(), p2.getY(), p2.getZ(),
-		z, x, y);
+	IntersectLineWithPlane(p.getX(), p.getY(), p.getZ(),
+			       p2.getX(), p2.getY(), p2.getZ(),
+			       z, x, y);
 	PlaceVertexWithColour(x, y, z, factor);
     }
 }
 
 int GfxCore::GetDepthColour(Double z)
 {
-    return m_Parent->GetDepthColour(z + m_Parent->GetZMin() + m_Parent->GetZExtent() / 2);
+    // Return the (0-based) depth colour band index for a z-coordinate.
+    Double z_ext = m_Parent->GetZExtent();
+    z += z_ext / 2;
+    return int((z / (z_ext == 0.0 ? 1.0 : z_ext)) * (m_Bands - 1));
 }
 
 Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b)
 {
-    return m_Parent->GetDepthBoundaryBetweenBands(a, b)
-	- m_Parent->GetZMin() - m_Parent->GetZExtent() / 2;
+    // Return the z-coordinate of the depth colour boundary between
+    // two adjacent depth colour bands (specified by 0-based indices).
+
+    assert((a == b - 1) || (a == b + 1));
+
+    int band = (a > b) ? a : b; // boundary N lies on the bottom of band N.
+    if (m_Bands == 1) return 0;
+    Double z_ext = m_Parent->GetZExtent();
+    return (z_ext * band / (m_Bands - 1)) - z_ext / 2;
 }
 
 void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
@@ -2165,7 +2121,23 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     EndPolygon();
 }
 
-void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num_points, const Point* vertices)
+void GfxCore::IntersectLineWithPlane(Double x0, Double y0, Double z0,
+				     Double x1, Double y1, Double z1,
+				     Double z, Double& x, Double& y)
+{
+    // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1)
+    // with the plane parallel to the xy-plane with z-axis intersection z.
+    assert(z1 - z0 != 0.0);
+
+    Double t = (z - z0) / (z1 - z0);
+    assert(0.0 <= t && t <= 1.0);
+
+    x = x0 + t * (x1 - x0);
+    y = y0 + t * (y1 - y0);
+}
+
+void GfxCore::DrawPolylines(bool depth_colour, int num_polylines,
+			    const int* num_points, const Point* vertices)
 {
     // Draw a set of polylines.
     
@@ -2177,30 +2149,38 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 
 	BeginPolyline();
 	
-	PlaceVertexWithColour(vertices->x, vertices->y, vertices->z, 1.0);
-	int band = GetDepthColour(vertices->z);
-	++vertices;
-
-	for (int segment = 1; segment < length; segment++) {
-	    int band2 = GetDepthColour(vertices->z);
-	    if (band != band2) {
-		int step = (band < band2) ? 1 : -1;
-		for (int i = band; i != band2; i += step) {
-		    Double x, y, z;
-		    z = GetDepthBoundaryBetweenBands(i, i + step);
-		    m_Parent->IntersectLineWithPlane(vertices[-1].x,
-			    			     vertices[-1].y,
-						     vertices[-1].z,
-						     vertices->x,
-			    			     vertices->y,
-						     vertices->z,
-						     z, x, y);
-		    PlaceVertexWithColour(x, y, z, 1.0);
-		}
-	    }
+	if (depth_colour) {
 	    PlaceVertexWithColour(vertices->x, vertices->y, vertices->z, 1.0);
-	    band = band2;
+	    int band = GetDepthColour(vertices->z);
 	    ++vertices;
+
+	    for (int segment = 1; segment < length; segment++) {
+		int band2 = GetDepthColour(vertices->z);
+		if (band != band2) {
+		    int step = (band < band2) ? 1 : -1;
+		    for (int i = band; i != band2; i += step) {
+			Double x, y, z;
+			z = GetDepthBoundaryBetweenBands(i, i + step);
+			IntersectLineWithPlane(vertices[-1].x,
+					       vertices[-1].y,
+					       vertices[-1].z,
+					       vertices->x,
+					       vertices->y,
+					       vertices->z,
+					       z, x, y);
+			PlaceVertexWithColour(x, y, z, 1.0);
+		    }
+		}
+		PlaceVertexWithColour(vertices->x, vertices->y, vertices->z, 1.0);
+		band = band2;
+		++vertices;
+	    }
+	} else {
+	    SetColour(m_Parent->GetSurfacePen());
+	    for (int segment = 0; segment < length; segment++) {
+		PlaceVertex(vertices->x, vertices->y, vertices->z);
+		++vertices;
+	    }
 	}
 
 	EndPolyline();

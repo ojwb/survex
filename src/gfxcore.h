@@ -117,8 +117,8 @@ class GfxCore : public GLACanvas {
     MainFrm* m_Parent;
     bool m_DoneFirstShow;
     bool m_RedrawOffscreen;
-    int* m_Polylines;
-    int* m_SurfacePolylines;
+    int m_Polylines;
+    int m_SurfacePolylines;
     int m_Bands;
     Double m_InitialScale;
     Double m_TiltAngle;
@@ -144,8 +144,6 @@ class GfxCore : public GLACanvas {
     bool m_InitialisePending;
     bool m_MouseOutsideCompass;
     bool m_MouseOutsideElev;
-    bool m_UndergroundLegs;
-    bool m_SurfaceLegs;
     bool m_Surface;
     bool m_SurfaceDashed;
     bool m_SurfaceDepth;
@@ -183,12 +181,12 @@ class GfxCore : public GLACanvas {
     void SetColourFromHeight(Double z, Double factor);
     void PlaceVertexWithColour(Double x, Double y, Double z, Double factor);
    
-    Double GridXToScreen(Double x, Double y, Double z);
-    Double GridYToScreen(Double x, Double y, Double z);
-    Double GridXToScreen(const Point &p) {
+    Double GridXToScreen(Double x, Double y, Double z) const;
+    Double GridYToScreen(Double x, Double y, Double z) const;
+    Double GridXToScreen(const Point &p) const {
 	return GridXToScreen(p.x, p.y, p.z);
     }
-    Double GridYToScreen(const Point &p) {
+    Double GridYToScreen(const Point &p) const {
 	return GridYToScreen(p.x, p.y, p.z);
     }
 
@@ -197,7 +195,8 @@ class GfxCore : public GLACanvas {
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
-    void DrawPolylines(const GLAPen&, int num_polylines, const int *num_points, const Point *vertices);
+    void DrawPolylines(bool depth_colour, int num_polylines,
+		       const int *num_points, const Point *vertices);
 
     void SetScaleInitial(Double scale);
 
@@ -308,31 +307,31 @@ public:
     bool CanRaiseViewpoint();
     bool CanLowerViewpoint();
 
-    LockFlags GetLock() { return m_Lock; }
-    bool IsRotating() { return m_Rotating; }
-    bool HasData() { return m_PlotData != NULL; }
+    LockFlags GetLock() const { return m_Lock; }
+    bool IsRotating() const { return m_Rotating; }
+    bool HasData() const { return m_PlotData != NULL; }
 
-    double GetScale() { return m_Params.scale; }
+    double GetScale() const { return m_Params.scale; }
     void SetScale(Double scale);
     
-    bool ShowingStationNames() { return m_Names; }
-    bool ShowingOverlappingNames() { return m_OverlappingNames; }
-    bool ShowingCrosses() { return m_Crosses; }
+    bool ShowingStationNames() const { return m_Names; }
+    bool ShowingOverlappingNames() const { return m_OverlappingNames; }
+    bool ShowingCrosses() const { return m_Crosses; }
 
-    bool HasUndergroundLegs() { return m_UndergroundLegs; }
-    bool HasSurfaceLegs() { return m_SurfaceLegs; }
+    bool HasUndergroundLegs() const { return (m_Polylines > 0); }
+    bool HasSurfaceLegs() const { return (m_SurfacePolylines > 0); }
 
-    bool ShowingUndergroundLegs() { return m_Legs; }
-    bool ShowingSurfaceLegs() { return m_Surface; }
-    bool ShowingSurfaceDepth() { return m_SurfaceDepth; }
-    bool ShowingSurfaceDashed() { return m_SurfaceDashed; }
+    bool ShowingUndergroundLegs() const { return m_Legs; }
+    bool ShowingSurfaceLegs() const { return m_Surface; }
+    bool ShowingSurfaceDepth() const { return m_SurfaceDepth; }
+    bool ShowingSurfaceDashed() const { return m_SurfaceDashed; }
 
-    bool ShowingDepthBar() { return m_Depthbar; }
-    bool ShowingScaleBar() { return m_Scalebar; }
+    bool ShowingDepthBar() const { return m_Depthbar; }
+    bool ShowingScaleBar() const { return m_Scalebar; }
 
-    bool ShowingEntrances() { return m_Entrances; }
-    bool ShowingFixedPts() { return m_FixedPts; }
-    bool ShowingExportedPts() { return m_ExportedPts; }
+    bool ShowingEntrances() const { return m_Entrances; }
+    bool ShowingFixedPts() const { return m_FixedPts; }
+    bool ShowingExportedPts() const { return m_ExportedPts; }
 
     int GetNumEntrances();
     int GetNumFixedPts();
@@ -351,15 +350,21 @@ public:
     void ToggleStationNames() { ToggleFlag(&m_Names, false); UpdateNames(); ForceRefresh(); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
     void ToggleDepthBar() { ToggleFlag(&m_Depthbar, false); UpdateIndicators(); ForceRefresh(); }
-    void ToggleSurfaceDepth() { ToggleFlag(&m_SurfaceDepth); }
-    void ToggleSurfaceDashed() { ToggleFlag(&m_SurfaceDashed); }
+    void ToggleSurfaceDepth() {
+	ToggleFlag(&m_SurfaceDepth);
+	m_Lists.surface_legs = CreateList(this, &GfxCore::GenerateDisplayListSurface);
+    }
+    void ToggleSurfaceDashed() {
+	ToggleFlag(&m_SurfaceDashed);
+	m_Lists.surface_legs = CreateList(this, &GfxCore::GenerateDisplayListSurface);
+    }
     void ToggleMetric() { ToggleFlag(&m_Metric, false); UpdateIndicators(); ForceRefresh(); }
     void ToggleDegrees() { ToggleFlag(&m_Degrees, false); UpdateIndicators(); ForceRefresh(); }
     void ToggleTubes() { ToggleFlag(&m_Tubes, false); UpdateLegs(); ForceRefresh(); }
 
-    bool GetMetric() { return m_Metric; }
-    bool GetDegrees() { return m_Degrees; }
-    bool GetTubes() { return m_Tubes; }
+    bool GetMetric() const { return m_Metric; }
+    bool GetDegrees() const { return m_Degrees; }
+    bool GetTubes() const { return m_Tubes; }
     
     void CheckHitTestGrid(wxPoint& point, bool centre);
 
@@ -374,8 +379,11 @@ public:
 			      Double factor);
     int GetDepthColour(Double z);
     Double GetDepthBoundaryBetweenBands(int a, int b);
+    void IntersectLineWithPlane(Double x0, Double y0, Double z0,
+				Double x1, Double y1, Double z1,
+				Double z, Double& x, Double& y);
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
-		      const Vector3 &c, const Vector3 &d);
+			  const Vector3 &c, const Vector3 &d);
 private:
     DECLARE_EVENT_TABLE()
 };
