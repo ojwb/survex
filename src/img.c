@@ -303,7 +303,7 @@ img_open_survey(const char *fnm, const char *survey)
        fnm[len - LITLEN(EXT_PLT) - 1] == FNM_SEP_EXT &&
        my_strcasecmp(fnm + len - LITLEN(EXT_PLT), EXT_PLT) == 0) {
       long fpos;
-
+plt_file:
       pimg->version = -2;
       pimg->start = 0;
       if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
@@ -353,6 +353,7 @@ img_open_survey(const char *fnm, const char *survey)
 		goto error;
 	    }
 	    if (!pimg->start) pimg->start = fpos;
+	    fseek(pimg->fh, pimg->start, SEEK_SET);
 	    return pimg;
 	  }
 	  case 'M': case 'D':
@@ -367,6 +368,11 @@ img_open_survey(const char *fnm, const char *survey)
 
    if (fread(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
        memcmp(buf, FILEID"\n", LITLEN(FILEID)) != 0) {
+      if (buf[0] == 'Z' && buf[1] == ' ') {
+	 /* Looks like a Compass .plt file ... */
+	 rewind(pimg->fh);
+	 goto plt_file;
+      }
       img_errno = IMG_BADFORMAT;
       goto error;
    }
@@ -987,6 +993,20 @@ img_read_item(img *pimg, img_point *p)
 	 switch (ch) {
 	    case '\x1a': case EOF: /* Don't insist on ^Z at end of file */
 	       return img_STOP;
+	    case 'X': case 'F': case 'S':
+	       /* bounding boX (marks end of survey), Feature survey, or
+		* new Section - skip to next survey */
+	       if (pimg->survey) return img_STOP;
+skip_to_N:
+	       while (1) {
+		  do {
+		     ch = getc(pimg->fh);
+		  } while (ch != '\n' && ch != '\r' && ch != EOF);
+		  while (ch == '\n' || ch == '\r') ch = getc(pimg->fh);
+		  if (ch == 'N') break;
+		  if (ch == '\x1a' || ch == EOF) return img_STOP;
+	       }
+	       /* FALLTHRU */
 	    case 'N':
 	       line = getline_alloc(pimg->fh);
 	       while (line[len] > 32) ++len;
@@ -1006,13 +1026,11 @@ img_read_item(img *pimg, img_point *p)
 	    case 'M': case 'D': {
 	       /* Move or Draw */
 	       long fpos = -1;
-	       if (!pimg->survey && pimg->label_len == 0) {
+	       if (pimg->survey && pimg->label_len == 0) {
 		  /* We're only holding onto this line in case the first line
-		   * of the 'N' is a 'D', so reprocess this line as an 'X'
-		   * to skip it for now...
+		   * of the 'N' is a 'D', so skip it for now...
 		   */
-		  ungetc('X', pimg->fh);
-		  break;
+		  goto skip_to_N;
 	       }
 	       if (ch == 'D' && pimg->pending == -1) {
 		  fpos = ftell(pimg->fh) - 1;
@@ -1057,20 +1075,6 @@ img_read_item(img *pimg, img_point *p)
 	       }
 	       return img_LABEL;
 	    }
-	    case 'X': case 'F': case 'S':
-	       /* bounding boX (marks end of survey), Feature survey, or
-		* new Section - skip to next survey */
-	       if (pimg->survey) return img_STOP;
-	       while (1) {
-		  do {
-		     ch = getc(pimg->fh);
-		  } while (ch != '\n' && ch != '\r' && ch != EOF);
-		  while (ch == '\n' || ch == '\r') ch = getc(pimg->fh);
-		  if (ch == 'N') break;
-		  if (ch == '\x1a' || ch == EOF) return img_STOP;
-	       }
-	       ungetc('N', pimg->fh);
-	       break;
 	    default:
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
