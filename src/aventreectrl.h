@@ -27,6 +27,16 @@
 #include "wx.h"
 
 class MainFrm;
+class LabelInfo;
+
+class TreeData : public wxTreeItemData {
+    const LabelInfo* m_Label;
+
+public:
+    TreeData(const LabelInfo* label) : m_Label(label) {}
+    const LabelInfo* GetLabel() const { return m_Label; }
+    bool IsStation() const { return m_Label != NULL; }
+};
 
 class AvenTreeCtrl : public wxTreeCtrl {
     MainFrm* m_Parent;

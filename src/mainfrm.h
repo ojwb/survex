@@ -515,8 +515,8 @@ public:
 	return m_Labels.rend();
     }
 
-    void ShowInfo(LabelInfo *label);
-    void DisplayTreeInfo(wxTreeItemData* data);
+    void ShowInfo(const LabelInfo *label);
+    void DisplayTreeInfo(const wxTreeItemData* data);
     void TreeItemSelected(wxTreeItemData* data);
 
 private:

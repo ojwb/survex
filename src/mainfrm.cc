@@ -237,15 +237,6 @@ public:
     }
 };
 
-class TreeData : public wxTreeItemData {
-    LabelInfo* m_Label;
-
-public:
-    TreeData(LabelInfo* label) : m_Label(label) {}
-    LabelInfo* GetLabel() { return m_Label; }
-    bool IsStation() { return m_Label != NULL; }
-};
-
 #if wxUSE_DRAG_AND_DROP
 class DnDFile : public wxFileDropTarget {
     public:
@@ -1004,25 +995,30 @@ void MainFrm::FillTree()
 	    wxString prefixes_ascended = current_prefix.Mid(count);
 
 	    // Count the number of prefixes to ascend over.
-	    int num_prefixes = prefixes_ascended.Freq('.') + 1;
+	    int num_prefixes = prefixes_ascended.Freq('.');
 
 	    // Reverse up over these prefixes.
 	    for (int i = 1; i <= num_prefixes; i++) {
-		current_id = previous_ids.top();
 		previous_ids.pop();
 	    }
+	    current_id = previous_ids.top();
+	    previous_ids.pop();
 
 	    if (!ascent_only) {
 		// Now extract the bit of new prefix.
 		wxString new_prefix = prefix.Mid(count);
 
 		// Add branches for this new part.
-		int next_dot;
 		while (1) {
 		    // Extract the next bit of prefix.
-		    next_dot = new_prefix.Find('.');
+		    int next_dot = new_prefix.Find('.');
 
-		    wxString bit = next_dot == -1 ? new_prefix : new_prefix.Left(next_dot);
+		    wxString bit;
+		    if (next_dot == -1) {
+			bit = new_prefix;
+		    } else {
+			bit = new_prefix.Left(next_dot);
+		    }
 
 		    // Add the current tree ID to the stack.
 		    previous_ids.push(current_id);
@@ -1032,9 +1028,7 @@ void MainFrm::FillTree()
 		    current_id = m_Tree->AppendItem(current_id, bit);
 		    m_Tree->SetItemData(current_id, new TreeData(NULL));
 
-		    if (next_dot == -1) {
-			break;
-		    }
+		    if (next_dot == -1) break;
 
 		    new_prefix = new_prefix.Mid(next_dot + 1);
 		}
@@ -1067,6 +1061,8 @@ void MainFrm::SetTreeItemColour(LabelInfo* label)
     }
 
     if (label->IsEntrance()) {
+	// FIXME: making this red here doesn't match with entrance blobs
+	// being green...
 	m_Tree->SetItemTextColour(label->tree_id, wxColour(255, 0, 0));
     }
 }
@@ -1075,9 +1071,9 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 {
     // Centre the dataset around the origin.
 
-    Double xoff = m_Offsets.x = xmin + (m_XExt / 2.0f);
-    Double yoff = m_Offsets.y = ymin + (m_YExt / 2.0f);
-    Double zoff = m_Offsets.z = zmin + (m_ZExt / 2.0f);
+    Double xoff = m_Offsets.x = xmin + (m_XExt / 2.0);
+    Double yoff = m_Offsets.y = ymin + (m_YExt / 2.0);
+    Double zoff = m_Offsets.z = zmin + (m_ZExt / 2.0);
 
     for (int band = 0; band < NUM_DEPTH_COLOURS + 1; band++) {
 	list<PointInfo*>::iterator pos = m_Points[band].begin();
@@ -1102,7 +1098,7 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 int MainFrm::GetDepthColour(Double z)
 {
     // Return the (0-based) depth colour band index for a z-coordinate.
-    return int(((z - m_ZMin) / (m_ZExt == 0.0f ? 1.0f : m_ZExt)) * (NUM_DEPTH_COLOURS - 1));
+    return int(((z - m_ZMin) / (m_ZExt == 0.0 ? 1.0 : m_ZExt)) * (NUM_DEPTH_COLOURS - 1));
 }
 
 Double MainFrm::GetDepthBoundaryBetweenBands(int a, int b)
@@ -1122,6 +1118,7 @@ void MainFrm::IntersectLineWithPlane(Double x0, Double y0, Double z0,
 {
     // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1)
     // with the plane parallel to the xy-plane with z-axis intersection z.
+    assert(z1 - z0 != 0.0);
 
     Double t = (z - z0) / (z1 - z0);
     x = x0 + t*(x1 - x0);
@@ -1141,7 +1138,8 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 
 	// If this is a leg, then check if it intersects a depth
 	// colour boundary.
-	if (prev_point && point->isLine) {
+	if (point->isLine) {
+	    assert(prev_point);
 	    int col1 = GetDepthColour(prev_point->z);
 	    int col2 = GetDepthColour(point->z);
 	    if (col1 != col2) {
@@ -1190,7 +1188,6 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 	else {
 	    // The first point, a surface point, or another move: put it in the
 	    // correct list according to depth.
-	    assert(!point->isLine || point->isSurface);
 	    int band = GetDepthColour(point->z);
 	    m_Points[band].push_back(point);
 	}
@@ -1356,7 +1353,7 @@ void MainFrm::SetAltitude(Double z)
     m_Coords->SetLabel(str);
 }
 
-void MainFrm::ShowInfo(LabelInfo *label)
+void MainFrm::ShowInfo(const LabelInfo *label)
 {
     assert(m_Gfx);
 	
@@ -1389,7 +1386,7 @@ void MainFrm::ShowInfo(LabelInfo *label)
 	TreeData *data = (TreeData*) sel_wx;
 
 	if (data->IsStation()) {
-	    LabelInfo* label2 = data->GetLabel();
+	    const LabelInfo* label2 = data->GetLabel();
 	    assert(label2);
 
 	    Double x0 = label2->x;
@@ -1443,10 +1440,9 @@ void MainFrm::ShowInfo(LabelInfo *label)
     }
 }
 
-void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
+void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
 {
-    TreeData* data = (TreeData*) item;
-
+    const TreeData* data = static_cast<const TreeData*>(item);
     if (data) {
 	if (data->IsStation()) {
 	    ShowInfo(data->GetLabel());
@@ -1467,7 +1463,7 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
     TreeData* data = (TreeData*) item;
 
     if (data && data->IsStation()) {
-	LabelInfo* label = data->GetLabel();
+	const LabelInfo* label = data->GetLabel();
 	m_Gfx->CentreOn(label->x, label->y, label->z);
     }
 
