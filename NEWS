@@ -8,6 +8,9 @@ Changes in 1.0.19:
   a lot of stations in the same survey hierarchy level (which is how Compass
   files are handled).
 
+* cavern: don't warn about a compass reading on a plumbed leg if the
+  plumb was inferred and the compass reading is zero.
+
 * cavern: reduced memory usage in code which reads a survey station name.
 
 * cavern: reported CPU time would go negative if cavern ran for more than

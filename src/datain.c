@@ -43,7 +43,9 @@
 
 int ch;
 
-typedef enum {CTYPE_OMIT, CTYPE_READING, CTYPE_PLUMB, CTYPE_HORIZ} clino_type;
+typedef enum {
+    CTYPE_OMIT, CTYPE_READING, CTYPE_PLUMB, CTYPE_INFERPLUMB, CTYPE_HORIZ
+} clino_type;
 
 /* Don't explicitly initialise as we can't set the jmp_buf - this has
  * static scope so will be initialised like this anyway */
@@ -809,7 +811,6 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	       clino_type ctype, clino_type backctype)
 {
    real tape = VAL(Tape);
-   real comp = VAL(Comp);
    real clin = VAL(Clino);
    real backclin = VAL(BackClino);
 
@@ -839,7 +840,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
 		 diff_from_abs90 > -EPSILON) {
-	 ctype = CTYPE_PLUMB;
+	 ctype = CTYPE_INFERPLUMB;
       }
    }
 
@@ -854,7 +855,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
 		 diff_from_abs90 > -EPSILON) {
-	 backctype = CTYPE_PLUMB;
+	 backctype = CTYPE_INFERPLUMB;
       }
    }
 
@@ -863,11 +864,17 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       return 0;
    }
 
-   if (ctype == CTYPE_PLUMB || backctype == CTYPE_PLUMB) {
+   if (ctype == CTYPE_PLUMB || ctype == CTYPE_INFERPLUMB ||
+       backctype == CTYPE_PLUMB || backctype == CTYPE_INFERPLUMB) {
       /* plumbed */
       if (!fNoComp) {
-	 /* FIXME: Different message for BackComp? */
-	 compile_warning(/*Compass reading given on plumbed leg*/21);
+	 if (ctype == CTYPE_PLUMB ||
+	     (ctype == CTYPE_INFERPLUMB && VAL(Comp) != 0.0) ||
+	     backctype == CTYPE_PLUMB ||
+	     (ctype == CTYPE_INFERPLUMB && VAL(BackComp) != 0.0)) {
+	    /* FIXME: Different message for BackComp? */
+	    compile_warning(/*Compass reading given on plumbed leg*/21);
+	 }
       }
 
       dx = dy = (real)0.0;
@@ -920,8 +927,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	    backclin = (backclin - pcs->z[Q_BACKGRADIENT])
 	       * pcs->sc[Q_BACKGRADIENT];
 	    if (ctype == CTYPE_READING) {
-	       if (sqrd((clin + backclin) / 3.0) >
-		     var_clin + VAR(BackClino)) {
+	       if (sqrd((clin + backclin) / 3.0) > var_clin + VAR(BackClino)) {
 		  /* fore and back readings differ by more than 3 sds */
 		  warn_readings_differ(/*Clino reading and back clino reading disagree by %s degrees*/99, clin + backclin);
 	       }
