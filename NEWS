@@ -1,7 +1,3 @@
-* (MS Windows version): aven: Delete now works in the search box.
-
-* (MS Windows version): aven: Loading file on start-up now works!
-
 * aven: Side Panel can now be dragged or toggled shut and then reopened
   again; double-clicking on the divider now maximises the survey window rather
   than the side panel.
@@ -17,15 +13,22 @@
 * aven: entrance blobs now green to distinguish them from stations matching
   search.
 
+* aven: problems with dragging scalebar fixed.
+
+* (MS Windows version): aven: Loading file on start-up now works!
+
+* (MS Windows version): aven: Delete now works in the search box.
+
 * cavern: Fixed handling of interleaved nosurvey data.
 
 * cavern: Diving and cylpolar styles now take DEPTHCHANGE where they used to
   take DZ.
 
 * (MS Windows version): Installer now uses a different compression
-  method which is about 5% more effective (bzip2).  It's likely to be
-  slower to uncompress - feedback on whether the slowdown is worth the
-  reduction in download size welcome.
+  method (bzip2) which reduces the download size by about 5% (and 
+  should help keep the installer small enough to fit on a 1.44M floppy).
+  Bzip2 is a little slower to uncompress, but not appreciably so on the
+  machines I've checked it on.
 
 * (MS Windows version): Should now install without errors for a
   non-admin user on MS Windows NT/2000/XP.
