@@ -24,7 +24,7 @@
 #include "prio.h"
 #include "filelist.h"
 #include "debug.h" /* for BUG and ASSERT */
-#include "prindept.h"
+#include "prcore.h"
 #include "ini.h"
 
 #define FNMFONT "pfont.bit"
@@ -32,7 +32,30 @@
 static int Pre(int pagesToPrint, const char *title);
 static void Post(void);
 
-#ifdef PCL
+#ifdef XBM
+static const char *xbm_Name(void);
+static void xbm_NewPage(int pg, int pass, int pagesX, int pagesY);
+static void xbm_Init(FILE *fh, const char *pth, float *pscX, float *pscY);
+static void xbm_ShowPage(const char *szPageDetails);
+
+static int xbm_page_no = 0;
+
+/*device xbm = {*/
+device printer = {
+   xbm_Name,
+   xbm_Init,
+   Pre,
+   xbm_NewPage,
+   MoveTo,
+   DrawTo,
+   DrawCross,
+   WriteString,
+   NULL, /* DrawCircle */
+   xbm_ShowPage,
+   Post,
+   prio_close
+};
+#elif defined(PCL)
 static bool fPCL = fTrue;
 static bool fNoPCLHTab = fFalse;
 static bool fNoPCLVTab = fFalse;
@@ -139,7 +162,22 @@ PlotDotPCL(long x, long y)
    bitmap[y - clip.y_min][x >> 3] |= 128 >> (x & 7);
 }
 
-#ifdef PCL
+static void
+PlotDotXBM(long x, long y)
+{
+   if (x < clip.x_min || x > clip.x_max || y < clip.y_min || y > clip.y_max)
+      return;
+   bitmap[y - clip.y_min][x - clip.x_min] = '*';
+}
+
+
+#ifdef XBM
+static const char *
+xbm_Name(void)
+{
+   return "XBM Printer";
+}
+#elif defined(PCL)
 static const char *
 pcl_Name(void)
 {
@@ -157,7 +195,9 @@ dm_Name(void)
  * otherwise pass goes from 0 to (passMax-1)
  */
 static void
-#ifdef PCL
+#ifdef XBM
+xbm_NewPage(int pg, int pass, int pagesX, int pagesY)
+#elif defined(PCL)
 pcl_NewPage(int pg, int pass, int pagesX, int pagesY)
 #else
 dm_NewPage(int pg, int pass, int pagesX, int pagesY)
@@ -195,24 +235,54 @@ dm_NewPage(int pg, int pass, int pagesX, int pagesY)
          ylThisPassDepth = ylPassDepth;
       }
 
+#ifdef XBM
+      /* Don't 0 all rows on last pass */
+      for (yi = 0; yi < ylThisPassDepth; yi++) memset(bitmap[yi], '.', lenLine);
+
+      PlotDot = PlotDotXBM;
+#else
       /* Don't 0 all rows on last pass */
       for (yi = 0; yi < ylThisPassDepth; yi++) memset(bitmap[yi], 0, lenLine);
 
       PlotDot = (fPCL ? PlotDotPCL : PlotDotDM); /* setup function ptr */
+#endif
 
       drawticks(edge, 9, x, y);
-   }
+   }   
+#ifdef XBM
+   xbm_page_no = pg;
+#endif
 }
 
 static void
-#ifdef PCL
+#ifdef XBM
+xbm_ShowPage(const char *szPageDetails)
+#elif defined(PCL)
 pcl_ShowPage(const char *szPageDetails)
 #else
 dm_ShowPage(const char *szPageDetails)
 #endif
 {
    int y, last;
-#ifdef PCL
+#ifdef XBM
+   if (passStore == 0)
+      prio_printf("/* XPM */\n"
+		  "static char *page%d[] = {\n"
+		  "/* width height num_colors chars_per_pixel */\n"
+		  "\"%d %d 1 1\",\n"
+		  "/* colors */\n"
+		  "\". c #ffffff\",\n"
+		  "\"* c #000000\",\n"
+		  "/* pixels */\n",
+		  xbm_page_no, xpPageWidth, ypPageDepth);
+   
+   
+   for (y = ypPageDepth - 1; y >= 0; y--) {
+      prio_putc('\"');
+      prio_putbuf(bitmap[y], xpPageWidth);
+      prio_print("\",\n");
+   }
+#elif defined(PCL)
 # define firstMin 7 /* length of horizontal offset ie  Esc * p <number> X */
    int first;
    static int cEmpties = 0; /* static so we can store them up between passes */
@@ -285,7 +355,9 @@ dm_ShowPage(const char *szPageDetails)
 #endif
    putchar(' ');
    if (passStore == passMax - 1) {
-#ifdef PCL
+#ifdef XBM
+      prio_print("};\n");
+#elif defined(PCL)
       prio_print("\x1b*rB\n\n"); /* End graphics */
       prio_print("\x1b(s0p20h12v0s3t2Q"); /* select a narrow-ish font */
       prio_print(szPageDetails);
@@ -302,7 +374,9 @@ dm_ShowPage(const char *szPageDetails)
 
 /* Initialise DM/PCL printer routines */
 static void 
-#ifdef PCL
+#ifdef XBM
+xbm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
+#elif defined(PCL)
 pcl_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
 #else
 dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
@@ -312,7 +386,10 @@ dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
    static char *vars[] = {
       "like",
       "output",
-#ifdef PCL
+#ifdef XBM
+      "width",
+      "height",
+#elif defined(PCL)
       "dpi",
       "mm_across_page",
       "mm_down_page",
@@ -338,7 +415,18 @@ dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
    };
    char **vals;
 
-#ifdef PCL
+#ifdef XBM
+   vals = ini_read_hier(fh, "xbm", vars);
+   fnmPrn = as_string(vals[1]);
+   xpPageWidth = as_int(vals[2], 1, INT_MAX);
+   ypPageDepth = as_int(vals[3], 1, INT_MAX);
+   ylPageDepth = ypPageDepth;
+   ypLineDepth = 1;
+   PaperWidth = xpPageWidth;
+   PaperDepth = ypPageDepth;
+   *pscX = *pscY = 1;
+   osfree(vals);
+#elif defined(PCL)
    vals = ini_read_hier(fh, "pcl", vars);
    fnmPrn = as_string(vals[1]);
    dpi = as_int(vals[2], 1, INT_MAX);
@@ -392,6 +480,9 @@ dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
    osfree(vals);
 #endif
 
+#ifdef XBM
+   read_font(pth, FNMFONT, 25, 25);
+#else
    if (fPCL) {
       read_font(pth, FNMFONT, dpi, dpi);
    } else {
@@ -399,7 +490,7 @@ dm_Init(FILE *fh, const char *pth, float *pscX, float *pscY)
       read_font(pth, FNMFONT, (int)((*pscX) * MM_PER_INCH),
 	       (int)((*pscY) * MM_PER_INCH));
    }
-
+#endif
    prio_open(fnmPrn);
    osfree(fnmPrn);
 }
@@ -414,7 +505,11 @@ Pre(int pagesToPrint, const char *title)
 
    passMax = 1;
    bitmap = osmalloc(ylPageDepth * ossizeof(void*));
+#ifdef XBM
+   lenLine = xpPageWidth;
+#else
    lenLine = ( fPCL ? ((xpPageWidth + 7) >> 3) : xpPageWidth * SIZEOFGRAPH_T);
+#endif
    bitmap[0] = osmalloc(lenLine);
    for (y = 1; y < ylPageDepth; y++) {
       bitmap[y] = xosmalloc(lenLine);
