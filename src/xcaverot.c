@@ -28,6 +28,12 @@
  * SOFTWARE.
  */
 
+/* Uncomment the next line to try Mark's bodge (as used in aven) - in xcaverot
+ * seems to perform worse that processing all events in the queue before
+ * redrawing, which is interesting... */
+
+/* #define MARKS_BODGE */
+
 #define XCAVEROT_BUTTONS
 
 #ifdef HAVE_CONFIG_H
@@ -1518,11 +1524,13 @@ main(int argc, char **argv)
       int refresh_window = 0;
       update_rotation();
 
-//      if (rot == 0 || XPending(mydisplay)) {
+#ifdef MARKS_BODGE
+      if (rot == 0 || XPending(mydisplay)) {
+#else
       if (rot == 0) goto ickybodge;
       while (XPending(mydisplay)) {
-	 ickybodge:
-
+	 ickybodge:	      
+#endif
          XNextEvent(mydisplay, &myevent);
 #if 0
          printf("event of type #%d, in window %x\n",myevent.type, (int)myevent.xany.window);
@@ -1751,6 +1759,11 @@ main(int argc, char **argv)
 	    }
 	 }
       }
+
+#ifdef MARKS_BODGE
+      // Discard all events.
+      XSync(mydisplay, True);
+#endif
 
       {
 	 static float old_view_angle = -1;
