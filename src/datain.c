@@ -279,22 +279,14 @@ read_reading(reading r, bool f_optional)
 }
 
 static void
-read_reading_or_omit(reading r)
+read_bearing_or_omit(reading r)
 {
    int n_readings;
    q_quantity q;
    VAL(r) = read_numeric_or_omit(&n_readings);
    switch (r) {
-      case Tape: q = Q_LENGTH; break;
       case Comp: q = Q_BEARING; break;
       case BackComp: q = Q_BACKBEARING; break;
-      case Clino: q = Q_GRADIENT; break;
-      case BackClino: q = Q_BACKGRADIENT; break;
-      case FrDepth: case ToDepth: q = Q_DEPTH; break;
-      case Dx: q = Q_DX; break;
-      case Dy: q = Q_DY; break;
-      case Dz: q = Q_DZ; break;
-      case FrCount: case ToCount: q = Q_COUNT; break;
       default: BUG("Unexpected case");
    }
    VAR(r) = var(q);
@@ -1183,10 +1175,10 @@ data_normal(void)
 	  fTopofil = fTrue;
 	  break;
        case Comp:
-	  read_reading_or_omit(Comp);
+	  read_bearing_or_omit(Comp);
 	  break;
        case BackComp:
-	  read_reading_or_omit(BackComp);
+	  read_bearing_or_omit(BackComp);
 	  break;
        case Clino:
 	  read_reading(Clino, fTrue);
