@@ -1,3 +1,31 @@
+Changes in 0.94-pre1:
+
+* Tentative fix for bug reported by Leandro - cavern would segfault
+  in articulate() on second *solve
+
+* Applied xcaverot patches from Leandro: fix menu buttons, keyboard
+  shortcuts, colour of station markers, scalebar length and text display,
+  mouse right-button "cave drag", centre-button "plan/elevation switch",
+  zoom in/out menu button
+
+* Fixed "matrix wouldn't invert" problem with certain datasets;
+  added regression test (bug2)
+
+* Check for sgmltools v3 (sgmltools-lite) as well as v2
+
+* BorlandC and RISC OS config files are now regenerated when version number
+  is updated
+
+Changes in 0.93:
+
+* Quick fix for problem with finding articulation points in particularly
+  contorted components with 2 or more fixed points - for now each component
+  is solved separately, but they aren't split at articulation points
+
+* Turned off some debug code left active by mistake
+
+* Test suite was missing a file
+
 Changes in 0.92:
 
 * 3dtodxf's DXF output can be opened by AutoCAD 13, 14 and 2000, as

@@ -35,7 +35,7 @@ AC_CHECK_PROGS(CXX, $CCC m4_default([$1], [c++ g++ gpp aCC CC cxx cc++ cl]),)
 if test -n "$CXX" ; then
   AC_PROG_CXX_WORKS_PROBE
   if test -n "$CXX" ; then
-    AC_PROG_CXX_GNU
+    _AC_PROG_CXX_GNU
   
     if test $ac_cv_prog_gxx = yes; then
       GXX=yes
@@ -49,7 +49,7 @@ if test -n "$CXX" ; then
     ac_test_CXXFLAGS="${CXXFLAGS+set}"
     ac_save_CXXFLAGS="$CXXFLAGS"
     CXXFLAGS=
-    AC_PROG_CXX_G
+    _AC_PROG_CXX_G
     if test "$ac_test_CXXFLAGS" = set; then
       CXXFLAGS="$ac_save_CXXFLAGS"
     elif test $ac_cv_prog_cxx_g = yes; then
@@ -75,8 +75,8 @@ AC_DEFUN(AC_PROG_CXX_WORKS_PROBE,
 [AC_MSG_CHECKING([whether the C++ compiler ($CXX $CXXFLAGS $CPPFLAGS $LDFLAGS) works])
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
-AC_TRY_COMPILER([int main(){return(0);}],
-                ac_cv_prog_cxx_works, ac_cv_prog_cxx_cross)
+AC_TRY_COMPILE([int main(){return(0);}],
+               ac_cv_prog_cxx_works, ac_cv_prog_cxx_cross)
 AC_LANG_RESTORE
 AC_MSG_RESULT($ac_cv_prog_cxx_works)
 if test $ac_cv_prog_cxx_works = no; then

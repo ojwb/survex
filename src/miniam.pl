@@ -159,6 +159,7 @@ sub init_riscos {
       'LIBOBJS' => 'strcasecmp.o',
       'CRLIB' => '',
       'CROBJX' => 'armrot.o',
+      # REAL_EPSILON might be ok as 1e-11...
       'CFLAGS' => '-DREAL_EPSILON=1e-10 -DHAVE_CONFIG_H -IC:,@ -throwback -ffahp -fussy',
       'LDFLAGS' => '',
       'LIBS' => 'C:OSLib.o.OSLib',

@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl Need 2.13 or later for 3 argument version of AC_DEFINE
 AC_PREREQ(2.13)
 AC_INIT(src/caverot.c)
-AM_INIT_AUTOMAKE(survex, 0.93)
+AM_INIT_AUTOMAKE(survex, 0.94)
 AM_CONFIG_HEADER(config.h)
 
 dnl keep this on two lines like this - miniam.pl relies on this
@@ -12,7 +12,7 @@ AC_DEFINE(COPYRIGHT_MSG,
 
 dnl Checks for programs.
 AC_PROG_CC
-AC_PROG_CXX_PROBE
+AC_PROG_CXX #_PROBE
 if test -n "$CXX" ; then
   AM_DEPENDENCIES(CXX)
   AC_PROG_CXXCPP
@@ -58,7 +58,7 @@ if test x$no_x != xyes; then
   AC_CHECK_LIB(Xext, XdbeQueryExtension, X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS", ,
                $X_LIBS $X_PRE_LIBS -lX11 -lXext $X_EXTRA_LIBS)
   CAVEROT=xcaverot ${CAVEROT}
-  AC_MSG_RESULT("building xcaverot")
+  AC_MSG_RESULT(building xcaverot)
 fi
 
 AVEN=
@@ -68,7 +68,7 @@ if test -n "$CXX" ; then
     AC_SUBST(GTKMM_VERSION)
     AC_SUBST(GTKMM_LIBS)
     AC_SUBST(GTKMM_CFLAGS)
-    AC_MSG_RESULT("building aven")
+    AC_MSG_RESULT(building aven)
   fi
 fi
 
@@ -128,9 +128,10 @@ esac
 
 AC_SUBST(LIBOBJS)
 
-AC_MSG_CHECKING(for sgmltools v2)
+AC_MSG_CHECKING(for sgmltools v2 or v3)
 case `sgmltools --version 2> /dev/null` in
 *" version 2"*) sgmltools=yes ;;
+*" version 3"*) sgmltools=yes ;;
 *) sgmltools=no ;;
 esac
 AC_MSG_RESULT($sgmltools)
