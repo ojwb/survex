@@ -53,6 +53,12 @@ bool Aven::OnInit()
     // Tell wxMac which the About menu item is so it can be put where MacOS
     // users expect it to be
     wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
+    // wxMac is supposed to remove this magic command line option (which
+    // Finder passes), but it doesn't seem too...
+    if (argc > 1 && strncmp(argv[1], "-psn_", 5) == 0) {
+	--argc;
+	memmove(argv + 1, argv + 2, argc * sizeof(char *));
+    }
 #endif 
     msg_init(argv);
 

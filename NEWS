@@ -16,6 +16,8 @@
 * (MacOS X version): aven: the keyboard and mouse now work!  It turns out that
   we must apply resources *after* installing.
 
+* (MacOS X version): aven: now works when run from the MacOS X Finder.
+
 * (MacOS X version): fixed not to try to build aven if wxWindows isn't
   installed.
 
