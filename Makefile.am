@@ -88,39 +88,38 @@ rpm : dist
 	fi
 
 debcl=deb/${PACKAGE}-${VERSION}/debian/changelog
+debct=deb/${PACKAGE}-${VERSION}/debian/control
 
 debian : dist
 	-rm -rf deb
 	mkdir deb
 	cd deb && tar zxvf ../${PACKAGE}-${VERSION}.tar.gz
-	cp -a debian deb/${PACKAGE}-${VERSION}
 	echo "${PACKAGE} (${VERSION}.${RELEASE}) unstable; urgency=low" > ${debcl}
 	echo >> ${debcl}
 	echo "  * Dummy changelog - see ChangeLog and NEWS." >> ${debcl}
 	echo >> ${debcl}
 	echo " -- Olly Betts <olly@survex.com>  "`date "+%a, %d %b %Y %X %z"` >> ${debcl}
-	echo Source: survex > debian/control
-	echo Section: math >> debian/control
-	echo Priority: optional >> debian/control
-	echo "Maintainer: Wookey <wookey@survex.com>" >> debian/control
-	echo Standards-Version: 3.0.1 >> debian/control
-	echo >> debian/control
-	echo Package: ${PACKAGE} >> debian/control
-	echo Architecture: any >> debian/control
-	echo 'Depends: ${shlibs:Depends}' >> debian/control
-	echo Description: Cave survey software >> debian/control
-	sed 's/^/ /' < desc.txt >> debian/control
-	echo >> debian/control
-	echo Package: survex-aven >> debian/control
-	echo Architecture: any >> debian/control
-	echo 'Depends: ${shlibs:Depends}' >> debian/control
-	echo Description: Aven viewer for Survex >> debian/control
-	sed 's/^/ /' < desc-aven.txt >> debian/control	
+	echo Source: survex > ${debct}
+	echo Section: math >> ${debct}
+	echo Priority: optional >> ${debct}
+	echo "Maintainer: Wookey <wookey@survex.com>" >> ${debct}
+	echo Standards-Version: 3.0.1 >> ${debct}
+	echo >> ${debct}
+	echo Package: ${PACKAGE} >> ${debct}
+	echo Architecture: any >> ${debct}
+	echo 'Depends: ${shlibs:Depends}' >> ${debct}
+	echo Description: Cave survey software >> ${debct}
+	sed 's/^/ /' < desc.txt >> ${debct}
+	echo >> ${debct}
+	echo Package: survex-aven >> ${debct}
+	echo Architecture: any >> ${debct}
+	echo 'Depends: ${shlibs:Depends}' >> ${debct}
+	echo Description: Aven viewer for Survex >> ${debct}
+	sed 's/^/ /' < desc-aven.txt >> ${debct}	
 	# -us and -uc mean don't sign packages
 	cd deb/${PACKAGE}-${VERSION} && debuild -us -uc
 	mv deb/*.deb .
 	rm -rf deb
-	rm debian/control
 
 dostxt :
 	$(RM) -rf dostxt_tmp	
