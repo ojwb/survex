@@ -28,7 +28,7 @@ EXTRA_DIST = manual $(doclist) survex.1.in index.htm.in\
  man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
  man_diffpos.sgml man_extend.sgml man_sorterr.sgml man_xcaverot.sgml\
  man_printdm.sgml man_printhpgl.sgml man_printpcl.sgml man_printps.sgml\
- man_print.ini.sgml cl2html.pl news2html.pl
+ man_print.ini.sgml cl2html.pl news2html.pl version.ent version.ent.in
 
 ChngeLog.htm: ../ChangeLog
 	./cl2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../ChangeLog > ChngeLog.htm
