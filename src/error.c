@@ -195,21 +195,22 @@ safe_fopen:      like fopen, but returns NULL for directories under all OS
 #include <limits.h>
 #include <errno.h>
 
-#ifndef NO_SIGNAL
-# include <signal.h>
-#endif
-
 #include "whichos.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "osdepend.h"
 #include "filelist.h"
 #include "debug.h"
 #include "version.h"
 
-#if 0
-#ifndef NO_TEX
-# include "tex.h" /* Will define NO_TEX if no special character set */
-#endif
+#ifdef HAVE_SIGNAL
+# ifdef HAVE_SETJMP
+#  include <setjmp.h>
+static jmp_buf jmpbufSignal;
+#  include <signal.h>
+# else
+#  undef HAVE_SIGNAL
+# endif
 #endif
 
 /* This is the name of the default language -- set like this so folks can
@@ -230,23 +231,23 @@ safe_fopen:      like fopen, but returns NULL for directories under all OS
 /* These are English versions of messages which might be needed before the
  * alternative language version has been read from the message file.
  */
-static sz  ergBootstrap[]={
+static const char * ergBootstrap[]={
    "",
    "Out of memory (couldn't find %ul bytes).\n",
    "\nFatal error from %s: ",
    "\nError from %s: ",
    "\nWarning from %s: ",
-   "Error message file has incorrect format\n",
+   "Message file has incorrect format\n", /* was "Error message file ..." */
    "Negative error numbers are not allowed\n",
    NULL /* NULL marks end of list */
 };
 
-static sz  *erg=ergBootstrap;
-static int enMac=32; /* Initially, grows automatically */
-static sz  szBadEn="???";
+static const char **erg = ergBootstrap;
+static int enMac = 32; /* Initially, grows automatically */
+static const char *szBadEn = "???";
 
-static int cWarnings=0; /* to keep track of how many warnings we've given */
-static int cErrors=0;   /* and how many (non-fatal) errors */
+static int cWarnings = 0; /* keep track of how many warnings we've given */
+static int cErrors = 0;   /* and how many (non-fatal) errors */
 
 extern int error_summary(void) {
    fprintf(STDERR,msg(16),cWarnings,cErrors);
@@ -298,17 +299,17 @@ extern void FAR * osstrdup( const char *sz ) {
 
 /* osfree is currently a macro in error.h */
 
-#ifndef NO_SIGNAL
-# ifdef NO_SETJMP
-#  error Can not handle signals if NO_SETJMP defined - define NO_SIGNAL too
-# else
-#  include <setjmp.h>
-static jmp_buf jmpbufSignal;
-# endif
+#ifdef HAVE_SIGNAL
 
 static int sigReceived;
 
-static CDECL void FAR report_sig( int sig ) {
+/* for systems not using autoconf, assume the signal handler returns void
+ * unless specified elsewhere */
+#ifndef RETSIGTYPE
+#define RETSIGTYPE void
+#endif
+
+static CDECL RETSIGTYPE FAR report_sig( int sig ) {
    sigReceived=sig;
    longjmp(jmpbufSignal,1);
 }
@@ -317,13 +318,13 @@ static void init_signals( void ) {
    int en;
    if (!setjmp(jmpbufSignal)) {
       signal(SIGABRT,report_sig); /* abnormal termination eg abort() */
-      signal(SIGFPE ,report_sig); /* arithmetic error eg /0 or overflow */
-      signal(SIGILL ,report_sig); /* illegal function image eg illegal instruction */
+//      signal(SIGFPE ,report_sig); /* arithmetic error eg /0 or overflow */
+//      signal(SIGILL ,report_sig); /* illegal function image eg illegal instruction */
       signal(SIGINT ,report_sig); /* interactive attention eg interrupt */
-      signal(SIGSEGV,report_sig); /* illegal storage access eg access outside memory limits */
-      signal(SIGTERM,report_sig); /* termination request sent to program */
+//      signal(SIGSEGV,report_sig); /* illegal storage access eg access outside memory limits */
+//      signal(SIGTERM,report_sig); /* termination request sent to program */
 # ifdef SIGSTAK /* only on RISC OS AFAIK */
-      signal(SIGSTAK,report_sig); /* stack overflow */
+//      signal(SIGSTAK,report_sig); /* stack overflow */
 # endif
       return;
    }
@@ -341,22 +342,25 @@ static void init_signals( void ) {
     default:      en=97; break;
    }
    fputsnl(msg(en),STDERR);
-   if (errno) {
-# ifndef NO_STRERROR
+   if (errno >= 0) {
+# ifdef HAVE_STRERROR
       fputsnl(strerror(errno),STDERR);
-# else
-#  ifndef NO_PERROR
+# elif defined(HAVE_SYS_ERRLIST)
+      if (errno < sys_nerr)
+	 fputsnl( STDERR, sys_errlist[errno] );
+# elif defined(HAVE_PERROR)
       perror(NULL); /* always goes to stderr */
       /* if (arg!=NULL && *arg!='\0') fputs("<arg>: <err>\n",stderr); */
       /* else fputs("<err>\n",stderr); */
-#  endif
+# else
+      fprintf( STDERR, "error code %d\n", errno );
 # endif
    }
    if (sigReceived!=SIGINT && sigReceived!=SIGTERM)
       fatal(11,NULL,NULL,0); /* shouldn't get any others => bug */
    exit(EXIT_FAILURE);
 }
-#endif /* !defined(NO_SIGNAL) */
+#endif
 
 /* write string and nl to STDERR */
 extern void wr( const char *sz, int n ) {
@@ -589,27 +593,30 @@ printf("oops, bad charset...\n");
   }
 #endif
 
+#if 0
 printf("opening error file\n");
 printf("(%s %s)\n",pthMe,lfErrs);
+#endif
   fh=fopenWithPthAndExt( pthMe, lfErrs, "", "rb", NULL );
+#if 0
 printf("opened error file\n");
+#endif
   if (!fh) {
     /* no point extracting this error, as it won't get used if file opens */
     fprintf(STDERR, erg[3], szAppNameCopy );
     fprintf(STDERR, "Can't open error message file '%s' using path '%s'\n",
-            lfErrs,pthMe);
+            lfErrs, pthMe );
     exit(EXIT_FAILURE);
   }
 
   { /* copy bootstrap erg[] which'll get overwritten by file entries */
-    sz *ergMalloc;
-    erg = ergBootstrap;
-    ergMalloc=osmalloc( enMac*ossizeof(char*) );
-    for ( en=0 ; erg[en] ; en++ )
-      ergMalloc[en]=erg[en]; /* NULL marks end of list */
-    for ( ; en<enMac ; en++ )
-      ergMalloc[en]=szBadEn;
-    erg=ergMalloc;
+     const char **ergMalloc;
+     erg = ergBootstrap;
+     ergMalloc = osmalloc( enMac * ossizeof(char*) );
+     /* NULL marks end of list */
+     for ( en = 0 ; erg[en] ; en++ ) ergMalloc[en]=erg[en];
+     for ( ; en < enMac ; en++ ) ergMalloc[en] = szBadEn;
+     erg = ergMalloc;
   }
 
   while (!feof( fh )) {
@@ -708,12 +715,10 @@ printf("opened error file\n");
         int enTmp;
         enTmp=enMac;
         enMac=enMac<<1;
-        erg=osrealloc(erg, enMac * ossizeof(char*) );
-        for ( ; enTmp<enMac ; enTmp++ )
-          erg[enTmp]=szBadEn;
+        erg = osrealloc(erg, enMac * ossizeof(char*) );
+        for ( ; enTmp < enMac ; enTmp++ ) erg[enTmp] = szBadEn;
       }
-      erg[en]=osmalloc(c+1);
-      strcpy(erg[en],estr); /* !HACK! osstrdup? */
+      erg[en] = osstrdup(estr);
 /*printf("Error number %d: %s\n",en,erg[en]);*/
     }
   }
@@ -727,7 +732,7 @@ extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvV
   char *szTmp;
 
   lfErrs = osstrdup(lfErrFile);
-#ifndef NO_SIGNAL
+#ifdef HAVE_SIGNAL
   init_signals();
 #endif
   /* This code *should* be completely bomb-proof :) even if strcpy()
@@ -827,18 +832,18 @@ extern char * FAR PthFromFnm( const char * fnm ) {
 }
 
 extern char * FAR LfFromFnm( const char *fnm ) {
-  const char * lf;
-  if ((lf=strrchr( fnm, FNM_SEP_LEV ))!=NULL)
-    return lf+1;
+   char *lf;
+   if ((lf = strrchr( fnm, FNM_SEP_LEV )) != NULL
 #ifdef FNM_SEP_LEV2
-  if ((lf=strrchr( fnm, FNM_SEP_LEV2))!=NULL)
-    return lf+1;
+       || (lf = strrchr( fnm, FNM_SEP_LEV2)) != NULL
 #endif
 #ifdef FNM_SEP_DRV
-  if ((lf=strrchr( fnm, FNM_SEP_DRV ))!=NULL)
-    return lf+1;
+       || (lf = strrchr( fnm, FNM_SEP_DRV )) != NULL
 #endif
-  return fnm;
+       ) {
+      return osstrdup(lf + 1);
+   }
+   return osstrdup(fnm);
 }
 
 /* Make fnm from pth and lf, inserting an FNM_SEP_LEV if appropriate */
@@ -906,7 +911,7 @@ extern char * FAR AddExt( const char *fnm, const char *ext ) {
  */
 extern FILE FAR * fopenWithPthAndExt( const char * pth, const char * fnm, const char * szExt, const char * szMode,
                                       char **pfnmUsed ) {
-  const char *fnmFull=NULL;
+  char *fnmFull=NULL;
   FILE *fh=NULL;
   bool fAbs;
   /* if no pth treat fnm as absolute */
@@ -935,7 +940,7 @@ extern FILE FAR * fopenWithPthAndExt( const char * pth, const char * fnm, const 
     if (!fh) {
       if (szExt && *szExt) {
         /* we've been given an extension so try using it */
-        const char *fnmTmp;
+        char *fnmTmp;
         fnmTmp=fnmFull;
         fnmFull=AddExt( fnmFull, szExt );
         osfree(fnmTmp);
@@ -959,7 +964,7 @@ extern FILE FAR * fopenWithPthAndExt( const char * pth, const char * fnm, const 
 typedef struct charset_li {
    struct charset_li *next;
    int code;
-   char **erg;
+   const char **erg;
 } charset_li;
 
 static charset_li *charset_head = NULL;
@@ -970,13 +975,13 @@ int select_charset( int charset_code ) {
    int old_charset = charset;
    charset_li *p;
 
-   printf( "select_charset(%d), old charset = %d\n", charset_code, charset );
+/*   printf( "select_charset(%d), old charset = %d\n", charset_code, charset ); */
 
    charset = charset_code;
 
    /* check if we've already parsed messages for new charset */
    for( p = charset_head ; p ; p = p->next ) {
-      printf("%p: code %d erg %p\n",p,p->code,p->erg);
+/*      printf("%p: code %d erg %p\n",p,p->code,p->erg); */
       if (p->code == charset) {
          erg = p->erg;
          goto found;
