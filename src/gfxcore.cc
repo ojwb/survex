@@ -43,11 +43,6 @@
 #define PLAN 1
 #define ELEVATION 2
 
-#ifdef AVENGL
-static void* LABEL_FONT = GLUT_BITMAP_HELVETICA_10;
-static const Double SURFACE_ALPHA = 0.6;
-#endif
-
 #ifdef _WIN32
 static const int FONT_SIZE = 8;
 #else
@@ -95,11 +90,7 @@ const ColourTriple COLOURS[] = {
 
 #define HITTEST_SIZE 20
 
-#ifdef AVENGL
-BEGIN_EVENT_TABLE(GfxCore, wxGLCanvas)
-#else
 BEGIN_EVENT_TABLE(GfxCore, wxWindow)
-#endif
     EVT_PAINT(GfxCore::OnPaint)
     EVT_LEFT_DOWN(GfxCore::OnLButtonDown)
     EVT_LEFT_UP(GfxCore::OnLButtonUp)
@@ -114,11 +105,7 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
-#ifdef AVENGL
-    wxGLCanvas(parent_win, 100, wxDefaultPosition, wxSize(640, 480)),
-#else
     wxWindow(parent_win, 100, wxDefaultPosition, wxSize(640, 480)),
-#endif
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
 	   wxFONTENCODING_ISO8859_1),
     m_InitialisePending(false)
@@ -161,11 +148,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
 #endif
     clipping = false;
 
-#ifdef AVENGL
-    m_TerrainLoaded = false;
-    m_AntiAlias = false;
-    m_SolidSurface = false;
-#else
     // Create pens and brushes for drawing.
     int num_colours = (int) col_LAST;
     m_Pens = new wxPen[num_colours];
@@ -176,7 +158,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
 	m_Brushes[col].SetColour(COLOURS[col].r, COLOURS[col].g, COLOURS[col].b);
 	assert(m_Brushes[col].Ok());
     }
-#endif
 
     SetBackgroundColour(wxColour(0, 0, 0));
 
@@ -192,10 +173,8 @@ GfxCore::~GfxCore()
         delete m_OffscreenBitmap;
     }
 
-#ifndef AVENGL
     DELETE_ARRAY(m_Pens);
     DELETE_ARRAY(m_Brushes);
-#endif
 
     delete[] m_PointGrid;
 }
@@ -258,10 +237,6 @@ void GfxCore::Initialise()
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
 
-#ifdef AVENGL
-    m_TerrainLoaded = false;
-#endif
-
 #ifdef AVENPRES
     m_DoingPresStep = -1; //--Pres: FIXME: delete old lists
 #endif
@@ -323,9 +298,6 @@ void GfxCore::Initialise()
     }
 
     // Scale the survey to a reasonable initial size.
-#ifdef AVENGL
-    m_InitialScale = 1.0;
-#else
     switch (m_Lock) {
      case lock_POINT:
        m_InitialScale = 1.0;
@@ -352,7 +324,6 @@ void GfxCore::Initialise()
 			    Double(m_YSize) / m_Parent->GetYExtent());
     }
     m_InitialScale *= .85;
-#endif
 
     // Calculate screen coordinates and redraw.
     SetScaleInitial(m_InitialScale);
@@ -366,18 +337,11 @@ void GfxCore::FirstShow()
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
 
-#ifdef AVENGL
-    glEnable(GL_DEPTH_TEST);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glEnable(GL_COLOR_MATERIAL);
-    CheckGLError("enabling features for survey legs");
-#else
     // Create the offscreen bitmap.
     m_OffscreenBitmap = new wxBitmap;
     m_OffscreenBitmap->Create(m_XSize, m_YSize);
 
     m_DrawDC.SelectObject(*m_OffscreenBitmap);
-#endif
 
     m_DoneFirstShow = true;
 
@@ -392,57 +356,11 @@ void GfxCore::SetScaleInitial(Double scale)
 {
     SetScale(scale);
 
-#ifdef AVENGL
-    DrawGrid();
-#endif
-
     if (true) {
 	// Invalidate hit-test grid.
 	m_HitTestGridValid = false;
 
-#ifdef AVENGL
-	// With OpenGL we have to make three passes, as OpenGL lists are
-	// immutable and we need the surface and underground data in different
-	// lists.  The third pass is so we get different lists for surface data
-	// split into depth bands, and not split like that.  This isn't a
-	// problem as this routine is only called once in the OpenGL version
-	// and it contains very little in the way of calculations for this
-	// version.
-	for (int pass = 0; pass < 3; pass++) {
-	    // 1st pass -> u/g data; 2nd pass -> surface (uniform);
-	    // 3rd pass -> surface (w/depth colouring)
-	    //--should delete any old GL list. (only a prob on reinit I think)
-	    if (pass == 0) {
-		CheckGLError("before allocating survey list");
-		m_Lists.survey = glGenLists(1);
-		CheckGLError("immediately after allocating survey list");
-		glNewList(m_Lists.survey, GL_COMPILE);
-		CheckGLError("creating survey list");
-	    }
-	    else if (pass == 1) {
-		m_Lists.surface = glGenLists(1);
-		glNewList(m_Lists.surface, GL_COMPILE);
-		CheckGLError("creating surface-nodepth list");
-	    }
-	    else {
-		m_Lists.surface_depth = glGenLists(1);
-		glNewList(m_Lists.surface_depth, GL_COMPILE);
-		CheckGLError("creating surface-depth list");
-	    }
-#endif
 	for (int band = 0; band < m_Bands; band++) {
-#ifdef AVENGL
-	    Double r, g, b;
-	    if (pass == 0 || pass == 2) {
-		m_Parent->GetColour(band, r, g, b);
-		glColor3d(r, g, b);
-		CheckGLError("setting survey colour");
-	    }
-	    else {
-		glColor3d(1.0, 1.0, 1.0);
-		CheckGLError("setting surface survey colour");
-	    }
-#else
 	    Point* pt = m_PlotData[band].vertices;
 	    assert(pt);
 	    int* count = m_PlotData[band].num_segs;
@@ -456,7 +374,6 @@ void GfxCore::SetScaleInitial(Double scale)
 
 	    m_Polylines[band] = 0;
 	    m_SurfacePolylines[band] = 0;
-#endif
 	    Double x, y, z;
 
 	    list<PointInfo*>::iterator pos = m_Parent->GetPointsNC(band);
@@ -464,9 +381,6 @@ void GfxCore::SetScaleInitial(Double scale)
 	    bool first_point = true;
 	    bool last_was_move = true;
 	    bool current_polyline_is_surface = false;
-#ifdef AVENGL
-	    bool line_open = false;
-#endif
 	    while (pos != end) {
 		PointInfo* pti = *pos++;
 
@@ -482,15 +396,6 @@ void GfxCore::SetScaleInitial(Double scale)
 			// Start a new polyline if we're switching
 			// underground/surface state or if the previous point
 			// was a move.
-#ifdef AVENGL
-			if ((current_polyline_is_surface && pass > 0) ||
-			    (!current_polyline_is_surface && pass == 0)) {
-			    line_open = true;
-			    glBegin(GL_LINE_STRIP);
-			    glVertex3d(x, y, z);
-			    CheckGLError("survey leg vertex");
-			}
-#else
 			Point** dest;
 
 			if (current_polyline_is_surface) {
@@ -513,23 +418,8 @@ void GfxCore::SetScaleInitial(Double scale)
 			// Advance the relevant coordinate pointer to the next
 			// position.
 			(*dest)++;
-#endif
 		    }
 
-#ifdef AVENGL
-		    if ((current_polyline_is_surface && pass > 0) ||
-			(!current_polyline_is_surface && pass == 0)) {
-			assert(line_open);
-			glVertex3d(x, y, z);
-			CheckGLError("survey leg vertex");
-			if (pass == 0) {
-			    m_UndergroundLegs = true;
-			}
-			else {
-			    m_SurfaceLegs = true;
-			}
-		    }
-#else
 		    // Add the leg onto the current polyline.
 		    Point** dest = &(current_polyline_is_surface ? spt : pt);
 
@@ -548,18 +438,9 @@ void GfxCore::SetScaleInitial(Double scale)
 		    else {
 			(*count)++;
 		    }
-#endif
 		    last_was_move = false;
 		}
 		else {
-#ifdef AVENGL
-		    if (line_open) {
-			//glVertex3d(x, y, z);
-			glEnd();
-			CheckGLError("closing survey leg strip");
-			line_open = false;
-		    }
-#endif
 		    first_point = false;
 		    last_was_move = true;
 
@@ -570,23 +451,12 @@ void GfxCore::SetScaleInitial(Double scale)
 		    z = pti->GetZ();
 		}
 	    }
-#ifndef AVENGL
 	    if (!m_UndergroundLegs) {
 		m_UndergroundLegs = (m_Polylines[band] > 0);
 	    }
 	    if (!m_SurfaceLegs) {
 		m_SurfaceLegs = (m_SurfacePolylines[band] > 0);
 	    }
-#else
-	    if (line_open) {
-		glEnd();
-		CheckGLError("closing survey leg strip (2)");
-	    }
-	}
-
-	glEndList();
-	CheckGLError("ending survey leg list");
-#endif
 	}
     }
 }
@@ -804,9 +674,7 @@ void GfxCore::RedrawOffscreen()
     timer.Start(); // reset timer
 
     // Redraw the offscreen bitmap
-#ifdef AVENGL
 
-#else
     // Invalidate hit-test grid.
     m_HitTestGridValid = false;
 
@@ -958,7 +826,6 @@ void GfxCore::RedrawOffscreen()
 					 HIGHLIGHTED_PT_SIZE * 2);
 #else
 		    m_DrawDC.DrawLines(10, blob, x, y);
-#endif
 		}
 	    }
 	}
@@ -993,10 +860,6 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     // Get a graphics context.
     wxPaintDC dc(this);
 
-#ifdef AVENGL
-    SetCurrent();
-#endif
-
     // Make sure we're initialised.
     if (!m_DoneFirstShow) {
 	FirstShow();
@@ -1008,96 +871,6 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	RedrawOffscreen();
     }
 
-#ifdef AVENGL
-    if (m_PlotData) {
-	// Clear the background.
-	ClearBackgroundAndBuffers();
-
-	// Set up projection matrix.
-	SetGLProjection();
-
-	// Set up model transformation matrix.
-	SetModellingTransformation();
-
-	if (m_Legs) {
-	    // Draw the underground legs.
-	    glCallList(m_Lists.survey);
-	}
-
-	if (m_Surface) {
-	    // Draw the surface legs.
-
-	    if (m_SurfaceDashed) {
-		glLineStipple(1, 0xaaaa);
-		glEnable(GL_LINE_STIPPLE);
-	    }
-
-	    glCallList(m_SurfaceDepth ? m_Lists.surface_depth : m_Lists.surface);
-
-	    if (m_SurfaceDashed) {
-		glDisable(GL_LINE_STIPPLE);
-	    }
-	}
-
-	if (m_Grid) {
-	    // Draw the grid.
-	    glCallList(m_Lists.grid);
-	}
-
-	if (m_TerrainLoaded && m_SolidSurface) {
-	    // Draw the terrain.
-
-	    // Underside...
-	    glDisable(GL_BLEND);
-	    glEnable(GL_CULL_FACE);
-	    glCullFace(GL_FRONT);
-	    if (floor_alt + m_Parent->GetZOffset() < m_Parent->GetTerrainMaxZ()) {
-		glCallList(m_Lists.terrain);
-	    } else {
-		glTranslated(0, 0, floor_alt + m_Parent->GetZOffset() - m_Parent->GetTerrainMaxZ());
-		glCallList(m_Lists.flat_terrain);
-	    }
-	    glEnable(GL_BLEND);
-
-	    // Topside...
-	    glCullFace(GL_BACK);
-	    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    glEnable(GL_TEXTURE_2D);
-	    if (floor_alt + m_Parent->GetZOffset() < m_Parent->GetTerrainMaxZ()) {
-		glCallList(m_Lists.terrain);
-	    } else {
-		glTranslated(0, 0, floor_alt + m_Parent->GetZOffset() - m_Parent->GetTerrainMaxZ());
-		glCallList(m_Lists.flat_terrain);
-	    }
-	    glDisable(GL_CULL_FACE);
-	    glDisable(GL_BLEND);
-	    glDisable(GL_TEXTURE_2D);
-/*
-	    // Map...
-	    glCallList(m_Lists.map);
-	    glDisable(GL_TEXTURE_2D);
-	    glDisable(GL_BLEND);*/
-	}
-
-	//--FIXME: share with above
-
-	// Draw station names.
-	if (m_Names) {
-	    glDisable(GL_DEPTH_TEST);
-	    DrawNames();
-	    glEnable(GL_DEPTH_TEST);
-	}
-
-	// Draw scalebar.
-	if (m_Scalebar) {
-	    DrawScalebar();
-	}
-
-	// Flush pipeline and swap buffers.
-	glFlush();
-	SwapBuffers();
-    }
-#else
     const wxRegion& region = GetUpdateRegion();
 
     dc.BeginDrawing();
@@ -1120,9 +893,6 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     if (!m_Rotating && !m_SwitchingTo
 #ifdef AVENPRES
 	&& !(m_DoingPresStep >= 0 && m_DoingPresStep <= 100)
-#endif
-#ifdef AVENGL
-	&& !(m_TerrainLoaded && floor_alt > -DBL_MAX && floor_alt <= HEAVEN)
 #endif
 	) {
 	int here_x = INT_MAX, here_y;
@@ -1153,7 +923,6 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     }
 
     dc.EndDrawing();
-#endif
 }
 
 Double GfxCore::GridXToScreen(Double x, Double y, Double z)
@@ -1177,13 +946,6 @@ Double GfxCore::GridYToScreen(Double x, Double y, Double z)
 void GfxCore::DrawGrid()
 {
     // Draw the grid.
-
-#ifdef AVENGL
-return;
-  //    m_Lists.grid = glGenLists(1);
-  //glNewList(m_Lists.grid, GL_COMPILE);
-#endif
-
     SetColour(col_RED);
 
     // Calculate the extent of the survey, in metres across the screen plane.
@@ -1213,33 +975,16 @@ return;
 
     for (int xc = 0; xc <= count_x; xc++) {
 	Double x = left + xc*grid_size;
-#ifdef AVENGL
-	glBegin(GL_LINES);
-	glVertex3d(x, bottom, grid_z);
-	glVertex3d(x, actual_top, grid_z);
-	glEnd();
-#else
 	m_DrawDC.DrawLine((int) GridXToScreen(x, bottom, grid_z), (int) GridYToScreen(x, bottom, grid_z),
 			  (int) GridXToScreen(x, actual_top, grid_z), (int) GridYToScreen(x, actual_top, grid_z));
-#endif
     }
 
     for (int yc = 0; yc <= count_y; yc++) {
 	Double y = bottom + yc*grid_size;
-#ifdef AVENGL
-	glBegin(GL_LINES);
-	glVertex3d(left, y, grid_z);
-	glVertex3d(actual_right, y, grid_z);
-	glEnd();
-#else
 	m_DrawDC.DrawLine((int) GridXToScreen(left, y, grid_z), (int) GridYToScreen(left, y, grid_z),
 			  (int) GridXToScreen(actual_right, y, grid_z),
 			  (int) GridYToScreen(actual_right, y, grid_z));
-#endif
     }
-#ifdef AVENGL
-    glEndList();
-#endif
 }
 
 wxCoord GfxCore::GetClinoOffset()
@@ -1461,13 +1206,8 @@ void GfxCore::DrawCompass()
 void GfxCore::DrawNames()
 {
     // Draw station names.
-
-#ifdef AVENGL
-
-#else
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(LABEL_COLOUR);
-#endif
 
     if (m_OverlappingNames) {
 	SimpleDrawNames();
@@ -1490,29 +1230,10 @@ void GfxCore::NattyDrawNames()
 
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
 
-#ifdef AVENGL
-    // Get transformation matrices, etc. for gluProject().
-    GLdouble modelview_matrix[16];
-    GLdouble projection_matrix[16];
-    GLint viewport[4];
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
-    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    glColor3f(0.0, 1.0, 0.0);//--FIXME
-#endif
-
     while (label != m_Parent->GetLabelsEnd()) {
-#ifdef AVENGL
-	// Project the label's position onto the window.
-	GLdouble x, y, z;
-	int code = gluProject((*label)->x, (*label)->y, (*label)->z,
-			      modelview_matrix, projection_matrix,
-			      viewport, &x, &y, &z);
-#else
 	Double x = GridXToScreen((*label)->x, (*label)->y, (*label)->z);
 	Double y = GridYToScreen((*label)->x, (*label)->y, (*label)->z)
 	    + CROSS_SIZE - FONT_SIZE;
-#endif
 
 	wxString str = (*label)->GetText();
 
@@ -1535,14 +1256,7 @@ void GfxCore::NattyDrawNames()
 	    }
 
 	    if (!reject) {
-#ifdef AVENGL
-		glRasterPos3f((*label)->x, (*label)->y, (*label)->z);
-		for (int pos = 0; pos < str.Length(); pos++) {
-		    glutBitmapCharacter(LABEL_FONT, (int) (str[pos]));
-		}
-#else
 		m_DrawDC.DrawText(str, (wxCoord)x, (wxCoord)y);
-#endif
 
 		int ymin = (iy >= 2) ? iy - 2 : iy;
 		int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
@@ -1557,10 +1271,7 @@ void GfxCore::NattyDrawNames()
 
 void GfxCore::SimpleDrawNames()
 {
-    // Draw station names, possibly overlapping; or use previously-cached info
-    // from NattyDrawNames() to draw names known not to overlap.
-
-#ifndef AVENGL
+    // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     while (label != m_Parent->GetLabelsEnd()) {
 	wxCoord x = (wxCoord)GridXToScreen((*label)->x, (*label)->y, (*label)->z);
@@ -1568,7 +1279,6 @@ void GfxCore::SimpleDrawNames()
 	m_DrawDC.DrawText((*label)->GetText(), x, y + CROSS_SIZE - FONT_SIZE);
 	++label;
     }
-#endif
 }
 
 void GfxCore::DrawDepthbar()
@@ -1695,11 +1405,7 @@ void GfxCore::DrawScalebar()
     // Draw the scalebar.
 
     // Calculate the extent of the survey, in metres across the screen plane.
-#ifdef AVENGL
-    Double x_size = -m_Volume.left * 2.0;
-#else
     int x_size = m_XSize;
-#endif
 
     Double across_screen = Double(x_size / m_Params.scale);
     Double multiplier = 1.0;
@@ -1725,51 +1431,24 @@ void GfxCore::DrawScalebar()
     if (!m_Metric) size_snap *= multiplier;
 
     // Actual size of the thing in pixels:
-#ifdef AVENGL
-    Double size = size_snap * m_Params.scale;
-#else
     int size = int(size_snap * m_Params.scale);
-#endif
     m_ScaleBar.width = (int) size; //FIXME
 
     // Draw it...
     //--FIXME: improve this
-#ifdef AVENGL
-    Double end_x = m_Volume.left + m_ScaleBar.offset_x;
-    Double height = (-m_Volume.bottom * 2.0) / 40.0;
-    Double gl_z = m_Volume.nearface + 1.0; //-- is this OK??
-    Double end_y = m_Volume.bottom + m_ScaleBar.offset_y - height;
-    Double interval = size / 10.0;
-#else
     int end_x = m_ScaleBar.offset_x;
     int height = SCALE_BAR_HEIGHT;
     int end_y = m_YSize - m_ScaleBar.offset_y - height;
     int interval = size / 10;
-#endif
 
     bool solid = true;
-#ifdef AVENGL
-    glLoadIdentity();
-    glBegin(GL_QUADS);
-#endif
     for (int ix = 0; ix < 10; ix++) {
-#ifdef AVENGL
-	Double x = end_x + ix * ((Double) size / 10.0);
-#else
 	int x = end_x + int(ix * ((Double) size / 10.0));
-#endif
 
 	SetColour(solid ? col_GREY : col_WHITE);
 	SetColour(solid ? col_GREY : col_WHITE, true);
 
-#ifdef AVENGL
-	glVertex3d(x, end_y, gl_z);
-	glVertex3d(x + interval, end_y, gl_z);
-	glVertex3d(x + interval, end_y + height, gl_z);
-	glVertex3d(x, end_y + height, gl_z);
-#else
 	m_DrawDC.DrawRectangle(x, end_y, interval + 2, height);
-#endif
 
 	solid = !solid;
     }
@@ -1777,9 +1456,6 @@ void GfxCore::DrawScalebar()
     // Add labels.
     wxString str = FormatLength(size_snap);
 
-#ifdef AVENGL
-    glEnd();
-#else
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
     m_DrawDC.DrawText("0", end_x, end_y - FONT_SIZE - 4);
@@ -1787,30 +1463,7 @@ void GfxCore::DrawScalebar()
     int text_width, text_height;
     m_DrawDC.GetTextExtent(str, &text_width, &text_height);
     m_DrawDC.DrawText(str, end_x + size - text_width, end_y - FONT_SIZE - 4);
-#endif
 }
-#if 0
-void GfxCore::DrawSky()
-{
-    // Render a sphere for the sky.
-
-    glNewList(m_Lists.sky, GL_COMPILE);
-    glEnable(GL_COLOR_MATERIAL);
-    glBindTexture(GL_TEXTURE_2D, m_Textures.sky);
-    glColor3f(0.0, 0.2, 1.0);
-    GLUquadricObj* sphere = gluNewQuadric();
-    gluQuadricDrawStyle(sphere, GLU_FILL);
-    gluQuadricOrientation(sphere, GLU_INSIDE);
-    gluQuadricNormals(sphere, GLU_SMOOTH);
-    gluQuadricTexture(sphere, GL_TRUE);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    gluSphere(sphere, m_MaxExtent * 2.0, 32, 32);
-    glPopMatrix();
-    glDisable(GL_COLOR_MATERIAL);
-    glEndList();
-}
-#endif
 
 //
 //  Mouse event handling methods
@@ -1908,10 +1561,6 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 	SetScale(m_Params.scale *= pow(1.06, 0.08 * dy));
     }
 
-#ifdef AVENGL
-    glDeleteLists(m_Lists.grid, 1);
-    //    DrawGrid();
-#endif
     ForceRefresh();
 
     m_DragStart = point;
@@ -1992,22 +1641,11 @@ void GfxCore::TranslateCave(int dx, int dy)
     Double x = Double(dx / m_Params.scale);
     Double z = Double(-dy / m_Params.scale);
 
-#ifdef AVENGL
-    x *= (m_MaxExtent / m_XSize);
-    z *= (m_MaxExtent * 0.75 / m_YSize);
-#endif
-
     Matrix4 inverse_rotation = m_Params.rotation.asInverseMatrix();
 
-#ifdef AVENGL
-    Double cx = Double(inverse_rotation.get(0, 0)*x + inverse_rotation.get(0, 1)*z);
-    Double cy = Double(inverse_rotation.get(1, 0)*x + inverse_rotation.get(1, 1)*z);
-    Double cz = Double(inverse_rotation.get(2, 0)*x + inverse_rotation.get(2, 1)*z);
-#else
     Double cx = Double(inverse_rotation.get(0, 0)*x + inverse_rotation.get(0, 2)*z);
     Double cy = Double(inverse_rotation.get(1, 0)*x + inverse_rotation.get(1, 2)*z);
     Double cz = Double(inverse_rotation.get(2, 0)*x + inverse_rotation.get(2, 2)*z);
-#endif
 
     // Update parameters and redraw.
     m_Params.translation.x += cx;
@@ -2019,7 +1657,6 @@ void GfxCore::TranslateCave(int dx, int dy)
 
 void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 {
-#ifndef AVENGL
     if (point.x < 0 || point.x >= m_XSize || point.y < 0 || point.y >= m_YSize) {
 	return;
     }
@@ -2062,7 +1699,6 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
     } else {
 	m_Parent->SetMouseOverStation(NULL);
     }
-#endif
 }
 
 void GfxCore::OnMouseMove(wxMouseEvent& event)
@@ -2234,13 +1870,6 @@ void GfxCore::OnSize(wxSizeEvent& event)
 	m_LabelGrid = new char[buffer_size];
 	CreateHitTestGrid();
 
-#ifdef AVENGL
-	if (GetContext()) {
-	    SetCurrent();
-	    glViewport(0, 0, m_XSize, m_YSize);
-	    SetGLProjection();
-	}
-#else
 #ifndef __WXMOTIF__
 	m_DrawDC.SelectObject(wxNullBitmap);
 #endif
@@ -2250,7 +1879,6 @@ void GfxCore::OnSize(wxSizeEvent& event)
 	m_OffscreenBitmap = new wxBitmap;
 	m_OffscreenBitmap->Create(m_XSize, m_YSize);
 	m_DrawDC.SelectObject(*m_OffscreenBitmap);
-#endif
 	RedrawOffscreen();
 	Refresh(false);
     }
@@ -2460,14 +2088,7 @@ void GfxCore::DefaultParameters()
     m_TiltAngle = M_PI_2;
     m_PanAngle = 0.0;
 
-#ifdef AVENGL
-    m_Params.rotation.setFromEulerAngles(m_TiltAngle - M_PI_2, 0.0, m_PanAngle);
-    m_AntiAlias = false;
-    m_SolidSurface = false;
-    SetGLAntiAliasing();
-#else
     m_Params.rotation.setFromEulerAngles(m_TiltAngle, 0.0, m_PanAngle);
-#endif
     m_RotationMatrix = m_Params.rotation.asMatrix();
 
     m_Params.translation.x = 0.0;
@@ -2652,16 +2273,13 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 // return: true if animation occured (and ForceRefresh() needs to be called)
 bool GfxCore::Animate(wxIdleEvent *idle_event)
 {
-#if !defined(AVENPRES) && !defined(AVENGL)
+#if !defined(AVENPRES)
     idle_event = idle_event; // Suppress "not used" warning
 #endif
 
     if (!m_Rotating && !m_SwitchingTo
 #ifdef AVENPRES
 	&& !(m_DoingPresStep >= 0 && m_DoingPresStep <= 100)
-#endif
-#ifdef AVENGL
-        && !(m_TerrainLoaded && floor_alt > -DBL_MAX && floor_alt <= HEAVEN)
 #endif
        ) {
 	return false;
@@ -2742,19 +2360,6 @@ bool GfxCore::Animate(wxIdleEvent *idle_event)
 	    m_PanAngle = m_PresStep.to.pan_angle;
 	    m_TiltAngle = m_PresStep.to.tilt_angle;
 	}
-    }
-#endif
-
-#ifdef AVENGL
-    if (m_TerrainLoaded && floor_alt > -DBL_MAX && floor_alt <= HEAVEN) {
-	// FIXME: check scaling on t - this is an educated guess...
-	if (terrain_rising) {
-	    floor_alt += 200.0 * t;
-	} else {
-	    floor_alt -= 200.0 * t;
-	}
-	InitialiseTerrain();
-	idle_event->RequestMore();
     }
 #endif
 
@@ -2929,104 +2534,6 @@ void GfxCore::OnToggleDegreesUpdate(wxUpdateUIEvent& cmd)
 //  OpenGL-specific methods
 //
 
-#ifdef AVENGL
-void GfxCore::OnAntiAlias()
-{
-    // Toggle anti-aliasing of survey legs.
-
-    SetCurrent();
-
-    m_AntiAlias = !m_AntiAlias;
-    SetGLAntiAliasing();
-
-    Refresh(false);
-}
-
-void GfxCore::OnAntiAliasUpdate(wxUpdateUIEvent& cmd)
-{
-    // Update the UI commands for toggling anti-aliasing of survey legs.
-
-    cmd.Enable(m_PlotData);
-    cmd.Check(m_AntiAlias);
-}
-
-void GfxCore::SetGLProjection()
-{
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    m_MaxExtent = MAX3(m_Parent->GetXExtent(), m_Parent->GetYExtent(), m_Parent->GetZExtent()) * 2.0;
-    m_Volume.nearface = -m_MaxExtent * m_Params.scale / 2.0;
-    double aspect = double(m_YSize) / double(m_XSize);
-    m_Volume.bottom = -m_MaxExtent * aspect / 2.0;
-    m_Volume.left = -m_MaxExtent / 2.0;
-    // Observe that the survey can't "escape" out of the sides of the viewing
-    // volume 'cos it's an orthographic projection.  It can, however, escape
-    // out of the front or back; thus these parameters must be changed
-    // according to the scale (which the others must not be, or else the survey
-    // will never appear to change size).
-    glOrtho(m_Volume.left, // left
-	    -m_Volume.left, // right
-	    m_Volume.bottom, // bottom
-	    -m_Volume.bottom,  // top
-	    m_Volume.nearface, // near
-	    -m_Volume.nearface); // far
-}
-
-void GfxCore::SetModellingTransformation()
-{
-    // Initialise the OpenGL modelview matrix.
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    // Remember: last line in this sequence of matrix multiplications is the
-    // first one to be applied during the modelview transform!
-    glScaled(m_Params.scale, m_Params.scale, m_Params.scale);
-    m_Params.rotation.CopyToOpenGL();
-    glTranslated(m_Params.translation.x, m_Params.translation.y, m_Params.translation.z);
-}
-
-void GfxCore::ClearBackgroundAndBuffers()
-{
-    // Initialise the OpenGL background colour, and clear the depth and colour
-    // buffers.
-
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void GfxCore::SetGLAntiAliasing()
-{
-    // Propagate the setting of the anti-aliasing field through to the OpenGL
-    // subsystem.
-
-    if (!m_DoneFirstShow) {
-	return;
-    }
-
-    if (m_AntiAlias) {
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-    }
-    else {
-	glDisable(GL_LINE_SMOOTH);
-	glDisable(GL_BLEND);
-    }
-}
-
-void GfxCore::CheckGLError(const wxString& where)
-{
-    GLenum err = glGetError();
-    if (err != GL_NO_ERROR) {
-	wxGetApp().ReportError(wxString("OpenGL error (") + where + wxString("): ") +
-			       (const char*) gluErrorString(err));
-    }
-}
-
-#endif
-
 void GfxCore::CentreOn(Double x, Double y, Double z)
 {
     m_Params.translation.x = -x;
@@ -3053,11 +2560,7 @@ void GfxCore::RecordPres(FILE* fp)
     d.pan_angle = m_PanAngle;
     d.tilt_angle = m_TiltAngle;
 
-#ifdef AVENGL
-    d.solid_surface = m_SolidSurface && (floor_alt <= HEAVEN);
-#else
     d.solid_surface = false;
-#endif
 
     fwrite(&d, sizeof(PresData), 1, fp);
 
@@ -3094,10 +2597,6 @@ void GfxCore::PresGoto(PresData& d, Quaternion& q)
     m_PresStep.to.scale = d.scale;
     m_PresStep.to.pan_angle = d.pan_angle;
     m_PresStep.to.tilt_angle = d.tilt_angle;
-
-#ifdef AVENGL
-    SetSolidSurface(d.solid_surface);
-#endif
 
     m_DoingPresStep = 0;
 }
@@ -3265,277 +2764,6 @@ void GfxCore::CreateHitTestGrid()
 
     m_HitTestGridValid = true;
 }
-
-
-//
-//  Terrain rendering methods
-//
-
-#ifdef AVENGL
-
-void GfxCore::InitialiseTerrain()
-{
-    CheckGLError("after loading textures");
-
-    if (m_TerrainLoaded) {
-	glDeleteLists(m_Lists.map, 1);
-    } else {
-	LoadTexture("surface", &m_Textures.surface);
-	LoadTexture("map", &m_Textures.map);
-
-	m_Lists.flat_terrain = glGenLists(1);
-	CheckGLError("before creating flat terrain list");
-	glNewList(m_Lists.flat_terrain, GL_COMPILE);
-	CheckGLError("immediately after creating flat terrain list");
-	RenderTerrain(m_Parent->GetTerrainMaxZ() - m_Parent->GetZOffset());
-	glEndList();
-	CheckGLError("after creating flat terrain list");
-
-	floor_alt = HEAVEN;
-	terrain_rising = false;
-    }
-
-    if (floor_alt + m_Parent->GetZOffset() < m_Parent->GetTerrainMaxZ()) {
-	if (m_TerrainLoaded) glDeleteLists(m_Lists.terrain, 1);
-
-	m_Lists.terrain = glGenLists(1);
-	CheckGLError("before creating terrain list");
-	glNewList(m_Lists.terrain, GL_COMPILE);
-	CheckGLError("immediately after creating terrain list");
-	RenderTerrain(floor_alt);
-	if (floor_alt + m_Parent->GetZOffset() <= m_Parent->GetTerrainMinZ()) {
-	    floor_alt = -DBL_MAX;
-	}
-	glEndList();
-	CheckGLError("after creating terrain list");
-    }
-
-    m_Lists.map = glGenLists(1);
-    glNewList(m_Lists.map, GL_COMPILE);
-    CheckGLError("immediately after creating map");
-    RenderMap();
-    glEndList();
-    CheckGLError("after creating map");
-
-    m_TerrainLoaded = true;
-    m_SolidSurface = true;
-
-    Refresh(false);
-}
-
-void GfxCore::RenderMap()
-{
-    // Fill the display list for the map.
-
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    CheckGLError("setting front face type for map");
-
-    glBindTexture(GL_TEXTURE_2D, m_Textures.map);
-    CheckGLError("binding map texture");
-
-    Double xmin = m_Parent->GetTerrainMinX();
-    Double xmax = m_Parent->GetTerrainMaxX();
-    Double ymin = m_Parent->GetTerrainMinY();
-    Double ymax = m_Parent->GetTerrainMaxY();
-    Double z = m_Parent->GetZMin() + 50.0;
-
-    glBegin(GL_QUADS);
-    glColor4f(0.7, 0.7, 0.7, 0.5);
-    glTexCoord2d(0.0, 0.0);
-    glVertex3d(xmin, ymin, z);
-    glTexCoord2d(1.0, 0.0);
-    glVertex3d(xmax, ymin, z);
-    glTexCoord2d(1.0, 1.0);
-    glVertex3d(xmax, ymax, z);
-    glTexCoord2d(0.0, 1.0);
-    glVertex3d(xmin, ymax, z);
-    glEnd();
-
-    CheckGLError("creating map");
-}
-
-void GfxCore::RenderTerrain(Double floor_alt)
-{
-    // Fill the display list for the terrain surface.
-
-    glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_2D);
-
-    CheckGLError("enabling features for terrain");
-
-    GLfloat ambient_light[] = {0.9, 0.9, 0.9, 1.0};
-    GLfloat source_light[] = {0.7, 0.7, 0.7, 1.0};
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_light);
-    CheckGLError("initialising ambient light");
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, source_light);
-    CheckGLError("initialising light 0");
-
-    glShadeModel(GL_SMOOTH);
-    CheckGLError("setting shading model");
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    CheckGLError("setting polygon fill mode");
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-    CheckGLError("setting two-sided lighting");
-    glColorMaterial(GL_BACK, GL_AMBIENT_AND_DIFFUSE);
-    CheckGLError("setting back face type");
-    GLfloat brown[] = {0.35, 0.35, 0.1, 1.0};
-    glColor4fv(brown);
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    CheckGLError("setting front face type");
-
-    //glBindTexture(GL_TEXTURE_2D, m_Textures.surface);
-    glBindTexture(GL_TEXTURE_2D, m_Textures.map);
-    CheckGLError("binding surface texture");
-
-    Double y_j = m_Parent->GetTerrainMinY();
-    Double y_j_plus_one = y_j + m_Parent->GetTerrainYSquareSize();
-
-    for (int j = 0; j < m_Parent->GetTerrainYSize() - 1; j++) {
-	Double x_i = m_Parent->GetTerrainMinX();
-	Double x_i_plus_one = x_i + m_Parent->GetTerrainXSquareSize();
-
-	for (int i = 0; i < m_Parent->GetTerrainXSize() - 1; i++) {
-
-	    glBegin(GL_QUADS);
-
-	    // Altitudes of the corners of the current quadrilateral, going
-	    // anticlockwise around it (looking from above):
-	    Double alt1, alt2, alt3, alt4;
-	    alt1 = m_Parent->GetTerrainHeight(i, j);
-	    alt2 = m_Parent->GetTerrainHeight(i + 1, j);
-	    alt3 = m_Parent->GetTerrainHeight(i + 1, j + 1);
-	    alt4 = m_Parent->GetTerrainHeight(i, j + 1);
-
-	    if (alt1 < floor_alt) {
-		alt1 = floor_alt;
-	    }
-	    if (alt2 < floor_alt) {
-		alt2 = floor_alt;
-	    }
-	    if (alt3 < floor_alt) {
-		alt3 = floor_alt;
-	    }
-	    if (alt4 < floor_alt) {
-		alt4 = floor_alt;
-	    }
-
-	    glNormal3d(alt2 - alt1, alt3 - alt2, 1.0);
-
-	    SetTerrainColour(alt1);
-	    glTexCoord2d(Double(i) / m_Parent->GetTerrainXSize(),
-			 1.0 - Double(j) / m_Parent->GetTerrainYSize());
-	    glVertex3d(x_i, y_j, alt1);
-
-	    SetTerrainColour(alt2);
-	    glTexCoord2d( Double(i + 1) / m_Parent->GetTerrainXSize(),
-			 1.0 - Double(j) / m_Parent->GetTerrainYSize());
-	    glVertex3d(x_i_plus_one, y_j, alt2);
-
-	    SetTerrainColour(alt3);
-	    glTexCoord2d(Double(i + 1) / m_Parent->GetTerrainXSize(),
-			 1.0 - Double(j + 1) / m_Parent->GetTerrainYSize());
-	    glVertex3d(x_i_plus_one, y_j_plus_one, alt3);
-
-	    SetTerrainColour(alt4);
-	    glTexCoord2d(Double(i) / m_Parent->GetTerrainXSize(),
-			 1.0 - Double(j + 1) / m_Parent->GetTerrainYSize());
-	    glVertex3d(x_i, y_j_plus_one, alt4);
-
-	    x_i = x_i_plus_one;
-	    x_i_plus_one += m_Parent->GetTerrainXSquareSize();
-
-	    glEnd();
-
-	    CheckGLError("creating quadrilateral");
-	}
-
-	y_j = y_j_plus_one;
-	y_j_plus_one += m_Parent->GetTerrainYSquareSize();
-    }
-
-//    glDisable(GL_COLOR_MATERIAL);
-}
-
-//--FIXME
-static const unsigned char REDS[]   = {177, 149, 119, 84, 50, 35, 11};
-static const unsigned char GREENS[] = {220, 203, 184, 164, 143, 135, 120};
-static const unsigned char BLUES[]  = {244, 213, 180, 142, 105, 89, 63};
-
-void GfxCore::SetTerrainColour(Double alt)
-{
-    int band = 6 - int((alt + m_Parent->GetZOffset() - m_Parent->GetTerrainMinZ()) * 6.9 /
-	       (m_Parent->GetTerrainMaxZ() - m_Parent->GetTerrainMinZ()));
-
-    Double r = Double(REDS[band]) / (SURFACE_ALPHA * 300.0);
-    Double g = Double(GREENS[band]) / (SURFACE_ALPHA * 300.0);
-    Double b = Double(BLUES[band]) / (SURFACE_ALPHA * 300.0);
-    if (r > 1.0) r = 1.0;
-    if (g > 1.0) g = 1.0;
-    if (b > 1.0) b = 1.0;
-    glColor4d(r, g, b, SURFACE_ALPHA);
-}
-
-void GfxCore::LoadTexture(const wxString& file /* with no extension */, GLuint* texture)
-{
-    // Load a texture from disk and create an OpenGL mipmap from it.
-
-    wxString path = wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR + file + ".png";
-    wxImage image(path, wxBITMAP_TYPE_PNG);
-
-    if (!image.Ok()) {
-	wxGetApp().ReportError("Failed to load texture '" + file + "'.");
-	return;
-    }
-
-    glEnable(GL_TEXTURE_2D);
-    glGenTextures(1, texture);
-    glBindTexture(GL_TEXTURE_2D, *texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    if (gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, image.GetWidth(), image.GetHeight(),
-			  GL_RGB, GL_UNSIGNED_BYTE, image.GetData()) != 0) {
-	wxGetApp().ReportError("Build2DMipmaps failed.");
-    }
-    CheckGLError("creating texture '" + file + "'");
-}
-
-void GfxCore::SetSolidSurface(bool state)
-{
-    terrain_rising = !state;
-
-    if (state) {
-	floor_alt = HEAVEN;
-    }
-    else {
-	floor_alt = m_Parent->GetTerrainMinZ() - m_Parent->GetZOffset();
-    }
-
-    Refresh(false);
-}
-
-void GfxCore::OnSolidSurface()
-{
-    terrain_rising = !terrain_rising;
-    if (floor_alt == -DBL_MAX)
-	floor_alt = m_Parent->GetTerrainMinZ() - m_Parent->GetZOffset();
-    if (floor_alt > HEAVEN)
-	floor_alt = HEAVEN;
-//    m_SolidSurface = !m_SolidSurface;
-    Refresh(false);
-}
-
-void GfxCore::OnSolidSurfaceUpdate(wxUpdateUIEvent& ui)
-{
-    ui.Enable(m_TerrainLoaded);
-    ui.Check(m_TerrainLoaded && m_SolidSurface);
-}
-
-#endif
 
 void GfxCore::OnKeyPress(wxKeyEvent &e)
 {

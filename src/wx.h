@@ -11,11 +11,3 @@
 #include "wx/splitter.h"
 #include "wx/treectrl.h"
 #include "wx/dnd.h"
-
-#ifdef AVENGL
-#ifndef wxUSE_GLCANVAS
-#define wxUSE_GLCANVAS
-#endif
-#include <wx/glcanvas.h>
-#endif
-

@@ -176,45 +176,6 @@ public:
 
     void setFromSphericalPolars(Double pan, Double tilt, Double rotation_amount);
     void setFromVectorAndAngle(Vector3 v, Double rotation_amount);
-
-#ifdef AVENGL
-    void CopyToOpenGL() {
-	static Double matrix[16];
-
-	Double xx = v.getX() * v.getX();
-	Double xy = v.getX() * v.getY();
-	Double xz = v.getX() * v.getZ();
-	Double xw = v.getX() * w;
-
-	Double yy = v.getY() * v.getY();
-	Double yz = v.getY() * v.getZ();
-	Double yw = v.getY() * w;
-
-	Double zz = v.getZ() * v.getZ();
-	Double zw = v.getZ() * w;
-
-	// column 0
-	matrix[0] = 1 - 2*(yy + zz);
-	matrix[1] = 2*(xy + zw);
-	matrix[2] = 2*(xz - yw);
-	matrix[3] = 0.0;
-	// column 1
-	matrix[4] = 2 * (xy - zw);
-	matrix[5] = 1 - 2 * (xx + zz);
-	matrix[6] = 2 * (yz + xw);
-	matrix[7] = 0.0;
-	// column 2
-	matrix[8] = 2 * (xz + yw);
-	matrix[9] = 2 * (yz - xw);
-	matrix[10] = 1 - 2 * (xx + yy);
-	matrix[11] = 0.0;
-	// column 4
-	matrix[12] = matrix[13] = matrix[14] = 0.0;
-	matrix[15] = 1.0;
-
-	glMultMatrixd(matrix);
-    }
-#endif
 };
 
 #endif

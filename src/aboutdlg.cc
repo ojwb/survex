@@ -37,11 +37,7 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
-#ifdef AVENGL
-    wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION" (OpenGL enabled)"));
-#else
     wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION));
-#endif
     wxStaticText* purpose = new wxStaticText(this, 505,
 	wxString(msg(/*Visualisation of Survex 3D files*/209)));
     wxStaticText* copyright1 = new wxStaticText(this, 503,

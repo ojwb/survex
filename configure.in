@@ -206,20 +206,6 @@ if test -n "$AVEN"; then
     WX_CXXFLAGS="`$WXCONFIG --cxxflags`"
     AC_SUBST(WX_CXXFLAGS)
     AC_MSG_RESULT(building aven)
-    AC_ARG_ENABLE(opengl,
-    [  --enable-opengl Build OpenGL-enabled version of Aven],
-    [case "$enableval" in
-      yes) WXGL_LIBS="-lwx_gtk_gl -lglut -lGLU -lGL $WX_LIBS"
-           AC_SUBST(WXGL_LIBS)
-	   WXGL_CFLAGS="-DAVENGL $WX_CFLAGS"
-	   AC_SUBST(WXGL_CFLAGS)
-	   WXGL_CXXFLAGS="-DAVENGL $WX_CXXFLAGS"
-	   AC_SUBST(WXGL_CXXFLAGS)
-           AC_MSG_RESULT("enabling OpenGL functionality for Aven")
-	   AVEN="$AVEN avengl";;
-      no) ;;
-      *) AC_MSG_ERROR(bad value $enableval for --enable-opengl) ;;
-    esac])
 dnl Not using hash_map at present...
 dnl    AC_LANG(C++)
 dnl    AC_CHECK_HEADERS(ext/hash_map hash_map, break)

@@ -160,11 +160,6 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SIDE_PANEL, MainFrm::OnViewSidePanel)
     EVT_MENU(menu_VIEW_METRIC, MainFrm::OnToggleMetric)
     EVT_MENU(menu_VIEW_DEGREES, MainFrm::OnToggleDegrees)
-#ifdef AVENGL
-    EVT_MENU(menu_FILE_OPEN_TERRAIN, MainFrm::OnFileOpenTerrain)
-    EVT_MENU(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAlias)
-    EVT_MENU(menu_VIEW_SOLID_SURFACE, MainFrm::OnSolidSurface)
-#endif
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
@@ -209,10 +204,6 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_VIEW_INDICATORS, MainFrm::OnIndicatorsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SIDE_PANEL, MainFrm::OnViewSidePanelUpdate)
-#ifdef AVENGL
-    EVT_UPDATE_UI(menu_VIEW_ANTIALIAS, MainFrm::OnAntiAliasUpdate)
-    EVT_UPDATE_UI(menu_VIEW_SOLID_SURFACE, MainFrm::OnSolidSurfaceUpdate)
-#endif
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
     EVT_UPDATE_UI(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLineUpdate)
     EVT_UPDATE_UI(menu_VIEW_METRIC, MainFrm::OnToggleMetricUpdate)
@@ -329,9 +320,6 @@ void MainFrm::CreateMenuBar()
 #ifdef AVENPRES
     filemenu->Append(menu_FILE_OPEN_PRES, GetTabMsg(/*Open @Presentation...*/321));
 #endif
-#ifdef AVENGL
-    filemenu->Append(menu_FILE_OPEN_TERRAIN, GetTabMsg(/*Open @Terrain...*/329));
-#endif
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*E@xit*/221));
 
@@ -388,12 +376,6 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295), "", true);
     viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296), "", true);
-#ifdef AVENGL
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_ANTIALIAS, GetTabMsg(/*Smoo@thed Survey Legs*/298), "", true);
-    viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SOLID_SURFACE, GetTabMsg(/*Solid Su@rface*/330), "", true);
-#endif
 
 #ifdef AVENPRES
     wxMenu* presmenu = new wxMenu;
@@ -481,11 +463,6 @@ void MainFrm::CreateToolBar()
     toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs.png"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show surface surveys");
     toolbar->AddSeparator();
-#ifdef AVENGL
-    toolbar->AddTool(menu_VIEW_SOLID_SURFACE, TOOLBAR_BITMAP("solid-surface.png"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show solid surface");
-    toolbar->AddSeparator();
-#endif
 
 #ifdef AVENPRES
     toolbar->AddTool(menu_PRES_CREATE, TOOLBAR_BITMAP("pres-create.png"),
@@ -829,102 +806,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     return true;
 }
 
-#ifdef AVENGL
-bool MainFrm::LoadTerrain(const wxString& file)
-{
-    // Load terrain data from a 3D file (temporary bodge).
-
-    img* survey = img_open_survey(file, "");
-    if (!survey) {
-	wxString m = wxString::Format(msg(img_error()), file.c_str());
-	wxGetApp().ReportError(m);
-	return false;
-    }
-
-    //--FIXME: need to be specified properly
-    m_TerrainSize.x = 40;
-    m_TerrainSize.y = 40;
-
-    m_TerrainExtents.xmin = DBL_MAX;
-    m_TerrainExtents.xmax = -DBL_MAX;
-    m_TerrainExtents.ymin = DBL_MAX;
-    m_TerrainExtents.ymax = -DBL_MAX;
-    m_TerrainExtents.zmin = DBL_MAX;
-    m_TerrainExtents.zmax = -DBL_MAX;
-
-    m_TerrainGrid = new Double[m_TerrainSize.x * m_TerrainSize.y];
-
-    int result;
-    do {
-	img_point pt;
-	result = img_read_item(survey, &pt);
-	switch (result) {
-	    case img_MOVE:
-	    case img_LINE:
-	    {
-		// Update survey extents.
-		if (pt.x < m_TerrainExtents.xmin) m_TerrainExtents.xmin = pt.x;
-		if (pt.x > m_TerrainExtents.xmax) m_TerrainExtents.xmax = pt.x;
-		if (pt.y < m_TerrainExtents.ymin) m_TerrainExtents.ymin = pt.y;
-		if (pt.y > m_TerrainExtents.ymax) m_TerrainExtents.ymax = pt.y;
-		if (pt.z < m_TerrainExtents.zmin) m_TerrainExtents.zmin = pt.z;
-		if (pt.z > m_TerrainExtents.zmax) m_TerrainExtents.zmax = pt.z;
-
-		break;
-	    }
-
-	    case img_BAD:
-		assert(0);
-		break;
-
-	    default:
-		break;
-	}
-    } while (result != img_STOP);
-
-    img_rewind(survey);
-
-    Double xext = m_TerrainExtents.xmax - m_TerrainExtents.xmin;
-    Double yext = m_TerrainExtents.ymax - m_TerrainExtents.ymin;
-
-    do {
-	img_point pt;
-	result = img_read_item(survey, &pt);
-	switch (result) {
-	    case img_LABEL:
-	    {
-		int x = int(floor(0.5 + ((pt.x - m_TerrainExtents.xmin) * (m_TerrainSize.x - 2) / xext)));
-		int y = int(floor(0.5 + ((pt.y - m_TerrainExtents.ymin) * (m_TerrainSize.y - 1) / yext)));
-
-		m_TerrainGrid[x + m_TerrainSize.x * y] = pt.z - m_Offsets.z;
-
-		break;
-	    }
-
-	    case img_BAD:
-		assert(0);
-		break;
-
-	    default:
-		break;
-	}
-    } while (result != img_STOP);
-
-    for (int i = 0; i < m_TerrainSize.y; i++)
-	m_TerrainGrid[m_TerrainSize.x-1 + m_TerrainSize.y*i] =
-	    m_TerrainGrid[m_TerrainSize.x-2 + m_TerrainSize.y*i];
-
-    img_close(survey);
-
-    m_TerrainExtents.xmin -= m_Offsets.x;
-    m_TerrainExtents.xmax -= m_Offsets.x;
-    m_TerrainExtents.ymin -= m_Offsets.y;
-    m_TerrainExtents.ymax -= m_Offsets.y;
-
-    return true;
-}
-#endif
-
 void MainFrm::FillTree()
 {
     // Fill the tree of stations and prefixes.
@@ -1228,7 +1109,6 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	    m_Gfx->Initialise();
 	}
 
-#ifndef AVENGL
 	m_Panel->Show(true);
 	int x;
 	int y;
@@ -1243,20 +1123,9 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	m_Splitter->SplitVertically(m_Panel, m_Gfx, x);
 
 	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
-#endif
 	m_Gfx->SetFocus();
     }
 }
-
-#ifdef AVENGL
-void MainFrm::OpenTerrain(const wxString& file)
-{
-    wxBusyCursor hourglass;
-    if (LoadTerrain(file)) {
-	m_Gfx->InitialiseTerrain();
-    }
-}
-#endif
 
 //
 //  UI event handlers
@@ -1304,24 +1173,6 @@ void MainFrm::OnOpen(wxCommandEvent&)
 	OpenFile(dlg.GetPath());
     }
 }
-
-#ifdef AVENGL
-void MainFrm::OnFileOpenTerrain(wxCommandEvent&)
-{
-#ifdef __WXMOTIF__
-    wxFileDialog dlg (this, wxString(msg(/*Select a terrain file to view*/228)), "", "",
-		      "*.3d", wxOPEN);
-#else
-    wxFileDialog dlg (this, wxString(msg(/*Select a terrain file to view*/228)), "", "",
-		      wxString::Format("%s|*.3d|%s|*.*",
-				       msg(/*Terrain files*/229),
-				       msg(/*All files*/208)), wxOPEN);
-#endif
-    if (dlg.ShowModal() == wxID_OK) {
-	OpenTerrain(dlg.GetPath());
-    }
-}
-#endif
 
 void MainFrm::OnQuit(wxCommandEvent&)
 {

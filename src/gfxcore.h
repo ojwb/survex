@@ -30,12 +30,6 @@
 #include "wx.h"
 #include <utility>
 #include <list>
-#ifdef AVENGL
-#ifndef wxUSE_GLCANVAS
-#define wxUSE_GLCANVAS
-#endif
-#include <wx/glcanvas.h>
-#endif
 
 using std::list;
 
@@ -79,11 +73,7 @@ class LabelInfo;
 
 extern const ColourTriple COLOURS[]; // defined in gfxcore.cc
 
-#ifdef AVENGL
-class GfxCore : public wxGLCanvas {
-#else
 class GfxCore : public wxWindow {
-#endif
     struct params {
 	Quaternion rotation;
 	Double scale;
@@ -104,21 +94,6 @@ class GfxCore : public wxWindow {
 	Double tilt_angle;
 	bool solid_surface;
     };
-#endif
-
-#ifdef AVENGL
-    struct {
-	// OpenGL display lists.
-	GLint survey; // all underground data
-	GLint surface; // all surface data in uniform colour
-	GLint surface_depth; // all surface data in depth bands
-	GLint grid; // the grid
-	GLint terrain; // surface terrain
-	GLint flat_terrain; // flat surface terrain - used for drape effect
-	GLint map; // map overlay
-    } m_Lists;
-
-    bool m_AntiAlias;
 #endif
 
     enum LockFlags {
@@ -146,25 +121,6 @@ class GfxCore : public wxWindow {
 	int drag_start_offset_x;
 	int drag_start_offset_y;
     } m_ScaleBar;
-
-#ifdef AVENGL
-    struct {
-	// Viewing volume parameters: these are all negative!
-	Double left;
-	Double bottom;
-	Double nearface;
-    } m_Volume;
-
-    struct {
-	GLuint surface;
-	GLuint map;
-    } m_Textures;
-
-    bool m_SolidSurface;
-
-    Double floor_alt;
-    bool terrain_rising;
-#endif
 
 #ifdef AVENPRES
     list<pair<PresData, Quaternion> > m_Presentation;
@@ -226,9 +182,6 @@ class GfxCore : public wxWindow {
 
     list<LabelInfo*> *m_PointGrid;
     bool m_HitTestGridValid;
-#ifdef AVENGL
-    bool m_TerrainLoaded;
-#endif
 
 #ifdef AVENPRES
     Double m_DoingPresStep;
@@ -257,18 +210,11 @@ class GfxCore : public wxWindow {
     
     bool clipping;
 
-#ifndef AVENGL
     wxPen* m_Pens;
     wxBrush* m_Brushes;
-#endif
 
     void SetColour(AvenColour col, bool background = false /* true => foreground */) {
 	assert(col >= (AvenColour) 0 && col < col_LAST);
-#ifdef AVENGL
-	glColor3f(GLfloat(COLOURS[col].r) / 256.0,
-		  GLfloat(COLOURS[col].g) / 256.0,
-		  GLfloat(COLOURS[col].b) / 256.0);
-#else
 	if (background) {
 	    assert(m_Brushes[col].Ok());
 	    m_DrawDC.SetBrush(m_Brushes[col]);
@@ -277,21 +223,7 @@ class GfxCore : public wxWindow {
 	    assert(m_Pens[col].Ok());
 	    m_DrawDC.SetPen(m_Pens[col]);
 	}
-#endif
     }
-
-#ifdef AVENGL
-    void SetGLProjection();
-    void SetModellingTransformation();
-    void ClearBackgroundAndBuffers();
-    void SetGLAntiAliasing();
-    void CheckGLError(const wxString& where);
-    void SetTerrainColour(Double);
-    void LoadTexture(const wxString& file, GLuint* texture);
-    void RenderMap();
-    void SetSolidSurface(bool);
-    void RenderTerrain(Double floor_alt);
-#endif
 
     Double XToScreen(Double x, Double y, Double z) {
 	return Double(x * m_RotationMatrix.get(0, 0) +
@@ -440,10 +372,6 @@ public:
     void OnShowEntrances();
     void OnShowFixedPts();
     void OnShowExportedPts();
-#ifdef AVENGL
-    void OnAntiAlias();
-    void OnSolidSurface();
-#endif
     void OnCancelDistLine();
 
     void OnPaint(wxPaintEvent&);
@@ -499,10 +427,6 @@ public:
     void OnShowEntrancesUpdate(wxUpdateUIEvent&);
     void OnShowExportedPtsUpdate(wxUpdateUIEvent&);
     void OnShowFixedPtsUpdate(wxUpdateUIEvent&);
-#ifdef AVENGL
-    void OnAntiAliasUpdate(wxUpdateUIEvent&);
-    void OnSolidSurfaceUpdate(wxUpdateUIEvent&);
-#endif
     void OnIndicatorsUpdate(wxUpdateUIEvent&);
     void OnCancelDistLineUpdate(wxUpdateUIEvent&);
 
