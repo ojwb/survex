@@ -19,6 +19,8 @@ Changes in 0.97-prerelease4:
 
 * testsuite: Enhanced many existing tests to check for warnings.
 
+* Fixed to build on Solaris with Sun's compiler.
+
 Changes in 0.97-prerelease3:
 
 * (Unix version): aven: Internationalised; Fixed serious drawing bug
