@@ -10,6 +10,8 @@
 
 * Updated translations: pt de
 
+* Added test cases for *export
+
 Changes in 0.97-prerelease1:
 
 * extend: fixed bug which result in bogus output (added regression test);
