@@ -140,7 +140,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_RedrawOffscreen = false;
     m_Params.display_shift.x = 0;
     m_Params.display_shift.y = 0;
-    m_LabelsLastPlotted = NULL;
     m_Crosses = false;
     m_Legs = true;
     m_Names = false;
@@ -220,8 +219,6 @@ void GfxCore::TryToFreeArrays()
 	DELETE_ARRAY(m_Polylines);
 	DELETE_ARRAY(m_SurfacePolylines);
 	DELETE_ARRAY(m_CrossData);
-	DELETE_ARRAY(m_Labels);
-	DELETE_ARRAY(m_LabelsLastPlotted);
 
 	if (m_LabelGrid) {
 	    DELETE_ARRAY(m_LabelGrid);
@@ -255,9 +252,6 @@ void GfxCore::Initialise()
     m_CrossData = new Point[m_Parent->GetNumCrosses()];
 
     m_HighlightedPts = new HighlightedPt[m_Parent->GetNumCrosses()];
-    m_Labels = new LabelInfo*[m_Parent->GetNumCrosses()];
-    m_LabelsLastPlotted = new LabelFlags[m_Parent->GetNumCrosses()];
-    m_LabelCacheNotInvalidated = false;
 
     for (int band = 0; band < m_Bands; band++) {
 	m_PlotData[band].vertices = new Point[m_Parent->GetNumPoints()];
@@ -625,7 +619,6 @@ void GfxCore::SetScaleInitial(Double scale)
     HighlightedPt* hpt = m_HighlightedPts;
     m_NumCrosses = 0;
     Point* pt = m_CrossData;
-    LabelInfo** labels = m_Labels;
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
     wxString text;
@@ -635,8 +628,6 @@ void GfxCore::SetScaleInitial(Double scale)
 	pt->y = label->GetY();
 	pt->z = label->GetZ();
 	pt++;
-
-	*labels++ = label;
 
 	m_NumCrosses++;
 
@@ -743,7 +734,6 @@ static int count = 0;
 
 	m_NumHighlightedPts = 0;
 	HighlightedPt* hpt = m_HighlightedPts;
-	LabelInfo** labels = m_Labels;
 	list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
 	list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
 	wxString text;
@@ -965,7 +955,6 @@ static int count = 0;
 	// Draw station names.
 	if (m_Names) {
 	    DrawNames();
-	    m_LabelCacheNotInvalidated = false;
 	}
 
 	// Draw any special points.
@@ -1116,7 +1105,6 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	    glDisable(GL_DEPTH_TEST);
 	    DrawNames();
 	    glEnable(GL_DEPTH_TEST);
-	    m_LabelCacheNotInvalidated = false;
 	}
 
 	// Draw scalebar.
@@ -1510,15 +1498,9 @@ void GfxCore::DrawNames()
     m_DrawDC.SetTextForeground(LABEL_COLOUR);
 #endif
 
-    if (m_OverlappingNames || m_LabelCacheNotInvalidated) {
+    if (m_OverlappingNames) {
 	SimpleDrawNames();
-	// Draw names on bits of the survey which weren't visible when
-	// the label cache was last generated (happens after a translation...)
-	if (m_LabelCacheNotInvalidated) {
-	    NattyDrawNames();
-	}
-    }
-    else {
+    } else {
 	NattyDrawNames();
     }
 }
@@ -1532,18 +1514,13 @@ void GfxCore::NattyDrawNames()
     const int quantised_x = m_XSize / quantise;
     const int quantised_y = m_YSize / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
-    if (!m_LabelCacheNotInvalidated) {
-	if (m_LabelGrid) {
-	    delete[] m_LabelGrid;
-	}
-	m_LabelGrid = new LabelFlags[buffer_size];
-	memset((void*) m_LabelGrid, 0, buffer_size * sizeof(LabelFlags));
+    if (m_LabelGrid) {
+	delete[] m_LabelGrid;
     }
+    m_LabelGrid = new char[buffer_size];
+    memset((void*)m_LabelGrid, 0, buffer_size);
 
-    LabelInfo** label = m_Labels;
-    LabelFlags* last_plot = m_LabelsLastPlotted;
-    
-    Point* pt = m_CrossData;
+    list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
 
 #ifdef AVENGL
     // Get transformation matrices, etc. for gluProject().
@@ -1557,110 +1534,61 @@ void GfxCore::NattyDrawNames()
 #endif
 
     for (int name = 0; name < m_NumCrosses; name++) {
-	// For non-OpenGL: *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are
-	// the coordinates of the actual station.
-
 #ifdef AVENGL
 	// Project the label's position onto the window.
 	GLdouble x, y, z;
-	int code = gluProject(pt->x, pt->y, pt->z, modelview_matrix, projection_matrix,
+	int code = gluProject((*label)->x, (*label)->y, (*label)->z,
+			      modelview_matrix, projection_matrix,
 			      viewport, &x, &y, &z);
 #else
-	wxCoord x = GridXToScreen(pt->x, pt->y, pt->z);
-	wxCoord y = GridYToScreen(pt->x, pt->y, pt->z) + CROSS_SIZE - FONT_SIZE;
+	wxCoord x = (int)GridXToScreen((*label)->x, (*label)->y, (*label)->z);
+	wxCoord y = (int)GridYToScreen((*label)->x, (*label)->y, (*label)->z)
+	    + CROSS_SIZE - FONT_SIZE;
 #endif
 
-	// We may have labels in the cache which are still going to be in the
-	// same place: in this case we only consider labels here which are in
-	// just about the region of screen exposed since the last label cache
-	// generation, and were not plotted last time, together with labels
-	// which were in this category last time around but didn't end up
-	// plotted (possibly because the newly exposed region was too small, as
-	// happens during a drag).
-#ifdef _DEBUG
-	if (m_LabelCacheNotInvalidated) {
-	    assert(m_LabelCacheExtend.bottom >= m_LabelCacheExtend.top);
-	    assert(m_LabelCacheExtend.right >= m_LabelCacheExtend.left);
-	}
-#endif
+	wxString str = (*label)->GetText();
 
-	if ((m_LabelCacheNotInvalidated && x >= m_LabelCacheExtend.GetLeft() &&
-	     x <= m_LabelCacheExtend.GetRight() && y >= m_LabelCacheExtend.GetTop() &&
-	     y <= m_LabelCacheExtend.GetBottom() && *last_plot == label_NOT_PLOTTED) ||
-	    (m_LabelCacheNotInvalidated && *last_plot == label_CHECK_AGAIN) ||
-	    !m_LabelCacheNotInvalidated) {
+	int ix = int(x) / quantise;
+	int iy = int(y) / quantise;
 
-	    wxString str = (*label)->GetText();
+	bool reject = true;
 
-#ifdef _DEBUG
-	    if (m_LabelCacheNotInvalidated && *last_plot == label_CHECK_AGAIN) {
-		TRACE("Label " + str + " being checked again.\n");
+	if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
+	    char *test = &m_LabelGrid[ix + iy * quantised_x];
+	    int len = str.Length() * dv + 1;
+	    reject = (ix + len >= quantised_x);
+	    int i = 0;
+	    while (!reject && i++ < len) {
+		reject = *test++;
 	    }
-#endif
 
-	    int ix = int(x) / quantise;
-	    int iy = int(y) / quantise;
-	    int ixshift = m_LabelCacheNotInvalidated ? int(m_LabelShift.x / quantise) : 0;
-	    int iyshift = m_LabelCacheNotInvalidated ? int(m_LabelShift.y / quantise) : 0;
-
-	    if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
-		  LabelFlags* test = &m_LabelGrid[ix + ixshift + (iy + iyshift)*quantised_x];
-		  int len = str.Length()*dv + 1;
-		  bool reject = (ix + len >= quantised_x);
-		  int i = 0;
-		  while (!reject && i++ < len) {
-		      reject = *test++ != label_NOT_PLOTTED;
-		  }
-
-		  if (!reject) {
+	    if (!reject) {
 #ifdef AVENGL
-		      glRasterPos3f(pt->x, pt->y, pt->z);
-		      for (int pos = 0; pos < str.Length(); pos++) {
-			  glutBitmapCharacter(LABEL_FONT, (int) (str[pos]));
-		      }
+		glRasterPos3f((*label)->x, (*label)->y, (*label)->z);
+		for (int pos = 0; pos < str.Length(); pos++) {
+		    glutBitmapCharacter(LABEL_FONT, (int) (str[pos]));
+		}
 #else
-		      m_DrawDC.DrawText(str, x, y);
+		m_DrawDC.DrawText(str, x, y);
 #endif
 
-		      int ymin = (iy >= 2) ? iy - 2 : iy;
-		      int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
-		      for (int y0 = ymin; y0 <= ymax; y0++) {
-			  memset((void*) &m_LabelGrid[ix + y0*quantised_x], true,
-				 sizeof(LabelFlags) * len);
-		      }
-		  }
-
-		  if (reject) {
-		      *last_plot++ = m_LabelCacheNotInvalidated ? label_CHECK_AGAIN :
-								  label_NOT_PLOTTED;
-		  }
-		  else {
-		      *last_plot++ = label_PLOTTED;
-		  }
-	    }
-	    else {
-		*last_plot++ = m_LabelCacheNotInvalidated ? label_CHECK_AGAIN :
-							    label_NOT_PLOTTED;
+		int ymin = (iy >= 2) ? iy - 2 : iy;
+		int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
+		for (int y0 = ymin; y0 <= ymax; y0++) {
+		    memset((void*) &m_LabelGrid[ix + y0 * quantised_x], 1, len);
+		}
 	    }
 	}
-	else {
-	    if (m_LabelCacheNotInvalidated && x >= m_LabelCacheExtend.GetLeft() - 50 &&
-		x <= m_LabelCacheExtend.GetRight() + 50 &&
-		y >= m_LabelCacheExtend.GetTop() - 50 &&
-		y <= m_LabelCacheExtend.GetBottom() + 50) {
-		*last_plot++ = label_CHECK_AGAIN;
-	    }
-	    else {
-		last_plot++; // leave the cache alone
-	    }
+	
+#if 0 // FIXME
+	if (reject) {
+	    (*label)->flags &= ~LABEL_DISPLAYED;
+	} else {
+	    (*label)->flags |= LABEL_DISPLAYED;
 	}
-
-	label++;
-#ifdef AVENGL
-	pt++;
-#else
-	pt += 4;
 #endif
+
+	++label;
     }
 }
 
@@ -1670,26 +1598,12 @@ void GfxCore::SimpleDrawNames()
     // from NattyDrawNames() to draw names known not to overlap.
 
 #ifndef AVENGL
-    LabelInfo** label = m_Labels;
-    Point* pt = m_CrossData;
-
-    LabelFlags* last_plot = m_LabelsLastPlotted;
+    list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for (int name = 0; name < m_NumCrosses; name++) {
-	// *pt is at (cx, cy - CROSS_SIZE), where (cx, cy) are the coordinates
-	// of the actual station.
-
-	if ((m_LabelCacheNotInvalidated && *last_plot == label_PLOTTED) ||
-	    !m_LabelCacheNotInvalidated) {
-#if 0 // FIXME
-	    m_DrawDC.DrawText((*label)->GetText(),
-		pt->x + m_XCentre + m_Params.display_shift.x,
-		pt->y + m_YCentre + m_Params.display_shift.y + CROSS_SIZE - FONT_SIZE);
-#endif
-	}
-
-	last_plot++;
-	label++;
-	pt;
+	wxCoord x = (wxCoord)GridXToScreen((*label)->x, (*label)->y, (*label)->z);
+	wxCoord y = (wxCoord)GridYToScreen((*label)->x, (*label)->y, (*label)->z);
+	m_DrawDC.DrawText((*label)->GetText(), x, y + CROSS_SIZE - FONT_SIZE);
+	++label;
     }
 #endif
 }
@@ -2167,16 +2081,6 @@ void GfxCore::HandleTranslate(wxPoint point)
     m_Params.translation.x += cx;
     m_Params.translation.y += cy;
     m_Params.translation.z += cz;
-
-    if (!m_OverlappingNames) {
-	// m_LabelCacheNotInvalidated = true;//--FIXME
-	m_LabelShift.x = dx;
-	m_LabelShift.y = dy;
-	// m_LabelCacheExtend.left = (dx < 0) ? m_XSize + dx : 0;
-	// m_LabelCacheExtend.right = (dx < 0) ? m_XSize : dx;
-	// m_LabelCacheExtend.top = (dy < 0) ? m_YSize + dy : 0;
-	// m_LabelCacheExtend.bottom = (dy < 0) ? m_YSize : dy;
-    }
 
 #ifndef AVENGL
     m_RedrawOffscreen = true;

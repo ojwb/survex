@@ -128,12 +128,6 @@ class GfxCore : public wxWindow {
     bool m_AntiAlias;
 #endif
 
-    enum LabelFlags {
-	label_NOT_PLOTTED,
-	label_PLOTTED,
-	label_CHECK_AGAIN
-    };
-
     enum HighlightFlags {
 	hl_NONE = 0,
 	hl_ENTRANCE = 1,
@@ -204,7 +198,7 @@ class GfxCore : public wxWindow {
     list<pair<PresData, Quaternion> >::iterator m_PresIterator;
 #endif
     double m_MaxExtent; // twice the maximum of the {x,y,z}-extents, in survey coordinates.
-    LabelFlags* m_LabelGrid;
+    char *m_LabelGrid;
     HighlightedPt* m_HighlightedPts;
     int m_NumHighlightedPts;
     bool m_RotationOK;
@@ -239,18 +233,13 @@ class GfxCore : public wxWindow {
     wxFont m_Font;
     bool m_Depthbar;
     bool m_OverlappingNames;
-    bool m_LabelCacheNotInvalidated;
-    LabelFlags* m_LabelsLastPlotted;
-    wxRect m_LabelCacheExtend;
     bool m_Compass;
     bool m_Clino;
     int m_XSize;
     int m_YSize;
     int m_XCentre;
     int m_YCentre;
-    wxPoint m_LabelShift;
     PlotData* m_PlotData;
-    LabelInfo** m_Labels;
     bool m_InitialisePending;
     enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV, drag_SCALE } m_LastDrag;
     bool m_MouseOutsideCompass;

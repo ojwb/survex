@@ -139,6 +139,7 @@ public:
 
 class LabelInfo {
     friend class MainFrm;
+    friend class GfxCore;
     Double x, y, z;
     wxString text;
     int flags;
