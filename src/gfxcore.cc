@@ -653,7 +653,22 @@ void GfxCore::RedrawOffscreen()
 
         // Draw underground legs.
         if (m_Legs) {
-	    for (int band = 0; band < m_Bands; band++) {
+	    int start;
+	    int end;
+	    int inc;
+
+	    if (m_TiltAngle < 0.0) {
+	        start = 0;
+		end = m_Bands;
+		inc = 1;
+	    }
+	    else {
+	        start = m_Bands;
+		end = 0;
+		inc = -1;
+	    }
+
+	    for (int band = start; band != end; band += inc) {
 	        m_DrawDC.SetPen(m_Parent->GetPen(band));
 		int* num_segs = m_PlotData[band].num_segs; //-- sort out the polyline stuff!!
 		wxPoint* vertices = m_PlotData[band].vertices;
@@ -681,7 +696,7 @@ void GfxCore::RedrawOffscreen()
 		inc = -1;
 	    }
 
-	    for (int band = start; band < end; band += inc) {
+	    for (int band = start; band != end; band += inc) {
 	        wxPen pen = m_SurfaceDepth ? m_Parent->GetPen(band) : m_Parent->GetSurfacePen();
 		if (m_SurfaceDashed) {
 #ifdef _WIN32

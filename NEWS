@@ -1,12 +1,12 @@
 Changes in 0.98-prerelease6:
 
-* (MS Windows version): aven.exe wasn't rebuilt for 0.98-prerelease -
-  fixed the dodgy script.
-
 * printwin: fixed new bug introduced in 0.98-prerelease4 which caused
   an internal error.
 
 * printwin: exit cleanly if no printer drivers are installed.
+
+* aven: surface surveys weren't being drawn when viewing from above
+  (bug introduced in recent version).
 
 * aven/caverot/xcaverot/print*/cadgen/extend/diffpos/3dtopos: --survey
   command line option once more trims specified prefix from station
@@ -31,6 +31,9 @@ Changes in 0.98-prerelease6:
 
 * Fixed dropping of first character of survey station names when
   reading old .3d files.
+
+* (MS Windows version): aven.exe wasn't rebuilt for 0.98-prerelease -
+  fixed the dodgy script.
 
 Changes in 0.98-prerelease5:
 
