@@ -319,7 +319,7 @@ void MainFrm::CreateMenuBar()
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*E@xit*/221));
+    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
 
     m_history.UseMenu(filemenu);
     m_history.Load(*wxConfigBase::Get());
