@@ -151,6 +151,7 @@ main(int argc, char **argv)
    root->stn = NULL;
    root->pos = NULL;
    root->ident = "\\";
+   root->exported = 0;
    root->fSuspectTypo = fFalse;
 
    nosurveyhead = NULL;

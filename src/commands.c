@@ -243,10 +243,11 @@ match_tok(const sztok *tab, int tab_size)
    return tab[tab_size].tok; /* no match */
 }
 
-typedef enum {CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_DATA,
-   CMD_DEFAULT, CMD_END, CMD_EQUATE, CMD_FIX, CMD_INCLUDE, CMD_INFER,
-   CMD_LRUD, CMD_MEASURE, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET, CMD_SOLVE,
-   CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
+typedef enum {
+   CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_DATA, CMD_DEFAULT,
+   CMD_END, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_INCLUDE, CMD_INFER,
+   CMD_LRUD, CMD_MEASURE, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET,
+   CMD_SOLVE, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
 
 static sztok cmd_tab[] = {
@@ -257,6 +258,7 @@ static sztok cmd_tab[] = {
      {"DEFAULT",   CMD_DEFAULT},
      {"END",       CMD_END},
      {"EQUATE",    CMD_EQUATE},
+     {"EXPORT",    CMD_EXPORT},
      {"FIX",       CMD_FIX},
      {"INCLUDE",   CMD_INCLUDE},
      {"INFER",     CMD_INFER},
@@ -585,6 +587,7 @@ fix_station(void)
 	    name->pos->shape = 0;
 	    name->stn = fixpt;
 	    name->up = NULL;
+	    name->exported = 0;
 	    add_stn_to_list(&stnlist, fixpt);
 	    POS(fixpt, 0) = x;
 	    POS(fixpt, 1) = y;
@@ -742,6 +745,42 @@ equate_list(void)
 		(real)0.0, (real)0.0, (real)0.0,
 		(real)0.0, (real)0.0, (real)0.0);
 #endif
+      }
+   }
+}
+
+static void
+export(void)
+{
+   while (1) {
+      prefix *pfx = read_prefix(fTrue);
+      int depth = 0;
+      /* FIXME: empty export OK? probably... */
+      if (pfx == NULL) break;
+      {
+         prefix *p = pfx;
+	 while (p != NULL && p != pcs->Prefix) {
+	    depth++;
+	    p = p->up;
+	 }
+	 if (p == NULL) {
+	    /* FIXME: something like: *export \foo */
+	    NOT_YET;
+	 }
+      }
+      if (depth == 0) {
+         /* FIXME: *export \ or similarly bogus shit */
+         NOT_YET;
+      }
+      if (depth < pfx->exported + 1) {
+         /* FIXME: warning already exported */
+         printf("*** warning already exported depth %d pfx->exported %d\n", depth, pfx->exported);
+      } else if (depth > pfx->exported + 1) {
+         /* FIXME: not exported enough */
+         printf("*** warning not exported enough depth %d pfx->exported %d\n", depth, pfx->exported);
+      } else {
+         pfx->exported++;
+	 printf("*** exporting %s to %d\n", sprint_prefix(pfx), pfx->exported);
       }
    }
 }
@@ -1239,6 +1278,7 @@ handle_command(void)
     case CMD_DATA: data(); break;
     case CMD_DEFAULT: set_default(); break;
     case CMD_EQUATE: equate_list(); break;
+    case CMD_EXPORT: export(); break;
     case CMD_FIX: fix_station(); break;
     case CMD_INCLUDE: include(); break;
     case CMD_INFER: infer(); break;

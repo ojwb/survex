@@ -309,8 +309,16 @@ pt: 24 Imposs&iacute;vel abrir arquivo de dados '%s'
 ca: 24 No s'ha pogut obrir el fitxer de dades '%s'
 es: 24 No se pudo abrir el fichero de datos '%s'
 it: 24 Non riesco ad aprire il file dei dati '%s'
-#XXX25
-#XXX26
+# FIXME: TRANSLATE check fr de pt ca es it
+en: 25 ROOT is deprecated
+fr: 25 ROOT n'est plus utilis&eacute;
+de: 25 ROOT ist veraltet
+pt: 25 ROOT descontinuado
+ca: 25 ROOT ja no s'utilitza
+es: 25 ROOT ya no se usa
+it: 25 ROOT &eacute sconsigliato
+# FIXME: TRANSLATE fr de pt ca es it
+en: 26 Prefix `%s' not exported with *EXPORT
 #XXX27
 #XXX28
 en: 29 Reentering an existing prefix level is deprecated (previously entered at %s:%lu)

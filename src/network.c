@@ -466,6 +466,7 @@ remove_subnets(void)
 		    nameZ->pos->shape = 3;
 		    nameZ->stn = stnZ;
 		    nameZ->up = NULL;
+		    nameZ->exported = 0;
 		    nameZ->fSuspectTypo = fFalse;
 		    unfix(stnZ);
 		    add_stn_to_list(&stnlist, stnZ);
@@ -625,7 +626,7 @@ replace_subnets(void)
          linkfor *leg;
 
 	 stn = ptrRed->join1->l.to;
-	 stn2 = ptrRed->join2->l.to;	  
+	 stn2 = ptrRed->join2->l.to;
          if (fixed(stn3)) {
 	    ASSERT(fixed(stn4)); /* either both or neither fixed */
             dirn = reverse_leg_dirn(ptrRed->join1);

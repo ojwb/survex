@@ -13,6 +13,9 @@ Changes in 0.97-prerelease1:
 * cavern: added warning that use of ROOT character ('\' by default) is
   deprecated; updated documentation to mention this.
 
+* cavern: added *export command to allow scope of station names to be
+  limited.
+
 Changes in 0.96:
 
 * (MSDOS and MS Windows versions): fixed bug in message file handling

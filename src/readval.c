@@ -26,6 +26,7 @@
 #include "message.h"
 #include "readval.h"
 #include "datain.h"
+#include "netbits.h"
 #include "osalloc.h"
 #ifdef NEW3DFORMAT
 #include "new3dout.h"
@@ -82,6 +83,7 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
    int i;
    bool fNew;
    bool fImplicitPrefix = fTrue;
+   int depth = 0;
 
    skipblanks();
    if (isRoot(ch)) {
@@ -143,6 +145,7 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 	 ptr->stn = NULL;
 	 ptr->up = back_ptr;
 	 ptr->filename = NULL;
+	 ptr->exported = 0;
 	 /* FIXME: what if foo.1 is a station as well as a prefix?!? */
 	 ptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
 	 back_ptr->down = ptr;
@@ -173,6 +176,7 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 	    newptr->stn = NULL;
 	    newptr->up = back_ptr;
 	    newptr->filename = NULL;
+	    newptr->exported = 0;
 	    newptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
 	    ptr = newptr;
 	    fNew = fTrue;
@@ -181,11 +185,18 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
 	       create_twig(ptr,file.filename);
 	    }
 #endif
+	 } else {
+	    /* OK, police the export level */
+	    if (ptr->exported < depth) {
+	       compile_error(/*"Prefix `%s' not exported."*/26,
+			     sprint_prefix(ptr));
+	    }
 	 }
       }
+      depth++;
       fOmit = fFalse; /* disallow after first level */
    } while (isSep(ch));
-   /* don't warn about a station is refered to twice */
+   /* don't warn about a station that is refered to twice */
    if (!fNew) ptr->fSuspectTypo = fFalse;
    return ptr;
 }

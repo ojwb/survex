@@ -138,6 +138,8 @@ typedef struct Prefix {
    char *ident;
    const char *filename;
    unsigned int line;
+   /* how many levels above is this prefix accessable (0 == parent only) */
+   int exported;
    /* If a survey leg or an *equate command refers to a station using a
     * prefix, and that station isn't refered to elsewhere, it's likely
     * that the user has cocked up the prefix in some way.
