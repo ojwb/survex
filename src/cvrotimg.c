@@ -260,7 +260,7 @@ xxx:
    /* centre survey in each (spatial) dimension */
    Xorg = (Xmin + Xmax)/2; Yorg = (Ymin + Ymax)/2; Zorg = (Zmin + Zmax)/2;
    Xrad = (Xmax - Xmin)/2; Yrad = (Ymax - Ymin)/2; Zrad = (Zmax - Zmin)/2;
-   Radius = (coord)(SQRT(sqrd((double)Xrad) + sqrd((double)Yrad)));
+   Radius = (coord)radius(Xrad, Yrad);
 
    if (Radius == 0 && Zrad == 0) return (BIG_SCALE);
 

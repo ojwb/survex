@@ -1,6 +1,6 @@
 /* > extend.c
  * Produce an extended elevation
- * Copyright (C) 1995,1996,1997,1998 Olly Betts
+ * Copyright (C) 1995,1996,1997,1998,2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -171,16 +171,14 @@ do_stn(point *p, float X)
       if (!l->fDone) { /* otherwise we extend loops multiple times */
          if (l->to == p) {
             lp->next = l->next; /* unlink FIXME ought to free memory too */
-            dX = (float)sqrt((sqrd(l->fr->x - l->to->x) + 
-			      sqrd(l->fr->y - l->to->y)));
+            dX = (float)radius(l->fr->x - l->to->x, l->fr->y - l->to->y);
             img_write_datum(pimg, img_MOVE, NULL, X + dX, 0, l->fr->z);
             img_write_datum(pimg, img_LINE, NULL, X, 0, l->to->z);
             l->fDone = 1;
             do_stn(l->fr, X + dX);
          } else if (l->fr == p) {
             lp->next = l->next; /* unlink FIXME ought to free memory too */
-            dX = (float)sqrt((sqrd(l->fr->x - l->to->x) +
-			      sqrd(l->fr->y - l->to->y)));
+            dX = (float)radius(l->fr->x - l->to->x, l->fr->y - l->to->y);
             img_write_datum(pimg, img_MOVE, NULL, X, 0, l->fr->z);
             img_write_datum(pimg, img_LINE, NULL, X + dX, 0, l->to->z);
             l->fDone = 1;

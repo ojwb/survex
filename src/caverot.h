@@ -32,7 +32,6 @@
 /* avoid problems with eg cos(10) where cos prototype is double cos(); */
 #define SIN(X) (sin((double)(X)))
 #define COS(X) (cos((double)(X)))
-#define SQRT(X) (sqrt((double)(X)))
 
 /* SIND(A)/COSD(A) give sine/cosine of angle A degrees */
 #define SIND(X) (sin(rad((double)(X))))

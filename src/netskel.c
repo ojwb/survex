@@ -320,7 +320,8 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
    s = sqrd(cx) + sqrd(cy);
    if (s > 0.0) {
       s = hsqrd / s;
-      s = s < 0.0 ? 0.0 : sqrt(s);
+      ASSERT(s >= 0.0);
+      s = sqrt(s); /* FIXME: How can s be < 0 ? */
       s = 1 - s;
       tot = sqrd(cx * s) + sqrd(cy * s) + sqrd(e[2]);
       if (tot <= expected_error) {
@@ -342,7 +343,8 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
       s = sqrd(nx) + sqrd(ny) + sqrd(cz);
       if (s > 0.0) {
          s = rsqrd / s;
-         s = s < 0.0 ? 0.0 : sqrt(s);
+	 ASSERT(s >= 0.0);
+         s = sqrt(s);
          tot = sqrd(cx - s * nx) + sqrd(cy - s * ny) + sqrd(cz - s * cz);
 	 if (tot <= expected_error) {
 	    if (!output) {
@@ -686,11 +688,13 @@ err_stat(int cLegsTrav, double lenTrav,
 	 double hTot, double hTotTheo,
 	 double vTot, double vTotTheo)
 {
+   double sqrt_eTot;
    fputnl(fhErrStat);
+   sqrt_eTot = sqrt(eTot);
    fprintf(fhErrStat, msg(/*Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). */145),
-	   lenTrav, cLegsTrav, sqrt(eTot), sqrt(eTot) / cLegsTrav);
+	   lenTrav, cLegsTrav, sqrt_eTot, sqrt_eTot / cLegsTrav);
    if (lenTrav > 0.0)
-      fprintf(fhErrStat, msg(/*Error%7.2f%%*/146), 100 * sqrt(eTot) / lenTrav);
+      fprintf(fhErrStat, msg(/*Error%7.2f%%*/146), 100 * sqrt_eTot / lenTrav);
    else
       fputs(msg(/*Error    N/A*/147), fhErrStat);
    fputnl(fhErrStat);
@@ -850,7 +854,7 @@ replace_trailing_travs(void)
 				 sqrd(POS(stnB, 1) - POS(stn1, 1)) +
 				 sqrd(POS(stnB, 2) - POS(stn1, 2)));
 		  total += sqrt(sqrdd(leg->d));
-		  totplan += sqrt(sqrd(leg->d[0]) + sqrd(leg->d[1]));
+		  totplan += radius(leg->d[0], leg->d[1]);
 		  totvert += fabs(leg->d[2]);
 	       }
 	    }
