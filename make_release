@@ -35,12 +35,16 @@ if ! make dist ; then
    exit 1
 fi
 if test x"$release" = xyes ; then
-   if ! make rpm ; then
-      echo make rpm failed
-      exit 1
+   if rpm --version > /dev/null 2> /dev/null ; then
+      if ! make rpm ; then
+         echo make rpm failed
+         exit 1
+       fi
+   else
+       echo rpm not installed - skipping rpm generation
    fi
    if ! make debian ; then
-      echo make rpm failed
+      echo make debian failed
       exit 1
    fi
    if ! make dos_doc_zip ; then
