@@ -169,7 +169,7 @@ main(int argc, char **argv)
    root = osnew(prefix);
    root->up = root->right = root->down = NULL;
    root->stn = NULL;
-   root->pos = NULL;
+   root->pos = NULL;   
    /* FIXME: shouldn't need to set this really, but need to check that nothing assumes the value of root->ident isn't "" */
    root->ident = "\\";
    root->min_export = root->max_export = 0;

@@ -88,7 +88,7 @@ p_pos(prefix *p)
 # ifdef PRINT_STN_ORDER
       /* NB this patch from Leandro Dybal Bertoni <LEANDRO@trieste.fapesp.br>
        * will confuse diffpos a lot so is off by default */
-      int shape = p->pos->shape;
+      int shape = p->shape;
       fprintf(fhPosList, "%2d (%8.2f, %8.2f, %8.2f ) ",
 	      shape, p->pos->p[0], p->pos->p[1], p->pos->p[2]);
 # else
@@ -109,7 +109,7 @@ static void
 node_stat(prefix *p)
 {
    if (p->pos && pfx_fixed(p)) {
-      int order = p->pos->shape;
+      int order = p->shape;
       if (order >= icOrderMac) {
 	 int c = order * 2;
 	 cOrder = osrealloc(cOrder, c * ossizeof(int));

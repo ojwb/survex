@@ -925,11 +925,11 @@ replace_trailing_travs(void)
 	    }
 	 }
 
-	 d = stn1->name->pos->shape;
+	 d = stn1->name->shape;
 	 if (d < 0) {
 	    /* "*fix STN reference ..." sets order negative to suppress the
 	     * unused fixed point warning */
-	    stn1->name->pos->shape = -1 - d;
+	    stn1->name->shape = -1 - d;
 	 } else if (d <= 1) {
 	    if (d == 0 ||
 		(stn1->leg[0] && !stn1->leg[0]->l.to->name->ident[0])) {

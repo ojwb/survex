@@ -460,10 +460,10 @@ remove_subnets(void)
 
 		    nameZ = osnew(prefix);
 		    nameZ->ident = ""; /* root has ident[0] == "\" */
+		    nameZ->shape = 3;
 		    stnZ = osnew(node);
 		    stnZ->name = nameZ;
 		    nameZ->pos = osnew(pos);
-		    nameZ->pos->shape = 3;
 		    nameZ->stn = stnZ;
 		    nameZ->up = NULL;
 		    nameZ->min_export = nameZ->max_export = 0;

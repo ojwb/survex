@@ -292,13 +292,13 @@ addfakeleg(node *fr, node *to,
    fr->leg[i] = leg;
    to->leg[j] = leg2;
 
-   shape = fr->name->pos->shape + 1;
+   shape = fr->name->shape + 1;
    if (shape < 1) shape = 1 - shape;
-   fr->name->pos->shape = shape;
+   fr->name->shape = shape;
 
-   shape = to->name->pos->shape + 1;
+   shape = to->name->shape + 1;
    if (shape < 1) shape = 1 - shape;
-   to->name->pos->shape = shape;
+   to->name->shape = shape;
 }
 
 char
@@ -367,7 +367,6 @@ StnFromPfx(prefix *name)
 #ifdef NEW3DFORMAT
       name->pos->id = 0;
 #endif
-      name->pos->shape = 0;
       unfix(stn);
    }
    stn->leg[0] = stn->leg[1] = stn->leg[2] = NULL;

@@ -152,6 +152,7 @@ typedef struct Prefix {
    struct Node *stn;
    struct Pos *pos;
    const char *ident;
+   int shape;
    const char *filename;
    unsigned int line;
    /* if (min_export == 0) then max_export is max # levels above is this
@@ -221,7 +222,6 @@ typedef struct Node {
 /* station position */
 typedef struct Pos {
    delta p; /* Position */
-   int shape;
 #if EXPLICIT_FIXED_FLAG
    unsigned char fFixed; /* flag indicating if station is a fixed point */
 #endif

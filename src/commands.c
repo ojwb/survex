@@ -613,9 +613,9 @@ cmd_fix(void)
 	    node *fixpt = osnew(node);
 	    prefix *name = osnew(prefix);
 	    name->ident = ""; /* root has ident[0] == "\" */
+	    name->shape = 0;
 	    fixpt->name = name;
 	    name->pos = osnew(pos);
-	    name->pos->shape = 0;
 	    name->stn = fixpt;
 	    name->up = NULL;
 	    name->min_export = name->max_export = 0;
@@ -632,14 +632,15 @@ cmd_fix(void)
 #endif
 		       );
 	    /* suppress "unused fixed point" warnings for this station */
-	    if (fRef) fix_name->pos->shape = -1 - fix_name->pos->shape;
+	    if (fRef) fix_name->shape = -1 - fix_name->shape;
 	 }
 	 return;
       }
+      stn = StnFromPfx(fix_name);
    }
 
    /* suppress "unused fixed point" warnings for this station */
-   if (fRef && fix_name->pos->shape == 0) fix_name->pos->shape = -1;
+   if (fRef && fix_name->shape == 0) fix_name->shape = -1;
 
    if (!fixed(stn)) {
       POS(stn, 0) = x;

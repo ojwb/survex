@@ -149,6 +149,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 	 ptr->ident = name;
 	 ptr->right = ptr->down = NULL;
 	 ptr->pos = NULL;
+	 ptr->shape = 0;
 	 ptr->stn = NULL;
 	 ptr->up = back_ptr;
 	 ptr->filename = NULL;
@@ -181,6 +182,7 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 	    newptr->right = ptr;
 	    newptr->down = NULL;
 	    newptr->pos = NULL;
+	    newptr->shape = 0;
 	    newptr->stn = NULL;
 	    newptr->up = back_ptr;
 	    newptr->filename = NULL;
