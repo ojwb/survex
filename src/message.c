@@ -1057,7 +1057,7 @@ msg_init(char * const *argv)
 	 GetModuleFileName(NULL, buf, len);
 	 /* Strange Win32 nastiness - strip prefix "\\?\" if present */
 	 if (strncmp(modname, "\\\\?\\", 4) == 0) modname += 4;
-	 pth_cfg_files = path_from_fnm(p);
+	 pth_cfg_files = path_from_fnm(modname);
 	 osfree(buf);
       }
 #else
