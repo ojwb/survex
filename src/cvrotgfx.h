@@ -95,11 +95,6 @@ extern BITMAP *BitMap, *BitMapDraw;
 #  include "allegro.h"
 extern BITMAP *BitMap, *BitMapDraw;
 
-# elif defined(__DJGPP__)
-/* DJGPP + GRX */
-#  include "grx20.h"
-extern GrContext *BitMap;
-
 # else
 /* Borland C */
 #  include <graphics.h>
@@ -111,15 +106,9 @@ extern GrContext *BitMap;
 #  define cvrotgfx_read_mouse(PDX, PDY, PBUT) NOP
 # endif
 
-# if !defined(ALLEGRO) && defined(__DJGPP__)
-#  define CVROTGFX_LBUT GR_M_LEFT
-#  define CVROTGFX_MBUT GR_M_MIDDLE
-#  define CVROTGFX_RBUT GR_M_RIGHT
-# else
-#  define CVROTGFX_LBUT 1 /* mask for left mouse button */
-#  define CVROTGFX_RBUT 2 /* mask for right mouse button (if present) */
-#  define CVROTGFX_MBUT 4 /* mask for middle mouse button (if present) */
-# endif
+# define CVROTGFX_LBUT 1 /* mask for left mouse button */
+# define CVROTGFX_RBUT 2 /* mask for right mouse button (if present) */
+# define CVROTGFX_MBUT 4 /* mask for middle mouse button (if present) */
 
 # define cvrotgfx_beep() sound(256) /* 256 is frequency */
 
@@ -164,11 +153,6 @@ void cvrotgfx_lineto(int X, int Y);
 #  endif
 #  define set_tcolour(X) _cvrotgfx_textcol = (X)
 #  define set_gcolour(X) _cvrotgfx_drawcol = (X)
-#  define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, S)
-# elif defined(__DJGPP__)
-#  define outtextxy(X, Y, S) GrTextXY((X), (Y), (S), 15, 0) /* FIXME 15 and 0 are colours */
-#  define set_tcolour(X) NOP /* FIXME */
-#  define set_gcolour(X) NOP /* FIXME */
 #  define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, S)
 # else
 #  define set_tcolour(X) setcolor(X)

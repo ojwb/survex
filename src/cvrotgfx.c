@@ -86,10 +86,6 @@ void set_gui_colors(void)
    gui_bg_color = 1;
 }
 
-# elif defined(__DJGPP__)
-/* DJGPP + GRX */
-GrContext *BitMap;
-
 # else
 /* Borland C */
 
@@ -119,22 +115,6 @@ cvrotgfx_read_mouse(int *pdx, int *pdy, int *pbut) {
    x_old = mouse_x;
    y_old = mouse_y;
 #endif
-}
-
-# elif defined(__DJGPP__)
-
-void
-cvrotgfx_read_mouse(int *pdx, int *pdy, int *pbut)
-{
-   GrMouseEvent event;
-   static int x_old, y_old;
-
-   GrMouseGetEventT(GR_M_EVENT, &event, 0L);
-   *pdx = event.x - x_old;
-   *pdy = y_old - event.y; /* mouse y goes the wrong way */
-   x_old = event.x;
-   y_old = event.y;
-   *pbut = event.buttons;
 }
 
 # else
@@ -339,29 +319,6 @@ cvrotgfx_init(void)
    if (get_display_switch_mode() == SWITCH_AMNESIA)
       set_display_switch_callback(SWITCH_IN, force_redraw);
 
-#elif defined(__DJGPP__)
-   const GrVideoMode *mode;
-/*	    GrSetMode(GR_width_height_color_graphics, x, y, c);
- * else if ((x >= 320) && (y >= 200))
- *	    GrSetMode(GR_width_height_graphics, x, y);
- *	else
- */
-/* if (!GrSetMode(GR_default_graphics)) */
-   if (!GrSetMode(GR_width_height_color_graphics, 800, 600, 256))
-      fatalerror(/*Error initialising graphics card*/81);
-
-   GrMouseEraseCursor();
-
-   /* Creates a bitmap 'context' in system memory, allocating memory for us */
-   BitMap = GrCreateContext(GrScreenX() + 1, GrScreenY() + 1, NULL, NULL);
-   if (!BitMap) exit(1); /* FIXME */
-   mode = GrCurrentVideoMode();
-   colText = colHelp = (1 << ((int)(mode->bpp))) - 1;
-   _cvrotgfx_drawcol = 1;
-   xcMac = mode->width;
-   ycMac = mode->height;
-   y_stretch *= (float)(((float)xcMac / ycMac) * (350.0 / 640.0) * 1.3);
-   fSwapScreen = 1;
 # else
    int gdriver, gmode, errorcode;
    /* detect graphics hardware available */
@@ -445,15 +402,6 @@ cvrotgfx_init(void)
    mouse_buttons = -2;
 #elif defined(ALLEGRO)
    /* mouse initialised above */
-#elif defined(__DJGPP__)
-   mouse_buttons = -1;
-   /* With Grx we can't distinguish no mouse from no driver */
-   if (GrMouseDetect()) {
-      GrMouseEventMode(1);
-      GrMouseInit(); /* not actually needed, but call for neatness */
-      /* With Grx we can't count the buttons, so assume 3 */
-      mouse_buttons = 3;
-   }
 #else
    mouse_buttons = init_ms_mouse();
 #endif
@@ -472,13 +420,6 @@ cvrotgfx_pre_main_draw(void)
       BitMapDraw = screen;
    }
    clear(BitMapDraw);
-#elif defined(__DJGPP__)
-   if (fSwapScreen) { /* bank swappin' */
-      GrSetContext(BitMap);
-      GrClearContext(0);
-   } else {
-      GrClearScreen(0);
-   }
 #elif defined(MSC)
    _setactivepage(bank);
    _clearscreen(_GCLEARSCREEN);
@@ -507,15 +448,6 @@ cvrotgfx_post_main_draw(void)
       extern int xcMac, ycMac;
       blit(BitMap, screen, 0, 0, 0, 0, xcMac, ycMac);
    }
-#elif defined(__DJGPP__)
-   if (fSwapScreen) {
-# if 1
-      GrBitBltNC(GrScreenContext(), 0, 0, BitMap /*NULL*/ /* current */, 0, 0,
-		 GrMaxX(), GrMaxY(), GrWRITE);
-# else
-      GrBitBltNCFS(GrScreenContext(), BitMap /*NULL*/ /* current */);
-# endif
-   }
 #elif defined(MSC)
    _setvisualpage(bank);
    bank ^= 1;
@@ -533,8 +465,6 @@ cvrotgfx_pre_supp_draw(void)
 {
 #ifdef ALLEGRO
    BitMapDraw = screen;
-#elif defined(__DJGPP__)
-   GrSetContext(0); /* write to screen */
 #endif
    return 1;
 }
@@ -552,10 +482,6 @@ int
 cvrotgfx_final(void)
 {
 #if defined(ALLEGRO)
-#elif defined(__DJGPP__)
-   /* get rid of BitMap */
-   /* GrDestroyContext(BitMap); */
-   /* GrSetMode(GR_default_text); */
 #elif defined(MSC)
 #else
    closegraph(); /* restore screen on exit */
@@ -569,18 +495,12 @@ int
 cvrotgfx_get_key(void)
 {
    int keycode;
-   if (!keypressed())
-      return -1; /* -1 => no key pressed */
+   if (!keypressed()) return -1; /* -1 => no key pressed */
    keycode = readkey();
    /* flush the keyboard buffer to stop key presses backing up */
    clear_keybuf();
 #if 0
-{FILE *fh = fopen("key.log", "a");
-if (fh) {
-fprintf(fh, "%04x\n", keycode);
-fclose(fh);
-}
-}
+   {FILE*f=fopen("key.log","a");if(f){fprintf(f,"%04x\n",keycode);fclose(f);}}
 #endif
    /* check for cursor keys/delete/end - these give enhanced DOS key codes (+ 0x100) */
    if (keycode && (keycode & 0xff) == 0) return (keycode >> 8) | 0x100;
@@ -607,11 +527,7 @@ cvrotgfx_get_key(void)
 }
 #endif
 
-#if 0
-void cvrotgfx_beep(void); /* make a beep */
-#endif
-
-#if defined(__DJGPP__) || (OS==UNIX) || (OS==WIN32)
+#ifdef ALLEGRO
 static int last_x = 0, last_y = 0;
 extern void
 cvrotgfx_moveto(int X, int Y)
@@ -623,11 +539,7 @@ cvrotgfx_moveto(int X, int Y)
 extern void
 cvrotgfx_lineto(int X, int Y)
 {
-# if defined(ALLEGRO)
    line(BitMapDraw, last_x, last_y, X, Y, _cvrotgfx_drawcol);
-# else
-   GrLine(last_x, last_y, X, Y, 15); /* FIXME: 15 is colour */
-# endif
    last_x = X; last_y = Y;
 }
 #endif
