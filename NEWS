@@ -78,6 +78,9 @@
   where the exact date isn't know, the day and month can be omitted -
   e.g. 2001.09 and 2001 are also valid.
 
+* (RISC OS version): query Territory module to find currently selected
+  language, and use that for messages.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

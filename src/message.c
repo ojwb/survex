@@ -795,7 +795,55 @@ msg_init(char * const *argv)
 	       break;
 	    }
 	 }
-#endif
+#elif (OS==RISCOS)
+	 switch (xterritory_number()) {
+	  case 1: /* UK */
+	  case 2: /* Master */
+	  case 3: /* Compact */
+	  case 17: /* Canada1 */
+	  case 19: /* Canada */
+	  case 22: /* Ireland */
+	    msg_lang = "en";
+	    break;
+	  case 4: /* Italy */
+	    msg_lang = "it";
+	    break;
+	  case 5: /* Spain */
+	  case 27: /* Mexico */
+	    msg_lang = "es"; /* or possibly ca for Spain */
+	    break;
+	  case 6: /* France */
+	  case 18: /* Canada2 */
+	    msg_lang = "fr";
+	    break;
+	  case 7: /* Germany */
+	    msg_lang = "de_DE";
+	    break;
+	  case 8: /* Portugal */
+	    msg_lang = "pt";
+	    break;
+	  case 48: /* USA */
+	    msg_lang = "en_US";
+	    break;
+	  case 28: /* LatinAm */
+	    msg_lang = "pt_BR"; /* or many other possibilities */
+	    break;	    
+#if 0
+	  case 9: /* Esperanto */
+	  case 10: /* Greece */
+	  case 11: /* Sweden */
+	  case 12: /* Finland */
+	  case 13: /* Unused */
+	  case 14: /* Denmark */
+	  case 15: /* Norway */
+	  case 16: /* Iceland */
+	  case 20: /* Turkey */
+	  case 21: /* Arabic */
+	  case 23: /* Hong Kong */
+	  case 24: /* Russia */
+	  case 25: /* Russia2 */
+	  case 26: /* Israel */
+#endif	    
       }
    }
 #ifdef DEBUG
