@@ -1,10 +1,23 @@
+Changes in 0.92-prerelease2:
+
 * Default srcdir if not set so we can easily run a test standalone
 
-* Turned some debug code off in matrix.c
+* Turned off stray debugging output in matrix.c
 
 * Created netartic.h
 
-Changes in 0.92 prerelease 1:
+* Improved various bits of debug code
+
+* Fixed minor problems when compiling with NO_COVARIANCES
+
+* In test suite, cavern failing now causes test to fail immediately
+
+* Include riscos/config.h.in and borlandc/config.h.in in distribution
+
+* Fixed bug when finding articulation points in a component with more
+  than one fixed point
+
+Changes in 0.92-prerelease1:
 
 * Caverot help screen incorrectly documented tilt as '/' and ':' - actually
   it's on '/' and ''' (single quote)
