@@ -76,6 +76,13 @@ patch -l build-djgpp.sh <<END
 END
 sh build-djgpp.sh
 
+Then you need to build and install the allegro graphics library:
+
+http://sunsite.dk/allegro/allegro-3.9.34.tar.gz
+
+And follow the instructions for building using a cross-compiler is
+readme.dj.
+
 Building under DOS in a native djgpp environment will probably require
 tinkering.  Best bet is either to install bash and use the current
 configure script, or perhaps simpler to modify miniam.pl to generate a

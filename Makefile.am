@@ -116,7 +116,8 @@ debian : dist
 	echo 'Depends: ${shlibs:Depends}' >> debian/control
 	echo Description: Aven viewer for Survex >> debian/control
 	sed 's/^/ /' < desc-aven.txt >> debian/control	
-	cd deb/${PACKAGE}-${VERSION} && debuild
+	# -us and -uc mean don't sign packages
+	cd deb/${PACKAGE}-${VERSION} && debuild -us -uc
 	mv deb/*.deb .
 	rm -rf deb
 	rm debian/control
