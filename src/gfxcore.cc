@@ -25,6 +25,8 @@
 #include <config.h>
 #endif
 
+//#define NDEBUG 1
+#include <assert.h>
 #include <float.h>
 
 #include "aven.h"
