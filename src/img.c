@@ -442,6 +442,7 @@ img_read_item(img *pimg, img_point *p)
       static double x = 0.0, y = 0.0, z = 0.0;
       long opt;
       again: /* label to goto if we get a cross */
+      pimg->survey[0] = '\0';
       if (pimg->version == 1) {
 	 if (opt_lookahead) {
 	    opt = opt_lookahead;
@@ -569,6 +570,7 @@ img_read_item(img *pimg, img_point *p)
       return result;
    } else {
       ascii_again:
+      pimg->survey[0] = '\0';
       if (feof(pimg->fh)) return img_STOP;
       if (pimg->pending) {
 	 pimg->pending = 0;
