@@ -73,9 +73,7 @@ editwrap_LDFLAGS = -mwindows
 
 if WIN32
 aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
-aven_LDFLAGS = @WX_LDFLAGS@
 avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
-avengl_LDFLAGS = @WX_LDFLAGS@
 
 svxeditrc.o: $(srcdir)/svxedit.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
@@ -87,9 +85,7 @@ avenrc.o: $(srcdir)/aven.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $$pwd/avenrc.o aven.rc
 else
 aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
-aven_LDFLAGS = @WX_LDFLAGS@
 avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
-avengl_LDFLAGS = @WX_LDFLAGS@
 endif
 
 if MACOSX
@@ -102,10 +98,11 @@ endif
 
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CXXFLAGS@ -DAVEN
+aven_LDFLAGS = @WX_LDFLAGS@
 
 avengl_CFLAGS = @WXGL_CFLAGS@ -DAVEN
 avengl_CXXFLAGS = @WXGL_CXXFLAGS@ -DAVEN
-avengl_LDFLAGS = @LIBRX@
+avengl_LDFLAGS = @WX_LDFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
  
