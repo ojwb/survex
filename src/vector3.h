@@ -68,8 +68,10 @@ public:
     Vector3& operator/=(const double);
     Vector3& operator=(const Vector3&);
 
-    friend Vector3 operator*(const Vector3&, const double);
     friend Vector3 operator*(const double, const Vector3&);
+    friend Vector3 operator*(const Vector3& v, const double f) {
+	return f * v;
+    }
     friend Vector3 operator*(const Vector3&, const Vector3&); // cross product
     friend Vector3 operator+(const Vector3&, const Vector3&);
     friend Vector3 operator-(const Vector3&, const Vector3&);

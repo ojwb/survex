@@ -94,16 +94,6 @@ Vector3& Vector3::operator/=(const double f)
     return *this;
 }
 
-Vector3 operator*(const Vector3& v, const double f)
-{
-    Vector3 o;
-    o.x = v.x * f;
-    o.y = v.y * f;
-    o.z = v.z * f;
-
-    return o;
-}
-
 Vector3 operator*(const double f, const Vector3& v)
 {
     Vector3 o;
