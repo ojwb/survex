@@ -113,7 +113,8 @@ Date: Sat, 03 Mar 2001
 From: Olly
 
 Document *require, *export, *flags, plumbed diving legs,
-easting/northing/altitude vs dx/dy/dz
+easting/northing/altitude vs dx/dy/dz (waiting until changes to docs come
+back to avoid trying to patch a modified version...)
 
 Date: Sat, 03 Mar 2001
 From: Olly
