@@ -258,6 +258,7 @@ default_charset(void)
 
    return CHARSET_RISCOS31;
 #elif (OS==MSDOS)
+#ifdef __DJGPP__
    __dpmi_regs r;
    r.x.ax = 0x6501;
    r.x.bx = 0xffff;
@@ -270,6 +271,21 @@ default_charset(void)
    if (__dpmi_int(0x21, &r) != -1 && !(r.x.flags & 1)) {
       unsigned short p;
       dosmemget(__tb + 5, 2, &p);
+#else
+   union REGS r;
+   struct SREGS s = { 0 };
+   
+   unsigned char buf[48];
+   r.x.ax = 0x6501;
+   r.x.bx = 0xffff;
+   r.x.dx = 0xffff;
+   s.es = FP_SEG(buf);
+   r.x.di = FP_OFF(buf);
+   r.x.cx = 48;
+   intdosx(&r, &r, &s);
+   if (!r.x.cflag) {
+      unsigned short p = buf[5] | (buf[6] << 8);
+#endif
       if (p == 437) return CHARSET_DOSCP437;
       if (p == 850) return CHARSET_DOSCP850;
    }
