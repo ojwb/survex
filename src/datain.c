@@ -32,9 +32,6 @@
 
 #define var(I) (pcs->Var[(I)])
 
-/* global defns */
-char *fnm_output_base = NULL;
-
 int ch;
 
 parse file = {
@@ -55,7 +52,7 @@ error_list_parent_files(void)
       while (p) {
 	 fprintf(STDERR, "%s:%d", p->filename, p->line);
 	 p = p->parent;
-	 /* FIXME number of spaces here should probably vary with language (ick) */
+	 /* FIXME: number of spaces here should probably vary with language (ick) */
 	 if (p) fprintf(STDERR, ",\n                      ");
       }
       fprintf(STDERR, ":\n");
@@ -87,23 +84,17 @@ static void
 using_data_file(const char *fnm)
 {
    if (!fnm_output_base) {
-      char *sz;
-#ifdef OUTPUT_TO_CURRENT_DIRECTORY /* FIXME: turn on by default in 0.91 */
-      fnm_output_base = LfFromFnm(fnm);
-      /* FIXME: add option to specify output path? */
-#else
-      fnm_output_base = osstrdup(fnm);
-#endif
-      /* Trim off any leaf extension, but directories can have extensions too */
-      sz = strrchr(fnm_output_base, FNM_SEP_EXT);
-      if (sz) {
-	 char *szLev;
-	 szLev = strrchr(sz, FNM_SEP_LEV);
-#ifdef FNM_SEP_LEV2
-	 if (!szLev) szLev = strrchr(sz, FNM_SEP_LEV2);
-#endif
-	 if (!szLev) *sz = '\0'; /* trim off any leaf extension */
-      }
+      /* was: fnm_output_base = base_from_fnm(fnm); */
+      fnm_output_base = baseleaf_from_fnm(fnm);
+   } else if (fnm_output_base_is_dir) {
+      /* --output pointed to directory so use the leaf basename in that dir */
+      char *lf, *p;
+      lf = baseleaf_from_fnm(fnm);
+      p = use_path(fnm_output_base, lf);
+      osfree(lf);
+      osfree(fnm_output_base);
+      fnm_output_base = p;
+      fnm_output_base_is_dir = 0;
    }
 }
 
