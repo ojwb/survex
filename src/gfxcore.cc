@@ -452,9 +452,9 @@ void GfxCore::Draw2dIndicators()
     wxPoint pts1[3] = { p2, p1, pc };
     wxPoint pts2[3] = { p3, p1, pc };
     m_DrawDC.SetPen(m_Pens.lgrey);
-    m_DrawDC.SetBrush(m_Brushes.indicator2);
-    m_DrawDC.DrawPolygon(3, pts1);
     m_DrawDC.SetBrush(m_Brushes.indicator1);
+    m_DrawDC.DrawPolygon(3, pts1);
+    m_DrawDC.SetBrush(m_Brushes.indicator2);
     m_DrawDC.DrawPolygon(3, pts2);
 
     // Elevation arrow
