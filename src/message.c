@@ -306,6 +306,7 @@ default_charset(void)
 		  while (chset < p && *chset && !isdigit(*chset)) chset++;
 		  switch (atoi(chset)) {
 		   case 1: return CHARSET_ISO_8859_1;
+		   case 15: return CHARSET_ISO_8859_15;
 		   default: return CHARSET_USASCII;		   
 		  }
 	       }
@@ -367,16 +368,40 @@ add_unicode(int charset, unsigned char *p, int value)
 	 return 1;
       }
       break;
+   case CHARSET_ISO_8859_15:
+      switch (value) {
+       case 0xa4: case 0xa6: case 0xb0: case 0xc4:
+       case 0xd0: case 0xd4: case 0xd5: case 0xd6:
+	 goto donthave;
+       case 0x152: value = 0xd4; break; /* &OElig; */
+       case 0x153: value = 0xd5; break; /* &oelig; */
+#if 0
+       case 0x0: value = 0xa4; break; /* euro */
+       case 0x0: value = 0xa6; break; /* Scaron */
+       case 0x0: value = 0xb0; break; /* scaron */
+       case 0x0: value = 0xc4; break; /* Zcaron */
+       case 0x0: value = 0xd0; break; /* zcaron */
+       case 0x0: value = 0xd6; break; /* Ydiersis */
+#endif
+      }
+      if (value < 0x100) {
+	 *p = value;
+	 return 1;
+      }
+      donthave:
+      break;
 #if (OS==RISCOS)
    case CHARSET_RISCOS31:
       /* RISC OS 3.1 (and later) extensions to ISO-8859-1 */
       switch (value) {
        case 0x152: value = 0x9a; break; /* &OElig; */
        case 0x153: value = 0x9b; break; /* &oelig; */
+#if 0
        case 0x174: value = 0x81; break; /* &Wcirc; */
        case 0x175: value = 0x82; break; /* &wcirc; */
        case 0x176: value = 0x85; break; /* &Ycirc; */
        case 0x177: value = 0x86; break; /* &ycirc; */
+#endif
       }
       if (value < 0x100) {
 	 *p = value;
@@ -386,10 +411,12 @@ add_unicode(int charset, unsigned char *p, int value)
 #elif (OS==WIN32)
    case CHARSET_WINCP1252:
       /* MS Windows extensions to ISO-8859-1 */
-      /* there are a few other obscure ones we don't currently need */
       switch (value) {
        case 0x152: value = 0x8c; break; /* &OElig; */
        case 0x153: value = 0x9c; break; /* &oelig; */
+#if 0
+      /* there are a few other obscure ones we don't currently need */
+#endif
       }
       if (value < 0x100) {
 	 *p = value;

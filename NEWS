@@ -13,6 +13,8 @@
 * Transliterate accented characters that can't be represented in the
   current character set.
 
+* Added support for Latin9 character set.
+
 * aven: added optional grid.
 
 * aven: reporting errors in a message box wasn't working (wxWindows

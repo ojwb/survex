@@ -38,13 +38,14 @@ extern "C" {
 # include "Mnemosyne.mnemosyn.h"
 #endif
 
-#define CHARSET_BAD       -1
-#define CHARSET_USASCII    0
-#define CHARSET_ISO_8859_1 1
-#define CHARSET_DOSCP850   2
-#define CHARSET_RISCOS31   3
-#define CHARSET_UTF8	   4
-#define CHARSET_WINCP1252  5
+#define CHARSET_BAD        -1
+#define CHARSET_USASCII     0
+#define CHARSET_ISO_8859_1  1
+#define CHARSET_DOSCP850    2
+#define CHARSET_RISCOS31    3
+#define CHARSET_UTF8	    4
+#define CHARSET_WINCP1252   5
+#define CHARSET_ISO_8859_15 6
 
 extern int msg_warnings; /* keep track of how many warnings we've given */
 extern int msg_errors;   /* and how many (non-fatal) errors */
