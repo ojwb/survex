@@ -182,6 +182,7 @@ it:  8 Questo campo non pu&oacute; essere omesso
 #it:  9 Questo campo &eacute; numerico
 en:  9 Expecting numeric field, found `%s'
 de:  9 Zahl erwartet, `%s' gelesen
+pt-br:  9 Esperando valor num&eacute;rico, encontrado `%s'
 # 10 c.f. 31, 32, 131
 en: 10 Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'
 fr: 10 Vous avez &eacute;crit `%s'; on attendait `PRESERVE', `TOUPPER', ou `TOLOWER'
@@ -229,6 +230,8 @@ it: 13 Stazione `%s' uguagliata a se stessa
 en: 14 Compass reading may not be omitted except on plumbed legs
 de-de,de-ch: 14 Kompassablesung darf nur bei Lotstrecken weggelassen werden
 de:     14 Kompa&szlig;ablesung darf nur bei Lotstrecken weggelassen werden
+pt-br: 14 Azimute n&atilde;o pode ser omitido exceto em visadas em prumo
+#
 en: 15 End of line not blank
 fr: 15 Fin de ligne non vide
 de: 15 Ende der Zeile ist nicht leer
@@ -608,8 +611,9 @@ de:     57 *EXPORT mu&szlig; unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
 pt: 57 *EXPORT deve estar logo ap&oacute;s um `*BEGIN <TOPO>'
 it: 57 *EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'
 # cf 162
-en: 58 "Plot what (n = station names, c = crosses, l = legs, s = surface) (default &quot;%s&quot;)&#10;: "
-de: 58 "Was plotten? (n = Stationsnamen, c = Kreuze, l = Strecken, s = Oberfl&auml;che) (Default &quot;%s&quot;)&#10;: "
+en: 58 "Plot what (n=station names, c=crosses, l=legs, s=surface) (default &quot;%s&quot;)&#10;: "
+de: 58 "Was plotten? (n=Stationsnamen, c=Kreuze, l=Strecken, s=Oberfl&auml;che) (Default &quot;%s&quot;)&#10;: "
+pt-br:58 "O qu&ecirc; plotar? (n=nomes de bases, c=marcas de bases, l=visadas, s=superf&iacute;cie) (default &quot;%s&quot;)&#10;:"
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
 fr: 59 Lecture de compas suspecte
@@ -1398,13 +1402,13 @@ pt:156 Saindo.
 ca:156 Sortint.
 es:156 Saliendo.
 it:156 Fine.
-# TRANSLATE pt-br es it
+# TRANSLATE es it
 en:157 Try `%s --help' for more information.&#10;
 fr:157 Pour en savoir davantage, faites: `%s --help'&#10;
 de:157 Versuchen Sie `%s --help' f&uuml;r weitere Informationen.&#10;
 de:157 Versuchen Sie `%s --help' f&uuml;r weitere Hinweise.&#10;
 pt:157 Tenta `%s --help' para mais informa&ccedil;&atilde;o.&#10;
-pt-br:157 Tente `%s --help' para mais informa&ccedil;&otilde;es.&#10;
+pt-br:157 Tente `%s --help' para maiores informa&ccedil;&otilde;es.&#10;
 es:157 Pruebe `%s --help' para m&aacute;s informaci&oacute;n.&#10;
 it:157 Usare `%s --help' per ulteriori informazioni.&#10;
 #
@@ -1720,9 +1724,9 @@ it:197 " a %4.2fm)"
 # Old versions
 #en:198 Expecting date
 #fr:198 On attendait une date
-#pt:198 Esperando data
 en:198 Expecting date, found `%s'
 de:198 Datum erwartet, `%s' gelesen
+pt-br: 198 Esperando data, encontrado `%s'
 #
 en:199 Only load the sub-survey with prefix
 fr:199 Ne charge que la partie de topo avec le prefixe
@@ -1787,7 +1791,7 @@ fr:206 S&eacute;lectionner un fichier 3d &agrave; visualiser
 de:206 3D-Datei zur Ansicht w&auml;hlen
 pt-br:206 Selecione um arquivo 3d para ser visualizado
 #
-# TRANSLATE pt es it
+# TRANSLATE es it
 en:207 Survex 3d files
 fr:207 Fichiers de donn&eacute;es Survex 3d
 de:207 Survex 3D-Dateien
@@ -1871,14 +1875,17 @@ it:215 @Aiuto
 en:216 Standard deviation must be positive
 de:216 Standardabweichung mu&szlig; positiv sein
 de-de,de-ch:216 Standardabweichung muss positiv sein
+pt-br:216 Desvio-padr&atilde;o deve ser positivo
 #
 en:217 Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')
 de:217 Ma&szlig;stab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
 # (no de-de entry here!)
 de-ch:217 Massstab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
+pt-br:217 Escala com problemas: `%s' (esperando algo como `1:500', `500' ou `0.002')
 #
 en:218 Bad list of pages to print `%s'
 de:218 Liste zu druckender Seiten `%s' ist fehlerhaft
+pt-br:218 Lista de p&aacute;ginas a imprimir com problemas: `%s'
 #XXX219
 #
 # back to aven...
@@ -1899,12 +1906,15 @@ pt:221 @Sair
 ca:221 Ei@xir
 es:221 @Salir
 it:221 @Esci
-#
+# error from "*data normal newline from to tape compass clino"
 en:222 NEWLINE can't be the first reading
-#
+de:222 NEWLINE kann nicht der erste Eintrag sein
+# error from "*data normal from to tape compass clino newline"
 en:223 NEWLINE can't be the last reading
-#
+de:223 NEWLINE kann nicht der letzte Eintrag sein
+# error from "*data normal station tape compass clino"
 en:224 Interleaved readings, but no NEWLINE
+de:224 Abwechselnde Eintr&auml;ge, aber kein NEWLINE
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
@@ -1930,7 +1940,8 @@ pt-br:233 @Diminuir Velocidade
 en:234 @Reverse Direction
 fr:234 Direction @Inverse
 de:234 @Andere Richtung
-pt-br:234 @Reverter Sentido
+#pt-br:234 @Reverter Sentido
+pt-br:234 @Inverter Sentido
 #
 en:235 Step Once @Anticlockwise
 fr:235 Pas &agrave; pas sens in@verse des aiguilles d'une montre
@@ -2347,15 +2358,19 @@ pt:330 Superf&iacute;cie S&oacute;@lida
 # number of stations found matching search
 en:331 %d found
 de:331 %d gefunden
+pt-br:331 %d bases encontradas
 # "Find stations" button label
 en:332 Find
 de:332 Suchen
+pt-br:332 Procurar
 # "Hide stations" button label
 en:333 Hide
 de:333 Unterdr&uuml;cken
+pt-br:333 Esconder
 # checkbox for regular expression search
 en:334 Regular expression
 de:334 Regul&auml;rer Ausdruck
+pt-br:334 Express&atilde;o regular
 #
 en:335 Altitude
 fr:335 Altitude
@@ -2364,26 +2379,30 @@ pt:335 Altura
 ca:335 Altitut 
 es:335 Altitud 
 it:335 Quota
-#
+# error if you try to drag multiple files to the aven window
 en:336 You may only view one 3d file at a time.
+de:336 Es kann nur eine 3D-Datei zugleich angezeigt werden.
 #
 en:337 Side P@anel
+de:337 Seitliches @Kontrollfeld
+# show coordinates (N = North or Northing, E = East or Easting)
 # TRANSLATE de (which is better translation?)
-en:338 "  %d N, %d E"
-fr:338 "  %d N, %d E"
-#de:338 "  %d N, %d O" ?
-de:338 "  %d R, %d H"
-pt:338 "  %d N, %d L"
-ca:338 "  %d N, %d E"
-es:338 "  %d N, %d E"
-it:338 "  %d N, %d E"
+en:338 "  %d E, %d N"
+fr:338 "  %d E, %d N"
+#de:338 "  %d O, %d N" ?
+de:338 "  %d H, %d R"
+pt:338 "  %d L, %d N"
+ca:338 "  %d E, %d N"
+es:338 "  %d E, %d N"
+it:338 "  %d E, %d N"
 # Used in Aven:
 #  From <stationname>
 #  H: 123m V: 234m
 #  Dist: 456m  Brg: 200
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr pt ca es it (check translation adapted from elsewhere)
 en:339 From
 fr:339 De
+# FIXME: "Von %s aus" better
 de:339 Von
 pt:339 De
 ca:339 Des de
