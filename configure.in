@@ -173,7 +173,7 @@ AM_CONDITIONAL(WIN32, [test yes = "$mswindows"])
 if test -n "$AVEN"; then
   if test -n "$WXCONFIG" ; then
     dnl WXCONFIG specified - sanity check the value
-    if (exec >&5 2>&5 ; $WXCONFIG --libs --cflags --cxxflags; exit $?) then
+    if (exec >&5 2>&5;$WXCONFIG --libs --cflags --cxxflags;exit $?) then
       :
     else
       AC_MSG_ERROR([\`$WXCONFIG --libs --cflags --cxxflags' doesn't work, bailing out])
@@ -250,8 +250,7 @@ AC_TRY_COMPILE(,[switch (0) { case (sizeof(int)==4): case 0: break; }],
 INT32_T=int,
 AC_TRY_COMPILE(,[switch (0) { case (sizeof(long)==4): case 0: break; }],
 INT32_T=long,
-AC_MSG_RESULT(not found)
-exit 1
+AC_MSG_ERROR(not found)
 )
 )
 AC_MSG_RESULT($INT32_T)
@@ -263,8 +262,7 @@ AC_TRY_COMPILE(,[switch (0) { case (sizeof(short)==2): case 0: break; }],
 INT16_T=short,
 AC_TRY_COMPILE(,[switch (0) { case (sizeof(int)==2): case 0: break; }],
 INT16_T=int,
-AC_MSG_RESULT(not found)
-exit 1
+AC_MSG_ERROR(not found)
 )
 )
 AC_MSG_RESULT($INT16_T)
