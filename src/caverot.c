@@ -537,7 +537,7 @@ process_key(void) /* and mouse! */
    }
 
    if (mouse_buttons >= 0) {
-      static fOldMBut = fFalse;
+      static bool fOldMBut = fFalse;
       int buttons = 0; /* zero in case read_mouse() doesn't set */
       int dx = 0, dy = 0;
       cvrotgfx_read_mouse(&dx, &dy, &buttons);
