@@ -129,7 +129,8 @@ foreach $lang (@langs) {
 	    }
 	 }
       }
-      if ($raw{$n} =~ /^#\s*TRANSLATE\b[-\sa-z]*\b$lang\b/m) {
+      if (defined($raw{$n})
+          && $raw{$n} =~ /^\s*#\s*TRANSLATE\b[- \ta-z]*\b$lang\b/m) {
 	 if ($warned) {
 	    print STDERR "Warning: message $n missing and also marked for iretranslation for language $lang\n";
 	 } else {
