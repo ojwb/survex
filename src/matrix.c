@@ -3,7 +3,7 @@
  * Copyright (C) 1993-1999 Olly Betts
  */
 
-/* #define SOR */
+/*#define SOR 1*/
 
 #if 0
 # define DEBUG_INVALID 1
@@ -77,6 +77,10 @@ solve_matrix(node *list)
    /* stn_tab = osrealloc(stn_tab, n_stn_tab * ossizeof(pos*)); */
    
    build_matrix(list, n_stn_tab, stn_tab);
+   FOR_EACH_STN(stn, list) {
+      print_prefix(stn->name);
+      printf("\n\t\t(%6.3f, %6.3f, %6.3f)\n", POS(stn, 0), POS(stn, 1), POS(stn, 2));
+   }
 }
 
 #ifdef NO_COVARIANCES
@@ -90,15 +94,7 @@ build_matrix(node *list, long n, pos **stn_tab)
 {
    real FAR *M;
    real *B;
-   node *stn;
-   int row, col;
    int dim;
-#ifdef NO_COVARIANCES
-   real e;
-#else
-   var e;
-   d a;
-#endif
 
    if (n == 0) {
       out_puts(msg(/*Network solved by reduction - no simultaneous equations to solve.*/74));
@@ -122,11 +118,15 @@ build_matrix(node *list, long n, pos **stn_tab)
 #endif
    for ( ; dim >= 0; dim--) {
       char buf[256];
+      node *stn;
+      int row;
+
       sprintf(buf, msg(/*Solving to find %c coordinates*/76), (char)('x'+dim));
       out_current_action(buf);
       /* Initialise M and B to zero */
       /* FIXME: might be best to zero "linearly" */
       for (row = (int)(n * FACTOR - 1); row >= 0; row--) {
+	 int col;
 	 B[row] = (real)0.0;
 	 for (col = row; col >= 0; col--) M(row,col) = (real)0.0;
       }
@@ -134,6 +134,12 @@ build_matrix(node *list, long n, pos **stn_tab)
       /* Construct matrix - Go thru' stn list & add all forward legs to M */
       /* (so each leg goes on exactly once) */
       FOR_EACH_STN(stn, list) {
+#ifdef NO_COVARIANCES
+	 real e;
+#else
+	 var e;
+	 d a;
+#endif
 #if DEBUG_MATRIX_BUILD
 	 int dirn;
 
@@ -254,7 +260,7 @@ build_matrix(node *list, long n, pos **stn_tab)
 			      M(f * FACTOR + i, f * FACTOR + j) += e[i][j];
 			      M(t * FACTOR + i, t * FACTOR + j) += e[i][j];
 			   }
-			   for (j = 0; j <= i; j++) {
+			   for (j = 0; j < 3; j++) {
 			      if (f < t) 
 				 M(t * FACTOR + i, f * FACTOR + j) -= e[i][j];
 			      else 
