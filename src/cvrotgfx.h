@@ -68,8 +68,8 @@ extern BITMAP *BitMap, *BitMapDraw;
 # ifdef NO_TEXT
 #  define outtextxy(X, Y, S) NOP
 # else
-#  define outtextxy(X, Y, S) textout(BitMapDraw, font, (char *)(S), (X), (Y),
-                                     _cvrotgfx_textcol)
+#  define outtextxy(X, Y, S) \
+ textout(BitMapDraw, font, (char *)(S), (X), (Y), _cvrotgfx_textcol)
 # endif
 # define set_tcolour(X) _cvrotgfx_textcol = (X)
 # define set_gcolour(X) _cvrotgfx_drawcol = (X)
@@ -144,8 +144,8 @@ void cvrotgfx_lineto(int X, int Y);
 #  ifdef NO_TEXT
 #   define outtextxy(X, Y, S) NOP
 #  else
-#   define outtextxy(X, Y, S) textout(BitMapDraw, font, (char *)(S), (X), (Y),
-                                      _cvrotgfx_textcol)
+#  define outtextxy(X, Y, S) \
+ textout(BitMapDraw, font, (char *)(S), (X), (Y), _cvrotgfx_textcol)
 #  endif
 #  define set_tcolour(X) _cvrotgfx_textcol = (X)
 #  define set_gcolour(X) _cvrotgfx_drawcol = (X)
@@ -197,8 +197,8 @@ void cvrotgfx_lineto(int X, int Y);
 # ifdef NO_TEXT
 #  define outtextxy(X, Y, S) NOP
 # else
-#  define outtextxy(X, Y, S) textout(BitMapDraw, font, (char *)(S), (X), (Y),
-                                     _cvrotgfx_textcol)
+#  define outtextxy(X, Y, S) \
+ textout(BitMapDraw, font, (char *)(S), (X), (Y), _cvrotgfx_textcol)
 # endif
 # define set_tcolour(X) _cvrotgfx_textcol = (X)
 # define set_gcolour(X) _cvrotgfx_drawcol = (X)
