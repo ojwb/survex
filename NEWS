@@ -7,6 +7,8 @@
 
 * Minor documentation updates.
 
+* aven: added Ctrl+Q as shortcut for File->Exit.
+
 Changes in 1.0.25:
 
 * (MacOS X version): hopefully fixed building of aven.

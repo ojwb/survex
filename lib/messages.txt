@@ -2148,14 +2148,7 @@ it:208 Tutti i file
 sk:208 V&scaron;etky s&uacute;bory
 #
 # in the about box (summarising the purpose of aven)
-en:209 Visualisation of Survex 3D files
-fr:209 Visualisation de fichiers Survex 3D
-de:209 Visualisierung von Survex 3D-Dateien
-pt-br:209 Visualiza&ccedil;&atilde;o de arquivos 3d do Survex
-ca:209 Visualitzaci&oacute; de fitxers Survex 3D
-es:209 Visualizaci&oacute;n de archivos Survex 3D
-it:209 Visualizzazione di file survex 3D
-sk:209 Vizualiz&aacute;cia 3D s&uacute;borov Survex
+en:209 Survey visualisation tool
 #
 # Aven menu titles.  An '@' goes before the letter of any accelerator key.
 # The accelerators must be different within this group
@@ -2240,14 +2233,14 @@ es:220 @Abrir...##Ctrl+O
 it:220 @Apri...##Ctrl+O
 sk:220 @Otvori&tcaron;...##Ctrl+O
 #
-en:221 E@xit
-fr:221 @Quitter
-de:221 @Beenden
-pt:221 @Sair
-ca:221 @Sortir
-es:221 @Salir
-it:221 @Esci
-sk:221 E@xit
+en:221 E@xit##Ctrl+Q
+fr:221 @Quitter##Ctrl+Q
+de:221 @Beenden##Ctrl+Q
+pt:221 @Sair##Ctrl+Q
+ca:221 @Sortir##Ctrl+Q
+es:221 @Salir##Ctrl+Q
+it:221 @Esci##Ctrl+Q
+sk:221 E@xit##Ctrl+Q
 # back to cavern
 # error from "*data normal newline from to tape compass clino"
 en:222 NEWLINE can't be the first reading
@@ -3113,7 +3106,7 @@ pt:341 "  Dist %d%s, Azim %03d%s"
 ca:341 "  Dist %d%s, Azim %03d%s" 
 es:341 "  Dist %d%s, Azim %03d%s"
 it:341 "  Dist %d%s, Azm. %03d%s"
-sk:341 "  Vzd %d%s,  Azim %03d%s"
+sk:341 "  Vzd %d%s, Azim %03d%s"
 # tickable menu item in View menu
 en:342 @Metric
 fr:342 @M&eacute;trique
@@ -3181,8 +3174,6 @@ ca:502 Esborrat: %s
 es:502 Borrado: %s
 it:502 Rimosso: %s
 sk:502 Zru&scaron;en&eacute;: %s
-#
-#en:504 Passage @Tubes##Ctrl+T
 #
 # "don't extract" messages - these are compiled into the programs
 #
