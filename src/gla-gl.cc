@@ -23,6 +23,7 @@
 #include "gla.h"
 #include <GL/gl.h>
 
+#include <iostream>
 #ifdef GLA_DEBUG
 #define CHECK_GL_ERROR(f, m) do { \
                                  GLenum err = glGetError(); \
@@ -100,9 +101,10 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     // Constructor.
 
     m_Rotation.setFromEulerAngles(0.0, 0.0, 0.0);
-    m_Scale = 0.0;
+    m_Scale = 1.0;
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
     m_SphereCreated = false;
+    SetVolumeCoordinates(-1, 1, -1, 1, -1, 1);
 }
 
 GLACanvas::~GLACanvas()
@@ -180,8 +182,8 @@ void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
 void GLACanvas::SetVolumeCoordinates(glaCoord left, glaCoord right, glaCoord front, glaCoord back,
                                      glaCoord bottom, glaCoord top)
 {
-    // Set the size of the data drawing volume by giving the coordinates relative to the origin
-    // of the faces of the volume.
+    // Set the size of the data drawing volume by giving the coordinates
+    // relative to the origin of the faces of the volume.
 
     m_Volume.left = left;
     m_Volume.right = right;
@@ -293,9 +295,13 @@ void GLACanvas::SetQuaternion(Quaternion& q)
 
 glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
 {
-    // Create a new list to hold a sequence of drawing operations, and compile it.
+    // Create a new list to hold a sequence of drawing operations, and compile
+    // it.
+
+    SetCurrent();
 
     glaList l = glGenLists(1);
+    assert(l != 0);
     CHECK_GL_ERROR("CreateList", "glGenLists");
     
     glNewList(l, GL_COMPILE);
@@ -303,7 +309,7 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
     (obj->*generator)();
     glEndList();
     CHECK_GL_ERROR("CreateList", "glEndList");
-    
+
     return l;
 }
 
@@ -687,4 +693,3 @@ Double GLACanvas::SurveyUnitsAcrossViewport()
 
     return (m_Volume.right - m_Volume.left) / m_Scale;
 }
-
