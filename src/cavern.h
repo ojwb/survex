@@ -198,11 +198,12 @@ extern prefix *root;
 extern node *stnlist;
 extern long optimize;
 
+extern char *fnm_output_base;
+
 extern char *survey_title;
 extern int survey_title_len;
 
 extern bool fExplicitTitle;
-extern char *pthOutput, *fnmInput;
 extern long cLegs, cStns, cComponents;
 extern FILE *fhErrStat;
 /* extern FILE *fhPosList; */
