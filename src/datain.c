@@ -214,9 +214,6 @@ data_file(const char *pth, const char *fnm)
 #ifndef NO_PERCENTAGE
    volatile long int filelen;
 #endif
-#ifdef NEW3DFORMAT
-   twig *temp;
-#endif
 
    {
       char *filename;
@@ -271,11 +268,10 @@ data_file(const char *pth, const char *fnm)
       skipblanks();
 
       if (isData(ch)) {
-	 f_export_ok = fFalse;
-
 #ifdef NEW3DFORMAT
-	 temp = limb;
+	 twig *temp = limb;
 #endif
+	 f_export_ok = fFalse;
 
 	 /* style function returns 0 => error, so start next line */
 	 if (!(pcs->Style)()) {
@@ -403,7 +399,7 @@ data_normal(void)
 {
    /* Horrible hack this, rewrite when I get the chance */
    /* It's getting better incrementally */
-   prefix *fr_name, *to_name;
+   prefix *fr_name = NULL, *to_name = NULL;
    node *fr, *to;
    real dx, dy, dz;
    real vx, vy, vz;
@@ -413,11 +409,7 @@ data_normal(void)
 
    datum first_stn = End;
 
-#ifdef NEW3DFORMAT
-   twig *twiglet;
-#endif
-
-   real tape, comp, clin, frcount, tocount;
+   real tape = 0, comp = 0, clin, frcount = 0, tocount = 0;
    bool fNoComp, fNoClino, fTopofil = fFalse, fPlumbed = fFalse;
 
    datum *ordering;
@@ -478,21 +470,6 @@ data_normal(void)
    }
 
    dataread:
-
-#ifdef NEW3DFORMAT
-   /* new twiglet and insert into twig tree */
-   if (fUseNewFormat) {
-      twiglet = osnew(twig);
-      twiglet->from = fr_name;
-      twiglet->to = to_name;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-   }
-#endif
 
 #if 0
    print_prefix(fr_name);
@@ -673,8 +650,19 @@ printf("clin %.2f\n",clin);
 	  );
 
 #ifdef NEW3DFORMAT
-   /* record pre-fettling deltas */
    if (fUseNewFormat) {
+      /* new twiglet and insert into twig tree */
+      twig *twiglet = osnew(twig);
+      twiglet->from = fr_name;
+      twiglet->to = to_name;
+      twiglet->down = twiglet->right = NULL;
+      twiglet->source = twiglet->drawings
+	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
+      twiglet->up = limb->up;
+      limb->right = twiglet;
+      limb = twiglet;
+
+      /* record pre-fettling deltas */
       twiglet->delta[0] = dx;
       twiglet->delta[1] = dy;
       twiglet->delta[2] = dz;
@@ -687,19 +675,15 @@ printf("clin %.2f\n",clin);
 extern int
 data_diving(void)
 {
-   prefix *fr_name, *to_name;
+   prefix *fr_name = NULL, *to_name = NULL;
    node *fr, *to;
    real dx, dy, dz;
    real vx, vy, vz;
 
-   real tape, comp;
-   real fr_depth, to_depth;
+   real tape = 0, comp = 0;
+   real fr_depth = 0, to_depth = 0;
 
    datum first_stn = End;
-
-#ifdef NEW3DFORMAT
-   twig *twiglet;
-#endif
 
    datum *ordering;
 
@@ -739,21 +723,6 @@ data_diving(void)
    }
 
    dataread:
-
-#ifdef NEW3DFORMAT
-   /*new twiglet and insert into twig tree*/
-   if (fUseNewFormat) {
-      twiglet = osnew(twig);
-      twiglet->from = fr_name;
-      twiglet->to = to_name;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-   }
-#endif
 
    if (tape < (real)0.0) {
       compile_warning(/*Negative tape reading*/60);
@@ -842,8 +811,19 @@ data_diving(void)
    addleg(fr, to, dx, dy, dz, vx, vy, vz, 0, 0, 0); /* FIXME: need covariances */
 #endif
 #ifdef NEW3DFORMAT
-   /* record pre-fettling deltas */
    if (fUseNewFormat) {
+      /*new twiglet and insert into twig tree*/
+      twig *twiglet = osnew(twig);
+      twiglet->from = fr_name;
+      twiglet->to = to_name;
+      twiglet->down = twiglet->right = NULL;
+      twiglet->source = twiglet->drawings
+	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
+      twiglet->up = limb->up;
+      limb->right = twiglet;
+      limb = twiglet;
+
+      /* record pre-fettling deltas */
       twiglet->delta[0] = dx;
       twiglet->delta[1] = dy;
       twiglet->delta[2] = dz;
@@ -856,15 +836,11 @@ data_diving(void)
 extern int
 data_cartesian(void)
 {
-   prefix *fr_name, *to_name;
+   prefix *fr_name = NULL, *to_name = NULL;
    node *fr, *to;
-   real dx, dy, dz;
+   real dx = 0, dy = 0, dz = 0;
 
    datum first_stn = End;
-
-#ifdef NEW3DFORMAT
-   twig *twiglet;
-#endif
 
    datum *ordering;
 
@@ -895,21 +871,6 @@ data_cartesian(void)
 
    dataread:
 
-#ifdef NEW3DFORMAT
-   /* new twiglet and insert into twig tree */
-   if (fUseNewFormat) {
-      twiglet = osnew(twig);
-      twiglet->from = fr_name;
-      twiglet->to = to_name;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-   }
-#endif
-
    dx = (dx * pcs->units[Q_DX] - pcs->z[Q_DX]) * pcs->sc[Q_DX];
    dy = (dy * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
    dz = (dz * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
@@ -928,8 +889,19 @@ data_cartesian(void)
 	  );
 
 #ifdef NEW3DFORMAT
-   /* record pre-fettling deltas */
    if (fUseNewFormat) {
+      /* new twiglet and insert into twig tree */
+      twig *twiglet = osnew(twig);
+      twiglet->from = fr_name;
+      twiglet->to = to_name;
+      twiglet->down = twiglet->right = NULL;
+      twiglet->source = twiglet->drawings
+	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
+      twiglet->up = limb->up;
+      limb->right = twiglet;
+      limb = twiglet;
+
+      /* record pre-fettling deltas */
       twiglet->delta[0] = dx;
       twiglet->delta[1] = dy;
       twiglet->delta[2] = dz;
@@ -942,13 +914,8 @@ data_cartesian(void)
 extern int
 data_nosurvey(void)
 {
-   prefix *fr_name, *to_name;
-   node *fr, *to;
+   prefix *fr_name = NULL, *to_name = NULL;
    nosurveylink *link;
-
-#ifdef NEW3DFORMAT
-   twig *twiglet;
-#endif
 
    datum *ordering;
 
@@ -957,11 +924,9 @@ data_nosurvey(void)
       switch (*ordering) {
        case Fr:
 	  fr_name = read_prefix(fFalse);
-	  fr = StnFromPfx(fr_name);
 	  break;
        case To:
 	  to_name = read_prefix(fFalse);
-	  to = StnFromPfx(to_name);
 	  break;
        case Ignore:
 	 skipword(); break;
@@ -977,9 +942,9 @@ data_nosurvey(void)
    dataread:
 
 #ifdef NEW3DFORMAT
-   /* new twiglet and insert into twig tree */
    if (fUseNewFormat) {
-      twiglet = osnew(twig);
+      /* new twiglet and insert into twig tree */
+      twig *twiglet = osnew(twig);
       twiglet->from = fr_name;
       twiglet->to = to_name;
       twiglet->down = twiglet->right = NULL;
@@ -995,8 +960,8 @@ data_nosurvey(void)
 
    /* add to linked list which is dealt with after network is solved */
    link = osnew(nosurveylink);
-   link->fr = fr;
-   link->to = to;
+   link->fr = StnFromPfx(fr_name);
+   link->to = StnFromPfx(to_name);
    link->next = nosurveyhead;
    nosurveyhead = link;
    return 1;

@@ -157,7 +157,7 @@ print_node_stats(FILE *fh)
 	 sprintf(buf, "%4d %d-%s.", cOrder[c], c,
 		 msg(cOrder[c] == 1 ? /*node*/176 : /*nodes*/177));
 	 if (!fQuiet) out_puts(buf);
-	 if (!fSuppress) fputsnl(buf, fh);
+	 if (fh) fputsnl(buf, fh);
       }
    }
 #endif

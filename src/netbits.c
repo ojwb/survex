@@ -38,7 +38,7 @@
 node *stn_iter = NULL; /* for FOR_EACH_STN */
 
 #ifdef NO_COVARIANCES
-static void check_var(const var *v) {
+static void check_var(/*const*/ var *v) {
    int bad = 0;
    int i;
 
@@ -52,11 +52,13 @@ static void check_var(const var *v) {
 }
 #else
 #define V(A,B) ((*v)[A][B])
-static void check_var(const var *v) {
+static void check_var(/*const*/ var *v) {
    int bad = 0;
    int ok = 0;
    int i, j;
+#if DEBUG_INVALID
    real det = 0.0;
+#endif
 
    for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) {
@@ -94,7 +96,7 @@ static void check_var(const var *v) {
 }
 #endif
 
-static void check_d(const d *d) {
+static void check_d(/*const*/ d *d) {
    int bad = 0;
    int i;
 
@@ -199,13 +201,13 @@ extern linkfor *
 addto_link(linkfor *leg, const linkfor *leg2)
 {
    if (data_here(leg2)) {
-      adddd(&leg->d, &leg->d, &leg2->d);
+      adddd(&leg->d, &leg->d, &((linkfor *)leg2)->d);
    } else {
       leg2 = reverse_leg(leg2);
       ASSERT(data_here(leg2));
-      subdd(&leg->d, &leg->d, &leg2->d);
+      subdd(&leg->d, &leg->d, &((linkfor *)leg2)->d);
    }
-   addvv(&leg->v, &leg->v, &leg2->v);
+   addvv(&leg->v, &leg->v, &((linkfor *)leg2)->v);
    return leg;
 }
 
@@ -426,7 +428,7 @@ sprint_prefix(const prefix *ptr)
 
 /* r = ab ; r,a,b are variance matrices */
 void
-mulvv(var *r, const var *a, const var *b)
+mulvv(var *r, /*const*/ var *a, /*const*/ var *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -437,8 +439,8 @@ mulvv(var *r, const var *a, const var *b)
    int i, j, k;
    real tot;
 
-   ASSERT((const var *)r != a);
-   ASSERT((const var *)r != b);
+   ASSERT((/*const*/ var *)r != a);
+   ASSERT((/*const*/ var *)r != b);
 
    check_var(a);
    check_var(b);
@@ -458,7 +460,7 @@ mulvv(var *r, const var *a, const var *b)
 
 /* r = ab ; r,b delta vectors; a variance matrix */
 void
-mulvd(d *r, const var *a, const d *b)
+mulvd(d *r, /*const*/ var *a, /*const*/ d *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -469,7 +471,7 @@ mulvd(d *r, const var *a, const d *b)
    int i, k;
    real tot;
 
-   ASSERT((const d*)r != b);
+   ASSERT((/*const*/ d*)r != b);
    check_var(a);
    check_d(b);
 
@@ -484,7 +486,7 @@ mulvd(d *r, const var *a, const d *b)
 
 /* r = ca ; r,a delta vectors; c real scaling factor  */
 void
-muldc(d *r, const d *a, real c) {
+muldc(d *r, /*const*/ d *a, real c) {
    check_d(a);
    (*r)[0] = (*a)[0] * c;
    (*r)[1] = (*a)[1] * c;
@@ -494,7 +496,7 @@ muldc(d *r, const d *a, real c) {
 
 /* r = ca ; r,a variance matrices; c real scaling factor  */
 void
-mulvc(var *r, const var *a, real c)
+mulvc(var *r, /*const*/ var *a, real c)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -514,7 +516,7 @@ mulvc(var *r, const var *a, real c)
 
 /* r = a + b ; r,a,b delta vectors */
 void
-adddd(d *r, const d *a, const d *b)
+adddd(d *r, /*const*/ d *a, /*const*/ d *b)
 {
    check_d(a);
    check_d(b);
@@ -526,7 +528,7 @@ adddd(d *r, const d *a, const d *b)
 
 /* r = a - b ; r,a,b delta vectors */
 void
-subdd(d *r, const d *a, const d *b) {
+subdd(d *r, /*const*/ d *a, /*const*/ d *b) {
    check_d(a);
    check_d(b);
    (*r)[0] = (*a)[0] - (*b)[0];
@@ -537,7 +539,7 @@ subdd(d *r, const d *a, const d *b) {
 
 /* r = a + b ; r,a,b variance matrices */
 void
-addvv(var *r, const var *a, const var *b)
+addvv(var *r, /*const*/ var *a, /*const*/ var *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -558,7 +560,7 @@ addvv(var *r, const var *a, const var *b)
 
 /* r = a - b ; r,a,b variance matrices */
 void
-subvv(var *r, const var *a, const var *b)
+subvv(var *r, /*const*/ var *a, /*const*/ var *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -580,7 +582,7 @@ subvv(var *r, const var *a, const var *b)
 /* inv = v^-1 ; inv,v variance matrices */
 #ifdef NO_COVARIANCES
 extern int
-invert_var(var *inv, const var *v)
+invert_var(var *inv, /*const*/ var *v)
 {
    int i;
    for (i = 0; i < 3; i++) {
@@ -591,12 +593,12 @@ invert_var(var *inv, const var *v)
 }
 #else
 extern int
-invert_var(var *inv, const var *v)
+invert_var(var *inv, /*const*/ var *v)
 {
    int i, j;
    real det = 0;
 
-   ASSERT((const var *)inv != v);
+   ASSERT((/*const*/ var *)inv != v);
 
    check_var(v);
    for (i = 0; i < 3; i++) {
@@ -644,7 +646,7 @@ invert_var(var *inv, const var *v)
 
 /* r = (b^-1)a ; r,a delta vectors; b variance matrix */
 void
-divdv(d *r, const d *a, const var *b)
+divdv(d *r, /*const*/ d *a, /*const*/ var *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -663,7 +665,7 @@ divdv(d *r, const d *a, const var *b)
 
 /* f = a(b^-1) ; r,a,b variance matrices */
 void
-divvv(var *r, const var *a, const var *b)
+divvv(var *r, /*const*/ var *a, /*const*/ var *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -684,7 +686,7 @@ divvv(var *r, const var *a, const var *b)
 }
 
 bool
-fZero(const var *v) {
+fZero(/*const*/ var *v) {
 #ifdef NO_COVARIANCES
    /* variance-only version */
    return ((*v)[0] == 0.0 && (*v)[1] == 0.0 && (*v)[2] == 0.0);

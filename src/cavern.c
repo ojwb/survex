@@ -41,6 +41,8 @@
 #include "validate.h"
 
 #ifdef NEW3DFORMAT
+#include <unistd.h> /* for getcwd() */
+
 #include "new3dout.h"
 #ifndef MAXPATHLEN
 #define MAXPATHLEN 1024
@@ -316,13 +318,13 @@ do_range(FILE *fh, int d, int msg1, int msg2, int msg3)
    strcat(buf, sprint_prefix(pfxLo[d]));
    sprintf(buf + strlen(buf), msg(msg3), min[d]);
    if (!fMute) out_puts(buf);
-   if (!fSuppress) fputsnl(buf, fh);
+   if (fh) fputsnl(buf, fh);
 }
 
 static void
 do_stats(void)
 {
-   FILE *fh;
+   FILE *fh = NULL;
    long cLoops = cComponents + cLegs - cStns;
    char buf[1024];
 
@@ -344,7 +346,7 @@ do_stats(void)
 	      msg(/* joined by %ld legs.*/175), cLegs);
 
    if (!fMute) out_puts(buf);
-   if (!fSuppress) fputsnl(buf, fh);
+   if (fh) fputsnl(buf, fh);
 
    if (cLoops == 1)
       sprintf(buf, msg(/*There is 1 loop.*/138));
@@ -352,30 +354,30 @@ do_stats(void)
       sprintf(buf, msg(/*There are %ld loops.*/139), cLoops);
 
    if (!fMute) out_puts(buf);
-   if (!fSuppress) fputsnl(buf, fh);
+   if (fh) fputsnl(buf, fh);
 
    if (cComponents != 1) {
       sprintf(buf,
 	      msg(/*Survey has %ld connected components.*/178), cComponents);
       if (!fMute) out_puts(buf);
-      if (!fSuppress) fputsnl(buf, fh);
+      if (fh) fputsnl(buf, fh);
    }
 
    sprintf(buf,
 	   msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
 	   total, totadj);
    if (!fMute) out_puts(buf);
-   if (!fSuppress) fputsnl(buf, fh);
+   if (fh) fputsnl(buf, fh);
 
    sprintf(buf,
 	   msg(/*Total plan length of survey legs = %7.2fm*/133), totplan);
    if (!fMute) out_puts(buf);
-   if (!fSuppress) fputsnl(buf, fh);
+   if (fh) fputsnl(buf, fh);
 
    sprintf(buf, msg(/*Total vertical length of survey legs = %7.2fm*/134),
 	   totvert);
    if (!fMute) out_puts(buf);
-   if (!fSuppress) fputsnl(buf, fh);
+   if (fh) fputsnl(buf, fh);
 
    do_range(fh, 2, /*Vertical range = %4.2fm (from */135,
 	    /* at %4.2fm to */136, /* at %4.2fm)*/137);
@@ -390,5 +392,5 @@ do_stats(void)
     *  # fixed stations (list of?)
     */
 
-   if (!fSuppress) fclose(fh);
+   if (fh) fclose(fh);
 }

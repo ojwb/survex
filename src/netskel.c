@@ -385,13 +385,13 @@ replace_travs(void)
    stack *ptrOld;
    node *stn1, *stn2, *stn3;
    int i, j, k;
-   double eTot, lenTrav, lenTot;
-   double eTotTheo;
-   double vTot, vTotTheo, hTot, hTotTheo;
+   double eTot = 0, lenTrav = 0, lenTot;
+   double eTotTheo = 0;
+   double vTot = 0, vTotTheo = 0, hTot = 0, hTotTheo = 0;
    d e, sc;
    bool fEquate; /* used to indicate equates in output */
-   int cLegsTrav;
-   prefix *nmPrev;
+   int cLegsTrav = 0;
+   prefix *nmPrev = NULL;
    linkfor *leg;
    bool fArtic;
 
