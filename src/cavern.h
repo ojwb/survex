@@ -125,7 +125,7 @@ typedef enum {
 /* enumeration of field types */
 typedef enum {
    End = 0, Fr, To, Tape, Comp, Clino, BackComp, BackClino,
-   FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount, Dr,
+   FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount, Dr, Dir,
    Station, Depth, Count, Newline, IgnoreAllAndNewLine,
    Ignore, IgnoreAll
 } reading;
@@ -243,6 +243,7 @@ struct Twig {
 #define STYLE_TOPOFIL    1
 #define STYLE_DIVING     2
 #define STYLE_CARTESIAN  3
+#define STYLE_NOSURVEY   4
 #define STYLE_NOSURVEY   4
 
 /*

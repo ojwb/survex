@@ -174,7 +174,7 @@ pt:  9 Valor num&eacute;rico esperado
 ca:  9 S'espera un camp numeric
 es:  9 Se espera un campo num&eacute;rico
 it:  9 Questo campo &eacute; numerico
-# 10 c.f. 31, 32
+# 10 c.f. 31, 32, 131
 en: 10 Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'
 fr: 10 Vous avez &eacute;crit `%s'; on attendait `PRESERVE', `TOUPPER', ou `TOLOWER'
 # Gerhard: "`%s' gelesen" means "have read `%s'" - "gefunden", the literal
@@ -348,7 +348,7 @@ fr: 30 D&eacute;j&agrave; utilis&eacute; ici
 de: 30 Bereits hier verwendet
 pt: 30 Prefixo usado originalmente aqui
 it: 30 Gi&aacute; utilizzato qui
-# 31 c.f. 10, 32
+# 31 c.f. 10, 32, 131
 en: 31 Found `%s', expecting `PLUMBS'
 fr: 31 Vous avez &eacute;crit `%s'; on attendait `PLUMBS'
 de: 31 `%s' gelesen, `PLUMBS' erwartet
@@ -356,7 +356,7 @@ pt: 31 Encontrado `%s' quando `PLUMBS' era esperado
 ca: 31 Trobat `%s', esperant `PLUMBS'
 es: 31 Encontrado `%s', esperando `PLUMBS'
 it: 31 Trovato `%s', atteso `PLUMBS'
-# 32 c.f. 10, 31
+# 32 c.f. 10, 31, 131
 en: 32 Found `%s', expecting `ON' or `OFF'
 fr: 32 Vous avez &eacute;crit `%s'; on attendait `ON' ou `OFF'
 de: 32 `%s' gelesen, `ON' oder `OFF' erwartet
@@ -364,6 +364,7 @@ pt: 32 Encontrado `%s' quando `ON' ou `OFF' eram esperados
 ca: 32 Trobat `%s', esperant `ON' o `OFF'
 es: 32 Encontrado `%s', esperando `ON' o `OFF'
 it: 32 Trovato `%s', atteso `ON' o `OFF'
+#
 en: 33 Only one station in equate list
 fr: 33 Une seule station dans une liste d'&eacute;quivalences
 de-de,de-ch: 33 Nur ein Messpunkt im EQUATE - Befehl angegeben
@@ -1117,7 +1118,15 @@ pt:130 Calculando rede de visadas
 ca:130 Calculant la xarxa
 es:130 Calculando la red
 it:130 Sto calcolando la rete
-#XXX131
+# 131 c.f. 10, 31, 32
+en:131 Found `%c', expecting `F' or `B'
+fr:131 Vous avez &eacute;crit `%c'; on attendait `F' ou `B'
+de:131 `%c' gelesen, `F' oder `B' erwartet
+pt:131 Encontrado `%c' quando `F' ou `B' eram esperados
+ca:131 Trobat `%c', esperant `F' o `B'
+es:131 Encontrado `%c', esperando `F' o `B'
+it:131 Trovato `%c', atteso `F' o `B'
+#
 en:132 Total length of survey legs = %7.2fm (%7.2fm adjusted)
 en-us:132 Total length of survey shots = %7.2fm (%7.2fm adjusted)
 fr:132 Longueur totale de la topo = %7.2fm (%7.2fm adjust&eacute;)

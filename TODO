@@ -319,3 +319,5 @@ check borlandc version to see if bios_keybrd is better or worse...
 
 translate diffpos, sorterr, etc
 
+tests for direction
+

@@ -898,6 +898,7 @@ cmd_data(void)
 	{"COMPASS",      Comp }, /* alternative name */
         {"COUNT",        Count }, /* FrCount&ToCount in multiline */
         {"DEPTH",        Depth }, /* FrDepth&ToDepth in multiline */
+        {"DIRECTION",    Dir },
 	{"DX",		 Dx },
 	{"DY",		 Dy },
 	{"DZ",		 Dz },
@@ -929,10 +930,11 @@ cmd_data(void)
 
    /* readings which may be given for each style */
    static unsigned long mask[] = {
-      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Tape) | BIT(Comp) | BIT(Clino),
-      BIT(Fr) | BIT(To) | BIT(Station)
+      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir)
+	 | BIT(Tape) | BIT(Comp) | BIT(Clino),
+      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir)
 	 | BIT(FrCount) | BIT(ToCount) | BIT(Count) | BIT(Comp) | BIT(Clino),
-      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Tape) | BIT(Comp)
+      BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dir) | BIT(Tape) | BIT(Comp)
 	 | BIT(FrDepth) | BIT(ToDepth) | BIT(Depth),
       BIT(Fr) | BIT(To) | BIT(Station) | BIT(Dx) | BIT(Dy) | BIT(Dz),
       BIT(Fr) | BIT(To) | BIT(Station)
@@ -940,9 +942,9 @@ cmd_data(void)
 
    /* readings which may be omitted for each style */
    static unsigned long mask_optional[] = {
-      BIT(Clino),
-      BIT(Clino),
-      0,
+      BIT(Dir) | BIT(Clino),
+      BIT(Dir) | BIT(Clino),
+      BIT(Dir),
       0,
       0
    };

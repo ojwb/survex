@@ -624,14 +624,15 @@ data_normal(void)
 
    real tape = 0, comp = 0, clin, frcount = 0, tocount = 0;
    bool fTopofil = fFalse, fMulti = fFalse; /* features of style... */
-   bool fNoClino, fPlumbed;
+   bool fNoClino, fPlumbed, fRev;
 
    reading *ordering;
 
    again:
 
    fPlumbed = fFalse;
-   
+   fRev = fFalse;
+
    /* ordering may omit clino reading, so set up default here */
    /* this is also used if clino reading is the omit character */
    clin = (real)0.0; /* no clino reading, so assume 0 with large sd */
@@ -642,16 +643,29 @@ data_normal(void)
       switch (*ordering) {
        case Fr:
 	  fr = read_prefix_stn(fFalse, fTrue);
-	  if (first_stn == End) first_stn = Fr;
+	  if (first_stn != End) first_stn = Fr;
 	  break;
        case To:
 	  to = read_prefix_stn(fFalse, fTrue);
-	  if (first_stn == End) first_stn = To;
+	  if (first_stn != End) first_stn = To;
 	  break;
        case Station:
 	  fr = to;
 	  to = read_prefix_stn(fFalse, fFalse);
 	  first_stn = To;
+	  break;
+       case Dir:
+	  switch(toupper(ch)) {
+	   case 'F':
+	     break;
+	   case 'B':
+	     fRev = fTrue;
+	     break;
+	   default:
+	     compile_error(/*Found `%c', expecting `F' or `B'*/131, ch);
+	     skipline();
+	     return 0;
+	  }
 	  break;
        case Count:
 	  frcount = tocount;
@@ -693,8 +707,14 @@ data_normal(void)
        case Newline:
 	 if (fr != NULL) {
 	    int r;
+	    if (fRev) {
+	       prefix *t = fr;
+	       fr = to;
+	       to = t;
+	    }
 	    r = process_normal(fr, to, tape, comp, clin, tocount - frcount,
-			       first_stn == To, fNoClino, fTopofil, fPlumbed);
+			       (first_stn == To) ^ fRev, fNoClino, fTopofil,
+			       fPlumbed);
 	    if (!r) skipline();
 	 }
 	 fMulti = fTrue;	    
@@ -711,8 +731,14 @@ data_normal(void)
        case End:
 	 if (!fMulti) {
 	    int r;
+	    if (fRev) {
+	       prefix *t = fr;
+	       fr = to;
+	       to = t;
+	    }
 	    r = process_normal(fr, to, tape, comp, clin, tocount - frcount,
-			       first_stn == To, fNoClino, fTopofil, fPlumbed);
+			       (first_stn == To) ^ fRev, fNoClino, fTopofil,
+			       fPlumbed);
 	    process_eol();
 	    return r;
 	 }
@@ -842,12 +868,15 @@ data_diving(void)
    real frdepth = 0, todepth = 0;
 
    bool fMulti = fFalse;
+   bool fRev;
 
    reading first_stn = End;
 
    reading *ordering;
 
    again:
+
+   fRev = fFalse;
 
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
@@ -865,6 +894,19 @@ data_diving(void)
 	 to = read_prefix_stn(fFalse, fFalse);
 	 first_stn = To;
 	 break;
+       case Dir:
+	  switch(toupper(ch)) {
+	   case 'F':
+	     break;
+	   case 'B':
+	     fRev = fTrue;
+	     break;
+	   default:
+	     compile_error(/*Found `%c', expecting `F' or `B'*/131, ch);
+	     skipline();
+	     return 0;
+	  }
+	  break;
        case Tape: tape = read_numeric(fFalse); break;
        case Comp:
 	 comp = read_numeric(fTrue);
@@ -890,8 +932,13 @@ data_diving(void)
        case Newline:
 	 if (fr != NULL) {
 	    int r;
+	    if (fRev) {
+	       prefix *t = fr;
+	       fr = to;
+	       to = t;
+	    }
 	    r = process_diving(fr, to, tape, comp, frdepth, todepth,
-			       first_stn == To);
+			       (first_stn == To) ^ fRev);
 	    if (!r) skipline();
 	 }
 	 fMulti = fTrue;
@@ -908,8 +955,13 @@ data_diving(void)
        case End:
 	 if (!fMulti) {
 	    int r;
+	    if (fRev) {
+	       prefix *t = fr;
+	       fr = to;
+	       to = t;
+	    }
 	    r = process_diving(fr, to, tape, comp, frdepth, todepth,
-			       first_stn == To);
+			       (first_stn == To) ^ fRev);
 	    process_eol();
 	    return r;
 	 }
