@@ -520,7 +520,7 @@ main(int argc, char **argv)
 #endif
 	       if (!fSeenMove) {
 #ifdef DEBUG_3DTODXF
-		  printf("Something is wrong -- img_LINE before any img_MOVE!\n"); /* FIXME: create message in messages.txt ? */
+		  printf("Something is wrong -- img_LINE before any img_MOVE!\n");
 #endif
 		  img_close(pimg);
 		  fatalerror(/*Bad 3d image file `%s'*/106, fnm_3d);
