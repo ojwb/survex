@@ -103,6 +103,9 @@ float y_stretch = 1.0;
 #define BUTWIDTH 60
 #define BUTHEIGHT 25
 
+/* length of cross station marker */
+#define CROSSLENGTH 3 /* FIXME: was 10 check which looks best */
+
 /* Width and height of compass and elevation indicator windows */
 #define FONTSPACE 20
 #define INDWIDTH 100	/* FIXME: allow INDWIDTH to be set dynamically - 50 is nice */
@@ -526,7 +529,11 @@ draw_scalebar(void)
      sprintf(temp, "%d m", (int)sbar);
    else
      sprintf(temp, "%d km", (int)sbar/1000);
+#ifdef XCAVEROT_BUTTONS
    XDrawString(mydisplay, mywindow, slab_gc, 8, BUTHEIGHT+5+FONTSPACE, temp, strlen(temp));
+#else
+   XDrawString(mydisplay, mywindow, slab_gc, 8, FONTSPACE, temp, strlen(temp));
+#endif
 }
 
 /* FIXME: Zoom In -> In / Zoom Out -> Out ??? */
@@ -537,7 +544,6 @@ process_zoom(Display * display, Window mainwin, Window button, GC mygc, GC egc)
    scale *= zoomfactor;
    changedscale = 1;
    flip_button(display, mainwin, button, egc, mygc, "Zoom in");
-   draw_scalebar();
    fill_segment_cache();
 }
 
@@ -548,7 +554,6 @@ process_mooz(Display * display, Window mainwin, Window button, GC mygc, GC egc)
    scale /= zoomfactor;
    changedscale = 1;
    flip_button(display, mainwin, button, egc, mygc, "Zoom out");
-   draw_scalebar();
    fill_segment_cache();
 }
 
@@ -930,7 +935,6 @@ redraw_image_dbe(Display * display, Window window, GC gc)
    /* Draw the cave into a window (strictly, the second buffer). */
 
    coord x1, y1, x2, y2;
-   int srvy = 0;	/*FIXME: JPNP had 1 - check */
    lid *plid;
 
    char temp[32];
@@ -958,8 +962,8 @@ redraw_image_dbe(Display * display, Window window, GC gc)
 	    x2 = toscreen_x(p);
 	    y2 = toscreen_y(p);
 	    if (crossing) {
-	       XDrawLine(display, window, gcs[srvy], x2 - 10, y2, x2 + 10, y2);
-	       XDrawLine(display, window, gcs[srvy], x2, y2 - 10, x2, y2 + 10);
+               XDrawLine(display, window, gcs[lab_col_ind], x2 - CROSSLENGTH, y2, x2 + CROSSLENGTH, y2);
+               XDrawLine(display, window, gcs[lab_col_ind], x2, y2 - CROSSLENGTH, x2, y2 + CROSSLENGTH);
 	    }
 
 	    if (labelling) {
@@ -985,8 +989,12 @@ redraw_image_dbe(Display * display, Window window, GC gc)
       sprintf(temp, "%d m", (int)sbar);
    else
       sprintf(temp, "%d km", (int)sbar / 1000);
-   // FIXME: add BUTHEIGHT to FONTSPACE if buttons on
+#ifdef XCAVEROT_BUTTONS
+   XDrawString(mydisplay, window,  slab_gc, 8, BUTHEIGHT + 5 + FONTSPACE,
+	       temp, strlen(temp));
+#else
    XDrawString(mydisplay, window, slab_gc, 8, FONTSPACE, temp, strlen(temp));
+#endif
 }
 
 static void
@@ -1228,14 +1236,12 @@ mouse_moved(Display * display, Window window, int mx, int my)
 	 scale = rotsc_scale * pow(2, -a);
       }
       changedscale = 1;
-      draw_scalebar();
    }
 
    fill_segment_cache();
 }
 
 #ifdef XCAVEROT_BUTTONS
-// FIXME:
 void
 draw_buttons(Display * display, Window mainwin, GC mygc, GC egc)
 {
@@ -1462,16 +1468,16 @@ main(int argc, char **argv)
    ind_elev =
       XCreateSimpleWindow(mydisplay, mywindow, attr.width - INDWIDTH * 2 - 1,
 			  0, INDWIDTH, INDDEPTH, 1, ind_fg, ind_bg);
-#if 0
+#ifdef XCAVEROT_BUTTONS
    scalebar =
-      XCreateSimpleWindow(mydisplay, mywindow, 0, BUTHEIGHT + 5 + FONTSPACE,
-			  23, attr.height - (BUTHEIGHT + FONTSPACE + 5), 0,
-			  ind_fg, ind_bg);
-#else
+      XCreateSimpleWindow(mydisplay, mywindow, 0, BUTHEIGHT + FONTSPACE + 10,
+			  23, attr.height - (BUTHEIGHT + FONTSPACE + 10) - 5,
+			  0, ind_fg, ind_bg);
+#else 
    scalebar =
-      XCreateSimpleWindow(mydisplay, mywindow, 0, BUTHEIGHT+FONTSPACE+10, 23,
-			  attr.height - (BUTHEIGHT + FONTSPACE + 10) -5, 0, ind_fg,
-			  ind_bg);
+      XCreateSimpleWindow(mydisplay, mywindow, 0, FONTSPACE,
+                          23, attr.height - 5, 0,
+                          ind_fg, ind_bg);
 #endif
 
    rot_but = XCreateSimpleWindow(mydisplay, mywindow, attr.width - INDWIDTH * 2
@@ -1680,7 +1686,6 @@ main(int argc, char **argv)
 		     redraw = 0;
 	       } else if (myevent.xbutton.window == scalebar) {
 		  scale_orig = scale;
-		  draw_scalebar();
 	       } else if (myevent.xbutton.window == mywindow) {
 		  press_left_button(myevent.xbutton.x, myevent.xbutton.y);
 		  /* process_focus(mydisplay, mywindow,
@@ -1722,15 +1727,13 @@ main(int argc, char **argv)
 			      );
 	       
 	       changedscale = 1;
-	       draw_scalebar();
 	    } else if (myevent.xmotion.window == mywindow) {
 	       /* drag cave about / alter rotation or scale */
 	       
 	       mouse_moved(mydisplay, mywindow, myevent.xmotion.x,
 			   myevent.xmotion.y);
 	    }
-	 }
-	 if (myevent.xany.window == mywindow) {
+	 } else if (myevent.xany.window == mywindow) {
 	    switch (myevent.type) {
 	     case KeyPress:
 		 {
@@ -1775,6 +1778,7 @@ main(int argc, char **argv)
 			      break;
 			    case 127:	/* Delete => restore defaults */
 			      set_defaults();
+                              fill_segment_cache();
 			      break;
 			    case 'q':
 			      done = 1;
@@ -1783,11 +1787,15 @@ main(int argc, char **argv)
 			      elev_angle += 3.0;
 			      if (elev_angle > 90.0)
 				 elev_angle = 90.0;
+                              fill_segment_cache();
+                              redraw = 1;
 			      break;
 			    case 'd':	/* cave down */
 			      elev_angle -= 3.0;
 			      if (elev_angle < -90.0)
 				 elev_angle = -90.0;
+                              fill_segment_cache();
+                              redraw = 1;
 			      break;
 			    case 'l':	/* switch to elevation */
 			      switch_to_elevation();
@@ -1810,6 +1818,7 @@ main(int argc, char **argv)
 			      if (scale < 0.001) {
 				 scale = 0.001;
 			      }
+                              changedscale = 1;
 			      fill_segment_cache();
 			      redraw = 1;
 			      break;
@@ -1818,6 +1827,7 @@ main(int argc, char **argv)
 			      if (scale > 0.4) {
 				 scale = 0.4;
 			      }
+                              changedscale = 1;
 			      fill_segment_cache();
 			      redraw = 1;
 			      break;
@@ -1898,8 +1908,6 @@ main(int argc, char **argv)
 			   myevent.xconfigure.width - INDWIDTH - 1, 0);
 	       XMoveWindow(mydisplay, ind_elev,
 			   myevent.xconfigure.width - (2 * INDWIDTH) - 1, 0);
-	       
-	       draw_scalebar();
 	       break;
 	    }
 	 }
