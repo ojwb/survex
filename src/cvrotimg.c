@@ -68,7 +68,8 @@ add(point Huge *p, OSSIZE_T *c, OSSIZE_T tot, coord act, const img_point *pt)
 }
 
 extern bool
-load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
+load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
+	  point Huge **ppStns)
 {
    img_point pt;
    char sz[256];
@@ -239,6 +240,7 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
    stns[c_stn]._.str = NULL;
 
    *ppLegs = legs;
+   *ppSLegs = slegs;
    *ppStns = stns;
 
    return fTrue; /* return fTrue iff image was OK */

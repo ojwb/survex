@@ -29,8 +29,8 @@ c/v - rotate one step
 n/s/e/w/u/d - view cave from north/south/east/west/above/below
 O (overlapping labels)
 
-xcaverot missing:, ^A (lazy redraw during drags) ^L
-(no legs), ^R (reverse sense of controls), escape vs q...
+xcaverot missing:, ^A (lazy redraw during drags), ^R (reverse sense of
+controls), escape vs q...
 
 check xcaverot/caverot/aven have consistent senses to mouse and keyboard
 controls; shift-ed keys in xcaverot should move faster...

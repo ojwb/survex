@@ -90,6 +90,7 @@ static bool fRotating;        /* flag indicating auto-rotation */
 static bool fNames = fFalse;  /* Draw station names? */
 bool fAllNames = fFalse;  /* Draw all station names? */
 static bool fLegs = fTrue;   /* Draw legs? */
+static bool fSLegs = fFalse;   /* Draw surface legs? */
 static bool fStns = fFalse;  /* Draw crosses at stns? */
 static bool fAll = fFalse;  /* Draw all during movement? */
 static bool fRevSense = fFalse; /* Movements relate to cave/observer */
@@ -121,6 +122,7 @@ int incAnimate = 1;
 #endif
 
 static point Huge **ppLegs = NULL;
+static point Huge **ppSLegs = NULL;
 static point Huge **ppStns = NULL;
 
 static void
@@ -136,6 +138,16 @@ draw_legs(void)
    set_gcolour(acolDraw[0]);
    draw_view_legs(ppLegs[cAnimate]);
 #endif
+}
+
+static void
+draw_slegs(void)
+{
+   int c;
+   for (c = 0; ppSLegs[c]; c++) {
+      set_gcolour(acolDraw[c]);
+      draw_view_legs(ppSLegs[c]);
+   }
 }
 
 static void
@@ -220,8 +232,10 @@ main(int argc, char **argv)
        
       reset_limits(&lower, &upper);
       
-      for (c = 0; ppLegs[c]; c++)
+      for (c = 0; ppLegs[c]; c++) {
 	 update_limits(&lower, &upper, ppLegs[c], ppStns[c]);
+	 update_limits(&lower, &upper, ppSLegs[c], NULL);
+      }
 
       /* can't do this until after we've initialised the graphics */
       scDefault = scale_to_screen(&lower, &upper, xcMac, ycMac, y_stretch);
@@ -288,11 +302,13 @@ main(int argc, char **argv)
 		 set_view(sc, degView, elev);
 		 if (fAll) {
 		    if (fLegs) draw_legs();
+		    if (fSLegs) draw_slegs();
 		    if (fStns) draw_stns();
 		    if (fNames) draw_names();
 		    item = DONE;
-		 } else if (fLegs) {
-		    draw_legs();
+		 } else if (fLegs || fSLegs) {
+		    if (fLegs) draw_legs();
+		    if (fSLegs) draw_slegs();
 		    item = STNS;
 		 } else if (fStns) {
 		    draw_stns();
@@ -555,6 +571,9 @@ process_key(void) /* and mouse! */
          fChanged = fTrue; fStns = !fStns; break;
        case ('L' - '@'):
          fChanged = fTrue; fLegs = !fLegs; break;
+       case ('S' - '@'): /* FIXME: add to help screen */
+       case ('F' - '@'): /* surFace - ^S is iffy on DOS iirc - FIXME: check */
+         fChanged = fTrue; fSLegs = !fSLegs; break;
        case ('R' - '@'):
          fRevSense = !fRevSense; break;
        case ESCAPE_KEY:
@@ -725,6 +744,8 @@ translate_data(coord Xchange, coord Ychange, coord Zchange)
 
    for (c = 0; ppLegs[c]; c++)
       do_translate(ppLegs[c], Xchange, Ychange, Zchange);
+   for (c = 0; ppSLegs[c]; c++)
+      do_translate(ppSLegs[c], Xchange, Ychange, Zchange);
    for (c = 0; ppStns[c]; c++)
       do_translate_stns(ppStns[c], Xchange, Ychange, Zchange);
 }
@@ -793,12 +814,15 @@ cmdline_load_files(int argc, char **argv)
 {
    int c;
    ppLegs = osmalloc((argc + 1) * sizeof(point Huge *));
+   ppSLegs = osmalloc((argc + 1) * sizeof(point Huge *));
    ppStns = osmalloc((argc + 1) * sizeof(point Huge *));
+
    /* load data into memory */
-   for (c = 0; c < argc; c++) {
-      if (!load_data(argv[c], ppLegs + c, ppStns + c)) return argv[c];
-   }
-   ppLegs[argc] = NULL;
-   ppStns[argc] = NULL;
+   for (c = 0; c < argc; c++)
+      if (!load_data(argv[c], ppLegs + c, ppSLegs + c, ppStns + c))
+	 return argv[c];
+
+   ppLegs[argc] = ppSLegs[argc] = ppStns[argc] = NULL;
+
    return NULL;
 }

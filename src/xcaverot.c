@@ -100,7 +100,7 @@ typedef struct {
    XSegment segments[20000];	/* array of line segments, FIXME: fixed limit temporary hack */
 } SegmentGroup;
 
-static SegmentGroup segment_groups[NUM_DEPTH_COLOURS];
+static SegmentGroup segment_groups[NUM_DEPTH_COLOURS + 1];
 
 /* use double buffering in the rendering if server supports it */
 static int have_double_buffering;
@@ -136,6 +136,8 @@ static int plan_elev;
 static int rot = 0;
 static int crossing = 0;
 static int labelling = 0;
+static int legs = 1;
+static int surf = 0;
 static int allnames = 0;
 
 static struct timeval lastframe;
@@ -307,6 +309,7 @@ findsurvey(const char *name)
 #endif
 
 static point **ppLegs = NULL;
+static point **ppSLegs = NULL;
 static point **ppStns = NULL;
 
 int
@@ -318,14 +321,15 @@ load_file(const char *name, int replace)
       while (ppLegs[blocks]) blocks++;
    }
    ppLegs = osrealloc(ppLegs, (blocks + 2) * sizeof(point Huge *));
+   ppSLegs = osrealloc(ppSLegs, (blocks + 2) * sizeof(point Huge *));
    ppStns = osrealloc(ppStns, (blocks + 2) * sizeof(point Huge *));
 
    /* load data into memory */
-   if (!load_data(name, ppLegs + blocks, ppStns + blocks)) {
-      ppLegs[blocks] = ppStns[blocks] = NULL;
+   if (!load_data(name, ppLegs + blocks, ppSLegs + blocks, ppStns + blocks)) {
+      ppLegs[blocks] = ppSLegs[blocks] = ppStns[blocks] = NULL;
       return 0;
    }
-   ppLegs[blocks + 1] = ppStns[blocks + 1] = NULL;
+   ppLegs[blocks + 1] = ppSLegs[blocks + 1] = ppStns[blocks + 1] = NULL;
 
    XGetWindowAttributes(mydisplay, mywindow, &attr);
    
@@ -335,8 +339,10 @@ load_file(const char *name, int replace)
        
       reset_limits(&lower, &upper);
       
-      for (c = 0; ppLegs[c]; c++)
+      for (c = 0; ppLegs[c]; c++) {
 	 update_limits(&lower, &upper, ppLegs[c], ppStns[c]);
+	 update_limits(&lower, &upper, ppSLegs[c], NULL);
+      }
 
       scale_default = scale_to_screen(&lower, &upper,
 				      attr.width, attr.height, 1.0);
@@ -711,19 +717,63 @@ toscreen_y(point * p)
    return yoff - y;
 }
 
+static void
+add_to_segment_cache(point **pp, int f_surface)
+{
+   coord x1, y1;
+   x1 = y1 = 0;	/* avoid compiler warning */
+   for ( ; *pp; pp++) {
+      point *p;
+      for (p = *pp; p->_.action != STOP; p++) {
+	 switch (p->_.action) {
+	  case MOVE:
+	    x1 = toscreen_x(p);
+	    y1 = toscreen_y(p);
+	    break;
+	    
+	  case DRAW: {
+	    XSegment *segment;
+	    SegmentGroup *group;
+
+	    if (f_surface) {
+	       /* put all surface legs in one group */
+	       group = &segment_groups[NUM_DEPTH_COLOURS];
+	    } else {
+	       /* calculate depth band */
+	       int depth = (int)((float)(-p->Z + Zorg + Zrad) * z_col_scale);
+	       if (depth < 0) {
+		  depth = 0;
+	       } else if (depth >= NUM_DEPTH_COLOURS) {
+		  depth = NUM_DEPTH_COLOURS - 1;
+	       }
+	       group = &segment_groups[depth];
+	    }
+
+	    segment = &(group->segments[group->num_segments++]);
+		
+	    /* observe the order of the following lines before modifying */
+	    segment->x1 = x1;
+	    segment->y1 = y1;
+	    segment->x2 = x1 = toscreen_x(p);
+	    segment->y2 = y1 = toscreen_y(p);
+		
+	    break;
+	  }
+	 }
+      }
+   }
+}
+
 /* Calculate positions of all line segments and put them in the cache. */
 static void
 fill_segment_cache(void)
 {
-   point **pp;
    int group;
+   for (group = 0; group < NUM_DEPTH_COLOURS; group++) {
+      segment_groups[group].num_segments = 0;
+   }
 
-   coord x1, y1;
-
-   if (ppLegs == NULL)
-      return;
-
-   x1 = y1 = 0;	/* avoid compiler warning */
+   if (ppLegs == NULL || (!legs && !surf)) return;
 
    /* since I no longer attempt to make sure that plan_elev is always
     * kept up to date by any action which might change the elev_angle
@@ -741,47 +791,8 @@ fill_segment_cache(void)
    se = sin(rad(elev_angle));
    ce = cos(rad(elev_angle));
 
-   for (group = 0; group < NUM_DEPTH_COLOURS; group++) {
-      segment_groups[group].num_segments = 0;
-   }
-
-   for (pp = ppLegs; *pp; pp++) {
-      point *p;
-      for (p = *pp; p->_.action != STOP; p++) {
-	 switch (p->_.action) {
-	   case MOVE:
-	    x1 = toscreen_x(p);
-	    y1 = toscreen_y(p);
-	    break;
-
-	   case DRAW: {
-	    XSegment *segment;
-	    SegmentGroup *group;
-
-	    /* calculate colour */
-	    int depth = (int)((float)(-p->Z + Zorg + Zrad) * z_col_scale);
-
-	    if (depth < 0) {
-	       depth = 0;
-	    } else if (depth >= NUM_DEPTH_COLOURS) {
-	       depth = NUM_DEPTH_COLOURS - 1;
-	    }
-
-	    /* store coordinates */
-	    group = &segment_groups[depth];
-	    segment = &(group->segments[group->num_segments++]);
-
-	    /* observe the order of the following lines before modifying */
-	    segment->x1 = x1;
-	    segment->y1 = y1;
-	    segment->x2 = x1 = toscreen_x(p);
-	    segment->y2 = y1 = toscreen_y(p);
-
-	    break;
-	   }
-	 }
-      }
-   }
+   if (legs) add_to_segment_cache(ppLegs, 0);
+   if (surf) add_to_segment_cache(ppSLegs, 1);
 }
 
 /* distance_metric() is a measure of how close we are */
@@ -877,8 +888,7 @@ redraw_image_dbe(Display * display, Window window, GC gc)
 
    x1 = y1 = 0;	/* avoid compiler warning */
 
-   if (ppStns == NULL && ppLegs == NULL)
-      return;
+   if (ppStns == NULL && ppLegs == NULL && ppSLegs == NULL) return;
 
    for (group = 0; group < NUM_DEPTH_COLOURS; group++) {
       SegmentGroup *group_ptr = &segment_groups[group];
@@ -1662,8 +1672,17 @@ main(int argc, char **argv)
 			    case 32:	/* Space => stop rotating */
 			      rot = 0;
 			      break;
-			    case 14:	/* Ctrl+N => toggle labels (station names) */
+			    case 6:	/* Ctrl+F => toggle surFace */
+			      surf = !surf;
+			      break;
+			    case 12:	/* Ctrl+L => toggle Legs */
+			      legs = !legs;
+			      break;
+			    case 14:	/* Ctrl+N => toggle Names */
 			      labelling = !labelling;
+			      break;
+			    case 19:	/* Ctrl+S => toggle Surface */
+			      surf = !surf;
 			      break;
 			    case 24:	/* Ctrl+X => toggle crosses */
 			      crossing = !crossing;

@@ -20,6 +20,8 @@ Changes in 0.97-prerelease1:
   surveys (to be ignored when calculating the total survey length) to be
   indicated.
 
+* caverot/xcaverot: allow surface legs to be hidden (they are by default)
+
 * new version of 3d file format which can store flags and is slightly more
   compact.  NB New programs can load old .3d files, but old programs can't
   load new .3d files.
