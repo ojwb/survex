@@ -1,6 +1,6 @@
 /* filename.h
  * Function prototypes for filename.c
- * Copyright (C) 1998-2001,2003 Olly Betts
+ * Copyright (C) 1998-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,10 @@
 
 #ifndef FILENAME_H /* only include once */
 #define FILENAME_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "useful.h"
 #include "osdepend.h"
@@ -42,5 +46,9 @@ void safe_fclose(FILE *f);
 
 void filename_register_output(const char *fnm);
 void filename_delete_output(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FILENAME_H */
