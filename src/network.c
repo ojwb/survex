@@ -296,7 +296,6 @@ remove_subnets(void)
 	 node *stn5, *stn6;
 	 int dirn5, dirn6, dirn0;
 	 linkfor *legAB, *legBC, *legCA;
-	 linkfor *legAZ, *legBZ, *legCZ;
 #if PRINT_NETBITS
 	 printf("replacing deltas with stars\n");
 #endif
@@ -395,11 +394,8 @@ remove_subnets(void)
 	       ASSERT(stn6->leg[dirn6]->l.to == stn3);
 
 	       trav = osnew(stackRed);
-	       legAZ = osnew(linkfor);
-	       legBZ = osnew(linkfor);
-	       legCZ = osnew(linkfor);
-
 		 {
+		    linkfor *legAZ, *legBZ, *legCZ;
 		    node *stnZ;
 		    prefix *nameZ;
 		    svar invAB, invBC, invCA, tmp, sum, inv;
@@ -419,6 +415,10 @@ remove_subnets(void)
 		       /* impossible - loop of zero variance */
 		       BUG("loop of zero variance found");
 		    }
+
+		    legAZ = osnew(linkfor);
+		    legBZ = osnew(linkfor);
+		    legCZ = osnew(linkfor);
 
 		    /* AZBZ */
 		    /* done above: addvv(&sum, &legBC->v, &legCA->v); */
@@ -451,6 +451,10 @@ remove_subnets(void)
 		    /* NB: swapped arguments to negate answer for legCZ->d */
 		    subdd(&temp, &temp, &temp2);
 		    mulsd(&legCZ->d, &sumCZAZ, &temp);
+
+		    osfree(legAB);
+		    osfree(legBC);
+		    osfree(legCA);
 
 		    /* Now add two, subtract third, and scale by 0.5 */
 		    addss(&sum, &sumAZBZ, &sumCZAZ);
