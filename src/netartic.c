@@ -180,7 +180,6 @@ articulate(void)
    colour = 0;
    stnStart = NULL;
    FOR_EACH_STN(stn, stnlist) {
-      /* stn->fArtic = fFalse; */
       if (fixed(stn)) {
 	 colour++;
 	 stn->colour = -colour;
@@ -243,7 +242,7 @@ articulate(void)
 	     * which it is iff we have to colour from it in more than one dirn
 	     */
 	    if (c) {
-	       /* FIXME: stn->fArtic = fTrue; */
+	       /* FIXME: stn is an articulation point! */
 	    }
 	    
 	    c++;
