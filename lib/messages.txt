@@ -112,7 +112,8 @@ pt:  1 Mem&oacute;ria insuficiente (s&atilde;o necesss&aacute;rios mais %lu byte
 ca:  1 Mem&ograve;ria insuficient (es necessiten %lu bytes m&eacute;s).
 es:  1 Memoria insuficiente (se necesitan %lu bytes de m&aacute;s).
 it:  1 Memoria insufficiente (ci vorrebbero altri %lu bytes).
-sk:  1 Nedostato&ccaron;n&aacute; kapacita pam&auml;te
+#sk:  1 Nedostato&ccaron;n&aacute; kapacita pam&auml;te
+sk:  1 Nedostatok pam&auml;te (ch&yacute;ba %lu bytov).
 en:  2 Survex version %s or greater required to process this survey data.
 fr:  2 Une version %s ou sup&eacute;rieure de Survex est n&eacute;cessaire pour traiter ces donn&eacute;es.
 # Gerhard: (this replaces the idea of "greater" with "newer" because it sounds

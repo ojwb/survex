@@ -83,6 +83,7 @@ while (<>) {
       }
    }
 }
+$raw{$curmsg} = $raw;
 
 my $lang;
 my @langs = sort grep ! /_\*$/, keys %msgs;
