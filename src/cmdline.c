@@ -226,6 +226,8 @@ cmdline_getopt(void)
       /* getopt displays a message for us (unless we set opterr to 0) */
       /* FIXME: set opterr to 0 so we can translate messages? */
       cmdline_syntax();
+      /* FIXME: translate */
+      fprintf(stderr, "Try `%s --help' for more information.\n", argv0);
       exit(0);
     case HLP_VERSION: /* --version */
       cmdline_version();
