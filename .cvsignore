@@ -10,6 +10,7 @@ config.status
 configure
 djgpp_exes
 mingw_exes
+riscos_exes
 src*_*.zip
 stamp-h
 stamp-h.in

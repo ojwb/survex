@@ -58,9 +58,13 @@ Date: 25 Jan 2000
 From: Mark Shinwell
 
 [Aven known bugs]
+
 - closing window doesn't work
+
 - slow response of toolbar highlighting during constant rotation
   (XFree86 v4 fixes this) 
+
 - not all Xcaverot keys implemented 
+
 - heading indicator not working -- soon to be fixed
 	  

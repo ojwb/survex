@@ -1,3 +1,9 @@
+* Windows and MSDOS builds were missing 3dtodxf.exe
+
+* Updated French, German, and Portugese translations
+
+Changes in 0.92-prerelease5:
+
 * printps: now allow separate font sizes (and fonts) for station
   labels and other text
 
