@@ -4,9 +4,6 @@
 
 * cave length...
 
-* migrate command-line parsing to GNU getopt and support --version and
-  --help (http://www.fsf.org/prep/standards_14.html#SEC14)
-
 Date: Tue, 17 Feb 98 18:10:51 GMT
 From: Andy Waddington on Survey stuff <Survex@pennine.demon.co.uk>
 
@@ -16,11 +13,6 @@ Date: 26 Aug 1998 10:06:16 GMT
 From: olly@muscat.co.uk
 
 Sort out 3dtodxf
-
-Date: 28 Aug 1998 13:06:53 GMT
-From: olly@muscat.co.uk
-
-Consider using GNU automake
 
 Date: Tue, 08 Sep 1998 17:52:52 -0300
 From: Leandro Dybal Bertoni <dybal@upe.org.br>
@@ -38,4 +30,67 @@ to be connected to the network is the most general solution. Then it wouldn't
 be deemed a warning when it was found not to be connected. Or possibly
 implement Immo's suggestion of nobbling a particular error message (not a
 great solution - but still useful).
+
+Date: 13 Dec 1998
+From: Olly
+
+Tidy up:
+message.c
+xcaverot.c (get latest from JP first...)
+cave.c
+
+Date: 15 Dec 1998
+From: Olly
+
+merge "datums" and quantities?
+
+Date: 19 Dec 1998
+From: Olly
+
+if there are errors, we shouldn't produce output files (reconsider some
+errors as warnings if this is done though).
+
+Date: 05 Jan 1999
+From: Wookey
+
+Point out in documentation that file structure and survey structure don't
+have to be the same.  And in particular that folder/directory names can be
+different.
+
+Date: 05 Jan 1999
+From: Wookey
+
+A STYLE for 'connections' (with no TCC info) for feeding in surface data,
+hydrological connections, etc.
+
+Date: 01 Mar 1999
+From: Olly
+
+Put 3dtodxf back in.  Or maybe wait until Leandro has brought it up-to-date.
+
+Date: 04 Mar 1999
+From: Olly
+
+Currently rpm isn't relocatable (since path to support files is compiled
+in).  Can we fix this?
+
+Date: 21 Mar 1999
+From: Olly
+
+Check through warnings from RISC OS compile (in riscos.err)
+
+Date: 31 Mar 1999
+From: Olly
+
+Need to update French translation (about 8 new messages)
+
+Date: 01 Apr 1999
+From: Wookey
+
+Different print.ini for each platform - or some mechanism to specify?
+
+Date: 01 Apr 1999
+From: Olly
+
+Ideally want makefile to package DOS and RISC OS versions
 
