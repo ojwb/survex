@@ -1623,6 +1623,7 @@ it:205 Informazioni su %s
 # TRANSLATE fr pt ca es it
 en:206 Select a 3d file to view
 de:206 3D-Datei zur Ansicht w&auml;hlen
+pt-br:206 Selecione um arquivo 3d para ser visualizado
 #
 # TRANSLATE ca check fr pt (pt-br is ok) es it
 en:207 Survex 3d files
@@ -1648,6 +1649,7 @@ it:208 Tutti i file
 # TRANSLATE fr pt ca es it
 en:209 Visualisation of Survex 3D files
 de:209 Visualisierung von Survex 3D-Dateien
+pt-br:209 Visualiza&ccedil;&atilde;o de arquivos 3d do Survex
 #
 # Aven menu titles.  An '@' goes before the letter of any accelerator key.
 # The accelerators must be different within this group
@@ -1753,7 +1755,7 @@ de:240 Nach @Norden##N
 pt-br:240 Olhar para @Norte##N
 #
 en:241 View @East##E
-de:241 Nach @Osten##O
+de:241 Nach @Osten##E
 pt-br:241 Olhar para @Leste##E
 #
 en:242 View @South##S
