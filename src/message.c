@@ -23,6 +23,8 @@
 #include "filelist.h"
 #include "debug.h"
 
+#include "svxhome.h"
+
 #ifdef HAVE_SIGNAL
 # ifdef HAVE_SETJMP
 #  include <setjmp.h>

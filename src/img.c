@@ -298,6 +298,7 @@ void
 img_write_datum(img *pimg, int code, const char *sz,
 		float x, float y, float z)
 {
+   if (!pimg) return; /* FIXME: should die */
    if (pimg->fBinary) {
       float Sc = (float)100.0; /* Output in cm */
       long opt = 0;
@@ -352,10 +353,13 @@ img_write_datum(img *pimg, int code, const char *sz,
 void
 img_close(img *pimg)
 {
-   if (pimg->fh) {
-      /* If writing a binary file, write end of data marker */   
-      if (pimg->fBinary && !pimg->fRead) put32(-1L, pimg->fh);
-      fclose(pimg->fh);
+   if (pimg) {
+      /* FIXME: should complain if pimg is NULL */
+      if (pimg->fh) {
+	 /* If writing a binary file, write end of data marker */   
+	 if (pimg->fBinary && !pimg->fRead) put32(-1L, pimg->fh);
+	 fclose(pimg->fh);
+      }
+      osfree(pimg);
    }
-   osfree(pimg);
 }

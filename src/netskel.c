@@ -115,8 +115,18 @@ solve_network(void /*node *stnlist*/)
    validate(); dump_network();
    remove_subnets();
    validate(); dump_network();
+#if 1
    articulate();
-/*   solve_matrix(stnlist); */
+#else
+   {
+      /* FIXME: */
+      extern unsigned long optimize;
+      if (optimize & BITA('a'))
+	 articulate();
+      else
+	 solve_matrix(stnlist);
+   }
+#endif
    validate(); dump_network();
    replace_subnets();
    validate(); dump_network();

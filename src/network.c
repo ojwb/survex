@@ -459,6 +459,19 @@ remove_subnets(void)
 		    subdd(&temp, &temp, &dsumAZBZ);
 		    muldc(&legCZ->d, &temp, 0.5);
 
+		    printf("AZ: d=");
+		    print_d(legAZ->d);
+		    printf(", v=\n");
+		    print_var(legAZ->v);
+		    printf("BZ: d=");
+		    print_d(legBZ->d);
+		    printf(", v=\n");
+		    print_var(legBZ->v);
+		    printf("CZ: d=");
+		    print_d(legCZ->d);
+		    printf(", v=\n");
+		    print_var(legCZ->v);
+		    
 		    nameZ = osnew(prefix);
 		    nameZ->ident = ""; /* root has ident[0] == "\" */
 		    stnZ = osnew(node);
@@ -484,9 +497,9 @@ remove_subnets(void)
 		    stnZ->leg[1]->l.reverse = dirn5;
 		    stnZ->leg[2]->l.to = stn6;
 		    stnZ->leg[2]->l.reverse = dirn6;
-		    addto_link(legAZ , stn4->leg[dirn4]);
-		    addto_link(legBZ , stn5->leg[dirn5]);
-		    addto_link(legCZ , stn6->leg[dirn6]);
+		    addto_link(legAZ, stn4->leg[dirn4]);
+		    addto_link(legBZ, stn5->leg[dirn5]);
+		    addto_link(legCZ, stn6->leg[dirn6]);
 		    /* stack stuff */
 		    trav->join1 = stn4->leg[dirn4];
 		    trav->join2 = stn5->leg[dirn5];
@@ -680,8 +693,7 @@ replace_subnets(void)
          osfree(stn4->leg[dirn4]);
 	 stn4->leg[dirn4] = ptrRed->join2;
       } else if (IS_DELTASTAR(ptrRed)) {
-         d e;
-         linkfor *leg1, *leg2;
+         linkfor *leg2;
          node *stnZ;
          node *stn[3];
          int dirn[3];
@@ -713,21 +725,20 @@ replace_subnets(void)
                        "bad sub-network for D*");
             }
             for (i = 0; i < 3; i++) {
+               linkfor *leg1 = copy_link(leg[i]);
                leg2 = stn[i]->leg[dirn[i]];
-               leg1 = copy_link(leg[i]);
                stn2 = leg[i]->l.to;
-               if (fZero(&leg2->v))
-                  e[0] = e[1] = e[2] = 0.0;
-               else {
-		  d tmp;
+               adddd(&POSD(stn2), &POSD(stn[i]), &leg1->d);
+               if (!fZero(&leg2->v)) {
+		  d e, tmp;
                   subdd(&e, &POSD(stnZ), &POSD(stn[i]));
                   subdd(&e, &e, &leg2->d);
                   divdv(&tmp, &e, &leg2->v);
                   mulvd(&e, &leg1->v, &tmp);
+		  adddd(&POSD(stn2), &POSD(stn2), &e);
                }
-               adddd(&POSD(stn2), &POSD(stn[i]), &leg1->d);
-               adddd(&POSD(stn2), &POSD(stn2), &e);
                fix(stn2);
+	       add_stn_to_list(&stnlist, stn2);
                osfree(leg1);
                osfree(leg2);
                stn[i]->leg[dirn[i]] = leg[i];
@@ -753,10 +764,10 @@ replace_subnets(void)
                osfree(stnZ->leg[i]);
                /* stnZ->leg[i] = NULL; */
             }
-	    remove_stn_from_list(&stnlist, stnZ);
-	    osfree(stnZ->name);
-	    osfree(stnZ);
 	 }
+	 remove_stn_from_list(&stnlist, stnZ);
+	 osfree(stnZ->name);
+	 osfree(stnZ);
       } else {
          BUG("ptrRed has unknown type");
       }

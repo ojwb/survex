@@ -529,6 +529,7 @@ data_normal(void)
 	 printf("Zero length leg: vx = %f, vy = %f, vz = %f\n", vx, vy, vz);
 #endif
       } else {
+	 real sinGcosG;
 	 comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
 	 comp -= pcs->z[Q_DECLINATION];
          /* LEVEL case */
@@ -561,7 +562,9 @@ printf("clin %.2f\n",clin);
 	 V = var(Q_LENGTH) / L2;
 	 dy2 = dy * dy;
 	 cosG2 = cosG * cosG;
+	 sinGcosG = sin(clin) * cosG;
 	 dz2 = dz * dz;
+#ifdef NO_COVARIANCES
 	 /* take into account variance in LEVEL case */
 	 v = dz2 * var(fPlumbed ? Q_LEVEL : Q_GRADIENT);
 	 vx = (var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) + 
@@ -574,15 +577,27 @@ printf("clin %.2f\n",clin);
 	    vz = (var(Q_POS) / 3.0 + L2 * (real)0.1);
 	 /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
 	 /* for Surveyor87 errors: vx=vy=vz=var(Q_POS)/3.0; */
-#ifndef NO_COVARIANCES
-	 cxy = sinB * cosB * 
-	    ((var(Q_LENGTH) - var(Q_BEARING) * L2) * cosG2 +
-	     var(Q_GRADIENT) * L2 * (sin(clin) * sin(clin)));
-	 czx = sinB * sin(clin) * cosG *
-	    (var(Q_LENGTH) - var(Q_GRADIENT) * L2);
-	 cyz = cosB * sin(clin) * cosG *
-	    (var(Q_LENGTH) - var(Q_GRADIENT) * L2);
-#if 1
+#else
+	 /* take into account variance in LEVEL case */
+	 v = dz2 * var(fPlumbed ? Q_LEVEL : Q_GRADIENT);
+	 vx = var(Q_POS) / 3.0 + dx2 * V + dy2 * var(Q_BEARING) + 
+	    (sinB * sinB * v);
+	 vy = var(Q_POS) / 3.0 + dy2 * V + dx2 * var(Q_BEARING) + 
+	    (cosB * cosB * v);
+	 if (!fNoClino)
+	    vz = (var(Q_POS) / 3.0 + dz2 * V + L2 * cosG2 * var(Q_GRADIENT));
+	 else
+	    vz = (var(Q_POS) / 3.0 + L2 * (real)0.1); /* FIXME: covariances? */
+	 /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
+	 cxy = sinB * cosB * (var(Q_LENGTH) * cosG2 + var(Q_GRADIENT) * dz2)
+	       - var(Q_BEARING) * dx * dy;
+	 czx = var(Q_LENGTH) * sinB * sinGcosG - var(Q_GRADIENT) * dx * dz;
+	 cyz = var(Q_LENGTH) * cosB * sinGcosG - var(Q_GRADIENT) * dy * dz;
+#if 0
+	 printf("vx = %6.3f, vy = %6.3f, vz = %6.3f\n", vx, vy, vz);
+	 printf("cxy = %6.3f, cyz = %6.3f, czx = %6.3f\n", cxy, cyz, czx);
+#endif
+#if 0
 	 cxy = cyz = czx = (real)0.0; /* for now */
 #endif
 #endif
