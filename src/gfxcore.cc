@@ -219,6 +219,11 @@ void GfxCore::Initialise()
     DefaultParameters();
 
     m_HaveData = true;
+
+#ifdef FLYFREE
+    m_ViewPoint = Vector3(0, 0, m_Parent->GetZExtent());
+    m_Perspective = true;
+#endif
 }
 
 void GfxCore::FirstShow()

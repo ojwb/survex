@@ -258,14 +258,21 @@ Double GLACanvas::SetViewportAndProjection()
     CHECK_GL_ERROR("SetViewportAndProjection", "glLoadIdentity");
 
     assert(m_Scale != 0.0);
+#ifndef FLYFREE
     Double lr = m_VolumeDiameter / m_Scale * 0.5;
-    Double tb = lr * aspect;
     Double near_plane = lr / tan(25.0 * M_PI / 180.0);
+    Double far_plane = m_VolumeDiameter + near_plane;
+#else
+    Double near_plane = 0.5;
+    Double lr = near_plane * tan(25.0 * M_PI / 180.0);
+    Double far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
+#endif
+    Double tb = lr * aspect;
     if (m_Perspective) {
-	glFrustum(-lr, lr, -tb, tb, near_plane, m_VolumeDiameter + near_plane);
+	glFrustum(-lr, lr, -tb, tb, near_plane, far_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glFrustum");
     } else {
-	glOrtho(-lr, lr, -tb, tb, near_plane, m_VolumeDiameter + near_plane);
+	glOrtho(-lr, lr, -tb, tb, near_plane, far_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
     }
 
@@ -348,6 +355,7 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
+#ifndef FLYFREE
     glTranslated(0.0, 0.0, -0.5 * m_VolumeDiameter - near_plane);
     CHECK_GL_ERROR("SetDataTransform", "glTranslated");
     // Get axes the correct way around (z upwards, y into screen)
@@ -355,6 +363,16 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
     m_Rotation.CopyToOpenGL();
     CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
+#else
+    glTranslated(0.0, 0.0, - near_plane);
+    // Get axes the correct way around (z upwards, y into screen)
+    glRotated(-90.0, 1.0, 0.0, 0.0);
+    CHECK_GL_ERROR("SetDataTransform", "glRotated");
+    m_Rotation.CopyToOpenGL();
+    CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
+    glTranslated(-m_ViewPoint.getX(), -m_ViewPoint.getY(), -m_ViewPoint.getZ());
+    CHECK_GL_ERROR("SetDataTransform", "glTranslated");
+#endif
     glTranslated(m_Translation.x, m_Translation.y, m_Translation.z);
     CHECK_GL_ERROR("SetDataTransform", "glTranslated");
 

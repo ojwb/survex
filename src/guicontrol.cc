@@ -644,7 +644,11 @@ void GUIControl::OnZoomIn(bool accel)
 {
     // Increase the scale.
 
+#ifndef FLYFREE
     m_View->SetScale(m_View->GetScale() * (accel ? 1.1236 : 1.06));
+#else
+    m_View->MoveViewer(accel ? 5.0 : 1.0);
+#endif
     m_View->ForceRefresh();
 }
 
@@ -657,7 +661,11 @@ void GUIControl::OnZoomOut(bool accel)
 {
     // Decrease the scale.
 
+#ifndef FLYFREE
     m_View->SetScale(m_View->GetScale() / (accel ? 1.1236 : 1.06));
+#else
+    m_View->MoveViewer(accel ? -5.0 : -1.0);
+#endif
     m_View->ForceRefresh();
 }
 

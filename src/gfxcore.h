@@ -361,6 +361,16 @@ public:
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
 			  const Vector3 &c, const Vector3 &d);
+#ifdef FLYFREE
+    void MoveViewer(double distance) {
+	Vector3 direction(cos(m_TiltAngle) * sin(m_PanAngle),
+			  cos(m_TiltAngle) * cos(m_PanAngle),
+			  -sin(m_TiltAngle));
+	direction *= distance;
+	m_ViewPoint += direction;
+	ForceRefresh();
+    }
+#endif
 private:
     DECLARE_EVENT_TABLE()
 };
