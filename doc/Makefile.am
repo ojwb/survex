@@ -104,6 +104,9 @@ uninstall-local:
 maintainer-clean-local:
 	rm -rf manual "$(srcdir)/manual"
 
+distclean-local:
+	-test . != "$(srcdir)" && rm -f manual.sgml
+
 # manual depends on config.h so it gets rebuilt when the version number is
 # bumped
 
