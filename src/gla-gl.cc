@@ -241,7 +241,6 @@ void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
     // Translate the data by a given amount, specified in screen coordinates.
     
     // Find out how far the translation takes us in data coordinates.
-    SetViewportAndProjection();
     SetDataTransform();
 
     Double x0, y0, z0;
@@ -263,60 +262,6 @@ void GLACanvas::SetVolumeDiameter(glaCoord diameter)
     // smallest sphere containing it.
 
     m_VolumeDiameter = diameter;
-}
-
-Double GLACanvas::SetViewportAndProjection()
-{
-    // Set viewport.  The width and height go to zero when the panel is dragged
-    // right across so we clamp them to be at least 1 to avoid errors from the
-    // opengl calls below.
-    int window_width;
-    int window_height;
-    GetSize(&window_width, &window_height);
-    if (window_height < 1) window_height = 1;
-    if (window_width < 1) window_width = 1;
-    double aspect = double(window_height) / double(window_width);
-
-    glViewport(0, 0, window_width, window_height);
-    CHECK_GL_ERROR("SetViewportAndProjection", "glViewport");
-
-    // Set projection.
-    glMatrixMode(GL_PROJECTION);
-    CHECK_GL_ERROR("SetViewportAndProjection", "glMatrixMode");
-    glLoadIdentity();
-    CHECK_GL_ERROR("SetViewportAndProjection", "glLoadIdentity");
-
-    assert(m_Scale != 0.0);
-#ifndef FLYFREE
-    Double lr = m_VolumeDiameter / m_Scale * 0.5;
-    Double near_plane = lr / tan(25.0 * M_PI / 180.0);
-    Double far_plane = m_VolumeDiameter + near_plane;
-#else
-    Double near_plane = 0.5;
-    Double lr = near_plane * tan(25.0 * M_PI / 180.0);
-    Double far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
-#endif
-    Double tb = lr * aspect;
-    if (m_Perspective) {
-	glFrustum(-lr, lr, -tb, tb, near_plane, far_plane);
-	CHECK_GL_ERROR("SetViewportAndProjection", "glFrustum");
-    } else {
-	glOrtho(-lr, lr, -tb, tb, near_plane, far_plane);
-	CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
-    }
-
-    glEnable(GL_DEPTH_TEST);
-    CHECK_GL_ERROR("SetViewportAndProjection", "glEnable GL_DEPTH_TEST");
-
-    // Save projection info.
-    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
-    CHECK_GL_ERROR("SetViewportAndProjection", "glGetDoublev");
-
-    // Save viewport info.
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    CHECK_GL_ERROR("SetViewportAndProjection", "glGetIntegerv");
-
-    return near_plane;
 }
 
 void GLACanvas::StartDrawing()
@@ -377,9 +322,45 @@ void GLACanvas::PlaceNormal(glaCoord x, glaCoord y, glaCoord z)
 
 void GLACanvas::SetDataTransform()
 {
+    // Set viewport.  The width and height go to zero when the panel is dragged
+    // right across so we clamp them to be at least 1 to avoid errors from the
+    // opengl calls below.
+    int window_width;
+    int window_height;
+    GetSize(&window_width, &window_height);
+    if (window_height < 1) window_height = 1;
+    if (window_width < 1) window_width = 1;
+    double aspect = double(window_height) / double(window_width);
+
+    glViewport(0, 0, window_width, window_height);
+    CHECK_GL_ERROR("SetDataTransform", "glViewport");
+
+    // Set projection.
+    glMatrixMode(GL_PROJECTION);
+    CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
+    glLoadIdentity();
+    CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
+
+    assert(m_Scale != 0.0);
+#ifndef FLYFREE
+    Double lr = m_VolumeDiameter / m_Scale * 0.5;
+    Double near_plane = lr / tan(25.0 * M_PI / 180.0);
+    Double far_plane = m_VolumeDiameter + near_plane;
+#else
+    Double near_plane = 0.5;
+    Double lr = near_plane * tan(25.0 * M_PI / 180.0);
+    Double far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
+#endif
+    Double tb = lr * aspect;
+    if (m_Perspective) {
+	glFrustum(-lr, lr, -tb, tb, near_plane, far_plane);
+	CHECK_GL_ERROR("SetViewportAndProjection", "glFrustum");
+    } else {
+	glOrtho(-lr, lr, -tb, tb, near_plane, far_plane);
+	CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
+    }
+
     // Set the modelview transform for drawing data.
-    
-    Double near_plane = SetViewportAndProjection();
     glMatrixMode(GL_MODELVIEW);
     CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
     glLoadIdentity();
@@ -398,9 +379,20 @@ void GLACanvas::SetDataTransform()
     glTranslated(m_Translation.x, m_Translation.y, m_Translation.z);
     CHECK_GL_ERROR("SetDataTransform", "glTranslated");
 
-    // Save matrices.
+    // Save projection matrix.
+    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+    CHECK_GL_ERROR("SetDataTransform", "glGetDoublev");
+
+    // Save viewport coordinates.
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    CHECK_GL_ERROR("SetDataTransform", "glGetIntegerv");
+
+    // Save modelview matrix.
     glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
     CHECK_GL_ERROR("SetDataTransform", "glGetDoublev");
+
+    glEnable(GL_DEPTH_TEST);
+    CHECK_GL_ERROR("SetDataTransform", "glEnable GL_DEPTH_TEST");
 }
 
 void GLACanvas::SetIndicatorTransform()
