@@ -2127,7 +2127,7 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 
         Double size = 1;
         
-        Vector3 v1_prev, v2_prev, v3_prev, v4_prev;
+        Vector3 v_prev[4];
         Vector3 prev_pt_v;
 
 	Vector3 right, up;
@@ -2251,8 +2251,8 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 			// FIXME: total bodge for particular case - want to permute
 			// vertices to minimise the tortional "stress" - perhaps even
 			// using triangles instead of rectangles...
-			swap(v1_prev,v3_prev);
-			swap(v2_prev,v4_prev);
+			swap(v_prev[0], v_prev[2]);
+			swap(v_prev[1], v_prev[3]);
 #endif
 		    } else if (r2.magnitude() == 0) {
 			Vector3 n = leg2_v;
@@ -2276,47 +2276,49 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 	    up *= size;
 
 	    // produce coordinates of the corners of the LRUD "plane"
-	    Vector3 v1 = pt_v - right + up;
-	    Vector3 v2 = pt_v + right + up;
-	    Vector3 v3 = pt_v + right - up;
-	    Vector3 v4 = pt_v - right - up;
+	    Vector3 v[4];
+	    v[0] = pt_v - right + up;
+	    v[1] = pt_v + right + up;
+	    v[2] = pt_v + right - up;
+	    v[3] = pt_v - right - up;
             
             const Vector3 light(1.0, 1.0, 1.0);
 
             if (segment > 0) {
                 BeginQuadrilaterals();
 
-		Vector3 normal = (v1 - v2_prev) * (v2 - v1_prev);
+		Vector3 normal = (v[0] - v_prev[1]) * (v[1] - v_prev[0]);
 		normal.normalise();
-                Double factor = dot(normal, light) * .3 + .7;
-                PlaceVertexWithColour(v1.getX(), v1.getY(), v1.getZ(), factor);
-                PlaceVertexWithColour(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ(), factor);
-                PlaceVertexWithColour(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ(), factor);
-                PlaceVertexWithColour(v2.getX(), v2.getY(), v2.getZ(), factor);
+                Double factor;
+                factor = dot(normal, light) * .3 + .7;
+                PlaceVertexWithColour(v[0].getX(), v[0].getY(), v[0].getZ(), factor);
+                PlaceVertexWithColour(v_prev[0].getX(), v_prev[0].getY(), v_prev[0].getZ(), factor);
+                PlaceVertexWithColour(v_prev[1].getX(), v_prev[1].getY(), v_prev[1].getZ(), factor);
+                PlaceVertexWithColour(v[1].getX(), v[1].getY(), v[1].getZ(), factor);
 
-		normal = (v3 - v4_prev) * (v4 - v3_prev);
+		normal = (v[2] - v_prev[3]) * (v[3] - v_prev[2]);
 		normal.normalise();
                 factor = dot(normal, light) * .3 + .7;
-                PlaceVertexWithColour(v4.getX(), v4.getY(), v4.getZ(), factor);
-                PlaceVertexWithColour(v3.getX(), v3.getY(), v3.getZ(), factor);
-                PlaceVertexWithColour(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ(), factor);
-                PlaceVertexWithColour(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ(), factor);
+                PlaceVertexWithColour(v[3].getX(), v[3].getY(), v[3].getZ(), factor);
+                PlaceVertexWithColour(v[2].getX(), v[2].getY(), v[2].getZ(), factor);
+                PlaceVertexWithColour(v_prev[2].getX(), v_prev[2].getY(), v_prev[2].getZ(), factor);
+                PlaceVertexWithColour(v_prev[3].getX(), v_prev[3].getY(), v_prev[3].getZ(), factor);
 
-		normal = (v2 - v3_prev) * (v3 - v2_prev);
+		normal = (v[1] - v_prev[2]) * (v[2] - v_prev[1]);
 		normal.normalise();
                 factor = dot(normal, light) * .3 + .7;
-                PlaceVertexWithColour(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ(), factor);
-                PlaceVertexWithColour(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ(), factor);
-                PlaceVertexWithColour(v3.getX(), v3.getY(), v3.getZ(), factor);
-                PlaceVertexWithColour(v2.getX(), v2.getY(), v2.getZ(), factor);
+                PlaceVertexWithColour(v_prev[1].getX(), v_prev[1].getY(), v_prev[1].getZ(), factor);
+                PlaceVertexWithColour(v_prev[2].getX(), v_prev[2].getY(), v_prev[2].getZ(), factor);
+                PlaceVertexWithColour(v[2].getX(), v[2].getY(), v[2].getZ(), factor);
+                PlaceVertexWithColour(v[1].getX(), v[1].getY(), v[1].getZ(), factor);
 
-		normal = (v4 - v1_prev) * (v1 - v4_prev);
+		normal = (v[3] - v_prev[0]) * (v[0] - v_prev[3]);
 		normal.normalise();
                 factor = dot(normal, light) * .3 + .7;
-                PlaceVertexWithColour(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ(), factor);
-                PlaceVertexWithColour(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ(), factor);
-                PlaceVertexWithColour(v1.getX(), v1.getY(), v1.getZ(), factor);
-                PlaceVertexWithColour(v4.getX(), v4.getY(), v4.getZ(), factor);
+                PlaceVertexWithColour(v_prev[3].getX(), v_prev[3].getY(), v_prev[3].getZ(), factor);
+                PlaceVertexWithColour(v_prev[0].getX(), v_prev[0].getY(), v_prev[0].getZ(), factor);
+                PlaceVertexWithColour(v[0].getX(), v[0].getY(), v[0].getZ(), factor);
+                PlaceVertexWithColour(v[3].getX(), v[3].getY(), v[3].getZ(), factor);
                 
                 EndQuadrilaterals();
             }
@@ -2328,19 +2330,19 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
                 
                 BeginQuadrilaterals();
 
-                PlaceVertexWithColour(v1.getX(), v1.getY(), v1.getZ(), factor);
-                PlaceVertexWithColour(v2.getX(), v2.getY(), v2.getZ(), factor);
-                PlaceVertexWithColour(v3.getX(), v3.getY(), v3.getZ(), factor);
-                PlaceVertexWithColour(v4.getX(), v4.getY(), v4.getZ(), factor);
+                PlaceVertexWithColour(v[0].getX(), v[0].getY(), v[0].getZ(), factor);
+                PlaceVertexWithColour(v[1].getX(), v[1].getY(), v[1].getZ(), factor);
+                PlaceVertexWithColour(v[2].getX(), v[2].getY(), v[2].getZ(), factor);
+                PlaceVertexWithColour(v[3].getX(), v[3].getY(), v[3].getZ(), factor);
                 
                 EndQuadrilaterals();
             }
 
             prev_pt_v = pt_v;
-            v1_prev = v1;
-            v2_prev = v2;
-            v3_prev = v3;
-            v4_prev = v4;
+            v_prev[0] = v[0];
+            v_prev[1] = v[1];
+            v_prev[2] = v[2];
+            v_prev[3] = v[3];
         }
     }
 }
