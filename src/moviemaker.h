@@ -26,16 +26,15 @@
 
 #include <stdio.h>
 
-struct AVCodec;
-struct AVCodecContext;
+struct AVFormatContext;
+struct AVStream;
 struct AVFrame;
 struct AVPicture;
 
 class MovieMaker {
-    AVCodec *codec;
-    AVCodecContext *c;
+    AVFormatContext *oc;
+    AVStream *st;
     int out_size;
-    FILE *fh;
     AVFrame *frame;
     unsigned char *outbuf;
     AVPicture *in;
@@ -43,8 +42,8 @@ class MovieMaker {
     unsigned char *pixels;
  
 public:
-    MovieMaker(int width, int height);
-    bool Open(const char *fnm);
+    MovieMaker();
+    bool Open(const char *fnm, int width, int height);
     unsigned char * GetBuffer() const;
     int GetWidth() const;
     int GetHeight() const;

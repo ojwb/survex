@@ -2677,9 +2677,9 @@ bool GfxCore::ExportMovie(const wxString & fnm)
     width += (width & 1);
     height += (height & 1);
 
-    mpeg = new MovieMaker(width, height);
+    mpeg = new MovieMaker();
 
-    if (!mpeg->Open(fnm.c_str())) {
+    if (!mpeg->Open(fnm.c_str(), width, height)) {
 	fprintf(stderr, "could not open %s\n", fnm.c_str());
 	delete mpeg;
 	mpeg = 0;
