@@ -41,6 +41,7 @@ extern "C" {
 
 # define img_FLAG_SURFACE   0x01
 # define img_FLAG_DUPLICATE 0x02
+# define img_FLAG_SPLAY     0x04
 
 typedef struct {
    double x, y, z;
@@ -71,24 +72,23 @@ extern unsigned int img_output_version;
 
 /* Open a .3d file for reading
  * fnm is the filename
- * szTitle and szDateStamp should be buffers to read the title and
- *   datestamp into
+ * title_buf and date_buf should be buffers to put the title and datestamp in
  * Returns pointer to an img struct or NULL
  */
-img *img_open(const char *fnm, char *szTitle, char *szDateStamp);
+img *img_open(const char *fnm, char *title_buf, char *date_buf);
 
 /* Open a .3d file for output
  * fnm is the filename
- * szTitle is the title
+ * title_buf is the title
  * fBinary == 0 for ASCII .3d file
  *         != 0 for binary .3d file
  * NB only the original .3d file format has an ASCII variant
  * Returns pointer to an img struct or NULL
  */
 # ifndef STANDALONE
-img *img_open_write(const char *fnm, char *szTitle, bool fBinary);
+img *img_open_write(const char *fnm, char *title_buf, bool fBinary);
 # else
-img *img_open_write(const char *fnm, char *szTitle, int fBinary);
+img *img_open_write(const char *fnm, char *title_buf, int fBinary);
 # endif
 
 /* Read an item from a .3d file
@@ -102,10 +102,11 @@ int img_read_item(img *pimg, img_point *p);
 /* Write a item to a .3d file
  * pimg is a pointer to an img struct returned by img_open_write()
  * code is one of the img_XXXX #define-d above
- * sz is the label (only meaningful for img_LABEL)
+ * flags is the leg or station flags (meaningful for img_LINE and img_LABEL
+ * s is the label (only meaningful for img_LABEL)
  * x, y, z are the coordinates
  */
-void img_write_item(img *pimg, int code, const char *sz,
+void img_write_item(img *pimg, int code, int flags, const char *s,
 		    double x, double y, double z);
 
 /* rewind a .3d file opened for reading so the data can be read in

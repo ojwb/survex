@@ -158,10 +158,6 @@ Tests these commands:
   *fix 2 0 0 0
   *equate 1 2
 
-flag legs as "skeletal" or something? (i.e. not in the cave passage) -
-e.g. a radiolocation leg isn't surface, but it isn't in the cave
-itself either.  You could just call it surface though...
-
 If there are errors, existing .pos and .inf files aren't removed, but
 existing .3d and .err files are...
 
@@ -172,9 +168,6 @@ in question in the error message (in the text form given in the file).
 Also report values when warning about problems with processed readings.
 
 complain about exporting fictional stations
-
-station flags: fixed point / "important" - e.g. top camp "fixed" point /
-entrance / ?
 
 ?outlaw prefixes on stations in data legs (as Todd has lobbied for)
 and then the prefix of a leg == prefix of each end...?
@@ -258,4 +251,41 @@ Subject: manual
 From: Olly
 
 doc/svxdocs.sgml has version number (0.97 currently) hardcoded.
+
+Date: Fri, 15 Jun 2001
+From: Olly
+
+prcore.c: want to ignore surface stations...
+
+Date: Sat, 16 Jun 2001
+Subject: flags
+From: Olly
+
+flag legs as "skeletal" or something? (i.e. not in the cave passage) -
+e.g. a radiolocation leg isn't surface, but it isn't in the cave
+itself either.  You could just call it surface though...
+
+station flags: fixed point / "important" - e.g. top camp "fixed" point
+/ ? surface/underground (a station can be both) (inferable from legs)
+/ entrance (implied by surface/ug join, but better to specify as caves
+with no surf svy and also situations in which multiple surveys leave
+an entrance) / exported
+
+junction,deadend (inferable from order) / articulation pt (know for
+nodes I think a station is if at least one of its nodes is)
+
+legs: surface/duplicate/splay
+
+legs: implied: inloop/plumb/nosurvey, diving, other styles
+
+legs: "dubious" for "tapeless" legs - bearing along continuation...
+
+legs: hydrology - fossil/active/not recorded/static water/underwater
+(sump) [diving uderw by default? except style can mean altimeter
+too...]
+
+legs: floor type - mud/sand/breakdown/flowstone/etc and can then used
+LRUD to draw crude survey...
+
+legs: "commented out" flag?  syntax check data but otherwise ignore
 

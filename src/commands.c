@@ -608,6 +608,7 @@ cmd_fix(void)
 	    name->stn = fixpt;
 	    name->up = NULL;
 	    name->min_export = name->max_export = 0;
+	    name->sflags = 0;
 	    add_stn_to_list(&stnlist, fixpt);
 	    POS(fixpt, 0) = x;
 	    POS(fixpt, 1) = y;
@@ -704,6 +705,7 @@ cmd_flags(void)
    static sztok flagtab[] = {
 	{"DUPLICATE", FLAGS_DUPLICATE },
 	{"NOT",	      FLAGS_NOT },
+	{"SPLAY",     FLAGS_SPLAY },
 	{"SURFACE",   FLAGS_SURFACE },
 	{NULL,        FLAGS_UNKNOWN }
    };
@@ -1016,11 +1018,11 @@ cmd_data(void)
        *   IGNORE,NEXT (duplicates allowed)
        *   END,IGNOREALL (not possible)
        */
-      if (d == Next && (mUsed & BIT(Back))) {
+      if (d == Next && TSTBIT(mUsed. Back)) {
 	 /* FIXME: "... back ... next ..." not allowed */
       }
 # define mask_dup_ok (BIT(Ignore) | BIT(End) | BIT(IgnoreAll) | BIT(Next))
-      if (!(mask_dup_ok & BIT(d))) {
+      if (!TSTBIT(mask_dup_ok, d)) {
 #else
       /* check for duplicates unless it's IGNORE (duplicates allowed) */
       /* or End/IGNOREALL (not possible) */
@@ -1035,7 +1037,7 @@ cmd_data(void)
 	 }
 # endif
 #endif
-	 if (mUsed & BIT(d)) {
+	 if (TSTBIT(mUsed, d)) {
 	    compile_error(/*Duplicate reading `%s'*/67, buffer);
 	 } else {
 	    mUsed |= BIT(d); /* used to catch duplicates */
@@ -1047,7 +1049,7 @@ cmd_data(void)
       }
       new_order[k++] = d;
 #define mask_done (BIT(End) | BIT(IgnoreAll))
-   } while (!(mask_done & BIT(d)));
+   } while (!TSTBIT(mask_done, d));
 
    if ((mUsed | mask_optional[style-1]) != mask[style-1]) {
       osfree(new_order);
@@ -1112,8 +1114,8 @@ cmd_units(void)
    if (units == UNITS_NULL) return;
    factor *= factor_tab[units];
 
-   if (((qmask & LEN_QMASK) && !(BIT(units) & LEN_UMASK)) ||
-       ((qmask & ANG_QMASK) && !(BIT(units) & ANG_UMASK))) {
+   if (((qmask & LEN_QMASK) && !TSTBIT(LEN_UMASK, units)) ||
+       ((qmask & ANG_QMASK) && !TSTBIT(ANG_UMASK, units))) {
       compile_error(/*Invalid units `%s' for quantity*/37, buffer);
       return;
    }
@@ -1152,7 +1154,7 @@ cmd_calibrate(void)
    if (sc == HUGE_REAL) sc = (real)1.0;
    /* check for declination scale */
    /* perhaps "*scale declination XXX" should be "*declination XXX" ? */
-   if ((qmask & BIT(Q_DECLINATION)) && sc != 1.0) {
+   if (TSTBIT(qmask, Q_DECLINATION) && sc != 1.0) {
       compile_error(/*Scale factor must be 1.0 for DECLINATION*/40);
       skipline();
       return;
@@ -1240,8 +1242,8 @@ cmd_sd(void)
    get_token();
    units = match_units();
    if (units == UNITS_NULL) return;
-   if (((qmask & LEN_QMASK) && !(BIT(units) & LEN_UMASK)) ||
-       ((qmask & ANG_QMASK) && !(BIT(units) & ANG_UMASK))) {
+   if (((qmask & LEN_QMASK) && !TSTBIT(LEN_UMASK, units)) ||
+       ((qmask & ANG_QMASK) && !TSTBIT(ANG_UMASK, units))) {
       compile_error(/*Invalid units `%s' for quantity*/37, buffer);
       skipline();
       return;

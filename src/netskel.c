@@ -443,12 +443,19 @@ replace_travs(void)
 	     !(leg->l.reverse & FLAG_REPLACEMENTLEG) && !fZero(&leg->v)) {
 	    if (fixed(stn1)) {
 	       stn2 = leg->l.to;
+	       if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+		  stn1->name->sflags |= BIT(SFLAGS_SURFACE);
+		  stn2->name->sflags |= BIT(SFLAGS_SURFACE);
+	       } else {
+		  stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+		  stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	       }
 #ifdef NEW3DFORMAT
 	       if (!fUseNewFormat) {
 #endif
-	       img_write_item(pimgOut, img_MOVE, NULL,
+	       img_write_item(pimgOut, img_MOVE, 0, NULL,
 			      POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-	       img_write_item(pimgOut, img_LINE, (char *)&leg->l.flags,
+	       img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 #ifdef NEW3DFORMAT
 	       }
@@ -557,7 +564,7 @@ replace_travs(void)
 #ifdef NEW3DFORMAT
  	 if (!fUseNewFormat) {
 #endif
-	    img_write_item(pimgOut, img_MOVE, NULL,
+	    img_write_item(pimgOut, img_MOVE, 0, NULL,
 			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 #ifdef NEW3DFORMAT
  	 }
@@ -627,10 +634,17 @@ replace_travs(void)
 	       adddd(&POSD(stn3), &POSD(stn3), &e);
 	    }
 	    fix(stn3);
+	    if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+	       stn1->name->sflags |= BIT(SFLAGS_SURFACE);
+	       stn3->name->sflags |= BIT(SFLAGS_SURFACE);
+	    } else {
+	       stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	       stn3->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	    }
 #ifdef NEW3DFORMAT
  	    if (!fUseNewFormat) {
 #endif
-	       img_write_item(pimgOut, img_LINE, (char *)&leg->l.flags,
+	       img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
 			      POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
 #ifdef NEW3DFORMAT
  	    }
@@ -680,10 +694,17 @@ replace_travs(void)
 	    stn1 = stn3;
 	 } /* endwhile */
 
+	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+	    stn1->name->sflags |= BIT(SFLAGS_SURFACE);
+	    stn2->name->sflags |= BIT(SFLAGS_SURFACE);
+	 } else {
+	    stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	    stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	 }
 #ifdef NEW3DFORMAT
  	 if (!fUseNewFormat) {
 #endif
-	    img_write_item(pimgOut, img_LINE, (char *)&leg->l.flags,
+	    img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
 			   POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 #ifdef NEW3DFORMAT
  	 }
@@ -823,7 +844,7 @@ replace_trailing_travs(void)
 #ifdef NEW3DFORMAT
 	 if (!fUseNewFormat) {
 #endif
-	    img_write_item(pimgOut, img_MOVE, NULL,
+	    img_write_item(pimgOut, img_MOVE, 0, NULL,
 			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 #ifdef NEW3DFORMAT
  	 }
@@ -849,10 +870,17 @@ replace_trailing_travs(void)
 
 	    fix(stn2);
 	    add_stn_to_list(&stnlist, stn2);
+	    if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+	       stn1->name->sflags |= BIT(SFLAGS_SURFACE);
+	       stn2->name->sflags |= BIT(SFLAGS_SURFACE);
+	    } else {
+	       stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	       stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	    }
 #ifdef NEW3DFORMAT
 	    if (!fUseNewFormat) {
 #endif
-	       img_write_item(pimgOut, img_LINE, (char *)&leg->l.flags,
+	       img_write_item(pimgOut, img_LINE, leg->l.flags, NULL,
 			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 #ifdef NEW3DFORMAT
  	    }
@@ -879,10 +907,19 @@ replace_trailing_travs(void)
    while (nosurveyhead) {
       nosurveylink *p = nosurveyhead;
       if (fixed(p->fr) && fixed(p->to)) {
-	 img_write_item(pimgOut, img_MOVE, NULL,
+#if 0
+	 if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
+	    p->fr->name->sflags |= BIT(SFLAGS_SURFACE);
+	    p->to->name->sflags |= BIT(SFLAGS_SURFACE);
+	 } else {
+	    p->fr->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	    p->to->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	 }
+#endif
+	 img_write_item(pimgOut, img_MOVE, 0, NULL,
 			POS(p->fr, 0), POS(p->fr, 1), POS(p->fr, 2));
 	 /* FIXME: flags? */
-	 img_write_item(pimgOut, img_LINE, NULL,
+	 img_write_item(pimgOut, img_LINE, 0, NULL,
 			POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
       }
       nosurveyhead = p->next;
@@ -899,10 +936,13 @@ replace_trailing_travs(void)
 	 /* take care of unused fixed points */
 #ifdef NEW3DFORMAT
 	 if (!fUseNewFormat) {
-#endif
-	 if (stn1->name->stn == stn1)
-	    img_write_item(pimgOut, img_LABEL, sprint_prefix(stn1->name),
+#endif	 
+	 if (stn1->name->stn == stn1) {
+	    /* FIXME: stn flags mask... */
+	    img_write_item(pimgOut, img_LABEL, stn1->name->sflags & 0xff,
+			   sprint_prefix(stn1->name),
 			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+	 }
 #ifdef NEW3DFORMAT
 	 }
 #endif
@@ -959,7 +999,9 @@ replace_trailing_travs(void)
 	    legRev = stnB->leg[iB];
 	    ASSERT2(legRev->l.to == stn1, "leg doesn't reciprocate");
 	    if (fixed(stn1) &&
-		!(leg->l.flags & (BIT(FLAGS_DUPLICATE)|BIT(FLAGS_SURFACE)))) {
+		!(leg->l.flags &
+		  (BIT(FLAGS_DUPLICATE)|BIT(FLAGS_SPLAY)|
+		   BIT(FLAGS_SURFACE)))) {
 	       /* check not an equating leg */
 	       if (!fZero(&leg->v)) {
 		  totadj += sqrt(sqrd(POS(stnB, 0) - POS(stn1, 0)) +

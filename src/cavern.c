@@ -168,8 +168,7 @@ main(int argc, char **argv)
    /* FIXME: shouldn't need to set this really, but need to check that nothing assumes the value of root->ident isn't "" */
    root->ident = "\\";
    root->min_export = root->max_export = 0;
-   root->fSuspectTypo = fFalse;
-   root->fSurvey = fTrue;
+   root->sflags = BIT(SFLAGS_SURVEY);
    root->filename = NULL;
 
    nosurveyhead = NULL;

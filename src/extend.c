@@ -38,18 +38,20 @@ typedef struct POINT {
    img_point p;
    const char *label;
    unsigned int order;
+   int flags;
    struct POINT *next;
 } point;
 
 typedef struct LEG {
    point *fr, *to;
-   struct LEG *next;
    int fDone;
+   int flags;
+   struct LEG *next;
 } leg;
 
-static point headpoint = {{0, 0, 0}, NULL, 0, NULL};
+static point headpoint = {{0, 0, 0}, NULL, 0, 0, NULL};
 
-static leg headleg = {NULL, NULL, NULL, 1};
+static leg headleg = {NULL, NULL, 1, 0, NULL};
 
 static img *pimg;
 
@@ -71,26 +73,29 @@ find_point(const img_point *pt)
    p->label = "<none>";
    p->order = 1;
    p->next = headpoint.next;
+   p->flags = 0;
    headpoint.next = p;
    return p;
 }
 
 static void
-add_leg(point *fr, point *to)
+add_leg(point *fr, point *to, int flags)
 {
-   leg *p;
-   p = osmalloc(ossizeof(leg));
-   p->fr = fr;
-   p->to = to;
-   p->next = headleg.next;
-   p->fDone = 0;
-   headleg.next = p;
+   leg *l;
+   l = osmalloc(ossizeof(leg));
+   l->fr = fr;
+   l->to = to;
+   l->next = headleg.next;
+   l->fDone = 0;
+   l->flags = flags;
+   headleg.next = l;
 }
 
 static void
-add_label(point *p, const char *label)
+add_label(point *p, const char *label, int flags)
 {
    p->label = osstrdup(label);
+   p->flags = flags;
 }
 
 static const struct option long_opts[] = {
@@ -155,7 +160,8 @@ main(int argc, char **argv)
        	    exit(1);
        	 }
          to = find_point(&pt);
-         if (!(pimg->flags & img_FLAG_SURFACE)) add_leg(fr, to);
+         if (!(pimg->flags & (img_FLAG_SURFACE|img_FLAG_SPLAY)))
+	    add_leg(fr, to, pimg->flags);
          fr = to;
          break;
       case img_CROSS:
@@ -164,7 +170,7 @@ main(int argc, char **argv)
          break;
       case img_LABEL:
          fr = find_point(&pt);
-         add_label(fr, pimg->label);
+         add_label(fr, pimg->label, pimg->flags);
          break;
       }
    } while (result != img_BAD && result != img_STOP);
@@ -205,7 +211,7 @@ do_stn(point *p, double X)
 {
    leg *l, *lp;
    double dX;
-   img_write_item(pimg, img_LABEL, p->label, X, 0, p->p.z);
+   img_write_item(pimg, img_LABEL, p->flags, p->label, X, 0, p->p.z);
    lp = &headleg;
    for (l = lp->next; l; lp = l, l = lp->next) {
       if (l->fDone) {
@@ -216,8 +222,8 @@ do_stn(point *p, double X)
          if (l->to == p) {
             lp->next = l->next;
             dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-            img_write_item(pimg, img_MOVE, NULL, X + dX, 0, l->fr->p.z);
-            img_write_item(pimg, img_LINE, NULL, X, 0, l->to->p.z);
+            img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
+            img_write_item(pimg, img_LINE, l->flags, NULL, X, 0, l->to->p.z);
             l->fDone = 1;
             do_stn(l->fr, X + dX);
 	    /* osfree(l); */
@@ -225,8 +231,8 @@ do_stn(point *p, double X)
          } else if (l->fr == p) {
             lp->next = l->next;
             dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-            img_write_item(pimg, img_MOVE, NULL, X, 0, l->fr->p.z);
-            img_write_item(pimg, img_LINE, NULL, X + dX, 0, l->to->p.z);
+            img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
+            img_write_item(pimg, img_LINE, l->flags, NULL, X + dX, 0, l->to->p.z);
             l->fDone = 1;
             do_stn(l->to, X + dX);
 	    /* osfree(l); */

@@ -135,7 +135,7 @@ img_error(void)
 #endif
 
 img *
-img_open(const char *fnm, char *title_buf, char *szDateStamp)
+img_open(const char *fnm, char *title_buf, char *date_buf)
 {
    img *pimg;
 
@@ -188,7 +188,7 @@ img_open(const char *fnm, char *title_buf, char *szDateStamp)
    }
    /* FIXME sizeof parameter is rather bogus here */
    getline((title_buf ? title_buf : tmpbuf), TMPBUFLEN, pimg->fh);
-   getline((szDateStamp ? szDateStamp : tmpbuf), TMPBUFLEN, pimg->fh);
+   getline((date_buf ? date_buf : tmpbuf), TMPBUFLEN, pimg->fh);
    pimg->fLinePending = fFalse; /* not in the middle of a 'LINE' command */
    pimg->fRead = fTrue; /* reading from this file */
    img_errno = IMG_NONE;
@@ -266,6 +266,7 @@ img_read_item(img *pimg, img_point *p)
    static double x = 0.0, y = 0.0, z = 0.0;
    static long opt_lookahead = 0;
    int result;
+   pimg->flags = 0;
    if (pimg->version > 0) {
       long opt;
       again: /* label to goto if we get a cross */
@@ -297,9 +298,10 @@ img_read_item(img *pimg, img_point *p)
 	 if (opt == 2) goto done;
 	 break;
        }
-       case 6: {
+       case 6: case 7: {
 	 size_t len;
 	 result = img_LABEL;
+	 if (opt == 7) pimg->flags = getc(pimg->fh);
 	 len = get32(pimg->fh);
 	 if (len >= pimg->buf_len) {
 	    pimg->label = xosrealloc(pimg->label, len + 1);
@@ -314,15 +316,31 @@ img_read_item(img *pimg, img_point *p)
        }
        case 4:
 	 result = img_MOVE;
-         pimg->flags = 0;
 	 break;
        case 5:
 	 result = img_LINE;
 	 break;
        default:
-	 if (!(opt & 0x80)) return img_BAD;
-	 pimg->flags = (int)opt & 0x7f;
-	 result = img_LINE;
+	 switch ((int)opt & 0xc0) {
+	  case 0x80:
+	    pimg->flags = (int)opt & 0x3f;
+	    result = img_LINE;
+	    break;
+	  case 0x40: {
+	    char *q;
+	    pimg->flags = (int)opt & 0x3f;
+	    result = img_LABEL;
+	    fgets(pimg->label, 257, pimg->fh);
+	    q = pimg->label + strlen(pimg->label) - 1;
+	    if (*q != '\n') return img_BAD;
+	    *q = '\0';
+	    break;
+	  }
+	  case 0xc0:
+	    /* use this for an extra leg or station flag if we need it */
+	  default:
+	    return img_BAD;
+	 }
 	 break;
       }
       x = get32(pimg->fh) / 100.0;
@@ -376,7 +394,7 @@ img_read_item(img *pimg, img_point *p)
 }
 
 void
-img_write_item(img *pimg, int code, const char *s,
+img_write_item(img *pimg, int code, int flags, const char *s,
 	       double x, double y, double z)
 {
    if (!pimg) return;
@@ -388,21 +406,23 @@ img_write_item(img *pimg, int code, const char *s,
        case img_LABEL:
 	 if (pimg->version == 1) {
 	    /* put a move before each label */
-	    img_write_item(pimg, img_MOVE, NULL, x, y, z);
+	    img_write_item(pimg, img_MOVE, 0, NULL, x, y, z);
 	    put32(2, pimg->fh);
 	    fputsnl(s, pimg->fh);
 	    return;
 	 }
+	 /* FIXME: handle flags... */
 	 len = strlen(s);
 	 if (len > 255 || strchr(s, '\n')) {
 	    /* long label - not in early incarnations of v2 format, but few
 	     * 3d files will need these, so better not to force incompatibility
 	     * with a new version I think... */
-	    putc(6, pimg->fh);
+	    putc(7, pimg->fh);
+	    putc(flags, pimg->fh);
 	    put32(len, pimg->fh);
 	    fputs(s, pimg->fh);
 	 } else {
-	    putc(3, pimg->fh);
+	    putc(0x40 | (flags & 0x3f), pimg->fh);
 	    fputsnl(s, pimg->fh);
 	 }
 	 opt = 0;
@@ -412,8 +432,8 @@ img_write_item(img *pimg, int code, const char *s,
 	 break;
        case img_LINE:
          if (pimg->version > 1) {
-	    opt = 128;
-	    if (s) opt |= *s;
+	    opt = 0x80;
+	    opt |= (flags & 0x3f);
 	    break;
          }
 	 opt = 5;

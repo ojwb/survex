@@ -432,9 +432,9 @@ stack_string(const char *s)
 static int
 read_in_data(void)
 {
-   img_point p;
+   bool fMove = fFalse;
+   img_point p, p_move;
    int result;
-
    do {
       result = img_read_item(pimg, &p);
       switch (result) {
@@ -442,14 +442,19 @@ read_in_data(void)
 	 return 0;
          /* break; */
        case img_LINE:
-	 /* if we're not plotting surface legs, and this is a surface leg */
-         if (!fSurface && (pimg->flags & img_FLAG_SURFACE))
-	    stack(img_MOVE, &p);
-	 else
+	 /* if we're plotting surface legs or this isn't a surface leg */
+         if (fSurface || !(pimg->flags & img_FLAG_SURFACE)) {
+	    if (fMove) {
+	       fMove = fFalse;
+	       stack(img_MOVE, &p_move);
+	    }
 	    stack(img_LINE, &p);
-         break;
+	    break;
+	 }
+	 /* FALLTHRU */
        case img_MOVE:
-	 stack(img_MOVE, &p);
+	 p_move = p;
+	 fMove = fTrue;
          break;
        case img_CROSS:
          /* use img_LABEL to posn CROSS - newer .3d files don't have

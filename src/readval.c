@@ -153,8 +153,9 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 	 ptr->up = back_ptr;
 	 ptr->filename = NULL;
 	 ptr->min_export = ptr->max_export = 0;
-	 ptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
-	 ptr->fSurvey = fTrue;
+	 ptr->sflags = BIT(SFLAGS_SURVEY);
+	 if (fSuspectTypo && !fImplicitPrefix)
+	    ptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	 back_ptr->down = ptr;
 	 fNew = fTrue;
 #ifdef NEW3DFORMAT
@@ -184,8 +185,9 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
 	    newptr->up = back_ptr;
 	    newptr->filename = NULL;
   	    newptr->min_export = newptr->max_export = 0;
-	    newptr->fSuspectTypo = fSuspectTypo && !fImplicitPrefix;
-	    newptr->fSurvey = fTrue;
+	    newptr->sflags = BIT(SFLAGS_SURVEY);
+	    if (fSuspectTypo && !fImplicitPrefix)
+	       newptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	    ptr = newptr;
 	    fNew = fTrue;
 #ifdef NEW3DFORMAT
@@ -199,13 +201,15 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo)
       fOmit = fFalse; /* disallow after first level */
    } while (isSep(ch));
    /* don't warn about a station that is refered to twice */
-   if (!fNew) ptr->fSuspectTypo = fFalse;
+   if (!fNew) ptr->sflags &= ~BIT(SFLAGS_SUSPECTTYPO);
    
    if (fNew) {
-      ptr->fSurvey = fSurvey;
+      /* fNew means SFLAGS_SURVEY is currently set */
+      ASSERT(TSTBIT(ptr->sflags, SFLAGS_SURVEY));
+      if (!fSurvey) ptr->sflags &= ~BIT(SFLAGS_SURVEY);
    } else {
       /* check that the same name isn't being used for a survey and station */
-      if (fSurvey ^ ptr->fSurvey) {
+      if (fSurvey ^ TSTBIT(ptr->sflags, SFLAGS_SURVEY)) {
 	 compile_error(/*`%s' can't be both a station and a survey*/27,
 		       sprint_prefix(ptr));
       }

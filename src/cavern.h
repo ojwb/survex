@@ -108,10 +108,18 @@ typedef enum {
    UNITS_DEGS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES, UNITS_MAC
 } u_units;
 
-/* don't reorder these values! */
+/* don't reorder these values!  They need to match with img.h too */
 typedef enum {
-   FLAGS_NOT = -2, FLAGS_UNKNOWN = -1, FLAGS_SURFACE, FLAGS_DUPLICATE
+   FLAGS_NOT = -2, FLAGS_UNKNOWN = -1, FLAGS_SURFACE, FLAGS_DUPLICATE,
+   FLAGS_SPLAY
 } flags;
+
+/* don't reorder these values!  They need to match with img.h too */
+typedef enum {
+   SFLAGS_SURFACE, SFLAGS_UNDERGROUND,
+   SFLAGS_ENTRANCE,
+   SFLAGS_SUSPECTTYPO = 14, SFLAGS_SURVEY = 15
+} sflags;
 
 /* enumeration of field types */
 typedef enum {
@@ -152,13 +160,9 @@ typedef struct Prefix {
     * have got (if min_export > 1 after a run, this prefix hasn't been
     * exported from below enough) */
    unsigned char max_export, min_export;
-   /* If a survey leg or an *equate command refers to a station using a
-    * prefix, and that station isn't refered to elsewhere, it's likely
-    * that the user has cocked up the prefix in some way.
-    */
-   unsigned char fSuspectTypo;
-   /* non-zero for a survey; zero for a station */
-   unsigned char fSurvey;
+   /* stn flags - e.g. surface, underground, entrance
+    * also suspecttypo and survey */
+   unsigned short sflags;   
 #ifdef NEW3DFORMAT
    twig *twig_link;
 #endif

@@ -1,11 +1,15 @@
-* extend: ignore surface legs.
-
 * (MS Windows version): aven: if there are problems opening the
   message file, report them in a message box rather than printing text
   which the user will never see.
 
 * cavern: invalid data lines weren't being counted, so you'd get
   incorrect line numbers reported for further errors and warnings.
+
+* cavern: Added a SPLAY flag for indicating splay shots in chambers
+  and large passages.
+
+* extend: ignore surface legs and splay legs; preserve duplicate flag
+  on extended legs.
 
 Changes in 0.97-prerelease5:
 
