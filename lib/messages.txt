@@ -1064,13 +1064,7 @@ pt:120 Calculando estat&iacute;sticas
 ca:120 Calculant estad&iacute;stiques
 es:120 Calculando estad&iacute;sticas
 it:120 Sto calcolando le statistiche
-en:121 Writing out 3d image file `%s'
-fr:121 Ecriture du fichier 3d `%s'
-de:121 3D-Bilddatei `%s' wird abgespeichert
-pt:121 Gravando arquivo de imagem 3d `%s'
-ca:121 Escrivint el fitxer d'imatge 3d `%s'
-es:121 Gravando el fichero de imagen 3d `%s'
-it:121 Sto scrivendo il file d'immagine 3d `%s'
+# XXX121
 # TRANSLATE
 en:122 too few arguments
 # TRANSLATE
@@ -2599,3 +2593,10 @@ it:1004 Memoria insufficiente (ci vorrebbero altri %lu bytes).
 #ca: 89 Ingnorant la resta de la l&iacute;nia
 #es: 89 Ignorando el resto de la l&iacute;nea
 #it: 89 Resto della linea ignorato
+#en:121 Writing out 3d image file `%s'
+#fr:121 Ecriture du fichier 3d `%s'
+#de:121 3D-Bilddatei `%s' wird abgespeichert
+#pt:121 Gravando arquivo de imagem 3d `%s'
+#ca:121 Escrivint el fitxer d'imatge 3d `%s'
+#es:121 Gravando el fichero de imagen 3d `%s'
+#it:121 Sto scrivendo il file d'immagine 3d `%s'

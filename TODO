@@ -14,12 +14,7 @@ chase up zombies again?
 
 resolve entries in TODO; resolve FIXMEs in code
 
-test diving data with compass omitted (plumbed)
-
 use "highest" title
-
-Tests these commands:
- DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET TITLE
 
 If there are errors, existing .inf file isn't removed, but
 existing .3d and .err files are...
@@ -31,8 +26,6 @@ complain about *export-ing or *entrance-ing fictional stations
 ?outlaw prefixes on stations in data legs (as Todd has lobbied for)
 and then the prefix of a leg == prefix of each end...?
 
-'Writing out 3d image file all.3d'... - but may get deleted if errors...
-
 Date: Tue, 01 May 2001
 Subject: caverot/xcaverot/aven ideas
 From: Wookey, Olly
@@ -41,8 +34,6 @@ From: Wookey, Olly
 fixed points)?
 
 click on station to centre; type in station to centre
-
-improve 3d torture test and try to automate its use if possible.
 
 label junctions/dead ends
 
@@ -97,10 +88,6 @@ extract help screen from caverot.c for translation
 caverot help page needs fettling so that it appears centrally (and indeed
 so that it all fits on the screen in chunky CGA modes) [BC fns to look at:
 textheight("W"), textwidth(), settextstyle()]
-
-caverot: on RISC OS now fall back to using 2 or even just one screen
-bank if we can't find a mode where we can create 3 banks [FIXME: need
-to test this works]
 
 Date: Fri, 04 May 2001
 Subject: manual
@@ -188,8 +175,6 @@ check line numbers with interleaved data (seem to be one too low).
 
 Maybe station lists should know how long they are?
 
-tests for direction - should direction work in non-interleaved data?
-
 finish implementing covariances in a few places - grep for FIXCOV.
 
 get Phil to fix where it says PHILU...
@@ -243,4 +228,20 @@ Date: Fri, 20 Jul 2001
 From: Olly
 
 Look into rounding of coords written to .3d files - e.g. tests/oneleg.svx.
+
+Date: Sun, 22 Jul 2001
+From: Olly
+
+test diving data with compass omitted (plumbed)
+
+Tests these commands:
+ DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET TITLE
+
+tests for direction - should direction work in non-interleaved data?
+
+improve 3d torture test and try to automate its use if possible.
+
+caverot: on RISC OS now fall back to using 2 or even just one screen
+bank if we can't find a mode where we can create 3 banks [FIXME: need
+to test this works]
 

@@ -410,14 +410,12 @@ replace_travs(void)
 	 fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3DX);
       } else {
 #endif
-      fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3D);
+	 fnmImg3D = add_ext(fnm_output_base, EXT_SVX_3D);
 #ifdef NEW3DFORMAT
       }
 #endif
       filename_register_output(fnmImg3D);
 
-      sprintf(buf, msg(/*Writing out 3d image file `%s'*/121), fnmImg3D);
-      out_current_action(buf);
 #ifdef NEW3DFORMAT
       if (fUseNewFormat) {
 	 pimg = cave_open_write(fnmImg3D, survey_title);
