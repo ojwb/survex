@@ -643,12 +643,12 @@ void GfxCore::DrawGrid()
 */
 }
 
-glaCoord GfxCore::GetClinoOffset()
+glaCoord GfxCore::GetClinoOffset() const
 {
     return m_Compass ? CLINO_OFFSET_X : INDICATOR_OFFSET_X;
 }
 
-wxPoint GfxCore::CompassPtToScreen(Double x, Double y, Double z)
+wxPoint GfxCore::CompassPtToScreen(Double x, Double y, Double z) const
 {
     /*return wxPoint(long(-XToScreen(x, y, z)) + m_XSize - COMPASS_OFFSET_X,
                    long(ZToScreen(x, y, z)) + m_YSize - COMPASS_OFFSET_Y);*/
@@ -656,7 +656,7 @@ wxPoint GfxCore::CompassPtToScreen(Double x, Double y, Double z)
     return wxPoint(0, 0);
 }
 
-GLAPoint GfxCore::IndicatorCompassToScreenPan(int angle)
+GLAPoint GfxCore::IndicatorCompassToScreenPan(int angle) const
 {
     Double theta = (angle * M_PI / 180.0) + m_PanAngle;
     glaCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
@@ -667,7 +667,7 @@ GLAPoint GfxCore::IndicatorCompassToScreenPan(int angle)
                     -m_YSize/2 + INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
 }
 
-GLAPoint GfxCore::IndicatorCompassToScreenElev(int angle)
+GLAPoint GfxCore::IndicatorCompassToScreenElev(int angle) const
 {
     Double theta = (angle * M_PI / 180.0) + m_TiltAngle + M_PI_2;
     glaCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
@@ -1516,56 +1516,56 @@ void GfxCore::SetCoords(wxPoint point)
     }
 }
 
-bool GfxCore::ChangingOrientation()
+bool GfxCore::ChangingOrientation() const
 {
     // Determine whether the cave is currently moving between orientations.
 
     return (m_SwitchingTo != 0);
 }
 
-bool GfxCore::ShowingCompass()
+bool GfxCore::ShowingCompass() const
 {
     // Determine whether the compass is currently shown.
 
     return m_Compass;
 }
 
-bool GfxCore::ShowingClino()
+bool GfxCore::ShowingClino() const
 {
     // Determine whether the clino is currently shown.
 
     return m_Clino;
 }
 
-wxCoord GfxCore::GetCompassXPosition()
+wxCoord GfxCore::GetCompassXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window coordinates.
     
     return m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
 }
 
-glaCoord GfxCore::GetClinoXPosition()
+glaCoord GfxCore::GetClinoXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window coordinates.
 
     return m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2;
 }
 
-wxCoord GfxCore::GetIndicatorYPosition()
+wxCoord GfxCore::GetIndicatorYPosition() const
 {
     // Return the y-coordinate of the centre of the indicators in window coordinates.
 
     return m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
 }
 
-wxCoord GfxCore::GetIndicatorRadius()
+wxCoord GfxCore::GetIndicatorRadius() const
 {
     // Return the radius of each indicator.
     
     return (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
 }
 
-bool GfxCore::PointWithinCompass(wxPoint point)
+bool GfxCore::PointWithinCompass(wxPoint point) const
 {
     // Determine whether a point (in window coordinates) lies within the compass.
 
@@ -1576,7 +1576,7 @@ bool GfxCore::PointWithinCompass(wxPoint point)
     return (dx * dx + dy * dy <= radius * radius);
 }
 
-bool GfxCore::PointWithinClino(wxPoint point)
+bool GfxCore::PointWithinClino(wxPoint point) const
 {
     // Determine whether a point (in window coordinates) lies within the clino.
 
@@ -1587,7 +1587,7 @@ bool GfxCore::PointWithinClino(wxPoint point)
     return (dx * dx + dy * dy <= radius * radius);
 }
 
-bool GfxCore::PointWithinScaleBar(wxPoint point)
+bool GfxCore::PointWithinScaleBar(wxPoint point) const
 {
     // Determine whether a point (in window coordinates) lies within the scale bar.
 
@@ -1697,7 +1697,7 @@ void GfxCore::StopRotation()
     ForceRefresh();
 }
 
-bool GfxCore::CanRotate()
+bool GfxCore::CanRotate() const
 {
     // Determine if the survey may be rotated.
 
@@ -1775,35 +1775,35 @@ void GfxCore::SwitchToPlan()
     }
 }
 
-bool GfxCore::CanRaiseViewpoint()
+bool GfxCore::CanRaiseViewpoint() const
 {
     // Determine if the survey can be viewed from a higher angle of elevation.
     
     return (m_TiltAngle < M_PI_2);
 }
 
-bool GfxCore::CanLowerViewpoint()
+bool GfxCore::CanLowerViewpoint() const
 {
     // Determine if the survey can be viewed from a lower angle of elevation.
 
     return (m_TiltAngle > -M_PI_2);
 }
 
-bool GfxCore::ShowingPlan()
+bool GfxCore::ShowingPlan() const
 {
     // Determine if the survey is in plan view.
     
     return (m_TiltAngle == M_PI_2);
 }
 
-bool GfxCore::ShowingElevation()
+bool GfxCore::ShowingElevation() const
 {
     // Determine if the survey is in elevation view.
     
     return (m_TiltAngle == 0.0);
 }
 
-bool GfxCore::ShowingMeasuringLine()
+bool GfxCore::ShowingMeasuringLine() const
 {
     // Determine if the measuring line is being shown.
     
@@ -1818,17 +1818,17 @@ void GfxCore::ToggleFlag(bool* flag, bool refresh)
     }
 }
 
-int GfxCore::GetNumEntrances()
+int GfxCore::GetNumEntrances() const
 {
     return m_Parent->GetNumEntrances();
 }
 
-int GfxCore::GetNumFixedPts()
+int GfxCore::GetNumFixedPts() const
 {
     return m_Parent->GetNumFixedPts();
 }
 
-int GfxCore::GetNumExportedPts()
+int GfxCore::GetNumExportedPts() const
 {
     return m_Parent->GetNumExportedPts();
 }
@@ -2048,6 +2048,21 @@ void GfxCore::PlaceVertexWithColour(Double x, Double y, Double z, Double factor)
     PlaceVertex(x, y, z);
 }
 
+static void IntersectLineWithPlane(Double x0, Double y0, Double z0,
+				   Double x1, Double y1, Double z1,
+				   Double z, Double& x, Double& y)
+{
+    // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1)
+    // with the plane parallel to the xy-plane with z-axis intersection z.
+    assert(z1 - z0 != 0.0);
+
+    Double t = (z - z0) / (z1 - z0);
+    assert(0.0 <= t && t <= 1.0);
+
+    x = x0 + t * (x1 - x0);
+    y = y0 + t * (y1 - y0);
+}
+
 static const Vector3 light(1.0, 1.0, 1.0);
 
 void GfxCore::SplitLineAcrossBands(int band, int band2,
@@ -2065,7 +2080,7 @@ void GfxCore::SplitLineAcrossBands(int band, int band2,
     }
 }
 
-int GfxCore::GetDepthColour(Double z)
+int GfxCore::GetDepthColour(Double z) const
 {
     // Return the (0-based) depth colour band index for a z-coordinate.
     Double z_ext = m_Parent->GetZExtent();
@@ -2073,7 +2088,7 @@ int GfxCore::GetDepthColour(Double z)
     return int((z / (z_ext == 0.0 ? 1.0 : z_ext)) * (m_Bands - 1));
 }
 
-Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b)
+Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
 {
     // Return the z-coordinate of the depth colour boundary between
     // two adjacent depth colour bands (specified by 0-based indices).
@@ -2087,7 +2102,7 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b)
 }
 
 void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
-			   const Vector3 &c, const Vector3 &d)
+			       const Vector3 &c, const Vector3 &d)
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
@@ -2119,21 +2134,6 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 	SplitLineAcrossBands(d_band, a_band, d, a, factor);
     }
     EndPolygon();
-}
-
-void GfxCore::IntersectLineWithPlane(Double x0, Double y0, Double z0,
-				     Double x1, Double y1, Double z1,
-				     Double z, Double& x, Double& y)
-{
-    // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1)
-    // with the plane parallel to the xy-plane with z-axis intersection z.
-    assert(z1 - z0 != 0.0);
-
-    Double t = (z - z0) / (z1 - z0);
-    assert(0.0 <= t && t <= 1.0);
-
-    x = x0 + t * (x1 - x0);
-    y = y0 + t * (y1 - y0);
 }
 
 void GfxCore::DrawPolylines(bool depth_colour, int num_polylines,

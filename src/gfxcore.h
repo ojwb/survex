@@ -190,8 +190,8 @@ class GfxCore : public GLACanvas {
 	return GridYToScreen(p.x, p.y, p.z);
     }
 
-    glaCoord GetClinoOffset();
-    wxPoint CompassPtToScreen(Double x, Double y, Double z);
+    glaCoord GetClinoOffset() const;
+    wxPoint CompassPtToScreen(Double x, Double y, Double z) const;
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
@@ -214,8 +214,8 @@ class GfxCore : public GLACanvas {
     void Draw2dIndicators();
     void DrawGrid();
 
-    GLAPoint IndicatorCompassToScreenPan(int angle);
-    GLAPoint IndicatorCompassToScreenElev(int angle);
+    GLAPoint IndicatorCompassToScreenPan(int angle) const;
+    GLAPoint IndicatorCompassToScreenElev(int angle) const;
 
     void DrawNames();
     void NattyDrawNames();
@@ -227,10 +227,10 @@ class GfxCore : public GLACanvas {
 
     void CreateHitTestGrid();
 
-    wxCoord GetCompassXPosition();
-    glaCoord GetClinoXPosition();
-    wxCoord GetIndicatorYPosition();
-    wxCoord GetIndicatorRadius();
+    wxCoord GetCompassXPosition() const;
+    glaCoord GetClinoXPosition() const;
+    wxCoord GetIndicatorYPosition() const;
+    wxCoord GetIndicatorRadius() const;
 
     void ToggleFlag(bool* flag, bool refresh = true);
 
@@ -275,12 +275,12 @@ public:
 
     void SetCoords(wxPoint);
 
-    bool ShowingCompass();
-    bool ShowingClino();
+    bool ShowingCompass() const;
+    bool ShowingClino() const;
     
-    bool PointWithinCompass(wxPoint point);
-    bool PointWithinClino(wxPoint point);
-    bool PointWithinScaleBar(wxPoint point);
+    bool PointWithinCompass(wxPoint point) const;
+    bool PointWithinClino(wxPoint point) const;
+    bool PointWithinScaleBar(wxPoint point) const;
     
     void SetCompassFromPoint(wxPoint point);
     void SetClinoFromPoint(wxPoint point);
@@ -291,21 +291,21 @@ public:
     void StartRotation();
     void ToggleRotation();
     void StopRotation();
-    bool CanRotate();
+    bool CanRotate() const;
     void ReverseRotation();
     void RotateSlower(bool accel);
     void RotateFaster(bool accel);
     
     void SwitchToElevation();
     void SwitchToPlan();
-    bool ChangingOrientation();
+    bool ChangingOrientation() const;
     
-    bool ShowingPlan();
-    bool ShowingElevation();
-    bool ShowingMeasuringLine();
+    bool ShowingPlan() const;
+    bool ShowingElevation() const;
+    bool ShowingMeasuringLine() const;
 
-    bool CanRaiseViewpoint();
-    bool CanLowerViewpoint();
+    bool CanRaiseViewpoint() const;
+    bool CanLowerViewpoint() const;
 
     LockFlags GetLock() const { return m_Lock; }
     bool IsRotating() const { return m_Rotating; }
@@ -333,9 +333,9 @@ public:
     bool ShowingFixedPts() const { return m_FixedPts; }
     bool ShowingExportedPts() const { return m_ExportedPts; }
 
-    int GetNumEntrances();
-    int GetNumFixedPts();
-    int GetNumExportedPts();
+    int GetNumEntrances() const;
+    int GetNumFixedPts() const;
+    int GetNumExportedPts() const;
 
     void ToggleUndergroundLegs() { ToggleFlag(&m_Legs); }
     void ToggleSurfaceLegs() { ToggleFlag(&m_Surface); }
@@ -377,11 +377,8 @@ public:
     void SplitLineAcrossBands(int band, int band2,
 	    		      const Vector3 &p, const Vector3 &p2,
 			      Double factor);
-    int GetDepthColour(Double z);
-    Double GetDepthBoundaryBetweenBands(int a, int b);
-    void IntersectLineWithPlane(Double x0, Double y0, Double z0,
-				Double x1, Double y1, Double z1,
-				Double z, Double& x, Double& y);
+    int GetDepthColour(Double z) const;
+    Double GetDepthBoundaryBetweenBands(int a, int b) const;
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
 			  const Vector3 &c, const Vector3 &d);
 private:
