@@ -50,6 +50,10 @@
 * RISC OS and BorlandC builds now track copyright message and version
   number automatically
 
+* If LANG is set to "en_US", treat it as if it were "en-US"
+
+* Merged in xcaverot changes from John Pybus and Mark Shinwell
+
 Changes in 0.91:
 
 * Fixed problem with message files with accented characters
