@@ -35,7 +35,7 @@
 #include "img.h"
 
 typedef struct POINT {
-   double x, y, z;
+   img_point p;
    char *label;
    unsigned int order;
    struct POINT *next;
@@ -47,7 +47,7 @@ typedef struct LEG {
    int fDone;
 } leg;
 
-static point headpoint = {0, 0, 0, NULL, 0, NULL};
+static point headpoint = {{0, 0, 0}, NULL, 0, NULL};
 
 static leg headleg = {NULL, NULL, NULL, 1};
 
@@ -56,20 +56,18 @@ static img *pimg;
 static void do_stn(point *, double);
 
 static point *
-find_point(double x, double y, double z)
+find_point(const img_point *pt)
 {
    point *p;
    for (p = headpoint.next; p != NULL; p = p->next) {
-      if (x == p->x && y == p->y && z == p->z) {
+      if (pt->x == p->p.x && pt->y == p->p.y && pt->z == p->p.z) {
 	 p->order++;
 	 return p;
       }
    }
 
    p = osmalloc(ossizeof(point));
-   p->x = x;
-   p->y = y;
-   p->z = z;
+   p->p = *pt;
    p->label = "<none>";
    p->order = 1;
    p->next = headpoint.next;
@@ -114,7 +112,7 @@ main(int argc, char **argv)
 {
    const char *fnmData, *fnmOutput;
    char szDesc[256];
-   float x, y, z;
+   img_point pt;
    char sz[256];
    int result;
    point *fr = NULL, *to;
@@ -144,20 +142,20 @@ main(int argc, char **argv)
    puts(msg(/*Reading in data - please wait...*/105));
 
    do {
-      result = img_read_datum(pimg, sz, &x, &y, &z);
+      result = img_read_item(pimg, sz, &pt);
       switch (result) {
       case img_BAD:
          puts(msg(/*Bad 3d image file `%s'*/106));
          break;
       case img_MOVE:
-         fr = find_point(x, y, z);
+         fr = find_point(&pt);
          break;
       case img_LINE:
        	 if (!fr) {
        	    printf("img_LINE before any img_MOVE\n");
        	    exit(1);
        	 }
-         to = find_point(x, y, z);
+         to = find_point(&pt);
          add_leg(fr, to);
          fr = to;
          break;
@@ -166,7 +164,7 @@ main(int argc, char **argv)
           * don't have crosses in */
          break;
       case img_LABEL:
-         fr = find_point(x, y, z);
+         fr = find_point(&pt);
          add_label(fr, sz);
          break;
       }
@@ -176,17 +174,17 @@ main(int argc, char **argv)
 
    /* start at the highest 1-node */
    for (p = headpoint.next; p != NULL; p = p->next) {
-      if (p->order == 1 && p->z > zMax) {
+      if (p->order == 1 && p->p.z > zMax) {
 	 start = p;
-	 zMax = p->z;
+	 zMax = p->p.z;
       }
    }
    /* of course we may have no 1-nodes... */
    if (start == NULL) {
       for (p = headpoint.next; p != NULL; p = p->next) {
-	 if (p->z > zMax && p->order != 0) {
+	 if (p->p.z > zMax && p->order != 0) {
 	    start = p;
-	    zMax = p->z;
+	    zMax = p->p.z;
 	 }
       }
       if (start == NULL) {
@@ -208,22 +206,22 @@ do_stn(point *p, double X)
 {
    leg *l, *lp;
    double dX;
-   img_write_datum(pimg, img_LABEL, p->label, X, 0, p->z);
+   img_write_item(pimg, img_LABEL, p->label, X, 0, p->p.z);
    l = &headleg;
    while (lp = l, (l = l->next) != NULL) {
       if (!l->fDone) { /* otherwise we extend loops multiple times */
          if (l->to == p) {
             lp->next = l->next; /* unlink FIXME ought to free memory too */
-            dX = radius(l->fr->x - l->to->x, l->fr->y - l->to->y);
-            img_write_datum(pimg, img_MOVE, NULL, X + dX, 0, l->fr->z);
-            img_write_datum(pimg, img_LINE, NULL, X, 0, l->to->z);
+            dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+            img_write_item(pimg, img_MOVE, NULL, X + dX, 0, l->fr->p.z);
+            img_write_item(pimg, img_LINE, NULL, X, 0, l->to->p.z);
             l->fDone = 1;
             do_stn(l->fr, X + dX);
          } else if (l->fr == p) {
             lp->next = l->next; /* unlink FIXME ought to free memory too */
-            dX = radius(l->fr->x - l->to->x, l->fr->y - l->to->y);
-            img_write_datum(pimg, img_MOVE, NULL, X, 0, l->fr->z);
-            img_write_datum(pimg, img_LINE, NULL, X + dX, 0, l->to->z);
+            dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+            img_write_item(pimg, img_MOVE, NULL, X, 0, l->fr->p.z);
+            img_write_item(pimg, img_LINE, NULL, X + dX, 0, l->to->p.z);
             l->fDone = 1;
             do_stn(l->to, X + dX);
          }

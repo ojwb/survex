@@ -17,16 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* Function list
-img_open:        opens image file
-img_open_write:  opens new image file and writes header
-img_read_datum:  reads item from image file
-img_write_datum: writes item to image file
-img_close:       close image file
-img_error:       gives message number of error if img_open* returned NULL
-                 [may be overwritten by calls to msg()]
-*/
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -255,7 +245,7 @@ img_open_write(const char *fnm, char *szTitle, bool fBinary)
 }
 
 int
-img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
+img_read_item(img *pimg, char *sz, img_point *p)
 {
    static float x = 0.0f, y = 0.0f, z = 0.0f;
    static long opt_lookahead = 0;
@@ -306,15 +296,14 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
       y = (float)get32(pimg->fh) / 100.0f;
       z = (float)get32(pimg->fh) / 100.0f;
       done:
-      *px = x;
-      *py = y;
-      *pz = z;
+      p->x = x;
+      p->y = y;
+      p->z = z;
 
       if (result == img_MOVE && pimg->version == 1) {
 	 /* peek at next code and see if it's img_LABEL */
          opt_lookahead = get32(pimg->fh);
-	 if (opt_lookahead == img_LABEL)
-	    return img_read_datum(pimg, sz, px, py, pz);
+	 if (opt_lookahead == img_LABEL) return img_read_item(pimg, sz, p);
       }
 	 
       return result;
@@ -336,7 +325,8 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
 	    pimg->fLinePending = fTrue;
 	    result = img_MOVE;
 	 } else if (strcmp(szTmp, "cross") == 0) {
-	    if (fscanf(pimg->fh, "%f%f%f", px, py, pz) < 3) return img_BAD;
+	    if (fscanf(pimg->fh, "%f%f%f", &p->x, &p->y, &p->z) < 3)
+	       return img_BAD;
 	    goto ascii_again;
 	 } else if (strcmp(szTmp, "name") == 0) {
 	    if (fscanf(pimg->fh,"%s", sz) < 1) return img_BAD;
@@ -345,14 +335,13 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
 	    return img_BAD; /* unknown keyword */
       }
 
-      if (fscanf(pimg->fh, "%f%f%f", px, py, pz) < 3) return img_BAD;
+      if (fscanf(pimg->fh, "%f%f%f", &p->x, &p->y, &p->z) < 3) return img_BAD;
       return result;
    }
 }
 
 void
-img_write_datum(img *pimg, int code, const char *sz,
-		float x, float y, float z)
+img_write_item(img *pimg, int code, const char *s, float x, float y, float z)
 {
    if (!pimg) return;
    if (pimg->version > 0) {
@@ -362,13 +351,13 @@ img_write_datum(img *pimg, int code, const char *sz,
        case img_LABEL:
 	 if (pimg->version == 1) {
 	    /* put a move before each label */
-	    img_write_datum(pimg, img_MOVE, NULL, x, y, z);
+	    img_write_item(pimg, img_MOVE, NULL, x, y, z);
 	    put32(2, pimg->fh);
-	    fputsnl(sz, pimg->fh);
+	    fputsnl(s, pimg->fh);
 	    return;
 	 }
 	 putc(3, pimg->fh);
-	 fputsnl(sz, pimg->fh);
+	 fputsnl(s, pimg->fh);
 	 opt = 0;
 	 break;	  
        case img_MOVE:
@@ -377,7 +366,7 @@ img_write_datum(img *pimg, int code, const char *sz,
        case img_LINE:
          if (pimg->version > 1) {
 	    opt = 128;
-	    if (sz) opt |= *sz;
+	    if (s) opt |= *s;
 	    break;
          }
 	 opt = 5;
@@ -406,7 +395,7 @@ img_write_datum(img *pimg, int code, const char *sz,
        case img_CROSS: /* ignore */
 	 break;
        case img_LABEL:
-	 fprintf(pimg->fh, "name %s %9.2f %9.2f %9.2f\n", sz, x, y, z);
+	 fprintf(pimg->fh, "name %s %9.2f %9.2f %9.2f\n", s, x, y, z);
 	 break;
        default:
 	 break;

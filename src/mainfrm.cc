@@ -332,9 +332,9 @@ bool MainFrm::LoadData(const wxString& file)
 
 	int result;
 	do {
-	    float x, y, z;
+	    img_point pt;
 	    char buffer[256];
-	    switch (result = img_read_datum(survey, buffer, &x, &y, &z)) {
+	    switch (result = img_read_datum(survey, buffer, &pt)) {
 	        case img_MOVE:
 	        case img_LINE:
 		{
@@ -367,17 +367,17 @@ bool MainFrm::LoadData(const wxString& file)
 		    }
 		    
 		    // Update survey extents.
-		    if (x < xmin) xmin = x;
-		    if (x > xmax) xmax = x;
-		    if (y < ymin) ymin = y;
-		    if (y > ymax) ymax = y;
-		    if (z < m_ZMin) m_ZMin = z;
-		    if (z > zmax) zmax = z;
+		    if (x < xmin) xmin = pt.x;
+		    if (x > xmax) xmax = pt.x;
+		    if (y < ymin) ymin = pt.y;
+		    if (y > ymax) ymax = pt.y;
+		    if (z < m_ZMin) m_ZMin = pt.z;
+		    if (z > zmax) zmax = pt.z;
 
 		    PointInfo* info = new PointInfo;
-		    info->x = x;
-		    info->y = y;
-		    info->z = z;
+		    info->x = pt.x;
+		    info->y = pt.y;
+		    info->z = pt.z;
 
 		    // Set flags if this datum is a line rather than a move; update number of
 		    // legs if it's a line.
@@ -399,19 +399,19 @@ bool MainFrm::LoadData(const wxString& file)
 		{
 		    LabelInfo* label = new LabelInfo;
 		    label->text = buffer;
-		    label->x = x;
-		    label->y = y;
-		    label->z = z;
+		    label->x = pt.x;
+		    label->y = pt.y;
+		    label->z = pt.z;
 		    m_Labels.push_back(label);
 		    m_NumCrosses++;
 
 		    // Update survey extents (just in case there are no legs).
-		    if (x < xmin) xmin = x;
-		    if (x > xmax) xmax = x;
-		    if (y < ymin) ymin = y;
-		    if (y > ymax) ymax = y;
-		    if (z < m_ZMin) m_ZMin = z;
-		    if (z > zmax) zmax = z;
+		    if (x < xmin) xmin = pt.x;
+		    if (x > xmax) xmax = pt.x;
+		    if (y < ymin) ymin = pt.y;
+		    if (y > ymax) ymax = pt.y;
+		    if (z < m_ZMin) m_ZMin = pt.z;
+		    if (z > zmax) zmax = pt.z;
 
 		    break;
 		}

@@ -398,18 +398,18 @@ describe_layout(int x, int y)
 }
 
 static void
-stack(int tag, float x, float y, float z)
+stack(int tag, const img_point *p)
 {
    li *pli;
    pli = osnew(li);
    pli->tag = tag;
-   pli->d.to.x = x * COS - y * SIN;
+   pli->d.to.x = p->x * COS - p->y * SIN;
    if (fPlan) {
-      pli->d.to.y = x * SIN + y * COS;
+      pli->d.to.y = p->x * SIN + p->y * COS;
    } else if (fTilt) {
-      pli->d.to.y = (x * SIN + y * COS) * SINT + z * COST;
+      pli->d.to.y = (p->x * SIN + p->y * COS) * SINT + p->z * COST;
    } else {
-      pli->d.to.y = z;
+      pli->d.to.y = p->z;
    }
    if (pli->d.to.x > xMax) xMax = pli->d.to.x;
    if (pli->d.to.x < xMin) xMin = pli->d.to.x;
@@ -433,26 +433,26 @@ stack_string(const char *s)
 static int
 read_in_data(void)
 {
-   float x, y, z;
+   img_point p;
    char sz[256];
    int result;
 
    do {
-      result = img_read_datum(pimg, sz, &x, &y, &z);
+      result = img_read_item(pimg, sz, &p);
       switch (result) {
        case img_BAD:
 	 return 0;
          /* break; */
        case img_MOVE:
        case img_LINE:
-         stack(result, x, y, z);
+         stack(result, &p);
          break;
        case img_CROSS:
          /* use img_LABEL to posn CROSS - newer .3d files don't have
           * img_CROSS anyway */
          break;
        case img_LABEL:
-         stack(img_CROSS, x, y, z);
+         stack(img_CROSS, &p);
          stack_string(sz);
          break;
       }

@@ -58,7 +58,7 @@ set_codes(coord move_, coord draw_, coord stop_)
 extern bool
 load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
 {
-   float x, y, z;
+   img_point pt;
    char sz[256];
    int result;
    img *pimg;
@@ -66,25 +66,23 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
    point Huge *pLegData;
    point Huge *pStnData;
 
-   /* Make 2 passes - one to work out exactly how much space to allocate,
-    * the second to actually read the data.  Disk caching should make this
-    * fairly efficient and it means we can use every last scrap of memory
-    */
-
    OSSIZE_T c_legs = 0; /* actually the number of MOVEs and DRAWs */
    OSSIZE_T c_stns = 0;
    OSSIZE_T c_totlabel = 0;
    OSSIZE_T c_leg, c_stn;
    char *p, *p_end;
 
+   /* Make 2 passes - one to work out exactly how much space to allocate,
+    * the second to actually read the data.  Disk caching should make this
+    * fairly efficient and it means we can use every last scrap of memory
+    */
+
    /* try to open image file, and check it has correct header */
    pimg = img_open(fnmData, NULL, NULL);
-   if (!pimg) {
-      return fFalse;
-   }
+   if (!pimg) return fFalse;
 
    do {
-      result = img_read_datum(pimg, sz, &x, &y, &z);
+      result = img_read_item(pimg, sz, &p);
       switch (result) {
        case img_MOVE:
        case img_LINE:
@@ -125,22 +123,22 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
    printf("%p %p\n%d %d\n%d %d\n", p, p_end, c_leg, c_legs, c_stn, c_stns);
 #endif
    do {
-      result = img_read_datum(pimg, sz, &x, &y, &z);
+      result = img_read_item(pimg, sz, &p);
       switch (result) {
        case img_MOVE:
 	 if (c_leg >= c_legs) return fFalse;
          pLegData[c_leg]._.action = move;
-    	 pLegData[c_leg].X = (coord)(x * factor);
-    	 pLegData[c_leg].Y = (coord)(y * factor);
-	 pLegData[c_leg].Z = (coord)(z * factor);
+    	 pLegData[c_leg].X = (coord)(pt.x * factor);
+    	 pLegData[c_leg].Y = (coord)(pt.y * factor);
+	 pLegData[c_leg].Z = (coord)(pt.z * factor);
 	 c_leg++;
     	 break;
        case img_LINE:
 	 if (c_leg >= c_legs) return fFalse;
          pLegData[c_leg]._.action = draw;
-    	 pLegData[c_leg].X = (coord)(x * factor);
-    	 pLegData[c_leg].Y = (coord)(y * factor);
-	 pLegData[c_leg].Z = (coord)(z * factor);
+    	 pLegData[c_leg].X = (coord)(pt.x * factor);
+    	 pLegData[c_leg].Y = (coord)(pt.y * factor);
+	 pLegData[c_leg].Z = (coord)(pt.z * factor);
     	 c_leg++;
     	 break;
        case img_CROSS:
@@ -153,9 +151,9 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
 	 if (c_stn >= c_stns) return fFalse;
 	 strcpy(p, sz);
     	 pStnData[c_stn]._.str = p;
-    	 pStnData[c_stn].X = (coord)(x * factor);
-   	 pStnData[c_stn].Y = (coord)(y * factor);
-    	 pStnData[c_stn].Z = (coord)(z * factor);
+    	 pStnData[c_stn].X = (coord)(pt.x * factor);
+   	 pStnData[c_stn].Y = (coord)(pt.y * factor);
+    	 pStnData[c_stn].Z = (coord)(pt.z * factor);
     	 c_stn++;
 	 p += size;
 	 break;

@@ -43,6 +43,10 @@ extern "C" {
 # define img_FLAG_DUPLICATE 0x02
 
 typedef struct {
+   float x, y, z;
+} img_point;
+    
+typedef struct {
    /* members you can access */
    int flags;
    /* all other members are for internal use only */
@@ -63,7 +67,7 @@ typedef struct {
 /* Which version of the file format to output (defaults to newest) */
 extern unsigned int img_output_version;
 
-/* Open a .3d file for input
+/* Open a .3d file for reading
  * fnm is the filename
  * szTitle and szDateStamp should be buffers to read the title and
  *   datestamp into
@@ -85,22 +89,22 @@ img *img_open_write(const char *fnm, char *szTitle, bool fBinary);
 img *img_open_write(const char *fnm, char *szTitle, int fBinary);
 # endif
 
-/* Read a datum from a .3d file
+/* Read an item from a .3d file
  * pimg is a pointer to an img struct returned by img_open()
  * sz is a buffer for a label (only meaningful for img_LABEL)
- * px,py,pz are pointers to floats for the x,y and z coordinates
+ * coordinates are returned in p
  * Returns img_XXXX as #define-d above
  */
-int img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz);
+int img_read_item(img *pimg, char *sz, img_point *p);
 
-/* Write a datum to a .3d file
+/* Write a item to a .3d file
  * pimg is a pointer to an img struct returned by img_open_write()
  * code is one of the img_XXXX #define-d above
  * sz is the label (only meaningful for img_LABEL)
- * x,y,z are the x,y and z coordinates
+ * x, y, z are the coordinates
  */
-void img_write_datum(img *pimg, int code, const char *sz,
-		     float x, float y, float z);
+void img_write_item(img *pimg, int code, const char *sz,
+		    float x, float y, float z);
 
 /* rewind a .3d file opened for reading so the data can be read in
  * several passes

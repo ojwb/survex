@@ -44,10 +44,6 @@
 
 #define GRID_SPACING	100
 
-typedef struct {
-   float x, y, z;
-} point;
-
 static FILE *fh;
 
 /* bounds */
@@ -147,12 +143,12 @@ dxf_start_pass(int layer)
 }
 
 static void
-dxf_move(point p)
+dxf_move(img_point p)
 {
 }
 
 static void
-dxf_line(point p1, point p)
+dxf_line(img_point p1, img_point p)
 {
    fprintf(fh, "0\nLINE\n");
    fprintf(fh, "8\nCentreLine\n"); /* Layer */
@@ -165,7 +161,7 @@ dxf_line(point p1, point p)
 }
 
 static void
-dxf_label(point p, const char *s)
+dxf_label(img_point p, const char *s)
 {
    /* write station label to dxf file */
    fprintf(fh, "0\nTEXT\n");
@@ -178,7 +174,7 @@ dxf_label(point p, const char *s)
 }
 
 static void
-dxf_cross(point p)
+dxf_cross(img_point p)
 {
    /* write station marker to dxf file */
    fprintf(fh, "0\nPOINT\n");
@@ -218,20 +214,20 @@ sketch_start_pass(int layer)
 }
 
 static void
-sketch_move(point p)
+sketch_move(img_point p)
 {
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x, p.y, 0.0);
 }
 
 static void
-sketch_line(point p1, point p)
+sketch_line(img_point p1, img_point p)
 {
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x, p.y, 0.0);
 }
 
 static void
-sketch_label(point p, const char *s)
+sketch_label(img_point p, const char *s)
 {
    fprintf(fh, "fp((0,0,0))\n");
    fprintf(fh, "le()\n");
@@ -247,7 +243,7 @@ sketch_label(point p, const char *s)
 }
 
 static void
-sketch_cross(point p)
+sketch_cross(img_point p)
 {
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
@@ -283,7 +279,7 @@ main(int argc, char **argv)
    img *pimg;
    int item;
    int fSeenMove = 0;
-   point p, p1;
+   img_point p, p1;
    int elevation = 0;
    double elev_angle = 0;
    double s = 0, c = 0;
@@ -293,10 +289,10 @@ main(int argc, char **argv)
 
    void (*header)(void);
    void (*start_pass)(int);
-   void (*move)(point);
-   void (*line)(point, point);
-   void (*label)(point, const char *);
-   void (*cross)(point);
+   void (*move)(img_point);
+   void (*line)(img_point, img_point);
+   void (*label)(img_point, const char *);
+   void (*cross)(img_point);
    void (*footer)(void);
 
    /* TRANSLATE */
@@ -449,7 +445,7 @@ main(int argc, char **argv)
    min_x = min_y = min_z = FLT_MAX;
    max_x = max_y = max_z = -FLT_MAX;
    do {
-      item = img_read_datum(pimg, szName, &p.x, &p.y, &p.z);
+      item = img_read_item(pimg, szName, &p);
 
       if (elevation) {
 	  double xnew = p.x * c - p.y * s;
@@ -496,7 +492,7 @@ main(int argc, char **argv)
 	 img_rewind(pimg);
 	 start_pass(*pass);
 	 do {
-	    item = img_read_datum(pimg, szName, &p.x, &p.y, &p.z);
+	    item = img_read_item(pimg, szName, &p);
 
 	    if (format == FMT_SKETCH) {
 	       p.x -= min_x;
