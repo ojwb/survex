@@ -250,3 +250,8 @@ identified?
 Don't split other traverses at articulating traverses when reporting error
 stats.
 
+Date: Fri, 20 Jul 2001
+From: Olly
+
+Look into rounding of coords written to .3d files - e.g. tests/oneleg.svx.
+
