@@ -43,6 +43,7 @@
 1997.02.02 RISC OS fixes
            added our own versions of ceil and floor for DJGPP
 1997.02.15 added #include <math.h> before DJGPP ceil/floor kludge
+1997.05.11 better OSLib fix
 1997.06.05 const added
 1997.06.06 fixed for alpha (hopefully)
 1998.03.22 autoconf-ed
@@ -51,16 +52,19 @@
 #ifndef OSDEPEND_H  /* only include once */
 # define OSDEPEND_H
 
-/* OSLib's types.h badly pollutes our namespace, so we kludge it off
- * in the makefile and then do the vital bits here */
+/* OSLib's types.h badly pollutes our namespace, so we kludge it off */
+# ifndef types_H
+#  define types_H
+/* and then do the vital bits ourselves */
 typedef unsigned int                            bits;
 typedef unsigned char                           byte;
-#define UNKNOWN                                 1
+#  define UNKNOWN                                 1
+# endif
 
 # include "whichos.h"
 # include "ostypes.h"
 
-# if   (OS==RISCOS)
+# if (OS==RISCOS)
 
 typedef long w32;
 typedef short w16;
