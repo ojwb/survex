@@ -31,11 +31,13 @@
 #include <float.h>
 
 BEGIN_EVENT_TABLE(ChildFrm, wxDocChildFrame)
+    EVT_MENU_RANGE(aven_COMMAND_START, aven_COMMAND_END, ChildFrm::OnCommand)
+    EVT_UPDATE_UI_RANGE(aven_COMMAND_START, aven_COMMAND_END, ChildFrm::OnUpdateUI)
 END_EVENT_TABLE()
 
 ChildFrm::ChildFrm(wxDocument* doc, wxView* view, wxDocParentFrame* parent, wxWindowID id,
 		   const wxString& title) :
-    wxDocChildFrame(doc, view, parent, id, title),
+    wxDocChildFrame(doc, view, parent, id, title, wxDefaultPosition, wxSize(640, 480)),
     m_Gfx((AvenDoc*) doc, this)
 {
     BuildMenuBar();
@@ -56,7 +58,6 @@ void ChildFrm::InitialiseGfx()
 {
     m_Gfx.Initialise();
     m_GfxInited = true;
-    //   PushEventHandler(&m_Gfx);
 }
 
 //
@@ -192,4 +193,14 @@ void ChildFrm::SetAccelerators()
 
     wxAcceleratorTable accel(11, entries);
     SetAcceleratorTable(accel);
+}
+
+void ChildFrm::OnCommand(wxCommandEvent& event)
+{
+    m_Gfx.ProcessEvent(event);
+}
+
+void ChildFrm::OnUpdateUI(wxUpdateUIEvent& event)
+{
+  //    m_Gfx.ProcessEvent(event);
 }

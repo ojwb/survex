@@ -96,7 +96,8 @@ bool Aven::OnInit()
 #endif
 
     m_DocManager = new wxDocManager;
-    (void) new wxDocTemplate(m_DocManager, "Survey", "*.3d", "", "3d", "Survey Doc", "Survey View",
+    (void) new wxDocTemplate(m_DocManager, "Survex 3d files", "*.3d", "", "3d",
+			     "Survey Doc", "Survey View",
         CLASSINFO(AvenDoc), CLASSINFO(AvenView));
 
     m_Frame = new MainFrm(m_DocManager, NULL, -1, "Aven");

@@ -46,18 +46,8 @@ public:
     ~ChildFrm();
 
     void InitialiseGfx(); // call only after loading survey data into the document
-
-#if 0
-    bool ProcessEvent(wxEvent& event) {
-        if (event.GetId() >= aven_COMMAND_START && event.GetId() <= aven_COMMAND_END) {
-	    return m_Gfx.ProcessEvent(event);
-	}
-	//else {
-	//    return wxDocChildFrame::ProcessEvent(event);
-	//}
-	return true;
-    }
-#endif
+    void OnCommand(wxCommandEvent& event);
+    void OnUpdateUI(wxUpdateUIEvent& event);
 
 private:
     DECLARE_EVENT_TABLE()
