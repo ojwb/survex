@@ -34,10 +34,11 @@ the file, restricted by Survey prefix.</P>
 older format versions are ("v0.01", "Bv0.01", "bv0.01", "v2").  Newer versions
 will be "v4", "v5", ..., "v10", "v11", etc.
 <li> Survey title: A string followed by a linefeed.  There's no length limit on this string.
-<li> Timestamp.  This is intended to be the time the file was generated, rather
-than the time the survey data was collected.  The easiest way to generate this
-is with the strftime() format "%a,%Y.%m.%d %H:%M:%S %Z" if you have access to
-strftime().  An example timestamp is "Sun,2002.03.17 14:01:07 GMT".
+<li> Timestamp: A string followed by a linefeed.  This is intended to be the
+time the file was generated, rather than the time the survey data was
+collected.  The easiest way to generate this is with the strftime() format
+"%a,%Y.%m.%d %H:%M:%S %Z" if you have access to strftime().  An example
+timestamp is "Sun,2002.03.17 14:01:07 GMT".
 </ul>
 
 <H2>Items</H2>
