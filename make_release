@@ -118,8 +118,7 @@ if expr "$mk" : '.*\<djgpp\>'; then
    if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
       PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
    fi
-   if ! ./configure --host=i386-pc-msdosdjgpp --build="$build_platform" --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o ; then
-      # FLAGS=-Werror CXXFLAGS=-Werror dies in z_getopt.c
+   if ! ./configure --host=i386-pc-msdosdjgpp --build="$build_platform" --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o CFLAGS=-Werror CXXFLAGS=-Werror ; then
       echo djgpp configure failed
       exit 1
    fi
@@ -176,8 +175,7 @@ if expr "$mk" : '.*\<mingw\>'; then
       LDFLAGS=-L/opt/rx-win32/lib
       CPPFLAGS=-I/opt/rx-win32/include
    fi
-   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG="$WXCONFIG" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" CAVEROT= ; then
-      # CFLAGS=-Werror CXXFLAGS=-Werror - _kbhit, etc not declared in cavern.c
+   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG="$WXCONFIG" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" CAVEROT= CFLAGS=-Werror CXXFLAGS=-Werror ; then
       echo mingw configure failed
       exit 1
    fi
