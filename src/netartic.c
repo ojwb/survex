@@ -43,7 +43,8 @@ static long colour;
  * deep visit will recurse */
 static unsigned long cMaxVisits;
 
-static unsigned char *visit_dirn_stack = NULL;
+static unsigned char *dirn_stack = NULL;
+static unsigned long *min_stack = NULL;
 
 static unsigned long
 visit(node *stn, int back)
@@ -51,58 +52,60 @@ visit(node *stn, int back)
    long min_colour;
    int i;
    node *stn2;
-   unsigned char *tos = visit_dirn_stack;
-   ASSERT(tos);
+   unsigned long tos = 0;
+   ASSERT(dirn_stack && min_stack);
 
 iter:
-   min_colour = ++colour;
+   min_colour = stn->colour = ++colour;
    for (i = 0; i <= 2 && stn->leg[i]; i++) {
-      if (i != back) {
+      if (i != back) {	    
 	 node *to = stn->leg[i]->l.to;
-	 long c = to->colour;
-
-	 if (c < 0) {
-	    /* we've found a fixed point */
-	    c = -c;
-	    to->colour = c;
-	    remove_stn_from_list(&fixedlist, to);
-	    add_stn_to_list(&stnlist, to);
-	 }
-
-	 if (c && c < min_colour) min_colour = c;
-      }
-   }
-   stn->colour = min_colour;
-   for (i = 0; i <= 2 && stn->leg[i]; i++) {
-      if (stn->leg[i]->l.to->colour == 0) {
-	 ASSERT(tos < visit_dirn_stack + cMaxVisits);
-	 *tos++ = back = reverse_leg_dirn(stn->leg[i]);
-	 stn = stn->leg[i]->l.to;
-	 goto iter;
+	 long col = to->colour;
+	 if (col == 0) {
+	    ASSERT(tos < cMaxVisits);
+	    dirn_stack[tos] = back = reverse_leg_dirn(stn->leg[i]);
+	    min_stack[tos] = min_colour;
+	    tos++;
+	    stn = to;
+	    goto iter;
 uniter:
-	 ASSERT(tos > visit_dirn_stack);
-	 --tos;
-	 i = reverse_leg_dirn(stn->leg[*tos]);
-	 stn2 = stn->leg[*tos]->l.to;
+	    ASSERT(tos > 0);
+	    --tos;
+	    i = reverse_leg_dirn(stn->leg[dirn_stack[tos]]);
+	    stn2 = stn->leg[dirn_stack[tos]]->l.to;
+	    if (min_stack[tos] < min_colour) min_colour = min_stack[tos];
+	    
+	    if (stn->colour <= min_colour) {
+	       min_colour = stn->colour;
+	       
+	       /* FIXME: note down leg (<-), remove and replace:
+		*                 /\   /        /\
+		* [fixed point(s)]  *-*  -> [..]  )
+		*                 \/   \        \/
+		*                stn2 stn
+		*/
+	       /* flag leg as an articulation for loop error reporting */
+	       stn->leg[dirn_stack[tos]]->l.reverse |= FLAG_ARTICULATION;
+	       stn2->leg[i]->l.reverse |= FLAG_ARTICULATION;
+	    }
 
-	 if (stn->colour < min_colour) {
-	    min_colour = stn->colour;
-
-	    /* FIXME: note down leg (<-), remove and replace:
-	     *                 /\   /        /\
-             * [fixed point(s)]  *-*  -> [..]  )
-	     *                 \/   \        \/
-	     *                stn2 stn
-	     */
-	    /* flag leg as an articulation for loop error reporting */
-	    stn->leg[*tos]->l.reverse |= FLAG_ARTICULATION;
-	    stn2->leg[i]->l.reverse |= FLAG_ARTICULATION;
-	 }
-
-	 stn = stn2;
+	    stn = stn2;
+	 } else {
+	    /* back edge case */
+	    if (col < 0) {
+	       /* we've found a fixed point */
+	       col = -col;
+	       to->colour = col;
+	       remove_stn_from_list(&fixedlist, to);
+	       add_stn_to_list(&stnlist, to);
+	    }
+	    
+	    if (col < min_colour) min_colour = col;
+	 }	 
       }
    }
-   if (tos > visit_dirn_stack) goto uniter;
+   
+   if (tos > 0) goto uniter;
 
    return min_colour;
 }
@@ -121,17 +124,18 @@ articulate(void)
    stnStart = NULL;
    cMaxVisits = 0;
    FOR_EACH_STN(stn, stnlist) {
-      cMaxVisits++;
       if (fixed(stn)) {
-	 colour++;
-	 stn->colour = -colour;
 	 remove_stn_from_list(&stnlist, stn);
 	 add_stn_to_list(&fixedlist, stn);
+	 colour++;
+	 stn->colour = -colour;
       } else {
+	 cMaxVisits++;
 	 stn->colour = 0;
       }
    }
-   visit_dirn_stack = osmalloc(cMaxVisits);
+   dirn_stack = osmalloc(cMaxVisits);
+   min_stack = osmalloc(cMaxVisits * sizeof(long));
 
    stnStart = fixedlist;
    ASSERT2(stnStart,"no fixed points!");
@@ -189,7 +193,7 @@ articulate(void)
       if (!stnStart) break;
    }
 
-#if 1
+#if 0
    /* test articulation */
    FOR_EACH_STN(stn, stnlist) {
       int d;
@@ -286,6 +290,8 @@ articulate(void)
 
    solve_matrix(stnlist);
 
-   osfree(visit_dirn_stack);
-   visit_dirn_stack = NULL;
+   osfree(dirn_stack);
+   osfree(min_stack);
+   dirn_stack = NULL;
+   min_stack = NULL;
 }
