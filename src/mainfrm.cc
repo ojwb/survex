@@ -639,14 +639,7 @@ void MainFrm::FillTree()
 
 	// Determine if we're still on the same prefix.
 	if (prefix == current_prefix) {
-	    // We are, so just add the item under the current branch.
-	    wxString bit = label->GetText().AfterLast('.');
-	    if (bit == "") {
-	        bit = "<root>";
-	    }
-	    wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
-	    m_Tree->SetItemData(id, new TreeData(label));
-	    SetTreeItemColour(id, label);
+	    // no need to fiddle with branches...
 	}
 	// If not, then see if we've descended to a new prefix.
 	else if (prefix.Length() > current_prefix.Length() && prefix.StartsWith(current_prefix) &&
@@ -663,88 +656,94 @@ void MainFrm::FillTree()
  	        next_dot = prefix.Find('.');
 
 		wxString bit = next_dot == -1 ? prefix : prefix.Left(next_dot);
+	        assert(bit != "");
 
 		// Add the current tree ID to the stack.
 	        previous_ids.push(current_id);
 
 		// Append the new item to the tree and set this as the current branch.
-		if (bit == "") {
-		    bit = "<root>";
-		}
-	
 		current_id = m_Tree->AppendItem(current_id, bit);
 		m_Tree->SetItemData(current_id, new TreeData(NULL));
 
 		prefix = prefix.Mid(next_dot + 1);
 	    } while (next_dot != -1);
-
-	    // Now add the first entry under the new branch.
-	    wxString bit = label->GetText().AfterLast('.');
-	    wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
-	    m_Tree->SetItemData(id, new TreeData(label));
-	    SetTreeItemColour(id, label);
 	}
 	// Otherwise, we must have moved up, and possibly then down again.
 	else {
-	    // Find out how much of the current prefix and the new prefix are the same.
-	    // Note that we require a match of a whole number of parts between dots!
 	    int count = 0;
-	    int pos = 0;
-	    int count_to_dot = 0;
-	    bool done = false;
-	    while (!done && pos < prefix.Length() && pos < current_prefix.Length()) {
-	        if (prefix[pos] != current_prefix[pos]) {
-		    done = true;
-	        }
-		else {
-	  	    if (prefix[pos] == '.') {
-		        count += count_to_dot + 1;
-			count_to_dot = 0;
+	    // Check for ascent only
+	    if (prefix.Length() < current_prefix.Length() && current_prefix.StartsWith(prefix) &&
+		(current_prefix[prefix.Length()] == '.' || prefix == "")) {
+
+		// Extract the part of the current prefix after the bit (if any) which has matched.
+		// This gives the prefixes to ascend over.
+		wxString prefixes_ascended = current_prefix.Mid(prefix.Length() + 1);
+
+		// Count the number of prefixes to ascend over.
+		int num_prefixes = prefixes_ascended.Freq('.') + 1;
+
+		// Reverse up over these prefixes.
+		for (int i = 1; i <= num_prefixes; i++) {
+		   current_id = previous_ids.top();
+		   previous_ids.pop();
+		}
+		current_prefix = prefix;
+	    } else {
+		// Find out how much of the current prefix and the new prefix are the same.
+		// Note that we require a match of a whole number of parts between dots!
+		int pos = 0;
+		while (prefix[pos] == current_prefix[pos]) {
+		    if (prefix[pos] == '.') {
+			count = pos + 1;
 		    }
-		    count_to_dot++;
 		    pos++;
 		}
-	    }
 
-	    // Extract the part of the current prefix after the bit (if any) which has matched.
-	    // This gives the prefixes to ascend over.
-	    wxString prefixes_ascended = current_prefix.Mid(count);
+		// Extract the part of the current prefix after the bit (if any) which has matched.
+		// This gives the prefixes to ascend over.
+		wxString prefixes_ascended = current_prefix.Mid(count);
 
-	    // Count the number of prefixes to ascend over.
-	    int num_prefixes = prefixes_ascended.Freq('.') + 1;
+		// Count the number of prefixes to ascend over.
+		int num_prefixes = prefixes_ascended.Freq('.') + 1;
 
-	    // Reverse up over these prefixes.
-	    for (int i = 1; i <= num_prefixes; i++) {
-	        current_id = previous_ids.top();
-		previous_ids.pop();
-	    }
-
-	    // Now extract the bit of new prefix.
-	    wxString new_prefix = prefix.Mid(count);
-	    current_prefix = prefix;
-
-	    // Add branches for this new part.
-	    int next_dot;
-	    do {
-	        // Extract the next bit of prefix.
- 	        next_dot = new_prefix.Find('.');
-		wxString bit = next_dot == -1 ? new_prefix : new_prefix.Left(next_dot);
-
-		// Add the current tree ID to the stack.
-	        previous_ids.push(current_id);
-
-		if (bit == "") {
-		    bit = "<root>";
+		// Reverse up over these prefixes.
+		for (int i = 1; i <= num_prefixes; i++) {
+		    current_id = previous_ids.top();
+		    previous_ids.pop();
 		}
 
-		// Append the new item to the tree and set this as the current branch.
-		current_id = m_Tree->AppendItem(current_id, bit);
-		m_Tree->SetItemData(current_id, new TreeData(NULL));
+		// Now extract the bit of new prefix.
+		wxString new_prefix = prefix.Mid(count);
+		current_prefix = prefix;
 
-		new_prefix = new_prefix.Mid(next_dot + 1);
+		// Add branches for this new part.
+		int next_dot;
+		while (1) {
+		    // Extract the next bit of prefix.
+		    next_dot = new_prefix.Find('.');
 
-	    } while (next_dot != -1);
+		    wxString bit = next_dot == -1 ? new_prefix : new_prefix.Left(next_dot);
+
+		    // Add the current tree ID to the stack.
+		    previous_ids.push(current_id);
+
+		    // Append the new item to the tree and set this as the current branch.
+		    current_id = m_Tree->AppendItem(current_id, bit);
+		    m_Tree->SetItemData(current_id, new TreeData(NULL));
+
+		    if (next_dot == -1) break;
+
+		    new_prefix = new_prefix.Mid(next_dot + 1);
+	        }
+	    }
 	}
+
+	// Now add the leaf
+	wxString bit = label->GetText().AfterLast('.');
+	assert(bit != "");
+	wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
+	m_Tree->SetItemData(id, new TreeData(label));
+	SetTreeItemColour(id, label);
     }
 }
 
