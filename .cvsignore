@@ -36,3 +36,6 @@ rpmmacros
 AUTHORS
 HACKING
 TODO
+survex_*.dsc
+survex_*.tar.gz
+survex_*_i386.changes
