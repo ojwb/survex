@@ -520,13 +520,7 @@ void GfxCore::SetScaleInitial(Double scale, int what)
 		    // We have a leg.
 
 		    assert(!first_point); // The first point must always be a move.
-
-		    // Determine if we're switching from an underground
-		    // polyline to a surface polyline, or vice-versa.
 		    bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
-		    pti->SetChangingUGState(changing_ug_state);
-		    pti->SetLastWasMove(last_was_move);
-
 		    // Record new underground/surface state.
 		    current_polyline_is_surface = pti->IsSurface();
 

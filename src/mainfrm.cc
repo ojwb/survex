@@ -279,7 +279,7 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
-    m_Gfx(NULL), m_FileToLoad(""), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0)
+    m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0)
 {
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
@@ -300,8 +300,10 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     SetSize(-1, -1, x, y);
 #endif
 
+#ifdef AVENPRES
     m_PresLoaded = false;
     m_Recording = false;
+#endif
 
 #if wxUSE_DRAG_AND_DROP
     SetDropTarget(new DnDFile(this));
@@ -520,72 +522,73 @@ void MainFrm::CreateSidePanel()
 
     m_Panel = new wxPanel(m_Splitter);
     m_Tree = new AvenTreeCtrl(this, m_Panel);
-    m_FindPanel = new wxPanel(m_Panel);
+    wxPanel *find_panel = new wxPanel(m_Panel);
     m_Panel->Show(false);
 
-    m_FindBox = new wxTextCtrl(m_FindPanel, -1, "");
-    m_FindButton = new wxButton(m_FindPanel, button_FIND, msg(/*Find*/332));
-    m_FindButton->SetDefault();
-    m_FindPanel->SetDefaultItem(m_FindButton);
-    m_HideButton = new wxButton(m_FindPanel, button_HIDE, msg(/*Hide*/333));
-    m_RegexpCheckBox = new wxCheckBox(m_FindPanel, -1,
+    m_FindBox = new wxTextCtrl(find_panel, -1, "");
+    wxButton *find_button, *hide_button;
+    find_button = new wxButton(find_panel, button_FIND, msg(/*Find*/332));
+    find_button->SetDefault();
+    find_panel->SetDefaultItem(find_button);
+    hide_button = new wxButton(find_panel, button_HIDE, msg(/*Hide*/333));
+    m_RegexpCheckBox = new wxCheckBox(find_panel, -1,
 				      msg(/*Regular expression*/334));
-    m_Coords = new wxStaticText(m_FindPanel, -1, "");
-    m_StnCoords = new wxStaticText(m_FindPanel, -1, "");
-    //  m_MousePtr = new wxStaticText(m_FindPanel, -1, "Mouse coordinates");
-    m_StnName = new wxStaticText(m_FindPanel, -1, "");
-    m_StnAlt = new wxStaticText(m_FindPanel, -1, "");
-    m_Dist1 = new wxStaticText(m_FindPanel, -1, "");
-    m_Dist2 = new wxStaticText(m_FindPanel, -1, "");
-    m_Dist3 = new wxStaticText(m_FindPanel, -1, "");
-    m_Found = new wxStaticText(m_FindPanel, -1, "");
+    m_Coords = new wxStaticText(find_panel, -1, "");
+    m_StnCoords = new wxStaticText(find_panel, -1, "");
+    //  m_MousePtr = new wxStaticText(find_panel, -1, "Mouse coordinates");
+    m_StnName = new wxStaticText(find_panel, -1, "");
+    m_StnAlt = new wxStaticText(find_panel, -1, "");
+    m_Dist1 = new wxStaticText(find_panel, -1, "");
+    m_Dist2 = new wxStaticText(find_panel, -1, "");
+    m_Dist3 = new wxStaticText(find_panel, -1, "");
+    m_Found = new wxStaticText(find_panel, -1, "");
 
-    m_FindButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-    m_FindButtonSizer->Add(m_FindBox, 1, wxALL, 2);
+    wxBoxSizer *find_button_sizer = new wxBoxSizer(wxHORIZONTAL);
+    find_button_sizer->Add(m_FindBox, 1, wxALL, 2);
 #ifdef _WIN32
-    m_FindButtonSizer->Add(m_FindButton, 0, wxALL, 2);
+    find_button_sizer->Add(find_button, 0, wxALL, 2);
 #else
     // GTK+ (and probably Motif) default buttons have a thick external
     // border we need to allow for
-    m_FindButtonSizer->Add(m_FindButton, 0, wxALL, 4);
+    find_button_sizer->Add(find_button, 0, wxALL, 4);
 #endif
 
-    m_HideButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-    m_HideButtonSizer->Add(m_Found, 1, wxALL, 2);
+    wxBoxSizer *hide_button_sizer = new wxBoxSizer(wxHORIZONTAL);
+    hide_button_sizer->Add(m_Found, 1, wxALL, 2);
 #ifdef _WIN32
-    m_HideButtonSizer->Add(m_HideButton, 0, wxALL, 2);
+    hide_button_sizer->Add(hide_button, 0, wxALL, 2);
 #else
-    m_HideButtonSizer->Add(m_HideButton, 0, wxALL, 4);
+    hide_button_sizer->Add(hide_button, 0, wxALL, 4);
 #endif
 
-    m_FindSizer = new wxBoxSizer(wxVERTICAL);
-    m_FindSizer->Add(m_FindButtonSizer, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_HideButtonSizer, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_RegexpCheckBox, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
-    //   m_FindSizer->Add(m_MousePtr, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_Coords, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_StnName, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_StnCoords, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_StnAlt, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_Dist1, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_Dist2, 0, wxALL | wxEXPAND, 2);
-    m_FindSizer->Add(m_Dist3, 0, wxALL | wxEXPAND, 2);
+    wxBoxSizer *find_sizer = new wxBoxSizer(wxVERTICAL);
+    find_sizer->Add(find_button_sizer, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(hide_button_sizer, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(m_RegexpCheckBox, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
+    //   find_sizer->Add(m_MousePtr, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(m_Coords, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(m_StnName, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(m_StnCoords, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(m_StnAlt, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(m_Dist1, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(m_Dist2, 0, wxALL | wxEXPAND, 2);
+    find_sizer->Add(m_Dist3, 0, wxALL | wxEXPAND, 2);
 
-    m_FindPanel->SetAutoLayout(true);
-    m_FindPanel->SetSizer(m_FindSizer);
-    m_FindSizer->Fit(m_FindPanel);
-    m_FindSizer->SetSizeHints(m_FindPanel);
+    find_panel->SetAutoLayout(true);
+    find_panel->SetSizer(find_sizer);
+    find_sizer->Fit(find_panel);
+    find_sizer->SetSizeHints(find_panel);
 
-    m_PanelSizer = new wxBoxSizer(wxVERTICAL);
-    m_PanelSizer->Add(m_Tree, 1, wxALL | wxEXPAND, 2);
-    m_PanelSizer->Add(m_FindPanel, 0, wxALL | wxEXPAND, 2);
+    wxBoxSizer *panel_sizer = new wxBoxSizer(wxVERTICAL);
+    panel_sizer->Add(m_Tree, 1, wxALL | wxEXPAND, 2);
+    panel_sizer->Add(find_panel, 0, wxALL | wxEXPAND, 2);
     m_Panel->SetAutoLayout(true);
-    m_Panel->SetSizer(m_PanelSizer);
-//    m_PanelSizer->Fit(m_Panel);
-//    m_PanelSizer->SetSizeHints(m_Panel);
+    m_Panel->SetSizer(panel_sizer);
+//    panel_sizer->Fit(m_Panel);
+//    panel_sizer->SetSizeHints(m_Panel);
 
     m_Gfx = new GfxCore(this, m_Splitter);
     m_Gfx->SetFocus();
@@ -648,9 +651,11 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_NumExportedPts = 0;
     m_NumEntrances = 0;
 
+#ifdef AVENPRES
     m_PresLoaded = false;
     m_Recording = false;
     //--Pres: FIXME: discard existing one, ask user about saving
+#endif
 
     // Delete any existing list entries.
     ClearPointLists();

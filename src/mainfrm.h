@@ -31,6 +31,7 @@
 #include "img.h"
 
 #include <list>
+#if 0 // if you turn this back on, reenabled the check in configure.in too
 #ifdef HAVE_EXT_HASH_MAP
 #include <ext/hash_map>
 #elif defined HAVE_HASH_MAP
@@ -38,6 +39,7 @@
 #else
 #include <map>
 #define hash_map map
+#endif
 #endif
 
 using namespace std;
@@ -125,8 +127,6 @@ class PointInfo {
     Double x, y, z;
     bool isLine; // false => move, true => draw line
     bool isSurface;
-    bool isChangingUGState;
-    bool lastWasMove;
     wxPoint* dest;
 
 public:
@@ -135,12 +135,6 @@ public:
     Double GetZ() const { return z; }
     bool IsLine() const { return isLine; }
     bool IsSurface() const { return isSurface; }
-
-    void SetChangingUGState(bool b) { isChangingUGState = b; }
-    bool IsChangingUGState() const { return isChangingUGState; }
-
-    void SetLastWasMove(bool b) { lastWasMove = b; }
-    bool LastWasMove() const { return lastWasMove; }
 
     void SetDestination(wxPoint* p) { dest = p; }
     wxPoint* GetDestination() const { return dest; }
@@ -171,7 +165,6 @@ class MainFrm : public wxFrame {
     int m_SashPosition;
     list<PointInfo*>* m_Points;
     list<LabelInfo*> m_Labels;
-    hash_map<wxTreeItemId, LabelInfo*> m_LabelMap;
     Double m_XExt;
     Double m_YExt;
     Double m_ZExt;
@@ -185,22 +178,14 @@ class MainFrm : public wxFrame {
     GfxCore* m_Gfx;
     wxPen* m_Pens;
     wxBrush* m_Brushes;
-    wxString m_FileToLoad;
     int m_NumEntrances;
     int m_NumFixedPts;
     int m_NumExportedPts;
     wxSplitterWindow* m_Splitter;
     wxPanel* m_Panel;
     AvenTreeCtrl* m_Tree;
-    wxBoxSizer* m_PanelSizer;
-    wxPanel* m_FindPanel;
     wxTreeItemId m_TreeRoot;
-    wxButton* m_FindButton;
-    wxButton* m_HideButton;
     wxTextCtrl* m_FindBox;
-    wxBoxSizer* m_FindButtonSizer;
-    wxBoxSizer* m_HideButtonSizer;
-    wxBoxSizer* m_FindSizer;
     wxStaticText* m_MousePtr;
     wxStaticText* m_Coords;
     wxStaticText* m_StnCoords;
@@ -211,15 +196,18 @@ class MainFrm : public wxFrame {
     wxStaticText* m_Dist3;
     wxStaticText* m_Found;
     wxCheckBox* m_RegexpCheckBox;
-    FILE* m_PresFP;
     wxString m_File;
+#ifdef AVENPRES
+    FILE* m_PresFP;
     bool m_PresLoaded;
     bool m_Recording;
+#endif
 
     struct {
 	Double x, y, z;
     } m_Offsets;
 
+#ifdef AVENGL
     struct {
 	Double xmin, xmax;
 	Double ymin, ymax;
@@ -231,6 +219,7 @@ class MainFrm : public wxFrame {
     } m_TerrainSize;
 
     Double* m_TerrainGrid;
+#endif
 
     void SetTreeItemColour(LabelInfo* label);
     void FillTree();
@@ -414,6 +403,7 @@ public:
     Double GetZMin() const { return m_ZMin; }
     Double GetZMax() const { return m_ZMin + m_ZExt; }
 
+#ifdef AVENGL
     int GetTerrainXSize() const { return m_TerrainSize.x; }
     int GetTerrainYSize() const { return m_TerrainSize.y; }
 
@@ -439,6 +429,7 @@ public:
 
 	return m_TerrainGrid[x + m_TerrainSize.x * y];
     }
+#endif
 
     int GetNumLegs() const { return m_NumLegs; }
     int GetNumPoints() const { return m_NumPoints; }
