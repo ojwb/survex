@@ -1,0 +1,55 @@
+#!/usr/bin/perl -w
+use strict;
+
+# converter for POV-Ray gradient files produced by The Gimp
+my $points = 13;
+my $prev = -1.0;
+my $interval = 1.0 / ($points-1);
+my $next = 0.0;
+my $pr = 0;
+my $pg = 0;
+my $pb = 0;
+my $prevpos = 0.0;
+my $outputr = "";
+my $outputg = "";
+my $outputb = "";
+while (my $l = <>) {
+   if ($l =~ /.*\[(\d\.\d+) color rgbt <(\d\.\d+), (\d\.\d+), (\d\.\d+).*/) {
+       if ($prev != $1) {
+           my $r = int($2 * 255);
+           my $g = int($3 * 255);
+           my $b = int($4 * 255);
+	   my $pos = $1;
+           while ($pos >= $next) {
+               if ($prev == -1.0) {
+	           $outputr = $r;
+	           $outputg = $g;
+	           $outputb = $b;
+	       }
+	       else {
+	           my $faralong = $next - $prevpos;
+		   my $total = $pos - $prevpos;
+		   my $frac = $faralong / $total;
+
+                   my $newr = $pr + int(($r - $pr) * $frac);
+                   my $newg = $pg + int(($g - $pg) * $frac);
+                   my $newb = $pb + int(($b - $pb) * $frac);
+		   
+		   $outputr = "$outputr, $newr";
+		   $outputg = "$outputg, $newg";
+		   $outputb = "$outputb, $newb";
+	       }
+	       $next += $interval;
+	   }
+	   $pr = $r;
+	   $pg = $g;
+	   $pb = $b;
+	   $prevpos = $pos;
+       }
+       $prev = $1;
+   }
+}
+print "static const unsigned char REDS[]   = {$outputr, 230};\n";
+print "static const unsigned char GREENS[] = {$outputg, 230};\n";
+print "static const unsigned char BLUES[]  = {$outputb, 230};\n";
+

@@ -3,7 +3,7 @@
 //
 //  Main frame handling for Aven.
 //
-//  Copyright (C) 2000-2001 Mark R. Shinwell
+//  Copyright (C) 2000-2002 Mark R. Shinwell
 //  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -56,9 +56,7 @@ const int NUM_DEPTH_COLOURS = 13; // up to 13
     wxCONFIG_PATH_SEPARATOR + wxString("icons") + wxCONFIG_PATH_SEPARATOR + \
     wxString(file), wxBITMAP_TYPE_PNG)
 
-static const unsigned char REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255, 230};
-static const unsigned char GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0, 230};
-static const unsigned char BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0, 230};
+#include "aven.pal"
 
 class AvenSplitterWindow : public wxSplitterWindow {
     MainFrm *parent;
@@ -223,11 +221,13 @@ public:
 	wxString l2 = pt2->text.AfterLast(separator);
 	n = name_cmp(l1, l2, separator);
 	if (n) return n < 0;
+	// Prefer non-2-nodes...
+	// FIXME; implement
 	// if leaf names are the same, prefer shorter labels as we can
 	// display more of them
 	n = pt1->text.length() - pt2->text.length();
 	if (n) return n < 0;
-	// make sure that we don't ever compare different label as equal
+	// make sure that we don't ever compare different labels as equal
 	return name_cmp(pt1->text, pt2->text, separator) < 0;
     }
 };
