@@ -48,6 +48,7 @@
            altered point structure
 1997.06.03 filename is now const char *
            quick fix for xcaverot
+1997.07.16 hacks for const problems
 */
 
 #include <stdio.h>
@@ -117,8 +118,8 @@ extern bool load_data( const char *fnmData, lid Huge **ppLegs, lid Huge **ppStns
    OSSIZE_T cStn, cStnMac; /* counter and ceiling for reading in stn data */
 
    /* try to open image file, and check it has correct header */
-   pimg = img_open( fnmData, NULL, NULL );
-   if (pimg == NULL) fatal( img_error(), wr, fnmData, 0 );
+   pimg = img_open( (char*)/*!HACK!*/fnmData, NULL, NULL );
+   if (pimg == NULL) fatal( img_error(), wr, (char*)/*!HACK!*/fnmData, 0 );
 
    cLeg = 0;
    cLegMac = 2048; /* say */
