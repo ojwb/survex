@@ -3,8 +3,11 @@ Changes in 0.97-prerelease4:
 * Updated Portuguese and German translations.
 
 * aven: Accents now work in display; suppress "wxstd" warning box for
-  en and en_US; speed improvements; redesign of indicators; rescale by
-  dragging scalebar.
+  English; speed improvements; redesign of indicators; rescale by
+  dragging scalebar; allow surface legs to be hidden (they are by
+  default); now defaults to plan view; depth bar labelling improved;
+  added caverot-like handling of flat surveys (so output from extend
+  is locked flat).
 
 * cavern: Complain if the same name is used for a survey and a station.
 
