@@ -30,6 +30,6 @@ control: Makefile $(top_srcdir)/desc.txt $(top_srcdir)/desc-aven.txt
 docs: Makefile $(top_srcdir)/configure.in
 	rm -f docs
 	for a in `echo @EXTRA_TEXT@|grep -v COPYING|grep -v ChangeLog` ; do \
-	 echo $a >> docs ; done
+	 echo $$a >> docs ; done
 	for a in @HTMLFILES@ @DOCS_OTHER@ manual/ ; do \
-	 echo debian/tmp/usr/doc/survex/$a >> docs ; done
+	 echo debian/tmp/usr/doc/survex/$$a >> docs ; done
