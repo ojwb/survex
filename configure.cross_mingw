@@ -1,3 +1,3 @@
 #! /bin/sh
-env ac_cv_c_bigendian=no PATH=/usr/local/cross-tools/i386-mingw32/bin:$PATH \
+env ac_cv_c_bigendian=no CC=/usr/local/cross-tools/i386-mingw32/bin/gcc \
  LDFLAGS=-s ./configure --with-x=no
