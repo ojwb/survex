@@ -1922,12 +1922,12 @@ de:234 @Andere Richtung##R
 pt-br:234 @Reverter Sentido##R
 #
 en:235 Step Once @Anticlockwise##C
-fr:235 Pas &agrave; pas sens inverse des aiguilles d'une montre##C
+fr:235 Pas &agrave; pas sens in@verse des aiguilles d'une montre##C
 de:235 Schritt im @Gegenuhrzeigersinn##C
 pt-br:235 Um Passo @Hor&aacute;rio##C
 #
 en:236 Step Once @Clockwise##V
-fr:236 Pas &agrave; pas dans le sens des aiguilles d'une montre##V
+fr:236 Pas &agrave; pas dans le @sens des aiguilles d'une montre##V
 de:236 Schritt im @Uhrzeigersinn##V
 pt-br:236 Um Passo A@ntihor&aacute;rio##V
 #
@@ -1995,24 +1995,24 @@ it:249 Pro@filo##L
 #
 # TRANSLATE ca es it
 en:250 @Higher Viewpoint##'
-fr:250 Point de vue plus H@aut##'
+fr:250 Point de vue plus Ha@ut##'
 de:250 @H&ouml;herer Standort##'
-pt-br:250 Observador Mais @@Alto##'
+pt-br:250 Observador Mais @Alto##'
 #
 # TRANSLATE ca es it
 en:251 Lo@wer Viewpoint##/
-fr:251 Point de vue plus Ba@s##/
+fr:251 Point de vue plus B@as##/
 de:251 Nie@drigerer Standort##/
-pt-br:251 Observador Mais @Baixo##/
+pt-br:251 Observador Mais Bai@xo##/
 #
 en:252 @Zoom In##]
 # fr: or "Agrandir"
 fr:252 @Zoom Avant##]
-de:252 Ver@gr&ouml;&szlig;ern##]
-de-ch:252 Ver@gr&ouml;ssern##]
+de:252 @Vergr&ouml;&szlig;ern##]
+de-ch:252 @Vergr&ouml;ssern##]
 # pt or "Ampliar"
 pt:252 @Aumentar##]
-pt-br:252 A@proximar##]
+pt-br:252 Aproxi@mar##]
 ca:252 @Apropa##]
 #es or "Aumentar"
 es:252 @Ampliar##]
@@ -2025,7 +2025,7 @@ fr:253 Zoo@m Arri&egrave;re##[
 de:253 Ver@kleinern##[
 # pt or "Reduzir"
 pt:253 @Diminuir##[
-pt-br:253 A@fastar##[
+pt-br:253 Afas@tar##[
 ca:254 A@llunya##[
 #es or "Disminuir"
 es:253 @Reducir##[
@@ -2033,10 +2033,10 @@ es:253 @Reducir##[
 it:253 Zoo@m indietro##]
 #
 en:254 Restore De@fault Settings##Delete
-fr:254 Restaurer les @valeurs par d&eacute;faut##Delete
-de:254 @Voreinstellungen wiederherstellen##Delete
+fr:254 @Restaurer les valeurs par d&eacute;faut##Delete
+de:254 Voreinstellungen @wiederherstellen##Delete
 pt:254 @Usar valores pr&eacute;-definidos##Delete
-pt-br:254 Restaurar @padr&otilde;es##Delete
+pt-br:254 @Restaurar padr&otilde;es##Delete
 ca:254 Restableix els @predeterminats##Delete
 es:254 Restaurar @valores predeterminados##Delete
 it:254 Ripristina i @valori predefiniti
@@ -2073,12 +2073,12 @@ it:272 @Battute##Ctrl+L
 #
 # TRANSLATE ca es it
 en:273 @Overlapping Names##O
-fr:273 Superp@osition des noms##O
+fr:273 @Superposition des noms##O
 de:273 &Uuml;ber@lappende Namen##O
 pt-br:273 Nomes @Sobrepostos##O
 #
-en:274 Co@mpass
-fr:274 Co@mpas
+en:274 @Compass
+fr:274 @Compas
 de-de,de-ch:274 @Kompass
 de:         274 @Kompa&szlig;
 pt-br:274 @B&uacute;ssola
@@ -2086,23 +2086,23 @@ ca:274 @Br&uacute;ixola
 es:274 @Br&uacute;jula
 it:274 @Bussola
 #
-en:275 Cl@inometer
-fr:275 Cl@ino
+en:275 C@linometer
+fr:275 C@lino
 de:275 @Neigungsanzeige
-pt-br:275 Cl@in&ocirc;metro
-ca:275 Cl@ino
-es:275 Cl@ino
-it:275 Cl@inometro
+pt-br:275 @Clin&ocirc;metro
+ca:275 @Clino
+es:275 @Clino
+it:275 @Clinometro
 #
 # TRANSLATE ca es it
 en:276 @Depth Bar
-fr:276 Barre de controle des Profon@deurs
+fr:276 Barre de controle des @Profondeurs
 de:276 @Tiefenskala
 pt-br:276 Barra de @Profundidade
 #
 # TRANSLATE ca es it
-en:277 Sc@ale Bar
-fr:277 Barre de controle des Ec@helles
+en:277 @Scale Bar
+fr:277 Barre de controle des @Echelles
 de:277 @Ma&szlig;stab
 de-ch:277 @Massstab
 pt-br:277 Barra de @Escala
@@ -2139,8 +2139,8 @@ de:292 Tiefen-F@arben auf Oberfl&auml;chendarstellungen
 pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
 en:293 Da@shed Surface Surveys
 fr:293 Topos de surface @Hachur&eacute;es
-de-de,de-ch:293 Ge@strichelte Oberfl&auml;chenmessz&uuml;ge
-de:          293 Ge@strichelte Oberfl&auml;chenme&szlig;z&uuml;ge
+de-de,de-ch:293 Gestrichelte @Oberfl&auml;chenmessz&uuml;ge
+de:          293 Gestrichelte @Oberfl&auml;chenme&szlig;z&uuml;ge
 pt:293 Topografias de Superf&iacute;cie @Tracejadas
 en:294 Highlight @Entrances
 fr:294 Mise en valeur des @entr&egrave;es

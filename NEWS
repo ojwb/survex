@@ -3,7 +3,8 @@
   of left panel; station search now case insensitive; regexp search
   enabled; suppressed message box when wxWindows doesn't support the
   language Survex is set to use; fixed obscure crash in search
-  highlighting; added "rubber band" between measured stations.
+  highlighting; added "rubber band" between measured stations;
+  Improved choice of menu short-cuts in translations.
 
 * (MS Windows version): don't include plain text versions of docs; fixed
   default action for 3d files to be "Open".
