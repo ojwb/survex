@@ -345,8 +345,8 @@ bool MainFrm::LoadData(const wxString& file)
 		    info->y = pt.y;
 		    info->z = pt.z;
 
-		    // Set flags if this datum is a line rather than a move; update number of
-		    // legs if it's a line.
+		    // Set flags if this datum is a line rather than a move;
+		    // update number of legs if it's a line.
 		    if (result == img_LINE) {
 		        m_NumLegs++;
 		        info->isLine = true;
