@@ -58,7 +58,7 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),          "Only load the sub-survey with this prefix"},
+   {HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
    {0, 0}
 };
 

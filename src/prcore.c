@@ -605,7 +605,7 @@ main(int argc, char **argv)
    /* TRANSLATE */
    static struct help_msg help[] = {
 /*				<-- */
-      {HLP_ENCODELONG(0),       "Only load the sub-survey with this prefix"},
+      {HLP_ENCODELONG(0),       "only load the sub-survey with this prefix"},
       {HLP_ENCODELONG(1),       "select elevation"},
       {HLP_ENCODELONG(2),       "select plan view"},
       {HLP_ENCODELONG(3),       "set bearing"},

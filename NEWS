@@ -1,3 +1,7 @@
+* aven: improved initial sizing of window.
+
+* Consitent capitalisation of --help option descriptions.
+
 Changes in 0.99-prerelease4:
 
 * Minor improvements to manual and Unix man pages.
