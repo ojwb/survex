@@ -37,6 +37,8 @@
 # define LONGJMP(JB) exit(1)
 #endif
 
+int root_depr_count = 0;
+
 /* Dinky macro to handle any case forcing needed */
 #define docase(X) (pcs->Case == OFF ? (X) :\
                    (pcs->Case == UPPER ? toupper(X) : tolower(X)))
@@ -60,7 +62,11 @@ read_prefix_(bool fOmit, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 skipline();
 	 LONGJMP(file.jbSkipLine);	 
       }
-      compile_warning(/*ROOT is deprecated*/25);
+      if (root_depr_count < 5) {
+	 compile_warning(/*ROOT is deprecated*/25);
+	 if (++root_depr_count == 5)
+	    compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+      }
       nextch();
       ptr = root;
       if (!isNames(ch)) {

@@ -21,6 +21,10 @@
 * cavern: interleaved nosurvey data style now works; nosurvey legs now
   count as a "use" of a fixed point.
 
+* cavern: give at most 5 warnings about use of any particular
+  deprecated feature.  Otherwise processing an old dataset just gives
+  an avalanche of warnings which buries any other warnings or errors.
+
 * aven: if a .3d file is truncated or corrupted part way through, aven
   would previously load part of it without complaint.  Fixed to
   complain and not load anything.

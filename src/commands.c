@@ -360,8 +360,13 @@ cmd_set(void)
       return;
    }
 
-   if (mask == SPECIAL_ROOT)
-      compile_warning(/*ROOT is deprecated*/25);
+   if (mask == SPECIAL_ROOT) {
+      if (root_depr_count < 5) {
+	 compile_warning(/*ROOT is deprecated*/25);
+	 if (++root_depr_count == 5)
+	    compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+      }
+   }
 
    /* if we're currently using an inherited translation table, allocate a new
     * table, and copy old one into it */
@@ -392,7 +397,14 @@ check_reentry(prefix *tag)
 	  strcmp(tag->filename, file.filename) != 0) {
 	 const char *filename_store = file.filename;
 	 unsigned int line_store = file.line;
-	 compile_warning(/*Reentering an existing prefix level is deprecated*/29);
+	 static int reenter_depr_count = 0;
+
+	 if (reenter_depr_count < 5) {
+	    compile_warning(/*Reentering an existing prefix level is deprecated*/29);
+	    if (++reenter_depr_count == 5)
+	       compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+	 }
+
 	 file.filename = tag->filename;
 	 file.line = tag->line;
 	 compile_warning(/*Originally entered here*/30);
@@ -408,11 +420,16 @@ check_reentry(prefix *tag)
 static void
 cmd_prefix(void)
 {
+   static int prefix_depr_count = 0;
    prefix *tag;
    /* Issue warning first, so "*prefix \" warns first that *prefix is
     * deprecated and then that ROOT is...
     */
-   compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
+   if (prefix_depr_count < 5) {
+      compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
+      if (++prefix_depr_count == 5)
+	 compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+   }
    tag = read_prefix_survey(fFalse, fTrue);
    pcs->Prefix = tag;
 #ifdef NEW3DFORMAT
@@ -1191,7 +1208,14 @@ cmd_default(void)
       { "UNITS",     CMD_UNITS },
       { NULL,        CMD_NULL }
    };
-   compile_warning(/**DEFAULT is deprecated - use *CALIBRATE/DATA/UNITS with argument DEFAULT instead*/20);
+   static int default_depr_count = 0;
+
+   if (default_depr_count < 5) {
+      compile_warning(/**DEFAULT is deprecated - use *CALIBRATE/DATA/UNITS with argument DEFAULT instead*/20);
+      if (++default_depr_count == 5)
+	 compile_warning(/*No further uses of this deprecated feature will be reported*/95);
+   }
+
    get_token();
    switch (match_tok(defaulttab, TABSIZE(defaulttab))) {
     case CMD_CALIBRATE:

@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+extern int root_depr_count;
+
 prefix *read_prefix_survey(bool fOmit, bool fAllowRoot);
 prefix *read_prefix_stn(bool fOmit, bool fAllowRoot);
 prefix *read_prefix_stn_check_implicit(bool fOmit, bool fAllowRoot);

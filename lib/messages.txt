@@ -906,7 +906,9 @@ pt: 94 Erro de acesso &agrave; mem&oacute;ria
 ca: 94 Acc&egrave;s a mem&ograve;ria dolent
 es: 94 Acceso a memoria err&oacute;neo
 it: 94 Accesso alla memoria errato
-# XXX95
+# TRANSLATE fr de pt ca es it
+en: 95 No further uses of this deprecated feature will be reported
+#
 en: 96 Stack overflow
 fr: 96 D&eacute;bordement de pile
 de: 96 Stack-&Uuml;berlauf
