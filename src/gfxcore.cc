@@ -483,8 +483,8 @@ void GfxCore::SetScaleInitial(Double scale)
             Double current_y;
             Double current_z;
 
-            list<PointInfo*>::const_iterator pos = m_Parent->GetPoints(band);
-            list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd(band);
+            list<PointInfo*>::iterator pos = m_Parent->GetPointsNC(band);
+            list<PointInfo*>::iterator end = m_Parent->GetPointsEndNC(band);
             bool first_point = true;
             bool last_was_move = true;
             bool current_polyline_is_surface = false;
@@ -492,7 +492,7 @@ void GfxCore::SetScaleInitial(Double scale)
             bool line_open = false;
 #endif
             while (pos != end) {
-                const PointInfo* pti = *pos++;
+                PointInfo* pti = *pos++;
 
                 if (pti->IsLine()) {
                     // We have a leg.
@@ -502,6 +502,8 @@ void GfxCore::SetScaleInitial(Double scale)
                     // Determine if we're switching from an underground polyline to a
                     // surface polyline, or vice-versa.
                     bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
+		    pti->SetChangingUGState(changing_ug_state);
+		    pti->SetLastWasMove(last_was_move);
 
                     // Record new underground/surface state.
                     current_polyline_is_surface = pti->IsSurface();
@@ -746,12 +748,12 @@ void GfxCore::SetScale(Double scale)
     DrawGrid();
 #endif
 
-    Double m_00 = m_RotationMatrix.get(0, 0);
-    Double m_01 = m_RotationMatrix.get(0, 1);
-    Double m_02 = m_RotationMatrix.get(0, 2);
-    Double m_20 = m_RotationMatrix.get(2, 0);
-    Double m_21 = m_RotationMatrix.get(2, 1);
-    Double m_22 = m_RotationMatrix.get(2, 2);
+    Double m_00 = m_RotationMatrix.get(0, 0) * scale;
+    Double m_01 = m_RotationMatrix.get(0, 1) * scale;
+    Double m_02 = m_RotationMatrix.get(0, 2) * scale;
+    Double m_20 = m_RotationMatrix.get(2, 0) * scale;
+    Double m_21 = m_RotationMatrix.get(2, 1) * scale;
+    Double m_22 = m_RotationMatrix.get(2, 2) * scale;
 
     if (!m_ScaleCrossesOnly && !m_ScaleHighlightedPtsOnly && !m_ScaleSpecialPtsOnly) {
 
@@ -809,7 +811,6 @@ void GfxCore::SetScale(Double scale)
 
             list<PointInfo*>::const_iterator pos = m_Parent->GetPoints(band);
             list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd(band);
-            bool first_point = true;
             bool last_was_move = true;
             bool current_polyline_is_surface = false;
 #ifdef AVENGL
@@ -821,16 +822,10 @@ void GfxCore::SetScale(Double scale)
                 if (pti->IsLine()) {
                     // We have a leg.
 
-                    assert(!first_point); // The first point must always be a move.
-
-                    // Determine if we're switching from an underground polyline to a
-                    // surface polyline, or vice-versa.
-                    bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
-
                     // Record new underground/surface state.
                     current_polyline_is_surface = pti->IsSurface();
 
-                    if (changing_ug_state || last_was_move) {
+                    if (pti->IsChangingUGState() || pti->LastWasMove()) {
                         // Start a new polyline if we're switching underground/surface state
                         // or if the previous point was a move.
 #ifdef AVENGL
@@ -844,8 +839,8 @@ void GfxCore::SetScale(Double scale)
 #else
                         wxPoint** dest = &(current_polyline_is_surface ? spt : pt);
 
-                        (*dest)->x = (long) ((current_x*m_00 + current_y*m_01 + current_z*m_02) * scale);
-                        (*dest)->y = -(long) ((current_x*m_20 + current_y*m_21 + current_z*m_22) * scale);
+                        (*dest)->x = (long) (current_x*m_00 + current_y*m_01 + current_z*m_02);
+                        (*dest)->y = -(long) (current_x*m_20 + current_y*m_21 + current_z*m_22);
 
                         // Advance the relevant coordinate pointer to the next position.
                         (*dest)++;
@@ -874,13 +869,12 @@ void GfxCore::SetScale(Double scale)
                     current_y = pti->GetY() + m_Params.translation.y;
                     current_z = pti->GetZ() + m_Params.translation.z;
 
-                    (*dest)->x = (long) ((current_x*m_00 + current_y*m_01 + current_z*m_02) * scale);
-                    (*dest)->y = -(long) ((current_x*m_20 + current_y*m_21 + current_z*m_22) * scale);
+                    (*dest)->x = (long) (current_x*m_00 + current_y*m_01 + current_z*m_02);
+                    (*dest)->y = -(long) (current_x*m_20 + current_y*m_21 + current_z*m_22);
 
                     // Advance the relevant coordinate pointer to the next position.
                     (*dest)++;
 #endif
-                    last_was_move = false;
                 }
                 else {
 #ifdef AVENGL
@@ -891,9 +885,6 @@ void GfxCore::SetScale(Double scale)
                         line_open = false;
                     }
 #endif
-                    first_point = false;
-                    last_was_move = true;
-
                     // Save the current coordinates for the next time around the loop.
                     current_x = pti->GetX() + m_Params.translation.x;
                     current_y = pti->GetY() + m_Params.translation.y;

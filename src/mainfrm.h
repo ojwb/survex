@@ -113,6 +113,8 @@ class PointInfo {
     Double x, y, z;
     bool isLine; // false => move, true => draw line
     bool isSurface;
+    bool isChangingUGState;
+    bool lastWasMove;
 
 public:
     Double GetX() const { return x; }
@@ -120,6 +122,12 @@ public:
     Double GetZ() const { return z; }
     bool IsLine() const { return isLine; }
     bool IsSurface() const { return isSurface; }
+
+    void SetChangingUGState(bool b) { isChangingUGState = b; }
+    bool IsChangingUGState() const { return isChangingUGState; }
+
+    void SetLastWasMove(bool b) { lastWasMove = b; }
+    bool LastWasMove() const { return lastWasMove; }
 };
 
 class LabelInfo {
@@ -421,6 +429,16 @@ public:
     Double GetZOffset() { return m_Offsets.z; }
 
     void SetMouseOverStation(LabelInfo* label);
+
+    list<PointInfo*>::iterator GetPointsNC(int band) {
+        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+        return m_Points[band].begin();
+    }
+
+    list<PointInfo*>::iterator GetPointsEndNC(int band) {
+        assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+        return m_Points[band].end();
+    }
 
     list<PointInfo*>::const_iterator GetPoints(int band) {
         assert(band >= 0 && band < NUM_DEPTH_COLOURS);
