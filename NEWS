@@ -8,6 +8,21 @@
 
 * Another regression test case added
 
+* HACKING: new file containing nuggets of wisdom for developers
+
+* Added default s.d. for level legs
+
+* Fixed network reduction bug (undoing network simplifications didn't
+  always restore removed stations to the station list)
+
+* Catch *begin with no matching *end
+
+* Catch *begin and matching *end in different files
+
+* Updated Portugese, French, and German translations [Leandro/Eric/Gerhard]
+
+* Wrong warning was being given for `*equate 1 1'
+
 Changes in 0.92-prerelease4:
 
 * cavern: "*infer" wasn't working due to internal token value mismatch

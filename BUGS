@@ -54,11 +54,6 @@ When I use caverot if I set the language to another one different than
 english, the screen doesn't print well the words with accents.
 [Need accent support from Allegro, which is under development - Olly]
 
-Date: 13 Sep 1999
-From: Olly
-
-Need to catch *begin with no *end
-
 Date: 10 Jan 2000
 From: Wookey
 
