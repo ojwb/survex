@@ -1,6 +1,6 @@
 /* > matrix.c
  * Matrix building and solving routines
- * Copyright (C) 1993-1996 Olly Betts
+ * Copyright (C) 1993-1998 Olly Betts
  */
 
 /*
@@ -108,6 +108,7 @@
 1995.04.15 ASSERT -> ASSERT2
 1996.02.20 solve_matrix() should take void parameter, not empty list
 1996.04.03 fixed a warning
+1998.03.04 covariances - current just a warning that they aren't supported here
 */
 
 #include "debug.h"
@@ -508,8 +509,12 @@ static void build_matrix(long n, prefix **stn_tab) {
          if (!(fixed(stn->leg[dirn]->l.to)) &&
              stn->leg[dirn]->l.to->status==statFixed) {
           t=find_stn_in_tab(stn->leg[dirn]->l.to);
+#ifdef NO_COVARIANCES
+          e=stn->leg[dirn]->v[d];
+#else
 	  ASSERT2(0,"fix covariances code!");
           e=stn->leg[dirn]->v[d][d]; /* !HACK! covariances */
+#endif
           if (e!=(real)0.0) /* not an equate */ {
            e=((real)1.0)/e;
            a=e*stn->leg[dirn]->d[d];
@@ -525,8 +530,12 @@ static void build_matrix(long n, prefix **stn_tab) {
        f=find_stn_in_tab(stn);
        for( dirn=2 ; dirn >= 0 ; dirn-- )
         if ( USED(stn,dirn) && data_here(stn->leg[dirn]) ) {
+#ifdef NO_COVARIANCES
+         e=stn->leg[dirn]->v[d];
+#else
 	 ASSERT2(0,"fix covariances code!");
          e=stn->leg[dirn]->v[d][d]; /* !HACK! covariances */
+#endif
          if (fixed(stn->leg[dirn]->l.to)) {
           if (e!=(real)0.0) /* Ignore equated nodes */ {
            e=((real)1.0)/e;
