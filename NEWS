@@ -8,6 +8,8 @@ Changes in 1.0.3:
 * Updated French translation; minor updates to other translations (mostly
   sorting out clashing menu shortcuts in aven).
 
+* (Unix version): assorted portability tweaks.
+
 Changes in 1.0.2:
 
 * printdm/printpcl/printwin: take notice of font_size_labels setting in
