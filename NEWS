@@ -2,6 +2,9 @@ Changes in 1.0.3:
 
 * cad3d: fixed bug which caused --plt to crash on some platforms.
 
+* print*: added "Printing to `XXX'..." message to say where output is being
+  written.
+
 Changes in 1.0.2:
 
 * printdm/printpcl/printwin: take notice of font_size_labels setting in

@@ -60,7 +60,7 @@
 static const char *hpgl_Name(void);
 static int hpgl_Pre(int pagesToPrint, const char *title);
 static void hpgl_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void hpgl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+static char *hpgl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 		      double *pscX, double *pscY, bool fCalibrate);
 static void hpgl_MoveTo(long x, long y);
 static void hpgl_DrawTo(long x, long y);
@@ -109,7 +109,7 @@ static const char *fontname, *fontname_labels;
 static const char *ps_Name(void);
 static int ps_Pre(int pagesToPrint, const char *title);
 static void ps_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+static char *ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 		    double *pscX, double *pscY, bool fCalibrate);
 static int CharsetLatin1(void);
 static void ps_MoveTo(long x, long y);
@@ -652,7 +652,7 @@ ps_ShowPage(const char *szPageDetails)
 #endif
 
 /* Initialise HPGL/PS printer routines */
-static void
+static char *
 #ifdef HPGL
 hpgl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 	  double *pscX, double *pscY, bool fCalibrate)
@@ -753,7 +753,7 @@ ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 #endif
 
    prio_open(fnm_prn);
-   osfree(fnm_prn);
+   return fnm_prn;
 }
 
 #ifndef HPGL

@@ -51,8 +51,8 @@ static char *fontname, *fontname_labels;
 static const char *win_Name(void);
 static int win_Pre(int pagesToPrint, const char *title);
 static void win_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void win_Init(FILE **fh_list, const char *pth, const char *outfnm,
-		     double *pscX, double *pscY, bool fCalibrate);
+static char *win_Init(FILE **fh_list, const char *pth, const char *outfnm,
+		      double *pscX, double *pscY, bool fCalibrate);
 static int  win_Charset(void);
 static void win_MoveTo(long x, long y);
 static void win_DrawTo(long x, long y);
@@ -333,11 +333,12 @@ win_ShowPage(const char *szPageDetails)
 }
 
 /* Initialise printer routines */
-static void
+static char *
 win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 	 double *pscX, double *pscY, bool fCalibrate)
 {
    PRINTDLGA psd;
+   LPDEVNAMES *dn;
    static const char *vars[] = {
       "like",
       "font_size_labels",
@@ -373,6 +374,14 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    xpPageWidth--;
    ypPageDepth = ypPageDepth - (int)(10 * *pscY);
    DeleteDC(psd.hDC);
+   
+   dn = GlobalLock(psd.hDevNames);
+   if (dn) {
+      char *p = osstrdup((char *)dn + dn->wDeviceOffset);
+      GlobalUnlock(psd.hDevNames);
+      return p;
+   }
+   return NULL;
 }
 
 static void

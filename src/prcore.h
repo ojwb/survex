@@ -1,6 +1,6 @@
 /* prcore.h
  * Header file for printer independent parts of Survex printer drivers
- * Copyright (C) 1994-2001 Olly Betts
+ * Copyright (C) 1994-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ typedef struct {
    /* A NULL fn ptr is Ok for Init, Charset, Pre, NewPage, ShowPage,
     & Post, Quit */
    /* if Pre==NULL, it "returns" 1 */
-   void (*Init)(FILE **fh_list, const char *pth, const char *out_fnm,
+   char * (*Init)(FILE **fh_list, const char *pth, const char *out_fnm,
 		double *pscX, double *pscY, bool fCalibrate);
    int  (*Charset)(void);
    int  (*Pre)(int pagesToPrint, const char *title);

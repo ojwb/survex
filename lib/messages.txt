@@ -1527,13 +1527,9 @@ pt:164 "P&aacute;ginas a imprimir:&#10;(RETURN para todas; 'n' para uma, 'm-n', 
 ca:164 "P&agrave;gines a imprimir:&#10;(RETURN per a totes; 'n' per una, 'm-n', 'm-', '-n' per intervals)&#10;: "
 es:164 "P&aacute;ginas a imprimir:&#10;(RETURN para todas; 'n' para uma, 'm-n', 'm-', '-n' para un intervalo)&#10;: "
 it:164 "Pagine da stampare:&#10;(RETURN per tuttr; 'n' per una pagina 'm-n', 'm-', '-n' per un intervallo)&#10;: "
-en:165 Generating images...
-fr:165 Cr&eacute;e les images...
-de:165 Bild wird erzeugt...
-pt:165 Gerando imagens...
-ca:165 Generant imatges...
-es:165 Generando im&aacute;genes...
-it:165 Sto generando le immagini...
+# e.g. "Printing to `somefile.ps'..." / "Printing to `Laserjet4 on amachine...'
+en:165 Printing to `%s'...
+#
 en:166 Page %d of %d
 fr:166 Page %d sur %d
 de:166 Seite %d von %d
@@ -2744,6 +2740,16 @@ pt:341 "  Dist %dm, Azim %03d&deg;"
 ca:341 "  Dist %dm, Azim %03d&deg;" 
 es:341 "  Dist %dm, Azim %03d&deg;"
 it:341 "  Dist %dm, Azm. %03d&deg;"
+# tickable menu item in View menu
+en:342 @Metric
+# tickable menu item in View menu
+en:343 @Degrees
+fr:343 @Degr&eacute;s
+de:343 @Grad
+pt:343 @Graus
+ca:343 @Graus
+es:343 @Grados
+it:343 @Gradi
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

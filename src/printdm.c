@@ -57,7 +57,7 @@ static int CharsetLatin1(void);
 #ifdef XBM
 static const char *xbm_Name(void);
 static void xbm_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void xbm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+static char *xbm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 		     double *pscX, double *pscY, bool fCalibrate);
 static void xbm_ShowPage(const char *szPageDetails);
 
@@ -87,7 +87,7 @@ static bool fPCLVTab = fTrue;
 
 static const char *pcl_Name(void);
 static void pcl_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void pcl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+static char *pcl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 		     double *pscX, double *pscY, bool fCalibrate);
 static void pcl_ShowPage(const char *szPageDetails);
 
@@ -114,7 +114,7 @@ static bool fIBM = fFalse;
 
 static const char *dm_Name(void);
 static void dm_NewPage(int pg, int pass, int pagesX, int pagesY);
-static void dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
+static char *dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 		    double *pscX, double *pscY, bool fCalibrate);
 static void dm_ShowPage(const char *szPageDetails);
 
@@ -397,7 +397,7 @@ dm_ShowPage(const char *szPageDetails)
 }
 
 /* Initialise DM/PCL printer routines */
-static void
+static char *
 #ifdef XBM
 xbm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 	 double *pscX, double *pscY, bool fCalibrate)
@@ -551,7 +551,7 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 	     (int)((*pscY) * MM_PER_INCH));
 #endif
    prio_open(fnm_prn);
-   osfree(fnm_prn);
+   return fnm_prn;
 }
 
 #if defined(PCL) || defined(XBM)

@@ -1,6 +1,6 @@
 /* prcore.c
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -761,7 +761,7 @@ main(int argc, char **argv)
 
    if (pr->Init) {
       if (pr->flags & PR_FLAG_NOINI) {
-	 pr->Init(NULL, msg_cfgpth(), output_fnm, &scX, &scY, 0);
+	 output_fnm = pr->Init(NULL, msg_cfgpth(), output_fnm, &scX, &scY, 0);
       } else {
 	 FILE *fh_list[4];
 	 FILE **pfh = fh_list;
@@ -798,7 +798,7 @@ main(int argc, char **argv)
 	 if (!fh) fatalerror(/*Couldn't open data file `%s'*/24, print_ini);
 	 *pfh++ = fh;
 	 *pfh = NULL;
-	 pr->Init(fh_list, pth_cfg, output_fnm, &scX, &scY, fCalibrate);
+	 output_fnm = pr->Init(fh_list, pth_cfg, output_fnm, &scX, &scY, fCalibrate);
 	 for (pfh = fh_list; *pfh; pfh++) (void)fclose(*pfh);
       }
    }
@@ -1009,7 +1009,9 @@ main(int argc, char **argv)
    /* if no explicit Alloc, default to one pass */
    cPasses = (pr->Pre ? pr->Pre(pages, title) : 1);
 
-   puts(msg(/*Generating images...*/165));
+   if (output_fnm) {
+      puts(msg(/*Printing to `%s'...*/165), output_fnm);
+   }
 
    /* note down so we can switch to printer charset */
    msg166 = msgPerm(/*Page %d of %d*/166);
