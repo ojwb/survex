@@ -663,8 +663,8 @@ void GfxCore::RedrawOffscreen()
 		inc = 1;
 	    }
 	    else {
-	        start = m_Bands;
-		end = 0;
+	        start = m_Bands - 1;
+		end = -1;
 		inc = -1;
 	    }
 
@@ -691,8 +691,8 @@ void GfxCore::RedrawOffscreen()
 		inc = 1;
 	    }
 	    else {
-	        start = m_Bands;
-		end = 0;
+	        start = m_Bands - 1;
+		end = -1;
 		inc = -1;
 	    }
 
