@@ -17,6 +17,10 @@
 
 * cavern: Fixed articulation code wasn't quite.
 
+* cavern: an empty label was being added to the .3d file for a station
+  fixed with standard deviations.  Such labels are also now ignored by
+  img on read-in.
+
 Changes in 0.98-prerelease2:
 
 * (MS Windows version): Fixed "Open" on a .3d file to open in aven

@@ -893,7 +893,7 @@ replace_trailing_travs(void)
 #ifdef NEW3DFORMAT
       if (!fUseNewFormat) {
 #endif	 
-	 if (stn1->name->stn == stn1) {
+	 if (stn1->name->stn == stn1 && stn1->name->ident[0]) {
 	    int sf = stn1->name->sflags & SFLAGS_MASK;
 	    if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
 	    img_write_item(pimgOut, img_LABEL, sf, sprint_prefix(stn1->name),

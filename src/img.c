@@ -299,6 +299,8 @@ img_read_item(img *pimg, img_point *p)
 	 fgets(pimg->label, 257, pimg->fh);
 	 q = pimg->label + strlen(pimg->label) - 1;
 	 if (*q != '\n') return img_BAD;
+	 /* Ignore empty labels in some .3d files (caused by a bug) */
+	 if (q == pimg->label) goto again;
 	 *q = '\0';
 	 pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
 	 if (opt == 2) goto done;
@@ -312,6 +314,8 @@ img_read_item(img *pimg, img_point *p)
 	 else
 	    pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
 	 len = get32(pimg->fh);
+	 /* Ignore empty labels in some .3d files (caused by a bug) */
+	 if (len == 0) goto again;
 	 if (len >= pimg->buf_len) {
 	    pimg->label = xosrealloc(pimg->label, len + 1);
 	    if (!pimg->label) {
@@ -341,6 +345,8 @@ img_read_item(img *pimg, img_point *p)
 	    result = img_LABEL;
 	    if (!fgets(pimg->label, 257, pimg->fh)) return img_BAD;
 	    q = pimg->label + strlen(pimg->label) - 1;
+	    /* Ignore empty-labels in some .3d files (caused by a bug) */
+	    if (q == pimg->label) goto again;
 	    if (*q != '\n') return img_BAD;
 	    *q = '\0';
 	    break;
