@@ -1,0 +1,69 @@
+#!/bin/sh
+VER=`sed 's/^AM_INIT_AUTOMAKE(.*, * \([0-9][0-9\.]*\)).*/\1/p;d' configure.in`
+REL=`sed 's/^RELEASE *= *\([0-9][0-9]*\).*/\1/p;d' Makefile.am`
+VRR=$VER-$REL
+VRD=$VER.$REL
+VRP=$VER-prerelease$REL
+
+FILES="survex-$VRR.i386.rpm survex-aven-$VRR.i386.rpm survex-$VRR.src.rpm\
+ survex_${VRD}_i386.deb survex-aven_${VRD}_i386.deb"
+
+for a in survex-$VER.tar.gz survex-dos-$VER.exe survex-win32-$VER.exe\
+ svxdoc-doswin-$VER.exe svxdoc-riscos-$VER.zip $OPT; do
+   new_a=`echo $a|sed "s/-$VER\\./-$VRP./"`
+   mv $a $new_a
+   FILES="$FILES $new_a"
+done
+
+for a in survex-riscos-$VER.zip survex-dos286-$VER.zip; do
+   if test -f $a ; then
+      new_a=`echo $a|sed "s/-$VER\\./-$VRP./"`
+      mv $a $new_a
+      FILES="$FILES $new_a"
+   fi
+done
+
+WEBDIR="software/test/$VRP"
+DIR="/export/survex/www/$WEBDIR"
+mkdir $DIR
+for a in $FILES ; do
+   cp $a $DIR/
+done
+
+cat > pre.hip <<END
+<ul>
+<li> <A HREF="$WEBDIR/survex-$VRP.tar.gz"
+>Source code</A>
+<li> <A HREF="$WEBDIR/survex-win32-$VRP.exe"
+>MS Windows Installer</A>
+<li> <A
+HREF="$WEBDIR/survex-dos-$VRP.exe"
+>MSDOS Executables</A> + <A
+HREF="$WEBDIR/svxdoc-doswin-$VRP.exe"
+>Documentation</A>
+<li> <A
+HREF="$WEBDIR/survex-dos286-$VRP.exe"
+>pre-386 MSDOS Executables</A> + <A
+HREF="$WEBDIR/svxdoc-doswin-$VRP.exe"
+>Documentation</A>
+<li> Linux i386 binary <A
+HREF="$WEBDIR/survex_${VRD}_i386.deb"
+>survex debian package</A> + 
+<A
+HREF="$WEBDIR/survex-aven_${VRD}_i386.deb"
+>aven cave viewer binary debian package</A>
+<li> Linux i386 binary <A
+HREF="$WEBDIR/survex-$VRR.i386.rpm"
+>survex RPM</A> + 
+<A HREF="$WEBDIR/survex-aven-$VRR.i386.rpm"
+>aven cave viewer binary RPM</A>
+<li> Linux <A
+HREF="$WEBDIR/survex-$VRR.src.rpm"
+>Source RPM</A>
+<li> <A
+HREF="$WEBDIR/survex-riscos-$VRP.zip"
+>RISC OS executables</A> and <A
+HREF="$WEBDIR/svxdoc-riscos-$VRP.zip"
+>documentation</A>
+</ul>
+END
