@@ -1,8 +1,8 @@
 #!/usr/bin/perl -w
 use strict;
 my %menu = ();
-my $srcdir = $ENV{'srcdir'};
-$srcdir .= '/' if defined $srcdir;
+my $srcdir = $ENV{'srcdir'} || '';
+$srcdir .= '/' if $srcdir;
 
 open I, "<$srcdir../src/mainfrm.cc" or die $!;
 while (<I>) {
