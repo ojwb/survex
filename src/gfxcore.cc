@@ -479,9 +479,9 @@ void GfxCore::SetScale(Double scale)
             m_Polylines[band] = 0;
             m_SurfacePolylines[band] = 0;
 #endif
-            Double current_x = 0.0;
-            Double current_y = 0.0;
-            Double current_z = 0.0;
+            Double current_x;
+            Double current_y;
+            Double current_z;
 
             list<PointInfo*>::const_iterator pos = m_Parent->GetPoints(band);
             list<PointInfo*>::const_iterator end = m_Parent->GetPointsEnd(band);
@@ -494,10 +494,6 @@ void GfxCore::SetScale(Double scale)
             while (pos != end) {
                 const PointInfo* pti = *pos++;
 
-                Double x = pti->GetX();
-                Double y = pti->GetY();
-                Double z = pti->GetZ();
-                
                 if (pti->IsLine()) {
                     // We have a leg.
 
@@ -565,9 +561,9 @@ void GfxCore::SetScale(Double scale)
                     wxPoint** dest = &(current_polyline_is_surface ? spt : pt);
 
                     // Final coordinate transformations and storage of coordinates.
-                    Double xp = x + m_Params.translation.x;
-                    Double yp = y + m_Params.translation.y;
-                    Double zp = z + m_Params.translation.z;
+                    Double xp = pti->GetX() + m_Params.translation.x;
+                    Double yp = pti->GetY() + m_Params.translation.y;
+                    Double zp = pti->GetZ() + m_Params.translation.z;
 
                     (*dest)->x = (long) ((xp*m_00 + yp*m_01 + zp*m_02) * scale);
                     (*dest)->y = -(long) ((xp*m_20 + yp*m_21 + zp*m_22) * scale);
@@ -596,12 +592,12 @@ void GfxCore::SetScale(Double scale)
 #endif
                     first_point = false;
                     last_was_move = true;
-                }
 
-                // Save the current coordinates for the next time around the loop.
-                current_x = x;
-                current_y = y;
-                current_z = z;
+                    // Save the current coordinates for the next time around the loop.
+                    current_x = pti->GetX();
+                    current_y = pti->GetY();
+                    current_z = pti->GetZ();
+                }
             }
 #ifndef AVENGL
             if (!m_UndergroundLegs) {
