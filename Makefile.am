@@ -109,6 +109,7 @@ mingw_iss :
 	cd doc;cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
+	cd mingw_extras && $(MAKE)
 	cp mingw_extras/*.ico lib/icons/*.png iss_tmp
 	cp /opt/rx-win32/bin/librx.dll iss_tmp
 	mkdir iss_tmp/manual
