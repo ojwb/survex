@@ -97,8 +97,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-11-15 18:44:21 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.74 2001-11-15 18:44:21 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-11-28 17:20:46 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.75 2001-11-28 17:20:46 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -514,12 +514,17 @@ command prompt.</Para></ListItem>
  </VarListEntry>
  <VarListEntry><Term>Microsoft Windows</Term>
    <ListItem><Para>
-Open the Start Menu, navigate to the Settings sub-menu, and open
-Control Panel.  Open System (picture of a computer) and click on
-the Advanced tab.  Chose `Enviromental Variables', and create a
-new one: name <systemitem>SURVEXLANG</systemitem>, value
-<systemitem>fr</systemitem>.  Click OK and the new value should be
-effective immediately.
+For MS Windows 95 and 98 (and probably ME), you'll need to add a line to
+<filename>AUTOEXEC.BAT</filename> as for MSDOS (see above).
+</Para>
+
+<Para>For MS Windows NT4, 2000, and XP, you should proceed as follows
+(this description is written from MS Windows 2000 - it should be similar on
+NT4 and XP): Open the Start Menu, navigate to the Settings sub-menu, and
+open Control Panel.  Open System (picture of a computer) and click on the
+Advanced tab.  Choose `Environmental Variables', and create a new one: name
+<systemitem>SURVEXLANG</systemitem>, value <systemitem>fr</systemitem>.
+Click OK and the new value should be effective immediately.
    </Para></ListItem>
  </VarListEntry>
  <VarListEntry><Term>&unix; - csh/tcsh</Term>
