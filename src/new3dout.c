@@ -18,12 +18,14 @@
  */
 
 #include <config.h>
-#include "new3dout.h"
+#include "cavern.h"
 
 #ifdef NEW3DFORMAT
 
-/* majority of new file interface... */
-#include "math.h"
+#include <stdio.h>
+#include <math.h>
+
+#include "3ddefs.h"
 
 twig *rhizome, *limb;
 char *firstfilename, *startingdir;

@@ -20,11 +20,12 @@
 #ifndef CAVERN_H
 #define CAVERN_H
 
+#define NEW3DFORMAT
+
 /* Using covariances increases the memory required somewhat - may be
  * desirable to disable this for small memory machines */
 
 /* #define NO_COVARIANCES 1 */
-#define NEW3DFORMAT
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,8 +34,8 @@
 #include <math.h>
 #include <float.h>
 
-#include "useful.h"
 #include "img.h"
+#include "useful.h"
 
 /* Set EXPLICIT_FIXED_FLAG to 1 to force an explicit fixed flag to be used
  * in each pos struct, rather than using p[0]==UNFIXED_VAL to indicate
@@ -112,6 +113,13 @@ typedef enum {
 typedef enum {
    FLAGS_NOT = -2, FLAGS_UNKNOWN = -1, FLAGS_SURFACE, FLAGS_DUPLICATE,
    FLAGS_SPLAY
+#if 0
+   ,
+   /* underground, but through rock (e.g. radiolocation).  Want to hide from
+    * plots by default (so not cave) but don't want to include in surface
+    * triangulation nets (so not surface) */
+   FLAGS_SKELETAL
+#endif
 } flags;
 
 typedef int compiletimeassert_flags1[BIT(FLAGS_SURFACE) == img_FLAG_SURFACE ? 1 : -1];
@@ -146,8 +154,17 @@ typedef char compiletimeassert_reading[IgnoreAll < 32 ? 1 : -1];
 /* type of a function to read in some data style */
 typedef int (*style_fn)(void);
 
-/* Structures */
-typedef struct Twig twig;
+/* position or length vector */
+typedef real delta[3];
+
+/* variance */
+#ifdef NO_COVARIANCES
+typedef real var[3];
+typedef var svar;
+#else
+typedef real var[3][3];
+typedef real svar[6];
+#endif
 
 /* station name */
 typedef struct Prefix {
@@ -169,21 +186,9 @@ typedef struct Prefix {
     * also suspecttypo and survey */
    unsigned short sflags;   
 #ifdef NEW3DFORMAT
-   twig *twig_link;
+   struct Twig *twig_link;
 #endif
 } prefix;
-
-/* variance */
-#ifdef NO_COVARIANCES
-typedef real var[3];
-typedef var svar;
-#else
-typedef real var[3][3];
-typedef real svar[6];
-#endif
-
-/* position or length vector */
-typedef real delta[3];
 
 /* stuff stored for both forward & reverse legs */
 typedef struct {
@@ -197,6 +202,7 @@ typedef struct {
     */
    unsigned char flags;
 } linkcommon;
+
 #define FLAG_DATAHERE 0x80
 #define FLAG_REPLACEMENTLEG 0x40
 #define FLAG_ARTICULATION 0x20
@@ -235,18 +241,6 @@ typedef struct Pos {
    INT32_T id;
 #endif
 } pos;
-
-#ifdef NEW3DFORMAT
-struct Twig {
-  struct Twig *up, *down, *right;
-  struct Prefix *to, *from;
-  delta delta;
-  int count;
-  short int sourceval;
-  /* pointers to some random data bits... */
-  char *date, *drawings, *tape, *instruments, *source;
-};
-#endif
 
 #define STYLE_DEFAULT   -2
 #define STYLE_UNKNOWN   -1
@@ -355,5 +349,9 @@ typedef struct nosurveylink {
 } nosurveylink;
 
 extern nosurveylink *nosurveyhead;
+
+#ifdef NEW3DFORMAT
+#include "new3dout.h"
+#endif
 
 #endif /* CAVERN_H */

@@ -35,9 +35,6 @@
 #include "out.h"
 #include "readval.h"
 #include "str.h"
-#ifdef NEW3DFORMAT
-#include "new3dout.h"
-#endif
 
 static void
 default_grade(settings *s)

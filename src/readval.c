@@ -30,9 +30,6 @@
 #include "netbits.h"
 #include "osalloc.h"
 #include "str.h"
-#ifdef NEW3DFORMAT
-#include "new3dout.h"
-#endif
 
 #ifdef HAVE_SETJMP
 # define LONGJMP(JB) longjmp((JB), 1)

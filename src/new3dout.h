@@ -24,13 +24,20 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include "cavern.h"
-
-#ifdef NEW3DFORMAT
-   
 #include "img.h"
-#include "3ddefs.h"
+   
+struct Twig {
+  struct Twig *up, *down, *right;
+  struct Prefix *to, *from;
+  delta delta;
+  int count;
+  short int sourceval;
+  /* pointers to some random data bits... */
+  char *date, *drawings, *tape, *instruments, *source;
+};
+
+/* Structures */
+typedef struct Twig twig;
 
 extern char *startingdir, *firstfilename;
 
@@ -39,8 +46,8 @@ extern twig *rhizome, *limb;
 
 extern int fUseNewFormat;
 
-void cave_write_stn(node*);
-void cave_write_leg(linkfor*);
+void cave_write_stn(node *);
+void cave_write_leg(linkfor *);
 void cave_write_source(const char *source);
 void cave_write_title(const char *, img *);
 img *cave_open_write(const char *, const char *);
@@ -50,8 +57,6 @@ int cave_error(void);
 void create_twig(prefix *pre, const char *fname);
 /* returns the active twig of a prefix */
 twig *get_twig(prefix *pre);
-
-#endif
 
 #ifdef __cplusplus
 }

@@ -35,9 +35,6 @@
 #include "datain.h"
 #include "commands.h"
 #include "out.h"
-#ifdef NEW3DFORMAT
-#include "new3dout.h"
-#endif
 
 #define EPSILON (REAL_EPSILON * 1000)
 
