@@ -2388,7 +2388,7 @@ en:209 Survey visualisation tool
 fr:209 Outil de visualisation de topographies
 ca:209 Eina per visualitzar topografies
 es:209 Herramienta para visualizar topografias
-it:209 Utilit&aacute; di visualizzazione topografica
+it:209 Strumento di visualizzazione rilievi
 sk:209 Vizualiz&aacute;cia polyg&oacute;nu
 ro:209 Utilitar pentru vizualizarea topografiei
 #
