@@ -51,9 +51,7 @@ const int NUM_DEPTH_COLOURS = 13;
     wxCONFIG_PATH_SEPARATOR + wxString("icons") + wxCONFIG_PATH_SEPARATOR + \
     wxString(file), wxBITMAP_TYPE_PNG)
 
-static const unsigned char REDS[]   = {190, 155, 110, 18, 0, 124, 48, 117, 163, 182, 224, 237, 255, 230};
-static const unsigned char GREENS[] = {218, 205, 177, 153, 178, 211, 219, 224, 224, 193, 190, 117, 0, 230};
-static const unsigned char BLUES[]  = {247, 255, 244, 237, 169, 175, 139, 40, 40, 17, 40, 18, 0, 230};
+#include "aven.pal"
 
 class AvenSplitterWindow : public wxSplitterWindow {
     MainFrm *parent;
