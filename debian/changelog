@@ -1,3 +1,14 @@
+survex (1.0.31) unstable; urgency=low
+
+  * aven: Fixed grid menu item so that it always correctly reflects whether
+    the grid is enabled or not.
+  * aven: Minor improvements to appearance of a few toolbar icons.
+  * Updates to Catalan, French, Italian, Romanian, Slovak, and Spanish
+    translations.
+  * cavern: Fixed Romanian message which was appearing in English .err files.
+
+ -- Wookey <wookey@survex.com>  Thu, 01 Jul 2004 01:36:19 +0100
+
 survex (1.0.30) unstable; urgency=low
 
   * aven: Added printing directly from Aven!

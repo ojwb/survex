@@ -6,7 +6,7 @@ Changes in 1.0.31:
 * aven: Fixed grid menu item so that it always correctly reflects whether the
   grid is enabled or not.
 
-* aven: Minor improvements to a few toolbar icons.
+* aven: Minor improvements to appearance of a few toolbar icons.
 
 * Updates to Catalan, French, Italian, Romanian, Slovak, and Spanish
   translations.
