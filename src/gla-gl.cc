@@ -162,6 +162,10 @@ GLACanvas::~GLACanvas()
 
 void GLACanvas::FirstShow()
 {
+    static bool once_only = true;
+    if (!once_only) return;
+    once_only = false;
+
     SetCurrent();
     m_Quadric = gluNewQuadric();
     CHECK_GL_ERROR("FirstShow", "gluNewQuadric");
