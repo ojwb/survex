@@ -75,7 +75,7 @@ img *pimg = NULL;
 bool fPercent = fFalse;
 #endif
 bool fQuiet = fFalse; /* just show brief summary + errors */
-static bool fMute = fFalse; /* just show errors */
+bool fMute = fFalse; /* just show errors */
 bool fSuppress = fFalse; /* only output 3d(3dx) file */
 static bool fLog = fFalse; /* stdout to .log file, suppress .inf file */
 static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */   
@@ -290,7 +290,7 @@ main(int argc, char **argv)
       osfree(fnm);
    }
 
-   if (!fMute) puts(PACKAGE" "VERSION"\n"COPYRIGHT_MSG"\n");
+   if (!fMute) puts(PACKAGE" "VERSION"\n"COPYRIGHT_MSG);
 
    atexit(delete_output_on_error);
 
@@ -336,10 +336,10 @@ main(int argc, char **argv)
 
 #ifdef NEW3DFORMAT
    if (fUseNewFormat) {
-     cave_close(pimg); /* this actually does all the writing */
+      cave_close(pimg); /* this actually does all the writing */
    } else {
 #endif
-     img_close(pimg); /* close .3d file */
+      img_close(pimg); /* close .3d file */
 #ifdef NEW3DFORMAT
    }
 #endif

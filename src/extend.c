@@ -191,9 +191,6 @@ main(int argc, char **argv)
    do {
       result = img_read_item(pimg, &pt);
       switch (result) {
-      case img_BAD:
-         puts(msg(/*Bad 3d image file `%s'*/106));
-         break;
       case img_MOVE:
          fr = find_point(&pt);
          break;
@@ -211,8 +208,11 @@ main(int argc, char **argv)
          fr = find_point(&pt);
          add_label(fr, pimg->label, pimg->flags);
          break;
+      case img_BAD:
+	 img_close(pimg);
+	 fatalerror(img_error(), fnmData);
       }
-   } while (result != img_BAD && result != img_STOP);
+   } while (result != img_STOP);
 
    img_close(pimg);
 

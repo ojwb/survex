@@ -549,9 +549,8 @@ img_read_item(img *pimg, img_point *p)
       y = get32(pimg->fh) / 100.0;
       z = get32(pimg->fh) / 100.0;
 
-      if (result == img_LABEL) {
-	 if (pimg->survey_len &&
-	  (strncmp(pimg->label_buf, pimg->survey, pimg->survey_len + 1) != 0))
+      if (result == img_LABEL && pimg->survey_len) {
+	 if (strncmp(pimg->label_buf, pimg->survey, pimg->survey_len + 1) != 0)
 	    goto again;
 	 pimg->label += pimg->survey_len + 1;
       }

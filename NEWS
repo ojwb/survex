@@ -13,11 +13,19 @@
 
 * cavern: Added --log option to send output to a .log file.
 
+* cavern: --quiet no longer suppresses node statistics.
+
+* extend: give up if the .3d file is truncated or corrupted part way
+  through.
+
 * (MS Windows version): sorterr.exe and 3dtopos.exe were missing;
   improvements to documentation; assorted fixes and improvements to
   file associations.
 
 * print*: reduced memory usage.
+
+* Fixed dropping of first character of survey station names when
+  reading old .3d files.
 
 Changes in 0.98-prerelease5:
 
