@@ -793,21 +793,22 @@ void GfxCore::RedrawOffscreen()
 	wxPoint(-CROSS_SIZE, CROSS_SIZE),
 	wxPoint(CROSS_SIZE + 1, -CROSS_SIZE - 1) // remove +/-1 if last dot
     };
-    // Redraw the offscreen bitmap.
-    if (false) {
-	static int ignore = 10; // Ignore the first few redraws before averaging
-	static double total = 0.0;
-	static int count = 0;
-	double t = timer.Time() * 1.0e-3;
-	if (ignore) {
-	    --ignore;
-	} else {
-	    total += t;
-	    count++;
-	    cout << count / total << " average fps; " << 1.0 / t << " fps (" << t << " sec)\n";
-	}
+#if 0
+    static int ignore = 10; // Ignore the first few redraws before averaging
+    static double total = 0.0;
+    static int count = 0;
+    double t = timer.Time() * 1.0e-3;
+    if (ignore) {
+	--ignore;
+    } else {
+	total += t;
+	count++;
+	cout << count / total << " average fps; " << 1.0 / t << " fps (" << t << " sec)\n";
     }
+#endif
     timer.Start(); // reset timer
+
+    // Redraw the offscreen bitmap
 #ifdef AVENGL
 
 #else
@@ -1492,6 +1493,7 @@ void GfxCore::NattyDrawNames()
     const int quantised_x = m_XSize / quantise;
     const int quantised_y = m_YSize / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
+    assert(m_LabelGrid);
     memset((void*)m_LabelGrid, 0, buffer_size);
 
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
