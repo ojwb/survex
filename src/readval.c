@@ -71,7 +71,8 @@
 #include <stddef.h>
 
 #include "survex.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "readval.h"
 #include "datain.h"
 #include "osalloc.h"
@@ -99,10 +100,10 @@ extern prefix *read_prefix( bool fOmit ) {
     ptr=pcs->Prefix;
   }
 
-  name = osmalloc( name_len );  
-   
   i=0;
   do {
+    /* get a new name buffer for each level */
+    name = osmalloc( name_len );
     if (i) /* i==0 iff this is the first pass */ {
       i=0;
       nextch();
