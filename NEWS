@@ -9,6 +9,8 @@
 * cavern: Writing "*:" at the start of a .svx file would crash cavern - fixed
   and added test case.
 
+* Documentation: minor updates.
+
 Changes in 1.0.18:
 
 * (Unix Version): Fixed "Process" action on .svx files.

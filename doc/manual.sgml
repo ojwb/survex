@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-09-30 19:56:26 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.101 2002-09-30 19:56:26 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-10-19 04:08:15 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.102 2002-10-19 04:08:15 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -3054,7 +3054,8 @@ sure that the special *sd settings only apply to this one leg.
 </Para>
 
 <Para>For more information on the expected errors from radiolocations
-see Compass Points Issue 10.
+see Compass Points Issue 10, available online at
+<ulink url="http://www.chaos.org.uk/survex/cp/CP10/CPoint10.htm">http://www.chaos.org.uk/survex/cp/CP10/CPoint10.htm</ulink>
 </Para>
 
 </Sect2>
