@@ -733,6 +733,7 @@ int main( int argc, sz argv[] ) {
    while (fnm) {
       /* first time around pimg is already open... */
       if (!pimg) {
+	 /* FIXME for multiple files, which title and datestamp to use...? */
 	 pimg = img_open(fnm, szTitle, szDateStamp);
 	 if (!pimg) fatal(img_error(), wr, fnm, 0);
       }
