@@ -264,13 +264,13 @@ pt: 19 Erros em excesso - desistindo
 ca: 19 Massa errors - proc&eacute;s abandonat
 es: 19 Demasiados errores - proceso abandonado
 it: 19 Troppi errori - processo interrotto
-en: 20 *default is deprecated - use *calibrate/data/style/units with argument DEFAULT instead
-fr: 20 *default n'est plus utilis&eacute; - employer *calibrate/data/style/units avec argument DEFAULT &agrave; la place
-de: 20 *default ist veraltet - stattdessen *calibrate/data/style/units mit DEFAULT-Argument verwenden
-pt: 20 *default decontinuado - use *calibrate/data/style/units com argumento DEFAULT em seu lugar
-ca: 20 *default ja no s'utilitza - fes servir *calibrate/data/style/units amb l'argument DEFAULT en el seu lloc
-es: 20 *default ya no se usa - utiliza *calibrate/data/style/units con el argumento DEFAULT en su lugar
-it: 20 *default &eacute sconsigliato - usare invece *calibrate/data/style/units con argomento DEFAULT
+en: 20 *DEFAULT is deprecated - use *CALIBRATE/DATA/UNITS with argument DEFAULT instead
+fr: 20 *DEFAULT n'est plus utilis&eacute; - employer *CALIBRATE/DATA/UNITS avec argument DEFAULT &agrave; la place
+de: 20 *DEFAULT ist veraltet - stattdessen *CALIBRATE/DATA/UNITS mit DEFAULT-Argument verwenden
+pt: 20 *DEFAULT decontinuado - use *CALIBRATE/DATA/UNITS com argumento DEFAULT em seu lugar
+ca: 20 *DEFAULT ja no s'utilitza - fes servir *CALIBRATE/DATA/UNITS amb l'argument DEFAULT en el seu lloc
+es: 20 *DEFAULT ya no se usa - utiliza *CALIBRATE/DATA/UNITS con el argumento DEFAULT en su lugar
+it: 20 *DEFAULT &eacute sconsigliato - usare invece *CALIBRATE/DATA/UNITS con argomento DEFAULT
 en: 21 Compass reading given on plumbed leg
 en-us: 21 Compass reading given on plumbed shot
 fr: 21 Lecture d'azimut donn&eacute;e sur une vis&eacute;e 'plomb&eacute;e'
@@ -595,20 +595,23 @@ ca: 62 Lectura de longitut inferior a la difer&egrave;ncia de profunditats
 es: 62 Lectura de longitud inferior a la diferencia de profundidades
 it: 62 La distanza &eacute; minore del dislivello
 # a data "style" is something like NORMAL, DIVING, etc.
-# a "datum" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
-# neither style nor datum is a keyword in the program
+# a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
+# neither style nor reading is a keyword in the program
 # 63 complains about a depth gauge reading in normal style, for example
 # GN(3): Ahhhh.  Got it.  Well, it fits already as it is now. :-)
 # TRANSLATE check adapted translation fr de pt ca es it
-en: 63 Datum `%s' not allowed for this style
+# FIXME: TRANSLATE fr de pt ca es it (datum replaced by reading)
+# FIXME: TRANSLATE de pt ca es it (style is not a keyword - replace with a translation of "data style")
+en: 63 Reading `%s' not allowed for this data style
 fr: 63 Donn&eacute;e `%s' pas permise pour ce style
 de: 63 Diese Me&szlig;gr&ouml;&szlig;e `%s' ist bei diesem STYLE nicht erlaubt
 pt: 63 Dado `%s' n&atilde;o permitido neste STYLE
 ca: 63 Dada `%s' no permesa en aquest STYLE
 es: 63 Dato `%s' no permitido en este STYLE
 it: 63 Dato `%s' non permesso in questo STYLE
-# i.e. not enough "datums" for the style.  I need to pick a better word than datum really
-en: 64 Too few data
+# i.e. not enough readings for the style.
+# FIXME: TRANSLATE fr de pt ca es it (data replaced by readings)
+en: 64 Too few readings
 fr: 64 Trop peu de donn&eacute;es
 de: 64 Zu wenige Me&szlig;werte
 pt: 64 Poucos dados
@@ -618,7 +621,8 @@ it: 64 Mancano dati
 #ital: 64 Troppo pochi dati
 # e.g. trying to refer to an invalid FNORD data style
 # GN(3): ie unknown STYLE?  ok, rephrasing.
-en: 65 STYLE `%s' unknown
+# FIXME: TRANSLATE fr de pt ca es it (style is not a keyword - translate it?)
+en: 65 Data style `%s' unknown
 fr: 65 STYLE `%s' inconnu
 de: 65 STYLE `%s' unbekannt
 pt: 65 STYLE `%s' com problemas
@@ -631,7 +635,8 @@ it: 65 STYLE `%s' sconosciuto
 # FIXME: TRANSLATE fr de pt ca es it
 en: 66 Station `%s' already exported
 # complains about a situation like trying to define two from stations per leg
-en: 67 Duplicate datum `%s'
+# FIXME: TRANSLATE fr de pt ca es it (datum replaced by reading)
+en: 67 Duplicate reading `%s'
 fr: 67 Donn&eacute;es dupliqu&eacute;es `%s'
 de: 67 Me&szlig;wert mehrfach angegeben `%s'
 pt: 67 Dado duplicado `%s'

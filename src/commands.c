@@ -73,7 +73,7 @@ default_case(settings *s)
    s->Case = LOWER;
 }
 
-datum default_order[] = { Fr, To, Tape, Comp, Clino, End };
+reading default_order[] = { Fr, To, Tape, Comp, Clino, End };
 
 static void
 default_style(settings *s)
@@ -488,7 +488,7 @@ cmd_begin(void)
 extern void
 free_settings(settings *p) {
    /* don't free default ordering or ordering used by parent */
-   datum *order = p->ordering;
+   reading *order = p->ordering;
    if (order != default_order && order != p->next->ordering) osfree(order);
 
    /* free Translate if not used by parent */
@@ -927,11 +927,11 @@ cmd_data(void)
    };
 
    int style, k = 0, kMac;
-   datum *new_order, d;
+   reading *new_order, d;
    unsigned long m, mUsed = 0;
 
    kMac = 6; /* minimum for NORMAL style */
-   new_order = osmalloc(kMac * sizeof(datum));
+   new_order = osmalloc(kMac * sizeof(reading));
 
    get_token();
    style = match_tok(styletab, TABSIZE(styletab));
@@ -942,7 +942,7 @@ cmd_data(void)
    }
 
    if (style == STYLE_UNKNOWN) {
-      compile_error(/*STYLE `%s' unknown*/65, buffer);
+      compile_error(/*Data style `%s' unknown*/65, buffer);
       skipline();
       return;
    }
@@ -961,15 +961,14 @@ cmd_data(void)
    do {
       get_token();
       d = match_tok(dtab, TABSIZE(dtab));
-      /* An unknown token is reported as trailing garbage */
+      /* Note: an unknown token is reported as trailing garbage */
       if (!TSTBIT(m, d)) {
-	 /* token not valid for this data style */
-	 compile_error(/*Datum `%s' not allowed for this style*/63, buffer);
+	 compile_error(/*Reading `%s' not allowed for this data style*/63, buffer);
 	 skipline();
 	 return;
       }
 #ifdef SVX_MULTILINEDATA /* NEW_STYLE */
-      /* Check for duplicates unless it's a special datum:
+      /* Check for duplicates unless it's a special reading:
        *   IGNORE,NEXT (duplicates allowed)
        *   END,IGNOREALL (not possible)
        */
@@ -985,14 +984,14 @@ cmd_data(void)
 # if 0
 	 cRealData++;
 	 if (cRealData > cData) {
-	    compile_error(/*Too many data*/);
+	    compile_error(/*Too many readings*/);
 	    showandskipline(NULL, -(int)strlen(buffer));
 	    return;
 	 }
 # endif
 #endif
 	 if (mUsed & BIT(d)) {
-	    compile_error(/*Duplicate datum `%s'*/67, buffer);
+	    compile_error(/*Duplicate reading `%s'*/67, buffer);
 	    skipline();
 	    return;
 	 }
@@ -1000,7 +999,7 @@ cmd_data(void)
       }
       if (k >= kMac) {
 	 kMac = kMac * 2;
-	 new_order = osrealloc(new_order, kMac * sizeof(datum));
+	 new_order = osrealloc(new_order, kMac * sizeof(reading));
       }
       new_order[k++] = d;
 #define mask_done (BIT(End) | BIT(IgnoreAll))
@@ -1008,7 +1007,7 @@ cmd_data(void)
 
    if ((mUsed | mask_optional[style-1]) != mask[style-1]) {
       osfree(new_order);
-      compile_error(/*Too few data*/64);
+      compile_error(/*Too few readings*/64);
       skipline();
       return;
    }
@@ -1130,7 +1129,7 @@ cmd_default(void)
       { "UNITS",     CMD_UNITS },
       { NULL,        CMD_NULL }
    };
-   compile_warning(/**default is deprecated - use *calibrate/data/style/units with argument DEFAULT instead*/20);
+   compile_warning(/**DEFAULT is deprecated - use *CALIBRATE/DATA/UNITS with argument DEFAULT instead*/20);
    get_token();
    switch (match_tok(defaulttab, TABSIZE(defaulttab))) {
     case CMD_CALIBRATE:

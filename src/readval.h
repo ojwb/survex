@@ -1,6 +1,6 @@
 /* > readval.h
- * Header file for routines to read a datum from the current input file
- * Copyright (C) 1991-2000 Olly Betts
+ * Routines to read a prefix or number from the current input file
+ * Copyright (C) 1991-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-extern prefix *read_prefix(bool fOmit);
-extern prefix *read_prefix_check_implicit(bool fOmit);
-extern real read_numeric(bool fOmit);
-extern unsigned int read_uint(void);
+prefix *read_prefix(bool fOmit);
+prefix *read_prefix_check_implicit(bool fOmit);
+real read_numeric(bool fOmit);
+unsigned int read_uint(void);

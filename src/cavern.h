@@ -121,7 +121,7 @@ typedef enum {
    Next, Back,
 #endif
    Ignore, IgnoreAll
-} datum;
+} reading;
 
 /* assert(IgnoreAll<32); */
 /* Dr, Comp, Dz give CYLPOL style */
@@ -265,7 +265,7 @@ typedef struct Settings {
    real z[Q_MAC];
    real sc[Q_MAC];
    real units[Q_MAC];
-   datum *ordering;
+   reading *ordering;
    int begin_lineno; /* 0 means no block started in this file */
    int flags;
    struct Settings *next;

@@ -406,12 +406,12 @@ data_normal(void)
    real cxy, cyz, czx;
 #endif
 
-   datum first_stn = End;
+   reading first_stn = End;
 
    real tape = 0, comp = 0, clin, frcount = 0, tocount = 0;
    bool fNoComp, fNoClino, fTopofil = fFalse, fPlumbed = fFalse;
 
-   datum *ordering;
+   reading *ordering;
 
    /* ordering may omit clino reading, so set up default here */
    /* this is also used if clino reading is the omit character */
@@ -464,7 +464,7 @@ data_normal(void)
 	 /* fall through */
        case End:
 	 goto dataread;
-       default: BUG("Unknown datum in ordering");
+       default: BUG("Unknown reading in ordering");
       }
    }
 
@@ -636,11 +636,11 @@ printf("clin %.2f\n",clin);
 #endif
    /*printf("dx,dy,dz = %.2f %.2f %.2f\n\n", dx, dy, dz);*/
    if (first_stn == To) {
-       to = StnFromPfx(to_name);
-       fr = StnFromPfx(fr_name);
+      to = StnFromPfx(to_name);
+      fr = StnFromPfx(fr_name);
    } else {
-       fr = StnFromPfx(fr_name);
-       to = StnFromPfx(to_name);
+      fr = StnFromPfx(fr_name);
+      to = StnFromPfx(to_name);
    }
    addleg(fr, to, dx, dy, dz, vx, vy, vz
 #ifndef NO_COVARIANCES
@@ -682,9 +682,9 @@ data_diving(void)
    real tape = 0, comp = 0;
    real fr_depth = 0, to_depth = 0;
 
-   datum first_stn = End;
+   reading first_stn = End;
 
-   datum *ordering;
+   reading *ordering;
 
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
@@ -717,7 +717,7 @@ data_diving(void)
 	 /* drop through */
       case End:
 	 goto dataread;
-      default: BUG("Unknown datum in ordering");
+      default: BUG("Unknown reading in ordering");
       }
    }
 
@@ -798,11 +798,11 @@ data_diving(void)
       vz = var(Q_POS) / 3.0 + 2 * var(Q_DEPTH);
    }
    if (first_stn == To) {
-       to = StnFromPfx(to_name);
-       fr = StnFromPfx(fr_name);
+      to = StnFromPfx(to_name);
+      fr = StnFromPfx(fr_name);
    } else {
-       fr = StnFromPfx(fr_name);
-       to = StnFromPfx(to_name);
+      fr = StnFromPfx(fr_name);
+      to = StnFromPfx(to_name);
    }
 #ifdef NO_COVARIANCES
    addleg(fr, to, dx, dy, dz, vx, vy, vz);
@@ -839,9 +839,9 @@ data_cartesian(void)
    node *fr, *to;
    real dx = 0, dy = 0, dz = 0;
 
-   datum first_stn = End;
+   reading first_stn = End;
 
-   datum *ordering;
+   reading *ordering;
 
    for (ordering = pcs->ordering ; ; ordering++) {
       skipblanks();
@@ -864,7 +864,7 @@ data_cartesian(void)
 	 /* fall through */
        case End:
 	 goto dataread;
-       default: BUG("Unknown datum in ordering");
+       default: BUG("Unknown reading in ordering");
       }
    }
 
@@ -875,11 +875,11 @@ data_cartesian(void)
    dz = (dz * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
 
    if (first_stn == To) {
-       to = StnFromPfx(to_name);
-       fr = StnFromPfx(fr_name);
+      to = StnFromPfx(to_name);
+      fr = StnFromPfx(fr_name);
    } else {
-       fr = StnFromPfx(fr_name);
-       to = StnFromPfx(to_name);
+      fr = StnFromPfx(fr_name);
+      to = StnFromPfx(to_name);
    }
    addleg(fr, to, dx, dy, dz, var(Q_DX), var(Q_DY), var(Q_DZ)
 #ifndef NO_COVARIANCES
@@ -916,16 +916,20 @@ data_nosurvey(void)
    prefix *fr_name = NULL, *to_name = NULL;
    nosurveylink *link;
 
-   datum *ordering;
+   reading first_stn = End;
+
+   reading *ordering;
 
    for (ordering = pcs->ordering ; ; ordering++) {
       skipblanks();
       switch (*ordering) {
        case Fr:
 	  fr_name = read_prefix(fFalse);
+	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
 	  to_name = read_prefix(fFalse);
+	  if (first_stn == End) first_stn = To;
 	  break;
        case Ignore:
 	 skipword(); break;
@@ -934,7 +938,7 @@ data_nosurvey(void)
 	 /* fall through */
        case End:
 	 goto dataread;
-       default: BUG("Unknown datum in ordering");
+       default: BUG("Unknown reading in ordering");
       }
    }
 
@@ -959,8 +963,13 @@ data_nosurvey(void)
 
    /* add to linked list which is dealt with after network is solved */
    link = osnew(nosurveylink);
-   link->fr = StnFromPfx(fr_name);
-   link->to = StnFromPfx(to_name);
+   if (first_stn == To) {
+      link->to = StnFromPfx(to_name);
+      link->fr = StnFromPfx(fr_name);
+   } else {
+      link->fr = StnFromPfx(fr_name);
+      link->to = StnFromPfx(to_name);
+   }
    link->next = nosurveyhead;
    nosurveyhead = link;
    return 1;

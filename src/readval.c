@@ -1,5 +1,5 @@
 /* > readval.c
- * Read a datum from the current input file
+ * Routines to read a prefix or number from the current input file
  * Copyright (C) 1991-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify

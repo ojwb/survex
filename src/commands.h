@@ -29,4 +29,4 @@ extern int match_tok(const sztok *tab, int tab_size);
 
 #define TABSIZE(T) ((sizeof(T) / sizeof(sztok)) - 1)
 
-extern datum default_order[];
+extern reading default_order[];
