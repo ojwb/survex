@@ -3,8 +3,8 @@
 //
 //  About box handling for Aven.
 //
-//  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2001,2002 Olly Betts
+//  Copyright (C) 2001-2003 Mark R. Shinwell.
+//  Copyright (C) 2001-2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -38,9 +38,10 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticText* title = new wxStaticText(this, 502, wxString("Aven "VERSION));
+    wxStaticText* title = new wxStaticText(this, 502,
+                                           wxString("Aven "VERSION));
     wxStaticText* purpose = new wxStaticText(this, 505,
-	wxString(msg(/*Visualisation of Survex 3D files*/209)));
+	wxString(msg(/*Survey visualisation tool*/209)));
     wxStaticText* copyright1 = new wxStaticText(this, 503,
 	    wxString::Format(AVEN_COPYRIGHT_MSG, msg(/*&copy;*/0)));
     wxStaticText* copyright2 = new wxStaticText(this, 504,
@@ -87,9 +88,11 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     vert->Add(10, 5, 0, wxTOP, 5);
     vert->Add(purpose, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
+
     vert->Add(copyright1, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(copyright2, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 15);
+    
     vert->Add(licence, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 1, wxALIGN_BOTTOM | wxTOP, 5);
 
