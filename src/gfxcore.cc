@@ -80,12 +80,9 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent) :
-    wxWindow(parent, 100),
+    wxWindow(parent, 100, wxDefaultPosition, wxSize(640, 480)),
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
 	   wxFONTENCODING_ISO8859_1),
-    //    m_StdCursor(wxCURSOR_ARROW),
-    //    m_ScaleRotateCursor("/home/mark/Development/survex/cursors/scrot.xbm"),
-    //    m_Timer(this, TIMER_ID),
     m_InitialisePending(false)
 {
     m_LastDrag = drag_NONE;
@@ -138,20 +135,11 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Brushes.indicator2.SetColour(114, 149, 160);
 
     SetBackgroundColour(wxColour(0, 0, 0));
-
-#ifdef _WIN32
-    // fp = fopen("avendebug.txt", "rw");
-    // assert(fp);
-#endif
 }
 
 GfxCore::~GfxCore()
 {
     TryToFreeArrays();
-
-#ifdef _WIN32
-    //  fclose(fp);
-#endif
 }
 
 void GfxCore::TryToFreeArrays()
@@ -192,6 +180,9 @@ void GfxCore::Initialise()
     // Initialise the view from the parent holding the survey data.
 
     TryToFreeArrays();
+
+    GetSize(&m_XSize, &m_YSize);
+    printf("size is %d, %d\n", m_XSize, m_YSize);
 
     m_Bands = m_Parent->GetNumDepthBands(); // last band is surface data
     m_PlotData = new PlotData[m_Bands];

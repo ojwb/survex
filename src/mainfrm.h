@@ -139,7 +139,6 @@ public:
     void OnOpen(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
-    void OnPaint(wxPaintEvent&);
     void OnClose(wxCloseEvent&);
 
     // temporary bodges until event handling problem is sorted out:

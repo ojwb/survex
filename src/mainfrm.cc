@@ -39,7 +39,6 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
 
-    EVT_PAINT(MainFrm::OnPaint)
     EVT_CLOSE(MainFrm::OnClose)
 
     EVT_MENU(menu_ROTATION_START, MainFrm::OnStartRotation)
@@ -257,16 +256,6 @@ bool MainFrm::ProcessEvent(wxEvent& event)
     return true;
 }
 #endif
-void MainFrm::OnPaint(wxPaintEvent&) //-- sort this out!
-{
-    wxPaintDC dc(this);
-
-    //  if (!m_Gfx) {
-	if (m_FileToLoad != wxString("")) {
-	    OpenFile(m_FileToLoad, true);
-	}
-	//  }
-}
 
 void MainFrm::ClearPointLists()
 {
@@ -578,21 +567,16 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 
 void MainFrm::OpenFile(const wxString& file, bool delay)
 {
-    if (m_Gfx) {
-        SetCursor(*wxHOURGLASS_CURSOR);
-        if (LoadData(file)) {
-	    if (!delay) {
-                m_Gfx->Initialise();
-	    }
-	    else {
-	        m_Gfx->InitialiseOnNextResize();
-	    }
+    SetCursor(*wxHOURGLASS_CURSOR);
+    if (LoadData(file)) {
+        if (!delay) {
+	    m_Gfx->Initialise();
 	}
-        SetCursor(*wxSTANDARD_CURSOR);
+	else {
+	    m_Gfx->InitialiseOnNextResize();
+	}
     }
-    else {
-        m_FileToLoad = file;
-    }
+    SetCursor(*wxSTANDARD_CURSOR);
 }
 
 //
@@ -617,14 +601,11 @@ void MainFrm::OnOpen(wxCommandEvent&)
 
 void MainFrm::OnQuit(wxCommandEvent&)
 {
-    // see comment in OnClose()
     exit(0);
 }
 
 void MainFrm::OnClose(wxCloseEvent&)
 {
-  //--wtf doesn't Destroy() work? (on Windows at least)
-  //    Destroy();
     exit(0);
 }
 
