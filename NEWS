@@ -1,5 +1,5 @@
 * Covariance matrices are symmetric - now only store 6 of the 9 entries.
-  Reduces memory requirements and may be faster.
+  Typically uses 10% less memory and is 15% faster.
 
 Changes in 0.97-prerelease7:
 
