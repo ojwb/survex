@@ -5,7 +5,7 @@ use strict;
 use integer;
 
 my %email = (
- 'de' => 'Gerhard Niklasch <nikl@mathematik.tu-muenchen.de>, gerhard.niklasch@okay.net',
+ 'de' => 'Gerhard Niklasch <nikl@mathematik.tu-muenchen.de>, <niklasch@consol.de>',
  'fr' => 'Eric.Madelaine@sophia.inria.fr',
  'it' => 'zoom7@freemail.it',
  'es' => 'nobody@localhost',
