@@ -272,3 +272,12 @@ Allow valid range for an instrument to be specified.  Tie in with
 *instrument.  *units date - ranges for dates - e.g. "1990-" or
 "jun-aug"...
 
+Date: Wed, 04 Jul 2001
+From: Olly
+
+check skip blank pages works on printer drivers (notably printpcl)
+
+resolve the odd fixed point warning from this:
+
+A A 1 0 0
+

@@ -291,10 +291,11 @@ addfakeleg(node *fr, node *to,
 
    if (fr->name == to->name) {
       /* we have been asked to add a leg with the same node at both ends
-       * - give a warning and don't add the leg to the data structure
-       */
+       * - give an error */
       compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
 		    sprint_prefix(fr->name));
+      /* We can't easily add the leg as freeleg() can't cope */
+      return;
    }
 
    leg = osnew(linkfor);

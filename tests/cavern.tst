@@ -62,7 +62,7 @@ for file in $TESTS ; do
   export) pos=no ; count=0 ;;
   export2) pos=no ; count=0 ;;
   includecomment) pos=no ; count=0 ;;
-  self_loop) pos=no ; count=1 ;;
+  self_loop) pos=fail ; count=0 ;;
   self_eq_loop) pos=no ; count=1 ;;
   reenterwarn) pos=no ; count=2 ;;
   cmd_default) pos=no ; count=3 ;;
