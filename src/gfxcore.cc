@@ -1955,6 +1955,8 @@ void GfxCore::OnLButtonDown(wxMouseEvent& event)
         m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
         m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y;
         m_DragStart = m_DragRealStart = wxPoint(event.GetX(), event.GetY());
+
+	CaptureMouse();
     }
 }
 
@@ -1974,6 +1976,7 @@ void GfxCore::OnLButtonUp(wxMouseEvent& event)
                        INDICATOR_BOX_SIZE);
         m_RedrawOffscreen = true;
         Refresh(false, &r);
+        ReleaseMouse();
     }
 }
 
@@ -1982,6 +1985,8 @@ void GfxCore::OnMButtonDown(wxMouseEvent& event)
     if (m_PlotData && m_Lock == lock_NONE) {
         m_DraggingMiddle = true;
         m_DragStart = wxPoint(event.GetX(), event.GetY());
+	
+	CaptureMouse();
     }
 }
 
@@ -1989,6 +1994,7 @@ void GfxCore::OnMButtonUp(wxMouseEvent& event)
 {
     if (m_PlotData && m_Lock == lock_NONE) {
         m_DraggingMiddle = false;
+        ReleaseMouse();
     }
 }
 
@@ -1999,6 +2005,8 @@ void GfxCore::OnRButtonDown(wxMouseEvent& event)
         m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
         m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y;
         m_DraggingRight = true;
+	
+	CaptureMouse();
     }
 }
 
@@ -2006,6 +2014,7 @@ void GfxCore::OnRButtonUp(wxMouseEvent& event)
 {
     m_DraggingRight = false;
     m_LastDrag = drag_NONE;
+    ReleaseMouse();
 }
 
 void GfxCore::HandleScaleRotate(bool control, wxPoint point)
