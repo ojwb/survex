@@ -295,11 +295,11 @@ static void Toolbar_About(GtkWidget*, gpointer data)
 // Aven methods:
 
 Aven::Aven(string name) :
-  Gnome_App("Aven", "Aven"), m_Eleving(false), m_Rotating(false), m_Splash(false), m_SplashStep(1),
+  Gnome_App("Aven", "Aven"), m_Eleving(false), m_Rotating(false), m_Splash(true), m_SplashStep(1),
     m_Moving(false), m_CurX(0), m_CurY(0), m_CaveWin(NULL), m_LastFactor(1.0),
     m_Scale2(1.0), m_RotateAngle(PI / 180.0),
     m_CurOriginX(0), m_CurOriginY(0), m_ForceUseOrig(false), m_Angle(0),
-    elev_angle(35.0), total_xshift(0), total_yshift(0), m_XSize(WIDTH), m_YSize(HEIGHT),
+    elev_angle(90.0), total_xshift(0), total_yshift(0), m_XSize(WIDTH), m_YSize(HEIGHT),
     m_SwitchToPlan(false), m_SwitchToElevation(false), m_WorkProcEnabled(false)
 {
     if (!load_data(name.c_str(), m_RawLegs, m_RawStns)) {
@@ -325,7 +325,7 @@ Aven::Aven(string name) :
     }
 
     m_Scale = scale_to_screen(m_RawLegs, m_RawStns) * 1.5;
-//    m_Scale /= pow(1.5, SPLASH_STEPS);
+    m_Scale /= pow(1.5, SPLASH_STEPS);
 
     z_col_scale = ((float) (NCOLS - 1)) / (2 * Zrad);
     
@@ -470,7 +470,7 @@ Aven::Aven(string name) :
               GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
     set_events(get_events() | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 
-//    EnableWorkProc();
+    EnableWorkProc();
 }
 
 Aven::~Aven()
@@ -545,12 +545,12 @@ void Aven::Draw(GdkPixmap* window, GdkGC* gc, int x0, int y0, int x1, int y1,
 {
     bool scale_and_rotate = (scale != m_Scale2 || m_ForceUseOrig);
   
-    if (scale_and_rotate) {
+/*    if (scale_and_rotate) {
         char buf[30];
         sprintf(buf, " Heading: %03ddeg", int(m_Angle * 180.0 / PI));
         m_HeadingLabel.set_text(buf);
     }
-
+*/
     GtkWidget* widget = GTK_WIDGET(m_Cave.gtkobj());
     gdk_window_get_size(widget->window, &m_XSize, &m_YSize);
     int halfxs = m_XSize / 2, halfys = m_YSize / 2;
@@ -648,9 +648,15 @@ gint Aven::ExposeEvent(GdkEventExpose* event)
     }
  
     // Establish clipping regions.
-    gdk_gc_set_clip_rectangle(m_LineGC, &event->area);
+    //    gdk_window_get_size(widget->window, &m_XSize, &m_YSize);
+
+    // Establish clipping regions.
+    GdkRectangle rect;
+    rect.x = rect.y = 0;
+    rect.width = m_XSize;
+    rect.height = m_YSize;
+    gdk_gc_set_clip_rectangle(m_LineGC, &rect);
     gdk_gc_set_clip_origin(m_LineGC, 0, 0);
-    
     int x1 = event->area.x + event->area.width;
     int y1 = event->area.y + event->area.height;
 
