@@ -237,8 +237,8 @@ void GLACanvas::SetViewportAndProjection()
 void GLACanvas::StartDrawing()
 {
     // Prepare for a redraw operation.
-    
-    glShadeModel(GL_FLAT);
+ 
+    glShadeModel(GL_SMOOTH);//FLAT);
     CHECK_GL_ERROR("StartDrawing", "glShadeModel");
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     CHECK_GL_ERROR("StartDrawing", "glPolygonMode");
@@ -256,12 +256,12 @@ void GLACanvas::EnableSmoothPolygons()
     // Only use this when required (in particular lines in lists may not be
     // coloured correctly when this is enabled).
     
-    glShadeModel(GL_SMOOTH);
+//    glShadeModel(GL_SMOOTH);
 }
 
 void GLACanvas::DisableSmoothPolygons()
 {
-    glShadeModel(GL_FLAT);
+//    glShadeModel(GL_FLAT);
 }
 
 void GLACanvas::SetDataTransform()

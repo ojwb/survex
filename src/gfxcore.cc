@@ -515,6 +515,8 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         FirstShow();
     }
 
+    assert(GetContext());
+
     StartDrawing();
 
     // Clear the background.
@@ -565,21 +567,14 @@ void GfxCore::OnPaint(wxPaintEvent& event)
         }
 */
 
-#if 0
-        BeginQuadrilaterals();
-        PlaceVertex(0.0, 0.0, 0.0);
-        PlaceVertex(100.0, 0.0, 0.0);
-        PlaceVertex(100.0, 100.0, 0.0);
-        PlaceVertex(0.0, 100.0, 0.0);
-        EndQuadrilaterals();
-      //  assert(0);
-
         if (!m_Rotating && !m_SwitchingTo) {
-            Double size = SurveyUnitsAcrossViewport() * HIGHLIGHTED_PT_SIZE / m_XSize;
+            Double size = SurveyUnitsAcrossViewport() * HIGHLIGHTED_PT_SIZE /
+                           m_XSize;
     
             // Draw "here" and "there".
             if (m_here.x != DBL_MAX) {
-                DrawSphere(m_Pens[HERE_COLOUR], m_here.x, m_here.y, m_here.z, size, 16);
+                DrawSphere(m_Pens[HERE_COLOUR],
+                           m_here.x, m_here.y, m_here.z, size, 16);
             }
             if (m_there.x != DBL_MAX) {
                 if (m_here.x != DBL_MAX) {
@@ -588,11 +583,11 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 		    PlaceVertex(m_there.x, m_there.y, m_there.z);
 		    EndLines();
                 }
-                DrawSphere(m_Pens[HERE_COLOUR], m_there.x, m_there.y, m_there.z, size, 16);
+                DrawSphere(m_Pens[HERE_COLOUR],
+                           m_there.x, m_there.y, m_there.z, size, 16);
             }
         }
         
-#endif
         // Draw indicators.
         SetIndicatorTransform();
         DrawList(m_Lists.indicators);
@@ -1325,6 +1320,8 @@ bool GfxCore::Animate(wxIdleEvent*)
 void GfxCore::RefreshLine(const Point &a1, const Point &b1,
                           const Point &a2, const Point &b2)
 {
+    ForceRefresh(); //--FIXME
+#if 0
     // Calculate the minimum rectangle which includes the old and new
     // measuring lines to minimise the redraw time
     int l = INT_MAX, r = INT_MIN, u = INT_MIN, d = INT_MAX;
@@ -1362,6 +1359,7 @@ void GfxCore::RefreshLine(const Point &a1, const Point &b1,
     }
     const wxRect R(l, d, r - l, u - d);
     Refresh(false, &R);
+#endif
 }
 
 void GfxCore::SetHere()
@@ -1446,7 +1444,8 @@ void GfxCore::UpdateQuaternion()
     Quaternion q1(v1, m_PanAngle);
     Quaternion q2(v2, m_TiltAngle);
 
-    m_Params.rotation = q2 * q1; // care: quaternion multiplication is not commutative!
+    m_Params.rotation = q2 * q1; // care: quaternion multiplication
+                                 //       is not commutative!
     SetRotation(m_Params.rotation);
 }
 
@@ -1454,9 +1453,8 @@ void GfxCore::UpdateIndicators()
 {
     if (m_Lists.indicators) {
         DeleteList(m_Lists.indicators);
+        m_Lists.indicators = CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
     }
-
-    m_Lists.indicators = CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
 }
 
 //
