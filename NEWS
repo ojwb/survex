@@ -1,3 +1,6 @@
+* extend: try to extend along a survey, and make breaks where other surveys
+  join.
+
 * Experimental support for Chinese (LANG=zh) - only a few messages are
   currently translated.
 
