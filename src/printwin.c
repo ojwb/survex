@@ -125,7 +125,6 @@ win_DrawCross(long x, long y)
    win_MoveTo(x, y);
 }
 
-
 static void
 win_WriteString(const char *s)
 {
@@ -149,22 +148,28 @@ win_Charset(void)
 static int
 win_Pre(int pagesToPrint, const char *title)
 {
-   PRINTDLGA psd = {0};
-   DOCINFO info = {0};
+   PRINTDLGA psd;
+   DOCINFO info;
 
-   pagesToPrint = pagesToPrint;
+   pagesToPrint = pagesToPrint; /* suppress compiler warning */
+
+   memset(&psd, 0, sizeof(PRINTDLGA));
 
    psd.lStructSize = 66;
    psd.hwndOwner = NULL;
    psd.hDevMode = NULL;
    psd.hDevNames = NULL; 
    psd.hDC = NULL;
-   psd.Flags = PD_RETURNDC + PD_RETURNDEFAULT;
+   psd.Flags = PD_RETURNDC | PD_RETURNDEFAULT;
    psd.hInstance = NULL;
-   PrintDlgA(&psd);
+   if (!PrintDlgA(&psd)) exit(1);
    pd = psd.hDC;
-   info.lpszDocName = title;
+
+   memset(&psd, 0, sizeof(DOCINFO));
+
    info.cbSize = sizeof(DOCINFO);
+   info.lpszDocName = title;
+
    StartDoc(pd, &info);
    return 1; /* only need 1 pass */
 }
@@ -204,21 +209,28 @@ win_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 {
    /* name and size of font to use for text */
    TEXTMETRIC temp;
-   PRINTDLGA psd = {0};
+   PRINTDLGA psd;
 
    fh_list = fh_list;
    pth = pth;
+
+   memset(&psd, 0, sizeof(PRINTDLGA));
 
    psd.lStructSize = 66;
    psd.hwndOwner = NULL;
    psd.hDevMode = NULL;
    psd.hDevNames = NULL; 
    psd.hDC = NULL;
-   psd.Flags = PD_RETURNDC + PD_RETURNDEFAULT;
+   psd.Flags = PD_RETURNDC | PD_RETURNDEFAULT;
    psd.hInstance = NULL;
-   PrintDlgA(&psd);
+
+   if (!PrintDlgA(&psd)) {
+      psd.Flags = PD_RETURNDC;      
+      if (!PrintDlgA(&psd)) exit(1);      
+   }
+
    fontsize = 12;
-  
+
    PaperWidth = GetDeviceCaps(psd.hDC, HORZSIZE);
    PaperDepth = GetDeviceCaps(psd.hDC, VERTSIZE);
    xpPageWidth = GetDeviceCaps(psd.hDC, HORZRES);
