@@ -313,8 +313,9 @@ it: 25 ROOT &eacute; sconsigliato
 # 1 2 1.23 045 -6
 # *end inner
 # *end outer
-# FIXME: TRANSLATE fr ca es de pt it
+# FIXME: TRANSLATE fr ca es de it
 en: 26 Station `%s' not exported from survey `%s'
+pt: 26 Base `%s' não exportada da topo `%s'
 # XXX 27,28
 # FIXME: perhaps use "survey" instead of "prefix level"?
 # FIXME: TRANSLATE check amended message fr ca es
@@ -652,7 +653,7 @@ it: 64 Mancano dati per lo STYLE `%s'
 en: 65 Data style `%s' unknown
 fr: 65 STYLE `%s' inconnu
 de: 65 Datenformat `%s' unbekannt
-pt: 65 Tipo de visada `%s' com problemas
+pt: 65 Tipo de visada `%s' desconhecido
 ca: 65 STYLE `%s' desconegut
 es: 65 STYLE `%s' desconocido
 it: 65 STYLE `%s' sconosciuto
@@ -781,11 +782,11 @@ pt: 81 Erro inicializando placa de v&iacute;deo
 ca: 81 Error a l'inicialitzar la placa gr&agrave;fica
 es: 81 Error al inicializar la placa gr&aacute;fica
 it: 81 Errore d'inizializzazione della scheda grafica
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr de ca es it
 en: 82 Parameter `%s' has invalid value `%s' in printer configuration file
 fr: 82 Param&egrave;tres `%s' has invalid value `%s' dans le fichier de configuration de l'imprimante
 de: 82 Parameter `%s' has invalid value `%s' in der Druckerkonfigurationsdatei
-pt: 82 Par&acirc;metros `%s' has invalid value `%s' em arquivo de configura&ccedil;&atilde;o de impressora
+pt: 82 Par&acirc;metro `%s' tem valor inválido `%s' em arquivo de configura&ccedil;&atilde;o de impressora
 ca: 82 Par&agrave;metres `%s' has invalid value `%s' al fitxer de configuraci&oacute; de l'impresora
 es: 82 Par&aacute;metros `%s' has invalid value `%s' en el fichero de configuraci&oacute;n de la impresora
 it: 82 Parametro `%s' has invalid value `%s' nel file di configurazione della stampante
@@ -812,11 +813,11 @@ pt: 84 Ignorando toda a linha
 ca: 84 Ignorant tota la l&iacute;nia
 es: 84 Ignorando toda la l&iacute;nea
 it: 84 Intera linea ignorata
-# TRANSLATE fr de pt ca es it (I've made a stab)
+# TRANSLATE fr de ca es it (I've made a stab)
 en: 85 Parameter `%s' missing in printer configuration file
 fr: 85 Param&egrave;tres `%s' manquant dans le fichier de configuration de l'imprimante
 de: 85 Parameter `%s' &uuml;fehlt in der Druckerkonfigurationsdatei
-pt: 85 Par&acirc;metros `%s' falta em arquivo de configura&ccedil;&atilde;o de impressora
+pt: 85 Falta parâmetro `%s' em arquivo de configura&ccedil;&atilde;o de impressora
 ca: 85 Par&agrave;metres `%s' manca al fitxer de configuraci&oacute; de l'impresora
 es: 85 Par&aacute;metros `%s' falta en el fichero de configuraci&oacute;n de la impresora
 it: 85 Parametro `%s' manca nel file di configurazione della stampante
@@ -1570,7 +1571,7 @@ pt:200 Este programa &eacute; um software de livre distribui&ccedil;&atilde;o, q
 es:200 Este programa es software libre. Puede redistribuirlo y/o modificarlo bajo los t&eacute;rminos de la Licencia P&uacute;blica General de GNU seg&uacute;n es publicada por la Free Software Foundation, bien de la versi&oacute; 2 de dicha Licencia o bien (seg&uacute;n su elecci&oacute;n) de cualquier versi&oacute;n posterior.
 it:200 Questo programma &egrave; software libero; &egrave; lecito redistribuirlo o modificarlo secondo i termini della Licenza Pubblica Generica GNU come &egrave; pubblicata dalla Free Software Foundation; o la versione 2 della licenza o (a propria scelta) una versione successiva.
 #
-# TRANSLATE check fr de pt ca es it
+# TRANSLATE check fr de ca es it
 en:201 Display command line options
 fr:201 Affiche les options de la ligne de commande
 de:201 Befehlszeilenparameter anzeigen
@@ -1579,11 +1580,13 @@ ca:201 Mostra les opcions de la l&iacute;nia de comanda
 es:201 Mostrar opciones en l&iacute;nea de comandos
 it:201 Mostra le opzioni della riga di comando
 #
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr de ca es it
 en:202 No survey data in 3d file `%s'
+pt:202 Não há dados de topografia no arquivo 3d '%s'
 #
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr de ca es it
 en:203 Facing
+pt:203 Olhando para
 #
 en:204 Close
 fr:204 Fermer
@@ -1614,12 +1617,12 @@ it:205 Informazioni su %s
 # TRANSLATE fr de pt ca es it
 en:206 Select a 3d file to view
 #
-# TRANSLATE ca check fr de pt es it
+# TRANSLATE ca check fr de pt (pt-br is ok) es it
 en:207 Survex 3d files
 fr:207 Fichiers de Survex 3d
 de:207 Survex 3d Dateien
 pt:207 Ficheiros de Survex 3d
-pt-br:207 Arquivos de Survex 3d
+pt-br:207 Arquivos 3d do Survex
 # es: or "Ficheros Survex 3d"?
 es:207 Archivos Survex 3d
 it:207 File Survex 3d
@@ -1634,6 +1637,7 @@ ca:208 Tots els fitxers
 es:208 Todos los archivos
 it:208 Tutti i file
 #
+# in the about box (summarising the purpose of aven)
 # TRANSLATE fr de pt ca es it
 en:209 Visualisation of Survex 3D files
 #
@@ -1710,22 +1714,50 @@ it:221 @Esci
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
+pt-br:230 @Iniciar Rotação##Return
+#
 en:231 S@top Rotation##Space
+pt-br:231 @Parar Rotação##Space
+#
 en:232 Speed @Up##Z
+pt-br:232 @Aumentar Velocidade##Z
+#
 en:233 Slow @Down##X
+pt-br:233 @Diminuir Velocidade##X
+#
 en:234 @Reverse Direction##R
+pt-br:234 @Reverter Sentido##R
+#
 en:235 Step Once @Anticlockwise##C
+pt-br:235 Um Passo @Horário##C
+#
 en:236 Step Once @Clockwise##V
+pt-br:236 Um Passo A@ntihorário##V
 #
 # The accelerators must be different within this group
 en:240 View @North##N
+pt-br:240 Olhar para @Norte##N
+#
 en:241 View @East##E
+pt-br:241 Olhar para @Leste##E
+#
 en:242 View @South##S
+pt-br:242 Olhar para @Sul##S
+#
 en:243 View @West##W
+pt-br:243 Olhar para @Oeste##W
+#
 en:244 Shift Survey @Left##Left Arrow
+pt-br:244 Mover para @Esquerda##Left Arrow
+#
 en:245 Shift Survey @Right##Right Arrow
+pt-br:245 Mover para @Direita##Right Arrow
+#
 en:246 Shift Survey @Up##Up Arrow
+pt-br:246 Mover para @Cima##Up Arrow
+#
 en:247 Shift Survey @Down##Down Arrow
+pt-br:247 Mover para @Baixo##Down Arrow
 #
 # c.f. 117
 en:248 @Plan View##P
@@ -1748,11 +1780,13 @@ ca:249 @Al&ccedil;at##L
 es:249 @Alzado##L
 it:249 Pro@filo##L
 #
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr de ca es it
 en:250 @Higher Viewpoint##'
+pt-br:250 Observador Mais @@Alto##'
 #
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr de ca es it
 en:251 Lo@wer Viewpoint##/
+pt-br:251 Observador Mais @Baixo##/
 #
 en:252 @Zoom In##]
 # fr: or "Agrandir"
@@ -1760,6 +1794,7 @@ fr:252 @Zoom Avant##]
 de:252 Ver@gr&ouml;&szlig;ern##]
 # pt or "Ampliar"
 pt:252 @Aumentar##]
+pt-br:252 A@proximar##]
 ca:252 @Apropa##]
 #es or "Aumentar"
 es:252 @Ampliar##]
@@ -1772,6 +1807,7 @@ fr:253 Zoo@m Arri&egrave;re##[
 de:253 Ver@kleinern##[
 # pt or "Reduzir"
 pt:253 @Diminuir##[
+pt-br:253 A@fastar##[
 ca:254 A@llunya##[
 #es or "Disminuir"
 es:253 @Reducir##[
@@ -1788,7 +1824,7 @@ es:254 Restaurar @valores predeterminados##Delete
 it:254 Ripristina i @valori predefiniti
 #
 # The accelerators must be different within this group
-# TRANSLATE CHECK fr de pt ca es it
+# TRANSLATE CHECK fr de ca es it
 en:270 Station @Names##Ctrl+N
 fr:270 @Noms de station##Ctrl+N
 de:270     Me&szlig;punkt@namen##Ctrl+N
@@ -1798,14 +1834,15 @@ ca:270 @Noms d'estaci&oacute;##Ctrl+N
 es:270 @Nombres de estaci&oacute;n##Ctrl+N
 it:270 @Nomes di stazione##Ctrl+N
 #
-# TRANSLATE fr pt
+# TRANSLATE fr
 en:271 @Crosses##Ctrl+X
 de:271 @Kreuze##Ctrl+X
+pt-br:271 @Marcas de base##Ctrl+X
 ca:271 @Creus##Ctrl+X
 es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
 #
-# TRANSLATE CHECK fr de pt ca es it
+# TRANSLATE CHECK fr de ca es it
 en:272 Survey @Legs##Ctrl+L
 en-us:272 @Shots##Ctrl+L
 fr:272 @Vis&eacute;es##Ctrl+L
@@ -1815,37 +1852,43 @@ ca:272 @Tirades##Ctrl+L
 es:272 @Tiradas##Ctrl+L
 it:272 @Battute##Ctrl+L
 #
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr de ca es it
 en:273 @Overlapping Names##O
+pt-br:273 Nomes @Sobrepostos##O
 #
-# TRANSLATE pt
 en:274 Co@mpass
 fr:274 Co@mpas
 de-de,de-ch:274 @Kompass
 de:         274 @Kompa&szlig;
+pt-br:274 @Bússola
 ca:274 @Br&uacute;ixola
 es:274 @Br&uacute;jula
 it:274 @Bussola
 #
-# TRANSLATE de pt
+# TRANSLATE de
 en:275 Cl@inometer
 fr:275 Cl@ino
+pt-br:275 Cl@inômetro
 ca:275 Cl@ino
 es:275 Cl@ino
 it:275 Cl@inometro
 #
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr de ca es it
 en:276 @Depth Bar
+pt-br:276 Barra de @Profundidade
 #
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr de ca es it
 en:277 Sc@ale Bar
+pt-br:277 Barra de @Escala
 #
 # The accelerators must be different within this group
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr de ca es it
 en:280 @Reverse Sense##Ctrl+R
+pt-br:280 @Inverter Sentido##Ctrl+R
 #
-# TRANSLATE fr de pt ca es it
+# TRANSLATE fr de ca es it
 en:281 Caverot-Style @Middle Button
+pt-br:281 Botão do @Meio no Estilo do Caverot
 #
 # The accelerators must be different within this group
 # c.f. 205

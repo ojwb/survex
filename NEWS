@@ -1,3 +1,5 @@
+* Updated Portuguese
+
 Changes in 0.97-prerelease3:
 
 * (Unix version): aven: Internationalised; Fixed serious drawing bug
@@ -391,7 +393,7 @@ Changes in 0.92-prerelease6:
 
 * Windows and MSDOS builds were missing 3dtodxf.exe
 
-* Updated French, German, Portugese, and Italian translations
+* Updated French, German, Portuguese, and Italian translations
 
 * Windows archive for pre5 contained Linux binaries! (except caverot)
 
@@ -418,7 +420,7 @@ Changes in 0.92-prerelease5:
 
 * Catch *begin and matching *end in different files
 
-* Updated Portugese, French, and German translations [Leandro/Eric/Gerhard]
+* Updated Portuguese, French, and German translations [Leandro/Eric/Gerhard]
 
 * Wrong warning was being given for `*equate 1 1'
 
@@ -615,7 +617,7 @@ Changes in 0.90 beta2:
 
 Changes in 0.90 beta1:
 
-* German, Italian, and Portugese translations updated
+* German, Italian, and Portuguese translations updated
 
 * Linux binaries now supplied (x86 RPM)
 
