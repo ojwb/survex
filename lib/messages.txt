@@ -947,7 +947,9 @@ it: 83 Scala per rientrare in una pagina
 sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku 
 # In data with backsights, the user has tried to give a plumb for the
 # foresight and a clino reading for the backsight, or something similar.
-en: 84 Clino and BackClino readings must be of the same type
+en: 84 CLINO and BACKCLINO readings must be of the same type
+#fr: 84 Les mesures de Clino et ClinoInverse doivent &ecirc;tre du m&ecirc;me type
+fr: 84 Les mesures de CLINO et BACKCLINO doivent &ecirc;tre du m&ecirc;me type
 #
 en: 85 Parameter `%s' missing in printer configuration file
 fr: 85 Param&egrave;tres `%s' manquant dans le fichier de configuration de l'imprimante
@@ -1067,9 +1069,13 @@ es: 97 Se ha recibido una se&ntilde;al desconocida
 it: 97 Ricevuto segnale sconosciuto
 sk: 97 Bol obdr&zcaron;an&yacute; nezn&aacute;my sign&aacute;l
 #
-en: 98 Compass reading and back compass reading disagree by %s degrees
+en: 98 COMPASS reading and BACKCOMPASS reading disagree by %s degrees
+#fr: 98 Les mesures de Compas et CompasInverse diff&egrave;rent de %s degr&eacute;s
+fr: 98 Les mesures de COMPASS et BACKCOMPASS diff&egrave;rent de %s degr&eacute;s
 #
-en: 99 Clino reading and back clino reading disagree by %s degrees
+en: 99 CLINO reading and BACKCLINO reading disagree by %s degrees
+#fr: 99 Les mesures de Clino et ClinoInverse diff&egrave;rent de %s degr&eacute;s
+fr: 99 Les mesures de CLINO et BACKCLINO diff&egrave;rent de %s degr&eacute;s
 #
 # A computer mouse, not the rodent sort ;)
 # Actually, mouse is somewhat imprecise as it could refer to a trackerball
@@ -2026,6 +2032,7 @@ sk:199 S prefixom sa natiahla iba &ccaron;as&tcaron; merania
 # your tape is marked in "0 feet" (but you might measure distance by counting
 # knots on a diving line, and tie them every "2 feet").
 en:200 *UNITS factor must be non-zero
+fr:200 *UNITS: le facteur doit &ecirc;tre non nul
 #
 # XXX 201
 #
