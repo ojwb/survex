@@ -665,12 +665,21 @@ void MainFrm::OpenFile(const wxString& file, bool delay)
 
 void MainFrm::OnOpen(wxCommandEvent&)
 {
+#ifdef __WXMOTIF__
+  wxFileDialog dlg (this, wxString(msg(606)) /* Select a 3D file to view */, "", "",
+		    "*.3d", wxOPEN);
+#else
     wxFileDialog dlg (this, wxString(msg(606)) /* Select a 3D file to view */, "", "",
 		      wxString::Format("%s|*.3d|%s|*.*",
 				       msg(607) /* Survex 3d files */,
 				       msg(608) /* All files */), wxOPEN);
+#endif
     if (dlg.ShowModal() == wxID_OK) {
         OpenFile(dlg.GetPath());
+#ifdef __WXMOTIF__
+	wxSizeEvent ev(GetSize());
+	OnSize(ev);
+#endif
     }
 }
 

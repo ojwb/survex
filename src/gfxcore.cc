@@ -1247,7 +1247,9 @@ void GfxCore::OnSize(wxSizeEvent& event)
     }
 
     if (m_DoneFirstShow) {
+#ifndef __WXMOTIF__
         m_DrawDC.SelectObject(wxNullBitmap);
+#endif
 	m_OffscreenBitmap.Create(m_XSize, m_YSize);
 	m_DrawDC.SelectObject(m_OffscreenBitmap);
         RedrawOffscreen();
