@@ -2349,7 +2349,7 @@ void GfxCore::Elevation()
 void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd) 
 {
     cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_SwitchingToPlan &&
-		!m_SwitchingToElevation && m_Lock == lock_NONE);
+		!m_SwitchingToElevation && m_Lock == lock_NONE && m_TiltAngle != 0.0);
 }
 
 void GfxCore::OnHigherViewpoint(wxCommandEvent&) 
@@ -2394,7 +2394,7 @@ void GfxCore::Plan()
 void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd) 
 {
     cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && !m_SwitchingToElevation &&
-		!m_SwitchingToPlan && m_Lock == lock_NONE);
+		!m_SwitchingToPlan && m_Lock == lock_NONE && m_TiltAngle != M_PI / 2.0);
 }
 
 void GfxCore::OnShiftDisplayDown(wxCommandEvent&) 

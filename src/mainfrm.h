@@ -205,7 +205,7 @@ public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
     ~MainFrm();
 
-    void OpenFile(const wxString& file, wxString survey = "");
+    void OpenFile(const wxString& file, wxString survey = "", bool delay = true);
     void OnOpenPresUpdate(wxUpdateUIEvent& event);
 
     void OnOpen(wxCommandEvent& event);

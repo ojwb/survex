@@ -691,7 +691,8 @@ void MainFrm::FillTree()
 		    if (prefix[pos] == '.') count = pos + 1;
 		    pos++;
 		}
-	    } else {
+	    }
+	    else {
 	        count = prefix.Length() + 1;
 	    }
 
@@ -885,11 +886,16 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
     }
 }
 
-void MainFrm::OpenFile(const wxString& file, wxString survey)
+void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 {
     SetCursor(*wxHOURGLASS_CURSOR);
     if (LoadData(file, survey)) {
-        m_Gfx->InitialiseOnNextResize();
+        if (delay) {
+	    m_Gfx->InitialiseOnNextResize();
+	}
+	else {
+	    m_Gfx->Initialise();
+	}
     }
     SetCursor(*wxSTANDARD_CURSOR);
 }
@@ -910,7 +916,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 				       msg(/*All files*/208)), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
-        OpenFile(dlg.GetPath());
+        OpenFile(dlg.GetPath(), "", false);
     }
 }
 
