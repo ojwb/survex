@@ -63,7 +63,6 @@ static void win_DrawCircle(long x, long y, long r);
 static void win_ShowPage(const char *szPageDetails);
 static void win_Quit(void);
 
-/*device ps = {*/
 device printer = {
    win_Name,
    win_Init,
@@ -76,7 +75,7 @@ device printer = {
    win_WriteString,
    win_DrawCircle,
    win_ShowPage,
-   NULL, /* ps_Post,*/
+   NULL, /* win_Post */
    win_Quit
 };
 
@@ -144,6 +143,9 @@ win_Pre(int pagesToPrint, const char *title)
 {
    PRINTDLGA psd = {0};
    DOCINFO info = {0};
+
+   pagesToPrint = pagesToPrint;
+
    psd.lStructSize = 66;
    psd.hwndOwner = NULL;
    psd.hDevMode = NULL;
@@ -188,13 +190,17 @@ win_ShowPage(const char *szPageDetails)
    EndPage(pd);
 }
 
-/* Initialise HPGL/PS printer routines */
+/* Initialise printer routines */
 static void
 win_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 {
    /* name and size of font to use for text */
    TEXTMETRIC temp;
    PRINTDLGA psd = {0};
+
+   fh_list = fh_list;
+   pth = pth;
+
    psd.lStructSize = 66;
    psd.hwndOwner = NULL;
    psd.hDevMode = NULL;

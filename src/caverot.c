@@ -853,7 +853,7 @@ static void
 parse_command(int argc, char **argv)
 {
    int c;
-   int col_idx = 0;
+   size_t col_idx = 0;
 
    cmdline_set_syntax_message("3D_FILE...", NULL); /* TRANSLATE */
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);

@@ -28,8 +28,8 @@
 #include "caverot.h" /* only for fAllNames - FIXME: try to eliminate */
 
 static char *map = NULL;
-static int width, height;
-static int size;
+static unsigned int width, height;
+static unsigned int size;
 
 static unsigned int x_mid, y_mid;
 
@@ -69,7 +69,7 @@ fancy_label(const char *label, int x, int y)
 {
    if (map && !fAllNames) {
       unsigned int X, Y; /* use unsigned so we can test for <0 for free */
-      int len, rows;
+      unsigned int len, rows;
       char *p;      
       X = (unsigned)(x + x_mid) / 4u;
       if (X >= width) return 0;
