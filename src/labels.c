@@ -27,40 +27,34 @@
 
 #include "caverot.h" /* only for fAllNames - FIXME: try to eliminate */
 
-static char **map;
+static char *map = NULL;
 static int width, height;
+static int size;
 
 static unsigned int x_mid, y_mid;
 
 int
 init_map(unsigned int w, unsigned int h)
 {
-   int i;
    x_mid = w / 2u;
    y_mid = h / 2u;
    width = w / 4u;
    height = h / 4u;
-   map = xosmalloc(height * ossizeof(void*));
-   if (!map) return 0;
-   /* Under 16 bit MSDOS compilers, this limits us to resolutions with a
+   size = width * height;
+   if (map) osfree(map);
+   /* Allocate in one block for simplicity and space efficiency.
+    * Under 16 bit MSDOS compilers, this limits us to resolutions with a
     * product strictly less than 1024*1024 - but Borland's BGI doesn't
     * support any resolution this high so it's not a problem.
-   /* Allocate in one block so we can zero with one memset() */
-   map[0] = osmalloc(width * height);
-   if (!map[0]) {
-      osfree(map);
-      return 0;
-   }
-   for (i = 1; i < height; i++) {
-      map[i] = map[i - 1] + width;
-   }
-   return 1;
+    */
+   map = xosmalloc(size);
+   return (map != NULL);
 }
 
 void
 clear_map(void)
 {
-   if (map) memset(map[0], 0, width * height);       
+   if (map) memset(map, 0, size);       
 }
 
 #if (OS==RISCOS)
@@ -75,21 +69,24 @@ fancy_label(const char *label, int x, int y)
 {
    if (map && !fAllNames) {
       unsigned int X, Y; /* use unsigned so we can test for <0 for free */
-      int len, l, m;
+      int len, rows;
+      char *p;      
       X = (unsigned)(x + x_mid) / 4u;
       if (X >= width) return 0;
       Y = (unsigned)(y + y_mid) / 4u;
       if (Y >= height) return 0;
       len = (strlen(label) * 2) + 1;
       if (X + len > width) len = width - X; /* or 'return' to right clip */
-      for (l = len - 1; l >= 0; l--)
-	 if (map[Y][X + l]) return 0;
-      l = Y - 2;
-      if (l < 0) l = 0;
-      m = Y + 2;
-      if (m >= height) m = height - 1;
-      for ( ; l <= m; l++)
-         memset(map[l] + X, 1, len);
+      p = map + Y * width + X;
+      if (memchr(p, 1, len)) return 0;
+      rows = (p - map) / width;
+      if (rows > 2) rows = 2;
+      p -= width * rows;
+      rows += 3;
+      while (--rows && p < map + size) {
+         memset(p, 1, len);
+	 p += width;
+      }
    }
    return 1;
 }
