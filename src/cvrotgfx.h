@@ -179,9 +179,7 @@ void text_xy(int x, int y, const char *str);
 # define set_gcolour(X) (ol_setcol((X)))
 # define set_tcolour(X) (xos_set_gcol(), xos_writec(0), xos_writec((X)))
 # define shift_pressed() (osbyte_read(osbyte_VAR_KEYBOARD_STATE) & 0x08)
-/* FIXME: guess
-# define ctrl_pressed() (osbyte_read(osbyte_VAR_KEYBOARD_STATE) & 0x04)
-*/
+# define ctrl_pressed() (osbyte_read(osbyte_VAR_KEYBOARD_STATE) & 0x40)
 
 # define cvrotgfx_beep() xos_bell()
 
