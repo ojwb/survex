@@ -2,14 +2,21 @@
 
 # Makefile for survex documentation
 
-# Can't produce PS at present as my machine doesn't have
-# a suitable build of TeX
-
 pkgdocdir = $(prefix)/doc/@PACKAGE@
 
-EXTRA_DIST = svxdocs/*.html svxdocs.sgml svxdocs.rtf svxdocs.txt custom.dsl
+# FIXME: problems with svxdocs directory - may be an automake bug
+#EXTRA_DIST = svxdocs/*.html svxdocs.sgml svxdocs.rtf svxdocs.txt custom.dsl
+EXTRA_DIST = svxdocs svxdocs.sgml svxdocs.rtf svxdocs.txt custom.dsl
 
-pkgdoc_DATA = svxdocs svxdocs.rtf svxdocs.txt # svxdocs.html # svxdocs.ps
+# Can't produce PS at present as my machine doesn't have
+# a suitable build of TeX
+# And I need to sort out an "all in one" HTML version
+
+# svxdocs.html svxdocs.ps
+
+MAINTAINERCLEANFILES = svxdocs svxdocs.rtf svxdocs.txt
+
+pkgdoc_DATA = svxdocs svxdocs.rtf svxdocs.txt
 
 svxdocs: svxdocs.sgml custom.dsl
 	sgmltools --backend=html --dsssl-spec=custom.dsl#html svxdocs.sgml
