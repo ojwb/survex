@@ -1010,11 +1010,8 @@ msg_init(char * const *argv)
    appname_copy = osstrdup(argv[0]);
 #else
    /* use the lower-cased leafname on other platforms */
-   appname_copy = p = leaf_from_fnm(argv[0]);
-   while (*p) {
-      *p = tolower(*p);
-      p++;
-   }
+   appname_copy = leaf_from_fnm(argv[0]);
+   for (p = appname_copy; *p; ++p) *p = tolower(*p);
 #endif
 
    /* shortcut --version so you can check the version number even when the
