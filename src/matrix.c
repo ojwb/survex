@@ -47,11 +47,11 @@ static void sor(real FAR *M, real *B, long n);
 
 static int find_stn_in_tab(node *stn);
 static int add_stn_to_tab(node *stn);
-static void build_matrix(node *list, long n, prefix **stn_tab);
+static void build_matrix(node *list, long n, pos **stn_tab);
 
 static long n_stn_tab;
 
-static prefix **stn_tab; /* FIXME: use pos ** instead */
+static pos **stn_tab;
 
 extern void
 solve_matrix(node *list)
@@ -67,14 +67,14 @@ solve_matrix(node *list)
     * of stations left after reduction. If memory is
     * plentiful, we can be crass.
     */
-   stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(prefix*)));
+   stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(pos*)));
    
    FOR_EACH_STN(stn, list) {
       if (!fixed(stn)) add_stn_to_tab(stn);
    }
 
    /* FIXME: release any unused entries in stn_tab ? */
-   /* stn_tab = osrealloc(stn_tab, n_stn_tab * ossizeof(prefix*)); */
+   /* stn_tab = osrealloc(stn_tab, n_stn_tab * ossizeof(pos*)); */
    
    build_matrix(list, n_stn_tab, stn_tab);
 }
@@ -86,7 +86,7 @@ solve_matrix(node *list)
 #endif
 
 static void
-build_matrix(node *list, long n, prefix **stn_tab)
+build_matrix(node *list, long n, pos **stn_tab)
 {
    real FAR *M;
    real *B;
@@ -98,17 +98,6 @@ build_matrix(node *list, long n, prefix **stn_tab)
 #else
    var e;
    d a;
-#endif
-
-#ifdef DEBUG_ARTIC
-   printf("# stations %lu\n",n);
-   if (n) {
-      int m;
-      for (m = 0; m < n; m++) {
-	 print_prefix(stn_tab[m]);
-	 putnl();
-      }
-   }
 #endif
 
    if (n == 0) {
@@ -297,27 +286,22 @@ build_matrix(node *list, long n, prefix **stn_tab)
 	 int m;
 	 for (m = (int)(n - 1); m >= 0; m--) {
 #ifdef NO_COVARIANCES
-	    stn_tab[m]->pos->p[dim] = B[m];
+	    stn_tab[m]->p[dim] = B[m];
 	    if (dim == 0) {
-	       ASSERT2(pfx_fixed(stn_tab[m]),
+	       ASSERT2(pos_fixed(stn_tab[m]),
 		       "setting station coordinates didn't mark pos as fixed");
-	       ASSERT2(fixed(stn_tab[m]->stn),
-		       "setting station coordinates didn't mark stn as fixed");
 	    }
 #else
 	    int i;
 	    for (i = 0; i < 3; i++) {
-	       stn_tab[m]->pos->p[i] = B[m * FACTOR + i];
+	       stn_tab[m]->p[i] = B[m * FACTOR + i];
 	    }
-	    ASSERT2(pfx_fixed(stn_tab[m]),
+	    ASSERT2(pos_fixed(stn_tab[m]),
 		    "setting station coordinates didn't mark pos as fixed");
-	    ASSERT2(fixed(stn_tab[m]->stn),
-		    "setting station coordinates didn't mark stn as fixed");
 #endif
 	 }
 #if EXPLICIT_FIXED_FLAG
-/* broken code? !HACK! */
-	 for (m = n - 1; m >= 0; m--) fix(stn_tab[m]->stn);
+	 for (m = n - 1; m >= 0; m--) fixpos(stn_tab[m]);
 #endif
       }
    }
@@ -332,17 +316,12 @@ find_stn_in_tab(node *stn)
    pos *pos;
 
    pos = stn->name->pos;
-   while (stn_tab[i]->pos != pos)
+   while (stn_tab[i] != pos)
       if (++i == n_stn_tab) {
 #if DEBUG_INVALID
 	 fputs("Station ", stderr);
 	 fprint_prefix(stderr,stn->name);
 	 fputs(" not in table\n\n",stderr);
-	 for (i = 0; i < n_stn_tab; i++) {
-	    fprintf(stderr,"%3d: ",i);
-	    fprint_prefix(stderr,stn_tab[i]);
-	    fputnl(stderr);
-	 }
 #endif
 #if 0
 	 print_prefix(stn->name);
@@ -363,9 +342,9 @@ add_stn_to_tab(node *stn)
 
    pos = stn->name->pos;
    for (i = 0; i < n_stn_tab; i++) {
-      if (stn_tab[i]->pos == pos) return i;
+      if (stn_tab[i] == pos) return i;
    }
-   stn_tab[n_stn_tab++] = stn->name;
+   stn_tab[n_stn_tab++] = pos;
    return i;
 }
 
