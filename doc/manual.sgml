@@ -92,8 +92,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-06-09 02:44:42 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.96 2002-06-09 02:44:42 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-07-01 01:22:45 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.97 2002-07-01 01:22:45 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -2397,7 +2397,12 @@ detail in various surveying articles.
 <listitem>
 <Para>
 <programlisting>
+*set blank x09x20
 *set decimal ,</programlisting>
+
+Note that you need to eliminate comma from being a blank before setting it as
+a decimal - otherwise the comma in "*set decimal ," is parsed as a blank, and
+you set decimal to not have any characters representing it.
 </Para>
 </listitem>
 
