@@ -1,6 +1,6 @@
 /* ini.c
  * .ini file routines
- * Copyright (C) 1995-2001 Olly Betts
+ * Copyright (C) 1995-2001,2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -216,7 +216,7 @@ ini_read_hier(FILE **fh_list, const char *section, const char **v)
 
       vars[j] = NULL;
 
-      x = ini_read(fh_list, vals[0], vars);
+      x = ini_read(fh_list, vals[0], (const char **)vars);
       if (!x) {
 	 free(vals);
 	 vals = NULL;

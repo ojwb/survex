@@ -1,6 +1,6 @@
 /* printwin.c */
 /* Device dependent part of Survex Win32 driver */
-/* Copyright (C) 1993-2002 Olly Betts
+/* Copyright (C) 1993-2003 Olly Betts
  * Copyright (C) 2001 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -46,7 +46,8 @@ static double MarginLeft, MarginRight, MarginTop, MarginBottom;
 static int fontsize, fontsize_labels;
 static double LineWidth;
 
-static char *fontname, *fontname_labels;
+/* FIXME: allow the font to be set */
+static const char *fontname = "Arial", *fontname_labels = "Arial";
 
 static const char *win_Name(void);
 static int win_Pre(int pagesToPrint, const char *title);
@@ -314,12 +315,12 @@ win_Pre(int pagesToPrint, const char *title)
 			    0, 0, 0, FW_NORMAL, 0, 0, 0,
 			    ANSI_CHARSET, OUT_DEFAULT_PRECIS,
 			    CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-			    FF_DONTCARE | DEFAULT_PITCH, "Arial");
+			    FF_DONTCARE | DEFAULT_PITCH, fontname_labels);
    font_default = CreateFont(-MulDiv(fontsize, logpixelsy, 72),
 			     0, 0, 0, FW_NORMAL, 0, 0, 0,
 			     ANSI_CHARSET, OUT_DEFAULT_PRECIS,
 			     CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-			     FF_DONTCARE | DEFAULT_PITCH, "Arial");
+			     FF_DONTCARE | DEFAULT_PITCH, fontname);
    /* Pen width of 0 should work, but seemed to give problems, so we'll
     * try 1 instead... */
    pen_leg = CreatePen(PS_SOLID, 1, colour_leg);
@@ -356,7 +357,7 @@ win_NewPage(int pg, int pass, int pagesX, int pagesY)
    if (pass == -1) return;
 
    StartPage(pd);
-   drawticks(clip, int(9 * scX / POINTS_PER_MM), x, y);
+   drawticks(clip, (int)(9 * scX / POINTS_PER_MM), x, y);
 }
 
 static void

@@ -1,6 +1,6 @@
 /* cvrotgfx.c */
 
-/* Copyright (C) Olly Betts 1997-2001
+/* Copyright (C) Olly Betts 1997-2001,2003
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,16 @@ static int fSwapScreen;
 volatile bool fRedraw = fTrue;
 
 int mouse_buttons = -3; /* special value => "not yet initialised" */
-static int bank = 0;
 
-/* number of screen banks to use (only used for RISCOS currently) */
+#if (OS == RISCOS)
+/* number of screen banks to use */
 static int nBanks = 3;
+#endif
+
+#ifndef ALLEGRO
+/* current bank */
+static int bank = 0;
+#endif
 
 int _cvrotgfx_textcol, _cvrotgfx_drawcol;
 
