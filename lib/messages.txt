@@ -114,7 +114,7 @@ it:  2 Questi dati di topografia possono essere trattati da Survex versione %s o
 # In file included from area.svx:12,
 #                  from cave.svx:3:
 # passage.svx:17: <some error or warning>
-# TRANSLATE: check de ca es it
+# TRANSLATE: check ca es it
 en:  3 "from "
 fr:  3 "depuis "
 de:  3 "von "
@@ -200,7 +200,7 @@ pt: 12 Comando desconhecido `%s'
 ca: 12 Comandament desconegut `%s'
 es: 12 Comando desconocido `%s'
 it: 12 Comando sconosciuto `%s'
-# TRANSLATE: de ca es it check insertion of `%s' (station name) ok
+# TRANSLATE: ca es it check insertion of `%s' (station name) ok
 en: 13 Station `%s' equated to itself
 fr: 13 Station `%s' ne doit pas &ecirc;tre d&eacute;clar&eacute;e "&eacute;gale" &agrave elle-m&ecirc;me
 de: 13 Station `%s' mit sich selbst gleichgesetzt
@@ -410,7 +410,7 @@ pt: 36 O BEGIN correspondente n&atilde;o tem prefixo
 ca: 36 La instrucci&oacute; BEGIN corresponent no te prefix
 es: 36 La instrucci&oacute;n BEGIN correspondiente no tiene prefijo
 it: 36 Il BEGIN corrispondente non ha prefisso
-# TRANSLATE check addition of `%s': de ca es it
+# TRANSLATE check addition of `%s': ca es it
 # Note: In English you talk about the *units* of a single measurement, but
 # the correct term in other languages may be singular.
 en: 37 Invalid units `%s' for quantity
@@ -592,7 +592,7 @@ it: 56 Pi&uacute; di un comando FIX senza coordinate
 # 1 2 1.23 045 -6
 # *export 2
 # *end fred
-# FIXME: TRANSLATE ca es CHECK de it
+# FIXME: TRANSLATE ca es CHECK it
 en: 57 *EXPORT must immediately follow `*BEGIN <SURVEY>'
 fr: 57 *EXPORT doit suivre imm&eacute;diatement `*BEGIN <SURVEY>'
 de-de,de-ch: 57 *EXPORT muss unmittelbar auf `*BEGIN <VERMESSUNG>' folgen
@@ -828,7 +828,7 @@ ca: 83 Escala per a encaixar en 1 p&agrave;gina
 es: 83 Escala para encajar en 1 p&aacute;gina
 it: 83 Scala per rientrare in una pagina
 en: 84 Ignoring entire line
-fr: 84 84 Ignore toute la ligne
+fr: 84 Ignore toute la ligne
 #germ: 84 Ignoriere die gesamte Zeile
 # GN(2): Not _quite_ satisfactory. (1) This is anthropomorphizing again, (2) the
 # grammar is ambiguous --- it could be read as an imperative, `please do
@@ -904,10 +904,10 @@ pt: 92 Instru&ccedil;&atilde;o ilegal
 ca: 92 Instrucci&oacute; il.legal
 es: 92 Instrucci&oacute;n ilegal
 it: 92 Istruzione illegale
-# TRANSLATE check de ca es it
+# TRANSLATE check ca es it
 en: 93 Couldn't open file `%s'
 fr: 93 Ne peut pas ouvrir le fichier `%s'
-de: 93 Konnte Daten nicht &ouml;ffnen oder finden `%s'
+de: 93 Datei `%s' nicht gefunden oder kein Zugriffsrecht
 pt: 93 Imposs&iacute;vel abrir arquivo `%s'
 ca: 93 No s'ha pogut obrir el fitxer `%s'
 es: 93 No se pudo abrir el fichero `%s'
@@ -985,6 +985,9 @@ es:102 Vista en direcci&oacute;n %05.1f
 it:102 Vista in direzione %05.1f
 #
 en:103 You need to calibrate your printer - see the manual for details.
+# Or shorter, just have - `siehe Handbuch' for the second half.
+de-de,de-ch:103 Drucker muss kalibriert werden - n&auml;her beschrieben im Handbuch.
+de:         103 Drucker mu&szlig; kalibriert werden - n&auml;her beschrieben im Handbuch.
 #
 #XXX 104
 en:105 Reading in data - please wait...
@@ -1023,12 +1026,12 @@ it:108 Data e ora non disponibili.
 # TRANSLATE
 en:109 Error reading from file `%s'
 fr:109 Erreur &agrave; la lecture du fichier `%s'
-de:109 Fehler beim Lesen der Datei %s'
+de:109 Fehler beim Lesen der Datei `%s'
 pt:109 Erro lendo arquivo `%s'
 # TRANSLATE
 en:110 Error writing to file `%s'
 fr:110 Erreur &agrave; l'&eacute;criture du fichier `%s'
-de:110 Fehler beim Schreiben in die Datei %s'
+de:110 Fehler beim Schreiben in die Datei `%s'
 pt:110 Erro escrevendo no arquivo `%s'
 # TRANSLATE
 en:111 Error writing to file
@@ -1041,10 +1044,10 @@ fr:112 La lecture du fichier .err a &eacute;chou&eacute;
 de:112 .err-Datei konnte nicht interpretiert werden
 pt:112 N&atilde;o foi poss&iacute;vel analisar arquivo de erros (.err)
 # c.f. 16
-# TRANSLATE extra phrase... fr de pt ca es it
+# TRANSLATE extra phrase... fr pt ca es it
 en:113 There were %d warning(s) and %d non-fatal error(s) - no output files produced.
 fr:113 Il y a %d avertissement(s) et %d erreur(s) non fatale(s) - no output files produced.
-de:113 Es gab %d Warnungen und %d nicht-fatale Fehler - no output files produced.
+de:113 Es gab %d Warnungen und %d nicht-fatale Fehler - keine Ausgabedatei erstellt.
 #Es wurden %d Warnungen und %d nicht-fatale Fehler registriert.
 pt:113 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s) - no output files produced.
 ca:113 Hi havia %d alerta(es) i %d error(s) no fatal(s) - no output files produced.
@@ -1053,7 +1056,7 @@ it:113 Ci sono %d avvertimenti e %d errori non fatali - no output files produced
 # TRANSLATE
 en:114 File `%s' has a newer format than this program can understand
 fr:114 Le fichier `%s' a un format plus r&eacute;cent que ce que ce
-de:114 Datei %s' ist in einem neueren Format, als dieses Programm verstehen kann
+de:114 Datei `%s' ist in einem neueren Format, als dieses Programm verstehen kann
 pt:114 Arquivo `%s' tem um formato mais novo do que este programa consegue entender
 #
 en:115 North
@@ -1341,7 +1344,7 @@ ca:149 "Extensi&oacute; Est-Oest = %4.2fm (des de "
 es:149 "Extensi&oacute;n Este-Oeste = %4.2fm (desde "
 it:149 "Estensione Est-Ovest = %4.2fm (da "
 # description of --help option
-# TRANSLATE: ca es it ( de check )
+# TRANSLATE: ca es it
 en:150 display this help and exit
 fr:150 montrer ce message d'aide et quitter
 de:150 Diese Hilfemeldung anzeigen und Beenden
@@ -1361,7 +1364,7 @@ ca:152 Driver
 es:152 Driver
 it:152 Driver
 # in command line syntax messages [OPTION]...
-# TRANSLATE: ca es it ; check de
+# TRANSLATE: ca es it
 en:153 OPTION
 fr:153 OPTION
 de:153 OPTION
@@ -1389,10 +1392,11 @@ pt:156 Saindo.
 ca:156 Sortint.
 es:156 Saliendo.
 it:156 Fine.
-# TRANSLATE: ca check de pt-br es it
+# TRANSLATE: ca check pt-br es it
 en:157 Try `%s --help' for more information.&#10;
 fr:157 Pour en savoir davantage, faites: `%s --help'&#10;
 de:157 Versuchen Sie `%s --help' f&uuml;r weitere Informationen.&#10;
+de:157 Versuchen Sie `%s --help' f&uuml;r weitere Hinweise.&#10;
 pt:157 Tenta `%s --help' para mais informa&ccedil;&atilde;o.&#10;
 pt-br:157 Tente `%s --help' para mais informa&ccedil;&otilde;es.&#10;
 es:157 Pruebe `%s --help' para m&aacute;s informaci&oacute;n.&#10;
@@ -1617,19 +1621,19 @@ it:184 profilo
 # TRANSLATE
 en:185 numeric argument `%s' out of range
 fr:185 argument num&eacute;rique `%s' hors limite
-de:185 numerisches Argument %s' nicht im erlaubten Bereich
+de:185 numerisches Argument `%s' nicht im erlaubten Bereich
 pt:185 argumento num&eacute;rico `%s' fora dos limites
 # TRANSLATE
 en:186 argument `%s' not an integer
 fr:186 l'argument `%s' n'est pas un entier
-de:186 Argument %s' ist nicht ganzzahlig
+de:186 Argument `%s' ist nicht ganzzahlig
 pt:186 argumento `%s' n&atilde;o &eacute; um n&uacute;mero inteiro
 # TRANSLATE
 en:187 argument `%s' not a number
 fr:187 l'argument `%s' n'est pas un nombre
-de:187 Argument %s' ist keine Zahl
+de:187 Argument `%s' ist keine Zahl
 pt:187 argumento `%s' n&atilde;o &eacute; um n&uacute;mero
-# TRANSLATE check
+# TRANSLATE check fr pt ca es it
 en:188 Expecting `DUPLICATE', `SPLAY', or `SURFACE'
 fr:188 On attendait `DUPLICATE', `SPLAY', ou `SURFACE'
 # NB there is no comma before "oder"
@@ -1638,7 +1642,7 @@ pt:188 `DUPLICATE', `SPLAY' ou `SURFACE' eram esperados
 ca:188 Esperant `DUPLICATE', `SPLAY', o `SURFACE'
 es:188 Esperando `DUPLICATE', `SPLAY', o `SURFACE'
 it:188 Atteso `DUPLICATE', `SPLAY' o `SURFACE'
-# TRANSLATE check
+# TRANSLATE check fr pt ca es it
 en:189 Expecting `NOT', `DUPLICATE', `SPLAY', or `SURFACE'
 fr:189 On attendait `NOT', `DUPLICATE', `SPLAY', ou `SURFACE'
 # NB there is no comma before "oder"
@@ -1650,8 +1654,8 @@ it:189 Atteso `NOT', `DUPLICATE', `SPLAY' o `SURFACE'
 # TRANSLATE
 en:190 Station `%s' referred to by *entrance or *export but never used
 fr:190 La station `%s' est cit&eacute;e dans un *entrance ou *export mais n'est jamais utilis&eacute;e
-de-de,de-ch: 190 Messpunkt %s' in *entrance oder *export erw&auml;hnt, aber nie verwendet
-de:190      Me&szlig;punkt %s' in *entrance oder *export erw&auml;hnt, aber nie verwendet
+de-de,de-ch:190 Messpunkt `%s' in *entrance oder *export erw&auml;hnt, aber nie verwendet
+de:190      Me&szlig;punkt `%s' in *entrance oder *export erw&auml;hnt, aber nie verwendet
 pt:190 Base `%s' referenciada por *entrance ou *export mas nunca usada
 # TRANSLATE
 en:191 Extended elevation
@@ -1715,7 +1719,7 @@ pt:198 Esperando data
 # TRANSLATE
 en:199 Only load the sub-survey with prefix
 fr:199 Ne charge que la partie de topo avec le prefixe
-de:199 Nur Teilvermessung mit angegebenem Pr&auml;fix laden
+de:199 Nur Teilvermessung mit Pr&auml;fix laden
 pt:199 Carregue apenas a sub-topografia com prefixo
 #
 #  Messages for Aven
@@ -2028,7 +2032,7 @@ es:254 Restaurar @valores predeterminados##Delete
 it:254 Ripristina i @valori predefiniti
 #
 # The accelerators must be different within this group
-# TRANSLATE CHECK de ca es it
+# TRANSLATE CHECK ca es it
 en:270 Station @Names##Ctrl+N
 fr:270 @Noms de station##Ctrl+N
 de:270     Me&szlig;punkt@namen##Ctrl+N
@@ -2046,12 +2050,12 @@ ca:271 @Creus##Ctrl+X
 es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
 #
-# TRANSLATE CHECK ca es it
-# TRANSLATION NEEDS REDOING: de ca es it [added "Underground"]
+# TRANSLATION NEEDS REDOING: ca es it [added "Underground"]
 en:272 Underground Survey @Legs##Ctrl+L
 en-us:272 Underground @Shots##Ctrl+L
 fr:272 @Vis&eacute;es sous terre##Ctrl+L
 de:272 @Strecken##Ctrl+L
+de:272 @Strecken unter Grund##Ctrl+L
 pt:272 @Visadas Subterr&acirc;neas##Ctrl+L
 ca:272 @Tirades##Ctrl+L
 es:272 @Tiradas##Ctrl+L
@@ -2116,15 +2120,17 @@ it:290 @Informazioni su...
 en:291 Sur@face Survey Legs##Ctrl+F
 en-us:291 Sur@face Shots##Ctrl+F
 fr:291 Segments de topo en Sur@face##Ctrl+F
-de-de,de-ch: 291 Messz&uuml;ge Ober@fl&auml;che##Ctrl+F
+de-de,de-ch:291 Messz&uuml;ge Ober@fl&auml;che##Ctrl+F
 de:          291 Me&szlig;z&uuml;ge Ober@fl&auml;che##Ctrl+F
 pt:291 Visadas de Su@perf&iacute;cie##Ctrl+P
 en:292 Depth C@olours on Surface Surveys
 fr:292 C@ouleur par profondeur pour les topos de surface
+de:292 Tiefen-F@arben auf Oberfl&auml;chendarstellungen
 pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
 en:293 Da@shed Surface Surveys
 fr:293 Topos de surface @Hachur&eacute;es
-de:293 Ge@strichelte Oberfl&auml;chenpl&auml;ne
+de-de,de-ch:293 Ge@strichelte Oberfl&auml;chenmessz&uuml;ge
+de:          293 Ge@strichelte Oberfl&auml;chenme&szlig;z&uuml;ge
 pt:293 Topografias de Superf&iacute;cie @Tracejadas
 en:294 Highlight @Entrances
 fr:294 Mise en valeur des @entr&egrave;es
@@ -2137,11 +2143,11 @@ de:295 Fi@xpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
 en:296 Highlight Ex@ported Points
 fr:296 Mise de valeur des points ex@port&eacute;s
-de: 296 Ex@portierte Punkte hervorheben
+de:296 Ex@portierte Punkte hervorheben
 pt:296 Destacar Bases Ex@portadas
 en:297 @Grid##Ctrl+G
 fr:297 @Grille##Ctrl+G
-de: 297 @Gitter##Ctrl+G
+de:297 @Gitter##Ctrl+G
 pt:297 @Grade##Ctrl+G
 en:298 S@moothed Survey Legs
 en-us:298 S@moothed Survey Shots
@@ -2251,11 +2257,11 @@ it:310 %s: opzione non valida -- %c&#10;
 # here pt = pt-br ...
 en:311 @Create...
 fr:311 @Creation...
-de:311 @Neue/r/s...
+de:311 @Neue Pr&auml;sentation...
 pt:311 @Criar...
 en:312 @Go
 fr:312 @D&eacute;marrage
-de:312 @Gehe zu
+de:312 @Vorf&uuml;hren
 pt:312 @Ir para
 en:313 @Record Position
 fr:313 Sauvega@rde de la position
@@ -2263,7 +2269,8 @@ de:313 Position @aufzeichnen
 pt:313 G@ravar Posi&ccedil;&atilde;o
 en:314 @Finish and Save
 fr:314 @Fin avec sauvegarde
-de:314 @Beenden und abspeichern
+de:314 @Abschlie&szlig;en und abspeichern
+de-ch:314 @Abschliessen und abspeichern
 pt:314 @Finalizar e Salvar
 en:315 @Erase Last Position
 fr:315 @Effacement de la derni&egrave;re position
@@ -2274,27 +2281,33 @@ fr:316 Effacement de @toutes les positions
 de:316 @Alle Positionen l&ouml;schen
 pt:316 Remover @Todas as Posi&ccedil;&otilde;es
 en:317 @Presentation
+de:317 @Pr&auml;sentation
 fr:317 @Pr&eacute;sentation
 pt:317 @Apresenta&ccedil;&atilde;o  
 en:318 Go @Back
 fr:318 @Retour
-de: 318 @Zur&uuml;ck
+de:318 @Zur&uuml;ck
 pt:318 @Voltar
 en:319 Select an output filename
 fr:319 S&eacute;lection d'un nom de fichier de sortie
-de: 319 Name der Ausgabedatei w&auml;hlen
+de:319 Name der Ausgabedatei w&auml;hlen
 pt:319 Escolha um nome de arquivo de sa&iacute;da
 en:320 Aven presentations
 fr:320 Pr&eacute;sentations Aven
 pt:320 Apresenta&ccedil;&otilde;es Aven
 en:321 Open @Presentation...
 fr:321 Ouvrir une @Pr&eacute;sentation
+de:321 @Pr&auml;sentation &ouml;ffnen...
 pt:321 Abrir @Apresenta&ccedil;&atilde;o
 en:322 Select a presentation to open
 fr:322 Slectionner une pr&eacute;sentation &agrave; ouvrir
+de:322 Zu &ouml;ffnende Pr&auml;sentation ausw&auml;hlen
 pt:322 Escolha uma apresenta&ccedil;&atilde;o para abrir
 en:323 ] - Recording Presentation
 fr:323 ] - Enregistrement d'une pr&eacute;sentation
+de:323 ] - Pr&auml;sentation wird aufgezeichnet
+# or, somewhat in radio broadcasting lingo,
+# de:323 ] - Aufzeichnung l&auml;uft
 pt:323 ] - Gravando Apresenta&ccedil;&atilde;o
 en:324 Res@tart
 fr:324 Re@d&eacute;marrage
@@ -2310,35 +2323,36 @@ de:326 Uuml;bersetzung des regul@&auml;ren Ausdrucks (Phase 2) fehlgeschlagen.
 pt:326 Compila&ccedil;&atilde;o (segundo est&aacute;gio) de express&atilde;o regular falhou.
 en:327 Regular expression search failed.
 fr:327 Expression r&eacute;guli&egrave;re non trouv&eacute;e
-de: 327 Suche nach regul&auml;rem Ausdruck fehlgeschlagen.
+de:327 Suche nach regul&auml;rem Ausdruck fehlgeschlagen.
 pt:327 Busca de express&atilde;o regular falhou.
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
-de: 328 Kein Treffer gefunden.
+de:328 Kein Treffer gefunden.
 pt:328 Nada foi encontrado.
 en:329 Open @Terrain...
-fr:329 Ouverture d'un @Terrain
-pt:329 Abrir @Terreno
+fr:329 Ouverture d'un @Terrain...
+de:329 Gel&auml;nde@modell &ouml;ffnen...
+pt:329 Abrir @Terreno...
 en:330 So@lid Surface
 fr:330 Surface So@lide
-de: 330 @Durchgezogene Oberfl&auml;che
+de:330 @Durchgezogene Oberfl&auml;che
 pt:330 Superf&iacute;cie S&oacute;@lida
 #
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s
-de: 500 Bewegt um (%3.2f,%3.2f,%3.2f): %s
+de:500 Verschoben um (%3.2f,%3.2f,%3.2f): %s
 pt:500 Movido por (%3.2f,%3.2f,%3.2f): %s
 en:501 Added: %s
 fr:501 Ajout de: %s
-de: 501 Hinzugef&uuml;gt: %s
+de:501 Hinzugef&uuml;gt: %s
 pt:501 Acrescentado: %s
 en:502 Deleted: %s
 fr:502 Effac&eacute;: %s
-de: 502 Entfernt: %s
+de:502 Entfernt: %s
 pt:502 Removido: %s
 en:503 Ignoring:
-de: 503 Ignoriere:
+de:503 Ignoriere:
 fr:503 Ignor&eacute;:
 pt:503 Ignorando:
 #
@@ -2346,12 +2360,12 @@ pt:503 Ignorando:
 #
 en:1000 Can't open message file `%s' using path `%s'
 fr:1000 Impossible d'ouvrir le fichier `%s' en utilisant le chemin `%s'
-de:1000 Kann Meldungsdatei %s' im Pfad %s' nicht &ouml;ffnen
+de:1000 Kann Meldungsdatei `%s' im Pfad `%s' nicht &ouml;ffnen
 pt:1000 Imposs&iacute;vel abrir arquivo de mansagens `%s' usando rota `%s'
 #
 en:1001 Problem with message file `%s'
 fr:1001 Probl&egrave;me avec le fichier de messages `%s'
-de:1001 Problem mit Meldungsdatei %s'
+de:1001 Problem mit Meldungsdatei `%s'
 pt:1001 Problemas com arquivo de mensagens `%s'
 #
 en:1002 I don't understand this message file version
