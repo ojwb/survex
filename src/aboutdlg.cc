@@ -1,9 +1,10 @@
 //
-//  aboutdlg.cxx
+//  aboutdlg.cc
 //
 //  About box handling for Aven.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
+//  Copyright (C) 2001,2002 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,13 +21,13 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "aboutdlg.h"
-#include "aven.h"
-#include "message.h"
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "aboutdlg.h"
+#include "aven.h"
+#include "message.h"
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
 END_EVENT_TABLE()

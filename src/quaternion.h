@@ -27,7 +27,9 @@
 #include "aventypes.h"
 
 #include <math.h>
+#ifdef AVENPRES
 #include <stdio.h>
+#endif
 
 class Quaternion {
     Double w;
@@ -135,7 +137,7 @@ public:
 	q.w = d * qa.w;
 	q.v = d * qa.v;
 
-	//	q.normalise();
+	//q.normalise();
 
 	return q;
     }

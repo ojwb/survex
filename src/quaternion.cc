@@ -20,25 +20,25 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "matrix4.h"
 #include "quaternion.h"
 
-#include <stdio.h>
 #include <math.h>
 #include <assert.h>
 
 void Quaternion::setFromSphericalPolars(double pan, double tilt, double rotation_amount)
 {
     double sin_rot = sin(rotation_amount);
-    double sin_tilt = sin(tilt);
 
     double vx = sin_rot * cos(tilt) * sin(pan);
-    double vy = sin_rot * sin_tilt;
-    double vz = sin_rot * sin_tilt * cos(pan);
+    double vy = sin_rot * sin(tilt);
+    double vz = vy * cos(pan);
 
     w = cos(rotation_amount);
-    //    printf("w is %.2g\n", w);
-    //    printf("v is [%.02g %.02g %.02g]\n", v.getX(), v.getY(), v.getZ());
 
     v.set(vx, vy, vz);
     normalise();
@@ -54,7 +54,7 @@ void Quaternion::setFromVectorAndAngle(Vector3 vec, double rotation_amount)
     normalise();
 }
 
-/*
+#if 0
 void Quaternion::axisAndAngleForInterpolation(const Matrix4& m1, const Matrix4& m2,
 					      Vector3& axis, double& angle)
 {
@@ -66,4 +66,4 @@ void Quaternion::axisAndAngleForInterpolation(const Matrix4& m1, const Matrix4& 
 
     m.toAxisAndAngle(axis, angle);
 }
-*/
+#endif

@@ -21,6 +21,7 @@
 #include <config.h>
 #endif
 
+#include <limits.h>
 #include <time.h>
 
 #include "cavern.h"
@@ -164,12 +165,8 @@ extern CDECL int
 main(int argc, char **argv)
 {
    int d;
-   static clock_t tmCPUStart;
-   static time_t tmUserStart;
-   static double tmCPU, tmUser;
-
-   tmUserStart = time(NULL);
-   tmCPUStart = clock();
+   time_t tmUserStart = time(NULL);
+   clock_t tmCPUStart = clock();
    init_screen();
 
    msg_init(argv);
@@ -358,9 +355,19 @@ main(int argc, char **argv)
    if (!fQuiet) {
       /* clock() typically wraps after 72 minutes, but there doesn't seem
        * to be a better way.  Still 72 minutes means some cave!
+       * We detect if clock() could have wrapped and suppress CPU time
+       * printing in this case.
        */
-      tmCPU = (clock_t)(clock() - tmCPUStart) / (double)CLOCKS_PER_SEC;
-      tmUser = difftime(time(NULL), tmUserStart);
+      double tmUser = difftime(time(NULL), tmUserStart);
+      double tmCPU;
+      clock_t now = clock();
+#define CLOCK_T_WRAP (1ul << (CHAR_BIT * sizeof(clock_t)))
+      tmCPU = (now - (unsigned long)tmCPUStart)
+	 / (double)CLOCKS_PER_SEC;
+      if (now < tmCPUStart)
+	 tmCPU += CLOCK_T_WRAP / (double)CLOCKS_PER_SEC;
+      if (tmUser >= tmCPU + CLOCK_T_WRAP / (double)CLOCKS_PER_SEC)
+	 tmCPU = 0;
 
       /* tmUser is integer, tmCPU not - equivalent to (ceil(tmCPU) >= tmUser) */
       if (tmCPU + 1 > tmUser) {
