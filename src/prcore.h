@@ -27,18 +27,25 @@ typedef struct {
    long x_min, y_min, x_max, y_max;
 } border;
 
-#define PR_FONT_DEFAULT 0
-#define PR_FONT_LABELS 1
+#define PR_FONT_DEFAULT	0
+#define PR_FONT_LABELS	1
 
-#define PR_FLAG_NOFILEOUTPUT 1
-#define PR_FLAG_NOINI 2
-#define PR_FLAG_CALIBRATE 4
+#define PR_COLOUR_TEXT		0
+#define PR_COLOUR_LABELS	1
+#define PR_COLOUR_FRAME		2
+#define PR_COLOUR_LEG		3
+#define PR_COLOUR_CROSS		4
+#define PR_COLOUR_SURFACE_LEG	5
+
+#define PR_FLAG_NOFILEOUTPUT	1
+#define PR_FLAG_NOINI		2
+#define PR_FLAG_CALIBRATE	4
 
 typedef struct {
    int flags;
    const char * (*Name)(void); /* returns "Widgetware printer" or whatever */
-   /* A NULL fn ptr is Ok for Init, Charset, Pre, NewPage, ShowPage,
-    & Post, Quit */
+   /* A NULL fn ptr is Ok for Init, Charset, Pre, NewPage, SetFont, SetColour,
+    * ShowPage, Post, Quit */
    /* if Pre==NULL, it "returns" 1 */
    char * (*Init)(FILE **fh_list, const char *pth, const char *out_fnm,
 		double *pscX, double *pscY, bool fCalibrate);
@@ -49,6 +56,7 @@ typedef struct {
    void (*DrawTo)(long x, long y);
    void (*DrawCross)(long x, long y);
    void (*SetFont)(int font); /* takes PR_FONT_xxx values */
+   void (*SetColour)(int colour); /* takes PR_COLOUR values */
    void (*WriteString)(const char *s);
    void (*DrawCircle)(long x, long y, long r);
    void (*ShowPage)(const char *szPageDetails);
@@ -61,6 +69,7 @@ extern device printer;
 void drawticks(border clip, int tick_size, int x, int y);
 
 int as_int(const char *v, char *p, int min_val, int max_val);
+unsigned long as_colour(const char *v, char *p);
 int as_bool(const char *v, char *p);
 double as_double(const char *v, char *p, double min_val, double max_val);
 int as_escstring(const char *v, char *s);

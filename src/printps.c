@@ -80,6 +80,7 @@ device printer = {
    hpgl_DrawTo,
    hpgl_DrawCross,
    NULL, /* SetFont */
+   NULL, /* SetColour */
    hpgl_WriteString,
    NULL, /* hpgl_DrawCircle */
    hpgl_ShowPage,
@@ -106,6 +107,8 @@ static const char *fontname, *fontname_labels;
 # define PS_TS 9 /* size of alignment 'ticks' on multipage printouts */
 # define PS_CROSS_SIZE 2 /* length of cross arms (in points!) */
 
+static unsigned long colour[6];
+
 static const char *ps_Name(void);
 static int ps_Pre(int pagesToPrint, const char *title);
 static void ps_NewPage(int pg, int pass, int pagesX, int pagesY);
@@ -116,6 +119,7 @@ static void ps_MoveTo(long x, long y);
 static void ps_DrawTo(long x, long y);
 static void ps_DrawCross(long x, long y);
 static void ps_SetFont(int fontcode);
+static void ps_SetColour(int colourcode);
 static void ps_WriteString(const char *s);
 static void ps_DrawCircle(long x, long y, long r);
 static void ps_ShowPage(const char *szPageDetails);
@@ -133,6 +137,7 @@ device printer = {
    ps_DrawTo,
    ps_DrawCross,
    ps_SetFont,
+   ps_SetColour,
    ps_WriteString,
    ps_DrawCircle,
    ps_ShowPage,
@@ -273,8 +278,7 @@ static char current_font_code = 'F';
 static void
 ps_SetFont(int fontcode)
 {
-   if (fontcode == current_font_code) return;
-
+   char old = current_font_code;
    switch (fontcode) {
     case PR_FONT_DEFAULT:
       current_font_code = 'F';
@@ -285,8 +289,20 @@ ps_SetFont(int fontcode)
     default:
       BUG("unknown font code");
    }
-   prio_putc(current_font_code);
-   prio_putc('\n');
+   if (current_font_code != old) {
+      prio_putc(current_font_code);
+      prio_putc(' ');
+   }
+}
+
+static int current_colourcode = -1;
+static void
+ps_SetColour(int colourcode)
+{
+   if (colourcode != current_colourcode) {
+      current_colourcode = colourcode;
+      prio_printf("C%d ", colourcode);
+   }
 }
 
 static void
@@ -552,6 +568,19 @@ ps_Pre(int pagesToPrint, const char *title)
 	       (int)fontsize_labels);
    prio_print("F\n");
 
+   /* C<digit> changes colour */
+   /* FIXME: read from ini */
+   {
+      int i;
+      for (i = 0; i < sizeof(colour) / sizeof(colour[0]); ++i) {
+	 prio_printf("/C%d {stroke %.3f %.3f %.3f setrgbcolor} def\n", i,
+		     (double)(colour[i] & 0xff0000) / 0xff0000,
+		     (double)(colour[i] & 0xff00) / 0xff00,
+		     (double)(colour[i] & 0xff) / 0xff);
+      }
+   }
+   prio_print("C0\n");
+
    /* Postscript definition for drawing a cross */
 #define CS PS_CROSS_SIZE
 #define CS2 (2*PS_CROSS_SIZE)
@@ -625,6 +654,7 @@ ps_NewPage(int pg, int pass, int pagesX, int pagesY)
 	       /*0l,0l, 0l,*/ ypPageDepth,
 	       xpPageWidth, ypPageDepth, xpPageWidth /*,0l*/ );
 #endif
+   current_colourcode = -1;
 #endif
 
 #ifdef HPGL
@@ -690,6 +720,12 @@ ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
       "line_width",
       "font_labels",
       "font_size_labels",
+      "colour_text",
+      "colour_labels",
+      "colour_frame",
+      "colour_legs",
+      "colour_crosses",
+      "colour_surface_legs",
 #endif
       NULL
    };
@@ -741,6 +777,12 @@ ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    if (vals[10]) fontname_labels = vals[10];
    fontsize_labels = fontsize;
    if (vals[11]) fontsize_labels = as_int(vars[11], vals[11], 1, INT_MAX);
+   {
+      int i;
+      for (i = 0; i < sizeof(colour) / sizeof(colour[0]); ++i) {
+	 if (vals[12 + i]) colour[i] = as_colour(vars[12 + i], vals[12 + i]);
+      }
+   }
 
    osfree(vals);
 

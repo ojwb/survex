@@ -11,6 +11,8 @@ Changes in 1.0.11:
 
 * cad3d: write dummy passage dimensions to .plt files to avoid Compass bug.
 
+* printwin/printps: now support coloured printouts.
+
 * print*: fixed to work correctly with PLT files.
 
 * extend: fixed to work correctly with PLT files.

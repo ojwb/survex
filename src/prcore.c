@@ -167,6 +167,8 @@ draw_info_box(double num, double denom)
    int boxwidth = 60;
    int boxheight = 30;
 
+   if (pr->SetColour) pr->SetColour(PR_COLOUR_FRAME);
+
    if (view != EXTELEV) {
       boxwidth = 100;
       boxheight = 40;
@@ -190,9 +192,6 @@ draw_info_box(double num, double denom)
     case PLAN: {
       long ax, ay, bx, by, cx, cy, dx, dy;
       int c;
-
-      MOVEMM(62, 36);
-      pr->WriteString(msg(/*North*/115));
 
       ax = (long)((80 - 15 * sin(rad(000.0 + rot))) * scX);
       ay = (long)((20 + 15 * cos(rad(000.0 + rot))) * scY);
@@ -221,14 +220,15 @@ draw_info_box(double num, double denom)
 	    DRAWMM(80.0 + RADIUS * sin(rad(c)), 20.0 + RADIUS * cos(rad(c)));
       }
 
+      if (pr->SetColour) pr->SetColour(PR_COLOUR_TEXT);
+      MOVEMM(62, 36);
+      pr->WriteString(msg(/*North*/115));
+
       MOVEMM(5, 23);
       pr->WriteString(msg(/*Plan view*/117));
       break;
     }
     case ELEV: case TILT:
-      MOVEMM(62, 33);
-      pr->WriteString(msg(/*Elevation on*/116));
-
       MOVEMM(65, 15); DRAWMM(70, 12); DRAWMM(68, 15); DRAWMM(70, 18);
 
       DRAWMM(65, 15); DRAWMM(95, 15);
@@ -236,6 +236,10 @@ draw_info_box(double num, double denom)
       DRAWMM(90, 18); DRAWMM(92, 15); DRAWMM(90, 12); DRAWMM(95, 15);
 
       MOVEMM(80, 13); DRAWMM(80, 17);
+
+      if (pr->SetColour) pr->SetColour(PR_COLOUR_TEXT);
+      MOVEMM(62, 33);
+      pr->WriteString(msg(/*Elevation on*/116));
 
       sprintf(szTmp, "%03d"DEG, (rot + 270) % 360);
       MOVEMM(65, 20); pr->WriteString(szTmp);
@@ -246,6 +250,7 @@ draw_info_box(double num, double denom)
       pr->WriteString(msg(/*Elevation*/118));
       break;
     case EXTELEV:
+      if (pr->SetColour) pr->SetColour(PR_COLOUR_TEXT);
       MOVEMM(5, 13);
       pr->WriteString(msg(/*Extended elevation*/191));
       break;
@@ -326,17 +331,20 @@ draw_scale_bar(double x, double y, double MaxLength, double scale)
    p = buf + strlen(buf);
    sprintf(p, " (%.0f%s)", (double)pow(10.0, (double)E), u_buf);
 
+   if (pr->SetColour) pr->SetColour(PR_COLOUR_TEXT);
    MOVEMM(x, y + 4); pr->WriteString(buf);
 
    /* Work out how many divisions there will be */
    n = (int)(MaxLength / d);
 
+   if (pr->SetColour) pr->SetColour(PR_COLOUR_FRAME);
    /* Draw top and bottom sides of scale bar */
    MOVEMM(x, y + 3); DRAWMM(x + n * d, y + 3);
    MOVEMM(x + n * d, y); DRAWMM(x, y);
 
    /* Draw divisions and label them */
    for (c = 0; c <= n; c++) {
+      if (pr->SetColour) pr->SetColour(PR_COLOUR_FRAME);
       MOVEMM(x + c * d, y); DRAWMM(x + c * d, y + 3);
 #if 0
       /* Gives a "zebra crossing" scale bar if we've a FillBox function */
@@ -347,6 +355,7 @@ draw_scale_bar(double x, double y, double MaxLength, double scale)
        * implementations return char* (ptr to end of written string I think) */
       sprintf(buf, "%d", c * Step);
       l = strlen(buf);
+      if (pr->SetColour) pr->SetColour(PR_COLOUR_TEXT);
       MOVEMM(x + c * d - l, y - 4);
       pr->WriteString(buf);
    }
@@ -451,13 +460,20 @@ read_in_data(void)
        case img_BAD:
 	 return 0;
        case img_LINE:
-	 /* if we're plotting surface legs or this isn't a surface leg */
-	 if (fSurface || !(pimg->flags & img_FLAG_SURFACE)) {
+	 /* if we're plotting underground legs and this is one or
+	  *    we're plotting surface legs and this is one
+	  */
+	 if ((fShots && !(pimg->flags & img_FLAG_SURFACE)) ||
+	     (fSurface && (pimg->flags & img_FLAG_SURFACE))) {
 	    if (fMove) {
 	       fMove = fFalse;
 	       stack(img_MOVE, NULL, &p_move);
 	    }
-	    stack(img_LINE, NULL, &p);
+	    if (pimg->flags & img_FLAG_SURFACE) {
+	       stack(999, NULL, &p);
+	    } else {
+	       stack(img_LINE, NULL, &p);
+	    }
 	    break;
 	 }
 	 /* FALLTHRU */
@@ -466,8 +482,10 @@ read_in_data(void)
 	 fMove = fTrue;
 	 break;
        case img_LABEL:
-	 if (fSurface || (pimg->flags & img_SFLAG_UNDERGROUND))
-	    stack(img_LABEL, pimg->label, &p);
+	 if (fLabels || fCrosses) {
+	    if (fSurface || (pimg->flags & img_SFLAG_UNDERGROUND))
+	       stack(img_LABEL, pimg->label, &p);
+	 }
 	 break;
       }
    } while (result != img_STOP);
@@ -1067,6 +1085,7 @@ main(int argc, char **argv)
 	 li *pli;
 	 long x, y;
 	 int pending_move = 0;
+	 int last_leg_tag = 0;
 
 	 x = y = INT_MAX;
 
@@ -1082,53 +1101,62 @@ main(int argc, char **argv)
 	 for (pli = pliHead; pli; pli = pli->pliNext) {
 	    if (pass == -1 && !fBlankPage) break;
 	    switch (pli->tag) {
-	     case img_MOVE:
-	       if (fShots) {
-		  long xnew, ynew;
-		  xnew = (long)((pli->to.x * Sc + xOrg) * scX);
-		  ynew = (long)((pli->to.y * Sc + yOrg) * scY);
+	     case img_MOVE: {
+	       long xnew, ynew;
+	       xnew = (long)((pli->to.x * Sc + xOrg) * scX);
+	       ynew = (long)((pli->to.y * Sc + yOrg) * scY);
 
-		  /* avoid superfluous moves */
-		  if (xnew != x || ynew != y) {
-		     x = xnew;
-		     y = ynew;
-		     pending_move = 1;
-		  }
-	       }
-	       break;
-	     case img_LINE:
-	       if (fShots) {
-		  long xnew, ynew;
-		  xnew = (long)((pli->to.x * Sc + xOrg) * scX);
-		  ynew = (long)((pli->to.y * Sc + yOrg) * scY);
-
-		  if (pending_move) {
-		     pr->MoveTo(x, y);
-		  }
-
-		  /* avoid drawing superfluous lines */
-		  if (pending_move || xnew != x || ynew != y) {
-		     pending_move = 0;
-		     x = xnew;
-		     y = ynew;
-		     pr->DrawTo(x, y);
-		  }
-	       }
-	       break;
-	     case img_LABEL:
-	       if (fCrosses || fLabels) {
-		  long xnew, ynew;
-		  xnew = (long)((pli->to.x * Sc + xOrg) * scX);
-		  ynew = (long)((pli->to.y * Sc + yOrg) * scY);
-		  if (fCrosses) pr->DrawCross(xnew, ynew);
-		  if (fLabels) {
-		     pr->MoveTo(xnew, ynew);
-		     pr->WriteString(pli->label);
-		  }
-		  /* Flag we need another MoveTo if (x,y) are to be reused. */
+	       /* avoid superfluous moves */
+	       if (xnew != x || ynew != y) {
+		  x = xnew;
+		  y = ynew;
 		  pending_move = 1;
 	       }
 	       break;
+	     }
+	     case img_LINE: case 999: {
+	       long xnew, ynew;
+	       xnew = (long)((pli->to.x * Sc + xOrg) * scX);
+	       ynew = (long)((pli->to.y * Sc + yOrg) * scY);
+
+	       if (pr->SetColour) {
+		  pr->SetColour(pli->tag == 999 ?
+				PR_COLOUR_SURFACE_LEG : PR_COLOUR_LEG);
+	       }
+
+	       if (pli->tag != last_leg_tag) pending_move = 1;
+
+	       if (pending_move) pr->MoveTo(x, y);
+
+	       /* avoid drawing superfluous lines */
+	       if (pending_move || xnew != x || ynew != y) {
+		  pending_move = 0;
+		  last_leg_tag = pli->tag;
+		  x = xnew;
+		  y = ynew;
+		  pr->DrawTo(x, y);
+	       }
+	       break;
+	     }
+	     case img_LABEL: {
+	       /* Only get here if (fCrosses || fLabels) - if neither
+		* is true, then img_LABEL doesn't get stacked */
+	       long xnew, ynew;
+	       xnew = (long)((pli->to.x * Sc + xOrg) * scX);
+	       ynew = (long)((pli->to.y * Sc + yOrg) * scY);
+	       if (fCrosses) {
+		  if (pr->SetColour) pr->SetColour(PR_COLOUR_CROSS);
+		  pr->DrawCross(xnew, ynew);
+	       }
+	       if (fLabels) {
+		  if (pr->SetColour) pr->SetColour(PR_COLOUR_LABELS);
+		  pr->MoveTo(xnew, ynew);
+		  pr->WriteString(pli->label);
+	       }
+	       /* Flag we need another MoveTo if (x,y) are to be reused. */
+	       pending_move = 1;
+	       break;
+	     }
 	    }
 	 }
 
@@ -1142,6 +1170,7 @@ main(int argc, char **argv)
 		  sprintf(szTmp, msg167, title, (int)page, pagesX * pagesY,
 			  datestamp);
 	       }
+	       if (pr->SetColour) pr->SetColour(PR_COLOUR_TEXT);
 	       pr->ShowPage(szTmp);
 	    }
 	 }
@@ -1167,6 +1196,7 @@ drawticks(border clip, int tsize, int x, int y)
    int s = tsize * 4;
    int o = s / 8;
    bool fAtCorner = fFalse;
+   if (pr->SetColour) pr->SetColour(PR_COLOUR_FRAME);
    if (x == 0 && fBorder) {
       /* solid left border */
       pr->MoveTo(clip.x_min, clip.y_min);
@@ -1303,6 +1333,78 @@ as_int(const char *v, char *p, int min_val, int max_val)
       setting_bad_value(v, p);
    osfree(p);
    return (int)val;
+}
+
+#define hex(C) (isdigit(C) ? ((C) - '0') : (tolower((C)) - 'a' + 10))
+unsigned long
+as_colour(const char *v, char *p)
+{
+   unsigned long val = 0xffffffff;
+   char *pEnd;
+   if (!p) setting_missing(v);
+   switch (tolower(*p)) {
+      case '#': {
+	 char *q = p + 1;
+	 while (isxdigit(*q)) q++;
+	 if (q - p == 4) {
+	    val = hex(p[1]) * 0x110000;
+	    val |= hex(p[2]) * 0x1100;
+	    val |= hex(p[3]) * 0x11;
+	 } else if (q - p == 7) {
+	    val = ((hex(p[1]) << 4) | hex(p[2])) << 16;
+	    val |= ((hex(p[3]) << 4) | hex(p[4])) << 8;
+	    val |= (hex(p[5]) << 4) | hex(p[6]);
+	 }
+	 break;
+      }
+      case 'a':
+	 if (strcasecmp(p, "aqua") == 0) val = 0x00fffful;
+	 break;
+      case 'b':
+	 if (strcasecmp(p, "black") == 0) val = 0x000000ul;
+	 else if (strcasecmp(p, "blue") == 0) val = 0x0000fful;
+	 break;
+      case 'f':
+	 if (strcasecmp(p, "fuchsia") == 0) val = 0xff00fful;
+	 break;
+      case 'g':
+	 if (strcasecmp(p, "gray") == 0) val = 0x808080ul;
+	 else if (strcasecmp(p, "green") == 0) val = 0x008000ul;
+	 break;
+      case 'l':
+	 if (strcasecmp(p, "lime") == 0) val = 0x00ff00ul;
+	 break;
+      case 'm':
+	 if (strcasecmp(p, "maroon") == 0) val = 0x800000ul;
+	 break;
+      case 'n':
+	 if (strcasecmp(p, "navy") == 0) val = 0x000080ul;
+	 break;
+      case 'o':
+	 if (strcasecmp(p, "olive") == 0) val = 0x808000ul;
+	 break;
+      case 'p':
+	 if (strcasecmp(p, "purple") == 0) val = 0x800080ul;
+	 break;
+      case 'r':
+	 if (strcasecmp(p, "red") == 0) val = 0xff0000ul;
+	 break;
+      case 's':
+	 if (strcasecmp(p, "silver") == 0) val = 0xc0c0c0ul;
+	 break;
+      case 't':
+	 if (strcasecmp(p, "teal") == 0) val = 0x008080ul;
+	 break;
+      case 'w':
+	 if (strcasecmp(p, "white") == 0) val = 0xfffffful;
+	 break;
+      case 'y':
+	 if (strcasecmp(p, "yellow") == 0) val = 0xffff00ul;
+	 break;
+   }
+   if (val == 0xffffffff) setting_bad_value(v, p);
+   osfree(p);
+   return val;
 }
 
 int

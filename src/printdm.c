@@ -61,6 +61,10 @@ static void xbm_ShowPage(const char *szPageDetails);
 
 static int xbm_page_no = 0;
 
+static char xbm_char = '0';
+
+static unsinged long colour[6];
+
 /*device xbm = {*/
 device printer = {
    0,
@@ -73,6 +77,7 @@ device printer = {
    DrawTo,
    DrawCross,
    SetFont,
+   xbm_SetColour,
    WriteString,
    NULL, /* DrawCircle */
    xbm_ShowPage,
@@ -100,7 +105,8 @@ device printer = {
    MoveTo,
    DrawTo,
    DrawCross,
-   NULL, /* SetFont */
+   SetFont,
+   NULL, /* SetColour */
    WriteString,
    NULL, /* DrawCircle */
    pcl_ShowPage,
@@ -127,7 +133,8 @@ device printer = {
    MoveTo,
    DrawTo,
    DrawCross,
-   NULL, /* SetFont */
+   SetFont,
+   NULL, /* SetColour */
    WriteString,
    NULL, /* DrawCircle */
    dm_ShowPage,
@@ -190,7 +197,7 @@ PlotDotReal(long x, long y)
 #else
    if (x < clip.x_min || x > clip.x_max || y < clip.y_min || y > clip.y_max)
       return;
-   bitmap[y - clip.y_min][x - clip.x_min] = '*';
+   bitmap[y - clip.y_min][x - clip.x_min] = xbm_char;
 #endif
 }
 
@@ -271,6 +278,14 @@ dm_NewPage(int pg, int pass, int pagesX, int pagesY)
 #endif
 }
 
+#ifdef XBM
+static void
+xbm_SetColour(int colourcode)
+{
+   xbm_char = (char)('0' + colourcode);
+}
+#endif
+
 static void
 #ifdef XBM
 xbm_ShowPage(const char *szPageDetails)
@@ -282,17 +297,22 @@ dm_ShowPage(const char *szPageDetails)
 {
    int y;
 #ifdef XBM
-   if (passStore == 0)
+   if (passStore == 0) {
+      int i;
       prio_printf("/* XPM */\n"
 		  "/* %s */\n"
 		  "static char *page%d[] = {\n"
 		  "/* width height num_colors chars_per_pixel */\n"
-		  "\"%d %d 2 1\",\n"
+		  "\"%d %d %d 1\",\n"
 		  "/* colors */\n"
-		  "\". c #ffffff\",\n"
-		  "\"* c #000000\",\n"
-		  "/* pixels */\n",
-		  szPageDetails, xbm_page_no, xpPageWidth, ypPageDepth);
+		  "\". c #ffffff\",\n",
+		  szPageDetails, xbm_page_no, xpPageWidth, ypPageDepth,
+		  int(sizeof(colour) / sizeof(colour[0]) + 1));
+      for (i = 0; i < sizeof(colour) / sizeof(colour[0]); ++i) {
+	 prio_printf("\"%d c #%06x\",\n", i, colour[i]);
+      }
+      prio_print("/* pixels */\n");
+   }
 
    for (y = ypPageDepth - 1; y >= 0; y--) {
       prio_putc('\"');
@@ -424,6 +444,12 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 #ifdef XBM
       "width",
       "height",
+      "colour_text",
+      "colour_labels",
+      "colour_frame",
+      "colour_legs",
+      "colour_crosses",
+      "colour_surface_legs",
 #elif defined(PCL)
       "dpi",
       "mm_across_page",
@@ -483,6 +509,12 @@ dm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    PaperWidth = xpPageWidth;
    PaperDepth = ypPageDepth;
    *pscX = *pscY = 1;
+   {
+      int i;
+      for (i = 0; i < 5; ++i) {
+	 if (vals[7 + i]) colour[i] = as_colour(vars[7 + i], vals[7 + i]);
+      }
+   }
    osfree(vals);
 #elif defined(PCL)
    dpi = as_int(vars[5], vals[5], 1, INT_MAX);

@@ -74,6 +74,7 @@ device printer = {
    win_DrawTo,
    win_DrawCross,
    win_SetFont,
+   win_SetColour,
    win_WriteString,
    win_DrawCircle,
    win_ShowPage,
@@ -84,6 +85,10 @@ device printer = {
 static HDC pd; /* printer context */
 
 static TEXTMETRIC *tm, tm_labels, tm_default; /* font info */
+
+static COLORREF colour_leg, colour_surface_leg, colour_cross, colour_frame;
+static COLORREF colour_text, colour_labels;
+static HPEN pen_leg, pen_surface_leg, pen_crosses, pen_frame;
 
 static double scX, scY;
 
@@ -228,6 +233,33 @@ win_SetFont(int fontcode)
 }
 
 static void
+win_SetColour(int colourcode)
+{
+   switch (colourcode) {
+      case PR_COLOUR_TEXT:
+	 SetTextColour(colour_text);
+	 break;
+      case PR_COLOUR_LABELS:
+	 SetTextColour(colour_labels);
+	 break;
+      case PR_COLOUR_FRAME:
+	 SelectObject(pd, pen_frame);
+	 break;
+      case PR_COLOUR_LEG:
+	 SelectObject(pd, pen_leg);
+	 break;
+      case PR_COLOUR_CROSS:
+	 SelectObject(pd, pen_cross);
+	 break;
+      case PR_COLOUR_SURFACE_LEG:
+	 SelectObject(pd, pen_surface_leg);
+	 break;
+      default:
+	 BUG("unknown colour code");
+   }
+}
+
+static void
 win_WriteString(const char *s)
 {
    if (cur_pass != -1) {
@@ -286,6 +318,10 @@ win_Pre(int pagesToPrint, const char *title)
 			     ANSI_CHARSET, OUT_DEFAULT_PRECIS,
 			     CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
 			     FF_DONTCARE | DEFAULT_PITCH, "Arial");
+   pen_leg = CreatePen(PS_SOLID, 0, colour_leg);
+   pen_surface_leg = CreatePen(PS_SOLID, 0, colour_surface_leg);
+   pen_cross = CreatePen(PS_SOLID, 0, colour_cross);
+   pen_frame = CreatePen(PS_SOLID, 0, colour_frame);
    font_old = SelectObject(pd, font_labels);
    GetTextMetrics(pd, &tm_labels);
    SelectObject(pd, font_default);
@@ -327,6 +363,13 @@ win_ShowPage(const char *szPageDetails)
    EndPage(pd);
 }
 
+static COLORREF
+to_rgb(const char *var, char *val)
+{
+   unsigned long rgb = as_colour(var, val);
+   return RGB((rgb & 0xff0000) >> 16, (rgb & 0xff00) >> 8, rgb & 0xff);
+}
+
 /* Initialise printer routines */
 static char *
 win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
@@ -337,6 +380,12 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    static const char *vars[] = {
       "like",
       "font_size_labels",
+      "colour_text",
+      "colour_labels",
+      "colour_frame",
+      "colour_legs",
+      "colour_crosses",
+      "colour_surface_legs",
       NULL
    };
    char **vals;
@@ -349,6 +398,12 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 
    fontsize_labels = as_int(vars[1], vals[1], 1, INT_MAX);
    fontsize = 10;
+
+   colour_text = to_rgb(vars[2], vals[2]);
+   colour_labels = to_rgb(vars[3], vals[3]);
+   colour_frame = to_rgb(vars[4], vals[4]);
+   colour_leg = to_rgb(vars[5], vals[5]);
+   colour_cross = to_rgb(vars[6], vals[6]);
 
    memset(&psd, 0, sizeof(PRINTDLGA));
    psd.lStructSize = 66;
