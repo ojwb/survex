@@ -7,7 +7,7 @@ dnl Need autoconf 2.50 or later for AC_ARG_VAR
 AC_PREREQ(2.50)
 AC_INIT(src/cavern.c)
 
-AM_INIT_AUTOMAKE(survex, 1.0.2)
+AM_INIT_AUTOMAKE(survex, 1.0.3)
 RELEASE=1
 
 AC_SUBST(RELEASE)
