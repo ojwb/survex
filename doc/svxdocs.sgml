@@ -56,8 +56,8 @@ nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in hei
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-06-12 23:39:37 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.29 2001-06-12 23:39:37 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-06-26 17:37:06 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.30 2001-06-26 17:37:06 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1183,6 +1183,34 @@ to 0.01m.</Para>
 
 </Sect2>
 
+<Sect2><Title>Cad3d</Title>
+
+<Para>
+Syntax: <command/cad3d &lt;datafile&gt;/
+</Para>
+
+<Para>Cad3d converts a <filename/.3d/ file
+into a format which can be read by a CAD or drawing package.
+Currently it can produce DXF files or Sketch files.
+<!-- FIXME: more info -->
+</Para>
+
+</Sect2>
+
+<Sect2><Title>SpeleoGen</Title>
+
+<!-- FIXME: needs syntax? think it's a GUI app actually -->
+
+<Para>This is an alternative to cad3d. It is a Windows
+(3.1/95/NT) utility which reads in &survexsuite; <filename/.3d/ data,
+LRUD passage wall data (in <filename/.cav/ format) and surface
+topography info in <filename/.csv/ format.  The results are combined,
+displayed, and saved out as a DXF file for import into CAD or Drawing
+packages.
+</Para>
+
+</Sect2>
+
 <Sect2><Title>&hto; Converters</Title>
 
 <Para>
@@ -1192,11 +1220,11 @@ format.
 </Para>
 
 <Para>
-Syntax: <command/SVX2HTO &lt;datafile&gt;/
+Syntax: <command/svx2hto &lt;datafile&gt;/
 </Para>
 
 <Para>
-HTO2SVX &lt;datafile&gt;
+<command/hto2svx &lt;datafile&gt;/
 </Para>
 
 <Para>
@@ -1204,20 +1232,6 @@ These were utilities written by Bill Purvis around about &survexsuite;
 v0.30. They have not really been kept up to date, and so will
 not deal with newer &survexsuite; commands. If anyone needs this functionality
 let us know.
-</Para>
-
-</Sect2>
-
-<Sect2><Title>SpeleoGen</Title>
-
-<!-- FIXME: needs syntax? think it's a GUI app actually -->
-
-<Para>This replaces the earlier 3D2DXF converter. It is a Windows
-(3.1/95/NT) utility which reads in &survexsuite; <filename/.3d/ data,
-LRUD passage wall data (in <filename/.cav/ format) and surface
-topography info in <filename/.csv/ format.  The results are combined,
-displayed, and saved out as a DXF file for import into CAD or Drawing
-packages.
 </Para>
 
 </Sect2>
