@@ -5,7 +5,7 @@
  *   NB The checks currently done aren't very comprehensive - more will be
  *    added if bugs require them
  *
- *   Copyright (C) 1993,1994,1996 Olly Betts
+ *   Copyright (C) 1993,1994,1996,2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,8 @@ check_fixed(void)
     * which get spotted and removed */
    node *stn;
    printf("*** Checking fixed-ness\n");
-   FOR_EACH_STN(stn, stnlist) {
+   /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
+   for (stn = stnlist; stn; stn = stn->next) {
       if (stn->status && !fixed(stn)) {
 	 printf("*** Station '");
 	 print_prefix(stn->name);
@@ -63,9 +64,10 @@ extern bool
 validate(void)
 {
    bool fOk = fTrue;
-   fOk &= validate_prefix_tree();
-   fOk &= validate_station_list();
+   if (!validate_prefix_tree()) fOk = fFalse;
+   if (!validate_station_list()) fOk = fFalse;
    if (fOk) puts("*** Data structures passed consistency checks");
+   else puts("*** Data structures FAILED consistency checks");
    return fOk;
 }
 
@@ -143,7 +145,8 @@ validate_station_list(void)
    int d, d2;
 
    ASSERT(!stnlist || !stnlist->prev);
-   FOR_EACH_STN(stn, stnlist) {
+   /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
+   for (stn = stnlist; stn; stn = stn->next) {
 #if 0
       printf("V [%p]<-[%p]->[%p] ", stn->prev, stn, stn->next); print_prefix(stn->name); putnl();
 #endif
@@ -152,6 +155,7 @@ validate_station_list(void)
       for (d = 0; d <= 2; d++) {
 	 if (stn->leg[d]) {
 	    stn2 = stn->leg[d]->l.to;
+	    ASSERT(stn2);
 #if 0
 	    if (stn->status && !stn2->status) {
 	       printf("*** Station '");
@@ -166,7 +170,8 @@ validate_station_list(void)
 	    if (stn2->leg[d2] == NULL) {
 	       /* fine iff stn is at the disconnected end of a fragment */
 	       node *s;
-	       FOR_EACH_STN(s, stnlist) if (s == stn) break;
+	       /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
+	       for (s = stnlist; s; s = s->next) if (s == stn) break;
 	       if (s) {
 		  printf("*** Station '");
 		  print_prefix(stn->name);
@@ -175,14 +180,20 @@ validate_station_list(void)
 		  printf("'\n");
 		  fOk = fFalse;
 	       }
+	    } else if (stn2->leg[d2]->l.to == NULL) {
+	       printf("*** Station '");
+	       print_prefix(stn2->name);
+	       printf("' [%p], leg %d points to NULL\n", stn2, d2);
+	       fOk = fFalse;
 	    } else if (stn2->leg[d2]->l.to!=stn) {
 	       /* fine iff stn is at the disconnected end of a fragment */
 	       node *s;
-	       FOR_EACH_STN(s, stnlist) if (s == stn) break;
+	       /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
+	       for (s = stnlist; s; s = s->next) if (s == stn) break;
 	       if (s) {
 		  printf("*** Station '");
 		  print_prefix(stn->name);
-		  printf("', leg %d reciprocates via station '", d);
+		  printf("' [%p], leg %d reciprocates via station '", stn, d);
 		  print_prefix(stn2->name);
 		  printf("' to station '");
 		  print_prefix(stn2->leg[d2]->l.to->name);
@@ -193,7 +204,7 @@ validate_station_list(void)
 		       (data_here(stn2->leg[d2]) == 0)) {
 	       printf("*** Station '");
 	       print_prefix(stn->name);
-	       printf("', leg %d reciprocates via station '", d);
+	       printf("' [%p], leg %d reciprocates via station '", stn, d);
 	       print_prefix(stn2->name);
 	       if (data_here(stn->leg[d])) 
 		  printf("' - data on both legs\n");
@@ -246,7 +257,8 @@ dump_node(node *stn)
 
    for (d = 0; d <= 2; d++) {
       if (stn->leg[d]) {
-	 printf("  leg %d -> stn [%p] ", d, stn->leg[d]->l.to);
+	 printf("  leg %d -> stn [%p] rev %d ", d, stn->leg[d]->l.to,
+		reverse_leg_dirn(stn->leg[d]));
 	 print_prefix(stn->leg[d]->l.to->name);
 	 printf("\n");
       }
@@ -259,7 +271,8 @@ dump_entire_network(void)
 {
    node *stn;
    /* FIXME: this doesn't cover removed stations - iterate prefix tree? */
-   FOR_EACH_STN(stn, stnlist) dump_node(stn);
+   /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
+   for (stn = stnlist; stn; stn = stn->next) dump_node(stn);
 }
 
 #undef dump_network 
@@ -267,5 +280,6 @@ extern void
 dump_network(void)
 {
    node *stn;
-   FOR_EACH_STN(stn, stnlist) dump_node(stn);
+   /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
+   for (stn = stnlist; stn; stn = stn->next) dump_node(stn);
 }
