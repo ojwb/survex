@@ -656,16 +656,26 @@ replace_travs(void)
 
 	    /* FIXME: equate at the start of a traverse treated specially
 	     * - what about equates at end? */	    
-	    if (nmPrev != stn3->name && stn3->name->ident[0]
-		&& !(fEquate && cLegsTrav == 0)) {
+	    if (nmPrev != stn3->name && !(fEquate && cLegsTrav == 0)) {
 	       /* (node not part of same stn) &&
-		* (not a link inside a fixed point with error estimates) &&
 		* (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
 	       if (fhErrStat && !fArtic) {
-		  fprint_prefix(fhErrStat, nmPrev);
+		  if (!nmPrev->ident[0]) {
+		     /* FIXME: not ideal */
+		     fputs("<fixed point>", fhErrStat);
+		  } else {
+		     fprint_prefix(fhErrStat, nmPrev);
+		  }
 		  fputs(fEquate ? szLinkEq : szLink, fhErrStat);
-		  if (reached_end) fprint_prefix(fhErrStat, stn3->name);
+		  if (reached_end) {
+		     if (!stn3->name->ident[0]) {
+			/* FIXME: not ideal */
+			fputs("<fixed point>", fhErrStat);
+		     } else {
+			fprint_prefix(fhErrStat, stn3->name);
+		     }
+		  }
 	       }
 #endif
 	       nmPrev = stn3->name;
