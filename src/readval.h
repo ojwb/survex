@@ -22,6 +22,10 @@ extern int root_depr_count;
 prefix *read_prefix_survey(bool fOmit, bool fAllowRoot);
 prefix *read_prefix_stn(bool fOmit, bool fAllowRoot);
 prefix *read_prefix_stn_check_implicit(bool fOmit, bool fAllowRoot);
+
 real read_numeric(bool fOmit);
+real read_numeric_or_omit(void);
+
 unsigned int read_uint(void);
+
 void read_string(char **pstr, int *plen);

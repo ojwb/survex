@@ -563,6 +563,11 @@ cmd_fix(void)
 
    x = read_numeric(fTrue);
    if (x == HUGE_REAL) {
+      /* If the end of the line isn't blank, read a number after all to
+       * get a more helpful error message */
+      if (!isEol(ch) && !isComm(ch)) x = read_numeric(fFalse);
+   }
+   if (x == HUGE_REAL) {
       if (stnOmitAlready) {
 	 if (fix_name != stnOmitAlready->name) {
 	    compile_error(/*More than one FIX command with no coordinates*/56);

@@ -308,6 +308,23 @@ read_numeric(bool fOmit)
    return 0.0; /* for brain-fried compilers */
 }
 
+/* read numeric expr or omit (return HUGE_REAL); else longjmp */
+extern real
+read_numeric_or_omit(void)
+{
+   real v = read_numeric(fTrue);
+   if (v == HUGE_REAL) {
+      if (!isOmit(ch)) {
+	 compile_error(/*Expecting numeric field*/9);
+	 showandskipline(NULL, 1);
+	 LONGJMP(file.jbSkipLine);
+	 return 0.0; /* for brain-fried compilers */
+      }
+      nextch();
+   }
+   return v;
+}
+
 extern unsigned int
 read_uint(void)
 {

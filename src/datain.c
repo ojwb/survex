@@ -713,19 +713,7 @@ data_normal(void)
        case Tape: tape = read_numeric(fFalse); break;
        case FrCount: frcount = read_numeric(fFalse); break;
        case ToCount: tocount = read_numeric(fFalse); fTopofil = fTrue; break;
-       case Comp: {
-	  comp = read_numeric(fTrue);
-	  if (comp == HUGE_REAL) {
-	     if (!isOmit(ch)) {
-		compile_error(/*Expecting numeric field*/9);
-		showandskipline(NULL, 1);
-		process_eol();
-		return 0;
-	     }
-	     nextch();
-	  }
-	  break;
-       }
+       case Comp: comp = read_numeric_or_omit(); break;
        case Clino: {
 	  clin = read_numeric(fTrue);
 	  if (clin == HUGE_REAL) {
@@ -956,18 +944,7 @@ data_diving(void)
 	  }
 	  break;
        case Tape: tape = read_numeric(fFalse); break;
-       case Comp:
-	 comp = read_numeric(fTrue);
-	 if (comp == HUGE_REAL) {
-	    if (!isOmit(ch)) {
-	       compile_error(/*Expecting numeric field*/9);
-	       showandskipline(NULL, 1);
-	       process_eol();
-	       return 0;
-	    }
-	    nextch();
-	 }
-	 break;
+       case Comp: comp = read_numeric_or_omit(); break;
        case FrDepth: frdepth = read_numeric(fFalse); break;
        case ToDepth: todepth = read_numeric(fFalse); break;
        case Depth:
