@@ -171,8 +171,8 @@ From: Olly
 
 test diving data with compass omitted (plumbed)
 
-Tests these commands:
- FLAGS SD SET
+Tests for these commands:
+ SD SET
 
 deprecate *LRUD?
 
