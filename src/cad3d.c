@@ -69,8 +69,8 @@ static const char *survey = NULL;
 static void
 dxf_header(void)
 {
-   fprintf(fh, "0\nSECTION\n");
-   fprintf(fh, "2\nHEADER\n");
+   fprintf(fh, "0\nSECTION\n"
+	       "2\nHEADER\n");
    fprintf(fh, "9\n$EXTMIN\n"); /* lower left corner of drawing */
    fprintf(fh, "10\n%#-.6f\n", min_x); /* x */
    fprintf(fh, "20\n%#-.6f\n", min_y); /* y */
@@ -83,10 +83,30 @@ dxf_header(void)
    fprintf(fh, "9\n$PDSIZE\n40\n%6.2f\n", marker_size); /* marker size */
    fprintf(fh, "0\nENDSEC\n");
 
-   fprintf(fh, "0\nSECTION\n");
-   fprintf(fh, "2\nTABLES\n");
-   fprintf(fh, "0\nTABLE\n");
-   fprintf(fh, "2\nLAYER\n");
+   fprintf(fh, "0\nSECTION\n"
+	       "2\nTABLES\n");
+   fprintf(fh, "0\nTABLE\n" /* Define CONTINUOUS and DASHED line types. */
+	       "2\nLTYPE\n"
+	       "70\n10\n"
+	       "0\nLTYPE\n"
+	       "2\nCONTINUOUS\n"
+	       "70\n64\n"
+	       "3\nContinuous\n"
+	       "72\n65\n"
+	       "73\n0\n"
+	       "40\n0.0\n"
+	       "0\nLTYPE\n"
+	       "2\nDASHED\n"
+	       "70\n64\n"
+	       "3\nDashed\n"
+	       "72\n65\n"
+	       "73\n2\n"
+	       "40\n2.5\n"
+	       "49\n1.25\n"
+	       "49\n-1.25\n"
+	       "0\nENDTAB\n");
+   fprintf(fh, "0\nTABLE\n"
+	       "2\nLAYER\n");
    fprintf(fh, "70\n10\n"); /* max # off layers in this DXF file : 10 */
    /* First Layer: CentreLine */
    fprintf(fh, "0\nLAYER\n2\nCentreLine\n");
@@ -125,11 +145,11 @@ dxf_header(void)
       fprintf(fh, "62\n7\n"); /* color: kept the same used by SpeleoGen */
       fprintf(fh, "6\nCONTINUOUS\n"); /* linetype */
    }
-   fprintf(fh, "0\nENDTAB\n");
-   fprintf(fh, "0\nENDSEC\n");
+   fprintf(fh, "0\nENDTAB\n"
+	       "0\nENDSEC\n");
 
-   fprintf(fh, "0\nSECTION\n");
-   fprintf(fh, "2\nENTITIES\n");
+   fprintf(fh, "0\nSECTION\n"
+	       "2\nENTITIES\n");
 
    if (grid > 0) {
       double x, y;

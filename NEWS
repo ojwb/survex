@@ -1,9 +1,17 @@
+Changes in 1.0.29:
+
+* cad3d: Fixed problem with DXF files which stopped them loading with some
+  drawing packages (introduced in 1.0.27).
+
 * aven: Changed File->Exit to File->Quit.
 
 * Removed some unused messages from the message files.
 
 * (Unix version): Fixed SRPMs to build on RedHat 9 and Fedora Core 1 (patch
   from John Pybus).
+
+* (MacOS X version): Include buildmacosx.sh script which will build a
+  diskimage suitable for distribution.
 
 Changes in 1.0.28:
 
