@@ -127,14 +127,12 @@ static void check_svar(/*const*/ svar *v) {
       printf("*** Singular!!!\n"), bad = 1;
 #endif
 
-#if 0 /* FIXME */
    if ((*v)[0] <= 0.0 || (*v)[1] <= 0.0 || (*v)[2] <= 0.0)
       printf("*** Not positive definite (diag <= 0)!!!\n"), bad = 1;
    if (sqrd((*v)[3]) >= (*v)[0]*(*v)[1] ||
        sqrd((*v)[4]) >= (*v)[0]*(*v)[2] ||
        sqrd((*v)[5]) >= (*v)[1]*(*v)[2])
       printf("*** Not positive definite (off diag^2 >= diag product)!!!\n"), bad = 1;
-#endif
    if (bad) print_svar(*v);
 }
 #endif
@@ -295,11 +293,8 @@ addfakeleg(node *fr, node *to,
       /* we have been asked to add a leg with the same node at both ends
        * - give a warning and don't add the leg to the data structure
        */
-      /* FIXME: should this be an error? */
-      compile_warning(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
-		      sprint_prefix(fr->name));
-      /* FIXME: inc loop count? */
-      return;
+      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
+		    sprint_prefix(fr->name));
    }
 
    leg = osnew(linkfor);
