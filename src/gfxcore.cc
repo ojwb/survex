@@ -61,7 +61,8 @@ static const int INDICATOR_GAP = 2;
 static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
-static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X + INDICATOR_BOX_SIZE + INDICATOR_GAP;
+static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
+                                  INDICATOR_BOX_SIZE + INDICATOR_GAP;
 static const int DEPTH_BAR_OFFSET_X = 16;
 static const int DEPTH_BAR_EXTRA_LEFT_MARGIN = 2;
 static const int DEPTH_BAR_BLOCK_WIDTH = 20;
@@ -248,34 +249,35 @@ void GfxCore::Initialise()
 
     // Scale the survey to a reasonable initial size.
     switch (m_Lock) {
-     case lock_POINT:
-       m_RotationOK = false;
-       m_InitialScale = 1.0;
-       break;
-     case lock_YZ:
-       m_InitialScale = Double(m_XSize) / m_Parent->GetXExtent();
-       break;
-     case lock_XZ:
-       m_InitialScale = Double(m_YSize) / m_Parent->GetYExtent();
-       break;
-     case lock_XY:
-       m_RotationOK = false;
-       m_InitialScale = Double(m_YSize) / m_Parent->GetZExtent();
-       break;
-     case lock_X:
-       m_RotationOK = false;
-       m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
-			    Double(m_XSize) / m_Parent->GetYExtent());
-       break;
-     case lock_Y:
-       m_RotationOK = false;
-       m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
-			    Double(m_XSize) / m_Parent->GetXExtent());
-       break;
-     default:
-       m_InitialScale = min(Double(m_XSize) / m_Parent->GetXExtent(),
-			    Double(m_YSize) / m_Parent->GetYExtent());
+	case lock_POINT:
+	    m_RotationOK = false;
+	    m_InitialScale = 1.0;
+	    break;
+	case lock_YZ:
+	    m_InitialScale = Double(m_XSize) / m_Parent->GetXExtent();
+	    break;
+	case lock_XZ:
+	    m_InitialScale = Double(m_YSize) / m_Parent->GetYExtent();
+	    break;
+	case lock_XY:
+	    m_RotationOK = false;
+	    m_InitialScale = Double(m_YSize) / m_Parent->GetZExtent();
+	    break;
+	case lock_X:
+	    m_RotationOK = false;
+	    m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
+				 Double(m_XSize) / m_Parent->GetYExtent());
+	    break;
+	case lock_Y:
+	    m_RotationOK = false;
+	    m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
+				 Double(m_XSize) / m_Parent->GetXExtent());
+	    break;
+	default:
+	    m_InitialScale = min(Double(m_XSize) / m_Parent->GetXExtent(),
+				 Double(m_YSize) / m_Parent->GetYExtent());
     }
+
     m_InitialScale *= .85;
 
     // Calculate screen coordinates and redraw.
