@@ -181,7 +181,6 @@ class MainFrm : public wxFrame {
     int m_NumLegs;
     int m_NumPoints;
     int m_NumCrosses;
-    int m_NumExtraLegs;
     GfxCore* m_Gfx;
     GUIControl* m_Control;
     int m_NumEntrances;
@@ -194,7 +193,7 @@ class MainFrm : public wxFrame {
     wxTreeItemId m_TreeRoot;
     wxTextCtrl* m_FindBox;
     wxStaticText* m_Found;
-    wxCheckBox* m_RegexpCheckBox;
+    // wxCheckBox* m_RegexpCheckBox;
     wxNotebook* m_Notebook;
 #ifdef AVENPRES
     wxPanel* m_PresPanel;
@@ -385,8 +384,8 @@ public:
     Double GetZMax() const { return m_ZMin + m_ZExt; }
 
     int GetNumLegs() const { return m_NumLegs; }
-    int GetNumPoints() const { return m_NumPoints; }
-    int GetNumCrosses() const { return m_NumCrosses; }
+    int GetNumPoints() const { return m_NumPoints; } // FIXME: unused
+    int GetNumCrosses() const { return m_NumCrosses; } // FIXME: unused
 
     void SelectTreeItem(LabelInfo* label);
     void ClearTreeSelection();

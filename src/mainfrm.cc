@@ -620,7 +620,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     m_NumLegs = 0;
     m_NumPoints = 0;
-    m_NumExtraLegs = 0;
     m_NumCrosses = 0;
     m_NumFixedPts = 0;
     m_NumExportedPts = 0;
@@ -717,7 +716,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		// FIXME: Do we need to reset all these? - Olly
 		m_NumLegs = 0;
 		m_NumPoints = 0;
-		m_NumExtraLegs = 0;
 		m_NumCrosses = 0;
 		m_NumFixedPts = 0;
 		m_NumExportedPts = 0;
