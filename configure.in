@@ -160,6 +160,9 @@ AC_DEFINE_UNQUOTED(INT16_T,$INT16_T,[signed 16 bit integer type])
 
 dnl Checks for library functions.
 AC_FUNC_STRFTIME
+if test x"$ac_cv_func_strftime" != xyes ; then
+  LIBOBJS="$LIBOBJS strftime.o"
+fi
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(mktime strdup strerror perror strtod strtol popen setjmp signal)
 

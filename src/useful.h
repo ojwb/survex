@@ -51,15 +51,6 @@ typedef long int fpos_t;
 # define CLOCKS_PER_SEC CLK_TCK
 #endif
 
-/* Deals with TurboC & maybe others. The format string is ignored,
- * and some default used instead.
- */
-/* FIXME: still something of a hack */
-#ifndef HAVE_STRFTIME
-# define strftime(S, L, F, T) \
- BLK(strncpy((S), asctime((T)), L); (S)[(L) - 1] = '\0';)
-#endif
-
 /* Return max/min of two numbers (if not defined already) */
 /* NB Bad news if X or Y has side-effects... */
 #ifndef max
