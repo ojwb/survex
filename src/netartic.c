@@ -118,6 +118,24 @@ uniter:
    return;
 }
 
+/* We want to split stations list into a list of components, each of which
+ * consists of a list of "articulations" - the first has all the fixed points
+ * in that component, and the others attach sequentially to produce the whole
+ * component
+ */
+
+typedef struct articulation {
+   struct articulation *next;
+   node *stnlist;
+} articulation;
+
+typedef struct component {
+   struct component *next;
+   articulation *artic;
+} component;
+
+component *component_list = NULL;
+
 extern void
 articulate(void)
 {
@@ -152,10 +170,12 @@ articulate(void)
       int cUncolouredNeighbours = 0;
       stn = stnStart;
 #if 0
-      /* FIXME: need to count components to get correct loop count */
       /* see if this is a fresh component */
       if (stn->status != statFixed) cComponents++;
 #endif
+      /* FIXME: do we always have a fresh component?  I think so, but the
+       * comment above suggests otherwise */
+      cComponents++;
 
       for (i = 0; i <= 2; i++) {
 	 if (stn->leg[i]) {
