@@ -295,7 +295,7 @@ Changes in 0.97-prerelease1:
 * (MS Windows version): new installation wizard.
 
 * Use double precision floating point to pass numbers to/from .3d file
-  reading rotuines to avoid rounding problems.
+  reading routines to avoid rounding problems.
 
 * cavern: change of terminology - use "reading" instead of "datum",
   since datum more usually means a map datum in surveying.
