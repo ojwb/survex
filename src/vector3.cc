@@ -1,5 +1,5 @@
 //
-//  vector3.cxx
+//  vector3.cc
 //
 //  C++ class for 3-element vectors
 //
@@ -38,11 +38,6 @@ Vector3::Vector3(double a, double b, double c)
 
 Vector3::~Vector3()
 {
-}
-
-double Vector3::magnitude() const
-{
-    return sqrt(x*x + y*y + z*z);
 }
 
 void Vector3::normalise()

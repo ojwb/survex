@@ -67,7 +67,7 @@ default_case(settings *s)
    s->Case = LOWER;
 }
 
-reading default_order[] = { Fr, To, Tape, Comp, Clino, End };
+static reading default_order[] = { Fr, To, Tape, Comp, Clino, End };
 
 static void
 default_style(settings *s)
@@ -155,9 +155,7 @@ extern void
 default_all(settings *s)
 {
    default_truncate(s);
-   s->f90Up = fFalse;
-   s->f0Eq = fFalse;
-   s->f_infer_exports = fFalse;
+   s->infer = 0;
    default_case(s);
    default_style(s);
    default_prefix(s);
@@ -692,7 +690,7 @@ cmd_fix(void)
 	    name->pos = osnew(pos);
 	    name->stn = fixpt;
 	    name->up = NULL;
-	    if (pcs->f_infer_exports) {
+	    if (TSTBIT(pcs->infer, INFER_EXPORTS)) {
 	       name->min_export = USHRT_MAX;
 	    } else {
 	       name->min_export = 0;
@@ -1415,26 +1413,29 @@ cmd_case(void)
 }
 
 static sztok infer_tab[] = {
-     {"EQUATES",    3},
-     {"EXPORTS",    2},
-     {"PLUMBS",     1},
-     {NULL,      0}
+     { "EQUATES",	INFER_EQUATES },
+     { "EXPORTS",	INFER_EXPORTS },
+     { "PLUMBS",	INFER_PLUMBS },
+#if 0 /* FIXME */
+     { "SUBSURVEYS",	INFER_SUBSURVEYS },
+#endif
+     { NULL,		INFER_NULL }
 };
 
 static sztok onoff_tab[] = {
-     {"OFF", 0},
-     {"ON",  1},
-     {NULL,       -1}
+     { "OFF", 0 },
+     { "ON",  1 },
+     { NULL, -1 }
 };
 
 static void
 cmd_infer(void)
 {
-   int setting;
+   infer_what setting;
    int on;
    get_token();
    setting = match_tok(infer_tab, TABSIZE(infer_tab));
-   if (setting == 0) {
+   if (setting == INFER_NULL) {
       compile_error_skip(/*Found `%s', expecting `EQUATES', `EXPORTS', or `PLUMBS'*/31, buffer);
       return;
    }
@@ -1445,19 +1446,11 @@ cmd_infer(void)
       return;
    }
 
-   switch (setting) {
-    case 3:
-      pcs->f0Eq = on;
-      break;
-    case 2:
-      pcs->f_infer_exports = on;
-      if (on) fExportUsed = fTrue;
-      break;
-    case 1:
-      pcs->f90Up = on;
-      break;
-    default:
-      BUG("unexpected case");
+   if (on) {
+      pcs->infer |= BIT(setting);
+      if (setting == INFER_EXPORTS) fExportUsed = fTrue;
+   } else {
+      pcs->infer &= ~BIT(setting);
    }
 }
 

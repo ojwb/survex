@@ -217,7 +217,7 @@ img_open_survey(const char *fnm, const char *survey)
 {
    img *pimg;
    size_t len;
-   char buf[LITLEN(FILEID) + 1];
+   char buf[LITLEN(FILEID) + 9];
    int ch;
 
    if (fDirectory(fnm)) {
@@ -451,6 +451,12 @@ xyz_file:
 
    if (fread(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
        memcmp(buf, FILEID"\n", LITLEN(FILEID) + 1) != 0) {
+      if (fread(buf + LITLEN(FILEID) + 1, 8, 1, pimg->fh) == 1 &&
+	  memcmp(buf, FILEID"\r\nv0.01\r\n", LITLEN(FILEID) + 9) == 0) {
+	 /* v0 3d file with DOS EOLs */
+	 pimg->version = 0;
+	 goto v03d;
+      }
       rewind(pimg->fh);
       if (buf[1] == ' ') {
 	 if (buf[0] == ' ') {
@@ -500,6 +506,7 @@ xyz_file:
       goto error;
    }
 
+v03d:
    if (!pimg->title)
        pimg->title = getline_alloc(pimg->fh);
    else

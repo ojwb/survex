@@ -25,6 +25,7 @@
 #define Vector3_h
 
 #include <stdio.h>
+#include <math.h>
 
 class Vector3 {
     double x; //--FIXME
@@ -36,6 +37,7 @@ public:
     Vector3(double, double, double);
     ~Vector3();
 
+#ifdef AVENPRES
     void Save(FILE* fp) const { //--Pres: FIXME
 	fwrite(&x, sizeof(double), 1, fp);
 	fwrite(&y, sizeof(double), 1, fp);
@@ -47,12 +49,16 @@ public:
 	fread(&y, sizeof(double), 1, fp);
 	fread(&z, sizeof(double), 1, fp);
     }
+#endif
 
     double getX() const { return x; }
     double getY() const { return y; }
     double getZ() const { return z; }
 
-    double magnitude() const;
+    double magnitude() const {
+	return sqrt(x*x + y*y + z*z);
+    }
+
     void normalise();
 
     void set(double, double, double);

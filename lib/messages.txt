@@ -112,7 +112,8 @@ pt:  1 Mem&oacute;ria insuficiente (s&atilde;o necesss&aacute;rios mais %lu byte
 ca:  1 Mem&ograve;ria insuficient (es necessiten %lu bytes m&eacute;s).
 es:  1 Memoria insuficiente (se necesitan %lu bytes de m&aacute;s).
 it:  1 Memoria insufficiente (ci vorrebbero altri %lu bytes).
-sk:  1 Nedostato&ccaron;n&aacute; kapacita pam&auml;te
+#sk:  1 Nedostato&ccaron;n&aacute; kapacita pam&auml;te
+sk:  1 Nedostatok pam&auml;te (ch&yacute;ba %lu bytov).
 en:  2 Survex version %s or greater required to process this survey data.
 fr:  2 Une version %s ou sup&eacute;rieure de Survex est n&eacute;cessaire pour traiter ces donn&eacute;es.
 # Gerhard: (this replaces the idea of "greater" with "newer" because it sounds
@@ -3159,7 +3160,11 @@ en:352 Highlight stations marked as fixed points
 en:353 Highlight stations which are exported
 en:354 Mark survey stations with their names
 en:355 Allow names to overlap on the display (faster)
-en:356 @Full Screen Mode
+#
+# TRANSLATE sk
+en:356 Full Screen @Mode
+sk:356 F@ull Screen Mode
+#
 en:357 Display underground survey legs
 en:358 Display surface survey legs
 en:359 Colour surface surveys by depth
@@ -3177,8 +3182,6 @@ en:370 Display depth bar
 en:371 Display compass
 en:372 Display clinometer
 en:373 Display side panel
-
-=======
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

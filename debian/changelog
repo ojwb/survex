@@ -1,3 +1,55 @@
+survex (1.0.18) unstable; urgency=low
+
+  * Fixed "Process" action on .svx files.
+  * File associations: if survex-svxedit isn't installed, run gnome-edit
+    instead; if survex-aven isn't installed, run xcaverot instead.
+  * Include file associations and file icons in the main package rather than
+    survex-aven.
+  * Documentation: added details of the 3d file format (version 3).
+  * Updated TODO list.
+  * Tweaked source to hopefully build on HPPA again (closes: bug#162912).
+  * Proper description for survex-svxedit (closes: bug#162954, bug#162970).
+
+ -- Wookey <wookey@survex.com>  Mon, 07 Oct 2002 00:29:05 +0100
+
+survex (1.0.17) unstable; urgency=low
+
+  * Note: 1.0.15 and 1.0.16 addressed MS Windows specific problems.
+  * survex-aven package now installs mime types, icons, and file associations
+    for Gnome.  Note: at present GMC doesn't seem to notice new files being
+    created (e.g.  Process on a .svx file creates .3d and .err files) - you
+    have to manually refresh the view.
+  * survex-svxedit is now architecture independent.  Fixed up a few lintian
+    warnings relating to it too.
+  * Minor update to manual.
+
+ -- Wookey <wookey@survex.com>  Tue, 24 Sep 2002 20:20:20 +0100
+
+survex (1.0.14) unstable; urgency=low
+
+  * svxedit: This is a Survex data entry editor from the therion team.  It
+    currently experimental needs tcl and wish installed, so is it its own
+    package: survex-svxedit.
+  * Improved handling of Compass PLT files and CMAP xyz files.
+  * aven: when picking non-overlapping labels, show a slight preference to
+    shorter labels with the aim of displaying more labels.
+  * aven: fixed hard to notice problem which could cause the cave to appear
+    tilted sideways after a lot of manipulation.
+  * cavern: Modest speed improvement (0.5% for sample dataset).
+  * cavern: fixed a rarely sighted bug which caused erroneous error about some
+    stations not being attached to a fixed point.
+  * cavern: fixed clino readings and DIRECTION to work in interleaved data.
+  * cavern: improved error reporting when an invalid value is given for a
+    DIRECTION reading.
+  * cavern: fixed "singular matrix" error when very low SDs were specified.
+  * print*: if the --raw is used, the survey can now use the space this would
+    have taken up.
+  * Reading of ASCII 3d files now copes with MSDOS/MS Windows line endings
+    once again.  Added regression test for this.
+  * Updated documentation.
+
+ -- Wookey <wookey@survex.com>  Sun, 15 Sep 2002 00:11:05 +0100
+
 survex (1.0.13) unstable; urgency=low
 
   * aven: Fixed bug which caused the occasional spurious leg to be shown

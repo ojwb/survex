@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2001 Olly Betts
+ * Copyright (C) 1991-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -951,7 +951,7 @@ replace_trailing_travs(void)
 				 sqrd(POS(stnB, 1) - POS(stn1, 1)) +
 				 sqrd(POS(stnB, 2) - POS(stn1, 2)));
 		  total += sqrt(sqrdd(leg->d));
-		  totplan += radius(leg->d[0], leg->d[1]);
+		  totplan += hypot(leg->d[0], leg->d[1]);
 		  totvert += fabs(leg->d[2]);
 	       }
 	    }

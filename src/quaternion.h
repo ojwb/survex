@@ -2,6 +2,7 @@
 //  quaternion.h
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
+//  Copyright (C) 2002 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -43,7 +44,8 @@ public:
 
     ~Quaternion() {}
 
-    void Save(FILE* fp) { //--Pres: FIXME: error handling
+#ifdef AVENPRES
+    void Save(FILE* fp) const { //--Pres: FIXME: error handling
 	fwrite(&w, sizeof(Double), 1, fp);
 	v.Save(fp);
     }
@@ -52,10 +54,15 @@ public:
 	fread(&w, sizeof(Double), 1, fp);
 	v.Load(fp);
     }
+#endif
 
-    Double magnitude() {
+    Double magnitude() const {
 	Double mv = v.magnitude();
+#ifdef HAVE_HYPOT
+	return hypot(mv, w);
+#else
 	return sqrt(mv*mv + w*w);
+#endif	
     }
 
     void normalise() {
@@ -67,8 +74,8 @@ public:
 	}
     }
 
-    Matrix4 asMatrix() {
-	static Matrix4 m;
+    Matrix4 asMatrix() const {
+	Matrix4 m;
 
 	Double xx = v.getX() * v.getX();
 	Double xy = v.getX() * v.getY();
@@ -90,8 +97,8 @@ public:
 	return m;
     }
 
-    Matrix4 asInverseMatrix() {
-	static Quaternion q;
+    Matrix4 asInverseMatrix() const {
+	Quaternion q;
 	q.v.set(-v.getX(), -v.getY(), -v.getZ());
 	q.w = w;
 	return q.asMatrix();
@@ -112,7 +119,7 @@ public:
     }
 
     friend Quaternion operator*(const Quaternion& qa, const Quaternion& qb) {
-	static Quaternion q;
+	Quaternion q;
 
 	q.w = (qa.w * qb.w) - dot(qa.v, qb.v);
 	q.v = (qa.w * qb.v) + (qa.v * qb.w) + (qa.v * qb.v);
@@ -123,7 +130,7 @@ public:
     }
 
     friend Quaternion operator*(const double d, const Quaternion& qa) {
-	static Quaternion q;
+	Quaternion q;
 
 	q.w = d * qa.w;
 	q.v = d * qa.v;
@@ -134,7 +141,7 @@ public:
     }
 
     friend Quaternion operator+(const Quaternion& qa, const Quaternion& qb) {
-	static Quaternion q;
+	Quaternion q;
 
 	q.w = qa.w + qb.w;
 	q.v = qa.v + qb.v;
@@ -144,8 +151,8 @@ public:
 	return q;
     }
 
-    Vector3 getVector() { return v; }
-    Double getScalar() { return w; }
+    Vector3 getVector() const { return v; }
+    Double getScalar() const { return w; }
 
     void setVector(const Vector3& v) { this->v = v; }
     void setScalar(const Double w) { this->w = w; }
@@ -170,9 +177,11 @@ public:
 	normalise();
     }
 
-    void print() {
+#if 0
+    void print() const {
 	printf("[%.02g  %.02g  %.02g] %.02g\n", v.getX(), v.getY(), v.getZ(), w);
     }
+#endif
 
     void setFromSphericalPolars(Double pan, Double tilt, Double rotation_amount);
     void setFromVectorAndAngle(Vector3 v, Double rotation_amount);

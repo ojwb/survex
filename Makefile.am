@@ -82,15 +82,17 @@ djgpp_zip : dostxt
 	test -d djgpp_exes || mkdir djgpp_exes
 	for a in $(base_progs) caverot ; do cp src/$$a.exe djgpp_exes ; done
 	$(RM) $(djgpp_zip_name)
-	zip -j $(djgpp_zip_name) djgpp_exes/*.exe $(extra_bin)\
+	zip -9 -j $(djgpp_zip_name) djgpp_exes/*.exe $(extra_bin)\
 	 djgpp_extras/cwsdpmi.exe djgpp_extras/emu387.dxe
 	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
 	ln -s ../README dostxt_tmp/README.txt
+	ln -s ../src/svxedit dostxt_tmp/svxedit.tcl
 	: # -l means convert LF to CR+LF
 	: # FIXME: really include dostxt too on DOS?
-	zip -9 -j -l $(djgpp_zip_name) dostxt_tmp/*.txt $(extra_txt)
-	cd doc;zip -l ../$(djgpp_zip_name) manual/*.htm @HTMLFILES@
-	cd doc;zip ../$(djgpp_zip_name) manual/*.png
+	zip -9 -j -l $(djgpp_zip_name) dostxt_tmp/*.txt dostxt_tmp/svxedit.tcl\
+	 $(extra_txt)
+	cd doc;zip -9 -l ../$(djgpp_zip_name) manual/*.htm @HTMLFILES@
+	cd doc;zip -9 ../$(djgpp_zip_name) manual/*.png
 	$(RM) -rf dostxt_tmp
 
 mingw : all mingw_iss
@@ -99,14 +101,17 @@ mingw_iss :
 	$(RM) -rf iss_tmp mingw_exes
 	mkdir iss_tmp
 	mkdir mingw_exes
-	for f in $(base_progs) aven printwin ; do cp src/$$f.exe mingw_exes ; done
+	for f in $(base_progs) aven printwin editwrap ; do cp src/$$f.exe mingw_exes ; done
+	cp src/svxedit iss_tmp/svxedit.tcl
 	cp $(extra_txt) survex.iss iss_tmp
-	: # so the can display the license
+	: # so the installer can display the license
 	cp COPYING iss_tmp/COPYING.txt
 	cd doc;cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
-	cp mingw_extras/*.ico lib/icons/*.png iss_tmp
+	cp lib/icons/*.ico lib/icons/*.png iss_tmp
+	: # don't ship pngs for which we ship the ico version
+	cd iss_tmp && for a in \*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
 	cp /opt/rx-win32/bin/librx.dll iss_tmp
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual
@@ -136,14 +141,14 @@ borlandc_exe : borlandc_zip
 
 borlandc_zip : dostxt
 	$(RM) $(bc_zip_name)
-	zip -j $(bc_zip_name) bc_exes/*.exe $(extra_bin) bc_extras/*.bgi
+	zip -9 -j $(bc_zip_name) bc_exes/*.exe $(extra_bin) bc_extras/*.bgi
 	ln -s ../INSTALL.DOS dostxt_tmp/INSTALL.txt
 	ln -s ../README dostxt_tmp/README.txt
 	: # -l means convert LF to CR+LF
 	: # FIXME: really include dostxt too on DOS?
-	zip -j -l $(bc_zip_name) dostxt_tmp/*.txt $(extra_txt)
-	cd doc;zip -l ../$(bc_zip_name) manual/*.htm @HTMLFILES@
-	cd doc;zip ../$(bc_zip_name) manual/*.png
+	zip -9 -j -l $(bc_zip_name) dostxt_tmp/*.txt $(extra_txt)
+	cd doc;zip -9 -l ../$(bc_zip_name) manual/*.htm @HTMLFILES@
+	cd doc;zip -9 ../$(bc_zip_name) manual/*.png
 	$(RM) -rf dostxt_tmp
 
 riscos_zip_name = survex-riscos-@VERSION@.zip
@@ -228,7 +233,7 @@ dos_doc_exe : dos_doc_zip
 dos_doc_zip :
 	$(RM) $(dos_doc_zip_name)
 	: # -l means convert LF to CR+LF
-	cd doc && zip -l ../$(dos_doc_zip_name) @DOCS_OTHER@
+	cd doc && zip -9 -l ../$(dos_doc_zip_name) @DOCS_OTHER@
 
 riscos_doc_zip_name = svxdoc-riscos-@VERSION@.zip
 

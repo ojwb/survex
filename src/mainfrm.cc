@@ -233,9 +233,6 @@ public:
     bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
 	int n = pt1->flags - pt2->flags;
 	if (n) return n > 0;
-	wxString l1 = pt1->GetText().AfterLast(separator);
-	wxString l2 = pt2->GetText().AfterLast(separator);
-	return name_cmp(l1, l2, separator) < 0;
 	wxString l1 = pt1->text.AfterLast(separator);
 	wxString l2 = pt2->text.AfterLast(separator);
 	n = name_cmp(l1, l2, separator);

@@ -41,10 +41,10 @@ already covered).
 <H2>Developing on Unix Platforms</H2>
 
 <P>You'll need automake 1.5 or later (earlier versions don't support
-per-executable CFLAGS; 1.6 has been tested and works)
-and autoconf 2.50 or later (for AC_ARG_VAR).
-There seem to be problems with trying to use autoconf 2.53 - autoconf 2.52
-is known to work.
+per-executable CFLAGS; 1.6 has been tested and works, but wasn't a
+very stable release - automake 1.6.1 is a better bet)
+and autoconf 2.50 or later (autoconf 2.52 and 2.53 have
+both been used successfully).
 
 <P>For building the documentation you'll need sgmltools 2 or later,
 docbook-to-man, and w3m.
@@ -97,6 +97,10 @@ sh build-djgpp.sh
 HREF="http://prdownloads.sourceforge.net/alleg/allegro-4.0.1.tar.gz"
 >http://prdownloads.sourceforge.net/alleg/allegro-4.0.1.tar.gz</A>
 
+<P>Allegro 4.0.2 has been released, but the list of changes doesn't show
+anything relevant to the routines caverot uses, so I've not bothered to
+upgrade.
+
 <P>And follow the instructions for building using a cross-compiler which
 you can find starting from readme.txt.  In 4.0.1 these boil down to:
 
@@ -129,8 +133,8 @@ You can probably install these on other distributions using alien to
 convert them to RPMs or similar.  Alternatively, before that
 I used to use pre-built binaries for gcc 2.95.2 obtained from:
 
-<P><A HREF="http://www.devolution.com/~slouken/SDL/Xmingw32/"
->http://www.devolution.com/~slouken/SDL/Xmingw32/</A>
+<P><A HREF="http://www.libsdl.org/extras/win32/cross/"
+>http://www.libsdl.org/extras/win32/cross/</A>
 
 <P>Building on Windows in a native mingw environment will probably
 require tinkering.  Best bet is probably to install bash and use the

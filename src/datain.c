@@ -590,7 +590,8 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       diff_from_abs90 = fabs(clin) - M_PI_2;
       if (diff_from_abs90 > EPSILON) {
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
-      } else if (pcs->f90Up && diff_from_abs90 > -EPSILON) {
+      } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
+		 diff_from_abs90 > -EPSILON) {
 	 ctype = CTYPE_PLUMB;
       }
    }
@@ -604,7 +605,8 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       if (diff_from_abs90 > EPSILON) {
 	 /* FIXME: different message for BackClino? */
 	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
-      } else if (pcs->f90Up && diff_from_abs90 > -EPSILON) {
+      } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
+		 diff_from_abs90 > -EPSILON) {
 	 backctype = CTYPE_PLUMB;
       }
    }
@@ -1240,8 +1242,8 @@ data_normal(void)
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
-	     if (pcs->f0Eq && VAL(Tape) == (real)0.0 &&
-		 VAL(FrDepth) == VAL(ToDepth)) {
+ 	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
+		 VAL(Tape) == (real)0.0 && VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		goto inferred_equate;
 	     }
@@ -1319,8 +1321,8 @@ data_normal(void)
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
-	     if (pcs->f0Eq && VAL(Tape) == (real)0.0 &&
-		 VAL(FrDepth) == VAL(ToDepth)) {
+ 	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
+		 VAL(Tape) == (real)0.0 && VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		process_eol();
 		return 1;

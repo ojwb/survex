@@ -6,6 +6,11 @@ check-local dist-hook:
 	  exit 1; \
 	fi
 
+SUFFIXES = .ico .png
+
+.png.ico:
+	$(SHELL) $(srcdir)/png2winicon $< $@
+
 noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  cvrotgfx.h cvrotimg.h datain.h debug.h dosrot.h filelist.h filename.h\
  getopt.h hash.h img.h ini.h labels.h listpos.h matrix.h message.h namecmp.h\
@@ -44,10 +49,11 @@ PRINT = printdm printps printpcl printhpgl
 TESTPROGS = @TESTPROGS@
 
 # printxbm and dump3d are test programs
-EXTRA_PROGRAMS = caverot printwin aven avengl dump3d printxbm
+EXTRA_PROGRAMS = caverot printwin aven avengl dump3d printxbm editwrap
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern $(PRINT) diffpos extend cad3d sorterr \
- 3dtopos @CAVEROT@ @AVEN@ @PRINTWIN@ @TESTPROGS@
+ 3dtopos @CAVEROT@ @AVEN@ @WINPROGS@ @TESTPROGS@
+bin_SCRIPTS = svxedit
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
 
@@ -66,14 +72,21 @@ avengl_SOURCES = $(aven_SOURCES) gla-gl.cc
 
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
 
+editwrap_SOURCES = editwrap.c
+editwrap_LDFLAGS = -mwindows
+
 if WIN32
 aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@ @LIBRX@
 avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 
+svxeditrc.o: $(srcdir)/svxedit.rc
+	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
+
+editwrap_LDADD = svxeditrc.o
+
 # FIXME: should use wxconfig or similar to get includes
 avenrc.o: $(srcdir)/aven.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $$pwd/avenrc.o aven.rc
-
 else
 aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
 avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
@@ -104,7 +117,7 @@ EXTRA_caverot_SOURCES = dosrot.c
 caverot_LDADD = @LIBOBJS@ @CROBJX@ @CRLIB@
 caverot_DEPENDENCIES = @CROBJX@
 
-eiffpos_SOURCES = diffpos.c namecmp.c img.c useful.c hash.c $(COMMONSRC)
+diffpos_SOURCES = diffpos.c namecmp.c img.c useful.c hash.c $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
 3dtopos_SOURCES = 3dtopos.c namecmp.c img.c useful.c $(COMMONSRC)
 extend_SOURCES = extend.c $(COMMONSRC) img.c useful.c hash.c
@@ -124,8 +137,8 @@ noinst_DATA = borlandc/makefile riscos/makefile
  
 EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
  riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
- riscos/stdh/regnames riscos/stdh/swinames miniam.pl aven.rc aven.ico\
- getopt.c gettexttomsg.pl
+ riscos/stdh/regnames riscos/stdh/swinames miniam.pl aven.rc aven.png aven.ico\
+ svxedit.png svxedit.ico getopt.c png2winicon gettexttomsg.pl
 
 BUILT_SOURCES = z_getopt.c aven.pal
 

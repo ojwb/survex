@@ -4,6 +4,7 @@
 //  C++ class for handling 4x4 matrices
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
+//  Copyright (C) 2002 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -33,10 +34,12 @@ public:
     ~Matrix4();
 
     void setRow(int row, double a, double b, double c, double d);
-    Matrix4 transpose();
-    double get(int r, int c) { return data[r*4 + c]; }
+    Matrix4 transpose() const;
+    double get(int r, int c) const { return data[r*4 + c]; }
 
-    void print();
+#if 0
+    void print() const;
+#endif
 
     friend Matrix4 operator*(const Matrix4& left, const Matrix4& right);
 };

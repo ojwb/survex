@@ -1,7 +1,7 @@
 /* cvrotimg.c
  * Reads a .3d image file into two linked lists of blocks, suitable for use
  * by caverot.c
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -298,7 +298,7 @@ scale_to_screen(const point *pmin, const point *pmax, int xcMac, int ycMac,
       Zrad = (pmax->Z - pmin->Z) / 2;
    }
 
-   Radius = radius(Xrad, Yrad);
+   Radius = hypot(Xrad, Yrad);
 
    if (Zrad > Radius) Radius = Zrad;
 

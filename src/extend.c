@@ -300,7 +300,7 @@ do_stn(point *p, double X, const char *prefix)
       } else if (l->prefix == prefix) {
 	 if (l->to == p) {
 	    lp->next = l->next;
-	    dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	    img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
 	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X, 0, l->to->p.z);
@@ -310,7 +310,7 @@ do_stn(point *p, double X, const char *prefix)
 	    l = lp;
 	 } else if (l->fr == p) {
 	    lp->next = l->next;
-	    dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	    img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
 	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X + dX, 0, l->to->p.z);
@@ -330,7 +330,7 @@ do_stn(point *p, double X, const char *prefix)
       } else {
 	 if (l->to == p) {
 	    lp->next = l->next;
-	    dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	    img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
 	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X, 0, l->to->p.z);
@@ -340,7 +340,7 @@ do_stn(point *p, double X, const char *prefix)
 	    l = lp;
 	 } else if (l->fr == p) {
 	    lp->next = l->next;
-	    dX = radius(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	    img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
 	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X + dX, 0, l->to->p.z);

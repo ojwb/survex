@@ -13,7 +13,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${DIFFPOS="$testdir"/../src/diffpos}
 : ${TDTOPOS="$testdir"/../src/3dtopos}
 
-: ${TESTS=${*-"pos v0 v1 v2 v3"}}
+: ${TESTS=${*-"pos v0 v0b v1 v2 v3"}}
 
 for file in $TESTS ; do
   echo $file

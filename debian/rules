@@ -66,7 +66,12 @@ binary-common: build install
 #	dh_installcron
 	gzip -9 debian/tmp/usr/share/man/man1/*
 	mkdir -p debian/survex-aven/usr/share/man/man1
+	mkdir -p debian/survex-svxedit/usr/share/man/man1
 	mv debian/tmp/usr/share/man/man1/aven.1.gz debian/survex-aven/usr/share/man/man1
+	mv debian/tmp/usr/share/man/man1/svxedit.1.gz debian/survex-svxedit/usr/share/man/man1
+# oddly /usr/bin/svxedit gets into survex and survex-svxedit otherwise
+# FIXME - this can't be the correct way to do this, can it?
+	rm -f debian/tmp/usr/bin/svxedit
 #	dh_installinfo
 #	dh_undocumented
 	dh_installchangelogs
@@ -85,8 +90,7 @@ binary-common: build install
 
 # Build architecture independant packages using the common target.
 binary-indep:
-# (Uncomment this next line if you have such packages.)
-#	 $(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
 
 # Build architecture dependant packages using the common target.
 binary-arch:

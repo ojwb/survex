@@ -362,11 +362,11 @@ main(int argc, char **argv)
       tmCPU = (clock_t)(clock() - tmCPUStart) / (double)CLOCKS_PER_SEC;
       tmUser = difftime(time(NULL), tmUserStart);
 
-      /* tmCPU is integer, tmUser not - equivalent to (ceil(tmCPU) >= tmUser) */
+      /* tmUser is integer, tmCPU not - equivalent to (ceil(tmCPU) >= tmUser) */
       if (tmCPU + 1 > tmUser) {
 	 printf(msg(/*CPU time used %5.2fs*/140), tmCPU);
       } else if (tmCPU == 0) {
-	 if (tmUser == 0.0) {
+	 if (tmUser != 0.0) {
 	    printf(msg(/*Time used %5.2fs*/141), tmUser);
 	 } else {
 	    fputs(msg(/*Time used unavailable*/142), stdout);

@@ -146,12 +146,12 @@ AC_SUBST(LIBRX)
 
 AC_PATH_XTRA
 
-PRINTWIN=
+WINPROGS=
 if test yes = "$mswindows"; then
-  PRINTWIN='printwin$(EXEEXT)'
-  AC_MSG_RESULT(building printwin)
+  WINPROGS='printwin$(EXEEXT) editwrap$(EXEEXT)'
+  AC_MSG_RESULT(building printwin and editwrap)
 fi
-AC_SUBST(PRINTWIN)
+AC_SUBST(WINPROGS)
 
 AC_ARG_VAR(WXCONFIG, [wxWindows configuration script to use to build Aven])
 
@@ -286,7 +286,7 @@ fi
 AC_FUNC_VPRINTF
 dnl check for strcasecmp here as well as below - this one is to get
 dnl HAVE_STRCASECMP defined if appropriate (for img.c)
-AC_CHECK_FUNCS(popen signal getpwuid round strcasecmp)
+AC_CHECK_FUNCS(popen signal getpwuid round strcasecmp hypot)
 
 dnl difftime seems to be an ANSI invention
 AC_CHECK_FUNCS(difftime)
@@ -365,10 +365,12 @@ AC_SUBST_FILE(DESC)
 DESC=desc.txt
 AC_SUBST_FILE(AVENDESC)
 AVENDESC=desc-aven.txt
+AC_SUBST_FILE(SVXEDITDESC)
+SVXEDITDESC=desc-svxedit.txt
 
 AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  tests/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
  doc/version.ent debian/copyright src/borlandc/config.h src/riscos/config.h
- survex.spec)
+ survex.spec src/svxedit lib/survex.keys)

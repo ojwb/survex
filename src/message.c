@@ -1010,10 +1010,11 @@ msg_init(char * const *argv)
    appname_copy = osstrdup(argv[0]);
 #else
    /* use the lower-cased leafname on other platforms */
-   appname_copy = p = leaf_from_fnm(argv[0]);
+   p = leaf_from_fnm(argv[0]);
+   appname_copy = p;
    while (*p) {
       *p = tolower(*p);
-      p++;
+      ++p;
    }
 #endif
 
@@ -1048,6 +1049,21 @@ msg_init(char * const *argv)
 	 osfree(p);
       }
       if (free_pth) osfree(pth);
+#elif (OS==WIN32)
+      DWORD len = 256;
+      char *buf = NULL, *modname;
+      while (1) {
+	  DWORD got;
+	  buf = osrealloc(buf, len);
+	  got = GetModuleFileName(NULL, buf, len);
+	  if (got < len) break;
+	  len += len;
+      }
+      modname = buf;
+      /* Strange Win32 nastiness - strip prefix "\\?\" if present */
+      if (strncmp(modname, "\\\\?\\", 4) == 0) modname += 4;
+      pth_cfg_files = path_from_fnm(modname);
+      osfree(buf);
 #else
       /* Get the path to the support files from argv[0] */
       pth_cfg_files = path_from_fnm(argv[0]);

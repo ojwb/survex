@@ -73,6 +73,9 @@
 /* Define if you have the strtol function.  */
 #define HAVE_STRTOL 1
 
+/* Define to 1 if you have the `hypot' function. */
+#define HAVE_HYPOT 1
+
 /* Define if you have the <limits.h> header file.  */
 #define HAVE_LIMITS_H 1
 

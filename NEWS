@@ -1,7 +1,68 @@
+Changes in 1.0.18:
+
+* (Unix Version): Fixed "Process" action on .svx files.
+
+* (Unix Version): File associations: if svxedit isn't installed, run gnome-edit
+  instead; if aven isn't installed, run xcaverot instead.
+
+* (Unix Version): In Debian packages, now include file associations and file
+  icons in the survex package rather than survex-aven.
+
+* (Unix Version): File associations were missing from RPM packages; moved
+  aven and svxedit man pages to their respective subpackages; moved aven icons
+  to the aven subpackage.
+
+* Documentation: added details of the 3d file format (version 3).
+
+* Updated TODO list.
+
+Changes in 1.0.17:
+
+* (MS Windows Version): Fixed "Open in SvxEdit" to work (and if tcl isn't
+  install this action now falls back to using notepad).  SvxEdit now has
+  its own icon.
+
+* (Unix Version): Install mime types, icons, and file associations for Gnome.
+  Note: at present GMC doesn't seem to notice new files being created (e.g.
+  Process on a .svx file creates .3d and .err files) - you have to manually
+  refresh the view.
+
+* Minor update to manual.
+
+Changes in 1.0.16:
+
+* (MS Windows Version): Really fixed bug introduced in 1.0.14 which often stops
+  programs from finding the message files.
+
+* (MS Windows Version): Remove any existing "Open" file association for .svx
+  files.
+
+Changes in 1.0.15:
+
+* (MS Windows Version): Fixed bug introduced in 1.0.14 which often stops
+  programs from finding the message files.
+
+* (MS Windows Version): "Open in Notepad" is now the double-click action
+  for .svx files once again, "Open in SvxEdit" is an action in the menu
+  obtained with the right mouse button.
+
+Changes in 1.0.14:
+
+* svxedit: This is a Survex data entry editor from the therion team.  It needs
+  tcl and wish installed - for MS Windows an installer is available for free
+  from Activeware.
+
 * Improved handling of Compass PLT files and CMAP xyz files - no longer change
   dots to spaces in survey and station names - instead use a space as the
   separator between survey name and station name.
-  FIXME: don't have sample PLT or XYZ files here - check this works.
+
+* aven: when picking non-overlapping labels, show a slight preference to shorter
+  labels with the aim of displaying more labels.
+
+* aven: fixed hard to notice problem which could cause the cave to appear
+  tilted sideways after a lot of manipulation.
+
+* cavern: Modest speed improvement (0.5% for sample dataset).
 
 * cavern: fixed a rarely sighted bug which caused erroneous error about some
   stations not being attached to a fixed point.
@@ -13,13 +74,22 @@
 
 * cavern: fixed "singular matrix" error when very low SDs were specified.
 
+* print*: if the --raw is used, the survey can now use the space this would
+  have taken up.
+
+* Reading of ASCII 3d files now copes with MSDOS/MS Windows line endings
+  once again.  Added regression test for this.
+
+* (MS Windows Version): Programs run from the command line now find message
+  files without SURVEXHOME needing to be set.
+
 * Updated documentation.
 
 Changes in 1.0.13:
 
 * aven: Fixed bug which caused the occasional spurious leg to be shown
   connecting arbitrary stations.
- 
+
 * extend: try to extend along a survey, and make breaks where other surveys
   join.
 
@@ -38,7 +108,7 @@ Changes in 1.0.12:
 
 * Fixed handling of iso-8859-2 character set and MS Windows code page 1250
   (both cover Eastern European languages).
- 
+
 * (MS Windows Version): install file associations for Compass .plt and .plf
   files and for CMAP .xyz files.  Also install the file icon for .plt and
   .plf files in case Compass isn't installed (thanks to Larry Fish for

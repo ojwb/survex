@@ -31,6 +31,7 @@ Source: "*.ini"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
+Source: "*.tcl"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}\icons"
 Source: "manual\*.*"; DestDir: "{app}\manual"
 ; NB keep these lines in step with Makefile.am
@@ -41,6 +42,7 @@ Source: "fr\wxstd.mo"; DestDir: "{app}\fr"
 Source: "it\wxstd.mo"; DestDir: "{app}\it"
 
 [Icons]
+Name: "{group}\SvxEdit"; Filename: "{app}\editwrap.exe"; Comment: "Enter survey data"
 Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"
 Name: "{group}\Documentation"; Filename: "{app}\index.htm"; Comment: "View the documentation for Survex"
 
@@ -64,7 +66,10 @@ Root: HKCU; Subkey: ".pos"; ValueType: string; ValueData: "survex.pos"; Flags: u
 Root: HKCU; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.source\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.source\shell\Open"; ValueType: none; Flags: deletekey
+Root: HKCU; Subkey: "survex.source\shell\Process"; ValueType: none; Flags: deletekey
+Root: HKCU; Subkey: "survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue
@@ -106,7 +111,10 @@ Root: HKCR; Subkey: ".pos"; ValueType: string; ValueData: "survex.pos"; Flags: u
 Root: HKCR; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue noerror
 Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue noerror
 Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.source\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.source\shell\Open"; ValueType: none; Flags: deletekey
+Root: HKCR; Subkey: "survex.source\shell\Process"; ValueType: none; Flags: deletekey
+Root: HKCR; Subkey: "survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue noerror
 Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue noerror
 Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue noerror
 Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue noerror

@@ -1,5 +1,5 @@
 //
-//  quaternion.cxx
+//  quaternion.cc
 //
 //  C++ class for handling quarternions.
 //
