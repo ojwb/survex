@@ -34,6 +34,9 @@ Changes in 0.97-prerelease2:
 * (MSDOS version): fallback DPMI provider and floating point emulator
   were missing in 0.97-prerelease1.
 
+* Better internationalisation - select localised system messages using
+  setlocale().
+
 Changes in 0.97-prerelease1:
 
 * extend: fixed bug which result in bogus output (added regression test);

@@ -399,6 +399,25 @@ parse_msg_file(int charset_code)
       msg_lang = lang;
    }
 
+   /* try to set_locale() appropriately too */
+   if (strchr(msg_lang, "-") {
+      char *lang = osstrdup(msg_lang);
+      char *dash = strchr(lang, '-');
+      char *p = dash;
+      *p++ = '_';
+      while (*p) {
+	 *p = toupper(*p);
+	 p++;
+      }
+      if (!set_locale(lang)) {
+	 *dash = '\0';
+	 set_locale(lang);
+      }
+      osfree(lang);
+   } else {
+      set_locale(msg_lang);
+   }
+   
    fh = fopenWithPthAndExt(pth_cfg_files, msg_lang, EXT_SVX_MSG, "rb", NULL);
 
    if (!fh) {
