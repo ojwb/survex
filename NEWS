@@ -2,6 +2,10 @@ Changes in 0.99-prerelease1:
 
 * Major clean-up of Survex Manual; renamed from "svxdocs" to "manual".
 
+* Text documentation converted to HTML; BUGS and TODO merged.
+  Include HTML documentation overview page in all versions (was
+  only included in MS Windows before).
+
 * aven: added new functionality: toolbar, side panel with survey tree,
   find station, measure distance between two stations, click on
   station to centre.
@@ -119,10 +123,7 @@ Changes in 0.99-prerelease1:
 * Expanded testsuite further.
 
 * French, Brazillian Portuguese, and German translations brought
-  alomst completely up-to-date.
-
-* Include documentation overview page in all versions (was just in MS
-  Windows version).
+  almost completely up-to-date.
 
 * Lots of little improvements to debian packages (mostly from Wookey).
 

@@ -6,4 +6,9 @@ manual.htm
 manual.ps
 manual.rtf
 manual.txt
-docindex.htm
+index.htm
+NEWS.html
+OLDNEWS.html
+ChangeLog.html
+HACKING.html
+TODO.html

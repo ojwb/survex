@@ -1,0 +1,28 @@
+<HTML><HEAD>
+<TITLE>@PRETTYPACKAGE@ @VERSION@ Documentation</TITLE>
+</HEAD><BODY BGCOLOR=white TEXT=black>
+
+Access to mailing lists and downloads are available at the <A
+HREF="http://www.survex.com/">Survex web site</A>.
+
+<H1>@PRETTYPACKAGE@ @VERSION@ Documentation</H1>
+
+<ul>
+<li><A HREF="manual/index.htm">@PRETTYPACKAGE@ @VERSION@ Manual</A>
+<li><A HREF="NEWS.html">Details of user visible changes in this and previous versions</A>
+	(<A HREF="OLDNEWS.html">older changes</A>)
+<li><A HREF="TODO.html">"To do" list (includes known bugs)</A>
+<li><A HREF="COPYING.html">GNU GENERAL PUBLIC LICENSE</A>
+<li><A HREF="AUTHORS.html">Credits</A>
+</ul>
+
+<H1>Documentation of use to Developers</H1>
+
+<ul>
+<li><A HREF="HACKING.html">Collection of useful information for developers</A>
+<li><A HREF="ZOMBIES.html">Bugs which we can't reproduce, or believe fixed but without confirmation</A>
+<li><A HREF="ChangeLog.html">Detailed list of internal changes</A>
+</ul>
+
+</BODY>
+</HTML>

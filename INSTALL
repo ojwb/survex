@@ -1,7 +1,12 @@
 Installing Survex under Unix
 ============================
 
-Like so:
+If you are using Debian Linux or RedHat Linux or a distribution based
+on one of these, you might prefer to install one of the prepackaged
+Linux versions.
+
+Otherwise building from source is very easy.  At a shell prompt, enter
+the following commands:
 
 ./configure
 make
