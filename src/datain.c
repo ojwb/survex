@@ -298,7 +298,7 @@ static void
 nextch_handling_eol(void)
 {
    nextch();
-   while (isEol(ch)) {
+   while (ch != EOF && isEol(ch)) {
       process_eol();
       nextch();
    }
@@ -873,18 +873,24 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    }
 
    if (backctype == CTYPE_READING) {
-      real diff_from_abs90;
       backclin *= pcs->units[Q_BACKGRADIENT];
       /* percentage scale */
       if (pcs->f_backclino_percent) backclin = atan(backclin);
-      diff_from_abs90 = fabs(backclin) - M_PI_2;
-      if (diff_from_abs90 > EPSILON) {
-	 /* FIXME: different message for BackClino? */
-	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
-      } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
-		 diff_from_abs90 >= -EPSILON) {
-	 backctype = CTYPE_INFERPLUMB;
+      if (ctype != CTYPE_READING) {
+	 real diff_from_abs90 = fabs(backclin) - M_PI_2;
+	 if (diff_from_abs90 > EPSILON) {
+	    /* FIXME: different message for BackClino? */
+	    compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
+	 } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
+		    diff_from_abs90 >= -EPSILON) {
+	    backctype = CTYPE_INFERPLUMB;
+	 }
       }
+   }
+
+   /* un-infer the plumb if the backsight was just a reading */
+   if (ctype == CTYPE_INFERPLUMB && backctype == CTYPE_READING) {
+       ctype = CTYPE_READING;
    }
 
    if (ctype != CTYPE_OMIT && backctype != CTYPE_OMIT && ctype != backctype) {
