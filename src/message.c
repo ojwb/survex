@@ -441,6 +441,10 @@ msg_cfgpth(void)
    return pth_cfg_files;
 }
 
+#if (OS==WIN32)
+#include <windows.h>
+#endif
+
 void
 msg_init(const char *argv0)
 {
@@ -494,6 +498,19 @@ msg_init(const char *argv0)
 
    /* On Mandrake LANG defaults to C */
    if (strcmp(msg_lang, "C") == 0) msg_lang = "en";
+
+#if (OS==WIN32)
+   if (!msg_lang || !*msg_lang) {
+      LCID locid = GetUserDefaultLCID();
+      if (locid) {
+	 /* FIXME: get extra buffer allocated here - lang is at most 6 inc terminating nul */
+	 int size = GetLocaleInfo(locid, LOCALE_ILANGUAGE, (LPTSTR) NULL, 0) + 1;
+	 msg_lang = osmalloc(sizeof(TCHAR) * size);
+	 GetLocaleInfo(locid, LOCALE_ILANGUAGE, msg_lang, size);
+	 printf("windows gave lang %s\n", msg_lang);
+      }
+   }
+#endif
 
    msg_lang = osstrdup(msg_lang);
 
