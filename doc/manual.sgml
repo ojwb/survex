@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-10-31 22:45:15 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.105 2002-10-31 22:45:15 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-03-04 19:47:12 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.106 2003-03-04 19:47:12 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -2846,8 +2846,8 @@ This data demonstrates a number of useful features of &survexsuite;:
 
 <Para>
 Legs can be measured either way round, which allows the use of
-techniques like "leap-frogging", meaning that the legs
-alternate forwards and backwards.
+techniques like "leap-frogging" (which is where legs
+alternate forwards and backwards).
 </Para>
 
 <Para>
@@ -3180,8 +3180,9 @@ instrument error corrections etc. Here is a typical survey file:
 
 <Para>All the lines starting with ';' are comments, which are ignored
 by &survexsuite;. You can also see the use of 'DOWN' for plumbs, and
-*calibrate tape for dealing with a tape length error. (This tape
-was unusual in being too long!).</Para>
+*calibrate tape for dealing with a tape length error (in this case
+the end of the tape had fallen off so measurements were made from the
+20cm point).</Para>
 
 <programlisting>
 *equate chaos.1 triassic.pt3.8
@@ -3513,19 +3514,19 @@ and other information.
 <?dbhtml filename="future.htm">
 
 <Para>
-We plan to bring &survexsuite; to version 1.0, and then start to
-develop version 2 (codenamed &spud;).  &spud; will evolve out of 
-Survex 1.0 - the GUI framework is likely to be based on aven, with
+Now that &survexsuite; has reached version 1.0, we plan to continue progress
+towards version 2, in a series of steps, evolving out of 
+Survex 1.0.  The GUI framework is being based on aven, with
 the printer drivers and other utility programs being pulled in
 and integrated into the menus.</Para>
 
 <Para>Aven is built on &wxwindows;, which means that can easily support
-Unix and Microsoft Windows.  Mac support is also possible if anyone
-with Mac expertise is interesting in porting &spud;.  There's no MSDOS
-support in &wxwindows; at present, though it may be added.  Support for RISC
-OS is unlikely.</Para>
+Unix and Microsoft Windows.  Mac support is under development (at least
+for OS X).  Support for MSDOS is possible if there's sufficient interest.
+Support for RISC OS is unlikely unless someone very enthusiastic steps
+forward to do the porting work.</Para>
 
-<Para>More information on our plans for &spud; is on the <ulink
+<Para>More information on our plans is on the <ulink
 url="&survexwebsite;">web site</ulink>.
 </Para>
 
@@ -3540,7 +3541,8 @@ welcome comments and suggestions for improvements.</Para>
 <Para>If you want the latest version and don't have net access, please
 enclose a suitably formatted floppy and an SAE.  These days, we'd probably
 struggle to cope with anything other than 3.5" floppies.  &msdos; format is
-easiest for us.</Para>
+easiest for us.  Alternatively, send a blank CDR and we can burn you a
+CD with all the versions on.</Para>
 
 <Address>
 Wookey
@@ -3561,7 +3563,7 @@ Olly Betts
 <City/Cambridge/
 <PostCode/CB4 2SN/
 <Country/UK/
-<Phone/Tel: 01223 513644 (home)/
+<Phone/Tel: 01223 513644 (home and work)/
 <Email/&ollyemail;/
 </Address>
 
