@@ -1096,33 +1096,34 @@ void MainFrm::OnOpen(wxCommandEvent&)
     wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
 		      "*.3d", wxOPEN);
 #else
-    wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
-		      wxString::Format("%s|*.3d"
+    wxFileDialog dlg(this, wxString(msg(/*Select a 3d file to view*/206)),
+		     "", "",
+		     wxString::Format("%s|*.3d"
 #ifdef FILEDIALOG_MULTIGLOBS
-				       ";*.3D"
+				      ";*.3D"
 #endif
-#ifdef FILEDIALOG_MULTIGLOBS
-				       "|%s|*.plt;*.plf"
+#ifdef FILEDIALOG_MULTIGLOBS 
+				      "|%s|*.plt;*.plf"
 #ifndef _WIN32
-				       ";*.PLT;*.PLF"
+				      ";*.PLT;*.PLF"
 #endif
 #else
-				       "|%s|*.pl?" // not ideal...
+				      "|%s|*.pl?" // not ideal...
 #endif
-				       "|%s|*.xyz"
+			      	      "|%s|*.xyz"
 #ifdef FILEDIALOG_MULTIGLOBS
 #ifndef _WIN32
-				       ";*.XYZ"
+				      ";*.XYZ"
 #endif
 #endif
-				       "|%s|%s",
-				       msg(/*Survex 3d files*/207),
-				       /* FIXME TRANSLATE */
-				       "Compass PLT files",
-				       "CMAP XYZ files",
-				       msg(/*All files*/208),
-				       wxFileSelectorDefaultWildcardStr
-				       ), wxOPEN);
+				      "|%s|%s",
+				      msg(/*Survex 3d files*/207),
+				      /* FIXME TRANSLATE */
+				      "Compass PLT files",
+				      "CMAP XYZ files",
+				      msg(/*All files*/208),
+				      wxFileSelectorDefaultWildcardStr),
+		     wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
