@@ -485,12 +485,61 @@ msg_init(const char *argv0)
 
    msg_lang = getenv("SURVEXLANG");
 #ifdef DEBUG
-   fprintf(stderr, "lang = %p (= \"%s\")\n", lang, lang?lang:"(null)");
+   fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
 #endif
 
    if (!msg_lang || !*msg_lang) {
       msg_lang = getenv("LANG");
-      if (!msg_lang || !*msg_lang) msg_lang = DEFAULTLANG;
+      if (!msg_lang || !*msg_lang) {
+#if (OS==WIN32)
+	 LCID locid;
+#endif
+	 msg_lang = DEFAULTLANG;
+#if (OS==WIN32)
+	 locid = GetUserDefaultLCID();
+	 if (locid) {
+	    WORD langid = LANGIDFROMLCID(locid);
+	    switch (PRIMARYLANGID(langid)) {
+	     case LANG_CATALAN:
+	       msg_lang = "ca";
+	       break;
+	     case LANG_ENGLISH:
+	       if (SUBLANGID(langid) == SUBLANG_ENGLISH_US)
+		  msg_lang = "en_US";
+	       else
+		  msg_lang = "en";
+	       break;
+	     case LANG_FRENCH:
+	       msg_lang = "fr";
+	       break;
+	     case LANG_GERMAN:
+	       switch (SUBLANGID(langid)) {
+		case SUBLANG_GERMAN_SWISS:
+		  msg_lang = "de_CH";
+		  break;
+		case SUBLANG_GERMAN:
+		  msg_lang = "de_DE";
+		  break;
+		default:
+		  msg_lang = "de";
+	       }
+	       break;
+	     case LANG_ITALIAN:
+	       msg_lang = "it";
+	       break;
+	     case LANG_PORTUGUESE:
+	       if (SUBLANGID(langid) == SUBLANG_PORTUGUESE_BRAZILIAN)
+		  msg_lang = "pt_BR";
+	       else
+		  msg_lang = "pt";
+	       break;
+	     case LANG_SPANISH:
+	       msg_lang = "es";
+	       break;
+	    }
+	 }
+#endif
+      }
    }
 #ifdef DEBUG
    fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
@@ -498,19 +547,6 @@ msg_init(const char *argv0)
 
    /* On Mandrake LANG defaults to C */
    if (strcmp(msg_lang, "C") == 0) msg_lang = "en";
-
-#if (OS==WIN32)
-   if (!msg_lang || !*msg_lang) {
-      LCID locid = GetUserDefaultLCID();
-      if (locid) {
-	 /* FIXME: get extra buffer allocated here - lang is at most 6 inc terminating nul */
-	 int size = GetLocaleInfo(locid, LOCALE_ILANGUAGE, (LPTSTR) NULL, 0) + 1;
-	 msg_lang = osmalloc(sizeof(TCHAR) * size);
-	 GetLocaleInfo(locid, LOCALE_ILANGUAGE, msg_lang, size);
-	 printf("windows gave lang %s\n", msg_lang);
-      }
-   }
-#endif
 
    msg_lang = osstrdup(msg_lang);
 
