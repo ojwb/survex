@@ -52,7 +52,7 @@ esac])
 if test -n "$AVEN" ; then
   AC_PROG_CXX
   dnl aclocal from automake 1.4 or 1.5 doesn't like next line:
-#  AM_DEPENDENCIES(CXX)
+dnl  AM_DEPENDENCIES(CXX)
   AC_PROG_CXXCPP
 fi
 
@@ -95,6 +95,7 @@ AC_CHECK_PROGS(STRIP, strip, echo "not stripping ")
 AC_CHECK_LIB(m, sqrt)
 
 dnl On Linux, regexp routines are included in recent version of libc
+dnl so check if we need -lrx
 LIBRX=
 AC_CHECK_LIB(rx, re_compile_pattern, LIBRX=-lrx)
 AC_SUBST(LIBRX)
