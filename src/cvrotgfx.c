@@ -13,6 +13,7 @@
 1997.05.06 RISCOS code added
 1997.05.10 rearranged a bit for RISCOS
 1997.05.11 and some more (bloody OSLib)
+1998.10.31 xallegro support
 */
 
 /*#include <limits.h>*/
@@ -29,27 +30,26 @@ int fSwapScreen;
 int mouse_buttons = -3; /*!HACK! special value => "not yet initialised" */
 static int bank = 0;
 
-#if (OS==MSDOS)
+#if (OS==MSDOS) || (OS==UNIX)
 
-#if 0
+# if 0
 /* DOS-specific I/O functions */
-#include <bios.h>
-#include <conio.h>
-#include <dos.h>
-#endif
+#  include <bios.h>
+#  include <conio.h>
+#  include <dos.h>
+# endif
 
-#ifdef MSC
+# ifdef MSC
 /* Microsoft C */
 /*# include <graph.h>*/
 
-#elif defined(JLIB)
+# elif defined(JLIB)
 /* DJGPP + JLIB */
 /*# include "jlib.h"*/
 buffer_rec *BitMap;
 
-#elif defined(ALLEGRO)
-/* DJGPP + Allegro */
-/*# include "allegro.h"*/
+# elif defined(ALLEGRO)
+/* DJGPP + Allegro (or UNIX+allegro) */
 BITMAP *BitMap, *BitMapDraw;
 
 static void set_gui_colors() {
@@ -66,20 +66,20 @@ static void set_gui_colors() {
    gui_bg_color = 1;
 }
 
-#elif defined(__DJGPP__)
+# elif defined(__DJGPP__)
 /* DJGPP + GRX */
 /*# include "grx20.h"*/
 GrContext *BitMap;
 
-#else
+# else
 /* Borland C */
 /*# include <graphics.h>*/
 
-#endif
+# endif
 
-#ifdef NO_MOUSE_SUPPORT
+# ifdef NO_MOUSE_SUPPORT
 /* cvrotgfx_read_mouse() #define-d in cvrotgfx.h */
-#elif defined(JLIB)
+# elif defined(JLIB)
 
 void cvrotgfx_read_mouse( int *pdx, int *pdy, int *pbut ) {
    static int x_old, y_old;
@@ -92,19 +92,30 @@ void cvrotgfx_read_mouse( int *pdx, int *pdy, int *pbut ) {
    y_old = y_new;
 }
 
-#elif defined(ALLEGRO)
+# elif defined(ALLEGRO)
 
 void cvrotgfx_read_mouse( int *pdx, int *pdy, int *pbut ) {
+#if 1 /*(OS==MSDOS)*/
    extern int xcMac, ycMac;
    *pbut = mouse_b;
    *pdx = mouse_x - xcMac/2;
    *pdy = ycMac/2 - mouse_y; /* mouse y goes the wrong way */
    position_mouse( xcMac/2, ycMac/2 );
+# if OS==MSDOS
    *pdx = *pdx * 3 / 2;
    *pdy = *pdy * 3 / 2;
+# endif
+#else
+   static int x_old, y_old;
+   *pbut = mouse_b;
+   *pdx = mouse_x - x_old;
+   *pdy = y_old - mouse_y; /* mouse y goes the wrong way */
+   x_old = mouse_x;
+   y_old = mouse_y;
+#endif
 }
 
-#elif defined(__DJGPP__)
+# elif defined(__DJGPP__)
 
 void cvrotgfx_read_mouse( int *pdx, int *pdy, int *pbut ) {
    GrMouseEvent event;
@@ -118,7 +129,7 @@ void cvrotgfx_read_mouse( int *pdx, int *pdy, int *pbut ) {
    *pbut = event.buttons;
 }
 
-#else
+# else
 
 /* prototype of function from mouse.lib */
 extern void cmousel( int*, int*, int*, int* );
@@ -153,16 +164,16 @@ void cvrotgfx_read_mouse( int *pdx, int *pdy, int *pbut ) {
    *pdy = -*pdy; /* mouse coords in Y up X right please */
 }
 
-#endif
+# endif
 
 /*****************************************************************************/
 
 static int mode_picker = 0;
-#if 0
+# if 0
 int driver = GFX_AUTODETECT;
 int drx = 800;
 int dry = 600;
-#endif
+# endif
 
 /* Called just after message file is read in to allow graphics library */
 /* specific command line switches to be processed */
@@ -250,18 +261,15 @@ int cvrotgfx_init( void ) {
    }
    
    if (!mode_picker) {
+#if (OS==UNIX)
+      set_color_depth(16);
+#endif
       res = set_gfx_mode( GFX_AUTODETECT, 800, 600, 0, 0 );
       /* if we couldn't get that mode, give the mode picker */
       if (res) mode_picker = 1;
    }
 
    if (mode_picker) {
-      int ol_keypressed(void) {
-	 return _bios_keybrd(_KEYBRD_READY);
-      }
-      int ol_readkey(void) {
-	 return _bios_keybrd(_KEYBRD_READ);
-      }
       res = set_gfx_mode( GFX_VGA, 320, 200, 0, 0 );
       if (res) {
 	 allegro_exit();
@@ -270,8 +278,7 @@ int cvrotgfx_init( void ) {
 	 exit(1);
       }
       setup_mouse();
-      /* install a faked up keyboard handler for the picker */
-      install_keyboard_hooks( ol_keypressed, ol_readkey );
+      install_keyboard();
       clear(screen);
       install_timer();
       set_gui_colors();
@@ -283,6 +290,7 @@ int cvrotgfx_init( void ) {
 	 exit(1);
       }
       remove_timer();
+      remove_mouse();
       remove_keyboard();
 /*   set_palette( desktop_palette ); */
       res = set_gfx_mode( c, w, h, 0, 0 );
@@ -306,8 +314,9 @@ int cvrotgfx_init( void ) {
       fatal(81,NULL,NULL,0);
    }
 
-   /* This makes sure the mouse gets set up if we didn't use the picker */
-   if (mouse_buttons == -3) setup_mouse();
+   /* re-setup mouse to make sure it picks up the correct screen size */
+   setup_mouse();
+   install_keyboard();
 
    colText = 255;
    colDraw = 1;
@@ -542,8 +551,7 @@ int cvrotgfx_final( void ) {
    return 1;
 }
 
-#if 0 /*def ALLEGRO*/ /* !HACK! need to sort out return values */
-/* !HACK! use _bios_keybd() instead? */
+#ifdef ALLEGRO
 /* returns a keycode - if enhanced keycode then 0x100 added; -1 if none */
 int cvrotgfx_get_key( void ) {
    int keycode;
@@ -552,7 +560,7 @@ int cvrotgfx_get_key( void ) {
    keycode = readkey();
    /* flush the keyboard buffer to stop key presses backing up */
    clear_keybuf();
-   return keycode;
+   return keycode & 0xff; /* !HACK! better to use scan code in higher bits? */
 }
 #else
 /* !HACK! use _bios_keybd() instead? */
@@ -576,7 +584,7 @@ int cvrotgfx_get_key( void ) {
 void cvrotgfx_beep( void ); /* make a beep */
 #endif
 
-#ifdef __DJGPP__
+#if defined(__DJGPP__) || (OS==UNIX)
 static int last_x = 0, last_y = 0;
 extern void cvrotgfx_moveto( int X, int Y ) {
    last_x = X;

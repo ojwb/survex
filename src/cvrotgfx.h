@@ -11,6 +11,7 @@
 1997.05.08 fettled to work on RISCOS again
 1997.05.10 protected against multiple inclusion
 1997.05.11 better solution to OSLib problems
+1998.10.31 xallegro support
 */
 
 #define ALLEGRO 1
@@ -22,7 +23,53 @@
 
 extern int mouse_buttons;
 
-#if (OS==MSDOS)
+#if (OS==UNIX)
+
+/* UNIX + Allegro */
+# include "allegro.h"
+# define ALLEGRO 1
+extern BITMAP *BitMap, *BitMapDraw;
+
+# define CVROTGFX_LBUT 1 /* mask for left mouse button */
+# define CVROTGFX_RBUT 2 /* mask for right mouse button (if present) */
+# define CVROTGFX_MBUT 4 /* mask for middle mouse button (if present) */
+
+extern int cvrotgfx_parse_cmdline( int *pargc, char **argv );
+extern int cvrotgfx_init( void );
+extern int cvrotgfx_pre_main_draw( void );
+extern int cvrotgfx_post_main_draw( void );
+extern int cvrotgfx_pre_supp_draw( void );
+extern int cvrotgfx_post_supp_draw( void );
+extern int cvrotgfx_final( void );
+extern int cvrotgfx_get_key( void );
+extern void cvrotgfx_read_mouse( int *pdx, int *pdy, int *pbut );
+extern void (cvrotgfx_beep)( void ); /* make a beep */
+extern void cvrotgfx_moveto( int X, int Y );
+extern void cvrotgfx_lineto( int X, int Y );
+
+# define cvrotgfx_beep() NOP /* !HACK! */
+
+# ifdef NO_MOUSE_SUPPORT
+/* emulate a dead mouse */
+#  define cvrotgfx_read_mouse(PDX,PDY,PBUT) NOP
+# endif
+
+/*# define cleardevice() GrClearContext(0)*/
+# ifdef NO_TEXT
+#  define outtextxy(X,Y,SZ) NOP
+# else
+#  define outtextxy(X,Y,SZ) BLK(\
+ extern int colText;\
+ textout( BitMapDraw, font, (SZ), (X), (Y), colText );\
+ )
+# endif
+# define set_tcolour(X) BLK( extern int colText; colText = (X); )
+# define set_gcolour(X) BLK( extern int colDraw; colDraw = (X); )
+# define text_xy(X,Y,S) outtextxy(12+(X)*12,12+(Y)*12,S)
+
+# define shift_pressed() 0 /* !HACK! */
+
+#elif (OS==MSDOS)
 
 /* DOS-specific I/O functions */
 # include <bios.h>
