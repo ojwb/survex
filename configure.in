@@ -4,14 +4,6 @@ AM_INIT_AUTOMAKE(survex, 0.92)
 AM_CONFIG_HEADER(config.h)
 
 AC_DEFINE(COPYRIGHT_MSG,"Copyright (C) 1990-1999 Olly Betts")
-if test "x$prefix" != xNONE; then
-   eval "expanded_datadir=$datadir"
-else
-   prefix="$ac_default_prefix"
-   eval "expanded_datadir=$datadir"
-   prefix=NONE
-fi
-AC_DEFINE_UNQUOTED(SURVEXHOME,"$expanded_datadir/$PACKAGE")
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -109,4 +101,4 @@ if test "$GCC" = yes; then
 fi
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile hto/Makefile
- tests/Makefile)
+ tests/Makefile src/svxhome.h)
