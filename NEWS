@@ -1,3 +1,6 @@
+* Experimental support for Chinese (LANG=zh) - only a few messages are
+  currently translated.
+
 Changes in 1.0.12:
 
 * diffpos: fixed to work on 64bit architectures.

@@ -58,6 +58,8 @@ window or the info panel).
 
 <li>aven for MSDOS?
 
+<li>see if we can fix to build under wxWindows 2.3 with WXWIN_COMPATIBILITY_2_2
+set to 0 in setup.h, while still building on wxWindows 2.2.
 </ul>
 
 <H2>Printing</H2>
@@ -115,8 +117,7 @@ and then the prefix of a leg == prefix of each end...?
 2 3 {10.16 10.17} 127 {+06 +05}
 3 4 11.98 007 {+03 +03}
 </pre>
-Also, should we add "*set bra {", "*set ket }" or similar?  Or is *set kind
-of deprecated?  Implement as extension to number format?  Then we can easily
+Implement as extension to number format?  Then we can easily
 allow any suitable numeric value to be repeated, but bear in mind that bearings
 don't average like normal numbers...
 </ul>
@@ -214,6 +215,9 @@ bar.2 moved by (-0.02, -0.05, 0.03)
 <li>MacOS X packaging
 
 <li>look at solution by QR factorisation in matrix.c more
+
+<li>consider disabling the more expensive asserts - turning them all off
+speeds up cavern by about 10%.
 
 </ul>
 
