@@ -1,22 +1,24 @@
-* German translation now completely up-to-date.
-
-* survex: removed conversion wrapper - you should use "cavern file.svx"
-  instead of "survex file.svx".
+Changes in 1.0.0:
 
 * Fixed --survey option supported by many programs which was broken in 0.99.
+
+* aven: altered colours of "fixed points" and "entrances" buttons to match
+  the coloured blobs used to indicate them.
 
 * (MS Windows Version): aven: changed current point highlighting in the
   survey tree to use a light grey background rather than bold (bold causes
   the text to "wriggle" as the highlight runs up or down).
 
-* aven: altered colours of "fixed points" and "entrances" buttons to match
-  the coloured blobs used to indicate them.
-
 * (MS Windows version): file icons now have transparent backgrounds.
+
+* survex: removed conversion wrapper - you should use "cavern file.svx"
+  instead of "survex file.svx".
 
 * (Unix version): GCC 2.95 sometimes fails with an internal error when trying
   to compile gfxcore.cc - if it does, the Makefile will now try recompiling
   with a lower optimisation level.
+
+* German translation now completely up-to-date.
 
 Changes in 0.99:
 

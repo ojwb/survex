@@ -1,3 +1,11 @@
+survex (1.0.0) unstable; urgency=low
+
+  * Compiling gfxcore.cc often causes an ICE in GCC 2.95, so if the compile
+    fails on this source we now retry with -O instead of -O2.  Hopefully
+    this'll get use a build on all architectures...
+
+ -- Wookey <wookey@survex.com>  Sun, 23 Dec 2001 01:58:55 +0000
+
 survex (0.99.10) unstable; urgency=low
 
   * Aven updates
