@@ -194,7 +194,7 @@ check_intersection(long x_p, long y_p)
    /* whole line is above, left, right, or below page */
    if (mask_t & mask_p) return 0;
 
-   if (mask_t == 0) mask_t = mask_p;
+   if (mask_t == 0) mask_t = mask_p; /*FIXME : noop?*/
    if (mask_t & U) {
       double v = (double)(y_p - ypPageDepth) / (y_p - y_t);
       return v >= 0 && v <= 1;
