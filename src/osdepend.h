@@ -110,6 +110,7 @@ typedef short w16;
 #   ifdef floor
 #    undef floor
 #   endif
+/* DJGPP's ceil and floor are bugged if FP is emulated, so do it ourselves */
 #   define ceil(X) svx_ceil((X))
 #   define floor(X) svx_floor((X))
 extern double svx_ceil(double);
