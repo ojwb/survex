@@ -52,7 +52,8 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
     EVT_RIGHT_UP(GfxCore::OnRButtonUp)
     EVT_MOTION(GfxCore::OnMouseMove)
     EVT_SIZE(GfxCore::OnSize)
-    EVT_TIMER(TIMER_ID, GfxCore::OnTimer)
+  //    EVT_TIMER(TIMER_ID, GfxCore::OnTimer)
+    EVT_IDLE(GfxCore::OnTimer)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent) :
@@ -1179,7 +1180,7 @@ void GfxCore::OnMoveWestUpdate(wxUpdateUIEvent& cmd)
 
 void GfxCore::StartTimer()
 {
-    m_Timer.Start(50);
+    m_Timer.Start(100);
 }
 
 void GfxCore::StopTimer()
@@ -1189,7 +1190,7 @@ void GfxCore::StopTimer()
 
 void GfxCore::OnStartRotation(wxCommandEvent&) 
 {
-    StartTimer();
+  //    StartTimer();
     m_Rotating = true;
 }
 
@@ -1201,7 +1202,7 @@ void GfxCore::OnStartRotationUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnStopRotation(wxCommandEvent&) 
 {
     if (!m_SwitchingToElevation && !m_SwitchingToPlan) {
-        StopTimer();
+      //        StopTimer();
     }
 
     m_Rotating = false;
@@ -1314,7 +1315,7 @@ void GfxCore::Defaults()
     m_ScaleCrossesOnly = false;
     SetScale(m_InitialScale);
 
-    StopTimer();
+    //    StopTimer();
     m_FreeRotMode = false;
     m_TiltAngle = 0.0;
     m_PanAngle = 0.0;
@@ -1343,7 +1344,7 @@ void GfxCore::Elevation()
     // Switch to elevation view.
 
     m_SwitchingToElevation = true;
-    StartTimer();
+    //    StartTimer();
 }
 
 void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd) 
@@ -1386,7 +1387,7 @@ void GfxCore::Plan()
     // Switch to plan view.
 
     m_SwitchingToPlan = true;
-    StartTimer();
+    //  StartTimer();
 }
 
 void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd) 
@@ -1486,20 +1487,20 @@ void GfxCore::OnTimer(wxTimerEvent& event)
         TurnCave(m_RotationStep);
     }
     // When switching to plan view...
-    else if (m_SwitchingToPlan) {
+    if (m_SwitchingToPlan) {
         if (m_TiltAngle == M_PI / 2.0) {
 	    if (!m_Rotating) {
-	        StopTimer();
+	      //	        StopTimer();
 	    }
 	    m_SwitchingToPlan = false;
 	}
 	TiltCave(M_PI / 30.0);
     }
     // When switching to elevation view;;;
-    else if (m_SwitchingToElevation) {
+    if (m_SwitchingToElevation) {
         if (m_TiltAngle == 0.0) {
 	    if (!m_Rotating) {
-	        StopTimer();
+	      //	        StopTimer();
 	    }
 	    m_SwitchingToElevation = false;
 	}
@@ -1512,7 +1513,7 @@ void GfxCore::OnTimer(wxTimerEvent& event)
 	    }
 	    if (m_TiltAngle >= 0.0) {
 	        if (!m_Rotating) {
-		    StopTimer();
+		  //		    StopTimer();
 		}
 		m_SwitchingToElevation = false;
 	    }
@@ -1527,7 +1528,7 @@ void GfxCore::OnTimer(wxTimerEvent& event)
 	    
 	    if (m_TiltAngle <= 0.0) {
 	        if (!m_Rotating) {
-		    StopTimer();
+		  //		    StopTimer();
 		}
 		m_SwitchingToElevation = false;
 	    }
