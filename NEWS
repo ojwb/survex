@@ -1,3 +1,5 @@
+Changes in 0.95-prerelease1:
+
 * cavern: *fix with error values (one for same all round, two for horizontal
   and vertical, three for x, y, z)
 

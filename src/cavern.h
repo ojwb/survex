@@ -194,7 +194,7 @@ typedef struct Pos {
    uchar fFixed; /* flag indicating if station is a fixed point */
 #endif
 #ifdef NEW3DFORMAT
-  long id;
+   INT32_T id;
 #endif
 } pos;
 

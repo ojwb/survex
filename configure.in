@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl Need 2.13 or later for 3 argument version of AC_DEFINE
 AC_PREREQ(2.13)
 AC_INIT(src/caverot.c)
-AM_INIT_AUTOMAKE(survex, 0.94)
+AM_INIT_AUTOMAKE(survex, 0.95)
 AM_CONFIG_HEADER(config.h)
 
 dnl keep this on two lines like this - miniam.pl relies on this

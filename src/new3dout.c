@@ -72,7 +72,7 @@ uchar length;
 uchar ltag;
 char *tag;
   if (pid->id == 0) {
-    pid->id = (w32)statcount;
+    pid->id = (INT32_T)statcount;
     tag = pre->ident;
     ltag = strlen(tag);
     length = ltag + 12 + 4 + 1;
