@@ -54,7 +54,14 @@ bool Aven::OnInit()
     // users expect it to be
     wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
     // wxMac is supposed to remove this magic command line option (which
-    // Finder passes), but it doesn't seem too...
+    // Finder passes), but the code in 2.4.2 is bogus.  It just decrements
+    // argc rather than copying argv down.  But luckily it also fails to
+    // set argv[argc] to NULL so we can just recalculate argc, then remove
+    // the -psn_* switch ourselves.
+    if (argv[argc]) {
+	argc = 1;
+	while (argv[argc]) ++argc;
+    }
     if (argc > 1 && strncmp(argv[1], "-psn_", 5) == 0) {
 	--argc;
 	memmove(argv + 1, argv + 2, argc * sizeof(char *));
