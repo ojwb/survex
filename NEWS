@@ -36,6 +36,9 @@
 * print*: If restricting to a subsurvey, use that survey name for the
   title of the printout.
 
+* cavern: complain about *export-ing or *entrance-ing a station which
+  is never used.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

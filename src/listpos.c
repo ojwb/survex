@@ -69,7 +69,16 @@ static int icOrderMac;
 static void
 node_stat(prefix *p)
 {
-   if (p->pos) {
+   if (!p->pos) {
+      if (!TSTBIT(p->sflags, SFLAGS_SURVEY)) {
+	 /* p doesn't have an associated position, but isn't a survey.
+	  * This means it was referred to in "*entrance" and/or "*export"
+	  * but not elsewhere.
+	  */
+	  warning(/*Station `%s' referred to by *entrance or *export but never used*/190,
+		  sprint_prefix(p));
+      }
+   } else {
       int order;
       ASSERT(pfx_fixed(p));
 

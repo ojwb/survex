@@ -1599,7 +1599,9 @@ pt:189 `NOT', `DUPLICATE', `SPLAY' ou `SURFACE' eram esperados
 ca:189 Esperant `NOT', `DUPLICATE', `SPLAY', o `SURFACE'
 es:189 Esperando `NOT', `DUPLICATE', `SPLAY', o `SURFACE'
 it:189 Atteso `NOT', `DUPLICATE', `SPLAY' o `SURFACE'
-# XXX190-191
+# TRANSLATE
+en:190 Station `%s' referred to by *entrance or *export but never used
+# XXX191
 # c.f. 22
 en:192 No matching BEGIN
 fr:192 BEGIN manquant

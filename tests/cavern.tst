@@ -32,7 +32,7 @@ export SURVEXHOME
  multinosurv multinormalbad multibug\
  cmd_title cmd_titlebad cmd_dummy cmd_infer\
  cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
- plumb"}}
+ plumb unusedstation"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -132,6 +132,7 @@ for file in $TESTS ; do
   cmd_flags) pos=no ; warn=0 ;;
   bad_cmd_flags) pos=fail ; error=19 ;;
   plumb) pos=yes ; warn=0 ;;
+  unusedstation) pos=no ; warn=2 ;;
   *) file='' ;;
   esac
 
