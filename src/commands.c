@@ -1236,8 +1236,8 @@ cmd_title(void)
 
 static sztok case_tab[] = {
      {"PRESERVE", OFF},
-     {"TOLOWER",  UPPER},
-     {"TOUPPER",  LOWER},
+     {"TOLOWER",  LOWER},
+     {"TOUPPER",  UPPER},
      {NULL,       -1}
 };
 
@@ -1250,7 +1250,7 @@ cmd_case(void)
    if (setting != -1) {
       pcs->Case = setting;
    } else {
-      compile_error(/*Found `%s', expecting `OFF', `UPPER', or `LOWER'*/10,
+      compile_error(/*Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'*/10,
 		    buffer);
       skipline();
    }

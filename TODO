@@ -255,8 +255,7 @@ improve messages given when a signal is received (eg more precise
 reporting of 'Arithmetic error' as 'Divide by zero', 'Negative root', etc)
 
 Tests these commands:
- CASE DATA DEFAULT (deprecated) FIX (with sds) FLAGS INFER
- LRUD PREFIX (deprecated) SD SET SOLVE (one test) TITLE TRUNCATE
+ DATA FIX (with sds) FLAGS INFER LRUD (deprecated) SD SET SOLVE (1 test) TITLE
 
 ? Allow F(orward)/B(ack) in data - checked somehow (?)
 

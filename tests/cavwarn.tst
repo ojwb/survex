@@ -10,7 +10,7 @@ export SURVEXHOME
 
 # tests which should produce warnings...
 # expect one warning unless ":<number>" is appended
-TESTS="self_loop self_eq_loop reenterwarn:2"
+TESTS="self_loop self_eq_loop reenterwarn:2 cmd_default:3 cmd_prefix:1"
 
 for t in $TESTS ; do
   file=`echo $t|cut -f 1 -d :`

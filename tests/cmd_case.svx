@@ -1,0 +1,10 @@
+*fix A 0 0 0
+*Case PRESERVE
+a B 1 0 0
+*begin ; also check begin/end preserves original case setting
+*CASE ToUpper
+B c 1 0 0
+*end
+C d 1 0 0
+*case tolower
+D e 1 0 0

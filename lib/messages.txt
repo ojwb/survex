@@ -176,16 +176,16 @@ ca:  9 S'espera un camp numeric
 es:  9 Se espera un campo num&eacute;rico
 it:  9 Questo campo &eacute; numerico
 # 10 c.f. 31, 32
-en: 10 Found `%s', expecting `OFF', `UPPER', or `LOWER'
-fr: 10 Vous avez &eacute;crit `%s'; on attendait `OFF', `UPPER', ou `LOWER'
+en: 10 Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'
+fr: 10 Vous avez &eacute;crit `%s'; on attendait `PRESERVE', `TOUPPER', ou `TOLOWER'
 # Gerhard: "`%s' gelesen" means "have read `%s'" - "gefunden", the literal
 # equivalent, doesn't sound quite right here
 # NB there is no comma before "oder"
-de: 10 `%s' gelesen, `OFF', `UPPER' oder `LOWER' erwartet
-pt: 10 Encontrado `%s' quando `OFF', `UPPER' ou `LOWER' eram esperados
-ca: 10 Trobat `%s', esperant `OFF', `UPPER', o `LOWER'
-es: 10 Encontrado `%s', esperando `OFF', `UPPER', o `LOWER'
-it: 10 Trovato `%s', atteso `OFF', `UPPER' o `LOWER'
+de: 10 `%s' gelesen, `PRESERVE', `TOUPPER' oder `TOLOWER' erwartet
+pt: 10 Encontrado `%s' quando `PRESERVE', `TOUPPER' ou `TOLOWER' eram esperados
+ca: 10 Trobat `%s', esperant `PRESERVE', `TOUPPER', o `TOLOWER'
+es: 10 Encontrado `%s', esperando `PRESERVE', `TOUPPER', o `TOLOWER'
+it: 10 Trovato `%s', atteso `PRESERVE', `TOUPPER' o `TOLOWER'
 en: 11 Bug in program detected! Please report this to the authors
 fr: 11 Bug d&eacute;tect&eacute; dans le programme! Signaler ce message &agrave; l'auteur S.V.P.
 de: 11 Fehler im Programm, bitte informieren Sie die Programmierer dar&uuml;ber

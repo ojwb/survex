@@ -1,0 +1,6 @@
+*fix 1 0 0 0
+1 2 1 0 0
+; these should generate one warning each:
+*default calibrate
+*default data
+*default units

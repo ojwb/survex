@@ -45,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-03-28 22:14:54 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.18 2001-03-28 22:14:54 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-03-28 23:02:37 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.19 2001-03-28 23:02:37 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1435,7 +1435,7 @@ zero error 0.0
 
 <VarListEntry><Term>Syntax</Term>
 
-<listitem><para>*case off|upper|lower</para></listitem>
+<listitem><para>*case preserve|toupper|tolower</para></listitem>
 
 </VarListEntry>
 
@@ -1445,7 +1445,7 @@ zero error 0.0
 <programlisting>
 *begin bobsbit
 ; Bob insists on using case sensitive station names
-*case off
+*case preserve
 1 2   10.23 106 -02
 2 2a   1.56 092 +10
 2 2A   3.12 034 +02

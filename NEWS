@@ -11,7 +11,10 @@
 
 * Updated translations: pt de
 
-* Added tests for *export and many other cases.
+* Added tests for most commands and various other cases.
+
+* cavern: fixed *case (correct args are PRESERVE/TOUPPER/TOLOWER) and
+  upper/lower were swapped.
 
 Changes in 0.97-prerelease1:
 

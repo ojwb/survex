@@ -32,4 +32,6 @@ hanging_cpt.svx\
 self_loop.svx self_eq_loop.svx badinc.svx badinc2.svx export.svx export2.svx\
 singlefix.svx singlefix.pos includecomment.svx reenterwarn.svx\
 angleunits.svx angleunits.pos\
-lengthunits.svx lengthunits.pos
+lengthunits.svx lengthunits.pos\
+cmd_default.svx cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
+cmd_case.svx cmd_case.pos
