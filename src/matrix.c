@@ -146,26 +146,29 @@ build_matrix(node *list, long n, pos **stn_tab)
 	 var e;
 	 d a;
 #endif
-#if DEBUG_MATRIX_BUILD
+	 int f, t;
 	 int dirn;
-
+#if DEBUG_MATRIX_BUILD
 	 print_prefix(stn->name);
-	 printf(" used: %d artic %d colour %d\n",
+	 printf(" used: %d colour %ld\n",
 		(!!stn->leg[2]) << 2 | (!!stn -> leg[1]) << 1 | (!!stn->leg[0]),
-		stn->fArtic, stn->colour);
+		stn->colour);
 
 	 for (dirn = 0; dirn <= 2; dirn++)
  	    if (USED(stn,dirn)) {
+#ifdef NO_COVARIANCES
 	       printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
 		      stn->leg[dirn]->v[0], stn->leg[dirn]->l.reverse);
+#else
+	       printf("Leg %d, vx=%f, reverse=%d, to ", dirn,		      
+		      stn->leg[dirn]->v[0][0], stn->leg[dirn]->l.reverse);
+#endif
 	       print_prefix(stn->leg[dirn]->l.to->name);
 	       putnl();
 	    }
 	 putnl();
 #endif /* DEBUG_MATRIX_BUILD */
-	 int f, t;
-	 int dirn;
-/*         print_prefix(stn->name); putnl(); */
+
 	 if (fixed(stn)) {
 	    for (dirn = 2; dirn >= 0; dirn--)
 	       if (USED(stn,dirn) && data_here(stn->leg[dirn])) {
@@ -185,7 +188,7 @@ build_matrix(node *list, long n, pos **stn_tab)
 			M(t,t) += e;
 			B[t] += e * (POS(stn, dim) + stn->leg[dirn]->d[dim]);
 #if DEBUG_MATRIX_BUILD
-			printf("--- Dealing with stn fixed at %lf\n",
+			printf("--- Dealing with stn fixed at %f\n",
 			       POS(stn, dim));
 #endif /* DEBUG_MATRIX_BUILD */
 		     }
@@ -203,7 +206,7 @@ build_matrix(node *list, long n, pos **stn_tab)
 			   B[t * FACTOR + i] += b[i];
 			}
 #if DEBUG_MATRIX_BUILD
-			printf("--- Dealing with stn fixed at (%lf, %lf, %lf)\n",
+			printf("--- Dealing with stn fixed at (%f, %f, %f)\n",
 			       POS(stn, 0), POS(stn, 1), POS(stn, 2));
 #endif /* DEBUG_MATRIX_BUILD */
 		     }
@@ -337,9 +340,9 @@ find_stn_in_tab(node *stn)
 #endif
 #if 0
 	 print_prefix(stn->name);
-	 printf(" used: %d artic %d colour %d\n",
+	 printf(" used: %d colour %d\n",
 		(!!stn->leg[2])<<2 | (!!stn->leg[1])<<1 | (!!stn->leg[0]),
-		stn->fArtic, stn->colour );
+		stn->colour );
 #endif
 	 fatalerror(/*Bug in program detected! Please report this to the authors*/11);
       }
@@ -496,7 +499,7 @@ sor(real FAR *M, real *B, long n)
       t += X[row] / M(row, row);
       for (col = row + 1; col < n; col++)
 	 t += M(col, row) * X[col];
-      printf("[ %lf %lf ]\n", t, B[row]);
+      printf("[ %f %f ]\n", t, B[row]);
    }
 #endif
 
