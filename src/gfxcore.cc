@@ -40,14 +40,18 @@ static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
 static const int CLINO_OFFSET_X = INDICATOR_OFFSET_X + INDICATOR_BOX_SIZE + INDICATOR_GAP;
-static const int DEPTH_BAR_OFFSET_X = 15;
-static const int DEPTH_BAR_OFFSET_Y = 15;
+static const int DEPTH_BAR_OFFSET_X = 16;
+static const int DEPTH_BAR_EXTRA_LEFT_MARGIN = 2;
 static const int DEPTH_BAR_BLOCK_WIDTH = 20;
 static const int DEPTH_BAR_BLOCK_HEIGHT = 15;
-static const int DEPTH_BAR_MARGIN = 8;
+static const int DEPTH_BAR_MARGIN = 6;
+static const int DEPTH_BAR_OFFSET_Y = 16 + DEPTH_BAR_MARGIN;
 static const int TICK_LENGTH = 4;
 static const int DISPLAY_SHIFT = 50;
 static const int TIMER_ID = 0;
+static const int SCALE_BAR_OFFSET_X = 15;
+static const int SCALE_BAR_OFFSET_Y = 12;
+static const int SCALE_BAR_HEIGHT = 12;
 
 #define DELETE_ARRAY(x) { assert(x); delete[] x; }
 
@@ -71,6 +75,9 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_InitialisePending(false)
 {
     m_LastDrag = drag_NONE;
+    m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
+    m_ScaleBar.offset_y = SCALE_BAR_OFFSET_Y;
+    m_ScaleBar.width = 0;
     m_DraggingLeft = false;
     m_DraggingMiddle = false;
     m_DraggingRight = false;
@@ -110,7 +117,7 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Brushes.black.SetColour(0, 0, 0);
     m_Brushes.white.SetColour(255, 255, 255);
     m_Brushes.grey.SetColour(100, 100, 100);
-    m_Brushes.dgrey.SetColour(70, 70, 70);
+    m_Brushes.dgrey.SetColour(90, 90, 90);
     m_Brushes.indicator1.SetColour(150, 205, 224);
     m_Brushes.indicator2.SetColour(114, 149, 160);
 
@@ -786,9 +793,11 @@ void GfxCore::DrawDepthbar()
 
     m_DrawDC.SetPen(m_Pens.black);
     m_DrawDC.SetBrush(m_Brushes.dgrey);
-    m_DrawDC.DrawRectangle(x_min - DEPTH_BAR_MARGIN, DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN,
-			   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*2,
-			   height*m_Bands + DEPTH_BAR_MARGIN*2);
+    m_DrawDC.DrawRectangle(x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
+			   DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
+			   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
+			     DEPTH_BAR_EXTRA_LEFT_MARGIN,
+			   height*m_Bands + DEPTH_BAR_MARGIN*4);
 
     for (int band = 0; band <= m_Bands; band++) {
         if (band < m_Bands) {
@@ -797,7 +806,7 @@ void GfxCore::DrawDepthbar()
 	    m_DrawDC.DrawRectangle(x_min, y - height, width, height);
 	}
 
-	m_DrawDC.DrawText(strs[band], x_min + width + 5, y - (FONT_SIZE / 2));
+	m_DrawDC.DrawText(strs[band], x_min + width + 5, y - (FONT_SIZE / 2) - 1);
 
 	y -= height;
     }
@@ -824,11 +833,12 @@ void GfxCore::DrawScalebar()
 
     // Actual size of the thing in pixels:
     int size = int(size_snap * m_Params.scale);
+    m_ScaleBar.width = size;
     
     // Draw it...
-    int end_x = 15;
-    int height = 12;
-    int end_y = m_YSize/2 - 15 - height;
+    int end_x = m_ScaleBar.offset_x;
+    int height = SCALE_BAR_HEIGHT;
+    int end_y = m_YSize - m_ScaleBar.offset_y - height;
     int interval = size / 10;
 
     bool solid = true;
@@ -837,7 +847,7 @@ void GfxCore::DrawScalebar()
         
 	m_DrawDC.SetPen(solid ? m_Pens.grey : m_Pens.white);
 	m_DrawDC.SetBrush(solid ? m_Brushes.grey : m_Brushes.white);
-        m_DrawDC.DrawRectangle(x, m_YCentre + end_y, interval + 2, height);
+        m_DrawDC.DrawRectangle(x, end_y, interval + 2, height);
 	
         solid = !solid;
     }
@@ -870,11 +880,11 @@ void GfxCore::DrawScalebar()
 
     m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
     m_DrawDC.SetTextForeground(TEXT_COLOUR);
-    m_DrawDC.DrawText(str, end_x, m_YCentre + end_y - FONT_SIZE - 4);
+    m_DrawDC.DrawText(str, end_x, end_y - FONT_SIZE - 4);
 
     int text_width, text_height;
     m_DrawDC.GetTextExtent(str2, &text_width, &text_height);
-    m_DrawDC.DrawText(str2, end_x + size - text_width, m_YCentre + end_y - FONT_SIZE - 4);
+    m_DrawDC.DrawText(str2, end_x + size - text_width, end_y - FONT_SIZE - 4);
 }
 
 //
@@ -884,6 +894,8 @@ void GfxCore::DrawScalebar()
 void GfxCore::OnLButtonDown(wxMouseEvent& event)
 {
     m_DraggingLeft = true;
+    m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
+    m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y;
     m_DragStart = wxPoint(event.GetX(), event.GetY());
 }
 
@@ -1164,6 +1176,24 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		      TiltCave(-m_TiltAngle);
 		      m_MouseOutsideElev = true;
 		  }
+	      }
+	      else if ((m_LastDrag == drag_NONE &&
+		       point.x >= m_ScaleBar.offset_x &&
+		       point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
+		       point.y <= m_YSize - m_ScaleBar.offset_y &&
+		       point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT) ||
+		       m_LastDrag == drag_SCALE) {
+ 	 	  if (point.x < 0) point.x = 0;
+		  if (point.y < 0) point.y = 0;
+		  if (point.x > m_XSize) point.x = m_XSize;
+		  if (point.y > m_YSize) point.y = m_YSize;
+		  m_LastDrag = drag_SCALE;
+		  int x_inside_bar = m_DragStart.x - m_ScaleBar.drag_start_offset_x;
+		  int y_inside_bar = m_YSize - m_ScaleBar.drag_start_offset_y - m_DragStart.y;
+		  m_ScaleBar.offset_x = point.x - x_inside_bar;
+		  m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
+		  m_RedrawOffscreen = true;
+		  Refresh(false);
 	      }
 	      else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
 		  m_LastDrag = drag_MAIN;

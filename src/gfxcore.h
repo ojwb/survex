@@ -60,6 +60,14 @@ class GfxCore : public wxWindow {
         int* num_segs;
     };
 
+    struct {
+        int offset_x;
+        int offset_y;
+        int width;
+        int drag_start_offset_x;
+        int drag_start_offset_y;
+    } m_ScaleBar;
+
     LabelFlags* m_LabelGrid;
     Matrix4 m_RotationMatrix;
     bool m_DraggingLeft;
@@ -105,7 +113,7 @@ class GfxCore : public wxWindow {
     PlotData* m_PlotData;
     wxString* m_Labels;
     bool m_InitialisePending;
-    enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV } m_LastDrag;
+    enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV, drag_SCALE } m_LastDrag;
     bool m_MouseOutsideCompass;
     bool m_MouseOutsideElev;
 

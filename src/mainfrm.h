@@ -194,6 +194,7 @@ public:
     void OnViewCompass(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewCompass(event); }
     void OnViewClino(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewClino(event); }
     void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotation(event); }
+    void OnLButtonUp(wxMouseEvent& event) { if (m_Gfx) printf("Caught Mouse Event!\n"); }
     // end of horrible bodges
 
     void OnToggleStatusbar(wxCommandEvent& event);

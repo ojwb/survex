@@ -41,6 +41,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
 
     EVT_PAINT(MainFrm::OnPaint)
+    EVT_LEFT_UP(MainFrm::OnLButtonUp)
 
     EVT_MENU(menu_ROTATION_START, MainFrm::OnStartRotation)
     EVT_MENU(menu_ROTATION_STOP, MainFrm::OnStopRotation)
@@ -147,10 +148,10 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 		    "Rotate the cave one step clockwise");
 
     wxMenu* orientmenu = new wxMenu;
-    orientmenu->Append(menu_ORIENT_MOVE_NORTH, "&North Upwards\tN", "Move the survey so North is up the screen.");
-    orientmenu->Append(menu_ORIENT_MOVE_EAST, "&East Upwards\tE", "Move the survey so East is up the screen.");
-    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, "&South Upwards\tS", "Move the survey so South is up the screen.");
-    orientmenu->Append(menu_ORIENT_MOVE_WEST, "&West Upwards\tW", "Move the survey so West is up the screen");
+    orientmenu->Append(menu_ORIENT_MOVE_NORTH, "&View North\tN", "Move the survey so it aims North");
+    orientmenu->Append(menu_ORIENT_MOVE_EAST, "&View East\tE", "Move the survey so it aims East");
+    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, "&View South\tS", "Move the survey so it aims South");
+    orientmenu->Append(menu_ORIENT_MOVE_WEST, "&View West\tW", "Move the survey so it aims West");
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_SHIFT_LEFT, "Shift Survey &Left\tLeft Arrow",
 		       "Shift the survey to the left");
