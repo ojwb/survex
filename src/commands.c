@@ -360,7 +360,7 @@ static void
 set_prefix(void)
 {
    pcs->Prefix = read_prefix(fFalse);
-   /* FIXME warn that this command is now deprecated */
+   compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
 }
 
 static void
@@ -531,8 +531,8 @@ equate_list(void)
       }
       
       if (name1 == name2) {
-	 /* e.g. *equate "fred fred" */
-	 /* FIXME: complain! */
+	 /* catch something like *equate "fred fred" */
+	 compile_warning(/*Station equated to itself*/33);
 	 /* FIXME: this won't catch: "*equate fred jim fred" */
       }
       fOnlyOneStn = fFalse;
@@ -815,7 +815,7 @@ calibrate(void)
 static void
 set_default(void)
 {
-   /* FIXME warn this command is deprecated */
+   compile_warning(/**default is deprecated - use *calibrate/data/style/units with default argument instead*/20);
    get_token(); 
    if (EQ("CALIBRATE")) {
       default_calib(pcs);
