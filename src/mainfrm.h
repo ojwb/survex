@@ -117,6 +117,7 @@ enum {
     menu_CTL_REVERSE,
     menu_CTL_CANCEL_DIST_LINE,
     menu_HELP_ABOUT,
+    textctrl_FIND,
     button_FIND,
     button_HIDE
 };
@@ -190,19 +191,12 @@ class MainFrm : public wxFrame {
     int m_NumEntrances;
     int m_NumFixedPts;
     int m_NumExportedPts;
+    int m_NumHighlighted;
     wxSplitterWindow* m_Splitter;
     wxPanel* m_Panel;
     AvenTreeCtrl* m_Tree;
     wxTreeItemId m_TreeRoot;
     wxTextCtrl* m_FindBox;
-    wxStaticText* m_MousePtr;
-    wxStaticText* m_Coords;
-    wxStaticText* m_StnCoords;
-    wxStaticText* m_StnName;
-    wxStaticText* m_StnAlt;
-    wxStaticText* m_Dist1;
-    wxStaticText* m_Dist2;
-    wxStaticText* m_Dist3;
     wxStaticText* m_Found;
     wxCheckBox* m_RegexpCheckBox;
     wxNotebook* m_Notebook;
@@ -252,6 +246,7 @@ public:
 
     void OnFind(wxCommandEvent& event);
     void OnHide(wxCommandEvent& event);
+    void OnHideUpdate(wxUpdateUIEvent& ui);
 
     void OnOpen(wxCommandEvent& event);
     void OnFilePreferences(wxCommandEvent& event);
@@ -420,6 +415,7 @@ public:
     int GetNumFixedPts() const { return m_NumFixedPts; }
     int GetNumExportedPts() const { return m_NumExportedPts; }
     int GetNumEntrances() const { return m_NumEntrances; }
+    int GetNumHighlightedPts() const { return m_NumHighlighted; }
 
     void ClearCoords();
     void SetCoords(Double x, Double y);

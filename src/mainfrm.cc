@@ -107,8 +107,10 @@ BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
-    EVT_BUTTON(button_FIND, MainFrm::OnFind)
-    EVT_BUTTON(button_HIDE, MainFrm::OnHide)
+    EVT_TEXT_ENTER(textctrl_FIND, MainFrm::OnFind)
+    EVT_MENU(button_FIND, MainFrm::OnFind)
+    EVT_MENU(button_HIDE, MainFrm::OnHide)
+    EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
 
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
 #ifdef AVENPRES
@@ -300,7 +302,8 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
-    m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0)
+    m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
+    m_NumHighlighted(0)
 #ifdef PREFDLG
     , m_PrefsDlg(NULL)
 #endif
@@ -518,12 +521,13 @@ void MainFrm::CreateToolBar()
 #endif
 
     toolbar->AddSeparator();
-    m_FindBox = new wxTextCtrl(toolbar, -1, "");
+    m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, "", wxDefaultPosition,
+			       wxDefaultSize, wxTE_PROCESS_ENTER);
     toolbar->AddControl(m_FindBox);
     toolbar->AddTool(button_FIND, TOOLBAR_BITMAP("find.png"),
-		     "Search for station name");
+		     msg(/*Find*/332)/*"Search for station name"*/);
     toolbar->AddTool(button_HIDE, TOOLBAR_BITMAP("hideresults.png"),
-		     "Hide search results");
+		     msg(/*Hide*/333)/*"Hide search results"*/);
 
     toolbar->Realize();
 }
@@ -543,70 +547,14 @@ void MainFrm::CreateSidePanel()
     m_Panel = new wxPanel(m_Splitter);
 #endif
     m_Tree = new AvenTreeCtrl(this, m_Panel);
-    wxPanel *find_panel = new wxPanel(m_Panel);
     m_Panel->Show(false);
 
-    m_FindBox = new wxTextCtrl(find_panel, -1, "");
-    wxButton *find_button, *hide_button;
-    find_button = new wxButton(find_panel, button_FIND, msg(/*Find*/332));
-    find_button->SetDefault();
-    find_panel->SetDefaultItem(find_button);
-    hide_button = new wxButton(find_panel, button_HIDE, msg(/*Hide*/333));
-    m_RegexpCheckBox = new wxCheckBox(find_panel, -1,
-				      msg(/*Regular expression*/334));
-    m_Coords = new wxStaticText(find_panel, -1, "");
-    m_StnCoords = new wxStaticText(find_panel, -1, "");
-    //  m_MousePtr = new wxStaticText(find_panel, -1, "Mouse coordinates");
-    m_StnName = new wxStaticText(find_panel, -1, "");
-    m_StnAlt = new wxStaticText(find_panel, -1, "");
-    m_Dist1 = new wxStaticText(find_panel, -1, "");
-    m_Dist2 = new wxStaticText(find_panel, -1, "");
-    m_Dist3 = new wxStaticText(find_panel, -1, "");
-    m_Found = new wxStaticText(find_panel, -1, "");
-
-    wxBoxSizer *find_button_sizer = new wxBoxSizer(wxHORIZONTAL);
-    find_button_sizer->Add(m_FindBox, 1, wxALL, 2);
-#ifdef _WIN32
-    find_button_sizer->Add(find_button, 0, wxALL, 2);
-#else
-    // GTK+ (and probably Motif) default buttons have a thick external
-    // border we need to allow for
-    find_button_sizer->Add(find_button, 0, wxALL, 4);
-#endif
-
-    wxBoxSizer *hide_button_sizer = new wxBoxSizer(wxHORIZONTAL);
-    hide_button_sizer->Add(m_Found, 1, wxALL, 2);
-#ifdef _WIN32
-    hide_button_sizer->Add(hide_button, 0, wxALL, 2);
-#else
-    hide_button_sizer->Add(hide_button, 0, wxALL, 4);
-#endif
-
-    wxBoxSizer *find_sizer = new wxBoxSizer(wxVERTICAL);
-    find_sizer->Add(find_button_sizer, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(hide_button_sizer, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(m_RegexpCheckBox, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
-    //   find_sizer->Add(m_MousePtr, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(m_Coords, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(m_StnName, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(m_StnCoords, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(m_StnAlt, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(10, 5, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(m_Dist1, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(m_Dist2, 0, wxALL | wxEXPAND, 2);
-    find_sizer->Add(m_Dist3, 0, wxALL | wxEXPAND, 2);
-
-    find_panel->SetAutoLayout(true);
-    find_panel->SetSizer(find_sizer);
-    find_sizer->Fit(find_panel);
-    find_sizer->SetSizeHints(find_panel);
+//    m_RegexpCheckBox = new wxCheckBox(find_panel, -1,
+//				      msg(/*Regular expression*/334));
+//    m_Found = new wxStaticText(find_panel, -1, "");
 
     wxBoxSizer *panel_sizer = new wxBoxSizer(wxVERTICAL);
     panel_sizer->Add(m_Tree, 1, wxALL | wxEXPAND, 2);
-    //panel_sizer->Add(find_panel, 0, wxALL | wxEXPAND, 2);
-    find_panel->Hide();
     m_Panel->SetAutoLayout(true);
     m_Panel->SetSizer(panel_sizer);
 //    panel_sizer->Fit(m_Panel);
@@ -1185,7 +1133,6 @@ void MainFrm::ClearTreeSelection()
 
 void MainFrm::ClearCoords()
 {
-    //m_Coords->SetLabel("");
     GetStatusBar()->SetStatusText("");
 }
 
@@ -1198,7 +1145,6 @@ void MainFrm::SetCoords(Double x, Double y)
 	str.Printf(msg(/*  %d E, %d N*/338),
 		   int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
     }
-    //m_Coords->SetLabel(str);
     GetStatusBar()->SetStatusText(str);
 }
 
@@ -1212,7 +1158,6 @@ void MainFrm::SetAltitude(Double z)
 	str.Printf("  %s %dft", msg(/*Altitude*/335),
 		   int(z / METRES_PER_FOOT));
     }
-    //m_Coords->SetLabel(str);
     GetStatusBar()->SetStatusText(str);
 }
 
@@ -1234,19 +1179,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 		   int((label->y + m_Offsets.y) / METRES_PER_FOOT),
 		   int((label->z + m_Offsets.z) / METRES_PER_FOOT));
     }
-//    m_StnCoords->SetLabel(str);
-//    m_StnName->SetLabel(label->text);
     GetStatusBar()->SetStatusText(str, 1);
-#if 0
-    if (m_Gfx->GetMetric()) {
-	str.Printf("  %s %dm", msg(/*Altitude*/335),
-		   int(label->z + m_Offsets.z));
-    } else {
-	str.Printf("  %s %dft", msg(/*Altitude*/335),
-		   int((label->z + m_Offsets.z) / METRES_PER_FOOT));
-    }
-    m_StnAlt->SetLabel(str);
-#endif
     m_Gfx->SetHere(label->x, label->y, label->z);
 
     wxTreeItemData* sel_wx;
@@ -1287,7 +1220,6 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 		  	      int(d_horiz / METRES_PER_FOOT), "ft",
 			      int(dz / METRES_PER_FOOT), "ft");
 	    }
-	    //m_Dist2->SetLabel(str);
 	    wxString brg_unit;
 	    if (m_Gfx->GetDegrees()) {
 		brg_unit = msg(/*&deg;*/344);
@@ -1320,13 +1252,8 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
 	if (data->IsStation()) {
 	    ShowInfo(data->GetLabel());
 	} else {
-	    m_StnName->SetLabel("");
-	    m_StnCoords->SetLabel("");
-	    m_StnAlt->SetLabel("");
+	    ClearCoords();
 	    m_Gfx->SetHere();
-	    m_Dist1->SetLabel("");
-	    m_Dist2->SetLabel("");
-	    m_Dist3->SetLabel("");
 	}
     }
 }
@@ -1340,9 +1267,7 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
 	m_Gfx->CentreOn(label->x, label->y, label->z);
     }
 
-    m_Dist1->SetLabel("");
-    m_Dist2->SetLabel("");
-    m_Dist3->SetLabel("");
+    // ClearCoords(); // FIXME or update or ?
 }
 
 #ifdef AVENPRES
@@ -1515,9 +1440,9 @@ void MainFrm::OnFind(wxCommandEvent&)
 	cflags |= REG_ICASE;
     }
 
-    if (m_RegexpCheckBox->GetValue()) {
+    if (false /*m_RegexpCheckBox->GetValue()*/) {
 	cflags |= REG_EXTENDED;
-    } else if (false /* simple glob-style */) {
+    } else if (true /* simple glob-style */) {
 	wxString pat;
 	for (size_t i = 0; i < str.size(); i++) {
 	   char ch = str[i];
@@ -1585,12 +1510,14 @@ void MainFrm::OnFind(wxCommandEvent&)
 
     regfree(&buffer);
 
-    m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found));
+    m_NumHighlighted = found;
+// FIXME:    m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found));
 #ifdef _WIN32
-    m_Found->Refresh(); // FIXME
+//    m_Found->Refresh(); // FIXME
 #endif
     // Re-sort so highlighted points get names in preference
     if (found) m_Labels.sort(LabelPlotCmp(separator));
+    m_Gfx->UpdateBlobs();
     m_Gfx->ForceRefresh();
 
 #if 0
@@ -1605,13 +1532,19 @@ void MainFrm::OnFind(wxCommandEvent&)
 void MainFrm::OnHide(wxCommandEvent&)
 {
     // Hide any search result highlights.
-    m_Found->SetLabel("");
+// FIXME:    m_Found->SetLabel("");
     list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;
 	label->flags &= ~LFLAG_HIGHLIGHTED;
     }
+    m_Gfx->UpdateBlobs();
     m_Gfx->ForceRefresh();
+}
+
+void MainFrm::OnHideUpdate(wxUpdateUIEvent& ui)
+{
+    ui.Enable(m_NumHighlighted != 0);
 }
 
 void MainFrm::SetMouseOverStation(LabelInfo* label)
@@ -1619,13 +1552,8 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
     if (label) {
 	ShowInfo(label);
     } else {
-	m_StnName->SetLabel("");
-	m_StnCoords->SetLabel("");
-	m_StnAlt->SetLabel("");
+	ClearCoords();
 	m_Gfx->SetHere();
-	m_Dist1->SetLabel("");
-	m_Dist2->SetLabel("");
-	m_Dist3->SetLabel("");
     }
 }
 

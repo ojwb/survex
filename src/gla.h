@@ -106,8 +106,6 @@ class GLACanvas : public wxWindow {
     static const int m_FontSize;
 #endif
 
-    bool m_SphereCreated;
-    GLuint m_SphereList;
     GLUquadric* m_Quadric;
     
     bool m_Perspective;
@@ -162,8 +160,9 @@ public:
     void DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start);
     void DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* vertices);
     
-    void DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaCoord radius, int divisions);
-    
+    void DrawBlob(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaCoord radius);
+    void DrawRing(GLAPen& pen, glaCoord x, glaCoord y, glaCoord radius);
+ 
     void PlaceVertex(glaCoord x, glaCoord y, glaCoord z);
     void PlaceIndicatorVertex(glaCoord x, glaCoord y);
 

@@ -136,7 +136,6 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     m_Rotation.setFromEulerAngles(0.0, 0.0, 0.0);
     m_Scale = 0.0;
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
-    m_SphereCreated = false;
     m_VolumeDiameter = 1.0;
     m_Perspective = false;
 }
@@ -144,11 +143,6 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
 GLACanvas::~GLACanvas()
 {
     // Destructor.
-
-    if (m_SphereCreated) {
-        glDeleteLists(m_SphereList, 1);
-        CHECK_GL_ERROR("~GLACanvas", "glDeleteLists");
-    }
 
     if (m_Quadric) {
         gluDeleteQuadric(m_Quadric);
@@ -654,38 +648,34 @@ void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
     PlaceVertex(x, y, 0.0);
 }
 
-void GLACanvas::DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z,
-                           glaCoord radius, int divisions)
+void GLACanvas::DrawBlob(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z,
+			 glaCoord radius)
 {
     // Draw a sphere centred on a particular point.
 
     SetColour(pen);
 
-    if (!m_SphereCreated) {
-        m_SphereCreated = true;
+    glPointSize(radius * 2);
+    CHECK_GL_ERROR("DrawBlob", "glPointSize");
 
-        m_SphereList = glGenLists(1);
-        CHECK_GL_ERROR("DrawSphere", "glGenLists");
-	assert(m_SphereList != 0);
-        glNewList(m_SphereList, GL_COMPILE);
-        CHECK_GL_ERROR("DrawSphere", "glNewList");
-        assert(m_Quadric);
-        gluSphere(m_Quadric, 1.0, divisions, divisions);
-        CHECK_GL_ERROR("DrawSphere", "gluSphere");
-        glEndList();
-        CHECK_GL_ERROR("DrawSphere", "glEndList");
-    }
+    glBegin(GL_POINTS);
+    PlaceVertex(x, y, z);
+    glEnd();
+    CHECK_GL_ERROR("DrawBlob", "GL_POINTS");
+}
 
-    glTranslated(x, y, z);
-    CHECK_GL_ERROR("DrawSphere", "glTranslated");
-    glScalef(radius, radius, radius);
-    CHECK_GL_ERROR("DrawSphere", "glScalef");
-    glCallList(m_SphereList);
-    CHECK_GL_ERROR("DrawSphere", "glCallList");
-    glScalef(1.0 / radius, 1.0 / radius, 1.0 / radius);
-    CHECK_GL_ERROR("DrawSphere", "glScalef");
-    glTranslated(-x, -y, -z);
-    CHECK_GL_ERROR("DrawSphere", "glTranslated");
+void GLACanvas::DrawRing(GLAPen& pen, glaCoord x, glaCoord y, glaCoord radius)
+{
+    // Draw an unfilled circle
+    
+    assert(m_Quadric);
+    SetColour(pen);
+    glTranslated(x, y, 0.0);
+    CHECK_GL_ERROR("DrawRing", "glTranslated");
+    gluDisk(m_Quadric, radius - 1.0, radius, 12, 1);
+    CHECK_GL_ERROR("DrawRing", "gluDisk");
+    glTranslated(-x, -y, 0.0);
+    CHECK_GL_ERROR("DrawRing", "glTranslated");
 }
 
 void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& top,

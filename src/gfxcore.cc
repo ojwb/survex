@@ -63,7 +63,7 @@ static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
 static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
-                                  INDICATOR_BOX_SIZE + INDICATOR_GAP;
+				  INDICATOR_BOX_SIZE + INDICATOR_GAP;
 static const int DEPTH_BAR_OFFSET_X = 16;
 static const int DEPTH_BAR_EXTRA_LEFT_MARGIN = 2;
 static const int DEPTH_BAR_BLOCK_WIDTH = 20;
@@ -121,7 +121,7 @@ END_EVENT_TABLE()
 GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     GLACanvas(parent_win, 100, wxDefaultPosition, wxSize(640, 480)),
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
-           wxFONTENCODING_ISO8859_1),
+	   wxFONTENCODING_ISO8859_1),
     m_HaveData(false)
 {
     m_Control = control;
@@ -161,9 +161,9 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     int num_colours = (int) col_LAST;
     m_Pens = new GLAPen[num_colours];
     for (int col = 0; col < num_colours; col++) {
-        m_Pens[col].SetColour(COLOURS[col].r / 255.0,
-                              COLOURS[col].g / 255.0,
-                              COLOURS[col].b / 255.0);
+	m_Pens[col].SetColour(COLOURS[col].r / 255.0,
+			      COLOURS[col].g / 255.0,
+			      COLOURS[col].b / 255.0);
     }
 
     // Initialise grid for hit testing.
@@ -267,9 +267,9 @@ void GfxCore::SetScale(Double scale)
     // to a particular absolute scale.
 
     if (scale < m_InitialScale / 20) {
-        scale = m_InitialScale / 20;
+	scale = m_InitialScale / 20;
     } else {
-        if (scale > 1000.0) scale = 1000.0;
+	if (scale > 1000.0) scale = 1000.0;
     }
 
     m_Params.scale = scale;
@@ -278,13 +278,12 @@ void GfxCore::SetScale(Double scale)
     GLACanvas::SetScale(scale);
 
     UpdateIndicators();
-    UpdateBlobs();
 }
 
 void GfxCore::UpdateBlobs()
 {
-//    DeleteList(m_Lists.blobs);
-//    m_Lists.blobs = CreateList(this, &GfxCore::GenerateBlobsDisplayList);
+    DeleteList(m_Lists.blobs);
+    m_Lists.blobs = CreateList(this, &GfxCore::GenerateBlobsDisplayList);
 }
 
 //
@@ -296,7 +295,7 @@ void GfxCore::OnIdle(wxIdleEvent& event)
     // Handle an idle event.
 
     if (Animate(&event)) {
-        ForceRefresh();
+	ForceRefresh();
     }
 }
 
@@ -317,89 +316,93 @@ void GfxCore::OnPaint(wxPaintEvent&)
     // Make sure we're initialised.
     bool first_time = !m_DoneFirstShow;
     if (first_time) {
-        FirstShow();
+	FirstShow();
     }
 
     if (m_HaveData) {
-        // Set up model transformation matrix.
-        SetDataTransform();
+	// Set up model transformation matrix.
+	SetDataTransform();
 
-        if (first_time) {
-            m_Lists.underground_legs =
-                CreateList(this, &GfxCore::GenerateDisplayList);
+	if (first_time) {
+	    m_Lists.underground_legs =
+		CreateList(this, &GfxCore::GenerateDisplayList);
 
-            m_Lists.tubes =
-                CreateList(this, &GfxCore::GenerateDisplayListTubes);
-            
-            m_Lists.surface_legs =
-                CreateList(this, &GfxCore::GenerateDisplayListSurface);
-            
-            m_Lists.indicators =
-                CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
-        }
+	    m_Lists.tubes =
+		CreateList(this, &GfxCore::GenerateDisplayListTubes);
+	    
+	    m_Lists.surface_legs =
+		CreateList(this, &GfxCore::GenerateDisplayListSurface);
+	    
+	    m_Lists.indicators =
+		CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
+
+	    m_Lists.blobs =
+		CreateList(this, &GfxCore::GenerateBlobsDisplayList);
+	}
 
 	timer.Start(); // reset timer
 
-        if (m_Legs || m_Tubes) {
-            // Draw the underground legs.
-            SetColour(m_Pens[7]);
-            DrawList(m_Lists.underground_legs);
+	if (m_Legs || m_Tubes) {
+	    // Draw the underground legs.
+	    SetColour(m_Pens[7]);
+	    DrawList(m_Lists.underground_legs);
 
-            if (m_Tubes) {
-                EnableSmoothPolygons();
+	    if (m_Tubes) {
+		EnableSmoothPolygons();
 		DrawList(m_Lists.tubes);
-                DisableSmoothPolygons();
-            }
-        }
+		DisableSmoothPolygons();
+	    }
+	}
 
-        if (m_Surface) {
-            // Draw the surface legs.
-            DrawList(m_Lists.surface_legs);
-        }
+	if (m_Surface) {
+	    // Draw the surface legs.
+	    DrawList(m_Lists.surface_legs);
+	}
 
-        // Draw station names.
-        if (m_Names
+	// Draw station names.
+	if (m_Names
 	/*&& !m_Control->MouseDown() && !m_Rotating && !m_SwitchingTo*/) {
-            DrawNames();
-        }
-/*
-        //DrawList(m_Lists.blobs);
-        GenerateBlobsDisplayList();*/
-/*
-        // FIXME: for non-GL: bool grid_first = (m_TiltAngle >= 0.0);
+	    DrawNames();
+	}
 
-        if (m_Grid) {
-            // Draw the grid.
-            DrawList(m_Lists.grid);
-        }
+	DrawList(m_Lists.blobs);
+/*
+	// FIXME: for non-GL: bool grid_first = (m_TiltAngle >= 0.0);
+
+	if (m_Grid) {
+	    // Draw the grid.
+	    DrawList(m_Lists.grid);
+	}
 */
 
 	drawtime = timer.Time();
 
-        if (!m_Rotating && !m_SwitchingTo) {
-            Double size = SurveyUnitsAcrossViewport() * HIGHLIGHTED_PT_SIZE /
-                           m_XSize;
+	SetIndicatorTransform();
 
-            // Draw "here" and "there".
-            if (m_here.x != DBL_MAX) {
-                DrawSphere(m_Pens[HERE_COLOUR],
-                           m_here.x, m_here.y, m_here.z, size, 16);
-            }
-            if (m_there.x != DBL_MAX) {
-                if (m_here.x != DBL_MAX) {
-                    BeginLines();
-                    PlaceVertex(m_here.x, m_here.y, m_here.z);
-		    PlaceVertex(m_there.x, m_there.y, m_there.z);
+	if (!m_Rotating && !m_SwitchingTo) {
+	    Double hx, hy;
+	    // Draw "here" and "there".
+	    if (m_here.x != DBL_MAX) {
+		Double dummy;
+		Transform(m_here.x, m_here.y, m_here.z, &hx, &hy, &dummy);
+		DrawRing(m_Pens[HERE_COLOUR], hx, hy, HIGHLIGHTED_PT_SIZE * 2);
+	    }
+	    if (m_there.x != DBL_MAX) {
+		Double tx, ty;
+		Double dummy;
+		Transform(m_there.x, m_there.y, m_there.z, &tx, &ty, &dummy);
+		if (m_here.x != DBL_MAX) {
+		    BeginLines();
+		    PlaceIndicatorVertex(hx, hy);
+		    PlaceIndicatorVertex(tx, ty);
 		    EndLines();
-                }
-                DrawSphere(m_Pens[HERE_COLOUR],
-                           m_there.x, m_there.y, m_there.z, size, 16);
-            }
-        }
-        
-        // Draw indicators.
-        SetIndicatorTransform();
-        DrawList(m_Lists.indicators);
+		}
+		DrawBlob(m_Pens[HERE_COLOUR], tx, ty, 0.0, HIGHLIGHTED_PT_SIZE);
+	    }
+	}
+	
+	// Draw indicators.
+	DrawList(m_Lists.indicators);
     }
 
     FinishDrawing();
@@ -444,10 +447,10 @@ void GfxCore::DrawGrid()
     Double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
     Double t = m_across_screen * 0.75 / size_snap;
     if (t >= 5.0) {
-        size_snap *= 5.0;
+	size_snap *= 5.0;
     }
     else if (t >= 2.0) {
-        size_snap *= 2.0;
+	size_snap *= 2.0;
     }
 
     Double grid_size = size_snap / 10.0;
@@ -463,17 +466,17 @@ void GfxCore::DrawGrid()
     Double actual_top = bottom + count_y*grid_size;
 
     for (int xc = 0; xc <= count_x; xc++) {
-        Double x = left + xc*grid_size;
-        
-        m_DrawDC.DrawLine((int) GridXToScreen(x, bottom, grid_z), (int) GridYToScreen(x, bottom, grid_z),
-                          (int) GridXToScreen(x, actual_top, grid_z), (int) GridYToScreen(x, actual_top, grid_z));
+	Double x = left + xc*grid_size;
+	
+	m_DrawDC.DrawLine((int) GridXToScreen(x, bottom, grid_z), (int) GridYToScreen(x, bottom, grid_z),
+			  (int) GridXToScreen(x, actual_top, grid_z), (int) GridYToScreen(x, actual_top, grid_z));
     }
 
     for (int yc = 0; yc <= count_y; yc++) {
-        Double y = bottom + yc*grid_size;
-        m_DrawDC.DrawLine((int) GridXToScreen(left, y, grid_z), (int) GridYToScreen(left, y, grid_z),
-                          (int) GridXToScreen(actual_right, y, grid_z),
-                          (int) GridYToScreen(actual_right, y, grid_z));
+	Double y = bottom + yc*grid_size;
+	m_DrawDC.DrawLine((int) GridXToScreen(left, y, grid_z), (int) GridYToScreen(left, y, grid_z),
+			  (int) GridXToScreen(actual_right, y, grid_z),
+			  (int) GridYToScreen(actual_right, y, grid_z));
     }
 */
 }
@@ -487,7 +490,7 @@ wxPoint GfxCore::CompassPtToScreen(Double x, Double y, Double z) const
 {
     x = x; y = y; z = z;
     /*return wxPoint(long(-XToScreen(x, y, z)) + m_XSize - COMPASS_OFFSET_X,
-                   long(ZToScreen(x, y, z)) + m_YSize - COMPASS_OFFSET_Y);*/
+		   long(ZToScreen(x, y, z)) + m_YSize - COMPASS_OFFSET_Y);*/
 
     return wxPoint(0, 0);
 }
@@ -500,7 +503,7 @@ GLAPoint GfxCore::IndicatorCompassToScreenPan(int angle) const
     glaCoord y = glaCoord(length * cos(theta));
 
     return GLAPoint(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2 - x,
-                    INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
+		    INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
 }
 
 GLAPoint GfxCore::IndicatorCompassToScreenElev(int angle) const
@@ -511,7 +514,7 @@ GLAPoint GfxCore::IndicatorCompassToScreenElev(int angle) const
     glaCoord y = glaCoord(length * cos(-theta));
 
     return GLAPoint(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2 - x,
-                    INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
+		    INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
 }
 
 void GfxCore::DrawTick(wxCoord cx, wxCoord cy, int angle_cw)
@@ -536,33 +539,33 @@ void GfxCore::Draw2dIndicators()
 
     // Indicator backgrounds.
     if (m_Compass && m_RotationOK) {
-        DrawCircle(m_Pens[col_LIGHT_GREY_2], m_Pens[col_GREY],
-                   m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-                   INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
-                   INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN);
+	DrawCircle(m_Pens[col_LIGHT_GREY_2], m_Pens[col_GREY],
+		   m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
+		   INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
+		   INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN);
     }
     if (m_Clino && m_Lock == lock_NONE) {
-        glaCoord tilt = (glaCoord) (m_TiltAngle * 180.0 / M_PI);
+	glaCoord tilt = (glaCoord) (m_TiltAngle * 180.0 / M_PI);
 	glaCoord start = fabs(-tilt - 90.0);
-        DrawSemicircle(m_Pens[col_LIGHT_GREY_2], m_Pens[col_GREY],
+	DrawSemicircle(m_Pens[col_LIGHT_GREY_2], m_Pens[col_GREY],
 		       m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-                       INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
-                       INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN, start);
+		       INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
+		       INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN, start);
 
-        SetColour(m_Pens[col_GREY]);
-        BeginLines();
-        PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-                             INDICATOR_OFFSET_Y + INDICATOR_MARGIN);
-        
-        PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-                             INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN);
+	SetColour(m_Pens[col_GREY]);
+	BeginLines();
+	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
+			     INDICATOR_OFFSET_Y + INDICATOR_MARGIN);
+	
+	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
+			     INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN);
 
-        PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-                             INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
-        
-        PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_MARGIN,
-                             INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
-        EndLines();
+	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
+			     INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
+	
+	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_MARGIN,
+			     INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
+	EndLines();
     }
 
 
@@ -575,55 +578,55 @@ void GfxCore::Draw2dIndicators()
     int elev_centre_x = m_XSize - INDICATOR_BOX_SIZE / 2 - GetClinoOffset();
 
     if (m_Compass && m_RotationOK) {
-        int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
-        //--FIXME: bodge by Olly to stop wrong tick highlighting
-        if (deg_pan) deg_pan = 360 - deg_pan;
-        for (int angle = deg_pan; angle <= 315 + deg_pan; angle += 45) {
-            if (deg_pan == angle) {
-                SetAvenColour(col_GREEN);
-            } else {
-                SetAvenColour(white ? col_WHITE : col_LIGHT_GREY_2);
-            }
-            DrawTick((int) pan_centre_x, (int) centre_y, angle);
-        }
+	int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
+	//--FIXME: bodge by Olly to stop wrong tick highlighting
+	if (deg_pan) deg_pan = 360 - deg_pan;
+	for (int angle = deg_pan; angle <= 315 + deg_pan; angle += 45) {
+	    if (deg_pan == angle) {
+		SetAvenColour(col_GREEN);
+	    } else {
+		SetAvenColour(white ? col_WHITE : col_LIGHT_GREY_2);
+	    }
+	    DrawTick((int) pan_centre_x, (int) centre_y, angle);
+	}
     }
 
     if (m_Clino && m_Lock == lock_NONE) {
-        white = false; /* FIXME m_DraggingLeft && m_LastDrag == drag_ELEV && m_MouseOutsideElev; */
-        int deg_elev = (int) (m_TiltAngle * 180.0 / M_PI);
-        for (int angle = 0; angle <= 180; angle += 90) {
-            if (deg_elev == angle - 90) {
-                SetAvenColour(col_GREEN);
-            } else {
-                SetAvenColour(white ? col_WHITE : col_LIGHT_GREY_2);
-            }
-            DrawTick((int) elev_centre_x, (int) centre_y, angle);
-        }
+	white = false; /* FIXME m_DraggingLeft && m_LastDrag == drag_ELEV && m_MouseOutsideElev; */
+	int deg_elev = (int) (m_TiltAngle * 180.0 / M_PI);
+	for (int angle = 0; angle <= 180; angle += 90) {
+	    if (deg_elev == angle - 90) {
+		SetAvenColour(col_GREEN);
+	    } else {
+		SetAvenColour(white ? col_WHITE : col_LIGHT_GREY_2);
+	    }
+	    DrawTick((int) elev_centre_x, (int) centre_y, angle);
+	}
     }
 
     // Pan arrow
     if (m_Compass && m_RotationOK) {
-        GLAPoint p1 = IndicatorCompassToScreenPan(0);
-        GLAPoint p2 = IndicatorCompassToScreenPan(150);
-        GLAPoint p3 = IndicatorCompassToScreenPan(210);
-        GLAPoint pc(pan_centre_x, centre_y, 0.0);
-        GLAPoint pts1[3] = { p2, p1, pc };
-        GLAPoint pts2[3] = { p3, p1, pc };
-        
-        DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_1], pts1);
-        DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_2], pts2);
+	GLAPoint p1 = IndicatorCompassToScreenPan(0);
+	GLAPoint p2 = IndicatorCompassToScreenPan(150);
+	GLAPoint p3 = IndicatorCompassToScreenPan(210);
+	GLAPoint pc(pan_centre_x, centre_y, 0.0);
+	GLAPoint pts1[3] = { p2, p1, pc };
+	GLAPoint pts2[3] = { p3, p1, pc };
+	
+	DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_1], pts1);
+	DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_2], pts2);
     }
 
     // Elevation arrow
     if (m_Clino && m_Lock == lock_NONE) {
-        GLAPoint p1e = IndicatorCompassToScreenElev(0);
-        GLAPoint p2e = IndicatorCompassToScreenElev(150);
-        GLAPoint p3e = IndicatorCompassToScreenElev(210);
-        GLAPoint pce(elev_centre_x, centre_y, 0.0);
-        GLAPoint pts1e[3] = { p2e, p1e, pce };
-        GLAPoint pts2e[3] = { p3e, p1e, pce };
-        DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_2], pts1e);
-        DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_1], pts2e);
+	GLAPoint p1e = IndicatorCompassToScreenElev(0);
+	GLAPoint p2e = IndicatorCompassToScreenElev(150);
+	GLAPoint p3e = IndicatorCompassToScreenElev(210);
+	GLAPoint pce(elev_centre_x, centre_y, 0.0);
+	GLAPoint pts1e[3] = { p2e, p1e, pce };
+	GLAPoint pts2e[3] = { p3e, p1e, pce };
+	DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_2], pts1e);
+	DrawTriangle(m_Pens[col_LIGHT_GREY], m_Pens[col_INDICATOR_1], pts2e);
     }
 
     // Text
@@ -637,31 +640,31 @@ void GfxCore::Draw2dIndicators()
     height = INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE + INDICATOR_GAP + h;
 
     if (m_Compass && m_RotationOK) {
-        if (m_Degrees) {
-            str = wxString::Format("%03d", int(m_PanAngle * 180.0 / M_PI));
-        } else {
-            str = wxString::Format("%03d", int(m_PanAngle * 200.0 / M_PI));
-        }       
-        GetTextExtent(str, &w, &h);
-        DrawIndicatorText(pan_centre_x + width / 2 - w, height, str);
-        str = wxString(msg(/*Facing*/203));
-        GetTextExtent(str, &w, &h);
-        DrawIndicatorText(pan_centre_x - w / 2, height + h, str);
+	if (m_Degrees) {
+	    str = wxString::Format("%03d", int(m_PanAngle * 180.0 / M_PI));
+	} else {
+	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / M_PI));
+	}       
+	GetTextExtent(str, &w, &h);
+	DrawIndicatorText(pan_centre_x + width / 2 - w, height, str);
+	str = wxString(msg(/*Facing*/203));
+	GetTextExtent(str, &w, &h);
+	DrawIndicatorText(pan_centre_x - w / 2, height + h, str);
     }
 
     if (m_Clino && m_Lock == lock_NONE) {
-        int angle;
-        if (m_Degrees) {
-            angle = int(-m_TiltAngle * 180.0 / M_PI);
-        } else {
-            angle = int(-m_TiltAngle * 200.0 / M_PI);
-        }       
-        str = angle ? wxString::Format("%+03d", angle) : wxString("00");
-        GetTextExtent(str, &w, &h);
-        DrawIndicatorText(elev_centre_x + width / 2 - w, height, str);
-        str = wxString(msg(/*Elevation*/118));
-        GetTextExtent(str, &w, &h);
-        DrawIndicatorText(elev_centre_x - w / 2, height + h, str);
+	int angle;
+	if (m_Degrees) {
+	    angle = int(-m_TiltAngle * 180.0 / M_PI);
+	} else {
+	    angle = int(-m_TiltAngle * 200.0 / M_PI);
+	}       
+	str = angle ? wxString::Format("%+03d", angle) : wxString("00");
+	GetTextExtent(str, &w, &h);
+	DrawIndicatorText(elev_centre_x + width / 2 - w, height, str);
+	str = wxString(msg(/*Elevation*/118));
+	GetTextExtent(str, &w, &h);
+	DrawIndicatorText(elev_centre_x - w / 2, height + h, str);
     }
 }
 
@@ -674,7 +677,7 @@ void GfxCore::DrawCompass()
 
     SetColour(col_TURQUOISE);
     m_DrawDC.DrawLine(CompassPtToScreen(0.0, 0.0, -COMPASS_SIZE),
-                      CompassPtToScreen(0.0, 0.0, COMPASS_SIZE));
+		      CompassPtToScreen(0.0, 0.0, COMPASS_SIZE));
 
     pt[0] = CompassPtToScreen(-COMPASS_SIZE / 3.0f, 0.0, -COMPASS_SIZE * 2.0f / 3.0f);
     pt[1] = CompassPtToScreen(0.0, 0.0, -COMPASS_SIZE);
@@ -682,11 +685,11 @@ void GfxCore::DrawCompass()
     m_DrawDC.DrawLines(3, pt);
 
     m_DrawDC.DrawLine(CompassPtToScreen(-COMPASS_SIZE, 0.0, 0.0),
-                      CompassPtToScreen(COMPASS_SIZE, 0.0, 0.0));
+		      CompassPtToScreen(COMPASS_SIZE, 0.0, 0.0));
 
     SetColour(col_GREEN);
     m_DrawDC.DrawLine(CompassPtToScreen(0.0, -COMPASS_SIZE, 0.0),
-                      CompassPtToScreen(0.0, COMPASS_SIZE, 0.0));
+		      CompassPtToScreen(0.0, COMPASS_SIZE, 0.0));
 
     pt[0] = CompassPtToScreen(-COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
     pt[1] = CompassPtToScreen(0.0, -COMPASS_SIZE, 0.0);
@@ -703,9 +706,9 @@ void GfxCore::DrawNames()
     SetColour(m_Pens[NAME_COLOUR_INDEX]);
     
     if (m_OverlappingNames) {
-        SimpleDrawNames();
+	SimpleDrawNames();
     } else {
-        NattyDrawNames();
+	NattyDrawNames();
     }
     SetDataTransform();
 }
@@ -722,7 +725,7 @@ void GfxCore::NattyDrawNames()
     const size_t buffer_size = quantised_x * quantised_y;
    
     if (m_LabelGrid) {
-        delete[] m_LabelGrid;
+	delete[] m_LabelGrid;
     }
     m_LabelGrid = new char[buffer_size];
 
@@ -731,48 +734,48 @@ void GfxCore::NattyDrawNames()
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
 
     while (label != m_Parent->GetLabelsEnd()) {
-        Double x, y, z;
+	Double x, y, z;
  
-        Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
+	Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
 	y += CROSS_SIZE - GetFontSize();
 
-        wxString str = (*label)->GetText();
+	wxString str = (*label)->GetText();
 
 	// Apply a small shift so that translating the view doesn't make which
 	// labels are displayed change as the resulting twinkling effect is
 	// distracting.
-        Double tx, ty, tz;
-        Transform(0, 0, 0, &tx, &ty, &tz);
-        tx -= floor(tx / quantise) * quantise;
-        ty -= floor(ty / quantise) * quantise;
+	Double tx, ty, tz;
+	Transform(0, 0, 0, &tx, &ty, &tz);
+	tx -= floor(tx / quantise) * quantise;
+	ty -= floor(ty / quantise) * quantise;
 
-        int ix = int(x - tx) / quantise;
-        int iy = int(y - ty) / quantise;
+	int ix = int(x - tx) / quantise;
+	int iy = int(y - ty) / quantise;
 
-        bool reject = true;
+	bool reject = true;
 
-        if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
-            char* test = &m_LabelGrid[ix + iy * quantised_x];
-            int len = str.Length() * dv + 1;
-            reject = (ix + len >= quantised_x);
-            int i = 0;
+	if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
+	    char* test = &m_LabelGrid[ix + iy * quantised_x];
+	    int len = str.Length() * dv + 1;
+	    reject = (ix + len >= quantised_x);
+	    int i = 0;
 
-            while (!reject && i++ < len) {
-                reject = *test++;
-            }
+	    while (!reject && i++ < len) {
+		reject = *test++;
+	    }
 
-            if (!reject) {
-                DrawIndicatorText((int)x, (int)y, str);
+	    if (!reject) {
+		DrawIndicatorText((int)x, (int)y, str);
 
-                int ymin = (iy >= 2) ? iy - 2 : iy;
-                int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
-                for (int y0 = ymin; y0 <= ymax; y0++) {
-                    assert((ix + y0 * quantised_x) < (quantised_x * quantised_y));
-                    memset((void*) &m_LabelGrid[ix + y0 * quantised_x], 1, len);
-                }
-            }
-        }
-        ++label;
+		int ymin = (iy >= 2) ? iy - 2 : iy;
+		int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
+		for (int y0 = ymin; y0 <= ymax; y0++) {
+		    assert((ix + y0 * quantised_x) < (quantised_x * quantised_y));
+		    memset((void*) &m_LabelGrid[ix + y0 * quantised_x], 1, len);
+		}
+	    }
+	}
+	++label;
     }
 }
 
@@ -781,10 +784,10 @@ void GfxCore::SimpleDrawNames()
     // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     while (label != m_Parent->GetLabelsEnd()) {
-        // FIXME: do this in the simple case too...
+	// FIXME: do this in the simple case too...
 	//y += CROSS_SIZE - GetFontSize();
-        DrawText((*label)->x, (*label)->y, (*label)->z, (*label)->GetText());
-        ++label;
+	DrawText((*label)->x, (*label)->y, (*label)->z, (*label)->GetText());
+	++label;
     }
 }
 
@@ -793,53 +796,53 @@ void GfxCore::DrawDepthbar()
     if (m_Parent->GetZExtent() == 0.0) return;
 
     int y = m_YSize -
-            (DEPTH_BAR_BLOCK_HEIGHT * (m_Bands - 1) + DEPTH_BAR_OFFSET_Y);
+	    (DEPTH_BAR_BLOCK_HEIGHT * (m_Bands - 1) + DEPTH_BAR_OFFSET_Y);
     int size = 0;
 
     wxString* strs = new wxString[m_Bands];
     int band;
     for (band = 0; band < m_Bands; band++) {
-        Double z = m_Parent->GetZMin() +
-                   m_Parent->GetZExtent() * band / (m_Bands - 1);
-        
-        strs[band] = FormatLength(z, false);
+	Double z = m_Parent->GetZMin() +
+		   m_Parent->GetZExtent() * band / (m_Bands - 1);
+	
+	strs[band] = FormatLength(z, false);
 
-        int x, dummy;
-        GetTextExtent(strs[band], &x, &dummy);
-        if (x > size) size = x;
+	int x, dummy;
+	GetTextExtent(strs[band], &x, &dummy);
+	if (x > size) size = x;
     }
 
     int x_min = m_XSize - DEPTH_BAR_OFFSET_X -
-                     DEPTH_BAR_BLOCK_WIDTH - DEPTH_BAR_MARGIN - size;
+		     DEPTH_BAR_BLOCK_WIDTH - DEPTH_BAR_MARGIN - size;
 
     DrawRectangle(m_Pens[col_BLACK],
-                  m_Pens[col_DARK_GREY],
-                  m_Pens[col_DARK_GREY],
-                  x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
-                  m_YSize - (DEPTH_BAR_BLOCK_HEIGHT*(m_Bands-1)) -
-                      DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
-                  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
-                      DEPTH_BAR_EXTRA_LEFT_MARGIN,
-                  DEPTH_BAR_BLOCK_HEIGHT*(m_Bands - 1) + DEPTH_BAR_MARGIN*4);
+		  m_Pens[col_DARK_GREY],
+		  m_Pens[col_DARK_GREY],
+		  x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  m_YSize - (DEPTH_BAR_BLOCK_HEIGHT*(m_Bands-1)) -
+		      DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
+		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
+		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  DEPTH_BAR_BLOCK_HEIGHT*(m_Bands - 1) + DEPTH_BAR_MARGIN*4);
 
     for (band = 0; band < m_Bands; band++) {
-        if (band < m_Bands - 1) {
-            DrawRectangle(m_Parent->GetPen(band),
-                          m_Parent->GetPen(band),
-                          m_Parent->GetPen(band+1),
-                          x_min,
-                          y,
-                          DEPTH_BAR_BLOCK_WIDTH,
-                          DEPTH_BAR_BLOCK_HEIGHT,
-                          false);
-        }
+	if (band < m_Bands - 1) {
+	    DrawRectangle(m_Parent->GetPen(band),
+			  m_Parent->GetPen(band),
+			  m_Parent->GetPen(band+1),
+			  x_min,
+			  y,
+			  DEPTH_BAR_BLOCK_WIDTH,
+			  DEPTH_BAR_BLOCK_HEIGHT,
+			  false);
+	}
 
-        SetColour(m_Pens[TEXT_COLOUR]);
+	SetColour(m_Pens[TEXT_COLOUR]);
 
-        DrawIndicatorText(x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
-                          y - (FONT_SIZE / 2) - 1, strs[band]);
+	DrawIndicatorText(x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
+			  y - (FONT_SIZE / 2) - 1, strs[band]);
 
-        y += DEPTH_BAR_BLOCK_HEIGHT;
+	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
 
     delete[] strs;
@@ -851,59 +854,59 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
     bool negative = (size_snap < 0.0);
 
     if (negative) {
-        size_snap = -size_snap;
+	size_snap = -size_snap;
     }
 
     if (size_snap == 0.0) {
-        str = "0";
+	str = "0";
     } else if (m_Metric) {
 #ifdef SILLY_UNITS
-        if (size_snap < 1e-12) {
-            str = wxString::Format("%.3gpm", size_snap * 1e12);
-        } else if (size_snap < 1e-9) {
-            str = wxString::Format("%.fpm", size_snap * 1e12);
-        } else if (size_snap < 1e-6) {
-            str = wxString::Format("%.fnm", size_snap * 1e9);
-        } else if (size_snap < 1e-3) {
-            str = wxString::Format("%.fum", size_snap * 1e6);
+	if (size_snap < 1e-12) {
+	    str = wxString::Format("%.3gpm", size_snap * 1e12);
+	} else if (size_snap < 1e-9) {
+	    str = wxString::Format("%.fpm", size_snap * 1e12);
+	} else if (size_snap < 1e-6) {
+	    str = wxString::Format("%.fnm", size_snap * 1e9);
+	} else if (size_snap < 1e-3) {
+	    str = wxString::Format("%.fum", size_snap * 1e6);
 #else
-        if (size_snap < 1e-3) {
-            str = wxString::Format("%.3gmm", size_snap * 1e3);
+	if (size_snap < 1e-3) {
+	    str = wxString::Format("%.3gmm", size_snap * 1e3);
 #endif
-        } else if (size_snap < 1e-2) {
-            str = wxString::Format("%.fmm", size_snap * 1e3);
-        } else if (size_snap < 1.0) {
-            str = wxString::Format("%.fcm", size_snap * 100.0);
-        } else if (size_snap < 1e3) {
-            str = wxString::Format("%.fm", size_snap);
+	} else if (size_snap < 1e-2) {
+	    str = wxString::Format("%.fmm", size_snap * 1e3);
+	} else if (size_snap < 1.0) {
+	    str = wxString::Format("%.fcm", size_snap * 100.0);
+	} else if (size_snap < 1e3) {
+	    str = wxString::Format("%.fm", size_snap);
 #ifdef SILLY_UNITS
-        } else if (size_snap < 1e6) {
-            str = wxString::Format("%.fkm", size_snap * 1e-3);
-        } else if (size_snap < 1e9) {
-            str = wxString::Format("%.fMm", size_snap * 1e-6);
-        } else {
-            str = wxString::Format("%.fGm", size_snap * 1e-9);
+	} else if (size_snap < 1e6) {
+	    str = wxString::Format("%.fkm", size_snap * 1e-3);
+	} else if (size_snap < 1e9) {
+	    str = wxString::Format("%.fMm", size_snap * 1e-6);
+	} else {
+	    str = wxString::Format("%.fGm", size_snap * 1e-9);
 #else
-        } else {
-            str = wxString::Format(scalebar ? "%.fkm" : "%.2fkm", size_snap * 1e-3);
+	} else {
+	    str = wxString::Format(scalebar ? "%.fkm" : "%.2fkm", size_snap * 1e-3);
 #endif
-        }
+	}
     } else {
-        size_snap /= METRES_PER_FOOT;
-        if (scalebar) {
-            Double inches = size_snap * 12;
-            if (inches < 1.0) {
-                str = wxString::Format("%.3gin", inches);
-            } else if (size_snap < 1.0) {
-                str = wxString::Format("%.fin", inches);
-            } else if (size_snap < 5279.5) {
-                str = wxString::Format("%.fft", size_snap);
-            } else {
-                str = wxString::Format("%.f miles", size_snap / 5280.0);
-            }
-        } else {
-            str = wxString::Format("%.fft", size_snap);
-        }
+	size_snap /= METRES_PER_FOOT;
+	if (scalebar) {
+	    Double inches = size_snap * 12;
+	    if (inches < 1.0) {
+		str = wxString::Format("%.3gin", inches);
+	    } else if (size_snap < 1.0) {
+		str = wxString::Format("%.fin", inches);
+	    } else if (size_snap < 5279.5) {
+		str = wxString::Format("%.fft", size_snap);
+	    } else {
+		str = wxString::Format("%.f miles", size_snap / 5280.0);
+	    }
+	} else {
+	    str = wxString::Format("%.fft", size_snap);
+	}
     }
 
     return negative ? wxString("-") + str : str;
@@ -922,21 +925,21 @@ void GfxCore::DrawScalebar()
     // Convert to imperial measurements if required.
     Double multiplier = 1.0;
     if (!m_Metric) {
-        across_screen /= METRES_PER_FOOT;
-        multiplier = METRES_PER_FOOT;
-        if (across_screen >= 5280.0 / 0.75) {
-            across_screen /= 5280.0;
-            multiplier *= 5280.0;
-        }
+	across_screen /= METRES_PER_FOOT;
+	multiplier = METRES_PER_FOOT;
+	if (across_screen >= 5280.0 / 0.75) {
+	    across_screen /= 5280.0;
+	    multiplier *= 5280.0;
+	}
     }
 
     // Calculate the length of the scale bar.
     Double size_snap = pow(10.0, floor(log10(0.65 * across_screen)));
     Double t = across_screen * 0.65 / size_snap;
     if (t >= 5.0) {
-        size_snap *= 5.0;
+	size_snap *= 5.0;
     } else if (t >= 2.0) {
-        size_snap *= 2.0;
+	size_snap *= 2.0;
     }
 
     if (!m_Metric) size_snap *= multiplier;
@@ -953,12 +956,12 @@ void GfxCore::DrawScalebar()
 
     bool solid = true;
     for (int ix = 0; ix < 10; ix++) {
-        int x = end_x + int(ix * ((Double) size / 10.0));
-        GLAPen& pen = solid ? m_Pens[col_GREY] : m_Pens[col_WHITE];
+	int x = end_x + int(ix * ((Double) size / 10.0));
+	GLAPen& pen = solid ? m_Pens[col_GREY] : m_Pens[col_WHITE];
 
-        DrawRectangle(pen, pen, pen, x, end_y, interval + 2, height);
+	DrawRectangle(pen, pen, pen, x, end_y, interval + 2, height);
 
-        solid = !solid;
+	solid = !solid;
     }
 
     // Add labels.
@@ -975,14 +978,14 @@ void GfxCore::DrawScalebar()
 bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 {
     if (point.x < 0 || point.x >= m_XSize ||
-        point.y < 0 || point.y >= m_YSize) {
-        return false;
+	point.y < 0 || point.y >= m_YSize) {
+	return false;
     }
 
     SetDataTransform();
 
     if (!m_HitTestGridValid) {
-        CreateHitTestGrid();
+	CreateHitTestGrid();
     }
 
     int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
@@ -994,37 +997,37 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
     list<LabelInfo*>::iterator iter = m_PointGrid[square].begin();
 
     while (iter != m_PointGrid[square].end()) {
-        LabelInfo *pt = *iter++;
+	LabelInfo *pt = *iter++;
 
-        Double cx, cy, cz;
+	Double cx, cy, cz;
 
-        Transform(pt->GetX(), pt->GetY(), pt->GetZ(), &cx, &cy, &cz);
+	Transform(pt->GetX(), pt->GetY(), pt->GetZ(), &cx, &cy, &cz);
 
-        cy = m_YSize - cy;
+	cy = m_YSize - cy;
 
-        int dx = point.x - int(cx);
-        int ds = dx * dx;
-        if (ds >= dist_sqrd) continue;
-        int dy = point.y - int(cy);
+	int dx = point.x - int(cx);
+	int ds = dx * dx;
+	if (ds >= dist_sqrd) continue;
+	int dy = point.y - int(cy);
 
-        ds += dy * dy;
-        if (ds >= dist_sqrd) continue;
+	ds += dy * dy;
+	if (ds >= dist_sqrd) continue;
  
-        dist_sqrd = ds;
-        best = pt;
-        
-        if (ds == 0) break;
+	dist_sqrd = ds;
+	best = pt;
+	
+	if (ds == 0) break;
     }
     
     if (best) {
-        m_Parent->SetMouseOverStation(best);
-        if (centre) {
-            CentreOn(best->GetX(), best->GetY(), best->GetZ());
-            SetThere(best->GetX(), best->GetY(), best->GetZ());
-            m_Parent->SelectTreeItem(best);
-        }
+	m_Parent->SetMouseOverStation(best);
+	if (centre) {
+	    CentreOn(best->GetX(), best->GetY(), best->GetZ());
+	    SetThere(best->GetX(), best->GetY(), best->GetZ());
+	    m_Parent->SelectTreeItem(best);
+	}
     } else {
-        m_Parent->SetMouseOverStation(NULL);
+	m_Parent->SetMouseOverStation(NULL);
     }
 
     return best;
@@ -1041,28 +1044,28 @@ void GfxCore::OnSize(wxSizeEvent& event)
     m_XSize = size.GetWidth();
     m_YSize = size.GetHeight();
     if (m_XSize < 0 || m_YSize < 0) { //-- FIXME
-        m_XSize = 640;
-        m_YSize = 480;
+	m_XSize = 640;
+	m_YSize = 480;
     }
     m_XCentre = m_XSize / 2;
     m_YCentre = m_YSize / 2;
 
     if (m_DoneFirstShow) {
-        // FIXME: copied from NattyDrawNames()
-        const int dv = 2;
-        const int quantise = int(GetFontSize() / dv);
-        const int quantised_x = m_XSize / quantise;
-        const int quantised_y = m_YSize / quantise;
-        const size_t buffer_size = quantised_x * quantised_y;
+	// FIXME: copied from NattyDrawNames()
+	const int dv = 2;
+	const int quantise = int(GetFontSize() / dv);
+	const int quantised_x = m_XSize / quantise;
+	const int quantised_y = m_YSize / quantise;
+	const size_t buffer_size = quantised_x * quantised_y;
 
-        if (m_LabelGrid) delete[] m_LabelGrid;
+	if (m_LabelGrid) delete[] m_LabelGrid;
 
-        m_LabelGrid = new char[buffer_size];
-        CreateHitTestGrid();
+	m_LabelGrid = new char[buffer_size];
+	CreateHitTestGrid();
 
-        UpdateIndicators();
+	UpdateIndicators();
 
-        Refresh(false);
+	Refresh(false);
     }
 }
 
@@ -1143,7 +1146,7 @@ void GfxCore::Defaults()
 bool GfxCore::Animate(wxIdleEvent*)
 {
     if (!m_Rotating && !m_SwitchingTo) {
-        return false;
+	return false;
     }
 
     static double last_t = 0;
@@ -1155,37 +1158,37 @@ bool GfxCore::Animate(wxIdleEvent*)
 
     // When rotating...
     if (m_Rotating) {
-        TurnCave(m_RotationStep /* FIXME * t */);
+	TurnCave(m_RotationStep /* FIXME * t */);
     }
 
     if (m_SwitchingTo == PLAN) {
-        // When switching to plan view...
-        TiltCave(M_PI_2 * t);
-        if (m_TiltAngle == M_PI_2) {
-            m_SwitchingTo = 0;
-            ForceRefresh();
-        }
+	// When switching to plan view...
+	TiltCave(M_PI_2 * t);
+	if (m_TiltAngle == M_PI_2) {
+	    m_SwitchingTo = 0;
+	    ForceRefresh();
+	}
     }
     else if (m_SwitchingTo == ELEVATION) {
-        // When switching to elevation view...
-        if (fabs(m_TiltAngle) < M_PI_2 * t) {
-            m_SwitchingTo = 0;
-            TiltCave(-m_TiltAngle);
-            ForceRefresh();
-        }
-        else if (m_TiltAngle < 0.0) {
-            TiltCave(M_PI_2 * t);
-        }
-        else {
-            TiltCave(-M_PI_2 * t);
-        }
+	// When switching to elevation view...
+	if (fabs(m_TiltAngle) < M_PI_2 * t) {
+	    m_SwitchingTo = 0;
+	    TiltCave(-m_TiltAngle);
+	    ForceRefresh();
+	}
+	else if (m_TiltAngle < 0.0) {
+	    TiltCave(M_PI_2 * t);
+	}
+	else {
+	    TiltCave(-M_PI_2 * t);
+	}
     }
 
     return true;
 }
 
 void GfxCore::RefreshLine(const Point &a1, const Point &b1,
-                          const Point &a2, const Point &b2)
+			  const Point &a2, const Point &b2)
 {
     (void)a1; (void)b1; (void)a2; (void)b2;
     ForceRefresh(); //--FIXME
@@ -1194,36 +1197,36 @@ void GfxCore::RefreshLine(const Point &a1, const Point &b1,
     // measuring lines to minimise the redraw time
     int l = INT_MAX, r = INT_MIN, u = INT_MIN, d = INT_MAX;
     if (a1.x != DBL_MAX) {
-        int x = (int)GridXToScreen(a1);
-        int y = (int)GridYToScreen(a1);
-        l = x - HIGHLIGHTED_PT_SIZE * 4;
-        r = x + HIGHLIGHTED_PT_SIZE * 4;
-        u = y + HIGHLIGHTED_PT_SIZE * 4;
-        d = y - HIGHLIGHTED_PT_SIZE * 4;
+	int x = (int)GridXToScreen(a1);
+	int y = (int)GridYToScreen(a1);
+	l = x - HIGHLIGHTED_PT_SIZE * 4;
+	r = x + HIGHLIGHTED_PT_SIZE * 4;
+	u = y + HIGHLIGHTED_PT_SIZE * 4;
+	d = y - HIGHLIGHTED_PT_SIZE * 4;
     }
     if (a2.x != DBL_MAX) {
-        int x = (int)GridXToScreen(a2);
-        int y = (int)GridYToScreen(a2);
-        l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
-        r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
-        u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
-        d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
+	int x = (int)GridXToScreen(a2);
+	int y = (int)GridYToScreen(a2);
+	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
+	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
+	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
+	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
     }
     if (b1.x != DBL_MAX) {
-        int x = (int)GridXToScreen(b1);
-        int y = (int)GridYToScreen(b1);
-        l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
-        r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
-        u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
-        d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
+	int x = (int)GridXToScreen(b1);
+	int y = (int)GridYToScreen(b1);
+	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
+	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
+	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
+	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
     }
     if (b2.x != DBL_MAX) {
-        int x = (int)GridXToScreen(b2);
-        int y = (int)GridYToScreen(b2);
-        l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
-        r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
-        u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
-        d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
+	int x = (int)GridXToScreen(b2);
+	int y = (int)GridYToScreen(b2);
+	l = min(l, x - HIGHLIGHTED_PT_SIZE * 4);
+	r = max(r, x + HIGHLIGHTED_PT_SIZE * 4);
+	u = max(u, y + HIGHLIGHTED_PT_SIZE * 4);
+	d = min(d, y - HIGHLIGHTED_PT_SIZE * 4);
     }
     const wxRect R(l, d, r - l, u - d);
     Refresh(false, &R);
@@ -1268,36 +1271,36 @@ void GfxCore::CreateHitTestGrid()
 {
     // Clear hit-test grid.
     for (int i = 0; i < HITTEST_SIZE * HITTEST_SIZE; i++) {
-        m_PointGrid[i].clear();
+	m_PointGrid[i].clear();
     }
 
     // Fill the grid.
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
     while (pos != end) {
-        LabelInfo* label = *pos++;
+	LabelInfo* label = *pos++;
 
-        if (!((m_Surface && label->IsSurface()) ||
+	if (!((m_Surface && label->IsSurface()) ||
 	      (m_Legs && label->IsUnderground()) ||
 	      (!label->IsSurface() && !label->IsUnderground()))) {
 	    // if this station isn't to be displayed, skip to the next
 	    // (last case is for stns with no legs attached)
-            continue;
-        }
+	    continue;
+	}
 
-        // Calculate screen coordinates.
-        Double cx, cy, cz;
-        Transform(label->GetX(), label->GetY(), label->GetZ(), &cx, &cy, &cz);
-        if (cx < 0 || cx >= m_XSize) continue;
-        if (cy < 0 || cy >= m_YSize) continue;
+	// Calculate screen coordinates.
+	Double cx, cy, cz;
+	Transform(label->GetX(), label->GetY(), label->GetZ(), &cx, &cy, &cz);
+	if (cx < 0 || cx >= m_XSize) continue;
+	if (cy < 0 || cy >= m_YSize) continue;
 
-        cy = m_YSize - cy;
+	cy = m_YSize - cy;
 
-        // On-screen, so add to hit-test grid...
-        int grid_x = int((cx * (HITTEST_SIZE - 1)) / m_XSize);
-        int grid_y = int((cy * (HITTEST_SIZE - 1)) / m_YSize);
+	// On-screen, so add to hit-test grid...
+	int grid_x = int((cx * (HITTEST_SIZE - 1)) / m_XSize);
+	int grid_y = int((cy * (HITTEST_SIZE - 1)) / m_YSize);
 
-        m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(label);
+	m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(label);
     }
 
     m_HitTestGridValid = true;
@@ -1313,15 +1316,15 @@ void GfxCore::UpdateQuaternion()
     Quaternion q2(v2, m_TiltAngle);
 
     m_Params.rotation = q2 * q1; // care: quaternion multiplication
-                                 //       is not commutative!
+				 //       is not commutative!
     SetRotation(m_Params.rotation);
 }
 
 void GfxCore::UpdateIndicators()
 {
     if (m_Lists.indicators) {
-        DeleteList(m_Lists.indicators);
-        m_Lists.indicators = CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
+	DeleteList(m_Lists.indicators);
+	m_Lists.indicators = CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
     }
 }
 
@@ -1335,9 +1338,9 @@ void GfxCore::TurnCave(Double angle)
 
     m_PanAngle += angle;
     if (m_PanAngle >= M_PI * 2.0) {
-        m_PanAngle -= M_PI * 2.0;
+	m_PanAngle -= M_PI * 2.0;
     } else if (m_PanAngle < 0.0) {
-        m_PanAngle += M_PI * 2.0;
+	m_PanAngle += M_PI * 2.0;
     }
 
     m_HitTestGridValid = false;
@@ -1356,9 +1359,9 @@ void GfxCore::TiltCave(Double tilt_angle)
 {
     // Tilt the cave by a given angle.
     if (m_TiltAngle + tilt_angle > M_PI_2) {
-        tilt_angle = M_PI_2 - m_TiltAngle;
+	tilt_angle = M_PI_2 - m_TiltAngle;
     } else if (m_TiltAngle + tilt_angle < -M_PI_2) {
-        tilt_angle = -M_PI_2 - m_TiltAngle;
+	tilt_angle = -M_PI_2 - m_TiltAngle;
     }
 
     m_TiltAngle += tilt_angle;
@@ -1394,13 +1397,13 @@ void GfxCore::SetCoords(wxPoint point)
     ReverseTransform(point.x, point.y, &cx, &cy, &cz);
 
     if (m_TiltAngle == M_PI_2) {
-        m_Parent->SetCoords(cx + m_Parent->GetXOffset(), -cy + m_Parent->GetYOffset());
+	m_Parent->SetCoords(cx + m_Parent->GetXOffset(), -cy + m_Parent->GetYOffset());
     }
     else if (m_TiltAngle == 0.0) {
-        m_Parent->SetAltitude(-cz + m_Parent->GetZOffset());
+	m_Parent->SetAltitude(-cz + m_Parent->GetZOffset());
     }
     else {
-        m_Parent->ClearCoords();
+	m_Parent->ClearCoords();
     }
 }
 
@@ -1480,9 +1483,9 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
     // Determine whether a point (in window coordinates) lies within the scale bar.
 
     return (point.x >= m_ScaleBar.offset_x &&
-            point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
-            point.y <= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT &&
-            point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT*2);
+	    point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
+	    point.y <= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT &&
+	    point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT*2);
 }
 
 void GfxCore::SetCompassFromPoint(wxPoint point)
@@ -1495,12 +1498,12 @@ void GfxCore::SetCompassFromPoint(wxPoint point)
     wxCoord radius = GetIndicatorRadius();
 
     if (dx * dx + dy * dy <= radius * radius) {
-        TurnCaveTo(atan2((double)dx, (double)dy) - M_PI);
-        m_MouseOutsideCompass = false;
+	TurnCaveTo(atan2((double)dx, (double)dy) - M_PI);
+	m_MouseOutsideCompass = false;
     }
     else {
-        TurnCaveTo(int(int((atan2((double)dx, (double)dy) - M_PI) * 180.0 / M_PI) / 45) * M_PI_4);
-        m_MouseOutsideCompass = true;
+	TurnCaveTo(int(int((atan2((double)dx, (double)dy) - M_PI) * 180.0 / M_PI) / 45) * M_PI_4);
+	m_MouseOutsideCompass = true;
     }
 
     ForceRefresh();
@@ -1516,20 +1519,20 @@ void GfxCore::SetClinoFromPoint(wxPoint point)
     glaCoord radius = GetIndicatorRadius();
     
     if (dx >= 0 && dx * dx + dy * dy <= radius * radius) {
-        TiltCave(atan2(dy, dx) - m_TiltAngle);
-        m_MouseOutsideElev = false;
+	TiltCave(atan2(dy, dx) - m_TiltAngle);
+	m_MouseOutsideElev = false;
     }
     else if (dy >= INDICATOR_MARGIN) {
-        TiltCave(M_PI_2 - m_TiltAngle);
-        m_MouseOutsideElev = true;
+	TiltCave(M_PI_2 - m_TiltAngle);
+	m_MouseOutsideElev = true;
     }
     else if (dy <= -INDICATOR_MARGIN) {
-        TiltCave(-M_PI_2 - m_TiltAngle);
-        m_MouseOutsideElev = true;
+	TiltCave(-M_PI_2 - m_TiltAngle);
+	m_MouseOutsideElev = true;
     }
     else {
-        TiltCave(-m_TiltAngle);
-        m_MouseOutsideElev = true;
+	TiltCave(-m_TiltAngle);
+	m_MouseOutsideElev = true;
     }
 
     ForceRefresh();
@@ -1549,11 +1552,11 @@ void GfxCore::RedrawIndicators()
     // Redraw the compass and clino indicators.
 
     const wxRect r(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 -
-                     INDICATOR_GAP,
-                   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
-                   INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
-                   INDICATOR_BOX_SIZE);
-                   
+		     INDICATOR_GAP,
+		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
+		   INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
+		   INDICATOR_BOX_SIZE);
+		   
     m_RedrawOffscreen = true;
     Refresh(false, &r);
 }
@@ -1573,7 +1576,7 @@ void GfxCore::ToggleRotation()
     m_Rotating = !m_Rotating;
 
     if (m_Rotating) {
-        timer.Start(drawtime);
+	timer.Start(drawtime);
     }
 }
 
@@ -1605,7 +1608,7 @@ void GfxCore::RotateSlower(bool accel)
 
     m_RotationStep /= accel ? 1.44 : 1.2;
 /* FIXME    if (m_RotationStep < M_PI / 180.0) {
-        m_RotationStep = (Double) M_PI / 180.0;
+	m_RotationStep = (Double) M_PI / 180.0;
     } */
 }
 
@@ -1615,7 +1618,7 @@ void GfxCore::RotateFaster(bool accel)
 
     m_RotationStep *= accel ? 1.44 : 1.2;
 /*    if (m_RotationStep > 2.5 * M_PI) {
-        m_RotationStep = (Double) 2.5 * M_PI;
+	m_RotationStep = (Double) 2.5 * M_PI;
     }*/
 }
 
@@ -1624,20 +1627,20 @@ void GfxCore::SwitchToElevation()
     // Perform an animated switch to elevation view.
 
     switch (m_SwitchingTo) {
-        case 0:
-            timer.Start(drawtime);
-            m_SwitchingTo = ELEVATION;
-            break;
-            
-        case PLAN:
-            m_SwitchingTo = ELEVATION;
-            break;
-            
-        case ELEVATION:
-            // a second order to switch takes us there right away
-            TiltCave(-m_TiltAngle);
-            m_SwitchingTo = 0;
-            ForceRefresh();
+	case 0:
+	    timer.Start(drawtime);
+	    m_SwitchingTo = ELEVATION;
+	    break;
+	    
+	case PLAN:
+	    m_SwitchingTo = ELEVATION;
+	    break;
+	    
+	case ELEVATION:
+	    // a second order to switch takes us there right away
+	    TiltCave(-m_TiltAngle);
+	    m_SwitchingTo = 0;
+	    ForceRefresh();
     }
 }
 
@@ -1646,20 +1649,20 @@ void GfxCore::SwitchToPlan()
     // Perform an animated switch to plan view.
 
     switch (m_SwitchingTo) {
-        case 0:
-            timer.Start(drawtime);
-            m_SwitchingTo = PLAN;
-            break;
-            
-        case ELEVATION:
-            m_SwitchingTo = PLAN;
-            break;
+	case 0:
+	    timer.Start(drawtime);
+	    m_SwitchingTo = PLAN;
+	    break;
+	    
+	case ELEVATION:
+	    m_SwitchingTo = PLAN;
+	    break;
 
-        case PLAN:
-            // a second order to switch takes us there right away
-            TiltCave(M_PI_2 - m_TiltAngle);
-            m_SwitchingTo = 0;
-            ForceRefresh();
+	case PLAN:
+	    // a second order to switch takes us there right away
+	    TiltCave(M_PI_2 - m_TiltAngle);
+	    m_SwitchingTo = 0;
+	    ForceRefresh();
     }
 }
 
@@ -1702,7 +1705,7 @@ void GfxCore::ToggleFlag(bool* flag, bool refresh)
 {
     *flag = !*flag;
     if (refresh) {
-        ForceRefresh();
+	ForceRefresh();
     }
 }
 
@@ -1769,72 +1772,66 @@ void GfxCore::GenerateDisplayListSurface()
 void GfxCore::GenerateBlobsDisplayList()
 {
     // Plot crosses and/or blobs.
-    if (m_Crosses || m_Entrances || m_FixedPts || m_ExportedPts) {
-        list<LabelInfo*>::const_reverse_iterator pos =
-            m_Parent->GetRevLabels();
-        while (pos != m_Parent->GetRevLabelsEnd()) {
-            LabelInfo* label = *pos++;
+    if (!(m_Crosses || m_Entrances || m_FixedPts || m_ExportedPts ||
+	  m_Parent->GetNumHighlightedPts())) return;
 
-            // When more than one flag is set on a point:
-            // search results take priority over entrance highlighting
-            // which takes priority over fixed point
-            // highlighting, which in turn takes priority over exported
-            // point highlighting.
+    list<LabelInfo*>::const_reverse_iterator pos = m_Parent->GetRevLabels();
+    while (pos != m_Parent->GetRevLabelsEnd()) {
+	const LabelInfo* label = *pos++;
 
-            enum AvenColour col;
-            enum {BLOB, CROSS} shape = BLOB;
+	// When more than one flag is set on a point:
+	// search results take priority over entrance highlighting
+	// which takes priority over fixed point
+	// highlighting, which in turn takes priority over exported
+	// point highlighting.
 
-            if (!((m_Surface && label->IsSurface()) ||
-                  (m_Legs && label->IsUnderground()) ||
-                  (!label->IsSurface() && !label->IsUnderground()))) {
-                // if this station isn't to be displayed, skip to the next
-                // (last case is for stns with no legs attached)
-                continue;
-            }
+	enum AvenColour col;
+	enum {BLOB, CROSS} shape = BLOB;
 
-            if (label->IsHighLighted()) {
-                col = col_YELLOW;
-            }
-            else if (m_Entrances && label->IsEntrance()) {
-                col = col_GREEN;
-            }
-            else if (m_FixedPts && label->IsFixedPt()) {
-                col = col_RED;
-            }
-            else if (m_ExportedPts && label->IsExportedPt()) {
-                col = col_TURQUOISE;
-            }
-            else if (m_Crosses) {
-                col = col_LIGHT_GREY;
-                shape = CROSS;
-            }
-            else {
-                continue;
-            }
+	if (!((m_Surface && label->IsSurface()) ||
+	      (m_Legs && label->IsUnderground()) ||
+	      (!label->IsSurface() && !label->IsUnderground()))) {
+	    // if this station isn't to be displayed, skip to the next
+	    // (last case is for stns with no legs attached)
+	    continue;
+	}
 
-            Double size = SurveyUnitsAcrossViewport() * 3.0 / m_XSize;
+	if (label->IsHighLighted()) {
+	    col = col_YELLOW;
+	} else if (m_Entrances && label->IsEntrance()) {
+	    col = col_GREEN;
+	} else if (m_FixedPts && label->IsFixedPt()) {
+	    col = col_RED;
+	} else if (m_ExportedPts && label->IsExportedPt()) {
+	    col = col_TURQUOISE;
+	} else if (m_Crosses) {
+	    col = col_LIGHT_GREY;
+	    shape = CROSS;
+	} else {
+	    continue;
+	}
+
 /*
-            Double x3 = label->GetX() + m_Params.translation.x;
-            Double y3 = label->GetY() + m_Params.translation.y;
-            Double z3 = label->GetZ() + m_Params.translation.z;
+	Double x3 = label->GetX() + m_Params.translation.x;
+	Double y3 = label->GetY() + m_Params.translation.y;
+	Double z3 = label->GetZ() + m_Params.translation.z;
 
-            // Calculate screen coordinates, and check if the point is
-            // visible - this is faster, and avoids coordinate
-            // wrap-around problems
-            int x = (int) (x3 * m_00 + y3 * m_01 + z3 * m_02) + m_XCentre;
-            if (x < -CROSS_SIZE || x >= m_XSize + CROSS_SIZE) continue;
-            int y = -(int) (x3 * m_20 + y3 * m_21 + z3 * m_22) + m_YCentre;
-            if (y < -CROSS_SIZE || y >= m_YSize + CROSS_SIZE) continue;
+	// Calculate screen coordinates, and check if the point is
+	// visible - this is faster, and avoids coordinate
+	// wrap-around problems
+	int x = (int) (x3 * m_00 + y3 * m_01 + z3 * m_02) + m_XCentre;
+	if (x < -CROSS_SIZE || x >= m_XSize + CROSS_SIZE) continue;
+	int y = -(int) (x3 * m_20 + y3 * m_21 + z3 * m_22) + m_YCentre;
+	if (y < -CROSS_SIZE || y >= m_YSize + CROSS_SIZE) continue;
 
-            SetColour(col);
-            */
-            if (shape == CROSS) {
-               // m_DrawDC.DrawLines(2, cross1, x, y);
-               // m_DrawDC.DrawLines(2, cross2, x, y);
-            } else {
-                DrawSphere(m_Pens[col], label->GetX(), label->GetY(), label->GetZ(), size, 16);
-            }
-        }
+	SetColour(col);
+	*/
+	if (shape == CROSS) {
+	   // m_DrawDC.DrawLines(2, cross1, x, y);
+	   // m_DrawDC.DrawLines(2, cross2, x, y);
+	} else {
+	    DrawBlob(m_Pens[col], label->GetX(), label->GetY(), label->GetZ(), HIGHLIGHTED_PT_SIZE);
+	}
     }
 }
 
@@ -1842,17 +1839,17 @@ void GfxCore::GenerateIndicatorDisplayList()
 {
     // Draw depthbar.
     if (m_Depthbar) {
-        DrawDepthbar();
+	DrawDepthbar();
     }
 
     // Draw compass or elevation/heading indicators.
     if ((m_Compass && m_RotationOK) || (m_Clino && m_Lock == lock_NONE)) {
-        Draw2dIndicators();
+	Draw2dIndicators();
     }
  
     // Draw scalebar.
     if (m_Scalebar) {
-        DrawScalebar();
+	DrawScalebar();
     }
 }
 
@@ -1882,7 +1879,7 @@ void GfxCore::SetColourFromHeight(Double z, Double factor)
     Double into_band = z_offset / interval - band;
    
 //    printf("%g z_offset=%g interval=%g band=%d\n", into_band,
-//            z_offset, interval, band);
+//	    z_offset, interval, band);
     // FIXME: why do we need to clamp here?  Is it because the walls can
     // extend further up/down than the centre-line?
     if (into_band < 0.0) into_band = 0.0;
@@ -2021,7 +2018,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 
 	    assert(!first_point); // The first point must always be a move.
 	    bool changing_ug_state =
-                (current_polyline_is_surface != pti.IsSurface());
+		(current_polyline_is_surface != pti.IsSurface());
 
 	    if (changing_ug_state || last_was_move) {
 		// Start a new polyline if we're switching
@@ -2085,7 +2082,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 				if (segment == 0) {
 				    // first segment
 				    Double h = sqrd(i->getX() - pt_v.getX()) +
-				 	       sqrd(i->getY() - pt_v.getY());
+					       sqrd(i->getY() - pt_v.getY());
 				    Double v = sqrd(i->getZ() - pt_v.getZ());
 				    if (h + v > 30.0 * 30.0) {
 					Double scale = 30.0 / sqrt(h + v);
@@ -2361,7 +2358,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 				if (segment == 0) {
 				    // first segment
 				    Double h = sqrd(i->getX() - pt_v.getX()) +
-				 	       sqrd(i->getY() - pt_v.getY());
+					       sqrd(i->getY() - pt_v.getY());
 				    Double v = sqrd(i->getZ() - pt_v.getZ());
 				    if (h + v > 30.0 * 30.0) {
 					Double scale = 30.0 / sqrt(h + v);

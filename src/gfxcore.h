@@ -163,7 +163,6 @@ class GfxCore : public GLACanvas {
 
     void UpdateQuaternion();
     void UpdateIndicators();
-    void UpdateBlobs();
     
     void SetColourFromHeight(Double z, Double factor);
     void PlaceVertexWithColour(Double x, Double y, Double z,
@@ -227,6 +226,7 @@ public:
     void Initialise();
     void InitialiseTerrain();
 
+    void UpdateBlobs();
     void ForceRefresh();
 
     void RefreshLine(const Point& a1, const Point& b1, const Point& a2, const Point& b2);
@@ -325,11 +325,11 @@ public:
     void ToggleCompass() { ToggleFlag(&m_Compass, false); UpdateIndicators(); ForceRefresh(); }
     void ToggleClino() { ToggleFlag(&m_Clino, false); UpdateIndicators(); ForceRefresh(); }
     void ToggleScaleBar() { ToggleFlag(&m_Scalebar, false); UpdateIndicators(); ForceRefresh(); }
-    void ToggleEntrances() { ToggleFlag(&m_Entrances); }
-    void ToggleFixedPts() { ToggleFlag(&m_FixedPts); }
-    void ToggleExportedPts() { ToggleFlag(&m_ExportedPts); }
+    void ToggleEntrances() { ToggleFlag(&m_Entrances); UpdateBlobs(); }
+    void ToggleFixedPts() { ToggleFlag(&m_FixedPts); UpdateBlobs(); }
+    void ToggleExportedPts() { ToggleFlag(&m_ExportedPts); UpdateBlobs(); }
     void ToggleGrid() { ToggleFlag(&m_Grid); }
-    void ToggleCrosses() { ToggleFlag(&m_Crosses); }
+    void ToggleCrosses() { ToggleFlag(&m_Crosses); UpdateBlobs(); }
     void ToggleStationNames() { ToggleFlag(&m_Names, false); ForceRefresh(); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
     void ToggleDepthBar() { ToggleFlag(&m_Depthbar, false); UpdateIndicators(); ForceRefresh(); }
