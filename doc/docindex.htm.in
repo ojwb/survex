@@ -8,7 +8,7 @@ HREF="http://www.survex.com/">Survex web site</A>.
 <H1>@PRETTYPACKAGE@ @VERSION@ Documentation</H1>
 
 <ul>
-<li><A HREF="help/index.htm">@PACKAGE@ @VERSION@ Manual</A>
+<li><A HREF="help/index.htm">@PRETTYPACKAGE@ @VERSION@ Manual</A>
 <li><A HREF="NEWS.txt">Details of user visible changes in this and previous versions</A>
 	(<A HREF="OLDNEWS.txt">older changes</A>)
 <li><A HREF="BUGS.txt">List of known bugs</A>
