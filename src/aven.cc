@@ -27,7 +27,6 @@
 
 #include "aven.h"
 #include "mainfrm.h"
-#include "splash.h"
 
 #include "cmdline.h"
 #include "message.h"
