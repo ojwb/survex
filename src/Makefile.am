@@ -6,7 +6,7 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h uni2dos.h useful.h\
  validate.h whichos.h xrot.h new3dout.h 3ddefs.h \
- aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h
+ aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h
 
 LDADD = @LIBOBJS@
 

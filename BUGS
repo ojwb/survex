@@ -2,20 +2,39 @@ Date: Sat, 07 Apr 2001
 From: Mark
 
 wxaven:
+
 - get it to build on/for win32
+
 - confusion over semantics of "reverse controls"
+
 - continuing trouble with accelerator keys
-- translations need doing
 
 wxaven with Motif:
+
 - need to resize window to get any display at all
+
 - about box is resizable
+
 - flicker on window resize
 
 Date: Mon, 09 Apr 2001
 From: Olly
 
 - dragging scale bar should change scale, not move scale bar!
-- where did the status bar go?
+
+- status bar?
+
 - "Alt-F, Ctrl-Z" changes hotkey for File->Open from Ctrl-O to Ctrl-Z !?!
+
+Date: Wed, 11 Apr 2001
+From: Olly
+
+- Accents in compass and clinometer labels don't display right - need
+to fix font encoding.
+
+- Accents in menus were working but suddenly stopped - I think this
+happened when I upgraded debian and a new libgtk package got
+installed...
+
+- Problems with which way the indicators point...
 
