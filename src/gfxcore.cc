@@ -119,6 +119,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
            wxFONTENCODING_ISO8859_1),
     m_InitialisePending(false)
 {
+    m_OffscreenBitmap = NULL;
     m_TerrainLoaded = false;
     m_LastDrag = drag_NONE;
     m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
@@ -401,9 +402,10 @@ void GfxCore::FirstShow()
     CheckGLError("enabling features for survey legs");
 #else
     // Create the offscreen bitmap.
-    m_OffscreenBitmap.Create(m_XSize, m_YSize);
+    m_OffscreenBitmap = new wxBitmap;
+    m_OffscreenBitmap->Create(m_XSize, m_YSize);
 
-    m_DrawDC.SelectObject(m_OffscreenBitmap);
+    m_DrawDC.SelectObject(*m_OffscreenBitmap);
 #endif
 
     m_DoneFirstShow = true;
@@ -2501,8 +2503,12 @@ void GfxCore::OnSize(wxSizeEvent& event)
 #ifndef __WXMOTIF__
         m_DrawDC.SelectObject(wxNullBitmap);
 #endif
-        m_OffscreenBitmap.Create(m_XSize, m_YSize);
-        m_DrawDC.SelectObject(m_OffscreenBitmap);
+        if (m_OffscreenBitmap) {
+            delete m_OffscreenBitmap;
+	}
+	m_OffscreenBitmap = new wxBitmap;
+        m_OffscreenBitmap->Create(m_XSize, m_YSize);
+        m_DrawDC.SelectObject(*m_OffscreenBitmap);
 #endif
         RedrawOffscreen();
         Refresh(false);
@@ -2511,7 +2517,6 @@ void GfxCore::OnSize(wxSizeEvent& event)
 
 void GfxCore::OnDisplayOverlappingNames()
 {
-    
     m_OverlappingNames = !m_OverlappingNames;
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
