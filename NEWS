@@ -1,3 +1,6 @@
+* (Unix version): Fixed attempt to load messages from
+  "DEFAULTLANG.msg" if both SURVEX_LANG and LANG were unset.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

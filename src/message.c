@@ -729,7 +729,11 @@ msg_init(const char *argv0)
 #if (OS==WIN32)
 	 LCID locid;
 #endif
+#ifdef DEFAULTLANG
 	 msg_lang = STRING(DEFAULTLANG);
+#else
+	 msg_lang = "en";
+#endif
 #if (OS==WIN32)
 	 locid = GetUserDefaultLCID();
 	 if (locid) {
