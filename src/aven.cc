@@ -114,6 +114,8 @@ aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
       m += ": ";
    }
 
-   m += wxString::FormatV(msg(en), ap);
+   wxString s;
+   s.PrintfV(msg(en), ap);
+   m += s;
    wxGetApp().ReportError(m);
 }

@@ -38,6 +38,10 @@
 #include "filelist.h"
 #include "debug.h"
 
+#ifdef AVEN
+#include "aven.h"
+#endif
+
 #ifdef HAVE_SIGNAL
 # ifdef HAVE_SETJMP
 #  include <setjmp.h>
@@ -72,8 +76,8 @@ static jmp_buf jmpbufSignal;
 int msg_warnings = 0; /* keep track of how many warnings we've given */
 int msg_errors = 0;   /* and how many (non-fatal) errors */
 
-/* in case osmalloc() fails before szAppNameCopy is set up */
-static const char *szAppNameCopy = "anonymous program";
+/* in case osmalloc() fails before appname_copy is set up */
+static const char *appname_copy = "anonymous program";
 
 /* error code for failed osmalloc and osrealloc calls */
 static void
@@ -257,9 +261,64 @@ default_charset(void)
    return CHARSET_RISCOS31;
 #elif (OS==MSDOS)
    return CHARSET_DOSCP850;
-#else
-   /* FIXME: assume ISO_8859_1 for now */
+#elif (OS==WIN32)
+   return CHARSET_WINCP1252:
+#elif (OS==UNIX)
+#if defined(XCAVEROT) || defined(AVEN)
    return CHARSET_ISO_8859_1;
+#else
+   char *p = strchr(msg_lang, '.');
+   if (p) {
+      char *chset = ++p;
+      size_t name_len;
+
+      while (*p != '\0' && *p != '@') p++;
+
+      name_len = p - chset;
+
+      if (name_len) {
+	 int only_digit = 1;
+	 size_t cnt;
+        
+	 for (cnt = 0; cnt < name_len; ++cnt)
+	    if (isalpha(chset[cnt])) {
+	       only_digit = 0;
+	       break;
+	    }
+
+	 if (only_digit) goto iso;
+	 
+	 switch (tolower(chset[0])) {
+	  case 'i':
+	    if (tolower(chset[1]) == 's' && tolower(chset[2]) == 'o') {
+	       chset += 3;
+	       iso:
+	       if (strncmp(chset, "8859", 4) == 0) {
+		  chset += 4;
+		  while (chset < p && *chset && !isdigit(*chset)) chset++;
+		  switch (atoi(chset)) {
+		   case 1: return CHARSET_ISO_8859_1;
+		   default: return CHARSET_USASCII;		   
+		  }
+	       }
+	    }
+	    break;
+	  case 'u':
+	    if (tolower(chset[1]) == 't' && tolower(chset[2]) == 'f') {
+	       chset += 3;
+	       while (chset < p && *chset && !isdigit(*chset)) chset++;
+	       switch (atoi(chset)) {
+		case 8: return CHARSET_UTF8;
+		default: return CHARSET_USASCII;
+	       }
+	    }
+	 }
+      }
+   }
+   return CHARSET_USASCII;
+#endif
+#else
+# error Do not know operating system 'OS'
 #endif
 }
 
@@ -273,6 +332,12 @@ xlate_dos_cp850(int unicode)
    return 0;
 }
 #endif
+
+/* It seems that Swedish and maybe some other scandanavian languages don't
+ * transliterate &auml; to ae - but it seems there may be conflicting views
+ * on this...
+ */
+#define umlaut_to_e() 1
 
 static int
 add_unicode(int charset, unsigned char *p, int value)
@@ -310,8 +375,20 @@ add_unicode(int charset, unsigned char *p, int value)
 	 return 1;
       }
       break;
-#endif
-#if (OS==MSDOS)
+#elif (OS==WIN32)
+   case CHARSET_WINCP1252:
+      /* MS Windows extensions to ISO-8859-1 */
+      /* there are a few other obscure ones we don't currently need */
+      switch (value) {
+       case 0x152: value = 0x8c; break; /* &OElig; */
+       case 0x153: value = 0x9c; break; /* &oelig; */
+      }
+      if (value < 0x100) {
+	 *p = value;
+	 return 1;
+      }
+      break;      
+#elif (OS==MSDOS)
    case CHARSET_DOSCP850:
       value = xlate_dos_cp850(value);
       if (value) {
@@ -321,6 +398,83 @@ add_unicode(int charset, unsigned char *p, int value)
       break;
 #endif
    }
+   /* Transliterate characters we can't represent */
+#ifdef DEBUG
+   fprintf(stderr, "transliterate `%c' 0x%x\n", value, value);
+#endif
+   switch (value) {
+    case 160:
+      *p = ' '; return 1;
+    case 161 /* ¡ */:
+      *p = '!'; return 1;
+    case 171 /* « */:
+      p[1] = *p = '<'; return 2;
+    case 187 /* » */:
+      p[1] = *p = '>'; return 2;
+    case 191 /* ¿ */:
+      *p = '?'; return 1;
+    case 192 /* À */: case 193 /* Á */: case 194 /* Â */: case 195 /* Ã */:
+      *p = 'A'; return 1;
+    case 197 /* Å */:
+      p[1] = *p = 'A'; return 2;
+    case 196 /* Ä */: /* &Auml; */
+      *p = 'A';
+      if (!umlaut_to_e()) return 1;
+      p[1] = 'E'; return 2;
+    case 198 /* Æ */:
+      *p = 'A'; p[1] = 'E'; return 2;
+    case 199 /* Ç */:
+      *p = 'C'; return 1;
+    case 200 /* È */: case 201 /* É */: case 202 /* Ê */: case 203 /* Ë */:
+      *p = 'E'; return 1;
+    case 204 /* Ì */: case 205 /* Í */: case 206 /* Î */: case 207 /* Ï */:
+      *p = 'I'; return 1;
+    case 208 /* Ð */: case 222 /* Þ */:
+      *p = 'T'; p[1] = 'H'; return 2;
+    case 209 /* Ñ */:
+      *p = 'N'; return 1;
+    case 210 /* Ò */: case 211 /* Ó */: case 212 /* Ô */: case 213 /* Õ */:
+      *p = 'O'; return 1;
+    case 214 /* Ö */: /* &Ouml; */ case 0x152: /* &OElig; */
+      *p = 'O'; p[1] = 'E'; return 2;
+    case 217 /* Ù */: case 218 /* Ú */: case 219 /* Û */:
+      *p = 'U'; return 1;
+    case 220 /* Ü */: /* &Uuml; */
+      *p = 'U'; p[1] = 'E'; return 2;
+    case 221 /* Ý */:
+      *p = 'Y'; return 1;
+    case 223 /* ß */:
+      p[1] = *p = 's'; return 2;
+    case 224 /* à */: case 225 /* á */: case 226 /* â */: case 227 /* ã */:
+      *p = 'a'; return 1;
+    case 228 /* ä */: /* &auml; */ case 230 /* æ */:
+      *p = 'a'; p[1] = 'e'; return 2;
+    case 229 /* å */:
+      p[1] = *p = 'a'; return 2;
+    case 231 /* ç */:
+      *p = 'c'; return 1;
+    case 232 /* è */: case 233 /* é */: case 234 /* ê */: case 235 /* ë */:
+      *p = 'e'; return 1;
+    case 236 /* ì */: case 237 /* í */: case 238 /* î */: case 239 /* ï */:
+      *p = 'i'; return 1;
+    case 241 /* ñ */:
+      *p = 'n'; return 1;
+    case 240 /* ð */: case 254 /* þ */:
+      *p = 't'; p[1] = 'h'; return 2;
+    case 242 /* ò */: case 243 /* ó */: case 244 /* ô */: case 245 /* õ */: 
+      *p = 'o'; return 1;
+    case 246 /* ö */: /* &ouml; */ case 0x153: /* &oelig; */
+      *p = 'o'; p[1] = 'e'; return 2;
+    case 249 /* ù */: case 250 /* ú */: case 251 /* û */:
+      *p = 'u'; return 1;
+    case 252 /* ü */: /* &uuml; */
+      *p = 'u'; p[1] = 'e'; return 2;
+    case 253 /* ý */: case 255 /* ÿ */:
+      *p = 'y'; return 1;
+   }
+#ifdef DEBUG
+   fprintf(stderr, "failed to transliterate\n");
+#endif
    return 0;
 }
 
@@ -459,13 +613,13 @@ msg_init(const char *argv0)
 #endif
    /* Point to argv0 itself so we report a more helpful error if the code to work
     * out the clean appname generates a signal */
-   szAppNameCopy = argv0;
+   appname_copy = argv0;
 #if (OS == UNIX)
    /* use name as-is on Unix - programs run from path get name as supplied */
-   szAppNameCopy = osstrdup(argv0);
+   appname_copy = osstrdup(argv0);
 #else
    /* use the lower-cased leafname on other platforms */
-   szAppNameCopy = p = leaf_from_fnm(argv0);
+   appname_copy = p = leaf_from_fnm(argv0);
    while (*p) {
       *p = tolower(*p);
       p++;
@@ -628,15 +782,13 @@ void
 v_report(int severity, const char *fnm, int line, int en, va_list ap)
 {
 #ifdef AVEN
-   extern void aven_v_report(int severity, const char *fnm, int line, int en,
-			     va_list ap);
    aven_v_report(severity, fnm, line, en, ap);
 #else
    if (fnm) {
       fputs(fnm, STDERR);
       if (line) fprintf(STDERR, ":%d", line);
    } else {
-      fputs(szAppNameCopy, STDERR);
+      fputs(appname_copy, STDERR);
    }
    fputs(": ", STDERR);
 

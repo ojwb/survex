@@ -44,6 +44,7 @@ extern "C" {
 #define CHARSET_DOSCP850   2
 #define CHARSET_RISCOS31   3
 #define CHARSET_UTF8	   4
+#define CHARSET_WINCP1252  5
 
 extern int msg_warnings; /* keep track of how many warnings we've given */
 extern int msg_errors;   /* and how many (non-fatal) errors */

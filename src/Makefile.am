@@ -60,7 +60,7 @@ caverot_LDADD = @LIBOBJS@ @CROBJX@ @CRLIB@
 caverot_DEPENDENCIES = @CROBJX@
 
 xcaverot_SOURCES = xcaverot.c $(ROTSRC)
-xcaverot_CFLAGS = @X_CFLAGS@
+xcaverot_CFLAGS = @X_CFLAGS@ -DXCAVEROT
 xcaverot_LDADD = @LIBOBJS@ @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
 
 diffpos_SOURCES = diffpos.c $(COMMONSRC)

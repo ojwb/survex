@@ -23,6 +23,17 @@
 #ifndef aven_h
 #define aven_h
 
+#include <stdarg.h>
+
+extern
+#ifdef __cplusplus
+ "C"
+#endif
+void aven_v_report(int severity, const char *fnm, int line, int en,
+		   va_list ap);
+
+#ifdef __cplusplus
+
 #include "wx.h"
 
 class MainFrm;
@@ -41,5 +52,7 @@ public:
 };
 
 DECLARE_APP(Aven)
+
+#endif
 
 #endif

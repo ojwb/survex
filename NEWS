@@ -4,6 +4,18 @@
 * caverot: adjust to speed of machine/size on initial draw, rather than
   on first input from user.
 
+* (MS Windows version): now handle oe-ligatures.
+
+* (Unix version): now get character set from $LANG.
+
+* Transliterate accented characters that can't be represented in the
+  current character set.
+
+* aven: added optional grid.
+
+* aven: reporting errors in a message box wasn't working (wxWindows
+  bug).
+
 Changes in 0.97-prerelease7:
 
 * Messages relating to command line options are now translatable.
