@@ -242,6 +242,7 @@ win_SetColour(int colourcode)
 	 break;
       case PR_COLOUR_LABELS:
 	 SetTextColor(pd, colour_labels);
+	 SetBkMode(pd, TRANSPARENT);
 	 break;
       case PR_COLOUR_FRAME:
 	 SelectObject(pd, pen_frame);
@@ -319,10 +320,12 @@ win_Pre(int pagesToPrint, const char *title)
 			     ANSI_CHARSET, OUT_DEFAULT_PRECIS,
 			     CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
 			     FF_DONTCARE | DEFAULT_PITCH, "Arial");
-   pen_leg = CreatePen(PS_SOLID, 0, colour_leg);
-   pen_surface_leg = CreatePen(PS_SOLID, 0, colour_surface_leg);
-   pen_cross = CreatePen(PS_SOLID, 0, colour_cross);
-   pen_frame = CreatePen(PS_SOLID, 0, colour_frame);
+   /* Pen width of 0 should work, but seemed to give problems, so we'll
+    * try 1 instead... */
+   pen_leg = CreatePen(PS_SOLID, 1, colour_leg);
+   pen_surface_leg = CreatePen(PS_SOLID, 1, colour_surface_leg);
+   pen_cross = CreatePen(PS_SOLID, 1, colour_cross);
+   pen_frame = CreatePen(PS_SOLID, 1, colour_frame);
    font_old = SelectObject(pd, font_labels);
    GetTextMetrics(pd, &tm_labels);
    SelectObject(pd, font_default);
@@ -367,6 +370,7 @@ win_ShowPage(const char *szPageDetails)
 static COLORREF
 to_rgb(const char *var, char *val)
 {
+   if (!val) return RGB(0, 0, 0);
    unsigned long rgb = as_colour(var, val);
    return RGB((rgb & 0xff0000) >> 16, (rgb & 0xff00) >> 8, rgb & 0xff);
 }
