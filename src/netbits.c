@@ -55,7 +55,7 @@
 */
 
 #include "debug.h"
-#include "survex.h"
+#include "cavein.h"
 #include "filename.h"
 #include "message.h"
 #include "netbits.h"

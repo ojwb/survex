@@ -18,6 +18,9 @@
 # include "Mnemosyne.mnemosyn.h"
 #endif
 
+/* name of current application */
+extern const char *szAppNameCopy;
+
 extern const char * FAR ReadErrorFile( const char *szAppName, const char *szEnvVar,
 				 const char *szLangVar, const char *argv0,
 				 const char *lfErrs );

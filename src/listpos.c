@@ -53,7 +53,7 @@
 #define PRINT_STN_POS_LIST 1
 #define NODESTAT 1
 
-#include "survex.h"
+#include "cavein.h"
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"

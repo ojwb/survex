@@ -115,7 +115,7 @@
 */
 
 #include "debug.h"
-#include "survex.h"
+#include "cavein.h"
 #include "filename.h"
 #include "message.h"
 #include "netbits.h"
@@ -602,7 +602,8 @@ static void build_matrix(long n, prefix **stn_tab) {
 #endif
 
 #ifdef SOR
-      if (optimize & 4) /* defined in network.c, set in commline.c */
+      /* defined in network.c, may be altered by -o<letters> in commline.c */
+      if (optimize & BIT('i'-'a'))
 	 sor(M,B);
       else
 #endif

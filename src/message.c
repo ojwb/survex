@@ -273,7 +273,7 @@ extern int error_summary(void) {
 }
 
 /* in case osmalloc() fails before szAppNameCopy is set up */
-static const char *szAppNameCopy="anonymous program";
+const char *szAppNameCopy = "anonymous program";
 
 /* error code for failed osmalloc and osrealloc calls */
 static void outofmem(OSSIZE_T size) {
