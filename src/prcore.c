@@ -637,8 +637,8 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
-   ASSERT(help[13].opt == HLP_ENCODELONG(12));
-   ASSERT(help[14].opt == HLP_ENCODELONG(13));
+   ASSERT(help[13].opt == HLP_ENCODELONG(13));
+   ASSERT(help[14].opt == HLP_ENCODELONG(14));
    ASSERT(help[15].opt == 0);
    ASSERT(!(pr->flags & PR_FLAG_CALIBRATE && pr->flags & PR_FLAG_NOFILEOUTPUT));
 
