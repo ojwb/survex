@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>DIFFPOS</refentrytitle>
+<refentrytitle>diffpos</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -18,7 +18,7 @@
 </cmdsynopsis>
 </refsynopsisdiv>
   
-<refsect1><title>DESCRIPTION</title>
+<refsect1><title>Description</title>
 
 <Para>
 Diffpos reports stations which

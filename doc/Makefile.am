@@ -120,6 +120,7 @@ manual: $(manual_sources) custom.dsl survex.ent
 	@sgmltools@ --backend=html --dsssl-spec=custom.dsl#html manual.sgml
 	cp caution.png note.png manual
 
+# this rule is not used by the build system - it's for "manual" use
 manual.html: $(manual_sources) custom.dsl survex.ent
 	@sgmltools@ --backend=onehtml --dsssl-spec=custom.dsl#onehtml manual.sgml
 

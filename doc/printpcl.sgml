@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>PRINTPCL</refentrytitle>
+<refentrytitle>printpcl</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -17,7 +17,7 @@
 </cmdsynopsis>
 </refsynopsisdiv>
   
-<refsect1><title>DESCRIPTION</title>
+<refsect1><title>Description</title>
 
 <Para>Printpcl produces output suitable for printers that support
 Hewlett Packard's <Acronym>PCL</Acronym> (Printer Control Language),
@@ -29,7 +29,7 @@ printers).
 
 </refsect1>
 
-<refsect1><Title>OPTIONS</Title>
+<refsect1><Title>Options</Title>
 
 <Para>The command line options are:
 </Para>
@@ -41,7 +41,7 @@ printers).
 
 </refsect1>
 
-<refsect1><Title>INTERACTIVE USE</Title>
+<refsect1><Title>Interactive Use</Title>
 
 &printer.interactive;
 

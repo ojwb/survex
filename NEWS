@@ -1,3 +1,5 @@
+* Minor improvements to manual and Unix man pages.
+
 * printps/printhpgl/printwin: --skip-blanks fixed.
 
 * printhpgl: fixed paper size for A1 landscape (was actually A2
@@ -14,10 +16,10 @@
 * (MSDOS version): pick a default language for messages by looking at the
   currently set country.
 
-* (Unix version): Improved test for needing librx - before it was used
-  if it was present, even if it wasn't needed.
+* (Unix version): Improved test for whether build needs librx - before
+  it was used if it was present, even if it wasn't needed.
 
-* (Unix version): Minor debian tweaks.
+* (Unix version): Assorted minor debian tweaks.
 
 Changes in 0.99-prerelease3:
 

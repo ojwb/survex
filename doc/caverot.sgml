@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>CAVEROT</refentrytitle>
+<refentrytitle>caverot</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -18,7 +18,7 @@
 </cmdsynopsis>
 </refsynopsisdiv>
 
-<refsect1><title>DESCRIPTION</title>
+<refsect1><title>Description</title>
 
 <Para>
 Caverot displays &x3d; files on screen and allows you to manipulate

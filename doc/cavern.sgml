@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>CAVERN</refentrytitle>
+<refentrytitle>cavern</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -19,7 +19,7 @@
 </cmdsynopsis>
 </refsynopsisdiv>
   
-<refsect1><title>DESCRIPTION</title>
+<refsect1><title>Description</title>
 
 <Para>Cavern is the &survexsuite; data processing engine.</Para>
 
@@ -30,7 +30,7 @@ their defaults before processing each file.
 
 </refsect1>
 
-<refsect1><Title>OPTIONS</Title>
+<refsect1><Title>Options</Title>
 
 <VariableList>
 <VarListEntry>
@@ -103,7 +103,7 @@ Chasm application.
 
 </refsect1>
 
-<refsect1><Title>OUTPUT</Title>
+<refsect1><Title>Output</Title>
 
 <Para>Cavern reads in text files containing the survey data
 &svx;) and outputs two files, with the extensions
@@ -182,7 +182,7 @@ are of lower quality or contain gross errors.
 
 </refsect1>
 
-<refsect1><Title>ERROR MESSAGES</Title>
+<refsect1><Title>Error Messages</Title>
 
 <Para>
 There are a number of error messages that you may get when processing
@@ -201,9 +201,9 @@ set it to allow you to jump to the file and line of each error.
 </Para>
 
 <Para>
-Cavern will stop after more than 50 errors - this is usually indicative
-of something like an incorrectly data order, and it's not useful to
-deluge the user with error messages.
+Cavern will stop after more than 50 errors.  This usually indicates
+something like the incorrect data order being specified.  Deluging
+the user with error messages makes the actual problem less clear.
 </Para>
 
 </refsect1>

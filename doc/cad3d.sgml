@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>CAD3D</refentrytitle>
+<refentrytitle>cad3d</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -18,7 +18,7 @@ and drawing packages
 </cmdsynopsis>
 </refsynopsisdiv>
   
-<refsect1><title>DESCRIPTION</title>
+<refsect1><title>Description</title>
 <!-- FIXME: more info (opts, etc) -->
 
 <para>

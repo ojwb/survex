@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>XCAVEROT</refentrytitle>
+<refentrytitle>xcaverot</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -16,7 +16,7 @@
 </cmdsynopsis>
 </refsynopsisdiv>
 
-<refsect1><title>DESCRIPTION</title>
+<refsect1><title>Description</title>
 
 <Para>
 Xcaverot displays processed cave surveys in a window and allows you to
@@ -107,7 +107,7 @@ this works.
 <Para>There is an auto-resizing scale bar on the left side of the screen.
 This varies in length as you zoom in or out.  The current length is given
 at the top.  In the top right is a compass pointer showing which way
-he didnis North, and a clino pointer showing the angle of tilt.
+is North, and a clino pointer showing the angle of tilt.
 </Para>
 
 </refsect2>

@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH SURVEX 1 "2001-09-14" "@PRETTYPACKAGE@ @VERSION@"
+.TH SURVEX 1 "2001-10-12" "@PRETTYPACKAGE@ @VERSION@"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -17,46 +17,6 @@
 .\" for manpage-specific macros, see man(7)
 .SH NAME
 survex \- cave survey software
-.SH SYNOPSIS
-.B cavern
-[\fIOPTION\fR]... \fISVX_FILE\fR...
-.br
-.B aven
-[\fIOPTION\fR]... \fI3DFILE\fR...
-.br
-.B xcaverot
-[\fIOPTION\fR]... \fI3DFILE\fR...
-.br
-.B printps
-[\fIOPTION\fR]... \fI3DFILE\fR...
-.br
-.B printhpgl
-[\fIOPTION\fR]... \fI3DFILE\fR...
-.br
-.B printpcl
-[\fIOPTION\fR]... \fI3DFILE\fR...
-.br
-.B printdm
-[\fIOPTION\fR]... \fI3DFILE\fR...
-.br
-.B extend
-\fIINPUT_3DFILE\fR [\fIOUTPUT_3DFILE\fR]
-.br
-.B diffpos
-\fI3DFILE\fR \fI3DFILE\fR [\fITHRESHOLD\fR]
-.br
-.B cad3d
-[\fIOPTION\fR]... \fI3DFILE\fR [\fI3DFILE\fR]
-.br
-.B 3dtopos
-[\fIOPTION\fR]... \fI3DFILE\fR [\fI3DFILE\fR]
-.br
-.B sorterr
-[\fIOPTION\fR]... \fI3DFILE\fR [\fI3DFILE\fR]
-.br
-.B survex
-[\fIOPTION\fR]... \fISVX_FILE\fR...
-.br
 
 .SH DESCRIPTION
 
@@ -64,19 +24,9 @@ survex \- cave survey software
 cave survey data.
 
 .PP
-There are individual man pages for each program:
-\fBcavern\fP,
-\fBaven\fP,
-\fBxcaverot\fP,
-\fBprint(ps|hpgl|pcl|dm)\fP,
-\fBdiffpos\fP,
-\fBcad3d\fP,
-\fB3dtopos\fP,
-and
-\fBsorterr\fP.
-.PP
-Survex also has a comprehensive manual, available in html, postscript,
-plain text, and rtf formats; see below.
+The individual programs each have a man page, and there's also a
+comprehensive manual, available in html, postscript, plain text, and
+rtf formats; see below.
 
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
 .\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
@@ -93,6 +43,18 @@ Show summary of options.
 .B \-\-version
 Show version of program.
 .SH SEE ALSO
+\fB3dtopos\fP\fB(1)\fP, 
+\fBaven\fP\fB(1)\fP, 
+\fBcad3d\fP\fB(1)\fP, 
+\fBcavern\fP\fB(1)\fP, 
+\fBdiffpos\fP\fB(1)\fP, 
+\fBextend\fP\fB(1)\fP, 
+\fBprintdm\fP\fB(1)\fP, 
+\fBprinthpgl\fP\fB(1)\fP, 
+\fBprintpcl\fP\fB(1)\fP, 
+\fBprintps\fP\fB(1)\fP, 
+\fBsorterr\fP\fB(1)\fP, 
+\fBxcaverot\fP\fB(1)\fP, 
 The Survex Manual - to be found in /usr/share/doc/survex or
 /usr/doc/survex
 .SH AUTHOR

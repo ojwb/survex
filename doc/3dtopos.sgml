@@ -1,5 +1,5 @@
 <refmeta>
-<refentrytitle>3DTOPOS</refentrytitle>
+<refentrytitle>3dtopos</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
@@ -19,7 +19,7 @@
 </refsynopsisdiv>
   
 <refsect1>
-<title>DESCRIPTION</title>
+<title>Description</title>
 
 <Para>
 3dtopos takes a &x3d; file and produces a &pos; file which contains a
