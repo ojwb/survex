@@ -178,7 +178,7 @@ Changes in 0.71:
 * caverot: DJGPP version for use of more than 640K
 
 * xcaverot: Updated to have most of the features of Caverot (non-overlapping
-  lables, scale bar & tilt/direction indicators)
+  labels, scale bar & tilt/direction indicators)
 
 Changes in 0.70:
 

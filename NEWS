@@ -5,6 +5,8 @@ Changes in 1.0.6:
 * aven: free rotation mode (engage by pressing control while left dragging,
   exit with Delete) improved.
 
+* Spell-checked documentation.
+
 Changes in 1.0.5:
 
 * Fixed bug in img_open_survey() which could cause a crash if you tried to

@@ -142,8 +142,8 @@ is counted as a leg in this statistic.
 
 <!-- FIXME loops, components, anything else -->
 
-<listitem><para>The East-West and North-South ranges, and the Northmost,
-Southmost, Eastmost, and Westmost stations.
+<listitem><para>The East-West and North-South ranges, and the North-most,
+South-most, East-most, and West-most stations.
 </para></listitem>
 
 <listitem><para>The number of each size of node in the network (where size

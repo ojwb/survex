@@ -1,5 +1,5 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
- <!-- Define a parameter entity to pull in the standard entites -->
+ <!-- Define a parameter entity to pull in the standard entities -->
  <!ENTITY % entities SYSTEM "survex.ent">
  <!-- Now use the parameter entity -->
  %entities;
@@ -92,8 +92,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2002-04-04 01:40:53 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.89 2002-04-04 01:40:53 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2002-04-05 14:26:57 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.90 2002-04-05 14:26:57 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -510,7 +510,7 @@ just a matter of opening the archive with
 <application>!SparkFS</application>, or
 similar and dragging the contents to where you want them installed.
 This version works with RISC OS 3.1 or newer.  We are unable to test
-compatibilty with earlier operating system versions.
+compatibility with earlier operating system versions.
 </Para>
 
 </Sect3>
@@ -814,7 +814,7 @@ station name twice.
 </Para>
 
 <!-- FIXME don't encourage separate processing -->
-<Para>The usual arrangemnt is to have one file which lists all the others
+<Para>The usual arrangement is to have one file which lists all the others
 that are included (e.g., <filename/161.svx/). Then
 <command/cavern 161/ will process all your data. To just process a
 section use the filename for that section, e.g. <command/cavern dtime/
@@ -857,7 +857,7 @@ not optional, then an error is given.
 
 <Para>&survexsuite; has a powerful system for naming stations.  It
 uses a hierarchy of survey names, in a similar way to the directory structure
-on your discs.  So point 6 in the entrance survey of Kaninchenhohle
+on your discs.  So point 6 in the entrance survey of Kaninchenh&ouml;hle
 (cave number 161) is referred to as: 161.entrance.6
 </Para>
 
@@ -1237,7 +1237,7 @@ compass calibration or name case sensitivity.
 
 Think of the lines starting with a "*" as "command or meta-data".
 
->The most-correct solution to this is (I beleive) Martin Heller's idea about
+>The most-correct solution to this is (I believe) Martin Heller's idea about
 >including 'rules' in the datastream, but that's too big a subject for right
 >now.
 >
