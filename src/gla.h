@@ -144,7 +144,6 @@ public:
     void SetVolumeDiameter(glaCoord diameter);
     void SetDataTransform();
     void SetIndicatorTransform();
-    void SetQuaternion(Quaternion& q);
     
     glaList CreateList(GfxCore*, void (GfxCore::*generator)());
     void DeleteList(glaList l);

@@ -499,13 +499,6 @@ void GLACanvas::FinishDrawing()
     SwapBuffers();
 }
 
-void GLACanvas::SetQuaternion(Quaternion& q)
-{
-    // Set the quaternion used for the modelling transformation.
-    
-    m_Rotation = q;
-}
-
 glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
 {
     // Create a new list to hold a sequence of drawing operations, and compile
