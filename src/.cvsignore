@@ -1,3 +1,13 @@
 .deps
 Makefile
 Makefile.in
+cavern
+printdm
+printps
+printpcl
+printhpgl
+diffpos
+extend
+survex
+3dtodxf
+xcaverot
