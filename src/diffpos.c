@@ -257,9 +257,10 @@ parse_pos_file(const char *fnm, const char *survey,
    while (1) {
       size_t off = 0;
       long fp = ftell(fh);
+      if (fp == -1) break;
       if (fscanf(fh, "(%lf,%lf,%lf ) ", &pt.x, &pt.y, &pt.z) != 3) {
 	 int ch;
-	 fseek(fh, SEEK_SET, fp);
+	 if (fseek(fh, fp, SEEK_SET) == -1) break;
 	 ch = getc(fh);
 	 if (ch == EOF) break;
 
@@ -274,12 +275,14 @@ parse_pos_file(const char *fnm, const char *survey,
 	 continue;
       }
 
+      if (ferror(fh))
+	 fatalerror_in_file(fnm, 0, /*Error reading file*/18);
+
       buf[0] = '\0';
       while (!feof(fh)) {
-	 if (!fgets(buf + off, buf_len - off, fh)) {
-	    /* FIXME */
-	    break;
-	 }
+	 if (!fgets(buf + off, buf_len - off, fh))
+	    fatalerror_in_file(fnm, 0, /*Error reading file*/18);
+
 	 off += strlen(buf + off);
 	 if (off && buf[off - 1] == '\n') {
 	    buf[off - 1] = '\0';
