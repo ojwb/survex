@@ -60,7 +60,8 @@ signed integers representing values in centimetres (0.01 metres).
 <li> 0x10-0x1f : remove N-15 (i.e. 1-16) characters from the current label.
 It's incorrect if the label ends up empty, or you attempt to trim more
 label than there is.
-<li> 0x20-0x3f &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
+<li> 0x20-0x3f : Reserved
+<li> 0x40-0x7f &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
 &lt;z coord&gt; : leg flags are (N &amp; 0x1f):
 <ul>
 <li> 0x01 : Leg is above ground 
@@ -81,7 +82,7 @@ length, which is encoded as follows:
 Return leg from current position to coordinates given, and update current
 position to coordinates given.  The label gives the survey that the leg is
 in.
-<li> 0x40-0x5f &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
+<li> 0x80-0x9f &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
 &lt;z coord&gt; : station flags are (N &amp; 0x1f):
 <ul>
 <li> 0x01 : Station is on an above ground leg
@@ -95,8 +96,8 @@ other surveys)
 Append label to the current label buffer.  Return station at the coordinates
 given, and update current position to coordinates given (FIXME: check this).
 The label gives the survey stations full name.
-<li> 0x60-0xff : Reserved
+<li> 0xa0-0xff : Reserved
 </ul>
 
-<P>Olly Betts 2002-03-17</P>
+<P>Olly Betts 2002-03-17, 2002-03-21</P>
 </BODY></HTML>
