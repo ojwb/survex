@@ -8,8 +8,6 @@
 # define DEBUG_ARTIC
 #endif
 
-#define DEBUG_ARTIC
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -124,8 +122,10 @@ uniter:
 	 remove_stn_from_list(&stnlist, stn);
 	 add_stn_to_list(&artlist, stn);
 
+#ifdef DEBUG_ARTIC
 	 printf(">> %p\n", stn);
-	 
+#endif
+
 	 if (artic_flag) {	    
 	    articulation *art;
 	    
@@ -143,13 +143,13 @@ uniter:
 	    art = osnew(articulation);
 	    art->next = component_list->artic;
 	    component_list->artic = art;
-/*
+#ifdef DEBUG_ARTIC
 	    printf("Articulate *-");
 	    print_prefix(stn2->name);
 	    printf("-");
 	    print_prefix(stn->name);
 	    printf("-...\n");
- */
+#endif
 	 }
 
 	 if (stn2->colour == min) {
@@ -179,8 +179,8 @@ articulate(void)
 #ifdef DEBUG_ARTIC
    ulong cFixed;
 #endif
+
    /* find articulation points and components */
-   cComponents = 0;
    colour = 0;
    stnStart = NULL;
    FOR_EACH_STN(stn, stnlist) {
@@ -209,7 +209,10 @@ articulate(void)
 	 component *comp;
 	 articulation *art;
 	 
+#ifdef DEBUG_ARTIC
 	 printf("new component\n");
+#endif
+
 	 stn->colour = -stn->colour; /* fixed points are negative until we colour from them */
 	 cComponents++;
 
@@ -280,40 +283,55 @@ articulate(void)
 	articulation *art;
 	node *stn;
 
+#ifdef DEBUG_ARTIC
 	printf("\nDump of %d components:\n", cComponents);
+#endif
 	for (comp = component_list; comp; comp = comp->next) {
 	   node *list = NULL, *listend = NULL;
+#ifdef DEBUG_ARTIC
 	   printf("Component:\n");
+#endif
 	   for (art = comp->artic; art; art = art->next) {
+#ifdef DEBUG_ARTIC
 	      printf("  Articulation (%p):\n", art->stnlist);
+#endif
 	      if (listend) {
 		 listend->next = art->stnlist;
+		 if (art->stnlist) art->stnlist->prev = listend;
 	      } else {
 		 list = art->stnlist;
 	      }
 
 	      FOR_EACH_STN(stn, art->stnlist) {
+#ifdef DEBUG_ARTIC
 		 printf("    %d %p (", stn->colour, stn);
 		 print_prefix(stn->name);
 		 printf(")\n");
+#endif
 		 listend = stn;
 	      }
 	   }
+#ifdef DEBUG_ARTIC
 	   FOR_EACH_STN(stn, list) {
 	      printf("MX: %c %p (", fixed(stn)?'*':' ', stn);
 	      print_prefix(stn->name);
 	      printf(")\n");	      
 	   }
+#endif
 	   solve_matrix(list);
-	   listend = stnlist;
+	   listend->next = stnlist;
+	   if (stnlist) stnlist->prev = listend;
 	   stnlist = list;
 	}
+#ifdef DEBUG_ARTIC
 	printf("\n");
+#endif
      }
 
 #if 0 /*def DEBUG_ARTIC*/
-   FOR_EACH_STN(stn, stnlist) { /* high-light unfixed bits */
-      if (stn->status && !fixed(stn)) {
+   /* highlight unfixed bits */
+   FOR_EACH_STN(stn, stnlist) {
+      if (!fixed(stn)) {
 	 print_prefix(stn->name);
 	 printf(" [%p] UNFIXED\n", stn);
       }

@@ -54,6 +54,11 @@
 
 * Merged in xcaverot changes from John Pybus and Mark Shinwell
 
+* *solve followed by some entirely unconnected survey now caught
+  cleanly (used to hit an assert)
+
+* Corrected component and loop counts when there's hanging survey around
+
 Changes in 0.91:
 
 * Fixed problem with message files with accented characters

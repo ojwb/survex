@@ -119,7 +119,7 @@ copy_link(linkfor *leg)
 # ifndef NO_COVARIANCES
    check_var(&(leg->v));
      {	
-	int i,j;
+	int i, j;
 	for (i = 0; i < 3; i++) {
 	   for (j = 0; j < 3; j++) legOut->v[i][j] = leg->v[i][j];
 	}

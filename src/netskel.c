@@ -11,7 +11,7 @@ extern void articulate(void); /* FIXME: */
 #if 0
 #define DEBUG_INVALID 1
 #define VALIDATE 1
-# define DUMP_NETWORK 1
+#define DUMP_NETWORK 1
 #endif
 
 #ifdef HAVE_CONFIG_H
@@ -79,35 +79,39 @@ solve_network(void /*node *stnlist*/)
    ptrTrail = NULL;
    dump_network();
 
-   if (first_solve) {
-      /* only do this stuff on a first solve (if *solve is used we are
-       * called several times).  Otherwise unattached data after a solve
-       * will cause a fixed point to be invented which is bogus.
-       */
-      first_solve = 0;
-
-      /* If there are no fixed points, invent one.  Do this first to
-       * avoid problems with sub-nodes of the invented fix which have
-       * been removed.  It also means we can fix the "first" station,
-       * which makes more sense to the user. */
-      FOR_EACH_STN(stn, stnlist)
-	 if (fixed(stn)) break;
-
-      if (!stn) {
-	 node *stnFirst = NULL;
-	 /* new stations are pushed onto the head of the list, so the
-	  * first station added is the last in the list */
-	 FOR_EACH_STN(stn, stnlist) stnFirst = stn;
-	 
-	 ASSERT2(stnFirst, "no stations left in net!");
-	 stn = stnFirst;
-	 out_printf((msg(/*Survey has no fixed points. Therefore I've fixed %s at (0,0,0)*/72), sprint_prefix(stn->name)));
-	 POS(stn,0) = (real)0.0;
-	 POS(stn,1) = (real)0.0;
-	 POS(stn,2) = (real)0.0;
-	 fix(stn);
+   /* If there are no fixed points, invent one.  Do this first to
+    * avoid problems with sub-nodes of the invented fix which have
+    * been removed.  It also means we can fix the "first" station,
+    * which makes more sense to the user. */
+   FOR_EACH_STN(stn, stnlist)
+      if (fixed(stn)) break;
+   
+   if (!stn) {
+      node *stnFirst = NULL;
+      
+      if (!first_solve) {
+	 /* We've had a *solve and all the new survey since then is hanging,
+	  * so don't invent a fixed point but complain instead */
+	 /* Let replace_trailing_travs() do the work for us... */
+	 remove_trailing_travs();
+	 replace_trailing_travs();
+	 return;	 
       }
+      
+      /* New stations are pushed onto the head of the list, so the
+       * first station added is the last in the list */
+      FOR_EACH_STN(stn, stnlist) stnFirst = stn;
+      
+      ASSERT2(stnFirst, "no stations left in net!");
+      stn = stnFirst;
+      out_printf((msg(/*Survey has no fixed points. Therefore I've fixed %s at (0,0,0)*/72), sprint_prefix(stn->name)));
+      POS(stn,0) = (real)0.0;
+      POS(stn,1) = (real)0.0;
+      POS(stn,2) = (real)0.0;
+      fix(stn);
    }
+
+   first_solve = 0;
 
    remove_trailing_travs();
    validate(); dump_network();
@@ -115,18 +119,7 @@ solve_network(void /*node *stnlist*/)
    validate(); dump_network();
    remove_subnets();
    validate(); dump_network();
-#if 1
    articulate();
-#else
-   {
-      /* FIXME: */
-      extern unsigned long optimize;
-      if (optimize & BITA('a'))
-	 articulate();
-      else
-	 solve_matrix(stnlist);
-   }
-#endif
    validate(); dump_network();
    replace_subnets();
    validate(); dump_network();
@@ -822,6 +815,7 @@ replace_trailing_travs(void)
 	    out_puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
 	 }
 	 out_puts(sprint_prefix(stn1->name));
+	 cComponents++; /* adjust component count */
       }
       for (i = 0; i <= 2; i++) {
 	 linkfor *leg, *legRev;
