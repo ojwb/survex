@@ -237,6 +237,7 @@ main(int argc, char **argv)
       putc('\n', fh_out);
       if (howmany && --howmany == 0) break;
    } while (next);
+   fclose(fh);
 
    if (fnm_out) {
       fclose(fh_out);
