@@ -952,6 +952,7 @@ en: 84 CLINO and BACKCLINO readings must be of the same type
 fr: 84 Les mesures de CLINO et BACKCLINO doivent &ecirc;tre du m&ecirc;me type
 ca: 84 Les lectures de CLINO i BACKCLINO han de ser del mateix tipus
 es: 84 Las lecturas de CLINO y BACKCLINO deben de ser del mismo tipo
+sk: 84 &Ccaron;&iacute;tanie CLINO a BACKCLINO mus&iacute; by&tcaron; toho ist&eacute;ho typu
 #
 en: 85 Parameter `%s' missing in printer configuration file
 fr: 85 Param&egrave;tres `%s' manquant dans le fichier de configuration de l'imprimante
@@ -1076,12 +1077,14 @@ en: 98 COMPASS reading and BACKCOMPASS reading disagree by %s degrees
 fr: 98 Les mesures de COMPASS et BACKCOMPASS diff&egrave;rent de %s degr&eacute;s
 ca: 98 Les lectures de COMPASS i BACKCOMPASS difereixen de %s graus
 es: 98 Las lecturas de COMPASS y BACKCOMPASS difieren de %s grados
+sk: 98 &Ccaron;&iacute;tanie COMPASS a BACKCOMPASS sa l&iacute;&scaron;i o %s stup&ncaron;ov
 #
 en: 99 CLINO reading and BACKCLINO reading disagree by %s degrees
 #fr: 99 Les mesures de Clino et ClinoInverse diff&egrave;rent de %s degr&eacute;s
 fr: 99 Les mesures de CLINO et BACKCLINO diff&egrave;rent de %s degr&eacute;s
 ca: 99 Les lectures de CLINO i BACKCLINO difereixen de %s graus
 es: 99 Las lecturas de CLINO y BACKCLINO difieren de %s grados
+sk: 99 &Ccaron;&iacute;tanie CLINO a BACKCLINO sa l&iacute;&scaron;i o %s stup&ncaron;ov
 #
 # A computer mouse, not the rodent sort ;)
 # Actually, mouse is somewhat imprecise as it could refer to a trackerball
