@@ -1920,20 +1920,17 @@ void GfxCore::HandleScaleRotate(bool control, wxPoint point)
 void GfxCore::TurnCave(Double angle)
 {
     // Turn the cave around its z-axis by a given angle.
-    Vector3 v(XToScreen(0.0, 0.0, 1.0),
-	      YToScreen(0.0, 0.0, 1.0),
-	      ZToScreen(0.0, 0.0, 1.0));
-    Quaternion q(v, angle);
-
-    m_Params.rotation = q * m_Params.rotation;
-    m_RotationMatrix = m_Params.rotation.asMatrix();
-
     m_PanAngle += angle;
     if (m_PanAngle >= M_PI * 2.0) {
 	m_PanAngle -= M_PI * 2.0;
     } else if (m_PanAngle < 0.0) {
 	m_PanAngle += M_PI * 2.0;
     }
+    m_Params.rotation.setFromEulerAngles(0.0, 0.0, m_PanAngle);
+    Quaternion q;
+    q.setFromEulerAngles(m_TiltAngle, 0.0, 0.0);
+    m_Params.rotation = q * m_Params.rotation;
+    m_RotationMatrix = m_Params.rotation.asMatrix();
 }
 
 void GfxCore::TurnCaveTo(Double angle)
@@ -1953,9 +1950,9 @@ void GfxCore::TiltCave(Double tilt_angle)
 
     m_TiltAngle += tilt_angle;
 
+    m_Params.rotation.setFromEulerAngles(0.0, 0.0, m_PanAngle);
     Quaternion q;
-    q.setFromEulerAngles(tilt_angle, 0.0, 0.0);
-
+    q.setFromEulerAngles(m_TiltAngle, 0.0, 0.0);
     m_Params.rotation = q * m_Params.rotation;
     m_RotationMatrix = m_Params.rotation.asMatrix();
 }

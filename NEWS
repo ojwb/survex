@@ -3,7 +3,10 @@
   separator between survey name and station name.
   FIXME: don't have sample PLT or XYZ files here - check this works.
 
-* cavern: fixed a rarely sighted bug which caused eroneous error about some
+* aven: fixed hard to notice problem which could cause the cave to appear
+  tilted sideways after a lot of manipulation.
+
+* cavern: fixed a rarely sighted bug which caused erroneous error about some
   stations not being attached to a fixed point.
 
 * cavern: fixed clino readings to work in interleaved data.
