@@ -9,6 +9,9 @@
 
 * cavern: Added --warnings-are-errors command line option.
 
+* caverot/xcaverot: Middle button now tilts cave by dragging rather
+  than toggling plan/elevation.
+
 Changes in 0.97-prerelease3:
 
 * (Unix version): aven: Internationalised; Fixed serious drawing bug

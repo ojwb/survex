@@ -67,7 +67,6 @@ enum {
     menu_VIEW_SCALE_BAR,
     menu_VIEW_STATUS_BAR,
     menu_CTL_REVERSE,
-    menu_CTL_CAVEROT_MID,
     menu_HELP_ABOUT
 };
 
@@ -151,7 +150,6 @@ public:
     void OnMoveWestUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnMoveWestUpdate(event); }
     void OnStartRotationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnStartRotationUpdate(event); }
     void OnStopRotationUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnStopRotationUpdate(event); }
-    void OnOriginalCaverotMouseUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnOriginalCaverotMouseUpdate(event); }
     void OnReverseControlsUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnReverseControlsUpdate(event); }
     void OnSlowDownUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnSlowDownUpdate(event); }
     void OnSpeedUpUpdate(wxUpdateUIEvent& event) { if (m_Gfx) m_Gfx->OnSpeedUpUpdate(event); }
@@ -184,7 +182,6 @@ public:
     void OnMoveWest(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnMoveWest(event); }
     void OnStartRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnStartRotation(event); }
     void OnStopRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnStopRotation(event); }
-    void OnOriginalCaverotMouse(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnOriginalCaverotMouse(event); }
     void OnReverseControls(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnReverseControls(event); }
     void OnSlowDown(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnSlowDown(event); }
     void OnSpeedUp(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnSpeedUp(event); }

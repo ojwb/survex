@@ -1591,7 +1591,7 @@ pt:202 N&atilde;o h&aacute; dados de topografia no arquivo 3d `%s'
 #
 # TRANSLATE fr ca es it
 en:203 Facing
-de:203 In Richtung
+de:203 Blickrichtung
 pt:203 Olhando para
 #
 en:204 Close
@@ -1724,9 +1724,11 @@ it:221 @Esci
 #
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
+de:230 @Rotation starten##Return
 pt-br:230 @Iniciar Rota&ccedil;&atilde;o##Return
 #
 en:231 S@top Rotation##Space
+de:231 Rotation an@halten##Space
 pt-br:231 @Parar Rota&ccedil;&atilde;o##Space
 #
 en:232 Speed @Up##Z
@@ -1775,11 +1777,11 @@ de:245 Verschieben nach @rechts##Right Arrow
 pt-br:245 Mover para @Direita##Right Arrow
 #
 en:246 Shift Survey @Up##Up Arrow
-de:246 Verschieben hin@auf##Up Arrow
+de:246 Verschieben nach o@ben##Up Arrow
 pt-br:246 Mover para @Cima##Up Arrow
 #
 en:247 Shift Survey @Down##Down Arrow
-de:247 Verschieben hin@unter##Down Arrow
+de:247 Verschieben nach @unten##Down Arrow
 pt-br:247 Mover para @Baixo##Down Arrow
 #
 # c.f. 117
@@ -1894,7 +1896,7 @@ it:274 @Bussola
 #
 en:275 Cl@inometer
 fr:275 Cl@ino
-de:275 @Neigungsmesser
+de:275 @Neigungsanzeige
 pt-br:275 Cl@in&ocirc;metro
 ca:275 Cl@ino
 es:275 Cl@ino
@@ -1902,8 +1904,7 @@ it:275 Cl@inometro
 #
 # TRANSLATE fr ca es it
 en:276 @Depth Bar
-de:276    @Vertikalma&szlig;stab
-de-ch:276 @Vertikalmassstab
+de:276 @Tiefenskala
 pt-br:276 Barra de @Profundidade
 #
 # TRANSLATE fr ca es it
@@ -1917,11 +1918,6 @@ pt-br:277 Barra de @Escala
 en:280 @Reverse Sense##Ctrl+R
 de:280 Richtung @umkehren##Ctrl+R
 pt-br:280 @Inverter Sentido##Ctrl+R
-#
-# TRANSLATE fr ca es it
-en:281 Caverot-Style @Middle Button
-de:281 Caverot-artiger @mittlerer Mausknopf
-pt-br:281 Bot&atilde;o do @Meio no Estilo do Caverot
 #
 # The accelerators must be different within this group
 # c.f. 205
@@ -2416,3 +2412,7 @@ it:290 @Informazioni su...
 #es: 95 Terminaci&oacute;n solicitada
 #it: 95 Esecuzione interrotta su richiesta
 ##ital: 95 Terminazione richiesta
+#
+#en:281 Caverot-Style @Middle Button
+#de:281 Caverot-artiger @mittlerer Mausknopf
+#pt-br:281 Bot&atilde;o do @Meio no Estilo do Caverot

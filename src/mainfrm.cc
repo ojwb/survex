@@ -73,7 +73,6 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebar)
     EVT_MENU(menu_VIEW_STATUS_BAR, MainFrm::OnToggleStatusbar)
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
-    EVT_MENU(menu_CTL_CAVEROT_MID, MainFrm::OnOriginalCaverotMouse)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 
     EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
@@ -108,7 +107,6 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
     EVT_UPDATE_UI(menu_VIEW_STATUS_BAR, MainFrm::OnToggleStatusbarUpdate)
     EVT_UPDATE_UI(menu_CTL_REVERSE, MainFrm::OnReverseControlsUpdate)
-    EVT_UPDATE_UI(menu_CTL_CAVEROT_MID, MainFrm::OnOriginalCaverotMouseUpdate)
 END_EVENT_TABLE()
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
@@ -141,8 +139,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     rotmenu->Append(menu_ROTATION_STEP_CCW, GetTabMsg(/*Step Once @Anticlockwise##C*/235), "Rotate the cave one step anticlockwise");
     rotmenu->Append(menu_ROTATION_STEP_CW, GetTabMsg(/*Step Once @Clockwise##V*/236), "Rotate the cave one step clockwise");
 
-   
-   
     wxMenu* orientmenu = new wxMenu;
     orientmenu->Append(menu_ORIENT_MOVE_NORTH, GetTabMsg(/*View @North##N*/240), "Move the survey so it aims North");
     orientmenu->Append(menu_ORIENT_MOVE_EAST, GetTabMsg(/*View @East##E*/241), "Move the survey so it aims East");
@@ -182,7 +178,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "Reverse the sense of the orientation controls", true);
-    ctlmenu->Append(menu_CTL_CAVEROT_MID, GetTabMsg(/*Caverot-Style @Middle Button*/281), "Cause the middle button to toggle between plan and elevation", true);
 
     wxMenu* helpmenu = new wxMenu;
     helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About Aven...*/290), "Display program information, version number, copyright and licence agreement");
@@ -228,7 +223,7 @@ bool MainFrm::ProcessEvent(wxEvent& event)
 
     // Dispatch certain command events down to the child drawing area window.
     if (m_Gfx && event.IsCommandEvent() && event.GetId() >= menu_ROTATION_START &&
-        event.GetId() <= menu_CTL_CAVEROT_MID) {
+        event.GetId() <= menu_CTL_REVERSE) {
 	result = m_Gfx->ProcessEvent(event);
     }
 

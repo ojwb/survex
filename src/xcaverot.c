@@ -116,7 +116,6 @@ static double scale_default;
 static double scale; /* factor to scale view on screen by */
 static double zoomfactor = 1.2;
 static double sbar; /* length of scale bar */
-static double scale_orig; /* saved state of scale, used in drag re-scale */
 
 /* position of original click in pointer drags */
 static struct {
@@ -230,13 +229,12 @@ static int numsurvey = 0;
 #endif
 static GC gcs[128];
 
-static int dragging_about = 0;	/* whether cave is being dragged with right button */
-static int drag_start_x, drag_start_y;
+static unsigned int drag_button = AnyButton; /* AnyButton => no drag */
+static double elev_angle_orig;
 static double x_mid_orig, y_mid_orig, z_mid_orig;	/* original posns b4 drag */
-static int rotsc_start_x, rotsc_start_y;
-static int rotating_and_scaling = 0;	/* whether left button is depressed */
-static double rotsc_angle;	/* rotn b4 drag w/ left button */
-static double rotsc_scale;	/* scale b4 drag w/ left button */
+static double view_angle_orig;
+static double scale_orig; /* saved state of scale before drag */
+
 static double sv, cv, se, ce;
 
 /* Create a set of colors from named colors */
@@ -1030,51 +1028,15 @@ switch_to_elevation(void)
    }
 }
 
-/* a sensible way of navigating about the cave */
-
-static void
-press_left_button(int x, int y)
-{
-   rotsc_start_x = x;
-   rotsc_start_y = y;
-   rotating_and_scaling = 1;
-   rotsc_angle = view_angle;
-   rotsc_scale = scale;
-}
-
-static void
-press_right_button(int x, int y)
-{
-   dragging_about = 1;
-   drag_start_x = x;
-   drag_start_y = y;
-   x_mid_orig = x_mid;
-   y_mid_orig = y_mid;
-   z_mid_orig = z_mid;
-}
-
-static void
-release_left_button(void)
-{
-   rotating_and_scaling = 0;
-}
-
-static void
-release_right_button(void)
-{
-   dragging_about = 0;
-}
-
 static void
 mouse_moved(int mx, int my)
 {
-   if (dragging_about) {
-      double x, y;
-      int dx, dy;
+   /* get offset moved */
+   int dx = mx - orig.x;
+   int dy = my - orig.y;
 
-      /* get offset moved */
-      dx = mx - drag_start_x;
-      dy = my - drag_start_y;
+   if (drag_button == Button3) {
+      double x, y;
 
       x = (int)((double)(dx) / scale);
       y = (int)((double)(dy) / scale);
@@ -1087,14 +1049,11 @@ mouse_moved(int mx, int my)
 	 x_mid = x_mid_orig + (x * cv);
 	 y_mid = y_mid_orig + (x * sv);
       }
-   } else if (rotating_and_scaling) {
+   } else if (drag_button == Button1) {
       double a;
 
-      int dx = mx - rotsc_start_x;
-      int dy = my - rotsc_start_y;
-
       /* L-R => rotation */
-      view_angle = rotsc_angle - (((double)dx) / 2.5);
+      view_angle = view_angle_orig - (((double)dx) / 2.5);
 
       /*dy = -dy; */
 
@@ -1107,11 +1066,16 @@ mouse_moved(int mx, int my)
 
       if (dy <= 0) {
 	 /* mouse moved up or back to starting pt */
-	 scale = rotsc_scale * pow(2, -a);
+	 scale = scale_orig * pow(2, -a);
       } else if (dy > 0) {
 	 /* mouse moved down */
-	 scale = rotsc_scale * pow(2, a);
+	 scale = scale_orig * pow(2, a);
       }
+   } else if (drag_button == Button2) {
+      /* U-D => tilt */
+      elev_angle = elev_angle_orig + (((double)dy) / 2.5);
+      if (elev_angle > 90) elev_angle = 90;
+      if (elev_angle < -90) elev_angle = -90;
    }
 }
 
@@ -1509,14 +1473,9 @@ main(int argc, char **argv)
          printf("event of type #%d, in window %x\n",myevent.type, (int)myevent.xany.window);
 #endif
 	 if (myevent.type == ButtonRelease) {
-	    if (myevent.xbutton.button == Button1) {
-	       /* left button released */
-	       release_left_button();
-	    } else if (myevent.xbutton.button == Button3) {
-	       /* right button has been released => stop dragging cave about */
-	       release_right_button();
-	    }
+	    if (myevent.xbutton.button == drag_button) drag_button = AnyButton;
 	 } else if (myevent.type == ButtonPress) {
+	    drag_button = myevent.xbutton.button;
 	    orig.x = myevent.xbutton.x;
 	    orig.y = myevent.xbutton.y;
 #if 0
@@ -1555,22 +1514,16 @@ main(int argc, char **argv)
 	       } else if (myevent.xbutton.window == scalebar) {
 		  scale_orig = scale;
 	       } else if (myevent.xbutton.window == mywindow) {
-		  press_left_button(myevent.xbutton.x, myevent.xbutton.y);
-		  /* process_focus(mydisplay, mywindow,
-		   * myevent.xbutton.x, myevent.xbutton.y); */
+		  view_angle_orig = view_angle;
+		  scale_orig = scale;
 	       }
-            }
-            else if (myevent.xbutton.button == Button2) {
-		  /* toggle plan/elevation */
-		  if (plan_elev == PLAN) {
-		     switch_to_elevation();
-		  } else {
-		     switch_to_plan();
-		  }
-	       } else if (myevent.xbutton.button == Button3) {
-		  /* translate cave */
-		  press_right_button(myevent.xbutton.x, myevent.xbutton.y);
-	       }
+            } else if (myevent.xbutton.button == Button2) {
+	       elev_angle_orig = elev_angle;
+	    } else if (myevent.xbutton.button == Button3) {
+	       x_mid_orig = x_mid;
+	       y_mid_orig = y_mid;
+	       z_mid_orig = z_mid;
+	    }
 	 } else if (myevent.type == MotionNotify) {
 	    if (myevent.xmotion.window == ind_com) {
 	       drag_compass(myevent.xmotion.x, myevent.xmotion.y);
@@ -1579,8 +1532,7 @@ main(int argc, char **argv)
 	    } else if (myevent.xmotion.window == scalebar) {
 	       if (myevent.xmotion.state & Button1Mask)
 		  scale = exp(log(scale_orig)
-			      + (double)(myevent.xmotion.y - orig.y) / (250)
-			      );
+			      + (double)(myevent.xmotion.y - orig.y) / 250);
 	       else
 		  scale = exp(log(scale_orig)
 			      * (1 - (double)(myevent.xmotion.y - orig.y) / 100)

@@ -583,11 +583,11 @@ process_key(void) /* and mouse! */
    }
 
    if (mouse_buttons >= 0) {
-      static bool fOldMBut = fFalse;
       int buttons = 0; /* zero in case read_mouse() doesn't set */
       int dx = 0, dy = 0;
       cvrotgfx_read_mouse(&dx, &dy, &buttons);
-      if (buttons & (CVROTGFX_LBUT | CVROTGFX_RBUT | CVROTGFX_MBUT)) autotilt = 0;
+      if (buttons & (CVROTGFX_LBUT | CVROTGFX_RBUT | CVROTGFX_MBUT))
+	 autotilt = 0;
       if (buttons & CVROTGFX_LBUT) {
          if (fRevSense) {
             sc *= (float)pow(LITTLE_MAGNIFY_FACTOR, 0.08 * dy);
@@ -609,11 +609,16 @@ process_key(void) /* and mouse! */
 			   (coord)(nStep * dy));
          fChanged = fTrue;
       }
-      if (locked == 0 && (buttons & CVROTGFX_MBUT) && !fOldMBut) {
-         elev = (elev == 90.0f) ? 0.0f : 90.0f;
+      if (locked == 0 && (buttons & CVROTGFX_MBUT)) {
+         if (fRevSense) {
+	    elev += dy * 0.16f;
+	 } else {
+	    elev -= dy * 0.16f;
+	 }
+	 if (elev > 90.0f) elev = 90.0f;
+	 if (elev < -90.0f) elev = -90.0f;
          fChanged = fTrue;
       }
-      fOldMBut = ((buttons & CVROTGFX_MBUT) > 0);
    }
 
    if (autotilt) {
@@ -689,7 +694,7 @@ show_help(void)
 	{"                    H : [H]elp screen (this!)", FLAG_ALWAYS},
 	{"", FLAG_ALWAYS},
 	{"Mouse controls:  LEFT : left/right rotates, up/down zooms", FLAG_MOUSE},
-	{"               MIDDLE : toggles plan/elevation", FLAG_MOUSE3},
+	{"               MIDDLE : up/down tilts", FLAG_MOUSE3},
 	{"                RIGHT : mouse moves cave", FLAG_MOUSE2},
 	{"No mouse detected", FLAG_NOMOUSE},
 #if 0

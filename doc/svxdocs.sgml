@@ -45,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-03-30 10:05:14 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.23 2001-03-30 10:05:14 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-04-24 03:00:08 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.24 2001-04-24 03:00:08 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -753,9 +753,9 @@ mouse. If you hold down the left button, then the cave is rotated if
 you move left or right, and zoomed if you move up and down. By default
 the mouse moves the cave, but if you press <keycap/Ctrl-R/, then the
 mouse will move the viewpoint instead (i.e. everything will go in the
-opposite direction. Some people prefer it this way round). If the
-middle button is recognised by your mouse driver then pushing it will
-swap between plan and elevation. This will not work on most PCs.
+opposite direction. Some people prefer it this way round). If your
+mouse has a middle button (and it is recognised by your mouse driver)
+then you can use it to tilt the cave.
 </Para>
 
 <Para>Changing from plan to elevation is now animated (if your machine is

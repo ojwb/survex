@@ -108,7 +108,6 @@ GfxCore::GfxCore(MainFrm* parent) :
     m_Depthbar = true;
     m_Scalebar = true;
     m_ReverseControls = false;
-    m_CaverotMouse = true;
     m_LabelGrid = NULL;
     m_Rotating = false;
     m_SwitchingToPlan = false;
@@ -1018,7 +1017,7 @@ void GfxCore::OnLButtonUp(wxMouseEvent& event)
 
 void GfxCore::OnMButtonDown(wxMouseEvent& event)
 {
-    if (m_PlotData && !m_CaverotMouse && m_Lock == lock_NONE) {
+    if (m_PlotData && m_Lock == lock_NONE) {
         m_DraggingMiddle = true;
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
     }
@@ -1027,32 +1026,7 @@ void GfxCore::OnMButtonDown(wxMouseEvent& event)
 void GfxCore::OnMButtonUp(wxMouseEvent& event)
 {
     if (m_PlotData && m_Lock == lock_NONE) {
-        if (m_CaverotMouse) {
-	    if (m_FreeRotMode) {
-	      //  	    m_Parent->SetStatusText("Disabled in free rotation mode.  Reset using Delete.");
-	    }
-	    else {
-  	        // plan/elevation toggle
-	        if (m_TiltAngle == 0.0) {
-	            Plan();
-		}
-		else if (m_TiltAngle == M_PI/2.0) {
-		    Elevation();
-		}
-		else {
-		    // go to whichever of plan or elevation is nearer
-		    if (m_TiltAngle > M_PI/4.0) {
-		        Plan();
-		    }
-		    else {
-		        Elevation();
-		    }
-		}
-	    }
-	}
-	else {
-	    m_DraggingMiddle = false;
-	}
+	m_DraggingMiddle = false;
     }
 }
 
@@ -1479,17 +1453,6 @@ void GfxCore::OnStopRotation(wxCommandEvent&)
 void GfxCore::OnStopRotationUpdate(wxUpdateUIEvent& cmd) 
 {
     cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Rotating);
-}
-
-void GfxCore::OnOriginalCaverotMouse(wxCommandEvent&)
-{
-    m_CaverotMouse = !m_CaverotMouse;
-}
-
-void GfxCore::OnOriginalCaverotMouseUpdate(wxUpdateUIEvent& cmd) 
-{
-    cmd.Enable(m_PlotData != NULL && !m_FreeRotMode && m_Lock == lock_NONE);
-    cmd.Check(m_CaverotMouse);
 }
 
 void GfxCore::OnReverseControls(wxCommandEvent&) 

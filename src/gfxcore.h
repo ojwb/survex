@@ -99,7 +99,6 @@ class GfxCore : public wxWindow {
     bool m_FreeRotMode;
     double m_TiltAngle;
     double m_PanAngle;
-    bool m_CaverotMouse;
     bool m_Rotating;
     double m_RotationStep;
     bool m_ReverseControls;
@@ -224,7 +223,6 @@ public:
     void OnMoveWest(wxCommandEvent&);
     void OnStartRotation(wxCommandEvent&);
     void OnStopRotation(wxCommandEvent&);
-    void OnOriginalCaverotMouse(wxCommandEvent&);
     void OnReverseControls(wxCommandEvent&);
     void OnSlowDown(wxCommandEvent&);
     void OnSpeedUp(wxCommandEvent&);
@@ -265,7 +263,6 @@ public:
     void OnMoveWestUpdate(wxUpdateUIEvent&);
     void OnStartRotationUpdate(wxUpdateUIEvent&);
     void OnStopRotationUpdate(wxUpdateUIEvent&);
-    void OnOriginalCaverotMouseUpdate(wxUpdateUIEvent&);
     void OnReverseControlsUpdate(wxUpdateUIEvent&);
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent&);
     void OnSlowDownUpdate(wxUpdateUIEvent&);
