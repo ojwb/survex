@@ -75,7 +75,7 @@ labels_plot(const char *label, int x, int y)
 {
    if (map && !fAllNames) {
       unsigned int X, Y; /* use unsigned so we can test for <0 for free */
-      unsigned int len, rows;
+      unsigned int len;
       char *p;      
       X = (unsigned)(x + x_mid) / 4u;
       if (X >= width) return 0;
@@ -85,13 +85,12 @@ labels_plot(const char *label, int x, int y)
       if (X + len > width) len = width - X; /* or 'return' to right clip */
       p = map + Y * width + X;
       if (memchr(p, 1, len)) return 0;
-      rows = max(Y, 2);
-      p -= width * rows;
-      rows += 3;
-      while (rows && p < map + size) {
+      if (Y > 2) Y = 2;
+      p -= width * Y;
+      Y += 4;
+      while (--Y && p < map + size) {
 	 memset(p, 1, len);
 	 p += width;
-	 rows--;
       }
    }
    return 1;
