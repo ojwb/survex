@@ -6,7 +6,7 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  cvrotgfx.h cvrotimg.h datain.h debug.h dosrot.h filelist.h filename.h\
  getopt.h img.h ini.h labels.h listpos.h matrix.h message.h netbits.h\
  network.h osalloc.h osdepend.h ostypes.h out.h prbitmap.h prcore.h\
- prio.h readval.h rotplot.h s.h useful.h validate.h whichos.h xrot.h\
+ prio.h readval.h rotplot.h str.h useful.h validate.h whichos.h xrot.h\
  uni2dos.h
 
 PRINT = printdm printps printpcl printhpgl
@@ -15,7 +15,7 @@ EXTRA_PROGRAMS = caverot xcaverot
 bin_PROGRAMS = cavern $(PRINT) diffpos extend @CAVEROT@ survex
 
 cavern_SOURCES = cavern.c message.c filename.c listpos.c commands.c\
- cmdline.c getopt.c getopt1.c datain.c network.c readval.c s.c\
+ cmdline.c getopt.c getopt1.c datain.c network.c readval.c str.c\
  matrix.c img.c osdepend.c svxmacro.c netbits.c useful.c validate.c
 
 survex_SOURCES = wrap.c osdepend.c
@@ -51,6 +51,9 @@ extend_SOURCES = extend.c message.c filename.c useful.c img.c osdepend.c
 
 #3dtodxf_SOURCES = 3dtodxf.c
 #3dtodxf_LDADD = imgalone.o
+
+#testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
+#imgtest_SOURCES = imgtest.c imgalone.c
 
 # this doesn't work if compiler doesn't support -c and -o, or with
 # deANSIfication
@@ -104,13 +107,6 @@ VERSION = @VERSION@
 #
 # If you're porting, don't define any to start with, and define them as
 # needed, using the compiler and linker errors for guidance.
-
-#testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
-#imgtest_SOURCES = imgtest.c imgalone.c
-
-# special standalone version of img.c object file
-#imgalone$(O) : $(RSP) img.c
-#	$(CC) -c $(CFLG) $(UFLG) -DSTANDALONE $(OP)$(OPTH)imgalone$(O) img.c
 
 #BUILT_SOURCES = makefile.bc makefile.ro
 noinst_DATA = borlandc/makefile riscos/makefile
