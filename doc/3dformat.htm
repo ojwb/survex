@@ -52,10 +52,10 @@ first byte of an item identifies what it is:
 <ul>
 <li> 0x00 : if the current label is empty, signifies the end of the data
 in the 3d file; if the current label isn't empty, make it empty.
-<li> 0x01-0x0e : trim the last 17 characters of the current label, then
-trim back N-1 (i.e. 0-13) dots ("."), removing "." and everything after
-it.  It's incorrect if the label ends up empty, or you attempt to trim more
-label than there is.  The rationale for removing 17 characters first is
+<li> 0x01-0x0e : trim the last 16 characters of the current label, then
+trim back N (i.e. 1-14) dots ("."), everything after that particular dot.
+It's incorrect if the label ends up empty, or you attempt to trim more
+label than there is.  The rationale for removing 16 characters first is
 that removal of 1-16 characters can be encoded by 0x10-0x1f (see below)
 and we can make this encoding more powerful by not overlapping what can
 be encoded.
