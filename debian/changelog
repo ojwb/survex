@@ -1,14 +1,9 @@
-survex (1.0.16) unstable; urgency=low
+survex (1.0.17) unstable; urgency=low
 
-  * Another MS Windows specific release.
+  * 1.0.15 and 1.0.16 addressed MS Windows specific problems.
+  * Minor update to manual.
 
- -- Wookey <wookey@survex.com>  Tue, 17 Sep 2002 15:36:33 +0100
-
-survex (1.0.15) unstable; urgency=low
-
-  * Only changes were to MS Windows version.
-
- -- Wookey <wookey@survex.com>  Tue, 17 Sep 2002 02:41:16 +0100
+ -- Wookey <wookey@survex.com>  Tue, 24 Sep 2002 13:48:33 +0100
 
 survex (1.0.14) unstable; urgency=low
 

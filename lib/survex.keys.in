@@ -1,0 +1,16 @@
+application/x-survex-svx:
+	open=${VISUAL-${EDITOR-/etc/alternatives/editor}} %f
+	open.tag1.Process=@PREFIX@/bin/cavern %f --output=%f
+	icon-filename=@DATADIR@/@PACKAGE@/icons/svx.png
+
+application/x-survex-3d:
+	open=@PREFIX@/bin/aven %f
+	icon-filename=@DATADIR@/@PACKAGE@/icons/3d.png
+
+application/x-survex-err:
+	open=${VISUAL-${EDITOR-/etc/alternatives/editor}} %f
+	icon-filename=@DATADIR@/@PACKAGE@/icons/err.png
+
+application/x-survex-pos:
+	open=${VISUAL-${EDITOR-/etc/alternatives/editor}} %f
+	icon-filename=@DATADIR@/@PACKAGE@/icons/pos.png

@@ -1,0 +1,11 @@
+application/x-survex-svx:
+	ext: svx
+
+application/x-survex-3d:
+	ext: 3d
+
+application/x-survex-err:
+	ext: err
+
+application/x-survex-pos:
+	ext: pos

@@ -4,6 +4,8 @@ Changes in 1.0.17:
   install this action now falls back to using notepad).  SvxEdit now has
   its own icon.
 
+* (Unix Version): Install mime types, icons, and file associations for Gnome.
+
 * Minor update to manual.
 
 Changes in 1.0.16:

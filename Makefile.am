@@ -109,8 +109,9 @@ mingw_iss :
 	cd doc;cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
-	cd mingw_extras && $(MAKE)
-	cp mingw_extras/*.ico lib/icons/*.png iss_tmp
+	cp lib/icons/*.ico lib/icons/*.png iss_tmp
+	: # don't ship pngs for which we ship the ico version
+	cd iss_tmp && for a in \*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
 	cp /opt/rx-win32/bin/librx.dll iss_tmp
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual
