@@ -178,17 +178,17 @@ AC_SUBST(PRINTWIN)
 
 AC_ARG_VAR(WXCONFIG, [wxWindows configuration script to use to build Aven])
 
-if test x$no_x != xyes; then
-  AC_CHECK_LIB(Xext, XdbeQueryExtension, X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS", ,
-               $X_LIBS $X_PRE_LIBS -lX11 -lXext $X_EXTRA_LIBS)
-  CAVEROT=xcaverot ${CAVEROT}
-  AC_MSG_RESULT(building xcaverot)
-else
+if test x$no_x = xyes; then
   AC_MSG_RESULT([not building xcaverot (X libraries not found or disabled)])
   if test -z "$WXCONFIG" && test $mswindows = no ; then
     AC_MSG_RESULT([not building aven (X libraries not found or disabled)])
     AVEN=
   fi
+else
+  AC_CHECK_LIB(Xext, XdbeQueryExtension, X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS", ,
+               $X_LIBS $X_PRE_LIBS -lX11 -lXext $X_EXTRA_LIBS)
+  CAVEROT=xcaverot ${CAVEROT}
+  AC_MSG_RESULT(building xcaverot)
 fi
 
 AM_CONDITIONAL(WIN32, [test $mswindows = yes])
