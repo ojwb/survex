@@ -46,19 +46,24 @@ is in aven, as img looks to be setting the station "underground" flag...
 <li>suppress warning box if wxWindows doesn't have translations in requested
 language (doesn't appear to be possible)
 
-<li>continuing trouble with accelerator keys
+<li>continuing trouble with accelerator keys:
+
+<ul>
+<li>"[", "]", "'", and "/" accelerators don't work (on MS Windows 98)
+<li>Some keystrokes in the "Search box" are interpreted as accelerators
+</ul>
 
 <li>Accents in menus were working but suddenly stopped - I think this
 happened when I upgraded debian and a new libgtk package got
 installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
+[from Olly: installing "locales" package fixes this for me...]
 
 <li>releasing drag over menubar doesn't send event properly
 
 <li>Close button in About box not in correct place (on MS Windows)
 
-<li>"[", "]", "'", and "/" accelerators don't work (on MS Windows 98)
-
-<li>trouble with zooming in too far on wxaven for GTK (xcaverot too)
+<li>"random lines" when zooming in a lot on wxaven for GTK (xcaverot too)
+- fix by doing the clipping ourselves?
 
 <li>by default put crosses on those points with no legs attached (unused
 fixed points)?
@@ -102,7 +107,7 @@ As"/"Load"/"Save" mould
 
 <ul>
 
-<li>Check skip blank pages works on print*...
+<li>Check skip blank pages works (checked printps)...
 
 <li>/etc/survex/example.print.ini ?
 

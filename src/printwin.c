@@ -105,24 +105,24 @@ check_intersection(long x_p, long y_p)
 #define L 4
 #define R 8      
    int mask_p = 0, mask_t = 0;
-   if (x_p < clip.x_min)
+   if (x_p < 0)
       mask_p = L;
-   else if (x_p > clip.x_max)
+   else if (x_p > xpPageWidth)
       mask_p = R;
 
-   if (y_p < clip.y_min)
+   if (y_p < 0)
       mask_p |= D;
-   else if (y_p > clip.y_max)
+   else if (y_p > ypPageDepth)
       mask_p |= U;
 
-   if (x_t < clip.x_min)
+   if (x_t < 0)
       mask_t = L;
-   else if (x_t > clip.x_max)
+   else if (x_t > xpPageWidth)
       mask_t = R;
 
-   if (y_t < clip.y_min)
+   if (y_t < 0)
       mask_t |= D;
-   else if (y_t > clip.y_max)
+   else if (y_t > ypPageDepth)
       mask_t |= U;
 
 #if 0
@@ -137,20 +137,20 @@ check_intersection(long x_p, long y_p)
 
    if (mask_t == 0) mask_t = mask_p;
    if (mask_t & U) {
-      double v = (double)(clip.y_max - y_p) / (y_t - y_p);
+      double v = (double)(y_p - ypPageDepth) / (y_p - y_t);
       return v >= 0 && v <= 1;
    }
    if (mask_t & D) {
-      double v = (double)(clip.y_min - y_p) / (y_t - y_p);
+      double v = (double)y_p / (y_p - y_t);
       return v >= 0 && v <= 1;
    }
    if (mask_t & R) {
-      double v = (double)(clip.x_max - x_p) / (x_t - x_p);
+      double v = (double)(x_p - xpPageWidth) / (x_p - x_t);
       return v >= 0 && v <= 1;
    }
    ASSERT(mask_t & L);
    {
-      double v = (double)(clip.x_min - x_p) / (x_t - x_p);
+      double v = (double)x_p / (x_p - x_t);
       return v >= 0 && v <= 1;
    }
 #endif
@@ -269,6 +269,11 @@ win_NewPage(int pg, int pass, int pagesX, int pagesY)
    x = (pg - 1) % pagesX;
    y = pagesY - 1 - ((pg - 1) / pagesX);
 
+   clip.x_min = (long)x * xpPageWidth;
+   clip.y_min = (long)y * ypPageDepth;
+   clip.x_max = clip.x_min + xpPageWidth; /* dm/pcl/ps had -1; */
+   clip.y_max = clip.y_min + ypPageDepth; /* dm/pcl/ps had -1; */
+
    cur_pass = pass;
    if (pass == -1) {
       /* Don't count alignment marks, but do count borders */
@@ -277,10 +282,6 @@ win_NewPage(int pg, int pass, int pagesX, int pagesY)
       return;
    }
 
-   clip.x_min = (long)x * xpPageWidth;
-   clip.y_min = (long)y * ypPageDepth;
-   clip.x_max = clip.x_min + xpPageWidth; /* dm/pcl/ps had -1; */
-   clip.y_max = clip.y_min + ypPageDepth; /* dm/pcl/ps had -1; */
    StartPage(pd);
    drawticks(clip, WIN_TS, x, y);
 }

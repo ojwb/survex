@@ -1,4 +1,4 @@
-* printps/printhpgl/printwin: --skip-blanks wouldn't always work.
+* printps/printhpgl/printwin: --skip-blanks fixed.
 
 * (MSDOS version): graphics in HTML manual were corrupted (by being
   packed as text).
