@@ -36,8 +36,8 @@ typedef struct {
 
 void set_codes(coord move_, coord draw_, coord stop_);
 
-bool load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppSLegs,
-	       point Huge **ppStns);
+bool load_data(const char *fnmData, const char *survey,
+	       point Huge **ppLegs, point Huge **ppSLegs, point Huge **ppStns);
 
 void reset_limits(point *pmin, point *pmax);
 

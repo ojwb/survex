@@ -284,7 +284,7 @@ static point **ppSLegs = NULL;
 static point **ppStns = NULL;
 
 static int
-load_file(const char *name, int replace)
+load_file(const char *name, const char *survey, int replace)
 {
    XWindowAttributes attr;
    int blocks = 0;
@@ -296,7 +296,8 @@ load_file(const char *name, int replace)
    ppStns = osrealloc(ppStns, (blocks + 2) * sizeof(point Huge *));
 
    /* load data into memory */
-   if (!load_data(name, ppLegs + blocks, ppSLegs + blocks, ppStns + blocks)) {
+   if (!load_data(name, survey, 
+		  ppLegs + blocks, ppSLegs + blocks, ppStns + blocks)) {
       ppLegs[blocks] = ppSLegs[blocks] = ppStns[blocks] = NULL;
       return 0;
    }
@@ -378,7 +379,7 @@ process_load(GC mygc)
 	 }
       }
 
-      if (load_file(string, 1)) break;
+      if (load_file(string, NULL, 1)) break;
 
       strcpy(string, "File not found or not a Survex image file");
       XClearWindow(mydisplay, enter_window);
@@ -1092,17 +1093,19 @@ set_defaults(void)
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+   {"survey", required_argument, 0, 's'},
    {"pda", no_argument, 0, 'p'},
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "p"
+#define short_opts "ps:"
 
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),          "Adapt to use on a PDA"},
+   {HLP_ENCODELONG(0),          "Only load the sub-survey with this prefix"},
+   {HLP_ENCODELONG(1),          "Adapt to use on a PDA"},
    {0, 0}
 };
 
@@ -1110,6 +1113,7 @@ int
 main(int argc, char **argv)
 {
    XWindowAttributes attr;
+   const char *survey = NULL;
 
    XGCValues gcval;
    GC scale_gc, mygc;
@@ -1134,7 +1138,11 @@ main(int argc, char **argv)
    while (1) {
       int opt = cmdline_getopt();
       if (opt == EOF) break;
-      if (opt == 'p') pda = 1;
+      if (opt == 's') {
+	 survey = optarg;
+      } else if (opt == 'p') {
+	 pda = 1;
+      }
    }
 
    set_codes(MOVE, DRAW, STOP);
@@ -1228,7 +1236,7 @@ main(int argc, char **argv)
 
    /* load file(s) */
    while (argv[optind]) {
-      if (!load_file(argv[optind], 0)) {
+      if (!load_file(argv[optind], survey, 0)) {
 	 printf("File `%s' not found or not a Survex image file\n",
 		argv[optind]);
 	 exit(1);

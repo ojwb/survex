@@ -37,6 +37,10 @@
   files are now stored compressed.  Despite now storing prefixes for
   legs, .3d files are now typically 25%-33% smaller than before.
 
+* xcaverot/caverot: Added --survey command line option which restricts
+  the view to a sub-survey in the .3d file.  e.g.:
+  "caverot --survey 161.dream all.3d"
+
 * (MS Windows version): added explorer bindings for sorterr.
 
 * cavern/xcaverot/sorterr: fixed --help output to include long options.

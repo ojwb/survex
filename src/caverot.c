@@ -846,18 +846,20 @@ translate_data(coord Xchange, coord Ychange, coord Zchange)
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+   {"survey", required_argument, 0, 's'},
    CVROTGFX_LONGOPTS
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "c:"CVROTGFX_SHORTOPTS
+#define short_opts "s:c:"CVROTGFX_SHORTOPTS
 
 /* TRANSLATE: extract help messages to message file */
 static struct help_msg help[] = {
 /*				<-- */
-   CVROTGFX_HELP(0)
+   {"survey", required_argument, 0, 's'},
+   CVROTGFX_HELP(1)
    {'c',                        "set display colours"},
    {0, 0}
 };
@@ -867,6 +869,7 @@ parse_command(int argc, char **argv)
 {
    int c;
    size_t col_idx = 0;
+   const char *survey = NULL;
 
    cmdline_set_syntax_message("3D_FILE...", NULL); /* TRANSLATE */
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
@@ -874,14 +877,17 @@ parse_command(int argc, char **argv)
       int opt = cmdline_getopt();
       if (opt == EOF) break;
       switch (opt) {
+       case 's':
+	 survey = optarg;
+	 break;
        case 'c': {
-	  char *p = optarg;
-	  while (*p && col_idx < (sizeof(acolDraw) / sizeof(acolDraw[0]))) {
-	     acolDraw[col_idx++] = (unsigned char)strtol(p, &p, 0);
-	     if (*p != ',') break;
-	     p++;
-	  }
-	  break;
+	 char *p = optarg;
+	 while (*p && col_idx < (sizeof(acolDraw) / sizeof(acolDraw[0]))) {
+	    acolDraw[col_idx++] = (unsigned char)strtol(p, &p, 0);
+	    if (*p != ',') break;
+	    p++;
+	 }
+	 break;
        }
       }
    }
@@ -899,7 +905,7 @@ parse_command(int argc, char **argv)
 
    /* load data into memory */
    for (c = 0; c < argc; c++) {
-      if (!load_data(argv[c], ppLegs + c, ppSLegs + c, ppStns + c)) {
+      if (!load_data(argv[c], survey, ppLegs + c, ppSLegs + c, ppStns + c)) {
 	 printf(msg(/*Bad 3d image file `%s'*/106), argv[c]);
 	 putnl();
 	 exit(1);
@@ -908,4 +914,3 @@ parse_command(int argc, char **argv)
 
    ppLegs[argc] = ppSLegs[argc] = ppStns[argc] = NULL;
 }
-

@@ -14,7 +14,7 @@ chase up zombies again?
 
 resolve entries in TODO; resolve FIXMEs in code
 
-use "highest" title
+use "highest" title (partly done?)
 
 Default variance for topofil counter? (currently same as that of tape)
 
@@ -50,7 +50,7 @@ Middle button drag should "resist" at elevation (i.e. angle == 0)...
 sort out wrap-around a highish zoom (caverot is OK)
 
 colour by cave (and more generally by sub-prefix):
-"caverot --prefix \161 --colour-by-sub-prefix all.3d" would result in
+"caverot --survey 161 --colour-by-sub-prefix all.3d" would result in
 lhroute, rhroute, adrian, etc all getting different colours...
 
 centre on only legs???
@@ -62,14 +62,14 @@ fast puters look sane, and so autorotate keeps an even speed when
 little can be seen for part of each rotation).
 
 aven/caverot/xcaverot: if all points share a common prefix then
-default to hiding it - store in .3d file differently?
+default to hiding it?
 
 Date: Fri, 04 May 2001
 Subject: xcaverot
 From: Olly
 
 xcaverot missing:, ^A (lazy redraw during drags), ^R (reverse sense of
-controls), escape vs q...
+controls), escape vs q(?)
 
 switch_to_(plan|elevation) in xcaverot should animate but code is just
 broken.
