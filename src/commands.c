@@ -68,7 +68,7 @@ default_case(settings *s)
    s->Case = LOWER;
 }
 
-static datum default_order[] = { Fr, To, Tape, Comp, Clino, End };
+extern datum default_order[] = { Fr, To, Tape, Comp, Clino, End };
 
 static void
 default_style(settings *s)
@@ -389,7 +389,7 @@ begin_block(void)
    pcsNew = osnew(settings);
 /*   memcpy(pcsNew, pcs, ossizeof(settings)); */
    *pcsNew = *pcs; /* copy contents */
-   pcsNew->fFileStarted = fFalse;
+   pcsNew->begin_lineno = file.line;
    pcsNew->next = pcs;
    pcs = pcsNew;
 
@@ -407,7 +407,7 @@ end_block(void)
 
    pcsParent = pcs->next;
 
-   if (pcs->fFileStarted) {
+   if (pcs->begin_lineno == 0) {
       if (pcsParent == NULL) {
 	 /* more ENDs than BEGINs */
 	 compile_error(/*No matching BEGIN*/192);
@@ -861,7 +861,6 @@ include(void)
    parse file_store;
    prefix *root_store;
    int ch_store;
-   bool fFileStarted_store;
 
    pth = path_from_fnm(file.filename);
 
@@ -873,39 +872,8 @@ include(void)
    file.parent = &file_store;
    ch_store = ch;
    
-   fFileStarted_store = pcs->fFileStarted;
-   pcs->fFileStarted = fTrue;
-   
    data_file(pth, fnm);
 
-   if (!pcs->fFileStarted) {
-      /* FIXME: can't give filename as it is freed by data_file() -
-       * perhaps this code should be pushed into data_file.  Then
-       * it would also work for files specified on the command line...
-       */
-      error(/*Unclosed BEGIN*/23);
-      skipline();
-      /* Implicitly close any unclosed BEGINs from this file */
-      do {
-	 /* FIXME: same code as in end_block() - pull out into function */
-	 datum *order;
-	 settings *pcsParent = pcs->next;
-	 ASSERT(pcsParent);
-   
-	 /* don't free default ordering or ordering used by parent */
-	 order = pcs->ordering;
-	 if (order != default_order && order != pcsParent->ordering) osfree(order);
-      
-	 /* free Translate if not used by parent */
-	 if (pcs->Translate != pcsParent->Translate) osfree(pcs->Translate - 1);
-
-	 osfree(pcs);
-	 pcs = pcsParent;
-      } while (!pcs->fFileStarted);
-   }
-
-   pcs->fFileStarted = fFileStarted_store;
-   
    root = root_store; /* and restore root */
    file = file_store;
    ch = ch_store;

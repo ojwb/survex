@@ -199,80 +199,18 @@ showline(const char *dummy, int n)
 extern void
 data_file(const char *pth, const char *fnm)
 {
+   int begin_lineno_store;
 #ifndef NO_PERCENTAGE
    volatile long int filelen;
 #endif
 
-   file.fh = fopenWithPthAndExt(pth, fnm, EXT_SVX_DATA, "rb", &file.filename);
+   file.fh = fopen_portable(pth, fnm, EXT_SVX_DATA, "rb", &file.filename);
    if (file.fh == NULL) {
-#if (OS==RISCOS) || (OS==UNIX)
-      int f_changed = 0;
-      char *fnm_trans, *p;
-#if OS==RISCOS
-      char *q;
-#endif
-      fnm_trans = osstrdup(fnm);
-#if OS==RISCOS
-      q = fnm_trans;
-#endif
-      for (p = fnm_trans; *p; p++) {
-	 switch (*p) {
-#if (OS==RISCOS)
-         /* swap either slash to a dot, and a dot to a forward slash */
-	 /* but .. goes to ^ */
-         case '.':
-	    if (p[1] == '.') {
-	       *q++ = '^';
-	       p++; /* skip second dot */
-	    } else {
-	       *q++ = '/';
-	    }
-	    f_changed = 1;
-	    break;
-         case '/': case '\\':
-	    *q++ = '.';
-	    f_changed = 1;
-	    break;
-	 default:
-	    *q++ = *p; break;
-#else
-         case '\\': /* swap a backslash to a forward slash */
-	    *p = '/';
-	    f_changed = 1;
-	    break;
-#endif
-	 }
-      }
-#if OS==RISCOS
-      *q = '\0';
-#endif
-      if (f_changed)
-	 file.fh = fopenWithPthAndExt(pth, fnm_trans, EXT_SVX_DATA, "rb",
-				      &file.filename);
-
-#if (OS==UNIX)
-      /* as a last ditch measure, try lowercasing the filename */
-      if (file.fh == NULL) {
-	 f_changed = 0;
-	 for (p = fnm_trans; *p ; p++)
-	    if (isupper(*p)) {
-	       *p = tolower(*p);
-	       f_changed = 1;
-	    }
-	 if (f_changed)
-	    file.fh = fopenWithPthAndExt(pth, fnm_trans, EXT_SVX_DATA, "rb",
-					 &file.filename);
-      }
-#endif
-      osfree(fnm_trans);
-#endif
-      if (file.fh == NULL) {
-	 compile_error(/*Couldn't open data file '%s'*/24, fnm);
-	 /* print "ignoring..." maybe !HACK! */
-	 return;
-      }
+      compile_error(/*Couldn't open data file '%s'*/24, fnm);
+      /* print "ignoring..." maybe !HACK! */
+      return;
    }
-
+   
 #if 0
    sprintf(out_buf, msg(/*Processing data file '%s'*/122), fnm);
    out_current_action(out_buf);
@@ -281,6 +219,9 @@ data_file(const char *pth, const char *fnm)
 
    using_data_file(file.filename);
 
+   begin_lineno_store = pcs->begin_lineno;
+   pcs->begin_lineno = 0;
+   
 #ifndef NO_PERCENTAGE
    /* Try to find how long the file is...
     * However, under ANSI fseek( ..., SEEK_END) may not be supported */
@@ -341,11 +282,39 @@ data_file(const char *pth, const char *fnm)
    if (fPercent) putnl();
 #endif
 
-   /* FIXME: check than we've had all *begin-s *end-ed */
+   if (pcs->begin_lineno) {
+      /* FIXME: can't give filename as it is freed by data_file() -
+       * perhaps this code should be pushed into data_file.  Then
+       * it would also work for files specified on the command line...
+       */
+      error_in_file(file.filename, pcs->begin_lineno, /*Unclosed BEGIN*/23);
+      skipline();
+      /* Implicitly close any unclosed BEGINs from this file */
+      do {
+	 /* FIXME: same code as in end_block() in commands.c - pull out into function */
+	 datum *order;
+	 settings *pcsParent = pcs->next;
+	 ASSERT(pcsParent);
    
+	 /* don't free default ordering or ordering used by parent */
+	 order = pcs->ordering;
+	 if (order != default_order && order != pcsParent->ordering)
+	    osfree(order);
+      
+	 /* free Translate if not used by parent */
+	 if (pcs->Translate != pcsParent->Translate)
+	    osfree(pcs->Translate - 1);
+
+	 osfree(pcs);
+	 pcs = pcsParent;
+      } while (pcs->begin_lineno);
+   }
+
+   pcs->begin_lineno = begin_lineno_store;
+      
    if (ferror(file.fh) || (fclose(file.fh) == EOF))
       compile_error(/*Error reading file*/18);
-
+   
    /* set_current_fnm(""); not correct if filenames are nested */
    osfree(file.filename);
 }

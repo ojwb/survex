@@ -1,6 +1,6 @@
 /* > commands.h
  * Header file for code for directives
- * Copyright (C) 1994,1995,1996 Olly Betts
+ * Copyright (C) 1994,1995,1996,2000 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,3 +26,5 @@ typedef struct { const char *sz; int tok; } sztok;
 extern int match_tok(const sztok *tab, int tab_size);
 
 #define TABSIZE(T) ((sizeof(T) / sizeof(sztok)) - 1)
+
+extern datum default_order[];

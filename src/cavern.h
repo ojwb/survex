@@ -211,7 +211,7 @@ typedef struct Settings {
    real sc[Q_MAC];
    real units[Q_MAC];   
    datum *ordering;
-   bool fFileStarted;
+   int begin_lineno; /* 0 means no block started in this file */
    struct Settings *next;
 } settings;
 

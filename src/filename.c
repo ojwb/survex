@@ -1,5 +1,5 @@
 /* OS dependent filename manipulation routines
- * Copyright (c) Olly Betts
+ * Copyright (c) Olly Betts 1998-2000
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 #endif
 
 #include "filename.h"
+
+#include <ctype.h>
 #include <string.h>
 
 /* FIXME: finish sorting out safe_fopen vs fopenWithPthAndExt... */
@@ -260,5 +262,76 @@ fopenWithPthAndExt(const char * pth, const char * fnm, const char * szExt,
    /* free name if it didn't open or name isn't wanted */
    if (fh == NULL || pfnmUsed == NULL) osfree(fnmFull);
    if (pfnmUsed) *pfnmUsed = (fh ? fnmFull : NULL);
+   return fh;
+}
+
+/* Like fopenWithPthAndExt except that "foreign" paths are translated to
+ * native ones (e.g. on Unix dir\file.ext -> dir/file.ext) */
+FILE *
+fopen_portable(const char *pth, const char *fnm, const char *ext,
+	       const char *mode, char **pfnmUsed)
+{
+   FILE *fh = fopenWithPthAndExt(pth, fnm, ext, mode, pfnmUsed);
+   if (fh == NULL) {
+#if (OS==RISCOS) || (OS==UNIX)
+      int f_changed = 0;
+      char *fnm_trans, *p;
+#if OS==RISCOS
+      char *q;
+#endif
+      fnm_trans = osstrdup(fnm);
+#if OS==RISCOS
+      q = fnm_trans;
+#endif
+      for (p = fnm_trans; *p; p++) {
+	 switch (*p) {
+#if (OS==RISCOS)
+         /* swap either slash to a dot, and a dot to a forward slash */
+	 /* but .. goes to ^ */
+         case '.':
+	    if (p[1] == '.') {
+	       *q++ = '^';
+	       p++; /* skip second dot */
+	    } else {
+	       *q++ = '/';
+	    }
+	    f_changed = 1;
+	    break;
+         case '/': case '\\':
+	    *q++ = '.';
+	    f_changed = 1;
+	    break;
+	 default:
+	    *q++ = *p; break;
+#else
+         case '\\': /* swap a backslash to a forward slash */
+	    *p = '/';
+	    f_changed = 1;
+	    break;
+#endif
+	 }
+      }
+#if OS==RISCOS
+      *q = '\0';
+#endif
+      if (f_changed)
+	 fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, pfnmUsed);
+
+#if (OS==UNIX)
+      /* as a last ditch measure, try lowercasing the filename */
+      if (fh == NULL) {
+	 f_changed = 0;
+	 for (p = fnm_trans; *p ; p++)
+	    if (isupper(*p)) {
+	       *p = tolower(*p);
+	       f_changed = 1;
+	    }
+	 if (f_changed)
+	    fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, pfnmUsed);
+      }
+#endif
+      osfree(fnm_trans);
+#endif
+   }
    return fh;
 }
