@@ -87,7 +87,9 @@ avenrc.o: $(srcdir)/aven.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $$pwd/avenrc.o aven.rc
 else
 aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
+aven_LDFLAGS = @WX_LDFLAGS@
 avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
+avengl_LDFLAGS = @WX_LDFLAGS@
 endif
 
 if MACOSX
