@@ -28,13 +28,19 @@ aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c
 
-aven_LDADD = @AVENRC@ @LIBOBJS@ @WX_LIBS@
-aven_CFLAGS = @WX_CFLAGS@ -DAVEN
-aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN
+if WIN32
+aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@
 
 # FIXME: should use wxconfig or similar to get includes
 avenrc.o: aven.rc
 	i586-mingw32msvc-windres --include-dir /opt/wxmsw/include -o $@ $<
+
+else
+aven_LDADD = @LIBOBJS@ @WX_LIBS@
+endif
+
+aven_CFLAGS = @WX_CFLAGS@ -DAVEN
+aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN
 
 PRSRC = prcore.c prio.c useful.c img.c $(COMMONSRC)
  

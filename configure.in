@@ -103,15 +103,12 @@ if test x$no_x != xyes; then
   AC_MSG_RESULT(building xcaverot)
 fi
 
-AVENRC=
+AM_CONDITIONAL(WIN32, test -n "$MINGW32$CYGWIN")
 if test -n "$WXCONFIG" ; then
   if test -n $AVEN; then
     AC_MSG_CHECKING(for wxwindows)
     if ( exec >&5 2>&5 ; $WXCONFIG --version ; exit $? ) then
       WX_LIBS=`$WXCONFIG --libs`
-      if test -n "$MINGW32$CYGWIN" ; then
-        AVENRC=avenrc.o
-      fi
       AC_SUBST(WX_LIBS)
       WX_CFLAGS=`$WXCONFIG --cflags`
       AC_SUBST(WX_CFLAGS)
@@ -130,7 +127,6 @@ AC_LANG_C
 
 AC_SUBST(CAVEROT)
 AC_SUBST(AVEN)
-AC_SUBST(AVENRC)
 
 EXTRA_MANS=`echo $CAVEROT $AVEN | sed 's/\>/.1/g'`
 AC_SUBST(EXTRA_MANS)
