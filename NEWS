@@ -4,8 +4,8 @@ Changes in 1.0.12:
 
 * sorterr: fixed to work with more than 1024 traverses.
 
-* xcaverot: automatically switch on PDA mode if the screen is narrower than
-  640 pixels.
+* (Unix version): xcaverot: automatically switch on PDA mode if the screen is
+  narrower than 640 pixels.
 
 * Updates to Portuguese translation - all translations are now up-to-date.
 
@@ -288,7 +288,7 @@ Changes in 1.0.2:
 
 * cavern: *FIX with 3 standard deviations but no covariances now works.
 
-* (Mac OS X version): command line programs now build.  We're working on Aven.
+* (MacOS X version): command line programs now build.  We're working on Aven.
 
 * Updates to the Catalan and Spanish translations.
 
