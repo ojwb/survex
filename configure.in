@@ -28,7 +28,7 @@ AC_SUBST(COPYRIGHT_MSG)
 AC_SUBST(AVEN_COPYRIGHT_MSG)
 
 dnl set PRETTYPACKAGE to PACKAGE with the first character capitalised
-PRETTYPACKAGE="`echo \"$PACKAGE\"|cut -b1|tr 'a-z' 'A-Z'``echo \"$PACKAGE\"|cut -b2-`"
+PRETTYPACKAGE="`echo \"$PACKAGE\"|cut -b1|tr a-z A-Z``echo \"$PACKAGE\"|cut -b2-`"
 AC_DEFINE_UNQUOTED(PRETTYPACKAGE, "$PRETTYPACKAGE",
 		   [Name of package (capitalised)])
 AC_SUBST(PRETTYPACKAGE)
