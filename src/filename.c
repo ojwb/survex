@@ -6,6 +6,8 @@
 #include "filename.h"
 #include <string.h>
 
+/* FIXME: finish sorting out safe_fopen vs fopenWithPthAndExt... */
+
 /* Wrapper for fopen which throws a fatal error if it fails.
  * Some versions of fopen() are quite happy to open a directory.
  * We aren't, so catch this case. */
@@ -23,7 +25,18 @@ safe_fopen(const char *fnm, const char *mode)
    return f;
 }
 
-FILE *
+extern FILE *
+safe_fopen_with_ext(const char *fnm, const char *ext, const char *mode)
+{
+   FILE *f;
+   char *p;
+   p = add_ext(fnm, ext);
+   f = safe_fopen(p, mode);
+   osfree(p);
+   return f;
+}
+
+static FILE *
 fopen_not_dir(const char *fnm, const char *mode)
 {
    if (fDirectory(fnm)) return NULL;
@@ -31,7 +44,7 @@ fopen_not_dir(const char *fnm, const char *mode)
 }
 
 extern char * FAR
-PthFromFnm(const char *fnm)
+path_from_fnm(const char *fnm)
 {
    char *pth;
    const char *lf;
@@ -53,8 +66,55 @@ PthFromFnm(const char *fnm)
    return pth;
 }
 
+extern char *
+base_from_fnm(const char *fnm)
+{
+   char *p;
+   
+   p = strrchr(fnm, FNM_SEP_EXT);
+   /* Trim off any leaf extension, but dirs can have extensions too */
+   if (p && !strrchr(p, FNM_SEP_LEV)
+#ifdef FNM_SEP_LEV2
+       && !strrchr(p, FNM_SEP_LEV2)
+#endif
+       ) {
+      size_t len = p - fnm;
+
+      p = osmalloc(len + 1);
+      memcpy(p, fnm, len);
+      p[len] = '\0';
+      return p;
+   }
+
+   return osstrdup(fnm);
+}
+
+extern char *
+baseleaf_from_fnm(const char *fnm)
+{
+   const char *p;
+   char *q;
+   size_t len;
+   
+   p = fnm;
+   q = strrchr(p, FNM_SEP_LEV);
+   if (q) p = q + 1;
+#ifdef FNM_SEP_LEV2
+   q = strrchr(p, FNM_SEP_LEV2);
+   if (q) p = q + 1;
+#endif
+   
+   q = strrchr(p, FNM_SEP_EXT);
+   if (q) len = q - p; else len = strlen(p);
+
+   q = osmalloc(len + 1);
+   memcpy(q, p, len);
+   q[len] = '\0';
+   return q;
+}
+
 extern char * FAR
-LfFromFnm(const char *fnm)
+leaf_from_fnm(const char *fnm)
 {
    char *lf;
    lf = strrchr(fnm, FNM_SEP_LEV);
@@ -73,7 +133,7 @@ LfFromFnm(const char *fnm)
 
 /* Make fnm from pth and lf, inserting an FNM_SEP_LEV if appropriate */
 extern char * FAR
-UsePth(const char *pth, const char *lf)
+use_path(const char *pth, const char *lf)
 {
    char *fnm;
    int len, len_total;
@@ -109,7 +169,7 @@ UsePth(const char *pth, const char *lf)
 
 /* Add ext to fnm, inserting an FNM_SEP_EXT if appropriate */
 extern char * FAR
-AddExt(const char *fnm, const char *ext)
+add_ext(const char *fnm, const char *ext)
 {
    char * fnmNew;
    int len, len_total;
@@ -158,20 +218,20 @@ fopenWithPthAndExt(const char * pth, const char * fnm, const char * szExt,
       } else {
 	 if (szExt && *szExt) {
 	    /* we've been given an extension so try using it */
-	    fnmFull = AddExt(fnm, szExt);
+	    fnmFull = add_ext(fnm, szExt);
 	    fh = fopen_not_dir(fnmFull, szMode);
 	 }
       }
    } else {
       /* try using path given - first of all without the extension */
-      fnmFull = UsePth(pth, fnm);
+      fnmFull = use_path(pth, fnm);
       fh = fopen_not_dir(fnmFull, szMode);
       if (!fh) {
 	 if (szExt && *szExt) {
 	    /* we've been given an extension so try using it */
 	    char *fnmTmp;
 	    fnmTmp = fnmFull;
-	    fnmFull = AddExt(fnmFull, szExt);
+	    fnmFull = add_ext(fnmFull, szExt);
 	    osfree(fnmTmp);
 	    fh = fopen_not_dir(fnmFull, szMode);
 	 }
