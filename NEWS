@@ -20,12 +20,20 @@
   giving up (so on Unix you can now process a DOS dataset by unpacking with
   "unzip -L" to force filenames of unpacked files to lower case).
 
-* Covariance code now working and enabled by default
-
 * Fixed a couple of bugs in diffpos, and it now exits with status 1 if
   differences were reported
 
 * Added some tests for cavern and diffpos - more to follow
+
+* Covariance code now working and enabled by default
+
+* When equating two existing stations we need to replace the pos of one with
+  the pos of the other.  We used to look down the whole station list, now we
+  just look at neighbouring nodes (noticable time saving for large networks
+  with many equates)
+
+* Renamed truncate function in commands.c to avoid clash with library
+  truncate function on FreeBSD
 
 Changes in 0.91:
 
