@@ -2152,6 +2152,8 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
             }
 */
 	    double z_pitch_adjust = 0.0;
+            bool cover_end = false;
+            
             if (segment == 0) {
                 // first segment
         
@@ -2172,6 +2174,8 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 		    last_right = right;
 		    up = up_v;
 		}
+
+                cover_end = true;
             }
             else if (segment == length - 1) {
                 // last segment
@@ -2212,6 +2216,8 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 		    last_right = right;
 		    up = up_v;
 		}
+
+                cover_end = true;
             }
             else {
                 // intermediate segment
@@ -2274,15 +2280,15 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 	    Vector3 v2 = pt_v + right + up;
 	    Vector3 v3 = pt_v + right - up;
 	    Vector3 v4 = pt_v - right - up;
+            
+            const Vector3 light(1.0, 1.0, 1.0);
 
             if (segment > 0) {
                 BeginQuadrilaterals();
 
-		const Vector3 light(1.0, 1.0, 1.0);
 		Vector3 normal = (v1 - v2_prev) * (v2 - v1_prev);
 		normal.normalise();
-                Double factor;
-                factor = dot(normal, light) * .3 + .7;
+                Double factor = dot(normal, light) * .3 + .7;
                 PlaceVertexWithColour(v1.getX(), v1.getY(), v1.getZ(), factor);
                 PlaceVertexWithColour(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ(), factor);
                 PlaceVertexWithColour(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ(), factor);
@@ -2310,6 +2316,21 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
                 PlaceVertexWithColour(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ(), factor);
                 PlaceVertexWithColour(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ(), factor);
                 PlaceVertexWithColour(v1.getX(), v1.getY(), v1.getZ(), factor);
+                PlaceVertexWithColour(v4.getX(), v4.getY(), v4.getZ(), factor);
+                
+                EndQuadrilaterals();
+            }
+
+            if (cover_end) {
+                Vector3 normal = up * right;
+		normal.normalise();
+                Double factor = dot(normal, light) * .3 + .7;
+                
+                BeginQuadrilaterals();
+
+                PlaceVertexWithColour(v1.getX(), v1.getY(), v1.getZ(), factor);
+                PlaceVertexWithColour(v2.getX(), v2.getY(), v2.getZ(), factor);
+                PlaceVertexWithColour(v3.getX(), v3.getY(), v3.getZ(), factor);
                 PlaceVertexWithColour(v4.getX(), v4.getY(), v4.getZ(), factor);
                 
                 EndQuadrilaterals();
