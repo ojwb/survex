@@ -612,3 +612,12 @@ ca:201 Mostra les opcions de la l&iacute;nia de comandaments
 es:201 Mostrar opciones en l&iacute;nea de comandos
 it:201 Mostra le opzioni della riga di comando
 sk:201 Zobrazi&tcaron; mo&zcaron;nosti pr&iacute;kazov&eacute;ho riadku
+#
+en:209 Visualisation of Survex 3D files
+fr:209 Visualisation de fichiers Survex 3D
+de:209 Visualisierung von Survex 3D-Dateien
+pt-br:209 Visualiza&ccedil;&atilde;o de arquivos 3d do Survex
+ca:209 Visualitzaci&oacute; de fitxers Survex 3D
+es:209 Visualizaci&oacute;n de archivos Survex 3D
+it:209 Visualizzazione di file survex 3D
+sk:209 Vizualiz&aacute;cia 3D s&uacute;borov Survex
