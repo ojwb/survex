@@ -90,7 +90,7 @@ static double indrad = 40;
 #define NUM_DEPTH_COLOURS 10
 
 /* nasty fixed limit - checked at least */
-#define SEGMENT_GROUP_SIZE 20000
+#define SEGMENT_GROUP_SIZE 40000
 
 /* A group of segments to be drawn in the same colour. */
 typedef struct {
