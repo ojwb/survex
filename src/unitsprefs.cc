@@ -4,6 +4,7 @@
 //  Preferences page for measurement unit options.
 //
 //  Copyright (C) 2002 Mark R. Shinwell
+//  Copyright (C) 2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -79,6 +80,6 @@ const wxString UnitsPrefs::GetName()
 
 const wxBitmap UnitsPrefs::GetIcon()
 {
-    return wxGetApp().LoadPreferencesIcon("units");
+    return GetParent()->LoadPreferencesIcon("units");
 }
 

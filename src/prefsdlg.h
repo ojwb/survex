@@ -4,6 +4,7 @@
 //  Preferences dialog box.
 //
 //  Copyright (C) 2002 Mark R. Shinwell
+//  Copyright (C) 2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -31,7 +32,8 @@ class PrefsDlg : public PanelDlg {
 
 public:
     PrefsDlg(GfxCore* parent, MainFrm* parent_win);
-    virtual ~PrefsDlg();
+    virtual ~PrefsDlg() { }
+    wxBitmap LoadPreferencesIcon(const wxString& icon) const;
 };
 
 #endif

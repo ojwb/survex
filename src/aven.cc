@@ -3,7 +3,7 @@
 //
 //  Main class for Aven.
 //
-//  Copyright (C) 2001-2002 Mark R. Shinwell.
+//  Copyright (C) 2001 Mark R. Shinwell.
 //  Copyright (C) 2002,2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -36,9 +36,6 @@
 #include <signal.h>
 
 #include <wx/image.h>
-#include <wx/cmdline.h>
-#include <wx/confbase.h>
-#include <wx/gdicmn.h>
 
 IMPLEMENT_APP(Aven)
 
@@ -173,29 +170,3 @@ aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
    m += s;
    wxGetApp().ReportError(m);
 }
-
-#ifdef PREFS
-const wxBitmap Aven::LoadPreferencesIcon(const wxString& icon) const
-{
-    // Load an icon for use in the preferences dialog.
-    //FIXME share code with LoadIcon...
-
-    const wxString path = wxString(msg_cfgpth()) +
-                          wxCONFIG_PATH_SEPARATOR + wxString("icons") +
-                          wxCONFIG_PATH_SEPARATOR +
-                          wxString(icon) + wxString("prefs.png");
-    return wxBitmap(path, wxBITMAP_TYPE_PNG);
-}
-#endif
-
-const wxBitmap Aven::LoadIcon(const wxString& icon) const
-{
-    // Load an icon.
-
-    const wxString path = wxString(msg_cfgpth()) +
-                          wxCONFIG_PATH_SEPARATOR + wxString("icons") +
-                          wxCONFIG_PATH_SEPARATOR +
-                          wxString(icon) + wxString(".png");
-    return wxBitmap(path, wxBITMAP_TYPE_PNG);
-}
-

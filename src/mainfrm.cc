@@ -904,8 +904,10 @@ void MainFrm::CreateSidePanel()
 
     // Overall tabbed structure:
     wxImageList* image_list = new wxImageList();
-    image_list->Add(wxGetApp().LoadIcon("survey-tree"));
-    image_list->Add(wxGetApp().LoadIcon("pres-tree"));
+    const wxString path = wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
+			  wxString("icons") + wxCONFIG_PATH_SEPARATOR;
+    image_list->Add(wxBitmap(path + "survey-tree.png", wxBITMAP_TYPE_PNG));
+    image_list->Add(wxBitmap(path + "pres-tree.png", wxBITMAP_TYPE_PNG));
     m_Notebook->SetImageList(image_list);
     m_Notebook->AddPage(m_Panel, msg(/*Surveys*/376), true, 0);
     m_Notebook->AddPage(m_PresPanel, msg(/*Presentation*/377), false, 1);

@@ -4,6 +4,7 @@
 //  Preferences page for mouse control options.
 //
 //  Copyright (C) 2002 Mark R. Shinwell
+//  Copyright (C) 2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -56,6 +57,6 @@ const wxString CtlPrefs::GetName()
 
 const wxBitmap CtlPrefs::GetIcon()
 {
-    return wxGetApp().LoadPreferencesIcon("ctl");
+    return GetParent()->LoadPreferencesIcon("ctl");
 }
 

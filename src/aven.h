@@ -52,10 +52,6 @@ public:
     virtual bool OnInit();
 
     void ReportError(const wxString&);
-#ifdef PREFS
-    const wxBitmap LoadPreferencesIcon(const wxString& icon) const;
-#endif
-    const wxBitmap LoadIcon(const wxString& icon /* no extension */) const;
 };
 
 DECLARE_APP(Aven)

@@ -4,6 +4,7 @@
 //  Preferences page for window-related options.
 //
 //  Copyright (C) 2002 Mark R. Shinwell
+//  Copyright (C) 2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -60,7 +61,7 @@ const wxString WinPrefs::GetName()
 
 const wxBitmap WinPrefs::GetIcon()
 {
-    return wxGetApp().LoadPreferencesIcon("window");
+    return GetParent()->LoadPreferencesIcon("window");
 }
 
 void WinPrefs::OnSidePanel(wxCommandEvent&)

@@ -4,6 +4,7 @@
 //  Preferences dialog box.
 //
 //  Copyright (C) 2002 Mark R. Shinwell
+//  Copyright (C) 2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,6 +24,8 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <wx/confbase.h>
 
 #include "ctlprefs.h"
 #include "gridprefs.h"
@@ -64,8 +67,14 @@ PrefsDlg::PrefsDlg(GfxCore* parent, MainFrm* parent_win) : PanelDlg(parent_win, 
     SetPages(pages);
 }
 
-PrefsDlg::~PrefsDlg()
+wxBitmap PrefsDlg::LoadPreferencesIcon(const wxString& icon) const
 {
+    // Load an icon for use in the preferences dialog.
+    //FIXME share code with LoadIcon...
 
+    const wxString path = wxString(msg_cfgpth()) +
+                          wxCONFIG_PATH_SEPARATOR + wxString("icons") +
+                          wxCONFIG_PATH_SEPARATOR +
+                          wxString(icon) + wxString("prefs.png");
+    return wxBitmap(path, wxBITMAP_TYPE_PNG);
 }
-
