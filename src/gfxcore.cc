@@ -728,11 +728,13 @@ void GfxCore::NattyDrawNames()
     memset((void*) m_LabelGrid, 0, buffer_size);
 
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
-
-    while (label != m_Parent->GetLabelsEnd()) {
+    for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
 	Double x, y, z;
 
 	Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
+	// Check if the label is behind us (in perspective view).
+	if (z > 1.0) continue;
+
 	y += CROSS_SIZE - GetFontSize();
 
 	wxString str = (*label)->GetText();
@@ -771,7 +773,6 @@ void GfxCore::NattyDrawNames()
 		}
 	    }
 	}
-	++label;
     }
 }
 

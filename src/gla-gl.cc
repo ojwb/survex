@@ -421,8 +421,6 @@ void GLACanvas::SetDataTransform()
 	CHECK_GL_ERROR("ToggleTextured", "glTexParameteri GL_TEXTURE_MIN_FILTER");
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     } else {
-	glDisable(GL_TEXTURE_GEN_S);
-	glDisable(GL_TEXTURE_GEN_T);
 	glDisable(GL_TEXTURE_2D);
     }
     if (m_Fog) {
@@ -466,9 +464,13 @@ void GLACanvas::SetIndicatorTransform()
     gluOrtho2D(0, window_width, 0, window_height);
     CHECK_GL_ERROR("SetIndicatorTransform", "gluOrtho2D");
 
-    glDisable(GL_TEXTURE_GEN_S);
-    glDisable(GL_TEXTURE_GEN_T);
     glDisable(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glAlphaFunc(GL_GREATER, 0.5f);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 	 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 }
 
 void GLACanvas::FinishDrawing()
@@ -556,7 +558,8 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
     GLdouble X, Y, Z;
     if (!gluProject(x, y, z, modelview_matrix, projection_matrix, viewport,
 		    &X, &Y, &Z)) return;
-    DrawIndicatorText((int)X, (int)Y, str);
+    printf("%.3f %s\n", Z, str.c_str());
+    if (Z > 0) DrawIndicatorText((int)X, (int)Y, str);
 #else
     glRasterPos3d(x, y, z);
     CHECK_GL_ERROR("DrawText", "glRasterPos3d");
@@ -602,7 +605,7 @@ void GLACanvas::GetTextExtent(const wxString& str, int * x_ext, int * y_ext)
     *x_ext = 0;
     for (size_t pos = 0; pos < str.Length(); pos++) {
         x_ext += glutBitmapWidth(m_Font, int((unsigned char)str[pos]));
-        CHECK_GL_ERROR("DrawText", "glutBitmapWidth");
+        CHECK_GL_ERROR("GetTextExtent", "glutBitmapWidth");
     }
 #endif
     *y_ext = m_FontSize + 2;
