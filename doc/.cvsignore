@@ -1,9 +1,9 @@
 Makefile
 Makefile.in
 survex.1
-svxdocs
-svxdocs.htm
-svxdocs.ps
-svxdocs.rtf
-svxdocs.txt
+manual
+manual.htm
+manual.ps
+manual.rtf
+manual.txt
 docindex.htm

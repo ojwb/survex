@@ -6,14 +6,17 @@ Abstract: This manual describes what Survex is
 Section: math
 
 Format: postscript
-Files: /usr/share/doc/survex/survex-manual/svxdocs.ps.gz
+Files: /usr/share/doc/survex/survex-manual/manual.ps.gz
 
 Format: text
-Files: /usr/share/doc/survex/survex-manual/svxdocs.txt.gz
+Files: /usr/share/doc/survex/survex-manual/manual.txt.gz
 
 Format: rtf
-Files: /usr/share/doc/survex/survex-manual/svxdocs.rtf.gz
+Files: /usr/share/doc/survex/survex-manual/manual.rtf.gz
 
 Format: HTML
-Index: /usr/share/doc/survex/survex-manual/index.htm
-Files: /usr/share/doc/survex/survex-manual/*.htm
+Files: /usr/share/doc/survex/survex-manual/manual.htm
+
+Format: HTML
+Index: /usr/share/doc/survex/survex-manual/manual/index.htm
+Files: /usr/share/doc/survex/survex-manual/manual/*.htm

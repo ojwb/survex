@@ -175,10 +175,10 @@ mingw_iss : dostxt mingwexes
 	# convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
 	cp mingw_extras/*.ico lib/aven-about.png iss_tmp
-	mkdir iss_tmp/help
-	cp doc/svxdocs/*.htm iss_tmp/help
+	mkdir iss_tmp/manual
+	cp doc/manual/*.htm iss_tmp/manual
 	# convert LF to CR+LF
-	perl -p -i -e 's/\n/\r\n/' iss_tmp/help/*
+	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp mingw_exes/*.exe $(extra_bin) iss_tmp
 	$(RM) -rf dostxt_tmp
 	-killall Xvfb
@@ -269,7 +269,7 @@ alien_src_zip :
 	cd alien_tmp && ../zip-magic -N -r ../$(alien_src_zip_name) *
 	$(RM) -rf alien_tmp
 
-SVXDOCS = svxdocs svxdocs/*.htm @DOCS_OTHER@
+MANUAL = manual manual/*.htm @DOCS_OTHER@
 
 dos_doc_zip_name = svxdoc-doswin-@VERSION@.zip
 dos_doc_exe_name = svxdoc-doswin-@VERSION@.exe
@@ -283,7 +283,7 @@ dos_doc_exe : dos_doc_zip
 dos_doc_zip :
 	$(RM) $(dos_doc_zip_name)
 	# -l means convert LF to CR+LF
-	cd doc && zip -l ../$(dos_doc_zip_name) $(SVXDOCS)
+	cd doc && zip -l ../$(dos_doc_zip_name) $(MANUAL)
 
 riscos_doc_zip_name = svxdoc-riscos-@VERSION@.zip
 
@@ -291,7 +291,7 @@ riscos_doc_zip :
 	$(RM) $(riscos_doc_zip_name)
 	$(RM) -rf riscos_doc_tmp
 	mkdir riscos_doc_tmp
-	cd doc && for f in $(SVXDOCS) ; do\
+	cd doc && for f in $(MANUAL) ; do\
 	 if test -d $$f ; then\
 	  mkdir ../riscos_doc_tmp/$$f ;\
 	 else\

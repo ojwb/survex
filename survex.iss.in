@@ -14,7 +14,7 @@ Uninstallable=yes
 AppCopyright=@COPYRIGHT_MSG@
 ; WizardImageFile=survey.bmp
 [Dirs]
-Name: "{app}\help"
+Name: "{app}\manual"
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"
@@ -26,7 +26,7 @@ Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}"
-Source: "help\*.*"; DestDir: "{app}\help"
+Source: "manual\*.*"; DestDir: "{app}\manual"
 
 [Icons]
 Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"

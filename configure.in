@@ -261,8 +261,7 @@ AC_ARG_ENABLE(profiling,
   *) AC_MSG_ERROR(bad value ${enableval} for --enable-profiling) ;;
 esac])
 
-DOCS_OTHER="svxdocs.rtf svxdocs.txt svxdocs.ps svxdocs.htm"
-# svxdocs.html
+DOCS_OTHER="manual.rtf manual.txt manual.ps manual.htm"
 AC_SUBST(DOCS_OTHER)
 
 AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
