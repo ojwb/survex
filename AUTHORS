@@ -1,28 +1,48 @@
-FIXME: This is all rather incomplete.  I really must sort it out.
+The less-incomplete-than-it-used-to-be Survex thankyou list:
 
-Thanks to Mark Fearon, Bill Purvis, and Andy Waddinton for spotting and
-solving minor problems in previous releases, and to Bill Purvis, Devon
-Bowen, and John Pybus for their work on xcaverot.  Iain Miller also deserves
-a mention for letting us play with his very interconnected survey data from
-OFD.  Andy Holtsbery kindly fixed a few problems with xcaverot due to
-changes in other files.
+Andrew Boardman
+Andy Holtsbery
+Andy Waddington
+Anthony Day
+Bill Purvis
+Bob Thrun
+Brian Clipstone
+Clewin Griffith
+Devon Bowen
+Duncan Collis
+Eric Madelaine
+Erin Lynch
+Francois Dani
+Gavin Lowe
+Gerhard Niklasch
+Iain Miller
+Jens Rasch
+John Halleck
+John Pybus
+Josep Guarro
+Julian Todd
+Leandro Dybal Bertoni
+Mark Fearon
+Mark Shinwell
+Martin Ellis
+Martin Green
+Martin Heller
+Mike Lake
+Mike McCombe
+Mike Yocum
+Olly Betts
+Patrick Warren
+Paul "Footleg" Fretwell
+Peter Wilton-Jones
+Phil Underwood
+Ray Duffy
+Rob Garrett
+Robert Smallshire
+Roberto Maugeri
+Sean Kelly
+Thilo Mueller
+Tim Long
+Wookey
 
-Martin Heller, John Halleck, Sean Kelly, Patrick Warren, and Leandro Dybal
-Bertoni also deserve a mention.
-
-Also a big thankyou to CUCC for a great deal of testing in Austria over the
-past few years.
-
-Thanks to the following people for their work on the translations:
-
-French: Eric Madelaine/Francois Dani
-German: Gerhard Niklasch/Jens Rasch
-Portuguese: Leandro Dybal Bertoni
-Catalan and Spanish: Josep Guarro
-Italian: Roberto Maugeri (Zoom)
-
-Also, a big thanks to everyone who has reported bugs and problems, and
-suggested improvements.
-
-More people: Mark Shinwell, Phil Underwood, Gavin Lowe, Thilo Mueller,
-Ray Duffy, Julian Todd.
+And everyone in CUCC who's helped give it a good hammering on
+expedition every year for the past decade.
