@@ -2,6 +2,16 @@ Changes in 0.99-prerelease1:
 
 * Major clean-up of Survex Manual; renamed from "svxdocs" to "manual".
 
+* aven: added new functionality: toolbar, side panel with survey tree,
+  find station, measure distance between two stations, click on
+  station to centre.
+
+* aven: can now create presentations consisting of a set of views with
+  movements between them.  Useful for using aven as a "slide show" in
+  a conference talk.
+
+* aven: handles loading file from command line better.
+
 * cavern: added error checks for "*flags" (with no arguments) and
   "*flags not".
 
