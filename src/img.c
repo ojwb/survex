@@ -394,7 +394,7 @@ img_write_item(img *pimg, int code, const char *s,
 	    return;
 	 }
 	 len = strlen(s);
-	 if (len > 255) {
+	 if (len > 255 || strchr(s, '\n')) {
 	    /* long label - not in early incarnations of v2 format, but few
 	     * 3d files will need these, so better not to force incompatibility
 	     * with a new version I think... */
