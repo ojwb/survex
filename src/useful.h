@@ -35,12 +35,9 @@
 /* Macro to do nothing, but avoid compiler warnings about empty if bodies &c */
 #define NOP (void)0
 
+/* In C++ code, #include<algorithm> and use std::max and std::min instead. */
+#ifndef __cplusplus
 /* Return max/min of two numbers. */
-#ifdef __cplusplus
-# include <algorithm>
-using std::min;
-using std::max;
-#else
 /* May be defined already (e.g. by Borland C in stdlib.h) */
 /* NB Bad news if X or Y has side-effects... */
 # ifndef max
