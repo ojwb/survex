@@ -242,7 +242,7 @@ static jmp_buf jmpbufSignal;
 /* For funcs which want to be immune from messing around with different
  * calling conventions */
 #ifndef CDECL
-#define CDECL
+# define CDECL
 #endif
 
 /* These are English versions of messages which might be needed before the
@@ -267,7 +267,7 @@ static int cWarnings = 0; /* keep track of how many warnings we've given */
 static int cErrors = 0;   /* and how many (non-fatal) errors */
 
 extern int error_summary(void) {
-   fprintf(STDERR,msg(16),cWarnings,cErrors);
+   fprintf(STDERR, msg(16), cWarnings, cErrors);
    fputnl(STDERR);
    return ( cErrors ? EXIT_FAILURE : EXIT_SUCCESS );
 }
@@ -287,26 +287,24 @@ static void outofmem(OSSIZE_T size) {
  */
 extern void FAR * osmalloc( OSSIZE_T size ) {
    void FAR *p;
-   p=xosmalloc( size );
-   if (p==NULL)
-      outofmem(size);
+   p = xosmalloc( size );
+   if (p == NULL) outofmem(size);
    return p;
 }
 
 /* realloc with error catching if it fails. */
 extern void FAR * osrealloc( void *p, OSSIZE_T size ) {
-   p=xosrealloc(p,size);
-   if (p==NULL)
-      outofmem(size);
+   p = xosrealloc(p,size);
+   if (p == NULL) outofmem(size);
    return p;
 }
 
 extern void FAR * osstrdup( const char *sz ) {
    char *p;
    int len;
-   len=strlen(sz)+1;
-   p=osmalloc(len);
-   memmove(p,sz,len);
+   len = strlen(sz)+1;
+   p = osmalloc(len);
+   memcpy(p, sz, len);
    return p;
 }
 
@@ -319,12 +317,12 @@ static int sigReceived;
 /* for systems not using autoconf, assume the signal handler returns void
  * unless specified elsewhere */
 #ifndef RETSIGTYPE
-#define RETSIGTYPE void
+# define RETSIGTYPE void
 #endif
 
 static CDECL RETSIGTYPE FAR report_sig( int sig ) {
    sigReceived=sig;
-   longjmp(jmpbufSignal,1);
+   longjmp(jmpbufSignal, 1);
 }
 
 static void init_signals( void ) {
@@ -390,14 +388,13 @@ static int default_charset( void ) {
 #ifdef ISO8859_1
    return CHARSET_ISO_8859_1;
 #elif (OS==RISCOS)
-/*
-RISCOS 3.1 and above CHARSET_RISCOS31 !HACK!
-*/
-   return CHARSET_CHARSET_RISCOS31;
+/* RISCOS 3.1 and above CHARSET_RISCOS31 (ISO_8859_1 + extras in 128-159)
+ * RISCOS < 3.1 is ISO_8859_1 !HACK! */
+   return CHARSET_RISCOS31;
 #elif (OS==MSDOS)
    return CHARSET_DOSCP850;
 #else
-   return CHARSET_ISO_8859_1; /*!HACK!*/
+   return CHARSET_ISO_8859_1; /* Look at env var CHARSET ? !HACK! */
 #endif
 }
 
@@ -426,7 +423,7 @@ case 171: return 174;
 case 172: return 170;
 case 173: return 240;
 case 174: return 169;
-#if 0
+#if 0 /* !HACK! ?? */
 case 175: return 223;
 case 175: return 238;
 #endif
