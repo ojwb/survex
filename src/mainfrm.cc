@@ -124,6 +124,10 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     m_Gfx(NULL), m_FileToLoad(""), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0)
     
 {
+#ifdef _WIN32
+    SetIcon(wxIcon("aaaaaAven"));
+#endif
+
     m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS+1];
     m_Pens = new wxPen[NUM_DEPTH_COLOURS+1];
     m_Brushes = new wxBrush[NUM_DEPTH_COLOURS+1];

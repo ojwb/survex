@@ -18,7 +18,6 @@ wxaven problems with unknown solution:
 happened when I upgraded debian and a new libgtk package got
 installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
 - releasing drag over menubar doesn't send event properly...
-- icon not set correctly on frame [Windows only]
 
 wxaven for Windows:
 - Close button in About box not in correct place
