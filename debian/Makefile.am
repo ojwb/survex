@@ -5,7 +5,7 @@ EXTRA_DIST = copyright copyright.in docs survex-aven.files doc-base \
 
 MAINTAINERCLEANFILES = control docs
 
-control: Makefile $(top_srcdir)/desc.txt $(top_srcdir)/desc-aven.txt
+control: Makefile.am $(top_srcdir)/configure.in $(top_srcdir)/desc.txt $(top_srcdir)/desc-aven.txt
 	echo Source: survex > control
 	echo Section: math >> control
 	echo Priority: optional >> control
@@ -27,7 +27,7 @@ control: Makefile $(top_srcdir)/desc.txt $(top_srcdir)/desc-aven.txt
 	echo Description: Sophisticated cave survey viewer for Survex >> control
 	sed 's/^/ /' < $(top_srcdir)/desc-aven.txt >> control
 
-docs: Makefile $(top_srcdir)/configure.in
+docs: Makefile.am $(top_srcdir)/configure.in
 	rm -f docs
 	for a in `echo @EXTRA_TEXT@|grep -v COPYING|grep -v ChangeLog` ; do \
 	 echo $$a >> docs ; done
