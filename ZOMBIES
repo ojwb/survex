@@ -1,5 +1,5 @@
 Bugs which are unrepeatable, or believed fixed but never confirmed by
-whoever reported the bug:
+whoever reported the bug, or not relevant any longer:
 
 Date: Sat, 11 Apr 1998 14:04:25 +0200
 From: immoh <immoh@donau.de>
@@ -7,8 +7,7 @@ From: immoh <immoh@donau.de>
 Another remark: Did you know that you can crash CAVEROT by setting the
 scale factor to very large or very small values (probably larger/smaller
 than MIN/MAXFLOAT)?! This would be worth an error catch....
-[Seems to be fixed by newer allegro version, let me know if you still get
-problems - Olly]
+[Seems to be fixed by newer allegro version - fix not confirmed by immoh]
 
 Date: Wed, 09 Sep 1998 15:10:12 +0100
 From: Wookey <wookey@aleph1.co.uk>
@@ -22,8 +21,9 @@ From: Olly <olly@muscat.co.uk>
 
 DJGPP+Allegro caverot doesn't run well under NT.  The best resolution is
 320x200 and there are other niggles (e.g. on an NT 4 server, the mouse works
-in the mode-picker, but not in caverot itself).  In this situation, use the
-directx version of caverot instead.
+in the mode-picker, but not in caverot itself).
+[If you're running NT use the MS Windows version which comes with a cave
+viewer called aven]
 
 Date: Thu, 21 Jan 1999 11:09:49 GMT
 From: Peter Wilton-Jones <P.G.G.Wilton-jones@Bradford.ac.uk>
@@ -39,14 +39,21 @@ From: Bill Nasby <bnasby@island.net>
 restart the computer to get the screen back. [win95, 0.90 alpha (5 or
 earlier)]
 
-(Maybe an allegro problem - I've upgraded to allegro 3.1 to see if that
-cures the problem).  PWJ suggests the graphics card might be the problem.
+[Maybe an allegro problem - I've upgraded to allegro 3.1 to see if that
+cures the problem.  PWJ suggests the graphics card might be the problem.
+No confirmation of fix from Bill]
+
+Date: 04 Mar 1999
+From: Olly
+
+Currently rpm isn't relocatable (since path to support files is compiled
+in).  Can we fix this?  Does anyone care?  [No, nobody cares!]
 
 Date: Wed, 08 Mar 2000 21:38:25 GMT
 From: Brian Clipstone <brian@bclipstone.freeserve.co.uk>
 
 [in 0.92pre6, allegro version] CAVEROT Keys :- Delete, U & D and the
-cursor keys do not work.
+cursor keys do not work. [Not confirmed as fixed by Brian]
 
 Date: Wed, 08 Mar 2000 18:29:09 EST
 From: Mike Yocum <myocum@mis.net>
@@ -58,8 +65,8 @@ what it was.]
 Date: Fri, 08 Dec 2000
 From: Olly
 
-[directx caverot is now eclipsed by winaven]
 directx caverot: redraw after switching away and back code seems to kill
 program; resolutions (use desktop res?); windowed mode doesn't work;
 command line switches don't seem to work...
+[directx caverot is now eclipsed by winaven]
 

@@ -7,6 +7,11 @@ From: Leandro Dybal Bertoni <dybal@upe.org.br>
 
 Sort .err file by error (the segment with the grossest error first)
 
+Date: Mon, 02 Nov 1998 09:16:23 +1100
+From: Michael Lake <Mike.Lake@uts.edu.au>
+
+[Document xcaverot keys somewhere]
+
 Date: 15 Dec 1998
 From: Olly
 
@@ -24,12 +29,6 @@ From: Wookey
 Point out in documentation that file structure and survey structure don't
 have to be the same.  And in particular that folder/directory names can be
 different.
-
-Date: 04 Mar 1999
-From: Olly
-
-Currently rpm isn't relocatable (since path to support files is compiled
-in).  Can we fix this?  Does anyone care?
 
 Date: 21 Jul 1999
 From: Olly
@@ -62,6 +61,7 @@ Date: Sun, 09 Jul 2000
 From: Olly
 
 Sort out and include program for generating file associations under Windows.
+(or maybe fullblown installer?  PhilU may be able to oblige...)
 
 Date: Fri, 14 Jul 2000
 From: Olly
@@ -78,18 +78,23 @@ Sort out gross error detection code
 Date: Fri, 18 Aug 2000
 From: Olly
 
-Targets to try to do for 0.96:
+grid patch -> printer drivers, caverot, aven, and xcaverot too; grid
+crosses option (only draw cross at intersections, not a full grid).
 
-* grid patch -> printer drivers, caverot, aven, and xcaverot too.
+Date: Fri, 18 Aug 2000
+From: Olly
 
-* Installer program for generating file associations under Windows (or maybe
-fullblown installer?)
+Update documentation (2 volunteers are currently working on this).
 
-* Update documentation (2 volunteers are currently working on this).
+Date: Fri, 18 Aug 2000
+From: Olly
 
-* Clean up the sample data and start including it again.
+Clean up the sample data and start including it again.
 
-* Debian Linux packages.
+Date: Fri, 18 Aug 2000
+From: Olly
+
+Debian Linux packages.
 
 Date: Thu, 23 Nov 2000
 From: Olly
@@ -103,4 +108,40 @@ From: Olly
 
 Don't split other traverses at articulating traverses when reporting error
 stats.
+
+Date: Sat, 03 Mar 2001
+From: Olly
+
+Document *require, *export, *flags, plumbed diving legs,
+easting/northing/altitude vs dx/dy/dz
+
+Date: Sat, 03 Mar 2001
+From: Olly
+
+Merge in Mark's new version of aven (which uses wxwindows)
+
+caverot: by default put crosses on those points with no legs attached
+
+caverot: click on station to centre; type in station to centre
+
+caverot: make suite of unusual .3d files to test (e.g. empty, no labels,
+no lines, no stations, no x/y/z dimension, etc) for testing aven, caverot,
+xcaverot.
+
+cavern: auto declination? NEW_STYLE?
+
+Leandro's sketch output patch?
+
+update translations
+
+chase up zombies
+
+resolve entries in TODO and BUGS; resolve FIXMEs in code
+
+check xcaverot/caverot/aven have consistent senses to mouse and keyboard
+controls...
+
+try using labels.c in xcaverot?
+
+test diving data with compass omitted (plumbed)
 
