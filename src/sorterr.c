@@ -62,20 +62,22 @@ typedef struct {
 } trav;
 
 static void
-skipline(FILE *fh)
+skipline(const char *fnm, FILE *fh)
 {
    int ch;
    do {
       ch = getc(fh);
    } while (ch != '\n' && ch != EOF);
+
    if (ch == EOF) {
-      printf("Couldn't parse .err file\n");
-      exit(1);   
+      if (ferror(fh))
+	 fatalerror_in_file(fnm, 0, /*Error reading file*/18);
+      fatalerror_in_file(fnm, 0, /*Couldn't parse .err file*/112);
    }
 }
 
 static void
-printline(FILE *fh, FILE *fh_out)
+printline(const char *fnm, FILE *fh, FILE *fh_out)
 {
    int ch;
    do {
@@ -83,9 +85,11 @@ printline(FILE *fh, FILE *fh_out)
       if (ch != EOF && ch != '\r' && ch != '\n') putc(ch, fh_out);
    } while (ch != '\n' && ch != EOF);
    putc('\n', fh_out);
+
    if (ch == EOF) {
-      printf("Couldn't parse .err file\n");
-      exit(1);
+      if (ferror(fh))
+	 fatalerror_in_file(fnm, 0, /*Error reading file*/18);
+      fatalerror_in_file(fnm, 0, /*Couldn't parse .err file*/112);
    }
 }
 
@@ -150,27 +154,27 @@ main(int argc, char **argv)
       blk[next].fpos = ftell(fh);
       ch = getc(fh);
       if (ch == EOF) break;
-      skipline(fh);
+      skipline(fnm, fh);
       switch (sortby) {
        case 'A':
-	 skipline(fh);
+	 skipline(fnm, fh);
 	 if (fscanf(fh, "%lf", &blk[next].err) != 1) {
 	    baderrfile:
 	    printf("Couldn't parse .err file\n");
 	    exit(1);
 	 }
-	 skipline(fh);
-	 skipline(fh);
+	 skipline(fnm, fh);
+	 skipline(fnm, fh);
 	 break;
        case 'H': case 'V':
-	 skipline(fh);
-	 skipline(fh);
+	 skipline(fnm, fh);
+	 skipline(fnm, fh);
 	 do {
 	    ch = getc(fh);
 	    if (ch == '\n' || ch == EOF) goto baderrfile;
 	 } while (ch != sortby);
 	 if (fscanf(fh, ":%lf", &blk[next].err) != 1) goto baderrfile;
-	 skipline(fh);
+	 skipline(fnm, fh);
 	 break;
        case 'P':
 	 do {
@@ -187,9 +191,9 @@ main(int argc, char **argv)
 	 } while (!isdigit(ch));
 	 ungetc(ch, fh);
 	 if (fscanf(fh, "%lf", &blk[next].err) != 1) goto baderrfile;
-	 skipline(fh);
-	 skipline(fh);
-	 skipline(fh);
+	 skipline(fnm, fh);
+	 skipline(fnm, fh);
+	 skipline(fnm, fh);
 	 break;
        case 'L':
 	 do {
@@ -201,12 +205,12 @@ main(int argc, char **argv)
 	    if (ch == '\n' || ch == EOF) goto baderrfile;
 	 } while (ch != '(');
 	 if (fscanf(fh, "%lf", &blk[next].err) != 1) goto baderrfile;
-	 skipline(fh);
-	 skipline(fh);
-	 skipline(fh);
+	 skipline(fnm, fh);
+	 skipline(fnm, fh);
+	 skipline(fnm, fh);
 	 break;
       }
-      skipline(fh);
+      skipline(fnm, fh);
       next++;
    }
 
@@ -230,10 +234,10 @@ main(int argc, char **argv)
 	 printf("couldn't seek\n");
 	 exit(1);
       }
-      printline(fh, fh_out);
-      printline(fh, fh_out);
-      printline(fh, fh_out);
-      printline(fh, fh_out);
+      printline(fnm, fh, fh_out);
+      printline(fnm, fh, fh_out);
+      printline(fnm, fh, fh_out);
+      printline(fnm, fh, fh_out);
       putc('\n', fh_out);
       if (howmany && --howmany == 0) break;
    } while (next);
