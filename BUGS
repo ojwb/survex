@@ -2,21 +2,32 @@ Date: Wed, 21 June 2001
 From: Mark
 
 wxaven:
+
 - clino needs resistance around 0
+
 - scale bar dragging factor needs slight tweak
+
 - finish reverse controls
+
 - possible mysterious problem with [ and ] not zooming to screen centre
+
 - get warning box if wxWindows doesn't have translation into requested language
 
 wxaven problems with unknown solution:
+
 - continuing trouble with accelerator keys
+
 - Accents in menus were working but suddenly stopped - I think this
 happened when I upgraded debian and a new libgtk package got
 installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
+
 - releasing drag over menubar doesn't send event properly...
 
 wxaven for Windows:
+
 - Close button in About box not in correct place
 
 wxaven for GTK:
+
 - trouble with zooming in too far
+

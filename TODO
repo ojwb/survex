@@ -1,7 +1,3 @@
-From: anon
-
-allow valid range for an instrument to be specified...
-
 Date: Tue, 08 Sep 1998 17:52:52 -0300
 From: Leandro Dybal Bertoni <dybal@upe.org.br>
 
@@ -31,11 +27,11 @@ Sort out gross error detection code
 Date: Fri, 18 Aug 2000
 From: Olly
 
-grid patch -> printer drivers, caverot, aven, and xcaverot too; grid
-crosses option (only draw cross at intersections, not a full grid).
+aven grid code -> printer drivers, caverot, and xcaverot too.
+grid crosses option (only draw cross at intersections, not a full grid).
 [(x,y) of a point to go through (easting, northing)
- x spacing, y spacing (default to x spacing)
- orientation (bearing of y-axis?) (defaults to 0)]
+x spacing, y spacing (default to x spacing)
+orientation (bearing of y-axis?) (defaults to 0)]
 
 Date: Fri, 18 Aug 2000
 From: Olly
@@ -262,10 +258,17 @@ This is certainly wrong (2 legs, 1 1-node, and 1 2-node):
 Date: Mon, 25 Jun 2001
 From: Olly
 
-quotes in messages
+quotes in messages - translate too?
 
 Date: Mon, 25 Jun 2001
 From: Olly
 
 check return values from fgets(), fread(), etc in img.c and elsewhere.
+
+Date: Mon, 02 Jul 2001
+From: Olly
+
+Allow valid range for an instrument to be specified.  Tie in with
+*instrument.  *units date - ranges for dates - e.g. "1990-" or
+"jun-aug"...
 
