@@ -1186,7 +1186,9 @@ main(int argc, char **argv)
    /* create a window with a size such that it fits on the screen */
    myhint.x = 0;
    myhint.y = 0;
-   myhint.width = WidthOfScreen(DefaultScreenOfDisplay(mydisplay))-5;
+   myhint.width = WidthOfScreen(DefaultScreenOfDisplay(mydisplay));
+   if (myhint.width < 640) pda = 1;
+   myhint.width -= 5;
    myhint.height = HeightOfScreen(DefaultScreenOfDisplay(mydisplay))-25;
    myhint.flags = /* PPosition | */ PSize;
 
