@@ -129,7 +129,7 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     m_Scale = 0.0;
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
     m_SphereCreated = false;
-    SetVolumeCoordinates(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+    m_VolumeDiameter = 1.0;
     m_Perspective = false;
 }
 
@@ -220,19 +220,12 @@ void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
     AddTranslation(x - x0, y - y0, z - z0);
 }
 
-void GLACanvas::SetVolumeCoordinates(glaCoord left, glaCoord right,
-                                     glaCoord front, glaCoord back,
-                                     glaCoord bottom, glaCoord top)
+void GLACanvas::SetVolumeDiameter(glaCoord diameter)
 {
-    // Set the size of the data drawing volume by giving the coordinates
-    // relative to the origin of the faces of the volume.
+    // Set the size of the data drawing volume by giving the diameter of the
+    // smallest sphere containing it.
 
-    m_Volume.left = left;
-    m_Volume.right = right;
-    m_Volume.front = front;
-    m_Volume.back = back;
-    m_Volume.bottom = bottom;
-    m_Volume.top = top;
+    m_VolumeDiameter = diameter;
 }
 
 Double GLACanvas::SetViewportAndProjection()
@@ -253,21 +246,16 @@ Double GLACanvas::SetViewportAndProjection()
     CHECK_GL_ERROR("SetViewportAndProjection", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetViewportAndProjection", "glLoadIdentity");
+
     assert(m_Scale != 1.0);
-    aspect /= m_Scale;
-
-    Double near_plane = (m_Volume.right - m_Volume.left) / m_Scale;
-    near_plane /= (2 * tan(25.0 * M_PI / 180.0));
-
+    Double lr = m_VolumeDiameter / m_Scale * 0.5;
+    Double tb = lr * aspect;
+    Double near_plane = lr / tan(25.0 * M_PI / 180.0);
     if (m_Perspective) {
-	glFrustum(m_Volume.left / m_Scale, m_Volume.right / m_Scale,
-		  m_Volume.bottom * aspect, m_Volume.top * aspect,
-		  near_plane, m_Volume.back - m_Volume.front + near_plane);
+	glFrustum(-lr, lr, -tb, tb, near_plane, m_VolumeDiameter + near_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glFrustum");
     } else {
-	glOrtho(m_Volume.left / m_Scale, m_Volume.right / m_Scale,
-		m_Volume.bottom * aspect, m_Volume.top * aspect,
-		near_plane, m_Volume.back - m_Volume.front + near_plane);
+	glOrtho(-lr, lr, -tb, tb, near_plane, m_VolumeDiameter + near_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
     }
 
@@ -307,9 +295,9 @@ void GLACanvas::EnableSmoothPolygons()
     //wxSize size = GetSize();
     //double aspect = double(size.GetWidth()) / double(size.GetHeight());
 #if 0
-    GLfloat light_position[] = { m_Volume.right - 5.0,
-                                 m_Volume.top / aspect - 5.0,
-                                 m_Volume.front * 3.0 + 5.0,
+    GLfloat light_position[] = { m_VolumeDiameter * 0.5 - 5.0,
+                                 m_VolumeDiameter * 0.5 / aspect - 5.0,
+                                 m_VolumeDiameter * 0.5 + 5.0,
                                  0.0 };
 #endif
     
@@ -350,7 +338,7 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
-    glTranslated(0.0, 0.0, m_Volume.front - near_plane);
+    glTranslated(0.0, 0.0, -0.5 * m_VolumeDiameter - near_plane);
     CHECK_GL_ERROR("SetDataTransform", "glTranslated");
     // Get axes the correct way around (z upwards, y into screen)
     glRotated(-90.0, 1.0, 0.0, 0.0);
@@ -805,5 +793,5 @@ Double GLACanvas::SurveyUnitsAcrossViewport()
     // current display scale.
 
     assert(m_Scale != 0.0);
-    return (m_Volume.right - m_Volume.left) / m_Scale;
+    return m_VolumeDiameter / m_Scale;
 }

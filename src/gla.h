@@ -80,15 +80,8 @@ class GLACanvas : public wxWindow {
     GLint viewport[4];
 #endif
 
-    // Viewing volume extents:
-    struct {
-        Double left;
-        Double right;
-        Double front;
-        Double back;
-        Double bottom;
-        Double top;
-    } m_Volume;
+    // Viewing volume diameter:
+    glaCoord m_VolumeDiameter;
 
     // Parameters for plotting data:
     Quaternion m_Rotation;
@@ -117,8 +110,7 @@ public:
     void StartDrawing();
     void FinishDrawing();
 
-    void SetVolumeCoordinates(glaCoord left, glaCoord right, glaCoord front, glaCoord back,
-                              glaCoord bottom, glaCoord top);
+    void SetVolumeDiameter(glaCoord diameter);
     void SetDataTransform();
     void SetIndicatorTransform();
     void SetQuaternion(Quaternion& q);

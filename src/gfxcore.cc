@@ -228,11 +228,10 @@ void GfxCore::FirstShow()
 
     SetBackgroundColour(0.0, 0.0, 0.0);
 	
-    // Set viewing volume coordinates.
-    double extent = MAX3(m_Parent->GetXExtent(),
-		         m_Parent->GetYExtent(),
-			 m_Parent->GetZExtent()) / 2.0;
-    SetVolumeCoordinates(-extent, extent, -extent, extent, -extent, extent);
+    // Set diameter of the viewing volume.
+    SetVolumeDiameter(sqrt(sqrd(m_Parent->GetXExtent()) +
+			   sqrd(m_Parent->GetYExtent()) +
+			   sqrd(m_Parent->GetZExtent())));
 
     // Update our record of the client area size and centre.
     GetClientSize(&m_XSize, &m_YSize);
