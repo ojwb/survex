@@ -40,15 +40,31 @@ this myself mostly following instructions from:
 
 http://www.objsw.com/CrossGCC/
 
-I think the only point where I deviated was to patch binutils using
-the patch from here:
+I suggest using binutils-2.10 rather than binutils-2.9.1.  The newer version
+includes the patch they supply, so the instructions boil down to this
+sequence of commands:
 
-http://www.delorie.com/howto/djgpp/linux-x-djgpp.html
-
-The patch on objsw only includes half the changes from DJ Delorie's
-version so I don't think it actually makes any difference!  (This
-patch merely excludes local labels from object files, so it just makes
-them rather smaller).
+bash
+mkdir ~/djcross
+cd ~/djcross
+wget ftp://ftp.objsw.com/pub/crossgcc/build-djgpp.sh
+mkdir tars
+cd tars
+wget ftp://ftp.simtel.net/pub/simtelnet/gnu/djgpp/v2/old/djcrx202.zip
+wget http://sunsite.org.uk/gnu/gcc/gcc-2.95.2.tar.gz
+wget http://sunsite.org.uk/gnu/binutils/binutils-2.10.tar.gz
+cd ..
+patch -l build-djgpp.sh <<END
+26c26
+< binutils=binutils-2.9.1
+---
+> binutils=binutils-2.10
+97c97
+<       patch -p1 <\$patches/\$binutilsdiff
+---
+>       #patch -p1 <\$patches/\$binutilsdiff
+END
+sh build-djgpp.sh
 
 Building under DOS in a native djgpp environment will probably require
 tinkering.  Best bet is either to install bash and use the current
