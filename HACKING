@@ -1,0 +1,94 @@
+Hacking Survex
+==============
+
+(That's hacking in the "tinkering with code" sense, not in the
+"breaking into other people's computer systems" sense)
+
+This is currently a random collection of notes that need to be written
+down while I remember.  With time it should evolve into a more
+coherent document.  If you have any questions which this should answer
+but doesn't then ask me and I'll add them.
+
+Network code debugging
+======================
+
+You can pick which network simplifications are attempted using "-z"
+with an argument listing code letters.  So:
+
+-z=    no special simplifications (articulation still performed)
+-z=l   remove "lollipops"
+-z=p   remove parallel legs
+-z=d   convert deltas to stars
+
+And you can combine these in any combination:
+
+-z=lp  remove "lollipops" and parallel legs
+-z=lpd remove "lollipops" and parallel legs; convert deltas to stars
+
+"-z=lpd" is the default (in 0.92 at least - more transformations may
+conceivably be added in future, although the simple common cases are
+already covered).
+
+Building on Non-Unix Platforms
+==============================
+
+DJGPP (MSDOS for 386 or better)
+-------------------------------
+
+Currently I build this with a Linux hosted cross-compiler.  I built
+this myself mostly following instructions from:
+
+http://www.objsw.com/CrossGCC/
+
+I think the only point where I deviated was to patch binutils using
+the patch from here:
+
+http://www.delorie.com/howto/djgpp/linux-x-djgpp.html
+
+The patch on objsw only includes half the changes from DJ Delorie's
+version so I don't think it actually makes any difference!  (This
+patch merely excludes local labels from object files, so it just makes
+them rather smaller).
+
+Building under DOS in a native djgpp environment will probably require
+tinkering.  Best bet is either to install bash and use the current
+configure script, or perhaps simpler to modify miniam.pl to generate a
+suitable makefile.  I'm happy to help if you want to try this, and
+I'll incorporate patches provided they're fairly clean.
+
+Mingw (MS Windows)
+------------------
+
+Currently I build this with a Linux hosted cross-compiler.  I use
+pre-built binaries for gcc 2.95.2 obtained from:
+
+http://www.devolution.com/~slouken/SDL/Xmingw32/
+
+Building on Windows in a native mingw environment will probably
+require tinkering.  Best bet is probably to install bash and use the
+current configure script.  I'm happy to help if you want to try this,
+and I'll incorporate patches provided they're fairly clean.
+
+Building on Windows with MSVC/BorlandC/Watcom/... is likely to be more
+work, but could be a worthwhile project.  I'd suggest patching the
+perl script miniam.pl to generate a suitable makefile.  Again, send
+patches if you get this to work.
+
+MSDOS for 286 and earlier (BorlandC)
+------------------------------------
+
+Wookey currently builds this with a rather elderly BorlandC++ 3.1.
+However Borland/Insprise have recently released BorlandC++ 5 for free.
+I'll try to get this to work.
+
+Anyway, you can build a suitable source archive for this version using
+`make alien_src_zip' on the source distribution on a Unix box.
+
+RISC OS
+-------
+
+Currently built with Acorn C V4.  Probably ought to use V5 - I think
+Wookey has access to this.
+
+Anyway, you can build a suitable source archive for this version using
+`make alien_src_zip' on the source distribution on a Unix box.
