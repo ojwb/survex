@@ -12,7 +12,7 @@ AppVersion=@VERSION@
 ChangesAssociations=yes
 LicenseFile=COPYING.txt
 Uninstallable=yes
-AppCopyright=@COPYRIGHT_MSG@
+AppCopyright=@COPYRIGHT_MSG_ASCII@
 ; WizardImageFile=survey.bmp
 Compression=bzip/9
 ; We require only features which work on NT 3.51 too so install there too

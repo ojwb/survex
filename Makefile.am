@@ -77,7 +77,7 @@ mingw_iss :
 	cp lib/icons/*.ico lib/icons/*.png iss_tmp
 	: # don't ship pngs for which we ship the ico version
 	for a in iss_tmp/*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
-	cp /opt/rx-win32/bin/librx.dll iss_tmp
+	cp mingw_extras/librx.dll iss_tmp
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual
 	: # convert LF to CR+LF

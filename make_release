@@ -44,15 +44,12 @@ if test yes = "$rel" ; then
       chmod 755 config.guess.new config.sub.new &&\
       mv config.guess.new config.guess && mv config.sub.new config.sub
 fi
-aclocal
-autoheader
-automake -a
-autoconf
+autoreconf --force -i
 export CC
 export CXX
 CC=gcc-3.2
 CXX=g++-3.2
-if ! ./configure ; then
+if ! ./configure --enable-opengl ; then
    echo configure failed
    exit 1
 fi
@@ -127,7 +124,11 @@ if expr "$mk" : '.*\<mingw\>'; then
 	 export CXX
       fi
    fi
-   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG=/opt/wxmsw-2.4.0/bin/wxmsw-2.4-i686-mingw32-config VLDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= CFLAGS=-Werror CXXFLAGS=-Werror ; then
+   wxc=wxmsw-2.4-config
+   for a in /usr/i586-mingw32msvc/bin/wxmsw-2.4-i586-mingw32msvc-config /opt/wxmsw-2.4.0/bin/wxmsw-2.4-i686-mingw32-config ; do
+      test -x "$a" && wxc="$a"
+   done
+   if ! ./configure --enable-opengl --host=mingw32 --build="$build_platform" --with-x=no WXCONFIG="$wxc" LDFLAGS="-s -L/opt/rx-win32/lib" CPPFLAGS=-I/opt/rx-win32/include CAVEROT= CFLAGS=-Werror CXXFLAGS=-Werror ; then
       echo mingw configure failed
       exit 1
    fi
