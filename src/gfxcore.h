@@ -179,7 +179,10 @@ class GfxCore : public GLACanvas {
     void UpdateQuaternion();
     void UpdateIndicators();
     void UpdateBlobs();
-
+    
+    void SetColourFromHeight(Double z, Double factor);
+    void PlaceVertexWithColour(Double x, Double y, Double z, Double factor);
+   
     Double GridXToScreen(Double x, Double y, Double z);
     Double GridYToScreen(Double x, Double y, Double z);
     Double GridXToScreen(const Point &p) {

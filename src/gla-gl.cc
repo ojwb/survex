@@ -68,6 +68,14 @@ double GLAPen::GetAlpha() const
     return m_Alpha;
 }
 
+void GLAPen::Interpolate(const GLAPen& pen, double how_far)
+{
+    m_Red = ((pen.GetRed() - m_Red) * how_far) + m_Red;
+    m_Green = ((pen.GetGreen() - m_Green) * how_far) + m_Green;
+    m_Blue = ((pen.GetBlue() - m_Blue) * how_far) + m_Blue;
+    m_Alpha = ((pen.GetAlpha() - m_Alpha) * how_far) + m_Alpha;
+}
+
 //
 //  GLACanvas
 //  
@@ -243,6 +251,7 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
 
     glaList l = glGenLists(1);
     
+    SetCurrent();
     glNewList(l, GL_COMPILE);
     (obj->*generator)();
     glEndList();
@@ -274,6 +283,14 @@ void GLACanvas::SetColour(const GLAPen& pen, bool set_transparency, double rgb_s
     else {
         glColor3f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale, pen.GetBlue() * rgb_scale);
     }
+}
+
+void GLACanvas::SetBlendColour(const GLAPen& pen, bool set_transparency, double rgb_scale)
+{
+    // Set the blend colour for subsequent operations.
+   
+    glBlendColor(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale, pen.GetBlue() * rgb_scale,
+                 set_transparency ? pen.GetAlpha() : 1.0);
 }
 
 void GLACanvas::SetPolygonColour(GLAPen& pen, bool front, bool set_transparency)

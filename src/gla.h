@@ -53,6 +53,7 @@ public:
 
     void SetColour(double red, double green, double blue); // arguments in range 0 to 1.0
     void SetAlpha(double alpha);
+    void Interpolate(const GLAPen&, double how_far);
 
     double GetRed() const;
     double GetGreen() const;
@@ -113,6 +114,7 @@ public:
     
     void SetBackgroundColour(float red, float green, float blue);
     void SetColour(const GLAPen& pen, bool set_transparency = false, double rgb_scale = 1.0);
+    void SetBlendColour(const GLAPen& pen, bool set_transparency = false, double rgb_scale = 1.0);
     void SetPolygonColour(GLAPen& pen, bool front, bool set_transparency = false);
    
     void DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str);

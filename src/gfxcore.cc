@@ -2061,6 +2061,48 @@ void GfxCore::GenerateIndicatorDisplayList()
     }
 }
 
+void GfxCore::SetColourFromHeight(Double z, Double factor)
+{
+    // Set the drawing colour based on an altitude.
+   
+    Double z_ext = m_Parent->GetZExtent();
+
+    // points arising from tubes may be slightly outside the limits...
+    if (z < -z_ext * 0.5) z = -z_ext * 0.5;
+    if (z > z_ext * 0.5) z = z_ext * 0.5;
+
+    Double z_offset = z + z_ext * 0.5;
+
+    Double how_far = z_offset / z_ext;
+    assert(how_far >= 0.0);
+    assert(how_far <= 1.0);
+
+    int band = int(floor(how_far * (m_Bands - 1)));
+    int next_band = (band == (m_Bands - 1)) ? band : band+1;
+    
+    GLAPen pen1 = m_Parent->GetPen(band);
+    const GLAPen& pen2 = m_Parent->GetPen(next_band);
+    
+    Double interval = z_ext / (m_Bands - 1);
+    Double band_start = interval * band;
+    Double into_band = (z_offset - band_start) / interval;
+    
+    assert(into_band >= 0.0);
+    assert(into_band <= 1.0);
+    
+    pen1.Interpolate(pen2, into_band);
+    
+    SetColour(pen1, true, factor);
+}
+
+void GfxCore::PlaceVertexWithColour(Double x, Double y, Double z, Double factor)
+{
+    // Set the drawing colour based on an altitude, and then place a vertex.
+
+    SetColourFromHeight(z, factor);
+    PlaceVertex(x, y, z);
+}
+
 void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num_points, const Point* vertices)
 {
     // Draw a set of polylines.
@@ -2223,6 +2265,7 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 	    // scale the vectors in the LRUD plane appropriately
 	    right.normalise();
 	    up.normalise();
+            
 	    if (z_pitch_adjust != 0) up = up + Vector3(0, 0, z_pitch_adjust);
 	    right *= size;
 	    up *= size;
@@ -2239,35 +2282,36 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 		const Vector3 light(1.0, 1.0, 1.0);
 		Vector3 normal = (v1 - v2_prev) * (v2 - v1_prev);
 		normal.normalise();
-                SetColour(pen, true, dot(normal, light) * .375 + .625);
-                PlaceVertex(v1.getX(), v1.getY(), v1.getZ());
-                PlaceVertex(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ());
-                PlaceVertex(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ());
-                PlaceVertex(v2.getX(), v2.getY(), v2.getZ());
+                Double factor;
+                factor = dot(normal, light) * .375 + .625;
+                PlaceVertexWithColour(v1.getX(), v1.getY(), v1.getZ(), factor);
+                PlaceVertexWithColour(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ(), factor);
+                PlaceVertexWithColour(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ(), factor);
+                PlaceVertexWithColour(v2.getX(), v2.getY(), v2.getZ(), factor);
 
 		normal = (v3 - v4_prev) * (v4 - v3_prev);
 		normal.normalise();
-                SetColour(pen, true, dot(normal, light) * .375 + .625);
-                PlaceVertex(v4.getX(), v4.getY(), v4.getZ());
-                PlaceVertex(v3.getX(), v3.getY(), v3.getZ());
-                PlaceVertex(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ());
-                PlaceVertex(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ());
+                factor = dot(normal, light) * .375 + .625;
+                PlaceVertexWithColour(v4.getX(), v4.getY(), v4.getZ(), factor);
+                PlaceVertexWithColour(v3.getX(), v3.getY(), v3.getZ(), factor);
+                PlaceVertexWithColour(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ(), factor);
+                PlaceVertexWithColour(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ(), factor);
 
 		normal = (v2 - v3_prev) * (v3 - v2_prev);
 		normal.normalise();
-                SetColour(pen, true, dot(normal, light) * .375 + .625);
-                PlaceVertex(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ());
-                PlaceVertex(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ());
-                PlaceVertex(v3.getX(), v3.getY(), v3.getZ());
-                PlaceVertex(v2.getX(), v2.getY(), v2.getZ());
+                factor = dot(normal, light) * .375 + .625;
+                PlaceVertexWithColour(v2_prev.getX(), v2_prev.getY(), v2_prev.getZ(), factor);
+                PlaceVertexWithColour(v3_prev.getX(), v3_prev.getY(), v3_prev.getZ(), factor);
+                PlaceVertexWithColour(v3.getX(), v3.getY(), v3.getZ(), factor);
+                PlaceVertexWithColour(v2.getX(), v2.getY(), v2.getZ(), factor);
 
 		normal = (v4 - v1_prev) * (v1 - v4_prev);
 		normal.normalise();
-                SetColour(pen, true, dot(normal, light) * .375 + .625);
-                PlaceVertex(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ());
-                PlaceVertex(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ());
-                PlaceVertex(v1.getX(), v1.getY(), v1.getZ());
-                PlaceVertex(v4.getX(), v4.getY(), v4.getZ());
+                factor = dot(normal, light) * .375 + .625;
+                PlaceVertexWithColour(v4_prev.getX(), v4_prev.getY(), v4_prev.getZ(), factor);
+                PlaceVertexWithColour(v1_prev.getX(), v1_prev.getY(), v1_prev.getZ(), factor);
+                PlaceVertexWithColour(v1.getX(), v1.getY(), v1.getZ(), factor);
+                PlaceVertexWithColour(v4.getX(), v4.getY(), v4.getZ(), factor);
                 
                 EndQuadrilaterals();
             }
