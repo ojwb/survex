@@ -367,7 +367,7 @@ set_chars(void)
    int i;
    get_token();
    mask = match_tok(chartab, TABSIZE(chartab));
-   if (!mask) {
+   if (mask == SPECIAL_UNKNOWN) {
       compile_error(/*Unknown character class `%s'*/42, buffer);
       skipline();
       return;
@@ -842,10 +842,7 @@ data(void)
    do {
       get_token();
       d = match_tok(dtab, TABSIZE(dtab));
-#if 0
-      /* Hmm, if invalid token is here, it'll reported as trailing garbage I think... */
-      if (d == /*FIXME*//*Unknown datum*/68);
-#endif
+      /* An unknown token is reported as trailing garbage */
       if (((m >> d) & 1) == 0) {
 	 /* token not valid for this data style */
 	 compile_error(/*%s: Datum not allowed for this style*/63, buffer);
@@ -869,7 +866,7 @@ data(void)
 # if 0
 	 cRealData++;
 	 if (cRealData > cData) {
-	    compile_error(/*Too many data*/66);
+	    compile_error(/*Too many data*/);
 	    showandskipline(NULL, -(int)strlen(buffer));
 	    return;
 	 }

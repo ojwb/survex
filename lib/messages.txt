@@ -598,15 +598,7 @@ pt: 67 Dado duplicado `%s'
 ca: 67 Dada duplicada `%s'
 es: 67 Dato duplicado `%s'
 it: 67 Dati duplicati `%s'
-# complain about a reading of the "Phreakometer dripstance" which survex knows nothing about
-# GN(3): that was a good one eh?  (pat pat)  ;-)  ok it fits now.
-en: 68 Unknown datum
-fr: 68 Donn&eacute;e non reconnue
-de: 68 Unbekannte Me&szlig;gr&ouml;&szlig;e
-pt: 68 Dado desconhecido
-ca: 68 Dada desconeguda
-es: 68 Dato desconocido
-it: 68 Dato sconosciuto
+#XXX68
 en: 69 Missing &quot;
 fr: 69 &quot; manquant
 de: 69 &quot; uml;fehlt
@@ -1412,16 +1404,7 @@ pt:184 eleva&ccedil;&atilde;o
 ca:184 al&ccedil;at
 es:184 alzado
 it:184 profilo
-# XXX185-190
-# 191 is followed by the version number of this file,
-# which should (basically) be the same as that of the program
-en:191 Need message file with version
-fr:191 Besoin d'un fichier de messages avec version
-de:191 Ben&ouml;tige Meldungsdatei in Version
-pt:191 Necess&aacute;rio arquivo de mensagens com vers&atilde;o
-ca:191 &Eacute;s necessari un fitxer de missatges amb versi&oacute;
-es:191 Se necessita un fichero de mensages con versi&oacute;n
-it:191 &Eacute; necessario un file dei messaggi versione
+# XXX185-191
 # c.f. 22
 en:192 No matching BEGIN
 fr:192 BEGIN manquant
@@ -1865,3 +1848,21 @@ it:197 " a %4.2fm)"
 #ca:114 Versi&oacute;
 #es:114 Versi&oacute;n
 #it:114 Versione
+# complain about a reading of the "Phreakometer dripstance" which survex knows nothing about
+# GN(3): that was a good one eh?  (pat pat)  ;-)  ok it fits now.
+#en: 68 Unknown datum
+#fr: 68 Donn&eacute;e non reconnue
+#de: 68 Unbekannte Me&szlig;gr&ouml;&szlig;e
+#pt: 68 Dado desconhecido
+#ca: 68 Dada desconeguda
+#es: 68 Dato desconocido
+#it: 68 Dato sconosciuto
+# 191 is followed by the version number of this file,
+# which should (basically) be the same as that of the program
+#en:191 Need message file with version
+#fr:191 Besoin d'un fichier de messages avec version
+#de:191 Ben&ouml;tige Meldungsdatei in Version
+#pt:191 Necess&aacute;rio arquivo de mensagens com vers&atilde;o
+#ca:191 &Eacute;s necessari un fitxer de missatges amb versi&oacute;
+#es:191 Se necessita un fichero de mensages con versi&oacute;n
+#it:191 &Eacute; necessario un file dei messaggi versione
