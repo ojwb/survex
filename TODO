@@ -255,3 +255,9 @@ Check that --mode-picker works on DJGPP caverot.
 
 Check SIGINT on DOS caverot restores text mode...
 
+Date: Fri, 04 May 2001
+Subject: manual
+From: Olly
+
+doc/svxdocs.sgml has version number (0.97 currently) hardcoded.
+
