@@ -592,7 +592,7 @@ msg(int en)
 {
    /* NB can't use ASSERT here! */
    static char badbuf[256];
-   if (en >= 1000 && en < 1000 + sizeof(dontextract)/sizeof(char*))
+   if (en >= 1000 && en < 1000 + (int)(sizeof(dontextract)/sizeof(char*)))
       return dontextract[en - 1000];
    if (!msg_array) {
       if (en != 1)  {
