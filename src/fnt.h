@@ -19,7 +19,7 @@
  
      For further information visit http://plib.sourceforge.net
 
-     $Id: fnt.h,v 1.1.2.5 2003-12-04 02:12:47 olly Exp $
+     $Id: fnt.h,v 1.1.2.6 2004-03-02 12:29:32 olly Exp $
 */
 
 
@@ -76,6 +76,7 @@ class fntTexFont {
     }
 
     void puts(int x, int y, const char *s) const {
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
