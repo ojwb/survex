@@ -64,7 +64,7 @@ survex \- cave survey software
 cave survey data.
 
 .PP
-This manual page documents briefly the
+There are individual man pages for each program:
 \fBcavern\fP,
 \fBaven\fP,
 \fBxcaverot\fP,
@@ -72,13 +72,11 @@ This manual page documents briefly the
 \fBdiffpos\fP,
 \fBcad3d\fP,
 \fB3dtopos\fP,
-\fBsorterr\fP,
 and
-\fBsurvex\fP
-commands.
+\fBsorterr\fP.
 .PP
-This manual page is just a pointer - Survex has documentation in sgml, text,
-html, postscript and rtf formats; see below.
+Survex also has a comprehensive manual, available in html, postscript,
+plain text, and rtf formats; see below.
 
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
 .\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
