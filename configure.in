@@ -239,6 +239,8 @@ dnl    AC_LANG(C)
   fi
 fi
 
+AM_CONDITIONAL(AVEN, [test -n "$AVEN"])
+
 AC_LANG_C
 
 AC_SUBST(CAVEROT)

@@ -13,6 +13,9 @@
 
 * Fixed standard graphics for "Note", "Warning", etc in the PostScript manual.
 
+* (MacOS X version): fixed not to try to build aven if wxWindows isn't
+  installed.
+
 Changes in 1.0.25:
 
 * (MacOS X version): hopefully fixed building of aven.

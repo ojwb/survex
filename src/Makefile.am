@@ -88,13 +88,25 @@ aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
 avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
 endif
 
+# If we're building aven on MacOS X, we need to bind resources to aven after
+# we build it.  Use aven-rez as a timestamp file to track whether we've
+# bound resources.
+if AVEN
 if MACOSX
-noinst_SCRIPTS = aven-rez
+AVEN_REZ = aven-rez
 
 aven-rez: aven
 	`@WXCONFIG@ --rezflags` aven
 	touch aven-rez
-endif
+else !MACOSX
+AVEN_REZ =
+endif !MACOSX
+else !AVEN
+AVEN_REZ =
+endif !AVEN
+
+noinst_SCRIPTS = $(AVEN_REZ)
+MOSTLYCLEANFILES = $(AVEN_REZ)
 
 aven_CFLAGS = @WX_CFLAGS@ -DAVEN
 aven_CXXFLAGS = @WX_CXXFLAGS@
