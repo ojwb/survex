@@ -98,6 +98,13 @@ void AvenTreeCtrl::UnselectAll()
     wxTreeCtrl::UnselectAll();
 }
 
+void AvenTreeCtrl::DeleteAllItems()
+{
+    m_LastItem = -1;
+    m_SelValid = false;
+    wxTreeCtrl::DeleteAllItems();    
+}
+
 void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 {
     if (e.m_keyCode == WXK_ESCAPE) {

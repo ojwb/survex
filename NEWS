@@ -5,6 +5,9 @@ Changes in 1.0.6:
 * aven: free rotation mode (engage by pressing control while left dragging,
   exit with Delete) improved.
 
+* aven: using File->Open when a file was already loaded caused a crash
+  if a station was "grey highlighted" in the survey tree - fixed.
+
 * aven: added hourglass for "find" operation.
 
 * aven: reenabled loading of files by drag-and-drop (accidentally disabled
