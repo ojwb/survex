@@ -15,6 +15,10 @@
 
 * cavern: fixed problem with points fixed with errors.
 
+* cavern: *title without quotes now stops at a comment; *title with no
+  argument no longer allowed - use `*title ""' if you really mean to
+  set an empty title.
+
 * Minor documentation updates.
 
 * 3dtopos: Fixed bug which resulted in station names and coordinates

@@ -5,3 +5,16 @@
 *fix 1 0 0 0
 1 2 1 0 0
 *end survey
+
+*begin survey2
+; empty title
+*title ""
+*fix a 0 0 0
+a b 1 0 0
+*end survey2
+
+*begin survey3
+*title used; to eat comments
+*fix z 0 0 0
+z x 1 0 0
+*end survey3

@@ -112,7 +112,7 @@ for file in $TESTS ; do
   multinormalbad) pos=fail ;;
   multibug) pos=no ; warn=0 ;;
   cmd_title) pos=no ; warn=0 ;;
-  cmd_titlebad) pos=fail ; error=3 ;;
+  cmd_titlebad) pos=fail ; error=4 ;;
   *) file='' ;;
   esac
 

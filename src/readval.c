@@ -329,33 +329,39 @@ read_uint(void)
 extern void
 read_string(char **pstr, int *plen)
 {
-   char quote = 0;
-
    s_zero(pstr);
 
    skipblanks();
    if (ch == '\"') {
-      quote = ch;
       nextch();
-   }
-   while (1) {
-      if (isEol(ch)) {
-	 if (quote) {
+      while (1) {
+	 if (isEol(ch)) {
 	    compile_error(/*Missing &quot;*/69);
 	    skipline();
-	 } else {
+	    return;
+	 }
+
+	 if (ch == '\"') break;
+
+	 s_catchar(pstr, plen, ch);
+	 nextch();
+      }
+   } else {
+      while (1) {
+	 if (isEol(ch) || isComm(ch)) {
 	    if (!*pstr || !(*pstr)[0]) {
 	       compile_error(/*Expecting string field*/121);
 	       skipline();
 	    }
+	    return;
 	 }
-	 return;
+
+	 if (isBlank(ch)) break;
+
+	 s_catchar(pstr, plen, ch);
+	 nextch();
       }
-
-      if (quote ? ch == quote : isBlank(ch)) break;
-
-      s_catchar(pstr, plen, ch);
-      nextch();
    }
+   
    nextch();
 }
