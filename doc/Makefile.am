@@ -7,8 +7,7 @@
 
 pkgdocdir = $(prefix)/doc/@PACKAGE@
 
-EXTRA_DIST = svxdocs/*.html svxdocs.sgml svxdocs svxdocs.rtf svxdocs.txt\
- custom.dsl
+EXTRA_DIST = svxdocs/*.html svxdocs.sgml svxdocs.rtf svxdocs.txt custom.dsl
 
 pkgdoc_DATA = svxdocs svxdocs.rtf svxdocs.txt # svxdocs.html # svxdocs.ps
 
