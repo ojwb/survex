@@ -56,7 +56,7 @@ Output version information and exit.
 \fBprintps\fP\fB(1)\fP, 
 \fBsorterr\fP\fB(1)\fP, 
 \fBxcaverot\fP\fB(1)\fP, 
-The Survex Manual - to be found in @PKGDOCDIR@
+The Survex Manual - to be found in @PKGDOCDIR_EXPANDED@
 .SH AUTHOR
 This manual page was written by Wookey <wookey@survex.com> and
 Olly Betts <olly@survex.com>

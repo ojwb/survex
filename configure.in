@@ -38,11 +38,7 @@ AC_DEFINE_UNQUOTED(COMMAVERSION, $COMMAVERSION,
                    [Version number of package (comma-separated)])
 AC_SUBST(COMMAVERSION)
 
-PKGDOCDIR=`(
- test "x$prefix" = xNONE && prefix="$ac_default_prefix"
- test "x$exec_prefix" = xNONE && exec_prefix="${prefix}"
- echo "${prefix}/doc/${PACKAGE}"
-)`
+PKGDOCDIR='${prefix}/doc/${PACKAGE}'
 AC_ARG_ENABLE(docdir,
 [  --enable-docdir=DIR Set directory for installing documentation to DIR],
 [case "${enableval}" in
@@ -52,7 +48,13 @@ esac
 PKGDOCDIR="${enableval}"
 ]
 )
+PKGDOCDIR_EXPANDED=`(
+ test "x$prefix" = xNONE && prefix="$ac_default_prefix"
+ test "x$exec_prefix" = xNONE && exec_prefix="${prefix}"
+ echo "$PKGDOCDIR"
+)`
 AC_SUBST(PKGDOCDIR)
+AC_SUBST(PKGDOCDIR_EXPANDED)
 
 DEFAULTLANG=en
 AC_ARG_ENABLE(defaultlang,
@@ -186,7 +188,7 @@ if test -n "$AVEN"; then
       :
     else
       AC_MSG_ERROR([\`$WXCONFIG --libs --cflags' doesn't work, bailing out])
-      dnl line above confuses vim's syntax colouring - resync: '\`'
+      dnl line above confuses vim's syntax colouring - resync: \`
     fi
   else
     AC_PATH_PROGS(WXCONFIG, [wxgtk-config wxgtk-2.2-config])
