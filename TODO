@@ -67,3 +67,26 @@ From: Wookey
 
 Different print.ini for each platform - or some mechanism to specify?
 
+Date: 21 Jul 1999
+From: Olly
+
+Need to redo articulation point code.  It has to find any network components
+which aren't anchored, and ideally the articulation point code should allow
+further network reductions to happen after splitting at articulation points.
+
+Date: 23 Jul 1999
+From: Olly
+
+Replace str with dyn-string from gcc/binutils
+
+Date: 24 Aug 1999
+From: Olly
+
+Change ".html" to ".htm" to placate unzip programs which only handle 8.3.
+
+Date: 24 Aug 1999
+From: Olly
+
+RISC OS caverot should probably fall back to using 2 or even just one screen
+bank if it can't find a mode where 3 works.
+
