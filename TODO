@@ -38,3 +38,4 @@ to be connected to the network is the most general solution. Then it wouldn't
 be deemed a warning when it was found not to be connected. Or possibly
 implement Immo's suggestion of nobbling a particular error message (not a
 great solution - but still useful).
+
