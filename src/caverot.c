@@ -278,7 +278,7 @@ float y_stretch=-1.0f;  /* factor to multiply y by to correct aspect ratio */
 float y_stretch=-0.3f;  /* test that aspect ratio works */
 #endif
 
-sz    pthMe;            /* path executable was run from */
+const char *pthMe;            /* path executable was run from */
 
 #if 0
 static int   Stored_views;     /* number of defined stores */
@@ -429,7 +429,8 @@ int main( int argc, char **argv ) {
 
      {
 	bool fRedraw = fTrue;
-	sz szPlan, szElev;
+	const char *szPlan;
+	const char *szElev;
 
 	szPlan = msgPerm(101);
 	szElev = msgPerm(102);
@@ -441,7 +442,6 @@ int main( int argc, char **argv ) {
 	      while (degView >= 360) degView -= 360;
 	      while (degView <0) degView += 360;
 	      clear_map();
-/*	      cleardevice();*/
 	      cvrotgfx_pre_main_draw();
 	      if (f3D) {
 #if 0
@@ -538,7 +538,7 @@ float scale_to_screen( lid Huge **pplid ) {
 
 	 for ( ; plid ; plid=plid->next ) {
 	    p=plid->pData;
-	    for ( ; p->_.action != STOP && p->_.action != (coord)-1 ; p++ ) {
+	    for ( ; p->_.action != STOP && p->_.str != NULL; p++ ) {
 	       if (p->X < Xmin) Xmin = p->X; else if (p->X > Xmax) Xmax = p->X;
 	       if (p->Y < Ymin) Ymin = p->Y; else if (p->Y > Ymax) Ymax = p->Y;
 	       if (p->Z < Zmin) Zmin = p->Z; else if (p->Z > Zmax) Zmax = p->Z;
@@ -606,7 +606,7 @@ xxx:
 
       for ( ; plid ; plid = plid->next ) {
          p = plid->pData;
-         for ( ; checkendfn(p); p++ ) {
+         for ( ; !checkendfn(p); p++ ) {
             if (p->X < Xmin) Xmin = p->X; else if (p->X > Xmax) Xmax = p->X;
             if (p->Y < Ymin) Ymin = p->Y; else if (p->Y > Ymax) Ymax = p->Y;
             if (p->Z < Zmin) Zmin = p->Z; else if (p->Z > Zmax) Zmax = p->Z;
@@ -657,32 +657,31 @@ bool process_key( void ) /* and mouse! */ {
    double s = SIND(degView), c = COSD(degView);
    static int autotilt = 0;
    static float autotilttarget;
-   static clock_t time = 0;
+   static clock_t new_time = 0;
    clock_t old_time;
    static float tsc = 1.0f; /* sane starting value */
 #ifdef ANIMATE
    static clock_t last_animate=0;
 #endif
 
-   old_time = time;
-   time = clock();
+   old_time = new_time;
+   new_time = clock();
    if (fRedraw) {
-      dt = (int)(time - old_time);
+      dt = (int)(new_time - old_time);
       /* better to be paranoid */
-      if (dt < 1)
-         dt = 1;
+      if (dt < 1) dt = 1;
       tsc = (float)dt*(10.0f/CLOCKS_PER_SEC);
       if (tsc>1000.0f) { cvrotgfx_beep(/*!HACK!*/); tsc = 1000.0f; }
       fRedraw = fFalse;
    }
 
 #ifdef ANIMATE
-   if (time-last_animate > CLOCKS_PER_SEC/ANIMATE_FPS) {
+   if (new_time-last_animate > CLOCKS_PER_SEC/ANIMATE_FPS) {
       cAnimate += incAnimate;
       if (cAnimate == 0 || ppLegs[cAnimate+1]==NULL)
          incAnimate = -incAnimate;
       if (last_animate == 0)
-         last_animate = time; /* !HACK! time is a bad name */
+         last_animate = new_time;
       else
          last_animate += CLOCKS_PER_SEC/ANIMATE_FPS;
       fRedraw = fTrue;
@@ -817,8 +816,8 @@ bool process_key( void ) /* and mouse! */ {
 	  start_time = clock();
 	  fRedraw = fTrue;
 	  show_help();
-	  time += (clock() - start_time); /* ignore time user spends viewing help */
-	  /* cruder: time = clock(); */
+	  new_time += (clock() - start_time); /* ignore time user spends viewing help */
+	  /* cruder: new_time = clock(); */
 	  break;
        }
        case ('A'-'@'):
@@ -1007,7 +1006,7 @@ static void parse_command( int argc, char **argv ) {
    putnl();
    puts( msg(105) ); /* reading in data... */
 
-   if (!cmdline_load_files( argc, argv )) {
+   if (cmdline_load_files( argc, argv )) {
       puts( msg(106) ); /* bad .3d file */
       exit(1);
    }
