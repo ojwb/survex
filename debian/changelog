@@ -5,9 +5,12 @@ survex (1.0.18) unstable; urgency=low
     instead; if survex-aven isn't installed, run xcaverot instead.
   * Include file associations and file icons in the main package rather than
     survex-aven.
+  * Documentation: added details of the 3d file format (version 3).
   * Updated TODO list.
+  * Tweaked source to hopefully build on HPPA again (closes: bug#162912).
+  * Proper description for survex-svxedit (closes: bug#162954, bug#162970).
 
- -- Wookey <wookey@survex.com>  Thu, 26 Sep 2002 02:45:05 +0100
+ -- Wookey <wookey@survex.com>  Mon, 07 Oct 2002 00:29:05 +0100
 
 survex (1.0.17) unstable; urgency=low
 
