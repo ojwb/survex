@@ -1578,43 +1578,93 @@ pt:197 " a %4.2fm)"
 ca:197 " a %4.2fm)"
 es:197 " en %4.2fm)"
 it:197 " a %4.2fm)"
-
 #
 #  Messages for Aven
 #
-en:200 This is free software.  Aven is licenced under the terms of the GNU General Public Licence version 2, or (at your option) any later version.
-
+# TRANSLATE ca
+#en:200 This is free software.  Aven is licenced under the terms of the GNU General Public Licence version 2, or (at your option) any later version.
+en:200 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.
+en-us:200 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+fr:200 Ce programme est un logiciel libre; vous pouvez le redistribuer et/ou le modifier conform&eacute;ment aux dispositions de la Licence Publique G&eacute;n&eacute;rale GNU, telle que publi&eacute;e par la Free Software Foundation; version 2 de la licence, ou encore (&agrave; votre choix) toute version ult&eacute;rieure.
+de:200 Dieses Programm ist freie Software. Sie k&ouml;nnen es unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation herausgegeben, weitergeben und/oder modifizieren, entweder unter Version 2 der Lizenz oder (wenn Sie es w&uuml;nschen) jeder sp&auml;teren Version.
+pt:200 Este programa &eacute; um software de livre distribui&ccedil;&atilde;o, que pode ser copiado e distribu&iacute;do sob os termos da Licen&ccedil;a P&uacute;blica Geral GNU, conforme publicada pela Free Software Foundation, vers&atilde;o 2 da licen&ccedil;a ou (a crit&eacute;rio do autor) qualquer vers&atilde;o posterior.
+es:200 Este programa es software libre. Puede redistribuirlo y/o modificarlo bajo los t&eacute;rminos de la Licencia P&uacute;blica General de GNU seg&uacute;n es publicada por la Free Software Foundation, bien de la versi&oacute; 2 de dicha Licencia o bien (seg&uacute;n su elecci&oacute;n) de cualquier versi&oacute;n posterior.
+it:200 Questo programma &egrave; software libero; &egrave; lecito redistribuirlo o modificarlo secondo i termini della Licenza Pubblica Generica GNU come &egrave; pubblicata dalla Free Software Foundation; o la versione 2 della licenza o (a propria scelta) una versione successiva.
+#
+# TRANSLATE lots
 en:201 Display command line options
 #
 en:202 No survey data in 3d file `%s'
-
+#
 en:203 Facing
-
+#
 en:204 Close
+fr:204 Fermer
+de:204    Schlie&szlig;en
+de-ch:204 Schliessen
+pt:204 Fechar
+ca:204 Tancar
+es:204 Cerrar
+it:204 Chiudi
+#
 # for the title of the About box (c.f. 290)
 en:205 About %s
+fr:205 A propos %s
+de:205 Informationen &uuml;ber %s
+pt:205 Acerca de %s
+pt-br:205 Sobre %s
+ca:205 A prop&ograve;sit de %s
+es:205 Acerca de %s
+it:205 Informazioni su %s
+#
 # Aven menu items.  An '@' goes before the letter of any accelerator key.
 # For the moment the following accelerator keys must NOT be changed in this file (as they
 # have to be hard-coded):
 #   Delete, Left/Right/Up/Down Arrow, ', /, ], [, Return and Space.
 # The string "##" separates the menu text and any accelerator key.
-
+#
 # File->Open dialog:
 en:206 Select a 3d file to view
 en:207 Survex 3d files
 en:208 All files
-
+#
 en:209 Visualisation of Survex 3D files
-
+#
 # Aven menu titles.  An '@' goes before the letter of any accelerator key.
 # The accelerators must be different within this group
 en:210 @File
+fr:210 @Fichier
+de:210 @Datei
+pt:210 @Ficheiro
+pt-br:210 @Arquivo
+ca:210 @Fitxer
+es:210 @Archivo
+it:210 @File
+#
 en:211 @Rotation
+#
 en:212 @Orientation
+#
 en:213 @View
+fr:213 @Vue
+de:213 @Ansicht
+pt:213 @Vista
+pt-br:213 @Visualisar
+ca:213 @Veure
+es:213 @Vista
+it:213 @Vista
+#
 en:214 @Controls
+#
 en:215 @Help
-
+fr:215 @Aide
+de:215 @Hilfe
+pt:215 @Ajuda
+pt-br:215 A@juda
+ca:215 @Ajuda
+es:215 A@yuda
+it:215 @Aiuto
+#
 # The accelerators must be different within this group
 en:220 @Open...##Ctrl+O
 fr:220 @Ouvrir...##Ctrl+O
@@ -1622,15 +1672,16 @@ de:220 &Ouml;@ffnen...##Ctrl+O
 pt:220 @Abrir...##Ctrl+O
 ca:220 @Obrir...##Ctrl+O
 es:220 @Abrir...##Ctrl+O
-it:220 @Aprire...##Ctrl+O
-en:221 @Exit
-fr:221 @Sortir
-de:221 @Verlassen
+it:220 @Apri...##Ctrl+O
+#
+en:221 E@xit
+fr:221 @Quitter
+de:221 @Beenden
 pt:221 @Sair
-ca:221 @Abortar
-es:221 @Abortar
-it:221 @Annulla
-
+ca:221 Ei@xir
+es:221 @Salir
+it:221 @Esci
+#
 # The accelerators must be different within this group
 en:230 @Start Rotation##Return
 en:231 S@top Rotation##Space
@@ -1639,7 +1690,7 @@ en:233 Slow @Down##X
 en:234 @Reverse Direction##R
 en:235 Step Once @Anticlockwise##C
 en:236 Step Once @Clockwise##V
-
+#
 # The accelerators must be different within this group
 en:240 View @North##N
 en:241 View @East##E
@@ -1656,7 +1707,7 @@ en:251 Lo@wer Viewpoint##/
 en:252 @Zoom In##]
 en:253 Zoo@m Out##[
 en:254 Restore De@fault Settings##Delete
-
+#
 # The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
 en:271 @Crosses##Ctrl+X
@@ -1666,15 +1717,22 @@ en:274 Co@mpass
 en:275 Cl@inometer
 en:276 @Depth Bar
 en:277 Sc@ale Bar
-
+#
 # The accelerators must be different within this group
 en:280 @Reverse Sense##Ctrl+R
 en:281 Caverot-Style @Middle Button
-
+#
 # The accelerators must be different within this group
 # c.f. 205
-en:290 @About Aven...
-
+en:290 @About...
+fr:290 @A propos...
+de:290 @Info...
+pt:290 @Acerca de...
+pt-br:290 @Sobre...
+ca:290 @A prop&ograve;sit de...
+es:290 @Acerca de...
+it:290 @Informazioni su...
+#
 ############################################################################
 # the rest are no longer used, but it's possible they may be at some point...
 ############################################################################
@@ -2117,11 +2175,10 @@ en:290 @About Aven...
 # 1 2 1.23 045 -6
 # *end inner
 # *end outer
-# FIXME: TRANSLATE fr ca es
 #en: 27 Station `%s' not exported from lowest prefix level
 #de: 27 Station `%s' nicht aus der innersten Pr&auml;fix-Ebene exportiert
 #pt: 27 Base `%s' n&atilde;o foi exportada no bloco BEGIN/END mais interno
-#it: 27 La stazione `%s' deve essere esportata in un livello pi&uacute; basso
+#it: 27 La stazione `%s' deve essere esportata nel livello pi&uacute; basso
 #And if it's not exported at all:
 # *equate entrance outer.inner.1
 # *begin outer
@@ -2129,7 +2186,6 @@ en:290 @About Aven...
 # 1 2 1.23 045 -6
 # *end inner
 # *end outer
-# FIXME: TRANSLATE fr ca es
 #en: 28 Station `%s' not exported with *EXPORT
 #de: 28 Station `%s' nicht mit *EXPORT exportiert
 #pt: 28 Base `%s' n&atilde;o foi exportada em nenhum n&iacute;vel
