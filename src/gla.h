@@ -102,7 +102,7 @@ class GLACanvas : public wxWindow {
 #ifdef USE_FNT
     fntTexFont m_Font;
 #else
-    static void* const m_Font;
+    static void * const m_Font;
     static const int m_FontSize;
 #endif
 
