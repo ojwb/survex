@@ -43,8 +43,8 @@ int cmdline_getopt(void);
 void cmdline_help(void);
 void cmdline_version(void);
 void cmdline_syntax(void);
-void cmdline_toofewargs(void);
-void cmdline_toomanyargs(void);
+void cmdline_too_few_args(void);
+void cmdline_too_many_args(void);
 int cmdline_int_arg(void);
 double cmdline_double_arg(void);
 
