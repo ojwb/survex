@@ -173,8 +173,6 @@ class MainFrm : public wxFrame {
     Double m_XExt;
     Double m_YExt;
     Double m_ZExt;
-    Double m_XMin;
-    Double m_YMin;
     Double m_ZMin;
     int m_NumLegs;
     int m_NumPoints;
@@ -382,9 +380,6 @@ public:
     Double GetXExtent() const { return m_XExt; }
     Double GetYExtent() const { return m_YExt; }
     Double GetZExtent() const { return m_ZExt; }
-    Double GetXMin() const { return m_XMin; }
-    Double GetYMin() const { return m_YMin; }
-    Double GetYMax() const { return m_YMin + m_YExt; }
     Double GetZMin() const { return m_ZMin; }
     Double GetZMax() const { return m_ZMin + m_ZExt; }
 

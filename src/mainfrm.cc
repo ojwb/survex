@@ -751,10 +751,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_YExt = ymax - ymin;
     m_ZExt = zmax - m_ZMin;
 
-    // FIXME -- temporary bodge
-    m_XMin = xmin;
-    m_YMin = ymin;
-
     // Sort the labels.
     m_Labels.sort(LabelCmp(separator));
 
