@@ -2082,8 +2082,9 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
         Double size = 2;
         
         Vector3 v1_prev, v2_prev, v3_prev, v4_prev;
-        Vector3 v1, v2, v3, v4;
         Vector3 prev_pt_v;
+
+	Vector3 right, up;
 
         for (int segment = 0; segment < length; segment++) {
             // get the coordinates of this vertex
@@ -2102,52 +2103,30 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
                 Double z1 = vertices_start->z;
                 Vector3 next_pt_v(x1, y1, z1);
                 
-                // calculate vector from next pt to this one
-                Vector3 leg_v = next_pt_v - pt_v;
+                // calculate vector from this pt to the next one
+                Vector3 leg_v = pt_v - next_pt_v;
                 
                 // obtain a vector in the LRUD plane
                 Vector3 up_v(0.0, 0.0, 1.0);
-                Vector3 perp_v = leg_v * up_v;
+  		right = leg_v * up_v;
+		if (right.magnitude() == 0) right = Vector3(1.0, 0.0, 0.0);
 
                 // obtain a second vector in the LRUD plane, perpendicular to the first
-                Vector3 perp2_v = perp_v * leg_v;
-
-                // scale the vectors in the LRUD plane appropriately
-                perp_v.normalise();
-                perp2_v.normalise();
-                perp_v *= size;
-                perp2_v *= size;
-
-                // produce coordinates of the corners of the LRUD "plane"
-                v1 = pt_v - perp_v + perp2_v;
-                v2 = pt_v + perp_v + perp2_v;
-                v3 = pt_v + perp_v - perp2_v;
-                v4 = pt_v - perp_v - perp2_v;
+                up = right * leg_v;
             }
             else if (segment == length - 1) {
                 // last segment
                 
-                // calculate vector from this pt to the previous one
-                Vector3 leg_v = pt_v - prev_pt_v;
+                // calculate vector from the previous pt to this one
+                Vector3 leg_v = prev_pt_v - pt_v;
 
                 // obtain a vector in the LRUD plane
                 Vector3 up_v(0.0, 0.0, 1.0);
-                Vector3 perp_v = leg_v * up_v;
+                right = leg_v * up_v;
+		if (right.magnitude() == 0) right = Vector3(1.0, 0.0, 0.0);
                 
                 // obtain a second vector in the LRUD plane, perpendicular to the first
-                Vector3 perp2_v = perp_v * leg_v;
-
-                // scale the vectors in the LRUD plane appropriately
-                perp_v.normalise();
-                perp2_v.normalise();
-                perp_v *= size;
-                perp2_v *= size;
-
-                // produce coordinates of the corners of the LRUD "plane"
-                v1 = pt_v - perp_v + perp2_v;
-                v2 = pt_v + perp_v + perp2_v;
-                v3 = pt_v + perp_v - perp2_v;
-                v4 = pt_v - perp_v - perp2_v;
+                up = right * leg_v;
             }
             else {
                 // intermediate segment
@@ -2159,31 +2138,34 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
                 Vector3 next_pt_v(x1, y1, z1);
 
                 // calculate vectors from this vertex to the next vertex, and
-                // from this vertex to the previous vertex.
-                Vector3 leg1_v = pt_v - prev_pt_v;
+                // from the previous vertex to this one
+                Vector3 leg1_v = prev_pt_v - pt_v;
                 Vector3 leg2_v = pt_v - next_pt_v;
 
                 // cross product these two vectors to obtain one perpendicular to both,
                 // which will be in the LRUD plane.
-                Vector3 perp_v = leg1_v * leg2_v;
-
-                // obtain a second vector in the LRUD plane, perpendicular to the first
-                leg1_v.normalise();
-                leg2_v.normalise();
-                Vector3 perp2_v = (leg1_v + leg2_v);
-
-                // scale the vectors in the LRUD plane appropriately
-                perp_v.normalise();
-                perp2_v.normalise();
-                perp_v *= -size;
-                perp2_v *= -size;
-
-                // produce coordinates of the corners of the LRUD "plane"
-                v1 = pt_v - perp_v - perp2_v;
-                v2 = pt_v - perp_v + perp2_v;
-                v3 = pt_v + perp_v + perp2_v;
-                v4 = pt_v + perp_v - perp2_v;
+                Vector3 up_v(0.0, 0.0, 1.0);
+		Vector3 r1 = leg1_v * up_v;
+		Vector3 r2 = leg2_v * up_v;
+		r1.normalise();
+		r2.normalise();
+		right = r1 + r2;
+		if (right.magnitude() == 0) right = Vector3(1.0, 0.0, 0.0);
+		up = right * leg1_v;
             }
+
+	    // scale the vectors in the LRUD plane appropriately
+	    right.normalise();
+	    up.normalise();
+	    right *= size;
+	    up *= size;
+
+	    Vector3 v1, v2, v3, v4;
+	    // produce coordinates of the corners of the LRUD "plane"
+	    v1 = pt_v - right + up;
+	    v2 = pt_v + right + up;
+	    v3 = pt_v + right - up;
+	    v4 = pt_v - right - up;
 
             if (segment > 0) {
                 SetColour(m_Pens[1], true);
