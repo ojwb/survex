@@ -2416,6 +2416,7 @@ void GfxCore::OnViewGrid()
 void GfxCore::OnViewGridUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_PlotData);
+    cmd.Check(m_Grid);
 }
 
 void GfxCore::OnIndicatorsUpdate(wxUpdateUIEvent& cmd)

@@ -1,3 +1,6 @@
+* aven: Fixed grid menu item so that it always correctly reflects whether the
+  grid is enabled or not.
+
 Changes in 1.0.30:
 
 * aven: Added printing directly from Aven!
