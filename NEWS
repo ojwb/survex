@@ -1,4 +1,4 @@
-* Standards-Version: 3.6.0 / Fixed lintian warning / Tidied up debian/rules.
+* Standards-Version: 3.6.1 / Fixed lintian warning / Tidied up debian/rules.
 
 * cavern: Fixed interleaved topofil data style - the length was always being
   calculated as zero.
