@@ -2384,7 +2384,9 @@ sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
 en:237 @Perspective
 ca,de,es,it:237 Perspecti@ve
 fr,pt,sk:237 Pe@rspective
-# XXX 238 239
+#
+en:238 @Screenshot...
+# XXX 239
 #
 # The accelerators must be different within this group
 # View *looking* North

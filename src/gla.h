@@ -207,4 +207,6 @@ public:
 
     void TogglePerspective() { m_Perspective = !m_Perspective; }
     bool GetPerspective() const { return m_Perspective; }
+
+    bool SaveScreenshot(const wxString & fnm, int type) const;
 };

@@ -32,6 +32,7 @@
 #include "message.h"
 #include "img.h"
 #include "namecmp.h"
+#include "filename.h"
 
 #include <wx/confbase.h>
 
@@ -220,9 +221,7 @@ class AvenListCtrl: public wxListCtrl {
 
 	    FILE * fh_pres = fopen(fnm.c_str(), "w");
 	    if (!fh_pres) {
-		wxString m = wxString::Format("Could not write presentation `%s'.",
-					      fnm.c_str());
-		wxGetApp().ReportError(m);
+		wxGetApp().ReportError(wxString::Format(msg(/*Error writing to file `%s'*/110), fnm.c_str()));
 		return;
 	    }
 	    list<PresentationMark>::const_iterator i;
@@ -315,6 +314,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
 
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
+    EVT_MENU(menu_FILE_SCREENSHOT, MainFrm::OnScreenshot)
 //    EVT_MENU(menu_FILE_PREFERENCES, MainFrm::OnFilePreferences)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
@@ -384,6 +384,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 
+    EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
     EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_STOP, MainFrm::OnStopRotationUpdate)
@@ -537,6 +538,7 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
+    filemenu->Append(menu_FILE_SCREENSHOT, GetTabMsg(/*@Screenshot...*/238));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*E@xit*/221));
 
@@ -1241,6 +1243,31 @@ void MainFrm::OnOpen(wxCommandEvent&)
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
     }
+}
+
+void MainFrm::OnScreenshot(wxCommandEvent&)
+{
+    char *baseleaf = baseleaf_from_fnm(m_File.c_str());
+    wxFileDialog dlg (this, wxString("Save Screenshot"), "",
+		      wxString(baseleaf) + ".png",
+		      "*.png", wxSAVE|wxOVERWRITE_PROMPT);
+    free(baseleaf);
+    if (dlg.ShowModal() == wxID_OK) {
+	static bool png_handled = false;
+	if (!png_handled) {
+	    wxImage::AddHandler(new wxPNGHandler);
+	    // or ::wxInitAllImageHandlers();
+	    png_handled = true;
+	}
+	if (!m_Gfx->SaveScreenshot(dlg.GetPath(), wxBITMAP_TYPE_PNG)) {
+	    wxGetApp().ReportError(wxString::Format(msg(/*Error writing to file `%s'*/110), dlg.GetPath().c_str()));
+	}
+    }
+}
+
+void MainFrm::OnScreenshotUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(!m_File.empty());
 }
 
 void MainFrm::OnFilePreferences(wxCommandEvent&)

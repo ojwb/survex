@@ -259,9 +259,11 @@ Double GLACanvas::SetViewportAndProjection()
     // Set viewport.  The width and height go to zero when the panel is dragged
     // right across so we clamp them to be at least 1 to avoid errors from the
     // opengl calls below.
-    wxSize size = GetSize();
-    int window_width = max(size.GetWidth(), 1);
-    int window_height = max(size.GetHeight(), 1);
+    int window_width;
+    int window_height;
+    GetSize(&window_width, &window_height);
+    if (window_height < 1) window_height = 1;
+    if (window_width < 1) window_width = 1;
     double aspect = double(window_height) / double(window_width);
 
     glViewport(0, 0, window_width, window_height);
@@ -856,4 +858,21 @@ Double GLACanvas::SurveyUnitsAcrossViewport()
 
     assert(m_Scale != 0.0);
     return m_VolumeDiameter / m_Scale;
+}
+
+bool GLACanvas::SaveScreenshot(const wxString & fnm, int type) const
+{
+    int width;
+    int height;
+    GetSize(&width, &height);
+    // Round up to next multiple of 4 or screengrab is skewed
+    width = (width + 3) &~ 3;
+    unsigned char *pixels = (unsigned char *)malloc(width * height * 3);
+    if (!pixels) return false;
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
+    wxImage grab(width, height, pixels);
+    // FIXME: might be slow to create new image, and uses twice the memory.
+    // Perhaps flip image inplace ourselves using memcpy?  And we can fix
+    // the skew problem at the same time...
+    return grab.Mirror(false).SaveFile(fnm, type);
 }

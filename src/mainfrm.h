@@ -61,6 +61,8 @@ using namespace std;
 
 enum {
     menu_FILE_OPEN = 1000,
+    menu_FILE_EXPORT_DXF,
+    menu_FILE_SCREENSHOT,
     menu_FILE_QUIT,
     menu_PRES_NEW,
     menu_PRES_OPEN,
@@ -245,6 +247,8 @@ public:
     void OnHideUpdate(wxUpdateUIEvent& ui);
 
     void OnOpen(wxCommandEvent& event);
+    void OnScreenshot(wxCommandEvent& event);
+    void OnScreenshotUpdate(wxUpdateUIEvent& event);
     void OnFilePreferences(wxCommandEvent& event);
     void OnFileOpenTerrain(wxCommandEvent& event);
     void OnPresNew(wxCommandEvent& event);
