@@ -184,12 +184,14 @@ get_token(void)
    }
 
    ucbuffer = osmalloc(buf_len);
-   {
+   if (buffer) {
       int i = -1;
       do {
 	 i++;
 	 ucbuffer[i] = toupper(buffer[i]);
       } while (buffer[i]);
+   } else {
+      ucbuffer[0] = '\0';
    }
 #if 0
    printf("get_token() got `%s'\n", buffer);
