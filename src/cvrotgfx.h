@@ -75,7 +75,6 @@ extern BITMAP *BitMap, *BitMapDraw;
 # define set_tcolour(X) _cvrotgfx_textcol = (X)
 # define set_gcolour(X) _cvrotgfx_drawcol = (X)
 # define text_xy(X, Y, S) outtextxy(12 + (X) * 12, 12 + (Y) * 12, (char *)(S))
-
 /* # define shift_pressed() (key[KEY_LSHIFT] || key[KEY_RSHIFT]) alternative... */
 # define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
 
@@ -115,7 +114,6 @@ extern BITMAP *BitMap, *BitMapDraw;
 # ifdef MSC
 #  define shift_pressed() (_bios_keybrd(_KEYBRD_SHIFTSTATUS) & 0x03)
 # elif defined(ALLEGRO)
-/* FIXME: if (keyboard_needs_poll()) we need to poll_keyboard() to update key_shifts */
 #  define shift_pressed() (key_shifts & KB_SHIFT_FLAG)
 # else
 #  define R_SHIFT  0x01
@@ -230,7 +228,6 @@ extern int cvrotgfx_window;
 #define CVROTGFX_LONGOPTS \
    {"window", no_argument, &cvrotgfx_window, 1},\
    {"mode-picker", no_argument, &cvrotgfx_mode_picker, 1},
-/* FIXME: values don't get set! */
 #endif
 
 /*				<-- */

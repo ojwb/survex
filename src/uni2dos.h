@@ -4,6 +4,7 @@ case 162: return 189;
 case 163: return 156;
 case 164: return 207;
 case 165: return 190;
+case 166: return 221;
 case 167: return 245;
 case 168: return 249;
 case 169: return 184;
@@ -12,10 +13,7 @@ case 171: return 174;
 case 172: return 170;
 case 173: return 240;
 case 174: return 169;
-#if 0 /* FIXME */
-case 175: return 223;
 case 175: return 238;
-#endif
 case 176: return 248;
 case 177: return 241;
 case 178: return 253;
@@ -96,3 +94,5 @@ case 252: return 129;
 case 253: return 236;
 case 254: return 231;
 case 255: return 152;
+case 305: return 213;
+case 402: return 159;

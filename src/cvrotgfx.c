@@ -23,6 +23,7 @@
 
 #include <string.h>
 
+#include "debug.h"
 #include "message.h"
 
 #include "cvrotgfx.h"
@@ -216,6 +217,12 @@ cvrotgfx_init(void)
    if (q) *q = 0;
    set_config_data(p, strlen(p));
    osfree(p);
+
+   /* On platforms where keyboard_needs_poll() returns TRUE we need to use:
+    *    #define shift_pressed() (poll_keyboard(), key_shifts & KB_SHIFT_FLAG)
+    * Ensure that this isn't one of those platforms...
+    */
+   ASSERT(!keyboard_needs_poll());
 
    res = allegro_init();
    /* test for res != 0, but never the case ATM */
