@@ -91,8 +91,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-12-12 11:05:56 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.77 2001-12-12 11:05:56 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-12-17 11:04:39 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.78 2001-12-17 11:04:39 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1704,7 +1704,7 @@ disagree, you can always use one of the other methods!
 <listitem><Para>
 *export marks the stations named as referable to from the enclosing
 survey.  To be able to refer to a station from a survey several levels
-above, it must be exported from enclosing survey.
+above, it must be exported from each enclosing survey.
 </Para>
 
 <!-- FIXME:
