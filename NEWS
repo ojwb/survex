@@ -15,6 +15,8 @@ Changes in 1.0.23:
 
 * (Unix version): tweaked debian packaging.
 
+* cavern: Handling of "*:" at start of file wasn't fully fixed in 1.0.19.
+
 Changes in 1.0.22:
 
 * aven: Fixed handling of extended elevations (and other flat surveys) -

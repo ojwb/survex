@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,6 +176,8 @@ static char *ucbuffer = NULL;
 extern void
 get_token(void)
 {
+   int i = -1;
+
    s_zero(&buffer);
    osfree(ucbuffer);
    skipblanks();
@@ -184,16 +186,13 @@ get_token(void)
       nextch();
    }
 
+   if (!buffer) s_catchar(&buffer, &buf_len, '\0');
+
    ucbuffer = osmalloc(buf_len);
-   if (buffer) {
-      int i = -1;
-      do {
-	 i++;
-	 ucbuffer[i] = toupper(buffer[i]);
-      } while (buffer[i]);
-   } else {
-      ucbuffer[0] = '\0';
-   }
+   do {
+      i++;
+      ucbuffer[i] = toupper(buffer[i]);
+   } while (buffer[i]);
 #if 0
    printf("get_token() got `%s'\n", buffer);
 #endif
