@@ -524,7 +524,7 @@ cvrotgfx_get_key(void)
    return keycode & 0xff;
 }
 #else
-#if 1
+#if 0 /* the _bios_keybrd() doesn't work and seems to require a reboot! */
 /* returns a keycode - if enhanced keycode then 0x100 added; -1 if none */
 int
 cvrotgfx_get_key(void)

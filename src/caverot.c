@@ -585,6 +585,10 @@ process_key(void) /* and mouse! */
 	    break;
 	 }
       }
+
+      /* Keys to avoid in BorlandC DOS: Ctrl+S (needs to be hit 3 times!);
+       * Ctrl+C (exits program); maybe Ctrl+Q?
+       */
       switch (iKeycode) {
        case ']': case '}':
          sc = fRevSense ? sc / ZoomFactor : sc * ZoomFactor;
@@ -638,8 +642,9 @@ process_key(void) /* and mouse! */
          fChanged = fTrue; fStns = !fStns; break;
        case ('L' - '@'):
          fChanged = fTrue; fLegs = !fLegs; break;
-       case ('S' - '@'): /* FIXME: add to help screen */
-       case ('F' - '@'): /* surFace - ^S is iffy on DOS iirc - FIXME: check */
+       /* surFace - ^S is iffy on BorlandC DOS - you need to hit it 3 times
+	* for it to work!  But include it for more common DJGPP version. */
+       case ('F' - '@'): case ('S' - '@'):
          fChanged = fTrue; fSLegs = !fSLegs; break;
        case ('R' - '@'):
          fRevSense = !fRevSense; break;
@@ -758,6 +763,7 @@ show_help(void)
 	{0, "               Ctrl-N : Toggle display of station [N]ames", FLAG_ALWAYS},
 	{0, "               Ctrl-X : Toggle display of crosses ([X]s) at stations", FLAG_ALWAYS},
 	{0, "               Ctrl-L : Toggle display of survey [L]egs", FLAG_ALWAYS},
+	{0, "               Ctrl-F : Toggle display of sur[F]ace legs", FLAG_ALWAYS},
 	{0, "               Ctrl-A : Toggle display of [A]ll/skeleton when moving", FLAG_ALWAYS},
 	{0, "                    O : Toggle display of non-overlapping/all names", FLAG_OVERLAP},
 	{0, "               Ctrl-R : Reverse sense of controls", FLAG_ALWAYS},
