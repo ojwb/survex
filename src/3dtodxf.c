@@ -140,11 +140,13 @@ dxf_header(void)
 static void
 dxf_start_pass(int layer)
 {
+   layer = layer;
 }
 
 static void
 dxf_move(img_point p)
 {
+   p = p;
 }
 
 static void
@@ -223,6 +225,7 @@ sketch_move(img_point p)
 static void
 sketch_line(img_point p1, img_point p)
 {
+   p1 = p1;
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p.x, p.y, 0.0);
 }
 

@@ -508,21 +508,23 @@ ca: 51 Lectura del clino superior a 90 graus (valor absolut)
 es: 51 Lectura del clino superior a 90 grados (valor absoluto)
 # "gradi" is correct here (grads would be "gradi quattrocentesimali")
 it: 51 Lettura del clinometro superiore a 90 gradi (valore assoluto)
-en: 52 Tried to equate two non-equal fixed stations
-fr: 52 Essai de rendre &eacute;gaux deux points fixes distincts
-de: 52 Versuch, zwei verschiedene feste Punkte gleichzusetzen
-pt: 52 Tentativa de igualar duas bases posicionadas em coordenadas diferentes
-ca: 52 Intent d'igualar dues estacions fixades en coordenades diferents
-es: 52 Tentativa de igualar dos estaciones fijadas en coordenadas diferentes
-it: 52 Tentativo di uguagliare due stazioni fisse differenti
+# TRANSLATE : check updated fr de pt ca es it
+en: 52 Tried to equate two non-equal fixed stations: `%s' and `%s'
+fr: 52 Essai de rendre &eacute;gaux deux points fixes distincts: `%s' et `%s'
+de: 52 Versuch, zwei verschiedene feste Punkte gleichzusetzen: `%s' und `%s'
+pt: 52 Tentativa de igualar duas bases posicionadas em coordenadas diferentes: `%s' e `%s'
+ca: 52 Intent d'igualar dues estacions fixades en coordenades diferents: `%s' i `%s'
+es: 52 Tentativa de igualar dos estaciones fijadas en coordenadas diferentes: `%s' y `%s'
+it: 52 Tentativo di uguagliare due stazioni fisse differenti: `%s' e `%s'
 # "equal" as in: *fix a 1 2 3 / *fix b 1 2 3 / *equate a b
-en: 53 Equating two equal fixed points
-fr: 53 Rend equivalents deux points fixes &eacute;gaux
-de: 53 Zwei identische Punkte miteinander gleichgesetzt
-pt: 53 Igualando duas bases posicionadas nas mesmas coordenadas
-ca: 53 Igualant dues estacions fixades a les mateixes coordenades
-es: 53 Igualando dos estaciones fijadas en las mismas coordenadas
-it: 53 Uguagliate due stazioni fisse identiche
+# TRANSLATE : check updated fr de pt ca es it
+en: 53 Equating two equal fixed points: `%s' and `%s'
+fr: 53 Rend equivalents deux points fixes &eacute;gaux: `%s' et `%s'
+de: 53 Zwei identische Punkte miteinander gleichgesetzt: `%s' und `%s'
+pt: 53 Igualando duas bases posicionadas nas mesmas coordenadas: `%s' e `%s'
+ca: 53 Igualant dues estacions fixades a les mateixes coordenades: `%s' i `%s'
+es: 53 Igualando dos estaciones fijadas en las mismas coordenadas: `%s' y `%s'
+it: 53 Uguagliate due stazioni fisse identiche: `%s' e `%s'
 # " *fix a " gives this message:
 en: 54 FIX command with no coordinates - fixing at (0,0,0)
 fr: 54 Commande FIX sans coordonn&eacute;es - fix&eacute; &agrave; (0,0,0)

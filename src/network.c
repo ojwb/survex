@@ -210,7 +210,7 @@ remove_subnets(void)
 		 {
 #ifdef NO_COVARIANCES
 		    var sum, prod;
-		    d temp, temp2;
+		    delta temp, temp2;
 		    addvv(&sum, &newleg->v, &newleg2->v);
 		    ASSERT2(!fZero(&sum), "loop of zero variance found");
 		    mulvv(&prod, &newleg->v, &newleg2->v);
@@ -221,7 +221,7 @@ remove_subnets(void)
 		    divvv(&newleg->v, &prod, &sum);
 #else
 		    var inv1, inv2, sum;
-		    d temp, temp2;
+		    delta temp, temp2;
 		    /* if leg one is an equate, we can just ignore leg two
 		     * whatever it is */
 		    if (invert_var(&inv1, &newleg->v)) {
@@ -398,7 +398,7 @@ remove_subnets(void)
 		    prefix *nameZ;
 		    var invAB, invBC, invCA, tmp, sum, inv;
 		    var sumAZBZ, sumBZCZ, sumCZAZ;
-		    d temp, temp2;
+		    delta temp, temp2;
 
 		    /* FIXME: ought to handle cases when some legs are
 		     * equates, but handle as a special case maybe? */
@@ -520,13 +520,12 @@ extern void
 replace_subnets(void)
 {
    stackRed *ptrOld;
-   node *stn, *stn2, *stn3, *stn4;
-   int dirn, dirn2, dirn3, dirn4;
-   linkfor *leg;
+   node *stn2, *stn3, *stn4;
+   int dirn2, dirn3, dirn4;
 
    /* help to catch bad accesses */
-   stn = stn2 = stn3 = stn4 = NULL;
-   dirn = dirn2 = dirn3 = dirn4 = 0;
+   stn2 = stn3 = stn4 = NULL;
+   dirn2 = dirn3 = dirn4 = 0;
 
    out_current_action(msg(/*Calculating network*/130));
 
@@ -541,7 +540,7 @@ replace_subnets(void)
 #endif
 
       if (!IS_DELTASTAR(ptrRed)) {
-
+	 linkfor *leg;
          leg = ptrRed->join1; leg = reverse_leg(leg);
          stn3 = leg->l.to; dirn3 = reverse_leg_dirn(leg);
          leg = ptrRed->join2; leg = reverse_leg(leg);
@@ -554,7 +553,8 @@ replace_subnets(void)
 
       if (IS_NOOSE(ptrRed)) {
          /* noose (hanging-loop) */
-         d e;
+	 node *stn;
+         delta e;
          linkfor *leg;
          if (fixed(stn3)) {
 	    int zero;
@@ -566,7 +566,7 @@ replace_subnets(void)
 
 	    zero = fZero(&leg->v);
             if (!zero) {
-	       d tmp;
+	       delta tmp;
                subdd(&e, &POSD(stn4), &POSD(stn3));
                subdd(&tmp, &e, &leg->d);
                divdv(&e, &tmp, &leg->v);
@@ -574,14 +574,14 @@ replace_subnets(void)
             if (data_here(ptrRed->join1)) {
                adddd(&POSD(stn2), &POSD(stn3), &ptrRed->join1->d);
 	       if (!zero) {
-		  d tmp;
+		  delta tmp;
 		  mulvd(&tmp, &ptrRed->join1->v, &e);
 		  adddd(&POSD(stn2), &POSD(stn2), &tmp);
 	       }
             } else {
                subdd(&POSD(stn2), &POSD(stn3), &stn2->leg[dirn2]->d);
                if (!zero) {
-		  d tmp;
+		  delta tmp;
 		  mulvd(&tmp, &stn2->leg[dirn2]->v, &e);
 		  adddd(&POSD(stn2), &POSD(stn2), &tmp);
 	       }
@@ -622,12 +622,14 @@ replace_subnets(void)
          stn4->leg[dirn4] = ptrRed->join2;
       } else if (IS_PARALLEL(ptrRed)) {
          /* parallel legs */
-         d e, e2;
+	 node *stn;
+         delta e, e2;
          linkfor *leg;
 
 	 stn = ptrRed->join1->l.to;
 	 stn2 = ptrRed->join2->l.to;
          if (fixed(stn3)) {
+	    int dirn;
 	    ASSERT(fixed(stn4)); /* either both or neither fixed */
             dirn = reverse_leg_dirn(ptrRed->join1);
             dirn2 = reverse_leg_dirn(ptrRed->join2);
@@ -644,7 +646,7 @@ replace_subnets(void)
             if (fZero(&leg->v))
                e[0] = e[1] = e[2] = 0.0;
             else {
-	       d tmp;
+	       delta tmp;
                subdd(&e, &POSD(stn4), &POSD(stn3));
                subdd(&tmp, &e, &leg->d);
                divdv(&e, &tmp, &leg->v);
@@ -724,7 +726,7 @@ replace_subnets(void)
                stn2 = leg[i]->l.to;
                adddd(&POSD(stn2), &POSD(stn[i]), &leg1->d);
                if (!fZero(&leg2->v)) {
-		  d e, tmp;
+		  delta e, tmp;
                   subdd(&e, &POSD(stnZ), &POSD(stn[i]));
                   subdd(&e, &e, &leg2->d);
                   divdv(&tmp, &e, &leg2->v);

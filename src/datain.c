@@ -51,16 +51,15 @@
 
 int ch;
 
-parse file = {
-   NULL,
-   NULL,
-   0,
-   NULL
-};
+/* Don't explicitly initialise as we can't set the jmp_buf - this has
+ * static scope so will be initialised like this anyway */
+parse file /* = { NULL, NULL, 0, NULL } */ ;
 
 bool f_export_ok;
 
 static long fpLineStart;
+
+static void showline(const char *dummy, int n);
 
 static void
 error_list_parent_files(void)
@@ -151,11 +150,10 @@ skipline(void)
  * 12  13   7.5& 120 -34
  *              ^ftell()
  */
-extern void
+static void
 showline(const char *dummy, int n)
 {
    char sz[256];
-   int ch;
    int i, o, c;
    int state;
    long fpCur;

@@ -1,5 +1,5 @@
 /* append a string */
-/* Copyright (c) Olly Betts 1999
+/* Copyright (c) Olly Betts 1999, 2001
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 void s_cat(char **pstr, int *plen, char *s);
 
 /* append a character */
-void s_catchar(char **pstr, int *plen, char ch);
+void s_catchar(char **pstr, int *plen, char /*ch*/);
 
 /* truncate string to zero length */
 void s_zero(char **pstr);

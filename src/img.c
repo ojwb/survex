@@ -101,7 +101,7 @@ static img_errcode img_errno = IMG_NONE;
 static int
 getline(char *buf, size_t len, FILE *fh)
 {
-   int i = 0;
+   size_t i = 0;
    int ch;
 
    ch = getc(fh);

@@ -20,7 +20,7 @@
 static FILE *outfd;
 static HTO in;
 
-static void die(char *msg, char *a, int b)
+static void die(const char *msg, const char *a, int b)
 {
   fprintf(stderr, "hto2svx: ");
   fprintf(stderr, msg, a, b);
@@ -30,13 +30,15 @@ static void die(char *msg, char *a, int b)
 
 static void postntcallback(HTO p, char *tag)
 {
-  p=p; tag=tag;
+  p = p;
+  tag = tag;
 /*  fprintf(outfd, "nt: %s\n", tag); */
 }
 
 static void posttmcallback(HTO p, char *tag)
 {
-  p=p; tag=tag;
+  p = p;
+  tag = tag;
 #if 0
   char val[100];
   HTO_GetObjectValue(p, tag, val);
@@ -47,7 +49,7 @@ static void posttmcallback(HTO p, char *tag)
 static void CPcallback(HTO p, char *tag)
 {
   char stn[100], x[32], y[32], z[32];
-  tag=tag;
+  tag = tag;
   HTO_GetObjectValue(p, "CPN", stn);
   HTO_GetObjectValue(p, "CPX", x);
   HTO_GetObjectValue(p, "CPY", y);
@@ -58,7 +60,7 @@ static void CPcallback(HTO p, char *tag)
 static void EQVcallback(HTO p, char *tag)
 {
   char a[100], b[100];
-  tag=tag;
+  tag = tag;
   HTO_GetObjectValue(p, "CTF", a);
   HTO_GetObjectValue(p, "CTT", b);
   fprintf(outfd, "*equate %s %s\n", a, b);
@@ -67,7 +69,7 @@ static void EQVcallback(HTO p, char *tag)
 static void CTcallback(HTO p, char *tag)
 {
   char from[100], to[100], dist[100], bearing[20], incl[20];
-  tag=tag;
+  tag = tag;
   HTO_GetObjectValue(p, "CTF", from);
   HTO_GetObjectValue(p, "CTT", to);
   HTO_GetObjectValue(p, "CTD", dist);

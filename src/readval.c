@@ -80,7 +80,7 @@ read_prefix_(bool fOmit, bool fSuspectTypo)
    prefix *back_ptr, *ptr;
    char *name;
    size_t name_len = 32;
-   int i;
+   size_t i;
    bool fNew;
    bool fImplicitPrefix = fTrue;
    int depth = -1;

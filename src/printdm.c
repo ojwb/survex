@@ -400,7 +400,7 @@ dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #endif
 {
    char *fnmPrn;
-   static char *vars[] = {
+   static const char *vars[] = {
       "like",
       "output",
 #if (OS==MSDOS)
@@ -533,7 +533,7 @@ dm_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 static int
 Pre(int pagesToPrint, const char *title)
 {
-   OSSIZE_T y;
+   int y;
 
    pagesToPrint = pagesToPrint; /* shut-up warning */
    title = title; /* shut-up warning */
@@ -561,7 +561,7 @@ Pre(int pagesToPrint, const char *title)
 static void
 Post(void)
 {
-   OSSIZE_T y;
+   int y;
    for (y = 0; y < ylPassDepth; y++) osfree(bitmap[y]);
    osfree(bitmap);
 }

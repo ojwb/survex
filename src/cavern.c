@@ -220,14 +220,14 @@ main(int argc, char **argv)
        case 'z': {
 	 /* Control which network optimisations are used (development tool) */
 	 static int first_opt_z = 1;
-	 char ch;
+	 char c;
 	 if (first_opt_z) {
 	    optimize = 0;
 	    first_opt_z = 0;
 	 }
 	 /* Lollipops, Parallel legs, Iterate mx, Delta* */
-	 while ((ch = *optarg++) != '\0')
-	     if (islower(ch)) optimize |= BITA(ch);
+	 while ((c = *optarg++) != '\0')
+	     if (islower(c)) optimize |= BITA(ch);
 	 break;
        }
       }

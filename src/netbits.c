@@ -96,7 +96,7 @@ static void check_var(/*const*/ var *v) {
 }
 #endif
 
-static void check_d(/*const*/ d *d) {
+static void check_d(/*const*/ delta *d) {
    int bad = 0;
    int i;
 
@@ -394,7 +394,7 @@ fprint_prefix(FILE *fh, const prefix *ptr)
 static char *
 sprint_prefix_(char *buf, OSSIZE_T len, const prefix *ptr)
 {
-   int i;
+   size_t i;
    if (ptr->up != NULL) {
       char *p;
       p = sprint_prefix_(buf, len, ptr->up);
@@ -461,7 +461,7 @@ mulvv(var *r, /*const*/ var *a, /*const*/ var *b)
 
 /* r = ab ; r,b delta vectors; a variance matrix */
 void
-mulvd(d *r, /*const*/ var *a, /*const*/ d *b)
+mulvd(delta *r, /*const*/ var *a, /*const*/ delta *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -472,7 +472,7 @@ mulvd(d *r, /*const*/ var *a, /*const*/ d *b)
    int i, k;
    real tot;
 
-   ASSERT((/*const*/ d*)r != b);
+   ASSERT((/*const*/ delta*)r != b);
    check_var(a);
    check_d(b);
 
@@ -487,7 +487,7 @@ mulvd(d *r, /*const*/ var *a, /*const*/ d *b)
 
 /* r = ca ; r,a delta vectors; c real scaling factor  */
 void
-muldc(d *r, /*const*/ d *a, real c) {
+muldc(delta *r, /*const*/ delta *a, real c) {
    check_d(a);
    (*r)[0] = (*a)[0] * c;
    (*r)[1] = (*a)[1] * c;
@@ -517,7 +517,7 @@ mulvc(var *r, /*const*/ var *a, real c)
 
 /* r = a + b ; r,a,b delta vectors */
 void
-adddd(d *r, /*const*/ d *a, /*const*/ d *b)
+adddd(delta *r, /*const*/ delta *a, /*const*/ delta *b)
 {
    check_d(a);
    check_d(b);
@@ -529,7 +529,7 @@ adddd(d *r, /*const*/ d *a, /*const*/ d *b)
 
 /* r = a - b ; r,a,b delta vectors */
 void
-subdd(d *r, /*const*/ d *a, /*const*/ d *b) {
+subdd(delta *r, /*const*/ delta *a, /*const*/ delta *b) {
    check_d(a);
    check_d(b);
    (*r)[0] = (*a)[0] - (*b)[0];
@@ -647,7 +647,7 @@ invert_var(var *inv, /*const*/ var *v)
 
 /* r = (b^-1)a ; r,a delta vectors; b variance matrix */
 void
-divdv(d *r, /*const*/ d *a, /*const*/ var *b)
+divdv(delta *r, /*const*/ delta *a, /*const*/ var *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */

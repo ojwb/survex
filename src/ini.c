@@ -1,6 +1,6 @@
 /* > ini.c
  * .ini file routines
- * Copyright (C) 1995-2000 Olly Betts
+ * Copyright (C) 1995-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ osstrdup(char *s)
 #define HASH_PRIME 29363
 
 static int
-hash_string(char *p)
+hash_string(const char *p)
 {
    int hash;
    ASSERT(p != NULL); /* can't hash NULL */
@@ -88,7 +88,7 @@ ini_write(const char *section, const char *var, const char *value)
 #endif
 
 char **
-ini_read(FILE **fh_list, char *section, char **vars)
+ini_read(FILE **fh_list, const char *section, const char **vars)
 {
    int n, c;
    char **vals;
@@ -188,84 +188,70 @@ ini_read(FILE **fh_list, char *section, char **vars)
 }
 
 char **
-ini_read_hier(FILE **fh_list, char *section, char **vars)
+ini_read_hier(FILE **fh_list, const char *sect, const char **v)
 {
    int i, j;
-   char **x;
-   char **vals = NULL;
-   char *old_section;
-   int first = 1;
-   int *to = NULL;
+   char **vals;
+   char *section;
+   int *to;
+   const char **vars;
 
    ASSERT(fh_list != NULL);
-   ASSERT(section != NULL);
-   ASSERT(vars != NULL);
+   ASSERT(sect != NULL);
+   ASSERT(v != NULL);
 
-   do {
-      x = ini_read(fh_list, section, vars);
-      if (!x) {
-         if (!first) {
-            free(vals);
-            free(section);
-         }
-         return NULL;
-      }
+   vals = ini_read(fh_list, sect, v);
+   if (!vals) return NULL;
 
+/*{int i; printf("[%s]\n",sect);
+for(i=0;vars[i];i++)printf("%d:%s\"%s\"\n",i,vars[i],vals[i]?vals[i]:"(null)");}*/
+   i = 0;
+   while (v[i]) i++;
+   vars = malloc((i + 1) * sizeof(char*)); /* + 1 to include NULL */
+   to = malloc(i * sizeof(int));
+   if (!vars || !to) {
+      free(vars);
+      free(to);
+      free(vals);
+      return NULL;
+   }
+   memcpy(vars, v, (i + 1) * sizeof(char*));
+   while (i) {
+      i--;
+      to[i] = i;
+   }
+
+   section = vals[0];
+
+   while (section) {
+      char **x;
 /*{int i; printf("[%s]\n",section);
 for(i=0;vars[i];i++)printf("%d:%s\"%s\"\n",i,vars[i],x[i]?x[i]:"(null)");}*/
-
-      if (first) {
-         char **p = vars;
-         int n;
-
-         n = 0;
-	 while (p[n]) n++;
-         n++; /* include NULL */
-	 vars = malloc(n * sizeof(char*));
-         if (!n) {
-            free(x);
-            return NULL;
-         }
-         memcpy(vars, p, n * sizeof(char*));
-         n--; /* to doesn't need NULL */
-
-	 to = malloc(n * sizeof(int));
-         if (!to) {
-            free(vars);
-            free(x);
-            return NULL;
-         }
-         while (n) {
-            n--;
-            to[n] = n;
-         }
-
-         vals = x;
-      }
-
       for (i = 1, j = 1; vars[i]; i++) {
-/*         printf("%s: %s %d\n",vars[i],x[i]?x[i]:"(null)",to[i]);*/
-         if (x[i]) {
-            vals[to[i]] = x[i];
-         } else {
-            vars[j] = vars[i];
-            to[j] = to[i];
-            j++;
-         }
+/*         printf("%s: %s %d\n",vars[i],vals[i]?vals[i]:"(null)",to[i]);*/
+	 if (vals[i]) {
+	    vals[to[i]] = vals[i];
+	 } else {
+	    vars[j] = vars[i];
+	    to[j] = to[i];
+	    j++;
+	 }
       }
+      if (j == 1) break;
       vars[j] = NULL;
-
-      old_section = section;
-      section = x[0];
-
-      if (!first) {
-         free(x);
-         free(old_section);
+      
+      x = ini_read(fh_list, section, vars);
+      if (!x) {
+	 free(vals);
+	 vals = NULL;
+	 break;
       }
-      first = 0;
 
-   } while (section && j > 1);
-
+      free(section);
+      section = x[0];
+      free(x);
+   }
+   
    free(section);
    free(vars);
    free(to);

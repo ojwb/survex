@@ -181,7 +181,7 @@ remove_trailing_travs(void)
 	  * or leg 1 (for a fixed 2 node) */
          if ((j == 0 && !one_node(stn2)) || (j == 1 && three_node(stn2))) {
 	    /* i is the direction to swap with */
-	    int i = (three_node(stn2)) ? 2 : 1;
+	    i = (three_node(stn2)) ? 2 : 1;
 	    /* change the other direction of leg i to use leg j */
 	    reverse_leg(stn2->leg[i])->l.reverse += j - i;
 	    stn2->leg[j] = stn2->leg[i];
@@ -288,7 +288,7 @@ concatenate_trav(node *stn, int i)
 /* expected_error is actually squared... */
 /* only called if fhErrStat != NULL */
 static void
-do_gross(d e, d v, node *stn1, node *stn2, double expected_error)
+do_gross(delta e, delta v, node *stn1, node *stn2, double expected_error)
 {
    double hsqrd, rsqrd, s, cx, cy, cz;
    double tot;
@@ -388,11 +388,10 @@ replace_travs(void)
    double eTot = 0, lenTrav = 0, lenTot;
    double eTotTheo = 0;
    double vTot = 0, vTotTheo = 0, hTot = 0, hTotTheo = 0;
-   d e, sc;
+   delta e, sc;
    bool fEquate; /* used to indicate equates in output */
    int cLegsTrav = 0;
    prefix *nmPrev = NULL;
-   linkfor *leg;
    bool fArtic;
 
    out_current_action(msg(/*Calculating traverses between nodes*/127));
@@ -438,7 +437,6 @@ replace_travs(void)
 
    /* First do all the one leg traverses */
    FOR_EACH_STN(stn1, stnlist) {
-      int i;
       for (i = 0; i <= 2; i++) {
 	 linkfor *leg = stn1->leg[i];
 	 if (leg && data_here(leg) &&
@@ -457,7 +455,7 @@ replace_travs(void)
 #endif
 	       if (!(leg->l.reverse & FLAG_ARTICULATION)) {
 #ifdef BLUNDER_DETECTION
-		  d err;
+		  delta err;
 		  int do_blunder;
 #else
 		  if (fhErrStat) {
@@ -506,8 +504,9 @@ replace_travs(void)
 
    while (ptr != NULL) {
       bool fFixed;
+
       /* work out where traverse should be reconnected */
-      leg = ptr->join1;
+      linkfor *leg = ptr->join1;
       leg = reverse_leg(leg);
       stn1 = leg->l.to;
       i = reverse_leg_dirn(leg);
@@ -573,7 +572,7 @@ replace_travs(void)
 
       if (fFixed) {
 #ifdef BLUNDER_DETECTION
-	 d err;
+	 delta err;
 	 int do_blunder;
 	 memcpy(&err, &e, sizeof(d));
 	 do_blunder = (eTot > eTotTheo);
@@ -930,10 +929,10 @@ replace_trailing_travs(void)
 	 cComponents++; /* adjust component count */
       }
       for (i = 0; i <= 2; i++) {
-	 linkfor *leg, *legRev;
 	 leg = stn1->leg[i];
 	 /* only want to think about forwards legs */
 	 if (leg && data_here(leg)) {
+	    linkfor *legRev;
 	    node *stnB;
 	    int iB;
 	    stnB = leg->l.to;

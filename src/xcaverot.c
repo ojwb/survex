@@ -93,9 +93,8 @@ static double indrad = 40;
 
 #define NUM_DEPTH_COLOURS 10	/* number of depth colour bands */
 
+/* A group of segments to be drawn in the same colour. */
 typedef struct {
-   /* A group of segments to be drawn in the same colour. */
-
    int num_segments;	/* number of segments */
    XSegment segments[20000];	/* array of line segments, FIXME: fixed limit temporary hack */
 } SegmentGroup;
@@ -159,7 +158,7 @@ static Window butselect;
 #endif
 #endif
 static Window ind_com, ind_elev, scalebar;
-static GC mygc, scale_gc, slab_gc;
+static GC slab_gc;
 static int oldwidth, oldheight;	/* to adjust scale on window resize */
 static Region label_reg;	/* used to implement non-overlapping labels */
 
@@ -173,9 +172,8 @@ static int fontheight, slashheight;	/* JPNP */
 
 static void update_rotation(void);
 static void fill_segment_cache(void);
-static void perform_redraw(void);
 
-static char *ncolors[] = { "black",
+static const char *ncolors[] = { "black",
 #if 0
    "BlanchedAlmond", "BlueViolet",
    "CadetBlue1", "CornflowerBlue", "DarkGoldenrod", "DarkGreen",
@@ -266,8 +264,8 @@ color_set_up(Display * display, Window window)
 }
 
 static void
-flip_button(Display * display, Window mainwin, Window button,
-	    GC normalgc, GC inversegc, char *string)
+flip_button(Display * display, Window button, GC normalgc, GC inversegc,
+	    const char *string)
 {
    int len = strlen(string);
    int width;
@@ -278,8 +276,7 @@ flip_button(Display * display, Window mainwin, Window button,
    width = XTextWidth(fs, string, len);
    XFreeFontInfo(NULL, fs, 1);
    offset = (BUTWIDTH - width) / 2;
-   if (offset < 0)
-      offset = 0;
+   if (offset < 0) offset = 0;
    /* for old behaviour, offset = BUTWIDTH/4 */
 
    XClearWindow(display, button);
@@ -312,7 +309,7 @@ static point **ppLegs = NULL;
 static point **ppSLegs = NULL;
 static point **ppStns = NULL;
 
-int
+static int
 load_file(const char *name, int replace)
 {
    XWindowAttributes attr;
@@ -357,7 +354,7 @@ load_file(const char *name, int replace)
    return 1;
 }
 
-void
+static void
 process_load(Display * display, Window mainwin, Window button, GC mygc, GC egc)
 {
    Window enter_window;
@@ -370,7 +367,7 @@ process_load(Display * display, Window mainwin, Window button, GC mygc, GC egc)
    char text[10];
    int count;
 
-   flip_button(display, mainwin, button, mygc, egc, "Load");
+   flip_button(display, button, mygc, egc, "Load");
 #if 0 /* unused */
    numsurvey = 0;
 #endif
@@ -419,69 +416,63 @@ process_load(Display * display, Window mainwin, Window button, GC mygc, GC egc)
 
    XDestroyWindow(display, enter_window);
 
-   flip_button(display, mainwin, button, egc, mygc, "Load");
+   flip_button(display, button, egc, mygc, "Load");
 }
 
-void
-process_plan(Display * display, Window mainwin, Window button, GC mygc, GC egc)
+static void
+process_plan(Display * display, Window button, GC mygc, GC egc)
 {
-   flip_button(display, mainwin, button, mygc, egc,
+   flip_button(display, button, mygc, egc,
 	       plan_elev == PLAN ? "Plan" : "Elev");
    if (plan_elev == PLAN) {
       switch_to_elevation();
    } else {
       switch_to_plan();
    }
-   flip_button(display, mainwin, button, egc, mygc,
+   flip_button(display, button, egc, mygc,
 	       plan_elev == PLAN ? "Plan" : "Elev");
 }
 
-void
-process_label(Display * display, Window mainwin, Window button,
-	      GC mygc, GC egc)
+static void
+process_label(Display * display, Window button, GC mygc, GC egc)
 {
-   flip_button(display, mainwin, button, mygc, egc,
-	       labelling ? "No Label" : "Label");
+   flip_button(display, button, mygc, egc, labelling ? "No Label" : "Label");
    labelling = !labelling;
-   flip_button(display, mainwin, button, egc, mygc,
-	       labelling ? "No Label" : "Label");
+   flip_button(display, button, egc, mygc, labelling ? "No Label" : "Label");
 }
 
-void
-process_cross(Display * display, Window mainwin, Window button,
-	      GC mygc, GC egc)
+static void
+process_cross(Display * display, Window button, GC mygc, GC egc)
 {
-   flip_button(display, mainwin, button, mygc, egc,
-	       crossing ? "No Cross" : "Cross");
+   flip_button(display, button, mygc, egc, crossing ? "No Cross" : "Cross");
    crossing = !crossing;
-   flip_button(display, mainwin, button, egc, mygc,
-	       crossing ? "No Cross" : "Cross");
+   flip_button(display, button, egc, mygc, crossing ? "No Cross" : "Cross");
 }
 
-void
-process_rot(Display * display, Window mainwin, Window button, GC mygc, GC egc)
+static void
+process_rot(Display * display, Window button, GC mygc, GC egc)
 {
-   flip_button(display, mainwin, button, mygc, egc, rot ? "Stop" : "Rotate");
+   flip_button(display, button, mygc, egc, rot ? "Stop" : "Rotate");
    rot = !rot;
    gettimeofday(&lastframe, NULL);
-   flip_button(display, mainwin, button, egc, mygc, rot ? "Stop" : "Rotate");
+   flip_button(display, button, egc, mygc, rot ? "Stop" : "Rotate");
 }
 
-void
-process_step(Display * display, Window mainwin, Window button, GC mygc, GC egc)
+static void
+process_step(Display * display, Window button, GC mygc, GC egc)
 {
-   flip_button(display, mainwin, button, mygc, egc, "Step");
+   flip_button(display, button, mygc, egc, "Step");
    view_angle += rot_speed / 5;
    if (view_angle >= 360.0)
       view_angle -= 360.0;
    else if (view_angle < 0)
       view_angle += 360.0;
    update_rotation();
-   flip_button(display, mainwin, button, egc, mygc, "Step");
+   flip_button(display, button, egc, mygc, "Step");
 }
 
 static void
-draw_scalebar(int changedscale)
+draw_scalebar(int changedscale, GC scale_gc)
 {
    char temp[20];
    float l, m, n, o;
@@ -517,24 +508,24 @@ draw_scalebar(int changedscale)
 #endif
 }
 
-void
-process_zoom(Display * display, Window mainwin, Window button, GC mygc, GC egc)
+static void
+process_zoom(Display * display, Window button, GC mygc, GC egc)
 {
-   flip_button(display, mainwin, button, mygc, egc, "Zoom in");
+   flip_button(display, button, mygc, egc, "Zoom in");
    scale *= zoomfactor;
-   flip_button(display, mainwin, button, egc, mygc, "Zoom in");
+   flip_button(display, button, egc, mygc, "Zoom in");
 }
 
-void
-process_mooz(Display * display, Window mainwin, Window button, GC mygc, GC egc)
+static void
+process_mooz(Display * display, Window button, GC mygc, GC egc)
 {
-   flip_button(display, mainwin, button, mygc, egc, "Zoom out");
+   flip_button(display, button, mygc, egc, "Zoom out");
    scale /= zoomfactor;
-   flip_button(display, mainwin, button, egc, mygc, "Zoom out");
+   flip_button(display, button, egc, mygc, "Zoom out");
 }
 
 #if 0 /* unused */
-void
+static void
 process_select(Display * display, Window window, Window button, GC mygc,
 	       GC egc)
 {
@@ -598,7 +589,7 @@ process_select(Display * display, Window window, Window button, GC mygc,
 }
 #endif
 
-void
+static void
 draw_ind_elev(Display * display, GC gc, float angle)
 {
    char temp[32];
@@ -632,7 +623,7 @@ draw_ind_elev(Display * display, GC gc, float angle)
 	       strlen(temp));
 }
 
-void
+static void
 draw_ind_com(Display * display, GC gc, float angle)
 {
    char temp[32];
@@ -667,7 +658,7 @@ draw_ind_com(Display * display, GC gc, float angle)
 	       strlen(temp));
 }
 
-void
+static void
 draw_label(Display * display, Window window, GC gc, int x, int y,
 	   const char *string, int length)
 {
@@ -694,13 +685,13 @@ draw_label(Display * display, Window window, GC gc, int x, int y,
    XDrawString(display, window, gc, x, y, string, length);
 }
 
-int
+static int
 toscreen_x(point * p)
 {
    return (((p->X - x_mid) * -cv + (p->Y - y_mid) * -sv) * scale) + xoff;
 }
 
-int
+static int
 toscreen_y(point * p)
 {
    int y;
@@ -802,8 +793,9 @@ fill_segment_cache(void)
 #define distance_metric(DX, DY) ((DX)*(DX) + (DY)*(DY))
 #endif
 
+#if 0
 static point *
-find_station(int x, int y, int mask)
+find_station(int x, int y)
 {
    point **pp;
    point *p, *q = NULL;
@@ -832,6 +824,7 @@ find_station(int x, int y, int mask)
 #endif
    return q;
 }
+#endif
 
 static void
 update_rotation(void)
@@ -865,8 +858,8 @@ update_rotation(void)
    lastframe.tv_usec = temptime.tv_usec;
 }
 
-void
-redraw_image(Display * display, Window window, GC gc)
+static void
+redraw_image(Display * display, Window window)
 {
    XdbeSwapInfo info;
 
@@ -876,7 +869,7 @@ redraw_image(Display * display, Window window, GC gc)
    XdbeSwapBuffers(display, &info, 1);
 }
 
-void
+static void
 redraw_image_dbe(Display * display, Window window, GC gc)
 {
    /* Draw the cave into a window (strictly, the second buffer). */
@@ -948,20 +941,8 @@ redraw_image_dbe(Display * display, Window window, GC gc)
 #endif
 }
 
-static void
-perform_redraw(void)
-{
-   if (have_double_buffering) {
-      redraw_image_dbe(mydisplay, (Window) backbuf, mygc);
-      redraw_image(mydisplay, mywindow, mygc);
-   } else {
-      XClearWindow(mydisplay, mywindow);
-      redraw_image_dbe(mydisplay, mywindow, mygc);
-   }
-}
-
 #if 0
-int
+static int
 x(void)
 {
    /* XClearWindow(display, window); */
@@ -978,7 +959,8 @@ x(void)
 }
 #endif
 
-void
+#if 0
+static void
 process_focus(Display * display, Window window, int ix, int iy)
 {
    int height, width;
@@ -1003,7 +985,7 @@ process_focus(Display * display, Window window, int ix, int iy)
       x_mid += x * cv;
       y_mid += x * sv;
    } else {
-      if ((q = find_station(ix, iy, MOVE | DRAW /*| LABEL */ )) != NULL) {
+      if ((q = find_station(ix, iy)) != NULL) {
 	 x = -(ix - toscreen_x(q)) / scale;
 	 y = (iy - toscreen_y(q)) / scale;
 
@@ -1018,6 +1000,7 @@ process_focus(Display * display, Window window, int ix, int iy)
 
    /*printf("x_mid, y_mid moved to %f,%f\n", (double)x_mid, (double)y_mid); */
 }
+#endif
 
 /* FIXME: neither of these produce the animated effect desired...
  * Use the same technique as in caverot */
@@ -1086,7 +1069,7 @@ release_right_button(void)
 }
 
 static void
-mouse_moved(Display * display, Window window, int mx, int my)
+mouse_moved(int mx, int my)
 {
    if (dragging_about) {
       float x, y;
@@ -1141,30 +1124,29 @@ mouse_moved(Display * display, Window window, int mx, int my)
 }
 
 #ifdef XCAVEROT_BUTTONS
-void
-draw_buttons(Display * display, Window mainwin, GC mygc, GC egc)
+static void
+draw_buttons(Display * display, GC mygc, GC egc)
 {
-   flip_button(display, mainwin, butload, egc, mygc, "Load");
-   flip_button(display, mainwin, butrot, egc, mygc, rot ? "Stop" : "Rotate");
-   flip_button(display, mainwin, butstep, egc, mygc, "Step");
-   flip_button(display, mainwin, butzoom, egc, mygc, "Zoom in");
-   flip_button(display, mainwin, butmooz, egc, mygc, "Zoom out");
-   flip_button(display, mainwin, butplan, egc, mygc,
+   flip_button(display, butload, egc, mygc, "Load");
+   flip_button(display, butrot, egc, mygc, rot ? "Stop" : "Rotate");
+   flip_button(display, butstep, egc, mygc, "Step");
+   flip_button(display, butzoom, egc, mygc, "Zoom in");
+   flip_button(display, butmooz, egc, mygc, "Zoom out");
+   flip_button(display, butplan, egc, mygc,
 	       plan_elev == ELEVATION ? "Elev" : (plan_elev ==
 						  PLAN ? "Plan" : "Tilt"));
-   flip_button(display, mainwin, butlabel, egc, mygc,
+   flip_button(display, butlabel, egc, mygc,
 	       labelling ? "No Label" : "Label");
-   flip_button(display, mainwin, butcross, egc, mygc,
-	       crossing ? "No Cross" : "Cross");
+   flip_button(display, butcross, egc, mygc, crossing ? "No Cross" : "Cross");
 #if 0 /* unused */
-   flip_button(display, mainwin, butselect, egc, mygc, "Select");
+   flip_button(display, butselect, egc, mygc, "Select");
 #endif
-   flip_button(display, mainwin, butquit, egc, mygc, "Quit");
+   flip_button(display, butquit, egc, mygc, "Quit");
 }
 
 #endif
 
-void
+static void
 drag_compass(int x, int y)
 {
    /* printf("x %d, y %d, ", x,y); */
@@ -1178,7 +1160,7 @@ drag_compass(int x, int y)
    /* printf("a %f\n", view_angle); */
 }
 
-void
+static void
 drag_elevation(int x, int y)
 {
    x -= INDWIDTH * (1 - E_IND_PTR) / 2;
@@ -1238,7 +1220,7 @@ main(int argc, char **argv)
 
    /* XWindowChanges ch; */
    XGCValues gcval;
-   GC enter_gc;
+   GC enter_gc, scale_gc, mygc;
 
    int visdepth;	/* used in Double Buffer setup code */
 
@@ -1517,7 +1499,7 @@ main(int argc, char **argv)
 
 #ifdef XCAVEROT_BUTTONS	/* FIXME: !?! */
    XNextEvent(mydisplay, &myevent);
-   draw_buttons(mydisplay, mywindow, mygc, enter_gc);
+   draw_buttons(mydisplay, mygc, enter_gc);
 #endif
 
    /* Loop through until a q is pressed,
@@ -1558,28 +1540,28 @@ main(int argc, char **argv)
                   drag_compass(myevent.xbutton.x, myevent.xbutton.y);
 #ifdef XCAVEROT_BUTTONS
                } else if (myevent.xbutton.window == butzoom)
-                     process_zoom(mydisplay, mywindow, butzoom, mygc, enter_gc);
+                  process_zoom(mydisplay, butzoom, mygc, enter_gc);
                else if (myevent.xbutton.window == butmooz)
-                     process_mooz(mydisplay, mywindow, butmooz, mygc, enter_gc);
+		  process_mooz(mydisplay, butmooz, mygc, enter_gc);
                else if (myevent.xbutton.window == butload)
-                     process_load(mydisplay, mywindow, butload, mygc, enter_gc);
+		  process_load(mydisplay, mywindow, butload, mygc, enter_gc);
                else if (myevent.xbutton.window == butrot)
-                     process_rot(mydisplay, mywindow, butrot, mygc, enter_gc);
+		  process_rot(mydisplay, butrot, mygc, enter_gc);
                else if (myevent.xbutton.window == butstep)
-                     process_step(mydisplay, mywindow, butstep, mygc, enter_gc);
+		  process_step(mydisplay, butstep, mygc, enter_gc);
                else if (myevent.xbutton.window == butplan)
-                     process_plan(mydisplay, mywindow, butplan, mygc, enter_gc);
+		  process_plan(mydisplay, butplan, mygc, enter_gc);
                else if (myevent.xbutton.window == butlabel)
-                     process_label(mydisplay, mywindow, butlabel, mygc, enter_gc);
+		  process_label(mydisplay, butlabel, mygc, enter_gc);
                else if (myevent.xbutton.window == butcross)
-                     process_cross(mydisplay, mywindow, butcross, mygc, enter_gc);
+		  process_cross(mydisplay, butcross, mygc, enter_gc);
 #if 0 /* unused */
                else if (myevent.xbutton.window == butselect)
-                     process_select(mydisplay, mywindow, butselect, mygc, enter_gc);
+		  process_select(mydisplay, butselect, mygc, enter_gc);
 #endif
                else if (myevent.xbutton.window == butquit) {
-                     done = 1;
-                     break;
+		  done = 1;
+		  break;
 #endif
 	       } else if (myevent.xbutton.window == ind_elev) {
 		  drag_elevation(myevent.xbutton.x, myevent.xbutton.y);
@@ -1620,8 +1602,7 @@ main(int argc, char **argv)
 	    } else if (myevent.xmotion.window == mywindow) {
 	       /* drag cave about / alter rotation or scale */
 
-	       mouse_moved(mydisplay, mywindow, myevent.xmotion.x,
-			   myevent.xmotion.y);
+	       mouse_moved(myevent.xmotion.x, myevent.xmotion.y);
 	    }
 	 } else if (myevent.xany.window == mywindow) {
 	    switch (myevent.type) {
@@ -1845,10 +1826,16 @@ main(int argc, char **argv)
 	 }
 
 	 if (redraw) {
-	    perform_redraw();
-	    draw_scalebar(old_scale != scale);
+	    if (have_double_buffering) {
+	       redraw_image_dbe(mydisplay, (Window) backbuf, mygc);
+	       redraw_image(mydisplay, mywindow);
+	    } else {
+	       XClearWindow(mydisplay, mywindow);
+	       redraw_image_dbe(mydisplay, mywindow, mygc);
+	    }
+	    draw_scalebar(old_scale != scale, scale_gc);
 #ifdef XCAVEROT_BUTTONS
-	    draw_buttons(mydisplay, mywindow, mygc, enter_gc);
+	    draw_buttons(mydisplay, mygc, enter_gc);
 #endif
 	    old_scale = scale;
 	 }

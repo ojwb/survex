@@ -28,11 +28,11 @@ static	void		SortCallBackList (HTO);
 static	int		SortCmp (const void *, const void *);
 static	void		Object (HTO);
 static	void		Object_List (HTO);
-static	void		FindCallBack (HTO, char *, CallBackPtr *, CallBackPtr *);
+static	void		FindCallBack (HTO, const char *, CallBackPtr *, CallBackPtr *);
 static	int		FindCmp (const void *, const void *);
 static	void		PushCallBack (HTO, CallBackPtr);
 static	CallBackPtr	PopCallBack (HTO);
-static	void		PushObjectValue (HTO, char *, char *);
+static	void		PushObjectValue (HTO, const char *, char *);
 static	void		PopObjectValues (HTO);
 static	int		ValSrchCmp (const void *, const void *);
 static	int		ValSortCmp (const void *, const void *);
@@ -269,7 +269,7 @@ static void GetToken (HTO p)	/* Get next token skipping whitespace */
 }
 
 /*----------*/
-void HTO_RegisterTagCallBack (HTO p, char *Tag, CallBackPtr Pre, CallBackPtr Post)
+void HTO_RegisterTagCallBack (HTO p, const char *Tag, CallBackPtr Pre, CallBackPtr Post)
 {
     /* Save the address of the tag-specific pre- and post-callback functions. */
 
@@ -325,7 +325,7 @@ static int SortCmp (const void *p, const void *q)
 }
 
 /*----------*/
-static void FindCallBack (HTO p, char *Tag, CallBackPtr *Pre, CallBackPtr *Post)
+static void FindCallBack (HTO p, const char *Tag, CallBackPtr *Pre, CallBackPtr *Post)
 {
     CallBackEntry	*q;
 
@@ -355,7 +355,7 @@ static int FindCmp (const void *p, const void *q)
 }
 
 /*----------*/
-void HTO_NoCallBack (HTO p, char *Tag)
+void HTO_NoCallBack (HTO p, const char *Tag)
 {
     /* This is just a stub used when no callback function is specified */
     p = p; Tag = Tag; /* suppress compiler warnings */
@@ -377,7 +377,7 @@ static CallBackPtr PopCallBack (HTO p)
 }
 
 /*----------*/
-static void PushObjectValue (HTO p, char *Tag, char *Value)
+static void PushObjectValue (HTO p, const char *Tag, char *Value)
 {
     VLEntry	*Ent;
     ValStack	*v;
@@ -458,7 +458,7 @@ static void PopObjectValues (HTO p)
 }
 
 /*----------*/
-char *HTO_GetObjectValue (HTO p, char *Tag, char *Value)
+char *HTO_GetObjectValue (HTO p, const char *Tag, char *Value)
 {
     VLEntry	*Ent;
     int		i;
@@ -563,7 +563,7 @@ static void InitHTODesc (HTO p)
 }
 
 /*----------*/
-void HTO_BeginObject (HTO p, char *Tag)
+void HTO_BeginObject (HTO p, const char *Tag)
 {
     fprintf (p->HTO_File, "%c%s%c", OBJECT_START, Tag, SEPARATOR);
     p->NestLevel++;
@@ -577,7 +577,7 @@ void HTO_EndObject (HTO p)
 }
 
 /*----------*/
-void HTO_WriteValue (HTO p, char *Tag, char *Value)
+void HTO_WriteValue (HTO p, const char *Tag, const char *Value)
 {
     if (strlen (Value) == 0)
 	return;
@@ -599,7 +599,7 @@ void HTO_PutChar (HTO p, char c)
 }
 
 /*----------*/
-void HTO_PutStr (HTO p, char *s)
+void HTO_PutStr (HTO p, const char *s)
 {
     fputs (s, p->HTO_File);
 }

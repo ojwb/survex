@@ -80,7 +80,7 @@ cave_write_pos(pos *pid, prefix *pre)
 {
   uchar length;
   uchar ltag;
-  char *tag;
+  const char *tag;
   if (pid->id == 0) {
     pid->id = (INT32_T)statcount;
     tag = pre->ident;
@@ -168,7 +168,7 @@ save3d(twig *sticky)
 {
   char ltag;
   short unsigned int stubcount;
-  double error, length, offset;
+  double err, length, offset;
   twig *twiglet;
   for (twiglet = sticky->right; twiglet; twiglet = twiglet->right) {
     if (twiglet->from) {
@@ -176,7 +176,7 @@ save3d(twig *sticky)
 	cave_write_pos(twiglet->from->pos,twiglet->from);
       } else { /*leg */
 	/* calculate an average percentage error, based on %age change of polars */
-	error = 0.0;
+	err = 0.0;
 	/* offset is how far the _to_ point is from where we thought it would be */
 	offset = hypot(twiglet->to->pos->p[2] - (twiglet->from->pos->p[2] +
 						 twiglet->delta[2]),
@@ -194,15 +194,15 @@ save3d(twig *sticky)
 		 length, offset);
 #endif
 	if (fabs(length) < 0.01) {
-	  error = 0; /*what is the error for a leg with zero length?
+	  err = 0; /*what is the error for a leg with zero length?
 	  	      *Phil -  he say none. */
 	} else {
-	  error = 10000.0 * offset / length;
+	  err = 10000.0 * offset / length;
 	}
 	putc(LEG_3D, pimgOut->fh);
 	put16((INT16_T)0x02, pimgOut->fh);
 	putc(0x04, pimgOut->fh);
-	put32((INT32_T)(error), pimgOut->fh); /* output error in %*100 */
+	put32((INT32_T)err, pimgOut->fh); /* output error in %*100 */
 	cave_write_pos(twiglet->from->pos, twiglet->from);
 	cave_write_pos(twiglet->to->pos, twiglet->to);
       }

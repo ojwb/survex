@@ -36,7 +36,7 @@
 
 typedef struct POINT {
    img_point p;
-   char *label;
+   const char *label;
    unsigned int order;
    struct POINT *next;
 } point;

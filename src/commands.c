@@ -358,7 +358,7 @@ get_qlist(void)
 
 #define SPECIAL_UNKNOWN 0
 static void
-set_chars(void)
+cmd_set(void)
 {
    static sztok chartab[] = {
 	{"BLANK",     SPECIAL_BLANK },
@@ -432,7 +432,7 @@ check_reentry(prefix *tag)
 }
 
 static void
-set_prefix(void)
+cmd_prefix(void)
 {
    prefix *tag;
    /* Issue warning first, so "*prefix \" warns first that *prefix is
@@ -455,7 +455,7 @@ set_prefix(void)
 }
 
 static void
-begin_block(void)
+cmd_begin(void)
 {
    prefix *tag;
    settings *pcsNew;
@@ -486,19 +486,19 @@ begin_block(void)
 }
 
 extern void
-free_settings(settings *pcs) {
+free_settings(settings *p) {
    /* don't free default ordering or ordering used by parent */
-   datum *order = pcs->ordering;
-   if (order != default_order && order != pcs->next->ordering) osfree(order);
+   datum *order = p->ordering;
+   if (order != default_order && order != p->next->ordering) osfree(order);
 
    /* free Translate if not used by parent */
-   if (pcs->Translate != pcs->next->Translate) osfree(pcs->Translate - 1);
+   if (p->Translate != p->next->Translate) osfree(p->Translate - 1);
 
-   osfree(pcs);
+   osfree(p);
 }
 
 static void
-end_block(void)
+cmd_end(void)
 {
    settings *pcsParent;
    prefix *tag, *tagBegin;
@@ -544,7 +544,7 @@ end_block(void)
 }
 
 static void
-fix_station(void)
+cmd_fix(void)
 {
    prefix *fix_name;
    node *stn;
@@ -734,7 +734,7 @@ cmd_flags(void)
 }
 
 static void
-equate_list(void)
+cmd_equate(void)
 {
    node *stn1, *stn2;
    prefix *name1, *name2;
@@ -769,15 +769,20 @@ equate_list(void)
 	 if (fixed(stn1)) {
 	    if (fixed(stn2)) {
 	       /* both are fixed, but let them off iff their coordinates match */
-	       int d;
-	       for (d = 2; d >= 0; d--)
+	       char *s = osstrdup(sprint_prefix(name1));
+	       int d;	       
+	       for (d = 2; d >= 0; d--) {
 		  if (name1->pos->p[d] != name2->pos->p[d]) {
-		     compile_error(/*Tried to equate two non-equal fixed stations*/52);
-		     showandskipline(NULL, 0);
+		     compile_error(/*Tried to equate two non-equal fixed stations: `%s' and `%s'*/52,
+				   s, sprint_prefix(name2));
+		     osfree(s);
+		     skipline();
 		     return;
 		  }
-	       compile_warning(/*Equating two equal fixed points*/53);
-	       showline(NULL, 0);
+	       }
+	       compile_warning(/*Equating two equal fixed points: `%s' and `%s'*/53,
+			       s, sprint_prefix(name2));
+	       osfree(s);
 	    }
 
 	    /* stn1 is fixed, so replace all refs to stn2's pos with stn1's */
@@ -852,7 +857,7 @@ cmd_export(void)
 }
 
 static void
-data(void)
+cmd_data(void)
 {
    /* FIXME: also BackComp, BackClino, Dr */
    static sztok dtab[] = {
@@ -885,7 +890,7 @@ data(void)
 	{NULL,           End }
    };
 
-   static style fn[] = {
+   static style_fn fn[] = {
       data_normal,
       data_normal,
       data_diving,
@@ -1027,7 +1032,7 @@ static real factor_tab[] = {
 };
 
 static void
-units(void)
+cmd_units(void)
 {
    int units, quantity;
    ulong qmask, m; /* mask with bit x set to indicate quantity x specified */
@@ -1076,7 +1081,7 @@ units(void)
 }
 
 static void
-calibrate(void)
+cmd_calibrate(void)
 {
    real sc, z; /* added so we don't modify current values if error given */
    ulong qmask, m;
@@ -1117,7 +1122,7 @@ calibrate(void)
 }
 
 static void
-set_default(void)
+cmd_default(void)
 {
    static sztok defaulttab[] = {
       { "CALIBRATE", CMD_CALIBRATE },
@@ -1145,7 +1150,7 @@ set_default(void)
 }
 
 static void
-include(void)
+cmd_include(void)
 {
    char *pth, *fnm = NULL;
    int fnm_len;
@@ -1173,7 +1178,7 @@ include(void)
 }
 
 static void
-set_sd(void)
+cmd_sd(void)
 {
    real sd, variance;
    int units;
@@ -1207,7 +1212,7 @@ set_sd(void)
 }
 
 static void
-set_title(void)
+cmd_title(void)
 {
    if (!fExplicitTitle) {
       fExplicitTitle = fTrue;
@@ -1229,7 +1234,7 @@ static sztok case_tab[] = {
 };
 
 static void
-case_handling(void)
+cmd_case(void)
 {
    int setting;
    get_token();
@@ -1258,7 +1263,7 @@ static sztok onoff_tab[] = {
 };
 
 static void
-infer(void)
+cmd_infer(void)
 {
    int setting;
    int on;
@@ -1292,7 +1297,7 @@ infer(void)
 }
 
 static void
-set_truncate(void)
+cmd_truncate(void)
 {
    unsigned int truncate_at = 0; /* default is no truncation */
    long fp = ftell(file.fh);
@@ -1306,7 +1311,7 @@ set_truncate(void)
 }
 
 static void
-require(void)
+cmd_require(void)
 {
    static char version[] = VERSION;
    char *p = version;
@@ -1360,16 +1365,16 @@ handle_command(void)
    }
 
    switch (cmdtok) {
-    case CMD_CALIBRATE: calibrate(); break;
-    case CMD_CASE: case_handling(); break;
-    case CMD_DATA: data(); break;
-    case CMD_DEFAULT: set_default(); break;
-    case CMD_EQUATE: equate_list(); break;
+    case CMD_CALIBRATE: cmd_calibrate(); break;
+    case CMD_CASE: cmd_case(); break;
+    case CMD_DATA: cmd_data(); break;
+    case CMD_DEFAULT: cmd_default(); break;
+    case CMD_EQUATE: cmd_equate(); break;
     case CMD_EXPORT: cmd_export(); break;
-    case CMD_FIX: fix_station(); break;
+    case CMD_FIX: cmd_fix(); break;
     case CMD_FLAGS: cmd_flags(); break;
-    case CMD_INCLUDE: include(); break;
-    case CMD_INFER: infer(); break;
+    case CMD_INCLUDE: cmd_include(); break;
+    case CMD_INFER: cmd_infer(); break;
     case CMD_LRUD: {
        /* just ignore *lrud for now so Tunnel can put it in */
        /* FIXME: except that tunnel keeps x-sections in a separate file... */
@@ -1377,16 +1382,16 @@ handle_command(void)
        break;
     }
     case CMD_MEASURE: NOT_YET; break;
-    case CMD_PREFIX: set_prefix(); break;
-    case CMD_UNITS: units(); break;
-    case CMD_BEGIN: begin_block(); break;
-    case CMD_END: end_block(); break;
-    case CMD_REQUIRE: require(); break;
+    case CMD_PREFIX: cmd_prefix(); break;
+    case CMD_UNITS: cmd_units(); break;
+    case CMD_BEGIN: cmd_begin(); break;
+    case CMD_END: cmd_end(); break;
+    case CMD_REQUIRE: cmd_require(); break;
     case CMD_SOLVE: solve_network(/*stnlist*/); break;
-    case CMD_SD: set_sd(); break;
-    case CMD_SET: set_chars(); break;
-    case CMD_TITLE: set_title(); break;
-    case CMD_TRUNCATE: set_truncate(); break;
+    case CMD_SD: cmd_sd(); break;
+    case CMD_SET: cmd_set(); break;
+    case CMD_TITLE: cmd_title(); break;
+    case CMD_TRUNCATE: cmd_truncate(); break;
     default:
       compile_error(/*Unknown command `%s'*/12, buffer);
       skipline();

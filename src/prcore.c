@@ -81,7 +81,6 @@ static img *pimg;
 extern device hpgl;
 static device *pr = &hpgl;
 #endif
-extern device printer;
 static device *pr = &printer;
 
 #define lenSzDateStamp 40
@@ -272,7 +271,7 @@ draw_scale_bar(double x, double y, double MaxLength, double scale)
 {
    double StepEst, d;
    int E, Step, n, l, c;
-   char szUnits[3], szTmp[256];
+   char u_buf[3], buf[256];
    char *p;
    static signed char powers[] = {
       12, 9, 9, 9, 6, 6, 6, 3, 2, 2, 0, 0, 0, -3, -3, -3, -6, -6, -6, -9,
@@ -304,17 +303,17 @@ draw_scale_bar(double x, double y, double MaxLength, double scale)
    n = max(n, -10) + 10;
    E += (int)powers[n];
 
-   szUnits[0] = si_mods[n];
-   szUnits[1] = '\0';
-   strcat(szUnits, "m");
+   u_buf[0] = si_mods[n];
+   u_buf[1] = '\0';
+   strcat(u_buf, "m");
 
-   strcpy(szTmp, msg(/*Scale*/154));
+   strcpy(buf, msg(/*Scale*/154));
 
    /* Add units used - eg. "Scale (10m)" */
-   p = szTmp + strlen(szTmp);
-   sprintf(p, " (%.0f%s)", (float)pow(10.0, (double)E), szUnits);
+   p = buf + strlen(buf);
+   sprintf(p, " (%.0f%s)", (float)pow(10.0, (double)E), u_buf);
 
-   MOVEMM(x, y + 4); pr->WriteString(szTmp);
+   MOVEMM(x, y + 4); pr->WriteString(buf);
 
    /* Work out how many divisions there will be */
    n = (int)(MaxLength / d);
@@ -333,10 +332,10 @@ draw_scale_bar(double x, double y, double MaxLength, double scale)
 #endif
       /* ANSI sprintf returns length of formatted string, but some pre-ANSI Unix
        * implementations return char* (ptr to end of written string I think) */
-      sprintf(szTmp, "%d", c * Step);
-      l = strlen(szTmp);
+      sprintf(buf, "%d", c * Step);
+      l = strlen(buf);
       MOVEMM(x + c * d - l, y - 4);
-      pr->WriteString(szTmp);
+      pr->WriteString(buf);
    }
 }
 
@@ -548,7 +547,7 @@ main(int argc, char **argv)
 {
    bool fOk;
    float Sc = 0;
-   unsigned int page, pages;
+   int page, pages;
    char *fnm;
    int cPasses, pass;
    unsigned int cPagesPrinted;
@@ -663,7 +662,7 @@ main(int argc, char **argv)
 
    if (pr->Init) {
       FILE *fh_list[4];
-      FILE **p = fh_list;
+      FILE **pfh = fh_list;
       FILE *fh;
       const char *pth_cfg;
 
@@ -679,23 +678,23 @@ main(int argc, char **argv)
       if (pth_cfg) {
 	 fh = fopenWithPthAndExt(pth_cfg, ".survex/print", EXT_INI, "rb",
 				 NULL);
-	 if (fh) *p++ = fh;
+	 if (fh) *pfh++ = fh;
       }
       pth_cfg = msg_cfgpth();
       fh = fopenWithPthAndExt(NULL, "/etc/survex/print", EXT_INI, "rb",
       	   		      NULL);
-      if (fh) *p++ = fh;
+      if (fh) *pfh++ = fh;
 #else
       pth_cfg = msg_cfgpth();
       fh = fopenWithPthAndExt(pth_cfg, "myprint", EXT_INI, "rb", NULL);
-      if (fh) *p++ = fh;
+      if (fh) *pfh++ = fh;
 #endif
       fh = fopenWithPthAndExt(pth_cfg, "print", EXT_INI, "rb", NULL);
       if (!fh) fatalerror(/*Couldn't open data file `%s'*/24, fnm);
-      *p++ = fh;
-      *p = NULL;
+      *pfh++ = fh;
+      *pfh = NULL;
       pr->Init(fh_list, pth_cfg, &scX, &scY);
-      for (p = fh_list; *p; p++) fclose(*p);
+      for (pfh = fh_list; *pfh; pfh++) fclose(*pfh);
    }
 
    if (fInteractive) {
@@ -807,7 +806,6 @@ main(int argc, char **argv)
    if (pageLim == 1) {
       pages = 1;
    } else {
-      int fOk;
       do {
          fOk = fTrue;
          if (fInteractive) {
@@ -1108,8 +1106,8 @@ as_escstring(char *s)
    char *p, *q;
    char c;
    char *t;
-   static char *escFr = "[nrt?0"; /* 0 is last so maps to the implicit \0 */
-   static char *escTo = "\x1b\n\r\t\?";
+   static const char *escFr = "[nrt?0"; /* 0 is last so maps to the implicit \0 */
+   static const char *escTo = "\x1b\n\r\t\?";
    bool fSyntax = fFalse;
    if (!s) print_config_error();
    p = q = s;

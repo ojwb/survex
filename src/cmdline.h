@@ -21,7 +21,7 @@
 
 struct help_msg {
    int opt;
-   char *msg;
+   const char *msg;
 };
 
 /* give -1 for max_args_ if there's no limit */

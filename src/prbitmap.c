@@ -130,7 +130,7 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
    FILE *fh;
    unsigned char header[20];
    int i;
-   unsigned len;
+   unsigned int len;
    char *fnm;
 
    dppX = DPP(dpiX); /* dots (printer pixels) per pixel (char defn pixels) */
@@ -194,7 +194,7 @@ WriteLetter(int ch, long X, long Y)
 extern void
 WriteString(const char *s)
 {
-   int ch;
+   unsigned char ch;
    unsigned const char *p = (unsigned const char *)s;
    while ((ch = *p++) >= 32) {
       if (ch <= max_def_char) WriteLetter(ch, xLast, yLast);

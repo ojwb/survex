@@ -417,7 +417,7 @@ ps_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY)
 #endif
 {
    char *fnmPrn;
-   static char *vars[] = {
+   static const char *vars[] = {
       "like",
       "output",
 #if (OS==MSDOS)

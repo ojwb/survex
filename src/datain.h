@@ -46,7 +46,6 @@ extern void skipblanks(void);
 extern void data_file(const char *pth, const char *fnm);
 
 extern void skipline(void);
-extern void showline(const char *dummy, int n);
 extern void showandskipline(const char *dummy, int n);
 
 /* style functions */

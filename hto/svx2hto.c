@@ -37,7 +37,7 @@ static int marked = 0;
 static char otag[16];
 static int linect = 0;
 
-static void die(char *msg, char *ins1, int ins2)
+static void die(const char *msg, const char *ins1, int ins2)
 {
   fprintf(stderr, "svx2hto: ");
   fprintf(stderr, msg, ins1, ins2);
@@ -78,7 +78,7 @@ static char *sort_prefix(char *p)
 #endif
 }
 
-static void wv(char *tag, char *val)
+static void wv(const char *tag, const char *val)
 {
   if (marked == 0)
     {
@@ -91,7 +91,7 @@ static void wv(char *tag, char *val)
   HTO_WriteValue(outfd, tag, val);
 }
 
-static void bo(char *tag, int lno)
+static void bo(const char *tag, int lno)
 {
   strcpy(otag, tag);
   linect = lno;
@@ -195,7 +195,7 @@ static void process(char *infn)
 {
   FILE *infd = fopen(infn, "r");
   char buff[256], *p;
-  int linect = 0;
+  int lineno = 0;
 
   if (infd == NULL)
     {
@@ -208,26 +208,26 @@ static void process(char *infn)
   strcpy(buff, infn);
   p = strchr(buff, '.');
   if (p) *p = 0;
-  bo("GR", linect);
+  bo("GR", lineno);
   wv("TI", buff);
   while (fgets(buff, 256, infd))
     {
       char lnobuff[32];
 
-      linect++;
+      lineno++;
       p = skipblanks(buff);
       if (*p)
 	{
-	  sprintf(lnobuff, "%d", linect);
+	  sprintf(lnobuff, "%d", lineno);
 	  trashNL(buff);
 	  if (*p == ';')
 	    HTO_WriteValue(outfd, "COM", buff+1);
 	  else
 	    {
 	      if (*p == '*')
-		command(p, infn, linect);
+		command(p, infn, lineno);
 	      else
-		data(p, infn, linect);
+		data(p, infn, lineno);
 	    }
 	}
     }

@@ -1,6 +1,6 @@
 /* > matrix.c
  * Matrix building and solving routines
- * Copyright (C) 1993-2000 Olly Betts
+ * Copyright (C) 1993-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ static void sor(real FAR *M, real *B, long n);
 
 static int find_stn_in_tab(node *stn);
 static int add_stn_to_tab(node *stn);
-static void build_matrix(node *list, long n, pos **stn_tab);
+static void build_matrix(node *list);
 
 static long n_stn_tab;
 
@@ -91,7 +91,7 @@ solve_matrix(node *list)
    /* FIXME: release any unused entries in stn_tab ? */
    /* stn_tab = osrealloc(stn_tab, n_stn_tab * ossizeof(pos*)); */
 
-   build_matrix(list, n_stn_tab, stn_tab);
+   build_matrix(list);
 #if DEBUG_MATRIX
    FOR_EACH_STN(stn, list) {
       printf("(%8.2f, %8.2f, %8.2f ) ", POS(stn, 0), POS(stn, 1), POS(stn, 2));
@@ -110,26 +110,26 @@ solve_matrix(node *list)
 #endif
 
 static void
-build_matrix(node *list, long n, pos **stn_tab)
+build_matrix(node *list)
 {
    real FAR *M;
    real *B;
    int dim;
 
-   if (n == 0) {
+   if (n_stn_tab == 0) {
       out_puts(msg(/*Network solved by reduction - no simultaneous equations to solve.*/74));
       return;
    }
-   /* (OSSIZE_T) cast may be needed if n>=181 */
-   M = osmalloc((OSSIZE_T)((((OSSIZE_T)n * FACTOR * (n * FACTOR + 1)) >> 1)) * ossizeof(real));
-   B = osmalloc((OSSIZE_T)(n * FACTOR * ossizeof(real)));
+   /* (OSSIZE_T) cast may be needed if n_stn_tab>=181 */
+   M = osmalloc((OSSIZE_T)((((OSSIZE_T)n_stn_tab * FACTOR * (n_stn_tab * FACTOR + 1)) >> 1)) * ossizeof(real));
+   B = osmalloc((OSSIZE_T)(n_stn_tab * FACTOR * ossizeof(real)));
 
    out_puts("");
    if (!fQuiet) {
-     if (n == 1)
+     if (n_stn_tab == 1)
        out_puts(msg(/*Solving one equation*/78));
      else {
-       out_printf((msg(/*Solving %d simultaneous equations*/75), n));
+       out_printf((msg(/*Solving %d simultaneous equations*/75), n_stn_tab));
      }
    }
 
@@ -147,7 +147,7 @@ build_matrix(node *list, long n, pos **stn_tab)
       out_current_action(buf);
       /* Initialise M and B to zero */
       /* FIXME: might be best to zero "linearly" */
-      for (row = (int)(n * FACTOR - 1); row >= 0; row--) {
+      for (row = (int)(n_stn_tab * FACTOR - 1); row >= 0; row--) {
 	 int col;
 	 B[row] = (real)0.0;
 	 for (col = row; col >= 0; col--) M(row,col) = (real)0.0;
@@ -160,7 +160,7 @@ build_matrix(node *list, long n, pos **stn_tab)
 	 real e;
 #else
 	 var e;
-	 d a;
+	 delta a;
 #endif
 	 int f, t;
 	 int dirn;
@@ -211,7 +211,7 @@ build_matrix(node *list, long n, pos **stn_tab)
 #else
 		     if (invert_var(&e, &stn->leg[dirn]->v)) {
 			/* not an equate */
-			d b;
+			delta b;
 			int i, j;
 			adddd(&a, &POSD(stn), &stn->leg[dirn]->d);
 			mulvd(&b, &e, &a);
@@ -245,7 +245,7 @@ build_matrix(node *list, long n, pos **stn_tab)
 		     }
 #else
 		     if (invert_var(&e, &stn->leg[dirn]->v)) {
-			d b;
+			delta b;
 			int i, j;
 			subdd(&a, &POSD(stn->leg[dirn]->l.to), &stn->leg[dirn]->d);
 			mulvd(&b, &e, &a);
@@ -302,20 +302,20 @@ build_matrix(node *list, long n, pos **stn_tab)
       }
 
 #if PRINT_MATRICES
-      print_matrix(M, B, n * FACTOR); /* 'ave a look! */
+      print_matrix(M, B, n_stn_tab * FACTOR); /* 'ave a look! */
 #endif
 
 #ifdef SOR
       /* defined in network.c, may be altered by -z<letters> on command line */
       if (optimize & BITA('i'))
-	 sor(M, B, n * FACTOR);
+	 sor(M, B, n_stn_tab * FACTOR);
       else
 #endif
-	 choleski(M, B, n * FACTOR);
+	 choleski(M, B, n_stn_tab * FACTOR);
 
       {
 	 int m;
-	 for (m = (int)(n - 1); m >= 0; m--) {
+	 for (m = (int)(n_stn_tab - 1); m >= 0; m--) {
 #ifdef NO_COVARIANCES
 	    stn_tab[m]->p[dim] = B[m];
 	    if (dim == 0) {
@@ -332,7 +332,7 @@ build_matrix(node *list, long n, pos **stn_tab)
 #endif
 	 }
 #if EXPLICIT_FIXED_FLAG
-	 for (m = n - 1; m >= 0; m--) fixpos(stn_tab[m]);
+	 for (m = n_stn_tab - 1; m >= 0; m--) fixpos(stn_tab[m]);
 #endif
       }
    }
@@ -344,21 +344,19 @@ static int
 find_stn_in_tab(node *stn)
 {
    int i = 0;
-   pos *pos;
-
-   pos = stn->name->pos;
-   while (stn_tab[i] != pos)
+   pos *p = stn->name->pos;
+   while (stn_tab[i] != p)
       if (++i == n_stn_tab) {
 #if DEBUG_INVALID
 	 fputs("Station ", stderr);
-	 fprint_prefix(stderr,stn->name);
-	 fputs(" not in table\n\n",stderr);
+	 fprint_prefix(stderr, stn->name);
+	 fputs(" not in table\n\n", stderr);
 #endif
 #if 0
 	 print_prefix(stn->name);
 	 printf(" used: %d colour %d\n",
 		(!!stn->leg[2])<<2 | (!!stn->leg[1])<<1 | (!!stn->leg[0]),
-		stn->colour );
+		stn->colour);
 #endif
 	 fatalerror(/*Bug in program detected! Please report this to the authors*/11);
       }
@@ -369,13 +367,11 @@ static int
 add_stn_to_tab(node *stn)
 {
    int i;
-   pos *pos;
-
-   pos = stn->name->pos;
+   pos *p = stn->name->pos;
    for (i = 0; i < n_stn_tab; i++) {
-      if (stn_tab[i] == pos) return i;
+      if (stn_tab[i] == p) return i;
    }
-   stn_tab[n_stn_tab++] = pos;
+   stn_tab[n_stn_tab++] = p;
    return i;
 }
 

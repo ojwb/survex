@@ -129,9 +129,9 @@ typedef enum {
 
 /* type of a function to read in some data style */
 #ifdef SVX_MULTILINEDATA
-typedef int (*style)(int);
+typedef int (*style_fn)(int);
 #else
-typedef int (*style)(void);
+typedef int (*style_fn)(void);
 #endif
 
 /* Structures */
@@ -142,7 +142,7 @@ typedef struct Prefix {
    struct Prefix *up, *down, *right;
    struct Node *stn;
    struct Pos *pos;
-   char *ident;
+   const char *ident;
    const char *filename;
    unsigned int line;
    /* if (min_export == 0) then max_export is max # levels above is this
@@ -171,7 +171,7 @@ typedef real var[3][3];
 #endif
 
 /* position or length vector */
-typedef real d[3];
+typedef real delta[3];
 
 /* stuff stored for both forward & reverse legs */
 typedef struct {
@@ -198,7 +198,7 @@ typedef struct LinkRev {
 /* forward leg - deltas & vars stored here */
 typedef struct Link {
    linkcommon l;
-   d d; /* Delta */
+   delta d; /* Delta */
    var v; /* Variances */
 } linkfor;
 
@@ -214,7 +214,7 @@ typedef struct Node {
 
 /* station position */
 typedef struct Pos {
-   d p; /* Position */
+   delta p; /* Position */
    int shape;
 #if EXPLICIT_FIXED_FLAG
    uchar fFixed; /* flag indicating if station is a fixed point */
@@ -228,7 +228,7 @@ typedef struct Pos {
 struct Twig {
   struct Twig *up, *down, *right;
   struct Prefix *to, *from;
-  d delta;
+  delta delta;
   int count;
   short int sourceval;
   /* pointers to some random data bits... */
@@ -253,11 +253,11 @@ typedef struct Inst {
 
 /* various settings preserved by *BEGIN and *END */
 typedef struct Settings {
-   int Truncate;
+   unsigned int Truncate;
 /*   bool f0Eq;*/
    bool f90Up;
    enum {OFF, LOWER, UPPER} Case;
-   style Style;
+   style_fn Style;
    prefix *Prefix;
    prefix *tag; /* used to check BEGIN/END tags match */
    short *Translate; /* if short is >= 16 bits, which ANSI requires */

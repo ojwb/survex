@@ -63,14 +63,18 @@ static int fPercent = -1, fAscii = 0;
 
 #define STDERR stdout
 
-static void wr(char *msg) {
+static void
+wr(const char *msg)
+{
    if (msg) puts(msg);
 }
 
-static void fatal(char *msg, void (*fn)(char *), char *szArg) {
-  fprintf(STDERR, "\nFatal error from survex: %s\n", msg);
-  if (fn) (fn)(szArg);
-  exit(EXIT_FAILURE);
+static void
+fatal(const char *msg, void (*fn)(const char *), const char *szArg)
+{
+   fprintf(STDERR, "\nFatal error from survex: %s\n", msg);
+   if (fn) (fn)(szArg);
+   exit(EXIT_FAILURE);
 }
 
 static void *xmalloc(size_t size) {
@@ -254,10 +258,10 @@ PthFromFnm(const char *fnm)
 
 typedef enum {COMMAND,COMMAND_FILENAME,SVX_FILE,TITLE} Mode;
 
-static void process_command( char * string, char * pth );
-static void command_file( char * pth, char * fnm );
-static void checkmode(Mode mode,void (*fn)( char * ),char * szArg);
-static void skipopt( char * sz );
+static void process_command(const char * string, const char * pth);
+static void command_file(const char * pth, const char * fnm);
+static void checkmode(void (*fn)(const char *), const char * arg);
+static void skipopt(const char * s);
 
 #define TITLE_LEN 80
 static char szSurveyTitle[TITLE_LEN];
@@ -276,7 +280,7 @@ static void process_command_line(int argc, char **argv) {
   for (j = 0; ++j < argc; ) process_command(argv[j], "");
 
   /* Check if everything's okay */
-  checkmode(mode,skipopt,NULL);
+  checkmode(skipopt,NULL);
 }
 
 static void
@@ -288,15 +292,15 @@ include(const char *fnm)
    add_to_list(p);
 }
 
-static char *datafile(char *fnm,char *pth) {
+static const char *datafile(const char *fnm, const char *pth) {
    /* if no pth treat fnm as absolute */
    if (pth != NULL && *pth != '\0' && !fAbsoluteFnm(fnm)) {
-      fnm = UsePth(pth, fnm);
-      include(fnm);
+      char *f = UsePth(pth, fnm);
+      include(f);
       if (!output_to) {
-	 output_to = fnm;
+	 output_to = f;
       } else {
-	 free(fnm);
+	 free(f);
       }
    } else {
       include(fnm);
@@ -308,9 +312,10 @@ static char *datafile(char *fnm,char *pth) {
    return "";
 }
 
-static char *process_command_mode( char *string, char *pth ) {
-  char ch, *sz=string;
-  ch=*(sz++);
+static const char *process_command_mode(const char *string, const char *pth) {
+  char ch;
+  const char *sz = string;
+  ch = *(sz++);
   if (strchr(SWITCH_SYMBOLS,ch)!=NULL) {
     char chOpt;
     int fSwitch=fTrue;
@@ -413,10 +418,10 @@ static char *process_command_mode( char *string, char *pth ) {
   return sz;
 }
 
-static void process_command( char * string, char * pth ) {
-  char * sz=string;
+static void process_command(const char * string, const char * pth) {
+  const char * sz = string;
 /*  printf("%d >%s<\n",mode,sz); */
-  while (*sz!='\0') {
+  while (*sz) {
     switch (mode) {
       case COMMAND:
         sz=process_command_mode(sz,pth);
@@ -426,9 +431,9 @@ static void process_command( char * string, char * pth ) {
         mode=COMMAND;
         break;
       case COMMAND_FILENAME:
-        mode=COMMAND;
-        command_file( pth, sz );
-        sz="";
+        mode = COMMAND;
+        command_file(pth, sz);
+        sz = "";
         break;
       case TITLE: {
 	 /* Survey title */
@@ -447,12 +452,12 @@ static void process_command( char * string, char * pth ) {
 #define COMMAND_BUFFER_LEN 256
 static char buffer[COMMAND_BUFFER_LEN];
 
-static void command_file( char * pth, char * fnm ) {
+static void command_file(const char * pth, const char * fnm) {
   FILE *fh;
-  int   byte;
+  int   ch;
   char  cmdbuf[COMMAND_BUFFER_LEN];
   int   i;
-  char *    fnmUsed;
+  char *fnmUsed, *path;
   int  fQuoted;
 
   fh=fopenWithPthAndExt( pth, fnm, EXT_SVX_CMND, "r", &fnmUsed );
@@ -460,58 +465,58 @@ static void command_file( char * pth, char * fnm ) {
     fatal("Couldn't open command file",skipopt,fnm);
     return;
   }
-  pth=PthFromFnm(fnmUsed);
+  path = PthFromFnm(fnmUsed);
   if (!output_to) {
      output_to = xmalloc(strlen(fnmUsed) + 1);
      strcpy(output_to, fnmUsed);
   }
   free(fnmUsed); /* not needed now */
 
-  byte=fgetc(fh);
-  while (byte!=EOF) {
+  ch=fgetc(fh);
+  while (ch!=EOF) {
     fQuoted=fFalse;
     i=0;
-    if (byte=='\"') {
+    if (ch=='\"') {
       fQuoted=fTrue;
-      byte=fgetc(fh);
+      ch=fgetc(fh);
     }
-    while ( (byte!=EOF) && (byte!=COMMAND_FILE_COMMENT_CHAR) ) {
-      if (isspace(byte) || (byte==CR))
-        byte=' ';
+    while ( (ch!=EOF) && (ch!=COMMAND_FILE_COMMENT_CHAR) ) {
+      if (isspace(ch) || (ch==CR))
+        ch=' ';
       /* if it's quoted, a quote ends it, else whitespace ends it */
-      if (byte == (fQuoted ? '\"' : ' ') )
+      if (ch == (fQuoted ? '\"' : ' ') )
         break;
-      cmdbuf[i++]=byte;
+      cmdbuf[i++]=ch;
       if (i>=COMMAND_BUFFER_LEN) {
         buffer[COMMAND_BUFFER_LEN-1]='\0';
 	fatal("Command too long",skipopt,cmdbuf);
         i=0; /* kills line */
-        byte=COMMAND_FILE_COMMENT_CHAR; /* skips to end of line */
+        ch=COMMAND_FILE_COMMENT_CHAR; /* skips to end of line */
         break;
       }
-      byte=fgetc(fh);
+      ch=fgetc(fh);
     }
-    if (byte==COMMAND_FILE_COMMENT_CHAR) { /* NB fiddle above if modifying */
-      while ((byte!=LF) && (byte!=CR) && (byte!=EOF))
-        byte=fgetc(fh);
+    if (ch==COMMAND_FILE_COMMENT_CHAR) { /* NB fiddle above if modifying */
+      while ((ch!=LF) && (ch!=CR) && (ch!=EOF))
+        ch=fgetc(fh);
     }
     /* skip character if not EOF */
-    if (byte!=EOF)
-      byte=fgetc(fh);
+    if (ch!=EOF)
+      ch=fgetc(fh);
     if (i>0) {
       cmdbuf[i]='\0';
-      process_command( cmdbuf, pth );
+      process_command(cmdbuf, path);
     }
   }
-  if (ferror(fh)||(fclose(fh)==EOF)) {
-     fatal("Couldn't close command file",wr,fnm);
+  if (ferror(fh) || fclose(fh) == EOF) {
+     fatal("Couldn't close command file", wr, fnm);
   }
-/* checkmode(mode,skipopt,fnm); */
-  free(pth);
+/* checkmode(skipopt,fnm); */
+  free(path);
 }
 
-static void checkmode(Mode mode,void (*fn)( char * ),char * szArg) {
-  char *msg;
+static void checkmode(void (*fn)(const char *), const char * arg) {
+  const char *msg;
   switch (mode) {
     case SVX_FILE:
       msg = "Data filename expected after -D";
@@ -527,10 +532,10 @@ static void checkmode(Mode mode,void (*fn)( char * ),char * szArg) {
     default:
       return;
   }
-  fatal(msg,fn,szArg);
+  fatal(msg, fn, arg);
 }
 
-static void skipopt(char * sz) {
+static void skipopt(const char * sz) {
    if (sz) puts(sz);
    puts("Skipping bad command line option");
 }
@@ -588,13 +593,23 @@ main(int argc, char **argv) {
 
    i = 1;
    /* ick: honour -P or -!P if specified, else use new default on no %ages */
-   if (fPercent == 1) args[i++] = "--percentage";
-   if (fAscii) args[i++] = "--ascii";
+   if (fPercent == 1) {
+      static char arg[] = "--percentage";
+      args[i++] = arg;
+   }
+   if (fAscii) {
+      static char arg[] = "--ascii";
+      args[i++] = arg;
+   }
    if (output_to) {
-      args[i++] = "--output";
+      static char arg[] = "--output";
+      args[i++] = arg;
       args[i++] = output_to;
    }
-   args[i++] = MYTMP;
+   {
+      static char arg[] = MYTMP;
+      args[i++] = arg;
+   }
    args[i] = NULL;
 
    fputs("; This file was automatically generated from a pre-0.90 survex command line\n"

@@ -76,7 +76,7 @@ static long colour;
 static ulong
 visit(node *stn, int back)
 {
-   long min;
+   long min_colour;
    int i;
    node *stn2;
    liv *livTos = NULL;
@@ -85,7 +85,7 @@ visit(node *stn, int back)
 #endif
 
 iter:
-   min = ++colour;
+   min_colour = ++colour;
 #ifdef DEBUG_ARTIC
    printf("visit: stn [%p] ", stn);
    print_prefix(stn->name);
@@ -109,12 +109,12 @@ iter:
 	    add_stn_to_list(&artlist, to);
 	 }
 
-	 if (c && c < min) min = c;
+	 if (c && c < min_colour) min_colour = c;
       }
    }
-   stn->colour = min;
+   stn->colour = min_colour;
 #ifdef DEBUG_ARTIC
-   printf("%d\n", min);
+   printf("%d\n", min_colour);
 #endif
    for (i = 0; i <= 2 && stn->leg[i]; i++) {
       if (stn->leg[i]->l.to->colour == 0) {
@@ -134,7 +134,7 @@ uniter:
 	 printf("unwind: stn [%p] ", stn2);
 	 print_prefix(stn2->name);
 	 printf(" colour %d, min %d, station after %d\n", stn2->colour,
-		min, stn->colour);
+		min_colour, stn->colour);
 #endif
 
 #ifdef DEBUG_ARTIC
@@ -149,10 +149,10 @@ uniter:
 	 printf(">> %p\n", stn);
 #endif
 
-	 if (stn->colour < min) {
+	 if (stn->colour < min_colour) {
 	    articulation *art;
 
-	    min = stn->colour;
+	    min_colour = stn->colour;
 
 	    /* FIXME: note down leg (<-), remove and replace:
 	     *                 /\   /        /\
@@ -197,7 +197,7 @@ uniter:
 #endif
    remove_stn_from_list(&stnlist, stn);
    add_stn_to_list(&artlist, stn);
-   return min;
+   return min_colour;
 }
 
 extern void
@@ -366,79 +366,78 @@ articulate(void)
       component_list = comp;
       articulation_list = NULL;
    }
-     {
-	component *comp;
-	articulation *art;
-	node *stn;
+   {
+      component *comp;
+      articulation *art;
 
 #if 0
-	/* reverse component list (why?) */
-	component *rev = NULL;
-	comp = component_list;
-	while (comp) {
-	   component *tmp = comp->next;
-	   comp->next = rev;
-	   rev = comp;
-	   comp = tmp;
-	}
-	component_list = rev;
+      /* reverse component list (why?) */
+      component *rev = NULL;
+      comp = component_list;
+      while (comp) {
+	 component *tmp = comp->next;
+	 comp->next = rev;
+	 rev = comp;
+	 comp = tmp;
+      }
+      component_list = rev;
 #endif
 
 #ifdef DEBUG_ARTIC
-	printf("\nDump of %d components:\n", cComponents);
+      printf("\nDump of %d components:\n", cComponents);
 #endif
-	for (comp = component_list; comp; comp = comp->next) {
-	   node *list = NULL, *listend = NULL;
+      for (comp = component_list; comp; comp = comp->next) {
+	 node *list = NULL, *listend = NULL;
 #ifdef DEBUG_ARTIC
-	   printf("Component:\n");
+	 printf("Component:\n");
 #endif
-	   ASSERT(comp->artic);
-	   for (art = comp->artic; art; art = art->next) {
+	 ASSERT(comp->artic);
+	 for (art = comp->artic; art; art = art->next) {
 #ifdef DEBUG_ARTIC
-	      printf("  Articulation (%p):\n", art->stnlist);
+	    printf("  Articulation (%p):\n", art->stnlist);
 #endif
-	      ASSERT(art->stnlist);
-	      if (listend) {
-		 listend->next = art->stnlist;
-		 art->stnlist->prev = listend;
-	      } else {
-		 list = art->stnlist;
-	      }
+	    ASSERT(art->stnlist);
+	    if (listend) {
+	       listend->next = art->stnlist;
+	       art->stnlist->prev = listend;
+	    } else {
+	       list = art->stnlist;
+	    }
 
-	      FOR_EACH_STN(stn, art->stnlist) {
+	    FOR_EACH_STN(stn, art->stnlist) {
 #ifdef DEBUG_ARTIC
-		 printf("    %d %p (", stn->colour, stn);
-		 print_prefix(stn->name);
-		 printf(")\n");
+	       printf("    %d %p (", stn->colour, stn);
+	       print_prefix(stn->name);
+	       printf(")\n");
 #endif
-		 listend = stn;
-	      }
-	   }
+	       listend = stn;
+	    }
+	 }
 #ifdef DEBUG_ARTIC
-	   putnl();
-	   FOR_EACH_STN(stn, list) {
-	      printf("MX: %c %p (", fixed(stn)?'*':' ', stn);
-	      print_prefix(stn->name);
-	      printf(")\n");
-	   }
+	 putnl();
+	 FOR_EACH_STN(stn, list) {
+	    printf("MX: %c %p (", fixed(stn)?'*':' ', stn);
+	    print_prefix(stn->name);
+	    printf(")\n");
+	 }
 #endif
-	   solve_matrix(list);
+	 solve_matrix(list);
 #ifdef DEBUG_ARTIC
-	   putnl();
-	   FOR_EACH_STN(stn, list) {
-	      printf("%c %p (", fixed(stn)?'*':' ', stn);
-	      print_prefix(stn->name);
-	      printf(")\n");
-	   }
+	 putnl();
+	 FOR_EACH_STN(stn, list) {
+	    printf("%c %p (", fixed(stn)?'*':' ', stn);
+	    print_prefix(stn->name);
+	    printf(")\n");
+	 }
 #endif
-	   listend->next = stnlist;
-	   if (stnlist) stnlist->prev = listend;
-	   stnlist = list;
-	}
+	 listend->next = stnlist;
+	 if (stnlist) stnlist->prev = listend;
+	 stnlist = list;
+      }
 #ifdef DEBUG_ARTIC
-	printf("done articulating\n");
+      printf("done articulating\n");
 #endif
-     }
+   }
 
 #ifdef DEBUG_ARTIC
    /* highlight unfixed bits */
