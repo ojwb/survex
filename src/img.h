@@ -79,6 +79,7 @@ extern unsigned int img_output_version;
 /* Open a .3d file for reading
  * fnm is the filename
  * title_buf and date_buf should be buffers to put the title and datestamp in
+ * (each of size 256 chars) or NULL if you don't want the information
  * Returns pointer to an img struct or NULL
  */
 img *img_open(const char *fnm, char *title_buf, char *date_buf);

@@ -186,7 +186,6 @@ img_open(const char *fnm, char *title_buf, char *date_buf)
       img_errno = IMG_BADFORMAT;
       return NULL;
    }
-   /* FIXME sizeof parameter is rather bogus here */
    getline((title_buf ? title_buf : tmpbuf), TMPBUFLEN, pimg->fh);
    getline((date_buf ? date_buf : tmpbuf), TMPBUFLEN, pimg->fh);
    pimg->fLinePending = fFalse; /* not in the middle of a 'LINE' command */
@@ -319,7 +318,7 @@ img_read_item(img *pimg, img_point *p)
 	    }
 	    pimg->buf_len = len + 1;
 	 }
-	 fread(pimg->label, len, 1, pimg->fh); /* FIXME: check params ; check error */
+	 if (fread(pimg->label, len, 1, pimg->fh) != 1) return img_BAD;
 	 break;
        }
        case 4:
@@ -338,7 +337,7 @@ img_read_item(img *pimg, img_point *p)
 	    char *q;
 	    pimg->flags = (int)opt & 0x3f;
 	    result = img_LABEL;
-	    fgets(pimg->label, 257, pimg->fh);
+	    if (!fgets(pimg->label, 257, pimg->fh)) return img_BAD;
 	    q = pimg->label + strlen(pimg->label) - 1;
 	    if (*q != '\n') return img_BAD;
 	    *q = '\0';
@@ -388,12 +387,14 @@ img_read_item(img *pimg, img_point *p)
 	       return img_BAD;
 	    goto ascii_again;
 	 } else if (strcmp(tmpbuf, "name") == 0) {
-	    /* FIXME: may overflow... */
 	    int ch;
 	    ch = getc(pimg->fh);
 	    if (ch == EOF) return img_BAD;
 	    if (ch != '\\') ungetc(ch, pimg->fh);
-	    if (fscanf(pimg->fh, "%s", pimg->label) < 1) return img_BAD;
+	    if (fscanf(pimg->fh, "%256s", pimg->label) < 1 ||
+		strlen(pimg->label) == 256) {
+	       return img_BAD;
+	    }
 	    result = img_LABEL;
 	 } else
 	    return img_BAD; /* unknown keyword */
@@ -423,7 +424,6 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	    fputsnl(s, pimg->fh);
 	    return;
 	 }
-	 /* FIXME: handle flags... */
 	 len = strlen(s);
 	 if (len > 255 || strchr(s, '\n')) {
 	    /* long label - not in early incarnations of v2 format, but few
