@@ -1014,7 +1014,7 @@ process_focus(Display * display, Window window, int ix, int iy)
    y = (int)((float)(height - iy) / scale);
    sx = sin(view_angle * PIBY180);
    cx = cos(view_angle * PIBY180);
-   /* printf("process focus: ix=%d, iy=%d, x=%lf, y=%lf\n", ix, iy, (double)x, (double)y); */
+   /* printf("process focus: ix=%d, iy=%d, x=%f, y=%f\n", ix, iy, (double)x, (double)y); */
    /* no distinction between PLAN or ELEVATION in the focus any more */
    /* plan_elev is no longer maintained correctly anyway JPNP 14/06/97 */
    if (plan_elev == PLAN) {
@@ -1072,7 +1072,7 @@ process_focus(Display * display, Window window, int ix, int iy)
       }
    }
 
-   /*printf("x_mid, y_mid moved to %lf,%lf\n", (double)x_mid, (double)y_mid); */
+   /*printf("x_mid, y_mid moved to %f,%f\n", (double)x_mid, (double)y_mid); */
 }
 
 static void
