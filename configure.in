@@ -16,10 +16,17 @@ AC_DEFINE(AVEN_COPYRIGHT_MSG,
 "Copyright (C) 1999-2001 Mark R. Shinwell", [Copyright Message for Aven])
 
 dnl set PRETTYPACKAGE to PACKAGE with the first character capitalised
-PRETTYPACKAGE=`echo $PACKAGE|cut -b1|tr 'a-z' 'A-Z'``echo $PACKAGE|cut -b2-`
+PRETTYPACKAGE=`echo "$PACKAGE"|cut -b1|tr 'a-z' 'A-Z'``echo "$PACKAGE"|cut -b2-`
 AC_DEFINE_UNQUOTED(PRETTYPACKAGE, "$PRETTYPACKAGE",
-                   [Name of Package (Capitalised)])
+                   [Name of package (capitalised)])
 AC_SUBST(PRETTYPACKAGE)
+
+dnl set COMMAVERSION to VERSION with the dots replaced by commas -
+dnl e.g. "0,99" or "1,0,22"
+COMMAVERSION=`echo "$VERSION"|tr '.' ','`
+AC_DEFINE_UNQUOTED(COMMAVERSION, $COMMAVERSION,
+                   [Version number of package (comma-separated)])
+AC_SUBST(COMMAVERSION)
 
 dnl Checks for programs.
 AC_PROG_CC

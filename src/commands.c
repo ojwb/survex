@@ -1371,18 +1371,16 @@ cmd_truncate(void)
 static void
 cmd_require(void)
 {
-   static char version[] = VERSION;
-   char *p = version;
+   const unsigned int version[] = {COMMAVERSION};
+   const unsigned int *ver = version;
    filepos fp;
 
    skipblanks();
    get_pos(&fp);
    while (1) {
-      unsigned int have, want;
-      have = (unsigned int)strtoul(p, &p, 10);
-      want = read_uint();
-      if (have > want) break;
-      if (have < want) {
+      int diff = *ver++ - read_uint();
+      if (diff > 0) break;
+      if (diff < 0) {
 	 size_t i, len;
 	 char *v;
 	 filepos fp_tmp;
@@ -1402,8 +1400,7 @@ cmd_require(void)
       }
       if (ch != '.') break;
       nextch();
-      if (!isdigit(ch) || *p != '.') break;
-      p++;
+      if (!isdigit(ch) || ver == version + sizeof(version)) break;
    }
    /* skip rest of version number */
    while (isdigit(ch) || ch == '.') nextch();
