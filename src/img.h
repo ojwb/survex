@@ -70,9 +70,13 @@ typedef struct {
    int fRead;        /* fTrue for reading, fFalse for writing */
 # endif
    long start;
-   /* version of file format (0 => 0.01 ascii, 1 => 0.01 binary,
-    * 2 => byte actions and flags, 3 => prefixes for legs; compressed
-    * prefixes) */
+   /* version of file format:
+    *  -1 => .pos file
+    *   0 => 0.01 ascii
+    *   1 => 0.01 binary,
+    *   2 => byte actions and flags
+    *   3 => prefixes for legs; compressed prefixes)
+    */
    int version;
    char *survey;
    size_t survey_len;

@@ -1,4 +1,4 @@
-/* > img.c
+/* img.c
  * Routines for reading and writing Survex ".3d" image files
  * Copyright (C) 1993-2001 Olly Betts
  *
@@ -114,6 +114,9 @@ static enum {
 static img_errcode img_errno = IMG_NONE;
 #endif
 
+/* Attempt to string paste to ensure we are passed a literal string */
+#define LITLEN(S) (sizeof(S"") - 1)
+
 /* Read a line from a stream to a buffer. Any eol chars are removed
  * from the file and the length of the string excluding '\0' is returned */
 static int
@@ -191,6 +194,7 @@ img *
 img_open_survey(const char *fnm, const char *survey)
 {
    img *pimg;
+   size_t len;
 
    if (fDirectory(fnm)) {
       img_errno = IMG_DIRECTORY;
@@ -218,6 +222,54 @@ img_open_survey(const char *fnm, const char *survey)
       return NULL;
    }
 
+   pimg->fRead = fTrue; /* reading from this file */
+   img_errno = IMG_NONE;
+   pimg->start = ftell(pimg->fh);
+
+   pimg->flags = 0;
+
+   /* for version 3 we use label_buf to store the prefix for reuse */
+   pimg->label_len = 0;
+
+   pimg->survey = NULL;
+   pimg->survey_len = 0;
+
+   if (survey) {
+      len = strlen(survey);
+      if (len) {
+	 if (survey[len - 1] == '.') len--;
+	 if (len) {
+	    char *p;
+	    pimg->survey = osmalloc(len + 2);
+	    memcpy(pimg->survey, survey, len);
+	    /* Set title to leaf survey name */
+	    pimg->survey[len] = '\0';
+	    p = strchr(pimg->survey, '.');
+	    if (p) p++; else p = pimg->survey;
+	    strcpy(pimg->title, p);
+	    pimg->survey[len] = '.';
+	    pimg->survey[len + 1] = '\0';
+	 }
+      }
+      pimg->survey_len = len;
+   }
+
+   /* [version -1] already skipped heading line, or there wasn't one
+    * [version 0] not in the middle of a 'LINE' command
+    * [version 3] not in the middle of turning a LINE into a MOVE
+    */
+   pimg->pending = 0;
+
+   len = strlen(fnm);
+   if (len > LITLEN(EXT_SVX_POS) + 1 &&
+       fnm[len - LITLEN(EXT_SVX_POS) - 1] == FNM_SEP_EXT &&
+       strcmp(fnm + len - LITLEN(EXT_SVX_POS), EXT_SVX_POS) == 0) {
+      pimg->version = -1;
+      pimg->title = baseleaf_from_fnm(fnm);
+      pimg->datestamp = osstrdup(msg(/*Date and time not available.*/108));
+      return pimg;
+   }
+
    getline(tmpbuf, TMPBUFLEN, pimg->fh); /* id string */
    if (strcmp(tmpbuf, "Survex 3D Image File") != 0) {
       fclose(pimg->fh);
@@ -230,7 +282,7 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->version = (tolower(*tmpbuf) == 'b'); /* binary file iff B/b prefix */
    /* knock off the 'B' or 'b' if it's there */
    if (strcmp(tmpbuf + pimg->version, "v0.01") == 0) {
-      pimg->flags = 0;
+      /* nothing special to do */
    } else if (pimg->version == 0 && tmpbuf[0] == 'v') {
       if (tmpbuf[1] < '2' || tmpbuf[1] > '3' || tmpbuf[2] != '\0') {
 	 fclose(pimg->fh);
@@ -255,40 +307,6 @@ img_open_survey(const char *fnm, const char *survey)
       img_errno = IMG_OUTOFMEMORY;
       return NULL;
    }
-
-   pimg->fRead = fTrue; /* reading from this file */
-   img_errno = IMG_NONE;
-   pimg->start = ftell(pimg->fh);
-
-   /* for version 3 we use label_buf to store the prefix for reuse */
-   pimg->label_len = 0;
-
-   pimg->survey = NULL;
-   pimg->survey_len = 0;
-
-   if (survey) {
-      size_t len = strlen(survey);
-      if (len) {
-	 if (survey[len - 1] == '.') len--;
-	 if (len) {
-	    char *p;
-	    pimg->survey = osmalloc(len + 2);
-	    memcpy(pimg->survey, survey, len);
-	    /* Set title to leaf survey name */
-	    pimg->survey[len] = '\0';
-	    p = strchr(pimg->survey, '.');
-	    if (p) p++; else p = pimg->survey;
-	    strcpy(pimg->title, p);
-	    pimg->survey[len] = '.';
-	    pimg->survey[len + 1] = '\0';
-	 }
-      }
-      pimg->survey_len = len;
-   }
-
-   /* [version 0] not in the middle of a 'LINE' command
-    * [version 3] not in the middle of turning a LINE into a MOVE */
-   pimg->pending = 0;
 
    return pimg;
 }
@@ -703,7 +721,7 @@ img_read_item(img *pimg, img_point *p)
       }
 
       return result;
-   } else {
+   } else if (pimg->version == 0) {
       ascii_again:
       pimg->label[0] = '\0';
       if (feof(pimg->fh)) return img_STOP;
@@ -728,26 +746,26 @@ img_read_item(img *pimg, img_point *p)
 	    }
 	    goto ascii_again;
 	 } else if (strcmp(tmpbuf, "name") == 0) {
-	    int ch;
-	    ch = getc(pimg->fh);
-	    if (ch == EOF) {
-	       img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
-	       return img_BAD;
-	    }
-	    if (ch != '\\') {
-	       if (ungetc(ch, pimg->fh) == EOF) {
+	    size_t off = 0;
+	    pimg->label_buf[0] = '\0';
+	    while (!feof(pimg->fh)) {
+	       if (!fgets(pimg->label_buf + off, pimg->buf_len - off, pimg->fh)) {
 		  img_errno = IMG_READERROR;
 		  return img_BAD;
 	       }
+
+	       off += strlen(pimg->label_buf + off);
+	       if (off && pimg->label_buf[off - 1] == '\n') {
+		  pimg->label_buf[off - 1] = '\0';
+		  break;
+	       }
+	       pimg->buf_len += pimg->buf_len;
+	       pimg->label_buf = xosrealloc(pimg->label_buf, pimg->buf_len);
 	    }
-	    if (fscanf(pimg->fh, "%256s", pimg->label_buf) < 1) {
-	       img_errno = ferror(pimg->fh) ? IMG_READERROR : IMG_BADFORMAT;
-	       return img_BAD;
-	    }
-	    if (strlen(pimg->label_buf) == 256) {
-	       img_errno = IMG_BADFORMAT;
-	       return img_BAD;
-	    }
+
+	    if (pimg->label[0] == '\\')
+	       memmove(pimg->label, pimg->label + 1, off - 1);
+      
 	    result = img_LABEL;
 	 } else {
 	    img_errno = IMG_BADFORMAT;
@@ -768,6 +786,47 @@ img_read_item(img *pimg, img_point *p)
       }
 
       return result;
+   } else {
+      /* version -1: .pos file */
+      size_t off = 0;
+      while (fscanf(pimg->fh, "(%lf,%lf,%lf ) ", &p->x, &p->y, &p->z) != 3) {
+	 int ch;
+	 if (ferror(pimg->fh)) {
+	    img_errno = IMG_READERROR;
+	    return img_BAD;
+	 }
+	 if (feof(pimg->fh)) return img_STOP;
+	 if (pimg->pending) {
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
+	 pimg->pending = 1;
+	 /* ignore rest of line */
+	 do {
+	    ch = getc(pimg->fh);
+	 } while (ch != '\n' && ch != '\r' && ch != EOF);
+      }
+
+      pimg->label_buf[0] = '\0';
+      while (!feof(pimg->fh)) {
+	 if (!fgets(pimg->label_buf + off, pimg->buf_len - off, pimg->fh)) {
+	    img_errno = IMG_READERROR;
+	    return img_BAD;
+	 }
+
+	 off += strlen(pimg->label_buf + off);
+	 if (off && pimg->label_buf[off - 1] == '\n') {
+	    pimg->label_buf[off - 1] = '\0';
+	    break;
+	 }
+	 pimg->buf_len += pimg->buf_len;
+	 pimg->label_buf = xosrealloc(pimg->label_buf, pimg->buf_len);
+      }
+
+      if (pimg->label[0] == '\\')
+	 memmove(pimg->label, pimg->label + 1, off - 1);
+      
+      return img_LABEL;
    }
 }
 

@@ -86,6 +86,10 @@
 
 * xcaverot: report more detailed error when .3d file can't be loaded.
 
+* img library can now read .pos files as if they were .3d files with
+  just stations in, so all programs which can read .3d files can also
+  now read .pos files.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

@@ -1,4 +1,4 @@
-/* > diffpos.c */
+/* diffpos.c */
 /* Utility to compare two SURVEX .pos or .3d files */
 /* Copyright (C) 1994,1996,1998,1999,2001 Olly Betts
  *
@@ -200,8 +200,8 @@ tree_check(void)
 }
 
 static void
-parse_3d_file(const char *fnm, const char *survey,
-	      void (*tree_func)(const char *, const img_point *))
+parse_file(const char *fnm, const char *survey,
+	   void (*tree_func)(const char *, const img_point *))
 {
    img_point pt;
    int result;
@@ -225,98 +225,6 @@ parse_3d_file(const char *fnm, const char *survey,
    } while (result != img_STOP);
       
    img_close(pimg);
-}
-
-static void
-parse_pos_file(const char *fnm, const char *survey,
-	       void (*tree_func)(const char *, const img_point *))
-{
-   FILE *fh;
-   img_point pt;
-   char *buf;
-   size_t buf_len = 256;
-
-   char *pfx = NULL;
-   size_t pfx_len = 0;
-
-   if (survey) {
-      pfx_len = strlen(survey);
-      if (pfx_len) {
-	 if (survey[pfx_len - 1] == '.') pfx_len--;
-	 if (pfx_len) {
-	    pfx = osmalloc(pfx_len + 2);
-	    memcpy(pfx, survey, pfx_len);
-	    pfx[pfx_len++] = '.';
-	    pfx[pfx_len] = '\0';
-	 }
-      }
-   }
-   
-   buf = osmalloc(buf_len);
-   
-   fh = fopen(fnm, "rb");
-   if (!fh) fatalerror(/*Couldn't open file `%s'*/93, fnm);
-
-   while (1) {
-      size_t off = 0;
-      long fp = ftell(fh);
-      if (fp == -1) break;
-      if (fscanf(fh, "(%lf,%lf,%lf ) ", &pt.x, &pt.y, &pt.z) != 3) {
-	 int ch;
-	 if (fseek(fh, fp, SEEK_SET) == -1) break;
-	 ch = getc(fh);
-	 if (ch == EOF) break;
-
-	 printf("%s: %s ", fnm, msg(/*Ignoring:*/503));
-	 while (ch != '\n' && ch != '\r' && ch != EOF) {
-	    putchar(ch);
-	    ch = getc(fh);
-	 }
-	 putchar('\n');
-	 
-	 if (feof(fh)) break;
-	 continue;
-      }
-
-      if (ferror(fh))
-	 fatalerror_in_file(fnm, 0, /*Error reading file*/18);
-
-      buf[0] = '\0';
-      while (!feof(fh)) {
-	 if (!fgets(buf + off, buf_len - off, fh))
-	    fatalerror_in_file(fnm, 0, /*Error reading file*/18);
-
-	 off += strlen(buf + off);
-	 if (off && buf[off - 1] == '\n') {
-	    buf[off - 1] = '\0';
-	    break;
-	 }
-	 buf_len += buf_len;
-	 buf = osrealloc(buf, buf_len);
-      }
-
-      if (!pfx_len || strncmp(buf, pfx, pfx_len) == 0) {
-	 tree_func(buf + pfx_len, &pt);
-      }
-   }
-   (void)fclose(fh);
-
-   osfree(buf);
-   osfree(pfx);
-}
-
-static void
-parse_file(const char *fnm, const char *survey,
-	   void (*tree_func)(const char *, const img_point *))
-{
-   static const char ext3d[] = EXT_SVX_3D;
-   size_t len = strlen(fnm);
-   if (len > sizeof(ext3d) && fnm[len - sizeof(ext3d)] == FNM_SEP_EXT &&
-       strcmp(fnm + len - sizeof(ext3d) + 1, ext3d) == 0) {
-      parse_3d_file(fnm, survey, tree_func);
-   } else {
-      parse_pos_file(fnm, survey, tree_func);
-   }
 }
 
 int
