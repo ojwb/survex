@@ -225,15 +225,15 @@ pt: 15 Final da linha n&atilde;o est&aacute; em branco
 ca: 15 Fi de l&iacute;nia no buit
 es: 15 Fin de l&iacute;nea no vacio
 it: 15 Fine della linea non vuota
-#
-en: 16 There were %d warning(s) and %d non-fatal error(s).
-fr: 16 Il y a %d avertissement(s) et %d erreur(s) non fatale(s).
-de: 16 Es gab %d Warnungen und %d nicht-fatale Fehler.
-#Es wurden %d Warnungen und %d nicht-fatale Fehler registriert.
-pt: 16 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s).
-ca: 16 Hi havia %d alerta(es) i %d error(s) no fatal(s).
-es: 16 Havia %d alerta(s) y %d error(es) no fatal(es).
-it: 16 Ci sono %d avvertimenti e %d errori non fatali.
+# c.f. 113
+en: 16 There were %d warning(s).
+fr: 16 Il y a %d avertissement(s).
+de: 16 Es gab %d Warnungen.
+#Es wurden %d Warnungen registriert.
+pt: 16 H&aacute; %d alerta(s).
+ca: 16 Hi havia %d alerta(es).
+es: 16 Havia %d alerta(s).
+it: 16 Ci sono %d avvertimenti.
 #
 # pipe here means a Unix pipe, which transfers data between two programs
 # -- probably best not to translate it
@@ -1021,7 +1021,17 @@ en:110 Error writing to file `%s'
 en:111 Error writing to file
 # TRANSLATE
 en:112 Couldn't parse .err file
-# XXX 113,114
+# c.f. 16
+# TRANSLATE extra phrase...
+en:113 There were %d warning(s) and %d non-fatal error(s) - no output files produced.
+fr:113 Il y a %d avertissement(s) et %d erreur(s) non fatale(s) - no output files produced.
+de:113 Es gab %d Warnungen und %d nicht-fatale Fehler - no output files produced.
+#Es wurden %d Warnungen und %d nicht-fatale Fehler registriert.
+pt:113 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s) - no output files produced.
+ca:113 Hi havia %d alerta(es) i %d error(s) no fatal(s) - no output files produced.
+es:113 Havia %d alerta(s) y %d error(es) no fatal(es) - no output files produced.
+it:113 Ci sono %d avvertimenti e %d errori non fatali - no output files produced.
+# XXX 114
 en:115 North
 fr:115 Nord
 de:115 Norden

@@ -371,13 +371,14 @@ main(int argc, char **argv)
       puts(msg(/*Done.*/144));
    }
    if (msg_warnings || msg_errors) {
-      printf(msg(/*There were %d warning(s) and %d non-fatal error(s).*/16),
-	     msg_warnings, msg_errors);
+      if (msg_errors || (f_warnings_are_errors && msg_warnings)) {
+	 printf(msg(/*There were %d warning(s) and %d non-fatal error(s) - no output files produced.*/113),
+		msg_warnings, msg_errors);
+	 putnl();
+	 return EXIT_FAILURE;
+      }
+      printf(msg(/*There were %d warning(s).*/16), msg_warnings);
       putnl();
-   }
-   if (msg_errors || (f_warnings_are_errors && msg_warnings)) {
-      puts(msg(/*No output files produced.*/113));
-      return EXIT_FAILURE;
    }
    return EXIT_SUCCESS;
 }

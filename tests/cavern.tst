@@ -145,12 +145,12 @@ for file in $TESTS ; do
     fi
     if test -n "$warn" ; then
       test -f "$testdir"/tmp.out || $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > "$testdir"/tmp.out
-      w=`sed '$!d;$s/^Done./0 /;s/[^0-9]*\([0-9]*\).*/\1/' "$testdir"/tmp.out`
+      w=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*\([0-9]*\).*/\1/' "$testdir"/tmp.out`
       test x"$w" = x"$warn" || exit 1
     fi
     if test -n "$error" ; then
       test -f "$testdir"/tmp.out || $CAVERN $srcdir/$file.svx --output="$testdir"/tmp > "$testdir"/tmp.out
-      e=`sed '$!d;$s/^Done./0 /;s/.*\([0-9][0-9]*\).*/\1/' "$testdir"/tmp.out`
+      e=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*[0-9][0-9]*[^0-9][^0-9]*\([0-9][0-9]*\).*/\1/;s/\(.*[^0-9].*\)/0/' "$testdir"/tmp.out`
       test x"$e" = x"$error" || exit 1
     fi
 
