@@ -3,6 +3,7 @@ use strict;
 
 # run on the output of:
 # cvs2cl --separate-header --no-wrap
+# or vanilla cvs2cl it seems...
 
 my $title = 'ChangeLog';
 $title = "$ARGV[0] $title" if defined $ARGV[0];
