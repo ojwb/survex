@@ -627,7 +627,7 @@ draw_ind_com(Display * display, GC gc, double angle)
 
    rs = r * sin(rad(C_IND_ANG));
    rc = r * cos(rad(C_IND_ANG));
-   sa = sin(rad(angle));
+   sa = -sin(rad(angle));
    ca = cos(rad(angle));
 
    XClearWindow(mydisplay, ind_com);
@@ -680,7 +680,7 @@ draw_label(Display * display, Window window, GC gc, int x, int y,
 static int
 toscreen_x(point * p)
 {
-   return (((p->X - x_mid) * -cv + (p->Y - y_mid) * -sv) * scale) + xoff;
+   return xoff - ((p->X - x_mid) * cv + (p->Y - y_mid) * sv) * scale;
 }
 
 static int
@@ -690,14 +690,14 @@ toscreen_y(point * p)
 
    switch (plan_elev) {
    case PLAN:
-      y = ((p->X - x_mid) * sv - (p->Y - y_mid) * cv) * scale;
+      y = (p->X - x_mid) * sv - (p->Y - y_mid) * cv;
    case ELEVATION:
-      y = (p->Z - z_mid) * scale;
+      y = p->Z - z_mid;
    default:
-      y = (((p->X - x_mid) * sv - (p->Y - y_mid) * cv) * se
-	   + (p->Z - z_mid) * ce) * scale;
+      y = ((p->X - x_mid) * sv - (p->Y - y_mid) * cv) * se
+	  + (p->Z - z_mid) * ce;
    }
-   return yoff - y;
+   return yoff - y * scale;
 }
 
 static void
@@ -770,7 +770,7 @@ fill_segment_cache(void)
    else
       plan_elev = 0;
 
-   sv = -sin(rad(view_angle));
+   sv = sin(rad(view_angle));
    cv = -cos(rad(view_angle));
    se = sin(rad(elev_angle));
    ce = cos(rad(elev_angle));
@@ -1107,7 +1107,7 @@ drag_compass(int x, int y)
    x -= INDWIDTH / 2;
    y -= INDWIDTH / 2;
    /* printf("xm %d, y %d, ", x,y); */
-   view_angle = deg(atan2(x, -y));
+   view_angle = deg(atan2(x, y));
    /* snap view_angle to nearest 45 degrees if outside circle */
    if (x * x + y * y > indrad * indrad)
       view_angle = ((int)((view_angle + 360 + 22) / 45)) * 45;
@@ -1624,15 +1624,15 @@ main(int argc, char **argv)
 			    case 'p':	/* switch to plan */
 			      switch_to_plan();
 			      break;
-			    case 'z':	/* rotn speed down */
-			      rot_speed = rot_speed / 1.5;
-			      if (fabs(rot_speed) < 0.1)
-				 rot_speed = rot_speed > 0 ? 0.1 : -0.1;
-			      break;
-			    case 'x':	/* rotn speed up */
-			      rot_speed = rot_speed * 1.5;
+			    case 'z':	/* rotn speed up */
+			      rot_speed = rot_speed * 1.2;
 			      if (fabs(rot_speed) > 720)
 				 rot_speed = rot_speed > 0 ? 720 : -720;
+			      break;
+			    case 'x':	/* rotn speed down */
+			      rot_speed = rot_speed / 1.2;
+			      if (fabs(rot_speed) < 0.1)
+				 rot_speed = rot_speed > 0 ? 0.1 : -0.1;
 			      break;
 			    case '[':	/* zoom out */
 			    case '{':
@@ -1645,11 +1645,11 @@ main(int argc, char **argv)
 			    case 'r':	/* reverse dirn of rotation */
 			      rot_speed = -rot_speed;
 			      break;
-			    case 'c':	/* rotate one step "clockwise" */
-			      view_angle += rot_speed / 5;
+			    case 'c':	/* rotate one step "anticlockwise" */
+			      view_angle += fabs(rot_speed) / 5;
 			      break;
-			    case 'v':	/* rotate one step "anticlockwise" */
-			      view_angle -= rot_speed / 5;
+			    case 'v':	/* rotate one step "clockwise" */
+			      view_angle -= fabs(rot_speed) / 5;
 			      break;
 			    case '\'':	/* higher viewpoint */
 			    case '@': case '"': /* alternate shifted forms */

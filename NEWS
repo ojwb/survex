@@ -24,6 +24,9 @@
 * (DOS version): caverot: fixed bug Brian Clipstone reported where
   caverot would lock up when trying to plot a label off-screen.
 
+* xcaverot/caverot: tweaked sense of a few controls to be consistent
+  with each other and with aven.
+
 Changes in 0.97-prerelease5:
 
 * survex: conversion wrapper now only creates __svxtmp.svx file if it

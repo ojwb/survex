@@ -466,8 +466,8 @@ process_key(void) /* and mouse! */
 	    degViewStep /= 1.2f;
 	    if (degViewStep <= 0.1) degViewStep = 0.1;
 	    break;
-	  case 'C': degView -= degViewStep * Accel; fChanged = fTrue; break;
-	  case 'V': degView += degViewStep * Accel; fChanged = fTrue; break;
+	  case 'C': degView += degViewStep * Accel; fChanged = fTrue; break;
+	  case 'V': degView -= degViewStep * Accel; fChanged = fTrue; break;
 	  case 'R': fRevRot = !fRevRot; break;
 	  case ' ':            fRotating = fFalse; break;
 	  case RETURN_KEY:     fRotating = fTrue; break;
@@ -687,7 +687,7 @@ show_help(void)
 	{0, "                  Z,X : Faster/Slower rotation", FLAG_ALWAYS},
 	{0, "                    R : [R]everse direction of rotation", FLAG_ALWAYS},
 	{0, "          Enter,Space : Start/Stop auto-rotation", FLAG_ALWAYS},
-	{0, "                  C,V : Rotate cave one step clockwise/anti", FLAG_ALWAYS},
+	{0, "                  C,V : Rotate cave one step (anti)clockwise", FLAG_ALWAYS},
 	{0, "                  ',/ : Higher/Lower viewpoint", FLAG_ALWAYS},
 	{0, "                  ],[ : Zoom In/Out", FLAG_ALWAYS},
 	{0, "                  U,D : View [U]p/[D]own", FLAG_ALWAYS},
