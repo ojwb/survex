@@ -1740,12 +1740,15 @@ bool GfxCore::ShowingMeasuringLine() const
     return (m_there.x != DBL_MAX);
 }
 
-void GfxCore::ToggleFlag(bool* flag, bool refresh)
+void GfxCore::ToggleFlag(bool* flag, int update)
 {
     *flag = !*flag;
-    if (refresh) {
-	ForceRefresh();
+    if (update == UPDATE_INDICATORS) {
+	UpdateIndicators();
+    } else if (update == UPDATE_BLOBS) {
+	UpdateBlobs();
     }
+    ForceRefresh();
 }
 
 int GfxCore::GetNumEntrances() const

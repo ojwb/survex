@@ -65,6 +65,10 @@ class PresentationMark {
     bool is_valid() const { return scale > 0; }
 };
 
+#define UPDATE_NONE 0
+#define UPDATE_INDICATORS 1
+#define UPDATE_BLOBS 2
+ 
 class GfxCore : public GLACanvas {
     struct params {
 	Double scale;
@@ -200,7 +204,7 @@ class GfxCore : public GLACanvas {
     int GetIndicatorYPosition() const;
     int GetIndicatorRadius() const;
 
-    void ToggleFlag(bool* flag, bool refresh = true);
+    void ToggleFlag(bool* flag, int update = UPDATE_NONE);
 
     GLAPen& GetPen(int band) const {
 	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
@@ -315,20 +319,20 @@ public:
 
     void ToggleUndergroundLegs() { ToggleFlag(&m_Legs); }
     void ToggleSurfaceLegs() { ToggleFlag(&m_Surface); }
-    void ToggleCompass() { ToggleFlag(&m_Compass, false); UpdateIndicators(); ForceRefresh(); }
-    void ToggleClino() { ToggleFlag(&m_Clino, false); UpdateIndicators(); ForceRefresh(); }
-    void ToggleScaleBar() { ToggleFlag(&m_Scalebar, false); UpdateIndicators(); ForceRefresh(); }
-    void ToggleEntrances() { ToggleFlag(&m_Entrances); UpdateBlobs(); }
-    void ToggleFixedPts() { ToggleFlag(&m_FixedPts); UpdateBlobs(); }
-    void ToggleExportedPts() { ToggleFlag(&m_ExportedPts); UpdateBlobs(); }
+    void ToggleCompass() { ToggleFlag(&m_Compass, UPDATE_INDICATORS); }
+    void ToggleClino() { ToggleFlag(&m_Clino, UPDATE_INDICATORS); }
+    void ToggleScaleBar() { ToggleFlag(&m_Scalebar, UPDATE_INDICATORS); }
+    void ToggleEntrances() { ToggleFlag(&m_Entrances, UPDATE_BLOBS); }
+    void ToggleFixedPts() { ToggleFlag(&m_FixedPts, UPDATE_BLOBS); }
+    void ToggleExportedPts() { ToggleFlag(&m_ExportedPts, UPDATE_BLOBS); }
     void ToggleGrid() { ToggleFlag(&m_Grid); }
-    void ToggleCrosses() { ToggleFlag(&m_Crosses); UpdateBlobs(); }
-    void ToggleStationNames() { ToggleFlag(&m_Names, false); ForceRefresh(); }
+    void ToggleCrosses() { ToggleFlag(&m_Crosses, UPDATE_BLOBS); }
+    void ToggleStationNames() { ToggleFlag(&m_Names); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
-    void ToggleDepthBar() { ToggleFlag(&m_Depthbar, false); UpdateIndicators(); ForceRefresh(); }
-    void ToggleMetric() { ToggleFlag(&m_Metric, false); UpdateIndicators(); ForceRefresh(); }
-    void ToggleDegrees() { ToggleFlag(&m_Degrees, false); UpdateIndicators(); ForceRefresh(); }
-    void ToggleTubes() { ToggleFlag(&m_Tubes, false); ForceRefresh(); }
+    void ToggleDepthBar() { ToggleFlag(&m_Depthbar, UPDATE_INDICATORS); }
+    void ToggleMetric() { ToggleFlag(&m_Metric, UPDATE_INDICATORS); }
+    void ToggleDegrees() { ToggleFlag(&m_Degrees, UPDATE_INDICATORS); }
+    void ToggleTubes() { ToggleFlag(&m_Tubes); }
     void TogglePerspective() { GLACanvas::TogglePerspective(); UpdateIndicators(); ForceRefresh(); }
 
     bool GetMetric() const { return m_Metric; }
