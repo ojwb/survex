@@ -334,7 +334,7 @@ bool MainFrm::LoadData(const wxString& file)
 	do {
 	    img_point pt;
 	    char buffer[256];
-	    switch (result = img_read_datum(survey, buffer, &pt)) {
+	    switch (result = img_read_item(survey, buffer, &pt)) {
 	        case img_MOVE:
 	        case img_LINE:
 		{
@@ -367,12 +367,12 @@ bool MainFrm::LoadData(const wxString& file)
 		    }
 		    
 		    // Update survey extents.
-		    if (x < xmin) xmin = pt.x;
-		    if (x > xmax) xmax = pt.x;
-		    if (y < ymin) ymin = pt.y;
-		    if (y > ymax) ymax = pt.y;
-		    if (z < m_ZMin) m_ZMin = pt.z;
-		    if (z > zmax) zmax = pt.z;
+		    if (pt.x < xmin) xmin = pt.x;
+		    if (pt.x > xmax) xmax = pt.x;
+		    if (pt.y < ymin) ymin = pt.y;
+		    if (pt.y > ymax) ymax = pt.y;
+		    if (pt.z < m_ZMin) m_ZMin = pt.z;
+		    if (pt.z > zmax) zmax = pt.z;
 
 		    PointInfo* info = new PointInfo;
 		    info->x = pt.x;
@@ -406,12 +406,12 @@ bool MainFrm::LoadData(const wxString& file)
 		    m_NumCrosses++;
 
 		    // Update survey extents (just in case there are no legs).
-		    if (x < xmin) xmin = pt.x;
-		    if (x > xmax) xmax = pt.x;
-		    if (y < ymin) ymin = pt.y;
-		    if (y > ymax) ymax = pt.y;
-		    if (z < m_ZMin) m_ZMin = pt.z;
-		    if (z > zmax) zmax = pt.z;
+		    if (pt.x < xmin) xmin = pt.x;
+		    if (pt.x > xmax) xmax = pt.x;
+		    if (pt.y < ymin) ymin = pt.y;
+		    if (pt.y > ymax) ymax = pt.y;
+		    if (pt.z < m_ZMin) m_ZMin = pt.z;
+		    if (pt.z > zmax) zmax = pt.z;
 
 		    break;
 		}

@@ -55,6 +55,18 @@ set_codes(coord move_, coord draw_, coord stop_)
    stop = stop_;
 }
 
+static bool
+add(point Huge *p, OSSIZE_T *c, OSSIZE_T tot, coord act, const img_point *pt)
+{
+   if (*c >= tot) return fFalse;
+   p[*c]._.action = act;
+   p[*c].X = (coord)(pt->x * factor);
+   p[*c].Y = (coord)(pt->y * factor);
+   p[*c].Z = (coord)(pt->z * factor);
+   (*c)++;
+   return fTrue;
+}
+
 extern bool
 load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
 {
@@ -63,13 +75,18 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
    int result;
    img *pimg;
 
-   point Huge *pLegData;
-   point Huge *pStnData;
+   point Huge *legs;
+   point Huge *slegs;
+   point Huge *stns;
 
    OSSIZE_T c_legs = 0; /* actually the number of MOVEs and DRAWs */
+   OSSIZE_T c_slegs = 0; /* actually the number of MOVEs and DRAWs */
    OSSIZE_T c_stns = 0;
    OSSIZE_T c_totlabel = 0;
-   OSSIZE_T c_leg, c_stn;
+   OSSIZE_T c_leg, c_sleg, c_stn;
+
+   bool f_surf = fFalse, f_pendingmove = fFalse;
+   
    char *p, *p_end;
 
    /* Make 2 passes - one to work out exactly how much space to allocate,
@@ -82,11 +99,33 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
    if (!pimg) return fFalse;
 
    do {
-      result = img_read_item(pimg, sz, &p);
+      result = img_read_item(pimg, sz, &pt);
       switch (result) {
        case img_MOVE:
+	 f_pendingmove = fTrue;
+	 break;
        case img_LINE:
-    	 c_legs++;
+	 if (f_pendingmove) {
+	    f_pendingmove = fFalse;
+	    f_surf = (pimg->flags & img_FLAG_SURFACE);
+	    if (f_surf) c_slegs += 2; else c_legs += 2;
+	 } else {
+	    if (f_surf) {
+	       if (pimg->flags & img_FLAG_SURFACE) {
+		  c_slegs++;
+	       } else {
+		  f_surf = fFalse;
+		  c_legs += 2;
+	       }
+	    } else {
+	       if (pimg->flags & img_FLAG_SURFACE) {
+		  f_surf = fTrue;
+		  c_slegs += 2;
+	       } else {
+		  c_legs++;
+	       }
+	    }
+	 }
     	 break;
        case img_CROSS:
          /* Use labels to position crosses too - newer format .3d files don't
@@ -103,6 +142,7 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
    } while (result != img_STOP);
 
    img_rewind(pimg);
+   f_surf = fFalse;
 
    /* get some memory to put the data in */
    /* blocks are: (all entries are coords)
@@ -113,33 +153,56 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
     *
     * <opt> is <LINE> or <DATA> for leg data, or -> label for station data
     */
-   pLegData = osmalloc(ossizeof(point) * c_legs + 1);
-   pStnData = osmalloc(ossizeof(point) * c_stns + 1);
+   legs = osmalloc(ossizeof(point) * c_legs + 1);
+   stns = osmalloc(ossizeof(point) * c_stns + 1);
+   slegs = osmalloc(ossizeof(point) * c_slegs + 1);
    p = osmalloc(c_totlabel);
    p_end = p + c_totlabel;
 
-   c_leg = c_stn = 0;
+   c_leg = c_sleg = c_stn = 0;
 #if 0
-   printf("%p %p\n%d %d\n%d %d\n", p, p_end, c_leg, c_legs, c_stn, c_stns);
+   printf("%p %p\n%d %d\n%d %d\n%d %d\n",
+	  p, p_end, c_leg, c_legs, c_sleg, c_slegs, c_stn, c_stns);
 #endif
    do {
-      result = img_read_item(pimg, sz, &p);
+      img_point mv;
+      result = img_read_item(pimg, sz, &pt);
       switch (result) {
        case img_MOVE:
-	 if (c_leg >= c_legs) return fFalse;
-         pLegData[c_leg]._.action = move;
-    	 pLegData[c_leg].X = (coord)(pt.x * factor);
-    	 pLegData[c_leg].Y = (coord)(pt.y * factor);
-	 pLegData[c_leg].Z = (coord)(pt.z * factor);
-	 c_leg++;
-    	 break;
+	 f_pendingmove = fTrue;
+	 mv = pt;
+	 break;
        case img_LINE:
-	 if (c_leg >= c_legs) return fFalse;
-         pLegData[c_leg]._.action = draw;
-    	 pLegData[c_leg].X = (coord)(pt.x * factor);
-    	 pLegData[c_leg].Y = (coord)(pt.y * factor);
-	 pLegData[c_leg].Z = (coord)(pt.z * factor);
-    	 c_leg++;
+	 if (f_pendingmove) {
+	    f_pendingmove = fFalse;
+	    f_surf = (pimg->flags & img_FLAG_SURFACE);
+	    if (f_surf) {
+	       if (!add(slegs, &c_sleg, c_slegs, move, &mv) ||
+		   !add(slegs, &c_sleg, c_slegs, draw, &pt)) return fFalse;
+	    } else {
+	       if (!add(legs, &c_leg, c_legs, move, &mv) ||
+		   !add(legs, &c_leg, c_legs, draw, &pt)) return fFalse;
+	    }
+	 } else {
+	    if (f_surf) {
+	       if (pimg->flags & img_FLAG_SURFACE) {
+		  if (!add(slegs, &c_sleg, c_slegs, draw, &pt)) return fFalse;
+	       } else {
+		  f_surf = fFalse;
+		  if (!add(legs, &c_leg, c_legs, move, &mv) ||
+		      !add(legs, &c_leg, c_legs, draw, &pt)) return fFalse;
+	       }
+	    } else {
+	       if (pimg->flags & img_FLAG_SURFACE) {
+		  f_surf = fTrue;
+		  if (!add(slegs, &c_sleg, c_slegs, move, &mv) ||
+		      !add(slegs, &c_sleg, c_slegs, draw, &pt)) return fFalse;
+	       } else {
+		  if (!add(legs, &c_leg, c_legs, draw, &pt)) return fFalse;
+	       }
+	    }
+	 }
+	 mv = pt;
     	 break;
        case img_CROSS:
          /* Use labels to position crosses too - newer format .3d files don't
@@ -150,10 +213,10 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
 	 if (p + size > p_end) return fFalse;
 	 if (c_stn >= c_stns) return fFalse;
 	 strcpy(p, sz);
-    	 pStnData[c_stn]._.str = p;
-    	 pStnData[c_stn].X = (coord)(pt.x * factor);
-   	 pStnData[c_stn].Y = (coord)(pt.y * factor);
-    	 pStnData[c_stn].Z = (coord)(pt.z * factor);
+    	 stns[c_stn]._.str = p;
+    	 stns[c_stn].X = (coord)(pt.x * factor);
+   	 stns[c_stn].Y = (coord)(pt.y * factor);
+    	 stns[c_stn].Z = (coord)(pt.z * factor);
     	 c_stn++;
 	 p += size;
 	 break;
@@ -171,12 +234,12 @@ load_data(const char *fnmData, point Huge **ppLegs, point Huge **ppStns)
 #endif
    if (p != p_end) return fFalse;
    if (c_leg != c_legs) return fFalse;
-   pLegData[c_leg]._.action = stop;
+   legs[c_leg]._.action = stop;
    if (c_stn != c_stns) return fFalse;
-   pStnData[c_stn]._.str = NULL;
+   stns[c_stn]._.str = NULL;
 
-   *ppLegs = pLegData;
-   *ppStns = pStnData;
+   *ppLegs = legs;
+   *ppStns = stns;
 
    return fTrue; /* return fTrue iff image was OK */
 }
