@@ -81,6 +81,10 @@
 * (RISC OS version): query Territory module to find currently selected
   language, and use that for messages.
 
+* hto2svx, svx2hto: Removed HTO support - Survex appears to be the
+  only released software to ever provide support, and an exchange format
+  that nobody else supports is useless.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.

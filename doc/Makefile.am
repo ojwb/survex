@@ -4,8 +4,8 @@ pkgdocdir = $(prefix)/doc/@PACKAGE@
 
 doclist = @DOCS_OTHER@
 
-other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 hto2svx.1 \
- printdm.1 printhpgl.1 printpcl.1 printps.1 svx2hto.1 @EXTRA_MANS@
+other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 \
+ printdm.1 printhpgl.1 printpcl.1 printps.1 @EXTRA_MANS@
 
 #can produce man page syntax summary from --help something like
 #SURVEXHOME=lib src/xcaverot --help | grep -i ^syntax |
@@ -14,7 +14,7 @@ other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 hto2svx.1 \
 
 # People can build from CVS without sgmltools v2 or v3 installed but they
 # won't be able to "make dist", which is arguably a good thing
-EXTRA_DIST = svxdocs $(doclist) svxdocs.sgml custom.dsl survex.1\
+EXTRA_DIST = svxdocs $(doclist) svxdocs.sgml custom.dsl survex.1.in\
  docindex.htm.in
 
 MAINTAINERCLEANFILES = $(doclist)

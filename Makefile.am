@@ -4,7 +4,7 @@ RELEASE = 1
 
 EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES survex.iss.in
 
-SUBDIRS = hto lib src doc tests debian
+SUBDIRS = lib src doc tests debian
 
 # seem to need this for "make distclean" to recurse?!?
 DIST_SUBDIRS = $(SUBDIRS)
@@ -144,7 +144,6 @@ djgpp_exe : djgpp_zip
 djgpp_zip : dostxt
 	test -d djgpp_exes || mkdir djgpp_exes
 	for a in $(base_progs) caverot ; do cp src/$$a.exe djgpp_exes ; done
-	for a in hto2svx svx2hto ; do cp hto/$$a.exe djgpp_exes ; done
 	$(RM) $(djgpp_zip_name)
 	zip -j $(djgpp_zip_name) djgpp_exes/*.exe $(extra_bin)\
 	 djgpp_extras/cwsdpmi.exe djgpp_extras/emu387.dxe
@@ -159,7 +158,6 @@ mingw : all mingw_iss
 mingwexes :
 	test -d mingw_exes || mkdir mingw_exes
 	for f in $(base_progs) aven printwin ; do cp src/$$f.exe mingw_exes ; done
-	for a in hto2svx svx2hto ; do cp hto/$$a.exe mingw_exes ; done
 
 mingw_zip_name = survex-win32-@VERSION@.zip
 
@@ -254,7 +252,7 @@ alien_src_zip :
 	mkdir alien_tmp/s
 	mkdir alien_tmp/o
 	mkdir alien_tmp/stdh
-	perl alien.pl src/*.c src/*.h hto/*.c hto/*.h > alien_tmp/\!ObeyMe,feb
+	perl alien.pl src/*.c src/*.h > alien_tmp/\!ObeyMe,feb
 	echo 'RMEnsure DDEUtils 0 System:modules.ddeutils' > alien_tmp/\!MakeMe,feb
 	echo 'Dir <Obey$$Dir>' >> alien_tmp/\!MakeMe,feb
 	echo amu >> alien_tmp/\!MakeMe,feb
@@ -267,7 +265,7 @@ alien_src_zip :
 	ln -s ../../src/riscos/stdh/regnames alien_tmp/stdh
 	ln -s ../../src/riscos/stdh/swinames alien_tmp/stdh
 	./zip-magic -N -j $(alien_src_zip_name) alien_tmp src/*.c src/*.h\
-	 hto/*.c hto/*.h src/riscos/makefile src/borlandc/config.h
+	 src/riscos/makefile src/borlandc/config.h
 	cd alien_tmp && ../zip-magic -N -r ../$(alien_src_zip_name) *
 	$(RM) -rf alien_tmp
 

@@ -1,5 +1,6 @@
 Makefile
 Makefile.in
+survex.1
 svxdocs
 svxdocs.htm
 svxdocs.ps

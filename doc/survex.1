@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH SURVEX 1 "2001-04-28"
+.TH SURVEX 1 "2001-09-14"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -54,13 +54,6 @@ survex \- cave survey software
 .B survex
 [\fIOPTION\fR]... \fISVX_FILE\fR...
 .br
-.B svx2hto
-[\fIHTO_FILE\fR [\fISVX_FILE\fR]]
-.br
-.B hto2svx
-\fISVX_FILE\fR [\fIHTO_FILE\fR]
-.RI <survex data file>
-.br
 
 .SH DESCRIPTION
 
@@ -76,10 +69,8 @@ This manual page documents briefly the
 \fBdiffpos\fP,
 \fBcad3d\fP,
 \fB3dtopos\fP,
-\fBsurvex\fP,
-\fBsvx2hto\fP,
 and
-\fBhto2svx\fP
+\fBsurvex\fP
 commands.
 .PP
 This manual page is just a pointer - Survex has documentation in sgml, text,
@@ -100,9 +91,7 @@ Show summary of options.
 .B \-\-version
 Show version of program.
 .SH SEE ALSO
-.\" Nothing - this feeble manpage is it.
-These programs are described fully by the documentation found in
-/usr/share/doc/survex or /usr/doc/survex
+.\" The Survex Manual - to be found in /usr/share/doc/survex or /usr/doc/survex
 .SH AUTHOR
 This manual page was written by Wookey <wookey@survex.com> and amended by
 Olly Betts <olly@survex.com>

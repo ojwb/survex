@@ -31,8 +31,6 @@ Theodolite only:
 
 Infinite sds so we can fix in x and y only (or z only)?
 
-add *data to hto to allow it to cope with different data ordering?
-
 use more accuracy than nearest point (1/72") in printps?
 
 funcs to spot differences between caves:

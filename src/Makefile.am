@@ -110,8 +110,8 @@ z_getopt.c: getopt.c
 
 MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile
 
-borlandc/config.h borlandc/makefile: Makefile.am $(top_srcdir)/configure.in $(top_srcdir)/hto/Makefile.am miniam.pl
-	cat $(srcdir)/Makefile.am $(top_srcdir)/hto/Makefile.am | $(srcdir)/miniam.pl borlandc $(top_srcdir)/configure.in borlandc/config.h > borlandc/makefile
+borlandc/config.h borlandc/makefile: Makefile.am $(top_srcdir)/configure.in miniam.pl
+	$(srcdir)/miniam.pl borlandc $(top_srcdir)/configure.in borlandc/config.h < $(srcdir)/Makefile.am > borlandc/makefile
 
-riscos/config.h riscos/makefile: Makefile.am $(top_srcdir)/configure.in $(top_srcdir)/hto/Makefile.am miniam.pl
-	cat $(srcdir)/Makefile.am $(top_srcdir)/hto/Makefile.am | $(srcdir)/miniam.pl riscos $(top_srcdir)/configure.in riscos/config.h > riscos/makefile
+riscos/config.h riscos/makefile: Makefile.am $(top_srcdir)/configure.in miniam.pl
+	$(srcdir)/miniam.pl riscos $(top_srcdir)/configure.in riscos/config.h < $(srcdir)/Makefile.am > riscos/makefile

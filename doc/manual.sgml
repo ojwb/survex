@@ -12,7 +12,6 @@
 <!ENTITY cucc "<Acronym/CUCC/">
 <!ENTITY arge "<Acronym/ARGE/">
 <!ENTITY dpmi "<Acronym/DPMI/">
-<!ENTITY hto "<Acronym/HTO/">
 <!ENTITY svx "<filename>.svx</filename>">
 <!ENTITY x3d "<filename>.3d</filename>">
 <!ENTITY err "<filename>.err</filename>">
@@ -122,8 +121,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-13 22:10:48 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.47 2001-09-13 22:10:48 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-14 00:17:08 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.48 2001-09-14 00:17:08 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
