@@ -539,3 +539,7 @@
 #fr:326 Echec de la compilation d'une expression r&eacute;guli&egrave;re (&agrave; l'&eacute;tape 2)
 #de:326 Uuml;bersetzung des regul@&auml;ren Ausdrucks (Phase 2) fehlgeschlagen.
 #pt:326 Compila&ccedil;&atilde;o (segundo est&aacute;gio) de express&atilde;o regular falhou.
+en:327 Regular expression search failed.
+fr:327 Expression r&eacute;guli&egrave;re non trouv&eacute;e
+de:327 Suche nach regul&auml;rem Ausdruck fehlgeschlagen.
+pt:327 Busca de express&atilde;o regular falhou.

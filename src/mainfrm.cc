@@ -431,8 +431,8 @@ void MainFrm::CreateToolBar()
 void MainFrm::CreateSidePanel()
 {
     m_Splitter = new wxSplitterWindow(this, -1, wxDefaultPosition,
-		                      wxDefaultSize,
-                                      wxSP_3D | wxSP_LIVE_UPDATE);
+				      wxDefaultSize,
+				      wxSP_3D | wxSP_LIVE_UPDATE);
     m_Panel = new wxPanel(m_Splitter);
     m_Tree = new AvenTreeCtrl(this, m_Panel);
     m_FindPanel = new wxPanel(m_Panel);
@@ -456,18 +456,22 @@ void MainFrm::CreateSidePanel()
     m_Found = new wxStaticText(m_FindPanel, -1, "");
 
     m_FindButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-    m_FindButtonSizer->Add(m_FindBox, 1, wxALL | wxEXPAND, 2);
+    m_FindButtonSizer->Add(m_FindBox, 1, wxALL, 2);
 #ifdef _WIN32
-    m_FindButtonSizer->Add(m_FindButton, 0, wxALL | wxALIGN_RIGHT, 2);
+    m_FindButtonSizer->Add(m_FindButton, 0, wxALL, 2);
 #else
     // GTK+ (and probably Motif) default buttons have a thick external
     // border we need to allow for
-    m_FindButtonSizer->Add(m_FindButton, 0, wxALL | wxALIGN_RIGHT, 6);
+    m_FindButtonSizer->Add(m_FindButton, 0, wxALL, 4);
 #endif
 
     m_HideButtonSizer = new wxBoxSizer(wxHORIZONTAL);
-    m_HideButtonSizer->Add(m_Found, 1, wxALL | wxEXPAND, 2);
-    m_HideButtonSizer->Add(m_HideButton, 0, wxALL | wxALIGN_RIGHT, 2);
+    m_HideButtonSizer->Add(m_Found, 1, wxALL, 2);
+#ifdef _WIN32
+    m_HideButtonSizer->Add(m_HideButton, 0, wxALL, 2);
+#else
+    m_HideButtonSizer->Add(m_HideButton, 0, wxALL, 4);
+#endif
 
     m_FindSizer = new wxBoxSizer(wxVERTICAL);
     m_FindSizer->Add(m_FindButtonSizer, 0, wxALL | wxEXPAND, 2);
@@ -488,14 +492,15 @@ void MainFrm::CreateSidePanel()
     m_FindPanel->SetAutoLayout(true);
     m_FindPanel->SetSizer(m_FindSizer);
     m_FindSizer->Fit(m_FindPanel);
+    m_FindSizer->SetSizeHints(m_FindPanel);
 
     m_PanelSizer = new wxBoxSizer(wxVERTICAL);
     m_PanelSizer->Add(m_Tree, 1, wxALL | wxEXPAND, 2);
     m_PanelSizer->Add(m_FindPanel, 0, wxALL | wxEXPAND, 2);
     m_Panel->SetAutoLayout(true);
     m_Panel->SetSizer(m_PanelSizer);
-    m_PanelSizer->Fit(m_Panel);
-    m_PanelSizer->SetSizeHints(m_Panel);
+//    m_PanelSizer->Fit(m_Panel);
+//    m_PanelSizer->SetSizeHints(m_Panel);
 
     m_Gfx = new GfxCore(this, m_Splitter);
     m_Gfx->SetFocus();
@@ -1296,7 +1301,8 @@ void MainFrm::OnPresCreate(wxCommandEvent& event)
         assert(m_PresFP); //--Pres: FIXME
 
         // Update window title.
-        SetTitle(wxString("Aven - [") + m_File + wxString(msg(/*] - Recording Presentation*/323)));
+        SetTitle(wxString("Aven - [") + m_File + wxString("] - ") +
+		 wxString(msg(/*Recording Presentation*/323)));
 
         //--Pres: FIXME: discard existing one
         m_PresLoaded = true;
@@ -1434,11 +1440,35 @@ void MainFrm::OnFind(wxCommandEvent& event)
     // Find stations specified by a string or regular expression.
 
     wxString str = m_FindBox->GetValue();
-    bool regexp = m_RegexpCheckBox->GetValue();
-    int cflags = REG_NOSUB | REG_ICASE;
+    int cflags = REG_NOSUB;
 
-    if (regexp) {
+    if (true /* case insensitive */) {
+        cflags |= REG_ICASE;
+    }
+
+    if (m_RegexpCheckBox->GetValue()) {
         cflags |= REG_EXTENDED;
+    } else if (false /* simple glob-style */) {
+        wxString pat;
+        for (size_t i = 0; i < str.size(); i++) {
+	   char ch = str[i];	   
+	   // ^ only special at start; $ at end.  But this is simpler...
+	   switch (ch) {
+	    case '^': case '$': case '.': case '[': case '\\':
+	      pat += '\\';
+	      pat += ch;
+	      break;
+	    case '*':
+	      pat += ".*";
+	      break;
+	    case '?':
+	      pat += '.';
+	      break;	       
+	    default:
+	      pat += ch;
+	   }
+	}
+        str = pat;
     } else {
         wxString pat;
         for (size_t i = 0; i < str.size(); i++) {
@@ -1453,6 +1483,11 @@ void MainFrm::OnFind(wxCommandEvent& event)
         str = pat;
     }
 
+    if (!true /* !substring */) {
+        if (str.empty() || str[0] != '^') str = '^' + str;
+        if (str[str.size() - 1] != '$') str = str + '$';
+    }
+   
     regex_t buffer;
     int errcode = regcomp(&buffer, str.c_str(), cflags);
     if (errcode) {
@@ -1479,14 +1514,16 @@ void MainFrm::OnFind(wxCommandEvent& event)
 	}
     }
 
-    if (regexp) regfree(&buffer);
+    regfree(&buffer);
 
     m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found)); 
     m_Gfx->DisplaySpecialPoints();
 
+#if 0   
     if (!found) {
         wxGetApp().ReportError(msg(/*No matches were found.*/328));
     }
+#endif
 
     m_Gfx->SetFocus();
 }

@@ -2313,21 +2313,17 @@ en:322 Select a presentation to open
 fr:322 Slectionner une pr&eacute;sentation &agrave; ouvrir
 de:322 Zu &ouml;ffnende Pr&auml;sentation ausw&auml;hlen
 pt:322 Escolha uma apresenta&ccedil;&atilde;o para abrir
-en:323 ] - Recording Presentation
-fr:323 ] - Enregistrement d'une pr&eacute;sentation
-de:323 ] - Pr&auml;sentation wird aufgezeichnet
+en:323 Recording Presentation
+fr:323 Enregistrement d'une pr&eacute;sentation
+de:323 Pr&auml;sentation wird aufgezeichnet
 # or, somewhat in radio broadcasting lingo,
-# de:323 ] - Aufzeichnung l&auml;uft
-pt:323 ] - Gravando Apresenta&ccedil;&atilde;o
+# de:323 Aufzeichnung l&auml;uft
+pt:323 Gravando Apresenta&ccedil;&atilde;o
 en:324 Res@tart
 fr:324 Re@d&eacute;marrage
 de:324 @Neustart
 pt:324 Re@iniciar
-#XXX 325 326
-en:327 Regular expression search failed.
-fr:327 Expression r&eacute;guli&egrave;re non trouv&eacute;e
-de:327 Suche nach regul&auml;rem Ausdruck fehlgeschlagen.
-pt:327 Busca de express&atilde;o regular falhou.
+#XXX 325 326 327
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
 de:328 Kein Treffer gefunden.

@@ -94,10 +94,16 @@ AC_CHECK_PROGS(STRIP, strip, echo "not stripping ")
 
 AC_CHECK_LIB(m, sqrt)
 
-dnl On Linux, regexp routines are included in recent version of libc
+dnl On Linux, regex routines are included in recent version of libc
 dnl so check if we need -lrx
+dnl FIXME - probably ought to favour RX over GNU regex in libc if given
+dnl the choice...
+dnl FIXME - check for header name to include...
 LIBRX=
-AC_TRY_LINK_FUNC(rx, , AC_CHECK_LIB(rx, regcomp, LIBRX=-lrx))
+AC_MSG_CHECKING(for regcomp)
+AC_TRY_LINK_FUNC(regcomp,
+  AC_MSG_RESULT(found),
+  AC_MSG_RESULT(not found) AC_CHECK_LIB(rx, regcomp, LIBRX=-lrx))
 AC_SUBST(LIBRX)
 
 AC_PATH_XTRA
