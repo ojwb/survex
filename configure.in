@@ -342,14 +342,14 @@ if test yes = "$GCC"; then
     AM_CFLAGS="$AM_CFLAGS -Wall -Wunused -Wpointer-arith\
       -Wwrite-strings -Wcast-align"
     AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wunused -Wpointer-arith\
-      -Wmissing-prototypes -Wwrite-strings -Wcast-align"
+      -Wwrite-strings -Wcast-align"
   else
     AM_CFLAGS="$AM_CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith\
       -Wmissing-prototypes -Wwrite-strings -Wredundant-decls -Wnested-externs\
       -Wcast-align"
     dnl -W causes problems with wxWindows
     AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wunused -Wshadow -Wpointer-arith\
-      -Wmissing-prototypes -Wwrite-strings -Wcast-align"
+      -Wwrite-strings -Wcast-align"
   fi
   dnl too many complaints from headers, etc: -Wconversion
 fi
