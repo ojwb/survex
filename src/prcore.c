@@ -41,8 +41,8 @@
 #include "prcore.h"
 #include "debug.h"
 
-#define MOVEMM(X, Y) pr->MoveTo((long)((X) * scX), (long)((Y) * scY));
-#define DRAWMM(X, Y) pr->DrawTo((long)((X) * scX), (long)((Y) * scY));
+#define MOVEMM(X, Y) pr->MoveTo((long)((X) * scX), (long)((Y) * scY))
+#define DRAWMM(X, Y) pr->DrawTo((long)((X) * scX), (long)((Y) * scY))
 
 #define DEG "\xB0" /* degree symbol in iso-8859-1 */
 
