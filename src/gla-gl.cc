@@ -4,6 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003 Mark R. Shinwell
+//  Copyright (C) 2003 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -24,12 +25,16 @@
 #include <config.h>
 #endif
 
+#include <algorithm>
+
 #include "gla.h"
 // Some WIN32 stupidity which causes mingw to fail to link for some reason;
-// probably means we can't safely use atexit() - see the comments in glut.h
-// if you can take the full horror...
+// doing this probably means we can't safely use atexit() - see the comments in
+// glut.h if you can take the full horror...
 #define GLUT_DISABLE_ATEXIT_HACK
 #include <GL/glut.h>
+
+using namespace std;
 
 #ifdef GLA_DEBUG
 // Important: CHECK_GL_ERROR must not be called within a glBegin()/glEnd() pair
@@ -238,11 +243,15 @@ void GLACanvas::SetVolumeCoordinates(glaCoord left, glaCoord right,
 
 void GLACanvas::SetViewportAndProjection()
 {
-    // Set viewport.
+    // Set viewport.  The width and height go to zero when the panel is dragged
+    // right across so we clamp them to be at least 1 to avoid errors from the
+    // opengl calls below.
     wxSize size = GetSize();
-    double aspect = double(size.GetWidth()) / double(size.GetHeight());
-    //FIXME: dimensions go to zero when the panel is dragged right across
-    glViewport(0, 0, size.GetWidth(), size.GetHeight());
+    int width = max(size.GetWidth(), 1);
+    int height = max(size.GetHeight(), 1);
+    double aspect = double(height) / double(width);
+
+    glViewport(0, 0, width, height);
     CHECK_GL_ERROR("SetViewportAndProjection", "glViewport");
 
     // Set projection.
@@ -252,7 +261,7 @@ void GLACanvas::SetViewportAndProjection()
     CHECK_GL_ERROR("SetViewportAndProjection", "glLoadIdentity");
     assert(m_Scale != 0.0);
     glOrtho(m_Volume.left, m_Volume.right,
-	    m_Volume.bottom / aspect, m_Volume.top / aspect,
+	    m_Volume.bottom * aspect, m_Volume.top * aspect,
             m_Volume.front * 3.0 * m_Scale, m_Volume.back * 3.0 * m_Scale);
     CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
 
