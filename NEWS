@@ -41,6 +41,8 @@
 * (Unix version): fixed configure code to turn on lots of GCC warnings and fixed
   most of them.
 
+* (MS Windows version): assorted tweaks to allow building with MS Visual C/C++.
+
 Changes in 1.0.25:
 
 * (MacOS X version): hopefully fixed building of aven.
