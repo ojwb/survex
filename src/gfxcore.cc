@@ -2469,3 +2469,8 @@ void GfxCore::FullScreenMode()
 {
     m_Parent->ViewFullScreen();
 }
+
+bool GfxCore::IsFullScreen() const
+{
+    return m_Parent->IsFullScreen();
+}

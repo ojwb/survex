@@ -422,7 +422,7 @@ void MainFrm::CreateMenuBar()
 #else
     viewmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
 #endif
-    viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode##F11*/356));
+    viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode##F11*/356), "", true);
 #ifdef PREFDLG
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_FILE_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
@@ -1674,4 +1674,43 @@ void MainFrm::OnViewSidePanelUpdate(wxUpdateUIEvent& ui)
 bool MainFrm::ShowingSidePanel()
 {
     return m_Splitter->IsSplit();
+}
+
+void MainFrm::ViewFullScreen() {
+    ShowFullScreen(!IsFullScreen());
+    static bool sidepanel;
+    if (IsFullScreen()) sidepanel = ShowingSidePanel();
+    if (sidepanel) ToggleSidePanel();
+#ifndef _WIN32
+    // wxGTK doesn't currently remove the toolbar, statusbar, or menubar.
+    // Can't work out how to lose the menubar right now, but this works for
+    // the other two.  FIXME: tidy this code up and submit a patch for
+    // wxWindows.
+    wxToolBar *tb = GetToolBar();
+    if (tb) tb->Show(!IsFullScreen());
+    wxStatusBar *sb = GetStatusBar();
+    if (sb) sb->Show(!IsFullScreen());
+#if 0
+    // FIXME: This sort of works, but we lose the top-level shortcuts
+    // (e.g. alt-F for File)
+    wxMenuBar *mb = GetMenuBar();
+    if (mb) {
+	static list<wxMenu *> menus;
+	static list<wxString> labels;
+	if (IsFullScreen()) {
+	    // remove menus
+	    for (int c = mb->GetMenuCount(); c >= 0; --c) {
+		labels.push_back(mb->GetLabelTop(c));
+		menus.push_back(mb->Remove(c));
+	    }
+	} else {
+	    while (!menus.empty()) {
+		mb->Append(menus.back(), labels.back());
+		menus.pop_back();
+		labels.pop_back();
+	    }
+	}
+    }
+#endif
+#endif
 }

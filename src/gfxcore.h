@@ -370,6 +370,8 @@ public:
 
     void FullScreenMode();
 
+    bool IsFullScreen() const;
+
     void DragFinished();
 
     void SplitLineAcrossBands(int band, int band2,

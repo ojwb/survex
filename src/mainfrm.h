@@ -367,19 +367,7 @@ public:
     void OnViewFullScreen(wxCommandEvent& event) {
 	ViewFullScreen();
     }
-    void ViewFullScreen() {
-	ShowFullScreen(!IsFullScreen());
-#ifndef _WIN32
-	// wxGTK doesn't currently remove the toolbar, statusbar, or menubar.
-	// Can't work out how to lose the menubar right now, but this works for
-	// the other two.  FIXME: tidy this code up and submit a patch for
-	// wxWindows.
-	wxToolBar *tb = GetToolBar();
-	if (tb) tb->Show(!IsFullScreen());
-	wxStatusBar *sb = GetStatusBar();
-	if (sb) sb->Show(!IsFullScreen());
-#endif
-    }
+    void ViewFullScreen();
     void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Control) m_Control->OnReverseDirectionOfRotation(); }
     void OnCancelDistLine(wxCommandEvent& event) { if (m_Control) m_Control->OnCancelDistLine(); }
 
