@@ -1,4 +1,4 @@
-/* > prindept.h
+/* > prcore.h
  * Header file for
  * Printer independent parts of Survex printer drivers
  * Copyright (C) 1994-1995 Olly Betts

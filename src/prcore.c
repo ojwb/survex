@@ -1,4 +1,4 @@
-/* > prindept.c
+/* > prcore.c
  * Printer independent parts of Survex printer drivers
  * Copyright (C) 1993-1997 Olly Betts
  */
@@ -24,7 +24,7 @@
 #include "message.h"
 #include "filelist.h"
 #include "img.h"
-#include "prindept.h"
+#include "prcore.h"
 #include "debug.h"
 
 #define MOVEMM(X, Y) pr->MoveTo((long)((X) * scX), (long)((Y) * scY));
