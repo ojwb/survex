@@ -192,9 +192,9 @@ extern void print_node_stats( FILE *fh ) {
  node_stats(root);
  for( c=0; c<icOrderMac; c++)
   if (cOrder[c]>0) {
-   sprintf( szOut, "%4d %d-%s.", cOrder[c], c, msg(cOrder[c]==1 ? 176:177) );
-   out_info(szOut);
-   fputsnl(szOut,fh);
+   sprintf( out_buf, "%4d %d-%s.", cOrder[c], c, msg(cOrder[c]==1 ? 176:177) );
+   out_info(out_buf);
+   fputsnl(out_buf,fh);
   }
 #endif
 }

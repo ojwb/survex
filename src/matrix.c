@@ -451,8 +451,8 @@ static void build_matrix(long n, prefix **stn_tab) {
    if (n == 1)
       out_info(msg(78));
    else {
-      sprintf(szOut, msg(75), n);
-      out_info(szOut);
+      sprintf(out_buf, msg(75), n);
+      out_info(out_buf);
    }
 
 #ifdef NO_COVARIANCES
@@ -461,8 +461,8 @@ static void build_matrix(long n, prefix **stn_tab) {
    dim = 0; /* fudge next loop for now */
 #endif
    for ( ; dim >= 0; dim-- ) {
-      sprintf( szOut, msg(76), (char)('x'+dim) );
-      out_current_action(szOut);
+      sprintf( out_buf, msg(76), (char)('x'+dim) );
+      out_current_action(out_buf);
       /* Initialise M and B to zero */
       /* might be best to zero "linearly" (!HACK!) */
       for ( row = n-1 ; row >= 0 ; row-- ) {

@@ -382,8 +382,8 @@ extern void data_file( const char *pth, const char *fnm ) {
      }
   }
 
-  sprintf(szOut,msg(122),fnm);
-  out_current_action(szOut);
+  sprintf(out_buf,msg(122),fnm);
+  out_current_action(out_buf);
   out_set_fnm(fnm); /* fnmUsed maybe?  !HACK! */
 
   UsingDataFile( fnmUsed );
@@ -431,8 +431,8 @@ extern void data_file( const char *pth, const char *fnm ) {
           pth=PthFromFnm(fnmUsed);
           include(pth);
           osfree(pth);
-          sprintf(szOut,msg(123),fnm); /* back to file '..' */
-          out_info(szOut);
+          sprintf(out_buf,msg(123),fnm); /* back to file '..' */
+          out_info(out_buf);
           break;
         }
         case CMD_MEASURE: NOT_YET; break;
@@ -464,8 +464,8 @@ extern void data_file( const char *pth, const char *fnm ) {
 
   if (ferror(file.fh)||(fclose(file.fh)==EOF))
     error(25,wr,fnm,0);
-  sprintf(szOut,msg(124),fnm);
-  out_info(szOut);
+  sprintf(out_buf,msg(124),fnm);
+  out_info(out_buf);
   /* set_current_fnm(""); not correct if filenames are nested */
   free(fnmUsed);
 }

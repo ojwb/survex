@@ -322,7 +322,7 @@ extern long cLegs,cStns,cComponents;
 extern FILE *fhErrStat;
 /* extern FILE *fhPosList; */
 extern img *pimgOut;
-extern char szOut[];
+extern char out_buf[];
 #ifndef NO_PERCENTAGE
 extern bool fPercent;
 #endif
