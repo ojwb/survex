@@ -38,12 +38,29 @@ close ENT;
 my %msgs = ();
 my %dontextract = ();
 
+my %raw = ();
+my $raw = '';
+my $raw_comments = '';
+my $curmsg = -1;
+
 while (<>) {
-   next if /^\s*#/; # skip comments
-   
+   if (/^\s*#/) {
+       $raw_comments .= $_;
+       next; # skip comments
+   }
+
    # en:  0 0.81 the message
    # en-us: 0 0.81 " the message "
    my ($langs, $msgno, $dummy, $msg) = /^([-\w,]+):\s*(\d+)\s+("?)(.*)\3/;
+
+   if ($msgno != $curmsg) {
+       $raw{$curmsg} = $raw;
+       $raw = '';
+       $curmsg = $msgno;
+   }	
+
+   $raw .= $raw_comments . $_;
+   $raw_comments = '';
 
    unless (defined $langs) {
       chomp;
@@ -99,9 +116,12 @@ foreach $lang (@langs) {
          $msg = $$parentaref[$n] if defined $parentaref;
 	 if (!defined $msg) {
 	    $msg = ${$msgs{'en'}}[$n];
-	    if (defined $msg && $msg ne '') {
-	       # don't report if we have a parent (as the omission will be reported there)
-	       print STDERR "Warning: message $n not in language $lang\n" unless defined $parentaref;
+	    # don't report if we have a parent (as the omission will be reported there)
+	    if (defined $msg && $msg ne '' && !defined $parentaref) {
+	       print STDERR "Warning: message $n not in language $lang\n";
+	       open TODO, ">>$lang.todo" or die $!;
+	       print TODO $raw{$n}, "\n";
+	       close TODO;
 	    } else {
 	       $msg = '';
 	    }
@@ -143,9 +163,12 @@ foreach $lang (@langs) {
 	 $msg = $$parentaref[$n] if defined $parentaref;
 	 if (!defined $msg) {
 	    $msg = ${$dontextract{'en'}}[$n];
-	    if (defined $msg && $msg ne '') {
-	       # don't report if we have a parent (as the omission will be reported there)
-	       print STDERR "Warning: message ", $dontextract_threshold + $n, " not in language $lang\n" unless defined $parentaref;
+	    # don't report if we have a parent (as the omission will be reported there)
+	    if (defined $msg && $msg ne '' && !defined $parentaref) {
+	       print STDERR "Warning: message ", $dontextract_threshold + $n, " not in language $lang\n";
+	       open TODO, ">>$lang.todo" or die $!;
+	       print TODO $raw{$dontextract_threshold + $n}, "\n";
+	       close TODO;
 	    } else {
 	       $msg = '';
 	    }
@@ -165,6 +188,8 @@ foreach $lang (@langs) {
    print OUT ";\n";
    close OUT or die $!;
 }
+
+#for (sort {$a<=>$b} keys %raw) {print "$_ = [$raw{$_}]\n";}
 
 sub string_to_utf8 {
    my $s = shift;
