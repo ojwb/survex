@@ -9,10 +9,15 @@
 * aven: suppress distance measuring line during auto-rotation and animated
   tilting.
 
+* aven: .3d files can now be loaded using "drag and drop" from MS Windows
+  Explorer, and X filemanagers which support XDND (e.g. Konqueror).
+
+* cavern: Fixed handling of interleaved nosurvey data.
+
 * cavern: Diving and cylpolar styles now take DEPTHCHANGE where they used to
   take DZ.
 
-* Updated manual.
+* Updated manual (notably added documentation for interleaved data styles).
 
 * German translation updated.
 

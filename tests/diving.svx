@@ -7,6 +7,6 @@
 4 3 1.0 1.0 1.00 180
 5 4 1.0 1.0 1.00 270
 
-*data diving to from dz tape compass
+*data diving to from depthchange tape compass
 6 5 0.0 1.00 000
 7 6 0.0 1.00 090

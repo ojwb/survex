@@ -1,2 +1,4 @@
 *data normal newline from to tape compass clino
 *data normal station from to tape compass newline
+*data normal newline from to tape compass clino
+*data normal station from to tape compass newline

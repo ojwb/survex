@@ -8,8 +8,6 @@
 <!--
 FIXME:
 
-in cylpolar/diving dz its own calibration
-
 3dfile title:
 defaults to a list of the leafnames of the &svx; files specified on the
 command line (with any paths and extensions removed).
@@ -93,8 +91,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-12-11 09:43:43 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.76 2001-12-11 09:43:43 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-12-12 11:05:56 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.77 2001-12-12 11:05:56 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1279,6 +1277,24 @@ E.g.:
 </Para></listitem>
 </VarListEntry>
 
+<VarListEntry><Term>TOPOFIL</Term>
+<listitem><Para>
+TOPOFIL data style is the same as the NORMAL data style, except that the tape
+reading is replaced with FROMCOUNT/TOCOUNT (or COUNT in interleaved data).
+
+<programlisting>
+*data topofil from to compass clino fromcount tocount
+1 2 172 -03 11532 11873</programlisting>
+
+<programlisting>
+*data topofil station count newline direction compass clino
+1 11532
+ F 172 -03
+2 11873</programlisting>
+ 
+</Para></listitem>
+</VarListEntry>
+
 <VarListEntry><Term>DIVING</Term>
 <listitem><Para>
 An underwater survey where the vertical information is from a diver's pressure
@@ -1328,35 +1344,47 @@ Cartesian data are relative to <emphasis>true</emphasis> North not
 </Para></Note>
 </VarListEntry>
 
-<VarListEntry><Term>TOPOFIL</Term>
-<listitem><Para>
-TOPOFIL data style is the same as the NORMAL data style, except that the tape
-reading is replaced with FROMCOUNT/TOCOUNT (or COUNT in interleaved data).
-
-<programlisting>
-*data topofil from to compass clino fromcount tocount
-1 2 172 -03 11532 11873</programlisting>
-
-<programlisting>
-*data topofil station count newline direction compass clino
-1 11532
- F 172 -03
-2 11873</programlisting>
- 
-</Para></listitem>
-</VarListEntry>
-
 <VarListEntry><Term>CYLPOLAR</Term>
 <listitem><Para>
-FROM TO TAPE <!--[BACK]-->COMPASS FROMDEPTH TODEPTH DEPTHCHANGE
+A CYLPOLAR style survey is similar to a diving survey, except that the tape
+is always measured horizontally rather than along the slope of the leg.
+
+<programlisting>
+*data cypolar from to tape compass fromdepth todepth
+1 2 9.45 311 -13.3 -19.0</programlisting>
+
+<programlisting>
+*data cylpolar station depth newline tape compass
+1 -13.3
+ 9.45 311
+2 -19.0</programlisting>
+
+<programlisting>
+*data cylpolar from to tape compass depthchange
+1 2 9.45 311 -5.7</programlisting>
 </Para></listitem>
 </VarListEntry>
 
 <VarListEntry><Term>NOSURVEY</Term>
 <listitem><Para>
 A NOSURVEY survey doesn't have any measurements - it merely indicates that
-there is line of sight between the pairs of stations
-FROM TO
+there is line of sight between the pairs of stations.
+
+<programlisting>
+*data nosurvey from to
+1 7
+5 7
+9 11</programlisting>
+
+<programlisting>
+*data nosurvey station
+1
+7
+5
+
+*data nosurvey station
+9
+11</programlisting>
 </Para></listitem>
 </VarListEntry>
 
@@ -1369,7 +1397,7 @@ FROM TO
 
 <Para>
 IGNORE skips a field (it may be used any number of times),
-and IGNOREALL may be used last to ignore the rest of the line.
+and IGNOREALL may be used last to ignore the rest of the data line.
 </Para>
 
 <Para>

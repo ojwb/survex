@@ -2368,6 +2368,27 @@ it:335 Quota
 en:336 You may only view one 3d file at a time.
 #
 en:337 Side P@anel
+# TRANSLATE de (which is better translation?)
+en:338 "  %d N, %d E"
+fr:338 "  %d N, %d E"
+#de:338 "  %d N, %d O" ?
+de:338 "  %d R, %d H"
+pt:338 "  %d N, %d L"
+ca:338 "  %d N, %d E"
+es:338 "  %d N, %d E"
+it:338 "  %d N, %d E"
+# Used in Aven:
+#  From <stationname>
+#  H: 123m V: 234m
+#  Dist: 456m  Brg: 200
+# TRANSLATE fr de pt ca es it
+en:339 From
+fr:339 De
+de:339 Von
+pt:339 De
+ca:339 Des de
+es:339 Desde
+it:339 Da
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s
