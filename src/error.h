@@ -37,6 +37,7 @@
 1996.02.19 malloc and friends split off into osalloc.h
 1996.04.04 introduced NOP
 1997.06.05 added const
+1998.03.21 fixed up to compile cleanly on Linux
 */
 
 #ifndef ERROR_H /* only include once */
@@ -69,14 +70,14 @@ extern void FAR   fatal( int en, void (*fn)( const char *, int ), const char *, 
 
 void wr( const char *, int ); /* write string sz and \n - return void */
 
-extern const char * FAR PthFromFnm( const char *fnm);
-extern const char * FAR LfFromFnm( const char *fnm);
-extern const char * FAR UsePth( const char *pth, const char *lf );
-extern const char * FAR AddExt( const char *fnm, const char *ext );
+extern char * FAR PthFromFnm( const char *fnm);
+extern char * FAR LfFromFnm( const char *fnm);
+extern char * FAR UsePth( const char *pth, const char *lf );
+extern char * FAR AddExt( const char *fnm, const char *ext );
 
 extern FILE FAR *fopenWithPthAndExt( const char *pth, const char *fnm,
 				      const char *szExt, const char *szMode,
-                                      const char **fnmUsed);
+                                      char **fnmUsed);
 
 extern FILE *safe_fopen( const char *fnm, const char *mode );
 

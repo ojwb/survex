@@ -170,6 +170,10 @@
 1996.05.05 added CDECL
 1996.05.12 recoded to remove ceil()
 1997.02.01 moved fp_check_ok() call much earlier ; fettled spacing a bit
+1997.06.03 converted DOS eols
+1997.08.24 removed limit on survey station name length
+1998.03.21 fixed up to compile cleanly on Linux
+           expiry code turned off
 */
 
 #include <time.h>
@@ -245,7 +249,7 @@ extern CDECL int main(int argc, sz argv[]) {
 
    display_banner();
 
-#include "expire.h"
+/*#include "expire.h"*/
 
    pcs = osnew(settings);
    pcs->next = NULL;
@@ -256,8 +260,7 @@ extern CDECL int main(int argc, sz argv[]) {
    root->up = root->right = root->down = NULL;
    root->stn = NULL;
    root->pos = NULL;
-   root->ident[0] = '\\';
-   root->ident[1] = '\0';
+   root->ident = "\\";
 
    stnlist = NULL;
    cLegs = 0;
@@ -272,7 +275,7 @@ extern CDECL int main(int argc, sz argv[]) {
    }
 
    /* Select defaults settings */
-   default_unique(pcs);
+   default_truncate(pcs);
    default_ascii(pcs);
    default_90up(pcs);
    default_case(pcs);
@@ -327,7 +330,7 @@ extern CDECL int main(int argc, sz argv[]) {
 /* Display startup banner */
 static void display_banner(void) {
    int msgGreet = 112;
-   char* szWelcomeTo;
+   const char *szWelcomeTo;
 #ifndef NO_NICEHELLO
    if (tmUserStart != (time_t)-1) {
       int hr;
@@ -371,7 +374,7 @@ static void do_range( FILE *fh, int d, int msg1, int msg2, int msg3 ) {
 static void do_stats( void ) {
    sz fnm;
    FILE *fh;
-   long cLoops = cComponents+cLegs-cStns;
+   long cLoops = cComponents + cLegs - cStns;
 
 #ifdef NO_EXTENSIONS
    fnm = UsePth( pthOutput, STATS_FILE );

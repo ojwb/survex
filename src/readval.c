@@ -1,6 +1,6 @@
 /* > readval.c
  * Read a datum from the current input file
- * Copyright (C) 1991-1994,1996 Olly Betts
+ * Copyright (C) 1991-1994,1996,1997 Olly Betts
  */
 
 /*
@@ -64,6 +64,8 @@
 1996.03.24 parse structure introduced
 1996.04.15 SPECIAL_POINT -> SPECIAL_DECIMAL
 1996.05.05 removed spaces from before preprocessor directives
+1997.08.24 removed limit on survey station name length
+1998.03.21 fixed up to compile cleanly on Linux
 */
 
 #include <stddef.h>
@@ -72,15 +74,7 @@
 #include "error.h"
 #include "readval.h"
 #include "datain.h"
-
-#if 0
-#ifdef TRIM_PREFIX
-/* might be faster (but not on the archie) */
-# define ident_cpy(X,Y) strncpy((X),(Y),IDENT_LEN)
-#else
-# define ident_cpy(X,Y) memcpy((X),(Y),IDENT_LEN)
-#endif
-#endif
+#include "osalloc.h"
 
 /* Dinky macro to handle any case forcing needed */
 #define docase(X) (pcs->Case==OFF?(X):(pcs->Case==UPPER?toupper(X):tolower(X)))
@@ -88,7 +82,8 @@
 /* if prefix is omitted: if fOmit return NULL, otherwise use longjmp */
 extern prefix *read_prefix( bool fOmit ) {
   prefix *back_ptr,*ptr;
-  id     name;
+  char *name;
+  size_t name_len = 32;
   int    i;
 
   skipblanks();
@@ -104,6 +99,8 @@ extern prefix *read_prefix( bool fOmit ) {
     ptr=pcs->Prefix;
   }
 
+  name = osmalloc( name_len );  
+   
   i=0;
   do {
     if (i) /* i==0 iff this is the first pass */ {
@@ -111,35 +108,33 @@ extern prefix *read_prefix( bool fOmit ) {
       nextch();
     }
     while (isNames(ch)) {
-      if (i<(int)pcs->Unique) /* truncate to pcs->Unique chars */
-        name[i]=docase(ch);
-      i++;
+      if (i < pcs->Truncate) { /* truncate name? */
+         name[i++] = docase(ch);
+	 if (i >= name_len) {
+	    name_len = name_len + name_len;
+	    name = osrealloc( name, name_len );
+	 }
+      }
       nextch();
     }
     if (i==0) {
       if (!fOmit)
         errorjmp(7,1,file.jbSkipLine);
+      osfree(name);
       return (prefix *)NULL;
     }
 
-    if (i>(int)pcs->Unique)
-      warning(42,showline,NULL,i-(int)pcs->Unique);
-#if 0
-    while (i<IDENT_LEN) /* pad to IDENT_LEN with nuls so matching is easier */
-      name[i++]='\0';
-#endif
-    if (i<IDENT_LEN)
-      name[i++]='\0';
+    if (i >= pcs->Truncate)
+      warning(42,showline,NULL,i-pcs->Truncate);
+
+    name[i++]='\0';
+    name = osrealloc( name, i );
 
     back_ptr=ptr;
     ptr=ptr->down;
     if (ptr==NULL) { /* Special case first time around at each level */
-#ifdef TRIM_PREFIX
-      ptr=osmalloc((OSSIZE_T)(offsetof(prefix,ident)+i));
-#else
       ptr=osnew(prefix);
-#endif
-      memcpy(ptr->ident,name,i);
+      ptr->ident = name;
       ptr->right=NULL;
       ptr->down=NULL;
       ptr->pos=NULL;
@@ -149,19 +144,14 @@ extern prefix *read_prefix( bool fOmit ) {
     } else {
       prefix *ptrPrev=NULL;
       int cmp=1; /* result of strncmp ( -ve for <, 0 for =, +ve for > ) */
-      /* maybe (int)pcs->Unique instead of IDENT_LEN in next line */
-      while ((ptr!=NULL) && (cmp=strncmp(ptr->ident,name,IDENT_LEN))<0) {
+      while ((ptr!=NULL) && (cmp=strcmp(ptr->ident,name))<0) {
         ptrPrev=ptr;
         ptr=ptr->right;
       }
       if (cmp) /* ie we got to one that was higher, or the end */ {
         prefix *new;
-#ifdef TRIM_PREFIX
-        new=osmalloc((OSSIZE_T)offsetof(prefix,ident)+i);
-#else
         new=osnew(prefix);
-#endif
-        memcpy(new->ident,name,i);
+	new->ident = name;
         if (ptrPrev==NULL)
           back_ptr->down=new;
         else

@@ -117,6 +117,7 @@
 1996.04.03 corrected char literals in switch
 1996.05.18 (hopefully) fixed over-keen clipping to top and right
 1996.09.12 line width is now read as floating point
+1998.03.21 fixed up to compile cleanly on Linux
 */
 
 #include <stdio.h>
@@ -154,12 +155,12 @@
 static char *hpgl_Name( void );
 static int  hpgl_Pre( int pagesToPrint );
 static void hpgl_NewPage( int pg, int pass, int pagesX, int pagesY );
-static void hpgl_Init( FILE *fh, char *pth, float *pscX, float *pscY );
+static void hpgl_Init( FILE *fh, const char *pth, float *pscX, float *pscY );
 static void hpgl_MoveTo( long x, long y );
 static void hpgl_DrawTo( long x, long y );
 static void hpgl_DrawCross( long x, long y );
-static void hpgl_WriteString( char *sz );
-static void hpgl_ShowPage( char *szPageDetails );
+static void hpgl_WriteString( const char *s );
+static void hpgl_ShowPage( const char *szPageDetails );
 
 /*device hpgl={*/
 device printer={
@@ -193,12 +194,12 @@ static char* szFont;
 static char *ps_Name( void );
 static int  ps_Pre( int pagesToPrint );
 static void ps_NewPage( int pg, int pass, int pagesX, int pagesY );
-static void ps_Init( FILE *fh, char *pth, float *pscX, float *pscY );
+static void ps_Init( FILE *fh, const char *pth, float *pscX, float *pscY );
 static void ps_MoveTo( long x, long y );
 static void ps_DrawTo( long x, long y );
 static void ps_DrawCross( long x, long y );
-static void ps_WriteString( char *sz );
-static void ps_ShowPage( char *szPageDetails );
+static void ps_WriteString( const char *s );
+static void ps_ShowPage( const char *szPageDetails );
 static void ps_Quit( void );
 
 /*device ps={*/
@@ -245,11 +246,11 @@ static void ps_DrawCross( long x, long y ) {
    prio_printf("%ld %ld C\n",x-clip.x_min,y-clip.y_min);
 }
 
-static void ps_WriteString( char *sz ) {
+static void ps_WriteString( const char *s ) {
    unsigned char ch;
    prio_putc('(');
-   while (*sz) {
-      ch=*sz++;
+   while (*s) {
+      ch = *s++;
       switch (ch) {
        case 0xB0:
          prio_printf("\\312"); /* degree symbol */
@@ -409,7 +410,7 @@ static void ps_NewPage( int pg, int pass, int pagesX, int pagesY ) {
 }
 
 #ifndef HPGL
-static void ps_ShowPage( char *szPageDetails ) {
+static void ps_ShowPage( const char *szPageDetails ) {
    prio_printf("stroke grestore\n0 -%d moveto\n",(int)(10.0*POINTS_PER_MM));
    ps_WriteString( szPageDetails );
    prio_printf("stroke\nshowpage\n");
@@ -418,9 +419,9 @@ static void ps_ShowPage( char *szPageDetails ) {
 
 /* Initialise HPGL/PS printer routines */
 #ifdef HPGL
-static void hpgl_Init( FILE *fh, char *pth, float *pscX, float *pscY ) {
+static void hpgl_Init( FILE *fh, const char *pth, float *pscX, float *pscY ) {
 #else
-static void ps_Init( FILE *fh, char *pth, float *pscX, float *pscY ) {
+static void ps_Init( FILE *fh, const char *pth, float *pscX, float *pscY ) {
 #endif
    char *fnmPrn;
    char **vals;
@@ -507,10 +508,10 @@ static void hpgl_DrawCross( long x, long y ) {
       prio_putc('\n');
 }
 
-static void hpgl_WriteString( char *sz ) {
+static void hpgl_WriteString( const char *s ) {
    prio_printf("LB"); /* Label - terminate text with a ^C */
-   while (*sz) {
-      switch (*sz) {
+   while (*s) {
+      switch (*s) {
        case '\xB0':
 #ifdef HPGL_USE_UC
          /* draw a degree sign */
@@ -551,20 +552,20 @@ static void hpgl_WriteString( char *sz ) {
 #endif
          break;
        default:
-         prio_putc( *sz );
+         prio_putc( *s );
       }
-      sz++;
+      s++;
    }
    prio_printf( HPGL_EOL";" );
    if (fNewLines)
       prio_putc('\n');
 }
 
-static void hpgl_ShowPage( char *szPageDetails ) {
+static void hpgl_ShowPage( const char *szPageDetails ) {
    /* clear clipping window and print footer */
    prio_printf("IW;PU%ld,%ld;",
                clip.x_min-x_org,clip.y_min-ypFooter/2L-y_org);
-   hpgl_WriteString((char *)szPageDetails);
+   hpgl_WriteString(szPageDetails);
    prio_printf("PG;"); /* New page.  NB PG is a no-op on the HP7475A */
    if (fNewLines)
       prio_putc('\n');

@@ -110,6 +110,7 @@
 1996.02.22 fixed fNoClino bug
 1996.03.24 parse structure introduced ; reworked showline() muchly
 1997.08.22 added covariances
+1998.03.21 fixed up to compile cleanly on Linux
 */
 
 #include <limits.h>
@@ -177,7 +178,7 @@ extern void skipblanks(void) {
     nextch();
 }
 
-extern void showandskipline(char *dummy, int n) {
+extern void showandskipline( const char *dummy, int n ) {
   showline(dummy,n);
   skipline();
 }
@@ -195,7 +196,7 @@ extern void skipline( void ) {
  * 12  13   7.5& 120 -34
  *              ^ftell()
  */
-extern void showline(char *dummy, int n) {
+extern void showline( const char *dummy, int n ) {
 #if 1
   char sz[256];
   int ch;
@@ -333,7 +334,7 @@ extern void data_file( sz pth, sz fnm ) {
 #ifndef NO_PERCENTAGE
   long int filelen;
 #endif
-  sz fnmUsed;
+  char *fnmUsed;
 
   file.fh=fopenWithPthAndExt( pth, fnm, EXT_SVX_DATA, "rb", &fnmUsed );
   if (file.fh==NULL) {

@@ -86,6 +86,7 @@
 1996.09.21 printdm: added "is_ibm" .ini file option
 1996.10.01 is_ibm now defaults to fFalse if not specified
 1997.01.16 now look for [dm] or [pcl] in .ini file
+1998.03.21 fixed up to compile cleanly on Linux
 */
 
 #include <stdio.h>
@@ -108,7 +109,7 @@
 static void MoveTo( long x, long y );
 static void DrawTo( long x, long y );
 static void DrawCross( long x, long y );
-static void WriteString( char *sz );
+static void WriteString( const char *s );
 static int Pre( int pagesToPrint );
 static void Post( void );
 
@@ -119,8 +120,8 @@ static bool fNoPCLVTab=fFalse;
 
 static char *pcl_Name( void );
 static void pcl_NewPage( int pg, int pass, int pagesX, int pagesY );
-static void pcl_Init( FILE *fh, char *pth, float *pscX, float *pscY );
-static void pcl_ShowPage( char *szPageDetails );
+static void pcl_Init( FILE *fh, const char *pth, float *pscX, float *pscY );
+static void pcl_ShowPage( const char *szPageDetails );
 
 /*device pcl={*/
 device printer={
@@ -142,8 +143,8 @@ static bool fIBM=fFalse;
 
 static char *dm_Name( void );
 static void dm_NewPage( int pg, int pass, int pagesX, int pagesY );
-static void dm_Init( FILE *fh, char *pth, float *pscX, float *pscY );
-static void dm_ShowPage( char *szPageDetails );
+static void dm_Init( FILE *fh, const char *pth, float *pscX, float *pscY );
+static void dm_ShowPage( const char *szPageDetails );
 
 /*device dm={*/
 device printer={
@@ -346,9 +347,9 @@ static void dm_NewPage( int pg, int pass, int pagesX, int pagesY ) {
 }
 
 #ifdef PCL
-static void pcl_ShowPage( sz szPageDetails ) {
+static void pcl_ShowPage( const char *szPageDetails ) {
 #else
-static void dm_ShowPage( sz szPageDetails ) {
+static void dm_ShowPage( const char *szPageDetails ) {
 #endif
    int x, y, last;
 #ifdef PCL
@@ -438,9 +439,9 @@ static void dm_ShowPage( sz szPageDetails ) {
 
 /* Initialise DM/PCL printer routines */
 #ifdef PCL
-static void pcl_Init( FILE *fh, char *pth, float *pscX, float *pscY ) {
+static void pcl_Init( FILE *fh, const char *pth, float *pscX, float *pscY ) {
 #else
-static void dm_Init( FILE *fh, char *pth, float *pscX, float *pscY ) {
+static void dm_Init( FILE *fh, const char *pth, float *pscX, float *pscY ) {
 #endif
    char *fnm;
    char *fnmPrn;
@@ -664,12 +665,12 @@ static void WriteLetter( int ch, long X, long Y ) {
    }
 }
 
-static void WriteString(sz sz) {
-   unsigned char ch=*sz;
-   while (ch>=32) {
-      if (ch<=MAX_DEF_CHAR)
-         WriteLetter(ch,xLast,yLast);
-      ch=*(++sz);
-      xLast+=(long)CHAR_SPACING*dppX;
+static void WriteString( const char *s ) {
+   unsigned char ch = *s;
+   while (ch >= 32) {
+      if (ch <= MAX_DEF_CHAR)
+         WriteLetter( ch, xLast, yLast );
+      ch = *(++s);
+      xLast += (long)CHAR_SPACING * dppX;
    }
 }

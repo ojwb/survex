@@ -15,6 +15,7 @@
            Alloc and Free removed - Pre now returns int
 1995.12.20 added as_xxx functions to simplify reading of .ini files
 1996.03.10 added prototypes for as_string and as_escstring
+1998.03.21 fixed up to compile cleanly on Linux
 */
 
 #include <stdio.h>
@@ -31,14 +32,14 @@ typedef struct {
    char * (*Name)( void ); /* returns "Widgetware printer" or whatever */
    /* A NULL fn ptr is Ok for Init, Alloc, NewPage, ShowPage, Free, Quit */
    /* if Alloc==NULL, it "returns" 1 */
-   void (*Init)( FILE *fh, char *pth, float *pscX, float *pscY );
+   void (*Init)( FILE *fh, const char *pth, float *pscX, float *pscY );
    int  (*Pre)( int pagesToPrint );
    void (*NewPage)( int pg, int pass, int pagesX, int pagesY );
    void (*MoveTo)( long x, long y );
    void (*DrawTo)( long x, long y );
    void (*DrawCross)( long x, long y );
-   void (*WriteString)( char *sz );
-   void (*ShowPage)( sz szPageDetails );
+   void (*WriteString)( const char *s );
+   void (*ShowPage)( const char *szPageDetails );
    void (*Post)( void );
    void (*Quit)( void );
 } device;

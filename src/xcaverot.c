@@ -43,7 +43,10 @@
 
 1997.05.28 rearranged a fair bit, so we can merge with caverot soon [Olly]
 1997.06.02 mostly converted to use cvrotimg [Olly]
-1997.06.10 fixed gcc warning [Olly]
+1998.03.04 merged two deviant versions:
+>1997.06.03 tweaked to compile [Olly]
+>1997.06.10 fixed gcc warning [Olly]
+1998.03.21 fixed up to compile cleanly on Linux
   */
 
 /* Width of each button along the top of the window */
@@ -61,6 +64,7 @@
 #define E_IND_LINE 0.6
 #define E_IND_PTR 0.38
 
+/* radius of compass and clino indicators */
 #define RADIUS ((float)INDWIDTH*.4)
 
 /* font to use */
@@ -68,8 +72,6 @@
 
 #define XOFF 500
 #define YOFF 350
-#define TRUE 1
-#define FALSE 0
 #define PIBY180 0.017453293
 
 #include <math.h>
@@ -95,14 +97,6 @@
 #endif
 
 #if 0
-typedef struct point {
-  short Option;
-  short survey;
-  int X;
-  int Y;
-  int Z;
-} point;
-
 #define MOVE 1
 #define DRAW 2
 #define STOP 4
@@ -552,7 +546,7 @@ void draw_ind_com( Display *display, GC gc, float angle ) {
 
 void draw_scalebar( void ) {
   char temp[20];
-  float l,m,n,o,p;
+  float l,m,n,o;
 
   if (changedscale) {
 
@@ -568,13 +562,11 @@ void draw_scalebar( void ) {
 
     o = (m-floor(m) < log10(5) ? n : 5*n );
 
-    p = o*100/l;
-
     sbar = (int)o;
 
     changedscale =0;
   }
- /* printf("%f\t%f\t%f\t%f\t%f\n", l,m,n,o,p); */
+ /* printf("%f\t%f\t%f\t%f\n", l,m,n,o); */
 
   XClearWindow(mydisplay, scalebar);
 
@@ -768,7 +760,7 @@ void process_focus( Display *display, Window window, int ix, int iy ) {
       x_mid += x * cx;
       y_mid += x * sx;
   } else {
-      if ( (q=find_station(ix,iy,MOVE & DRAW /*& LABEL*/)) != NULL) {
+      if ( (q=find_station(ix,iy,MOVE | DRAW /*| LABEL*/)) != NULL) {
         float n1, n2, n3, j1, j2, j3, i1, i2, i3;
         /*
 	x_mid = q->X;

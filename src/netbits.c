@@ -49,6 +49,7 @@
 1994.10.31 added prefix.shape
 1995.10.11 fettled layout
 1997.08.22 added covariances
+1998.03.21 fixed up to compile cleanly on Linux
 */
 
 #include "survex.h"
@@ -70,6 +71,7 @@ extern linkfor *copy_link( linkfor *leg ) {
       for(d=2;d>=0;d--)
          legOut->d[d] = -leg->d[d];
    }
+#ifndef NO_COVARIANCES
 #if 1
      {
 	int i,j;
@@ -81,6 +83,10 @@ extern linkfor *copy_link( linkfor *leg ) {
      }
 #else
    memcpy( legOut->v, leg->v, sizeof (var));
+#endif
+#else
+   for(d=2;d>=0;d--)
+      legOut->v[d] = leg->v[d];
 #endif
    return legOut;
 }
@@ -132,10 +138,14 @@ void addfakeleg( node *fr, node *to,
       leg->l.to=to;
       leg2->l.to=fr;
       leg->d[0]=dx;leg->d[1]=dy;leg->d[2]=dz;
+#ifndef NO_COVARIANCES
       leg->v[0][0]=vx;leg->v[1][1]=vy;leg->v[2][2]=vz;
       leg->v[0][1]=leg->v[1][0]=cxy;
       leg->v[1][2]=leg->v[2][1]=cyz;
       leg->v[2][0]=leg->v[0][2]=czx;
+#else
+      leg->v[0]=vx;leg->v[1]=vy;leg->v[2]=vz;
+#endif
       leg2->l.reverse=i;
       leg->l.reverse=(j | 0x80);
 
@@ -184,11 +194,15 @@ char freeleg(node **stnptr) {
    leg->l.to=stn;
    leg->d[0]=leg->d[1]=leg->d[2]=(real)0.0;
    
+#ifndef NO_COVARIANCES
    for ( i = 0; i < 3 ; i++ ) {
       for ( j = 0; j < 3 ; j++ ) {
 	 leg->v[i][j] = (real)0.0;
       }
    }
+#else
+   leg->v[0]=leg->v[1]=leg->v[2]=(real)0.0;
+#endif
    leg->l.reverse=1 | 0x80;
 
    leg2->l.to=oldstn;
@@ -229,14 +243,11 @@ node *StnFromPfx( prefix *name ) {
 }
 
 extern void fprint_prefix( FILE *fh, prefix *ptr ) {
-   int i;
    if (ptr->up!=NULL) {
       fprint_prefix( fh, ptr->up );
       if (ptr->up->up!=NULL)
          fputc('.',fh);
-      /* to save space, there's no terminating '\0' if id is max length */
-      for( i=0 ; i<IDENT_LEN && ptr->ident[i]!='\0' ; i++ )
-         fputc( ptr->ident[i], fh );
+      fputs( ptr->ident, fh );
    } else {
       fputc('\\',fh);
    }
@@ -244,18 +255,17 @@ extern void fprint_prefix( FILE *fh, prefix *ptr ) {
 
 static char *sprint_prefix_( char *sz, prefix *ptr ) {
    int i;
-   if (ptr->up!=NULL) {
-      sz=sprint_prefix_( sz, ptr->up );
-      if (ptr->up->up!=NULL)
-         *sz++='.';
-      /* to save space, there's no terminating '\0' if id is max length */
-      for( i=0 ; i<IDENT_LEN && ptr->ident[i]!='\0' ; i++ )
-         sz[i]=ptr->ident[i];
-      sz+=i;
+   if (ptr->up != NULL) {
+      sz = sprint_prefix_( sz, ptr->up );
+      if (ptr->up->up != NULL)
+         *sz++ = '.';
+      i = strlen( ptr->ident );
+      memcpy( sz, ptr->ident, i );
+      sz += i;
    } else {
-      *sz++='\\';
+      *sz++ = '\\';
    }
-   *sz='\0';
+   *sz = '\0';
    return sz;
 }
 
