@@ -1,5 +1,7 @@
 /* message.c */
 
+/* ERRC show diffs to newer version of error.c - most that are left in here aren't relevant */
+
 /* loosely based on Survex's error.c, but uses SGML entities for accented
  * characters, and is rather more generic */
 
@@ -164,6 +166,9 @@
 >1995.02.14 changed "char foo[]=" to "char *foo="
 >1996.02.10 pszTable is now an array of char *, which can be NULL
 >	   szSingTab can also be NULL
+1997.06.05 added const
+1998.03.04 more const
+1998.03.21 fixed up to compile cleanly on Linux
 */
 
 /* Beware: This file contains top-bit-set characters (160-255), so be     */
@@ -612,22 +617,22 @@ printf("opened error file\n");
     /* no point extracting this error, as it won't get used if file opens */
     fprintf(STDERR, erg[3], szAppNameCopy );
     fprintf(STDERR, "Can't open message file '%s' using path '%s'\n",
-            lfErrs,pthMe);
+            lfErrs, pthMe);
     exit(EXIT_FAILURE);
   }
 
   { /* copy bootstrap erg[] which'll get overwritten by file entries */
-    const char **ergMalloc;
-    erg = ergBootstrap;
-    ergMalloc=osmalloc( enMac*ossizeof(char*) );
-    for ( en=0 ; erg[en] ; en++ )
-      ergMalloc[en]=erg[en]; /* NULL marks end of list */
-    for ( ; en<enMac ; en++ )
-      ergMalloc[en]=szBadEn;
-    erg=ergMalloc;
+     const char **ergMalloc;
+     erg = ergBootstrap;
+     ergMalloc = osmalloc( enMac * ossizeof(char*) );
+     /* NULL marks end of list */
+     for ( en = 0 ; erg[en] ; en++ ) ergMalloc[en]=erg[en];
+     for ( ; en < enMac ; en++ ) ergMalloc[en] = szBadEn;
+     erg = ergMalloc;
   }
 
   while (!feof( fh )) {
+#ifndef ERRC
     const char *p, *q;
     getline( line, ossizeof(line), fh );
     if (strncmp( line, prefix, prefix_len ) == 0) {
@@ -635,8 +640,18 @@ printf("opened error file\n");
       if (val < 0 || val > (unsigned long)INT_MAX) {
         fprintf( STDERR, erg[3], szAppNameCopy );
         fprintf( STDERR, erg[ (errno==ERANGE) ? 5 : 6 ] );
+#else /* ERRC */
+    char *q;
+    getline(line,ossizeof(line),fh);
+    if (strncmp(line,prefix,prefix_len)==0) {
+      long val=strtol(line+prefix_len,&q,0);
+      if (val<0 || val>(unsigned long)INT_MAX) {
+        fprintf(STDERR, erg[3], szAppNameCopy);
+        fprintf(STDERR,erg[ (errno==ERANGE)?5:6 ]);
+#endif /* ERRC */
         exit(EXIT_FAILURE);
       }
+#ifndef ERRC
       en = (int)val;
       while (isspace(*q)) q++;
 
@@ -670,25 +685,119 @@ printf("opened error file\n");
 	       if (*q == ';') q++;
 	       if (/* add entity "entity" at estr[c] ok*/) continue;
 	       q = entity - 1;
+#else /* ERRC */
+      en=(int)val;
+      while (isspace(*q))
+        q++;
+      fQuoted=(*q=='\"');
+      if (fQuoted)
+        q++;
+      c=0;
+      while (*q && !(fQuoted && *q=='\"') ) {
+        if (*q=='\'' || *q=='`') /* convert `` and '' to left/right " */ {
+          if (*q==*(q+1)) {
+#ifndef NO_TEX
+            estr[c++] = ( *q=='`' ? chOpenQuotes : chCloseQuotes );
+#else
+            estr[c++] = '\"';
+#endif /* !NO_TEX */
+            q+=2;
+            continue;
+          }
+        }
+        if (*q!='\\')
+          estr[c++]=*q;
+        else {
+          q++;
+          switch (*q) {
+            case 'n': /* '\n' */
+              estr[c++]='\n';
+              break;
+            case '\0': /* \ at end of line, so concatenate lines */
+              getline(line,ossizeof(line),fh);
+              if (strncmp(line,prefix,prefix_len)!=0) { /* bad format */
+                fprintf(STDERR, erg[3], szAppNameCopy);
+                fprintf(STDERR,erg[5]);
+                exit(EXIT_FAILURE);
+              }
+              q=line+prefix_len;
+              continue;
+#ifndef NO_TEX
+            default: {
+              char *p;
+              int i, accent;
+              p=strchr(szSingles,*q);
+              if (p && szSingTab) {
+                estr[c++]=szSingTab[p-szSingles];
+                break;
+              }
+              p=strchr(szAccents,*q);
+              if (!p) {
+                if (*q!='\\')
+                  estr[c++]='\\';
+                break; /* \\ becomes \ and \<unknown> is not translated */
+              }
+              accent=p-szAccents;
+              q++;
+              p=strchr(szLetters,*q);
+              if (!p) {
+                estr[c++]='\\';
+                estr[c++]=szAccents[accent];
+                break;
+              }
+              i=p-szLetters;
+              if (pszTable[accent] && i<strlen(pszTable[accent])) {
+                char ch;
+                ch=pszTable[accent][i];
+                if (ch!=32) {
+                  estr[c++]=ch;
+                  break;
+                }
+              }
+              estr[c++]='\\';
+              estr[c++]=szAccents[accent];
+              estr[c++]=szLetters[i];
+#endif /* ERRC */
             }
+#ifndef ERRC
          }
          if (*q < 32 || *q >= 127) {
             printf( STDERR, "Warning: literal character '%c' (value %d) "
                     "in message %d\n", *q, (int)*q, en );
          }
 	 estr[c++] = *q++;
+#else /* ERRC */
+#endif /* !NO_TEX */
+          }
+        }
+        q++;
+#endif /* ERRC */
       }
+#ifndef ERRC
       estr[c] = '\0';
+#endif /* not ERRC */
 
+#ifndef ERRC
       if (en >= enMac) {
          int enTmp;
          enTmp = enMac;
          enMac = enMac<<1;
          erg = osrealloc( erg, enMac * ossizeof(char*) );
          while (enTmp < enMac) erg[enTmp++] = szBadEn;
+#else /* ERRC */
+      if (!fQuoted) /* if string wasn't quoted, trim off spaces... */
+        while (c>0 && estr[c-1]==' ')
+          c--;
+      estr[c]='\0';
+      if (en>=enMac) {
+        int enTmp;
+        enTmp=enMac;
+        enMac=enMac<<1;
+        erg = osrealloc(erg, enMac * ossizeof(char*) );
+        for ( ; enTmp < enMac ; enTmp++ ) erg[enTmp] = szBadEn;
+#endif /* ERRC */
       }
-      erg[en] = osmalloc(c+1);
-      strcpy( erg[en], estr ); /* !HACK! osstrdup? */
+      erg[en] = osstrdup(estr);
 /*printf("Error number %d: %s\n",en,erg[en]);*/
     }
   }
@@ -783,7 +892,7 @@ extern void FAR fatal( int en, void (*fn)( const char *, int ), const char *szAr
 typedef struct charset_li {
    struct charset_li *next;
    int code;
-   char **erg;
+   const char **erg;
 } charset_li;
 
 static charset_li *charset_head = NULL;
@@ -794,13 +903,13 @@ int select_charset( int charset_code ) {
    int old_charset = charset;
    charset_li *p;
 
-   printf( "select_charset(%d), old charset = %d\n", charset_code, charset );
+/*   printf( "select_charset(%d), old charset = %d\n", charset_code, charset ); */
 
    charset = charset_code;
 
    /* check if we've already parsed messages for new charset */
    for( p = charset_head ; p ; p = p->next ) {
-      printf("%p: code %d erg %p\n",p,p->code,p->erg);
+/*      printf("%p: code %d erg %p\n",p,p->code,p->erg); */
       if (p->code == charset) {
          erg = p->erg;
          goto found;
@@ -808,7 +917,7 @@ int select_charset( int charset_code ) {
    }
 
    /* nope, got to reparse message file */
-   ParseErrorFile( charset_code );
+   parse_msg_file( charset_code );
 
    /* add to list */
    p = osnew(charset_li);
