@@ -354,8 +354,8 @@ draw_scale_bar(double x, double y, double MaxLength, double scale)
 static int
 getanswer(char *szReplies)
 {
-   char *reply;
    int ch;
+   char *reply;
    ASSERT2(szReplies, "NULL pointer passed");
    ASSERT2(*szReplies, "list of possible replies is empty");
    putchar('(');
@@ -365,20 +365,22 @@ getanswer(char *szReplies)
       putchar(*reply);
    }
    fputs(") : ", stdout);
-   /* FIXME: this isn't what we want, as buffered IO means we wait until
-    * return is pressed, then if nothing is recognised, return is taken
-    * to mean default */
+   /* Switching to non-line based input is tricky to do portably, so we'll
+    * just take a line and look at the first character */
    do {
       ch = getchar();
+      
+      if (ch == '\n') return 0; /* default to first answer */
+      
+      /* skip rest of line entered */
+      while (getchar() != '\n') {}
+
       /* first try the letter as typed */
       reply = strchr(szReplies, ch);
       /* if that isn't there, then try toggling the case of the letter */
       if (!reply)
          reply = strchr(szReplies, isupper(ch) ? tolower(ch) : toupper(ch));
-   } while (!reply && ch!='\n');
-   if (ch == '\n') return 0; /* default to first answer */
-   while (getchar() != '\n')
-      {} /* twiddle(thumbs); */
+   } while (!reply);
    return (reply - szReplies);
 }
 
@@ -786,8 +788,7 @@ main(int argc, char **argv)
    }
 
    if (fInteractive && survey == NULL) {
-      /* FIXME: extract this message */
-      fputs("Only load the sub-survey with this prefix", stdout);
+      fputs(msg(/*Only load the sub-survey with prefix*/199), stdout);
       puts(":");
       fgets(szTmp, sizeof(szTmp), stdin);
       if (szTmp[0] >= 32) {
