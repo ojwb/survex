@@ -151,7 +151,7 @@ img_open(const char *fnm, char *title_buf, char *szDateStamp)
    }
 
    pimg->buf_len = 257;
-   pimg->label = (char*) xosmalloc(pimg->buf_len);
+   pimg->label = xosmalloc(pimg->buf_len);
    if (!pimg->label) {
       osfree(pimg);
       img_errno = IMG_OUTOFMEMORY;
@@ -220,7 +220,7 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    }
 
    pimg->buf_len = 257;
-   pimg->label = (char*) xosmalloc(pimg->buf_len);
+   pimg->label = xosmalloc(pimg->buf_len);
    if (!pimg->label) {
       osfree(pimg);
       img_errno = IMG_OUTOFMEMORY;
@@ -302,7 +302,7 @@ img_read_item(img *pimg, img_point *p)
 	 result = img_LABEL;
 	 len = get32(pimg->fh);
 	 if (len >= pimg->buf_len) {
-	    pimg->label = (char*) xosrealloc(pimg->label, len + 1);
+	    pimg->label = xosrealloc(pimg->label, len + 1);
 	    if (!pimg->label) {
 	       img_errno = IMG_OUTOFMEMORY;
 	       return img_BAD;
