@@ -308,7 +308,7 @@ public:
 
     LockFlags GetLock() const { return m_Lock; }
     bool IsRotating() const { return m_Rotating; }
-    bool HasData() const { return m_HaveData; }
+    bool HasData() const { return m_DoneFirstShow && m_HaveData; }
 
     double GetScale() const { return m_Params.scale; }
     void SetScale(Double scale);
