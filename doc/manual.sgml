@@ -10,6 +10,9 @@ Add note that this is produced from an sgml master and that large
 patches are better done on that...
 
 
+Remerge printini.sgml (possibly as a man page too)
+
+
 interleaved data styles...
 
 
@@ -121,8 +124,8 @@ this.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-10-04 01:00:02 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.62 2001-10-04 01:00:02 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-10-04 01:05:09 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.63 2001-10-04 01:05:09 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
