@@ -1,6 +1,6 @@
 /* > datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-1997 Olly Betts
+ * Copyright (C) 1991-1998 Olly Betts
  */
 
 /*
@@ -111,6 +111,7 @@
 1996.03.24 parse structure introduced ; reworked showline() muchly
 1997.08.22 added covariances
 1998.03.21 fixed up to compile cleanly on Linux
+1998.05.27 fettled to work with NO_COVARIANCES
 */
 
 #include <limits.h>
@@ -137,12 +138,6 @@
 #define var(I)   (pcs->Var[(I)])
 
 /* global defns */
-/*
-#ifndef NO_SETJMP
-jmp_buf jbSkipLine;
-#endif
-FILE *fh;
-*/
 int  ch;
 parse file;
 uchar buffer[COMMAND_BUFFER_LEN];
@@ -359,7 +354,7 @@ extern void data_file( sz pth, sz fnm ) {
     filelen=0;
 #endif
 
-#ifndef NO_SETJMP
+#ifdef HAVE_SETJMP
   if (setjmp(file.jbSkipLine)) /* errors in nested functions can longjmp here */
     { /* do nothing special */ }
 #endif
@@ -449,7 +444,9 @@ extern void data_normal( void ) {
   prefix *fr_name,*to_name;
   real    dx,dy,dz;
   real    vx,vy,vz;
+#ifndef NO_COVARIANCES
   real    cxy,cyz,czx;
+#endif
 
   real tape,comp,clin;
   bool fNoComp,fPlumbed=fFalse;
@@ -586,7 +583,9 @@ printf("clin %.2f\n",clin);
     dz=(clin>(real)0.0)?tape:-tape;
     vx=vy=var(Q_POS)/3.0+dz*dz*var(Q_PLUMB);
     vz=var(Q_POS)/3.0+var(Q_LENGTH);
+#ifndef NO_COVARIANCES
     cxy=cyz=czx=(real)0.0; /* !HACK! do this properly */
+#endif
   } else {
     /* clino */
     real L2,cosG,LcosG,cosG2,sinB,cosB,dx2,dy2,dz2,v,V;
@@ -597,7 +596,9 @@ printf("clin %.2f\n",clin);
     if (tape==(real)0.0) {
       dx=dy=dz=(real)0.0;
       vx=vy=vz=(real)(var(Q_POS)/3.0); /* Position error only */
+#ifndef NO_COVARIANCES
       cxy=cyz=czx=(real)0.0;
+#endif
 #if DEBUG_DATAIN_1
       printf("Zero length leg: vx = %f, vy = %f, vz = %f\n",vx,vy,vz);
 #endif
@@ -644,12 +645,16 @@ printf("clin %.2f\n",clin);
         vz=(var(Q_POS)/3.0+L2*(real)0.1);
         /* if no clino, assume sd=tape/sqrt(10) so 3sds = .95*tape */
       /* for Surveyor87 errors: vx=vy=vz=var(Q_POS)/3.0; */
+#ifndef NO_COVARIANCES
       cxy = sinB*cosB*
 	 ( (var(Q_LENGTH) - var(Q_BEARING)*L2) * cosG2 +
 	  var(Q_GRADIENT)*L2*(sin(clin)*sin(clin)) );
       czx = sinB*sin(clin)*cosG*( var(Q_LENGTH) - var(Q_GRADIENT)*L2 );
       cyz = cosB*sin(clin)*cosG*( var(Q_LENGTH) - var(Q_GRADIENT)*L2 );
-    cxy=cyz=czx=(real)0.0; /* !HACK! do this properly */
+#if 1
+    cxy=cyz=czx=(real)0.0; /* for now */
+#endif
+#endif
 #if DEBUG_DATAIN_1
       printf("In DATAIN.C, vx = %f, vy = %f, vz = %f\n",vx,vy,vz);
 #endif
@@ -659,8 +664,11 @@ printf("clin %.2f\n",clin);
   printf("Just before addleg, vx = %f\n",vx);
 #endif
 /*printf("dx,dy,dz = %.2f %.2f %.2f\n\n",dx,dy,dz);*/
-  addleg(StnFromPfx(fr_name),StnFromPfx(to_name),dx,dy,dz,vx,vy,vz,
-	 cyz,czx,cxy);
+  addleg(StnFromPfx(fr_name),StnFromPfx(to_name),dx,dy,dz,vx,vy,vz
+#ifndef NO_COVARIANCES
+	 ,cyz,czx,cxy
+#endif
+	 );
 }
 
 extern void data_diving( void ) {
@@ -742,5 +750,9 @@ extern void data_diving( void ) {
     }
     vz=var(Q_POS)/3.0+2*var(Q_DEPTH);
   }
+#ifdef NO_COVARIANCES
+  addleg(StnFromPfx(fr_name),StnFromPfx(to_name),dx,dy,dz,vx,vy,vz);
+#else
   addleg(StnFromPfx(fr_name),StnFromPfx(to_name),dx,dy,dz,vx,vy,vz,0,0,0); /* !HACK! need covariances */
+#endif
 }
