@@ -217,20 +217,24 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 END_EVENT_TABLE()
 
 class LabelCmp {
+    int separator;
 public:
+    LabelCmp(int separator_) : separator(separator_) {}
     bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
-	return name_cmp(pt1->GetText(), pt2->GetText(), '.') < 0;
+	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
     }
 };
 
 class LabelPlotCmp {
+    int separator;
 public:
+    LabelPlotCmp(int separator_) : separator(separator_) {}
     bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
 	int n = pt1->flags - pt2->flags;
 	if (n) return n > 0;
-	wxString l1 = pt1->GetText().AfterLast('.');
-	wxString l2 = pt2->GetText().AfterLast('.');
-	return name_cmp(l1, l2, '.') < 0;
+	wxString l1 = pt1->GetText().AfterLast(separator);
+	wxString l2 = pt2->GetText().AfterLast(separator);
+	return name_cmp(l1, l2, separator) < 0;
     }
 };
 
