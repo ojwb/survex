@@ -177,7 +177,8 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     
 {
 #ifdef _WIN32
-    SetIcon(wxIcon("aaaaaAven"));
+    SetIcon(wxIcon("aaaaaAven")); // the peculiar name is so that the icon is the first in the file
+                                  // (required by Windows for this type of icon)
 #endif
 
     m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS+1];
@@ -346,17 +347,16 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     toolbar->Realize();
 
-    int x;
-    int y;
-    GetSize(&x, &y);
-
     m_Splitter = new wxSplitterWindow(this, -1, wxDefaultPosition, wxDefaultSize,
       				      wxSP_3D | wxSP_LIVE_UPDATE);
     m_Panel = new wxPanel(m_Splitter);
     m_Tree = new AvenTreeCtrl(this, m_Panel);
     m_FindPanel = new wxPanel(m_Panel);
+    m_Panel->Show(false);
 
     m_FindButton = new wxButton(m_FindPanel, -1, "Find");
+    m_FindButton->SetDefault();
+    m_FindPanel->SetDefaultItem(m_FindButton);
     m_HideButton = new wxButton(m_FindPanel, -1, "Hide");
     m_Coords = new wxStaticText(m_FindPanel, -1, "");
     m_StnCoords = new wxStaticText(m_FindPanel, -1, "");
@@ -399,9 +399,12 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     m_Gfx = new GfxCore(this, m_Splitter);
 
-    m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 4);
+    m_Splitter->Initialize(m_Gfx);
 
 #ifdef __X__
+    int x;
+    int y;
+    GetSize(&x, &y);
     // X seems to require a forced resize.
     SetSize(-1, -1, x, y);
 #endif
@@ -728,7 +731,9 @@ void MainFrm::FillTree()
 		    current_id = m_Tree->AppendItem(current_id, bit);
 		    m_Tree->SetItemData(current_id, new TreeData(NULL));
 
-		    if (next_dot == -1) break;
+		    if (next_dot == -1) {
+		        break;
+		    }
 
 		    new_prefix = new_prefix.Mid(next_dot + 1);
 		}
@@ -896,6 +901,12 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 	else {
 	    m_Gfx->Initialise();
 	}
+
+	m_Panel->Show(true);
+	int x;
+	int y;
+	GetSize(&x, &y);
+	m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 4);
     }
     SetCursor(*wxSTANDARD_CURSOR);
 }
