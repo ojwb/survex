@@ -9,8 +9,8 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 
 This specification is reverse engineered from the code.  At least one person
 has written code to successfully written code to read 3d files using it, but
-it may be incorrect in minor details, and it's possible that there are points
-which aren't fully spelled out.  If you encounter any problems, please mail
+minor details may be unspecified or incorrect.
+If you encounter any problems, please mail
 us so we can improve this document.
 
 <H1>Survex 3d Format Specification</H1>
@@ -22,8 +22,9 @@ rebuilding your software with the updated img routines, rather than having to
 update your own code.  It also allows you to read a sub-set of the data in
 the file, restricted by Survey prefix.</P>
 
-<P>This document only describes the most recent revision of the 3d format
-(version 3), which is produced by Survex versions 0.97 and later.</P>
+<P>This document only describes the more recent revisions of the 3d format
+(versions 3 and 4).  Version 3 was produced by Survex versions 0.97 and later,
+version 4 by Survex 1.1.0 and later.</P>
 
 <H2>File Header</H2>
 
@@ -32,9 +33,9 @@ the file, restricted by Survey prefix.</P>
 <ul>
 <li> File ID: the string "Survex 3D Image File" followed by a linefeed (decimal 10, hex x0a). [Note: v0.01 files can have a carriage return before this and
 other linefeeds - this is a file format error in any other format version].
-<li> File format version: "v3" followed by a linefeed.  Valid values for
-older format versions are ("v0.01", "Bv0.01", "bv0.01", "v2").  Newer versions
-will be "v4", "v5", ..., "v10", "v11", etc.
+<li> File format version: "v3" or "v4" followed by a linefeed.  Valid values for
+older format versions are ("v0.01", "Bv0.01", "bv0.01", "v2").  Any future
+versions will be "v5", "v6", ..., "v10", "v11", etc.
 <li> Survey title: A string followed by a linefeed.  There's no length limit on this string.
 <li> Timestamp: A string followed by a linefeed.  This is intended to be the
 time the file was generated, rather than the time the survey data was
@@ -65,7 +66,10 @@ signed integers representing values in centimetres (0.01 metres).
 <li> 0x10-0x1f : remove N-15 (i.e. 1-16) characters from the current label.
 It's incorrect if the label ends up empty, or you attempt to trim more
 label than there is.
-<li> 0x20-0x3f : Reserved
+<li> <font color=red>0x20 &lt;date&gt;: set survey date of legs (date is 4 byte little endian unsigned integer counting seconds since 1970) [New in version 4]</font>
+<li> <font color=red>0x21 &lt;date1&gt; &lt;date2&gt;: set survey date of legs
+to a range (date1, date2 are 4 byte little endian unsigned integer counting seconds since 1970) [New in version 4]</font>
+<li> 0x22-0x3f : Reserved
 <li> 0x40-0x7f &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
 &lt;z coord&gt; : station flags are (N &amp; 0x1f):
 <ul>

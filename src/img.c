@@ -783,6 +783,22 @@ img_read_item(img *pimg, img_point *p)
 	    result = img_MOVE;
 	    break;
 	 }
+	 if (opt >= 0x20) {
+	     switch (opt) {
+		 case 0x20:
+		     pimg->date1 = get32(pimg->fh);
+		     pimg->date2 = pimg->date1;
+		     break;
+		 case 0x21:
+		     pimg->date1 = get32(pimg->fh);
+		     pimg->date2 = get32(pimg->fh);
+		     break;
+		 default:
+		     img_errno = IMG_BADFORMAT;
+		     return img_BAD;
+	     }
+	     goto again3;
+	 }
 	 /* 16-31 mean remove (n - 15) characters from the prefix */
 	 /* zero prefix using 0 */
 	 if (pimg->label_len <= (size_t)(opt - 15)) {
@@ -1479,6 +1495,17 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	 opt = 15;
 	 break;
        case img_LINE:
+	 if (pimg->version == 4) {
+	     // FIXME: be smarter and only write these when they change!
+	     if (pimg->date1 == pimg->date2) {
+		 putc(0x20, pimg->fh);
+		 put32(pimg->date1, pimg->fh);
+	     } else {
+		 putc(0x21, pimg->fh);
+		 put32(pimg->date1, pimg->fh);
+		 put32(pimg->date2, pimg->fh);
+	     }
+	 }
 	 write_v3label(pimg, 0x80 | flags, s ? s : "");
 	 opt = 0;
 	 break;
