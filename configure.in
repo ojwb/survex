@@ -1,4 +1,4 @@
-dnl Process this file with autoconf to produce a configure script.
+dnl Process this file with autoconf to produce a configure script.exe
 
 dnl CFLAGS=-DDEFAULTLANG=fr to build with French as the default language.
 
@@ -30,6 +30,14 @@ AC_SUBST(COMMAVERSION)
 
 dnl Checks for programs.
 AC_PROG_CC
+
+TXTEXT=
+CHANGELOG=ChangeLog
+case "$EXEEXT" in
+.[Ee][Xx][Ee]) TXTEXT=.txt ; CHANGELOG=Changes.txt ;;
+esac
+AC_SUBST(TXTEXT)
+AC_SUBST(CHANGELOG)
 
 AVEN='aven$(EXEEXT)'
 AC_ARG_ENABLE(aven,
