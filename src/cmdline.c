@@ -163,6 +163,39 @@ cmdline_syntax(void)
    putnl();
 }
 
+static void
+syntax_and_help_pointer(void)
+{
+   cmdline_syntax();
+   fprintf(stderr, msg(/*Try `%s --help' for more information.\n*/157),
+	   msg_appname());
+   exit(1);
+}
+
+static void
+moan_and_die(int msgno)
+{
+   fprintf(stderr, "%s: ", msg_appname());
+   fprintf(stderr, msg(msgno), optarg);
+   fputnl(stderr);
+   cmdline_syntax();
+   exit(1);
+}
+
+void
+cmdline_too_few_args(void)
+{
+   fprintf(stderr, "%s: %s\n", msg_appname(), msg(/*too few arguments*/122));
+   syntax_and_help_pointer();
+}
+
+void
+cmdline_too_many_args(void)
+{
+   fprintf(stderr, "%s: %s\n", msg_appname(), msg(/*too many arguments*/123));
+   syntax_and_help_pointer();
+}
+
 void
 cmdline_set_syntax_message(const char *args, const char *extra)
 {
@@ -181,17 +214,9 @@ cmdline_int_arg(void)
    result = strtol(optarg, &endptr, 10);
 
    if (errno == ERANGE || result > INT_MAX || result < INT_MIN) {
-      fprintf(stderr, "%s: ", msg_appname());
-      fprintf(stderr, msg(/*numeric argument `%s' out of range*/185), optarg);
-      fputnl(stderr);
-      cmdline_syntax();
-      exit(1);
+      moan_and_die(/*numeric argument `%s' out of range*/185);
    } else if (*optarg == '\0' || *endptr != '\0') {
-      fprintf(stderr, "%s: ", msg_appname());
-      fprintf(stderr, msg(/*argument `%s' not an integer*/186), optarg);
-      fputnl(stderr);
-      cmdline_syntax();
-      exit(1);
+      moan_and_die(/*argument `%s' not an integer*/186);
    }
 
    return (int)result;
@@ -208,17 +233,9 @@ cmdline_double_arg(void)
    result = strtod(optarg, &endptr);
 
    if (errno == ERANGE) {
-      fprintf(stderr, "%s: ", msg_appname());
-      fprintf(stderr, msg(/*numeric argument `%s' out of range*/185), optarg);
-      fputnl(stderr);
-      cmdline_syntax();
-      exit(1);
+      moan_and_die(/*numeric argument `%s' out of range*/185);
    } else if (*optarg == '\0' || *endptr != '\0') {
-      fprintf(stderr, "%s: ", msg_appname());
-      fprintf(stderr, msg(/*argument `%s' not a number*/187), optarg);
-      fputnl(stderr);
-      cmdline_syntax();
-      exit(1);
+      moan_and_die(/*argument `%s' not a number*/187);
    }
 
    return result;
@@ -245,25 +262,20 @@ cmdline_getopt(void)
 {
    int opt = getopt_long(argc, argv, shortopts, longopts, longind);
 
-   if (opt == EOF) {
+   switch (opt) {
+    case EOF:
       /* check valid # of args given - if not give syntax message */
       if (argc - optind < min_args) {
-	 fprintf(stderr, "%s: %s\n", msg_appname(), msg(/*too few arguments*/122));
-	 opt = '?';
+	 cmdline_too_few_args();
       } else if (max_args >= 0 && argc - optind > max_args) {
-	 fprintf(stderr, "%s: %s\n", msg_appname(), msg(/*too many arguments*/123));
-	 opt = '?';
+	 cmdline_too_many_args();
       }
-   }
-
-   switch (opt) {
+      break;
     case ':': /* parameter missing */
     case '?': /* unknown opt, ambiguous match, or extraneous param */
       /* getopt displays a message for us */
-      cmdline_syntax();
-      fprintf(stderr, msg(/*Try `%s --help' for more information.\n*/157),
-	      msg_appname());
-      exit(1);
+      syntax_and_help_pointer();
+      break;
     case HLP_VERSION: /* --version */
       cmdline_version();
       exit(0);

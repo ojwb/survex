@@ -20,7 +20,12 @@
 <!ENTITY pos "<filename>.pos</filename>">
 ]>
 <!--
+Add note that this is produced from an sgml master and that large
+patches are better done on that...
+
+
 interleaved data styles...
+
 
 3dfile title:
 defaults to a list of the leafnames of the &svx; files specified on the
@@ -132,8 +137,8 @@ the station 1 of the Adrian's Route survey.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-19 22:49:25 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.58 2001-09-19 22:49:25 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-21 23:32:26 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.59 2001-09-21 23:32:26 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1364,21 +1369,14 @@ horizontal and vertical tabbing.
 
 <Para>
 Dot Matrix printers do not print to an accurate size - you need to do
-a test plot to calibrate your printer in order to get correctly-scaled
-plots.  Process the following survey (<filename>square.svx</filename>)
-with <command>cavern square.svx</command> and then print it out using
-<command>printdm --scale=1:1 square.3d</command>:
+to calibrate your printer in order to get correctly-scaled
+plots.  Print out a calibration plot using
+<command>printdm --calibrate</command> and measure the width and height
+of the page border.
 </Para>
 
-<programlisting>
-0 1 0.1 000 0
-1 2 0.1 090 0
-2 3 0.1 180 0
-3 0 0.1 270 0</programlisting>
-
 <Para>
-Measure the width and height of the page border and create an entry in
-<filename>/etc/print.ini</filename> or
+Then create an entry in <filename>/etc/print.ini</filename> or
 <filename>.survex/print.ini</filename> in your home directory (Unix)
 or <filename>myprint.ini</filename>
 in the installation directory (other platforms) with 
@@ -1393,10 +1391,11 @@ mm_across_page=204.5
 mm_down_page=278</programlisting>
 
 <Para>
-Then run printdm again, and check that the square is now 10cm wide and
-high. This calibration is particularly necessary for older dot-matrix
-printers as they vary significantly in scaling - even between two
-printers of the same make and model.
+Then run <command>printdm --calibrate</command> again, and check that
+the square is now 10cm wide and high.  This calibration is
+particularly necessary for older dot-matrix printers as they vary
+significantly in scaling - even between two printers of the same make
+and model.
 </Para>
 
 </Sect2>

@@ -1,4 +1,4 @@
-/* > prcore.c
+/* prcore.c
  * Printer independent parts of Survex printer drivers
  * Copyright (C) 1993-2001 Olly Betts
  *
@@ -573,6 +573,7 @@ main(int argc, char **argv)
    int old_charset;
    const char *output_fnm = NULL;
    const char *survey = NULL;
+   bool fCalibrate = 0;
 
    /* TRANSLATE */
    static const struct option long_opts[] = {
@@ -593,12 +594,13 @@ main(int argc, char **argv)
       {"surface", no_argument, 0, 'S'},
       {"skip-blanks", no_argument, 0, 'k'},
       {"output", required_argument, 0, 'o'},
+      {"calibrate", required_argument, 0, 'C'},
       {"help", no_argument, 0, HLP_HELP},
       {"version", no_argument, 0, HLP_VERSION},
       {0, 0, 0, 0}
    };
 
-#define short_opts "epb:t:s:ncBlSko:"
+#define short_opts "epb:t:s:ncBlSko:C"
 
    /* TRANSLATE */
    static struct help_msg help[] = {
@@ -616,6 +618,7 @@ main(int argc, char **argv)
       {HLP_ENCODELONG(10),      "turn on display of surface survey legs"},
       {HLP_ENCODELONG(11),      "don't output blank pages (implies --no-border)"},
       {HLP_ENCODELONG(12),      "set output file"},
+      {HLP_ENCODELONG(13),      "print out calibration page"},
       {0, 0}
    };
 
@@ -623,8 +626,7 @@ main(int argc, char **argv)
 
    fnm = NULL;
 
-   /* at least one argument must be given */
-   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, -1);
    while (1) {
       int opt = cmdline_getopt();
       if (opt == EOF) break;
@@ -676,7 +678,39 @@ main(int argc, char **argv)
        case 'o':
 	 output_fnm = optarg;
 	 break;
+       case 'C':
+	 fCalibrate = 1;
+	 fInteractive = fFalse;
+	 break;
       }
+   }
+
+   /* at least one argument must be given unless -C is specified
+    * - then no arguments may be given */
+   if (fCalibrate) {
+      time_t tm;
+
+      if (argv[optind]) cmdline_too_many_args();
+
+      fCrosses = fNoBorder = fSurface = fSkipBlank = fNoBorder = 0;
+      fLabels = fShots = 1;
+      view = PLAN;
+      rot = tilt = 0;
+      N_Scale = D_Scale = 1.0;
+      title = osstrdup("calibration plot");
+
+      tm = time(NULL);
+      if (tm == (time_t)-1) {
+	 datestamp = osstrdup(msg(/*Date and time not available.*/108));
+      } else {
+	 char date[256];
+	 /* output current date and time in format specified */
+	 strftime(date, 256, msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107),
+		  localtime(&tm));
+	 datestamp = osstrdup(date);
+      }
+   } else {
+      if (!argv[optind]) cmdline_too_few_args();
    }
 
    szDesc = pr->Name();
@@ -684,23 +718,25 @@ main(int argc, char **argv)
    printf("Survex %s %s v"VERSION"\n  "COPYRIGHT_MSG"\n\n",
           szDesc, msg(/*Driver*/152));
 
-   fnm = argv[optind++];
+   if (!fCalibrate) {      
+      fnm = argv[optind++];
 
-   /* Try to open first image file and check it has correct header,
-    * rather than asking lots of questions then failing */
-   pimg = img_open_survey(fnm, survey);
-   if (!pimg) fatalerror(img_error(), fnm);
+      /* Try to open first image file and check it has correct header,
+       * rather than asking lots of questions then failing */
+      pimg = img_open_survey(fnm, survey);
+      if (!pimg) fatalerror(img_error(), fnm);
 
-   /* Copy strings so they're valid after the 3d file is closed... */
-   title = osstrdup(pimg->title);
-   datestamp = osstrdup(pimg->datestamp);
+      /* Copy strings so they're valid after the 3d file is closed... */
+      title = osstrdup(pimg->title);
+      datestamp = osstrdup(pimg->datestamp);
 
-   if (strlen(title) > 11 &&
-       strcmp(title + strlen(title) - 11, " (extended)") == 0) {
-      title[strlen(title) - 11] = '\0';
-      view = EXTELEV;
-      rot = 0;
-      tilt = 0;
+      if (strlen(title) > 11 &&
+	  strcmp(title + strlen(title) - 11, " (extended)") == 0) {
+	 title[strlen(title) - 11] = '\0';
+	 view = EXTELEV;
+	 rot = 0;
+	 tilt = 0;
+      }
    }
 
    if (pr->Init) {
@@ -753,9 +789,7 @@ main(int argc, char **argv)
       putchar(' ');
       view = PLAN;
       if (getanswer(szReplies) == 1) view = ELEV;
-   }
 
-   if (fInteractive && view != EXTELEV) {
       do {
          printf(msg(view == PLAN ? /*Bearing up page (degrees): */159:
 		    /*View towards: */160));
@@ -767,6 +801,7 @@ main(int argc, char **argv)
          printf("%d\n", rot);
       }
    }
+
    SIN = sin(rad(rot));
    COS = cos(rad(rot));
 
@@ -787,43 +822,69 @@ main(int argc, char **argv)
       COST = cos(rad(tilt));
    }
 
-   if (fInteractive && survey == NULL) {
-      fputs(msg(/*Only load the sub-survey with prefix*/199), stdout);
-      puts(":");
-      fgets(szTmp, sizeof(szTmp), stdin);
-      if (szTmp[0] >= 32) {
-	 size_t len = strlen(szTmp);
-	 if (szTmp[len - 1] == '\n') szTmp[len - 1] = '\0';	 
-	 survey = osstrdup(szTmp);
-      }
-   }
-
    if (fInteractive) {
+      if (survey == NULL) {
+	 fputs(msg(/*Only load the sub-survey with prefix*/199), stdout);
+	 puts(":");
+	 fgets(szTmp, sizeof(szTmp), stdin);
+	 if (szTmp[0] >= 32) {
+	    size_t len = strlen(szTmp);
+	    if (szTmp[len - 1] == '\n') szTmp[len - 1] = '\0';	 
+	    survey = osstrdup(szTmp);
+	 }
+      }
+
       putnl();
       puts(msg(/*Reading in data - please wait...*/105));
    }
 
-   xMax = yMax = -DBL_MAX; /* any (sane) value will beat this */
-   xMin = yMin = DBL_MAX; /* ditto */
+   if (fCalibrate) {
+      img_point pt = { 0.0, 0.0, 0.0 };
+      xMax = yMax = 0.1;
+      xMin = yMin = 0;
 
-   while (fnm) {
-      /* first time around pimg is already open... */
-      if (!pimg) {
-	 /* for multiple files use title and datestamp from the first */
-	 pimg = img_open_survey(fnm, survey);
-	 if (!pimg) fatalerror(img_error(), fnm);
-      }
-      if (!read_in_data()) fatalerror(img_error(), fnm);
-      img_close(pimg);
-      pimg = NULL;
-      fnm = argv[optind++];
-   }
+      stack(img_MOVE, NULL, &pt);
+      pt.x = 0.1;
+      stack(img_LINE, NULL, &pt);
+      pt.y = 0.1;
+      stack(img_LINE, NULL, &pt);
+      pt.x = 0.0;
+      stack(img_LINE, NULL, &pt);
+      pt.y = 0.0;
+      stack(img_LINE, NULL, &pt);
+      pt.x = 0.05;
+      pt.y = 0.001;
+      stack(img_LABEL, "10cm", &pt);
+      pt.x = 0.001;
+      pt.y = 0.05;
+      stack(img_LABEL, "10cm", &pt);
 
-   /* can't have been any data */
-   if (xMax < xMin || yMax < yMin) fatalerror(/*No data in 3d Image file*/86);
-
-   {
+      *ppliEnd = NULL;
+      
+      Sc = 1000.0;
+      pages_required(Sc);
+   } else {
       double w, x;
+
+      xMax = yMax = -DBL_MAX; /* any (sane) value will beat this */
+      xMin = yMin = DBL_MAX; /* ditto */
+
+      while (fnm) {
+	 /* first time around pimg is already open... */
+	 if (!pimg) {
+	    /* for multiple files use title and datestamp from the first */
+	    pimg = img_open_survey(fnm, survey);
+	    if (!pimg) fatalerror(img_error(), fnm);
+	 }
+	 if (!read_in_data()) fatalerror(img_error(), fnm);
+	 img_close(pimg);
+	 pimg = NULL;
+	 fnm = argv[optind++];
+      }
+
+      /* can't have been any data */
+      if (xMax < xMin || yMax < yMin) fatalerror(/*No data in 3d Image file*/86);
+
       x = 1000.0 / pick_scale(1, 1);
 
       /* trim to 2 s.f. (rounding up) */

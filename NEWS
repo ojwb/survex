@@ -117,6 +117,8 @@ Changes in 0.99-prerelease1:
 * Include documentation overview page in all versions (was just in MS
   Windows version).
 
+* printdm: added --calibrate option to print calibration page.
+
 Changes in 0.98:
 
 * (MS Windows version): New icons for .svx, .pos, and .err files.
