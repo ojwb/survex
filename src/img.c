@@ -28,6 +28,7 @@
 #include <ctype.h>
 
 #include "img.h"
+
 #ifdef IMG_HOSTED
 # include "debug.h"
 # include "filelist.h"
@@ -95,9 +96,6 @@ my_round(double x) {
 
 unsigned int img_output_version = 3;
 
-#define TMPBUFLEN 256
-static char tmpbuf[TMPBUFLEN];
-
 #ifdef IMG_HOSTED
 static enum {
    IMG_NONE = 0,
@@ -114,31 +112,19 @@ static enum {
 static img_errcode img_errno = IMG_NONE;
 #endif
 
+#define FILEID "Survex 3D Image File"
+
 /* Attempt to string paste to ensure we are passed a literal string */
 #define LITLEN(S) (sizeof(S"") - 1)
 
-/* Read a line from a stream to a buffer. Any eol chars are removed
- * from the file and the length of the string excluding '\0' is returned */
-static int
-getline(char *buf, size_t len, FILE *fh)
+static char *
+my_strdup(const char *str)
 {
-   size_t i = 0;
-   int ch;
-
-   ch = getc(fh);
-   while (ch != '\n' && ch != '\r' && ch != EOF && i < len - 1) {
-      buf[i++] = ch;
-      ch = getc(fh);
-   }
-   if (ch == '\n' || ch == '\r') {
-      /* remove any further eol chars (for DOS text files) */
-      do {
-	 ch = getc(fh);
-      } while (ch == '\n' || ch == '\r');
-      ungetc(ch, fh); /* we don't want it, so put it back */
-   }
-   buf[i] = '\0';
-   return i;
+   char *p;
+   size_t len = strlen(str) + 1;
+   p = xosmalloc(len);
+   if (p) memcpy(p, str, len);
+   return p;
 }
 
 static char *
@@ -195,6 +181,8 @@ img_open_survey(const char *fnm, const char *survey)
 {
    img *pimg;
    size_t len;
+   char buf[LITLEN(FILEID) + 1];
+   int ch;
 
    if (fDirectory(fnm)) {
       img_errno = IMG_DIRECTORY;
@@ -246,7 +234,11 @@ img_open_survey(const char *fnm, const char *survey)
 	    pimg->survey[len] = '\0';
 	    p = strchr(pimg->survey, '.');
 	    if (p) p++; else p = pimg->survey;
-	    pimg->title = osstrdup(p); /* FIXME: osstrdup for non IMG_HOSTED case */
+	    pimg->title = my_strdup(p);
+	    if (!pimg->title) {
+	       img_errno = IMG_OUTOFMEMORY;
+	       goto error;
+	    }
 	    pimg->survey[len] = '.';
 	    pimg->survey[len + 1] = '\0';
 	 }
@@ -266,34 +258,51 @@ img_open_survey(const char *fnm, const char *survey)
        strcmp(fnm + len - LITLEN(EXT_SVX_POS), EXT_SVX_POS) == 0) {
       pimg->version = -1;
       if (!survey) pimg->title = baseleaf_from_fnm(fnm);
-      /* FIXME: osstrdup for non IMG_HOSTED case */
-      pimg->datestamp = osstrdup(TIMENA);
+      pimg->datestamp = my_strdup(TIMENA);
+      if (!pimg->datestamp) {
+	 img_errno = IMG_OUTOFMEMORY;
+	 goto error;
+      }
       pimg->start = 0;
       return pimg;
    }
 
-   getline(tmpbuf, TMPBUFLEN, pimg->fh); /* id string */
-   if (strcmp(tmpbuf, "Survex 3D Image File") != 0) {
+   if (fread(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
+       memcmp(buf, FILEID"\n", LITLEN(FILEID)) != 0) {
       img_errno = IMG_BADFORMAT;
       goto error;
    }
 
-   getline(tmpbuf, TMPBUFLEN, pimg->fh); /* file format version */
-   pimg->version = (tolower(*tmpbuf) == 'b'); /* binary file iff B/b prefix */
-   /* knock off the 'B' or 'b' if it's there */
-   if (strcmp(tmpbuf + pimg->version, "v0.01") == 0) {
+   /* check file format version */
+   ch = getc(pimg->fh);
+   pimg->version = 0;
+   if (tolower(ch) == 'b') {
+      /* binary file iff B/b prefix */
+      pimg->version = 1;
+      ch = getc(pimg->fh);
+   }
+   if (ch != 'v') {
+      img_errno = IMG_BADFORMAT;
+      goto error;
+   }
+   ch = getc(pimg->fh);
+   if (ch == '0') {
+      if (fread(buf, 4, 1, pimg->fh) != 1 || memcmp(buf, ".01\n", 4) != 0) {
+	 img_errno = IMG_BADFORMAT;
+	 goto error;
+      }
       /* nothing special to do */
-   } else if (pimg->version == 0 && tmpbuf[0] == 'v') {
-      if (tmpbuf[1] < '2' || tmpbuf[1] > '3' || tmpbuf[2] != '\0') {
+   } else if (pimg->version == 0) {
+      if (ch < '2' || ch > '3' || getc(pimg->fh) != '\n') {
 	 img_errno = IMG_TOONEW;
 	 goto error;
       }
-      pimg->version = tmpbuf[1] - '0';
+      pimg->version = ch - '0';
    } else {
       img_errno = IMG_BADFORMAT;
       goto error;
    }
-
+   
    if (!pimg->title) pimg->title = getline_alloc(pimg->fh);
    pimg->datestamp = getline_alloc(pimg->fh);
    if (!pimg->title || !pimg->datestamp) {
@@ -374,9 +383,10 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    if (tm == (time_t)-1) {
       fputsnl(TIMENA, pimg->fh);
    } else {
+      char date[256];
       /* output current date and time in format specified */
-      strftime(tmpbuf, TMPBUFLEN, TIMEFMT, localtime(&tm));
-      fputsnl(tmpbuf, pimg->fh);
+      strftime(date, 256, TIMEFMT, localtime(&tm));
+      fputsnl(date, pimg->fh);
    }
    pimg->fRead = fFalse; /* writing to this file */
    img_errno = IMG_NONE;
@@ -732,23 +742,24 @@ img_read_item(img *pimg, img_point *p)
 	 pimg->pending = 0;
 	 result = img_LINE;
       } else {
+	 char cmd[7];
 	 /* Stop if nothing found */
-	 if (fscanf(pimg->fh, "%s", tmpbuf) < 1) return img_STOP;
-	 if (strcmp(tmpbuf, "move") == 0)
+	 if (fscanf(pimg->fh, "%6s", cmd) < 1) return img_STOP;
+	 if (strcmp(cmd, "move") == 0)
 	    result = img_MOVE;
-	 else if (strcmp(tmpbuf, "draw") == 0)
+	 else if (strcmp(cmd, "draw") == 0)
 	    result = img_LINE;
-	 else if (strcmp(tmpbuf, "line") == 0) {
+	 else if (strcmp(cmd, "line") == 0) {
 	    /* set flag to indicate to process second triplet as LINE */
 	    pimg->pending = 1;
 	    result = img_MOVE;
-	 } else if (strcmp(tmpbuf, "cross") == 0) {
+	 } else if (strcmp(cmd, "cross") == 0) {
 	    if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) {
 	       img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	       return img_BAD;
 	    }
 	    goto ascii_again;
-	 } else if (strcmp(tmpbuf, "name") == 0) {
+	 } else if (strcmp(cmd, "name") == 0) {
 	    size_t off = 0;
 	    int ch = getc(pimg->fh);
 	    if (ch == ' ') ch = getc(pimg->fh);
