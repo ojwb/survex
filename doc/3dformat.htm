@@ -7,7 +7,7 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 </HEAD><BODY BGCOLOR=white TEXT=black>
 <H1>Warning - Very Provisional</H1>
 
-This is the <b>first draft</b> of this specification, and I've had to reverse
+This is an <b>early draft</b> of this specification, and I've had to reverse
 engineer it from the code.  It may be incorrect in places, and I certain
 there's a lot of knowledge this document assumes, especially if you aren't
 familiar with Survex.
@@ -73,9 +73,19 @@ other surveys)
 <li> 0x20 : Reserved
 </ul>
 
-Append label to the current label buffer.  Return station at the coordinates
+Append label to the current label buffer.  The length of label is given by
+length, which is encoded as follows:
+<ul>
+<li> 0-253 - byte 0x00-0xfd
+<li> 254-65789 - byte 0xfe 2 byte little-endian unsigned integer len-254
+0x0000-0xffff
+<li> 65790 and greater - byte 0xff 4 byte little-endian unsigned integer len
+0x000100fd-0xffffffff
+</ul>
+
+Return station at the coordinates
 given, and update current position to coordinates given (FIXME: check this).
-The label gives the survey stations full name.
+The updated contents of the label buffer give the survey stations full name.
 
 <li> 0x80-0xbf &lt;length&gt; &lt;label&gt; &lt;x coord&gt; &lt;y coord&gt;
 &lt;z coord&gt; : leg flags are (N &amp; 0x1f):
@@ -87,18 +97,10 @@ The label gives the survey stations full name.
 <li> 0x10 : Reserved
 <li> 0x20 : Reserved
 </ul>
-Append label to the current label buffer.  The length of label is given by
-length, which is encoded as follows:
-<ul>
-<li> 0-253 - byte 0x00-0xfd
-<li> 254-65789 - byte 0xfe 2 byte little-endian unsigned integer len-254
-0x0000-0xffff
-<li> 65790 and greater - byte 0xff 4 byte little-endian unsigned integer len
-0x000100fd-0xffffffff
-</ul>
-Return leg from current position to coordinates given, and update current
-position to coordinates given.  The label gives the survey that the leg is
-in.
+Append label to the current label buffer.  The length of the label is encoded
+as for a station label above.  Return leg from current position to coordinates
+given, and update current position to coordinates given.  The updated contents
+of the label buffer give the survey that the leg is in.
 <li> 0xc0-0xff : Reserved
 </ul>
 
