@@ -1,3 +1,5 @@
+Changes in 1.0.11:
+
 * cad3d: write dummy passage dimensions to .plt files to avoid Compass bug.
 
 * aven: improvements in 1.0.10 to the file type selector only work properly
