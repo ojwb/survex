@@ -26,6 +26,8 @@ r - reverse direction of autorotation
 c/v - rotate one step
 '// - higher/lower viewpoint
 n/s/e/w/u/d - view cave from north/south/east/west/above/below
+missing: O (overlapping labels), ^A (lazy redraw during drags) ^L (no
+legs), ^R (reverse sense of controls), escape vs q...
 
 Date: 15 Dec 1998
 From: Olly
