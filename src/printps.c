@@ -61,7 +61,7 @@ static const char *hpgl_Name(void);
 static int hpgl_Pre(int pagesToPrint, const char *title);
 static void hpgl_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void hpgl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-		      float *pscX, float *pscY);
+		      double *pscX, double *pscY);
 static void hpgl_MoveTo(long x, long y);
 static void hpgl_DrawTo(long x, long y);
 static void hpgl_DrawCross(long x, long y);
@@ -93,12 +93,12 @@ device printer = {
 #  include <unistd.h>
 # endif
 
-# define POINTS_PER_INCH 72.0f
-# define POINTS_PER_MM ((float)(POINTS_PER_INCH) / (MM_PER_INCH))
+# define POINTS_PER_INCH 72.0
+# define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
-static float MarginLeft, MarginRight, MarginTop, MarginBottom;
+static double MarginLeft, MarginRight, MarginTop, MarginBottom;
 static int fontsize, fontsize_labels;
-static float LineWidth;
+static double LineWidth;
 
 static const char *fontname, *fontname_labels;
 
@@ -109,7 +109,7 @@ static const char *ps_Name(void);
 static int ps_Pre(int pagesToPrint, const char *title);
 static void ps_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-		    float *pscX, float *pscY);
+		    double *pscX, double *pscY);
 static int CharsetLatin1(void);
 static void ps_MoveTo(long x, long y);
 static void ps_DrawTo(long x, long y);
@@ -515,7 +515,7 @@ ps_NewPage(int pg, int pass, int pagesX, int pagesY)
    /* shift image up page about 10mm to allow for page footer */
    prio_printf("%ld %ld translate\ngsave\n",
                (long)(MarginLeft * POINTS_PER_MM),
-               (long)(((double)MarginBottom + 10.0f) * POINTS_PER_MM));
+               (long)((MarginBottom + 10.0) * POINTS_PER_MM));
    /* and set clipping on printer */
 #if 0 /* old version */
    prio_printf("%d %d moveto %d %d moveto %d %d moveto %d %d moveto\n"
@@ -560,10 +560,10 @@ ps_ShowPage(const char *szPageDetails)
 static void
 #ifdef HPGL
 hpgl_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-	  float *pscX, float *pscY)
+	  double *pscX, double *pscY)
 #else
 ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-	float *pscX, float *pscY)
+	double *pscX, double *pscY)
 #endif
 {
    char *fnm_prn;
@@ -616,13 +616,13 @@ ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
       fnm_prn = as_string(vars[1], vals[1]);
 
 #ifdef HPGL
-   PaperWidth = as_float(vars[3], vals[3], 1, FLT_MAX);
-   PaperDepth = as_float(vars[4], vals[4], 11, FLT_MAX);
+   PaperWidth = as_double(vars[3], vals[3], 1, FLT_MAX);
+   PaperDepth = as_double(vars[4], vals[4], 11, FLT_MAX);
    fOriginInCentre = as_bool(vars[5], vals[5]);
    PaperDepth -= 10; /* Allow 10mm for footer */
    osfree(vals);
 
-   *pscX = *pscY = (float)(HPGL_UNITS_PER_MM);
+   *pscX = *pscY = (double)HPGL_UNITS_PER_MM;
    xpPageWidth = (long)(HPGL_UNITS_PER_MM * (double)PaperWidth);
    ypPageDepth = (long)(HPGL_UNITS_PER_MM * (double)PaperDepth);
 
@@ -632,12 +632,12 @@ ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    fontname = as_string(vars[3], vals[3]);
    fontsize = as_int(vars[8], vals[8], 1, INT_MAX);
 
-   MarginLeft = as_float(vars[4], vals[4], 0, FLT_MAX);
-   MarginRight = as_float(vars[5], vals[5], 0, FLT_MAX);
-   MarginBottom = as_float(vars[6], vals[6], 0, FLT_MAX);
-   MarginTop = as_float(vars[7], vals[7], 0, FLT_MAX);
+   MarginLeft = as_double(vars[4], vals[4], 0, FLT_MAX);
+   MarginRight = as_double(vars[5], vals[5], 0, FLT_MAX);
+   MarginBottom = as_double(vars[6], vals[6], 0, FLT_MAX);
+   MarginTop = as_double(vars[7], vals[7], 0, FLT_MAX);
 
-   LineWidth = as_float(vars[9], vals[9], 0, INT_MAX);
+   LineWidth = as_double(vars[9], vals[9], 0, INT_MAX);
 
    /* name and size of font to use for station labels (default to text font) */
    fontname_labels = fontname;
@@ -650,7 +650,7 @@ ps_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    PaperWidth = MarginRight - MarginLeft;
    PaperDepth = MarginTop - MarginBottom - 10; /* Allow 10mm for footer */
 
-   *pscX = *pscY = (float)(POINTS_PER_MM);
+   *pscX = *pscY = POINTS_PER_MM;
    xpPageWidth = (long)(POINTS_PER_MM * PaperWidth);
    ypPageDepth = (long)(POINTS_PER_MM * PaperDepth);
 #endif

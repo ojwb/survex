@@ -1,4 +1,4 @@
-/* > caverot.c
+/* caverot.c
  * Reads in SURVEX .3d image files & allows quick rotation and examination
  * Copyright (C) 1990,1993-2001 Olly Betts
  * Portions Copyright (C) 1993 Wookey
@@ -99,12 +99,12 @@ Hungarian style types:
  sz   - pointer to zero-terminated string
 */
 
-static float degView;          /* current direction of view (degrees) */
-static float degViewStep;      /* current size of change in view direction */
-static float degStereoSep;     /* half the stereo separation of 3d view */
+static double degView;          /* current direction of view (degrees) */
+static double degViewStep;      /* current size of change in view direction */
+static double degStereoSep;     /* half the stereo separation of 3d view */
 double scDefault;        /* scale to show whole survey on screen */
 static double sc;               /* current scale */
-static float ZoomFactor;       /* zoom in/out factor */
+static double ZoomFactor;       /* zoom in/out factor */
 static bool fRotating;        /* flag indicating auto-rotation */
 static bool fNames = fFalse;  /* Draw station names? */
 bool fAllNames = fFalse;  /* Draw all station names? */
@@ -114,19 +114,19 @@ static bool fStns = fFalse;  /* Draw crosses at stns? */
 static bool fAll = fFalse;  /* Draw all during movement? */
 static bool fRevSense = fFalse; /* Movements relate to cave/observer */
 static bool fRevRot = fFalse; /* auto-rotate backwards */
-static float elev;             /* angle of elevation of viewpoint */
-static float nStepsize;        /* stepsize for movements */
+static double elev;             /* angle of elevation of viewpoint */
+static double nStepsize;        /* stepsize for movements */
 static bool f3D;              /* flag indicating red/green 3d view mode */
 static bool fOverlap; /* are overlapping labels pruned? may be disabled when memory is tight */
 int xcMac, ycMac;            /* screen size in plot units (==pixels usually) */
 #if 1
 #ifdef Y_UP
-float y_stretch = 1.0f;   /* factor to multiply y by to correct aspect ratio */
+double y_stretch = 1.0;   /* factor to multiply y by to correct aspect ratio */
 #else /* !defined(Y_UP) */
-float y_stretch = -1.0f;  /* factor to multiply y by to correct aspect ratio */
+double y_stretch = -1.0;  /* factor to multiply y by to correct aspect ratio */
 #endif
 #else
-float y_stretch = -0.3f;  /* test that aspect ratio works */
+double y_stretch = -0.3;  /* test that aspect ratio works */
 #endif
 
 #if 0
@@ -239,10 +239,10 @@ main(int argc, char **argv)
 
    /* these aren't in set_defaults() 'cos we don't want DELETE to reset them */
    degView = 0;
-   elev = 90.0f;       /* display plan by default */
+   elev = 90.0;       /* display plan by default */
    fRotating = fFalse; /* stationary to start with */
    f3D = fFalse;       /* red/green 3d view off by default */
-   degStereoSep = 2.5f;
+   degStereoSep = 2.5;
 
    /* setup colour values for 3dview (RED_3D,GREEN_3D,BLUE_3D) or ??? */
 
@@ -298,16 +298,16 @@ main(int argc, char **argv)
    switch (locked) {
     case 1:
       degView = 90;
-      elev = 0.0f; /* elevation looking along X axis */
+      elev = 0.0; /* elevation looking along X axis */
       break;
     case 2:
       degView = 0;
-      elev = 0.0f; /* elevation looking along Y axis */
+      elev = 0.0; /* elevation looking along Y axis */
       break;
     case 4:
       locked = 3;
       degView = 0;
-      elev = 90.0f; /* plan */
+      elev = 90.0; /* plan */
       break;
     default:
       /* don't bother locking it if it's linear or a single point */
@@ -316,7 +316,7 @@ main(int argc, char **argv)
    }
 
    /* set base step size according to screen size */
-   nStepsize = min(xcMac, ycMac) / 25.0f;
+   nStepsize = min(xcMac, ycMac) / 25.0;
    set_defaults();
 
    /* still displaying help page so wait here */
@@ -373,7 +373,7 @@ main(int argc, char **argv)
 		 }
 	      }
 	      set_tcolour(colText);
-	      sprintf(sz, (elev == 90.0f) ? szPlan : szElev, degView);
+	      sprintf(sz, (elev == 90.0) ? szPlan : szElev, degView);
 	      text_xy(0, 0, sz);
 	      draw_scale_bar();
 	      cvrotgfx_post_main_draw();
@@ -461,12 +461,12 @@ lap_timer(bool want_time)
 bool
 process_key(void) /* and mouse! */
 {
-   float nStep, Accel;
+   double nStep, Accel;
    int iKeycode;
    static bool fChanged = fTrue; /* Want to time initial draw */
    double s = SIND(degView), c = COSD(degView);
    static int autotilt = 0;
-   static float autotilttarget;
+   static double autotilttarget;
    static double tsc = 1.0; /* sane starting value */
 #ifdef ANIMATE
    static clock_t last_animate = 0;
@@ -496,16 +496,16 @@ process_key(void) /* and mouse! */
 
    iKeycode = cvrotgfx_get_key();
    if (shift_pressed()) {
-      nStep = 5.0f * nStepsize / sc;
+      nStep = 5.0 * nStepsize / sc;
       ZoomFactor = BIG_MAGNIFY_FACTOR;
-      Accel = 5.0f;
+      Accel = 5.0;
    } else {
       nStep = nStepsize / sc;
       ZoomFactor = LITTLE_MAGNIFY_FACTOR;
-      Accel = 1.0f;
+      Accel = 1.0;
    }
    nStep *= tsc;
-   ZoomFactor = (float)pow(ZoomFactor, tsc);
+   ZoomFactor = pow(ZoomFactor, tsc);
    Accel *= tsc;
 
    if (fRevSense) nStep = -nStep;
@@ -519,11 +519,11 @@ process_key(void) /* and mouse! */
 	 switch (iKeycode) {
 /*        case '3': case SHIFT_3:    f3D = !f3D; break; */
 	  case 'Z':
-	    degViewStep *= 1.2f;
+	    degViewStep *= 1.2;
 	    if (degViewStep >= 45) degViewStep = 45;
 	    break;
 	  case 'X':
-	    degViewStep /= 1.2f;
+	    degViewStep /= 1.2;
 	    if (degViewStep <= 0.1) degViewStep = 0.1;
 	    break;
 	  case 'C': degView += degViewStep * Accel; fChanged = fTrue; break;
@@ -540,46 +540,46 @@ process_key(void) /* and mouse! */
 	     * so check both '@' (UK) and '"' (US) */
 	    if (fRevSense) goto tiltup;
 	    tiltdown:
-	    if (elev > -90.0f) {
+	    if (elev > -90.0) {
 	       elev -= degViewStep * Accel;
-	       if (elev < -90.0f) elev = -90.0f;
+	       if (elev < -90.0) elev = -90.0;
 	       fChanged = fTrue;
 	    }
 	    break;
 	  case '/': case '?':
 	    if (fRevSense) goto tiltdown;
 	    tiltup:
-	    if (elev < 90.0f) {
+	    if (elev < 90.0) {
 	       elev += degViewStep * Accel;
-	       if (elev > 90.0f) elev = 90.0f;
+	       if (elev > 90.0) elev = 90.0;
 	       fChanged = fTrue;
 	    }
 	    break;
 	  case 'P':
-	    if (elev != 90.0f) {
+	    if (elev != 90.0) {
 /*fprintf(stderr, "P:tsc = %f\n", tsc);fflush(stderr);*/
 	       autotilt = (int)ceil(90.0 / ceil(9.0 / tsc));
 /*fprintf(stderr,"P:autotilt = %d\n",autotilt);fflush(stderr);*/
 	       if (autotilt > 16) {
 		  autotilt = 0;
-		  elev = 90.0f;
+		  elev = 90.0;
 	       }
-	       autotilttarget = 90.0f;
+	       autotilttarget = 90.0;
 	       fChanged = fTrue;
 	    }
 	    break;
 	  case 'L':
-	    if (elev!=0.0f) {
+	    if (elev != 0.0) {
 /*fprintf(stderr,"L:tsc = %f\n",tsc);fflush(stderr);*/
 	       autotilt = (int)ceil(90.0 / ceil(9.0 / tsc));
 /*fprintf(stderr,"L:autotilt = %d\n",autotilt);fflush(stderr);*/
 	       if (autotilt > 16) {
-		  elev = 0.0f;
+		  elev = 0.0;
 		  autotilt = 0;
-	       } else if (elev > 0.0f) {
+	       } else if (elev > 0.0) {
 		  autotilt = -autotilt;
 	       }
-	       autotilttarget = 0.0f;
+	       autotilttarget = 0.0;
 	       fChanged = fTrue;
 	    }
 	    break;
@@ -610,13 +610,13 @@ process_key(void) /* and mouse! */
 	 break;
 /*       case 'I':   get_view_details(); fChanged=fTrue; break; */
        case CURSOR_UP:
-         if (elev == 90.0f)
+         if (elev == 90.0)
             translate_data((coord)(nStep * s), (coord)(nStep * c), 0);
          else
             translate_data(0, 0, (coord)nStep);
          fChanged = fTrue; break;
        case CURSOR_DOWN:
-         if (elev == 90.0f)
+         if (elev == 90.0)
             translate_data(-(coord)(nStep * s), -(coord)(nStep * c), 0);
          else
             translate_data(0, 0, (coord)-nStep);
@@ -662,39 +662,39 @@ process_key(void) /* and mouse! */
 	 autotilt = 0;
       if (buttons & CVROTGFX_LBUT) {
          if (fRevSense) {
-            sc *= (float)pow(LITTLE_MAGNIFY_FACTOR, 0.08 * dy);
-            if (locked == 0 || locked == 3) degView += dx * 0.16f;
+            sc *= pow(LITTLE_MAGNIFY_FACTOR, 0.08 * dy);
+            if (locked == 0 || locked == 3) degView += dx * 0.16;
          } else {
-            sc *= (float)pow(LITTLE_MAGNIFY_FACTOR, -0.08 * dy);
-            if (locked == 0 || locked == 3) degView -= dx * 0.16f;
+            sc *= pow(LITTLE_MAGNIFY_FACTOR, -0.08 * dy);
+            if (locked == 0 || locked == 3) degView -= dx * 0.16;
          }
          fChanged = fTrue;
       }
       if (buttons & CVROTGFX_RBUT) {
-         nStep *= 0.025f;
-         if (elev == 90.0f)
+         nStep *= 0.025;
+         if (elev == 90.0)
             translate_data((coord)(nStep * (dx * c + dy * s)),
                            -(coord)(nStep * (dx * s - dy * c)), 0);
          else
-            translate_data((coord)(nStep * (double)dx * c),
-                           -(coord)(nStep * (double)dx * s),
+            translate_data((coord)(nStep * dx * c),
+                           -(coord)(nStep * dx * s),
 			   (coord)(nStep * dy));
          fChanged = fTrue;
       }
       if (locked == 0 && (buttons & CVROTGFX_MBUT)) {
          if (fRevSense) {
-	    elev += dy * 0.16f;
+	    elev += dy * 0.16;
 	 } else {
-	    elev -= dy * 0.16f;
+	    elev -= dy * 0.16;
 	 }
-	 if (elev > 90.0f) elev = 90.0f;
-	 if (elev < -90.0f) elev = -90.0f;
+	 if (elev > 90.0) elev = 90.0;
+	 if (elev < -90.0) elev = -90.0;
          fChanged = fTrue;
       }
    }
 
    if (autotilt) {
-      elev += (float)autotilt;
+      elev += autotilt;
       fChanged = fTrue;
       if (autotilt > 0) {
          if (elev >= autotilttarget) {

@@ -181,7 +181,7 @@ int
 cvrotgfx_init(void)
 {
    extern int xcMac, ycMac;
-   extern float y_stretch;
+   extern double y_stretch;
 #ifdef MSC
    struct _videoconfig vidcfg;
    /* detect graphics hardware available */
@@ -194,7 +194,7 @@ cvrotgfx_init(void)
    colText = colHelp = 1;
    _cvrotgfx_drawcol = (vidcfg.numcolors > 2) ? 2 : 1;
    fSwapScreen = (vidcfg.numvideopages > 1);
-   y_stretch *= (float)(((float)xcMac / ycMac) * (350.0 / 640.0) * 1.3);
+   y_stretch *= (((double)xcMac / ycMac) * (350.0 / 640.0) * 1.3);
 # elif defined(ALLEGRO)
    int res;
    int c, w, h;
@@ -316,7 +316,7 @@ cvrotgfx_init(void)
    _cvrotgfx_drawcol = 1;
    xcMac = SCREEN_W;
    ycMac = SCREEN_H;
-   y_stretch *= (float)(((float)xcMac / ycMac) * (350.0 / 640.0) * 1.3);
+   y_stretch *= (((double)xcMac / ycMac) * (350.0 / 640.0) * 1.3);
    fSwapScreen = 1;
    {
       RGB temp;
@@ -411,7 +411,7 @@ cvrotgfx_init(void)
 
    xcMac = getmaxx();
    ycMac = getmaxy();
-   y_stretch *= (float)(((float)xcMac / ycMac) * (350.0 / 640.0)
+   y_stretch *= (((double)xcMac / ycMac) * (350.0 / 640.0)
 			* 0.751677852);
 #endif
 #ifdef NO_MOUSE_SUPPORT
@@ -588,7 +588,7 @@ cvrotgfx_init(void)
 {
    extern void fastline_init(void); /* initialise fast lines routines */
    oswordpointer_bbox_block bbox = {{}, 1, -32768, -32768, 0x7fff, 0x7fff };
-   extern float y_stretch;
+   extern double y_stretch;
    extern int xcMac, ycMac;
    int mode, modeAlt, modeBest;
    int scrmem;
@@ -686,7 +686,7 @@ cvrotgfx_init(void)
    /* limits for OS routines (used for text) */
    xcMacOS = xcMac << eigX;
    ycMacOS = ycMac << eigY;
-   y_stretch *= (float)(int)(1 << eigX) / (float)(int)(1 << eigY);
+   y_stretch *= (double)(1 << eigX) / (1 << eigY);
    /* set origin to centre of screen +/- adjustment for labels */
    {
       int v;

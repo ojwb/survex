@@ -1,4 +1,4 @@
-/* > caverot.h
+/* caverot.h
  * Data structures and #defines for cave rotator
  * Copyright (C) 1993-2001 Olly Betts
  *
@@ -18,8 +18,8 @@
  */
 
 /* these are common to all systems: */
-#define BIG_MAGNIFY_FACTOR     (1.1236f) /* SHIFT-ed zoom in/out factor */
-#define LITTLE_MAGNIFY_FACTOR  (1.06f)   /* standard zoom in/out factor */
+#define BIG_MAGNIFY_FACTOR     (1.1236) /* SHIFT-ed zoom in/out factor */
+#define LITTLE_MAGNIFY_FACTOR  (1.06)   /* standard zoom in/out factor */
 
 #include "whichos.h"
 #include "useful.h"
@@ -56,10 +56,10 @@ extern bool fAllNames;
 
 #if 0
 typedef struct {
-   float nView_dir;               /* direction of view */
-   float nView_dir_step;          /* step size of change in view */
-   float nHeight;                 /* current height of view position */
-   float nScale;                  /* current scale */
+   double nView_dir;               /* direction of view */
+   double nView_dir_step;          /* step size of change in view */
+   double nHeight;                 /* current height of view position */
+   double nScale;                  /* current scale */
    coord iXcentr, iYcentr, iZcentr; /* centre of rotation of survey */
    bool  fRotating;               /* flag for rotating or not */
 } view;
@@ -94,7 +94,7 @@ void do_translate(point Huge *p, coord dX, coord dY, coord dZ);
 void do_translate_stns(point Huge *p, coord dX, coord dY, coord dZ);
 
 extern int xcMac, ycMac; /* screen size in plot units (==pixels usually) */
-extern float y_stretch; /* multiplier for y to correct aspect ratio */
+extern double y_stretch; /* multiplier for y to correct aspect ratio */
 
 /* plot text x chars *right* and y *down* */
 void (text_xy)(int x, int y, const char *s);

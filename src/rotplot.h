@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-void set_view(float sc, float theta, float z);
+void set_view(double sc, double theta, double z);
 void draw_view_legs(point Huge *p);
 void draw_view_stns(point Huge *p);
 void draw_view_labs(point Huge *p);

@@ -40,9 +40,9 @@
 #include "prcore.h"
 #include <windows.h>
 
-static float MarginLeft, MarginRight, MarginTop, MarginBottom;
+static double MarginLeft, MarginRight, MarginTop, MarginBottom;
 static int fontsize, fontsize_labels;
-static float LineWidth;
+static double LineWidth;
 
 static char *fontname, *fontname_labels;
 
@@ -55,7 +55,7 @@ static const char *win_Name(void);
 static int win_Pre(int pagesToPrint, const char *title);
 static void win_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void win_Init(FILE **fh_list, const char *pth, const char *outfnm,
-		     float *pscX, float *pscY);
+		     double *pscX, double *pscY);
 static int  win_Charset(void);
 static void win_MoveTo(long x, long y);
 static void win_DrawTo(long x, long y);
@@ -86,7 +86,7 @@ static HDC pd; /* printer context */
 
 static int midtextheight; /*height of text*/
 
-static float scX, scY;
+static double scX, scY;
 
 static border clip;
 
@@ -201,7 +201,7 @@ win_ShowPage(const char *szPageDetails)
 /* Initialise printer routines */
 static void
 win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
-	 float *pscX, float *pscY)
+	 double *pscX, double *pscY)
 {
    /* name and size of font to use for text */
    TEXTMETRIC temp;

@@ -27,14 +27,14 @@
 #include "cvrotgfx.h"
 
 static coord x1 = 0, x2 = 0, y1_sigh = 0, y2 = 0, y3 = 0;
-static float sc_last, theta_last, elev_last;
+static double sc_last, theta_last, elev_last;
 static bool fPlan;
 
 static int fixed_pt_pos = FIXED_PT_POS;
 
 /* looking towards theta from height z, with zoom factor sc */
 extern void
-set_view(float sc, float theta, float elev)
+set_view(double sc, double theta, double elev)
 {
    double sine, cosine;
    double scale;
@@ -48,8 +48,8 @@ set_view(float sc, float theta, float elev)
    elev_last = elev;
    fPlan = (elev == 90.0);
 
-   sine = (float)SIND(theta);
-   cosine = (float)COSD(theta);
+   sine = SIND(theta);
+   cosine = COSD(theta);
 
    X1 = cosine * sc;
    X2 = -sine * sc;
@@ -81,7 +81,7 @@ set_view(float sc, float theta, float elev)
 #undef CORNER
    } else {
       /* work out y scale factor for whole survey */
-      Y3 = (double)sc * y_stretch * cos(phi);
+      Y3 = sc * y_stretch * cos(phi);
       Y1 = sine * tan(phi) * Y3;
       Y2 = cosine * tan(phi) * Y3;
 #define CORNER(XP, YP, ZP) fabs((coord)(Xorg XP Xrad) * Y1 + \
@@ -225,10 +225,10 @@ draw_scale_bar(void)
    text_xy(0, 1, sz);
    /* outtextxy(8, 12, sz); */
    plot_no_tilt((point Huge *)pScaleBar,
-		(coord)(xcMac * .01 * (float)(1L << FIXED_PT_POS)),
+		(coord)(xcMac * .01 * (1L << FIXED_PT_POS)),
 		(coord)0,
-		(coord)(len * sc_last * y_stretch *
-			(float)(1L << (FIXED_PT_POS-XTRA))),
+		(coord)(len * sc_last * y_stretch
+			* (1L << (FIXED_PT_POS-XTRA))),
 		FIXED_PT_POS );
 
      {

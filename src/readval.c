@@ -1,4 +1,4 @@
-/* > readval.c
+/* readval.c
  * Routines to read a prefix or number from the current input file
  * Copyright (C) 1991-2001 Olly Betts
  *
@@ -273,7 +273,7 @@ read_numeric(bool fOmit)
    if (isSign(ch)) nextch();
 
    while (isdigit(ch)) {
-      n = n * 10.0f + (char)(ch - '0');
+      n = n * (real)10.0 + (char)(ch - '0');
       nextch();
       fDigits = fTrue;
    }

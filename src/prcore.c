@@ -54,7 +54,7 @@ static const char *szDesc;
 typedef struct LI {
    struct LI *pliNext;
    int tag;
-   struct { float x, y; } to;
+   struct { double x, y; } to;
    char *label;
 } li;
 
@@ -81,18 +81,18 @@ static device *pr = &printer;
 static char *title, *datestamp;
 
 static int rot = 0, tilt = 0;
-static float xMin, xMax, yMin, yMax;
+static double xMin, xMax, yMin, yMax;
 
-static float COS, SIN;
-static float COST, SINT;
+static double COS, SIN;
+static double COST, SINT;
 
-static float scX, scY;
-static float xOrg, yOrg;
+static double scX, scY;
+static double xOrg, yOrg;
 static int pagesX, pagesY;
 
 static char szTmp[256];
 
-float PaperWidth, PaperDepth;
+double PaperWidth, PaperDepth;
 
 /* draw fancy scale bar with bottom left at (x,y) (both in mm) and at most */
 /* MaxLength mm long. The scaling in use is 1:scale */
@@ -101,7 +101,7 @@ static void draw_scale_bar(double x, double y, double MaxLength,
 
 #define DEF_RATIO (1.0/(double)DEFAULT_SCALE)
 /* return a scale which will make it fit in the desired size */
-static float
+static double
 pick_scale(int x, int y)
 {
    double Sc_x, Sc_y;
@@ -116,24 +116,24 @@ pick_scale(int x, int y)
     */
    Sc_x = Sc_y = DEF_RATIO;
    if (PaperWidth > 0.0 && xMax > xMin)
-      Sc_x = (x * PaperWidth - 19.0f) / (double)(xMax - xMin);
+      Sc_x = (x * PaperWidth - 19.0) / (xMax - xMin);
    if (PaperDepth > 0.0 && yMax > yMin)
-      Sc_y = (y * PaperDepth - 61.0f) / (double)(yMax - yMin);
+      Sc_y = (y * PaperDepth - 61.0) / (yMax - yMin);
 
    Sc_x = min(Sc_x, Sc_y) * 0.99; /* shrink by 1% so we don't cock up */
 #if 0 /* this picks a nice (in some sense) ratio, but is too stingy */
    E = pow(10.0, floor(log10(Sc_x)));
    Sc_x = floor(Sc_x / E) * E;
 #endif
-   return (float)Sc_x;
+   return Sc_x;
 }
 
 static void
-pages_required(float Sc)
+pages_required(double Sc)
 {
-   float image_dx, image_dy;
-   float image_centre_x, image_centre_y;
-   float paper_centre_x, paper_centre_y;
+   double image_dx, image_dy;
+   double image_centre_x, image_centre_y;
+   double paper_centre_x, paper_centre_y;
 
    image_dx = (xMax - xMin) * Sc;
    if (PaperWidth > 0.0) {
@@ -141,7 +141,7 @@ pages_required(float Sc)
    } else {
       /* paperwidth not fixed (eg window or roll printer/plotter) */
       pagesX = 1;
-      PaperWidth = image_dx + 19.0f;
+      PaperWidth = image_dx + 19.0;
    }
    paper_centre_x = (pagesX * PaperWidth) / 2;
    image_centre_x = Sc * (xMax + xMin) / 2;
@@ -153,7 +153,7 @@ pages_required(float Sc)
    } else {
       /* paperdepth not fixed (eg window or roll printer/plotter) */
       pagesY = 1;
-      PaperDepth = image_dy + 61.0f;
+      PaperDepth = image_dy + 61.0;
    }
    paper_centre_y = 20 + (pagesY * PaperDepth) / 2;
    image_centre_y = Sc * (yMax + yMin) / 2;
@@ -161,7 +161,7 @@ pages_required(float Sc)
 }
 
 static void
-draw_info_box(float num, float denom)
+draw_info_box(double num, double denom)
 {
    char *p;
    int boxwidth = 60;
@@ -272,7 +272,7 @@ draw_info_box(float num, float denom)
    MOVEMM(boxwidth + 2, 2); pr->WriteString("http://www.survex.com/");
 
    draw_scale_bar(boxwidth + 10.0, 17.0, PaperWidth - boxwidth - 18.0,
-		  (double)denom / num);
+		  denom / num);
 }
 
 /* Draw fancy scale bar with bottom left at (x,y) (both in mm) and at most */
@@ -322,7 +322,7 @@ draw_scale_bar(double x, double y, double MaxLength, double scale)
 
    /* Add units used - eg. "Scale (10m)" */
    p = buf + strlen(buf);
-   sprintf(p, " (%.0f%s)", (float)pow(10.0, (double)E), u_buf);
+   sprintf(p, " (%.0f%s)", (double)pow(10.0, (double)E), u_buf);
 
    MOVEMM(x, y + 4); pr->WriteString(buf);
 
@@ -520,7 +520,7 @@ next_page(int *pstate, char **q, int pageLim)
    return 0;
 }
 
-static float N_Scale = 1, D_Scale = DEFAULT_SCALE;
+static double N_Scale = 1, D_Scale = DEFAULT_SCALE;
 
 static bool
 read_scale(const char *s)
@@ -533,7 +533,7 @@ read_scale(const char *s)
       if (*p == '\0') {
 	 /* accept "<number>" as meaning "1:<number>" */
 	 N_Scale = 1;
-	 D_Scale = (float)val;
+	 D_Scale = val;
 	 return fTrue;
       }
       if (*p == ':') {
@@ -543,8 +543,8 @@ read_scale(const char *s)
 	 if (p != optarg) {
 	    while (isspace(*p)) p++;
 	    if (*p == '\0') {
-	       N_Scale = (float)val;
-	       D_Scale = (float)val2;
+	       N_Scale = val;
+	       D_Scale = val2;
 	       return fTrue;
 	    }
 	 }
@@ -557,7 +557,7 @@ int
 main(int argc, char **argv)
 {
    bool fOk;
-   float Sc = 0;
+   double Sc = 0;
    int page, pages;
    char *fnm;
    int cPasses, pass;
@@ -765,8 +765,8 @@ main(int argc, char **argv)
          printf("%d\n", rot);
       }
    }
-   SIN = (float)sin(rad(rot));
-   COS = (float)cos(rad(rot));
+   SIN = sin(rad(rot));
+   COS = cos(rad(rot));
 
    if (view == ELEV) {
       if (fInteractive) {
@@ -781,8 +781,8 @@ main(int argc, char **argv)
          }
       }
       if (tilt != 0) view = TILT;
-      SINT = (float)sin(rad(tilt));
-      COST = (float)cos(rad(tilt));
+      SINT = sin(rad(tilt));
+      COST = cos(rad(tilt));
    }
 
    if (fInteractive && survey == NULL) {
@@ -802,8 +802,8 @@ main(int argc, char **argv)
       puts(msg(/*Reading in data - please wait...*/105));
    }
 
-   xMax = yMax = -(FLT_MAX / 10.0f); /* any (sane) value will beat this */
-   xMin = yMin = FLT_MAX; /* ditto */
+   xMax = yMax = -DBL_MAX; /* any (sane) value will beat this */
+   xMin = yMin = DBL_MAX; /* ditto */
 
    while (fnm) {
       /* first time around pimg is already open... */
@@ -833,7 +833,7 @@ main(int argc, char **argv)
       printf(" = 1:%.0f\n", x);
       if (N_Scale == 0.0) {
          N_Scale = 1;
-         D_Scale = (float)x;
+         D_Scale = x;
          Sc = N_Scale * 1000 / D_Scale;
          pages_required(Sc);
       } else if (!fInteractive) {
@@ -848,8 +848,8 @@ main(int argc, char **argv)
 	     DEFAULT_SCALE);
       fgets(szTmp, sizeof(szTmp), stdin);
       if (!read_scale(szTmp)) {
-         N_Scale = 1;
-         D_Scale = (float)DEFAULT_SCALE;
+         N_Scale = 1.0;
+         D_Scale = (double)DEFAULT_SCALE;
       }
       putnl();
       printf(msg(/*Using scale %.0f:%.0f*/163), N_Scale, D_Scale);
@@ -1128,17 +1128,17 @@ as_bool(const char *v, char *p)
    return as_int(v, p, 0, 1);
 }
 
-float
-as_float(const char *v, char *p, float min_val, float max_val)
+double
+as_double(const char *v, char *p, double min_val, double max_val)
 {
    double val;
    char *pEnd;
    if (!p) setting_missing(v);
    val = strtod(p, &pEnd);
-   if (pEnd == p || val < (double)min_val || val > (double)max_val)
+   if (pEnd == p || val < min_val || val > max_val)
       setting_bad_value(v, p);
    osfree(p);
-   return (float)val;
+   return val;
 }
 
 /* Converts '0'-'9' to 0-9, 'A'-'F' to 10-15 and 'a'-'f' to 10-15.

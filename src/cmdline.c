@@ -1,4 +1,4 @@
-/* > cmdline.c
+/* cmdline.c
  * Wrapper for GNU getopt which deals with standard options
  * Copyright (C) 1998-2001 Olly Betts
  *
@@ -222,20 +222,6 @@ cmdline_double_arg(void)
    }
 
    return result;
-}
-
-float
-cmdline_float_arg(void)
-{
-   double result = cmdline_double_arg();
-   if (fabs(result) > FLT_MAX) {
-      fprintf(stderr, "%s: ", msg_appname());
-      fprintf(stderr, msg(/*numeric argument `%s' out of range*/185), optarg);
-      fputnl(stderr);
-      cmdline_syntax();
-      exit(1);
-   }
-   return (float)result;
 }
 
 void

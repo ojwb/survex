@@ -1,6 +1,6 @@
-/* > cmdline.h
+/* cmdline.h
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998-2000 Olly Betts
+ * Copyright (C) 1998-2001 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,6 @@ void cmdline_help(void);
 void cmdline_version(void);
 void cmdline_syntax(void);
 int cmdline_int_arg(void);
-float cmdline_float_arg(void);
 double cmdline_double_arg(void);
 
 #define HLP_ENCODELONG(N) (-(N + 1))
