@@ -19,16 +19,9 @@ int fSwapScreen;
 int mouse_buttons = -3; /*!HACK! special value => "not yet initialised" */
 static int bank = 0;
 
-#if (OS==MSDOS) || (OS==UNIX)
-
-# if 0
-/* DOS-specific I/O functions */
-#  include <bios.h>
-#  include <conio.h>
-#  include <dos.h>
-# endif
-
 int _cvrotgfx_textcol, _cvrotgfx_drawcol;
+
+#if (OS==MSDOS) || (OS==UNIX)
 
 # ifdef MSC
 /* Microsoft C */
@@ -852,10 +845,10 @@ cvrotgfx_get_key(void)
 /* do something sane for proportional fonts */
 /* could be a little neater here... :) */
 void
-text_xy(int x, int y, char *str) {
+text_xy(int x, int y, const char *str) {
    xos_plot(os_MOVE_TO, (x << eigX) - (xcMacOS >> 1) + 16,
 	    (ycMacOS >> 1) - (y << eigY) - 16);
-   xos_write0(str);
+   xos_write0((char *)str);
 }
 
 void
