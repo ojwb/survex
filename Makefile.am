@@ -98,7 +98,7 @@ djgpp_zip : dostxt
 
 mingw : all mingw_iss
 
-mingw_iss :
+mingw_iss : survex.iss
 	$(RM) -rf iss_tmp
 	mkdir iss_tmp
 	cp src/svxedit iss_tmp/svxedit.tcl
@@ -112,7 +112,6 @@ mingw_iss :
 	cp lib/icons/*.ico lib/icons/*.png iss_tmp
 	: # don't ship pngs for which we ship the ico version
 	for a in iss_tmp/*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
-	cp mingw_extras/librx.dll iss_tmp
 	gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual
@@ -125,7 +124,9 @@ mingw_iss :
 	 mkdir iss_tmp/$$a;\
 	 cp /usr/share/locale/$$a/LC_MESSAGES/wxstd.mo iss_tmp/$$a;\
 	done
-	echo 'wine "c:/Program Files/Inno Setup 2/ISCC.exe" iss_tmp/survex.iss' > iss_tmp/runissinwine
+	: # Also need to reduce colour depth it appears:
+	: # src/png2bmp lib/icons/aven_about.png iss_tmp/logo.bmp
+	echo 'wine "c:/Program Files/Inno Setup 4/ISCC.exe" iss_tmp/survex.iss' > iss_tmp/runissinwine
 	chmod 755 iss_tmp/runissinwine
 	xvfb-run --server-args="-screen 0 64x32x8" iss_tmp/runissinwine
 	mv iss_tmp/Output/*.exe .
