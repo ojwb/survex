@@ -88,33 +88,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_BUTTON(button_HIDE, MainFrm::OnHide)
 
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
-#ifdef AVENPRES
-    EVT_MENU(menu_FILE_OPEN_PRES, MainFrm::OnOpenPres)
-#endif
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
-
-#ifdef AVENPRES
-    EVT_MENU(menu_PRES_CREATE, MainFrm::OnPresCreate)
-    EVT_MENU(menu_PRES_GO, MainFrm::OnPresGo)
-    EVT_MENU(menu_PRES_GO_BACK, MainFrm::OnPresGoBack)
-    EVT_MENU(menu_PRES_RESTART, MainFrm::OnPresRestart)
-    EVT_MENU(menu_PRES_RECORD, MainFrm::OnPresRecord)
-    EVT_MENU(menu_PRES_FINISH, MainFrm::OnPresFinish)
-    EVT_MENU(menu_PRES_ERASE, MainFrm::OnPresErase)
-    EVT_MENU(menu_PRES_ERASE_ALL, MainFrm::OnPresEraseAll)
-
-    EVT_UPDATE_UI(menu_FILE_OPEN_PRES, MainFrm::OnOpenPresUpdate)
-
-    EVT_UPDATE_UI(menu_PRES_CREATE, MainFrm::OnPresCreateUpdate)
-    EVT_UPDATE_UI(menu_PRES_GO, MainFrm::OnPresGoUpdate)
-    EVT_UPDATE_UI(menu_PRES_GO_BACK, MainFrm::OnPresGoBackUpdate)
-    EVT_UPDATE_UI(menu_PRES_RESTART, MainFrm::OnPresRestartUpdate)
-    EVT_UPDATE_UI(menu_PRES_RECORD, MainFrm::OnPresRecordUpdate)
-    EVT_UPDATE_UI(menu_PRES_FINISH, MainFrm::OnPresFinishUpdate)
-    EVT_UPDATE_UI(menu_PRES_ERASE, MainFrm::OnPresEraseUpdate)
-    EVT_UPDATE_UI(menu_PRES_ERASE_ALL, MainFrm::OnPresEraseAllUpdate)
-#endif
 
     EVT_CLOSE(MainFrm::OnClose)
     EVT_SET_FOCUS(MainFrm::OnSetFocus)
@@ -282,11 +257,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     SetSize(-1, -1, x, y);
 #endif
 
-#ifdef AVENPRES
-    m_PresLoaded = false;
-    m_Recording = false;
-#endif
-
 #if wxUSE_DRAG_AND_DROP
     SetDropTarget(new DnDFile(this));
 #endif
@@ -317,9 +287,6 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
-#ifdef AVENPRES
-    filemenu->Append(menu_FILE_OPEN_PRES, GetTabMsg(/*Open @Presentation...*/321));
-#endif
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*E@xit*/221));
 
@@ -377,21 +344,6 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295), "", true);
     viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296), "", true);
 
-#ifdef AVENPRES
-    wxMenu* presmenu = new wxMenu;
-    presmenu->Append(menu_PRES_CREATE, GetTabMsg(/*@Create...*/311));
-    presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_GO, GetTabMsg(/*@Go*/312));
-    presmenu->Append(menu_PRES_GO_BACK, GetTabMsg(/*Go @Back*/318));
-    presmenu->Append(menu_PRES_RESTART, GetTabMsg(/*Res@tart*/324));
-    presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_RECORD, GetTabMsg(/*@Record Position*/313));
-    presmenu->Append(menu_PRES_FINISH, GetTabMsg(/*@Finish and Save*/314));
-    presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_ERASE, GetTabMsg(/*@Erase Last Position*/315));
-    presmenu->Append(menu_PRES_ERASE_ALL, GetTabMsg(/*Er@ase All Positions*/316));
-#endif
-
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "", true);
     ctlmenu->AppendSeparator();
@@ -416,9 +368,6 @@ void MainFrm::CreateMenuBar()
     menubar->Append(rotmenu, GetTabMsg(/*@Rotation*/211));
     menubar->Append(orientmenu, GetTabMsg(/*@Orientation*/212));
     menubar->Append(viewmenu, GetTabMsg(/*@View*/213));
-#ifdef AVENPRES
-    menubar->Append(presmenu, GetTabMsg(/*@Presentation*/317));
-#endif
     menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
@@ -435,9 +384,6 @@ void MainFrm::CreateToolBar()
 #endif
 
     toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open.png"), "Open a 3D file for viewing");
-#ifdef AVENPRES
-    toolbar->AddTool(menu_FILE_OPEN_PRES, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
-#endif
     toolbar->AddSeparator();
     toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation.png"),
 		     wxNullBitmap, true, -1, -1, NULL, "Toggle rotation");
@@ -463,21 +409,6 @@ void MainFrm::CreateToolBar()
     toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs.png"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show surface surveys");
     toolbar->AddSeparator();
-
-#ifdef AVENPRES
-    toolbar->AddTool(menu_PRES_CREATE, TOOLBAR_BITMAP("pres-create.png"),
-		     "Create a new presentation");
-    toolbar->AddTool(menu_PRES_RECORD, TOOLBAR_BITMAP("pres-record.png"),
-		     "Record a presentation step");
-    toolbar->AddTool(menu_PRES_FINISH, TOOLBAR_BITMAP("pres-finish.png"),
-		     "Finish this presentation and save it to disk");
-    toolbar->AddSeparator();
-    toolbar->AddTool(menu_PRES_RESTART, TOOLBAR_BITMAP("pres-restart.png"),
-		     "Go to the start of the presentation");
-    toolbar->AddTool(menu_PRES_GO_BACK, TOOLBAR_BITMAP("pres-go-back.png"),
-		     "Go back one presentation step");
-    toolbar->AddTool(menu_PRES_GO, TOOLBAR_BITMAP("pres-go.png"), "Go forwards one presentation step");
-#endif
 
 #if 0 // FIXME: maybe...
     m_FindBox = new wxTextCtrl(toolbar, -1, "");
@@ -624,12 +555,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_NumFixedPts = 0;
     m_NumExportedPts = 0;
     m_NumEntrances = 0;
-
-#ifdef AVENPRES
-    m_PresLoaded = false;
-    m_Recording = false;
-    //--Pres: FIXME: discard existing one, ask user about saving
-#endif
 
     // Delete any existing list entries.
     ClearPointLists();
@@ -1352,160 +1277,6 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
     m_Dist2->SetLabel("");
     m_Dist3->SetLabel("");
 }
-
-#ifdef AVENPRES
-void MainFrm::OnPresCreate(wxCommandEvent& event)
-{
-#ifdef __WXMOTIF__
-    wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
-		      "*.avp", wxSAVE);
-#else
-    wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
-		      wxString::Format("%s|*.avp|%s|*.*",
-				       msg(/*Aven presentations*/320),
-				       msg(/*All files*/208)), wxSAVE);
-#endif
-    if (dlg.ShowModal() == wxID_OK) {
-	m_PresFP = fopen(dlg.GetPath().c_str(), "w");
-	assert(m_PresFP); //--Pres: FIXME
-
-	// Update window title.
-	SetTitle(wxString("Aven - [") + m_File + wxString("] - ") +
-		 wxString(msg(/*Recording Presentation*/323)));
-
-	//--Pres: FIXME: discard existing one
-	m_PresLoaded = true;
-	m_Recording = true;
-    }
-}
-
-void MainFrm::OnPresGo(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && !m_Recording); //--Pres: FIXME
-
-    m_Gfx->PresGo();
-}
-
-void MainFrm::OnPresGoBack(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && !m_Recording); //--Pres: FIXME
-
-    m_Gfx->PresGoBack();
-}
-
-void MainFrm::OnPresRecord(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && m_Recording); //--Pres: FIXME
-
-    m_Gfx->RecordPres(m_PresFP);
-}
-
-void MainFrm::OnPresFinish(wxCommandEvent& event)
-{
-    assert(m_PresFP); //--Pres: FIXME
-    fclose(m_PresFP);
-
-    // Update window title.
-    SetTitle(wxString("Aven - [") + m_File + wxString("]"));
-}
-
-void MainFrm::OnPresRestart(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && !m_Recording); //--Pres: FIXME
-
-    m_Gfx->RestartPres();
-}
-
-void MainFrm::OnPresErase(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && m_Recording); //--Pres: FIXME
-
-
-}
-
-void MainFrm::OnPresEraseAll(wxCommandEvent& event)
-{
-    assert(m_PresLoaded && m_Recording); //--Pres: FIXME
-
-
-}
-
-void MainFrm::OnOpenPres(wxCommandEvent& event)
-{
-#ifdef __WXMOTIF__
-    wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      "*.avp", wxSAVE);
-#else
-    wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      wxString::Format("%s|*.avp|%s|*.*",
-				       msg(/*Aven presentations*/320),
-				       msg(/*All files*/208)), wxOPEN);
-#endif
-    if (dlg.ShowModal() == wxID_OK) {
-	m_PresFP = fopen(dlg.GetPath(), "rb");
-	assert(m_PresFP); //--Pres: FIXME
-
-	m_Gfx->LoadPres(m_PresFP);
-
-	fclose(m_PresFP);
-
-	m_PresLoaded = true;
-	m_Recording = false;
-    }
-}
-#endif
-
-void MainFrm::OnFileOpenTerrainUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(!m_File.empty());
-}
-
-#ifdef AVENPRES
-void MainFrm::OnOpenPresUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(!m_File.empty());
-}
-
-void MainFrm::OnPresCreateUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(!m_PresLoaded && !m_File.empty());
-}
-
-void MainFrm::OnPresGoUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && !m_Recording && !m_Gfx->AtEndOfPres());
-}
-
-void MainFrm::OnPresGoBackUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && !m_Recording && !m_Gfx->AtStartOfPres());
-}
-
-void MainFrm::OnPresFinishUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && m_Recording);
-}
-
-void MainFrm::OnPresRestartUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && !m_Recording && !m_Gfx->AtStartOfPres());
-}
-
-void MainFrm::OnPresRecordUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && m_Recording);
-}
-
-void MainFrm::OnPresEraseUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && m_Recording); //--Pres: FIXME
-}
-
-void MainFrm::OnPresEraseAllUpdate(wxUpdateUIEvent& event)
-{
-    event.Enable(m_PresLoaded && m_Recording); //--Pres: FIXME
-}
-#endif
 
 void MainFrm::OnFind(wxCommandEvent& event)
 {

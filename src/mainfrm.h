@@ -201,11 +201,6 @@ class MainFrm : public wxFrame {
     wxCheckBox* m_RegexpCheckBox;
     wxString m_File;
     int separator; // character separating survey levels (often '.')
-#ifdef AVENPRES
-    FILE* m_PresFP;
-    bool m_PresLoaded;
-    bool m_Recording;
-#endif
 
     struct {
 	Double x, y, z;
@@ -238,9 +233,6 @@ public:
 
     void OnMRUFile(wxCommandEvent& event);
     void OpenFile(const wxString& file, wxString survey = "", bool delay = false);
-#ifdef AVENPRES
-    void OnOpenPresUpdate(wxUpdateUIEvent& event);
-#endif
     void OnFileOpenTerrainUpdate(wxUpdateUIEvent& event);
 
     void OnFind(wxCommandEvent& event);
@@ -248,30 +240,7 @@ public:
 
     void OnOpen(wxCommandEvent& event);
     void OnFileOpenTerrain(wxCommandEvent& event);
-#ifdef AVENPRES
-    void OnOpenPres(wxCommandEvent& event);
-#endif
     void OnQuit(wxCommandEvent& event);
-
-#ifdef AVENPRES
-    void OnPresCreate(wxCommandEvent& event);
-    void OnPresGo(wxCommandEvent& event);
-    void OnPresGoBack(wxCommandEvent& event);
-    void OnPresFinish(wxCommandEvent& event);
-    void OnPresRestart(wxCommandEvent& event);
-    void OnPresRecord(wxCommandEvent& event);
-    void OnPresErase(wxCommandEvent& event);
-    void OnPresEraseAll(wxCommandEvent& event);
-
-    void OnPresCreateUpdate(wxUpdateUIEvent& event);
-    void OnPresGoUpdate(wxUpdateUIEvent& event);
-    void OnPresGoBackUpdate(wxUpdateUIEvent& event);
-    void OnPresFinishUpdate(wxUpdateUIEvent& event);
-    void OnPresRestartUpdate(wxUpdateUIEvent& event);
-    void OnPresRecordUpdate(wxUpdateUIEvent& event);
-    void OnPresEraseUpdate(wxUpdateUIEvent& event);
-    void OnPresEraseAllUpdate(wxUpdateUIEvent& event);
-#endif
 
     void OnAbout(wxCommandEvent& event);
     void OnClose(wxCloseEvent&);

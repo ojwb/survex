@@ -84,18 +84,6 @@ class GfxCore : public wxWindow {
 	} translation;
     } m_Params;
 
-#ifdef AVENPRES
-    struct PresData {
-	struct {
-	    Double x, y, z;
-	} translation;
-	Double scale;
-	Double pan_angle;
-	Double tilt_angle;
-	bool solid_surface;
-    };
-#endif
-
     enum LockFlags {
 	lock_NONE = 0,
 	lock_X = 1,
@@ -122,10 +110,6 @@ class GfxCore : public wxWindow {
 	int drag_start_offset_y;
     } m_ScaleBar;
 
-#ifdef AVENPRES
-    list<pair<PresData, Quaternion> > m_Presentation;
-    list<pair<PresData, Quaternion> >::iterator m_PresIterator;
-#endif
     double m_MaxExtent; // twice the maximum of the {x,y,z}-extents, in survey coordinates.
     char *m_LabelGrid;
     bool m_RotationOK;
@@ -182,26 +166,6 @@ class GfxCore : public wxWindow {
 
     list<LabelInfo*> *m_PointGrid;
     bool m_HitTestGridValid;
-
-#ifdef AVENPRES
-    Double m_DoingPresStep;
-    struct step_params {
-	Double pan_angle;
-	Double tilt_angle;
-	Quaternion rotation;
-	Double scale;
-	struct {
-	    Double x;
-	    Double y;
-	    Double z;
-	} translation;
-    };
-
-    struct {
-	step_params from;
-	step_params to;
-    } m_PresStep;
-#endif
 
     Point m_here, m_there;
 
@@ -319,19 +283,6 @@ public:
     void SetThere(Double x, Double y, Double z);
 
     void CentreOn(Double x, Double y, Double z);
-
-#ifdef AVENPRES
-    void RecordPres(FILE* fp);
-    void LoadPres(FILE* fp);
-    void PresGo();
-    void PresGoBack();
-    void RestartPres();
-
-    bool AtStartOfPres();
-    bool AtEndOfPres();
-
-    void PresGoto(PresData& d, Quaternion& q);
-#endif
 
     void OnDefaults();
     void OnPlan();

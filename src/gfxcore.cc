@@ -143,9 +143,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     wxConfigBase::Get()->Read("degrees", &m_Degrees, true);
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
-#ifdef AVENPRES
-    m_DoingPresStep = -1;
-#endif
     clipping = false;
 
     // Create pens and brushes for drawing.
@@ -236,10 +233,6 @@ void GfxCore::Initialise()
     m_HitTestGridValid = false;
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
-
-#ifdef AVENPRES
-    m_DoingPresStep = -1; //--Pres: FIXME: delete old lists
-#endif
 
     // Apply default parameters.
     DefaultParameters();
@@ -890,11 +883,7 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 	iter++;
     }
     
-    if (!m_Rotating && !m_SwitchingTo
-#ifdef AVENPRES
-	&& !(m_DoingPresStep >= 0 && m_DoingPresStep <= 100)
-#endif
-	) {
+    if (!m_Rotating && !m_SwitchingTo) {
 	int here_x = INT_MAX, here_y;
 	// Draw "here" and "there".
 	if (m_here.x != DBL_MAX) {
@@ -2273,15 +2262,9 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 // return: true if animation occured (and ForceRefresh() needs to be called)
 bool GfxCore::Animate(wxIdleEvent *idle_event)
 {
-#if !defined(AVENPRES)
     idle_event = idle_event; // Suppress "not used" warning
-#endif
 
-    if (!m_Rotating && !m_SwitchingTo
-#ifdef AVENPRES
-	&& !(m_DoingPresStep >= 0 && m_DoingPresStep <= 100)
-#endif
-       ) {
+    if (!m_Rotating && !m_SwitchingTo) {
 	return false;
     }
 
@@ -2313,55 +2296,6 @@ bool GfxCore::Animate(wxIdleEvent *idle_event)
 	    TiltCave(-M_PI_2 * t);
 	}
     }
-
-#ifdef AVENPRES
-    if (m_DoingPresStep >= 0 && m_DoingPresStep <= 100) {
-	m_Params.scale = INTERPOLATE(m_PresStep.from.scale, m_PresStep.to.scale, m_DoingPresStep);
-
-	m_Params.translation.x = INTERPOLATE(m_PresStep.from.translation.x, m_PresStep.to.translation.x,
-					     m_DoingPresStep);
-	m_Params.translation.y = INTERPOLATE(m_PresStep.from.translation.y, m_PresStep.to.translation.y,
-					     m_DoingPresStep);
-	m_Params.translation.z = INTERPOLATE(m_PresStep.from.translation.z, m_PresStep.to.translation.z,
-					     m_DoingPresStep);
-
-	Double c = dot(m_PresStep.from.rotation.getVector(), m_PresStep.to.rotation.getVector()) +
-		       m_PresStep.from.rotation.getScalar() * m_PresStep.to.rotation.getScalar();
-
-	// adjust signs (if necessary)
-	if (c < 0.0) {
-	    c = -c;
-	    m_PresStep.to.rotation = -m_PresStep.to.rotation;
-	}
-
-	Double p = Double(m_DoingPresStep) / 100.0;
-	Double scale0;
-	Double scale1;
-
-	if ((1.0 - c) > 0.000001) {
-	    Double omega = acos(c);
-	    Double s = sin(omega);
-	    scale0 = sin((1.0 - p) * omega) / s;
-	    scale1 = sin(p * omega) / s;
-	}
-	else {
-	    scale0 = 1.0 - p;
-	    scale1 = p;
-	}
-
-	m_Params.rotation = scale0 * m_PresStep.from.rotation + scale1 * m_PresStep.to.rotation;
-	m_RotationMatrix = m_Params.rotation.asMatrix();
-
-	m_DoingPresStep += 30.0 * t;
-	if (m_DoingPresStep <= 100.0) {
-	    idle_event->RequestMore();
-	}
-	else {
-	    m_PanAngle = m_PresStep.to.pan_angle;
-	    m_TiltAngle = m_PresStep.to.tilt_angle;
-	}
-    }
-#endif
 
     return true;
 }
@@ -2541,99 +2475,6 @@ void GfxCore::CentreOn(Double x, Double y, Double z)
     m_Params.translation.z = -z;
     ForceRefresh();
 }
-
-#ifdef AVENPRES
-//
-//  Presentations
-//
-
-void GfxCore::RecordPres(FILE* fp)
-{
-    PresData d;
-
-    d.translation.x = m_Params.translation.x;
-    d.translation.y = m_Params.translation.y;
-    d.translation.z = m_Params.translation.z;
-
-    d.scale = m_Params.scale;
-
-    d.pan_angle = m_PanAngle;
-    d.tilt_angle = m_TiltAngle;
-
-    d.solid_surface = false;
-
-    fwrite(&d, sizeof(PresData), 1, fp);
-
-    m_Params.rotation.Save(fp);
-}
-
-void GfxCore::LoadPres(FILE* fp)
-{
-    //--Pres: FIXME: delete old lists
-    PresData d;
-    while (fread(&d, sizeof(PresData), 1, fp) == 1) {
-	Quaternion q;
-	q.Load(fp);
-	m_Presentation.push_back(make_pair(d, q));
-    }
-
-    m_PresIterator = m_Presentation.begin();
-    PresGo();
-}
-
-void GfxCore::PresGoto(PresData& d, Quaternion& q)
-{
-    timer.Start(drawtime);
-    m_PresStep.from.rotation = m_Params.rotation;
-    m_PresStep.from.translation.x = m_Params.translation.x;
-    m_PresStep.from.translation.y = m_Params.translation.y;
-    m_PresStep.from.translation.z = m_Params.translation.z;
-    m_PresStep.from.scale = m_Params.scale;
-
-    m_PresStep.to.rotation = q;
-    m_PresStep.to.translation.x = d.translation.x;
-    m_PresStep.to.translation.y = d.translation.y;
-    m_PresStep.to.translation.z = d.translation.z;
-    m_PresStep.to.scale = d.scale;
-    m_PresStep.to.pan_angle = d.pan_angle;
-    m_PresStep.to.tilt_angle = d.tilt_angle;
-
-    m_DoingPresStep = 0;
-}
-
-void GfxCore::PresGo()
-{
-    if (m_PresIterator != m_Presentation.end()) { //--Pres: FIXME (watch out for first step from LoadPres)
-	pair<PresData, Quaternion> p =  *m_PresIterator++;
-	PresGoto(p.first, p.second);
-    }
-}
-
-void GfxCore::PresGoBack()
-{
-    if (m_PresIterator != (++(m_Presentation.begin()))) { //--Pres: FIXME -- zero-length presentations
-	pair<PresData, Quaternion> p =  *(--(--(m_PresIterator)));
-	PresGoto(p.first, p.second);
-	m_PresIterator++;
-    }
-}
-
-void GfxCore::RestartPres()
-{
-    m_PresIterator = m_Presentation.begin();
-    PresGo();
-}
-
-bool GfxCore::AtStartOfPres()
-{
-   return (m_PresIterator == ++(m_Presentation.begin()));
-}
-
-bool GfxCore::AtEndOfPres()
-{
-   return (m_PresIterator == m_Presentation.end());
-}
-#endif
 
 void GfxCore::ForceRefresh()
 {
