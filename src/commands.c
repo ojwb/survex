@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003 Olly Betts
+ * Copyright (C) 1991-2003,2004 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -816,7 +816,7 @@ cmd_equate(void)
       name1 = read_prefix_stn_check_implicit(fTrue, fTrue);
       if (name1 == NULL) {
 	 if (fOnlyOneStn) {
-	    compile_error_skip(/*Only one station in equate list*/33);
+	    compile_error_skip(/*Only one station in EQUATE command*/33);
 	 }
 #ifdef CHASM3DX
 	 if (fUseNewFormat) limb = get_twig(pcs->Prefix);
