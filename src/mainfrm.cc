@@ -41,6 +41,7 @@
 #include <float.h>
 #include <functional>
 #include <stack>
+#include <vector>
 
 #ifdef HAVE_REGEX_H
 # include <regex.h>
