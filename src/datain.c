@@ -342,6 +342,52 @@ data_file(const char *pth, const char *fnm)
    /* osfree(file.filename); */
 }
 
+static real
+handle_plumb(bool *pfPlumbed)
+{
+   typedef enum {
+      CLINO_NULL=-1, CLINO_UP, CLINO_DOWN, CLINO_LEVEL
+   } clino_tok;
+   static sztok clino_tab[] = {
+      {"D",     CLINO_DOWN},
+      {"DOWN",  CLINO_DOWN},
+      {"H",     CLINO_LEVEL},
+      {"LEVEL", CLINO_LEVEL},
+      {"U",     CLINO_UP},
+      {"UP",    CLINO_UP},
+      {NULL,    CLINO_NULL}
+   };
+   static real clinos[] = {(real)(PI/2.0),(real)(-PI/2.0),(real)0.0};
+   clino_tok tok;
+
+   skipblanks();
+   if (isalpha(ch)) {
+      long fp = ftell(file.fh);
+      get_token();
+      tok = match_tok(clino_tab, TABSIZE(clino_tab));
+      if (tok != CLINO_NULL) {
+	 *pfPlumbed = fTrue;
+	 return clinos[tok];
+      }
+      fseek(file.fh, fp, SEEK_SET);
+   } else if (isSign(ch)) {
+      int chOld = ch;
+      nextch();
+      if (toupper(ch) == 'V') {
+	 nextch();
+	 *pfPlumbed = fTrue;
+	 return (!isMinus(chOld) ? PI / 2.0 : -PI / 2.0);
+      }
+
+      if (isOmit(chOld)) {	
+	 *pfPlumbed = fFalse;      
+	 /* no clino reading, so assume 0 with large sd */
+	 return (real)0.0;
+      }
+   }
+   return HUGE_REAL;
+}
+
 /* tape/compass/clino and topofil (fromcount/tocount/compass/clino) */
 extern int
 data_normal(void)
@@ -401,49 +447,8 @@ data_normal(void)
        case Clino: {
 	  clin = read_numeric(fTrue);
 	  if (clin == HUGE_REAL) {
-	     typedef enum {
-		CLINO_NULL=-1, CLINO_UP, CLINO_DOWN, CLINO_LEVEL
-	     } clino_tok;
-	     static sztok clino_tab[] = {
-		  {"D",     CLINO_DOWN},
-		  {"DOWN",  CLINO_DOWN},
-		  {"H",     CLINO_LEVEL},
-		  {"LEVEL", CLINO_LEVEL},
-		  {"U",     CLINO_UP},
-		  {"UP",    CLINO_UP},
-		  {NULL,    CLINO_NULL}
-	     };
-	     static real clinos[] = {(real)(PI/2.0),(real)(-PI/2.0),(real)0.0};
-	     clino_tok tok;
-
-	     skipblanks();
-	     if (isalpha(ch)) {
-		long fp = ftell(file.fh);
-		get_token();
-		tok = match_tok(clino_tab, TABSIZE(clino_tab));
-		if (tok != CLINO_NULL) {
-		   fPlumbed = fTrue;
-		   clin = clinos[tok];
-		   break;
-		}
-		fseek(file.fh, fp, SEEK_SET);
-	     } else if (isSign(ch)) {
-		int chOld = ch;
-		nextch();
-		if (toupper(ch)=='V') {
-		   nextch();
-		   fPlumbed=fTrue;
-		   clin = (!isMinus(chOld) ? PI / 2.0 : -PI / 2.0);
-		   break;
-		}
-
-		if (isOmit(chOld)) {
-		   clin = (real)0.0; /* no clino reading, so assume 0 with large sd */
-		   /* default reading is set up above, but overwritten */
-		   break;
-		}
-	     }
-
+	     clin = handle_plumb(&fPlumbed);
+	     if (clin != HUGE_REAL) break;
 	     compile_error(/*Expecting numeric field*/9);
 	     showandskipline(NULL, 1);
 	     return 0;
