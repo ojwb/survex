@@ -5,6 +5,10 @@
 
 * Fixed --survey option supported by many programs which was broken in 0.99.
 
+* (MS Windows Version): aven: changed current point highlighting in the
+  survey tree to use a light grey background rather than bold (bold causes
+  the text to "wriggle" as the highlight runs up or down).
+
 * aven: altered colours of "fixed points" and "entrances" buttons to match
   the coloured blobs used to indicate them.
 

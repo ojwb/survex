@@ -49,26 +49,14 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 	if (pos != m_LastItem) {
 	    if (flags & TREE_MASK) {
 		if (m_LastItem != -1) {
-#ifndef __WXGTK__
-		    SetItemBold(m_LastItem, false);
-#else
 		    SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
-#endif
 		}
-#ifndef __WXGTK__
-		SetItemBold(pos, true);
-#else
 		SetItemBackgroundColour(pos, wxColour(180, 180, 180));
-#endif
 		m_Parent->DisplayTreeInfo(GetItemData(pos));
 		m_LastItem = pos;
 	    } else {
 		if (m_LastItem != -1) {
-#ifndef __WXGTK__
-		    SetItemBold(m_LastItem, false);
-#else
 		    SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
-#endif
 		}
 		m_Parent->DisplayTreeInfo(NULL);
 	    }
