@@ -2105,11 +2105,9 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 			    }
 			    EndPolyline();
 			} else if (tubes) {
-			    list<Vector3>::const_iterator i, prev_i;
+			    list<Vector3>::const_iterator i;
 			    i = centreline.begin();
 			    PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
-			    prev_i = i;
-			    ++i;
 			    list<Vector3>::size_type segment = 0;
 			    while (i != centreline.end()) {
 				// get the coordinates of this vertex
@@ -2279,7 +2277,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 				right.normalise();
 				up.normalise();
 
-				if (z_pitch_adjust != 0) up = up + Vector3(0, 0, z_pitch_adjust);
+				if (z_pitch_adjust != 0) up += Vector3(0, 0, z_pitch_adjust);
 				right *= size;
 				up *= size;
 
@@ -2383,11 +2381,9 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 			    }
 			    EndPolyline();
 			} else if (tubes) {
-			    list<Vector3>::const_iterator i, prev_i;
+			    list<Vector3>::const_iterator i;
 			    i = centreline.begin();
 			    PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
-			    prev_i = i;
-			    ++i;
 			    list<Vector3>::size_type segment = 0;
 			    while (i != centreline.end()) {
 				// get the coordinates of this vertex
@@ -2557,7 +2553,7 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 				right.normalise();
 				up.normalise();
 
-				if (z_pitch_adjust != 0) up = up + Vector3(0, 0, z_pitch_adjust);
+				if (z_pitch_adjust != 0) up += Vector3(0, 0, z_pitch_adjust);
 				right *= size;
 				up *= size;
 
