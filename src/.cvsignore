@@ -2,6 +2,7 @@
 Makefile
 Makefile.in
 z_getopt.c
+avenpal.h
 aven
 avengl
 cavern
@@ -17,6 +18,5 @@ cad3d
 xcaverot
 3dtopos
 sorterr
-aven.pal
 svxedit
 aven.ico svxedit.ico

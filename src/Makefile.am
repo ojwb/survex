@@ -63,7 +63,7 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc \
- aven.pal
+ avenpal.h
 
 avengl_SOURCES = $(aven_SOURCES)
 
@@ -168,13 +168,13 @@ EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
  aven.png aven.ico\
  svxedit.png svxedit.ico getopt.c png2winicon gettexttomsg.pl
 
-BUILT_SOURCES = z_getopt.c aven.pal
+BUILT_SOURCES = z_getopt.c avenpal.h
 
 z_getopt.c: getopt.c gettexttomsg.pl
 	./gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
 
-aven.pal: $(srcdir)/gradient.pov
-	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-aven.pal && mv tmp-aven.pal aven.pal
+avenpal.h: $(srcdir)/gradient.pov
+	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-avenpal.h && mv tmp-avenpal.h avenpal.h
 
 MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile $(BUILT_SOURCES)
 
