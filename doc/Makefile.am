@@ -3,6 +3,7 @@
 pkgdocdir = $(prefix)/doc/@PACKAGE@
 
 # FIXME: need to sort out an "all in one" HTML version
+# FIXME: this is almost duplicated in ../Makefile.am
 doclist = svxdocs svxdocs.rtf svxdocs.txt svxdocs.ps # svxdocs.html
 
 EXTRA_DIST = $(doclist) svxdocs.sgml custom.dsl

@@ -92,7 +92,8 @@ alien_src_zip :
 	cd alien_tmp && ../zip-magic -N -r ../$(alien_src) *
 	$(RM) -rf alien_tmp
 
-SVXDOCS = svxdocs svxdocs/*.html svxdocs.rtf svxdocs.txt
+# FIXME: this is almost duplicated in doc/Makefile.am
+SVXDOCS = svxdocs svxdocs/*.htm svxdocs.rtf svxdocs.txt svxdocs.ps
 
 dos_doc_zip :
 	$(RM) svxdoc-doswin-@VERSION@.zip
@@ -108,7 +109,7 @@ riscos_doc_zip :
 	  mkdir ../riscos_doc_tmp/$$f ;\
 	 else\
 	  case "$$f" in\
-	   */*.html) ln -s ../../doc/$$f ../riscos_doc_tmp/$$f,faf ;;\
+	   */*.htm|*/*.html) ln -s ../../doc/$$f ../riscos_doc_tmp/$$f,faf ;;\
 	   *.txt) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,fff ;;\
 	   *.rtf) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,c32 ;;\
 	   *) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,ffd ;;\

@@ -9,7 +9,7 @@
     ;;
     ;;  Tweak a few options from the default HTML stylesheet
     ;;
-    (define %html-ext% ".html")
+    (define %html-ext% ".htm")
     (define %body-attr% '())
     (define %shade-verbatim% #t)
     (define %use-id-as-filename% #t)
