@@ -30,7 +30,7 @@
 #include <float.h>
 
 BEGIN_EVENT_TABLE(MainFrm, wxDocParentFrame)
-    EVT_MENU(menu_HELP_ABOUT, Aven::OnAbout)
+    EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 END_EVENT_TABLE()
 
 MainFrm::MainFrm(wxDocManager* manager, wxFrame* parent, wxWindowID id, const wxString& title) :
@@ -75,4 +75,9 @@ void MainFrm::BuildMenuBar()
     menubar->Append(BuildHelpMenu(), wxGetApp().GetTabMsg(/*@Help*/215));
 
     SetMenuBar(menubar);
+}
+
+void MainFrm::OnAbout(wxCommandEvent& event)
+{
+    wxGetApp().OnAbout(this);
 }

@@ -32,7 +32,7 @@
 
 BEGIN_EVENT_TABLE(ChildFrm, wxDocChildFrame)
     EVT_MENU_RANGE(aven_COMMAND_START, aven_COMMAND_END, ChildFrm::OnCommand)
-    EVT_UPDATE_UI_RANGE(aven_COMMAND_START, aven_COMMAND_END, ChildFrm::OnUpdateUI)
+    EVT_UPDATE_UI_RANGE(aven_COMMAND_START + 1, aven_COMMAND_END - 1, ChildFrm::OnUpdateUI)
 END_EVENT_TABLE()
 
 ChildFrm::ChildFrm(wxDocument* doc, wxView* view, wxDocParentFrame* parent, wxWindowID id,
@@ -157,7 +157,7 @@ wxMenu* ChildFrm::BuildHelpMenu()
 {
     wxMenu* menu = new wxMenu;
 
-    menu->Append(menu_HELP_ABOUT, wxGetApp().GetTabMsg(/*@About Aven...*/290), "");
+    menu->Append(menu_HELP_ABOUT_CHILD, wxGetApp().GetTabMsg(/*@About Aven...*/290), "");
 
     return menu;
 }
@@ -202,5 +202,12 @@ void ChildFrm::OnCommand(wxCommandEvent& event)
 
 void ChildFrm::OnUpdateUI(wxUpdateUIEvent& event)
 {
-  //    m_Gfx.ProcessEvent(event);
+    //-- nasty thing here to prevent stack overflow due to this function being
+    // called recursively by wxWindows' event handling.  To be sorted.
+    static bool allow = true;
+    if (allow) {
+        allow = false;
+        m_Gfx.ProcessEvent(event);
+	allow = true;
+    }
 }

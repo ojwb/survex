@@ -117,11 +117,11 @@ void Aven::ReportError(const wxString& msg)
     wxMessageBox(msg, "Aven", wxOK | wxCENTRE | wxICON_EXCLAMATION);
 }
 
-void Aven::OnAbout(wxCommandEvent&)
+void Aven::OnAbout(wxWindow* parent)
 {
     // Display the About box.
 
-    wxDialog* dlg = new AboutDlg(GetMainFrame());
+    wxDialog* dlg = new AboutDlg(parent);
     dlg->Centre();
     dlg->ShowModal();
 }

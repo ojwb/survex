@@ -224,6 +224,8 @@ public:
 
     void Initialise();
 
+    void OnAbout(wxCommandEvent&);
+
     void OnDefaults(wxCommandEvent&);
     void OnPlan(wxCommandEvent&);
     void OnElevation(wxCommandEvent&);

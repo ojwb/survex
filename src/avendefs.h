@@ -69,6 +69,7 @@ enum {
     menu_VIEW_STATUS_BAR,
     menu_CTL_REVERSE,
     menu_HELP_ABOUT,
+    menu_HELP_ABOUT_CHILD,
     aven_COMMAND_END
 };
 

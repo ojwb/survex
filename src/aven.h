@@ -62,7 +62,7 @@ public:
         wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
     }
 
-    void OnAbout(wxCommandEvent&);
+    void OnAbout(wxWindow*);
 };
 
 DECLARE_APP(Aven)

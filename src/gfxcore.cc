@@ -26,8 +26,10 @@
 #include "message.h"
 #include "avendefs.h"
 #include "aven.h"
+#include "aboutdlg.h"
 
 #include <math.h>
+#include <stdio.h>
 
 // This is for mingw32/Visual C++:
 #ifndef M_PI
@@ -119,7 +121,7 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
 
     EVT_MENU(menu_CTL_REVERSE, GfxCore::OnReverseControls)
 
-    EVT_MENU(menu_HELP_ABOUT, Aven::OnAbout)
+    EVT_MENU(menu_HELP_ABOUT_CHILD, GfxCore::OnAbout)
 
     EVT_UPDATE_UI(menu_ROTATION_START, GfxCore::OnStartRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_STOP, GfxCore::OnStopRotationUpdate)
@@ -2102,4 +2104,9 @@ void GfxCore::OnShowSurfaceDashedUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_PlotData && m_SurfaceLegs && m_Surface);
     cmd.Check(m_SurfaceDashed);
+}
+
+void GfxCore::OnAbout(wxCommandEvent& event)
+{
+    wxGetApp().OnAbout(GetParent());
 }
