@@ -28,14 +28,14 @@ install-data-local:
 	  for p in `find "$$(srcdir)/svxdocs" -name *.htm -type f -print` ; do \
 	    f="`echo $$p | sed -e 's|^.*/||'`"; \
 	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
-	    $(INSTALL_DATA) d$$p $(DESTDIR)$(pkgdocdir)/$$f; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
 	  done \
 	fi
 	if test -d svxdocs ; then \
 	  for p in `find svxdocs -name *.htm -type f -print` ; do \
 	    f="`echo $$p | sed -e 's|^.*/||'`"; \
 	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
-	    $(INSTALL_DATA) d$$p $(DESTDIR)$(pkgdocdir)/$$f; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
 	  done \
 	fi
 
