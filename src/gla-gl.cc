@@ -125,12 +125,6 @@ GLACanvas::~GLACanvas()
     CHECK_GL_ERROR("~GLACanvas", "gluDeleteQuadric");
 }
 
-#if 0
-bool GLACanvas::Show(bool f) {
-    wxGLCanvas::Show(f);
-}
-#endif
-
 void GLACanvas::Clear()
 {
     // Clear the canvas.
@@ -512,7 +506,6 @@ void GLACanvas::DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaC
 
     SetColour(pen);
 
-#if 0
     if (!m_SphereCreated) {
         m_SphereCreated = true;
 
@@ -526,13 +519,12 @@ void GLACanvas::DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaC
         glEndList();
         CHECK_GL_ERROR("DrawSphere", "glEndList");
     }
-#endif
 
     glTranslated(x, y, z);
     CHECK_GL_ERROR("DrawSphere", "glTranslated");
     glScalef(radius, radius, radius);
     CHECK_GL_ERROR("DrawSphere", "glScalef");
-//    glCallList(m_SphereList);
+    glCallList(m_SphereList);
     CHECK_GL_ERROR("DrawSphere", "glCallList");
     glScalef(1.0 / radius, 1.0 / radius, 1.0 / radius);
     CHECK_GL_ERROR("DrawSphere", "glScalef");

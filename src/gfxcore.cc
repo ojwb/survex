@@ -547,24 +547,16 @@ void GfxCore::OnPaint(wxPaintEvent& event)
     
             // Draw "here" and "there".
             if (m_here.x != DBL_MAX) {
-                //DrawSphere(m_Pens[HERE_COLOUR], m_here.x, m_here.y, m_here.z, size, 16);
+                DrawSphere(m_Pens[HERE_COLOUR], m_here.x, m_here.y, m_here.z, size, 16);
             }
             if (m_there.x != DBL_MAX) {
                 if (m_here.x != DBL_MAX) {
                     BeginLines();
-#if 0
                     PlaceVertex(m_here.x, m_here.y, m_here.z);
 		    PlaceVertex(m_there.x, m_there.y, m_there.z);
-#else
-		    PlaceVertex(0,0,0);
-		    PlaceVertex(1,1,1);
-		    PlaceVertex(1,0,1);
-#endif
-		    cout << "Hello" << endl;
 		    EndLines();
-		    cout << "Hello" << endl;
                 }
-                //DrawSphere(m_Pens[HERE_COLOUR], m_there.x, m_there.y, m_there.z, size, 16);
+                DrawSphere(m_Pens[HERE_COLOUR], m_there.x, m_there.y, m_there.z, size, 16);
             }
         }
         
