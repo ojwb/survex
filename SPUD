@@ -160,7 +160,7 @@ commentall?
 
 GPS support (e.g. export survey as GPS coords)
 
-print to an image file (use gd?)
+print to an image file (use gd? or wxwindows...)
 
 Allow covariances to be specified in cartesian style?
 
@@ -177,8 +177,6 @@ printout of current view from aven...
 *fix with datums etc
 
 Profile aven (for speed and memory usage)
-
-glcaverot features - depth fogging...
 
 Mark: "surface.png is for a textured landscape -- there needs to be a
 menu option to select the texturing on/off, and this should be the

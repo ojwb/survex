@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2003 Olly Betts
+//  Copyright (C) 2001-2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -152,6 +152,9 @@ public:
 
     void OnViewPerspective();
     void OnViewPerspectiveUpdate(wxUpdateUIEvent& cmd);
+
+    void OnViewFog();
+    void OnViewFogUpdate(wxUpdateUIEvent& cmd);
 
     void OnToggleMetric();
     void OnToggleMetricUpdate(wxUpdateUIEvent& cmd);

@@ -106,6 +106,7 @@ enum {
     menu_VIEW_GRID,
     menu_VIEW_SHOW_TUBES,
     menu_VIEW_PERSPECTIVE,
+    menu_VIEW_FOG,
     menu_VIEW_FULLSCREEN,
     menu_VIEW_PREFERENCES,
     menu_IND_COMPASS,
@@ -305,6 +306,7 @@ public:
     void OnViewGridUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewGridUpdate(event); }
     void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewClinoUpdate(event); }
     void OnViewPerspectiveUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewPerspectiveUpdate(event); }
+    void OnViewFogUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewFogUpdate(event); }
     void OnViewFullScreenUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewFullScreenUpdate(event); }
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnReverseDirectionOfRotationUpdate(event); }
     void OnCancelDistLineUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnCancelDistLineUpdate(event); }
@@ -347,9 +349,8 @@ public:
     void OnViewClino(wxCommandEvent&) { if (m_Control) m_Control->OnViewClino(); }
     void OnViewGrid(wxCommandEvent&) { if (m_Control) m_Control->OnViewGrid(); }
     void OnViewPerspective(wxCommandEvent&) { if (m_Control) m_Control->OnViewPerspective(); }
-    void OnViewFullScreen(wxCommandEvent&) {
-	ViewFullScreen();
-    }
+    void OnViewFog(wxCommandEvent&) { if (m_Control) m_Control->OnViewFog(); }
+    void OnViewFullScreen(wxCommandEvent&) { ViewFullScreen(); }
     void ViewFullScreen();
     void OnReverseDirectionOfRotation(wxCommandEvent&) { if (m_Control) m_Control->OnReverseDirectionOfRotation(); }
     void OnCancelDistLine(wxCommandEvent&) { if (m_Control) m_Control->OnCancelDistLine(); }

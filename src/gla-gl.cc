@@ -148,6 +148,7 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
     m_VolumeDiameter = 1.0;
     m_Perspective = false;
+    m_Fog = false;
 }
 
 GLACanvas::~GLACanvas()
@@ -187,6 +188,16 @@ void GLACanvas::FirstShow()
     CHECK_GL_ERROR("FirstShow", "glPointSize");
     //glAlphaFunc(GL_GREATER, 0.5f);
     //CHECK_GL_ERROR("FirstShow", "glAlphaFunc");
+ 
+    // Grey fog effect.
+    GLfloat fogcolour[4] = { 0.5, 0.5, 0.5, 1.0 };
+    glFogfv(GL_FOG_COLOR, fogcolour);
+
+    // Linear fogging.
+    glFogi(GL_FOG_MODE, GL_LINEAR);
+
+    // Optimise for speed (compute fog per vertex).
+    glHint(GL_FOG_HINT, GL_FASTEST);
 
     // No padding on pixel packing and unpacking (so screengrabs don't have
     // "gaps" when the width isn't divisible by 4).
@@ -393,6 +404,12 @@ void GLACanvas::SetDataTransform()
 
     glEnable(GL_DEPTH_TEST);
     CHECK_GL_ERROR("SetDataTransform", "glEnable GL_DEPTH_TEST");
+
+    if (m_Fog) {
+	glFogf(GL_FOG_START, near_plane);
+	glFogf(GL_FOG_END, near_plane + m_VolumeDiameter);
+	glEnable(GL_FOG);
+    }
 }
 
 void GLACanvas::SetIndicatorTransform()
@@ -410,6 +427,8 @@ void GLACanvas::SetIndicatorTransform()
 
     glDisable(GL_DEPTH_TEST);
     CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_DEPTH_TEST");
+    glDisable(GL_FOG);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_FOG");
 
     // And just a simple 2D projection
     glMatrixMode(GL_PROJECTION);

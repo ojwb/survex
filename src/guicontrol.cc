@@ -814,6 +814,17 @@ void GUIControl::OnViewPerspectiveUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_View->GetPerspective());
 }
 
+void GUIControl::OnViewFog()
+{
+    m_View->ToggleFog();
+}
+
+void GUIControl::OnViewFogUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+    cmd.Check(m_View->GetFog());
+}
+
 void GUIControl::OnToggleMetric()
 {
     m_View->ToggleMetric();

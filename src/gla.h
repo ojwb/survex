@@ -125,6 +125,7 @@ class GLACanvas : public wxWindow {
     GLUquadric* m_Quadric;
     
     bool m_Perspective;
+    bool m_Fog;
 
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
@@ -206,6 +207,9 @@ public:
 
     void TogglePerspective() { m_Perspective = !m_Perspective; }
     bool GetPerspective() const { return m_Perspective; }
+
+    void ToggleFog() { m_Fog = !m_Fog; }
+    bool GetFog() const { return m_Fog; }
 
     bool SaveScreenshot(const wxString & fnm, int type) const;
 };
