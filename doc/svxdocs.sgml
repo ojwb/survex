@@ -46,8 +46,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2000-02-20 12:35:18 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.13 2000-02-20 12:35:18 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2000-03-08 01:20:11 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.14 2000-03-08 01:20:11 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -118,6 +118,7 @@ url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
 </Sect1>
 
 <Sect1><Title>Getting Started</Title>
+<?dbhtml filename="getstart.htm">
 
 <Para>This section covers how to obtain the software, and how to unpack and
 install it.</Para>
@@ -245,6 +246,7 @@ been stamped.
 -->
 
 <Sect1><Title>Using &survexsuite;</Title>
+<?dbhtml filename="using.htm">
 
 <!-- FIXME rewrite this -->
 <Para>A complete specification of the &survexsuite; program commands is in
@@ -325,6 +327,7 @@ these in case they are of use to someone.
 <!-- FIXME: Configuration -->
 
 <Sect1><Title>Environment variables</Title>
+<?dbhtml filename="envvars.htm">
 
 <!-- FIXME: bad style -->
 
@@ -414,6 +417,7 @@ should not be necessary.
 </Sect1>
 
 <Sect1><Title>Survex Command Line Conventions</Title>
+<?dbhtml filename="cmdline.htm">
 
 <!-- FIXME: bad style -->
 
@@ -464,6 +468,7 @@ again.
 </Sect1>
 
 <Sect1><Title>Cavern</Title>
+<?dbhtml filename="cavern.htm">
 
 <Para>Cavern is the data processing engine of the suite.
 </Para>
@@ -637,6 +642,7 @@ fast machine you can't follow the change percentages.-->
 <!-- FIXME: gcc format error messages -->
 
 <Sect1><Title>Caverot</Title>
+<?dbhtml filename="caverot.htm">
 
 <Para>Caverot reads the <filename/.3d/ image files and displays the
 results on screen, letting you control the view to understand the
@@ -817,6 +823,7 @@ rotated, as this is meaningless.
 </Sect1>
 
 <Sect1><Title>Printer Drivers</Title>
+<?dbhtml filename="printer.htm">
 
 <Para>These read <filename/.3d/ files and print out the results on
 various sorts of printer/plotter.</Para>
@@ -1098,6 +1105,7 @@ of the same make and model.
 </Sect1>
 
 <Sect1><Title>Other Utilities</Title>
+<?dbhtml filename="utils.htm">
 
 <Para>There are a number of other utilities available which can help with
 specific tasks.</Para>
@@ -1178,6 +1186,7 @@ packages.
 </Sect1>
 
 <Sect1><Title>&survexsuite; data files</Title>
+<?dbhtml filename="datafile.htm">
 
 <Para>Survey data is entered in the form of text files. You can use
 any text editor you like for this. The data format is very flexible;
@@ -2189,6 +2198,7 @@ specification appendix
 </Sect1>
 
 <Sect1><Title>Contents of .svx files: How do I?</Title>
+<?dbhtml filename="svxhowto.htm">
 
 <Para>
 Here is some example &survexsuite; data (a very small cave numbered 1623/163):
@@ -2515,6 +2525,7 @@ survey is part of a loop.
 </Sect1>
 
 <Sect1><Title>General: How do I?</Title>
+<?dbhtml filename="genhowto.htm">
 
 <Sect2><Title>Create a new survey</Title>
 
@@ -2797,6 +2808,7 @@ name of the file in which the error was encountered.
 </Sect1>
 
 <Sect1><Title>Appendices</Title>
+<?dbhtml filename="appendix.htm">
 
 <Para>Files provided
 </Para>
@@ -2807,6 +2819,7 @@ name of the file in which the error was encountered.
 </Sect1>
 
 <Sect1><Title>Mailing List</Title>
+<?dbhtml filename="maillist.htm">
 
 <!-- FIXME: rewrite this -->
 
@@ -2820,6 +2833,7 @@ not receive automatic updates and information.
 </Sect1>
 
 <Sect1><Title>Error Messages</Title>
+<?dbhtml filename="errormsg.htm">
 
 <Para>There are a number of error messages that you may get when processing
 data.  Most of these are self explanatory, and will be caused by typing
@@ -2839,6 +2853,7 @@ without recompiling the program.</Para>
 </Sect1>
 
 <Sect1><Title>Future Developments</Title>
+<?dbhtml filename="future.htm">
 
 <Sect2><Title>Soon</Title>
 
@@ -2921,7 +2936,7 @@ Olly Betts
 <PostCode/CB4 2SN/
 <Country/UK/
 <Phone/Tel: 01223 513644 (home)/
-<Phone/Tel: 01223 715023 (work)/
+<!-- <Phone/Tel: 01223 715023 (work)/ -->
 <Email/&ollyemail;/
 </Address>
 
