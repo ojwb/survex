@@ -1150,12 +1150,12 @@ bool GfxCore::Animate()
 	    // non-perspective mode?
 	    next_mark_time = sqrd(d / 100);
 	    double a = next_mark.angle - prev_mark.angle;
-	    if (a > 180) {
-		next_mark.angle -= 360;
-		a = 360 - a;
-	    } else if (a < -180) {
-		next_mark.angle += 360;
-		a += 360;
+	    if (a > M_PI) {
+		next_mark.angle -= M_PI * 2;
+		a = M_PI * 2 - a;
+	    } else if (a < -M_PI) {
+		next_mark.angle += M_PI * 2;
+		a += M_PI * 2;
 	    } else {
 		a = fabs(a);
 	    }
@@ -1174,12 +1174,19 @@ bool GfxCore::Animate()
 	    double p = t / next_mark_time;
 	    double q = 1 - p;
 	    PresentationMark here = GetView();
+	    if (next_mark.angle < 0) {
+		if (here.angle >= next_mark.angle + M_PI * 2)
+		    here.angle -= M_PI * 2;
+	    } else if (next_mark.angle >= M_PI * 2) {
+		if (here.angle <= next_mark.angle - M_PI * 2)
+		    here.angle += M_PI * 2;
+	    }
 	    here.x = q * here.x + p * next_mark.x;
 	    here.y = q * here.y + p * next_mark.y;
 	    here.z = q * here.z + p * next_mark.z;
 	    here.angle = q * here.angle + p * next_mark.angle;
-	    if (here.angle < 0) here.angle += 360;
-	    else if (here.angle >= 360) here.angle -= 360;
+	    if (here.angle < 0) here.angle += M_PI * 2;
+	    else if (here.angle >= M_PI * 2) here.angle -= M_PI * 2;
 	    here.tilt_angle = q * here.tilt_angle + p * next_mark.tilt_angle;
 	    here.scale = exp(q * log(here.scale) + p * log(next_mark.scale));
 	    SetView(here);
@@ -1410,13 +1417,15 @@ void GfxCore::DragFinished()
     ForceRefresh();
 }
 
+void GfxCore::ClearCoords()
+{
+    m_Parent->ClearCoords();
+}
+
 void GfxCore::SetCoords(wxPoint point)
 {
     // We can't work out 2D coordinates from a perspective view
-    if (GetPerspective()) {
-	m_Parent->ClearCoords();
-	return;
-    }
+    if (GetPerspective()) return;
 
     // Update the coordinate or altitude display, given the (x, y) position in
     // window coordinates.  The relevant display is updated depending on
@@ -1520,8 +1529,9 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
 
 void GfxCore::SetCompassFromPoint(wxPoint point)
 {
-    // Given a point in window coordinates, set the heading of the survey.  If the point
-    // is outside the compass, it snaps to 45 degree intervals; otherwise it operates as normal.
+    // Given a point in window coordinates, set the heading of the survey.  If
+    // the point is outside the compass, it snaps to 45 degree intervals;
+    // otherwise it operates as normal.
 
     wxCoord dx = point.x - GetCompassXPosition();
     wxCoord dy = point.y - GetIndicatorYPosition();
@@ -1541,8 +1551,9 @@ void GfxCore::SetCompassFromPoint(wxPoint point)
 
 void GfxCore::SetClinoFromPoint(wxPoint point)
 {
-    // Given a point in window coordinates, set the elevation of the survey.  If the point
-    // is outside the clino, it snaps to 90 degree intervals; otherwise it operates as normal.
+    // Given a point in window coordinates, set the elevation of the survey.
+    // If the point is outside the clino, it snaps to 90 degree intervals;
+    // otherwise it operates as normal.
 
     glaCoord dx = point.x - GetClinoXPosition();
     glaCoord dy = point.y - GetIndicatorYPosition();
@@ -2605,7 +2616,6 @@ bool GfxCore::IsFullScreen() const
     return m_Parent->IsFullScreen();
 }
 
-#ifdef FLYFREE
 void
 GfxCore::MoveViewer(double forward, double up, double right)
 {
@@ -2619,9 +2629,12 @@ GfxCore::MoveViewer(double forward, double up, double right)
     Vector3 v_right(cP * cT2_sT2, sP * cT2_sT2, 0);
     Vector3 move = v_forward * forward + v_up * up + v_right * right;
     AddTranslation(-move.getX(), -move.getY(), -move.getZ());
+    // Show current position.
+    m_Parent->SetCoords(m_Translation.x + m_Parent->GetXOffset(),
+			m_Translation.y + m_Parent->GetYOffset(),
+			m_Translation.z + m_Parent->GetZOffset());
     ForceRefresh();
 }
-#endif
 
 PresentationMark GfxCore::GetView() const
 {

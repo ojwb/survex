@@ -352,21 +352,18 @@ void GLACanvas::SetDataTransform()
     glLoadIdentity();
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
 
-    assert(m_Scale != 0.0);
-#ifndef FLYFREE
-    Double lr = m_VolumeDiameter / m_Scale * 0.5;
-    Double near_plane = lr / tan(25.0 * M_PI / 180.0);
-    Double far_plane = m_VolumeDiameter + near_plane;
-#else
-    Double near_plane = 0.5;
-    Double lr = near_plane * tan(25.0 * M_PI / 180.0);
-    Double far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
-#endif
-    Double tb = lr * aspect;
+    Double near_plane = 1.0;
     if (m_Perspective) {
+	Double lr = near_plane * tan(25.0 * M_PI / 180.0);
+	Double far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
+	Double tb = lr * aspect;
 	glFrustum(-lr, lr, -tb, tb, near_plane, far_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glFrustum");
     } else {
+	assert(m_Scale != 0.0);
+	Double lr = m_VolumeDiameter / m_Scale * 0.5;
+	Double far_plane = m_VolumeDiameter + near_plane;
+	Double tb = lr * aspect;
 	glOrtho(-lr, lr, -tb, tb, near_plane, far_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
     }
@@ -376,11 +373,11 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
-#ifndef FLYFREE
-    glTranslated(0.0, 0.0, -0.5 * m_VolumeDiameter - near_plane);
-#else
-    glTranslated(0.0, 0.0, - near_plane);
-#endif
+    if (m_Perspective) {
+	glTranslated(0.0, 0.0, -near_plane);
+    } else {
+	glTranslated(0.0, 0.0, -0.5 * m_VolumeDiameter);
+    }
     CHECK_GL_ERROR("SetDataTransform", "glTranslated");
     // Get axes the correct way around (z upwards, y into screen)
     glRotated(-90.0, 1.0, 0.0, 0.0);

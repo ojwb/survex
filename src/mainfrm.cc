@@ -1328,6 +1328,21 @@ void MainFrm::ClearCoords()
     GetStatusBar()->SetStatusText("");
 }
 
+void MainFrm::SetCoords(Double x, Double y, Double z)
+{
+    wxString str;
+    if (m_Gfx->GetMetric()) {
+	str.Printf(msg(/*  %d E, %d N*/338), int(x), int(y));
+	str += wxString::Format(", %s %dm", msg(/*Altitude*/335), int(z));
+    } else {
+	str.Printf(msg(/*  %d E, %d N*/338),
+		   int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
+	str += wxString::Format(", %s %dft", msg(/*Altitude*/335),
+		   int(z / METRES_PER_FOOT));
+    }
+    GetStatusBar()->SetStatusText(str);
+}
+
 void MainFrm::SetCoords(Double x, Double y)
 {
     wxString str;

@@ -250,6 +250,7 @@ public:
 
     bool Animate();
 
+    void ClearCoords();
     void SetCoords(wxPoint);
 
     bool ShowingCompass() const;
@@ -353,9 +354,7 @@ public:
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b, 
 			  const Vector3 &c, const Vector3 &d);
-#ifdef FLYFREE
     void MoveViewer(double forward, double up, double right);
-#endif
 
     PresentationMark GetView() const;
     void SetView(const PresentationMark & p);

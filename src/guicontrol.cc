@@ -63,7 +63,7 @@ void GUIControl::HandleTilt(wxPoint point)
     // Handle a mouse movement during tilt mode.
     int dy = point.y - m_DragStart.y;
 
-    if (m_ReverseControls) dy = -dy;
+    if (m_ReverseControls != m_View->GetPerspective()) dy = -dy;
 
     m_View->TiltCave(Double(-dy) * M_PI / 500.0);
 
@@ -83,11 +83,11 @@ void GUIControl::HandleTranslate(wxPoint point)
 	dy = -dy;
     }
 
-#ifndef FLYFREE
-    m_View->TranslateCave(dx, dy);
-#else
-    m_View->MoveViewer(0, -dy, dx);
-#endif
+    if (m_View->GetPerspective())
+	m_View->MoveViewer(0, -dy * .1, dx * .1);
+    else
+	m_View->TranslateCave(dx, dy);
+
     m_DragStart = point;
 }
 
@@ -103,12 +103,12 @@ void GUIControl::HandleScale(wxPoint point)
 	dy = -dy;
     }
 
-#ifndef FLYFREE
-    m_View->SetScale(m_View->GetScale() * pow(1.06, 0.08 * dy));
-    m_View->ForceRefresh();
-#else
-    m_View->MoveViewer(dy, 0, 0);
-#endif
+    if (m_View->GetPerspective()) {
+	m_View->MoveViewer(-dy * .1, 0, 0);
+    } else {
+	m_View->SetScale(m_View->GetScale() * pow(1.06, 0.08 * dy));
+	m_View->ForceRefresh();
+    }
 
     m_DragStart = point;
 }
@@ -120,7 +120,7 @@ void GUIControl::HandleTiltRotate(wxPoint point)
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
-    if (m_ReverseControls) {
+    if (m_ReverseControls != m_View->GetPerspective()) {
 	dx = -dx;
 	dy = -dy;
     }
@@ -533,7 +533,11 @@ void GUIControl::OnSpeedUpUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnStepOnceAnticlockwise(bool accel)
 {
-    m_View->TurnCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
+    if (m_View->GetPerspective()) {
+	m_View->TurnCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
+    } else {
+	m_View->TurnCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
+    }
     m_View->ForceRefresh();
 }
 
@@ -544,7 +548,11 @@ void GUIControl::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnStepOnceClockwise(bool accel)
 {
-    m_View->TurnCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
+    if (m_View->GetPerspective()) {
+	m_View->TurnCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
+    } else {
+	m_View->TurnCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
+    }
     m_View->ForceRefresh();
 }
 
@@ -578,25 +586,41 @@ void GUIControl::OnElevationUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnHigherViewpoint(bool accel)
 {
     // Raise the viewpoint.
-    m_View->TiltCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
+    if (m_View->GetPerspective()) {
+	m_View->TiltCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
+    } else {
+	m_View->TiltCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
+    }
     m_View->ForceRefresh();
 }
 
 void GUIControl::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanRaiseViewpoint() && m_View->GetLock() == lock_NONE);
+    if (m_View->GetPerspective()) {
+	cmd.Enable(m_View->HasData() && m_View->CanLowerViewpoint() && m_View->GetLock() == lock_NONE);
+    } else {
+	cmd.Enable(m_View->HasData() && m_View->CanRaiseViewpoint() && m_View->GetLock() == lock_NONE);
+    }
 }
 
 void GUIControl::OnLowerViewpoint(bool accel)
 {
     // Lower the viewpoint.
-    m_View->TiltCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
+    if (m_View->GetPerspective()) {
+	m_View->TiltCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
+    } else {
+	m_View->TiltCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
+    }
     m_View->ForceRefresh();
 }
 
 void GUIControl::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanLowerViewpoint() && m_View->GetLock() == lock_NONE);
+    if (m_View->GetPerspective()) {
+	cmd.Enable(m_View->HasData() && m_View->CanRaiseViewpoint() && m_View->GetLock() == lock_NONE);
+    } else {
+	cmd.Enable(m_View->HasData() && m_View->CanLowerViewpoint() && m_View->GetLock() == lock_NONE);
+    }
 }
 
 void GUIControl::OnPlan()
@@ -612,11 +636,10 @@ void GUIControl::OnPlanUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayDown(bool accel)
 {
-#ifndef FLYFREE
-    m_View->TranslateCave(0, accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT);
-#else
-    m_View->MoveViewer(0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT, 0);
-#endif
+    if (m_View->GetPerspective()) 
+	m_View->MoveViewer(0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT, 0);
+    else
+	m_View->TranslateCave(0, accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT);
 }
 
 void GUIControl::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
@@ -626,11 +649,10 @@ void GUIControl::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayLeft(bool accel)
 {
-#ifndef FLYFREE
-    m_View->TranslateCave(accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT, 0);
-#else
-    m_View->MoveViewer(0, 0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT);
-#endif
+    if (m_View->GetPerspective()) 
+	m_View->MoveViewer(0, 0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT);
+    else
+	m_View->TranslateCave(accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT, 0);
 }
 
 void GUIControl::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
@@ -640,11 +662,10 @@ void GUIControl::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayRight(bool accel)
 {
-#ifndef FLYFREE
-    m_View->TranslateCave(accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT, 0);
-#else
-    m_View->MoveViewer(0, 0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT);
-#endif
+    if (m_View->GetPerspective()) 
+	m_View->MoveViewer(0, 0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT);
+    else
+	m_View->TranslateCave(accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT, 0);
 }
 
 void GUIControl::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
@@ -654,11 +675,10 @@ void GUIControl::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnShiftDisplayUp(bool accel)
 {
-#ifndef FLYFREE
-    m_View->TranslateCave(0, accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT);
-#else
-    m_View->MoveViewer(0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT, 0);
-#endif
+    if (m_View->GetPerspective()) 
+	m_View->MoveViewer(0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT, 0);
+    else
+	m_View->TranslateCave(0, accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT);
 }
 
 void GUIControl::OnShiftDisplayUpUpdate(wxUpdateUIEvent& cmd)
@@ -670,12 +690,12 @@ void GUIControl::OnZoomIn(bool accel)
 {
     // Increase the scale.
 
-#ifndef FLYFREE
-    m_View->SetScale(m_View->GetScale() * (accel ? 1.1236 : 1.06));
-    m_View->ForceRefresh();
-#else
-    m_View->MoveViewer(accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT, 0, 0);
-#endif
+    if (m_View->GetPerspective()) {
+	m_View->MoveViewer(accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT, 0, 0);
+    } else {
+	m_View->SetScale(m_View->GetScale() * (accel ? 1.1236 : 1.06));
+	m_View->ForceRefresh();
+    }
 }
 
 void GUIControl::OnZoomInUpdate(wxUpdateUIEvent& cmd)
@@ -687,12 +707,12 @@ void GUIControl::OnZoomOut(bool accel)
 {
     // Decrease the scale.
 
-#ifndef FLYFREE
-    m_View->SetScale(m_View->GetScale() / (accel ? 1.1236 : 1.06));
-    m_View->ForceRefresh();
-#else
-    m_View->MoveViewer(accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT, 0, 0);
-#endif
+    if (m_View->GetPerspective()) {
+	m_View->MoveViewer(accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT, 0, 0);
+    } else {
+	m_View->SetScale(m_View->GetScale() / (accel ? 1.1236 : 1.06));
+	m_View->ForceRefresh();
+    }
 }
 
 void GUIControl::OnZoomOutUpdate(wxUpdateUIEvent& cmd)
@@ -784,7 +804,8 @@ void GUIControl::OnShowExportedPts()
 
 void GUIControl::OnShowExportedPtsUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && (m_View->GetNumExportedPts() > 0));
+    // FIXME enable only if we have timestamps...
+    cmd.Enable(m_View->HasData() /*&& (m_View->GetNumExportedPts() > 0)*/);
     cmd.Check(m_View->ShowingExportedPts());
 }
 
@@ -806,6 +827,12 @@ void GUIControl::OnIndicatorsUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnViewPerspective()
 {
     m_View->TogglePerspective();
+    // Force update of coordinate display.
+    if (m_View->GetPerspective()) {
+	m_View->MoveViewer(0, 0, 0);
+    } else {
+	m_View->ClearCoords();
+    }
 }
 
 void GUIControl::OnViewPerspectiveUpdate(wxUpdateUIEvent& cmd)

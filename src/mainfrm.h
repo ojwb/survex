@@ -389,6 +389,7 @@ public:
     int GetNumHighlightedPts() const { return m_NumHighlighted; }
 
     void ClearCoords();
+    void SetCoords(Double x, Double y, Double z);
     void SetCoords(Double x, Double y);
     void SetAltitude(Double z);
 
