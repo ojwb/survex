@@ -40,11 +40,36 @@
 # define EXT_SVX_CMND ".svc"
 #endif
 
-static void
-fatal(const char *msg)
-{
-   puts(msg);
-   exit(1);
+#define STDERR stdout
+
+static void wr(char *msg) {
+   if (msg) puts(msg);
+}
+
+static void errdisp(char *msg, void (*fn)( char * ), char*szArg, char *type ) {
+  putc('\n', STDERR);
+  fprintf( STDERR, "%s from survex:", type);
+  fprintf( STDERR, "%s\n", msg );
+  if (fn) (fn)(szArg);
+}
+
+#if 0
+extern void warning(char *en, void (*fn)( char * ), char*szArg) {
+  cWarnings++; /* And another notch in the bedpost... */
+  errdisp( en, fn, szArg, 4 );
+}
+#endif
+
+extern void error(char *en, void (*fn)( char * ), char*szArg) {
+#if 0
+   cErrors++; /* non-fatal errors now return... */
+#endif
+  errdisp( en, fn, szArg, "Error" );
+}
+
+extern void fatal(char *en, void (*fn)( char * ), char*szArg) {
+  errdisp( en, fn, szArg, "Fatal Error" );
+  exit(EXIT_FAILURE);
 }
 
 /* Make fnm from pth and lf, inserting an FNM_SEP_LEV if appropriate */
@@ -91,7 +116,7 @@ fopen_not_dir(const char *fnm, const char *mode)
 }
 
 /* Add ext to fnm, inserting an FNM_SEP_EXT if appropriate */
-extern char * FAR
+extern char *
 AddExt(const char *fnm, const char *ext)
 {
    char * fnmNew;
@@ -201,8 +226,8 @@ typedef enum {COMMAND,COMMAND_FILENAME,SPECIAL_CHARS,SVX_FILE,TITLE} Mode;
 
 static void process_command( char * string, char * pth );
 static void command_file( char * pth, char * fnm );
-static void checkmode(Mode mode,void (*fn)( char *, int ),char * szArg);
-static void skipopt( char * sz, int n );
+static void checkmode(Mode mode,void (*fn)( char * ),char * szArg);
+static void skipopt( char * sz );
 
 #define TITLE_LEN 80
 char szSurveyTitle[TITLE_LEN];
@@ -216,10 +241,9 @@ static void process_command_line(int argc, char **argv) {
   *szSurveyTitle='\0';
 
   if (argc<2) 
-    fatal("No arguments given");
+    fatal("No arguments given", NULL, NULL);
 
-  for(j=0;++j<argc;)
-    process_command(argv[j],"");
+  for (j = 0; ++j < argc; ) process_command(argv[j], "");
 
   /* Check if everything's okay */
   checkmode(mode,skipopt,NULL);
@@ -251,7 +275,8 @@ static char *process_command_mode( char *string, char *pth ) {
       sz++;
       if (strchr("DFST",chOpt)) {
         /* negating these option doesn't make sense */
-	// FIXME: error(27,skipopt,string);
+	error("Not a boolean option - `!' prefix not meaningful",
+	      skipopt, string);
         return sz;
       }
     }
@@ -269,7 +294,7 @@ static char *process_command_mode( char *string, char *pth ) {
 	   case 'L':
 	     fprintf(fout, "*case tolower\n");
 	     break;
-	   default: //FIXME: error(28,skipopt,string,0);
+	   default: error("Expected U or L", skipopt, string);
           }
         } else {
 	  fprintf(fout, "*case preserve\n");
@@ -304,13 +329,13 @@ static char *process_command_mode( char *string, char *pth ) {
             ch=*(sz++);
           }
           sz--;
-	   // FIXME:          if (ln < 1) error(29,skipopt,string,0);
+	  if (ln < 1) error("Syntax: -U<uniqueness> where uniqueness > 0",skipopt,string);
 	  fprintf(fout, "*truncate %d\n", ln);
         } else
 	  fprintf(fout, "*truncate 0\n"); // FIXME: ick
         break;
       default:
-       // FIXME: error(30,skipopt,string,0);
+       error("Unknown command",skipopt,string);
     }
   } else {
     switch (ch) {
@@ -374,7 +399,7 @@ static void command_file( char * pth, char * fnm ) {
 
   fh=fopenWithPthAndExt( pth, fnm, EXT_SVX_CMND, "r", &fnmUsed );
   if (fh==NULL) {
-     //FIXME:error(22,skipopt,fnm,0);
+    error("Couldn't open command file",skipopt,fnm);
     return;
   }
   pth=PthFromFnm(fnmUsed);
@@ -398,7 +423,7 @@ static void command_file( char * pth, char * fnm ) {
       cmdbuf[i++]=byte;
       if (i>=COMMAND_BUFFER_LEN) {
         buffer[COMMAND_BUFFER_LEN-1]='\0';
-	 //FIXME:error(26,skipopt,cmdbuf,0);
+	error("Command too long",skipopt,cmdbuf);
         i=0; /* kills line */
         byte=COMMAND_FILE_COMMENT_CHAR; /* skips to end of line */
         break;
@@ -417,41 +442,37 @@ static void command_file( char * pth, char * fnm ) {
       process_command( cmdbuf, pth );
     }
   }
-  if (ferror(fh)||(fclose(fh)==EOF))
-     {} // FIXME: error(23,wr,fnm,0);
+  if (ferror(fh)||(fclose(fh)==EOF)) {
+     error("Couldn't close command file",wr,fnm);
+  }
 /* checkmode(mode,skipopt,fnm); */
   free(pth);
 }
 
-static void checkmode(Mode mode,void (*fn)( char *, int ),char * szArg) {
-  int errnum;
+static void checkmode(Mode mode,void (*fn)( char * ),char * szArg) {
+  char *msg;
   switch (mode) {
     case SVX_FILE:
-      errnum=10; break;
+      msg = "Data filename expected after -D";
+      break;
     case COMMAND_FILENAME:
-      errnum=18; break;
+      msg = "Command filename expected after -F";
+      break;
     case SPECIAL_CHARS:
-      errnum=19; break;
+      msg = "Special characters list expected after -S";
+      break;
     default:
       return;
   }
-   // FIXME:error(errnum,fn,szArg,0);
+  error(msg,fn,szArg);
 }
 
-static void skipopt( char * sz, int n ) {
-  if (sz)
-      puts(sz); // FIXME: n
-  puts("FIXME:"/*msg(83)*/);
+static void skipopt(char * sz) {
+   if (sz) puts(sz);
+   puts("Skipping bad command line option");
 }
 
 #define MYTMP "__xxxtmp.svx"
-
-#if 0
-static void error(void) {
-   printf("Syntax error in command line arguments\n");
-   exit(1);
-}
-#endif
 
 int main(int argc, char **argv) {
 
