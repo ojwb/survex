@@ -35,8 +35,8 @@ extern "C" {
 # define img_MOVE   0
 # define img_LINE   1
 /* NB: img_CROSS is never output and ignored on input.
- * Crosses are put where labels are. */
-# define img_CROSS  2
+ * Put crosses where labels are. */
+/* # define img_CROSS  2 */
 # define img_LABEL  3
 
 # define img_FLAG_SURFACE   0x01
@@ -59,6 +59,7 @@ typedef struct {
    int flags;
    /* all other members are for internal use only */
    FILE *fh;          /* file handle of image file */
+   char *label_buf;
    size_t buf_len;
    size_t label_len;
 # ifdef IMG_HOSTED

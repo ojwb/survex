@@ -54,10 +54,8 @@ static const char *szDesc;
 typedef struct LI {
    struct LI *pliNext;
    int tag;
-   union {
-      struct { float x, y; } to;
-      char *szLabel;
-   } d;
+   struct { float x, y; } to;
+   char *label;
 } li;
 
 static li *pliHead, **ppliEnd = &pliHead;
@@ -394,34 +392,24 @@ describe_layout(int x, int y)
 }
 
 static void
-stack(int tag, const img_point *p)
+stack(int tag, const char *s, const img_point *p)
 {
    li *pli;
    pli = osnew(li);
    pli->tag = tag;
-   pli->d.to.x = p->x * COS - p->y * SIN;
+   pli->to.x = p->x * COS - p->y * SIN;
    if (fPlan) {
-      pli->d.to.y = p->x * SIN + p->y * COS;
+      pli->to.y = p->x * SIN + p->y * COS;
    } else if (fTilt) {
-      pli->d.to.y = (p->x * SIN + p->y * COS) * SINT + p->z * COST;
+      pli->to.y = (p->x * SIN + p->y * COS) * SINT + p->z * COST;
    } else {
-      pli->d.to.y = p->z;
+      pli->to.y = p->z;
    }
-   if (pli->d.to.x > xMax) xMax = pli->d.to.x;
-   if (pli->d.to.x < xMin) xMin = pli->d.to.x;
-   if (pli->d.to.y > yMax) yMax = pli->d.to.y;
-   if (pli->d.to.y < yMin) yMin = pli->d.to.y;
-   *ppliEnd = pli;
-   ppliEnd = &(pli->pliNext);
-}
-
-static void
-stack_string(const char *s)
-{
-   li *pli;
-   pli = osnew(li);
-   pli->tag = img_LABEL;
-   pli->d.szLabel = osstrdup(s);
+   if (pli->to.x > xMax) xMax = pli->to.x;
+   if (pli->to.x < xMin) xMin = pli->to.x;
+   if (pli->to.y > yMax) yMax = pli->to.y;
+   if (pli->to.y < yMin) yMin = pli->to.y;
+   pli->label = s ? osstrdup(s) : NULL;
    *ppliEnd = pli;
    ppliEnd = &(pli->pliNext);
 }
@@ -444,9 +432,9 @@ read_in_data(void)
          if (fSurface || !(pimg->flags & img_FLAG_SURFACE)) {
 	    if (fMove) {
 	       fMove = fFalse;
-	       stack(img_MOVE, &p_move);
+	       stack(img_MOVE, NULL, &p_move);
 	    }
-	    stack(img_LINE, &p);
+	    stack(img_LINE, NULL, &p);
 	    break;
 	 }
 	 /* FALLTHRU */
@@ -455,10 +443,8 @@ read_in_data(void)
 	 fMove = fTrue;
          break;
        case img_LABEL:
-	 if (fSurface || (pimg->flags & img_SFLAG_UNDERGROUND)) {
-	    stack(img_CROSS, &p);
-	    stack_string(pimg->label);
-	 }
+	 if (fSurface || (pimg->flags & img_SFLAG_UNDERGROUND))
+	    stack(img_LABEL, pimg->label, &p);
          break;
       }
    } while (result != img_BAD && result != img_STOP);
@@ -938,8 +924,8 @@ main(int argc, char **argv)
              case img_MOVE:
                if (fShots) {
 		  long xnew, ynew;
-		  xnew = (long)((pli->d.to.x * Sc + xOrg) * scX);
-	          ynew = (long)((pli->d.to.y * Sc + yOrg) * scY);
+		  xnew = (long)((pli->to.x * Sc + xOrg) * scX);
+	          ynew = (long)((pli->to.y * Sc + yOrg) * scY);
 
                   /* avoid superfluous moves */
                   if (xnew != x || ynew != y) {
@@ -952,8 +938,8 @@ main(int argc, char **argv)
              case img_LINE:
                if (fShots) {
 		  long xnew, ynew;
-		  xnew = (long)((pli->d.to.x * Sc + xOrg) * scX);
-	          ynew = (long)((pli->d.to.y * Sc + yOrg) * scY);
+		  xnew = (long)((pli->to.x * Sc + xOrg) * scX);
+	          ynew = (long)((pli->to.y * Sc + yOrg) * scY);
 
 		  if (pending_move) {
 		     pr->MoveTo(x, y);
@@ -968,23 +954,21 @@ main(int argc, char **argv)
 		  }
                }
                break;
-             case img_CROSS:
+             case img_LABEL:
                if (fCrosses) {
-                  x = (long)((pli->d.to.x * Sc + xOrg) * scX);
-	          y = (long)((pli->d.to.y * Sc + yOrg) * scY);
+                  x = (long)((pli->to.x * Sc + xOrg) * scX);
+	          y = (long)((pli->to.y * Sc + yOrg) * scY);
                   pr->DrawCross(x, y);
 	          x = y = INT_MAX;
                   break;
 	       }
                if (fLabels) {
-                  x = (long)((pli->d.to.x * Sc + xOrg) * scX);
-	          y = (long)((pli->d.to.y * Sc + yOrg) * scY);
+                  x = (long)((pli->to.x * Sc + xOrg) * scX);
+	          y = (long)((pli->to.y * Sc + yOrg) * scY);
                   pr->MoveTo(x, y);
+		  pr->WriteString(pli->label);
 	          x = y = INT_MAX;
 	       }
-               break;
-             case img_LABEL:
-               if (fLabels) pr->WriteString(pli->d.szLabel);
                break;
             }
          if (pass == -1) {

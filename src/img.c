@@ -156,8 +156,8 @@ img_open_survey(const char *fnm, char *title_buf, char *date_buf,
    }
 
    pimg->buf_len = 257;
-   pimg->label = xosmalloc(pimg->buf_len);
-   if (!pimg->label) {
+   pimg->label_buf = xosmalloc(pimg->buf_len);
+   if (!pimg->label_buf) {
       osfree(pimg);
       img_errno = IMG_OUTOFMEMORY;
       return NULL;
@@ -261,8 +261,8 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    }
 
    pimg->buf_len = 257;
-   pimg->label = xosmalloc(pimg->buf_len);
-   if (!pimg->label) {
+   pimg->label_buf = xosmalloc(pimg->buf_len);
+   if (!pimg->label_buf) {
       osfree(pimg);
       img_errno = IMG_OUTOFMEMORY;
       return NULL;
@@ -297,7 +297,7 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    img_errno = IMG_NONE;
 
    /* for version 3 we use label to store the prefix for reuse */
-   pimg->label[0] = '\0';
+   pimg->label_buf[0] = '\0';
    pimg->label_len = 0;
 
    return pimg;
@@ -308,6 +308,7 @@ img_read_item(img *pimg, img_point *p)
 {
    int result;
    pimg->flags = 0;
+   pimg->label = pimg->label_buf;
 
    if (pimg->version == 3) {
       int opt;
@@ -315,7 +316,7 @@ img_read_item(img *pimg, img_point *p)
 	 *p = pimg->mv;
 	 pimg->flags = (int)(pimg->pending) & 0x3f;
 	 pimg->pending = 0;
-	 return img_LINE;
+	 return img_LINE; // FIXME
       }
       again3: /* label to goto if we get a prefix */
       opt = getc(pimg->fh);
@@ -336,7 +337,7 @@ img_read_item(img *pimg, img_point *p)
 	    }
 	    c = pimg->label_len - 16;
 	    opt &= 0x07;
-	    while (pimg->label[c] != '.' || --opt > 0) {
+	    while (pimg->label_buf[c] != '.' || --opt > 0) {
 	       if (--c < 0) {
 		  /* zero prefix using "0" */
 		  img_errno = IMG_BADFORMAT;
@@ -344,7 +345,7 @@ img_read_item(img *pimg, img_point *p)
 	       }
 	    }
 	    c++;
-	    pimg->label[c] = '\0';
+	    pimg->label_buf[c] = '\0';
 	    pimg->label_len = c;
 	    goto again3;
 	 }
@@ -375,11 +376,11 @@ img_read_item(img *pimg, img_point *p)
 	    }
 	 }
 
-	 q = pimg->label + pimg->label_len;
+	 q = pimg->label_buf + pimg->label_len;
 	 pimg->label_len += len;
 	 if (pimg->label_len >= pimg->buf_len) {
-	    pimg->label = xosrealloc(pimg->label, pimg->label_len + 1);
-	    if (!pimg->label) {
+	    pimg->label_buf = xosrealloc(pimg->label_buf, pimg->label_len + 1);
+	    if (!pimg->label_buf) {
 	       img_errno = IMG_OUTOFMEMORY;
 	       return img_BAD;
 	    }
@@ -395,7 +396,7 @@ img_read_item(img *pimg, img_point *p)
 
 	 if (pimg->survey_len) {
 	    size_t l = pimg->survey_len;
-	    const char *s = pimg->label;
+	    const char *s = pimg->label_buf;
 	    if (result == img_LINE) {
 	       if (strncmp(pimg->survey, s, l) != 0 ||
 		   !(s[l] == '.' || s[l] == '\0')) {
@@ -411,6 +412,9 @@ img_read_item(img *pimg, img_point *p)
 		  goto again3;
 	       }
 	    }
+	    pimg->label += l;
+	    /* skip the dot if there */
+	    if (*pimg->label) pimg->label++;
 	 }
 
 	 if (result == img_LINE && pimg->pending) {
@@ -466,14 +470,14 @@ img_read_item(img *pimg, img_point *p)
 	    return img_BAD;
 	 }
 	 if (ch != '\\') ungetc(ch, pimg->fh);
-	 fgets(pimg->label, 257, pimg->fh);
-	 q = pimg->label + strlen(pimg->label) - 1;
+	 fgets(pimg->label_buf, 257, pimg->fh);
+	 q = pimg->label_buf + strlen(pimg->label_buf) - 1;
 	 if (*q != '\n') {
 	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
 	 }
 	 /* Ignore empty labels in some .3d files (caused by a bug) */
-	 if (q == pimg->label) goto again;
+	 if (q == pimg->label_buf) goto again;
 	 *q = '\0';
 	 pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
 	 if (opt == 2) goto done;
@@ -490,14 +494,14 @@ img_read_item(img *pimg, img_point *p)
 	 /* Ignore empty labels in some .3d files (caused by a bug) */
 	 if (len == 0) goto again;
 	 if (len >= pimg->buf_len) {
-	    pimg->label = xosrealloc(pimg->label, len + 1);
-	    if (!pimg->label) {
+	    pimg->label_buf = xosrealloc(pimg->label_buf, len + 1);
+	    if (!pimg->label_buf) {
 	       img_errno = IMG_OUTOFMEMORY;
 	       return img_BAD;
 	    }
 	    pimg->buf_len = len + 1;
 	 }
-	 if (fread(pimg->label, len, 1, pimg->fh) != 1) {
+	 if (fread(pimg->label_buf, len, 1, pimg->fh) != 1) {
 	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
 	 }
@@ -519,13 +523,13 @@ img_read_item(img *pimg, img_point *p)
 	    char *q;
 	    pimg->flags = (int)opt & 0x3f;
 	    result = img_LABEL;
-	    if (!fgets(pimg->label, 257, pimg->fh)) {
+	    if (!fgets(pimg->label_buf, 257, pimg->fh)) {
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	    }
-	    q = pimg->label + strlen(pimg->label) - 1;
+	    q = pimg->label_buf + strlen(pimg->label_buf) - 1;
 	    /* Ignore empty-labels in some .3d files (caused by a bug) */
-	    if (q == pimg->label) goto again;
+	    if (q == pimg->label_buf) goto again;
 	    if (*q != '\n') {
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
@@ -545,9 +549,12 @@ img_read_item(img *pimg, img_point *p)
       y = get32(pimg->fh) / 100.0;
       z = get32(pimg->fh) / 100.0;
 
-      if (result == img_LABEL && pimg->survey_len &&
-	  (strncmp(pimg->label, pimg->survey, pimg->survey_len + 1) != 0))
-	 goto again;
+      if (result == img_LABEL) {
+	 if (pimg->survey_len &&
+	  (strncmp(pimg->label_buf, pimg->survey, pimg->survey_len + 1) != 0))
+	    goto again;
+	 pimg->label += pimg->survey_len + 1;
+      }
 
       done:
       p->x = x;
@@ -592,8 +599,8 @@ img_read_item(img *pimg, img_point *p)
 	       return img_BAD;
 	    }
 	    if (ch != '\\') ungetc(ch, pimg->fh);
-	    if (fscanf(pimg->fh, "%256s", pimg->label) < 1 ||
-		strlen(pimg->label) == 256) {
+	    if (fscanf(pimg->fh, "%256s", pimg->label_buf) < 1 ||
+		strlen(pimg->label_buf) == 256) {
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	    }
@@ -609,9 +616,12 @@ img_read_item(img *pimg, img_point *p)
 	 return img_BAD;
       }
 
-      if (result == img_LABEL && pimg->survey_len &&
-	  (strncmp(pimg->label, pimg->survey, pimg->survey_len) != 0 ||
-	   !pimg->survey[pimg->survey_len] == '.')) goto ascii_again;
+      if (result == img_LABEL) {
+	 if (pimg->survey_len &&
+	  (strncmp(pimg->label_buf, pimg->survey, pimg->survey_len + 1) != 0))
+	    goto ascii_again;
+	 pimg->label += pimg->survey_len + 1;
+      }
 
       return result;
    }
@@ -624,7 +634,7 @@ write_v3label(img *pimg, int opt, const char *s)
 
    /* find length of common prefix */
    dot = 0;
-   for (len = 0; s[len] == pimg->label[len] && s[len] != '\0'; len++) {
+   for (len = 0; s[len] == pimg->label_buf[len] && s[len] != '\0'; len++) {
       if (s[len] == '.') dot = len + 1;
    }
 
@@ -638,7 +648,7 @@ write_v3label(img *pimg, int opt, const char *s)
       if (pimg->label_len) putc(0, pimg->fh);
       len = 0;      
    } else {
-      const char *p = pimg->label + dot;
+      const char *p = pimg->label_buf + dot;
       n = 1;
       for (len = pimg->label_len - dot - 17; len; len--) {
 	 if (*p++ == '.') n++;
@@ -668,21 +678,21 @@ write_v3label(img *pimg, int opt, const char *s)
    n += len;
    pimg->label_len = n;
    if (n >= pimg->buf_len) {
-      char *p = xosrealloc(pimg->label, n + 1);
+      char *p = xosrealloc(pimg->label_buf, n + 1);
       if (p) {
-	 pimg->label = p;
+	 pimg->label_buf = p;
 	 pimg->buf_len = n + 1;
       } else {
 	 /* can't store this station, so just reset to no prefix */
 	 if (pimg->label_len) {
 	    /* can't here... putc(0, pimg->fh); */
 	    abort();
-	    pimg->label[0] = '\0';
+	    pimg->label_buf[0] = '\0';
 	    pimg->label_len = 0;
 	 }
       }
    }
-   memcpy(pimg->label + len, s + len, n - len + 1);
+   memcpy(pimg->label_buf + len, s + len, n - len + 1);
 }
 
 void
@@ -704,7 +714,6 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	 write_v3label(pimg, 0x80 | flags, s ? s : "");
 	 opt = 0;
 	 break;
-       case img_CROSS: /* ignore */
        default: /* ignore for now */
 	 return;
       }
@@ -751,8 +760,6 @@ img_write_item(img *pimg, int code, int flags, const char *s,
          }
 	 opt = 5;
 	 break;
-       case img_CROSS: /* ignore */
-	 return;
        default: /* ignore for now */
 	 return;
       }
@@ -792,7 +799,7 @@ img_close(img *pimg)
 	 }
 	 fclose(pimg->fh);
       }
-      osfree(pimg->label);
+      osfree(pimg->label_buf);
       osfree(pimg);
    }
 }
