@@ -16,6 +16,9 @@
 * caverot: overlapping label code wasn't allowing enough for vertical
   overlap.
 
+* cavern: after a bad *data command, ignore survey data until the next
+  valid *data command.
+
 Changes in 0.97-prerelease4:
 
 * Updated Portuguese and German translations.
