@@ -81,7 +81,7 @@ bool Aven::OnInit()
 	{0, 0}
     };
 
-    cmdline_set_syntax_message("[3D_FILE]", NULL);
+    cmdline_set_syntax_message("[3d file]", NULL);
     cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
     while (1) {
 	int opt = cmdline_getopt();
