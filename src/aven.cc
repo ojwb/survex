@@ -45,8 +45,8 @@ bool Aven::OnInit()
     signal(SIGINT, SIG_DFL); // I want to be able to press Ctrl+C!!
 
     static wxCmdLineEntryDesc cmdline[] = {
-        { wxCMD_LINE_OPTION, "h", "help", msgPerm(501) /* Print command line options */ },
-	{ wxCMD_LINE_PARAM,  NULL, NULL, msgPerm(502) /* 3d file */, wxCMD_LINE_VAL_STRING,
+        { wxCMD_LINE_OPTION, "h", "help", msgPerm(/*Display command line options*/201) },
+	{ wxCMD_LINE_PARAM,  NULL, NULL, msgPerm(/*3d file*/119), wxCMD_LINE_VAL_STRING,
 	  wxCMD_LINE_PARAM_OPTIONAL },
 	{ wxCMD_LINE_NONE }
     };
@@ -54,8 +54,8 @@ bool Aven::OnInit()
     wxCmdLineParser cli(cmdline, argc, argv);
     int c = cli.Parse();
     if (c != 0 || cli.Found("h")) {
-        fprintf(stderr, msg(500) /* syntax: %s [3d file] */, argv[0]);
-	fprintf(stderr, "\n");
+        fprintf(stderr, "%s: %s [%s]\n",
+		msg(/*Syntax*/49), argv[0], msg(/*3d file*/119));
 	exit(c > 0 ? 1 /* syntax error */ : 0 /* --help */);
     }
 

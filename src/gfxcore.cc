@@ -647,7 +647,7 @@ void GfxCore::Draw2dIndicators()
     wxString str;
 
     if (m_Compass) {
-        str = wxString::Format("%s %03d", msg(503) /* Facing */,
+        str = wxString::Format("%s %03d", msg(/*Facing*/203),
 			     int(m_PanAngle * 180.0 / M_PI));
 	m_DrawDC.GetTextExtent(str, &w, &h);
 	m_DrawDC.DrawText(str, pan_centre_x - w/2,
@@ -655,12 +655,20 @@ void GfxCore::Draw2dIndicators()
     }
 
     if (m_Clino) {
-        str = m_TiltAngle == 0 ? wxString::Format("%s 00", msg(504) /* Elev */) :
-	                         wxString::Format("%s %+03d", msg(504) /* Elev */,
-			                          int(m_TiltAngle * 180.0 / M_PI));
+	wxCoord width, height;
+        m_DrawDC.GetTextExtent(wxString(" +00"), &width, &height);
+        m_DrawDC.GetTextExtent(wxString(" -00"), &w, &h);
+	if (w > width) width = w;
+        str = wxString(msg(/*Elevation*/118));
 	m_DrawDC.GetTextExtent(str, &w, &h);
-	m_DrawDC.DrawText(str, elev_centre_x - w/2,
-			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
+        width += w;
+	if (h > height) height = h;
+	height = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - height;
+	m_DrawDC.DrawText(str, elev_centre_x - width/2, height);
+        str = m_TiltAngle == 0 ? wxString("00") :
+	                         wxString::Format("%+03d", int(m_TiltAngle * 180.0 / M_PI));
+	m_DrawDC.GetTextExtent(str, &w, NULL);
+	m_DrawDC.DrawText(str, elev_centre_x + width/2 - w, height);
     }
 }
 

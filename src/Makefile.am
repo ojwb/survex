@@ -25,11 +25,12 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 survex_SOURCES = wrap.c osdepend.c
 
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
- gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc
+ gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
+ useful.c
 
 aven_LDADD = @LIBOBJS@ @WX_LIBS@
-aven_CFLAGS = -DSTANDALONE @WX_CFLAGS@
-aven_CXXFLAGS = -DSTANDALONE @WX_CFLAGS@
+aven_CFLAGS = @WX_CFLAGS@
+aven_CXXFLAGS = @WX_CFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c $(COMMONSRC)
  

@@ -124,97 +124,75 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     // The status bar messages aren't internationalised, 'cos there ain't any
     // status bar at the moment! ;-)
     wxMenu* filemenu = new wxMenu;
-    filemenu->Append(menu_FILE_OPEN, GetTabMsg(513), "Open a Survex 3D file for viewing");
+    filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220), "Open a Survex 3D file for viewing");
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_QUIT, GetTabMsg(514), "Quit Aven");
+    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Exit*/221), "Quit Aven");
 
     wxMenu* rotmenu = new wxMenu;
-    rotmenu->Append(menu_ROTATION_START, GetTabMsg(515),
-		    "Start the survey rotating");
-    rotmenu->Append(menu_ROTATION_STOP, GetTabMsg(516),
-		    "Stop the survey rotating");
+    rotmenu->Append(menu_ROTATION_START, GetTabMsg(/*@Start Rotation##Return*/230), "Start the survey rotating");
+    rotmenu->Append(menu_ROTATION_STOP, GetTabMsg(/*S@top Rotation##Space*/231), "Stop the survey rotating");
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_SPEED_UP, GetTabMsg(517), "Speed up rotation of the survey");
-    rotmenu->Append(menu_ROTATION_SLOW_DOWN, GetTabMsg(518),
-		    "Slow down rotation of the survey");
+    rotmenu->Append(menu_ROTATION_SPEED_UP, GetTabMsg(/*Speed @Up##Z*/232), "Speed up rotation of the survey");
+    rotmenu->Append(menu_ROTATION_SLOW_DOWN, GetTabMsg(/*S@low Down##X*/233), "Slow down rotation of the survey");
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_REVERSE, GetTabMsg(519),
-		    "Reverse the direction of rotation");
+    rotmenu->Append(menu_ROTATION_REVERSE, GetTabMsg(/*@Reverse Direction##R*/234), "Reverse the direction of rotation");
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_STEP_CCW, GetTabMsg(520),
-		    "Rotate the cave one step anticlockwise");
-    rotmenu->Append(menu_ROTATION_STEP_CW, GetTabMsg(521),
-		    "Rotate the cave one step clockwise");
+    rotmenu->Append(menu_ROTATION_STEP_CCW, GetTabMsg(/*Step Once @Anticlockwise##C*/235), "Rotate the cave one step anticlockwise");
+    rotmenu->Append(menu_ROTATION_STEP_CW, GetTabMsg(/*Step Once @Clockwise##V*/236), "Rotate the cave one step clockwise");
 
+   
+   
     wxMenu* orientmenu = new wxMenu;
-    orientmenu->Append(menu_ORIENT_MOVE_NORTH, GetTabMsg(522), "Move the survey so it aims North");
-    orientmenu->Append(menu_ORIENT_MOVE_EAST, GetTabMsg(523), "Move the survey so it aims East");
-    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, GetTabMsg(524), "Move the survey so it aims South");
-    orientmenu->Append(menu_ORIENT_MOVE_WEST, GetTabMsg(525), "Move the survey so it aims West");
+    orientmenu->Append(menu_ORIENT_MOVE_NORTH, GetTabMsg(/*View @North##N*/240), "Move the survey so it aims North");
+    orientmenu->Append(menu_ORIENT_MOVE_EAST, GetTabMsg(/*View @East##E*/241), "Move the survey so it aims East");
+    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, GetTabMsg(/*View @South##S*/242), "Move the survey so it aims South");
+    orientmenu->Append(menu_ORIENT_MOVE_WEST, GetTabMsg(/*View @West##W*/243), "Move the survey so it aims West");
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, GetTabMsg(526),
-		       "Shift the survey to the left");
-    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, GetTabMsg(527),
-		       "Shift the survey to the right");
-    orientmenu->Append(menu_ORIENT_SHIFT_UP, GetTabMsg(528),
-		       "Shift the survey upwards");
-    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, GetTabMsg(529),
-		       "Shift the survey downwards");
+    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, GetTabMsg(/*Shift Survey @Left##Left Arrow*/244), "Shift the survey to the left");
+    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, GetTabMsg(/*Shift Survey @Right##Right Arrow*/245), "Shift the survey to the right");
+    orientmenu->Append(menu_ORIENT_SHIFT_UP, GetTabMsg(/*Shift Survey @Up##Up Arrow*/246), "Shift the survey upwards");
+    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, GetTabMsg(/*Shift Survey @Down##Down Arrow*/247), "Shift the survey downwards");
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_PLAN, GetTabMsg(530), "Switch to plan view");
-    orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(531), "Switch to elevation view");
+    orientmenu->Append(menu_ORIENT_PLAN, GetTabMsg(/*@Plan View##P*/248), "Switch to plan view");
+    orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation View##L*/249), "Switch to elevation view");
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(532),
-		       "Raise the angle of viewing");
-    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(533),
-		       "Lower the angle of viewing");
+    orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(/*@Higher Viewpoint##'*/250), "Raise the angle of viewing");
+    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*Lo@wer Viewpoint##/*/251), "Lower the angle of viewing");
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_ZOOM_IN, GetTabMsg(534), "Zoom further into the survey");
-    orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(535),
-		       "Zoom further out from the survey");
+    orientmenu->Append(menu_ORIENT_ZOOM_IN, GetTabMsg(/*@Zoom In##]*/252), "Zoom further into the survey");
+    orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253), "Zoom further out from the survey");
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(536),
-		       "Restore default settings for zoom, scale and rotation");
+    orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault Settings##Delete*/254), "Restore default settings for zoom, scale and rotation");
 
     wxMenu* viewmenu = new wxMenu;
-    viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(537),
-		     "Toggle display of survey station names", true);
-    viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(538),
-		     "Toggle display of crosses at survey stations", true);
-    viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(539),
-		     "Toggle display of survey legs", true);
+    viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "Toggle display of survey station names", true);
+    viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "Toggle display of crosses at survey stations", true);
+    viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*Survey @Legs##Ctrl+L*/272), "Toggle display of survey legs", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(540),
-		     "Toggle display all station names, whether or not they overlap", true);
+    viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names##O*/273), "Toggle display all station names, whether or not they overlap", true);
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_COMPASS, GetTabMsg(541), "Toggle display of the compass", true);
-    viewmenu->Append(menu_VIEW_CLINO, GetTabMsg(542), "Toggle display of the clinometer",
-		     true);
-    viewmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(543), "Toggle display of the depth bar",
-		     true);
-    viewmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(544), "Toggle display of the scale bar",
-		     true);
+    viewmenu->Append(menu_VIEW_COMPASS, GetTabMsg(/*Co@mpass*/274), "Toggle display of the compass", true);
+    viewmenu->Append(menu_VIEW_CLINO, GetTabMsg(/*Cl@inometer*/275), "Toggle display of the clinometer", true);
+    viewmenu->Append(menu_VIEW_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "Toggle display of the depth bar", true);
+    viewmenu->Append(menu_VIEW_SCALE_BAR, GetTabMsg(/*Sc@ale Bar*/277), "Toggle display of the scale bar", true);
     //    viewmenu->AppendSeparator();
     //    viewmenu->Append(menu_VIEW_STATUS_BAR, "&Status Bar",
     //		     "Toggle display of the status bar", true);
 
     wxMenu* ctlmenu = new wxMenu;
-    ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(545),
-		    "Reverse the sense of the orientation controls", true);
-    ctlmenu->Append(menu_CTL_CAVEROT_MID, GetTabMsg(546),
-		    "Cause the middle button to toggle between plan and elevation", true);
+    ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "Reverse the sense of the orientation controls", true);
+    ctlmenu->Append(menu_CTL_CAVEROT_MID, GetTabMsg(/*Caverot-Style @Middle Button*/281), "Cause the middle button to toggle between plan and elevation", true);
 
     wxMenu* helpmenu = new wxMenu;
-    helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(547),
-		"Display program information, version number, copyright and licence agreement");
+    helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About Aven...*/290), "Display program information, version number, copyright and licence agreement");
 
     wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE);
-    menubar->Append(filemenu, GetTabMsg(580));
-    menubar->Append(rotmenu, GetTabMsg(581));
-    menubar->Append(orientmenu, GetTabMsg(582));
-    menubar->Append(viewmenu, GetTabMsg(583));
-    menubar->Append(ctlmenu, GetTabMsg(584));
-    menubar->Append(helpmenu, GetTabMsg(585));
+    menubar->Append(filemenu, GetTabMsg(/*@File*/210));
+    menubar->Append(rotmenu, GetTabMsg(/*@Rotation*/211));
+    menubar->Append(orientmenu, GetTabMsg(/*@Orientation*/212));
+    menubar->Append(viewmenu, GetTabMsg(/*@View*/213));
+    menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
+    menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
     SetMenuBar(menubar);
 
     wxAcceleratorEntry entries[11];
@@ -321,17 +299,7 @@ bool MainFrm::LoadData(const wxString& file)
     img* survey = img_open(file, NULL, NULL);
     if (!survey) {
         //SetStatusText("");
-	wxString svxerr;
-	switch (img_error()) {
-	    case IMG_FILENOTFOUND: svxerr = msg(600); /* file not found */ break;
-	    case IMG_OUTOFMEMORY:  svxerr = msg(601); /* out of memory */ break;
-	    case IMG_DIRECTORY:    svxerr = msg(602); /* it's a directory! */ break;
-	    case IMG_BADFORMAT:    svxerr = msg(603); /* incorrect 3D file format */ break;
-	    default: assert(0);
-	}
-        wxString m = wxString(msg(604) /* Couldn't open 3d file */) + wxString(" '") +
-	                      file + wxString("' (") + svxerr +
-	                      wxString(").");
+	wxString m = wxString::Format(msg(img_error()), file.c_str());
 	wxGetApp().ReportError(m);
 	//SetStatusText("Ready");
     }
@@ -455,10 +423,9 @@ bool MainFrm::LoadData(const wxString& file)
 	} while (result != img_BAD && result != img_STOP);
 
 	// Check we've actually loaded some legs or stations!
-	if (m_NumLegs == 0 || m_Labels.size() == 0) {
+	if (m_NumLegs == 0 && m_Labels.empty()) {
 	    //SetStatusText(wxString(""));
-	    wxString m = wxString(msg(605)) /* No legs or stations found in 3D file */ +
-	                 wxString(" '") + file + wxString("'.");
+	    wxString m = wxString::Format(msg(/*No survey data in 3d file `%s'*/202), file.c_str());
 	    wxGetApp().ReportError(m);
 	    return false;
 	}
@@ -666,13 +633,13 @@ void MainFrm::OpenFile(const wxString& file, bool delay)
 void MainFrm::OnOpen(wxCommandEvent&)
 {
 #ifdef __WXMOTIF__
-  wxFileDialog dlg (this, wxString(msg(606)) /* Select a 3D file to view */, "", "",
-		    "*.3d", wxOPEN);
+    wxFileDialog dlg (this, wxString(msg(206)) /* Select a 3D file to view */, "", "",
+		      "*.3d", wxOPEN);
 #else
-    wxFileDialog dlg (this, wxString(msg(606)) /* Select a 3D file to view */, "", "",
+    wxFileDialog dlg (this, wxString(msg(206)) /* Select a 3D file to view */, "", "",
 		      wxString::Format("%s|*.3d|%s|*.*",
-				       msg(607) /* Survex 3d files */,
-				       msg(608) /* All files */), wxOPEN);
+				       msg(207) /* Survex 3d files */,
+				       msg(208) /* All files */), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
         OpenFile(dlg.GetPath());
