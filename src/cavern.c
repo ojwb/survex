@@ -119,6 +119,7 @@ main(int argc, char **argv)
 
    pcs = osnew(settings);
    pcs->next = NULL;
+   pcs->fFileStarted = fTrue;
    pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
 
    /* Set up root of prefix hierarchy */

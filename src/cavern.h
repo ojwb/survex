@@ -211,6 +211,7 @@ typedef struct Settings {
    real sc[Q_MAC];
    real units[Q_MAC];   
    datum *ordering;
+   bool fFileStarted;
    struct Settings *next;
 } settings;
 

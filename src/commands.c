@@ -381,42 +381,18 @@ set_prefix(void)
 }
 
 static void
-push(void)
-{
-   settings *pcsNew;
-   pcsNew = osnew(settings);
-/*   memcpy(pcsNew, pcs, ossizeof(settings)); */
-   *pcsNew = *pcs; /* copy contents */
-   pcsNew->next = pcs;
-   pcs = pcsNew;
-}
-
-static bool
-pop(void)
-{
-   settings *pcsParent;
-   datum *order;
-   
-   pcsParent = pcs->next;
-   if (pcsParent == NULL) return fFalse;
-   
-   /* don't free default ordering or ordering used by parent */
-   order = pcs->ordering;
-   if (order != default_order && order != pcsParent->ordering) osfree(order);
-      
-   /* free Translate if not used by parent */
-   if (pcs->Translate != pcsParent->Translate) osfree(pcs->Translate - 1);
-
-   osfree(pcs);
-   pcs = pcsParent;
-   return fTrue;
-}
-
-static void
 begin_block(void)
 {
    prefix *tag;
-   push();
+   settings *pcsNew;
+
+   pcsNew = osnew(settings);
+/*   memcpy(pcsNew, pcs, ossizeof(settings)); */
+   *pcsNew = *pcs; /* copy contents */
+   pcsNew->fFileStarted = fFalse;
+   pcsNew->next = pcs;
+   pcs = pcsNew;
+
    tag = read_prefix(fTrue);
    pcs->tag = tag;
    if (tag) pcs->Prefix = tag;
@@ -425,18 +401,42 @@ begin_block(void)
 static void
 end_block(void)
 {
+   settings *pcsParent;
+   datum *order;
    prefix *tag, *tagBegin;
-   tagBegin = pcs->tag;
-   if (!pop()) {
-      /* more ENDs than BEGINs */
-      compile_error(/*No matching BEGIN*/192);
+
+   pcsParent = pcs->next;
+
+   if (pcs->fFileStarted) {
+      if (pcsParent == NULL) {
+	 /* more ENDs than BEGINs */
+	 compile_error(/*No matching BEGIN*/192);
+      } else {
+	 compile_error(/*No matching BEGIN in this file*/22);
+      }
       skipline();
       return;
    }
+
+   ASSERT(pcsParent);
+   
+   /* don't free default ordering or ordering used by parent */
+   order = pcs->ordering;
+   if (order != default_order && order != pcsParent->ordering) osfree(order);
+      
+   /* free Translate if not used by parent */
+   if (pcs->Translate != pcsParent->Translate) osfree(pcs->Translate - 1);
+
+   tagBegin = pcs->tag;
+   
+   osfree(pcs);
+   pcs = pcsParent;
+
    tag = read_prefix(fTrue); /* need to read using root *before* BEGIN */
    if (tag != tagBegin) {
       if (tag) {
 	 /* tag mismatch */
+	 /* FIXME: *begin / *end foo caught here too */
 	 compile_error(/*Prefix tag doesn't match BEGIN*/193);
 	 skipline();
       } else {
@@ -861,6 +861,7 @@ include(void)
    parse file_store;
    prefix *root_store;
    int ch_store;
+   bool fFileStarted_store;
 
    pth = path_from_fnm(file.filename);
 
@@ -871,8 +872,40 @@ include(void)
    file_store = file;
    file.parent = &file_store;
    ch_store = ch;
+   
+   fFileStarted_store = pcs->fFileStarted;
+   pcs->fFileStarted = fTrue;
+   
    data_file(pth, fnm);
 
+   if (!pcs->fFileStarted) {
+      /* FIXME: can't give filename as it is freed by data_file() -
+       * perhaps this code should be pushed into data_file.  Then
+       * it would also work for files specified on the command line...
+       */
+      error(/*Unclosed BEGIN*/23);
+      skipline();
+      /* Implicitly close any unclosed BEGINs from this file */
+      do {
+	 /* FIXME: same code as in end_block() - pull out into function */
+	 datum *order;
+	 settings *pcsParent = pcs->next;
+	 ASSERT(pcsParent);
+   
+	 /* don't free default ordering or ordering used by parent */
+	 order = pcs->ordering;
+	 if (order != default_order && order != pcsParent->ordering) osfree(order);
+      
+	 /* free Translate if not used by parent */
+	 if (pcs->Translate != pcsParent->Translate) osfree(pcs->Translate - 1);
+
+	 osfree(pcs);
+	 pcs = pcsParent;
+      } while (!pcs->fFileStarted);
+   }
+
+   pcs->fFileStarted = fFileStarted_store;
+   
    root = root_store; /* and restore root */
    file = file_store;
    ch = ch_store;
