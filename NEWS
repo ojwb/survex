@@ -16,6 +16,9 @@ Changes in 1.0.6:
 * aven: improved handling of flat surveys (e.g. output of extend, surveys
   with no clino information).
 
+* aven: surveys with stations but no legs no longer cause the labels and
+  crosses buttons to behave oddly.
+
 * aven: removed quite a bit of unused and superfluous code.
 
 * Spell-checked documentation.
