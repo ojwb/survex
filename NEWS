@@ -4,6 +4,10 @@
   Chasm unless we're actually producing that output - saves about 8 bytes
   per station.
 
+* (MS Windows Version): all .ico files except 3d.ico have been missing since
+  1.0.17 (or maybe 1.0.16) - fixed.  You wouldn't notice this if you installed
+  over an previous version.
+
 Changes in 1.0.20:
 
 * aven: update display when "Metric" or "Degrees" is toggled.
