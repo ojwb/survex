@@ -155,19 +155,13 @@ win_Pre(int pagesToPrint, const char *title)
    pagesToPrint = pagesToPrint; /* suppress compiler warning */
 
    memset(&psd, 0, sizeof(PRINTDLGA));
-
    psd.lStructSize = 66;
-   psd.hwndOwner = NULL;
-   psd.hDevMode = NULL;
-   psd.hDevNames = NULL; 
-   psd.hDC = NULL;
    psd.Flags = PD_RETURNDC | PD_RETURNDEFAULT;
-   psd.hInstance = NULL;
+
    if (!PrintDlgA(&psd)) exit(1);
    pd = psd.hDC;
 
-   memset(&psd, 0, sizeof(DOCINFO));
-
+   memset(&info, 0, sizeof(DOCINFO));
    info.cbSize = sizeof(DOCINFO);
    info.lpszDocName = title;
 
@@ -218,19 +212,10 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    out_fnm = out_fnm;
 
    memset(&psd, 0, sizeof(PRINTDLGA));
-
    psd.lStructSize = 66;
-   psd.hwndOwner = NULL;
-   psd.hDevMode = NULL;
-   psd.hDevNames = NULL; 
-   psd.hDC = NULL;
    psd.Flags = PD_RETURNDC | PD_RETURNDEFAULT;
-   psd.hInstance = NULL;
 
-   if (!PrintDlgA(&psd)) {
-      psd.Flags = PD_RETURNDC;      
-      if (!PrintDlgA(&psd)) exit(1);      
-   }
+   if (!PrintDlgA(&psd)) exit(1);      
 
    fontsize = 12;
 
