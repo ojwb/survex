@@ -1,3 +1,15 @@
+Changes in 0.95-prerelease2:
+
+* Minor tweaks to some messages.
+
+* 3dtodxf: Fixed calculation of bounding box if all coordinates are negative
+  in one or more axes.
+
+* Added Wookey's man pages - these just list the command line options and
+  point to the HTML documentation.
+
+* Fixes for compilation problems on non-Linux UNIX platforms.
+
 Changes in 0.95-prerelease1:
 
 * cavern: *fix with error values (one for same all round, two for horizontal
