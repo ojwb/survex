@@ -2,6 +2,8 @@
 require 5.003;
 use strict;
 
+use POSIX;
+
 my $package = '';
 my $version = '';
 open C, "<configure.in" or die $!;
@@ -25,7 +27,7 @@ close M;
 
 open CL, "<debian/changelog" or die $!;
 
-my $date = strftime "+%a, %d %b %Y %X %z", localtime;
+my $date = strftime("%a, %d %b %Y %X %z", localtime);
 
 my $line = <CL>;
 unless ($line =~ /^\Q$package ($version)/) {
