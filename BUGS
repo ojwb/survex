@@ -4,6 +4,8 @@ From: immoh <immoh@donau.de>
 Another remark: Did you know that you can crash CAVEROT by setting the
 scale factor to very large or very small values (probably larger/smaller
 than MIN/MAXFLOAT)?! This would be worth an error catch....
+[Seems to be fixed by newer allegro version, let me know if you still get
+problems - Olly]
 
 Date: Wed, 09 Sep 1998 15:10:12 +0100
 From: Wookey <wookey@aleph1.co.uk>
@@ -19,7 +21,7 @@ From: olly@muscat.co.uk
 In DJGPP+Allegro caverot: On an NT 4 server, the mouse works in the
 mode-picker, but not in caverot itself.  Also, the mode caverot tries to
 select by default doesn't work, although caverot seems blissfully unaware of
-the fact. 
+the fact - detect NT and default to a mode that is more likely to work (VGA?)
 
 Date: Mon, 02 Nov 1998 09:16:23 +1100
 From: Michael Lake <Mike.Lake@uts.edu.au>
@@ -48,7 +50,7 @@ cures the problem).  PWJ suggests the graphics card might be the problem.
 Date: Mon, 22 Feb 1999 08:58:53 GMT
 From: jep@redestb.es (Josep Guarro)
 
-When I use caverot if I set the language to another
-one different than english, the screen doesn't print well the words
-with accents.
+When I use caverot if I set the language to another one different than
+english, the screen doesn't print well the words with accents.
+[Need accent support from Allegro, which is under development - Olly]
 
