@@ -20,7 +20,7 @@ EXTRA_DIST = svxdocs $(doclist) svxdocs.sgml custom.dsl survex.1\
 MAINTAINERCLEANFILES = $(doclist)
 CLEANFILES = $(other_mans)
 
-pkgdoc_DATA = $(doclist)
+pkgdoc_DATA = svxdocs $(doclist)
 
 man_MANS = survex.1 $(other_mans)
 

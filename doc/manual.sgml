@@ -1,4 +1,4 @@
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 <!ENTITY ollyemail "olly@survex.com">
 <!ENTITY wookeyemail "wookey@survex.com">
 <!ENTITY survexwebsite "http://www.survex.com/">
@@ -13,6 +13,10 @@
 <!ENTITY arge "<Acronym/ARGE/">
 <!ENTITY dpmi "<Acronym/DPMI/">
 <!ENTITY hto "<Acronym/HTO/">
+<!ENTITY svx "<filename>.svx</filename>">
+<!ENTITY x3d "<filename>.3d</filename>">
+<!ENTITY err "<filename>.err</filename>">
+<!ENTITY pos "<filename>.pos</filename>">
 ]>
 <!--
 FIXME todo:
@@ -60,12 +64,38 @@ and/or suffix, so you'd get:
 The intention is to give the order you'd expect, so if you find examples
 where this isn't the case, let me know.
 
-</Sect3>
+
+
+<Para>The other really important commands apart from *BEGIN, *END, and
+*INCLUDE are *EQUATE and *FIX.
+</Para>
+
+<Para>*EQUATE is used to join surveys together, e.g.
+</Para>
+
+<programlisting>*equate entrance.6 adrian.1</programlisting>
+
+<Para>
+indicates that station 6 of the entrance survey was used as
+the station 1 of the Adrian's Route survey.
+</Para>
+
+<Para>*FIX is for fixing points in space. E.g.
+</Para>
+
+<programlisting>
+*fix 161.entrance.1    0  0  1780</programlisting>
+
+<Para>fixes the 1st point of the 'entrance' survey at the coordinates
+0 (east-west), 0 (north-south), 1780 (altitude).
+</Para>
+
+
 
 -->
 
 <Article Status="draft" id=index>
- <ArtHeader>
+ <ArticleInfo>
   <Title>&survexsuite; 0.99 Manual</Title>
   <AuthorGroup>
    <Author>
@@ -92,15 +122,15 @@ where this isn't the case, let me know.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-09-11 21:58:13 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.46 2001-09-11 21:58:13 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-09-13 22:10:48 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.47 2001-09-13 22:10:48 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
     cave surveyors.
    </Para>
   </Abstract>
- </ArtHeader>
+ </ArticleInfo>
 
 <!--
 This document also available for download in <a
@@ -171,32 +201,80 @@ url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
 
 <Sect2><Title>Other Documentation</Title>
 
-<Para>
-NEWS or NEWS.txt - this file contains a list of changes of interest to
+<variablelist>
+<varlistentry>
+<term>NEWS or NEWS.txt</term>
+<listitem><Para>a list of changes of interest to
 &survexsuite; users, broken down by version number.  Consult this file
 when upgrading to find out what has changed since the version you were
 using previously.
-</Para>
+</Para></listitem>
+</varlistentry>
 
-<Para>
-ChangeLog or CHANGES.txt - this is a much more detailed list of changes,
-aimed at developers rather than end users.
-</Para>
+<varlistentry>
+<term>ChangeLog or CHANGES.txt</term>
+<listitem><Para>a much more detailed list of changes, aimed at developers
+rather than end users.
+</Para></listitem>
+</varlistentry>
 
-<Para>
-BUGS or BUGS.txt - a list of known bugs.
-</Para>
+<varlistentry>
+<term>BUGS or BUGS.txt</term>
+<listitem><Para>a list of known bugs.
+</Para></listitem>
+</varlistentry>
 
-<Para>
-TODO or TODO.txt - planned changes and enhancements.
-</Para>
+<varlistentry>
+<term>TODO or TODO.txt</term>
+<listitem><Para>planned changes and enhancements.
+</Para></listitem>
+</varlistentry>
 
 <!-- FIXME: INSTALL no longer relevant and so no longer inclued on win32 thanks to installer -->
-<Para>
-INSTALL or INSTALL.txt - instructions for installing &survexsuite;.
-</Para>
+<varlistentry>
+<term>INSTALL or INSTALL.txt</term>
+<listitem><Para>instructions for installing &survexsuite;.
+</Para></listitem>
+</varlistentry>
+</variablelist>
 
 <!-- FIXME: any other text files? -->
+
+</Sect2>
+
+<Sect2><Title>Terminology</Title>
+
+<Para>Throughout this document we use British terminology for
+surveying.</Para>
+
+<variablelist>
+<varlistentry>
+<term>station</term>
+<listitem><para>a point in the cave that you survey from and/or to
+</para></listitem></varlistentry>
+
+<varlistentry>
+<term>leg</term>
+<listitem><para>a line joining two stations
+</para></listitem></varlistentry>
+
+<varlistentry>
+<term>survey</term>
+<listitem><para>a group of legs surveyed on the same trip
+</para></listitem></varlistentry>
+
+<varlistentry>
+<term>node</term>
+<listitem><para>when talking about the survey network, we talk about an
+<emphasis>n</emphasis>-node to describe the number of connections to
+a station.  So a 1-node is a station with only 1 leg to or from it
+- i.e. The end of a passage or survey. A
+2-node is a typical station along a passage with a survey leg coming
+into it, and one going out.  A 3-node is a station with three legs
+joining it, e.g. at a T-junction. And so on.
+</para></listitem></varlistentry>
+
+</variablelist>
 
 </Sect2>
 
@@ -228,14 +306,31 @@ We supply pre-compiled versions for x86 &linux; machines in RPM format
 and dpkg format (suitable for Debian and Debian-derived distributions).
 </Para>
 
+<Para>
+You'll need root access to install these prebuilt packages.
+If you don't have root access you will need to build from source
+(see the next section).
+</Para>
+
 <Sect3><Title>Other versions of &unix;</Title>
 
 <Para>For other &unix; versions you'll need to get the source code
 and compile it on your system.  &survexsuite; uses GNU automake
 and autoconf to streamline the compile process, so all you need to do
-is unpack the sources, then simply type <command>./configure</command>
-followed by <command>make</command> to build the programs and then
-<command>make install</command> to install them.</Para>
+is unpack the sources, then simply type <userinput>./configure</userinput>
+followed by <userinput>make</userinput> to build the programs and then
+<userinput>make install</userinput> to install them.</Para>
+
+<Note>
+<Para>
+If you're building to install in your home directory (for example
+if you don't have root access on the machine you wish to install
+&survexsuite; on) configure and build with
+<userinput>./configure --prefix=/home/olly/survex</userinput> then
+<userinput>make</userinput> to build and
+<userinput>make install</userinput> to install.
+</Para>
+</Note>
 
 <Para>
 There's a GUI cave viewer called aven, which needs wxWindows to build,
@@ -281,10 +376,11 @@ The installer creates a Survex group in the start menu containing:
 </ItemizedList>
 
 <Para>
-Icons are installed for .svx and .3d files.  Double-clicking on a .svx
-file process it to produce a .3d file.  Double-clicking the .3d file
-views it in aven.  You can right click on the files to bring up a menu
-of other possible actions.
+Icons are installed for &svx;, &x3d;, &err;, and &pos; files.
+Double-clicking on a &svx; file processes it to produce a &x3d; file.
+Double-clicking the &x3d; file views it in aven.
+You can also right click on the files to bring up a menu of other possible
+actions.
 </Para>
 
 <!--
@@ -300,25 +396,18 @@ extend->extend
 print->printwin
 -->
 
-<Para>
-This version may also work under Windows 3.1 with
-Win32s installed, but we've not tried this.  If you do let us know how
-you get on.
-</Para>
 </Sect3>
 
 <Sect3><Title>Windows 3.1 and &msdos; (Intel 80386 or newer CPU)</Title>
 
-<Para>For Windows 3.1 we suggest using the &msdos; version (it may
-also be possible to use the Win32 version if you have Win32s
-installed).  This version is compiled with the free DJGPP C compiler
+<Para>For Windows 3.1 we suggest using the &msdos; version.
+This version is compiled with the free DJGPP C compiler
 (<ulink url="&djgppwebsite;">&djgppwebsite;</ulink>) which uses &dpmi;
-to access memory above &msdos;'s 640k. This means you will need a
-&dpmi; server to use them. Windows has &dpmi; services built in, as do
-QEMM and Novell DOS 7.  Otherwise you can use the free
-<filename/cwsdpmi.exe/ we include - just make sure it's in the same
-directory as the other executables and it will be used automatically
-if it's needed.</Para>
+to access memory above &msdos;'s 640k. Windows has &dpmi; services built in,
+as do QEMM and Novell DOS 7.
+For those situations where &dpmi; services aren't available, we
+inlcude the free <filename>cwsdpmi.exe</filename>, which will be used
+automatically if it's needed.</Para>
 
 </Sect3>
 
@@ -332,10 +421,10 @@ typically equates to a few kilometres of survey.  A very loopy cave may
 need more memory.
 </Para>
 
-<Para>This version is compiled with <Application/Borland C++/.  As a
-result, if you wish to stop one of them in the middle of running, use
-<keycap/Ctrl-Break/. <keycap/Ctrl-C/ will also work in many situations
-but <keycap/Ctrl-Break/ is more reliable.</Para>
+<Para>This version is built with <Application/Borland C/.
+One consequence is that the best way to force a program to
+terminate is with <keycap/Ctrl-Break/. <keycap/Ctrl-C/ sometimes works,
+but is less reliable.</Para>
 
 </Sect3>
 
@@ -343,29 +432,15 @@ but <keycap/Ctrl-Break/ is more reliable.</Para>
 
 <Para>
 &survexsuite; for &riscos; comes in a zip archive.  Installation is
-just a matter of opening the archive with !SparkPlug, !SparkFS or
+just a matter of opening the archive with
+<application>!SparkPlug</application>,
+<application>!SparkFS</application>, or
 similar and dragging the contents to where you want them installed.
-This version should run on any RISC OS machine, though hasn't been tested
-on RISC OS 2 recently.
+This version works with RISC OS 3.1 or newer.  We are unable to test
+compatibilty with earlier operating system versions.
 </Para>
 
 </Sect3>
-
-</Sect2>
-
-<Sect2><Title>Terminology</Title>
-
-<Para>Throughout this document we use British terminology for
-surveying. A 'Station' is a point in the cave that you survey from or
-to. A 'Leg' is the line joining two stations. A 'Survey' is a group of
-legs surveyed together on one trip.</Para>
-
-<Para>Nodes: These are similar to stations. We talk about nodes to
-describe the interconnectedness of the survey. A 1-node is a station
-with only 1 leg joining it - i.e. The end of a passage or survey. A
-2-node is a typical station along a passage with a survey leg coming
-into it, and one going out.  A 3-node is a station with three legs
-joining it, e.g. at a T-junction. And so on.</Para>
 
 </Sect2>
 
@@ -373,6 +448,9 @@ joining it, e.g. at a T-junction. And so on.</Para>
 
 <Sect1><Title>Using &survexsuite;</Title>
 <?dbhtml filename="using.htm">
+
+
+<!-- FIXME: .log... -->
 
 <!--
 <Para>A complete specification of the &survexsuite; program commands is in
@@ -390,11 +468,11 @@ command line. There are three main sections:
 <ItemizedList>
 
 <ListItem><Para>cavern: is the central data processing part of the
-suite.  It turns survey data into coordinates (in <filename/.3d/
+suite.  It turns survey data into coordinates (in &x3d;
 files), as well as generating other useful info in other files.
 </Para></ListItem>
 
-<ListItem><Para>caverot: cave viewer for visualising <filename/.3d/ files.
+<ListItem><Para>caverot: cave viewer for visualising &x3d; files.
 </Para></ListItem>
 
 <ListItem><Para>printdm, printpcl, printps, prnthpgl, printwin: print processed
@@ -405,9 +483,9 @@ driver systems - this is the recommended way to print on Windows.
 </ItemizedList>
 
 <Para>The best way to use the program suite is to use some sort of
-shell to automatically run cavern if you click on a <filename/.svx/
+shell to automatically run cavern if you click on a &.svx;
 file, and start caverot or an appropriate printXXX if you click on a
-<filename/.3d/ file.  This reduces the typing significantly.  Under
+&x3d; file.  This reduces the typing significantly.  Under
 Windows and RISC OS suitable file associations are set up for you
 automatically when you install.
 </Para>
@@ -417,18 +495,11 @@ automatically when you install.
 <ItemizedList>
 
 <ListItem><Para> diffpos: compares the positions of stations in two
-<filename/.3d/ files.
+&x3d; files.
 </Para></ListItem>
 
 <ListItem><Para> extend: simplistic Extended Elevation processor.
 </Para></ListItem>
-
-<ListItem><Para> hto2svx and svx2hto: translate
-<filename/.svx/ files to and from Doug
-Dotson's &hto; format for survey data transfer.  Bill Purvis wrote these
-using Doug Dotson's &hto; library routines. They are now somewhat out of
-date and may not work too well. &hto; never really took off but we
-include these in case they are of use to someone.  </Para></ListItem>
 
 </ItemizedList>
 
@@ -438,52 +509,64 @@ include these in case they are of use to someone.  </Para></ListItem>
 
 <!-- FIXME: Configuration -->
 
-<Sect1><Title>Environment variables</Title>
-<?dbhtml filename="envvars.htm">
+<Sect1><Title>Selecting a Language</Title>
 
-<!-- FIXME: bad style -->
+<Para>Survex has extensive internationalisation capabilities.  The
+language used for messages from Survex and most of the library calls it uses
+can be changed.  By default this is picked up from the language the operating
+system is set to use (from the MS Windows setting, or from
+the <systemitem>LANG</systemitem> environment variable on Unix).
+If no setting is found, International English is used.</Para>
 
-<Sect2><Title>Language: SURVEXLANG</Title>
+<Para>
+However you may want to override the language manually
+(for example if Survex isn't available in your native language
+you'll want to choose the supported language you speak best).
+You'll also need to use this technique to set a language
+on &msdos; (which has no standard way to set the language) and
+&riscos; (where the numeric language codes used appear to be undocumented).
+</Para>
 
-<Para>The language used for messages in &survexsuite; can be specified using
-the <systemitem>SURVEXLANG</systemitem> environment variable. If this is not
-set, then the <systemitem>LANG</systemitem> environment variable is checked.
-The default language is International English.</Para>
+<Para>
+To do this, you set the
+<systemitem>SURVEXLANG</systemitem> environment variable.  Here's a list
+of the currently supported codes:</Para>
 
-<Para>The codes used are those specified in ISO639 - those currently
-supported are:</Para>
-
-<informaltable frame="all"><!--<title/Language Codes/-->
+<informaltable frame="all">
 <tgroup cols="2">
 <thead>
 <row><entry/Code/<entry/Language/</row>
 </thead>
 <tbody>
 <row><entry/en/<entry/International English/</row>
-<row><entry/en-us/<entry/US English/</row>
-<row><entry/it/<entry/Italian/</row>
-<row><entry/fr/<entry/French/</row>
-<row><entry/de/<entry/German/</row>
-<row><entry/pt/<entry/Portuguese/</row>
-<row><entry/es/<entry/Spanish/</row>
+<row><entry/en_US/<entry/US English/</row>
 <row><entry/ca/<entry/Catalan/</row>
+<row><entry/de/<entry/German/</row>
+<row><entry/de_CH/<entry/Swiss German/</row>
+<row><entry/de_DE/<entry/German German/</row>
+<row><entry/es/<entry/Spanish/</row>
+<row><entry/fr/<entry/French/</row>
+<row><entry/it/<entry/Italian/</row>
+<row><entry/pt/<entry/Portuguese/</row>
+<row><entry/pt_BR/<entry/Brazillian Portuguese/</row>
 </tbody>
 </tgroup>
 </informaltable>
 
-<Para>Here are examples of how to specify this environment variable:</Para>
+<Para>Here are examples of how to set this environment variable to give
+messages in French (language code fr):</Para>
 
 <VariableList>
  <VarListEntry><Term>&msdos;</Term>
    <ListItem><Para>Put <SystemItem>SET SURVEXLANG=fr</SystemItem> in your
-<filename>AUTOEXEC.BAT</filename> script to get French messages.</Para></ListItem>
+<filename>AUTOEXEC.BAT</filename> script.</Para></ListItem>
  </VarListEntry>
  <!-- FIXME: windows? -->
  <VarListEntry><Term>&unix; - csh/tcsh</Term>
-   <ListItem><Para><SystemItem>setenv SURVEXLANG fr</SystemItem></Para></ListItem>
+   <ListItem><Para><userinput>setenv SURVEXLANG fr</userinput></Para></ListItem>
  </VarListEntry>
  <VarListEntry><Term>&unix; - sh/bash</Term>
-   <ListItem><Para><SystemItem>SURVEXLANG=fr ; export SURVEXLANG</SystemItem></Para></ListItem>
+   <ListItem><Para><userinput>SURVEXLANG=fr ; export SURVEXLANG</userinput></Para></ListItem>
  </VarListEntry>
  <VarListEntry><Term>&riscos;</Term>
    <ListItem><Para>Edit the <SystemItem>Set SURVEXLANG ...</SystemItem>
@@ -492,51 +575,11 @@ change the value to the code for the language you want.</Para></ListItem>
  </VarListEntry>
 </VariableList>
 
-</Sect2>
-<!-- FIXME: more translations? OS messages and startup may still be in
-English -->
-<Sect2><Title>Support File Directory: SURVEXHOME</Title>
-
-<Para>&survexsuite; needs various support files.  Under some
-operating systems (notably &unix;) the path to the support files needs
-to be built into the programs, but this causes a problem if the
-support files need to be installed elsewhere for some reason and the
-programs can't be rebuilt. To get around this problem, you can
-define an environmental variable <SystemItem/SURVEXHOME/ to point to a
-directory in which to look for support files.
-</Para>
-
-<Para>This mechanism is sometimes useful on other operating
-systems.</Para>
-
-<Para>E.g. for &msdos;, put <SystemItem>SET SURVEXHOME=C:\SURVEX</SystemItem> in
-your AUTOEXEC.BAT file
-</Para>
-
-<Para>
-The &riscos; version comes with a simple Wimp front-end.  Setting
-SURVEXHOME yourself should never be required.
-<!--
-For &riscos; put <SystemItem>*Set SURVEXHOME
-ADFS::4.$.&survexsuite;.!Survex</SystemItem> into your Boot <filename/!Run/
-or <filename/!DeskTop/ (assuming <filename>ADFS::4.$.Survex.!Survex</filename>
-contains the &survexsuite; executables).
-If you ensure that !Survex is seen by the filer with a line like
-<SystemItem>Filer_Boot ADFS::4.$.Survex.!Survex</SystemItem> then the above
-should not be necessary.
--->
-</Para>
-
-<Para>Under unix, use "setenv SURVEXHOME /home/user/survex" (csh)
-or "export SURVEXHOME; SURVEXHOME=/home/user/survex" (sh).  This
-is essential when installing a prebuilt survex in other than the
-default location; entirely likely when you're not installing it with
-root privileges.  If you're building survex yourself, you be more
-sensible to configure survex with "./configure
---prefix=/home/user/survex".
-</Para>
-
-</Sect2>
+<Para>If &survexsuite; isn't available in your language, you could
+help out by providing a translation.  The initial translation is
+likely to be about a day's work; after that translations for
+new or changed messages are occasionally required.  Contact us for details
+if you're interested.</Para>
 
 </Sect1>
 
@@ -562,24 +605,32 @@ output version information and exit
 
 </VariableList>
 
-<Para>Note that command line options are case sensitive, so "-B" and "-b"
+<Para>
+Options have two forms: short (a dash followed by a single letter e.g.
+<command/cavern -p/) and long (two dashes followed by one or more words e.g.
+<command/cavern --percentage/).  The long form is generally easier to
+remember, while the short form is quicker to type.  Options are often
+available in both forms.
+</Para>
+
+<Note><Para>Command line options are case sensitive, so "-B" and "-b"
 are different (this didn't used to be the case before Survex 0.90).  Case
 sensitivity doubles the number of available short options (and is also the
-norm on &unix;).  &msdos; doesn't have a firm convention - some programs
-treat options as case sensitive while others don't.
-</Para>
-</Sect2>
-
-<Sect2><Title>Searching for data files</Title>
+norm on &unix;).
+</Para></Note>
 
 <Para>A file specified on the command line of any of the &survexsuite; suite
 of programs will be looked for as specified.  If it is not found, then the
-program will try adding the default extension (if appropriate) and try
-again.  Under Unix, data files will also be searched for both as
-specified and as an all-lower-case filename.
+file is looked for with the appropriate extension appended.  So
+<userinput>cavern survey</userinput> will look first for
+<filename>survey</filename>, then for <filename>survey.svx</filename>.
 </Para>
 
-</Sect2>
+<Para>Filenames with spaces can be processed (provided your operating system
+supports them - &unix; does, and so do recent versions of Microsoft
+Windows).  You need to enclose the filename in quotes like so:
+<userinput>cavern "Spider Cave"</userinput>
+</Para>
 
 </Sect1>
 
@@ -595,27 +646,29 @@ specified and as an all-lower-case filename.
 <Sect2><Title>Cavern Output</Title>
 
 <Para>Cavern reads in text files containing the survey data
-(<filename/.svx/) and outputs two files, with the extensions
-<filename/.3d/ and <filename/.err/.
+&svx;) and outputs two files, with the extensions
+&x3d; and &err;.
 By default these files are put in the current directory, 
-with the same base filename as the first <filename/.svx/ file read
-(but a different extension).
+with the same base filename as the first &svx; file read,
+but a different extension.
 You can change the directory and/or base filename using the --output switch.
 <!-- FIXME: link --> 
 </Para>
 
 <Para>E.g. if you process the data file <filename>entrance.svx</filename>
-with the command <command>cavern entrance</command> then the files
+with the command <userinput>cavern entrance</userinput> then the files
 <filename>entrance.3d</filename> and <filename>entrance.err</filename>
 will be created.
 </Para>
 
+<!-- mention .log FIXME -->
+
 <Para>
-Cavern also gives a range of statistics at the end of a run:
+Cavern also gives a range of statistics at the end of a successful run:
 </Para>
 
 <itemizedlist>
-<listitem><para>The highest and lowest points and the height difference
+<listitem><para>The highest and lowest stations and the height difference
 between them
 </para></listitem>
 
@@ -628,7 +681,10 @@ DUPLICATE, or SPLAY.
 is counted as a leg in this statistic.
 </para></listitem>
 
-<listitem><para>The East-West and North-South ranges.
+<!-- FIXME loops, components, anything else -->
+
+<listitem><para>The East-West and North-South ranges, and the Northmost,
+Southmost, Eastmost, and Westmost stations.
 </para></listitem>
 
 <listitem><para>The number of each size of node in the network (where size
@@ -642,7 +698,7 @@ used.
 </para></listitem>
 </itemizedlist>
 
-<Sect3><Title><filename/.3d/ - data describing the loop-closed centre line</Title>
+<Sect3><Title>&x3d; - data describing the loop-closed centre line</Title>
 
 <Para>This file contains details of the stations and legs, and any
 flags associated with them.
@@ -650,12 +706,15 @@ flags associated with them.
 
 </Sect3>
 
-<Sect3><Title><filename/.err/ - loop closure statistics (%age errors, etc)</Title>
+<Sect3><Title>&err; - loop closure statistics (%age errors, etc)</Title>
 
 <Para>This file contains statistics about each traverse in the survey
 including the percentage error in each leg when it is part of a loop. You
 should study this information to determine if any parts of the survey are of
-lower quality or contain gross errors.</Para>
+lower quality or contain gross errors.
+
+<!-- FIXME explain the various statistics -->
+</Para>
 
 </Sect3>
 
@@ -670,11 +729,6 @@ lower quality or contain gross errors.</Para>
 </cmdsynopsis>
 
 <!-- FIXME: brackets implied around each file -->
-
-<Para>Filenames with spaces can be processed (provided your operating system
-supports them - &unix; does, and so do recent versions of Microsoft
-Windows).  You need to enclose the filename in quotes like so:
-<command>cavern "Spider Cave"</command></Para>
 
 <!--
 <Para>The command line is processed from left to right.
@@ -701,14 +755,6 @@ open, or if you attempt to close brackets that you have not opened.
 
 <Sect3><Title>Cavern Options</Title>
 
-<Para>
-Options have two forms: short (a dash followed by a single letter e.g.
-<command/cavern -p/) and long (two dashes followed by one or more words e.g.
-<command/cavern --percentage/).  The long form is generally easier to
-remember, while the short form is quicker to type.  Options are often
-available in both forms.
-</Para>
-
 <Sect4><Title><command/cavern --percentage//<command/cavern -p/ : Display percentage progress</Title>
 
 <Para>You can get cavern to display the percentage progress through the
@@ -723,6 +769,8 @@ fast machine you can't follow the change percentages.-->
 
 </Sect4>
 
+<!-- FIXME: other options -->
+
 </Sect3>
 
 </Sect2>
@@ -734,10 +782,11 @@ fast machine you can't follow the change percentages.-->
 <Sect1><Title>Caverot</Title>
 <?dbhtml filename="caverot.htm">
 
-<Para>Caverot reads the <filename/.3d/ image files and displays the
+<Para>Caverot reads the &x3d; files and displays the
 results on screen, letting you control the view to understand the
-cave.  Aven is a GUI caverot replacement which works in a very similar
-way with almost indentical mouse and key controls.</Para>
+cave.  Aven is a GUI caverot replacement which supports most of
+caverot's mouse and keyboard controls but offers many additional
+features.</Para>
 
 <Sect2><Title>Syntax</Title>
 
@@ -751,6 +800,7 @@ way with almost indentical mouse and key controls.</Para>
     <arg rep="repeat">3d image file</arg>
 </cmdsynopsis>
 
+<!-- FIXME: reword -->
 <Para>More exactly, when specifying colours for the files read in it is:
 </Para>
 
@@ -818,14 +868,9 @@ mouse. If you hold down the left button, then the cave is rotated if
 you move left or right, and zoomed if you move up and down. By default
 the mouse moves the cave, but if you press <keycap/Ctrl-R/, then the
 mouse will move the viewpoint instead (i.e. everything will go in the
-opposite direction. Some people prefer it this way round). If your
+opposite direction. This seems more natural to some people. If your
 mouse has a middle button (and it is recognised by your mouse driver)
 then you can use it to tilt the cave.
-</Para>
-
-<Para>Changing from plan to elevation is animated to help you see
-where you are and how things relate.  This animation is automatically
-disabled on slow machines to avoid user frustration.
 </Para>
 
 </Sect2>
@@ -833,9 +878,19 @@ disabled on slow machines to avoid user frustration.
 <Sect2><Title>Keyboard Control</Title>
 
 <Para><keycap/P/ and <keycap/L/ select Plan and eLevation
-respectively. Comma <keycap/,/, and Slash <keycap>/</keycap> tilt up
-and down respectively. Tilt goes 180 degrees from plan to upside
-down. Enter starts the cave spinning, and <keycap/Space/ stops it. The
+respectively.  Changing between plan to elevation is animated to help
+you see where you are and how things relate. This animation is
+automatically disabled on slow machines to avoid user frustration.
+</Para>
+
+<Para>
+Comma <keycap/,/, and Slash <keycap>/</keycap> tilt up
+and down respectively. Tilt goes 180 degrees from plan view to a view
+from directly below (upside down plan).
+</Para>
+
+<Para>
+Enter starts the cave spinning, and <keycap/Space/ stops it. The
 speed of rotation for this, and tilt, is controlled by <keycap/Z/ and
 <keycap/X/.
 </Para>
@@ -845,7 +900,7 @@ speed of rotation for this, and tilt, is controlled by <keycap/Z/ and
 <keycap/Ctrl-L/ toggles the display of survey legs.
 </Para>
 
-<para>By default, labels and indicators are not redrawn during
+<para>By default, labels and crosses are not redrawn during
 movement, to improve responsiveness.  With a small cave, or a fast
 computer, you can enable redraw of everything during movement with
 <keycap/Ctrl-A/.  <keycap/Ctrl-O/ toggles whether all names are
@@ -859,7 +914,7 @@ mouse - <keycap/Shift/ helps here as it accelerates all movements:
 </para>
 
 <screen>
-<keycap/Z/, <keycap/X/ : Faster Slower Rotation
+<keycap/Z/, <keycap/X/ : Faster/Slower Rotation
 <keycap/R/: Reverse direction of rotation
 <keycap/Enter/, <keycap/Space/: Start and stop rotation
 <keycap/C/, <keycap/V/: Rotate cave one step clockwise/anti-clockwise
@@ -906,7 +961,7 @@ rotated, as this is meaningless.
 <Sect1><Title>Printer Drivers</Title>
 <?dbhtml filename="printer.htm">
 
-<Para>These read <filename/.3d/ files and print out the results on
+<Para>These read &x3d; files and print out the results on
 various sorts of printer/plotter.</Para>
 
 <Sect2><Title>Commands</Title>
@@ -949,7 +1004,7 @@ update <filename/print.ini/ with your numbers.
 <Para>printdm, printpcl and prnthpgl all produce binary files.  If
 output from these is sent to a file, the file
 <emphasis>must</emphasis> then be sent to the printer with
-<command>COPY /B OUTPUT PRN</command> where OUTPUT is the filename and
+<userinput>COPY /B OUTPUT PRN</userinput> where OUTPUT is the filename and
 PRN the device name.  Do <emphasis>not</emphasis> use COPY without the
 /B.  If you do, the output may be corrupted. Sorry, this is a problem
 with &msdos;, and there is nothing we can do about it.</Para>
@@ -1167,7 +1222,7 @@ horizontal and vertical tabbing.
 <Para>Dot Matrix printers do not print to an accurate size - you need
 to do a test plot to calibrate your printer in order to get
 correctly-scaled plots. <filename/test.svx/ is supplied for this
-purpose. It prints a 10cm cross and border. Measure the border, and
+purpose<!--FIXME-->. It prints a 10cm cross and border. Measure the border, and
 fill the results into the mm_across_page, and mm_down_page options.
 </Para>
 
@@ -1192,8 +1247,7 @@ specific tasks.</Para>
 <Para>Syntax: <command/extend &lt;input imagefile&gt; [&lt;output imagefile&gt;]/
 </Para>
 
-<Para>extend
-takes a <filename/.3d/ file and generates an extend elevation from
+<Para>extend takes a &x3d; file and generates an extend elevation from
 it.  It starts with the
 highest deadend station in the survey (or the highest station if there
 are no deadends) which is put on the left, then folds each leg out
@@ -1217,7 +1271,7 @@ output to <filename/extend.3d/.</Para>
 </Para>
 
 <Para>diffpos compares the contents of the two specified
-<filename>.3d</filename> files. It will tell you about stations which
+&x3d; files. It will tell you about stations which
 are in one file but not the other, and also stations which have moved
 by more than a specified threshold distance in X, Y, or Z.  The
 threshold distance is given in metres and defaults to 0.01m if not
@@ -1226,7 +1280,7 @@ specified.
 
 <Para>
 For backward compatibility diffpos will also read the
-<filename>.pos</filename> files produced by earlier versions of cavern.
+&pos; files produced by earlier versions of cavern, or by 3dtopos.
 </Para>
 
 </Sect2>
@@ -1237,49 +1291,19 @@ For backward compatibility diffpos will also read the
 Syntax: <command/cad3d &lt;datafile&gt;/
 </Para>
 
-<Para>Cad3d converts a <filename/.3d/ file
+<Para>Cad3d converts a &x3d; file
 into a format which can be read by a CAD or drawing package.
 Currently it can produce DXF files or Sketch files.
 <!-- FIXME: more info -->
 </Para>
 
-</Sect2>
-
-<Sect2><Title>SpeleoGen</Title>
-
-<!-- FIXME: needs syntax? think it's a GUI app actually -->
-
-<Para>This is an alternative to cad3d. It is a Windows
-(3.1/95/NT) utility which reads in &survexsuite; <filename/.3d/ data,
-LRUD passage wall data (in <filename/.cav/ format) and surface
-topography info in <filename/.csv/ format.  The results are combined,
-displayed, and saved out as a DXF file for import into CAD or Drawing
-packages.
-</Para>
-
-</Sect2>
-
-<Sect2><Title>&hto; Converters</Title>
-
-<Para>
-SVX2HTO and HTO2SVX are converters between &survexsuite; data files in
-.SVX format, and &hto; (Hierarchical Tagged Objects) interchange
-format.
-</Para>
-
-<Para>
-Syntax: <command/svx2hto &lt;datafile&gt;/
-</Para>
-
-<Para>
-<command/hto2svx &lt;datafile&gt;/
-</Para>
-
-<Para>
-These were utilities written by Bill Purvis around about &survexsuite;
-v0.30. They have not really been kept up to date, and so will
-not deal with newer &survexsuite; commands. If anyone needs this functionality
-let us know.
+<Para>An alternative to cad3d is SpeleoGen, which can be found in the
+"Related Tools" section of the Survex web site. <!--FIXME: url-->
+SpeleoGen is a Windows (3.1/95/NT) utility which reads in
+&survexsuite; &x3d; files, LRUD passage wall data (in <filename/.cav/ format)
+and surface topography info in <filename/.csv/ format.  The results are
+combined, displayed, and saved out as a DXF file for import into
+CAD or drawing packages.
 </Para>
 
 </Sect2>
@@ -1415,7 +1439,7 @@ I will have to do some sums...
 
 <Sect2><Title>cavern Commands</Title>
 
-<Para>Commands in <filename/.svx/ files are introduced by an asterisk
+<Para>Commands in &svx; files are introduced by an asterisk
 (by default - this can be changed using the <command/set/ command).
 </Para>
 
@@ -1987,9 +2011,9 @@ it must be enclosed in quotes.
 
 <ListItem><Para>An included file which does not have a complete path
 is resolved relative to the directory which the parent file is in
-(just as relative HTML links do).  Cavern will try adding a ".svx"
-extension if no extension is present, and will also try translating
-"\" to "/" (or other appropriate tricks on RISC OS).  And as a last
+(just as relative HTML links do).  Cavern will try adding a &svx;
+extension, and will also try translating "\" to "/"
+(or other appropriate tricks on RISC OS).  And as a last
 resort, it will try a lower case version of the filename (so if you
 use Unix and someone sends you a DOS/Windows dataset with mismatched
 case, unzip it with "unzip -L" and unix cavern will process it).
@@ -2249,11 +2273,11 @@ are sure about first.
 <VarListEntry><Term>Description</Term>
 
 <listitem><Para>*title allows you to set the title used in the
-<filename/.3d/ file. If
+&x3d; file. If
 the title contains spaces, you need to enclose it in quotes
 (""). Multiple titles are strung together, separated by
 commas. If there are no *title commands, the title defaults to
-a list of the leafnames of the .svx files specified on the command line
+a list of the leafnames of the &svx; files specified on the command line
 (with any paths and extensions removed).</Para>
 <!--
 <Para>e.g.: cavern entrance.svx \data\2ndpart.svx
@@ -2444,46 +2468,16 @@ stations unique identifiers if you like:
 <Para>AA06, AA07, P34, ZZ6, etc.
 </Para>
 
-<Para>A minimal use of the prefix system is just to split the survey
-into cave and surface sections.  We plan to enhance CAVEROT so
-that sections can be hidden or coloured by prefix.
+<!-- FIXME:
+<Para>However you'll loose the ability to handle subsurveys if you do.
 </Para>
-
-<Para>The other really important commands apart from *BEGIN, *END, and
-*INCLUDE are *EQUATE and *FIX.
-</Para>
-
-<Para>*EQUATE is used to join surveys together, where the station
-numbering sequence has not simply been continued. e.g.
-</Para>
-
-<programlisting>*equate entrance.6 adrian.1</programlisting>
-
-<Para>
-indicates that the 6th point of the entrance survey was used as
-the 1st point of the Adrian's Route survey.
-</Para>
-
-<Para>The idea is that you do not have to change the names of points
-when entering the data to make things join up.  Just EQUATE the
-points where surveys join.
-</Para>
-
-<Para>*FIX is for fixing points in space. E.g.
-</Para>
-
-<programlisting>
-*fix 161.entrance.1    0  0  1780</programlisting>
-
-<Para>fixes the 1st point of the 'entrance' survey at the coordinates
-0 (east-west), 0 (north-south), 1780 (altitude).
-</Para>
+-->
 
 </Sect2>
 
 </Sect1>
 
-<Sect1><Title>Contents of .svx files: How do I?</Title>
+<Sect1><Title>Contents of &svx; files: How do I?</Title>
 <?dbhtml filename="svxhowto.htm">
 
 <Para>
@@ -2838,13 +2832,13 @@ survey is part of a loop.
 <Sect2><Title>Create a new survey</Title>
 
 <Para>You simply create a text file containing the relevant survey data,
-using a text editor, and save it with a suitable name. It is generally
-a good idea to give it a .SVX extension under &msdos;/Windows. The
+using a text editor, and save it with a suitable name with a &svx;
+extension. The
 easiest way is to look at some of the example data and use that
 as a template. Nearly all surveys will need a bit of basic info
-as well as the survey data itself: e.g. comments about date, where,
-what cave, a name for the survey (using *begin and *end), instrument
-error corrections etc. Here is a typical survey file:
+as well as the survey data itself: e.g. the date (*date), comments
+about where, what cave, a name for the survey (using *begin and *end),
+instrument error corrections etc. Here is a typical survey file:
 </Para>
 
 <Para>All the lines starting with ';' are comments, which are ignored
@@ -3012,19 +3006,20 @@ particularly useful, e.g. if you have a dataset with LRUD info or comments
 on the ends of lines.
 </Para>
 
-<Sect3><Title>Changing Meanings of characters</Title>
+<Sect3><Title>Changing Meanings of Characters</Title>
 
-<Para>e.g. if you have some data with station names containing the '?'
-character (which is not permitted in a name by default), then the command:
+<Para>e.g. if you have some data with station names containing the 
+characters '?' and '+' (which are not permitted in a name by default)
+then the command:
 </Para>
 
 <programlisting>
-*SET NAMES ?\</programlisting>
+*SET NAMES ?+</programlisting>
 
 <Para>
-specifies that question marks and backslashes are permitted in station names.
-A-Z, a-z, and 0-9 are always permitted. '_' is also permitted by default,
-but isn't in this example.
+specifies that question marks and plus signs are permitted in station names.
+A-Z, a-z, and 0-9 are always permitted. '_' and '-' are also permitted by
+default, but aren't in this example.
 </Para>
 
 <Para>If your data uses a comma ',' instead of a decimal point, then
@@ -3062,17 +3057,8 @@ These will normally be available via the
 
 <Sect2><Title>Export data from &survexsuite;</Title>
 
-<Para>The SVX2HTO and HTO2SVX programs are provided for import
-and export functions. These convert &survexsuite; data files from/to
-&hto; (Hierarchical tagged objects) data files. See the command
-description for more details. Details of the spec are available
-on-line via the CSG web pages. You can also just use the text format
-files and make the changes needed for another piece of software
-to understand the data, either by hand or other text-processing
-tools. We are working on other export tools (Slowly!), so if you
-have a particular need then contact us to see if we have anything
-relevant.
-</Para>
+<Para>See Rosetta Stal in the Related Tools section of the Survex web
+site.</Para> <!--FIXME: more info-->
 
 </Sect2>
 
@@ -3105,7 +3091,7 @@ name of the file in which the error was encountered.
 
 <Sect2><Title>Create an Extended Elevation</Title>
 
-<Para>Use the Extend program. This takes <filename/.3d/ files and
+<Para>Use the Extend program. This takes &x3d; files and
 'flattens' them.  See 'Extend' for details.
 </Para>
 
@@ -3127,13 +3113,13 @@ name of the file in which the error was encountered.
 <Sect1><Title>Mailing List</Title>
 <?dbhtml filename="maillist.htm">
 
-<!-- FIXME: rewrite this -->
+<!-- FIXME: URL to list, contact wookey for paper -->
 
 <Para>We have both email and paper mailing lists for &survexsuite;, to
 keep users informed of new versions and so forth.  This is available free
 by e-mail, or by post for a small charge (to cover photocopying, disks,
-and postage).  See the file MAILLIST.TXT for more details. If you do not
-register, you will not receive automatic updates and information.
+and postage). We recommend you register to receive automatic updates
+and other information.
 </Para>
 
 </Sect1>
@@ -3144,17 +3130,14 @@ register, you will not receive automatic updates and information.
 <Para>There are a number of error messages that you may get when processing
 data.  Most of these are self explanatory, and will be caused by typing
 mistakes, or by your survey data not being attached to fixed points. After
-the error message telling you what has gone wrong, the offending line will
-be printed, or the filename of a file that could not be found etc.  If the
-error is in a line, &survexsuite; will highlight part of the line if it
-thinks this makes sense.</Para>
+the error message telling you what has gone wrong, the filename
+and line number of the offending line will
+be printed, or the filename if a file couldn't be found.
+<!-- FIXME: gcc format error msgs -->
+</Para>
 
 <Para>When surveys are not all connected to fixed points, &survexsuite; will
-list all the stations that are not connected.</Para>
-
-<Para>The error messages (and other messages) are all contained in the file
-messages(.txt) so the messages can be translated into other languages
-without recompiling the program.</Para>
+list some of the stations that are not connected.</Para>
 
 </Sect1>
 
