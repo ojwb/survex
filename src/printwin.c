@@ -95,6 +95,8 @@ static border clip;
 
 static long xpPageWidth, ypPageDepth;
 
+static long x_t, y_t;
+
 static int
 check_intersection(long x_p, long y_p)
 {
@@ -163,8 +165,6 @@ win_Name(void)
 {
    return "Win32 Printer";
 }
-
-static long x_t, y_t;
 
 static void
 win_MoveTo(long x, long y)
