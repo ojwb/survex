@@ -1,3 +1,19 @@
+survex (1.0.11) unstable; urgency=low
+
+  * aven: improvements in 1.0.10 to the file type selector only work with
+    wxGtk >= 2.3 (the debian package is the latest stable release: 2.2.9
+    where this doesn't work).  Fixed to work as well as possible on 2.2.9,
+    and as intended if rebuilt against 2.3.
+  * aven: fixed so that loading PLT files works regardless of the current locale
+    (previously it would fail for locales where the decimal character wasn't
+    '.').
+  * cad3d: write dummy passage dimensions to .plt files to avoid Compass bug.
+  * printps: now supports coloured printouts.
+  * print*: fixed to work correctly with PLT files.
+  * extend: fixed to work correctly with PLT files.
+
+ -- Wookey <wookey@survex.com>  Sun, 26 May 2002 12:47:49 +0100
+
 survex (1.0.10) unstable; urgency=low
 
   * aven: Fully disabled some debug code (closes: bug#147309).
