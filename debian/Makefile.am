@@ -7,7 +7,7 @@ EXTRA_DIST = copyright copyright.in survex-aven.files doc-base \
 MAINTAINERCLEANFILES = control
 
 control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $(srcdir)/../desc-aven.txt
-	echo Source: survex1.1 > control
+	echo Source: survex > control
 	echo Section: science >> control
 	echo Priority: extra >> control
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
