@@ -742,12 +742,10 @@ data_normal(void)
 	    process_eol();
 	    return r;
 	 }
-	 while (1) {
+	 do {
 	    process_eol();
 	    process_bol();
-	    if (isData(ch)) break;
-	    if (!isComm(ch)) return 1;
-	 }
+	 } while (isComm(ch));
 	 goto again;
        default: BUG("Unknown reading in ordering");
       }
@@ -965,12 +963,10 @@ data_diving(void)
 	    process_eol();
 	    return r;
 	 }
-	 while (1) {
+	 do {
 	    process_eol();
 	    process_bol();
-	    if (isData(ch)) break;
-	    if (!isComm(ch)) return 1;
-	 }
+	 } while (isComm(ch));
 	 goto again;
       default: BUG("Unknown reading in ordering");
       }
@@ -1076,12 +1072,10 @@ data_cartesian(void)
 	    process_eol();
 	    return r;
 	 }
-	 while (1) {
+	 do {
 	    process_eol();
 	    process_bol();
-	    if (isData(ch)) break;
-	    if (!isComm(ch)) return 1;
-	 }
+	 } while (isComm(ch));
 	 goto again;
        default: BUG("Unknown reading in ordering");
       }
@@ -1182,12 +1176,10 @@ data_nosurvey(void)
 	    process_eol();
 	    return r;
 	 }
-	 while (1) {
+	 do {
 	    process_eol();
 	    process_bol();
-	    if (isData(ch)) break;
-	    if (!isComm(ch)) return 1;
-	 }
+	 } while (isComm(ch));
 	 goto again;
        default: BUG("Unknown reading in ordering");
       }

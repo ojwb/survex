@@ -26,7 +26,7 @@ export SURVEXHOME
  hanging_cpt badinc badinc2 non_existant_file\
  stnsurvey1 stnsurvey2 stnsurvey3\
  tapelessthandepth longname chinabug chinabug2\
- multinormal multinormignall multidiving multicartesian"}}
+ multinormal multinormignall multidiving multicartesian multinormalbad"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -102,6 +102,7 @@ for file in $TESTS ; do
   multinormignall) pos=yes ; count=0 ;;
   multidiving) pos=yes ; count=0 ;;
   multicartesian) pos=yes ; count=0 ;;
+  multinormalbad) pos=fail ;;
   *) file='' ;;
   esac
 
