@@ -33,7 +33,7 @@ Source: "manual\*.*"; DestDir: "{app}\manual"
 
 [Icons]
 Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"
-Name: "{group}\Documentation"; Filename: "{app}\docindex.htm"; Comment: "View the documentation for Survex"
+Name: "{group}\Documentation"; Filename: "{app}\index.htm"; Comment: "View the documentation for Survex"
 
 [Registry]
 Root: HKCR; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue
