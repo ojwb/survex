@@ -11,24 +11,6 @@ Date: Mon, 02 Nov 1998 09:16:23 +1100
 Subject: caverot/xcaverot/aven
 From: Michael Lake <Mike.Lake@uts.edu.au>, Wookey, Olly
 
-[Document xcaverot keys somewhere]
-pan view - cursor keys
-start autorotate - return
-stop autorotate - space
-toggle labels - ^N
-toggle crosses - ^X
-restore default view - delete
-exit - q
-eLevation - l
-Plan - p
-z/x - slower/faster rotation
-[/] - zoom out/in
-r - reverse direction of autorotation
-c/v - rotate one step
-'// - higher/lower viewpoint
-n/s/e/w/u/d - view cave from north/south/east/west/above/below
-O (overlapping labels)
-
 xcaverot missing:, ^A (lazy redraw during drags), ^R (reverse sense of
 controls), escape vs q...
 
@@ -131,49 +113,6 @@ stats.
 Date: Sat, 03 Mar 2001
 From: Olly
 Subject: documentation
-
-Update documentation (2 volunteers are currently working on this).
-
-Document *require, *export, *flags, plumbed diving legs,
-easting/northing/altitude vs dx/dy/dz (waiting until changes to docs come
-back to avoid trying to patch a modified version...)
-
-Point out in documentation that file structure and survey structure don't
-have to be the same.  And in particular that folder/directory names can be
-different.
-
-duncs comment on rewording docs on where files are looked for:
- If an included file does not have a complete path, cavern will look
- for it starting from the directory of the file which includes it.
-to:
- This isn't (or at least should be) the case.  *include should resolve
- relative to the directory which the parent file is in (just as
- relative HTML links do).
-and:
- Cavern will try adding a ".svx" extension if no extension is present,
- and will also try translating "\" to "/" (or other appropriate tricks
- on RISC OS).  And as a last resort, it will try a lower case version
- of the filename (so if someone sends you a DOS/Windows dataset with
- mismatched case, unzip with "unzip -L" and unix cavern should process it).
-
-add ms windows installer info to docs:
-
-===
-A survex group is created in the start menu containing
- Aven
- Survex Help
- Uninstall Survex
-
-Icons are installed for svx and 3d files. right click on svx gives 
-open->notepad {default}
-process->cavern
-
-right click on 3d
-open->aven {default}
-extend->extend /* Is this working properly at the moment? Aven seems to get *
-                * very confused with the output from it...                  */
-print->printwin
-===
 
 Sort out INSTALL.DOS
 

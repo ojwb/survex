@@ -667,8 +667,8 @@ show_help(void)
 	{"                  C,V : Rotate cave one step clockwise/anti", FLAG_ALWAYS},
 	{"                  ',/ : Higher/Lower viewpoint", FLAG_ALWAYS},
 	{"                  ],[ : Zoom In/Out", FLAG_ALWAYS},
-	{"                  U,D : View cave from [U]p/[D]own", FLAG_ALWAYS},
-	{"              N,S,E,W : View cave from [N]orth/[S]outh/[E]ast/[W]est", FLAG_ALWAYS},
+	{"                  U,D : View [U]p/[D]own", FLAG_ALWAYS},
+	{"              N,S,E,W : View [N]orth/[S]outh/[E]ast/[W]est", FLAG_ALWAYS},
 	{"               Delete : Default scale, rotation rate, etc", FLAG_ALWAYS},
 	{"                  P,L : [P]lan/e[L]evation", FLAG_ALWAYS},
       /*  "                    I : [I]nput values", */

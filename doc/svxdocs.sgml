@@ -45,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-03-29 21:52:12 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.20 2001-03-29 21:52:12 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-03-29 23:17:13 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.21 2001-03-29 23:17:13 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -189,13 +189,32 @@ and Debian-derived distributions).</Para>
 <Sect3><Title>Microsoft Windows 95/98/NT/2000/ME</Title>
 
 <Para>The &msdos; version works under Windows, but there is now a
-native Win32 console version which will run on all modern desktop
+native Win32 version which will run on all modern desktop
 versions of Microsoft windows (it may also work under Windows 3.1 with
 Win32s installed, but we've not tried this).</Para>
 
 <Para>There's also a GUI caverot replacement called aven, and a Survex
 printer driver (printwin) which uses the Windows printer system.</Para>
 </Sect3>
+
+<Para>This version of survex comes with an installation wizard, so you
+just need to run the downloaded package and follow the steps.
+
+<!-- FIXME:
+A survex group is created in the start menu containing
+ Aven
+ Survex Help
+ Uninstall Survex
+
+Icons are installed for svx and 3d files. right click on svx gives 
+open->notepad {default}
+process->cavern
+
+right click on 3d
+open->aven {default}
+extend->extend
+print->printwin
+-->
 
 <Sect3><Title>Windows 3.1 and &msdos; (Intel 80386 or newer CPU)</Title>
 
@@ -267,6 +286,7 @@ program from that so below are general comments on the basic concepts of
 &survexsuite; and typical ways of using the program.</Para>
 -->
 
+<!-- FIXME: this is no longer true on RISC OS or Windows... -->
 <Para>&survexsuite; is, currently, used almost completely from the
 command line. There are three main sections:
 </Para>
@@ -290,8 +310,9 @@ data to scale.
 <Para>The best way to use the program suite is to use some sort of
 shell to automatically run cavern if you click on a <filename/.svx/
 file, and start caverot or an appropriate printXXX if you click on a
-<filename/.3d/ file.  This reduces the typing significantly.  You can
-use Windows as the shell.
+<filename/.3d/ file.  This reduces the typing significantly.  Under
+Windows and RISC OS suitable file associations are set up for you
+automatically when you install.
 </Para>
 
 <Para>Also supplied are a few useful utilities:</Para>
@@ -647,7 +668,8 @@ fast machine you can't follow the change percentages.-->
 
 <Para>Caverot reads the <filename/.3d/ image files and displays the
 results on screen, letting you control the view to understand the
-cave.</Para>
+cave.  Aven is a GUI caverot replacement which works in a very similar
+way with almost indentical mouse and key controls.</Para>
 
 <Sect2><Title>Syntax</Title>
 
@@ -777,8 +799,8 @@ mouse - <keycap/Shift/ helps here as it accelerates all movements:
 <keycap/C/, <keycap/V/: Rotate cave one step clockwise/anti-clockwise
 <keycap/'/ , <keycap>/</keycap>: Higher/Lower Viewpoint
 <keycap/]/ , <keycap/[/: Zoom in/Out
-<keycap/U/, <keycap/D/: Cave Up/Down
-<keycap/N/, <keycap/S/, <keycap/E/, <keycap/W/: Cave North, South, East, West
+<keycap/U/, <keycap/D/: View Up/Down
+<keycap/N/, <keycap/S/, <keycap/E/, <keycap/W/: View North, South, East, West
 <keycap/Delete/: Reset to default scale, rotation rate etc
 <keycap/P/, <keycap/L/: Plan, Elevation
 <keycap/Cursor Left/, <keycap/Cursor Right/: Cave Left/Right (on screen)
@@ -1219,6 +1241,14 @@ makes sense to put related survey data in the same file.  You
 can have one file per trip, or per area of the cave, or just one
 file for the whole cave if you like.
 </Para>
+<!-- FIXME: wook sez:
+
+ Point out in documentation that file structure and survey structure don't
+ have to be the same.  And in particular that folder/directory names can be
+ different.
+
+Which is partly covered above, though the last bit isn't... 
+-->
 
 <Sect2><Title>Readings</Title>
 
@@ -1376,6 +1406,8 @@ depth.</Para></listitem>
 </Sect3>
 
 <Sect3><Title>CALIBRATE &lt;quantity list&gt; &lt;ZeroError&gt; [&lt;Scale&gt;]</Title>
+
+<!-- FIXME: or `*calibrate default' -->
 
 <Para>
 - Calibrates instruments:
@@ -1561,25 +1593,18 @@ whole run.
 e.g. *DATA Normal from to compass tape clino
 </Para>
 
-<Para>
-["DATA NORMAL &lt;ordering with no BACK&gt;" implemented]
-</Para>
+<!-- FIXME: CYLPOLAR, LRUD not yet implemented -->
 
 <Para>
-["DATA DIVING &lt;ordering&gt" implemented]
-</Para>
-
-<Para>
-[Other types not yet implemented]
-</Para>
-
-<Para>
-&lt;type&gt; = NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR (|LRUD
-for LRUD data, etc)
+&lt;type&gt; = DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|NOSURVEY
 </Para>
 
 <Para>
 &lt;ordering&gt; = A selection from one the following:
+</Para>
+
+<Para>
+DEFAULT
 </Para>
 
 <Para>
@@ -1591,7 +1616,7 @@ DIVING FROM TO LENGTH [BACK]BEARING FROMDEPTH TODEPTH
 </Para>
 
 <Para>
-CARTESIAN FROM TO dx dy dz
+CARTESIAN FROM TO NORTHING EASTING ALTITUDE
 </Para>
 
 <Para>
@@ -1599,12 +1624,18 @@ TOPOFIL FROM TO FROMCOUNT TOCOUNT [BACK]BEARING [BACK]GRADIENT
 </Para>
 
 <Para>
+NOSURVEY FROM TO
+</Para>
+
+<!--
+<Para>
 CYLPOLAR FROM TO VERTICAL HORIZONTAL [BACK]BEARING
 </Para>
 
 <Para>
 (LRUD STATION [LEFT] [RIGHT] [UP] [DOWN])
 </Para>
+-->
 
 <Para>
 Also, IGNORE skips a field (it may be used any number of times),
@@ -1631,12 +1662,13 @@ The default is *DATA Normal From To Tape Compass Clino
 <Sect3><Title>DEFAULT &lt;settings list&gt;|ALL</Title>
 
 <Para>
-- Restores defaults for given settings.
+- Restores defaults for given settings.  This command is deprecated -
+you should instead use: *calibrate default, *data default, *units default.
 </Para>
 
 <Para>
 Where the valid settings are CALIBRATE,DATA,UNITS. The defaults
-are given under each Keyword description.
+are given under each keyword description.
 </Para>
 
 </Sect3>
@@ -1666,6 +1698,21 @@ id in the list. I think this is preferable to using:
 as EQUATE does not add in an extra position error. It is also clearer than
 substituting in the original name wherever passages are linked. If you
 disagree, you can always use one of the other methods!
+</Para>
+
+</Sect3>
+
+<Sect3><Title>EXPORT &lt;station id list&gt;</Title>
+
+<Para>
+e.g: *EXPORT 1 6 17
+</Para>
+
+<Para>
+- All the station names in the list are marked as referable to in the
+prefix level above.  To use a station name several levels above it must
+be exported from each level.  *export must follow *begin (or another
+*export).
 </Para>
 
 </Sect3>
@@ -1705,6 +1752,28 @@ command to suppress this warning for a particular station.
 
 </Sect3>
 
+<Sect3><Title>FLAGS &lt;flags&gt;</Title>
+
+<Para>
+e.g *flags duplicate not surface
+</Para>
+
+<Para>- The current flag settings are updated according with those
+given.  Flags not mentioned retain their previous state.  Valid flags
+are DUPLICATE and SURFACE, and a flag may be preceded with NOT to
+turn it off.
+</Para>
+
+<Para>
+Survey legs marked SURFACE are hidden from plots by default, and not
+included in cave survey length calculations.  Survey legs marked as
+DUPLICATE are not included in cave survey length calculations either
+(useful if you have two different surveys along the same section of
+passage).
+</Para>
+
+</Sect3>
+
 <Sect3><Title>INCLUDE &lt;filename&gt;</Title>
 
 <Para>
@@ -1720,14 +1789,17 @@ deep with ANSI C - I think). If &lt;filename&gt; contains spaces,
 it must be enclosed in quotes.
 </Para></ListItem>
 
-<ListItem><Para>If an included file does not have a complete path,
-cavern will look for it starting from the directory of the file which
-includes it.
+<ListItem><Para>An included file which does not have a complete path
+is resolved relative to the directory which the parent file is in
+(just as relative HTML links do).  Cavern will try adding a ".svx"
+extension if no extension is present, and will also try translating
+"\" to "/" (or other appropriate tricks on RISC OS).  And as a last
+resort, it will try a lower case version of the filename (so if you
+use Unix and someone sends you a DOS/Windows dataset with mismatched
+case, unzip it with "unzip -L" and unix cavern will process it).
 </Para></ListItem>
 
-<ListItem><Para>Note that the usual filename search procedure is used here,
-so chosspot.svx will be tried if chosspot is not found.
-</Para></ListItem>
+</ListItem>
 
 </ItemizedList>
 
@@ -1785,6 +1857,18 @@ the data has not been converted to have UP and DOWN in it.
 <Para>
 - Sets the currents prefix. Now deprecated. Use *BEGIN and *END
 instead. See section on hierarchical prefixes.
+</Para>
+
+</Sect3>
+
+<Sect3><Title>REQUIRE &lt;version&gt;</Title>
+
+<Para>
+- Check that the version of cavern in use is at least &lt;version&gt; and
+issues an error if not.  So if your dataset requires a feature
+introduced in a particular version, you can add a *require command and
+users will know what version they need to upgrade to, rather than
+getting an error message and having to guess what the real problem is.
 </Para>
 
 </Sect3>
@@ -2048,6 +2132,8 @@ versions removed this rather archaic restriction).
 
 <Sect3><Title>UNITS &lt;quantity list&gt; [&lt;factor&gt;] &lt;unit&gt;</Title>
 
+<!-- FIXME: or `*units default' -->
+
 <Para>e.g. *Units tape metres
 </Para>
 
@@ -2069,6 +2155,8 @@ the instrument or the measurement.
 <Para>Valid units for listed quantities are:
 </Para>
 
+<!-- FIXME: are these correct?
+  and dx,dy,dz -> easting/northing/altitude in preference -->
 <Para>TAPE, LENGTH, COUNTER, COUNT, DEPTH, dX, dY, dZ, X,Y,Z,
 LENGTHOUTPUT in YARDS|FEET|METRIC|METRES|METERS
 </Para>
@@ -2189,10 +2277,10 @@ points where surveys join.
 </Para>
 
 <itemizedlist>
-<listitem><Para>*DEFAULT   - resets defaults</Para></listitem>
 <listitem><Para>*UNITS     - sets units for length and angular measurements</Para></listitem>
 <listitem><Para>*CALIBRATE - takes account of instrument and magnetic error/variation</Para></listitem>
 <listitem><Para>*SD - specify expected Standard Deviations for measurements</Para></listitem>
+<!-- FIXME and more -->
 </itemizedlist>
 
 <Para>
@@ -2353,6 +2441,7 @@ station is mentioned in the previous line (assuming there is no
 change of depth gauge/water level). If the survey station does not
 appear in the previous line (or this is the first line of diving
 data), then an error is given.
+<!-- FIXME: plumbed diving legs -->
 </Para>
 
 <Para>
