@@ -347,7 +347,7 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 
    vals = ini_read_hier(fh_list, "win", vars);
 
-   fontsize_labels = as_int(vars[2], vals[2], 1, INT_MAX);
+   fontsize_labels = as_int(vars[1], vals[1], 1, INT_MAX);
    fontsize = 10;
 
    memset(&psd, 0, sizeof(PRINTDLGA));
