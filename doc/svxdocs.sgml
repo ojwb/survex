@@ -26,6 +26,9 @@ level sump fudge:
 nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in height across the sump
 *end
 
+``Quick start'' section - lead people through entering and processing
+a sample survey.  Take examples from surveying books and real surveys.
+
 -->
 
 <Article Status="draft" id=index>
@@ -56,8 +59,8 @@ nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in hei
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-06-29 09:57:12 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.31 2001-06-29 09:57:12 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-07-11 19:30:31 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.32 2001-07-11 19:30:31 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -89,12 +92,14 @@ will try to help.</Para>
 
 <!-- with the windows installer, windows printer driver, and aven we
      do now have a GUI of sorts, so this next paragraph could be kinder
-     on ourselves... -->
+     on ourselves...
+     FIXME
 <Para>&survexsuite; has been designed to be a powerful and useful
 survey-production tool. This focus on facilities and structure means that
 less attention has so far been given to the user interface, so it does not
 yet have nice menus, on-line help etc. - you will have to read the
 instructions first! Version 2.0 will have windows and menus.</Para>
+ -->
 
 <Para>We are well aware that not everyone has access to super hardware
 - often surveying projects are run on little or no budget and any
@@ -134,7 +139,7 @@ url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
 <Para>
 NEWS or NEWS.txt - this file contains a list of changes of interest to
 &survexsuite; users, broken down by version number.  When upgrading, it's
-wise to check this file for information on what has change since the version
+wise to check this file for information on what has changed since the version
 you were previously using.
 </Para>
 
@@ -207,34 +212,58 @@ basic X libraries.
 <!-- FIXME: rather a long list now... -->
 <Sect3><Title>Microsoft Windows 95/98/NT/2000/ME</Title>
 
-<Para>The &msdos; version works under Windows, but there is now a
-native Win32 version which will run on all modern desktop
-versions of Microsoft windows (it may also work under Windows 3.1 with
-Win32s installed, but we've not tried this).</Para>
-
-<Para>There's also a GUI caverot replacement called aven, and a Survex
-printer driver (printwin) which uses the Windows printer system.
-<!-- FIXME: recommend printps of Unix (or just Linux)??? -->
+<Para>
+On moderm versions of MS Windows we advise you use the native Win32
+version which comes packaged with an installation wizard, so you just
+need to run the downloaded package and let it lead you through the
+installation process.
 </Para>
 
-<Para>This version of survex comes with an installation wizard, so you
-just need to run the downloaded package and follow the steps.
+<Para>
+This version includes a GUI caverot replacement called aven, and a
+Survex printer driver (printwin) which uses the Windows printer
+system.<!-- FIXME: recommend printps of Unix (or just Linux)??? -->
+</Para>
 
-<!-- FIXME:
-A survex group is created in the start menu containing
- Aven
- Survex Help
- Uninstall Survex
+<Para><!-- FIXME check up to date -->
+The installer creates a Survex group in the start menu containing:
+</Para>
 
-Icons are installed for svx and 3d files. right click on svx gives 
+<ItemizedList>
+
+<ListItem><Para>Aven</Para></ListItem>
+
+<ListItem><Para>Survex Help</Para></ListItem>
+
+<ListItem><Para>Uninstall Survex</Para></ListItem>
+
+</ItemizedList>
+
+<Para>
+Icons are installed for .svx and .3d files.  Double-clicking on a .svx
+file process it to produce a .3d file.  Double-clicking the .3d file
+views it in aven.  You can right click on the files to bring up a menu
+of other possible actions.
+</Para>
+
+<!--
+right click on svx:
+
 open->notepad {default}
 process->cavern
 
-right click on 3d
+right click on 3d:
+
 open->aven {default}
 extend->extend
 print->printwin
 -->
+
+<Para>
+This version may also work under Windows 3.1 with
+Win32s installed, but we've not tried this.  If you do let us know how
+you get on.
+</Para>
 </Sect3>
 
 <Sect3><Title>Windows 3.1 and &msdos; (Intel 80386 or newer CPU)</Title>
@@ -271,8 +300,13 @@ but <keycap/Ctrl-Break/ is more reliable.</Para>
 
 <Sect3><Title>&riscos;</Title>
 
-<Para>&survexsuite; for &riscos; comes in one version, which should
-run on any RISC OS machine.</Para>
+<Para>
+&survexsuite; for &riscos; comes in a zip archive.  Installation is
+just a matter of opening the archive with !SparkPlug, !SparkFS or
+similar and dragging the contents to where you want them installed.
+This version should run on any RISC OS machine, though hasn't been tested
+on RISC OS 2 recently.
+</Para>
 
 </Sect3>
 
@@ -445,14 +479,18 @@ systems.</Para>
 your AUTOEXEC.BAT file
 </Para>
 
-<!-- FIXME: use Wooks Wimp frontend -->
-<Para>For &riscos; put <SystemItem>*Set SURVEXHOME
+<Para>
+The &riscos; version comes with a simple Wimp front-end.  Setting
+SURVEXHOME yourself should never be required.
+<!--
+For &riscos; put <SystemItem>*Set SURVEXHOME
 ADFS::4.$.&survexsuite;.!Survex</SystemItem> into your Boot <filename/!Run/
 or <filename/!DeskTop/ (assuming <filename>ADFS::4.$.Survex.!Survex</filename>
 contains the &survexsuite; executables).
 If you ensure that !Survex is seen by the filer with a line like
 <SystemItem>Filer_Boot ADFS::4.$.Survex.!Survex</SystemItem> then the above
 should not be necessary.
+-->
 </Para>
 
 <Para>Under unix, use "setenv SURVEXHOME /home/user/survex-0.96" (csh)
@@ -1703,7 +1741,7 @@ you should instead use: *calibrate default, *data default, *units default.
 </Para>
 
 <Para>
-Where the valid settings are CALIBRATE,DATA,UNITS. The defaults
+Where the valid settings are CALIBRATE, DATA, UNITS. The defaults
 are given under each keyword description.
 </Para>
 
@@ -1796,16 +1834,19 @@ e.g *flags duplicate not surface
 
 <Para>- The current flag settings are updated according with those
 given.  Flags not mentioned retain their previous state.  Valid flags
-are DUPLICATE and SURFACE, and a flag may be preceded with NOT to
+are DUPLICATE, SPLAY, and SURFACE, and a flag may be preceded with NOT to
 turn it off.
 </Para>
 
 <Para>
 Survey legs marked SURFACE are hidden from plots by default, and not
 included in cave survey length calculations.  Survey legs marked as
-DUPLICATE are not included in cave survey length calculations either
-(useful if you have two different surveys along the same section of
-passage).
+DUPLICATE or SPLAY are also not included in cave survey length
+calculations; legs marked SPLAY are ignored by the extend program.
+DUPLICATE is intended for the case when if you have two different
+surveys along the same section of passage (for example to tie two
+surveys into a permanent survey station); SPLAY is intended for 
+cases such as radial legs in a large chamber.
 </Para>
 
 </Sect3>
@@ -2047,8 +2088,8 @@ the positions of all existing stations.  This is done automatically
 after all the survey data has been read in.  This command is intended
 to be useful for adding extensions to an already drawn survey.
  You can read in the old data, use *SOLVE to fix it, and then
-read in the new data. This can be done repeatedly if like. This
-allows you to solve loops sequentially, pinning down ones you
+read in the new data. This can be done repeatedly if you want to,
+allowing you to solve loops sequentially, pinning down ones you
 are sure about first.
 </Para>
 
@@ -3049,7 +3090,6 @@ Olly Betts
 <PostCode/CB4 2SN/
 <Country/UK/
 <Phone/Tel: 01223 513644 (home)/
-<!-- <Phone/Tel: 01223 715023 (work)/ -->
 <Email/&ollyemail;/
 </Address>
 
