@@ -970,7 +970,7 @@ wxString GfxCore::FormatLength(double size_snap)
 	}
     }
 
-    return negative ? str : wxString("-") + str;
+    return negative ? wxString("-") + str : str;
 }
 
 void GfxCore::DrawScalebar()
@@ -1311,17 +1311,13 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 		       point.y <= m_YSize - m_ScaleBar.offset_y &&
 		       point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT) ||
 		       m_LastDrag == drag_SCALE) {
- 	 	  if (point.x < 0) point.x = 0;
-		  if (point.y < 0) point.y = 0;
-		  if (point.x > m_XSize) point.x = m_XSize;
-		  if (point.y > m_YSize) point.y = m_YSize;
-		  m_LastDrag = drag_SCALE;
-		  int x_inside_bar = m_DragStart.x - m_ScaleBar.drag_start_offset_x;
-		  int y_inside_bar = m_YSize - m_ScaleBar.drag_start_offset_y - m_DragStart.y;
-		  m_ScaleBar.offset_x = point.x - x_inside_bar;
-		  m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
-		  m_RedrawOffscreen = true;
-		  Refresh(false);
+ 		  if (point.x >= 0 && point.x <= m_XSize) {
+		      m_LastDrag = drag_SCALE;
+		      SetScale(m_Params.scale * pow(1.06, 0.01 *
+						    (-m_DragStart.x + point.x)));
+		      m_RedrawOffscreen = true;
+		      Refresh(false);
+		  }
 	      }
 	      else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
 		  m_LastDrag = drag_MAIN;
@@ -1336,7 +1332,27 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 	    HandleTilt(point);
 	}
 	else if (m_DraggingRight) {
-	    HandleTranslate(point);
+	    if ((m_LastDrag == drag_NONE &&
+		 point.x >= m_ScaleBar.offset_x &&
+		 point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
+		 point.y <= m_YSize - m_ScaleBar.offset_y &&
+		 point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT) ||
+		 m_LastDrag == drag_SCALE) {
+ 	 	  if (point.x < 0) point.x = 0;
+		  if (point.y < 0) point.y = 0;
+		  if (point.x > m_XSize) point.x = m_XSize;
+		  if (point.y > m_YSize) point.y = m_YSize;
+		  m_LastDrag = drag_SCALE;
+		  int x_inside_bar = m_DragStart.x - m_ScaleBar.drag_start_offset_x;
+		  int y_inside_bar = m_YSize - m_ScaleBar.drag_start_offset_y - m_DragStart.y;
+		  m_ScaleBar.offset_x = point.x - x_inside_bar;
+		  m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
+		  m_RedrawOffscreen = true;
+		  Refresh(false);
+	    }
+	    else {
+	        HandleTranslate(point);
+	    }
 	}
     }
 }
