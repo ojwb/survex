@@ -1,6 +1,7 @@
 Makefile
 Makefile.in
 svxdocs
+svxdocs.html
 svxdocs.ps
 svxdocs.rtf
 svxdocs.txt
