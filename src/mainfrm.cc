@@ -1233,8 +1233,11 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		      "*.3d", wxOPEN);
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select a 3D file to view*/206)), "", "",
-		      wxString::Format("%s|*.3d|%s|*.*",
+		      wxString::Format("%s|*.3d|%s|*.plt|%s|*.xyz|%s|*.*",
 				       msg(/*Survex 3d files*/207),
+				       /* FIXME TRANSLATE */
+				       "Compass PLT files",
+				       "CMAP XYZ files",
 				       msg(/*All files*/208)), wxOPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
@@ -1371,9 +1374,7 @@ void MainFrm::ShowInfo(LabelInfo *label)
 	    Double dr = sqrt(dx*dx + dy*dy + dz*dz);
 
 	    Double brg = atan2(dx, dy) * 180.0 / M_PI;
-	    if (brg < 0) {
-		brg += 360;
-	    }
+	    if (brg < 0) brg += 360;
 
 	    str.Printf(msg(/*From %s*/339), label2->text.c_str());
 	    m_Dist1->SetLabel(str);
@@ -1383,8 +1384,8 @@ void MainFrm::ShowInfo(LabelInfo *label)
 			   int(dz), "m");
 	    } else {
 		str.Printf(msg(/*  H %d%s, V %d%s*/340),
-			   int(d_horiz / METRES_PER_FOOT), "m",
-			   int(dz / METRES_PER_FOOT), "m");
+			   int(d_horiz / METRES_PER_FOOT), "ft",
+			   int(dz / METRES_PER_FOOT), "ft");
 	    }
 	    m_Dist2->SetLabel(str);
 	    wxString brg_unit;
