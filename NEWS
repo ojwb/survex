@@ -1,4 +1,6 @@
-* (RISC OS Version): fixed automatic detection of language.
+* (RISC OS version): fixed automatic detection of language.
+
+* (MS Windows version): minor tweaks to .err, .pos, and .svx file icons.
 
 * Italian translation updated.
 
