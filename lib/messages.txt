@@ -156,6 +156,7 @@ es:  5 "En el fichero incluido desde "
 it:  5 "Nel file inserito da "
 #FIXME translate
 en:  6 *prefix is deprecated - use *begin and *end instead
+pt:  6 *prefix descontinuado - use *begin e *end em seu lugar
 en:  7 Character not allowed in station name
 fr:  7 Caract&egrave;re interdit dans un nom de station
 de:  7 Unerlaubtes Zeichen in Me&szlig;punktname
@@ -202,6 +203,7 @@ es: 12 Comando desconocido en fichero de datos - l&iacute;nea ignorada
 it: 12 Comando sconosciuto nel file dei dati - linea ignorata
 #FIXME translate
 en: 13 Station equated to itself
+pt: 13 Base igualada a ela mesma
 en: 14 Compass reading may not be omitted here
 fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise ici
 de: 14 Kompa&szlig;ablesung darf nicht weggelassen werden
@@ -252,6 +254,7 @@ es: 19 Demasiados errores - proceso abandonado
 it: 19 Troppi errori - processo interrotto
 #FIXME translate
 en: 20 *default is deprecated - use *calibrate/data/style/units with argument DEFAULT instead
+pt: 20 *default decontinuado - use *calibrate/data/style/units com argumento DEFAULT em seu lugar
 en: 21 Compass reading given on plumbed leg
 en-us: 21 Compass reading given on plumbed shot
 fr: 21 Lecture d'azimut donn&eacute;e sur une vis&eacute;e 'plomb&eacute;e'
@@ -673,7 +676,7 @@ it: 83 Scala per rientrare in una pagina
 en: 84 Ignoring entire line
 fr: 84 Ignore la ligne en enti&egrave;rement
 #germ: 84 Ignoriere die gesamte Zeile
-# GN(2): Not _quite_ satisfactory. (1) This is anthropomorhizing again, (2) the
+# GN(2): Not _quite_ satisfactory. (1) This is anthropomorphizing again, (2) the
 # grammar is ambiguous --- it could be read as an imperative, `please do
 # ignore the entire line'.  Unfortunately the alternatives that come to
 # mind are worse.  Cf no. 89 below, same problem.
