@@ -25,6 +25,7 @@ Source: "*.ini"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
+Source: "*.png"; DestDir: "{app}"
 Source: "help\*.*"; DestDir: "{app}\help"
 
 [Icons]
