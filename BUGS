@@ -1,4 +1,4 @@
-Date: Thu, 03 May 2001
+Date: Fri, 15 June 2001
 From: Mark
 
 wxaven:
@@ -20,10 +20,13 @@ installed... [from Mark: libgtk1.2 1.2.10-1 exhibits these symptoms]
 - releasing drag over menubar doesn't send event properly...
 
 wxaven for Windows:
-- doesn't run (crash on startup)
+- flicker on resize
+- slow plotting of labels
+- icon not set correctly on frame
+- Close button in About box not in correct place
 
 wxaven with Motif:
-- need to resize window to get any display at all
+- need to resize window to get any display at all (may be fixed now)
 - about box is resizable
 - flicker on window resize
 
