@@ -3,7 +3,8 @@ AC_INIT(src/caverot.c)
 AM_INIT_AUTOMAKE(survex, 0.92)
 AM_CONFIG_HEADER(config.h)
 
-AC_DEFINE(COPYRIGHT_MSG,"Copyright (C) 1990-1999 Olly Betts")
+AC_DEFINE(COPYRIGHT_MSG,
+"Copyright (C) 1990-1999 Olly Betts", [Copyright Message])
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -82,17 +83,24 @@ AC_MSG_CHECKING(how to compare strings ignoring case)
 AC_MSG_RESULT()
 strcasecmp=no
 # The order of these tests is important.
-AC_CHECK_FUNC(strcasecmp, strcasecmp=strcasecmp )
-if test $strcasecmp = no; then
-  AC_CHECK_FUNC(stricmp, AC_DEFINE(strcasecmp, stricmp) strcasecmp=stricmp )
+AC_CHECK_FUNC(strcasecmp, strcasecmp=strcasecmp)
+if test "x$strcasecmp" = no ; then
+  AC_CHECK_FUNC(stricmp, strcasecmp=stricmp)
 fi
-if test $strcasecmp = no; then
-  AC_CHECK_FUNC(strcmpi, AC_DEFINE(strcasecmp, strcmpi) strcasecmp=strcmpi )
+if test "x$strcasecmp" = no ; then
+  AC_CHECK_FUNC(strcmpi, strcasecmp=strcmpi)
 fi
-if test $strcasecmp = no; then
+
+case "$strcasecmp" in
+no)
   LIBOBJS="$LIBOBJS strcasecmp.o"
-  AC_MSG_RESULT("using own implementation of strcasecmp")
-fi
+  AC_MSG_RESULT(using own implementation of strcasecmp) ;;
+strcasecmp) ;;
+*)
+  AC_DEFINE_UNQUOTED(strcasecmp, "$strcasecmp",
+    [strcasecmp define for systems which call it something else]) ;;
+esac
+
 AC_SUBST(LIBOBJS)
 
 dnl extra flags for building with gcc
@@ -100,5 +108,7 @@ if test "$GCC" = yes; then
   CFLAGS="$CFLAGS -Wall -Wunused"
 fi
 
+AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
+
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile hto/Makefile
- tests/Makefile src/svxhome.h)
+ tests/Makefile)

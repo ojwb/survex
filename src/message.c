@@ -23,8 +23,6 @@
 #include "filelist.h"
 #include "debug.h"
 
-#include "svxhome.h"
-
 #ifdef HAVE_SIGNAL
 # ifdef HAVE_SETJMP
 #  include <setjmp.h>
@@ -489,10 +487,10 @@ msg_init(const char *argv0)
    p = getenv("SURVEXHOME");
    if (p && *p) {
       pth_cfg_files = osstrdup(p);
-#if (OS==UNIX) && defined(SURVEXHOME)
+#if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
    } else {
       /* under Unix, we compile in the configured path */
-      pth_cfg_files = SURVEXHOME;
+      pth_cfg_files = DATADIR "/" PACKAGE;
 #else
    } else if (argv0) {
       /* else try the path on argv[0] */
