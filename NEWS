@@ -23,7 +23,7 @@
 * cavern: fixed *entrance - it was trying to insist its argument was a
   survey, not a station.
 
-* printps/printpcl: Improved handling of accents on printouts.
+* printps/printpcl/printwin: Improved handling of accents on printouts.
 
 Changes in 0.97-prerelease7:
 

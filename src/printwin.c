@@ -1,7 +1,7 @@
 /* > printwin.c */
 /* Device dependent part of Survex Win32 driver */
 /* Copyright (C) 1993-2000 Olly Betts
- * Copyright (C) 2001 Philip Underwood
+ * Copyright (C) 2001 Philip Underwood, Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ static const char *win_Name(void);
 static int win_Pre(int pagesToPrint, const char *title);
 static void win_NewPage(int pg, int pass, int pagesX, int pagesY);
 static void win_Init(FILE **fh_list, const char *pth, float *pscX, float *pscY);
+static int  win_Charset(void);
 static void win_MoveTo(long x, long y);
 static void win_DrawTo(long x, long y);
 static void win_DrawCross(long x, long y);
@@ -66,6 +67,7 @@ static void win_Quit(void);
 device printer = {
    win_Name,
    win_Init,
+   win_Charset,
    win_Pre,
    win_NewPage,
    win_MoveTo,
@@ -136,6 +138,12 @@ win_DrawCircle(long x, long y, long r)
    x_t = x - clip.x_min;
    y_t = clip.y_max - y;
    Ellipse(pd, x_t - r, y_t - r, x_t + r, y_t + r);
+}
+
+static int
+win_Charset(void)
+{
+   return CHARSET_ISO_8859_1;
 }
 
 static int
