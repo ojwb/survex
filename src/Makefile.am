@@ -29,8 +29,8 @@ aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  useful.c
 
 aven_LDADD = @LIBOBJS@ @WX_LIBS@
-aven_CFLAGS = @WX_CFLAGS@
-aven_CXXFLAGS = @WX_CFLAGS@
+aven_CFLAGS = @WX_CFLAGS@ -DAVEN
+aven_CXXFLAGS = @WX_CFLAGS@ -DAVEN
 
 PRSRC = prcore.c prio.c useful.c img.c $(COMMONSRC)
  

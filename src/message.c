@@ -565,9 +565,29 @@ msgPerm(int en)
    return msg(en);
 }
 
+#ifdef AVEN
+#include "wx.h".
+#endif
+
 void
 v_report(int severity, const char *fnm, int line, int en, va_list ap)
 {
+#ifdef AVEN
+   wxString m;
+   if (fnm) {
+      m = fnm;
+      if (line) m += wxString::Format(":%d", line);
+      m += ": ";
+   }
+
+   if (severity == 0) {
+      m += msg(/*warning*/4);
+      m += ": ";
+   }
+
+   m += wxString::FormatV(msg(en), ap);
+   wxGetApp().ReportError(m);
+#else         
    if (fnm) {
       fputs(fnm, STDERR);
       if (line) fprintf(STDERR, ":%d", line);
@@ -583,6 +603,7 @@ v_report(int severity, const char *fnm, int line, int en, va_list ap)
 
    vfprintf(STDERR, msg(en), ap);
    fputnl(STDERR);
+#endif
 
    switch (severity) {
     case 0:
