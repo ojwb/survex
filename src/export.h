@@ -1,8 +1,8 @@
 /* export.h
- * Export to CAD-like formats (DXF, Sketch, SVG) and also Compass PLT.
+ * Export to CAD-like formats (DXF, Sketch, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 2004 Olly Betts
+/* Copyright (C) 2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-bool Export(const wxString &fnm_out, const MainFrm * mainfrm,
-       double pan, double tilt, bool labels, bool crosses, bool legs,
-       bool surface);
+bool Export(const wxString &fnm_out, const wxString &title,
+	const MainFrm * mainfrm, double pan, double tilt,
+	bool labels, bool crosses, bool legs, bool surface);

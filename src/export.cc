@@ -1,8 +1,8 @@
 /* export.cc
- * Export to CAD-like formats (DXF, Sketch, SVG) and also Compass PLT.
+ * Export to CAD-like formats (DXF, Sketch, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004 Olly Betts
+/* Copyright (C) 1994-2004,2005 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,6 +27,7 @@
 #endif
 
 #include "wx.h"
+#include <wx/utils.h>
 #include "mainfrm.h"
 
 #include <float.h>
@@ -34,6 +35,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if defined(HAVE_GETPWUID) && !defined(__DJGPP__)
+# include <pwd.h>
+# include <sys/types.h>
+# include <unistd.h>
+#endif
 
 #include "cmdline.h"
 #include "debug.h"
@@ -76,7 +83,7 @@ static const char *unit = "mm";
 static const char *survey = NULL;
 
 static void
-dxf_header(void)
+dxf_header(const char *)
 {
    fprintf(fh, "0\nSECTION\n"
 	       "2\nHEADER\n");
@@ -251,7 +258,7 @@ dxf_footer(void)
 }
 
 static void
-sketch_header(void)
+sketch_header(const char *)
 {
    fprintf(fh, "##Sketch 1 2\n"); /* Sketch file version */
    fprintf(fh, "document()\n");
@@ -398,7 +405,7 @@ static bool to_close = 0;
 static bool close_g = 0;
 
 static void
-svg_header(void)
+svg_header(const char *)
 {
    size_t i;
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
@@ -494,7 +501,7 @@ svg_footer(void)
 }
 
 static void
-plt_header(void)
+plt_header(const char *title)
 {
    size_t i;
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
@@ -505,7 +512,7 @@ plt_header(void)
            min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
            min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X",
-	   survey ? survey : "X"); // Second string is the title
+	   (title && title[0]) ? title : "X");
 }
 
 static void
@@ -567,18 +574,309 @@ plt_footer(void)
    putc('\x1a', fh);
 }
 
+static void
+eps_header(const char *title)
+{
+   const char * fontname_labels = "helvetica"; // FIXME
+   int fontsize_labels = 10; // FIXME
+   fputs("%!PS-Adobe-2.0 EPSF-1.2\n", fh);
+   fputs("%%Creator: Survex "VERSION" EPS Output Filter\n", fh);
+
+   if (title && title[0]) fprintf(fh, "%%%%Title: %s\n", title);
+
+   char buf[64];
+   time_t now = time(NULL);
+   if (strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S %Z\n", localtime(&now))) {
+      fputs("%%CreationDate: ", fh);
+      fputs(buf, fh);
+   }
+
+   wxString name;
+#if defined(HAVE_GETPWUID) && !defined(__DJGPP__)
+   struct passwd * ent = getpwuid(getuid());
+   if (ent && ent->pw_gecos[0]) name = ent->pw_gecos;
+#endif
+   if (name.empty()) {
+       name = ::wxGetUserName();
+       if (name.empty()) {
+	   name = ::wxGetUserId();
+       }
+   }
+   if (name) {
+      fprintf(fh, "%%%%For: %s\n", name.c_str());
+   }
+
+   fprintf(fh, "%%%%BoundingBox: %d %d %d %d\n",
+	   int(floor(min_x * factor)), int(floor(min_y * factor)),
+	   int(ceil(max_x * factor)), int(ceil(max_y * factor)));
+   fprintf(fh, "%%%%HiResBoundingBox: %.4f %.4f %.4f %.4f\n",
+	   min_x * factor, min_y * factor, max_x * factor, max_y * factor);
+   fputs("%%LanguageLevel: 1\n"
+	 "%%PageOrder: Ascend\n"
+	 "%%Pages: 1\n"
+	 "%%Orientation: Portrait\n", fh);
+
+   fprintf(fh, "%%%%DocumentFonts: %s\n", fontname_labels);
+
+   fputs("%%EndComments\n"
+	 "%%Page 1 1\n"
+	 "save countdictstack mark\n", fh);
+
+   /* this code adapted from a2ps */
+   fputs("%%BeginResource: encoding ISO88591Encoding\n"
+         "/ISO88591Encoding [\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs(
+"/space /exclam /quotedbl /numbersign\n"
+"/dollar /percent /ampersand /quoteright\n"
+"/parenleft /parenright /asterisk /plus\n"
+"/comma /minus /period /slash\n"
+"/zero /one /two /three\n"
+"/four /five /six /seven\n"
+"/eight /nine /colon /semicolon\n"
+"/less /equal /greater /question\n"
+"/at /A /B /C /D /E /F /G\n"
+"/H /I /J /K /L /M /N /O\n"
+"/P /Q /R /S /T /U /V /W\n"
+"/X /Y /Z /bracketleft\n"
+"/backslash /bracketright /asciicircum /underscore\n"
+"/quoteleft /a /b /c /d /e /f /g\n"
+"/h /i /j /k /l /m /n /o\n"
+"/p /q /r /s /t /u /v /w\n"
+"/x /y /z /braceleft\n"
+"/bar /braceright /asciitilde /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
+   fputs(
+"/space /exclamdown /cent /sterling\n"
+"/currency /yen /brokenbar /section\n"
+"/dieresis /copyright /ordfeminine /guillemotleft\n"
+"/logicalnot /hyphen /registered /macron\n"
+"/degree /plusminus /twosuperior /threesuperior\n"
+"/acute /mu /paragraph /bullet\n"
+"/cedilla /onesuperior /ordmasculine /guillemotright\n"
+"/onequarter /onehalf /threequarters /questiondown\n"
+"/Agrave /Aacute /Acircumflex /Atilde\n"
+"/Adieresis /Aring /AE /Ccedilla\n"
+"/Egrave /Eacute /Ecircumflex /Edieresis\n"
+"/Igrave /Iacute /Icircumflex /Idieresis\n"
+"/Eth /Ntilde /Ograve /Oacute\n"
+"/Ocircumflex /Otilde /Odieresis /multiply\n"
+"/Oslash /Ugrave /Uacute /Ucircumflex\n"
+"/Udieresis /Yacute /Thorn /germandbls\n"
+"/agrave /aacute /acircumflex /atilde\n"
+"/adieresis /aring /ae /ccedilla\n"
+"/egrave /eacute /ecircumflex /edieresis\n"
+"/igrave /iacute /icircumflex /idieresis\n"
+"/eth /ntilde /ograve /oacute\n"
+"/ocircumflex /otilde /odieresis /divide\n"
+"/oslash /ugrave /uacute /ucircumflex\n"
+"/udieresis /yacute /thorn /ydieresis\n"
+"] def\n"
+"%%EndResource\n", fh);
+
+   /* this code adapted from a2ps */
+   fputs(
+"/reencode {\n" /* def */
+"dup length 5 add dict begin\n"
+"{\n" /* forall */
+"1 index /FID ne\n"
+"{ def }{ pop pop } ifelse\n"
+"} forall\n"
+"/Encoding exch def\n"
+
+/* Use the font's bounding box to determine the ascent, descent,
+ * and overall height; don't forget that these values have to be
+ * transformed using the font's matrix.
+ * We use `load' because sometimes BBox is executable, sometimes not.
+ * Since we need 4 numbers and not an array avoid BBox from being executed
+ */
+"/FontBBox load aload pop\n"
+"FontMatrix transform /Ascent exch def pop\n"
+"FontMatrix transform /Descent exch def pop\n"
+"/FontHeight Ascent Descent sub def\n"
+
+/* Define these in case they're not in the FontInfo (also, here
+ * they're easier to get to.
+ */
+"/UnderlinePosition 1 def\n"
+"/UnderlineThickness 1 def\n"
+
+/* Get the underline position and thickness if they're defined. */
+"currentdict /FontInfo known {\n"
+"FontInfo\n"
+
+"dup /UnderlinePosition known {\n"
+"dup /UnderlinePosition get\n"
+"0 exch FontMatrix transform exch pop\n"
+"/UnderlinePosition exch def\n"
+"} if\n"
+
+"dup /UnderlineThickness known {\n"
+"/UnderlineThickness get\n"
+"0 exch FontMatrix transform exch pop\n"
+"/UnderlineThickness exch def\n"
+"} if\n"
+
+"} if\n"
+"currentdict\n"
+"end\n"
+"} bind def\n", fh);
+
+   fprintf(fh, "/lab ISO88591Encoding /%s findfont reencode definefont pop\n",
+	   fontname_labels);
+
+   fprintf(fh, "/lab findfont %d scalefont setfont\n", int(fontsize_labels));
+   
+   fprintf(fh, "0.1 setlinewidth\n");
+
+#if 0
+   /* C<digit> changes colour */
+   /* FIXME: read from ini */
+   {
+      size_t i;
+      for (i = 0; i < sizeof(colour) / sizeof(colour[0]); ++i) {
+	 fprintf(fh, "/C%u {stroke %.3f %.3f %.3f setrgbcolor} def\n", i,
+		 (double)(colour[i] & 0xff0000) / 0xff0000,
+		 (double)(colour[i] & 0xff00) / 0xff00,
+		 (double)(colour[i] & 0xff) / 0xff);
+      }
+   }
+   fputs("C0\n", fh);
+#endif
+
+   /* Postscript definition for drawing a cross */
+   fprintf(fh, "/X {stroke moveto %.2f %.2f rmoveto %.2f %.2f rlineto "
+	   "%.2f 0 rmoveto %.2f %.2f rlineto %.2f %.2f rmoveto} def\n",
+	   -marker_size, -marker_size,  marker_size * 2, marker_size * 2,
+	   -marker_size * 2,  marker_size * 2, -marker_size * 2,
+	   -marker_size, marker_size );
+
+   /* define some functions to keep file short */
+   fputs("/M {stroke moveto} def\n"
+	 "/L {lineto} def\n"
+/*	 "/R {rlineto} def\n" */
+	 "/S {show} def\n", fh);
+
+   fprintf(fh, "gsave %.8f dup scale\n", factor);
+#if 0
+   if (grid > 0) {
+      double x, y;
+      x = floor(min_x / grid) * grid + grid;
+      y = floor(min_y / grid) * grid + grid;
+#ifdef DEBUG_CAD3D
+      printf("x_min: %f  y_min: %f\n", x, y);
+#endif
+      while (x < max_x) {
+	 /* horizontal line */
+	 fprintf(fh, "0\nLINE\n");
+	 fprintf(fh, "8\nGrid\n"); /* Layer */
+	 fprintf(fh, "10\n%6.2f\n", x);
+	 fprintf(fh, "20\n%6.2f\n", min_y);
+	 fprintf(fh, "30\n0\n");
+	 fprintf(fh, "11\n%6.2f\n", x);
+	 fprintf(fh, "21\n%6.2f\n", max_y);
+	 fprintf(fh, "31\n0\n");
+	 x += grid;
+      }
+      while (y < max_y) {
+	 /* vertical line */
+	 fprintf(fh, "0\nLINE\n");
+	 fprintf(fh, "8\nGrid\n"); /* Layer */
+	 fprintf(fh, "10\n%6.2f\n", min_x);
+	 fprintf(fh, "20\n%6.2f\n", y);
+	 fprintf(fh, "30\n0\n");
+	 fprintf(fh, "11\n%6.2f\n", max_x);
+	 fprintf(fh, "21\n%6.2f\n", y);
+	 fprintf(fh, "31\n0\n");
+	 y += grid;
+      }
+   }
+#endif
+}
+
+static void
+eps_start_pass(int layer)
+{
+   layer = layer;
+}
+
+static void
+eps_move(const img_point *p)
+{
+   fprintf(fh, "%.2f %.2f M\n", p->x, p->y);
+}
+
+static void
+eps_line(const img_point *p1, const img_point *p, bool fSurface)
+{
+   fSurface = fSurface; /* unused */
+   p1 = p1; /* unused */
+   fprintf(fh, "%.2f %.2f L\n", p->x, p->y);
+}
+
+static void
+eps_label(const img_point *p, const char *s, bool fSurface)
+{
+   fprintf(fh, "%.2f %.2f M\n", p->x, p->y);
+   putc('(', fh);
+   while (*s) {
+       unsigned char ch = *s++;
+       switch (ch) {
+	   case '(': case ')': case '\\': /* need to escape these characters */
+	       putc('\\', fh);
+	       putc(ch, fh);
+	       break;
+	   default:
+	       putc(ch, fh);
+	       break;
+       }
+   }
+   fputs(") S\n", fh);
+}
+
+static void
+eps_cross(const img_point *p, bool fSurface)
+{
+   fSurface = fSurface; /* unused */
+   fprintf(fh, "%.2f %.2f X\n", p->x, p->y);
+}
+
+static void
+eps_footer(void)
+{
+   fputs("stroke showpage grestore\n"
+	 "%%Trailer\n"
+	 "cleartomark countdictstack exch sub { end } repeat restore\n"
+	 "%%EOF\n", fh);
+}
+
 static int dxf_passes[] = { LEGS|STNS|LABELS, 0 };
 static int sketch_passes[] = { LEGS, STNS, LABELS, 0 };
 static int plt_passes[] = { LABELS, LEGS, 0 };
 static int svg_passes[] = { LEGS, LABELS, STNS, 0 };
+static int eps_passes[] = { LEGS|STNS|LABELS, 0 };
 
 typedef enum {
-    FMT_DXF = 0, FMT_SVG, FMT_SKETCH, FMT_PLT, FMT_ENDMARKER
+    FMT_DXF = 0, FMT_SVG, FMT_SKETCH, FMT_PLT, FMT_EPS, FMT_ENDMARKER
 } export_format;
-static const char *extensions[] = { "dxf", "svg", "sk", "plt" };
+static const char *extensions[] = { "dxf", "svg", "sk", "plt", "eps" };
 
 bool
-Export(const wxString &fnm_out, const MainFrm * mainfrm,
+Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
        double pan, double tilt, bool labels, bool crosses, bool legs,
        bool surface)
 {
@@ -590,7 +888,7 @@ Export(const wxString &fnm_out, const MainFrm * mainfrm,
    bool elevation = (tilt == 90.0);
    double elev_angle = pan;
 
-   void (*header)(void);
+   void (*header)(const char *);
    void (*start_pass)(int);
    void (*move)(const img_point *);
    void (*line)(const img_point *, const img_point *, bool);
@@ -725,6 +1023,18 @@ Export(const wxString &fnm_out, const MainFrm * mainfrm,
       factor = 1000.0 / scale;
       mode = "wb"; /* Binary file output */
       break;
+    case FMT_EPS:
+      header = eps_header;
+      start_pass = eps_start_pass;
+      move = eps_move;
+      line = eps_line;
+      label = eps_label;
+      cross = eps_cross;
+      footer = eps_footer;
+      pass = eps_passes;
+      factor = POINTS_PER_MM * 1000.0 / scale;
+      mode = "wb"; /* Binary file output */
+      break;
     default:
       exit(1);
    }
@@ -803,7 +1113,7 @@ Export(const wxString &fnm_out, const MainFrm * mainfrm,
    }
 
    /* Header */
-   header();
+   header(title.c_str());
 
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
 
