@@ -4,6 +4,9 @@ Changes in 1.0.14:
   dots to spaces in survey and station names - instead use a space as the
   separator between survey name and station name.
 
+* aven: when picking non-overlapping labels, show a slight preference to shorter
+  labels with the aim of displaying more labels.
+
 * aven: fixed hard to notice problem which could cause the cave to appear
   tilted sideways after a lot of manipulation.
 
