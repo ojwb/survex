@@ -268,20 +268,21 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
          opt = getc(pimg->fh);
       }
       switch (opt) {
-       case -1: case 255:
+       case -1: case 0:
 	 return img_STOP; /* end of data marker */
        case 1:
 	 (void)get32(pimg->fh);
 	 (void)get32(pimg->fh);
 	 (void)get32(pimg->fh);
 	 goto again;
-       case 2:
+       case 2: case 3:
+	 result = img_LABEL;
 	 fgets(sz, 256, pimg->fh);
 	 sz += strlen(sz) - 1;
 	 if (*sz != '\n') return img_BAD;
 	 *sz = '\0';
-	 result = img_LABEL;
-	 goto done;
+	 if (opt == 2) goto done;
+	 break;
        case 4:
 	 result = img_MOVE;
          pimg->flags = 0;
@@ -289,12 +290,11 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
        case 5:
 	 result = img_LINE;
 	 break;
-       case 6:
-	 result = img_FLAGS;
-         pimg->flags = getc(pimg->fh);
-         break;
        default:
-	 return img_BAD;
+	 if (!(opt & 0x80)) return img_BAD;
+	 pimg->flags = opt & 0x7f;
+	 result = img_LINE;
+	 break;
       }
       x = (float)get32(pimg->fh) / 100.0f;
       y = (float)get32(pimg->fh) / 100.0f;
@@ -327,10 +327,6 @@ img_read_datum(img *pimg, char *sz, float *px, float *py, float *pz)
 	 } else if (strcmp(szTmp, "name") == 0) {
 	    if (fscanf(pimg->fh,"%s", sz) < 1) return img_BAD;
 	    result = img_LABEL;
-	 } else if (strcmp(szTmp, "scale") == 0) {
-	    if (fscanf(pimg->fh,"%f", px) < 1) return img_BAD;
-	    *py = *pz = *px;
-	    return img_SCALE;
 	 } else
 	    return img_BAD; /* unknown keyword */
       }
@@ -349,44 +345,42 @@ img_write_datum(img *pimg, int code, const char *sz,
       float Sc = (float)100.0; /* Output in cm */
       INT32_T opt = 0;
       switch (code) {
-       case img_LABEL: /* put a move before each label */
+       case img_LABEL:
+	 if (pimg->version == 1) {
+	    /* put a move before each label */
+	    img_write_datum(pimg, img_MOVE, NULL, x, y, z);
+	    put32(2, pimg->fh);
+	    fputsnl(sz, pimg->fh);
+	    return;
+	 }
+	 putc(3, pimg->fh);
+	 fputsnl(sz, pimg->fh);
+	 opt = 0;
+	 break;	  
        case img_MOVE:
 	 opt = 4;
 	 break;
        case img_LINE:
+         if (pimg->version > 1) {
+	    opt = 128;
+	    if (sz) opt |= *sz;
+	    break;
+         }
 	 opt = 5;
 	 break;
-       case img_CROSS:
-	 opt = 1;
-	 break;
-       case img_FLAGS:
-         if (pimg->version > 1) {
-            putc(6, pimg->fh);
-            putc(*sz, pimg->fh);
-            return;
-         }
-       case img_SCALE: /* fprintf( pimg->fh, "scale %9.2f\n", x ); */
+       case img_CROSS: /* ignore */
+	 return;
        default: /* ignore for now */
-	 break;
+	 return;
       }
-      if (opt) {
-	 if (pimg->version == 1) {
-	    put32(opt, pimg->fh);
-	 } else {
-	    putc(opt, pimg->fh);
-	 }
-	 put32((INT32_T)(x * Sc), pimg->fh);
-	 put32((INT32_T)(y * Sc), pimg->fh);
-	 put32((INT32_T)(z * Sc), pimg->fh);
+      if (pimg->version == 1) {
+	 put32(opt, pimg->fh);
+      } else {
+	 if (opt) putc(opt, pimg->fh);
       }
-      if (code == img_LABEL) {
-	 if (pimg->version == 1) {
-	    put32(2, pimg->fh);
-	 } else {
-	    putc(2, pimg->fh);
-	 }
-	 fputsnl(sz, pimg->fh);
-      }
+      put32((INT32_T)(x * Sc), pimg->fh);
+      put32((INT32_T)(y * Sc), pimg->fh);
+      put32((INT32_T)(z * Sc), pimg->fh);
    } else {
       switch (code) {
        case img_MOVE:
@@ -395,14 +389,10 @@ img_write_datum(img *pimg, int code, const char *sz,
        case img_LINE:
 	 fprintf(pimg->fh, "draw %9.2f %9.2f %9.2f\n", x, y, z);
 	 break;
-       case img_CROSS:
-	 fprintf(pimg->fh, "cross %9.2f %9.2f %9.2f\n", x, y, z);
+       case img_CROSS: /* ignore */
 	 break;
        case img_LABEL:
 	 fprintf(pimg->fh, "name %s %9.2f %9.2f %9.2f\n", sz, x, y, z);
-	 break;
-       case img_SCALE:
-	 fprintf(pimg->fh, "scale %9.2f\n", x);
 	 break;
        default:
 	 break;
@@ -420,7 +410,7 @@ img_close(img *pimg)
 	    if (pimg->version == 1) {
 	       put32((INT32_T)-1, pimg->fh);
 	    } else {
-	       putc('\xff', pimg->fh);
+	       putc(0, pimg->fh);
 	    }
 	 }
 	 fclose(pimg->fh);

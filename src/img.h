@@ -32,10 +32,10 @@ extern "C" {
 # define img_STOP  -1
 # define img_MOVE   0
 # define img_LINE   1
+/* NB: img_CROSS is never output and ignored on input.
+ * Crosses are put where labels are. */
 # define img_CROSS  2
 # define img_LABEL  3
-# define img_SCALE  4 /* ignore this one for now */
-# define img_FLAGS  5
 
 # define img_FLAG_SURFACE   0x01
 # define img_FLAG_DUPLICATE 0x02

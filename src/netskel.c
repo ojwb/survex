@@ -453,12 +453,8 @@ replace_travs(void)
 #endif
 	       img_write_datum(pimgOut, img_MOVE, NULL,
 			       POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-	       img_write_datum(pimgOut, img_LINE, NULL,
+	       img_write_datum(pimgOut, img_LINE, (char *)&leg->l.flags,
 			       POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
-	       if (leg->l.flags) {
-	          img_write_datum(pimgOut, img_FLAGS, (char *)&leg->l.flags,
-	                          0, 0, 0);
-	       }
 #ifdef NEW3DFORMAT
 	       }
 #endif
@@ -630,11 +626,7 @@ replace_travs(void)
 #ifdef NEW3DFORMAT
  	    if (!fUseNewFormat) {
 #endif
-	    if (leg->l.flags) {
-	       img_write_datum(pimgOut, img_FLAGS, (char *)&leg->l.flags,
-	                       0, 0, 0);
-	    }
- 	    img_write_datum(pimgOut, img_LINE, NULL,
+ 	    img_write_datum(pimgOut, img_LINE, (char *)&leg->l.flags,
 			    POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
 #ifdef NEW3DFORMAT
  	    }
@@ -691,11 +683,7 @@ replace_travs(void)
 #ifdef NEW3DFORMAT
  	 if (!fUseNewFormat) {
 #endif
-	 if (leg->l.flags) {
-	    img_write_datum(pimgOut, img_FLAGS, (char *)&leg->l.flags,
-	                    0, 0, 0);
-	 }
- 	 img_write_datum(pimgOut, img_LINE, NULL,
+ 	 img_write_datum(pimgOut, img_LINE, (char *)&leg->l.flags,
 			 POS(stn2,0), POS(stn2, 1), POS(stn2, 2));
 #ifdef NEW3DFORMAT
  	 }
@@ -872,11 +860,7 @@ replace_trailing_travs(void)
 #ifdef NEW3DFORMAT
 	    if (!fUseNewFormat) {
 #endif
-	       if (leg->l.flags) {
-	          img_write_datum(pimgOut, img_FLAGS, (char *)&leg->l.flags,
-	                          0, 0, 0);
-	       }
-	       img_write_datum(pimgOut, img_LINE, NULL,
+	       img_write_datum(pimgOut, img_LINE, (char *)&leg->l.flags,
 			       POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 #ifdef NEW3DFORMAT
  	    }
