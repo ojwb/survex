@@ -90,35 +90,19 @@ print.ini.5: $(srcdir)/print.ini.sgml $(srcdir)/man_print.ini.sgml $(srcdir)/sur
 	docbook-to-man $(srcdir)/man_print.ini.sgml > print.ini.5
 
 install-data-local: manual
-	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual; \
-	if test -d manual ; then \
-	  for p in manual/*.htm manual/*.png ; do \
-	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
-	  done \
-	elif test -d "$(srcdir)/manual" ; then \
-	  for p in $(srcdir)/manual/*.htm $(srcdir)/manual/*.png ; do \
-	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$f; \
-	  done \
-	fi
+	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual
+	test ! -d manual -a -d "$(srcdir)/manual" && cd $(srcdir) ; \
+	for p in manual/*.htm manual/*.png ; do \
+	  echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$p"; \
+	  $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$p; \
+	done
 
 uninstall-local:
-	if test -d manual ; then \
-	  for p in manual/*.htm manual/*.png ; do \
-	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
-	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
-	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
-	  done \
-	elif test -d "$(srcdir)/manual" ; then \
-	  for p in $(srcdir)/manual/*.htm $(srcdir)/manual/*.png ; do \
-	    f="`echo $$p | sed -e 's|^.*/|manual/|'`"; \
-	    echo " rm -f $(DESTDIR)$(pkgdocdir)/$$f"; \
-	    rm -f $(DESTDIR)$(pkgdocdir)/$$f; \
-	  done \
-	fi
+	test ! -d manual -a -d "$(srcdir)/manual" && cd $(srcdir) ; \
+	for p in manual/*.htm manual/*.png ; do \
+	  echo " rm -f $(DESTDIR)$(pkgdocdir)/$$p"; \
+	  rm -f $(DESTDIR)$(pkgdocdir)/$$p; \
+	done
 	-rmdir $(DESTDIR)$(pkgdocdir)/manual
 
 maintainer-clean-local:
@@ -131,7 +115,7 @@ manual: $(manual_sources) custom.dsl survex.ent
 
 # this rule is not used by the build system - it's for "manual" use (ho ho)
 manual.html: $(manual_sources) custom.dsl survex.ent
-	@sgmltools@ --backend=onehtml --dsssl-spec=custom.dsl#onehtml manual.sgml
+	@sgmltools@ --backend=onehtml --dsssl-spec='custom.dsl#onehtml' manual.sgml
 
 manual.rtf: $(manual_sources) survex.ent
 	@sgmltools@ --backend=rtf manual.sgml

@@ -18,6 +18,10 @@ Changes in 1.0.0:
   to compile gfxcore.cc - if it does, the Makefile will now try recompiling
   with a lower optimisation level.
 
+* (Unix version): when doing an "in directory" build from source, the HTML
+  manual is now installed in its own subdirectory as when doing a non
+  "in directory" build.
+
 * German translation now completely up-to-date.
 
 Changes in 0.99:
