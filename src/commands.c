@@ -1,6 +1,6 @@
 /* > commands.c
  * Code for directives
- * Copyright (C) 1991-1996 Olly Betts
+ * Copyright (C) 1991-1998 Olly Betts
  */
 
 /*
@@ -95,7 +95,10 @@
 1996.03.24 parse structure introduced to fix include() problem
 1996.04.02 fixed some Borland C warnings
 1996.04.15 SPECIAL_POINT -> SPECIAL_DECIMAL
-1997.08.22 added covariances
+1998.03.04 merged 2 deviant versions:
+>1996.06.10 Next and Back added to datum list
+>1997.08.22 added covariances
+1998.03.21 fix for covariances
 */
 
 #include <assert.h>
@@ -382,11 +385,11 @@ extern void equate_list( void ) {
     /* free the (now-unused) old pos */
     osfree(posReplace);
     /* count equates as legs for now... */
-#if 0
-       addleg(stn1,stn2,(real)0.0,(real)0.0,(real)0.0,
+#ifdef NO_COVARIANCES
+    addleg(stn1,stn2,(real)0.0,(real)0.0,(real)0.0,
                      (real)0.0,(real)0.0,(real)0.0);
 #else
-       addleg(stn1,stn2,(real)0.0,(real)0.0,(real)0.0,
+    addleg(stn1,stn2,(real)0.0,(real)0.0,(real)0.0,
                      (real)0.0,(real)0.0,(real)0.0,
                      (real)0.0,(real)0.0,(real)0.0);
 #endif
@@ -396,6 +399,9 @@ extern void equate_list( void ) {
 
 void data( void ) {
   static sztok dtab[]= {
+#ifdef SVX_MULTILINEDATA
+    {"BACK",         Back },
+#endif
     {"BEARING",      Comp },
     {"FROM",         Fr },
     {"FROMDEPTH",    FrDepth },
@@ -403,6 +409,9 @@ void data( void ) {
     {"IGNORE",       Ignore },
     {"IGNOREALL",    IgnoreAll },
     {"LENGTH",       Tape },
+#ifdef SVX_MULTILINEDATA
+    {"NEXT",         Next },
+#endif
     {"TO",           To },
     {"TODEPTH",      ToDepth },
     { NULL,          End }
@@ -423,8 +432,8 @@ void data( void ) {
     BIT(Clino),
     0
   };
-/*  static int cdata[]={5,6};*/
-  int style, /*cData, cRealData=0,*/ k=0, kMac;
+
+  int style, k=0, kMac;
   datum *new_order, d;
   unsigned long m,mUsed=0;
 
@@ -438,8 +447,11 @@ void data( void ) {
     return;
   }
   pcs->Style=fn[style-1];
+#ifdef SVX_MULTILINEDATA
+  m=mask[style-1]|BIT(Back)|BIT(Next)|BIT(Ignore)|BIT(IgnoreAll)|BIT(End);
+#else
   m=mask[style-1]|BIT(Ignore)|BIT(IgnoreAll)|BIT(End);
-/*  cData=cdata[style-1];*/
+#endif
 
   skipblanks();
   /* olde syntax had optional field for survey grade, so allow an omit */
@@ -453,8 +465,18 @@ void data( void ) {
       /* token not valid for this data style */
       error(63,showandskipline,NULL,(int)strlen((sz)buffer));
       return;
-      /* hack message 68 unused??? */
     }
+#ifdef SVX_MULTILINEDATA
+    /* Check for duplicates unless it's a special datum:
+     *   IGNORE,NEXT (duplicates allowed)
+     *   END,IGNOREALL (not possible)
+     */
+    if (d==Next && (mUsed & BIT(Back))) {
+      /* !HACK! "... back ... next ..." not allowed */
+    }
+#define mask_dup_ok (BIT(Ignore)|BIT(End)|BIT(IgnoreAll)|BIT(Next))
+    if (!(mask_dup_ok & BIT(d))) {
+#else 
     /* check for duplicates unless it's IGNORE (duplicates allowed) */
     /* or End/IGNOREALL (not possible) */
     if (d!=Ignore && d!=End && d!=IgnoreAll) {
@@ -465,6 +487,7 @@ void data( void ) {
         return;
       }
 */
+#endif
       if (mUsed & BIT(d)) {
         error(67,showandskipline,NULL,(int)strlen((sz)buffer));
         return;
@@ -476,7 +499,8 @@ void data( void ) {
       new_order=osrealloc( new_order, kMac*sizeof(datum) );
     }
     new_order[k++]=d;
-  } while (d!=End && d!=IgnoreAll);
+#define mask_done (BIT(End)|BIT(IgnoreAll))
+  } while (!(mask_done & BIT(d)));
 
   if ( (mUsed | mask_optional[style-1]) != mask[style-1] ) {
     osfree(new_order);
