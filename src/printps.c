@@ -21,7 +21,7 @@
 #include "prio.h"
 #include "filelist.h"
 #include "debug.h" /* for BUG and ASSERT */
-#include "prindept.h"
+#include "prcore.h"
 #include "ini.h"
 
 #ifdef HPGL
