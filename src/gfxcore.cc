@@ -205,7 +205,6 @@ void GfxCore::SetScale(double scale)
 	    bool more = true;
 	    while (more) {
 	        more = m_Parent->GetNextPoint(band, pos, x, y, z, is_line);
-		if (!more) break; //--sort this out...
 
 		x += m_Params.translation.x;
 		y += m_Params.translation.y;
@@ -243,7 +242,6 @@ void GfxCore::SetScale(double scale)
 	bool more = true;
 	while (more) {
 	    more = m_Parent->GetNextLabel(pos, x, y, z, text);
-	    if (!more) break;
 
 	    x += m_Params.translation.x;
 	    y += m_Params.translation.y;
@@ -303,7 +301,7 @@ void GfxCore::RedrawOffscreen()
 		int* num_segs = m_PlotData[band].num_segs; //-- sort out the polyline stuff!!
 		wxPoint* vertices = m_PlotData[band].vertices;
 		for (int polyline = 0; polyline < m_Polylines[band]; polyline++) {
-		    m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre, m_YCentre);
+       		    m_DrawDC.DrawLines(*num_segs, vertices, m_XCentre, m_YCentre);
 		    vertices += *num_segs++;
 		}
 	    }

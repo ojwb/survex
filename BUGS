@@ -28,5 +28,5 @@ wxaven:
 terrible slowness during rotation
 about box layout is crap (awful with motif version); close button doesn't work
 probs with building on win32
-problems with rendering -- some legs missing!
+problems with rendering -- some legs missing! -- FIXED
 indicators still need coding

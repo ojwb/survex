@@ -429,7 +429,8 @@ bool MainFrm::LoadData(const wxString& file)
 	// Check we've actually loaded some legs or stations!
 	if (m_NumLegs == 0 || m_Labels.size() == 0) {
 	    SetStatusText(wxString(""));
-	    wxString msg = wxString("No legs or stations found in 3D file '") + file + wxString("'.");
+	    wxString msg = wxString("No legs or stations found in 3D file '") + file +
+	                   wxString("'.");
 	    wxGetApp().ReportError(msg);
 	    return false;
 	}
