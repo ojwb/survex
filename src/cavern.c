@@ -361,7 +361,8 @@ main(int argc, char **argv)
       double tmUser = difftime(time(NULL), tmUserStart);
       double tmCPU;
       clock_t now = clock();
-#define CLOCK_T_WRAP (1ul << (CHAR_BIT * sizeof(clock_t)))
+#define CLOCK_T_WRAP \
+	(sizeof(clock_t)<sizeof(long)?(1ul << (CHAR_BIT * sizeof(clock_t))):0)
       tmCPU = (now - (unsigned long)tmCPUStart)
 	 / (double)CLOCKS_PER_SEC;
       if (now < tmCPUStart)
