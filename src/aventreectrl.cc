@@ -4,6 +4,7 @@
 //  Tree control used for the survey tree.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
+//  Copyright (C) 2001-2002, Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -47,17 +48,14 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 	int flags;
 	wxTreeItemId pos = HitTest(event.GetPosition(), flags);
 	if (pos != m_LastItem) {
+	    if (m_LastItem != -1) {
+		SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
+	    }
 	    if (flags & TREE_MASK) {
-		if (m_LastItem != -1) {
-		    SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
-		}
 		SetItemBackgroundColour(pos, wxColour(180, 180, 180));
 		m_Parent->DisplayTreeInfo(GetItemData(pos));
 		m_LastItem = pos;
 	    } else {
-		if (m_LastItem != -1) {
-		    SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
-		}
 		m_Parent->DisplayTreeInfo(NULL);
 	    }
 	}
