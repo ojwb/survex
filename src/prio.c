@@ -87,11 +87,11 @@ prio_close(void)
 #ifdef HAVE_POPEN
    if (fPipeOpen) {
       /* pclose gives return code from program or -1, so only 0 means OK */
-      if (pclose(fhPrn) == -1) prio_writeerror();
+      if (ferror(fhPrn) || pclose(fhPrn)) prio_writeerror();
       return;
    }
 #endif
-   if (fclose(fhPrn) == EOF) prio_writeerror();
+   if (ferror(fhPrn) || fclose(fhPrn) == EOF) prio_writeerror();
 }
 
 extern void
