@@ -40,7 +40,6 @@ $package ($version) unstable; urgency=low
  -- Wookey <wookey\@survex.com>  $date
 
 END
-   close O;
    print O $line;
    while (<CL>) {
       print O $_;
