@@ -588,7 +588,7 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
     }
 }
 
-void MainFrm::OpenFile(const wxString& file, const wxString & survey, bool delay)
+void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 {
     // FIXME: delay is always false...
     SetCursor(*wxHOURGLASS_CURSOR);

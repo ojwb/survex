@@ -152,7 +152,7 @@ public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
     ~MainFrm();
 
-    void OpenFile(const wxString& file, const wxString& survey = "",
+    void OpenFile(const wxString& file, wxString survey = "",
 		  bool delay_gfx_init = false);
 
     void OnOpen(wxCommandEvent& event);
