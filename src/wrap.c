@@ -286,7 +286,7 @@ static char *process_command_mode( char *string, char *pth ) {
         break;
       case 'P': /* Percentage */
 #ifndef NO_PERCENTAGE
-       // FIXME:=fSwitch;
+        if (fSwitch) printf(" --percentage");
 #endif
         break;
       case 'S': /* Special Characters */
@@ -353,20 +353,7 @@ static void process_command( char * string, char * pth ) {
         /* Write this bit */
         break;
       case TITLE: /* Survey title */
-        if (!fExplicitTitle) {
-          fExplicitTitle=fTrue;
-          *szSurveyTitle='\0'; /* Throw away any partial default title */
-        }
-        if (strlen(sz)+strlen(szSurveyTitle)+3<=TITLE_LEN) {
-          char *p=szSurveyTitle;
-          /* !HACK! should cope better with exceeding title buffer... */
-          if (*p) /* If there's already a title in the list */ {
-            p+=strlen(szSurveyTitle);
-            *p++=',';
-            *p++=' ';
-          }
-          strcpy(p,sz);
-        }
+        fprintf(fout, "*title \"%s\"\n", sz);
         sz+=strlen(sz); /* advance past it */
         mode=COMMAND;
         break;
@@ -459,10 +446,12 @@ static void skipopt( char * sz, int n ) {
 
 #define MYTMP "__xxxtmp.svx"
 
+#if 0
 static void error(void) {
    printf("Syntax error in command line arguments\n");
    exit(1);
 }
+#endif
 
 int main(int argc, char **argv) {
 
@@ -472,57 +461,18 @@ int main(int argc, char **argv) {
       exit(1);
    }
 
+   printf("cavern");
+   
    process_command_line(argc, argv);
 
    fclose(fout);
-   
-   printf("cavern");
+
+   /*
    while (*argv) {
       printf(" %s", *argv++);
    }
-   printf("\n");
+   */
+   printf(" "MYTMP"\n");
 
    return 0;
 }
-
-#if 0
-   j = 1;
-   for (i = 1; i < argc; i++) {
-      int neg = 0;
-      char *p = argv[i];
-      
-      switch (p[0]) {
-       case '-':
-	 if (p[1] == '!') {
-	    neg = 1;
-	    p++;
-	 }	 
-	  case 'D': /* Data File (so fnames can begin with '-' or '/' */
-	    i++;
-	    if (!argv[i]) error();
-	    fprintf(fout, "*include \"%s\"\n", argv[i]);
-	    break;
-	  case 'F': /* Command File */
-	    printf("-F <.svc file> and @ <.svc file> not supported\n");
-	    exit(1);
-	    break;
-	  case 'T': /* Title */
-	    i++;
-	    if (!argv[i]) error();
-	    fprintf(fout, "*title \"%s\"\n", argv[i]);
-	    break;
-	  case 'U': /* Unique */
-	    break;
-	  default:
-	    error();
-	 }
-	 break;
-       case '@':
-         break;
-       default:
-	 fprintf(fout, "*include \"%s\"\n", argv[i]);
-         break;
-      }      
-   }
-   argv[j] = '\0';
-#endif
