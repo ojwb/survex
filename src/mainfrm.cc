@@ -354,7 +354,7 @@ bool MainFrm::LoadData(const wxString& file)
 
 		    m_NumPoints++;
 
-		    // We must ensure that the resulting list has a move as it's first
+		    // We must ensure that the resulting list has a move as its first
 		    // datum.
 		    if (first && (result != img_MOVE)) {
 		        PointInfo* info = new PointInfo;
