@@ -198,6 +198,9 @@ void GfxCore::Initialise()
 	m_PlotData[band].surface_num_segs = new int[m_Parent->GetNumLegs()];
     }
 
+    m_UndergroundLegs = false;
+    m_SurfaceLegs = false;
+
     // Apply default parameters.
     DefaultParameters();
 
@@ -315,9 +318,6 @@ void GfxCore::SetScale(double scale)
     if (m_Params.scale < m_InitialScale / 20.0) {
         m_Params.scale = m_InitialScale / 20.0;
     }
-
-    m_UndergroundLegs = false;
-    m_SurfaceLegs = false;
 
     if (!m_ScaleCrossesOnly) {
         for (int band = 0; band < m_Bands; band++) {
