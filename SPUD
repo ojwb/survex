@@ -1,4 +1,4 @@
-TODO entries which aren't likely to be done for 1.0:
+TODO entries which aren't likely to be done for 1.0.x:
 
 Warn bearings not 3 digits, gradient not <sign><digit><digit>
 
@@ -13,9 +13,7 @@ cavern: auto declination?
 
 Sort out gross error detection code
 
-add to UNITS: percentage, lengthoutput, angleoutput ?
-
-error and warning log for survex?
+add to UNITS: percentage
 
 Fixing a point by triangulation?
 
