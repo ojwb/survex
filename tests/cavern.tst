@@ -3,6 +3,9 @@
 # allow us to run tests standalone more easily
 : ${srcdir=.}
 
+# force VERBOSE if we're run on a subset of tests
+test -n "$*" && VERBOSE=1
+
 : ${CAVERN=../src/cavern}
 : ${DIFFPOS=../src/diffpos}
 
