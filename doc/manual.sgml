@@ -124,8 +124,8 @@ this.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-10-09 16:19:56 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.68 2001-10-09 16:19:56 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-10-24 09:43:19 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.69 2001-10-24 09:43:19 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -526,10 +526,22 @@ messages in French (language code fr):</Para>
 
 <VariableList>
  <VarListEntry><Term>&msdos;</Term>
-   <ListItem><Para>Put <SystemItem>SET SURVEXLANG=fr</SystemItem> in your
-<filename>AUTOEXEC.BAT</filename> script.</Para></ListItem>
+   <ListItem><Para>Put <command>SET SURVEXLANG=fr</command> in your
+<filename>AUTOEXEC.BAT</filename> script.  You will need to restart
+&msdos; before it notices this setting - to set it for the current
+&msdos; session enter <command>SET SURVEXLANG=fr</command> at the MSDOS
+command prompt.</Para></ListItem>
  </VarListEntry>
- <!-- FIXME: windows? -->
+ <VarListEntry><Term>Microsoft Windows</Term>
+   <ListItem><Para>
+Open the Start Menu, navigate to the Settings sub-menu, and open
+Control Panel.  Open System (picture of a computer) and click on
+the Advanced tab.  Chose `Enviromental Variables', and create a
+new one: name <systemitem>SURVEXLANG</systemitem>, value
+<systemitem>fr</systemitem>.  Click OK and the new value should be
+effective immediately.
+   </Para></ListItem>
+ </VarListEntry>
  <VarListEntry><Term>&unix; - csh/tcsh</Term>
    <ListItem><Para><userinput>setenv SURVEXLANG fr</userinput></Para></ListItem>
  </VarListEntry>

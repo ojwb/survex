@@ -1,5 +1,43 @@
 <refsect2><Title>Printer Settings</Title>
 
+<!--
+; Note: don't modify this file or your changes will be overwritten by
+; upgrades.  Instead create:
+;
+;  * /etc/survex/print.ini (Unix - system-wide settings)
+;  * ~/.survex/print.ini (Unix - per user settings)
+;  * myprint.ini in the directory where Survex is installed (other platforms)
+;
+; The drivers look for the section "[dm]", "[ps]", "[pcl]" or "[hpgl]" as
+; appropriate.  The file you create should should contain something like
+; to select a particular printer:
+;
+; [pcl]
+; like=pcl_modern_a4
+;
+; For printdm, it should also contain calibration measurements:
+;
+; [dm]
+; like=dm_24pin_a4
+; mm_across_page=202
+; mm_down_page=278
+;
+; You can override other settings too, such as the output destination:
+;
+; [dm]
+; output_unix=|lpr -Pepson
+; like=dm_24pin_a4
+; mm_across_page=202
+; mm_down_page=278
+;
+; printdm can also drive Canon bubblejets in native mode (which gives a
+; higher resolution than in Epson emulation mode).  To use this,
+; set "like=bj" in the "[dm]" section - like so:
+;
+; [dm]
+; like=bj
+-->
+
 <Para>The format of the
 <filename>print.ini</filename>/<filename>myprint.ini</filename>
 file is similar to Windows <filename/.ini/ files.
@@ -66,7 +104,7 @@ specified printer and paper size.
 
 <!-- FIXME: check this -->
 
-<Para>The examples provided are: [dm_8pin_a4] [dm_8pin_11inch],
+<Para>The examples provided are: [dm_8pin_a4], [dm_8pin_11inch],
 [dm_8pin_12inch], [dm_9pin_11inch], [dm_9pin_12inch], [dm_24pin_a4],
 [dm_24pin_11inch], [dm_24pin_12inch], [dm_panasonic_24pin],
 [dm_epsonlx86_9pin_11inch]

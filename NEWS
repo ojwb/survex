@@ -7,6 +7,8 @@
   number less than one as the scale in the obvious way (so "0.001"
   means "1:1000").
 
+* Minor documentation updates.
+
 Changes in 0.99-prerelease5:
 
 * aven: improved initial sizing of window; "Toggle rotation" toolbar
