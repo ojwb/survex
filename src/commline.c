@@ -1,6 +1,6 @@
 /* > commline.c
  * Command line processing for Survex data reduction program
- * Copyright (C) 1991-1996 Olly Betts
+ * Copyright (C) 1991-1997 Olly Betts
  */
 
 /*
@@ -25,7 +25,7 @@
 1993.06.04 FALSE -> fFalse
 1993.06.11 fixed -U option so that multiple digit numbers should work
 1993.06.16 malloc() -> osmalloc(); syserr() -> fatal(); free() -> osfree()
-1993.06.28 changed (!pthOutput) to (pthutput==NULL)
+1993.06.28 changed (!pthOutput) to (pthOutput==NULL)
            command_file() now osfree()s strings returned by PthFromFnm()
 1993.08.06 changed 'c.CommLine' -> commline.c in error 'where' strings
 1993.08.13 fettled header
@@ -69,7 +69,11 @@
 1995.01.21 fixed bug Tim Long reported with -T not absorbing titles
 1995.01.31 removed unused message note and moved comment
 1996.03.24 changes for Translate table ; buffer -> cmdbuf
+1997.08.24 removed limit on survey station name length
+1998.03.21 fixed up to compile cleanly on Linux
 */
+
+#include <limits.h>
 
 #include "survex.h"
 #include "error.h"
@@ -81,8 +85,8 @@ typedef enum {COMMAND,COMMAND_FILENAME,SPECIAL_CHARS,SVX_FILE,TITLE} Mode;
 
 static void process_command( sz string, sz pth );
 static void command_file( sz pth, sz fnm );
-static void checkmode(Mode mode,void (*fn)( sz, int ),sz szArg);
-static void skipopt( sz sz, int n );
+static void checkmode(Mode mode,void (*fn)( const char *, int ),sz szArg);
+static void skipopt( const char *s, int n );
 
 #define TITLE_LEN 80
 char szSurveyTitle[TITLE_LEN];
@@ -225,22 +229,19 @@ static char *process_command_mode( char *string, char *pth ) {
       case 'T': /* Title */
         mode=TITLE;
         break;
-      case 'U': /* Unique */
-        if (fSwitch) {
-          int ln=0;
-          ch=*(sz++); /* if we have no digits, ln=0 & error is given */
-          while (isdigit(ch)) {
-            ln=ln*10+(ch-'0');
+      case 'U': { /* Unique */
+	 int len = 0;
+         if (fSwitch) {
             ch=*(sz++);
-          }
-          sz--;
-          if (ln>IDENT_LEN || ln<1)
-            error(29,skipopt,string,0);
-          else
-            pcs->Unique=ln;
-        } else
-          pcs->Unique=IDENT_LEN;
-        break;
+	    while (isdigit(ch)) {
+	       len = len*10 + (ch-'0');
+	       ch=*(sz++);
+	    }
+	    sz--;
+	 }
+	 pcs->Truncate = (len < 1) ? INT_MAX : len;
+         break;
+      }
       default:
         error(30,skipopt,string,0);
     }
@@ -312,7 +313,7 @@ static void command_file( sz pth, sz fnm ) {
   int   byte;
   char  cmdbuf[COMMAND_BUFFER_LEN];
   int   i;
-  sz    fnmUsed;
+  char *fnmUsed;
   bool  fQuoted;
 
   fh=fopenWithPthAndExt( pth, fnm, EXT_SVX_CMND, "r", &fnmUsed );
@@ -366,7 +367,7 @@ static void command_file( sz pth, sz fnm ) {
   osfree(pth);
 }
 
-static void checkmode(Mode mode,void (*fn)( sz, int ),sz szArg) {
+static void checkmode(Mode mode,void (*fn)( const char *, int ),sz szArg) {
   int errnum;
   switch (mode) {
     case SVX_FILE:
@@ -381,8 +382,7 @@ static void checkmode(Mode mode,void (*fn)( sz, int ),sz szArg) {
   error(errnum,fn,szArg,0);
 }
 
-static void skipopt( sz sz, int n ) {
-  if (sz)
-    wr(sz,n);
-  wr(msg(83),0);
+static void skipopt( const char *s, int n ) {
+  if (s) wr( s, n );
+  wr( msg(83), 0 );
 }
