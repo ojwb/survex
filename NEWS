@@ -9,7 +9,7 @@
 * cavern: fixed a rarely sighted bug which caused erroneous error about some
   stations not being attached to a fixed point.
 
-* cavern: fixed clino readings to work in interleaved data.
+* cavern: fixed clino readings and DIRECTION to work in interleaved data.
 
 * cavern: improved error reporting when an invalid value is given for a
   DIRECTION reading.
