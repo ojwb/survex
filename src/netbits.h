@@ -94,7 +94,7 @@ bool fZero(const var *v);
 #define PREC "%8.6f"
 
 #ifdef NO_COVARIANCES
-# define print_var(V) printf("("PREC","PREC","PREC")", (V)[0], (V)[1], (V)[2])
+# define print_var(V) printf("("PREC","PREC","PREC")\n", (V)[0], (V)[1], (V)[2])
 #else
 # define print_var(V) \
 printf("/"PREC","PREC","PREC"\\\n|"PREC","PREC","PREC"|\n\\"PREC","PREC","PREC"/\n",\
