@@ -128,7 +128,6 @@ pt:  1 Mem&oacute;ria insuficiente (s&atilde;o necesss&aacute;rios mais %lu byte
 ca:  1 Mem&ograve;ria insuficient (es necessiten %lu bytes m&eacute;s).
 es:  1 Memoria insuficiente (se necesitan %lu bytes de m&aacute;s).
 it:  1 Memoria insufficiente (ci vorrebbero altri %lu bytes).
-# FIXME: translate it
 en:  2 Survex version %s or greater required to process this survey data.
 fr:  2 Une version %s ou sup&eacute;rieure de Survex est n&eacute;cessaire pour traiter ces donn&eacute;es.
 # Gerhard: (this replaces the idea of "greater" with "newer" because it sounds
@@ -138,6 +137,7 @@ de:  2 Survex Version %s oder neuer ist zum Verarbeiten dieser Daten erforderlic
 pt:  2 Para processar estes dados &eacute; necess&acute;ria a vers&atilde;o %s (ou posterior) do Survex.
 ca:  2 Per processar aquestes dades topogr&agrave;fiques es requereix la versi&oacute; %s de Survex (o superior).
 es:  2 Para procesar estos datos topogr&aacute;ficos se requiere la versi&oacute;n %s de Survex (o superior).
+it:  2 Questi dati di topografia possono essere trattati da Survex versione %s o superiore.
 #XXX3
 # indicates a warning message e.g. "spoon.svx:12: warning: *prefix is deprecated"
 en:  4 warning
@@ -165,16 +165,16 @@ pt:  6 *prefix descontinuado - use *begin e *end em seu lugar
 ca:  6 *prefix ja no s'utilitza - fes servir *begin i *end en el seu lloc
 es:  6 *prefix ya no se usa - utiliza *begin y *end en su lugar
 it:  6 *prefix &eacute sconsigliato - usare invece *begin e *end
-# FIXME de it - check addition of `%c' fits with translations, add *set names reference
 en:  7 Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)
 fr:  7 Caract&egrave;re `%c' interdit dans un nom de station (cf *SET NAMES pour modifier la liste des caract&egrave;res autoris&eacute;s)
-de:  7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname
+# shorter, but not as good:
+#de:  7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname (erlaubte Zeichen mit
+#*SET NAMES definieren)
+de:  7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname (erlaubte Zeichen k&ouml;nnen mit *SET NAMES definiert werden)
 pt:  7 Caracter `%c' n&atilde;o permitido em nome de base (use *SET NAMES para configurar os cararcteres permitidos)
 ca:  7 Car&agrave;cter `%c' no perm&egrave;s al nom d'una estaci&oacute; (utilitza *SET NAMES per definir els car&agrave;cters permesos)
 es:  7 Car&aacute;cter `%c' no permitido en el nombre de una estaci&oacute;n (utiliza *SET NAMES para definir los caracteres permitidos)
-ca:  7 Car&agrave;cter `%c' no perm&egrave;s al nom d'una estaci&oacute;
-es:  7 Car&aacute;cter `%c' no permitido en el nombre de una estaci&oacute;n
-it:  7 Carattere `%c' non permesso nel nome di stazione
+it:  7 Carattere `%c' non permesso nel nome di stazione (usare *SET NAMES per cambiare i caratteri permessi)
 en:  8 Field may not be omitted
 fr:  8 Champ non optionnel
 de:  8 Eintragung fehlt
@@ -189,7 +189,7 @@ pt:  9 Valor num&eacute;rico esperado
 ca:  9 S'espera un camp numeric
 es:  9 Se espera un campo num&eacute;rico
 it:  9 Questo campo &eacute; numerico
-#FIXME translate "Found `%s'," fr it (c.f. 31 and 32)
+#FIXME translate "Found `%s'," fr (c.f. 31 and 32)
 en: 10 Found `%s', expecting `OFF', `UPPER', or `LOWER'
 fr: 10 On attendait `OFF', `UPPER', ou `LOWER'
 # Gerhard: "`%s' gelesen" means "have read `%s'" - "gefunden", the literal
@@ -197,9 +197,9 @@ fr: 10 On attendait `OFF', `UPPER', ou `LOWER'
 # NB there is no comma before "oder"
 de: 10 `%s' gelesen, `OFF', `UPPER' oder `LOWER' erwartet
 pt: 10 Encontrado `%s' quando `OFF', `UPPER' ou `LOWER' eram esperados
-ca: 10 Trobat %s', esperant `OFF', `UPPER', o `LOWER'
-es: 10 Encontrado %', esperando `OFF', `UPPER', o `LOWER'
-it: 10 Atteso `OFF', `UPPER' o `LOWER'
+ca: 10 Trobat `%s', esperant `OFF', `UPPER', o `LOWER'
+es: 10 Encontrado `%s', esperando `OFF', `UPPER', o `LOWER'
+it: 10 Trovato `%s', atteso `OFF', `UPPER' o `LOWER'
 en: 11 Bug in program detected! Please report this to the authors
 fr: 11 Bug d&eacute;tect&eacute; dans le programme! Signaler ce message &agrave; l'auteur S.V.P.
 de: 11 Fehler im Programm, bitte informieren Sie die Programmierer dar&uuml;ber
@@ -207,7 +207,6 @@ pt: 11 Erro no programa! Por favor, comunique aos autores
 ca: 11 Error detectat al programa! Si us plau comunica-ho als autors
 es: 11 Error detectado en el programa! Por favor comun&iacute;calo a los autores
 it: 11 Individuato un errore nel programma! Per favore comunicatelo agli autori
-# FIXME translate check it (c.f. old12 at end of file)
 en: 12 Unknown command `%s'
 fr: 12 Commande inconnue `%s'
 # Gerhard says "Kommando" and "Befehl" are equally valid translations - use
@@ -314,7 +313,6 @@ it: 24 Non riesco ad aprire il file dei dati '%s'
 #XXX26
 #XXX27
 #XXX28
-# FIXME TRANSLATE it
 en: 29 Reentering an existing prefix level is deprecated (previously entered at %s:%lu)
 fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute; (d&eacute;j&agrave; utilis&eacute; en: %s:%lu)
 # deprecated is a wonderful English word lacking a wonderful German
@@ -326,23 +324,24 @@ de: 29 Erneutes Einf&uuml;hren eines Pr&auml;fix ist veraltet (bereits in %s:%lu
 pt: 29 A re-utiliza&ccedil;&atilde;o de um prefixo &eacute; desaconselhada (utilizado previamente em %s:%lu)
 ca: 29 Reentrar en un nivell de prefix existent ja no s'utilitza (previament entrat a %s:%lu)
 es: 29 Reentrar en un nivel de prefijo existente yo no se usa (previamente entrado en %s:%lu)
+it: 29 Reimmettere un prefisso di livello gi&aacute; esistente &eacute; sconsigliato (gi&aacute; immesso in %s:%lu)
 #XXX30
-# 31 c.f. 10, 32 FIXME TRANSLATE fr it
+# 31 c.f. 10, 32 FIXME TRANSLATE fr
 en: 31 Found `%s', expecting `PLUMBS'
 fr: 31 On attendait `PLUMBS'
 de: 31 `%s' gelesen, `PLUMBS' erwartet
 pt: 31 Encontrado `%s' quando `PLUMBS' era esperado
 ca: 31 Trobat `%s', esperant `PLUMBS'
 es: 31 Encontrado `%s', esperando `PLUMBS'
-it: 31 Atteso `PLUMBS'
-# 32 c.f. 10, 31 FIXME TRANSLATE fr it
+it: 31 Trovato `%s', atteso `PLUMBS'
+# 32 c.f. 10, 31 FIXME TRANSLATE fr
 en: 32 Found `%s', expecting `ON' or `OFF'
 fr: 32 On attendait `ON' ou `OFF'
 de: 32 `%s' gelesen, `ON' oder `OFF' erwartet
 pt: 32 Encontrado `%s' quando `ON' ou `OFF' eram esperados
 ca: 32 Trobat `%s', esperant `ON' o `OFF'
 es: 32 Encontrado `%s', esperando `ON' o `OFF'
-it: 32 Atteso `ON' o `OFF'
+it: 32 Trovato `%s', atteso `ON' o `OFF'
 en: 33 Only one station in equate list
 fr: 33 Une seule station dans une liste d'&eacute;quivalences
 de: 33 Nur ein Me&szlig;punkt im EQUATE - Befehl angegeben
@@ -351,7 +350,6 @@ pt: 33 Somente uma base na lista de equival&ecirc;ncia
 ca: 33 Sols una estaci&oacute; a la llista d'equival&egrave;ncia
 es: 33 Solo una estaci&oacute;n en la lista de equivalencia
 it: 33 Solo una stazione nella lista di equivalenza
-# FIXME it - check addition of `%s' fits with translations
 en: 34 Unknown quantity `%s'
 fr: 34 Quantit&eacute; `%s' inconnue
 de: 34 Unbekannte Gr&ouml;&szlig;e `%s'
@@ -359,7 +357,6 @@ pt: 34 Tipo de quantidade `%s' desconhecida
 ca: 34 Quantitat `%s' desconeguda
 es: 34 Cantidad `%s' desconocida
 it: 34 Quantit&aacute; `%s' sconosciuta
-# FIXME it - check addition of `%s' fits with translations
 en: 35 Unknown units `%s'
 fr: 35 Unit&eacute; `%s' inconnue
 #germ: 35 Unbekannte Einheiten `%s'
@@ -368,14 +365,15 @@ pt: 35 Unidade `%s' desconhecida
 ca: 35 Unitats `%s' desconegudes
 es: 35 Unidades `%s' desconocidas
 it: 35 Unit&aacute; `%s' sconosciute
-# FIXME TRANSLATE it
 # "*begin" / "*end foo"
+# TRANSLATE it dubious
 en: 36 Matching BEGIN tag has no prefix
 fr: 36 Le tag BEGIN correspondant n'a pas de pr&eacute;fixe
 de: 36 Zugeh&ouml;riges BEGIN hatte keine Pr&auml;fix
 pt: 36 O BEGIN correspondente n&atilde;o tem prefixo 
 ca: 36 La instrucci&oacute; BEGIN corresponent no te prefix
 es: 36 La instrucci&oacute;n BEGIN correspondiente no tiene prefijo
+it: 36 BEGIN / END senza prefisso
 #
 en: 37 Invalid units for quantity
 fr: 37 Unit&eacute; incorrecte pour une quantit&eacute;
@@ -394,7 +392,6 @@ pt: 38 Mem&oacute;ria insuficiente %.0s
 ca: 38 Mem&ograve;ria insuficient %.0s
 es: 38 Mem&oacute;ria insuficiente %.0s
 it: 38 Memoria insufficiente %.0s
-# FIXME it - check addition of `%s' fits with translations
 en: 39 Unknown instrument `%s'
 fr: 39 Instrument `%s' inconnu
 de: 39 Unbekanntes Instrument `%s'
@@ -411,7 +408,6 @@ pt: 40 Fator de escala tem que ser 1.0 para comando DECLINATION
 ca: 40 El factor d'escala ha d'&egrave;sser 1.0 pel comandament DECLINATION
 es: 40 El factor de escala debe ser 1.0 para el comando DECLINATION
 it: 40 Il fattore di scala per il comando DECLINATION deve essere 1.0
-# FIXME it - check addition of `%s' fits with translations
 en: 41 Unknown setting `%s'
 fr: 41 Param&egrave;tres `%s' inconnus
 #germ: 41 Unbekannter Parameter `%s'
@@ -420,7 +416,6 @@ pt: 41 Configura&ccedil;&atilde;o `%s' desconhecida
 ca: 41 Configuraci&oacute; `%s' desconeguda
 es: 41 Configuraci&oacute;n `%s' desconocida
 it: 41 Parametro `%s' sconosciuto
-#ital: 41 Configurazione `%s' sconosciuta
 en: 42 Unknown character class `%s'
 fr: 42 Classe de caract&egrave;re inconnue `%s'
 de: 42 Unbekannte Zeichenklasse `%s'
@@ -609,14 +604,16 @@ it: 64 Mancano dati
 #ital: 64 Troppo pochi dati
 # e.g. trying to refer to an invalid FNORD data style
 # GN(3): ie unknown STYLE?  ok, rephrasing.
-# FIXME it - check addition of `%s' fits with translations
 en: 65 STYLE `%s' unknown
 fr: 65 STYLE `%s' inconnu
 de: 65 STYLE `%s' unbekannt
 pt: 65 STYLE `%s' com problemas
 ca: 65 STYLE `%s' desconegut
 es: 65 STYLE `%s' desconocido
-it: 65 STYLE `%s' scorretto
+it: 65 STYLE `%s' sconosciuto
+# The meaning of scorretto is that the STYLE is written wrong but is similar 
+# to a known style.
+#it: 65 STYLE `%s' scorretto
 #XXX66
 # complains about a situation like trying to define two from stations per leg
 en: 67 Duplicate datum `%s'
@@ -777,9 +774,7 @@ de: 88 Formatfehler in der Zeichensatzdatei '%s'
 pt: 88 Erro no formato do arquivo de fontes '%s'
 ca: 88 Error en el format del fitxer de fonts '%s'
 es: 88 Error en el formato del fichero de fuentes '%s'
-#FIXME: "del del" is probably not correct in italian: it
-it: 88 Errore nel formato del del file dei caratteri '%s'
-#ital: 88 Errore nel formato del font file '%s'
+it: 88 Errore nel formato del file dei caratteri '%s'
 # cf no. 84.
 en: 89 Ignoring rest of line
 fr: 89 Ignore le restant de la ligne
