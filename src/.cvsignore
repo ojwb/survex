@@ -1,6 +1,7 @@
 .deps
 Makefile
 Makefile.in
+aven
 cavern
 printdm
 printps
