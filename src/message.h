@@ -1,6 +1,6 @@
 /* message.h
  * Function prototypes for message.c
- * Copyright (C) 1998-2001 Olly Betts
+ * Copyright (C) 1998-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ extern "C" {
 #define CHARSET_WINCP1252   5
 #define CHARSET_ISO_8859_15 6
 #define CHARSET_DOSCP437    7
+#define CHARSET_ISO_8859_2  8
 
 extern int msg_warnings; /* keep track of how many warnings we've given */
 extern int msg_errors;   /* and how many (non-fatal) errors */

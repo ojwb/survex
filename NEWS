@@ -25,6 +25,8 @@ Changes in 1.0.8:
 * cavern: N-S, E-W, and vertical ranges now only count stations which are in
   underground surveys.
 
+* Slovak translation added.
+
 Changes in 1.0.7:
 
 * print*: halted with a failed assertion in 1.0.4-1.0.6.

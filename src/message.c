@@ -289,6 +289,7 @@ default_charset(void)
 #endif
       if (p == 437) return CHARSET_DOSCP437;
       if (p == 850) return CHARSET_DOSCP850;
+      if (p == 912) return CHARSET_ISO_8859_2;
    }
    return CHARSET_USASCII;
 #elif (OS==WIN32)
@@ -349,6 +350,7 @@ default_charset(void)
 		  while (chset < p && *chset && !isdigit(*chset)) chset++;
 		  switch (atoi(chset)) {
 		   case 1: return CHARSET_ISO_8859_1;
+		   case 2: return CHARSET_ISO_8859_2;
 		   case 15: return CHARSET_ISO_8859_15;
 		   default: return CHARSET_USASCII;
 		  }
@@ -401,6 +403,81 @@ add_unicode(int charset, unsigned char *p, int value)
 	 return 1;
       }
       break;
+   case CHARSET_ISO_8859_2:
+      if (value >= 0xa0) {
+	 int v = 0;
+	 switch (value) {
+	    case 0xa0: case 0xa4: case 0xa7: case 0xa8: case 0xad: case 0xb0:
+	    case 0xb4: case 0xb8: case 0xc1: case 0xc2: case 0xc4: case 0xc7:
+	    case 0xc9: case 0xcb: case 0xcd: case 0xce: case 0xd3: case 0xd4:
+	    case 0xd6: case 0xd7: case 0xda: case 0xdc: case 0xdd: case 0xdf:
+	    case 0xe1: case 0xe2: case 0xe4: case 0xe7: case 0xe9: case 0xeb:
+	    case 0xed: case 0xee: case 0xf3: case 0xf4: case 0xf6: case 0xf7:
+	    case 0xfa: case 0xfc: case 0xfd:
+	       v = value; break;
+	    case 0x104: v = '\xa1'; break;
+	    case 0x2d8: v = '\xa2'; break;
+	    case 0x141: v = '\xa3'; break;
+	    case 0x13d: v = '\xa5'; break;
+	    case 0x15a: v = '\xa6'; break;
+	    case 0x160: v = '\xa9'; break;
+	    case 0x15e: v = '\xaa'; break;
+	    case 0x164: v = '\xab'; break;
+	    case 0x179: v = '\xac'; break;
+	    case 0x17d: v = '\xae'; break;
+	    case 0x17b: v = '\xaf'; break;
+	    case 0x105: v = '\xb1'; break;
+	    case 0x2db: v = '\xb2'; break;
+	    case 0x142: v = '\xb3'; break;
+	    case 0x13e: v = '\xb5'; break;
+	    case 0x15b: v = '\xb6'; break;
+	    case 0x2c7: v = '\xb7'; break;
+	    case 0x161: v = '\xb9'; break;
+	    case 0x15f: v = '\xba'; break;
+	    case 0x165: v = '\xbb'; break;
+	    case 0x17a: v = '\xbc'; break;
+	    case 0x2dd: v = '\xbd'; break;
+	    case 0x17e: v = '\xbe'; break;
+	    case 0x17c: v = '\xbf'; break;
+	    case 0x154: v = '\xc0'; break;
+	    case 0x102: v = '\xc3'; break;
+	    case 0x139: v = '\xc5'; break;
+	    case 0x106: v = '\xc6'; break;
+	    case 0x10c: v = '\xc8'; break;
+	    case 0x118: v = '\xca'; break;
+	    case 0x11a: v = '\xcc'; break;
+	    case 0x10e: v = '\xcf'; break;
+	    case 0x110: v = '\xd0'; break;
+	    case 0x143: v = '\xd1'; break;
+	    case 0x147: v = '\xd2'; break;
+	    case 0x150: v = '\xd5'; break;
+	    case 0x158: v = '\xd8'; break;
+	    case 0x16e: v = '\xd9'; break;
+	    case 0x170: v = '\xdb'; break;
+	    case 0x162: v = '\xde'; break;
+	    case 0x155: v = '\xe0'; break;
+	    case 0x103: v = '\xe3'; break;
+	    case 0x13a: v = '\xe5'; break;
+	    case 0x107: v = '\xe6'; break;
+	    case 0x10d: v = '\xe8'; break;
+	    case 0x119: v = '\xea'; break;
+	    case 0x11b: v = '\xec'; break;
+	    case 0x10f: v = '\xef'; break;
+	    case 0x111: v = '\xf0'; break;
+	    case 0x144: v = '\xf1'; break;
+	    case 0x148: v = '\xf2'; break;
+	    case 0x151: v = '\xf5'; break;
+	    case 0x159: v = '\xf8'; break;
+	    case 0x16f: v = '\xf9'; break;
+	    case 0x171: v = '\xfb'; break;
+	    case 0x163: v = '\xfe'; break;
+	    case 0x2d9: v = '\xff'; break;
+	 }
+	 if (v = 0) break;
+	 value = v;
+      }
+      *p = value;
+      return 1;
    case CHARSET_ISO_8859_15:
       switch (value) {
        case 0xa4: case 0xa6: case 0xb0: case 0xc4:
@@ -410,10 +487,12 @@ add_unicode(int charset, unsigned char *p, int value)
        case 0x153: value = 0xd5; break; /* &oelig; */
 #if 0
        case 0x0: value = 0xa4; break; /* euro */
-       case 0x0: value = 0xa6; break; /* Scaron */
-       case 0x0: value = 0xb0; break; /* scaron */
-       case 0x0: value = 0xc4; break; /* Zcaron */
-       case 0x0: value = 0xd0; break; /* zcaron */
+#endif
+       case 0x160: value = 0xa6; break; /* Scaron */
+       case 0x161: value = 0xb0; break; /* scaron */
+       case 0x17d: value = 0xc4; break; /* Zcaron */
+       case 0x17e: value = 0xd0; break; /* zcaron */
+#if 0
        case 0x0: value = 0xd6; break; /* Ydiersis */
 #endif
       }
@@ -442,7 +521,7 @@ add_unicode(int charset, unsigned char *p, int value)
       }
       break;
 #elif (OS==WIN32)
-   case CHARSET_WINCP1252:
+   case CHARSET_WINCP1250:
       /* MS Windows extensions to ISO-8859-1 */
       switch (value) {
        case 0x152: value = 0x8c; break; /* &OElig; */
@@ -456,6 +535,101 @@ add_unicode(int charset, unsigned char *p, int value)
 	 return 1;
       }
       break;
+   case CHARSET_WINCP1250:
+      /* MS Windows rough equivalent to ISO-8859-2 */
+      if (value >= 0x80) {
+	 int v = 0;
+	 switch (value) {
+	    case 0xa0: case 0xa4: case 0xa6: case 0xa7: case 0xa8: case 0xa9:
+	    case 0xab: case 0xac: case 0xad: case 0xae: case 0xb0: case 0xb1:
+	    case 0xb4: case 0xb5: case 0xb6: case 0xb7: case 0xb8: case 0xbb:
+	    case 0xc1: case 0xc2: case 0xc4: case 0xc7: case 0xc9: case 0xcb:
+	    case 0xcd: case 0xce: case 0xd3: case 0xd4: case 0xd6: case 0xd7:
+	    case 0xda: case 0xdc: case 0xdd: case 0xdf: case 0xe1: case 0xe2:
+	    case 0xe4: case 0xe7: case 0xe9: case 0xeb: case 0xed: case 0xee:
+	    case 0xf3: case 0xf4: case 0xf6: case 0xf7: case 0xfa: case 0xfc:
+	    case 0xfd: 
+	       v = value; break;
+	    case 0x20ac: v = '\x80'; break;
+	    case 0x201a: v = '\x82'; break;
+	    case 0x201e: v = '\x84'; break;
+	    case 0x2026: v = '\x85'; break;
+	    case 0x2020: v = '\x86'; break;
+	    case 0x2021: v = '\x87'; break;
+	    case 0x2030: v = '\x89'; break;
+	    case 0x0160: v = '\x8a'; break;
+	    case 0x2039: v = '\x8b'; break;
+	    case 0x015a: v = '\x8c'; break;
+	    case 0x0164: v = '\x8d'; break;
+	    case 0x017d: v = '\x8e'; break;
+	    case 0x0179: v = '\x8f'; break;
+	    case 0x2018: v = '\x91'; break;
+	    case 0x2019: v = '\x92'; break;
+	    case 0x201c: v = '\x93'; break;
+	    case 0x201d: v = '\x94'; break;
+	    case 0x2022: v = '\x95'; break;
+	    case 0x2013: v = '\x96'; break;
+	    case 0x2014: v = '\x97'; break;
+	    case 0x2122: v = '\x99'; break;
+	    case 0x0161: v = '\x9a'; break;
+	    case 0x203a: v = '\x9b'; break;
+	    case 0x015b: v = '\x9c'; break;
+	    case 0x0165: v = '\x9d'; break;
+	    case 0x017e: v = '\x9e'; break;
+	    case 0x017a: v = '\x9f'; break;
+	    case 0x02c7: v = '\xa1'; break;
+	    case 0x02d8: v = '\xa2'; break;
+	    case 0x0141: v = '\xa3'; break;
+	    case 0x0104: v = '\xa5'; break;
+	    case 0x015e: v = '\xaa'; break;
+	    case 0x017b: v = '\xaf'; break;
+	    case 0x02db: v = '\xb2'; break;
+	    case 0x0142: v = '\xb3'; break;
+	    case 0x0105: v = '\xb9'; break;
+	    case 0x015f: v = '\xba'; break;
+	    case 0x013d: v = '\xbc'; break;
+	    case 0x02dd: v = '\xbd'; break;
+	    case 0x013e: v = '\xbe'; break;
+	    case 0x017c: v = '\xbf'; break;
+	    case 0x0154: v = '\xc0'; break;
+	    case 0x0102: v = '\xc3'; break;
+	    case 0x0139: v = '\xc5'; break;
+	    case 0x0106: v = '\xc6'; break;
+	    case 0x010c: v = '\xc8'; break;
+	    case 0x0118: v = '\xca'; break;
+	    case 0x011a: v = '\xcc'; break;
+	    case 0x010e: v = '\xcf'; break;
+	    case 0x0110: v = '\xd0'; break;
+	    case 0x0143: v = '\xd1'; break;
+	    case 0x0147: v = '\xd2'; break;
+	    case 0x0150: v = '\xd5'; break;
+	    case 0x0158: v = '\xd8'; break;
+	    case 0x016e: v = '\xd9'; break;
+	    case 0x0170: v = '\xdb'; break;
+	    case 0x0162: v = '\xde'; break;
+	    case 0x0155: v = '\xe0'; break;
+	    case 0x0103: v = '\xe3'; break;
+	    case 0x013a: v = '\xe5'; break;
+	    case 0x0107: v = '\xe6'; break;
+	    case 0x010d: v = '\xe8'; break;
+	    case 0x0119: v = '\xea'; break;
+	    case 0x011b: v = '\xec'; break;
+	    case 0x010f: v = '\xef'; break;
+	    case 0x0111: v = '\xf0'; break;
+	    case 0x0144: v = '\xf1'; break;
+	    case 0x0148: v = '\xf2'; break;
+	    case 0x0151: v = '\xf5'; break;
+	    case 0x0159: v = '\xf8'; break;
+	    case 0x016f: v = '\xf9'; break;
+	    case 0x0171: v = '\xfb'; break;
+	    case 0x0163: v = '\xfe'; break;
+	    case 0x02d9: v = '\xff'; break;
+	 }
+	 if (v = 0) break;
+	 value = v;
+      }
+      *p = value;
+      return 1;
 #endif
 #if (OS==MSDOS)
    case CHARSET_DOSCP437: {
@@ -572,26 +746,34 @@ add_unicode(int charset, unsigned char *p, int value)
       p[1] = 'E'; return 2;
     case 198 /* Æ */:
       *p = 'A'; p[1] = 'E'; return 2;
-    case 199 /* Ç */:
+    case 199 /* Ç */: case 268: /* &Ccaron; */
       *p = 'C'; return 1;
+    case 270: /* &Dcaron; */
+      *p = 'D'; return 1;
     case 200 /* È */: case 201 /* É */: case 202 /* Ê */: case 203 /* Ë */:
       *p = 'E'; return 1;
     case 204 /* Ì */: case 205 /* Í */: case 206 /* Î */: case 207 /* Ï */:
       *p = 'I'; return 1;
     case 208 /* Ð */: case 222 /* Þ */:
       *p = 'T'; p[1] = 'H'; return 2;
+    case 315: /* &Lacute; */
+      *p = 'L'; return 1;
     case 209 /* Ñ */:
       *p = 'N'; return 1;
     case 210 /* Ò */: case 211 /* Ó */: case 212 /* Ô */: case 213 /* Õ */:
       *p = 'O'; return 1;
     case 214 /* Ö */: /* &Ouml; */ case 0x152: /* &OElig; */
       *p = 'O'; p[1] = 'E'; return 2;
+    case 352: /* &Scaron; */
+      *p = 'S'; return 1;
     case 217 /* Ù */: case 218 /* Ú */: case 219 /* Û */:
       *p = 'U'; return 1;
     case 220 /* Ü */: /* &Uuml; */
       *p = 'U'; p[1] = 'E'; return 2;
     case 221 /* Ý */:
       *p = 'Y'; return 1;
+    case 381: /* &Zcaron; */
+      *p = 'Z'; return 1;
     case 223 /* ß */:
       p[1] = *p = 's'; return 2;
     case 224 /* à */: case 225 /* á */: case 226 /* â */: case 227 /* ã */:
@@ -600,14 +782,25 @@ add_unicode(int charset, unsigned char *p, int value)
       *p = 'a'; p[1] = 'e'; return 2;
     case 229 /* å */:
       p[1] = *p = 'a'; return 2;
-    case 231 /* ç */:
+    case 231 /* ç */: case 269 /* &ccaron; */:
       *p = 'c'; return 1;
+    case 271: /* &dcaron; */
+      *p = 'd'; return 1;
     case 232 /* è */: case 233 /* é */: case 234 /* ê */: case 235 /* ë */:
+    case 283 /* &ecaron; */:
       *p = 'e'; return 1;
     case 236 /* ì */: case 237 /* í */: case 238 /* î */: case 239 /* ï */:
       *p = 'i'; return 1;
-    case 241 /* ñ */:
+    case 316 /* &lacute; */:
+      *p = 'l'; return 1;
+    case 241 /* ñ */: case 328 /* &ncaron; */:
       *p = 'n'; return 1;
+    case 345: /* &rcaron; */
+      *p = 'r'; return 1;
+    case 353: /* &scaron; */
+      *p = 's'; return 1;
+    case 357: /* &tcaron; */
+      *p = 't'; return 1;
     case 240 /* ð */: case 254 /* þ */:
       *p = 't'; p[1] = 'h'; return 2;
     case 242 /* ò */: case 243 /* ó */: case 244 /* ô */: case 245 /* õ */:
@@ -615,11 +808,14 @@ add_unicode(int charset, unsigned char *p, int value)
     case 246 /* ö */: /* &ouml; */ case 0x153: /* &oelig; */
       *p = 'o'; p[1] = 'e'; return 2;
     case 249 /* ù */: case 250 /* ú */: case 251 /* û */:
+    case 367 /* &uring; */:
       *p = 'u'; return 1;
     case 252 /* ü */: /* &uuml; */
       *p = 'u'; p[1] = 'e'; return 2;
     case 253 /* ý */: case 255 /* ÿ */:
       *p = 'y'; return 1;
+    case 382: /* &zcaron; */
+      *p = 'z'; return 1;
    }
 #ifdef DEBUG
    fprintf(stderr, "failed to transliterate\n");

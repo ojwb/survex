@@ -564,6 +564,7 @@ pt: 84 Ignorando toda a linha
 ca: 84 Ignorant tota la l&iacute;nia
 es: 84 Ignorando toda la l&iacute;nea
 it: 84 Intera linea ignorata
+sk: 84 Ignoruje sa cel&yacute; riadok
 #
 en:503 Ignoring:
 de:503 Ignoriert:
@@ -572,3 +573,4 @@ pt:503 Ignorando:
 ca:503 Ignorant:
 es:503 Ignorando:
 it:503 Ignorando:
+sk:503 Ignorovan&eacute;:
