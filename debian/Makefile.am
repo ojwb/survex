@@ -13,7 +13,7 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
 	echo Standards-Version: 3.5.6.0 >> control
 	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
-	echo 'Build-Depends: debhelper (>= 1.1.17), libwxgtk2.3-dev' >> control
+	echo 'Build-Depends: debhelper (>= 1.1.17), libwxgtk2.3-dev|libwxgtk2.2-dev' >> control
 	echo >> control
 	echo Package: ${PACKAGE} >> control
 	echo Architecture: any >> control

@@ -21,7 +21,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex WXCONFIG=/usr/bin/wxgtk-2.3-config
+	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex WXCONFIG=`test -x /usr/bin/wxgtk-2.3-config && echo /usr/bin/wxgtk-2.3-config || echo /usr/bin/wxgtk-2.2-config`
 	$(MAKE)
 ifeq	($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
 	$(MAKE) check
