@@ -31,11 +31,13 @@
 #include "img.h"
 
 #include <list>
-// FIXME: do this with a configure test...
-#if defined(__GNUC__) && __GNUC__ == 3
+#ifdef HAVE_EXT_HASH_MAP
 #include <ext/hash_map>
-#else
+#elif defined HAVE_HASH_MAP
 #include <hash_map>
+#else
+#include <map>
+#define hash_map map
 #endif
 
 using namespace std;

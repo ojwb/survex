@@ -243,6 +243,9 @@ if test -n "$AVEN"; then
       no) ;;
       *) AC_MSG_ERROR(bad value ${enableval} for --enable-opengl) ;;
     esac])
+    AC_LANG(C++)
+    AC_CHECK_HEADERS(ext/hash_map hash_map, break)
+    AC_LANG(C)
   fi
 fi
 
