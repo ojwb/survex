@@ -1000,10 +1000,11 @@ fr:103 Il vous faut calibrer votre imprimante - voir le manuel pour plus de d&ea
 de-de,de-ch:103 Drucker muss kalibriert werden - n&auml;her beschrieben im Handbuch.
 de:         103 Drucker mu&szlig; kalibriert werden - n&auml;her beschrieben im Handbuch.
 pt:103 &Eacute; necess&aacute;rio calibrar a impressora - veja como no manual da mesma.
-it: 103 E' necessario calibrare la stampante - consultare il manuale per i dettagli
+it:103 &Eacute; necessario calibrare la stampante - consultare il manuale per i dettagli
 #
 en:104 `*data %s %c ...' is deprecated - use `*data %s ...' instead
 de:104 `*data %s %c ...' ist veraltet - stattdessen `*data %s ...' verwenden
+pt:104 `*data %s %c ...' obsoleto - use `*data %s ...' no lugar
 it:104 `*data %s %c ...' &eacute; una funzionalit&aacute; non pi&uacute; usata - usare `*data %s ...'
 #
 en:105 Reading in data - please wait...
@@ -1923,6 +1924,8 @@ en:219 Reading `%s' duplicates previous reading(s)
 # de has the reverse singular/plural arrangement :)
 # (i.e., singular has the final -n, plural doesn't)
 de:219 Eintrag `%s' wiederholt fr&uuml;here(n)
+pt:219 Valor `%s' duplica valor(es) anterior(es)
+it:219 La lettura `%s' duplica precedenti letture
 #
 # back to aven...
 #
@@ -1946,22 +1949,34 @@ it:221 @Esci
 # error from "*data normal newline from to tape compass clino"
 en:222 NEWLINE can't be the first reading
 de:222 NEWLINE kann nicht der erste Eintrag sein
+pt:222 NEWLINE n&atilde;o pode ser o primeiro valor
+it:222 NEWLINE non pu&oacute; essere la prima lettura
 # error from "*data normal from to tape compass clino newline"
 en:223 NEWLINE can't be the last reading
 de:223 NEWLINE kann nicht der letzte Eintrag sein
+pt:223 NEWLINE n&atilde;o pode ser o &uacute;ltimo valor
+it:223 NEWLINE non pu&oacute; essere l'ultima lettura
 # error from "*data normal station tape compass clino"
 en:224 Interleaved readings, but no NEWLINE
 de:224 Abwechselnde Eintr&auml;ge, aber kein NEWLINE
+pt:224 Valores em mais de uma linha sem NEWLINE
+it:224 Letture su pi&uacute; linee, ma nessuna NEWLINE
 # caused by e.g. "*data diving station newline depth tape compass"
 en:225 Reading `%s' must occur before NEWLINE
 de:225     Eintrag `%s' mu&szlig; vor NEWLINE kommen
 de-de,de-ch:225 Eintrag `%s' muss vor NEWLINE kommen
+pt:225 Valor `%s' deve estar antes do NEWLINE
+it:225 La lettura `%s' deve precedere NEWLINE
 # e.g. "*data normal from to tape newline compass clino"
 en:226 NEWLINE can only be preceded by STATION, DEPTH, and COUNT
 de:226 Vor NEWLINE kann nur STATION, DEPTH oder COUNT stehen
+pt:226 NEWLINE s&oacute; pode ser precedido por STATION, DEPTH e COUNT
+it:226 NEWLINE pu&oacute; essere preceduto solamente da STATION, DEPTH e COUNT
 #
 en:227 Can't calibrate angular and length quantities together
 de:227 Winkel und L&auml;ngen k&ouml;nnen nicht gleichzeitig kalibriert werden
+pt:227 N&atilde;o &eacute; poss&iacute;vel calibrar &acirc;ngulos e comprimentos ao mesmo tempo
+it:227 Le quantit&aacute; di lunghezza e angolari non possono essere calibrate insieme
 # XXX228,229
 #
 # The accelerators must be different within this group
@@ -2203,6 +2218,8 @@ it:280 @Inverte il senso##Ctrl+R
 en:281 @Cancel Measuring Line##Escape
 de:281     Me&szlig;linie @abschalten##Escape
 de-de,de-ch:281 Messlinie @abschalten##Escape
+pt:281 @Cancelar linha de medida##Escape
+it:281 @Cancella la linea di misura##Escape
 #
 # The accelerators must be different within this group
 # c.f. 205
@@ -2506,9 +2523,12 @@ it:335 Quota
 # error if you try to drag multiple files to the aven window
 en:336 You may only view one 3d file at a time.
 de:336 Es kann nur eine 3D-Datei zugleich angezeigt werden.
+pt:336 S&oacute; &eacute; poss&iacute;vel examinar um arquivo 3d de cada vez
+it:336 &Eacute; possibile visualizzare solamente un file 3D alla volta.
 #
 en:337 Side P@anel
 de:337 Seitliches @Kontrollfeld
+pt:337 P@ainel lateral
 # show coordinates (N = North or Northing, E = East or Easting)
 en:338 "  %d E, %d N"
 fr:338 "  %d E, %d N"
@@ -2522,7 +2542,7 @@ it:338 "  %d E, %d N"
 #  From <stationname>
 #  H: 123m V: 234m
 #  Dist: 456m  Brg: 200
-# TRANSLATE fr pt ca es it (check translation adapted from elsewhere)
+# TRANSLATE fr ca es (check translation adapted from elsewhere)
 en:339 From %s
 fr:339 De %s
 de:339 Von %s aus
@@ -2533,9 +2553,13 @@ it:339 Da %s
 #
 en:340 "  H %dm, V %dm"
 de:340 "  H %dm, V %dm"
+pt:340 "  H %dm, V %dm"
+it:340 "  O %dm, V %dm"
 #
 en:341 "  Dist %dm, Brg %03d&deg;"
 de:341 "  Dist %dm, Richt. %03d&deg;"
+pt:341 "  Dist %dm, Azim %03d&deg;"
+it:341 "  Dist %dm, Azm. %03d&deg;"
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s
@@ -2567,21 +2591,25 @@ en:1000 Can't open message file `%s' using path `%s'
 fr:1000 Impossible d'ouvrir le fichier `%s' en utilisant le chemin `%s'
 de:1000 Kann Meldungsdatei `%s' im Pfad `%s' nicht &ouml;ffnen
 pt:1000 Imposs&iacute;vel abrir arquivo de mansagens `%s' usando rota `%s'
+it:1000 Impossibile aprire il file dei messaggi `%s' usando il percorso `%s'
 #
 en:1001 Problem with message file `%s'
 fr:1001 Probl&egrave;me avec le fichier de messages `%s'
 de:1001 Problem mit Meldungsdatei `%s'
 pt:1001 Problemas com arquivo de mensagens `%s'
+it:1001 C'&eacute un problema con il file dei messaggi `%s'
 #
 en:1002 I don't understand this message file version
 fr:1002 Je ne comprends pas cette version de fichier de messages
 de:1002 Version dieser Meldungsdatei unbekannt
 pt:1002 Vers&atilde;o deste arquivo de mensagens incompreens&iacute;vel
+it:1002 Non riesco a comprendere questo file di messaggi
 #
 en:1003 Message file truncated?
 fr:1003 Fichier de messages incomplet?
 de:1003 Meldungsdatei abgeschnitten?
 pt:1003 Arquivo de mensagens truncado?
+it:1003 File dei messaggi troncato?
 #
 en:1004 Out of memory (couldn't find %lu bytes).
 fr:1004 Plus de m&eacute;moire (%lu octets n&eacute;cessaires, non disponibles).
