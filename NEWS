@@ -39,6 +39,14 @@
 
 * Fixed obscure problems when configure is rerun with a different prefix
 
+* If the environmental variable SURVEXLANG isn't set, LANG is now
+  check before resorting to the default.  LANG is a standard way to
+  specify the language for GNU applications - SURVEXLANG is still
+  useful as a way to specify an alternate language if Survex doesn't
+  support your prefered language.
+
+* Cured superfluous copy of svxdocs in doc/svxdocs in source distribution
+
 Changes in 0.91:
 
 * Fixed problem with message files with accented characters

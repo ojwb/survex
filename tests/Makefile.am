@@ -7,4 +7,4 @@ oneleg.svx oneleg.pos\
 midpoint.svx midpoint.pos\
 noose.svx noose.pos\
 delatenda.pos delatendb.pos delatend.out\
-addatend.pos addatendb.pos addatend.out
+addatenda.pos addatendb.pos addatend.out
