@@ -31,14 +31,6 @@ AC_SUBST(COMMAVERSION)
 dnl Checks for programs.
 AC_PROG_CC
 
-TXTEXT=
-CHANGELOG=ChangeLog
-case "$EXEEXT" in
-.[Ee][Xx][Ee]) TXTEXT=.txt ; CHANGELOG=Changes.txt ;;
-esac
-AC_SUBST(TXTEXT)
-AC_SUBST(CHANGELOG)
-
 AVEN='aven$(EXEEXT)'
 AC_ARG_ENABLE(aven,
 [  --disable-aven Don't try to build Aven cave viewer],
@@ -61,6 +53,14 @@ AC_PROG_MAKE_SET
 
 AC_EXEEXT
 AC_OBJEXT
+
+TXTEXT=
+CHANGELOG=ChangeLog
+case "$EXEEXT" in
+.[Ee][Xx][Ee]) TXTEXT=.txt ; CHANGELOG=Changes.txt ;;
+esac
+AC_SUBST(TXTEXT)
+AC_SUBST(CHANGELOG)
 
 if test -n "$MINGW32$CYGWIN" ; then
 dnl assume mingw32 or cygwin means littleendian (may not be true for NT
