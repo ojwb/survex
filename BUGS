@@ -40,12 +40,6 @@ wxaven for GTK:
 
 - trouble with zooming in too far
 
-Date: Wed, 18 Jul 2001
-From: Olly
-
-printwin doesn't seem to work - it runs, but doesn't finish and no
-output appears.
-
 Date: Fri, 20 Jul 2001
 From: Olly
 
