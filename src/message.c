@@ -377,7 +377,11 @@ parse_msg_file(int charset_code)
     * handle this... */
    if (strchr(lang, '_')) {
       char *under = strchr(lang, '_');
-      *under = '-';
+      *under++ = '-';
+      while (*under) {
+	 *under = tolower(*under);
+	 under++;
+      }
    }
 
    fh = fopenWithPthAndExt(pth_cfg_files, lang, EXT_SVX_MSG, "rb", NULL);
