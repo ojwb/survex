@@ -130,7 +130,8 @@ public:
     void BeginPolyline();
     void EndPolyline();
     
-    void DrawRectangle(GLAPen& edge, GLAPen& fill, glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
+    void DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& fill_top,
+                       glaCoord x0, glaCoord y0, glaCoord w, glaCoord h, bool draw_lines = true);
     void DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius);
     void DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start);
     void DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* vertices);

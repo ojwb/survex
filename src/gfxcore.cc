@@ -986,7 +986,7 @@ void GfxCore::DrawDepthbar()
 
     glaCoord x_min = m_XSize/2 - DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH - DEPTH_BAR_MARGIN - size;
 
-    DrawRectangle(m_Pens[col_BLACK], m_Pens[col_DARK_GREY],
+    DrawRectangle(m_Pens[col_BLACK], m_Pens[col_DARK_GREY], m_Pens[col_DARK_GREY],
                   x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
                   m_YSize/2 - (DEPTH_BAR_BLOCK_HEIGHT*(m_Bands-1))- DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
                   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 + DEPTH_BAR_EXTRA_LEFT_MARGIN,
@@ -994,11 +994,12 @@ void GfxCore::DrawDepthbar()
 
     for (int band = 0; band < m_Bands; band++) {
         if (band < m_Bands - 1) {
-            DrawRectangle(m_Parent->GetPen(band), m_Parent->GetPen(band),
+            DrawRectangle(m_Parent->GetPen(band), m_Parent->GetPen(band), m_Parent->GetPen(band+1),
                           x_min,
                           y,
                           DEPTH_BAR_BLOCK_WIDTH,
-                          DEPTH_BAR_BLOCK_HEIGHT);
+                          DEPTH_BAR_BLOCK_HEIGHT,
+                          false);
         }
 
         SetColour(m_Pens[TEXT_COLOUR]);
@@ -1120,7 +1121,7 @@ void GfxCore::DrawScalebar()
         int x = end_x + int(ix * ((Double) size / 10.0));
         GLAPen& pen = solid ? m_Pens[col_GREY] : m_Pens[col_WHITE];
 
-        DrawRectangle(pen, pen, x, end_y, interval + 2, height);
+        DrawRectangle(pen, pen, pen, x, end_y, interval + 2, height);
 
         solid = !solid;
     }
@@ -2113,12 +2114,10 @@ void GfxCore::DrawPolylines(const GLAPen& pen, int num_polylines, const int* num
 
         assert(length > 1);
 
-	SetColour(const_cast<GLAPen&>(pen), true);
-
 	BeginPolyline();
 	
 	for (int segment = 0; segment < length; segment++) {
-	    PlaceVertex(vertices->x, vertices->y, vertices->z);
+	    PlaceVertexWithColour(vertices->x, vertices->y, vertices->z, 1.0);
 	    vertices++;
 	}
 

@@ -430,26 +430,31 @@ void GLACanvas::DrawSphere(GLAPen& pen, glaCoord x, glaCoord y, glaCoord z, glaC
     glTranslated(-x, -y, -z);
 }
 
-void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, glaCoord x0, glaCoord y0, glaCoord w, glaCoord h)
+void GLACanvas::DrawRectangle(GLAPen& edge, GLAPen& fill, GLAPen& top,
+                              glaCoord x0, glaCoord y0, glaCoord w, glaCoord h,
+                              bool draw_lines)
 {
     // Draw a filled rectangle with an edge in the indicator plane.
     // (x0, y0) specify the bottom-left corner of the rectangle and (w, h) the size.
 
-    SetColour(fill);
     BeginQuadrilaterals();
+    SetColour(fill);
     PlaceIndicatorVertex(x0, y0);
     PlaceIndicatorVertex(x0 + w, y0);
+    SetColour(top);
     PlaceIndicatorVertex(x0 + w, y0 + h);
     PlaceIndicatorVertex(x0, y0 + h);
     EndQuadrilaterals();
 
-    SetColour(edge);
-    BeginLines();
-    PlaceIndicatorVertex(x0, y0);
-    PlaceIndicatorVertex(x0 + w, y0);
-    PlaceIndicatorVertex(x0 + w, y0 + h);
-    PlaceIndicatorVertex(x0, y0 + h);
-    EndLines();
+    if (draw_lines) {
+        SetColour(edge);
+        BeginLines();
+        PlaceIndicatorVertex(x0, y0);
+        PlaceIndicatorVertex(x0 + w, y0);
+        PlaceIndicatorVertex(x0 + w, y0 + h);
+        PlaceIndicatorVertex(x0, y0 + h);
+        EndLines();
+    }
 }
 
 void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius)
