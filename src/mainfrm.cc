@@ -1325,10 +1325,6 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 	m_history.Save(*b);
 	b->Flush();
 
-	m_Gfx->Initialise();
-
-	m_Notebook->Show(true);
-
 	int x;
 	int y;
 	GetClientSize(&x, &y);
@@ -1341,6 +1337,9 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 
 	m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
 	m_SashPosition = x; // Save width of panel.
+
+	m_Gfx->Initialise();
+	m_Notebook->Show(true);
 
 	m_Gfx->SetFocus();
     }
