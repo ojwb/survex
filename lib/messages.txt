@@ -2529,6 +2529,7 @@ it:336 &Eacute; possibile visualizzare solamente un file 3D alla volta.
 en:337 Side P@anel
 de:337 Seitliches @Kontrollfeld
 pt:337 P@ainel lateral
+it:337 Riquadro @Laterale
 # show coordinates (N = North or Northing, E = East or Easting)
 en:338 "  %d E, %d N"
 fr:338 "  %d E, %d N"
