@@ -94,10 +94,11 @@ MSDOS for 286 and earlier (BorlandC)
 ------------------------------------
 
 Wookey currently builds this with a rather elderly BorlandC++ 3.1.
-However Borland/Insprise have recently released BorlandC++ 5.5 for
-free.  I'll try to get this to work.
+BorlandC++ 5.5 can be downloaded for free, but it appears to only compile to
+32 bit code.  You can also download TurboC version 2, which might do the job
+(I've not tried yet).
 
-Anyway, you can build a suitable source archive for this version using
+You can build a suitable source archive for this version using
 `make alien_src_zip' on the source distribution on a Unix box.
 
 RISC OS
