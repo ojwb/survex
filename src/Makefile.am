@@ -66,7 +66,7 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc \
- guicontrol.cc gla-gl.cc avenpal.h fnt.cc fnt.h
+ guicontrol.cc gla-gl.cc avenpal.h fnt.cc fnt.h moviemaker.cc moviemaker.h
 
 # splash.cc paneldlg.cc paneldlgpage.cc prefsdlg.cc \
 # tubeprefs.cc stnprefs.cc legprefs.cc ctlprefs.cc gridprefs.cc unitsprefs.cc \
@@ -91,7 +91,7 @@ avenrc.o: $(srcdir)/aven.rc
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o $$pwd/avenrc.o aven.rc
 else
 #aven_LDADD = @LIBOBJS@ @WX_LIBS@ @LIBRX@
-aven_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@
+aven_LDADD = @LIBOBJS@ @WXGL_LIBS@ @LIBRX@ libavformat.a libavcodec.a
 endif
 
 # If we're building aven on MacOS X, we need to bind resources to aven after
@@ -134,7 +134,7 @@ MOSTLYCLEANFILES = $(AVEN_REZ)
 #aven_LDFLAGS = @WX_LDFLAGS@
 
 aven_CFLAGS = @WXGL_CFLAGS@ $(AM_CFLAGS) -DAVEN
-aven_CXXFLAGS = @WXGL_CXXFLAGS@ $(AM_CXXFLAGS)
+aven_CXXFLAGS = @WXGL_CXXFLAGS@ $(AM_CXXFLAGS) -I$(srcdir)/ffmpeginc -DHAVE_AVFORMAT_H
 aven_LDFLAGS = @WX_LDFLAGS@
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
