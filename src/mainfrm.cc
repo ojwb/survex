@@ -79,7 +79,7 @@ class AvenSplitterWindow : public wxSplitterWindow {
 	    parent->ToggleSidePanel();
 #endif
 	}
-	
+
     private:
 	DECLARE_EVENT_TABLE()
 };
@@ -440,11 +440,6 @@ void MainFrm::CreateToolBar()
 		     -1, -1, NULL, "Show surface surveys");
     toolbar->AddSeparator();
 
-#if 0 // FIXME: maybe...
-    m_FindBox = new wxTextCtrl(toolbar, -1, "");
-    toolbar->AddControl(m_FindBox);
-#endif
-
     toolbar->Realize();
 }
 
@@ -630,9 +625,8 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		    info->isLine = false;
 		}
 
-		// Store this point in the list.
+		// Add this point to the list.
 		points.push_back(info);
-
 		break;
 	    }
 
@@ -926,9 +920,9 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 	}
     }
 
-    list<LabelInfo*>::iterator pos = m_Labels.begin();
-    while (pos != m_Labels.end()) {
-	LabelInfo* label = *pos++;
+    list<LabelInfo*>::iterator lpos = m_Labels.begin();
+    while (lpos != m_Labels.end()) {
+	LabelInfo* label = *lpos++;
 	label->x -= xoff;
 	label->y -= yoff;
 	label->z -= zoff;
@@ -1100,8 +1094,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
     wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
 		      "*.3d", wxOPEN);
 #else
-    wxFileDialog dlg(this, wxString(msg(/*Select a 3d file to view*/206)),
-		     "", "",
+    wxFileDialog dlg(this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
 		     wxString::Format("%s|*.3d"
 #ifdef FILEDIALOG_MULTIGLOBS
 				      ";*.3D"
@@ -1122,9 +1115,8 @@ void MainFrm::OnOpen(wxCommandEvent&)
 #endif
 				      "|%s|%s",
 				      msg(/*Survex 3d files*/207),
-				      /* FIXME TRANSLATE */
-				      "Compass PLT files",
-				      "CMAP XYZ files",
+				      msg(/*Compass PLT files*/324),
+				      msg(/*CMAP XYZ files*/325),
 				      msg(/*All files*/208),
 				      wxFileSelectorDefaultWildcardStr),
 		     wxOPEN);
@@ -1406,7 +1398,7 @@ void MainFrm::OnFind(wxCommandEvent&)
     if (!true /* !substring */) {
 	// FIXME "0u" required to avoid compilation error with g++-3.0
 	if (pattern.empty() || pattern[0u] != '^') pattern = '^' + pattern;
-	if (pattern[pattern.size() - 1] != '$') pattern = pattern + '$';
+	if (pattern[pattern.size() - 1] != '$') pattern += '$';
     }
 
     wxRegEx regex;

@@ -3243,7 +3243,14 @@ ro:319 Selectati un fisier pentru iesire
 #ro: still to check!
 #
 #
-# XXX 325 326 327
+# "Compass" as in Larry Fish's cave surveying package, so probably shouldn't
+# be translated
+en:324 Compass PLT files
+it:324 File Compass PLT
+# "CMAP" is Bob Thrun's cave surveying package.
+en:325 CMAP XYZ files
+it:325 File CMAP XYZ
+# XXX 326 327
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
 de:328 Kein Treffer gefunden.
