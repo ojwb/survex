@@ -40,6 +40,10 @@ Changes in 0.98-prerelease1:
   turn off less useful buttons for use on small screens (such as the
   ipaq PDA).
 
+Changes in 0.97:
+
+* Unchanged from 0.97-prerelease7.
+
 Changes in 0.97-prerelease7:
 
 * Messages relating to command line options are now translatable.
