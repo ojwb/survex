@@ -1,6 +1,7 @@
 Makefile
 Makefile.in
 *.1
+print.ini.5
 manual
 manual.html
 manual.ps
