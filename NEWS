@@ -1,3 +1,10 @@
+Changes in 0.95-prerelease4:
+
+* Fixed typo which prevented documentation from installing.
+
+* Fixed logic error in "only mentioned once in *equate with explicit prefix"
+  check.
+
 Changes in 0.95-prerelease3:
 
 * aven: updated to compile with new cvrotimg.
