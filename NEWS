@@ -1,3 +1,22 @@
+Changes in 0.97-prerelease3:
+
+* (Unix version): aven: Internationalised; Fixed serious drawing bug
+  causing incorrect rendering and segfaults; Scale bar now draggable;
+  Depth bar tidied up; Orientation menu changes; Menu accelerators
+  fixed; Status bar disabled (various continuing problems and it
+  doesn't really convey much useful info anyway); About box fixes;
+  Fixed crashes on mouse actions when no survey loaded; Improved
+  labelling of scale bar and indicators.
+
+* Created Swiss German and "German German" sub-versions of German
+  translation.
+
+* (DOS version): caverot: fixed slight underallocation of memory which
+  probably caused the bug Brian Clipstone reported.
+
+* cavern: Improved reporting of missing *export-s; added 2 more
+  *export tests.
+
 Changes in 0.97-prerelease2:
 
 * cad3d: Fixed output from `--help'; -e, -D, -S short options now work;
