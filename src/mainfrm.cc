@@ -731,6 +731,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
 		wxString m = wxString::Format(msg(img_error()), file.c_str());
 		wxGetApp().ReportError(m);
+
 		return false;
 	    }
 
