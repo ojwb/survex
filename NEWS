@@ -1,5 +1,7 @@
 * Don't distribute unused toolbar icons.
 
+* cavern: avoid unnecessary work when --percentage isn't specified.
+
 Changes in 1.0.18:
 
 * (Unix Version): Fixed "Process" action on .svx files.

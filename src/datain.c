@@ -56,8 +56,6 @@ static real value[Fr - 1];
 static real variance[Fr - 1];
 #define VAR(N) variance[(N)-1]
 
-static filepos fpLineStart;
-
 void
 get_pos(filepos *fp)
 {
@@ -199,13 +197,13 @@ static long int filelen;
 static void
 process_bol(void)
 {
-   /* Note start of line for error reporting */
-   get_pos(&fpLineStart);
-
 #ifndef NO_PERCENTAGE
    /* print %age of file done */
-   if (filelen > 0)
-      printf("%d%%\r", (int)(100 * fpLineStart.offset / filelen));
+   if (filelen > 0) {
+      filepos fp;
+      get_pos(&fp);
+      printf("%d%%\r", (int)(100 * fp.offset / filelen));
+   }
 #endif
 
    nextch();
