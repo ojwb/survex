@@ -2,7 +2,8 @@
 
 * aven: Suppress warning box when starting with English messages.
 
-* aven: Accents now work in display.
+* aven: Accents now work in display; suppress warning box if wxWindows
+  dialogs aren't translated into the requested language.
 
 * cavern: Complain if the same name is used for a survey and a station.
 

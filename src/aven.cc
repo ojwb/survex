@@ -45,12 +45,11 @@ bool Aven::OnInit()
     msg_init(argv[0]);
 
     static wxLocale wx_locale;    
-    if (strcmp(msg_lang, "en") != 0 &&
-	!wx_locale.Init(msg_lang, msg_lang, msg_lang, TRUE, TRUE)) {
-	if (msg_lang2) {
-	    wx_locale.Init(msg_lang2, msg_lang2, msg_lang2, TRUE, TRUE);
-	}
+    if (!wx_locale.Init(msg_lang, msg_lang, msg_lang, FALSE, TRUE)) {
+       if (msg_lang2)
+	  wx_locale.Init(msg_lang2, msg_lang2, msg_lang2, FALSE, TRUE);
     }
+    if (wx_locale.IsOk()) wx_locale.AddCatalog("wxstd");
 
     static wxCmdLineEntryDesc cmdline[] = {
         { wxCMD_LINE_OPTION, "h", "help", msgPerm(/*Display command line options*/201) },
