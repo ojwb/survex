@@ -1,11 +1,17 @@
 #! /bin/sh
-release=yes
+
+# for building on mrs30 - need CVS automake
+if test -d /opt/crosstools/autotools/bin ; then
+   PATH=/opt/crosstools/autotools/bin:$PATH
+fi
+
+rel=yes
 if test x"$1" = x-t ; then
-   release=
+   rel=
    shift
 fi
-build=${@-src rpm deb doc alien djgpp mingw}
-if test x"$release" = xyes ; then
+mk=${@-src rpm deb doc alien djgpp mingw}
+if test x"$rel" = xyes ; then
    if ! cvs diff > /dev/null 2> /dev/null ; then
       echo There are changes not checked into CVS - please rectify
       exit 1
@@ -26,7 +32,7 @@ if test -f Makefile ; then
       exit 1
    fi
 fi
-if test x"$release" = xyes ; then
+if test x"$rel" = xyes ; then
    rm -f config.guess.new config.sub.new
    wget ftp://ftp.gnu.org/gnu/config/config.guess -O config.guess.new &&\
       wget ftp://ftp.gnu.org/gnu/config/config.sub -O config.sub.new &&\
@@ -46,7 +52,7 @@ if ! make dist ; then
    echo make dist failed
    exit 1
 fi
-if test x"$release" = xyes && expr "$build" : '.*\<rpm\>'; then
+if test x"$rel" = xyes && expr "$mk" : '.*\<rpm\>' || test x"$mk" = xrpm ; then
    if rpm --version > /dev/null 2> /dev/null ; then
       if ! make rpm ; then
          echo make rpm failed
@@ -56,13 +62,13 @@ if test x"$release" = xyes && expr "$build" : '.*\<rpm\>'; then
        echo rpm not installed - skipping rpm generation
    fi
 fi
-if test x"$release" = xyes && expr "$build" : '.*\<deb\>'; then
+if test x"$rel" = xyes && expr "$mk" : '.*\<deb\>' || test x"$mk" = xdeb ; then
    if ! make debian ; then
       echo make debian failed
       exit 1
    fi
 fi
-if test x"$release" = xyes && expr "$build" : '.*\<doc\>'; then
+if test x"$rel" = xyes && expr "$mk" : '.*\<doc\>' || test x"$mk" = xdoc ; then
    if ! make dos_doc_exe ; then
       echo make dos_doc_exe failed
       exit 1
@@ -72,7 +78,7 @@ if test x"$release" = xyes && expr "$build" : '.*\<doc\>'; then
       exit 1
    fi
 fi
-if expr "$build" : '.*\<alien\>'; then
+if expr "$mk" : '.*\<alien\>'; then
    if ! make alien_src_zip ; then
       echo make alien_src_zip failed
       exit 1
@@ -82,7 +88,7 @@ if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
-if expr "$build" : '.*\<djgpp\>'; then
+if expr "$mk" : '.*\<djgpp\>'; then
    SAVE_PATH="$PATH"
    # for building on mrs30
    if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
@@ -107,7 +113,7 @@ if expr "$build" : '.*\<djgpp\>'; then
    fi
    PATH="$SAVE_PATH"
 fi
-if expr "$build" : '.*\<mingw\>'; then
+if expr "$mk" : '.*\<mingw\>'; then
    SAVE_PATH="$PATH"
    if test -d /usr/local/cross-tools/i386-mingw32msvc/bin ; then
       # binaries from http://www.devolution.com/~slouken/SDL/Xmingw32/
