@@ -113,8 +113,10 @@ static XSetWindowAttributes dbwinattr;
 /* Note: data in file in metres. 100.0 below stores to nearest cm */
 static float datafactor = (float)100.0;
 
+static float scale_default;
+
 /* factor to scale view on screen by */
-static float scale = 0.1;
+static float scale;
 static float zoomfactor = 1.2;
 static float sbar;	/* length of scale bar */
 static float scale_orig;	/* saved state of scale, used in drag re-scale */
@@ -296,21 +298,26 @@ static lid **ppLegs = NULL;
 static lid **ppStns = NULL;
 
 int
-load_file(const char *name)
+load_file(const char *name, int replace)
 {
    XWindowAttributes attr;
-
-   ppLegs = osmalloc((1 + 1) * sizeof(lid Huge *));
-   ppStns = osmalloc((1 + 1) * sizeof(lid Huge *));
+   int blocks = 0;
+   if (!replace && ppLegs) {
+      while (ppLegs[blocks]) blocks++;
+   }
+   ppLegs = osrealloc(ppLegs, (blocks + 2) * sizeof(lid Huge *));
+   ppStns = osrealloc(ppStns, (blocks + 2) * sizeof(lid Huge *));
 
    /* load data into memory */
-   if (!load_data(name, ppLegs, ppStns))
+   if (!load_data(name, ppLegs + blocks, ppStns + blocks)) {
+      ppLegs[blocks] = ppStns[blocks] = NULL;
       return 0;
-   ppLegs[1] = NULL;
-   ppStns[1] = NULL;
+   }
+   ppLegs[blocks + 1] = ppStns[blocks + 1] = NULL;
 
    XGetWindowAttributes(mydisplay, mywindow, &attr);
    scale = scale_to_screen(ppLegs, ppStns, attr.width, attr.height, 1.0);
+   scale_default = scale;
    x_mid = Xorg;
    y_mid = Yorg;
    z_mid = Zorg;
@@ -369,7 +376,7 @@ process_load(Display * display, Window mainwin, Window button, GC mygc, GC egc)
 
       /* Clear everything out of the buffers and reset */
       XFlush(display);
-      if (!load_file(string)) {
+      if (!load_file(string, 1)) {
 	 strcpy(string, "File not found or not a Survex image file");
 	 break;
       }
@@ -673,11 +680,11 @@ toscreen_y(point * p)
    return yoff - y;
 }
 
+/* Calculate positions of all line segments and put them in the cache. */
 static void
 fill_segment_cache(void)
 {
-   /* Calculate positions of all line segments and put them in the cache. */
-
+   lid **pp;
    lid *plid;
    int group;
 
@@ -709,40 +716,42 @@ fill_segment_cache(void)
       segment_groups[group].num_segments = 0;
    }
 
-   for (plid = ppLegs[0]; plid; plid = plid->next) {
-      point *p;
+   for (pp = ppLegs; *pp; pp++) {
+      for (plid = *pp; plid; plid = plid->next) {
+	 point *p;
 
-      for (p = plid->pData; p->_.action != STOP; p++) {
-	 switch (p->_.action) {
-	 case MOVE:
-	    x1 = toscreen_x(p);
-	    y1 = toscreen_y(p);
-	    break;
+	 for (p = plid->pData; p->_.action != STOP; p++) {
+	    switch (p->_.action) {
+	       case MOVE:
+	          x1 = toscreen_x(p);
+		  y1 = toscreen_y(p);
+	          break;
 
-	 case DRAW:{
-	    XSegment *segment;
-	    SegmentGroup *group;
+	       case DRAW: {
+		  XSegment *segment;
+		  SegmentGroup *group;
 
-	    /* calculate colour */
-	    int depth = (int)((float)(-p->Z + Zorg + Zrad) * z_col_scale);
+		  /* calculate colour */
+		  int depth = (int)((float)(-p->Z + Zorg + Zrad) * z_col_scale);
+	       
+		  if (depth < 0) {
+		      depth = 0;
+		  } else if (depth >= NUM_DEPTH_COLOURS) {
+		      depth = NUM_DEPTH_COLOURS - 1;
+		  }
+		  /* store coordinates */
+		  group = &segment_groups[depth];
+		  segment = &(group->segments[group->num_segments++]);
 
-	    if (depth < 0) {
-	       depth = 0;
-	    } else if (depth >= NUM_DEPTH_COLOURS) {
-	       depth = NUM_DEPTH_COLOURS - 1;
+		  /* observe the order of the following lines before modifying */
+		  segment->x1 = x1;
+		  segment->y1 = y1;
+		  segment->x2 = x1 = toscreen_x(p);
+		  segment->y2 = y1 = toscreen_y(p);
+		  
+		  break;
+	       }
 	    }
-	    /* store coordinates */
-	    group = &segment_groups[depth];
-	    segment = &(group->segments[group->num_segments++]);
-
-	    /* observe the order of the following lines before modifying */
-	    segment->x1 = x1;
-	    segment->y1 = y1;
-	    segment->x2 = x1 = toscreen_x(p);
-	    segment->y2 = y1 = toscreen_y(p);
-
-	    break;
-	 }
 	 }
       }
    }
@@ -762,20 +771,24 @@ find_station(int x, int y, int mask)
 
    /* Ignore points a really long way away */
    int d_min = distance_metric(300, 300);
+
+   lid **pp;
    lid *plid;
 
    if (ppStns == NULL) return NULL;
 
-   for (plid = ppStns[0]; plid; plid = plid->next) {
-      for (p = plid->pData; p->_.str != NULL; p++) {
-	 int d;
-	 int x1 = toscreen_x(p);
-	 int y1 = toscreen_y(p);
+   for (pp = ppStns; *pp; pp++) {
+      for (plid = *pp; plid; plid = plid->next) {
+         for (p = plid->pData; p->_.str != NULL; p++) {
+	    int d;
+	    int x1 = toscreen_x(p);
+	    int y1 = toscreen_y(p);
 
-	 d = distance_metric(x1 - x, y1 - y);
-	 if (d < d_min) {
-	    d_min = d;
-	    q = p;
+	    d = distance_metric(x1 - x, y1 - y);
+	    if (d < d_min) {
+		d_min = d;
+		q = p;
+	    }
 	 }
       }
    }
@@ -855,34 +868,37 @@ redraw_image_dbe(Display * display, Window window, GC gc)
    label_reg = XCreateRegion();
 
    if ((crossing || labelling) /*&& surveymask[p->survey] */ ) {
-      for (plid = ppStns[0]; plid; plid = plid->next) {
-	 point *p;
+      lid **pp;
+      for (pp = ppStns; *pp; pp++) {
+	 for (plid = *pp; plid; plid = plid->next) {
+       	    point *p;
 
-	 for (p = plid->pData; p->_.str != NULL; p++) {
-	    x2 = toscreen_x(p);
-	    y2 = toscreen_y(p);
-	    if (crossing) {
+	    for (p = plid->pData; p->_.str != NULL; p++) {
+	       x2 = toscreen_x(p);
+	       y2 = toscreen_y(p);
+	       if (crossing) {
 #if 0 /* + crosses */
-               XDrawLine(display, window, gcs[lab_col_ind], x2 - CROSSLENGTH, y2, x2 + CROSSLENGTH, y2);
-               XDrawLine(display, window, gcs[lab_col_ind], x2, y2 - CROSSLENGTH, x2, y2 + CROSSLENGTH);
+		  XDrawLine(display, window, gcs[lab_col_ind], x2 - CROSSLENGTH, y2, x2 + CROSSLENGTH, y2);
+		  XDrawLine(display, window, gcs[lab_col_ind], x2, y2 - CROSSLENGTH, x2, y2 + CROSSLENGTH);
 #else /* x crosses */
-               XDrawLine(display, window, gcs[lab_col_ind],
-			 x2 - CROSSLENGTH, y2 - CROSSLENGTH,
-			 x2 + CROSSLENGTH, y2 + CROSSLENGTH);
-               XDrawLine(display, window, gcs[lab_col_ind],
-			 x2 + CROSSLENGTH, y2 - CROSSLENGTH,
-			 x2 - CROSSLENGTH, y2 + CROSSLENGTH);
+		  XDrawLine(display, window, gcs[lab_col_ind],
+			    x2 - CROSSLENGTH, y2 - CROSSLENGTH,
+			    x2 + CROSSLENGTH, y2 + CROSSLENGTH);
+		  XDrawLine(display, window, gcs[lab_col_ind],
+			    x2 + CROSSLENGTH, y2 - CROSSLENGTH,
+			    x2 - CROSSLENGTH, y2 + CROSSLENGTH);
 #endif
-	    }
+	       }
 
-	    if (labelling) {
-	       char *q;
+	       if (labelling) {
+		  char *q;
 
-	       q = p->_.str;
-	       draw_label(display, window, gcs[lab_col_ind],
-			  x2, y2 + slashheight, q, strlen(q));
-	       /* XDrawString(display,window,gcs[lab_col_ind],x2,y2+slashheight, q, strlen(q)); */
-	       /* XDrawString(display,window,gcs[p->survey],x2+10,y2, q, strlen(q)); */
+		  q = p->_.str;
+		  draw_label(display, window, gcs[lab_col_ind],
+			     x2, y2 + slashheight, q, strlen(q));
+	          /* XDrawString(display,window,gcs[lab_col_ind],x2,y2+slashheight, q, strlen(q)); */
+	          /* XDrawString(display,window,gcs[p->survey],x2+10,y2, q, strlen(q)); */
+	       }
 	    }
 	 }
       }
@@ -1204,8 +1220,8 @@ set_defaults(void)
 {
    XWindowAttributes a;
 
+   scale = scale_default;
    view_angle = 180.0;
-   scale = 0.01;
    plan_elev = PLAN;
    elev_angle = 90.0;
    rot = 0;
@@ -1258,8 +1274,8 @@ main(int argc, char **argv)
 
    msg_init(argv[0]);
 
-   cmdline_set_syntax_message("3D_FILE", NULL);
-   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 1);
+   cmdline_set_syntax_message("3D_FILE...", NULL);
+   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
    while (cmdline_getopt() != EOF) {
       /* do nothing */
    }
@@ -1401,20 +1417,13 @@ main(int argc, char **argv)
    oldwidth = attr.width;
    oldheight = attr.height;
 
-   /* load file */
-   load_file(argv[optind]);
    title = osmalloc(strlen(hello) + strlen(argv[optind]) + 7);
    sprintf(title, "%s - [%s]", hello, argv[optind]);
-   optind++;
-
-#if 0	/* FIXME: JPNP code */
-   /* set scale to fit cave in screen */
-   scale = 0.6 * min((float)oldwidth / (xRad * 2 + 1),
-		     min((float)oldheight / (yRad * 2 + 1),
-			 (float)oldheight / (zRad * 2 + 1)));
-
-
-#endif
+    
+   /* load file(s) -- FIXME: report errors (i.e. when load_file returns 0) */
+   while (argv[optind]) {
+      load_file(argv[optind++], 0);
+   }
 
    set_defaults();
 
