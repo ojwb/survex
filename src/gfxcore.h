@@ -271,6 +271,7 @@ class GfxCore : public wxWindow {
     bool m_Grid;
     int m_NumCrosses;
     list<GridPointInfo>* m_PointGrid;
+    bool m_HitTestGridValid;
 
     int m_DoingPresStep;
     struct step_params {
@@ -393,6 +394,8 @@ class GfxCore : public wxWindow {
     void Repaint();
 
     void PresGoto(PresData& d, Quaternion& q);
+
+    void CreateHitTestGrid();
 
 public:
     GfxCore(MainFrm* parent, wxWindow* parent_window);

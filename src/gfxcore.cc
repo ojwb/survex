@@ -252,6 +252,8 @@ void GfxCore::Initialise()
     m_UndergroundLegs = false;
     m_SurfaceLegs = false;
 
+    m_HitTestGridValid = false;
+
     m_DoingPresStep = -1; //--Pres: FIXME: delete old lists
 
     // Apply default parameters.
@@ -399,6 +401,10 @@ void GfxCore::SetScale(Double scale)
 #endif
 
     if (!m_ScaleCrossesOnly && !m_ScaleHighlightedPtsOnly && !m_ScaleSpecialPtsOnly) {
+
+        // Invalidate hit-test grid.
+	m_HitTestGridValid = false;
+    
 #ifdef AVENGL
         // With OpenGL we have to make three passes, as OpenGL lists are immutable and
         // we need the surface and underground data in different lists.  The third pass is
@@ -587,12 +593,7 @@ void GfxCore::SetScale(Double scale)
         }
     }
 
-    // Clear hit-test grid.
-    for (int i = 0; i < HITTEST_SIZE * HITTEST_SIZE; i++) {
-        m_PointGrid[i].clear();
-    }
-
-    if (/*(m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) &&*/ !m_ScaleSpecialPtsOnly) {
+    if ((m_Crosses || m_Names || m_Entrances || m_FixedPts || m_ExportedPts) && !m_ScaleSpecialPtsOnly) {
         // Construct polylines for crosses, sort out station names and deal with highlighted points.
 
         m_NumHighlightedPts = 0;
@@ -632,22 +633,6 @@ void GfxCore::SetScale(Double scale)
 
             int cx = (int) (XToScreen(x, y, z) * scale) + m_Params.display_shift.x;
             int cy = -(int) (ZToScreen(x, y, z) * scale) + m_Params.display_shift.y;
-
-	    int cx_real = cx + m_XCentre;
-	    int cy_real = cy + m_YCentre;
-
-	    // Add to hit-test grid.
-	    if (cx_real >= 0 && cx_real < m_XSize && cy_real >= 0 && cy_real < m_YSize) {
-	        int grid_x = (cx_real * (HITTEST_SIZE - 1)) / m_XSize;
-	        int grid_y = (cy_real * (HITTEST_SIZE - 1)) / m_YSize;
-
-  	        GridPointInfo point;
-	        point.x = cx_real;
-	        point.y = cy_real;
-                point.label = label;
-
-	        m_PointGrid[grid_x + grid_y*HITTEST_SIZE].push_back(point);
-            }
 
             if ((m_Crosses || m_Names) &&
                 ((label->IsSurface() && m_Surface) ||
@@ -1961,29 +1946,40 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
 
     wxPoint point = wxPoint(event.GetX(), event.GetY());
 
-    // Check hit-test grid.
-    int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
-    int grid_y = (point.y * (HITTEST_SIZE - 1)) / m_YSize;
-    bool done = false;
-    int square = grid_x + grid_y * HITTEST_SIZE;
-    list<GridPointInfo>::iterator iter = m_PointGrid[square].begin();
-    while (!done && iter != m_PointGrid[square].end()) {
-        GridPointInfo& info = *iter++;
+    // Check hit-test grid (only if no buttons are pressed).
+    if (!event.LeftIsDown() && !event.MiddleIsDown() && !event.RightIsDown()) {
+        if (!m_HitTestGridValid) {
+            CreateHitTestGrid();
+        }
+        
+        int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
+        int grid_y = (point.y * (HITTEST_SIZE - 1)) / m_YSize;
+        bool done = false;
+        int square = grid_x + grid_y * HITTEST_SIZE;
+        list<GridPointInfo>::iterator iter = m_PointGrid[square].begin();
+        while (!done && iter != m_PointGrid[square].end()) {
+            GridPointInfo& info = *iter++;
+    
+            //-- FIXME: check types
+            int x0 = info.x;
+    	    int y0 = info.y;
+    	    int x1 = point.x;
+    	    int y1 = point.y;
+    
+    	    int dx = x1 - x0;
+    	    int dy = y1 - y0;
+    
+            if (int(sqrt(dx*dx + dy*dy)) <= 4.0) {
+    	        m_Parent->SetMouseOverStation(info.label);
+    	        done = true;
+    	    }
+        }
 
-        //-- FIXME: check types
-        int x0 = info.x;
-	int y0 = info.y;
-	int x1 = point.x;
-	int y1 = point.y;
-
-	int dx = x1 - x0;
-	int dy = y1 - y0;
-
-        if (int(sqrt(dx*dx + dy*dy)) < 10.0) {
-	    m_Parent->SetMouseOverStation(info.label);
-	    done = true;
+	if (!done) {
+            m_Parent->SetMouseOverStation(NULL);
 	}
-    }
+     }
+
 
     // Update coordinate display if in plan view.
     if (m_TiltAngle == M_PI / 2.0) {
@@ -2058,7 +2054,7 @@ void GfxCore::OnMouseMove(wxMouseEvent& event)
                        m_LastDrag == drag_SCALE) {
                   if (point.x >= 0 && point.x <= m_XSize) {
                       m_LastDrag = drag_SCALE;
-                      //--GL fix needed
+                      //--FIXME: GL fix needed
                       SetScale(m_Params.scale * pow(1.06, 0.01 *
                                                     (-m_DragStart.x + point.x)));
                       m_RedrawOffscreen = true;
@@ -3049,4 +3045,48 @@ void GfxCore::DisplaySpecialPoints()
     SetScale(m_Params.scale);
     m_RedrawOffscreen = true;
     Refresh(false);
+}
+
+void GfxCore::CreateHitTestGrid()
+{
+    // Clear hit-test grid.
+    for (int i = 0; i < HITTEST_SIZE * HITTEST_SIZE; i++) {
+        m_PointGrid[i].clear();
+    }
+
+    // Fill the grid.
+    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+    list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
+    while (pos != end) {
+        LabelInfo* label = *pos++;
+        Double x = label->GetX();
+        Double y = label->GetY();
+        Double z = label->GetZ();
+
+        // Calculate screen coordinates.
+        x += m_Params.translation.x;
+        y += m_Params.translation.y;
+        z += m_Params.translation.z;
+
+        int cx = (int) (XToScreen(x, y, z) * m_Params.scale) + m_Params.display_shift.x;
+        int cy = -(int) (ZToScreen(x, y, z) * m_Params.scale) + m_Params.display_shift.y;
+
+	int cx_real = cx + m_XCentre;
+	int cy_real = cy + m_YCentre;
+
+	// Add to hit-test grid if onscreen.
+	if (cx_real >= 0 && cx_real < m_XSize && cy_real >= 0 && cy_real < m_YSize) {
+	    int grid_x = (cx_real * (HITTEST_SIZE - 1)) / m_XSize;
+	    int grid_y = (cy_real * (HITTEST_SIZE - 1)) / m_YSize;
+
+  	    GridPointInfo point;
+	    point.x = cx_real;
+	    point.y = cy_real;
+            point.label = label;
+
+	    m_PointGrid[grid_x + grid_y*HITTEST_SIZE].push_back(point);
+        }
+    }
+
+    m_HitTestGridValid = true;
 }

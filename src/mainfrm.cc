@@ -185,6 +185,8 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
                                   // (required by Windows for this type of icon)
 #endif
 
+    m_HighlightedPtValid = false;
+
     InitialisePensAndBrushes();
     CreateMenuBar();
     CreateAcceleratorTable();
@@ -931,6 +933,8 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
 {
     SetCursor(*wxHOURGLASS_CURSOR);
     if (LoadData(file, survey)) {
+        m_HighlightedPtValid = false;
+
         if (delay) {
             m_Gfx->InitialiseOnNextResize();
         }
@@ -943,8 +947,6 @@ void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
         int y;
         GetSize(&x, &y);
         m_Splitter->SplitVertically(m_Panel, m_Gfx, x / 4);
-
-        m_HighlightedPtValid = false;
     }
     SetCursor(*wxSTANDARD_CURSOR);
 }
@@ -1319,18 +1321,32 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
 {
     //-- FIXME: share with code above
 
-    wxString str;
-    str.Printf("   %d N, %d E", (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
-    m_StnCoords->SetLabel(str);
-    m_StnName->SetLabel(label->text);
-    str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
-    m_StnAlt->SetLabel(str);
-    if (m_HighlightedPtValid) {
-        m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
-        m_HighlightedPtValid = false;
+    if (label) {
+        wxString str;
+        str.Printf("   %d N, %d E", (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
+        m_StnCoords->SetLabel(str);
+        m_StnName->SetLabel(label->text);
+        str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
+        m_StnAlt->SetLabel(str);
+        if (m_HighlightedPtValid) {
+            m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
+            m_HighlightedPtValid = false;
+        }
+        m_HighlightedPt = m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_WHITE);
+        m_Gfx->DisplaySpecialPoints();
+        m_HighlightedPtValid = true;
     }
-    m_HighlightedPt = m_Gfx->AddSpecialPoint(label->x, label->y, label->z, col_WHITE);
-    m_Gfx->DisplaySpecialPoints();
-    m_HighlightedPtValid = true;
+    else {
+        m_StnName->SetLabel("");
+        m_StnCoords->SetLabel("");
+        m_StnAlt->SetLabel("");
+        if (m_HighlightedPtValid) {
+            m_Gfx->DeleteSpecialPoint(m_HighlightedPt);
+            m_HighlightedPtValid = false;
+        }
+        m_Dist1->SetLabel("");
+        m_Dist2->SetLabel("");
+        m_Dist3->SetLabel("");
+    }
 }
 
