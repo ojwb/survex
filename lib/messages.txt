@@ -3337,12 +3337,37 @@ it:345 g.cent.
 sk:345 gr&aacute;dy
 ro:345 gr.cent
 #ro: 345 grade centezimale
-#
+# cf 400
 en:380 @Print...##Ctrl+P
 ro:380 @Imprimare...##Ctrl+P
 #
 en:381 P@age Setup...
-ro:381 P@age Setup...
+ca:381 @Configuraci&oacute; de la p&agrave;gina...
+sk:381 @Nastaven&iacute; tisku
+# TRANSLATE sk
+en:400 &amp;Print
+sk:400 &amp;Vytisknout
+ro:400 &amp;Imprimare
+# TRANSLATE ca (check part of speech) sk 
+en:401 Pre&amp;view
+ca:401 &amp;Previsualitza
+sk:401 &amp;N&acute;hled
+#
+en:402 &amp;Cancel
+ca:402 &amp;Anul&middot;la
+sk:402 &amp;Zru&scaron;it
+# cf 291
+en:403 Sur&amp;face Survey Legs
+en-us:403 Sur&amp;face Shots
+fr:403 Segments de topo en Sur&amp;face
+de-de,de-ch:403 Messz&uuml;ge Ober&amp;fl&auml;che
+de:          403 Me&szlig;z&uuml;ge Ober&amp;fl&auml;che
+pt:403 Visadas de Super&amp;f&iacute;cie
+ca:403 Tirades de topograf&iacute;a de super&amp;f&iacute;cie
+es:403 Tiradas de topografia de super&amp;ficie
+it:403 Battute topografia di Super&amp;ficie
+sk:403 Z&aacute;mery &amp;na povrchu
+ro:403 &amp;Portiuni de suprafata ale topografiei
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

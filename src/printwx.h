@@ -58,7 +58,7 @@ protected:
 	wxCheckBox* m_stations;
 	wxCheckBox* m_names;
 	wxCheckBox* m_borders;
-	wxCheckBox* m_blanks;
+//	wxCheckBox* m_blanks;
 	wxCheckBox* m_infoBox;
 	wxCheckBox* m_surface;
 	wxString m_File;

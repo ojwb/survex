@@ -173,20 +173,31 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     v2->Add(anglebox,0,wxALIGN_LEFT + wxALL,0);
     h1->Add(v2,0,wxALIGN_LEFT + wxALL,5);
     
-    v3->Add(m_legs = new wxCheckBox(this,svx_LEGS,"Legs"),0,wxALIGN_LEFT + wxALL,2);
-    v3->Add(m_surface = new wxCheckBox(this,svx_SCALEBAR,"Surface legs"),0,wxALIGN_LEFT + wxALL,2);
-    v3->Add(m_stations = new wxCheckBox(this,svx_STATIONS,"Stations"),0,wxALIGN_LEFT + wxALL,2);
-    v3->Add(m_names = new wxCheckBox(this,svx_NAMES,"Station names"),0,wxALIGN_LEFT + wxALL,2);
-    v3->Add(m_borders = new wxCheckBox(this,svx_BORDERS,"Borders"),0,wxALIGN_LEFT + wxALL,2);
-    v3->Add(m_blanks = new wxCheckBox(this,svx_BLANKS,"Blank Pages"),0,wxALIGN_LEFT + wxALL,2);
-    v3->Add(m_infoBox = new wxCheckBox(this,svx_INFOBOX,"Info Box"),0,wxALIGN_LEFT + wxALL,2);
-    h1->Add(v3,0,wxALIGN_LEFT + wxALL,5);
-    v1->Add(h1,0,wxALIGN_LEFT + wxALL,5);
+    m_legs = new wxCheckBox(this, svx_LEGS, "Legs");
+    v3->Add(m_legs, 0, wxALIGN_LEFT|wxALL, 2);
+    m_surface = new wxCheckBox(this, svx_SCALEBAR, msg(/*Surface survey legs*/403));
+    v3->Add(m_surface, 0, wxALIGN_LEFT|wxALL, 2);
+    m_stations = new wxCheckBox(this, svx_STATIONS, "Stations");
+    v3->Add(m_stations, 0, wxALIGN_LEFT|wxALL, 2);
+    m_names = new wxCheckBox(this, svx_NAMES, "Station names");
+    v3->Add(m_names, 0, wxALIGN_LEFT|wxALL, 2);
+    m_borders = new wxCheckBox(this, svx_BORDERS, "Borders");
+    v3->Add(m_borders, 0, wxALIGN_LEFT|wxALL, 2);
+//    m_blanks = new wxCheckBox(this, svx_BLANKS, "Blank Pages");
+//    v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
+    m_infoBox = new wxCheckBox(this, svx_INFOBOX, "Info Box");
+    v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
+    h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
+    v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
 
-    h2->Add(new wxButton(this,svx_PRINT,"Print"),0,wxALIGN_RIGHT + wxALL,5);
-    h2->Add(new wxButton(this,svx_PREVIEW,"Preview"),0,wxALIGN_RIGHT + wxALL,5);
-    h2->Add(new wxButton(this,wxID_CANCEL,"Cancel"),0,wxALIGN_RIGHT + wxALL,5);
-    v1->Add(h2,0,wxALIGN_RIGHT + wxALL,5);
+    wxButton * but;
+    but = new wxButton(this, svx_PRINT, msg(/*&Print*/400));
+    h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+    but = new wxButton(this, svx_PREVIEW, msg(/*Pre&view*/401));
+    h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+    but = new wxButton(this, wxID_CANCEL, msg(/*&Cancel*/402));
+    h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+    v1->Add(h2, 0, wxALIGN_RIGHT|wxALL, 5);
     
     LayoutToUI();
     SetAutoLayout(true);
@@ -275,7 +286,7 @@ svxPrintDlg::LayoutToUI(){
     m_legs->SetValue(m_layout->Shots);
     m_stations->SetValue(m_layout->Crosses);
     m_borders->SetValue(m_layout->Border);
-    m_blanks->SetValue(m_layout->SkipBlank);
+//    m_blanks->SetValue(m_layout->SkipBlank);
     m_infoBox->SetValue(!m_layout->Raw);
     m_surface->SetValue(m_layout->Surface);
     m_tilt->SetValue(m_layout->tilt);
@@ -302,7 +313,7 @@ svxPrintDlg::UIToLayout(){
     m_layout->Shots = m_legs->IsChecked();
     m_layout->Crosses = m_stations->IsChecked();
     m_layout->Border = m_borders->IsChecked();
-    m_layout->SkipBlank = m_blanks->IsChecked();
+//    m_layout->SkipBlank = m_blanks->IsChecked();
     m_layout->Raw = !m_infoBox->IsChecked();
     m_layout->Surface = m_surface->IsChecked();
 
@@ -923,8 +934,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 		    WriteString((*label)->GetText());
 		}
 	    }
+	    ++label;
 	}
-	label++;
     }
 
     if (!l->Raw) {
