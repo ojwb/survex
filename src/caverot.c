@@ -193,7 +193,8 @@
 #include <string.h>
 #include <time.h>
 
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "filelist.h"
 #include "useful.h"
 #include "version.h"

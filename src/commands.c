@@ -103,7 +103,8 @@
 
 #include <assert.h>
 #include "survex.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "netbits.h"
 #include "commands.h"
 #include "readval.h"

@@ -34,7 +34,8 @@
 #include <limits.h>
 
 #include "survex.h"
-#include "error.h"
+#include "filename.h"
+#include "message.h"
 #include "datain.h" /* for extern void data_normal( void ); */
 #include "defaults.h"
 
