@@ -1,24 +1,30 @@
-1.1 branch:
+Changes between 1.0.25 and 1.1.0:
 
-* Use Status bar for coordinates, distances, etc.
+* NOTE: Survex 1.1.X releases are development snapshots made available for
+  the purposes of allowing wider testing and getting more user feedback.  Once
+  the code has stabilised the version number will be raised to 1.2.0.
 
-* Search moved onto toolbar.
+* aven: Now uses OpenGL for 3d rendering - you may need to install drivers if
+  you're using Windows 95 - these can be obtained from:
+  http://download.microsoft.com/download/win95upg/info/1/W95/EN-US/Opengl95.exe
 
-* Solid tunnels option.
+* aven: Solid passages - passage dimensions are currently inferred from
+  the leg length (pretty effective as you can measure longer legs in
+  larger passages).  Use of real LRUD data coming soon...
 
-* Depth colouring is now continuously varying.
+* aven: Depth colouring is now continuously varying.
 
-* Full screen mode.
+* aven: Search moved onto the toolbar, and we now use the status bar for
+  coordinates, distances, etc to make better use of screen space.
 
-* Annoying splash screen added.
+* aven: Full screen mode (F11) - needs more work though.
 
-* Context sensitive cursor.
+* aven: Context sensitive cursor shape - needs more work.
 
-* Different mouse actions (hopefully more natural).
+* aven: Mouse actions changed (hopefully they're now more natural, but
+  you may find the change disorientating - feedback wanted on this).
 
-
-
-* Standards-Version: 3.5.10.0
+* aven: added Ctrl+Q as shortcut for File->Exit.
 
 * Fixed configure --enable-defaultlang=XX to work.
 
@@ -28,8 +34,6 @@
 * Minor documentation updates.
 
 * (Unix version): aven: "All Files" now shows files without extensions too.
-
-* aven: added Ctrl+Q as shortcut for File->Exit.
 
 Changes in 1.0.25:
 
