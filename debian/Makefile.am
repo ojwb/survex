@@ -3,6 +3,8 @@
 EXTRA_DIST = copyright copyright.in docs survex-aven.files doc-base \
  rules survex-aven.menu watch control changelog
 
+CLEANFILES = control docs
+
 control: Makefile $(top_srcdir)/desc.txt $(top_srcdir)/desc-aven.txt
 	echo Source: survex > control
 	echo Section: math >> control
