@@ -21,7 +21,7 @@ export SURVEXHOME
  exporterr1b exporterr2b exporterr3b exporterr6 exporterr6b\
  hanging_cpt badinc badinc2 non_existant_file\
  stnsurvey1 stnsurvey2 stnsurvey3\
- tapelessthandepth longname"}
+ tapelessthandepth longname chinabug chinabug2"}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -67,6 +67,9 @@ for file in $TESTS ; do
   cmd_prefix) pos=no ; count=1 ;;
   singlefixerr) pos=no ; count=1 ;;
   tapelessthandepth) pos=no ; count=1 ;;
+  chinabug2) pos=no ; count=0 ;;
+  longname) pos=no ; count=0 ;;
+  chinabug) pos=fail ;;
   begin_no_end) pos=fail ;;
   end_no_begin) pos=fail ;;
   end_no_begin_nest) pos=fail ;;
@@ -88,7 +91,6 @@ for file in $TESTS ; do
   stnsurvey1) pos=fail ;;
   stnsurvey2) pos=fail ;;
   stnsurvey3) pos=fail ;;
-  longname) pos=fail ;;
   *) file='' ;;
   esac
 
@@ -97,14 +99,18 @@ for file in $TESTS ; do
     rm -f ./tmp.*
     if test -n "$VERBOSE" ; then
       if test x"$pos" = xfail ; then
-        $CAVERN $srcdir/$file.svx --output=./tmp && exit 1
+        $CAVERN $srcdir/$file.svx --output=./tmp
+	# success gives 0, signal (128 + <signal number>)
+	test $? = 1 || exit 1
       else
         $CAVERN $srcdir/$file.svx --output=./tmp || exit 1
       fi
     else
       if test -z "$count" ; then
         if test x"$pos" = xfail ; then
-          $CAVERN $srcdir/$file.svx --output=./tmp > /dev/null && exit 1
+	  $CAVERN $srcdir/$file.svx --output=./tmp > /dev/null
+	  # success gives 0, signal (128 + <signal number>)
+	  test $? = 1 || exit 1
 	else
           $CAVERN $srcdir/$file.svx --output=./tmp > /dev/null || exit 1
 	fi
@@ -126,6 +132,8 @@ for file in $TESTS ; do
       test -f ./tmp.pos || exit 1 ;;
     fail)
       test -f ./tmp.pos && exit 1 ;;
+    *)
+      echo "Bad value for pos" ; exit 1 ;;
     esac
     rm -f ./tmp.*
   fi
