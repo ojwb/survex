@@ -24,6 +24,7 @@
 #define avenview_h
 
 #include "wx.h"
+#include "gfxcore.h"
 
 class ChildFrm;
 
@@ -31,6 +32,9 @@ class AvenView : public wxView {
     DECLARE_DYNAMIC_CLASS(AvenView)
 
     ChildFrm* m_Frame;
+    GfxCore* m_Gfx;
+
+    static bool m_First;
 
 public:
     AvenView();

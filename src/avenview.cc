@@ -27,7 +27,9 @@
 
 IMPLEMENT_DYNAMIC_CLASS(AvenView, wxView)
 
-AvenView::AvenView()
+bool AvenView::m_First = true;
+
+AvenView::AvenView() : m_Gfx(NULL)
 {
 
 }
@@ -41,18 +43,34 @@ bool AvenView::OnCreate(wxDocument* doc, long flags)
 {
     // Called when a new view is created.
 
-    // Create a new child frame.
-    m_Frame = new ChildFrm(doc, this, wxGetApp().GetMainFrame(), -1, "Aven");
+    if (m_First) {
+        // The first survey opened should sit inside the "parent" frame window.
+        // Unfortunately, the f*cking toolkit seems to hinder this.
+
+        wxWindow* parent = wxGetApp().GetMainFrame();
+	m_Gfx = new GfxCore((AvenDoc*) doc, parent);
+	int x;
+	int y;
+	m_Gfx->GetSize(&x, &y);
+	m_Gfx->SetSize(-1, -1, x, y);
+    }
+    else {
+        // Create a new child frame.
+        m_Frame = new ChildFrm(doc, this, wxGetApp().GetMainFrame(), -1, "Aven");
+ 
 
 #ifdef __X__
-    // X seems to require a forced resize.
-    int x;
-    int y;
-    m_Frame->GetSize(&x, &y);
-    m_Frame->SetSize(-1, -1, x, y);
+	// X seems to require a forced resize.
+	int x;
+	int y;
+	m_Frame->GetSize(&x, &y);
+	m_Frame->SetSize(-1, -1, x, y);
 #endif
 
-    m_Frame->Show(true);
+	m_Frame->Show(true);
+    }
+
+    m_First = false;
 
     return true;
 }
@@ -64,5 +82,12 @@ void AvenView::OnDraw(wxDC* dc)
 
 void AvenView::OnUpdate(wxView*, wxObject*)
 {
-    m_Frame->InitialiseGfx();
+  //   static bool inited = false;
+    
+    if (m_Gfx) {
+        m_Gfx->Initialise();
+    }
+    else {
+        m_Frame->InitialiseGfx();
+    }
 }

@@ -90,7 +90,7 @@ class GfxCore : public wxWindow {
     bool m_DraggingLeft;
     bool m_DraggingMiddle;
     bool m_DraggingRight;
-    ChildFrm* m_Parent;
+    wxWindow* m_Parent;
     AvenDoc* m_Doc;
     wxPoint m_DragStart;
     wxBitmap m_OffscreenBitmap;
@@ -219,7 +219,7 @@ class GfxCore : public wxWindow {
     void Repaint();
 
 public:
-    GfxCore(AvenDoc* doc, ChildFrm* parent);
+    GfxCore(AvenDoc* doc, wxWindow* parent);
     ~GfxCore();
 
     void Initialise();

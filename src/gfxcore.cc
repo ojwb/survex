@@ -162,7 +162,7 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
     EVT_UPDATE_UI(menu_CTL_REVERSE, GfxCore::OnReverseControlsUpdate)
 END_EVENT_TABLE()
 
-GfxCore::GfxCore(AvenDoc* doc, ChildFrm* parent) :
+GfxCore::GfxCore(AvenDoc* doc, wxWindow* parent) :
     wxWindow(parent, 100),
     m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica", wxFONTENCODING_ISO8859_1)
 {
