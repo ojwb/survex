@@ -87,8 +87,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 #endif
 
     EVT_CLOSE(MainFrm::OnClose)
-	
     EVT_SET_FOCUS(MainFrm::OnSetFocus)
+    EVT_DROP_FILES(MainFrm::OnDropFiles)
 
     EVT_MENU(menu_ROTATION_START, MainFrm::OnStartRotation)
     EVT_MENU(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotation)
@@ -231,6 +231,8 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     CreateMenuBar();
     CreateToolBar();
     CreateSidePanel();
+
+    DragAcceptFiles(true);
 
 #ifdef __X__
     int x;
@@ -1108,6 +1110,20 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
         }
 
         prev_point = point;
+    }
+}
+
+void MainFrm::OnDropFiles(wxDropFilesEvent& event)
+{
+    // Load a survey file by drag-and-drop.
+
+    assert(event.GetNumberOfFiles() > 0);
+
+    if (event.GetNumberOfFiles() == 1) {
+        OpenFile((event.GetFiles())[0], "", false);
+    }
+    else {
+        wxGetApp().ReportError(msg(/*You may only view one 3d file at a time.*/336));
     }
 }
 
