@@ -103,8 +103,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2003-03-26 04:59:00 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.107 2003-03-26 04:59:00 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2003-03-28 02:02:23 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.108 2003-03-28 02:02:23 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -3494,7 +3494,7 @@ which you can then inspect with a text editor.
 </Para>
 
 </Sect1>
-
+-->
 <Sect1><Title>Working with Larry Fish's Compass</Title>
 <?dbhtml filename="compass.htm">
 
