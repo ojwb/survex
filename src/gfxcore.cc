@@ -32,8 +32,13 @@
 static const int FONT_SIZE = 10;
 static const int CROSS_SIZE = 5;
 static const float COMPASS_SIZE = 24.0f;
-static const long COMPASS_OFFSET_X = 60;
-static const long COMPASS_OFFSET_Y = 80;
+static const int COMPASS_OFFSET_X = 60;
+static const int COMPASS_OFFSET_Y = 80;
+static const int INDICATOR_BOX_SIZE = 60;
+static const int INDICATOR_MARGIN = 5;
+static const int INDICATOR_OFFSET_X = 15;
+static const int INDICATOR_OFFSET_Y = 60;
+static const int INDICATOR_GAP = 2;
 static const int DISPLAY_SHIFT = 50;
 static const int TIMER_ID = 0;
 
@@ -81,13 +86,19 @@ GfxCore::GfxCore(MainFrm* parent) :
     // Create pens and brushes for drawing.
     m_Pens.black.SetColour(0, 0, 0);
     m_Pens.grey.SetColour(100, 100, 100);
+    m_Pens.lgrey.SetColour(180, 180, 180);
+    m_Pens.lgrey2.SetColour(140, 140, 140);
     m_Pens.white.SetColour(255, 255, 255);
     m_Pens.turquoise.SetColour(0, 100, 255);
     m_Pens.green.SetColour(0, 255, 40);
+    m_Pens.indicator1.SetColour(150, 205, 224);
+    m_Pens.indicator2.SetColour(114, 149, 160);
 
     m_Brushes.black.SetColour(0, 0, 0);
     m_Brushes.white.SetColour(255, 255, 255);
     m_Brushes.grey.SetColour(100, 100, 100);
+    m_Brushes.indicator1.SetColour(150, 205, 224);
+    m_Brushes.indicator2.SetColour(114, 149, 160);
 
     SetBackgroundColour(wxColour(0, 0, 0));
 }
@@ -330,9 +341,14 @@ void GfxCore::RedrawOffscreen()
 	    DrawDepthbar();
 	}
 
-	// Draw compass.
+	// Draw compass or elevation/heading indicators.
 	if (m_Compass) {
-	    DrawCompass();
+	    if (m_FreeRotMode) {
+	        DrawCompass();
+	    }
+	    else {
+	        Draw2dIndicators();
+	    }
 	}
     }
 
@@ -379,13 +395,95 @@ void GfxCore::OnPaint(wxPaintEvent& event)
 
 wxPoint GfxCore::CompassPtToScreen(float x, float y, float z)
 {
-    return wxPoint(long(-XToScreen(x, y, z)) + m_XSize/2 - COMPASS_OFFSET_X + m_XCentre,
-	  	   long(ZToScreen(x, y, z)) + m_YSize/2 - COMPASS_OFFSET_Y + m_YCentre);
+    return wxPoint(long(-XToScreen(x, y, z)) + m_XSize - COMPASS_OFFSET_X,
+	  	   long(ZToScreen(x, y, z)) + m_YSize - COMPASS_OFFSET_Y);
+}
+
+wxPoint GfxCore::IndicatorCompassToScreenPan(int angle)
+{
+    float theta = (angle * M_PI / 180.0) - m_PanAngle;
+    wxCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
+    wxCoord x = wxCoord(length * sin(theta));
+    wxCoord y = wxCoord(length * cos(theta));
+
+    return wxPoint(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2 - x,
+		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2 - y);
+}
+
+wxPoint GfxCore::IndicatorCompassToScreenElev(int angle)
+{
+    float theta = (angle * M_PI / 180.0) - m_TiltAngle + M_PI/2.0;
+    wxCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
+    wxCoord x = wxCoord(length * sin(-theta));
+    wxCoord y = wxCoord(length * cos(-theta));
+
+    return wxPoint(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - x,
+		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2 - y);
+}
+
+void GfxCore::Draw2dIndicators()
+{
+    // Draw the "traditional" elevation and compass indicators.
+
+    m_DrawDC.SetBrush(m_Brushes.grey);
+    m_DrawDC.SetPen(m_Pens.lgrey2);
+    m_DrawDC.DrawEllipse(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
+			 m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
+			 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
+			 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2);
+    m_DrawDC.DrawEllipse(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 + INDICATOR_MARGIN -
+			   INDICATOR_GAP,
+			 m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
+			 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
+			 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2);
+
+    // Pan arrow
+    wxPoint p1 = IndicatorCompassToScreenPan(0);
+    wxPoint p2 = IndicatorCompassToScreenPan(150);
+    wxPoint p3 = IndicatorCompassToScreenPan(210);
+    wxPoint pc(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2,
+	       m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2);
+    wxPoint pts1[3] = { p2, p1, pc };
+    wxPoint pts2[3] = { p3, p1, pc };
+    m_DrawDC.SetPen(m_Pens.lgrey);
+    m_DrawDC.SetBrush(m_Brushes.indicator2);
+    m_DrawDC.DrawPolygon(3, pts1);
+    m_DrawDC.SetBrush(m_Brushes.indicator1);
+    m_DrawDC.DrawPolygon(3, pts2);
+
+    // Elevation arrow
+    wxPoint p1e = IndicatorCompassToScreenElev(0);
+    wxPoint p2e = IndicatorCompassToScreenElev(150);
+    wxPoint p3e = IndicatorCompassToScreenElev(210);
+    wxPoint pce(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5,
+	        m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2);
+    wxPoint pts1e[3] = { p2e, p1e, pce };
+    wxPoint pts2e[3] = { p3e, p1e, pce };
+    m_DrawDC.SetPen(m_Pens.lgrey);
+    m_DrawDC.SetBrush(m_Brushes.indicator2);
+    m_DrawDC.DrawPolygon(3, pts1e);
+    m_DrawDC.SetBrush(m_Brushes.indicator1);
+    m_DrawDC.DrawPolygon(3, pts2e);
+
+    // Text
+    m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
+    m_DrawDC.SetTextForeground(TEXT_COLOUR);
+
+    wxString str = wxString::Format("Facing %03d", int(m_PanAngle * 180.0 / M_PI));
+    int w, h;
+    m_DrawDC.GetTextExtent(str, &w, &h);
+    m_DrawDC.DrawText(str, m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2 - w/2,
+		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
+
+    str = wxString::Format("Elev %03d", int(m_TiltAngle * 180.0 / M_PI));
+    m_DrawDC.GetTextExtent(str, &w, &h);
+    m_DrawDC.DrawText(str, m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*1.5 - w/2,
+		      m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h);
 }
 
 void GfxCore::DrawCompass()
 {
-    // Draw the compass.
+    // Draw the 3d compass.
 
     wxPoint pt[3];
 
@@ -409,19 +507,6 @@ void GfxCore::DrawCompass()
     pt[1] = CompassPtToScreen(0.0, -COMPASS_SIZE, 0.0);
     pt[2] = CompassPtToScreen(COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
     m_DrawDC.DrawLines(3, pt);
-
-    if (!m_FreeRotMode) {
-        m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
-	m_DrawDC.SetTextForeground(TEXT_COLOUR);
-
-	wxString str = wxString::Format("Hdg %03d", int(m_PanAngle * 180.0 / M_PI));
-	m_DrawDC.DrawText(str, m_XCentre + int(m_XSize/2 - COMPASS_OFFSET_X - COMPASS_SIZE*3),
-			  m_YCentre + int(m_YSize/2 - COMPASS_OFFSET_Y - FONT_SIZE*1.5));
-
-	str = wxString::Format("Elev %03d", int(m_TiltAngle * 180.0 / M_PI));
-	m_DrawDC.DrawText(str, m_XCentre + int(m_XSize/2 - COMPASS_OFFSET_X - COMPASS_SIZE*3),
-			  m_YCentre + int(m_YSize/2 - COMPASS_OFFSET_Y + FONT_SIZE/2.0));
-    }
 }
 
 void GfxCore::DrawNames()

@@ -111,12 +111,18 @@ class GfxCore : public wxWindow {
         wxPen green;
         wxPen white;
         wxPen grey;
+        wxPen lgrey;
+        wxPen lgrey2;
+        wxPen indicator1;
+        wxPen indicator2;
     } m_Pens;
 
     struct brushes {
         wxBrush black;
         wxBrush grey;
         wxBrush white;
+        wxBrush indicator1;
+        wxBrush indicator2;
     } m_Brushes;
 
     float XToScreen(float x, float y, float z) {
@@ -144,6 +150,10 @@ class GfxCore : public wxWindow {
     void DrawScalebar();
     void DrawDepthbar();
     void DrawCompass();
+    void Draw2dIndicators();
+
+    wxPoint IndicatorCompassToScreenPan(int angle);
+    wxPoint IndicatorCompassToScreenElev(int angle);
 
     void HandleScaleRotate(bool, wxPoint);
     void HandleTilt(wxPoint);
