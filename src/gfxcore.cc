@@ -2826,6 +2826,9 @@ void GfxCore::DefaultParameters()
     m_Params.display_shift.y = 0;
 
     m_ScaleCrossesOnly = false;
+    m_ScaleSpecialPtsOnly = false;
+    m_ScaleHighlightedPtsOnly = false;
+	
     m_Surface = false;
     m_SurfaceDepth = false;
     m_SurfaceDashed = true;

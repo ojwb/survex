@@ -1173,7 +1173,7 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
 	else {
 	    // The first point, a surface point, or another move: put it in the
 	    // correct list according to depth.
-	    assert(point->isSurface || !point->isLine);
+	    assert(!point->isLine || point->isSurface);
 	    int band = GetDepthColour(point->z);
 	    m_Points[band].push_back(point);
 	}

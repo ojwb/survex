@@ -59,12 +59,6 @@ default_truncate(settings *s)
 }
 
 static void
-default_90up(settings *s)
-{
-   s->f90Up = fFalse;
-}
-
-static void
 default_case(settings *s)
 {
    s->Case = LOWER;
@@ -153,7 +147,8 @@ extern void
 default_all(settings *s)
 {
    default_truncate(s);
-   default_90up(s);
+   s->f90Up = fFalse;
+   s->f0Eq = fFalse;
    default_case(s);
    default_style(s);
    default_prefix(s);
