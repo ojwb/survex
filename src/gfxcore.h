@@ -513,7 +513,7 @@ public:
     void OnAntiAlias();
     void OnSolidSurface();
 #endif
-    void OnCancelDistLine(wxCommandEvent&);
+    void OnCancelDistLine();
 
     void OnPaint(wxPaintEvent&);
     void OnMouseMove(wxMouseEvent& event);

@@ -1234,7 +1234,8 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
         str.Printf("   %d N, %d E", (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
         m_StnCoords->SetLabel(str);
         m_StnName->SetLabel(label->text);
-        str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
+        str.Printf("   %s: %dm", msg(/*Altitude*/335),
+		   (int) (label->z + m_Offsets.z));
         m_StnAlt->SetLabel(str);
         m_Gfx->SetHere(label->x, label->y, label->z);
 
@@ -1270,7 +1271,9 @@ void MainFrm::DisplayTreeInfo(wxTreeItemData* item)
                 str.Printf("   Dist: %dm  Brg: %03d", (int) sqrt(dx*dx + dy*dy + dz*dz), brg);
                 m_Dist3->SetLabel(str);
 	        m_Gfx->SetThere(x0, y0, z0);
-            }
+            } else {
+	        m_Gfx->SetThere();
+	    }
         }
     }
     else if (!data) {
@@ -1561,7 +1564,8 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
         str.Printf("   %d N, %d E", (int) (label->y + m_Offsets.y), (int) (label->x + m_Offsets.x));
         m_StnCoords->SetLabel(str);
         m_StnName->SetLabel(label->text);
-        str.Printf("   Altitude: %dm", (int) (label->z + m_Offsets.z));
+        str.Printf("   %s: %dm", msg(/*Altitude*/335),
+		   (int) (label->z + m_Offsets.z));
         m_StnAlt->SetLabel(str);
         m_Gfx->SetHere(label->x, label->y, label->z);
         m_Gfx->DisplaySpecialPoints();
@@ -1569,7 +1573,6 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
         wxTreeItemData* sel_wx;
         bool sel = m_Tree->GetSelectionData(&sel_wx);
         if (sel) {
-	printf("selection\n");
 	    TreeData* data = (TreeData*) sel_wx;
 
             if (data->IsStation()) {

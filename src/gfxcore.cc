@@ -3461,7 +3461,7 @@ void GfxCore::SetThere(Double x, Double y, Double z)
     Refresh(false);
 }
 
-void GfxCore::OnCancelDistLine(wxCommandEvent&)
+void GfxCore::OnCancelDistLine()
 {
     SetThere();
     m_Parent->ClearTreeSelection();

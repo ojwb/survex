@@ -380,7 +380,7 @@ public:
     void OnViewClino(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewClino(); }
     void OnViewGrid(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnViewGrid(); }
     void OnReverseDirectionOfRotation(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnReverseDirectionOfRotation(); }
-    void OnCancelDistLine(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnCancelDistLine(event); }
+    void OnCancelDistLine(wxCommandEvent& event) { if (m_Gfx) m_Gfx->OnCancelDistLine(); }
 #ifdef AVENGL
     void OnAntiAlias(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnAntiAlias(); }
     void OnSolidSurface(wxCommandEvent&) { if (m_Gfx) m_Gfx->OnSolidSurface(); }
