@@ -25,8 +25,6 @@
 #include <string.h>
 #include <windows.h>
 
-//int
-//main(int argc, char **argv)
 int APIENTRY
 WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
