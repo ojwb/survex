@@ -1,10 +1,3 @@
-Date: 21 Jul 1999
-From: Olly
-
-Articulation point code: ideally the articulation point code should allow
-further network reductions to happen after splitting at articulation
-points?
-
 Date: 24 Feb 2000
 From: Wookey
 
@@ -32,12 +25,6 @@ Date: Fri, 18 Aug 2000
 From: Olly
 
 Clean up the sample data and start including it again.
-
-Date: Fri, 16 Feb 2001
-From: Olly
-
-Don't split other traverses at articulating traverses when reporting error
-stats.
 
 Date: Sat, 03 Mar 2001
 From: Olly
@@ -347,4 +334,17 @@ commentall?
 
 pos files should be generated from .3d by a small utility, and diffpos
 should work on .3d files (diff3d).
+
+Date: Wed, 18 Jul 20001
+From: Olly
+
+Articulation point code: ideally the articulation point code should allow
+further network reductions to happen after splitting at articulation
+points?
+
+Rather than forming a linked list of components, solve each as it is
+identified?
+
+Don't split other traverses at articulating traverses when reporting error
+stats.
 
