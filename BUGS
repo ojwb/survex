@@ -3,7 +3,6 @@ From: Mark
 
 wxaven:
 - clino needs resistance around 0
-- need to prevent zooming in/out silly amounts (e.g. when scale bar is 1cm)
 - scale bar dragging factor needs slight tweak
 - finish reverse controls
 - possible mysterious problem with [ and ] not zooming to screen centre

@@ -332,11 +332,31 @@ void GfxCore::SetScale(double scale)
     // Fill the plot data arrays with screen coordinates, scaling the survey
     // to a particular absolute scale.
 
-    m_Params.scale = scale;
+#if 0
+    //--share code!
+    // Calculate the extent of the survey, in metres across the screen plane.
+    double m_across_screen = double(m_XSize / scale);
 
-    if (m_Params.scale < m_InitialScale / 20.0) {
-        m_Params.scale = m_InitialScale / 20.0;
+    // Calculate the length of the scale bar in metres.
+    double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
+    double t = m_across_screen * 0.75 / size_snap;
+    if (t >= 5.0) {
+        size_snap *= 5.0;
     }
+    else if (t >= 2.0) {
+        size_snap *= 2.0;
+    }
+
+    if (size_snap < 0.1 || size_snap > 20000) {
+        return;
+    }
+#endif
+
+    if (scale > m_InitialScale * 2000 || scale < m_InitialScale / 20) {
+        return;
+    }
+
+    m_Params.scale = scale;
 
     if (!m_ScaleCrossesOnly && !m_ScaleHighlightedPtsOnly) {
         for (int band = 0; band < m_Bands; band++) {
