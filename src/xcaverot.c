@@ -1,5 +1,5 @@
 /* > xcaverot.c
- * Copyright (C) 1993-2001 Olly Betts, John Pybus, Mark Shinwell,
+ * Copyright (C) 1993-2001 Bill Purvis, Olly Betts, John Pybus, Mark Shinwell,
  * Leandro Dybal Bertoni, Andy Holtsbery, et al
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  *
- * Based on original code Copyright 1993 Bill Purvis
+ * Original license on code Copyright 1993 Bill Purvis:
  *
  * Bill Purvis DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
  * ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -27,12 +27,6 @@
  * ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  * SOFTWARE.
  */
-
-/* Uncomment the next line to try Mark's bodge (as used in aven) - in xcaverot
- * seems to perform worse that processing all events in the queue before
- * redrawing, which is interesting... */
-
-/* #define MARKS_BODGE */
 
 #define XCAVEROT_BUTTONS
 
@@ -45,13 +39,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <sys/time.h>	/* for gettimeofday */
+#include <sys/time.h> /* for gettimeofday */
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 
-#include <X11/extensions/Xdbe.h>	/* for double buffering support */
+#include <X11/extensions/Xdbe.h> /* for double buffering support */
 
 #include "cmdline.h"
 #include "useful.h"
@@ -88,15 +82,20 @@ static double indrad = 40;
 /* default font to use */
 #define FONTNAME "-adobe-helvetica-medium-r-normal-*-8-*"
 
-#define PLAN 1	/* values of plan_elev */
+/* values of plan_elev */
+#define PLAN 1
 #define ELEVATION 2
 
-#define NUM_DEPTH_COLOURS 10	/* number of depth colour bands */
+/* number of depth colour bands */
+#define NUM_DEPTH_COLOURS 10
+
+/* nasty fixed limit - checked at least */
+#define SEGMENT_GROUP_SIZE 20000
 
 /* A group of segments to be drawn in the same colour. */
 typedef struct {
-   int num_segments;	/* number of segments */
-   XSegment segments[20000];	/* array of line segments, FIXME: fixed limit temporary hack */
+   int num_segments;
+   XSegment segments[SEGMENT_GROUP_SIZE];
 } SegmentGroup;
 
 static SegmentGroup segment_groups[NUM_DEPTH_COLOURS + 1];
@@ -114,22 +113,21 @@ static double datafactor = 100.0;
 
 static double scale_default;
 
-/* factor to scale view on screen by */
-static double scale;
+static double scale; /* factor to scale view on screen by */
 static double zoomfactor = 1.2;
-static double sbar;	/* length of scale bar */
-static double scale_orig;	/* saved state of scale, used in drag re-scale */
+static double sbar; /* length of scale bar */
+static double scale_orig; /* saved state of scale, used in drag re-scale */
 
+/* position of original click in pointer drags */
 static struct {
    int x;
    int y;
-} orig;	/* position of original click in pointer drags */
+} orig;
 
-static double view_angle = 180.0;	/* viewed from this bearing */
+static double view_angle = 0.0;	/* bearing up page */
 
-				 /* subtract 180 for bearing up page */
 static double elev_angle = 0.0;
-static double rot_speed;	/* rotation speed degrees per second */
+static double rot_speed; /* rotation speed degrees per second */
 
 static int plan_elev;
 static int rot = 0;
@@ -463,10 +461,6 @@ process_step(Display * display, Window button, GC mygc, GC egc)
 {
    flip_button(display, button, mygc, egc, "Step");
    view_angle += rot_speed / 5;
-   if (view_angle >= 360.0)
-      view_angle -= 360.0;
-   else if (view_angle < 0)
-      view_angle += 360.0;
    update_rotation();
    flip_button(display, button, egc, mygc, "Step");
 }
@@ -635,8 +629,8 @@ draw_ind_com(Display * display, GC gc, double angle)
 
    rs = r * sin(rad(C_IND_ANG));
    rc = r * cos(rad(C_IND_ANG));
-   sa = sin(rad(angle + 180));
-   ca = cos(rad(angle + 180));
+   sa = sin(rad(angle));
+   ca = cos(rad(angle));
 
    XClearWindow(mydisplay, ind_com);
 
@@ -653,7 +647,7 @@ draw_ind_com(Display * display, GC gc, double angle)
 	     ym + rs * sa + rc * ca, xm - r * sa / 2, ym + r * ca / 2);
    XDrawLine(display, ind_com, gc, xm, ym - r / 2, xm, ym - r);
 
-   sprintf(temp, "%03d", 180 - (int)angle);
+   sprintf(temp, "%03d", (int)angle);
    XDrawString(display, ind_com, gc, INDWIDTH / 2 - 20, INDDEPTH - 10, temp,
 	       strlen(temp));
 }
@@ -723,7 +717,6 @@ add_to_segment_cache(point **pp, int f_surface)
 	    break;
 	    
 	  case DRAW: {
-	    XSegment *segment;
 	    SegmentGroup *group;
 
 	    if (f_surface) {
@@ -740,13 +733,17 @@ add_to_segment_cache(point **pp, int f_surface)
 	       group = &segment_groups[depth];
 	    }
 
-	    segment = &(group->segments[group->num_segments++]);
-		
-	    /* observe the order of the following lines before modifying */
-	    segment->x1 = x1;
-	    segment->y1 = y1;
-	    segment->x2 = x1 = toscreen_x(p);
-	    segment->y2 = y1 = toscreen_y(p);
+	    if (group->num_segments < SEGMENT_GROUP_SIZE) {
+	       XSegment *segment = &(group->segments[group->num_segments++]);
+
+	       /* observe the order of the following lines before modifying */
+	       segment->x1 = x1;
+	       segment->y1 = y1;
+	       segment->x2 = x1 = toscreen_x(p);
+	       segment->y2 = y1 = toscreen_y(p);
+	    } else {
+	       fprintf(stderr, "ignoring some legs for now rather than overflowing fixed segment buffer\n");
+	    }
 		
 	    break;
 	  }
@@ -777,8 +774,8 @@ fill_segment_cache(void)
    else
       plan_elev = 0;
 
-   sv = sin(rad(view_angle));
-   cv = cos(rad(view_angle));
+   sv = -sin(rad(view_angle));
+   cv = -cos(rad(view_angle));
    se = sin(rad(elev_angle));
    ce = cos(rad(elev_angle));
 
@@ -840,11 +837,6 @@ update_rotation(void)
 
       timefact += (temptime.tv_usec - lastframe.tv_usec) / 1000000.0;
       view_angle += rot_speed * timefact;
-
-      while (view_angle >= 360.0)
-	 view_angle -= 360.0;
-      while (view_angle < 0.0)
-	 view_angle += 360.0;
 
       if (elev_angle == 0.0)
 	 plan_elev = ELEVATION;
@@ -925,6 +917,11 @@ redraw_image_dbe(Display * display, Window window, GC gc)
    }
 
    XDestroyRegion(label_reg);
+
+   while (view_angle < 0.0)
+      view_angle += 360.0;
+   while (view_angle >= 360.0)
+      view_angle -= 360.0;
 
    draw_ind_com(display, gc, view_angle);
    draw_ind_elev(display, gc, elev_angle);
@@ -1099,11 +1096,6 @@ mouse_moved(int mx, int my)
       /* L-R => rotation */
       view_angle = rotsc_angle - (((double)dx) / 2.5);
 
-      while (view_angle < 0.0)
-	 view_angle += 360.0;
-      while (view_angle >= 360.0)
-	 view_angle -= 360.0;
-
       /*dy = -dy; */
 
       /* U-D => scaling */
@@ -1153,10 +1145,10 @@ drag_compass(int x, int y)
    x -= INDWIDTH / 2;
    y -= INDWIDTH / 2;
    /* printf("xm %d, y %d, ", x,y); */
-   view_angle = deg(atan2(-x, y));
+   view_angle = deg(atan2(x, -y));
    /* snap view_angle to nearest 45 degrees if outside circle */
    if (x * x + y * y > indrad * indrad)
-      view_angle = ((int)((view_angle + 360 + 22) / 45)) * 45 - 360;
+      view_angle = ((int)((view_angle + 360 + 22) / 45)) * 45;
    /* printf("a %f\n", view_angle); */
 }
 
@@ -1187,7 +1179,7 @@ set_defaults(void)
    XWindowAttributes a;
 
    scale = scale_default;
-   view_angle = 180.0;
+   view_angle = 0.0;
    plan_elev = PLAN;
    elev_angle = 90.0;
    rot = 0;
@@ -1224,7 +1216,6 @@ main(int argc, char **argv)
 
    int visdepth;	/* used in Double Buffer setup code */
 
-   XEvent myevent;
    XSizeHints myhint;
    XGCValues gvalues;
 
@@ -1497,8 +1488,7 @@ main(int argc, char **argv)
 
    gettimeofday(&lastframe, NULL);
 
-#ifdef XCAVEROT_BUTTONS	/* FIXME: !?! */
-   XNextEvent(mydisplay, &myevent);
+#ifdef XCAVEROT_BUTTONS
    draw_buttons(mydisplay, mygc, enter_gc);
 #endif
 
@@ -1510,13 +1500,10 @@ main(int argc, char **argv)
       int refresh_window = 0;
       update_rotation();
 
-#ifdef MARKS_BODGE
-      if (rot == 0 || XPending(mydisplay)) {
-#else
       if (rot == 0) goto ickybodge;
       while (XPending(mydisplay)) {
+	 XEvent myevent;
 	 ickybodge:
-#endif
          XNextEvent(mydisplay, &myevent);
 #if 0
          printf("event of type #%d, in window %x\n",myevent.type, (int)myevent.xany.window);
@@ -1710,11 +1697,9 @@ main(int argc, char **argv)
 			      break;
 			    case 'c':	/* rotate one step "clockwise" */
 			      view_angle += rot_speed / 5;
-			      if (view_angle >= 360.0) view_angle -= 360.0;
 			      break;
 			    case 'v':	/* rotate one step "anticlockwise" */
 			      view_angle -= rot_speed / 5;
-			      if (view_angle <= 0.0) view_angle += 360.0;
 			      break;
 			    case '\'':	/* higher viewpoint */
 			    case '@': case '"': /* alternate shifted forms */
@@ -1780,11 +1765,6 @@ main(int argc, char **argv)
 	    }
 	 }
       }
-
-#ifdef MARKS_BODGE
-      /* Discard all events. */
-      XSync(mydisplay, True);
-#endif
 
       {
 	 static double old_view_angle = -1;
