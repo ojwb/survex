@@ -1,3 +1,6 @@
+* aven: Fixed bug which caused the occasional spurious leg to be shown
+  connecting arbitrary stations.
+ 
 * extend: try to extend along a survey, and make breaks where other surveys
   join.
 

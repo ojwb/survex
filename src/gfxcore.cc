@@ -467,7 +467,6 @@ void GfxCore::SetScaleInitial(Double scale)
 #ifdef AVENGL
 	    bool line_open = false;
 #endif
-	    PointInfo* prev_pti = NULL;
 	    while (pos != end) {
 		PointInfo* pti = *pos++;
 
@@ -534,11 +533,9 @@ void GfxCore::SetScaleInitial(Double scale)
 		    // Add the leg onto the current polyline.
 		    Point** dest = &(current_polyline_is_surface ? spt : pt);
 
-		    (*dest)->x = pti->GetX();
-		    (*dest)->y = pti->GetY();
-		    (*dest)->z = pti->GetZ();
-
-		    prev_pti = pti;
+		    (*dest)->x = x = pti->GetX();
+		    (*dest)->y = y = pti->GetY();
+		    (*dest)->z = z = pti->GetZ();
 
 		    // Advance the relevant coordinate pointer to the next
 		    // position.
@@ -571,8 +568,6 @@ void GfxCore::SetScaleInitial(Double scale)
 		    x = pti->GetX();
 		    y = pti->GetY();
 		    z = pti->GetZ();
-
-		    prev_pti = pti;
 		}
 	    }
 #ifndef AVENGL
