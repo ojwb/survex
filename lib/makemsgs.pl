@@ -111,6 +111,7 @@ foreach $lang (@langs) {
 
    my $n;
    for $n (0 .. $num_msgs - 1) {
+      my $warned = 0;
       my $msg = $$aref[$n];
       if (!defined $msg) {
          $msg = $$parentaref[$n] if defined $parentaref;
@@ -122,9 +123,20 @@ foreach $lang (@langs) {
 	       open TODO, ">>$lang.todo" or die $!;
 	       print TODO $raw{$n}, "\n";
 	       close TODO;
+	       $warned = 1;
 	    } else {
 	       $msg = '';
 	    }
+	 }
+      }
+      if ($raw{$n} =~ /^#\s*TRANSLATE\b[-\sa-z]*\b$lang\b/m) {
+	 if ($warned) {
+	    print STDERR "Warning: message $n missing and also marked for iretranslation for language $lang\n";
+	 } else {
+	    print STDERR "Warning: message $n needs retranslating for language $lang\n";
+	    open TODO, ">>$lang.todo" or die $!;
+	    print TODO $raw{$n}, "\n";
+	    close TODO;
 	 }
       }
       $buff .= $msg . "\0";
