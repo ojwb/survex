@@ -118,6 +118,7 @@ default_translate(settings *s)
    t['\\'] |= SPECIAL_ROOT;
    t['.'] |= SPECIAL_SEPARATOR;
    t['_'] |= SPECIAL_NAMES;
+   t['-'] |= SPECIAL_NAMES; /* Added in 0.97 prerelease 4 */
    t['.'] |= SPECIAL_DECIMAL;
    t['-'] |= SPECIAL_MINUS;
    t['+'] |= SPECIAL_PLUS;

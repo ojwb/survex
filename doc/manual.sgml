@@ -45,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-05-01 19:16:05 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.26 2001-05-01 19:16:05 mark Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-05-04 01:00:59 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.27 2001-05-04 01:00:59 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1273,7 +1273,7 @@ not optional, then an error is given.
 <Sect2><Title>Survey Station Names</Title>
 
 <Para>Station names may contain any alphanumeric characters and
-additionally any characters in &lt;NAMES&gt; (default '_'). Alphabetic
+additionally any characters in &lt;NAMES&gt; (default `_' and `-'). Alphabetic
 characters may be forced to upper or lower case by using the *case
 command. Station names may be any length - if you want to only treat
 the first few characters as significant you can get cavern to truncate
@@ -1965,8 +1965,8 @@ MINUS (-) Indicates negative number
 </Para>
 
 <Para>
-NAMES (Underscore) Non-alphanumeric chars permitted in station
-names. (The alphanumeric characters are always permitted).
+NAMES (_-) Non-alphanumeric chars permitted in station
+names (letters and numbers are always permitted).
 </Para>
 
 <Para>
@@ -1989,6 +1989,7 @@ SEPARATOR (.) Level separator in prefix hierarchy
 The special characters may not be alphanumeric.
 </Para>
 
+<!-- FIXME this isn't implemented
 <Para>
 The following characters may be written as words:
 </Para>
@@ -2006,6 +2007,7 @@ Dash (&amp;2D) Dot (&amp;2E) Underscore (&amp;5F)
 Also, HexXX means the character with hex value XX. Eg Hex20 is
 a space.
 </Para>
+-->
 
 </Sect3>
 
