@@ -254,7 +254,7 @@ main(int argc, char **argv)
 	 }
 	 /* Lollipops, Parallel legs, Iterate mx, Delta* */
 	 while ((c = *optarg++) != '\0')
-	     if (islower(c)) optimize |= BITA(ch);
+	     if (islower(c)) optimize |= BITA(c);
 	 break;
 #if (OS==WIN32)
        case 256:
