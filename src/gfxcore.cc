@@ -2469,9 +2469,8 @@ GfxCore::MoveViewer(double forward, double up, double right)
     double cP = cos(rad(m_PanAngle));
     double sP = sin(rad(m_PanAngle));
     Vector3 v_forward(cT * sP, cT * cP, -sT);
-    Vector3 v_up(- sT * sP, - sT * cP, cT);
-    double cT2_sT2 = cT * cT - sT * sT;
-    Vector3 v_right(cP * cT2_sT2, - sP * cT2_sT2, 0);
+    Vector3 v_up(-sT * sP, -sT * cP, -cT);
+    Vector3 v_right(-cP, sP, 0);
     assert(fabs(dot(v_forward, v_up)) < 1e-6);
     assert(fabs(dot(v_forward, v_right)) < 1e-6);
     assert(fabs(dot(v_right, v_up)) < 1e-6);

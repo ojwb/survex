@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2004 Olly Betts
+//  Copyright (C) 2001,2003,2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -652,7 +652,7 @@ void GUIControl::OnPlanUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnShiftDisplayDown(bool accel)
 {
     if (m_View->GetPerspective()) 
-	m_View->MoveViewer(0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT, 0);
+	m_View->MoveViewer(0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT, 0);
     else
 	m_View->TranslateCave(0, accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT);
 }
@@ -665,7 +665,7 @@ void GUIControl::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnShiftDisplayLeft(bool accel)
 {
     if (m_View->GetPerspective()) 
-	m_View->MoveViewer(0, 0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT);
+	m_View->MoveViewer(0, 0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT);
     else
 	m_View->TranslateCave(accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT, 0);
 }
@@ -678,7 +678,7 @@ void GUIControl::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnShiftDisplayRight(bool accel)
 {
     if (m_View->GetPerspective()) 
-	m_View->MoveViewer(0, 0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT);
+	m_View->MoveViewer(0, 0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT);
     else
 	m_View->TranslateCave(accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT, 0);
 }
@@ -691,7 +691,7 @@ void GUIControl::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnShiftDisplayUp(bool accel)
 {
     if (m_View->GetPerspective()) 
-	m_View->MoveViewer(0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT, 0);
+	m_View->MoveViewer(0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT, 0);
     else
 	m_View->TranslateCave(0, accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT);
 }
