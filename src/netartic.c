@@ -240,49 +240,15 @@ articulate(void)
 	 if (stn2->colour < 0) {
 	    stn2->colour = -stn2->colour;
 	 } else if (stn2->colour == 0) {
-	    ulong n;
-	    ulong colBefore = colour;
-
 	    /* Special case to check if start station is an articulation point
 	     * which it is iff we have to colour from it in more than one dirn
 	     */
 	    if (c) {
-	       /* stn2->fArtic = fTrue; */
+	       /* FIXME: stn->fArtic = fTrue; */
 	    }
 	    
 	    c++;
 	    visit(stn2, reverse_leg_dirn(stn->leg[i]));
-	    n = colour - colBefore;
-#ifdef DEBUG_ARTIC
-	    printf("visited %lu nodes\n", n);
-#endif
-	    
-#if 0 /* FIXME: */
-	    if (n == 0) continue;
-	    /* Solve chunk of net from stn in dirn i up to stations
-	     * with fArtic set or fixed() true - hmm fixed() test
-	     * causes problems if an equated fixed point spans 2
-	     * articulations.
-	     * Then solve stations up to next set of fArtic points,
-	     * and repeat until all this bit done.
-	     */
-	    stn->status = statFixed;
-more:
-	    solve_matrix(stnlist);
-	    FOR_EACH_STN(stn2, stnlist) {
-	       if (stn2->fArtic && fixed(stn2)) {
-		  int d;
-		  for (d = 0; d <= 2 && stn->leg[d]; d++) {
-		     node *stn3 = stn2->leg[d]->l.to;
-		     if (!fixed(stn3)) {
-			stn2 = stn3;
-			goto more;
-		     }
-		  }
-		  stn2->fArtic = fFalse;
-	       }
-	    }
-#endif
 	 }
       }
 
@@ -325,7 +291,7 @@ more:
 	      } else {
 		 list = art->stnlist;
 	      }
-		 
+
 	      FOR_EACH_STN(stn, art->stnlist) {
 		 printf("    %d %p (", stn->colour, stn);
 		 print_prefix(stn->name);
@@ -344,7 +310,7 @@ more:
 	}
 	printf("\n");
      }
-   
+
 #if 0 /*def DEBUG_ARTIC*/
    FOR_EACH_STN(stn, stnlist) { /* high-light unfixed bits */
       if (stn->status && !fixed(stn)) {
