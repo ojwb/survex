@@ -16,7 +16,47 @@
 
 node *stn_iter = NULL; /* for FOR_EACH_STN */
 
-/* FIXME: station lists should know how long they are... */
+#define V(A,B) ((*v)[A][B])
+extern void check_var(const var *v) {
+   int bad = 0;
+   int ok = 0;
+   int i, j;
+   real det = 0.0;
+
+   for (i = 0; i < 3; i++) {
+      for (j = 0; j < 3; j++) {
+	 char buf[32];
+	 sprintf(buf, "%6.3f", (*v)[i][j]);
+	 if (strstr(buf, "NaN")) printf("*** NaN!!!\n"), bad = 1, ok = 1;
+	 if ((*v)[i][j] != 0.0) ok = 1;
+      }
+   }
+   if (!ok) return; /* ignore all-zero matrices */
+
+   for (i = 0; i < 3; i++) {
+      det += (*v)[i][0] * ((*v)[(i + 1) % 3][1] * (*v)[(i + 2) % 3][2] -
+			   (*v)[(i + 1) % 3][2] * (*v)[(i + 2) % 3][1]);
+   }
+
+   if (fabs(det) < 1E-10)
+      printf("*** Singular!!!\n"), bad = 1;
+
+#if 0
+   if (fabs(V(0,1) - V(1,0)) > 1e-12 ||
+       fabs(V(0,2) - V(2,0)) > 1e-12 ||
+       fabs(V(1,2) - V(2,1)) > 1e-12)
+      printf("*** Not symmetric!!!\n"), bad = 1;
+   if (V(0,0) <= 0.0 || V(1,1) <= 0.0 || V(2,2) <= 0.0)
+      printf("*** Not positive definite (diag <= 0)!!!\n"), bad = 1;
+   if (sqrd(V(0,1)) >= V(0,0)*V(1,1) || sqrd(V(0,2)) >= V(0,0)*V(2,2) ||
+       sqrd(V(1,0)) >= V(0,0)*V(1,1) || sqrd(V(2,0)) >= V(0,0)*V(2,2) ||
+       sqrd(V(1,2)) >= V(2,2)*V(1,1) || sqrd(V(2,1)) >= V(2,2)*V(1,1))
+      printf("*** Not positive definite (off diag^2 >= diag product)!!!\n"), bad = 1;
+#endif
+   if (bad) print_var(*v);
+}
+
+/* FIXME: station lists should probably know how long they are... */
 
 /* insert at head of double-linked list */
 void
@@ -63,7 +103,8 @@ copy_link(linkfor *leg)
    }
 #if 1
 # ifndef NO_COVARIANCES
-     {
+   check_var(&(leg->v));
+     {	
 	int i,j;
 	for (i = 0; i < 3; i++) {
 	   for (j = 0; j < 3; j++) legOut->v[i][j] = leg->v[i][j];
@@ -158,6 +199,7 @@ addfakeleg(node *fr, node *to,
    leg->v[0][1] = leg->v[1][0] = cxy;
    leg->v[1][2] = leg->v[2][1] = cyz;
    leg->v[2][0] = leg->v[0][2] = czx;
+   check_var(&(leg->v));
 #else
    leg->v[0] = vx;
    leg->v[1] = vy;
@@ -246,7 +288,7 @@ StnFromPfx(prefix *name)
 }
 
 extern void
-fprint_prefix(FILE *fh, prefix *ptr)
+fprint_prefix(FILE *fh, const prefix *ptr)
 {
    if (ptr->up != NULL) {
       fprint_prefix(fh, ptr->up);
@@ -259,7 +301,7 @@ fprint_prefix(FILE *fh, prefix *ptr)
 
 /* FIXME buffer overflow problems... */
 static char *
-sprint_prefix_(char *buf, OSSIZE_T len, prefix *ptr)
+sprint_prefix_(char *buf, OSSIZE_T len, const prefix *ptr)
 {
    int i;
    if (ptr->up != NULL) {
@@ -286,7 +328,7 @@ sprint_prefix_(char *buf, OSSIZE_T len, prefix *ptr)
 }
 
 extern char *
-sprint_prefix(prefix *ptr)
+sprint_prefix(const prefix *ptr)
 {
    static char buffer[512];
    sprint_prefix_(buffer, sizeof(buffer), ptr);
@@ -306,6 +348,12 @@ mulvv(var *r, const var *a, const var *b)
    int i, j, k;
    real tot;
 
+   ASSERT(r != a);
+   ASSERT(r != b);
+
+   check_var(a);
+   check_var(b);
+
    for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) {
 	 tot = 0;
@@ -315,12 +363,13 @@ mulvv(var *r, const var *a, const var *b)
 	 (*r)[i][j] = tot;
       }
    }
+   check_var(r);
 #endif
 }
 
 /* r = ab ; r,b delta vectors; a variance matrix */
 void
-mulvd(d *r, var *a, d *b)
+mulvd(d *r, const var *a, const d *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -331,6 +380,8 @@ mulvd(d *r, var *a, d *b)
    int i, k;
    real tot;
 
+   ASSERT(r != b);
+
    for (i = 0; i < 3; i++) {
       tot = 0;
       for (k = 0; k < 3; k++) tot += (*a)[i][k] * (*b)[k];
@@ -339,9 +390,35 @@ mulvd(d *r, var *a, d *b)
 #endif
 }
 
+/* r = ca ; r,a delta vectors; c real scaling factor  */
+void
+muldc(d *r, const d *a, real c) {
+   (*r)[0] = (*a)[0] * c;
+   (*r)[1] = (*a)[1] * c;
+   (*r)[2] = (*a)[2] * c;
+}
+
+/* r = ca ; r,a variance matrices; c real scaling factor  */
+void
+mulvc(var *r, const var *a, real c)
+{
+#ifdef NO_COVARIANCES
+   /* variance-only version */
+   (*r)[0] = (*a)[0] * c;
+   (*r)[1] = (*a)[1] * c;
+   (*r)[2] = (*a)[2] * c;
+#else
+   int i, j;
+
+   for (i = 0; i < 3; i++) {
+      for (j = 0; j < 3; j++) (*r)[i][j] = (*a)[i][j] * c;
+   }
+#endif
+}
+
 /* r = a + b ; r,a,b delta vectors */
 void
-adddd(d *r, d *a, d *b)
+adddd(d *r, const d *a, const d *b)
 {
    (*r)[0] = (*a)[0] + (*b)[0];
    (*r)[1] = (*a)[1] + (*b)[1];
@@ -350,7 +427,7 @@ adddd(d *r, d *a, d *b)
 
 /* r = a - b ; r,a,b delta vectors */
 void
-subdd(d *r, d *a, d *b) {
+subdd(d *r, const d *a, const d *b) {
    (*r)[0] = (*a)[0] - (*b)[0];
    (*r)[1] = (*a)[1] - (*b)[1];
    (*r)[2] = (*a)[2] - (*b)[2];
@@ -358,7 +435,7 @@ subdd(d *r, d *a, d *b) {
 
 /* r = a + b ; r,a,b variance matrices */
 void
-addvv(var *r, var *a, var *b)
+addvv(var *r, const var *a, const var *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -376,7 +453,7 @@ addvv(var *r, var *a, var *b)
 
 /* r = a - b ; r,a,b variance matrices */
 void
-subvv(var *r, var *a, var *b)
+subvv(var *r, const var *a, const var *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -400,13 +477,16 @@ invert_var(var *inv, const var *v)
    int i, j;
    real det = 0;
 
+   ASSERT(inv != v);
+
+   check_var(v);
    for (i = 0; i < 3; i++) {
       det += (*v)[i][0] * ((*v)[(i + 1) % 3][1] * (*v)[(i + 2) % 3][2] -
 			   (*v)[(i + 1) % 3][2] * (*v)[(i + 2) % 3][1]);
    }
 
    if (fabs(det) < 1E-10) {
-      printf("det=%.20f\n", det);
+      /* printf("det=%.20f\n", det); */
       return 0; /* matrix is singular - FIXME use epsilon */
    }
 
@@ -416,19 +496,18 @@ invert_var(var *inv, const var *v)
    for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) {
          (*inv)[i][j] = det * (B(i+1,j+1)*B(i+2,j+2) - B(i+2,j+1)*B(i+1,j+2));
-/*         if ((i+j) % 2) (*inv)[i][j] = -((*inv)[i][j]);*/
       }
    }
 #undef B
 
-     {
+     { /* check that original * inverse = identity matrix */
 	var p;
 	real d = 0;
-	mulvv( &p, v, inv );
+	mulvv(&p, v, inv);
 	for (i = 0; i < 3; i++) {
 	   for (j = 0; j < 3; j++ ) d += fabs(p[i][j] - (real)(i==j));
 	}
-	if (d > 1E-5) {
+	if (d > 1E-10) {
 	   printf("original * inverse=\n");
 	   print_var(*v);
 	   printf("*\n");
@@ -437,6 +516,7 @@ invert_var(var *inv, const var *v)
 	   print_var(p);
 	   BUG("matrix didn't invert");
 	}
+	check_var(inv);
      }
 
    return 1;
@@ -445,7 +525,7 @@ invert_var(var *inv, const var *v)
 
 /* r = (b^-1)a ; r,a delta vectors; b variance matrix */
 void
-divdv(d *r, d *a, var *b)
+divdv(d *r, const d *a, const var *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -464,7 +544,7 @@ divdv(d *r, d *a, var *b)
 
 /* f = a(b^-1) ; r,a,b variance matrices */
 void
-divvv(var *r, var *a, var *b)
+divvv(var *r, const var *a, const var *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -473,22 +553,26 @@ divvv(var *r, var *a, var *b)
    (*r)[2] = (*a)[2] / (*b)[2];
 #else
    var b_inv;
+   check_var(a);
+   check_var(b);
    if (!invert_var(&b_inv, b)) {
       print_var(*b);
       BUG("covariance matrix is singular");
    }
    mulvv(r, a, &b_inv);
+   check_var(r);
 #endif
 }
 
 bool
-fZero(var *v) {
+fZero(const var *v) {
 #ifdef NO_COVARIANCES
    /* variance-only version */
    return ((*v)[0] == 0.0 && (*v)[1] == 0.0 && (*v)[2] == 0.0);
 #else
    int i, j;
 
+   check_var(v);
    for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) if ((*v)[i][j] != 0.0) return fFalse;
    }
