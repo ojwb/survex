@@ -12,8 +12,11 @@ AC_DEFINE(COPYRIGHT_MSG,
 
 dnl Checks for programs.
 AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_CXXCPP
+AC_PROG_CXX_PROBE
+if test -n "$CXX" ; then
+  AM_DEPENDENCIES(CXX)
+  AC_PROG_CXXCPP
+fi
 
 AC_LANG_C
 
@@ -51,26 +54,30 @@ AC_CHECK_PROGS(STRIP, strip, echo "not stripping ")
 
 AC_PATH_XTRA
 
+if test x$no_x != xyes; then
+  AC_CHECK_LIB(Xext, XdbeQueryExtension, X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS", ,
+               $X_LIBS $X_PRE_LIBS -lX11 -lXext $X_EXTRA_LIBS)
+  CAVEROT=xcaverot ${CAVEROT}
+  AC_MSG_RESULT("building xcaverot")
+fi
+
 AVEN=
-AM_PATH_GTKMM(1.0.0,AVEN=aven,AC_MSG_WARN([GTK-- not found (is gtkmm-config in path?) : not building aven]))
-AC_SUBST(GTKMM_VERSION)
-AC_SUBST(GTKMM_LIBS)
-AC_SUBST(GTKMM_CFLAGS)
-AC_SUBST(AVEN)
+if test -n "$CXX" ; then
+  if test x$no_x != xyes; then
+    AM_PATH_GTKMM(1.0.0,AVEN=aven,AC_MSG_WARN([GTK-- not found (is gtkmm-config in path?) : not building aven]))
+    AC_SUBST(GTKMM_VERSION)
+    AC_SUBST(GTKMM_LIBS)
+    AC_SUBST(GTKMM_CFLAGS)
+    AC_MSG_RESULT("building aven")
+  fi
+fi
 
 AC_LANG_C
 
 AC_CHECK_LIB(m, sqrt)
 
-if test x$no_x != xyes; then
-  AC_CHECK_LIB(Xext, XdbeQueryExtension, X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS", ,
-   $X_LIBS $X_PRE_LIBS -lX11 -lXext $X_EXTRA_LIBS)			 
-  CAVEROT=xcaverot ${CAVEROT}
-  AC_MSG_RESULT("building xcaverot")
-else
-  AVEN=
-fi
 AC_SUBST(CAVEROT)
+AC_SUBST(AVEN)
 
 dnl caverot libraries...
 AC_SUBST(CRLIB)
@@ -120,6 +127,14 @@ strcasecmp) ;;
 esac
 
 AC_SUBST(LIBOBJS)
+
+AC_MSG_CHECKING(for sgmltools v2)
+case `sgmltools --version 2> /dev/null` in
+*" version 2"*) sgmltools=yes ;;
+*) sgmltools=no ;;
+esac
+AC_MSG_RESULT($sgmltools)
+AM_CONDITIONAL(SGMLTOOLS, test $sgmltools = yes)
 
 dnl extra flags for building with gcc
 if test "$GCC" = yes; then

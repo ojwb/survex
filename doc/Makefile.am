@@ -1,34 +1,51 @@
 ## Process this file with automake to produce Makefile.in
 
-# Makefile for survex documentation
-
 pkgdocdir = $(prefix)/doc/@PACKAGE@
 
-# FIXME: problems with svxdocs directory - may be an automake bug
-#EXTRA_DIST = svxdocs/*.html svxdocs.sgml svxdocs.rtf svxdocs.txt custom.dsl
-EXTRA_DIST = svxdocs svxdocs.sgml svxdocs.rtf svxdocs.txt custom.dsl
+# FIXME: need to sort out an "all in one" HTML version
+doclist = svxdocs svxdocs.rtf svxdocs.txt svxdocs.ps # svxdocs.html
 
-# Can't produce PS at present as my machine doesn't have
-# a suitable build of TeX
-# And I need to sort out an "all in one" HTML version
+EXTRA_DIST = $(doclist) svxdocs.sgml custom.dsl
 
-# svxdocs.html svxdocs.ps
+MAINTAINERCLEANFILES = $(doclist)
 
-MAINTAINERCLEANFILES = svxdocs svxdocs.rtf svxdocs.txt
+pkgdoc_DATA = $(doclist)
 
-pkgdoc_DATA = svxdocs svxdocs.rtf svxdocs.txt
+# Allow people to build from CVS without sgmltools v2 installed
+# (but they won't be able to "make dist", which is a good thing)
+warning="Can't make documentation without sgmltools v2 installed"
 
 svxdocs: svxdocs.sgml custom.dsl
+if SGMLTOOLS
 	sgmltools --backend=html --dsssl-spec=custom.dsl#html svxdocs.sgml
+else
+	echo $(warning) 1>&2
+endif
 
-#svxdocs.html: svxdocs.sgml custom.dsl
-#	sgmltools --backend=html --dsssl-spec=custom.dsl#onepage svxdocs.sgml
+svxdocs.html: svxdocs.sgml custom.dsl
+if SGMLTOOLS
+	sgmltools --backend=html --dsssl-spec=custom.dsl#onepage svxdocs.sgml
+else
+	echo $(warning) 1>&2
+endif
 
 svxdocs.rtf: svxdocs.sgml
+if SGMLTOOLS
 	sgmltools --backend=rtf svxdocs.sgml
+else
+	echo $(warning) 1>&2
+endif
 
 svxdocs.txt: svxdocs.sgml
+if SGMLTOOLS
 	sgmltools --backend=txt svxdocs.sgml
+else
+	echo $(warning) 1>&2
+endif
 
-#svxdocs.ps: svxdocs.sgml
-#	sgmltools --backend=ps svxdocs.sgml
+svxdocs.ps: svxdocs.sgml
+if SGMLTOOLS
+	sgmltools --backend=ps svxdocs.sgml
+else
+	echo $(warning) 1>&2
+endif
