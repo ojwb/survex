@@ -9,7 +9,11 @@ if test x"$release" = xyes ; then
       exit 1
    fi
    # Update ChangeLog
-   if ! ../cvs2cl/cvs2cl.pl 2> /dev/null ; then
+   CVS2CL=./cvs2cl.pl
+   if ! test -x $CVS2CL ; then
+      CVS2CL=../cvs2cl/cvs2cl.pl
+   fi
+   if ! $CVS2CL 2> /dev/null ; then
       echo Failed to update ChangeLog from CVS
       exit 1
    fi
