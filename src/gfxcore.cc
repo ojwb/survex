@@ -33,8 +33,8 @@
 
 #define MAX(a, b)    (((a) > (b)) ? (a) : (b))
 #define TEXT_COLOUR  wxColour(0, 255, 40)
-//#define LABEL_COLOUR wxColour(160, 255, 0)
-#define LABEL_COLOUR wxColour(175, 4, 214)
+#define LABEL_COLOUR wxColour(160, 255, 0)
+//#define LABEL_COLOUR wxColour(175, 4, 214)
 
 static const int FONT_SIZE = 10;
 static const int CROSS_SIZE = 5;
@@ -584,12 +584,13 @@ void GfxCore::Draw2dIndicators()
 			     INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2);
     }
     if (m_Clino) {
+        int tilt = (int) (m_TiltAngle * 180.0 / M_PI);
         m_DrawDC.DrawEllipticArc(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE +
 				 INDICATOR_MARGIN,
 				 m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE +
 				 INDICATOR_MARGIN,
 				 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
-				 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2, -90, 90);
+				 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2, -tilt, -180 - tilt);
     
 	m_DrawDC.DrawLine(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
 			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_MARGIN,
