@@ -1187,9 +1187,10 @@ main(int argc, char **argv)
    myhint.x = 0;
    myhint.y = 0;
    myhint.width = WidthOfScreen(DefaultScreenOfDisplay(mydisplay));
-   if (myhint.width < 640) pda = 1;
+   myhint.height = HeightOfScreen(DefaultScreenOfDisplay(mydisplay));
+   if (myhint.width < 640 || myhint.height < 480) pda = 1;
    myhint.width -= 5;
-   myhint.height = HeightOfScreen(DefaultScreenOfDisplay(mydisplay))-25;
+   myhint.height -= 25;
    myhint.flags = /* PPosition | */ PSize;
 
    if (have_double_buffering) {

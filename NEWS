@@ -16,7 +16,7 @@ Changes in 1.0.12:
   again.
 
 * (Unix version): xcaverot: automatically switch on PDA mode if the screen is
-  narrower than 640 pixels.
+  less than 640 pixels wide or less than 480 pixels high.
 
 * (Unix version): minor portability improvements.
 
