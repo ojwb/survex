@@ -312,14 +312,16 @@ MainFrm::~MainFrm()
 {
     ClearPointLists();
     delete[] m_Points;
+    delete[] m_Pens;
+    delete[] m_Brushes;
 }
 
 void MainFrm::InitialisePensAndBrushes()
 {
-    m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS+1];
-    m_Pens = new wxPen[NUM_DEPTH_COLOURS+1];
-    m_Brushes = new wxBrush[NUM_DEPTH_COLOURS+1];
-    for (int pen = 0; pen < NUM_DEPTH_COLOURS+1; pen++) {
+    m_Points = new list<PointInfo*>[NUM_DEPTH_COLOURS + 1];
+    m_Pens = new wxPen[NUM_DEPTH_COLOURS + 1];
+    m_Brushes = new wxBrush[NUM_DEPTH_COLOURS + 1];
+    for (int pen = 0; pen < NUM_DEPTH_COLOURS + 1; ++pen) {
 	m_Pens[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
 	m_Brushes[pen].SetColour(REDS[pen], GREENS[pen], BLUES[pen]);
     }

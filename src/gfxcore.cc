@@ -89,7 +89,7 @@ const ColourTriple COLOURS[] = {
     { 0, 100, 255 }    // cyan
 };
 
-#define DELETE_ARRAY(x) do { assert(x); delete[] x; } while (0)
+#define DELETE_ARRAY(A) do { assert((A)); delete[] (A); } while (0)
 
 #define HITTEST_SIZE 20
 

@@ -237,6 +237,7 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->fh = fopenWithPthAndExt("", fnm, EXT_SVX_3D, "rb", NULL);
    if (pimg->fh == NULL) {
       osfree(pimg);
+      osfree(pimg->label_buf);
       img_errno = IMG_FILENOTFOUND;
       return NULL;
    }
@@ -573,6 +574,7 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    pimg->fh = fopen(fnm, "wb");
    if (!pimg->fh) {
       osfree(pimg);
+      osfree(pimg->label_buf);
       img_errno = IMG_CANTOPENOUT;
       return NULL;
    }
