@@ -1,6 +1,6 @@
 /* netartic.c
  * Split up network at articulation points
- * Copyright (C) 1993-2001 Olly Betts
+ * Copyright (C) 1993-2002 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#if 0
+#if 1
 # define DEBUG_INVALID 1
 # define DEBUG_ARTIC
 #endif
@@ -160,6 +160,8 @@ uniter:
 	       /* we've found a fixed point */
 	       col = -col;
 	       to->colour = col;
+#if 1 /*0*/ /* FIXME: removing this solves Graham Mullen's problem, but breaks
+	     * loser/caves/136/136.svx */
 #ifdef DEBUG_ARTIC
 	       printf("Putting FOUND FIXED stn ");
 	       print_prefix(to->name);
@@ -167,6 +169,7 @@ uniter:
 #endif
 	       remove_stn_from_list(&fixedlist, to);
 	       add_stn_to_list(&artlist, to);
+#endif
 	    }
 
 	    if (col < min_colour) min_colour = col;

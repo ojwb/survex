@@ -1,3 +1,6 @@
+FIXME:	* cavern: fixed a rarely sighted bug which caused eroneous error about some
+	  stations not being attached to a fixed point.
+
 * Updated documentation.
 
 Changes in 1.0.13:
