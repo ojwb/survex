@@ -45,8 +45,8 @@ section on "design philosophy"
    <year>1998</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-03-30 00:19:51 $</pubdate>
-  <ReleaseInfo>$Id: svxdocs.sgml,v 1.22 2001-03-30 00:19:51 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-03-30 10:05:14 $</pubdate>
+  <ReleaseInfo>$Id: svxdocs.sgml,v 1.23 2001-03-30 10:05:14 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -2563,25 +2563,36 @@ measurements and legs are believed to be okay:
 
 <Sect2><Title>Enter Radiolocation Data</Title>
 
-<Para>This is done by using the *SD command to indicate that the 'leg'
-between two points in unusual. For a radiolocation you have an
-approximately vertical 'leg' between the underground station,
-and the surface station. The horizontal positioning of this is
-generally quite accurate, but the vertical positioning may be
-much less well known. You will need to represent the leg as a
-plumb, giving suitable SDs for the length and gradient. E.g:
-we have a radiolocation of about 50m depth +/- 20m and horizontal
-accuracy of say +/- 8m. Over 50m the +/-8m is equivalent to an
-angle of 9degrees, so that is the expected gradient error. 20m
-is the expected error in the length. To get the equivalent SD
-we assume that 95% of readings will be within 3 standard deviations
-of the error value. Thus we divide the expected errors by 3 to
-get the SD we should specify:
+<Para>This is done by using the *SD command to specify the appropriate
+errors for the radiolocation `survey leg' so that the loop closure
+algorithm knows how to distribute errors if it forms part of a loop.
+</Para>
+
+<Para>The best approach for a radiolocation where the underground station
+is vertically below the surface station is to represent it as a
+plumbed leg, giving suitable SDs for the length and plumb angle. The
+horizontal positioning of this is generally quite accurate, but the
+vertical positioning may be much less well known. E.g: we have a
+radiolocation of about 50m depth +/- 20m and horizontal accuracy of
++/- 8m. Over 50m the +/-8m is equivalent to an angle of 9 degrees, so
+that is the expected plumb error. 20m is the expected error in the
+length. To get the equivalent SD we assume that 95% of readings will
+be within 3 standard deviations of the error value. Thus we divide the
+expected errors by 3 to get the SD we should specify:
 </Para>
 
 <programlisting>
-*SD length 6.67
-*SD gradient 3 degrees.</programlisting>
+*begin
+*sd length 6.67
+*sd plumb 3 degrees
+surface underground 50 - down
+*end
+</programlisting>
+
+<Para>
+The reason we wrap the radiolocation leg in a *begin/*end block to make
+sure that the special *sd settings only apply to this one leg.
+</Para>
 
 <Para>For more information on the expected errors from radiolocations
 see Compass Points Issue 10.

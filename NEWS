@@ -1,3 +1,5 @@
+Changes in 0.97-prerelease2:
+
 * cad3d: Fixed output from `--help'; -e, -D, -S short options now work;
   fixed infinite loop bug.
 

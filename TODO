@@ -53,7 +53,8 @@ Date: 21 Jul 1999
 From: Olly
 
 Articulation point code: ideally the articulation point code should allow
-further network reductions to happen after splitting at articulation points.
+further network reductions to happen after splitting at articulation
+points?
 
 Date: 24 Feb 2000
 From: Wookey
@@ -123,7 +124,7 @@ cavern: auto declination? NEW_STYLE?
 
 update translations
 
-chase up zombies
+chase up zombies again?
 
 resolve entries in TODO; resolve FIXMEs in code
 
@@ -158,8 +159,6 @@ Theodolite only:
 
 Infinite sds so we can fix in x and y only (or z only)?
 
-Radiolocation?
-
 add *data to hto to allow it to cope with different data ordering?
 
 use more accuracy than nearest point (1/72") in printps?
@@ -174,8 +173,6 @@ program - autosense (by looking at argv[0]) which we're being run as
 override (so we can use alias/batchfile for DOS)?
 
 get DOS programs to abort on Ctrl-C reliably?
-
-Split network at articulation points (ref: DSA page 245)?
 
 Sort out code fragments to attempt to handle dud equates (nodes equated
 to each other but not referred to otherwise (done?)
