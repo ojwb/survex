@@ -52,6 +52,11 @@ if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
+(
+# for building on mrs30
+if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
+   PATH=/opt/crosstools/bin:$PATH
+fi
 if ! env CC=i386-pc-msdosdjgpp-gcc LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe \
  CRLIB=-lalleg CROBJX=dosrot.o ./configure --with-x=no ; then
    echo djgpp configure failed
@@ -71,9 +76,17 @@ if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
-PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
+)
+(
+if test -d /usr/local/cross-tools/i386-mingw32msvc/bin ; then
+   # binaries from http://www.devolution.com/~slouken/SDL/Xmingw32/
+   PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
+else
+   # debian mingw32 package
+   PATH=/usr/i586-mingw32msvc/bin:$PATH
+fi
 # FIXME: is this all needed?
-if ! env ac_cv_c_bigendian=no LDFLAGS=-s CAVEROT= ./configure --with-x=no ; then
+if ! env LDFLAGS=-s CAVEROT= ./configure --with-x=no ; then
    echo mingw configure failed
    exit 1
 fi
@@ -91,3 +104,4 @@ if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
+)

@@ -29,6 +29,13 @@ And you can combine these in any combination:
 conceivably be added in future, although the simple common cases are
 already covered).
 
+Developing on Unix Platforms
+============================
+
+You'll need an unreleased version on automake from their CVS server. I
+recommend checking out the a snapshot at date "Wed Oct 18 15:11:27
+2000" as I've used this version a lot and it's fairly solid.
+
 Building on Non-Unix Platforms
 ==============================
 
@@ -50,8 +57,11 @@ cd ~/djcross
 wget ftp://ftp.objsw.com/pub/crossgcc/build-djgpp.sh
 mkdir tars
 cd tars
+# can't get it to build with djcrx203
 wget ftp://ftp.simtel.net/pub/simtelnet/gnu/djgpp/v2/old/djcrx202.zip
+# can't get 2.95.3 to build
 wget http://sunsite.org.uk/gnu/gcc/gcc-2.95.2.tar.gz
+# can't get 2.10.1 to build
 wget http://sunsite.org.uk/gnu/binutils/binutils-2.10.tar.gz
 cd ..
 patch -l build-djgpp.sh <<END
