@@ -580,13 +580,26 @@ int main(int argc, char **argv)
 	 tilt = cmdline_int_arg();
 	 fInteractive = fFalse;
 	 break;
-       case 's':
-	 /* FIXME check for trailing garbage... */
-	 if (sscanf(optarg, "%f:%f", &N_Scale, &D_Scale) == 2) {
-	    fInteractive = fFalse;
-	    break;
+       case 's': {
+	 char *p;
+	 double val;
+	 /* FIXME: pull this code out and use it for the user input case too
+	  * - also accept "<number>" as meaning "1:<number>" */
+	 val = strtod(optarg, &p);
+	 if (p != optarg) {
+	    N_Scale = val;
+	    if (*p == ':') {
+	       optarg = p + 1;
+	       val = strtod(optarg, &p);
+	       if (p != optarg) {
+		  D_Scale = val;
+		  fInteractive = fFalse;
+		  break;
+	       }
+	    }
 	 }
 	 /* FIXME complain */
+       }
       }
    }
 
