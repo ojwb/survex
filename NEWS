@@ -1,5 +1,9 @@
 Changes in 1.0.8:
 
+* aven: rate of rotation and switching between plan and elevation now adjusted
+  to the speed of redraw, so aven behaves in a similar way independent of the
+  speed of the computer or size of the survey.
+
 * aven: provide list of the 9 most recently used files.
 
 Changes in 1.0.7:

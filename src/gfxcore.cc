@@ -50,7 +50,7 @@ static const int FONT_SIZE = 8;
 static const int FONT_SIZE = 9;
 #endif
 static const int CROSS_SIZE = 5;
-static const Double COMPASS_SIZE = 24.0f;
+static const Double COMPASS_SIZE = 24.0;
 static const int COMPASS_OFFSET_X = 60;
 static const int COMPASS_OFFSET_Y = 80;
 static const int INDICATOR_BOX_SIZE = 60;
@@ -67,7 +67,6 @@ static const int DEPTH_BAR_MARGIN = 6;
 static const int DEPTH_BAR_OFFSET_Y = 16 + DEPTH_BAR_MARGIN;
 static const int TICK_LENGTH = 4;
 static const int DISPLAY_SHIFT = 50;
-static const int TIMER_ID = 0;
 static const int SCALE_BAR_OFFSET_X = 15;
 static const int SCALE_BAR_OFFSET_Y = 12;
 static const int SCALE_BAR_HEIGHT = 12;
@@ -107,7 +106,7 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
     EVT_RIGHT_UP(GfxCore::OnRButtonUp)
     EVT_MOTION(GfxCore::OnMouseMove)
     EVT_SIZE(GfxCore::OnSize)
-    EVT_IDLE(GfxCore::OnTimer)
+    EVT_IDLE(GfxCore::OnIdle)
     EVT_CHAR(GfxCore::OnKeyPress)
 END_EVENT_TABLE()
 
@@ -899,6 +898,7 @@ void GfxCore::RedrawOffscreen()
 {
     // Redraw the offscreen bitmap.
 
+    timer.Start(); // reset timer
 #ifdef AVENGL
 
 #else
@@ -1123,6 +1123,8 @@ void GfxCore::RedrawOffscreen()
 
     m_DrawDC.EndDrawing();
 #endif
+    
+    drawtime = timer.Time();
 }
 
 void GfxCore::OnPaint(wxPaintEvent& event)
@@ -2583,20 +2585,10 @@ void GfxCore::OnMoveWestUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && !(m_Lock & lock_Y));
 }
 
-void GfxCore::StartTimer()
-{
-    m_Timer.Start(100);
-}
-
-void GfxCore::StopTimer()
-{
-    m_Timer.Stop();
-}
-
 void GfxCore::OnStartRotation()
 {
-  //    StartTimer();
     m_Rotating = true;
+    timer.Start(drawtime);
 }
 
 void GfxCore::OnStartRotationUpdate(wxUpdateUIEvent& cmd)
@@ -2607,6 +2599,7 @@ void GfxCore::OnStartRotationUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnToggleRotation()
 {
     m_Rotating = !m_Rotating;
+    if (m_Rotating) timer.Start(drawtime);
 }
 
 void GfxCore::OnToggleRotationUpdate(wxUpdateUIEvent& cmd)
@@ -2649,8 +2642,8 @@ void GfxCore::OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnSlowDown(bool accel)
 {
     m_RotationStep /= accel ? 1.44 : 1.2;
-    if (m_RotationStep < M_PI / 2000.0) {
-	m_RotationStep = (Double) M_PI / 2000.0;
+    if (m_RotationStep < M_PI / 180.0) {
+	m_RotationStep = (Double) M_PI / 180.0;
     }
 }
 
@@ -2662,8 +2655,8 @@ void GfxCore::OnSlowDownUpdate(wxUpdateUIEvent& cmd)
 void GfxCore::OnSpeedUp(bool accel)
 {
     m_RotationStep *= accel ? 1.44 : 1.2;
-    if (m_RotationStep > M_PI / 8.0) {
-	m_RotationStep = (Double) M_PI / 8.0;
+    if (m_RotationStep > 2.5 * M_PI) {
+	m_RotationStep = (Double) 2.5 * M_PI;
     }
 }
 
@@ -2723,7 +2716,7 @@ void GfxCore::DefaultParameters()
     m_SurfaceDepth = false;
     m_SurfaceDashed = true;
     m_FreeRotMode = false;
-    m_RotationStep = M_PI / 180.0;
+    m_RotationStep = M_PI / 6.0;
     m_Rotating = false;
     m_SwitchingToPlan = false;
     m_SwitchingToElevation = false;
@@ -2752,6 +2745,7 @@ void GfxCore::OnElevation()
 {
     // Switch to elevation view.
 
+    timer.Start(drawtime);
     m_SwitchingToElevation = true;
     m_SwitchingToPlan = false;
 }
@@ -2792,6 +2786,7 @@ void GfxCore::OnPlan()
 {
     // Switch to plan view.
 
+    timer.Start(drawtime);
     m_SwitchingToPlan = true;
     m_SwitchingToElevation = false;
 }
@@ -2885,20 +2880,24 @@ void GfxCore::OnZoomOutUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
 }
 
-void GfxCore::OnTimer(wxIdleEvent& event)
+void GfxCore::OnIdle(wxIdleEvent& event)
 {
     // Handle an idle event.
+    double t = timer.Time() * 1.0e-3;
+//    cout << 1.0 / t << " fps (i.e. " << t << " sec)\n";
+    if (t == 0) t = 0.001;
+    else if (t > 1.0) t = 1.0;
 
     // When rotating...
     if (m_Rotating) {
-	TurnCave(m_RotationStep);
+	TurnCave(m_RotationStep * t);
     }
     // When switching to plan view...
     if (m_SwitchingToPlan) {
 	if (m_TiltAngle == M_PI_2) {
 	    m_SwitchingToPlan = false;
 	}
-	TiltCave(M_PI / 30.0);
+	TiltCave(M_PI_2 * t);
     }
     // When switching to elevation view...
     if (m_SwitchingToElevation) {
@@ -2906,22 +2905,22 @@ void GfxCore::OnTimer(wxIdleEvent& event)
 	    m_SwitchingToElevation = false;
 	}
 	else if (m_TiltAngle < 0.0) {
-	    if (m_TiltAngle > (-M_PI / 30.0)) {
+	    if (m_TiltAngle > (-M_PI_2 * t)) {
 		TiltCave(-m_TiltAngle);
 	    }
 	    else {
-		TiltCave(M_PI / 30.0);
+		TiltCave(M_PI_2 * t);
 	    }
 	    if (m_TiltAngle >= 0.0) {
 		m_SwitchingToElevation = false;
 	    }
 	}
 	else {
-	    if (m_TiltAngle < (M_PI / 30.0)) {
+	    if (m_TiltAngle < (M_PI_2 * t)) {
 		TiltCave(-m_TiltAngle);
 	    }
 	    else {
-		TiltCave(-M_PI / 30.0);
+		TiltCave(-M_PI_2 * t);
 	    }
 
 	    if (m_TiltAngle <= 0.0) {
@@ -2957,31 +2956,26 @@ void GfxCore::OnTimer(wxIdleEvent& event)
 	    m_PresStep.to.rotation = -m_PresStep.to.rotation;
 	}
 
-	Double t = Double(m_DoingPresStep) / 100.0;
+	Double p = Double(m_DoingPresStep) / 100.0;
 	Double scale0;
 	Double scale1;
 
 	if ((1.0 - c) > 0.000001) {
 	    Double omega = acos(c);
 	    Double s = sin(omega);
-	    scale0 = sin((1.0 - t) * omega) / s;
-	    scale1 = sin(t * omega) / s;
+	    scale0 = sin((1.0 - p) * omega) / s;
+	    scale1 = sin(p * omega) / s;
 	}
 	else {
-	    scale0 = 1.0 - t;
-	    scale1 = t;
+	    scale0 = 1.0 - p;
+	    scale1 = p;
 	}
 
 	m_Params.rotation = scale0 * m_PresStep.from.rotation + scale1 * m_PresStep.to.rotation;
 	m_RotationMatrix = m_Params.rotation.asMatrix();
 
-#ifndef AVENGL
-//--FIXME: use proper timing
-	m_DoingPresStep++;
-#else
-	m_DoingPresStep += 3;
-#endif
-	if (m_DoingPresStep <= 100) {
+	m_DoingPresStep += 30.0 * t;
+	if (m_DoingPresStep <= 100.0) {
 	    event.RequestMore();
 	}
 	else {
@@ -2997,10 +2991,11 @@ void GfxCore::OnTimer(wxIdleEvent& event)
 
 #ifdef AVENGL
     if (m_TerrainLoaded && floor_alt > -DBL_MAX && floor_alt <= HEAVEN) {
+	// FIXME: check scaling on t - this is an educated guess...
 	if (terrain_rising) {
-	    floor_alt += 20.0;
+	    floor_alt += 200.0 * t;
 	} else {
-	    floor_alt -= 20.0;
+	    floor_alt -= 200.0 * t;
 	}
 	InitialiseTerrain();
 	event.RequestMore();
@@ -3345,6 +3340,7 @@ void GfxCore::LoadPres(FILE* fp)
 
 void GfxCore::PresGoto(PresData& d, Quaternion& q)
 {
+    timer.Start(drawtime);
     m_PresStep.from.rotation = m_Params.rotation;
     m_PresStep.from.translation.x = m_Params.translation.x;
     m_PresStep.from.translation.y = m_Params.translation.y;

@@ -282,7 +282,6 @@ class GfxCore : public wxWindow {
     int m_XCentre;
     int m_YCentre;
     wxPoint m_LabelShift;
-    wxTimer m_Timer;
     PlotData* m_PlotData;
     LabelInfo** m_Labels;
     bool m_InitialisePending;
@@ -305,7 +304,7 @@ class GfxCore : public wxWindow {
     list<PointInfo> m_PointCache;
 
 #ifdef AVENPRES
-    int m_DoingPresStep;
+    Double m_DoingPresStep;
     struct step_params {
 	Double pan_angle;
 	Double tilt_angle;
@@ -336,6 +335,9 @@ class GfxCore : public wxWindow {
     struct {
 	Double x, y, z;
     } m_there;
+
+    wxStopWatch timer;
+    long drawtime;
 
 #ifndef AVENGL
     wxPen* m_Pens;
@@ -422,9 +424,6 @@ class GfxCore : public wxWindow {
     void TiltCave(Double tilt_angle);
     void TurnCave(Double angle);
     void TurnCaveTo(Double angle);
-
-    void StartTimer();
-    void StopTimer();
 
     void DrawNames();
     void NattyDrawNames();
@@ -530,7 +529,7 @@ public:
     void OnRButtonDown(wxMouseEvent& event);
     void OnRButtonUp(wxMouseEvent& event);
     void OnSize(wxSizeEvent& event);
-    void OnTimer(wxIdleEvent& event);
+    void OnIdle(wxIdleEvent& event);
 
     void OnKeyPress(wxKeyEvent &e);
 
