@@ -3331,29 +3331,19 @@ void GfxCore::CreateHitTestGrid()
     list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
     while (pos != end) {
 	LabelInfo* label = *pos++;
-	Double x = label->GetX();
-	Double y = label->GetY();
-	Double z = label->GetZ();
 
 	// Calculate screen coordinates.
-	x += m_Params.translation.x;
-	y += m_Params.translation.y;
-	z += m_Params.translation.z;
-
-	int cx = (int) (XToScreen(x, y, z) * m_Params.scale);
-	int cy = -(int) (ZToScreen(x, y, z) * m_Params.scale);
-
-	int cx_real = cx + m_XCentre;
-	int cy_real = cy + m_YCentre;
+	int cx = (int)GridXToScreen(label->GetX(), label->GetY(), label->GetZ());
+	int cy = (int)GridYToScreen(label->GetX(), label->GetY(), label->GetZ());
 
 	// Add to hit-test grid if onscreen.
-	if (cx_real >= 0 && cx_real < m_XSize && cy_real >= 0 && cy_real < m_YSize) {
-	    int grid_x = (cx_real * (HITTEST_SIZE - 1)) / m_XSize;
-	    int grid_y = (cy_real * (HITTEST_SIZE - 1)) / m_YSize;
-
+ 	if (cx >= 0 && cx < m_XSize && cy >= 0 && cy < m_YSize) {
+ 	    int grid_x = (cx * (HITTEST_SIZE - 1)) / m_XSize;
+ 	    int grid_y = (cy * (HITTEST_SIZE - 1)) / m_YSize;
+  
 	    GridPointInfo point;
-	    point.x = cx_real;
-	    point.y = cy_real;
+	    point.x = cx;
+	    point.y = cy;
 	    point.label = label;
 
 	    m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(point);
