@@ -495,18 +495,8 @@ static void draw_scalebar(void)
     changedscale =0;
     XClearWindow(mydisplay, scalebar);
   }
- /* printf("%f\t%f\t%f\t%f\n", l,m,n,o); */
 
   XDrawLine(mydisplay, scalebar, scale_gc, 13, 2, 13, 2 + scale*datafactor*sbar);
-#if 0
-  /* FIXME: this bit is elsewhere in MRS's version */
-  char temp[20];
-  if (sbar<1000)
-    sprintf(temp, "%d m", (int)sbar);
-  else
-    sprintf(temp, "%d km", (int)sbar/1000);
-  XDrawString(mydisplay, mainwin, slab_gc, 8, BUTHEIGHT + FONTSPACE, temp, strlen(temp));
-#endif
 }
 
 void process_zoom(Display *display, Window mainwin, Window button,
@@ -683,8 +673,6 @@ draw_label(Display *display, Window window, GC gc, int x, int y, const char *str
 {
   XRectangle r;
   int strwidth;
-  /*int width=1000, height=700;*/ /* nasty hack doesn't work if screen resize
-			       * should be fixed ! JPNP  (FIXME)*/
   int width = oldwidth;
   int height = oldheight;
   strwidth = XTextWidth( fontinfo, string, length );
@@ -772,7 +760,8 @@ static void fill_segment_cache()
     
                 /* calculate colour */
                 int depth = (int) ((float) (- p->Z + Zorg + Zrad) * z_col_scale);
-	        if (depth < 0) { // FIXME:
+	        if (depth < 0) {
+		   // FIXME:
 		   printf("!!! depth = %d\n", depth);
 		   depth = 0;
 		} else if (depth >= NUM_DEPTH_COLOURS) {
@@ -873,8 +862,6 @@ void redraw_image_dbe(Display* display, Window window, GC gc)
    /* Draw the cave into a window (strictly, the second buffer). */
 
    coord x1, y1, x2, y2;
-   // FIXME: XWindowAttributes a;
-   // FIXME: int width, height;
    int srvy = 0; /*FIXME: JPNP had 1 - check */
    lid *plid;
 
@@ -937,6 +924,7 @@ perform_redraw(void)
       redraw_image_dbe(mydisplay, (Window) backbuf, mygc);
       redraw_image(mydisplay, mywindow, mygc);
    } else {
+      XClearWindow(mydisplay, mywindow);
       redraw_image_dbe(mydisplay, mywindow, mygc);
    }
 }
@@ -949,16 +937,6 @@ int x() {
   width = a.width;
   xoff = width / 2;
   yoff = height / 2;
-
-  /* use double buffering if supported */
-  if (have_double_buffering)
-    window = backbuff;
-  else
-    XClearWindow(display, window);
-
-  label_reg = XCreateRegion();
-
-  setview( view_angle );
 
 
    
@@ -1053,7 +1031,7 @@ switch_to_plan(void)
 	elev_angle = x;
         update_rotation();
         if (!rot) fill_segment_cache();
-	redraw_image_dbe(mydisplay, (Window) backbuf, mygc);
+        perform_redraw();
 	redraw_image(mydisplay, mywindow, mygc);
 
 	x += 5.0;
@@ -1080,8 +1058,7 @@ switch_to_elevation(void)
 	elev_angle = x;
         update_rotation();
         if (!rot) fill_segment_cache();
-	redraw_image_dbe(mydisplay, (Window) backbuf, mygc);
-	redraw_image(mydisplay, mywindow, mygc);
+        perform_redraw();
 
 	x += step;
 
@@ -1179,13 +1156,6 @@ mouse_moved(Display* display, Window window, int mx, int my)
 
     fill_segment_cache();
 }
-
-#if 0 // FIXME
-void draw_string(Window win, int x, int y, char *str)
-{
-   XDrawImageString(mydisplay, win, mygc, x, y, str, strlen(str));
-}
-#endif
 
 #ifdef XCAVEROT_BUTTONS
 // FIXME:
@@ -1588,8 +1558,6 @@ int main( int argc, char **argv )
 		  done = 1;
 		  break;
                 }
-	      else if (myevent.xbutton.window == ind_com)
-                {
 #endif
 		   int old_angle = (int) view_angle;
 		   drag_compass(myevent.xbutton.x, myevent.xbutton.y);
