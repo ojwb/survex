@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = -DSURVEXHOME=\"$(pkgdatadir)\"
+AM_CPPFLAGS = -DSURVEXHOME=\"$(pkgdatadir)\"
 
 noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  cvrotgfx.h cvrotimg.h datain.h debug.h dosrot.h filelist.h filename.h\
