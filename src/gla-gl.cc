@@ -561,10 +561,14 @@ void GLACanvas::DrawCircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy,
     
     SetColour(fill);
     glTranslated(cx, cy, 0.0);
+    CHECK_GL_ERROR("DrawCircle", "glTranslated");
     gluDisk(quadric, 0.0, radius, 36, 1);
+    CHECK_GL_ERROR("DrawCircle", "gluDisk");
     SetColour(edge);
     gluDisk(quadric, radius - 1.0, radius, 36, 1);
+    CHECK_GL_ERROR("DrawCircle", "gluDisk (2)");
     glTranslated(-cx, -cy, 0.0);
+    CHECK_GL_ERROR("DrawCircle", "glTranslated (2)");
 }
 
 void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start)
@@ -581,16 +585,20 @@ void GLACanvas::DrawSemicircle(GLAPen& edge, GLAPen& fill, glaCoord cx, glaCoord
 
     SetColour(fill);
     glTranslated(cx, cy, 0.0);
+    CHECK_GL_ERROR("DrawCircle", "glTranslated");
     gluPartialDisk(quadric, 0.0, radius, 36, 1, start, 180.0);
+    CHECK_GL_ERROR("DrawCircle", "gluPartialDisk");
     SetColour(edge);
     gluPartialDisk(quadric, radius - 1.0, radius, 36, 1, start, 180.0);
+    CHECK_GL_ERROR("DrawCircle", "gluPartialDisk (2)");
     glTranslated(-cx, -cy, 0.0);
+    CHECK_GL_ERROR("DrawCircle", "glTranslated (2)");
 }
 
 void GLACanvas::DrawTriangle(GLAPen& edge, GLAPen& fill, GLAPoint* points)
 {
-    // Draw a filled triangle with an edge.  The fill is in the z=0 plane whilst the edge is in
-    // the z=5 plane.
+    // Draw a filled triangle with an edge.  The fill is in the z=0 plane
+    // whilst the edge is in the z=5 plane.
     
     SetColour(fill);
     BeginTriangles();
@@ -613,6 +621,7 @@ void GLACanvas::DrawList(glaList l)
     // Perform the operations specified by a display list.
     
     glCallList(l);
+    CHECK_GL_ERROR("DrawList", "glCallList");
 }
 
 void GLACanvas::EnableDashedLines()
@@ -620,12 +629,15 @@ void GLACanvas::EnableDashedLines()
     // Enable dashed lines, and start drawing in them.
 
     glLineStipple(1, 0xaaaa);
+    CHECK_GL_ERROR("EnableDashedLines", "glLineStipple");
     glEnable(GL_LINE_STIPPLE);
+    CHECK_GL_ERROR("EnableDashedLines", "glEnable");
 }
 
 void GLACanvas::DisableDashedLines()
 {
     glDisable(GL_LINE_STIPPLE);
+    CHECK_GL_ERROR("DisableDashedLines", "glDisable");
 }
 
 void GLACanvas::Transform(Double x, Double y, Double z, Double* x_out, Double* y_out, Double* z_out)
@@ -637,11 +649,15 @@ void GLACanvas::Transform(Double x, Double y, Double z, Double* x_out, Double* y
     GLdouble projection_matrix[16];
     GLint viewport[4];
     glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
+    CHECK_GL_ERROR("Transform", "glGetDoublev");
     glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+    CHECK_GL_ERROR("Transform", "glGetDoublev (2)");
     glGetIntegerv(GL_VIEWPORT, viewport);
+    CHECK_GL_ERROR("Transform", "glGetIntegerv");
 
     // Perform the projection.
     gluProject(x, y, z, modelview_matrix, projection_matrix, viewport, x_out, y_out, z_out);
+    CHECK_GL_ERROR("Transform", "gluProject");
 }
 
 void GLACanvas::ReverseTransform(Double x, Double y, Double* x_out, Double* y_out, Double* z_out)
@@ -653,17 +669,21 @@ void GLACanvas::ReverseTransform(Double x, Double y, Double* x_out, Double* y_ou
     GLdouble projection_matrix[16];
     GLint viewport[4];
     glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
+    CHECK_GL_ERROR("ReverseTransform", "glGetDoublev");
     glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+    CHECK_GL_ERROR("ReverseTransform", "glGetDoublev (2)");
     glGetIntegerv(GL_VIEWPORT, viewport);
+    CHECK_GL_ERROR("ReverseTransform", "glGetIntegerv");
 
     // Perform the projection.
     gluUnProject(x, y, 0.0, modelview_matrix, projection_matrix, viewport, x_out, y_out, z_out);
+    CHECK_GL_ERROR("ReverseTransform", "gluUnProject");
 }
 
 Double GLACanvas::SurveyUnitsAcrossViewport()
 {
-    // Measure the current viewport in survey units, taking into account the current
-    // display scale.
+    // Measure the current viewport in survey units, taking into account the
+    // current display scale.
 
     return (m_Volume.right - m_Volume.left) / m_Scale;
 }
