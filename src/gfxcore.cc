@@ -645,7 +645,9 @@ void GfxCore::SetScale(Double scale)
 
 	    //--FIXME
 #ifndef AVENGL
-	    if (m_FixedPts || m_Entrances || m_ExportedPts) {
+	    if ((m_FixedPts || m_Entrances || m_ExportedPts) &&
+		((label->IsSurface() && m_Surface) || (label->IsUnderground() && m_Legs) ||
+		 (!label->IsSurface() && !label->IsUnderground() /* for stns with no legs attached */))) {
 		hpt->x = cx;
 		hpt->y = cy;
 		hpt->flags = hl_NONE;
@@ -2886,33 +2888,45 @@ void GfxCore::LoadPres(FILE* fp)
     PresGo();
 }
 
+void GfxCore::PresGoto(PresData& d, Quaternion& q)
+{
+    m_PresStep.from.rotation = m_Params.rotation;
+    m_PresStep.from.translation.x = m_Params.translation.x;
+    m_PresStep.from.translation.y = m_Params.translation.y;
+    m_PresStep.from.translation.z = m_Params.translation.z;
+    m_PresStep.from.display_shift.x = m_Params.display_shift.x;
+    m_PresStep.from.display_shift.y = m_Params.display_shift.y;
+    m_PresStep.from.display_shift.z = m_Params.display_shift.z;
+    m_PresStep.from.scale = m_Params.scale;
+
+    m_PresStep.to.rotation = q;
+    m_PresStep.to.translation.x = d.translation.x;
+    m_PresStep.to.translation.y = d.translation.y;
+    m_PresStep.to.translation.z = d.translation.z;
+    m_PresStep.to.display_shift.x = d.display_shift.x;
+    m_PresStep.to.display_shift.y = d.display_shift.y;
+    m_PresStep.to.display_shift.z = d.display_shift.z;
+    m_PresStep.to.scale = d.scale;
+    m_PresStep.to.pan_angle = d.pan_angle;
+    m_PresStep.to.tilt_angle = d.tilt_angle;
+
+    m_DoingPresStep = 0;
+}
+
 void GfxCore::PresGo()
 {
     if (m_PresIterator != m_Presentation.end()) { //--Pres: FIXME (watch out for first step from LoadPres)
         pair<PresData, Quaternion> p =  *m_PresIterator++;
-	PresData& d = p.first;
+	PresGoto(p.first, p.second);
+    }
+}
 
-	m_PresStep.from.rotation = m_Params.rotation;
-	m_PresStep.from.translation.x = m_Params.translation.x;
-	m_PresStep.from.translation.y = m_Params.translation.y;
-	m_PresStep.from.translation.z = m_Params.translation.z;
-	m_PresStep.from.display_shift.x = m_Params.display_shift.x;
-	m_PresStep.from.display_shift.y = m_Params.display_shift.y;
-	m_PresStep.from.display_shift.z = m_Params.display_shift.z;
-	m_PresStep.from.scale = m_Params.scale;
-
-	m_PresStep.to.rotation = p.second;
-	m_PresStep.to.translation.x = d.translation.x;
-	m_PresStep.to.translation.y = d.translation.y;
-	m_PresStep.to.translation.z = d.translation.z;
-	m_PresStep.to.display_shift.x = d.display_shift.x;
-	m_PresStep.to.display_shift.y = d.display_shift.y;
-	m_PresStep.to.display_shift.z = d.display_shift.z;
-	m_PresStep.to.scale = d.scale;
-	m_PresStep.to.pan_angle = d.pan_angle;
-	m_PresStep.to.tilt_angle = d.tilt_angle;
-
-	m_DoingPresStep = 0;
+void GfxCore::PresGoBack()
+{
+    if (m_PresIterator != (++(m_Presentation.begin()))) { //--Pres: FIXME -- zero-length presentations
+        pair<PresData, Quaternion> p =  *(--(--(m_PresIterator)));
+	PresGoto(p.first, p.second);
+	m_PresIterator++;
     }
 }
 

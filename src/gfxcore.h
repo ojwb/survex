@@ -371,6 +371,8 @@ class GfxCore : public wxWindow {
 
     void Repaint();
 
+    void PresGoto(PresData& d, Quaternion& q);
+
 public:
     GfxCore(MainFrm* parent, wxWindow* parent_window);
     ~GfxCore();
@@ -386,6 +388,7 @@ public:
     void RecordPres(FILE* fp);
     void LoadPres(FILE* fp);
     void PresGo();
+    void PresGoBack();
     void RestartPres();
 
     void OnDefaults(wxCommandEvent&);

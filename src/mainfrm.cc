@@ -1062,7 +1062,7 @@ void MainFrm::OnPresGoBack(wxCommandEvent& event)
 {
     assert(m_PresLoaded && !m_Recording); //--Pres: FIXME
 
-
+    m_Gfx->PresGoBack();
 }
 
 void MainFrm::OnPresRecord(wxCommandEvent& event)
@@ -1108,7 +1108,7 @@ void MainFrm::OnOpenPres(wxCommandEvent& event)
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
 		      "*.avp", wxSAVE);
 #else
-    wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", "",
+    wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
 		      wxString::Format("%s|*.avp|%s|*.*",
 				       msg(/*Aven presentations*/320),
 				       msg(/*All files*/208)), wxOPEN);
