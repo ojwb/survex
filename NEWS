@@ -6,7 +6,9 @@
 
 * (MS Windows version): now handle oe-ligatures.
 
-* (Unix version): now get character set from $LANG.
+* (Unix version): discover character set by looking at $LANG.
+
+* (MS Windows version): discover character set from Windows.
 
 * Transliterate accented characters that can't be represented in the
   current character set.

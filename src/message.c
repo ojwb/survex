@@ -64,7 +64,7 @@ static jmp_buf jmpbufSignal;
  * e.g. with `CFLAGS="-DDEFAULTLANG=fr" ./configure'
  */
 #ifndef DEFAULTLANG
-# define DEFAULTLANG "en"
+# define DEFAULTLANG en
 #endif
 
 /* For funcs which want to be immune from messing around with different
@@ -262,7 +262,15 @@ default_charset(void)
 #elif (OS==MSDOS)
    return CHARSET_DOSCP850;
 #elif (OS==WIN32)
+# ifdef AVEN
    return CHARSET_WINCP1252:
+# else
+   switch (GetConsoleOutputCP()) {
+    case 1252: return CHARSET_WINCP1252:
+/* FIXME: case 850: return CHARSET_DOSCP850; */
+   }
+   return CHARSET_USASCII;
+# endif
 #elif (OS==UNIX)
 #if defined(XCAVEROT) || defined(AVEN)
    return CHARSET_ISO_8859_1;
@@ -487,71 +495,16 @@ static char **msg_array = NULL;
 const char *msg_lang = NULL;
 const char *msg_lang2 = NULL;
 
-static void
-parse_msg_file(int charset_code)
-{
-   FILE *fh;
-   unsigned char header[20];
+static char **
+parse_msgs(int n, unsigned char *p, int charset_code) {
    int i;
-   unsigned len;
-   unsigned char *p;
-   char *fnm, *s;
 
-#ifdef DEBUG
-   fprintf(stderr, "parse_msg_file(%d)\n", charset_code);
-#endif
+   char **msgs = osmalloc(n * sizeof(char *));
 
-   fnm = osstrdup(msg_lang);
-   /* trim off charset from stuff like "de_DE.iso8859_1" */
-   s = strchr(fnm, '.');
-   if (s) *s = '\0';
-
-   fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
-
-   if (!fh) {
-      /* e.g. if 'en-COCKNEY' is unknown, see if we know 'en' */
-      if (strlen(fnm) > 3 && fnm[2] == '-') {
-	 fnm[2] = '\0';
-	 fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
-	 if (!fh) fnm[2] = '-'; /* for error reporting */
-      }
-   }
-
-   if (!fh) {
-      fatalerror(/*Can't open message file `%s' using path `%s'*/1000,
-		 fnm, pth_cfg_files);
-   }
-
-   if (fread(header, 1, 20, fh) < 20 ||
-       memcmp(header, "Svx\nMsg\r\n\xfe\xff", 12) != 0) {
-      fatalerror(/*Problem with message file `%s'*/1001, fnm);
-   }
-
-   if (header[12] != 0)
-      fatalerror(/*I don't understand this message file version*/1002);
-
-   num_msgs = (header[14] << 8) | header[15];
-
-   len = 0;
-   for (i = 16; i < 20; i++) len = (len << 8) | header[i];
-
-   p = osmalloc(len);
-   if (fread(p, 1, len, fh) < len)
-      fatalerror(/*Message file truncated?*/1003);
-
-   fclose(fh);
-
-#ifdef DEBUG
-   fprintf(stderr, "fnm = `%s', num_msgs = %d, len = %d\n", fnm, num_msgs, len);
-#endif
-   osfree(fnm);
-
-   msg_array = osmalloc(sizeof(char *) * num_msgs);
-
-   for (i = 0; i < num_msgs; i++) {
+   for (i = 0; i < n; i++) {
       unsigned char *to = p;
       int ch;
-      msg_array[i] = (char *)p;
+      msgs[i] = (char *)p;
 
       /* If we want UTF8 anyway, we just need to find the start of each
        * message */
@@ -588,13 +541,88 @@ parse_msg_file(int charset_code)
 	 if (ch < 127) {
 	    *to++ = (char)ch;
 	 } else {
-            /* FIXME: this rather assumes a 2 byte UTF-8 code never
-             * transliterates to more than 2 characters */
+            /* We assume an N byte UTF-8 code never transliterates to more
+	     * than N characters (so we can't transliterate © to (C) or
+	     * ® to (R) for example) */
 	    to += add_unicode(charset_code, to, ch);
 	 }
       }
       *to++ = '\0';
    }
+   return msgs;
+}
+
+/* No point extracting these errors as they won't get used if file opens */
+#define HDR(D) "../lib/"STRING(D)".h"
+#include HDR(DEFAULTLANG)
+
+static char **dontextract = NULL;
+
+static void
+parse_msg_file(int charset_code)
+{
+   FILE *fh;
+   unsigned char header[20];
+   int i;   
+   unsigned len;
+   unsigned char *p;
+   char *fnm, *s;
+   int n;
+
+#ifdef DEBUG
+   fprintf(stderr, "parse_msg_file(%d)\n", charset_code);
+#endif
+
+   /* sort out messages we need to print if we can't open the message file */
+   dontextract = parse_msgs(N_DONTEXTRACTMSGS, dontextractmsgs, charset_code);
+
+   fnm = osstrdup(msg_lang);
+   /* trim off charset from stuff like "de_DE.iso8859_1" */
+   s = strchr(fnm, '.');
+   if (s) *s = '\0';
+
+   fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
+
+   if (!fh) {
+      /* e.g. if 'en-COCKNEY' is unknown, see if we know 'en' */
+      if (strlen(fnm) > 3 && fnm[2] == '-') {
+	 fnm[2] = '\0';
+	 fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
+	 if (!fh) fnm[2] = '-'; /* for error reporting */
+      }
+   }
+
+   if (!fh) {
+      fatalerror(/*Can't open message file `%s' using path `%s'*/1000,
+		 fnm, pth_cfg_files);
+   }
+
+   if (fread(header, 1, 20, fh) < 20 ||
+       memcmp(header, "Svx\nMsg\r\n\xfe\xff", 12) != 0) {
+      fatalerror(/*Problem with message file `%s'*/1001, fnm);
+   }
+
+   if (header[12] != 0)
+      fatalerror(/*I don't understand this message file version*/1002);
+
+   n = (header[14] << 8) | header[15];
+
+   len = 0;
+   for (i = 16; i < 20; i++) len = (len << 8) | header[i];
+
+   p = osmalloc(len);
+   if (fread(p, 1, len, fh) < len)
+      fatalerror(/*Message file truncated?*/1003);
+
+   fclose(fh);
+
+#ifdef DEBUG
+   fprintf(stderr, "fnm = `%s', n = %d, len = %d\n", fnm, n, len);
+#endif
+   osfree(fnm);
+
+   msg_array = parse_msgs(n, p, charset_code);
+   num_msgs = n;
 }
 
 const char *
@@ -652,7 +680,7 @@ msg_init(const char *argv0)
 #if (OS==WIN32)
 	 LCID locid;
 #endif
-	 msg_lang = DEFAULTLANG;
+	 msg_lang = STRING(DEFAULTLANG);
 #if (OS==WIN32)
 	 locid = GetUserDefaultLCID();
 	 if (locid) {
@@ -735,32 +763,24 @@ msg_init(const char *argv0)
    select_charset(default_charset());
 }
 
-/* no point extracting these errors as they won't get used if file opens */
-/* FIXME: if DEFAULTLANG != "en" translate these... */
-static const char *dontextract[] = {
-   "Can't open message file `%s' using path `%s'", /*1000*/
-   "Problem with message file `%s'", /*1001*/
-   "I don't understand this message file version", /*1002*/
-   "Message file truncated?" /*1003*/
-};
-
-/* message may be overwritten by next call
+/* Message may be overwritten by next call
  * (but not in current implementation) */
 const char *
 msg(int en)
 {
    /* NB can't use ASSERT here! */
    static char badbuf[256];
-   if (en >= 1000 && en < 1000 + (int)(sizeof(dontextract)/sizeof(char*)))
+   if (en >= 1000 && en < 1000 + N_DONTEXTRACTMSGS)
       return dontextract[en - 1000];
    if (!msg_array) {
       if (en != 1)  {
 	 sprintf(badbuf, "Message %d requested before msg_array initialised\n", en);
 	 return badbuf;
       }
-      /* this should be the only message which can be requested before
+      /* this should be the only other message which can be requested before
        * the message file is opened and read... */
-      return "Out of memory (couldn't find %ul bytes).\n";
+      if (!dontextract) return "Out of memory (couldn't find %lu bytes).";
+      return dontextract[4];
    }
 
    if (en < 0 || en >= num_msgs) {

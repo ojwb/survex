@@ -2060,6 +2060,24 @@ ca:310 %s: l'opci&oacute; no &eacute;s v&agrave;lida -- %c&#10;
 es:310 %s: opci&oacute;n inv&aacute;lida -- %c&#10;
 it:310 %s: opzione non valida -- %c&#10;
 #
+# "don't extract" messages - these are compiled into the programs
+#
+en:1000 Can't open message file `%s' using path `%s'
+#
+en:1001 Problem with message file `%s'
+#
+en:1002 I don't understand this message file version
+#
+en:1003 Message file truncated?
+#
+en:1004 Out of memory (couldn't find %lu bytes).
+fr:1004 Plus de m&eacute;moire (%lu octets n&eacute;cessaires, non disponibles).
+de:1004 Zuwenig Speicherplatz (konnte %lu Bytes nicht finden).
+pt:1004 Mem&oacute;ria insuficiente (s&atilde;o necesss&aacute;rios mais %lu bytes).
+ca:1004 Mem&ograve;ria insuficient (es necessiten %lu bytes m&eacute;s).
+es:1004 Memoria insuficiente (se necesitan %lu bytes de m&aacute;s).
+it:1004 Memoria insufficiente (ci vorrebbero altri %lu bytes).
+#
 ############################################################################
 # the rest are no longer used, but it's possible they may be at some point...
 ############################################################################

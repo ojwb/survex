@@ -4,7 +4,7 @@ RELEASE = 1
 
 EXTRA_DIST = OLDNEWS HACKING BUGS alien.pl ZOMBIES survex.iss.in docindex.htm.in
 
-SUBDIRS = hto src lib doc tests debian
+SUBDIRS = hto lib src doc tests debian
 
 # seem to need this for "make distclean" to recurse?!?
 DIST_SUBDIRS = $(SUBDIRS)

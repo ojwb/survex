@@ -4,6 +4,9 @@ use strict;
 
 use integer;
 
+# messages >= this value are written to a header file
+my $dontextract_threshold = 1000;
+
 # Magic identifier (12 bytes)
 my $magic = "Svx\nMsg\r\n\xfe\xff\0";
 # Designed to be corrupted by ASCII ftp, top bit stripping (or
@@ -33,6 +36,7 @@ while (<ENT>) {
 close ENT;
 
 my %msgs = ();
+my %dontextract = ();
 
 while (<>) {
    next if /^\s*#/; # skip comments
@@ -55,7 +59,11 @@ while (<>) {
 
    my $utf8 = string_to_utf8($msg);
    for (split /,/, $langs) {
-      ${$msgs{$_}}[$msgno] = $utf8;
+      if ($msgno >= $dontextract_threshold) {
+	 ${$dontextract{$_}}[$msgno - $dontextract_threshold] = $utf8;
+      } else {
+	 ${$msgs{$_}}[$msgno] = $utf8;
+      }
    }
 }
 
@@ -106,6 +114,56 @@ foreach $lang (@langs) {
    close OUT or die $!;
 }
 
+my $num_dontextract = -1;
+foreach $lang (@langs) {
+   my $aref = $dontextract{$lang};
+   if (defined(@$aref)) {
+       $num_dontextract = scalar @$aref if scalar @$aref > $num_dontextract;
+   }
+}
+
+foreach $lang (@langs) {
+   open OUT, ">$lang.h" or die $!;
+   print OUT "#define N_DONTEXTRACTMSGS ", $num_dontextract, "\n";
+   print OUT "static unsigned char dontextractmsgs[] =";
+
+   for my $n (0 .. $num_dontextract - 1) {
+      print OUT "\n";
+
+      my $aref = $dontextract{$lang};
+ 
+      my $parentaref;
+      my $mainlang = $lang;
+      $parentaref = $dontextract{$mainlang} if $mainlang =~ s/_.*$//;
+
+      my $msg = $$aref[$n];
+      if (!defined $msg) {
+	 $msg = $$parentaref[$n] if defined $parentaref;
+	 if (!defined $msg) {
+	    $msg = ${$dontextract{'en'}}[$n];
+	    if (defined $msg && $msg ne '') {
+	       # don't report if we have a parent (as the omission will be reported there)
+	       print STDERR "Warning: message ", $dontextract_threshold + $n, " not in language $lang\n" unless defined $parentaref;
+	    } else {
+	       $msg = '';
+	    }
+	 }
+      }
+      $msg =~ s/\\/\\\\/g;
+      $msg =~ s/"/\\"/g;
+      $msg =~ s/\t/\\t/g;
+      $msg =~ s/\n/\\n/g;
+      $msg =~ s/\r/\\r/g;
+      if ($msg =~ /^ / || $msg =~ / $/) {
+	 $msg =~ s/\\"/\\\\\\"/g;
+	 $msg = '\\"'.$msg.'\\"';
+      }
+      print OUT "   /*", $dontextract_threshold + $n, "*/ \"$msg\\0\"";
+   }
+   print OUT ";\n";
+   close OUT or die $!;
+}
+
 sub string_to_utf8 {
    my $s = shift;
    $s =~ s/([\x80-\xff])/char_to_utf8(ord($1))/eg;
@@ -139,3 +197,4 @@ sub char_to_utf8 {
    $result = chr((0x100 - $n*2) | $unicode) . $result;
    return $result;
 }
+
