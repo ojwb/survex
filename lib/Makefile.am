@@ -24,6 +24,9 @@ pkgdata_DATA = default.bit bold.bit print.ini bcra3.svx bcra5.svx $(msg_files)
 
 BUILT_SOURCES = defaultlang.h
 
+# FIXME: shouldn't this be removed automatically?
+DISTCLEANFILES = defaultlang.h
+
 $(msg_files) $(hdr_files): messages.txt makemsgs.pl
 	perl $(srcdir)/makemsgs.pl $(srcdir)/messages.txt
 

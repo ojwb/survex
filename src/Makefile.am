@@ -13,7 +13,7 @@ noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  prbitmap.h prcore.h prio.h readval.h rotplot.h str.h useful.h\
  validate.h whichos.h xrot.h xcvrtbut.h new3dout.h 3ddefs.h \
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
- aventypes.h aventreectrl.h guicontrol.h
+ aventypes.h aventreectrl.h guicontrol.h gla.h survey.h
 
 # GCC 2.95 frequently dies on gfxcore.cc with an internal error, so if the
 # compile fails, rerun it with -O instead of -O2 - FIXME this probably
@@ -133,7 +133,7 @@ z_getopt.c: getopt.c gettexttomsg.pl
 	./gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
 
 aven.pal: $(srcdir)/gradient.pov
-	$(srcdir)/gdtconvert <$(srcdir)/gradient.pov >$(srcdir)/aven.pal
+	$(srcdir)/gdtconvert <$(srcdir)/gradient.pov >aven.pal
 
 MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile
 

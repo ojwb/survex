@@ -3152,7 +3152,9 @@ es:345 g.cent
 it:345 g.cent.
 sk:345 gr&aacute;dy
 #
+# TRANSLATE ca de es it pt
 en:346 Passage @Tubes##Ctrl+T
+ca,de,es,it,pt:346 Passage T@ubes##Ctrl+T
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s
