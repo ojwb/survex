@@ -224,6 +224,7 @@ svxPrintDlg::~svxPrintDlg() {
 
 void 
 svxPrintDlg::OnPrint(wxCommandEvent& event) {
+    OnChange(event);
     wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
     wxPrinter pr(&pd);
     svxPrintout po(m_parent, m_layout, m_parent->GetPageSetupData(), m_File);
@@ -830,7 +831,6 @@ svxPrintout::OnPrintPage(int pageNum) {
 	wxSize sz = pdc->GetSize();
 	xpPageWidth = sz.GetWidth();
 	ypPageDepth = sz.GetHeight();
-	printf("default font size = %d * %ld / %d = %.3f\n", fontsize, xpPageWidth, w, (double)fontsize * xpPageWidth / w);
 	double font_scaling = (double)xpPageWidth / w;
 	int W, H;
 	GetPPIPrinter(&W, &H);
