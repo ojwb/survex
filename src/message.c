@@ -1084,7 +1084,6 @@ msg_init(char * const *argv)
 macosx_got_msg:
 #endif
 	 osfree(p);
-#endif
       }
       
       if (free_pth) osfree(pth);
