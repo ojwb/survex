@@ -131,14 +131,13 @@ dostxt :
 djgpp : all djgpp_zip
 
 djgpp_zip_name = survex-dos-@VERSION@.zip
-djgpp_exe_name = svxdoc-dos-@VERSION@.zip
+djgpp_exe_name = survex-dos-@VERSION@.exe
 
 djgpp_exe : djgpp_zip
 	$(RM) $(djgpp_exe_name)~
 	cat dos_extras/unzipsfx.exe $(djgpp_zip_name) > $(djgpp_exe_name)~
 	zip -A $(djgpp_exe_name)~
 	mv $(djgpp_exe_name)~ $(djgpp_exe_name)
-
 
 djgpp_zip : dostxt
 	test -d djgpp_exes || mkdir djgpp_exes
@@ -266,7 +265,7 @@ alien_src_zip :
 SVXDOCS = svxdocs svxdocs/*.htm svxdocs.rtf svxdocs.txt svxdocs.ps
 
 dos_doc_zip_name = svxdoc-doswin-@VERSION@.zip
-dos_doc_exe_name = svxdoc-doswin-@VERSION@.zip
+dos_doc_exe_name = svxdoc-doswin-@VERSION@.exe
 
 dos_doc_exe : dos_doc_zip
 	$(RM) $(dos_doc_exe_name)~
