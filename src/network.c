@@ -205,9 +205,7 @@ remove_subnets(void)
 		    mulvd(&temp, &newleg2->v, &newleg->d);
 		    mulvd(&temp2, &newleg->v, &newleg2->d);
 		    adddd(&temp, &temp, &temp2);
-/*printf("divdv(&newleg->d, &temp, &sum)\n");*/
 		    divdv(&newleg->d, &temp, &sum);
-/*printf("divvv(&newleg->v, &prod, &sum)\n");*/
 		    divvv(&newleg->v, &prod, &sum);
 #else
 		    var inv1, inv2, sum;
@@ -276,7 +274,6 @@ remove_subnets(void)
 	       fMore = fTrue;
 	    }
 	 }
-/*printf("done replacing parallel legs\n");*/
       }
 
       if (optimize & BITA('d')) {
@@ -387,91 +384,65 @@ remove_subnets(void)
 		 {
 		    node *stnZ;
 		    prefix *nameZ;
-		    var invAB, invBC, invCA, tmp, sum;
+		    var invAB, invBC, invCA, tmp, sum, inv;
 		    var sumAZBZ, sumBZCZ, sumCZAZ;
 		    d temp, temp2;
-		    d dsumAZBZ, dsumBZCZ, dsumCZAZ;
-
+		    
 		    /* FIXME: ought to handle cases when some legs are
 		     * equates, but handle as a special case maybe? */
 		    if (!invert_var(&invAB, &legAB->v)) break; /* FIXME */
 		    if (!invert_var(&invBC, &legBC->v)) break; /* FIXME */
 		    if (!invert_var(&invCA, &legCA->v)) break; /* FIXME */
 
+		    addvv(&sum, &legBC->v, &legCA->v);
+		    addvv(&tmp, &sum, &legAB->v);
+		    if (!invert_var(&inv, &tmp)) break; /* FIXME: impossible - loop of zero variance */
+		    
 		    /* AZBZ */
-		    addvv(&tmp, &legBC->v, &legCA->v);
-		    if (!invert_var(&sum, &tmp)) break; /* FIXME: impossible */
-
-		    addvv(&tmp, &invAB, &sum);
-		    if (!invert_var(&sumAZBZ, &tmp)) break; /* FIXME: impossible */
+		    /* done above: addvv(&sum, &legBC->v, &legCA->v); */
+		    mulvv(&tmp, &sum, &inv);
+		    mulvv(&sumAZBZ, &tmp, &legAB->v);
 
 		    adddd(&temp, &legBC->d, &legCA->d);
-		    mulvd(&temp2, &sum, &temp);
+		    divdv(&temp2, &temp, &sum);
 		    mulvd(&temp, &invAB, &legAB->d);
-		    adddd(&dsumAZBZ, &temp, &temp2);
+		    subdd(&temp, &temp2, &temp);
+		    mulvd(&legBZ->d, &sumAZBZ, &temp);
+
+		    /* leg vectors after transform are determined up to
+		     * a constant addition, so arbitrarily fix AZ = 0 */
+		    legAZ->d[2] = legAZ->d[1] = legAZ->d[0] = 0;
 
 		    /* BZCZ */
-		    addvv(&tmp, &legCA->v, &legAB->v);
-		    if (!invert_var(&sum, &tmp)) break; /* FIXME */
-
-		    addvv(&tmp, &invBC, &sum);
-		    if (!invert_var(&sumBZCZ, &tmp)) break; /* FIXME */
-
-		    adddd(&temp, &legCA->d, &legAB->d);
-		    mulvd(&temp2, &sum, &temp);
-		    mulvd(&temp, &invBC, &legBC->d);
-		    adddd(&dsumBZCZ, &temp, &temp2);
+		    addvv(&sum, &legCA->v, &legAB->v);
+		    mulvv(&tmp, &sum, &inv);
+		    mulvv(&sumBZCZ, &tmp, &legBC->v);
 
 		    /* CZAZ */
-		    addvv(&tmp, &legAB->v, &legBC->v);
-		    if (!invert_var(&sum, &tmp)) break; /* FIXME */
-
-		    addvv(&tmp, &invCA, &sum);
-		    if (!invert_var(&sumCZAZ, &tmp)) break; /* FIXME */
+		    addvv(&sum, &legAB->v, &legBC->v);
+		    mulvv(&tmp, &sum, &inv);
+		    mulvv(&sumCZAZ, &tmp, &legCA->v);
 
 		    adddd(&temp, &legAB->d, &legBC->d);
-		    mulvd(&temp2, &sum, &temp);
+		    divdv(&temp2, &temp, &sum);
 		    mulvd(&temp, &invCA, &legCA->d);
-		    adddd(&dsumCZAZ, &temp, &temp2);
+		    /* NB: swapped arguments to negate answer for legCZ->d */
+		    subdd(&temp, &temp, &temp2);
+		    mulvd(&legCZ->d, &sumCZAZ, &temp);
 
 		    /* Now add two, subtract third, and scale by 0.5 */
 		    addvv(&sum, &sumAZBZ, &sumCZAZ);
 		    subvv(&sum, &sum, &sumBZCZ);
 		    mulvc(&legAZ->v, &sum, 0.5);
 
-		    adddd(&temp, &dsumAZBZ, &dsumCZAZ);
-		    subdd(&temp, &temp, &dsumBZCZ);
-		    muldc(&legAZ->d, &temp, 0.5);
-		    
 		    addvv(&sum, &sumBZCZ, &sumAZBZ);
 		    subvv(&sum, &sum, &sumCZAZ);
 		    mulvc(&legBZ->v, &sum, 0.5);
-
-		    adddd(&temp, &dsumBZCZ, &dsumAZBZ);
-		    subdd(&temp, &temp, &dsumCZAZ);
-		    muldc(&legBZ->d, &temp, 0.5);
 
 		    addvv(&sum, &sumCZAZ, &sumBZCZ);
 		    subvv(&sum, &sum, &sumAZBZ);
 		    mulvc(&legCZ->v, &sum, 0.5);
 
-		    adddd(&temp, &dsumCZAZ, &dsumBZCZ);
-		    subdd(&temp, &temp, &dsumAZBZ);
-		    muldc(&legCZ->d, &temp, 0.5);
-
-		    printf("AZ: d=");
-		    print_d(legAZ->d);
-		    printf(", v=\n");
-		    print_var(legAZ->v);
-		    printf("BZ: d=");
-		    print_d(legBZ->d);
-		    printf(", v=\n");
-		    print_var(legBZ->v);
-		    printf("CZ: d=");
-		    print_d(legCZ->d);
-		    printf(", v=\n");
-		    print_var(legCZ->v);
-		    
 		    nameZ = osnew(prefix);
 		    nameZ->ident = ""; /* root has ident[0] == "\" */
 		    stnZ = osnew(node);
@@ -518,17 +489,14 @@ remove_subnets(void)
 		    stn4->leg[dirn4] = legAZ;
 		    stn5->leg[dirn5] = legBZ;
 		    stn6->leg[dirn6] = legCZ;
-		    /*print_prefix(stnZ->name);printf(" %p\n", (void*)stnZ);*/
 		 }
 	       
 	    }
 	    nodeltastar:;
 	 }
-	 /*printf("done replacing delta with star\n");*/
       }
 
    }
-   /* printf("\ndone\n");*/
 }
 
 extern void
