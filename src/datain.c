@@ -83,6 +83,8 @@ push_back(int c)
 static void
 error_list_parent_files(void)
 {
+   /* FIXME: don't list this a second time if we just reported another error
+    * in the same file included in the same way... */
    if (file.parent) {
       parse *p = file.parent;
       const char *m = msg(/*In file included from */5);
@@ -92,7 +94,7 @@ error_list_parent_files(void)
       while (p) {
 	 fprintf(STDERR, "%s:%d", p->filename, p->line);
 	 p = p->parent;
-	 if (p) fprintf(STDERR, ",\n%*s", len, m);
+	 if (p) fprintf(STDERR, ",\n%*s", (int)len, m);
       }
       fprintf(STDERR, ":\n");
    }
