@@ -81,15 +81,17 @@ solve_matrix(node *list)
     * of stations left after reduction. If memory is
     * plentiful, we can be crass.
     */
-   stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(pos*)));
+   stn_tab = osmalloc((OSSIZE_T)(n * ossizeof(pos*)));
    n_stn_tab = 0;
 
    FOR_EACH_STN(stn, list) {
       if (!fixed(stn)) add_stn_to_tab(stn);
    }
 
-   /* FIXME: release any unused entries in stn_tab ? */
-   /* stn_tab = osrealloc(stn_tab, n_stn_tab * ossizeof(pos*)); */
+   if (n_stn_tab < n) {
+      /* release unused entries in stn_tab */
+      stn_tab = osrealloc(stn_tab, n_stn_tab * ossizeof(pos*));
+   }
 
    build_matrix(list);
 #if DEBUG_MATRIX
@@ -145,13 +147,23 @@ build_matrix(node *list)
 
       sprintf(buf, msg(/*Solving to find %c coordinates*/76), (char)('x'+dim));
       out_current_action(buf);
+
       /* Initialise M and B to zero */
-      /* FIXME: might be best to zero "linearly" */
+#if 1
+      /* Zeroing "linearly" will minimise paging when the matrix is large */
+      {
+	 int end = n_stn_tab * FACTOR;
+	 for (row = 0; row < end; row++) B[row] = (real)0.0;
+	 end = ((OSSIZE_T)n_stn_tab * FACTOR * (n_stn_tab * FACTOR + 1)) >> 1;
+	 for (row = 0; row < end; row++) M[row] = (real)0.0;
+      }
+#else
       for (row = (int)(n_stn_tab * FACTOR - 1); row >= 0; row--) {
 	 int col;
 	 B[row] = (real)0.0;
 	 for (col = row; col >= 0; col--) M(row,col) = (real)0.0;
       }
+#endif
 
       /* Construct matrix - Go thru' stn list & add all forward legs to M */
       /* (so each leg goes on exactly once) */

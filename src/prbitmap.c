@@ -157,16 +157,19 @@ read_font(const char *pth, const char *leaf, int dpiX, int dpiY)
    len = 0;
    for (i = 16; i < 20; i++) len = (len << 8) | header[i];
 
+   if ((len / 8) + 31 != max_def_char) {
+      /* len and #chars are really the same info, so check they match-up
+       * (also avoids a potential buffer overrun) */
+      fatalerror(/*Error in format of font file `%s'*/88, fnm);
+      /* TRANSLATE Font file length and max_def_char mismatch */
+   }
+
    font = osmalloc(len);
    if (fread(font, 1, len, fh) < len) {
       fatalerror(/*Error in format of font file `%s'*/88, fnm);
       /* TRANSLATE Font file truncated?/read error */
    }
 
-   /* len and #chars are really the same info, so double check to avoid
-    * a buffer overrun - FIXME this isn't a sensible way for this to work */
-   len = (len / 8) + 31;
-   if (max_def_char > len) max_def_char = len;
    osfree(fnm);
    fclose(fh);
 }
