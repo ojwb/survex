@@ -68,6 +68,7 @@ solve_matrix(node *list)
     * plentiful, we can be crass.
     */
    stn_tab = osmalloc((OSSIZE_T)(n*ossizeof(pos*)));
+   n_stn_tab = 0;
    
    FOR_EACH_STN(stn, list) {
       if (!fixed(stn)) add_stn_to_tab(stn);
@@ -82,6 +83,8 @@ solve_matrix(node *list)
       print_prefix(stn->name);
       putnl();
    }
+
+   osfree(stn_tab);
 }
 
 #ifdef NO_COVARIANCES
