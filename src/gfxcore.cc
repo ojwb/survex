@@ -363,9 +363,6 @@ void GfxCore::FirstShow()
     m_OffscreenBitmap.Create(m_XSize, m_YSize);
 
     m_DrawDC.SelectObject(m_OffscreenBitmap);
-
-    // Set the font.
-    m_DrawDC.SetFont(m_Font);
 #endif
 
     m_DoneFirstShow = true;
@@ -689,6 +686,9 @@ void GfxCore::RedrawOffscreen()
 
 #else
     m_DrawDC.BeginDrawing();
+
+    // Set the font.
+    m_DrawDC.SetFont(m_Font);
 
     // Clear the background to black.
     SetColour(col_BLACK);

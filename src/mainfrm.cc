@@ -888,17 +888,11 @@ void MainFrm::SortIntoDepthBands(list<PointInfo*>& points)
     }
 }
 
-void MainFrm::OpenFile(const wxString& file, wxString survey, bool delay)
+void MainFrm::OpenFile(const wxString& file, wxString survey)
 {
-    // FIXME: delay is always false...
     SetCursor(*wxHOURGLASS_CURSOR);
     if (LoadData(file, survey)) {
-        if (!delay) {
-	    m_Gfx->Initialise();
-	}
-	else {
-	    m_Gfx->InitialiseOnNextResize();
-	}
+        m_Gfx->InitialiseOnNextResize();
     }
     SetCursor(*wxSTANDARD_CURSOR);
 }
