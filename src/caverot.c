@@ -52,6 +52,12 @@ static jmp_buf jmpbufSignal;
 #include "rotplot.h"
 #include "labels.h"
 
+/* For funcs which want to be immune from messing around with different
+ * calling conventions */
+#ifndef CDECL
+# define CDECL
+#endif
+
 /*#define ANIMATE*/
 #define ANIMATE_FPS 1
 
