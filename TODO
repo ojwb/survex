@@ -128,24 +128,19 @@ Point out in documentation that file structure and survey structure don't
 have to be the same.  And in particular that folder/directory names can be
 different.
 
-duncs comment on rewording docs on where files are looked for...
-
-Sort out INSTALL.DOS and mingw_extras/INSTALL.txt
-
-Date: Sat, 03 Mar 2001
-From: Olly
-
-cavern: auto declination? NEW_STYLE?
-
-update translations
-
-chase up zombies
-
-resolve entries in TODO; resolve FIXMEs in code
-
-test diving data with compass omitted (plumbed)
-
-use "highest" title?
+duncs comment on rewording docs on where files are looked for:
+ If an included file does not have a complete path, cavern will look
+ for it starting from the directory of the file which includes it.
+to:
+ This isn't (or at least should be) the case.  *include should resolve
+ relative to the directory which the parent file is in (just as
+ relative HTML links do).
+and:
+ Cavern will try adding a ".svx" extension if no extension is present,
+ and will also try translating "\" to "/" (or other appropriate tricks
+ on RISC OS).  And as a last resort, it will try a lower case version
+ of the filename (so if someone sends you a DOS/Windows dataset with
+ mismatched case, unzip with "unzip -L" and unix cavern should process it).
 
 add ms windows installer info to docs:
 
@@ -163,3 +158,21 @@ open->aven {default}
 extend->extend /* Is this working properly at the moment? Aven seems to get *
                 * very confused with the output from it...                  */
 print->printwin
+
+Sort out INSTALL.DOS
+
+Date: Sat, 03 Mar 2001
+From: Olly
+
+cavern: auto declination? NEW_STYLE?
+
+update translations
+
+chase up zombies
+
+resolve entries in TODO; resolve FIXMEs in code
+
+test diving data with compass omitted (plumbed)
+
+use "highest" title?
+
