@@ -611,11 +611,7 @@ void GUIControl::OnHigherViewpoint(bool accel)
 
 void GUIControl::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
 {
-    if (m_View->GetPerspective()) {
-	cmd.Enable(m_View->HasData() && m_View->CanLowerViewpoint() && m_View->GetLock() == lock_NONE);
-    } else {
-	cmd.Enable(m_View->HasData() && m_View->CanRaiseViewpoint() && m_View->GetLock() == lock_NONE);
-    }
+    cmd.Enable(m_View->HasData() && m_View->CanRaiseViewpoint() && m_View->GetLock() == lock_NONE);
 }
 
 void GUIControl::OnLowerViewpoint(bool accel)
@@ -631,11 +627,7 @@ void GUIControl::OnLowerViewpoint(bool accel)
 
 void GUIControl::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
 {
-    if (m_View->GetPerspective()) {
-	cmd.Enable(m_View->HasData() && m_View->CanRaiseViewpoint() && m_View->GetLock() == lock_NONE);
-    } else {
-	cmd.Enable(m_View->HasData() && m_View->CanLowerViewpoint() && m_View->GetLock() == lock_NONE);
-    }
+    cmd.Enable(m_View->HasData() && m_View->CanLowerViewpoint() && m_View->GetLock() == lock_NONE);
 }
 
 void GUIControl::OnPlan()

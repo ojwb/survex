@@ -1730,14 +1730,14 @@ bool GfxCore::CanRaiseViewpoint() const
 {
     // Determine if the survey can be viewed from a higher angle of elevation.
 
-    return (m_TiltAngle < 90.0);
+    return GetPerspective() ? (m_TiltAngle > -90.0) : (m_TiltAngle < 90.0);
 }
 
 bool GfxCore::CanLowerViewpoint() const
 {
     // Determine if the survey can be viewed from a lower angle of elevation.
 
-    return (m_TiltAngle > -90.0);
+    return GetPerspective() ? (m_TiltAngle < 90.0) : (m_TiltAngle > -90.0);
 }
 
 bool GfxCore::ShowingPlan() const
