@@ -1,0 +1,265 @@
+<refmeta>
+<refentrytitle>print.ini</refentrytitle>
+<manvolnum>5</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname>print.ini</refname>
+<refpurpose>survex printer settings
+</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<Para>
+The print.ini file serves as a repository for printer descriptions for
+the Survex printer drivers.
+</Para>
+
+<refsect2><title>File Format</title>
+
+<Para>The format of the <filename>print.ini</filename> file
+is similar to the <filename>.ini</filename> files used on Microsoft Windows.
+The file is divided into sections, each section corresponding to a separate
+printer description.  A section starts with a section name
+in square brackets, e.g.:
+</Para>
+
+<screen>[generic_pcl]</screen>
+
+<Para>followed by some options of the form
+&lt;option&gt;=&lt;setting&gt;, e.g.:</Para>
+
+<screen>pixels_across_page=960</screen>
+
+<Para>Most options are preceded by a comment (indicated by a semicolon ';')
+briefly explaining the option.
+</Para>
+
+<Para>
+Each section can contain a 'like' option.  If present this contains
+the name of another section (possibly in another print.ini file).
+Options not specified in the current section will be taken from that
+section.  This allows a printer definition to be based on that
+for another similar model of printer.
+</Para>
+
+<Para>Here is an example of how this works:</Para>
+
+<screen>
+[dm_9pin_12inch]
+like=dm_11inch_9pin
+lines_down_page=108</screen>
+
+<Para>This says that the definition 'dm_9pin_12inch' (for a 9pin dot
+matrix printer using 12 inch paper), is just like the 11 inch definition
+for the same printer, except that there are more lines per page.
+</Para>
+
+<Para>Each printer driver reads a different section -
+<command>printdm</command> (the Dot Matrix driver) reads
+<screen>[dm]</screen>,
+<command>printhpgl</command> (for HPGL plotters) reads
+<screen>[hpgl]</screen>,
+<command>printpcl</command> (for PCL printers) reads
+<screen>[pcl]</screen>, and
+<command>printps</command> (for Postscript printers) reads
+<screen>[ps]</screen>.
+Several definitions are supplied for each printer driver, covering
+most commonly encountered printers of each type.
+</Para>
+
+<refsect3><title>printdm</title>
+
+<Para>The definitions provided for printdm are: dm_8pin_a4,
+dm_8pin_11inch,
+dm_8pin_12inch,
+dm_9pin_a4,
+dm_9pin_11inch,
+dm_9pin_12inch,
+dm_24pin_a4,
+dm_24pin_11inch,
+dm_24pin_12inch,
+dm_panasonic_24pin,
+dm_lx86_9pin_11inch,
+and bj (for driving Canon BJ printers).
+</Para>
+
+<Para>
+In the unlikely event that you need to change the printer control
+codes, here is a quick overview of the format: printable characters
+are literal, except for backslash.  A backslash
+<!-- stupid docbook-to-man can't cope with \...
+'\'
+indicates that the following character is to be interpreted as a
+control code.  So \[ means send the value 27 decimal (1B hex,
+also called 'ESC' for Escape). If the backslash is followed by a small
+x and two hex digits - e.g \x0c, then that means send the code 0C hex
+(12 decimal, also called 'FF' for FormFeed).
+-->
+followed by an 'x' followed by two hex digits represents the character
+with that hex value.  A double backslash means a literal backslash.
+</Para>
+
+<Para>
+This is all rather cryptic (printer codes inherently are) but the provided
+set-ups will work with nearly all dot matrix printers, so you are unlikely
+to need to fiddle with these runes.
+</Para>
+
+</refsect3>
+
+<refsect3><title>printhpgl</title>
+
+<Para>The definitions provided for printhpgl are:
+hpgl_generic_a4landscape,
+hpgl_generic_a1landscape, and
+hpgl_generic_a0landscape.
+</Para>
+
+</refsect3>
+
+<refsect3><title>printpcl</title>
+
+<Para>The definitions provided for printpcl are:
+pcl_generic_a4 and pcl_modern_a4.</Para>
+
+<Para>Note that if you are using a PCL printer the defaults are set
+not to use advanced printer features for compatibility. If you want to
+try these (equivalent to HP laserjet III or later), then you should
+use the modern_pcl_a4 printer definition (see below for how to do this).
+This will enable horizontal and vertical tabbing.
+</Para>
+</refsect3>
+
+<refsect3><title>printhpgl</title>
+
+<Para>There's only one definition provided at present:
+ps_generic_a4.</Para>
+
+</refsect3>
+
+<!-- FIXME: fettle this
+<Para>If you find that your printout does not come out correctly, then the
+best way to make changes for your printer is to create a new section called
+[my_printer], and start with a like=something where something is the closest
+section to your printer. Then add new options to override the ones that are
+not correct for your printer. Finally you need to change the section for the
+type of printer you are using to point to your new definition. E.g. if you
+are using a dot-matrix printer then you need to change the [DM] section to
+say like=my_printer .
+</Para>
+-->
+
+</refsect2>
+</refsect1>
+
+<refsect1><Title>Customising Printer Settings</Title>
+
+<Para>
+The only settings most users will want to customise are which printer
+definition is used, and where to send the output.  If you're using a Dot
+Matrix Printer you will also need to set calibration details.
+</Para>
+
+<Para>You shouldn't modify the master print.ini (located in /usr/share/survex
+on Unix, or in the same directory as the Survex program files on other
+systems), or your changes will be overwritten by upgrades.  Instead create:
+</Para>
+
+<ItemizedList>
+<ListItem><Para>/etc/survex/print.ini (Unix - system-wide settings)</Para></ListItem>
+<ListItem><Para>~/.survex/print.ini (Unix - per user settings)</Para></ListItem>
+<ListItem><Para>myprint.ini in the directory where Survex is installed (other platforms)</Para></ListItem>
+</ItemizedList>
+
+<Para>
+The drivers look for the section "[dm]", "[ps]", "[pcl]" or "[hpgl]" as
+appropriate.  The file you create should should contain something like
+this to select a particular printer:
+</Para>
+
+<screen>
+[pcl]
+like=pcl_modern_a4
+</screen>
+
+<Para>
+For printdm, it should also contain calibration measurements (calibrate
+your printer by running <command>printdm --calibrate</command>):
+</Para>
+
+<screen>
+[dm]
+like=dm_24pin_a4
+mm_across_page=202
+mm_down_page=278
+</screen>
+
+<Para>
+You can override other settings too, such as the output destination.
+This is usually inherited from [base], and can be overridden in [base]
+(where it'll apply to all printer drivers) or in a printer driver
+specific section (such as [dm]).
+The output destination is set by an option of the form
+output_&lt;platform&gt=&lt;device&gt;, where device can be a device name
+(e.g. PRN, LPT1, LPT2 under &msdos;, <filename/Printer:/ under &riscos;) or a
+filename:
+</Para>
+
+<screen>
+[dm]
+output_msdos=LPT1
+like=dm_24pin_a4
+mm_across_page=202
+mm_down_page=278
+</screen>
+
+<Para><!--FIXME what else has popen? msdos too?-->
+Under &unix; output may be piped into another command like so:
+</Para>
+
+<screen>
+[base]
+; send output to printer 'oak'
+output_unix=|lpr -Poak
+</screen>
+
+<Para>Note you can also override the output setting using the --output
+command line option.
+</Para>
+
+<Para>
+If the output device isn't a device or a pipe command, it is taken as
+a filename to write the printer data to.  This can then be sent to a
+printer later.
+</Para>
+
+<caution>
+<Para>If you're using &msdos; you need to be careful when sending output
+to a file - printdm, printpcl and printhpgl all produce binary files, which
+<emphasis>must</emphasis> then be sent to the printer with
+<userinput>COPY /B OUTPUT PRN</userinput> where OUTPUT is the filename and
+PRN the device name.  Do <emphasis>not</emphasis> use COPY without the
+/B.  If you do, the output may be corrupted. Sorry, this is a deficiency
+of &msdos;, and there is nothing we can do about it.</Para>
+
+<Para>If you send output straight to the printer, by putting <filename/PRN/
+or <filename/LPT1/ in the configuration file, then this problem should not
+occur.</Para>
+
+<Para>printps produces text files as output, and so should be unaffected by
+this problem.</Para>
+</caution>
+
+<Para>
+printdm can also drive Canon bubblejets in native mode (which gives a
+higher resolution than in Epson emulation mode).  To use this,
+set "like=bj" in the "[dm]" section - like so:
+</Para>
+
+<screen>
+[dm]
+like=bj</screen>
+
+</refsect1>

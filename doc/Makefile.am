@@ -5,7 +5,7 @@ pkgdocdir = $(prefix)/doc/@PACKAGE@
 doclist = @DOCS_OTHER@
 
 other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
- printdm.1 printhpgl.1 printpcl.1 printps.1 @EXTRA_MANS@
+ printdm.1 printhpgl.1 printpcl.1 printps.1 print.ini.5 @EXTRA_MANS@
 
 #can produce man page syntax summary from --help something like
 #SURVEXHOME=lib src/xcaverot --help | grep -i ^syntax |
@@ -40,7 +40,7 @@ OLDNEWS.htm: ../OLDNEWS
 MAINTAINERCLEANFILES = $(doclist) $(other_mans)
 
 pkgdoc_DATA = index.htm GPL.htm TODO.htm ChngeLog.htm\
- NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist)
+ NEWS.htm OLDNEWS.htm AUTHORS.htm HACKING.htm $(doclist) manual
 
 man_MANS = survex.1 $(other_mans)
 
@@ -82,6 +82,9 @@ sorterr.1: $(srcdir)/sorterr.sgml $(srcdir)/man_sorterr.sgml $(srcdir)/survex.en
 
 xcaverot.1: $(srcdir)/xcaverot.sgml $(srcdir)/man_xcaverot.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_xcaverot.sgml > xcaverot.1
+
+print.ini.5: $(srcdir)/print.ini.sgml $(srcdir)/man_print.ini.sgml $(srcdir)/survex.ent
+	docbook-to-man $(srcdir)/man_print.ini.sgml > print.ini.5
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual; \

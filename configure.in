@@ -197,7 +197,7 @@ AC_SUBST(AVEN)
 dnl only build extra man pages on Unix - the ".exe" messes us up otherwise
 dnl FIXME: probably no point building man pages except on Unix
 if test -z "${ac_exeext}" ; then
-  EXTRA_MANS=`echo $CAVEROT $AVEN|sed 's/\>/.1/g'`
+  EXTRA_MANS=`echo $CAVEROT $AVEN|sed 's/\$(EXEEXT)//g;s/\>/.1/g'`
 else
   EXTRA_MANS=
 fi

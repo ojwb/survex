@@ -6,13 +6,6 @@
 ]>
 
 <!--
-Add note that this is produced from an sgml master and that large
-patches are better done on that...
-
-
-Remerge printini.sgml (possibly as a man page too)
-
-
 interleaved data styles...
 
 
@@ -69,31 +62,6 @@ the station 1 of the Adrian's Route survey.
 0 (east-west), 0 (north-south), 1780 (altitude).
 </Para>
 
-
-
-
-<sect2><Title>IMPORTANT NOTE FOR &msdos; USERS</Title>
-
-<caution>
-<Para>printdm, printpcl and prnthpgl all produce binary files.  If
-output from these is sent to a file, the file
-<emphasis>must</emphasis> then be sent to the printer with
-<userinput>COPY /B OUTPUT PRN</userinput> where OUTPUT is the filename and
-PRN the device name.  Do <emphasis>not</emphasis> use COPY without the
-/B.  If you do, the output may be corrupted. Sorry, this is a problem
-with &msdos;, and there is nothing we can do about it.</Para>
-</caution>
-
-<Para>If you send output straight to the printer, by putting <filename/PRN/
-or <filename/LPT1/ in the configuration file, then this problem should not
-occur.</Para>
-
-<Para>printps produces text files as output, and so should be unaffected by
-this.
-</Para>
-
-</sect2>
-
 -->
 
 <article Status="draft" id=index>
@@ -124,20 +92,26 @@ this.
    <year>1998-2001</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2001-11-07 13:27:50 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.70 2001-11-07 13:27:50 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2001-11-08 19:25:30 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.71 2001-11-08 19:25:30 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
     cave surveyors.
    </Para>
+
+   <Para>
+    The master version of this manual is an <acronym>SGML</acronym>
+    document written using the <ulink
+    url="http://www.docbook.org/">docbook</ulink> <acronym>DTD</acronym>,
+    then automatically converted to a number of other formats.  If
+    you're making <emphasis>major</emphasis> changes, it's much easier
+    to apply them if you work with this master, which you can get
+    from the source archive or <ulink
+    url="http://www.survex.com/docs.html">the Survex website</ulink>.
+   </Para>
   </Abstract>
  </articleinfo>
-
-<!--
-This document also available for download in <a
-href="http://www.survex.com/docs.html">various formats</a>.
--->
 
 <Sect1><Title>Introduction</Title>
 <?dbhtml filename="intro.htm">
@@ -569,14 +543,22 @@ if you're interested.</Para>
 
 </Sect3>
 
-<Sect3><Title>Calibrating Your Dot-Matrix Printer</Title>
+<Sect3><Title>Configuring the Printer Drivers</Title>
 
 <Para>
-To get plots that are properly to scale on dot-matrix printers
-you <emphasis>must</emphasis> measure the output from
-<emphasis>your</emphasis> printer - see `Printer Calibration' <!--
-check section name and add link? --> below.
+On Microsoft Windows, we recommend you print using printwin which uses
+the built in drivers and so requires no separate configuration - if you
+can print from other programs, you can print from Survex.
 </Para>
+
+<Para>
+The drivers used for other platforms may require a small amount of
+configuration, which is described in the following section.
+</Para>
+
+<refentry id="print.ini">
+&man.print.ini;
+</refentry>
 
 </Sect3>
 

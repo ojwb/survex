@@ -24,7 +24,7 @@
 * print*: if running interactively, prompt for what elements to plot
   when run so MS Windows users don't have to resort to the command line.
 
-* Minor documentation updates.
+* Improved documentation for print.ini; Other minor documentation updates.
 
 * (Unix version) configure auto-probe for wxWindows updated to cope
   with wxWindows version 2.2.8 (still works with older versions too).

@@ -32,6 +32,7 @@
 <!entity man.printwin SYSTEM "printwin.sgml">
 <!entity man.sorterr SYSTEM "sorterr.sgml">
 <!entity man.xcaverot SYSTEM "xcaverot.sgml">
+<!entity man.print.ini SYSTEM "print.ini.sgml">
 
 <!entity printer.options "
 <varlistentry><term>--survey=SURVEY</term>
