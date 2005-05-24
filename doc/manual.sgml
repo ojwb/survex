@@ -107,8 +107,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2005-01-12 00:46:25 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.115 2005-01-12 00:46:25 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2005-05-24 01:04:40 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.116 2005-05-24 01:04:40 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -3441,9 +3441,11 @@ you use
 </Para>
 
 <programlisting>
+*SET BLANK x09x20
 *SET DECIMAL ,</programlisting>
 
-<Para>to specify that ',' is now the decimal separator instead of '.'.
+<Para>to specify that ',' is no longer a blank character, and is now
+the decimal separator instead of '.'.
 </Para>
 
 <!-- FIXME
