@@ -463,7 +463,7 @@ svxPrintDlg::RecalcBounds()
 
 static int xpPageWidth, ypPageDepth;
 static long MarginLeft, MarginRight, MarginTop, MarginBottom;
-static long x_offset,y_offset;
+static long x_offset, y_offset;
 static wxFont *font_labels, *font_default;
 static int fontsize, fontsize_labels;
 
@@ -880,33 +880,36 @@ svxPrintout::drawticks(border clip, int tsize, int x, int y)
 
 bool 
 svxPrintout::OnPrintPage(int pageNum) {
-    pdc = GetDC();
     GetPageSizePixels(&xpPageWidth, &ypPageDepth);
-    int PaperWidth, PaperDepth;
-    GetPageSizeMM(&PaperWidth, &PaperDepth);
-    m_layout->scX = (double)xpPageWidth / PaperWidth;
-    m_layout->scY = (double)ypPageDepth / PaperDepth;
+    pdc = GetDC();
     if (IsPreview()) {
-	wxSize sz = pdc->GetSize();
-	pdc->SetUserScale((double)sz.GetWidth() / xpPageWidth,
-			  (double)sz.GetHeight() / ypPageDepth);
+	int dcx, dcy;
+	pdc->GetSize(&dcx, &dcy);
+	pdc->SetUserScale((double)dcx / xpPageWidth, (double)dcy / ypPageDepth);
     }
-    font_scaling_x = xpPageWidth / PaperWidth * 25.4 / 72.0;
-    font_scaling_y = ypPageDepth / PaperDepth * 25.4 / 72.0;
-    MarginLeft = m_data->GetMarginTopLeft().x;
-    MarginTop = m_data->GetMarginTopLeft().y;
-    MarginBottom = m_data->GetMarginBottomRight().y;
-    MarginRight = m_data->GetMarginBottomRight().x;
-    xpPageWidth -= (int)(m_layout->scX * (MarginLeft + MarginRight));
-    ypPageDepth -= (int)(m_layout->scY * (MarginBottom + MarginRight));
-    xpPageWidth -= 1;
-    ypPageDepth -= (int)(10 * m_layout->scY);
-    x_offset = (long)(m_layout->scX * MarginLeft);
-    y_offset = (long)(m_layout->scY * MarginTop);
-    m_layout->PaperWidth = PaperWidth -= MarginLeft + MarginRight;
-    m_layout->PaperDepth = PaperDepth -= MarginTop + MarginBottom;
 
     layout * l = m_layout;
+    {
+	int pwidth, pdepth;
+	GetPageSizeMM(&pwidth, &pdepth);
+	l->scX = (double)xpPageWidth / pwidth;
+	l->scY = (double)ypPageDepth / pdepth;
+	font_scaling_x = l->scX * (25.4 / 72.0);
+	font_scaling_y = l->scY * (25.4 / 72.0);
+	MarginLeft = m_data->GetMarginTopLeft().x;
+	MarginTop = m_data->GetMarginTopLeft().y;
+	MarginBottom = m_data->GetMarginBottomRight().y;
+	MarginRight = m_data->GetMarginBottomRight().x;
+	xpPageWidth -= (int)(l->scX * (MarginLeft + MarginRight));
+	ypPageDepth -= (int)(l->scY * (10 + MarginBottom + MarginRight));
+	// xpPageWidth -= 1;
+	pdepth -= 10;
+	x_offset = (long)(l->scX * MarginLeft);
+	y_offset = (long)(l->scY * MarginTop);
+	l->PaperWidth = pwidth -= MarginLeft + MarginRight;
+	l->PaperDepth = pdepth -= MarginTop + MarginBottom;
+    }
+
     double SIN,COS,SINT,COST;
     SIN = sin(rad(l->rot));
     COS = cos(rad(l->rot));
@@ -924,7 +927,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 	draw_info_box();
     }
 
-    double Sc = 1000 / m_layout->Scale;
+    double Sc = 1000 / l->Scale;
 
     if (l->Surface || l->Shots) {
 	for (int i=0; i < m_parent->GetNumDepthBands(); ++i) {
