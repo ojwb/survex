@@ -1,7 +1,7 @@
 /* extend.c
  * Produce an extended elevation
  * Copyright (C) 1995-2002 Olly Betts
- * Copyright (C) 2004 John Pybus
+ * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ static leg headleg = {NULL, NULL, NULL, 0, 0, 0, NULL};
 
 static img *pimg;
 
-static void do_stn(point *, double, const char *, int);
+static void do_stn(point *, double, const char *, int, int);
 
 typedef struct pfx {
    const char *label;
@@ -580,7 +580,8 @@ main(int argc, char **argv)
    putnl();
    pimg = img_open_write(fnm_out, desc, fTrue);
 
-   do_stn(start, 0.0, NULL, ERIGHT); /* only does single connected component currently */
+   /* Only does single connected component currently. */
+   do_stn(start, 0.0, NULL, ERIGHT, 0);
    if (!img_close(pimg)) {
       (void)remove(fnm_out);
       fatalerror(img_error(), fnm_out);
@@ -590,21 +591,23 @@ main(int argc, char **argv)
 }
 
 static void
-do_stn(point *p, double X, const char *prefix, int dir)
+do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 {
    leg *l, *lp;
    double dX;
    const stn *s;
+   int odir = dir;
 
    for (s = p->stns; s; s = s->next) {
       img_write_item(pimg, img_LABEL, s->flags, s->label, X, 0, p->p.z);
    }
-   if (p->fDone & BREAK) {
+   if (p->fDone & BREAK | labOnly) {
      return;
    }
 
    lp = &headleg;
    for (l = lp->next; l; lp = l, l = lp->next) {
+      dir = odir;
       if (l->fDone & DONE) {
 	 /* this case happens if a recursive call causes the next leg to be
 	  * removed, leaving our next pointing to a leg which has been dealt
@@ -625,7 +628,7 @@ do_stn(point *p, double X, const char *prefix, int dir)
 	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X, 0, l->to->p.z);
 	    l->fDone |= DONE;
-	    do_stn(l->fr, X + dX, l->prefix, dir);
+	    do_stn(l->fr, X + dX, l->prefix, dir, (l->fDone & BREAK_FR));
 	    l = lp;
 	 } else if (l->fr == p) {
 	    if (l->fDone & BREAK_FR) continue;
@@ -642,13 +645,14 @@ do_stn(point *p, double X, const char *prefix, int dir)
 	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X + dX, 0, l->to->p.z);
 	    l->fDone |= DONE;
-	    do_stn(l->to, X + dX, l->prefix, dir);
+	    do_stn(l->to, X + dX, l->prefix, dir, (l->fDone & BREAK_TO));
 	    l = lp;
 	 }
       }
    }
    lp = &headleg;
    for (l = lp->next; l; lp = l, l = lp->next) {
+      dir = odir;
       if (l->fDone & DONE) {
 	 /* this case happens iff a recursive call causes the next leg to be
 	  * removed, leaving our next pointing to a leg which has been dealt
@@ -669,7 +673,7 @@ do_stn(point *p, double X, const char *prefix, int dir)
 	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X, 0, l->to->p.z);
 	    l->fDone |= DONE;
-	    do_stn(l->fr, X + dX, l->prefix, dir);
+	    do_stn(l->fr, X + dX, l->prefix, dir, (l->fDone & BREAK_FR));
 	    l = lp;
 	 } else if (l->fr == p) {
 	    if (l->fDone & BREAK_FR) continue;
@@ -686,7 +690,7 @@ do_stn(point *p, double X, const char *prefix, int dir)
 	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
 			   X + dX, 0, l->to->p.z);
 	    l->fDone |= DONE;
-	    do_stn(l->to, X + dX, l->prefix, dir);
+	    do_stn(l->to, X + dX, l->prefix, dir, (l->fDone & BREAK_TO));
 	    l = lp;
 	 }
       }

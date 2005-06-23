@@ -31,18 +31,21 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${EXTEND="$testdir"/../src/extend}
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
-: ${TESTS=${*-"extend extend2names"}}
+: ${TESTS=${*-"extend extend2names eswap"}} # also eswap-break
+# JPNP: eswap-break currently fails due to bug in diffpos
 
 for file in $TESTS ; do
   echo $file
+  EXTEND_ARGS=""
+  test -f "$file.espec" && EXTEND_ARGS="--specfile $file.espec"
   rm -f tmp.*
   if test -n "$VERBOSE" ; then
     $CAVERN "$srcdir/$file.svx" --output=tmp || exit 1
-    $EXTEND tmp.3d tmp.x.3d || exit 1
+    $EXTEND $EXTEND_ARGS tmp.3d tmp.x.3d || exit 1
     $DIFFPOS tmp.x.3d "$srcdir/${file}x.3d" || exit 1
   else
     $CAVERN "$srcdir/$file.svx" --output=tmp > /dev/null || exit 1
-    $EXTEND tmp.3d tmp.x.3d > /dev/null || exit 1
+    $EXTEND $EXTEND_ARGS tmp.3d tmp.x.3d > /dev/null || exit 1
     $DIFFPOS tmp.x.3d "$srcdir/${file}x.3d" > /dev/null || exit 1
   fi
   rm -f tmp.*
