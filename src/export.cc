@@ -208,14 +208,9 @@ dxf_start_pass(int layer)
 }
 
 static void
-dxf_move(const img_point *p)
+dxf_line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
-   p = p; /* unused */
-}
-
-static void
-dxf_line(const img_point *p1, const img_point *p, bool fSurface)
-{
+   fPendingMove = fPendingMove; /* unused */
    fprintf(fh, "0\nLINE\n");
    fprintf(fh, fSurface ? "8\nSurface\n" : "8\nCentreLine\n"); /* Layer */
    fprintf(fh, "10\n%6.2f\n", p1->x);
@@ -281,17 +276,13 @@ sketch_start_pass(int layer)
 }
 
 static void
-sketch_move(const img_point *p)
-{
-   fprintf(fh, "b()\n");
-   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p->x * factor, p->y * factor, 0.0);
-}
-
-static void
-sketch_line(const img_point *p1, const img_point *p, bool fSurface)
+sketch_line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
    fSurface = fSurface; /* unused */
-   p1 = p1; /* unused */
+   if (fPendingMove) {
+       fprintf(fh, "b()\n");
+       fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p1->x * factor, p1->y * factor, 0.0);
+   }
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p->x * factor, p->y * factor, 0.0);
 }
 
@@ -444,20 +435,15 @@ svg_start_pass(int layer)
 }
 
 static void
-svg_move(const img_point *p)
-{
-   if (to_close) {
-      fprintf(fh, "\"/>\n");
-   }
-   fprintf(fh, "<path d=\"M%.3f %.3f", p->x * factor, p->y * -factor);
-   to_close = 1;
-}
-
-static void
-svg_line(const img_point *p1, const img_point *p, bool fSurface)
+svg_line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
    fSurface = fSurface; /* unused */
-   p1 = p1; /* unused */
+   if (fPendingMove) {
+       if (to_close) {
+	   fprintf(fh, "\"/>\n");
+       }
+       fprintf(fh, "<path d=\"M%.3f %.3f", p1->x * factor, p1->y * -factor);
+   }
    fprintf(fh, "L%.3f %.3f", p->x * factor, p->y * -factor);
    to_close = 1;
 }
@@ -522,20 +508,15 @@ plt_start_pass(int layer)
 }
 
 static void
-plt_move(const img_point *p)
+plt_line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
-   /* Survex is E, N, Alt - PLT file is N, E, Alt */
-   fprintf(fh, "M %.3f %.3f %.3f ",
-	   p->y / METRES_PER_FOOT, p->x / METRES_PER_FOOT, p->z / METRES_PER_FOOT);
-   /* dummy passage dimensions are required to avoid compass bug */
-   fprintf(fh, "S%s P -9 -9 -9 -9\r\n", find_name(p));
-}
-
-static void
-plt_line(const img_point *p1, const img_point *p, bool fSurface)
-{
-   fSurface = fSurface; /* unused */
-   p1 = p1; /* unused */
+   if (fPendingMove) {
+       /* Survex is E, N, Alt - PLT file is N, E, Alt */
+       fprintf(fh, "M %.3f %.3f %.3f ",
+	       p1->y / METRES_PER_FOOT, p1->x / METRES_PER_FOOT, p1->z / METRES_PER_FOOT);
+       /* dummy passage dimensions are required to avoid compass bug */
+       fprintf(fh, "S%s P -9 -9 -9 -9\r\n", find_name(p1));
+   }
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "D %.3f %.3f %.3f ",
 	   p->y / METRES_PER_FOOT, p->x / METRES_PER_FOOT, p->z / METRES_PER_FOOT);
@@ -815,16 +796,12 @@ eps_start_pass(int layer)
 }
 
 static void
-eps_move(const img_point *p)
-{
-   fprintf(fh, "%.2f %.2f M\n", p->x, p->y);
-}
-
-static void
-eps_line(const img_point *p1, const img_point *p, bool fSurface)
+eps_line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
    fSurface = fSurface; /* unused */
-   p1 = p1; /* unused */
+   if (fPendingMove) {
+       fprintf(fh, "%.2f %.2f M\n", p1->x, p1->y);
+   }
    fprintf(fh, "%.2f %.2f L\n", p->x, p->y);
 }
 
@@ -881,6 +858,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
        bool surface)
 {
    int fSeenMove = 0;
+   int fPendingMove = 0;
    img_point p, p1;
    double s = 0, c = 0;
    export_format format = FMT_DXF;
@@ -890,8 +868,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 
    void (*header)(const char *);
    void (*start_pass)(int);
-   void (*move)(const img_point *);
-   void (*line)(const img_point *, const img_point *, bool);
+   void (*line)(const img_point *, const img_point *, bool, bool);
    void (*label)(const img_point *, const char *, bool);
    void (*cross)(const img_point *, bool);
    void (*footer)(void);
@@ -981,7 +958,6 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
     case FMT_DXF:
       header = dxf_header;
       start_pass = dxf_start_pass;
-      move = dxf_move;
       line = dxf_line;
       label = dxf_label;
       cross = dxf_cross;
@@ -991,7 +967,6 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
     case FMT_SKETCH:
       header = sketch_header;
       start_pass = sketch_start_pass;
-      move = sketch_move;
       line = sketch_line;
       label = sketch_label;
       cross = sketch_cross;
@@ -1003,7 +978,6 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
     case FMT_PLT:
       header = plt_header;
       start_pass = plt_start_pass;
-      move = plt_move;
       line = plt_line;
       label = plt_label;
       cross = plt_cross;
@@ -1014,7 +988,6 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
     case FMT_SVG:
       header = svg_header;
       start_pass = svg_start_pass;
-      move = svg_move;
       line = svg_line;
       label = svg_label;
       cross = svg_cross;
@@ -1026,7 +999,6 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
     case FMT_EPS:
       header = eps_header;
       start_pass = eps_start_pass;
-      move = eps_move;
       line = eps_line;
       label = eps_label;
       cross = eps_cross;
@@ -1151,13 +1123,22 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 #ifdef DEBUG_CAD3D
 		     printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
 #endif
-		     assert(fSeenMove);
-		     line(&p1, &p, (*pos)->IsSurface());
+		     if (!fSeenMove) {
+			 p1 = p;
+			 fPendingMove = 1;
+			 fSeenMove = 1;
+		     }
+		     if (surface || !(*pos)->IsSurface()) {
+			 line(&p1, &p, (*pos)->IsSurface(), fPendingMove);
+			 fPendingMove = 0;
+		     } else {
+			 fPendingMove = 1;
+		     }
 		 } else {
 #ifdef DEBUG_CAD3D
 		     printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
 #endif
-		     move(&p);
+		     fPendingMove = 1;
 		     fSeenMove = 1;
 		 }
 		 p1 = p;
