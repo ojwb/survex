@@ -1,11 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-check-local dist-hook:
-	if grep '@.*@' borlandc/config.h riscos/config.h ; then \
-	  echo 'Unsubstituted token in src/*/config.h - something is amiss with configure.in'; \
-	  exit 1; \
-	fi
-
 noinst_HEADERS = cavern.h commands.h cmdline.h\
  datain.h debug.h filelist.h filename.h\
  getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
@@ -169,10 +163,4 @@ z_getopt.c: getopt.c gettexttomsg.pl
 avenpal.h: $(srcdir)/gradient.pov
 	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-avenpal.h && mv tmp-avenpal.h avenpal.h
 
-MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile $(BUILT_SOURCES)
-
-borlandc/makefile: $(srcdir)/Makefile.am miniam.pl
-	$(srcdir)/miniam.pl borlandc < $(srcdir)/Makefile.am > borlandc/tmp-makefile && mv borlandc/tmp-makefile borlandc/makefile
-
-riscos/makefile: $(srcdir)/Makefile.am miniam.pl
-	$(srcdir)/miniam.pl riscos < $(srcdir)/Makefile.am > riscos/tmp-makefile && mv riscos/tmp-makefile riscos/makefile
+MAINTAINERCLEANFILES = $(BUILT_SOURCES)
