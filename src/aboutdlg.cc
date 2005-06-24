@@ -100,9 +100,10 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     vert->Add(new wxStaticText(this, 505, msg(/*System Information:*/390)),
 	      0, wxLEFT | wxRIGHT, 20);
 
-#ifdef unix
-    // On Unix, wx reports the OS that we were *built* on, which may have
-    // be a different OS or kernel version to what we're running on.
+#if defined unix && !wxCHECK_VERSION(2,5,4)
+    // On Unix, older wx versions report the OS that we were *built* on, which
+    // may be a different OS or kernel version to what we're running on.
+    // I submitted a patch to fix this which was applied in 2.5.4.
     wxString info;
     {
 	char buf[80];
