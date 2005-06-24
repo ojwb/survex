@@ -49,33 +49,34 @@ typedef struct POINT {
    img_point p;
    const stn *stns;
    unsigned int order;
-   int fDir;
-   int fDone;
+   char dir;
+   char fDone;
+   char fBroken;
    struct POINT *next;
 } point;
 
 typedef struct LEG {
    point *fr, *to;
    const char *prefix;
-   int fDir;
-   int fDone;
+   char dir;
+   char fDone;
+   char broken;
    int flags;
    struct LEG *next;
 } leg;
 
-#define DONE        0x01
-#define BREAK_FR    0x04
-#define BREAK_TO    0x08
-#define BREAK       (BREAK_FR | BREAK_TO)
+/* Values for leg.broken: */
+#define BREAK_FR    0x01
+#define BREAK_TO    0x02
 
+/* Values for point.dir and leg.dir: */
+#define ELEFT  0x01
+#define ERIGHT 0x02
+#define ESWAP  0x04
 
-#define ELEFT  0x04
-#define ERIGHT 0x08
-#define ESWAP  0x10
+static point headpoint = {{0, 0, 0}, NULL, 0, 0, 0, 0, NULL};
 
-static point headpoint = {{0, 0, 0}, NULL, 0, 0, 0, NULL};
-
-static leg headleg = {NULL, NULL, NULL, 0, 0, 0, NULL};
+static leg headleg = {NULL, NULL, NULL, 0, 0, 0, 0, NULL};
 
 static img *pimg;
 
@@ -125,7 +126,7 @@ find_point(const img_point *pt)
    p->p = *pt;
    p->stns = NULL;
    p->order = 0;
-   p->fDir = 0;
+   p->dir = 0;
    p->fDone = 0;
    p->next = headpoint.next;
    headpoint.next = p;
@@ -146,7 +147,7 @@ add_leg(point *fr, point *to, const char *prefix, int flags)
    else
       l->prefix = NULL;
    l->next = headleg.next;
-   l->fDir = 0;
+   l->dir = 0;
    l->fDone = 0;
    l->flags = flags;
    headleg.next = l;
@@ -262,7 +263,7 @@ parseconfigline(char *ln)
 	       if (strcmp(s->label, ll)==0) {
 		  printf(msg(/*Plotting to the left from station %s*/605),ll);
 		  putnl();
-		  p->fDir = ELEFT;
+		  p->dir = ELEFT;
 		  goto loopend;
 	       }
 	    }
@@ -281,7 +282,7 @@ parseconfigline(char *ln)
 			if (strcmp(t->label,lr)==0) {
 			   printf(msg(/*Plotting to the left from leg %s -> %s*/607), s->label, t->label);
 			   putnl();
-			   l->fDir=ELEFT;
+			   l->dir = ELEFT;
 			   goto loopend;
 			}
 		     }
@@ -301,7 +302,7 @@ parseconfigline(char *ln)
 	       if (strcmp(s->label, ll)==0) {
 		  printf(msg(/*Plotting to the right from station %s*/608),ll);
 		  putnl();
-		  p->fDir = ERIGHT;
+		  p->dir = ERIGHT;
 		  goto loopend;
 	       }
 	    }
@@ -320,7 +321,7 @@ parseconfigline(char *ln)
 			if (strcmp(t->label,lr)==0) {
 			   printf(msg(/*Plotting to the right from leg %s -> %s*/609), s->label, t->label);
 			   printf("\n");
-			   l->fDir=ERIGHT;
+			   l->dir=ERIGHT;
 			   goto loopend;
 			}
 		     }
@@ -340,7 +341,7 @@ parseconfigline(char *ln)
 	       if (strcmp(s->label, ll)==0) {
 		  printf(msg(/*Swapping plot direction from station %s*/615),ll);
 		  putnl();
-		  p->fDir = ESWAP;
+		  p->dir = ESWAP;
 		  goto loopend;
 	       }
 	    }
@@ -359,7 +360,7 @@ parseconfigline(char *ln)
 			if (strcmp(t->label,lr)==0) {
 			   printf(msg(/*Swapping plot direction from leg %s -> %s*/616), s->label, t->label);
 			   printf("\n");
-			   l->fDir = ESWAP;
+			   l->dir = ESWAP;
 			   goto loopend;
 			}
 		     }
@@ -379,7 +380,7 @@ parseconfigline(char *ln)
 	       if (strcmp(s->label, ll)==0) {
 		  printf(msg(/*Breaking survey at station %s*/610), ll);
 		  putnl();
-		  p->fDone = BREAK;
+		  p->fBroken = 1;
 		  goto loopend;
 	       }
 	    }
@@ -389,7 +390,7 @@ parseconfigline(char *ln)
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
 	    point * to = l->to;
-	    if (fr && to ) {
+	    if (fr && to) {
 	       for (s=fr->stns; s; s=s->next) {
 		  int b = 0;
 		  if (strcmp(s->label,ll)==0 || (strcmp(s->label, ln)==0 && (b = 1)) ) {
@@ -398,7 +399,7 @@ parseconfigline(char *ln)
 			if (strcmp(t->label,lr)==0) {
 			   printf(msg(/*Breaking survey at leg %s -> %s*/611), s->label, t->label);
 			   putnl();
-			   l->fDone = (b ? BREAK_TO : BREAK_FR);
+			   l->broken = (b ? BREAK_TO : BREAK_FR);
 			   goto loopend;
 			}
 		     }
@@ -590,6 +591,14 @@ main(int argc, char **argv)
    return EXIT_SUCCESS;
 }
 
+static int adjust_direction(int dir, int by) {
+    if (by == ESWAP)
+	return dir ^ (ELEFT|ERIGHT);
+    if (by)
+	return by;
+    return dir;
+}
+
 static void
 do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 {
@@ -601,98 +610,93 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
    for (s = p->stns; s; s = s->next) {
       img_write_item(pimg, img_LABEL, s->flags, s->label, X, 0, p->p.z);
    }
-   if (p->fDone & BREAK | labOnly) {
-     return;
+   if (labOnly || p->fBroken) {
+      return;
    }
 
    lp = &headleg;
    for (l = lp->next; l; lp = l, l = lp->next) {
       dir = odir;
-      if (l->fDone & DONE) {
+      if (l->fDone) {
 	 /* this case happens if a recursive call causes the next leg to be
 	  * removed, leaving our next pointing to a leg which has been dealt
 	  * with... */
-      } else if (l->prefix == prefix) {
-	 if (l->to == p) {
-	    if (l->fDone & BREAK_TO) continue;
-	    lp->next = l->next;
-	    /* adjust direction of extension if necessary */
-	    if (l->to->fDir == ESWAP)               dir = (dir==ERIGHT ? ELEFT : ERIGHT);
-	    else if (l->to->fDir & (ERIGHT|ELEFT))  dir = l->to->fDir;
-	    if (l->fDir == ESWAP)                   dir = (dir==ERIGHT ? ELEFT : ERIGHT);
-	    else if (l->fDir & (ERIGHT|ELEFT))      dir = l->fDir;
+	 continue;
+      }
+      if (l->prefix != prefix) {
+	 continue;
+      }
+      if (l->to == p) {
+	 if (l->broken & BREAK_TO) continue;
+	 lp->next = l->next;
+	 /* adjust direction of extension if necessary */
+	 dir = adjust_direction(dir, l->to->dir);
+	 dir = adjust_direction(dir, l->dir);
 
-	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-	    if (dir == ELEFT) dX *= -1.0;
-	    img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
-			   X, 0, l->to->p.z);
-	    l->fDone |= DONE;
-	    do_stn(l->fr, X + dX, l->prefix, dir, (l->fDone & BREAK_FR));
-	    l = lp;
-	 } else if (l->fr == p) {
-	    if (l->fDone & BREAK_FR) continue;
-	    lp->next = l->next;
-	    /* adjust direction of extension if necessary */
-	    if (l->fr->fDir == ESWAP)               dir = (dir==ERIGHT ? ELEFT : ERIGHT);
-	    else if (l->fr->fDir & (ERIGHT|ELEFT))  dir = l->fr->fDir;
-	    if (l->fDir == ESWAP)                   dir = (dir==ERIGHT ? ELEFT : ERIGHT);
-	    else if (l->fDir & (ERIGHT|ELEFT))      dir = l->fDir;
+	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	 if (dir == ELEFT) dX = -dX;
+	 img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
+	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+			X, 0, l->to->p.z);
+	 l->fDone = 1;
+	 do_stn(l->fr, X + dX, l->prefix, dir, (l->broken & BREAK_FR));
+	 l = lp;
+      } else if (l->fr == p) {
+	 if (l->broken & BREAK_FR) continue;
+	 lp->next = l->next;
+	 /* adjust direction of extension if necessary */
+	 dir = adjust_direction(dir, l->fr->dir);
+	 dir = adjust_direction(dir, l->dir);
 
-	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-	    if (dir == ELEFT) dX *= -1.0;
-	    img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
-			   X + dX, 0, l->to->p.z);
-	    l->fDone |= DONE;
-	    do_stn(l->to, X + dX, l->prefix, dir, (l->fDone & BREAK_TO));
-	    l = lp;
-	 }
+	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	 if (dir == ELEFT) dX = -dX;
+	 img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
+	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+			X + dX, 0, l->to->p.z);
+	 l->fDone = 1;
+	 do_stn(l->to, X + dX, l->prefix, dir, (l->broken & BREAK_TO));
+	 l = lp;
       }
    }
    lp = &headleg;
    for (l = lp->next; l; lp = l, l = lp->next) {
       dir = odir;
-      if (l->fDone & DONE) {
+      if (l->fDone) {
 	 /* this case happens iff a recursive call causes the next leg to be
 	  * removed, leaving our next pointing to a leg which has been dealt
 	  * with... */
-      } else {
-	 if (l->to == p) {
-	    if (l->fDone & BREAK_TO) continue;
-	    lp->next = l->next;
-	    /* adjust direction of extension if necessary */
-	    if (l->to->fDir == ESWAP)               dir = (dir==ERIGHT ? ELEFT : ERIGHT);
-	    else if (l->to->fDir & (ERIGHT|ELEFT))  dir = l->to->fDir;
-	    if (l->fDir == ESWAP)                   dir = (dir==ERIGHT ? ELEFT : ERIGHT);
-	    else if (l->fDir & (ERIGHT|ELEFT))      dir = l->fDir;
-	    
-	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-	    if (dir == ELEFT) dX *= -1.0;
-	    img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
-			   X, 0, l->to->p.z);
-	    l->fDone |= DONE;
-	    do_stn(l->fr, X + dX, l->prefix, dir, (l->fDone & BREAK_FR));
-	    l = lp;
-	 } else if (l->fr == p) {
-	    if (l->fDone & BREAK_FR) continue;
-	    lp->next = l->next;
-	    /* adjust direction of extension if necessary */
-	    if (l->fr->fDir == ESWAP)               dir = (dir==ERIGHT ? ELEFT : ERIGHT);
-	    else if (l->fr->fDir & (ERIGHT|ELEFT))  dir = l->fr->fDir;
-	    if (l->fDir == ESWAP)                   dir = (dir==ERIGHT ? ELEFT : ERIGHT);
-	    else if (l->fDir & (ERIGHT|ELEFT))      dir = l->fDir;
+	 continue;
+      }
+      if (l->to == p) {
+	 if (l->broken & BREAK_TO) continue;
+	 lp->next = l->next;
+	 /* adjust direction of extension if necessary */
+	 dir = adjust_direction(dir, l->to->dir);
+	 dir = adjust_direction(dir, l->dir);
 
-	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-	    if (dir == ELEFT) dX *= -1.0;
-	    img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-	    img_write_item(pimg, img_LINE, l->flags, l->prefix,
-			   X + dX, 0, l->to->p.z);
-	    l->fDone |= DONE;
-	    do_stn(l->to, X + dX, l->prefix, dir, (l->fDone & BREAK_TO));
-	    l = lp;
-	 }
+	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	 if (dir == ELEFT) dX = -dX;
+	 img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
+	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+			X, 0, l->to->p.z);
+	 l->fDone = 1;
+	 do_stn(l->fr, X + dX, l->prefix, dir, (l->broken & BREAK_FR));
+	 l = lp;
+      } else if (l->fr == p) {
+	 if (l->broken & BREAK_FR) continue;
+	 lp->next = l->next;
+	 /* adjust direction of extension if necessary */
+	 dir = adjust_direction(dir, l->fr->dir);
+	 dir = adjust_direction(dir, l->dir);
+
+	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	 if (dir == ELEFT) dX = -dX;
+	 img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
+	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+			X + dX, 0, l->to->p.z);
+	 l->fDone = 1;
+	 do_stn(l->to, X + dX, l->prefix, dir, (l->broken & BREAK_TO));
+	 l = lp;
       }
    }
 }
