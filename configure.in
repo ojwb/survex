@@ -16,7 +16,7 @@ AC_SUBST(RELEASE)
 AM_CONFIG_HEADER(config.h)
 
 dnl don't reformat the next line, miniam.pl pulls out the value
-COPYRIGHT_MSG="Copyright %s 1990-2004 Olly Betts"
+COPYRIGHT_MSG="Copyright %s 1990-2005 Olly Betts"
 
 AVEN_COPYRIGHT_MSG="Copyright %s 1999-2003 Mark R. Shinwell"
 
