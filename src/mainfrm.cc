@@ -47,10 +47,6 @@
 
 using namespace std;
 
-#define TOOLBAR_BITMAP(file) wxBitmap(wxString(msg_cfgpth()) + \
-    wxCONFIG_PATH_SEPARATOR + wxString("icons") + wxCONFIG_PATH_SEPARATOR + \
-    wxString(file), wxBITMAP_TYPE_PNG)
-
 class AvenSplitterWindow : public wxSplitterWindow {
     MainFrm *parent;
 
@@ -644,10 +640,17 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     , m_PrefsDlg(NULL)
 #endif
 {
+    icon_path = msg_cfgpth();
+    icon_path += wxCONFIG_PATH_SEPARATOR;
+    icon_path += "icons";
+    icon_path += wxCONFIG_PATH_SEPARATOR;
+
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
     // (required by Microsoft Windows for this type of icon)
     SetIcon(wxIcon("aaaaaAven"));
+#else
+    SetIcon(wxIcon(icon_path + "aven.png", wxBITMAP_TYPE_PNG));
 #endif
 
     CreateMenuBar();
@@ -800,6 +803,9 @@ void MainFrm::CreateMenuBar()
     SetMenuBar(menubar);
 }
 
+// ICON must be a literal string.
+#define TOOLBAR_BITMAP(ICON) wxBitmap(icon_path + ICON".png", wxBITMAP_TYPE_PNG)
+
 void MainFrm::CreateToolBar()
 {
     // Create the toolbar.
@@ -811,55 +817,55 @@ void MainFrm::CreateToolBar()
 #endif
 
     // FIXME: TRANSLATE tooltips
-    toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open.png"), "Open a 3D file for viewing");
-    toolbar->AddTool(menu_PRES_OPEN, TOOLBAR_BITMAP("open-pres.png"), "Open a presentation");
+    toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open"), "Open a 3D file for viewing");
+    toolbar->AddTool(menu_PRES_OPEN, TOOLBAR_BITMAP("open-pres"), "Open a presentation");
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation.png"),
+    toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation"),
 		     wxNullBitmap, true, -1, -1, NULL, "Toggle rotation");
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_ORIENT_PLAN, TOOLBAR_BITMAP("plan.png"), "Switch to plan view");
-    toolbar->AddTool(menu_ORIENT_ELEVATION, TOOLBAR_BITMAP("elevation.png"), "Switch to elevation view");
+    toolbar->AddTool(menu_ORIENT_PLAN, TOOLBAR_BITMAP("plan"), "Switch to plan view");
+    toolbar->AddTool(menu_ORIENT_ELEVATION, TOOLBAR_BITMAP("elevation"), "Switch to elevation view");
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_ORIENT_DEFAULTS, TOOLBAR_BITMAP("defaults.png"), "Restore default view");
+    toolbar->AddTool(menu_ORIENT_DEFAULTS, TOOLBAR_BITMAP("defaults"), "Restore default view");
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_VIEW_SHOW_NAMES, TOOLBAR_BITMAP("names.png"), wxNullBitmap, true,
+    toolbar->AddTool(menu_VIEW_SHOW_NAMES, TOOLBAR_BITMAP("names"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show station names");
-    toolbar->AddTool(menu_VIEW_SHOW_CROSSES, TOOLBAR_BITMAP("crosses.png"), wxNullBitmap, true,
+    toolbar->AddTool(menu_VIEW_SHOW_CROSSES, TOOLBAR_BITMAP("crosses"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show crosses on stations");
-    toolbar->AddTool(menu_VIEW_SHOW_ENTRANCES, TOOLBAR_BITMAP("entrances.png"), wxNullBitmap, true,
+    toolbar->AddTool(menu_VIEW_SHOW_ENTRANCES, TOOLBAR_BITMAP("entrances"), wxNullBitmap, true,
 		     -1, -1, NULL, "Highlight entrances");
-    toolbar->AddTool(menu_VIEW_SHOW_FIXED_PTS, TOOLBAR_BITMAP("fixed-pts.png"), wxNullBitmap, true,
+    toolbar->AddTool(menu_VIEW_SHOW_FIXED_PTS, TOOLBAR_BITMAP("fixed-pts"), wxNullBitmap, true,
 		     -1, -1, NULL, "Highlight fixed points");
-    toolbar->AddTool(menu_VIEW_SHOW_EXPORTED_PTS, TOOLBAR_BITMAP("exported-pts.png"), wxNullBitmap, true,
+    toolbar->AddTool(menu_VIEW_SHOW_EXPORTED_PTS, TOOLBAR_BITMAP("exported-pts"), wxNullBitmap, true,
 		     -1, -1, NULL, "Highlight exported stations");
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_VIEW_SHOW_LEGS, TOOLBAR_BITMAP("ug-legs.png"), wxNullBitmap, true,
+    toolbar->AddTool(menu_VIEW_SHOW_LEGS, TOOLBAR_BITMAP("ug-legs"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show underground surveys");
-    toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs.png"), wxNullBitmap, true,
+    toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show surface surveys");
 #ifdef AVENGL
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_VIEW_SHOW_TUBES, TOOLBAR_BITMAP("tubes.png"), wxNullBitmap, true,
+    toolbar->AddTool(menu_VIEW_SHOW_TUBES, TOOLBAR_BITMAP("tubes"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show passage tubes");
 #endif
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_PRES_FREWIND, TOOLBAR_BITMAP("pres-frew.png"), wxNullBitmap, true, -1, -1, NULL, "Very Fast Rewind");
-    toolbar->AddTool(menu_PRES_REWIND, TOOLBAR_BITMAP("pres-rew.png"), wxNullBitmap, true, -1, -1, NULL, "Fast Rewind");
-    toolbar->AddTool(menu_PRES_REVERSE, TOOLBAR_BITMAP("pres-go-back.png"), wxNullBitmap, true, -1, -1, NULL, "Play Backwards");
-    toolbar->AddTool(menu_PRES_PAUSE, TOOLBAR_BITMAP("pres-pause.png"), wxNullBitmap, true, -1, -1, NULL, "Pause");
-    toolbar->AddTool(menu_PRES_PLAY, TOOLBAR_BITMAP("pres-go.png"), wxNullBitmap, true, -1, -1, NULL, "Play");
-    toolbar->AddTool(menu_PRES_FF, TOOLBAR_BITMAP("pres-ff.png"), wxNullBitmap, true, -1, -1, NULL, "Fast Forward");
-    toolbar->AddTool(menu_PRES_FFF, TOOLBAR_BITMAP("pres-fff.png"), wxNullBitmap, true, -1, -1, NULL, "Very Fast Forward");
-    toolbar->AddTool(menu_PRES_STOP, TOOLBAR_BITMAP("pres-stop.png"), wxNullBitmap, false, -1, -1, NULL, "Stop");
+    toolbar->AddTool(menu_PRES_FREWIND, TOOLBAR_BITMAP("pres-frew"), wxNullBitmap, true, -1, -1, NULL, "Very Fast Rewind");
+    toolbar->AddTool(menu_PRES_REWIND, TOOLBAR_BITMAP("pres-rew"), wxNullBitmap, true, -1, -1, NULL, "Fast Rewind");
+    toolbar->AddTool(menu_PRES_REVERSE, TOOLBAR_BITMAP("pres-go-back"), wxNullBitmap, true, -1, -1, NULL, "Play Backwards");
+    toolbar->AddTool(menu_PRES_PAUSE, TOOLBAR_BITMAP("pres-pause"), wxNullBitmap, true, -1, -1, NULL, "Pause");
+    toolbar->AddTool(menu_PRES_PLAY, TOOLBAR_BITMAP("pres-go"), wxNullBitmap, true, -1, -1, NULL, "Play");
+    toolbar->AddTool(menu_PRES_FF, TOOLBAR_BITMAP("pres-ff"), wxNullBitmap, true, -1, -1, NULL, "Fast Forward");
+    toolbar->AddTool(menu_PRES_FFF, TOOLBAR_BITMAP("pres-fff"), wxNullBitmap, true, -1, -1, NULL, "Very Fast Forward");
+    toolbar->AddTool(menu_PRES_STOP, TOOLBAR_BITMAP("pres-stop"), wxNullBitmap, false, -1, -1, NULL, "Stop");
 
 
     toolbar->AddSeparator();
     m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, "", wxDefaultPosition,
 			       wxDefaultSize, wxTE_PROCESS_ENTER);
     toolbar->AddControl(m_FindBox);
-    toolbar->AddTool(button_FIND, TOOLBAR_BITMAP("find.png"),
+    toolbar->AddTool(button_FIND, TOOLBAR_BITMAP("find"),
 		     msg(/*Find*/332)/*"Search for station name"*/);
-    toolbar->AddTool(button_HIDE, TOOLBAR_BITMAP("hideresults.png"),
+    toolbar->AddTool(button_HIDE, TOOLBAR_BITMAP("hideresults"),
 		     msg(/*Hide*/333)/*"Hide search results"*/);
 
     toolbar->Realize();

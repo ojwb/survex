@@ -223,6 +223,8 @@ class MainFrm : public wxFrame {
 	Double x, y, z;
     } m_Offsets;
 
+    wxString icon_path;
+
     void SetTreeItemColour(LabelInfo* label);
     void FillTree();
     bool LoadData(const wxString& file, wxString prefix = "");

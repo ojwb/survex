@@ -6,11 +6,6 @@ check-local dist-hook:
 	  exit 1; \
 	fi
 
-SUFFIXES = .ico .png
-
-.png.ico:
-	$(SHELL) $(srcdir)/png2winicon $< $@
-
 noinst_HEADERS = cavern.h commands.h cmdline.h\
  datain.h debug.h filelist.h filename.h\
  getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
@@ -164,8 +159,7 @@ cad3d_SOURCES = cad3d.c $(COMMONSRC) useful.c img.c hash.c
 #imgalone.o: img.c
 #        $(COMPILE) -DSTANDALONE -o imgalone.o -c img.c
 
-EXTRA_DIST = aven.rc aven.png aven.ico\
- svxedit.png svxedit.ico getopt.c png2winicon gettexttomsg.pl gradient.pov
+EXTRA_DIST = aven.rc getopt.c gettexttomsg.pl gradient.pov
 
 BUILT_SOURCES = z_getopt.c avenpal.h
 
