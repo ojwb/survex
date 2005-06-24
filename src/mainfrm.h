@@ -218,6 +218,8 @@ private:
     wxPageSetupData m_pageSetupData;
     wxPrintData m_printData;
 
+    wxString icon_path;
+
     void SetTreeItemColour(LabelInfo* label);
     void FillTree();
     void ClearPointLists();

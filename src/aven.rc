@@ -1,2 +1,2 @@
-aaaaaAven ICON aven.ico
+aaaaaAven ICON ../lib/icons/aven.ico
 #include "wx/msw/wx.rc"

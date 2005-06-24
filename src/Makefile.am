@@ -6,11 +6,6 @@ check-local dist-hook:
 	  exit 1; \
 	fi
 
-SUFFIXES = .ico .png
-
-.png.ico:
-	$(SHELL) $(srcdir)/png2winicon $< $@
-
 noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
  cvrotgfx.h cvrotimg.h datain.h debug.h dosrot.h filelist.h filename.h\
  getopt.h hash.h img.h ini.h labels.h listpos.h matrix.h message.h namecmp.h\
@@ -175,8 +170,8 @@ noinst_DATA = borlandc/makefile riscos/makefile
 EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
  riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
  riscos/stdh/regnames riscos/stdh/swinames msvc/config.h msvc/config.h.in\
- miniam.pl aven.rc svxedit.rc aven.png aven.ico svxedit.png svxedit.ico\
- getopt.c png2winicon gettexttomsg.pl gradient.pov
+ miniam.pl aven.rc svxedit.rc\
+ getopt.c gettexttomsg.pl gradient.pov
 
 BUILT_SOURCES = z_getopt.c avenpal.h
 
