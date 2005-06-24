@@ -73,8 +73,7 @@ class PresentationMark {
 #define COLOUR_BY_ERROR 3
 
 #define UPDATE_NONE 0
-#define UPDATE_INDICATORS 1
-#define UPDATE_BLOBS 2
+#define UPDATE_BLOBS 1
 
 class GfxCore : public GLACanvas {
     struct params {
@@ -93,7 +92,6 @@ class GfxCore : public GLACanvas {
         glaList underground_legs;
         glaList tubes;
         glaList surface_legs;
-        glaList indicators;
         glaList blobs;
     } m_Lists;
 
@@ -160,7 +158,6 @@ class GfxCore : public GLACanvas {
     MovieMaker * mpeg;
 
     void UpdateQuaternion();
-    void UpdateIndicators();
 
     void SetColourFromHeight(Double z, Double factor);
     void PlaceVertexWithColour(Double x, Double y, Double z,
@@ -192,7 +189,8 @@ class GfxCore : public GLACanvas {
     void GenerateDisplayListTubes();
     void GenerateDisplayListSurface();
     void GenerateBlobsDisplayList();
-    void GenerateIndicatorDisplayList();
+
+    void DrawIndicators();
 
     void TryToFreeArrays();
     void FirstShow();
@@ -340,9 +338,9 @@ public:
 
     void ToggleUndergroundLegs() { ToggleFlag(&m_Legs); }
     void ToggleSurfaceLegs() { ToggleFlag(&m_Surface); }
-    void ToggleCompass() { ToggleFlag(&m_Compass, UPDATE_INDICATORS); }
-    void ToggleClino() { ToggleFlag(&m_Clino, UPDATE_INDICATORS); }
-    void ToggleScaleBar() { ToggleFlag(&m_Scalebar, UPDATE_INDICATORS); }
+    void ToggleCompass() { ToggleFlag(&m_Compass); }
+    void ToggleClino() { ToggleFlag(&m_Clino); }
+    void ToggleScaleBar() { ToggleFlag(&m_Scalebar); }
     void ToggleEntrances() { ToggleFlag(&m_Entrances, UPDATE_BLOBS); }
     void ToggleFixedPts() { ToggleFlag(&m_FixedPts, UPDATE_BLOBS); }
     void ToggleExportedPts() { ToggleFlag(&m_ExportedPts, UPDATE_BLOBS); }
@@ -350,11 +348,11 @@ public:
     void ToggleCrosses() { ToggleFlag(&m_Crosses, UPDATE_BLOBS); }
     void ToggleStationNames() { ToggleFlag(&m_Names); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
-    void ToggleDepthBar() { ToggleFlag(&m_Depthbar, UPDATE_INDICATORS); }
-    void ToggleMetric() { ToggleFlag(&m_Metric, UPDATE_INDICATORS); }
-    void ToggleDegrees() { ToggleFlag(&m_Degrees, UPDATE_INDICATORS); }
+    void ToggleDepthBar() { ToggleFlag(&m_Depthbar); }
+    void ToggleMetric() { ToggleFlag(&m_Metric); }
+    void ToggleDegrees() { ToggleFlag(&m_Degrees); }
     void ToggleTubes() { ToggleFlag(&m_Tubes); }
-    void TogglePerspective() { GLACanvas::TogglePerspective(); UpdateIndicators(); ForceRefresh(); }
+    void TogglePerspective() { GLACanvas::TogglePerspective(); ForceRefresh(); }
 
     bool GetMetric() const { return m_Metric; }
     bool GetDegrees() const { return m_Degrees; }

@@ -146,7 +146,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Lists.underground_legs = 0;
     m_Lists.tubes = 0;
     m_Lists.surface_legs = 0;
-    m_Lists.indicators = 0;
     presentation_mode = 0;
     pres_speed = 0.0;
     pres_reverse = false;
@@ -266,8 +265,6 @@ void GfxCore::SetScale(Double scale)
     m_HitTestGridValid = false;
 
     GLACanvas::SetScale(scale);
-
-    UpdateIndicators();
 }
 
 bool GfxCore::HasUndergroundLegs() const
@@ -330,9 +327,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	    m_Lists.surface_legs =
 		CreateList(this, &GfxCore::GenerateDisplayListSurface);
-
-	    m_Lists.indicators =
-		CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
 
 	    m_Lists.blobs =
 		CreateList(this, &GfxCore::GenerateBlobsDisplayList);
@@ -403,7 +397,14 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	}
 
 	// Draw indicators.
-	DrawList(m_Lists.indicators);
+	//
+	// There's no advantage in generating an OpenGL list for the
+	// indicators since they change with almost every redraw (and
+	// sometimes several times between redraws).  This way we avoid
+	// the need to track when to update the indicator OpenGL list,
+	// and also avoid indicator update bugs when we don't quite get this
+	// right...
+	DrawIndicators();
 
 	FinishDrawing();
 
@@ -1050,8 +1051,6 @@ void GfxCore::OnSize(wxSizeEvent& event)
 
 	m_HitTestGridValid = false;
 
-	UpdateIndicators();
-
 	Refresh(false);
     }
 }
@@ -1386,14 +1385,6 @@ void GfxCore::UpdateQuaternion()
     SetRotation(rotation);
 }
 
-void GfxCore::UpdateIndicators()
-{
-    if (m_Lists.indicators) {
-	DeleteList(m_Lists.indicators);
-	m_Lists.indicators = CreateList(this, &GfxCore::GenerateIndicatorDisplayList);
-    }
-}
-
 //
 //  Methods for controlling the orientation of the survey
 //
@@ -1412,7 +1403,6 @@ void GfxCore::TurnCave(Double angle)
     m_HitTestGridValid = false;
 
     UpdateQuaternion();
-    UpdateIndicators();
 }
 
 void GfxCore::TurnCaveTo(Double angle)
@@ -1435,7 +1425,6 @@ void GfxCore::TiltCave(Double tilt_angle)
     m_HitTestGridValid = false;
 
     UpdateQuaternion();
-    UpdateIndicators();
 }
 
 void GfxCore::TranslateCave(int dx, int dy)
@@ -1773,9 +1762,7 @@ bool GfxCore::ShowingMeasuringLine() const
 void GfxCore::ToggleFlag(bool* flag, int update)
 {
     *flag = !*flag;
-    if (update == UPDATE_INDICATORS) {
-	UpdateIndicators();
-    } else if (update == UPDATE_BLOBS) {
+    if (update == UPDATE_BLOBS) {
 	UpdateBlobs();
     }
     ForceRefresh();
@@ -1915,7 +1902,7 @@ void GfxCore::GenerateBlobsDisplayList()
     EndBlobs();
 }
 
-void GfxCore::GenerateIndicatorDisplayList()
+void GfxCore::DrawIndicators()
 {
     // Draw depthbar.
     if (m_Depthbar) {
@@ -2546,8 +2533,6 @@ void GfxCore::PlayPres(double speed, bool change_speed) {
 }
 
 void GfxCore::SetColourBy(int colour_by) {
-    bool update_indicators = (m_ColourBy == COLOUR_BY_DEPTH) ||
-			     (colour_by == COLOUR_BY_DEPTH);
     m_ColourBy = colour_by;
     switch (colour_by) {
 	case COLOUR_BY_DEPTH:
@@ -2567,8 +2552,6 @@ void GfxCore::SetColourBy(int colour_by) {
     DeleteList(m_Lists.tubes);
     m_Lists.tubes =
 	CreateList(this, &GfxCore::GenerateDisplayListTubes);
-
-    if (update_indicators) UpdateIndicators();
 
     ForceRefresh();
 }
