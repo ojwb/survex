@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -2018,36 +2018,36 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
     return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2;
 }
 
-void GfxCore::AddPolyline(const list<Vector3> & centreline)
+void GfxCore::AddPolyline(const list<PointInfo> & centreline)
 {
     BeginPolyline();
     SetColour(GetSurfacePen());
-    list<Vector3>::const_iterator i = centreline.begin();
-    PlaceVertex(i->getX(), i->getY(), i->getZ());
+    list<PointInfo>::const_iterator i = centreline.begin();
+    PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
     ++i;
     while (i != centreline.end()) {
-	PlaceVertex(i->getX(), i->getY(), i->getZ());
+	PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
 	++i;
     }
     EndPolyline();
 }
 		
-void GfxCore::AddPolylineDepth(const list<Vector3> & centreline)
+void GfxCore::AddPolylineDepth(const list<PointInfo> & centreline)
 {
     BeginPolyline();
-    list<Vector3>::const_iterator i, prev_i;
+    list<PointInfo>::const_iterator i, prev_i;
     i = centreline.begin();
-    int band0 = GetDepthColour(i->getZ());
-    PlaceVertexWithDepthColour(i->getX(), i->getY(), i->getZ());
+    int band0 = GetDepthColour(i->GetZ());
+    PlaceVertexWithDepthColour(i->GetX(), i->GetY(), i->GetZ());
     prev_i = i;
     ++i;
     while (i != centreline.end()) {
-	int band = GetDepthColour(i->getZ());
+	int band = GetDepthColour(i->GetZ());
 	if (band != band0) {
-	    SplitLineAcrossBands(band0, band, *prev_i, *i);
+	    SplitLineAcrossBands(band0, band, prev_i->vec(), i->vec());
 	    band0 = band;
 	}
-	PlaceVertexWithDepthColour(i->getX(), i->getY(), i->getZ());
+	PlaceVertexWithDepthColour(i->GetX(), i->GetY(), i->GetZ());
 	prev_i = i;
 	++i;
     }
@@ -2119,10 +2119,9 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 }
 
 void
-GfxCore::SkinPassage(const list<Vector3> & centreline,
+GfxCore::SkinPassage(const list<PointInfo> & centreline,
 		     bool current_polyline_is_surface, bool surface, bool tubes,
-		     Double x0, Double y0, Double z0,
-		     Vector3 * u, Vector3 & prev_pt_v, Vector3 & last_right)
+		     Vector3 * U, PointInfo & prev_pt_v, Vector3 & last_right)
 {
     // Start a new polyline if we're switching
     // underground/surface state or if the previous point
@@ -2136,17 +2135,18 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 	    if (!surface && !tubes) {
 		(this->*AddPoly)(centreline);
 	    } else if (tubes) {
-		list<Vector3>::const_iterator i = centreline.begin();
-		PlaceVertexWithColour(i->getX(), i->getY(), i->getZ());
-		list<Vector3>::size_type segment = 0;
+		list<PointInfo>::const_iterator i = centreline.begin();
+		PlaceVertexWithColour(i->GetX(), i->GetY(), i->GetZ());
+		list<PointInfo>::size_type segment = 0;
 		while (i != centreline.end()) {
 		    // get the coordinates of this vertex
-		    const Vector3 & pt_v = *i;
+		    const PointInfo & pt_v = *i;
 		    ++i;
 
 		    double z_pitch_adjust = 0.0;
 		    bool cover_end = false;
 
+		    Double l, r, u, d;
 		    Double size;
 
 		    Vector3 right, up;
@@ -2156,9 +2156,9 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 		    if (segment == 0) {
 			assert(i != centreline.end());
 			// first segment
-			Double h = sqrd(i->getX() - pt_v.getX()) +
-				   sqrd(i->getY() - pt_v.getY());
-			Double v = sqrd(i->getZ() - pt_v.getZ());
+			Double h = sqrd(i->GetX() - pt_v.GetX()) +
+				   sqrd(i->GetY() - pt_v.GetY());
+			Double v = sqrd(i->GetZ() - pt_v.GetZ());
 			if (h + v > 30.0 * 30.0) {
 			    Double scale = 30.0 / sqrt(h + v);
 			    h *= scale;
@@ -2167,11 +2167,16 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 			size = sqrt(h + v / 9);
 			size /= 4;
 
+			l = pt_v.GetL();
+			r = pt_v.GetR();
+			u = pt_v.GetU();
+			d = pt_v.GetD();
+
 			// get the coordinates of the next vertex
-			const Vector3 & next_pt_v = *i;
+			const PointInfo & next_pt_v = *i;
 
 			// calculate vector from this pt to the next one
-			Vector3 leg_v = pt_v - next_pt_v;
+			Vector3 leg_v = pt_v.vec() - next_pt_v.vec();
 
 			// obtain a vector in the LRUD plane
 			right = leg_v * up_v;
@@ -2188,9 +2193,9 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 			cover_end = true;
 		    } else if (segment + 1 == centreline.size()) {
 			// last segment
-			Double h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
-			    sqrd(prev_pt_v.getY() - pt_v.getY());
-			Double v = sqrd(prev_pt_v.getZ() - pt_v.getZ());
+			Double h = sqrd(prev_pt_v.GetX() - pt_v.GetX()) +
+				   sqrd(prev_pt_v.GetY() - pt_v.GetY());
+			Double v = sqrd(prev_pt_v.GetZ() - pt_v.GetZ());
 			if (h + v > 30.0 * 30.0) {
 			    Double scale = 30.0 / sqrt(h + v);
 			    h *= scale;
@@ -2199,8 +2204,17 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 			size = sqrt(h + v / 9);
 			size /= 4;
 
+			l = pt_v.GetL();
+			if (l < 0) l = size;
+			r = pt_v.GetR();
+			if (r < 0) r = size;
+			u = pt_v.GetU();
+			if (u < 0) u = size;
+			d = pt_v.GetD();
+			if (d < 0) d = size;
+
 			// calculate vector from the previous pt to this one
-			Vector3 leg_v = prev_pt_v - pt_v;
+			Vector3 leg_v = prev_pt_v.vec() - pt_v.vec();
 
 			// obtain a horizontal vector in the LRUD plane
 			right = leg_v * up_v;
@@ -2218,18 +2232,18 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 		    } else {
 			assert(i != centreline.end());
 			// intermediate segment
-			Double h = sqrd(i->getX() - pt_v.getX()) +
-			    sqrd(i->getY() - pt_v.getY());
-			Double v = sqrd(i->getZ() - pt_v.getZ());
+			Double h = sqrd(i->GetX() - pt_v.GetX()) +
+				   sqrd(i->GetY() - pt_v.GetY());
+			Double v = sqrd(i->GetZ() - pt_v.GetZ());
 			if (h + v > 30.0 * 30.0) {
 			    Double scale = 30.0 / sqrt(h + v);
 			    h *= scale;
 			    v *= scale;
 			}
 			size = sqrt(h + v / 9);
-			h = sqrd(prev_pt_v.getX() - pt_v.getX()) +
-			    sqrd(prev_pt_v.getY() - pt_v.getY());
-			v = sqrd(prev_pt_v.getZ() - pt_v.getZ());
+			h = sqrd(prev_pt_v.GetX() - pt_v.GetX()) +
+			    sqrd(prev_pt_v.GetY() - pt_v.GetY());
+			v = sqrd(prev_pt_v.GetZ() - pt_v.GetZ());
 			if (h + v > 30.0 * 30.0) {
 			    Double scale = 30.0 / sqrt(h + v);
 			    h *= scale;
@@ -2238,14 +2252,23 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 			size += sqrt(h + v / 9);
 			size /= 8;
 
+			l = i->GetL();
+			if (l < 0) l = size;
+			r = i->GetR();
+			if (r < 0) r = size;
+			u = i->GetU();
+			if (u < 0) u = size;
+			d = i->GetD();
+			if (d < 0) d = size;
+
 			// Get the coordinates of the next vertex.
-			const Vector3 & next_pt_v = *i;
+			const PointInfo & next_pt_v = *i;
 
 			// Calculate vectors from this vertex to the
 			// next vertex, and from the previous vertex to
 			// this one.
-			Vector3 leg1_v = prev_pt_v - pt_v;
-			Vector3 leg2_v = pt_v - next_pt_v;
+			Vector3 leg1_v = prev_pt_v.vec() - pt_v.vec();
+			Vector3 leg2_v = pt_v.vec() - next_pt_v.vec();
 
 			// Obtain horizontal vectors perpendicular to
 			// both legs, then normalise and average to get
@@ -2277,7 +2300,7 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 			    up.normalise();
 			    Vector3 vec = up - right;
 			    for (int orient = 0; orient <= 3; ++orient) {
-				Vector3 tmp = u[orient] - prev_pt_v;
+				Vector3 tmp = U[orient] - prev_pt_v.vec();
 				tmp.normalise();
 				Double dotp = dot(vec, tmp);
 				if (dotp > maxdotp) {
@@ -2287,25 +2310,26 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 			    }
 			    if (shift) {
 				if (shift != 2) {
-				    Vector3 temp(u[0]);
+#if 0
+				    Vector3 temp(U[0]);
 				    int j = 0;
-				    for (int l = 0; l < 3; ++l) {
+				    for (int m = 0; m < 3; ++m) {
 					int k = (j + shift) % 4;
-					u[j] = u[k];
+					U[j] = U[k];
 					j = k;
 				    }
-				    u[j] = temp;
-#if 0
+				    U[j] = temp;
+#else
 				    // FIXME: Could do this with 3 vector swaps,
 				    // instead of 5 vector assigns and lots of
 				    // integer calcs...
-				    swap(u[0], u[shift]);
-				    swap(u[shift], u[2]);
-				    swap(u[2], u[shift ^ 2]);
+				    swap(U[0], U[shift]);
+				    swap(U[shift], U[2]);
+				    swap(U[2], U[shift ^ 2]);
 #endif
 				} else {
-				    swap(u[0], u[2]);
-				    swap(u[1], u[3]);
+				    swap(U[0], U[2]);
+				    swap(U[1], U[3]);
 				}
 			    }
 #if 0
@@ -2314,7 +2338,7 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 			    shift = 0;
 			    maxdotp = 0;
 			    for (int i = 0; i <= 3; ++i) {
-				Vector3 tmp = u[i] - prev_pt_v;
+				Vector3 tmp = U[i] - prev_pt_v.vec();
 				tmp.normalise();
 				Double dotp = dot(vec, tmp);
 				if (dotp > maxdotp) {
@@ -2327,7 +2351,7 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 				shift = 0;
 				maxdotp = 0;
 				for (int i = 0; i <= 3; ++i) {
-				    Vector3 tmp = u[i] - prev_pt_v;
+				    Vector3 tmp = U[i] - prev_pt_v.vec();
 				    tmp.normalise();
 				    Double dotp = dot(vec, tmp);
 				    printf("    %d : %.8f\n", i, dotp);
@@ -2351,21 +2375,29 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 		    up.normalise();
 
 		    if (z_pitch_adjust != 0) up += Vector3(0, 0, fabs(z_pitch_adjust));
-		    right *= size;
-		    up *= size;
+
+		    if (l == 0 && r == 0 && u == 0 && d == 0) {
+			l = r = u = d = size;
+		    } else {
+			if (l < 0) l = size;
+			if (r < 0) r = size;
+			if (u < 0) u = size;
+			if (d < 0) d = size;
+		    }
+		    //printf("%.3f %.3f %.3f %.3f\n", l, r, u, d);
 
 		    // Produce coordinates of the corners of the LRUD "plane".
 		    Vector3 v[4];
-		    v[0] = pt_v - right + up;
-		    v[1] = pt_v + right + up;
-		    v[2] = pt_v + right - up;
-		    v[3] = pt_v - right - up;
+		    v[0] = pt_v.vec() - right * l + up * u;
+		    v[1] = pt_v.vec() + right * r + up * u;
+		    v[2] = pt_v.vec() + right * r - up * d;
+		    v[3] = pt_v.vec() - right * l - up * d;
 
 		    if (segment > 0) {
-			(this->*AddQuad)(v[0], v[1], u[1], u[0]);
-			(this->*AddQuad)(v[2], v[3], u[3], u[2]);
-			(this->*AddQuad)(v[1], v[2], u[2], u[1]);
-			(this->*AddQuad)(v[3], v[0], u[0], u[3]);
+			(this->*AddQuad)(v[0], v[1], U[1], U[0]);
+			(this->*AddQuad)(v[2], v[3], U[3], U[2]);
+			(this->*AddQuad)(v[1], v[2], U[2], U[1]);
+			(this->*AddQuad)(v[3], v[0], U[0], U[3]);
 		    }
 
 		    if (cover_end) {
@@ -2373,10 +2405,10 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 		    }
 
 		    prev_pt_v = pt_v;
-		    u[0] = v[0];
-		    u[1] = v[1];
-		    u[2] = v[2];
-		    u[3] = v[3];
+		    U[0] = v[0];
+		    U[1] = v[1];
+		    U[2] = v[2];
+		    U[3] = v[3];
 
 		    ++segment;
 		}
@@ -2387,18 +2419,16 @@ GfxCore::SkinPassage(const list<Vector3> & centreline,
 
 void GfxCore::DrawPolylines(bool tubes, bool surface)
 {
-    Double x0 = 0.0, y0 = 0.0, z0 = 0.0;
-
-    bool first_point = true;
     bool last_was_move = true;
     bool current_polyline_is_surface = false;
 
-    Vector3 u[4];
-    Vector3 prev_pt_v;
+    Vector3 U[4];
+    PointInfo prev_pt_v;
 
     Vector3 last_right(1.0, 0.0, 0.0);
 
-    list<Vector3> centreline;
+    list<PointInfo> centreline;
+    const PointInfo *prev = NULL;
 
     if (surface) EnableDashedLines();
     list<PointInfo>::const_iterator pos = m_Parent->GetPoints();
@@ -2406,24 +2436,19 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
     while (pos != end) {
 	const PointInfo & pti = *pos++;
 
-	Double x, y, z;
-	x = pti.GetX();
-	y = pti.GetY();
-	z = pti.GetZ();
-
 	if (pti.IsLine()) {
 	    // We have a leg.
 
-	    assert(!first_point); // The first point must always be a move.
+	    assert(prev); // The first point must always be a move.
 	    bool changing_ug_state =
 		(current_polyline_is_surface != pti.IsSurface());
 
 	    if (changing_ug_state || last_was_move) {
 		SkinPassage(centreline, current_polyline_is_surface, surface,
-			    tubes, x0, y0, z0, u, prev_pt_v, last_right);
+			    tubes, U, prev_pt_v, last_right);
 		centreline.clear();
 
-		centreline.push_back(Vector3(x0, y0, z0));
+		centreline.push_back(*prev);
 
 		last_was_move = false;
 
@@ -2431,19 +2456,16 @@ void GfxCore::DrawPolylines(bool tubes, bool surface)
 		current_polyline_is_surface = pti.IsSurface();
 	    }
 
-	    centreline.push_back(Vector3(x, y, z));
+	    centreline.push_back(pti);
 	} else {
-	    first_point = false;
 	    last_was_move = true;
 	}
 
-	x0 = x;
-	y0 = y;
-	z0 = z;
+	prev = &pti;
     }
 
     SkinPassage(centreline, current_polyline_is_surface, surface,
-		tubes, x0, y0, z0, u, prev_pt_v, last_right);
+		tubes, U, prev_pt_v, last_right);
 
     if (surface) DisableDashedLines();
 }

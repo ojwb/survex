@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003 Mark R. Shinwell
-//  Copyright (C) 2001-2004 Olly Betts
+//  Copyright (C) 2001-2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -130,22 +130,6 @@ enum {
     button_FIND,
     button_HIDE,
     listctrl_PRES
-};
-
-class PointInfo {
-    friend class MainFrm;
-    Double x, y, z;
-    bool isLine; // false => move, true => draw line
-    bool isSurface;
-
-public:
-    PointInfo(Double x_, Double y_, Double z_, bool line, bool surface)
-	: x(x_), y(y_), z(z_), isLine(line), isSurface(surface) { }
-    Double GetX() const { return x; }
-    Double GetY() const { return y; }
-    Double GetZ() const { return z; }
-    bool IsLine() const { return isLine; }
-    bool IsSurface() const { return isSurface; }
 };
 
 #define LFLAG_SURFACE		img_SFLAG_SURFACE

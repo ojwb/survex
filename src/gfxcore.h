@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001 Mark R. Shinwell.
-//  Copyright (C) 2001-2004 Olly Betts
+//  Copyright (C) 2001-2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,31 @@
 using std::list;
 
 class MainFrm;
+
+class PointInfo {
+    friend class MainFrm;
+    Double x, y, z;
+    Double l, r, u, d;
+    bool isLine; // false => move, true => draw line
+    bool isSurface;
+
+public:
+    PointInfo() : x(0), y(0), z(0), l(0), r(0), u(0), d(0), isLine(false), isSurface(false) { }
+    PointInfo(Double x_, Double y_, Double z_, bool line, bool surface,
+	      Double l_, Double r_, Double u_, Double d_)
+	: x(x_), y(y_), z(z_), l(l_), r(r_), u(u_), d(d_),
+	  isLine(line), isSurface(surface) { }
+    Double GetX() const { return x; }
+    Double GetY() const { return y; }
+    Double GetZ() const { return z; }
+    Double GetL() const { return l; }
+    Double GetR() const { return r; }
+    Double GetU() const { return u; }
+    Double GetD() const { return d; }
+    bool IsLine() const { return isLine; }
+    bool IsSurface() const { return isSurface; }
+    Vector3 vec() const { return Vector3(x, y, z); }
+};
 
 extern const int NUM_DEPTH_COLOURS;
 
@@ -179,10 +204,9 @@ class GfxCore : public GLACanvas {
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
-    void SkinPassage(const list<Vector3> & centreline,
+    void SkinPassage(const list<PointInfo> & centreline,
 		     bool current_polyline_is_surface, bool surface, bool tubes,
-		     Double x0, Double y0, Double z0,
-		     Vector3 * u, Vector3 & prev_pt_v, Vector3 & last_right);
+		     Vector3 * U, PointInfo & prev_pt_v, Vector3 & last_right);
     void DrawPolylines(bool tubes, bool surface);
 
     void GenerateDisplayList();
@@ -375,8 +399,8 @@ public:
 			      Double factor = 1.0);
     int GetDepthColour(Double z) const;
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
-    void AddPolyline(const list<Vector3> & centreline);
-    void AddPolylineDepth(const list<Vector3> & centreline);
+    void AddPolyline(const list<PointInfo> & centreline);
+    void AddPolylineDepth(const list<PointInfo> & centreline);
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			  const Vector3 &c, const Vector3 &d);
     void AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
@@ -385,7 +409,7 @@ public:
 
     void (GfxCore::* AddQuad)(const Vector3 &a, const Vector3 &b,
                               const Vector3 &c, const Vector3 &d);
-    void (GfxCore::* AddPoly)(const list<Vector3> & centreline);
+    void (GfxCore::* AddPoly)(const list<PointInfo> & centreline);
 
     PresentationMark GetView() const;
     void SetView(const PresentationMark & p);

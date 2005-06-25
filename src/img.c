@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2004 Olly Betts
+ * Copyright (C) 1993-2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -664,6 +664,8 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    pimg->date1 = 0;
    pimg->date2 = 0;
 
+   pimg->l = pimg->r = pimg->u = pimg->d = -1;
+
    /* Don't check for write errors now - let img_close() report them... */
    return pimg;
 }
@@ -1298,6 +1300,30 @@ skip_to_N:
 		   memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
 	       } else {
 		   memcpy(pimg->label, q, len - 1);
+	       }
+	       q += len - 1;
+	       /* Now read LRUD.  Technically, this is optional but virtually
+		* all PLT files have it (if with dummy negative values) and
+		* some versions of Compass can't read PLT files without it!
+		*/
+	       while (*q && *q <= ' ') q++;
+	       if (*q == 'P') {
+		   if (sscanf(q + 1, "%lf%lf%lf%lf",
+			      &pimg->l, &pimg->r, &pimg->u, &pimg->d) != 4) {
+		       osfree(line);
+		       if (ferror(pimg->fh)) {
+			   img_errno = IMG_READERROR;
+		       } else {
+			   img_errno = IMG_BADFORMAT;
+		       }
+		       return img_BAD;
+		   }
+		   pimg->l *= METRES_PER_FOOT;
+		   pimg->r *= METRES_PER_FOOT;
+		   pimg->u *= METRES_PER_FOOT;
+		   pimg->d *= METRES_PER_FOOT;
+	       } else {
+		   pimg->l = pimg->r = pimg->u = pimg->d = -1;
 	       }
 	       osfree(line);
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
