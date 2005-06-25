@@ -305,6 +305,8 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->date1 = 0;
    pimg->date2 = 0;
 
+   pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
+
    pimg->title = pimg->datestamp = NULL;
    if (survey) {
       len = strlen(survey);
@@ -664,7 +666,7 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    pimg->date1 = 0;
    pimg->date2 = 0;
 
-   pimg->l = pimg->r = pimg->u = pimg->d = -1;
+   pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
 
    /* Don't check for write errors now - let img_close() report them... */
    return pimg;
