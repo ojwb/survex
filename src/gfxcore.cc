@@ -2204,15 +2204,6 @@ GfxCore::SkinPassage(const list<PointInfo> & centreline,
 			size = sqrt(h + v / 9);
 			size /= 4;
 
-			l = pt_v.GetL();
-			if (l < 0) l = size;
-			r = pt_v.GetR();
-			if (r < 0) r = size;
-			u = pt_v.GetU();
-			if (u < 0) u = size;
-			d = pt_v.GetD();
-			if (d < 0) d = size;
-
 			// calculate vector from the previous pt to this one
 			Vector3 leg_v = prev_pt_v.vec() - pt_v.vec();
 
@@ -2251,15 +2242,6 @@ GfxCore::SkinPassage(const list<PointInfo> & centreline,
 			}
 			size += sqrt(h + v / 9);
 			size /= 8;
-
-			l = i->GetL();
-			if (l < 0) l = size;
-			r = i->GetR();
-			if (r < 0) r = size;
-			u = i->GetU();
-			if (u < 0) u = size;
-			d = i->GetD();
-			if (d < 0) d = size;
 
 			// Get the coordinates of the next vertex.
 			const PointInfo & next_pt_v = *i;
