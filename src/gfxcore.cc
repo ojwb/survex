@@ -737,7 +737,7 @@ void GfxCore::NattyDrawNames()
 
 	Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
 	// Check if the label is behind us (in perspective view).
-	if (z > 1.0) continue;
+	if (z > 0) continue;
 
 	y += CROSS_SIZE - GetFontSize();
 
@@ -2062,6 +2062,7 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     Double factor = dot(normal, light) * .3 + .7;
     int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
     int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
     glTexCoord2i(0, 0);
     PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
@@ -2093,6 +2094,7 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     // for each depth band...
     int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
     int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginPolygon();
 ////    PlaceNormal(normal.getX(), normal.getY(), normal.getZ());
     glTexCoord2i(0, 0);
