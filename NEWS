@@ -1,3 +1,20 @@
+Changes in 1.0.35:
+
+* aven: Fix printing which was deciding how many pages to spread the plot over
+  by looking at the whole paper size, not the printable area.
+
+* aven: When exporting, omit surface data if it's not being shown at the
+  moment.  Also omit unnecessary MOVE ops from generated files (which saves
+  quite a lot of space when surface data is turned off).
+
+* (Unix Version): Set Aven's icon on non-Windows platforms too.
+
+* extend: Added documentation and test cases for the new extend features.
+
+* manual: Fix example of setting decimal separator
+
+* printxbm: Fixed test program printxbm to compile.
+
 Changes in 1.0.34:
 
 * extend: Added changes from John Pybus which allow you to specify a
