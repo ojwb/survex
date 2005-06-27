@@ -8,7 +8,7 @@ GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
 EXTRA_DIST = $(GNU_FILES) TODO alien.pl survex.iss.in OLDNEWS\
  desc.txt desc-aven.txt desc-svxedit.txt survex.spec.in survex.spec\
- buildmacosx.sh
+ buildmacosx.sh vim/syntax/survex.vim vim/ftdetect/survex.vim
 
 SUBDIRS = . lib src doc tests debian
 

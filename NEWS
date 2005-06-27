@@ -11,9 +11,12 @@ Changes in 1.0.35:
 
 * extend: Added documentation and test cases for the new extend features.
 
-* manual: Fix example of setting decimal separator
+* manual: Fix example of setting decimal separator.
 
 * printxbm: Fixed test program printxbm to compile.
+
+* Include syntax colouring mode for .svx files for the vim editor, written
+  by David Loeffler.
 
 Changes in 1.0.34:
 

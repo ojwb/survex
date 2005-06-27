@@ -1,3 +1,20 @@
+survex (1.0.35) unstable; urgency=low
+
+  * aven: Fix printing which was deciding how many pages to spread the plot
+    over by looking at the whole paper size, not the printable area.
+  * aven: When exporting, omit surface data if it's not being shown at the
+    moment.  Also omit unnecessary MOVE ops from generated files (which saves
+    quite a lot of space when surface data is turned off).
+  * Set Aven's icon on non-Windows platforms too.  This means that with
+    windowmaker the appicon has an icon without user intervention, and
+    probably improves things with other windowmanagers too.
+  * extend: Added documentation and test cases for the new extend features.
+  * manual: Fix example of setting decimal separator.
+  * Include syntax colouring mode for .svx files for the vim editor, written
+    by David Loeffler.
+
+ -- Wookey <wookey@survex.com>  Mon, 27 Jun 2005 17:42:19 +0100
+
 survex (1.0.34) unstable; urgency=low
 
   * extend: Added changes from John Pybus which allow you to specify a
