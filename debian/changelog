@@ -1,5 +1,6 @@
 survex (1.0.35) unstable; urgency=low
 
+  * Standards-Version: 3.6.2 (no changes).
   * aven: Fix printing which was deciding how many pages to spread the plot
     over by looking at the whole paper size, not the printable area.
   * aven: When exporting, omit surface data if it's not being shown at the
@@ -13,7 +14,7 @@ survex (1.0.35) unstable; urgency=low
   * Include syntax colouring mode for .svx files for the vim editor, written
     by David Loeffler.
 
- -- Wookey <wookey@survex.com>  Mon, 27 Jun 2005 17:42:19 +0100
+ -- Wookey <wookey@survex.com>  Mon, 27 Jun 2005 22:32:19 +0100
 
 survex (1.0.34) unstable; urgency=low
 
