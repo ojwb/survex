@@ -71,14 +71,22 @@ if WIN32
 aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@
 avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@
 
-svxeditrc.o: $(srcdir)/svxedit.rc
+svxeditrc.o: $(srcdir)/svxedit.rc svxedit.ico
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
+
+svxedit.ico: ../lib/icons/svxedit.ico
+	cp ../lib/icons/svxedit.ico .
 
 editwrap_LDADD = svxeditrc.o
 
 # FIXME: use path on WXCONFIG to get --include-dir?
-avenrc.o: $(srcdir)/aven.rc
+avenrc.o: $(srcdir)/aven.rc aven.ico
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o $$pwd/avenrc.o aven.rc
+
+aven.ico: ../lib/icons/aven.ico
+	cp ../lib/icons/aven.ico .
+
+CLEANFILES = aven.ico svxedit.ico
 else
 aven_LDADD = @LIBOBJS@ @WX_LIBS@
 avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@
