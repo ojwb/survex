@@ -27,7 +27,7 @@ if test "x$1" = "x--install-wx" ; then
   if test -x WXINSTALL/bin/wx-config ; then
     :
   else
-    prefix="`pwd`"/WXINSTALL
+    prefix=`pwd`/WXINSTALL
     test -f wxMac-2.4.2.tar.gz || \
       wget ftp://biolpc22.york.ac.uk/pub/2.4.2/wxMac-2.4.2.tar.gz
     test -d wxMac-2.4.2 || tar zxvf wxMac-2.4.2.tar.gz
@@ -38,7 +38,7 @@ if test "x$1" = "x--install-wx" ; then
     make -s install
     cd ../..
   fi
-  WXCONFIG="`pwd`"/WXINSTALL/bin/wx-config
+  WXCONFIG=`pwd`/WXINSTALL/bin/wx-config
 fi
 
 test -n "$WXCONFIG" || WXCONFIG=`which wx-config`
@@ -50,8 +50,8 @@ fi
 WXCONFIG=$WXCONFIG' --static'
 export WXCONFIG
 rm -rf *.dmg Survex macosxtmp
-D="`pwd`/Survex"
-T="`pwd`/macosxtmp"
+D=`pwd`/Survex
+T=`pwd`/macosxtmp
 ./configure --prefix="$D" --bindir="$D" --mandir="$T" CFLAGS=-DMACOSX_BUNDLE
 make
 make install
@@ -78,8 +78,8 @@ ditto lib/INSTALL.OSX /Volumes/Survex/INSTALL
 echo "Detaching image."
 hdiutil detach $dev
 
-version="`sed 's/.*AM_INIT_AUTOMAKE([^,]*, *\([0-9.]*\).*/\1/p;d' configure.in`"
-file="survex-macosx-`echo $version`.dmg"
+version=`sed 's/.*AM_INIT_AUTOMAKE([^,]*, *\([0-9.]*\).*/\1/p;d' configure.in`
+file=survex-macosx-`echo $version`.dmg
 echo "Compressing image file survex-macosx.dmg to $file"
 # This needs MacOS X 10.1 or above for unpacking - change UDZO to UDCO to allow
 # the dmg to be unpacked on 10.0 as well:
