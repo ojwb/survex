@@ -2,7 +2,7 @@
 
 /* Device dependent part of Survex Dot-matrix/PCL printer driver */
 /* Bitmap routines for Survex Dot-matrix and Inkjet printer drivers */
-/* Copyright (C) 1993-2002 Olly Betts
+/* Copyright (C) 1993-2002,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,13 +57,14 @@ static const char *xbm_Name(void);
 static void xbm_NewPage(int pg, int pass, int pagesX, int pagesY);
 static char *xbm_Init(FILE **fh_list, const char *pth, const char *out_fnm,
 		     double *pscX, double *pscY, bool fCalibrate);
+static void xbm_SetColour(int colourcode);
 static void xbm_ShowPage(const char *szPageDetails);
 
 static int xbm_page_no = 0;
 
 static char xbm_char = '0';
 
-static unsinged long colour[6];
+static unsigned long colour[6];
 
 /*device xbm = {*/
 device printer = {
@@ -298,7 +299,7 @@ dm_ShowPage(const char *szPageDetails)
    int y;
 #ifdef XBM
    if (passStore == 0) {
-      int i;
+      size_t i;
       prio_printf("/* XPM */\n"
 		  "/* %s */\n"
 		  "static char *page%d[] = {\n"
@@ -307,7 +308,7 @@ dm_ShowPage(const char *szPageDetails)
 		  "/* colors */\n"
 		  "\". c #ffffff\",\n",
 		  szPageDetails, xbm_page_no, xpPageWidth, ypPageDepth,
-		  int(sizeof(colour) / sizeof(colour[0]) + 1));
+		  (int)(sizeof(colour) / sizeof(colour[0]) + 1));
       for (i = 0; i < sizeof(colour) / sizeof(colour[0]); ++i) {
 	 prio_printf("\"%d c #%06x\",\n", i, colour[i]);
       }
