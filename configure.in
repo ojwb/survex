@@ -43,7 +43,7 @@ dnl set COMMAVERSION to VERSION with the dots replaced by commas -
 dnl e.g. "0,99" or "1,0,22"
 COMMAVERSION="`echo \"$VERSION\"|tr '.' ','`"
 AC_DEFINE_UNQUOTED(COMMAVERSION, $COMMAVERSION,
-                   [Version number of package (comma-separated)])
+		   [Version number of package (comma-separated)])
 AC_SUBST(COMMAVERSION)
 
 PKGDOCDIR='${prefix}/doc/${PACKAGE}'
@@ -76,7 +76,7 @@ AC_DEFINE_UNQUOTED(DEFAULTLANG, [$enableval], [Default language for messages])
 ]
 )
 AC_SUBST(DEFAULTLANG)
-    
+
 AC_ARG_ENABLE(testprogs,
 [  --enable-testprogs Enable building of various test harness programs],
 [case "$enableval" in
@@ -176,23 +176,26 @@ if test -n "$AVEN"; then
       dnl line above confuses vim's syntax colouring - resync: \`
     fi
   else
-    # prefer 2.4 if we can find it - a few things work better with it
+    # prefer wx2.6 (or wx2.5) - a few things work better with it.
     if test yes = "$macosx" ; then
-      AC_PATH_PROGS(WXCONFIG, [wxmac-2.4-config wxmac-config wxmac-2.2-config])
+      AC_PATH_PROGS(WXCONFIG, [wxmac-2.6-config wxmac-2.5-config wxmac-2.4-config wxmac-config])
       wxdef=__WXMAC__
+    elif test yes = "$mswindows" ; then
+      AC_PATH_PROGS(WXCONFIG, [wxmsw-2.6-config wxmsw-2.5-config wxmsw-2.4-config wxmsw-config])
+      wxdef=__WXMSW__
     else
-      AC_PATH_PROGS(WXCONFIG, [wxgtk-2.4-config wxgtk-config wxgtk-2.2-config])
+      AC_PATH_PROGS(WXCONFIG, [wxgtk-2.6-config wxgtk-2.5-config wxgtk-2.4-config wxgtk-config])
       wxdef=__WXGTK__
     fi
     if test -z "$WXCONFIG" ; then
       dnl see if wx-config exists and is for the correct version
       AC_PATH_PROGS(WXCONFIG, [wx-config])
       if test -n "$WXCONFIG" ; then
-        if (exec >&5 2>&5;$WXCONFIG --cflags|grep -e -D"$wxdef";exit $?) then
-          :
+	if (exec >&5 2>&5;$WXCONFIG --cflags|grep -e -D"$wxdef";exit $?) then
+	  :
 	else
 	  WXCONFIG=
-        fi
+	fi
       fi
     fi
     if test -z "$WXCONFIG" ; then
@@ -383,7 +386,7 @@ AC_SUBST_FILE(SVXEDITDESC)
 SVXEDITDESC=desc-svxedit.txt
 
 dnl don't define DATADIR if building for MS Windows - it won't be used, and
-dnl can conflict with DATADIR typedef in objidl.h 
+dnl can conflict with DATADIR typedef in objidl.h
 if test no = "$mswindows"; then
   AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 fi
