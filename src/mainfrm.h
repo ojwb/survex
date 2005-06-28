@@ -148,6 +148,7 @@ class LabelInfo {
     friend class LabelPlotCmp;
     Double x, y, z;
     wxString text;
+    unsigned width;
     int flags;
     wxTreeItemId tree_id;
 

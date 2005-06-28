@@ -649,10 +649,10 @@ void GfxCore::Draw2dIndicators()
 	} else {
 	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / 180.0));
 	}
-	GetTextExtent(str, &w, &h);
+	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(pan_centre_x + width / 2 - w, height, str);
 	str = wxString(msg(/*Facing*/203));
-	GetTextExtent(str, &w, &h);
+	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(pan_centre_x - w / 2, height + h, str);
     }
 
@@ -664,10 +664,10 @@ void GfxCore::Draw2dIndicators()
 	    angle = int(-m_TiltAngle * 200.0 / 180.0);
 	}
 	str = angle ? wxString::Format("%+03d", angle) : wxString("00");
-	GetTextExtent(str, &w, &h);
+	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(elev_centre_x + width / 2 - w, height, str);
 	str = wxString(msg(/*Elevation*/118));
-	GetTextExtent(str, &w, &h);
+	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(elev_centre_x - w / 2, height + h, str);
     }
 }
@@ -721,10 +721,9 @@ void GfxCore::NattyDrawNames()
 {
     // Draw station names, without overlapping.
 
-    const int dv = 2;
-    const int quantise = int(GetFontSize() / dv);
-    const int quantised_x = m_XSize / quantise;
-    const int quantised_y = m_YSize / quantise;
+    const unsigned int quantise(GetFontSize() / QUANTISE_FACTOR);
+    const unsigned int quantised_x = m_XSize / quantise;
+    const unsigned int quantised_y = m_YSize / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
 
     if (!m_LabelGrid) m_LabelGrid = new char[buffer_size];
@@ -737,11 +736,7 @@ void GfxCore::NattyDrawNames()
 
 	Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
 	// Check if the label is behind us (in perspective view).
-	if (z > 0) continue;
-
-	y += CROSS_SIZE - GetFontSize();
-
-	wxString str = (*label)->GetText();
+	if (z <= 0.0 || z >= 1.0) continue;
 
 	// Apply a small shift so that translating the view doesn't make which
 	// labels are displayed change as the resulting twinkling effect is
@@ -751,30 +746,28 @@ void GfxCore::NattyDrawNames()
 	tx -= floor(tx / quantise) * quantise;
 	ty -= floor(ty / quantise) * quantise;
 
-	int ix = int(x - tx) / quantise;
-	int iy = int(y - ty) / quantise;
+	unsigned int ix = unsigned(x - tx) / quantise;
+	if (ix >= quantised_x) continue;
+	unsigned int width = (*label)->width;
+	if (ix + width >= quantised_x) continue;
 
-	bool reject = true;
+	unsigned int iy = unsigned(y - ty) / quantise;
+	if (iy >= quantised_y) continue;
 
-	if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
-	    char * test = &m_LabelGrid[ix + iy * quantised_x];
-	    int len = str.Length() * dv + 1;
-	    reject = (ix + len >= quantised_x);
-	    int i = 0;
-	    while (!reject && i++ < len) {
-		reject = *test++;
-	    }
+	char * test = &m_LabelGrid[ix + iy * quantised_x];
+	if (memchr(test, 1, width)) continue;
 
-	    if (!reject) {
-		DrawIndicatorText((int)x, (int)y, str);
+	y += CROSS_SIZE - GetFontSize();
+	DrawIndicatorText((int)x, (int)y, (*label)->GetText());
 
-		int ymin = (iy >= 2) ? iy - 2 : iy;
-		int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
-		for (int y0 = ymin; y0 <= ymax; y0++) {
-		    assert((ix + y0 * quantised_x) < (quantised_x * quantised_y));
-		    memset((void*) &m_LabelGrid[ix + y0 * quantised_x], 1, len);
-		}
-	    }
+	if (iy > QUANTISE_FACTOR) iy = QUANTISE_FACTOR;
+	test -= quantised_x * iy;
+	iy += min((m_LabelGrid + buffer_size - test) / quantised_x,
+		  QUANTISE_FACTOR + 2);
+	while (--iy) {
+	    if (test >= m_LabelGrid + buffer_size) abort();
+	    memset(test, 1, width);
+	    test += quantised_x;
 	}
     }
 }
@@ -784,9 +777,15 @@ void GfxCore::SimpleDrawNames()
     // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
-	// FIXME: do this in the simple case too...
-	//y += CROSS_SIZE - GetFontSize();
-	DrawText((*label)->x, (*label)->y, (*label)->z, (*label)->GetText());
+	Double x, y, z;
+	Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
+
+	// Check if the label is behind us (in perspective view).
+	if (z <= 0) continue;
+
+	y += CROSS_SIZE - GetFontSize();
+
+	DrawIndicatorText((int)x, (int)y, (*label)->GetText());
     }
 }
 
@@ -2125,9 +2124,8 @@ GfxCore::SkinPassage(const list<PointInfo> & centreline,
 		     bool current_polyline_is_surface, bool surface, bool tubes,
 		     Vector3 * U, PointInfo & prev_pt_v, Vector3 & last_right)
 {
-    // Start a new polyline if we're switching
-    // underground/surface state or if the previous point
-    // was a move.
+    // Start a new polyline if we're switching underground/surface state or if
+    // the previous point was a move.
     if (centreline.size() > 1) {
 	if (current_polyline_is_surface) {
 	    if (surface) {

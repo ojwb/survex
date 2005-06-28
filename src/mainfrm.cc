@@ -1152,8 +1152,15 @@ void MainFrm::FillTree()
     wxString current_prefix = "";
     wxTreeItemId current_id = m_TreeRoot;
 
+    const unsigned int quantise(m_Gfx->GetFontSize() / QUANTISE_FACTOR);
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;
+
+	// Calculate and set the label width for use when plotting
+	// none-overlapping labels.
+	int ext_x;
+	m_Gfx->GetTextExtent(label->GetText(), &ext_x, NULL);
+	label->width = unsigned(ext_x) / quantise + 1;
 
 	// Determine the current prefix.
 	wxString prefix = label->GetText().BeforeLast(separator);

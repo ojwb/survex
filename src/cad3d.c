@@ -356,9 +356,9 @@ set_name(const img_point *p, const char *s)
    hash = (hash_data(u.data, sizeof(int) * 3) & (HTAB_SIZE - 1));
    for (pt = htab[hash]; pt; pt = pt->next) {
       if (pt->p.x == p->x && pt->p.y == p->y && pt->p.z == p->z) {
-         /* already got name for these coordinates */
-         /* FIXME: what about multiple names for the same station? */
-         return;
+	 /* already got name for these coordinates */
+	 /* FIXME: what about multiple names for the same station? */
+	 return;
       }
    }
 
@@ -393,6 +393,9 @@ find_name(const img_point *p)
    return "?";
 }
 
+static bool to_close = 0;
+static bool close_g = 0;
+
 static void
 svg_header(void)
 {
@@ -406,10 +409,9 @@ svg_header(void)
            (max_x - min_x) * factor, (max_y - min_y) * factor );
    fprintf(fh, "<g transform=\"translate(%.3f %.3f)\">\n",
            min_x * -factor, max_y * factor);
+   to_close = 0;
+   close_g = 0;
 }
-
-static bool to_close = 0;
-static bool close_g = 0;
 
 static void
 svg_start_pass(int layer)
@@ -439,7 +441,7 @@ svg_move(const img_point *p)
    if (to_close) {
       fprintf(fh, "\"/>\n");
    }
-   fprintf(fh, "<path d=\"M %.3f %.3f", p->x * factor, p->y * -factor);
+   fprintf(fh, "<path d=\"M%.3f %.3f", p->x * factor, p->y * -factor);
    to_close = 1;
 }
 
@@ -477,13 +479,16 @@ svg_cross(const img_point *p, bool fSurface)
 }
 
 static void
-svg_footer(void) ////
+svg_footer(void)
 {
    if (to_close) {
       fprintf(fh, "\"/>\n");
       to_close = 0;
    }
-   fprintf(fh, "</g>\n");
+   if (close_g) {
+      fprintf(fh, "</g>\n");
+   }
+   close_g = 1;
    fprintf(fh, "</g>\n</svg>");
 }
 

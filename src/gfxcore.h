@@ -35,6 +35,10 @@
 
 using std::list;
 
+// How many bins per letter height to use when working out non-overlapping
+// labels.
+const unsigned int QUANTISE_FACTOR = 2;
+
 class MainFrm;
 
 class PointInfo {

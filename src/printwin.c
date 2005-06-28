@@ -1,6 +1,6 @@
 /* printwin.c */
 /* Device dependent part of Survex Win32 driver */
-/* Copyright (C) 1993-2003 Olly Betts
+/* Copyright (C) 1993-2003,2005 Olly Betts
  * Copyright (C) 2001 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -430,7 +430,9 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    scX = *pscX = xpPageWidth / PaperWidth;
    scY = *pscY = ypPageDepth / PaperDepth;
    xpPageWidth--;
-   ypPageDepth = ypPageDepth - (int)(10 * *pscY);
+   // Allow for the page footer.
+   ypPageDepth -= (int)(10 * *pscY);
+   PaperDepth -= 10.0;
    DeleteDC(psd.hDC);
 
    dn = GlobalLock(psd.hDevNames);

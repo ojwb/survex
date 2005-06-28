@@ -602,23 +602,22 @@ void GLACanvas::DrawIndicatorText(int x, int y, const wxString& str)
 
 void GLACanvas::GetTextExtent(const wxString& str, int * x_ext, int * y_ext)
 {
-    assert(x_ext);
-    assert(y_ext);
-
 #ifdef USE_FNT
     m_Font.getTextExtent(str.c_str(), x_ext, y_ext);
 #else
+    if (x_ext) {
 #if 1
-    *x_ext = glutBitmapLength(m_Font, (const unsigned char *)str.c_str());
-    CHECK_GL_ERROR("GetTextExtent", "glutBitmapLength");
+	*x_ext = glutBitmapLength(m_Font, (const unsigned char *)str.c_str());
+	CHECK_GL_ERROR("GetTextExtent", "glutBitmapLength");
 #else
-    *x_ext = 0;
-    for (size_t pos = 0; pos < str.Length(); pos++) {
-        x_ext += glutBitmapWidth(m_Font, int((unsigned char)str[pos]));
-        CHECK_GL_ERROR("GetTextExtent", "glutBitmapWidth");
-    }
+	*x_ext = 0;
+	for (size_t pos = 0; pos < str.Length(); pos++) {
+	    x_ext += glutBitmapWidth(m_Font, int((unsigned char)str[pos]));
+	    CHECK_GL_ERROR("GetTextExtent", "glutBitmapWidth");
+	}
 #endif
-    *y_ext = m_FontSize + 2;
+    }
+    if (y_ext) *y_ext = m_FontSize + 2;
 #endif
 }
 

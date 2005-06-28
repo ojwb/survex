@@ -22,6 +22,9 @@
  *
  * Fixes from ado@elsie.nci.nih.gov
  * February 1991
+ *
+ * Fixed compiler warnings from GCC
+ * Olly Betts 2005-01-12
  */
 
 #include <stdio.h>
@@ -115,30 +118,30 @@ strftime(char *s, size_t maxsize, const char *format, const struct tm *timeptr)
 	char tbuf[100];
 	int i;
 	static short first = 1;
-	static char *savetz = NULL, *oldtz = NULL;
+	static char *savetz = NULL;
 	static int savetzlen = 0;
 	char *tz;
 	int tzlen;
 
 	/* various tables, useful in North America */
-	static char *days_a[] = {
+	static const char *days_a[] = {
 		"Sun", "Mon", "Tue", "Wed",
 		"Thu", "Fri", "Sat",
 	};
-	static char *days_l[] = {
+	static const char *days_l[] = {
 		"Sunday", "Monday", "Tuesday", "Wednesday",
 		"Thursday", "Friday", "Saturday",
 	};
-	static char *months_a[] = {
+	static const char *months_a[] = {
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 	};
-	static char *months_l[] = {
+	static const char *months_l[] = {
 		"January", "February", "March", "April",
 		"May", "June", "July", "August", "September",
 		"October", "November", "December",
 	};
-	static char *ampm[] = { "AM", "PM", };
+	static const char *ampm[] = { "AM", "PM", };
 
 	if (s == NULL || format == NULL || timeptr == NULL || maxsize == 0)
 		return 0;
@@ -392,12 +395,13 @@ strftime(char *s, size_t maxsize, const char *format, const struct tm *timeptr)
 			break;
 		}
 		i = strlen(tbuf);
-		if (i)
+		if (i) {
 			if (s + i < endp - 1) {
 				strcpy(s, tbuf);
 				s += i;
 			} else
 				return 0;
+		}
 	}
 out:
 	if (s < endp && *format == '\0') {
