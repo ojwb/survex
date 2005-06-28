@@ -40,8 +40,6 @@
 		  // for mingw (because the header seems to be missing).
 #include <wx/display.h>
 #endif
-//#include <wx/confbase.h>
-//#include <wx/gdicmn.h>
 
 IMPLEMENT_APP(Aven)
 

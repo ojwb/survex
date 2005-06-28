@@ -106,7 +106,7 @@ void AvenTreeCtrl::DeleteAllItems()
 {
     m_LastItem = -1;
     m_SelValid = false;
-    wxTreeCtrl::DeleteAllItems();    
+    wxTreeCtrl::DeleteAllItems();
 }
 
 void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
