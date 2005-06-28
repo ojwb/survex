@@ -50,6 +50,10 @@
 
 const int NUM_DEPTH_COLOURS = 13;
 
+// How many bins per letter height to use when working out non-overlapping
+// labels.
+const unsigned int QUANTISE_FACTOR = 2;
+
 #include "avenpal.h"
 
 #ifdef _WIN32
@@ -213,6 +217,17 @@ void GfxCore::Initialise()
 void GfxCore::FirstShow()
 {
     GLACanvas::FirstShow();
+
+    const unsigned int quantise(GLACanvas::GetFontSize() / QUANTISE_FACTOR);
+    list<LabelInfo*>::iterator pos = m_Parent->GetLabelsNC();
+    while (pos != m_Parent->GetLabelsNCEnd()) {
+	LabelInfo* label = *pos++;
+	// Calculate and set the label width for use when plotting
+	// none-overlapping labels.
+	int ext_x;
+	GLACanvas::GetTextExtent(label->GetText(), &ext_x, NULL);
+	label->width = unsigned(ext_x) / quantise + 1;
+    }
 
     SetBackgroundColour(0.0, 0.0, 0.0);
 

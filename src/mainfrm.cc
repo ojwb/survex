@@ -1147,20 +1147,13 @@ void MainFrm::FillTree()
 {
     // Fill the tree of stations and prefixes.
 
-    list<LabelInfo*>::iterator pos = m_Labels.begin();
     stack<wxTreeItemId> previous_ids;
     wxString current_prefix = "";
     wxTreeItemId current_id = m_TreeRoot;
 
-    const unsigned int quantise(m_Gfx->GetFontSize() / QUANTISE_FACTOR);
+    list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;
-
-	// Calculate and set the label width for use when plotting
-	// none-overlapping labels.
-	int ext_x;
-	m_Gfx->GetTextExtent(label->GetText(), &ext_x, NULL);
-	label->width = unsigned(ext_x) / quantise + 1;
 
 	// Determine the current prefix.
 	wxString prefix = label->GetText().BeforeLast(separator);
