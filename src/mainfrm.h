@@ -24,7 +24,7 @@
 #ifndef mainfrm_h
 #define mainfrm_h
 
-#include <wx.h>
+#include "wx.h"
 #include <wx/docview.h> // for m_FileHistory
 #include <wx/listctrl.h>
 #include <wx/notebook.h>
@@ -36,6 +36,7 @@
 //#include "prefsdlg.h"
 
 #include <list>
+#include <vector>
 #if 0 // if you turn this back on, reenable the check in configure.in too
 #ifdef HAVE_EXT_HASH_MAP
 #include <ext/hash_map>
@@ -132,6 +133,27 @@ enum {
     listctrl_PRES
 };
 
+class PointInfo {
+    friend class MainFrm;
+    Double x, y, z;
+    Double l, r, u, d;
+
+public:
+    PointInfo() : x(0), y(0), z(0), l(0), r(0), u(0), d(0) { }
+    PointInfo(const img_point & pt, Double l_, Double r_, Double u_, Double d_)
+	: x(pt.x), y(pt.y), z(pt.z), l(l_), r(r_), u(u_), d(d_) { }
+    PointInfo(const img_point & pt)
+	: x(pt.x), y(pt.y), z(pt.z), l(0), r(0), u(0), d(0) { }
+    Double GetX() const { return x; }
+    Double GetY() const { return y; }
+    Double GetZ() const { return z; }
+    Double GetL() const { return l; }
+    Double GetR() const { return r; }
+    Double GetU() const { return u; }
+    Double GetD() const { return d; }
+    Vector3 vec() const { return Vector3(x, y, z); }
+};
+
 #define LFLAG_SURFACE		img_SFLAG_SURFACE
 #define LFLAG_UNDERGROUND	img_SFLAG_UNDERGROUND
 #define LFLAG_EXPORTED		img_SFLAG_EXPORTED
@@ -170,13 +192,13 @@ public:
 class MainFrm : public wxFrame {
     wxFileHistory m_history;
     int m_SashPosition;
-    list<PointInfo> points;
+    list<vector<PointInfo> > traverses;
+    list<vector<PointInfo> > surface_traverses;
     list<LabelInfo*> m_Labels;
     Double m_XExt;
     Double m_YExt;
     Double m_ZExt;
     Double m_ZMin;
-    int m_NumPoints;
     int m_NumCrosses;
     GfxCore* m_Gfx;
     GUIControl* m_Control;
@@ -390,7 +412,6 @@ public:
     Double GetZMin() const { return m_ZMin; }
     Double GetZMax() const { return m_ZMin + m_ZExt; }
 
-    int GetNumPoints() const { return m_NumPoints; } // FIXME: unused
     int GetNumCrosses() const { return m_NumCrosses; } // FIXME: unused
 
     void SelectTreeItem(LabelInfo* label);
@@ -415,12 +436,20 @@ public:
 
     void SetMouseOverStation(LabelInfo* label);
 
-    list<PointInfo>::const_iterator GetPoints() const {
-	return points.begin();
+    list<vector<PointInfo> >::const_iterator traverses_begin() const {
+	return traverses.begin();
     }
 
-    list<PointInfo>::const_iterator GetPointsEnd() const {
-	return points.end();
+    list<vector<PointInfo> >::const_iterator traverses_end() const {
+	return traverses.end();
+    }
+
+    list<vector<PointInfo> >::const_iterator surface_traverses_begin() const {
+	return surface_traverses.begin();
+    }
+
+    list<vector<PointInfo> >::const_iterator surface_traverses_end() const {
+	return surface_traverses.end();
     }
 
     list<LabelInfo*>::const_iterator GetLabels() const {

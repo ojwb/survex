@@ -949,6 +949,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	file_size = ftell(survey->fh);
 	fseek(survey->fh, pos, SEEK_SET);
     }
+    int items = 0;
 #endif
 
     m_File = file;
@@ -961,7 +962,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // Create a list of all the leg vertices, counting them and finding the
     // extent of the survey at the same time.
 
-    m_NumPoints = 0;
     m_NumCrosses = 0;
     m_NumFixedPts = 0;
     m_NumExportedPts = 0;
@@ -981,13 +981,22 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_ZMin = DBL_MAX;
     Double zmax = -DBL_MAX;
 
-    points.clear();
+    traverses.clear();
+    surface_traverses.clear();
+
+    // Ultimately we probably want different types (subclasses perhaps?) for
+    // underground and surface data, so we don't need to store LRUD for surface
+    // stuff.
+    vector<PointInfo> * current_traverse = NULL;
+    vector<PointInfo> * current_surface_traverse = NULL;
 
     int result;
-    int items = 0;
+    img_point prev_pt = {0,0,0};
+    bool current_polyline_is_surface = false;
+    bool pending_move = false;
     do {
 #if 0
-	if (items % 200 == 0) {
+	if (++items % 200 == 0) {
 	    long pos = ftell(survey->fh);
 	    int progress = int((double(pos) / double(file_size)) * 100.0);
 	    // SetProgress(progress);
@@ -996,13 +1005,13 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
 	img_point pt;
 	result = img_read_item(survey, &pt);
-	items++;
 	switch (result) {
 	    case img_MOVE:
-	    case img_LINE:
-	    {
-		m_NumPoints++;
+		pending_move = true;
+		prev_pt = pt;
+		break;
 
+	    case img_LINE: {
 		// Update survey extents.
 		if (pt.x < xmin) xmin = pt.x;
 		if (pt.x > xmax) xmax = pt.x;
@@ -1011,24 +1020,48 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		if (pt.z < m_ZMin) m_ZMin = pt.z;
 		if (pt.z > zmax) zmax = pt.z;
 
-		bool is_surface = false;
-		if (result == img_LINE) {
-		    // Set flags to say this is a line rather than a move
-		    is_surface = (survey->flags & img_FLAG_SURFACE);
+		bool is_surface = (survey->flags & img_FLAG_SURFACE);
+		if (pending_move || current_polyline_is_surface != is_surface) {
+		    current_polyline_is_surface = is_surface;
+		    // Start new traverse (surface or underground).
 		    if (is_surface) {
 			m_HasSurfaceLegs = true;
+			surface_traverses.push_back(vector<PointInfo>());
+			current_surface_traverse = &traverses.back();
 		    } else {
 			m_HasUndergroundLegs = true;
+			traverses.push_back(vector<PointInfo>());
+			current_traverse = &traverses.back();
+		    }
+		    if (pending_move) {
+			// Update survey extents.
+			if (prev_pt.x < xmin) xmin = prev_pt.x;
+			if (prev_pt.x > xmax) xmax = prev_pt.x;
+			if (prev_pt.y < ymin) ymin = prev_pt.y;
+			if (prev_pt.y > ymax) ymax = prev_pt.y;
+			if (prev_pt.z < m_ZMin) m_ZMin = prev_pt.z;
+			if (prev_pt.z > zmax) zmax = prev_pt.z;
+
+			if (is_surface) {
+			    current_surface_traverse->push_back(PointInfo(prev_pt));
+			} else {
+			    current_traverse->push_back(PointInfo(prev_pt, survey->l, survey->r, survey->u, survey->d));
+			}
 		    }
 		}
 
-		// Add this point to the list.
-		points.push_back(PointInfo(pt.x, pt.y, pt.z, (result == img_LINE), is_surface, survey->l, survey->r, survey->u, survey->d));
+		if (is_surface) {
+		    current_surface_traverse->push_back(PointInfo(pt));
+		} else {
+		    current_traverse->push_back(PointInfo(pt, survey->l, survey->r, survey->u, survey->d));
+		}
+
+		prev_pt = pt;
+		pending_move = false;
 		break;
 	    }
 
-	    case img_LABEL:
-	    {
+	    case img_LABEL: {
 		LabelInfo* label = new LabelInfo;
 		label->text = survey->label;
 		label->x = pt.x;
@@ -1053,12 +1086,10 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		break;
 	    }
 
-	    case img_BAD:
-	    {
+	    case img_BAD: {
 		m_Labels.clear();
 
 		// FIXME: Do we need to reset all these? - Olly
-		m_NumPoints = 0;
 		m_NumCrosses = 0;
 		m_NumFixedPts = 0;
 		m_NumExportedPts = 0;
@@ -1091,7 +1122,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	return false;
     }
 
-    if (points.empty()) {
+    if (traverses.empty() && surface_traverses.empty()) {
 	// No legs, so get survey extents from stations
 	list<LabelInfo*>::const_iterator i;
 	for (i = m_Labels.begin(); i != m_Labels.end(); ++i) {
@@ -1101,12 +1132,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	    if ((*i)->y > ymax) ymax = (*i)->y;
 	    if ((*i)->z < m_ZMin) m_ZMin = (*i)->z;
 	    if ((*i)->z > zmax) zmax = (*i)->z;
-	}
-    } else {
-	// Delete any trailing move.
-	if (!points.back().isLine) {
-	    m_NumPoints--;
-	    points.pop_back();
 	}
     }
 
@@ -1229,7 +1254,7 @@ void MainFrm::FillTree()
 		wxString new_prefix = prefix.Mid(count);
 
 		// Add branches for this new part.
-		while (1) {
+		while (true) {
 		    // Extract the next bit of prefix.
 		    int next_dot = new_prefix.Find(separator);
 
@@ -1295,12 +1320,28 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
     Double yoff = m_Offsets.y = ymin + (m_YExt / 2.0);
     Double zoff = m_Offsets.z = zmin + (m_ZExt / 2.0);
 
-    list<PointInfo>::iterator pos = points.begin();
-    while (pos != points.end()) {
-	PointInfo & point = *pos++;
-	point.x -= xoff;
-	point.y -= yoff;
-	point.z -= zoff;
+    list<vector<PointInfo> >::iterator t = traverses.begin();
+    while (t != traverses.end()) {
+	vector<PointInfo>::iterator pos = t->begin();
+	while (pos != t->end()) {
+	    PointInfo & point = *pos++;
+	    point.x -= xoff;
+	    point.y -= yoff;
+	    point.z -= zoff;
+	}
+	++t;
+    }
+
+    t = surface_traverses.begin();
+    while (t != surface_traverses.end()) {
+	vector<PointInfo>::iterator pos = t->begin();
+	while (pos != t->end()) {
+	    PointInfo & point = *pos++;
+	    point.x -= xoff;
+	    point.y -= yoff;
+	    point.z -= zoff;
+	}
+	++t;
     }
 
     list<LabelInfo*>::iterator lpos = m_Labels.begin();
