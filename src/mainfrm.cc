@@ -1027,26 +1027,29 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		    if (is_surface) {
 			m_HasSurfaceLegs = true;
 			surface_traverses.push_back(vector<PointInfo>());
-			current_surface_traverse = &traverses.back();
+			current_surface_traverse = &surface_traverses.back();
 		    } else {
 			m_HasUndergroundLegs = true;
 			traverses.push_back(vector<PointInfo>());
 			current_traverse = &traverses.back();
 		    }
 		    if (pending_move) {
-			// Update survey extents.
+			// Update survey extents.  We only need to do this if
+			// there's a pending move, since for a surface <->
+			// underground transition, we'll already have handled
+			// this point.
 			if (prev_pt.x < xmin) xmin = prev_pt.x;
 			if (prev_pt.x > xmax) xmax = prev_pt.x;
 			if (prev_pt.y < ymin) ymin = prev_pt.y;
 			if (prev_pt.y > ymax) ymax = prev_pt.y;
 			if (prev_pt.z < m_ZMin) m_ZMin = prev_pt.z;
 			if (prev_pt.z > zmax) zmax = prev_pt.z;
+		    }
 
-			if (is_surface) {
-			    current_surface_traverse->push_back(PointInfo(prev_pt));
-			} else {
-			    current_traverse->push_back(PointInfo(prev_pt, survey->l, survey->r, survey->u, survey->d));
-			}
+		    if (is_surface) {
+			current_surface_traverse->push_back(PointInfo(prev_pt));
+		    } else {
+			current_traverse->push_back(PointInfo(prev_pt, survey->l, survey->r, survey->u, survey->d));
 		    }
 		}
 
@@ -1322,6 +1325,7 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 
     list<vector<PointInfo> >::iterator t = traverses.begin();
     while (t != traverses.end()) {
+	assert(t->size() > 1);
 	vector<PointInfo>::iterator pos = t->begin();
 	while (pos != t->end()) {
 	    PointInfo & point = *pos++;
@@ -1334,6 +1338,7 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 
     t = surface_traverses.begin();
     while (t != surface_traverses.end()) {
+	assert(t->size() > 1);
 	vector<PointInfo>::iterator pos = t->begin();
 	while (pos != t->end()) {
 	    PointInfo & point = *pos++;
