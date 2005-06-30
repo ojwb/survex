@@ -2157,6 +2157,7 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 void
 GfxCore::SkinPassage(const vector<PointInfo> & centreline)
 {
+    assert(centreline.size() > 1);
     Vector3 U[4];
     PointInfo prev_pt_v;
     Vector3 last_right(1.0, 0.0, 0.0);
@@ -2166,8 +2167,7 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
     vector<PointInfo>::size_type segment = 0;
     while (i != centreline.end()) {
 	// get the coordinates of this vertex
-	const PointInfo & pt_v = *i;
-	++i;
+	const PointInfo & pt_v = *i++;
 
 	double z_pitch_adjust = 0.0;
 	bool cover_end = false;
@@ -2318,23 +2318,11 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
 		}
 		if (shift) {
 		    if (shift != 2) {
-#if 0
 			Vector3 temp(U[0]);
-			int j = 0;
-			for (int m = 0; m < 3; ++m) {
-			    int k = (j + shift) % 4;
-			    U[j] = U[k];
-			    j = k;
-			}
-			U[j] = temp;
-#else
-			// FIXME: Could do this with 3 vector swaps,
-			// instead of 5 vector assigns and lots of
-			// integer calcs...
-			swap(U[0], U[shift]);
-			swap(U[shift], U[2]);
-			swap(U[2], U[shift ^ 2]);
-#endif
+			U[0] = U[shift];
+			U[shift] = U[2];
+			U[2] = U[shift ^ 2];
+			U[shift ^ 2] = temp;
 		    } else {
 			swap(U[0], U[2]);
 			swap(U[1], U[3]);
@@ -2345,24 +2333,24 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
 		// the vertices correctly.
 		shift = 0;
 		maxdotp = 0;
-		for (int i = 0; i <= 3; ++i) {
-		    Vector3 tmp = U[i] - prev_pt_v.vec();
+		for (int j = 0; j <= 3; ++j) {
+		    Vector3 tmp = U[j] - prev_pt_v.vec();
 		    tmp.normalise();
 		    Double dotp = dot(vec, tmp);
 		    if (dotp > maxdotp) {
 			maxdotp = dotp + 1e-6; // Add small tolerance to stop 45 degree offset cases being flagged...
-			shift = i;
+			shift = j;
 		    }
 		}
 		if (shift) {
 		    printf("New shift = %d!\n", shift);
 		    shift = 0;
 		    maxdotp = 0;
-		    for (int i = 0; i <= 3; ++i) {
-			Vector3 tmp = U[i] - prev_pt_v.vec();
+		    for (int j = 0; j <= 3; ++j) {
+			Vector3 tmp = U[j] - prev_pt_v.vec();
 			tmp.normalise();
 			Double dotp = dot(vec, tmp);
-			printf("    %d : %.8f\n", i, dotp);
+			printf("    %d : %.8f\n", j, dotp);
 		    }
 		}
 #endif
