@@ -200,27 +200,13 @@ if test -n "$AVEN"; then
     AC_SUBST(WX_CFLAGS)
     WX_CXXFLAGS="`$WXCONFIG --cxxflags`"
     AC_SUBST(WX_CXXFLAGS)
+    WXGL_LIBS="`$WXCONFIG --libs` `$WXCONFIG --gl-libs`"
+    AC_SUBST(WXGL_LIBS)
+    WXGL_CFLAGS="-DAVENGL $WX_CFLAGS"
+    AC_SUBST(WXGL_CFLAGS)
+    WXGL_CXXFLAGS="-DAVENGL $WX_CXXFLAGS"
+    AC_SUBST(WXGL_CXXFLAGS)
     AC_MSG_RESULT(building aven)
-dnl    AC_ARG_ENABLE(opengl,
-dnl    [  --enable-opengl Build OpenGL-enabled version of Aven],
-dnl    [case "$enableval" in
-dnl      yes)
-	   WXGL_LIBS="`$WXCONFIG --libs` `$WXCONFIG --gl-libs`"
-	   AC_SUBST(WXGL_LIBS)
-	   WXGL_CFLAGS="-DAVENGL $WX_CFLAGS"
-	   AC_SUBST(WXGL_CFLAGS)
-	   WXGL_CXXFLAGS="-DAVENGL $WX_CXXFLAGS"
-	   AC_SUBST(WXGL_CXXFLAGS)
-	   AC_MSG_RESULT(enabling OpenGL functionality for Aven)
-dnl		;;
-dnl      no) ;;
-dnl      *) AC_MSG_ERROR(bad value $enableval for --enable-opengl) ;;
-dnl    esac])
-
-dnl Not using hash_map at present...
-dnl    AC_LANG(C++)
-dnl    AC_CHECK_HEADERS(ext/hash_map hash_map, break)
-dnl    AC_LANG(C)
 
     dnl Check for ffmpeg
     MOVIE_LIBS=
@@ -401,7 +387,6 @@ fi
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  tests/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
- doc/version.ent debian/copyright
- survex.spec src/svxedit lib/survex.keys)
+ doc/version.ent debian/copyright survex.spec src/svxedit lib/survex.keys)
 dnl was src/msvc/config.h survex.spec src/svxedit lib/survex.keys)
 dnl FIXME update msvc makefile for 1.1 branch
