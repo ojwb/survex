@@ -1022,6 +1022,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
 		bool is_surface = (survey->flags & img_FLAG_SURFACE);
 		if (pending_move || current_polyline_is_surface != is_surface) {
+		    if (!current_polyline_is_surface && current_traverse) {
+			FixLRUD(*current_traverse);
+		    }
 		    current_polyline_is_surface = is_surface;
 		    // Start new traverse (surface or underground).
 		    if (is_surface) {
@@ -1115,6 +1118,10 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	}
     } while (result != img_STOP);
 
+    if (!current_polyline_is_surface && current_traverse) {
+	FixLRUD(*current_traverse);
+    }
+
     separator = survey->separator;
     img_close(survey);
 
@@ -1169,6 +1176,75 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_File = file;
 
     return true;
+}
+
+// Run along a newly read in traverse and make up plausible LRUD where
+// it is missing.
+void
+MainFrm::FixLRUD(vector<PointInfo> & centreline)
+{
+    assert(centreline.size() > 1);
+
+    Double last_size = 0;
+    vector<PointInfo>::iterator i = centreline.begin();
+    while (i != centreline.end()) {
+	// get the coordinates of this vertex
+	PointInfo & pt_v = *i++;
+	Double size;
+
+	if (i != centreline.end()) {
+	    Double h = sqrd(i->GetX() - pt_v.GetX()) +
+		       sqrd(i->GetY() - pt_v.GetY());
+	    Double v = sqrd(i->GetZ() - pt_v.GetZ());
+	    if (h + v > 30.0 * 30.0) {
+		Double scale = 30.0 / sqrt(h + v);
+		h *= scale;
+		v *= scale;
+	    }
+	    size = sqrt(h + v / 9);
+	    size /= 4;
+	    if (i == centreline.begin() + 1) {
+		// First segment.
+		last_size = size;
+	    } else {
+		// Intermediate segment.
+		swap(size, last_size);
+		size += last_size;
+		size /= 2;
+	    }
+	} else {
+	    // Last segment.
+	    size = last_size;
+	}
+
+	Double & l = pt_v.l;
+	Double & r = pt_v.r;
+	Double & u = pt_v.u;
+	Double & d = pt_v.d;
+
+	if (l == 0 && r == 0 && u == 0 && d == 0) {
+	    l = r = u = d = -size;
+	} else {
+	    if (l < 0 && r < 0) {
+		l = r = -size;
+	    } else if (l < 0) {
+		l = -(2 * size - r);
+		if (l >= 0) l = -0.01;
+	    } else if (r < 0) {
+		r = -(2 * size - l);
+		if (r >= 0) r = -0.01;
+	    }
+	    if (u < 0 && d < 0) {
+		u = d = -size;
+	    } else if (u < 0) {
+		u = -(2 * size - d);
+		if (u >= 0) u = -0.01;
+	    } else if (d < 0) {
+		d = -(2 * size - u);
+		if (d >= 0) d = -0.01;
+	    }
+	}
+    }
 }
 
 void MainFrm::FillTree()

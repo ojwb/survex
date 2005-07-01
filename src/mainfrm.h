@@ -235,6 +235,7 @@ class MainFrm : public wxFrame {
     void SetTreeItemColour(LabelInfo* label);
     void FillTree();
     bool LoadData(const wxString& file, wxString prefix = "");
+    void FixLRUD(vector<PointInfo> & centreline);
     void CentreDataset(Double xmin, Double ymin, Double zmin);
 
     wxString GetTabMsg(int key) {

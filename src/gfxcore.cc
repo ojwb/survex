@@ -2163,7 +2163,6 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
     Vector3 last_right(1.0, 0.0, 0.0);
 
     vector<PointInfo>::const_iterator i = centreline.begin();
-    PlaceVertexWithColour(i->GetX(), i->GetY(), i->GetZ());
     vector<PointInfo>::size_type segment = 0;
     while (i != centreline.end()) {
 	// get the coordinates of this vertex
@@ -2172,9 +2171,6 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
 	double z_pitch_adjust = 0.0;
 	bool cover_end = false;
 
-	Double l, r, u, d;
-	Double size;
-
 	Vector3 right, up;
 
 	const Vector3 up_v(0.0, 0.0, 1.0);
@@ -2182,21 +2178,6 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
 	if (segment == 0) {
 	    assert(i != centreline.end());
 	    // first segment
-	    Double h = sqrd(i->GetX() - pt_v.GetX()) +
-		       sqrd(i->GetY() - pt_v.GetY());
-	    Double v = sqrd(i->GetZ() - pt_v.GetZ());
-	    if (h + v > 30.0 * 30.0) {
-		Double scale = 30.0 / sqrt(h + v);
-		h *= scale;
-		v *= scale;
-	    }
-	    size = sqrt(h + v / 9);
-	    size /= 4;
-
-	    l = pt_v.GetL();
-	    r = pt_v.GetR();
-	    u = pt_v.GetU();
-	    d = pt_v.GetD();
 
 	    // get the coordinates of the next vertex
 	    const PointInfo & next_pt_v = *i;
@@ -2219,16 +2200,6 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
 	    cover_end = true;
 	} else if (segment + 1 == centreline.size()) {
 	    // last segment
-	    Double h = sqrd(prev_pt_v.GetX() - pt_v.GetX()) +
-		       sqrd(prev_pt_v.GetY() - pt_v.GetY());
-	    Double v = sqrd(prev_pt_v.GetZ() - pt_v.GetZ());
-	    if (h + v > 30.0 * 30.0) {
-		Double scale = 30.0 / sqrt(h + v);
-		h *= scale;
-		v *= scale;
-	    }
-	    size = sqrt(h + v / 9);
-	    size /= 4;
 
 	    // Calculate vector from the previous pt to this one.
 	    Vector3 leg_v = prev_pt_v.vec() - pt_v.vec();
@@ -2249,25 +2220,6 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
 	} else {
 	    assert(i != centreline.end());
 	    // Intermediate segment.
-	    Double h = sqrd(i->GetX() - pt_v.GetX()) +
-		       sqrd(i->GetY() - pt_v.GetY());
-	    Double v = sqrd(i->GetZ() - pt_v.GetZ());
-	    if (h + v > 30.0 * 30.0) {
-		Double scale = 30.0 / sqrt(h + v);
-		h *= scale;
-		v *= scale;
-	    }
-	    size = sqrt(h + v / 9);
-	    h = sqrd(prev_pt_v.GetX() - pt_v.GetX()) +
-		sqrd(prev_pt_v.GetY() - pt_v.GetY());
-	    v = sqrd(prev_pt_v.GetZ() - pt_v.GetZ());
-	    if (h + v > 30.0 * 30.0) {
-		Double scale = 30.0 / sqrt(h + v);
-		h *= scale;
-		v *= scale;
-	    }
-	    size += sqrt(h + v / 9);
-	    size /= 8;
 
 	    // Get the coordinates of the next vertex.
 	    const PointInfo & next_pt_v = *i;
@@ -2372,15 +2324,10 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
 
 	if (z_pitch_adjust != 0) up += Vector3(0, 0, fabs(z_pitch_adjust));
 
-	if (l == 0 && r == 0 && u == 0 && d == 0) {
-	    l = r = u = d = size;
-	} else {
-	    if (l < 0) l = size;
-	    if (r < 0) r = size;
-	    if (u < 0) u = size;
-	    if (d < 0) d = size;
-	}
-	//printf("%.3f %.3f %.3f %.3f\n", l, r, u, d);
+	Double l = fabs(pt_v.GetL());
+	Double r = fabs(pt_v.GetR());
+	Double u = fabs(pt_v.GetU());
+	Double d = fabs(pt_v.GetD());
 
 	// Produce coordinates of the corners of the LRUD "plane".
 	Vector3 v[4];
