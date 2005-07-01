@@ -60,6 +60,7 @@ enum {
     menu_FILE_OPEN = 1000,
     menu_FILE_EXPORT_DXF,
     menu_FILE_SCREENSHOT,
+    menu_FILE_EXPORT,
     menu_FILE_QUIT,
     menu_PRES_NEW,
     menu_PRES_OPEN,
@@ -219,6 +220,7 @@ class MainFrm : public wxFrame {
     wxPanel* m_PresPanel;
     AvenPresList* m_PresList;
     wxString m_File;
+    wxString m_Title, m_DateStamp;
     int separator; // character separating survey levels (often '.')
 #ifdef PREFDLG
     PrefsDlg* m_PrefsDlg;
@@ -292,12 +294,15 @@ public:
     void OnPresPause(wxCommandEvent& event);
     void OnPresStop(wxCommandEvent& event);
     void OnPresExportMovie(wxCommandEvent& event);
+    void OnExport(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
 
     void OnAbout(wxCommandEvent& event);
     void OnClose(wxCloseEvent&);
 
     void OnSetFocus(wxFocusEvent &) { if (m_Gfx) m_Gfx->SetFocus(); }
+
+    void OnExportUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
 
     // temporary bodges until event handling problem is sorted out:
     void OnDefaultsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnDefaultsUpdate(event); }

@@ -1,17 +1,13 @@
 ## Process this file with automake to produce Makefile.in
 
-noinst_HEADERS = cavern.h commands.h cmdline.h\
- datain.h debug.h filelist.h filename.h\
- getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
+noinst_HEADERS = cavern.h commands.h cmdline.h datain.h debug.h filelist.h\
+ filename.h getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
  netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
- prbitmap.h prcore.h prio.h readval.h str.h useful.h\
- validate.h whichos.h new3dout.h 3ddefs.h \
+ prbitmap.h prcore.h prio.h readval.h str.h useful.h validate.h whichos.h\
+ new3dout.h 3ddefs.h \
  aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
- aventypes.h aventreectrl.h guicontrol.h gla.h survey.h
-
-# splash.h paneldlg.h paneldlgpage.h \
-# tubeprefs.h prefsdlg.h stnprefs.h legprefs.h gridprefs.h unitsprefs.h \
-# ctlprefs.h indicatorprefs.h winprefs.h
+ aventypes.h aventreectrl.h export.h\
+ guicontrol.h gla.h
 
 # GCC 2.95 frequently dies on gfxcore.cc with an internal error, so if the
 # compile fails, rerun it with -O instead of -O2 - FIXME this probably
@@ -54,8 +50,9 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
- useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc \
- guicontrol.cc gla-gl.cc avenpal.h fnt.cc fnt.h moviemaker.cc moviemaker.h
+ useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc export.cc \
+ guicontrol.cc gla-gl.cc fnt.cc fnt.h moviemaker.cc moviemaker.h \
+ avenpal.h hash.c
 
 # splash.cc paneldlg.cc paneldlgpage.cc prefsdlg.cc \
 # tubeprefs.cc stnprefs.cc legprefs.cc ctlprefs.cc gridprefs.cc unitsprefs.cc \
@@ -67,7 +64,6 @@ editwrap_SOURCES = editwrap.c
 editwrap_LDFLAGS = -mwindows
 
 if WIN32
-#aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@
 aven_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@ @MOVIE_LIBS@
 
 svxeditrc.o: $(srcdir)/svxedit.rc svxedit.ico
@@ -87,7 +83,6 @@ aven.ico: ../lib/icons/aven.ico
 
 CLEANFILES = aven.ico svxedit.ico
 else
-#aven_LDADD = @LIBOBJS@ @WX_LIBS@
 aven_LDADD = @LIBOBJS@ @WXGL_LIBS@ @MOVIE_LIBS@
 endif
 
@@ -126,10 +121,6 @@ endif !AVEN
 noinst_SCRIPTS = $(AVEN_REZ)
 MOSTLYCLEANFILES = $(AVEN_REZ)
 
-#aven_CFLAGS = @WX_CFLAGS@ -DAVEN
-#aven_CXXFLAGS = @WX_CXXFLAGS@
-#aven_LDFLAGS = @WX_LDFLAGS@
-
 aven_CFLAGS = @WXGL_CFLAGS@ $(AM_CFLAGS) -DAVEN
 aven_CXXFLAGS = @WXGL_CXXFLAGS@ $(AM_CXXFLAGS)
 aven_LDFLAGS = @WX_LDFLAGS@
@@ -161,7 +152,8 @@ cad3d_SOURCES = cad3d.c $(COMMONSRC) useful.c img.c hash.c
 #imgalone.o: img.c
 #        $(COMPILE) -DSTANDALONE -o imgalone.o -c img.c
 
-EXTRA_DIST = aven.rc getopt.c gettexttomsg.pl gradient.pov
+EXTRA_DIST = \
+ aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov
 
 BUILT_SOURCES = z_getopt.c avenpal.h
 
@@ -171,4 +163,5 @@ z_getopt.c: getopt.c gettexttomsg.pl
 avenpal.h: $(srcdir)/gradient.pov
 	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-avenpal.h && mv tmp-avenpal.h avenpal.h
 
-MAINTAINERCLEANFILES = $(BUILT_SOURCES)
+MAINTAINERCLEANFILES =\
+ $(BUILT_SOURCES)

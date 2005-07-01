@@ -25,7 +25,6 @@
 #define guicontrol_h
 
 #include "wx.h"
-#include "survey.h"
 
 class GfxCore;
 

@@ -62,8 +62,9 @@
 #define SQRT_2          1.41421356237309504880168872420969
 
 #define LEGS 1
-#define STNS 2
-#define LABELS 4
+#define SURF 2
+#define STNS 4
+#define LABELS 8
 
 /* default to DXF */
 #define FMT_DEFAULT FMT_DXF
@@ -510,6 +511,7 @@ plt_start_pass(int layer)
 static void
 plt_line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
+   fSurface = fSurface; /* unused */
    if (fPendingMove) {
        /* Survex is E, N, Alt - PLT file is N, E, Alt */
        fprintf(fh, "M %.3f %.3f %.3f ",
@@ -841,11 +843,11 @@ eps_footer(void)
 	 "%%EOF\n", fh);
 }
 
-static int dxf_passes[] = { LEGS|STNS|LABELS, 0 };
-static int sketch_passes[] = { LEGS, STNS, LABELS, 0 };
-static int plt_passes[] = { LABELS, LEGS, 0 };
-static int svg_passes[] = { LEGS, LABELS, STNS, 0 };
-static int eps_passes[] = { LEGS|STNS|LABELS, 0 };
+static int dxf_passes[] = { LEGS|SURF|STNS|LABELS, 0 };
+static int sketch_passes[] = { LEGS|SURF, STNS, LABELS, 0 };
+static int plt_passes[] = { LABELS, LEGS|SURF, 0 };
+static int svg_passes[] = { LEGS|SURF, LABELS, STNS, 0 };
+static int eps_passes[] = { LEGS|SURF|STNS|LABELS, 0 };
 
 typedef enum {
     FMT_DXF = 0, FMT_SVG, FMT_SKETCH, FMT_PLT, FMT_EPS, FMT_ENDMARKER
@@ -857,13 +859,12 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
        double pan, double tilt, bool labels, bool crosses, bool legs,
        bool surface)
 {
-   int fSeenMove = 0;
    int fPendingMove = 0;
    img_point p, p1;
    double s = 0, c = 0;
    export_format format = FMT_DXF;
    int *pass;
-   bool elevation = (tilt == 90.0);
+   bool elevation = (tilt == 0.0);
    double elev_angle = pan;
 
    void (*header)(const char *);
@@ -1022,13 +1023,15 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
    /* Get drawing corners */
    min_x = min_y = min_z = HUGE_VAL;
    max_x = max_y = max_z = -HUGE_VAL;
-   for (int band = 0; band < mainfrm->GetNumDepthBands(); ++band) {
-	list<PointInfo*>::const_iterator pos = mainfrm->GetPoints(band);
-	list<PointInfo*>::const_iterator end = mainfrm->GetPointsEnd(band);
+   list<vector<PointInfo> >::const_iterator trav = mainfrm->traverses_begin();
+   list<vector<PointInfo> >::const_iterator tend = mainfrm->traverses_end();
+   for ( ; trav != tend; ++trav) {
+	vector<PointInfo>::const_iterator pos = trav->begin();
+	vector<PointInfo>::const_iterator end = trav->end();
 	for ( ; pos != end; ++pos) {
-	    p.x = (*pos)->GetX();
-	    p.y = (*pos)->GetY();
-	    p.z = (*pos)->GetZ();
+	    p.x = pos->GetX();
+	    p.y = pos->GetY();
+	    p.z = pos->GetZ();
 
 	    if (elevation) {
 		double xnew = p.x * c - p.y * s;
@@ -1089,21 +1092,26 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
 
-   while (*pass) {
+   for ( ; *pass; ++pass) {
       bool legs_this_pass = ((*pass & LEGS) && legs);
+      bool surf_this_pass = ((*pass & SURF) && legs && surface);
       bool crosses_this_pass = ((*pass & STNS) && crosses);
       bool labels_this_pass = ((*pass & LABELS) && labels);
-      if (legs_this_pass || crosses_this_pass || labels_this_pass) {
-	  start_pass(*pass);
-      }
+      if (!(legs_this_pass || surf_this_pass || crosses_this_pass ||
+	    labels_this_pass))
+	  continue;
+      start_pass(*pass);
       if (legs_this_pass) {
-	 for (int band = 0; band < mainfrm->GetNumDepthBands(); ++band) {
-	     list<PointInfo*>::const_iterator pos = mainfrm->GetPoints(band);
-	     list<PointInfo*>::const_iterator end = mainfrm->GetPointsEnd(band);
+	  trav = mainfrm->traverses_begin();
+	  tend = mainfrm->traverses_end();
+	  for ( ; trav != tend; ++trav) {
+	     assert(trav->size() > 1);
+	     vector<PointInfo>::const_iterator pos = trav->begin();
+	     vector<PointInfo>::const_iterator end = trav->end();
 	     for ( ; pos != end; ++pos) {
-		 p.x = (*pos)->GetX();
-		 p.y = (*pos)->GetY();
-		 p.z = (*pos)->GetZ();
+		 p.x = pos->GetX();
+		 p.y = pos->GetY();
+		 p.z = pos->GetZ();
 
 		 if (format == FMT_SKETCH) {
 		     p.x -= min_x;
@@ -1119,27 +1127,61 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 		     p.x = xnew;
 		 }
 
-		 if ((*pos)->IsLine()) {
-#ifdef DEBUG_CAD3D
-		     printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
-#endif
-		     if (!fSeenMove) {
-			 p1 = p;
-			 fPendingMove = 1;
-			 fSeenMove = 1;
-		     }
-		     if (surface || !(*pos)->IsSurface()) {
-			 line(&p1, &p, (*pos)->IsSurface(), fPendingMove);
-			 fPendingMove = 0;
-		     } else {
-			 fPendingMove = 1;
-		     }
-		 } else {
+		 if (pos == trav->begin()) {
+		     // First point is move...
 #ifdef DEBUG_CAD3D
 		     printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
 #endif
 		     fPendingMove = 1;
-		     fSeenMove = 1;
+		 } else {
+#ifdef DEBUG_CAD3D
+		     printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
+#endif
+		     line(&p1, &p, false, fPendingMove);
+		     fPendingMove = 0;
+		 }
+		 p1 = p;
+	     }
+	 }
+      }
+      if (surf_this_pass) {
+	  trav = mainfrm->surface_traverses_begin();
+	  tend = mainfrm->surface_traverses_end();
+	  for ( ; trav != tend; ++trav) {
+	     assert(trav->size() > 1);
+	     vector<PointInfo>::const_iterator pos = trav->begin();
+	     vector<PointInfo>::const_iterator end = trav->end();
+	     for ( ; pos != end; ++pos) {
+		 p.x = pos->GetX();
+		 p.y = pos->GetY();
+		 p.z = pos->GetZ();
+
+		 if (format == FMT_SKETCH) {
+		     p.x -= min_x;
+		     p.y -= min_y;
+		     p.z -= min_z;
+		 }
+
+		 if (elevation) {
+		     double xnew = p.x * c - p.y * s;
+		     double znew = - p.x * s - p.y * c;
+		     p.y = p.z;
+		     p.z = znew;
+		     p.x = xnew;
+		 }
+
+		 if (pos == trav->begin()) {
+		     // First point is move...
+#ifdef DEBUG_CAD3D
+		     printf("surface move to %9.2f %9.2f %9.2f\n",x,y,z);
+#endif
+		     fPendingMove = 1;
+		 } else {
+#ifdef DEBUG_CAD3D
+		     printf("surface line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
+#endif
+		     line(&p1, &p, true, fPendingMove);
+		     fPendingMove = 0;
 		 }
 		 p1 = p;
 	     }
@@ -1167,7 +1209,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 		p.x = xnew;
 	    }
 #ifdef DEBUG_CAD3D
-	    printf("label `%s' at %9.2f %9.2f %9.2f\n",(*pos)->GetText(),x,y,z);
+	    printf("label '%s' at %9.2f %9.2f %9.2f\n",(*pos)->GetText(),x,y,z);
 #endif
 	    /* Use !UNDERGROUND as the criterion - we want stations where
 	     * a surface and underground survey meet to be in the
@@ -1178,7 +1220,6 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 		cross(&p, !(*pos)->IsUnderground());
 	}
       }
-      pass++;
    }
    footer();
    safe_fclose(fh);

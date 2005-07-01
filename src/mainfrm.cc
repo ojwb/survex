@@ -432,6 +432,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
     EVT_MENU(menu_FILE_SCREENSHOT, MainFrm::OnScreenshot)
 //    EVT_MENU(menu_FILE_PREFERENCES, MainFrm::OnFilePreferences)
+    EVT_MENU(menu_FILE_EXPORT, MainFrm::OnExport)
     EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
 
@@ -521,6 +522,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 
     EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
+    EVT_UPDATE_UI(menu_FILE_EXPORT, MainFrm::OnExportUpdate)
     EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_STOP, MainFrm::OnStopRotationUpdate)
@@ -687,7 +689,9 @@ void MainFrm::CreateMenuBar()
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
     filemenu->Append(menu_FILE_SCREENSHOT, GetTabMsg(/*@Screenshot...*/201));
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit*/221));
+    filemenu->Append(menu_FILE_EXPORT, "Export as..."); // FIXME TRANSLATE
+    filemenu->AppendSeparator();
+    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
 
     m_history.UseMenu(filemenu);
     m_history.Load(*wxConfigBase::Get());
@@ -1123,6 +1127,8 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     }
 
     separator = survey->separator;
+    m_Title = survey->title;
+    m_DateStamp = survey->datestamp;
     img_close(survey);
 
     // Check we've actually loaded some legs or stations!
@@ -1558,6 +1564,22 @@ void MainFrm::OnFilePreferences(wxCommandEvent&)
     m_PrefsDlg = new PrefsDlg(m_Gfx, this);
     m_PrefsDlg->Show(true);
 #endif
+}
+
+void MainFrm::OnExport(wxCommandEvent&)
+{
+    char *baseleaf = baseleaf_from_fnm(m_File.c_str());
+    wxFileDialog dlg(this, wxString("Export as:"), "",
+		     wxString(baseleaf),
+		     "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt",
+		     wxSAVE|wxOVERWRITE_PROMPT);
+    free(baseleaf);
+    if (dlg.ShowModal() == wxID_OK) {
+	wxString fnm = dlg.GetPath();
+	if (!m_Gfx->OnExport(fnm, m_Title)) {
+	    wxGetApp().ReportError(wxString::Format("Couldn't write file `%s'", fnm.c_str()));
+	}
+    }
 }
 
 void MainFrm::OnQuit(wxCommandEvent&)

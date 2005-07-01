@@ -35,6 +35,7 @@
 #include "useful.h"
 #include "guicontrol.h"
 #include "moviemaker.h"
+#include "export.h"
 
 #include <wx/confbase.h>
 #include <wx/image.h>
@@ -2486,4 +2487,11 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 
     PlayPres(1, false);
     return true;
+}
+
+bool
+GfxCore::OnExport(const wxString &filename, const wxString &title)
+{
+    return Export(filename, title, m_Parent,
+	   m_PanAngle, m_TiltAngle, m_Names, m_Crosses, m_Legs, m_Surface);
 }

@@ -3,7 +3,7 @@
 //
 //  Core drawing code for Aven.
 //
-//  Copyright (C) 2000-2001 Mark R. Shinwell.
+//  Copyright (C) 2000-2001,2002 Mark R. Shinwell.
 //  Copyright (C) 2001-2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -77,6 +77,17 @@ class PresentationMark {
 
 #define UPDATE_NONE 0
 #define UPDATE_BLOBS 1
+
+enum LockFlags {
+    lock_NONE = 0,
+    lock_X = 1,
+    lock_Y = 2,
+    lock_Z = 4,
+    lock_POINT = lock_X | lock_Y | lock_Z,
+    lock_XZ = lock_X | lock_Z,
+    lock_YZ = lock_Y | lock_Z,
+    lock_XY = lock_X | lock_Y
+};
 
 class GfxCore : public GLACanvas {
     struct params {
@@ -394,6 +405,7 @@ public:
 
     void SetColourBy(int colour_by);
     bool ExportMovie(const wxString & fnm);
+    bool OnExport(const wxString &filename, const wxString &title);
 
 private:
     DECLARE_EVENT_TABLE()
