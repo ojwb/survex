@@ -5,9 +5,9 @@ noinst_HEADERS = cavern.h commands.h cmdline.h datain.h debug.h filelist.h\
  netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
  prbitmap.h prcore.h prio.h readval.h str.h useful.h validate.h whichos.h\
  new3dout.h 3ddefs.h \
- aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
- aventypes.h aventreectrl.h export.h\
- guicontrol.h gla.h
+ fnt.h guicontrol.h gla.h moviemaker.h \
+ aboutdlg.h aven.h avenpal.h gfxcore.h mainfrm.h matrix4.h quaternion.h\
+ vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h
 
 # GCC 2.95 frequently dies on gfxcore.cc with an internal error, so if the
 # compile fails, rerun it with -O instead of -O2 - FIXME this probably
@@ -51,12 +51,8 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc export.cc \
- guicontrol.cc gla-gl.cc fnt.cc fnt.h moviemaker.cc moviemaker.h \
- avenpal.h hash.c
-
-# splash.cc paneldlg.cc paneldlgpage.cc prefsdlg.cc \
-# tubeprefs.cc stnprefs.cc legprefs.cc ctlprefs.cc gridprefs.cc unitsprefs.cc \
-# indicatorprefs.cc winprefs.cc
+ guicontrol.cc gla-gl.cc fnt.cc moviemaker.cc \
+ avenprcore.cc printwx.cc ini.c hash.c
 
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
 

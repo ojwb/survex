@@ -33,6 +33,7 @@
 #include "mainfrm.h"
 #include "message.h"
 #include "useful.h"
+#include "printwx.h"
 #include "guicontrol.h"
 #include "moviemaker.h"
 #include "export.h"
@@ -2487,6 +2488,17 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 
     PlayPres(1, false);
     return true;
+}
+
+void
+GfxCore::OnPrint(const wxString &filename, const wxString &title,
+		 const wxString &datestamp)
+{
+    svxPrintDlg * p;
+    p = new svxPrintDlg(m_Parent, filename, title, datestamp,
+			m_PanAngle, m_TiltAngle,
+			m_Names, m_Crosses, m_Legs, m_Surface);
+    p->Show(TRUE);
 }
 
 bool

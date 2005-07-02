@@ -32,6 +32,7 @@
 #include "message.h"
 #include "img.h"
 #include "namecmp.h"
+#include "printwx.h"
 #include "filename.h"
 #include "useful.h"
 
@@ -59,10 +60,10 @@ class AvenSplitterWindow : public wxSplitterWindow {
 	}
 
 	void OnSplitterDClick(wxSplitterEvent &e) {
-#if wxMAJOR_VERSION > 2 || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
+#if wxCHECK_VERSION(2,3,0)
 	    e.Veto();
 #endif
-#if defined(__UNIX__) && wxMAJOR_VERSION == 2 && wxMINOR_VERSION == 3 && wxRELEASE_NUMBER <= 4
+#if defined(__UNIX__) && !wxCHECK_VERSION(2,3,5)
 	    parent->m_SashPosition = GetSashPosition(); // save width of panel
 	    // Calling Unsplit from OnSplitterDClick() doesn't work in debian
 	    // wxGtk 2.3.3.2 (which calls itself 2.3.4) - it does work from CVS
@@ -430,6 +431,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
 
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
+    EVT_MENU(menu_FILE_PRINT, MainFrm::OnPrint)
+    EVT_MENU(menu_FILE_PAGE_SETUP, MainFrm::OnPageSetup)
     EVT_MENU(menu_FILE_SCREENSHOT, MainFrm::OnScreenshot)
 //    EVT_MENU(menu_FILE_PREFERENCES, MainFrm::OnFilePreferences)
     EVT_MENU(menu_FILE_EXPORT, MainFrm::OnExport)
@@ -521,6 +524,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
     EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
 
+    EVT_UPDATE_UI(menu_FILE_PRINT, MainFrm::OnPrintUpdate)
     EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
     EVT_UPDATE_UI(menu_FILE_EXPORT, MainFrm::OnExportUpdate)
     EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
@@ -687,8 +691,11 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* filemenu = new wxMenu;
     filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
-    filemenu->Append(menu_FILE_SCREENSHOT, GetTabMsg(/*@Screenshot...*/201));
     filemenu->AppendSeparator();
+    filemenu->Append(menu_FILE_PRINT, GetTabMsg(/*@Print...##Ctrl+P*/380));
+    filemenu->Append(menu_FILE_PAGE_SETUP, GetTabMsg(/*P@age Setup...*/381));
+    filemenu->AppendSeparator();
+    filemenu->Append(menu_FILE_SCREENSHOT, GetTabMsg(/*@Screenshot...*/201));
     filemenu->Append(menu_FILE_EXPORT, "Export as..."); // FIXME TRANSLATE
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
@@ -1486,7 +1493,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 
 #undef FILEDIALOG_MULTIGLOBS
 // MS Windows supports "*.abc;*.def" natively; wxGtk supports them as of 2.3
-#if defined(_WIN32) || wxMAJOR_VERSION > 2 || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION >= 3)
+#if defined(_WIN32) || wxCHECK_VERSION(2,3,0)
 # define FILEDIALOG_MULTIGLOBS
 #endif
 
@@ -1564,6 +1571,22 @@ void MainFrm::OnFilePreferences(wxCommandEvent&)
     m_PrefsDlg = new PrefsDlg(m_Gfx, this);
     m_PrefsDlg->Show(true);
 #endif
+}
+
+void MainFrm::OnPrint(wxCommandEvent&)
+{
+    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp);
+}
+
+void MainFrm::OnPageSetup(wxCommandEvent&)
+{
+    m_pageSetupData.SetPrintData(m_printData);
+
+    wxPageSetupDialog pageSetupDialog(this, &m_pageSetupData);
+    pageSetupDialog.ShowModal();
+
+    m_printData = pageSetupDialog.GetPageSetupData().GetPrintData();
+    m_pageSetupData = pageSetupDialog.GetPageSetupData();
 }
 
 void MainFrm::OnExport(wxCommandEvent&)

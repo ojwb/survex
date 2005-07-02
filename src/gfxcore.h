@@ -405,6 +405,8 @@ public:
 
     void SetColourBy(int colour_by);
     bool ExportMovie(const wxString & fnm);
+    void OnPrint(const wxString &filename, const wxString &title,
+		 const wxString &datestamp);
     bool OnExport(const wxString &filename, const wxString &title);
 
 private:

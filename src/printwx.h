@@ -63,7 +63,7 @@ protected:
 	wxCheckBox* m_infoBox;
 	wxCheckBox* m_surface;
 	wxString m_File;
-	MainFrm* m_parent;
+	MainFrm* mainfrm;
 
 	void LayoutToUI();
 	void UIToLayout();

@@ -28,6 +28,9 @@
 #include <wx/docview.h> // for m_FileHistory
 #include <wx/listctrl.h>
 #include <wx/notebook.h>
+#include <wx/print.h>
+#include <wx/printdlg.h>
+
 #include "gfxcore.h"
 #include "message.h"
 #include "aventreectrl.h"
@@ -37,16 +40,6 @@
 
 #include <list>
 #include <vector>
-#if 0 // if you turn this back on, reenable the check in configure.in too
-#ifdef HAVE_EXT_HASH_MAP
-#include <ext/hash_map>
-#elif defined HAVE_HASH_MAP
-#include <hash_map>
-#else
-#include <map>
-#define hash_map map
-#endif
-#endif
 
 using namespace std;
 
@@ -58,7 +51,8 @@ using namespace std;
 
 enum {
     menu_FILE_OPEN = 1000,
-    menu_FILE_EXPORT_DXF,
+    menu_FILE_PRINT,
+    menu_FILE_PAGE_SETUP,
     menu_FILE_SCREENSHOT,
     menu_FILE_EXPORT,
     menu_FILE_QUIT,
@@ -232,6 +226,9 @@ class MainFrm : public wxFrame {
 	Double x, y, z;
     } m_Offsets;
 
+    wxPageSetupData m_pageSetupData;
+    wxPrintData m_printData;
+
     wxString icon_path;
 
     void SetTreeItemColour(LabelInfo* label);
@@ -280,6 +277,8 @@ public:
     void OnScreenshotUpdate(wxUpdateUIEvent& event);
     void OnFilePreferences(wxCommandEvent& event);
     void OnFileOpenTerrain(wxCommandEvent& event);
+    void OnPrint(wxCommandEvent& event);
+    void OnPageSetup(wxCommandEvent& event);
     void OnPresNew(wxCommandEvent& event);
     void OnPresOpen(wxCommandEvent& event);
     void OnPresSave(wxCommandEvent& event);
@@ -302,6 +301,7 @@ public:
 
     void OnSetFocus(wxFocusEvent &) { if (m_Gfx) m_Gfx->SetFocus(); }
 
+    void OnPrintUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
     void OnExportUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
 
     // temporary bodges until event handling problem is sorted out:
@@ -485,6 +485,7 @@ public:
     void ShowInfo(const LabelInfo *label);
     void DisplayTreeInfo(const wxTreeItemData* data);
     void TreeItemSelected(wxTreeItemData* data);
+    wxPageSetupData * GetPageSetupData() { return &m_pageSetupData; }
     PresentationMark GetPresMark(int which);
 
 private:

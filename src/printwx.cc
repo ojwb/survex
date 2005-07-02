@@ -49,7 +49,7 @@
 #include "mainfrm.h"
 
 class svxPrintout : public wxPrintout {
-    MainFrm *m_parent;
+    MainFrm *mainfrm;
     layout *m_layout;
     wxString m_title;
     wxPageSetupData* m_data;
@@ -129,13 +129,13 @@ static const wxString scales[] = {
 
 // there are three jobs to do here...
 // User <-> wx - this should possibly be done in a separate file
-svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
+svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 const wxString & title, const wxString & datestamp,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf)
-	: wxDialog(parent, -1, wxString(msg(/*Print*/399))),
-	  m_layout(parent->GetPageSetupData()),
-	  m_File(filename), m_parent(parent)
+	: wxDialog(mainfrm_, -1, wxString(msg(/*Print*/399))),
+	  m_layout(mainfrm_->GetPageSetupData()),
+	  m_File(filename), mainfrm(mainfrm_)
 {
     m_layout.Labels = labels;
     m_layout.Crosses = crosses;
@@ -265,9 +265,9 @@ svxPrintDlg::~svxPrintDlg() {
 void 
 svxPrintDlg::OnPrint(wxCommandEvent&) {
     SomethingChanged();
-    wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
+    wxPrintDialogData pd(mainfrm->GetPageSetupData()->GetPrintData());
     wxPrinter pr(&pd);
-    svxPrintout po(m_parent, &m_layout, m_parent->GetPageSetupData(), m_File);
+    svxPrintout po(mainfrm, &m_layout, mainfrm->GetPageSetupData(), m_File);
     if (pr.Print(this, &po, true)) {
 	// Close the print dialog if printing succeeded.
 	Destroy();
@@ -277,14 +277,14 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
 void 
 svxPrintDlg::OnPreview(wxCommandEvent&) {
     SomethingChanged();
-    wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
+    wxPrintDialogData pd(mainfrm->GetPageSetupData()->GetPrintData());
     wxPrintPreview* pv;
-    pv = new wxPrintPreview(new svxPrintout(m_parent, &m_layout,
-					    m_parent->GetPageSetupData(), m_File),
-			    new svxPrintout(m_parent, &m_layout,
-					    m_parent->GetPageSetupData(), m_File),
+    pv = new wxPrintPreview(new svxPrintout(mainfrm, &m_layout,
+					    mainfrm->GetPageSetupData(), m_File),
+			    new svxPrintout(mainfrm, &m_layout,
+					    mainfrm->GetPageSetupData(), m_File),
 			    &pd);
-    wxPreviewFrame *frame = new wxPreviewFrame(pv, m_parent, msg(/*Print Preview*/398));
+    wxPreviewFrame *frame = new wxPreviewFrame(pv, mainfrm, msg(/*Print Preview*/398));
     frame->Initialize();
 
     // Size preview frame so that all of the controlbar and canvas can be seen
@@ -421,28 +421,47 @@ svxPrintDlg::RecalcBounds()
     SINT = sin(rad(m_layout.tilt));
     COST = cos(rad(m_layout.tilt));
 
-    if (m_layout.Surface || m_layout.Shots) {
-	for (int i=0; i < NUM_DEPTH_COLOURS; ++i) {
-	    list<PointInfo*>::const_iterator p = m_parent->GetPoints(i);
-	    while (p != m_parent->GetPointsEnd(i)) {
-		double x = (*p)->GetX();
-		double y = (*p)->GetY();
-		double z = (*p)->GetZ();
-		if ((*p)->IsSurface() ? m_layout.Surface : m_layout.Shots) {
-		    double X = x * COS - y * SIN;
-		    if (X > m_layout.xMax) m_layout.xMax = X;
-		    if (X < m_layout.xMin) m_layout.xMin = X;
-		    double Y = (x * SIN + y * COS) * SINT + z * COST;
-		    if (Y > m_layout.yMax) m_layout.yMax = Y;
-		    if (Y < m_layout.yMin) m_layout.yMin = Y;
-		}
-		++p;
+    if (m_layout.Shots) {
+	list<vector<PointInfo> >::const_iterator trav = mainfrm->traverses_begin();
+	list<vector<PointInfo> >::const_iterator tend = mainfrm->traverses_end();
+	for ( ; trav != tend; ++trav) {
+	    vector<PointInfo>::const_iterator pos = trav->begin();
+	    vector<PointInfo>::const_iterator end = trav->end();
+	    for ( ; pos != end; ++pos) {
+		double x = pos->GetX();
+		double y = pos->GetY();
+		double z = pos->GetZ();
+		double X = x * COS - y * SIN;
+		if (X > m_layout.xMax) m_layout.xMax = X;
+		if (X < m_layout.xMin) m_layout.xMin = X;
+		double Y = (x * SIN + y * COS) * SINT + z * COST;
+		if (Y > m_layout.yMax) m_layout.yMax = Y;
+		if (Y < m_layout.yMin) m_layout.yMin = Y;
+	    }
+	}
+    }
+    if (m_layout.Surface) {
+	list<vector<PointInfo> >::const_iterator trav = mainfrm->surface_traverses_begin();
+	list<vector<PointInfo> >::const_iterator tend = mainfrm->surface_traverses_end();
+	for ( ; trav != tend; ++trav) {
+	    vector<PointInfo>::const_iterator pos = trav->begin();
+	    vector<PointInfo>::const_iterator end = trav->end();
+	    for ( ; pos != end; ++pos) {
+		double x = pos->GetX();
+		double y = pos->GetY();
+		double z = pos->GetZ();
+		double X = x * COS - y * SIN;
+		if (X > m_layout.xMax) m_layout.xMax = X;
+		if (X < m_layout.xMin) m_layout.xMin = X;
+		double Y = (x * SIN + y * COS) * SINT + z * COST;
+		if (Y > m_layout.yMax) m_layout.yMax = Y;
+		if (Y < m_layout.yMin) m_layout.yMin = Y;
 	    }
 	}
     }
     if (m_layout.Labels || m_layout.Crosses) {
-	list<LabelInfo*>::const_iterator label = m_parent->GetLabels();
-	while (label != m_parent->GetLabelsEnd()) {
+	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
+	while (label != mainfrm->GetLabelsEnd()) {
 	    double x = (*label)->GetX();
 	    double y = (*label)->GetY();
 	    double z = (*label)->GetZ();
@@ -472,11 +491,11 @@ static int fontsize, fontsize_labels;
 static const char *fontname = "Arial", *fontname_labels = "Arial";
 
 // wx <-> prcore (calls to print_page etc...)
-svxPrintout::svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupData *data,
+svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l, wxPageSetupData *data,
 			 const wxString & title)
     : wxPrintout(title)
 {
-    m_parent = mainfrm;
+    mainfrm = mainfrm_;
     m_layout = l;
     m_title = title;
     m_data = data;
@@ -916,10 +935,6 @@ svxPrintout::OnPrintPage(int pageNum) {
     SINT = sin(rad(l->tilt));
     COST = cos(rad(l->tilt));
 
-    long x = 0, y = 0;
-    bool pending_move = false;
-    bool last_leg_surface = false;
-
     NewPage(pageNum, l->pagesX, l->pagesY);
 
     if (!l->Raw && pageNum == (l->pagesY - 1) * l->pagesX + 1) {
@@ -929,58 +944,58 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     double Sc = 1000 / l->Scale;
 
-    if (l->Surface || l->Shots) {
-	for (int i=0; i < m_parent->GetNumDepthBands(); ++i) {
-	    list<PointInfo*>::const_iterator p = m_parent->GetPoints(i);
-	    while (p != m_parent->GetPointsEnd(i)) {
-		double px = (*p)->GetX();
-		double py = (*p)->GetY();
-		double pz = (*p)->GetZ();
-		double X = px * COS - py * SIN;
-		double Y = (px * SIN + py * COS) * SINT + pz * COST;
-		long xnew = (long)((X * Sc + l->xOrg) * l->scX);
-		long ynew = (long)((Y * Sc + l->yOrg) * l->scY);
-
-		if ((*p)->IsLine()) {
-		    bool draw = ((*p)->IsSurface() ? l->Surface : l->Shots);
-		    if (draw) {
-			SetColour((*p)->IsSurface() ?
-				  PR_COLOUR_SURFACE_LEG : PR_COLOUR_LEG);
-		    }
-
-		    if ((*p)->IsSurface() != last_leg_surface)
-			pending_move = true;
-
-		    /* avoid drawing superfluous lines */
-		    if (pending_move || xnew != x || ynew != y) {
-			if (draw) {
-			    if (pending_move) MoveTo(x, y);
-			    pending_move = false;
-			    DrawTo(xnew, ynew);
-			} else {
-			    pending_move = true;
-			}
-			last_leg_surface = (*p)->IsSurface();
-			x = xnew;
-			y = ynew;
-		    }
+    if (l->Shots) {
+	SetColour(PR_COLOUR_LEG);
+	list<vector<PointInfo> >::const_iterator trav = mainfrm->traverses_begin();
+	list<vector<PointInfo> >::const_iterator tend = mainfrm->traverses_end();
+	for ( ; trav != tend; ++trav) {
+	    vector<PointInfo>::const_iterator pos = trav->begin();
+	    vector<PointInfo>::const_iterator end = trav->end();
+	    for ( ; pos != end; ++pos) {
+		double x = pos->GetX();
+		double y = pos->GetY();
+		double z = pos->GetZ();
+		double X = x * COS - y * SIN;
+		double Y = (x * SIN + y * COS) * SINT + z * COST;
+		long px = (long)((X * Sc + l->xOrg) * l->scX);
+		long py = (long)((Y * Sc + l->yOrg) * l->scY);
+		if (pos == trav->begin()) {
+		    MoveTo(px, py);
 		} else {
-		    /* avoid superfluous moves */
-		    if (xnew != x || ynew != y) {
-			x = xnew;
-			y = ynew;
-			pending_move = true;
-		    }
+		    DrawTo(px, py);
 		}
-		p++;
+	    }
+	}
+    }
+
+    if (l->Surface) {
+	SetColour(PR_COLOUR_SURFACE_LEG);
+	list<vector<PointInfo> >::const_iterator trav = mainfrm->surface_traverses_begin();
+	list<vector<PointInfo> >::const_iterator tend = mainfrm->surface_traverses_end();
+	for ( ; trav != tend; ++trav) {
+	    vector<PointInfo>::const_iterator pos = trav->begin();
+	    vector<PointInfo>::const_iterator end = trav->end();
+	    for ( ; pos != end; ++pos) {
+		double x = pos->GetX();
+		double y = pos->GetY();
+		double z = pos->GetZ();
+		double X = x * COS - y * SIN;
+		double Y = (x * SIN + y * COS) * SINT + z * COST;
+		long px = (long)((X * Sc + l->xOrg) * l->scX);
+		long py = (long)((Y * Sc + l->yOrg) * l->scY);
+		if (pos == trav->begin()) {
+		    MoveTo(px, py);
+		} else {
+		    DrawTo(px, py);
+		}
 	    }
 	}
     }
 
     if (l->Labels || l->Crosses) {
 	if (l->Labels) SetFont(PR_FONT_LABELS);
-	list<LabelInfo*>::const_iterator label = m_parent->GetLabels();
-	while (label != m_parent->GetLabelsEnd()) {
+	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
+	while (label != mainfrm->GetLabelsEnd()) {
 	    double px = (*label)->GetX();
 	    double py = (*label)->GetY();
 	    double pz = (*label)->GetZ();
