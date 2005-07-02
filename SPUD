@@ -50,8 +50,6 @@ cavern: auto declination?
 
 Sort out gross error detection code
 
-add to UNITS: percentage
-
 Fixing a point by triangulation?
 
 Theodolite + level:
@@ -71,11 +69,6 @@ use more accuracy than nearest point (1/72") in printps?
 funcs to spot differences between caves:
   display two plots at once, maybe flash in ram banks?
   compare nets
-
-? make printps & printhpgl one program; make printdm and printpcl one
-program - autosense (by looking at argv[0]) which we're being run as
-(and use symbolic link in Unix). Provide command line option as
-override (so we can use alias/batchfile for DOS)?
 
 Label lengths aren't considered when working out image size in prcore.c,
 so a long label can spill off the edge of the printout
@@ -118,12 +111,7 @@ From: Olly
 xcaverot missing:, ^A (lazy redraw during drags), ^R (reverse sense of
 controls), escape vs q(?)
 
-switch_to_(plan|elevation) in xcaverot should animate but code is just
-broken.
-
 Shift-ed keys should move faster as they do in aven and caverot
-
-?try using labels.c in xcaverot to see if XRegions are better or not?
 
 Maybe station lists should know how long they are?
 
@@ -170,8 +158,6 @@ grid crosses option (only draw cross at intersections, not a full grid).
 x spacing, y spacing (default to x spacing)
 orientation (bearing of y-axis?) (defaults to 0)]
 
-printout of current view from aven...
-
 *fix with datums etc
 
 Profile aven (for speed and memory usage)
@@ -202,4 +188,3 @@ lhroute, rhroute, adrian, etc all getting different colours...
 window or the info panel).
 
 <li>Highlight a whole survey by clicking on it in the tree...
-
