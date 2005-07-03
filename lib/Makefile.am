@@ -52,4 +52,4 @@ aven.txf:
 	./gentexfont$(EXEEXT) -w 128 -h 128 -glist `perl -e 'for (33..126,160..255) {print chr $$_}'` -fn -misc-fixed-medium-r-normal--13-100-100-100-c-80-iso8859-1 -file aven.txf
 
 gentexfont$(EXEEXT): gentexfont.c TexFont.h
-	$(CC) -o gentexfont$(EXEEXT) gentexfont.c @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
+	$(CC) -o gentexfont$(EXEEXT) gentexfont.c -L/usr/X11R6/lib -lX11
