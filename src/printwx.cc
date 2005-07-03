@@ -22,7 +22,10 @@
 # include <config.h>
 #endif
 
-#include "printwx.h"
+#include <vector>
+
+using namespace std;
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -47,6 +50,7 @@
 
 #include "avenprcore.h"
 #include "mainfrm.h"
+#include "printwx.h"
 
 class svxPrintout : public wxPrintout {
     MainFrm *mainfrm;
@@ -88,6 +92,7 @@ class svxPrintout : public wxPrintout {
     int Pre();
     void NewPage(int pg, int pagesX, int pagesY);
     void ShowPage(const char *szPageDetails);
+    void SkinPassage(const vector<PointInfo> & centreline);
     char * Init(FILE **fh_list, bool fCalibrate);
   public:
     svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupData *data, const wxString & title);
@@ -942,7 +947,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 	draw_info_box();
     }
 
-    double Sc = 1000 / l->Scale;
+    const double Sc = 1000 / l->Scale;
 
     if (l->Shots) {
 	SetColour(PR_COLOUR_LEG);
@@ -965,6 +970,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 		    DrawTo(px, py);
 		}
 	    }
+	    if (l->tilt == 90.0) SkinPassage(*trav);
 	}
     }
 
@@ -1353,6 +1359,124 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
 void
 svxPrintout::ShowPage(const char *szPageDetails)
 {
+}
+
+void
+svxPrintout::SkinPassage(const vector<PointInfo> & centreline)
+{
+    assert(centreline.size() > 1);
+    PointInfo prev_pt_v;
+    Vector3 last_right(1.0, 0.0, 0.0);
+
+    const double Sc = 1000 / m_layout->Scale;
+
+    vector<PointInfo>::const_iterator i = centreline.begin();
+    vector<PointInfo>::size_type segment = 0;
+    while (i != centreline.end()) {
+	// get the coordinates of this vertex
+	const PointInfo & pt_v = *i++;
+
+	bool cover_end = false;
+
+	Vector3 right;
+
+	const Vector3 up_v(0.0, 0.0, 1.0);
+
+	if (segment == 0) {
+	    assert(i != centreline.end());
+	    // first segment
+
+	    // get the coordinates of the next vertex
+	    const PointInfo & next_pt_v = *i;
+
+	    // calculate vector from this pt to the next one
+	    Vector3 leg_v = pt_v.vec() - next_pt_v.vec();
+
+	    // obtain a vector in the LRUD plane
+	    right = leg_v * up_v;
+	    if (right.magnitude() == 0) {
+		right = last_right;
+	    } else {
+		last_right = right;
+	    }
+	} else if (segment + 1 == centreline.size()) {
+	    // last segment
+
+	    // Calculate vector from the previous pt to this one.
+	    Vector3 leg_v = prev_pt_v.vec() - pt_v.vec();
+
+	    // Obtain a horizontal vector in the LRUD plane.
+	    right = leg_v * up_v;
+	    if (right.magnitude() == 0) {
+		right = Vector3(last_right.getX(), last_right.getY(), 0.0);
+	    } else {
+		last_right = right;
+	    }
+
+	    cover_end = true;
+	} else {
+	    assert(i != centreline.end());
+	    // Intermediate segment.
+
+	    // Get the coordinates of the next vertex.
+	    const PointInfo & next_pt_v = *i;
+
+	    // Calculate vectors from this vertex to the
+	    // next vertex, and from the previous vertex to
+	    // this one.
+	    Vector3 leg1_v = prev_pt_v.vec() - pt_v.vec();
+	    Vector3 leg2_v = pt_v.vec() - next_pt_v.vec();
+
+	    // Obtain horizontal vectors perpendicular to
+	    // both legs, then normalise and average to get
+	    // a horizontal bisector.
+	    Vector3 r1 = leg1_v * up_v;
+	    Vector3 r2 = leg2_v * up_v;
+	    r1.normalise();
+	    r2.normalise();
+	    right = r1 + r2;
+	    if (right.magnitude() == 0) {
+		// This is the "mid-pitch" case...
+		right = last_right;
+	    }
+	    last_right = right;
+	}
+
+	// Scale to unit vectors in the LRUD plane.
+	right.normalise();
+
+	Double l = pt_v.GetL();
+	Double r = pt_v.GetR();
+
+	if (l >= 0) {
+	    double SIN = sin(rad(m_layout->rot));
+	    double COS = cos(rad(m_layout->rot));
+	    Vector3 p = pt_v.vec() - right * l;
+	    double X = p.getX() * COS - p.getY() * SIN;
+	    double Y = (p.getX() * SIN + p.getY() * COS); // * SINT + z * COST;
+	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
+	    long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
+	    MoveTo(x - PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
+	    DrawTo(x, y);
+	    DrawTo(x - PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
+	}
+	if (r >= 0) {
+	    double SIN = sin(rad(m_layout->rot));
+	    double COS = cos(rad(m_layout->rot));
+	    Vector3 p = pt_v.vec() + right * r;
+	    double X = p.getX() * COS - p.getY() * SIN;
+	    double Y = (p.getX() * SIN + p.getY() * COS); // * SINT + z * COST;
+	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
+	    long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
+	    MoveTo(x + PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
+	    DrawTo(x, y);
+	    DrawTo(x + PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
+	}
+
+	prev_pt_v = pt_v;
+
+	++segment;
+    }
 }
 
 static wxColour
