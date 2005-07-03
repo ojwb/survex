@@ -92,7 +92,8 @@ class svxPrintout : public wxPrintout {
     int Pre();
     void NewPage(int pg, int pagesX, int pagesY);
     void ShowPage(const char *szPageDetails);
-    void SkinPassage(const vector<PointInfo> & centreline);
+    void PlotLR(const vector<PointInfo> & centreline);
+    void PlotUD(const vector<PointInfo> & centreline);
     char * Init(FILE **fh_list, bool fCalibrate);
   public:
     svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupData *data, const wxString & title);
@@ -970,7 +971,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 		    DrawTo(px, py);
 		}
 	    }
-	    if (l->tilt == 90.0) SkinPassage(*trav);
+	    if (l->tilt == 90.0 || l->tilt == -90) PlotLR(*trav);
+	    if (l->tilt == 0.0) PlotUD(*trav);
 	}
     }
 
@@ -1362,21 +1364,21 @@ svxPrintout::ShowPage(const char *szPageDetails)
 }
 
 void
-svxPrintout::SkinPassage(const vector<PointInfo> & centreline)
+svxPrintout::PlotLR(const vector<PointInfo> & centreline)
 {
     assert(centreline.size() > 1);
     PointInfo prev_pt_v;
     Vector3 last_right(1.0, 0.0, 0.0);
 
     const double Sc = 1000 / m_layout->Scale;
+    const double SIN = sin(rad(m_layout->rot));
+    const double COS = cos(rad(m_layout->rot));
 
     vector<PointInfo>::const_iterator i = centreline.begin();
     vector<PointInfo>::size_type segment = 0;
     while (i != centreline.end()) {
 	// get the coordinates of this vertex
 	const PointInfo & pt_v = *i++;
-
-	bool cover_end = false;
 
 	Vector3 right;
 
@@ -1412,8 +1414,6 @@ svxPrintout::SkinPassage(const vector<PointInfo> & centreline)
 	    } else {
 		last_right = right;
 	    }
-
-	    cover_end = true;
 	} else {
 	    assert(i != centreline.end());
 	    // Intermediate segment.
@@ -1449,11 +1449,9 @@ svxPrintout::SkinPassage(const vector<PointInfo> & centreline)
 	Double r = pt_v.GetR();
 
 	if (l >= 0) {
-	    double SIN = sin(rad(m_layout->rot));
-	    double COS = cos(rad(m_layout->rot));
 	    Vector3 p = pt_v.vec() - right * l;
 	    double X = p.getX() * COS - p.getY() * SIN;
-	    double Y = (p.getX() * SIN + p.getY() * COS); // * SINT + z * COST;
+	    double Y = (p.getX() * SIN + p.getY() * COS);
 	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
 	    long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
 	    MoveTo(x - PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
@@ -1461,11 +1459,9 @@ svxPrintout::SkinPassage(const vector<PointInfo> & centreline)
 	    DrawTo(x - PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
 	}
 	if (r >= 0) {
-	    double SIN = sin(rad(m_layout->rot));
-	    double COS = cos(rad(m_layout->rot));
 	    Vector3 p = pt_v.vec() + right * r;
 	    double X = p.getX() * COS - p.getY() * SIN;
-	    double Y = (p.getX() * SIN + p.getY() * COS); // * SINT + z * COST;
+	    double Y = (p.getX() * SIN + p.getY() * COS);
 	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
 	    long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
 	    MoveTo(x + PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
@@ -1476,6 +1472,43 @@ svxPrintout::SkinPassage(const vector<PointInfo> & centreline)
 	prev_pt_v = pt_v;
 
 	++segment;
+    }
+}
+
+void
+svxPrintout::PlotUD(const vector<PointInfo> & centreline)
+{
+    assert(centreline.size() > 1);
+    const double Sc = 1000 / m_layout->Scale;
+
+    vector<PointInfo>::const_iterator i = centreline.begin();
+    while (i != centreline.end()) {
+	// get the coordinates of this vertex
+	const PointInfo & pt_v = *i++;
+
+	Double u = pt_v.GetL();
+	Double d = pt_v.GetR();
+
+	if (u >= 0 || d >= 0) {
+	    Vector3 p = pt_v.vec();
+	    double SIN = sin(rad(m_layout->rot));
+	    double COS = cos(rad(m_layout->rot));
+	    double X = p.getX() * COS - p.getY() * SIN;
+	    double Y = p.getZ();
+	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
+	    if (u >= 0) {
+		long y = (long)(((Y + u) * Sc + m_layout->yOrg) * m_layout->scY);
+		MoveTo(x - PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
+		DrawTo(x, y);
+		DrawTo(x + PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
+	    }
+	    if (d >= 0) {
+		long y = (long)(((Y - d) * Sc + m_layout->yOrg) * m_layout->scY);
+		MoveTo(x - PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
+		DrawTo(x, y);
+		DrawTo(x + PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
+	    }
+	}
     }
 }
 
