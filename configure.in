@@ -229,7 +229,7 @@ dnl only build extra man pages on Unix - the ".exe" messes us up otherwise
 dnl FIXME: probably no point building man pages except on Unix
 if test -z "$ac_exeext" ; then
   dnl can't use \> as freebsd sed doesn't support it
-  EXTRA_MANS=`echo $AVEN|sed 's/\$(EXEEXT)//g;s/\([[^ ]]\) /\1.1 /g;s/\(.\)$/\1.1/'`
+  EXTRA_MANS=`echo "$AVEN"|sed 's/\$(EXEEXT)//g;s/\([[^ ]]\) /\1.1 /g;s/\(.\)$/\1.1/'`
 else
   EXTRA_MANS=
 fi
@@ -389,5 +389,5 @@ fi
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  tests/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
  doc/version.ent debian/copyright survex.spec src/svxedit lib/survex.keys)
-dnl was src/msvc/config.h survex.spec src/svxedit lib/survex.keys)
 dnl FIXME update msvc makefile for 1.1 branch
+dnl src/msvc/config.h
