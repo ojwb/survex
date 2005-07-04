@@ -92,6 +92,7 @@ bool Aven::OnInit()
     setlocale(LC_NUMERIC, "C");
 
     wxString survey;
+    bool print_and_exit = false;
 
     /* Want --version and a decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
@@ -99,16 +100,18 @@ bool Aven::OnInit()
     static const struct option long_opts[] = {
 	/* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
 	{"survey", required_argument, 0, 's'},
+	{"print", no_argument, 0, 'p'},
 	{"help", no_argument, 0, HLP_HELP},
 	{"version", no_argument, 0, HLP_VERSION},
 	{0, 0, 0, 0}
     };
 
-#define short_opts "s:"
+#define short_opts "s:p"
 
     static struct help_msg help[] = {
 	/*			     <-- */
 	{HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
+	{HLP_ENCODELONG(1),          "print and exit (requires a 3d file)"},
 	{0, 0}
     };
 
@@ -120,6 +123,14 @@ bool Aven::OnInit()
 	if (opt == 's') {
 	    survey = optarg;
 	}
+	if (opt == 'p') {
+	    print_and_exit = true;
+	}
+    }
+
+    if (print_and_exit && !argv[optind]) {
+	cmdline_syntax(); // FIXME : not a helpful error...
+	exit(1);
     }
 
     wxImage::AddHandler(new wxPNGHandler);
@@ -148,6 +159,13 @@ bool Aven::OnInit()
 
     if (argv[optind]) {
 	m_Frame->OpenFile(wxString(argv[optind]), survey);
+    }
+
+    if (print_and_exit) {
+	wxCommandEvent dummy;
+	m_Frame->OnPrint(dummy);
+	m_Frame->OnQuit(dummy);
+	return true;
     }
 
     m_Frame->Show(true);
