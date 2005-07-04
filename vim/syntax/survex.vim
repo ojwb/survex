@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:     Survex
 " Maintainer:   David Loeffler <dave@cucc.survex.com>
-" Last Change:  $Date: 2005-06-27 19:56:20 $
+" Last Change:  $Date: 2005-07-04 02:09:30 $
 " Filenames:    *.svx
 " URL:          [NONE]
 " Note:         The definitions below are taken from the Survex user manual as of February 2005, for version 1.0.34; several inconsistencies discovered in the process were clarified by reference to source code

@@ -8,7 +8,7 @@ GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
 EXTRA_DIST = $(GNU_FILES) TODO survex.iss.in OLDNEWS\
  desc.txt desc-aven.txt survex.spec.in survex.spec\
- buildmacosx.sh
+ buildmacosx.sh vim/syntax/survex.vim vim/ftdetect/survex.vim
 
 SUBDIRS = . lib src doc tests debian
 
@@ -63,7 +63,7 @@ debian : dist
 
 mingw : all mingw_iss
 
-mingw_iss :
+mingw_iss : survex.iss
 	$(RM) -rf iss_tmp
 	mkdir iss_tmp
 	cp src/svxedit iss_tmp/svxedit.tcl
@@ -93,7 +93,7 @@ mingw_iss :
 	: # src/png2bmp lib/icons/aven_about.png iss_tmp/logo.bmp
 	echo 'wine "c:/Program Files/Inno Setup 4/ISCC.exe" iss_tmp/survex.iss' > iss_tmp/runissinwine
 	chmod 755 iss_tmp/runissinwine
-	xvfb-run --server-args="-screen 0 64x32x8" iss_tmp/runissinwine
+	./xvfb-run -a --server-args="-screen 0 64x32x8" iss_tmp/runissinwine
 	mv iss_tmp/Output/*.exe .
 	$(RM) -rf iss_tmp
 
