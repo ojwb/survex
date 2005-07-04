@@ -21,7 +21,8 @@ EXTRA_DIST = bcra3.svx bcra5.svx messages.txt default.txt bold.txt print.ini\
 MAINTAINERCLEANFILES = $(msg_files) $(hdr_files) default.bit bold.bit\
  *.todo
 
-pkgdata_DATA = default.bit bold.bit print.ini bcra3.svx bcra5.svx $(msg_files)
+pkgdata_DATA = default.bit bold.bit print.ini bcra3.svx bcra5.svx\
+ $(msg_files)
 
 BUILT_SOURCES = defaultlang.h
 
