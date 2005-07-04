@@ -779,7 +779,7 @@ void GfxCore::NattyDrawNames()
 
 	if (iy > QUANTISE_FACTOR) iy = QUANTISE_FACTOR;
 	test -= quantised_x * iy;
-	iy += min((m_LabelGrid + buffer_size - test) / quantised_x,
+	iy += min(unsigned(m_LabelGrid + buffer_size - test) / quantised_x,
 		  QUANTISE_FACTOR + 2);
 	while (--iy) {
 	    if (test >= m_LabelGrid + buffer_size) abort();
