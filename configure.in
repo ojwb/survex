@@ -138,6 +138,8 @@ AC_PATH_TOOL(STRIP, strip, [echo "not stripping "])
 
 AC_CHECK_LIB(m, sqrt)
 
+AC_PATH_XTRA
+
 WINPROGS=
 if test yes = "$mswindows"; then
   WINPROGS='printwin$(EXEEXT) editwrap$(EXEEXT)'
