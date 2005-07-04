@@ -157,10 +157,8 @@ bool Aven::OnInit()
     // Create the main window.
     m_Frame = new MainFrm(APP_NAME, wxPoint(x, y), wxSize(width, height));
 
-    const bool delay = true;
-
     if (argv[optind]) {
-	m_Frame->OpenFile(wxString(argv[optind]), survey, delay);
+	m_Frame->OpenFile(wxString(argv[optind]), survey, true);
     }
 
     if (print_and_exit) {
