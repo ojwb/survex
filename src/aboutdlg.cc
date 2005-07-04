@@ -27,6 +27,7 @@
 
 #include "aboutdlg.h"
 #include "aven.h"
+#include "gla.h"
 #include "message.h"
 
 #include <stdio.h> // for popen
@@ -127,49 +128,9 @@ AboutDlg::AboutDlg(wxWindow* parent) :
     int bpp = wxDisplayDepth();
     info += wxString::Format("Display Depth: %d bpp", bpp);
     if (wxColourDisplay()) info += " (colour)";
+    info += '\n';
+    info += GetGLSystemDescription();
 
-#ifdef AVENGL // FIXME: make this a function in gla-gl.cc
-    const char *p = (const char*)glGetString(GL_VERSION);
-    // If OpenGL isn't initialised, p may be NULL.
-    if (p) {
-	info += "\nOpenGL ";
-	info += p;
-	info += '\n';
-	info += (const char*)glGetString(GL_VENDOR);
-	info += '\n';
-	info += (const char*)glGetString(GL_RENDERER);
-	info += '\n';
-
-	const GLubyte* gl_extensions = glGetString(GL_EXTENSIONS);
-	if (*gl_extensions) {
-	    info += gl_extensions;
-	    info += '\n';
-	}
-	GLint red, green, blue;
-	glGetIntegerv(GL_RED_BITS, &red);
-	glGetIntegerv(GL_GREEN_BITS, &green);
-	glGetIntegerv(GL_BLUE_BITS, &blue);
-	GLint max_texture_size;
-	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
-	GLint max_viewport[2];
-	glGetIntegerv(GL_MAX_VIEWPORT_DIMS, max_viewport);
-	GLdouble point_size_range[2];
-	glGetDoublev(GL_POINT_SIZE_RANGE, point_size_range);
-	GLdouble point_size_granularity;
-	glGetDoublev(GL_POINT_SIZE_GRANULARITY, &point_size_granularity);
-	wxString s;
-	s.Printf("R%dG%dB%d\n"
-		 "Max Texture size: %dx%d\n"
-		 "Max Viewport size: %dx%d\n"
-		 "Point Size %.3f-%.3f (granularity %.3f)",
-		 (int)red, (int)green, (int)blue,
-		 (int)max_texture_size, (int)max_texture_size,
-		 (int)max_viewport[0], (int)max_viewport[1],
-		 point_size_range[0], point_size_range[1],
-		 point_size_granularity);
-	info += s;
-    }
-#endif
     // Use a readonly multiline text edit for the system info so users can
     // easily cut and paste it into an email when reporting bugs.
     vert->Add(new wxTextCtrl(this, 506, info, wxDefaultPosition,
