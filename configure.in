@@ -28,20 +28,20 @@ AC_SUBST(COPYRIGHT_MSG)
 AC_SUBST(AVEN_COPYRIGHT_MSG)
 
 dnl for use in text files rather than C/C++ code (e.g. debian/copyright)
-COPYRIGHT_MSG_ASCII="`echo \"$COPYRIGHT_MSG\"|sed 's/%s/(C)/g'`"
-AVEN_COPYRIGHT_MSG_ASCII="`echo \"$AVEN_COPYRIGHT_MSG\"|sed 's/%s/(C)/g'`"
+COPYRIGHT_MSG_ASCII=`echo \"$COPYRIGHT_MSG\"|sed 's/%s/(C)/g'`
+AVEN_COPYRIGHT_MSG_ASCII=`echo \"$AVEN_COPYRIGHT_MSG\"|sed 's/%s/(C)/g'`
 AC_SUBST(COPYRIGHT_MSG_ASCII)
 AC_SUBST(AVEN_COPYRIGHT_MSG_ASCII)
 
 dnl set PRETTYPACKAGE to PACKAGE with the first character capitalised
-PRETTYPACKAGE="`echo \"$PACKAGE\"|cut -b1|tr a-z A-Z``echo \"$PACKAGE\"|cut -b2-`"
+PRETTYPACKAGE=`echo "$PACKAGE"|cut -b1|tr a-z A-Z``echo "$PACKAGE"|cut -b2-`
 AC_DEFINE_UNQUOTED(PRETTYPACKAGE, "$PRETTYPACKAGE",
 		   [Name of package (capitalised)])
 AC_SUBST(PRETTYPACKAGE)
 
 dnl set COMMAVERSION to VERSION with the dots replaced by commas -
 dnl e.g. "0,99" or "1,0,22"
-COMMAVERSION="`echo \"$VERSION\"|tr '.' ','`"
+COMMAVERSION=`echo "$VERSION"|tr '.' ','`
 AC_DEFINE_UNQUOTED(COMMAVERSION, $COMMAVERSION,
 		   [Version number of package (comma-separated)])
 AC_SUBST(COMMAVERSION)
@@ -49,25 +49,25 @@ AC_SUBST(COMMAVERSION)
 PKGDOCDIR='${prefix}/doc/${PACKAGE}'
 AC_ARG_ENABLE(docdir,
 [  --enable-docdir=DIR Set directory for installing documentation to DIR],
-[case "$enableval" in
+[case $enableval in
  yes|no)
   AC_MSG_ERROR([configure: Syntax: configure --enable-docdir=DIR]) ;;
 esac
 PKGDOCDIR="$enableval"
 ]
 )
-PKGDOCDIR_EXPANDED="`(
- test NONE = \"$prefix\" && prefix=\"$ac_default_prefix\"
- test NONE = \"$exec_prefix\" && exec_prefix=\"$prefix\"
- eval echo \"$PKGDOCDIR\"
-)`"
+PKGDOCDIR_EXPANDED=`(
+ test NONE = "$prefix" && prefix="$ac_default_prefix"
+ test NONE = "$exec_prefix" && exec_prefix="$prefix"
+ eval echo "$PKGDOCDIR"
+)`
 AC_SUBST(PKGDOCDIR)
 AC_SUBST(PKGDOCDIR_EXPANDED)
 
 DEFAULTLANG=en
 AC_ARG_ENABLE(defaultlang,
 [  --enable-defaultlang=LANG Set the default language for messages to LANG],
-[case "$enableval" in
+[case $enableval in
  yes|no) # until we support Norwegian...
   AC_MSG_ERROR([configure: Syntax: configure --enable-defaultlang=LANGUAGE]) ;;
 esac
@@ -79,7 +79,7 @@ AC_SUBST(DEFAULTLANG)
 
 AC_ARG_ENABLE(testprogs,
 [  --enable-testprogs Enable building of various test harness programs],
-[case "$enableval" in
+[case $enableval in
  yes) TESTPROGS="dump3d printxbm" ;;
  no) TESTPROGS= ;;
  *) AC_MSG_ERROR(bad value $enableval for --enable-testprogs) ;;
@@ -97,7 +97,7 @@ AC_PROG_CPP
 AVEN='aven$(EXEEXT)'
 AC_ARG_ENABLE(aven,
 [  --disable-aven Don't try to build Aven cave viewer],
-[case "$enableval" in
+[case $enableval in
   yes) ;;
   no) AVEN= ;;
   *) AC_MSG_ERROR(bad value $enableval for --enable-aven) ;;
@@ -121,12 +121,12 @@ AC_PROG_MAKE_SET
 AC_EXEEXT
 AC_OBJEXT
 
-case "$host_os" in
+case $host_os in
 *mingw*|*cygwin*|windows*) mswindows=yes ;;
 *) mswindows=no ;;
 esac
 
-case "$host" in
+case $host in
 powerpc-*-darwin*) macosx=yes ;; # wxWindows uses this to detect MacOS X
 *) macosx=no ;;
 esac
@@ -159,8 +159,7 @@ if test -n "$AVEN"; then
     if (exec >&5 2>&5;$WXCONFIG --libs --cflags --cxxflags;exit $?) then
       :
     else
-      AC_MSG_ERROR([\`$WXCONFIG --libs --cflags --cxxflags' doesn't work, bailing out])
-      dnl line above confuses vim's syntax colouring - resync: \`
+      AC_MSG_ERROR(['$WXCONFIG --libs --cflags --cxxflags' doesn't work, bailing out])
     fi
   else
     # prefer wx2.6 (or wx2.5) - a few things work better with it.
@@ -192,17 +191,17 @@ if test -n "$AVEN"; then
   fi
 
   if test -n "$AVEN"; then
-    WX_LIBS="`$WXCONFIG --libs`"
+    WX_LIBS=`$WXCONFIG --libs`
     AC_SUBST(WX_LIBS)
     dnl older wx-config didn't support this - error goes to stderr, with
     dnl nothing to stdout, so just ignore stderr
-    WX_LDFLAGS="`$WXCONFIG --ldflags 2> /dev/null`"
+    WX_LDFLAGS=`$WXCONFIG --ldflags 2> /dev/null`
     AC_SUBST(WX_LDFLAGS)
-    WX_CFLAGS="`$WXCONFIG --cflags`"
+    WX_CFLAGS=`$WXCONFIG --cflags`
     AC_SUBST(WX_CFLAGS)
-    WX_CXXFLAGS="`$WXCONFIG --cxxflags`"
+    WX_CXXFLAGS=`$WXCONFIG --cxxflags`
     AC_SUBST(WX_CXXFLAGS)
-    WXGL_LIBS="`$WXCONFIG --libs` `$WXCONFIG --gl-libs`"
+    WXGL_LIBS=`$WXCONFIG --libs`" "`$WXCONFIG --gl-libs`
     AC_SUBST(WXGL_LIBS)
     WXGL_CFLAGS="-DAVENGL $WX_CFLAGS"
     AC_SUBST(WXGL_CFLAGS)
@@ -230,7 +229,7 @@ dnl only build extra man pages on Unix - the ".exe" messes us up otherwise
 dnl FIXME: probably no point building man pages except on Unix
 if test -z "$ac_exeext" ; then
   dnl can't use \> as freebsd sed doesn't support it
-  EXTRA_MANS="`echo $AVEN|sed 's/\$(EXEEXT)//g;s/\([[^ ]]\) /\1.1 /g;s/\(.\)$/\1.1/'`"
+  EXTRA_MANS=`echo $AVEN|sed 's/\$(EXEEXT)//g;s/\([[^ ]]\) /\1.1 /g;s/\(.\)$/\1.1/'`
 else
   EXTRA_MANS=
 fi
@@ -311,7 +310,7 @@ if test no = "$strcasecmp"; then
   AC_CHECK_FUNC(strcmpi, strcasecmp=strcmpi)
 fi
 
-case "$strcasecmp" in
+case $strcasecmp in
 no)
   AC_LIBOBJ(strcasecmp)
   AC_MSG_RESULT(using own implementation of strcasecmp) ;;
@@ -322,7 +321,7 @@ strcasecmp) ;;
 esac
 
 AC_MSG_CHECKING(for sgmltools v2 or v3)
-case "`(exec 2>&5 ; sgmltools --version)`" in
+case `(exec 2>&5 ; sgmltools --version)` in
 *" version 2"*)
   sgmltools=sgmltools
   AC_MSG_RESULT(yes) ;;
@@ -357,7 +356,7 @@ AC_SUBST(AM_CXXFLAGS)
 
 AC_ARG_ENABLE(profiling,
 [  --enable-profiling Build binaries to generate profiling information],
-[case "$enableval" in
+[case $enableval in
   yes) AM_CXXFLAGS="$AM_CXXFLAGS -pg"
        AM_CFLAGS="$AM_CFLAGS -pg"
        AC_MSG_RESULT(building binaries to generate profiling information);;
