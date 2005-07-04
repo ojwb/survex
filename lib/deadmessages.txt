@@ -621,6 +621,14 @@ ca:209 Visualitzaci&oacute; de fitxers Survex 3D
 es:209 Visualizaci&oacute;n de archivos Survex 3D
 it:209 Visualizzazione di file survex 3D
 sk:209 Vizualiz&aacute;cia 3D s&uacute;borov Survex
+en: 49 Syntax
+fr: 49 Syntaxe
+de: 49 Syntax
+pt: 49 Sintaxe
+ca: 49 Sintaxi
+es: 49 Sintaxis
+it: 49 Sintassi
+sk: 49 Syntax
 #
 en:292 @Altitude Colouring on Surface Surveys
 en-us:292 @Altitude Coloring on Surface Surveys
