@@ -216,10 +216,6 @@ if test -n "$AVEN"; then
     WX_CXXFLAGS="`$WXCONFIG --cxxflags`"
     AC_SUBST(WX_CXXFLAGS)
     AC_MSG_RESULT(building aven)
-dnl Not using hash_map at present...
-dnl    AC_LANG(C++)
-dnl    AC_CHECK_HEADERS(ext/hash_map hash_map, break)
-dnl    AC_LANG(C)
   fi
 fi
 
@@ -393,5 +389,5 @@ fi
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  tests/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
- doc/version.ent debian/copyright src/borlandc/config.h src/riscos/config.h
- src/msvc/config.h survex.spec src/svxedit lib/survex.keys)
+ src/borlandc/config.h src/riscos/config.h src/msvc/config.h 
+ doc/version.ent debian/copyright survex.spec src/svxedit lib/survex.keys)
