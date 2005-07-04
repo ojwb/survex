@@ -2300,9 +2300,10 @@ sk:200 *UNITS faktor mus&iacute; by&tcaron; nenulov&yacute;
 ro:200 Factorul *UNITS trebie sa fie diferit de zero
 #
 #  Messages for Aven
-# TRANSLATE ca es pt
+# TRANSLATE ca de es pt
 en:201 @Screenshot...
-ca,es,pt:201 S@creenshot...
+ca,es:201 Screensho@t...
+de,pt:201 S@creenshot...
 it:201 @Cattura schermo...
 #
 en:202 No survey data in 3d file `%s'
@@ -2661,18 +2662,17 @@ es:236 Un paso en el senido @horario
 it:236 Un passo @Orario
 sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
 ro:236 Un pas in sens o@rar
-# TRANSLATE ca de es fr it pt sk
+# TRANSLATE ca de es fr pt sk ro
 en:237 @Perspective
-ca,de,es:237 Perspecti@ve
+ca,de,es,ro:237 Perspecti@ve
 fr,pt,sk:237 Pe@rspective
 it:237 Prospetti@va
 #
 en:238 Textured @Walls
-it:238 @Pareti con texture
-# TRANSLATE de fr
+it:238 Pareti con te@xture
+#
 en:239 Fade @Distant Objects
 en-us:239 @Fade Distant Objects
-de,fr:239 @Fade Distant Objects
 it:239 Sbiadisce gli oggetti @distanti
 #
 # The accelerators must be different within this group
@@ -2843,7 +2843,7 @@ es:254 Restaurar @valores predeterminados
 it:254 Ripristina i @valori predefiniti
 sk:254 Znov@u na v&yacute;chodzie hodnoty
 ro:254 @Restabiliti setarile initiale
-# Used in print dialog to label 
+# Used in print dialog to label
 # TRANSLATE fr pt pt-br ca es it sk ro check reused message makes sense
 # in this context
 # cf 213
@@ -3077,7 +3077,7 @@ sk:294 Zv&yacute;razni&tcaron; @vchody
 ro:294 Marcheaza @Intrarile
 #
 en:295 Highlight @Fixed Points
-en-us:295 Highlight Control @Points
+en-us:295 Highlight Contro@l Points
 fr:295 Mise en valeur des points Fi@xes
 de:295 Fi@xpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
@@ -3108,8 +3108,8 @@ sk:297 @Sie&tcaron;##Ctrl+G
 #ro:297 @Gril&abreve;##Ctrl+G
 ro:297 @Grid##Ctrl+G
 #
-en:298 Smoo@thed Survey Legs
-en-us:298 Smoo@thed Survey Shots
+en:298 Smoot@hed Survey Legs
+en-us:298 Smoot@hed Survey Shots
 fr:298 @Lissage des segments topographiques
 de-de,de-ch:298 Gegl&auml;ttete @Messz&uuml;ge
 de:298          Gegl&auml;ttete @Me&szlig;z&uuml;ge
@@ -3513,9 +3513,9 @@ sk:345 gr&aacute;dy
 ro:345 gr.cent
 #ro: 345 grade centezimale
 #
-# TRANSLATE ca es
+# TRANSLATE de ca es
 en:346 Passage @Tubes##Ctrl+T
-ca,es:346 P@assage Tubes##Ctrl+T
+ca,de,es:346 Passage Tubes (@y)##Ctrl+T
 it:346 Passaggi come @Tubi##Ctrl+T
 #
 en:347 @Preferences...
@@ -3546,9 +3546,9 @@ en:355 Allow names to overlap on the display (faster)
 it:355 Permetti che i nomi si sovrappongano (pi&acute; veloce)
 #
 #
-# TRANSLATE de pt-br sk
+# TRANSLATE de pt sk
 en:356 Full Screen @Mode##F11
-de,pt-br:356 Full S@creen Mode##F11
+de,pt:356 Full S@creen Mode##F11
 it:356 @Modo schermo pieno##F11
 sk:356 F@ull Screen Mode##F11
 #
