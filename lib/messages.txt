@@ -2291,7 +2291,7 @@ ro:199 Incarcati doar sub-topografia cu prefixul
 en:200 *UNITS factor must be non-zero
 fr:200 *UNITS: le facteur doit &ecirc;tre non nul
 de-de,de-ch:200 Faktor nach *UNITS muss von Null verschieden sein
-de:200 Faktor nach *UNITS mu&szlig; von Null verschieden sein
+de:200     Faktor nach *UNITS mu&szlig; von Null verschieden sein
 pt:200 Fator em *UNITS n&atilde;o pode ser zero
 ca:200 El factor *UNITS ha de ser diferent de zero
 es:200 El factor de *UNITS debe de ser diferente de cero
@@ -2299,9 +2299,9 @@ it:200 Il fattore *UNITS deve essere diverso da zero
 sk:200 *UNITS faktor mus&iacute; by&tcaron; nenulov&yacute;
 ro:200 Factorul *UNITS trebie sa fie diferit de zero
 #
-# XXX 201
-#
 #  Messages for Aven
+# TRANSLATE ca es pt
+# 1.1 only: 201
 #
 en:202 No survey data in 3d file `%s'
 fr:202 Pas de donn&eacute;es topo dans le fichier 3d `%s'
@@ -2459,7 +2459,8 @@ it:215 @Aiuto
 sk:215 @Help
 ro:215 @Ajutor
 #
-# XXX 216 217 218
+# 1.1 only: 216
+# XXX 217 218
 #
 en:219 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.
 en-us:219 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -2651,7 +2652,7 @@ es:236 Un paso en el senido @horario
 it:236 Un passo @Orario
 sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
 ro:236 Un pas in sens o@rar
-# XXX 237 238 239
+# 1.1 only: 237 238 239
 #
 # The accelerators must be different within this group
 # View *looking* North
@@ -2892,7 +2893,7 @@ es:262 Tiradas Subterr&aacute;neas
 it:262 Battute del rilievo sotterraneo
 sk:262 Z&aacute;mery pod povrchom
 ro:262 Portiuni subterane ale topografiei
-# XXX 262-269
+# XXX 263-269
 # The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
 fr:270 @Noms de station##Ctrl+N
@@ -3004,6 +3005,7 @@ it:281 @Cancella la linea di misura##Escape
 sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
 ro:281 @Anulati linia de masura##Escape
 #ro: to find a better way to express that
+# XXX 282 283 284 285 286 287 288 289
 #
 # The accelerators must be different within this group
 # c.f. 205
@@ -3231,6 +3233,9 @@ it:310 %s: opzione non valida -- %c&#10;
 sk:310 %s: nespr&aacute;vna mo&zcaron;nos&tcaron; -- %c&#10;
 ro:310 %s: op&tcedil;iune invalid&abreve; -- %c&#10;
 #
+# Used in 1.1: 311-317
+# XXX 318
+#
 en:319 Select an output filename
 fr:319 S&eacute;lection d'un nom de fichier de sortie
 de:319 Name der Ausgabedatei w&auml;hlen
@@ -3243,6 +3248,7 @@ ro:319 Selectati un fisier pentru iesire
 #ro: still to check!
 #
 #
+# Used in 1.1: 320 321 322 323
 # "Compass" as in Larry Fish's cave surveying package, so probably shouldn't
 # be translated
 en:324 Compass PLT files
@@ -3250,7 +3256,7 @@ it:324 File Compass PLT
 # "CMAP" is Bob Thrun's cave surveying package.
 en:325 CMAP XYZ files
 it:325 File CMAP XYZ
-# XXX 326 327
+# Used in 1.1: 326 327
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
 de:328 Kein Treffer gefunden.
@@ -3260,6 +3266,8 @@ es:328 B&uacute;squeda infroctuosa.
 it:328 Nessun elemento trovato.
 sk:328 Ne&uacute;spe&scaron;n&eacute; h&lcaron;adanie.
 ro:328 Nici un element nua fost gasit.
+#
+# allocated but unused in 1.1: 329 330
 # number of stations found matching search
 en:331 %d found
 fr:331 %d trouv&eacute;e(s)
@@ -3302,7 +3310,7 @@ es:334 Expressi&oacute;n regular
 it:334 Espressione regolare
 sk:334 Regular expression
 ro:334 Expresie normala
-#
+# cf 195
 en:335 Altitude
 fr:335 Altitude
 de:335 H&ouml;he    
@@ -3367,6 +3375,7 @@ es:340 "  H %d%s, V %d%s"
 it:340 "  O %d%s, V %d%s"
 sk:340 "  V %d%s, &Scaron; %d%s"
 ro:340 "  H %d%s, V %d%s" 
+#
 en:341 "  Dist %d%s, Brg %03d%s"
 fr:341 "  Dist %d%s, Azim %03d%s" 
 de:341 "  Dist %d%s, Richt. %03d%s"

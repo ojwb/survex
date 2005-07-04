@@ -636,8 +636,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		break;
 	    }
 
-	    case img_LABEL:
-	    {
+	    case img_LABEL: {
 		LabelInfo* label = new LabelInfo;
 		label->text = survey->label;
 		label->x = pt.x;
@@ -662,8 +661,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		break;
 	    }
 
-	    case img_BAD:
-	    {
+	    case img_BAD: {
 		m_Labels.clear();
 
 		// FIXME: Do we need to reset all these? - Olly
@@ -849,7 +847,7 @@ void MainFrm::FillTree()
 		wxString new_prefix = prefix.Mid(count);
 
 		// Add branches for this new part.
-		while (1) {
+		while (true) {
 		    // Extract the next bit of prefix.
 		    int next_dot = new_prefix.Find(separator);
 

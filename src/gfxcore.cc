@@ -2704,7 +2704,7 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	default:
 	    e.Skip();
     }
- 
+
     // OnPaint clears m_RedrawOffscreen so it'll only still be set if we need
     // to redraw
     if (m_RedrawOffscreen) ForceRefresh();

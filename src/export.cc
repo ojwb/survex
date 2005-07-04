@@ -62,8 +62,8 @@
 #define SQRT_2          1.41421356237309504880168872420969
 
 #define LEGS 1
-#define STNS 2
-#define LABELS 4
+#define STNS 4
+#define LABELS 8
 
 /* default to DXF */
 #define FMT_DEFAULT FMT_DXF
@@ -510,6 +510,7 @@ plt_start_pass(int layer)
 static void
 plt_line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
+   fSurface = fSurface; /* unused */
    if (fPendingMove) {
        /* Survex is E, N, Alt - PLT file is N, E, Alt */
        fprintf(fh, "M %.3f %.3f %.3f ",
@@ -1089,13 +1090,13 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
 
-   while (*pass) {
+   for ( ; *pass; ++pass) {
       bool legs_this_pass = ((*pass & LEGS) && legs);
       bool crosses_this_pass = ((*pass & STNS) && crosses);
       bool labels_this_pass = ((*pass & LABELS) && labels);
-      if (legs_this_pass || crosses_this_pass || labels_this_pass) {
-	  start_pass(*pass);
-      }
+      if (!(legs_this_pass || crosses_this_pass || labels_this_pass))
+	  continue;
+      start_pass(*pass);
       if (legs_this_pass) {
 	 for (int band = 0; band < mainfrm->GetNumDepthBands(); ++band) {
 	     list<PointInfo*>::const_iterator pos = mainfrm->GetPoints(band);
@@ -1119,7 +1120,13 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 		     p.x = xnew;
 		 }
 
-		 if ((*pos)->IsLine()) {
+		 if (!(*pos)->IsLine()) {
+#ifdef DEBUG_CAD3D
+		     printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
+#endif
+		     fPendingMove = 1;
+		     fSeenMove = 1;
+		 } else {
 #ifdef DEBUG_CAD3D
 		     printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
 #endif
@@ -1134,12 +1141,6 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 		     } else {
 			 fPendingMove = 1;
 		     }
-		 } else {
-#ifdef DEBUG_CAD3D
-		     printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
-#endif
-		     fPendingMove = 1;
-		     fSeenMove = 1;
 		 }
 		 p1 = p;
 	     }
@@ -1167,7 +1168,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 		p.x = xnew;
 	    }
 #ifdef DEBUG_CAD3D
-	    printf("label `%s' at %9.2f %9.2f %9.2f\n",(*pos)->GetText(),x,y,z);
+	    printf("label '%s' at %9.2f %9.2f %9.2f\n",(*pos)->GetText(),x,y,z);
 #endif
 	    /* Use !UNDERGROUND as the criterion - we want stations where
 	     * a surface and underground survey meet to be in the
@@ -1178,7 +1179,6 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 		cross(&p, !(*pos)->IsUnderground());
 	}
       }
-      pass++;
    }
    footer();
    safe_fclose(fh);

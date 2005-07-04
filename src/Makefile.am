@@ -6,14 +6,15 @@ check-local dist-hook:
 	  exit 1; \
 	fi
 
-noinst_HEADERS = armrot.h cavern.h caverot.h commands.h cmdline.h\
- cvrotgfx.h cvrotimg.h datain.h debug.h dosrot.h filelist.h filename.h\
- getopt.h hash.h img.h ini.h labels.h listpos.h matrix.h message.h namecmp.h\
+noinst_HEADERS = cavern.h commands.h cmdline.h datain.h debug.h filelist.h\
+ filename.h getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
  netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
- prbitmap.h prcore.h prio.h readval.h rotplot.h str.h useful.h\
- validate.h whichos.h xrot.h xcvrtbut.h new3dout.h 3ddefs.h \
- aboutdlg.h aven.h gfxcore.h mainfrm.h matrix4.h quaternion.h vector3.h wx.h \
- aventypes.h aventreectrl.h printwx.h avenprcore.h export.h
+ prbitmap.h prcore.h prio.h readval.h str.h useful.h validate.h whichos.h\
+ new3dout.h 3ddefs.h \
+ armrot.h caverot.h cvrotgfx.h cvrotimg.h dosrot.h labels.h rotplot.h xrot.h\
+ xcvrtbut.h\
+ aboutdlg.h aven.h avenpal.h gfxcore.h mainfrm.h matrix4.h quaternion.h\
+ vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h
 
 # GCC 2.95 frequently dies on gfxcore.cc with an internal error, so if the
 # compile fails, rerun it with -O instead of -O2 - FIXME this probably
@@ -42,7 +43,7 @@ PRINT = printdm printps printpcl printhpgl
 TESTPROGS = @TESTPROGS@
 
 # printxbm and dump3d are test programs
-EXTRA_PROGRAMS = caverot xcaverot printwin aven avengl dump3d printxbm \
+EXTRA_PROGRAMS = caverot xcaverot printwin aven dump3d printxbm \
  editwrap
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern $(PRINT) diffpos extend cad3d sorterr \
@@ -58,9 +59,7 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc export.cc \
- avenpal.h avenprcore.cc printwx.cc ini.c hash.c
-
-avengl_SOURCES = $(aven_SOURCES)
+ avenprcore.cc printwx.cc ini.c hash.c
 
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
 
@@ -69,7 +68,6 @@ editwrap_LDFLAGS = -mwindows
 
 if WIN32
 aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@
-avengl_LDADD = avenrc.o @LIBOBJS@ @WXGL_LIBS@
 
 svxeditrc.o: $(srcdir)/svxedit.rc svxedit.ico
 	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
@@ -89,7 +87,6 @@ aven.ico: ../lib/icons/aven.ico
 CLEANFILES = aven.ico svxedit.ico
 else
 aven_LDADD = @LIBOBJS@ @WX_LIBS@
-avengl_LDADD = @LIBOBJS@ @WXGL_LIBS@
 endif
 
 # If we're building aven on MacOS X, we need to bind resources to aven after
@@ -131,10 +128,6 @@ aven_CFLAGS = @WX_CFLAGS@ $(AM_CFLAGS) -DAVEN
 aven_CXXFLAGS = @WX_CXXFLAGS@ $(AM_CXXFLAGS)
 aven_LDFLAGS = @WX_LDFLAGS@
 
-avengl_CFLAGS = @WXGL_CFLAGS@ $(AM_CFLAGS) -DAVEN
-avengl_CXXFLAGS = @WXGL_CXXFLAGS@ $(AM_CXXFLAGS)
-avengl_LDFLAGS = @WX_LDFLAGS@
-
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
 
 printps_SOURCES = printps.c $(PRSRC)
@@ -175,11 +168,11 @@ cad3d_SOURCES = cad3d.c $(COMMONSRC) useful.c img.c hash.c
 
 noinst_DATA = borlandc/makefile riscos/makefile
 
-EXTRA_DIST = borlandc/makefile borlandc/config.h borlandc/config.h.in\
+EXTRA_DIST = \
+ miniam.pl borlandc/makefile borlandc/config.h borlandc/config.h.in\
  riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
  riscos/stdh/regnames riscos/stdh/swinames msvc/config.h msvc/config.h.in\
- miniam.pl aven.rc svxedit.rc\
- getopt.c gettexttomsg.pl gradient.pov
+ aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov
 
 BUILT_SOURCES = z_getopt.c avenpal.h
 
@@ -189,7 +182,9 @@ z_getopt.c: getopt.c gettexttomsg.pl
 avenpal.h: $(srcdir)/gradient.pov
 	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-avenpal.h && mv tmp-avenpal.h avenpal.h
 
-MAINTAINERCLEANFILES = borlandc/makefile riscos/makefile $(BUILT_SOURCES)
+MAINTAINERCLEANFILES =\
+ borlandc/makefile riscos/makefile\
+ $(BUILT_SOURCES)
 
 borlandc/makefile: $(srcdir)/Makefile.am miniam.pl
 	$(srcdir)/miniam.pl borlandc < $(srcdir)/Makefile.am > borlandc/makefile

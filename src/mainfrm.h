@@ -28,23 +28,13 @@
 #include <wx/docview.h> // for m_FileHistory
 #include <wx/print.h>
 #include <wx/printdlg.h>
+
 #include "gfxcore.h"
 #include "message.h"
 #include "aventreectrl.h"
 #include "img.h"
 
 #include <list>
-#if 0 // if you turn this back on, reenable the check in configure.in too
-#ifdef HAVE_EXT_HASH_MAP
-#include <ext/hash_map>
-#elif defined HAVE_HASH_MAP
-#include <hash_map>
-#else
-#include <map>
-#define hash_map map
-#endif
-#endif
-
 using namespace std;
 
 #include <math.h>
@@ -53,7 +43,6 @@ extern const int NUM_DEPTH_COLOURS;
 
 enum {
     menu_FILE_OPEN = 1000,
-    menu_FILE_OPEN_PRES,
     menu_FILE_PRINT,
     menu_FILE_PAGE_SETUP,
     menu_FILE_EXPORT,
@@ -101,14 +90,6 @@ enum {
     menu_VIEW_SIDE_PANEL,
     menu_VIEW_METRIC,
     menu_VIEW_DEGREES,
-    menu_PRES_CREATE,
-    menu_PRES_GO,
-    menu_PRES_GO_BACK,
-    menu_PRES_RESTART,
-    menu_PRES_RECORD,
-    menu_PRES_FINISH,
-    menu_PRES_ERASE,
-    menu_PRES_ERASE_ALL,
     menu_CTL_REVERSE,
     menu_CTL_CANCEL_DIST_LINE,
     menu_HELP_ABOUT,
