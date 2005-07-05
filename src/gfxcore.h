@@ -279,12 +279,17 @@ public:
     void OnKeyPress(wxKeyEvent &event) { m_Control->OnKeyPress(event); }
 
     bool Animate();
+    bool Animating() const {
+	return m_Rotating || m_SwitchingTo || presentation_mode != 0;
+    }
 
     void ClearCoords();
     void SetCoords(wxPoint);
 
-    bool ShowingCompass() const;
-    bool ShowingClino() const;
+    // Determine whether the compass is currently shown.
+    bool ShowingCompass() const { return m_Compass; }
+    // Determine whether the clino is currently shown.
+    bool ShowingClino() const { return m_Clino; }
 
     bool PointWithinCompass(wxPoint point) const;
     bool PointWithinClino(wxPoint point) const;
@@ -306,7 +311,6 @@ public:
 
     void SwitchToElevation();
     void SwitchToPlan();
-    bool ChangingOrientation() const;
 
     bool ShowingPlan() const;
     bool ShowingElevation() const;
@@ -355,7 +359,7 @@ public:
     void ToggleFixedPts() { ToggleFlag(&m_FixedPts, UPDATE_BLOBS); }
     void ToggleExportedPts() { ToggleFlag(&m_ExportedPts, UPDATE_BLOBS); }
     void ToggleGrid() { ToggleFlag(&m_Grid); }
-    void ToggleCrosses() { ToggleFlag(&m_Crosses, UPDATE_BLOBS); }
+    void ToggleCrosses() { ToggleFlag(&m_Crosses); }
     void ToggleStationNames() { ToggleFlag(&m_Names); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
     void ToggleDepthBar() { ToggleFlag(&m_Depthbar); }
@@ -381,7 +385,7 @@ public:
     void DragFinished();
 
     void SplitLineAcrossBands(int band, int band2,
-	    		      const Vector3 &p, const Vector3 &p2,
+			      const Vector3 &p, const Vector3 &p2,
 			      Double factor = 1.0);
     int GetDepthColour(Double z) const;
     Double GetDepthBoundaryBetweenBands(int a, int b) const;

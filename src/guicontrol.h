@@ -30,7 +30,7 @@ class GfxCore;
 
 class GUIControl {
     GfxCore* m_View;
-    
+
     enum { NO_DRAG = 0, LEFT_DRAG, MIDDLE_DRAG, RIGHT_DRAG } dragging;
 
     wxPoint m_DragStart;
@@ -46,7 +46,7 @@ class GUIControl {
     void HandleTranslate(wxPoint);
     void HandleScale(wxPoint);
     void HandleTiltRotate(wxPoint);
-    
+
     void HandCursor();
     void RestoreCursor();
 
@@ -57,7 +57,7 @@ public:
     void SetView(GfxCore* view);
 
     bool MouseDown();
-    
+
     void OnDefaults();
     void OnPlan();
     void OnElevation();
@@ -166,10 +166,10 @@ public:
 
     void OnToggleDegrees();
     void OnToggleDegreesUpdate(wxUpdateUIEvent& cmd);
-   
+
     void OnToggleTubes();
     void OnToggleTubesUpdate(wxUpdateUIEvent& cmd);
-   
+
     void OnViewFullScreenUpdate(wxUpdateUIEvent&);
     void OnViewFullScreen();
 };

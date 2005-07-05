@@ -1692,6 +1692,14 @@ void MainFrm::SetAltitude(Double z)
     GetStatusBar()->SetStatusText(str);
 }
 
+void MainFrm::ClearInfo()
+{
+    m_Gfx->SetHere();
+    m_Gfx->SetThere();
+    GetStatusBar()->SetStatusText("", 1);
+    GetStatusBar()->SetStatusText("", 2);
+}
+
 void MainFrm::ShowInfo(const LabelInfo *label)
 {
     assert(m_Gfx);
@@ -1771,6 +1779,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	    GetStatusBar()->SetStatusText(str, 2);
 	    m_Gfx->SetThere(x0, y0, z0);
 	} else {
+	    GetStatusBar()->SetStatusText("", 2);
 	    m_Gfx->SetThere(); // FIXME: not in SetMouseOverStation version?
 	}
     }

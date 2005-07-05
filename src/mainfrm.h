@@ -482,6 +482,7 @@ public:
 	return m_Labels.end();
     }
 
+    void ClearInfo();
     void ShowInfo(const LabelInfo *label);
     void DisplayTreeInfo(const wxTreeItemData* data);
     void TreeItemSelected(wxTreeItemData* data);

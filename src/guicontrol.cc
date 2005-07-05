@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001,2003,2004 Olly Betts
+//  Copyright (C) 2001,2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -184,6 +184,10 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     // Mouse motion event handler.
     if (!m_View->HasData()) return;
 
+    // If we're animating, don't show mouse coordinates or the nearest
+    // station.
+    if (m_View->Animating()) return;
+
     wxPoint point = wxPoint(event.GetX(), event.GetY());
 
     // Check hit-test grid (only if no buttons are pressed).
@@ -206,69 +210,67 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     // or altitude if in elevation view.
     m_View->SetCoords(point);
 
-    if (!m_View->ChangingOrientation()) {
-	switch (dragging) {
-	    case LEFT_DRAG:
-		if (m_LastDrag == drag_NONE) {
-		    if (m_View->ShowingCompass() &&
-			m_View->PointWithinCompass(point)) {
-			m_LastDrag = drag_COMPASS;
-		    } else if (m_View->ShowingClino() &&
-			     m_View->PointWithinClino(point)) {
-			m_LastDrag = drag_ELEV;
-		    } else if (m_View->ShowingScaleBar() &&
-			     m_View->PointWithinScaleBar(point)) {
-			m_LastDrag = drag_SCALE;
-		    }
+    switch (dragging) {
+	case LEFT_DRAG:
+	    if (m_LastDrag == drag_NONE) {
+		if (m_View->ShowingCompass() &&
+		    m_View->PointWithinCompass(point)) {
+		    m_LastDrag = drag_COMPASS;
+		} else if (m_View->ShowingClino() &&
+			   m_View->PointWithinClino(point)) {
+		    m_LastDrag = drag_ELEV;
+		} else if (m_View->ShowingScaleBar() &&
+			   m_View->PointWithinScaleBar(point)) {
+		    m_LastDrag = drag_SCALE;
 		}
+	    }
 
-		if (m_LastDrag == drag_COMPASS) {
-		    // drag in heading indicator
-		    m_View->SetCompassFromPoint(point);
-		} else if (m_LastDrag == drag_ELEV) {
-		    // drag in clinometer
-		    m_View->SetClinoFromPoint(point);
-		} else if (m_LastDrag == drag_SCALE) {
-		    // FIXME: check why there was a check here for x being inside
-		    // the window
-		    m_View->SetScaleBarFromOffset(point.x - m_DragLast.x);
-		} else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
-		    m_LastDrag = drag_MAIN;
-		    if (event.ShiftDown()) {
-			HandleScaleRotate(point);
-		    } else {
-			HandleTiltRotate(point);
-		    }
-		}
-		break;
-	    case MIDDLE_DRAG:
+	    if (m_LastDrag == drag_COMPASS) {
+		// drag in heading indicator
+		m_View->SetCompassFromPoint(point);
+	    } else if (m_LastDrag == drag_ELEV) {
+		// drag in clinometer
+		m_View->SetClinoFromPoint(point);
+	    } else if (m_LastDrag == drag_SCALE) {
+		// FIXME: check why there was a check here for x being inside
+		// the window
+		m_View->SetScaleBarFromOffset(point.x - m_DragLast.x);
+	    } else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
+		m_LastDrag = drag_MAIN;
 		if (event.ShiftDown()) {
-		    HandleTilt(point);
+		    HandleScaleRotate(point);
 		} else {
-		    HandleScale(point);
+		    HandleTiltRotate(point);
 		}
-		break;
-	    case RIGHT_DRAG:
-		if ((m_LastDrag == drag_NONE && m_View->PointWithinScaleBar(point)) || m_LastDrag == drag_SCALE) {
-		/* FIXME
-		      if (point.x < 0) point.x = 0;
-		      if (point.y < 0) point.y = 0;
-		      if (point.x > m_XSize) point.x = m_XSize;
-		      if (point.y > m_YSize) point.y = m_YSize;
-		      m_LastDrag = drag_SCALE;
-		      int x_inside_bar = m_DragStart.x - m_ScaleBar.drag_start_offset_x;
-		      int y_inside_bar = m_YSize - m_ScaleBar.drag_start_offset_y - m_DragStart.y;
-		      m_ScaleBar.offset_x = point.x - x_inside_bar;
-		      m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
-		      m_View->ForceRefresh(); */
-		} else {
-		    m_LastDrag = drag_MAIN;
-		    HandleTranslate(point);
-		}
-		break;
-	    case NO_DRAG:
-		break;
-	}
+	    }
+	    break;
+	case MIDDLE_DRAG:
+	    if (event.ShiftDown()) {
+		HandleTilt(point);
+	    } else {
+		HandleScale(point);
+	    }
+	    break;
+	case RIGHT_DRAG:
+	    if ((m_LastDrag == drag_NONE && m_View->PointWithinScaleBar(point)) || m_LastDrag == drag_SCALE) {
+	    /* FIXME
+		  if (point.x < 0) point.x = 0;
+		  if (point.y < 0) point.y = 0;
+		  if (point.x > m_XSize) point.x = m_XSize;
+		  if (point.y > m_YSize) point.y = m_YSize;
+		  m_LastDrag = drag_SCALE;
+		  int x_inside_bar = m_DragStart.x - m_ScaleBar.drag_start_offset_x;
+		  int y_inside_bar = m_YSize - m_ScaleBar.drag_start_offset_y - m_DragStart.y;
+		  m_ScaleBar.offset_x = point.x - x_inside_bar;
+		  m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
+		  m_View->ForceRefresh(); */
+	    } else {
+		m_LastDrag = drag_MAIN;
+		HandleTranslate(point);
+	    }
+	    break;
+	case NO_DRAG:
+	    break;
     }
 
     m_DragLast = point;

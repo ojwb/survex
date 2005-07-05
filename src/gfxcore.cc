@@ -307,7 +307,6 @@ void GfxCore::UpdateBlobs()
 void GfxCore::OnIdle(wxIdleEvent& event)
 {
     // Handle an idle event.
-
     if (Animate()) ForceRefresh();
 }
 
@@ -813,7 +812,7 @@ void GfxCore::DrawDepthbar()
 
     int y = m_YSize -
 	    (DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1)
-	     						+ DEPTH_BAR_OFFSET_Y);
+							+ DEPTH_BAR_OFFSET_Y);
     int size = 0;
 
     wxString* strs = new wxString[GetNumDepthBands()];
@@ -1147,9 +1146,11 @@ void GfxCore::Defaults()
 // return: true if animation occured (and ForceRefresh() needs to be called)
 bool GfxCore::Animate()
 {
-    if (!m_Rotating && !m_SwitchingTo && presentation_mode == 0) {
-	return false;
-    }
+    if (!Animating()) return false;
+
+    // Don't show pointer coordinates while animating.
+    ClearCoords();
+    m_Parent->ClearInfo();
 
     static double last_t = 0;
     double t;
@@ -1485,27 +1486,6 @@ void GfxCore::SetCoords(wxPoint point)
     }
 }
 
-bool GfxCore::ChangingOrientation() const
-{
-    // Determine whether the cave is currently moving between orientations.
-
-    return (m_SwitchingTo != 0);
-}
-
-bool GfxCore::ShowingCompass() const
-{
-    // Determine whether the compass is currently shown.
-
-    return m_Compass;
-}
-
-bool GfxCore::ShowingClino() const
-{
-    // Determine whether the clino is currently shown.
-
-    return m_Clino;
-}
-
 int GfxCore::GetCompassXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window
@@ -1647,10 +1627,10 @@ void GfxCore::ToggleRotation()
 {
     // Toggle the survey rotation on/off.
 
-    m_Rotating = !m_Rotating;
-
     if (m_Rotating) {
-	timer.Start(drawtime);
+	StopRotation();
+    } else {
+	StartRotation();
     }
 }
 
@@ -2067,7 +2047,7 @@ void GfxCore::AddPolyline(const vector<PointInfo> & centreline)
     }
     EndPolyline();
 }
-		
+
 void GfxCore::AddPolylineDepth(const vector<PointInfo> & centreline)
 {
     BeginPolyline();
