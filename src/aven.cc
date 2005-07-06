@@ -146,6 +146,13 @@ bool Aven::OnInit()
     height = geom.height;
 #else
     wxClientDisplayRect(&x, &y, &width, &height);
+    // Crude fix to help behaviour on multi-monitor displays.
+    // Fudge factors are a bit specific to my setup...
+    if (width > height * 3 / 2) {
+	x += width;
+	width = height * 3 / 2;
+	x -= width;
+    }
 #endif
 
     // Calculate a reasonable size for our window.
