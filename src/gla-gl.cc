@@ -527,13 +527,16 @@ void GLACanvas::SetIndicatorTransform()
     CHECK_GL_ERROR("SetIndicatorTransform", "gluOrtho2D");
 
     glDisable(GL_TEXTURE_2D);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_TEXTURE_2D");
     glDisable(GL_BLEND);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_BLEND");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glAlphaFunc(GL_GREATER, 0.5f);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+    CHECK_GL_ERROR("SetIndicatorTransform", "various");
 }
 
 void GLACanvas::FinishDrawing()
@@ -551,7 +554,9 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
     // it.
 
     glaList l = glGenLists(1);
-//    printf("new list: %d... ", l);
+#ifdef GLA_DEBUG
+    printf("new list: %d... ", l);
+#endif
     CHECK_GL_ERROR("CreateList", "glGenLists");
     assert(l != 0);
 
@@ -563,7 +568,7 @@ glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
     (obj->*generator)();
     glEndList();
 #ifdef GLA_DEBUG
-    //printf("done (%d vertices)\n", m_Vertices);
+    printf("done (%d vertices)\n", m_Vertices);
 #endif
     CHECK_GL_ERROR("CreateList", "glEndList");
 
@@ -939,15 +944,14 @@ void GLACanvas::DisableDashedLines()
     CHECK_GL_ERROR("DisableDashedLines", "glDisable GL_LINE_STIPPLE");
 }
 
-void GLACanvas::Transform(Double x, Double y, Double z,
+bool GLACanvas::Transform(Double x, Double y, Double z,
                           Double* x_out, Double* y_out, Double* z_out)
 {
     // Convert from data coordinates to screen coordinates.
 
     // Perform the projection.
-    gluProject(x, y, z, modelview_matrix, projection_matrix, viewport,
-               x_out, y_out, z_out);
-    CHECK_GL_ERROR("Transform", "gluProject");
+    return gluProject(x, y, z, modelview_matrix, projection_matrix, viewport,
+		      x_out, y_out, z_out);
 }
 
 void GLACanvas::ReverseTransform(Double x, Double y,

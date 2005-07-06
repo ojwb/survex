@@ -368,13 +368,8 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    DrawList(m_Lists.surface_legs);
 	}
 
-	// Draw station names.
-	if (m_Names
-	/*&& !m_Control->MouseDown() && !m_Rotating && !m_SwitchingTo*/) {
-	    DrawNames();
-	}
-
 	DrawList(m_Lists.blobs);
+
 /*
 	// FIXME: for non-GL: bool grid_first = (m_TiltAngle >= 0.0);
 
@@ -386,8 +381,59 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	SetIndicatorTransform();
 
-	if (!m_Rotating && !m_SwitchingTo &&
-	    (m_here.x != DBL_MAX || m_there.x != DBL_MAX)) {
+	// Draw station names.
+	if (m_Names /*&& !m_Control->MouseDown() && !Animating()*/) {
+	    SetColour(NAME_COLOUR);
+
+	    if (m_OverlappingNames) {
+		SimpleDrawNames();
+	    } else {
+		NattyDrawNames();
+	    }
+	}
+
+	if (m_Crosses) {
+	    // Plot crosses.  To get the crosses to appear at a constant
+	    // size and orientation on screen, we plot them in the Indicator
+	    // transform coordinates (and this means we can't sensibly put
+	    // them in an opengl display list).
+	    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+	    SetColour(col_LIGHT_GREY);
+	    BeginLines();
+	    while (pos != m_Parent->GetLabelsEnd()) {
+		const LabelInfo* label = *pos++;
+
+		if (!((m_Surface && label->IsSurface()) ||
+			    (m_Legs && label->IsUnderground()) ||
+			    (!label->IsSurface() && !label->IsUnderground()))) {
+		    // if this station isn't to be displayed, skip to the next
+		    // (last case is for stns with no legs attached)
+		    continue;
+		}
+
+		Double x, y, z;
+		if (!Transform(label->GetX(), label->GetY(), label->GetZ(),
+			       &x, &y, &z)) {
+		    printf("bad transform on: %s\n", label->GetText().c_str());
+		    continue;
+		}
+		// Stuff in behind us (in perspective view) will get clipped,
+		// but we can save effort with a cheap check here.
+		if (z > 0) {
+		    // Round to integers before adding on the offsets for the
+		    // cross arms to avoid uneven crosses.
+		    x = rint(x);
+		    y = rint(y);
+		    PlaceVertex(x - 2, y - 2, z);
+		    PlaceVertex(x + 2, y + 2, z);
+		    PlaceVertex(x - 2, y + 2, z);
+		    PlaceVertex(x + 2, y - 2, z);
+		}
+	    }
+	    EndLines();
+	}
+
+	if (!Animating() && (m_here.x != DBL_MAX || m_there.x != DBL_MAX)) {
 	    // Draw "here" and "there".
 	    Double hx, hy;
 	    SetColour(HERE_COLOUR);
@@ -716,21 +762,6 @@ void GfxCore::DrawCompass()
     pt[2] = CompassPtToScreen(COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
     m_DrawDC.DrawLines(3, pt);
 #endif
-}
-
-void GfxCore::DrawNames()
-{
-    // Draw station names.
-
-    SetIndicatorTransform();
-    SetColour(NAME_COLOUR);
-
-    if (m_OverlappingNames) {
-	SimpleDrawNames();
-    } else {
-	NattyDrawNames();
-    }
-    SetDataTransform();
 }
 
 void GfxCore::NattyDrawNames()
@@ -1841,34 +1872,6 @@ void GfxCore::GenerateDisplayListSurface()
 // Plot crosses and/or blobs.
 void GfxCore::GenerateBlobsDisplayList()
 {
-    if (m_Crosses) {
-	// Plot crosses.
-	list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
-	SetColour(col_LIGHT_GREY);
-	BeginLines();
-	while (pos != m_Parent->GetLabelsEnd()) {
-	    const LabelInfo* label = *pos++;
-
-	    if (!((m_Surface && label->IsSurface()) ||
-			(m_Legs && label->IsUnderground()) ||
-			(!label->IsSurface() && !label->IsUnderground()))) {
-		// if this station isn't to be displayed, skip to the next
-		// (last case is for stns with no legs attached)
-		continue;
-	    }
-
-	    Double x, y, z;
-	    //Transform(label->GetX(), label->GetY(), label->GetZ(), &x, &y, &z);
-	    x = label->GetX(); y = label->GetY(); z = label->GetZ();
-
-	    PlaceVertex(x - 2, y - 2, z);
-	    PlaceVertex(x + 2, y + 2, z);
-	    PlaceVertex(x - 2, y + 2, z);
-	    PlaceVertex(x + 2, y - 2, z);
-	}
-	EndLines();
-    }
-
     if (!(m_Entrances || m_FixedPts || m_ExportedPts ||
 	  m_Parent->GetNumHighlightedPts()))
 	return;

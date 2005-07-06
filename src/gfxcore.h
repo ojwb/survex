@@ -214,7 +214,6 @@ class GfxCore : public GLACanvas {
     GLAPoint IndicatorCompassToScreenPan(int angle) const;
     GLAPoint IndicatorCompassToScreenElev(int angle) const;
 
-    void DrawNames();
     void NattyDrawNames();
     void SimpleDrawNames();
 
