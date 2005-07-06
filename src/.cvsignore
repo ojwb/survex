@@ -4,7 +4,6 @@ Makefile.in
 z_getopt.c
 avenpal.h
 aven
-avengl
 cavern
 printdm
 printps
