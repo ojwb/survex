@@ -1017,12 +1017,14 @@ void GfxCore::DrawScalebar()
 
 bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 {
+    if (Animating()) return false;
+
     if (point.x < 0 || point.x >= m_XSize ||
 	point.y < 0 || point.y >= m_YSize) {
 	return false;
     }
 
-    SetDataTransform();
+//    SetDataTransform();
 
     if (!m_HitTestGridValid) CreateHitTestGrid();
 
@@ -1495,8 +1497,9 @@ void GfxCore::ClearCoords()
 
 void GfxCore::SetCoords(wxPoint point)
 {
-    // We can't work out 2D coordinates from a perspective view
-    if (GetPerspective()) return;
+    // We can't work out 2D coordinates from a perspective view, and it
+    // doesn't really make sense to show coordinates while we're animating.
+    if (GetPerspective() || Animating()) return;
 
     // Update the coordinate or altitude display, given the (x, y) position in
     // window coordinates.  The relevant display is updated depending on

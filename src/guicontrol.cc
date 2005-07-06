@@ -184,10 +184,6 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     // Mouse motion event handler.
     if (!m_View->HasData()) return;
 
-    // If we're animating, don't show mouse coordinates or the nearest
-    // station.
-    if (m_View->Animating()) return;
-
     wxPoint point = wxPoint(event.GetX(), event.GetY());
 
     // Check hit-test grid (only if no buttons are pressed).
