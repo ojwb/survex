@@ -94,11 +94,7 @@ static const gla_colour NAME_COLOUR = col_GREEN;
 // vector for lighting angle
 static const Vector3 light(.577, .577, .577);
 
-#ifdef AVENGL
 BEGIN_EVENT_TABLE(GfxCore, wxGLCanvas)
-#else
-BEGIN_EVENT_TABLE(GfxCore, wxWindow)
-#endif
     EVT_PAINT(GfxCore::OnPaint)
     EVT_LEFT_DOWN(GfxCore::OnLButtonDown)
     EVT_LEFT_UP(GfxCore::OnLButtonUp)

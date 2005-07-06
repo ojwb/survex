@@ -4,7 +4,7 @@
 //  Header file for the GLA abstraction layer.
 //
 //  Copyright (C) 2002 Mark R. Shinwell.
-//  Copyright (C) 2003,2004 Olly Betts
+//  Copyright (C) 2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -87,21 +87,14 @@ public:
     double GetBlue() const;
 };
 
-#ifdef AVENGL
 class GLACanvas : public wxGLCanvas {
-#else
-class GLACanvas : public wxWindow {
-#endif
-
 #ifdef GLA_DEBUG
     int m_Vertices;
 #endif
 
-#ifdef AVENGL
     GLdouble modelview_matrix[16];
     GLdouble projection_matrix[16];
     GLint viewport[4];
-#endif
 
     // Viewing volume diameter:
     glaCoord m_VolumeDiameter;

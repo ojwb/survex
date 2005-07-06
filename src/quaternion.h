@@ -2,7 +2,7 @@
 //  quaternion.h
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ public:
 	return hypot(mv, w);
 #else
 	return sqrt(mv*mv + w*w);
-#endif	
+#endif
     }
 
     void normalise() {
@@ -175,7 +175,6 @@ public:
     void setFromSphericalPolars(Double pan, Double tilt, Double rotation_amount);
     void setFromVectorAndAngle(Vector3 v, Double rotation_amount);
 
-#ifdef AVENGL
     void CopyToOpenGL() const {
 	Double matrix[16];
 
@@ -212,7 +211,6 @@ public:
 
 	glMultMatrixd(matrix);
     }
-#endif
 };
 
 #endif

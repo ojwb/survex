@@ -12,9 +12,7 @@
 #include <wx/treectrl.h>
 #include <wx/dnd.h>
 
-#ifdef AVENGL
 #if !wxUSE_GLCANVAS
 #error wxWindows must be built with wxUSE_GLCANVAS set to 1
 #endif
 #include <wx/glcanvas.h>
-#endif

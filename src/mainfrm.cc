@@ -510,9 +510,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_FOG, MainFrm::OnViewFog)
     EVT_MENU(menu_VIEW_SMOOTH_LINES, MainFrm::OnViewSmoothLines)
     EVT_MENU(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreen)
-#ifdef AVENGL
     EVT_MENU(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubes)
-#endif
     EVT_MENU(menu_IND_COMPASS, MainFrm::OnViewCompass)
     EVT_MENU(menu_IND_CLINO, MainFrm::OnViewClino)
     EVT_MENU(menu_IND_DEPTH_BAR, MainFrm::OnToggleDepthbar)
@@ -565,9 +563,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_FOG, MainFrm::OnViewFogUpdate)
     EVT_UPDATE_UI(menu_VIEW_SMOOTH_LINES, MainFrm::OnViewSmoothLinesUpdate)
     EVT_UPDATE_UI(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreenUpdate)
-#ifdef AVENGL
     EVT_UPDATE_UI(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubesUpdate)
-#endif
     EVT_UPDATE_UI(menu_IND_COMPASS, MainFrm::OnViewCompassUpdate)
     EVT_UPDATE_UI(menu_IND_CLINO, MainFrm::OnViewClinoUpdate)
     EVT_UPDATE_UI(menu_IND_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
@@ -750,9 +746,7 @@ void MainFrm::CreateMenuBar()
     wxMenu* viewmenu = new wxMenu;
 #ifndef PREFDLG
     viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "", true);
-#ifdef AVENGL
     viewmenu->Append(menu_VIEW_SHOW_TUBES, GetTabMsg(/*Passage @Tubes*/346), "", true);
-#endif
     viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "", true);
     viewmenu->Append(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297), "", true);
     viewmenu->AppendSeparator();
@@ -854,11 +848,9 @@ void MainFrm::CreateToolBar()
 		     -1, -1, NULL, "Show underground surveys");
     toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show surface surveys");
-#ifdef AVENGL
     toolbar->AddSeparator();
     toolbar->AddTool(menu_VIEW_SHOW_TUBES, TOOLBAR_BITMAP("tubes"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show passage tubes");
-#endif
     toolbar->AddSeparator();
     toolbar->AddTool(menu_PRES_FREWIND, TOOLBAR_BITMAP("pres-frew"), wxNullBitmap, true, -1, -1, NULL, "Very Fast Rewind");
     toolbar->AddTool(menu_PRES_REWIND, TOOLBAR_BITMAP("pres-rew"), wxNullBitmap, true, -1, -1, NULL, "Fast Rewind");

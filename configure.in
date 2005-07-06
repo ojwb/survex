@@ -203,10 +203,6 @@ if test -n "$AVEN"; then
     AC_SUBST(WX_CXXFLAGS)
     WXGL_LIBS=`$WXCONFIG --libs`" "`$WXCONFIG --gl-libs`
     AC_SUBST(WXGL_LIBS)
-    WXGL_CFLAGS="-DAVENGL $WX_CFLAGS"
-    AC_SUBST(WXGL_CFLAGS)
-    WXGL_CXXFLAGS="-DAVENGL $WX_CXXFLAGS"
-    AC_SUBST(WXGL_CXXFLAGS)
     AC_MSG_RESULT(building aven)
 
     dnl Check for ffmpeg
