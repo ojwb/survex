@@ -1,6 +1,7 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003 Olly Betts
+ * Copyright (C) 1991-2003,2005 Olly Betts
+ * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,10 +145,24 @@ typedef int compiletimeassert_sflags5[BIT(SFLAGS_FIXED) == img_SFLAG_FIXED ? 1 :
 typedef enum {
    End = 0, Tape, Comp, Clino, BackComp, BackClino,
    FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount,
-   /* Up to here are readings used in datain.c */
+   /* Up to here are readings are allowed multiple values
+    * and have slot in the value[] array in datain.c.
+    * (Depth, DepthChange, and Count can have multiple
+    * readings, but are actually handled using tokens
+    * above rather than as themselves).
+    *
+    * Fr must be the first reading after this comment!
+    */
    Fr, To, Station, Depth, DepthChange, Count, Dir,
-   CompassDATFlags,
-   Newline, IgnoreAllAndNewLine, Ignore, IgnoreAll
+   Newline, IgnoreAllAndNewLine, Ignore, IgnoreAll,
+   /* IgnoreAll must be the last reading before this comment!
+    *
+    * Readings after this comment are only used in datain.c
+    * so can have enum values >= 32 because we only use a
+    * bitmask for those readings used in commands.c.
+    */
+   CompassDATComp, CompassDATClino,
+   CompassDATBackComp, CompassDATBackClino, CompassDATFlags
 } reading;
 /* Tape Comp Clino BackComp BackClino FrDepth ToDepth Dx Dy Dz FrCount ToCount */
 

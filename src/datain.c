@@ -1,6 +1,7 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003 Olly Betts
+ * Copyright (C) 1991-2003,2005 Olly Betts
+ * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +42,10 @@
 #define EPSILON (REAL_EPSILON * 1000)
 
 #define var(I) (pcs->Var[(I)])
+
+/* true if x is not-a-number value in Compass (999.0 or -999.0)    */
+/* Compass uses 999.0 but understands Karst data which used -999.0 */
+#define is_compass_NaN(x) ( fabs(fabs(x)-999.0) <  EPSILON )
 
 int ch;
 
@@ -274,7 +279,7 @@ read_reading(reading r, bool f_optional)
       case Dz: q = Q_DZ; break;
       case FrCount: case ToCount: q = Q_COUNT; break;
       default:
-	q = Q_NULL; /* Suppress compiler warning */; 
+	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
    }
    VAR(r) = var(q);
@@ -291,7 +296,7 @@ read_bearing_or_omit(reading r)
       case Comp: q = Q_BEARING; break;
       case BackComp: q = Q_BACKBEARING; break;
       default:
-	q = Q_NULL; /* Suppress compiler warning */; 
+	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
    }
    VAR(r) = var(q);
@@ -419,7 +424,7 @@ data_file(const char *pth, const char *fnm)
       pcs = pcsNew;
 
       t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
-      
+
       t[EOF] = SPECIAL_EOL;
       memset(t, 0, sizeof(short) * 33);
       for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
@@ -449,12 +454,14 @@ data_file(const char *pth, const char *fnm)
    if (fmt == FMT_DAT) {
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 static reading compass_order[] = {
-	    Fr, To, Tape, Comp, Clino, Ignore, Ignore, Ignore, Ignore,
+	    Fr, To, Tape, CompassDATComp, CompassDATClino,
+	    Ignore, Ignore, Ignore, Ignore, /*LRUD*/
 	    CompassDATFlags, IgnoreAll
 	 };
 	 static reading compass_order_backsights[] = {
-	    Fr, To, Tape, Comp, Clino, Ignore, Ignore, Ignore, Ignore,
-	    BackComp, BackClino,
+	    Fr, To, Tape, CompassDATComp, CompassDATClino,
+	    Ignore, Ignore, Ignore, Ignore, /*LRUD*/
+	    CompassDATBackComp, CompassDATBackClino,
 	    CompassDATFlags, IgnoreAll
 	 };
 	 /* <Cave name> */
@@ -559,7 +566,7 @@ data_file(const char *pth, const char *fnm)
 	 pcs->ordering = NULL;
 	 free_settings(pcs);
 	 pcs = pcsParent;
-      }					  
+      }
    } else if (fmt == FMT_MAK) {
       nextch_handling_eol();
       while (!feof(file.fh) && !ferror(file.fh)) {
@@ -645,7 +652,7 @@ data_file(const char *pth, const char *fnm)
 	 SVX_ASSERT(pcsParent);
 	 free_settings(pcs);
 	 pcs = pcsParent;
-      }					  
+      }
    } else {
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
@@ -1471,7 +1478,7 @@ data_normal(void)
 	     break;
 	   default:
 	     compile_error_skip(/*Found `%s', expecting `F' or `B'*/131,
-			        buffer);
+				buffer);
 	     process_eol();
 	     return 0;
 	  }
@@ -1537,6 +1544,36 @@ data_normal(void)
 	  VAL(FrDepth) = 0;
 	  read_reading(ToDepth, fFalse);
 	  break;
+       case CompassDATComp:
+	  read_bearing_or_omit(Comp);
+	  if (is_compass_NaN(VAL(Comp))) VAL(Comp) = HUGE_REAL;
+	  break;
+       case CompassDATBackComp:
+	  read_bearing_or_omit(BackComp);
+	  if (is_compass_NaN(VAL(BackComp))) VAL(BackComp) = HUGE_REAL;
+	  break;
+       case CompassDATClino:
+	  read_reading(Clino, fTrue);
+	  if (is_compass_NaN(VAL(Clino))) {
+	     VAL(Clino) = HUGE_REAL;
+	     ctype = CTYPE_OMIT;
+	  } else if (VAL(Clino) == HUGE_REAL) {
+	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
+	     process_eol();
+	     return 0;
+	  } else ctype = CTYPE_READING;
+	  break;
+       case CompassDATBackClino:
+	  read_reading(BackClino, fTrue);
+	  if (is_compass_NaN(VAL(BackClino))) {
+	     VAL(BackClino) = HUGE_REAL;
+	     backctype = CTYPE_OMIT;
+	  } else if (VAL(BackClino) == HUGE_REAL) {
+	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
+	     process_eol();
+	     return 0;
+	  } else backctype = CTYPE_READING;
+	  break;
        case CompassDATFlags:
 	  if (ch == '#') {
 	     nextch();
@@ -1581,15 +1618,15 @@ data_normal(void)
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
- 	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
+	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
 		 VAL(Tape) == (real)0.0 && VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		goto inferred_equate;
 	     }
 	     if (fRev) {
 		prefix *t = fr;
-	   	fr = to;
-	    	to = t;
+		fr = to;
+		to = t;
 	     }
 	     if (fTopofil) {
 		VAL(Tape) *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
@@ -1616,7 +1653,7 @@ data_normal(void)
 		BUG("bad style");
 	     }
 	     if (!r) skipline();
-	     
+
 	     /* Swap fr and to back to how they were for next line */
 	     if (fRev) {
 		prefix *t = fr;
@@ -1633,7 +1670,7 @@ data_normal(void)
 	  /* this is also used if clino reading is the omit character */
 	  VAL(Clino) = VAL(BackClino) = 0;
 
-          inferred_equate:
+	  inferred_equate:
 
 	  fMulti = fTrue;
 	  while (1) {
@@ -1693,7 +1730,7 @@ data_normal(void)
 				     fDepthChange);
 		break;
 	      default:
-		r = 0; /* Suppress compiler warning */; 
+		r = 0; /* Suppress compiler warning */;
 		BUG("bad style");
 	     }
 	     process_eol();
