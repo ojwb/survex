@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2004 Olly Betts
+# Copyright (C) 1999-2004,2005 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
  notentranceorexport inferunknown inferexports bad_units_factor\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
- lech level 2fixbug declination.dat ignore.dat dot17 3dcorner surfequate"}}
+ lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner surfequate"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -179,8 +179,7 @@ for file in $TESTS ; do
   lech) pos=no; warn=0 ;;
   level) pos=yes; warn=0 ;;
   2fixbug) pos=no; warn=0 ;;
-  declination.dat) pos=yes; warn=0 ;;
-  ignore.dat) pos=yes; warn=0 ;;
+  declination.dat|ignore.dat|backread.dat) pos=yes; warn=0 ;;
   dot17) pos=yes; warn=0 ;;
   3dcorner) pos=yes; warn=0 ;;
   surfequate) pos=dxf; warn=0 ;;
