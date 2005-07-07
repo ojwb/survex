@@ -50,7 +50,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  cmd_title cmd_titlebad cmd_dummy cmd_infer\
  cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
  plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar\
- newline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
+ badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
  notentranceorexport inferunknown inferexports bad_units_factor\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner surfequate"}}
@@ -183,7 +183,8 @@ for file in $TESTS ; do
   dot17) pos=yes; warn=0 ;;
   3dcorner) pos=yes; warn=0 ;;
   surfequate) pos=dxf; warn=0 ;;
-  *) file='' ;;
+  *) echo "Warning: don't know how to run test '$file' - skipping it"
+     file='' ;;
   esac
 
   if test -n "$file" ; then
