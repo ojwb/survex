@@ -4,7 +4,7 @@ pkgdocdir = @PKGDOCDIR@
 
 other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
  printdm.1 printhpgl.1 printpcl.1 printps.1 print.ini.5 svxedit.1 \
- @EXTRA_MANS@
+ aven.1
 
 manual_sources = manual.sgml cad3d.sgml cavern.sgml\
  diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml\
@@ -14,7 +14,7 @@ manual_sources = manual.sgml cad3d.sgml cavern.sgml\
 # People can build from CVS without sgmltools v2 or v3 installed but they
 # won't be able to "make dist", which is arguably a good thing - we don't
 # want tarballs accidentally lacking the documentation.
-EXTRA_DIST = manual @HTMLFILES@ @DOCS_OTHER@ survex.1.in index.htm.in\
+EXTRA_DIST = manual $(HTMLFILES) $(DOCS_OTHER) survex.1.in index.htm.in\
  custom.dsl survex.ent\
  caution.png note.png\
  $(manual_sources) $(other_mans)\

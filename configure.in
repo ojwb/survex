@@ -94,25 +94,8 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CPP
 
-AVEN='aven$(EXEEXT)'
-AC_ARG_ENABLE(aven,
-[  --disable-aven Don't try to build Aven cave viewer],
-[case $enableval in
-  yes) ;;
-  no) AVEN= ;;
-  *) AC_MSG_ERROR(bad value $enableval for --enable-aven) ;;
-esac])
-
-if test -n "$AVEN" ; then
-  AC_PROG_CXX
-  AC_PROG_CXXCPP
-else
-  dnl We don't want to fail to build Survex just because there's no C++
-  dnl compiler installed, so we need to invoke AC_PROG_CXX conditionally.
-  dnl This bodge is required in order to do that...
-  am__fastdepCXX_TRUE='#'
-  am__fastdepCXX_FALSE=
-fi
+AC_PROG_CXX
+AC_PROG_CXXCPP
 
 AC_LANG_C
 
@@ -152,84 +135,64 @@ AC_ARG_VAR(WXCONFIG, [wxWindows configuration script to use to build Aven])
 AM_CONDITIONAL(WIN32, [test yes = "$mswindows"])
 AM_CONDITIONAL(MACOSX, [test yes = "$macosx"])
 
-if test -n "$AVEN"; then
-  if test -n "$WXCONFIG" ; then
-    dnl WXCONFIG specified - sanity check the value
-    dnl don't check for --ldflags - older wx-config didn't do that
-    if (exec >&5 2>&5;$WXCONFIG --libs --cflags --cxxflags;exit $?) then
-      :
-    else
-      AC_MSG_ERROR(['$WXCONFIG --libs --cflags --cxxflags' doesn't work, bailing out])
-    fi
+if test -n "$WXCONFIG" ; then
+  dnl WXCONFIG specified - sanity check the value
+  dnl don't check for --ldflags - older wx-config didn't do that
+  if (exec >&5 2>&5;$WXCONFIG --libs --cflags --cxxflags;exit $?) then
+    :
   else
-    # prefer wx2.6 (or wx2.5) - a few things work better with it.
-    if test yes = "$macosx" ; then
-      AC_PATH_PROGS(WXCONFIG, [wxmac-2.6-config wxmac-2.5-config wxmac-2.4-config wxmac-config])
-      wxdef=__WXMAC__
-    elif test yes = "$mswindows" ; then
-      AC_PATH_PROGS(WXCONFIG, [wxmsw-2.6-config wxmsw-2.5-config wxmsw-2.4-config wxmsw-config])
-      wxdef=__WXMSW__
-    else
-      AC_PATH_PROGS(WXCONFIG, [wxgtk-2.6-config wxgtk-2.5-config wxgtk-2.4-config wxgtk-config])
-      wxdef=__WXGTK__
-    fi
-    if test -z "$WXCONFIG" ; then
-      dnl see if wx-config exists and is for the correct version
-      AC_PATH_PROGS(WXCONFIG, [wx-config])
-      if test -n "$WXCONFIG" ; then
-	if (exec >&5 2>&5;$WXCONFIG --cflags|grep -e -D"$wxdef";exit $?) then
-	  :
-	else
-	  WXCONFIG=
-	fi
+    AC_MSG_ERROR(['$WXCONFIG --libs --cflags --cxxflags' doesn't work, bailing out])
+  fi
+else
+  # prefer wx2.6 (or wx2.5) - a few things work better with it.
+  if test yes = "$macosx" ; then
+    AC_PATH_PROGS(WXCONFIG, [wxmac-2.6-config wxmac-2.5-config wxmac-2.4-config wxmac-config])
+    wxdef=__WXMAC__
+  elif test yes = "$mswindows" ; then
+    AC_PATH_PROGS(WXCONFIG, [wxmsw-2.6-config wxmsw-2.5-config wxmsw-2.4-config wxmsw-config])
+    wxdef=__WXMSW__
+  else
+    AC_PATH_PROGS(WXCONFIG, [wxgtk-2.6-config wxgtk-2.5-config wxgtk-2.4-config wxgtk-config])
+    wxdef=__WXGTK__
+  fi
+  if test -z "$WXCONFIG" ; then
+    dnl see if wx-config exists and is for the correct version
+    AC_PATH_PROGS(WXCONFIG, [wx-config])
+    if test -n "$WXCONFIG" ; then
+      if (exec >&5 2>&5;$WXCONFIG --cflags|grep -e -D"$wxdef";exit $?) then
+	:
+      else
+	WXCONFIG=
       fi
     fi
-    if test -z "$WXCONFIG" ; then
-      AC_MSG_RESULT([not building aven (wxWindows not found)])
-      AVEN=
-    fi
   fi
-
-  if test -n "$AVEN"; then
-    WX_LIBS=`$WXCONFIG --libs`
-    AC_SUBST(WX_LIBS)
-    dnl older wx-config didn't support this - error goes to stderr, with
-    dnl nothing to stdout, so just ignore stderr
-    WX_LDFLAGS=`$WXCONFIG --ldflags 2> /dev/null`
-    AC_SUBST(WX_LDFLAGS)
-    WX_CFLAGS=`$WXCONFIG --cflags`
-    AC_SUBST(WX_CFLAGS)
-    WX_CXXFLAGS=`$WXCONFIG --cxxflags`
-    AC_SUBST(WX_CXXFLAGS)
-    WXGL_LIBS=`$WXCONFIG --libs`" "`$WXCONFIG --gl-libs`
-    AC_SUBST(WXGL_LIBS)
-    AC_MSG_RESULT(building aven)
-
-    dnl Check for ffmpeg
-    MOVIE_LIBS=
-    AC_CHECK_LIB(avcodec, avcodec_init,
-      [AC_CHECK_LIB(avformat, av_register_all,
-	[AC_CHECK_HEADERS([avformat.h],
-	  [MOVIE_LIBS="-lavformat -lavcodec"])], [], [-lavcodec $WXGL_LIBS])])
-    AC_SUBST(MOVIE_LIBS)
+  if test -z "$WXCONFIG" ; then
+    AC_MSG_ERROR([wxWindows not found])
   fi
 fi
 
-AM_CONDITIONAL(AVEN, [test -n "$AVEN"])
+WX_LIBS=`$WXCONFIG --libs`" "`$WXCONFIG --gl-libs`
+dnl Needed for nvidia drivers on linux (for some setups anyway).
+AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryVersion, [WX_LIBS="$WX_LIBS -lXxf86vm"], [], [$WX_LIBS])
+AC_SUBST(WX_LIBS)
+dnl Older wx-config didn't support this - error goes to stderr, with
+dnl nothing to stdout, so just ignore stderr
+WX_LDFLAGS=`$WXCONFIG --ldflags 2> /dev/null`
+AC_SUBST(WX_LDFLAGS)
+WX_CFLAGS=`$WXCONFIG --cflags`
+AC_SUBST(WX_CFLAGS)
+WX_CXXFLAGS=`$WXCONFIG --cxxflags`
+AC_SUBST(WX_CXXFLAGS)
+
+dnl Check for ffmpeg
+MOVIE_LIBS=
+AC_CHECK_LIB(avcodec, avcodec_init,
+  [AC_CHECK_LIB(avformat, av_register_all,
+    [AC_CHECK_HEADERS([avformat.h],
+      [MOVIE_LIBS="-lavformat -lavcodec"])], [], [-lavcodec $WX_LIBS])])
+AC_SUBST(MOVIE_LIBS)
 
 AC_LANG_C
-
-AC_SUBST(AVEN)
-
-dnl only build extra man pages on Unix - the ".exe" messes us up otherwise
-dnl FIXME: probably no point building man pages except on Unix
-if test -z "$ac_exeext" ; then
-  dnl can't use \> as freebsd sed doesn't support it
-  EXTRA_MANS=`echo "$AVEN"|sed 's/\$(EXEEXT)//g;s/\([[^ ]]\) /\1.1 /g;s/\(.\)$/\1.1/'`
-else
-  EXTRA_MANS=
-fi
-AC_SUBST(EXTRA_MANS)
 
 dnl caverot libraries...
 AC_SUBST(CRLIB)
@@ -294,26 +257,27 @@ AC_CHECK_FUNCS(difftime)
 
 dnl try to find a case-insensitive compare
 
-AC_MSG_CHECKING(how to compare strings ignoring case)
-AC_MSG_RESULT()
 strcasecmp=no
 dnl The order of these tests is important.
-AC_CHECK_FUNC(strcasecmp, strcasecmp=strcasecmp)
+AC_CHECK_FUNC(strcasecmp, [strcasecmp=strcasecmp])
 if test no = "$strcasecmp"; then
-  AC_CHECK_FUNC(stricmp, strcasecmp=stricmp)
+  AC_CHECK_FUNC(stricmp, [strcasecmp=stricmp])
 fi
 if test no = "$strcasecmp"; then
-  AC_CHECK_FUNC(strcmpi, strcasecmp=strcmpi)
+  AC_CHECK_FUNC(strcmpi, [strcasecmp=strcmpi])
 fi
 
+AC_MSG_CHECKING([how to compare strings ignoring case])
 case $strcasecmp in
 no)
   AC_LIBOBJ(strcasecmp)
-  AC_MSG_RESULT(using own implementation of strcasecmp) ;;
-strcasecmp) ;;
+  AC_MSG_RESULT([using own implementation of strcasecmp]) ;;
+strcasecmp)
+  AC_MSG_RESULT([strcasecmp]) ;;
 *)
   AC_DEFINE_UNQUOTED(strcasecmp, "$strcasecmp",
-    [strcasecmp define for systems which call it something else]) ;;
+    [strcasecmp define for systems which call it something else])
+  AC_MSG_RESULT([$strcasecmp]) ;;
 esac
 
 AC_MSG_CHECKING(for sgmltools v2 or v3)
@@ -376,8 +340,8 @@ AVENDESC=desc-aven.txt
 AC_SUBST_FILE(SVXEDITDESC)
 SVXEDITDESC=desc-svxedit.txt
 
-dnl don't define DATADIR if building for MS Windows - it won't be used, and
-dnl can conflict with DATADIR typedef in objidl.h
+dnl Don't define DATADIR if building for MS Windows - it won't be used, and
+dnl can conflict with the DATADIR typedef in objidl.h
 if test no = "$mswindows"; then
   AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 fi
