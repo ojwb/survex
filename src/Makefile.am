@@ -49,6 +49,8 @@ aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc export.cc \
  guicontrol.cc gla-gl.cc fnt.cc moviemaker.cc \
+ brotatemask.xbm brotate.xbm hand_mask.xbm handmask.xbm hand.xbm \
+ rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  avenprcore.cc printwx.cc ini.c hash.c
 
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
