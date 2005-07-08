@@ -116,9 +116,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_HaveData(false)
 {
     m_Control = control;
-    m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
-    m_ScaleBar.offset_y = SCALE_BAR_OFFSET_Y;
-    m_ScaleBar.width = 0;
+    m_ScaleBarWidth = 0;
     m_Parent = parent;
     m_RotationOK = true;
     m_DoneFirstShow = false;
@@ -152,6 +150,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     pres_speed = 0.0;
     pres_reverse = false;
     mpeg = NULL;
+    current_cursor = GfxCore::CURSOR_DEFAULT;
 
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
@@ -983,19 +982,17 @@ void GfxCore::DrawScalebar()
 
     // Actual size of the thing in pixels:
     int size = int((size_snap / SurveyUnitsAcrossViewport()) * m_XSize);
-    m_ScaleBar.width = size;
+    m_ScaleBarWidth = size;
 
     // Draw it...
-    int end_x = m_ScaleBar.offset_x;
-    int height = SCALE_BAR_HEIGHT;
-    int end_y = m_ScaleBar.offset_y + height;
+    const int end_y = SCALE_BAR_OFFSET_Y + SCALE_BAR_HEIGHT;
     int interval = size / 10;
 
     gla_colour col = col_WHITE;
     for (int ix = 0; ix < 10; ix++) {
-	int x = end_x + int(ix * ((Double) size / 10.0));
+	int x = SCALE_BAR_OFFSET_X + int(ix * ((Double) size / 10.0));
 
-	DrawRectangle(col, col, x, end_y, interval + 2, height);
+	DrawRectangle(col, col, x, end_y, interval + 2, SCALE_BAR_HEIGHT);
 
 	col = (col == col_WHITE) ? col_GREY : col_WHITE;
     }
@@ -1004,11 +1001,11 @@ void GfxCore::DrawScalebar()
     wxString str = FormatLength(size_snap);
 
     SetColour(TEXT_COLOUR);
-    DrawIndicatorText(end_x, end_y - FONT_SIZE - 4, "0");
+    DrawIndicatorText(SCALE_BAR_OFFSET_X, end_y - FONT_SIZE - 4, "0");
 
     int text_width, text_height;
     GetTextExtent(str, &text_width, &text_height);
-    DrawIndicatorText(end_x + size - text_width, end_y - FONT_SIZE - 4, str);
+    DrawIndicatorText(SCALE_BAR_OFFSET_X + size - text_width, end_y - FONT_SIZE - 4, str);
 }
 
 bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
@@ -1547,6 +1544,8 @@ bool GfxCore::PointWithinCompass(wxPoint point) const
 {
     // Determine whether a point (in window coordinates) lies within the
     // compass.
+    if (!ShowingCompass()) return false;
+
     glaCoord dx = point.x - GetCompassXPosition();
     glaCoord dy = point.y - GetIndicatorYPosition();
     glaCoord radius = GetIndicatorRadius();
@@ -1557,6 +1556,8 @@ bool GfxCore::PointWithinCompass(wxPoint point) const
 bool GfxCore::PointWithinClino(wxPoint point) const
 {
     // Determine whether a point (in window coordinates) lies within the clino.
+    if (!ShowingClino()) return false;
+
     glaCoord dx = point.x - GetClinoXPosition();
     glaCoord dy = point.y - GetIndicatorYPosition();
     glaCoord radius = GetIndicatorRadius();
@@ -1566,12 +1567,14 @@ bool GfxCore::PointWithinClino(wxPoint point) const
 
 bool GfxCore::PointWithinScaleBar(wxPoint point) const
 {
-    // Determine whether a point (in window coordinates) lies within the scale bar.
+    // Determine whether a point (in window coordinates) lies within the scale
+    // bar.
+    if (!ShowingScaleBar()) return false;
 
-    return (point.x >= m_ScaleBar.offset_x &&
-	    point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
-	    point.y <= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT &&
-	    point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT*2);
+    return (point.x >= SCALE_BAR_OFFSET_X &&
+	    point.x <= SCALE_BAR_OFFSET_X + m_ScaleBarWidth &&
+	    point.y <= m_YSize - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT &&
+	    point.y >= m_YSize - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT*2);
 }
 
 void GfxCore::SetCompassFromPoint(wxPoint point)
@@ -1628,7 +1631,7 @@ void GfxCore::SetScaleBarFromOffset(wxCoord dx)
     // Set the scale of the survey, given an offset as to how much the mouse has
     // been dragged over the scalebar since the last scale change.
 
-    SetScale((m_ScaleBar.width + dx) * m_Params.scale / m_ScaleBar.width);
+    SetScale((m_ScaleBarWidth + dx) * m_Params.scale / m_ScaleBarWidth);
     ForceRefresh();
 }
 
@@ -2488,4 +2491,76 @@ GfxCore::OnExport(const wxString &filename, const wxString &title)
 {
     return Export(filename, title, m_Parent,
 	   m_PanAngle, m_TiltAngle, m_Names, m_Crosses, m_Legs, m_Surface);
+}
+
+static wxCursor
+make_cursor(const unsigned char * bits, const unsigned char * mask,
+	    int hotx, int hoty)
+{
+#ifdef __WXMSW__
+    wxBitmap cursor_bitmap(bits, 32, 32);
+    cursor_bitmap.SetMask(new wxMask(wxBitmap(mask, 32, 32)));
+    wxImage cursor_image = cursor_bitmap.ConvertToImage();
+    cursor_image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, hotx);
+    cursor_image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, hoty);
+    return wxCursor(move_cursor_image);
+#else
+    return wxCursor((const char *)bits, 32, 32, hotx, hoty,
+		    (const char *)mask, wxWHITE, wxBLACK);
+#endif
+}
+
+const
+#include "hand.xbm"
+const
+#include "handmask.xbm"
+
+const
+#include "brotate.xbm"
+const
+#include "brotatemask.xbm"
+
+const
+#include "vrotate.xbm"
+const
+#include "vrotatemask.xbm"
+
+const
+#include "rotate.xbm"
+const
+#include "rotatemask.xbm"
+
+void
+GfxCore::SetCursor(GfxCore::cursor new_cursor)
+{
+    // Check if we're already showing that cursor.
+    if (current_cursor == new_cursor) return;
+
+    current_cursor = new_cursor;
+    switch (current_cursor) {
+	case GfxCore::CURSOR_DEFAULT:
+	    GLACanvas::SetCursor(wxNullCursor);
+	    break;
+	case GfxCore::CURSOR_POINTING_HAND:
+	    GLACanvas::SetCursor(wxCursor(wxCURSOR_HAND));
+	    break;
+	case GfxCore::CURSOR_DRAGGING_HAND:
+	    GLACanvas::SetCursor(make_cursor(hand_bits, handmask_bits, 12, 18));
+	    break;
+	case GfxCore::CURSOR_HORIZONTAL_RESIZE:
+	    GLACanvas::SetCursor(wxCursor(wxCURSOR_SIZEWE));
+	    break;
+	case GfxCore::CURSOR_ROTATE_HORIZONTALLY:
+	    GLACanvas::SetCursor(make_cursor(rotate_bits, rotatemask_bits, 15, 15));
+	    break;
+	case GfxCore::CURSOR_ROTATE_VERTICALLY:
+	    GLACanvas::SetCursor(make_cursor(vrotate_bits, vrotatemask_bits, 15, 15));
+	    break;
+	case GfxCore::CURSOR_ROTATE_EITHER_WAY:
+	    GLACanvas::SetCursor(make_cursor(brotate_bits, brotatemask_bits, 15, 15));
+	    break;
+	case GfxCore::CURSOR_ZOOM:
+	    GLACanvas::SetCursor(wxCursor(wxCURSOR_MAGNIFIER));
+	    break;
+    }
 }

@@ -94,13 +94,7 @@ class GfxCore : public GLACanvas {
 	Double scale;
     } m_Params;
 
-    struct {
-	int offset_x;
-	int offset_y;
-	int width;
-	int drag_start_offset_x;
-	int drag_start_offset_y;
-    } m_ScaleBar;
+    int m_ScaleBarWidth;
 
     struct {
         glaList underground_legs;
@@ -109,6 +103,19 @@ class GfxCore : public GLACanvas {
         glaList blobs;
     } m_Lists;
 
+public:
+    typedef enum {
+	CURSOR_DEFAULT,
+	CURSOR_POINTING_HAND,
+	CURSOR_DRAGGING_HAND,
+	CURSOR_HORIZONTAL_RESIZE,
+	CURSOR_ROTATE_HORIZONTALLY,
+	CURSOR_ROTATE_VERTICALLY,
+	CURSOR_ROTATE_EITHER_WAY,
+	CURSOR_ZOOM
+    } cursor;
+
+private:
     GUIControl* m_Control;
     char* m_LabelGrid;
     bool m_RotationOK;
@@ -170,6 +177,8 @@ class GfxCore : public GLACanvas {
     double this_mark_total;
 
     MovieMaker * mpeg;
+
+    cursor current_cursor;
 
     void UpdateQuaternion();
 
@@ -411,6 +420,7 @@ public:
     void OnPrint(const wxString &filename, const wxString &title,
 		 const wxString &datestamp);
     bool OnExport(const wxString &filename, const wxString &title);
+    void SetCursor(GfxCore::cursor new_cursor);
 
 private:
     DECLARE_EVENT_TABLE()

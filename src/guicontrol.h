@@ -41,7 +41,7 @@ class GUIControl {
 
     bool m_ReverseControls;
 
-    void HandleScaleRotate(wxPoint);
+    void HandleRotate(wxPoint);
     void HandleTilt(wxPoint);
     void HandleTranslate(wxPoint);
     void HandleScale(wxPoint);
@@ -56,7 +56,7 @@ public:
 
     void SetView(GfxCore* view);
 
-    bool MouseDown();
+    bool MouseDown() const;
 
     void OnDefaults();
     void OnPlan();

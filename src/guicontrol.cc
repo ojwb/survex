@@ -51,7 +51,7 @@ void GUIControl::SetView(GfxCore* view)
     m_View = view;
 }
 
-bool GUIControl::MouseDown()
+bool GUIControl::MouseDown() const
 {
     return (dragging != NO_DRAG);
 }
@@ -59,6 +59,10 @@ bool GUIControl::MouseDown()
 void GUIControl::HandleTilt(wxPoint point)
 {
     // Handle a mouse movement during tilt mode.
+
+    // wxGTK (at least) fails to update the cursor while dragging.
+    m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
+
     int dy = point.y - m_DragStart.y;
 
     if (m_ReverseControls != m_View->GetPerspective()) dy = -dy;
@@ -73,6 +77,10 @@ void GUIControl::HandleTilt(wxPoint point)
 void GUIControl::HandleTranslate(wxPoint point)
 {
     // Handle a mouse movement during translation mode.
+
+    // wxGTK (at least) fails to update the cursor while dragging.
+    m_View->SetCursor(GfxCore::CURSOR_DRAGGING_HAND);
+
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
@@ -92,6 +100,9 @@ void GUIControl::HandleTranslate(wxPoint point)
 void GUIControl::HandleScale(wxPoint point)
 {
     // Handle a mouse movement during scale mode.
+
+    // wxGTK (at least) fails to update the cursor while dragging.
+    m_View->SetCursor(GfxCore::CURSOR_ZOOM);
 
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
@@ -115,6 +126,9 @@ void GUIControl::HandleTiltRotate(wxPoint point)
 {
     // Handle a mouse movement during tilt/rotate mode.
 
+    // wxGTK (at least) fails to update the cursor while dragging.
+    m_View->SetCursor(GfxCore::CURSOR_ROTATE_EITHER_WAY);
+
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
@@ -133,45 +147,35 @@ void GUIControl::HandleTiltRotate(wxPoint point)
     m_DragStart = point;
 }
 
-void GUIControl::HandleScaleRotate(wxPoint point)
+void GUIControl::HandleRotate(wxPoint point)
 {
-    // Handle a mouse movement during scale/rotate mode.
+    // Handle a mouse movement during rotate mode.
+
+    // wxGTK (at least) fails to update the cursor while dragging.
+    m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
+
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
-    if (m_ReverseControls) {
+    if (m_ReverseControls != m_View->GetPerspective()) {
 	dx = -dx;
 	dy = -dy;
     }
 
-    Double pan_angle = m_View->CanRotate() ? (Double(dx) * -0.36) : 0.0;
+    // left/right => rotate.
+    m_View->TurnCave(m_View->CanRotate() ? (Double(dx) * -0.36) : 0.0);
 
-    // left/right => rotate, up/down => scale
-    m_View->TurnCave(pan_angle);
-
-    m_View->SetScale(m_View->GetScale() * pow(1.06, 0.08 * dy));
-
-#ifdef AVENGL
-    //glDeleteLists(m_Lists.grid, 1);
-    //    DrawGrid();
-#endif
     m_View->ForceRefresh();
 
     m_DragStart = point;
 }
 
-void GUIControl::HandCursor()
-{
-    const wxCursor HAND_CURSOR(wxCURSOR_HAND);
-    m_View->SetCursor(HAND_CURSOR);
-}
-
 void GUIControl::RestoreCursor()
 {
     if (m_View->ShowingMeasuringLine()) {
-        HandCursor();
+        m_View->SetCursor(GfxCore::CURSOR_POINTING_HAND);
     } else {
-        m_View->SetCursor(wxNullCursor);
+        m_View->SetCursor(GfxCore::CURSOR_DEFAULT);
     }
 }
 
@@ -184,22 +188,21 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     // Mouse motion event handler.
     if (!m_View->HasData()) return;
 
-    wxPoint point = wxPoint(event.GetX(), event.GetY());
+    wxPoint point(event.GetX(), event.GetY());
 
     // Check hit-test grid (only if no buttons are pressed).
     if (!event.LeftIsDown() && !event.MiddleIsDown() && !event.RightIsDown()) {
 	if (m_View->CheckHitTestGrid(point, false)) {
-            HandCursor();
-        } else {
-            if (m_View->ShowingScaleBar() &&
-                m_View->PointWithinScaleBar(point)) {
-
-                const wxCursor CURSOR(wxCURSOR_SIZEWE);
-                m_View->SetCursor(CURSOR);
-            } else {
-                m_View->SetCursor(wxNullCursor);
-            }
-        }
+	    m_View->SetCursor(GfxCore::CURSOR_POINTING_HAND);
+        } else if (m_View->PointWithinScaleBar(point)) {
+	    m_View->SetCursor(GfxCore::CURSOR_HORIZONTAL_RESIZE);
+        } else if (m_View->PointWithinCompass(point)) {
+	    m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
+        } else if (m_View->PointWithinClino(point)) {
+	    m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
+	} else {
+	    RestoreCursor();
+	}
     }
 
     // Update coordinate display if in plan view,
@@ -208,62 +211,39 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 
     switch (dragging) {
 	case LEFT_DRAG:
-	    if (m_LastDrag == drag_NONE) {
-		if (m_View->ShowingCompass() &&
-		    m_View->PointWithinCompass(point)) {
-		    m_LastDrag = drag_COMPASS;
-		} else if (m_View->ShowingClino() &&
-			   m_View->PointWithinClino(point)) {
-		    m_LastDrag = drag_ELEV;
-		} else if (m_View->ShowingScaleBar() &&
-			   m_View->PointWithinScaleBar(point)) {
-		    m_LastDrag = drag_SCALE;
-		}
-	    }
-
-	    if (m_LastDrag == drag_COMPASS) {
-		// drag in heading indicator
-		m_View->SetCompassFromPoint(point);
-	    } else if (m_LastDrag == drag_ELEV) {
-		// drag in clinometer
-		m_View->SetClinoFromPoint(point);
-	    } else if (m_LastDrag == drag_SCALE) {
-		// FIXME: check why there was a check here for x being inside
-		// the window
-		m_View->SetScaleBarFromOffset(point.x - m_DragLast.x);
-	    } else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
-		m_LastDrag = drag_MAIN;
-		if (event.ShiftDown()) {
-		    HandleScaleRotate(point);
-		} else {
-		    HandleTiltRotate(point);
-		}
+	    switch (m_LastDrag) {
+		case drag_COMPASS:
+		    // Drag in heading indicator.
+		    m_View->SetCompassFromPoint(point);
+		    break;
+		case drag_ELEV:
+		    // Drag in clinometer.
+		    m_View->SetClinoFromPoint(point);
+		    break;
+		case drag_SCALE:
+		    m_View->SetScaleBarFromOffset(point.x - m_DragLast.x);
+		    break;
+		case drag_MAIN:
+		    if (event.ControlDown()) {
+			HandleTiltRotate(point);
+		    } else {
+			HandleScale(point);
+		    }
+		    break;
+		case drag_NONE:
+		    // Shouldn't happen?!  FIXME: assert or something.
+		    break;
 	    }
 	    break;
 	case MIDDLE_DRAG:
-	    if (event.ShiftDown()) {
+	    if (event.ControlDown()) {
 		HandleTilt(point);
 	    } else {
-		HandleScale(point);
+		HandleRotate(point);
 	    }
 	    break;
 	case RIGHT_DRAG:
-	    if ((m_LastDrag == drag_NONE && m_View->PointWithinScaleBar(point)) || m_LastDrag == drag_SCALE) {
-	    /* FIXME
-		  if (point.x < 0) point.x = 0;
-		  if (point.y < 0) point.y = 0;
-		  if (point.x > m_XSize) point.x = m_XSize;
-		  if (point.y > m_YSize) point.y = m_YSize;
-		  m_LastDrag = drag_SCALE;
-		  int x_inside_bar = m_DragStart.x - m_ScaleBar.drag_start_offset_x;
-		  int y_inside_bar = m_YSize - m_ScaleBar.drag_start_offset_y - m_DragStart.y;
-		  m_ScaleBar.offset_x = point.x - x_inside_bar;
-		  m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
-		  m_View->ForceRefresh(); */
-	    } else {
-		m_LastDrag = drag_MAIN;
-		HandleTranslate(point);
-	    }
+	    HandleTranslate(point);
 	    break;
 	case NO_DRAG:
 	    break;
@@ -277,14 +257,24 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
     if (m_View->HasData() && m_View->GetLock() != lock_POINT) {
 	dragging = LEFT_DRAG;
 
-	/* FIXME
-	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
-	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y; */
-
 	m_DragStart = m_DragRealStart = wxPoint(event.GetX(), event.GetY());
 
-//        const wxCursor CURSOR(wxCURSOR_MAGNIFIER);
-//        m_View->SetCursor(CURSOR);
+	if (m_View->PointWithinCompass(m_DragStart)) {
+	    m_LastDrag = drag_COMPASS;
+	} else if (m_View->PointWithinClino(m_DragStart)) {
+	    m_LastDrag = drag_ELEV;
+	} else if (m_View->PointWithinScaleBar(m_DragStart)) {
+	    m_LastDrag = drag_SCALE;
+	} else {
+	    m_LastDrag = drag_MAIN;
+
+	    if (event.ControlDown()) {
+		m_View->SetCursor(GfxCore::CURSOR_ROTATE_EITHER_WAY);
+	    } else {
+		m_View->SetCursor(GfxCore::CURSOR_ZOOM);
+	    }
+	}
+
 	m_View->CaptureMouse();
     }
 }
@@ -293,7 +283,7 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 {
     if (m_View->HasData() && m_View->GetLock() != lock_POINT) {
 	if (event.GetPosition() == m_DragRealStart) {
-	    // just a "click"...
+	    // Just a "click"...
 	    m_View->CheckHitTestGrid(m_DragStart, true);
 	}
 
@@ -315,8 +305,12 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
 	dragging = MIDDLE_DRAG;
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
 
-        const wxCursor CURSOR(wxCURSOR_MAGNIFIER);
-        m_View->SetCursor(CURSOR);
+	if (event.ControlDown()) {
+	    m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
+	} else {
+	    m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
+	}
+
 	m_View->CaptureMouse();
     }
 }
@@ -337,13 +331,9 @@ void GUIControl::OnRButtonDown(wxMouseEvent& event)
     if (m_View->HasData()) {
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
 
-/* FIXME	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
-	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y; */
-
 	dragging = RIGHT_DRAG;
 
-      //  const wxCursor CURSOR(wxCURSOR_HAND);
-      //  m_View->SetCursor(CURSOR);
+        m_View->SetCursor(GfxCore::CURSOR_DRAGGING_HAND);
 	m_View->CaptureMouse();
     }
 }
@@ -361,7 +351,7 @@ void GUIControl::OnRButtonUp(wxMouseEvent&)
 }
 
 void GUIControl::OnMouseWheel(wxMouseEvent& event) {
-    m_View->TiltCave(event.GetWheelRotation() / 24.0);
+    m_View->TiltCave(event.GetWheelRotation() / 12.0);
     m_View->ForceRefresh();
 }
 
