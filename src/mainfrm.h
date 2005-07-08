@@ -506,7 +506,7 @@ class AvenAllowOnTop {
 #endif
 	{
 #ifndef _WIN32
-	    if (mainfrm_->IsFullScreen()) {
+	    if (mainfrm_ && mainfrm_->IsFullScreen()) {
 		mainfrm = mainfrm_;
 		mainfrm->ViewFullScreen();
 	    }
