@@ -84,7 +84,7 @@ extern bool fExportUsed;
 typedef enum {
    Q_NULL = -1, Q_DEFAULT, Q_LENGTH, Q_DEPTH, Q_DX, Q_DY, Q_DZ, Q_COUNT, Q_POS,
    Q_BEARING, Q_BACKBEARING, Q_GRADIENT, Q_BACKGRADIENT, Q_DECLINATION,
-   Q_PLUMB, Q_LEVEL, Q_MAC
+   Q_PLUMB, Q_LEVEL, Q_LEFT, Q_RIGHT, Q_UP, Q_DOWN, Q_MAC
 } q_quantity;
 
 typedef enum {
@@ -143,7 +143,7 @@ typedef int compiletimeassert_sflags5[BIT(SFLAGS_FIXED) == img_SFLAG_FIXED ? 1 :
 
 /* enumeration of field types */
 typedef enum {
-   End = 0, Tape, Comp, Clino, BackComp, BackClino,
+   End = 0, Tape, Comp, Clino, BackComp, BackClino, Left, Right, Up, Down,
    FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount,
    /* Up to here are readings are allowed multiple values
     * and have slot in the value[] array in datain.c.
@@ -161,8 +161,9 @@ typedef enum {
     * so can have enum values >= 32 because we only use a
     * bitmask for those readings used in commands.c.
     */
-   CompassDATComp, CompassDATClino,
-   CompassDATBackComp, CompassDATBackClino, CompassDATFlags
+   CompassDATComp, CompassDATClino, CompassDATBackComp, CompassDATBackClino,
+   CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
+   CompassDATFlags
 } reading;
 /* Tape Comp Clino BackComp BackClino FrDepth ToDepth Dx Dy Dz FrCount ToCount */
 

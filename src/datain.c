@@ -278,6 +278,10 @@ read_reading(reading r, bool f_optional)
       case Dy: q = Q_DY; break;
       case Dz: q = Q_DZ; break;
       case FrCount: case ToCount: q = Q_COUNT; break;
+      case Left: q = Q_LEFT; break;
+      case Right: q = Q_RIGHT; break;
+      case Up: q = Q_UP; break;
+      case Down: q = Q_DOWN; break;
       default:
 	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
@@ -455,12 +459,12 @@ data_file(const char *pth, const char *fnm)
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 static reading compass_order[] = {
 	    Fr, To, Tape, CompassDATComp, CompassDATClino,
-	    Ignore, Ignore, Ignore, Ignore, /*LRUD*/
+	    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
 	    CompassDATFlags, IgnoreAll
 	 };
 	 static reading compass_order_backsights[] = {
 	    Fr, To, Tape, CompassDATComp, CompassDATClino,
-	    Ignore, Ignore, Ignore, Ignore, /*LRUD*/
+	    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
 	    CompassDATBackComp, CompassDATBackClino,
 	    CompassDATFlags, IgnoreAll
 	 };
@@ -1429,9 +1433,10 @@ data_normal(void)
    reading *ordering;
 
    VAL(Tape) = 0;
-   VAL(Comp) = VAL(BackComp) = HUGE_VAL;
+   VAL(Comp) = VAL(BackComp) = HUGE_REAL;
    VAL(FrCount) = VAL(ToCount) = 0;
    VAL(FrDepth) = VAL(ToDepth) = 0;
+   VAL(Left) = VAL(Right) = VAL(Up) = VAL(Down) = HUGE_REAL;
 
    fRev = fFalse;
    ctype = backctype = CTYPE_OMIT;
@@ -1501,11 +1506,8 @@ data_normal(void)
 	  read_reading(ToCount, fFalse);
 	  fTopofil = fTrue;
 	  break;
-       case Comp:
-	  read_bearing_or_omit(Comp);
-	  break;
-       case BackComp:
-	  read_bearing_or_omit(BackComp);
+       case Comp: case BackComp:
+	  read_bearing_or_omit(*ordering);
 	  break;
        case Clino:
 	  read_reading(Clino, fTrue);
@@ -1529,11 +1531,8 @@ data_normal(void)
 	  }
 	  backctype = CTYPE_READING;
 	  break;
-       case FrDepth:
-	  read_reading(FrDepth, fFalse);
-	  break;
-       case ToDepth:
-	  read_reading(ToDepth, fFalse);
+       case FrDepth: case ToDepth:
+	  read_reading(*ordering, fFalse);
 	  break;
        case Depth:
 	  VAL(FrDepth) = VAL(ToDepth);
@@ -1553,27 +1552,30 @@ data_normal(void)
 	  if (is_compass_NaN(VAL(BackComp))) VAL(BackComp) = HUGE_REAL;
 	  break;
        case CompassDATClino:
-	  read_reading(Clino, fTrue);
+	  read_reading(Clino, fFalse);
 	  if (is_compass_NaN(VAL(Clino))) {
 	     VAL(Clino) = HUGE_REAL;
 	     ctype = CTYPE_OMIT;
-	  } else if (VAL(Clino) == HUGE_REAL) {
-	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
-	     process_eol();
-	     return 0;
-	  } else ctype = CTYPE_READING;
+	  } else {
+	     ctype = CTYPE_READING;
+	  }
 	  break;
        case CompassDATBackClino:
-	  read_reading(BackClino, fTrue);
+	  read_reading(BackClino, fFalse);
 	  if (is_compass_NaN(VAL(BackClino))) {
 	     VAL(BackClino) = HUGE_REAL;
 	     backctype = CTYPE_OMIT;
-	  } else if (VAL(BackClino) == HUGE_REAL) {
-	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
-	     process_eol();
-	     return 0;
-	  } else backctype = CTYPE_READING;
+	  } else {
+	     backctype = CTYPE_READING;
+	  }
 	  break;
+       case CompassDATLeft: case CompassDATRight:
+       case CompassDATUp: case CompassDATDown: {
+	  reading actual = Left + (*ordering - CompassDATLeft);
+	  read_reading(actual, fFalse);
+	  if (VAL(actual) < 0) VAL(actual) = HUGE_REAL;
+	  break;
+       }
        case CompassDATFlags:
 	  if (ch == '#') {
 	     nextch();
@@ -1703,7 +1705,7 @@ data_normal(void)
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
- 	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
+	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
 		 VAL(Tape) == (real)0.0 && VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		process_eol();
