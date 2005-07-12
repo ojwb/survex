@@ -117,10 +117,6 @@ manual.txt: $(manual_sources) survex.ent ../configure.in
 	@sgmltools@ --backend=txt manual.sgml
 
 manual.ps: $(manual_sources) survex.ent ../configure.in
-	: # Create symlink as a workaround for missing leading / on path in
-	: # /usr/share/sgml/stylesheet/dsssl/sgmltools/print.dsl
-	: # (Debian bug #130504)
-	-ln -s /usr usr
 	@sgmltools@ --backend=ps manual.sgml
 
 CLEANFILES = usr
