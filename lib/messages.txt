@@ -2869,7 +2869,8 @@ es:257 %d p&aacute;ginas (%dx%d)
 it:257 %d pagine (%dx%d)
 sk:257 %d str&aacute;nok (%dx%d)
 ro:257 %d pagini (%dx%d)
-# XXX 258
+# temporary message
+en:258 Already have LRUD for station - ignoring these (for now)
 # cf 159
 # TRANSLATE fr pt pt-br ca es it sk ro check adapted message is ok
 en:259 Bearing
@@ -3053,16 +3054,12 @@ it:291 Battute topografia di Super@ficie##Ctrl+F
 sk:291 Z&aacute;mery @na povrchu##Ctrl+F
 ro:291 Portiuni de @suprafata ale topografiei##Ctrl+F
 #
-en:292 @Altitude Colouring on Surface Surveys
-en-us:292 @Altitude Coloring on Surface Surveys
-fr:292 Couleur par altit@ude pour les topos de surface
-de:292 H&ouml;hen-F@arben auf Oberfl&auml;chendarstellungen
-pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
-ca:292 Colors per @Altitud en topograf&iacute;a de superf&iacute;cie
-es:292 Colores por @Altitud en topografia de superficie
-it:292 Rappresentazione delle @Quote mediante colori
-sk:292 Fare@bnos&tcaron; pod&lcaron;a v&yacute;&scaron;ky pre povrchov&eacute; z&aacute;mery
-ro:292 Coloreaza in functie de @altitudine Topografia de Suprafata
+# NB 292 is a different message in 1.0!
+# TRANSLATE fr de
+en:292 Co@lour by Depth
+en-us:292 Color by @Depth
+fr,de:292 C@olour by Depth
+it:292 Co@lori secondo profondit&aacute;
 #
 # XXX 293 (used in 1.0)
 #
