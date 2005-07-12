@@ -12,6 +12,7 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>extend</command>
+<arg choice="opt">--specfile configuration .espec file</arg>
 <arg choice="req">&nbsp;input .3d file</arg>
 <arg choice="opt">output .3d file</arg>
 </cmdsynopsis>
@@ -20,20 +21,57 @@
 <refsect1><title>Description</title>
 
 <Para>
-Extend starts with the highest station marked as an entrance which
-has at least one underground survey leg attached to it.  If there are
-no such stations, the highest deadend station in the survey (or the
-highest station if there are no deadends) is used.  Extend puts the
-first station on the left, then folds each leg out individually to the right,
-breaking loops arbitrarily (usually at junctions).</Para>
-
-<Para>
-This approach suffices for simple caves or sections of cave.
-for more complicated situations human intervention is required -
-try &chasm;'s extended elevation editor (which we plan to integrate
-into Survex in the future).</Para>
+If no specfile is given, extend starts with the highest station marked
+as an entrance which has at least one underground survey leg attached
+to it.  If there are no such stations, the highest deadend station in
+the survey (or the highest station if there are no deadends) is used.
+Extend puts the first station on the left, then folds each leg out
+individually to the right, breaking loops arbitrarily (usually at
+junctions).</Para>
 
 <Para>If the output filename is not specified, extend writes its
 output to <filename/extend.3d/.</Para>
+
+<Para>
+This approach suffices for simple caves or sections of cave, but for more
+complicated situations human intervention is required.  More complex
+sections of cave can be handled with a specfile giving directions to
+switch the direction of extension between left and right, to
+explicitly specify the start station, or to break the extension at
+particular stations or legs. </Para>
+
+<Para>
+The specfile is in a format similar to cavern's data format:</Para>
+
+<programlisting>
+;This is a comment
+
+; start the elevation at station entrance.a
+*start entrance.a  ;this is a comment after a command
+
+; start extending leftwards from station half-way-down.5
+*eleft half-way-down.5
+
+; change direction of extension at further-down.8
+*eswap further-down.8
+
+; extend right from further-down.junction, but only for
+; the leg joining it to very-deep.1, other legs continuing
+; as before
+*eright further-down.junction  very-deep.1
+
+; break the survey at station side-loop.4
+*break side-loop.4
+
+; break survey at station side-loop.junction but only
+; for leg going to complex-loop.2
+*break side-loop.junction complex-loop.2 
+</programlisting>
+
+<Para>
+This approach requires some trial and error, but gives useful results
+for many caves.  The most complex systems would benefit from an
+interactive interface to select and view the breaks and switches of
+direction.</Para>
 
 </refsect1>

@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2003,2004 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,24 +40,6 @@
 #include "out.h"
 #include "str.h"
 #include "validate.h"
-
-#ifdef CHASM3DX
-# if OS != RISCOS
-/* include header for getcwd() */
-#  if OS == MSDOS && !defined(__DJGPP__)
-#   include <dir.h>
-#  elif OS == WIN32
-#   include <direct.h>
-#   include <conio.h> /* for _kbhit() and _getch() */
-#  else
-#   include <unistd.h>
-#  endif
-#endif
-
-#ifndef MAXPATHLEN
-#define MAXPATHLEN 1024
-#endif
-#endif
 
 /* For funcs which want to be immune from messing around with different
  * calling conventions */
@@ -114,9 +96,6 @@ static const struct option long_opts[] = {
    {"no-auxiliary-files", no_argument, 0, 's'},
    {"warnings-are-errors", no_argument, 0, 'w'},
    {"log", no_argument, 0, 1},
-#ifdef CHASM3DX
-   {"chasm-format", no_argument, 0, 'x'},
-#endif
 #if (OS==WIN32)
    {"pause", no_argument, 0, 2},
 #endif
@@ -125,25 +104,18 @@ static const struct option long_opts[] = {
    {0, 0, 0, 0}
 };
 
-#ifdef CHASM3DX
-#define short_opts "pxao:qswz:"
-#else
 #define short_opts "pao:qswz:"
-#endif
 
 /* TRANSLATE extract help messages to message file */
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),          "display percentage progress"},
-   {HLP_ENCODELONG(2),          "set location for output files"},
-   {HLP_ENCODELONG(3),          "only show brief summary (-qq for errors only)"},
-   {HLP_ENCODELONG(4),          "do not create .err file"},
-   {HLP_ENCODELONG(5),          "turn warnings into errors"},
-   {HLP_ENCODELONG(6),          "log output to .log file"},
-#ifdef CHASM3DX
-   {HLP_ENCODELONG(7),          "output data in chasm's 3dx format"},
-#endif
- /*{'z',                        "set optimizations for network reduction"},*/
+   {HLP_ENCODELONG(0),		"display percentage progress"},
+   {HLP_ENCODELONG(2),		"set location for output files"},
+   {HLP_ENCODELONG(3),		"only show brief summary (-qq for errors only)"},
+   {HLP_ENCODELONG(4),		"do not create .err file"},
+   {HLP_ENCODELONG(5),		"turn warnings into errors"},
+   {HLP_ENCODELONG(6),		"log output to .log file"},
+ /*{'z',			"set optimizations for network reduction"},*/
    {0, 0}
 };
 
@@ -231,12 +203,6 @@ main(int argc, char **argv)
 	 }
 	 break;
        }
-#ifdef CHASM3DX
-       case 'x': {
-	 fUseNewFormat = 1;
-	 break;
-       }
-#endif
        case 'q':
 	 if (fQuiet) fMute = 1;
 	 fQuiet = 1;
@@ -314,22 +280,6 @@ main(int argc, char **argv)
 
       /* Select defaults settings */
       default_all(pcs);
-#ifdef CHASM3DX
-      /* we need to get the filename of the first one for our base_source */
-      /* and also run_file */
-      if (fUseNewFormat) {
-	 create_twig(root, fnm);
-	 rhizome = root->twig_link;
-	 limb = get_twig(root);
-	 firstfilename = osstrdup(fnm);
-	 startingdir = osmalloc(MAXPATHLEN);
-#if (OS==RISCOS)
-	 strcpy(startingdir, "@");
-#else
-	 getcwd(startingdir, MAXPATHLEN);
-#endif
-      }
-#endif
       data_file(NULL, fnm); /* first argument is current path */
 
       optind++;
@@ -340,23 +290,11 @@ main(int argc, char **argv)
    solve_network(/*stnlist*/); /* Find coordinates of all points */
    validate();
 
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* this actually does all the writing */
-      if (!cave_close(pimg)) {
-	 char *fnm = add_ext(fnm_output_base, EXT_SVX_3DX);
-	 fatalerror(/*Error writing to file `%s'*/110, fnm);
-      }
-   } else {
-#endif
-      /* close .3d file */
-      if (!img_close(pimg)) {
-	 char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
-	 fatalerror(img_error(), fnm);
-      }
-#ifdef CHASM3DX
+   /* close .3d file */
+   if (!img_close(pimg)) {
+      char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
+      fatalerror(img_error(), fnm);
    }
-#endif
    if (fhErrStat) safe_fclose(fhErrStat);
 
    out_current_action(msg(/*Calculating statistics*/120));

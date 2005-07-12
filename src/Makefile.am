@@ -4,7 +4,6 @@ noinst_HEADERS = cavern.h commands.h cmdline.h datain.h debug.h filelist.h\
  filename.h getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
  netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
  prbitmap.h prcore.h prio.h readval.h str.h useful.h validate.h whichos.h\
- new3dout.h 3ddefs.h \
  fnt.h guicontrol.h gla.h moviemaker.h \
  aboutdlg.h aven.h avenpal.h gfxcore.h mainfrm.h matrix4.h quaternion.h\
  vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h
@@ -43,7 +42,7 @@ COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
 
 cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
  readval.c str.c matrix.c img.c netbits.c useful.c validate.c netartic.c \
- new3dout.c $(COMMONSRC)
+ $(COMMONSRC)
 
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \

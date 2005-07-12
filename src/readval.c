@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003 Olly Betts
+ * Copyright (C) 1991-2003,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,16 +131,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       if (ptr == NULL) {
 	 /* Special case first time around at each level */
 	 name = osrealloc(name, i);
-#ifdef CHASM3DX
-	 if (fUseNewFormat) {
-	    ptr = osnew(prefix);
-	 } else {
-	    /* only allocate the part of the structure we need... */
-	    ptr = (prefix *)osmalloc(offsetof(prefix, twig_link));
-	 }
-#else
 	 ptr = osnew(prefix);
-#endif
 	 ptr->ident = name;
 	 name = NULL;
 	 ptr->right = ptr->down = NULL;
@@ -155,11 +146,6 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	    ptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	 back_ptr->down = ptr;
 	 fNew = fTrue;
-#ifdef CHASM3DX
-	 if (fUseNewFormat) {
-	    create_twig(ptr, file.filename);
-	 }
-#endif
       } else {
 	 /* Use caching to speed up adding an increasing sequence to a
 	  * large survey */
@@ -178,16 +164,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	    /* ie we got to one that was higher, or the end */
 	    prefix *newptr;
 	    name = osrealloc(name, i);
-#ifdef CHASM3DX
-	    if (fUseNewFormat) {
-	       newptr = osnew(prefix);
-	    } else {
-	       /* only allocate the part of the structure we need... */
-	       newptr = (prefix *)osmalloc(offsetof(prefix, twig_link));
-	    }
-#else
 	    newptr = osnew(prefix);
-#endif
 	    newptr->ident = name;
 	    name = NULL;
 	    if (ptrPrev == NULL)
@@ -207,11 +184,6 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	       newptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	    ptr = newptr;
 	    fNew = fTrue;
-#ifdef CHASM3DX
-	    if (fUseNewFormat) {
-	       create_twig(ptr, file.filename);
-	    }
-#endif
 	 }
 	 cached_survey = back_ptr;
 	 cached_station = ptr;

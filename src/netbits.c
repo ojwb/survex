@@ -33,10 +33,6 @@
 #include "datain.h" /* for compile_error */
 #include "validate.h" /* for compile_error */
 
-#ifdef CHASM3DX
-#include <stddef.h> /* for offsetof */
-#endif
-
 #define THRESHOLD (REAL_EPSILON * 1000) /* 100 was too small */
 
 node *stn_iter = NULL; /* for FOR_EACH_STN */
@@ -535,17 +531,7 @@ StnFromPfx(prefix *name)
    stn = osnew(node);
    stn->name = name;
    if (name->pos == NULL) {
-#ifdef CHASM3DX
-      if (fUseNewFormat) {
-	 name->pos = osnew(pos);
-	 name->pos->id = 0;
-      } else {
-	 /* only allocate the part of the structure we need... */
-	 name->pos = (pos *)osmalloc(offsetof(pos, id));
-      }
-#else
       name->pos = osnew(pos);
-#endif
       unfix(stn);
    }
    stn->leg[0] = stn->leg[1] = stn->leg[2] = NULL;

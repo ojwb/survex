@@ -661,9 +661,6 @@ data_file(const char *pth, const char *fnm)
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
 	    volatile int r;
-#ifdef CHASM3DX
-	    twig *temp = limb;
-#endif
 	    f_export_ok = fFalse;
 	    switch (pcs->style) {
 	     case STYLE_NORMAL:
@@ -685,14 +682,6 @@ data_file(const char *pth, const char *fnm)
 	       BUG("bad style");
 	    }
 	    /* style function returns 0 => error */
-#ifdef CHASM3DX
-	    if (!r && fUseNewFormat) {
-	       /* we have just created a very naughty twiglet, and it must be
-		* punished */
-	       osfree(limb);
-	       limb = temp;
-	    }
-#endif
 	 }
       }
    }
@@ -1080,26 +1069,6 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 		, cyz, czx, cxy
 #endif
 		);
-
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* new twiglet and insert into twig tree */
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-
-      /* record pre-fettling deltas */
-      twiglet->delta[0] = dx;
-      twiglet->delta[1] = dy;
-      twiglet->delta[2] = dz;
-   }
-#endif
    return 1;
 }
 
@@ -1201,26 +1170,6 @@ process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 		, cxy, cyz, czx
 #endif
 		);
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* new twiglet and insert into twig tree */
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-
-      /* record pre-fettling deltas */
-      twiglet->delta[0] = dx;
-      twiglet->delta[1] = dy;
-      twiglet->delta[2] = dz;
-   }
-#endif
-
    return 1;
 }
 
@@ -1236,27 +1185,6 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
 		, 0, 0, 0
 #endif
 		);
-
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* new twiglet and insert into twig tree */
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-
-      /* record pre-fettling deltas */
-      twiglet->delta[0] = dx;
-      twiglet->delta[1] = dy;
-      twiglet->delta[2] = dz;
-   }
-#endif
-
    return 1;
 }
 
@@ -1393,26 +1321,6 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 		, cxy, 0, 0
 #endif
 		);
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* new twiglet and insert into twig tree */
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-
-      /* record pre-fettling deltas */
-      twiglet->delta[0] = dx;
-      twiglet->delta[1] = dy;
-      twiglet->delta[2] = dz;
-   }
-#endif
-
    return 1;
 }
 
@@ -1754,24 +1662,6 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
 {
    nosurveylink *link;
    int shape;
-
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* new twiglet and insert into twig tree */
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-      /* delta is only used to calculate error - pass zero and cope
-       * elsewhere */
-      twiglet->delta[0] = twiglet->delta[1] = twiglet->delta[2] = 0;
-   }
-#endif
 
    /* Suppress "unused fixed point" warnings for these stations
     * We do this if it's a 0 or 1 node - 1 node might be an sdfix

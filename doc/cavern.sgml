@@ -88,15 +88,6 @@ warnings and errors only).
 </ListItem>
 </VarListEntry>
 
-<VarListEntry>
-<Term>-x, --chasm-format</Term>
-<ListItem>
-<Para>Output data in chasm's 3dx format for use with Phil Underwood's
-Chasm application.
-</Para>
-</ListItem>
-</VarListEntry>
-
 </VariableList>
 
 </refsect1>

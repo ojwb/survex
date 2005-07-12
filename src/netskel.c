@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2004 Olly Betts
+ * Copyright (C) 1991-2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -399,29 +399,10 @@ replace_travs(void)
       fhErrStat = safe_fopen_with_ext(fnm_output_base, EXT_SVX_ERRS, "w");
 
    if (!pimg) {
-      char *fnm;
-#ifdef CHASM3DX
-      if (fUseNewFormat) {
-	 fnm = add_ext(fnm_output_base, EXT_SVX_3DX);
-      } else {
-#endif
-	 fnm = add_ext(fnm_output_base, EXT_SVX_3D);
-#ifdef CHASM3DX
-      }
-#endif
+      char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
       filename_register_output(fnm);
-
-#ifdef CHASM3DX
-      if (fUseNewFormat) {
-	 pimg = cave_open_write(fnm, survey_title);
-	 if (!pimg) fatalerror(cave_error(), fnm);
-      } else {
-#endif
-	 pimg = img_open_write(fnm, survey_title, fTrue);
-	 if (!pimg) fatalerror(img_error(), fnm);
-#ifdef CHASM3DX
-      }
-#endif
+      pimg = img_open_write(fnm, survey_title, fTrue);
+      if (!pimg) fatalerror(img_error(), fnm);
       osfree(fnm);
    }
 
@@ -447,24 +428,18 @@ replace_travs(void)
 	       stn1->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	       stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	    }
-#ifdef CHASM3DX
-	    if (!fUseNewFormat) {
-#endif
-	       img_write_item(pimg, img_MOVE, 0, NULL,
-			      POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-	       if (leg->meta) {
-		   pimg->date1 = leg->meta->date1;
-		   pimg->date2 = leg->meta->date2;
-	       } else {
-		   pimg->date1 = 0;
-		   pimg->date2 = 0;
-	       }
-	       img_write_item(pimg, img_LINE, leg->l.flags,
-			      sprint_prefix(stn1->name->up),
-			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
-#ifdef CHASM3DX
+	    img_write_item(pimg, img_MOVE, 0, NULL,
+			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+	    if (leg->meta) {
+		pimg->date1 = leg->meta->date1;
+		pimg->date2 = leg->meta->date2;
+	    } else {
+		pimg->date1 = 0;
+		pimg->date2 = 0;
 	    }
-#endif
+	    img_write_item(pimg, img_LINE, leg->l.flags,
+			   sprint_prefix(stn1->name->up),
+			   POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 	    if (!(leg->l.reverse & FLAG_ARTICULATION)) {
 #ifdef BLUNDER_DETECTION
 	       delta err;
@@ -561,14 +536,8 @@ replace_travs(void)
       eTotTheo = hTotTheo + vTotTheo;
       cLegsTrav = 0;
       lenTrav = 0.0;
-#ifdef CHASM3DX
-      if (!fUseNewFormat) {
-#endif
-	 img_write_item(pimg, img_MOVE, 0, NULL,
-			POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-#ifdef CHASM3DX
-      }
-#endif
+      img_write_item(pimg, img_MOVE, 0, NULL,
+		     POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 
       fArtic = stn1->leg[i]->l.reverse & FLAG_ARTICULATION;
       osfree(stn1->leg[i]);
@@ -647,30 +616,24 @@ replace_travs(void)
 		stn3->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	     }
 
-#ifdef CHASM3DX
-	    if (!fUseNewFormat) {
-#endif
-	       SVX_ASSERT(!fEquate);
-	       SVX_ASSERT(!fZeros(&leg->v));
-	       if (leg->meta) {
-		   pimg->date1 = leg->meta->date1;
-		   pimg->date2 = leg->meta->date2;
-	       } else {
-		   pimg->date1 = 0;
-		   pimg->date2 = 0;
-	       }
-	       img_write_item(pimg, img_LINE, leg->l.flags,
-			      sprint_prefix(leg_pfx),
-			      POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
-#ifdef CHASM3DX
+	    SVX_ASSERT(!fEquate);
+	    SVX_ASSERT(!fZeros(&leg->v));
+	    if (leg->meta) {
+		pimg->date1 = leg->meta->date1;
+		pimg->date2 = leg->meta->date2;
+	    } else {
+		pimg->date1 = 0;
+		pimg->date2 = 0;
 	    }
-#endif
+	    img_write_item(pimg, img_LINE, leg->l.flags,
+			   sprint_prefix(leg_pfx),
+			   POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
 	 }
 
 	 /* FIXME: equate at the start of a traverse treated specially
 	  * - what about equates at end? */
 	 if (stn1->name != stn3->name && !(fEquate && cLegsTrav == 0)) {
- 	    /* (node not part of same stn) &&
+	    /* (node not part of same stn) &&
 	     * (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
 	    if (fhErrStat && !fArtic) {
@@ -787,14 +750,8 @@ replace_trailing_travs(void)
       }
       stn1->leg[i] = ptrTrail->join1;
       SVX_ASSERT(fixed(stn1));
-#ifdef CHASM3DX
-      if (!fUseNewFormat) {
-#endif
-	 img_write_item(pimg, img_MOVE, 0, NULL,
-			POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-#ifdef CHASM3DX
-      }
-#endif
+      img_write_item(pimg, img_MOVE, 0, NULL,
+		     POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 
       while (1) {
 	 prefix *leg_pfx;
@@ -829,25 +786,19 @@ replace_trailing_travs(void)
 		stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	     }
 	 }
-#ifdef CHASM3DX
-	 if (!fUseNewFormat) {
-#endif
-	    if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
-	       SVX_ASSERT(!fZeros(&leg->v));
-	       if (leg->meta) {
-		   pimg->date1 = leg->meta->date1;
-		   pimg->date2 = leg->meta->date2;
-	       } else {
-		   pimg->date1 = 0;
-		   pimg->date2 = 0;
-	       }
-	       img_write_item(pimg, img_LINE, leg->l.flags,
-			      sprint_prefix(leg_pfx),
-			      POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
+	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
+	    SVX_ASSERT(!fZeros(&leg->v));
+	    if (leg->meta) {
+		pimg->date1 = leg->meta->date1;
+		pimg->date2 = leg->meta->date2;
+	    } else {
+		pimg->date1 = 0;
+		pimg->date2 = 0;
 	    }
-#ifdef CHASM3DX
+	    img_write_item(pimg, img_LINE, leg->l.flags,
+			   sprint_prefix(leg_pfx),
+			   POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 	 }
-#endif
 
 	 /* stop if not 2 node */
 	 if (!two_node(stn2)) break;
@@ -862,61 +813,49 @@ replace_trailing_travs(void)
    }
 
    /* write out connections with no survey data */
-#ifdef CHASM3DX
-   if (!fUseNewFormat) {
-#endif
-      while (nosurveyhead) {
-	 nosurveylink *p = nosurveyhead;
-	 SVX_ASSERT(fixed(p->fr));
-	 SVX_ASSERT(fixed(p->to));
-	 if (TSTBIT(p->flags, FLAGS_SURFACE)) {
-	    p->fr->name->sflags |= BIT(SFLAGS_SURFACE);
-	    p->to->name->sflags |= BIT(SFLAGS_SURFACE);
-	 } else {
-	    p->fr->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	    p->to->name->sflags |= BIT(SFLAGS_UNDERGROUND);
-	 }
-	 img_write_item(pimg, img_MOVE, 0, NULL,
-			POS(p->fr, 0), POS(p->fr, 1), POS(p->fr, 2));
-	 if (leg->meta) {
-	     pimg->date1 = leg->meta->date1;
-	     pimg->date2 = leg->meta->date2;
-	 } else {
-	     pimg->date1 = 0;
-	     pimg->date2 = 0;
-	 }
-	 img_write_item(pimg, img_LINE, p->flags,
-			sprint_prefix(p->fr->name->up),
-			POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
-	 nosurveyhead = p->next;
-	 osfree(p);
+   while (nosurveyhead) {
+      nosurveylink *p = nosurveyhead;
+      SVX_ASSERT(fixed(p->fr));
+      SVX_ASSERT(fixed(p->to));
+      if (TSTBIT(p->flags, FLAGS_SURFACE)) {
+	 p->fr->name->sflags |= BIT(SFLAGS_SURFACE);
+	 p->to->name->sflags |= BIT(SFLAGS_SURFACE);
+      } else {
+	 p->fr->name->sflags |= BIT(SFLAGS_UNDERGROUND);
+	 p->to->name->sflags |= BIT(SFLAGS_UNDERGROUND);
       }
-#ifdef CHASM3DX
+      img_write_item(pimg, img_MOVE, 0, NULL,
+		     POS(p->fr, 0), POS(p->fr, 1), POS(p->fr, 2));
+      if (leg->meta) {
+	  pimg->date1 = leg->meta->date1;
+	  pimg->date2 = leg->meta->date2;
+      } else {
+	  pimg->date1 = 0;
+	  pimg->date2 = 0;
+      }
+      img_write_item(pimg, img_LINE, p->flags,
+		     sprint_prefix(p->fr->name->up),
+		     POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
+      nosurveyhead = p->next;
+      osfree(p);
    }
-#endif
 
    /* write stations to .3d file and free legs and stations */
    FOR_EACH_STN(stn1, stnlist) {
       int d;
       SVX_ASSERT(fixed(stn1));
       /* take care of unused fixed points */
-#ifdef CHASM3DX
-      if (!fUseNewFormat) {
-#endif
-	 if (stn1->name->stn == stn1 && stn1->name->ident) {
-	    int sf = stn1->name->sflags;
-	    if (!TSTBIT(sf, SFLAGS_SOLVED)) {
-	       /* Set flag to stop station being rewritten after *solve */
-	       stn1->name->sflags = sf | BIT(SFLAGS_SOLVED);
-	       sf &= SFLAGS_MASK;
-	       if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
-	       img_write_item(pimg, img_LABEL, sf, sprint_prefix(stn1->name),
-			      POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
-	    }
+      if (stn1->name->stn == stn1 && stn1->name->ident) {
+	 int sf = stn1->name->sflags;
+	 if (!TSTBIT(sf, SFLAGS_SOLVED)) {
+	    /* Set flag to stop station being rewritten after *solve */
+	    stn1->name->sflags = sf | BIT(SFLAGS_SOLVED);
+	    sf &= SFLAGS_MASK;
+	    if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
+	    img_write_item(pimg, img_LABEL, sf, sprint_prefix(stn1->name),
+			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 	 }
-#ifdef CHASM3DX
       }
-#endif
       /* update coords of bounding box, ignoring the base positions
        * of points fixed with error estimates and only counting stations
        * in underground surveys. */

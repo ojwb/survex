@@ -1,6 +1,6 @@
 /* network.c
  * Survex network reduction - find patterns and apply network reductions
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2002,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,6 @@
 #include "netbits.h"
 #include "network.h"
 #include "out.h"
-
-#ifdef CHASM3DX
-#include <stddef.h> /* for offsetof */
-#endif
 
 /* type field isn't vital - join3 is unused except for deltastar, so
  * we can set its value to indicate which type this is:
@@ -98,7 +94,7 @@ remove_subnets(void)
 	  *      * stn2
 	  * stn /|
 	  *  4 * * stn3  -->  stn4 *-* stn3
-	  *    : :                 : :
+	  *    : :		   : :
 	  */
 	 /* NB can have non-fixed 0 nodes */
 	 FOR_EACH_STN(stn, stnlist) {
@@ -173,11 +169,11 @@ remove_subnets(void)
 	    /*
 	     *  :
 	     *  * stn3
-	     *  |            :
-	     *  * stn        * stn3
+	     *  |	     :
+	     *  * stn	     * stn3
 	     * ( )      ->   |
 	     *  * stn2       * stn4
-	     *  |            :
+	     *  |	     :
 	     *  * stn4
 	     *  :
 	     */
@@ -306,12 +302,12 @@ remove_subnets(void)
 	 FOR_EACH_STN(stn, stnlist) {
 	    /*    printf("*");*/
 	    /*
-	     *          :
-	     *          * stn5            :
-	     *          |                 * stn5
-	     *          * stn2            |
-	     *         / \        ->      O stnZ
-	     *    stn *---* stn3         / \
+	     *		:
+	     *		* stn5		  :
+	     *		|		  * stn5
+	     *		* stn2		  |
+	     *	       / \	  ->	  O stnZ
+	     *    stn *---* stn3	 / \
 	     *       /     \       stn4 *   * stn6
 	     * stn4 *       * stn6      :   :
 	     *      :       :
@@ -473,19 +469,8 @@ remove_subnets(void)
 		    subss(&sum, &sum, &sumAZBZ);
 		    mulsc(&legCZ->v, &sum, 0.5);
 
-#ifdef CHASM3DX
-		    if (fUseNewFormat) {
-		       nameZ = osnew(prefix);
-		       nameZ->pos = osnew(pos);
-		    } else {
-		       /* only allocate the part of the structures we need... */
-		       nameZ = (prefix *)osmalloc(offsetof(prefix, twig_link));
-		       nameZ->pos = (pos *)osmalloc(offsetof(pos, id));
-		    }
-#else
 		    nameZ = osnew(prefix);
 		    nameZ->pos = osnew(pos);
-#endif
 		    nameZ->ident = NULL;
 		    nameZ->shape = 3;
 		    stnZ = osnew(node);
