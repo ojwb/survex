@@ -788,15 +788,19 @@ void GfxCore::NattyDrawNames()
 	tx -= floor(tx / quantise) * quantise;
 	ty -= floor(ty / quantise) * quantise;
 
-	unsigned int ix = unsigned(x - tx) / quantise;
-	if (ix >= quantised_x) continue;
+	tx = x - tx;
+	if (tx < 0) continue;
+
+	ty = y - ty;
+	if (ty < 0) continue;
+
+	unsigned int iy = unsigned(ty) / quantise;
+	if (iy >= quantised_y) continue;
 	unsigned int width = (*label)->width;
+	unsigned int ix = unsigned(tx) / quantise;
 	if (ix + width >= quantised_x) continue;
 
-	unsigned int iy = unsigned(y - ty) / quantise;
-	if (iy >= quantised_y) continue;
-
-	char * test = &m_LabelGrid[ix + iy * quantised_x];
+	char * test = m_LabelGrid + ix + iy * quantised_x;
 	if (memchr(test, 1, width)) continue;
 
 	y += CROSS_SIZE - GetFontSize();
@@ -804,10 +808,8 @@ void GfxCore::NattyDrawNames()
 
 	if (iy > QUANTISE_FACTOR) iy = QUANTISE_FACTOR;
 	test -= quantised_x * iy;
-	iy += min(unsigned(m_LabelGrid + buffer_size - test) / quantised_x,
-		  QUANTISE_FACTOR + 2);
-	while (--iy) {
-	    if (test >= m_LabelGrid + buffer_size) abort();
+	iy += 4;
+	while (--iy && test < m_LabelGrid + buffer_size) {
 	    memset(test, 1, width);
 	    test += quantised_x;
 	}
