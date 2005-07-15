@@ -140,7 +140,7 @@ if expr "$mk" : '.*\<mingw\>'; then
    LDFLAGS=
    CPPFLAGS=
 #if ! ./configure --host=mingw32 --build="$build_platform" WXCONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" CFLAGS=-Werror CXXFLAGS=-Werror ; then
-   if ! ./configure --host=mingw32 --build="$build_platform" WXCONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" CXXFLAGS=-Werror ; then
+   if ! ./configure --host=mingw32 --build="$build_platform" WXCONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" ; then
       echo mingw configure failed
       exit 1
    fi
