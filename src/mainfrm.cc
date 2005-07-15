@@ -1221,7 +1221,7 @@ MainFrm::FixLRUD(vector<PointInfo> & centreline)
     Double last_size = 0;
     vector<PointInfo>::iterator i = centreline.begin();
     while (i != centreline.end()) {
-	// get the coordinates of this vertex
+	// Get the coordinates of this vertex.
 	PointInfo & pt_v = *i++;
 	Double size;
 
