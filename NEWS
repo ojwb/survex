@@ -1,3 +1,99 @@
+Changes in 1.1.2:
+
+* Added support for LRUD data in .svx files, in .3d files, and aven can
+  now load and display it on screen and on printouts.  The ability to "fake"
+  LRUD data in aven is gone for now but will reappear in some form later.
+
+* cavern: Removed support for writing Chasm's 3dx format.  We're going to
+  fold any desirable missing chasm functionality into aven.
+
+* aven: Rearranged mouse actions as discussed on the mailing list.  Added
+  cursors for each different mouse action to help the user learn what each
+  does.  Also added cursors for the "compass" and "clino" as well as the
+  scalebar to suggest to the user that they can be dragged to change the view.
+	
+* aven: Don't segfault on Unix if LANG isn't a known language.
+
+* tests/smoketest.tst: If X windows is running, check that we can run aven
+  with --help and --version.
+
+* tests/cavern.tst: Fixed cavern.tst to warn if it is skipping a test because
+  no results are listed for it.  This revealed that there was a "newline" test
+  which should have been called "newline", and was a broken testcase too!
+  Fixed all these problems.
+
+* cavern: Applied Simeon Warner's patch for handling backcompass, backclino,
+  and omitted forward compass/clino readings in Compass DAT files.  Added
+  a feature test for this to the testsuite.
+
+* It no longer makes sense to have an option not to build aven or to build aven
+  without OpenGL so remove old machinery for this from configure and the sources.
+
+* configure: Check if "-lXxf86vm" is needed on UNIX.
+
+* configure: Better output for strcasecmp test.
+
+* aven: Fix crosses to work much better.  Not a total fix - their position
+  in the Z buffer isn't correct and they're rather slow to plot.
+
+* aven: Don't regenerate the hittest grid every time the mouse moves while
+  animating, which solves the mysterious pausing effect (thanks go to Martin
+  Green for spotting this!)  Also clear all the status bar coordinates when
+  animating.
+
+* aven: Sort out clashing menu shortcuts in some languages.
+
+* aven: Fixed compilation problem on x86_64
+
+* SPUD: Pruned out stuff which has been done or which is not actually relevant
+  to this branch.
+
+* Merge various changes from 1.0 branch:
+
+  + aven: Port over "printing from aven" functionality.
+
+  + aven: Port over "export as" functionality,
+
+  + Add David Loeffler's vim mode for .svx files.
+
+* aven: Fix check for whether a label is behind us in perspective view.
+	
+* aven: Don't use an opengl list for drawing the indicators - we typically make
+  a new list each time we plot them anyway.
+
+* Remove lingering traces of support for RISC OS and pre-386 MSDOS
+
+* aven: Set icon on non-Windows platforms too.  This means that with
+  WindowMaker on UNIX you get an icon on the AppIcon by default.
+
+* configure: Update wxWindows checks to handle newer wx versions.
+
+* Make all maintainer perl scripts "use bytes;" to avoid utf-8 double encoding
+  problems.  They also all require Perl 5.8 now (hopefully this isn't an issue
+  for anyone building from CVS).
+
+* acinclude.m4: Quote macro name for fix autotools warning.
+
+* doc/aven.sgml: "tilt up" is "'" not ",".
+
+* aven: Add support for mousewheels (to tilt the cave).
+
+* aven: Fixed twisted transitions to and from pitches in certain cases.
+
+* aven: Pick a sensible initial window size when the user's desktop is spread over
+  more than one monitor (works best with wx2.5 or newer, but try to do
+  better with wx2.4 or earlier as well).
+
+* aven: Initialise GfxCore slightly later to avoid visual glitch from notebook
+  contents being visible before any survey is loaded.
+
+* aven: Allow a coloured texture to be used
+
+* aven: Don't initialise until we have data (to the user, this means the window
+  is default colour (grey for most systems) not black until a survey is loaded.
+
+* aven: Fixed weird "shadowed" icons.
+
 Changes in 1.1.1:
 
 * (Microsoft Windows version): aven: Hopefully fix loading a survey file at
