@@ -61,6 +61,8 @@ survex (1.1.2) experimental; urgency=low
     is default colour (grey for most systems) not black until a survey is loaded.
   * aven: Fixed weird "shadowed" icons.
 
+ -- Wookey <wookey@survex.com>  Fri, 15 Jul 2005 21:16:30 +0100
+
 survex (1.1.1) experimental; urgency=low
 
   * aven: Delay loading the bitmap for the "About" dialog until it is first
