@@ -92,8 +92,8 @@ class svxPrintout : public wxPrintout {
     int Pre();
     void NewPage(int pg, int pagesX, int pagesY);
     void ShowPage(const char *szPageDetails);
-    void PlotLR(const vector<PointInfo> & centreline);
-    void PlotUD(const vector<PointInfo> & centreline);
+    void PlotLR(const vector<XSect> & centreline);
+    void PlotUD(const vector<XSect> & centreline);
     char * Init(FILE **fh_list, bool fCalibrate);
   public:
     svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupData *data, const wxString & title);
@@ -173,7 +173,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     /* setup our print dialog*/
     wxBoxSizer* v1 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* h1 = new wxBoxSizer(wxHORIZONTAL); // holds controls
-    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, msg(/*View*/255)), wxVERTICAL); 
+    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, msg(/*View*/255)), wxVERTICAL);
     wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, "Elements"), wxVERTICAL); // FIXME TRANSLATE
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
@@ -212,7 +212,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
     }
-    
+
     if (m_layout.view != layout::EXTELEV) {
 	wxBoxSizer * planelevsizer = new wxBoxSizer(wxHORIZONTAL);
 	planelevsizer->Add(new wxButton(this, svx_PLAN, "Plan"),
@@ -239,7 +239,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 //    v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
     m_infoBox = new wxCheckBox(this, svx_INFOBOX, "Info Box"); // FIXME TRANSLATE
     v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
-    
+
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
 
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
@@ -253,7 +253,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     but->SetDefault();
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     v1->Add(h2, 0, wxALIGN_RIGHT|wxALL, 5);
-    
+
     SetAutoLayout(true);
     SetSizer(v1);
     v1->Fit(this);
@@ -268,7 +268,7 @@ svxPrintDlg::~svxPrintDlg() {
     osfree(m_layout.datestamp);
 }
 
-void 
+void
 svxPrintDlg::OnPrint(wxCommandEvent&) {
     SomethingChanged();
     wxPrintDialogData pd(mainfrm->GetPageSetupData()->GetPrintData());
@@ -280,7 +280,7 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
     }
 }
 
-void 
+void
 svxPrintDlg::OnPreview(wxCommandEvent&) {
     SomethingChanged();
     wxPrintDialogData pd(mainfrm->GetPageSetupData()->GetPrintData());
@@ -325,24 +325,24 @@ svxPrintDlg::OnPreview(wxCommandEvent&) {
     frame->Show();
 }
 
-void 
+void
 svxPrintDlg::OnPlan(wxCommandEvent&) {
     m_tilt->SetValue(90);
     SomethingChanged();
 }
 
-void 
+void
 svxPrintDlg::OnElevation(wxCommandEvent&) {
     m_tilt->SetValue(0);
     SomethingChanged();
 }
 
-void 
+void
 svxPrintDlg::OnChangeSpin(wxSpinEvent&e) {
     SomethingChanged();
 }
 
-void 
+void
 svxPrintDlg::OnChange(wxCommandEvent&) {
     SomethingChanged();
 }
@@ -352,13 +352,13 @@ svxPrintDlg::SomethingChanged() {
     UIToLayout();
     // Update the bounding box.
     RecalcBounds();
-    if (m_layout.xMax >= m_layout.xMin) { 
+    if (m_layout.xMax >= m_layout.xMin) {
 	m_layout.pages_required();
 	m_printSize->SetLabel(wxString::Format(msg(/*%d pages (%dx%d)*/257), m_layout.pages, m_layout.pagesX, m_layout.pagesY));
     }
 }
 
-void 
+void
 svxPrintDlg::LayoutToUI(){
     m_names->SetValue(m_layout.Labels);
     m_legs->SetValue(m_layout.Shots);
@@ -387,7 +387,7 @@ svxPrintDlg::LayoutToUI(){
     }
 }
 
-void 
+void
 svxPrintDlg::UIToLayout(){
     m_layout.Labels = m_names->IsChecked();
     m_layout.Shots = m_legs->IsChecked();
@@ -714,7 +714,7 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
 }
 
 #if 0
-void 
+void
 make_calibration(layout *l) {
       img_point pt = { 0.0, 0.0, 0.0 };
       l->xMax = l->yMax = 0.1;
@@ -903,7 +903,7 @@ svxPrintout::drawticks(border clip, int tsize, int x, int y)
    }
 }
 
-bool 
+bool
 svxPrintout::OnPrintPage(int pageNum) {
     GetPageSizePixels(&xpPageWidth, &ypPageDepth);
     pdc = GetDC();
@@ -971,7 +971,14 @@ svxPrintout::OnPrintPage(int pageNum) {
 		    DrawTo(px, py);
 		}
 	    }
-	    if (l->tilt == 90.0 || l->tilt == -90) PlotLR(*trav);
+	}
+    }
+
+    if (l->Shots && (l->tilt == 0.0 || l->tilt == 90.0 || l->tilt == -90.0)) {
+	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
+	list<vector<XSect> >::const_iterator tend = mainfrm->tubes_end();
+	for ( ; trav != tend; ++trav) {
+	    if (l->tilt == 90.0 || l->tilt == -90.0) PlotLR(*trav);
 	    if (l->tilt == 0.0) PlotUD(*trav);
 	}
     }
@@ -1040,7 +1047,7 @@ svxPrintout::OnPrintPage(int pageNum) {
     return true;
 }
 
-void 
+void
 svxPrintout::GetPageInfo(int *minPage, int *maxPage,
 			 int *pageFrom, int *pageTo)
 {
@@ -1048,19 +1055,19 @@ svxPrintout::GetPageInfo(int *minPage, int *maxPage,
     *maxPage = *pageTo = m_layout->pages;
 }
 
-wxString 
+wxString
 svxPrintout::GetTitle() {
     return m_title;
 }
 
-bool 
+bool
 svxPrintout::HasPage(int pageNum) {
     return (pageNum <= m_layout->pages);
 }
 
-void 
+void
 svxPrintout::OnBeginPrinting() {
-    FILE *fh_list[4];	
+    FILE *fh_list[4];
 
     FILE **pfh = fh_list;
     FILE *fh;
@@ -1280,7 +1287,7 @@ svxPrintout::WriteString(const char *s)
     int w, h;
     if (cur_pass != -1) {
 	pdc->GetTextExtent("My", &w, &h);
-	pdc->DrawText(s, 
+	pdc->DrawText(s,
 		      long(x_t / font_scaling_x),
 		      long(y_t / font_scaling_y) - h);
     } else {
@@ -1350,7 +1357,7 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     MoveTo((long)(6 * m_layout->scX) + clip.x_min,
 	   clip.y_min - (long)(7 * m_layout->scY));
     char szFooter[256];
-    sprintf(szFooter, m_layout->footer, m_layout->title, pg, 
+    sprintf(szFooter, m_layout->footer, m_layout->title, pg,
 	    m_layout->pagesX * m_layout->pagesY,m_layout->datestamp);
     WriteString(szFooter);
     pdc->DestroyClippingRegion();
@@ -1364,21 +1371,21 @@ svxPrintout::ShowPage(const char *szPageDetails)
 }
 
 void
-svxPrintout::PlotLR(const vector<PointInfo> & centreline)
+svxPrintout::PlotLR(const vector<XSect> & centreline)
 {
     assert(centreline.size() > 1);
-    PointInfo prev_pt_v;
+    XSect prev_pt_v;
     Vector3 last_right(1.0, 0.0, 0.0);
 
     const double Sc = 1000 / m_layout->Scale;
     const double SIN = sin(rad(m_layout->rot));
     const double COS = cos(rad(m_layout->rot));
 
-    vector<PointInfo>::const_iterator i = centreline.begin();
-    vector<PointInfo>::size_type segment = 0;
+    vector<XSect>::const_iterator i = centreline.begin();
+    vector<XSect>::size_type segment = 0;
     while (i != centreline.end()) {
 	// get the coordinates of this vertex
-	const PointInfo & pt_v = *i++;
+	const XSect & pt_v = *i++;
 
 	Vector3 right;
 
@@ -1389,7 +1396,7 @@ svxPrintout::PlotLR(const vector<PointInfo> & centreline)
 	    // first segment
 
 	    // get the coordinates of the next vertex
-	    const PointInfo & next_pt_v = *i;
+	    const XSect & next_pt_v = *i;
 
 	    // calculate vector from this pt to the next one
 	    Vector3 leg_v = pt_v.vec() - next_pt_v.vec();
@@ -1419,7 +1426,7 @@ svxPrintout::PlotLR(const vector<PointInfo> & centreline)
 	    // Intermediate segment.
 
 	    // Get the coordinates of the next vertex.
-	    const PointInfo & next_pt_v = *i;
+	    const XSect & next_pt_v = *i;
 
 	    // Calculate vectors from this vertex to the
 	    // next vertex, and from the previous vertex to
@@ -1476,15 +1483,15 @@ svxPrintout::PlotLR(const vector<PointInfo> & centreline)
 }
 
 void
-svxPrintout::PlotUD(const vector<PointInfo> & centreline)
+svxPrintout::PlotUD(const vector<XSect> & centreline)
 {
     assert(centreline.size() > 1);
     const double Sc = 1000 / m_layout->Scale;
 
-    vector<PointInfo>::const_iterator i = centreline.begin();
+    vector<XSect>::const_iterator i = centreline.begin();
     while (i != centreline.end()) {
 	// get the coordinates of this vertex
-	const PointInfo & pt_v = *i++;
+	const XSect & pt_v = *i++;
 
 	Double u = pt_v.GetL();
 	Double d = pt_v.GetR();

@@ -70,6 +70,7 @@ static void remove_trailing_travs(void);
 static void remove_travs(void);
 static void replace_travs(void);
 static void replace_trailing_travs(void);
+static void write_passage_models(void);
 
 static void concatenate_trav(node *stn, int i);
 
@@ -140,6 +141,9 @@ solve_network(void /*node *stnlist*/)
    validate(); dump_network();
    replace_trailing_travs();
    validate(); dump_network();
+
+   /* Now write out any passage models. */
+   write_passage_models();
 }
 
 static void
@@ -826,9 +830,9 @@ replace_trailing_travs(void)
       }
       img_write_item(pimg, img_MOVE, 0, NULL,
 		     POS(p->fr, 0), POS(p->fr, 1), POS(p->fr, 2));
-      if (leg->meta) {
-	  pimg->date1 = leg->meta->date1;
-	  pimg->date2 = leg->meta->date2;
+      if (p->meta) {
+	  pimg->date1 = p->meta->date1;
+	  pimg->date2 = p->meta->date2;
       } else {
 	  pimg->date1 = 0;
 	  pimg->date2 = 0;
@@ -848,7 +852,7 @@ replace_trailing_travs(void)
       if (stn1->name->stn == stn1 && stn1->name->ident) {
 	 int sf = stn1->name->sflags;
 	 if (!TSTBIT(sf, SFLAGS_SOLVED)) {
-	    /* Set flag to stop station being rewritten after *solve */
+	    /* Set flag to stop station being rewritten after *solve. */
 	    stn1->name->sflags = sf | BIT(SFLAGS_SOLVED);
 	    sf &= SFLAGS_MASK;
 	    if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
@@ -933,4 +937,33 @@ replace_trailing_travs(void)
       osfree(stn1);
    }
    stnlist = NULL;
+}
+
+static void
+write_passage_models(void)
+{
+   lrudlist * psg = model;
+   while (psg) {
+      lrudlist * oldp;
+      lrud * xsect = psg->tube;
+      int xflags = 0;
+      while (xsect) {
+	 lrud *oldx;
+	 const char *name;
+	 pimg->l = xsect->l;
+	 pimg->r = xsect->r;
+	 pimg->u = xsect->u;
+	 pimg->d = xsect->d;
+	 name = sprint_prefix(xsect->stn);
+	 oldx = xsect;
+	 xsect = xsect->next;
+	 osfree(oldx);
+	 if (xsect == NULL) xflags = img_XFLAG_END;
+	 img_write_item(pimg, img_XSECT, xflags, name, 0, 0, 0);
+      }
+      oldp = psg;
+      psg = psg->next;
+      osfree(oldp);
+   }
+   model = NULL;
 }

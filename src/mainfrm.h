@@ -128,17 +128,15 @@ enum {
     listctrl_PRES
 };
 
-class PointInfo {
+class XSect {
     friend class MainFrm;
     Double x, y, z;
     Double l, r, u, d;
 
 public:
-    PointInfo() : x(0), y(0), z(0), l(0), r(0), u(0), d(0) { }
-    PointInfo(const img_point & pt, Double l_, Double r_, Double u_, Double d_)
-	: x(pt.x), y(pt.y), z(pt.z), l(l_), r(r_), u(u_), d(d_) { }
-    PointInfo(const img_point & pt)
-	: x(pt.x), y(pt.y), z(pt.z), l(0), r(0), u(0), d(0) { }
+    XSect() : x(0), y(0), z(0), l(0), r(0), u(0), d(0) { }
+    XSect(Double x_, Double y_, Double z_, Double l_, Double r_, Double u_, Double d_)
+	: x(x_), y(y_), z(z_), l(l_), r(r_), u(u_), d(d_) { }
     Double GetX() const { return x; }
     Double GetY() const { return y; }
     Double GetZ() const { return z; }
@@ -146,6 +144,20 @@ public:
     Double GetR() const { return r; }
     Double GetU() const { return u; }
     Double GetD() const { return d; }
+    Vector3 vec() const { return Vector3(x, y, z); }
+};
+
+class PointInfo {
+    friend class MainFrm;
+    Double x, y, z;
+
+public:
+    PointInfo() : x(0), y(0), z(0) { }
+    PointInfo(const img_point & pt)
+	: x(pt.x), y(pt.y), z(pt.z) { }
+    Double GetX() const { return x; }
+    Double GetY() const { return y; }
+    Double GetZ() const { return z; }
     Vector3 vec() const { return Vector3(x, y, z); }
 };
 
@@ -189,6 +201,7 @@ class MainFrm : public wxFrame {
     int m_SashPosition;
     list<vector<PointInfo> > traverses;
     list<vector<PointInfo> > surface_traverses;
+    list<vector<XSect> > tubes;
     list<LabelInfo*> m_Labels;
     Double m_XExt;
     Double m_YExt;
@@ -456,6 +469,14 @@ public:
 
     list<vector<PointInfo> >::const_iterator surface_traverses_end() const {
 	return surface_traverses.end();
+    }
+
+    list<vector<XSect> >::const_iterator tubes_begin() const {
+	return tubes.begin();
+    }
+
+    list<vector<XSect> >::const_iterator tubes_end() const {
+	return tubes.end();
     }
 
     list<LabelInfo*>::const_iterator GetLabels() const {

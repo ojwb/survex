@@ -50,6 +50,7 @@ public:
 };
 
 class PointInfo;
+class XSect;
 class LabelInfo;
 class MovieMaker;
 
@@ -202,7 +203,7 @@ private:
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
-    void SkinPassage(const vector<PointInfo> & centreline);
+    void SkinPassage(const vector<XSect> & centreline);
 
     void GenerateDisplayList();
     void GenerateDisplayListTubes();

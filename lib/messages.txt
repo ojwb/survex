@@ -2869,8 +2869,7 @@ es:257 %d p&aacute;ginas (%dx%d)
 it:257 %d pagine (%dx%d)
 sk:257 %d str&aacute;nok (%dx%d)
 ro:257 %d pagini (%dx%d)
-# temporary message
-en:258 Already have LRUD for station - ignoring these (for now)
+# XXX 258
 # cf 159
 # TRANSLATE fr pt pt-br ca es it sk ro check adapted message is ok
 en:259 Bearing

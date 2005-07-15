@@ -39,6 +39,7 @@ extern "C" {
  * Put crosses where labels are. */
 /* # define img_CROSS  2 */
 # define img_LABEL  3
+# define img_XSECT  4
 
 # define img_FLAG_SURFACE   0x01
 # define img_FLAG_DUPLICATE 0x02
@@ -49,6 +50,8 @@ extern "C" {
 # define img_SFLAG_ENTRANCE    0x04
 # define img_SFLAG_EXPORTED    0x08
 # define img_SFLAG_FIXED       0x10
+
+# define img_XFLAG_END      0x01
 
 /* 3D coordinates (in metres) */
 typedef struct {
@@ -91,6 +94,7 @@ typedef struct {
    size_t survey_len;
    int pending; /* for old style text format files and survey filtering */
    img_point mv;
+   time_t olddate1, olddate2;
 } img;
 
 /* Which version of the file format to output (defaults to newest) */
@@ -135,7 +139,8 @@ int img_read_item(img *pimg, img_point *p);
 /* Write a item to a .3d file
  * pimg is a pointer to an img struct returned by img_open_write()
  * code is one of the img_XXXX #define-d above
- * flags is the leg or station flags (meaningful for img_LINE and img_LABEL
+ * flags is the leg, station, or xsect flags
+ * (meaningful for img_LINE, img_LABEL, and img_XSECT respectively)
  * s is the label (only meaningful for img_LABEL)
  * x, y, z are the coordinates
  */

@@ -80,6 +80,9 @@ bool fExplicitTitle = fFalse;
 char *fnm_output_base = NULL;
 int fnm_output_base_is_dir = 0;
 
+lrudlist * model = NULL;
+lrud ** next_lrud = NULL;
+
 static void do_stats(void);
 
 static const struct option long_opts[] = {

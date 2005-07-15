@@ -64,6 +64,13 @@ static real value[Fr - 1];
 static real variance[Fr - 1];
 #define VAR(N) variance[(N)-1]
 
+/* style functions */
+static int data_normal(void);
+static int data_cartesian(void);
+static int data_passage(void);
+static int data_nosurvey(void);
+static int data_ignore(void);
+
 void
 get_pos(filepos *fp)
 {
@@ -671,6 +678,9 @@ data_file(const char *pth, const char *fnm)
 	     case STYLE_CARTESIAN:
 	       r = data_cartesian();
 	       break;
+	     case STYLE_PASSAGE:
+	       r = data_passage();
+	       break;
 	     case STYLE_NOSURVEY:
 	       r = data_nosurvey();
 	       break;
@@ -1188,7 +1198,7 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
    return 1;
 }
 
-extern int
+static int
 data_cartesian(void)
 {
    prefix *fr = NULL, *to = NULL;
@@ -1326,7 +1336,7 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 
 /* Process tape/compass/clino, diving, and cylpolar styles of survey data
  * Also handles topofil (fromcount/tocount or count) in place of tape */
-extern int
+static int
 data_normal(void)
 {
    prefix *fr = NULL, *to = NULL;
@@ -1479,6 +1489,7 @@ data_normal(void)
 	  break;
        case CompassDATLeft: case CompassDATRight:
        case CompassDATUp: case CompassDATDown: {
+	  /* FIXME: need to actually make use of these entries! */
 	  reading actual = Left + (*ordering - CompassDATLeft);
 	  read_reading(actual, fFalse);
 	  if (VAL(actual) < 0) VAL(actual) = HUGE_REAL;
@@ -1643,6 +1654,7 @@ data_normal(void)
 		r = 0; /* Suppress compiler warning */;
 		BUG("bad style");
 	     }
+
 	     process_eol();
 	     return r;
 	  }
@@ -1653,6 +1665,53 @@ data_normal(void)
 	  goto again;
        default:
 	  BUG("Unknown reading in ordering");
+      }
+   }
+}
+
+static int
+process_lrud(prefix *stn)
+{
+   SVX_ASSERT(next_lrud);
+   lrud * xsect = osnew(lrud);
+   xsect->stn = stn;
+   xsect->l = (VAL(Left) * pcs->units[Q_LEFT] - pcs->z[Q_LEFT]) * pcs->sc[Q_LEFT];
+   xsect->r = (VAL(Right) * pcs->units[Q_RIGHT] - pcs->z[Q_RIGHT]) * pcs->sc[Q_RIGHT];
+   xsect->u = (VAL(Up) * pcs->units[Q_UP] - pcs->z[Q_UP]) * pcs->sc[Q_UP];
+   xsect->d = (VAL(Down) * pcs->units[Q_DOWN] - pcs->z[Q_DOWN]) * pcs->sc[Q_DOWN];
+   xsect->next = NULL;
+   *next_lrud = xsect;
+   next_lrud = &(xsect->next);
+
+   return 1;
+}
+
+static int
+data_passage(void)
+{
+   prefix *stn = NULL;
+   reading *ordering;
+
+   for (ordering = pcs->ordering ; ; ordering++) {
+      skipblanks();
+      switch (*ordering) {
+       case Station:
+	 stn = read_prefix_stn(fFalse, fFalse);
+	 break;
+       case Left: case Right: case Up: case Down:
+	 read_reading(*ordering, fFalse);
+	 break;
+       case Ignore:
+	 skipword(); break;
+       case IgnoreAll:
+	 skipline();
+	 /* fall through */
+       case End: {
+	 int r = process_lrud(stn);
+	 process_eol();
+	 return r;
+       }
+       default: BUG("Unknown reading in ordering");
       }
    }
 }
@@ -1681,12 +1740,14 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
       link->to = StnFromPfx(to);
    }
    link->flags = pcs->flags;
+   link->meta = pcs->meta;
+   if (pcs->meta) ++pcs->meta->ref_count;
    link->next = nosurveyhead;
    nosurveyhead = link;
    return 1;
 }
 
-extern int
+static int
 data_nosurvey(void)
 {
    prefix *fr = NULL, *to = NULL;
@@ -1768,7 +1829,7 @@ data_nosurvey(void)
 }
 
 /* totally ignore a line of survey data */
-extern int
+static int
 data_ignore(void)
 {
    skipline();

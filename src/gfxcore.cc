@@ -1850,8 +1850,8 @@ void GfxCore::GenerateDisplayListTubes()
     // Generate the display list for the tubes.
     assert(m_HaveData);
 
-    list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();
-    list<vector<PointInfo> >::const_iterator tend = m_Parent->traverses_end();
+    list<vector<XSect> >::const_iterator trav = m_Parent->tubes_begin();
+    list<vector<XSect> >::const_iterator tend = m_Parent->tubes_end();
     while (trav != tend) {
 	SkinPassage(*trav);
 	++trav;
@@ -2144,18 +2144,18 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 }
 
 void
-GfxCore::SkinPassage(const vector<PointInfo> & centreline)
+GfxCore::SkinPassage(const vector<XSect> & centreline)
 {
     assert(centreline.size() > 1);
     Vector3 U[4];
-    PointInfo prev_pt_v;
+    XSect prev_pt_v;
     Vector3 last_right(1.0, 0.0, 0.0);
 
-    vector<PointInfo>::const_iterator i = centreline.begin();
-    vector<PointInfo>::size_type segment = 0;
+    vector<XSect>::const_iterator i = centreline.begin();
+    vector<XSect>::size_type segment = 0;
     while (i != centreline.end()) {
 	// get the coordinates of this vertex
-	const PointInfo & pt_v = *i++;
+	const XSect & pt_v = *i++;
 
 	double z_pitch_adjust = 0.0;
 	bool cover_end = false;
@@ -2169,7 +2169,7 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
 	    // first segment
 
 	    // get the coordinates of the next vertex
-	    const PointInfo & next_pt_v = *i;
+	    const XSect & next_pt_v = *i;
 
 	    // calculate vector from this pt to the next one
 	    Vector3 leg_v = pt_v.vec() - next_pt_v.vec();
@@ -2211,7 +2211,7 @@ GfxCore::SkinPassage(const vector<PointInfo> & centreline)
 	    // Intermediate segment.
 
 	    // Get the coordinates of the next vertex.
-	    const PointInfo & next_pt_v = *i;
+	    const XSect & next_pt_v = *i;
 
 	    // Calculate vectors from this vertex to the
 	    // next vertex, and from the previous vertex to

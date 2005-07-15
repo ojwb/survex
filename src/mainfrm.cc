@@ -986,12 +986,14 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     traverses.clear();
     surface_traverses.clear();
+    tubes.clear();
 
     // Ultimately we probably want different types (subclasses perhaps?) for
     // underground and surface data, so we don't need to store LRUD for surface
     // stuff.
     vector<PointInfo> * current_traverse = NULL;
     vector<PointInfo> * current_surface_traverse = NULL;
+    vector<XSect> * current_tube = NULL;
 
     int result;
     img_point prev_pt = {0,0,0};
@@ -1026,7 +1028,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		bool is_surface = (survey->flags & img_FLAG_SURFACE);
 		if (pending_move || current_polyline_is_surface != is_surface) {
 		    if (!current_polyline_is_surface && current_traverse) {
-			FixLRUD(*current_traverse);
+			//FixLRUD(*current_traverse);
 		    }
 		    current_polyline_is_surface = is_surface;
 		    // Start new traverse (surface or underground).
@@ -1055,14 +1057,16 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		    if (is_surface) {
 			current_surface_traverse->push_back(PointInfo(prev_pt));
 		    } else {
-			current_traverse->push_back(PointInfo(prev_pt, survey->l, survey->r, survey->u, survey->d));
+			current_traverse->push_back(PointInfo(prev_pt));
+			// current_traverse->push_back(PointInfo(prev_pt, survey->l, survey->r, survey->u, survey->d));
 		    }
 		}
 
 		if (is_surface) {
 		    current_surface_traverse->push_back(PointInfo(pt));
 		} else {
-		    current_traverse->push_back(PointInfo(pt, survey->l, survey->r, survey->u, survey->d));
+		    //current_traverse->push_back(PointInfo(pt, survey->l, survey->r, survey->u, survey->d));
+		    current_traverse->push_back(PointInfo(pt));
 		}
 
 		prev_pt = pt;
@@ -1095,6 +1099,27 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		break;
 	    }
 
+	    case img_XSECT: {
+		if (!current_tube) {
+		    // Start new current_tube.
+		    tubes.push_back(vector<XSect>());
+		    current_tube = &tubes.back();
+		}
+
+		// FIXME: avoid linear search...
+		list<LabelInfo*>::const_iterator i = m_Labels.begin();
+		while (i != m_Labels.end() && (*i)->GetText() != survey->label) ++i;
+		assert(i != m_Labels.end()); // FIXME: shouldn't use assert for this...
+
+		current_tube->push_back(XSect((*i)->GetX(), (*i)->GetY(), (*i)->GetZ(), survey->l, survey->r, survey->u, survey->d));
+		if (survey->flags & img_XFLAG_END) {
+		    // Finish off current_tube.
+		    current_tube = NULL;
+		}
+
+		break;
+	    }
+
 	    case img_BAD: {
 		m_Labels.clear();
 
@@ -1122,8 +1147,10 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     } while (result != img_STOP);
 
     if (!current_polyline_is_surface && current_traverse) {
-	FixLRUD(*current_traverse);
+	//FixLRUD(*current_traverse);
     }
+
+    assert(!current_tube);
 
     separator = survey->separator;
     m_Title = survey->title;
@@ -1188,6 +1215,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 void
 MainFrm::FixLRUD(vector<PointInfo> & centreline)
 {
+#if 0
     assert(centreline.size() > 1);
 
     Double last_size = 0;
@@ -1250,6 +1278,7 @@ MainFrm::FixLRUD(vector<PointInfo> & centreline)
 	    }
 	}
     }
+#endif
 }
 
 void MainFrm::FillTree()
@@ -1428,6 +1457,19 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 	    point.z -= zoff;
 	}
 	++t;
+    }
+
+    list<vector<XSect> >::iterator i = tubes.begin();
+    while (i != tubes.end()) {
+	assert(i->size() > 1);
+	vector<XSect>::iterator pos = i->begin();
+	while (pos != i->end()) {
+	    XSect & point = *pos++;
+	    point.x -= xoff;
+	    point.y -= yoff;
+	    point.z -= zoff;
+	}
+	++i;
     }
 
     list<LabelInfo*>::iterator lpos = m_Labels.begin();

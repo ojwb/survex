@@ -321,6 +321,7 @@ get_qlist(unsigned long mask_bad)
 	{"BACKCOMPASS",  Q_BACKBEARING },     /* alternative name */
 	{"BACKGRADIENT", Q_BACKGRADIENT },
 	{"BEARING",      Q_BEARING },
+	{"CEILING",      Q_UP },          /* alternative name */
 	{"CLINO",	 Q_GRADIENT },    /* alternative name */
 	{"COMPASS",      Q_BEARING },     /* alternative name */
 	{"COUNT",	 Q_COUNT },
@@ -328,17 +329,22 @@ get_qlist(unsigned long mask_bad)
 	{"DECLINATION",  Q_DECLINATION },
 	{"DEFAULT",      Q_DEFAULT }, /* not a real quantity... */
 	{"DEPTH",	 Q_DEPTH },
+	{"DOWN",         Q_DOWN },
 	{"DX",		 Q_DX },	  /* alternative name */
 	{"DY",		 Q_DY },	  /* alternative name */
 	{"DZ",		 Q_DZ },	  /* alternative name */
 	{"EASTING",	 Q_DX },
+	{"FLOOR",        Q_DOWN },        /* alternative name */
 	{"GRADIENT",     Q_GRADIENT },
+	{"LEFT",         Q_LEFT },
 	{"LENGTH",       Q_LENGTH },
 	{"LEVEL",	 Q_LEVEL},
 	{"NORTHING",     Q_DY },
 	{"PLUMB",	 Q_PLUMB},
 	{"POSITION",     Q_POS },
+	{"RIGHT",        Q_RIGHT },
 	{"TAPE",	 Q_LENGTH },      /* alternative name */
+	{"UP",           Q_UP },
 	{NULL,		 Q_NULL }
    };
    unsigned long qmask = 0;
@@ -866,30 +872,36 @@ cmd_data(void)
 	{"BACKCOMPASS",  BackComp }, /* alternative name */
 	{"BACKGRADIENT", BackClino },
 	{"BEARING",      Comp },
+	{"CEILING",      Up }, /* alternative name */
 	{"CLINO",	 Clino }, /* alternative name */
 	{"COMPASS",      Comp }, /* alternative name */
 	{"COUNT",	 Count }, /* FrCount&ToCount in multiline */
 	{"DEPTH",	 Depth }, /* FrDepth&ToDepth in multiline */
 	{"DEPTHCHANGE",  DepthChange },
 	{"DIRECTION",    Dir },
+	{"DOWN",         Down },
 	{"DX",		 Dx },
 	{"DY",		 Dy },
 	{"DZ",		 Dz },
 	{"EASTING",      Dx },
+	{"FLOOR",        Down }, /* alternative name */
 	{"FROM",	 Fr },
 	{"FROMCOUNT",    FrCount },
 	{"FROMDEPTH",    FrDepth },
 	{"GRADIENT",     Clino },
 	{"IGNORE",       Ignore },
 	{"IGNOREALL",    IgnoreAll },
+	{"LEFT",         Left },
 	{"LENGTH",       Tape },
 	{"NEWLINE",      Newline },
 	{"NORTHING",     Dy },
+	{"RIGHT",        Right },
 	{"STATION",      Station }, /* Fr&To in multiline */
 	{"TAPE",	 Tape }, /* alternative name */
 	{"TO",		 To },
 	{"TOCOUNT",      ToCount },
 	{"TODEPTH",      ToDepth },
+	{"UP",           Up },
 	{NULL,		 End }
    };
 
@@ -903,11 +915,13 @@ cmd_data(void)
 #define MASK_DIVING MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
 #define MASK_CARTESIAN MASK_stns | BIT(Dx) | BIT(Dy) | BIT(Dz)
 #define MASK_CYLPOLAR  MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
+#define MASK_PASSAGE BIT(Station) | BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down)
 #define MASK_NOSURVEY MASK_stns
 
    /* readings which may be given for each style */
    static const unsigned long mask[] = {
-      MASK_NORMAL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR, MASK_NOSURVEY
+      MASK_NORMAL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR, MASK_PASSAGE,
+      MASK_NOSURVEY
    };
 
    /* readings which may be omitted for each style */
@@ -916,6 +930,7 @@ cmd_data(void)
       BIT(Dir),
       0,
       BIT(Dir),
+      0, /* BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down), */
       0
    };
 
@@ -925,6 +940,7 @@ cmd_data(void)
       MASK_DIVING | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_CARTESIAN | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_CYLPOLAR | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_PASSAGE | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_NOSURVEY | BIT(Ignore) | BIT(IgnoreAll) | BIT(End)
    };
 #define STYLE_DEFAULT   -2
@@ -937,6 +953,7 @@ cmd_data(void)
 	{"DIVING",       STYLE_DIVING },
 	{"NORMAL",       STYLE_NORMAL },
 	{"NOSURVEY",     STYLE_NOSURVEY },
+	{"PASSAGE",      STYLE_PASSAGE },
 	{"TOPOFIL",      STYLE_NORMAL },
 	{NULL,		 STYLE_UNKNOWN }
    };
@@ -1106,6 +1123,8 @@ cmd_data(void)
 	 new_order[k - 1] = Newline;
 	 new_order[k++] = End;
       }
+   } else if (style == STYLE_PASSAGE) {
+      /* Station doesn't mean "multiline" for STYLE_PASSAGE. */
    } else if (!TSTBIT(mUsed, Newline) && (m_multi & mUsed)) {
       /* This is for when they write
        * *data normal station tape compass clino
@@ -1122,10 +1141,12 @@ cmd_data(void)
 #endif
 
    /* Check the supplied readings form a sufficient set. */
-   if (mUsed & (BIT(Fr) | BIT(To)))
-      mUsed |= BIT(Station);
-   else if (TSTBIT(mUsed, Station))
-      mUsed |= BIT(Fr) | BIT(To);
+   if (style != STYLE_PASSAGE) {
+       if (mUsed & (BIT(Fr) | BIT(To)))
+	   mUsed |= BIT(Station);
+       else if (TSTBIT(mUsed, Station))
+	   mUsed |= BIT(Fr) | BIT(To);
+   }
 
    if (mUsed & (BIT(Comp) | BIT(BackComp)))
       mUsed |= BIT(Comp) | BIT(BackComp);
@@ -1157,6 +1178,7 @@ cmd_data(void)
       SVX_ASSERT((((mUsed &~ BIT(Newline)) | mask_optional[style])
 	      &~ mask[style]) == 0);
       compile_error_skip(/*Too few readings for data style `%s'*/64, style_name);
+      printf("%lx %lx %lx %lx\n", mUsed, BIT(Newline), mask_optional[style], mask[style]);
       osfree(style_name);
       osfree(new_order);
       return;
@@ -1171,6 +1193,14 @@ cmd_data(void)
    pcs->ordering = new_order;
 
    osfree(style_name);
+
+   if (style == STYLE_PASSAGE) {
+      lrudlist * new_psg = osnew(lrudlist);
+      new_psg->tube = NULL;
+      new_psg->next = model;
+      model = new_psg;
+      next_lrud = &(new_psg->tube);
+   }
 }
 
 static void
