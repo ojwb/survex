@@ -11,7 +11,7 @@ Changes in 1.1.2:
   cursors for each different mouse action to help the user learn what each
   does.  Also added cursors for the "compass" and "clino" as well as the
   scalebar to suggest to the user that they can be dragged to change the view.
-	
+
 * aven: Don't segfault on Unix if LANG isn't a known language.
 
 * tests/smoketest.tst: If X windows is running, check that we can run aven
@@ -57,7 +57,7 @@ Changes in 1.1.2:
   + Add David Loeffler's vim mode for .svx files.
 
 * aven: Fix check for whether a label is behind us in perspective view.
-	
+
 * aven: Don't use an opengl list for drawing the indicators - we typically make
   a new list each time we plot them anyway.
 
@@ -97,7 +97,7 @@ Changes in 1.1.2:
 Changes in 1.1.1:
 
 * (Microsoft Windows version): aven: Hopefully fix loading a survey file at
-  startup.		
+  startup.
 
 * aven: Delay loading the bitmap for the "About" dialog until it is first
   needed.  We want start up to be as quick as possible.
@@ -323,7 +323,7 @@ Changes in 1.0.25:
 
 * (Unix version): RPMs: give up supplying binary RPMs due to apparently
   insurmountable technical problems.
-  
+
 Changes in 1.0.24:
 
 * cavern: fixed LEVEL (broken since around 1.0.8) and added test case.
@@ -673,7 +673,7 @@ Changes in 1.0.8:
 
 * print*: added --raw switch to turn of info box, scale bar, and page footer.
   This can be useful if you want to import the output into another application.
-  
+
 * print*: improved output when --no-border is used.
 
 * printpcl/printdm: Added new .ini setting "font_bitmap" which allows the user
