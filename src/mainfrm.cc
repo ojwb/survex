@@ -951,7 +951,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     int items = 0;
 #endif
 
-    m_File = file;
+    m_File = survey->filename_opened;
 
     m_Tree->DeleteAllItems();
 
@@ -1200,8 +1200,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 #endif
 
     // Update window title.
-    SetTitle(wxString(APP_NAME" - [") + file + wxString("]"));
-    m_File = file;
+    SetTitle(wxString(APP_NAME" - [") + m_File + wxString("]"));
 
     return true;
 }
@@ -1487,10 +1486,10 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 {
     wxBusyCursor hourglass;
     if (LoadData(file, survey)) {
-	if (wxIsAbsolutePath(file)) {
-	    m_history.AddFileToHistory(file);
+	if (wxIsAbsolutePath(m_File)) {
+	    m_history.AddFileToHistory(m_File);
 	} else {
-	    wxString abs = wxGetCwd() + wxString(FNM_SEP_LEV) + file;
+	    wxString abs = wxGetCwd() + wxString(FNM_SEP_LEV) + m_File;
 	    m_history.AddFileToHistory(abs);
 	}
 	wxConfigBase *b = wxConfigBase::Get();

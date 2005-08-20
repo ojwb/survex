@@ -279,7 +279,7 @@ img_open_survey(const char *fnm, const char *survey)
       return NULL;
    }
 
-   pimg->fh = fopenWithPthAndExt("", fnm, EXT_SVX_3D, "rb", NULL);
+   pimg->fh = fopenWithPthAndExt("", fnm, EXT_SVX_3D, "rb", &(pimg->filename_opened));
    if (pimg->fh == NULL) {
       osfree(pimg->label_buf);
       osfree(pimg);
