@@ -148,11 +148,11 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_layout.Shots = legs;
     m_layout.Surface = surf;
     m_layout.datestamp = osstrdup(datestamp.c_str());
+    m_layout.rot = int(angle + .001);
     if (title.length() > 11 &&
 	title.substr(title.length() - 11) == " (extended)") {
 	m_layout.title = osstrdup(title.substr(0, title.length() - 11).c_str());
 	m_layout.view = layout::EXTELEV;
-	m_layout.rot = int(deg(angle) + .001);
 	if (m_layout.rot != 0 && m_layout.rot != 180) m_layout.rot = 0;
 	m_layout.tilt = 0;
     } else {
@@ -160,7 +160,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	// fraction before forcing to int as otherwise plan view ends up being
 	// 89 degrees!
 	m_layout.title = osstrdup(title.c_str());
-	m_layout.tilt = int(deg(tilt_angle) + .001);
+	m_layout.tilt = int(tilt_angle + .001);
 	if (m_layout.tilt == 90) {
 	    m_layout.view = layout::PLAN;
 	} else if (m_layout.tilt == 0) {
