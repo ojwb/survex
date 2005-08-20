@@ -817,10 +817,6 @@ void MainFrm::CreateToolBar()
 
     wxToolBar* toolbar = wxFrame::CreateToolBar();
 
-#ifndef _WIN32
-    toolbar->SetMargins(5, 5);
-#endif
-
     // FIXME: TRANSLATE tooltips
     toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open"), "Open a 3D file for viewing");
     toolbar->AddTool(menu_PRES_OPEN, TOOLBAR_BITMAP("open-pres"), "Open a presentation");
