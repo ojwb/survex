@@ -1048,14 +1048,12 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 			current_surface_traverse->push_back(PointInfo(prev_pt));
 		    } else {
 			current_traverse->push_back(PointInfo(prev_pt));
-			// current_traverse->push_back(PointInfo(prev_pt, survey->l, survey->r, survey->u, survey->d));
 		    }
 		}
 
 		if (is_surface) {
 		    current_surface_traverse->push_back(PointInfo(pt));
 		} else {
-		    //current_traverse->push_back(PointInfo(pt, survey->l, survey->r, survey->u, survey->d));
 		    current_traverse->push_back(PointInfo(pt));
 		}
 
