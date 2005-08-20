@@ -426,8 +426,8 @@ END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_TEXT_ENTER(textctrl_FIND, MainFrm::OnFind)
-    EVT_BUTTON(button_FIND, MainFrm::OnFind)
-    EVT_BUTTON(button_HIDE, MainFrm::OnHide)
+    EVT_MENU(button_FIND, MainFrm::OnFind)
+    EVT_MENU(button_HIDE, MainFrm::OnHide)
     EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
 
     EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
