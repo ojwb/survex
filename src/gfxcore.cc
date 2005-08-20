@@ -2196,7 +2196,8 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 		right = last_right;
 		// Obtain a second vector in the LRUD plane,
 		// perpendicular to the first.
-		up = right * leg_v;
+		//up = right * leg_v;
+		up = up_v;
 	    } else {
 		last_right = right;
 		up = up_v;
@@ -2215,7 +2216,8 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 		right = Vector3(last_right.getX(), last_right.getY(), 0.0);
 		// Obtain a second vector in the LRUD plane,
 		// perpendicular to the first.
-		up = right * leg_v;
+		//up = right * leg_v;
+		up = up_v;
 	    } else {
 		last_right = right;
 		up = up_v;
@@ -2251,8 +2253,9 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 		Vector3 n = leg1_v;
 		n.normalise();
 		z_pitch_adjust = n.getZ();
-		up = Vector3(0, 0, leg1_v.getZ());
-		up = right * up;
+		//up = Vector3(0, 0, leg1_v.getZ());
+		//up = right * up;
+		up = up_v;
 
 		// Rotate pitch section to minimise the
 		// "tortional stress" - FIXME: use
@@ -2315,8 +2318,9 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 		Vector3 n = leg2_v;
 		n.normalise();
 		z_pitch_adjust = n.getZ();
-		up = Vector3(0, 0, leg2_v.getZ());
-		up = right * up;
+		//up = Vector3(0, 0, leg2_v.getZ());
+		//up = right * up;
+		up = up_v;
 	    } else {
 		up = up_v;
 	    }
