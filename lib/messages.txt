@@ -2590,15 +2590,15 @@ sk:229 S&uacute;bory s povrchom
 ro:229 Model digital al terenului
 #
 # The accelerators must be different within this group
-en:230 @Start Rotation##Return
-fr:230 @D&eacute;marre la rotation##Return
-de:230 @Rotation starten##Return
-pt,pt-br:230 Iniciar @Rota&ccedil;&atilde;o##Return
-ca:230 @Comen&ccedil;a la Rotaci&oacute;##Return
-es:230 @Empieza la Rotaci&oacute;n##Return
-it:230 @Avvia la rotazione##Return
-sk:230 @Za&ccaron;a&tcaron; rot&aacute;ciu##Return
-ro:230 @Porneste Rotatia##Return
+en:230 @Start Rotation
+fr:230 @D&eacute;marre la rotation
+de:230 @Rotation starten
+pt,pt-br:230 Iniciar @Rota&ccedil;&atilde;o
+ca:230 @Comen&ccedil;a la Rotaci&oacute;
+es:230 @Empieza la Rotaci&oacute;n
+it:230 @Avvia la rotazione
+sk:230 @Za&ccaron;a&tcaron; rot&aacute;ciu
+ro:230 @Porneste Rotatia
 #
 en:231 S@top Rotation##Space
 fr:231 @Arr&ecirc;te la rotation##Space
@@ -3745,6 +3745,41 @@ es:502 Borrado: %s
 it:502 Rimosso: %s
 sk:502 Zru&scaron;en&eacute;: %s
 ro:502 Eliminat: %s
+#
+# for extend:
+en:600 Don't understand command `%s' in config, line %i
+#
+en:601 Unexpected content `%s' in config, line %i
+#
+en:602 Command without station name in config, line %i
+#
+en:603 Failed to find station %s in config, line %i
+#
+en:604 Starting from station %s
+#
+en:605 Plotting to the left from station %s
+#
+en:606 Failed to find leg %s -> %s in config, line %i
+#
+en:607 Plotting to the left from leg %s -> %s
+#
+en:608 Plotting to the right from station %s
+#
+en:609 Plotting to the right from leg %s -> %s
+#
+en:610 Breaking survey at station %s
+#
+en:611 Breaking survey at leg %s -> %s
+#
+en:612 Error reading line %i from spec file
+#
+en:613 Applying specfile: `%s'
+#
+en:614 Writing out .3d file...
+#
+en:615 Swapping plot direction from station %s
+#
+en:616 Swapping plot direction from leg %s -> %s
 #
 # "don't extract" messages - these are compiled into the programs
 #
