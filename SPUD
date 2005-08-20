@@ -22,7 +22,8 @@ may be needed to get meaningful timing info.
 sort out date colouring cleanly.  also error colouring, etc.
 
 texture mapped fonts: seems to be a minor alignment bug which gives spacing
-inconsistencies - investigate.
+inconsistencies - investigate.  Or is this fixed now we round label coordinates
+before plotting?
 
 Unix full screen mode needs to allow dialogs to appear over the window
 (e.g. try Ctrl+O while in full screen mode).  Added tweak to drop out
@@ -31,6 +32,16 @@ It would be best of all if wx got this right...
 
 smooth wrinkles in presentation code (Add "stop", stop pres on Open or New,
 changing focus on listctrl as presentation plays doesn't really work properly)
+
+Does anyone use Controls->"Reverse Sense"?  It made some sense with caverot
+but now seeing the mouse pointer makes people expect the default motions...
+
+Save margin settings, etc for printing in .aven (at least on unix).
+
+Measuring line turning itself on can be annoying - rethink how this works a
+bit perhaps?
+
+Right-click menus for indicators?
 
 ---
 
