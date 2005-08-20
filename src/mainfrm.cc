@@ -1401,14 +1401,10 @@ void MainFrm::SetTreeItemColour(LabelInfo* label)
 {
     // Set the colour for an item in the survey tree.
 
-    if (label->IsSurface()) {
-	m_Tree->SetItemTextColour(label->tree_id, wxColour(49, 158, 79));
-    }
-
     if (label->IsEntrance()) {
-	// FIXME: making this red here doesn't match with entrance blobs
-	// being green...
-	m_Tree->SetItemTextColour(label->tree_id, wxColour(255, 0, 0));
+	m_Tree->SetItemTextColour(label->tree_id, wxColour(0, 255, 0));
+    } else if (label->IsSurface()) {
+	m_Tree->SetItemTextColour(label->tree_id, wxColour(49, 158, 79));
     }
 }
 
