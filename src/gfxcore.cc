@@ -774,6 +774,14 @@ void GfxCore::NattyDrawNames()
 
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
+	if (!((m_Surface && (*label)->IsSurface()) ||
+	      (m_Legs && (*label)->IsUnderground()) ||
+	      (!(*label)->IsSurface() && !(*label)->IsUnderground()))) {
+	    // if this station isn't to be displayed, skip to the next
+	    // (last case is for stns with no legs attached)
+	    continue;
+	}
+
 	Double x, y, z;
 
 	Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
@@ -821,6 +829,14 @@ void GfxCore::SimpleDrawNames()
     // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
+	if (!((m_Surface && (*label)->IsSurface()) ||
+	      (m_Legs && (*label)->IsUnderground()) ||
+	      (!(*label)->IsSurface() && !(*label)->IsUnderground()))) {
+	    // if this station isn't to be displayed, skip to the next
+	    // (last case is for stns with no legs attached)
+	    continue;
+	}
+
 	Double x, y, z;
 	Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
 
