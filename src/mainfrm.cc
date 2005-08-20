@@ -2050,6 +2050,7 @@ void MainFrm::OnFind(wxCommandEvent&)
 	re_flags |= wxRE_ICASE;
     }
 
+    bool substring = true;
     if (false /*m_RegexpCheckBox->GetValue()*/) {
 	re_flags |= wxRE_EXTENDED;
     } else if (true /* simple glob-style */) {
@@ -2064,9 +2065,11 @@ void MainFrm::OnFind(wxCommandEvent&)
 	      break;
 	    case '*':
 	      pat += ".*";
+              substring = false;
 	      break;
 	    case '?':
 	      pat += '.';
+              substring = false;
 	      break;
 	    default:
 	      pat += ch;
@@ -2089,9 +2092,10 @@ void MainFrm::OnFind(wxCommandEvent&)
 	re_flags |= wxRE_BASIC;
     }
 
-    if (!true /* !substring */) {
+    if (!substring) {
 	// FIXME "0u" required to avoid compilation error with g++-3.0
 	if (pattern.empty() || pattern[0u] != '^') pattern = '^' + pattern;
+        // FIXME: this fails to cope with "\$" at the end of pattern...
 	if (pattern[pattern.size() - 1] != '$') pattern += '$';
     }
 
