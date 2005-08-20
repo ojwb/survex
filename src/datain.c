@@ -1699,7 +1699,13 @@ data_passage(void)
 	 stn = read_prefix_stn(fFalse, fFalse);
 	 break;
        case Left: case Right: case Up: case Down:
-	 read_reading(*ordering, fFalse);
+	 read_reading(*ordering, fTrue);
+         if (VAL(*ordering) == HUGE_REAL) {
+            if (!isOmit(ch)) {
+               compile_error_token(/*Expecting numeric field, found `%s'*/9);
+            }
+            VAL(*ordering) = -1;
+         }
 	 break;
        case Ignore:
 	 skipword(); break;
