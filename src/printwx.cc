@@ -56,7 +56,7 @@ class svxPrintout : public wxPrintout {
     MainFrm *mainfrm;
     layout *m_layout;
     wxString m_title;
-    wxPageSetupData* m_data;
+    wxPageSetupDialogData* m_data;
     wxDC* pdc;
     static const int cur_pass = 0;
 
@@ -96,7 +96,7 @@ class svxPrintout : public wxPrintout {
     void PlotUD(const vector<XSect> & centreline);
     char * Init(FILE **fh_list, bool fCalibrate);
   public:
-    svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupData *data, const wxString & title);
+    svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupDialogData *data, const wxString & title);
     bool OnPrintPage(int pageNum);
     void GetPageInfo(int *minPage, int *maxPage,
 		     int *pageFrom, int *pageTo);
@@ -497,7 +497,7 @@ static int fontsize, fontsize_labels;
 static const char *fontname = "Arial", *fontname_labels = "Arial";
 
 // wx <-> prcore (calls to print_page etc...)
-svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l, wxPageSetupData *data,
+svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l, wxPageSetupDialogData *data,
 			 const wxString & title)
     : wxPrintout(title)
 {

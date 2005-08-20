@@ -239,7 +239,7 @@ class MainFrm : public wxFrame {
 	Double x, y, z;
     } m_Offsets;
 
-    wxPageSetupData m_pageSetupData;
+    wxPageSetupDialogData m_pageSetupData;
     wxPrintData m_printData;
 
     wxString icon_path;
@@ -503,7 +503,7 @@ public:
     void ShowInfo(const LabelInfo *label);
     void DisplayTreeInfo(const wxTreeItemData* data);
     void TreeItemSelected(wxTreeItemData* data);
-    wxPageSetupData * GetPageSetupData() { return &m_pageSetupData; }
+    wxPageSetupDialogData * GetPageSetupData() { return &m_pageSetupData; }
     PresentationMark GetPresMark(int which);
 
 private:
