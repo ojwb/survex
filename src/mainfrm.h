@@ -334,9 +334,7 @@ public:
     void OnMoveNorthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveNorthUpdate(event); }
     void OnMoveSouthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveSouthUpdate(event); }
     void OnMoveWestUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveWestUpdate(event); }
-    void OnStartRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnStartRotationUpdate(event); }
     void OnToggleRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleRotationUpdate(event); }
-    void OnStopRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnStopRotationUpdate(event); }
     void OnReverseControlsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnReverseControlsUpdate(event); }
     void OnSlowDownUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnSlowDownUpdate(event); }
     void OnSpeedUpUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnSpeedUpUpdate(event); }
@@ -380,9 +378,7 @@ public:
     void OnMoveNorth(wxCommandEvent&) { if (m_Control) m_Control->OnMoveNorth(); }
     void OnMoveSouth(wxCommandEvent&) { if (m_Control) m_Control->OnMoveSouth(); }
     void OnMoveWest(wxCommandEvent&) { if (m_Control) m_Control->OnMoveWest(); }
-    void OnStartRotation(wxCommandEvent&) { if (m_Control) m_Control->OnStartRotation(); }
     void OnToggleRotation(wxCommandEvent&) { if (m_Control) m_Control->OnToggleRotation(); }
-    void OnStopRotation(wxCommandEvent&) { if (m_Control) m_Control->OnStopRotation(); }
     void OnReverseControls(wxCommandEvent&) { if (m_Control) m_Control->OnReverseControls(); }
     void OnSlowDown(wxCommandEvent&) { if (m_Control) m_Control->OnSlowDown(); }
     void OnSpeedUp(wxCommandEvent&) { if (m_Control) m_Control->OnSpeedUp(); }

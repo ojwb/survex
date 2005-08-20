@@ -472,9 +472,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_CLOSE(MainFrm::OnClose)
     EVT_SET_FOCUS(MainFrm::OnSetFocus)
 
-    EVT_MENU(menu_ROTATION_START, MainFrm::OnStartRotation)
     EVT_MENU(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotation)
-    EVT_MENU(menu_ROTATION_STOP, MainFrm::OnStopRotation)
     EVT_MENU(menu_ROTATION_SPEED_UP, MainFrm::OnSpeedUp)
     EVT_MENU(menu_ROTATION_SLOW_DOWN, MainFrm::OnSlowDown)
     EVT_MENU(menu_ROTATION_REVERSE, MainFrm::OnReverseDirectionOfRotation)
@@ -525,9 +523,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_FILE_PRINT, MainFrm::OnPrintUpdate)
     EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
     EVT_UPDATE_UI(menu_FILE_EXPORT, MainFrm::OnExportUpdate)
-    EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotationUpdate)
-    EVT_UPDATE_UI(menu_ROTATION_STOP, MainFrm::OnStopRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_SPEED_UP, MainFrm::OnSpeedUpUpdate)
     EVT_UPDATE_UI(menu_ROTATION_SLOW_DOWN, MainFrm::OnSlowDownUpdate)
     EVT_UPDATE_UI(menu_ROTATION_REVERSE, MainFrm::OnReverseDirectionOfRotationUpdate)
@@ -700,8 +696,8 @@ void MainFrm::CreateMenuBar()
     m_history.Load(*wxConfigBase::Get());
 
     wxMenu* rotmenu = new wxMenu;
-    rotmenu->Append(menu_ROTATION_START, GetTabMsg(/*@Start Rotation##Return*/230));
-    rotmenu->Append(menu_ROTATION_STOP, GetTabMsg(/*S@top Rotation##Space*/231));
+    // FIXME: TRANSLATE
+    rotmenu->Append(menu_ROTATION_TOGGLE, "&Auto-Rotate\tSpace", "", true);
     rotmenu->AppendSeparator();
     rotmenu->Append(menu_ROTATION_SPEED_UP, GetTabMsg(/*Speed @Up*/232));
     rotmenu->Append(menu_ROTATION_SLOW_DOWN, GetTabMsg(/*Slow @Down*/233));
@@ -823,10 +819,8 @@ void MainFrm::CreateToolBar()
     toolbar->AddSeparator();
     toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation"),
 		     wxNullBitmap, true, -1, -1, NULL, "Toggle rotation");
-    toolbar->AddSeparator();
     toolbar->AddTool(menu_ORIENT_PLAN, TOOLBAR_BITMAP("plan"), "Switch to plan view");
     toolbar->AddTool(menu_ORIENT_ELEVATION, TOOLBAR_BITMAP("elevation"), "Switch to elevation view");
-    toolbar->AddSeparator();
     toolbar->AddTool(menu_ORIENT_DEFAULTS, TOOLBAR_BITMAP("defaults"), "Restore default view");
     toolbar->AddSeparator();
     toolbar->AddTool(menu_VIEW_SHOW_NAMES, TOOLBAR_BITMAP("names"), wxNullBitmap, true,

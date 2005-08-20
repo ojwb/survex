@@ -71,9 +71,7 @@ public:
     void OnMoveNorth();
     void OnMoveSouth();
     void OnMoveWest();
-    void OnStartRotation();
     void OnToggleRotation();
-    void OnStopRotation();
     void OnReverseControls();
     void OnSlowDown(bool accel = false);
     void OnSpeedUp(bool accel = false);
@@ -117,9 +115,7 @@ public:
     void OnMoveNorthUpdate(wxUpdateUIEvent&);
     void OnMoveSouthUpdate(wxUpdateUIEvent&);
     void OnMoveWestUpdate(wxUpdateUIEvent&);
-    void OnStartRotationUpdate(wxUpdateUIEvent&);
     void OnToggleRotationUpdate(wxUpdateUIEvent&);
-    void OnStopRotationUpdate(wxUpdateUIEvent&);
     void OnReverseControlsUpdate(wxUpdateUIEvent&);
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent&);
     void OnSlowDownUpdate(wxUpdateUIEvent&);

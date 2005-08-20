@@ -458,16 +458,6 @@ void GUIControl::OnMoveWestUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_View->HasData() && !(m_View->GetLock() & lock_Y));
 }
 
-void GUIControl::OnStartRotation()
-{
-    m_View->StartRotation();
-}
-
-void GUIControl::OnStartRotationUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData() && !m_View->IsRotating() && m_View->CanRotate());
-}
-
 void GUIControl::OnToggleRotation()
 {
     m_View->ToggleRotation();
@@ -477,16 +467,6 @@ void GUIControl::OnToggleRotationUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && m_View->CanRotate());
     cmd.Check(m_View->HasData() && m_View->IsRotating());
-}
-
-void GUIControl::OnStopRotation()
-{
-    m_View->StopRotation();
-}
-
-void GUIControl::OnStopRotationUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData() && m_View->IsRotating());
 }
 
 void GUIControl::OnReverseControls()
@@ -996,12 +976,13 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    OnDefaults();
 	    break;
 	case WXK_RETURN:
+            // For compatibility with older versions.
 	    if (m_View->CanRotate() && !m_View->IsRotating())
-		OnStartRotation();
+                m_View->StartRotation();
 	    break;
 	case WXK_SPACE:
-	    if (m_View->IsRotating())
-		OnStopRotation();
+	    if (m_View->CanRotate())
+		OnToggleRotation();
 	    break;
 	case WXK_LEFT:
 	    if (e.m_controlDown) {
