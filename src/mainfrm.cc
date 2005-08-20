@@ -838,7 +838,6 @@ void MainFrm::CreateToolBar()
 		     -1, -1, NULL, "Show underground surveys");
     toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show surface surveys");
-    toolbar->AddSeparator();
     toolbar->AddTool(menu_VIEW_SHOW_TUBES, TOOLBAR_BITMAP("tubes"), wxNullBitmap, true,
 		     -1, -1, NULL, "Show passage tubes");
     toolbar->AddSeparator();
