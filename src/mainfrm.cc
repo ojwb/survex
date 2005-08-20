@@ -2132,11 +2132,12 @@ void MainFrm::OnFind(wxCommandEvent&)
     m_Gfx->UpdateBlobs();
     m_Gfx->ForceRefresh();
 
-#if 0
     if (!found) {
 	wxGetApp().ReportError(msg(/*No matches were found.*/328));
+        GetToolBar()->SetToolShortHelp(button_HIDE, msg(/*No matches were found.*/328));
+    } else {
+        GetToolBar()->SetToolShortHelp(button_HIDE, wxString::Format("Unhilight %d found stations", found));
     }
-#endif
 
     m_Gfx->SetFocus();
 }
