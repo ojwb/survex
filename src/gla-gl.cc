@@ -270,7 +270,7 @@ void GLACanvas::Clear()
     CHECK_GL_ERROR("Clear", "glClear");
 }
 
-void GLACanvas::SetRotation(Quaternion& q)
+void GLACanvas::SetRotation(const Quaternion& q)
 {
     m_Rotation = q;
 }

@@ -190,7 +190,7 @@ public:
     void EnableSmoothPolygons();
     void DisableSmoothPolygons();
 
-    void SetRotation(Quaternion&);
+    void SetRotation(const Quaternion&);
     void SetScale(Double);
     void SetTranslation(Double, Double, Double);
     void AddTranslation(Double, Double, Double);
