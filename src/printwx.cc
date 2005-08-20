@@ -1399,7 +1399,7 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	    const XSect & next_pt_v = *i;
 
 	    // calculate vector from this pt to the next one
-	    Vector3 leg_v = pt_v.vec() - next_pt_v.vec();
+	    Vector3 leg_v = next_pt_v.vec() - pt_v.vec();
 
 	    // obtain a vector in the LRUD plane
 	    right = leg_v * up_v;
@@ -1412,7 +1412,7 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	    // last segment
 
 	    // Calculate vector from the previous pt to this one.
-	    Vector3 leg_v = prev_pt_v.vec() - pt_v.vec();
+	    Vector3 leg_v = pt_v.vec() - prev_pt_v.vec();
 
 	    // Obtain a horizontal vector in the LRUD plane.
 	    right = leg_v * up_v;
@@ -1431,8 +1431,8 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	    // Calculate vectors from this vertex to the
 	    // next vertex, and from the previous vertex to
 	    // this one.
-	    Vector3 leg1_v = prev_pt_v.vec() - pt_v.vec();
-	    Vector3 leg2_v = pt_v.vec() - next_pt_v.vec();
+	    Vector3 leg1_v = pt_v.vec() - prev_pt_v.vec();
+	    Vector3 leg2_v = next_pt_v.vec() - pt_v.vec();
 
 	    // Obtain horizontal vectors perpendicular to
 	    // both legs, then normalise and average to get
@@ -1493,8 +1493,8 @@ svxPrintout::PlotUD(const vector<XSect> & centreline)
 	// get the coordinates of this vertex
 	const XSect & pt_v = *i++;
 
-	Double u = pt_v.GetL();
-	Double d = pt_v.GetR();
+	Double u = pt_v.GetU();
+	Double d = pt_v.GetD();
 
 	if (u >= 0 || d >= 0) {
 	    Vector3 p = pt_v.vec();
