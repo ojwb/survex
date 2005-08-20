@@ -1962,7 +1962,7 @@ PresentationMark MainFrm::GetPresMark(int which)
 
 void MainFrm::OnPresNewUpdate(wxUpdateUIEvent& event)
 {
-    event.Enable(!m_PresList->Empty());
+    event.Enable(!m_File.empty());
 }
 
 void MainFrm::OnPresOpenUpdate(wxUpdateUIEvent& event)
