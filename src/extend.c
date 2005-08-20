@@ -78,7 +78,7 @@ static point headpoint = {{0, 0, 0}, NULL, 0, 0, 0, 0, NULL};
 
 static leg headleg = {NULL, NULL, NULL, 0, 0, 0, 0, NULL};
 
-static img *pimg;
+static img *pimg_out;
 
 static void do_stn(point *, double, const char *, int, int);
 
@@ -449,6 +449,8 @@ main(int argc, char **argv)
    point *p;
    const char *survey = NULL;
    const char *specfile = NULL;
+   img *pimg;
+   int have_xsect = 0;
 
    msg_init(argv);
 
@@ -503,14 +505,16 @@ main(int argc, char **argv)
       case img_BAD:
 	 (void)img_close(pimg);
 	 fatalerror(img_error(), fnm_in);
+	 break;
+      case img_XSECT:
+         have_xsect = 1;
+         break;
       }
    } while (result != img_STOP);
 
    desc = osmalloc(strlen(pimg->title) + 11 + 1);
    strcpy(desc, pimg->title);
    strcat(desc, " (extended)");
-
-   (void)img_close(pimg);
 
    if (specfile) {
       FILE *fs = NULL;
@@ -579,11 +583,26 @@ main(int argc, char **argv)
 
    printf(msg(/*Writing out .3d file...*/614));
    putnl();
-   pimg = img_open_write(fnm_out, desc, fTrue);
+   pimg_out = img_open_write(fnm_out, desc, fTrue);
 
    /* Only does single connected component currently. */
    do_stn(start, 0.0, NULL, ERIGHT, 0);
-   if (!img_close(pimg)) {
+
+   if (have_xsect) {
+      img_rewind(pimg);
+      do {
+	 result = img_read_item(pimg, &pt);
+	 if (result == img_XSECT) {
+            pimg_out->u = pimg->u;
+	    pimg_out->d = pimg->d;
+            img_write_item(pimg_out, img_XSECT, pimg->flags, pimg->label, 0, 0, 0);
+	 }
+      } while (result != img_STOP);
+   }
+   
+   (void)img_close(pimg);
+
+   if (!img_close(pimg_out)) {
       (void)remove(fnm_out);
       fatalerror(img_error(), fnm_out);
    }
@@ -608,7 +627,7 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
    int odir = dir;
 
    for (s = p->stns; s; s = s->next) {
-      img_write_item(pimg, img_LABEL, s->flags, s->label, X, 0, p->p.z);
+      img_write_item(pimg_out, img_LABEL, s->flags, s->label, X, 0, p->p.z);
    }
    if (labOnly || p->fBroken) {
       return;
@@ -635,8 +654,8 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 
 	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+	 img_write_item(pimg_out, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
+	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
 			X, 0, l->to->p.z);
 	 l->fDone = 1;
 	 do_stn(l->fr, X + dX, l->prefix, dir, (l->broken & BREAK_FR));
@@ -650,8 +669,8 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 
 	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+	 img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
+	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
 			X + dX, 0, l->to->p.z);
 	 l->fDone = 1;
 	 do_stn(l->to, X + dX, l->prefix, dir, (l->broken & BREAK_TO));
@@ -676,8 +695,8 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 
 	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+	 img_write_item(pimg_out, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
+	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
 			X, 0, l->to->p.z);
 	 l->fDone = 1;
 	 do_stn(l->fr, X + dX, l->prefix, dir, (l->broken & BREAK_FR));
@@ -691,8 +710,8 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 
 	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+	 img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
+	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
 			X + dX, 0, l->to->p.z);
 	 l->fDone = 1;
 	 do_stn(l->to, X + dX, l->prefix, dir, (l->broken & BREAK_TO));
