@@ -365,14 +365,13 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	DrawList(m_Lists.blobs);
 
-/*
-	// FIXME: for non-GL: bool grid_first = (m_TiltAngle >= 0.0);
-
 	if (m_Grid) {
 	    // Draw the grid.
-	    DrawList(m_Lists.grid);
+	    // FIXME: draw grid as opengl list?  tracking when to invalidate
+	    // it requires care...
+	    // DrawList(m_Lists.grid);
+	    DrawGrid();
 	}
-*/
 
 	SetIndicatorTransform();
 
@@ -498,11 +497,10 @@ Double GfxCore::GridYToScreen(Double x, Double y, Double z) const
 void GfxCore::DrawGrid()
 {
     // Draw the grid.
-/*
     SetColour(col_RED);
 
     // Calculate the extent of the survey, in metres across the screen plane.
-    Double m_across_screen = Double(m_XSize / m_Params.scale);
+    Double m_across_screen = SurveyUnitsAcrossViewport();
     // Calculate the length of the scale bar in metres.
     //--move this elsewhere
     Double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
@@ -526,20 +524,22 @@ void GfxCore::DrawGrid()
     Double actual_right = left + count_x*grid_size;
     Double actual_top = bottom + count_y*grid_size;
 
+    BeginLines();
+
     for (int xc = 0; xc <= count_x; xc++) {
 	Double x = left + xc*grid_size;
 
-	m_DrawDC.DrawLine((int) GridXToScreen(x, bottom, grid_z), (int) GridYToScreen(x, bottom, grid_z),
-			  (int) GridXToScreen(x, actual_top, grid_z), (int) GridYToScreen(x, actual_top, grid_z));
+	PlaceVertex(x, bottom, grid_z);
+	PlaceVertex(x, actual_top, grid_z);
     }
 
     for (int yc = 0; yc <= count_y; yc++) {
 	Double y = bottom + yc*grid_size;
-	m_DrawDC.DrawLine((int) GridXToScreen(left, y, grid_z), (int) GridYToScreen(left, y, grid_z),
-			  (int) GridXToScreen(actual_right, y, grid_z),
-			  (int) GridYToScreen(actual_right, y, grid_z));
+	PlaceVertex(left, y, grid_z);
+	PlaceVertex(actual_right, y, grid_z);
     }
-*/
+
+    EndLines();
 }
 
 int GfxCore::GetClinoOffset() const
