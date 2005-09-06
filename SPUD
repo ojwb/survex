@@ -1,11 +1,11 @@
 Still to do to aven 1.1.*:
 
-Try to speed up crosses (use texture mapping?)
-
-Make grid work again!
+Fix depth clipping on grid
 
 Make blobs round (use antialised blobs with an alpha threshold)?  But we
 need to work out how to get them centred...
+
+Try to speed up crosses (use texture mapping?)
 
 Draw the measuring line directly onto the front buffer, so we can remove it
 with a copy from the back buffer and redraw it in the new position without a
@@ -26,7 +26,7 @@ inconsistencies - investigate.  Or is this fixed now we round label coordinates
 before plotting?
 
 Unix full screen mode needs to allow dialogs to appear over the window
-(e.g. try Ctrl+O while in full screen mode).  Added tweak to drop out
+(e.g. try Ctrl+O while in full screen mode).  I've added a tweak to drop out
 of it before showing dialog and return after, but this isn't ideal.
 It would be best of all if wx got this right...
 
@@ -42,6 +42,9 @@ Measuring line turning itself on can be annoying - rethink how this works a
 bit perhaps?
 
 Right-click menus for indicators?
+
+Optional lazy label redraw during drags?  Or turn on at some redraw time
+threshold...
 
 ---
 
@@ -83,9 +86,6 @@ funcs to spot differences between caves:
 Label lengths aren't considered when working out image size in prcore.c,
 so a long label can spill off the edge of the printout
 
-"message.c" add option to read errors from disc only when needed, to help
-when memory is tight
-
 printer driver name spills over one page on Wookey's printer (printdm)
 
 For warnings such as "Suspicious compass reading", report the reading
@@ -114,20 +114,7 @@ Allow valid range for an instrument to be specified.  Tie in with
 *instrument.  *units date - ranges for dates - e.g. "1990-" or
 "jun-aug"...
 
-Date: Fri, 04 May 2001
-Subject: xcaverot
-From: Olly
-
-xcaverot missing:, ^A (lazy redraw during drags), ^R (reverse sense of
-controls), escape vs q(?)
-
-Shift-ed keys should move faster as they do in aven and caverot
-
 Maybe station lists should know how long they are?
-
-caverot help page needs fettling so that it appears centrally (and indeed
-so that it all fits on the screen in chunky CGA modes) [BC fns to look at:
-textheight("W"), textwidth(), settextstyle()]
 
 cope with any combination of readings which gives enough info ???
 
@@ -162,39 +149,39 @@ Allow covariances to be specified in cartesian style?
 
 back bearings?
 
-aven grid code -> printer drivers, caverot, and xcaverot too.
+*fix with datums etc
+
+Aven:
+
+aven grid code -> printouts
 grid crosses option (only draw cross at intersections, not a full grid).
 [(x,y) of a point to go through (easting, northing)
 x spacing, y spacing (default to x spacing)
 orientation (bearing of y-axis?) (defaults to 0)]
 
-*fix with datums etc
-
-Profile aven (for speed and memory usage)
-
 Mark: "surface.png is for a textured landscape -- there needs to be a
 menu option to select the texturing on/off, and this should be the
 texture used. map.png is just a different surface overlay for Loser."
 
-Aven:
+Profile aven further (for both speed and memory usage)
 
-<li>by default put crosses on those points with no legs attached (unused
+by default put crosses on those points with no legs attached (unused
 fixed points)?
 
-<li>label junctions/dead ends?
+label junctions/dead ends?
 
-<li>colour by traverse
+colour by traverse
 
-<li>section colouring/selective labelling
+section colouring/selective labelling
 
-<li>clipping - want to select a clip sphere (or maybe cube) centred on
+clipping - want to select a clip sphere (or maybe cube) centred on
 centre on rotation I think.
 
-<li>colour by cave (and more generally by sub-prefix):
+colour by cave (and more generally by sub-prefix):
 "aven --survey 161 --colour-by-sub-prefix all.3d" would result in
 lhroute, rhroute, adrian, etc all getting different colours...
 
-<li>Some way to display all the names of an equated station (e.g. in pop-up
+Some way to display all the names of an equated station (e.g. in pop-up
 window or the info panel).
 
-<li>Highlight a whole survey by clicking on it in the tree...
+Highlight a whole survey by clicking on it in the tree...
