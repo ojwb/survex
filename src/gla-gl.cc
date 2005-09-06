@@ -965,7 +965,7 @@ void GLACanvas::ReverseTransform(Double x, Double y,
     CHECK_GL_ERROR("ReverseTransform", "gluUnProject");
 }
 
-Double GLACanvas::SurveyUnitsAcrossViewport()
+Double GLACanvas::SurveyUnitsAcrossViewport() const
 {
     // Measure the current viewport in survey units, taking into account the
     // current display scale.

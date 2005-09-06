@@ -201,7 +201,7 @@ public:
 
     int GetFontSize() const { return m_Font.getFontSize(); }
 
-    Double SurveyUnitsAcrossViewport();
+    Double SurveyUnitsAcrossViewport() const;
 
     void ToggleTextured();
     bool GetTextured() const { return m_Textured; }
