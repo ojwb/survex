@@ -2520,12 +2520,13 @@ make_cursor(const unsigned char * bits, const unsigned char * mask,
 	    int hotx, int hoty)
 {
 #ifdef __WXMSW__
-    wxBitmap cursor_bitmap(bits, 32, 32);
-    cursor_bitmap.SetMask(new wxMask(wxBitmap(mask, 32, 32)));
+    wxBitmap cursor_bitmap(reinterpret_cast<const char *>(bits), 32, 32);
+    wxBitmap mask_bitmap(reinterpret_cast<const char *>(mask), 32, 32);
+    cursor_bitmap.SetMask(new wxMask(mask_bitmap));
     wxImage cursor_image = cursor_bitmap.ConvertToImage();
     cursor_image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, hotx);
     cursor_image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, hoty);
-    return wxCursor(move_cursor_image);
+    return wxCursor(cursor_image);
 #else
     return wxCursor((const char *)bits, 32, 32, hotx, hoty,
 		    (const char *)mask, wxWHITE, wxBLACK);
