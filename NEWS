@@ -1,4 +1,45 @@
-Changes in 1.1.2:
+Changes in 1.1.3:
+
+* (Microsoft Windows version): Fixed build problems.
+
+* cavern: Allow OMIT character (-) for left/right/up/down.
+
+* aven: Remove an unnecessary menu separator.
+
+* aven: Fix "Find" and "Hide" toolbar buttons to work with GTK2.0.
+
+* aven: Make the tooltip for "Hide" show the number of found stations.
+
+* aven: If * or ? is used in a glob-style pattern, force a non-substring match.
+
+* aven: Enable "New Presentation" when there's a 3d file loaded, rather than
+  when there's a presentation loaded.
+
+* aven: Make entrances green in side panel tree list to match green blobs used
+  in cave view.
+
+* aven: Don't show surface labels if we're not showing surface data, etc.
+
+* aven: Merge "Start Rotation" and "Stop Rotation" into "Toggle Rotation" and
+  make "Space" the key for this.  Keep Return working "Stop Rotation" so
+  existing users are happy, but don't advertise it.
+
+* aven: Normalise filename by adding any extension used, and use the normalised
+  filename for file history and window title.
+
+* (Unix version): aven: Stop setting extra toolbar margin when using GTK2.0
+  as the toolbar buttons already have a sensible margin - the extra margin is
+  only needed with GTK1.2.
+
+* aven: Fix handling of plumb legs in tube model.
+
+* aven: Fixed swapped L and R in tube model.
+
+* extend: Preserve UD cross-section information in extended elevation.
+
+* extend: Add new messages for John Pybus' enhancements.
+
+Changes in 1.1.2 (never formally released):
 
 * Added support for LRUD data in .svx files, in .3d files, and aven can
   now load and display it on screen and on printouts.  The ability to "fake"
@@ -12,7 +53,7 @@ Changes in 1.1.2:
   does.  Also added cursors for the "compass" and "clino" as well as the
   scalebar to suggest to the user that they can be dragged to change the view.
 
-* aven: Don't segfault on Unix if LANG isn't a known language.
+* (Unix version): aven: Don't segfault if LANG isn't a known language.
 
 * tests/smoketest.tst: If X windows is running, check that we can run aven
   with --help and --version.
@@ -27,9 +68,10 @@ Changes in 1.1.2:
   a feature test for this to the testsuite.
 
 * It no longer makes sense to have an option not to build aven or to build aven
-  without OpenGL so remove old machinery for this from configure and the sources.
+  without OpenGL so remove old machinery for this from configure and the
+  sources.
 
-* configure: Check if "-lXxf86vm" is needed on UNIX.
+* (Unix version): configure: Check if "-lXxf86vm" is needed.
 
 * configure: Better output for strcasecmp test.
 
@@ -64,7 +106,7 @@ Changes in 1.1.2:
 * Remove lingering traces of support for RISC OS and pre-386 MSDOS
 
 * aven: Set icon on non-Windows platforms too.  This means that with
-  WindowMaker on UNIX you get an icon on the AppIcon by default.
+  WindowMaker on Unix you get an icon on the AppIcon by default.
 
 * configure: Update wxWindows checks to handle newer wx versions.
 
@@ -80,8 +122,8 @@ Changes in 1.1.2:
 
 * aven: Fixed twisted transitions to and from pitches in certain cases.
 
-* aven: Pick a sensible initial window size when the user's desktop is spread over
-  more than one monitor (works best with wx2.5 or newer, but try to do
+* aven: Pick a sensible initial window size when the user's desktop is spread
+  over more than one monitor (works best with wx2.5 or newer, but try to do
   better with wx2.4 or earlier as well).
 
 * aven: Initialise GfxCore slightly later to avoid visual glitch from notebook
