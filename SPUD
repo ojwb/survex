@@ -7,6 +7,10 @@ need to work out how to get them centred...
 
 Try to speed up crosses (use texture mapping?)
 
+Easy way to "print extended elevation"
+
+*data chamber ...
+
 Draw the measuring line directly onto the front buffer, so we can remove it
 with a copy from the back buffer and redraw it in the new position without a
 re-render.
