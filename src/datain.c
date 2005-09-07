@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003 Olly Betts
+ * Copyright (C) 1991-2003,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,13 @@ static real value[Fr - 1];
 #define VAL(N) value[(N)-1]
 static real variance[Fr - 1];
 #define VAR(N) variance[(N)-1]
+
+/* style functions */
+static int data_normal(void);
+static int data_cartesian(void);
+static int data_passage(void);
+static int data_nosurvey(void);
+static int data_ignore(void);
 
 void
 get_pos(filepos *fp)
@@ -273,7 +280,7 @@ read_reading(reading r, bool f_optional)
       case Dz: q = Q_DZ; break;
       case FrCount: case ToCount: q = Q_COUNT; break;
       default:
-	q = Q_NULL; /* Suppress compiler warning */; 
+	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
    }
    VAR(r) = var(q);
@@ -290,7 +297,7 @@ read_bearing_or_omit(reading r)
       case Comp: q = Q_BEARING; break;
       case BackComp: q = Q_BACKBEARING; break;
       default:
-	q = Q_NULL; /* Suppress compiler warning */; 
+	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
    }
    VAR(r) = var(q);
@@ -418,7 +425,7 @@ data_file(const char *pth, const char *fnm)
       pcs = pcsNew;
 
       t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
-      
+
       t[EOF] = SPECIAL_EOL;
       memset(t, 0, sizeof(short) * 33);
       for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
@@ -471,6 +478,7 @@ data_file(const char *pth, const char *fnm)
 	 process_eol();
 	 /* SURVEY DATE: 7 10 79  COMMENT:<Long name> */
 	 /* Note: Larry says a 2 digit year is always 19XX */
+	 /* NB order is *month* *day* year */
 	 get_token();
 	 get_token();
 	 /* if (ch != ':') ... */
@@ -543,7 +551,7 @@ data_file(const char *pth, const char *fnm)
 	 pcs->ordering = NULL;
 	 free_settings(pcs);
 	 pcs = pcsParent;
-      }					  
+      }
    } else if (fmt == FMT_MAK) {
       nextch_handling_eol();
       while (!feof(file.fh) && !ferror(file.fh)) {
@@ -629,7 +637,7 @@ data_file(const char *pth, const char *fnm)
 	 SVX_ASSERT(pcsParent);
 	 free_settings(pcs);
 	 pcs = pcsParent;
-      }					  
+      }
    } else {
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
@@ -1233,7 +1241,7 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
    return 1;
 }
 
-extern int
+static int
 data_cartesian(void)
 {
    prefix *fr = NULL, *to = NULL;
@@ -1391,7 +1399,7 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 
 /* Process tape/compass/clino, diving, and cylpolar styles of survey data
  * Also handles topofil (fromcount/tocount or count) in place of tape */
-extern int
+static int
 data_normal(void)
 {
    prefix *fr = NULL, *to = NULL;
@@ -1406,7 +1414,7 @@ data_normal(void)
    reading *ordering;
 
    VAL(Tape) = 0;
-   VAL(Comp) = VAL(BackComp) = HUGE_VAL;
+   VAL(Comp) = VAL(BackComp) = HUGE_REAL;
    VAL(FrCount) = VAL(ToCount) = 0;
    VAL(FrDepth) = VAL(ToDepth) = 0;
 
@@ -1455,7 +1463,7 @@ data_normal(void)
 	     break;
 	   default:
 	     compile_error_skip(/*Found `%s', expecting `F' or `B'*/131,
-			        buffer);
+				buffer);
 	     process_eol();
 	     return 0;
 	  }
@@ -1565,15 +1573,15 @@ data_normal(void)
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
- 	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
+	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
 		 VAL(Tape) == (real)0.0 && VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		goto inferred_equate;
 	     }
 	     if (fRev) {
 		prefix *t = fr;
-	   	fr = to;
-	    	to = t;
+		fr = to;
+		to = t;
 	     }
 	     if (fTopofil) {
 		VAL(Tape) *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
@@ -1600,7 +1608,7 @@ data_normal(void)
 		BUG("bad style");
 	     }
 	     if (!r) skipline();
-	     
+
 	     /* Swap fr and to back to how they were for next line */
 	     if (fRev) {
 		prefix *t = fr;
@@ -1617,7 +1625,7 @@ data_normal(void)
 	  /* this is also used if clino reading is the omit character */
 	  VAL(Clino) = VAL(BackClino) = 0;
 
-          inferred_equate:
+	  inferred_equate:
 
 	  fMulti = fTrue;
 	  while (1) {
@@ -1650,7 +1658,7 @@ data_normal(void)
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
- 	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
+	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
 		 VAL(Tape) == (real)0.0 && VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		process_eol();
@@ -1677,9 +1685,10 @@ data_normal(void)
 				     fDepthChange);
 		break;
 	      default:
-		r = 0; /* Suppress compiler warning */; 
+		r = 0; /* Suppress compiler warning */;
 		BUG("bad style");
 	     }
+
 	     process_eol();
 	     return r;
 	  }
@@ -1741,7 +1750,7 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
    return 1;
 }
 
-extern int
+static int
 data_nosurvey(void)
 {
    prefix *fr = NULL, *to = NULL;
@@ -1823,7 +1832,7 @@ data_nosurvey(void)
 }
 
 /* totally ignore a line of survey data */
-extern int
+static int
 data_ignore(void)
 {
    skipline();

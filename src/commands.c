@@ -252,14 +252,14 @@ static sztok cmd_tab[] = {
      {"PREFIX",    CMD_PREFIX},
 #endif
      {"REQUIRE",   CMD_REQUIRE},
-     {"SD",        CMD_SD},
+     {"SD",	   CMD_SD},
      {"SET",       CMD_SET},
      {"SOLVE",     CMD_SOLVE},
      {"TEAM",      CMD_TEAM},
      {"TITLE",     CMD_TITLE},
      {"TRUNCATE",  CMD_TRUNCATE},
      {"UNITS",     CMD_UNITS},
-     {NULL,        CMD_NULL}
+     {NULL,	   CMD_NULL}
 };
 
 /* masks for units which are length and angles respectively */
@@ -277,18 +277,18 @@ get_units(unsigned long qmask, bool percent_ok)
 {
    static sztok utab[] = {
 	{"DEGREES",       UNITS_DEGS },
-	{"DEGS",          UNITS_DEGS },
-	{"FEET",          UNITS_FEET },
-	{"GRADS",         UNITS_GRADS },
-	{"METERS",        UNITS_METRES },
-	{"METRES",        UNITS_METRES },
-	{"METRIC",        UNITS_METRES },
-	{"MILS",          UNITS_GRADS },
-	{"MINUTES",       UNITS_MINUTES },
-	{"PERCENT",       UNITS_PERCENT },
+	{"DEGS",	  UNITS_DEGS },
+	{"FEET",	  UNITS_FEET },
+	{"GRADS",	  UNITS_GRADS },
+	{"METERS",	  UNITS_METRES },
+	{"METRES",	  UNITS_METRES },
+	{"METRIC",	  UNITS_METRES },
+	{"MILS",	  UNITS_GRADS },
+	{"MINUTES",	  UNITS_MINUTES },
+	{"PERCENT",	  UNITS_PERCENT },
 	{"PERCENTAGE",    UNITS_PERCENT },
-	{"YARDS",         UNITS_YARDS },
-	{NULL,            UNITS_NULL }
+	{"YARDS",	  UNITS_YARDS },
+	{NULL,		  UNITS_NULL }
    };
    int units;
    get_token();
@@ -320,25 +320,25 @@ get_qlist(unsigned long mask_bad)
 	{"BACKCOMPASS",  Q_BACKBEARING },     /* alternative name */
 	{"BACKGRADIENT", Q_BACKGRADIENT },
 	{"BEARING",      Q_BEARING },
-	{"CLINO",        Q_GRADIENT },    /* alternative name */
+	{"CLINO",	 Q_GRADIENT },    /* alternative name */
 	{"COMPASS",      Q_BEARING },     /* alternative name */
-	{"COUNT",        Q_COUNT },
+	{"COUNT",	 Q_COUNT },
 	{"COUNTER",      Q_COUNT },       /* alternative name */
 	{"DECLINATION",  Q_DECLINATION },
 	{"DEFAULT",      Q_DEFAULT }, /* not a real quantity... */
-	{"DEPTH",        Q_DEPTH },
-	{"DX",           Q_DX },          /* alternative name */
-	{"DY",           Q_DY },          /* alternative name */
-	{"DZ",           Q_DZ },          /* alternative name */
-	{"EASTING",      Q_DX },
+	{"DEPTH",	 Q_DEPTH },
+	{"DX",		 Q_DX },	  /* alternative name */
+	{"DY",		 Q_DY },	  /* alternative name */
+	{"DZ",		 Q_DZ },	  /* alternative name */
+	{"EASTING",	 Q_DX },
 	{"GRADIENT",     Q_GRADIENT },
 	{"LENGTH",       Q_LENGTH },
-	{"LEVEL",        Q_LEVEL},
+	{"LEVEL",	 Q_LEVEL},
 	{"NORTHING",     Q_DY },
-	{"PLUMB",        Q_PLUMB},
+	{"PLUMB",	 Q_PLUMB},
 	{"POSITION",     Q_POS },
-	{"TAPE",         Q_LENGTH },      /* alternative name */
-	{NULL,           Q_NULL }
+	{"TAPE",	 Q_LENGTH },      /* alternative name */
+	{NULL,		 Q_NULL }
    };
    unsigned long qmask = 0;
    int tok;
@@ -390,7 +390,7 @@ cmd_set(void)
 	{"ROOT",      SPECIAL_ROOT },
 #endif
 	{"SEPARATOR", SPECIAL_SEPARATOR },
-	{NULL,        SPECIAL_UNKNOWN }
+	{NULL,	      SPECIAL_UNKNOWN }
    };
    int mask;
    int i;
@@ -769,7 +769,7 @@ cmd_flags(void)
 	{"NOT",	      FLAGS_NOT },
 	{"SPLAY",     FLAGS_SPLAY },
 	{"SURFACE",   FLAGS_SURFACE },
-	{NULL,        FLAGS_UNKNOWN }
+	{NULL,	      FLAGS_UNKNOWN }
    };
    bool fNot = fFalse;
    bool fEmpty = fTrue;
@@ -909,17 +909,17 @@ cmd_data(void)
 	{"BACKCOMPASS",  BackComp }, /* alternative name */
 	{"BACKGRADIENT", BackClino },
 	{"BEARING",      Comp },
-	{"CLINO",        Clino }, /* alternative name */
+	{"CLINO",	 Clino }, /* alternative name */
 	{"COMPASS",      Comp }, /* alternative name */
-	{"COUNT",        Count }, /* FrCount&ToCount in multiline */
-	{"DEPTH",        Depth }, /* FrDepth&ToDepth in multiline */
+	{"COUNT",	 Count }, /* FrCount&ToCount in multiline */
+	{"DEPTH",	 Depth }, /* FrDepth&ToDepth in multiline */
 	{"DEPTHCHANGE",  DepthChange },
 	{"DIRECTION",    Dir },
 	{"DX",		 Dx },
 	{"DY",		 Dy },
 	{"DZ",		 Dz },
 	{"EASTING",      Dx },
-	{"FROM",         Fr },
+	{"FROM",	 Fr },
 	{"FROMCOUNT",    FrCount },
 	{"FROMDEPTH",    FrDepth },
 	{"GRADIENT",     Clino },
@@ -929,11 +929,11 @@ cmd_data(void)
 	{"NEWLINE",      Newline },
 	{"NORTHING",     Dy },
 	{"STATION",      Station }, /* Fr&To in multiline */
-	{"TAPE",         Tape }, /* alternative name */
-	{"TO",           To },
+	{"TAPE",	 Tape }, /* alternative name */
+	{"TO",		 To },
 	{"TOCOUNT",      ToCount },
 	{"TODEPTH",      ToDepth },
-	{NULL,           End }
+	{NULL,		 End }
    };
 
 #define MASK_stns BIT(Fr) | BIT(To) | BIT(Station)
@@ -982,7 +982,7 @@ cmd_data(void)
 	{"NOSURVEY",     STYLE_NOSURVEY },
 	{"PASSAGE",      STYLE_IGNORE },
 	{"TOPOFIL",      STYLE_NORMAL },
-	{NULL,           STYLE_UNKNOWN }
+	{NULL,		 STYLE_UNKNOWN }
    };
 
 #define m_multi (BIT(Station) | BIT(Count) | BIT(Depth))
@@ -1297,7 +1297,7 @@ cmd_default(void)
       { "CALIBRATE", CMD_CALIBRATE },
       { "DATA",      CMD_DATA },
       { "UNITS",     CMD_UNITS },
-      { NULL,        CMD_NULL }
+      { NULL,	     CMD_NULL }
    };
    static int default_depr_count = 0;
 

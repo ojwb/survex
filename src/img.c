@@ -429,7 +429,7 @@ plt_file:
       char *line;
 xyz_file:
       /* Spaces aren't legal in CMAP station names, but dots are, so
-       * use space as the level separator */
+       * use space as the level separator. */
       pimg->separator = ' ';
       line = getline_alloc(pimg->fh);
       if (!line) {
@@ -1312,7 +1312,7 @@ skip_to_N:
 	    pimg->pending = img_STOP + 4;
 	    return img_MOVE;
 	 }
-	
+
 	 pimg->pending = 0;
 
 	 if (r == img_STOP) {
@@ -1320,7 +1320,7 @@ skip_to_N:
 	    read_xyz_shot_coords(p, pimg->label_buf + 16);
 	    return img_LINE;
 	 }
-	 
+
 	 return r;
       }
 
@@ -1350,7 +1350,7 @@ skip_to_N:
 	 *q = '\0';
 
 	 read_xyz_station_coords(p, line);
- 
+
 	 /* FIXME: look at prev for lines (line + 32, 5) */
 	 /* FIXME: duplicate stations... */
 	 return img_LABEL;
@@ -1362,11 +1362,11 @@ skip_to_N:
 	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
 	 }
- 
+
 	 memcpy(old, line, 7);
 	 q = memchr(old, ' ', 7);
 	 if (!q) q = old + 7;
-	 *q = '\0'; 
+	 *q = '\0';
 
 	 memcpy(new, line + 7, 7);
 	 q = memchr(new, ' ', 7);
@@ -1382,7 +1382,7 @@ skip_to_N:
 	    osfree(line);
 	    return img_LABEL;
 	 }
- 
+
 	 if (strcmp(old, pimg->label) == 0) {
 	    pimg->pending = img_LINE + 4;
 	    read_xyz_shot_coords(p, line);
@@ -1390,7 +1390,7 @@ skip_to_N:
 	    osfree(line);
 	    return img_LABEL;
 	 }
-	 
+
 	 pimg->pending = img_LABEL + 4;
 	 read_xyz_shot_coords(p, line);
 	 strcpy(pimg->label, new);

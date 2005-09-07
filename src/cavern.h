@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,13 +126,17 @@ typedef int compiletimeassert_flags1[BIT(FLAGS_SURFACE) == img_FLAG_SURFACE ? 1 
 typedef int compiletimeassert_flags2[BIT(FLAGS_DUPLICATE) == img_FLAG_DUPLICATE ? 1 : -1];
 typedef int compiletimeassert_flags3[BIT(FLAGS_SPLAY) == img_FLAG_SPLAY ? 1 : -1];
 
-/* don't reorder these values!  They need to match with img.h too */
 typedef enum {
+   /* Don't reorder these values!  They need to match with img.h too. */
    SFLAGS_SURFACE = 0, SFLAGS_UNDERGROUND, SFLAGS_ENTRANCE, SFLAGS_EXPORTED,
    SFLAGS_FIXED,
+   /* These values don't need to match img.h, but mustn't clash. */
    SFLAGS_SOLVED = 13, SFLAGS_SUSPECTTYPO = 14, SFLAGS_SURVEY = 15
 } sflags;
-#define SFLAGS_MASK (~(BIT(SFLAGS_SUSPECTTYPO)|BIT(SFLAGS_SURVEY)))
+
+/* Mask to AND with to get bits to pass to img library. */
+#define SFLAGS_MASK (BIT(SFLAGS_SURFACE) | BIT(SFLAGS_UNDERGROUND) |\
+	BIT(SFLAGS_ENTRANCE) | BIT(SFLAGS_EXPORTED) | BIT(SFLAGS_FIXED))
 
 typedef int compiletimeassert_sflags1[BIT(SFLAGS_SURFACE) == img_SFLAG_SURFACE ? 1 : -1];
 typedef int compiletimeassert_sflags2[BIT(SFLAGS_UNDERGROUND) == img_SFLAG_UNDERGROUND ? 1 : -1];
@@ -203,6 +207,8 @@ typedef struct {
    unsigned char reverse;
    /* flags - e.g. surface, duplicate survey
     * only used if (FLAG_DATAHERE & !(FLAG_REPLACEMENTLEG|FLAG_FAKE))
+    * This could be only in linkfor, but this is actually more space
+    * efficient.
     */
    unsigned char flags;
 } linkcommon;
