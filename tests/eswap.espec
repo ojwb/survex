@@ -1,9 +1,0 @@
-
-; Starting from non highest station
-*start b
-
-;setting direction at a station
-*eleft c
-
-;swapping on leg
-*eswap d d1
