@@ -33,21 +33,19 @@ aven-gfxcore.o: gfxcore.cc
 	 || $h `echo $(aven_CXXFLAGS) $(CXXFLAGS)|sed 's/-O2/-O/g'` $t \
 	 || $h `echo $(aven_CXXFLAGS) $(CXXFLAGS)|sed 's/-O2*//g'` $t
 
-LDADD = @LIBOBJS@
+LDADD = $(LIBOBJS)
 
 INCLUDES = -DIMG_HOSTED
 
 PRINT = printdm printps printpcl printhpgl
 
-# developer tools, testharnesses, etc
-TESTPROGS = @TESTPROGS@
-
 # printxbm and dump3d are test programs
-EXTRA_PROGRAMS = caverot xcaverot printwin aven dump3d printxbm \
- editwrap
+EXTRA_PROGRAMS =\
+	caverot xcaverot\
+	printwin aven dump3d printxbm editwrap
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern $(PRINT) diffpos extend cad3d sorterr \
- 3dtopos @CAVEROT@ @AVEN@ @WINPROGS@ @TESTPROGS@
+ 3dtopos $(CAVEROT) $(AVEN) $(WINPROGS) $(TESTPROGS)
 bin_SCRIPTS = svxedit
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
@@ -67,10 +65,10 @@ editwrap_SOURCES = editwrap.c
 editwrap_LDFLAGS = -mwindows
 
 if WIN32
-aven_LDADD = avenrc.o @LIBOBJS@ @WX_LIBS@
+aven_LDADD = avenrc.o $(LIBOBJS) $(WX_LIBS)
 
 svxeditrc.o: $(srcdir)/svxedit.rc svxedit.ico
-	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o $$pwd/svxeditrc.o svxedit.rc
+	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres -o "$$pwd/svxeditrc.o" svxedit.rc
 
 svxedit.ico: ../lib/icons/svxedit.ico
 	cp ../lib/icons/svxedit.ico .
@@ -79,14 +77,14 @@ editwrap_LDADD = svxeditrc.o
 
 # FIXME: use path on WXCONFIG to get --include-dir?
 avenrc.o: $(srcdir)/aven.rc aven.ico
-	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o $$pwd/avenrc.o aven.rc
+	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o "$$pwd/avenrc.o" aven.rc
 
 aven.ico: ../lib/icons/aven.ico
 	cp ../lib/icons/aven.ico .
 
 CLEANFILES = aven.ico svxedit.ico
 else
-aven_LDADD = @LIBOBJS@ @WX_LIBS@
+aven_LDADD = $(LIBOBJS) $(WX_LIBS)
 endif
 
 # If we're building aven on MacOS X, we need to bind resources to aven after
@@ -99,16 +97,16 @@ if MACOSX
 AVEN_REZ = aven-rez
 
 aven-rez: aven
-	`@WXCONFIG@ --rezflags` aven
+	`$(WXCONFIG) --rezflags` aven
 	touch aven-rez
 
 install-exec-hook:
-	`@WXCONFIG@ --rezflags` $(bindir)/aven
+	`$(WXCONFIG) --rezflags` $(bindir)/aven
 else !MACOSX
 AVEN_REZ =
 
-# need empty target as automake will try to make it because it's in the other
-# branch
+# We need an empty target as automake will try to make it because it's in the
+# other branch.
 install-exec-hook:
 
 endif !MACOSX
@@ -124,9 +122,9 @@ endif !AVEN
 noinst_SCRIPTS = $(AVEN_REZ)
 MOSTLYCLEANFILES = $(AVEN_REZ)
 
-aven_CFLAGS = @WX_CFLAGS@ $(AM_CFLAGS) -DAVEN
-aven_CXXFLAGS = @WX_CXXFLAGS@ $(AM_CXXFLAGS)
-aven_LDFLAGS = @WX_LDFLAGS@
+aven_CFLAGS = $(WX_CFLAGS) $(AM_CFLAGS) -DAVEN
+aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS)
+aven_LDFLAGS = $(WX_LDFLAGS)
 
 PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
 
