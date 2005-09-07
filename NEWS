@@ -1,3 +1,23 @@
+Changes in 1.0.36:
+
+* cavern: Ignore "*data passage" data style so you can process files containing
+  LRUD data for Survex 1.1.3 and later.
+
+* cavern: Fix assertion failure when handling a survey with a station only
+  attached by a nosurvey leg.
+
+* Changes backported from 1.1.3:
+
+  + aven: Improve initial window sizing and placement on multimonitor
+    displays when using wx2.4 or earlier.
+
+  + testsuite: Fix cavern.tst to report misspelled test names and
+    make badnewline test case actually run and actually pass.
+
+  + (Unix version): aven: Only add toolbar margins for gtk1.2
+
+  + (Unix version): configure: Updated check for wx version.
+
 Changes in 1.0.35:
 
 * aven: Fix printing which was deciding how many pages to spread the plot over
@@ -32,7 +52,7 @@ Changes in 1.0.33:
 * aven,printwin: Fixed bug which would sometimes pick one too few pages
   vertically resulting in the survey escaping off the top of the topmost
   pages.
- 
+
 * aven: Changed the toner-wasting, hard-to-measure-exactly alternately filled
   scale bar to a simple line with ticks.
 
