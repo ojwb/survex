@@ -50,13 +50,16 @@
 #define PLAN 1
 #define ELEVATION 2
 
+// How many bins per letter height to use when working out non-overlapping
+// labels.
+const unsigned int QUANTISE_FACTOR = 2;
+
 #ifdef _WIN32
 static const int FONT_SIZE = 8;
 #else
 static const int FONT_SIZE = 9;
 #endif
 static const int CROSS_SIZE = 3;
-static const Double COMPASS_SIZE = 24.0;
 static const int COMPASS_OFFSET_X = 60;
 static const int COMPASS_OFFSET_Y = 80;
 static const int INDICATOR_BOX_SIZE = 60;
@@ -65,7 +68,7 @@ static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
 static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
-                                  INDICATOR_BOX_SIZE + INDICATOR_GAP;
+				  INDICATOR_BOX_SIZE + INDICATOR_GAP;
 static const int DEPTH_BAR_OFFSET_X = 16;
 static const int DEPTH_BAR_EXTRA_LEFT_MARGIN = 2;
 static const int DEPTH_BAR_BLOCK_WIDTH = 20;
@@ -696,9 +699,9 @@ void GfxCore::RedrawOffscreen()
 			 m_00, m_01, m_02, m_20, m_21, m_22);
 	    }
 	}
-	    
-	// Draw surface legs.
+
 	if (m_Surface) {
+	    // Draw the surface legs.
 	    int start;
 	    int end;
 	    int inc;
@@ -1128,35 +1131,6 @@ void GfxCore::Draw2dIndicators()
     }
 }
 
-// FIXME: either remove this, or make it an option...
-void GfxCore::DrawCompass()
-{
-    // Draw the 3d compass.
-
-    wxPoint pt[3];
-
-    SetColour(col_TURQUOISE);
-    m_DrawDC.DrawLine(CompassPtToScreen(0.0, 0.0, -COMPASS_SIZE),
-		      CompassPtToScreen(0.0, 0.0, COMPASS_SIZE));
-
-    pt[0] = CompassPtToScreen(-COMPASS_SIZE / 3.0f, 0.0, -COMPASS_SIZE * 2.0f / 3.0f);
-    pt[1] = CompassPtToScreen(0.0, 0.0, -COMPASS_SIZE);
-    pt[2] = CompassPtToScreen(COMPASS_SIZE / 3.0f, 0.0, -COMPASS_SIZE * 2.0f / 3.0f);
-    m_DrawDC.DrawLines(3, pt);
-
-    m_DrawDC.DrawLine(CompassPtToScreen(-COMPASS_SIZE, 0.0, 0.0),
-		      CompassPtToScreen(COMPASS_SIZE, 0.0, 0.0));
-
-    SetColour(col_GREEN);
-    m_DrawDC.DrawLine(CompassPtToScreen(0.0, -COMPASS_SIZE, 0.0),
-		      CompassPtToScreen(0.0, COMPASS_SIZE, 0.0));
-
-    pt[0] = CompassPtToScreen(-COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
-    pt[1] = CompassPtToScreen(0.0, -COMPASS_SIZE, 0.0);
-    pt[2] = CompassPtToScreen(COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
-    m_DrawDC.DrawLines(3, pt);
-}
-
 void GfxCore::DrawNames()
 {
     // Draw station names.
@@ -1174,8 +1148,7 @@ void GfxCore::NattyDrawNames()
 {
     // Draw station names, without overlapping.
     // FIXME: copied to OnSize()
-    const int dv = 2;
-    const int quantise = int(FONT_SIZE / dv);
+    const int quantise(FONT_SIZE / QUANTISE_FACTOR);
     const int quantised_x = m_XSize / quantise;
     const int quantised_y = m_YSize / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
@@ -1184,6 +1157,14 @@ void GfxCore::NattyDrawNames()
 
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
+	if (!((m_Surface && (*label)->IsSurface()) ||
+	      (m_Legs && (*label)->IsUnderground()) ||
+	      (!(*label)->IsSurface() && !(*label)->IsUnderground()))) {
+	    // if this station isn't to be displayed, skip to the next
+	    // (last case is for stns with no legs attached)
+	    continue;
+	}
+
 	Double x = GridXToScreen((*label)->x, (*label)->y, (*label)->z);
 	Double y = GridYToScreen((*label)->x, (*label)->y, (*label)->z)
 	    + CROSS_SIZE - FONT_SIZE;
@@ -1201,7 +1182,7 @@ void GfxCore::NattyDrawNames()
 
 	if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
 	    char * test = &m_LabelGrid[ix + iy * quantised_x];
-	    int len = str.Length() * dv + 1;
+	    int len = str.Length() * QUANTISE_FACTOR + 1;
 	    reject = (ix + len >= quantised_x);
 	    int i = 0;
 	    while (!reject && i++ < len) {
@@ -1814,8 +1795,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
 
     if (m_DoneFirstShow) {
 	// FIXME: copied from NattyDrawNames()
-	const int dv = 2;
-	const int quantise = int(FONT_SIZE / dv);
+	const int quantise(FONT_SIZE / QUANTISE_FACTOR);
 	const int quantised_x = m_XSize / quantise;
 	const int quantised_y = m_YSize / quantise;
 	const size_t buffer_size = quantised_x * quantised_y;
@@ -2716,7 +2696,7 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
 {
     svxPrintDlg * p;
     p = new svxPrintDlg(m_Parent, filename, title, datestamp,
-			m_PanAngle, m_TiltAngle,
+			deg(m_PanAngle), deg(m_TiltAngle),
 			m_Names, m_Crosses, m_Legs, m_Surface);
     p->Show(TRUE);
 }

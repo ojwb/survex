@@ -234,7 +234,6 @@ class GfxCore : public wxWindow {
 
     void DrawScalebar();
     void DrawDepthbar();
-    void DrawCompass();
     void Draw2dIndicators();
     void DrawGrid();
 

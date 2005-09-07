@@ -765,11 +765,11 @@ void MainFrm::FillTree()
 {
     // Fill the tree of stations and prefixes.
 
-    list<LabelInfo*>::iterator pos = m_Labels.begin();
     stack<wxTreeItemId> previous_ids;
     wxString current_prefix = "";
     wxTreeItemId current_id = m_TreeRoot;
 
+    list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;
 
@@ -1226,7 +1226,7 @@ void MainFrm::SetAltitude(Double z)
 void MainFrm::ShowInfo(const LabelInfo *label)
 {
     assert(m_Gfx);
-	
+
     wxString str;
     if (m_Gfx->m_Metric) {
 	str.Printf(msg(/*  %d E, %d N*/338),
@@ -1360,6 +1360,7 @@ void MainFrm::OnFind(wxCommandEvent&)
 	re_flags |= wxRE_ICASE;
     }
 
+    bool substring = true;
     if (m_RegexpCheckBox->GetValue()) {
 	re_flags |= wxRE_EXTENDED;
     } else if (false /* simple glob-style */) {
@@ -1374,9 +1375,11 @@ void MainFrm::OnFind(wxCommandEvent&)
 	      break;
 	    case '*':
 	      pat += ".*";
+              substring = false;
 	      break;
 	    case '?':
 	      pat += '.';
+              substring = false;
 	      break;
 	    default:
 	      pat += ch;
@@ -1399,9 +1402,10 @@ void MainFrm::OnFind(wxCommandEvent&)
 	re_flags |= wxRE_BASIC;
     }
 
-    if (!true /* !substring */) {
+    if (!substring) {
 	// FIXME "0u" required to avoid compilation error with g++-3.0
 	if (pattern.empty() || pattern[0u] != '^') pattern = '^' + pattern;
+        // FIXME: this fails to cope with "\$" at the end of pattern...
 	if (pattern[pattern.size() - 1] != '$') pattern += '$';
     }
 

@@ -22,7 +22,6 @@
 # include <config.h>
 #endif
 
-#include "printwx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -47,12 +46,13 @@
 
 #include "avenprcore.h"
 #include "mainfrm.h"
+#include "printwx.h"
 
 class svxPrintout : public wxPrintout {
-    MainFrm *m_parent;
+    MainFrm *mainfrm;
     layout *m_layout;
     wxString m_title;
-    wxPageSetupData* m_data;
+    wxPageSetupDialogData* m_data;
     wxDC* pdc;
     static const int cur_pass = 0;
 
@@ -90,7 +90,7 @@ class svxPrintout : public wxPrintout {
     void ShowPage(const char *szPageDetails);
     char * Init(FILE **fh_list, bool fCalibrate);
   public:
-    svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupData *data, const wxString & title);
+    svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupDialogData *data, const wxString & title);
     bool OnPrintPage(int pageNum);
     void GetPageInfo(int *minPage, int *maxPage,
 		     int *pageFrom, int *pageTo);
@@ -129,24 +129,24 @@ static const wxString scales[] = {
 
 // there are three jobs to do here...
 // User <-> wx - this should possibly be done in a separate file
-svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
+svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 const wxString & title, const wxString & datestamp,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf)
-	: wxDialog(parent, -1, wxString(msg(/*Print*/399))),
-	  m_layout(parent->GetPageSetupData()),
-	  m_File(filename), m_parent(parent)
+	: wxDialog(mainfrm_, -1, wxString(msg(/*Print*/399))),
+	  m_layout(mainfrm_->GetPageSetupData()),
+	  m_File(filename), mainfrm(mainfrm_)
 {
     m_layout.Labels = labels;
     m_layout.Crosses = crosses;
     m_layout.Shots = legs;
     m_layout.Surface = surf;
     m_layout.datestamp = osstrdup(datestamp.c_str());
+    m_layout.rot = int(angle + .001);
     if (title.length() > 11 &&
 	title.substr(title.length() - 11) == " (extended)") {
 	m_layout.title = osstrdup(title.substr(0, title.length() - 11).c_str());
 	m_layout.view = layout::EXTELEV;
-	m_layout.rot = int(deg(angle) + .001);
 	if (m_layout.rot != 0 && m_layout.rot != 180) m_layout.rot = 0;
 	m_layout.tilt = 0;
     } else {
@@ -154,7 +154,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
 	// fraction before forcing to int as otherwise plan view ends up being
 	// 89 degrees!
 	m_layout.title = osstrdup(title.c_str());
-	m_layout.tilt = int(deg(tilt_angle) + .001);
+	m_layout.tilt = int(tilt_angle + .001);
 	if (m_layout.tilt == 90) {
 	    m_layout.view = layout::PLAN;
 	} else if (m_layout.tilt == 0) {
@@ -167,7 +167,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     /* setup our print dialog*/
     wxBoxSizer* v1 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* h1 = new wxBoxSizer(wxHORIZONTAL); // holds controls
-    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, msg(/*View*/255)), wxVERTICAL); 
+    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, msg(/*View*/255)), wxVERTICAL);
     wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, "Elements"), wxVERTICAL); // FIXME TRANSLATE
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
@@ -206,7 +206,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
 
     v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
     }
-    
+
     if (m_layout.view != layout::EXTELEV) {
 	wxBoxSizer * planelevsizer = new wxBoxSizer(wxHORIZONTAL);
 	planelevsizer->Add(new wxButton(this, svx_PLAN, "Plan"),
@@ -233,7 +233,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
 //    v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
     m_infoBox = new wxCheckBox(this, svx_INFOBOX, "Info Box"); // FIXME TRANSLATE
     v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
-    
+
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
 
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
@@ -247,7 +247,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* parent, const wxString & filename,
     but->SetDefault();
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     v1->Add(h2, 0, wxALIGN_RIGHT|wxALL, 5);
-    
+
     SetAutoLayout(true);
     SetSizer(v1);
     v1->Fit(this);
@@ -262,29 +262,29 @@ svxPrintDlg::~svxPrintDlg() {
     osfree(m_layout.datestamp);
 }
 
-void 
+void
 svxPrintDlg::OnPrint(wxCommandEvent&) {
     SomethingChanged();
-    wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
+    wxPrintDialogData pd(mainfrm->GetPageSetupData()->GetPrintData());
     wxPrinter pr(&pd);
-    svxPrintout po(m_parent, &m_layout, m_parent->GetPageSetupData(), m_File);
+    svxPrintout po(mainfrm, &m_layout, mainfrm->GetPageSetupData(), m_File);
     if (pr.Print(this, &po, true)) {
 	// Close the print dialog if printing succeeded.
 	Destroy();
     }
 }
 
-void 
+void
 svxPrintDlg::OnPreview(wxCommandEvent&) {
     SomethingChanged();
-    wxPrintDialogData pd(m_parent->GetPageSetupData()->GetPrintData());
+    wxPrintDialogData pd(mainfrm->GetPageSetupData()->GetPrintData());
     wxPrintPreview* pv;
-    pv = new wxPrintPreview(new svxPrintout(m_parent, &m_layout,
-					    m_parent->GetPageSetupData(), m_File),
-			    new svxPrintout(m_parent, &m_layout,
-					    m_parent->GetPageSetupData(), m_File),
+    pv = new wxPrintPreview(new svxPrintout(mainfrm, &m_layout,
+					    mainfrm->GetPageSetupData(), m_File),
+			    new svxPrintout(mainfrm, &m_layout,
+					    mainfrm->GetPageSetupData(), m_File),
 			    &pd);
-    wxPreviewFrame *frame = new wxPreviewFrame(pv, m_parent, msg(/*Print Preview*/398));
+    wxPreviewFrame *frame = new wxPreviewFrame(pv, mainfrm, msg(/*Print Preview*/398));
     frame->Initialize();
 
     // Size preview frame so that all of the controlbar and canvas can be seen
@@ -319,24 +319,24 @@ svxPrintDlg::OnPreview(wxCommandEvent&) {
     frame->Show();
 }
 
-void 
+void
 svxPrintDlg::OnPlan(wxCommandEvent&) {
     m_tilt->SetValue(90);
     SomethingChanged();
 }
 
-void 
+void
 svxPrintDlg::OnElevation(wxCommandEvent&) {
     m_tilt->SetValue(0);
     SomethingChanged();
 }
 
-void 
+void
 svxPrintDlg::OnChangeSpin(wxSpinEvent&e) {
     SomethingChanged();
 }
 
-void 
+void
 svxPrintDlg::OnChange(wxCommandEvent&) {
     SomethingChanged();
 }
@@ -346,13 +346,13 @@ svxPrintDlg::SomethingChanged() {
     UIToLayout();
     // Update the bounding box.
     RecalcBounds();
-    if (m_layout.xMax >= m_layout.xMin) { 
+    if (m_layout.xMax >= m_layout.xMin) {
 	m_layout.pages_required();
 	m_printSize->SetLabel(wxString::Format(msg(/*%d pages (%dx%d)*/257), m_layout.pages, m_layout.pagesX, m_layout.pagesY));
     }
 }
 
-void 
+void
 svxPrintDlg::LayoutToUI(){
     m_names->SetValue(m_layout.Labels);
     m_legs->SetValue(m_layout.Shots);
@@ -381,7 +381,7 @@ svxPrintDlg::LayoutToUI(){
     }
 }
 
-void 
+void
 svxPrintDlg::UIToLayout(){
     m_layout.Labels = m_names->IsChecked();
     m_layout.Shots = m_legs->IsChecked();
@@ -423,8 +423,8 @@ svxPrintDlg::RecalcBounds()
 
     if (m_layout.Surface || m_layout.Shots) {
 	for (int i=0; i < NUM_DEPTH_COLOURS; ++i) {
-	    list<PointInfo*>::const_iterator p = m_parent->GetPoints(i);
-	    while (p != m_parent->GetPointsEnd(i)) {
+	    list<PointInfo*>::const_iterator p = mainfrm->GetPoints(i);
+	    while (p != mainfrm->GetPointsEnd(i)) {
 		double x = (*p)->GetX();
 		double y = (*p)->GetY();
 		double z = (*p)->GetZ();
@@ -441,8 +441,8 @@ svxPrintDlg::RecalcBounds()
 	}
     }
     if (m_layout.Labels || m_layout.Crosses) {
-	list<LabelInfo*>::const_iterator label = m_parent->GetLabels();
-	while (label != m_parent->GetLabelsEnd()) {
+	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
+	while (label != mainfrm->GetLabelsEnd()) {
 	    double x = (*label)->GetX();
 	    double y = (*label)->GetY();
 	    double z = (*label)->GetZ();
@@ -472,11 +472,11 @@ static int fontsize, fontsize_labels;
 static const char *fontname = "Arial", *fontname_labels = "Arial";
 
 // wx <-> prcore (calls to print_page etc...)
-svxPrintout::svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupData *data,
+svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l, wxPageSetupDialogData *data,
 			 const wxString & title)
     : wxPrintout(title)
 {
-    m_parent = mainfrm;
+    mainfrm = mainfrm_;
     m_layout = l;
     m_title = title;
     m_data = data;
@@ -689,7 +689,7 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
 }
 
 #if 0
-void 
+void
 make_calibration(layout *l) {
       img_point pt = { 0.0, 0.0, 0.0 };
       l->xMax = l->yMax = 0.1;
@@ -878,7 +878,7 @@ svxPrintout::drawticks(border clip, int tsize, int x, int y)
    }
 }
 
-bool 
+bool
 svxPrintout::OnPrintPage(int pageNum) {
     GetPageSizePixels(&xpPageWidth, &ypPageDepth);
     pdc = GetDC();
@@ -927,12 +927,12 @@ svxPrintout::OnPrintPage(int pageNum) {
 	draw_info_box();
     }
 
-    double Sc = 1000 / l->Scale;
+    const double Sc = 1000 / l->Scale;
 
     if (l->Surface || l->Shots) {
-	for (int i=0; i < m_parent->GetNumDepthBands(); ++i) {
-	    list<PointInfo*>::const_iterator p = m_parent->GetPoints(i);
-	    while (p != m_parent->GetPointsEnd(i)) {
+	for (int i=0; i < mainfrm->GetNumDepthBands(); ++i) {
+	    list<PointInfo*>::const_iterator p = mainfrm->GetPoints(i);
+	    while (p != mainfrm->GetPointsEnd(i)) {
 		double px = (*p)->GetX();
 		double py = (*p)->GetY();
 		double pz = (*p)->GetZ();
@@ -979,8 +979,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     if (l->Labels || l->Crosses) {
 	if (l->Labels) SetFont(PR_FONT_LABELS);
-	list<LabelInfo*>::const_iterator label = m_parent->GetLabels();
-	while (label != m_parent->GetLabelsEnd()) {
+	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
+	while (label != mainfrm->GetLabelsEnd()) {
 	    double px = (*label)->GetX();
 	    double py = (*label)->GetY();
 	    double pz = (*label)->GetZ();
@@ -1017,7 +1017,7 @@ svxPrintout::OnPrintPage(int pageNum) {
     return true;
 }
 
-void 
+void
 svxPrintout::GetPageInfo(int *minPage, int *maxPage,
 			 int *pageFrom, int *pageTo)
 {
@@ -1025,19 +1025,19 @@ svxPrintout::GetPageInfo(int *minPage, int *maxPage,
     *maxPage = *pageTo = m_layout->pages;
 }
 
-wxString 
+wxString
 svxPrintout::GetTitle() {
     return m_title;
 }
 
-bool 
+bool
 svxPrintout::HasPage(int pageNum) {
     return (pageNum <= m_layout->pages);
 }
 
-void 
+void
 svxPrintout::OnBeginPrinting() {
-    FILE *fh_list[4];	
+    FILE *fh_list[4];
 
     FILE **pfh = fh_list;
     FILE *fh;
@@ -1257,7 +1257,7 @@ svxPrintout::WriteString(const char *s)
     int w, h;
     if (cur_pass != -1) {
 	pdc->GetTextExtent("My", &w, &h);
-	pdc->DrawText(s, 
+	pdc->DrawText(s,
 		      long(x_t / font_scaling_x),
 		      long(y_t / font_scaling_y) - h);
     } else {
@@ -1327,7 +1327,7 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     MoveTo((long)(6 * m_layout->scX) + clip.x_min,
 	   clip.y_min - (long)(7 * m_layout->scY));
     char szFooter[256];
-    sprintf(szFooter, m_layout->footer, m_layout->title, pg, 
+    sprintf(szFooter, m_layout->footer, m_layout->title, pg,
 	    m_layout->pagesX * m_layout->pagesY,m_layout->datestamp);
     WriteString(szFooter);
     pdc->DestroyClippingRegion();
