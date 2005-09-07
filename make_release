@@ -165,10 +165,6 @@ if expr "$mk" : '.*\<mingw\>'; then
    done
    LDFLAGS=
    CPPFLAGS=
-   if test -d /opt/rx-win32 ; then
-      LDFLAGS=-L/opt/rx-win32/lib
-      CPPFLAGS=-I/opt/rx-win32/include
-   fi
    if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no CAVEROT= WXCONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" ; then
       echo mingw configure failed
       exit 1
