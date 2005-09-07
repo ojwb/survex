@@ -415,7 +415,7 @@ void MainFrm::CreateToolBar()
 
     wxToolBar* toolbar = wxFrame::CreateToolBar();
 
-#ifndef _WIN32
+#ifdef __WXGTK12__
     toolbar->SetMargins(5, 5);
 #endif
 
