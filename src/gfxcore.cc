@@ -1637,13 +1637,13 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 
 	ds += dy * dy;
 	if (ds >= dist_sqrd) continue;
- 
+
 	dist_sqrd = ds;
 	best = pt;
-	
+
 	if (ds == 0) break;
     }
-    
+
     if (best) {
 	m_Parent->SetMouseOverStation(best);
 	if (centre) {
