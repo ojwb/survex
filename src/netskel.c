@@ -111,9 +111,17 @@ solve_network(void /*node *stnlist*/)
 
       /* New stations are pushed onto the head of the list, so the
        * first station added is the last in the list. */
-      FOR_EACH_STN(stn, stnlist) stnFirst = stn;
+      FOR_EACH_STN(stn, stnlist) {
+	  /* Prefer a station with legs attached when choosing one to fix
+	   * so that if there's a hanging station on a nosurvey leg we pick
+	   * the main clump of survey data. */
+	  if (stnFirst && !stnFirst->leg[0]) continue;
+	  stnFirst = stn;
+      }
 
-      SVX_ASSERT2(stnFirst->leg[0], "no fixed stns, but we've got a zero node!");
+      /* If we've got nosurvey legs, then the station we find to fix could have
+       * no real legs attached. */
+      SVX_ASSERT2(nosurveyhead || stnFirst->leg[0], "no fixed stns, but we've got a zero node!");
       SVX_ASSERT2(stnFirst, "no stations left in net!");
       stn = stnFirst;
       printf(msg(/*Survey has no fixed points. Therefore I've fixed %s at (0,0,0)*/72),
