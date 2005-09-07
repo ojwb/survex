@@ -60,7 +60,7 @@ for file in $TESTS ; do
   warn=
   # how many errors to expect
   error=
-  case "$file" in
+  case $file in
   singlefix) pos=yes ; warn=1;;
   singlereffix) pos=yes ; warn=0 ;;
   oneleg) pos=yes ; warn=0 ;;
@@ -189,11 +189,11 @@ for file in $TESTS ; do
 
   if test -n "$file" ; then
     echo "$file"
-    case "$file" in
+    case $file in
     *.*)
       input="$srcdir/$file"
-      posfile="$srcdir/`echo \"$file\"|sed 's/\.[^.]*$/.pos/'`"
-      dxffile="$srcdir/`echo \"$file\"|sed 's/\.[^.]*$/.dxf/'`" ;;
+      posfile="$srcdir"/`echo "$file"|sed 's/\.[^.]*$/.pos/'`
+      dxffile="$srcdir"/`echo "$file"|sed 's/\.[^.]*$/.dxf/'` ;;
     *)
       input="$srcdir/$file.svx"
       posfile="$srcdir/$file.pos"
@@ -222,7 +222,7 @@ for file in $TESTS ; do
       exit 1
     fi
 
-    case "$pos" in
+    case $pos in
     yes)
       if test -n "$VERBOSE" ; then
         $DIFFPOS tmp.3d "$posfile" || exit 1
