@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -980,6 +980,7 @@ cmd_data(void)
 	{"DIVING",       STYLE_DIVING },
 	{"NORMAL",       STYLE_NORMAL },
 	{"NOSURVEY",     STYLE_NOSURVEY },
+	{"PASSAGE",      STYLE_IGNORE },
 	{"TOPOFIL",      STYLE_NORMAL },
 	{NULL,           STYLE_UNKNOWN }
    };
