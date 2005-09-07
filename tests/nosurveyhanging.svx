@@ -1,0 +1,6 @@
+; based on example from alessandro antonelli
+; caused an assertion to fail with 1.0.35 and earlier
+*begin test
+*data nosurvey from to
+1 2
+*end test
