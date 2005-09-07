@@ -20,7 +20,7 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $
 	echo 'Depends: $${shlibs:Depends}' >> control
 	echo 'Recommends: survex-aven (= ${VERSION})' >> control
 	echo 'Suggests: survex-svxedit (= ${VERSION})' >> control
-	echo Description: cave surveying and mapping software >> control
+	echo 'Description: Cave surveying and mapping software' >> control
 	sed 's/^$$/./;s/^/ /' < $(srcdir)/../desc.txt >> control
 	echo ' .' >> control
 	echo ' Homepage: http://www.survex.com/' >> control
