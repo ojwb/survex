@@ -61,7 +61,6 @@ static real variance[Fr - 1];
 /* style functions */
 static int data_normal(void);
 static int data_cartesian(void);
-static int data_passage(void);
 static int data_nosurvey(void);
 static int data_ignore(void);
 
