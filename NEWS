@@ -132,7 +132,8 @@ Changes in 1.1.2 (never formally released):
 * aven: Allow a coloured texture to be used
 
 * aven: Don't initialise until we have data (to the user, this means the window
-  is default colour (grey for most systems) not black until a survey is loaded.
+  is default colour (grey for most systems) not black until a survey is
+  loaded).
 
 * aven: Fixed weird "shadowed" icons.
 
