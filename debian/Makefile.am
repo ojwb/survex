@@ -11,7 +11,7 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $
 	echo Section: science >> control
 	echo Priority: extra >> control
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
-	echo Standards-Version: 3.6.1 >> control
+	echo Standards-Version: 3.6.2 >> control
 	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
 	echo 'Build-Depends: debhelper (>= 1.1.17), xlibs-dev, libwxgtk2.4-dev' >> control
 	echo >> control
@@ -20,3 +20,5 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $
 	echo 'Depends: $${shlibs:Depends}' >> control
 	echo 'Description: Cave surveying and mapping software (development branch)' >> control
 	sed 's/^$$/./;s/^/ /' < $(srcdir)/../desc.txt >> control
+	echo ' .' >> control
+	echo ' Homepage: http://www.survex.com/' >> control
