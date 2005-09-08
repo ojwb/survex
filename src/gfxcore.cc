@@ -50,11 +50,11 @@
 #define PLAN 1
 #define ELEVATION 2
 
-const int NUM_DEPTH_COLOURS = 13;
-
 // How many bins per letter height to use when working out non-overlapping
 // labels.
 const unsigned int QUANTISE_FACTOR = 2;
+
+const int NUM_DEPTH_COLOURS = 13;
 
 #include "avenpal.h"
 
@@ -64,7 +64,6 @@ static const int FONT_SIZE = 8;
 static const int FONT_SIZE = 9;
 #endif
 static const int CROSS_SIZE = 3;
-static const int COMPASS_SIZE = 24;
 static const int COMPASS_OFFSET_X = 60;
 static const int COMPASS_OFFSET_Y = 80;
 static const int INDICATOR_BOX_SIZE = 60;
@@ -727,36 +726,6 @@ void GfxCore::Draw2dIndicators()
 	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(elev_centre_x - w / 2, height + h, str);
     }
-}
-
-// FIXME: either remove this, or make it an option...
-void GfxCore::DrawCompass()
-{
-    // Draw the 3d compass.
-#if 0
-    wxPoint pt[3];
-
-    SetColour(col_TURQUOISE);
-    m_DrawDC.DrawLine(CompassPtToScreen(0.0, 0.0, -COMPASS_SIZE),
-		      CompassPtToScreen(0.0, 0.0, COMPASS_SIZE));
-
-    pt[0] = CompassPtToScreen(-COMPASS_SIZE / 3.0f, 0.0, -COMPASS_SIZE * 2.0f / 3.0f);
-    pt[1] = CompassPtToScreen(0.0, 0.0, -COMPASS_SIZE);
-    pt[2] = CompassPtToScreen(COMPASS_SIZE / 3.0f, 0.0, -COMPASS_SIZE * 2.0f / 3.0f);
-    m_DrawDC.DrawLines(3, pt);
-
-    m_DrawDC.DrawLine(CompassPtToScreen(-COMPASS_SIZE, 0.0, 0.0),
-		      CompassPtToScreen(COMPASS_SIZE, 0.0, 0.0));
-
-    SetColour(col_GREEN);
-    m_DrawDC.DrawLine(CompassPtToScreen(0.0, -COMPASS_SIZE, 0.0),
-		      CompassPtToScreen(0.0, COMPASS_SIZE, 0.0));
-
-    pt[0] = CompassPtToScreen(-COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
-    pt[1] = CompassPtToScreen(0.0, -COMPASS_SIZE, 0.0);
-    pt[2] = CompassPtToScreen(COMPASS_SIZE / 3.0f, -COMPASS_SIZE * 2.0f / 3.0f, 0.0);
-    m_DrawDC.DrawLines(3, pt);
-#endif
 }
 
 void GfxCore::NattyDrawNames()

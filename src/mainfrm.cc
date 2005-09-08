@@ -937,17 +937,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	return false;
     }
 
-#if 0
-    long file_size;
-    {
-	long pos = ftell(survey->fh);
-	fseek(survey->fh, 0, SEEK_END);
-	file_size = ftell(survey->fh);
-	fseek(survey->fh, pos, SEEK_SET);
-    }
-    int items = 0;
-#endif
-
     m_File = survey->filename_opened;
 
     m_Tree->DeleteAllItems();
