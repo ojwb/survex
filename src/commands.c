@@ -1178,7 +1178,6 @@ cmd_data(void)
       SVX_ASSERT((((mUsed &~ BIT(Newline)) | mask_optional[style])
 	      &~ mask[style]) == 0);
       compile_error_skip(/*Too few readings for data style `%s'*/64, style_name);
-      printf("%lx %lx %lx %lx\n", mUsed, BIT(Newline), mask_optional[style], mask[style]);
       osfree(style_name);
       osfree(new_order);
       return;
