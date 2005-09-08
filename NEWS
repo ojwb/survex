@@ -60,7 +60,7 @@ Changes in 1.1.2 (never formally released):
 
 * tests/cavern.tst: Fixed cavern.tst to warn if it is skipping a test because
   no results are listed for it.  This revealed that there was a "newline" test
-  which should have been called "newline", and was a broken testcase too!
+  which should have been called "badnewline", and was a broken testcase too!
   Fixed all these problems.
 
 * cavern: Applied Simeon Warner's patch for handling backcompass, backclino,
