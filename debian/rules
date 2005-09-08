@@ -54,6 +54,10 @@ install: build
 	dh_installdirs
 
 	$(MAKE) prefix=`pwd`/debian/tmp/usr install
+	install -d debian/tmp/usr/share/vim/addons/ftdetect
+	install -d debian/tmp/usr/share/vim/addons/syntax
+	install vim/ftdetect/survex.vim debian/tmp/usr/share/vim/addons/ftdetect
+	install vim/syntax/survex.vim debian/tmp/usr/share/vim/addons/syntax
 
 	dh_movefiles
 
