@@ -1,6 +1,6 @@
 #! /bin/sh
 
-## Needed for wine to run on roadkill:
+# Needed for wine to run on roadkill:
 LD_ASSUME_KERNEL=2.4.1
 export LD_ASSUME_KERNEL
 
