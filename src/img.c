@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2004 Olly Betts
+ * Copyright (C) 1993-2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -279,7 +279,7 @@ img_open_survey(const char *fnm, const char *survey)
       return NULL;
    }
 
-   pimg->fh = fopenWithPthAndExt("", fnm, EXT_SVX_3D, "rb", NULL);
+   pimg->fh = fopenWithPthAndExt("", fnm, EXT_SVX_3D, "rb", &(pimg->filename_opened));
    if (pimg->fh == NULL) {
       osfree(pimg->label_buf);
       osfree(pimg);
@@ -292,7 +292,7 @@ img_open_survey(const char *fnm, const char *survey)
 
    pimg->flags = 0;
 
-   /* for version 3 we use label_buf to store the prefix for reuse */
+   /* for version >= 3 we use label_buf to store the prefix for reuse */
    /* for version -2, 0 value indicates we haven't entered a survey yet */
    /* for version -4, we store the last station here to detect whether
     * we MOVE or LINE */
@@ -302,6 +302,10 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->survey = NULL;
    pimg->survey_len = 0;
    pimg->separator = '.';
+   pimg->date1 = 0;
+   pimg->date2 = 0;
+
+   pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
 
    pimg->title = pimg->datestamp = NULL;
    if (survey) {
@@ -335,7 +339,7 @@ img_open_survey(const char *fnm, const char *survey)
    /* [version -2, -3, -4] pending IMG_LINE or IMG_MOVE - both have 4 added
     * [version -1] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
-    * [version 3] not in the middle of turning a LINE into a MOVE
+    * [version >= 3] not in the middle of turning a LINE into a MOVE
     */
    pimg->pending = 0;
 
@@ -540,7 +544,7 @@ xyz_file:
       }
       /* nothing special to do */
    } else if (pimg->version == 0) {
-      if (ch < '2' || ch > '3' || getc(pimg->fh) != '\n') {
+      if (ch < '2' || ch > '5' || getc(pimg->fh) != '\n') {
 	 img_errno = IMG_TOONEW;
 	 goto error;
       }
@@ -585,12 +589,12 @@ img_rewind(img *pimg)
    clearerr(pimg->fh);
    /* [version -1] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
-    * [version 3] not in the middle of turning a LINE into a MOVE */
+    * [version >= 3] not in the middle of turning a LINE into a MOVE */
    pimg->pending = 0;
 
    img_errno = IMG_NONE;
 
-   /* for version 3 we use label_buf to store the prefix for reuse */
+   /* for version >= 3 we use label_buf to store the prefix for reuse */
    /* for version -2, 0 value indicates we haven't entered a survey yet */
    /* for version -4, we store the last station here to detect whether
     * we MOVE or LINE */
@@ -639,7 +643,7 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
       pimg->version = 1;
       fputs("Bv0.01\n", pimg->fh); /* binary file format version number */
    } else {
-      pimg->version = (img_output_version > 2) ? 3 : 2;
+      pimg->version = (img_output_version > 5) ? 5 : img_output_version;
       fprintf(pimg->fh, "v%d\n", pimg->version); /* file format version no. */
    }
    fputsnl(title_buf, pimg->fh);
@@ -655,9 +659,17 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    pimg->fRead = fFalse; /* writing to this file */
    img_errno = IMG_NONE;
 
-   /* for version 3 we use label_buf to store the prefix for reuse */
+   /* for version >= 3 we use label_buf to store the prefix for reuse */
    pimg->label_buf[0] = '\0';
    pimg->label_len = 0;
+
+   pimg->date1 = 0;
+   pimg->date2 = 0;
+
+   pimg->olddate1 = 0;
+   pimg->olddate2 = 0;
+
+   pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
 
    /* Don't check for write errors now - let img_close() report them... */
    return pimg;
@@ -726,21 +738,67 @@ skip_coord(FILE *fh)
     return (fseek(fh, 12, SEEK_CUR) == 0);
 }
 
+static int
+read_v3label(img *pimg)
+{
+   char *q;
+   long len = getc(pimg->fh);
+   if (len == EOF) {
+      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      return img_BAD;
+   }
+   if (len == 0xfe) {
+      len += get16(pimg->fh);
+      if (feof(pimg->fh)) {
+	 img_errno = IMG_BADFORMAT;
+	 return img_BAD;
+      }
+      if (ferror(pimg->fh)) {
+	 img_errno = IMG_READERROR;
+	 return img_BAD;
+      }
+   } else if (len == 0xff) {
+      len = get32(pimg->fh);
+      if (ferror(pimg->fh)) {
+	 img_errno = IMG_READERROR;
+	 return img_BAD;
+      }
+      if (feof(pimg->fh) || len < 0xfe + 0xffff) {
+	 img_errno = IMG_BADFORMAT;
+	 return img_BAD;
+      }
+   }
+
+   if (!check_label_space(pimg, pimg->label_len + len + 1)) {
+      img_errno = IMG_OUTOFMEMORY;
+      return img_BAD;
+   }
+   q = pimg->label_buf + pimg->label_len;
+   pimg->label_len += len;
+   if (len && fread(q, len, 1, pimg->fh) != 1) {
+      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      return img_BAD;
+   }
+   q[len] = '\0';
+   return 0;
+}
+
 int
 img_read_item(img *pimg, img_point *p)
 {
    int result;
    pimg->flags = 0;
 
-   if (pimg->version == 3) {
+   if (pimg->version >= 3) {
       int opt;
+      pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
       if (pimg->pending >= 0x80) {
 	 *p = pimg->mv;
 	 pimg->flags = (int)(pimg->pending) & 0x3f;
 	 pimg->pending = 0;
 	 return img_LINE;
       }
-      again3: /* label to goto if we get a prefix */
+      again3: /* label to goto if we get a prefix, date, or lrud */
       pimg->label = pimg->label_buf;
       opt = getc(pimg->fh);
       if (opt == EOF) {
@@ -779,6 +837,38 @@ img_read_item(img *pimg, img_point *p)
 	    result = img_MOVE;
 	    break;
 	 }
+	 if (opt >= 0x20) {
+	     switch (opt) {
+		 case 0x20: /* Single date */
+		     pimg->date1 = get32(pimg->fh);
+		     pimg->date2 = pimg->date1;
+		     break;
+		 case 0x21: /* Date range */
+		     pimg->date1 = get32(pimg->fh);
+		     pimg->date2 = get32(pimg->fh);
+		     break;
+		 case 0x30: case 0x31: /* LRUD */
+		     if (read_v3label(pimg) == img_BAD) return img_BAD;
+		     pimg->flags = (int)opt & 0x01;
+		     pimg->l = get16(pimg->fh) / 100.0;
+		     pimg->r = get16(pimg->fh) / 100.0;
+		     pimg->u = get16(pimg->fh) / 100.0;
+		     pimg->d = get16(pimg->fh) / 100.0;
+		     return img_XSECT;
+		 case 0x32: case 0x33: /* Big LRUD! */
+		     if (read_v3label(pimg) == img_BAD) return img_BAD;
+		     pimg->flags = (int)opt & 0x01;
+		     pimg->l = get32(pimg->fh) / 100.0;
+		     pimg->r = get32(pimg->fh) / 100.0;
+		     pimg->u = get32(pimg->fh) / 100.0;
+		     pimg->d = get32(pimg->fh) / 100.0;
+		     return img_XSECT;
+		 default: /* 0x24 - 0x2f and 0x34 - 0x3f are currently unallocated. */
+		     img_errno = IMG_BADFORMAT;
+		     return img_BAD;
+	     }
+	     goto again3;
+	 }
 	 /* 16-31 mean remove (n - 15) characters from the prefix */
 	 /* zero prefix using 0 */
 	 if (pimg->label_len <= (size_t)(opt - 15)) {
@@ -787,72 +877,46 @@ img_read_item(img *pimg, img_point *p)
 	 }
 	 pimg->label_len -= (opt - 15);
 	 goto again3;
-       case 1: case 2: {
-	 char *q;
-	 long len = getc(pimg->fh);
-	 if (len == EOF) {
-	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
-	    return img_BAD;
-	 }
-	 if (len == 0xfe) {
-	    len += get16(pimg->fh);
-	    if (feof(pimg->fh)) {
-	       img_errno = IMG_BADFORMAT;
-	       return img_BAD;
-	    }
-	    if (ferror(pimg->fh)) {
-	       img_errno = IMG_READERROR;
-	       return img_BAD;
-	    }
-	 } else if (len == 0xff) {
-	    len = get32(pimg->fh);
-	    if (ferror(pimg->fh)) {
-	       img_errno = IMG_READERROR;
-	       return img_BAD;
-	    }
-	    if (feof(pimg->fh) || len < 0xfe + 0xffff) {
-	       img_errno = IMG_BADFORMAT;
-	       return img_BAD;
-	    }
-	 }
+       case 1:
+	 if (read_v3label(pimg) == img_BAD) return img_BAD;
 
-	 if (!check_label_space(pimg, pimg->label_len + len + 1)) {
-	    img_errno = IMG_OUTOFMEMORY;
-	    return img_BAD;
-	 }
-	 q = pimg->label_buf + pimg->label_len;
-	 pimg->label_len += len;
-	 if (len && fread(q, len, 1, pimg->fh) != 1) {
-	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
-	    return img_BAD;
-	 }
-	 q[len] = '\0';
-
-	 result = opt & 0x40 ? img_LABEL : img_LINE;
+	 result = img_LABEL;
 
 	 if (pimg->survey_len) {
 	    size_t l = pimg->survey_len;
 	    const char *s = pimg->label_buf;
-	    if (result == img_LINE) {
-	       if (strncmp(pimg->survey, s, l) != 0 ||
-		   !(s[l] == '.' || s[l] == '\0')) {
-		  if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
-		  pimg->pending = 15;
-		  goto again3;
-	       }
-	    } else {
-	       if (strncmp(pimg->survey, s, l + 1) != 0) {
-		  if (!skip_coord(pimg->fh)) return img_BAD;
-		  pimg->pending = 0;
-		  goto again3;
-	       }
+	    if (strncmp(pimg->survey, s, l + 1) != 0) {
+	       if (!skip_coord(pimg->fh)) return img_BAD;
+	       pimg->pending = 0;
+	       goto again3;
 	    }
 	    pimg->label += l;
 	    /* skip the dot if there */
 	    if (*pimg->label) pimg->label++;
 	 }
 
-	 if (result == img_LINE && pimg->pending) {
+	 pimg->flags = (int)opt & 0x3f;
+	 break;
+       case 2:
+	 if (read_v3label(pimg) == img_BAD) return img_BAD;
+
+	 result = img_LINE;
+
+	 if (pimg->survey_len) {
+	    size_t l = pimg->survey_len;
+	    const char *s = pimg->label_buf;
+	    if (strncmp(pimg->survey, s, l) != 0 ||
+		!(s[l] == '.' || s[l] == '\0')) {
+	       if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
+	       pimg->pending = 15;
+	       goto again3;
+	    }
+	    pimg->label += l;
+	    /* skip the dot if there */
+	    if (*pimg->label) pimg->label++;
+	 }
+
+	 if (pimg->pending) {
 	    *p = pimg->mv;
 	    if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
 	    pimg->pending = opt;
@@ -860,7 +924,6 @@ img_read_item(img *pimg, img_point *p)
 	 }
 	 pimg->flags = (int)opt & 0x3f;
 	 break;
-       }
        default:
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
@@ -1278,6 +1341,31 @@ skip_to_N:
 	       } else {
 		   memcpy(pimg->label, q, len - 1);
 	       }
+	       q += len - 1;
+	       /* Now read LRUD.  Technically, this is optional but virtually
+		* all PLT files have it (with dummy negative values if no LRUD
+		* was measured) and some versions of Compass can't read PLT
+		* files without it!
+		*/
+	       while (*q && *q <= ' ') q++;
+	       if (*q == 'P') {
+		   if (sscanf(q + 1, "%lf%lf%lf%lf",
+			      &pimg->l, &pimg->r, &pimg->u, &pimg->d) != 4) {
+		       osfree(line);
+		       if (ferror(pimg->fh)) {
+			   img_errno = IMG_READERROR;
+		       } else {
+			   img_errno = IMG_BADFORMAT;
+		       }
+		       return img_BAD;
+		   }
+		   pimg->l *= METRES_PER_FOOT;
+		   pimg->r *= METRES_PER_FOOT;
+		   pimg->u *= METRES_PER_FOOT;
+		   pimg->d *= METRES_PER_FOOT;
+	       } else {
+		   pimg->l = pimg->r = pimg->u = pimg->d = -1;
+	       }
 	       osfree(line);
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
 	       if (fpos != -1) {
@@ -1464,17 +1552,60 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	       double x, double y, double z)
 {
    if (!pimg) return;
-   if (pimg->version == 3) {
+   if (pimg->version >= 3) {
       int opt = 0;
       switch (code) {
        case img_LABEL:
 	 write_v3label(pimg, 0x40 | flags, s);
 	 opt = 0;
 	 break;
+       case img_XSECT: {
+	 INT32_T l = (INT32_T)my_round(pimg->l * 100.0);
+	 INT32_T r = (INT32_T)my_round(pimg->r * 100.0);
+	 INT32_T u = (INT32_T)my_round(pimg->u * 100.0);
+	 INT32_T d = (INT32_T)my_round(pimg->d * 100.0);
+	 INT32_T max_dim = max(max(l, r), max(u, d));
+	 if (l < 0) l = -1;
+	 if (r < 0) r = -1;
+	 if (u < 0) u = -1;
+	 if (d < 0) d = -1;
+	 flags &= 1;
+	 if (max_dim >= 32768) flags |= 2;
+	 write_v3label(pimg, 0x30 | flags, s);
+	 if (flags & 2) {
+	    /* Big passage!  Need to use 4 bytes. */
+	    put32(l, pimg->fh);
+	    put32(r, pimg->fh);
+	    put32(u, pimg->fh);
+	    put32(d, pimg->fh);
+	 } else {
+	    put16(l, pimg->fh);
+	    put16(r, pimg->fh);
+	    put16(u, pimg->fh);
+	    put16(d, pimg->fh);
+	 }
+	 return;
+       }
        case img_MOVE:
 	 opt = 15;
 	 break;
        case img_LINE:
+	 if (pimg->version >= 4) {
+	     if (pimg->date1 != pimg->olddate1 ||
+		 pimg->date2 != pimg->olddate2) {
+		 /* Only write dates when they've changed. */
+		 if (pimg->date1 == pimg->date2) {
+		     putc(0x20, pimg->fh);
+		     put32(pimg->date1, pimg->fh);
+		 } else {
+		     putc(0x21, pimg->fh);
+		     put32(pimg->date1, pimg->fh);
+		     put32(pimg->date2, pimg->fh);
+		 }
+		 pimg->olddate1 = pimg->date1;
+		 pimg->olddate2 = pimg->date2;
+	     }
+	 }
 	 write_v3label(pimg, 0x80 | flags, s ? s : "");
 	 opt = 0;
 	 break;
@@ -1558,7 +1689,7 @@ img_close(img *pimg)
 	     case 2:
 	       putc(0, pimg->fh);
 	       break;
-	     case 3:
+	     default:
 	       if (pimg->label_len) putc(0, pimg->fh);
 	       putc(0, pimg->fh);
 	       break;
