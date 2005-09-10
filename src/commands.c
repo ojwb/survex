@@ -1002,6 +1002,14 @@ cmd_data(void)
    get_token();
    style = match_tok(styletab, TABSIZE(styletab));
 
+   if (style == STYLE_IGNORE) {
+      /* We don't understand PASSAGE style data, so just ignore the rest
+       * of this line and any data in this style. */
+      pcs->style = STYLE_IGNORE;
+      skipline();
+      return;
+   }
+
    if (style == STYLE_DEFAULT) {
       default_style(pcs);
       return;
