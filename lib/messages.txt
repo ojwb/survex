@@ -2832,8 +2832,10 @@ it:253 Zoo@m indietro##[
 sk:253 Zmen&scaron;i@t##[
 ro:253 Mi@c&scedil;orare##[
 #
-en:254 Restore De@fault Settings
-en-us:254 Restore Defaul@t Settings
+# TRANSLATE fr de pt pt-br ca es it sk ro
+# "Restore Default Settings" -> "Restore Default View"
+en:254 Restore De@fault View
+en-us:254 Restore Defaul@t View
 fr:254 @Restaurer les valeurs par d&eacute;faut
 de:254 Voreinstellungen w@iederherstellen
 pt:254 @Usar valores pr&eacute;-definidos

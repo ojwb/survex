@@ -727,7 +727,7 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_ZOOM_IN, GetTabMsg(/*@Zoom In##]*/252));
     orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault Settings*/254));
+    orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault View*/254));
 
     wxMenu* presmenu = new wxMenu;
     presmenu->Append(menu_PRES_NEW, GetTabMsg(/*@New Presentation*/311));
