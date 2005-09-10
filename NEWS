@@ -1,3 +1,14 @@
+Changes in 1.0.37:
+
+* cavern: Also ignore any arguments after "*data passage" which makes this
+  feature actually useful as intended.
+
+* aven: Recognise .3d file format versions 4 and 5 so you can load .3d files
+  processed by 1.1.x test builds.
+
+* aven: Normalise filename by adding any extension used, and use the normalised
+  filename for file history and window title.
+
 Changes in 1.0.36:
 
 * cavern: Ignore "*data passage" data style so you can process files containing
@@ -5,6 +16,9 @@ Changes in 1.0.36:
 
 * cavern: Fix assertion failure when handling a survey with a station only
   attached by a nosurvey leg.
+
+* aven: The bearing used for a printout now defaults to the current view.
+  (This feature was accidentally broken between 1.0.31 and 1.0.32).
 
 * Changes backported from 1.1.3:
 
