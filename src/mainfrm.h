@@ -439,6 +439,7 @@ public:
 
     bool HasUndergroundLegs() const { return m_HasUndergroundLegs; }
     bool HasSurfaceLegs() const { return m_HasSurfaceLegs; }
+    bool HasTubes() const { return !tubes.empty(); }
 
     void ClearCoords();
     void SetCoords(Double x, Double y, Double z);

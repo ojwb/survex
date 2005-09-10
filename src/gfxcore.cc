@@ -288,6 +288,11 @@ bool GfxCore::HasSurfaceLegs() const
     return m_Parent->HasSurfaceLegs();
 }
 
+bool GfxCore::HasTubes() const
+{
+    return m_Parent->HasTubes();
+}
+
 void GfxCore::UpdateBlobs()
 {
     DeleteList(m_Lists.blobs);
@@ -351,7 +356,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 		DisableSmoothPolygons();
 	    }
 
-	    // Draw the underground legs (draw them last so that anti-aliasing
+	    // Draw the underground legs.  Do this last so that anti-aliasing
 	    // works over polygons.
 	    SetColour(col_GREEN);
 	    DrawList(m_Lists.underground_legs);

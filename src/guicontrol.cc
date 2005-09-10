@@ -882,7 +882,7 @@ void GUIControl::OnToggleTubes()
 
 void GUIControl::OnToggleTubesUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData());
+    cmd.Enable(m_View->HasData() && m_View->HasTubes());
     cmd.Check(m_View->GetTubes());
 }
 

@@ -343,6 +343,7 @@ public:
 
     bool HasUndergroundLegs() const;
     bool HasSurfaceLegs() const;
+    bool HasTubes() const;
 
     bool ShowingUndergroundLegs() const { return m_Legs; }
     bool ShowingSurfaceLegs() const { return m_Surface; }
