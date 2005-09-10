@@ -1,3 +1,14 @@
+survex (1.0.37) unstable; urgency=low
+
+  * cavern: Also ignore any arguments after "*data passage" which makes this
+    feature actually useful as intended.
+  * aven: Recognise .3d file format versions 4 and 5 so you can load .3d files
+    processed by 1.1.x test builds.
+  * aven: Normalise filename by adding any extension used, and use the
+    normalised filename for file history and window title.
+
+ -- Wookey <wookey@survex.com>  Sat, 10 Sep 2005 19:31:20 +0100
+
 survex (1.0.36) unstable; urgency=low
 
   * cavern: Ignore "*data passage" data style so you can process files
