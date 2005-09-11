@@ -97,13 +97,13 @@ class GfxCore : public GLACanvas {
 
     int m_ScaleBarWidth;
 
-    struct {
-        glaList underground_legs;
-        glaList tubes;
-        glaList surface_legs;
-	glaList shadow;
-        glaList blobs;
-    } m_Lists;
+    typedef enum {
+	LIST_UNDERGROUND_LEGS,
+	LIST_TUBES,
+	LIST_SURFACE_LEGS,
+	LIST_SHADOW,
+	LIST_BLOBS
+    } drawing_list;
 
 public:
     typedef enum {
@@ -207,6 +207,7 @@ private:
 
     void SkinPassage(const vector<XSect> & centreline);
 
+    virtual void GenerateList(unsigned int l);
     void GenerateDisplayList();
     void GenerateDisplayListTubes();
     void GenerateDisplayListSurface();

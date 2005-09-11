@@ -549,62 +549,53 @@ void GLACanvas::FinishDrawing()
     SwapBuffers();
 }
 
-glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
+void GLACanvas::DrawList(unsigned int l)
 {
-    // Generate the list lazily to minimise delays on startup.
-    drawing_lists.push_back(make_pair(0, generator));
-    return drawing_lists.size();
-}
+    if (l >= drawing_lists.size()) drawing_lists.resize(l + 1);
 
-void GLACanvas::DrawList(glaList l)
-{
-    assert(l != 0 && l <= drawing_lists.size());
-
-    glaList & list = drawing_lists[l - 1].first;
-
-    // Check if we need to generate the OpenGL list.
-    if (!list) {
+    // We generate the OpenGL lists lazily to minimise delays on startup.
+    // So check if we need to generate the OpenGL list now.
+    if (!drawing_lists[l]) {
 	// Create a new OpenGL list to hold this sequence of drawing
 	// operations.
-	list = glGenLists(1);
+	GLuint list = glGenLists(1);
 #ifdef GLA_DEBUG
-	printf("new list: %d... ", list);
+	printf("new list #%d: %d... ", l, list);
+	m_Vertices = 0;
 #endif
 	CHECK_GL_ERROR("CreateList", "glGenLists");
 	assert(list != 0);
 
+	// http://www.opengl.org/resources/faq/technical/displaylist.htm
+	// advises:
+	// "Stay away from GL_COMPILE_AND_EXECUTE mode. Instead, create the
+	// list using GL_COMPILE mode, then execute it with glCallList()."
 	glNewList(list, GL_COMPILE);
 	CHECK_GL_ERROR("CreateList", "glNewList");
-#ifdef GLA_DEBUG
-	m_Vertices = 0;
-#endif
-	((GfxCore*)this->*(drawing_lists[l - 1].second))();
+	GenerateList(l);
 	glEndList();
 #ifdef GLA_DEBUG
 	printf("done (%d vertices)\n", m_Vertices);
 #endif
 	CHECK_GL_ERROR("CreateList", "glEndList");
+	drawing_lists[l] = list;
     }
 
     // Perform the operations specified by the OpenGL display list.
-    glCallList(list);
+    glCallList(drawing_lists[l]);
     CHECK_GL_ERROR("DrawList", "glCallList");
 }
 
-void GLACanvas::RegenerateList(glaList l)
+void GLACanvas::InvalidateList(unsigned int l)
 {
-    assert(l != 0 && l <= drawing_lists.size());
-
-    glaList & list = drawing_lists[l - 1].first;
-
-    if (list) {
+    if (l < drawing_lists.size() && drawing_lists[l]) {
 	// Delete any existing OpenGL list.
 	SetCurrent();
-	glDeleteLists(list, 1);
+	glDeleteLists(drawing_lists[l], 1);
 	CHECK_GL_ERROR("DeleteList", "glDeleteLists");
 
 	// And flag this list as requiring generation before use.
-	list = 0;
+	drawing_lists[l] = 0;
     }
 }
 

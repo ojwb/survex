@@ -43,7 +43,6 @@ wxString GetGLSystemDescription();
 #define GLA_DEBUG 1
 
 typedef Double glaCoord;
-typedef GLuint glaList;
 
 class GLAPoint {
     glaCoord xc, yc, zc;
@@ -131,7 +130,7 @@ class GLACanvas : public wxGLCanvas {
     bool m_Fog;
     bool m_AntiAlias;
 
-    vector<pair<glaList, void (GfxCore::*)()> > drawing_lists;
+    vector<GLuint> drawing_lists;
 
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
@@ -147,9 +146,9 @@ public:
     void SetDataTransform();
     void SetIndicatorTransform();
 
-    glaList CreateList(GfxCore*, void (GfxCore::*generator)());
-    void DrawList(glaList l);
-    void RegenerateList(glaList l);
+    void DrawList(unsigned int l);
+    void InvalidateList(unsigned int l);
+    virtual void GenerateList(unsigned int l) = 0;
 
     void SetBackgroundColour(float red, float green, float blue);
     void SetColour(const GLAPen& pen, double rgb_scale);

@@ -41,8 +41,6 @@
 #include <wx/confbase.h>
 #include <wx/image.h>
 
-//#define DrawList(L) do { printf("DrawList(%s)\n", #L); (DrawList)(L); } while (0)
-
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MAX3(a, b, c) ((a) > (b) ? MAX(a, c) : MAX(b, c))
 
@@ -143,9 +141,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     wxConfigBase::Get()->Read("degrees", &m_Degrees, true);
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
-    m_Lists.underground_legs = 0;
-    m_Lists.tubes = 0;
-    m_Lists.surface_legs = 0;
     presentation_mode = 0;
     pres_speed = 0.0;
     pres_reverse = false;
@@ -296,7 +291,7 @@ bool GfxCore::HasTubes() const
 
 void GfxCore::UpdateBlobs()
 {
-    RegenerateList(m_Lists.blobs);
+    InvalidateList(LIST_BLOBS);
 }
 
 //
@@ -333,44 +328,27 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	// Set up model transformation matrix.
 	SetDataTransform();
 
-	if (first_time) {
-	    m_Lists.underground_legs =
-		CreateList(this, &GfxCore::GenerateDisplayList);
-
-	    m_Lists.shadow =
-		CreateList(this, &GfxCore::GenerateDisplayListPrintShadow);
-
-	    m_Lists.tubes =
-		CreateList(this, &GfxCore::GenerateDisplayListTubes);
-
-	    m_Lists.surface_legs =
-		CreateList(this, &GfxCore::GenerateDisplayListSurface);
-
-	    m_Lists.blobs =
-		CreateList(this, &GfxCore::GenerateBlobsDisplayList);
-	}
-
 	timer.Start(); // reset timer
 
 	if (m_Legs || m_Tubes) {
 	    if (m_Tubes) {
 		EnableSmoothPolygons();
-		DrawList(m_Lists.tubes);
+		DrawList(LIST_TUBES);
 		DisableSmoothPolygons();
 	    }
 
 	    // Draw the underground legs.  Do this last so that anti-aliasing
 	    // works over polygons.
 	    SetColour(col_GREEN);
-	    DrawList(m_Lists.underground_legs);
+	    DrawList(LIST_UNDERGROUND_LEGS);
 	}
 
 	if (m_Surface) {
 	    // Draw the surface legs.
-	    DrawList(m_Lists.surface_legs);
+	    DrawList(LIST_SURFACE_LEGS);
 	}
 
-	DrawList(m_Lists.blobs);
+	DrawList(LIST_BLOBS);
 
 	if (m_BoundingBox) {
 	    DrawShadowedBoundingBox();
@@ -379,7 +357,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    // Draw the grid.
 	    // FIXME: draw grid as opengl list?  tracking when to invalidate
 	    // it requires care...
-	    // DrawList(m_Lists.grid);
+	    // DrawList(LIST_GRID);
 	    DrawGrid();
 	}
 
@@ -534,7 +512,7 @@ void GfxCore::DrawShadowedBoundingBox()
 
     glDisable(GL_POLYGON_OFFSET_FILL);
 
-    DrawList(m_Lists.shadow);
+    DrawList(LIST_SHADOW);
 }
 
 Double GfxCore::GridXToScreen(Double x, Double y, Double z) const
@@ -1888,11 +1866,35 @@ void GfxCore::ForceRefresh()
     Refresh(false);
 }
 
+void GfxCore::GenerateList(unsigned int l)
+{
+    assert(m_HaveData);
+
+    switch (l) {
+	case LIST_UNDERGROUND_LEGS:
+	    GenerateDisplayList();
+	    break;
+	case LIST_TUBES:
+	    GenerateDisplayListTubes();
+	    break;
+	case LIST_SURFACE_LEGS:
+	    GenerateDisplayListSurface();
+	    break;
+	case LIST_SHADOW:
+	    GenerateDisplayListPrintShadow();
+	    break;
+	case LIST_BLOBS:
+	    GenerateBlobsDisplayList();
+	    break;
+	default:
+	    assert(false);
+	    break;
+    }
+}
+
 void GfxCore::GenerateDisplayList()
 {
     // Generate the display list for the underground legs.
-    assert(m_HaveData);
-
     list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();
     list<vector<PointInfo> >::const_iterator tend = m_Parent->traverses_end();
     while (trav != tend) {
@@ -1904,8 +1906,6 @@ void GfxCore::GenerateDisplayList()
 void GfxCore::GenerateDisplayListTubes()
 {
     // Generate the display list for the tubes.
-    assert(m_HaveData);
-
     list<vector<XSect> >::const_iterator trav = m_Parent->tubes_begin();
     list<vector<XSect> >::const_iterator tend = m_Parent->tubes_end();
     while (trav != tend) {
@@ -1917,8 +1917,6 @@ void GfxCore::GenerateDisplayListTubes()
 void GfxCore::GenerateDisplayListSurface()
 {
     // Generate the display list for the surface legs.
-    assert(m_HaveData);
-
     EnableDashedLines();
     list<vector<PointInfo> >::const_iterator trav = m_Parent->surface_traverses_begin();
     list<vector<PointInfo> >::const_iterator tend = m_Parent->surface_traverses_end();
@@ -1931,8 +1929,6 @@ void GfxCore::GenerateDisplayListSurface()
 
 void GfxCore::GenerateDisplayListPrintShadow()
 {
-    assert(m_HaveData);
-
     SetColour(col_BLACK);
     list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();
     list<vector<PointInfo> >::const_iterator tend = m_Parent->traverses_end();
@@ -1942,7 +1938,7 @@ void GfxCore::GenerateDisplayListPrintShadow()
     }
 }
 
-// Plot crosses and/or blobs.
+// Plot blobs.
 void GfxCore::GenerateBlobsDisplayList()
 {
     if (!(m_Entrances || m_FixedPts || m_ExportedPts ||
@@ -2529,8 +2525,8 @@ void GfxCore::SetColourBy(int colour_by) {
 	    break;
     }
 
-    RegenerateList(m_Lists.underground_legs);
-    RegenerateList(m_Lists.tubes);
+    InvalidateList(LIST_UNDERGROUND_LEGS);
+    InvalidateList(LIST_TUBES);
 
     ForceRefresh();
 }
