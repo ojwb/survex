@@ -1648,7 +1648,7 @@ void MainFrm::OnClose(wxCloseEvent&)
 void MainFrm::OnAbout(wxCommandEvent&)
 {
     AvenAllowOnTop ontop(this);
-    AboutDlg dlg(this);
+    AboutDlg dlg(this, icon_path);
     dlg.Centre();
     dlg.ShowModal();
 }

@@ -37,16 +37,15 @@
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
 END_EVENT_TABLE()
 
-AboutDlg::AboutDlg(wxWindow* parent) :
+AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
     wxDialog(parent, 500, wxString::Format(msg(/*About %s*/205), APP_NAME))
 {
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
     if (!bitmap.Ok()) {
-	bitmap.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
-			wxString("icons") + wxCONFIG_PATH_SEPARATOR +
-			wxString("aven-about.png"), wxBITMAP_TYPE_PNG);
+	bitmap.LoadFile(icon_path + "aven-about.png", wxBITMAP_TYPE_PNG);
+	bitmap_icon.LoadFile(icon_path + "aven.png", wxBITMAP_TYPE_PNG);
     }
     if (bitmap.Ok()) {
 	wxStaticBitmap* static_bitmap = new wxStaticBitmap(this, 501, bitmap);
@@ -57,7 +56,12 @@ AboutDlg::AboutDlg(wxWindow* parent) :
 
     wxString id = wxString(APP_NAME" "VERSION"\n");
     id += msg(/*Survey visualisation tool*/209);
-    wxStaticText* title = new wxStaticText(this, 502, id);
+    wxBoxSizer* title = new wxBoxSizer(wxHORIZONTAL);
+    if (bitmap_icon.Ok()) {
+	title->Add(new wxStaticBitmap(this, 599, bitmap_icon), 0, wxALIGN_CENTRE_VERTICAL|wxRIGHT, 8);
+    }
+    title->Add(new wxStaticText(this, 502, id), 0, wxALL, 2);
+
     wxStaticText* copyright = new wxStaticText(this, 503,
 	    wxString::Format(AVEN_COPYRIGHT_MSG"\n"COPYRIGHT_MSG,
 			     msg(/*&copy;*/0), msg(/*&copy;*/0)));
