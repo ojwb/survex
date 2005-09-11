@@ -3,8 +3,8 @@
 //
 //  OpenGL implementation for the GLA abstraction layer.
 //
-//  Copyright (C) 2002-2003 Mark R. Shinwell
-//  Copyright (C) 2003,2004 Olly Betts
+//  Copyright (C) 2002-2003,2005 Mark R. Shinwell
+//  Copyright (C) 2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -174,6 +174,7 @@ const ColourTriple COLOURS[] = {
     { 114, 149, 160 }, // indicator 2
     { 255, 255, 0 },   // yellow
     { 255, 0, 0 },     // red
+    { 40, 40, 255 },   // blue
 };
 
 //

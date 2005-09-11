@@ -108,6 +108,8 @@ movements-->:
 <keycap/Ctrl-L/: Toggle display of survey legs
 <keycap/Ctrl-F/: Toggle display of surface legs
 <!--<keycap/Ctrl-A/: Toggle display of All/skeleton when moving-->
+<keycap/Ctrl-G/: Toggle display of grid
+<keycap/Ctrl-B/: Toggle display of bounding box
 <keycap/O/: Toggle display of non-overlapping/all names
 <keycap/Ctrl-R/: reverse sense of controls
 <!--<keycap/Shift/: accelerates all movement keys-->
@@ -121,6 +123,8 @@ this works.
 which varies in length as you zoom in or out.  
 In the lower right corner is a compass pointer showing which way
 is North, and a clino pointer showing the angle of tilt.
+And in the upper right is a depth bar showing the correspondence between
+colour and depth.
 </Para>
 
 </refsect2>

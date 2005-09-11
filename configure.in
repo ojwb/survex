@@ -18,7 +18,7 @@ AM_CONFIG_HEADER(config.h)
 dnl don't reformat the next line, miniam.pl pulls out the value
 COPYRIGHT_MSG="Copyright %s 1990-2005 Olly Betts"
 
-AVEN_COPYRIGHT_MSG="Copyright %s 1999-2003 Mark R. Shinwell"
+AVEN_COPYRIGHT_MSG="Copyright %s 1999-2003,2005 Mark R. Shinwell"
 
 AC_DEFINE_UNQUOTED(COPYRIGHT_MSG, "$COPYRIGHT_MSG", [Copyright Message])
 AC_DEFINE_UNQUOTED(AVEN_COPYRIGHT_MSG, "$AVEN_COPYRIGHT_MSG",

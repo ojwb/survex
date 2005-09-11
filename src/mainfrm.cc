@@ -3,7 +3,7 @@
 //
 //  Main frame handling for Aven.
 //
-//  Copyright (C) 2000-2002 Mark R. Shinwell
+//  Copyright (C) 2000-2002,2005 Mark R. Shinwell
 //  Copyright (C) 2001-2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -503,6 +503,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepth)
     EVT_MENU(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurface)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
+    EVT_MENU(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBox)
     EVT_MENU(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspective)
     EVT_MENU(menu_VIEW_TEXTURED, MainFrm::OnViewTextured)
     EVT_MENU(menu_VIEW_FOG, MainFrm::OnViewFog)
@@ -554,6 +555,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNamesUpdate)
     EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepthUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
+    EVT_UPDATE_UI(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBoxUpdate)
     EVT_UPDATE_UI(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspectiveUpdate)
     EVT_UPDATE_UI(menu_VIEW_TEXTURED, MainFrm::OnViewTexturedUpdate)
     EVT_UPDATE_UI(menu_VIEW_FOG, MainFrm::OnViewFogUpdate)
@@ -745,6 +747,7 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_TUBES, GetTabMsg(/*Passage @Tubes*/346), "", true);
     viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "", true);
     viewmenu->Append(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297), "", true);
+    viewmenu->Append(menu_VIEW_BOUNDING_BOX, GetTabMsg(/*@Bounding Box##Ctrl+B*/318), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*@Underground Survey Legs##Ctrl+L*/272), "", true);
     viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*@Surface Survey Legs##Ctrl+F*/291), "", true);

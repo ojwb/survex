@@ -3,7 +3,7 @@
 //
 //  Handlers for events relating to the display of a survey.
 //
-//  Copyright (C) 2000-2002 Mark R. Shinwell
+//  Copyright (C) 2000-2002,2005 Mark R. Shinwell
 //  Copyright (C) 2001-2004 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -168,6 +168,9 @@ public:
 
     void OnViewFullScreenUpdate(wxUpdateUIEvent&);
     void OnViewFullScreen();
+ 
+    void OnViewBoundingBoxUpdate(wxUpdateUIEvent&);
+    void OnViewBoundingBox();
 };
 
 #endif

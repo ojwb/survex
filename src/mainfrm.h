@@ -3,7 +3,7 @@
 //
 //  Main frame handling for Aven.
 //
-//  Copyright (C) 2000-2003 Mark R. Shinwell
+//  Copyright (C) 2000-2003,2005 Mark R. Shinwell
 //  Copyright (C) 2001-2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -103,6 +103,7 @@ enum {
     menu_VIEW_SHOW_EXPORTED_PTS,
     menu_VIEW_STATUS_BAR,
     menu_VIEW_GRID,
+    menu_VIEW_BOUNDING_BOX,
     menu_VIEW_SHOW_TUBES,
     menu_VIEW_PERSPECTIVE,
     menu_VIEW_TEXTURED,
@@ -352,6 +353,7 @@ public:
     void OnToggleDepthbarUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleDepthbarUpdate(event); }
     void OnViewCompassUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewCompassUpdate(event); }
     void OnViewGridUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewGridUpdate(event); }
+    void OnViewBoundingBoxUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewBoundingBoxUpdate(event); }
     void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewClinoUpdate(event); }
     void OnViewPerspectiveUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewPerspectiveUpdate(event); }
     void OnViewTexturedUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewTexturedUpdate(event); }
@@ -397,6 +399,7 @@ public:
     void OnViewCompass(wxCommandEvent&) { if (m_Control) m_Control->OnViewCompass(); }
     void OnViewClino(wxCommandEvent&) { if (m_Control) m_Control->OnViewClino(); }
     void OnViewGrid(wxCommandEvent&) { if (m_Control) m_Control->OnViewGrid(); }
+    void OnViewBoundingBox(wxCommandEvent&) { if (m_Control) m_Control->OnViewBoundingBox(); }
     void OnViewPerspective(wxCommandEvent&) { if (m_Control) m_Control->OnViewPerspective(); }
     void OnViewTextured(wxCommandEvent&) { if (m_Control) m_Control->OnViewTextured(); }
     void OnViewFog(wxCommandEvent&) { if (m_Control) m_Control->OnViewFog(); }

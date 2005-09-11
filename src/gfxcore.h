@@ -3,7 +3,7 @@
 //
 //  Core drawing code for Aven.
 //
-//  Copyright (C) 2000-2001,2002 Mark R. Shinwell.
+//  Copyright (C) 2000-2001,2002,2005 Mark R. Shinwell.
 //  Copyright (C) 2001-2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -101,6 +101,7 @@ class GfxCore : public GLACanvas {
         glaList underground_legs;
         glaList tubes;
         glaList surface_legs;
+	glaList shadow;
         glaList blobs;
     } m_Lists;
 
@@ -155,6 +156,7 @@ private:
     bool m_FixedPts;
     bool m_ExportedPts;
     bool m_Grid;
+    bool m_BoundingBox;
 
     bool m_Degrees;
     bool m_Metric;
@@ -208,6 +210,7 @@ private:
     void GenerateDisplayList();
     void GenerateDisplayListTubes();
     void GenerateDisplayListSurface();
+    void GenerateDisplayListPrintShadow();
     void GenerateBlobsDisplayList();
 
     void DrawIndicators();
@@ -247,6 +250,9 @@ private:
     GLAPen& GetSurfacePen() const { return m_Pens[NUM_DEPTH_COLOURS]; }
 
     int GetNumDepthBands() const { return NUM_DEPTH_COLOURS; }
+
+    void DrawShadowedBoundingBox();
+    void DrawBoundingBox();
 
 public:
     GfxCore(MainFrm* parent, wxWindow* parent_window, GUIControl* control);
@@ -376,6 +382,8 @@ public:
     void ToggleDegrees() { ToggleFlag(&m_Degrees); }
     void ToggleTubes() { ToggleFlag(&m_Tubes); }
     void TogglePerspective() { GLACanvas::TogglePerspective(); ForceRefresh(); }
+    bool DisplayingBoundingBox() const { return m_BoundingBox; }
+    void ToggleBoundingBox() { ToggleFlag(&m_BoundingBox); }
 
     bool GetMetric() const { return m_Metric; }
     bool GetDegrees() const { return m_Degrees; }
@@ -402,6 +410,7 @@ public:
     void AddPolylineDepth(const vector<PointInfo> & centreline);
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			  const Vector3 &c, const Vector3 &d);
+    void AddPolylineShadow(const vector<PointInfo> & centreline);
     void AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 			       const Vector3 &c, const Vector3 &d);
     void MoveViewer(double forward, double up, double right);

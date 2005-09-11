@@ -89,6 +89,7 @@ typedef struct {
     *   2 => byte actions and flags
     *   3 => prefixes for legs; compressed prefixes
     *   4 => survey date
+    *   5 => LRUD info
     */
    int version;
    char *survey;

@@ -3,7 +3,7 @@
 //
 //  Handlers for events relating to the display of a survey.
 //
-//  Copyright (C) 2000-2002 Mark R. Shinwell
+//  Copyright (C) 2000-2002,2005 Mark R. Shinwell
 //  Copyright (C) 2001,2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -1037,4 +1037,15 @@ void GUIControl::OnViewFullScreenUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnViewFullScreen()
 {
     m_View->FullScreenMode();
+}
+
+void GUIControl::OnViewBoundingBoxUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+    cmd.Check(m_View->DisplayingBoundingBox());
+}
+
+void GUIControl::OnViewBoundingBox()
+{
+    m_View->ToggleBoundingBox();
 }

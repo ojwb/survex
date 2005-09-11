@@ -3,7 +3,7 @@
 //
 //  Core drawing code for Aven.
 //
-//  Copyright (C) 2000-2003 Mark R. Shinwell
+//  Copyright (C) 2000-2003,2005 Mark R. Shinwell
 //  Copyright (C) 2001-2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -135,6 +135,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_ExportedPts = false;
     m_Tubes = false;
     m_Grid = false;
+    m_BoundingBox = false;
     m_ColourBy = COLOUR_BY_DEPTH;
     AddQuad = &GfxCore::AddQuadrilateralDepth;
     AddPoly = &GfxCore::AddPolylineDepth;
@@ -337,6 +338,9 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    m_Lists.underground_legs =
 		CreateList(this, &GfxCore::GenerateDisplayList);
 
+	    m_Lists.shadow =
+		CreateList(this, &GfxCore::GenerateDisplayListPrintShadow);
+
 	    m_Lists.tubes =
 		CreateList(this, &GfxCore::GenerateDisplayListTubes);
 
@@ -369,6 +373,9 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	DrawList(m_Lists.blobs);
 
+	if (m_BoundingBox) {
+	    DrawShadowedBoundingBox();
+	}
 	if (m_Grid) {
 	    // Draw the grid.
 	    // FIXME: draw grid as opengl list?  tracking when to invalidate
@@ -470,6 +477,65 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	drawtime = timer.Time();
     }
+}
+
+void GfxCore::DrawBoundingBox()
+{
+    const double x = 0.5 * m_Parent->GetXExtent();
+    const double y = 0.5 * m_Parent->GetYExtent();
+    const double z = 0.5 * m_Parent->GetZExtent();
+
+    SetColour(col_BLUE);
+    EnableDashedLines();
+    BeginPolyline();
+    PlaceVertex(-x, -y, z);
+    PlaceVertex(-x, y, z);
+    PlaceVertex(x, y, z);
+    PlaceVertex(x, -y, z);
+    PlaceVertex(-x, -y, z);
+    EndPolyline();
+    BeginPolyline();
+    PlaceVertex(-x, -y, -z);
+    PlaceVertex(-x, y, -z);
+    PlaceVertex(x, y, -z);
+    PlaceVertex(x, -y, -z);
+    PlaceVertex(-x, -y, -z);
+    EndPolyline();
+    BeginLines();
+    PlaceVertex(-x, -y, z);
+    PlaceVertex(-x, -y, -z);
+    PlaceVertex(-x, y, z);
+    PlaceVertex(-x, y, -z);
+    PlaceVertex(x, y, z);
+    PlaceVertex(x, y, -z);
+    PlaceVertex(x, -y, z);
+    PlaceVertex(x, -y, -z);
+    EndLines();
+    DisableDashedLines();
+}
+
+void GfxCore::DrawShadowedBoundingBox()
+{
+    const double x = 0.5 * m_Parent->GetXExtent();
+    const double y = 0.5 * m_Parent->GetYExtent();
+    const double z = 0.5 * m_Parent->GetZExtent();
+
+    glPolygonOffset(1.0, 1.0);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+
+    DrawBoundingBox();
+
+    SetColour(col_DARK_GREY);
+    BeginQuadrilaterals();
+    PlaceVertex(-x, -y, -z);
+    PlaceVertex(-x, y, -z);
+    PlaceVertex(x, y, -z);
+    PlaceVertex(x, -y, -z);
+    EndQuadrilaterals();
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
+
+    DrawList(m_Lists.shadow);
 }
 
 Double GfxCore::GridXToScreen(Double x, Double y, Double z) const
@@ -1148,6 +1214,7 @@ void GfxCore::DefaultParameters()
     m_FixedPts = false;
     m_ExportedPts = false;
     m_Grid = false;
+    m_BoundingBox = false;
     m_Tubes = false;
     if (GetPerspective()) TogglePerspective();
 }
@@ -1863,6 +1930,19 @@ void GfxCore::GenerateDisplayListSurface()
     DisableDashedLines();
 }
 
+void GfxCore::GenerateDisplayListPrintShadow()
+{
+    assert(m_HaveData);
+
+    SetColour(col_BLACK);
+    list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();
+    list<vector<PointInfo> >::const_iterator tend = m_Parent->traverses_end();
+    while (trav != tend) {
+	AddPolylineShadow(*trav);
+	++trav;
+    }
+}
+
 // Plot crosses and/or blobs.
 void GfxCore::GenerateBlobsDisplayList()
 {
@@ -2040,6 +2120,19 @@ void GfxCore::AddPolyline(const vector<PointInfo> & centreline)
     ++i;
     while (i != centreline.end()) {
 	PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
+	++i;
+    }
+    EndPolyline();
+}
+
+void GfxCore::AddPolylineShadow(const vector<PointInfo> & centreline)
+{
+    BeginPolyline();
+    vector<PointInfo>::const_iterator i = centreline.begin();
+    PlaceVertex(i->GetX(), i->GetY(), -0.5 * m_Parent->GetZExtent());
+    ++i;
+    while (i != centreline.end()) {
+	PlaceVertex(i->GetX(), i->GetY(), -0.5 * m_Parent->GetZExtent());
 	++i;
     }
     EndPolyline();
