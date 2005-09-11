@@ -296,8 +296,7 @@ bool GfxCore::HasTubes() const
 
 void GfxCore::UpdateBlobs()
 {
-    DeleteList(m_Lists.blobs);
-    m_Lists.blobs = CreateList(this, &GfxCore::GenerateBlobsDisplayList);
+    RegenerateList(m_Lists.blobs);
 }
 
 //
@@ -2530,13 +2529,8 @@ void GfxCore::SetColourBy(int colour_by) {
 	    break;
     }
 
-    DeleteList(m_Lists.underground_legs);
-    m_Lists.underground_legs =
-	CreateList(this, &GfxCore::GenerateDisplayList);
-
-    DeleteList(m_Lists.tubes);
-    m_Lists.tubes =
-	CreateList(this, &GfxCore::GenerateDisplayListTubes);
+    RegenerateList(m_Lists.underground_legs);
+    RegenerateList(m_Lists.tubes);
 
     ForceRefresh();
 }

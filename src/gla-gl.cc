@@ -551,39 +551,61 @@ void GLACanvas::FinishDrawing()
 
 glaList GLACanvas::CreateList(GfxCore* obj, void (GfxCore::*generator)())
 {
-    // Create a new list to hold a sequence of drawing operations, and compile
-    // it.
-
-    glaList l = glGenLists(1);
-#ifdef GLA_DEBUG
-    printf("new list: %d... ", l);
-#endif
-    CHECK_GL_ERROR("CreateList", "glGenLists");
-    assert(l != 0);
-
-    glNewList(l, GL_COMPILE);
-    CHECK_GL_ERROR("CreateList", "glNewList");
-#ifdef GLA_DEBUG
-    m_Vertices = 0;
-#endif
-    (obj->*generator)();
-    glEndList();
-#ifdef GLA_DEBUG
-    printf("done (%d vertices)\n", m_Vertices);
-#endif
-    CHECK_GL_ERROR("CreateList", "glEndList");
-
-    return l;
+    // Generate the list lazily to minimise delays on startup.
+    drawing_lists.push_back(make_pair(0, generator));
+    return drawing_lists.size();
 }
 
-void GLACanvas::DeleteList(glaList l)
+void GLACanvas::DrawList(glaList l)
 {
-    // Delete an existing list.
+    assert(l != 0 && l <= drawing_lists.size());
 
-    assert(l != 0);
-    SetCurrent();
-    glDeleteLists(l, 1);
-    CHECK_GL_ERROR("DeleteList", "glDeleteLists");
+    glaList & list = drawing_lists[l - 1].first;
+
+    // Check if we need to generate the OpenGL list.
+    if (!list) {
+	// Create a new OpenGL list to hold this sequence of drawing
+	// operations.
+	list = glGenLists(1);
+#ifdef GLA_DEBUG
+	printf("new list: %d... ", list);
+#endif
+	CHECK_GL_ERROR("CreateList", "glGenLists");
+	assert(list != 0);
+
+	glNewList(list, GL_COMPILE);
+	CHECK_GL_ERROR("CreateList", "glNewList");
+#ifdef GLA_DEBUG
+	m_Vertices = 0;
+#endif
+	((GfxCore*)this->*(drawing_lists[l - 1].second))();
+	glEndList();
+#ifdef GLA_DEBUG
+	printf("done (%d vertices)\n", m_Vertices);
+#endif
+	CHECK_GL_ERROR("CreateList", "glEndList");
+    }
+
+    // Perform the operations specified by the OpenGL display list.
+    glCallList(list);
+    CHECK_GL_ERROR("DrawList", "glCallList");
+}
+
+void GLACanvas::RegenerateList(glaList l)
+{
+    assert(l != 0 && l <= drawing_lists.size());
+
+    glaList & list = drawing_lists[l - 1].first;
+
+    if (list) {
+	// Delete any existing OpenGL list.
+	SetCurrent();
+	glDeleteLists(list, 1);
+	CHECK_GL_ERROR("DeleteList", "glDeleteLists");
+
+	// And flag this list as requiring generation before use.
+	list = 0;
+    }
 }
 
 void GLACanvas::SetBackgroundColour(float red, float green, float blue)
@@ -919,14 +941,6 @@ void GLACanvas::DrawTriangle(gla_colour edge, gla_colour fill, GLAPoint* points)
     PlaceIndicatorVertex(points[1].GetX(), points[1].GetY());
     PlaceIndicatorVertex(points[2].GetX(), points[2].GetY());
     EndPolyline();
-}
-
-void GLACanvas::DrawList(glaList l)
-{
-    // Perform the operations specified by a display list.
-
-    glCallList(l);
-    CHECK_GL_ERROR("DrawList", "glCallList");
 }
 
 void GLACanvas::EnableDashedLines()

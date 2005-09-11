@@ -24,6 +24,10 @@
 // Use texture mapped fonts (lots faster, at least with hardware 3d)
 #define USE_FNT
 
+#include <vector>
+
+using namespace std;
+
 #include "wx.h"
 #include "aventypes.h"
 #include "quaternion.h"
@@ -127,6 +131,8 @@ class GLACanvas : public wxGLCanvas {
     bool m_Fog;
     bool m_AntiAlias;
 
+    vector<pair<glaList, void (GfxCore::*)()> > drawing_lists;
+
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
     ~GLACanvas();
@@ -142,8 +148,8 @@ public:
     void SetIndicatorTransform();
 
     glaList CreateList(GfxCore*, void (GfxCore::*generator)());
-    void DeleteList(glaList l);
     void DrawList(glaList l);
+    void RegenerateList(glaList l);
 
     void SetBackgroundColour(float red, float green, float blue);
     void SetColour(const GLAPen& pen, double rgb_scale);
