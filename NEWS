@@ -1,3 +1,5 @@
+* aven: Added Aven's icon to the "About" dialog.
+
 Changes in 1.0.37:
 
 * cavern: Also ignore any arguments after "*data passage" which makes this

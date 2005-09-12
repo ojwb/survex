@@ -1173,7 +1173,7 @@ void MainFrm::OnClose(wxCloseEvent&)
 
 void MainFrm::OnAbout(wxCommandEvent&)
 {
-    AboutDlg dlg(this);
+    AboutDlg dlg(this, icon_path);
     dlg.Centre();
     dlg.ShowModal();
 }
