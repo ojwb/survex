@@ -4,7 +4,7 @@
 //  Tree control used for the survey tree.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2003, Olly Betts
+//  Copyright (C) 2001-2003,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -83,6 +83,7 @@ void AvenTreeCtrl::OnSelChanged(wxTreeEvent&)
 bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data)
 {
     assert(m_Enabled);
+    assert(data);
 
     if (!m_SelValid) {
 	return false;
@@ -111,9 +112,37 @@ void AvenTreeCtrl::DeleteAllItems()
 
 void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 {
-    if (e.m_keyCode == WXK_ESCAPE) {
-	m_Parent->ClearTreeSelection();
-    } else {
-	e.Skip();
+    switch (e.m_keyCode) {
+	case WXK_ESCAPE:
+	    m_Parent->ClearTreeSelection();
+	    break;
+	case WXK_RETURN: {
+	    wxTreeItemId id = GetSelection();
+	    if (id.IsOk()) {
+		if (ItemHasChildren(id)) {
+		    // If on a branch, expand/contract it.
+		    if (IsExpanded(id)) {
+			Collapse(id);
+		    } else {
+			Expand(id);
+		    }
+		} else {
+		    // FIXME if on a station, show information on that station
+		    // or something?
+		}
+	    }
+	    break;
+	}
+	case WXK_LEFT: case WXK_RIGHT: case WXK_UP: case WXK_DOWN:
+	case WXK_HOME: case WXK_END: case WXK_PAGEUP: case WXK_PAGEDOWN:
+	// PRIOR/NEXT seem to actually be PAGEUP/PAGEDOWN (tested on wxGtk)
+	case WXK_PRIOR: case WXK_NEXT:
+	    e.Skip();
+	    break;
+	default:
+	    // Pass key event to MainFrm which will pass to GfxCore which will
+	    // pass to GUIControl.
+	    m_Parent->OnKeyPress(e);
+	    break;
     }
 }

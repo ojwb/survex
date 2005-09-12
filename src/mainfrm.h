@@ -315,6 +315,13 @@ public:
 
     void OnSetFocus(wxFocusEvent &) { if (m_Gfx) m_Gfx->SetFocus(); }
 
+    void OnKeyPress(wxKeyEvent &e) {
+	if (m_Gfx) {
+	    m_Gfx->SetFocus();
+	    m_Gfx->OnKeyPress(e);
+	}
+    }
+
     void OnPrintUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
     void OnExportUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
 
