@@ -1,5 +1,8 @@
 Still to do to aven 1.1.*:
 
+"New Presentation" should probably ensure sidepanel is open and on presentation
+tab.
+
 Fix depth clipping on grid
 
 Make blobs round (use antialised blobs with an alpha threshold)?  But we
