@@ -148,6 +148,7 @@ public:
 
     void DrawList(unsigned int l);
     void InvalidateList(unsigned int l);
+    void InvalidateAllLists();
     virtual void GenerateList(unsigned int l) = 0;
 
     void SetBackgroundColour(float red, float green, float blue);

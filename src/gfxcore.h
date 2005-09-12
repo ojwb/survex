@@ -101,8 +101,9 @@ class GfxCore : public GLACanvas {
 	LIST_UNDERGROUND_LEGS,
 	LIST_TUBES,
 	LIST_SURFACE_LEGS,
-	LIST_SHADOW,
-	LIST_BLOBS
+	LIST_BLOBS,
+	LIST_GRID,
+	LIST_SHADOW
     } drawing_list;
 
 public:
@@ -211,7 +212,7 @@ private:
     void GenerateDisplayList();
     void GenerateDisplayListTubes();
     void GenerateDisplayListSurface();
-    void GenerateDisplayListPrintShadow();
+    void GenerateDisplayListShadow();
     void GenerateBlobsDisplayList();
 
     void DrawIndicators();

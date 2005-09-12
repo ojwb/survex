@@ -203,6 +203,8 @@ void GfxCore::Initialise()
     // Apply default parameters.
     DefaultParameters();
 
+    InvalidateAllLists();
+
     m_HaveData = true;
 }
 
@@ -272,6 +274,8 @@ void GfxCore::SetScale(Double scale)
     m_HitTestGridValid = false;
 
     GLACanvas::SetScale(scale);
+
+    InvalidateList(LIST_GRID);
 }
 
 bool GfxCore::HasUndergroundLegs() const
@@ -355,10 +359,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	}
 	if (m_Grid) {
 	    // Draw the grid.
-	    // FIXME: draw grid as opengl list?  tracking when to invalidate
-	    // it requires care...
-	    // DrawList(LIST_GRID);
-	    DrawGrid();
+	    DrawList(LIST_GRID);
 	}
 
 	SetIndicatorTransform();
@@ -1127,6 +1128,8 @@ void GfxCore::OnSize(wxSizeEvent& event)
 
 	m_HitTestGridValid = false;
 
+	InvalidateList(LIST_GRID);
+
 	Refresh(false);
     }
 }
@@ -1881,7 +1884,10 @@ void GfxCore::GenerateList(unsigned int l)
 	    GenerateDisplayListSurface();
 	    break;
 	case LIST_SHADOW:
-	    GenerateDisplayListPrintShadow();
+	    GenerateDisplayListShadow();
+	    break;
+	case LIST_GRID:
+	    DrawGrid();
 	    break;
 	case LIST_BLOBS:
 	    GenerateBlobsDisplayList();
@@ -1927,7 +1933,7 @@ void GfxCore::GenerateDisplayListSurface()
     DisableDashedLines();
 }
 
-void GfxCore::GenerateDisplayListPrintShadow()
+void GfxCore::GenerateDisplayListShadow()
 {
     SetColour(col_BLACK);
     list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();

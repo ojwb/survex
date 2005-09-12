@@ -599,6 +599,19 @@ void GLACanvas::InvalidateList(unsigned int l)
     }
 }
 
+void GLACanvas::InvalidateAllLists()
+{
+    SetCurrent();
+    vector<GLuint>::const_iterator i;
+    for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
+	if (*i) {
+	    glDeleteLists(*i, 1);
+	    CHECK_GL_ERROR("DeleteList", "glDeleteLists");
+	}
+    }
+    drawing_lists.resize(0);
+}
+
 void GLACanvas::SetBackgroundColour(float red, float green, float blue)
 {
     // Set the background colour of the canvas.
