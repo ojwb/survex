@@ -38,7 +38,7 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     wxTreeCtrl(window_parent, -1, wxDefaultPosition),
     m_Parent(parent),
     m_Enabled(false),
-    m_LastItem(wxTreeItemId(-1)),
+    m_LastItem(),
     m_BackgroundColour(GetBackgroundColour()),
     m_SelValid(false)
 {
@@ -52,7 +52,7 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 	int flags;
 	wxTreeItemId pos = HitTest(event.GetPosition(), flags);
 	if (pos != m_LastItem) {
-	    if (m_LastItem != wxTreeItemId(-1)) {
+	    if (m_LastItem.IsOk()) {
 		SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
 	    }
 	    if (flags & TREE_MASK) {
@@ -105,7 +105,7 @@ void AvenTreeCtrl::UnselectAll()
 
 void AvenTreeCtrl::DeleteAllItems()
 {
-    m_LastItem = -1;
+    m_LastItem = wxTreeItemId();
     m_SelValid = false;
     wxTreeCtrl::DeleteAllItems();
 }
