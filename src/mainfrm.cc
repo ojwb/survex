@@ -1592,13 +1592,10 @@ void MainFrm::OnPrint(wxCommandEvent&)
 
 void MainFrm::OnPageSetup(wxCommandEvent&)
 {
-    m_pageSetupData.SetPrintData(m_printData);
-
-    wxPageSetupDialog pageSetupDialog(this, &m_pageSetupData);
-    pageSetupDialog.ShowModal();
-
-    m_printData = pageSetupDialog.GetPageSetupData().GetPrintData();
-    m_pageSetupData = pageSetupDialog.GetPageSetupData();
+    wxPageSetupDialog dlg(this, wxGetApp().GetPageSetupDialogData());
+    if (dlg.ShowModal() == wxID_OK) {
+	wxGetApp().SetPageSetupDialogData(dlg.GetPageSetupData());
+    }
 }
 
 void MainFrm::OnExport(wxCommandEvent&)

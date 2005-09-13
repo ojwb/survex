@@ -240,9 +240,6 @@ class MainFrm : public wxFrame {
 	Double x, y, z;
     } m_Offsets;
 
-    wxPageSetupDialogData m_pageSetupData;
-    wxPrintData m_printData;
-
     wxString icon_path;
 
     void SetTreeItemColour(LabelInfo* label);
@@ -514,7 +511,6 @@ public:
     void ShowInfo(const LabelInfo *label);
     void DisplayTreeInfo(const wxTreeItemData* data);
     void TreeItemSelected(wxTreeItemData* data);
-    wxPageSetupDialogData * GetPageSetupData() { return &m_pageSetupData; }
     PresentationMark GetPresMark(int which);
 
 private:

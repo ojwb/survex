@@ -48,6 +48,7 @@ using namespace std;
 #include "prio.h"
 #include "useful.h"
 
+#include "aven.h"
 #include "avenprcore.h"
 #include "mainfrm.h"
 #include "printwx.h"
@@ -140,7 +141,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf)
 	: wxDialog(mainfrm_, -1, wxString(msg(/*Print*/399))),
-	  m_layout(mainfrm_->GetPageSetupData()),
+	  m_layout(wxGetApp().GetPageSetupDialogData()),
 	  m_File(filename), mainfrm(mainfrm_)
 {
     m_layout.Labels = labels;
@@ -271,9 +272,10 @@ svxPrintDlg::~svxPrintDlg() {
 void
 svxPrintDlg::OnPrint(wxCommandEvent&) {
     SomethingChanged();
-    wxPrintDialogData pd(mainfrm->GetPageSetupData()->GetPrintData());
+    wxPageSetupDialogData * psdd = wxGetApp().GetPageSetupDialogData();
+    wxPrintDialogData pd(psdd->GetPrintData());
     wxPrinter pr(&pd);
-    svxPrintout po(mainfrm, &m_layout, mainfrm->GetPageSetupData(), m_File);
+    svxPrintout po(mainfrm, &m_layout, psdd, m_File);
     if (pr.Print(this, &po, true)) {
 	// Close the print dialog if printing succeeded.
 	Destroy();
@@ -283,12 +285,11 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
 void
 svxPrintDlg::OnPreview(wxCommandEvent&) {
     SomethingChanged();
-    wxPrintDialogData pd(mainfrm->GetPageSetupData()->GetPrintData());
+    wxPageSetupDialogData * psdd = wxGetApp().GetPageSetupDialogData();
+    wxPrintDialogData pd(psdd->GetPrintData());
     wxPrintPreview* pv;
-    pv = new wxPrintPreview(new svxPrintout(mainfrm, &m_layout,
-					    mainfrm->GetPageSetupData(), m_File),
-			    new svxPrintout(mainfrm, &m_layout,
-					    mainfrm->GetPageSetupData(), m_File),
+    pv = new wxPrintPreview(new svxPrintout(mainfrm, &m_layout, psdd, m_File),
+			    new svxPrintout(mainfrm, &m_layout, psdd, m_File),
 			    &pd);
     wxPreviewFrame *frame = new wxPreviewFrame(pv, mainfrm, msg(/*Print Preview*/398));
     frame->Initialize();
