@@ -32,7 +32,6 @@
 #include "message.h"
 
 #include <assert.h>
-#include <locale.h>
 #include <signal.h>
 
 #include <wx/image.h>
@@ -86,10 +85,6 @@ bool Aven::OnInit()
 	// The existence of the wxLocale object is enough - no need to keep a
 	// pointer to it!
     }
-    // Set LC_NUMERIC back to the default - otherwise we break img.c
-    // FIXME: eventually stop doing this so that floating point values are
-    // displayed correctly for the locale...
-    setlocale(LC_NUMERIC, "C");
 
     wxString survey;
     bool print_and_exit = false;
