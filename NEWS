@@ -11,8 +11,6 @@ Changes in 1.1.4:
 
 * aven: Make pressing "Return" in the tree control expand/collapse a subtree.
 
-* aven: Added the Aven icon to the "About" dialog.
-
 * aven: Speed up intialisation by delaying creation of OpenGL lists until
   they're needed.
 

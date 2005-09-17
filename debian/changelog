@@ -1,3 +1,25 @@
+survex (1.1.4) unstable; urgency=low
+
+  * aven: Added Aven's icon to the "About" dialog.
+  * aven: Use localised character for the decimal point (e.g. "," in most
+    continental European countries).
+  * aven: Previously the survey tree would get focus and then take keypresses
+    (e.g. "P", "L", "Delete").  Now we pass most keypresses across so they
+    operate on the cave, and transfer the input focus across when we do.
+  * aven: Make pressing "Return" in the tree control expand/collapse a
+    subtree.
+  * aven: Speed up intialisation by delaying creation of OpenGL lists until
+    they're needed.
+  * aven: Added Mark Shinwell's bounding box with shadow of the survey.
+  * aven: Disable the "Tubes" button/menu item when there's no LRUD data.
+  * aven: Reworded "Restore Default Settings" as "Restore Default View".
+  * aven: Set sensible default margins for printing and preserve any margin
+    values the user specifies between runs (previously margins defaulted to 0
+    each time aven was run).
+  * Documentation: Document *DATA PASSAGE in the manual.
+
+ -- Wookey <wookey@survex.com>  Sat, 17 Sep 2005 21:34:57 +0100
+
 survex (1.1.3) unstable; urgency=low
 
   * cavern: Allow OMIT character (-) for left/right/up/down.
