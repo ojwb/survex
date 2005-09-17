@@ -3270,8 +3270,9 @@ it:316 @Visualizza
 #
 en:317 @Export as Movie...
 it:317 @Esporta come Animazione...
-#
+# TRANSLATE it
 en:318 @Bounding Box##Ctrl+B
+it:318 Bo@unding Box##Ctrl+B
 #
 en:319 Select an output filename
 fr:319 S&eacute;lection d'un nom de fichier de sortie
