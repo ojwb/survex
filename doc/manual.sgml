@@ -107,8 +107,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2004-03-30 02:03:51 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.8 2004-03-30 02:03:51 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2005-09-17 20:16:23 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.9 2005-09-17 20:16:23 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -1317,7 +1317,7 @@ stored in a way that can be automatically collated.
 <VarListEntry><Term>Description</Term>
 
 <listitem><Para>
-&lt;style&gt; = DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR|NOSURVEY
+&lt;style&gt; = DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR|NOSURVEY|PASSAGE
 </Para>
 
 <Para>
@@ -1497,11 +1497,33 @@ there is line of sight between the pairs of stations.
 </Para></listitem>
 </VarListEntry>
 
-<!-- FIXME: LRUD not yet implemented
+<VarListEntry><Term>PASSAGE</Term>
+<listitem><Para>
+This survey style defines a 3D "tube" modelling a passage in the cave.
+The tube uses the survey stations listed in the order listed.  It's
+permitted to use survey stations which aren't directly linked by
+the centre-line survey.  This can be useful - sometimes the centreline
+will step sideways or up/down to allow a better sight for the next
+leg and you can ignore the extra station.  You can also define tubes
+along unsurveyed passages, akin to "nosurvey" legs in the centreline
+data.</Para>
+
+<Para>This means that you need to split off side passages into seperate
+tubes, and hence separate sections of passage data, starting with
+a new *data command.</Para>
+
 <Para>
-(LRUD STATION [LEFT] [RIGHT] [UP] [DOWN])
+Simple example of how to use this data style (note the use of ignoreall
+to allow a free-form text description to be given):
+
+<programlisting>
+*data passage station left right up down ignoreall
+1  0.1 2.3 8.0 1.4  Sticking out point on left wall
+2  0.0 1.9 9.0 0.5  Point on left wall
+3  1.0 0.7 9.0 0.8  Highest point of boulder
+</programlisting>
 </Para>
--->
+</VarListEntry>
 </VariableList>
 
 <Para>
