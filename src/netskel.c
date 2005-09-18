@@ -85,7 +85,12 @@ solve_network(void /*node *stnlist*/)
    static int first_solve = 1;
    node *stn;
 
-   if (stnlist == NULL) fatalerror(/*No survey data*/43);
+   if (stnlist == NULL) {
+      if (first_solve) fatalerror(/*No survey data*/43);
+      /* We've had a *solve followed by another *solve (or the implicit
+       * *solve at the end of the data.  Don't moan about that. */
+      return;
+   }
    ptr = NULL;
    ptrTrail = NULL;
    dump_network();

@@ -1,0 +1,11 @@
+; Regression test
+*fix A.1 0 0 0
+*begin A
+1	2	1.23 123 12
+*end A
+*solve
+*solve
+*begin B
+1	2	2.34 234 23
+*end B
+*equate A.1 B.1

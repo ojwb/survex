@@ -6,6 +6,10 @@
 * cavern: Fix handling of a *solve followed by survey data, none of which is
   attached to the previous data.
 
+* cavern: Fixed "No survey data" error when a *solve is followed by another
+  *solve (or the implicit solve at the end of processing) with no data between
+  them.
+
 Changes in 1.1.4:
 
 * aven: Added Aven's icon to the "About" dialog.

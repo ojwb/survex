@@ -53,7 +53,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
  notentranceorexport inferunknown inferexports bad_units_factor\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
- nosurveyhanging\
+ nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner surfequate"}}
 
 for file in $TESTS ; do
@@ -186,6 +186,7 @@ for file in $TESTS ; do
   surfequate) pos=dxf; warn=0 ;;
   nosurveyhanging) pos=fail ;;
   cmd_solve_hanging) pos=fail ;;
+  cmd_solve_nothing*) pos=no; warn=0 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac
