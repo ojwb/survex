@@ -129,6 +129,7 @@ class GLACanvas : public wxGLCanvas {
     bool m_Perspective;
     bool m_Fog;
     bool m_AntiAlias;
+    bool glpoint_ok;
 
     vector<GLuint> drawing_lists;
 
@@ -223,4 +224,6 @@ public:
     bool GetAntiAlias() const { return m_AntiAlias; }
 
     bool SaveScreenshot(const wxString & fnm, int type) const;
+
+    bool CanUseListForBlobs() const { return glpoint_ok; }
 };

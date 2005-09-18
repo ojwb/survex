@@ -5,10 +5,8 @@ tab.
 
 Fix depth clipping on grid
 
-Make blobs round (use antialised blobs with an alpha threshold)?  But we
-need to work out how to get them centred...
-
-Try to speed up crosses (use texture mapping?)
+Try to speed up crosses (use texture mapping?)  Some cards support
+GL_POINT_SPRITE_ARB to texture map points!
 
 Easy way to "print extended elevation"
 

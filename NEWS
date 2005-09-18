@@ -1,3 +1,8 @@
+* aven: Make blobs round like they are in Survex 1.0.
+
+* aven: If the graphics drivers don't support drawing blobs using OpenGL
+  point markers, fall back to drawing filled circles.
+
 Changes in 1.1.4:
 
 * aven: Added Aven's icon to the "About" dialog.

@@ -352,7 +352,12 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    DrawList(LIST_SURFACE_LEGS);
 	}
 
-	DrawList(LIST_BLOBS);
+	// FIXME: try to encapsulate this artifact of how we draw blobs...
+	if (CanUseListForBlobs()) {
+	    DrawList(LIST_BLOBS);
+	} else {
+	    GenerateBlobsDisplayList();
+	}
 
 	if (m_BoundingBox) {
 	    DrawShadowedBoundingBox();
@@ -400,7 +405,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 		    printf("bad transform on: %s\n", label->GetText().c_str());
 		    continue;
 		}
-		// Stuff in behind us (in perspective view) will get clipped,
+		// Stuff behind us (in perspective view) will get clipped,
 		// but we can save effort with a cheap check here.
 		if (z > 0) {
 		    // Round to integers before adding on the offsets for the

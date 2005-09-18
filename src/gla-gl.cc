@@ -49,6 +49,8 @@
 
 using namespace std;
 
+const double BLOB_DIAMETER = 5.0;
+
 wxString GetGLSystemDescription()
 {
     const char *p = (const char*)glGetString(GL_VERSION);
@@ -230,10 +232,6 @@ void GLACanvas::FirstShow()
     CHECK_GL_ERROR("FirstShow", "glShadeModel");
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     CHECK_GL_ERROR("FirstShow", "glPolygonMode");
-    //glEnable(GL_POINT_SMOOTH);
-    //CHECK_GL_ERROR("FirstShow", "glEnable GL_POINT_SMOOTH");
-    glPointSize(4);
-    CHECK_GL_ERROR("FirstShow", "glPointSize");
     //glAlphaFunc(GL_GREATER, 0.5f);
     //CHECK_GL_ERROR("FirstShow", "glAlphaFunc");
 
@@ -261,6 +259,17 @@ void GLACanvas::FirstShow()
     path += "aven.txf";
     m_Font.load(path.c_str());
 #endif
+
+    // Check if we can use GL_POINTS to plot blobs at stations.
+    GLdouble point_size_range[2];
+    glGetDoublev(GL_POINT_SIZE_RANGE, point_size_range);
+    CHECK_GL_ERROR("FirstShow", "glGetDoublev GL_POINT_SIZE_RANGE");
+    glpoint_ok = (point_size_range[0] <= BLOB_DIAMETER &&
+		  point_size_range[1] >= BLOB_DIAMETER);
+    if (glpoint_ok) {
+	glPointSize(BLOB_DIAMETER);
+	CHECK_GL_ERROR("FirstShow", "glPointSize");
+    }
 }
 
 void GLACanvas::Clear()
@@ -551,6 +560,8 @@ void GLACanvas::FinishDrawing()
 
 void GLACanvas::DrawList(unsigned int l)
 {
+    // FIXME: uncomment to disable use of lists for debugging:
+    // GenerateList(l); return;
     if (l >= drawing_lists.size()) drawing_lists.resize(l + 1);
 
     // We generate the OpenGL lists lazily to minimise delays on startup.
@@ -802,25 +813,60 @@ void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
 
 void GLACanvas::BeginBlobs()
 {
-    // Commence drawing of a set of blobs.
-    //glEnable(GL_ALPHA_TEST);
-    //CHECK_GL_ERROR("BeginBlobs", "glEnable GL_ALPHA_TEST");
-    glBegin(GL_POINTS);
+    if (glpoint_ok) {
+	// Commence drawing of a set of blobs.
+	glEnable(GL_ALPHA_TEST);
+	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_ALPHA_TEST");
+	glEnable(GL_POINT_SMOOTH);
+	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_POINT_SMOOTH");
+	glBegin(GL_POINTS);
+    } else {
+	glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT);
+	CHECK_GL_ERROR("BeginBlobs", "glPushAttrib");
+	SetIndicatorTransform();
+    }
 }
 
 void GLACanvas::EndBlobs()
 {
-    // Finish drawing of a set of blobs.
-    glEnd();
-    CHECK_GL_ERROR("EndBlobs", "GL_POINTS");
-    //glDisable(GL_ALPHA_TEST);
-    //CHECK_GL_ERROR("EndBlobs", "glDisable GL_ALPHA_TEST");
+    if (glpoint_ok) {
+	// Finish drawing of a set of blobs.
+	glEnd();
+	CHECK_GL_ERROR("EndBlobs", "GL_POINTS");
+	glDisable(GL_POINT_SMOOTH);
+	CHECK_GL_ERROR("EndBlobs", "glDisable GL_POINT_SMOOTH");
+	glDisable(GL_ALPHA_TEST);
+	CHECK_GL_ERROR("EndBlobs", "glDisable GL_ALPHA_TEST");
+    } else {
+	glPopAttrib();
+	CHECK_GL_ERROR("EndBlobs", "glPopAttrib");
+    }
 }
 
 void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 {
-    // Draw a marker (ideally a circle, but a square for now).
-    PlaceVertex(x, y, z);
+    if (glpoint_ok) {
+	// Draw a marker.
+	PlaceVertex(x, y, z);
+    } else {
+	Double X, Y, Z;
+	if (!Transform(x, y, z, &X, &Y, &Z)) {
+	    printf("bad transform\n");
+	    return;
+	}
+	// Stuff behind us (in perspective view) will get clipped,
+	// but we can save effort with a cheap check here.
+	if (Z <= 0) return;
+
+	// Draw an filled circle.
+	assert(m_Quadric);
+	glTranslated(X, Y, Z);
+	CHECK_GL_ERROR("glTranslated 1", "DrawBlob");
+	gluDisk(m_Quadric, 0, BLOB_DIAMETER * 0.5, 8, 1);
+	CHECK_GL_ERROR("gluDisk", "DrawBlob");
+	glTranslated(-X, -Y, -Z);
+	CHECK_GL_ERROR("glTranslated 2", "DrawBlob");
+    }
 }
 
 void GLACanvas::DrawRing(glaCoord x, glaCoord y)
