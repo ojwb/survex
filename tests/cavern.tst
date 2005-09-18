@@ -185,6 +185,7 @@ for file in $TESTS ; do
   3dcorner) pos=yes; warn=0 ;;
   surfequate) pos=dxf; warn=0 ;;
   nosurveyhanging) pos=fail ;;
+  cmd_solve_hanging) pos=fail ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac
@@ -242,7 +243,11 @@ for file in $TESTS ; do
     no)
       test -f tmp.3d || exit 1 ;;
     fail)
-      test -f tmp.3d && exit 1 ;;
+      test -f tmp.3d && exit 1
+      # Check that last line doesn't contains "Bug in program detected"
+      case `tail -n 1 tmp.out` in
+      *"Bug in program detected"*) exit 1 ;;
+      esac ;;
     *)
       echo "Bad value for pos: '$pos'" ; exit 1 ;;
     esac

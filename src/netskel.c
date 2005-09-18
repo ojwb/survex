@@ -97,17 +97,13 @@ solve_network(void /*node *stnlist*/)
    FOR_EACH_STN(stn, stnlist)
       if (fixed(stn)) break;
 
-   if (!stn) {
+   if (!stn && first_solve) {
+     /* If we've had a *solve and all the new survey since then is hanging,
+      * we don't want to invent a fixed point.  We want to complain but
+      * the easiest way to is just to continue processing and let
+      * articulate() catch this condition as it will any hanging survey
+      * data. */
       node *stnFirst = NULL;
-
-      if (!first_solve) {
-	 /* We've had a *solve and all the new survey since then is hanging,
-	  * so don't invent a fixed point but complain instead */
-	 /* Let replace_trailing_travs() do the work for us... */
-	 remove_trailing_travs();
-	 replace_trailing_travs();
-	 return;
-      }
 
       /* New stations are pushed onto the head of the list, so the
        * first station added is the last in the list. */

@@ -76,6 +76,6 @@ bad_units_factor.svx percent_gradient.svx percent_gradient.pos dotinsurvey.svx\
 gettokennullderef.svx lech.svx level.svx level.pos\
 declination.dat declination.pos ignore.dat ignore.pos backread.dat backread.pos\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos surfequate.svx surfequate.dxf\
-nosurveyhanging.svx\
+nosurveyhanging.svx cmd_solve_hanging.svx\
 eswap.svx eswap.espec eswapx.3d\
 eswap-break.svx eswap-break.espec eswap-breakx.3d

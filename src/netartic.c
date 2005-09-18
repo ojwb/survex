@@ -1,6 +1,6 @@
 /* netartic.c
  * Split up network at articulation points
- * Copyright (C) 1993-2003 Olly Betts
+ * Copyright (C) 1993-2003,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,11 +230,12 @@ articulate(void)
    dirn_stack = osmalloc(cMaxVisits);
    min_stack = osmalloc(cMaxVisits * sizeof(long));
 
-   stnStart = fixedlist;
-   SVX_ASSERT2(stnStart,"no fixed points!");
+   /* fixedlist can be NULL here if we've had a *solve followed by survey
+    * which is all hanging. */
    cFixed = colour;
-   while (1) {
+   while (fixedlist) {
       int c;
+      stnStart = fixedlist;
       stn = stnStart;
 
       /* see if this is a fresh component - it may not be, we may be
@@ -342,9 +343,6 @@ articulate(void)
 #endif
 	 break;
       }
-
-      stnStart = fixedlist;
-      if (!stnStart) break;
    }
 
    osfree(dirn_stack);

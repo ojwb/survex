@@ -3,6 +3,9 @@
 * aven: If the graphics drivers don't support drawing blobs using OpenGL
   point markers, fall back to drawing filled circles.
 
+* cavern: Fix handling of a *solve followed by survey data, none of which is
+  attached to the previous data.
+
 Changes in 1.1.4:
 
 * aven: Added Aven's icon to the "About" dialog.
