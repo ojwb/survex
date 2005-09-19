@@ -91,6 +91,22 @@ public:
     double GetBlue() const;
 };
 
+const unsigned int INVALIDATE_ON_SCALE = 1;
+const unsigned int NEVER_CACHE = 2;
+
+class GLAList {
+    GLuint gl_list;
+    unsigned int flags;
+  public:
+    GLAList() : gl_list(0), flags(0) { }
+    GLAList(GLuint gl_list_, unsigned int flags_)
+	: gl_list(gl_list_), flags(flags_) { }
+    bool test_flag(unsigned int mask) const { return flags & mask; }
+    operator bool() { return gl_list != 0; }
+    void DrawList() const;
+    void InvalidateList();
+};
+
 class GLACanvas : public wxGLCanvas {
 #ifdef GLA_DEBUG
     int m_Vertices;
@@ -131,7 +147,8 @@ class GLACanvas : public wxGLCanvas {
     bool m_AntiAlias;
     bool glpoint_ok;
 
-    vector<GLuint> drawing_lists;
+    vector<GLAList> drawing_lists;
+    mutable unsigned int list_flags;
 
 public:
     GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
@@ -149,7 +166,6 @@ public:
 
     void DrawList(unsigned int l);
     void InvalidateList(unsigned int l);
-    void InvalidateAllLists();
     virtual void GenerateList(unsigned int l) = 0;
 
     void SetBackgroundColour(float red, float green, float blue);
@@ -224,6 +240,4 @@ public:
     bool GetAntiAlias() const { return m_AntiAlias; }
 
     bool SaveScreenshot(const wxString & fnm, int type) const;
-
-    bool CanUseListForBlobs() const { return glpoint_ok; }
 };

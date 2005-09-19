@@ -203,8 +203,6 @@ void GfxCore::Initialise()
     // Apply default parameters.
     DefaultParameters();
 
-    InvalidateAllLists();
-
     m_HaveData = true;
 }
 
@@ -274,8 +272,6 @@ void GfxCore::SetScale(Double scale)
     m_HitTestGridValid = false;
 
     GLACanvas::SetScale(scale);
-
-    InvalidateList(LIST_GRID);
 }
 
 bool GfxCore::HasUndergroundLegs() const
@@ -352,12 +348,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    DrawList(LIST_SURFACE_LEGS);
 	}
 
-	// FIXME: try to encapsulate this artifact of how we draw blobs...
-	if (CanUseListForBlobs()) {
-	    DrawList(LIST_BLOBS);
-	} else {
-	    GenerateBlobsDisplayList();
-	}
+	DrawList(LIST_BLOBS);
 
 	if (m_BoundingBox) {
 	    DrawShadowedBoundingBox();
@@ -1132,8 +1123,6 @@ void GfxCore::OnSize(wxSizeEvent& event)
 	}
 
 	m_HitTestGridValid = false;
-
-	InvalidateList(LIST_GRID);
 
 	Refresh(false);
     }

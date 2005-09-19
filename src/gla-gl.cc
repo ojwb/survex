@@ -179,6 +179,19 @@ const ColourTriple COLOURS[] = {
     { 40, 40, 255 },   // blue
 };
 
+void GLAList::DrawList() const {
+    glCallList(gl_list);
+    CHECK_GL_ERROR("GLAList::DrawList", "glCallList");
+}
+
+void GLAList::InvalidateList() {
+    glDeleteLists(gl_list, 1);
+    CHECK_GL_ERROR("GLAList::InvalidateList", "glDeleteLists");
+
+    // And flag this list as requiring generation before use.
+    gl_list = 0;
+}
+
 //
 //  GLACanvas
 //
@@ -203,6 +216,7 @@ GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size)
     m_Perspective = false;
     m_Fog = false;
     m_AntiAlias = false;
+    list_flags = 0;
 }
 
 GLACanvas::~GLACanvas()
@@ -217,11 +231,19 @@ GLACanvas::~GLACanvas()
 
 void GLACanvas::FirstShow()
 {
+    SetCurrent();
+
+    // Clear any cached OpenGL lists.
+    vector<GLAList>::iterator i;
+    for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
+	if (*i) i->InvalidateList();
+    }
+    drawing_lists.resize(0);
+
     static bool once_only = true;
     if (!once_only) return;
     once_only = false;
 
-    SetCurrent();
     m_Quadric = gluNewQuadric();
     CHECK_GL_ERROR("FirstShow", "gluNewQuadric");
     if (!m_Quadric) {
@@ -287,7 +309,14 @@ void GLACanvas::SetRotation(const Quaternion& q)
 
 void GLACanvas::SetScale(Double scale)
 {
-    m_Scale = scale;
+    if (scale != m_Scale) {
+	vector<GLAList>::iterator i;
+	for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
+	    if (*i && i->test_flag(INVALIDATE_ON_SCALE)) i->InvalidateList();
+	}
+
+	m_Scale = scale;
+    }
 }
 
 void GLACanvas::SetTranslation(Double x, Double y, Double z)
@@ -512,6 +541,8 @@ void GLACanvas::SetDataTransform()
 
 void GLACanvas::SetIndicatorTransform()
 {
+    list_flags |= NEVER_CACHE;
+
     // Set the modelview transform and projection for drawing indicators.
     wxSize size = GetSize();
     int window_width = max(size.GetWidth(), 1);
@@ -566,7 +597,7 @@ void GLACanvas::DrawList(unsigned int l)
 
     // We generate the OpenGL lists lazily to minimise delays on startup.
     // So check if we need to generate the OpenGL list now.
-    if (!drawing_lists[l]) {
+    if (!drawing_lists[l] && !drawing_lists[l].test_flag(NEVER_CACHE)) {
 	// Create a new OpenGL list to hold this sequence of drawing
 	// operations.
 	GLuint list = glGenLists(1);
@@ -583,44 +614,33 @@ void GLACanvas::DrawList(unsigned int l)
 	// list using GL_COMPILE mode, then execute it with glCallList()."
 	glNewList(list, GL_COMPILE);
 	CHECK_GL_ERROR("CreateList", "glNewList");
+	// Clear list_flags so that we can note what conditions to invalidate
+	// the cached OpenGL list on.
+	list_flags = 0;
 	GenerateList(l);
 	glEndList();
 #ifdef GLA_DEBUG
 	printf("done (%d vertices)\n", m_Vertices);
 #endif
 	CHECK_GL_ERROR("CreateList", "glEndList");
-	drawing_lists[l] = list;
+	drawing_lists[l] = GLAList(list, list_flags);
     }
 
-    // Perform the operations specified by the OpenGL display list.
-    glCallList(drawing_lists[l]);
-    CHECK_GL_ERROR("DrawList", "glCallList");
+    if (drawing_lists[l].test_flag(NEVER_CACHE)) {
+	// That list can't be cached.
+	GenerateList(l);
+    } else {
+	// Perform the operations specified by the OpenGL display list.
+	drawing_lists[l].DrawList();
+    }
 }
 
 void GLACanvas::InvalidateList(unsigned int l)
 {
     if (l < drawing_lists.size() && drawing_lists[l]) {
 	// Delete any existing OpenGL list.
-	SetCurrent();
-	glDeleteLists(drawing_lists[l], 1);
-	CHECK_GL_ERROR("DeleteList", "glDeleteLists");
-
-	// And flag this list as requiring generation before use.
-	drawing_lists[l] = 0;
+	drawing_lists[l].InvalidateList();
     }
-}
-
-void GLACanvas::InvalidateAllLists()
-{
-    SetCurrent();
-    vector<GLuint>::const_iterator i;
-    for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
-	if (*i) {
-	    glDeleteLists(*i, 1);
-	    CHECK_GL_ERROR("DeleteList", "glDeleteLists");
-	}
-    }
-    drawing_lists.resize(0);
 }
 
 void GLACanvas::SetBackgroundColour(float red, float green, float blue)
@@ -1036,6 +1056,7 @@ Double GLACanvas::SurveyUnitsAcrossViewport() const
     // current display scale.
 
     assert(m_Scale != 0.0);
+    list_flags |= INVALIDATE_ON_SCALE;
     return m_VolumeDiameter / m_Scale;
 }
 
