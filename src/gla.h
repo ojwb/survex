@@ -228,7 +228,11 @@ public:
     bool Transform(Double x, Double y, Double z, Double* x_out, Double* y_out, Double* z_out);
     void ReverseTransform(Double x, Double y, Double* x_out, Double* y_out, Double* z_out);
 
+#ifdef USE_FNT
     int GetFontSize() const { return m_Font.getFontSize(); }
+#else
+    int GetFontSize() const { return m_FontSize; }
+#endif
 
     Double SurveyUnitsAcrossViewport() const;
 
