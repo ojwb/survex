@@ -8,6 +8,9 @@
  
 * aven: Cross size increased to match Survex 1.0.
 
+* aven: We must update which blobs are displayed if display of surface or
+  underground legs is toggled.
+
 * cavern: Fix handling of a *solve followed by survey data, none of which is
   attached to the previous data.
 
