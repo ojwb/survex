@@ -4,6 +4,8 @@ Fix measuring line issues on MS Windows.
 
 Fix focus issues on MS Windows.
 
+Merge Martin's patch for improved here/there update.
+
 "New Presentation" should probably ensure sidepanel is open and on presentation
 tab.
 
@@ -26,10 +28,6 @@ Check timing code - we need to glFinish to ensure it's all drawn, and that
 may be needed to get meaningful timing info.
 
 sort out date colouring cleanly.  also error colouring, etc.
-
-texture mapped fonts: seems to be a minor alignment bug which gives spacing
-inconsistencies - investigate.  Or is this fixed now we round label coordinates
-before plotting?
 
 Unix full screen mode needs to allow dialogs to appear over the window
 (e.g. try Ctrl+O while in full screen mode).  I've added a tweak to drop out
