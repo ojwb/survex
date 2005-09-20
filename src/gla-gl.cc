@@ -922,10 +922,10 @@ void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
 	// cross arms to avoid uneven crosses.
 	X = rint(X);
 	Y = rint(Y);
-	glVertex3d(X - 2, Y - 2, Z);
-	glVertex3d(X + 2, Y + 2, Z);
-	glVertex3d(X - 2, Y + 2, Z);
-	glVertex3d(X + 2, Y - 2, Z);
+	glVertex3d(X - 3, Y - 3, Z);
+	glVertex3d(X + 3, Y + 3, Z);
+	glVertex3d(X - 3, Y + 3, Z);
+	glVertex3d(X + 3, Y - 3, Z);
     }
 }
 
