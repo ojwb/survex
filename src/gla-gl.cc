@@ -292,6 +292,37 @@ void GLACanvas::FirstShow()
 	glPointSize(BLOB_DIAMETER);
 	CHECK_GL_ERROR("FirstShow", "glPointSize");
     }
+
+    // See if we have GL_POINT_SPRITE_ARB - if so use it to draw crosses
+    // by texture mapping GL points.
+    const char * gl_extensions = (const char *)glGetString(GL_EXTENSIONS);
+    glpoint_sprite = strstr(gl_extensions, "GL_ARB_point_sprite");
+    if (glpoint_sprite) {
+	float maxSize = 0.0f;
+	glGetFloatv(GL_POINT_SIZE_MAX_ARB, &maxSize);
+	if (maxSize < 8) glpoint_sprite = false;
+    }
+    if (glpoint_sprite) {
+	glGenTextures(1, &m_CrossTexture);
+	glBindTexture(GL_TEXTURE_2D, m_CrossTexture);
+	const unsigned char crossteximage[128] = {
+	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,
+	      0,  0,255,255,  0,  0,  0,  0,  0,  0,  0,  0,255,255,  0,  0,
+	      0,  0,  0,  0,255,255,  0,  0,  0,  0,255,255,  0,  0,  0,  0,
+	      0,  0,  0,  0,  0,  0,255,255,255,255,  0,  0,  0,  0,  0,  0,
+	      0,  0,  0,  0,  0,  0,255,255,255,255,  0,  0,  0,  0,  0,  0,
+	      0,  0,  0,  0,255,255,  0,  0,  0,  0,255,255,  0,  0,  0,  0,
+	      0,  0,255,255,  0,  0,  0,  0,  0,  0,  0,  0,255,255,  0,  0,
+	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255
+	};
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, 8, 8, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, (GLvoid *)crossteximage);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    }
 }
 
 void GLACanvas::Clear()
@@ -886,46 +917,65 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 	CHECK_GL_ERROR("gluDisk", "DrawBlob");
 	glTranslated(-X, -Y, -Z);
 	CHECK_GL_ERROR("glTranslated 2", "DrawBlob");
+#ifdef GLA_DEBUG
+	m_Vertices++;
+#endif
     }
 }
 
 void GLACanvas::BeginCrosses()
 {
-    // Plot crosses.  To get the crosses to appear at a constant
-    // size and orientation on screen, we plot them in the Indicator
-    // transform coordinates (which unfortunately means they can't
-    // be usefully put in an opengl display list).
-    glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT);
-    CHECK_GL_ERROR("BeginCrosses", "glPushAttrib");
-    SetIndicatorTransform();
-    BeginLines();
+    // Plot crosses.
+    if (glpoint_sprite) {
+	glPushAttrib(GL_ENABLE_BIT|GL_POINT_BIT);
+	glBindTexture(GL_TEXTURE_2D, m_CrossTexture);
+	glEnable(GL_ALPHA_TEST);
+	glPointSize(8);
+	glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_POINT_SPRITE_ARB);
+	glBegin(GL_POINTS);
+    } else {
+	// To get the crosses to appear at a constant size and orientation on
+	// screen, we plot them in the Indicator transform coordinates (which
+	// unfortunately means they can't be usefully put in an opengl display
+	// list).
+	glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT);
+	CHECK_GL_ERROR("BeginCrosses", "glPushAttrib");
+	SetIndicatorTransform();
+	glBegin(GL_LINES);
+    }
 }
 
 void GLACanvas::EndCrosses()
 {
-    EndLines();
+    glEnd();
     glPopAttrib();
     CHECK_GL_ERROR("EndCrosses", "glPopAttrib");
 }
 
 void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
 {
-    Double X, Y, Z;
-    if (!Transform(x, y, z, &X, &Y, &Z)) {
-	printf("bad transform\n");
-	return;
-    }
-    // Stuff behind us (in perspective view) will get clipped,
-    // but we can save effort with a cheap check here.
-    if (Z > 0) {
-	// Round to integers before adding on the offsets for the
-	// cross arms to avoid uneven crosses.
-	X = rint(X);
-	Y = rint(Y);
-	glVertex3d(X - 3, Y - 3, Z);
-	glVertex3d(X + 3, Y + 3, Z);
-	glVertex3d(X - 3, Y + 3, Z);
-	glVertex3d(X + 3, Y - 3, Z);
+    if (glpoint_sprite) {
+	PlaceVertex(x, y, z);
+    } else {
+	Double X, Y, Z;
+	if (!Transform(x, y, z, &X, &Y, &Z)) {
+	    printf("bad transform\n");
+	    return;
+	}
+	// Stuff behind us (in perspective view) will get clipped,
+	// but we can save effort with a cheap check here.
+	if (Z > 0) {
+	    // Round to integers before adding on the offsets for the
+	    // cross arms to avoid uneven crosses.
+	    X = rint(X);
+	    Y = rint(Y);
+	    PlaceVertex(X - 3, Y - 3, Z);
+	    PlaceVertex(X + 3, Y + 3, Z);
+	    PlaceVertex(X - 3, Y + 3, Z);
+	    PlaceVertex(X + 3, Y - 3, Z);
+	}
     }
 }
 

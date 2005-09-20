@@ -3,6 +3,11 @@
 * aven: If the graphics drivers don't support drawing blobs using OpenGL
   point markers, fall back to drawing filled circles.
 
+* aven: If the graphics drivers support it, draw crosses as texture mapped
+  OpenGL point markers which is much faster.
+ 
+* aven: Cross size increased to match Survex 1.0.
+
 * cavern: Fix handling of a *solve followed by survey data, none of which is
   attached to the previous data.
 

@@ -1,12 +1,13 @@
 Still to do to aven 1.1.*:
 
+Fix measuring line issues on MS Windows.
+
+Fix focus issues on MS Windows.
+
 "New Presentation" should probably ensure sidepanel is open and on presentation
 tab.
 
 Fix depth clipping on grid
-
-Try to speed up crosses (use texture mapping?)  Some cards support
-GL_POINT_SPRITE_ARB to texture map points!
 
 Easy way to "print extended elevation"
 

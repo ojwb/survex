@@ -140,12 +140,14 @@ class GLACanvas : public wxGLCanvas {
     GLUquadric* m_Quadric;
 
     GLuint m_Texture;
+    GLuint m_CrossTexture;
 
     bool m_Textured;
     bool m_Perspective;
     bool m_Fog;
     bool m_AntiAlias;
     bool glpoint_ok;
+    bool glpoint_sprite;
 
     vector<GLAList> drawing_lists;
     mutable unsigned int list_flags;
