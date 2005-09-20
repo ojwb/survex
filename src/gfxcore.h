@@ -102,6 +102,7 @@ class GfxCore : public GLACanvas {
 	LIST_TUBES,
 	LIST_SURFACE_LEGS,
 	LIST_BLOBS,
+	LIST_CROSSES,
 	LIST_GRID,
 	LIST_SHADOW
     } drawing_list;
@@ -137,7 +138,6 @@ private:
     bool m_Legs;
     bool m_Names;
     bool m_Scalebar;
-    wxFont m_Font;
     bool m_Depthbar;
     bool m_OverlappingNames;
     bool m_Compass;

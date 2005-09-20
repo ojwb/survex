@@ -56,12 +56,6 @@ const int NUM_DEPTH_COLOURS = 13;
 
 #include "avenpal.h"
 
-#ifdef _WIN32
-static const int FONT_SIZE = 8;
-#else
-static const int FONT_SIZE = 9;
-#endif
-static const int CROSS_SIZE = 3;
 static const int COMPASS_OFFSET_X = 60;
 static const int COMPASS_OFFSET_Y = 80;
 static const int INDICATOR_BOX_SIZE = 60;
@@ -108,8 +102,6 @@ END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     GLACanvas(parent_win, 100, wxDefaultPosition, wxSize(640, 480)),
-    m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
-	   wxFONTENCODING_ISO8859_1),
     m_HaveData(false)
 {
     m_Control = control;
@@ -210,7 +202,7 @@ void GfxCore::FirstShow()
 {
     GLACanvas::FirstShow();
 
-    const unsigned int quantise(GLACanvas::GetFontSize() / QUANTISE_FACTOR);
+    const unsigned int quantise(GetFontSize() / QUANTISE_FACTOR);
     list<LabelInfo*>::iterator pos = m_Parent->GetLabelsNC();
     while (pos != m_Parent->GetLabelsNCEnd()) {
 	LabelInfo* label = *pos++;
@@ -788,7 +780,8 @@ void GfxCore::NattyDrawNames()
 	char * test = m_LabelGrid + ix + iy * quantised_x;
 	if (memchr(test, 1, width)) continue;
 
-	y += CROSS_SIZE - GetFontSize();
+	x += 3;
+	y -= GetFontSize() / 2;
 	DrawIndicatorText((int)x, (int)y, (*label)->GetText());
 
 	if (iy > QUANTISE_FACTOR) iy = QUANTISE_FACTOR;
@@ -820,8 +813,8 @@ void GfxCore::SimpleDrawNames()
 	// Check if the label is behind us (in perspective view).
 	if (z <= 0) continue;
 
-	y += CROSS_SIZE - GetFontSize();
-
+	x += 3;
+	y -= GetFontSize() / 2;
 	DrawIndicatorText((int)x, (int)y, (*label)->GetText());
     }
 }
@@ -871,7 +864,7 @@ void GfxCore::DrawDepthbar()
 	SetColour(TEXT_COLOUR);
 
 	DrawIndicatorText(x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
-			  y - (FONT_SIZE / 2) - 1, strs[band]);
+			  y - (GetFontSize() / 2) - 1, strs[band]);
 
 	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
@@ -995,12 +988,12 @@ void GfxCore::DrawScalebar()
     // Add labels.
     wxString str = FormatLength(size_snap);
 
-    SetColour(TEXT_COLOUR);
-    DrawIndicatorText(SCALE_BAR_OFFSET_X, end_y - FONT_SIZE - 4, "0");
-
     int text_width, text_height;
     GetTextExtent(str, &text_width, &text_height);
-    DrawIndicatorText(SCALE_BAR_OFFSET_X + size - text_width, end_y - FONT_SIZE - 4, str);
+    const int text_y = end_y - text_height + 1;
+    SetColour(TEXT_COLOUR);
+    DrawIndicatorText(SCALE_BAR_OFFSET_X, text_y, "0");
+    DrawIndicatorText(SCALE_BAR_OFFSET_X + size - text_width, text_y, str);
 }
 
 bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
