@@ -1,3 +1,21 @@
+survex (1.1.5) unstable; urgency=low
+
+  * aven: Make blobs round like they are in Survex 1.0.
+  * aven: If the graphics drivers don't support drawing blobs using OpenGL
+    point markers, fall back to drawing filled circles.
+  * aven: If the graphics drivers support it, draw crosses as texture mapped
+    OpenGL point markers which is much faster.
+  * aven: Cross size increased to match Survex 1.0.
+  * aven: We must update which blobs are displayed if display of surface or
+    underground legs is toggled.
+  * cavern: Fix handling of a *solve followed by survey data, none of which is
+    attached to the previous data.
+  * cavern: Fixed "No survey data" error when a *solve is followed by another
+    *solve (or the implicit solve at the end of processing) with no data between
+    them.
+
+ -- Wookey <wookey@survex.com>  Tue, 20 Sep 2005 15:08:53 +0100
+
 survex (1.1.4) unstable; urgency=low
 
   * aven: Added Aven's icon to the "About" dialog.
