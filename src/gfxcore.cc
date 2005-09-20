@@ -821,9 +821,6 @@ void GfxCore::SimpleDrawNames()
 
 void GfxCore::DrawDepthbar()
 {
-    if (m_ColourBy != COLOUR_BY_DEPTH || m_Parent->GetZExtent() == 0.0)
-	return;
-
     int y = m_YSize -
 	    (DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1)
 							+ DEPTH_BAR_OFFSET_Y);
@@ -1824,6 +1821,9 @@ void GfxCore::GenerateList(unsigned int l)
     assert(m_HaveData);
 
     switch (l) {
+	case LIST_DEPTHBAR:
+	    DrawDepthbar();
+	    break;
 	case LIST_UNDERGROUND_LEGS:
 	    GenerateDisplayList();
 	    break;
@@ -1967,8 +1967,9 @@ void GfxCore::GenerateBlobsDisplayList()
 void GfxCore::DrawIndicators()
 {
     // Draw depthbar.
-    if (m_Depthbar) {
-	DrawDepthbar();
+    if (m_Depthbar && m_ColourBy == COLOUR_BY_DEPTH &&
+	m_Parent->GetZExtent() != 0.0) {
+	DrawList(LIST_DEPTHBAR);
     }
 
     // Draw compass or elevation/heading indicators.

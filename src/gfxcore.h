@@ -98,6 +98,7 @@ class GfxCore : public GLACanvas {
     int m_ScaleBarWidth;
 
     typedef enum {
+	LIST_DEPTHBAR,
 	LIST_UNDERGROUND_LEGS,
 	LIST_TUBES,
 	LIST_SURFACE_LEGS,
