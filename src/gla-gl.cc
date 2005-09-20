@@ -34,6 +34,15 @@
 #include "message.h"
 #include "useful.h"
 
+#include <GL/glext.h>
+
+#ifndef GL_POINT_SPRITE_ARB
+#define GL_POINT_SPRITE_ARB 0x8861
+#endif
+#ifndef GL_COORD_REPLACE_ARB
+#define GL_COORD_REPLACE_ARB 0x8862
+#endif
+
 #ifndef USE_FNT
 // Some WIN32 stupidity which causes mingw to fail to link for some reason;
 // doing this probably means we can't safely use atexit() - see the comments in
