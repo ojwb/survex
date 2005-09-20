@@ -45,15 +45,20 @@
 IMPLEMENT_APP(Aven)
 
 Aven::Aven() :
-    m_Frame(NULL)
+    m_Frame(NULL), m_pageSetupData(NULL)
 {
+}
+
+Aven::~Aven()
+{
+    if (m_pageSetupData) delete m_pageSetupData;
 }
 
 bool Aven::OnInit()
 {
 #ifdef __WXMAC__
     // Tell wxMac which the About menu item is so it can be put where MacOS
-    // users expect it to be
+    // users expect it to be.
     wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
     // wxMac is supposed to remove this magic command line option (which
     // Finder passes), but the code in 2.4.2 is bogus.  It just decrements
@@ -182,6 +187,7 @@ bool Aven::OnInit()
 wxPageSetupDialogData *
 Aven::GetPageSetupDialogData()
 {
+    if (!m_pageSetupData) m_pageSetupData = new wxPageSetupDialogData;
 #ifdef __WXGTK__
     // Fetch paper margins stored on disk.
     int left, right, top, bottom;
@@ -192,16 +198,17 @@ Aven::GetPageSetupDialogData()
     cfg->Read("paper_margin_right", &right, 7);
     cfg->Read("paper_margin_top", &top, 14);
     cfg->Read("paper_margin_bottom", &bottom, 14);
-    m_pageSetupData.SetMarginTopLeft(wxPoint(left, top));
-    m_pageSetupData.SetMarginBottomRight(wxPoint(right, bottom));
+    m_pageSetupData->SetMarginTopLeft(wxPoint(left, top));
+    m_pageSetupData->SetMarginBottomRight(wxPoint(right, bottom));
 #endif
-    return &m_pageSetupData;
+    return m_pageSetupData;
 }
 
 void
 Aven::SetPageSetupDialogData(const wxPageSetupDialogData & psdd)
 {
-    m_pageSetupData = psdd;
+    if (!m_pageSetupData) m_pageSetupData = new wxPageSetupDialogData;
+    *m_pageSetupData = psdd;
 #ifdef __WXGTK__
     wxPoint topleft = psdd.GetMarginTopLeft();
     wxPoint bottomright = psdd.GetMarginBottomRight();

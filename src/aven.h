@@ -44,11 +44,16 @@ void aven_v_report(int severity, const char *fnm, int line, int en,
 class MainFrm;
 
 class Aven : public wxApp {
-    MainFrm* m_Frame;
-    wxPageSetupDialogData m_pageSetupData;
+    MainFrm * m_Frame;
+    // This must be a pointer, otherwise it gets initialised too early and
+    // we get a segfault on MS Windows when it tries to look up paper
+    // sizes in wxThePrintPaperDatabase which is still NULL at the point
+    // when the Aven class is constructed.
+    wxPageSetupDialogData * m_pageSetupData;
 
 public:
     Aven();
+    ~Aven();
 
     virtual bool OnInit();
 
