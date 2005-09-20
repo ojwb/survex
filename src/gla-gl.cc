@@ -889,6 +889,46 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
     }
 }
 
+void GLACanvas::BeginCrosses()
+{
+    // Plot crosses.  To get the crosses to appear at a constant
+    // size and orientation on screen, we plot them in the Indicator
+    // transform coordinates (which unfortunately means they can't
+    // be usefully put in an opengl display list).
+    glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT);
+    CHECK_GL_ERROR("BeginCrosses", "glPushAttrib");
+    SetIndicatorTransform();
+    BeginLines();
+}
+
+void GLACanvas::EndCrosses()
+{
+    EndLines();
+    glPopAttrib();
+    CHECK_GL_ERROR("EndCrosses", "glPopAttrib");
+}
+
+void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
+{
+    Double X, Y, Z;
+    if (!Transform(x, y, z, &X, &Y, &Z)) {
+	printf("bad transform\n");
+	return;
+    }
+    // Stuff behind us (in perspective view) will get clipped,
+    // but we can save effort with a cheap check here.
+    if (Z > 0) {
+	// Round to integers before adding on the offsets for the
+	// cross arms to avoid uneven crosses.
+	X = rint(X);
+	Y = rint(Y);
+	glVertex3d(X - 2, Y - 2, Z);
+	glVertex3d(X + 2, Y + 2, Z);
+	glVertex3d(X - 2, Y + 2, Z);
+	glVertex3d(X + 2, Y - 2, Z);
+    }
+}
+
 void GLACanvas::DrawRing(glaCoord x, glaCoord y)
 {
     // Draw an unfilled circle

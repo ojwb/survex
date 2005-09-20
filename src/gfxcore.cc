@@ -358,6 +358,10 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    DrawList(LIST_GRID);
 	}
 
+	if (m_Crosses) {
+	    DrawList(LIST_CROSSES);
+	}
+
 	SetIndicatorTransform();
 
 	// Draw station names.
@@ -369,47 +373,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    } else {
 		NattyDrawNames();
 	    }
-	}
-
-	if (m_Crosses) {
-	    // Plot crosses.  To get the crosses to appear at a constant
-	    // size and orientation on screen, we plot them in the Indicator
-	    // transform coordinates (and this means we can't sensibly put
-	    // them in an opengl display list).
-	    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
-	    SetColour(col_LIGHT_GREY);
-	    BeginLines();
-	    while (pos != m_Parent->GetLabelsEnd()) {
-		const LabelInfo* label = *pos++;
-
-		if (!((m_Surface && label->IsSurface()) ||
-			    (m_Legs && label->IsUnderground()) ||
-			    (!label->IsSurface() && !label->IsUnderground()))) {
-		    // if this station isn't to be displayed, skip to the next
-		    // (last case is for stns with no legs attached)
-		    continue;
-		}
-
-		Double x, y, z;
-		if (!Transform(label->GetX(), label->GetY(), label->GetZ(),
-			       &x, &y, &z)) {
-		    printf("bad transform on: %s\n", label->GetText().c_str());
-		    continue;
-		}
-		// Stuff behind us (in perspective view) will get clipped,
-		// but we can save effort with a cheap check here.
-		if (z > 0) {
-		    // Round to integers before adding on the offsets for the
-		    // cross arms to avoid uneven crosses.
-		    x = rint(x);
-		    y = rint(y);
-		    PlaceVertex(x - 2, y - 2, z);
-		    PlaceVertex(x + 2, y + 2, z);
-		    PlaceVertex(x - 2, y + 2, z);
-		    PlaceVertex(x + 2, y - 2, z);
-		}
-	    }
-	    EndLines();
 	}
 
 	if (!Animating() && (m_here.x != DBL_MAX || m_there.x != DBL_MAX)) {
@@ -1877,14 +1840,32 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_SURFACE_LEGS:
 	    GenerateDisplayListSurface();
 	    break;
-	case LIST_SHADOW:
-	    GenerateDisplayListShadow();
+	case LIST_BLOBS:
+	    GenerateBlobsDisplayList();
 	    break;
+	case LIST_CROSSES: {
+	    BeginCrosses();
+	    SetColour(col_LIGHT_GREY);
+	    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+	    while (pos != m_Parent->GetLabelsEnd()) {
+		const LabelInfo* label = *pos++;
+
+		if ((m_Surface && label->IsSurface()) ||
+		    (m_Legs && label->IsUnderground()) ||
+		    (!label->IsSurface() && !label->IsUnderground())) {
+		    // Check if this station should be displayed
+		    // (last case is for stns with no legs attached)
+		    DrawCross(label->GetX(), label->GetY(), label->GetZ());
+		}
+	    }
+	    EndCrosses();
+	    break;
+	}
 	case LIST_GRID:
 	    DrawGrid();
 	    break;
-	case LIST_BLOBS:
-	    GenerateBlobsDisplayList();
+	case LIST_SHADOW:
+	    GenerateDisplayListShadow();
 	    break;
 	default:
 	    assert(false);

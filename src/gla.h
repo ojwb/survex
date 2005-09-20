@@ -191,6 +191,8 @@ public:
     void EndPolygon();
     void BeginBlobs();
     void EndBlobs();
+    void BeginCrosses();
+    void EndCrosses();
 
     void DrawRectangle(gla_colour edge, gla_colour fill,
                        glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
@@ -201,6 +203,7 @@ public:
     void DrawTriangle(gla_colour edge, gla_colour fill, GLAPoint* vertices);
 
     void DrawBlob(glaCoord x, glaCoord y, glaCoord z);
+    void DrawCross(glaCoord x, glaCoord y, glaCoord z);
     void DrawRing(glaCoord x, glaCoord y);
 
     void PlaceVertex(glaCoord x, glaCoord y, glaCoord z);
