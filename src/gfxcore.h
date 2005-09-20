@@ -78,6 +78,7 @@ class PresentationMark {
 
 #define UPDATE_NONE 0
 #define UPDATE_BLOBS 1
+#define UPDATE_BLOBS_AND_CROSSES 2
 
 enum LockFlags {
     lock_NONE = 0,
@@ -368,8 +369,12 @@ public:
     int GetNumFixedPts() const;
     int GetNumExportedPts() const;
 
-    void ToggleUndergroundLegs() { ToggleFlag(&m_Legs); }
-    void ToggleSurfaceLegs() { ToggleFlag(&m_Surface); }
+    void ToggleUndergroundLegs() {
+	ToggleFlag(&m_Legs, UPDATE_BLOBS_AND_CROSSES);
+    }
+    void ToggleSurfaceLegs() {
+	ToggleFlag(&m_Surface, UPDATE_BLOBS_AND_CROSSES);
+    }
     void ToggleCompass() { ToggleFlag(&m_Compass); }
     void ToggleClino() { ToggleFlag(&m_Clino); }
     void ToggleScaleBar() { ToggleFlag(&m_Scalebar); }

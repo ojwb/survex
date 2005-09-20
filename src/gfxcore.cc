@@ -1779,6 +1779,9 @@ void GfxCore::ToggleFlag(bool* flag, int update)
     *flag = !*flag;
     if (update == UPDATE_BLOBS) {
 	UpdateBlobs();
+    } else if (update == UPDATE_BLOBS_AND_CROSSES) {
+	UpdateBlobs();
+	InvalidateList(LIST_CROSSES);
     }
     ForceRefresh();
 }
