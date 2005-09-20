@@ -1,3 +1,7 @@
+Changes in 1.1.5:
+
+* (MS Windows version): aven: Fixed crash on start-up (introduced in 1.1.4).
+
 * aven: Make blobs round like they are in Survex 1.0.
 
 * aven: If the graphics drivers don't support drawing blobs using OpenGL
