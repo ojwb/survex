@@ -222,8 +222,6 @@ void GfxCore::FirstShow()
 
     // Update our record of the client area size and centre.
     GetClientSize(&m_XSize, &m_YSize);
-    m_XCentre = m_XSize / 2;
-    m_YCentre = m_YSize / 2;
 
     switch (m_Lock) {
 	case lock_POINT:
@@ -477,7 +475,7 @@ Double GfxCore::GridXToScreen(Double x, Double y, Double z) const
     y += m_Params.translation.y;
     z += m_Params.translation.z;
 
-    return (XToScreen(x, y, z) * m_Params.scale) + m_XCentre;*/
+    return (XToScreen(x, y, z) * m_Params.scale) + m_XSize / 2;*/
 }
 
 Double GfxCore::GridYToScreen(Double x, Double y, Double z) const
@@ -490,7 +488,7 @@ Double GfxCore::GridYToScreen(Double x, Double y, Double z) const
     y += m_Params.translation.y;
     z += m_Params.translation.z;
 
-    return m_YCentre - ((ZToScreen(x, y, z) * m_Params.scale));*/
+    return m_YSize / 2 - ((ZToScreen(x, y, z) * m_Params.scale));*/
 }
 
 void GfxCore::DrawGrid()
@@ -544,15 +542,6 @@ void GfxCore::DrawGrid()
 int GfxCore::GetClinoOffset() const
 {
     return m_Compass ? CLINO_OFFSET_X : INDICATOR_OFFSET_X;
-}
-
-wxPoint GfxCore::CompassPtToScreen(Double x, Double y, Double z) const
-{
-    x = x; y = y; z = z;
-    /*return wxPoint(long(-XToScreen(x, y, z)) + m_XSize - COMPASS_OFFSET_X,
-		   long(ZToScreen(x, y, z)) + m_YSize - COMPASS_OFFSET_Y);*/
-
-    return wxPoint(0, 0);
 }
 
 GLAPoint GfxCore::IndicatorCompassToScreenPan(int angle) const
@@ -1066,8 +1055,6 @@ void GfxCore::OnSize(wxSizeEvent& event)
     }
     m_XSize = size.GetWidth();
     m_YSize = size.GetHeight();
-    m_XCentre = m_XSize / 2;
-    m_YCentre = m_YSize / 2;
 
     if (m_DoneFirstShow) {
 	if (m_LabelGrid) {

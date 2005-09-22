@@ -147,8 +147,6 @@ private:
     bool m_Tubes;
     int m_XSize;
     int m_YSize;
-    int m_XCentre;
-    int m_YCentre;
     int m_ColourBy;
 
     bool m_HaveData;
@@ -204,7 +202,6 @@ private:
     }
 
     int GetClinoOffset() const;
-    wxPoint CompassPtToScreen(Double x, Double y, Double z) const;
     void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
