@@ -1097,6 +1097,11 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		current_tube->push_back(XSect((*i)->GetX(), (*i)->GetY(), (*i)->GetZ(), survey->l, survey->r, survey->u, survey->d));
 		if (survey->flags & img_XFLAG_END) {
 		    // Finish off current_tube.
+		    // If there's only one cross-section in the tube, just
+		    // discard it for now.  FIXME: we should handle this
+		    // when we come to skinnin the tubes.
+		    if (current_tube->size() == 1)
+			tubes.resize(tubes.size() - 1);
 		    current_tube = NULL;
 		}
 
