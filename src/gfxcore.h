@@ -99,6 +99,9 @@ class GfxCore : public GLACanvas {
     int m_ScaleBarWidth;
 
     typedef enum {
+	LIST_COMPASS,
+	LIST_CLINO,
+	LIST_CLINO_BACK,
 	LIST_DEPTHBAR,
 	LIST_UNDERGROUND_LEGS,
 	LIST_TUBES,
@@ -202,7 +205,7 @@ private:
     }
 
     int GetClinoOffset() const;
-    void DrawTick(wxCoord cx, wxCoord cy, Double angle_cw);
+    void DrawTick(int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
     void SkinPassage(const vector<XSect> & centreline);
@@ -221,11 +224,11 @@ private:
 
     void DrawScalebar();
     void DrawDepthbar();
+    void DrawCompass();
+    void DrawClino();
+    void DrawClinoBack();
     void Draw2dIndicators();
     void DrawGrid();
-
-    GLAPoint IndicatorCompassToScreenPan(int angle) const;
-    GLAPoint IndicatorCompassToScreenElev(int angle) const;
 
     void NattyDrawNames();
     void SimpleDrawNames();

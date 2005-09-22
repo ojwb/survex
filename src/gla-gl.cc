@@ -1071,10 +1071,6 @@ void GLACanvas::DrawCircle(gla_colour edge, gla_colour fill,
 			   glaCoord cx, glaCoord cy, glaCoord radius)
 {
     // Draw a filled circle with an edge.
-
-    cx += radius;
-    cy -= radius;
-
     SetColour(fill);
     glTranslated(cx, cy, 0.0);
     CHECK_GL_ERROR("DrawCircle", "glTranslated");
@@ -1095,10 +1091,6 @@ void GLACanvas::DrawSemicircle(gla_colour edge, gla_colour fill,
     // Draw a filled semicircle with an edge.
     // The semicircle extends from "start" deg to "start"+180 deg (increasing
     // clockwise, 0 deg upwards).
-
-    cx += radius;
-    cy -= radius;
-
     SetColour(fill);
     glTranslated(cx, cy, 0.0);
     CHECK_GL_ERROR("DrawCircle", "glTranslated");

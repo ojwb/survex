@@ -63,6 +63,7 @@ static const int INDICATOR_GAP = 2;
 static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
+static const int INDICATOR_RADIUS = INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN;
 static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
 				  INDICATOR_BOX_SIZE + INDICATOR_GAP;
 static const int DEPTH_BAR_OFFSET_X = 16;
@@ -544,42 +545,80 @@ int GfxCore::GetClinoOffset() const
     return m_Compass ? CLINO_OFFSET_X : INDICATOR_OFFSET_X;
 }
 
-GLAPoint GfxCore::IndicatorCompassToScreenPan(int angle) const
-{
-    Double theta = rad(angle + m_PanAngle);
-    glaCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
-    glaCoord x = glaCoord(length * sin(theta));
-    glaCoord y = glaCoord(length * cos(theta));
-
-    return GLAPoint(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2 - x,
-		    INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
-}
-
-GLAPoint GfxCore::IndicatorCompassToScreenElev(int angle) const
-{
-    Double theta = rad(angle + m_TiltAngle + 90.0);
-    glaCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
-    glaCoord x = glaCoord(length * sin(-theta));
-    glaCoord y = glaCoord(length * cos(-theta));
-
-    return GLAPoint(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2 - x,
-		    INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
-}
-
-void GfxCore::DrawTick(wxCoord cx, wxCoord cy, Double angle_cw)
+void GfxCore::DrawTick(int angle_cw)
 {
     const Double theta = rad(angle_cw);
-    wxCoord length1 = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
-    wxCoord length0 = length1 + TICK_LENGTH;
+    const wxCoord length1 = INDICATOR_RADIUS;
+    const wxCoord length0 = length1 + TICK_LENGTH;
     wxCoord x0 = wxCoord(length0 * sin(theta));
-    wxCoord y0 = wxCoord(length0 * -cos(theta));
+    wxCoord y0 = wxCoord(length0 * cos(theta));
     wxCoord x1 = wxCoord(length1 * sin(theta));
-    wxCoord y1 = wxCoord(length1 * -cos(theta));
+    wxCoord y1 = wxCoord(length1 * cos(theta));
 
+    PlaceIndicatorVertex(x0, y0);
+    PlaceIndicatorVertex(x1, y1);
+}
+
+void GfxCore::DrawCompass() {
+    // Ticks.
     BeginLines();
-    PlaceIndicatorVertex(cx + x0, cy - y0);
-    PlaceIndicatorVertex(cx + x1, cy - y1);
+    for (int angle = 315; angle > 0; angle -= 45) {
+	DrawTick(angle);
+    }
+    SetColour(col_GREEN);
+    DrawTick(0);
     EndLines();
+
+    // Compass background.
+    DrawCircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS);
+
+    // Compass arrow.
+    GLAPoint p1(0, INDICATOR_RADIUS, 0);
+    GLAPoint p2(INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 150deg
+    GLAPoint p3(-INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 210deg
+    GLAPoint pc(0, 0, 0);
+    GLAPoint pts1[3] = { p2, p1, pc };
+    GLAPoint pts2[3] = { p3, p1, pc };
+
+    DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts1);
+    DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts2);
+}
+
+// Draw the non-rotating background to the clino.
+void GfxCore::DrawClinoBack() {
+    BeginLines();
+    for (int angle = 0; angle <= 180; angle += 90) {
+	DrawTick(angle);
+    }
+
+    SetColour(col_GREY);
+    PlaceIndicatorVertex(0, INDICATOR_RADIUS);
+    PlaceIndicatorVertex(0, -INDICATOR_RADIUS);
+    PlaceIndicatorVertex(0, 0);
+    PlaceIndicatorVertex(INDICATOR_RADIUS, 0);
+
+    EndLines();
+}
+
+void GfxCore::DrawClino() {
+    // Ticks.
+    SetColour(col_GREEN);
+    BeginLines();
+    DrawTick(0);
+    EndLines();
+
+    // Clino background.
+    DrawSemicircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS, 0);
+
+    // Elevation arrow.
+    GLAPoint p1(0, INDICATOR_RADIUS, 0);
+    GLAPoint p2(INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 150deg
+    GLAPoint p3(-INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 210deg
+    GLAPoint pc(0, 0, 0);
+    GLAPoint pts1[3] = { p2, p1, pc };
+    GLAPoint pts2[3] = { p3, p1, pc };
+    DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts1);
+    DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts2);
 }
 
 void GfxCore::Draw2dIndicators()
@@ -588,80 +627,23 @@ void GfxCore::Draw2dIndicators()
 
     const int centre_y = INDICATOR_BOX_SIZE / 2 + INDICATOR_OFFSET_Y;
 
-    const int comp_centre_x = m_XSize - INDICATOR_BOX_SIZE / 2 - INDICATOR_OFFSET_X;
+    const int comp_centre_x = GetCompassXPosition();
 
     if (m_Compass && m_RotationOK) {
-	// Compass background.
-	DrawCircle(col_LIGHT_GREY_2, col_GREY,
-		   m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-		   INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
-		   INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN);
-
-	// Ticks.
+	// If the user is dragging the compass with the pointer outside the
+	// compass, we snap to 45 degree multiples, and the ticks go white.
 	SetColour(m_MouseOutsideCompass ? col_WHITE : col_LIGHT_GREY_2);
-	for (int angle = 315; angle >= 0; angle -= 45) {
-	    if (angle == 0) SetColour(col_GREEN);
-	    DrawTick(comp_centre_x, centre_y, angle - m_PanAngle);
-	}
-
-	// Compass arrow.
-	GLAPoint p1 = IndicatorCompassToScreenPan(0);
-	GLAPoint p2 = IndicatorCompassToScreenPan(150);
-	GLAPoint p3 = IndicatorCompassToScreenPan(210);
-	GLAPoint pc(comp_centre_x, centre_y, 0.0);
-	GLAPoint pts1[3] = { p2, p1, pc };
-	GLAPoint pts2[3] = { p3, p1, pc };
-
-	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts1);
-	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts2);
+	DrawList2D(LIST_COMPASS, comp_centre_x, centre_y, -m_PanAngle);
     }
 
-    const int elev_centre_x = m_XSize - INDICATOR_BOX_SIZE / 2 - GetClinoOffset();
+    const int elev_centre_x = GetClinoXPosition();
 
     if (m_Clino && m_Lock == lock_NONE) {
-	// Clino background.
-	glaCoord tilt = (glaCoord)m_TiltAngle;
-	glaCoord start = tilt + 90;
-	DrawSemicircle(col_LIGHT_GREY_2, col_GREY,
-		       m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-		       INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
-		       INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN, start);
-
-	SetColour(col_GREY);
-	BeginLines();
-	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-			     INDICATOR_OFFSET_Y + INDICATOR_MARGIN);
-
-	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-			     INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN);
-
-	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-			     INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
-
-	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_MARGIN,
-			     INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
-	EndLines();
-
-	// Ticks.
-	int deg_elev = int(m_TiltAngle);
-	for (int angle = 0; angle <= 180; angle += 90) {
-	    if (deg_elev == angle - 90) {
-		SetColour(col_GREEN);
-	    } else {
-		SetColour(m_MouseOutsideElev ? col_WHITE : col_LIGHT_GREY_2);
-	    }
-	    DrawTick(elev_centre_x, centre_y, angle);
-	}
-
-	// Elevation arrow.
-	GLAPoint p1e = IndicatorCompassToScreenElev(0);
-	GLAPoint p2e = IndicatorCompassToScreenElev(150);
-	GLAPoint p3e = IndicatorCompassToScreenElev(210);
-	GLAPoint pce(elev_centre_x, centre_y, 0.0);
-	GLAPoint pts1e[3] = { p2e, p1e, pce };
-	GLAPoint pts2e[3] = { p3e, p1e, pce };
-	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts1e);
-	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts2e);
+	// If the user is dragging the clino with the pointer outside the
+	// clino, we snap to 90 degree multiples, and the ticks go white.
+	SetColour(m_MouseOutsideElev ? col_WHITE : col_LIGHT_GREY_2);
+	DrawList2D(LIST_CLINO_BACK, elev_centre_x, centre_y, 0);
+	DrawList2D(LIST_CLINO, elev_centre_x, centre_y, 90 + m_TiltAngle);
     }
 
     SetColour(TEXT_COLOUR);
@@ -1799,6 +1781,15 @@ void GfxCore::GenerateList(unsigned int l)
     assert(m_HaveData);
 
     switch (l) {
+	case LIST_COMPASS:
+	    DrawCompass();
+	    break;
+	case LIST_CLINO:
+	    DrawClino();
+	    break;
+	case LIST_CLINO_BACK:
+	    DrawClinoBack();
+	    break;
 	case LIST_DEPTHBAR:
 	    DrawDepthbar();
 	    break;
