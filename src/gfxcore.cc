@@ -1279,7 +1279,10 @@ static const int HIGHLIGHTED_PT_SIZE = 2; // FIXME: tie in to blob and ring size
 #define MARGIN (HIGHLIGHTED_PT_SIZE * 2 + 1)
 void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 {
-#if 0
+    // FIXME: Ideally just refresh part of the window.
+    // Best of all might be to copy the window contents before we draw the
+    // line, then replace each time we redraw.
+#if 1
     (void)a; (void)b; (void)c;
     ForceRefresh(); //--FIXME
 #else
