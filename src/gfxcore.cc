@@ -566,9 +566,9 @@ GLAPoint GfxCore::IndicatorCompassToScreenElev(int angle) const
 		    INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2 + y, 0.0);
 }
 
-void GfxCore::DrawTick(wxCoord cx, wxCoord cy, int angle_cw)
+void GfxCore::DrawTick(wxCoord cx, wxCoord cy, Double angle_cw)
 {
-    Double theta = rad(angle_cw);
+    const Double theta = rad(angle_cw);
     wxCoord length1 = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
     wxCoord length0 = length1 + TICK_LENGTH;
     wxCoord x0 = wxCoord(length0 * sin(theta));
@@ -584,16 +584,42 @@ void GfxCore::DrawTick(wxCoord cx, wxCoord cy, int angle_cw)
 
 void GfxCore::Draw2dIndicators()
 {
-    // Draw the "traditional" elevation and compass indicators.
+    // Draw the compass and elevation indicators.
 
-    // Indicator backgrounds.
+    const int centre_y = INDICATOR_BOX_SIZE / 2 + INDICATOR_OFFSET_Y;
+
+    const int comp_centre_x = m_XSize - INDICATOR_BOX_SIZE / 2 - INDICATOR_OFFSET_X;
+
     if (m_Compass && m_RotationOK) {
+	// Compass background.
 	DrawCircle(col_LIGHT_GREY_2, col_GREY,
 		   m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
 		   INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE - INDICATOR_MARGIN,
 		   INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN);
+
+	// Ticks.
+	SetColour(m_MouseOutsideCompass ? col_WHITE : col_LIGHT_GREY_2);
+	for (int angle = 315; angle >= 0; angle -= 45) {
+	    if (angle == 0) SetColour(col_GREEN);
+	    DrawTick(comp_centre_x, centre_y, angle - m_PanAngle);
+	}
+
+	// Compass arrow.
+	GLAPoint p1 = IndicatorCompassToScreenPan(0);
+	GLAPoint p2 = IndicatorCompassToScreenPan(150);
+	GLAPoint p3 = IndicatorCompassToScreenPan(210);
+	GLAPoint pc(comp_centre_x, centre_y, 0.0);
+	GLAPoint pts1[3] = { p2, p1, pc };
+	GLAPoint pts2[3] = { p3, p1, pc };
+
+	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts1);
+	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts2);
     }
+
+    const int elev_centre_x = m_XSize - INDICATOR_BOX_SIZE / 2 - GetClinoOffset();
+
     if (m_Clino && m_Lock == lock_NONE) {
+	// Clino background.
 	glaCoord tilt = (glaCoord)m_TiltAngle;
 	glaCoord start = tilt + 90;
 	DrawSemicircle(col_LIGHT_GREY_2, col_GREY,
@@ -615,59 +641,19 @@ void GfxCore::Draw2dIndicators()
 	PlaceIndicatorVertex(m_XSize - GetClinoOffset() - INDICATOR_MARGIN,
 			     INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE/2);
 	EndLines();
-    }
 
-
-    // Ticks
-    bool white = false;
-    /* FIXME m_Control->DraggingMouseOutsideCompass();
-    m_DraggingLeft && m_LastDrag == drag_COMPASS && m_MouseOutsideCompass; */
-    int pan_centre_x = m_XSize - INDICATOR_BOX_SIZE / 2 - INDICATOR_OFFSET_X;
-    int centre_y = INDICATOR_BOX_SIZE / 2 + INDICATOR_OFFSET_Y;
-    int elev_centre_x = m_XSize - INDICATOR_BOX_SIZE / 2 - GetClinoOffset();
-
-    if (m_Compass && m_RotationOK) {
-	int deg_pan = (int) m_PanAngle;
-	//--FIXME: bodge by Olly to stop wrong tick highlighting
-	if (deg_pan) deg_pan = 360 - deg_pan;
-	for (int angle = deg_pan; angle <= 315 + deg_pan; angle += 45) {
-	    if (deg_pan == angle) {
-		SetColour(col_GREEN);
-	    } else {
-		SetColour(white ? col_WHITE : col_LIGHT_GREY_2);
-	    }
-	    DrawTick((int) pan_centre_x, (int) centre_y, angle);
-	}
-    }
-
-    if (m_Clino && m_Lock == lock_NONE) {
-	white = false; /* FIXME m_DraggingLeft && m_LastDrag == drag_ELEV && m_MouseOutsideElev; */
+	// Ticks.
 	int deg_elev = int(m_TiltAngle);
 	for (int angle = 0; angle <= 180; angle += 90) {
 	    if (deg_elev == angle - 90) {
 		SetColour(col_GREEN);
 	    } else {
-		SetColour(white ? col_WHITE : col_LIGHT_GREY_2);
+		SetColour(m_MouseOutsideElev ? col_WHITE : col_LIGHT_GREY_2);
 	    }
-	    DrawTick((int) elev_centre_x, (int) centre_y, angle);
+	    DrawTick(elev_centre_x, centre_y, angle);
 	}
-    }
 
-    // Pan arrow
-    if (m_Compass && m_RotationOK) {
-	GLAPoint p1 = IndicatorCompassToScreenPan(0);
-	GLAPoint p2 = IndicatorCompassToScreenPan(150);
-	GLAPoint p3 = IndicatorCompassToScreenPan(210);
-	GLAPoint pc(pan_centre_x, centre_y, 0.0);
-	GLAPoint pts1[3] = { p2, p1, pc };
-	GLAPoint pts2[3] = { p3, p1, pc };
-
-	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts1);
-	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts2);
-    }
-
-    // Elevation arrow
-    if (m_Clino && m_Lock == lock_NONE) {
+	// Elevation arrow.
 	GLAPoint p1e = IndicatorCompassToScreenElev(0);
 	GLAPoint p2e = IndicatorCompassToScreenElev(150);
 	GLAPoint p3e = IndicatorCompassToScreenElev(210);
@@ -678,7 +664,6 @@ void GfxCore::Draw2dIndicators()
 	DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts2e);
     }
 
-    // Text
     SetColour(TEXT_COLOUR);
 
     int w, h;
@@ -695,10 +680,10 @@ void GfxCore::Draw2dIndicators()
 	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / 180.0));
 	}
 	GetTextExtent(str, &w, NULL);
-	DrawIndicatorText(pan_centre_x + width / 2 - w, height, str);
+	DrawIndicatorText(comp_centre_x + width / 2 - w, height, str);
 	str = wxString(msg(/*Facing*/203));
 	GetTextExtent(str, &w, NULL);
-	DrawIndicatorText(pan_centre_x - w / 2, height + h, str);
+	DrawIndicatorText(comp_centre_x - w / 2, height + h, str);
     }
 
     if (m_Clino && m_Lock == lock_NONE) {
@@ -810,9 +795,9 @@ void GfxCore::SimpleDrawNames()
 
 void GfxCore::DrawDepthbar()
 {
-    int y = m_YSize -
-	    (DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1)
-							+ DEPTH_BAR_OFFSET_Y);
+    const int total_block_height =
+	DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
     int size = 0;
 
     wxString* strs = new wxString[GetNumDepthBands()];
@@ -828,30 +813,29 @@ void GfxCore::DrawDepthbar()
 	if (x > size) size = x;
     }
 
-    int x_min = m_XSize - DEPTH_BAR_OFFSET_X -
-		     DEPTH_BAR_BLOCK_WIDTH - DEPTH_BAR_MARGIN - size;
+    int left = -DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
+		- DEPTH_BAR_MARGIN - size;
 
     DrawRectangle(col_BLACK, col_DARK_GREY,
-		  x_min - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
-		  m_YSize - DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1) -
-		      DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN * 2,
+		  left - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  top - DEPTH_BAR_MARGIN * 2,
 		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN * 3 +
 		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
-		  DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1) +
-		      DEPTH_BAR_MARGIN*4);
+		  total_block_height + DEPTH_BAR_MARGIN*4);
 
+    int y = top;
+    for (band = 0; band < GetNumDepthBands() - 1; band++) {
+	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
+			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    y = top - GetFontSize() / 2 - 1;
+    left += DEPTH_BAR_BLOCK_WIDTH + 5;
+
+    SetColour(TEXT_COLOUR);
     for (band = 0; band < GetNumDepthBands(); band++) {
-	if (band < GetNumDepthBands() - 1) {
-	    DrawShadedRectangle(GetPen(band), GetPen(band + 1),
-				x_min, y,
-				DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
-	}
-
-	SetColour(TEXT_COLOUR);
-
-	DrawIndicatorText(x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
-			  y - (GetFontSize() / 2) - 1, strs[band]);
-
+	DrawIndicatorText(left, y, strs[band]);
 	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
 
@@ -1456,6 +1440,7 @@ void GfxCore::TranslateCave(int dx, int dy)
 
 void GfxCore::DragFinished()
 {
+    m_MouseOutsideCompass = m_MouseOutsideElev = false;
     ForceRefresh();
 }
 
@@ -1962,7 +1947,7 @@ void GfxCore::DrawIndicators()
     // Draw depthbar.
     if (m_Depthbar && m_ColourBy == COLOUR_BY_DEPTH &&
 	m_Parent->GetZExtent() != 0.0) {
-	DrawList(LIST_DEPTHBAR);
+	DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
     }
 
     // Draw compass or elevation/heading indicators.

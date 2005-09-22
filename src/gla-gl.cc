@@ -675,6 +675,25 @@ void GLACanvas::DrawList(unsigned int l)
     }
 }
 
+void GLACanvas::DrawList2D(unsigned int l, glaCoord x, glaCoord y, Double rotation)
+{
+    glMatrixMode(GL_PROJECTION);
+    CHECK_GL_ERROR("DrawList2D", "glMatrixMode");
+    glPushMatrix();
+    CHECK_GL_ERROR("DrawList2D", "glPushMatrix");
+    glTranslated(x, y, 0);
+    CHECK_GL_ERROR("DrawList2D", "glTranslated");
+    if (rotation != 0.0) {
+	glRotated(rotation, 0, 0, -1);
+	CHECK_GL_ERROR("DrawList2D", "glRotated");
+    }
+    DrawList(l);
+    glMatrixMode(GL_PROJECTION);
+    CHECK_GL_ERROR("DrawList2D", "glMatrixMode 2");
+    glPopMatrix();
+    CHECK_GL_ERROR("DrawList2D", "glPopMatrix");
+}
+
 void GLACanvas::InvalidateList(unsigned int l)
 {
     if (l < drawing_lists.size() && drawing_lists[l]) {

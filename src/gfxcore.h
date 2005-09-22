@@ -202,7 +202,7 @@ private:
     }
 
     int GetClinoOffset() const;
-    void DrawTick(wxCoord cx, wxCoord cy, int angle_cw);
+    void DrawTick(wxCoord cx, wxCoord cy, Double angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
 
     void SkinPassage(const vector<XSect> & centreline);

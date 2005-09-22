@@ -167,6 +167,7 @@ public:
     void SetIndicatorTransform();
 
     void DrawList(unsigned int l);
+    void DrawList2D(unsigned int l, glaCoord x, glaCoord y, Double rotation);
     void InvalidateList(unsigned int l);
     virtual void GenerateList(unsigned int l) = 0;
 
