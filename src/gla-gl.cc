@@ -646,7 +646,11 @@ void GLACanvas::DrawList(unsigned int l)
 	m_Vertices = 0;
 #endif
 	CHECK_GL_ERROR("CreateList", "glGenLists");
-	assert(list != 0);
+	if (list == 0) {
+	    // If we can't create a list, fall back to just drawing directly.
+	    GenerateList(l);
+	    return;
+	}
 
 	// http://www.opengl.org/resources/faq/technical/displaylist.htm
 	// advises:
