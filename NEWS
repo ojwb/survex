@@ -3,6 +3,8 @@
 
 * aven: Disable "Colour by Depth" option if there's no elevation variation.
 
+* (MS Windows version): aven: Fix redrawing of measuring line.
+
 Changes in 1.1.5:
 
 * (MS Windows version): aven: Fixed crash on start-up (introduced in 1.1.4).

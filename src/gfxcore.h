@@ -192,15 +192,6 @@ private:
     void PlaceVertexWithDepthColour(Double x, Double y, Double z,
 				    Double factor = 1.0);
 
-    Double GridXToScreen(Double x, Double y, Double z) const;
-    Double GridYToScreen(Double x, Double y, Double z) const;
-    Double GridXToScreen(const Point &p) const {
-	return GridXToScreen(p.x, p.y, p.z);
-    }
-    Double GridYToScreen(const Point &p) const {
-	return GridYToScreen(p.x, p.y, p.z);
-    }
-
     int GetClinoOffset() const;
     void DrawTick(int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);

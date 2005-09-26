@@ -470,32 +470,6 @@ void GfxCore::DrawShadowedBoundingBox()
     DrawList(LIST_SHADOW);
 }
 
-Double GfxCore::GridXToScreen(Double x, Double y, Double z) const
-{
-    x = x; y = y; z = z;
-    return 0.0;
-
-    /*
-    x += m_Params.translation.x;
-    y += m_Params.translation.y;
-    z += m_Params.translation.z;
-
-    return (XToScreen(x, y, z) * m_Scale) + m_XSize / 2;*/
-}
-
-Double GfxCore::GridYToScreen(Double x, Double y, Double z) const
-{
-    x = x; y = y; z = z;
-    return 0.0;
-
-    /*
-    x += m_Params.translation.x;
-    y += m_Params.translation.y;
-    z += m_Params.translation.z;
-
-    return m_YSize / 2 - ((ZToScreen(x, y, z) * m_Scale));*/
-}
-
 void GfxCore::DrawGrid()
 {
     // Draw the grid.
@@ -1249,43 +1223,51 @@ static const int HIGHLIGHTED_PT_SIZE = 2; // FIXME: tie in to blob and ring size
 #define MARGIN (HIGHLIGHTED_PT_SIZE * 2 + 1)
 void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 {
-    // FIXME: Ideally just refresh part of the window.
     // Best of all might be to copy the window contents before we draw the
     // line, then replace each time we redraw.
-#if 1
-    (void)a; (void)b; (void)c;
-    ForceRefresh(); //--FIXME
-#else
+
     // Calculate the minimum rectangle which includes the old and new
     // measuring lines to minimise the redraw time
     int l = INT_MAX, r = INT_MIN, u = INT_MIN, d = INT_MAX;
+    Double X, Y, Z;
     if (a.x != DBL_MAX) {
-	int x = (int)GridXToScreen(a);
-	int y = (int)GridYToScreen(a);
-	l = x - MARGIN;
-	r = x + MARGIN;
-	u = y + MARGIN;
-	d = y - MARGIN;
+	if (!Transform(a.x, a.y, a.z, &X, &Y, &Z)) {
+	    printf("oops\n");
+	} else {
+	    int x = int(X);
+	    int y = m_YSize - 1 - int(Y);
+	    l = x - MARGIN;
+	    r = x + MARGIN;
+	    u = y + MARGIN;
+	    d = y - MARGIN;
+	}
     }
     if (b.x != DBL_MAX) {
-	int x = (int)GridXToScreen(b);
-	int y = (int)GridYToScreen(b);
-	l = min(l, x - MARGIN);
-	r = max(r, x + MARGIN);
-	u = max(u, y + MARGIN);
-	d = min(d, y - MARGIN);
+	if (!Transform(b.x, b.y, b.z, &X, &Y, &Z)) {
+	    printf("oops\n");
+	} else {
+	    int x = int(X);
+	    int y = m_YSize - 1 - int(Y);
+	    l = min(l, x - MARGIN);
+	    r = max(r, x + MARGIN);
+	    u = max(u, y + MARGIN);
+	    d = min(d, y - MARGIN);
+	}
     }
     if (c.x != DBL_MAX) {
-	int x = (int)GridXToScreen(c);
-	int y = (int)GridYToScreen(c);
-	l = min(l, x - MARGIN);
-	r = max(r, x + MARGIN);
-	u = max(u, y + MARGIN);
-	d = min(d, y - MARGIN);
+	if (!Transform(c.x, c.y, c.z, &X, &Y, &Z)) {
+	    printf("oops\n");
+	} else {
+	    int x = int(X);
+	    int y = m_YSize - 1 - int(Y);
+	    l = min(l, x - MARGIN);
+	    r = max(r, x + MARGIN);
+	    u = max(u, y + MARGIN);
+	    d = min(d, y - MARGIN);
+	}
     }
     const wxRect R(l, d, r - l, u - d);
     Refresh(false, &R);
-#endif
 }
 
 void GfxCore::SetHere()
