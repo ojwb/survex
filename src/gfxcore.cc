@@ -263,7 +263,7 @@ void GfxCore::SetScale(Double scale)
 	if (scale > 1000.0) scale = 1000.0;
     }
 
-    m_Params.scale = scale;
+    m_Scale = scale;
     m_HitTestGridValid = false;
 
     GLACanvas::SetScale(scale);
@@ -480,7 +480,7 @@ Double GfxCore::GridXToScreen(Double x, Double y, Double z) const
     y += m_Params.translation.y;
     z += m_Params.translation.z;
 
-    return (XToScreen(x, y, z) * m_Params.scale) + m_XSize / 2;*/
+    return (XToScreen(x, y, z) * m_Scale) + m_XSize / 2;*/
 }
 
 Double GfxCore::GridYToScreen(Double x, Double y, Double z) const
@@ -493,7 +493,7 @@ Double GfxCore::GridYToScreen(Double x, Double y, Double z) const
     y += m_Params.translation.y;
     z += m_Params.translation.z;
 
-    return m_YSize / 2 - ((ZToScreen(x, y, z) * m_Params.scale));*/
+    return m_YSize / 2 - ((ZToScreen(x, y, z) * m_Scale));*/
 }
 
 void GfxCore::DrawGrid()
@@ -1578,7 +1578,7 @@ void GfxCore::SetScaleBarFromOffset(wxCoord dx)
     // Set the scale of the survey, given an offset as to how much the mouse has
     // been dragged over the scalebar since the last scale change.
 
-    SetScale((m_ScaleBarWidth + dx) * m_Params.scale / m_ScaleBarWidth);
+    SetScale((m_ScaleBarWidth + dx) * m_Scale / m_ScaleBarWidth);
     ForceRefresh();
 }
 
@@ -2420,7 +2420,7 @@ PresentationMark GfxCore::GetView() const
 			    m_Translation.z + m_Parent->GetZOffset(),
 			    m_PanAngle,
 			    m_TiltAngle,
-			    m_Params.scale);
+			    m_Scale);
 }
 
 void GfxCore::SetView(const PresentationMark & p)

@@ -92,10 +92,7 @@ enum LockFlags {
 };
 
 class GfxCore : public GLACanvas {
-    struct params {
-	Double scale;
-    } m_Params;
-
+    Double m_Scale;
     int m_ScaleBarWidth;
 
     typedef enum {
@@ -342,7 +339,7 @@ public:
     bool HasData() const { return m_DoneFirstShow && m_HaveData; }
     bool IsFlat() const;
 
-    double GetScale() const { return m_Params.scale; }
+    double GetScale() const { return m_Scale; }
     void SetScale(Double scale);
 
     bool ShowingStationNames() const { return m_Names; }
