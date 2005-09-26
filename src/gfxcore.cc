@@ -452,6 +452,7 @@ void GfxCore::DrawShadowedBoundingBox()
     const double y = 0.5 * m_Parent->GetYExtent();
     const double z = 0.5 * m_Parent->GetZExtent();
 
+    // FIXME: these gl* calls should be in gla-gl.cc
     glPolygonOffset(1.0, 1.0);
     glEnable(GL_POLYGON_OFFSET_FILL);
 
@@ -1098,6 +1099,7 @@ bool GfxCore::Animate()
     static double last_t = 0;
     double t;
     if (mpeg) {
+	// FIXME: this glReadPixels call should be in gla-gl.cc
 	glReadPixels(0, 0, mpeg->GetWidth(), mpeg->GetHeight(), GL_RGB,
 		     GL_UNSIGNED_BYTE, (GLvoid *)mpeg->GetBuffer());
 	mpeg->AddFrame();
@@ -2100,6 +2102,7 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
+    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
     glTexCoord2i(0, 0);
     PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
     glTexCoord2i(w, 0);
@@ -2133,6 +2136,7 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginPolygon();
 ////    PlaceNormal(normal.getX(), normal.getY(), normal.getZ());
+    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
     glTexCoord2i(0, 0);
     PlaceVertexWithDepthColour(a.getX(), a.getY(), a.getZ(), factor);
     if (a_band != b_band) {

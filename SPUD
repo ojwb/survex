@@ -6,6 +6,8 @@ Fix focus issues on MS Windows.
 
 Merge Martin's patch for improved here/there update.
 
+Move gl* calls out of gfxcore.cc into gla-gl.cc!
+
 "New Presentation" should probably ensure sidepanel is open and on presentation
 tab.
 
