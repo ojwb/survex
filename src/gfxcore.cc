@@ -196,6 +196,10 @@ void GfxCore::Initialise()
     // Apply default parameters.
     DefaultParameters();
 
+    if (m_Parent->GetZExtent() == 0.0) {
+       SetColourBy(COLOUR_BY_NONE);
+    }
+
     m_HaveData = true;
 }
 
@@ -1708,6 +1712,11 @@ bool GfxCore::CanLowerViewpoint() const
     // Determine if the survey can be viewed from a lower angle of elevation.
 
     return GetPerspective() ? (m_TiltAngle < 90.0) : (m_TiltAngle > -90.0);
+}
+
+bool GfxCore::IsFlat() const
+{
+    return m_Parent->GetZExtent() == 0.0;
 }
 
 bool GfxCore::ShowingPlan() const

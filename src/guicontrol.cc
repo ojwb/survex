@@ -377,7 +377,7 @@ void GUIControl::OnColourByDepth()
 
 void GUIControl::OnColourByDepthUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs());
+    cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs() && !m_View->IsFlat());
     cmd.Check(m_View->ColouringBy() == COLOUR_BY_DEPTH);
 }
 

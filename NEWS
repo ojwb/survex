@@ -1,3 +1,8 @@
+* aven: Don't crash if trying to load a survey with no elevation variation.
+  Instead turn off depth colouring.
+
+* aven: Disable "Colour by Depth" option if there's no elevation variation.
+
 Changes in 1.1.5:
 
 * (MS Windows version): aven: Fixed crash on start-up (introduced in 1.1.4).
