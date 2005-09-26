@@ -128,8 +128,6 @@ private:
     LockFlags m_Lock;
     MainFrm* m_Parent;
     bool m_DoneFirstShow;
-    int m_Polylines;
-    int m_SurfacePolylines;
     Double m_InitialScale;
     Double m_TiltAngle;
     Double m_PanAngle;
@@ -186,7 +184,6 @@ private:
 
     void UpdateQuaternion();
 
-    void SetColourFromHeight(Double z, Double factor);
     void PlaceVertexWithColour(Double x, Double y, Double z,
 			       Double factor = 1.0);
     void PlaceVertexWithDepthColour(Double x, Double y, Double z,
