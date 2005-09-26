@@ -1140,7 +1140,7 @@ void GLACanvas::DisableDashedLines()
 }
 
 bool GLACanvas::Transform(Double x, Double y, Double z,
-                          Double* x_out, Double* y_out, Double* z_out)
+                          Double* x_out, Double* y_out, Double* z_out) const
 {
     // Convert from data coordinates to screen coordinates.
 
@@ -1150,7 +1150,7 @@ bool GLACanvas::Transform(Double x, Double y, Double z,
 }
 
 void GLACanvas::ReverseTransform(Double x, Double y,
-                                 Double* x_out, Double* y_out, Double* z_out)
+                                 Double* x_out, Double* y_out, Double* z_out) const
 {
     // Convert from screen coordinates to data coordinates.
 
