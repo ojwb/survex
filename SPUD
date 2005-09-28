@@ -1,8 +1,6 @@
 Still to do to aven 1.1.*:
 
-Fix measuring line issues on MS Windows.
-
-Fix focus issues on MS Windows.
+Fix remaining focus issues on MS Windows.
 
 Merge Martin's patch for improved here/there update.
 
