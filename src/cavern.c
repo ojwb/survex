@@ -145,6 +145,10 @@ main(int argc, char **argv)
    int d;
    time_t tmUserStart = time(NULL);
    clock_t tmCPUStart = clock();
+
+   /* Always buffer by line for aven's benefit. */
+   setvbuf(stdout, NULL, _IOLBF, 0);
+
    init_screen();
 
    msg_init(argv);

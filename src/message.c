@@ -83,6 +83,9 @@ int msg_errors = 0;   /* and how many (non-fatal) errors */
 /* in case osmalloc() fails before appname_copy is set up */
 static const char *appname_copy = "anonymous program";
 
+/* Path to use to look for executables (used by aven to find cavern). */
+static const char *exe_pth = "";
+
 /* error code for failed osmalloc and osrealloc calls */
 static void
 outofmem(OSSIZE_T size)
@@ -540,7 +543,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0xda: case 0xdc: case 0xdd: case 0xdf: case 0xe1: case 0xe2:
 	    case 0xe4: case 0xe7: case 0xe9: case 0xeb: case 0xed: case 0xee:
 	    case 0xf3: case 0xf4: case 0xf6: case 0xf7: case 0xfa: case 0xfc:
-	    case 0xfd: 
+	    case 0xfd:
 	       v = value; break;
 	    case 0x20ac: v = '\x80'; break;
 	    case 0x201a: v = '\x82'; break;
@@ -1001,6 +1004,12 @@ msg_cfgpth(void)
 }
 
 const char *
+msg_exepth(void)
+{
+   return exe_pth;
+}
+
+const char *
 msg_appname(void)
 {
    return appname_copy;
@@ -1038,12 +1047,11 @@ msg_init(char * const *argv)
       exit(0);
    }
    if (argv[0]) {
+      exe_pth = path_from_fnm(argv[0]);
 #ifdef MACOSX_BUNDLE
       /* If we're being built into a bundle, always look relative to
        * the path to the binary. */
-      char * pth = path_from_fnm(argv[0]);
-      pth_cfg_files = use_path(pth, "share/survex");
-      osfree(pth);
+      pth_cfg_files = use_path(exe_pth, "share/survex");
 #elif (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
       bool free_pth = fFalse;
       char *pth = getenv("srcdir");
@@ -1086,7 +1094,7 @@ macosx_got_msg:
 #endif
 	 osfree(p);
       }
-      
+
       if (free_pth) osfree(pth);
 #elif (OS==WIN32)
       DWORD len = 256;
@@ -1115,12 +1123,13 @@ macosx_got_msg:
 #endif
 
    if (!msg_lang || !*msg_lang) {
-      msg_lang = getenv("LANG");
+      msg_lang = getenv("LC_MESSAGES");
+      if (!msg_lang || !*msg_lang) msg_lang = getenv("LANG");
       if (!msg_lang || !*msg_lang) {
 #if (OS==WIN32)
 	 LCID locid;
 #elif (OS==RISCOS)
-         territory_t t;
+	 territory_t t;
 #endif
 #ifdef DEFAULTLANG
 	 msg_lang = STRING(DEFAULTLANG);
@@ -1184,7 +1193,7 @@ macosx_got_msg:
 	    }
 	 }
 #elif (OS==RISCOS)
-         if (!xterritory_number(&t)) switch (t) {
+	 if (!xterritory_number(&t)) switch (t) {
 	  case 1: /* UK */
 	  case 2: /* Master */
 	  case 3: /* Compact */

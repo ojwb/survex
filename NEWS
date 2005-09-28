@@ -1,9 +1,17 @@
+* aven: If aven is asked to load a .svx, .dat, or .mak file, run cavern on
+  it, showing cavern's output in a window (with errors and warnings clickable
+  to load the offending file into an editor), and then loading the resulting
+  3d file.
+
 * aven: Don't crash if trying to load a survey with no elevation variation.
   Instead turn off depth colouring.
 
 * aven: Disable "Colour by Depth" option if there's no elevation variation.
 
 * (MS Windows version): aven: Fix redrawing of measuring line.
+
+* (Unix version): Check environmental variable LC_MESSAGES when deciding what
+  language to use for messages.
 
 Changes in 1.1.5:
 
