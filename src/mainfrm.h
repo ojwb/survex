@@ -31,11 +31,12 @@
 #include <wx/print.h>
 #include <wx/printdlg.h>
 
-#include "gfxcore.h"
-#include "message.h"
 #include "aventreectrl.h"
-#include "img.h"
+#include "gfxcore.h"
 #include "guicontrol.h"
+#include "img.h"
+#include "message.h"
+#include "vector3.h"
 //#include "prefsdlg.h"
 
 #include <list>
@@ -143,14 +144,6 @@ public:
     Double GetD() const { return d; }
 };
 
-class PointInfo : public Point {
-    friend class MainFrm;
-
-public:
-    PointInfo() : Point() { }
-    PointInfo(const img_point & pt) : Point(pt.x, pt.y, pt.z) { }
-};
-
 #define LFLAG_SURFACE		img_SFLAG_SURFACE
 #define LFLAG_UNDERGROUND	img_SFLAG_UNDERGROUND
 #define LFLAG_EXPORTED		img_SFLAG_EXPORTED
@@ -184,8 +177,8 @@ public:
 class MainFrm : public wxFrame {
     wxFileHistory m_history;
     int m_SashPosition;
-    list<vector<PointInfo> > traverses;
-    list<vector<PointInfo> > surface_traverses;
+    list<vector<Point> > traverses;
+    list<vector<Point> > surface_traverses;
     list<vector<XSect> > tubes;
     list<LabelInfo*> m_Labels;
     Double m_XExt;
@@ -219,16 +212,14 @@ class MainFrm : public wxFrame {
     wxString m_pres_filename;
     bool m_pres_modified;
 
-    struct {
-	Double x, y, z;
-    } m_Offsets;
+    Vector3 m_Offsets;
 
     wxString icon_path;
 
     void FillTree();
     bool ProcessSVXFile(const wxString & file);
     bool LoadData(const wxString& file, wxString prefix = "");
-    void FixLRUD(vector<PointInfo> & centreline);
+    void FixLRUD(vector<Point> & centreline);
     void CentreDataset(Double xmin, Double ymin, Double zmin);
 
     wxString GetTabMsg(int key) {
@@ -436,25 +427,25 @@ public:
     void SetCoords(Double x, Double y);
     void SetAltitude(Double z);
 
-    Double GetXOffset() const { return m_Offsets.x; }
-    Double GetYOffset() const { return m_Offsets.y; }
-    Double GetZOffset() const { return m_Offsets.z; }
+    Double GetXOffset() const { return m_Offsets.getX(); }
+    Double GetYOffset() const { return m_Offsets.getY(); }
+    Double GetZOffset() const { return m_Offsets.getZ(); }
 
     void SetMouseOverStation(LabelInfo* label);
 
-    list<vector<PointInfo> >::const_iterator traverses_begin() const {
+    list<vector<Point> >::const_iterator traverses_begin() const {
 	return traverses.begin();
     }
 
-    list<vector<PointInfo> >::const_iterator traverses_end() const {
+    list<vector<Point> >::const_iterator traverses_end() const {
 	return traverses.end();
     }
 
-    list<vector<PointInfo> >::const_iterator surface_traverses_begin() const {
+    list<vector<Point> >::const_iterator surface_traverses_begin() const {
 	return surface_traverses.begin();
     }
 
-    list<vector<PointInfo> >::const_iterator surface_traverses_end() const {
+    list<vector<Point> >::const_iterator surface_traverses_end() const {
 	return surface_traverses.end();
     }
 

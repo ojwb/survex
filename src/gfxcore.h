@@ -26,6 +26,8 @@
 
 #include <float.h>
 
+#include "img.h"
+
 #include "quaternion.h"
 #include "guicontrol.h"
 #include "vector3.h"
@@ -46,14 +48,14 @@ class Point {
   public:
     Double x, y, z;
     Point() {}
-    Point(Double x_, Double y_, Double z_) : x(x_), y(y_), z(z_) {}
+    Point(Double x_, Double y_, Double z_) : x(x_), y(y_), z(z_) { }
+    Point(const img_point & pt) : x(pt.x), y(pt.y), z(pt.z) { }
     Double GetX() const { return x; }
     Double GetY() const { return y; }
     Double GetZ() const { return z; }
     Vector3 vec() const { return Vector3(x, y, z); }
 };
 
-class PointInfo;
 class XSect;
 class LabelInfo;
 class MovieMaker;
@@ -402,18 +404,18 @@ public:
 			      Double factor = 1.0);
     int GetDepthColour(Double z) const;
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
-    void AddPolyline(const vector<PointInfo> & centreline);
-    void AddPolylineDepth(const vector<PointInfo> & centreline);
+    void AddPolyline(const vector<Point> & centreline);
+    void AddPolylineDepth(const vector<Point> & centreline);
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			  const Vector3 &c, const Vector3 &d);
-    void AddPolylineShadow(const vector<PointInfo> & centreline);
+    void AddPolylineShadow(const vector<Point> & centreline);
     void AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 			       const Vector3 &c, const Vector3 &d);
     void MoveViewer(double forward, double up, double right);
 
     void (GfxCore::* AddQuad)(const Vector3 &a, const Vector3 &b,
                               const Vector3 &c, const Vector3 &d);
-    void (GfxCore::* AddPoly)(const vector<PointInfo> & centreline);
+    void (GfxCore::* AddPoly)(const vector<Point> & centreline);
 
     PresentationMark GetView() const;
     void SetView(const PresentationMark & p);

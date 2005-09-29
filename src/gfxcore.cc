@@ -1834,8 +1834,8 @@ void GfxCore::GenerateList(unsigned int l)
 void GfxCore::GenerateDisplayList()
 {
     // Generate the display list for the underground legs.
-    list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();
-    list<vector<PointInfo> >::const_iterator tend = m_Parent->traverses_end();
+    list<vector<Point> >::const_iterator trav = m_Parent->traverses_begin();
+    list<vector<Point> >::const_iterator tend = m_Parent->traverses_end();
     while (trav != tend) {
 	(this->*AddPoly)(*trav);
 	++trav;
@@ -1857,8 +1857,8 @@ void GfxCore::GenerateDisplayListSurface()
 {
     // Generate the display list for the surface legs.
     EnableDashedLines();
-    list<vector<PointInfo> >::const_iterator trav = m_Parent->surface_traverses_begin();
-    list<vector<PointInfo> >::const_iterator tend = m_Parent->surface_traverses_end();
+    list<vector<Point> >::const_iterator trav = m_Parent->surface_traverses_begin();
+    list<vector<Point> >::const_iterator tend = m_Parent->surface_traverses_end();
     while (trav != tend) {
 	AddPolyline(*trav);
 	++trav;
@@ -1869,8 +1869,8 @@ void GfxCore::GenerateDisplayListSurface()
 void GfxCore::GenerateDisplayListShadow()
 {
     SetColour(col_BLACK);
-    list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();
-    list<vector<PointInfo> >::const_iterator tend = m_Parent->traverses_end();
+    list<vector<Point> >::const_iterator trav = m_Parent->traverses_begin();
+    list<vector<Point> >::const_iterator tend = m_Parent->traverses_end();
     while (trav != tend) {
 	AddPolylineShadow(*trav);
 	++trav;
@@ -2038,11 +2038,11 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
     return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2;
 }
 
-void GfxCore::AddPolyline(const vector<PointInfo> & centreline)
+void GfxCore::AddPolyline(const vector<Point> & centreline)
 {
     BeginPolyline();
     SetColour(GetSurfacePen());
-    vector<PointInfo>::const_iterator i = centreline.begin();
+    vector<Point>::const_iterator i = centreline.begin();
     PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
     ++i;
     while (i != centreline.end()) {
@@ -2052,10 +2052,10 @@ void GfxCore::AddPolyline(const vector<PointInfo> & centreline)
     EndPolyline();
 }
 
-void GfxCore::AddPolylineShadow(const vector<PointInfo> & centreline)
+void GfxCore::AddPolylineShadow(const vector<Point> & centreline)
 {
     BeginPolyline();
-    vector<PointInfo>::const_iterator i = centreline.begin();
+    vector<Point>::const_iterator i = centreline.begin();
     PlaceVertex(i->GetX(), i->GetY(), -0.5 * m_Parent->GetZExtent());
     ++i;
     while (i != centreline.end()) {
@@ -2065,10 +2065,10 @@ void GfxCore::AddPolylineShadow(const vector<PointInfo> & centreline)
     EndPolyline();
 }
 
-void GfxCore::AddPolylineDepth(const vector<PointInfo> & centreline)
+void GfxCore::AddPolylineDepth(const vector<Point> & centreline)
 {
     BeginPolyline();
-    vector<PointInfo>::const_iterator i, prev_i;
+    vector<Point>::const_iterator i, prev_i;
     i = centreline.begin();
     int band0 = GetDepthColour(i->GetZ());
     PlaceVertexWithDepthColour(i->GetX(), i->GetY(), i->GetZ());

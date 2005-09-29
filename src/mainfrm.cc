@@ -1250,8 +1250,8 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     // Ultimately we probably want different types (subclasses perhaps?) for
     // underground and surface data, so we don't need to store LRUD for surface
     // stuff.
-    vector<PointInfo> * current_traverse = NULL;
-    vector<PointInfo> * current_surface_traverse = NULL;
+    vector<Point> * current_traverse = NULL;
+    vector<Point> * current_surface_traverse = NULL;
     vector<XSect> * current_tube = NULL;
 
     int result;
@@ -1293,11 +1293,11 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		    // Start new traverse (surface or underground).
 		    if (is_surface) {
 			m_HasSurfaceLegs = true;
-			surface_traverses.push_back(vector<PointInfo>());
+			surface_traverses.push_back(vector<Point>());
 			current_surface_traverse = &surface_traverses.back();
 		    } else {
 			m_HasUndergroundLegs = true;
-			traverses.push_back(vector<PointInfo>());
+			traverses.push_back(vector<Point>());
 			current_traverse = &traverses.back();
 		    }
 		    if (pending_move) {
@@ -1314,16 +1314,16 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		    }
 
 		    if (is_surface) {
-			current_surface_traverse->push_back(PointInfo(prev_pt));
+			current_surface_traverse->push_back(Point(prev_pt));
 		    } else {
-			current_traverse->push_back(PointInfo(prev_pt));
+			current_traverse->push_back(Point(prev_pt));
 		    }
 		}
 
 		if (is_surface) {
-		    current_surface_traverse->push_back(PointInfo(pt));
+		    current_surface_traverse->push_back(Point(pt));
 		} else {
-		    current_traverse->push_back(PointInfo(pt));
+		    current_traverse->push_back(Point(pt));
 		}
 
 		prev_pt = pt;
@@ -1473,16 +1473,16 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 // Run along a newly read in traverse and make up plausible LRUD where
 // it is missing.
 void
-MainFrm::FixLRUD(vector<PointInfo> & centreline)
+MainFrm::FixLRUD(vector<Point> & centreline)
 {
 #if 0
     assert(centreline.size() > 1);
 
     Double last_size = 0;
-    vector<PointInfo>::iterator i = centreline.begin();
+    vector<Point>::iterator i = centreline.begin();
     while (i != centreline.end()) {
 	// Get the coordinates of this vertex.
-	PointInfo & pt_v = *i++;
+	Point & pt_v = *i++;
 	Double size;
 
 	if (i != centreline.end()) {
@@ -1686,16 +1686,17 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 {
     // Centre the dataset around the origin.
 
-    Double xoff = m_Offsets.x = xmin + (m_XExt / 2.0);
-    Double yoff = m_Offsets.y = ymin + (m_YExt / 2.0);
-    Double zoff = m_Offsets.z = zmin + (m_ZExt / 2.0);
+    Double xoff = xmin + (m_XExt / 2.0);
+    Double yoff = ymin + (m_YExt / 2.0);
+    Double zoff = zmin + (m_ZExt / 2.0);
+    m_Offsets.set(xoff, yoff, zoff);
 
-    list<vector<PointInfo> >::iterator t = traverses.begin();
+    list<vector<Point> >::iterator t = traverses.begin();
     while (t != traverses.end()) {
 	assert(t->size() > 1);
-	vector<PointInfo>::iterator pos = t->begin();
+	vector<Point>::iterator pos = t->begin();
 	while (pos != t->end()) {
-	    PointInfo & point = *pos++;
+	    Point & point = *pos++;
 	    point.x -= xoff;
 	    point.y -= yoff;
 	    point.z -= zoff;
@@ -1706,9 +1707,9 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
     t = surface_traverses.begin();
     while (t != surface_traverses.end()) {
 	assert(t->size() > 1);
-	vector<PointInfo>::iterator pos = t->begin();
+	vector<Point>::iterator pos = t->begin();
 	while (pos != t->end()) {
-	    PointInfo & point = *pos++;
+	    Point & point = *pos++;
 	    point.x -= xoff;
 	    point.y -= yoff;
 	    point.z -= zoff;
@@ -1996,15 +1997,15 @@ void MainFrm::ShowInfo(const LabelInfo *label)
     if (m_Gfx->GetMetric()) {
 	str.Printf(msg(/*%s: %d E, %d N, %dm altitude*/374),
 		   label->text.GetData(),
-		   int(label->x + m_Offsets.x),
-		   int(label->y + m_Offsets.y),
-		   int(label->z + m_Offsets.z));
+		   int(label->x + m_Offsets.getX()),
+		   int(label->y + m_Offsets.getY()),
+		   int(label->z + m_Offsets.getZ()));
     } else {
 	str.Printf(msg(/*%s: %d E, %d N, %dft altitude*/375),
 		   label->text.GetData(),
-		   int((label->x + m_Offsets.x) / METRES_PER_FOOT),
-		   int((label->y + m_Offsets.y) / METRES_PER_FOOT),
-		   int((label->z + m_Offsets.z) / METRES_PER_FOOT));
+		   int((label->x + m_Offsets.getX()) / METRES_PER_FOOT),
+		   int((label->y + m_Offsets.getY()) / METRES_PER_FOOT),
+		   int((label->z + m_Offsets.getZ()) / METRES_PER_FOOT));
     }
     GetStatusBar()->SetStatusText(str, 1);
     m_Gfx->SetHere(label->x, label->y, label->z);
