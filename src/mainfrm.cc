@@ -2008,7 +2008,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 		   int((label->z + m_Offsets.getZ()) / METRES_PER_FOOT));
     }
     GetStatusBar()->SetStatusText(str, 1);
-    m_Gfx->SetHere(label->x, label->y, label->z);
+    m_Gfx->SetHere(*label);
 
     wxTreeItemData* sel_wx;
     bool sel = m_Tree->GetSelectionData(&sel_wx);
@@ -2066,7 +2066,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 			   brg_unit.c_str());
 	    }
 	    GetStatusBar()->SetStatusText(str, 2);
-	    m_Gfx->SetThere(x0, y0, z0);
+	    m_Gfx->SetThere(*label2);
 	} else {
 	    GetStatusBar()->SetStatusText("", 2);
 	    m_Gfx->SetThere(); // FIXME: not in SetMouseOverStation version?
@@ -2081,7 +2081,7 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
 	if (data->IsStation()) {
 	    const LabelInfo * l = data->GetLabel();
 	    ShowInfo(l);
-	    m_Gfx->SetHere(l->x, l->y, l->z);
+	    m_Gfx->SetHere(*l);
 	} else {
 	    ClearCoords();
 	    m_Gfx->SetHere();
@@ -2095,8 +2095,8 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
 
     if (data && data->IsStation()) {
 	const LabelInfo* label = data->GetLabel();
-	m_Gfx->CentreOn(label->x, label->y, label->z);
-	m_Gfx->SetThere(label->x, label->y, label->z);
+	m_Gfx->CentreOn(*label);
+	m_Gfx->SetThere(*label);
     } else {
 	m_Gfx->SetThere();
     }

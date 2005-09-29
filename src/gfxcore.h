@@ -260,11 +260,11 @@ public:
     void RefreshLine(const Point& a, const Point& b, const Point& c);
 
     void SetHere();
-    void SetHere(Double x, Double y, Double z);
+    void SetHere(const Point &p);
     void SetThere();
-    void SetThere(Double x, Double y, Double z);
+    void SetThere(const Point &p);
 
-    void CentreOn(Double x, Double y, Double z);
+    void CentreOn(const Point &p);
 
     void TranslateCave(int dx, int dy);
     void TiltCave(Double tilt_angle);

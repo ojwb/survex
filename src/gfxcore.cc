@@ -974,8 +974,8 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
     if (best) {
 	m_Parent->SetMouseOverStation(best);
 	if (centre) {
-	    CentreOn(best->GetX(), best->GetY(), best->GetZ());
-	    SetThere(best->GetX(), best->GetY(), best->GetZ());
+	    CentreOn(*best);
+	    SetThere(*best);
 	    m_Parent->SelectTreeItem(best);
 	}
     } else {
@@ -1283,12 +1283,10 @@ void GfxCore::SetHere()
     RefreshLine(old, m_there, m_here);
 }
 
-void GfxCore::SetHere(Double x, Double y, Double z)
+void GfxCore::SetHere(const Point &p)
 {
     Point old = m_here;
-    m_here.x = x;
-    m_here.y = y;
-    m_here.z = z;
+    m_here = p;
     RefreshLine(old, m_there, m_here);
 }
 
@@ -1300,12 +1298,10 @@ void GfxCore::SetThere()
     RefreshLine(m_here, old, m_there);
 }
 
-void GfxCore::SetThere(Double x, Double y, Double z)
+void GfxCore::SetThere(const Point &p)
 {
     Point old = m_there;
-    m_there.x = x;
-    m_there.y = y;
-    m_there.z = z;
+    m_there = p;
     RefreshLine(m_here, old, m_there);
 }
 
@@ -1759,9 +1755,9 @@ void GfxCore::ClearTreeSelection()
     m_Parent->ClearTreeSelection();
 }
 
-void GfxCore::CentreOn(Double x, Double y, Double z)
+void GfxCore::CentreOn(const Point &p)
 {
-    SetTranslation(-x, -y, -z);
+    SetTranslation(-p.x, -p.y, -p.z);
     m_HitTestGridValid = false;
 
     ForceRefresh();
