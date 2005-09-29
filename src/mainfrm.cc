@@ -1221,9 +1221,6 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 
     m_Tree->DeleteAllItems();
 
-    m_TreeRoot = m_Tree->AddRoot(wxFileNameFromPath(file));
-    m_Tree->SetEnabled();
-
     // Create a list of all the leg vertices, counting them and finding the
     // extent of the survey at the same time.
 
@@ -1451,7 +1448,6 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 
     // Fill the tree of stations and prefixes.
     FillTree();
-    m_Tree->Expand(m_TreeRoot);
 
     // Sort labels so that entrances are displayed in preference,
     // then fixed points, then exported points, then other points.
@@ -1547,11 +1543,13 @@ MainFrm::FixLRUD(vector<PointInfo> & centreline)
 
 void MainFrm::FillTree()
 {
-    // Fill the tree of stations and prefixes.
+    // Create the root of the tree.
+    wxTreeItemId treeroot = m_Tree->AddRoot(wxFileNameFromPath(m_File));
 
+    // Fill the tree of stations and prefixes.
     stack<wxTreeItemId> previous_ids;
     wxString current_prefix = "";
-    wxTreeItemId current_id = m_TreeRoot;
+    wxTreeItemId current_id = treeroot;
 
     list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
@@ -1664,25 +1662,24 @@ void MainFrm::FillTree()
 	assert(bit != "");
 	wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
 	m_Tree->SetItemData(id, new TreeData(label));
-	label->tree_id = id; // before calling SetTreeItemColour()...
-	SetTreeItemColour(label);
+	label->tree_id = id;
+	// Set the colour for an item in the survey tree.
+	if (label->IsEntrance()) {
+	    // Entrances are green (like entrance blobs).
+	    m_Tree->SetItemTextColour(id, wxColour(0, 255, 0));
+	} else if (label->IsSurface()) {
+	    // Surface stations are dark green.
+	    m_Tree->SetItemTextColour(id, wxColour(49, 158, 79));
+	}
     }
+
+    m_Tree->Expand(treeroot);
+    m_Tree->SetEnabled();
 }
 
 void MainFrm::SelectTreeItem(LabelInfo* label)
 {
     m_Tree->SelectItem(label->tree_id);
-}
-
-void MainFrm::SetTreeItemColour(LabelInfo* label)
-{
-    // Set the colour for an item in the survey tree.
-
-    if (label->IsEntrance()) {
-	m_Tree->SetItemTextColour(label->tree_id, wxColour(0, 255, 0));
-    } else if (label->IsSurface()) {
-	m_Tree->SetItemTextColour(label->tree_id, wxColour(49, 158, 79));
-    }
 }
 
 void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)

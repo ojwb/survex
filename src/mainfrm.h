@@ -220,7 +220,6 @@ class MainFrm : public wxFrame {
     wxSplitterWindow* m_Splitter;
     wxPanel* m_Panel;
     AvenTreeCtrl* m_Tree;
-    wxTreeItemId m_TreeRoot;
     wxTextCtrl* m_FindBox;
     wxStaticText* m_Found;
     // wxCheckBox* m_RegexpCheckBox;
@@ -242,7 +241,6 @@ class MainFrm : public wxFrame {
 
     wxString icon_path;
 
-    void SetTreeItemColour(LabelInfo* label);
     void FillTree();
     bool ProcessSVXFile(const wxString & file);
     bool LoadData(const wxString& file, wxString prefix = "");
