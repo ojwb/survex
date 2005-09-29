@@ -1368,7 +1368,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		while (i != m_Labels.end() && (*i)->GetText() != survey->label) ++i;
 		assert(i != m_Labels.end()); // FIXME: shouldn't use assert for this...
 
-		current_tube->push_back(XSect((*i)->GetX(), (*i)->GetY(), (*i)->GetZ(), survey->l, survey->r, survey->u, survey->d));
+		current_tube->push_back(XSect(**i, survey->l, survey->r, survey->u, survey->d));
 		if (survey->flags & img_XFLAG_END) {
 		    // Finish off current_tube.
 		    // If there's only one cross-section in the tube, just
@@ -1838,7 +1838,7 @@ void MainFrm::OnScreenshot(wxCommandEvent&)
     if (dlg.ShowModal() == wxID_OK) {
 	static bool png_handled = false;
 	if (!png_handled) {
-#if 0 // FIXME : enable this is we allow other export formats...
+#if 0 // FIXME : enable this to allow other export formats...
 	    ::wxInitAllImageHandlers();
 #else
 	    wxImage::AddHandler(new wxPNGHandler);

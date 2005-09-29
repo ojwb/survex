@@ -1995,32 +1995,24 @@ void GfxCore::PlaceVertexWithDepthColour(Double x, Double y, Double z,
     PlaceVertex(x, y, z);
 }
 
-static void IntersectLineWithPlane(Double x0, Double y0, Double z0,
-				   Double x1, Double y1, Double z1,
-				   Double z, Double& x, Double& y)
-{
-    // Find the intersection point of the line (x0, y0, z0) -> (x1, y1, z1)
-    // with the plane parallel to the xy-plane with z-axis intersection z.
-    assert(z1 - z0 != 0.0);
-
-    Double t = (z - z0) / (z1 - z0);
-//    assert(0.0 <= t && t <= 1.0);		FIXME: rounding problems!
-
-    x = x0 + t * (x1 - x0);
-    y = y0 + t * (y1 - y0);
-}
-
 void GfxCore::SplitLineAcrossBands(int band, int band2,
-				   const Vector3 &p, const Vector3 &p2,
+				   const Vector3 &p, const Vector3 &q,
 				   Double factor)
 {
-    int step = (band < band2) ? 1 : -1;
+    const int step = (band < band2) ? 1 : -1;
     for (int i = band; i != band2; i += step) {
-	Double x, y, z;
-	z = GetDepthBoundaryBetweenBands(i, i + step);
-	IntersectLineWithPlane(p.getX(), p.getY(), p.getZ(),
-			       p2.getX(), p2.getY(), p2.getZ(),
-			       z, x, y);
+	const Double z = GetDepthBoundaryBetweenBands(i, i + step);
+
+	// Find the intersection point of the line p -> q
+	// with the plane parallel to the xy-plane with z-axis intersection z.
+	assert(q.getZ() - p.getZ() != 0.0);
+
+	const Double t = (z - p.getZ()) / (q.getZ() - p.getZ());
+//	assert(0.0 <= t && t <= 1.0);		FIXME: rounding problems!
+
+	const Double x = p.getX() + t * (q.getX() - p.getX());
+	const Double y = p.getY() + t * (q.getY() - p.getY());
+
 	PlaceVertexWithDepthColour(x, y, z, factor);
     }
 }

@@ -28,6 +28,7 @@
 
 #include "quaternion.h"
 #include "guicontrol.h"
+#include "vector3.h"
 #include "wx.h"
 #include "gla.h"
 
@@ -42,11 +43,14 @@ class MainFrm;
 extern const int NUM_DEPTH_COLOURS;
 
 class Point {
-    friend class GfxCore;
+  public:
     Double x, y, z;
-public:
     Point() {}
     Point(Double x_, Double y_, Double z_) : x(x_), y(y_), z(z_) {}
+    Double GetX() const { return x; }
+    Double GetY() const { return y; }
+    Double GetZ() const { return z; }
+    Vector3 vec() const { return Vector3(x, y, z); }
 };
 
 class PointInfo;
@@ -54,18 +58,16 @@ class XSect;
 class LabelInfo;
 class MovieMaker;
 
-class PresentationMark {
-    public:
-    Double x, y, z;
+class PresentationMark : public Point {
+  public:
     Double angle, tilt_angle;
     Double scale;
     Double time;
-    PresentationMark()
-	: x(0), y(0), z(0), angle(0), tilt_angle(0), scale(0), time(0)
+    PresentationMark() : Point(), angle(0), tilt_angle(0), scale(0), time(0)
 	{ }
     PresentationMark(Double x_, Double y_, Double z_, Double angle_,
 		     Double tilt_angle_, Double scale_, Double time_ = 0)
-	: x(x_), y(y_), z(z_), angle(angle_), tilt_angle(tilt_angle_),
+	: Point(x_, y_, z_), angle(angle_), tilt_angle(tilt_angle_),
 	  scale(scale_), time(time_)
 	{ }
     bool is_valid() const { return scale > 0; }
@@ -396,7 +398,7 @@ public:
     void DragFinished();
 
     void SplitLineAcrossBands(int band, int band2,
-			      const Vector3 &p, const Vector3 &p2,
+			      const Vector3 &p, const Vector3 &q,
 			      Double factor = 1.0);
     int GetDepthColour(Double z) const;
     Double GetDepthBoundaryBetweenBands(int a, int b) const;

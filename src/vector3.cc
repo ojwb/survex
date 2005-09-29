@@ -29,21 +29,6 @@
 
 #include <math.h>
 
-Vector3::Vector3() : x(0.0), y(0.0), z(0.0)
-{
-}
-
-Vector3::Vector3(double a, double b, double c)
-{
-    x = a;
-    y = b;
-    z = c;
-}
-
-Vector3::~Vector3()
-{
-}
-
 void Vector3::normalise()
 {
     double mag = magnitude();
@@ -57,22 +42,6 @@ void Vector3::normalise()
 double dot(const Vector3& left, const Vector3& right)
 {
     return left.x*right.x + left.y*right.y + left.z*right.z;
-}
-
-Vector3& Vector3::operator=(const Vector3& r)
-{
-    x = r.x;
-    y = r.y;
-    z = r.z;
-
-    return *this;
-}
-
-void Vector3::set(double nx, double ny, double nz)
-{
-    x = nx;
-    y = ny;
-    z = nz;
 }
 
 Vector3& Vector3::operator*=(const double f)

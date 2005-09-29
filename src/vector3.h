@@ -4,7 +4,7 @@
 //  C++ class for 3-element vectors
 //
 //  Copyright (C) 2000-2002, Mark R. Shinwell.
-//  Copyright (C) 2002-2004 Olly Betts
+//  Copyright (C) 2002-2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -27,14 +27,12 @@
 #include <math.h>
 
 class Vector3 {
-    double x; //--FIXME
-    double y;
-    double z;
+    double x, y, z;
 
 public:
-    Vector3();
-    Vector3(double, double, double);
-    ~Vector3();
+    Vector3() : x(0.0), y(0.0), z(0.0) { }
+    Vector3(double a, double b, double c) : x(a), y(b), z(c) { }
+    ~Vector3() { }
 
     double getX() const { return x; }
     double getY() const { return y; }
@@ -46,23 +44,24 @@ public:
 
     void normalise();
 
-    void set(double, double, double);
-
-    friend Vector3 operator-(const Vector3& v) {
-	Vector3 o;
-	o.x = -v.x;
-	o.y = -v.y;
-	o.z = -v.z;
-	return o;
+    void set(double a, double b, double c) {
+	x = a; y = b; z = c;
     }
-    Vector3& operator*=(const double);
-    Vector3& operator/=(const double);
+
+    friend Vector3 operator-(const Vector3& o) {
+	return Vector3(-o.x, -o.y, -o.z);
+    }
+    Vector3& operator*=(double);
+    Vector3& operator/=(double);
     Vector3& operator+=(const Vector3&);
     Vector3& operator-=(const Vector3&);
-    Vector3& operator=(const Vector3&);
+    Vector3& operator=(const Vector3& o) {
+	x = o.x; y = o.y; z = o.z;
+	return *this;
+    }
 
-    friend Vector3 operator*(const double, const Vector3&);
-    friend Vector3 operator*(const Vector3& v, const double f) {
+    friend Vector3 operator*(double, const Vector3&);
+    friend Vector3 operator*(const Vector3& v, double f) {
 	return f * v;
     }
     friend Vector3 operator*(const Vector3&, const Vector3&); // cross product

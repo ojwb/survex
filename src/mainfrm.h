@@ -129,37 +129,26 @@ enum {
     listctrl_PRES
 };
 
-class XSect {
+class XSect : public Point {
     friend class MainFrm;
-    Double x, y, z;
     Double l, r, u, d;
 
 public:
-    XSect() : x(0), y(0), z(0), l(0), r(0), u(0), d(0) { }
-    XSect(Double x_, Double y_, Double z_, Double l_, Double r_, Double u_, Double d_)
-	: x(x_), y(y_), z(z_), l(l_), r(r_), u(u_), d(d_) { }
-    Double GetX() const { return x; }
-    Double GetY() const { return y; }
-    Double GetZ() const { return z; }
+    XSect() : Point(), l(0), r(0), u(0), d(0) { }
+    XSect(const Point &p, Double l_, Double r_, Double u_, Double d_)
+	: Point(p), l(l_), r(r_), u(u_), d(d_) { }
     Double GetL() const { return l; }
     Double GetR() const { return r; }
     Double GetU() const { return u; }
     Double GetD() const { return d; }
-    Vector3 vec() const { return Vector3(x, y, z); }
 };
 
-class PointInfo {
+class PointInfo : public Point {
     friend class MainFrm;
-    Double x, y, z;
 
 public:
-    PointInfo() : x(0), y(0), z(0) { }
-    PointInfo(const img_point & pt)
-	: x(pt.x), y(pt.y), z(pt.z) { }
-    Double GetX() const { return x; }
-    Double GetY() const { return y; }
-    Double GetZ() const { return z; }
-    Vector3 vec() const { return Vector3(x, y, z); }
+    PointInfo() : Point() { }
+    PointInfo(const img_point & pt) : Point(pt.x, pt.y, pt.z) { }
 };
 
 #define LFLAG_SURFACE		img_SFLAG_SURFACE
@@ -172,21 +161,16 @@ public:
 class LabelPlotCmp;
 class AvenPresList;
 
-class LabelInfo {
+class LabelInfo : public Point {
     friend class MainFrm;
     friend class GfxCore;
     friend class LabelPlotCmp;
-    Double x, y, z;
     wxString text;
     unsigned width;
     int flags;
     wxTreeItemId tree_id;
 
 public:
-    Double GetX() const { return x; }
-    Double GetY() const { return y; }
-    Double GetZ() const { return z; }
-
     wxString GetText() const { return text; }
 
     bool IsEntrance() const { return (flags & LFLAG_ENTRANCE) != 0; }
