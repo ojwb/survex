@@ -1061,7 +1061,11 @@ MainFrm::ProcessSVXFile(const wxString & file)
 {
     char *cavern = use_path(msg_exepth(), "cavern");
     const char * argv[3] = { NULL, NULL, NULL };
+#ifdef __WXMSW__
+    SetEnvironmentVariable("SURVEX_CHARSET", "utf8");
+#else
     setenv("SURVEX_CHARSET", "utf8", 1);
+#endif
     argv[0] = cavern;
     argv[1] = file.c_str();
 
