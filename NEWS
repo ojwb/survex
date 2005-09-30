@@ -3,6 +3,9 @@
   to load the offending file into an editor), and then loading the resulting
   3d file.
 
+* aven: Improved update of mouse coordinates and measuring line (thanks to
+  Martin Green).
+
 * aven: Don't crash if trying to load a survey with no elevation variation.
   Instead turn off depth colouring.
 

@@ -5,6 +5,7 @@
 //
 //  Copyright (C) 2000-2001,2002,2005 Mark R. Shinwell.
 //  Copyright (C) 2001-2004,2005 Olly Betts
+//  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -276,6 +277,8 @@ public:
     void OnIdle(wxIdleEvent &event);
 
     void OnMouseMove(wxMouseEvent& event) { m_Control->OnMouseMove(event); }
+    void OnLeaveWindow(wxMouseEvent& event);
+
     void OnLButtonDown(wxMouseEvent& event) { m_Control->OnLButtonDown(event); }
     void OnLButtonUp(wxMouseEvent& event) { m_Control->OnLButtonUp(event); }
     void OnMButtonDown(wxMouseEvent& event) { m_Control->OnMButtonDown(event); }

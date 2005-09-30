@@ -5,6 +5,7 @@
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
 //  Copyright (C) 2001-2003,2005 Olly Betts
+//  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -30,6 +31,7 @@
 
 BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
     EVT_MOTION(AvenTreeCtrl::OnMouseMove)
+    EVT_LEAVE_WINDOW(AvenTreeCtrl::OnLeaveWindow)
     EVT_TREE_SEL_CHANGED(-1, AvenTreeCtrl::OnSelChanged)
     EVT_CHAR(AvenTreeCtrl::OnKeyPress)
 END_EVENT_TABLE()
@@ -51,19 +53,31 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
     if (m_Enabled) {
 	int flags;
 	wxTreeItemId pos = HitTest(event.GetPosition(), flags);
+	if (!(flags & TREE_MASK)) {
+	    pos = wxTreeItemId();
+	}
 	if (pos != m_LastItem) {
 	    if (m_LastItem.IsOk()) {
 		SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
 	    }
-	    if (flags & TREE_MASK) {
+	    if (pos.IsOk()) {
 		SetItemBackgroundColour(pos, wxColour(180, 180, 180));
 		m_Parent->DisplayTreeInfo(GetItemData(pos));
-		m_LastItem = pos;
 	    } else {
 		m_Parent->DisplayTreeInfo(NULL);
 	    }
+	    m_LastItem = pos;
 	}
     }
+}
+
+void AvenTreeCtrl::OnLeaveWindow(wxMouseEvent&)
+{
+    if (m_LastItem.IsOk()) {
+	SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
+	m_LastItem = wxTreeItemId();
+    }
+    m_Parent->DisplayTreeInfo(NULL);
 }
 
 void AvenTreeCtrl::SetEnabled(bool enabled)
@@ -105,6 +119,7 @@ void AvenTreeCtrl::UnselectAll()
 
 void AvenTreeCtrl::DeleteAllItems()
 {
+    m_Enabled = false;
     m_LastItem = wxTreeItemId();
     m_SelValid = false;
     wxTreeCtrl::DeleteAllItems();

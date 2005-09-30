@@ -5,6 +5,7 @@
 //
 //  Copyright (C) 2000-2002,2005 Mark R. Shinwell
 //  Copyright (C) 2001-2003,2004,2005 Olly Betts
+//  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -1933,6 +1934,7 @@ void MainFrm::OnAbout(wxCommandEvent&)
 void MainFrm::ClearTreeSelection()
 {
     m_Tree->UnselectAll();
+    GetStatusBar()->SetStatusText("", 2);
     m_Gfx->SetThere();
 }
 
@@ -2014,11 +2016,15 @@ void MainFrm::ShowInfo(const LabelInfo *label)
     bool sel = m_Tree->GetSelectionData(&sel_wx);
     if (sel) {
 	TreeData *data = (TreeData*) sel_wx;
+	const LabelInfo* label2 = NULL;
 
 	if (data->IsStation()) {
-	    const LabelInfo* label2 = data->GetLabel();
+	    label2 = data->GetLabel();
 	    assert(label2);
+	    if (label2 == label) label2 = NULL;
+	}
 
+	if (label2) {
 	    Double x0 = label2->x;
 	    Double x1 = label->x;
 	    Double dx = x1 - x0;
@@ -2069,7 +2075,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	    m_Gfx->SetThere(*label2);
 	} else {
 	    GetStatusBar()->SetStatusText("", 2);
-	    m_Gfx->SetThere(); // FIXME: not in SetMouseOverStation version?
+	    m_Gfx->SetThere();
 	}
     }
 }
@@ -2077,15 +2083,12 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
 {
     const TreeData* data = static_cast<const TreeData*>(item);
-    if (data) {
-	if (data->IsStation()) {
-	    const LabelInfo * l = data->GetLabel();
-	    ShowInfo(l);
-	    m_Gfx->SetHere(*l);
-	} else {
-	    ClearCoords();
-	    m_Gfx->SetHere();
-	}
+    if (data && data->IsStation()) {
+	const LabelInfo * label = data->GetLabel();
+	ShowInfo(label);
+	m_Gfx->SetHere(*label);
+    } else {
+	ClearInfo();
     }
 }
 
@@ -2097,11 +2100,14 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
 	const LabelInfo* label = data->GetLabel();
 	m_Gfx->CentreOn(*label);
 	m_Gfx->SetThere(*label);
+	GetStatusBar()->SetStatusText("", 2);
+	// FIXME: Need to update statustext 2 (From ... etc)
+	// But we don't currently know where "here" is at this point in the
+	// code!
     } else {
+	GetStatusBar()->SetStatusText("", 2);
 	m_Gfx->SetThere();
     }
-
-    // ClearCoords(); // FIXME or update or ?
 }
 
 void MainFrm::OnPresNew(wxCommandEvent&)
@@ -2438,8 +2444,7 @@ void MainFrm::SetMouseOverStation(LabelInfo* label)
     if (label) {
 	ShowInfo(label);
     } else {
-	ClearCoords();
-	m_Gfx->SetHere();
+	ClearInfo();
     }
 }
 

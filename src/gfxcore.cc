@@ -5,6 +5,7 @@
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
 //  Copyright (C) 2001-2003,2004,2005 Olly Betts
+//  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -96,6 +97,7 @@ BEGIN_EVENT_TABLE(GfxCore, wxGLCanvas)
     EVT_RIGHT_UP(GfxCore::OnRButtonUp)
     EVT_MOUSEWHEEL(GfxCore::OnMouseWheel)
     EVT_MOTION(GfxCore::OnMouseMove)
+    EVT_LEAVE_WINDOW(GfxCore::OnLeaveWindow)
     EVT_SIZE(GfxCore::OnSize)
     EVT_IDLE(GfxCore::OnIdle)
     EVT_CHAR(GfxCore::OnKeyPress)
@@ -292,6 +294,11 @@ void GfxCore::UpdateBlobs()
 //
 //  Event handlers
 //
+
+void GfxCore::OnLeaveWindow(wxMouseEvent& event) {
+    SetHere();
+    ClearCoords();
+}
 
 void GfxCore::OnIdle(wxIdleEvent& event)
 {
@@ -1431,7 +1438,7 @@ void GfxCore::SetCoords(wxPoint point)
     Double cx, cy, cz;
 
     SetDataTransform();
-    ReverseTransform(point.x, m_YSize - point.y, &cx, &cy, &cz);
+    ReverseTransform(point.x, m_YSize - 1 - point.y, &cx, &cy, &cz);
 
     if (m_TiltAngle == 90.0) {
 	m_Parent->SetCoords(cx + m_Parent->GetXOffset(),
