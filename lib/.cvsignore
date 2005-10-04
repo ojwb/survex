@@ -1,7 +1,5 @@
 Makefile
 Makefile.in
-bold.bit
-default.bit
 [a-z][a-z].msg
 [a-z][a-z]_[A-Z][A-Z].msg
 [a-z][a-z].h

@@ -15,15 +15,13 @@ hdr_files = ca.h de.h de_CH.h de_DE.h en.h en_US.h\
 
 EXTRA_DIST = bcra3.svx bcra5.svx messages.txt default.txt bold.txt print.ini\
  named-entities.txt makefont.pl makemsgs.pl checkshortcut.pl\
- $(msg_files) default.bit bold.bit $(hdr_files) survex.mime survex.keys.in\
+ $(msg_files) $(hdr_files) survex.mime survex.keys.in\
  aven.txf gentexfont.c TexFont.h\
  INSTALL.OSX
 
-MAINTAINERCLEANFILES = $(msg_files) $(hdr_files) default.bit bold.bit\
- *.todo aven.txf
+MAINTAINERCLEANFILES = $(msg_files) $(hdr_files) *.todo aven.txf
 
-pkgdata_DATA = default.bit bold.bit print.ini bcra3.svx bcra5.svx\
- $(msg_files) aven.txf
+pkgdata_DATA = print.ini bcra3.svx bcra5.svx $(msg_files) aven.txf
 
 BUILT_SOURCES = defaultlang.h
 
@@ -37,12 +35,6 @@ $(msg_files) $(hdr_files): messages.txt makemsgs.pl
 defaultlang.h:
 	-rm -f defaultlang.h
 	ln -s $(srcdir)/$(DEFAULTLANG).h defaultlang.h
-
-default.bit: default.txt makefont.pl
-	LANG=C perl makefont.pl default.txt default.bit
-
-bold.bit: bold.txt makefont.pl
-	LANG=C perl makefont.pl bold.txt bold.bit
 
 mimedir = $(datadir)/mime-info
 mime_DATA = survex.mime survex.keys

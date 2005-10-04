@@ -37,7 +37,6 @@ Name: "{app}\icons"
 [Files]
 Source: "*.exe"; DestDir: "{app}"
 Source: "*.dll"; DestDir: "{app}"
-Source: "*.bit"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.tcl"; DestDir: "{app}"
@@ -88,7 +87,7 @@ Root: HKCU; Subkey: "survex.source\shell\Process\command"; ValueType: string; Va
 Root: HKCU; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\printwin.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\aven.exe"" --print ""%1"""; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""; Flags: uninsdeletevalue
 Root: HKCU; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: string; ValueData: """{app}\3dtopos.exe"" ""%1"""; Flags: uninsdeletevalue
@@ -133,7 +132,7 @@ Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; Va
 Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue noerror
 Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue noerror
 Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\printwin.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\aven.exe"" --print ""%1"""; Flags: uninsdeletevalue noerror
 Root: HKCR; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue noerror
 Root: HKCR; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""; Flags: uninsdeletevalue noerror
 Root: HKCR; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: string; ValueData: """{app}\3dtopos.exe"" ""%1"""; Flags: uninsdeletevalue noerror

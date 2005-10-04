@@ -1888,7 +1888,7 @@ void MainFrm::OnExport(wxCommandEvent&)
     char *baseleaf = baseleaf_from_fnm(m_File.c_str());
     wxFileDialog dlg(this, wxString("Export as:"), "",
 		     wxString(baseleaf),
-		     "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt",
+		     "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl",
 		     wxSAVE|wxOVERWRITE_PROMPT);
     free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {

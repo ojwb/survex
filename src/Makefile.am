@@ -3,8 +3,8 @@
 noinst_HEADERS = cavern.h commands.h cmdline.h datain.h debug.h filelist.h\
  filename.h getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
  netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
- prbitmap.h prcore.h prio.h readval.h str.h useful.h validate.h whichos.h\
- fnt.h guicontrol.h gla.h moviemaker.h \
+ readval.h str.h useful.h validate.h whichos.h\
+ fnt.h guicontrol.h gla.h moviemaker.h exportfilter.h hpgl.h \
  aboutdlg.h aven.h avenpal.h gfxcore.h mainfrm.h matrix4.h quaternion.h\
  vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h
 
@@ -29,13 +29,11 @@ LDADD = $(LIBOBJS)
 
 INCLUDES = -DIMG_HOSTED
 
-PRINT = printdm printps printpcl printhpgl
-
-# printxbm and dump3d are test programs
+# dump3d is a test program
 EXTRA_PROGRAMS =\
-	printwin aven dump3d printxbm editwrap
+	aven dump3d editwrap
 # FIXME: base_progs in top level Makefile.am needs updating if this is
-bin_PROGRAMS = cavern $(PRINT) diffpos extend cad3d sorterr \
+bin_PROGRAMS = cavern diffpos extend cad3d sorterr \
  3dtopos aven $(WINPROGS) $(TESTPROGS)
 bin_SCRIPTS = svxedit
 
@@ -48,7 +46,7 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc export.cc \
- guicontrol.cc gla-gl.cc fnt.cc moviemaker.cc \
+ guicontrol.cc gla-gl.cc fnt.cc moviemaker.cc hpgl.cc \
  brotatemask.xbm brotate.xbm hand_mask.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  avenprcore.cc printwx.cc ini.c hash.c
@@ -110,17 +108,6 @@ MOSTLYCLEANFILES = $(AVEN_REZ)
 aven_CFLAGS = $(WX_CFLAGS) $(AM_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS)
 aven_LDFLAGS = $(WX_LDFLAGS)
-
-PRSRC = prcore.c prio.c useful.c img.c ini.c hash.c $(COMMONSRC)
-
-printps_SOURCES = printps.c $(PRSRC)
-printdm_SOURCES = printdm.c $(PRSRC) prbitmap.c
-printpcl_SOURCES = printpcl.c $(PRSRC) prbitmap.c
-printxbm_SOURCES = printxbm.c $(PRSRC) prbitmap.c
-printhpgl_SOURCES = prhpgl.c $(PRSRC)
-printwin_SOURCES = printwin.c $(PRSRC)
-printwin_LDFLAGS = -mconsole
-printwin_LDADD = -lgdi32 -lcomdlg32
 
 diffpos_SOURCES = diffpos.c namecmp.c img.c useful.c hash.c $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)

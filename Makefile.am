@@ -15,13 +15,12 @@ SUBDIRS = . lib src doc tests debian
 # seem to need this for "make distclean" to recurse?!?
 DIST_SUBDIRS = $(SUBDIRS)
 
-extra_bin = lib/*.msg lib/default.bit lib/bold.bit lib/aven.txf
+extra_bin = lib/*.msg lib/aven.txf
 extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
 
 # FIXME: need to keep in step with src/Makefile.am
-base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
- extend sorterr 3dtopos
+base_progs = cad3d cavern diffpos extend sorterr 3dtopos
 
 AUTHORS: doc/AUTHORS.htm
 	w3m -dump doc/AUTHORS.htm > AUTHORS
@@ -73,7 +72,7 @@ mingw_iss : survex.iss
 	cd doc;cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
-	for f in $(base_progs) aven printwin editwrap ; do cp src/$$f.exe iss_tmp ; done
+	for f in $(base_progs) aven editwrap ; do cp src/$$f.exe iss_tmp ; done
 	cp lib/icons/*.ico lib/icons/*.png iss_tmp
 	: # don't ship pngs for which we ship the ico version
 	for a in iss_tmp/*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done

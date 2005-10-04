@@ -13,24 +13,18 @@ configure
 config.guess
 config.sub
 depcomp install-sh missing mkinstalldirs
-bc_exes
 djgpp_exes
 mingw_exes
-riscos_exes
 src*_*.zip
 stamp-h
 stamp-h.in
 stamp-h1
 survex-*.tar.gz
 survex-win32-*.zip
-survex-dos-*.zip
-survex-dos286-*.zip
-survex-riscos-*.zip
 survex-*.rpm
 survex_*.deb
 survex-aven_*.deb
 svxdoc-doswin-*.zip
-svxdoc-riscos-*.zip
 survex.spec
 survex.iss
 ChangeLog
