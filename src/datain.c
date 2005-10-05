@@ -1704,6 +1704,7 @@ data_passage(void)
             if (!isOmit(ch)) {
                compile_error_token(/*Expecting numeric field, found `%s'*/9);
             }
+	    nextch();
             VAL(*ordering) = -1;
          }
 	 break;

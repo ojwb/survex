@@ -54,7 +54,8 @@ test -x "$testdir"/../src/cavern || testdir=.
  notentranceorexport inferunknown inferexports bad_units_factor\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
- lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner surfequate"}}
+ lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
+ surfequate passage"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -187,6 +188,7 @@ for file in $TESTS ; do
   nosurveyhanging) pos=fail ;;
   cmd_solve_hanging) pos=fail ;;
   cmd_solve_nothing*) pos=no; warn=0 ;;
+  passage) pos=no; warn=0 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac
