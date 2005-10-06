@@ -13,8 +13,8 @@ msg_files = ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg\
 hdr_files = ca.h de.h de_CH.h de_DE.h en.h en_US.h\
  es.h fr.h it.h pt.h pt_BR.h sk.h ro.h zh.h
 
-EXTRA_DIST = bcra3.svx bcra5.svx messages.txt default.txt bold.txt print.ini\
- named-entities.txt makefont.pl makemsgs.pl checkshortcut.pl\
+EXTRA_DIST = bcra3.svx bcra5.svx messages.txt print.ini\
+ named-entities.txt makemsgs.pl checkshortcut.pl\
  $(msg_files) $(hdr_files) survex.mime survex.keys.in\
  aven.txf gentexfont.c TexFont.h\
  INSTALL.OSX
