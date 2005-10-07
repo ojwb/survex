@@ -31,14 +31,6 @@
 #include "osdepend.h"
 #include "prio.h"
 
-#if (OS==MSDOS)
-/* Make DJGPP v2 use register struct-s compatible with v1 and BorlandC */
-# if defined(__DJGPP__) && (__DJGPP__ >= 2)
-#  define _NAIVE_DOS_REGS
-# endif
-# include <dos.h>
-#endif
-
 static FILE *fhPrn;
 
 #ifdef HAVE_POPEN
@@ -58,21 +50,6 @@ prio_open(const char *fnmPrn)
    }
 #endif
    fhPrn = safe_fopen(fnmPrn, "wb");
-#if (OS==MSDOS)
-   { /* For DOS, check if we're talking directly to a device, and force
-      * "raw mode" if we are, so that ^Z ^S ^Q ^C don't get filtered */
-      union REGS in, out;
-      in.x.ax = 0x4400; /* get device info */
-      in.x.bx = fileno(fhPrn);
-      intdos(&in, &out);
-      /* check call worked && file is a device */
-      if (!out.x.cflag && (out.h.dl & 0x80)) {
-	 in.x.ax = 0x4401; /* set device info */
-	 in.x.dx = out.h.dl | 0x20; /* force binary mode */
-	 intdos(&in, &out);
-      }
-   }
-#endif
 }
 
 static void

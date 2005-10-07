@@ -25,53 +25,13 @@
 # include "whichos.h"
 # include "ostypes.h"
 
-# if (OS==RISCOS)
-
-/* OSLib's types.h badly pollutes our namespace, so we kludge it off
- * and then do the vital bits ourselves */
-#  ifndef types_H
-#   define types_H
-typedef unsigned int bits;
-typedef unsigned char byte;
-#   define UNKNOWN 1
-#  endif
-
-#  include "oslib/os.h"
-
-/* Take over screen (clear text window/default colours/cls) */
-#  define init_screen() BLK(xos_writec(26); xos_writec(20); xos_cls();)
-
-/* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
-#  define FNM_SEP_LEV '.'
-#  define FNM_SEP_DRV ':'
-/* "." in DOS filenames is translated to "/" by DOSFS and some other
- * software, and we follow this defacto convention */
-#  define FNM_SEP_EXT '/'
-
-#  define NO_STDPRN
-
-# elif (OS==MSDOS) || (OS==WIN32)
+# if (OS==WIN32)
 
 /* FNM_SEP_DRV and FNM_SEP_EXT and FNM_SEP_LEV2 needn't be defined */
 #  define FNM_SEP_LEV '\\'
 #  define FNM_SEP_LEV2 '/'
 #  define FNM_SEP_DRV ':'
 #  define FNM_SEP_EXT '.'
-
-#  ifdef __DJGPP__
-#   include <math.h>
-#   ifdef ceil
-#    undef ceil
-#   endif
-#   ifdef floor
-#    undef floor
-#   endif
-/* DJGPP's ceil and floor are buggy if FP is emulated, so do it ourselves */
-#   define ceil(X) svx_ceil((X))
-#   define floor(X) svx_floor((X))
-double svx_ceil(double);
-double svx_floor(double);
-#  endif
 
 #  ifdef __TURBOC__
 #   include <time.h>
@@ -80,27 +40,11 @@ double svx_floor(double);
 #   endif
 #  endif
 
-# elif (OS==TOS)
-
-/* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
-#  define FNM_SEP_LEV '\\'
-#  define FNM_SEP_DRV ':'
-#  define FNM_SEP_EXT '.'
-
 # elif (OS==UNIX)
 
 /* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
 #  define FNM_SEP_LEV '/'
 /* #  define FNM_SEP_DRV  No equivalent under UNIX */
-#  define FNM_SEP_EXT '.'
-
-#  define NO_STDPRN
-
-# elif (OS==AMIGA)
-
-/* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
-#  define FNM_SEP_LEV '/'
-#  define FNM_SEP_DRV ':'
 #  define FNM_SEP_EXT '.'
 
 #  define NO_STDPRN

@@ -56,16 +56,6 @@ static jmp_buf jmpbufSignal;
 #if (OS==WIN32)
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-#elif (OS==MSDOS)
-# include <dos.h>
-# ifdef __DJGPP__
-#  include <dpmi.h>
-#  include <go32.h>
-#  include <sys/movedata.h>
-# endif
-#elif (OS==RISCOS)
-# include "oslib/wimpreadsy.h"
-# include "oslib/territory.h"
 #elif (OS==UNIX)
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -100,7 +90,7 @@ static const char tombstone[TOMBSTONE_SIZE] = "012345\xfftombstone";
 #endif
 
 /* malloc with error catching if it fails. Also allows us to write special
- * versions easily eg for DOS EMS or MS Windows.
+ * versions easily eg for MS Windows.
  */
 void Far *
 osmalloc(OSSIZE_T size)
@@ -251,54 +241,7 @@ init_signals(void)
 static int
 default_charset(void)
 {
-#if (OS==RISCOS)
-   /* RISCOS 3.1 and above CHARSET_RISCOS31 (ISO_8859_1 + extras in 128-159)
-    * RISCOS < 3.1 is ISO_8859_1 */
-   int version;
-   if (xwimpreadsysinfo_version(&version) != NULL) {
-      /* RISC OS 2 or some error (don't care which) */
-      return CHARSET_ISO_8859_1;
-   }
-
-   /* oddly wimp_VERSION_RO3 is RISC OS 3.1 */
-   if (version < wimp_VERSION_RO3) return CHARSET_ISO_8859_1;
-
-   return CHARSET_RISCOS31;
-#elif (OS==MSDOS)
-#ifdef __DJGPP__
-   __dpmi_regs r;
-   r.x.ax = 0x6501;
-   r.x.bx = 0xffff;
-   r.x.dx = 0xffff;
-   /* Use DJGPP's transfer buffer (which is at least 2K) */
-   r.x.es = __tb >> 4;
-   r.x.di = __tb & 0x0f;
-   r.x.cx = 2048;
-   /* bit 1 is the carry flag */
-   if (__dpmi_int(0x21, &r) != -1 && !(r.x.flags & 1)) {
-      unsigned short p;
-      dosmemget(__tb + 5, 2, &p);
-#else
-   union REGS r;
-   struct SREGS s = { 0 };
-
-   unsigned char buf[48];
-   r.x.ax = 0x6501;
-   r.x.bx = 0xffff;
-   r.x.dx = 0xffff;
-   s.es = FP_SEG(buf);
-   r.x.di = FP_OFF(buf);
-   r.x.cx = 48;
-   intdosx(&r, &r, &s);
-   if (!r.x.cflag) {
-      unsigned short p = buf[5] | (buf[6] << 8);
-#endif
-      if (p == 437) return CHARSET_DOSCP437;
-      if (p == 850) return CHARSET_DOSCP850;
-      if (p == 912) return CHARSET_ISO_8859_2;
-   }
-   return CHARSET_USASCII;
-#elif (OS==WIN32)
+#if (OS==WIN32)
 # ifdef AVEN
 #  define CODEPAGE GetACP()
 # else
@@ -311,7 +254,7 @@ default_charset(void)
    }
    return CHARSET_USASCII;
 #elif (OS==UNIX)
-#if defined(XCAVEROT) || defined(AVEN)
+#ifdef AVEN
    return CHARSET_ISO_8859_1;
 #else
    const char *p = getenv("LC_ALL");
@@ -511,25 +454,7 @@ add_unicode(int charset, unsigned char *p, int value)
       }
       donthave:
       break;
-#if (OS==RISCOS)
-   case CHARSET_RISCOS31:
-      /* RISC OS 3.1 (and later) extensions to ISO-8859-1 */
-      switch (value) {
-       case 0x152: value = 0x9a; break; /* &OElig; */
-       case 0x153: value = 0x9b; break; /* &oelig; */
-#if 0
-       case 0x174: value = 0x81; break; /* &Wcirc; */
-       case 0x175: value = 0x82; break; /* &wcirc; */
-       case 0x176: value = 0x85; break; /* &Ycirc; */
-       case 0x177: value = 0x86; break; /* &ycirc; */
-#endif
-      }
-      if (value < 0x100) {
-	 *p = value;
-	 return 1;
-      }
-      break;
-#elif (OS==WIN32)
+#if (OS==WIN32)
    case CHARSET_WINCP1250:
       /* MS Windows rough equivalent to ISO-8859-2 */
       if (value >= 0x80) {
@@ -640,63 +565,7 @@ add_unicode(int charset, unsigned char *p, int value)
       }
       break;
 #endif
-#if (OS==MSDOS)
-   case CHARSET_DOSCP437: {
-      unsigned char uni2dostab[] = {
-	  255, 173, 155, 156,   0, 157,   0,   0,
-	    0,   0, 166, 174, 170,   0,   0,   0,
-	  248, 241, 253,   0,   0, 230,   0, 250,
-	    0,   0, 167, 175, 172, 171,   0, 168,
-	    0,   0,   0,   0, 142, 143, 146, 128,
-	    0, 144,   0,   0,   0,   0,   0,   0,
-	    0, 165,   0,   0,   0,   0, 153,   0,
-	    0,   0,   0,   0, 154,   0,   0, 225,
-	  133, 160, 131,   0, 132, 134, 145, 135,
-	  138, 130, 136, 137, 141, 161, 140, 139,
-	    0, 164, 149, 162, 147,   0, 148, 246,
-	    0, 151, 163, 150, 129,   0,   0, 152,
-      };
-      if (value >= 160 && value < 256) {
-	 int ch = (int)uni2dostab[value - 160];
-	 if (!ch) break;
-	 *p = ch;
-	 return 1;
-      }
-#if 0
-      switch (value) {
-	  case 8359: *p = 158; return 1; /* PESETA SIGN */
-	  case 402: *p = 159; return 1; /* LATIN SMALL LETTER F WITH HOOK */
-	  case 8976: *p = 169; return 1; /* REVERSED NOT SIGN */
-	  case 945: *p = 224; return 1; /* GREEK SMALL LETTER ALPHA */
-	  case 915: *p = 226; return 1; /* GREEK CAPITAL LETTER GAMMA */
-	  case 960: *p = 227; return 1; /* GREEK SMALL LETTER PI */
-	  case 931: *p = 228; return 1; /* GREEK CAPITAL LETTER SIGMA */
-	  case 963: *p = 229; return 1; /* GREEK SMALL LETTER SIGMA */
-	  case 964: *p = 231; return 1; /* GREEK SMALL LETTER TAU */
-	  case 934: *p = 232; return 1; /* GREEK CAPITAL LETTER PHI */
-	  case 920: *p = 233; return 1; /* GREEK CAPITAL LETTER THETA */
-	  case 937: *p = 234; return 1; /* GREEK CAPITAL LETTER OMEGA */
-	  case 948: *p = 235; return 1; /* GREEK SMALL LETTER DELTA */
-	  case 8734: *p = 236; return 1; /* INFINITY */
-	  case 966: *p = 237; return 1; /* GREEK SMALL LETTER PHI */
-	  case 949: *p = 238; return 1; /* GREEK SMALL LETTER EPSILON */
-	  case 8745: *p = 239; return 1; /* INTERSECTION */
-	  case 8801: *p = 240; return 1; /* IDENTICAL TO */
-	  case 8805: *p = 242; return 1; /* GREATER-THAN OR EQUAL TO */
-	  case 8804: *p = 243; return 1; /* LESS-THAN OR EQUAL TO */
-	  case 8992: *p = 244; return 1; /* TOP HALF INTEGRAL */
-	  case 8993: *p = 245; return 1; /* BOTTOM HALF INTEGRAL */
-	  case 8776: *p = 247; return 1; /* ALMOST EQUAL TO */
-	  case 8729: *p = 249; return 1; /* BULLET OPERATOR */
-	  case 8730: *p = 251; return 1; /* SQUARE ROOT */
-	  case 8319: *p = 252; return 1; /* SUPERSCRIPT LATIN SMALL LETTER N */
-	  case 9632: *p = 254; return 1; /* BLACK SQUARE */
-      }
-#endif
-      break;
-   }
-#endif
-#if (OS==MSDOS || OS==WIN32)
+#if (OS==WIN32)
    case CHARSET_DOSCP850: {
       unsigned char uni2dostab[] = {
 	 255, 173, 189, 156, 207, 190, 221, 245,
@@ -1128,8 +997,6 @@ macosx_got_msg:
       if (!msg_lang || !*msg_lang) {
 #if (OS==WIN32)
 	 LCID locid;
-#elif (OS==RISCOS)
-	 territory_t t;
 #endif
 #ifdef DEFAULTLANG
 	 msg_lang = STRING(DEFAULTLANG);
@@ -1192,341 +1059,6 @@ macosx_got_msg:
 	       break;
 	    }
 	 }
-#elif (OS==RISCOS)
-	 if (!xterritory_number(&t)) switch (t) {
-	  case 1: /* UK */
-	  case 2: /* Master */
-	  case 3: /* Compact */
-	  case 17: /* Canada1 */
-	  case 19: /* Canada */
-	  case 22: /* Ireland */
-	    msg_lang = "en";
-	    break;
-	  case 4: /* Italy */
-	    msg_lang = "it";
-	    break;
-	  case 5: /* Spain (or ca) */
-	  case 27: /* Mexico */
-	  case 28: /* LatinAm (or pt_BR) */
-	    msg_lang = "es";
-	    break;
-	  case 6: /* France */
-	  case 18: /* Canada2 */
-	    msg_lang = "fr";
-	    break;
-	  case 7: /* Germany */
-	    msg_lang = "de_DE";
-	    break;
-	  case 8: /* Portugal */
-	    msg_lang = "pt";
-	    break;
-	  case 23: /* Hong Kong */
-	    msg_lang = "zh";
-	    break;
-	  case 48: /* USA */
-	    msg_lang = "en_US";
-	    break;
-#if 0
-	  case 9: /* Esperanto */
-	  case 10: /* Greece */
-	  case 11: /* Sweden */
-	  case 12: /* Finland */
-	  case 13: /* Unused */
-	  case 14: /* Denmark */
-	  case 15: /* Norway */
-	  case 16: /* Iceland */
-	  case 20: /* Turkey */
-	  case 21: /* Arabic */
-	  case 24: /* Russia */
-	  case 25: /* Russia2 */
-	  case 26: /* Israel */
-#endif
-	 }
-#elif (OS==MSDOS)
-	   {
-	      int country_code;
-# ifdef __DJGPP__
-	      __dpmi_regs r;
-	      r.x.ax = 0x6501;
-	      r.x.bx = 0xffff;
-	      r.x.dx = 0xffff;
-	      /* Use DJGPP's transfer buffer (which is at least 2K) */
-	      r.x.es = __tb >> 4;
-	      r.x.di = __tb & 0x0f;
-	      r.x.cx = 2048;
-	      /* bit 1 is the carry flag */
-	      if (__dpmi_int(0x21, &r) != -1 && !(r.x.flags & 1)) {
-		 unsigned short val;
-		 dosmemget(__tb + 3, 2, &val);
-		 country_code = val;
-# else
-	      union REGS r;
-	      r.x.ax = 0x3800; /* get current country info */
-	      r.x.dx = 0;
-	      intdos(&r, &r);
-	      if (!r.x.cflag) {
-		 country_code = r.x.bx;
-# endif
-		 /* List of country codes taken from:
-		  * http://www.delorie.com/djgpp/doc/rbinter/it/00/14.html */
-		 /* The mappings here are guesses at best in most cases.
-		  * In a lot of cases we pick a language because we have
-		  * a translation in it, rather than because it's the most
-		  * widely used or understood in that country. */
-		 /* Improvements welcome */
-		 switch (country_code) {
-		     case 1: /* United States */
-		     case 670: /* Saipan / N. Mariana Island */
-		     case 671: /* Guam */
-		     case 680: /* Palau */
-		     case 684: /* American Samoa */
-		     case 691: /* Micronesia */
-		     case 692: /* Marshall Islands */
-			 msg_lang = "en_US";
-			 break;
-		     case 4: /* Canada (English) */
-		     case 27: /* South Africa */
-		     case 44: /* United Kingdom */
-		     case 61: /* International English / Australia */
-		     case 64: /* New Zealand */
-		     case 99: /* Asia (English) */
-		     case 220: /* Gambia */
-		     case 231: /* Liberia */
-		     case 232: /* Sierra Leone */
-		     case 233: /* Ghana */
-		     case 254: /* Kenya */
-		     case 256: /* Uganda */
-		     case 260: /* Zambia */
-		     case 263: /* Zimbabwe */
-		     case 264: /* Namibia */
-		     case 267: /* Botswana */
-		     case 268: /* Swaziland */
-		     case 290: /* St. Helena */
-		     case 297: /* Aruba */
-		     case 350: /* Gibraltar */
-		     case 353: /* Ireland */
-		     case 356: /* Malta */
-		     case 500: /* Falkland Islands */
-		     case 501: /* Belize */
-		     case 592: /* Guyana */
-		     case 672: /* Norfolk Island (Australia) / Christmas Island/Cocos Islands / Antartica */
-		     case 673: /* Brunei Darussalam */
-		     case 674: /* Nauru */
-		     case 675: /* Papua New Guinea */
-		     case 676: /* Tonga Islands */
-		     case 677: /* Solomon Islands */
-		     case 679: /* Fiji */
-		     case 682: /* Cook Islands */
-		     case 683: /* Niue */
-		     case 685: /* Western Samoa */
-		     case 686: /* Kiribati */
-			 /* I believe only some of these are English speaking... */
-		     case 809: /* Antigua and Barbuda / Anguilla / Bahamas / Barbados / Bermuda
-				  British Virgin Islands / Cayman Islands / Dominica
-				  Dominican Republic / Grenada / Jamaica / Montserra
-				  St. Kitts and Nevis / St. Lucia / St. Vincent and Grenadines
-				  Trinidad and Tobago / Turks and Caicos */
-			 msg_lang = "en";
-			 break;
-		     case 2: /* Canadian-French */
-		     case 32: /* Belgium */ /* maybe */
-		     case 33: /* France */
-		     case 213: /* Algeria */
-		     case 216: /* Tunisia */
-		     case 221: /* Senegal */
-		     case 223: /* Mali */
-		     case 225: /* Ivory Coast */
-		     case 226: /* Burkina Faso */
-		     case 227: /* Niger */
-		     case 228: /* Togo */
-		     case 229: /* Benin */
-		     case 230: /* Mauritius */
-		     case 235: /* Chad */
-		     case 236: /* Central African Republic */
-		     case 237: /* Cameroon */
-		     case 241: /* Gabon */
-		     case 242: /* Congo */
-		     case 250: /* Rwhanda */
-		     case 253: /* Djibouti */
-		     case 257: /* Burundi */
-		     case 261: /* Madagascar */
-		     case 262: /* Reunion Island */
-		     case 269: /* Comoros */
-		     case 270: /* Mayotte */
-		     case 352: /* Luxembourg (or de or ...) */
-		     case 508: /* St. Pierre and Miquelon */
-		     case 509: /* Haiti */
-		     case 590: /* Guadeloupe */
-		     case 594: /* French Guiana */
-		     case 596: /* Martinique / French Antilles */
-		     case 678: /* Vanuatu */
-		     case 681: /* Wallis & Futuna */
-		     case 687: /* New Caledonia */
-		     case 689: /* French Polynesia */
-		     case 961: /* Lebanon */
-			 msg_lang = "fr";
-			 break;
-		     case 3: /* Latin America */
-		     case 34: /* Spain */
-		     case 51: /* Peru */
-		     case 52: /* Mexico */
-		     case 53: /* Cuba */
-		     case 54: /* Argentina */
-		     case 56: /* Chile */
-		     case 57: /* Columbia */
-		     case 58: /* Venezuela */
-		     case 63: /* Philippines */
-		     case 240: /* Equatorial Guinea */
-		     case 502: /* Guatemala */
-		     case 503: /* El Salvador */
-		     case 504: /* Honduras */
-		     case 505: /* Nicraragua */
-		     case 506: /* Costa Rica */
-		     case 507: /* Panama */
-		     case 591: /* Bolivia */
-		     case 593: /* Ecuador */
-		     case 595: /* Paraguay */
-		     case 598: /* Uruguay */
-			 msg_lang = "es";
-			 break;
-		     case 39: /* Italy / San Marino / Vatican City */
-			 msg_lang = "it";
-			 break;
-		     case 41: /* Switzerland / Liechtenstein */ /* or fr or ... */
-			 msg_lang = "de_CH";
-			 break;
-		     case 43: /* Austria (DR DOS 5.0) */
-			 msg_lang = "de";
-			 break;
-		     case 49: /* Germany */
-			 msg_lang = "de_DE";
-			 break;
-		     case 55: /* Brazil (not supported by DR DOS 5.0) */
-			 msg_lang = "pt_BR";
-			 break;
-		     case 238: /* Cape Verde Islands */
-		     case 244: /* Angola */
-		     case 245: /* Guinea-Bissau */
-		     case 259: /* Mozambique */
-		     case 351: /* Portugal */
-			 msg_lang = "pt";
-			 break;
-		     case 42: /* Czechoslovakia / Tjekia / Slovakia (not supported by DR DOS 5.0) */
-		     case 421: /* Czech Republic / Tjekia (PC DOS 7+) */
-		     case 422: /* Slovakia (reported as 421 due to a bug in COUNTRY.SYS) */
-			 msg_lang = "sk";
-			 break;
-		     case 65: /* Singapore */
-		     case 86: /* China (MS-DOS 5.0+) */
-		     case 88: /* Taiwan (MS-DOS 5.0+) */
-		     case 852: /* Hong Kong */
-		     case 853: /* Macao */
-		     case 886: /* Taiwan (MS-DOS 6.22+) */
-			 msg_lang = "zh";
-			 break;
-#if 0
-		     case 7: /* Russia */
-		     case 20: /* Egypt */
-		     case 30: /* Greece */
-		     case 31: /* Netherlands */
-		     case 35: /* Bulgaria??? */
-		     case 36: /* Hungary (not supported by DR DOS 5.0) */
-		     case 38: /* Yugoslavia (not supported by DR DOS 5.0) -- obsolete */
-#endif
-		     case 40: /* Romania */
-			 msg_lang = "ro";
-			 break;
-#if 0
-		     case 45: /* Denmark */
-		     case 46: /* Sweden */
-		     case 47: /* Norway */
-		     case 48: /* Poland (not supported by DR DOS 5.0) */
-		     case 60: /* Malaysia */
-		     case 62: /* Indonesia / East Timor */
-		     case 66: /* Thailand (or Taiwan??? ) */
-		     case 81: /* Japan (DR DOS 5.0, MS-DOS 5.0+) */
-		     case 82: /* South Korea (DR DOS 5.0) */
-		     case 84: /* Vietnam */
-		     case 90: /* Turkey (MS-DOS 5.0+) */
-		     case 91: /* India */
-		     case 92: /* Pakistan */
-		     case 93: /* Afghanistan */
-		     case 94: /* Sri Lanka */
-		     case 98: /* Iran */
-		     case 102: /* ??? (Hebrew MS-DOS 5.0) */
-		     case 112: /* Belarus */
-		     case 200: /* Thailand (PC DOS 6.1+) (reported as 01due to a bug in PC DOS COUNTRY.SYS) */
-		     case 212: /* Morocco */
-		     case 218: /* Libya */
-		     case 222: /* Maruitania */
-		     case 224: /* African Guinea */
-		     case 234: /* Nigeria */
-		     case 239: /* Sao Tome and Principe */
-		     case 243: /* Zaire */
-		     case 246: /* Diego Garcia */
-		     case 247: /* Ascension Isle */
-		     case 248: /* Seychelles */
-		     case 249: /* Sudan */
-		     case 251: /* Ethiopia */
-		     case 252: /* Somalia */
-		     case 255: /* Tanzania */
-		     case 265: /* Malawi */
-		     case 266: /* Lesotho */
-		     case 298: /* Faroe Islands */
-		     case 299: /* Greenland */
-		     case 354: /* Iceland */
-		     case 355: /* Albania */
-		     case 357: /* Cyprus */
-		     case 358: /* Finland */
-		     case 359: /* Bulgaria */
-		     case 370: /* Lithuania (reported as 372 due to a bug in MS-DOS COUNTRY.SYS) */
-		     case 371: /* Latvia (reported as 372 due to a bug in MS-DOS COUNTRY.SYS) */
-		     case 372: /* Estonia */
-		     case 373: /* Moldova */ /* FIXME: similar to Romanian? */
-		     case 375: /* ??? (MS-DOS 7.10 / Windows98) */
-		     case 380: /* Ukraine */
-		     case 381: /* Serbia / Montenegro */
-		     case 384: /* Croatia */
-		     case 385: /* Croatia (PC DOS 7+) */
-		     case 386: /* Slovenia */
-		     case 387: /* Bosnia-Herzegovina (Latin) */
-		     case 388: /* Bosnia-Herzegovina (Cyrillic) (PC DOS 7+) (reported as 381 due to a bug in PC DOS COUNTRY.SYS) */
-		     case 389: /* FYR Macedonia */
-		     case 597: /* Suriname (nl) */
-		     case 599: /* Netherland Antilles (nl) */
-		     case 666: /* Russia??? (PTS-DOS 6.51 KEYB) */
-		     case 667: /* Poland??? (PTS-DOS 6.51 KEYB) */
-		     case 668: /* Poland??? (Slavic??? ) (PTS-DOS 6.51 KEYB) */
-		     case 688: /* Tuvalu */
-		     case 690: /* Tokealu */
-		     case 711: /* ??? (currency = EA$, code pages 437,737,850,852,855,857) */
-		     case 785: /* Arabic (Middle East/Saudi Arabia/etc.) */
-		     case 804: /* Ukraine */
-		     case 850: /* North Korea */
-		     case 855: /* Cambodia */
-		     case 856: /* Laos */
-		     case 880: /* Bangladesh */
-		     case 960: /* Maldives */
-		     case 962: /* Jordan */
-		     case 963: /* Syria / Syrian Arab Republic */
-		     case 964: /* Iraq */
-		     case 965: /* Kuwait */
-		     case 966: /* Saudi Arabia */
-		     case 967: /* Yemen */
-		     case 968: /* Oman */
-		     case 969: /* Yemen??? (Arabic MS-DOS 5.0) */
-		     case 971: /* United Arab Emirates */
-		     case 972: /* Israel (Hebrew) (DR DOS 5.0,MS-DOS 5.0+) */
-		     case 973: /* Bahrain */
-		     case 974: /* Qatar */
-		     case 975: /* Bhutan */
-		     case 976: /* Mongolia */
-		     case 977: /* Nepal */
-		     case 995: /* Myanmar (Burma) */
-#endif
-		 }
-	      }
-	   }
 #endif
       }
    }
