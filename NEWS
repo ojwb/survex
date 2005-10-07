@@ -3,6 +3,8 @@
   to load the offending file into an editor), and then loading the resulting
   3d file.
 
+* aven: Export as HPGL added.
+
 * aven: Improved update of mouse coordinates and measuring line (thanks to
   Martin Green).
 
@@ -13,8 +15,15 @@
 
 * (MS Windows version): aven: Fix redrawing of measuring line.
 
+* (MS Windows version): "Print" on a 3d file now prints through aven rather
+  than the separate printer driver.
+
 * (Unix version): Check environmental variable LC_MESSAGES when deciding what
   language to use for messages.
+
+* Removed old printer drivers.
+
+* cavern: Fixed small one-off memory leak if you specify -o more than once.
 
 Changes in 1.1.5:
 
