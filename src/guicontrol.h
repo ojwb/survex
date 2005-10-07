@@ -168,7 +168,7 @@ public:
 
     void OnViewFullScreenUpdate(wxUpdateUIEvent&);
     void OnViewFullScreen();
- 
+
     void OnViewBoundingBoxUpdate(wxUpdateUIEvent&);
     void OnViewBoundingBox();
 };
