@@ -41,6 +41,10 @@
 #include "str.h"
 #include "validate.h"
 
+#if (OS==WIN32)
+#include <conio.h> /* for _kbhit() and _getch() */
+#endif
+
 /* For funcs which want to be immune from messing around with different
  * calling conventions */
 #ifndef CDECL
