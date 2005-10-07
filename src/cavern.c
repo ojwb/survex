@@ -201,6 +201,7 @@ main(int argc, char **argv)
 	 break;
 #endif
        case 'o': {
+	 osfree(fnm_output_base); /* in case of multiple -o options */
 	 /* can be a directory (in which case use basename of leaf input)
 	  * or a file (in which case just trim the extension off) */
 	 if (fDirectory(optarg)) {
@@ -209,7 +210,6 @@ main(int argc, char **argv)
 	    fnm_output_base = base_from_fnm(optarg);
 	    fnm_output_base_is_dir = 1;
 	 } else {
-	    osfree(fnm_output_base); /* in case of multiple -o options */
 	    fnm_output_base = base_from_fnm(optarg);
 	 }
 	 break;
