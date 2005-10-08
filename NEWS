@@ -13,6 +13,8 @@
 
 * aven: Disable "Colour by Depth" option if there's no elevation variation.
 
+* (MS Windows version): aven: Fix first redraw of a newly loaded survey.
+
 * (MS Windows version): aven: Fix redrawing of measuring line.
 
 * (MS Windows version): "Print" on a 3d file now prints through aven rather
