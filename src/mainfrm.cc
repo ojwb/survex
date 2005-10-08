@@ -1090,7 +1090,9 @@ MainFrm::ProcessSVXFile(const wxString & file)
     frm->SetIcon(wxIcon(icon_path + "aven.png", wxBITMAP_TYPE_PNG));
 #endif
     CavernLogWindow * log = new CavernLogWindow(frm);
-    log->Show(true);
+#ifdef _WIN32
+    log->SetSize(frm->GetClientSize());
+#endif
     frm->Show(true);
 
     wxInputStream * std_out = proc->GetInputStream();
@@ -1170,7 +1172,7 @@ MainFrm::ProcessSVXFile(const wxString & file)
 		log->Scroll(-1, y / yu);
 		//cout << "[" << cur << "]" << endl;
 #endif
-		cur.resize(0);
+		cur.clear();
 		wxYield();
 		break;
 	    }
@@ -1589,15 +1591,15 @@ void MainFrm::FillTree()
 	    // no need to fiddle with branches...
 	}
 	// If not, then see if we've descended to a new prefix.
-	else if (prefix.Length() > current_prefix.Length() &&
+	else if (prefix.length() > current_prefix.length() &&
 		 prefix.StartsWith(current_prefix) &&
-		 (prefix[current_prefix.Length()] == separator ||
+		 (prefix[current_prefix.length()] == separator ||
 		  current_prefix == "")) {
 	    // We have, so start as many new branches as required.
-	    int current_prefix_length = current_prefix.Length();
+	    int current_prefix_length = current_prefix.length();
 	    current_prefix = prefix;
 	    if (current_prefix_length != 0) {
-		prefix = prefix.Mid(current_prefix_length + 1);
+		prefix.erase(0, current_prefix_length + 1);
 	    }
 	    int next_dot;
 	    do {
@@ -1613,15 +1615,15 @@ void MainFrm::FillTree()
 		// Append the new item to the tree and set this as the current branch.
 		current_id = m_Tree->AppendItem(current_id, bit);
 		m_Tree->SetItemData(current_id, new TreeData(NULL));
-		prefix = prefix.Mid(next_dot + 1);
+		prefix.erase(0, next_dot + 1);
 	    } while (next_dot != -1);
 	}
 	// Otherwise, we must have moved up, and possibly then down again.
 	else {
 	    size_t count = 0;
-	    bool ascent_only = (prefix.Length() < current_prefix.Length() &&
+	    bool ascent_only = (prefix.length() < current_prefix.length() &&
 				current_prefix.StartsWith(prefix) &&
-				(current_prefix[prefix.Length()] == separator ||
+				(current_prefix[prefix.length()] == separator ||
 				 prefix == ""));
 	    if (!ascent_only) {
 		// Find out how much of the current prefix and the new prefix
@@ -1632,13 +1634,13 @@ void MainFrm::FillTree()
 		    if (prefix[i] == separator) count = i + 1;
 		}
 	    } else {
-		count = prefix.Length() + 1;
+		count = prefix.length() + 1;
 	    }
 
 	    // Extract the part of the current prefix after the bit (if any)
 	    // which has matched.
 	    // This gives the prefixes to ascend over.
-	    wxString prefixes_ascended = current_prefix.Mid(count);
+	    wxString prefixes_ascended = current_prefix.substr(count);
 
 	    // Count the number of prefixes to ascend over.
 	    int num_prefixes = prefixes_ascended.Freq(separator);
@@ -1652,7 +1654,7 @@ void MainFrm::FillTree()
 
 	    if (!ascent_only) {
 		// Now extract the bit of new prefix.
-		wxString new_prefix = prefix.Mid(count);
+		wxString new_prefix = prefix.substr(count);
 
 		// Add branches for this new part.
 		while (true) {
@@ -1676,7 +1678,7 @@ void MainFrm::FillTree()
 
 		    if (next_dot == -1) break;
 
-		    new_prefix = new_prefix.Mid(next_dot + 1);
+		    new_prefix.erase(0, next_dot + 1);
 		}
 	    }
 

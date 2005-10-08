@@ -750,7 +750,7 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
     glutBitmapString(m_Font, (const unsigned char *)str.c_str());
     CHECK_GL_ERROR("DrawText", "glutBitmapString");
 #else
-    for (size_t pos = 0; pos < str.Length(); pos++) {
+    for (size_t pos = 0; pos < str.length(); pos++) {
         glutBitmapCharacter(m_Font, int((unsigned char)str[pos]));
         CHECK_GL_ERROR("DrawText", "glutBitmapCharacter");
     }
@@ -783,7 +783,7 @@ void GLACanvas::GetTextExtent(const wxString& str, int * x_ext, int * y_ext)
 	CHECK_GL_ERROR("GetTextExtent", "glutBitmapLength");
 #else
 	*x_ext = 0;
-	for (size_t pos = 0; pos < str.Length(); pos++) {
+	for (size_t pos = 0; pos < str.length(); pos++) {
 	    x_ext += glutBitmapWidth(m_Font, int((unsigned char)str[pos]));
 	    CHECK_GL_ERROR("GetTextExtent", "glutBitmapWidth");
 	}
