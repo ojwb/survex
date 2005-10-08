@@ -314,51 +314,21 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 {
    FILE *fh = fopenWithPthAndExt(pth, fnm, ext, mode, fnmUsed);
    if (fh == NULL) {
-#if (OS==RISCOS) || (OS==UNIX)
+#if (OS==UNIX)
       int f_changed = 0;
       char *fnm_trans, *p;
-#if OS==RISCOS
-      char *q;
-#endif
       fnm_trans = osstrdup(fnm);
-#if OS==RISCOS
-      q = fnm_trans;
-#endif
       for (p = fnm_trans; *p; p++) {
 	 switch (*p) {
-#if (OS==RISCOS)
-	 /* swap either slash to a dot, and a dot to a forward slash */
-	 /* but .. goes to ^ */
-	 case '.':
-	    if (p[1] == '.') {
-	       *q++ = '^';
-	       p++; /* skip second dot */
-	    } else {
-	       *q++ = '/';
-	    }
-	    f_changed = 1;
-	    break;
-	 case '/': case '\\':
-	    *q++ = '.';
-	    f_changed = 1;
-	    break;
-	 default:
-	    *q++ = *p; break;
-#else
 	 case '\\': /* swap a backslash to a forward slash */
 	    *p = '/';
 	    f_changed = 1;
 	    break;
-#endif
 	 }
       }
-#if OS==RISCOS
-      *q = '\0';
-#endif
       if (f_changed)
 	 fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
 
-#if (OS==UNIX)
       /* as a last ditch measure, try lowercasing the filename */
       if (fh == NULL) {
 	 f_changed = 0;
@@ -372,7 +342,6 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 	 if (f_changed)
 	    fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
       }
-#endif
       osfree(fnm_trans);
 #endif
    }
