@@ -995,7 +995,7 @@ class CavernLogWindow : public wxHtmlWindow {
     virtual void OnLinkClicked(const wxHtmlLinkInfo &link) {
 	wxString href = link.GetHref();
 	wxString title = link.GetTarget();
-	size_t colon = href.find(':');
+	size_t colon = href.rfind(':');
 	if (colon != wxString::npos) {
 #ifdef __WXMSW__
 	    wxString cmd = "notepad $f";
@@ -1062,7 +1062,7 @@ MainFrm::ProcessSVXFile(const wxString & file)
     char *cavern = use_path(msg_exepth(), "cavern");
     const char * argv[3] = { NULL, NULL, NULL };
 #ifdef __WXMSW__
-    SetEnvironmentVariable("SURVEX_CHARSET", "utf8");
+    SetEnvironmentVariable("SURVEX_UTF8", "1");
 #else
     setenv("SURVEX_CHARSET", "utf8", 1);
 #endif
@@ -1082,13 +1082,25 @@ MainFrm::ProcessSVXFile(const wxString & file)
 
     wxFrame * frm;
     frm = new wxFrame(NULL, wxID_ANY, "Processing: " + file);
+#ifdef _WIN32
+    // The peculiar name is so that the icon is the first in the file
+    // (required by Microsoft Windows for this type of icon)
+    frm->SetIcon(wxIcon("aaaaaAven"));
+#else
+    frm->SetIcon(wxIcon(icon_path + "aven.png", wxBITMAP_TYPE_PNG));
+#endif
     CavernLogWindow * log = new CavernLogWindow(frm);
+    log->Show(true);
     frm->Show(true);
 
     wxInputStream * std_out = proc->GetInputStream();
     wxString cur;
     while (!std_out->Eof()) {
-	while (!proc->IsInputAvailable()) wxYield();
+	if (!proc->IsInputAvailable()) {
+	    if (status >= 0) break;
+	    while (!proc->IsInputAvailable() && !std_out->Eof()) wxYield();
+	    if (std_out->Eof()) break;
+	}
 	int ch = (unsigned char)std_out->GetC();
 	// Decode UTF-8 first to avoid security issues with <, >, &, etc
 	// encoded using multibyte encodings.
@@ -1112,9 +1124,17 @@ MainFrm::ProcessSVXFile(const wxString & file)
 	}
 
 	switch (ch) {
+	    case '\r':
+		// Ignore.
+		break;
 	    case '\n': {
 		if (cur.empty()) continue;
 		size_t colon = cur.find(':');
+#ifdef __WXMSW__
+		// If the path is "C:\path\to\file.svx" then don't split at the
+		// : after the drive letter!  FIXME: better to look for ": "?
+		if (colon == 1) colon = cur.find(':', 2);
+#endif
 		if (colon != wxString::npos) {
 		    size_t colon2 = cur.find(':', colon + 1);
 		    if (colon2 != wxString::npos && colon2 != cur.size() - 1) {
@@ -1172,6 +1192,7 @@ MainFrm::ProcessSVXFile(const wxString & file)
 	}
     }
     while (status < 0) wxYield();
+    proc->Detach();
     osfree(cavern);
     if (status != 0) {
 	// FIXME: improve error message.

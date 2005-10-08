@@ -245,9 +245,10 @@ default_charset(void)
 # ifdef AVEN
 #  define CODEPAGE GetACP()
 # else
-#  define CODEPAGE GetConsoleOutputCP()
+#  define CODEPAGE (getenv("SURVEX_UTF8") ? 0 : GetConsoleOutputCP())
 # endif
    switch (CODEPAGE) {
+    case 0: return CHARSET_UTF8;
     case 1252: return CHARSET_WINCP1252;
     case 1250: return CHARSET_WINCP1250;
     case 850: return CHARSET_DOSCP850;
