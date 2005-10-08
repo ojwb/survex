@@ -266,13 +266,17 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 	} else if (m_View->PointWithinScaleBar(m_DragStart)) {
 	    m_LastDrag = drag_SCALE;
 	} else {
-	    m_LastDrag = drag_MAIN;
-
 	    if (event.ControlDown()) {
+		if (m_View->GetLock() != lock_NONE) {
+		    dragging = NO_DRAG;
+		    return;
+		}
 		m_View->SetCursor(GfxCore::CURSOR_ROTATE_EITHER_WAY);
 	    } else {
 		m_View->SetCursor(GfxCore::CURSOR_ZOOM);
 	    }
+
+	    m_LastDrag = drag_MAIN;
 	}
 
 	m_View->CaptureMouse();
@@ -285,6 +289,8 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 	if (event.GetPosition() == m_DragRealStart) {
 	    // Just a "click"...
 	    m_View->CheckHitTestGrid(m_DragStart, true);
+	} else if (dragging == NO_DRAG) {
+	    return;
 	}
 
 //	m_View->RedrawIndicators();
@@ -351,8 +357,10 @@ void GUIControl::OnRButtonUp(wxMouseEvent&)
 }
 
 void GUIControl::OnMouseWheel(wxMouseEvent& event) {
-    m_View->TiltCave(event.GetWheelRotation() / 12.0);
-    m_View->ForceRefresh();
+    if (m_View->GetLock() == lock_NONE) {
+	m_View->TiltCave(event.GetWheelRotation() / 12.0);
+	m_View->ForceRefresh();
+    }
 }
 
 void GUIControl::OnDisplayOverlappingNames()

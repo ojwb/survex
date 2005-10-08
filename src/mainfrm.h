@@ -216,6 +216,9 @@ class MainFrm : public wxFrame {
 
     wxString icon_path;
 
+    // Strings for status bar reporting of distances.
+    wxString here_text, coords_text, dist_text;
+
     void FillTree();
     bool ProcessSVXFile(const wxString & file);
     bool LoadData(const wxString& file, wxString prefix = "");
@@ -229,6 +232,8 @@ class MainFrm : public wxFrame {
     void CreateMenuBar();
     void CreateToolBar();
     void CreateSidePanel();
+
+    void UpdateStatusBar();
 
 public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
@@ -431,8 +436,6 @@ public:
     Double GetYOffset() const { return m_Offsets.getY(); }
     Double GetZOffset() const { return m_Offsets.getZ(); }
 
-    void SetMouseOverStation(LabelInfo* label);
-
     list<vector<Point> >::const_iterator traverses_begin() const {
 	return traverses.begin();
     }
@@ -481,7 +484,6 @@ public:
 	return m_Labels.end();
     }
 
-    void ClearInfo();
     void ShowInfo(const LabelInfo *label);
     void DisplayTreeInfo(const wxTreeItemData* data);
     void TreeItemSelected(wxTreeItemData* data);

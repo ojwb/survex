@@ -8,6 +8,10 @@
 * aven: Improved update of mouse coordinates and measuring line (thanks to
   Martin Green).
 
+* aven: Show the coordinates of either the mouse pointer or the nearest
+  survey station to it (if there is one near enough).  Showing both was
+  confusing and meant the status bar overflowed on smaller displays.
+
 * aven: Don't crash if trying to load a survey with no elevation variation.
   Instead turn off depth colouring.
 
@@ -17,11 +21,11 @@
 
 * (MS Windows version): aven: Fix redrawing of measuring line.
 
-* (MS Windows version): "Print" on a 3d file now prints through aven rather
-  than the separate printer driver.
-
 * (Unix version): Check environmental variable LC_MESSAGES when deciding what
   language to use for messages.
+
+* (MS Windows version): "Print" on a 3d file now prints through aven rather
+  than the separate printer driver (Unix has done this for some time).
 
 * Removed old printer drivers.
 

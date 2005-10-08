@@ -199,7 +199,7 @@ void GfxCore::Initialise()
     DefaultParameters();
 
     if (m_Parent->GetZExtent() == 0.0) {
-       SetColourBy(COLOUR_BY_NONE);
+	SetColourBy(COLOUR_BY_NONE);
     }
 
     m_HaveData = true;
@@ -980,15 +980,13 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	if (ds == 0) break;
     }
 
+    m_Parent->ShowInfo(best);
     if (best) {
-	m_Parent->SetMouseOverStation(best);
 	if (centre) {
 	    CentreOn(*best);
 	    SetThere(*best);
 	    m_Parent->SelectTreeItem(best);
 	}
-    } else {
-	m_Parent->SetMouseOverStation(NULL);
     }
 
     return best;
@@ -1106,7 +1104,7 @@ bool GfxCore::Animate()
 
     // Don't show pointer coordinates while animating.
     ClearCoords();
-    m_Parent->ClearInfo();
+    m_Parent->ShowInfo(NULL);
 
     static double last_t = 0;
     double t;

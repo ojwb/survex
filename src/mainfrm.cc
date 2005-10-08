@@ -660,11 +660,11 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
     CreateMenuBar();
     CreateToolBar();
-    CreateStatusBar(3, wxST_SIZEGRIP);
+    CreateStatusBar(2, wxST_SIZEGRIP);
     CreateSidePanel();
 
-    int widths[3] = { 150, -1 /* variable width */, -1 };
-    GetStatusBar()->SetStatusWidths(3, widths);
+    int widths[2] = { -1 /* variable width */, -1 };
+    GetStatusBar()->SetStatusWidths(2, widths);
 
 #ifdef __X__ // wxMotif or wxX11
     int x;
@@ -1051,7 +1051,7 @@ class CavernProcess : public wxProcess {
   public:
     CavernProcess(int * pstatus_)
 	: wxProcess(wxPROCESS_REDIRECT), pstatus(pstatus_) {}
-    void OnTerminate(int , int status) {
+    void OnTerminate(int, int status) {
 	*pstatus = status < 0 ? 1 : status;
     }
 };
@@ -1956,85 +1956,100 @@ void MainFrm::OnAbout(wxCommandEvent&)
     dlg.ShowModal();
 }
 
+void MainFrm::UpdateStatusBar()
+{
+    if (!here_text.empty()) {
+	GetStatusBar()->SetStatusText(here_text);
+	GetStatusBar()->SetStatusText(dist_text, 1);
+    } else if (!coords_text.empty()) {
+	GetStatusBar()->SetStatusText(coords_text);
+	GetStatusBar()->SetStatusText("", 1);
+    } else {
+	GetStatusBar()->SetStatusText("");
+	GetStatusBar()->SetStatusText("", 1);
+    }
+}
+
 void MainFrm::ClearTreeSelection()
 {
     m_Tree->UnselectAll();
-    GetStatusBar()->SetStatusText("", 2);
+    dist_text = "";
+    UpdateStatusBar();
     m_Gfx->SetThere();
 }
 
 void MainFrm::ClearCoords()
 {
-    GetStatusBar()->SetStatusText("");
+    coords_text = "";
+    UpdateStatusBar();
 }
 
 void MainFrm::SetCoords(Double x, Double y, Double z)
 {
-    wxString str;
+    wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
-	str.Printf(msg(/*  %d E, %d N*/338), int(x), int(y));
-	str += wxString::Format(", %s %dm", msg(/*Altitude*/335), int(z));
+	s.Printf(msg(/*%d E, %d N*/338), int(x), int(y));
+	s += wxString::Format(", %s %dm", msg(/*Altitude*/335), int(z));
     } else {
-	str.Printf(msg(/*  %d E, %d N*/338),
-		   int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
-	str += wxString::Format(", %s %dft", msg(/*Altitude*/335),
-		   int(z / METRES_PER_FOOT));
+	s.Printf(msg(/*%d E, %d N*/338),
+		 int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
+	s += wxString::Format(", %s %dft", msg(/*Altitude*/335),
+			      int(z / METRES_PER_FOOT));
     }
-    GetStatusBar()->SetStatusText(str);
+    UpdateStatusBar();
 }
 
 void MainFrm::SetCoords(Double x, Double y)
 {
-    wxString str;
+    wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
-	str.Printf(msg(/*  %d E, %d N*/338), int(x), int(y));
+	s.Printf(msg(/*%d E, %d N*/338), int(x), int(y));
     } else {
-	str.Printf(msg(/*  %d E, %d N*/338),
-		   int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
+	s.Printf(msg(/*%d E, %d N*/338),
+		 int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
     }
-    GetStatusBar()->SetStatusText(str);
+    UpdateStatusBar();
 }
 
 void MainFrm::SetAltitude(Double z)
 {
-    wxString str;
+    wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
-	str.Printf("  %s %dm", msg(/*Altitude*/335),
-		   int(z));
+	s.Printf("%s %dm", msg(/*Altitude*/335), int(z));
     } else {
-	str.Printf("  %s %dft", msg(/*Altitude*/335),
-		   int(z / METRES_PER_FOOT));
+	s.Printf("%s %dft", msg(/*Altitude*/335), int(z / METRES_PER_FOOT));
     }
-    GetStatusBar()->SetStatusText(str);
-}
-
-void MainFrm::ClearInfo()
-{
-    m_Gfx->SetHere();
-    m_Gfx->SetThere();
-    GetStatusBar()->SetStatusText("", 1);
-    GetStatusBar()->SetStatusText("", 2);
+    UpdateStatusBar();
 }
 
 void MainFrm::ShowInfo(const LabelInfo *label)
 {
     assert(m_Gfx);
 
-    wxString str;
-    if (m_Gfx->GetMetric()) {
-	str.Printf(msg(/*%s: %d E, %d N, %dm altitude*/374),
-		   label->text.GetData(),
-		   int(label->x + m_Offsets.getX()),
-		   int(label->y + m_Offsets.getY()),
-		   int(label->z + m_Offsets.getZ()));
-    } else {
-	str.Printf(msg(/*%s: %d E, %d N, %dft altitude*/375),
-		   label->text.GetData(),
-		   int((label->x + m_Offsets.getX()) / METRES_PER_FOOT),
-		   int((label->y + m_Offsets.getY()) / METRES_PER_FOOT),
-		   int((label->z + m_Offsets.getZ()) / METRES_PER_FOOT));
+    if (!label) {
+	m_Gfx->SetHere();
+	m_Gfx->SetThere();
+	here_text = "";
+	dist_text = "";
+	UpdateStatusBar();
+	return;
     }
-    GetStatusBar()->SetStatusText(str, 1);
+
+    double x = label->x + m_Offsets.getX();
+    double y = label->y + m_Offsets.getY();
+    double z = label->z + m_Offsets.getZ();
+    wxString & s = here_text;
+    if (m_Gfx->GetMetric()) {
+	s.Printf(msg(/*%d E, %d N*/338), int(x), int(y));
+	s += wxString::Format(", %s %dm", msg(/*Altitude*/335), int(z));
+    } else {
+	s.Printf(msg(/*%d E, %d N*/338),
+		 int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
+	s += wxString::Format(", %s %dft", msg(/*Altitude*/335),
+			      int(z / METRES_PER_FOOT));
+    }
+    s += ": ";
+    s += label->text.GetData();
     m_Gfx->SetHere(*label);
 
     wxTreeItemData* sel_wx;
@@ -2086,23 +2101,24 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 		brg *= 400.0 / 360.0;
 		brg_unit = msg(/*grad*/345);
 	    }
+	    wxString & d = dist_text;
 	    if (m_Gfx->GetMetric()) {
-		str.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
-			   from_str.c_str(), hv_str.c_str(),
-			   int(dr), "m", int(brg), brg_unit.c_str());
+		d.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
+			 from_str.c_str(), hv_str.c_str(),
+			 int(dr), "m", int(brg), brg_unit.c_str());
 	    } else {
-		str.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
-			   from_str.c_str(), hv_str.c_str(),
-			   int(dr / METRES_PER_FOOT), "ft", int(brg),
-			   brg_unit.c_str());
+		d.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
+			 from_str.c_str(), hv_str.c_str(),
+			 int(dr / METRES_PER_FOOT), "ft", int(brg),
+			 brg_unit.c_str());
 	    }
-	    GetStatusBar()->SetStatusText(str, 2);
 	    m_Gfx->SetThere(*label2);
 	} else {
-	    GetStatusBar()->SetStatusText("", 2);
+	    dist_text = "";
 	    m_Gfx->SetThere();
 	}
     }
+    UpdateStatusBar();
 }
 
 void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
@@ -2113,7 +2129,7 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
 	ShowInfo(label);
 	m_Gfx->SetHere(*label);
     } else {
-	ClearInfo();
+	ShowInfo(NULL);
     }
 }
 
@@ -2125,14 +2141,15 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
 	const LabelInfo* label = data->GetLabel();
 	m_Gfx->CentreOn(*label);
 	m_Gfx->SetThere(*label);
-	GetStatusBar()->SetStatusText("", 2);
-	// FIXME: Need to update statustext 2 (From ... etc)
+	dist_text = "";
+	// FIXME: Need to update dist_text (From ... etc)
 	// But we don't currently know where "here" is at this point in the
 	// code!
     } else {
-	GetStatusBar()->SetStatusText("", 2);
+	dist_text = "";
 	m_Gfx->SetThere();
     }
+    UpdateStatusBar();
 }
 
 void MainFrm::OnPresNew(wxCommandEvent&)
@@ -2462,15 +2479,6 @@ void MainFrm::OnHide(wxCommandEvent&)
 void MainFrm::OnHideUpdate(wxUpdateUIEvent& ui)
 {
     ui.Enable(m_NumHighlighted != 0);
-}
-
-void MainFrm::SetMouseOverStation(LabelInfo* label)
-{
-    if (label) {
-	ShowInfo(label);
-    } else {
-	ClearInfo();
-    }
 }
 
 void MainFrm::OnViewSidePanel(wxCommandEvent&)

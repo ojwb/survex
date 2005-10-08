@@ -3424,16 +3424,16 @@ sk:337 @Postrann&yacute; panel
 ro:337 @Cadran lateral
 #ro: still to check
 # show coordinates (N = North or Northing, E = East or Easting)
-en:338 "  %d E, %d N"
-fr:338 "  %d E, %d N"
-#alternatively de:338 "  %d O, %d N", but H/R is consistent with headings in pos files
-de:338 "  %d H, %d R"
-pt:338 "  %d L, %d N"
-ca:338 "  %d E, %d N"
-es:338 "  %d E, %d N"
-it:338 "  %d E, %d N"
-sk:338 "  %d V, %d S"
-ro:338 "  %d E, %d N"
+en:338 "%d E, %d N"
+fr:338 "%d E, %d N"
+#alternatively de:338 "%d O, %d N", but H/R is consistent with headings in pos files
+de:338 "%d H, %d R"
+pt:338 "%d L, %d N"
+ca:338 "%d E, %d N"
+es:338 "%d E, %d N"
+it:338 "%d E, %d N"
+sk:338 "%d V, %d S"
+ro:338 "%d E, %d N"
 # Used in Aven:
 #  From <stationname>
 #  H: 123m V: 234m
@@ -3603,12 +3603,7 @@ it:372 Mostra clinometro
 en:373 Display side panel
 it:373 Mostra pannello laterale
 #
-# for status bar:
-en:374 %s: %d E, %d N, %dm altitude
-it:374 %s: %d E, %d N, %dm quota
-#
-en:375 %s: %d E, %d N, %dft altitude
-it:375 %s: %d E, %d N, %dft quota
+# XXX 374, 375
 #
 # labels for tabbed side panel:
 en:376 Surveys
