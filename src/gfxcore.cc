@@ -203,6 +203,8 @@ void GfxCore::Initialise()
     }
 
     m_HaveData = true;
+
+    ForceRefresh();
 }
 
 void GfxCore::FirstShow()
@@ -943,7 +945,7 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	return false;
     }
 
-//    SetDataTransform();
+    SetDataTransform();
 
     if (!m_HitTestGridValid) CreateHitTestGrid();
 
