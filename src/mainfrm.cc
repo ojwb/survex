@@ -697,7 +697,7 @@ void MainFrm::CreateMenuBar()
     filemenu->Append(menu_FILE_PAGE_SETUP, GetTabMsg(/*P@age Setup...*/381));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_SCREENSHOT, GetTabMsg(/*@Screenshot...*/201));
-    filemenu->Append(menu_FILE_EXPORT, "Export as..."); // FIXME TRANSLATE
+    filemenu->Append(menu_FILE_EXPORT, "&Export as..."); // FIXME TRANSLATE
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
 
@@ -706,7 +706,7 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* rotmenu = new wxMenu;
     // FIXME: TRANSLATE
-    rotmenu->Append(menu_ROTATION_TOGGLE, "&Auto-Rotate\tSpace", "", true);
+    rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, "&Auto-Rotate\tSpace");
     rotmenu->AppendSeparator();
     rotmenu->Append(menu_ROTATION_SPEED_UP, GetTabMsg(/*Speed @Up*/232));
     rotmenu->Append(menu_ROTATION_SLOW_DOWN, GetTabMsg(/*Slow @Down*/233));
@@ -750,32 +750,32 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* viewmenu = new wxMenu;
 #ifndef PREFDLG
-    viewmenu->Append(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270), "", true);
-    viewmenu->Append(menu_VIEW_SHOW_TUBES, GetTabMsg(/*Passage @Tubes*/346), "", true);
-    viewmenu->Append(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271), "", true);
-    viewmenu->Append(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297), "", true);
-    viewmenu->Append(menu_VIEW_BOUNDING_BOX, GetTabMsg(/*@Bounding Box##Ctrl+B*/318), "", true);
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_TUBES, GetTabMsg(/*Passage @Tubes*/346));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271));
+    viewmenu->AppendCheckItem(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297));
+    viewmenu->AppendCheckItem(menu_VIEW_BOUNDING_BOX, GetTabMsg(/*@Bounding Box##Ctrl+B*/318));
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_LEGS, GetTabMsg(/*@Underground Survey Legs##Ctrl+L*/272), "", true);
-    viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*@Surface Survey Legs##Ctrl+F*/291), "", true);
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_LEGS, GetTabMsg(/*@Underground Survey Legs##Ctrl+L*/272));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*@Surface Survey Legs##Ctrl+F*/291));
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273), "", true);
-    viewmenu->Append(menu_VIEW_COLOUR_BY_DEPTH, GetTabMsg(/*Colour by @Depth*/292), "", true);
-    viewmenu->Append(menu_VIEW_COLOUR_BY_DATE, GetTabMsg(/*Colour by D@ate*/293), "", true);
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273));
+    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, GetTabMsg(/*Colour by @Depth*/292));
+    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, GetTabMsg(/*Colour by D@ate*/293));
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
-    viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295), "", true);
-    viewmenu->Append(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296), "", true);
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296));
     viewmenu->AppendSeparator();
 #else
     viewmenu-> Append(menu_VIEW_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
 #endif
-    viewmenu->Append(menu_VIEW_PERSPECTIVE, GetTabMsg(/*@Perspective*/237), "", true);
-    viewmenu->Append(menu_VIEW_TEXTURED, GetTabMsg(/*Textured @Walls*/238), "", true);
-    viewmenu->Append(menu_VIEW_FOG, GetTabMsg(/*Fade @Distant Objects*/239), "", true);
-    viewmenu->Append(menu_VIEW_SMOOTH_LINES, GetTabMsg(/*@Smoothed Survey Legs*/298), "", true);
+    viewmenu->AppendCheckItem(menu_VIEW_PERSPECTIVE, GetTabMsg(/*@Perspective*/237));
+    viewmenu->AppendCheckItem(menu_VIEW_TEXTURED, GetTabMsg(/*Textured @Walls*/238));
+    viewmenu->AppendCheckItem(menu_VIEW_FOG, GetTabMsg(/*Fade @Distant Objects*/239));
+    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_LINES, GetTabMsg(/*@Smoothed Survey Legs*/298));
     viewmenu->AppendSeparator();
-    viewmenu->Append(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode##F11*/356), "", true);
+    viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode##F11*/356));
 #ifdef PREFDLG
     viewmenu->AppendSeparator();
     viewmenu-> Append(menu_VIEW_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
@@ -783,20 +783,20 @@ void MainFrm::CreateMenuBar()
 
 #ifndef PREFDLG
     wxMenu* ctlmenu = new wxMenu;
-    ctlmenu->Append(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280), "", true);
+    ctlmenu->AppendCheckItem(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280));
     ctlmenu->AppendSeparator();
     ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
     ctlmenu->AppendSeparator();
     wxMenu* indmenu = new wxMenu;
-    indmenu->Append(menu_IND_COMPASS, GetTabMsg(/*@Compass*/274), "", true);
-    indmenu->Append(menu_IND_CLINO, GetTabMsg(/*C@linometer*/275), "", true);
-    indmenu->Append(menu_IND_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276), "", true);
-    indmenu->Append(menu_IND_SCALE_BAR, GetTabMsg(/*@Scale Bar*/277), "", true);
+    indmenu->AppendCheckItem(menu_IND_COMPASS, GetTabMsg(/*@Compass*/274));
+    indmenu->AppendCheckItem(menu_IND_CLINO, GetTabMsg(/*C@linometer*/275));
+    indmenu->AppendCheckItem(menu_IND_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276));
+    indmenu->AppendCheckItem(menu_IND_SCALE_BAR, GetTabMsg(/*@Scale Bar*/277));
     ctlmenu->Append(menu_CTL_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
-    ctlmenu->Append(menu_CTL_SIDE_PANEL, GetTabMsg(/*@Side Panel*/337), "", true);
+    ctlmenu->AppendCheckItem(menu_CTL_SIDE_PANEL, GetTabMsg(/*@Side Panel*/337));
     ctlmenu->AppendSeparator();
-    ctlmenu->Append(menu_CTL_METRIC, GetTabMsg(/*@Metric*/342), "", true);
-    ctlmenu->Append(menu_CTL_DEGREES, GetTabMsg(/*@Degrees*/343), "", true);
+    ctlmenu->AppendCheckItem(menu_CTL_METRIC, GetTabMsg(/*@Metric*/342));
+    ctlmenu->AppendCheckItem(menu_CTL_DEGREES, GetTabMsg(/*@Degrees*/343));
 #endif
 
     wxMenu* helpmenu = new wxMenu;
