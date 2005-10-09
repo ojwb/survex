@@ -812,6 +812,58 @@ void GfxCore::DrawDepthbar()
     delete[] strs;
 }
 
+void GfxCore::DrawDatebar()
+{
+    const int total_block_height =
+	DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
+    int size = 0;
+
+    wxString* strs = new wxString[GetNumDepthBands()];
+    char buf[128];
+    int band;
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	time_t date = m_Parent->GetDateMin() +
+		   m_Parent->GetDateExtent() * band / (GetNumDepthBands() - 1);
+	size_t res = strftime(buf, sizeof(buf), "%Y-%m-%d", gmtime(&date));
+	// Insert extra "" to avoid trigraphs issues.
+	if (res == 0 || res == sizeof(buf)) strcpy(buf, "?""?""?""?-?""?-?""?");
+	strs[band] = buf;
+
+	int x, dummy;
+	GetTextExtent(strs[band], &x, &dummy);
+	if (x > size) size = x;
+    }
+
+    int left = -DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
+		- DEPTH_BAR_MARGIN - size;
+
+    DrawRectangle(col_BLACK, col_DARK_GREY,
+		  left - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  top - DEPTH_BAR_MARGIN * 2,
+		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN * 3 +
+		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  total_block_height + DEPTH_BAR_MARGIN*4);
+
+    int y = top;
+    for (band = 0; band < GetNumDepthBands() - 1; band++) {
+	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
+			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    y = top - GetFontSize() / 2 - 1;
+    left += DEPTH_BAR_BLOCK_WIDTH + 5;
+
+    SetColour(TEXT_COLOUR);
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	DrawIndicatorText(left, y, strs[band]);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    delete[] strs;
+}
+
 wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 {
     wxString str;
@@ -1709,6 +1761,11 @@ bool GfxCore::IsFlat() const
     return m_Parent->GetZExtent() == 0.0;
 }
 
+bool GfxCore::HasRangeOfDates() const
+{
+    return m_Parent->GetDateExtent() > 0;
+}
+
 bool GfxCore::ShowingPlan() const
 {
     // Determine if the survey is in plan view.
@@ -1792,6 +1849,9 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_DEPTHBAR:
 	    DrawDepthbar();
 	    break;
+	case LIST_DATEBAR:
+	    DrawDatebar();
+	    break;
 	case LIST_UNDERGROUND_LEGS:
 	    GenerateDisplayList();
 	    break;
@@ -1837,8 +1897,8 @@ void GfxCore::GenerateList(unsigned int l)
 void GfxCore::GenerateDisplayList()
 {
     // Generate the display list for the underground legs.
-    list<vector<Point> >::const_iterator trav = m_Parent->traverses_begin();
-    list<vector<Point> >::const_iterator tend = m_Parent->traverses_end();
+    list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();
+    list<vector<PointInfo> >::const_iterator tend = m_Parent->traverses_end();
     while (trav != tend) {
 	(this->*AddPoly)(*trav);
 	++trav;
@@ -1860,8 +1920,8 @@ void GfxCore::GenerateDisplayListSurface()
 {
     // Generate the display list for the surface legs.
     EnableDashedLines();
-    list<vector<Point> >::const_iterator trav = m_Parent->surface_traverses_begin();
-    list<vector<Point> >::const_iterator tend = m_Parent->surface_traverses_end();
+    list<vector<PointInfo> >::const_iterator trav = m_Parent->surface_traverses_begin();
+    list<vector<PointInfo> >::const_iterator tend = m_Parent->surface_traverses_end();
     while (trav != tend) {
 	AddPolyline(*trav);
 	++trav;
@@ -1872,8 +1932,8 @@ void GfxCore::GenerateDisplayListSurface()
 void GfxCore::GenerateDisplayListShadow()
 {
     SetColour(col_BLACK);
-    list<vector<Point> >::const_iterator trav = m_Parent->traverses_begin();
-    list<vector<Point> >::const_iterator tend = m_Parent->traverses_end();
+    list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();
+    list<vector<PointInfo> >::const_iterator tend = m_Parent->traverses_end();
     while (trav != tend) {
 	AddPolylineShadow(*trav);
 	++trav;
@@ -1935,9 +1995,12 @@ void GfxCore::GenerateBlobsDisplayList()
 void GfxCore::DrawIndicators()
 {
     // Draw depthbar.
-    if (m_Depthbar && m_ColourBy == COLOUR_BY_DEPTH &&
-	m_Parent->GetZExtent() != 0.0) {
-	DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
+    if (m_Depthbar) {
+       if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetZExtent() != 0.0) {
+	   DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
+       } else if (m_ColourBy == COLOUR_BY_DATE && m_Parent->GetDateExtent()) {
+	   DrawList2D(LIST_DATEBAR, m_XSize, m_YSize, 0);
+       }
     }
 
     // Draw compass or elevation/heading indicators.
@@ -1974,25 +2037,24 @@ void GfxCore::PlaceVertexWithDepthColour(Double x, Double y, Double z,
     assert(how_far <= 1.0);
 
     int band = int(floor(how_far * (GetNumDepthBands() - 1)));
-    int next_band = (band == (GetNumDepthBands() - 1)) ? band : band + 1;
-
     GLAPen pen1 = GetPen(band);
-    const GLAPen& pen2 = GetPen(next_band);
+    if (band < GetNumDepthBands() - 1) {
+	const GLAPen& pen2 = GetPen(band + 1);
 
-    Double interval = z_ext / (GetNumDepthBands() - 1);
-    Double into_band = z_offset / interval - band;
+	Double interval = z_ext / (GetNumDepthBands() - 1);
+	Double into_band = z_offset / interval - band;
 
-//    printf("%g z_offset=%g interval=%g band=%d\n", into_band,
-//	    z_offset, interval, band);
-    // FIXME: why do we need to clamp here?  Is it because the walls can
-    // extend further up/down than the centre-line?
-    if (into_band < 0.0) into_band = 0.0;
-    if (into_band > 1.0) into_band = 1.0;
-    assert(into_band >= 0.0);
-    assert(into_band <= 1.0);
+//	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
+//	       z_offset, interval, band);
+	// FIXME: why do we need to clamp here?  Is it because the walls can
+	// extend further up/down than the centre-line?
+	if (into_band < 0.0) into_band = 0.0;
+	if (into_band > 1.0) into_band = 1.0;
+	assert(into_band >= 0.0);
+	assert(into_band <= 1.0);
 
-    pen1.Interpolate(pen2, into_band);
-
+	pen1.Interpolate(pen2, into_band);
+    }
     SetColour(pen1, factor);
 
     PlaceVertex(x, y, z);
@@ -2041,11 +2103,11 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
     return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2;
 }
 
-void GfxCore::AddPolyline(const vector<Point> & centreline)
+void GfxCore::AddPolyline(const vector<PointInfo> & centreline)
 {
     BeginPolyline();
     SetColour(GetSurfacePen());
-    vector<Point>::const_iterator i = centreline.begin();
+    vector<PointInfo>::const_iterator i = centreline.begin();
     PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
     ++i;
     while (i != centreline.end()) {
@@ -2055,10 +2117,10 @@ void GfxCore::AddPolyline(const vector<Point> & centreline)
     EndPolyline();
 }
 
-void GfxCore::AddPolylineShadow(const vector<Point> & centreline)
+void GfxCore::AddPolylineShadow(const vector<PointInfo> & centreline)
 {
     BeginPolyline();
-    vector<Point>::const_iterator i = centreline.begin();
+    vector<PointInfo>::const_iterator i = centreline.begin();
     PlaceVertex(i->GetX(), i->GetY(), -0.5 * m_Parent->GetZExtent());
     ++i;
     while (i != centreline.end()) {
@@ -2068,10 +2130,10 @@ void GfxCore::AddPolylineShadow(const vector<Point> & centreline)
     EndPolyline();
 }
 
-void GfxCore::AddPolylineDepth(const vector<Point> & centreline)
+void GfxCore::AddPolylineDepth(const vector<PointInfo> & centreline)
 {
     BeginPolyline();
-    vector<Point>::const_iterator i, prev_i;
+    vector<PointInfo>::const_iterator i, prev_i;
     i = centreline.begin();
     int band0 = GetDepthColour(i->GetZ());
     PlaceVertexWithDepthColour(i->GetX(), i->GetY(), i->GetZ());
@@ -2158,6 +2220,94 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     EndPolygon();
 }
 
+void GfxCore::SetColourFromDate(time_t date, Double factor)
+{
+    // Set the drawing colour based on a date.
+
+    if (date == 0) {
+	SetColour(GetSurfacePen(), factor);
+	return;
+    }
+
+    time_t date_ext = m_Parent->GetDateExtent();
+    time_t date_offset = date - m_Parent->GetDateMin();
+
+    Double how_far = (Double)date_offset / date_ext;
+    assert(how_far >= 0.0);
+    assert(how_far <= 1.0);
+
+    int band = int(floor(how_far * (GetNumDepthBands() - 1)));
+    GLAPen pen1 = GetPen(band);
+    if (band < GetNumDepthBands() - 1) {
+	const GLAPen& pen2 = GetPen(band + 1);
+
+	Double interval = date_ext / (GetNumDepthBands() - 1);
+	Double into_band = date_offset / interval - band;
+
+//	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
+//	       z_offset, interval, band);
+	// FIXME: why do we need to clamp here?  Is it because the walls can
+	// extend further up/down than the centre-line?
+	if (into_band < 0.0) into_band = 0.0;
+	if (into_band > 1.0) into_band = 1.0;
+	assert(into_band >= 0.0);
+	assert(into_band <= 1.0);
+
+	pen1.Interpolate(pen2, into_band);
+    }
+    SetColour(pen1, factor);
+}
+
+void GfxCore::AddPolylineDate(const vector<PointInfo> & centreline)
+{
+    BeginPolyline();
+    vector<PointInfo>::const_iterator i, prev_i;
+    i = centreline.begin();
+    time_t date = i->GetDate();
+    SetColourFromDate(date, 1.0);
+    PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
+    prev_i = i;
+    while (++i != centreline.end()) {
+	time_t newdate = i->GetDate();
+	if (newdate != date) {
+	    EndPolyline();
+	    BeginPolyline();
+	    date = newdate;
+	    SetColourFromDate(date, 1.0);
+	    PlaceVertex(prev_i->GetX(), prev_i->GetY(), prev_i->GetZ());
+	}
+	PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
+	prev_i = i;
+    }
+    EndPolyline();
+}
+
+static time_t static_date_hack; // FIXME
+
+void GfxCore::AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
+				   const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    // FIXME: should plot triangles instead to avoid rendering glitches.
+    BeginPolygon();
+////    PlaceNormal(normal.getX(), normal.getY(), normal.getZ());
+    SetColourFromDate(static_date_hack, factor);
+    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
+    glTexCoord2i(0, 0);
+    PlaceVertex(a.getX(), a.getY(), a.getZ());
+    glTexCoord2i(w, 0);
+    PlaceVertex(b.getX(), b.getY(), b.getZ());
+    glTexCoord2i(w, h);
+    PlaceVertex(c.getX(), c.getY(), c.getZ());
+    glTexCoord2i(0, h);
+    PlaceVertex(d.getX(), d.getY(), d.getZ());
+    EndPolygon();
+}
+
 void
 GfxCore::SkinPassage(const vector<XSect> & centreline)
 {
@@ -2203,6 +2353,7 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 	    }
 
 	    cover_end = true;
+	    static_date_hack = next_pt_v.GetDate();
 	} else if (segment + 1 == centreline.size()) {
 	    // last segment
 
@@ -2223,6 +2374,7 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 	    }
 
 	    cover_end = true;
+	    static_date_hack = pt_v.GetDate();
 	} else {
 	    assert(i != centreline.end());
 	    // Intermediate segment.
@@ -2324,6 +2476,7 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 		up = up_v;
 	    }
 	    last_right = right;
+	    static_date_hack = pt_v.GetDate();
 	}
 
 	// Scale to unit vectors in the LRUD plane.
@@ -2446,7 +2599,6 @@ void GfxCore::PlayPres(double speed, bool change_speed) {
 	    swap(this_mark_total, next_mark_time);
 	}
     }
-    pres_speed = speed;
 }
 
 void GfxCore::SetColourBy(int colour_by) {
@@ -2455,6 +2607,10 @@ void GfxCore::SetColourBy(int colour_by) {
 	case COLOUR_BY_DEPTH:
 	    AddQuad = &GfxCore::AddQuadrilateralDepth;
 	    AddPoly = &GfxCore::AddPolylineDepth;
+	    break;
+	case COLOUR_BY_DATE:
+	    AddQuad = &GfxCore::AddQuadrilateralDate;
+	    AddPoly = &GfxCore::AddPolylineDate;
 	    break;
 	default: // case COLOUR_BY_NONE:
 	    AddQuad = &GfxCore::AddQuadrilateral;

@@ -1577,6 +1577,25 @@ write_v3label(img *pimg, int opt, const char *s)
    return !ferror(pimg->fh);
 }
 
+static void
+img_write_item_date(img *pimg)
+{
+    if (pimg->date1 != pimg->olddate1 ||
+	    pimg->date2 != pimg->olddate2) {
+	/* Only write dates when they've changed. */
+	if (pimg->date1 == pimg->date2) {
+	    putc(0x20, pimg->fh);
+	    put32(pimg->date1, pimg->fh);
+	} else {
+	    putc(0x21, pimg->fh);
+	    put32(pimg->date1, pimg->fh);
+	    put32(pimg->date2, pimg->fh);
+	}
+	pimg->olddate1 = pimg->date1;
+	pimg->olddate2 = pimg->date2;
+    }
+}
+
 void
 img_write_item(img *pimg, int code, int flags, const char *s,
 	       double x, double y, double z)
@@ -1590,15 +1609,19 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	 opt = 0;
 	 break;
        case img_XSECT: {
-	 INT32_T l = (INT32_T)my_round(pimg->l * 100.0);
-	 INT32_T r = (INT32_T)my_round(pimg->r * 100.0);
-	 INT32_T u = (INT32_T)my_round(pimg->u * 100.0);
-	 INT32_T d = (INT32_T)my_round(pimg->d * 100.0);
-	 INT32_T max_dim = max(max(l, r), max(u, d));
+	 INT32_T l, r, u, d, max_dim;
+	 /* Need at least version 5 for img_XSECT. */
+	 if (pimg->version < 5) break;
+	 img_write_item_date(pimg);
+	 l = (INT32_T)my_round(pimg->l * 100.0);
+	 r = (INT32_T)my_round(pimg->r * 100.0);
+	 u = (INT32_T)my_round(pimg->u * 100.0);
+	 d = (INT32_T)my_round(pimg->d * 100.0);
 	 if (l < 0) l = -1;
 	 if (r < 0) r = -1;
 	 if (u < 0) u = -1;
 	 if (d < 0) d = -1;
+	 max_dim = max(max(l, r), max(u, d));
 	 flags &= 1;
 	 if (max_dim >= 32768) flags |= 2;
 	 write_v3label(pimg, 0x30 | flags, s);
@@ -1621,20 +1644,7 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	 break;
        case img_LINE:
 	 if (pimg->version >= 4) {
-	     if (pimg->date1 != pimg->olddate1 ||
-		 pimg->date2 != pimg->olddate2) {
-		 /* Only write dates when they've changed. */
-		 if (pimg->date1 == pimg->date2) {
-		     putc(0x20, pimg->fh);
-		     put32(pimg->date1, pimg->fh);
-		 } else {
-		     putc(0x21, pimg->fh);
-		     put32(pimg->date1, pimg->fh);
-		     put32(pimg->date2, pimg->fh);
-		 }
-		 pimg->olddate1 = pimg->date1;
-		 pimg->olddate2 = pimg->date2;
-	     }
+	     img_write_item_date(pimg);
 	 }
 	 write_v3label(pimg, 0x80 | flags, s ? s : "");
 	 opt = 0;

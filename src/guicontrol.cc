@@ -383,10 +383,25 @@ void GUIControl::OnColourByDepth()
     }
 }
 
+void GUIControl::OnColourByDate()
+{
+    if (m_View->ColouringBy() == COLOUR_BY_DATE) {
+	m_View->SetColourBy(COLOUR_BY_NONE);
+    } else {
+	m_View->SetColourBy(COLOUR_BY_DATE);
+    }
+}
+
 void GUIControl::OnColourByDepthUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs() && !m_View->IsFlat());
     cmd.Check(m_View->ColouringBy() == COLOUR_BY_DEPTH);
+}
+
+void GUIControl::OnColourByDateUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs() && m_View->HasRangeOfDates());
+    cmd.Check(m_View->ColouringBy() == COLOUR_BY_DATE);
 }
 
 void GUIControl::OnShowCrosses()

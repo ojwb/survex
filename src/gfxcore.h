@@ -59,6 +59,7 @@ class Point {
 
 class XSect;
 class LabelInfo;
+class PointInfo;
 class MovieMaker;
 
 class PresentationMark : public Point {
@@ -105,6 +106,7 @@ class GfxCore : public GLACanvas {
 	LIST_CLINO,
 	LIST_CLINO_BACK,
 	LIST_DEPTHBAR,
+	LIST_DATEBAR,
 	LIST_UNDERGROUND_LEGS,
 	LIST_TUBES,
 	LIST_SURFACE_LEGS,
@@ -194,6 +196,8 @@ private:
     void PlaceVertexWithDepthColour(Double x, Double y, Double z,
 				    Double factor = 1.0);
 
+    void SetColourFromDate(time_t date, Double factor);
+
     int GetClinoOffset() const;
     void DrawTick(int angle_cw);
     wxString FormatLength(Double, bool scalebar = true);
@@ -214,6 +218,7 @@ private:
 
     void DrawScalebar();
     void DrawDepthbar();
+    void DrawDatebar();
     void DrawCompass();
     void DrawClino();
     void DrawClinoBack();
@@ -333,6 +338,7 @@ public:
     bool IsRotating() const { return m_Rotating; }
     bool HasData() const { return m_DoneFirstShow && m_HaveData; }
     bool IsFlat() const;
+    bool HasRangeOfDates() const;
 
     double GetScale() const { return m_Scale; }
     void SetScale(Double scale);
@@ -342,7 +348,7 @@ public:
     bool ShowingCrosses() const { return m_Crosses; }
     bool ShowingGrid() const { return m_Grid; }
 
-    bool ColouringBy() const { return m_ColourBy; }
+    int ColouringBy() const { return m_ColourBy; }
 
     bool HasUndergroundLegs() const;
     bool HasSurfaceLegs() const;
@@ -407,18 +413,21 @@ public:
 			      Double factor = 1.0);
     int GetDepthColour(Double z) const;
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
-    void AddPolyline(const vector<Point> & centreline);
-    void AddPolylineDepth(const vector<Point> & centreline);
+    void AddPolyline(const vector<PointInfo> & centreline);
+    void AddPolylineDepth(const vector<PointInfo> & centreline);
+    void AddPolylineDate(const vector<PointInfo> & centreline);
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			  const Vector3 &c, const Vector3 &d);
-    void AddPolylineShadow(const vector<Point> & centreline);
+    void AddPolylineShadow(const vector<PointInfo> & centreline);
     void AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 			       const Vector3 &c, const Vector3 &d);
+    void AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
+			      const Vector3 &c, const Vector3 &d);
     void MoveViewer(double forward, double up, double right);
 
     void (GfxCore::* AddQuad)(const Vector3 &a, const Vector3 &b,
                               const Vector3 &c, const Vector3 &d);
-    void (GfxCore::* AddPoly)(const vector<Point> & centreline);
+    void (GfxCore::* AddPoly)(const vector<PointInfo> & centreline);
 
     PresentationMark GetView() const;
     void SetView(const PresentationMark & p);

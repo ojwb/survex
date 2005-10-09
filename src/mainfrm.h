@@ -45,6 +45,7 @@
 using namespace std;
 
 #include <math.h>
+#include <time.h>
 
 #define MARK_FIRST 1
 #define MARK_NEXT 2
@@ -113,6 +114,7 @@ enum {
     menu_VIEW_FULLSCREEN,
     menu_VIEW_PREFERENCES,
     menu_VIEW_COLOUR_BY_DEPTH,
+    menu_VIEW_COLOUR_BY_DATE,
     menu_IND_COMPASS,
     menu_IND_CLINO,
     menu_IND_DEPTH_BAR,
@@ -130,14 +132,26 @@ enum {
     listctrl_PRES
 };
 
-class XSect : public Point {
+class PointInfo : public Point {
+    time_t date;
+
+public:
+    PointInfo() : Point(), date(0) { }
+    PointInfo(const img_point & pt) : Point(pt), date(0) { }
+    PointInfo(const img_point & pt, time_t date_) : Point(pt), date(date_) { }
+    PointInfo(const Point & p, time_t date_) : Point(p), date(date_) { }
+    time_t GetDate() const { return date; }
+};
+
+class XSect : public PointInfo {
     friend class MainFrm;
     Double l, r, u, d;
 
 public:
-    XSect() : Point(), l(0), r(0), u(0), d(0) { }
-    XSect(const Point &p, Double l_, Double r_, Double u_, Double d_)
-	: Point(p), l(l_), r(r_), u(u_), d(d_) { }
+    XSect() : PointInfo(), l(0), r(0), u(0), d(0) { }
+    XSect(const Point &p, time_t date_,
+	  Double l_, Double r_, Double u_, Double d_)
+	: PointInfo(p, date_), l(l_), r(r_), u(u_), d(d_) { }
     Double GetL() const { return l; }
     Double GetR() const { return r; }
     Double GetU() const { return u; }
@@ -177,14 +191,15 @@ public:
 class MainFrm : public wxFrame {
     wxFileHistory m_history;
     int m_SashPosition;
-    list<vector<Point> > traverses;
-    list<vector<Point> > surface_traverses;
+    list<vector<PointInfo> > traverses;
+    list<vector<PointInfo> > surface_traverses;
     list<vector<XSect> > tubes;
     list<LabelInfo*> m_Labels;
     Double m_XExt;
     Double m_YExt;
     Double m_ZExt;
     Double m_ZMin;
+    time_t m_DateMin, m_DateExt;
     int m_NumCrosses;
     GfxCore* m_Gfx;
     GUIControl* m_Control;
@@ -222,7 +237,7 @@ class MainFrm : public wxFrame {
     void FillTree();
     bool ProcessSVXFile(const wxString & file);
     bool LoadData(const wxString& file, wxString prefix = "");
-    void FixLRUD(vector<Point> & centreline);
+//    void FixLRUD(vector<PointInfo> & centreline);
     void CentreDataset(Double xmin, Double ymin, Double zmin);
 
     wxString GetTabMsg(int key) {
@@ -307,6 +322,7 @@ public:
     void OnElevationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnElevationUpdate(event); }
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnDisplayOverlappingNamesUpdate(event); }
     void OnColourByDepthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDepthUpdate(event); }
+    void OnColourByDateUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDateUpdate(event); }
     void OnShowCrossesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowCrossesUpdate(event); }
     void OnShowEntrancesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowEntrancesUpdate(event); }
     void OnShowFixedPtsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowFixedPtsUpdate(event); }
@@ -352,6 +368,7 @@ public:
     void OnElevation(wxCommandEvent&) { if (m_Control) m_Control->OnElevation(); }
     void OnDisplayOverlappingNames(wxCommandEvent&) { if (m_Control) m_Control->OnDisplayOverlappingNames(); }
     void OnColourByDepth(wxCommandEvent&) { if (m_Control) m_Control->OnColourByDepth(); }
+    void OnColourByDate(wxCommandEvent&) { if (m_Control) m_Control->OnColourByDate(); }
     void OnShowCrosses(wxCommandEvent&) { if (m_Control) m_Control->OnShowCrosses(); }
     void OnShowEntrances(wxCommandEvent&) { if (m_Control) m_Control->OnShowEntrances(); }
     void OnShowFixedPts(wxCommandEvent&) { if (m_Control) m_Control->OnShowFixedPts(); }
@@ -413,6 +430,9 @@ public:
     Double GetZMin() const { return m_ZMin; }
     Double GetZMax() const { return m_ZMin + m_ZExt; }
 
+    time_t GetDateExtent() const { return m_DateExt; }
+    time_t GetDateMin() const { return m_DateMin; }
+
     int GetNumCrosses() const { return m_NumCrosses; } // FIXME: unused
 
     void SelectTreeItem(LabelInfo* label);
@@ -436,19 +456,19 @@ public:
     Double GetYOffset() const { return m_Offsets.getY(); }
     Double GetZOffset() const { return m_Offsets.getZ(); }
 
-    list<vector<Point> >::const_iterator traverses_begin() const {
+    list<vector<PointInfo> >::const_iterator traverses_begin() const {
 	return traverses.begin();
     }
 
-    list<vector<Point> >::const_iterator traverses_end() const {
+    list<vector<PointInfo> >::const_iterator traverses_end() const {
 	return traverses.end();
     }
 
-    list<vector<Point> >::const_iterator surface_traverses_begin() const {
+    list<vector<PointInfo> >::const_iterator surface_traverses_begin() const {
 	return surface_traverses.begin();
     }
 
-    list<vector<Point> >::const_iterator surface_traverses_end() const {
+    list<vector<PointInfo> >::const_iterator surface_traverses_end() const {
 	return surface_traverses.end();
     }
 

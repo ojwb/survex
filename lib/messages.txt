@@ -2671,7 +2671,7 @@ it:237 Prospetti@va
 en:238 Textured @Walls
 it:238 Pareti con te@xture
 #
-en:239 Fade @Distant Objects
+en:239 Fade Distant Ob@jects
 en-us:239 @Fade Distant Objects
 it:239 Sbiadisce gli oggetti @distanti
 #
@@ -3056,13 +3056,13 @@ sk:291 Z&aacute;mery @na povrchu##Ctrl+F
 ro:291 Portiuni de @suprafata ale topografiei##Ctrl+F
 #
 # NB 292 is a different message in 1.0!
-# TRANSLATE fr de
-en:292 Co@lour by Depth
-en-us:292 Color by @Depth
-fr,de:292 C@olour by Depth
+en:292 Colour by @Depth
 it:292 Co@lori secondo profondit&aacute;
 #
-# XXX 293 (used in 1.0)
+# NB 293 is a different message in 1.0!
+# TRANSLATE it
+en:293 Colour by D@ate
+it:293 C@olour by Date
 #
 en:294 Highlight @Entrances
 fr:294 Mise en valeur des @entr&egrave;es

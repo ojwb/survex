@@ -506,6 +506,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNames)
     EVT_MENU(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNames)
     EVT_MENU(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepth)
+    EVT_MENU(menu_VIEW_COLOUR_BY_DATE, MainFrm::OnColourByDate)
     EVT_MENU(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurface)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
     EVT_MENU(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBox)
@@ -559,6 +560,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurfaceUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNamesUpdate)
     EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepthUpdate)
+    EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DATE, MainFrm::OnColourByDateUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBoxUpdate)
     EVT_UPDATE_UI(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspectiveUpdate)
@@ -758,7 +760,8 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*@Surface Survey Legs##Ctrl+F*/291), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273), "", true);
-    viewmenu->Append(menu_VIEW_COLOUR_BY_DEPTH, GetTabMsg(/*Co@lour by Depth*/292), "", true);
+    viewmenu->Append(menu_VIEW_COLOUR_BY_DEPTH, GetTabMsg(/*Colour by @Depth*/292), "", true);
+    viewmenu->Append(menu_VIEW_COLOUR_BY_DATE, GetTabMsg(/*Colour by D@ate*/293), "", true);
     viewmenu->AppendSeparator();
     viewmenu->Append(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294), "", true);
     viewmenu->Append(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295), "", true);
@@ -1270,6 +1273,15 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     Double ymax = -DBL_MAX;
     m_ZMin = DBL_MAX;
     Double zmax = -DBL_MAX;
+    m_DateMin = (time_t)-1;
+    if (m_DateMin < 0) {
+	// Hmm, signed time_t!
+	// FIXME: find a cleaner way to do this...
+	time_t x = time_t(1) << (sizeof(time_t) * 8 - 2);
+	m_DateMin = x;
+	while ((x>>=1) != 0) m_DateMin |= x;
+    }
+    time_t datemax = 0;
 
     traverses.clear();
     surface_traverses.clear();
@@ -1278,8 +1290,8 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     // Ultimately we probably want different types (subclasses perhaps?) for
     // underground and surface data, so we don't need to store LRUD for surface
     // stuff.
-    vector<Point> * current_traverse = NULL;
-    vector<Point> * current_surface_traverse = NULL;
+    vector<PointInfo> * current_traverse = NULL;
+    vector<PointInfo> * current_surface_traverse = NULL;
     vector<XSect> * current_tube = NULL;
 
     int result;
@@ -1312,6 +1324,12 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		if (pt.z < m_ZMin) m_ZMin = pt.z;
 		if (pt.z > zmax) zmax = pt.z;
 
+		time_t date = (survey->date1 + survey->date2) / 2;
+		if (date) {
+		    if (date < m_DateMin) m_DateMin = date;
+		    if (date > datemax) datemax = date;
+		}
+
 		bool is_surface = (survey->flags & img_FLAG_SURFACE);
 		if (pending_move || current_polyline_is_surface != is_surface) {
 		    if (!current_polyline_is_surface && current_traverse) {
@@ -1321,11 +1339,11 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		    // Start new traverse (surface or underground).
 		    if (is_surface) {
 			m_HasSurfaceLegs = true;
-			surface_traverses.push_back(vector<Point>());
+			surface_traverses.push_back(vector<PointInfo>());
 			current_surface_traverse = &surface_traverses.back();
 		    } else {
 			m_HasUndergroundLegs = true;
-			traverses.push_back(vector<Point>());
+			traverses.push_back(vector<PointInfo>());
 			current_traverse = &traverses.back();
 		    }
 		    if (pending_move) {
@@ -1342,16 +1360,16 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		    }
 
 		    if (is_surface) {
-			current_surface_traverse->push_back(Point(prev_pt));
+			current_surface_traverse->push_back(PointInfo(prev_pt));
 		    } else {
-			current_traverse->push_back(Point(prev_pt));
+			current_traverse->push_back(PointInfo(prev_pt));
 		    }
 		}
 
 		if (is_surface) {
-		    current_surface_traverse->push_back(Point(pt));
+		    current_surface_traverse->push_back(PointInfo(pt, date));
 		} else {
-		    current_traverse->push_back(Point(pt));
+		    current_traverse->push_back(PointInfo(pt, date));
 		}
 
 		prev_pt = pt;
@@ -1396,7 +1414,13 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		while (i != m_Labels.end() && (*i)->GetText() != survey->label) ++i;
 		assert(i != m_Labels.end()); // FIXME: shouldn't use assert for this...
 
-		current_tube->push_back(XSect(**i, survey->l, survey->r, survey->u, survey->d));
+		time_t date = (survey->date1 + survey->date2) / 2;
+		if (date) {
+		    if (date < m_DateMin) m_DateMin = date;
+		    if (date > datemax) datemax = date;
+		}
+
+		current_tube->push_back(XSect(**i, date, survey->l, survey->r, survey->u, survey->d));
 		if (survey->flags & img_XFLAG_END) {
 		    // Finish off current_tube.
 		    // If there's only one cross-section in the tube, just
@@ -1471,6 +1495,9 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     m_YExt = ymax - ymin;
     m_ZExt = zmax - m_ZMin;
 
+    if (datemax < m_DateMin) m_DateMin = 0;
+    m_DateExt = datemax - m_DateMin;
+
     // Sort the labels.
     m_Labels.sort(LabelCmp(separator));
 
@@ -1498,16 +1525,16 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     return true;
 }
 
+#if 0
 // Run along a newly read in traverse and make up plausible LRUD where
 // it is missing.
 void
-MainFrm::FixLRUD(vector<Point> & centreline)
+MainFrm::FixLRUD(vector<PointInfo> & centreline)
 {
-#if 0
     assert(centreline.size() > 1);
 
     Double last_size = 0;
-    vector<Point>::iterator i = centreline.begin();
+    vector<PointInfo>::iterator i = centreline.begin();
     while (i != centreline.end()) {
 	// Get the coordinates of this vertex.
 	Point & pt_v = *i++;
@@ -1566,8 +1593,8 @@ MainFrm::FixLRUD(vector<Point> & centreline)
 	    }
 	}
     }
-#endif
 }
+#endif
 
 void MainFrm::FillTree()
 {
@@ -1719,10 +1746,10 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
     Double zoff = zmin + (m_ZExt / 2.0);
     m_Offsets.set(xoff, yoff, zoff);
 
-    list<vector<Point> >::iterator t = traverses.begin();
+    list<vector<PointInfo> >::iterator t = traverses.begin();
     while (t != traverses.end()) {
 	assert(t->size() > 1);
-	vector<Point>::iterator pos = t->begin();
+	vector<PointInfo>::iterator pos = t->begin();
 	while (pos != t->end()) {
 	    Point & point = *pos++;
 	    point.x -= xoff;
@@ -1735,7 +1762,7 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
     t = surface_traverses.begin();
     while (t != surface_traverses.end()) {
 	assert(t->size() > 1);
-	vector<Point>::iterator pos = t->begin();
+	vector<PointInfo>::iterator pos = t->begin();
 	while (pos != t->end()) {
 	    Point & point = *pos++;
 	    point.x -= xoff;
@@ -1750,7 +1777,7 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 	assert(i->size() > 1);
 	vector<XSect>::iterator pos = i->begin();
 	while (pos != i->end()) {
-	    XSect & point = *pos++;
+	    Point & point = *pos++;
 	    point.x -= xoff;
 	    point.y -= yoff;
 	    point.z -= zoff;
@@ -1760,10 +1787,10 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 
     list<LabelInfo*>::iterator lpos = m_Labels.begin();
     while (lpos != m_Labels.end()) {
-	LabelInfo* label = *lpos++;
-	label->x -= xoff;
-	label->y -= yoff;
-	label->z -= zoff;
+	Point & point = **lpos++;
+	point.x -= xoff;
+	point.y -= yoff;
+	point.z -= zoff;
     }
 }
 
