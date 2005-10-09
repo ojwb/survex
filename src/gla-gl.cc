@@ -652,6 +652,11 @@ void GLACanvas::DrawList(unsigned int l)
 	    return;
 	}
 
+	// We should have 256 lists for font drawing and a dozen or so for 2D
+	// and 3D lists.  So something is amiss if we've generated 1000 lists,
+	// probably a infinite loop in the lazy list mechanism.
+	assert(list < 1000);
+
 	// http://www.opengl.org/resources/faq/technical/displaylist.htm
 	// advises:
 	// "Stay away from GL_COMPILE_AND_EXECUTE mode. Instead, create the
@@ -907,6 +912,8 @@ void GLACanvas::BeginBlobs()
 	glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT);
 	CHECK_GL_ERROR("BeginBlobs", "glPushAttrib");
 	SetIndicatorTransform();
+	glEnable(GL_DEPTH_TEST);
+	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_DEPTH_TEST");
     }
 }
 
@@ -975,6 +982,8 @@ void GLACanvas::BeginCrosses()
 	glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT);
 	CHECK_GL_ERROR("BeginCrosses", "glPushAttrib");
 	SetIndicatorTransform();
+	glEnable(GL_DEPTH_TEST);
+	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_DEPTH_TEST");
 	glBegin(GL_LINES);
     }
 }
