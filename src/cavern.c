@@ -272,8 +272,21 @@ main(int argc, char **argv)
       osfree(fnm);
    }
 
-   if (!fMute)
-      printf(PRETTYPACKAGE" "VERSION"\n"COPYRIGHT_MSG"\n", msg(/*&copy;*/0));
+   if (!fMute) {
+      const char *p = COPYRIGHT_MSG;
+      puts(PRETTYPACKAGE" "VERSION);
+      while (1) {
+	  const char *q = p;
+	  p = strstr(p, "(C)");
+	  if (p == NULL) {
+	      puts(q);
+	      break;
+	  }
+	  fwrite(q, 1, p - q, stdout);
+	  fputs(msg(/*&copy;*/0), stdout);
+	  p += 3;
+      }
+   }
 
    atexit(delete_output_on_error);
 
