@@ -493,7 +493,7 @@ data_file(const char *pth, const char *fnm)
 	 get_token();
 	 get_token();
 	 if (ch == ':') {
-	     struct tm t;
+	     struct tm t = {0};
 
 	     copy_on_write_meta(pcs);
 
@@ -508,6 +508,8 @@ data_file(const char *pth, const char *fnm)
 
 	     pcs->meta->date1 = mktime(&t);
 	     pcs->meta->date2 = pcs->meta->date1;
+	 } else {
+	     pcs->meta->date1 = pcs->meta->date2 = 0;
 	 }
 	 skipline();
 	 process_eol();
@@ -1679,6 +1681,8 @@ process_lrud(prefix *stn)
    xsect->r = (VAL(Right) * pcs->units[Q_RIGHT] - pcs->z[Q_RIGHT]) * pcs->sc[Q_RIGHT];
    xsect->u = (VAL(Up) * pcs->units[Q_UP] - pcs->z[Q_UP]) * pcs->sc[Q_UP];
    xsect->d = (VAL(Down) * pcs->units[Q_DOWN] - pcs->z[Q_DOWN]) * pcs->sc[Q_DOWN];
+   xsect->meta = pcs->meta;
+   if (pcs->meta) ++pcs->meta->ref_count;
    xsect->next = NULL;
    *next_lrud = xsect;
    next_lrud = &(xsect->next);

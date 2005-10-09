@@ -386,6 +386,7 @@ extern nosurveylink *nosurveyhead;
 typedef struct lrud {
     struct lrud * next;
     prefix *stn;
+    meta_data *meta;
     real l, r, u, d;
 } lrud;
 
