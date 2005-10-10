@@ -104,11 +104,11 @@ void GUIControl::HandleScale(wxPoint point)
     // wxGTK (at least) fails to update the cursor while dragging.
     m_View->SetCursor(GfxCore::CURSOR_ZOOM);
 
-    int dx = point.x - m_DragStart.x;
+    //int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
 
     if (m_ReverseControls) {
-	dx = -dx;
+	//dx = -dx;
 	dy = -dy;
     }
 
@@ -125,6 +125,7 @@ void GUIControl::HandleScale(wxPoint point)
 void GUIControl::HandleTiltRotate(wxPoint point)
 {
     // Handle a mouse movement during tilt/rotate mode.
+    if (m_View->IsExtendedElevation()) return;
 
     // wxGTK (at least) fails to update the cursor while dragging.
     m_View->SetCursor(GfxCore::CURSOR_ROTATE_EITHER_WAY);
@@ -139,8 +140,8 @@ void GUIControl::HandleTiltRotate(wxPoint point)
 
     // left/right => rotate, up/down => tilt.
     // Make tilt less sensitive than rotate as that feels better.
-    m_View->TurnCave(m_View->CanRotate() ? (Double(dx) * -0.36) : 0.0);
-    m_View->TiltCave(Double(-dy) * 0.18);
+    m_View->TurnCave(Double(dx) * -0.36);
+    m_View->TiltCave(Double(dy) * -0.18);
 
     m_View->ForceRefresh();
 
@@ -150,6 +151,7 @@ void GUIControl::HandleTiltRotate(wxPoint point)
 void GUIControl::HandleRotate(wxPoint point)
 {
     // Handle a mouse movement during rotate mode.
+    if (m_View->IsExtendedElevation()) return;
 
     // wxGTK (at least) fails to update the cursor while dragging.
     m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
@@ -163,7 +165,7 @@ void GUIControl::HandleRotate(wxPoint point)
     }
 
     // left/right => rotate.
-    m_View->TurnCave(m_View->CanRotate() ? (Double(dx) * -0.36) : 0.0);
+    m_View->TurnCave(Double(dx) * -0.36);
 
     m_View->ForceRefresh();
 
@@ -254,7 +256,7 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 
 void GUIControl::OnLButtonDown(wxMouseEvent& event)
 {
-    if (m_View->HasData() && m_View->GetLock() != lock_POINT) {
+    if (m_View->HasData()) {
 	dragging = LEFT_DRAG;
 
 	m_DragStart = m_DragRealStart = wxPoint(event.GetX(), event.GetY());
@@ -267,7 +269,7 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 	    m_LastDrag = drag_SCALE;
 	} else {
 	    if (event.ControlDown()) {
-		if (m_View->GetLock() != lock_NONE) {
+		if (m_View->IsExtendedElevation()) {
 		    dragging = NO_DRAG;
 		    return;
 		}
@@ -285,7 +287,7 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 
 void GUIControl::OnLButtonUp(wxMouseEvent& event)
 {
-    if (m_View->HasData() && m_View->GetLock() != lock_POINT) {
+    if (m_View->HasData()) {
 	if (event.GetPosition() == m_DragRealStart) {
 	    // Just a "click"...
 	    m_View->CheckHitTestGrid(m_DragStart, true);
@@ -307,7 +309,7 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 
 void GUIControl::OnMButtonDown(wxMouseEvent& event)
 {
-    if (m_View->HasData() && m_View->GetLock() == lock_NONE) {
+    if (m_View->HasData() && !m_View->IsExtendedElevation()) {
 	dragging = MIDDLE_DRAG;
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
 
@@ -323,7 +325,7 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
 
 void GUIControl::OnMButtonUp(wxMouseEvent&)
 {
-    if (m_View->HasData() && m_View->GetLock() == lock_NONE) {
+    if (m_View->HasData()) {
 	dragging = NO_DRAG;
 	m_View->ReleaseMouse();
         m_View->DragFinished();
@@ -357,7 +359,7 @@ void GUIControl::OnRButtonUp(wxMouseEvent&)
 }
 
 void GUIControl::OnMouseWheel(wxMouseEvent& event) {
-    if (m_View->GetLock() == lock_NONE) {
+    if (!m_View->IsExtendedElevation()) {
 	m_View->TiltCave(event.GetWheelRotation() / 12.0);
 	m_View->ForceRefresh();
     }
@@ -433,7 +435,7 @@ void GUIControl::OnShowSurveyLegs()
 
 void GUIControl::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->GetLock() != lock_POINT && m_View->HasUndergroundLegs());
+    cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs());
     cmd.Check(m_View->ShowingUndergroundLegs());
 }
 
@@ -445,7 +447,7 @@ void GUIControl::OnMoveEast()
 
 void GUIControl::OnMoveEastUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !(m_View->GetLock() & lock_Y));
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
 }
 
 void GUIControl::OnMoveNorth()
@@ -456,7 +458,7 @@ void GUIControl::OnMoveNorth()
 
 void GUIControl::OnMoveNorthUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !(m_View->GetLock() & lock_X));
+    cmd.Enable(m_View->HasData());
 }
 
 void GUIControl::OnMoveSouth()
@@ -467,7 +469,7 @@ void GUIControl::OnMoveSouth()
 
 void GUIControl::OnMoveSouthUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !(m_View->GetLock() & lock_X));
+    cmd.Enable(m_View->HasData());
 }
 
 void GUIControl::OnMoveWest()
@@ -478,7 +480,7 @@ void GUIControl::OnMoveWest()
 
 void GUIControl::OnMoveWestUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !(m_View->GetLock() & lock_Y));
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
 }
 
 void GUIControl::OnToggleRotation()
@@ -488,7 +490,7 @@ void GUIControl::OnToggleRotation()
 
 void GUIControl::OnToggleRotationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanRotate());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
     cmd.Check(m_View->HasData() && m_View->IsRotating());
 }
 
@@ -510,7 +512,7 @@ void GUIControl::OnReverseDirectionOfRotation()
 
 void GUIControl::OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanRotate());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
 }
 
 void GUIControl::OnSlowDown(bool accel)
@@ -520,7 +522,7 @@ void GUIControl::OnSlowDown(bool accel)
 
 void GUIControl::OnSlowDownUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanRotate());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
 }
 
 void GUIControl::OnSpeedUp(bool accel)
@@ -530,7 +532,7 @@ void GUIControl::OnSpeedUp(bool accel)
 
 void GUIControl::OnSpeedUpUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanRotate());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
 }
 
 void GUIControl::OnStepOnceAnticlockwise(bool accel)
@@ -545,7 +547,7 @@ void GUIControl::OnStepOnceAnticlockwise(bool accel)
 
 void GUIControl::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanRotate() && !m_View->IsRotating());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->IsRotating());
 }
 
 void GUIControl::OnStepOnceClockwise(bool accel)
@@ -560,7 +562,7 @@ void GUIControl::OnStepOnceClockwise(bool accel)
 
 void GUIControl::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanRotate() && !m_View->IsRotating());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->IsRotating());
 }
 
 void GUIControl::OnDefaults()
@@ -582,7 +584,7 @@ void GUIControl::OnElevation()
 
 void GUIControl::OnElevationUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->GetLock() == lock_NONE && !m_View->ShowingElevation());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->ShowingElevation());
 }
 
 void GUIControl::OnHigherViewpoint(bool accel)
@@ -598,7 +600,7 @@ void GUIControl::OnHigherViewpoint(bool accel)
 
 void GUIControl::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanRaiseViewpoint() && m_View->GetLock() == lock_NONE);
+    cmd.Enable(m_View->HasData() && m_View->CanRaiseViewpoint() && !m_View->IsExtendedElevation());
 }
 
 void GUIControl::OnLowerViewpoint(bool accel)
@@ -614,7 +616,7 @@ void GUIControl::OnLowerViewpoint(bool accel)
 
 void GUIControl::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanLowerViewpoint() && m_View->GetLock() == lock_NONE);
+    cmd.Enable(m_View->HasData() && m_View->CanLowerViewpoint() && !m_View->IsExtendedElevation());
 }
 
 void GUIControl::OnPlan()
@@ -625,7 +627,7 @@ void GUIControl::OnPlan()
 
 void GUIControl::OnPlanUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->GetLock() == lock_NONE && !m_View->ShowingPlan());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->ShowingPlan());
 }
 
 void GUIControl::OnShiftDisplayDown(bool accel)
@@ -694,7 +696,7 @@ void GUIControl::OnZoomIn(bool accel)
 
 void GUIControl::OnZoomInUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->GetLock() != lock_POINT);
+    cmd.Enable(m_View->HasData());
 }
 
 void GUIControl::OnZoomOut(bool accel)
@@ -711,7 +713,7 @@ void GUIControl::OnZoomOut(bool accel)
 
 void GUIControl::OnZoomOutUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->GetLock() != lock_POINT);
+    cmd.Enable(m_View->HasData());
 }
 
 void GUIControl::OnToggleScalebar()
@@ -721,7 +723,7 @@ void GUIControl::OnToggleScalebar()
 
 void GUIControl::OnToggleScalebarUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->GetLock() != lock_POINT);
+    cmd.Enable(m_View->HasData());
     cmd.Check(m_View->ShowingScaleBar());
 }
 
@@ -732,8 +734,7 @@ void GUIControl::OnToggleDepthbar() /* FIXME naming */
 
 void GUIControl::OnToggleDepthbarUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !(m_View->GetLock() && lock_Z) &&
-	       m_View->ColouringBy() == COLOUR_BY_DEPTH);
+    cmd.Enable(m_View->HasData() && m_View->ColouringBy() == COLOUR_BY_DEPTH);
     cmd.Check(m_View->ShowingDepthBar());
 }
 
@@ -744,7 +745,7 @@ void GUIControl::OnViewCompass()
 
 void GUIControl::OnViewCompassUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->CanRotate());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
     cmd.Check(m_View->ShowingCompass());
 }
 
@@ -755,7 +756,7 @@ void GUIControl::OnViewClino()
 
 void GUIControl::OnViewClinoUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->GetLock() == lock_NONE);
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
     cmd.Check(m_View->ShowingClino());
 }
 
@@ -933,63 +934,59 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 
     switch (e.m_keyCode) {
 	case '/': case '?':
-	    if (m_View->CanLowerViewpoint() && m_View->GetLock() == lock_NONE)
+	    if (m_View->CanLowerViewpoint() && !m_View->IsExtendedElevation())
 		OnLowerViewpoint(e.m_shiftDown);
 	    break;
 	case '\'': case '@': case '"': // both shifted forms - US and UK kbd
-	    if (m_View->CanRaiseViewpoint() && m_View->GetLock() == lock_NONE)
+	    if (m_View->CanRaiseViewpoint() && !m_View->IsExtendedElevation())
 		OnHigherViewpoint(e.m_shiftDown);
 	    break;
 	case 'C': case 'c':
-	    if (m_View->CanRotate() && !m_View->IsRotating())
+	    if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
 		OnStepOnceAnticlockwise(e.m_shiftDown);
 	    break;
 	case 'V': case 'v':
-	    if (m_View->CanRotate() && !m_View->IsRotating())
+	    if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
 		OnStepOnceClockwise(e.m_shiftDown);
 	    break;
 	case ']': case '}':
-	    if (m_View->GetLock() != lock_POINT)
-		OnZoomIn(e.m_shiftDown);
+	    OnZoomIn(e.m_shiftDown);
 	    break;
 	case '[': case '{':
-	    if (m_View->GetLock() != lock_POINT)
-		OnZoomOut(e.m_shiftDown);
+	    OnZoomOut(e.m_shiftDown);
 	    break;
 	case 'N': case 'n':
-	    if (!(m_View->GetLock() & lock_X))
-		OnMoveNorth();
+	    OnMoveNorth();
 	    break;
 	case 'S': case 's':
-	    if (!(m_View->GetLock() & lock_X))
-		OnMoveSouth();
+	    OnMoveSouth();
 	    break;
 	case 'E': case 'e':
-	    if (!(m_View->GetLock() & lock_Y))
+	    if (!m_View->IsExtendedElevation())
 		OnMoveEast();
 	    break;
 	case 'W': case 'w':
-	    if (!(m_View->GetLock() & lock_Y))
+	    if (!m_View->IsExtendedElevation())
 		OnMoveWest();
 	    break;
 	case 'Z': case 'z':
-	    if (m_View->CanRotate())
+	    if (!m_View->IsExtendedElevation())
 		OnSpeedUp(e.m_shiftDown);
 	    break;
 	case 'X': case 'x':
-	    if (m_View->CanRotate())
+	    if (!m_View->IsExtendedElevation())
 		OnSlowDown(e.m_shiftDown);
 	    break;
 	case 'R': case 'r':
-	    if (m_View->CanRotate())
+	    if (!m_View->IsExtendedElevation())
 		OnReverseDirectionOfRotation();
 	    break;
 	case 'P': case 'p':
-	    if (m_View->GetLock() == lock_NONE && !m_View->ShowingPlan())
+	    if (!m_View->IsExtendedElevation() && !m_View->ShowingPlan())
 		OnPlan();
 	    break;
 	case 'L': case 'l':
-	    if (m_View->GetLock() == lock_NONE && !m_View->ShowingElevation())
+	    if (!m_View->IsExtendedElevation() && !m_View->ShowingElevation())
 		OnElevation();
 	    break;
 	case 'O': case 'o':
@@ -1000,16 +997,16 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    break;
 	case WXK_RETURN:
             // For compatibility with older versions.
-	    if (m_View->CanRotate() && !m_View->IsRotating())
+	    if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
                 m_View->StartRotation();
 	    break;
 	case WXK_SPACE:
-	    if (m_View->CanRotate())
+	    if (!m_View->IsExtendedElevation())
 		OnToggleRotation();
 	    break;
 	case WXK_LEFT:
 	    if (e.m_controlDown) {
-		if (m_View->CanRotate() && !m_View->IsRotating())
+		if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
 		    OnStepOnceAnticlockwise(e.m_shiftDown);
 	    } else {
 		OnShiftDisplayLeft(e.m_shiftDown);
@@ -1017,7 +1014,7 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    break;
 	case WXK_RIGHT:
 	    if (e.m_controlDown) {
-		if (m_View->CanRotate() && !m_View->IsRotating())
+		if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
 		    OnStepOnceClockwise(e.m_shiftDown);
 	    } else {
 		OnShiftDisplayRight(e.m_shiftDown);
@@ -1025,7 +1022,7 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    break;
 	case WXK_UP:
 	    if (e.m_controlDown) {
-		if (m_View->CanRaiseViewpoint() && m_View->GetLock() == lock_NONE)
+		if (m_View->CanRaiseViewpoint() && !m_View->IsExtendedElevation())
 		    OnHigherViewpoint(e.m_shiftDown);
 	    } else {
 		OnShiftDisplayUp(e.m_shiftDown);
@@ -1033,7 +1030,7 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    break;
 	case WXK_DOWN:
 	    if (e.m_controlDown) {
-		if (m_View->CanLowerViewpoint() && m_View->GetLock() == lock_NONE)
+		if (m_View->CanLowerViewpoint() && !m_View->IsExtendedElevation())
 		    OnLowerViewpoint(e.m_shiftDown);
 	    } else {
 		OnShiftDisplayDown(e.m_shiftDown);

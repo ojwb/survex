@@ -110,7 +110,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Control = control;
     m_ScaleBarWidth = 0;
     m_Parent = parent;
-    m_RotationOK = true;
     m_DoneFirstShow = false;
     m_Crosses = false;
     m_Legs = true;
@@ -187,14 +186,6 @@ void GfxCore::Initialise()
     m_here.x = DBL_MAX;
     m_there.x = DBL_MAX;
 
-    // Check for flat/linear/point surveys.
-    m_RotationOK = true;
-
-    m_Lock = lock_NONE;
-    if (m_Parent->GetXExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_X);
-    if (m_Parent->GetYExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_Y);
-    if (m_Parent->GetZExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_Z);
-
     // Apply default parameters.
     DefaultParameters();
 
@@ -231,19 +222,6 @@ void GfxCore::FirstShow()
 
     // Update our record of the client area size and centre.
     GetClientSize(&m_XSize, &m_YSize);
-
-    switch (m_Lock) {
-	case lock_POINT:
-	case lock_XY:
-	case lock_X:
-	case lock_Y:
-	    m_RotationOK = false;
-	    break;
-	case lock_YZ:
-	case lock_XZ:
-	default:
-	    break;
-    }
 
     // Set the initial scale.
     m_InitialScale = 1.0;
@@ -617,7 +595,7 @@ void GfxCore::Draw2dIndicators()
 
     const int comp_centre_x = GetCompassXPosition();
 
-    if (m_Compass && m_RotationOK) {
+    if (m_Compass && !m_Parent->IsExtendedElevation()) {
 	// If the user is dragging the compass with the pointer outside the
 	// compass, we snap to 45 degree multiples, and the ticks go white.
 	SetColour(m_MouseOutsideCompass ? col_WHITE : col_LIGHT_GREY_2);
@@ -626,7 +604,7 @@ void GfxCore::Draw2dIndicators()
 
     const int elev_centre_x = GetClinoXPosition();
 
-    if (m_Clino && m_Lock == lock_NONE) {
+    if (m_Clino) {
 	// If the user is dragging the clino with the pointer outside the
 	// clino, we snap to 90 degree multiples, and the ticks go white.
 	SetColour(m_MouseOutsideElev ? col_WHITE : col_LIGHT_GREY_2);
@@ -643,7 +621,7 @@ void GfxCore::Draw2dIndicators()
     GetTextExtent(wxString("000"), &width, &h);
     height = INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE + INDICATOR_GAP + h;
 
-    if (m_Compass && m_RotationOK) {
+    if (m_Compass && !m_Parent->IsExtendedElevation()) {
 	if (m_Degrees) {
 	    str = wxString::Format("%03d", int(m_PanAngle));
 	} else {
@@ -656,7 +634,7 @@ void GfxCore::Draw2dIndicators()
 	DrawIndicatorText(comp_centre_x - w / 2, height + h, str);
     }
 
-    if (m_Clino && m_Lock == lock_NONE) {
+    if (m_Clino) {
 	int angle;
 	if (m_Degrees) {
 	    angle = int(-m_TiltAngle);
@@ -931,8 +909,7 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 void GfxCore::DrawScalebar()
 {
     // Draw the scalebar.
-
-    if (m_Lock == lock_POINT || GetPerspective()) return;
+    if (GetPerspective()) return;
 
     // Calculate how many metres of survey are currently displayed across the
     // screen.
@@ -1093,36 +1070,10 @@ void GfxCore::DefaultParameters()
     }
 
     m_PanAngle = 0.0;
-    m_TiltAngle = 90.0;
-    switch (m_Lock) {
-	case lock_X:
-	{
-	    // elevation looking along X axis (East)
-	    m_PanAngle = 270.0;
-	    m_TiltAngle = 0.0;
-	    break;
-	}
-
-	case lock_Y:
-	case lock_XY: // survey is linearface and parallel to the Z axis => display in elevation.
-	    // elevation looking along Y axis (North)
-	    m_TiltAngle = 0.0;
-	    break;
-
-	case lock_Z:
-	case lock_XZ: // linearface survey parallel to Y axis
-	case lock_YZ: // linearface survey parallel to X axis
-	{
-	    // flat survey (zero height range) => go into plan view (default orientation).
-	    break;
-	}
-
-	case lock_POINT:
-	    m_Crosses = true;
-	    break;
-
-	case lock_NONE:
-	    break;
+    if (m_Parent->IsExtendedElevation()) {
+	m_TiltAngle = 0.0;
+    } else {
+	m_TiltAngle = 90.0;
     }
 
     UpdateQuaternion();
@@ -1664,11 +1615,9 @@ void GfxCore::StopRotation()
     ForceRefresh();
 }
 
-bool GfxCore::CanRotate() const
+bool GfxCore::IsExtendedElevation() const
 {
-    // Determine if the survey may be rotated.
-
-    return m_RotationOK;
+    return m_Parent->IsExtendedElevation();
 }
 
 void GfxCore::ReverseRotation()
@@ -2004,8 +1953,8 @@ void GfxCore::DrawIndicators()
     }
 
     // Draw compass or elevation/heading indicators.
-    if ((m_Compass && m_RotationOK) || (m_Clino && m_Lock == lock_NONE)) {
-	Draw2dIndicators();
+    if (m_Compass || m_Clino) {
+	if (!m_Parent->IsExtendedElevation()) Draw2dIndicators();
     }
 
     // Draw scalebar.

@@ -234,6 +234,8 @@ class MainFrm : public wxFrame {
     // Strings for status bar reporting of distances.
     wxString here_text, coords_text, dist_text;
 
+    bool m_IsExtendedElevation;
+
     void FillTree();
     bool ProcessSVXFile(const wxString & file);
     bool LoadData(const wxString& file, wxString prefix = "");
@@ -446,6 +448,8 @@ public:
     bool HasUndergroundLegs() const { return m_HasUndergroundLegs; }
     bool HasSurfaceLegs() const { return m_HasSurfaceLegs; }
     bool HasTubes() const { return !tubes.empty(); }
+
+    bool IsExtendedElevation() const { return m_IsExtendedElevation; }
 
     void ClearCoords();
     void SetCoords(Double x, Double y, Double z);

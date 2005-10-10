@@ -86,17 +86,6 @@ class PresentationMark : public Point {
 #define UPDATE_BLOBS 1
 #define UPDATE_BLOBS_AND_CROSSES 2
 
-enum LockFlags {
-    lock_NONE = 0,
-    lock_X = 1,
-    lock_Y = 2,
-    lock_Z = 4,
-    lock_POINT = lock_X | lock_Y | lock_Z,
-    lock_XZ = lock_X | lock_Z,
-    lock_YZ = lock_Y | lock_Z,
-    lock_XY = lock_X | lock_Y
-};
-
 class GfxCore : public GLACanvas {
     Double m_Scale;
     int m_ScaleBarWidth;
@@ -131,8 +120,6 @@ public:
 private:
     GUIControl* m_Control;
     char* m_LabelGrid;
-    bool m_RotationOK;
-    LockFlags m_Lock;
     MainFrm* m_Parent;
     bool m_DoneFirstShow;
     Double m_InitialScale;
@@ -319,7 +306,7 @@ public:
     void StartRotation();
     void ToggleRotation();
     void StopRotation();
-    bool CanRotate() const;
+    bool IsExtendedElevation() const;
     void ReverseRotation();
     void RotateSlower(bool accel);
     void RotateFaster(bool accel);
@@ -334,7 +321,6 @@ public:
     bool CanRaiseViewpoint() const;
     bool CanLowerViewpoint() const;
 
-    LockFlags GetLock() const { return m_Lock; }
     bool IsRotating() const { return m_Rotating; }
     bool HasData() const { return m_DoneFirstShow && m_HaveData; }
     bool IsFlat() const;

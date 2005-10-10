@@ -149,9 +149,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_layout.Surface = surf;
     m_layout.datestamp = osstrdup(datestamp.c_str());
     m_layout.rot = int(angle + .001);
-    if (title.length() > 11 &&
-	title.substr(title.length() - 11) == " (extended)") {
-	m_layout.title = osstrdup(title.substr(0, title.length() - 11).c_str());
+    m_layout.title = osstrdup(title.c_str());
+    if (mainfrm->IsExtendedElevation()) {
 	m_layout.view = layout::EXTELEV;
 	if (m_layout.rot != 0 && m_layout.rot != 180) m_layout.rot = 0;
 	m_layout.tilt = 0;
@@ -159,7 +158,6 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	// FIXME rot and tilt shouldn't be integers, but for now add a small
 	// fraction before forcing to int as otherwise plan view ends up being
 	// 89 degrees!
-	m_layout.title = osstrdup(title.c_str());
 	m_layout.tilt = int(tilt_angle + .001);
 	if (m_layout.tilt == 90) {
 	    m_layout.view = layout::PLAN;
@@ -196,24 +194,22 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
     v2->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
 
-    { // this isn't the "too wide" bit...
-    wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
-    wxStaticText * brg_label;
-    brg_label = new wxStaticText(this, -1, msg(/*Bearing*/259));
-    anglebox->Add(brg_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
-    m_bearing = new wxSpinCtrl(this, svx_BEARING);
-    m_bearing->SetRange(0, 359);
-    anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
-    m_tilttext = new wxStaticText(this, -1, "Tilt angle"); // FIXME TRANSLATE
-    anglebox->Add(m_tilttext, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
-    m_tilt = new wxSpinCtrl(this,svx_TILT);
-    m_tilt->SetRange(-90, 90);
-    anglebox->Add(m_tilt, 0, wxALIGN_CENTER|wxALL, 5);
-
-    v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
-    }
-
     if (m_layout.view != layout::EXTELEV) {
+	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
+	wxStaticText * brg_label, * tilt_label;
+	brg_label = new wxStaticText(this, -1, msg(/*Bearing*/259));
+	anglebox->Add(brg_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
+	m_bearing = new wxSpinCtrl(this, svx_BEARING);
+	m_bearing->SetRange(0, 359);
+	anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
+	tilt_label = new wxStaticText(this, -1, "Tilt angle"); // FIXME TRANSLATE
+	anglebox->Add(tilt_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
+	m_tilt = new wxSpinCtrl(this,svx_TILT);
+	m_tilt->SetRange(-90, 90);
+	anglebox->Add(m_tilt, 0, wxALIGN_CENTER|wxALL, 5);
+
+	v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
+
 	wxBoxSizer * planelevsizer = new wxBoxSizer(wxHORIZONTAL);
 	planelevsizer->Add(new wxButton(this, svx_PLAN, "Plan"),
 			   0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
@@ -367,16 +363,18 @@ svxPrintDlg::LayoutToUI(){
 //    m_blanks->SetValue(m_layout.SkipBlank);
     m_infoBox->SetValue(!m_layout.Raw);
     m_surface->SetValue(m_layout.Surface);
-    m_tilt->SetValue(m_layout.tilt);
-    // FIXME is EXTELEV disable both buttons and tilt and rot spinctrls
-    // FIXME: enable both buttons
-    if (m_layout.tilt > 89) {
-	// FIXME: disable Plan button
-    } else if (m_layout.tilt == 0) {
-	// FIXME: disable Elevation button
+    if (m_layout.view != layout::EXTELEV) {
+	m_tilt->SetValue(m_layout.tilt);
+	// FIXME: enable both buttons
+	if (m_layout.tilt > 89) {
+	    // FIXME: disable Plan button
+	} else if (m_layout.tilt == 0) {
+	    // FIXME: disable Elevation button
+	}
+
+	m_bearing->SetValue(m_layout.rot);
     }
 
-    m_bearing->SetValue(m_layout.rot);
     // Do this last as it causes an OnChange message which calls UIToLayout
     if (m_layout.Scale != 0) {
 	wxString temp;

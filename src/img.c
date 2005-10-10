@@ -305,6 +305,7 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->separator = '.';
    pimg->date1 = 0;
    pimg->date2 = 0;
+   pimg->is_extended_elevation = 0;
 
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
 
@@ -572,6 +573,12 @@ v03d:
    }
 
    pimg->start = ftell(pimg->fh);
+
+   len = strlen(pimg->title);
+   if (len > 11 && strcmp(pimg->title + len - 11, " (extended)") == 0) {
+       pimg->title[len - 11] = '\0';
+       pimg->is_extended_elevation = 1;
+   }
 
    return pimg;
 }
@@ -1126,7 +1133,7 @@ img_read_item(img *pimg, img_point *p)
       return result;
    }
 }
-   
+
 /* Handle all for ASCII formats so we can easily fix up the locale
  * so fscanf(), etc work on numbers with "." as decimal point. */
 static int
@@ -1489,7 +1496,7 @@ skip_to_N:
 	 memcpy(new, line + 7, 7);
 	 q = memchr(new, ' ', 7);
 	 if (!q) q = new + 7;
-	 *q = '\0'; 
+	 *q = '\0';
 
 	 pimg->flags = img_SFLAG_UNDERGROUND;
 

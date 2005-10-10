@@ -642,7 +642,8 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
     m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
-    m_NumHighlighted(0), m_HasUndergroundLegs(false), m_HasSurfaceLegs(false)
+    m_NumHighlighted(0), m_HasUndergroundLegs(false), m_HasSurfaceLegs(false),
+    m_IsExtendedElevation(false)
 #ifdef PREFDLG
     , m_PrefsDlg(NULL)
 #endif
@@ -1249,6 +1250,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     } else {
 	m_File = survey->filename_opened;
     }
+    m_IsExtendedElevation = survey->is_extended_elevation;
 
     m_Tree->DeleteAllItems();
 
