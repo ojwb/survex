@@ -493,7 +493,8 @@ data_file(const char *pth, const char *fnm)
 	 get_token();
 	 get_token();
 	 if (ch == ':') {
-	     struct tm t = {0};
+	     struct tm t;
+	     memset(&t, 0, sizeof(struct tm));
 
 	     copy_on_write_meta(pcs);
 
