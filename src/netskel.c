@@ -963,8 +963,13 @@ write_passage_models(void)
 	 pimg->r = xsect->r;
 	 pimg->u = xsect->u;
 	 pimg->d = xsect->d;
-	 pimg->date1 = xsect->meta->date1;
-	 pimg->date2 = xsect->meta->date2;
+	 if (xsect->meta) {
+	     pimg->date1 = xsect->meta->date1;
+	     pimg->date2 = xsect->meta->date2;
+	 } else {
+	     pimg->date1 = 0;
+	     pimg->date2 = 0;
+	 }
 	 name = sprint_prefix(xsect->stn);
 	 oldx = xsect;
 	 xsect = xsect->next;
