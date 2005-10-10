@@ -834,7 +834,7 @@ void GUIControl::OnViewPerspective()
 
 void GUIControl::OnViewPerspectiveUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData());
+    cmd.Enable(m_View->HasData() || !m_View->IsExtendedElevation());
     cmd.Check(m_View->GetPerspective());
 }
 
