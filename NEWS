@@ -1,7 +1,19 @@
+Changes in 1.1.6:
+
+* (MS Windows version): Distribution is about a third smaller than 1.1.5
+  (mostly because mingwm10.dll is no longer required).
+
 * aven: If aven is asked to load a .svx, .dat, or .mak file, run cavern on
   it, showing cavern's output in a window (with errors and warnings clickable
   to load the offending file into an editor), and then loading the resulting
   3d file.
+
+* aven: Added "Colour by Date" option.
+
+* aven: Disable "Colour by Depth" option if there's no elevation variation.
+
+* aven: Don't crash if trying to load a survey with no elevation variation.
+  Instead turn off depth colouring.
 
 * aven: Export as HPGL added.
 
@@ -12,14 +24,29 @@
   survey station to it (if there is one near enough).  Showing both was
   confusing and meant the status bar overflowed on smaller displays.
 
-* aven: Don't crash if trying to load a survey with no elevation variation.
-  Instead turn off depth colouring.
+* aven: When printing an extended elevation, don't show bearing and elevation.
 
-* aven: Disable "Colour by Depth" option if there's no elevation variation.
+* aven: Don't lock "flat" surveys which aren't extended elevations - a
+  flat survey with LRUD data isn't flat any more!
+
+* aven: When we have to draw blobs and crosses the slow way (because the
+  graphics hardware doesn't support the fast way), draw them so that they
+  should appear at the correct depth into the 3D scene instead of on top
+  of everything else.
+
+* aven: Make "play presentation backwards" icon green to match the other
+  presentation icons.
+
+* (MS Windows version): aven: Mouse clicks on the survey view now set the
+  keyboard focus there.
 
 * (MS Windows version): aven: Fix first redraw of a newly loaded survey.
 
 * (MS Windows version): aven: Fix redrawing of measuring line.
+
+* cavern: Store dates for img_XSECT.
+
+* cavern: Fixed small one-off memory leak if you specify -o more than once.
 
 * (Unix version): Check environmental variable LC_MESSAGES when deciding what
   language to use for messages.
@@ -29,7 +56,8 @@
 
 * Removed old printer drivers.
 
-* cavern: Fixed small one-off memory leak if you specify -o more than once.
+* img library: When creating a 3d file, ignore img_XSECT if we've been asked
+  to write a file format version which doesn't support it.
 
 Changes in 1.1.5:
 

@@ -1,19 +1,37 @@
-Still to do to aven 1.1.*:
+Definitely still to do before Survex 1.2:
+=========================================
 
-Fix remaining focus issues on MS Windows.
+Check mail folder for tagged problem reports.
 
-Merge Martin's patch for improved here/there update.
+Update translations.
+
+Lots of aven things need documenting.
+
+Update innosetup
+
+Does anyone use Controls->"Reverse Sense"?  It made some sense with caverot
+but now seeing the mouse pointer makes people expect the default motions...
+
+Merge Martin's patch for improved here/there update (think this is now done).
+
+Sort out mouse actions
+
+Clean up export.cc and allow scale, line width, etc to be specified
+
+Output from cavern doesn't appear in aven's window until run has finished
+if we start aven with a .svx file, but works fine if we load a .svx file
+into an already running aven...
+
+LRUD in Aven Export
 
 Move gl* calls out of gfxcore.cc into gla-gl.cc!
 
 "New Presentation" should probably ensure sidepanel is open and on presentation
-tab.
+tab.  Smooth wrinkles in presentation code (Add "stop", stop pres on Open or
+New, changing focus on listctrl as presentation plays doesn't really work
+properly)
 
 Fix depth clipping on grid
-
-Easy way to "print extended elevation"
-
-*data chamber ...
 
 Draw the measuring line directly onto the front buffer, so we can remove it
 with a copy from the back buffer and redraw it in the new position without a
@@ -27,20 +45,19 @@ Process all pending input before rerendering to improve responsiveness.
 Check timing code - we need to glFinish to ensure it's all drawn, and that
 may be needed to get meaningful timing info.
 
-sort out date colouring cleanly.  also error colouring, etc.
+Add "colour by error" and maybe "colour by survey".
+
+Maybe some of these too:
+========================
+
+*data chamber ...
+
+Easy way to "print extended elevation"
 
 Unix full screen mode needs to allow dialogs to appear over the window
 (e.g. try Ctrl+O while in full screen mode).  I've added a tweak to drop out
 of it before showing dialog and return after, but this isn't ideal.
 It would be best of all if wx got this right...
-
-smooth wrinkles in presentation code (Add "stop", stop pres on Open or New,
-changing focus on listctrl as presentation plays doesn't really work properly)
-
-Does anyone use Controls->"Reverse Sense"?  It made some sense with caverot
-but now seeing the mouse pointer makes people expect the default motions...
-
-Save margin settings, etc for printing in .aven (at least on unix).
 
 Measuring line turning itself on can be annoying - rethink how this works a
 bit perhaps?
@@ -173,8 +190,6 @@ by default put crosses on those points with no legs attached (unused
 fixed points)?
 
 label junctions/dead ends?
-
-colour by traverse
 
 section colouring/selective labelling
 
