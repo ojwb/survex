@@ -3,12 +3,11 @@
 pkgdocdir = @PKGDOCDIR@
 
 other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
- printdm.1 printhpgl.1 printpcl.1 printps.1 print.ini.5 svxedit.1 \
- aven.1
+ aven.1 \
+ print.ini.5 svxedit.1
 
 manual_sources = manual.sgml cad3d.sgml cavern.sgml\
  diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml\
- printdm.sgml printhpgl.sgml printpcl.sgml printps.sgml printwin.sgml\
  print.ini.sgml svxedit.sgml
 
 # People can build from CVS without sgmltools v2 or v3 installed but they
@@ -20,7 +19,6 @@ EXTRA_DIST = manual $(HTMLFILES) $(DOCS_OTHER) survex.1.in index.htm.in\
  $(manual_sources) $(other_mans)\
  man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
  man_diffpos.sgml man_extend.sgml man_sorterr.sgml\
- man_printdm.sgml man_printhpgl.sgml man_printpcl.sgml man_printps.sgml\
  man_print.ini.sgml man_svxedit.sgml cl2html.pl news2html.pl\
  version.ent version.ent.in
 
@@ -54,18 +52,6 @@ diffpos.1: $(srcdir)/diffpos.sgml $(srcdir)/man_diffpos.sgml $(srcdir)/survex.en
 
 extend.1: $(srcdir)/extend.sgml $(srcdir)/man_extend.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_extend.sgml > extend.1
-
-printdm.1: $(srcdir)/printdm.sgml $(srcdir)/man_printdm.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_printdm.sgml > printdm.1
-
-printhpgl.1: $(srcdir)/printhpgl.sgml $(srcdir)/man_printhpgl.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_printhpgl.sgml > printhpgl.1
-
-printpcl.1: $(srcdir)/printpcl.sgml $(srcdir)/man_printpcl.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_printpcl.sgml > printpcl.1
-
-printps.1: $(srcdir)/printps.sgml $(srcdir)/man_printps.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_printps.sgml > printps.1
 
 sorterr.1: $(srcdir)/sorterr.sgml $(srcdir)/man_sorterr.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_sorterr.sgml > sorterr.1

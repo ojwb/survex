@@ -52,10 +52,6 @@ Output version information and exit.
 \fBcavern\fP\fB(1)\fP, 
 \fBdiffpos\fP\fB(1)\fP, 
 \fBextend\fP\fB(1)\fP, 
-\fBprintdm\fP\fB(1)\fP, 
-\fBprinthpgl\fP\fB(1)\fP, 
-\fBprintpcl\fP\fB(1)\fP, 
-\fBprintps\fP\fB(1)\fP, 
 \fBsorterr\fP\fB(1)\fP.
 .SH AUTHOR
 This manual page was written by Wookey <wookey@survex.com> and

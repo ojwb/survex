@@ -107,8 +107,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2005-09-17 20:16:23 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.9 2005-09-17 20:16:23 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2005-10-11 21:48:45 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.10 2005-10-11 21:48:45 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -358,8 +358,6 @@ There's a GUI cave viewer called aven, which needs &wxwindows; to build,
 which in turn needs either Motif or Gtk+.
 </Para>
 
-<!-- FIXME: recommend printps on &UNIX; (or just &linux;)??? -->
-
 </Sect3>
 
 <Sect3><Title>Microsoft Windows 95/NT and successors</Title>
@@ -374,9 +372,7 @@ can be set up for all users.
 </Para>
 
 <Para>
-This version includes a GUI cave survey viewer called aven, and a
-Survex printer driver (printwin) which uses the Windows printer
-system.
+This version includes a GUI cave survey viewer called aven.
 </Para>
 
 <Para>
@@ -582,16 +578,10 @@ if you're interested.</Para>
 <Sect3><Title>Configuring the Printer Drivers</Title>
 
 <Para>
-On Microsoft Windows, we recommend you print using printwin which uses
-the built in drivers and so requires no separate configuration - if you
-can print from other programs, you can print from Survex.  The only
-thing you may want to configure is the colours used if you have a colour
-printer.
-</Para>
-
-<Para>
-The drivers used for other platforms may require a small amount of
-configuration, which is described in the following section.
+Printing is now built into aven.
+The print.ini configuration file still exists, but is only
+useful if you want to configure the colours used if you
+have a colour printer.
 </Para>
 
 <refentry id="print.ini">
@@ -608,21 +598,12 @@ configuration, which is described in the following section.
 
 type in .svx file
 
-run cavern
+run cavern (through aven)
 
 run aven
 
-run printps/printwin/...
+how to print/export etc
 
--->
-
-<!-- FIXME:
-<ListItem><Para>
-printdm, printpcl, printps, prnthpgl, printwin: print processed data
-to scale.  printwin is only available on Microsoft Windows and uses
-the Windows printer driver systems - this is the recommended way to
-print on Windows.
-</Para></ListItem>
 -->
 
 <!-- FIXME perhaps move this after data files section? -->
@@ -695,26 +676,6 @@ file is looked for with the appropriate extension appended.  So
 <refentry id="aven">
 <?dbhtml filename="aven.htm">
 &man.aven;
-</refentry>
-<refentry id="printdm">
-<?dbhtml filename="printdm.htm">
-&man.printdm;
-</refentry>
-<refentry id="printhpgl">
-<?dbhtml filename="prhpgl.htm">
-&man.printhpgl;
-</refentry>
-<refentry id="printpcl">
-<?dbhtml filename="printpcl.htm">
-&man.printpcl;
-</refentry>
-<refentry id="printps">
-<?dbhtml filename="printps.htm">
-&man.printps;
-</refentry>
-<refentry id="printwin">
-<?dbhtml filename="printwin.htm">
-&man.printwin;
 </refentry>
 <refentry id="x3dtopos">
 <?dbhtml filename="3dtopos.htm">
@@ -3343,8 +3304,7 @@ Survex website for download links.
 <Sect2><Title>Overlay a grid</Title>
 
 <Para>Aven is able to display a grid, but this functionality isn't currently
-available in 
-the printer drivers.
+available in printouts.
 You can achieve a similar effect for now by creating a &svx; file
 where the survey legs form a grid.
 </Para>
