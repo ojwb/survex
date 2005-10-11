@@ -1,4 +1,6 @@
 #!/usr/bin/perl -w
+require 5.008;
+use bytes;
 use strict;
 
 # run on a NEWS file
