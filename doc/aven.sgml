@@ -64,9 +64,9 @@ from directly below (upside down plan).
 </Para>
 
 <Para>
-Enter starts the cave spinning, and <keycap/Space/ stops it. The
-speed of rotation for this, and tilt, is controlled by <keycap/Z/ and
-<keycap/X/.
+<keycap>Space</keycap> toggles automatic rotation about a vertical
+axis on and off.  The speed of rotation for this, and animated transitions
+between plan and elevation, is controlled by <keycap/Z/ and <keycap/X/.
 </Para>
 
 <Para>Crosses and/or labels can be displayed at survey stations.
@@ -86,8 +86,8 @@ displayed, or only non-overlapping ones.
 <para><keycap/Delete/ is useful if you get lost - it resets the scale,
 position, and rotation speed, so that the cave returns to the centre
 of the screen. There are also keyboard controls to use instead of the
-mouse<!-- - <keycap/Shift/ helps here as it accelerates all
-movements-->:
+mouse - <keycap/Shift/ helps here as it accelerates all
+movements:
 </para>
 
 <screen>
@@ -112,7 +112,7 @@ movements-->:
 <keycap/Ctrl-B/: Toggle display of bounding box
 <keycap/O/: Toggle display of non-overlapping/all names
 <keycap/Ctrl-R/: reverse sense of controls
-<!--<keycap/Shift/: accelerates all movement keys-->
+<keycap/Shift/: accelerates all movement keys
 </screen>
 
 <Para>A little experimentation should give a better understanding of how
