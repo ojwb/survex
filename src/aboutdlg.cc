@@ -136,6 +136,25 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
 #endif
     info += '\n';
     info += wxVERSION_STRING;
+#ifdef __WXGTK__
+#if defined __WXGTK24__
+    info += " (GTK+ >= 2.4)";
+#elif defined __WXGTK20__
+    info += " (GTK+ >= 2.0)";
+#elif defined __WXGTK12__
+    info += " (GTK+ >= 1.2)";
+#else
+    info += " (GTK+ < 1.2)";
+#endif
+#elif defined __WXMOTIF__
+#if defined __WXMOTIF20__
+    info += " (Motif >= 2.0)";
+#else
+    info += " (Motif < 2.0)";
+#endif
+#elif defined __WXX11__
+    info += " (X11)";
+#endif
     info += '\n';
     int bpp = wxDisplayDepth();
     info += wxString::Format("Display Depth: %d bpp", bpp);

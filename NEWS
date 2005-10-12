@@ -1,3 +1,6 @@
+* (Unix version): aven: Add details of which of wxGTK, wxMotif, and wxX11
+  we've been compiled with, and which GTK+/Motif version where appropriate.
+
 * (Unix version): Fixed build on Fedora Core 3.
 
 Changes in 1.1.6:
