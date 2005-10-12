@@ -178,6 +178,12 @@ static img_errcode img_errno = IMG_NONE;
 /* Attempt to string paste to ensure we are passed a literal string */
 #define LITLEN(S) (sizeof(S"") - 1)
 
+/* Fake "version numbers" for non-3d formats we can read. */
+#define VERSION_CMAP_SHOT	-4
+#define VERSION_CMAP_STATION	-3
+#define VERSION_COMPASS_PLT	-2
+#define VERSION_SURVEX_POS	-1
+
 static char *
 my_strdup(const char *str)
 {
@@ -294,9 +300,10 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->flags = 0;
 
    /* for version >= 3 we use label_buf to store the prefix for reuse */
-   /* for version -2, 0 value indicates we haven't entered a survey yet */
-   /* for version -4, we store the last station here to detect whether
-    * we MOVE or LINE */
+   /* for VERSION_COMPASS_PLT, 0 value indicates we haven't
+    * entered a survey yet */
+   /* for VERSION_CMAP_SHOT, we store the last station here
+    * to detect whether we MOVE or LINE */
    pimg->label_len = 0;
    pimg->label_buf[0] = '\0';
 
@@ -338,8 +345,9 @@ img_open_survey(const char *fnm, const char *survey)
       pimg->survey_len = len;
    }
 
-   /* [version -2, -3, -4] pending IMG_LINE or IMG_MOVE - both have 4 added
-    * [version -1] already skipped heading line, or there wasn't one
+   /* [VERSION_COMPASS_PLT, VERSION_CMAP_STATION, VERSION_CMAP_SHOT] pending
+    * IMG_LINE or IMG_MOVE - both have 4 added.
+    * [VERSION_SURVEX_POS] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
     * [version >= 3] not in the middle of turning a LINE into a MOVE
     */
@@ -348,7 +356,7 @@ img_open_survey(const char *fnm, const char *survey)
    len = strlen(fnm);
    if (has_ext(fnm, len, EXT_SVX_POS)) {
 pos_file:
-      pimg->version = -1;
+      pimg->version = VERSION_SURVEX_POS;
       if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
       if (!pimg->datestamp) {
@@ -362,7 +370,7 @@ pos_file:
    if (has_ext(fnm, len, EXT_PLT) || has_ext(fnm, len, EXT_PLF)) {
       long fpos;
 plt_file:
-      pimg->version = -2;
+      pimg->version = VERSION_COMPASS_PLT;
       /* Spaces aren't legal in Compass station names, but dots are, so
        * use space as the level separator */
       pimg->separator = ' ';
@@ -480,9 +488,9 @@ xyz_file:
 	 goto error;
       }
       if (line[1] == 'S') {
-	 pimg->version = -3; /* Station format */
+	 pimg->version = VERSION_CMAP_STATION;
       } else {
-	 pimg->version = -4; /* Shot format */
+	 pimg->version = VERSION_CMAP_SHOT;
       }
       osfree(line);
       line = getline_alloc(pimg->fh);
@@ -595,7 +603,7 @@ img_rewind(img *pimg)
       return 0;
    }
    clearerr(pimg->fh);
-   /* [version -1] already skipped heading line, or there wasn't one
+   /* [VERSION_SURVEX_POS] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
     * [version >= 3] not in the middle of turning a LINE into a MOVE */
    pimg->pending = 0;
@@ -603,8 +611,9 @@ img_rewind(img *pimg)
    img_errno = IMG_NONE;
 
    /* for version >= 3 we use label_buf to store the prefix for reuse */
-   /* for version -2, 0 value indicates we haven't entered a survey yet */
-   /* for version -4, we store the last station here to detect whether
+   /* for VERSION_COMPASS_PLT, 0 value indicates we haven't entered a survey
+    * yet */
+   /* for VERSION_CMAP_SHOT, we store the last station here to detect whether
     * we MOVE or LINE */
    pimg->label_len = 0;
    return 1;
@@ -1207,8 +1216,8 @@ img_read_item_ascii(img *pimg, img_point *p)
       }
 
       return result;
-   } else if (pimg->version == -1) {
-      /* version -1: .pos file */
+   } else if (pimg->version == VERSION_SURVEX_POS) {
+      /* Survex .pos file */
       size_t off;
       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
       againpos:
@@ -1260,8 +1269,8 @@ img_read_item_ascii(img *pimg, img_point *p)
       }
 
       return img_LABEL;
-   } else if (pimg->version == -2) {
-      /* version -2: Compass .plt file */
+   } else if (pimg->version == VERSION_COMPASS_PLT) {
+      /* Compass .plt file */
       if (pimg->pending > 0) {
 	 /* -1 signals we've entered the first survey we want to
 	  * read, and need to fudge lots if the first action is 'D'...
@@ -1418,7 +1427,7 @@ skip_to_N:
 	 }
       }
    } else {
-      /* version -3 or -4: CMAP .xyz file */
+      /* CMAP .xyz file */
       char *line = NULL;
       char *q;
       size_t len;
@@ -1462,7 +1471,7 @@ skip_to_N:
       if (line[0] == '\x1a') return img_STOP;
 
       len = strlen(line);
-      if (pimg->version == -3) {
+      if (pimg->version == VERSION_CMAP_STATION) {
 	 /* station variant */
 	 if (len < 37) {
 	    osfree(line);
