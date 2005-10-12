@@ -1,3 +1,5 @@
+* aven: Fix labelling of date colouring on 32 bit platforms.
+
 * aven: If "colour by date" is on and we load a survey with no date info
   (or all surveyed on the same date) then set "colour by none".
 
