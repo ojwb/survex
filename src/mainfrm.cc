@@ -1326,7 +1326,8 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		if (pt.z < m_ZMin) m_ZMin = pt.z;
 		if (pt.z > zmax) zmax = pt.z;
 
-		time_t date = (survey->date1 + survey->date2) / 2;
+		time_t date;
+		date = survey->date1 + (survey->date2 - survey->date1) / 2;
 		if (date) {
 		    if (date < m_DateMin) m_DateMin = date;
 		    if (date > datemax) datemax = date;
