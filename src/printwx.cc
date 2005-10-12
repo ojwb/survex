@@ -1079,7 +1079,7 @@ svxPrintout::OnBeginPrinting() {
      * <support file directory>/print.ini [must exist]
      */
 
-#if (OS==UNIX)
+#ifdef __UNIX__
     pth_cfg = getenv("HOME");
     if (pth_cfg) {
 	fh = fopenWithPthAndExt(pth_cfg, ".survex/print."EXT_INI, NULL,

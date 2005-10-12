@@ -38,8 +38,6 @@
 #include "useful.h"
 
 #include <wx/confbase.h>
-// whichos.h #defines UNIX, which causes problems for wx/html/htmlwin.h
-#undef UNIX
 #include <wx/html/htmlwin.h>
 #include <wx/image.h>
 #include <wx/imaglist.h>

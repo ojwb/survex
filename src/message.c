@@ -53,10 +53,10 @@ static jmp_buf jmpbufSignal;
 # endif
 #endif
 
-#if (OS==WIN32)
+#if OS_WIN32
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-#elif (OS==UNIX)
+#elif OS_UNIX
 # include <sys/types.h>
 # include <sys/stat.h>
 #endif
@@ -241,7 +241,7 @@ init_signals(void)
 static int
 default_charset(void)
 {
-#if (OS==WIN32)
+#if OS_WIN32
 # ifdef AVEN
 #  define CODEPAGE GetACP()
 # else
@@ -254,7 +254,7 @@ default_charset(void)
     case 850: return CHARSET_DOSCP850;
    }
    return CHARSET_USASCII;
-#elif (OS==UNIX)
+#elif OS_UNIX
 #ifdef AVEN
    return CHARSET_ISO_8859_1;
 #else
@@ -325,7 +325,7 @@ default_charset(void)
    return CHARSET_USASCII;
 #endif
 #else
-# error Do not know operating system 'OS'
+# error Do not know operating system!
 #endif
 }
 
@@ -455,7 +455,7 @@ add_unicode(int charset, unsigned char *p, int value)
       }
       donthave:
       break;
-#if (OS==WIN32)
+#if OS_WIN32
    case CHARSET_WINCP1250:
       /* MS Windows rough equivalent to ISO-8859-2 */
       if (value >= 0x80) {
@@ -566,7 +566,7 @@ add_unicode(int charset, unsigned char *p, int value)
       }
       break;
 #endif
-#if (OS==WIN32)
+#if OS_WIN32
    case CHARSET_DOSCP850: {
       unsigned char uni2dostab[] = {
 	 255, 173, 189, 156, 207, 190, 221, 245,
@@ -711,7 +711,7 @@ add_unicode(int charset, unsigned char *p, int value)
    return 0;
 }
 
-#if (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
+#if OS_UNIX && defined DATADIR && defined PACKAGE
 /* Under Unix, we compile in the configured path */
 static const char *pth_cfg_files = DATADIR "/" PACKAGE;
 #else
@@ -897,7 +897,7 @@ msg_init(char * const *argv)
    /* Point to argv[0] itself so we report a more helpful error if the
     * code to work out the clean appname generates a signal */
    appname_copy = argv[0];
-#if (OS == UNIX)
+#if OS_UNIX
    /* use name as-is on Unix - programs run from path get name as supplied */
    appname_copy = osstrdup(argv[0]);
 #else
@@ -922,7 +922,7 @@ msg_init(char * const *argv)
       /* If we're being built into a bundle, always look relative to
        * the path to the binary. */
       pth_cfg_files = use_path(exe_pth, "share/survex");
-#elif (OS==UNIX) && defined(DATADIR) && defined(PACKAGE)
+#elif OS_UNIX && defined DATADIR && defined PACKAGE
       bool free_pth = fFalse;
       char *pth = getenv("srcdir");
       if (!pth || !pth[0]) {
@@ -931,7 +931,7 @@ msg_init(char * const *argv)
       }
       if (pth[0]) {
 	 struct stat buf;
-#if defined(__GNUC__) && defined(__APPLE_CC__)
+#if OS_UNIX_MACOSX
 	 /* On MacOS X the programs may be installed anywhere, with the
 	  * share directory and the binaries in the same directory. */
 	 p = use_path(pth, "share/survex/en.msg");
@@ -966,7 +966,7 @@ macosx_got_msg:
       }
 
       if (free_pth) osfree(pth);
-#elif (OS==WIN32)
+#elif OS_WIN32
       DWORD len = 256;
       char *buf = NULL, *modname;
       while (1) {
@@ -996,7 +996,7 @@ macosx_got_msg:
       msg_lang = getenv("LC_MESSAGES");
       if (!msg_lang || !*msg_lang) msg_lang = getenv("LANG");
       if (!msg_lang || !*msg_lang) {
-#if (OS==WIN32)
+#if OS_WIN32
 	 LCID locid;
 #endif
 #ifdef DEFAULTLANG
@@ -1004,7 +1004,7 @@ macosx_got_msg:
 #else
 	 msg_lang = "en";
 #endif
-#if (OS==WIN32)
+#if OS_WIN32
 	 locid = GetUserDefaultLCID();
 	 if (locid) {
 	    WORD langid = LANGIDFROMLCID(locid);

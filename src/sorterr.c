@@ -1,6 +1,6 @@
 /* sorterr.c */
 /* Sort a survex .err file */
-/* Copyright (C) 2001,2002 Olly Betts
+/* Copyright (C) 2001,2002,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -244,13 +244,9 @@ main(int argc, char **argv)
 
    if (fnm_out) {
       safe_fclose(fh_out);
-#if (OS!=UNIX) && !defined(__DJGPP__)
+#if OS_WIN32
       /* UNIX rename atomically replaces, so doesn't need this.
-       * DJGPP "removes destination first if it exists" according to docs
-       *    (testing confirms this) so doesn't need this.
-       * BorlandC won't overwrite (from tests) so needs this code
        * WIN32 won't overwrite (from tests) so needs this code.
-       * RISC OS won't overwrite on some filing systems, so needs this code.
        */
       remove(fnm);
 #endif

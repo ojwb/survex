@@ -113,7 +113,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
     vert->Add(new wxStaticText(this, 505, msg(/*System Information:*/390)),
 	      0, wxLEFT | wxRIGHT, 20);
 
-#if defined unix && !wxCHECK_VERSION(2,5,4)
+#if defined __UNIX__ && !wxCHECK_VERSION(2,5,4)
     // On Unix, older wx versions report the OS that we were *built* on, which
     // may be a different OS or kernel version to what we're running on.
     // I submitted a patch to fix this which was applied in 2.5.4.

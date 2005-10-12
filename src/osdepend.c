@@ -1,6 +1,6 @@
 /* osdepend.c
  * OS dependent functions
- * Copyright (C) 1993-2003,2004 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include "useful.h"
 #include "osdepend.h"
 
-#if (OS==WIN32)
+#if OS_WIN32
 # include <ctype.h> /* needed for isalpha */
 
 /* NB "c:fred" isn't relative. Eg "c:\data\c:fred" won't work */
@@ -39,7 +39,7 @@ fAbsoluteFnm(const char *fnm)
    return ((fnm[1] == ':' && isalpha(ch)) || ch == '\\' || ch == '/');
 }
 
-#elif (OS==UNIX)
+#elif OS_UNIX
 
 bool
 fAbsoluteFnm(const char *fnm)
@@ -56,7 +56,7 @@ fAbsoluteFnm(const char *fnm)
  * empty string).
  */
 
-#if ((OS==UNIX) || (OS==WIN32))
+#if OS_UNIX || OS_WIN32
 
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -71,7 +71,7 @@ fDirectory(const char *fnm)
        || fnm[strlen(fnm) - 1] == FNM_SEP_LEV2
 #endif
        ) return 1;
-#if (OS == UNIX)
+#ifdef HAVE_LSTAT
    /* On Unix, dereference any symlinks we might encounter */
    if (lstat(fnm, &buf) != 0) return 0;
 #else

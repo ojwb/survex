@@ -1,3 +1,5 @@
+* (Unix version): Fixed build on Fedora Core 3.
+
 Changes in 1.1.6:
 
 * (MS Windows version): Distribution is about a third smaller than 1.1.5

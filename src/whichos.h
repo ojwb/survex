@@ -1,6 +1,5 @@
-/* whichos.h
- * Determines which OS Survex will try to compile for
- * Copyright (C) 1993-1995,2002,2003 Olly Betts
+/* whichos.h  Detect which OS we're compiling for.
+ * Copyright (C) 2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,53 +13,42 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-/* Built-in #define-s that identify compilers: (initals => checked)
- * unix,UNIX			Unix systems (?)
- * __TURBOC__			Turbo C
- * MacOSX with apple modified gcc:
- * -D__ppc__ -D__MACH__ -D__APPLE__ -D__APPLE_CC__=932
- */
+#ifndef SURVEX_WHICHOS_H
+#define SURVEX_WHICHOS_H
 
-#ifndef WHICHOS_H
-# define WHICHOS_H
+/* Attempt to auto-detect OS. */
+#if (defined(unix) || defined(UNIX))
+# define OS_UNIX 1
+#elif defined(__GNUC__) && defined(__APPLE_CC__)
+/* MacOS X is Unix for most purposes. */
+# define OS_UNIX 1
+# define OS_UNIX_MACOSX 1
+#endif
 
-/* if OS has been defined, then assume they know what they're up to */
-# ifndef OS
-/* Okay, let's try to be clever and auto-detect - if OS gets defined more
- * than once, compiler should barf and warn user
- */
-#  if (defined(unix) || defined(UNIX))
-#   undef UNIX /* to stop it causing problems later */
-#   define OS UNIX
-#  endif
-#  if defined(__GNUC__) && defined(__APPLE_CC__)
-/* Mac OS X is Unix underneath */
-#   define OS UNIX
-#  endif
-#  if (defined (WIN32) || defined(__WIN32__))
-#   undef WIN32
-#   define OS WIN32
-#  endif
-/* etc ... */
-# endif /*!defined(OS)*/
-
-/* predefine OS to be one of these (eg in the make file) to force a compile
- * for an OS/compiler combination not support or that clashes somehow.
- * eg with -DOS=AMIGA to predefine OS as AMIGA
- */
-//# define RISCOS 1
-//# define MSDOS  2
-# define UNIX   3
-//# define AMIGA  4
-//# define TOS    5
-# define WIN32  6
-/* Just numbers, not a rating system ;) */
-
-/* One last check, in case nothing worked */
-# ifndef OS
-#  error Sorry, do not know what OS to compile for - look at whichos.h
+#if !OS_UNIX
+# if defined WIN32 || defined _WIN32 || defined __WIN32 || defined __WIN32__
+#  define OS_WIN32 1
 # endif
+#endif
+
+#ifndef OS_UNIX
+# define OS_UNIX 0
+#endif
+
+#ifndef OS_UNIX_MACOSX
+# define OS_UNIX_MACOSX 0
+#endif
+
+#ifndef OS_WIN32
+# define OS_WIN32 0
+#endif
+
+/* Check that we detected an OS! */
+# if !(OS_UNIX+OS_WIN32)
+#  error Failed to detect which os to compile for
+# endif
+
 #endif

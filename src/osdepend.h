@@ -1,6 +1,6 @@
 /* osdepend.h
  * Contains commonly required OS dependent bits
- * Copyright (C) 1993-2003,2004 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 # include "whichos.h"
 # include "ostypes.h"
 
-# if (OS==WIN32)
+# if OS_WIN32
 
 /* FNM_SEP_DRV and FNM_SEP_EXT and FNM_SEP_LEV2 needn't be defined */
 #  define FNM_SEP_LEV '\\'
@@ -40,7 +40,7 @@
 #   endif
 #  endif
 
-# elif (OS==UNIX)
+# elif OS_UNIX
 
 /* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
 #  define FNM_SEP_LEV '/'
@@ -49,9 +49,9 @@
 
 #  define NO_STDPRN
 
-# else /* OS==? */
-#  error Do not know operating system 'OS'
-# endif /* OS==? */
+# else
+#  error Do not know what to do for this operating system
+# endif
 
 /***************************************************************************/
 
