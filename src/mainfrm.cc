@@ -823,7 +823,7 @@ void MainFrm::CreateToolBar()
 
     wxToolBar* toolbar = wxFrame::CreateToolBar();
 
-#ifdef __WXGTK12__
+#ifndef __WXGTK20__
     toolbar->SetMargins(5, 5);
 #endif
 
