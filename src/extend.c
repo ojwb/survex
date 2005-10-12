@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2002 Olly Betts
+ * Copyright (C) 1995-2002,2005 Olly Betts
  * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
@@ -221,7 +221,7 @@ delimword(char *ln, char** lr)
    } else {
       *lr = le + 1;
    }
-   
+
    *le = '\0';
    return ln;
 }

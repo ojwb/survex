@@ -1543,7 +1543,7 @@ cmd_date(void)
    --t.tm_mon; /* Jan is 0 */
    if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
    pcs->meta->date1 = mktime(&t); /* FIXME mktime works on localtime - what to do? */
- 
+
    skipblanks();
    if (ch == '-') {
       nextch();

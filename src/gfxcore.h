@@ -266,7 +266,7 @@ public:
 
     void OnPaint(wxPaintEvent&);
     void OnSize(wxSizeEvent& event);
-    void OnIdle(wxIdleEvent &event);
+    void OnIdle(wxIdleEvent& event);
 
     void OnMouseMove(wxMouseEvent& event) { m_Control->OnMouseMove(event); }
     void OnLeaveWindow(wxMouseEvent& event);

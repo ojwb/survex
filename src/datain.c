@@ -489,6 +489,7 @@ data_file(const char *pth, const char *fnm)
 	 skipline();
 	 process_eol();
 	 /* SURVEY DATE: 7 10 79  COMMENT:<Long name> */
+	 /* Note: Larry says a 2 digit year is always 19XX */
 	 /* NB order is *month* *day* year */
 	 get_token();
 	 get_token();
