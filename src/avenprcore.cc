@@ -1,4 +1,4 @@
-/* avenprcore.c
+/* avenprcore.cc
  * Printer independent parts of Survex printer drivers
  * Copyright (C) 1993-2002,2004,2005 Olly Betts
  * Copyright (C) 2004 Philip Underwood
