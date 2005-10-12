@@ -226,7 +226,8 @@ Aven::SetPageSetupDialogData(const wxPageSetupDialogData & psdd)
 void Aven::ReportError(const wxString& msg)
 {
     AvenAllowOnTop ontop(m_Frame);
-    wxMessageBox(msg, APP_NAME, wxOK | wxCENTRE | wxICON_EXCLAMATION, m_Frame);
+    wxMessageDialog dlg(m_Frame, msg, APP_NAME, wxOK | wxICON_ERROR);
+    dlg.ShowModal();
 }
 
 // called to report errors by message.c
