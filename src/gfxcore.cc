@@ -189,8 +189,17 @@ void GfxCore::Initialise()
     // Apply default parameters.
     DefaultParameters();
 
-    if (m_Parent->GetZExtent() == 0.0) {
-	SetColourBy(COLOUR_BY_NONE);
+    switch (m_ColourBy) {
+	case COLOUR_BY_DEPTH:
+	    if (m_Parent->GetZExtent() == 0.0) {
+		SetColourBy(COLOUR_BY_NONE);
+	    }
+	    break;
+	case COLOUR_BY_DATE:
+	    if (m_Parent->GetDateExtent() == 0) {
+		SetColourBy(COLOUR_BY_NONE);
+	    }
+	    break;
     }
 
     m_HaveData = true;
@@ -1974,6 +1983,7 @@ void GfxCore::PlaceVertexWithDepthColour(Double x, Double y, Double z,
 {
     // Set the drawing colour based on the altitude.
     Double z_ext = m_Parent->GetZExtent();
+    assert(z_ext > 0);
 
     // points arising from tubes may be slightly outside the limits...
     if (z < -z_ext * 0.5) z = -z_ext * 0.5;
@@ -2035,8 +2045,9 @@ int GfxCore::GetDepthColour(Double z) const
 {
     // Return the (0-based) depth colour band index for a z-coordinate.
     Double z_ext = m_Parent->GetZExtent();
+    assert(z_ext > 0);
     z += z_ext / 2;
-    return int((z / (z_ext == 0.0 ? 1.0 : z_ext)) * (GetNumDepthBands() - 1));
+    return int(z / z_ext * (GetNumDepthBands() - 1));
 }
 
 Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
@@ -2179,6 +2190,7 @@ void GfxCore::SetColourFromDate(time_t date, Double factor)
     }
 
     time_t date_ext = m_Parent->GetDateExtent();
+    assert(date_ext > 0);
     time_t date_offset = date - m_Parent->GetDateMin();
 
     Double how_far = (Double)date_offset / date_ext;
