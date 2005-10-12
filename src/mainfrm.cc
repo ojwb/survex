@@ -1062,14 +1062,16 @@ bool
 MainFrm::ProcessSVXFile(const wxString & file)
 {
     char *cavern = use_path(msg_exepth(), "cavern");
-    const char * argv[3] = { NULL, NULL, NULL };
+    const char * argv[5] = { NULL, NULL, NULL, NULL, NULL };
 #ifdef __WXMSW__
     SetEnvironmentVariable("SURVEX_UTF8", "1");
 #else
     setenv("SURVEX_CHARSET", "utf8", 1);
 #endif
     argv[0] = cavern;
-    argv[1] = file.c_str();
+    argv[1] = "-o";
+    argv[2] = file.c_str();
+    argv[3] = file.c_str();
 
     int status = -1;
     CavernProcess * proc = new CavernProcess(&status);

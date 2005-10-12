@@ -3,6 +3,9 @@
   range for the relevant period (previously it became a single date near
   the middle of that period).
 
+* aven: When processing a .svx file, put the resultant .3d file in the
+  same directory.
+
 * aven: Fix labelling of date colouring on 32 bit platforms.
 
 * aven: If "colour by date" is on and we load a survey with no date info
