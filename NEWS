@@ -1,3 +1,8 @@
+* cavern: Add validity checking for dates in *date commands with feature
+  test.  A date entered as just "year" or "year.month" now becomes a date
+  range for the relevant period (previously it became a single date near
+  the middle of that period).
+
 * aven: Fix labelling of date colouring on 32 bit platforms.
 
 * aven: If "colour by date" is on and we load a survey with no date info

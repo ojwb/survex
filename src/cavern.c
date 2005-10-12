@@ -143,12 +143,16 @@ pause_on_exit(void)
 }
 #endif
 
+time_t tmUserStart;
+
 extern CDECL int
 main(int argc, char **argv)
 {
    int d;
-   time_t tmUserStart = time(NULL);
-   clock_t tmCPUStart = clock();
+   clock_t tmCPUStart;
+
+   tmUserStart = time(NULL);
+   tmCPUStart = clock();
 
    /* Always buffer by line for aven's benefit. */
    setvbuf(stdout, NULL, _IOLBF, 0);

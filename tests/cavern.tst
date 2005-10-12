@@ -47,7 +47,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  tapelessthandepth longname chinabug chinabug2\
  multinormal multinormignall multidiving multicylpolar multicartesian\
  multinosurv multinormalbad multibug\
- cmd_title cmd_titlebad cmd_dummy cmd_infer\
+ cmd_title cmd_titlebad cmd_dummy cmd_infer cmd_date cmd_datebad cmd_datebad2\
  cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
  plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar\
  badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
@@ -147,6 +147,9 @@ for file in $TESTS ; do
   cmd_titlebad) pos=fail ; error=4 ;;
   cmd_dummy) pos=no ; warn=0 ;;
   cmd_infer) pos=yes ; warn=0 ;;
+  cmd_date) pos=no ; warn=3 ;;
+  cmd_datebad) pos=fail ; error=36 ;;
+  cmd_datebad2) pos=fail ; error=20 ;;
   cartes) pos=yes ; warn=0 ;;
   diving) pos=yes ; warn=0 ;;
   cylpolar) pos=yes ; warn=0 ;;

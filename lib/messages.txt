@@ -760,16 +760,8 @@ es: 57 *EXPORT debe seguir inmediatamente a *BEGIN <TOPOGRAF&Iacute;A>'
 it: 57 *EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'
 sk: 57 *EXPORT mus&iacute; bezprostredne nasledova&tcaron; `*BEGIN <SURVEY>'
 ro: 57 *EXPORT trebuie sa urmeze dupa `*BEGIN <TOPOGRAFIE>'
-# cf 162
-en: 58 "Plot what (n=station names, c=crosses, l=legs, s=surface) (default &quot;%s&quot;)&#10;: "
-fr: 58 "Que dessiner (n=noms de station, c=croix, l=segments, s=surface) (defaut &quot;%s&quot;)&#10;: "
-de: 58 "Was plotten? (n=Stationsnamen, c=Kreuze, l=Strecken, s=Oberfl&auml;che) (Default &quot;%s&quot;)&#10;: "
-pt,pt-br: 58 "O qu&ecirc; plotar? (n=nomes de bases, c=marcas de bases, l=visadas, s=superf&iacute;cie) (default &quot;%s&quot;)&#10;:"
-ca: 58 "Que s'ha de plotejar? (n=noms d'estaci&oacute;, c=creus, l=tirades, s=superf&iacute;cie) (per defecte &quot;%s&quot;)&#10;: "
-es: 58 "Que hay que plotear? (n=nombres de estaci&oacute;n, c=cruces, l=tiradas, s=superf&iacute;cie) (por defecto &quot;%s&quot;)&#10;: "
-it: 58 "Disegna cosa (n=nomi delle stazioni, c=croci, l=battute, s=superficie) (default &quot;%s&quot;)&#10;: "
-sk: 58 "&Ccaron;o vykresli&tcaron;? (n=men&aacute; bodov, c=kr&iacute;&zcaron;iky, l=z&aacute;mery, s=povrch) (defaultne &quot;%s&quot;)&#10;: "
-ro: 58 "Ce se deseneaza? (n=numele punctelor de statie, c=intersectii, l=segmentele topografiei, s=suprafata) (default &quot;%s&quot;)&#10;: "
+# 58 different in 1.0
+en: 58 Invalid year (< 1970 or > 2037)
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
 fr: 59 Lecture de compas suspecte
@@ -1008,28 +1000,11 @@ es: 79 Distancia ajustada negativa
 it: 79 Distanza corretta negativa
 sk: 79 Z&aacute;porn&aacute; nastaven&aacute; vzdialenos&tcaron;
 ro: 79 Distanta corectata negativ
+# different in 1.0
+en: 80 Date is in the future!
+# different in 1.0
+en: 81 End of date range is before the start
 #
-en: 80 Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')
-fr: 80 Echelle incorrecte `%s' (syntaxes correctes: `1:500', `500', ou `0.002')
-de: 80 Ma&szlig;stab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
-# (no de-de entry here!)
-de-ch: 80 Massstab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
-pt,pt-br: 80 Escala com problemas: `%s' (esperando algo como `1:500', `500' ou `0.002')
-ca: 80 Escala err&ograve;nia `%s' (esperant per ex. `1:500', `500', o `0.002')
-es: 80 Escala err&oacute;nea `%s' (esperando por ej. `1:500', `500', o `0.002')
-it: 80 Scala errata `%s' (valori di esempio `1:500', `500', or `0.002')
-sk: 80 Nespr&aacute;vne mer&iacute;tko `%s' (predpoklad&aacute; sa napr.: `1:500', `500', alebo `0.002')
-ro: 80 Scara gresita `%s' (asteptam de ex. `1:500', `500', or `0.002')
-#
-en: 81 Error initialising graphics card
-fr: 81 Erreur &agrave; l'initialisation de la carte graphique
-de: 81 Fehler bei der Initialisierung der Graphikkarte
-pt: 81 Erro inicializando placa de v&iacute;deo
-ca: 81 Error a l'inicialitzar la placa gr&agrave;fica
-es: 81 Error al inicializar la placa gr&aacute;fica
-it: 81 Errore d'inizializzazione della scheda grafica
-sk: 81 Chyba pri inicializ&aacute;cii grafickej karty
-ro: 81 Eroare la initializarea placii video
 en: 82 Parameter `%s' has invalid value `%s' in printer configuration file
 fr: 82 Le param&egrave;tre `%s' a une valeur incorrecte `%s' dans le fichier de configuration de l'imprimante
 de: 82 Parameter `%s' hat ung&uuml;ltigen Wert `%s' in der Druckerkonfigurationsdatei
@@ -1039,19 +1014,7 @@ es: 82 Par&aacute;metros `%s' tienen un valor incorrecto `%s' en el archivo de c
 it: 82 Parametro `%s' ha un valore `%s' non valido nel file di configurazione della stampante
 sk: 82 Parameter `%s' v konfigura&ccaron;nom s&uacute;bore tla&ccaron;iarne m&aacute; nespr&aacute;vnu hodnotu `%s' 
 ro: 82 Parametrul `%s' are valoarea incorecta `%s' in fisierul de configurare a imprimantei
-#
-en: 83 Scale to fit on 1 page
-fr: 83 Mettre &agrave; l'&eacute;chelle pour tenir en 1 page
-# somewhat clumsily, but anything else would require a subordinate
-# clause and become much longer:
-de-ch: 83   Massstab f&uuml;r Zeichnung auf 1 Seite
-de: 83 Ma&szlig;stab f&uuml;r Zeichnung auf 1 Seite
-pt: 83 Escala para caber em uma p&aacute;gina
-ca: 83 Escala per a encaixar en 1 p&agrave;gina
-es: 83 Escala para encajar en 1 p&aacute;gina
-it: 83 Scala per rientrare in una pagina
-sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku 
-ro: 83 Redimensionata pentru a incapea pe 1 pagina
+# XXX 83
 # In data with backsights, the user has tried to give a plumb for the
 # foresight and a clino reading for the backsight, or something similar.
 en: 84 CLINO and BACKCLINO readings must be of the same type
@@ -1074,30 +1037,11 @@ es: 85 Par&aacute;metros `%s' faltan en el archivo de configuraci&oacute;n de la
 it: 85 Il parametro `%s' manca nel file di configurazione della stampante
 sk: 85 Parameter `%s' v konfigura&ccaron;nom s&uacute;bore tla&ccaron;iarne ch&yacute;ba
 ro: 85 Parametrul `%s' lipseste din fisierul de configurare a imprimantei
+# 86, 87 different in 1.0
+en: 86 Invalid month
 #
-en: 86 No data in 3d Image file
-fr: 86 Pas de donn&eacute;es dans le fichier image 3d
-de: 86 Keine Daten in der 3D-Bilddatei
-pt: 86 N&atilde;o h&aacute; dados no arquivo de imagem 3d
-ca: 86 No hi ha dades al fitxer d'imatge 3d
-es: 86 No hay datos en el archivo de imagen 3d
-it: 86 Nessun dato nel file immagine 3d
-sk: 86 V 3D-obrazovom s&uacute;bore nie s&uacute; &uacute;daje
-ro: 86 Lipsesc datele din fisierul de imagine 3d
-en: 87 Error writing printer output
-fr: 87 Erreur &agrave; l'&eacute;criture du fichier &agrave; imprimer
-# no we aren't printing yet, _because_ we couldn't even finish writing the
-# file that was to be printed
-# OL: not necessarily the case, as it might go wrong during printout
-# GN(3): ok reverting to previous version here
-de: 87 Fehler beim Schreiben oder Drucken der Ausgabedatei
-#germ: 87 Fehler beim Schreiben der Drucker-Ausgabedatei
-pt: 87 Erro ao imprimir
-ca: 87 Error a l'escriure la sortida a impresora
-es: 87 Error al escribir la salida a impresora
-it: 87 Errore nella scrittura del file per la stampa
-sk: 87 Chyba pri z&aacute;pise na tla&ccaron;iare&ncaron;
-ro: 87 Eroare in scrierea fisierului pentru imprimare
+en: 87 Invalid day of month
+#
 en: 88 Error in format of font file `%s'
 fr: 88 Erreur dans le format du fichier de fontes `%s'
 de: 88 Formatfehler in der Zeichensatzdatei `%s'
@@ -1176,7 +1120,7 @@ ca: 95 Utilitzacions futures d'aquesta funci&oacute; obsoleta no seran informats
 es: 95 Usos futuros de &eacute;sta funci&oacute;n obsoleta no ser&aacute;n informados
 it: 95 Usi futuri di questa funzionalit&aacute; non pi&uacute; usata non verranno segnalati
 sk: 95 &Dcaron;al&scaron;ie pou&zcaron;itia zamietnutej fukcie nebud&uacute; zaznamenan&eacute;
-# FIXME ro: pls give me a synonim for "deprecated"
+# FIXME ro: pls give me a synonym for "deprecated"
 ro: 95 Folosirea ulterioara a acestei functionalitati ??? nu va fi semnalata
 #
 en: 96 Stack overflow

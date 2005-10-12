@@ -1528,39 +1528,48 @@ copy_on_write_meta(settings *s)
 static void
 cmd_date(void)
 {
-   struct tm t;
+    struct tm t;
+    int year, month, day;
+    time_t date1, date2;
 
-   copy_on_write_meta(pcs);
+    memset(&t, 0, sizeof(t));
+    read_date(&year, &month, &day);
+    t.tm_year = year;
+    t.tm_mon = month ? month : 1;
+    t.tm_mday = day ? day : 1;
 
-   memset(&t, 0, sizeof(t));
-   read_date(&t.tm_year, &t.tm_mon, &t.tm_mday);
-   if (t.tm_mon == 0) {
-       t.tm_mon = 6;
-       t.tm_mday = 1;
-   } else if (t.tm_mday == 0) {
-       t.tm_mday = 15;
-   }
-   --t.tm_mon; /* Jan is 0 */
-   if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
-   pcs->meta->date1 = mktime(&t); /* FIXME mktime works on localtime - what to do? */
+    --t.tm_mon; /* Jan is 0 */
+    if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
+    date1 = mktime(&t);
+    if (date1 == (time_t)-1) {
+	date1 = 0;
+    } else if (date1 > tmUserStart) {
+	compile_warning(/*Date is in the future!*/80);
+    }
 
-   skipblanks();
-   if (ch == '-') {
-      nextch();
-      memset(&t, 0, sizeof(t));
-      read_date(&t.tm_year, &t.tm_mon, &t.tm_mday);
-      if (t.tm_mon == 0) {
-	  t.tm_mon = 6;
-	  t.tm_mday = 1;
-      } else if (t.tm_mday == 0) {
-	  t.tm_mday = 15;
-      }
-      --t.tm_mon; /* Jan is 0 */
-      if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
-      pcs->meta->date2 = mktime(&t);
-   } else {
-      pcs->meta->date2 = pcs->meta->date1;
-   }
+    skipblanks();
+    if (ch == '-') {
+	nextch();
+	memset(&t, 0, sizeof(t));
+	read_date(&year, &month, &day);
+    }
+    t.tm_year = year;
+    t.tm_mon = month ? month : 12;
+    if (day == 0) {
+	t.tm_mday = last_day(year, t.tm_mon);
+    } else {
+	t.tm_mday = day;
+    }
+    --t.tm_mon; /* Jan is 0 */
+    if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
+    date2 = mktime(&t);
+    if (date2 == (time_t)-1) date2 = 0;
+    if (date2 < date1)
+	compile_error(/*End of date range is before the start*/81);
+
+    copy_on_write_meta(pcs);
+    pcs->meta->date1 = date1;
+    pcs->meta->date2 = date2;
 }
 
 typedef void (*cmd_fn)(void);

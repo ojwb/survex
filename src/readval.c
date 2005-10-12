@@ -429,6 +429,15 @@ read_string(char **pstr, int *plen)
    nextch();
 }
 
+static int lastday[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+extern int
+last_day(int year, int month)
+{
+    SVX_ASSERT(month >= 1 && month <= 12);
+    return (month == 2 && is_leap_year(year)) ? 29 : lastday[month - 1];
+}
+
 extern void
 read_date(int *py, int *pm, int *pd)
 {
@@ -439,12 +448,29 @@ read_date(int *py, int *pm, int *pd)
 
    get_pos(&fp);
    y = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
+   /* Two digit year is 19xx. */
+   if (y < 100) y += 1900;
+   if (y < 1970 || y > 2037) {
+      compile_error_skip(/*Invalid year (< 1970 or > 2037)*/58);
+      LONGJMP(file.jbSkipLine);
+      return; /* for brain-fried compilers */
+   }
    if (ch == '.') {
       nextch();
       m = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
+      if (m < 1 || m > 12) {
+	 compile_error_skip(/*Invalid month*/86);
+	 LONGJMP(file.jbSkipLine);
+	 return; /* for brain-fried compilers */
+      }
       if (ch == '.') {
 	 nextch();
 	 d = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
+	 if (d < 1 || d > last_day(y, m)) {
+	    compile_error_skip(/*Invalid day of month*/87);
+	    LONGJMP(file.jbSkipLine);
+	    return; /* for brain-fried compilers */
+	 }
       }
    }
    if (py) *py = y;

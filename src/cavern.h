@@ -77,6 +77,8 @@ extern int fnm_output_base_is_dir;
 
 extern bool fExportUsed;
 
+extern time_t tmUserStart;
+
 /* Types */
 
 typedef enum {

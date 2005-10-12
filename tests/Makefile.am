@@ -78,5 +78,6 @@ declination.dat declination.pos ignore.dat ignore.pos backread.dat backread.pos\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos surfequate.svx surfequate.dxf\
 nosurveyhanging.svx cmd_solve_hanging.svx passage.svx\
 cmd_solve_nothing.svx cmd_solve_nothing_implicit.svx\
+cmd_date.svx cmd_datebad.svx cmd_datebad2.svx\
 eswap.svx eswap.espec eswapx.3d\
 eswap-break.svx eswap-break.espec eswap-breakx.3d
