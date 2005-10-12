@@ -2589,16 +2589,8 @@ it:229 File di modelli digitali del suolo
 sk:229 S&uacute;bory s povrchom
 ro:229 Model digital al terenului
 #
+# XXX 230 (used in 1.0)
 # The accelerators must be different within this group
-en:230 @Start Rotation
-fr:230 @D&eacute;marre la rotation
-de:230 @Rotation starten
-pt,pt-br:230 Iniciar @Rota&ccedil;&atilde;o
-ca:230 @Comen&ccedil;a la Rotaci&oacute;
-es:230 @Empieza la Rotaci&oacute;n
-it:230 @Avvia la rotazione
-sk:230 @Za&ccaron;a&tcaron; rot&aacute;ciu
-ro:230 @Porneste Rotatia
 #
 en:231 S@top Rotation##Space
 fr:231 @Arr&ecirc;te la rotation##Space
