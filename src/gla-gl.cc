@@ -909,7 +909,7 @@ void GLACanvas::BeginBlobs()
 	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_POINT_SMOOTH");
 	glBegin(GL_POINTS);
     } else {
-	glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT);
+	glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT|GL_ENABLE_BIT);
 	CHECK_GL_ERROR("BeginBlobs", "glPushAttrib");
 	SetIndicatorTransform();
 	glEnable(GL_DEPTH_TEST);
@@ -979,7 +979,7 @@ void GLACanvas::BeginCrosses()
 	// screen, we plot them in the Indicator transform coordinates (which
 	// unfortunately means they can't be usefully put in an opengl display
 	// list).
-	glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT);
+	glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT|GL_ENABLE_BIT);
 	CHECK_GL_ERROR("BeginCrosses", "glPushAttrib");
 	SetIndicatorTransform();
 	glEnable(GL_DEPTH_TEST);

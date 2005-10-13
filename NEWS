@@ -1,7 +1,9 @@
-* cavern: Add validity checking for dates in *date commands with feature
-  test.  A date entered as just "year" or "year.month" now becomes a date
-  range for the relevant period (previously it became a single date near
-  the middle of that period).
+Changes in 1.1.7:
+
+* cavern: Add validity checking for dates in *date commands (with feature
+  test in testsuite).  A date entered as just "year" or "year.month" now
+  becomes a date range for the relevant period (previously it became a single
+  date near the middle of that period).
 
 * extend: Fixed 2 uninitialised flags (should fix erratic behaviour on
   with MS Windows).
@@ -27,6 +29,10 @@
 
 * aven: Enforce a minimum object volume diameter of 1m to avoid problems
   if a survey file with only one station in is loaded.
+
+* aven: Fix problems with indicators disappearing when we're drawing
+  blobs and/or crosses the slow (but always supported) way.  (Problem
+  in 1.1.6).
 
 * (Unix version): aven: Really stop setting extra toolbar margin when using
   GTK2.0.  The attempt to fix this in 1.1.3 failed because __WXGTK12__ is
