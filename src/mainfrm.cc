@@ -26,6 +26,7 @@
 #include <config.h>
 #endif
 
+#include "cavernlog.h"
 #include "mainfrm.h"
 #include "aven.h"
 #include "aboutdlg.h"
@@ -38,7 +39,6 @@
 #include "useful.h"
 
 #include <wx/confbase.h>
-#include <wx/html/htmlwin.h>
 #include <wx/image.h>
 #include <wx/imaglist.h>
 #include <wx/process.h>
@@ -928,162 +928,9 @@ void MainFrm::CreateSidePanel()
     m_Splitter->Initialize(m_Gfx);
 }
 
-static wxString escape_for_shell(wxString s, bool protect_dash = false)
-{
-    size_t p = 0;
-#ifdef __WXMSW__
-    bool needs_quotes = false;
-    while (p < s.size()) {
-	if (p == '"') {
-	    s.insert(p, '\\');
-	    ++p;
-	    needs_quotes = true;
-	}
-	++p;
-    }
-    if (needs_quotes) {
-	s.insert(0, '"');
-	s += '"';
-    }
-#else
-    if (protect_dash && !s.empty() && s[0u] == '-') {
-	// If the filename starts with a '-', protect it from being
-	// treated as an option by prepending "./".
-	s.insert(0, "./");
-	p = 2;
-    }
-    while (p < s.size()) {
-	// Exclude a few safe characters which are common in filenames
-	if (!isalnum(s[p]) && strchr("/._-", s[p]) == NULL) {
-	    s.insert(p, '\\');
-	    ++p;
-	}
-	++p;
-    }
-#endif
-    return s;
-}
-
-static wxString
-html_escape(const wxString &str)
-{
-    wxString res;
-    size_t p = 0;
-    while (p < str.size()) {
-	char ch = str[p++];
-	switch (ch) {
-	    case '<':
-	        res += "&lt;";
-	        continue;
-	    case '>':
-	        res += "&gt;";
-	        continue;
-	    case '&':
-	        res += "&amp;";
-	        continue;
-	    case '"':
-	        res += "&quot;";
-	        continue;
-	    default:
-	        res += ch;
-	}
-    }
-    return res;
-}
-
-class CavernLogWindow : public wxHtmlWindow {
-  public:
-    CavernLogWindow(wxWindow * parent) : wxHtmlWindow(parent) { }
-    virtual void OnLinkClicked(const wxHtmlLinkInfo &link) {
-	wxString href = link.GetHref();
-	wxString title = link.GetTarget();
-	size_t colon = href.rfind(':');
-	if (colon != wxString::npos) {
-#ifdef __WXMSW__
-	    wxString cmd = "notepad $f";
-#else
-	    wxString cmd = "x-terminal-emulator -title $t -e vim -c $l $f";
-	    // wxString cmd = "x-terminal-emulator -title $t -e emacs +$l $f";
-	    // wxString cmd = "x-terminal-emulator -title $t -e nano +$l $f";
-	    // wxString cmd = "x-terminal-emulator -title $t -e jed -g $l $f";
-#endif
-	    const char *p = getenv("SURVEXEDITOR");
-	    if (p) {
-		cmd = p;
-		if (!cmd.find("$f")) {
-		    cmd += " $f";
-		}
-	    }
-	    size_t i = 0;
-	    while ((i = cmd.find('$', i)) != wxString::npos) {
-		if (++i >= cmd.size()) break;
-		    switch (cmd[i]) {
-			case '$':
-			    cmd.erase(i, 1);
-			    break;
-			case 'f': {
-			    wxString f = escape_for_shell(href.substr(0, colon), true);
-			    cmd.replace(i - 1, 2, f);
-			    i += f.size() - 1;
-			    break;
-			}
-			case 't': {
-			    wxString t = escape_for_shell(title);
-			    cmd.replace(i - 1, 2, t);
-			    i += t.size() - 1;
-			    break;
-			}
-			case 'l': {
-			    wxString l = escape_for_shell(href.substr(colon + 1));
-			    cmd.replace(i - 1, 2, l);
-			    i += l.size() - 1;
-			    break;
-			}
-			default:
-			    ++i;
-		    }
-	    }
-	    (void)wxExecute(cmd);
-	}
-    }
-};
-
-class CavernProcess : public wxProcess {
-    int * pstatus;
-  public:
-    CavernProcess(int * pstatus_)
-	: wxProcess(wxPROCESS_REDIRECT), pstatus(pstatus_) {}
-    void OnTerminate(int, int status) {
-	*pstatus = status < 0 ? 1 : status;
-    }
-};
-
 bool
 MainFrm::ProcessSVXFile(const wxString & file)
 {
-    char *cavern = use_path(msg_exepth(), "cavern");
-    const char * argv[5] = { NULL, NULL, NULL, NULL, NULL };
-#ifdef __WXMSW__
-    SetEnvironmentVariable("SURVEX_UTF8", "1");
-#else
-    setenv("SURVEX_CHARSET", "utf8", 1);
-#endif
-    argv[0] = cavern;
-    argv[1] = "-o";
-    argv[2] = file.c_str();
-    argv[3] = file.c_str();
-
-    int status = -1;
-    CavernProcess * proc = new CavernProcess(&status);
-    if (!wxExecute((char **)argv, int(wxEXEC_ASYNC), proc)) {
-	wxString c(cavern);
-	c += ' ';
-	c += file;
-	wxString m = wxString::Format(msg(/*Couldn't open pipe: `%s'*/17), c.c_str());
-	wxGetApp().ReportError(m);
-	return false;
-    }
-
     wxFrame * frm;
     frm = new wxFrame(NULL, wxID_ANY, "Processing: " + file);
 #ifdef _WIN32
@@ -1093,119 +940,14 @@ MainFrm::ProcessSVXFile(const wxString & file)
 #else
     frm->SetIcon(wxIcon(icon_path + "aven.png", wxBITMAP_TYPE_PNG));
 #endif
+
     CavernLogWindow * log = new CavernLogWindow(frm);
 #ifdef _WIN32
     log->SetSize(frm->GetClientSize());
 #endif
     frm->Show(true);
 
-    wxInputStream * std_out = proc->GetInputStream();
-    wxString cur;
-    while (!std_out->Eof()) {
-	if (!proc->IsInputAvailable()) {
-	    if (status >= 0) break;
-	    while (!proc->IsInputAvailable() && !std_out->Eof()) wxYield();
-	    if (std_out->Eof()) break;
-	}
-	int ch = (unsigned char)std_out->GetC();
-	// Decode UTF-8 first to avoid security issues with <, >, &, etc
-	// encoded using multibyte encodings.
-	if (ch >= 0xc0 && ch < 0xf0) {
-	    int ch1 = (unsigned char)std_out->GetC();
-	    if ((ch1 & 0xc0) != 0x80) {
-		std_out->Ungetch(ch1);
-	    } else if (ch < 0xe0) {
-		/* 2 byte sequence */
-		ch = ((ch & 0x1f) << 6) | (ch1 & 0x3f);
-	    } else {
-		/* 3 byte sequence */
-		int ch2 = (unsigned char)std_out->GetC();
-		if ((ch2 & 0xc0) != 0x80) {
-		    std_out->Ungetch(ch2);
-		    std_out->Ungetch(ch1);
-		} else {
-		    ch = ((ch & 0x1f) << 12) | ((ch1 & 0x3f) << 6) | (ch2 & 0x3f);
-		}
-	    }
-	}
-
-	switch (ch) {
-	    case '\r':
-		// Ignore.
-		break;
-	    case '\n': {
-		if (cur.empty()) continue;
-		size_t colon = cur.find(':');
-#ifdef __WXMSW__
-		// If the path is "C:\path\to\file.svx" then don't split at the
-		// : after the drive letter!  FIXME: better to look for ": "?
-		if (colon == 1) colon = cur.find(':', 2);
-#endif
-		if (colon != wxString::npos) {
-		    size_t colon2 = cur.find(':', colon + 1);
-		    if (colon2 != wxString::npos && colon2 != cur.size() - 1) {
-			wxString href = cur.substr(0, colon2);
-			while (++colon2 < cur.size()) {
-			    if (cur[colon2] != ' ') break;
-			}
-			wxString title = cur.substr(colon2);
-			cur.insert(colon2, "</a>");
-			wxString tag = "<a href=\"";
-			tag += html_escape(href);
-			tag += "\" target=\"";
-			tag += html_escape(title);
-			tag += "\">";
-			cur.insert(0, tag);
-		    }
-		}
-		log->AppendToPage(cur);
-		log->AppendToPage("<br>\n");
-#if 0
-		// FIXME: do we want to scroll to the bottom?  Doing so seems
-		// unhelpful if there are warnings or errors...
-		int x, y;
-		log->GetVirtualSize(&x, &y);
-		//printf("vs %dx%d\n", x, y);
-		int xs, ys;
-		log->GetClientSize(&xs, &ys);
-		//printf("cs %dx%d\n", xs, ys);
-		y -= ys;
-		int xu, yu;
-		log->GetScrollPixelsPerUnit(&xu, &yu);
-		//printf("ppu %dx%d\n", xu, yu);
-		log->Scroll(-1, y / yu);
-		//cout << "[" << cur << "]" << endl;
-#endif
-		cur.clear();
-		wxYield();
-		break;
-	    }
-	    case '<':
-		cur += "&lt;";
-		break;
-	    case '>':
-		cur += "&gt;";
-		break;
-	    case '&':
-		cur += "&amp;";
-		break;
-	    default:
-		if (ch >= 128) {
-		    cur += wxString::Format("&#%u;", ch);
-		} else {
-		    cur += (char)ch;
-		}
-	}
-    }
-    while (status < 0) wxYield();
-    proc->Detach();
-    osfree(cavern);
-    if (status != 0) {
-	// FIXME: improve error message.
-	wxGetApp().ReportError("Failed to process survey data");
-	return false;
-    }
-    return true;
+    return log->process(file);
 }
 
 bool MainFrm::LoadData(const wxString& file_, wxString prefix)

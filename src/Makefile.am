@@ -4,7 +4,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h datain.h debug.h filelist.h\
  filename.h getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
  netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
  readval.h str.h useful.h validate.h whichos.h\
- fnt.h guicontrol.h gla.h moviemaker.h exportfilter.h hpgl.h \
+ fnt.h guicontrol.h gla.h moviemaker.h exportfilter.h hpgl.h cavernlog.h\
  aboutdlg.h aven.h avenpal.h gfxcore.h mainfrm.h matrix4.h quaternion.h\
  vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h
 
@@ -46,7 +46,7 @@ cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
 aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc matrix4.cc quaternion.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc export.cc \
- guicontrol.cc gla-gl.cc fnt.cc moviemaker.cc hpgl.cc \
+ guicontrol.cc gla-gl.cc fnt.cc moviemaker.cc hpgl.cc cavernlog.cc \
  brotatemask.xbm brotate.xbm hand_mask.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  avenprcore.cc printwx.cc ini.c hash.c
