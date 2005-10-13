@@ -128,6 +128,7 @@ find_point(const img_point *pt)
    p->order = 0;
    p->dir = 0;
    p->fDone = 0;
+   p->fBroken = 0;
    p->next = headpoint.next;
    headpoint.next = p;
    return p;
@@ -149,6 +150,7 @@ add_leg(point *fr, point *to, const char *prefix, int flags)
    l->next = headleg.next;
    l->dir = 0;
    l->fDone = 0;
+   l->broken = 0;
    l->flags = flags;
    headleg.next = l;
 }
@@ -268,7 +270,7 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);       
+	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -307,7 +309,7 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);      
+	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -346,7 +348,7 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);      
+	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -385,7 +387,7 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);  
+	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -537,7 +539,7 @@ main(int argc, char **argv)
    }
 
    if (start == NULL) { /* i.e. start wasn't specified in specfile */
-   
+
       /* start at the highest entrance with some legs attached */
       for (p = headpoint.next; p != NULL; p = p->next) {
 	 if (p->order > 0 && p->p.z > zMax) {
@@ -599,7 +601,7 @@ main(int argc, char **argv)
 	 }
       } while (result != img_STOP);
    }
-   
+
    (void)img_close(pimg);
 
    if (!img_close(pimg_out)) {
