@@ -468,7 +468,13 @@ main(int argc, char **argv)
    if (argv[optind]) {
       fnm_out = argv[optind];
    } else {
-      fnm_out = add_ext("extend", EXT_SVX_3D);
+      char * p = base_from_fnm(fnm_in);
+      char * q = osmalloc(strlen(p) + 8);
+      strcpy(q, p);
+      strcat(q, "_extend");
+      fnm_out = add_ext(q, EXT_SVX_3D);
+      osfree(p);
+      osfree(q);
    }
 
    /* try to open image file, and check it has correct header */

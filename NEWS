@@ -6,6 +6,10 @@
 * extend: Fixed 2 uninitialised flags (should fix erratic behaviour on
   with MS Windows).
 
+* extend: Default output name for a file called input.3d is now input_extend.3d
+  rather than just extend.3d (which was annoying if you wanted to extend
+  several surveys in the same directory).
+
 * aven: Don't clear the "there" mark just because the mouse pointer has
   moved off a station.
 

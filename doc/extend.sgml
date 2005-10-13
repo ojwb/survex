@@ -20,6 +20,15 @@
   
 <refsect1><title>Description</title>
 
+<Note>
+<Para>
+The <command>extend</command> program can also work on
+<Application>Compass>/Application> <filename>.plt</filename> (as can
+<command>aven</command> and any other &survexsuite; program which reads &x3d;
+files).
+</Para>
+</Note>
+
 <Para>
 If no specfile is given, extend starts with the highest station marked
 as an entrance which has at least one underground survey leg attached
@@ -29,8 +38,10 @@ Extend puts the first station on the left, then folds each leg out
 individually to the right, breaking loops arbitrarily (usually at
 junctions).</Para>
 
-<Para>If the output filename is not specified, extend writes its
-output to <filename/extend.3d/.</Para>
+<Para>If the output filename is not specified, extend bases the output
+filename on the input filename, but ending "_extend.3d".  For example,
+<command>extend deep_pit.3d</command> produces an extended elevation
+called <filename>deep_pit_extend.3d</filename>.</Para>
 
 <Para>
 This approach suffices for simple caves or sections of cave, but for more
