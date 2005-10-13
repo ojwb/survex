@@ -3,6 +3,9 @@
   range for the relevant period (previously it became a single date near
   the middle of that period).
 
+* aven: Don't clear the "there" mark just because the mouse pointer has
+  moved off a station.
+
 * aven: When processing a .svx file, put the resultant .3d file in the
   same directory.
 

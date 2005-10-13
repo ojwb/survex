@@ -2061,7 +2061,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 
     if (!label) {
 	m_Gfx->SetHere();
-	m_Gfx->SetThere();
+	// Don't clear "There" mark here.
 	here_text = "";
 	dist_text = "";
 	UpdateStatusBar();
