@@ -1417,7 +1417,8 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		while (i != m_Labels.end() && (*i)->GetText() != survey->label) ++i;
 		assert(i != m_Labels.end()); // FIXME: shouldn't use assert for this...
 
-		time_t date = (survey->date1 + survey->date2) / 2;
+		time_t date;
+		date = survey->date1 + (survey->date2 - survey->date1) / 2;
 		if (date) {
 		    if (date < m_DateMin) m_DateMin = date;
 		    if (date > datemax) datemax = date;
