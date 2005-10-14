@@ -205,7 +205,7 @@ CavernLogWindow::process(const wxString &file)
 	    wxYield();
 	    continue;
 	}
-	if (!FD_SET(cavern_fd, &rfds)) {
+	if (!FD_ISSET(cavern_fd, &rfds)) {
 	    // Error, which pclose() should report.
 	    break;
 	}
