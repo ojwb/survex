@@ -122,7 +122,6 @@ private:
     char* m_LabelGrid;
     MainFrm* m_Parent;
     bool m_DoneFirstShow;
-    Double m_InitialScale;
     Double m_TiltAngle;
     Double m_PanAngle;
     bool m_Rotating;

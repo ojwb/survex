@@ -233,8 +233,7 @@ void GfxCore::FirstShow()
     GetClientSize(&m_XSize, &m_YSize);
 
     // Set the initial scale.
-    m_InitialScale = 1.0;
-    SetScale(m_InitialScale);
+    SetScale(1.0);
 
     m_DoneFirstShow = true;
 }
@@ -248,8 +247,8 @@ void GfxCore::SetScale(Double scale)
     // Fill the plot data arrays with screen coordinates, scaling the survey
     // to a particular absolute scale.
 
-    if (scale < m_InitialScale / 20) {
-	scale = m_InitialScale / 20;
+    if (scale < 0.05) {
+	scale = 0.05;
     } else {
 	if (scale > 1000.0) scale = 1000.0;
     }
@@ -1105,7 +1104,7 @@ void GfxCore::Defaults()
     // Restore default scale, rotation and translation parameters.
 
     DefaultParameters();
-    SetScale(m_InitialScale);
+    SetScale(1.0);
     ForceRefresh();
 }
 
