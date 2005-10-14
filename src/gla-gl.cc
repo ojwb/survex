@@ -302,15 +302,41 @@ void GLACanvas::FirstShow()
 	CHECK_GL_ERROR("FirstShow", "glPointSize");
     }
 
-    // See if we have GL_POINT_SPRITE_ARB - if so use it to draw crosses
-    // by texture mapping GL points.
-    const char * gl_extensions = (const char *)glGetString(GL_EXTENSIONS);
-    glpoint_sprite = strstr(gl_extensions, "GL_ARB_point_sprite");
-    if (glpoint_sprite) {
-	float maxSize = 0.0f;
-	glGetFloatv(GL_POINT_SIZE_MAX_ARB, &maxSize);
-	if (maxSize < 8) glpoint_sprite = false;
+    // Point sprites provide an easy, fast way for us to draw crosses by
+    // texture mapping GL points.
+    //
+    // If we have OpenGL > 2.0 then we definitely have GL_POINT_SPRITE.
+    // Otherwise see if we have the GL_ARB_point_sprite or GL_NV_point_sprite
+    // extensions.
+    //
+    // The symbolic constants GL_POINT_SPRITE, GL_POINT_SPRITE_ARB, and
+    // GL_POINT_SPRITE_NV all give the same number so it doesn't matter
+    // which we use.
+    float maxSize = 0.0f;
+    glGetFloatv(GL_POINT_SIZE_MAX, &maxSize);
+    if (maxSize >= 8) {
+	glpoint_sprite = (atoi((const char *)glGetString(GL_VERSION)) >= 2);
+	if (!glpoint_sprite) {
+	    const char * p = (const char *)glGetString(GL_EXTENSIONS);
+	    while (true) {
+		if (memcmp(p, "GL_ARB_point_sprite", 19) == 0) {
+		    p += 19;
+		} else if (memcmp(p, "GL_NV_point_sprite", 18) == 0) {
+		    p += 18;
+		} else {
+		    continue;
+		}
+		if (*p == '\0' || *p == ' ') {
+		    glpoint_sprite = true;
+		    break;
+		}
+		p = strchr(p + 1, ' ');
+		if (!p) break;
+		++p;
+	    }
+	}
     }
+
     if (glpoint_sprite) {
 	glGenTextures(1, &m_CrossTexture);
 	glBindTexture(GL_TEXTURE_2D, m_CrossTexture);
@@ -332,6 +358,8 @@ void GLACanvas::FirstShow()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     }
+    //if (glpoint_ok) printf("Using GL_POINTS for blobs\n");
+    //if (glpoint_sprite) printf("Using GL_POINT_SPRITE* for crosses");
 }
 
 void GLACanvas::Clear()

@@ -12,6 +12,9 @@ Changes in 1.1.7:
   rather than just extend.3d (which was annoying if you wanted to extend
   several surveys in the same directory).
 
+* aven: OpenGL 2.0 always includes support for point sprites so rework
+  our for them to include that knowledge.
+
 * aven: Don't clear the "there" mark just because the mouse pointer has
   moved off a station.
 
