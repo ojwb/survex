@@ -36,6 +36,9 @@
 
 #include <GL/glext.h>
 
+#ifndef GL_POINT_SIZE_MAX
+#define GL_POINT_SIZE_MAX 0x8127
+#endif
 #ifndef GL_POINT_SPRITE_ARB
 #define GL_POINT_SPRITE_ARB 0x8861
 #endif
