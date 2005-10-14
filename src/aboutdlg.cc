@@ -179,7 +179,6 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
     vert->Add(bottom, 0, wxEXPAND | wxLEFT | wxRIGHT, 0);
     vert->SetMinSize(0, bitmap.GetHeight());
 
-    SetAutoLayout(true);
     SetSizer(horiz);
 
     horiz->Fit(this);
