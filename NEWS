@@ -15,6 +15,8 @@ Changes in 1.1.7:
 * aven: OpenGL 2.0 always includes support for point sprites so rework
   our for them to include that knowledge.
 
+* aven: Regenerate depth bar if user switches to/from metric units.
+
 * aven: Don't clear the "there" mark just because the mouse pointer has
   moved off a station.
 

@@ -370,7 +370,7 @@ public:
     void ToggleStationNames() { ToggleFlag(&m_Names); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
     void ToggleDepthBar() { ToggleFlag(&m_Depthbar); }
-    void ToggleMetric() { ToggleFlag(&m_Metric); }
+    void ToggleMetric() { ToggleFlag(&m_Metric); InvalidateList(LIST_DEPTHBAR); }
     void ToggleDegrees() { ToggleFlag(&m_Degrees); }
     void ToggleTubes() { ToggleFlag(&m_Tubes); }
     void TogglePerspective() { GLACanvas::TogglePerspective(); ForceRefresh(); }
