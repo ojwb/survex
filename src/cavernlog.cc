@@ -27,6 +27,7 @@
 #include "filename.h"
 #include "message.h"
 
+#include <errno.h>
 #include <stdio.h>
 
 // For select():
