@@ -1114,6 +1114,10 @@ bool GfxCore::Animate()
     if (!Animating()) return false;
 
     // Don't show pointer coordinates while animating.
+    // FIXME : only do this when we *START* animating!  Use a static copy
+    // of the value of "Animating()" last time we were here to track this?
+    // MainFrm now checks if we're trying to clear already cleared labels
+    // and just returns, but it might be simpler to check here!
     ClearCoords();
     m_Parent->ShowInfo(NULL);
 

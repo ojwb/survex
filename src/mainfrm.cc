@@ -1748,15 +1748,19 @@ void MainFrm::UpdateStatusBar()
 void MainFrm::ClearTreeSelection()
 {
     m_Tree->UnselectAll();
-    dist_text = "";
-    UpdateStatusBar();
+    if (!dist_text.empty()) {
+	dist_text = "";
+	UpdateStatusBar();
+    }
     m_Gfx->SetThere();
 }
 
 void MainFrm::ClearCoords()
 {
-    coords_text = "";
-    UpdateStatusBar();
+    if (!coords_text.empty()) {
+	coords_text = "";
+	UpdateStatusBar();
+    }
 }
 
 void MainFrm::SetCoords(Double x, Double y, Double z)
@@ -1804,6 +1808,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
     if (!label) {
 	m_Gfx->SetHere();
 	// Don't clear "There" mark here.
+	if (here_text.empty() && dist_text.empty()) return;
 	here_text = "";
 	dist_text = "";
 	UpdateStatusBar();
