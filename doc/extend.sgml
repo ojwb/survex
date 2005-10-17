@@ -23,7 +23,7 @@
 <Note>
 <Para>
 The <command>extend</command> program can also work on
-<Application>Compass>/Application> <filename>.plt</filename> (as can
+<Application>Compass</Application> <filename>.plt</filename> (as can
 <command>aven</command> and any other &survexsuite; program which reads &x3d;
 files).
 </Para>
