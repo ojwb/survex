@@ -107,8 +107,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2005-10-11 21:48:45 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.10 2005-10-11 21:48:45 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2005-10-17 04:49:04 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.11 2005-10-17 04:49:04 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -372,7 +372,22 @@ can be set up for all users.
 </Para>
 
 <Para>
-This version includes a GUI cave survey viewer called aven.
+The survey viewer that's part of &survexsuite; is called aven, and uses OpenGL
+for 3d rendering.
+OpenGL comes as standard as of Windows 98, and was included in the
+OSR2 update to Windows 95.  It's also possible that you've installed
+OpenGL with another application already (especially a 3D game like Quake).
+If you can view a survey in aven, all is well.  Otherwise you can
+<ulink url="http://support.microsoft.com/default.aspx?scid=kb;EN-US;q154877
+">download OpenGL drivers from Microsoft's website</ulink> (or here's
+a <ulink url="http://download.microsoft.com/download/win95upg/info/1/W95/EN-US/Opengl95.exe">direct link to the file you actually need</ulink>).
+</Para>
+
+<Para>
+If you find that 3D rendering is sometimes very slow (e.g. one user reported
+very slow performance when running full screen, while running in a window
+was fine) then try installing the OpenGL driver supplied by the manufacturer
+of your graphics card rather than the driver Microsoft supply.
 </Para>
 
 <Para>
@@ -394,10 +409,11 @@ Start menu containing the following items:
 Icons are installed for &svx;, &x3d;, &err;, and &pos; files, and also for
 Compass Plot files (<filename>.plt</filename> and <filename>.plf</filename>)
 (which Survex can read). <!-- FIXME XYZ -->
-Double-clicking on a &svx; file processes it to produce a &x3d; file.
-Double-clicking the &x3d; file views it in aven.
-You can also right click on these files to bring up a menu of other possible
-actions:
+Double-clicking on a &svx; file loads it for editing.  To process it to
+produce a &x3d; file, right click and choose "Process" from the menu.
+Double-clicking the resultant &x3d; file views it in aven.
+All the &survexsuite; file types can be right clicked on to give a menu of
+possible actions.  
 </Para>
 
 <VariableList>
