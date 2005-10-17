@@ -48,6 +48,8 @@ Changes in 1.1.7:
 
 * (Unix version): Fixed build on Fedora Core 3.
 
+* documentation: Updates to 3d file format specification from Mike McCombe.
+
 Changes in 1.1.6:
 
 * (MS Windows version): Distribution is about a third smaller than 1.1.5
