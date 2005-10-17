@@ -322,16 +322,18 @@ void GLACanvas::FirstShow()
 	if (!glpoint_sprite) {
 	    const char * p = (const char *)glGetString(GL_EXTENSIONS);
 	    while (true) {
+		size_t l = 0;
 		if (memcmp(p, "GL_ARB_point_sprite", 19) == 0) {
-		    p += 19;
+		    l = 19;
 		} else if (memcmp(p, "GL_NV_point_sprite", 18) == 0) {
-		    p += 18;
-		} else {
-		    continue;
+		    l = 18;
 		}
-		if (*p == '\0' || *p == ' ') {
-		    glpoint_sprite = true;
-		    break;
+		if (l) {
+		    p += l;
+		    if (*p == '\0' || *p == ' ') {
+			glpoint_sprite = true;
+			break;
+		    }
 		}
 		p = strchr(p + 1, ' ');
 		if (!p) break;
