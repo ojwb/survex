@@ -291,10 +291,12 @@ if test yes = "$GCC"; then
   if test yes = "$cross_compiling"; then
 dnl    AM_CFLAGS="$AM_CFLAGS -Werror -Wall -Wunused -Wpointer-arith\
 dnl      -Wwrite-strings -Wcast-align"
+dnl -Wsign-compare causes a warning with the mingw FD_SET macro, so we have
+dnl to disable it for mingw builds.
     AM_CFLAGS="$AM_CFLAGS -Wall -Wunused -Wpointer-arith\
       -Wwrite-strings -Wcast-align"
     AM_CXXFLAGS="$AM_CXXFLAGS -Werror -Wall -Wunused -Wpointer-arith\
-      -Wwrite-strings -Wcast-align"
+      -Wwrite-strings -Wcast-align -Wno-sign-compare"
   else
     AM_CFLAGS="$AM_CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith\
       -Wmissing-prototypes -Wwrite-strings -Wredundant-decls -Wnested-externs\
