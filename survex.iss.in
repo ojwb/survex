@@ -36,7 +36,8 @@ Name: "{app}\icons"
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"
-Source: "*.dll"; DestDir: "{app}"
+; mingwm10.dll only needed if we use threads
+;Source: "*.dll"; DestDir: "{app}"
 Source: "*.bit"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
