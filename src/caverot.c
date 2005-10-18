@@ -250,8 +250,21 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
-   printf("Survex cave rotator v"VERSION"\n  "COPYRIGHT_MSG"\n",
-	  msg(/*&copy;*/0));
+   {
+      const char *p = COPYRIGHT_MSG;
+      puts("Survex cave rotator v"VERSION);
+      while (1) {
+	  const char *q = p;
+	  p = strstr(p, "(C)");
+	  if (p == NULL) {
+	      puts(q);
+	      break;
+	  }
+	  fwrite(q, 1, p - q, stdout);
+	  fputs(msg(/*&copy;*/0), stdout);
+	  p += 3;
+      }
+   }
 
    parse_command(argc, argv);
 
