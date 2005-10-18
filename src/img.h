@@ -64,7 +64,7 @@ typedef struct {
    int flags;
    char *title;
    char *datestamp;
-   char separator; /* charactor used to separate survey levels ('.' usually) */
+   char separator; /* character used to separate survey levels ('.' usually) */
    time_t date1, date2;
    double l, r, u, d;
    char * filename_opened; /* The filename actually opened (e.g. may have ".3d" added). */

@@ -8,4 +8,17 @@ Administrator level to do this.
 
 At present, you'll need to use the command line (via Terminal.app)
 to process survey data.  Once it is processed, you can view it from
-the desktop using Aven.
+the desktop using Aven.  To process, open Terminal.app and then
+you can process mydata.svx to produce mydata.3d using:
+
+/Applications/Survex/cavern mydata.svx
+
+You can avoid having to type so much by adding /Applications/Survex
+to your "PATH".  Add the following to the file .bash_profile in your
+home directory, creating that file if it does not already exist:
+
+export PATH=$PATH:/Applications/Survex
+
+Then you can just use:
+
+cavern mydata.svx

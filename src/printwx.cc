@@ -41,9 +41,9 @@
 #include "filename.h"
 #include "ini.h"
 #include "message.h"
-#include "prio.h"
 #include "useful.h"
 
+#include "aven.h"
 #include "avenprcore.h"
 #include "mainfrm.h"
 #include "printwx.h"
@@ -134,7 +134,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf)
 	: wxDialog(mainfrm_, -1, wxString(msg(/*Print*/399))),
-	  m_layout(mainfrm_->GetPageSetupData()),
+	  m_layout(wxGetApp().GetPageSetupDialogData()),
 	  m_File(filename), mainfrm(mainfrm_)
 {
     m_layout.Labels = labels;
@@ -190,24 +190,22 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
     v2->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
 
-    { // this isn't the "too wide" bit...
-    wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
-    wxStaticText * brg_label;
-    brg_label = new wxStaticText(this, -1, msg(/*Bearing*/259));
-    anglebox->Add(brg_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
-    m_bearing = new wxSpinCtrl(this, svx_BEARING);
-    m_bearing->SetRange(0, 359);
-    anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
-    m_tilttext = new wxStaticText(this, -1, "Tilt angle"); // FIXME TRANSLATE
-    anglebox->Add(m_tilttext, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
-    m_tilt = new wxSpinCtrl(this,svx_TILT);
-    m_tilt->SetRange(-90, 90);
-    anglebox->Add(m_tilt, 0, wxALIGN_CENTER|wxALL, 5);
-
-    v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
-    }
-
     if (m_layout.view != layout::EXTELEV) {
+	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
+	wxStaticText * brg_label, * tilt_label;
+	brg_label = new wxStaticText(this, -1, msg(/*Bearing*/259));
+	anglebox->Add(brg_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
+	m_bearing = new wxSpinCtrl(this, svx_BEARING);
+	m_bearing->SetRange(0, 359);
+	anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
+	tilt_label = new wxStaticText(this, -1, "Tilt angle"); // FIXME TRANSLATE
+	anglebox->Add(tilt_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
+	m_tilt = new wxSpinCtrl(this,svx_TILT);
+	m_tilt->SetRange(-90, 90);
+	anglebox->Add(m_tilt, 0, wxALIGN_CENTER|wxALL, 5);
+
+	v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
+
 	wxBoxSizer * planelevsizer = new wxBoxSizer(wxHORIZONTAL);
 	planelevsizer->Add(new wxButton(this, svx_PLAN, "Plan"),
 			   0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
@@ -265,9 +263,10 @@ svxPrintDlg::~svxPrintDlg() {
 void
 svxPrintDlg::OnPrint(wxCommandEvent&) {
     SomethingChanged();
-    wxPrintDialogData pd(mainfrm->GetPageSetupData()->GetPrintData());
+    wxPageSetupDialogData * psdd = wxGetApp().GetPageSetupDialogData();
+    wxPrintDialogData pd(psdd->GetPrintData());
     wxPrinter pr(&pd);
-    svxPrintout po(mainfrm, &m_layout, mainfrm->GetPageSetupData(), m_File);
+    svxPrintout po(mainfrm, &m_layout, psdd, m_File);
     if (pr.Print(this, &po, true)) {
 	// Close the print dialog if printing succeeded.
 	Destroy();
@@ -277,12 +276,11 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
 void
 svxPrintDlg::OnPreview(wxCommandEvent&) {
     SomethingChanged();
-    wxPrintDialogData pd(mainfrm->GetPageSetupData()->GetPrintData());
+    wxPageSetupDialogData * psdd = wxGetApp().GetPageSetupDialogData();
+    wxPrintDialogData pd(psdd->GetPrintData());
     wxPrintPreview* pv;
-    pv = new wxPrintPreview(new svxPrintout(mainfrm, &m_layout,
-					    mainfrm->GetPageSetupData(), m_File),
-			    new svxPrintout(mainfrm, &m_layout,
-					    mainfrm->GetPageSetupData(), m_File),
+    pv = new wxPrintPreview(new svxPrintout(mainfrm, &m_layout, psdd, m_File),
+			    new svxPrintout(mainfrm, &m_layout, psdd, m_File),
 			    &pd);
     wxPreviewFrame *frame = new wxPreviewFrame(pv, mainfrm, msg(/*Print Preview*/398));
     frame->Initialize();
@@ -361,16 +359,18 @@ svxPrintDlg::LayoutToUI(){
 //    m_blanks->SetValue(m_layout.SkipBlank);
     m_infoBox->SetValue(!m_layout.Raw);
     m_surface->SetValue(m_layout.Surface);
-    m_tilt->SetValue(m_layout.tilt);
-    // FIXME is EXTELEV disable both buttons and tilt and rot spinctrls
-    // FIXME: enable both buttons
-    if (m_layout.tilt > 89) {
-	// FIXME: disable Plan button
-    } else if (m_layout.tilt == 0) {
-	// FIXME: disable Elevation button
+    if (m_layout.view != layout::EXTELEV) {
+	m_tilt->SetValue(m_layout.tilt);
+	// FIXME: enable both buttons
+	if (m_layout.tilt > 89) {
+	    // FIXME: disable Plan button
+	} else if (m_layout.tilt == 0) {
+	    // FIXME: disable Elevation button
+	}
+
+	m_bearing->SetValue(m_layout.rot);
     }
 
-    m_bearing->SetValue(m_layout.rot);
     // Do this last as it causes an OnChange message which calls UIToLayout
     if (m_layout.Scale != 0) {
 	wxString temp;

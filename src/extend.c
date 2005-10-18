@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2002 Olly Betts
+ * Copyright (C) 1995-2002,2005 Olly Betts
  * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
@@ -78,7 +78,7 @@ static point headpoint = {{0, 0, 0}, NULL, 0, 0, 0, 0, NULL};
 
 static leg headleg = {NULL, NULL, NULL, 0, 0, 0, 0, NULL};
 
-static img *pimg;
+static img *pimg_out;
 
 static void do_stn(point *, double, const char *, int, int);
 
@@ -128,6 +128,7 @@ find_point(const img_point *pt)
    p->order = 0;
    p->dir = 0;
    p->fDone = 0;
+   p->fBroken = 0;
    p->next = headpoint.next;
    headpoint.next = p;
    return p;
@@ -149,6 +150,7 @@ add_leg(point *fr, point *to, const char *prefix, int flags)
    l->next = headleg.next;
    l->dir = 0;
    l->fDone = 0;
+   l->broken = 0;
    l->flags = flags;
    headleg.next = l;
 }
@@ -221,7 +223,7 @@ delimword(char *ln, char** lr)
    } else {
       *lr = le + 1;
    }
-   
+
    *le = '\0';
    return ln;
 }
@@ -268,7 +270,7 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);       
+	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -307,7 +309,7 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);      
+	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -346,7 +348,7 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);      
+	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -385,7 +387,7 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);  
+	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -449,6 +451,7 @@ main(int argc, char **argv)
    point *p;
    const char *survey = NULL;
    const char *specfile = NULL;
+   img *pimg;
 
    msg_init(argv);
 
@@ -464,7 +467,13 @@ main(int argc, char **argv)
    if (argv[optind]) {
       fnm_out = argv[optind];
    } else {
-      fnm_out = add_ext("extend", EXT_SVX_3D);
+      char * base_in = base_from_fnm(fnm_in);
+      char * base_out = osmalloc(strlen(base_in) + 8);
+      strcpy(base_out, base_in);
+      strcat(base_out, "_extend");
+      fnm_out = add_ext(base_out, EXT_SVX_3D);
+      osfree(base_in);
+      osfree(base_out);
    }
 
    /* try to open image file, and check it has correct header */
@@ -533,7 +542,7 @@ main(int argc, char **argv)
    }
 
    if (start == NULL) { /* i.e. start wasn't specified in specfile */
-   
+
       /* start at the highest entrance with some legs attached */
       for (p = headpoint.next; p != NULL; p = p->next) {
 	 if (p->order > 0 && p->p.z > zMax) {
@@ -579,11 +588,11 @@ main(int argc, char **argv)
 
    printf(msg(/*Writing out .3d file...*/614));
    putnl();
-   pimg = img_open_write(fnm_out, desc, fTrue);
+   pimg_out = img_open_write(fnm_out, desc, fTrue);
 
    /* Only does single connected component currently. */
    do_stn(start, 0.0, NULL, ERIGHT, 0);
-   if (!img_close(pimg)) {
+   if (!img_close(pimg_out)) {
       (void)remove(fnm_out);
       fatalerror(img_error(), fnm_out);
    }
@@ -608,7 +617,7 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
    int odir = dir;
 
    for (s = p->stns; s; s = s->next) {
-      img_write_item(pimg, img_LABEL, s->flags, s->label, X, 0, p->p.z);
+      img_write_item(pimg_out, img_LABEL, s->flags, s->label, X, 0, p->p.z);
    }
    if (labOnly || p->fBroken) {
       return;
@@ -635,8 +644,8 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 
 	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+	 img_write_item(pimg_out, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
+	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
 			X, 0, l->to->p.z);
 	 l->fDone = 1;
 	 do_stn(l->fr, X + dX, l->prefix, dir, (l->broken & BREAK_FR));
@@ -650,8 +659,8 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 
 	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+	 img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
+	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
 			X + dX, 0, l->to->p.z);
 	 l->fDone = 1;
 	 do_stn(l->to, X + dX, l->prefix, dir, (l->broken & BREAK_TO));
@@ -676,8 +685,8 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 
 	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+	 img_write_item(pimg_out, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
+	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
 			X, 0, l->to->p.z);
 	 l->fDone = 1;
 	 do_stn(l->fr, X + dX, l->prefix, dir, (l->broken & BREAK_FR));
@@ -691,8 +700,8 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 
 	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
 	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-	 img_write_item(pimg, img_LINE, l->flags, l->prefix,
+	 img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
+	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
 			X + dX, 0, l->to->p.z);
 	 l->fDone = 1;
 	 do_stn(l->to, X + dX, l->prefix, dir, (l->broken & BREAK_TO));

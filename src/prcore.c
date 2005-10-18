@@ -770,8 +770,22 @@ main(int argc, char **argv)
 
    szDesc = pr->Name();
 
-   printf("Survex %s %s v"VERSION"\n  "COPYRIGHT_MSG"\n\n",
-	  szDesc, msg(/*Driver*/152), msg(/*&copy;*/0));
+   {
+      const char *p_ = COPYRIGHT_MSG;
+      printf(PRETTYPACKAGE" %s %s v"VERSION"\n  ", szDesc, msg(/*Driver*/152));
+      while (1) {
+	  const char *q = p_;
+	  p_ = strstr(p_, "(C)");
+	  if (p_ == NULL) {
+	      puts(q);
+	      break;
+	  }
+	  fwrite(q, 1, p_ - q, stdout);
+	  fputs(msg(/*&copy;*/0), stdout);
+	  p_ += 3;
+      }
+      putnl();
+   }
 
    if (!fCalibrate) {
       fnm = argv[optind++];

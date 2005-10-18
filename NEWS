@@ -1,4 +1,66 @@
+Changes in 1.0.38 (all backported from 1.1.7):
+
+* (MS Windows version): Distribution is about a third smaller than 1.1.5
+  (mostly because mingwm10.dll is no longer required).
+
+* (Unix version): Check environmental variable LC_MESSAGES when deciding what
+  language to use for messages.
+
+* aven: Improved update of mouse coordinates and measuring line (thanks to
+  Martin Green).
+
+* aven: When printing an extended elevation, don't show bearing and elevation.
+
 * aven: Added Aven's icon to the "About" dialog.
+
+* aven: Use localised character for the decimal point (e.g. "," in most
+  continental European countries).
+
+* aven: Previously the survey tree would get focus and then take keypresses
+  (e.g. "P", "L", "Delete").  Now we pass most keypresses across so they
+  operate on the cave, and transfer the input focus across when we do.
+
+* aven: Make pressing "Return" in the tree control expand/collapse a subtree.
+
+* aven: Make entrances green in side panel tree list to match green blobs used
+  in cave view.
+
+* aven: Reworded "Restore Default Settings" as "Restore Default View".
+
+* (Unix version): aven: Set sensible default margins for printing and preserve
+  any margin values the user specifies between runs (previously margins
+  defaulted to 0 each time aven was run).
+
+* (Unix version): aven: Really stop setting extra toolbar margin when using
+  GTK2.0.  The attempt to fix this backported in 1.0.36 failed because
+  __WXGTK12__ is set for GTK+ 1.2 or *any later release* so it is true for
+  GTK+ 2.0 too!
+
+* (Unix version): aven: Add details of which of wxGTK, wxMotif, and wxX11
+  we've been compiled with, and which GTK+/Motif version where appropriate.
+
+* (MS Windows version): aven: Mouse clicks on the survey view now set the
+  keyboard focus there.
+
+* extend: Fixed 2 uninitialised flags (should fix erratic behaviour on
+  with MS Windows).
+
+* extend: Default output name for a file called input.3d is now input_extend.3d
+  rather than just extend.3d (which was annoying if you wanted to extend
+  several surveys in the same directory).
+
+* cavern: Applied Simeon Warner's patch for handling backcompass, backclino,
+  and omitted forward compass/clino readings in Compass DAT files.  Added
+  a feature test for this to the testsuite.
+
+* cavern: Fix handling of a *solve followed by survey data, none of which is
+  attached to the previous data.
+
+* cavern: Fixed "No survey data" error when a *solve is followed by another
+  *solve (or the implicit solve at the end of processing) with no data between
+  them.
+
+* cavern: Fixed small one-off memory leak if you specify -o more than once.
 
 Changes in 1.0.37:
 

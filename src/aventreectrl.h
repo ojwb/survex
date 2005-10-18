@@ -5,6 +5,7 @@
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
 //  Copyright (C) 2002, Olly Betts
+//  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -52,6 +53,7 @@ public:
     void UnselectAll();
 
     void OnMouseMove(wxMouseEvent& event);
+    void OnLeaveWindow(wxMouseEvent& event);
     void OnSelChanged(wxTreeEvent& event);
     void OnKeyPress(wxKeyEvent &e);
 

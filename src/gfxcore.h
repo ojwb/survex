@@ -206,7 +206,7 @@ class GfxCore : public wxWindow {
 		      y * m_RotationMatrix.get(2, 1) +
 		      z * m_RotationMatrix.get(2, 2));
     }
-    
+
     Double GridXToScreen(Double x, Double y, Double z);
     Double GridYToScreen(Double x, Double y, Double z);
     Double GridXToScreen(const Point &p) {
@@ -321,15 +321,18 @@ public:
     void OnCancelDistLine();
 
     void OnPaint(wxPaintEvent&);
+    void OnSize(wxSizeEvent& event);
+    void OnIdle(wxIdleEvent& event);
+
     void OnMouseMove(wxMouseEvent& event);
+    void OnLeaveWindow(wxMouseEvent& event);
+
     void OnLButtonDown(wxMouseEvent& event);
     void OnLButtonUp(wxMouseEvent& event);
     void OnMButtonDown(wxMouseEvent& event);
     void OnMButtonUp(wxMouseEvent& event);
     void OnRButtonDown(wxMouseEvent& event);
     void OnRButtonUp(wxMouseEvent& event);
-    void OnSize(wxSizeEvent& event);
-    void OnIdle(wxIdleEvent& event);
     bool Animate();
 
     void OnKeyPress(wxKeyEvent &e);

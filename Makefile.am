@@ -16,13 +16,14 @@ SUBDIRS = . lib src doc tests debian
 # seem to need this for "make distclean" to recurse?!?
 DIST_SUBDIRS = $(SUBDIRS)
 
-extra_bin = lib/*.msg lib/default.bit lib/bold.bit
+extra_bin = lib/*.msg\
+ lib/default.bit lib/bold.bit
 extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
 
 # FIXME: need to keep in step with src/Makefile.am
-base_progs = cad3d cavern printdm printps printpcl printhpgl diffpos\
- extend sorterr 3dtopos
+base_progs = cad3d cavern diffpos extend sorterr 3dtopos\
+ printdm printps printpcl printhpgl
 
 AUTHORS: doc/AUTHORS.htm
 	w3m -dump doc/AUTHORS.htm > AUTHORS
@@ -113,7 +114,9 @@ mingw_iss : survex.iss
 	cp lib/icons/*.ico lib/icons/*.png iss_tmp
 	: # don't ship pngs for which we ship the ico version
 	for a in iss_tmp/*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
-	gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
+	: # but we do want aven.png for the About dialog
+	cp lib/icons/aven.png iss_tmp
+	: # not needed if we build wx without threads: gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual
 	: # convert LF to CR+LF

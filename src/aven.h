@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -44,12 +44,21 @@ void aven_v_report(int severity, const char *fnm, int line, int en,
 class MainFrm;
 
 class Aven : public wxApp {
-    MainFrm* m_Frame;
+    MainFrm * m_Frame;
+    // This must be a pointer, otherwise it gets initialised too early and
+    // we get a segfault on MS Windows when it tries to look up paper
+    // sizes in wxThePrintPaperDatabase which is still NULL at the point
+    // when the Aven class is constructed.
+    wxPageSetupDialogData * m_pageSetupData;
 
 public:
     Aven();
+    ~Aven();
 
     virtual bool OnInit();
+
+    wxPageSetupDialogData * GetPageSetupDialogData();
+    void SetPageSetupDialogData(const wxPageSetupDialogData & psdd);
 
     void ReportError(const wxString&);
 };

@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2002,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,12 @@ solve_network(void /*node *stnlist*/)
    static int first_solve = 1;
    node *stn;
 
-   if (stnlist == NULL) fatalerror(/*No survey data*/43);
+   if (stnlist == NULL) {
+      if (first_solve) fatalerror(/*No survey data*/43);
+      /* We've had a *solve followed by another *solve (or the implicit
+       * *solve at the end of the data.  Don't moan about that. */
+      return;
+   }
    ptr = NULL;
    ptrTrail = NULL;
    dump_network();
@@ -96,17 +101,13 @@ solve_network(void /*node *stnlist*/)
    FOR_EACH_STN(stn, stnlist)
       if (fixed(stn)) break;
 
-   if (!stn) {
+   if (!stn && first_solve) {
+     /* If we've had a *solve and all the new survey since then is hanging,
+      * we don't want to invent a fixed point.  We want to complain but
+      * the easiest way to is just to continue processing and let
+      * articulate() catch this condition as it will any hanging survey
+      * data. */
       node *stnFirst = NULL;
-
-      if (!first_solve) {
-	 /* We've had a *solve and all the new survey since then is hanging,
-	  * so don't invent a fixed point but complain instead */
-	 /* Let replace_trailing_travs() do the work for us... */
-	 remove_trailing_travs();
-	 replace_trailing_travs();
-	 return;
-      }
 
       /* New stations are pushed onto the head of the list, so the
        * first station added is the last in the list. */
@@ -664,7 +665,7 @@ replace_travs(void)
 	 /* FIXME: equate at the start of a traverse treated specially
 	  * - what about equates at end? */
 	 if (stn1->name != stn3->name && !(fEquate && cLegsTrav == 0)) {
- 	    /* (node not part of same stn) &&
+	    /* (node not part of same stn) &&
 	     * (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
 	    if (fhErrStat && !fArtic) {

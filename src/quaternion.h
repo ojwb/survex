@@ -49,7 +49,7 @@ public:
 	return hypot(mv, w);
 #else
 	return sqrt(mv*mv + w*w);
-#endif	
+#endif
     }
 
     void normalise() {

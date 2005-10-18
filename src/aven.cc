@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -32,27 +32,33 @@
 #include "message.h"
 
 #include <assert.h>
-#include <locale.h>
 #include <signal.h>
 
+#include <wx/confbase.h>
 #include <wx/image.h>
-#if wxUSE_DISPLAY // wxDisplay was added in wx 2.5; but it may not be built
-		  // for mingw (because the header seems to be missing).
+#if wxUSE_DISPLAY
+// wxDisplay was added in wx 2.5; but it may not be built for mingw (because
+// the header seems to be missing).
 #include <wx/display.h>
 #endif
 
 IMPLEMENT_APP(Aven)
 
 Aven::Aven() :
-    m_Frame(NULL)
+    m_Frame(NULL), m_pageSetupData(NULL)
 {
+}
+
+Aven::~Aven()
+{
+    if (m_pageSetupData) delete m_pageSetupData;
 }
 
 bool Aven::OnInit()
 {
 #ifdef __WXMAC__
     // Tell wxMac which the About menu item is so it can be put where MacOS
-    // users expect it to be
+    // users expect it to be.
     wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
     // wxMac is supposed to remove this magic command line option (which
     // Finder passes), but the code in 2.4.2 is bogus.  It just decrements
@@ -86,10 +92,6 @@ bool Aven::OnInit()
 	// The existence of the wxLocale object is enough - no need to keep a
 	// pointer to it!
     }
-    // Set LC_NUMERIC back to the default - otherwise we break img.c
-    // FIXME: eventually stop doing this so that floating point values are
-    // displayed correctly for the locale...
-    setlocale(LC_NUMERIC, "C");
 
     wxString survey;
     bool print_and_exit = false;
@@ -180,6 +182,45 @@ bool Aven::OnInit()
     m_Frame->SetFocus();
 #endif
     return true;
+}
+
+wxPageSetupDialogData *
+Aven::GetPageSetupDialogData()
+{
+    if (!m_pageSetupData) m_pageSetupData = new wxPageSetupDialogData;
+#ifdef __WXGTK__
+    // Fetch paper margins stored on disk.
+    int left, right, top, bottom;
+    wxConfigBase * cfg = wxConfigBase::Get();
+    // These default margins were chosen by looking at all the .ppd files
+    // on my machine.
+    cfg->Read("paper_margin_left", &left, 7);
+    cfg->Read("paper_margin_right", &right, 7);
+    cfg->Read("paper_margin_top", &top, 14);
+    cfg->Read("paper_margin_bottom", &bottom, 14);
+    m_pageSetupData->SetMarginTopLeft(wxPoint(left, top));
+    m_pageSetupData->SetMarginBottomRight(wxPoint(right, bottom));
+#endif
+    return m_pageSetupData;
+}
+
+void
+Aven::SetPageSetupDialogData(const wxPageSetupDialogData & psdd)
+{
+    if (!m_pageSetupData) m_pageSetupData = new wxPageSetupDialogData;
+    *m_pageSetupData = psdd;
+#ifdef __WXGTK__
+    wxPoint topleft = psdd.GetMarginTopLeft();
+    wxPoint bottomright = psdd.GetMarginBottomRight();
+
+    // Store user specified paper margins on disk/in registry.
+    wxConfigBase * cfg = wxConfigBase::Get();
+    cfg->Write("paper_margin_left", topleft.x);
+    cfg->Write("paper_margin_right", bottomright.x);
+    cfg->Write("paper_margin_top", topleft.y);
+    cfg->Write("paper_margin_bottom", bottomright.y);
+    cfg->Flush();
+#endif
 }
 
 void Aven::ReportError(const wxString& msg)

@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ctype.h>
+#include <locale.h>
 
 #include "img.h"
 
@@ -783,6 +784,8 @@ read_v3label(img *pimg)
    return 0;
 }
 
+static int img_read_item_ascii(img *pimg, img_point *p);
+
 int
 img_read_item(img *pimg, img_point *p)
 {
@@ -1103,7 +1106,25 @@ img_read_item(img *pimg, img_point *p)
       }
 
       return result;
-   } else if (pimg->version == 0) {
+   } else {
+      /* We need to set the default locale for fscanf() to work on
+       * numbers with "." as decimal point. */
+      char * current_locale = my_strdup(setlocale(LC_NUMERIC, NULL));
+      setlocale(LC_NUMERIC, "C");
+      result = img_read_item_ascii(pimg, p);
+      setlocale(LC_NUMERIC, current_locale);
+      free(current_locale);
+      return result;
+   }
+}
+
+/* Handle all for ASCII formats so we can easily fix up the locale
+ * so fscanf(), etc work on numbers with "." as decimal point. */
+static int
+img_read_item_ascii(img *pimg, img_point *p)
+{
+   int result;
+   if (pimg->version == 0) {
       ascii_again:
       pimg->label[0] = '\0';
       if (feof(pimg->fh)) return img_STOP;
@@ -1459,7 +1480,7 @@ skip_to_N:
 	 memcpy(new, line + 7, 7);
 	 q = memchr(new, ' ', 7);
 	 if (!q) q = new + 7;
-	 *q = '\0'; 
+	 *q = '\0';
 
 	 pimg->flags = img_SFLAG_UNDERGROUND;
 

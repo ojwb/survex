@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - smoke tests
-# Copyright (C) 1999-2003 Olly Betts
+# Copyright (C) 1999-2003,2005 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ PROGS="cad3d cavern printdm printps printpcl printhpgl diffpos extend sorterr\
  3dtopos"
 test -r "$testdir"/../src/xcaverot && PROGS="$PROGS xcaverot"
 # aven tries to open an X display even for --help and --version
-#test -r "$testdir"/../src/aven && PROGS="$PROGS aven"
+test -r "$testdir"/../src/aven && test -n "$DISPLAY" && PROGS="$PROGS aven"
 
 for p in ${PROGS}; do
    echo $p

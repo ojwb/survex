@@ -53,8 +53,9 @@ test -x "$testdir"/../src/cavern || testdir=.
  badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
  notentranceorexport inferunknown inferexports bad_units_factor\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
- nosurveyhanging datapassage\
- lech level 2fixbug declination.dat ignore.dat dot17 3dcorner surfequate"}}
+ nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
+ lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
+ surfequate passage"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -180,12 +181,14 @@ for file in $TESTS ; do
   lech) pos=no; warn=0 ;;
   level) pos=yes; warn=0 ;;
   2fixbug) pos=no; warn=0 ;;
-  declination.dat|ignore.dat) pos=yes; warn=0 ;;
+  declination.dat|ignore.dat|backread.dat) pos=yes; warn=0 ;;
   dot17) pos=yes; warn=0 ;;
   3dcorner) pos=yes; warn=0 ;;
   surfequate) pos=dxf; warn=0 ;;
   nosurveyhanging) pos=fail ;;
-  datapassage) pos=no; warn=0 ;;
+  cmd_solve_hanging) pos=fail ;;
+  cmd_solve_nothing*) pos=no; warn=0 ;;
+  passage) pos=no; warn=0 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac
@@ -243,7 +246,11 @@ for file in $TESTS ; do
     no)
       test -f tmp.3d || exit 1 ;;
     fail)
-      test -f tmp.3d && exit 1 ;;
+      test -f tmp.3d && exit 1
+      # Check that last line doesn't contains "Bug in program detected"
+      case `tail -n 1 tmp.out` in
+      *"Bug in program detected"*) exit 1 ;;
+      esac ;;
     *)
       echo "Bad value for pos: '$pos'" ; exit 1 ;;
     esac

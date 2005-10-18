@@ -540,7 +540,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0xda: case 0xdc: case 0xdd: case 0xdf: case 0xe1: case 0xe2:
 	    case 0xe4: case 0xe7: case 0xe9: case 0xeb: case 0xed: case 0xee:
 	    case 0xf3: case 0xf4: case 0xf6: case 0xf7: case 0xfa: case 0xfc:
-	    case 0xfd: 
+	    case 0xfd:
 	       v = value; break;
 	    case 0x20ac: v = '\x80'; break;
 	    case 0x201a: v = '\x82'; break;
@@ -1086,7 +1086,7 @@ macosx_got_msg:
 #endif
 	 osfree(p);
       }
-      
+
       if (free_pth) osfree(pth);
 #elif (OS==WIN32)
       DWORD len = 256;
@@ -1115,7 +1115,8 @@ macosx_got_msg:
 #endif
 
    if (!msg_lang || !*msg_lang) {
-      msg_lang = getenv("LANG");
+      msg_lang = getenv("LC_MESSAGES");
+      if (!msg_lang || !*msg_lang) msg_lang = getenv("LANG");
       if (!msg_lang || !*msg_lang) {
 #if (OS==WIN32)
 	 LCID locid;

@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2003,2004 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,10 @@
 #include "str.h"
 #include "validate.h"
 
+#if (OS==WIN32)
+#include <conio.h> /* for _kbhit() and _getch() */
+#endif
+
 #ifdef CHASM3DX
 # if OS != RISCOS
 /* include header for getcwd() */
@@ -48,7 +52,6 @@
 #   include <dir.h>
 #  elif OS == WIN32
 #   include <direct.h>
-#   include <conio.h> /* for _kbhit() and _getch() */
 #  else
 #   include <unistd.h>
 #  endif
@@ -134,16 +137,16 @@ static const struct option long_opts[] = {
 /* TRANSLATE extract help messages to message file */
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),          "display percentage progress"},
-   {HLP_ENCODELONG(2),          "set location for output files"},
-   {HLP_ENCODELONG(3),          "only show brief summary (-qq for errors only)"},
-   {HLP_ENCODELONG(4),          "do not create .err file"},
-   {HLP_ENCODELONG(5),          "turn warnings into errors"},
-   {HLP_ENCODELONG(6),          "log output to .log file"},
+   {HLP_ENCODELONG(0),		"display percentage progress"},
+   {HLP_ENCODELONG(2),		"set location for output files"},
+   {HLP_ENCODELONG(3),		"only show brief summary (-qq for errors only)"},
+   {HLP_ENCODELONG(4),		"do not create .err file"},
+   {HLP_ENCODELONG(5),		"turn warnings into errors"},
+   {HLP_ENCODELONG(6),		"log output to .log file"},
 #ifdef CHASM3DX
-   {HLP_ENCODELONG(7),          "output data in chasm's 3dx format"},
+   {HLP_ENCODELONG(7),		"output data in chasm's 3dx format"},
 #endif
- /*{'z',                        "set optimizations for network reduction"},*/
+ /*{'z',			"set optimizations for network reduction"},*/
    {0, 0}
 };
 
@@ -217,6 +220,7 @@ main(int argc, char **argv)
 	 break;
 #endif
        case 'o': {
+	 osfree(fnm_output_base); /* in case of multiple -o options */
 	 /* can be a directory (in which case use basename of leaf input)
 	  * or a file (in which case just trim the extension off) */
 	 if (fDirectory(optarg)) {
@@ -225,7 +229,6 @@ main(int argc, char **argv)
 	    fnm_output_base = base_from_fnm(optarg);
 	    fnm_output_base_is_dir = 1;
 	 } else {
-	    osfree(fnm_output_base); /* in case of multiple -o options */
 	    fnm_output_base = base_from_fnm(optarg);
 	 }
 	 break;
@@ -294,8 +297,21 @@ main(int argc, char **argv)
       osfree(fnm);
    }
 
-   if (!fMute)
-      printf(PRETTYPACKAGE" "VERSION"\n"COPYRIGHT_MSG"\n", msg(/*&copy;*/0));
+   if (!fMute) {
+      const char *p = COPYRIGHT_MSG;
+      puts(PRETTYPACKAGE" "VERSION);
+      while (1) {
+	  const char *q = p;
+	  p = strstr(p, "(C)");
+	  if (p == NULL) {
+	      puts(q);
+	      break;
+	  }
+	  fwrite(q, 1, p - q, stdout);
+	  fputs(msg(/*&copy;*/0), stdout);
+	  p += 3;
+      }
+   }
 
    atexit(delete_output_on_error);
 

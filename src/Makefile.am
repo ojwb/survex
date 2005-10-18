@@ -9,8 +9,8 @@ check-local dist-hook:
 noinst_HEADERS = cavern.h commands.h cmdline.h datain.h debug.h filelist.h\
  filename.h getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
  netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
- prbitmap.h prcore.h prio.h readval.h str.h useful.h validate.h whichos.h\
- new3dout.h 3ddefs.h \
+ readval.h str.h useful.h validate.h whichos.h\
+ prbitmap.h prcore.h prio.h new3dout.h 3ddefs.h \
  armrot.h caverot.h cvrotgfx.h cvrotimg.h dosrot.h labels.h rotplot.h xrot.h\
  xcvrtbut.h\
  aboutdlg.h aven.h avenpal.h gfxcore.h mainfrm.h matrix4.h quaternion.h\

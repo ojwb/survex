@@ -171,7 +171,6 @@ private:
     wxSplitterWindow* m_Splitter;
     wxPanel* m_Panel;
     AvenTreeCtrl* m_Tree;
-    wxTreeItemId m_TreeRoot;
     wxTextCtrl* m_FindBox;
     wxStaticText* m_MousePtr;
     wxStaticText* m_Coords;
@@ -187,16 +186,13 @@ private:
     wxString m_Title, m_DateStamp;
     int separator; // character separating survey levels (often '.')
 
-    struct {
-	Double x, y, z;
-    } m_Offsets;
+    Vector3 m_Offsets;
 
     wxPageSetupDialogData m_pageSetupData;
     wxPrintData m_printData;
 
     wxString icon_path;
 
-    void SetTreeItemColour(LabelInfo* label);
     void FillTree();
     void ClearPointLists();
     bool LoadData(const wxString& file, wxString prefix = "");
@@ -239,6 +235,13 @@ public:
     void OnClose(wxCloseEvent&);
 
     void OnSetFocus(wxFocusEvent &) { if (m_Gfx) m_Gfx->SetFocus(); }
+
+    void OnKeyPress(wxKeyEvent &e) {
+	if (m_Gfx) {
+	    m_Gfx->SetFocus();
+	    m_Gfx->OnKeyPress(e);
+	}
+    }
 
     void OnPrintUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
     void OnExportUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
@@ -378,9 +381,9 @@ public:
     void SetCoords(Double x, Double y);
     void SetAltitude(Double z);
 
-    Double GetXOffset() const { return m_Offsets.x; }
-    Double GetYOffset() const { return m_Offsets.y; }
-    Double GetZOffset() const { return m_Offsets.z; }
+    Double GetXOffset() const { return m_Offsets.getX(); }
+    Double GetYOffset() const { return m_Offsets.getY(); }
+    Double GetZOffset() const { return m_Offsets.getZ(); }
 
     void SetMouseOverStation(LabelInfo* label);
 

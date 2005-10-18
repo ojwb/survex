@@ -61,9 +61,17 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
     }
     title->Add(new wxStaticText(this, 502, id), 0, wxALL, 2);
 
-    wxStaticText* copyright = new wxStaticText(this, 503,
-	    wxString::Format(AVEN_COPYRIGHT_MSG"\n"COPYRIGHT_MSG,
-			     msg(/*&copy;*/0), msg(/*&copy;*/0)));
+    wxString copyright_msg = COPYRIGHT_MSG"\n"AVEN_COPYRIGHT_MSG;
+    const char * csign = msg(/*&copy;*/0);
+    if (strcmp(csign, "(C)") != 0) {
+	size_t csign_len = strlen(csign);
+	size_t i = 0;
+	while ((i = copyright_msg.find("(C)", i)) != wxString::npos) {
+	    copyright_msg.replace(i, 3, csign, csign_len);
+	    i += csign_len;
+	}
+    }
+    wxStaticText* copyright = new wxStaticText(this, 503, copyright_msg);
 
     wxString licence_str;
     wxString l(msg(/*This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.*/219));
@@ -104,7 +112,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
     vert->Add(new wxStaticText(this, 505, msg(/*System Information:*/390)),
 	      0, wxLEFT | wxRIGHT, 20);
 
-#if defined unix && !wxCHECK_VERSION(2,5,4)
+#if defined __UNIX__ && !wxCHECK_VERSION(2,5,4)
     // On Unix, older wx versions report the OS that we were *built* on, which
     // may be a different OS or kernel version to what we're running on.
     // I submitted a patch to fix this which was applied in 2.5.4.
@@ -127,6 +135,25 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
 #endif
     info += '\n';
     info += wxVERSION_STRING;
+#ifdef __WXGTK__
+#if defined __WXGTK24__
+    info += " (GTK+ >= 2.4)";
+#elif defined __WXGTK20__
+    info += " (GTK+ >= 2.0)";
+#elif defined __WXGTK12__
+    info += " (GTK+ >= 1.2)";
+#else
+    info += " (GTK+ < 1.2)";
+#endif
+#elif defined __WXMOTIF__
+#if defined __WXMOTIF20__
+    info += " (Motif >= 2.0)";
+#else
+    info += " (Motif < 2.0)";
+#endif
+#elif defined __WXX11__
+    info += " (X11)";
+#endif
     info += '\n';
     int bpp = wxDisplayDepth();
     info += wxString::Format("Display Depth: %d bpp", bpp);

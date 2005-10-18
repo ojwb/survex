@@ -1407,6 +1407,7 @@ void GfxCore::DrawScalebar()
 
 void GfxCore::OnLButtonDown(wxMouseEvent& event)
 {
+    SetFocus();
     if (m_PlotData && m_Lock != lock_POINT) {
 	m_DraggingLeft = true;
 	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
@@ -1439,6 +1440,7 @@ void GfxCore::OnLButtonUp(wxMouseEvent& event)
 
 void GfxCore::OnMButtonDown(wxMouseEvent& event)
 {
+    SetFocus();
     if (m_PlotData && m_Lock == lock_NONE) {
 	m_DraggingMiddle = true;
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
@@ -1457,6 +1459,7 @@ void GfxCore::OnMButtonUp(wxMouseEvent&)
 
 void GfxCore::OnRButtonDown(wxMouseEvent& event)
 {
+    SetFocus();
     if (m_PlotData) {
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
 	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;

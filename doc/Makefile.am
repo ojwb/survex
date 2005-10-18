@@ -3,8 +3,8 @@
 pkgdocdir = @PKGDOCDIR@
 
 other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
- printdm.1 printhpgl.1 printpcl.1 printps.1 print.ini.5 svxedit.1 \
- @EXTRA_MANS@
+ printdm.1 printhpgl.1 printpcl.1 printps.1 @EXTRA_MANS@ \
+ print.ini.5 svxedit.1
 
 manual_sources = manual.sgml cad3d.sgml cavern.sgml\
  diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml\

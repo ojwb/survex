@@ -1,6 +1,7 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
  * Copyright (C) 1991-2003,2005 Olly Betts
+ * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +41,10 @@
 #define EPSILON (REAL_EPSILON * 1000)
 
 #define var(I) (pcs->Var[(I)])
+
+/* true if x is not-a-number value in Compass (999.0 or -999.0)    */
+/* Compass uses 999.0 but understands Karst data which used -999.0 */
+#define is_compass_NaN(x) ( fabs(fabs(x)-999.0) <  EPSILON )
 
 int ch;
 
@@ -454,12 +459,14 @@ data_file(const char *pth, const char *fnm)
    if (fmt == FMT_DAT) {
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 static reading compass_order[] = {
-	    Fr, To, Tape, Comp, Clino, Ignore, Ignore, Ignore, Ignore,
+	    Fr, To, Tape, CompassDATComp, CompassDATClino,
+	    Ignore, Ignore, Ignore, Ignore,
 	    CompassDATFlags, IgnoreAll
 	 };
 	 static reading compass_order_backsights[] = {
-	    Fr, To, Tape, Comp, Clino, Ignore, Ignore, Ignore, Ignore,
-	    BackComp, BackClino,
+	    Fr, To, Tape, CompassDATComp, CompassDATClino,
+	    Ignore, Ignore, Ignore, Ignore,
+	    CompassDATBackComp, CompassDATBackClino,
 	    CompassDATFlags, IgnoreAll
 	 };
 	 /* <Cave name> */
@@ -1485,11 +1492,8 @@ data_normal(void)
 	  read_reading(ToCount, fFalse);
 	  fTopofil = fTrue;
 	  break;
-       case Comp:
-	  read_bearing_or_omit(Comp);
-	  break;
-       case BackComp:
-	  read_bearing_or_omit(BackComp);
+       case Comp: case BackComp:
+	  read_bearing_or_omit(*ordering);
 	  break;
        case Clino:
 	  read_reading(Clino, fTrue);
@@ -1513,11 +1517,8 @@ data_normal(void)
 	  }
 	  backctype = CTYPE_READING;
 	  break;
-       case FrDepth:
-	  read_reading(FrDepth, fFalse);
-	  break;
-       case ToDepth:
-	  read_reading(ToDepth, fFalse);
+       case FrDepth: case ToDepth:
+	  read_reading(*ordering, fFalse);
 	  break;
        case Depth:
 	  VAL(FrDepth) = VAL(ToDepth);
@@ -1527,6 +1528,32 @@ data_normal(void)
 	  fDepthChange = fTrue;
 	  VAL(FrDepth) = 0;
 	  read_reading(ToDepth, fFalse);
+	  break;
+       case CompassDATComp:
+	  read_bearing_or_omit(Comp);
+	  if (is_compass_NaN(VAL(Comp))) VAL(Comp) = HUGE_REAL;
+	  break;
+       case CompassDATBackComp:
+	  read_bearing_or_omit(BackComp);
+	  if (is_compass_NaN(VAL(BackComp))) VAL(BackComp) = HUGE_REAL;
+	  break;
+       case CompassDATClino:
+	  read_reading(Clino, fFalse);
+	  if (is_compass_NaN(VAL(Clino))) {
+	     VAL(Clino) = HUGE_REAL;
+	     ctype = CTYPE_OMIT;
+	  } else {
+	     ctype = CTYPE_READING;
+	  }
+	  break;
+       case CompassDATBackClino:
+	  read_reading(BackClino, fFalse);
+	  if (is_compass_NaN(VAL(BackClino))) {
+	     VAL(BackClino) = HUGE_REAL;
+	     backctype = CTYPE_OMIT;
+	  } else {
+	     backctype = CTYPE_READING;
+	  }
 	  break;
        case CompassDATFlags:
 	  if (ch == '#') {

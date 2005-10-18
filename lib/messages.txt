@@ -1176,7 +1176,7 @@ ca: 95 Utilitzacions futures d'aquesta funci&oacute; obsoleta no seran informats
 es: 95 Usos futuros de &eacute;sta funci&oacute;n obsoleta no ser&aacute;n informados
 it: 95 Usi futuri di questa funzionalit&aacute; non pi&uacute; usata non verranno segnalati
 sk: 95 &Dcaron;al&scaron;ie pou&zcaron;itia zamietnutej fukcie nebud&uacute; zaznamenan&eacute;
-# FIXME ro: pls give me a synonim for "deprecated"
+# FIXME ro: pls give me a synonym for "deprecated"
 ro: 95 Folosirea ulterioara a acestei functionalitati ??? nu va fi semnalata
 #
 en: 96 Stack overflow
@@ -2580,15 +2580,15 @@ sk:229 S&uacute;bory s povrchom
 ro:229 Model digital al terenului
 #
 # The accelerators must be different within this group
-en:230 @Start Rotation##Return
-fr:230 @D&eacute;marre la rotation##Return
-de:230 @Rotation starten##Return
-pt,pt-br:230 Iniciar @Rota&ccedil;&atilde;o##Return
-ca:230 @Comen&ccedil;a la Rotaci&oacute;##Return
-es:230 @Empieza la Rotaci&oacute;n##Return
-it:230 @Avvia la rotazione##Return
-sk:230 @Za&ccaron;a&tcaron; rot&aacute;ciu##Return
-ro:230 @Porneste Rotatia##Return
+en:230 @Start Rotation
+fr:230 @D&eacute;marre la rotation
+de:230 @Rotation starten
+pt,pt-br:230 Iniciar @Rota&ccedil;&atilde;o
+ca:230 @Comen&ccedil;a la Rotaci&oacute;
+es:230 @Empieza la Rotaci&oacute;n
+it:230 @Avvia la rotazione
+sk:230 @Za&ccaron;a&tcaron; rot&aacute;ciu
+ro:230 @Porneste Rotatia
 #
 en:231 S@top Rotation##Space
 fr:231 @Arr&ecirc;te la rotation##Space
@@ -2811,8 +2811,10 @@ it:253 Zoo@m indietro##[
 sk:253 Zmen&scaron;i@t##[
 ro:253 Mi@c&scedil;orare##[
 #
-en:254 Restore De@fault Settings
-en-us:254 Restore Defaul@t Settings
+# TRANSLATE fr de pt pt-br ca es it sk ro
+# "Restore Default Settings" -> "Restore Default View"
+en:254 Restore De@fault View
+en-us:254 Restore Defaul@t View
 fr:254 @Restaurer les valeurs par d&eacute;faut
 de:254 Voreinstellungen w@iederherstellen
 pt:254 @Usar valores pr&eacute;-definidos
@@ -2822,7 +2824,7 @@ es:254 Restaurar @valores predeterminados
 it:254 Ripristina i @valori predefiniti
 sk:254 Znov@u na v&yacute;chodzie hodnoty
 ro:254 @Restabiliti setarile initiale
-# Used in print dialog to label 
+# Used in print dialog to label
 # TRANSLATE fr pt pt-br ca es it sk ro check reused message makes sense
 # in this context
 # cf 213
@@ -3233,8 +3235,7 @@ it:310 %s: opzione non valida -- %c&#10;
 sk:310 %s: nespr&aacute;vna mo&zcaron;nos&tcaron; -- %c&#10;
 ro:310 %s: op&tcedil;iune invalid&abreve; -- %c&#10;
 #
-# Used in 1.1: 311-317
-# XXX 318
+# Used in 1.1: 311-318
 #
 en:319 Select an output filename
 fr:319 S&eacute;lection d'un nom de fichier de sortie

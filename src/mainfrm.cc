@@ -415,7 +415,7 @@ void MainFrm::CreateToolBar()
 
     wxToolBar* toolbar = wxFrame::CreateToolBar();
 
-#ifdef __WXGTK12__
+#ifndef __WXGTK20__
     toolbar->SetMargins(5, 5);
 #endif
 
@@ -556,11 +556,12 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // chop legs such that no legs cross depth colour boundaries and prepare
     // the data for drawing.
 
-    // Load the survey data.
 #if 0
     wxStopWatch timer;
     timer.Start();
 #endif
+
+    // Load the survey data.
 
     img* survey = img_open_survey(file, prefix.c_str());
     if (!survey) {
@@ -572,9 +573,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_File = survey->filename_opened;
 
     m_Tree->DeleteAllItems();
-
-    m_TreeRoot = m_Tree->AddRoot(wxFileNameFromPath(file));
-    m_Tree->SetEnabled();
 
     // Create a list of all the leg vertices, counting them and finding the
     // extent of the survey at the same time.
@@ -734,7 +732,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     // Fill the tree of stations and prefixes.
     FillTree();
-    m_Tree->Expand(m_TreeRoot);
 
     // Sort labels so that entrances are displayed in preference,
     // then fixed points, then exported points, then other points.
@@ -762,11 +759,13 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
 void MainFrm::FillTree()
 {
-    // Fill the tree of stations and prefixes.
+    // Create the root of the tree.
+    wxTreeItemId treeroot = m_Tree->AddRoot(wxFileNameFromPath(m_File));
 
+    // Fill the tree of stations and prefixes.
     stack<wxTreeItemId> previous_ids;
     wxString current_prefix = "";
-    wxTreeItemId current_id = m_TreeRoot;
+    wxTreeItemId current_id = treeroot;
 
     list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
@@ -780,12 +779,12 @@ void MainFrm::FillTree()
 	    // no need to fiddle with branches...
 	}
 	// If not, then see if we've descended to a new prefix.
-	else if (prefix.Length() > current_prefix.Length() &&
+	else if (prefix.length() > current_prefix.length() &&
 		 prefix.StartsWith(current_prefix) &&
-		 (prefix[current_prefix.Length()] == separator ||
+		 (prefix[current_prefix.length()] == separator ||
 		  current_prefix == "")) {
 	    // We have, so start as many new branches as required.
-	    int current_prefix_length = current_prefix.Length();
+	    int current_prefix_length = current_prefix.length();
 	    current_prefix = prefix;
 	    if (current_prefix_length != 0) {
 		prefix = prefix.Mid(current_prefix_length + 1);
@@ -810,9 +809,9 @@ void MainFrm::FillTree()
 	// Otherwise, we must have moved up, and possibly then down again.
 	else {
 	    size_t count = 0;
-	    bool ascent_only = (prefix.Length() < current_prefix.Length() &&
+	    bool ascent_only = (prefix.length() < current_prefix.length() &&
 				current_prefix.StartsWith(prefix) &&
-				(current_prefix[prefix.Length()] == separator ||
+				(current_prefix[prefix.length()] == separator ||
 				 prefix == ""));
 	    if (!ascent_only) {
 		// Find out how much of the current prefix and the new prefix
@@ -823,7 +822,7 @@ void MainFrm::FillTree()
 		    if (prefix[i] == separator) count = i + 1;
 		}
 	    } else {
-		count = prefix.Length() + 1;
+		count = prefix.length() + 1;
 	    }
 
 	    // Extract the part of the current prefix after the bit (if any)
@@ -879,9 +878,19 @@ void MainFrm::FillTree()
 	assert(bit != "");
 	wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
 	m_Tree->SetItemData(id, new TreeData(label));
-	label->tree_id = id; // before calling SetTreeItemColour()...
-	SetTreeItemColour(label);
+	label->tree_id = id;
+	// Set the colour for an item in the survey tree.
+	if (label->IsEntrance()) {
+	    // Entrances are green (like entrance blobs).
+	    m_Tree->SetItemTextColour(id, wxColour(0, 255, 0));
+	} else if (label->IsSurface()) {
+	    // Surface stations are dark green.
+	    m_Tree->SetItemTextColour(id, wxColour(49, 158, 79));
+	}
     }
+
+    m_Tree->Expand(treeroot);
+    m_Tree->SetEnabled();
 }
 
 void MainFrm::SelectTreeItem(LabelInfo* label)
@@ -889,28 +898,14 @@ void MainFrm::SelectTreeItem(LabelInfo* label)
     m_Tree->SelectItem(label->tree_id);
 }
 
-void MainFrm::SetTreeItemColour(LabelInfo* label)
-{
-    // Set the colour for an item in the survey tree.
-
-    if (label->IsSurface()) {
-	m_Tree->SetItemTextColour(label->tree_id, wxColour(49, 158, 79));
-    }
-
-    if (label->IsEntrance()) {
-	// FIXME: making this red here doesn't match with entrance blobs
-	// being green...
-	m_Tree->SetItemTextColour(label->tree_id, wxColour(255, 0, 0));
-    }
-}
-
 void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 {
     // Centre the dataset around the origin.
 
-    Double xoff = m_Offsets.x = xmin + (m_XExt / 2.0);
-    Double yoff = m_Offsets.y = ymin + (m_YExt / 2.0);
-    Double zoff = m_Offsets.z = zmin + (m_ZExt / 2.0);
+    Double xoff = xmin + (m_XExt / 2.0);
+    Double yoff = ymin + (m_YExt / 2.0);
+    Double zoff = zmin + (m_ZExt / 2.0);
+    m_Offsets.set(xoff, yoff, zoff);
 
     for (int band = 0; band < NUM_DEPTH_COLOURS + 1; band++) {
 	list<PointInfo*>::iterator pos = m_Points[band].begin();
@@ -1136,13 +1131,10 @@ void MainFrm::OnPrint(wxCommandEvent&)
 
 void MainFrm::OnPageSetup(wxCommandEvent&)
 {
-    m_pageSetupData.SetPrintData(m_printData);
-
-    wxPageSetupDialog pageSetupDialog(this, &m_pageSetupData);
-    pageSetupDialog.ShowModal();
-
-    m_printData = pageSetupDialog.GetPageSetupData().GetPrintData();
-    m_pageSetupData = pageSetupDialog.GetPageSetupData();
+    wxPageSetupDialog dlg(this, wxGetApp().GetPageSetupDialogData());
+    if (dlg.ShowModal() == wxID_OK) {
+	wxGetApp().SetPageSetupDialogData(dlg.GetPageSetupData());
+    }
 }
 
 void MainFrm::OnExport(wxCommandEvent&)
@@ -1199,27 +1191,25 @@ void MainFrm::ClearCoords()
 
 void MainFrm::SetCoords(Double x, Double y)
 {
-    wxString str;
+    wxString s;
     if (m_Gfx->m_Metric) {
-	str.Printf(msg(/*  %d E, %d N*/338), int(x), int(y));
+	s.Printf(msg(/*  %d E, %d N*/338), int(x), int(y));
     } else {
-	str.Printf(msg(/*  %d E, %d N*/338),
-		   int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
+	s.Printf(msg(/*  %d E, %d N*/338),
+		 int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
     }
-    m_Coords->SetLabel(str);
+    m_Coords->SetLabel(s);
 }
 
 void MainFrm::SetAltitude(Double z)
 {
-    wxString str;
+    wxString s;
     if (m_Gfx->m_Metric) {
-	str.Printf("  %s %dm", msg(/*Altitude*/335),
-		   int(z));
+	s.Printf("  %s %dm", msg(/*Altitude*/335), int(z));
     } else {
-	str.Printf("  %s %dft", msg(/*Altitude*/335),
-		   int(z / METRES_PER_FOOT));
+	s.Printf("  %s %dft", msg(/*Altitude*/335), int(z / METRES_PER_FOOT));
     }
-    m_Coords->SetLabel(str);
+    m_Coords->SetLabel(s);
 }
 
 void MainFrm::ShowInfo(const LabelInfo *label)
@@ -1229,22 +1219,22 @@ void MainFrm::ShowInfo(const LabelInfo *label)
     wxString str;
     if (m_Gfx->m_Metric) {
 	str.Printf(msg(/*  %d E, %d N*/338),
-		   int(label->x + m_Offsets.x),
-		   int(label->y + m_Offsets.y));
+		   int(label->x + m_Offsets.getX()),
+		   int(label->y + m_Offsets.getY()));
     } else {
 	str.Printf(msg(/*  %d E, %d N*/338),
-		   int((label->x + m_Offsets.x) / METRES_PER_FOOT),
-		   int((label->y + m_Offsets.y) / METRES_PER_FOOT));
+		   int((label->x + m_Offsets.getX()) / METRES_PER_FOOT),
+		   int((label->y + m_Offsets.getY()) / METRES_PER_FOOT));
     }
     m_StnCoords->SetLabel(str);
     m_StnName->SetLabel(label->text);
 
     if (m_Gfx->m_Metric) {
 	str.Printf("  %s %dm", msg(/*Altitude*/335),
-		   int(label->z + m_Offsets.z));
+		   int(label->z + m_Offsets.getZ()));
     } else {
 	str.Printf("  %s %dft", msg(/*Altitude*/335),
-		   int((label->z + m_Offsets.z) / METRES_PER_FOOT));
+		   int((label->z + m_Offsets.getZ()) / METRES_PER_FOOT));
     }
     m_StnAlt->SetLabel(str);
     m_Gfx->SetHere(label->x, label->y, label->z);
@@ -1271,7 +1261,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	    Double d_horiz = sqrt(dx*dx + dy*dy);
 	    Double dr = sqrt(dx*dx + dy*dy + dz*dz);
 
-	    Double brg = atan2(dx, dy) * 180.0 / M_PI;
+	    Double brg = deg(atan2(dx, dy));
 	    if (brg < 0) brg += 360;
 
 	    str.Printf(msg(/*From %s*/339), label2->text.c_str());
@@ -1312,21 +1302,19 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
 {
     const TreeData* data = static_cast<const TreeData*>(item);
-    if (data) {
-	if (data->IsStation()) {
-	    const LabelInfo * l = data->GetLabel();
-	    ShowInfo(l);
-	    m_Gfx->SetHere(l->x, l->y, l->z);
-	} else {
-	    m_StnName->SetLabel("");
-	    m_StnCoords->SetLabel("");
-	    m_StnAlt->SetLabel("");
-	    m_Gfx->SetHere();
-	    m_Dist1->SetLabel("");
-	    m_Dist2->SetLabel("");
-	    m_Dist3->SetLabel("");
-	    m_Gfx->SetHere();
-	}
+    if (data && data->IsStation()) {
+	const LabelInfo * l = data->GetLabel();
+	ShowInfo(l);
+	m_Gfx->SetHere(l->x, l->y, l->z);
+    } else {
+	m_StnName->SetLabel("");
+	m_StnCoords->SetLabel("");
+	m_StnAlt->SetLabel("");
+	m_Gfx->SetHere();
+	m_Dist1->SetLabel("");
+	m_Dist2->SetLabel("");
+	m_Dist3->SetLabel("");
+	m_Gfx->SetHere();
     }
 }
 
