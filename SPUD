@@ -8,12 +8,13 @@ Update translations.
 
 Lots of aven things need documenting.
 
-Update innosetup
+Update innosetup to newer version.
 
 Does anyone use Controls->"Reverse Sense"?  It made some sense with caverot
 but now seeing the mouse pointer makes people expect the default motions...
 
-Merge Martin's patch for improved here/there update (think this is now done).
+Merge Martin's patch for improved here/there update.  Mostly done but here's
+follow up from looking over the latest version with Martin:
 - transition plan/elev doesn't highlight station if we end up on one (ditto
   any other movement)
 - setting here with mouseover in GfxCore should probably highlight in tree
@@ -30,6 +31,9 @@ Clean up export.cc and allow scale, line width, etc to be specified
 Output from cavern doesn't appear in aven's window until run has finished
 if we start aven with a .svx file, but works fine if we load a .svx file
 into an already running aven...
+
+Would cavern output be better inside the main aven frame rather than as a
+separate window?
 
 LRUD in Aven Export
 
@@ -67,7 +71,9 @@ may be needed to get meaningful timing info.
 
 * store survey error values for each leg
 
-* store 
+* store equated stations in some way
+
+* store legs by end stations rather than repeating coordinates over and over?
 
 Add "colour by error" and maybe "colour by survey".
 
@@ -225,7 +231,7 @@ clipping - want to select a clip sphere (or maybe cube) centred on
 centre on rotation I think.
 
 colour by cave (and more generally by sub-prefix):
-"aven --survey 161 --colour-by-sub-prefix all.3d" would result in
+maybe "aven --survey 161 --colour-by-sub-prefix all.3d" would result in
 lhroute, rhroute, adrian, etc all getting different colours...
 
 Some way to display all the names of an equated station (e.g. in pop-up
