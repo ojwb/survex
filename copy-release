@@ -8,24 +8,21 @@ VRD=$VER
 VRP=$VER
 
 FILES="survex-$VRR.src.rpm\
- survex_${VRD}_i386.deb\
  survex-$VER.tar.gz survex-win32-$VER.exe\
  svxdoc-doswin-$VER.exe"
-
-for a in survex-riscos-$VER.zip survex-dos286-$VER.exe; do
-   if test -f $a ; then
-      FILES="$FILES $a"
-   fi
-done
+DEB_FILES="survex_$VRD.tar.gz survex_$VRD.dsc survex_${VRD}_i386.deb\
+ survex_${VRD}_i386.changes"
 
 WEBDIR="software/$VRP"
 HOST="tartarus.org"
 DIR="/usr/data/www/survex.com/$WEBDIR"
 ssh tartarus.org mkdir "$DIR"
+ssh tartarus.org mkdir "$DIR"/debian
 scp $FILES "$HOST:$DIR"
+scp $DEB_FILES "$HOST:$DIR"/debian
 
-DIR="/usr/data/www/survex.com/docs"
-ssh tartarus.org mkdir "$DIR.tmp"
-scp -C -pr doc/manual{,.{sgml,ps,txt,rtf}} "$HOST:$DIR.tmp"
-ssh tartarus.org mv "$DIR" "$DIR.old" \&\& mv "$DIR.tmp" "$DIR"
-ssh tartarus.org rm -rf "$DIR.old"
+#DIR="/usr/data/www/survex.com/docs"
+#ssh tartarus.org mkdir "$DIR.tmp"
+#scp -C -pr doc/manual{,.{sgml,ps,txt,rtf}} "$HOST:$DIR.tmp"
+#ssh tartarus.org mv "$DIR" "$DIR.old" \&\& mv "$DIR.tmp" "$DIR"
+#ssh tartarus.org rm -rf "$DIR.old"
