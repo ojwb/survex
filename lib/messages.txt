@@ -179,7 +179,7 @@ pt:  6 *prefix descontinuado - use *begin e *end em seu lugar
 ca:  6 *prefix ja no s'utilitza - fes servir *begin i *end en el seu lloc
 es:  6 *prefix ya no se usa - utiliza *begin y *end en su lugar
 it:  6 *prefix &eacute sconsigliato - usare invece *begin e *end
-sk:  6 *prefix bol odmietnut&yacute; - pou&zcaron;ijte namiesto toho *begin a *end 
+sk:  6 *prefix bol odmietnut&yacute; - pou&zcaron;ijte namiesto toho *begin a *end
 ro:  6 *prefix contine eroare - folositi in schimb *begin si *end
 en:  7 Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)
 fr:  7 Caract&egrave;re `%c' interdit dans un nom de station (cf *SET NAMES pour modifier la liste des caract&egrave;res autoris&eacute;s)
@@ -225,7 +225,7 @@ ca: 10 Trobat `%s', esperant `PRESERVE', `TOUPPER', o `TOLOWER'
 es: 10 Encontrado `%s', esperando `PRESERVE', `TOUPPER', o `TOLOWER'
 it: 10 Trovato `%s', atteso `PRESERVE', `TOUPPER' o `TOLOWER'
 sk: 10 Zisten&eacute; `%s', predpoklad&aacute; sa `PRESERVE', `TOUPPER' alebo `TOLOWER'
-ro: 10 S-a gasit `%s', se astepta `PRESERVE', `TOUPPER' sau `TOLOWER'  
+ro: 10 S-a gasit `%s', se astepta `PRESERVE', `TOUPPER' sau `TOLOWER'
 en: 11 Bug in program detected! Please report this to the authors
 fr: 11 Bug d&eacute;tect&eacute; dans le programme! Signaler ce message &agrave; l'auteur S.V.P.
 de: 11 Fehler im Programm, bitte informieren Sie die Programmierer dar&uuml;ber
@@ -265,7 +265,7 @@ pt,pt-br: 14 Azimute n&atilde;o pode ser omitido exceto em visadas em prumo
 ca: 14 La lectura de la br&uacute;ixola no es pot ometre excepte en tirades a plom
 es: 14 La lectura de la br&uacute;jula no se puede omitir excepto en tiradas a plomo
 it: 14 La lettura della bussola non pu&oacute; essere omessa qui eccettto che nelle battute verticali
-sk: 14 Nemalo by ch&yacute;ba&tcaron; &ccaron;&iacute;tanie kompasu pokia&lcaron; nejde o vertik&aacute;lnu z&aacute;meru 
+sk: 14 Nemalo by ch&yacute;ba&tcaron; &ccaron;&iacute;tanie kompasu pokia&lcaron; nejde o vertik&aacute;lnu z&aacute;meru
 ro: 14 Valoarea azimutului poate fi omisa doar in cazul vizelor verticale
 #
 en: 15 End of line not blank
@@ -332,7 +332,7 @@ sk: 20 *DEFAULT bol odmietnut&yacute; - pou&zcaron;ijte namiesto toho *CALIBRATE
 ro: 20 *DEFAULT nu mai este folosit - folositi in schimb *CALIBRATE/DATA/SD/UNITS cu argumentul DEFAULT
 en: 21 Compass reading given on plumbed leg
 en-us: 21 Compass reading given on plumbed shot
-fr: 21 Lecture d'azimut donn&eacute;e sur une vis&eacute;e 'plomb&eacute;e'
+fr: 21 Lecture d'azimut donn&eacute;e sur une vis&eacute;e verticale
 de-de,de-ch: 21 Kompassablesung f&uuml;r geloteten Schacht angegeben
 de:     21 Kompa&szlig;ablesung f&uuml;r geloteten Schacht angegeben
 pt: 21 Azimute fornecido numa visada vertical
@@ -518,7 +518,7 @@ ro: 35 Unitati necunoscute `%s'
 en: 36 Matching BEGIN tag has no prefix
 fr: 36 Le tag BEGIN correspondant n'a pas de pr&eacute;fixe
 de: 36 Zugeh&ouml;riges BEGIN hatte keine Pr&auml;fix
-pt: 36 O BEGIN correspondente n&atilde;o tem prefixo 
+pt: 36 O BEGIN correspondente n&atilde;o tem prefixo
 ca: 36 La instrucci&oacute; BEGIN corresponent no te prefix
 es: 36 La instrucci&oacute;n BEGIN correspondiente no tiene prefijo
 it: 36 Il BEGIN corrispondente non ha prefisso
@@ -853,7 +853,7 @@ pt: 65 Tipo de visada `%s' desconhecido
 ca: 65 Estil de dades `%s' desconegut
 es: 65 Estilo de datos `%s' desconocido
 it: 65 Tipo di dati `%s' sconosciuto
-# The meaning of scorretto is that the STYLE is written wrong but is similar 
+# The meaning of scorretto is that the STYLE is written wrong but is similar
 # to a known style.
 #it: 65 STYLE `%s' scorretto
 sk: 65 Nezn&aacute;my typ d&aacute;t `%s'
@@ -935,7 +935,7 @@ pt: 72 Topografia sem bases posicionadas. Assim %s foi posicionada em (0,0,0)
 ca: 72 La topografia no te punts fixats. Tanmateix he fixat %s a (0,0,0)
 es: 72 La topografia no tiene puntos fijados. De todos modos he fijado %s en (0,0,0)
 it: 72 La topografia non ha punti fissi. Quindi %s &eacute; stata fissata a (0,0,0)
-sk: 72 Meranie (survey) nem&aacute; fixn&eacute; body. Preto bude fixovan&yacute; %s so s&uacute;radnicami (0,0,0) 
+sk: 72 Meranie (survey) nem&aacute; fixn&eacute; body. Preto bude fixovan&yacute; %s so s&uacute;radnicami (0,0,0)
 ro: 72 Topografia nu contine puncte fixate. Am fixat %s ca (0,0,0)
 # fixed station that is not part of any traverse
 en: 73 Unused fixed point `%s'
@@ -976,7 +976,7 @@ ca: 76 Resolent per trobar coordenades %c
 es: 76 Resolviendo para encontrar coordenadas %c
 it: 76 Sto risolvendo per trovare le coordinate %c
 sk: 76 H&lcaron;ad&aacute; sa %c s&uacute;radn&iacute;c
-ro: 76 Incerc sa gasesc coordonatele %c 
+ro: 76 Incerc sa gasesc coordonatele %c
 #
 en: 77 Reading `%s' duplicates previous reading(s)
 fr: 77 La valeur `%s' fait doublon avec une ou des valeur(s) pr&eacute;c&eacute;dante(s)
@@ -1037,7 +1037,7 @@ pt: 82 Par&acirc;metro `%s' tem valor inv&aacute;lido `%s' em arquivo de configu
 ca: 82 Par&agrave;metres `%s' tenen un valor incorrecte `%s' al fitxer de configuraci&oacute; de l'impresora
 es: 82 Par&aacute;metros `%s' tienen un valor incorrecto `%s' en el archivo de configuraci&oacute;n de la impresora
 it: 82 Parametro `%s' ha un valore `%s' non valido nel file di configurazione della stampante
-sk: 82 Parameter `%s' v konfigura&ccaron;nom s&uacute;bore tla&ccaron;iarne m&aacute; nespr&aacute;vnu hodnotu `%s' 
+sk: 82 Parameter `%s' v konfigura&ccaron;nom s&uacute;bore tla&ccaron;iarne m&aacute; nespr&aacute;vnu hodnotu `%s'
 ro: 82 Parametrul `%s' are valoarea incorecta `%s' in fisierul de configurare a imprimantei
 #
 en: 83 Scale to fit on 1 page
@@ -1050,7 +1050,7 @@ pt: 83 Escala para caber em uma p&aacute;gina
 ca: 83 Escala per a encaixar en 1 p&agrave;gina
 es: 83 Escala para encajar en 1 p&aacute;gina
 it: 83 Scala per rientrare in una pagina
-sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku 
+sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku
 ro: 83 Redimensionata pentru a incapea pe 1 pagina
 # In data with backsights, the user has tried to give a plumb for the
 # foresight and a clino reading for the backsight, or something similar.
@@ -1535,7 +1535,7 @@ pt:128 Calculando seq&uuml;&ecirc;ncias de ponta
 ca:128 Calculant les seq&uuml;&egrave;ncies terminals
 es:128 Calculando las secuencias terminales
 it:128 Sto calcolando le traverse terminali
-sk:128 V&yacute;po&ccaron;et koncov&yacute;ch spojok 
+sk:128 V&yacute;po&ccaron;et koncov&yacute;ch spojok
 ro:128 Calculez traversele terminale
 en:129 Simplifying network
 fr:129 Simplification de r&eacute;seau
@@ -1735,7 +1735,7 @@ ca:147 Error    N/A
 es:147 Error    N/A
 it:147 Errore    N/A
 sk:147 Chyba (nem&aacute; zmysel)
-ro:147 Eroare    N/A 
+ro:147 Eroare    N/A
 # <148> <station name> <196> <station name> <197>
 # similar to <135> <station name> <136> <station name> <137>
 en:148 "North-South range = %4.2fm (from "
@@ -1762,7 +1762,7 @@ ro:149 "Extindere Est-Vest = %4.2fm (de la "
 en:150 display this help and exit
 fr:150 montrer ce message d'aide et quitter
 de:150 Diese Hilfemeldung anzeigen und Beenden
-pt:150 exibir esta mensagem e sair              
+pt:150 exibir esta mensagem e sair
 ca:150 mostra aquesta ajuda i surt
 es:150 muestra esta ayuda y sale
 it:150 mostra questo aiuto ed esce
@@ -1794,7 +1794,7 @@ ro:152 Driver
 en:153 OPTION
 fr:153 OPTION
 de:153 OPTION
-pt:153 OP&Ccedil;&Atilde;O 
+pt:153 OP&Ccedil;&Atilde;O
 ca:153 OPCI&Oacute;
 es:153 OPCI&Oacute;N
 it:153 OPZIONI
@@ -1899,7 +1899,7 @@ it:162 "Per favore, immettere la scala della carta = X:Y (default 1:%d)&#10;: "
 sk:162 "Pros&iacute;m, vlo&zcaron;te mer&iacute;tko mapy = X:Y (defaultne 1:%d)&#10;: "
 ro:162 "Va rog introduceti Scara Hartii = X:Y (default 1:%d)&#10;: "
 #
-en:163 Using scale %.0f:%.0f 
+en:163 Using scale %.0f:%.0f
 fr:163 &Agrave; l'&eacute;chelle %.0f:%.0f
 de-ch:163 Verwendeter Massstab %.0f:%.0f
 de:163    Verwendeter Ma&szlig;stab %.0f:%.0f
@@ -1907,7 +1907,7 @@ pt:163 Usando escala %.0f:%.0f
 ca:163 Utilitzant l'escala %.0f:%.0f
 es:163 Utilizando la escala %.0f:%.0f
 it:163 Scala utilizzata %.0f:%.0f
-sk:163 Pou&zcaron;it&eacute; mer&iacute;tko %.0f:%.0f 
+sk:163 Pou&zcaron;it&eacute; mer&iacute;tko %.0f:%.0f
 ro:163 Scara folosita %.0f:%.0f
 #
 en:164 "Print which pages?&#10;(RETURN for all; 'n' for one page, 'm-n', 'm-', '-n' for a range)&#10;: "
@@ -1956,7 +1956,7 @@ en:168 Up page
 fr:168 En haut de page
 de:168 Oben
 pt:168 Topo da p&aacute;gina
-ca:168 A dalt la pagina 
+ca:168 A dalt la pagina
 es:168 Arriba la pagina
 it:168 Alto della pagina
 sk:168 Vrch str&aacute;nky
@@ -2300,7 +2300,6 @@ sk:200 *UNITS faktor mus&iacute; by&tcaron; nenulov&yacute;
 ro:200 Factorul *UNITS trebie sa fie diferit de zero
 #
 #  Messages for Aven
-# TRANSLATE ca es pt
 # 1.1 only: 201
 #
 en:202 No survey data in 3d file `%s'
@@ -2355,7 +2354,7 @@ en:206 Select a 3d file to view
 fr:206 S&eacute;lectionner un fichier 3d &agrave; visualiser
 de:206 3D-Datei zur Ansicht w&auml;hlen
 pt,pt-br:206 Selecione um arquivo 3d para ser visualizado
-ca:206 Selecciona un fitxer 3d per a visualitzar 
+ca:206 Selecciona un fitxer 3d per a visualitzar
 es:206 Selecciona un archivo 3d para visualizar
 it:206 Seleziona un file 3D da visualizzare
 sk:206 Vyberte 3D s&uacute;bor k zobrazeniu
@@ -2640,7 +2639,7 @@ es:235 Un paso en el senido a@ntihorario
 it:235 Un passo a@ntiorario
 sk:235 Jeden krok proti s@meru ot&aacute;&ccaron;ania hod&iacute;n
 ro:235 Un pas in sens a@ntiorar
-#ro: antiorar is somehow forced. a genuine translation would sound like 
+#ro: antiorar is somehow forced. a genuine translation would sound like
 #ro: anticlockwise = in sens contrar acelor de ceasornic
 #
 en:236 Step Once @Clockwise
@@ -2811,11 +2810,11 @@ it:253 Zoo@m indietro##[
 sk:253 Zmen&scaron;i@t##[
 ro:253 Mi@c&scedil;orare##[
 #
-# TRANSLATE fr de pt pt-br ca es it sk ro
+# TRANSLATE de pt pt-br ca es it sk ro
 # "Restore Default Settings" -> "Restore Default View"
 en:254 Restore De@fault View
 en-us:254 Restore Defaul@t View
-fr:254 @Restaurer les valeurs par d&eacute;faut
+fr:254 @Restaurer la vues par d&eacute;faut
 de:254 Voreinstellungen w@iederherstellen
 pt:254 @Usar valores pr&eacute;-definidos
 pt-br:254 @Restaurar padr&otilde;es
@@ -2825,7 +2824,7 @@ it:254 Ripristina i @valori predefiniti
 sk:254 Znov@u na v&yacute;chodzie hodnoty
 ro:254 @Restabiliti setarile initiale
 # Used in print dialog to label
-# TRANSLATE fr pt pt-br ca es it sk ro check reused message makes sense
+# TRANSLATE pt pt-br ca es it sk ro check reused message makes sense
 # in this context
 # cf 213
 en:255 View
@@ -2840,7 +2839,7 @@ sk:255 Poh&lcaron;ad
 ro:255 Vizualizare
 # XXX 256 (for "Elements" or whatever we change that to)
 # cf 170
-# TRANSLATE fr pt pt-br ca es it sk ro check adapted message is ok
+# TRANSLATE pt pt-br ca es it sk ro check adapted message is ok
 en:257 %d pages (%dx%d)
 fr:257 %d pages (%dx%d)
 de:257 %d Seiten (%dx%d)
@@ -2852,7 +2851,7 @@ sk:257 %d str&aacute;nok (%dx%d)
 ro:257 %d pagini (%dx%d)
 # XXX 258
 # cf 159
-# TRANSLATE fr pt pt-br ca es it sk ro check adapted message is ok
+# TRANSLATE pt pt-br ca es it sk ro check adapted message is ok
 en:259 Bearing
 fr:259 Azimut
 de:259 Richtung
@@ -3061,13 +3060,13 @@ fr:294 Mise en valeur des @entr&egrave;es
 de:294 @Eing&auml;nge hervorheben
 pt:294 Destacar @Entradas
 ca:294 Marca les @Entrades
-es:294 Marca las @Entradas 
+es:294 Marca las @Entradas
 it:294 Marca gli Ing@ressi
 sk:294 Zv&yacute;razni&tcaron; @vchody
 ro:294 Marcheaza @Intrarile
 #
 en:295 Highlight @Fixed Points
-en-us:295 Highlight Control @Points
+en-us:295 Highlight Contro@l Points
 fr:295 Mise en valeur des points Fi@xes
 de:295 Fi@xpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
@@ -3098,12 +3097,12 @@ sk:297 @Sie&tcaron;##Ctrl+G
 #ro:297 @Gril&abreve;##Ctrl+G
 ro:297 @Grid##Ctrl+G
 #
-en:298 Smoo@thed Survey Legs
-en-us:298 Smoo@thed Survey Shots
+en:298 Smoot@hed Survey Legs
+en-us:298 Smoot@hed Survey Shots
 fr:298 @Lissage des segments topographiques
 de-de,de-ch:298 Gegl&auml;ttete @Messz&uuml;ge
 de:298          Gegl&auml;ttete @Me&szlig;z&uuml;ge
-pt:298 Visadas S@uavizadas 
+pt:298 Visadas S@uavizadas
 ca:298 Tirades S@uavitzades
 es:298 Tiradas S@uavizadas
 it:298 Battute topografiche @ammorbidite
@@ -3314,10 +3313,10 @@ ro:334 Expresie normala
 # cf 195
 en:335 Altitude
 fr:335 Altitude
-de:335 H&ouml;he    
-pt:335 Altura  
-ca:335 Altitud 
-es:335 Altitud 
+de:335 H&ouml;he
+pt:335 Altura
+ca:335 Altitud
+es:335 Altitud
 it:335 Quota
 sk:335 Nadmorsk&aacute; v&yacute;&scaron;ka
 ro:335 Altitudine
@@ -3375,13 +3374,13 @@ ca:340 "  H %d%s, V %d%s"
 es:340 "  H %d%s, V %d%s"
 it:340 "  O %d%s, V %d%s"
 sk:340 "  V %d%s, &Scaron; %d%s"
-ro:340 "  H %d%s, V %d%s" 
+ro:340 "  H %d%s, V %d%s"
 #
 en:341 "  Dist %d%s, Brg %03d%s"
-fr:341 "  Dist %d%s, Azim %03d%s" 
+fr:341 "  Dist %d%s, Azim %03d%s"
 de:341 "  Dist %d%s, Richt. %03d%s"
 pt:341 "  Dist %d%s, Azim %03d%s"
-ca:341 "  Dist %d%s, Azim %03d%s" 
+ca:341 "  Dist %d%s, Azim %03d%s"
 es:341 "  Dist %d%s, Azim %03d%s"
 it:341 "  Dist %d%s, Azm. %03d%s"
 sk:341 "  Vzd %d%s, Azim %03d%s"
@@ -3442,7 +3441,7 @@ sk:380 @Tla&ccaron;i&tcaron;...##Ctrl+P
 ro:380 @Imprimare...##Ctrl+P
 # TRANSLATE pt
 en:381 P@age Setup...
-fr:381 @Configurer la page...
+fr:381 Configurer la @page...
 de:381 @Seite einrichten...
 ca:381 @Configuraci&oacute; de la p&agrave;gina...
 es:381 @Configuraci&oacute;n de la p&aacute;gina...
@@ -3450,13 +3449,15 @@ pt:381 Pa@ge Setup...
 it:381 @Imposta pagina...
 sk:381 @Nastaven&iacute; tisku...
 ro:381 Initializare @pagina...
+# XXX 382 383 384 385 386 387 388 389
 # for about box:
 en:390 System Information:
+fr:390 Syst&egrave;me d'information:
 it:390 Informazioni sul Sistema:
 # Title of the print preview dialog
-# TRANSLATE fr ca es it sk de pt-br check translations culled from elsewhere
+# TRANSLATE ca es it sk de pt-br check translations culled from elsewhere
 en:398 Print Preview
-fr:398 Aperçu avant impression
+fr:398 Aper&ccedil;u avant impression
 de:398 Druckvorschau
 pt-br:398 Visualizar impress&atilde;o
 ca:398 Imprimeix previsualitzacii&oacute;
@@ -3514,6 +3515,7 @@ sk:403 Z&aacute;mery &amp;na povrchu
 ro:403 &amp;Portiuni de suprafata ale topografiei
 # "%s" is replaced by the invalid expression
 en:404 Invalid regular expression: %s
+fr:404 Expression r&eacute;guli&egrave;re invalide: %s
 #
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
@@ -3548,38 +3550,55 @@ ro:502 Eliminat: %s
 #
 # for extend:
 en:600 Don't understand command `%s' in config, line %i
+fr:600 Commande incomprise `%s', &agrave; la ligne %i de la configuration
 #
 en:601 Unexpected content `%s' in config, line %i
+fr:601 Contenu inattendu `%s', &agrave; la ligne %i de la configuration
 #
 en:602 Command without station name in config, line %i
+fr:602 Commande sans nom de station dans la configuration &agrave; la ligne %i
 #
 en:603 Failed to find station %s in config, line %i
+fr:603 La station %s n'a pas &eacute;t&eacute; trouv&eacute;e &agrave; la ligne %i de la configuration
 #
 en:604 Starting from station %s
+fr:604 D&eacute;but &agrave; la station %s
 #
 en:605 Plotting to the left from station %s
+fr:605 Dessin vers la gauche en partant de la station %s
 #
 en:606 Failed to find leg %s -> %s in config, line %i
+fr:606 Vis&eacute;e %s -> %s non trouv&eacute; &agrave; la ligne %i de la configuration
 #
 en:607 Plotting to the left from leg %s -> %s
+fr:607 Dessin vers la gauche en partant de la vis&eacute;e %s -> %s
 #
 en:608 Plotting to the right from station %s
+fr:608 Dession vers la droite en partant de la station %s
 #
 en:609 Plotting to the right from leg %s -> %s
+fr:609 Dessin vers la droite en partant de la vis&eacute;e %s -> %s
 #
 en:610 Breaking survey at station %s
+fr:610 Arr&ecirc;t de la topo &agrave; la station %s
 #
 en:611 Breaking survey at leg %s -> %s
+fr:611 Arr&ecirc;t de la topo &agrave; la vis&eacute;e %s -> %s
 #
 en:612 Error reading line %i from spec file
+fr:612 Erreur de lecture &agrave; ligne %i du fichier de sp&eacute;cification
 #
 en:613 Applying specfile: `%s'
+fr:613 Application du fichier de sp&eacute;cification: `%s'
 #
 en:614 Writing out .3d file...
+fr:614 Ecriture du fichier .3d...
 #
 en:615 Swapping plot direction from station %s
+fr:615 Change la direction de dessin &agrave; partir de la station %s
 #
 en:616 Swapping plot direction from leg %s -> %s
+fr:616 Change la direction du dession &agrave; partion de la vis&eacute;e %s -> %s
 #
 # "don't extract" messages - these are compiled into the programs
 #
