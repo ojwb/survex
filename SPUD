@@ -1,7 +1,8 @@
 Definitely still to do before Survex 1.2:
 =========================================
 
-Check mail folder for tagged problem reports.
+If some surveys have no date info and all others have the same date we
+currently turn off date colouring, which isn't ideal...
 
 Update translations.
 
@@ -13,6 +14,14 @@ Does anyone use Controls->"Reverse Sense"?  It made some sense with caverot
 but now seeing the mouse pointer makes people expect the default motions...
 
 Merge Martin's patch for improved here/there update (think this is now done).
+- transition plan/elev doesn't highlight station if we end up on one (ditto
+  any other movement)
+- setting here with mouseover in GfxCore should probably highlight in tree
+  view (but not expand to do so)
+- click to centre on GfxCore should perhaps move mouse to centre too (see how
+  it feels!)
+- should we show coords of there when here isn't a station?
+- should we show distances when here isn't a station (X,Y in plan; Z in elev)
 
 Sort out mouse actions
 
@@ -23,6 +32,8 @@ if we start aven with a .svx file, but works fine if we load a .svx file
 into an already running aven...
 
 LRUD in Aven Export
+
+Better handling of missing LRUD values
 
 Move gl* calls out of gfxcore.cc into gla-gl.cc!
 
@@ -45,10 +56,29 @@ Process all pending input before rerendering to improve responsiveness.
 Check timing code - we need to glFinish to ensure it's all drawn, and that
 may be needed to get meaningful timing info.
 
+3d format:
+
+* sort out XSECT - I'm sure I meant there to be 1 and 2 byte forms, not 2 and 4
+- 4 byte is only useful if a passage dimension is > 327.67m!
+
+* add "this is an extended elevation" flag
+
+* store "file processed on" date as a time_t rather than a string?
+
+* store survey error values for each leg
+
+* store 
+
 Add "colour by error" and maybe "colour by survey".
+
+Implement "Skip blank pages" in aven printing
 
 Maybe some of these too:
 ========================
+
+Terrain data
+
+different keyboard layouts mean that some key choices don't make much sense...
 
 *data chamber ...
 
@@ -106,8 +136,6 @@ funcs to spot differences between caves:
 
 Label lengths aren't considered when working out image size in prcore.c,
 so a long label can spill off the edge of the printout
-
-printer driver name spills over one page on Wookey's printer (printdm)
 
 For warnings such as "Suspicious compass reading", report the reading
 in question in the error message (in the text form given in the file).
@@ -174,7 +202,7 @@ back bearings?
 
 Aven:
 
-aven grid code -> printouts
+grid on printouts
 grid crosses option (only draw cross at intersections, not a full grid).
 [(x,y) of a point to go through (easting, northing)
 x spacing, y spacing (default to x spacing)
