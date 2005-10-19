@@ -800,8 +800,7 @@ void GUIControl::OnShowExportedPts()
 
 void GUIControl::OnShowExportedPtsUpdate(wxUpdateUIEvent& cmd)
 {
-    // FIXME enable only if we have timestamps...
-    cmd.Enable(m_View->HasData() /*&& (m_View->GetNumExportedPts() > 0)*/);
+    cmd.Enable(m_View->HasData() && (m_View->GetNumExportedPts() > 0));
     cmd.Check(m_View->ShowingExportedPts());
 }
 
