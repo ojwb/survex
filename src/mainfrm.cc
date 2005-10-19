@@ -721,10 +721,10 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_MOVE_SOUTH, GetTabMsg(/*View @South*/242));
     orientmenu->Append(menu_ORIENT_MOVE_WEST, GetTabMsg(/*View @West*/243));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, GetTabMsg(/*Shift Survey @Left*/244));
-    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, GetTabMsg(/*Shift Survey @Right*/245));
-    orientmenu->Append(menu_ORIENT_SHIFT_UP, GetTabMsg(/*Shift Survey @Up*/246));
-    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, GetTabMsg(/*Shift Survey @Down*/247));
+    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, "Shift Survey &Left\tLeft");
+    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, "Shift Survey &Right\tRight");
+    orientmenu->Append(menu_ORIENT_SHIFT_UP, "Shift Survey &Up\tUp");
+    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, "Shift Survey &Down\tDown");
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_PLAN, GetTabMsg(/*@Plan View*/248));
     orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation*/249));
@@ -886,8 +886,8 @@ void MainFrm::CreateSidePanel()
 				wxNB_BOTTOM | wxNB_LEFT);
     m_Notebook->Show(false);
 
-    m_Panel = new wxPanel(m_Notebook);
-    m_Tree = new AvenTreeCtrl(this, m_Panel);
+    wxPanel * panel = new wxPanel(m_Notebook);
+    m_Tree = new AvenTreeCtrl(this, panel);
 
 //    m_RegexpCheckBox = new wxCheckBox(find_panel, -1,
 //				      msg(/*Regular expression*/334));
@@ -895,24 +895,24 @@ void MainFrm::CreateSidePanel()
 
     wxBoxSizer *panel_sizer = new wxBoxSizer(wxVERTICAL);
     panel_sizer->Add(m_Tree, 1, wxALL | wxEXPAND, 2);
-    m_Panel->SetAutoLayout(true);
-    m_Panel->SetSizer(panel_sizer);
-//    panel_sizer->Fit(m_Panel);
-//    panel_sizer->SetSizeHints(m_Panel);
+    panel->SetAutoLayout(true);
+    panel->SetSizer(panel_sizer);
+//    panel_sizer->Fit(panel);
+//    panel_sizer->SetSizeHints(panel);
 
     m_Control = new GUIControl();
     m_Gfx = new GfxCore(this, m_Splitter, m_Control);
     m_Control->SetView(m_Gfx);
 
     // Presentation panel:
-    m_PresPanel = new wxPanel(m_Notebook);
+    wxPanel * prespanel = new wxPanel(m_Notebook);
 
-    m_PresList = new AvenPresList(this, m_PresPanel, m_Gfx);
+    m_PresList = new AvenPresList(this, prespanel, m_Gfx);
 
     wxBoxSizer *pres_panel_sizer = new wxBoxSizer(wxVERTICAL);
     pres_panel_sizer->Add(m_PresList, 1, wxALL | wxEXPAND, 2);
-    m_PresPanel->SetAutoLayout(true);
-    m_PresPanel->SetSizer(pres_panel_sizer);
+    prespanel->SetAutoLayout(true);
+    prespanel->SetSizer(pres_panel_sizer);
 
     // Overall tabbed structure:
     // FIXME: this assumes images are 15x15
@@ -922,8 +922,8 @@ void MainFrm::CreateSidePanel()
     image_list->Add(wxBitmap(path + "survey-tree.png", wxBITMAP_TYPE_PNG));
     image_list->Add(wxBitmap(path + "pres-tree.png", wxBITMAP_TYPE_PNG));
     m_Notebook->SetImageList(image_list);
-    m_Notebook->AddPage(m_Panel, msg(/*Surveys*/376), true, 0);
-    m_Notebook->AddPage(m_PresPanel, msg(/*Presentation*/377), false, 1);
+    m_Notebook->AddPage(panel, msg(/*Surveys*/376), true, 0);
+    m_Notebook->AddPage(prespanel, msg(/*Presentation*/377), false, 1);
 
     m_Splitter->Initialize(m_Gfx);
 }
@@ -2210,6 +2210,25 @@ void MainFrm::OnFind(wxCommandEvent&)
     list<LabelInfo*>::iterator pos = m_Labels.begin();
 
     int found = 0;
+    while (pos != m_Labels.end()) {
+	LabelInfo* label = *pos++;
+
+	if (regex.Matches(label->text)) {
+	    label->flags |= LFLAG_HIGHLIGHTED;
+	    found++;
+	} else {
+	    label->flags &= ~LFLAG_HIGHLIGHTED;
+	}
+    }
+
+
+    m_NumHighlighted = found;
+// FIXME:    m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found));
+#ifdef _WIN32
+//    m_Found->Refresh(); // FIXME
+#endif
+    // Re-sort so highlighted points get names in preference
+    if (found) m_Labels.sort(LabelPlotCmp(separator));
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;
 

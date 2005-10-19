@@ -210,13 +210,11 @@ class MainFrm : public wxFrame {
     bool m_HasUndergroundLegs;
     bool m_HasSurfaceLegs;
     wxSplitterWindow* m_Splitter;
-    wxPanel* m_Panel;
     AvenTreeCtrl* m_Tree;
     wxTextCtrl* m_FindBox;
     wxStaticText* m_Found;
     // wxCheckBox* m_RegexpCheckBox;
     wxNotebook* m_Notebook;
-    wxPanel* m_PresPanel;
     AvenPresList* m_PresList;
     wxString m_File;
     wxString m_Title, m_DateStamp;
