@@ -319,7 +319,7 @@ void MainFrm::CreateMenuBar()
     filemenu->Append(menu_FILE_PRINT, GetTabMsg(/*@Print...##Ctrl+P*/380));
     filemenu->Append(menu_FILE_PAGE_SETUP, GetTabMsg(/*P@age Setup...*/381));
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_EXPORT, "Export as..."); // FIXME TRANSLATE
+    filemenu->Append(menu_FILE_EXPORT, GetTabMsg(/*@Export as...*/382));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
 
