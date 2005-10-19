@@ -220,8 +220,6 @@ class MainFrm : public wxFrame {
 #ifdef PREFDLG
     PrefsDlg* m_PrefsDlg;
 #endif
-    wxString m_pres_filename;
-    bool m_pres_modified;
 
     Vector3 m_Offsets;
 
