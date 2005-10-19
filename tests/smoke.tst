@@ -30,7 +30,9 @@ test -x "$testdir"/../src/cavern || testdir=.
 
 PROGS="cad3d cavern diffpos extend sorterr 3dtopos"
 # aven tries to open an X display even for --help and --version
-test -n "$DISPLAY" && PROGS="$PROGS aven"
+if test -n "$DISPLAY" ; then
+   PROGS="$PROGS aven"
+fi
 
 for p in ${PROGS}; do
    echo $p
