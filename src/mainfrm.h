@@ -200,7 +200,6 @@ class MainFrm : public wxFrame {
     Double m_ZExt;
     Double m_ZMin;
     time_t m_DateMin, m_DateExt;
-    int m_NumCrosses;
     GfxCore* m_Gfx;
     GUIControl* m_Control;
     int m_NumEntrances;
@@ -432,8 +431,6 @@ public:
 
     time_t GetDateExtent() const { return m_DateExt; }
     time_t GetDateMin() const { return m_DateMin; }
-
-    int GetNumCrosses() const { return m_NumCrosses; } // FIXME: unused
 
     void SelectTreeItem(LabelInfo* label);
     void ClearTreeSelection();
