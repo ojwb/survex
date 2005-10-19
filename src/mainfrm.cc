@@ -891,7 +891,6 @@ void MainFrm::CreateSidePanel()
 
 //    m_RegexpCheckBox = new wxCheckBox(find_panel, -1,
 //				      msg(/*Regular expression*/334));
-//    m_Found = new wxStaticText(find_panel, -1, "");
 
     wxBoxSizer *panel_sizer = new wxBoxSizer(wxVERTICAL);
     panel_sizer->Add(m_Tree, 1, wxALL | wxEXPAND, 2);
@@ -999,7 +998,6 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     // Create a list of all the leg vertices, counting them and finding the
     // extent of the survey at the same time.
 
-    m_NumCrosses = 0;
     m_NumFixedPts = 0;
     m_NumExportedPts = 0;
     m_NumEntrances = 0;
@@ -1142,8 +1140,6 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		    m_NumExportedPts++;
 		}
 		m_Labels.push_back(label);
-		m_NumCrosses++;
-
 		break;
 	    }
 
@@ -1184,7 +1180,6 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		m_Labels.clear();
 
 		// FIXME: Do we need to reset all these? - Olly
-		m_NumCrosses = 0;
 		m_NumFixedPts = 0;
 		m_NumExportedPts = 0;
 		m_NumEntrances = 0;
@@ -2215,37 +2210,14 @@ void MainFrm::OnFind(wxCommandEvent&)
 
 	if (regex.Matches(label->text)) {
 	    label->flags |= LFLAG_HIGHLIGHTED;
-	    found++;
+	    ++found;
 	} else {
 	    label->flags &= ~LFLAG_HIGHLIGHTED;
 	}
     }
 
-
     m_NumHighlighted = found;
-// FIXME:    m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found));
-#ifdef _WIN32
-//    m_Found->Refresh(); // FIXME
-#endif
-    // Re-sort so highlighted points get names in preference
-    if (found) m_Labels.sort(LabelPlotCmp(separator));
-    while (pos != m_Labels.end()) {
-	LabelInfo* label = *pos++;
 
-	if (regex.Matches(label->text)) {
-	    label->flags |= LFLAG_HIGHLIGHTED;
-	    found++;
-	} else {
-	    label->flags &= ~LFLAG_HIGHLIGHTED;
-	}
-    }
-
-
-    m_NumHighlighted = found;
-// FIXME:    m_Found->SetLabel(wxString::Format(msg(/*%d found*/331), found));
-#ifdef _WIN32
-//    m_Found->Refresh(); // FIXME
-#endif
     // Re-sort so highlighted points get names in preference
     if (found) m_Labels.sort(LabelPlotCmp(separator));
     m_Gfx->UpdateBlobs();
@@ -2264,7 +2236,6 @@ void MainFrm::OnFind(wxCommandEvent&)
 void MainFrm::OnHide(wxCommandEvent&)
 {
     // Hide any search result highlights.
-// FIXME:    m_Found->SetLabel("");
     list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;

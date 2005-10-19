@@ -211,7 +211,6 @@ class MainFrm : public wxFrame {
     wxSplitterWindow* m_Splitter;
     AvenTreeCtrl* m_Tree;
     wxTextCtrl* m_FindBox;
-    wxStaticText* m_Found;
     // wxCheckBox* m_RegexpCheckBox;
     wxNotebook* m_Notebook;
     AvenPresList* m_PresList;
