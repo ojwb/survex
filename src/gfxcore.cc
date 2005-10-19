@@ -178,7 +178,7 @@ GfxCore::~GfxCore()
     TryToFreeArrays();
 
     if (m_OffscreenBitmap) {
-        delete m_OffscreenBitmap;
+	delete m_OffscreenBitmap;
     }
 
     DELETE_ARRAY(m_Pens);
@@ -816,7 +816,7 @@ void GfxCore::RedrawOffscreen()
     }
 
     m_DrawDC.EndDrawing();
-    
+
     drawtime = timer.Time();
 }
 
@@ -856,7 +856,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	iter++;
     }
-    
+
     if (!m_Rotating && !m_SwitchingTo) {
 	int here_x = INT_MAX, here_y = INT_MAX;
 	// Draw "here" and "there".
@@ -1107,7 +1107,7 @@ void GfxCore::Draw2dIndicators()
 	    str = wxString::Format("%03d", int(m_PanAngle * 180.0 / M_PI));
 	} else {
 	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / M_PI));
-	}	
+	}
 	m_DrawDC.GetTextExtent(str, &w, &h);
 	m_DrawDC.DrawText(str, pan_centre_x + width / 2 - w, height);
 	str = wxString(msg(/*Facing*/203));
@@ -1121,7 +1121,7 @@ void GfxCore::Draw2dIndicators()
 	    angle = int(-m_TiltAngle * 180.0 / M_PI);
 	} else {
 	    angle = int(-m_TiltAngle * 200.0 / M_PI);
-	}	
+	}
 	str = angle ? wxString::Format("%+03d", angle) : wxString("00");
 	m_DrawDC.GetTextExtent(str, &w, &h);
 	m_DrawDC.DrawText(str, elev_centre_x + width / 2 - w, height);
@@ -1232,7 +1232,7 @@ void GfxCore::DrawDepthbar()
 		/ (m_Bands - 1);
 
 	strs[band] = FormatLength(z, false);
-	
+
 	int x, dummy;
 	m_DrawDC.GetTextExtent(strs[band], &x, &dummy);
 	if (x > size) size = x;
@@ -1244,7 +1244,7 @@ void GfxCore::DrawDepthbar()
     SetColour(col_BLACK);
     SetColour(col_DARK_GREY, true);
     m_DrawDC.DrawRectangle(x_min - DEPTH_BAR_MARGIN
-		    	     - DEPTH_BAR_EXTRA_LEFT_MARGIN,
+			     - DEPTH_BAR_EXTRA_LEFT_MARGIN,
 			   DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
 			   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
 			     DEPTH_BAR_EXTRA_LEFT_MARGIN,
@@ -1255,7 +1255,7 @@ void GfxCore::DrawDepthbar()
 	    m_DrawDC.SetPen(m_Parent->GetPen(band));
 	    m_DrawDC.SetBrush(m_Parent->GetBrush(band));
 	    m_DrawDC.DrawRectangle(x_min,
-			           y - DEPTH_BAR_BLOCK_HEIGHT,
+				   y - DEPTH_BAR_BLOCK_HEIGHT,
 				   DEPTH_BAR_BLOCK_WIDTH,
 				   DEPTH_BAR_BLOCK_HEIGHT);
 	}
@@ -1564,7 +1564,7 @@ void GfxCore::HandleTranslate(wxPoint point)
     // Handle a mouse movement during translation mode.
     int dx = point.x - m_DragStart.x;
     int dy = point.y - m_DragStart.y;
-    
+
     if (m_ReverseControls) {
 	dx = -dx;
 	dy = -dy;
@@ -2097,7 +2097,7 @@ void GfxCore::OnElevation()
 	    TiltCave(-m_TiltAngle);
 	    m_SwitchingTo = 0;
 	    ForceRefresh();
-    } 
+    }
 }
 
 void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd)
@@ -2550,9 +2550,9 @@ void GfxCore::CreateHitTestGrid()
 
 	// Calculate screen coordinates.
 	int cx = (int)GridXToScreen(label->GetX(), label->GetY(), label->GetZ());
- 	if (cx < 0 || cx >= m_XSize) continue;
+	if (cx < 0 || cx >= m_XSize) continue;
 	int cy = (int)GridYToScreen(label->GetX(), label->GetY(), label->GetZ());
- 	if (cy < 0 || cy >= m_YSize) continue;
+	if (cy < 0 || cy >= m_YSize) continue;
 
 	// On-screen, so add to hit-test grid...
 	int grid_x = (cx * (HITTEST_SIZE - 1)) / m_XSize;
