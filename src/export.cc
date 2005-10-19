@@ -722,7 +722,7 @@ eps_header(const char *title)
 	   fontname_labels);
 
    fprintf(fh, "/lab findfont %d scalefont setfont\n", int(fontsize_labels));
-   
+
    fprintf(fh, "0.1 setlinewidth\n");
 
 #if 0
