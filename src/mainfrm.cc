@@ -696,7 +696,7 @@ void MainFrm::CreateMenuBar()
     filemenu->Append(menu_FILE_PAGE_SETUP, GetTabMsg(/*P@age Setup...*/381));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_SCREENSHOT, GetTabMsg(/*@Screenshot...*/201));
-    filemenu->Append(menu_FILE_EXPORT, "&Export as..."); // FIXME TRANSLATE
+    filemenu->Append(menu_FILE_EXPORT, GetTabMsg(/*@Export as...*/382));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
 
@@ -704,8 +704,7 @@ void MainFrm::CreateMenuBar()
     m_history.Load(*wxConfigBase::Get());
 
     wxMenu* rotmenu = new wxMenu;
-    // FIXME: TRANSLATE
-    rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, "&Auto-Rotate\tSpace");
+    rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, GetTabMsg(/*@Auto-Rotate##Space*/231));
     rotmenu->AppendSeparator();
     rotmenu->Append(menu_ROTATION_SPEED_UP, GetTabMsg(/*Speed @Up*/232));
     rotmenu->Append(menu_ROTATION_SLOW_DOWN, GetTabMsg(/*Slow @Down*/233));

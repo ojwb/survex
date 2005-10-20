@@ -117,8 +117,8 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_BUTTON(svx_ELEV, svxPrintDlg::OnElevation)
 END_EVENT_TABLE()
 
-static const wxString scales[] = {
-    "One page", // FIXME TRANSLATE
+static wxString scales[] = {
+    "",
     "25",
     "50",
     "100",
@@ -172,12 +172,13 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     wxBoxSizer* v1 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* h1 = new wxBoxSizer(wxHORIZONTAL); // holds controls
     wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, msg(/*View*/255)), wxVERTICAL);
-    wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, "Elements"), wxVERTICAL); // FIXME TRANSLATE
+    wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, msg(/*Elements*/256)), wxVERTICAL);
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
     { // this isn't the "too wide" bit...
     wxStaticText* label;
     label = new wxStaticText(this, -1, wxString(msg(/*Scale*/154)) + " 1:");
+    if (scales[0].empty()) scales[0].assign(msg(/*One page*/258));
     m_scale = new wxComboBox(this, svx_SCALE, scales[0], wxDefaultPosition,
 			     wxDefaultSize, sizeof(scales) / sizeof(scales[0]),
 			     scales);
@@ -202,7 +203,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	m_bearing = new wxSpinCtrl(this, svx_BEARING);
 	m_bearing->SetRange(0, 359);
 	anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
-	tilt_label = new wxStaticText(this, -1, "Tilt angle"); // FIXME TRANSLATE
+	tilt_label = new wxStaticText(this, -1, msg(/*Tilt angle*/263));
 	anglebox->Add(tilt_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
 	m_tilt = new wxSpinCtrl(this,svx_TILT);
 	m_tilt->SetRange(-90, 90);
@@ -229,11 +230,11 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     v3->Add(m_stations, 0, wxALIGN_LEFT|wxALL, 2);
     m_names = new wxCheckBox(this, svx_NAMES, msg(/*Station Names*/260));
     v3->Add(m_names, 0, wxALIGN_LEFT|wxALL, 2);
-    m_borders = new wxCheckBox(this, svx_BORDERS, "Borders"); // FIXME TRANSLATE
+    m_borders = new wxCheckBox(this, svx_BORDERS, msg(/*Page Borders*/264));
     v3->Add(m_borders, 0, wxALIGN_LEFT|wxALL, 2);
-//    m_blanks = new wxCheckBox(this, svx_BLANKS, "Blank Pages");
+//    m_blanks = new wxCheckBox(this, svx_BLANKS, msg(/*Blank Pages*/266));
 //    v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
-    m_infoBox = new wxCheckBox(this, svx_INFOBOX, "Info Box"); // FIXME TRANSLATE
+    m_infoBox = new wxCheckBox(this, svx_INFOBOX, msg(/*Info Box*/265));
     v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
 
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
@@ -381,6 +382,7 @@ svxPrintDlg::LayoutToUI(){
 	temp << m_layout.Scale;
 	m_scale->SetValue(temp);
     } else {
+	if (scales[0].empty()) scales[0].assign(msg(/*One page*/258));
 	m_scale->SetValue(scales[0]);
     }
 }
