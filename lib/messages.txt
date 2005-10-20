@@ -2841,6 +2841,7 @@ ro:255 Vizualizare
 # checkboxes in the "what to print" dialog.  "Elements" isn't a good name for this but
 # nothing better has yet come to mind!
 en:256 Elements
+fr:256 El&eacute;ments
 # cf 170
 # TRANSLATE pt pt-br ca es it sk ro check adapted message is ok
 en:257 %d pages (%dx%d)
@@ -2855,7 +2856,7 @@ ro:257 %d pagini (%dx%d)
 # used in the scale drop down selector in the print dialog
 # the implicit meaning is "choose a suitable scale to fit the
 # plot on a single page", but we need something shorter
-# TRANSLATE fr de pt ca es it sk ro check adapted translation
+# TRANSLATE de pt ca es it sk ro check adapted translation
 en:258 One page
 fr:258 Une page
 de:258 Eine Seite
@@ -2912,14 +2913,18 @@ ro:262 Portiuni subterane ale topografiei
 # Used in the print dialog:
 # cf 161
 en:263 Tilt angle
+fr:263 Angle de basculement
 # used in the print dialog - controls drawing lines around each page
 en:264 Page Borders
+fr:264 Bordures de page
 # used in the print dialog - controls drawing the box at the lower left
 # with survey name, view angles, etc
 en:265 Info Box
+fr:265 Panneau d'information
 # will be used in the print dialog - check this to print blank pages
 # (otherwise they'll be skipped to save paper)
 en:266 Blank Pages
+fr:266 Pages blanches
 # XXX 267-269
 # The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
@@ -3082,7 +3087,7 @@ sk:293 &Ccaron;i@arkovan&eacute; povrchov&eacute; z&aacute;mery
 ro:293 @Topografia de suprafata reprezentata prin linii punctate
 #
 en:294 Highlight @Entrances
-fr:294 Mise en valeur des @entr&egrave;es
+fr:294 Mise en valeur des @entr&eacute;es
 de:294 @Eing&auml;nge hervorheben
 pt:294 Destacar @Entradas
 ca:294 Marca les @Entrades
@@ -3479,6 +3484,7 @@ sk:381 @Nastaven&iacute; tisku...
 ro:381 Initializare @pagina...
 # TRANSLATE it
 en:382 @Export as...
+fr:382 @Exporter sous...
 it:382 E@xport as...
 # XXX 383 384 385 386 387 388 389
 # for about box:
@@ -3617,13 +3623,13 @@ en:611 Breaking survey at leg %s -> %s
 fr:611 Arr&ecirc;t de la topo &agrave; la vis&eacute;e %s -> %s
 #
 en:612 Error reading line %i from spec file
-fr:612 Erreur de lecture &agrave; ligne %i du fichier de sp&eacute;cification
+fr:612 Erreur de lecture &agrave; la ligne %i du fichier de sp&eacute;cification
 #
 en:613 Applying specfile: `%s'
 fr:613 Application du fichier de sp&eacute;cification: `%s'
 #
 en:614 Writing out .3d file...
-fr:614 Ecriture du fichier .3d...
+fr:614 &Eacute;criture du fichier .3dc...
 #
 en:615 Swapping plot direction from station %s
 fr:615 Change la direction de dessin &agrave; partir de la station %s
