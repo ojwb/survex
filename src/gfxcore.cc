@@ -104,8 +104,7 @@ BEGIN_EVENT_TABLE(GfxCore, wxGLCanvas)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
-    GLACanvas(parent_win, 100, wxDefaultPosition, wxSize(640, 480)),
-    m_HaveData(false)
+    GLACanvas(parent_win, 100), m_HaveData(false)
 {
     m_Control = control;
     m_ScaleBarWidth = 0;

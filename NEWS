@@ -1,5 +1,7 @@
 TOBE Changes in 1.1.8:
 
+* (MS Windows version): aven: Fix cursor keys to pan survey.
+
 * aven: Disable "Highlight exported points" if there aren't any.
 
 * Updates to French translation from Michel Bovey.

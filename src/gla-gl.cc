@@ -213,8 +213,9 @@ void* const GLACanvas::m_Font = GLUT_BITMAP_HELVETICA_10;
 const int GLACanvas::m_FontSize = 10;
 #endif
 
-GLACanvas::GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size) :
-    wxGLCanvas(parent, id, posn, size)
+// Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
+GLACanvas::GLACanvas(wxWindow* parent, int id)
+    : wxGLCanvas(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS)
 {
     // Constructor.
 

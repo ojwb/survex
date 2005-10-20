@@ -720,10 +720,10 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_MOVE_SOUTH, GetTabMsg(/*View @South*/242));
     orientmenu->Append(menu_ORIENT_MOVE_WEST, GetTabMsg(/*View @West*/243));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, "Shift Survey &Left\tLeft");
-    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, "Shift Survey &Right\tRight");
-    orientmenu->Append(menu_ORIENT_SHIFT_UP, "Shift Survey &Up\tUp");
-    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, "Shift Survey &Down\tDown");
+    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, GetTabMsg(/*Shift Survey @Left*/244));
+    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, GetTabMsg(/*Shift Survey @Right*/245));
+    orientmenu->Append(menu_ORIENT_SHIFT_UP, GetTabMsg(/*Shift Survey @Up*/246));
+    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, GetTabMsg(/*Shift Survey @Down*/247));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_PLAN, GetTabMsg(/*@Plan View*/248));
     orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation*/249));

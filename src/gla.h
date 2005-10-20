@@ -153,7 +153,7 @@ class GLACanvas : public wxGLCanvas {
     mutable unsigned int list_flags;
 
 public:
-    GLACanvas(wxWindow* parent, int id, const wxPoint& posn, wxSize size);
+    GLACanvas(wxWindow* parent, int id);
     ~GLACanvas();
 
     void FirstShow();

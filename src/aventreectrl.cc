@@ -37,7 +37,7 @@ BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
 END_EVENT_TABLE()
 
 AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
-    wxTreeCtrl(window_parent, -1, wxDefaultPosition),
+    wxTreeCtrl(window_parent, -1),
     m_Parent(parent),
     m_Enabled(false),
     m_LastItem(),
