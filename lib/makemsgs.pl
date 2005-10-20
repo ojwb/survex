@@ -102,6 +102,7 @@ my $num_msgs = -1;
 foreach $lang (@langs) {
    my $aref = $msgs{$lang};
    $num_msgs = scalar @$aref if scalar @$aref > $num_msgs;
+   unlink "$lang.todo";
 }
 
 foreach $lang (@langs) {

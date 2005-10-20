@@ -2857,7 +2857,7 @@ ro:257 %d pagini (%dx%d)
 # plot on a single page", but we need something shorter
 # TRANSLATE fr de pt ca es it sk ro check adapted translation
 en:258 One page
-fr:258 Un page
+fr:258 Une page
 de:258 Eine Seite
 pt:258 Uma P&aacute;gina
 ca:258 Una P&agrave;gina
