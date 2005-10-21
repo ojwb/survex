@@ -86,14 +86,17 @@ mingw_iss : survex.iss
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp doc/manual/*.png iss_tmp/manual
 	cp $(extra_bin) iss_tmp
-	: # NB keep next line in step with survex.iss.in
-	for a in cs de es fr it; do\
+	: # NB check for updates for each new wx version
+	: # also currently available are:
+	: # af da el eu fi hi hu id ja lv nb nl pl ru sl sv tr uk zh_CN zh_TW
+	for a in ca cs de es fr it pt_BR ; do\
 	 mkdir iss_tmp/$$a;\
-	 cp /usr/share/locale/$$a/LC_MESSAGES/wxstd.mo iss_tmp/$$a;\
+	 cp /usr/i586-mingw32msvc/share/locale/$$a/LC_MESSAGES/wxstd.mo;\
+	 echo 'Source "$$a\wxstd.mo"; DestDir: "{app}\$$a"' >> isstmp/i18nfiles.iss;\
 	done
 	: # Also need to reduce colour depth it appears:
 	: # src/png2bmp lib/icons/aven_about.png iss_tmp/logo.bmp
-	echo 'wine "c:/Program Files/Inno Setup 4/ISCC.exe" iss_tmp/survex.iss' > iss_tmp/runissinwine
+	echo 'wine "c:/Program Files/Inno Setup 5/ISCC.exe" iss_tmp/survex.iss' > iss_tmp/runissinwine
 	chmod 755 iss_tmp/runissinwine
 	./xvfb-run -a --server-args="-screen 0 64x32x8" iss_tmp/runissinwine
 	mv iss_tmp/Output/*.exe .

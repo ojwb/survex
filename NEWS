@@ -2,6 +2,16 @@ TOBE Changes in 1.1.8:
 
 * (MS Windows version): aven: Fix cursor keys to pan survey.
 
+* (MS Windows version): Fix installer to work on Windows 2000 or XP if
+  run by an unprivileged user.
+
+* (MS Windows version): Upgrade to the latest version of InnoSetup (the
+  installer builder we use) and include new installer translations for
+  UK English, Spanish, Brazilian Portuguese, Italian, Romanian, and Slovak.
+
+* (MS Windows version): aven: Include Catalan and Brazilian Portuguese
+  translations of messages for wxWidgets (the GUI library we use).
+
 * aven: Disable "Highlight exported points" if there aren't any.
 
 * Updates to French translation from Michel Bovey.
