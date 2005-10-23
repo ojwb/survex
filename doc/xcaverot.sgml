@@ -112,7 +112,7 @@ is North, and a clino pointer showing the angle of tilt.
 </Para>
 
 </refsect2>
-<refsect2><Title>Keyboard Control</Title>
+<refsect2><Title>Environmental Variables</Title>
 
 <Para>
 There are two environmental variables which may be used to configure xcaverot,
