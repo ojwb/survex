@@ -758,6 +758,8 @@ ro: 57 *EXPORT trebuie sa urmeze dupa `*BEGIN <TOPOGRAFIE>'
 en: 58 Invalid year (< 1970 or > 2037)
 fr: 58 Ann&eacute;e invalide (< 1970 ou > 2037)
 de: 58 Ung&uuml;ltiges Jahr (< 1970 oder > 2037)
+ca: 58 Any inv&agrave;lid (< 1970 &oacute; > 2037)
+es: 58 A&ntilde;o inv&aacute;lido (< 1970 &oacute; > 2037)
 it: 58 Anno non valido (<1970 o >2037)
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
@@ -1003,11 +1005,15 @@ ro: 79 Distanta corectata negativ
 en: 80 Date is in the future!
 fr: 80 La date est dans le futur!
 de: 80 Datum liegt in der Zukunft!
+ca: 80 La data &eacute;s en el futur!
+es: 80 La fecha es en el futuro!
 it: 80 La data &eacute; nel futuro!
 # different in 1.0
 en: 81 End of date range is before the start
 fr: 81 La date de fin est ant&eacute;rieure &agrave; celle de d&eacute;but
 de: 81 Das Enddatum ist fr&uuml;her als das Anfangsdatum
+ca: 81 La data final &eacute;s anterior a la inicial
+es: 81 La fecha final es anterior a la incial
 it: 81 La data finale &eacute; anteriore a quella finale
 #
 en: 82 Parameter `%s' has invalid value `%s' in printer configuration file
@@ -1046,11 +1052,15 @@ ro: 85 Parametrul `%s' lipseste din fisierul de configurare a imprimantei
 en: 86 Invalid month
 fr: 86 Mois invalide
 de: 86 Ung&uuml;ltiger Monat
+ca: 86 Mes inv&agrave;lid
+es: 86 Mes inv&aacute;lido
 it: 86 Mese non valido
 # e.g. 31st of April, or 32nd of any month
 en: 87 Invalid day of the month
 fr: 87 Jour du mois invalide
 de: 87 Ung&uuml;ltiger Monatstag
+ca: 87 El dia del mes &eacute;s inv&agrave;lid
+es: 87 El dia del mes es inv&aacute;lido
 it: 87 Giorno del mese non valido
 #
 en: 88 Error in format of font file `%s'
@@ -2261,11 +2271,12 @@ ro:200 Factorul *UNITS trebie sa fie diferit de zero
 #
 #  Messages for Aven
 # In the "File" menu (see 220 onwards)
-# TRANSLATE ca es pt
+# TRANSLATE pt
 en:201 @Screenshot...
 fr:201 @Copie d'&eacute;cran...
 de:201 Bildschirm@abzug
-ca,es:201 Screensho@t...
+ca:201 @Captura de pantalla...
+es:201 @Captura de pantalla...
 pt:201 S@creenshot...
 it:201 @Cattura schermo...
 #
@@ -2562,14 +2573,16 @@ ro:229 Model digital al terenului
 en:231 Au@to-Rotate##Space
 fr:231 Rotation @Automatique##Space
 de:231 Auto@matisch rotieren##Space
+ca:231 @Auto-Rotar##Espai
+es:231 @Auto-Rotar##Espacio
 it:231 @Auto-Rotazione##Spazio
 #
 en:232 Speed @Up
 fr:232 A@cc&eacute;l&egrave;re
 de:232 @Schneller
 pt,pt-br:232 @Aumentar Velocidade
-ca:232 Acce@lera la rotaci&oacute;
-es:232 @Accelera la rotaci&oacute;n
+ca:232 A@ccelera la rotaci&oacute;
+es:232 A@ccelera la rotaci&oacute;n
 it:232 A@ccelera la rotazione
 sk:232 Z@r&yacute;chli&tcaron; rot&aacute;ciu
 ro:232 @Accelereaza rotatia
@@ -2618,17 +2631,21 @@ sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
 ro:236 Un pas in sens o@rar
 # End of rotation menu.
 #
-# TRANSLATE ca es pt sk ro
+# TRANSLATE pt sk ro
 en:237 @Perspective
 fr:237 Pe@rspective
 de:237 @Perspektive
-ca,es,ro:237 Perspecti@ve
+ca:237 Perspecti@va
+es:237 Perspecti@va
+ro:237 Perspecti@ve
 pt,sk:237 Pe@rspective
 it:237 Prospetti@va
 #
 en:238 Textured @Walls
 fr:238 Te@xture des parois
 de:238 @Wandtextur
+ca:238 Parets amb te@xtura
+es:238 Paredes con te@xtura
 it:238 Pareti con te@xture
 #
 # Toggles OpenGL "Depth Fogging" - feel free to translate using that term
@@ -2637,7 +2654,9 @@ en:239 Fade Distant Ob@jects
 en-us:239 @Fade Distant Objects
 fr:239 Rendre @floue les objets lointains
 de:239 D@unsteffekt
-it:239 Sbiadisce gli oggetti @distanti
+ca:239 @Aten&uacute;a els objectes llunyans
+es:239 @Desvanece los objetos lejanos
+it:239 Sbiadisce g@li oggetti distanti
 #
 # The accelerators must be different within this group
 # View *looking* North
@@ -2803,6 +2822,8 @@ en-us:254 Restore Defaul@t View
 # "la vues" seems grammatically incorrect - check...
 fr:254 @Restaurer la vues par d&eacute;faut
 de:254 @Zur&uuml;ck zur voreingestellten Ansicht
+ca:254 Restablei@x la vista per defecte
+es:254 Restaurar la @vista predeterminada
 pt:254 @Usar valores pr&eacute;-definidos
 pt-br:254 @Restaurar padr&otilde;es
 ca:254 Restablei@x els predeterminats
@@ -2810,8 +2831,8 @@ es:254 Restaurar @valores predeterminados
 it:254 Ripristina la @vista predefinita
 sk:254 Znov@u na v&yacute;chodzie hodnoty
 ro:254 @Restabiliti setarile initiale
-# Used in print dialog to label
-# TRANSLATE pt pt-br ca es sk ro check reused message makes sense
+# Used in print dialog to label the box around the tilt and pan angles
+# TRANSLATE pt pt-br sk ro check reused message makes sense
 # in this context
 # cf 213
 en:255 View
@@ -2819,7 +2840,7 @@ fr:255 Vue
 de:255 Ansehen
 pt:255 Vista
 pt-br:255 Visualisar
-ca:255 Veure
+ca:255 Vista
 es:255 Vista
 it:255 Vista
 sk:255 Poh&lcaron;ad
@@ -2830,9 +2851,11 @@ ro:255 Vizualizare
 en:256 Elements
 fr:256 El&eacute;ments
 de:256 Elemente
+ca:256 Elements
+es:256 Elementos
 it:256 Elementi
 # cf 170
-# TRANSLATE pt pt-br ca es sk ro check adapted message is ok
+# TRANSLATE pt pt-br sk ro check adapted message is ok
 en:257 %d pages (%dx%d)
 fr:257 %d pages (%dx%d)
 de:257 %d Seiten (%dx%d)
@@ -2845,18 +2868,18 @@ ro:257 %d pagini (%dx%d)
 # used in the scale drop down selector in the print dialog
 # the implicit meaning is "choose a suitable scale to fit the
 # plot on a single page", but we need something shorter
-# TRANSLATE pt ca es sk ro check adapted translation
+# TRANSLATE pt sk ro check adapted translation
 en:258 One page
 fr:258 Une page
 de:258 Eine Seite
 pt:258 Uma P&aacute;gina
 ca:258 Una P&agrave;gina
-es:258 Uma P&aacute;gina
+es:258 Una P&aacute;gina
 it:258 Una Pagina
 sk:258 Jednu Str&aacute;nku
 ro:258 Una Pagina
 # cf 159
-# TRANSLATE pt pt-br ca es sk ro check adapted message is ok
+# TRANSLATE pt pt-br sk ro check adapted message is ok
 en:259 Bearing
 fr:259 Azimut
 de:259 Richtung
@@ -2904,23 +2927,31 @@ ro:262 Portiuni subterane ale topografiei
 en:263 Tilt angle
 fr:263 Angle de basculement
 de:263 Neigung
+ca:263 Angle d'inclinaci&oacute;
+es:263 Angulo de inclinaci&oacute;n
 it:263 Angolo di inclinazione
 # used in the print dialog - controls drawing lines around each page
 en:264 Page Borders
 fr:264 Bordures de page
 de:264 Seitenrahmen
+ca:264 Marcs de la p&agrave;gina
+es:264 Marcos de la p&aacute;gina
 it:264 Bordi pagina
 # used in the print dialog - controls drawing the box at the lower left
 # with survey name, view angles, etc
 en:265 Info Box
 fr:265 Panneau d'information
 de:265 Legende
+ca:265 Requadre d'informaci&oacute;
+es:265 Cajet&iacute;n de informaci&oacute;n
 it:265 Riquadro informazioni
 # will be used in the print dialog - check this to print blank pages
 # (otherwise they'll be skipped to save paper)
 en:266 Blank Pages
 fr:266 Pages blanches
 de:266 Leerseiten
+ca:266 P&agrave;gines en blanc
+es:266 P&aacute;ginas en blanco
 it:266 Pagine bianche
 # XXX 267-269
 # The accelerators must be different within this group
@@ -3056,7 +3087,7 @@ de-de,de-ch:291 Messz&uuml;ge Oberfl&auml;c@he##Ctrl+F
 de:    291 Me&szlig;z&uuml;ge Oberfl&auml;c@he##Ctrl+F
 pt,pt-br:291 Visadas de Super@f&iacute;cie##Ctrl+F
 ca:291 Tirades de topograf&iacute;a de super@f&iacute;cie##Ctrl+F
-es:291 Tiradas de topografia de super@ficie##Ctrl+F
+es:291 Tiradas de t@opografia de superficie##Ctrl+F
 it:291 Battute topografia di Super@ficie##Ctrl+F
 sk:291 Z&aacute;mery @na povrchu##Ctrl+F
 ro:291 Portiuni de @suprafata ale topografiei##Ctrl+F
@@ -3065,13 +3096,17 @@ ro:291 Portiuni de @suprafata ale topografiei##Ctrl+F
 en:292 Colour by @Depth
 fr:292 Couleur par @profondeur
 de:292 Farbe je nach @Tiefe
-it:292 Co@lori secondo profondit&aacute;
+ca:292 Color per @Profunditat
+es:292 Colorear por @Profundidad
+it:292 Colori secondo @profondit&aacute;
 #
 # NB 293 is a different message in 1.0!
 en:293 Colour by D@ate
 fr:293 Couleur par @date
 de:293 Farbe je nach @Datum
-it:293 C@oloure per Data
+ca:293 Color per @Data
+es:293 Colorear por @Fecha
+it:293 Coloure per @Data
 #
 # 294-296 c.f. 351-353
 en:294 Highlight @Entrances
@@ -3089,9 +3124,9 @@ en-us:295 Highlight Contro@l Points
 fr:295 Mise en valeur des points F@ixes
 de:295 @Festpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
-ca:295 Marca els @Punts fixats
-es:295 Marca los @Puntos fijados
-it:295 Marca i @Punti fissi
+ca:295 Marca els Punts f@ixats
+es:295 Marca los Puntos f@ijados
+it:295 Marca i Punti f@issi
 sk:295 Zv&yacute;razni&tcaron; @fixn&eacute; body
 ro:295 Marcheaza Punctele @Fixe
 #
@@ -3099,8 +3134,8 @@ en:296 Highlight E@xported Points
 fr:296 Mise de valeur des points exp@ort&eacute;s
 de:296 Exp@ortierte Punkte hervorheben
 pt:296 Destacar Bases Ex@portadas
-ca:296 Marca els Punts E@xportats
-es:296 Marca los Puntos E@xportados
+ca:296 Marca els Punts Expo@rtats
+es:296 M@arca los Puntos Exportados
 it:296 Marca i punti @Esportati
 sk:296 Zv&yacute;razni&tcaron; e@xportovan&eacute; body
 ro:296 Marcheaza Punctele @Exportate
@@ -3257,6 +3292,8 @@ ro:310 %s: op&tcedil;iune invalid&abreve; -- %c&#10;
 en:311 @New Presentation
 fr:311 @Nouvelle Pr&eacute;sentation
 de:311 @Neue Pr&auml;sentation
+ca:311 @Nova Presentaci&oacute;
+es:311 @Nueva Presentaci&oacute;n
 it:311 @Nuova PResentazione
 #
 en:312 Open @Presentation...
@@ -3271,32 +3308,45 @@ sk:312 Otvori&tcaron; @prezent&aacute;ciu...
 en:313 @Save Presentation
 fr:313 @Sauver la Pr&eacute;sentation
 de:313 Pr&auml;sentation @speichern
+ca:313 @Desa la Presentaci&oacute;
+es:313 @Guardar la Presentaci&oacute;
 it:313 @Salva Presentazione
 #
 en:314 Save Presentation @As...
 fr:314 S@auver la Pr&eacute;sentation sous...
 de:314 Pr&auml;sentation speichern @als...
+ca:314 Desa la Presentaci&oacute; @Com...
+es:314 Guardar la Presentaci&oacute; @Como...
 it:314 Salva Presentazione @come...
 # "Mark" as in "Mark this point"
 en:315 @Mark
 fr:315 @Marquer
 de:315 @Markieren
+ca:315 @Marca
+es:315 @Marca
 it:315 Se@gna
 # "Play" as in "Play back a recording"
+# TRANSLATE fr Check if this if Jouer means play in this sense
 en:316 Pla@y
 fr:316 @Jouer
 de:316 Abspie@len
+ca:316 @Reprodueix
+es:316 @Reproduce
 it:316 @Visualizza
 #
 en:317 @Export as Movie...
 fr:317 @Exporter comme Animation...
 # "als Animation" could also be used here.
 de:317 @Exportieren als Film...
+ca:317 @Exporta com Animaci&oacute;...
+es:317 @Exporta como Animaci&oacute;n...
 it:317 @Esporta come Animazione...
 # TRANSLATE it
 en:318 @Bounding Box##Ctrl+B
 fr:318 @Bordures du cadre##Ctrl+B
 de:318 @Begrenzendes Rechteck##Ctrl+B
+ca:318 @L&iacute;mits del Quadre##Ctrl+B
+es:318 @Bordes del Cuadro##Ctrl+B
 it:318 Bo@unding Box##Ctrl+B
 #
 en:319 Select an output filename
@@ -3324,6 +3374,8 @@ sk:320 Prezent&aacute;cie programu Aven
 en:321 Save Screenshot
 fr:321 Sauver la copie d'&eacute;cran
 de:321 Bildschirmabzug speichern
+ca:321 Desa la captura de pantalla
+es:321 Guardar la captura de pantalla
 it:321 Salva Schermo catturato
 #
 en:322 Select a presentation to open
@@ -3338,27 +3390,37 @@ sk:322 Vybra&tcaron; prezent&aacute;ciu pre otvorenie
 en:323 Error in format of presentation file `%s'
 fr:323 Erreur de formatage du fichier de pr&eacute;sentation `%s'
 de:323 Formatfehler in der Pr&auml;sentationsdatei `%s'
+ca:323 Error en el format del fitxer de presentaci&oacute; `%s'
+es:323 Error en el formato del archivo de presentaci&oacute;n `%s' 
 it:323 Errore nel formato del file di presentazione `%s'
 # "Compass" as in Larry Fish's cave surveying package, so probably shouldn't
 # be translated
 en:324 Compass PLT files
 fr:324 Fichier Compass PLT
 de:324 Compass PLT Datei
+ca:324 Fitxers Compass PLT
+es:324 Archivos Compass PLT
 it:324 File Compass PLT
 # "CMAP" is Bob Thrun's cave surveying package.
 en:325 CMAP XYZ files
 fr:325 Fichier CMAP XYZ
 de:325 CAMP XYZ Datei
+ca:325 Fitxers CMAP XYZ
+es:325 Archivos CMAP XYZ
 it:325 File CMAP XYZ
 # title of message box
 en:326 Modified Presentation
 fr:326 Pr&eacute;sentation modifi&eacute;e
 de:326 Modifizierte Pr&auml;sentation
+ca:326 Presentaci&oacute; Modificada
+es:326 Presentaci&oacute;n Modificada
 it:326 Presentazione Modificata
 # and the question in that box
 en:327 The current presentation has been modified.  Abandon unsaved changes?
 fr:327 La pr&eacute;sentation en cours a &eacute;t&eacute; modifi&eacute;e. Perte des changements non sauv&eacute;s?
 de:327 Die aktuelle Pr&auml;sentation wurde ver&auml;ndert. Abbrechen, ohne die &Auml;nderungen zu speichern?
+ca:327 La presentaci&oacute; actual ha estat modificada. Abandonar els canvis no desats?
+es:327 La presentaci&oacute;n actual ha sido modificada. Abandonar los cambios no guardados?
 it:327 La presentazione corrente &eacute; stata modificata. Abbandonare i cambiamenti non salvati?
 #
 en:328 No matches were found.
@@ -3551,58 +3613,78 @@ sk:345 gr&aacute;dy
 ro:345 gr.cent
 #ro: 345 grade centezimale
 #
-# Draws 3D passages
-# TRANSLATE de ca es
+# Toggles drawing of 3D passages
+# TRANSLATE de
 en:346 Passage @Tubes##Ctrl+T
 fr:346 Galeries @Tubulaires##Ctrl+T
-ca,de,es:346 Passage Tubes (@y)##Ctrl+T
+de:346 Passage Tubes (@y)##Ctrl+T
+ca:346 Galeries Tu@bulars##Ctrl+T
+es:346 @Galerias Tubulares##Ctrl+T
 it:346 Passaggi come @Tubi##Ctrl+T
 #
 en:347 @Preferences...
 fr:347 @Pr&eacute;f&eacute;rences...
 de:347 @Einstellungen...
+ca:347 @Prefer&egrave;ncies...
+es:347 @Preferencias...
 it:347 @Preferenze...
 #
 en:348 Draw passage walls
 fr:348 D&eacute;ssiner les parois
 de:348 W&auml;nde einzeichnen
+ca:348 Dibuixa les parets
+es:348 Dibuja las paredes
 it:348 Disegna le pareti
 #
 en:349 Estimate LRUD readings based on heuristics
 fr:349 Estimation heuristique des dimensions de galerie
 de:349 LROU-Werte heuristisch sch&auml;tzen
+ca:349 Estimaci&oacute; heur&iacute;stica de les dades LRUD
+es:349 Estimaci&oacute;n heur&iacute;stica de los datos LRUD
 it:349 Stima lel letture DSSS con ragionamento euristico
 #
 en:350 Mark survey stations with crosses
 fr:350 Marquer les stations par une croix
 de-de,de-ch:350 Messpunkte durch Kreuze markieren
 de:    350 Me&szlig;punkte durch Kreuze markieren
+ca:350 Marcar les estacions topogr&agrave;fiques amb creus
+es:350 Marcar las estaciones topogr&aacute;ficas con cruces
 it:350 Segna le stazioni con croci
 #
 en:351 Highlight stations marked as entrances
 fr:351 Montrer les entr&eacute;es
 de:351 Punkte an den Eing&auml;ngen hervorheben
+ca:351 Ressaltar les estacions marcades com entrades
+es:351 Destacar las estaciones marcadas como entradas
 it:351 Evidenzia le stazioni segnate come ingressi
 #
 en:352 Highlight stations marked as fixed points
 fr:352 Montrer les points fixes
 de:352 Festpunkte hervorheben
+ca:352 Ressaltar les estacions marcades com punts fixes
+es:352 Destacar las estaciones marcadas como puntos fijos
 it:352 Evidenzia le stazioni segnate come punti fissi
 #
 en:353 Highlight stations which are exported
 fr:353 Montrer les stations export&eacute;es
 de:353 Exportierte Punkte hervorheben
+ca:353 Ressaltar les estacions exportades
+es:353 Destacar las estaciones exportadas
 it:353 Evidenzia le stazioni che sono esportate
 #
 en:354 Mark survey stations with their names
 fr:354 Afficher les stations par leurs noms
 de-de,de-ch:354 Messpunkte mit ihren Namen beschriften
 de:354     Me&szlig;punkte mit ihren Namen beschriften
+ca:354 Marcar les estacions topogr&agrave;fiques amb els seus noms
+es:354 Marcar las estaciones topogr&aacute;ficas con sus nombres
 it:354 Segna le stazioni con i loro nomi
 #
 en:355 Allow names to overlap on the display (faster)
 fr:355 Permettre aux noms de se recouvrir (affichage plus rapide)
 de:355 &Uuml;berlappende Beschriftungen zulassen (schneller)
+ca:355 Permet que els noms es sobreposin (m&eacute;s r&agrave;pid)
+es:355 Permitir que los nombres se sobrepongan (m&aacute;s r&aacute;pido)
 it:355 Permetti che i nomi si sovrappongano (pi&acute; veloce)
 #
 #
@@ -3610,6 +3692,8 @@ it:355 Permetti che i nomi si sovrappongano (pi&acute; veloce)
 en:356 Full Screen @Mode##F11
 fr:356 @Mode Plein Ecran##F11
 de:356 @Vollbild-Modus##F11
+ca:356 @Mode Pantalla Sencera##F11
+es:356 @Modo Pantalla Completa##F11
 pt:356 Full S@creen Mode##F11
 it:356 @Modo schermo pieno##F11
 sk:356 F@ull Screen Mode##F11
@@ -3745,8 +3829,8 @@ ro:380 @Imprimare...##Ctrl+P
 en:381 P@age Setup...
 fr:381 Configurer la @page...
 de:381 @Seite einrichten...
-ca:381 @Configuraci&oacute; de la p&agrave;gina...
-es:381 @Configuraci&oacute;n de la p&aacute;gina...
+ca:381 Configuraci&oacute; de la @p&agrave;gina...
+es:381 Configuraci&oacute;n de la @p&aacute;gina...
 pt:381 Pa@ge Setup...
 it:381 @Imposta pagina...
 sk:381 @Nastaven&iacute; tisku...
