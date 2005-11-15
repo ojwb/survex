@@ -1,42 +1,27 @@
-# New style Survex messages file using HTML/SGML-style accents
+# Survex messages file.
+#
+# Use HTML/SGML-style accents (e.g. &eacute; for e with an acute accent).
+# I have a script to fix messages with literal ISO-8859-1 accents so feel
+# free to use those if it's easier for you.
 #
 # Note that there are a few gaps in the numbering.  Also, the messages
 # are not always numbered such that related messages are together.
 # Sorry.
 #
-# I'm gradually adding comments to indicate the context.  If you are
-# unsure, it's best to ask rather than risk a wrong guess.
+# I've tried to include comments to indicate the context if needed, but there
+# are surely places which need one where I haven't.  If you are unsure, it's
+# best to ask rather than risk a wrong guess, and I'll add a comment to help
+# future translators.
 #
 # Trailing spaces are stripped unless quoted, so don't worry about them.
 #
-# Eric's queries:
+# @ is used to mark the letter which should be underlined as a shortcut for
+# navigating menus.  Within a menu these need to be different, but don't
+# worry too much about trying to ensure this, as I have a script which checks -
+# just put the @ in a logical place and I'll resolve any conflicts.
 #
-#- "Warning"
-#  I don't like Francois's "Impr&eacute;cision"
-#  The official translation is "Avertissement", I will use it even if
-#  it sounds somewhat formal.
-#
-#- "plumbed leg" (21)
-#  --> vis&eacute;e plomb&eacute;e
-#  This is difficult to translate literally... It should refer to a
-#  notion properly defined in the (french version of the) documentation!
-#
-# Ol: It means a leg measured with a plumb (a weight on a string) in case
-#     you weren't clear on that.  Or is it an expression problem rather
-#     than a comprehension one?
-#
-# Eric: Well, essentially yes. And if I understand correctly, you would use
-# it also for an horizontal shot on a lake surface, ... Well
-# "vis&eacute;e plomb&eacute;e" is as good as the english wording.
-#
-# Ol: Oops.  That needs fixing.
-#
-#- traverses, trailing traverses...
-#  I have chosen the terminology used by toporobot: "sequence"..
-#  I'm not sure if this is technicaly correct.
-#  Are those messages useful for the end-user, anyhow?
-#
-# OL: Not really.  They do let them know that something is happening though.
+# Menu entries with accelerator keys are listed as "##Ctrl+X" or similar.
+# Don't try to translate the keyname - that should happen automatically.
 #
 # Gerhard's queries from GN(2):
 #
@@ -91,7 +76,7 @@
 #     quotes are not standard ascii."
 #
 # Josep:
-#  In Spanish  "Archivos" or "Ficheros" are equivalent and can be used
+#  In Spanish "Archivos" or "Ficheros" are equivalent and can be used
 #  both, I've used always "archivos" but I see in many software (i.e.W98)
 #  "file" is translated by "Archivo" so if you wish you can replace all
 #  "archivo" by "archivo" and all "Ficheros" by "Archivos".
@@ -144,7 +129,11 @@ es:  3 desde
 it:  3 da
 sk:  3 z
 ro:  3 de la
-# indicates a warning message e.g. "spoon.svx:12: warning: *prefix is deprecated"
+# Indicates a warning message e.g.:
+# "spoon.svx:12: warning: *prefix is deprecated"
+#
+# fr: Francois had "Impr&eacute;cision".  The official translation is
+# "Avertissement", which Eric favours even if it sounds somewhat formal.
 en:  4 warning
 fr:  4 avertissement
 de:  4 Warnung
@@ -249,7 +238,8 @@ ro: 12 Comanda necunoscuta `%s'
 # ro: 12 Comand&abreve; necunoscut&abreve; `%s'
 en: 13 Station `%s' equated to itself
 fr: 13 Station `%s' ne doit pas &ecirc;tre d&eacute;clar&eacute;e "&eacute;gale" &agrave elle-m&ecirc;me
-de: 13 Station `%s' mit sich selbst gleichgesetzt
+de-de,de-ch: 13 Messpunkt `%s' mit sich selbst gleichgesetzt
+de:     13 Me&szlig;punkt `%s' mit sich selbst gleichgesetzt
 pt: 13 Base `%s' igualada a ela mesma
 ca: 13 Estaci&oacute; `%s' igualada a ella mateixa
 es: 13 Estacio&acute;n `%s' igualada a si misma
@@ -330,6 +320,9 @@ es: 20 *DEFAULT ya no se usa - utiliza *CALIBRATE/DATA/SD/UNITS con el argumento
 it: 20 *DEFAULT &eacute sconsigliato - usare invece *CALIBRATE/DATA/SD/UNITS con argomento DEFAULT
 sk: 20 *DEFAULT bol odmietnut&yacute; - pou&zcaron;ijte namiesto toho *CALIBRATE/DATA/SD/UNITS s argumentom DEFAULT
 ro: 20 *DEFAULT nu mai este folosit - folositi in schimb *CALIBRATE/DATA/SD/UNITS cu argumentul DEFAULT
+# A "plumbed leg" is one measured using a plumbline (a weight on a string).
+# So the problem here is that the leg is vertical, so a compass reading has
+# no meaning!
 en: 21 Compass reading given on plumbed leg
 en-us: 21 Compass reading given on plumbed shot
 fr: 21 Lecture d'azimut donn&eacute;e sur une vis&eacute;e verticale
@@ -392,7 +385,8 @@ ro: 25 ROOT nu se recomanda
 # *end outer
 en: 26 Station `%s' not exported from survey `%s'
 fr: 26 La station `%s' n'est pas export&eacute;e de la topographie `%s'
-de: 26 Station `%s' nicht aus Vermessung `%s' exportiert
+de-de,de-ch: 26 Messpunkt `%s' nicht aus Vermessung `%s' exportiert
+de:     26 Me&szlig;punkt `%s' nicht aus Vermessung `%s' exportiert
 pt: 26 Base `%s' n&atilde;o exportada da topo `%s'
 ca: 26 L'estaci&oacute; `%s' no ha estat exportada des de la topografia `%s'
 es: 26 La estaci&oacute; `%s' no ha sido exportada desde la topograf&iacute;a `%s'
@@ -763,6 +757,7 @@ ro: 57 *EXPORT trebuie sa urmeze dupa `*BEGIN <TOPOGRAFIE>'
 # 58 different in 1.0
 en: 58 Invalid year (< 1970 or > 2037)
 fr: 58 Ann&eacute;e invalide (< 1970 ou > 2037)
+de: 58 Ung&uuml;ltiges Jahr (< 1970 oder > 2037)
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
 fr: 59 Lecture de compas suspecte
@@ -859,7 +854,8 @@ ro: 65 Tipul de date `%s' necunoscut
 # *end example
 en: 66 Station `%s' already exported
 fr: 66 Station `%s' d&eacute;j&agrave; export&eacute;e
-de: 66 Station `%s' bereits exportiert
+de-de,de-ch: 66 Messpunkt `%s' bereits exportiert
+de:     66 Me&szlig;punkt `%s' bereits exportiert
 pt: 66 Base `%s' j&aacute; foi exportada
 ca: 66 L'estaci&oacute; `%s' ja ha estat exportada anteriorment
 es: 66 La estaci&oacute;n `%s' ya ha sido exportada anteriormente
@@ -904,7 +900,8 @@ ro: 69 Lipseste &quot;
 #
 en: 70 Station `%s' referred to just once, with an explicit prefix - typo?
 fr: 70 La station `%s' n'est mentionn&eacute;e qu'une fois, avec un pr&eacute;fixe explicite - typo?
-de: 70 Station `%s' nur einmal erw&auml;hnt, mit explizitem Pr&auml;fix - Tippfehler?
+de-de,de-ch: 70 Messpunkt `%s' nur einmal erw&auml;hnt, mit explizitem Pr&auml;fix - Tippfehler?
+de:     70 Me&szlig;punkt `%s' nur einmal erw&auml;hnt, mit explizitem Pr&auml;fix - Tippfehler?
 pt: 70 Base `%s' utilizada apenas uma vez, e com um prefixo expl&iacute;cito - erro de digita&ccedil;&atilde;o?
 ca: 70 L'estaci&oacute; `%s' sols s'ha utilitzat una vegada, amb un prefix expl&iacute;cit - error tipogr&agrave;fic?
 es: 70 La estacio&oacute;n `%s' solo ha sido usada una vez, con un prefijo expl&iacute;cito - error tipogr&aacute;fico?
@@ -1004,9 +1001,11 @@ ro: 79 Distanta corectata negativ
 # different in 1.0
 en: 80 Date is in the future!
 fr: 80 La date est dans le futur!
+de: 80 Datum liegt in der Zukunft!
 # different in 1.0
 en: 81 End of date range is before the start
 fr: 81 La date de fin est ant&eacute;rieure &agrave; celle de d&eacute;but
+de: 81 Das Enddatum ist fr&uuml;her als das Anfangsdatum
 #
 en: 82 Parameter `%s' has invalid value `%s' in printer configuration file
 fr: 82 Le param&egrave;tre `%s' a une valeur incorrecte `%s' dans le fichier de configuration de l'imprimante
@@ -1043,9 +1042,11 @@ ro: 85 Parametrul `%s' lipseste din fisierul de configurare a imprimantei
 # 86, 87 different in 1.0
 en: 86 Invalid month
 fr: 86 Mois invalide
-#
-en: 87 Invalid day of month
+de: 86 Ung&uuml;ltiger Monat
+# e.g. 31st of April, or 32nd of any month
+en: 87 Invalid day of the month
 fr: 87 Jour du mois invalide
+de: 87 Ung&uuml;ltiger Monatstag
 #
 en: 88 Error in format of font file `%s'
 fr: 88 Erreur dans le format du fichier de fontes `%s'
@@ -1444,6 +1445,11 @@ sk:124 S&Uacute;BOR
 #ro:124 FI&Scedil;IER
 ro:124 FISIER
 # a trailing traverse is a dead end back to a junction
+#
+# fr: Eric has chosen the terminology used by toporobot: "sequence", though
+# toporobot uses the term to mean something more specific.  Not really an issue
+# since these messages really just give the end-user an indication that
+# progress is being made.
 en:125 Removing trailing traverses
 fr:125 Enl&egrave;ve les s&eacute;quences terminales
 #germ:125 Entferne Blindg&auml;nge
@@ -2249,15 +2255,17 @@ sk:200 *UNITS faktor mus&iacute; by&tcaron; nenulov&yacute;
 ro:200 Factorul *UNITS trebie sa fie diferit de zero
 #
 #  Messages for Aven
-# TRANSLATE ca de es pt
+# In the "File" menu (see 220 onwards)
+# TRANSLATE ca es pt
 en:201 @Screenshot...
 fr:201 @Copie d'&eacute;cran...
+de:201 Bildschirm@abzug
 ca,es:201 Screensho@t...
-de,pt:201 S@creenshot...
+pt:201 S@creenshot...
 it:201 @Cattura schermo...
 #
 en:202 No survey data in 3d file `%s'
-fr:202 Pas de donn&eacute;es topo dans le fichier 3d `%s'
+fr:202 Pas de donn&eacute;es topo dans le fichier image 3d `%s'
 de:202 Keine Vermessungsdaten in 3D-Datei `%s'
 pt:202 N&atilde;o h&aacute; dados de topografia no arquivo 3d `%s'
 ca:202 No hi ha dades topogr&agrave;fiques en el fitxer 3d `%s'
@@ -2305,7 +2313,7 @@ ro:205 Despre %s
 #
 # File->Open dialog:
 en:206 Select a 3d file to view
-fr:206 S&eacute;lectionner un fichier 3d &agrave; visualiser
+fr:206 S&eacute;lectionner un fichier image 3d &agrave; visualiser
 de:206 3D-Datei zur Ansicht w&auml;hlen
 pt,pt-br:206 Selecione um arquivo 3d para ser visualizado
 ca:206 Selecciona un fitxer 3d per a visualitzar
@@ -2411,7 +2419,7 @@ es:215 A@yuda
 it:215 @Aiuto
 sk:215 @Help
 ro:215 @Ajutor
-#
+# c.f. 377
 en:216 @Presentation
 de:216 @Pr&auml;sentation
 fr:216 @Pr&eacute;sentation
@@ -2433,7 +2441,8 @@ it:219 Questo programma &egrave; software libero; &egrave; lecito redistribuirlo
 sk:219 Tento program je voln&yacute; software; m&uring;&zcaron;ete jej &scaron;&iacute;&rcaron;it a modifikovat podle ustanoven&iacute; Obecn&eacute; ve&rcaron;ejn&eacute; licence GNU, vyd&aacute;van&eacute; Free Software Foundation; a to bu&dcaron; verze 2 t&eacute;to licence anebo (podle va&scaron;eho uv&aacute;&zcaron;en&iacute;) kter&eacute;koli pozd&ecaron;j&scaron;&iacute; verze.
 ro:219 Acest program este liber; &icirc;l pute&tcedil;i redistribui &scedil;i/sau modifica &icirc;n conformitate cu termenii Licen&tcedil;ei Publice Generale GNU a&scedil;a cum este publicat&abreve; de Free Software Foundation; fie versiunea 2 Licen&tcedil;ei, fie (la latitudinea dumneavoastr&abreve;) orice versiune ulterioar&abreve;.
 #
-# The accelerators must be different within this group
+# "File" menu.  The accelerators must be different within this group.
+# see also 201, 380, 381.
 en:220 @Open...##Ctrl+O
 fr:220 @Ouvrir...##Ctrl+O
 de:220 &Ouml;@ffnen...##Ctrl+O
@@ -2454,6 +2463,8 @@ es:221 @Salir##Ctrl+Q
 it:221 @Esci##Ctrl+Q
 sk:221 E@xit##Ctrl+Q
 ro:221 @Termin&abreve;##Ctrl+Q
+# End of "File" menu.
+#
 # back to cavern
 # error from "*data normal newline from to tape compass clino"
 en:222 NEWLINE can't be the first reading
@@ -2517,7 +2528,8 @@ es:227 No se pueden calibrar cantidades angulares y de longitud juntas
 it:227 Le quantit&aacute; di lunghezza e angolari non possono essere calibrate insieme
 sk:227 Nie je mo&zcaron;n&eacute; nakalibrova&tcaron; uhlov&yacute;&eacute; a d&lacute;&zcaron;kov&eacute; &uacute;daje naraz
 ro:227 Nu pot calibra unghiurile verticale si lungimile in acelasi timp
-#
+# "Terrain file" being a digital model of the terrain (e.g. a grid of
+# height values).
 en:228 Select a terrain file to view
 fr:228 S&eacute;lectionner un fichier de surface &agrave; visualiser
 de:228 Gel&auml;ndedatei zur Ansicht w&auml;hlen
@@ -2527,7 +2539,6 @@ es:228 Selecciona un archivo de terreno para ver
 it:228 Seleziona un modello digitale del suolo da visualizzare
 sk:228 Vyber s&uacute;bor s povrchom k zobrazeniu
 ro:228 Selectati un model digital al terenului pentru vizualizare
-#ro: i used the italian translation here: terrain file = digital model. was it correct?
 #
 en:229 Terrain files
 fr:229 Fichiers de surface
@@ -2540,11 +2551,12 @@ sk:229 S&uacute;bory s povrchom
 ro:229 Model digital al terenului
 #
 # XXX 230 (used in 1.0)
-# The accelerators must be different within this group
+# "Rotation" menu.  The accelerators must be different within this group.
 # 231 Different in 1.0
 # Tickable menu item which toggles auto rotation
-en:231 @Auto-Rotate##Space
+en:231 Au@to-Rotate##Space
 fr:231 Rotation @Automatique##Space
+de:231 Auto@matisch rotieren##Space
 #
 en:232 Speed @Up
 fr:232 A@cc&eacute;l&egrave;re
@@ -2598,20 +2610,27 @@ es:236 Un paso en el senido @horario
 it:236 Un passo @Orario
 sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
 ro:236 Un pas in sens o@rar
-# TRANSLATE ca de es pt sk ro
+# End of rotation menu.
+#
+# TRANSLATE ca es pt sk ro
 en:237 @Perspective
 fr:237 Pe@rspective
-ca,de,es,ro:237 Perspecti@ve
+de:237 @Perspektive
+ca,es,ro:237 Perspecti@ve
 pt,sk:237 Pe@rspective
 it:237 Prospetti@va
 #
 en:238 Textured @Walls
 fr:238 Te@xture des parois
+de:238 @Wandtextur
 it:238 Pareti con te@xture
 #
+# Toggles OpenGL "Depth Fogging" - feel free to translate using that term
+# instead if it gives a better translation which most users will understand.
 en:239 Fade Distant Ob@jects
 en-us:239 @Fade Distant Objects
 fr:239 Rendre @floue les objets lointains
+de:239 D@unsteffekt
 it:239 Sbiadisce gli oggetti @distanti
 #
 # The accelerators must be different within this group
@@ -2771,12 +2790,13 @@ it:253 Zoo@m indietro##[
 sk:253 Zmen&scaron;i@t##[
 ro:253 Mi@c&scedil;orare##[
 #
-# TRANSLATE de pt pt-br ca es it sk ro
+# TRANSLATE fr pt pt-br ca es it sk ro
 # "Restore Default Settings" -> "Restore Default View"
 en:254 Restore De@fault View
 en-us:254 Restore Defaul@t View
+# "la vues" seems grammatically incorrect - check...
 fr:254 @Restaurer la vues par d&eacute;faut
-de:254 Voreinstellungen w@iederherstellen
+de:254 @Zur&uuml;ck zur voreingestellten Ansicht
 pt:254 @Usar valores pr&eacute;-definidos
 pt-br:254 @Restaurar padr&otilde;es
 ca:254 Restablei@x els predeterminats
@@ -2798,11 +2818,12 @@ es:255 Vista
 it:255 Vista
 sk:255 Poh&lcaron;ad
 ro:255 Vizualizare
-# Used as a label for the surrounding box for the "survey legs" "stations" "names" etc
-# checkboxes in the "what to print" dialog.  "Elements" isn't a good name for this but
-# nothing better has yet come to mind!
+# Used as a label for the surrounding box for the "survey legs" "stations"
+# "names" etc checkboxes in the "what to print" dialog.  "Elements" isn't a
+# good name for this but nothing better has yet come to mind!
 en:256 Elements
 fr:256 El&eacute;ments
+de:256 Elemente
 # cf 170
 # TRANSLATE pt pt-br ca es it sk ro check adapted message is ok
 en:257 %d pages (%dx%d)
@@ -2817,7 +2838,7 @@ ro:257 %d pagini (%dx%d)
 # used in the scale drop down selector in the print dialog
 # the implicit meaning is "choose a suitable scale to fit the
 # plot on a single page", but we need something shorter
-# TRANSLATE de pt ca es it sk ro check adapted translation
+# TRANSLATE pt ca es it sk ro check adapted translation
 en:258 One page
 fr:258 Une page
 de:258 Eine Seite
@@ -2875,17 +2896,21 @@ ro:262 Portiuni subterane ale topografiei
 # cf 161
 en:263 Tilt angle
 fr:263 Angle de basculement
+de:263 Neigung
 # used in the print dialog - controls drawing lines around each page
 en:264 Page Borders
 fr:264 Bordures de page
+de:264 Seitenrahmen
 # used in the print dialog - controls drawing the box at the lower left
 # with survey name, view angles, etc
 en:265 Info Box
 fr:265 Panneau d'information
+de:265 Legende
 # will be used in the print dialog - check this to print blank pages
 # (otherwise they'll be skipped to save paper)
 en:266 Blank Pages
 fr:266 Pages blanches
+de:266 Leerseiten
 # XXX 267-269
 # The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
@@ -2932,7 +2957,7 @@ es:273 Nombres @Superpuestos
 it:273 Nomi @Sovrapposti
 sk:273 Pr@ekr&yacute;vaj&uacute;ce sa men&aacute;
 ro:273 Nume s@uprapuse
-#
+# cf 371
 en:274 @Compass
 fr:274 @Compas
 de-de,de-ch:274 @Kompass
@@ -2943,7 +2968,7 @@ es:274 @Br&uacute;jula
 it:274 @Bussola
 sk:274 @Kompas
 ro:274 @Busola
-#
+# cf 372
 en:275 C@linometer
 fr:275 C@lino
 de:275 @Neigungsanzeige
@@ -2953,7 +2978,7 @@ es:275 @Clino
 it:275 @Clinometro
 sk:275 @Sklonomer
 ro:275 @Clinometru
-#
+# cf 370
 en:276 @Depth Bar
 fr:276 Barre de controle des @Profondeurs
 de:276 @Tiefenskala
@@ -2963,7 +2988,7 @@ es:276 Barra de @Profundidad
 it:276 Barra di controllo della @Profondit&aacute;
 sk:276 @H&lacute;bkov&eacute; mer&iacute;tko
 ro:276 Bara de control a @adancimii
-#
+# cf 369
 en:277 @Scale Bar
 fr:277 Barre de controle des @Echelles
 de:277 @Ma&szlig;stab
@@ -3015,9 +3040,9 @@ ro:290 @Despre...
 #
 en:291 @Surface Survey Legs##Ctrl+F
 en-us:291 @Surface Shots##Ctrl+F
-fr:291 Segments de topo en Sur@face##Ctrl+F
-de-de,de-ch:291 Messz&uuml;ge Ober@fl&auml;che##Ctrl+F
-de:          291 Me&szlig;z&uuml;ge Ober@fl&auml;che##Ctrl+F
+fr:291 Segments de topo en S@urface##Ctrl+F
+de-de,de-ch:291 Messz&uuml;ge Oberfl&auml;c@he##Ctrl+F
+de:    291 Me&szlig;z&uuml;ge Oberfl&auml;c@he##Ctrl+F
 pt,pt-br:291 Visadas de Super@f&iacute;cie##Ctrl+F
 ca:291 Tirades de topograf&iacute;a de super@f&iacute;cie##Ctrl+F
 es:291 Tiradas de topografia de super@ficie##Ctrl+F
@@ -3027,15 +3052,18 @@ ro:291 Portiuni de @suprafata ale topografiei##Ctrl+F
 #
 # NB 292 is a different message in 1.0!
 en:292 Colour by @Depth
-fr:292 Co@uleur par profondeur
+fr:292 Couleur par @profondeur
+de:292 Farbe je nach @Tiefe
 it:292 Co@lori secondo profondit&aacute;
 #
 # NB 293 is a different message in 1.0!
 # TRANSLATE it
 en:293 Colour by D@ate
-fr:293 C@oleur par date
+fr:293 Couleur par @date
+de:293 Farbe je nach @Datum
 it:293 C@olour by Date
 #
+# 294-296 c.f. 351-353
 en:294 Highlight @Entrances
 fr:294 Mise en valeur des @entr&eacute;es
 de:294 @Eing&auml;nge hervorheben
@@ -3048,8 +3076,8 @@ ro:294 Marcheaza @Intrarile
 #
 en:295 Highlight @Fixed Points
 en-us:295 Highlight Contro@l Points
-fr:295 Mise en valeur des points Fi@xes
-de:295 Fi@xpunkte hervorheben
+fr:295 Mise en valeur des points F@ixes
+de:295 @Festpunkte hervorheben
 pt:295 Destacar Bases Fi@xadas
 ca:295 Marca els @Punts fixats
 es:295 Marca los @Puntos fijados
@@ -3058,8 +3086,8 @@ sk:295 Zv&yacute;razni&tcaron; @fixn&eacute; body
 ro:295 Marcheaza Punctele @Fixe
 #
 en:296 Highlight E@xported Points
-fr:296 Mise de valeur des points ex@port&eacute;s
-de:296 Ex@portierte Punkte hervorheben
+fr:296 Mise de valeur des points exp@ort&eacute;s
+de:296 Exp@ortierte Punkte hervorheben
 pt:296 Destacar Bases Ex@portadas
 ca:296 Marca els Punts E@xportats
 es:296 Marca los Puntos E@xportados
@@ -3069,7 +3097,7 @@ ro:296 Marcheaza Punctele @Exportate
 #
 en:297 @Grid##Ctrl+G
 fr:297 @Grille##Ctrl+G
-de:297 Gi@tter##Ctrl+G
+de:297 @Gitter##Ctrl+G
 pt:297 @Grade##Ctrl+G
 ca:297 @Graella##Ctrl+G
 es:297 @Rejilla##Ctrl+G
@@ -3214,7 +3242,8 @@ es:310 %s: opci&oacute;n inv&aacute;lida -- %c&#10;
 it:310 %s: opzione non valida -- %c&#10;
 sk:310 %s: nespr&aacute;vna mo&zcaron;nos&tcaron; -- %c&#10;
 ro:310 %s: op&tcedil;iune invalid&abreve; -- %c&#10;
-#
+# "Presentation" menu: 311-317
+# c.f. 216, 377 which translate "Presentation"
 en:311 @New Presentation
 fr:311 @Nouvelle Pr&eacute;sentation
 de:311 @Neue Pr&auml;sentation
@@ -3231,26 +3260,33 @@ sk:312 Otvori&tcaron; @prezent&aacute;ciu...
 #
 en:313 @Save Presentation
 fr:313 @Sauver la Pr&eacute;sentation
+de:313 Pr&auml;sentation @speichern
 it:313 @Salva Presentazione
 #
 en:314 Save Presentation @As...
 fr:314 S@auver la Pr&eacute;sentation sous...
+de:314 Pr&auml;sentation speichern @als...
 it:314 Salva Presentazione @come...
-#
+# "Mark" as in "Mark this point"
 en:315 @Mark
 fr:315 @Marquer
+de:315 @Markieren
 it:315 Se@gna
-#
+# "Play" as in "Play back a recording"
 en:316 Pla@y
 fr:316 @Jouer
+de:316 Abspie@len
 it:316 @Visualizza
 #
 en:317 @Export as Movie...
 fr:317 @Exporter comme Animation...
+# "als Animation" could also be used here.
+de:317 @Exportieren als Film...
 it:317 @Esporta come Animazione...
 # TRANSLATE it
 en:318 @Bounding Box##Ctrl+B
 fr:318 @Bordures du cadre##Ctrl+B
+de:318 @Begrenzendes Rechteck##Ctrl+B
 it:318 Bo@unding Box##Ctrl+B
 #
 en:319 Select an output filename
@@ -3273,9 +3309,11 @@ ca:320 Presentacions Aven
 es:320 Presentaciones Aven
 it:320 Presentazione Aven
 sk:320 Prezent&aacute;cie programu Aven
-# title of the save dialog
+# title of the save screenshot dialog
+# c.f. 201
 en:321 Save Screenshot
 fr:321 Sauver la copie d'&eacute;cran
+de:321 Bildschirmabzug speichern
 it:321 Salva Schermo catturato
 #
 en:322 Select a presentation to open
@@ -3289,23 +3327,28 @@ sk:322 Vybra&tcaron; prezent&aacute;ciu pre otvorenie
 # cf 88
 en:323 Error in format of presentation file `%s'
 fr:323 Erreur de formatage du fichier de pr&eacute;sentation `%s'
+de:323 Formatfehler in der Pr&auml;sentationsdatei `%s'
 it:323 Errore nel formato del file di presentazione `%s'
 # "Compass" as in Larry Fish's cave surveying package, so probably shouldn't
 # be translated
 en:324 Compass PLT files
 fr:324 Fichier Compass PLT
+de:324 Compass PLT Datei
 it:324 File Compass PLT
 # "CMAP" is Bob Thrun's cave surveying package.
 en:325 CMAP XYZ files
 fr:325 Fichier CMAP XYZ
+de:325 CAMP XYZ Datei
 it:325 File CMAP XYZ
 # title of message box
 en:326 Modified Presentation
 fr:326 Pr&eacute;sentation modifi&eacute;e
+de:326 Modifizierte Pr&auml;sentation
 it:326 Presentazione Modificata
 # and the question in that box
 en:327 The current presentation has been modified.  Abandon unsaved changes?
 fr:327 La pr&eacute;sentation en cours a &eacute;t&eacute; modifi&eacute;e. Perte des changements non sauv&eacute;s?
+de:327 Die aktuelle Pr&auml;sentation wurde ver&auml;ndert. Abbrechen, ohne die &Auml;nderungen zu speichern?
 it:327 La presentazione corrente &eacute; stata modificata. Abbandonare i cambiamenti non salvati?
 #
 en:328 No matches were found.
@@ -3389,7 +3432,7 @@ sk:335 Nadmorsk&aacute; v&yacute;&scaron;ka
 ro:335 Altitudine
 # error if you try to drag multiple files to the aven window
 en:336 You may only view one 3d file at a time.
-fr:336 Vous ne pouvez afficher qu'un fichier 3d &agrave; la fois
+fr:336 Vous ne pouvez afficher qu'un fichier image 3d &agrave; la fois
 de:336 Es kann nur eine 3D-Datei zugleich angezeigt werden.
 pt:336 S&oacute; &eacute; poss&iacute;vel examinar um arquivo 3d de cada vez
 ca:336 Sols es pot visualitzar un fitxer 3d alhora.
@@ -3397,7 +3440,7 @@ es:336 Solo se puede visualizar un archivo 3d a la vez.
 it:336 &Eacute; possibile visualizzare solamente un file 3D alla volta.
 sk:336 M&ocirc;&zcaron;ete prehliada&tcaron; iba jeden 3D s&uacute;bor
 ro:336 Puteti vizualiza doar un fisier 3d odata
-#
+# cf 373
 en:337 @Side Panel
 fr:337 @Vue lat&eacute;rale
 de:337 @Seitliches Kontrollfeld
@@ -3498,6 +3541,7 @@ sk:345 gr&aacute;dy
 ro:345 gr.cent
 #ro: 345 grade centezimale
 #
+# Draws 3D passages
 # TRANSLATE de ca es
 en:346 Passage @Tubes##Ctrl+T
 fr:346 Galeries @Tubulaires##Ctrl+T
@@ -3506,125 +3550,159 @@ it:346 Passaggi come @Tubi##Ctrl+T
 #
 en:347 @Preferences...
 fr:347 @Pr&eacute;f&eacute;rences...
+de:347 @Einstellungen...
 it:347 @Preferenze...
 #
 en:348 Draw passage walls
 fr:348 D&eacute;ssiner les parois
+de:348 W&auml;nde einzeichnen
 it:348 Disegna le pareti
 #
 en:349 Estimate LRUD readings based on heuristics
-fr:349 Estimation heuristique des dimenssions de galerie
+fr:349 Estimation heuristique des dimensions de galerie
+de:349 LROU-Werte heuristisch sch&auml;tzen
 it:349 Stima lel letture DSSS con ragionamento euristico
 #
 en:350 Mark survey stations with crosses
 fr:350 Marquer les stations par une croix
+de-de,de-ch:350 Messpunkte durch Kreuze markieren
+de:    350 Me&szlig;punkte durch Kreuze markieren
 it:350 Segna le stazioni con croci
 #
 en:351 Highlight stations marked as entrances
 fr:351 Montrer les entr&eacute;es
+de:351 Punkte an den Eing&auml;ngen hervorheben
 it:351 Evidenzia le stazioni segnate come ingressi
 #
 en:352 Highlight stations marked as fixed points
 fr:352 Montrer les points fixes
+de:352 Festpunkte hervorheben
 it:352 Evidenzia le stazioni segnate come punti fissi
 #
 en:353 Highlight stations which are exported
 fr:353 Montrer les stations export&eacute;es
+de:353 Exportierte Punkte hervorheben
 it:353 Evidenzia le stazioni che sono esportate
 #
 en:354 Mark survey stations with their names
 fr:354 Afficher les stations par leurs noms
+de-de,de-ch:354 Messpunkte mit ihren Namen beschriften
+de:354     Me&szlig;punkte mit ihren Namen beschriften
 it:354 Segna le stazioni con i loro nomi
 #
 en:355 Allow names to overlap on the display (faster)
 fr:355 Permettre aux noms de se recouvrir (affichage plus rapide)
+de:355 &Uuml;berlappende Beschriftungen zulassen (schneller)
 it:355 Permetti che i nomi si sovrappongano (pi&acute; veloce)
 #
 #
-# TRANSLATE de pt sk
+# TRANSLATE pt sk
 en:356 Full Screen @Mode##F11
 fr:356 @Mode Plein Ecran##F11
-de,pt:356 Full S@creen Mode##F11
+de:356 @Vollbild-Modus##F11
+pt:356 Full S@creen Mode##F11
 it:356 @Modo schermo pieno##F11
 sk:356 F@ull Screen Mode##F11
 #
 en:357 Display underground survey legs
 fr:357 Afficher les vis&eacute;es sous-terraines
+de:357 Strecken unter Grund anzeigen
 it:357 Mostra i tiri del rilievo sotteraneo
 #
 en:358 Display surface survey legs
 fr:358 Afficher les vis&eacute;es de surface
+de:358 Oberfl&auml;chenstrecken anzeigen
 it:358 Mostra i tiri del rilievo di superficie
 #
 en:359 Colour surface surveys by depth
 fr:359 Couleur de la topo de surface en fonction de l'altitude
+de:359 Oberfl&auml;chenvermessung nach H&ouml;he einf&auml;rben
 it:359 Colora i rilievi superficiali per la profondit&aacute;
 #
 en:360 Draw surface legs with dashed lines
 fr:360 Repr&eacute;senter les vis&eacute;es de surfaces par des pointill&eacute;s
+de:360 Oberfl&auml;chenstrecken gestrichelt zeichnen
 it:360 Disegna i tiri in superficie con linee tratteggiate
 #
 en:361 Draw a grid
 fr:361 Afficher une grille
+de:361 Gitter einzeichnen
 it:361 Disegna una griglia
 #
 en:362 metric units
 fr:362 m&egrave;tres
+de:362 Meter
 it:362 metri
 #
 en:363 imperial units
 fr:363 mesures anglaises
+de:363 englische Einheiten
 it:363 unit&aacute; inglesi
-#
-en:364 degrees
-fr:364 degr&eacute;s
-it:364 gradi sessagesimali
+# 364-365 c.f. 343-345
+en:364 degrees (&deg;)
+fr:364 degr&eacute;s (&deg;)
+de:364 Altgrad (&deg;)
+it:364 gradi sessagesimali (&deg;)
 #
 en:365 grads
 fr:365 grades
+de:365 Neugrad (gon)
 it:365 gradi decimali
 #
 en:366 Display measurements in
 fr:366 Afficher les distances en
+de:366 L&auml;ngen anzeigen in
 it:366 Mostra le distanze in
 #
 en:367 Display angles in
 fr:367 Afficher les angles en
+de:367 Winkel anzeigen in
 it:367 Mostra gli angoli in
-#
+# reverses the sense of the mouse controls
 en:368 Reverse the sense of the controls
 fr:368 Inverser le sens des contr&ocirc;les
 it:368 Inverte il senso dei controlli
-#
+# cf 277
 en:369 Display scale bar
 fr:369 Afficher l'&eacute;chelle
+de:369 Ma&szlig;stab anzeigen
+de-ch:369 Massstab anzeigen
 it:369 Mostra la scala
-#
+# cf 276
 en:370 Display depth bar
 fr:370 Afficher la barre de profondeur
+de:370 Tiefenskala anzeigen
 it:370 Mostra barra delle profondit&aacute;
-#
+# cf 274
 en:371 Display compass
 fr:371 Afficher la boussole
+de-de,de-ch:371 Kompass anzeigen
+de:         371 Kompa&szlig; anzeigen
 it:371 Mostra bussola
-#
+# cf 275
 en:372 Display clinometer
 fr:372 Afficher le clinom&egrave;tre
+de:372 Neigungsmesser anzeigen
 it:372 Mostra clinometro
-#
+# cf 337
 en:373 Display side panel
 fr:373 Afficher le panneau lat&eacute;ral
+de:373 Seitliches Kontrollfeld anzeigen
 it:373 Mostra pannello laterale
 #
 # XXX 374, 375
 #
-# labels for tabbed side panel:
+# labels for tabbed side panel
+#
+# this is for the tab with the tree hierarchy of survey station names
 en:376 Surveys
 fr:376 Topographies
+de:376 Vermessung
 it:376 Rilievi
-#
+# c.f. 216
 en:377 Presentation
 fr:377 Pr&eacute;sentation
+de:377 Pr&auml;sentation
 it:377 Presentazione
 # cf 195
 en:378 Easting
@@ -3666,14 +3744,16 @@ ro:381 Initializare @pagina...
 # TRANSLATE it
 en:382 @Export as...
 fr:382 @Exporter sous...
+de:382 @Exportieren als...
 it:382 E@xport as...
 # XXX 383 384 385 386 387 388 389
 # for about box:
 en:390 System Information:
 fr:390 Syst&egrave;me d'information:
+de:390 Systeminformation:
 it:390 Informazioni sul Sistema:
 # Title of the print preview dialog
-# TRANSLATE ca es it sk de pt-br check translations culled from elsewhere
+# TRANSLATE ca es it sk pt-br check translations culled from elsewhere
 en:398 Print Preview
 fr:398 Aper&ccedil;u avant impression
 de:398 Druckvorschau
@@ -3734,6 +3814,7 @@ ro:403 &amp;Portiuni de suprafata ale topografiei
 # "%s" is replaced by the invalid expression
 en:404 Invalid regular expression: %s
 fr:404 Expression r&eacute;guli&egrave;re invalide: %s
+de:404 Ung&uuml;ltiger regul&auml;rer Ausdruck: %s
 #
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
@@ -3767,56 +3848,45 @@ sk:502 Zru&scaron;en&eacute;: %s
 ro:502 Eliminat: %s
 #
 # for extend:
-en:600 Don't understand command `%s' in config, line %i
-fr:600 Commande incomprise `%s', &agrave; la ligne %i de la configuration
+en:510 Failed to find station %s
+fr:510 La station %s n'a pas &eacute;t&eacute; trouv&eacute;e
 #
-en:601 Unexpected content `%s' in config, line %i
-fr:601 Contenu inattendu `%s', &agrave; la ligne %i de la configuration
+en:511 Failed to find leg %s -> %s
+fr:511 Vis&eacute;e %s -> %s non trouv&eacute;
 #
-en:602 Command without station name in config, line %i
-fr:602 Commande sans nom de station dans la configuration &agrave; la ligne %i
+en:512 Starting from station %s
+fr:512 D&eacute;but &agrave; la station %s
+# TRANSLATE fr (changed from "Plotting" to "Extending")
+en:513 Extending to the left from station %s
+fr:513 Dessin vers la gauche en partant de la station %s
+# TRANSLATE fr (changed from "Plotting" to "Extending")
+en:514 Extending to the right from station %s
+fr:514 Dession vers la droite en partant de la station %s
+# TRANSLATE fr (changed from "Plotting" to "Extending")
+en:515 Extending to the left from leg %s -> %s
+fr:515 Dessin vers la gauche en partant de la vis&eacute;e %s -> %s
+# TRANSLATE fr (changed from "Extending" to "Extending")
+en:516 Extending to the right from leg %s -> %s
+fr:516 Dessin vers la droite en partant de la vis&eacute;e %s -> %s
+# TRANSLATE fr (changed "survey" -> "survey loop")
+en:517 Breaking survey loop at station %s
+fr:517 Arr&ecirc;t de la topo &agrave; la station %s
+# TRANSLATE fr (changed "survey" -> "survey loop")
+en:518 Breaking survey loop at leg %s -> %s
+fr:518 Arr&ecirc;t de la topo &agrave; la vis&eacute;e %s -> %s
+# TRANSLATE fr extend -> plot
+en:519 Swapping extend direction from station %s
+fr:519 Change la direction de dessin &agrave; partir de la station %s
+# TRANSLATE fr extend -> plot
+en:520 Swapping extend direction from leg %s -> %s
+fr:520 Change la direction du dession &agrave; partion de la vis&eacute;e %s -> %s
 #
-en:603 Failed to find station %s in config, line %i
-fr:603 La station %s n'a pas &eacute;t&eacute; trouv&eacute;e &agrave; la ligne %i de la configuration
-#
-en:604 Starting from station %s
-fr:604 D&eacute;but &agrave; la station %s
-#
-en:605 Plotting to the left from station %s
-fr:605 Dessin vers la gauche en partant de la station %s
-#
-en:606 Failed to find leg %s -> %s in config, line %i
-fr:606 Vis&eacute;e %s -> %s non trouv&eacute; &agrave; la ligne %i de la configuration
-#
-en:607 Plotting to the left from leg %s -> %s
-fr:607 Dessin vers la gauche en partant de la vis&eacute;e %s -> %s
-#
-en:608 Plotting to the right from station %s
-fr:608 Dession vers la droite en partant de la station %s
-#
-en:609 Plotting to the right from leg %s -> %s
-fr:609 Dessin vers la droite en partant de la vis&eacute;e %s -> %s
-#
-en:610 Breaking survey at station %s
-fr:610 Arr&ecirc;t de la topo &agrave; la station %s
-#
-en:611 Breaking survey at leg %s -> %s
-fr:611 Arr&ecirc;t de la topo &agrave; la vis&eacute;e %s -> %s
-#
-en:612 Error reading line %i from spec file
-fr:612 Erreur de lecture &agrave; la ligne %i du fichier de sp&eacute;cification
-#
-en:613 Applying specfile: `%s'
-fr:613 Application du fichier de sp&eacute;cification: `%s'
-#
-en:614 Writing out .3d file...
-fr:614 &Eacute;criture du fichier .3dc...
-#
-en:615 Swapping plot direction from station %s
-fr:615 Change la direction de dessin &agrave; partir de la station %s
-#
-en:616 Swapping plot direction from leg %s -> %s
-fr:616 Change la direction du dession &agrave; partion de la vis&eacute;e %s -> %s
+en:521 Applying specfile: `%s'
+fr:521 Application du fichier de sp&eacute;cification: `%s'
+# Used to tell the user that a file is being written - %s is the filename
+# TRANSLATE fr adapted message
+en:522 Writing %s...
+fr:522 &Eacute;criture %s...
 #
 # "don't extract" messages - these are compiled into the programs
 #

@@ -14,7 +14,8 @@ TOBE Changes in 1.1.8:
 
 * aven: Disable "Highlight exported points" if there aren't any.
 
-* Updates to French translation from Michel Bovey.
+* Updates to French translation from Michel Bovey.  Also updated German
+  translation.
 
 * (Unix version): test suite: fix smoke test to pass even without X running
   (it was meant to but the code had a bug).

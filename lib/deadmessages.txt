@@ -803,3 +803,15 @@ it: 87 Errore nella scrittura del file per la stampa
 sk: 87 Chyba pri z&aacute;pise na tla&ccaron;iare&ncaron;
 ro: 87 Eroare in scrierea fisierului pentru imprimare
 #
+en:600 Don't understand command `%s' in config, line %i
+fr:600 Commande incomprise `%s', &agrave; la ligne %i de la configuration
+#
+en:601 Unexpected content `%s' in config, line %i
+fr:601 Contenu inattendu `%s', &agrave; la ligne %i de la configuration
+#
+en:602 Command without station name in config, line %i
+fr:602 Commande sans nom de station dans la configuration &agrave; la ligne %i
+#
+en:612 Error reading line %i from spec file
+fr:612 Erreur de lecture &agrave; la ligne %i du fichier de sp&eacute;cification
+#

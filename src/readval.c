@@ -467,7 +467,7 @@ read_date(int *py, int *pm, int *pd)
 	 nextch();
 	 d = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
 	 if (d < 1 || d > last_day(y, m)) {
-	    compile_error_skip(/*Invalid day of month*/87);
+	    compile_error_skip(/*Invalid day of the month*/87);
 	    LONGJMP(file.jbSkipLine);
 	    return; /* for brain-fried compilers */
 	 }
