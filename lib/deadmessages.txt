@@ -805,13 +805,17 @@ ro: 87 Eroare in scrierea fisierului pentru imprimare
 #
 en:600 Don't understand command `%s' in config, line %i
 fr:600 Commande incomprise `%s', &agrave; la ligne %i de la configuration
+it:600 Non capisco il comando `%s' nella linea di configurazione %i
 #
 en:601 Unexpected content `%s' in config, line %i
 fr:601 Contenu inattendu `%s', &agrave; la ligne %i de la configuration
+it:601 Contenuto inatteso `%s' nella linea di configurazione %i
 #
 en:602 Command without station name in config, line %i
 fr:602 Commande sans nom de station dans la configuration &agrave; la ligne %i
+it:602 Comando senza il nome della stazione nella linea di configurazione %i
 #
 en:612 Error reading line %i from spec file
 fr:612 Erreur de lecture &agrave; la ligne %i du fichier de sp&eacute;cification
+it:612 Errore di lettura alla linea %i del file di specifiche
 #
