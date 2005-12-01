@@ -545,6 +545,7 @@ es: 38 Mem&oacute;ria insuficiente %.0s
 it: 38 Memoria insufficiente %.0s
 sk: 38 Nedostato&ccaron;n&aacute; pam&auml;&tcaron; %.0s
 ro: 38 Memorie insuficienta %.0s
+#
 en: 39 Unknown instrument `%s'
 fr: 39 Instrument `%s' inconnu
 de: 39 Unbekanntes Instrument `%s'
@@ -552,7 +553,7 @@ pt: 39 Instrumento `%s' desconhecido
 ca: 39 Instrument `%s' desconegut
 es: 39 Instrumento `%s' desconocido
 it: 39 Strumento `%s' sconosciuto
-sk: 39 Nezn&aacute;ma pom&ocirc;cka
+sk: 39 Nezn&aacute;ma pom&ocirc;cka `%s'
 ro: 39 Instrument necunoscut `%s'
 # DECLINATION is a built-in keyword, so best not to translate
 en: 40 Scale factor must be 1.0 for DECLINATION
@@ -658,7 +659,7 @@ es: 49 Utilizaci&oacute;n
 it: 49 Utilizzo
 sk: 49 Pou&zcaron;itie
 ro: 49 Folosire
-#
+# %s is a placeholder for the name of the station
 en: 50 Survey leg with same station (`%s') at both ends - typing error?
 en-us: 50 Survey shot with same station (`%s') at both ends - typing error?
 fr: 50 Vis&eacute;e avec 2 extr&eacute;mit&eacute;s identiques (`%s') - erreur de frappe?
@@ -669,7 +670,8 @@ ca: 50 Tirada amb la mateixa estaci&oacute; a ambdues puntes (`%s') - error de t
 es: 50 Tirada con la misma estaci&oacute;n en ambas puntas (`%s') - error de transcripci&oacute;n?
 it: 50 Alle estremit&aacute; di una battuta c'&eacute; la stessa stazione (`%s') - Errore di trascrizione?
 sk: 50 Z&aacute;mera s t&yacute;m ist&yacute;m bodom (`%s') na oboch koncoch - preklep?
-ro: 50 Masuratoare cu acelasi punct la ambele capete - eroare de transcriere?
+ro: 50 Masuratoare cu acelasi punct (`%s') la ambele capete - eroare de transcriere?
+#
 en: 51 Clino reading over 90 degrees (absolute value)
 en-us: 51 Clino over 90 degrees (absolute value)
 fr: 51 Lecture de clino sup&eacute;rieure &agrave; 90 degr&eacute;s (en value absolue)
@@ -1553,6 +1555,7 @@ it:132 Sviluppo spaziale = %7.2fm (%7.2fm corretto)
 #ital:132 Lunghezza totale dei tiri = %7.2fm (%7.2fm corretto)
 sk:132 Celkov&aacute; d&lacute;&zcaron;ka z&aacute;mer = %7.2fm (%7.2fm nastaven&eacute;)
 ro:132 Lungimea totala a masuratorilor topografiei = %7.2fm (%7.2fm ajustat)
+#
 en:133 Total plan length of survey legs = %7.2fm
 en-us:133 Total plan length of survey shots = %7.2fm
 fr:133 Longueur totale en projection horizontale = %7.2fm
@@ -2279,7 +2282,7 @@ ro:200 Factorul *UNITS trebie sa fie diferit de zero
 # TRANSLATE pt
 en:201 @Screenshot...
 fr:201 @Copie d'&eacute;cran...
-de:201 Bildschirm@abzug
+de:201 Bildschirm@abzug...
 ca:201 @Captura de pantalla...
 es:201 @Captura de pantalla...
 pt:201 S@creenshot...
@@ -2645,7 +2648,6 @@ fr:237 Pe@rspective
 de:237 @Perspektive
 ca:237 Perspecti@va
 es:237 Perspecti@va
-ro:237 Perspecti@ve
 pt,sk:237 Pe@rspective
 it:237 Prospetti@va
 ro:237 Perspecti@va
@@ -3314,14 +3316,14 @@ it:311 @Nuova PResentazione
 ro:311 Prezentare @noua
 #
 en:312 Open @Presentation...
-fr:312 Ouvrir une @Pr&eacute;sentation
+fr:312 Ouvrir une @Pr&eacute;sentation...
 de:312 @Pr&auml;sentation &ouml;ffnen...
-pt:312 Abrir A@presenta&ccedil;&atilde;o
+pt:312 Abrir A@presenta&ccedil;&atilde;o...
 ca:312 Obrir @Presentaci&oacute;...
 es:312 Abrir @Presentaci&oacute;n...
-it:312 Apri @Presentazione
+it:312 Apri @Presentazione...
 sk:312 Otvori&tcaron; @prezent&aacute;ciu...
-ro:312 Deschidere @prezentare
+ro:312 Deschidere @prezentare...
 #
 en:313 @Save Presentation
 fr:313 @Sauver la Pr&eacute;sentation
@@ -3363,7 +3365,7 @@ de:317 @Exportieren als Film...
 ca:317 @Exporta com Animaci&oacute;...
 es:317 @Exporta como Animaci&oacute;n...
 it:317 @Esporta come Animazione...
-ro:317 @Exporta ca Animatie
+ro:317 @Exporta ca Animatie...
 # TRANSLATE it
 en:318 @Bounding Box##Ctrl+B
 fr:318 @Bordures du cadre##Ctrl+B
@@ -3471,8 +3473,8 @@ de:329 Gel&auml;nde@modell &ouml;ffnen...
 pt:329 Abrir @Terreno...
 ca:329 Obrir @Terreny...
 es:329 Abrir @Terreno...
-it:329 Apri Modello Digitale @Terrestre
-sk:329 Otvori&tcaron; digit&aacute;lny model @ter&eacute;nu
+it:329 Apri Modello Digitale @Terrestre...
+sk:329 Otvori&tcaron; digit&aacute;lny model @ter&eacute;nu...
 ro:329 Deschidere @Model Teren...
 # UNUSED
 en:330 Solid Su@rface
@@ -3663,7 +3665,7 @@ de:347 @Einstellungen...
 ca:347 @Prefer&egrave;ncies...
 es:347 @Preferencias...
 it:347 @Preferenze...
-ro:347 @Preferinte
+ro:347 @Preferinte...
 #
 en:348 Draw passage walls
 fr:348 D&eacute;ssiner les parois
