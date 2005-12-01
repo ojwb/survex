@@ -229,7 +229,7 @@ delimword(char *ln, char** lr)
 }
 
 static void
-parseconfigline(char *ln)
+parseconfigline(const char *fnm, char *ln)
 {
    point *p;
    const stn *s;
@@ -243,34 +243,36 @@ parseconfigline(char *ln)
 
    if (strcmp(ln, "*start")==0) {
       ln = delimword(lc, &lc);
-      if (*ln == 0) fatalerror(/*Command without station name in config, line %i*/602, lineno);
+      if (*ln == 0)
+	 fatalerror_in_file(fnm, lineno, /*Expecting station name*/28);
       for (p = headpoint.next; p != NULL; p = p->next) {
 	 for (s = p->stns; s; s = s->next) {
 	    if (strcmp(s->label, ln)==0) {
 	       start = p;
-	       printf(msg(/*Starting from station %s*/604),ln);
+	       printf(msg(/*Starting from station %s*/512),ln);
 	       putnl();
 	       goto loopend;
 	    }
 	 }
       }
-      warning(/*Failed to find station %s in config, line %i*/603, ln, lineno);
+      warning_in_file(fnm, lineno, /*Failed to find station %s*/510, ln);
    } else if (strcmp(ln, "*eleft")==0) {
       char *ll = delimword(lc, &lc);
-      if (*ll == 0) fatalerror(/*Command without station name in config, line %i*/602,lineno);
+      if (*ll == 0)
+	 fatalerror_in_file(fnm, lineno, /*Expecting station name*/28);
       ln = delimword(lc, &lc);
       if (*ln == 0) { /* One argument, look for point to switch at. */
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
-		  printf(msg(/*Plotting to the left from station %s*/605),ll);
+		  printf(msg(/*Extending to the left from station %s*/513), ll);
 		  putnl();
 		  p->dir = ELEFT;
 		  goto loopend;
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
+	 warning_in_file(fnm, lineno, /*Failed to find station %s*/510, ll);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -282,7 +284,7 @@ parseconfigline(char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
-			   printf(msg(/*Plotting to the left from leg %s -> %s*/607), s->label, t->label);
+			   printf(msg(/*Extending to the left from leg %s -> %s*/515), s->label, t->label);
 			   putnl();
 			   l->dir = ELEFT;
 			   goto loopend;
@@ -292,24 +294,25 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find leg %s-%s in config, line %i*/606, ll, ln, lineno);
+	 warning_in_file(fnm, lineno, /*Failed to find leg %s -> %s*/511, ll, ln);
       }
    } else if (strcmp(ln, "*eright")==0) {
       char *ll = delimword(lc, &lc);
-      if (*ll == 0) fatalerror(/*Command without station name in config, line %i*/602,lineno);
+      if (*ll == 0)
+	 fatalerror_in_file(fnm, lineno, /*Expecting station name*/28);
       ln = delimword(lc, &lc);
       if (*ln == 0) { /* One argument, look for point to switch at. */
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
-		  printf(msg(/*Plotting to the right from station %s*/608),ll);
+		  printf(msg(/*Extending to the right from station %s*/514), ll);
 		  putnl();
 		  p->dir = ERIGHT;
 		  goto loopend;
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
+	 warning_in_file(fnm, lineno, /*Failed to find station %s*/510, ll);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -321,8 +324,8 @@ parseconfigline(char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
-			   printf(msg(/*Plotting to the right from leg %s -> %s*/609), s->label, t->label);
-			   printf("\n");
+			   printf(msg(/*Extending to the right from leg %s -> %s*/516), s->label, t->label);
+			   putnl();
 			   l->dir=ERIGHT;
 			   goto loopend;
 			}
@@ -331,24 +334,25 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find leg %s-%s in config, line %i*/606, ll, ln, lineno);
+	 warning_in_file(fnm, lineno, /*Failed to find leg %s -> %s*/511, ll, ln);
       }
    } else if (strcmp(ln, "*eswap")==0) {
       char *ll = delimword(lc, &lc);
-      if (*ll == 0) fatalerror(/*Command without station name in config, line %i*/602,lineno);
+      if (*ll == 0)
+	 fatalerror_in_file(fnm, lineno, /*Expecting station name*/28);
       ln = delimword(lc, &lc);
       if (*ln == 0) { /* One argument, look for point to switch at. */
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
-		  printf(msg(/*Swapping plot direction from station %s*/615),ll);
+		  printf(msg(/*Swapping extend direction from station %s*/519),ll);
 		  putnl();
 		  p->dir = ESWAP;
 		  goto loopend;
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
+	 warning_in_file(fnm, lineno, /*Failed to find station %s*/510, ll);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -360,8 +364,8 @@ parseconfigline(char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
-			   printf(msg(/*Swapping plot direction from leg %s -> %s*/616), s->label, t->label);
-			   printf("\n");
+			   printf(msg(/*Swapping extend direction from leg %s -> %s*/520), s->label, t->label);
+			   putnl();
 			   l->dir = ESWAP;
 			   goto loopend;
 			}
@@ -370,24 +374,25 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find leg %s-%s in config, line %i*/606, ll, ln, lineno);
+	 warning_in_file(fnm, lineno, /*Failed to find leg %s -> %s*/511, ll, ln);
       }
    } else if (strcmp(ln, "*break")==0) {
       char *ll = delimword(lc, &lc);
-      if (*ll == 0) fatalerror(/*Command without station name in config, line %i*/602,lineno);
+      if (*ll == 0)
+	 fatalerror_in_file(fnm, lineno, /*Expecting station name*/28);
       ln = delimword(lc, &lc);
       if (*ln == 0) { /* One argument, look for point to break at. */
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
-		  printf(msg(/*Breaking survey at station %s*/610), ll);
+		  printf(msg(/*Breaking survey loop at station %s*/517), ll);
 		  putnl();
 		  p->fBroken = 1;
 		  goto loopend;
 	       }
 	    }
 	 }
-	 warning(/*Failed to find station %s in config, line %i*/603, ll, lineno);
+	 warning_in_file(fnm, lineno, /*Failed to find station %s*/510, ll);
       } else { /* Two arguments look for a specific leg */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
@@ -399,7 +404,7 @@ parseconfigline(char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
-			   printf(msg(/*Breaking survey at leg %s -> %s*/611), s->label, t->label);
+			   printf(msg(/*Breaking survey loop at leg %s -> %s*/518), s->label, t->label);
 			   putnl();
 			   l->broken = (b ? BREAK_TO : BREAK_FR);
 			   goto loopend;
@@ -409,15 +414,16 @@ parseconfigline(char *ln)
 	       }
 	    }
 	 }
-	 warning(/*Failed to find leg %s-%s in config, line %i*/606, ll, ln, lineno);
+	 warning_in_file(fnm, lineno, /*Failed to find leg %s -> %s*/511, ll, ln);
       }
    } else {
-      fatalerror(/*Don't understand command `%s' in config, line %i*/600, ln, lineno);
+      fatalerror_in_file(fnm, lineno, /*Unknown command `%s'*/12, ln);
    }
  loopend:
    ln = delimword(lc, &lc);
    if (*ln != 0) {
-      fatalerror(/*Unexpected content `%s' in config, line %i*/601, ln, lineno);
+      fatalerror_in_file(fnm, lineno, /*End of line not blank*/15);
+      /* FIXME: give ln as context? */
    }
 }
 
@@ -523,22 +529,20 @@ main(int argc, char **argv)
 
    if (specfile) {
       FILE *fs = NULL;
-      printf(msg(/*Applying specfile: `%s'*/613), specfile);
+      char *fnm_used;
+      printf(msg(/*Applying specfile: `%s'*/521), specfile);
       putnl();
-      fs = fopenWithPthAndExt("", specfile, NULL, "r", NULL);
+      fs = fopenWithPthAndExt("", specfile, NULL, "r", &fnm_used);
       if (fs == NULL) fatalerror(/*Unable to open file*/93, specfile);
       while (!feof(fs)) {
-	 char *lbuf = NULL;
-	 lbuf = getline_alloc(fs, 32);
+	 char *lbuf = getline_alloc(fs, 32);
 	 lineno++;
-	 if (!lbuf) {
-	    error(/*Error reading line %i from spec file*/612, lineno);
-	    osfree(lbuf);
-	    break;
-	 }
-	 parseconfigline(lbuf);
+	 if (!lbuf)
+	    fatalerror_in_file(fnm_used, lineno, /*Error reading file*/18);
+	 parseconfigline(fnm_used, lbuf);
 	 osfree(lbuf);
       }
+      osfree(fnm_used);
    }
 
    if (start == NULL) { /* i.e. start wasn't specified in specfile */
@@ -586,7 +590,7 @@ main(int argc, char **argv)
       }
    }
 
-   printf(msg(/*Writing out .3d file...*/614));
+   printf(msg(/*Writing %s...*/522), fnm_out);
    putnl();
    pimg_out = img_open_write(fnm_out, desc, fTrue);
 
