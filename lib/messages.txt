@@ -552,7 +552,7 @@ pt: 39 Instrumento `%s' desconhecido
 ca: 39 Instrument `%s' desconegut
 es: 39 Instrumento `%s' desconocido
 it: 39 Strumento `%s' sconosciuto
-sk: 39 Nezn&aacute;ma pom&ocirc;cka
+sk: 39 Nezn&aacute;ma pom&ocirc;cka `%s'
 ro: 39 Instrument necunoscut `%s'
 # DECLINATION is a built-in keyword, so best not to translate
 en: 40 Scale factor must be 1.0 for DECLINATION
@@ -669,7 +669,7 @@ ca: 50 Tirada amb la mateixa estaci&oacute; a ambdues puntes (`%s') - error de t
 es: 50 Tirada con la misma estaci&oacute;n en ambas puntas (`%s') - error de transcripci&oacute;n?
 it: 50 Alle estremit&aacute; di una battuta c'&eacute; la stessa stazione (`%s') - Errore di trascrizione?
 sk: 50 Z&aacute;mera s t&yacute;m ist&yacute;m bodom (`%s') na oboch koncoch - preklep?
-ro: 50 Masuratoare cu acelasi punct la ambele capete - eroare de transcriere?
+ro: 50 Masuratoare cu acelasi punct (`%s') la ambele capete - eroare de transcriere?
 en: 51 Clino reading over 90 degrees (absolute value)
 en-us: 51 Clino over 90 degrees (absolute value)
 fr: 51 Lecture de clino sup&eacute;rieure &agrave; 90 degr&eacute;s (en value absolue)
