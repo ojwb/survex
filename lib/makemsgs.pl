@@ -316,5 +316,11 @@ sub sanity_check {
        print STDERR "Warning: $where has menu accelerator but original doesn't\n";
    } elsif ($msg !~ /\#\#/ && $orig =~ /\#\#/) {
        print STDERR "Warning: $where is missing menu accelerator\n";
+   } elsif ($orig =~ /\#\#(.*)/) {
+       my $acc_o = $1;
+       my ($acc_m) = $msg =~ /\#\#(.*)/;
+       if ($acc_o ne $acc_m) {
+	   print STDERR "Warning: $where has menu accelerator $acc_m instead of $acc_o\n";
+       }
    }
 }

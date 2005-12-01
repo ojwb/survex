@@ -2583,10 +2583,10 @@ ro:229 Model digital al terenului
 en:231 Au@to-Rotate##Space
 fr:231 Rotation @Automatique##Space
 de:231 Auto@matisch rotieren##Space
-ca:231 @Auto-Rotar##Espai
-es:231 @Auto-Rotar##Espacio
-it:231 @Auto-Rotazione##Spazio
-ro:231 @Auto-rotatie##Spatiu
+ca:231 @Auto-Rotar##Space
+es:231 @Auto-Rotar##Space
+it:231 @Auto-Rotazione##Space
+ro:231 @Auto-rotatie##Space
 #
 en:232 Speed @Up
 fr:232 A@cc&eacute;l&egrave;re
