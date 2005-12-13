@@ -3366,13 +3366,13 @@ ca:317 @Exporta com Animaci&oacute;...
 es:317 @Exporta como Animaci&oacute;n...
 it:317 @Esporta come Animazione...
 ro:317 @Exporta ca Animatie...
-# TRANSLATE it
+#
 en:318 @Bounding Box##Ctrl+B
 fr:318 @Bordures du cadre##Ctrl+B
 de:318 @Begrenzendes Rechteck##Ctrl+B
 ca:318 @L&iacute;mits del Quadre##Ctrl+B
 es:318 @Bordes del Cuadro##Ctrl+B
-it:318 Bo@unding Box##Ctrl+B
+it:318 B@ordo riquadro##Ctrl+B
 ro:318 Cadr@u##Ctrl+B
 #
 en:319 Select an output filename
@@ -4032,45 +4032,45 @@ en:512 Starting from station %s
 fr:512 D&eacute;but &agrave; la station %s
 it:512 Inizio dalla stazione %s
 ro:512 Incepind cu punctul de statie %s
-# TRANSLATE fr it (changed from "Plotting" to "Extending")
+# TRANSLATE fr (changed from "Plotting" to "Extending")
 en:513 Extending to the left from station %s
 fr:513 Dessin vers la gauche en partant de la station %s
-it:513 Disegno verso sinistra a partire dalla stazione %s
+it:513 Sviluppo verso sinistra a partire dalla stazione %s
 ro:513 Extindere spre stanga incepind cu punctul de statie %s
-# TRANSLATE fr it (changed from "Plotting" to "Extending")
+# TRANSLATE fr (changed from "Plotting" to "Extending")
 en:514 Extending to the right from station %s
 fr:514 Dession vers la droite en partant de la station %s
-it:514 Disegno verso destra a partire dalla stazione %s
+it:514 Sviluppo verso destra a partire dalla stazione %s
 ro:514 Extindere spre dreapta incepind cu punctul de statie %s
-# TRANSLATE fr it (changed from "Plotting" to "Extending")
+# TRANSLATE fr (changed from "Plotting" to "Extending")
 en:515 Extending to the left from leg %s -> %s
 fr:515 Dessin vers la gauche en partant de la vis&eacute;e %s -> %s
-it:515 Disegno verso sinistra a partire dal tiro %s -> %s
+it:515 Sviluppo verso sinistra a partire dal tiro %s -> %s
 ro:515 Extindere spre stanga incepind cu masuratoarea %s -> %s
-# TRANSLATE fr it (changed from "Plotting" to "Extending")
+# TRANSLATE fr (changed from "Plotting" to "Extending")
 en:516 Extending to the right from leg %s -> %s
 fr:516 Dessin vers la droite en partant de la vis&eacute;e %s -> %s
-it:516 Disegno verso destra a partire dal tiro %s -> %s
+it:516 Sviluppo verso destra a partire dal tiro %s -> %s
 ro:516 Extindere spre drepta incepind cu masuratoarea %s -> %s
-# TRANSLATE fr it (changed "survey" -> "survey loop")
+# TRANSLATE fr (changed "survey" -> "survey loop")
 en:517 Breaking survey loop at station %s
 fr:517 Arr&ecirc;t de la topo &agrave; la station %s
 it:517 Topografia interrotta alla stazione %s
 ro:517 Topografia intrerupta incepind cu punctul de statie %s 
-# TRANSLATE fr it (changed "survey" -> "survey loop")
+# TRANSLATE fr (changed "survey" -> "survey loop")
 en:518 Breaking survey loop at leg %s -> %s
 fr:518 Arr&ecirc;t de la topo &agrave; la vis&eacute;e %s -> %s
 it:518 Topografia interrotta al tiro %s -> %s
 ro:518 Topografia intrerupta incepind cu masuratoarea %s -> %s
-# TRANSLATE fr it plot -> extend
+# TRANSLATE fr plot -> extend
 en:519 Swapping extend direction from station %s
 fr:519 Change la direction de dessin &agrave; partir de la station %s
-it:519 Cambia la direzione del disegno a partire dalla stazione %s
+it:519 Cambia lo sviluppo del disegno a partire dalla stazione %s
 ro:519 Schimbare directie desen incepind cu punctul de statie %s
-# TRANSLATE fr it plot -> extend
+# TRANSLATE fr plot -> extend
 en:520 Swapping extend direction from leg %s -> %s
 fr:520 Change la direction du dession &agrave; partion de la vis&eacute;e %s -> %s
-it:520 Cambia la direzione del disegno a partire dal tiro %s -> %s
+it:520 Cambia lo sviluppo del disegno a partire dal tiro %s -> %s
 ro:520 Schimbare directie desen incepind cu masuratoarea %s -> %s
 #
 en:521 Applying specfile: `%s'
@@ -4078,7 +4078,7 @@ fr:521 Application du fichier de sp&eacute;cification: `%s'
 it:521 Applicazione del file di specifiche: `%s'
 ro:521 Aplicare fisier de specificatii: `%s'
 # Used to tell the user that a file is being written - %s is the filename
-# TRANSLATE fr it adapted message
+# TRANSLATE fr adapted message
 en:522 Writing %s...
 fr:522 &Eacute;criture %s...
 it:522 Scrittura %s...
