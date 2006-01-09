@@ -1,3 +1,14 @@
+survex (1.0.39) unstable; urgency=low
+
+  * Updates to French translation from Michel Bovey.  Also updates to German,
+    Italian, Catalan, Spanish, and Romanian translations.
+  * test suite: fix smoke test to pass even without X running (it was meant to
+    but the code had a bug).  Bug introduced in 1.0.38.
+  * Updated "Build-Depends:" for the new X library packaging.
+  * Upgrade to debhelper >= 4.
+
+ -- Wookey <wookey@survex.com>  Mon, 09 Jan 2006 15:41:05 +0000
+
 survex (1.0.38) unstable; urgency=low
 
   All changes backported from 1.1.7:
