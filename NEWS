@@ -9,7 +9,7 @@ TOBE Changes in 1.0.39:
   (it was meant to but the code had a bug).  Bug introduced in 1.0.38.
 
 * (Unix version): Debian: Updated "Build-Depends:" for the new X library
-  packaging.
+  packaging; Upgrade to debhelper >= 4.
 
 Changes in 1.0.38 (all backported from 1.1.7):
 

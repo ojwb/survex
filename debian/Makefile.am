@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 EXTRA_DIST = copyright copyright.in survex-aven.files doc-base \
- rules survex-aven.menu watch control changelog dhelp \
+ rules survex-aven.menu watch compat control changelog dhelp \
  survex-svxedit.files survex-svxedit.menu
 
 MAINTAINERCLEANFILES = control
@@ -12,12 +12,12 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $
 	echo Priority: extra >> control
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
 	echo Standards-Version: 3.6.2 >> control
-	: # Need debhelper >= 1.1.17 for DH_OPTIONS to work.
-	echo 'Build-Depends: debhelper (>= 1.1.17), libx11-dev, libxext-dev, libxt-dev, x-dev, xlibs-dev, libwxgtk2.4-dev' >> control
+	: # Need debhelper >= 4 for dh compat level 4.
+	echo 'Build-Depends: debhelper (>= 4), libx11-dev, libxext-dev, libxt-dev, x-dev, xlibs-dev, libwxgtk2.4-dev' >> control
 	echo >> control
 	echo 'Package: ${PACKAGE}' >> control
 	echo Architecture: any >> control
-	echo 'Depends: $${shlibs:Depends}' >> control
+	echo 'Depends: $${misc:Depends}, $${shlibs:Depends}' >> control
 	echo 'Recommends: survex-aven (= ${VERSION})' >> control
 	echo 'Suggests: survex-svxedit (= ${VERSION})' >> control
 	echo 'Description: Cave surveying and mapping software' >> control
@@ -27,7 +27,7 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $
 	echo >> control
 	echo Package: survex-aven >> control
 	echo Architecture: any >> control
-	echo 'Depends: survex (= ${VERSION}), $${shlibs:Depends}' >> control
+	echo 'Depends: survex (= ${VERSION}), $${misc:Depends}, $${shlibs:Depends}' >> control
 	echo Description: sophisticated cave survey viewer for Survex >> control
 	sed 's/^$$/./;s/^/ /' < $(srcdir)/../desc-aven.txt >> control
 	echo >> control

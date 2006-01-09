@@ -3,16 +3,13 @@
 # GPL copyright 1997 to 1999 by Joey Hess.
 #
 # Copyright (C) 2001 Wookey
-# Copyright (C) 2001,2002,2003,2004 Olly Betts
+# Copyright (C) 2001,2002,2003,2004,2005 Olly Betts
 #
 # This is a multibinary package. You can build any of the binary packages
 # independently, via binary-<package> targets.
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
-
-# This is the debhelper compatability version to use.
-export DH_COMPAT=1
 
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
@@ -53,11 +50,11 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	$(MAKE) prefix=`pwd`/debian/tmp/usr install
-	install -d debian/tmp/usr/share/vim/addons/ftdetect
-	install -d debian/tmp/usr/share/vim/addons/syntax
-	install vim/ftdetect/survex.vim debian/tmp/usr/share/vim/addons/ftdetect
-	install vim/syntax/survex.vim debian/tmp/usr/share/vim/addons/syntax
+	$(MAKE) DESTDIR=`pwd`/debian/survex install
+	install -d debian/survex/usr/share/vim/addons/ftdetect
+	install -d debian/survex/usr/share/vim/addons/syntax
+	install -m 0644 vim/ftdetect/survex.vim debian/survex/usr/share/vim/addons/ftdetect
+	install -m 0644 vim/syntax/survex.vim debian/survex/usr/share/vim/addons/syntax
 
 	dh_movefiles
 
@@ -68,29 +65,26 @@ install: build
 binary-common: build install
 	dh_testdir
 	dh_testroot
-#	dh_installdebconf
 	dh_installdocs
-	rm -rf debian/tmp/usr/doc
+	rm -rf debian/survex/usr/doc
 	dh_installexamples
 	dh_installmenu
 #	dh_installemacsen
 #	dh_installmime
-	gzip -9 debian/tmp/usr/share/man/man1/*
+	gzip -9 debian/survex/usr/share/man/man1/*
 	mkdir -p debian/survex-aven/usr/share/man/man1
 	mkdir -p debian/survex-svxedit/usr/share/man/man1
-	mv debian/tmp/usr/share/man/man1/aven.1.gz debian/survex-aven/usr/share/man/man1
-	mv debian/tmp/usr/share/man/man1/svxedit.1.gz debian/survex-svxedit/usr/share/man/man1
+	mv debian/survex/usr/share/man/man1/aven.1.gz debian/survex-aven/usr/share/man/man1
+	mv debian/survex/usr/share/man/man1/svxedit.1.gz debian/survex-svxedit/usr/share/man/man1
 # oddly /usr/bin/svxedit gets into survex and survex-svxedit otherwise
 # FIXME - this can't be the correct way to do this, can it?
-	rm -f debian/tmp/usr/bin/svxedit
+	rm -f debian/survex/usr/bin/svxedit
 	dh_installchangelogs
 	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
-#	dh_makeshlibs
 	dh_installdeb
-#	dh_perl
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
