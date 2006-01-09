@@ -48,7 +48,7 @@ rpm : dist
 	rm -rf BUILD
 	mkdir BUILD
 	: #
-	rpm -bs --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
+	rpmbuild -bs --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
 
 debian : dist
 	: # overkill maybe - we could probably just use this tree
