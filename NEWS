@@ -8,6 +8,9 @@ TOBE Changes in 1.0.39:
 * (Unix version): test suite: fix smoke test to pass even without X running
   (it was meant to but the code had a bug).  Bug introduced in 1.0.38.
 
+* (Unix version): Debian: Updated "Build-Depends:" for the new X library
+  packaging.
+
 Changes in 1.0.38 (all backported from 1.1.7):
 
 * (MS Windows version): Distribution is about a third smaller than 1.1.5
