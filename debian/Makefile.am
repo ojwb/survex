@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 EXTRA_DIST = changelog compat control copyright copyright.in dhelp doc-base\
- rules watch survex.install survex-aven.install survex-survex.install\
+ rules watch survex.install survex-aven.install survex-svxedit.install\
  survex-aven.menu survex-svxedit.menu
 
 MAINTAINERCLEANFILES = control
