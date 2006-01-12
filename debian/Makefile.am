@@ -12,8 +12,9 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $
 	echo Priority: extra >> control
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
 	echo Standards-Version: 3.6.2 >> control
-	: # Need debhelper >= 4 for dh compat level 4.
-	echo 'Build-Depends: debhelper (>= 4), libx11-dev, libxext-dev, x-dev, libwxgtk2.4-dev' >> control
+	: # Need debhelper >= 4 for dh compat level 4; >= 4.2.13 for misc:Depends
+	: # Don't move to compat level 5 yet - debian stable only has 4.2.32 currently.
+	echo 'Build-Depends: debhelper (>= 4.2.13), libx11-dev, libxext-dev, x-dev, libwxgtk2.4-dev' >> control
 	echo >> control
 	echo 'Package: ${PACKAGE}' >> control
 	echo Architecture: any >> control
