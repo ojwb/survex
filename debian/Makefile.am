@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = copyright copyright.in survex-aven.files doc-base \
- rules survex-aven.menu watch compat control changelog dhelp \
- survex-svxedit.files survex-svxedit.menu
+EXTRA_DIST = changelog compat control copyright copyright.in dhelp doc-base\
+ rules watch survex.install survex-aven.install survex-survex.install\
+ survex-aven.menu survex-svxedit.menu
 
 MAINTAINERCLEANFILES = control
 
@@ -13,7 +13,7 @@ control: $(srcdir)/Makefile.am $(srcdir)/../configure.in $(srcdir)/../desc.txt $
 	echo "Maintainer: Wookey <wookey@survex.com>" >> control
 	echo Standards-Version: 3.6.2 >> control
 	: # Need debhelper >= 4 for dh compat level 4.
-	echo 'Build-Depends: debhelper (>= 4), libx11-dev, libxext-dev, libxt-dev, x-dev, xlibs-dev, libwxgtk2.4-dev' >> control
+	echo 'Build-Depends: debhelper (>= 4), libx11-dev, libxext-dev, x-dev, libwxgtk2.4-dev' >> control
 	echo >> control
 	echo 'Package: ${PACKAGE}' >> control
 	echo Architecture: any >> control

@@ -5,9 +5,13 @@ survex (1.0.39) unstable; urgency=low
   * test suite: fix smoke test to pass even without X running (it was meant to
     but the code had a bug).  Bug introduced in 1.0.38.
   * Updated "Build-Depends:" for the new X library packaging.
-  * Upgrade to debhelper >= 4.
+  * Rebuilt debian/rules starting from debhelper example rules.multi2 to
+    eliminate cruft such as use of debhelper programs which are deprecated or
+    have better alternatives.  The new rules file puts exactly the same set of
+    files in each package as the old one does, but should be easier to
+    understand and maintain.
 
- -- Wookey <wookey@survex.com>  Mon, 09 Jan 2006 15:41:05 +0000
+ -- Wookey <wookey@survex.com>  Thu, 12 Jan 2006 03:36:05 +0000
 
 survex (1.0.38) unstable; urgency=low
 
