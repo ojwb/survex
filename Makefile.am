@@ -259,7 +259,7 @@ riscos_doc_zip :
 	   *.ps) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,ff5 ;;\
 	   *) ln -s ../doc/$$f ../riscos_doc_tmp/$$f,ffd ;;\
 	  esac;\
-	 fi\
+	 fi;\
 	done
 	cd riscos_doc_tmp && ../zip-magic -N -r ../$(riscos_doc_zip_name) *
 	$(RM) -rf riscos_doc_tmp
