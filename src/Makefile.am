@@ -170,14 +170,14 @@ EXTRA_DIST = \
  miniam.pl borlandc/makefile borlandc/config.h borlandc/config.h.in\
  riscos/makefile riscos/config.h riscos/config.h.in riscos/armrot.s\
  riscos/stdh/regnames riscos/stdh/swinames msvc/config.h msvc/config.h.in\
- aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov
+ aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov gdtconvert
 
 BUILT_SOURCES = z_getopt.c avenpal.h
 
 z_getopt.c: getopt.c gettexttomsg.pl
-	./gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
+	$(srcdir)/gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
 
-avenpal.h: $(srcdir)/gradient.pov
+avenpal.h: $(srcdir)/gradient.pov gdtconvert
 	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-avenpal.h && mv tmp-avenpal.h avenpal.h
 
 MAINTAINERCLEANFILES =\
