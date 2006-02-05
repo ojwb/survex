@@ -88,15 +88,15 @@ and bj (for driving Canon BJ printers).
 <Para>
 In the unlikely event that you need to change the printer control
 codes, here is a quick overview of the format: printable characters
-are literal, except for backslash.  A backslash '\'
+are literal, except for backslash.  A backslash '&bsol;'
 indicates that the following character or characters are to be
 interpreted as a control code, as follows:
-\ followed by an 'x' followed by two hex digits
+&bsol; followed by an 'x' followed by two hex digits
 represents the character with that hex value;
 a double backslash means a literal backslash;
-\0 is nul (0); \t is tab (9); \n is newline (10);
-\r is return (13); \[ is escape (27); \? is delete (127);
-\A - \Z are (1) to (26).
+&bsol;0 is nul (0); &bsol;t is tab (9); &bsol;n is newline (10);
+&bsol;r is return (13); &bsol;[ is escape (27); &bsol;? is delete (127);
+&bsol;A - &bsol;Z are (1) to (26).
 </Para>
 
 <Para>

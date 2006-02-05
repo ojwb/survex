@@ -5,6 +5,10 @@
  %entities;
  <!ENTITY % versionentity SYSTEM "version.ent">
  %versionentity;
+ <!-- We need to use this instead of a literal backslash in SGML which
+      docbook-to-man processes, but by default it doesn't seem to be
+      defined by SGMLtools -->
+ <!ENTITY bsol "\">
 ]>
 
 <!--
@@ -107,8 +111,8 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2002</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2005-05-24 01:04:40 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.116 2005-05-24 01:04:40 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2006-02-05 00:10:41 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.117 2006-02-05 00:10:41 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
