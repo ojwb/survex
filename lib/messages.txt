@@ -3982,7 +3982,9 @@ fr:404 Expression r&eacute;guli&egrave;re invalide: %s
 de:404 Ung&uuml;ltiger regul&auml;rer Ausdruck: %s
 it:404 Espressione regolare non valida: %s
 ro:404 Expresie regulara incorecta: %s
-#
+# %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
+# things in future).
+en:405 This version of %s requires OpenGL to work, but it isn't available
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s

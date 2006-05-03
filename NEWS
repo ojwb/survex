@@ -20,6 +20,9 @@ TOBE Changes in 1.1.8:
 * (Unix version): test suite: fix smoke test to pass even without X running
   (it was meant to but the code had a bug).
 
+* aven: Check if OpenGL is available and exit cleanly with a helpful error
+  if it isn't.
+
 Changes in 1.1.7:
 
 * cavern: Add validity checking for dates in *date commands (with feature

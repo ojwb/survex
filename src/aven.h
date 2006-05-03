@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2006 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ void aven_v_report(int severity, const char *fnm, int line, int en,
 
 class MainFrm;
 
-class Aven : public wxApp {
+class Aven : public wxGLApp {
     MainFrm * m_Frame;
     // This must be a pointer, otherwise it gets initialised too early and
     // we get a segfault on MS Windows when it tries to look up paper

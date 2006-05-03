@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2006 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -132,6 +132,13 @@ bool Aven::OnInit()
 
     if (print_and_exit && !argv[optind]) {
 	cmdline_syntax(); // FIXME : not a helpful error...
+	exit(1);
+    }
+
+    if (!InitGLVisual(NULL)) {
+	wxString m;
+	m.Printf(msg(/*This version of %s requires OpenGL to work, but it isn't available*/405), APP_NAME);
+	wxMessageBox(m, APP_NAME, wxOK | wxCENTRE | wxICON_EXCLAMATION);
 	exit(1);
     }
 
