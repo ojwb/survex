@@ -55,6 +55,9 @@ public:
     Aven();
     ~Aven();
 
+#if wxCHECK_VERSION(2,5,1)
+    virtual bool Initialize(int& argc, wxChar **argv);
+#endif
     virtual bool OnInit();
 
     wxPageSetupDialogData * GetPageSetupDialogData();

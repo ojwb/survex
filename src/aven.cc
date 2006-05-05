@@ -42,6 +42,24 @@
 #include <wx/display.h>
 #endif
 
+static const struct option long_opts[] = {
+    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
+    {"survey", required_argument, 0, 's'},
+    {"print", no_argument, 0, 'p'},
+    {"help", no_argument, 0, HLP_HELP},
+    {"version", no_argument, 0, HLP_VERSION},
+    {0, 0, 0, 0}
+};
+
+#define short_opts "s:p"
+
+static struct help_msg help[] = {
+    /*			     <-- */
+    {HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
+    {HLP_ENCODELONG(1),          "print and exit (requires a 3d file)"},
+    {0, 0}
+};
+
 IMPLEMENT_APP(Aven)
 
 Aven::Aven() :
@@ -54,27 +72,59 @@ Aven::~Aven()
     if (m_pageSetupData) delete m_pageSetupData;
 }
 
-bool Aven::OnInit()
+#if wxCHECK_VERSION(2,5,1)
+static int getopt_first_response = 0;
+
+bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 {
 #ifdef __WXMAC__
     // Tell wxMac which the About menu item is so it can be put where MacOS
     // users expect it to be.
     wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
-    // wxMac is supposed to remove this magic command line option (which
-    // Finder passes), but the code in 2.4.2 is bogus.  It just decrements
-    // argc rather than copying argv down.  But luckily it also fails to
-    // set argv[argc] to NULL so we can just recalculate argc, then remove
-    // the -psn_* switch ourselves.
-    if (argv[argc]) {
-	argc = 1;
-	while (argv[argc]) ++argc;
-    }
-    if (argc > 1 && strncmp(argv[1], "-psn_", 5) == 0) {
-	--argc;
-	memmove(argv + 1, argv + 2, argc * sizeof(char *));
+
+    // MacOS passes a magic -psn_XXXX command line argument in argv[1] which
+    // wx ignores for us, but in wxApp::Initialize() which hasn't been
+    // called yet.  So we need to remove it ourselves.
+    if (my_argc > 1 && strncmp(my_argv[1], "-psn_", 5) == 0) {
+	--my_argc;
+	memmove(my_argv + 1, my_argv + 2, my_argc * sizeof(char *));
     }
 #endif
-    msg_init(argv);
+    // Call msg_init() and start processing the command line first so that
+    // we can respond to --help and --version even without an X display.
+    msg_init(my_argv);
+    cmdline_set_syntax_message("[3d file]", NULL);
+    cmdline_init(my_argc, my_argv, short_opts, long_opts, NULL, help, 0, 1);
+    getopt_first_response = cmdline_getopt();
+    return wxApp::Initialize(my_argc, my_argv);
+}
+#else
+const int getopt_first_response = 0;
+#endif
+
+bool Aven::OnInit()
+{
+#if !wxCHECK_VERSION(2,5,1) && defined __WXMAC__
+    // Tell wxMac which the About menu item is so it can be put where MacOS
+    // users expect it to be.
+    wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
+
+    // wxMac is supposed to remove this magic command line option (which
+    // Finder passes), but the code in 2.4.2 is bogus.  It just decrements
+    // argc rather than copying argv down.  But we get to the command line
+    // before wx does, so we can just remove it and then wx does nothing.
+    // But luckily it also fails to set argv[argc] to NULL so we can just
+    // recalculate argc, then remove the -psn_* switch ourselves.
+    // The code was broken differently in 2.5.0, and fixed in 2.5.1.
+    if (my_argv[my_argc]) {
+	my_argc = 1;
+	while (my_argv[my_argc]) ++my_argc;
+    }
+    if (my_argc > 1 && strncmp(my_argv[1], "-psn_", 5) == 0) {
+	--my_argc;
+	memmove(my_argv + 1, my_argv + 2, my_argc * sizeof(char *));
+    }
+#endif
 
     const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
     if (lang) {
@@ -99,28 +149,19 @@ bool Aven::OnInit()
     /* Want --version and a decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
      */
-    static const struct option long_opts[] = {
-	/* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
-	{"survey", required_argument, 0, 's'},
-	{"print", no_argument, 0, 'p'},
-	{"help", no_argument, 0, HLP_HELP},
-	{"version", no_argument, 0, HLP_VERSION},
-	{0, 0, 0, 0}
-    };
-
-#define short_opts "s:p"
-
-    static struct help_msg help[] = {
-	/*			     <-- */
-	{HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
-	{HLP_ENCODELONG(1),          "print and exit (requires a 3d file)"},
-	{0, 0}
-    };
-
+#if !wxCHECK_VERSION(2,5,1)
+    msg_init(argv);
     cmdline_set_syntax_message("[3d file]", NULL);
     cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
+#endif
     while (true) {
-	int opt = cmdline_getopt();
+	int opt;
+	if (getopt_first_response) {
+	    opt = getopt_first_response;
+	    getopt_first_response = 0;
+	} else {
+	    opt = cmdline_getopt();
+	}
 	if (opt == EOF) break;
 	if (opt == 's') {
 	    survey = optarg;

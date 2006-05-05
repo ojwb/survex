@@ -23,6 +23,9 @@ TOBE Changes in 1.1.8:
 * aven: Check if OpenGL is available and exit cleanly with a helpful error
   if it isn't.
 
+* (Unix version): aven: Fix --help and --version to work without a working
+  X display (provided it's built with wxWidgets 2.5.1 or newer).
+
 Changes in 1.1.7:
 
 * cavern: Add validity checking for dates in *date commands (with feature
