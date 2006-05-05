@@ -5,7 +5,7 @@ dnl CFLAGS=-DDEFAULTLANG=fr to build with French as the default language.
 dnl Need autoconf 2.13 or later for 3 argument version of AC_DEFINE
 dnl Need autoconf 2.50 or later for AC_ARG_VAR
 AC_PREREQ(2.50)
-AC_INIT(src/cavern.c)
+AC_INIT(src/aven.cc)
 
 dnl next line is for make_release
 CHANGELOG_FROM_TAG=v1_1_6
@@ -15,7 +15,7 @@ RELEASE=1
 AC_SUBST(RELEASE)
 AM_CONFIG_HEADER(config.h)
 
-COPYRIGHT_MSG="Copyright (C) 1990-2005 Olly Betts"
+COPYRIGHT_MSG="Copyright (C) 1990-2006 Olly Betts"
 AVEN_COPYRIGHT_MSG="Copyright (C) 1999-2003,2005 Mark R. Shinwell"
 
 AC_DEFINE_UNQUOTED(COPYRIGHT_MSG, ["$COPYRIGHT_MSG"], [Copyright Message])
