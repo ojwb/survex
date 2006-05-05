@@ -54,7 +54,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
     }
     horiz->Add(vert, 0, wxALL, 2);
 
-    wxString id = wxString(APP_NAME" "VERSION"\n");
+    wxString id(APP_NAME" "VERSION"\n");
     id += msg(/*Survey visualisation tool*/209);
     wxBoxSizer* title = new wxBoxSizer(wxHORIZONTAL);
     if (bitmap_icon.Ok()) {
@@ -62,7 +62,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
     }
     title->Add(new wxStaticText(this, 502, id), 0, wxALL, 2);
 
-    wxString copyright_msg = COPYRIGHT_MSG"\n"AVEN_COPYRIGHT_MSG;
+    wxString copyright_msg(COPYRIGHT_MSG"\n"AVEN_COPYRIGHT_MSG);
     const char * csign = msg(/*&copy;*/0);
     if (strcmp(csign, "(C)") != 0) {
 	size_t csign_len = strlen(csign);
@@ -125,7 +125,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
 	    size_t c = fread(buf, 1, sizeof(buf), f);
 	    if (c > 0) {
 		if (buf[c - 1] == '\n') --c;
-		info = wxString(buf, c);
+		info.assign(buf, c);
 	    }
 	    fclose(f);
 	}
