@@ -98,8 +98,6 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     getopt_first_response = cmdline_getopt();
     return wxApp::Initialize(my_argc, my_argv);
 }
-#else
-const int getopt_first_response = 0;
 #endif
 
 bool Aven::OnInit()
@@ -156,12 +154,16 @@ bool Aven::OnInit()
 #endif
     while (true) {
 	int opt;
+#if wxCHECK_VERSION(2,5,1)
 	if (getopt_first_response) {
 	    opt = getopt_first_response;
 	    getopt_first_response = 0;
 	} else {
 	    opt = cmdline_getopt();
 	}
+#else
+	opt = cmdline_getopt();
+#endif
 	if (opt == EOF) break;
 	if (opt == 's') {
 	    survey = optarg;
