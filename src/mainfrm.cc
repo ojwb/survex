@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -656,7 +656,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     // (required by Microsoft Windows for this type of icon)
     SetIcon(wxIcon("aaaaaAven"));
 #else
-    SetIcon(wxIcon(icon_path + "aven.png", wxBITMAP_TYPE_PNG));
+    SetIcon(wxIcon(icon_path + APP_IMAGE, wxBITMAP_TYPE_PNG));
 #endif
 
     CreateMenuBar();
@@ -936,7 +936,7 @@ MainFrm::ProcessSVXFile(const wxString & file)
     // (required by Microsoft Windows for this type of icon)
     frm->SetIcon(wxIcon("aaaaaAven"));
 #else
-    frm->SetIcon(wxIcon(icon_path + "aven.png", wxBITMAP_TYPE_PNG));
+    frm->SetIcon(wxIcon(icon_path + APP_IMAGE, wxBITMAP_TYPE_PNG));
 #endif
 
     CavernLogWindow * log = new CavernLogWindow(frm);

@@ -29,6 +29,8 @@
 #include <stdarg.h>
 
 #define APP_NAME "Aven"
+#define APP_IMAGE "aven.png"
+#define APP_ABOUT_IMAGE "aven-about.png"
 
 extern
 #ifdef __cplusplus

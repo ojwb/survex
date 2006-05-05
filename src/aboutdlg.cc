@@ -4,7 +4,7 @@
 //  About box handling for Aven.
 //
 //  Copyright (C) 2001-2003 Mark R. Shinwell.
-//  Copyright (C) 2001,2002,2003,2004,2005 Olly Betts
+//  Copyright (C) 2001,2002,2003,2004,2005,2006 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -44,8 +44,8 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
     if (!bitmap.Ok()) {
-	bitmap.LoadFile(icon_path + "aven-about.png", wxBITMAP_TYPE_PNG);
-	bitmap_icon.LoadFile(icon_path + "aven.png", wxBITMAP_TYPE_PNG);
+	bitmap.LoadFile(icon_path + APP_ABOUT_IMAGE, wxBITMAP_TYPE_PNG);
+	bitmap_icon.LoadFile(icon_path + APP_IMAGE, wxBITMAP_TYPE_PNG);
     }
     if (bitmap.Ok()) {
 	wxStaticBitmap* static_bitmap = new wxStaticBitmap(this, 501, bitmap);
