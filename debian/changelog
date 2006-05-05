@@ -1,3 +1,6 @@
+  * Updated "Build-Depends:" for the new X library packaging.
+  * Incorporate rebuilt debian/rules from 1.0 branch.
+
 survex (1.1.7) unstable; urgency=low
 
   * cavern: Add validity checking for dates in *date commands (with feature

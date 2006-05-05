@@ -1,36 +1,41 @@
 #!/usr/bin/make -f
-# Based on sample debian/rules that uses debhelper,
-# GPL copyright 1997 to 1999 by Joey Hess.
+# Based on public domain debhelper example rules.multi2 by Joey Hess.
 #
-# Copyright (C) 2001 Wookey
-# Copyright (C) 2001,2002,2003,2004 Olly Betts
+# Copyright (C) 2005,2006 Olly Betts
 #
-# This is a multibinary package. You can build any of the binary packages
-# independently, via binary-<package> targets.
+# GPL licensed.
+#
+# This is a multibinary package.  You can build any of the binary packages
+# independently by using the appropriate binary-<package> target.
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
-
-# This is the debhelper compatability version to use.
-export DH_COMPAT=1
 
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 CFLAGS += -O0
+CXXFLAGS += -O0
 else
 CFLAGS += -O2
+CXXFLAGS += -O2
 endif
 ifneq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-STRIP=/bin/echo
+STRIP=/bin/true
 endif
+
+# Make sure DEB_BUILD_GNU_TYPE and DEB_HOST_GNU_TYPE are set even if
+# we aren't called from dpkg-buildpackage, but don't reset them if
+# they're already set so the caller can override dpkg-architecture.
+export DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+export DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 
 build: build-stamp
 build-stamp:
 	dh_testdir
 
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-docdir=\$${prefix}/share/doc/survex CFLAGS=$(CFLAGS) STRIP=$(STRIP)
+	./configure --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --enable-docdir=\$${prefix}/share/doc/survex CFLAGS=$(CFLAGS) CXXFLAGS=$(CXXFLAGS) STRIP=$(STRIP)
 	$(MAKE)
 ifeq	($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
 	$(MAKE) check
@@ -53,53 +58,48 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	$(MAKE) prefix=`pwd`/debian/tmp/usr install
-	install -d debian/tmp/usr/share/vim/addons/ftdetect
-	install -d debian/tmp/usr/share/vim/addons/syntax
-	install vim/ftdetect/survex.vim debian/tmp/usr/share/vim/addons/ftdetect
-	install vim/syntax/survex.vim debian/tmp/usr/share/vim/addons/syntax
+	$(MAKE) DESTDIR=`pwd`/debian/tmp install
+	install -d debian/survex/usr/share/vim/addons/ftdetect
+	install -d debian/survex/usr/share/vim/addons/syntax
+	install -m 0644 vim/ftdetect/survex.vim debian/survex/usr/share/vim/addons/ftdetect
+	install -m 0644 vim/syntax/survex.vim debian/survex/usr/share/vim/addons/syntax
 
-	dh_movefiles
+	dh_install --fail-missing
 
 # This single target is used to build all the packages, all at once, or
 # one at a time. So keep in mind: any options passed to commands here will
 # affect _all_ packages. Anything you want to only affect one package
 # should be put in another target, such as the install target.
-binary-common: build install
+binary-common:
 	dh_testdir
 	dh_testroot
-#	dh_installdebconf
+	dh_installchangelogs
 	dh_installdocs
-	rm -rf debian/tmp/usr/doc
 	dh_installexamples
 	dh_installmenu
-#	dh_installemacsen
+# FIXME: investigate using dh_installmime
 #	dh_installmime
-	gzip -9 debian/tmp/usr/share/man/man1/*
-	dh_installchangelogs
-	dh_link
 	dh_strip
+	dh_link
 	dh_compress
 	dh_fixperms
-#	dh_makeshlibs
 	dh_installdeb
-#	dh_perl
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
 
-# Build architecture independant packages using the common target.
-#binary-indep:
-#	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+# Build architecture independent packages using the common target.
+binary-indep: build install
+	#$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
 
 # Build architecture dependant packages using the common target.
-binary-arch:
+binary-arch: build install
 	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
 
 # Any other binary targets build just one binary package at a time.
 binary-%: build install
 	make -f debian/rules binary-common DH_OPTIONS=-p$*
 
-binary: binary-arch
-.PHONY: build clean binary-indep binary-arch binary install
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary-common binary install
