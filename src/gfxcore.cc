@@ -1037,7 +1037,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
     if (size.GetWidth() <= 0 || size.GetHeight() <= 0) {
 	// Before things are fully initialised, we sometimes get a bogus
 	// resize message...
-	// FIXME have changes in mainfrm cured this?  It still happens with
+	// FIXME have changes in MainFrm cured this?  It still happens with
 	// 1.0.32 and wxGtk 2.5.2 (load a file from the command line).
 	// With 1.1.6 and wxGtk 2.4.2 we only get negative sizes if MainFrm
 	// is resized such that the GfxCore window isn't visible.
