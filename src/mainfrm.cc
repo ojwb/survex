@@ -1588,10 +1588,10 @@ void MainFrm::OnOpen(wxCommandEvent&)
 {
     AvenAllowOnTop ontop(this);
 #ifdef __WXMOTIF__
-    wxFileDialog dlg (this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
-		      "*.3d", wxOPEN);
+    wxFileDialog dlg(this, msg(/*Select a 3d file to view*/206), "", "",
+		     "*.3d", wxOPEN);
 #else
-    wxFileDialog dlg(this, wxString(msg(/*Select a 3d file to view*/206)), "", "",
+    wxFileDialog dlg(this, msg(/*Select a 3d file to view*/206), "", "",
 		     wxString::Format("%s|*.3d"
 #ifdef FILEDIALOG_MULTIGLOBS
 				      ";*.3D"
