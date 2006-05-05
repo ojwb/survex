@@ -1,5 +1,19 @@
+Before next release:
+====================
+
+Save cavern log from aven
+
 Definitely still to do before Survex 1.2:
 =========================================
+
+Consider using "legend" instead of "info box"...
+
+Reword "Shift Survey Left", etc?
+
+Look at rewording extend.sgml (AndyA comments)
+
+message.c should use GetUserDefaultUILanguage() on WinMe/Windows2000 or later
+to find language id.
 
 If some surveys have no date info and all others have the same date we
 currently turn off date colouring, which isn't ideal...
