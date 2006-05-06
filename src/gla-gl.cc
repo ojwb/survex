@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 
 #include <algorithm>
 
+#include "aven.h"
 #include "gla.h"
 #include "message.h"
 #include "useful.h"
@@ -67,7 +68,7 @@ wxString GetGLSystemDescription()
 {
     const char *p = (const char*)glGetString(GL_VERSION);
     // If OpenGL isn't initialised, p may be NULL.
-    if (!p) return "No OpenGL information available!";
+    if (!p) return "No OpenGL information available yet - try opening a file.";
 
     wxString info;
     info += "OpenGL ";
@@ -109,23 +110,13 @@ wxString GetGLSystemDescription()
     return info;
 }
 
-#ifdef GLA_DEBUG
 // Important: CHECK_GL_ERROR must not be called within a glBegin()/glEnd() pair
 //            (thus it must not be called from BeginLines(), etc., or within a
 //             BeginLines()/EndLines() block etc.)
-#define CHECK_GL_ERROR(f, m) \
-    do { \
-        GLenum err = glGetError(); \
-        if (err != GL_NO_ERROR) { \
-            fprintf(stderr, "OpenGL error: %s: call %s in function %s\n", \
-                    gluErrorString(err), m, f); \
-            /* abort();*/ \
-        } \
-    } \
-    while (0)
-#else
-#define CHECK_GL_ERROR(f, m) do {} while (0)
-#endif
+#define CHECK_GL_ERROR(M, F) \
+    if (glGetError() == GL_NO_ERROR) { } else \
+	wxLogError(__FILE__":"STRING(__LINE__)": OpenGL error: %s " \
+		   "(call "F" in method "M")", gluErrorString(glGetError()))
 
 //
 //  GLAPen
@@ -571,7 +562,6 @@ void GLACanvas::SetDataTransform()
 	Double Tx, Ty, Tz;
 	gluUnProject(X, Y, 0.5, modelview_matrix, projection_matrix, viewport,
 		     &Tx, &Ty, &Tz);
-	glMatrixMode(GL_MODELVIEW);
 	glTranslated(Tx, Ty, Tz);
 	CHECK_GL_ERROR("SetDataTransform", "glTranslated");
 	glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
@@ -622,24 +612,24 @@ void GLACanvas::SetIndicatorTransform()
     int window_width = max(size.GetWidth(), 1);
     int window_height = max(size.GetHeight(), 1);
 
-    // No modelview transform
-    glMatrixMode(GL_MODELVIEW);
-    CHECK_GL_ERROR("SetIndicatorTransform", "glMatrixMode");
-    glLoadIdentity();
-    CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity");
-
     glDisable(GL_DEPTH_TEST);
     CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_DEPTH_TEST");
     glDisable(GL_FOG);
     CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_FOG");
 
-    // And just a simple 2D projection
+    // Just a simple 2D projection.
     glMatrixMode(GL_PROJECTION);
     CHECK_GL_ERROR("SetIndicatorTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity (2)");
     gluOrtho2D(0, window_width, 0, window_height);
     CHECK_GL_ERROR("SetIndicatorTransform", "gluOrtho2D");
+
+    // No modelview transform.
+    glMatrixMode(GL_MODELVIEW);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glMatrixMode");
+    glLoadIdentity();
+    CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity");
 
     glDisable(GL_TEXTURE_2D);
     CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_TEXTURE_2D");
@@ -937,6 +927,8 @@ void GLACanvas::BeginBlobs()
 {
     if (glpoint_ok) {
 	// Commence drawing of a set of blobs.
+	glPushAttrib(GL_ENABLE_BIT);
+	CHECK_GL_ERROR("BeginBlobs", "glPushAttrib");
 	glEnable(GL_ALPHA_TEST);
 	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_ALPHA_TEST");
 	glEnable(GL_POINT_SMOOTH);
@@ -957,14 +949,9 @@ void GLACanvas::EndBlobs()
 	// Finish drawing of a set of blobs.
 	glEnd();
 	CHECK_GL_ERROR("EndBlobs", "GL_POINTS");
-	glDisable(GL_POINT_SMOOTH);
-	CHECK_GL_ERROR("EndBlobs", "glDisable GL_POINT_SMOOTH");
-	glDisable(GL_ALPHA_TEST);
-	CHECK_GL_ERROR("EndBlobs", "glDisable GL_ALPHA_TEST");
-    } else {
-	glPopAttrib();
-	CHECK_GL_ERROR("EndBlobs", "glPopAttrib");
     }
+    glPopAttrib();
+    CHECK_GL_ERROR("EndBlobs", "glPopAttrib");
 }
 
 void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
@@ -990,10 +977,10 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 	CHECK_GL_ERROR("gluDisk", "DrawBlob");
 	glTranslated(-X, -Y, -Z);
 	CHECK_GL_ERROR("glTranslated 2", "DrawBlob");
-#ifdef GLA_DEBUG
-	m_Vertices++;
-#endif
     }
+#ifdef GLA_DEBUG
+    m_Vertices++;
+#endif
 }
 
 void GLACanvas::BeginCrosses()
@@ -1052,6 +1039,9 @@ void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
 	    PlaceVertex(X + 3, Y - 3, Z);
 	}
     }
+#ifdef GLA_DEBUG
+    m_Vertices++;
+#endif
 }
 
 void GLACanvas::DrawRing(glaCoord x, glaCoord y)
@@ -1059,12 +1049,16 @@ void GLACanvas::DrawRing(glaCoord x, glaCoord y)
     // Draw an unfilled circle
     const Double radius = 4;
     assert(m_Quadric);
+    glMatrixMode(GL_MODELVIEW);
+    CHECK_GL_ERROR("DrawRing", "glMatrixMode");
+    glPushMatrix();
+    CHECK_GL_ERROR("DrawRing", "glPushMatrix");
     glTranslated(x, y, 0.0);
     CHECK_GL_ERROR("DrawRing", "glTranslated");
     gluDisk(m_Quadric, radius - 1.0, radius, 12, 1);
     CHECK_GL_ERROR("DrawRing", "gluDisk");
-    glTranslated(-x, -y, 0.0);
-    CHECK_GL_ERROR("DrawRing", "glTranslated");
+    glPopMatrix();
+    CHECK_GL_ERROR("DrawRing", "glPopMatrix");
 }
 
 void GLACanvas::DrawRectangle(gla_colour edge, gla_colour fill,
@@ -1119,6 +1113,10 @@ void GLACanvas::DrawCircle(gla_colour edge, gla_colour fill,
 {
     // Draw a filled circle with an edge.
     SetColour(fill);
+    glMatrixMode(GL_MODELVIEW);
+    CHECK_GL_ERROR("DrawCircle", "glMatrixMode");
+    glPushMatrix();
+    CHECK_GL_ERROR("DrawCircle", "glPushMatrix");
     glTranslated(cx, cy, 0.0);
     CHECK_GL_ERROR("DrawCircle", "glTranslated");
     assert(m_Quadric);
@@ -1127,8 +1125,8 @@ void GLACanvas::DrawCircle(gla_colour edge, gla_colour fill,
     SetColour(edge);
     gluDisk(m_Quadric, radius - 1.0, radius, 36, 1);
     CHECK_GL_ERROR("DrawCircle", "gluDisk (2)");
-    glTranslated(-cx, -cy, 0.0);
-    CHECK_GL_ERROR("DrawCircle", "glTranslated (2)");
+    glPopMatrix();
+    CHECK_GL_ERROR("DrawCircle", "glPopMatrix");
 }
 
 void GLACanvas::DrawSemicircle(gla_colour edge, gla_colour fill,
@@ -1139,16 +1137,20 @@ void GLACanvas::DrawSemicircle(gla_colour edge, gla_colour fill,
     // The semicircle extends from "start" deg to "start"+180 deg (increasing
     // clockwise, 0 deg upwards).
     SetColour(fill);
+    glMatrixMode(GL_MODELVIEW);
+    CHECK_GL_ERROR("DrawSemicircle", "glMatrixMode");
+    glPushMatrix();
+    CHECK_GL_ERROR("DrawSemicircle", "glPushMatrix");
     glTranslated(cx, cy, 0.0);
-    CHECK_GL_ERROR("DrawCircle", "glTranslated");
+    CHECK_GL_ERROR("DrawSemicircle", "glTranslated");
     assert(m_Quadric);
     gluPartialDisk(m_Quadric, 0.0, radius, 36, 1, start, 180.0);
-    CHECK_GL_ERROR("DrawCircle", "gluPartialDisk");
+    CHECK_GL_ERROR("DrawSemicircle", "gluPartialDisk");
     SetColour(edge);
     gluPartialDisk(m_Quadric, radius - 1.0, radius, 36, 1, start, 180.0);
-    CHECK_GL_ERROR("DrawCircle", "gluPartialDisk (2)");
-    glTranslated(-cx, -cy, 0.0);
-    CHECK_GL_ERROR("DrawCircle", "glTranslated (2)");
+    CHECK_GL_ERROR("DrawSemicircle", "gluPartialDisk (2)");
+    glPopMatrix();
+    CHECK_GL_ERROR("DrawSemicircle", "glPopMatrix");
 }
 
 void GLACanvas::DrawTriangle(gla_colour edge, gla_colour fill, GLAPoint* points)

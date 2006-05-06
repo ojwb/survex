@@ -26,6 +26,7 @@
 #endif
 
 #include "aven.h"
+#include "log.h"
 #include "mainfrm.h"
 
 #include "cmdline.h"
@@ -65,6 +66,7 @@ IMPLEMENT_APP(Aven)
 Aven::Aven() :
     m_Frame(NULL), m_pageSetupData(NULL)
 {
+    wxLog::SetActiveTarget(new MyLogWindow());
 }
 
 Aven::~Aven()
