@@ -4,7 +4,7 @@
 //  C++ class for 3-element vectors
 //
 //  Copyright (C) 2000-2002, Mark R. Shinwell.
-//  Copyright (C) 2002-2004,2005 Olly Betts
+//  Copyright (C) 2002-2004,2005,2006 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -27,16 +27,16 @@
 #include <math.h>
 
 class Vector3 {
+protected:
     double x, y, z;
 
 public:
     Vector3() : x(0.0), y(0.0), z(0.0) { }
     Vector3(double a, double b, double c) : x(a), y(b), z(c) { }
-    ~Vector3() { }
 
-    double getX() const { return x; }
-    double getY() const { return y; }
-    double getZ() const { return z; }
+    double GetX() const { return x; }
+    double GetY() const { return y; }
+    double GetZ() const { return z; }
 
     double magnitude() const {
 	return sqrt(x*x + y*y + z*z);
@@ -44,7 +44,7 @@ public:
 
     void normalise();
 
-    void set(double a, double b, double c) {
+    void assign(double a, double b, double c) {
 	x = a; y = b; z = c;
     }
 

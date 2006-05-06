@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001,2002,2005 Mark R. Shinwell.
-//  Copyright (C) 2001-2004,2005 Olly Betts
+//  Copyright (C) 2001-2004,2005,2006 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -45,16 +45,16 @@ class MainFrm;
 
 extern const int NUM_DEPTH_COLOURS;
 
-class Point {
+class Point : public Vector3 {
   public:
-    Double x, y, z;
     Point() {}
-    Point(Double x_, Double y_, Double z_) : x(x_), y(y_), z(z_) { }
-    Point(const img_point & pt) : x(pt.x), y(pt.y), z(pt.z) { }
+    Point(const Vector3 & v) : Vector3(v) { }
+    Point(const img_point & pt) : Vector3(pt.x, pt.y, pt.z) { }
     Double GetX() const { return x; }
     Double GetY() const { return y; }
     Double GetZ() const { return z; }
-    Vector3 vec() const { return Vector3(x, y, z); }
+    void Invalidate() { x = DBL_MAX; }
+    bool IsValid() const { return x != DBL_MAX; }
 };
 
 class XSect;
@@ -69,10 +69,10 @@ class PresentationMark : public Point {
     Double time;
     PresentationMark() : Point(), angle(0), tilt_angle(0), scale(0), time(0)
 	{ }
-    PresentationMark(Double x_, Double y_, Double z_, Double angle_,
-		     Double tilt_angle_, Double scale_, Double time_ = 0)
-	: Point(x_, y_, z_), angle(angle_), tilt_angle(tilt_angle_),
-	  scale(scale_), time(time_)
+    PresentationMark(const Vector3 & v, Double angle_, Double tilt_angle_,
+		     Double scale_, Double time_ = 0)
+	: Point(v), angle(angle_), tilt_angle(tilt_angle_), scale(scale_),
+	  time(time_)
 	{ }
     bool is_valid() const { return scale > 0; }
 };
@@ -177,15 +177,14 @@ private:
 
     void UpdateQuaternion();
 
-    void PlaceVertexWithColour(Double x, Double y, Double z,
-			       Double factor = 1.0);
-    void PlaceVertexWithDepthColour(Double x, Double y, Double z,
-				    Double factor = 1.0);
+    void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);
+    void PlaceVertexWithDepthColour(const Vector3 & v, Double factor = 1.0);
 
     void SetColourFromDate(time_t date, Double factor);
 
     int GetClinoOffset() const;
     void DrawTick(int angle_cw);
+    void DrawArrow(gla_colour col1, gla_colour col2);
     wxString FormatLength(Double, bool scalebar = true);
 
     void SkinPassage(const vector<XSect> & centreline);
@@ -374,6 +373,7 @@ public:
     void ToggleDegrees() { ToggleFlag(&m_Degrees); }
     void ToggleTubes() { ToggleFlag(&m_Tubes); }
     void TogglePerspective() { GLACanvas::TogglePerspective(); ForceRefresh(); }
+    void ToggleSmoothShading();
     bool DisplayingBoundingBox() const { return m_BoundingBox; }
     void ToggleBoundingBox() { ToggleFlag(&m_BoundingBox); }
 

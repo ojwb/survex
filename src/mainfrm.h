@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -108,6 +108,7 @@ enum {
     menu_VIEW_BOUNDING_BOX,
     menu_VIEW_SHOW_TUBES,
     menu_VIEW_PERSPECTIVE,
+    menu_VIEW_SMOOTH_SHADING,
     menu_VIEW_TEXTURED,
     menu_VIEW_FOG,
     menu_VIEW_SMOOTH_LINES,
@@ -178,7 +179,7 @@ class LabelInfo : public Point {
     wxTreeItemId tree_id;
 
 public:
-    wxString GetText() const { return text; }
+    const wxString & GetText() const { return text; }
 
     bool IsEntrance() const { return (flags & LFLAG_ENTRANCE) != 0; }
     bool IsFixedPt() const { return (flags & LFLAG_FIXED) != 0; }
@@ -195,9 +196,7 @@ class MainFrm : public wxFrame {
     list<vector<PointInfo> > surface_traverses;
     list<vector<XSect> > tubes;
     list<LabelInfo*> m_Labels;
-    Double m_XExt;
-    Double m_YExt;
-    Double m_ZExt;
+    Vector3 m_Ext;
     Double m_ZMin;
     time_t m_DateMin, m_DateExt;
     GfxCore* m_Gfx;
@@ -234,7 +233,7 @@ class MainFrm : public wxFrame {
     bool ProcessSVXFile(const wxString & file);
     bool LoadData(const wxString& file, wxString prefix = "");
 //    void FixLRUD(vector<PointInfo> & centreline);
-    void CentreDataset(Double xmin, Double ymin, Double zmin);
+    void CentreDataset(const Vector3 & vmin);
 
     wxString GetTabMsg(int key) {
 	wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
@@ -351,6 +350,7 @@ public:
     void OnViewBoundingBoxUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewBoundingBoxUpdate(event); }
     void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewClinoUpdate(event); }
     void OnViewPerspectiveUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewPerspectiveUpdate(event); }
+    void OnViewSmoothShadingUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewSmoothShadingUpdate(event); }
     void OnViewTexturedUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewTexturedUpdate(event); }
     void OnViewFogUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewFogUpdate(event); }
     void OnViewSmoothLinesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewSmoothLinesUpdate(event); }
@@ -397,6 +397,7 @@ public:
     void OnViewGrid(wxCommandEvent&) { if (m_Control) m_Control->OnViewGrid(); }
     void OnViewBoundingBox(wxCommandEvent&) { if (m_Control) m_Control->OnViewBoundingBox(); }
     void OnViewPerspective(wxCommandEvent&) { if (m_Control) m_Control->OnViewPerspective(); }
+    void OnViewSmoothShading(wxCommandEvent&) { if (m_Control) m_Control->OnViewSmoothShading(); }
     void OnViewTextured(wxCommandEvent&) { if (m_Control) m_Control->OnViewTextured(); }
     void OnViewFog(wxCommandEvent&) { if (m_Control) m_Control->OnViewFog(); }
     void OnViewSmoothLines(wxCommandEvent&) { if (m_Control) m_Control->OnViewSmoothLines(); }
@@ -420,11 +421,12 @@ public:
     void ToggleSidePanel();
     bool ShowingSidePanel();
 
-    Double GetXExtent() const { return m_XExt; }
-    Double GetYExtent() const { return m_YExt; }
-    Double GetZExtent() const { return m_ZExt; }
+    const Vector3 & GetExtent() const { return m_Ext; }
+    Double GetXExtent() const { return m_Ext.GetX(); }
+    Double GetYExtent() const { return m_Ext.GetY(); }
+    Double GetZExtent() const { return m_Ext.GetZ(); }
     Double GetZMin() const { return m_ZMin; }
-    Double GetZMax() const { return m_ZMin + m_ZExt; }
+    Double GetZMax() const { return m_ZMin + m_Ext.GetZ(); }
 
     time_t GetDateExtent() const { return m_DateExt; }
     time_t GetDateMin() const { return m_DateMin; }
@@ -444,13 +446,11 @@ public:
     bool IsExtendedElevation() const { return m_IsExtendedElevation; }
 
     void ClearCoords();
-    void SetCoords(Double x, Double y, Double z);
+    void SetCoords(const Vector3 &v);
     void SetCoords(Double x, Double y);
     void SetAltitude(Double z);
 
-    Double GetXOffset() const { return m_Offsets.getX(); }
-    Double GetYOffset() const { return m_Offsets.getY(); }
-    Double GetZOffset() const { return m_Offsets.getZ(); }
+    const Vector3 & GetOffset() const { return m_Offsets; }
 
     list<vector<PointInfo> >::const_iterator traverses_begin() const {
 	return traverses.begin();
@@ -513,28 +513,23 @@ private:
 // By creating this object on the stack, you can get the dialog on top...
 class AvenAllowOnTop {
 #ifndef _WIN32
-        MainFrm * mainfrm;
-#endif
+	MainFrm * mainfrm;
     public:
-	AvenAllowOnTop(MainFrm * mainfrm_)
-#ifndef _WIN32
-	    : mainfrm(0)
-#endif
-	{
-#ifndef _WIN32
+	AvenAllowOnTop(MainFrm * mainfrm_) {
 	    if (mainfrm_ && mainfrm_->IsFullScreen()) {
 		mainfrm = mainfrm_;
 		mainfrm->ViewFullScreen();
+	    } else {
+		mainfrm = 0;
 	    }
-#else
-	    (void)mainfrm_;
-#endif
 	}
 	~AvenAllowOnTop() {
-#ifndef _WIN32
 	    if (mainfrm) mainfrm->ViewFullScreen();
-#endif
 	}
+#else
+    public:
+	AvenAllowOnTop(MainFrm *) { }
+#endif
 };
 
 #endif

@@ -43,7 +43,7 @@ void Quaternion::setFromSphericalPolars(double pan, double tilt, double rotation
     //    printf("w is %.2g\n", w);
     //    printf("v is [%.02g %.02g %.02g]\n", v.getX(), v.getY(), v.getZ());
 
-    v.set(vx, vy, vz);
+    v.assign(vx, vy, vz);
     normalise();
 }
 

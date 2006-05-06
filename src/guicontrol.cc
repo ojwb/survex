@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002,2005 Mark R. Shinwell
-//  Copyright (C) 2001,2003,2004,2005 Olly Betts
+//  Copyright (C) 2001,2003,2004,2005,2006 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -835,6 +835,17 @@ void GUIControl::OnViewPerspectiveUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
     cmd.Check(m_View->GetPerspective());
+}
+
+void GUIControl::OnViewSmoothShading()
+{
+    m_View->ToggleSmoothShading();
+}
+
+void GUIControl::OnViewSmoothShadingUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+    cmd.Check(m_View->GetSmoothShading());
 }
 
 void GUIControl::OnViewTextured()

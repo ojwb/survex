@@ -1,6 +1,6 @@
 /* printwx.cc */
 /* wxWindows specific parts of Survex wxWindows printing code */
-/* Copyright (C) 1993-2003,2004,2005 Olly Betts
+/* Copyright (C) 1993-2003,2004,2005,2006 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1399,7 +1399,7 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	    const XSect & next_pt_v = *i;
 
 	    // calculate vector from this pt to the next one
-	    Vector3 leg_v = next_pt_v.vec() - pt_v.vec();
+	    Vector3 leg_v = next_pt_v - pt_v;
 
 	    // obtain a vector in the LRUD plane
 	    right = leg_v * up_v;
@@ -1412,12 +1412,12 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	    // last segment
 
 	    // Calculate vector from the previous pt to this one.
-	    Vector3 leg_v = pt_v.vec() - prev_pt_v.vec();
+	    Vector3 leg_v = pt_v - prev_pt_v;
 
 	    // Obtain a horizontal vector in the LRUD plane.
 	    right = leg_v * up_v;
 	    if (right.magnitude() == 0) {
-		right = Vector3(last_right.getX(), last_right.getY(), 0.0);
+		right = Vector3(last_right.GetX(), last_right.GetY(), 0.0);
 	    } else {
 		last_right = right;
 	    }
@@ -1431,8 +1431,8 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	    // Calculate vectors from this vertex to the
 	    // next vertex, and from the previous vertex to
 	    // this one.
-	    Vector3 leg1_v = pt_v.vec() - prev_pt_v.vec();
-	    Vector3 leg2_v = next_pt_v.vec() - pt_v.vec();
+	    Vector3 leg1_v = pt_v - prev_pt_v;
+	    Vector3 leg2_v = next_pt_v - pt_v;
 
 	    // Obtain horizontal vectors perpendicular to
 	    // both legs, then normalise and average to get
@@ -1456,9 +1456,9 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	Double r = pt_v.GetR();
 
 	if (l >= 0) {
-	    Vector3 p = pt_v.vec() - right * l;
-	    double X = p.getX() * COS - p.getY() * SIN;
-	    double Y = (p.getX() * SIN + p.getY() * COS);
+	    Vector3 p = pt_v - right * l;
+	    double X = p.GetX() * COS - p.GetY() * SIN;
+	    double Y = (p.GetX() * SIN + p.GetY() * COS);
 	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
 	    long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
 	    MoveTo(x - PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
@@ -1466,9 +1466,9 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	    DrawTo(x - PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
 	}
 	if (r >= 0) {
-	    Vector3 p = pt_v.vec() + right * r;
-	    double X = p.getX() * COS - p.getY() * SIN;
-	    double Y = (p.getX() * SIN + p.getY() * COS);
+	    Vector3 p = pt_v + right * r;
+	    double X = p.GetX() * COS - p.GetY() * SIN;
+	    double Y = (p.GetX() * SIN + p.GetY() * COS);
 	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
 	    long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
 	    MoveTo(x + PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
@@ -1497,11 +1497,11 @@ svxPrintout::PlotUD(const vector<XSect> & centreline)
 	Double d = pt_v.GetD();
 
 	if (u >= 0 || d >= 0) {
-	    Vector3 p = pt_v.vec();
+	    Vector3 p = pt_v;
 	    double SIN = sin(rad(m_layout->rot));
 	    double COS = cos(rad(m_layout->rot));
-	    double X = p.getX() * COS - p.getY() * SIN;
-	    double Y = p.getZ();
+	    double X = p.GetX() * COS - p.GetY() * SIN;
+	    double Y = p.GetZ();
 	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
 	    if (u >= 0) {
 		long y = (long)(((Y + u) * Sc + m_layout->yOrg) * m_layout->scY);

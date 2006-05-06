@@ -2,7 +2,7 @@
 //  quaternion.h
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2006 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -64,17 +64,17 @@ public:
     Matrix4 asMatrix() const {
 	Matrix4 m;
 
-	Double xx = v.getX() * v.getX();
-	Double xy = v.getX() * v.getY();
-	Double xz = v.getX() * v.getZ();
-	Double xw = v.getX() * w;
+	Double xx = v.GetX() * v.GetX();
+	Double xy = v.GetX() * v.GetY();
+	Double xz = v.GetX() * v.GetZ();
+	Double xw = v.GetX() * w;
 
-	Double yy = v.getY() * v.getY();
-	Double yz = v.getY() * v.getZ();
-	Double yw = v.getY() * w;
+	Double yy = v.GetY() * v.GetY();
+	Double yz = v.GetY() * v.GetZ();
+	Double yw = v.GetY() * w;
 
-	Double zz = v.getZ() * v.getZ();
-	Double zw = v.getZ() * w;
+	Double zz = v.GetZ() * v.GetZ();
+	Double zw = v.GetZ() * w;
 
 	m.setRow(0, 1 - 2*(yy + zz),     2 * (xy - zw),     2 * (xz + yw), 0.0);
 	m.setRow(1,     2*(xy + zw), 1 - 2 * (xx + zz),     2 * (yz - xw), 0.0);
@@ -86,7 +86,7 @@ public:
 
     Matrix4 asInverseMatrix() const {
 	Quaternion q;
-	q.v.set(-v.getX(), -v.getY(), -v.getZ());
+	q.v.assign(-v.GetX(), -v.GetY(), -v.GetZ());
 	q.w = w;
 	return q.asMatrix();
     }
@@ -168,7 +168,7 @@ public:
 
 #if 0
     void print() const {
-	printf("[%.02g  %.02g  %.02g] %.02g\n", v.getX(), v.getY(), v.getZ(), w);
+	printf("[%.02g  %.02g  %.02g] %.02g\n", v.GetX(), v.GetY(), v.GetZ(), w);
     }
 #endif
 
@@ -178,17 +178,17 @@ public:
     void CopyToOpenGL() const {
 	Double matrix[16];
 
-	Double xx = v.getX() * v.getX();
-	Double xy = v.getX() * v.getY();
-	Double xz = v.getX() * v.getZ();
-	Double xw = v.getX() * w;
+	Double xx = v.GetX() * v.GetX();
+	Double xy = v.GetX() * v.GetY();
+	Double xz = v.GetX() * v.GetZ();
+	Double xw = v.GetX() * w;
 
-	Double yy = v.getY() * v.getY();
-	Double yz = v.getY() * v.getZ();
-	Double yw = v.getY() * w;
+	Double yy = v.GetY() * v.GetY();
+	Double yz = v.GetY() * v.GetZ();
+	Double yw = v.GetY() * w;
 
-	Double zz = v.getZ() * v.getZ();
-	Double zw = v.getZ() * w;
+	Double zz = v.GetZ() * v.GetZ();
+	Double zw = v.GetZ() * w;
 
 	// column 0
 	matrix[0] = 1 - 2*(yy + zz);

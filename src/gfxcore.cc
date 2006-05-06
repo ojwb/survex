@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -132,8 +132,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     AddPoly = &GfxCore::AddPolylineDepth;
     wxConfigBase::Get()->Read("metric", &m_Metric, true);
     wxConfigBase::Get()->Read("degrees", &m_Degrees, true);
-    m_here.x = DBL_MAX;
-    m_there.x = DBL_MAX;
+    m_here.Invalidate();
+    m_there.Invalidate();
     presentation_mode = 0;
     pres_speed = 0.0;
     pres_reverse = false;
@@ -182,8 +182,8 @@ void GfxCore::Initialise()
     m_DoneFirstShow = false;
 
     m_HitTestGridValid = false;
-    m_here.x = DBL_MAX;
-    m_there.x = DBL_MAX;
+    m_here.Invalidate();
+    m_there.Invalidate();
 
     // Apply default parameters.
     DefaultParameters();
@@ -321,7 +321,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	if (m_Legs || m_Tubes) {
 	    if (m_Tubes) {
-		EnableSmoothPolygons();
+		EnableSmoothPolygons(true); // FIXME: allow false for wireframe view
 		DrawList(LIST_TUBES);
 		DisableSmoothPolygons();
 	    }
@@ -364,20 +364,20 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    }
 	}
 
-	if (!Animating() && (m_here.x != DBL_MAX || m_there.x != DBL_MAX)) {
+	if (!Animating() && (m_here.IsValid() || m_there.IsValid())) {
 	    // Draw "here" and "there".
 	    Double hx, hy;
 	    SetColour(HERE_COLOUR);
-	    if (m_here.x != DBL_MAX) {
+	    if (m_here.IsValid()) {
 		Double dummy;
-		Transform(m_here.x, m_here.y, m_here.z, &hx, &hy, &dummy);
+		Transform(m_here, &hx, &hy, &dummy);
 		DrawRing(hx, hy);
 	    }
-	    if (m_there.x != DBL_MAX) {
+	    if (m_there.IsValid()) {
 		Double tx, ty;
 		Double dummy;
-		Transform(m_there.x, m_there.y, m_there.z, &tx, &ty, &dummy);
-		if (m_here.x != DBL_MAX) {
+		Transform(m_there, &tx, &ty, &dummy);
+		if (m_here.IsValid()) {
 		    BeginLines();
 		    PlaceIndicatorVertex(hx, hy);
 		    PlaceIndicatorVertex(tx, ty);
@@ -407,44 +407,40 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 void GfxCore::DrawBoundingBox()
 {
-    const double x = 0.5 * m_Parent->GetXExtent();
-    const double y = 0.5 * m_Parent->GetYExtent();
-    const double z = 0.5 * m_Parent->GetZExtent();
+    const Vector3 v = 0.5 * m_Parent->GetExtent();
 
     SetColour(col_BLUE);
     EnableDashedLines();
     BeginPolyline();
-    PlaceVertex(-x, -y, z);
-    PlaceVertex(-x, y, z);
-    PlaceVertex(x, y, z);
-    PlaceVertex(x, -y, z);
-    PlaceVertex(-x, -y, z);
+    PlaceVertex(-v.GetX(), -v.GetY(), v.GetZ());
+    PlaceVertex(-v.GetX(), v.GetY(), v.GetZ());
+    PlaceVertex(v.GetX(), v.GetY(), v.GetZ());
+    PlaceVertex(v.GetX(), -v.GetY(), v.GetZ());
+    PlaceVertex(-v.GetX(), -v.GetY(), v.GetZ());
     EndPolyline();
     BeginPolyline();
-    PlaceVertex(-x, -y, -z);
-    PlaceVertex(-x, y, -z);
-    PlaceVertex(x, y, -z);
-    PlaceVertex(x, -y, -z);
-    PlaceVertex(-x, -y, -z);
+    PlaceVertex(-v.GetX(), -v.GetY(), -v.GetZ());
+    PlaceVertex(-v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), -v.GetY(), -v.GetZ());
+    PlaceVertex(-v.GetX(), -v.GetY(), -v.GetZ());
     EndPolyline();
     BeginLines();
-    PlaceVertex(-x, -y, z);
-    PlaceVertex(-x, -y, -z);
-    PlaceVertex(-x, y, z);
-    PlaceVertex(-x, y, -z);
-    PlaceVertex(x, y, z);
-    PlaceVertex(x, y, -z);
-    PlaceVertex(x, -y, z);
-    PlaceVertex(x, -y, -z);
+    PlaceVertex(-v.GetX(), -v.GetY(), v.GetZ());
+    PlaceVertex(-v.GetX(), -v.GetY(), -v.GetZ());
+    PlaceVertex(-v.GetX(), v.GetY(), v.GetZ());
+    PlaceVertex(-v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), v.GetY(), v.GetZ());
+    PlaceVertex(v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), -v.GetY(), v.GetZ());
+    PlaceVertex(v.GetX(), -v.GetY(), -v.GetZ());
     EndLines();
     DisableDashedLines();
 }
 
 void GfxCore::DrawShadowedBoundingBox()
 {
-    const double x = 0.5 * m_Parent->GetXExtent();
-    const double y = 0.5 * m_Parent->GetYExtent();
-    const double z = 0.5 * m_Parent->GetZExtent();
+    const Vector3 v = 0.5 * m_Parent->GetExtent();
 
     // FIXME: these gl* calls should be in gla-gl.cc
     glPolygonOffset(1.0, 1.0);
@@ -454,10 +450,10 @@ void GfxCore::DrawShadowedBoundingBox()
 
     SetColour(col_DARK_GREY);
     BeginQuadrilaterals();
-    PlaceVertex(-x, -y, -z);
-    PlaceVertex(-x, y, -z);
-    PlaceVertex(x, y, -z);
-    PlaceVertex(x, -y, -z);
+    PlaceVertex(-v.GetX(), -v.GetY(), -v.GetZ());
+    PlaceVertex(-v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), -v.GetY(), -v.GetZ());
     EndQuadrilaterals();
 
     glDisable(GL_POLYGON_OFFSET_FILL);
@@ -483,13 +479,13 @@ void GfxCore::DrawGrid()
 	size_snap *= 2.0;
     }
 
-    Double grid_size = size_snap / 10.0;
+    Double grid_size = size_snap * 0.1;
     Double edge = grid_size * 2.0;
-    Double grid_z = -m_Parent->GetZExtent()/2.0 - grid_size;
-    Double left = -m_Parent->GetXExtent()/2.0 - edge;
-    Double right = m_Parent->GetXExtent()/2.0 + edge;
-    Double bottom = -m_Parent->GetYExtent()/2.0 - edge;
-    Double top = m_Parent->GetYExtent()/2.0 + edge;
+    Double grid_z = -m_Parent->GetZExtent() * 0.5 - grid_size;
+    Double left = -m_Parent->GetXExtent() * 0.5 - edge;
+    Double right = m_Parent->GetXExtent() * 0.5 + edge;
+    Double bottom = -m_Parent->GetYExtent() * 0.5 - edge;
+    Double top = m_Parent->GetYExtent() * 0.5 + edge;
     int count_x = (int) ceil((right - left) / grid_size);
     int count_y = (int) ceil((top - bottom) / grid_size);
     Double actual_right = left + count_x*grid_size;
@@ -532,6 +528,16 @@ void GfxCore::DrawTick(int angle_cw)
     PlaceIndicatorVertex(x1, y1);
 }
 
+void GfxCore::DrawArrow(gla_colour col1, gla_colour col2) {
+    Vector3 p1(0, INDICATOR_RADIUS, 0);
+    Vector3 p2(INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 150deg
+    Vector3 p3(-INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 210deg
+    Vector3 pc(0, 0, 0);
+
+    DrawTriangle(col_LIGHT_GREY, col1, p2, p1, pc);
+    DrawTriangle(col_LIGHT_GREY, col2, p3, p1, pc);
+}
+
 void GfxCore::DrawCompass() {
     // Ticks.
     BeginLines();
@@ -546,15 +552,7 @@ void GfxCore::DrawCompass() {
     DrawCircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS);
 
     // Compass arrow.
-    GLAPoint p1(0, INDICATOR_RADIUS, 0);
-    GLAPoint p2(INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 150deg
-    GLAPoint p3(-INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 210deg
-    GLAPoint pc(0, 0, 0);
-    GLAPoint pts1[3] = { p2, p1, pc };
-    GLAPoint pts2[3] = { p3, p1, pc };
-
-    DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts1);
-    DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts2);
+    DrawArrow(col_INDICATOR_1, col_INDICATOR_2);
 }
 
 // Draw the non-rotating background to the clino.
@@ -584,14 +582,7 @@ void GfxCore::DrawClino() {
     DrawSemicircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS, 0);
 
     // Elevation arrow.
-    GLAPoint p1(0, INDICATOR_RADIUS, 0);
-    GLAPoint p2(INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 150deg
-    GLAPoint p3(-INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 210deg
-    GLAPoint pc(0, 0, 0);
-    GLAPoint pts1[3] = { p2, p1, pc };
-    GLAPoint pts2[3] = { p3, p1, pc };
-    DrawTriangle(col_LIGHT_GREY, col_INDICATOR_2, pts1);
-    DrawTriangle(col_LIGHT_GREY, col_INDICATOR_1, pts2);
+    DrawArrow(col_INDICATOR_2, col_INDICATOR_1);
 }
 
 void GfxCore::Draw2dIndicators()
@@ -682,7 +673,7 @@ void GfxCore::NattyDrawNames()
 
 	Double x, y, z;
 
-	Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
+	Transform(**label, &x, &y, &z);
 	// Check if the label is behind us (in perspective view).
 	if (z <= 0.0 || z >= 1.0) continue;
 
@@ -690,7 +681,7 @@ void GfxCore::NattyDrawNames()
 	// labels are displayed change as the resulting twinkling effect is
 	// distracting.
 	Double tx, ty, tz;
-	Transform(0, 0, 0, &tx, &ty, &tz);
+	Transform(Vector3(), &tx, &ty, &tz);
 	tx -= floor(tx / quantise) * quantise;
 	ty -= floor(ty / quantise) * quantise;
 
@@ -737,7 +728,7 @@ void GfxCore::SimpleDrawNames()
 	}
 
 	Double x, y, z;
-	Transform((*label)->x, (*label)->y, (*label)->z, &x, &y, &z);
+	Transform(**label, &x, &y, &z);
 
 	// Check if the label is behind us (in perspective view).
 	if (z <= 0) continue;
@@ -998,7 +989,7 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 
 	Double cx, cy, cz;
 
-	Transform(pt->GetX(), pt->GetY(), pt->GetZ(), &cx, &cy, &cz);
+	Transform(*pt, &cx, &cy, &cz);
 
 	cy = m_YSize - cy;
 
@@ -1055,7 +1046,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
 
 	m_HitTestGridValid = false;
 
-	Refresh(false);
+	ForceRefresh();
     }
 }
 
@@ -1084,7 +1075,7 @@ void GfxCore::DefaultParameters()
     }
 
     UpdateQuaternion();
-    SetTranslation(0.0, 0.0, 0.0);
+    SetTranslation(Vector3());
 
     m_RotationStep = 30.0;
     m_Rotating = false;
@@ -1162,9 +1153,7 @@ bool GfxCore::Animate()
 	    if (tmp > 0) {
 		next_mark_time = tmp;
 	    } else {
-		double d = sqrt(sqrd(next_mark.x - prev_mark.x) +
-				sqrd(next_mark.y - prev_mark.y) +
-				sqrd(next_mark.z - prev_mark.z));
+		double d = (next_mark - prev_mark).magnitude();
 		// FIXME: should ignore component of d which is unseen in
 		// non-perspective mode?
 		next_mark_time = sqrd(d / 100);
@@ -1203,9 +1192,7 @@ bool GfxCore::Animate()
 		if (here.angle <= next_mark.angle - 360.0)
 		    here.angle += 360.0;
 	    }
-	    here.x = q * here.x + p * next_mark.x;
-	    here.y = q * here.y + p * next_mark.y;
-	    here.z = q * here.z + p * next_mark.z;
+	    (Vector3)here = q * here + p * next_mark;
 	    here.angle = q * here.angle + p * next_mark.angle;
 	    if (here.angle < 0) here.angle += 360.0;
 	    else if (here.angle >= 360.0) here.angle -= 360.0;
@@ -1256,8 +1243,8 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
     // measuring lines to minimise the redraw time
     int l = INT_MAX, r = INT_MIN, u = INT_MIN, d = INT_MAX;
     Double X, Y, Z;
-    if (a.x != DBL_MAX) {
-	if (!Transform(a.x, a.y, a.z, &X, &Y, &Z)) {
+    if (a.IsValid()) {
+	if (!Transform(a, &X, &Y, &Z)) {
 	    printf("oops\n");
 	} else {
 	    int x = int(X);
@@ -1268,8 +1255,8 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	    d = y - MARGIN;
 	}
     }
-    if (b.x != DBL_MAX) {
-	if (!Transform(b.x, b.y, b.z, &X, &Y, &Z)) {
+    if (b.IsValid()) {
+	if (!Transform(b, &X, &Y, &Z)) {
 	    printf("oops\n");
 	} else {
 	    int x = int(X);
@@ -1280,8 +1267,8 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	    d = min(d, y - MARGIN);
 	}
     }
-    if (c.x != DBL_MAX) {
-	if (!Transform(c.x, c.y, c.z, &X, &Y, &Z)) {
+    if (c.IsValid()) {
+	if (!Transform(c, &X, &Y, &Z)) {
 	    printf("oops\n");
 	} else {
 	    int x = int(X);
@@ -1298,9 +1285,9 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 
 void GfxCore::SetHere()
 {
-    if (m_here.x == DBL_MAX) return;
+    if (!m_here.IsValid()) return;
     Point old = m_here;
-    m_here.x = DBL_MAX;
+    m_here.Invalidate();
     RefreshLine(old, m_there, m_here);
 }
 
@@ -1313,9 +1300,9 @@ void GfxCore::SetHere(const Point &p)
 
 void GfxCore::SetThere()
 {
-    if (m_there.x == DBL_MAX) return;
+    if (!m_there.IsValid()) return;
     Point old = m_there;
-    m_there.x = DBL_MAX;
+    m_there.Invalidate();
     RefreshLine(m_here, old, m_there);
 }
 
@@ -1349,7 +1336,7 @@ void GfxCore::CreateHitTestGrid()
 
 	// Calculate screen coordinates.
 	Double cx, cy, cz;
-	Transform(label->GetX(), label->GetY(), label->GetZ(), &cx, &cy, &cz);
+	Transform(*label, &cx, &cy, &cz);
 	if (cx < 0 || cx >= m_XSize) continue;
 	if (cy < 0 || cy >= m_YSize) continue;
 
@@ -1455,10 +1442,10 @@ void GfxCore::SetCoords(wxPoint point)
     ReverseTransform(point.x, m_YSize - 1 - point.y, &cx, &cy, &cz);
 
     if (m_TiltAngle == 90.0) {
-	m_Parent->SetCoords(cx + m_Parent->GetXOffset(),
-			    cy + m_Parent->GetYOffset());
+	m_Parent->SetCoords(cx + m_Parent->GetOffset().GetX(),
+			    cy + m_Parent->GetOffset().GetY());
     } else if (m_TiltAngle == 0.0) {
-	m_Parent->SetAltitude(cz + m_Parent->GetZOffset());
+	m_Parent->SetAltitude(cz + m_Parent->GetOffset().GetZ());
     } else {
 	m_Parent->ClearCoords();
     }
@@ -1744,7 +1731,7 @@ bool GfxCore::ShowingMeasuringLine() const
 {
     // Determine if the measuring line is being shown.
 
-    return (m_there.x != DBL_MAX);
+    return (m_there.IsValid());
 }
 
 void GfxCore::ToggleFlag(bool* flag, int update)
@@ -1781,7 +1768,7 @@ void GfxCore::ClearTreeSelection()
 
 void GfxCore::CentreOn(const Point &p)
 {
-    SetTranslation(-p.x, -p.y, -p.z);
+    SetTranslation(-p);
     m_HitTestGridValid = false;
 
     ForceRefresh();
@@ -1852,6 +1839,13 @@ void GfxCore::GenerateList(unsigned int l)
 	    assert(false);
 	    break;
     }
+}
+
+void GfxCore::ToggleSmoothShading()
+{
+    GLACanvas::ToggleSmoothShading();
+    InvalidateList(LIST_TUBES);
+    ForceRefresh();
 }
 
 void GfxCore::GenerateDisplayList()
@@ -1974,19 +1968,19 @@ void GfxCore::DrawIndicators()
     }
 }
 
-void GfxCore::PlaceVertexWithColour(Double x, Double y, Double z, Double factor)
+void GfxCore::PlaceVertexWithColour(const Vector3 & v, Double factor)
 {
     SetColour(GetSurfacePen(), factor); // FIXME : assumes surface pen is white!
-    PlaceVertex(x, y, z);
+    PlaceVertex(v);
 }
 
-void GfxCore::PlaceVertexWithDepthColour(Double x, Double y, Double z,
-					 Double factor)
+void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
 {
     // Set the drawing colour based on the altitude.
     Double z_ext = m_Parent->GetZExtent();
     assert(z_ext > 0);
 
+    Double z = v.GetZ();
     // points arising from tubes may be slightly outside the limits...
     if (z < -z_ext * 0.5) z = -z_ext * 0.5;
     if (z > z_ext * 0.5) z = z_ext * 0.5;
@@ -2018,7 +2012,7 @@ void GfxCore::PlaceVertexWithDepthColour(Double x, Double y, Double z,
     }
     SetColour(pen1, factor);
 
-    PlaceVertex(x, y, z);
+    PlaceVertex(v);
 }
 
 void GfxCore::SplitLineAcrossBands(int band, int band2,
@@ -2031,15 +2025,15 @@ void GfxCore::SplitLineAcrossBands(int band, int band2,
 
 	// Find the intersection point of the line p -> q
 	// with the plane parallel to the xy-plane with z-axis intersection z.
-	assert(q.getZ() - p.getZ() != 0.0);
+	assert(q.GetZ() - p.GetZ() != 0.0);
 
-	const Double t = (z - p.getZ()) / (q.getZ() - p.getZ());
+	const Double t = (z - p.GetZ()) / (q.GetZ() - p.GetZ());
 //	assert(0.0 <= t && t <= 1.0);		FIXME: rounding problems!
 
-	const Double x = p.getX() + t * (q.getX() - p.getX());
-	const Double y = p.getY() + t * (q.getY() - p.getY());
+	const Double x = p.GetX() + t * (q.GetX() - p.GetX());
+	const Double y = p.GetY() + t * (q.GetY() - p.GetY());
 
-	PlaceVertexWithDepthColour(x, y, z, factor);
+	PlaceVertexWithDepthColour(Vector3(x, y, z), factor);
     }
 }
 
@@ -2070,10 +2064,10 @@ void GfxCore::AddPolyline(const vector<PointInfo> & centreline)
     BeginPolyline();
     SetColour(GetSurfacePen());
     vector<PointInfo>::const_iterator i = centreline.begin();
-    PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
+    PlaceVertex(*i);
     ++i;
     while (i != centreline.end()) {
-	PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
+	PlaceVertex(*i);
 	++i;
     }
     EndPolyline();
@@ -2098,16 +2092,16 @@ void GfxCore::AddPolylineDepth(const vector<PointInfo> & centreline)
     vector<PointInfo>::const_iterator i, prev_i;
     i = centreline.begin();
     int band0 = GetDepthColour(i->GetZ());
-    PlaceVertexWithDepthColour(i->GetX(), i->GetY(), i->GetZ());
+    PlaceVertexWithDepthColour(*i);
     prev_i = i;
     ++i;
     while (i != centreline.end()) {
 	int band = GetDepthColour(i->GetZ());
 	if (band != band0) {
-	    SplitLineAcrossBands(band0, band, prev_i->vec(), i->vec());
+	    SplitLineAcrossBands(band0, band, *prev_i, *i);
 	    band0 = band;
 	}
-	PlaceVertexWithDepthColour(i->GetX(), i->GetY(), i->GetZ());
+	PlaceVertexWithDepthColour(*i);
 	prev_i = i;
 	++i;
     }
@@ -2126,13 +2120,13 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     BeginQuadrilaterals();
     // FIXME: these glTexCoord2i calls should be in gla-gl.cc
     glTexCoord2i(0, 0);
-    PlaceVertexWithColour(a.getX(), a.getY(), a.getZ(), factor);
+    PlaceVertexWithColour(a, factor);
     glTexCoord2i(w, 0);
-    PlaceVertexWithColour(b.getX(), b.getY(), b.getZ(), factor);
+    PlaceVertexWithColour(b, factor);
     glTexCoord2i(w, h);
-    PlaceVertexWithColour(c.getX(), c.getY(), c.getZ(), factor);
+    PlaceVertexWithColour(c, factor);
     glTexCoord2i(0, h);
-    PlaceVertexWithColour(d.getX(), d.getY(), d.getZ(), factor);
+    PlaceVertexWithColour(d, factor);
     EndQuadrilaterals();
 }
 
@@ -2143,13 +2137,13 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
     int a_band, b_band, c_band, d_band;
-    a_band = GetDepthColour(a.getZ());
+    a_band = GetDepthColour(a.GetZ());
     a_band = min(max(a_band, 0), GetNumDepthBands());
-    b_band = GetDepthColour(b.getZ());
+    b_band = GetDepthColour(b.GetZ());
     b_band = min(max(b_band, 0), GetNumDepthBands());
-    c_band = GetDepthColour(c.getZ());
+    c_band = GetDepthColour(c.GetZ());
     c_band = min(max(c_band, 0), GetNumDepthBands());
-    d_band = GetDepthColour(d.getZ());
+    d_band = GetDepthColour(d.GetZ());
     d_band = min(max(d_band, 0), GetNumDepthBands());
     // All this splitting is incorrect - we need to make a separate polygon
     // for each depth band...
@@ -2157,25 +2151,25 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginPolygon();
-////    PlaceNormal(normal.getX(), normal.getY(), normal.getZ());
+////    PlaceNormal(normal);
     // FIXME: these glTexCoord2i calls should be in gla-gl.cc
     glTexCoord2i(0, 0);
-    PlaceVertexWithDepthColour(a.getX(), a.getY(), a.getZ(), factor);
+    PlaceVertexWithDepthColour(a, factor);
     if (a_band != b_band) {
 	SplitLineAcrossBands(a_band, b_band, a, b, factor);
     }
     glTexCoord2i(w, 0);
-    PlaceVertexWithDepthColour(b.getX(), b.getY(), b.getZ(), factor);
+    PlaceVertexWithDepthColour(b, factor);
     if (b_band != c_band) {
 	SplitLineAcrossBands(b_band, c_band, b, c, factor);
     }
     glTexCoord2i(w, h);
-    PlaceVertexWithDepthColour(c.getX(), c.getY(), c.getZ(), factor);
+    PlaceVertexWithDepthColour(c, factor);
     if (c_band != d_band) {
 	SplitLineAcrossBands(c_band, d_band, c, d, factor);
     }
     glTexCoord2i(0, h);
-    PlaceVertexWithDepthColour(d.getX(), d.getY(), d.getZ(), factor);
+    PlaceVertexWithDepthColour(d, factor);
     if (d_band != a_band) {
 	SplitLineAcrossBands(d_band, a_band, d, a, factor);
     }
@@ -2228,7 +2222,7 @@ void GfxCore::AddPolylineDate(const vector<PointInfo> & centreline)
     i = centreline.begin();
     time_t date = i->GetDate();
     SetColourFromDate(date, 1.0);
-    PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
+    PlaceVertex(*i);
     prev_i = i;
     while (++i != centreline.end()) {
 	time_t newdate = i->GetDate();
@@ -2237,9 +2231,9 @@ void GfxCore::AddPolylineDate(const vector<PointInfo> & centreline)
 	    BeginPolyline();
 	    date = newdate;
 	    SetColourFromDate(date, 1.0);
-	    PlaceVertex(prev_i->GetX(), prev_i->GetY(), prev_i->GetZ());
+	    PlaceVertex(*prev_i);
 	}
-	PlaceVertex(i->GetX(), i->GetY(), i->GetZ());
+	PlaceVertex(*i);
 	prev_i = i;
     }
     EndPolyline();
@@ -2257,17 +2251,17 @@ void GfxCore::AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
     int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginPolygon();
-////    PlaceNormal(normal.getX(), normal.getY(), normal.getZ());
+////    PlaceNormal(normal);
     SetColourFromDate(static_date_hack, factor);
     // FIXME: these glTexCoord2i calls should be in gla-gl.cc
     glTexCoord2i(0, 0);
-    PlaceVertex(a.getX(), a.getY(), a.getZ());
+    PlaceVertex(a);
     glTexCoord2i(w, 0);
-    PlaceVertex(b.getX(), b.getY(), b.getZ());
+    PlaceVertex(b);
     glTexCoord2i(w, h);
-    PlaceVertex(c.getX(), c.getY(), c.getZ());
+    PlaceVertex(c);
     glTexCoord2i(0, h);
-    PlaceVertex(d.getX(), d.getY(), d.getZ());
+    PlaceVertex(d);
     EndPolygon();
 }
 
@@ -2300,7 +2294,7 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 	    const XSect & next_pt_v = *i;
 
 	    // calculate vector from this pt to the next one
-	    Vector3 leg_v = next_pt_v.vec() - pt_v.vec();
+	    Vector3 leg_v = next_pt_v - pt_v;
 
 	    // obtain a vector in the LRUD plane
 	    right = leg_v * up_v;
@@ -2321,12 +2315,12 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 	    // last segment
 
 	    // Calculate vector from the previous pt to this one.
-	    Vector3 leg_v = pt_v.vec() - prev_pt_v.vec();
+	    Vector3 leg_v = pt_v - prev_pt_v;
 
 	    // Obtain a horizontal vector in the LRUD plane.
 	    right = leg_v * up_v;
 	    if (right.magnitude() == 0) {
-		right = Vector3(last_right.getX(), last_right.getY(), 0.0);
+		right = Vector3(last_right.GetX(), last_right.GetY(), 0.0);
 		// Obtain a second vector in the LRUD plane,
 		// perpendicular to the first.
 		//up = right * leg_v;
@@ -2348,8 +2342,8 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 	    // Calculate vectors from this vertex to the
 	    // next vertex, and from the previous vertex to
 	    // this one.
-	    Vector3 leg1_v = pt_v.vec() - prev_pt_v.vec();
-	    Vector3 leg2_v = next_pt_v.vec() - pt_v.vec();
+	    Vector3 leg1_v = pt_v - prev_pt_v;
+	    Vector3 leg2_v = next_pt_v - pt_v;
 
 	    // Obtain horizontal vectors perpendicular to
 	    // both legs, then normalise and average to get
@@ -2366,8 +2360,8 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 	    if (r1.magnitude() == 0) {
 		Vector3 n = leg1_v;
 		n.normalise();
-		z_pitch_adjust = n.getZ();
-		//up = Vector3(0, 0, leg1_v.getZ());
+		z_pitch_adjust = n.GetZ();
+		//up = Vector3(0, 0, leg1_v.GetZ());
 		//up = right * up;
 		up = up_v;
 
@@ -2382,7 +2376,7 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 		up.normalise();
 		Vector3 vec = up - right;
 		for (int orient = 0; orient <= 3; ++orient) {
-		    Vector3 tmp = U[orient] - prev_pt_v.vec();
+		    Vector3 tmp = U[orient] - prev_pt_v;
 		    tmp.normalise();
 		    Double dotp = dot(vec, tmp);
 		    if (dotp > maxdotp) {
@@ -2408,7 +2402,7 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 		shift = 0;
 		maxdotp = 0;
 		for (int j = 0; j <= 3; ++j) {
-		    Vector3 tmp = U[j] - prev_pt_v.vec();
+		    Vector3 tmp = U[j] - prev_pt_v;
 		    tmp.normalise();
 		    Double dotp = dot(vec, tmp);
 		    if (dotp > maxdotp) {
@@ -2421,7 +2415,7 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 		    shift = 0;
 		    maxdotp = 0;
 		    for (int j = 0; j <= 3; ++j) {
-			Vector3 tmp = U[j] - prev_pt_v.vec();
+			Vector3 tmp = U[j] - prev_pt_v;
 			tmp.normalise();
 			Double dotp = dot(vec, tmp);
 			printf("    %d : %.8f\n", j, dotp);
@@ -2431,8 +2425,8 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 	    } else if (r2.magnitude() == 0) {
 		Vector3 n = leg2_v;
 		n.normalise();
-		z_pitch_adjust = n.getZ();
-		//up = Vector3(0, 0, leg2_v.getZ());
+		z_pitch_adjust = n.GetZ();
+		//up = Vector3(0, 0, leg2_v.GetZ());
 		//up = right * up;
 		up = up_v;
 	    } else {
@@ -2455,10 +2449,10 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 
 	// Produce coordinates of the corners of the LRUD "plane".
 	Vector3 v[4];
-	v[0] = pt_v.vec() - right * l + up * u;
-	v[1] = pt_v.vec() + right * r + up * u;
-	v[2] = pt_v.vec() + right * r - up * d;
-	v[3] = pt_v.vec() - right * l - up * d;
+	v[0] = pt_v - right * l + up * u;
+	v[1] = pt_v + right * r + up * u;
+	v[2] = pt_v + right * r - up * d;
+	v[3] = pt_v - right * l - up * d;
 
 	if (segment > 0) {
 	    (this->*AddQuad)(v[0], v[1], U[1], U[0]);
@@ -2505,30 +2499,22 @@ GfxCore::MoveViewer(double forward, double up, double right)
     assert(fabs(dot(v_forward, v_right)) < 1e-6);
     assert(fabs(dot(v_right, v_up)) < 1e-6);
     Vector3 move = v_forward * forward + v_up * up + v_right * right;
-    AddTranslation(-move.getX(), -move.getY(), -move.getZ());
+    AddTranslation(-move);
     // Show current position.
-    m_Parent->SetCoords(m_Parent->GetXOffset() - m_Translation.x,
-			m_Parent->GetYOffset() - m_Translation.y,
-			m_Parent->GetZOffset() - m_Translation.z);
+    m_Parent->SetCoords(m_Parent->GetOffset() - GetTranslation());
     ForceRefresh();
 }
 
 PresentationMark GfxCore::GetView() const
 {
-    return PresentationMark(m_Translation.x + m_Parent->GetXOffset(),
-			    m_Translation.y + m_Parent->GetYOffset(),
-			    m_Translation.z + m_Parent->GetZOffset(),
-			    m_PanAngle,
-			    m_TiltAngle,
-			    m_Scale);
+    return PresentationMark(GetTranslation() + m_Parent->GetOffset(),
+			    m_PanAngle, m_TiltAngle, m_Scale);
 }
 
 void GfxCore::SetView(const PresentationMark & p)
 {
     m_SwitchingTo = 0;
-    SetTranslation(p.x - m_Parent->GetXOffset(),
-		   p.y - m_Parent->GetYOffset(),
-		   p.z - m_Parent->GetZOffset());
+    SetTranslation(p - m_Parent->GetOffset());
     m_PanAngle = p.angle;
     m_TiltAngle = p.tilt_angle;
     UpdateQuaternion();
@@ -2549,6 +2535,8 @@ void GfxCore::PlayPres(double speed, bool change_speed) {
 	this_mark_total = 0;
 	pres_reverse = (speed < 0);
     }
+
+    if (change_speed) pres_speed = speed;
 
     if (speed != 0.0) {
 	bool new_pres_reverse = (speed < 0);

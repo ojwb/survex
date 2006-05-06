@@ -4,7 +4,7 @@
 //  Header file for the GLA abstraction layer.
 //
 //  Copyright (C) 2002 Mark R. Shinwell.
-//  Copyright (C) 2003,2004,2005 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -40,21 +40,9 @@ class GfxCore;
 
 wxString GetGLSystemDescription();
 
-#define GLA_DEBUG 1
+// #define GLA_DEBUG
 
 typedef Double glaCoord;
-
-class GLAPoint {
-    glaCoord xc, yc, zc;
-
-public:
-    GLAPoint(glaCoord x, glaCoord y, glaCoord z) : xc(x), yc(y), zc(z) {}
-    ~GLAPoint() {}
-
-    glaCoord GetX() { return xc; }
-    glaCoord GetY() { return yc; }
-    glaCoord GetZ() { return zc; }
-};
 
 // Colours for drawing.  Don't reorder these!
 enum gla_colour {
@@ -122,13 +110,7 @@ class GLACanvas : public wxGLCanvas {
     // Parameters for plotting data:
     Quaternion m_Rotation;
     Double m_Scale;
-    public: // FIXME
-    struct {
-        Double x;
-        Double y;
-        Double z;
-    } m_Translation;
-    private:
+    Vector3 m_Translation;
 
 #ifdef USE_FNT
     fntTexFont m_Font;
@@ -142,6 +124,7 @@ class GLACanvas : public wxGLCanvas {
     GLuint m_Texture;
     GLuint m_CrossTexture;
 
+    bool m_SmoothShading;
     bool m_Textured;
     bool m_Perspective;
     bool m_Fog;
@@ -198,35 +181,46 @@ public:
     void EndCrosses();
 
     void DrawRectangle(gla_colour edge, gla_colour fill,
-                       glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
+		       glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
     void DrawShadedRectangle(const GLAPen & fill_bot, const GLAPen & fill_top,
 			     glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
     void DrawCircle(gla_colour edge, gla_colour fill, glaCoord cx, glaCoord cy, glaCoord radius);
     void DrawSemicircle(gla_colour edge, gla_colour fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start);
-    void DrawTriangle(gla_colour edge, gla_colour fill, GLAPoint* vertices);
+    void DrawTriangle(gla_colour edge, gla_colour fill,
+		      const Vector3 &p0, const Vector3 &p1, const Vector3 &p2);
 
     void DrawBlob(glaCoord x, glaCoord y, glaCoord z);
     void DrawCross(glaCoord x, glaCoord y, glaCoord z);
     void DrawRing(glaCoord x, glaCoord y);
 
+    void PlaceVertex(const Vector3 & v) {
+	PlaceVertex(v.GetX(), v.GetY(), v.GetZ());
+    }
     void PlaceVertex(glaCoord x, glaCoord y, glaCoord z);
     void PlaceIndicatorVertex(glaCoord x, glaCoord y);
 
-    void PlaceNormal(glaCoord x, glaCoord y, glaCoord z);
+    void PlaceNormal(const Vector3 &v);
 
     void EnableDashedLines();
     void DisableDashedLines();
 
-    void EnableSmoothPolygons();
+    void EnableSmoothPolygons(bool filled);
     void DisableSmoothPolygons();
 
     void SetRotation(const Quaternion&);
     void SetScale(Double);
-    void SetTranslation(Double, Double, Double);
-    void AddTranslation(Double, Double, Double);
+    void SetTranslation(const Vector3 &v) {
+	m_Translation = v;
+    }
+    void AddTranslation(const Vector3 &v) {
+	m_Translation += v;
+    }
+    const Vector3 & GetTranslation() const {
+	return m_Translation;
+    }
     void AddTranslationScreenCoordinates(int dx, int dy);
 
-    bool Transform(Double x, Double y, Double z, Double* x_out, Double* y_out, Double* z_out) const;
+    bool Transform(const Vector3 & v, Double* x_out, Double* y_out, Double* z_out) const;
     void ReverseTransform(Double x, Double y, Double* x_out, Double* y_out, Double* z_out) const;
 
 #ifdef USE_FNT
@@ -234,6 +228,9 @@ public:
 #else
     int GetFontSize() const { return m_FontSize; }
 #endif
+
+    void ToggleSmoothShading();
+    bool GetSmoothShading() const { return m_SmoothShading; }
 
     Double SurveyUnitsAcrossViewport() const;
 

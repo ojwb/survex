@@ -206,15 +206,16 @@ const int GLACanvas::m_FontSize = 10;
 
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
 GLACanvas::GLACanvas(wxWindow* parent, int id)
-    : wxGLCanvas(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS)
+    : wxGLCanvas(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
+      m_Translation()
 {
     // Constructor.
 
     m_Quadric = NULL;
     m_Rotation.setFromSphericalPolars(0.0, 0.0, 0.0);
     m_Scale = 0.0;
-    m_Translation.x = m_Translation.y = m_Translation.z = 0.0;
     m_VolumeDiameter = 1.0;
+    m_SmoothShading = false;
     m_Texture = 0;
     m_Textured = false;
     m_Perspective = false;
@@ -256,7 +257,7 @@ void GLACanvas::FirstShow()
 
     glShadeModel(GL_FLAT);
     CHECK_GL_ERROR("FirstShow", "glShadeModel");
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // So text works.
     CHECK_GL_ERROR("FirstShow", "glPolygonMode");
     //glAlphaFunc(GL_GREATER, 0.5f);
     //CHECK_GL_ERROR("FirstShow", "glAlphaFunc");
@@ -384,20 +385,6 @@ void GLACanvas::SetScale(Double scale)
     }
 }
 
-void GLACanvas::SetTranslation(Double x, Double y, Double z)
-{
-    m_Translation.x = x;
-    m_Translation.y = y;
-    m_Translation.z = z;
-}
-
-void GLACanvas::AddTranslation(Double x, Double y, Double z)
-{
-    m_Translation.x += x;
-    m_Translation.y += y;
-    m_Translation.z += z;
-}
-
 void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
 {
     // Translate the data by a given amount, specified in screen coordinates.
@@ -415,7 +402,7 @@ void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
     CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject (2)");
 
     // Apply the translation.
-    AddTranslation(x - x0, y - y0, z - z0);
+    AddTranslation(Vector3(x - x0, y - y0, z - z0));
 }
 
 void GLACanvas::SetVolumeDiameter(glaCoord diameter)
@@ -434,52 +421,50 @@ void GLACanvas::StartDrawing()
     glDepthMask(true);
 }
 
-void GLACanvas::EnableSmoothPolygons()
+void GLACanvas::EnableSmoothPolygons(bool filled)
 {
     // Prepare for drawing smoothly-shaded polygons.
     // Only use this when required (in particular lines in lists may not be
     // coloured correctly when this is enabled).
 
-    glShadeModel(GL_SMOOTH);
-    //glEnable(GL_COLOR_MATERIAL);
+    glPushAttrib(GL_ENABLE_BIT|GL_LIGHTING_BIT|GL_POLYGON_BIT);
+    if (filled) {
+	glShadeModel(GL_SMOOTH);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    } else {
+	glDisable(GL_LINE_SMOOTH);
+	glDisable(GL_TEXTURE_2D);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+    CHECK_GL_ERROR("EnableSmoothPolygons", "glPolygonMode");
 
-    //GLfloat diffuseMaterial[] = { 0.3, 0.3, 0.3, 1.0 };
-    //GLfloat mat_specular[] = { 0.5, 0.5, 0.5, 1.0 };
-    //wxSize size = GetSize();
-    //double aspect = double(size.GetWidth()) / double(size.GetHeight());
-#if 0
-    GLfloat light_position[] = { m_VolumeDiameter * 0.5 - 5.0,
-                                 m_VolumeDiameter * 0.5 / aspect - 5.0,
-                                 m_VolumeDiameter * 0.5 + 5.0,
-                                 0.0 };
-#endif
-
-  //  glMaterialfv(GL_FRONT, GL_AMBIENT, diffuseMaterial);
-//    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-//    glMaterialf(GL_FRONT, GL_SHININESS, 10.0);
-/*
-    GLfloat light_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    //glColorMaterial(GL_BACK, GL_AMBIENT);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);*/
+    if (filled && m_SmoothShading) {
+	static const GLfloat mat_specular[] = { 0.2, 0.2, 0.2, 1.0 };
+	static const GLfloat light_position[] = { -1.0, -1.0, -1.0, 0.0 };
+	static const GLfloat light_ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+	static const GLfloat light_diffuse[] = { 0.7, 0.7, 0.7, 1.0 };
+	glEnable(GL_COLOR_MATERIAL);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 10.0);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+    }
 }
 
 void GLACanvas::DisableSmoothPolygons()
 {
-    glShadeModel(GL_FLAT);
-  //  glDisable(GL_LIGHT0);
-//    glDisable(GL_LIGHTING);
-//    glDisable(GL_COLOR_MATERIAL);
+    glPopAttrib();
 }
 
-void GLACanvas::PlaceNormal(glaCoord x, glaCoord y, glaCoord z)
+void GLACanvas::PlaceNormal(const Vector3 &v)
 {
     // Add a normal (for polygons etc.)
 
-    glNormal3d(x, y, z);
+    glNormal3d(v.GetX(), v.GetY(), v.GetZ());
 }
 
 void GLACanvas::SetDataTransform()
@@ -537,7 +522,9 @@ void GLACanvas::SetDataTransform()
     m_Rotation.CopyToOpenGL();
     CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
     if (m_Perspective) {
-	glTranslated(m_Translation.x, m_Translation.y, m_Translation.z);
+	glTranslated(m_Translation.GetX(),
+		     m_Translation.GetY(),
+		     m_Translation.GetZ());
 	CHECK_GL_ERROR("SetDataTransform", "glTranslated");
     }
 
@@ -556,7 +543,9 @@ void GLACanvas::SetDataTransform()
     if (!m_Perspective) {
 	// Adjust the translation so we don't change the Z position of the model
 	Double X, Y, Z;
-	gluProject(m_Translation.x, m_Translation.y, m_Translation.z,
+	gluProject(m_Translation.GetX(),
+		   m_Translation.GetY(),
+		   m_Translation.GetZ(),
 		   modelview_matrix, projection_matrix, viewport,
 		   &X, &Y, &Z);
 	Double Tx, Ty, Tz;
@@ -961,7 +950,7 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 	PlaceVertex(x, y, z);
     } else {
 	Double X, Y, Z;
-	if (!Transform(x, y, z, &X, &Y, &Z)) {
+	if (!Transform(Vector3(x, y, z), &X, &Y, &Z)) {
 	    printf("bad transform\n");
 	    return;
 	}
@@ -1022,7 +1011,7 @@ void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
 	PlaceVertex(x, y, z);
     } else {
 	Double X, Y, Z;
-	if (!Transform(x, y, z, &X, &Y, &Z)) {
+	if (!Transform(Vector3(x, y, z), &X, &Y, &Z)) {
 	    printf("bad transform\n");
 	    return;
 	}
@@ -1153,23 +1142,25 @@ void GLACanvas::DrawSemicircle(gla_colour edge, gla_colour fill,
     CHECK_GL_ERROR("DrawSemicircle", "glPopMatrix");
 }
 
-void GLACanvas::DrawTriangle(gla_colour edge, gla_colour fill, GLAPoint* points)
+void
+GLACanvas::DrawTriangle(gla_colour edge, gla_colour fill,
+			const Vector3 &p0, const Vector3 &p1, const Vector3 &p2)
 {
     // Draw a filled triangle with an edge.
 
     SetColour(fill);
     BeginTriangles();
-    PlaceIndicatorVertex(points[0].GetX(), points[0].GetY());
-    PlaceIndicatorVertex(points[1].GetX(), points[1].GetY());
-    PlaceIndicatorVertex(points[2].GetX(), points[2].GetY());
+    PlaceIndicatorVertex(p0.GetX(), p0.GetY());
+    PlaceIndicatorVertex(p1.GetX(), p1.GetY());
+    PlaceIndicatorVertex(p2.GetX(), p2.GetY());
     EndTriangles();
 
     SetColour(edge);
-    BeginPolyline();
-    PlaceIndicatorVertex(points[0].GetX(), points[0].GetY());
-    PlaceIndicatorVertex(points[1].GetX(), points[1].GetY());
-    PlaceIndicatorVertex(points[2].GetX(), points[2].GetY());
-    EndPolyline();
+    glBegin(GL_LINE_STRIP);
+    PlaceIndicatorVertex(p0.GetX(), p0.GetY());
+    PlaceIndicatorVertex(p1.GetX(), p1.GetY());
+    PlaceIndicatorVertex(p2.GetX(), p2.GetY());
+    glEnd();
 }
 
 void GLACanvas::EnableDashedLines()
@@ -1188,13 +1179,14 @@ void GLACanvas::DisableDashedLines()
     CHECK_GL_ERROR("DisableDashedLines", "glDisable GL_LINE_STIPPLE");
 }
 
-bool GLACanvas::Transform(Double x, Double y, Double z,
+bool GLACanvas::Transform(const Vector3 & v,
                           Double* x_out, Double* y_out, Double* z_out) const
 {
     // Convert from data coordinates to screen coordinates.
 
     // Perform the projection.
-    return gluProject(x, y, z, modelview_matrix, projection_matrix, viewport,
+    return gluProject(v.GetX(), v.GetY(), v.GetZ(),
+		      modelview_matrix, projection_matrix, viewport,
 		      x_out, y_out, z_out);
 }
 
@@ -1217,6 +1209,11 @@ Double GLACanvas::SurveyUnitsAcrossViewport() const
     assert(m_Scale != 0.0);
     list_flags |= INVALIDATE_ON_SCALE;
     return m_VolumeDiameter / m_Scale;
+}
+
+void GLACanvas::ToggleSmoothShading()
+{
+    m_SmoothShading = !m_SmoothShading;
 }
 
 void GLACanvas::ToggleTextured()

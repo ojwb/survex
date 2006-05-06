@@ -99,9 +99,9 @@ public:
     EditMarkDlg(wxWindow* parent, const PresentationMark & p)
 	: wxDialog(parent, 500, wxString("Edit Waypoint"))
     {
-	easting = new wxTextCtrl(this, 601, wxString::Format("%.3f", p.x));
-	northing = new wxTextCtrl(this, 602, wxString::Format("%.3f", p.y));
-	altitude = new wxTextCtrl(this, 603, wxString::Format("%.3f", p.z));
+	easting = new wxTextCtrl(this, 601, wxString::Format("%.3f", p.GetX()));
+	northing = new wxTextCtrl(this, 602, wxString::Format("%.3f", p.GetY()));
+	altitude = new wxTextCtrl(this, 603, wxString::Format("%.3f", p.GetZ()));
 	angle = new wxTextCtrl(this, 604, wxString::Format("%.3f", p.angle));
 	tilt_angle = new wxTextCtrl(this, 605, wxString::Format("%.3f", p.tilt_angle));
 	scale = new wxTextCtrl(this, 606, wxString::Format("%.3f", p.scale));
@@ -160,17 +160,17 @@ public:
 	vert->SetSizeHints(this);
     }
     PresentationMark GetMark() const {
-	double x, y, z, a, t, s, T;
-	x = atof(easting->GetValue().c_str());
-	y = atof(northing->GetValue().c_str());
-	z = atof(altitude->GetValue().c_str());
+	double a, t, s, T;
+	Vector3 v(atof(easting->GetValue().c_str()),
+		  atof(northing->GetValue().c_str()),
+		  atof(altitude->GetValue().c_str()));
 	a = atof(angle->GetValue().c_str());
 	t = atof(tilt_angle->GetValue().c_str());
 	s = atof(scale->GetValue().c_str());
 	wxString str = time->GetValue();
 	if (str[0u] == '*') str[0u] = '-';
 	T = atof(str.c_str());
-	return PresentationMark(x, y, z, a, t, s, T);
+	return PresentationMark(v, a, t, s, T);
     }
 
 private:
@@ -284,9 +284,9 @@ class AvenPresList : public wxListCtrl {
 	    const PresentationMark & p = entries[item];
 	    double v;
 	    switch (column) {
-		case 0: v = p.x; break;
-		case 1: v = p.y; break;
-		case 2: v = p.z; break;
+		case 0: v = p.GetX(); break;
+		case 1: v = p.GetY(); break;
+		case 2: v = p.GetZ(); break;
 #if 0
 		case 3: v = p.angle; break;
 		case 4: v = p.tilt_angle; break;
@@ -324,11 +324,11 @@ class AvenPresList : public wxListCtrl {
 	    vector<PresentationMark>::const_iterator i;
 	    for (i = entries.begin(); i != entries.end(); ++i) {
 		const PresentationMark &p = *i;
-		write_double(p.x, fh_pres);
+		write_double(p.GetX(), fh_pres);
 		putc(' ', fh_pres);
-		write_double(p.y, fh_pres);
+		write_double(p.GetY(), fh_pres);
 		putc(' ', fh_pres);
-		write_double(p.z, fh_pres);
+		write_double(p.GetZ(), fh_pres);
 		putc(' ', fh_pres);
 		write_double(p.angle, fh_pres);
 		putc(' ', fh_pres);
@@ -373,7 +373,7 @@ class AvenPresList : public wxListCtrl {
 			return false;
 		    }
 		    if (c == 6) T = 0;
-		    AddMark(item, PresentationMark(x, y, z, a, t, s, T));
+		    AddMark(item, PresentationMark(Vector3(x, y, z), a, t, s, T));
 		    ++item;
 		}
 	    }
@@ -509,6 +509,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
     EVT_MENU(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBox)
     EVT_MENU(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspective)
+    EVT_MENU(menu_VIEW_SMOOTH_SHADING, MainFrm::OnViewSmoothShading)
     EVT_MENU(menu_VIEW_TEXTURED, MainFrm::OnViewTextured)
     EVT_MENU(menu_VIEW_FOG, MainFrm::OnViewFog)
     EVT_MENU(menu_VIEW_SMOOTH_LINES, MainFrm::OnViewSmoothLines)
@@ -562,6 +563,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBoxUpdate)
     EVT_UPDATE_UI(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspectiveUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SMOOTH_SHADING, MainFrm::OnViewSmoothShadingUpdate)
     EVT_UPDATE_UI(menu_VIEW_TEXTURED, MainFrm::OnViewTexturedUpdate)
     EVT_UPDATE_UI(menu_VIEW_FOG, MainFrm::OnViewFogUpdate)
     EVT_UPDATE_UI(menu_VIEW_SMOOTH_LINES, MainFrm::OnViewSmoothLinesUpdate)
@@ -769,6 +771,7 @@ void MainFrm::CreateMenuBar()
     viewmenu-> Append(menu_VIEW_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
 #endif
     viewmenu->AppendCheckItem(menu_VIEW_PERSPECTIVE, GetTabMsg(/*@Perspective*/237));
+// FIXME: enable this    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_SHADING, GetTabMsg(/*@Smooth Shading*/?!?);
     viewmenu->AppendCheckItem(menu_VIEW_TEXTURED, GetTabMsg(/*Textured @Walls*/238));
     viewmenu->AppendCheckItem(menu_VIEW_FOG, GetTabMsg(/*Fade @Distant Objects*/239));
     viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_LINES, GetTabMsg(/*@Smoothed Survey Legs*/298));
@@ -1231,9 +1234,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 	}
     }
 
-    m_XExt = xmax - xmin;
-    m_YExt = ymax - ymin;
-    m_ZExt = zmax - m_ZMin;
+    m_Ext.assign(xmax - xmin, ymax - ymin, zmax - m_ZMin);
 
     if (datemax < m_DateMin) m_DateMin = 0;
     m_DateExt = datemax - m_DateMin;
@@ -1253,7 +1254,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     m_Labels.sort(LabelPlotCmp(separator));
 
     // Centre the dataset around the origin.
-    CentreDataset(xmin, ymin, m_ZMin);
+    CentreDataset(Vector3(xmin, ymin, m_ZMin));
 
 #if 0
     printf("time to load = %.3f\n", (double)timer.Time());
@@ -1477,14 +1478,11 @@ void MainFrm::SelectTreeItem(LabelInfo* label)
     m_Tree->SelectItem(label->tree_id);
 }
 
-void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
+void MainFrm::CentreDataset(const Vector3 & vmin)
 {
     // Centre the dataset around the origin.
 
-    Double xoff = xmin + (m_XExt / 2.0);
-    Double yoff = ymin + (m_YExt / 2.0);
-    Double zoff = zmin + (m_ZExt / 2.0);
-    m_Offsets.set(xoff, yoff, zoff);
+    m_Offsets = vmin + (m_Ext * 0.5);
 
     list<vector<PointInfo> >::iterator t = traverses.begin();
     while (t != traverses.end()) {
@@ -1492,9 +1490,7 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 	vector<PointInfo>::iterator pos = t->begin();
 	while (pos != t->end()) {
 	    Point & point = *pos++;
-	    point.x -= xoff;
-	    point.y -= yoff;
-	    point.z -= zoff;
+	    point -= m_Offsets;
 	}
 	++t;
     }
@@ -1505,9 +1501,7 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 	vector<PointInfo>::iterator pos = t->begin();
 	while (pos != t->end()) {
 	    Point & point = *pos++;
-	    point.x -= xoff;
-	    point.y -= yoff;
-	    point.z -= zoff;
+	    point -= m_Offsets;
 	}
 	++t;
     }
@@ -1518,9 +1512,7 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
 	vector<XSect>::iterator pos = i->begin();
 	while (pos != i->end()) {
 	    Point & point = *pos++;
-	    point.x -= xoff;
-	    point.y -= yoff;
-	    point.z -= zoff;
+	    point -= m_Offsets;
 	}
 	++i;
     }
@@ -1528,9 +1520,7 @@ void MainFrm::CentreDataset(Double xmin, Double ymin, Double zmin)
     list<LabelInfo*>::iterator lpos = m_Labels.begin();
     while (lpos != m_Labels.end()) {
 	Point & point = **lpos++;
-	point.x -= xoff;
-	point.y -= yoff;
-	point.z -= zoff;
+	point -= m_Offsets;
     }
 }
 
@@ -1757,17 +1747,19 @@ void MainFrm::ClearCoords()
     }
 }
 
-void MainFrm::SetCoords(Double x, Double y, Double z)
+void MainFrm::SetCoords(const Vector3 &v)
 {
     wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
-	s.Printf(msg(/*%d E, %d N*/338), int(x), int(y));
-	s += wxString::Format(", %s %dm", msg(/*Altitude*/335), int(z));
+	s.Printf(msg(/*%d E, %d N*/338), int(v.GetX()), int(v.GetY()));
+	s += wxString::Format(", %s %.2fm", msg(/*Altitude*/335),
+			      double(v.GetZ()));
     } else {
 	s.Printf(msg(/*%d E, %d N*/338),
-		 int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
-	s += wxString::Format(", %s %dft", msg(/*Altitude*/335),
-			      int(z / METRES_PER_FOOT));
+		 int(v.GetX() / METRES_PER_FOOT),
+		 int(v.GetY() / METRES_PER_FOOT));
+	s += wxString::Format(", %s %.2fft", msg(/*Altitude*/335),
+			      double(v.GetZ() / METRES_PER_FOOT));
     }
     UpdateStatusBar();
 }
@@ -1788,9 +1780,9 @@ void MainFrm::SetAltitude(Double z)
 {
     wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
-	s.Printf("%s %dm", msg(/*Altitude*/335), int(z));
+	s.Printf("%s %.2fm", msg(/*Altitude*/335), double(z));
     } else {
-	s.Printf("%s %dft", msg(/*Altitude*/335), int(z / METRES_PER_FOOT));
+	s.Printf("%s %.2fft", msg(/*Altitude*/335), double(z / METRES_PER_FOOT));
     }
     UpdateStatusBar();
 }
@@ -1809,18 +1801,17 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	return;
     }
 
-    double x = label->x + m_Offsets.getX();
-    double y = label->y + m_Offsets.getY();
-    double z = label->z + m_Offsets.getZ();
+    Vector3 v = *label + m_Offsets;
     wxString & s = here_text;
     if (m_Gfx->GetMetric()) {
-	s.Printf(msg(/*%d E, %d N*/338), int(x), int(y));
-	s += wxString::Format(", %s %dm", msg(/*Altitude*/335), int(z));
+	s.Printf(msg(/*%d E, %d N*/338), int(v.GetX()), int(v.GetY()));
+	s += wxString::Format(", %s %.2fm", msg(/*Altitude*/335),
+			      double(v.GetZ()));
     } else {
 	s.Printf(msg(/*%d E, %d N*/338),
-		 int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
-	s += wxString::Format(", %s %dft", msg(/*Altitude*/335),
-			      int(z / METRES_PER_FOOT));
+		 int(v.GetX() / METRES_PER_FOOT), int(v.GetY() / METRES_PER_FOOT));
+	s += wxString::Format(", %s %.2fft", msg(/*Altitude*/335),
+			      double(v.GetZ() / METRES_PER_FOOT));
     }
     s += ": ";
     s += label->text.GetData();
@@ -1839,20 +1830,12 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	}
 
 	if (label2) {
-	    Double x0 = label2->x;
-	    Double x1 = label->x;
-	    Double dx = x1 - x0;
-	    Double y0 = label2->y;
-	    Double y1 = label->y;
-	    Double dy = y1 - y0;
-	    Double z0 = label2->z;
-	    Double z1 = label->z;
-	    Double dz = z1 - z0;
+	    Vector3 delta = *label - *label2;
 
-	    Double d_horiz = sqrt(dx*dx + dy*dy);
-	    Double dr = sqrt(dx*dx + dy*dy + dz*dz);
+	    Double d_horiz = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
+	    Double dr = delta.magnitude();
 
-	    Double brg = deg(atan2(dx, dy));
+	    Double brg = deg(atan2(delta.GetX(), delta.GetY()));
 	    if (brg < 0) brg += 360;
 
 	    wxString from_str;
@@ -1860,13 +1843,13 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 
 	    wxString hv_str;
 	    if (m_Gfx->GetMetric()) {
-		hv_str.Printf(msg(/*H %d%s, V %d%s*/340),
+		hv_str.Printf(msg(/*H %delta%s, V %delta%s*/340),
 			      int(d_horiz), "m",
-			      int(dz), "m");
+			      int(delta.GetZ()), "m");
 	    } else {
-		hv_str.Printf(msg(/*H %d%s, V %d%s*/340),
+		hv_str.Printf(msg(/*H %delta%s, V %delta%s*/340),
 			      int(d_horiz / METRES_PER_FOOT), "ft",
-			      int(dz / METRES_PER_FOOT), "ft");
+			      int(delta.GetZ() / METRES_PER_FOOT), "ft");
 	    }
 	    wxString brg_unit;
 	    if (m_Gfx->GetDegrees()) {
