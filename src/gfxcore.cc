@@ -1156,7 +1156,7 @@ bool GfxCore::Animate()
 		double d = (next_mark - prev_mark).magnitude();
 		// FIXME: should ignore component of d which is unseen in
 		// non-perspective mode?
-		next_mark_time = sqrd(d / 100);
+		next_mark_time = sqrd(d / 30.0);
 		double a = next_mark.angle - prev_mark.angle;
 		if (a > 180.0) {
 		    next_mark.angle -= 360.0;
@@ -1171,12 +1171,12 @@ bool GfxCore::Animate()
 		double ta = fabs(next_mark.tilt_angle - prev_mark.tilt_angle);
 		next_mark_time += sqrd(ta / 60.0);
 		double s = fabs(log(next_mark.scale) - log(prev_mark.scale));
-		next_mark_time += sqrd(s / 2);
+		next_mark_time += sqrd(s / 2.0);
 		next_mark_time = sqrt(next_mark_time);
-		// was: next_mark_time = max(max(d, s / 2), max(a, ta) / 60);
+		// was: next_mark_time = max(max(d / 30, s / 2), max(a, ta) / 60);
 		//printf("*** %.6f from (\nd: %.6f\ns: %.6f\na: %.6f\nt: %.6f )\n",
-		//       next_mark_time, d/100, s/2, a/60, ta/60);
-		if (tmp < 0) next_mark_time *= -tmp;
+		//       next_mark_time, d/30.0, s/2.0, a/60.0, ta/60.0);
+		if (tmp < 0) next_mark_time /= -tmp;
 	    }
 	}
 
@@ -1192,7 +1192,7 @@ bool GfxCore::Animate()
 		if (here.angle <= next_mark.angle - 360.0)
 		    here.angle += 360.0;
 	    }
-	    (Vector3)here = q * here + p * next_mark;
+	    here.assign(q * here + p * next_mark);
 	    here.angle = q * here.angle + p * next_mark.angle;
 	    if (here.angle < 0) here.angle += 360.0;
 	    else if (here.angle >= 360.0) here.angle -= 360.0;
