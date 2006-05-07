@@ -66,7 +66,6 @@ IMPLEMENT_APP(Aven)
 Aven::Aven() :
     m_Frame(NULL), m_pageSetupData(NULL)
 {
-    wxLog::SetActiveTarget(new MyLogWindow());
 }
 
 Aven::~Aven()
@@ -104,6 +103,7 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 
 bool Aven::OnInit()
 {
+    wxLog::SetActiveTarget(new MyLogWindow());
 #if !wxCHECK_VERSION(2,5,1) && defined __WXMAC__
     // Tell wxMac which the About menu item is so it can be put where MacOS
     // users expect it to be.
