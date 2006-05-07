@@ -1,4 +1,3 @@
-//
 //  vector3.h
 //
 //  C++ class for 3-element vectors
@@ -46,6 +45,10 @@ public:
 
     void assign(double a, double b, double c) {
 	x = a; y = b; z = c;
+    }
+
+    void assign(const Vector3 &v) {
+	*this = v;
     }
 
     friend Vector3 operator-(const Vector3& o) {
