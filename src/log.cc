@@ -28,7 +28,7 @@
 //#include "message.h"
 
 // FIXME: Make window title available for translation.
-MyLogWindow::MyLogWindow() 
+MyLogWindow::MyLogWindow()
     : wxLogWindow(NULL, APP_NAME" Error Log", false, false), first(true)
 {
 }
