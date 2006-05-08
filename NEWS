@@ -26,6 +26,18 @@ TOBE Changes in 1.1.8:
 * (Unix version): aven: Fix --help and --version to work without a working
   X display (provided it's built with wxWidgets 2.5.1 or newer).
 
+* aven: Automatically select the presentation tab of the notebook when the user
+  selects "New Presentation" or "Open Presentation".
+
+* aven: Fix "Delete" in the presentation list to not get passed on (and so not
+  reset to default view as well).
+
+* aven: Fix Ctrl+Insert in the presentation list not to segfault if the list is
+  empty.
+
+* aven: Fix Cursor Up and Down in the presentation list to move the highlight
+  up and down instead of being passed on and moving the survey.
+
 Changes in 1.1.7:
 
 * cavern: Add validity checking for dates in *date commands (with feature

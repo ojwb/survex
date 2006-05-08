@@ -240,7 +240,7 @@ class AvenPresList : public wxListCtrl {
 		    break;
 		}
 		default:
-		    //printf("event.GetIndex() = %ld\n", event.GetIndex());
+		    //printf("event.GetIndex() = %ld %d\n", event.GetIndex(), event.GetKeyCode());
 		    event.Skip();
 	    }
 	}
@@ -260,14 +260,25 @@ class AvenPresList : public wxListCtrl {
 	    }
 	}
 	void OnChar(wxKeyEvent& event) {
-	    if (event.GetKeyCode() == WXK_INSERT) {
-		if (event.m_controlDown) {
-		    AddMark(current_item, entries[current_item]);
-		} else {
-		    AddMark(current_item);
-		}
-	    } else {
-		gfx->OnKeyPress(event);
+	    switch (event.GetKeyCode()) {
+		case WXK_INSERT:
+		    if (event.m_controlDown) {
+			if (current_item != -1 &&
+			    size_t(current_item) < entries.size()) {
+			    AddMark(current_item, entries[current_item]);
+			}
+		    } else {
+			AddMark(current_item);
+		    }
+		    break;
+		case WXK_DELETE:
+		    // Already handled in OnListKeyDown.
+		    break;
+		case WXK_UP: case WXK_DOWN:
+		    event.Skip();
+		    break;
+		default:
+		    gfx->OnKeyPress(event);
 	    }
 	}
 	void AddMark(long item = -1) {
@@ -1921,6 +1932,8 @@ void MainFrm::OnPresNew(wxCommandEvent&)
 	}
     }
     m_PresList->DeleteAllItems();
+    // Select the presentation page in the notebook.
+    m_Notebook->SetSelection(1);
 }
 
 void MainFrm::OnPresOpen(wxCommandEvent&)
@@ -1951,6 +1964,8 @@ void MainFrm::OnPresOpen(wxCommandEvent&)
 	}
 	// FIXME : keep a history of loaded/saved presentations, like we do for
 	// loaded surveys...
+	// Select the presentation page in the notebook.
+	m_Notebook->SetSelection(1);
     }
 }
 
