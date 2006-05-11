@@ -91,8 +91,8 @@ mingw_iss : survex.iss
 	: # af da el eu fi hi hu id ja lv nb nl pl ru sl sv tr uk zh_CN zh_TW
 	for a in ca cs de es fr it pt_BR ; do\
 	 mkdir iss_tmp/$$a;\
-	 cp /usr/i586-mingw32msvc/share/locale/$$a/LC_MESSAGES/wxstd.mo;\
-	 echo 'Source "$$a\wxstd.mo"; DestDir: "{app}\$$a"' >> isstmp/i18nfiles.iss;\
+	 cp /usr/i586-mingw32msvc/share/locale/$$a/LC_MESSAGES/wxstd.mo iss_tmp/$$a;\
+	 echo 'Source "$$a\wxstd.mo"; DestDir: "{app}\$$a"' >> iss_tmp/i18nfiles.iss;\
 	done
 	: # Also need to reduce colour depth it appears:
 	: # src/png2bmp lib/icons/aven_about.png iss_tmp/logo.bmp
