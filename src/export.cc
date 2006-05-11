@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Sketch, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -61,12 +61,24 @@
 #define POINTS_PER_INCH	72.0
 #define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
-#define SQRT_2          1.41421356237309504880168872420969
+#define SQRT_2		1.41421356237309504880168872420969
 
 #define LEGS 1
 #define SURF 2
 #define STNS 4
 #define LABELS 8
+
+static const char *layer_names[] = {
+   NULL,
+   "Legs",	// LEGS
+   "Surface",	// SURF
+   "Legs",	// LEGS|SURF
+   "Stations",	// STNS
+   NULL,
+   NULL,
+   NULL,
+   "Labels"	// LABELS
+};
 
 /* default to DXF */
 #define FMT_DEFAULT FMT_DXF
@@ -80,6 +92,7 @@ static double grid; /* grid spacing (or 0 for no grid) */
 static double scale = 500.0;
 static double factor;
 static const char *unit = "mm";
+const double SVG_MARGIN = 5.0; // In units of "unit".
 
 static const char *survey = NULL;
 
@@ -301,14 +314,6 @@ Sketch::header(const char *)
 	   (max_x - min_x) * factor, (max_y - min_y) * factor);
 }
 
-static const char *layer_names[] = {
-   NULL,
-   "Legs",
-   "Stations",
-   NULL,
-   "Labels"
-};
-
 void
 Sketch::start_pass(int layer)
 {
@@ -461,12 +466,17 @@ SVG::header(const char *)
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
    for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    fprintf(fh, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
-   fprintf(fh, "<svg width=\"%.3f%s\" height=\"%.3f%s\""
-               " viewBox=\"0 0 %0.3f %0.3f\">\n",
-           (max_x - min_x) * factor, unit, (max_y - min_y) * factor, unit,
-           (max_x - min_x) * factor, (max_y - min_y) * factor );
+   double width = (max_x - min_x) * factor + SVG_MARGIN * 2;
+   double height = (max_y - min_y) * factor + SVG_MARGIN * 2;
+   fprintf(fh, "<svg version=\"1.1\" baseProfile=\"full\"\n"
+	       "xmlns=\"http://www.w3.org/2000/svg\"\n"
+	       "xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n"
+	       "xmlns:ev=\"http://www.w3.org/2001/xml-events\"\n"
+	       "width=\"%.3f%s\" height=\"%.3f%s\"\n"
+	       "viewBox=\"0 0 %0.3f %0.3f\">\n",
+	   width, unit, height, unit, width, height);
    fprintf(fh, "<g transform=\"translate(%.3f %.3f)\">\n",
-           min_x * -factor, max_y * factor);
+	   SVG_MARGIN - min_x * factor, SVG_MARGIN + max_y * factor);
    to_close = false;
    close_g = false;
 }
@@ -483,11 +493,11 @@ SVG::start_pass(int layer)
    }
    fprintf(fh, "<g id=\"%s\"", layer_names[layer]);
    if (layer & LEGS)
-      fprintf(fh, " style=\"stroke:black;fill:none;stroke-width:0.4\"");
+      fprintf(fh, " stroke=\"black\" fill=\"none\" stroke-width=\"0.4px\"");
    else if (layer & STNS)
-      fprintf(fh, " style=\"stroke:black;fill:none;stroke-width:0.05\"");
+      fprintf(fh, " stroke=\"black\" fill=\"none\" stroke-width=\"0.05px\"");
    else if (layer & LABELS)
-      fprintf(fh, " style=\"font-size:%.3f\"", text_height);
+      fprintf(fh, " font-size=\"%.3fem\"", text_height);
    fprintf(fh, ">\n");
 
    close_g = true;
@@ -512,7 +522,7 @@ SVG::label(const img_point *p, const char *s, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
-           p->x * factor, p->y * -factor);
+	   p->x * factor, p->y * -factor);
    fprintf(fh, s);
    fprintf(fh, "</text>\n");
    set_name(p, s);
@@ -523,7 +533,7 @@ SVG::cross(const img_point *p, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "<circle id=\"%s\" cx=\"%.3f\" cy=\"%.3f\" r=\"%.3f\"/>\n",
-           find_name(p), p->x * factor, p->y * -factor, MARKER_SIZE * SQRT_2);
+	   find_name(p), p->x * factor, p->y * -factor, MARKER_SIZE * SQRT_2);
    fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3fM%.3f %.3fL%.3f %.3f\"/>\n",
 	   p->x * factor - MARKER_SIZE, p->y * -factor - MARKER_SIZE,
 	   p->x * factor + MARKER_SIZE, p->y * -factor + MARKER_SIZE,
@@ -542,7 +552,7 @@ SVG::footer()
       fprintf(fh, "</g>\n");
       close_g = false;
    }
-   fprintf(fh, "</g>\n</svg>");
+   fprintf(fh, "</g>\n</svg>\n");
 }
 
 class PLT : public ExportFilter {
@@ -570,9 +580,9 @@ PLT::header(const char *title)
    for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
-           min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
-           min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
-           min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
+	   min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
+	   min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
+	   min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X",
 	   (title && title[0]) ? title : "X");
 }
@@ -612,9 +622,9 @@ PLT::footer(void)
 {
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "X %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
-           min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
-           min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
-           min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
+	   min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
+	   min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
+	   min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    /* Yucky DOS "end of textfile" marker */
    putc('\x1a', fh);
 }
@@ -679,7 +689,7 @@ EPS::header(const char *title)
 
    /* this code adapted from a2ps */
    fputs("%%BeginResource: encoding ISO88591Encoding\n"
-         "/ISO88591Encoding [\n", fh);
+	 "/ISO88591Encoding [\n", fh);
    fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
    fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
    fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
@@ -1219,6 +1229,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
       }
    }
    filt->footer();
+   delete filt;
    osfree(htab);
    htab = NULL;
    return true;

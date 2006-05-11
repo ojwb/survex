@@ -38,6 +38,18 @@ TOBE Changes in 1.1.8:
 * aven: Fix Cursor Up and Down in the presentation list to move the highlight
   up and down instead of being passed on and moving the survey.
 
+* aven: Improve SVG output compatibility.  Tested with Mozilla Firefox 1.5,
+  with Adobe's SVG browser plugin, Gimp, Gqview, and Opera 8.5.
+
+* aven: Put a 5mm border around exported SVG files to allow for station markers
+  and non-zero width lines.
+
+* aven: Fix crash when exporting as SVG or Sketch if labels or surface data
+  was turned on.
+
+* aven: Actually close the file we're exporting which fixes problems with it
+  not always being fully written.
+
 Changes in 1.1.7:
 
 * cavern: Add validity checking for dates in *date commands (with feature
