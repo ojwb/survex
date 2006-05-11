@@ -84,7 +84,7 @@ Source: "manual\*.*"; DestDir: "{app}\manual"
 Name: "{group}\SvxEdit"; Filename: "{app}\editwrap.exe"; Comment: "Enter survey data"
 Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"
 Name: "{group}\Documentation"; Filename: "{app}\index.htm"; Comment: "View the documentation for Survex"
-Name: "{group}\{cm:UninstallProgram,{AppName}}"; Filename: "{uninstallexe}"
+Name: "{group}\{cm:UninstallProgram,@PRETTYPACKAGE@}"; Filename: "{uninstallexe}"
 
 [Registry]
 ; Support for loading Compass Plot files
