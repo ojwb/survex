@@ -49,6 +49,22 @@
 #include <stack>
 #include <vector>
 
+// These were renamed in wx 2.7.
+#if !wxCHECK_VERSION(2,7,0)
+# define wxFD_OPEN wxOPEN
+# define wxFD_OVERWRITE_PROMPT wxOVERWRITE_PROMPT
+# define wxFD_SAVE wxSAVE
+# if wxCHECK_VERSION(2,6,0)
+#  define wxFD_FILE_MUST_EXIST wxFILE_MUST_EXIST
+# else
+// This was a new feature in wx 2.6.
+#  define wxFD_FILE_MUST_EXIST 0
+# endif
+
+# define wxBK_BOTTOM wxNB_BOTTOM
+# define wxBK_LEFT wxNB_LEFT
+#endif
+
 using namespace std;
 
 class AvenSplitterWindow : public wxSplitterWindow {
@@ -314,14 +330,14 @@ class AvenPresList : public wxListCtrl {
 		AvenAllowOnTop ontop(mainfrm);
 #ifdef __WXMOTIF__
 		wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", fnm,
-				  "*.fly", wxSAVE|wxOVERWRITE_PROMPT);
+				  "*.fly", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 #else
 		wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", fnm,
 				  wxString::Format("%s|*.fly|%s|%s",
 						   msg(/*Aven presentations*/320),
 						   msg(/*All files*/208),
 						   wxFileSelectorDefaultWildcardStr),
-				  wxSAVE|wxOVERWRITE_PROMPT);
+				  wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 #endif
 		if (dlg.ShowModal() != wxID_OK) return;
 		fnm = dlg.GetPath();
@@ -896,7 +912,7 @@ void MainFrm::CreateSidePanel()
 
     m_Notebook = new wxNotebook(m_Splitter, 400, wxDefaultPosition,
 				wxDefaultSize,
-				wxNB_BOTTOM | wxNB_LEFT);
+				wxBK_BOTTOM | wxBK_LEFT);
     m_Notebook->Show(false);
 
     wxPanel * panel = new wxPanel(m_Notebook);
@@ -1590,7 +1606,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
     AvenAllowOnTop ontop(this);
 #ifdef __WXMOTIF__
     wxFileDialog dlg(this, msg(/*Select a 3d file to view*/206), "", "",
-		     "*.3d", wxOPEN);
+		     "*.3d", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 #else
     wxFileDialog dlg(this, msg(/*Select a 3d file to view*/206), "", "",
 		     wxString::Format("%s|*.3d"
@@ -1617,7 +1633,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 				      msg(/*CMAP XYZ files*/325),
 				      msg(/*All files*/208),
 				      wxFileSelectorDefaultWildcardStr),
-		     wxOPEN);
+		     wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
@@ -1630,7 +1646,7 @@ void MainFrm::OnScreenshot(wxCommandEvent&)
     char *baseleaf = baseleaf_from_fnm(m_File.c_str());
     wxFileDialog dlg (this, msg(/*Save Screenshot*/321), "",
 		      wxString(baseleaf) + ".png",
-		      "*.png", wxSAVE|wxOVERWRITE_PROMPT);
+		      "*.png", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	static bool png_handled = false;
@@ -1680,7 +1696,7 @@ void MainFrm::OnExport(wxCommandEvent&)
     wxFileDialog dlg(this, wxString("Export as:"), "",
 		     wxString(baseleaf),
 		     "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl",
-		     wxSAVE|wxOVERWRITE_PROMPT);
+		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	wxString fnm = dlg.GetPath();
@@ -1949,14 +1965,14 @@ void MainFrm::OnPresOpen(wxCommandEvent&)
     }
 #ifdef __WXMOTIF__
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      "*.fly", wxSAVE);
+		      "*.fly", wxFD_SAVE);
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
 		      wxString::Format("%s|*.fly|%s|%s",
 				       msg(/*Aven presentations*/320),
 				       msg(/*All files*/208),
 				       wxFileSelectorDefaultWildcardStr),
-		      wxOPEN);
+		      wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	if (!m_PresList->Load(dlg.GetPath())) {
@@ -2033,7 +2049,7 @@ void MainFrm::OnPresExportMovie(wxCommandEvent&)
     wxFileDialog dlg(this, wxString("Export Movie"), "",
 		     wxString(baseleaf) + ".mpg",
 		     "MPEG|*.mpg|AVI|*.avi|QuickTime|*.mov|WMV|*.wmv;*.asf",
-		     wxSAVE|wxOVERWRITE_PROMPT);
+		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	if (!m_Gfx->ExportMovie(dlg.GetPath())) {
