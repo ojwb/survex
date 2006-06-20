@@ -97,26 +97,72 @@ void GUIControl::HandleTranslate(wxPoint point)
     m_DragStart = point;
 }
 
-void GUIControl::HandleScale(wxPoint point)
+void GUIControl::HandleScaleRotate(wxPoint point)
 {
-    // Handle a mouse movement during scale mode.
+    // Handle a mouse movement during scale/rotate mode.
 
     // wxGTK (at least) fails to update the cursor while dragging.
-    m_View->SetCursor(GfxCore::CURSOR_ZOOM);
+    m_View->SetCursor(GfxCore::CURSOR_ZOOM_ROTATE);
 
-    //int dx = point.x - m_DragStart.x;
-    int dy = point.y - m_DragStart.y;
+    int dx, dy;
+    int threshold;
+    if (m_ScaleRotateLock == NONE) {
+	// Dragging to scale or rotate but we've not decided which yet.
+	dx = point.x - m_DragRealStart.x;
+	dy = point.y - m_DragRealStart.y;
+	threshold = 8 * 8;
+    } else {
+	dx = point.x - m_DragStart.x;
+	dy = point.y - m_DragStart.y;
+	threshold = 5;
+    }
+    int dx2 = dx * dx;
+    int dy2 = dy * dy;
+    if (dx2 + dy2 < threshold) return;
+
+    switch (m_ScaleRotateLock) {
+	case NONE:
+	    if (dx2 > dy2) {
+		m_ScaleRotateLock = ROTATE;
+//		m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
+	    } else {
+		m_ScaleRotateLock = SCALE;
+//		m_View->SetCursor(GfxCore::CURSOR_ZOOM);
+	    }
+	    break;
+	case SCALE:
+	    if (dx2 >= 8 * dy2) {
+		m_ScaleRotateLock = ROTATE;
+//		m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
+	    }
+	    break;
+	case ROTATE:
+	    if (dy2 >= 8 * dx2) {
+		m_ScaleRotateLock = SCALE;
+//		m_View->SetCursor(GfxCore::CURSOR_ZOOM);
+	    }
+	    break;
+    }
+
+    if (m_ScaleRotateLock == ROTATE) {
+	dy = 0;
+    } else {
+	dx = 0;
+    }
 
     if (m_ReverseControls) {
-	//dx = -dx;
+	dx = -dx;
 	dy = -dy;
     }
 
     if (m_View->GetPerspective()) {
-	m_View->MoveViewer(-dy * .1, 0, 0);
+	if (dy) m_View->MoveViewer(-dy * .1, 0, 0);
     } else {
-	m_View->SetScale(m_View->GetScale() * pow(1.06, 0.08 * dy));
-	m_View->ForceRefresh();
+	// up/down => scale.
+	if (dy) m_View->SetScale(m_View->GetScale() * pow(1.06, 0.08 * dy));
+	// left/right => rotate.
+	if (dx) m_View->TurnCave(Double(dx) * -0.36);
+	if (dx || dy) m_View->ForceRefresh();
     }
 
     m_DragStart = point;
@@ -190,6 +236,22 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     // Mouse motion event handler.
     if (!m_View->HasData()) return;
 
+    // Ignore moves which don't change the position.
+    if (event.GetX() == m_DragStart.x && event.GetY() == m_DragStart.y) {
+	return;
+    }
+
+    static long timestamp = LONG_MIN;
+    if (dragging != NO_DRAG && m_ScaleRotateLock != NONE && timestamp != LONG_MIN) {
+	// If no motion for a second, reset the direction lock.
+	if (event.GetTimestamp() - timestamp >= 1000) {
+	    m_ScaleRotateLock = NONE;
+	    m_DragRealStart = m_DragStart;
+	    RestoreCursor();
+	}
+    }
+    timestamp = event.GetTimestamp();
+
     wxPoint point(event.GetX(), event.GetY());
 
     // Check hit-test grid (only if no buttons are pressed).
@@ -229,7 +291,7 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 		    if (event.ControlDown()) {
 			HandleTiltRotate(point);
 		    } else {
-			HandleScale(point);
+			HandleScaleRotate(point);
 		    }
 		    break;
 		case drag_NONE:
@@ -238,11 +300,7 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 	    }
 	    break;
 	case MIDDLE_DRAG:
-	    if (event.ControlDown()) {
-		HandleTilt(point);
-	    } else {
-		HandleRotate(point);
-	    }
+	    HandleTilt(point);
 	    break;
 	case RIGHT_DRAG:
 	    HandleTranslate(point);
@@ -275,10 +333,11 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 		}
 		m_View->SetCursor(GfxCore::CURSOR_ROTATE_EITHER_WAY);
 	    } else {
-		m_View->SetCursor(GfxCore::CURSOR_ZOOM);
+		m_View->SetCursor(GfxCore::CURSOR_ZOOM_ROTATE);
 	    }
 
 	    m_LastDrag = drag_MAIN;
+	    m_ScaleRotateLock = NONE;
 	}
 
 	m_View->CaptureMouse();
@@ -313,11 +372,7 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
 	dragging = MIDDLE_DRAG;
 	m_DragStart = wxPoint(event.GetX(), event.GetY());
 
-	if (event.ControlDown()) {
-	    m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
-	} else {
-	    m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
-	}
+	m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
 
 	m_View->CaptureMouse();
     }
@@ -359,8 +414,11 @@ void GUIControl::OnRButtonUp(wxMouseEvent&)
 }
 
 void GUIControl::OnMouseWheel(wxMouseEvent& event) {
-    if (!m_View->IsExtendedElevation()) {
-	m_View->TiltCave(event.GetWheelRotation() / 12.0);
+    int dy = event.GetWheelRotation();
+    if (m_View->GetPerspective()) {
+	m_View->MoveViewer(-dy, 0, 0);
+    } else {
+	m_View->SetScale(m_View->GetScale() * pow(1.06, -0.04 * dy));
 	m_View->ForceRefresh();
     }
 }

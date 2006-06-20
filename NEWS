@@ -1,5 +1,10 @@
 TOBE Changes in 1.1.8:
 
+* aven: Change mouse actions to be compatible with those in Survex 1.0.
+  The mousewheel now zooms in/out (it doesn't do anything in 1.0) and
+  left drag is now smart about not rotating and zooming at the same
+  time.
+
 * (MS Windows version): aven: Fix cursor keys to pan survey.
 
 * (MS Windows version): Fix installer to work on Windows 2000 or XP if
@@ -39,7 +44,8 @@ TOBE Changes in 1.1.8:
   up and down instead of being passed on and moving the survey.
 
 * aven: Improve SVG output compatibility.  Tested with Mozilla Firefox 1.5,
-  with Adobe's SVG browser plugin, Gimp, Gqview, and Opera 8.5.
+  Adobe's SVG browser plugin, Gimp 2.2.8, Gqview 2.0.0, Opera 8.5,
+  Safari 2.0.3, and InkScape 0.42.
 
 * aven: Put a 5mm border around exported SVG files to allow for station markers
   and non-zero width lines.

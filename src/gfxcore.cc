@@ -2654,6 +2654,11 @@ const
 const
 #include "rotatemask.xbm"
 
+const
+#include "rotatezoom.xbm"
+const
+#include "rotatezoommask.xbm"
+
 void
 GfxCore::SetCursor(GfxCore::cursor new_cursor)
 {
@@ -2685,6 +2690,9 @@ GfxCore::SetCursor(GfxCore::cursor new_cursor)
 	    break;
 	case GfxCore::CURSOR_ZOOM:
 	    GLACanvas::SetCursor(wxCursor(wxCURSOR_MAGNIFIER));
+	    break;
+	case GfxCore::CURSOR_ZOOM_ROTATE:
+	    GLACanvas::SetCursor(make_cursor(rotatezoom_bits, rotatezoommask_bits, 15, 15));
 	    break;
     }
 }
