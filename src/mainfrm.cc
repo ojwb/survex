@@ -49,6 +49,10 @@
 #include <stack>
 #include <vector>
 
+#if !wxCHECK_VERSION(2,4,0)
+# error We support building with wxWidgets 2.4.0 or newer
+#endif
+
 // These were renamed in wx 2.7.
 #if !wxCHECK_VERSION(2,7,0)
 # define wxFD_OPEN wxOPEN
@@ -79,19 +83,7 @@ class AvenSplitterWindow : public wxSplitterWindow {
 	}
 
 	void OnSplitterDClick(wxSplitterEvent &e) {
-#if wxCHECK_VERSION(2,3,0)
-	    e.Veto();
-#endif
-#if defined(__UNIX__) && !wxCHECK_VERSION(2,3,5)
-	    parent->m_SashPosition = GetSashPosition(); // save width of panel
-	    // Calling Unsplit from OnSplitterDClick() doesn't work in debian
-	    // wxGtk 2.3.3.2 (which calls itself 2.3.4) - it does work from CVS
-	    // prior to the actual 2.3.4 though - FIXME: monitor this
-	    // situation...
-	    SetSashPosition(0);
-#else
 	    parent->ToggleSidePanel();
-#endif
 	}
 
     private:
@@ -197,6 +189,8 @@ private:
 static void write_double(double d, FILE * fh) {
     char buf[64];
     sprintf(buf, "%.21f", d);
+    char * p = strchr(buf, ',');
+    if (p) *p = '.';
     size_t l = strlen(buf);
     while (l > 1 && buf[l - 1] == '0') --l;
     if (l > 1 && buf[l - 1] == '.') --l;
@@ -395,9 +389,14 @@ class AvenPresList : public wxListCtrl {
 		    double x, y, z, a, t, s, T;
 		    int c = sscanf(buf, "%lf %lf %lf %lf %lf %lf %lf", &x, &y, &z, &a, &t, &s, &T);
 		    if (c < 6) {
-			DeleteAllItems();
-			wxGetApp().ReportError(wxString::Format(msg(/*Error in format of presentation file `%s'*/323), fnm.c_str()));
-			return false;
+			char *p = buf;
+			while ((p = strchr(p, '.'))) *p++ = ',';
+			c = sscanf(buf, "%lf %lf %lf %lf %lf %lf %lf", &x, &y, &z, &a, &t, &s, &T);
+			if (c < 6) {
+			    DeleteAllItems();
+			    wxGetApp().ReportError(wxString::Format(msg(/*Error in format of presentation file `%s'*/323), fnm.c_str()));
+			    return false;
+			}
 		    }
 		    if (c == 6) T = 0;
 		    AddMark(item, PresentationMark(Vector3(x, y, z), a, t, s, T));
@@ -830,7 +829,7 @@ void MainFrm::CreateMenuBar()
     wxMenu* helpmenu = new wxMenu;
     helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About...*/290));
 
-    wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE);
+    wxMenuBar* menubar = new wxMenuBar();
     menubar->Append(filemenu, GetTabMsg(/*@File*/210));
     menubar->Append(rotmenu, GetTabMsg(/*@Rotation*/211));
     menubar->Append(orientmenu, GetTabMsg(/*@Orientation*/212));
@@ -857,42 +856,32 @@ void MainFrm::CreateToolBar()
 #endif
 
     // FIXME: TRANSLATE tooltips
-    toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open"), "Open a 3D file for viewing");
-    toolbar->AddTool(menu_PRES_OPEN, TOOLBAR_BITMAP("open-pres"), "Open a presentation");
+    toolbar->AddTool(menu_FILE_OPEN, "Open", TOOLBAR_BITMAP("open"), "Open a 3D file for viewing");
+    toolbar->AddTool(menu_PRES_OPEN, "Open presentation", TOOLBAR_BITMAP("open-pres"), "Open a presentation");
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation"),
-		     wxNullBitmap, true, -1, -1, NULL, "Toggle rotation");
-    toolbar->AddTool(menu_ORIENT_PLAN, TOOLBAR_BITMAP("plan"), "Switch to plan view");
-    toolbar->AddTool(menu_ORIENT_ELEVATION, TOOLBAR_BITMAP("elevation"), "Switch to elevation view");
-    toolbar->AddTool(menu_ORIENT_DEFAULTS, TOOLBAR_BITMAP("defaults"), "Restore default view");
+    toolbar->AddCheckTool(menu_ROTATION_TOGGLE, "Toggle rotation", TOOLBAR_BITMAP("rotation"), wxNullBitmap, "Toggle rotation");
+    toolbar->AddTool(menu_ORIENT_PLAN, "Plan", TOOLBAR_BITMAP("plan"), "Switch to plan view");
+    toolbar->AddTool(menu_ORIENT_ELEVATION, "Elevation", TOOLBAR_BITMAP("elevation"), "Switch to elevation view");
+    toolbar->AddTool(menu_ORIENT_DEFAULTS, "Default view", TOOLBAR_BITMAP("defaults"), "Restore default view");
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_VIEW_SHOW_NAMES, TOOLBAR_BITMAP("names"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show station names");
-    toolbar->AddTool(menu_VIEW_SHOW_CROSSES, TOOLBAR_BITMAP("crosses"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show crosses on stations");
-    toolbar->AddTool(menu_VIEW_SHOW_ENTRANCES, TOOLBAR_BITMAP("entrances"), wxNullBitmap, true,
-		     -1, -1, NULL, "Highlight entrances");
-    toolbar->AddTool(menu_VIEW_SHOW_FIXED_PTS, TOOLBAR_BITMAP("fixed-pts"), wxNullBitmap, true,
-		     -1, -1, NULL, "Highlight fixed points");
-    toolbar->AddTool(menu_VIEW_SHOW_EXPORTED_PTS, TOOLBAR_BITMAP("exported-pts"), wxNullBitmap, true,
-		     -1, -1, NULL, "Highlight exported stations");
+    toolbar->AddCheckTool(menu_VIEW_SHOW_NAMES, "Names", TOOLBAR_BITMAP("names"), wxNullBitmap, "Show station names");
+    toolbar->AddCheckTool(menu_VIEW_SHOW_CROSSES, "Crosses", TOOLBAR_BITMAP("crosses"), wxNullBitmap, "Show crosses on stations");
+    toolbar->AddCheckTool(menu_VIEW_SHOW_ENTRANCES, "Entrances", TOOLBAR_BITMAP("entrances"), wxNullBitmap, "Highlight entrances");
+    toolbar->AddCheckTool(menu_VIEW_SHOW_FIXED_PTS, "Fixed points", TOOLBAR_BITMAP("fixed-pts"), wxNullBitmap, "Highlight fixed points");
+    toolbar->AddCheckTool(menu_VIEW_SHOW_EXPORTED_PTS, "Exported points", TOOLBAR_BITMAP("exported-pts"), wxNullBitmap, "Highlight exported stations");
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_VIEW_SHOW_LEGS, TOOLBAR_BITMAP("ug-legs"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show underground surveys");
-    toolbar->AddTool(menu_VIEW_SHOW_SURFACE, TOOLBAR_BITMAP("surface-legs"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show surface surveys");
-    toolbar->AddTool(menu_VIEW_SHOW_TUBES, TOOLBAR_BITMAP("tubes"), wxNullBitmap, true,
-		     -1, -1, NULL, "Show passage tubes");
+    toolbar->AddCheckTool(menu_VIEW_SHOW_LEGS, "Underground legs", TOOLBAR_BITMAP("ug-legs"), wxNullBitmap, "Show underground surveys");
+    toolbar->AddCheckTool(menu_VIEW_SHOW_SURFACE, "Surface legs", TOOLBAR_BITMAP("surface-legs"), wxNullBitmap, "Show surface surveys");
+    toolbar->AddCheckTool(menu_VIEW_SHOW_TUBES, "Tubes", TOOLBAR_BITMAP("tubes"), wxNullBitmap, "Show passage tubes");
     toolbar->AddSeparator();
-    toolbar->AddTool(menu_PRES_FREWIND, TOOLBAR_BITMAP("pres-frew"), wxNullBitmap, true, -1, -1, NULL, "Very Fast Rewind");
-    toolbar->AddTool(menu_PRES_REWIND, TOOLBAR_BITMAP("pres-rew"), wxNullBitmap, true, -1, -1, NULL, "Fast Rewind");
-    toolbar->AddTool(menu_PRES_REVERSE, TOOLBAR_BITMAP("pres-go-back"), wxNullBitmap, true, -1, -1, NULL, "Play Backwards");
-    toolbar->AddTool(menu_PRES_PAUSE, TOOLBAR_BITMAP("pres-pause"), wxNullBitmap, true, -1, -1, NULL, "Pause");
-    toolbar->AddTool(menu_PRES_PLAY, TOOLBAR_BITMAP("pres-go"), wxNullBitmap, true, -1, -1, NULL, "Play");
-    toolbar->AddTool(menu_PRES_FF, TOOLBAR_BITMAP("pres-ff"), wxNullBitmap, true, -1, -1, NULL, "Fast Forward");
-    toolbar->AddTool(menu_PRES_FFF, TOOLBAR_BITMAP("pres-fff"), wxNullBitmap, true, -1, -1, NULL, "Very Fast Forward");
-    toolbar->AddTool(menu_PRES_STOP, TOOLBAR_BITMAP("pres-stop"), wxNullBitmap, false, -1, -1, NULL, "Stop");
-
+    toolbar->AddCheckTool(menu_PRES_FREWIND, "Fast Rewind", TOOLBAR_BITMAP("pres-frew"), wxNullBitmap, "Very Fast Rewind");
+    toolbar->AddCheckTool(menu_PRES_REWIND, "Rewind", TOOLBAR_BITMAP("pres-rew"), wxNullBitmap, "Fast Rewind");
+    toolbar->AddCheckTool(menu_PRES_REVERSE, "Backwards", TOOLBAR_BITMAP("pres-go-back"), wxNullBitmap, "Play Backwards");
+    toolbar->AddCheckTool(menu_PRES_PAUSE, "Pause", TOOLBAR_BITMAP("pres-pause"), wxNullBitmap, "Pause");
+    toolbar->AddCheckTool(menu_PRES_PLAY, "Go", TOOLBAR_BITMAP("pres-go"), wxNullBitmap, "Play");
+    toolbar->AddCheckTool(menu_PRES_FF, "FF", TOOLBAR_BITMAP("pres-ff"), wxNullBitmap, "Fast Forward");
+    toolbar->AddCheckTool(menu_PRES_FFF, "Very FF", TOOLBAR_BITMAP("pres-fff"), wxNullBitmap, "Very Fast Forward");
+    toolbar->AddTool(menu_PRES_STOP, "Stop", TOOLBAR_BITMAP("pres-stop"), "Stop");
 
     toolbar->AddSeparator();
     m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, "", wxDefaultPosition,
@@ -1595,10 +1584,11 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 //  UI event handlers
 //
 
-#undef FILEDIALOG_MULTIGLOBS
-// MS Windows supports "*.abc;*.def" natively; wxGtk supports them as of 2.3
-#if defined(_WIN32) || wxCHECK_VERSION(2,3,0)
-# define FILEDIALOG_MULTIGLOBS
+// For Unix we want "*.svx;*.SVX" while for Windows we only want "*.svx".
+#ifdef _WIN32
+# define CASE(X)
+#else
+# define CASE(X) ";"X
 #endif
 
 void MainFrm::OnOpen(wxCommandEvent&)
@@ -1608,32 +1598,26 @@ void MainFrm::OnOpen(wxCommandEvent&)
     wxFileDialog dlg(this, msg(/*Select a 3d file to view*/206), "", "",
 		     "*.3d", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 #else
+    wxString filetypes;
+    filetypes.Printf("|%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.xyz;"
+		     CASE("*.3D;*.SVX;*.PLT;*.PLF;*.DAT;*.MAK;*.XYZ")
+		     "%s|*.3d"CASE("*.3D")
+		     "|%s|*.svx"CASE("*.SVX")
+		     "|%s|*.plt;*.plf"CASE("*.PLT;*.PLF")
+		     "|%s|*.dat;*.mak"CASE("*.DAT;*.MAK")
+		     "|%s|*.xyz"CASE("*.XYZ")
+		     "|%s|%s",
+		     "All survey files",
+		     msg(/*Survex 3d files*/207),
+		     "Survex svx files",
+		     msg(/*Compass PLT files*/324),
+		     "Compass DAT and MAK files",
+		     msg(/*CMAP XYZ files*/325),
+		     msg(/*All files*/208),
+		     wxFileSelectorDefaultWildcardStr);
+    // FIXME: drop "3d" from this message?
     wxFileDialog dlg(this, msg(/*Select a 3d file to view*/206), "", "",
-		     wxString::Format("%s|*.3d"
-#ifdef FILEDIALOG_MULTIGLOBS
-				      ";*.3D"
-#endif
-#ifdef FILEDIALOG_MULTIGLOBS
-				      "|%s|*.plt;*.plf"
-#ifndef _WIN32
-				      ";*.PLT;*.PLF"
-#endif
-#else
-				      "|%s|*.pl?" // not ideal...
-#endif
-				      "|%s|*.xyz"
-#ifdef FILEDIALOG_MULTIGLOBS
-#ifndef _WIN32
-				      ";*.XYZ"
-#endif
-#endif
-				      "|%s|%s",
-				      msg(/*Survex 3d files*/207),
-				      msg(/*Compass PLT files*/324),
-				      msg(/*CMAP XYZ files*/325),
-				      msg(/*All files*/208),
-				      wxFileSelectorDefaultWildcardStr),
-		     wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+		     filetypes, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());

@@ -1,9 +1,24 @@
 TOBE Changes in 1.1.8:
 
+* Drop support for building with wxWidgets versions prior to 2.4.0
+  (which was released on 2003-01-07).
+
 * aven: Change mouse actions to be compatible with those in Survex 1.0.
   The mousewheel now zooms in/out (it doesn't do anything in 1.0) and
   left drag is now smart about not rotating and zooming at the same
   time.
+
+* aven: Fix presentation saving to also write "." for decimal points and
+  presentation loading to accept either "." or ",".
+
+* (Unix version): aven: Add text for all toolbar items so that aven
+  will work with the Gnome desktop preference for displaying toolbars as
+  icons with text or just text (wxWidgets needs fixing first though).
+
+* (Unix version): aven: Remove the ability to detach the menu bar (yell
+  if you actually used it and I'll restore it!)
+
+* aven: Add "all survey files" option to the "open file" dialog.
 
 * (MS Windows version): aven: Fix cursor keys to pan survey.
 
