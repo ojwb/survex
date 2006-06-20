@@ -49,6 +49,7 @@ aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
  guicontrol.cc gla-gl.cc fnt.cc log.cc moviemaker.cc hpgl.cc cavernlog.cc \
  brotatemask.xbm brotate.xbm hand_mask.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
+ rotatezoom.xbm rotatezoommask.xbm \
  avenprcore.cc printwx.cc ini.c hash.c
 
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
