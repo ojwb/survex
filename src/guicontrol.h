@@ -39,12 +39,14 @@ class GUIControl {
 
     enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV, drag_SCALE } m_LastDrag;
 
+    enum { NONE, ROTATE, SCALE } m_ScaleRotateLock;
+
     bool m_ReverseControls;
 
     void HandleRotate(wxPoint);
     void HandleTilt(wxPoint);
     void HandleTranslate(wxPoint);
-    void HandleScale(wxPoint);
+    void HandleScaleRotate(wxPoint);
     void HandleTiltRotate(wxPoint);
 
     void HandCursor();
