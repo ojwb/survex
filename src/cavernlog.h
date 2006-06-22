@@ -26,7 +26,7 @@
 
 class CavernLogWindow : public wxHtmlWindow {
   public:
-    CavernLogWindow(wxWindow * parent) : wxHtmlWindow(parent) { }
+    CavernLogWindow(wxWindow * parent);
 
     bool CavernLogWindow::process(const wxString &file);
 

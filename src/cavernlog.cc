@@ -101,6 +101,13 @@ html_escape(const wxString &str)
     return res;
 }
 
+CavernLogWindow::CavernLogWindow(wxWindow * parent) : wxHtmlWindow(parent) {
+    int fsize = parent->GetFont().GetPointSize();
+    int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
+    SetFonts("", "", sizes);
+    GetParser()->SetInputEncoding(wxFONTENCODING_UTF8);
+}
+
 void
 CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 {
@@ -165,6 +172,7 @@ CavernLogWindow::process(const wxString &file)
 #else
     setenv("SURVEX_CHARSET", "utf8", 1);
 #endif
+
     wxString escaped_file = escape_for_shell(file, true);
     wxString cmd = escape_for_shell(cavern, false);
     cmd += " -o ";
@@ -268,8 +276,17 @@ CavernLogWindow::process(const wxString &file)
 			cur.insert(0, tag);
 		    }
 		}
+
+		// Save the scrollbar positions.
+		int scroll_x = 0, scroll_y = 0;
+		GetViewStart(&scroll_x, &scroll_y);
+
+		cur += "<br>\n";
 		AppendToPage(cur);
-		AppendToPage("<br>\n");
+
+		// Restore the scrollbar positions.
+		Scroll(scroll_x, scroll_y);
+
 #if 0
 		// FIXME: do we want to scroll to the bottom?  Doing so seems
 		// unhelpful if there are warnings or errors...
@@ -308,9 +325,15 @@ CavernLogWindow::process(const wxString &file)
 	}
 	ch = left;
     }
-    if (pclose(cavern_out) == -1) {
-	// FIXME: improve error message.
-	wxGetApp().ReportError("Failed to process survey data");
+    int retval = pclose(cavern_out);
+    if (retval) {
+	if (retval == -1) {
+	    wxString m = "Problem running cavern: ";
+	    m += strerror(errno);
+	    wxGetApp().ReportError(m);
+	} else {
+	    wxGetApp().ReportError("Failed to process survey data - see log window for details");
+	}
 	return false;
     }
     return true;
