@@ -1010,10 +1010,14 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
     m_Parent->ShowInfo(best);
     if (best) {
 	if (centre) {
+	    // FIXME: allow Ctrl-Click to not set there or something?
 	    CentreOn(*best);
 	    SetThere(*best);
 	    m_Parent->SelectTreeItem(best);
 	}
+    } else {
+	// Left-clicking not on a survey cancels the measuring line.
+	if (centre) ClearTreeSelection();
     }
 
     return best;

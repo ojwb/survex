@@ -8,6 +8,8 @@ TOBE Changes in 1.1.8:
   left drag is now smart about not rotating and zooming at the same
   time.
 
+* aven: Left-clicking away from a station now cancels measuring line.
+
 * aven: Fix presentation saving to also write "." for decimal points and
   presentation loading to accept either "." or ",".
 
