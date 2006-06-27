@@ -949,7 +949,7 @@ bool
 MainFrm::ProcessSVXFile(const wxString & file)
 {
     wxFrame * frm;
-    frm = new wxFrame(NULL, wxID_ANY, "Processing: " + file);
+    frm = new wxFrame(NULL, wxID_ANY, "Processing: " + file, wxDefaultPosition, wxSize(700, 512));
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
     // (required by Microsoft Windows for this type of icon)
