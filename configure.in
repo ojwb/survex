@@ -295,7 +295,7 @@ dnl -Wsign-compare causes a warning with the mingw FD_SET macro, so we have
 dnl to disable it for mingw builds.
     AM_CFLAGS="$AM_CFLAGS -Wall -Wunused -Wpointer-arith\
       -Wwrite-strings -Wcast-align"
-    AM_CXXFLAGS="$AM_CXXFLAGS -Werror -Wall -Wunused -Wpointer-arith\
+    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wunused -Wpointer-arith\
       -Wwrite-strings -Wcast-align -Wno-sign-compare"
   else
     AM_CFLAGS="$AM_CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith\
