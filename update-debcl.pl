@@ -21,10 +21,10 @@ open CL, "<debian/changelog" or die $!;
 my $date = strftime("%a, %d %b %Y %X %z", localtime);
 
 my $line = <CL>;
-unless ($line =~ /^\Q$package ($version)/) {
+unless ($line =~ /^\Q$package ($version-\d+)/) {
    open O, ">debian/changelog~" or die $!;
    print O <<END;
-$package ($version) unstable; urgency=low
+$package ($version-1) unstable; urgency=low
 
   * New release
 
