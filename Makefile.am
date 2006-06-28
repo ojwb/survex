@@ -57,7 +57,7 @@ debian : dist
 	mkdir deb
 	cd deb && tar zxvf ../${PACKAGE}-${VERSION}.tar.gz
 	: # -us and -uc mean don't sign packages
-	cd deb/${PACKAGE}-${VERSION} && debuild -us -uc --no-tgz-check
+	cd deb/${PACKAGE}-${VERSION} && DEBUILD_TGZ_CHECK=no debuild -us -uc
 	mv deb/*.deb deb/*.dsc deb/*.changes deb/*.gz .
 	rm -rf deb
 
