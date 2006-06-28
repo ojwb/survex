@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005 Olly Betts
+ * Copyright (C) 2005,2006 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ class CavernLogWindow : public wxHtmlWindow {
   public:
     CavernLogWindow(wxWindow * parent);
 
-    bool CavernLogWindow::process(const wxString &file);
+    bool process(const wxString &file);
 
     virtual void OnLinkClicked(const wxHtmlLinkInfo &link);
 };
