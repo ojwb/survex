@@ -49,10 +49,10 @@ Name: "it"; MessagesFile: "compiler:Languages/Italian.isl"
 ;Name: "pl"; MessagesFile: "compiler:Languages/Polish.isl"
 Name: "pt"; MessagesFile: "compiler:Languages/Portuguese.isl"
 ;Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl"
+Name: "sk"; MessagesFile: "compiler:Languages/Slovak.isl"
 ;Name: "??"; MessagesFile: "compiler:Languages/Slovenian.isl"
 ; Unofficial translations:
 Name: "ro"; MessagesFile: "compiler:Languages/Romanian-5-5.1.0.isl"
-Name: "sk"; MessagesFile: "compiler:Languages/Slovak-6-5.1.0.isl"
 Name: "es"; MessagesFile: "compiler:Languages/SpanishStd-2-5.1.0.isl"
 Name: "en_gb"; MessagesFile: "compiler:Languages/English_UK.isl"
 
