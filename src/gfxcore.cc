@@ -1693,6 +1693,28 @@ void GfxCore::SwitchToPlan()
     }
 }
 
+void GfxCore::SetViewTo(Double xmin, Double xmax, Double ymin, Double ymax, Double zmin, Double zmax)
+{
+
+    SetTranslation(-Vector3((xmin + xmax) / 2, (ymin + ymax) / 2, (zmin + zmax) / 2));
+    Double scale = 1000.0;
+    const Vector3 ext = m_Parent->GetExtent();
+    if (xmax > xmin) {
+	Double s = ext.GetX() / (xmax - xmin);
+	if (s < scale) scale = s;
+    }
+    if (ymax > ymin) {
+	Double s = ext.GetY() / (ymax - ymin);
+	if (s < scale) scale = s;
+    }
+    if (!ShowingPlan() && zmax > zmin) {
+	Double s = ext.GetZ() / (zmax - zmin);
+	if (s < scale) scale = s;
+    }
+    SetScale(scale);
+    ForceRefresh();
+}
+
 bool GfxCore::CanRaiseViewpoint() const
 {
     // Determine if the survey can be viewed from a higher angle of elevation.

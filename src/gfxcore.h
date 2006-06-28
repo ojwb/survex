@@ -313,6 +313,8 @@ public:
     void SwitchToElevation();
     void SwitchToPlan();
 
+    void SetViewTo(Double xmin, Double xmax, Double ymin, Double ymax, Double zmin, Double zmax);
+
     bool ShowingPlan() const;
     bool ShowingElevation() const;
     bool ShowingMeasuringLine() const;

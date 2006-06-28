@@ -454,8 +454,9 @@ BEGIN_EVENT_TABLE(AvenPresList, wxListCtrl)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
-    EVT_TEXT_ENTER(textctrl_FIND, MainFrm::OnFind)
-    EVT_MENU(button_FIND, MainFrm::OnFind)
+    EVT_TEXT(textctrl_FIND, MainFrm::OnFind)
+    EVT_TEXT_ENTER(textctrl_FIND, MainFrm::OnGotoFound)
+    EVT_MENU(button_FIND, MainFrm::OnGotoFound)
     EVT_MENU(button_HIDE, MainFrm::OnHide)
     EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
 
@@ -2136,111 +2137,141 @@ void MainFrm::OnFind(wxCommandEvent&)
     // Find stations specified by a string or regular expression.
 
     wxString pattern = m_FindBox->GetValue();
-    int re_flags = wxRE_NOSUB;
-
-    if (true /* case insensitive */) {
-	re_flags |= wxRE_ICASE;
-    }
-
-    bool substring = true;
-    if (false /*m_RegexpCheckBox->GetValue()*/) {
-	re_flags |= wxRE_EXTENDED;
-    } else if (true /* simple glob-style */) {
-	wxString pat;
-	for (size_t i = 0; i < pattern.size(); i++) {
-	   char ch = pattern[i];
-	   // ^ only special at start; $ at end.  But this is simpler...
-	   switch (ch) {
-	    case '^': case '$': case '.': case '[': case '\\':
-	      pat += '\\';
-	      pat += ch;
-	      break;
-	    case '*':
-	      pat += ".*";
-              substring = false;
-	      break;
-	    case '?':
-	      pat += '.';
-              substring = false;
-	      break;
-	    default:
-	      pat += ch;
-	   }
-	}
-	pattern = pat;
-	re_flags |= wxRE_BASIC;
-    } else {
-	wxString pat;
-	for (size_t i = 0; i < pattern.size(); i++) {
-	   char ch = pattern[i];
-	   // ^ only special at start; $ at end.  But this is simpler...
-	   switch (ch) {
-	    case '^': case '$': case '*': case '.': case '[': case '\\':
-	      pat += '\\';
-	   }
-	   pat += ch;
-	}
-	pattern = pat;
-	re_flags |= wxRE_BASIC;
-    }
-
-    if (!substring) {
-	// FIXME "0u" required to avoid compilation error with g++-3.0
-	if (pattern.empty() || pattern[0u] != '^') pattern = '^' + pattern;
-        // FIXME: this fails to cope with "\$" at the end of pattern...
-	if (pattern[pattern.size() - 1] != '$') pattern += '$';
-    }
-
-    wxRegEx regex;
-    if (!regex.Compile(pattern, re_flags)) {
-	wxString m;
-	m.Printf(msg(/*Invalid regular expression: %s*/404), pattern.c_str());
-	wxGetApp().ReportError(m);
-	return;
-    }
-
-    list<LabelInfo*>::iterator pos = m_Labels.begin();
-
-    int found = 0;
-    while (pos != m_Labels.end()) {
-	LabelInfo* label = *pos++;
-
-	if (regex.Matches(label->text)) {
-	    label->flags |= LFLAG_HIGHLIGHTED;
-	    ++found;
-	} else {
+    if (pattern.empty()) {
+	// Hide any search result highlights.
+	list<LabelInfo*>::iterator pos = m_Labels.begin();
+	while (pos != m_Labels.end()) {
+	    LabelInfo* label = *pos++;
 	    label->flags &= ~LFLAG_HIGHLIGHTED;
 	}
+	m_NumHighlighted = 0;
+    } else {
+	int re_flags = wxRE_NOSUB;
+
+	if (true /* case insensitive */) {
+	    re_flags |= wxRE_ICASE;
+	}
+
+	bool substring = true;
+	if (false /*m_RegexpCheckBox->GetValue()*/) {
+	    re_flags |= wxRE_EXTENDED;
+	} else if (true /* simple glob-style */) {
+	    wxString pat;
+	    for (size_t i = 0; i < pattern.size(); i++) {
+	       char ch = pattern[i];
+	       // ^ only special at start; $ at end.  But this is simpler...
+	       switch (ch) {
+		case '^': case '$': case '.': case '[': case '\\':
+		  pat += '\\';
+		  pat += ch;
+		  break;
+		case '*':
+		  pat += ".*";
+		  substring = false;
+		  break;
+		case '?':
+		  pat += '.';
+		  substring = false;
+		  break;
+		default:
+		  pat += ch;
+	       }
+	    }
+	    pattern = pat;
+	    re_flags |= wxRE_BASIC;
+	} else {
+	    wxString pat;
+	    for (size_t i = 0; i < pattern.size(); i++) {
+	       char ch = pattern[i];
+	       // ^ only special at start; $ at end.  But this is simpler...
+	       switch (ch) {
+		case '^': case '$': case '*': case '.': case '[': case '\\':
+		  pat += '\\';
+	       }
+	       pat += ch;
+	    }
+	    pattern = pat;
+	    re_flags |= wxRE_BASIC;
+	}
+
+	if (!substring) {
+	    // FIXME "0u" required to avoid compilation error with g++-3.0
+	    if (pattern.empty() || pattern[0u] != '^') pattern = '^' + pattern;
+	    // FIXME: this fails to cope with "\$" at the end of pattern...
+	    if (pattern[pattern.size() - 1] != '$') pattern += '$';
+	}
+
+	wxRegEx regex;
+	if (!regex.Compile(pattern, re_flags)) {
+	    wxBell();
+	    return;
+	}
+
+	int found = 0;
+
+	list<LabelInfo*>::iterator pos = m_Labels.begin();
+	while (pos != m_Labels.end()) {
+	    LabelInfo* label = *pos++;
+
+	    if (regex.Matches(label->text)) {
+		label->flags |= LFLAG_HIGHLIGHTED;
+		++found;
+	    } else {
+		label->flags &= ~LFLAG_HIGHLIGHTED;
+	    }
+	}
+
+	m_NumHighlighted = found;
+
+	// Re-sort so highlighted points get names in preference
+	if (found) m_Labels.sort(LabelPlotCmp(separator));
     }
 
-    m_NumHighlighted = found;
-
-    // Re-sort so highlighted points get names in preference
-    if (found) m_Labels.sort(LabelPlotCmp(separator));
     m_Gfx->UpdateBlobs();
     m_Gfx->ForceRefresh();
 
-    if (!found) {
-	wxGetApp().ReportError(msg(/*No matches were found.*/328));
+    if (!m_NumHighlighted) {
         GetToolBar()->SetToolShortHelp(button_HIDE, msg(/*No matches were found.*/328));
     } else {
-        GetToolBar()->SetToolShortHelp(button_HIDE, wxString::Format("Unhilight %d found stations", found));
+        GetToolBar()->SetToolShortHelp(button_HIDE, wxString::Format("Unhilight %d found stations", m_NumHighlighted));
+    }
+}
+
+void MainFrm::OnGotoFound(wxCommandEvent&)
+{
+    if (!m_NumHighlighted) {
+	wxGetApp().ReportError(msg(/*No matches were found.*/328));
+	return;
     }
 
+    Double xmin = DBL_MAX;
+    Double xmax = -DBL_MAX;
+    Double ymin = DBL_MAX;
+    Double ymax = -DBL_MAX;
+    Double zmin = DBL_MAX;
+    Double zmax = -DBL_MAX;
+
+    list<LabelInfo*>::iterator pos = m_Labels.begin();
+    while (pos != m_Labels.end()) {
+	LabelInfo* label = *pos++;
+
+	if (label->flags & LFLAG_HIGHLIGHTED) {
+	    if (label->x < xmin) xmin = label->x;
+	    if (label->x > xmax) xmax = label->x;
+	    if (label->y < ymin) ymin = label->y;
+	    if (label->y > ymax) ymax = label->y;
+	    if (label->z < zmin) zmin = label->z;
+	    if (label->z > zmax) zmax = label->z;
+	}
+    }
+
+    m_Gfx->SetViewTo(xmin, xmax, ymin, ymax, zmin, zmax);
     m_Gfx->SetFocus();
 }
 
 void MainFrm::OnHide(wxCommandEvent&)
 {
-    // Hide any search result highlights.
-    list<LabelInfo*>::iterator pos = m_Labels.begin();
-    while (pos != m_Labels.end()) {
-	LabelInfo* label = *pos++;
-	label->flags &= ~LFLAG_HIGHLIGHTED;
-    }
-    m_NumHighlighted = 0;
-    m_Gfx->UpdateBlobs();
-    m_Gfx->ForceRefresh();
+    m_FindBox->SetValue("");
 }
 
 void MainFrm::OnHideUpdate(wxUpdateUIEvent& ui)

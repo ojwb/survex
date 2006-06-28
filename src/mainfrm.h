@@ -269,6 +269,7 @@ public:
     //void OnFileOpenTerrainUpdate(wxUpdateUIEvent& event);
 
     void OnFind(wxCommandEvent& event);
+    void OnGotoFound(wxCommandEvent& event);
     void OnHide(wxCommandEvent& event);
     void OnHideUpdate(wxUpdateUIEvent& ui);
 
