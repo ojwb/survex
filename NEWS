@@ -1,4 +1,4 @@
-TOBE Changes in 1.1.8:
+Changes in 1.1.8:
 
 * Drop support for building with wxWidgets versions prior to 2.4.0
   (which was released on 2003-01-07).
@@ -27,6 +27,8 @@ TOBE Changes in 1.1.8:
 * aven: Add "all survey files" option to the "open file" dialog.
 
 * (MS Windows version): aven: Fix cursor keys to pan survey.
+
+* (MS Windows version): Built with wxWidgets 2.6.3 instead of 2.6.2.
 
 * (MS Windows version): Fix installer to work on Windows 2000 or XP if
   run by an unprivileged user.

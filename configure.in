@@ -2,14 +2,14 @@ dnl Process this file with autoconf to produce a configure script
 
 dnl CFLAGS=-DDEFAULTLANG=fr to build with French as the default language.
 
-dnl Need autoconf 2.13 or later for 3 argument version of AC_DEFINE
-dnl Need autoconf 2.50 or later for AC_ARG_VAR
-AC_PREREQ(2.50)
+dnl Need autoconf 2.50 or later for AC_ARG_VAR.  2.59 has been around for
+dnl long enough, that we might as well just require that.
+AC_PREREQ(2.59)
 AC_INIT(src/aven.cc)
 
 dnl next line is for make_release
-CHANGELOG_FROM_TAG=v1_1_6
-AM_INIT_AUTOMAKE(survex, 1.1.7)
+CHANGELOG_FROM_TAG=v1_1_7
+AM_INIT_AUTOMAKE(survex, 1.1.8)
 RELEASE=1
 
 AC_SUBST(RELEASE)
@@ -136,7 +136,7 @@ if test -n "$WXCONFIG" ; then
     AC_MSG_ERROR(['$WXCONFIG --libs --cflags --cxxflags' doesn't work, bailing out])
   fi
 else
-  # prefer wx2.6 (or wx2.5) - a few things work better with it.
+  # Prefer wx2.6 (or wx2.5) since a number of things work better with it.
   if test yes = "$macosx" ; then
     AC_PATH_PROGS(WXCONFIG, [wxmac-2.6-config wxmac-2.5-config wxmac-2.4-config wxmac-config])
     wxdef=__WXMAC__
