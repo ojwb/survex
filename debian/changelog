@@ -1,5 +1,59 @@
+survex (1.1.8-1) unstable; urgency=low
+
+  * No longer a debian native package.
   * Updated "Build-Depends:" for the new X library packaging.
   * Incorporate rebuilt debian/rules from 1.0 branch.
+  * "Standards-Version: 3.7.2" - no changes required.
+  * New upstream release:
+    + Drop support for building with wxWidgets versions prior to 2.4.0
+      (which was released on 2003-01-07).
+    + aven: Change mouse actions to be compatible with those in Survex 1.0.
+      The mousewheel now zooms in/out (it doesn't do anything in 1.0) and
+      left drag is now smart about not rotating and zooming at the same
+      time.
+    + aven: Highlighting stations now happens as you type, and pressing
+      "Enter" or clicking the "Find" button now pans and zooms to show the
+      highlighted stations.
+    + aven: Left-clicking away from a station now cancels measuring line.
+    + aven: Setting view to North, South, East, or West is now animated like
+      the tilt from plan to elevation.
+    + aven: Fix presentation saving to also write "." for decimal points and
+      presentation loading to accept either "." or ",".
+    + aven: Add text for all toolbar items so that aven will work with the
+      Gnome desktop preference for displaying toolbars as icons with text or
+      just text (wxWidgets needs fixing first though).
+    + aven: Remove the ability to detach the menu bar (yell if you actually
+      used it and I'll restore it!)
+    + aven: Add "all survey files" option to the "open file" dialog.
+    + aven: Disable "Highlight exported points" if there aren't any.
+    + Updates to French translation from Michel Bovey.  Also updates to German,
+      Italian, Catalan, Spanish, and Romanian translations.
+    + test suite: fix smoke test to pass even without X running (it was meant
+      to but the code had a bug).
+    + aven: Check if OpenGL is available and exit cleanly with a helpful error
+      if it isn't.
+    + aven: Fix --help and --version to work without a working X display
+      (provided it's built with wxWidgets 2.5.1 or newer which the debian
+      package sadly isn't currently).
+    + aven: Automatically select the presentation tab of the notebook when the user
+      selects "New Presentation" or "Open Presentation".
+    + aven: Fix "Delete" in the presentation list to not get passed on (and so not
+      reset to default view as well).
+    + aven: Fix Ctrl+Insert in the presentation list not to segfault if the list is
+      empty.
+    + aven: Fix Cursor Up and Down in the presentation list to move the highlight
+      up and down instead of being passed on and moving the survey.
+    + aven: Improve SVG output compatibility.  Tested with Mozilla Firefox 1.5,
+      Adobe's SVG browser plugin, Gimp 2.2.8, Gqview 2.0.0, Opera 8.5,
+      Safari 2.0.3, and InkScape 0.42.
+    + aven: Put a 5mm border around exported SVG files to allow for station markers
+      and non-zero width lines.
+    + aven: Fix crash when exporting as SVG or Sketch if labels or surface data
+      was turned on.
+    + aven: Actually close the file we're exporting which fixes problems with it
+      not always being fully written.
+
+ -- Wookey <wookey@survex.com>  Wed, 28 Jun 2006 16:21:21 +0100
 
 survex (1.1.7) unstable; urgency=low
 
