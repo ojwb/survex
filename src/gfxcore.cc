@@ -48,6 +48,10 @@
 // Values for m_SwitchingTo
 #define PLAN 1
 #define ELEVATION 2
+#define NORTH 3
+#define EAST 4
+#define SOUTH 5
+#define WEST 6
 
 // How many bins per letter height to use when working out non-overlapping
 // labels.
@@ -1229,6 +1233,20 @@ bool GfxCore::Animate()
 	} else {
 	    TiltCave(-90.0 * t);
 	}
+    } else if (m_SwitchingTo) {
+	int angle = (m_SwitchingTo - NORTH) * 90;
+	double diff = angle - m_PanAngle;
+	if (diff < -180) diff += 360;
+	if (diff > 180) diff -= 360;
+	double move = 90.0 * t;
+	if (move >= fabs(diff)) {
+	    TurnCave(diff);
+	    m_SwitchingTo = 0;
+	} else if (diff < 0) {
+	    TurnCave(-move);
+	} else {
+	    TurnCave(move);
+	}
     }
 
     return true;
@@ -1391,8 +1409,16 @@ void GfxCore::TurnCave(Double angle)
 
 void GfxCore::TurnCaveTo(Double angle)
 {
-    // Turn the cave to a particular pan angle.
-    TurnCave(angle - m_PanAngle);
+    timer.Start(drawtime);
+    int new_switching_to = ((int)angle) / 90 + NORTH;
+    if (new_switching_to == m_SwitchingTo) {
+	// A second order to switch takes us there right away
+	TurnCave(angle - m_PanAngle);
+	m_SwitchingTo = 0;
+	ForceRefresh();
+    } else {
+	m_SwitchingTo = new_switching_to;
+    }
 }
 
 void GfxCore::TiltCave(Double tilt_angle)
@@ -1531,10 +1557,10 @@ void GfxCore::SetCompassFromPoint(wxPoint point)
 
     double angle = deg(atan2(double(dx), double(dy))) - 180.0;
     if (dx * dx + dy * dy <= radius * radius) {
-	TurnCaveTo(angle);
+	TurnCave(angle - m_PanAngle);
 	m_MouseOutsideCompass = false;
     } else {
-	TurnCaveTo(int(angle / 45.0) * 45.0);
+	TurnCave(int(angle / 45.0) * 45.0 - m_PanAngle);
 	m_MouseOutsideCompass = true;
     }
 

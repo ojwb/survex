@@ -14,6 +14,9 @@ Changes in 1.1.8:
 
 * aven: Left-clicking away from a station now cancels measuring line.
 
+* aven: Setting view to North, South, East, or West is now animated like
+  the tilt from plan to elevation.
+
 * aven: Fix presentation saving to also write "." for decimal points and
   presentation loading to accept either "." or ",".
 
