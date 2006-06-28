@@ -3,3 +3,5 @@ debian/tmp/usr/share/mime-info/
 debian/tmp/usr/bin/
 debian/tmp/usr/share/man/
 debian/tmp/usr/share/doc/survex
+lib/icons/aven.png usr/share/pixmaps/
+debian/survex-aven.desktop usr/share/applications/

@@ -4,6 +4,7 @@ survex (1.1.8-1) unstable; urgency=low
   * Updated "Build-Depends:" for the new X library packaging.
   * Incorporate rebuilt debian/rules from 1.0 branch.
   * "Standards-Version: 3.7.2" - no changes required.
+  * Add desktop file for aven contributed to the Ubuntu package by Phil Bull.
   * New upstream release:
     + Drop support for building with wxWidgets versions prior to 2.4.0
       (which was released on 2003-01-07).
@@ -35,25 +36,25 @@ survex (1.1.8-1) unstable; urgency=low
     + aven: Fix --help and --version to work without a working X display
       (provided it's built with wxWidgets 2.5.1 or newer which the debian
       package sadly isn't currently).
-    + aven: Automatically select the presentation tab of the notebook when the user
-      selects "New Presentation" or "Open Presentation".
-    + aven: Fix "Delete" in the presentation list to not get passed on (and so not
-      reset to default view as well).
-    + aven: Fix Ctrl+Insert in the presentation list not to segfault if the list is
-      empty.
-    + aven: Fix Cursor Up and Down in the presentation list to move the highlight
-      up and down instead of being passed on and moving the survey.
+    + aven: Automatically select the presentation tab of the notebook when the
+      user selects "New Presentation" or "Open Presentation".
+    + aven: Fix "Delete" in the presentation list to not get passed on (and so
+      not reset to default view as well).
+    + aven: Fix Ctrl+Insert in the presentation list not to segfault if the
+      list is empty.
+    + aven: Fix Cursor Up and Down in the presentation list to move the
+      highlight up and down instead of being passed on and moving the survey.
     + aven: Improve SVG output compatibility.  Tested with Mozilla Firefox 1.5,
       Adobe's SVG browser plugin, Gimp 2.2.8, Gqview 2.0.0, Opera 8.5,
       Safari 2.0.3, and InkScape 0.42.
-    + aven: Put a 5mm border around exported SVG files to allow for station markers
-      and non-zero width lines.
+    + aven: Put a 5mm border around exported SVG files to allow for station
+      markers and non-zero width lines.
     + aven: Fix crash when exporting as SVG or Sketch if labels or surface data
       was turned on.
-    + aven: Actually close the file we're exporting which fixes problems with it
-      not always being fully written.
+    + aven: Actually close the file we're exporting which fixes problems with
+      it not always being fully written.
 
- -- Wookey <wookey@survex.com>  Wed, 28 Jun 2006 16:21:21 +0100
+ -- Wookey <wookey@survex.com>  Thu, 29 Jun 2006 00:12:21 +0100
 
 survex (1.1.7) unstable; urgency=low
 
