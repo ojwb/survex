@@ -41,12 +41,12 @@ rpm : dist
 	echo %_srcrpmdir `pwd` >> rpmmacros
 	echo %_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm >> rpmmacros
 	: #
-	echo macrofiles : `rpm --showrc | sed 's/^macrofiles\> *: //p;d'`:`pwd`/rpmmacros > rpmrc
+	echo macrofiles : `rpmbuild --showrc | sed 's/^macrofiles\> *: //p;d'`:`pwd`/rpmmacros > rpmrc
 	: #
 	rm -rf BUILD
 	mkdir BUILD
 	: #
-	rpm -bs --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
+	rpmbuild -bs --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
 
 debian : dist
 	: # overkill maybe - we could probably just use this tree

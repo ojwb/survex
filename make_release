@@ -83,13 +83,13 @@ else
    fi
 fi
 if test x"$rel" = xyes && expr "$mk" : '.*\<rpm\>' || test x"$mk" = xrpm ; then
-   if rpm --version > /dev/null 2> /dev/null ; then
+   if rpmbuild --version > /dev/null 2> /dev/null ; then
       if ! make rpm ; then
          echo make rpm failed
          exit 1
        fi
    else
-       echo rpm not installed - skipping rpm generation
+       echo rpmbuild not installed - skipping rpm generation
    fi
 fi
 if test x"$rel" = xyes && expr "$mk" : '.*\<deb\>' || test x"$mk" = xdeb ; then
