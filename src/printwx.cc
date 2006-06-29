@@ -1533,7 +1533,6 @@ char *
 svxPrintout::Init(FILE **fh_list, bool fCalibrate)
 {
    static const char *vars[] = {
-      "like",
       "font_size_labels",
       "colour_text",
       "colour_labels",
@@ -1547,7 +1546,7 @@ svxPrintout::Init(FILE **fh_list, bool fCalibrate)
 
    fCalibrate = fCalibrate; /* suppress unused argument warning */
 
-   vals = ini_read_hier(fh_list, "win", vars);
+   vals = ini_read(fh_list, "aven", vars);
    fontsize_labels = 10;
    if (vals[1]) fontsize_labels = as_int(vars[1], vals[1], 1, INT_MAX);
    fontsize = 10;
