@@ -66,6 +66,7 @@ IMPLEMENT_APP(Aven)
 Aven::Aven() :
     m_Frame(NULL), m_pageSetupData(NULL)
 {
+    wxFont::SetDefaultEncoding(wxFONTENCODING_UTF8);
 }
 
 Aven::~Aven()

@@ -260,7 +260,7 @@ default_charset(void)
    return CHARSET_USASCII;
 #elif OS_UNIX
 #ifdef AVEN
-   return CHARSET_ISO_8859_1;
+   return CHARSET_UTF8;
 #else
    const char *p = getenv("LC_ALL");
    if (p == NULL || p[0] == '\0') {
