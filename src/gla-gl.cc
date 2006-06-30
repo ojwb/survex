@@ -301,7 +301,7 @@ void GLACanvas::FirstShow()
     // Point sprites provide an easy, fast way for us to draw crosses by
     // texture mapping GL points.
     //
-    // If we have OpenGL > 2.0 then we definitely have GL_POINT_SPRITE.
+    // If we have OpenGL >= 2.0 then we definitely have GL_POINT_SPRITE.
     // Otherwise see if we have the GL_ARB_point_sprite or GL_NV_point_sprite
     // extensions.
     //
@@ -966,6 +966,26 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 	CHECK_GL_ERROR("gluDisk", "DrawBlob");
 	glTranslated(-X, -Y, -Z);
 	CHECK_GL_ERROR("glTranslated 2", "DrawBlob");
+    }
+#ifdef GLA_DEBUG
+    m_Vertices++;
+#endif
+}
+
+void GLACanvas::DrawBlob(glaCoord x, glaCoord y)
+{
+    if (glpoint_ok) {
+	// Draw a marker.
+	PlaceVertex(x, y, 0);
+    } else {
+	// Draw an filled circle.
+	assert(m_Quadric);
+	glTranslated(x, y, 0);
+	CHECK_GL_ERROR("glTranslated 1", "DrawBlob 2");
+	gluDisk(m_Quadric, 0, BLOB_DIAMETER * 0.5, 8, 1);
+	CHECK_GL_ERROR("gluDisk", "DrawBlob");
+	glTranslated(-x, -y, 0);
+	CHECK_GL_ERROR("glTranslated 2", "DrawBlob 2");
     }
 #ifdef GLA_DEBUG
     m_Vertices++;

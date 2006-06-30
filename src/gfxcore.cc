@@ -388,7 +388,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 		    EndLines();
 		}
 		BeginBlobs();
-		DrawBlob(tx, ty, 0.0);
+		DrawBlob(tx, ty);
 		EndBlobs();
 	    }
 	}

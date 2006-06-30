@@ -190,6 +190,7 @@ public:
 		      const Vector3 &p0, const Vector3 &p1, const Vector3 &p2);
 
     void DrawBlob(glaCoord x, glaCoord y, glaCoord z);
+    void DrawBlob(glaCoord x, glaCoord y);
     void DrawCross(glaCoord x, glaCoord y, glaCoord z);
     void DrawRing(glaCoord x, glaCoord y);
 
