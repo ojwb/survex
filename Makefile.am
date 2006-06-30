@@ -57,7 +57,7 @@ debian : dist
 	mkdir deb
 	cd deb && tar zxvf ../${PACKAGE}-${VERSION}.tar.gz
 	: # -us and -uc mean don't sign packages
-	cd deb/${PACKAGE}-${VERSION} && DEBUILD_TGZ_CHECK=no debuild -us -uc
+	cd deb/${PACKAGE}-${VERSION} && debuild --no-tgz-check -us -uc
 	mv deb/*.deb deb/*.dsc deb/*.changes deb/*.gz .
 	rm -rf deb
 
@@ -115,3 +115,5 @@ dos_doc_zip :
 	$(RM) $(dos_doc_zip_name)
 	: # -l means convert LF to CR+LF
 	cd doc && zip -9 -l ../$(dos_doc_zip_name) @DOCS_OTHER@
+
+.PHONY: rpm debian mingw mingw_iss dos_doc_exe dos_doc_zip
