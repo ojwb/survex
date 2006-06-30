@@ -8,6 +8,7 @@ survex (1.1.8-1) unstable; urgency=low
   * debian/doc-base: Register the manual in Apps/Science rather than Apps/Math
     for consistency with where we put the Debian menu entry.
   * Add Conflicts/Replaces with survex-aven package.
+  * Restore survex-svxedit package.
   * New upstream release:
     + Drop support for building with wxWidgets versions prior to 2.4.0
       (which was released on 2003-01-07).
@@ -60,7 +61,7 @@ survex (1.1.8-1) unstable; urgency=low
     + aven: Actually close the file we're exporting which fixes problems with
       it not always being fully written.
 
- -- Wookey <wookey@survex.com>  Thu, 29 Jun 2006 00:12:21 +0100
+ -- Wookey <wookey@survex.com>  Fri, 30 Jun 2006 01:33:03 +0100
 
 survex (1.1.7) unstable; urgency=low
 
