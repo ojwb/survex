@@ -1,3 +1,6 @@
+* (Unix version): Fix "Can't open message file `en_US' using path
+  `${prefix}/share/survex'" error.
+
 Changes in 1.1.8:
 
 * Drop support for building with wxWidgets versions prior to 2.4.0
