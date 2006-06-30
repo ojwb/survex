@@ -5,9 +5,15 @@ survex (1.1.8-1) unstable; urgency=low
   * Incorporate rebuilt debian/rules from 1.0 branch.
   * "Standards-Version: 3.7.2" - no changes required.
   * Add desktop file for aven contributed to the Ubuntu package by Phil Bull.
+  * debian/doc-base: Register the manual in Apps/Science rather than Apps/Math
+    for consistency with where we put the Debian menu entry.
+  * Add Conflicts/Replaces with survex-aven package.
   * New upstream release:
     + Drop support for building with wxWidgets versions prior to 2.4.0
       (which was released on 2003-01-07).
+    + aven: Printing through aven now uses settings from the "[aven]" section
+      of print.ini, and support for hierarchical sections (using "like=") has
+      been disabled.
     + aven: Change mouse actions to be compatible with those in Survex 1.0.
       The mousewheel now zooms in/out (it doesn't do anything in 1.0) and
       left drag is now smart about not rotating and zooming at the same
