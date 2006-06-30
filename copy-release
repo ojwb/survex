@@ -4,14 +4,14 @@ VER=`sed 's/^AM_INIT_AUTOMAKE(.*, * \([0-9][0-9\.]*\)).*/\1/p;d' configure.in`
 REL=`sed 's/^RELEASE *= *\([0-9][0-9]*\).*/\1/p;d' configure.in`
 
 VRR=$VER-$REL
-VRD=$VER
+VRD=$VER-1
 VRP=$VER
 
 FILES="survex-$VRR.src.rpm\
  survex-$VER.tar.gz survex-win32-$VER.exe\
  svxdoc-doswin-$VER.exe"
 DEB_FILES="survex_$VRD.tar.gz survex_$VRD.dsc survex_${VRD}_i386.deb\
- survex_${VRD}_i386.changes"
+ survex_${VRD}_i386.changes survex-svxedit_1.1.8-1_all.deb"
 
 WEBDIR="software/$VRP"
 HOST="tartarus.org"
