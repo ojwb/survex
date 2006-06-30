@@ -1,7 +1,21 @@
 debian/tmp/usr/share/survex/
 debian/tmp/usr/share/mime-info/
-debian/tmp/usr/bin/
-debian/tmp/usr/share/man/
+debian/tmp/usr/bin/aven
+debian/tmp/usr/bin/cavern
+debian/tmp/usr/bin/diffpos
+debian/tmp/usr/bin/extend
+debian/tmp/usr/bin/cad3d
+debian/tmp/usr/bin/sorterr
+debian/tmp/usr/bin/3dtopos
+debian/tmp/usr/share/man/man1/3dtopos.1
+debian/tmp/usr/share/man/man1/aven.1
+debian/tmp/usr/share/man/man1/cad3d.1
+debian/tmp/usr/share/man/man1/cavern.1
+debian/tmp/usr/share/man/man1/diffpos.1
+debian/tmp/usr/share/man/man1/extend.1
+debian/tmp/usr/share/man/man1/sorterr.1
+debian/tmp/usr/share/man/man1/survex.1
+debian/tmp/usr/share/man/man5/print.ini.5
 debian/tmp/usr/share/doc/survex
 lib/icons/aven.png usr/share/pixmaps/
 debian/survex-aven.desktop usr/share/applications/

@@ -1,2 +1,4 @@
 debian/tmp/usr/bin/svxedit
 debian/tmp/usr/share/man/man1/svxedit.1
+lib/icons/svxedit.png usr/share/pixmaps/
+debian/survex-svxedit.desktop usr/share/applications/
