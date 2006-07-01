@@ -406,6 +406,9 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	FinishDrawing();
 
 	drawtime = timer.Time();
+    } else {
+	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
+	dc.Clear();
     }
 }
 
