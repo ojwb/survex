@@ -6,14 +6,14 @@ AUTOMAKE_OPTIONS = 1.5 foreign
 # These files are installed automatically in --gnu mode
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
-EXTRA_DIST = $(GNU_FILES) TODO survex.iss.in OLDNEWS\
- desc.txt desc-aven.txt survex.spec.in survex.spec\
- buildmacosx.sh vim/syntax/survex.vim vim/ftdetect/survex.vim
-
-SUBDIRS = . lib src doc tests debian
+SUBDIRS = . lib src doc tests vim debian
 
 # seem to need this for "make distclean" to recurse?!?
 DIST_SUBDIRS = $(SUBDIRS)
+
+EXTRA_DIST = $(GNU_FILES) TODO survex.iss.in OLDNEWS\
+ desc.txt desc-aven.txt survex.spec.in survex.spec\
+ buildmacosx.sh
 
 extra_bin = lib/*.msg\
  lib/aven.txf

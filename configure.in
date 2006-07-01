@@ -343,7 +343,7 @@ if test no = "$mswindows"; then
 fi
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
- tests/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
+ tests/Makefile vim/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
  doc/version.ent debian/copyright survex.spec src/svxedit lib/survex.keys)
 dnl FIXME update msvc makefile for 1.1 branch
 dnl src/msvc/config.h
