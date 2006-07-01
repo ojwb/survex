@@ -64,11 +64,16 @@ using namespace std;
 
 const double BLOB_DIAMETER = 5.0;
 
+static bool opengl_initialised = false;
+
 wxString GetGLSystemDescription()
 {
+    // If OpenGL isn't initialised we may get a SEGV from glGetString.
+    if (!opengl_initialised)
+	return "No OpenGL information available yet - try opening a file.";
     const char *p = (const char*)glGetString(GL_VERSION);
-    // If OpenGL isn't initialised, p may be NULL.
-    if (!p) return "No OpenGL information available yet - try opening a file.";
+    if (!p)
+	return "Couldn't read OpenGL version!";
 
     wxString info;
     info += "OpenGL ";
@@ -237,6 +242,7 @@ GLACanvas::~GLACanvas()
 void GLACanvas::FirstShow()
 {
     SetCurrent();
+    opengl_initialised = true;
 
     // Clear any cached OpenGL lists.
     vector<GLAList>::iterator i;
@@ -245,9 +251,8 @@ void GLACanvas::FirstShow()
     }
     drawing_lists.resize(0);
 
-    static bool once_only = true;
-    if (!once_only) return;
-    once_only = false;
+    if (m_Quadric) return;
+    // One time initialisation follows.
 
     m_Quadric = gluNewQuadric();
     CHECK_GL_ERROR("FirstShow", "gluNewQuadric");
