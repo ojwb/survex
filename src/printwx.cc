@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1548,16 +1548,16 @@ svxPrintout::Init(FILE **fh_list, bool fCalibrate)
 
    vals = ini_read(fh_list, "aven", vars);
    fontsize_labels = 10;
-   if (vals[1]) fontsize_labels = as_int(vars[1], vals[1], 1, INT_MAX);
+   if (vals[0]) fontsize_labels = as_int(vars[0], vals[0], 1, INT_MAX);
    fontsize = 10;
 
    colour_text = colour_labels = colour_frame = colour_leg = colour_cross = colour_surface_leg = *wxBLACK;
-   if (vals[2]) colour_text = to_rgb(vars[2], vals[2]);
-   if (vals[3]) colour_labels = to_rgb(vars[3], vals[3]);
-   if (vals[4]) colour_frame = to_rgb(vars[4], vals[4]);
-   if (vals[5]) colour_leg = to_rgb(vars[5], vals[5]);
-   if (vals[6]) colour_cross = to_rgb(vars[6], vals[6]);
-   if (vals[7]) colour_surface_leg = to_rgb(vars[7], vals[7]);
+   if (vals[1]) colour_text = to_rgb(vars[1], vals[1]);
+   if (vals[2]) colour_labels = to_rgb(vars[2], vals[2]);
+   if (vals[3]) colour_frame = to_rgb(vars[3], vals[3]);
+   if (vals[4]) colour_leg = to_rgb(vars[4], vals[4]);
+   if (vals[5]) colour_cross = to_rgb(vars[5], vals[5]);
+   if (vals[6]) colour_surface_leg = to_rgb(vars[6], vals[6]);
    m_layout->scX = 1;
    m_layout->scY = 1;
    return NULL;
