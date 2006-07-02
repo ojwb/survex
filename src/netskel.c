@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2004,2005 Olly Betts
+ * Copyright (C) 1991-2004,2005,2006 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 /* #define BLUNDER_DETECTION */
@@ -958,6 +958,7 @@ write_passage_models(void)
       int xflags = 0;
       while (xsect) {
 	 lrud *oldx;
+	 prefix *pfx;
 	 const char *name;
 	 pimg->l = xsect->l;
 	 pimg->r = xsect->r;
@@ -970,12 +971,21 @@ write_passage_models(void)
 	     pimg->date1 = 0;
 	     pimg->date2 = 0;
 	 }
-	 name = sprint_prefix(xsect->stn);
+
+	 pfx = xsect->stn;
+	 name = sprint_prefix(pfx);
 	 oldx = xsect;
 	 xsect = xsect->next;
 	 osfree(oldx);
-	 if (xsect == NULL) xflags = img_XFLAG_END;
-	 img_write_item(pimg, img_XSECT, xflags, name, 0, 0, 0);
+
+	 if (!pfx->pos) {
+	     error_in_file(pfx->filename, pfx->line,
+			   /*Cross section specified at non-existent station `%s'*/83,
+			   name);
+	 } else {
+	     if (xsect == NULL) xflags = img_XFLAG_END;
+	     img_write_item(pimg, img_XSECT, xflags, name, 0, 0, 0);
+	 }
       }
       oldp = psg;
       psg = psg->next;

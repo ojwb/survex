@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2006 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -468,7 +468,7 @@ check_reentry(prefix *tag)
 {
    /* Don't try to check "*prefix \" or "*begin \" */
    if (!tag->up) return;
-   if (tag->filename) {
+   if (TSTBIT(tag->sflags, SFLAGS_PREFIX_ENTERED)) {
       if (tag->line != file.line ||
 	  strcmp(tag->filename, file.filename) != 0) {
 	 const char *filename_store = file.filename;
@@ -488,6 +488,7 @@ check_reentry(prefix *tag)
 	 file.line = line_store;
       }
    } else {
+      tag->sflags |= BIT(SFLAGS_PREFIX_ENTERED);
       tag->filename = file.filename;
       tag->line = file.line;
    }

@@ -1030,7 +1030,9 @@ es: 82 Par&aacute;metros `%s' tienen un valor incorrecto `%s' en el archivo de c
 it: 82 Parametro `%s' ha un valore `%s' non valido nel file di configurazione della stampante
 sk: 82 Parameter `%s' v konfigura&ccaron;nom s&uacute;bore tla&ccaron;iarne m&aacute; nespr&aacute;vnu hodnotu `%s'
 ro: 82 Parametrul `%s' are valoarea incorecta `%s' in fisierul de configurare a imprimantei
-# XXX 83
+# e.g. the user specify a passage cross-section at station "entrance.27", but
+# there is no station "entrance.27" in the centre-line.
+en: 83 Cross section specified at non-existent station `%s'
 # In data with backsights, the user has tried to give a plumb for the
 # foresight and a clino reading for the backsight, or something similar.
 en: 84 CLINO and BACKCLINO readings must be of the same type

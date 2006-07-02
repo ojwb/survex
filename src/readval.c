@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -139,7 +139,8 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 ptr->shape = 0;
 	 ptr->stn = NULL;
 	 ptr->up = back_ptr;
-	 ptr->filename = NULL;
+	 ptr->filename = file.filename;
+	 ptr->line = file.line;
 	 ptr->min_export = ptr->max_export = 0;
 	 ptr->sflags = BIT(SFLAGS_SURVEY);
 	 if (fSuspectTypo && !fImplicitPrefix)
@@ -177,7 +178,8 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	    newptr->shape = 0;
 	    newptr->stn = NULL;
 	    newptr->up = back_ptr;
-	    newptr->filename = NULL;
+	    newptr->filename = file.filename;
+	    newptr->line = file.line;
 	    newptr->min_export = newptr->max_export = 0;
 	    newptr->sflags = BIT(SFLAGS_SURVEY);
 	    if (fSuspectTypo && !fImplicitPrefix)

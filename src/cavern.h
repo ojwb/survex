@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifndef CAVERN_H
@@ -132,7 +132,7 @@ typedef enum {
    SFLAGS_SURFACE = 0, SFLAGS_UNDERGROUND, SFLAGS_ENTRANCE, SFLAGS_EXPORTED,
    SFLAGS_FIXED,
    /* These values don't need to match img.h, but mustn't clash. */
-   SFLAGS_SOLVED = 13, SFLAGS_SUSPECTTYPO = 14, SFLAGS_SURVEY = 15
+   SFLAGS_SOLVED = 12, SFLAGS_SUSPECTTYPO = 13, SFLAGS_SURVEY = 14, SFLAGS_PREFIX_ENTERED = 15
 } sflags;
 
 /* Mask to AND with to get bits to pass to img library. */
