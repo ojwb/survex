@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005 Olly Betts
+ * Copyright (C) 2005,2006 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,6 +102,7 @@ html_escape(const wxString &str)
 }
 
 CavernLogWindow::CavernLogWindow(wxWindow * parent) : wxHtmlWindow(parent) {
+    GetParser()->SetInputEncoding(wxFONTENCODING_UTF8);
     int fsize = parent->GetFont().GetPointSize();
     int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
     SetFonts("", "", sizes);
@@ -170,7 +171,7 @@ CavernLogWindow::process(const wxString &file)
 #ifdef __WXMSW__
     SetEnvironmentVariable("SURVEX_UTF8", "1");
 #else
-    setenv("SURVEX_CHARSET", "utf8", 1);
+    setenv("SURVEX_UTF8", "1", 1);
 #endif
 
     wxString escaped_file = escape_for_shell(file, true);
