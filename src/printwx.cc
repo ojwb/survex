@@ -212,9 +212,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
 
 	wxBoxSizer * planelevsizer = new wxBoxSizer(wxHORIZONTAL);
-	planelevsizer->Add(new wxButton(this, svx_PLAN, "Plan"),
+	planelevsizer->Add(new wxButton(this, svx_PLAN, msg(/*Plan*/117)),
 			   0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
-	planelevsizer->Add(new wxButton(this, svx_ELEV, "Elevation"),
+	planelevsizer->Add(new wxButton(this, svx_ELEV, msg(/*Elevation*/118)),
 			   0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
 
 	v2->Add(planelevsizer, 0, wxALIGN_LEFT|wxALL, 5);
