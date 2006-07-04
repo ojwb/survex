@@ -13,15 +13,18 @@ msg_files = ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg\
 hdr_files = ca.h de.h de_CH.h de_DE.h en.h en_US.h\
  es.h fr.h it.h pt.h pt_BR.h sk.h ro.h zh.h
 
-EXTRA_DIST = bcra3.svx bcra5.svx messages.txt print.ini\
+EXTRA_DIST = messages.txt\
  named-entities.txt makemsgs.pl checkshortcut.pl\
- $(msg_files) $(hdr_files) survex.mime survex.keys.in\
- aven.txf gentexfont.c TexFont.h\
+ $(hdr_files) survex.keys.in\
+ gentexfont.c TexFont.h\
  INSTALL.OSX
 
 MAINTAINERCLEANFILES = $(msg_files) $(hdr_files) *.todo aven.txf
 
-pkgdata_DATA = print.ini bcra3.svx bcra5.svx $(msg_files) aven.txf
+dist_pkgdata_DATA = print.ini bcra3.svx bcra5.svx $(msg_files) aven.txf
+
+appsdir = $(datadir)/applications
+dist_apps_DATA = survex-aven.desktop survex-svxedit.desktop
 
 BUILT_SOURCES = defaultlang.h
 
@@ -37,7 +40,8 @@ defaultlang.h:
 	ln -s $(srcdir)/$(DEFAULTLANG).h defaultlang.h
 
 mimedir = $(datadir)/mime-info
-mime_DATA = survex.mime survex.keys
+dist_mime_DATA = survex.mime
+mime_DATA = survex.keys
 
 aven.txf:
 	$(MAKE) gentexfont$(EXEEXT)
