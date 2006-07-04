@@ -29,7 +29,7 @@ survex (1.1.9-1) unstable; urgency=low
     (doesn't affect Survex itself, but other applications which use img.c should
     update their copy).
 
- -- Wookey <wookey@survex.com>  Tue, 04 Jul 2006 05:03:20 +0100
+ -- Wookey <wookey@survex.com>  Tue, 04 Jul 2006 05:18:20 +0100
 
 survex (1.1.8-1) unstable; urgency=low
 

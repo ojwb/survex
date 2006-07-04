@@ -19,3 +19,4 @@ debian/tmp/usr/share/man/man5/print.ini.5
 debian/tmp/usr/share/doc/survex
 debian/tmp/usr/share/applications/survex-aven.desktop
 debian/tmp/usr/share/pixmaps/aven.png
+debian/tmp/usr/share/vim
