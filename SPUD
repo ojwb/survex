@@ -1,10 +1,14 @@
-Before next release:
-====================
-
-Save cavern log from aven
-
 Definitely still to do before Survex 1.2:
 =========================================
+
+Sort out display of accents in OpenGL window (try "SURVEXLANG=fr aven" and
+look at the clino legend).
+
+Save cavern log from aven.
+
+img should return img_XSECT from Compass PLT files.
+
+Closing a running cavernlog window causes a crash.
 
 Consider using "legend" instead of "info box"...
 
@@ -21,8 +25,6 @@ currently turn off date colouring, which isn't ideal...
 Update translations.
 
 Lots of aven things need documenting.
-
-Update innosetup to newer version.
 
 Does anyone use Controls->"Reverse Sense"?  It made some sense with caverot
 but now seeing the mouse pointer makes people expect the default motions...
