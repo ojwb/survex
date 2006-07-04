@@ -11,18 +11,11 @@ URL: http://www.survex.com/
 Packager: Olly Betts <olly@survex.com>
 #Can't build with rpm on debian with this next line uncommented:
 #BuildRequires: wxGTK-devel >= 2.4.0
+Requires: wxGTK >= 2.4.0
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
 @DESC@
-
-%package aven
-Summary: Aven viewer for Survex
-Group: Applications/Misc
-Requires: survex = @VERSION@, wxGTK >= 2.4.0
-
-%description aven
-@AVENDESC@
 
 %package svxedit
 Summary: SvxEdit survey data editor for Survex
@@ -60,20 +53,17 @@ mv "%{buildroot}"/usr/doc/@PACKAGE@ ./built-docs
 %doc @EXTRA_TEXT@
 %doc built-docs/*
 %doc /usr/share/man/
-%exclude /usr/share/man/man1/aven*
 %exclude /usr/share/man/man1/svxedit*
 /usr/bin/*
-%exclude /usr/bin/aven
 %exclude /usr/bin/svxedit
 /usr/share/@PACKAGE@/
-%exclude /usr/share/@PACKAGE@/icons/????*.png
 /usr/share/mime-info/survex.*
-%files aven
-%defattr(-, root, root)
-%doc /usr/share/man/man1/aven*
-/usr/bin/aven
-/usr/share/@PACKAGE@/icons/????*.png
+/usr/share/applications/survex-aven.desktop
+/usr/share/pixmaps/aven.png
+
 %files svxedit
 %defattr(-, root, root)
 %doc /usr/share/man/man1/svxedit*
 /usr/bin/svxedit
+/usr/share/applications/survex-svxedit.desktop
+/usr/share/pixmaps/svxedit.png
