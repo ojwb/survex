@@ -45,13 +45,8 @@ if test -f Makefile ; then
    fi
 fi
 if test yes = "$rel" ; then
-   rm -f config.guess.new config.sub.new
-   # only check for new versions if the current ones are over a day old
-   perl -e '-M "config.guess" && -M "config.sub" && exit 1' ||\
-      wget ftp://ftp.gnu.org/gnu/config/config.guess -O config.guess.new &&\
-      wget ftp://ftp.gnu.org/gnu/config/config.sub -O config.sub.new &&\
-      chmod 755 config.guess.new config.sub.new &&\
-      mv config.guess.new config.guess && mv config.sub.new config.sub
+   cp -u /usr/share/misc/config.guess .
+   cp -u /usr/share/misc/config.sub .
 fi
 autoreconf --force -i
 export CC
