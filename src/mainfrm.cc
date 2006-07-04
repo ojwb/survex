@@ -667,7 +667,7 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 #endif
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
-    wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
+    wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE), // wxNO_FULL_REPAINT_ON_RESIZE is 0 in wx >= 2.6
     m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
     m_NumHighlighted(0), m_HasUndergroundLegs(false), m_HasSurfaceLegs(false),
     m_IsExtendedElevation(false)
@@ -1172,7 +1172,15 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		// FIXME: avoid linear search...
 		list<LabelInfo*>::const_iterator i = m_Labels.begin();
 		while (i != m_Labels.end() && (*i)->GetText() != survey->label) ++i;
-		assert(i != m_Labels.end()); // FIXME: shouldn't use assert for this...
+
+		if (i == m_Labels.end()) {
+		    // Unattached cross-section - ignore for now.
+		    printf("unattached cross-section\n");
+		    if (current_tube->size() == 1)
+			tubes.resize(tubes.size() - 1);
+		    current_tube = NULL;
+		    break;
+		}
 
 		time_t date;
 		date = survey->date1 + (survey->date2 - survey->date1) / 2;
@@ -1182,18 +1190,18 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		}
 
 		current_tube->push_back(XSect(**i, date, survey->l, survey->r, survey->u, survey->d));
-		if (survey->flags & img_XFLAG_END) {
-		    // Finish off current_tube.
-		    // If there's only one cross-section in the tube, just
-		    // discard it for now.  FIXME: we should handle this
-		    // when we come to skinnin the tubes.
-		    if (current_tube->size() == 1)
-			tubes.resize(tubes.size() - 1);
-		    current_tube = NULL;
-		}
-
 		break;
 	    }
+
+	    case img_XSECT_END:
+		// Finish off current_tube.
+		// If there's only one cross-section in the tube, just
+		// discard it for now.  FIXME: we should handle this
+		// when we come to skinning the tubes.
+		if (current_tube && current_tube->size() == 1)
+		    tubes.resize(tubes.size() - 1);
+		current_tube = NULL;
+		break;
 
 	    case img_BAD: {
 		m_Labels.clear();
@@ -1224,7 +1232,12 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 	//FixLRUD(*current_traverse);
     }
 
-    assert(!current_tube);
+    // Finish off current_tube.
+    // If there's only one cross-section in the tube, just
+    // discard it for now.  FIXME: we should handle this
+    // when we come to skinning the tubes.
+    if (current_tube && current_tube->size() == 1)
+	tubes.resize(tubes.size() - 1);
 
     separator = survey->separator;
     m_Title = survey->title;

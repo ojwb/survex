@@ -820,6 +820,7 @@ img_read_item(img *pimg, img_point *p)
    if (pimg->version >= 3) {
       int opt;
       pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
+      if (pimg->pending == 256) return img_XSECT_END;
       if (pimg->pending >= 0x80) {
 	 *p = pimg->mv;
 	 pimg->flags = (int)(pimg->pending) & 0x3f;
@@ -876,20 +877,36 @@ img_read_item(img *pimg, img_point *p)
 		     pimg->date2 = get32(pimg->fh);
 		     break;
 		 case 0x30: case 0x31: /* LRUD */
-		     if (read_v3label(pimg) == img_BAD) return img_BAD;
-		     pimg->flags = (int)opt & 0x01;
-		     pimg->l = get16(pimg->fh) / 100.0;
-		     pimg->r = get16(pimg->fh) / 100.0;
-		     pimg->u = get16(pimg->fh) / 100.0;
-		     pimg->d = get16(pimg->fh) / 100.0;
-		     return img_XSECT;
 		 case 0x32: case 0x33: /* Big LRUD! */
 		     if (read_v3label(pimg) == img_BAD) return img_BAD;
 		     pimg->flags = (int)opt & 0x01;
-		     pimg->l = get32(pimg->fh) / 100.0;
-		     pimg->r = get32(pimg->fh) / 100.0;
-		     pimg->u = get32(pimg->fh) / 100.0;
-		     pimg->d = get32(pimg->fh) / 100.0;
+		     if (opt < 0x32) {
+			 pimg->l = get16(pimg->fh) / 100.0;
+			 pimg->r = get16(pimg->fh) / 100.0;
+			 pimg->u = get16(pimg->fh) / 100.0;
+			 pimg->d = get16(pimg->fh) / 100.0;
+		     } else {
+			 pimg->l = get32(pimg->fh) / 100.0;
+			 pimg->r = get32(pimg->fh) / 100.0;
+			 pimg->u = get32(pimg->fh) / 100.0;
+			 pimg->d = get32(pimg->fh) / 100.0;
+		     }
+		     if (pimg->survey_len) {
+			 size_t l = pimg->survey_len;
+			 const char *s = pimg->label_buf;
+			 if (strncmp(pimg->survey, s, l + 1) != 0) {
+			     return img_XSECT_END;
+			 }
+			 pimg->label += l;
+			 /* skip the dot if there */
+			 if (*pimg->label) pimg->label++;
+		     }
+		     /* If this is the last cross-section in this passage, set
+		      * pending so we return img_XSECT_END next time. */
+		     if (pimg->flags & 0x01) {
+			 pimg->pending = 256;
+			 pimg->flags &= ~0x01;
+		     }
 		     return img_XSECT;
 		 default: /* 0x24 - 0x2f and 0x34 - 0x3f are currently unallocated. */
 		     img_errno = IMG_BADFORMAT;

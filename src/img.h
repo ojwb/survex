@@ -1,6 +1,6 @@
 /* img.h
  * Header file for routines to read and write Survex ".3d" image files
- * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005
+ * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifndef IMG_H
@@ -40,6 +40,7 @@ extern "C" {
 /* # define img_CROSS  2 */
 # define img_LABEL  3
 # define img_XSECT  4
+# define img_XSECT_END 5
 
 # define img_FLAG_SURFACE   0x01
 # define img_FLAG_DUPLICATE 0x02
@@ -51,6 +52,7 @@ extern "C" {
 # define img_SFLAG_EXPORTED    0x08
 # define img_SFLAG_FIXED       0x10
 
+/* No longer used: */
 # define img_XFLAG_END      0x01
 
 /* 3D coordinates (in metres) */
