@@ -38,6 +38,7 @@ make
 [ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
 mkdir -p "%{buildroot}"
 make install-strip DESTDIR="%{buildroot}"
+make -C vim vimdir=/usr/share/vim install DESTDIR="%{buildroot}"
 # Rearrange to conform to the FHS.
 mv "%{buildroot}"/usr/man "%{buildroot}"/usr/share/man
 # Move docs back into build tree to keep rpmbuild happy by letting

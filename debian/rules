@@ -59,10 +59,7 @@ install: build
 	dh_installdirs
 
 	$(MAKE) DESTDIR=`pwd`/debian/tmp install
-	install -d debian/survex/usr/share/vim/addons/ftdetect
-	install -d debian/survex/usr/share/vim/addons/syntax
-	install -m 0644 vim/ftdetect/survex.vim debian/survex/usr/share/vim/addons/ftdetect
-	install -m 0644 vim/syntax/survex.vim debian/survex/usr/share/vim/addons/syntax
+	$(MAKE) -C vim DESTDIR=`pwd`/debian/tmp vimdir=/usr/share/vim/addons install
 
 	dh_install --fail-missing
 
