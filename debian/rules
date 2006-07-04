@@ -71,6 +71,9 @@ install: build
 # affect _all_ packages. Anything you want to only affect one package
 # should be put in another target, such as the install target.
 binary-common:
+# Avoid warning:
+# dpkg-gencontrol: warning: unknown substitution variable ${misc:Depends}
+	echo 'misc:Depends=' > debian/survex.substvars
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs
