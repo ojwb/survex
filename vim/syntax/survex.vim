@@ -1,10 +1,27 @@
 " Vim syntax file
 " Language:     Survex
 " Maintainer:   David Loeffler <dave@cucc.survex.com>
-" Last Change:  $Date: 2006-07-04 01:21:11 $
+" Last Change:  $Date: 2006-07-04 03:18:25 $
 " Filenames:    *.svx
 " URL:          [NONE]
-" Note:         The definitions below are taken from the Survex user manual as of February 2005, for version 1.0.34; several inconsistencies discovered in the process were clarified by reference to source code
+" Note:         The definitions below are taken from the Survex user manual as of February 2005, for version 1.0.34; several inconsistencies discovered in the process were clarified by reference to source code.  Since updated for version 1.1.8.
+"
+" Copyright (C) 2005 David Loeffler
+" Copyright (C) 2006 Olly Betts
+"
+" This program is free software; you can redistribute it and/or modify
+" it under the terms of the GNU General Public License as published by
+" the Free Software Foundation; either version 2 of the License, or
+" (at your option) any later version.
+"
+" This program is distributed in the hope that it will be useful,
+" but WITHOUT ANY WARRANTY; without even the implied warranty of
+" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+" GNU General Public License for more details.
+"
+" You should have received a copy of the GNU General Public License
+" along with this program; if not, write to the Free Software
+" Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
@@ -25,14 +42,14 @@ syn match svxAnything ".*" contained
 
 " Command names: these first few take no interesting arguments
 syn keyword svxCmd contained    begin date
-syn keyword svxCmd contained    end entrance equate export fix
+syn keyword svxCmd contained    end entrance equate export
 syn keyword svxCmd contained    include require
 syn keyword svxCmd contained    solve title truncate
 
 syn keyword svxCmdDeprecated contained  default prefix
 
 " These commands accept the whole of the rest of the line as argument, irrespective of whitespace.
-syn keyword svxCmd      contained       copyright instrument team nextgroup=svxAnything
+syn keyword svxCmd contained	copyright instrument team nextgroup=svxAnything
 
 syn keyword svxCmd      calibrate sd units      contained nextgroup=svxQty skipwhite
 syn keyword svxQty contained    altitude backbearing backclino nextgroup=svxQty,svxUnit skipwhite
@@ -76,8 +93,11 @@ syn keyword svxUnit contained           yards feet metric metres meters
 syn keyword svxUnit contained           deg degrees grads mils percent percentage
 syn keyword svxUnit contained           deg degrees grads mils minutes
 
+syn keyword svxCmd contained nextgroup=svxRef skipwhite fix
+syn keyword svxRef contained		reference
+
 " Miscellaneous things that are spotted everywhere
-syn keyword svxMisc             reference - down up
+syn keyword svxMisc             - down up
 
 " Comments
 syn match svxComment ";.*"
