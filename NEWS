@@ -1,5 +1,52 @@
-* (Unix version): Fix "Can't open message file `en_US' using path
+Changes in 1.1.9:
+
+* (Unix version): Install desktop files for aven and svxedit contributed to the
+  Ubuntu package by Phil Bull, and corresponding pixmaps.
+
+* Fix img to filter out cross-sections which don't match the subsurvey (if
+  specified).  The API now returns img_XSECT_END to mark the end of a
+  passage rather than setting a flag on the last img_XSECT of the passage.
+
+* Enhance integration with the vim editor - this can now colour .err files, run
+  cavern from vim and parse error output, and run aven from vim.  Tweak the
+  existing vim mode for .svx files to fix a few minor bugs and add support for
+  the new "*data passage" style.
+
+* aven: fix drawing of the "blob" end of the measuring line on graphics cards
+  which can't draw large enough blobs for us.
+
+* aven: sort out confusion about what encoding everything is in which means
+  that the distance measured by the measuring line actually gets displayed
+  and also fixes problems with empty menu items in non-English locales in
+  some cases.
+
+* aven: redraw grey background after a menu is closed over the aven window
+  with no survey loaded.
+
+* aven: fix bug which caused printing to crash (introduced in 1.1.8).
+
+* aven: avoid crash on some machines when opening "About" dialog before having
+  loaded a survey.
+
+* aven: Translate "Plan" and "Elevation" buttons in print view dialog.
+
+* (Unix version): aven: Fix character set handling of cavern output.
+
+* cavern: Report an error if a cross-section is specified for a station which
+  doesn't exist.
+
+* Updated French and Italian translations.
+
+* (Unix version): aven: Fix "Can't open message file `en_US' using path
   `${prefix}/share/survex'" error.
+
+* Fix bug in 3d file reading on 64 bit platforms when used in STANDALONE mode
+  (doesn't affect Survex itself, but other applications which use img.c should
+  update their copy).
+
+* (Unix version): Add checks that wxWidgets is a non-unicode version (wx 2.6
+  and later are caught by configure, whereas older wx versions are caught when
+  trying to compile).
 
 Changes in 1.1.8:
 
