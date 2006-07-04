@@ -639,6 +639,15 @@ void GfxCore::Draw2dIndicators()
 	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(comp_centre_x + width / 2 - w, height, str);
 	str = wxString(msg(/*Facing*/203));
+	for (size_t i = 0; i < str.size(); ++i) {
+	    unsigned char ch = str[i];
+	    if (i + 1 < str.size() && ch >= 0xc0 && ch < 0xe0) {
+		char buf[2];
+		buf[0] = ((ch & 0x1f) << 6) | (str[i + 1] & 0x3f);
+		buf[1] = '\0';
+		str.replace(i, 2, buf);
+	    }
+	}
 	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(comp_centre_x - w / 2, height + h, str);
     }
@@ -654,6 +663,15 @@ void GfxCore::Draw2dIndicators()
 	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(elev_centre_x + width / 2 - w, height, str);
 	str = wxString(msg(/*Elevation*/118));
+	for (size_t i = 0; i < str.size(); ++i) {
+	    unsigned char ch = str[i];
+	    if (i + 1 < str.size() && ch >= 0xc0 && ch < 0xe0) {
+		char buf[2];
+		buf[0] = ((ch & 0x1f) << 6) | (str[i + 1] & 0x3f);
+		buf[1] = '\0';
+		str.replace(i, 2, buf);
+	    }
+	}
 	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(elev_centre_x - w / 2, height + h, str);
     }
