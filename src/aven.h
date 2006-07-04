@@ -43,6 +43,12 @@ void aven_v_report(int severity, const char *fnm, int line, int en,
 
 #include "wx.h"
 
+// wxWidgets 2.6 and later are checked by configure, but 2.4 has to be
+// checked here.
+#ifdef wxUSE_UNICODE
+# error Survex requires a non-unicode build of wxWidgets
+#endif
+
 class MainFrm;
 
 class Aven : public wxGLApp {
