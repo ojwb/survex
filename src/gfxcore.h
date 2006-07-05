@@ -421,7 +421,7 @@ public:
     void SetView(const PresentationMark & p);
     void PlayPres(double speed, bool change_speed = true);
     int GetPresentationMode() const { return presentation_mode; }
-    double GetPresentationSpeed() const { return pres_speed; }
+    double GetPresentationSpeed() const { return presentation_mode ? pres_speed : 0; }
 
     void SetColourBy(int colour_by);
     bool ExportMovie(const wxString & fnm);
