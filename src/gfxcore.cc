@@ -1041,6 +1041,7 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	if (centre) {
 	    // FIXME: allow Ctrl-Click to not set there or something?
 	    CentreOn(*best);
+	    WarpPointer(m_XSize / 2, m_YSize / 2);
 	    SetThere(*best);
 	    m_Parent->SelectTreeItem(best);
 	}
