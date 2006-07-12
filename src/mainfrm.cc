@@ -1747,7 +1747,7 @@ void MainFrm::UpdateStatusBar()
 	GetStatusBar()->SetStatusText(dist_text, 1);
     } else if (!coords_text.empty()) {
 	GetStatusBar()->SetStatusText(coords_text);
-	GetStatusBar()->SetStatusText("", 1);
+	GetStatusBar()->SetStatusText(distfree_text, 1);
     } else {
 	GetStatusBar()->SetStatusText("");
 	GetStatusBar()->SetStatusText("", 1);
@@ -1786,37 +1786,97 @@ void MainFrm::SetCoords(const Vector3 &v)
 	s += wxString::Format(", %s %.2fft", msg(/*Altitude*/335),
 			      double(v.GetZ() / METRES_PER_FOOT));
     }
+    distfree_text = "";
     UpdateStatusBar();
+}
+
+const LabelInfo * MainFrm::GetTreeSelection() const {
+    wxTreeItemData* sel_wx;
+    if (!m_Tree->GetSelectionData(&sel_wx)) return NULL;
+
+    TreeData *data = (TreeData*) sel_wx;
+    if (!data->IsStation()) return NULL;
+
+    return data->GetLabel();
 }
 
 void MainFrm::SetCoords(Double x, Double y)
 {
     wxString & s = coords_text;
+    wxString & t = distfree_text;
     if (m_Gfx->GetMetric()) {
 	s.Printf(msg(/*%d E, %d N*/338), int(x), int(y));
     } else {
 	s.Printf(msg(/*%d E, %d N*/338),
 		 int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
     }
+
+    const LabelInfo* label = GetTreeSelection();
+    if (label) {
+	Vector3 delta(x - m_Offsets.GetX() - label->GetX(),
+		      y - m_Offsets.GetY() - label->GetY(), 0);
+	Double dh = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
+	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
+	if (brg < 0) brg += 360;
+
+	wxString from_str;
+	from_str.Printf(msg(/*From %s*/339), label->text.c_str());
+
+	wxString brg_unit;
+	if (m_Gfx->GetDegrees()) {
+	    brg_unit = msg(/*&deg;*/344);
+	} else {
+	    brg *= 400.0 / 360.0;
+	    brg_unit = msg(/*grad*/345);
+	}
+
+	if (m_Gfx->GetMetric()) {
+	    t.Printf(msg(/*%s: H %d%s, Brg %03d%s*/374),
+		     from_str.c_str(), int(dh), "m", int(brg), brg_unit.c_str());
+	} else {
+	    t.Printf(msg(/*%s: H %d%s, Brg %03d%s*/374),
+		     from_str.c_str(), int(dh / METRES_PER_FOOT), "ft", int(brg),
+		     brg_unit.c_str());
+	}
+    }
+
     UpdateStatusBar();
 }
 
 void MainFrm::SetAltitude(Double z)
 {
     wxString & s = coords_text;
+    wxString & t = distfree_text;
     if (m_Gfx->GetMetric()) {
 	s.Printf("%s %.2fm", msg(/*Altitude*/335), double(z));
     } else {
 	s.Printf("%s %.2fft", msg(/*Altitude*/335), double(z / METRES_PER_FOOT));
     }
+
+    const LabelInfo* label = GetTreeSelection();
+    if (label) {
+	Double dz = z - m_Offsets.GetZ() - label->GetZ();
+
+	wxString from_str;
+	from_str.Printf(msg(/*From %s*/339), label->text.c_str());
+
+	if (m_Gfx->GetMetric()) {
+	    t.Printf(msg(/*%s: V %d%s*/375),
+		     from_str.c_str(), int(dz), "m");
+	} else {
+	    t.Printf(msg(/*%s: V %d%s*/375),
+		     from_str.c_str(), int(dz / METRES_PER_FOOT), "ft");
+	}
+    }
+
     UpdateStatusBar();
 }
 
-void MainFrm::ShowInfo(const LabelInfo *label)
+void MainFrm::ShowInfo(const LabelInfo *here)
 {
     assert(m_Gfx);
 
-    if (!label) {
+    if (!here) {
 	m_Gfx->SetHere();
 	// Don't clear "There" mark here.
 	if (here_text.empty() && dist_text.empty()) return;
@@ -1826,7 +1886,7 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 	return;
     }
 
-    Vector3 v = *label + m_Offsets;
+    Vector3 v = *here + m_Offsets;
     wxString & s = here_text;
     if (m_Gfx->GetMetric()) {
 	s.Printf(msg(/*%d E, %d N*/338), int(v.GetX()), int(v.GetY()));
@@ -1839,66 +1899,54 @@ void MainFrm::ShowInfo(const LabelInfo *label)
 			      double(v.GetZ() / METRES_PER_FOOT));
     }
     s += ": ";
-    s += label->text.GetData();
-    m_Gfx->SetHere(*label);
+    s += here->text.GetData();
+    m_Gfx->SetHere(*here);
 
-    wxTreeItemData* sel_wx;
-    bool sel = m_Tree->GetSelectionData(&sel_wx);
-    if (sel) {
-	TreeData *data = (TreeData*) sel_wx;
-	const LabelInfo* label2 = NULL;
+    const LabelInfo* label = GetTreeSelection();
+    if (label) {
+	Vector3 delta = *here - *label;
 
-	if (data->IsStation()) {
-	    label2 = data->GetLabel();
-	    assert(label2);
-	    if (label2 == label) label2 = NULL;
-	}
+	Double d_horiz = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
+	Double dr = delta.magnitude();
 
-	if (label2) {
-	    Vector3 delta = *label - *label2;
+	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
+	if (brg < 0) brg += 360;
 
-	    Double d_horiz = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
-	    Double dr = delta.magnitude();
+	wxString from_str;
+	from_str.Printf(msg(/*From %s*/339), label->text.c_str());
 
-	    Double brg = deg(atan2(delta.GetX(), delta.GetY()));
-	    if (brg < 0) brg += 360;
-
-	    wxString from_str;
-	    from_str.Printf(msg(/*From %s*/339), label2->text.c_str());
-
-	    wxString hv_str;
-	    if (m_Gfx->GetMetric()) {
-		hv_str.Printf(msg(/*H %delta%s, V %delta%s*/340),
-			      int(d_horiz), "m",
-			      int(delta.GetZ()), "m");
-	    } else {
-		hv_str.Printf(msg(/*H %delta%s, V %delta%s*/340),
-			      int(d_horiz / METRES_PER_FOOT), "ft",
-			      int(delta.GetZ() / METRES_PER_FOOT), "ft");
-	    }
-	    wxString brg_unit;
-	    if (m_Gfx->GetDegrees()) {
-		brg_unit = msg(/*&deg;*/344);
-	    } else {
-		brg *= 400.0 / 360.0;
-		brg_unit = msg(/*grad*/345);
-	    }
-	    wxString & d = dist_text;
-	    if (m_Gfx->GetMetric()) {
-		d.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
-			 from_str.c_str(), hv_str.c_str(),
-			 int(dr), "m", int(brg), brg_unit.c_str());
-	    } else {
-		d.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
-			 from_str.c_str(), hv_str.c_str(),
-			 int(dr / METRES_PER_FOOT), "ft", int(brg),
-			 brg_unit.c_str());
-	    }
-	    m_Gfx->SetThere(*label2);
+	wxString hv_str;
+	if (m_Gfx->GetMetric()) {
+	    hv_str.Printf(msg(/*H %d%s, V %d%s*/340),
+			  int(d_horiz), "m",
+			  int(delta.GetZ()), "m");
 	} else {
-	    dist_text = "";
-	    m_Gfx->SetThere();
+	    hv_str.Printf(msg(/*H %d%s, V %d%s*/340),
+			  int(d_horiz / METRES_PER_FOOT), "ft",
+			  int(delta.GetZ() / METRES_PER_FOOT), "ft");
 	}
+	wxString brg_unit;
+	if (m_Gfx->GetDegrees()) {
+	    brg_unit = msg(/*&deg;*/344);
+	} else {
+	    brg *= 400.0 / 360.0;
+	    brg_unit = msg(/*grad*/345);
+	}
+	wxString & d = dist_text;
+	if (m_Gfx->GetMetric()) {
+	    d.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
+		     from_str.c_str(), hv_str.c_str(),
+		     int(dr), "m", int(brg), brg_unit.c_str());
+	} else {
+	    d.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
+		     from_str.c_str(), hv_str.c_str(),
+		     int(dr / METRES_PER_FOOT), "ft", int(brg),
+		     brg_unit.c_str());
+	}
+	m_Gfx->SetThere(*label);
+    } else {
+	dist_text = "";
+	m_Gfx->SetThere();
     }
     UpdateStatusBar();
 }

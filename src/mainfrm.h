@@ -225,7 +225,7 @@ class MainFrm : public wxFrame {
     wxString icon_path;
 
     // Strings for status bar reporting of distances.
-    wxString here_text, coords_text, dist_text;
+    wxString here_text, coords_text, dist_text, distfree_text;
 
     bool m_IsExtendedElevation;
 
@@ -448,6 +448,7 @@ public:
 
     void ClearCoords();
     void SetCoords(const Vector3 &v);
+    const LabelInfo * GetTreeSelection() const;
     void SetCoords(Double x, Double y);
     void SetAltitude(Double z);
 

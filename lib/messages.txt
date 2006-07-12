@@ -3847,8 +3847,29 @@ fr:373 Afficher le panneau lat&eacute;ral
 de:373 Seitliches Kontrollfeld anzeigen
 it:373 Mostra pannello laterale
 ro:373 Afiseaza casuta laterala
+# cf 340, 341
+# TRANSLATE fr de pt ca es it sk ro Check translation adapted from 340,341
+en:374 "%s: H %d%s, Brg %03d%s"
+fr:374 "%s: H %d%s, Azim %03d%s"
+de:374 "%s: H %d%s, Richt. %03d%s"
+pt:374 "%s: H %d%s, Azim %03d%s"
+ca:374 "%s: H %d%s, Azim %03d%s"
+es:374 "%s: H %d%s, Azim %03d%s"
+it:374 "%s: O %d%s, Azm. %03d%s"
+sk:374 "%s: V %d%s, Azim %03d%s"
+ro:374 "%s: H %d%s, Azim %03d%s"
 #
-# XXX 374, 375
+# cf 340
+# TRANSLATE fr de pt ca es it sk ro Check translation adapted from 340
+en:375 "%s: V %d%s"
+fr:375 "%s: V %d%s"
+de:375 "%s: V %d%s"
+pt:375 "%s: V %d%s"
+ca:375 "%s: V %d%s"
+es:375 "%s: V %d%s"
+it:375 "%s: V %d%s"
+sk:375 "%s: &Scaron; %d%s"
+ro:375 "%s: V %d%s"
 #
 # labels for tabbed side panel
 #

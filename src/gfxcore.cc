@@ -1047,7 +1047,13 @@ bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	}
     } else {
 	// Left-clicking not on a survey cancels the measuring line.
-	if (centre) ClearTreeSelection();
+	if (centre) {
+	    ClearTreeSelection();
+	} else {
+	    Double x, y, z;
+	    ReverseTransform(point.x, m_YSize - point.y, &x, &y, &z);
+	    SetHere(Point(Vector3(x, y, z)));
+	}
     }
 
     return best;
@@ -1497,10 +1503,10 @@ void GfxCore::SetCoords(wxPoint point)
     SetDataTransform();
     ReverseTransform(point.x, m_YSize - 1 - point.y, &cx, &cy, &cz);
 
-    if (m_TiltAngle == 90.0) {
+    if (ShowingPlan()) {
 	m_Parent->SetCoords(cx + m_Parent->GetOffset().GetX(),
 			    cy + m_Parent->GetOffset().GetY());
-    } else if (m_TiltAngle == 0.0) {
+    } else if (ShowingElevation()) {
 	m_Parent->SetAltitude(cz + m_Parent->GetOffset().GetZ());
     } else {
 	m_Parent->ClearCoords();
