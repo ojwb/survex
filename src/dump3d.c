@@ -121,6 +121,13 @@ main(int argc, char **argv)
 	    if (pimg->flags & img_SFLAG_FIXED) printf(" FIXED");
 	    printf("\n");
 	    break;
+	  case img_XSECT:
+	    printf("XSECT %f %f %f %f [%s]\n",
+		   pimg->l, pimg->r, pimg->u, pimg->d, pimg->label);
+	    break;
+	  case img_XSECT_END:
+	    printf("XSECT_END\n");
+	    break;
 	  case img_BAD:
 	    img_close(pimg);
 	    fatalerror(img_error(), fnm);
