@@ -504,7 +504,7 @@ public:
 
     void ShowInfo(const LabelInfo *label);
     void DisplayTreeInfo(const wxTreeItemData* data);
-    void TreeItemSelected(wxTreeItemData* data);
+    void TreeItemSelected(const wxTreeItemData* data, bool zoom);
     PresentationMark GetPresMark(int which);
 
 private:

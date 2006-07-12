@@ -1396,15 +1396,14 @@ void MainFrm::FillTree()
 	    // We have, so start as many new branches as required.
 	    int current_prefix_length = current_prefix.length();
 	    current_prefix = prefix;
-	    if (current_prefix_length != 0) {
-		prefix.erase(0, current_prefix_length + 1);
-	    }
-	    int next_dot;
+	    size_t next_dot = current_prefix_length - 1;
 	    do {
-		// Extract the next bit of prefix.
-		next_dot = prefix.Find(separator);
+		size_t prev_dot = next_dot + 1;
 
-		wxString bit = next_dot == -1 ? prefix : prefix.Left(next_dot);
+		// Extract the next bit of prefix.
+		next_dot = prefix.find(separator, prev_dot + 1);
+
+		wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
 		assert(bit != "");
 
 		// Add the current tree ID to the stack.
@@ -1412,9 +1411,8 @@ void MainFrm::FillTree()
 
 		// Append the new item to the tree and set this as the current branch.
 		current_id = m_Tree->AppendItem(current_id, bit);
-		m_Tree->SetItemData(current_id, new TreeData(NULL));
-		prefix.erase(0, next_dot + 1);
-	    } while (next_dot != -1);
+		m_Tree->SetItemData(current_id, new TreeData(prefix.substr(0, next_dot)));
+	    } while (next_dot != wxString::npos);
 	}
 	// Otherwise, we must have moved up, and possibly then down again.
 	else {
@@ -1451,33 +1449,24 @@ void MainFrm::FillTree()
 	    previous_ids.pop();
 
 	    if (!ascent_only) {
-		// Now extract the bit of new prefix.
-		wxString new_prefix = prefix.substr(count);
-
 		// Add branches for this new part.
-		while (true) {
-		    // Extract the next bit of prefix.
-		    int next_dot = new_prefix.Find(separator);
+		size_t next_dot = count - 1;
+		do {
+		    size_t prev_dot = next_dot + 1;
 
-		    wxString bit;
-		    if (next_dot == -1) {
-			bit = new_prefix;
-		    } else {
-			bit = new_prefix.Left(next_dot);
-		    }
+		    // Extract the next bit of prefix.
+		    next_dot = prefix.find(separator, prev_dot + 1);
+
+		    wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
+		    assert(bit != "");
 
 		    // Add the current tree ID to the stack.
 		    previous_ids.push(current_id);
 
-		    // Append the new item to the tree and set this as the
-		    // current branch.
+		    // Append the new item to the tree and set this as the current branch.
 		    current_id = m_Tree->AppendItem(current_id, bit);
-		    m_Tree->SetItemData(current_id, new TreeData(NULL));
-
-		    if (next_dot == -1) break;
-
-		    new_prefix.erase(0, next_dot + 1);
-		}
+		    m_Tree->SetItemData(current_id, new TreeData(prefix.substr(0, next_dot)));
+		} while (next_dot != wxString::npos);
 	    }
 
 	    current_prefix = prefix;
@@ -1794,7 +1783,7 @@ const LabelInfo * MainFrm::GetTreeSelection() const {
     wxTreeItemData* sel_wx;
     if (!m_Tree->GetSelectionData(&sel_wx)) return NULL;
 
-    TreeData *data = (TreeData*) sel_wx;
+    const TreeData* data = static_cast<const TreeData*>(sel_wx);
     if (!data->IsStation()) return NULL;
 
     return data->GetLabel();
@@ -1963,13 +1952,12 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
     }
 }
 
-void MainFrm::TreeItemSelected(wxTreeItemData* item)
+void MainFrm::TreeItemSelected(const wxTreeItemData* item, bool zoom)
 {
-    TreeData* data = (TreeData*) item;
-
+    const TreeData* data = static_cast<const TreeData*>(item);
     if (data && data->IsStation()) {
 	const LabelInfo* label = data->GetLabel();
-	m_Gfx->CentreOn(*label);
+	if (zoom) m_Gfx->CentreOn(*label);
 	m_Gfx->SetThere(*label);
 	dist_text = "";
 	// FIXME: Need to update dist_text (From ... etc)
@@ -1978,6 +1966,20 @@ void MainFrm::TreeItemSelected(wxTreeItemData* item)
     } else {
 	dist_text = "";
 	m_Gfx->SetThere();
+    }
+    if (!data) {
+	// Must be the root.
+	m_FindBox->SetValue("");
+	if (zoom) {
+	    wxCommandEvent dummy;
+	    OnDefaults(dummy);
+	}
+    } else if (data && !data->IsStation()) {
+	m_FindBox->SetValue(data->GetSurvey() + ".*");
+	if (zoom) {
+	    wxCommandEvent dummy;
+	    OnGotoFound(dummy);
+	}
     }
     UpdateStatusBar();
 }
@@ -2195,7 +2197,7 @@ void MainFrm::OnPresExportMovieUpdate(wxUpdateUIEvent& event)
 void MainFrm::OnFind(wxCommandEvent&)
 {
     wxBusyCursor hourglass;
-    // Find stations specified by a string or regular expression.
+    // Find stations specified by a string or regular expression pattern.
 
     wxString pattern = m_FindBox->GetValue();
     if (pattern.empty()) {

@@ -4,7 +4,7 @@
 //  Tree control used for the survey tree.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2002, Olly Betts
+//  Copyright (C) 2002,2006 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -32,10 +32,13 @@ class LabelInfo;
 
 class TreeData : public wxTreeItemData {
     const LabelInfo* m_Label;
+    wxString survey;
 
 public:
     TreeData(const LabelInfo* label) : m_Label(label) {}
+    TreeData(const wxString & survey_) : m_Label(NULL), survey(survey_) {}
     const LabelInfo* GetLabel() const { return m_Label; }
+    const wxString & GetSurvey() const { return survey; }
     bool IsStation() const { return m_Label != NULL; }
 };
 
@@ -56,6 +59,7 @@ public:
     void OnLeaveWindow(wxMouseEvent& event);
     void OnSelChanged(wxTreeEvent& event);
     void OnKeyPress(wxKeyEvent &e);
+    void OnItemActivated(wxTreeEvent& e);
 
     bool GetSelectionData(wxTreeItemData**);
 

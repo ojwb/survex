@@ -33,6 +33,7 @@ BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
     EVT_MOTION(AvenTreeCtrl::OnMouseMove)
     EVT_LEAVE_WINDOW(AvenTreeCtrl::OnLeaveWindow)
     EVT_TREE_SEL_CHANGED(-1, AvenTreeCtrl::OnSelChanged)
+    EVT_TREE_ITEM_ACTIVATED(-1, AvenTreeCtrl::OnItemActivated)
     EVT_CHAR(AvenTreeCtrl::OnKeyPress)
 END_EVENT_TABLE()
 
@@ -86,13 +87,20 @@ void AvenTreeCtrl::SetEnabled(bool enabled)
     m_Enabled = enabled;
 }
 
-void AvenTreeCtrl::OnSelChanged(wxTreeEvent&)
+void AvenTreeCtrl::OnSelChanged(wxTreeEvent& e)
 {
     if (m_Enabled) {
-	m_Parent->TreeItemSelected(GetItemData(GetSelection()));
+	m_Parent->TreeItemSelected(GetItemData(e.GetItem()), false);
     }
 
     m_SelValid = true;
+}
+
+void AvenTreeCtrl::OnItemActivated(wxTreeEvent& e)
+{
+    if (m_Enabled) {
+	m_Parent->TreeItemSelected(GetItemData(e.GetItem()), true);
+    }
 }
 
 bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data)
