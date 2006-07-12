@@ -820,7 +820,10 @@ img_read_item(img *pimg, img_point *p)
    if (pimg->version >= 3) {
       int opt;
       pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
-      if (pimg->pending == 256) return img_XSECT_END;
+      if (pimg->pending == 256) {
+	 pimg->pending = 0;
+	 return img_XSECT_END;
+      }
       if (pimg->pending >= 0x80) {
 	 *p = pimg->mv;
 	 pimg->flags = (int)(pimg->pending) & 0x3f;
