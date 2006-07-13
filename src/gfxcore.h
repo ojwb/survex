@@ -384,7 +384,7 @@ public:
     bool GetDegrees() const { return m_Degrees; }
     bool GetTubes() const { return m_Tubes; }
 
-    bool CheckHitTestGrid(wxPoint& point, bool centre);
+    bool CheckHitTestGrid(const wxPoint& point, bool centre);
 
     void ClearTreeSelection();
 

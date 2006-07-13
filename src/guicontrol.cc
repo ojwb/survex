@@ -227,6 +227,20 @@ void GUIControl::RestoreCursor()
     }
 }
 
+void GUIControl::HandleNonDrag(const wxPoint & point) {
+    if (m_View->CheckHitTestGrid(point, false)) {
+	m_View->SetCursor(GfxCore::CURSOR_POINTING_HAND);
+    } else if (m_View->PointWithinScaleBar(point)) {
+	m_View->SetCursor(GfxCore::CURSOR_HORIZONTAL_RESIZE);
+    } else if (m_View->PointWithinCompass(point)) {
+	m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
+    } else if (m_View->PointWithinClino(point)) {
+	m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
+    } else {
+	RestoreCursor();
+    }
+}
+
 //
 //  Mouse event handling methods
 //
@@ -237,7 +251,7 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     if (!m_View->HasData()) return;
 
     // Ignore moves which don't change the position.
-    if (event.GetX() == m_DragStart.x && event.GetY() == m_DragStart.y) {
+    if (event.GetPosition() == m_DragStart) {
 	return;
     }
 
@@ -252,21 +266,11 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     }
     timestamp = event.GetTimestamp();
 
-    wxPoint point(event.GetX(), event.GetY());
+    wxPoint point(event.GetPosition());
 
     // Check hit-test grid (only if no buttons are pressed).
     if (!event.LeftIsDown() && !event.MiddleIsDown() && !event.RightIsDown()) {
-	if (m_View->CheckHitTestGrid(point, false)) {
-	    m_View->SetCursor(GfxCore::CURSOR_POINTING_HAND);
-        } else if (m_View->PointWithinScaleBar(point)) {
-	    m_View->SetCursor(GfxCore::CURSOR_HORIZONTAL_RESIZE);
-        } else if (m_View->PointWithinCompass(point)) {
-	    m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
-        } else if (m_View->PointWithinClino(point)) {
-	    m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
-	} else {
-	    RestoreCursor();
-	}
+	HandleNonDrag(point);
     }
 
     // Update coordinate display if in plan view,
@@ -317,7 +321,7 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
     if (m_View->HasData()) {
 	dragging = LEFT_DRAG;
 
-	m_DragStart = m_DragRealStart = wxPoint(event.GetX(), event.GetY());
+	m_DragStart = m_DragRealStart = event.GetPosition();
 
 	if (m_View->PointWithinCompass(m_DragStart)) {
 	    m_LastDrag = drag_COMPASS;
@@ -362,7 +366,11 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 
         m_View->DragFinished();
 
-        RestoreCursor();
+	if (event.GetPosition() == m_DragRealStart) {
+	    RestoreCursor();
+	} else {
+	    HandleNonDrag(event.GetPosition());
+	}
     }
 }
 
@@ -370,7 +378,7 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
 {
     if (m_View->HasData() && !m_View->IsExtendedElevation()) {
 	dragging = MIDDLE_DRAG;
-	m_DragStart = wxPoint(event.GetX(), event.GetY());
+	m_DragStart = event.GetPosition();
 
 	m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
 
@@ -392,7 +400,7 @@ void GUIControl::OnMButtonUp(wxMouseEvent&)
 void GUIControl::OnRButtonDown(wxMouseEvent& event)
 {
     if (m_View->HasData()) {
-	m_DragStart = wxPoint(event.GetX(), event.GetY());
+	m_DragStart = event.GetPosition();
 
 	dragging = RIGHT_DRAG;
 

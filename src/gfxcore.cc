@@ -992,7 +992,7 @@ void GfxCore::DrawScalebar()
     DrawIndicatorText(SCALE_BAR_OFFSET_X + size - text_width, text_y, str);
 }
 
-bool GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
+bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 {
     if (Animating()) return false;
 

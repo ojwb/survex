@@ -52,6 +52,8 @@ class GUIControl {
     void HandCursor();
     void RestoreCursor();
 
+    void HandleNonDrag(const wxPoint & point);
+
 public:
     GUIControl();
     ~GUIControl();
