@@ -222,7 +222,7 @@ void GfxCore::FirstShow()
 	// none-overlapping labels.
 	int ext_x;
 	GLACanvas::GetTextExtent(label->GetText(), &ext_x, NULL);
-	label->width = unsigned(ext_x) / quantise + 1;
+	label->set_width(unsigned(ext_x) / quantise + 1);
     }
 
     SetBackgroundColour(0.0, 0.0, 0.0);
@@ -722,7 +722,7 @@ void GfxCore::NattyDrawNames()
 
 	unsigned int iy = unsigned(ty) / quantise;
 	if (iy >= quantised_y) continue;
-	unsigned int width = (*label)->width;
+	unsigned int width = (*label)->get_width();
 	unsigned int ix = unsigned(tx) / quantise;
 	if (ix + width >= quantised_x) continue;
 

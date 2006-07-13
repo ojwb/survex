@@ -170,16 +170,21 @@ class LabelPlotCmp;
 class AvenPresList;
 
 class LabelInfo : public Point {
-    friend class MainFrm;
-    friend class GfxCore;
-    friend class LabelPlotCmp;
     wxString text;
     unsigned width;
     int flags;
-    wxTreeItemId tree_id;
 
 public:
+    wxTreeItemId tree_id;
+
+    LabelInfo(const img_point &pt, const wxString &text_, int flags_)
+	: Point(pt), text(text_), flags(flags_) { }
     const wxString & GetText() const { return text; }
+    int get_flags() const { return flags; }
+    void set_flags(int mask) { flags |= mask; }
+    void clear_flags(int mask) { flags &= ~mask; }
+    unsigned get_width() const { return width; }
+    void set_width(unsigned width_) { width = width_; }
 
     bool IsEntrance() const { return (flags & LFLAG_ENTRANCE) != 0; }
     bool IsFixedPt() const { return (flags & LFLAG_FIXED) != 0; }

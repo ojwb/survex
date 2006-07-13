@@ -622,20 +622,20 @@ class LabelPlotCmp : public greater<const LabelInfo*> {
 public:
     LabelPlotCmp(int separator_) : separator(separator_) {}
     bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
-	int n = pt1->flags - pt2->flags;
+	int n = pt1->get_flags() - pt2->get_flags();
 	if (n) return n > 0;
-	wxString l1 = pt1->text.AfterLast(separator);
-	wxString l2 = pt2->text.AfterLast(separator);
+	wxString l1 = pt1->GetText().AfterLast(separator);
+	wxString l2 = pt2->GetText().AfterLast(separator);
 	n = name_cmp(l1, l2, separator);
 	if (n) return n < 0;
 	// Prefer non-2-nodes...
 	// FIXME; implement
 	// if leaf names are the same, prefer shorter labels as we can
 	// display more of them
-	n = pt1->text.length() - pt2->text.length();
+	n = pt1->GetText().length() - pt2->GetText().length();
 	if (n) return n < 0;
 	// make sure that we don't ever compare different labels as equal
-	return name_cmp(pt1->text, pt2->text, separator) < 0;
+	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
     }
 };
 
@@ -1140,15 +1140,11 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 	    }
 
 	    case img_LABEL: {
-		LabelInfo* label = new LabelInfo;
-		label->text = survey->label;
-		label->x = pt.x;
-		label->y = pt.y;
-		label->z = pt.z;
-		if (survey->flags & img_SFLAG_ENTRANCE) {
-		    survey->flags ^= (img_SFLAG_ENTRANCE | LFLAG_ENTRANCE);
+		int flags = survey->flags;
+		if (flags & img_SFLAG_ENTRANCE) {
+		    flags ^= (img_SFLAG_ENTRANCE | LFLAG_ENTRANCE);
 		}
-		label->flags = survey->flags;
+		LabelInfo* label = new LabelInfo(pt, survey->label, flags);
 		if (label->IsEntrance()) {
 		    m_NumEntrances++;
 		}
@@ -1255,12 +1251,12 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 	// No legs, so get survey extents from stations
 	list<LabelInfo*>::const_iterator i;
 	for (i = m_Labels.begin(); i != m_Labels.end(); ++i) {
-	    if ((*i)->x < xmin) xmin = (*i)->x;
-	    if ((*i)->x > xmax) xmax = (*i)->x;
-	    if ((*i)->y < ymin) ymin = (*i)->y;
-	    if ((*i)->y > ymax) ymax = (*i)->y;
-	    if ((*i)->z < m_ZMin) m_ZMin = (*i)->z;
-	    if ((*i)->z > zmax) zmax = (*i)->z;
+	    if ((*i)->GetX() < xmin) xmin = (*i)->GetX();
+	    if ((*i)->GetX() > xmax) xmax = (*i)->GetX();
+	    if ((*i)->GetY() < ymin) ymin = (*i)->GetY();
+	    if ((*i)->GetY() > ymax) ymax = (*i)->GetY();
+	    if ((*i)->GetZ() < m_ZMin) m_ZMin = (*i)->GetZ();
+	    if ((*i)->GetZ() > zmax) zmax = (*i)->GetZ();
 	}
     }
 
@@ -1809,7 +1805,7 @@ void MainFrm::SetCoords(Double x, Double y)
 	if (brg < 0) brg += 360;
 
 	wxString from_str;
-	from_str.Printf(msg(/*From %s*/339), label->text.c_str());
+	from_str.Printf(msg(/*From %s*/339), label->GetText().c_str());
 
 	wxString brg_unit;
 	if (m_Gfx->GetDegrees()) {
@@ -1847,7 +1843,7 @@ void MainFrm::SetAltitude(Double z)
 	Double dz = z - m_Offsets.GetZ() - label->GetZ();
 
 	wxString from_str;
-	from_str.Printf(msg(/*From %s*/339), label->text.c_str());
+	from_str.Printf(msg(/*From %s*/339), label->GetText().c_str());
 
 	if (m_Gfx->GetMetric()) {
 	    t.Printf(msg(/*%s: V %d%s*/375),
@@ -1888,7 +1884,7 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 			      double(v.GetZ() / METRES_PER_FOOT));
     }
     s += ": ";
-    s += here->text.GetData();
+    s += here->GetText();
     m_Gfx->SetHere(*here);
 
     const LabelInfo* label = GetTreeSelection();
@@ -1902,7 +1898,7 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	if (brg < 0) brg += 360;
 
 	wxString from_str;
-	from_str.Printf(msg(/*From %s*/339), label->text.c_str());
+	from_str.Printf(msg(/*From %s*/339), label->GetText().c_str());
 
 	wxString hv_str;
 	if (m_Gfx->GetMetric()) {
@@ -2205,7 +2201,7 @@ void MainFrm::OnFind(wxCommandEvent&)
 	list<LabelInfo*>::iterator pos = m_Labels.begin();
 	while (pos != m_Labels.end()) {
 	    LabelInfo* label = *pos++;
-	    label->flags &= ~LFLAG_HIGHLIGHTED;
+	    label->clear_flags(LFLAG_HIGHLIGHTED);
 	}
 	m_NumHighlighted = 0;
     } else {
@@ -2276,11 +2272,11 @@ void MainFrm::OnFind(wxCommandEvent&)
 	while (pos != m_Labels.end()) {
 	    LabelInfo* label = *pos++;
 
-	    if (regex.Matches(label->text)) {
-		label->flags |= LFLAG_HIGHLIGHTED;
+	    if (regex.Matches(label->GetText())) {
+		label->set_flags(LFLAG_HIGHLIGHTED);
 		++found;
 	    } else {
-		label->flags &= ~LFLAG_HIGHLIGHTED;
+		label->clear_flags(LFLAG_HIGHLIGHTED);
 	    }
 	}
 
@@ -2318,13 +2314,13 @@ void MainFrm::OnGotoFound(wxCommandEvent&)
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;
 
-	if (label->flags & LFLAG_HIGHLIGHTED) {
-	    if (label->x < xmin) xmin = label->x;
-	    if (label->x > xmax) xmax = label->x;
-	    if (label->y < ymin) ymin = label->y;
-	    if (label->y > ymax) ymax = label->y;
-	    if (label->z < zmin) zmin = label->z;
-	    if (label->z > zmax) zmax = label->z;
+	if (label->get_flags() & LFLAG_HIGHLIGHTED) {
+	    if (label->GetX() < xmin) xmin = label->GetX();
+	    if (label->GetX() > xmax) xmax = label->GetX();
+	    if (label->GetY() < ymin) ymin = label->GetY();
+	    if (label->GetY() > ymax) ymax = label->GetY();
+	    if (label->GetZ() < zmin) zmin = label->GetZ();
+	    if (label->GetZ() > zmax) zmax = label->GetZ();
 	}
     }
 
