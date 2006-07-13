@@ -319,6 +319,7 @@ public:
     bool ShowingPlan() const;
     bool ShowingElevation() const;
     bool ShowingMeasuringLine() const;
+    bool HereIsReal() const { return m_here.IsValid() && !m_here_is_temporary; }
 
     bool CanRaiseViewpoint() const;
     bool CanLowerViewpoint() const;

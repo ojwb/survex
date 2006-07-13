@@ -1865,6 +1865,7 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 
     if (!here) {
 	m_Gfx->SetHere();
+	m_Tree->SetHere(wxTreeItemId());
 	// Don't clear "There" mark here.
 	if (here_text.empty() && dist_text.empty()) return;
 	here_text = "";
@@ -1888,6 +1889,7 @@ void MainFrm::ShowInfo(const LabelInfo *here)
     s += ": ";
     s += here->GetText();
     m_Gfx->SetHere(*here);
+    m_Tree->SetHere(here->tree_id);
 
     const LabelInfo* label;
     if (m_Gfx->ShowingMeasuringLine() && (label = GetTreeSelection())) {

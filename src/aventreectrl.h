@@ -61,7 +61,9 @@ public:
     void OnKeyPress(wxKeyEvent &e);
     void OnItemActivated(wxTreeEvent& e);
 
-    bool GetSelectionData(wxTreeItemData**);
+    bool GetSelectionData(wxTreeItemData**) const;
+
+    void SetHere(wxTreeItemId pos);
 
     void DeleteAllItems();
 

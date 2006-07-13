@@ -220,7 +220,7 @@ void GUIControl::HandleRotate(wxPoint point)
 
 void GUIControl::RestoreCursor()
 {
-    if (m_View->ShowingMeasuringLine()) {
+    if (m_View->HereIsReal()) {
         m_View->SetCursor(GfxCore::CURSOR_POINTING_HAND);
     } else {
         m_View->SetCursor(GfxCore::CURSOR_DEFAULT);

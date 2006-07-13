@@ -57,20 +57,27 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 	if (!(flags & TREE_MASK)) {
 	    pos = wxTreeItemId();
 	}
-	if (pos != m_LastItem) {
-	    if (m_LastItem.IsOk()) {
-		SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
-	    }
-	    if (pos.IsOk()) {
-		m_BackgroundColour = GetItemBackgroundColour(pos);
-		SetItemBackgroundColour(pos, wxColour(180, 180, 180));
-		m_Parent->DisplayTreeInfo(GetItemData(pos));
-	    } else {
-		m_Parent->DisplayTreeInfo(NULL);
-	    }
-	    m_LastItem = pos;
+	if (pos == m_LastItem) return;
+	if (pos.IsOk()) {
+	    m_Parent->DisplayTreeInfo(GetItemData(pos));
+	} else {
+	    m_Parent->DisplayTreeInfo(NULL);
 	}
     }
+}
+
+void AvenTreeCtrl::SetHere(wxTreeItemId pos)
+{
+    if (pos == m_LastItem) return;
+
+    if (m_LastItem.IsOk()) {
+	SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
+    }
+    if (pos.IsOk()) {
+	m_BackgroundColour = GetItemBackgroundColour(pos);
+	SetItemBackgroundColour(pos, wxColour(180, 180, 180));
+    }
+    m_LastItem = pos;
 }
 
 void AvenTreeCtrl::OnLeaveWindow(wxMouseEvent&)
@@ -103,7 +110,7 @@ void AvenTreeCtrl::OnItemActivated(wxTreeEvent& e)
     }
 }
 
-bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data)
+bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data) const
 {
     assert(m_Enabled);
     assert(data);

@@ -376,7 +376,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    if (m_here.IsValid()) {
 		Double dummy;
 		Transform(m_here, &hx, &hy, &dummy);
-		DrawRing(hx, hy);
+		if (!m_here_is_temporary) DrawRing(hx, hy);
 	    }
 	    if (m_there.IsValid()) {
 		Double tx, ty;
