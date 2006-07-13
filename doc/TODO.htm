@@ -15,12 +15,17 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 
 <li>Update translations.
 
-<li>Sort out display of full unicode in OpenGL window (currently we only
-handle latin1 there, which is sufficient for all the current i18ns).
+<li>After keyboard controlled movement, the measuring line/circle doesn't
+reappear until the mouse is moved (e.g. plan/elevation transition with P/L).
 
 <li>Save cavern log from aven.
 
+<li>Sort out display of full unicode in OpenGL window (currently we only
+handle latin1 there, which is sufficient for all the current i18ns).
+
 <li>img should return img_XSECT from Compass PLT files.
+
+<li>Fix depth clipping on grid
 
 <li>Consider using "legend" instead of "info box"...
 
@@ -39,20 +44,9 @@ currently turn off date colouring, which isn't ideal...
 
 <li>Lots of aven things need documenting.
 
-<li>Does anyone use Controls-&gt;"Reverse Sense"?  It made some sense with caverot
-but now seeing the mouse pointer makes people expect the default motions...
-
-<li>Sort out remaining few issues after merging Martin's improved here/there update
-changes:
-<ul>
-<li>transition plan/elev doesn't highlight station if we end up on one (ditto
-  any other movement)
-<li>setting here with mouseover in GfxCore should probably highlight in tree
-  view (but not expand to do so)
-<li>when measuring line isn't on a station, tilting or rotating currently
-  reveals the arbitrary in/out screen positioning on the end of the line
-  we should cancel the line or hide it or something in this situation.
-</ul>
+<li>Does anyone use Controls-&gt;"Reverse Sense"?  It made some sense with
+caverot but now seeing the mouse pointer makes people expect the default
+motions (for right button drag particularly).
 
 <li>Clean up export.cc and allow scale, line width, etc to be specified
 
@@ -75,14 +69,12 @@ separate window?
 New, changing focus on listctrl as presentation plays doesn't really work
 properly)
 
-<li>Fix depth clipping on grid
-
 <li>Draw the measuring line directly onto the front buffer, so we can remove it
 with a copy from the back buffer and redraw it in the new position without a
 re-render.
 
-<li>Round the measuring line coords so the ring is a nice shape?  Or just antialias
-the ring, "there" blob and line?
+<li>Round the measuring line coords so the ring is a nice shape?  Or just
+antialias the ring, "there" blob and line?
 
 <li>Process all pending input before rerendering to improve responsiveness.
 
@@ -91,21 +83,22 @@ may be needed to get meaningful timing info.
 
 <li>3d format:
 <ul>
-<li>sort out XSECT - I'm sure I meant there to be 1 and 2 byte forms, not 2 and 4
-- 4 byte is only useful if a passage dimension is &gt; 327.67m!
+  <li>sort out XSECT - I'm sure I meant there to be 1 and 2 byte forms, not 2
+  and 4 - 4 byte is only useful if a passage dimension is &gt; 327.67m!
 
-<li>add "this is an extended elevation" flag
+  <li>add "this is an extended elevation" flag
 
-<li>store "file processed on" date as a time_t rather than a string?
+  <li>store "file processed on" date as a time_t rather than a string?
 
-<li>store survey error values for each leg
+  <li>store survey error values for each leg
 
-<li>store equated stations in some way
+  <li>store equated stations in some way
 
-<li>store legs by end stations rather than repeating coordinates over and over?
+  <li>store legs by end stations rather than repeating coordinates over and
+  over?
 </ul>
 
-<li>Add "colour by error" and maybe "colour by survey".
+<li>Add "colour by error" and "colour by survey".
 
 <li>Implement "Skip blank pages" in aven printing
 </ul>
@@ -128,9 +121,6 @@ may be needed to get meaningful timing info.
 of it before showing dialog and return after, but this isn't ideal.
 It would be best of all if wx got this right...
 
-<li>Measuring line turning itself on can be annoying - rethink how this works a
-bit perhaps?
-
 <li>Right-click menus for indicators?
 
 <li>Optional lazy label redraw during drags?  Or turn on at some redraw time
@@ -139,8 +129,8 @@ threshold...
 <li>
 Warn bearings not 3 digits, gradient not &lt;sign&gt;&lt;digit&gt;&lt;digit&gt;
 
-<li>Allow angles as deg/min/sec (for theodolite data) (060&deg;10'15" as 060 10 15,
-or 060.1005 (crap notation))
+<li>Allow angles as deg/min/sec (for theodolite data) (060&deg;10'15" as 060 10
+15, or 060.1005 (crap notation))
 
 <li>Add support for bearings of form N20E (ie [NS][0-9]+[EW])?
 
@@ -399,7 +389,7 @@ selectable
 
 <ul>
 
-<li>resolve entries in TODO; resolve FIXMEs in code
+<li>resolve FIXMEs in code
 
 <li>Default variance for topofil counter? (currently same as that of tape)
 

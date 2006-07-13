@@ -1,3 +1,29 @@
+Changes in 1.1.10:
+
+* aven: Clicking on a survey name in the survey tree now highlights it in
+  the map view.  Double-clicking zooms the view to show the clicked survey
+  highlighted.  Clicking the root clears the highlighting and double-clicking
+  the root restores the default view.  To expand/collapse a branch, click
+  on the "[+]" or "[-]" icon to the left of the survey name.
+
+* aven: The measuring line can now measure to anywhere in plan or elevation
+  view (not just to a station!)  In plan view the horizontal distance and
+  bearing are shown, while in elevation view the vertical distance is shown.
+    
+* aven: Moving the mouse over a station in the survey view now highlights
+  that station in the survey tree (though it may not be visible if the
+  survey(s) it is in aren't expanded).
+
+* aven: Clicking on a station to centre the view now moves the mouse pointer
+  to the new location of the station (except on Mac OS X where this isn't
+  allowed).
+
+* aven: Fix which presentation toolbar buttons are shown as depressed.
+
+* Fix infinite loop reading 3d files with LRUD data (bug introduced in 1.1.9).
+
+* vim files are now installed with the correct paths (bug introduced in 1.1.9).
+
 Changes in 1.1.9:
 
 * (Unix version): Install desktop files for aven and svxedit contributed to the

@@ -8,8 +8,8 @@ AC_PREREQ(2.59)
 AC_INIT(src/aven.cc)
 
 dnl next line is for make_release
-CHANGELOG_FROM_TAG=v1_1_8
-AM_INIT_AUTOMAKE(survex, 1.1.9)
+CHANGELOG_FROM_TAG=v1_1_9
+AM_INIT_AUTOMAKE(survex, 1.1.10)
 RELEASE=1
 
 AC_SUBST(RELEASE)
