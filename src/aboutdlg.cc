@@ -33,6 +33,7 @@
 #include <stdio.h> // for popen
 
 #include <wx/confbase.h>
+#include <wx/image.h>
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
     EVT_IDLE(AboutDlg::OnIdle)
