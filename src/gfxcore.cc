@@ -453,11 +453,11 @@ void GfxCore::DrawShadowedBoundingBox()
 {
     const Vector3 v = 0.5 * m_Parent->GetExtent();
 
+    DrawBoundingBox();
+
     // FIXME: these gl* calls should be in gla-gl.cc
     glPolygonOffset(1.0, 1.0);
     glEnable(GL_POLYGON_OFFSET_FILL);
-
-    DrawBoundingBox();
 
     SetColour(col_DARK_GREY);
     BeginQuadrilaterals();
