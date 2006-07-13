@@ -1788,7 +1788,6 @@ const LabelInfo * MainFrm::GetTreeSelection() const {
 void MainFrm::SetCoords(Double x, Double y)
 {
     wxString & s = coords_text;
-    wxString & t = distfree_text;
     if (m_Gfx->GetMetric()) {
 	s.Printf(msg(/*%d E, %d N*/338), int(x), int(y));
     } else {
@@ -1796,8 +1795,10 @@ void MainFrm::SetCoords(Double x, Double y)
 		 int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
     }
 
-    const LabelInfo* label = GetTreeSelection();
-    if (label) {
+    wxString & t = distfree_text;
+    t = "";
+    const LabelInfo* label;
+    if (m_Gfx->ShowingMeasuringLine() && (label = GetTreeSelection())) {
 	Vector3 delta(x - m_Offsets.GetX() - label->GetX(),
 		      y - m_Offsets.GetY() - label->GetY(), 0);
 	Double dh = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
@@ -1831,15 +1832,16 @@ void MainFrm::SetCoords(Double x, Double y)
 void MainFrm::SetAltitude(Double z)
 {
     wxString & s = coords_text;
-    wxString & t = distfree_text;
     if (m_Gfx->GetMetric()) {
 	s.Printf("%s %.2fm", msg(/*Altitude*/335), double(z));
     } else {
 	s.Printf("%s %.2fft", msg(/*Altitude*/335), double(z / METRES_PER_FOOT));
     }
 
-    const LabelInfo* label = GetTreeSelection();
-    if (label) {
+    wxString & t = distfree_text;
+    t = "";
+    const LabelInfo* label;
+    if (m_Gfx->ShowingMeasuringLine() && (label = GetTreeSelection())) {
 	Double dz = z - m_Offsets.GetZ() - label->GetZ();
 
 	wxString from_str;
@@ -1887,8 +1889,8 @@ void MainFrm::ShowInfo(const LabelInfo *here)
     s += here->GetText();
     m_Gfx->SetHere(*here);
 
-    const LabelInfo* label = GetTreeSelection();
-    if (label) {
+    const LabelInfo* label;
+    if (m_Gfx->ShowingMeasuringLine() && (label = GetTreeSelection())) {
 	Vector3 delta = *here - *label;
 
 	Double d_horiz = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());

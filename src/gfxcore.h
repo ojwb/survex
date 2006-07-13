@@ -157,6 +157,7 @@ private:
     list<LabelInfo*> *m_PointGrid;
     bool m_HitTestGridValid;
 
+    bool m_here_is_temporary;
     Point m_here, m_there;
 
     wxStopWatch timer;

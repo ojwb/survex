@@ -258,6 +258,7 @@ void GfxCore::SetScale(Double scale)
 
     m_Scale = scale;
     m_HitTestGridValid = false;
+    if (m_here_is_temporary) SetHere();
 
     GLACanvas::SetScale(scale);
 }
@@ -1053,6 +1054,7 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 	    Double x, y, z;
 	    ReverseTransform(point.x, m_YSize - point.y, &x, &y, &z);
 	    SetHere(Point(Vector3(x, y, z)));
+	    m_here_is_temporary = true;
 	}
     }
 
@@ -1350,6 +1352,7 @@ void GfxCore::SetHere(const Point &p)
     Point old = m_here;
     m_here = p;
     RefreshLine(old, m_there, m_here);
+    m_here_is_temporary = false;
 }
 
 void GfxCore::SetThere()
@@ -1435,6 +1438,7 @@ void GfxCore::TurnCave(Double angle)
     }
 
     m_HitTestGridValid = false;
+    if (m_here_is_temporary) SetHere();
 
     UpdateQuaternion();
 }
@@ -1465,6 +1469,7 @@ void GfxCore::TiltCave(Double tilt_angle)
     m_TiltAngle += tilt_angle;
 
     m_HitTestGridValid = false;
+    if (m_here_is_temporary) SetHere();
 
     UpdateQuaternion();
 }
@@ -1473,6 +1478,8 @@ void GfxCore::TranslateCave(int dx, int dy)
 {
     AddTranslationScreenCoordinates(dx, dy);
     m_HitTestGridValid = false;
+
+    if (m_here_is_temporary) SetHere();
 
     ForceRefresh();
 }
@@ -1815,7 +1822,7 @@ bool GfxCore::ShowingMeasuringLine() const
 {
     // Determine if the measuring line is being shown.
 
-    return (m_there.IsValid());
+    return (m_there.IsValid() && m_here.IsValid());
 }
 
 void GfxCore::ToggleFlag(bool* flag, int update)
