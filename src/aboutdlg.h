@@ -29,9 +29,13 @@
 class AboutDlg : public wxDialog {
 public:
     AboutDlg(wxWindow* parent, const wxString & icon_path);
+    void OnIdle(wxIdleEvent &e);
 
 private:
     wxBitmap bitmap, bitmap_icon;
+    wxString icon_path;
+    unsigned long then;
+
     DECLARE_EVENT_TABLE()
 };
 

@@ -35,10 +35,27 @@
 #include <wx/confbase.h>
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
+    EVT_IDLE(AboutDlg::OnIdle)
 END_EVENT_TABLE()
 
-AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
-    wxDialog(parent, 500, wxString::Format(msg(/*About %s*/205), APP_NAME))
+void
+AboutDlg::OnIdle(wxIdleEvent &e)
+{
+    if (!then) return;
+    if (time(NULL) - then > 42) {
+	then = 0;
+	wxImage::AddHandler(new wxJPEGHandler);
+	wxBitmap bmp;
+	bitmap.LoadFile(icon_path + "osterei.jpg", wxBITMAP_TYPE_JPEG);
+	((wxStaticBitmap*)FindWindowById(501, this))->SetBitmap(bitmap);
+	return;
+    }
+    e.RequestMore();
+}
+
+AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
+    wxDialog(parent, 500, wxString::Format(msg(/*About %s*/205), APP_NAME)),
+    icon_path(icon_path_)
 {
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
@@ -183,4 +200,6 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
 
     horiz->Fit(this);
     horiz->SetSizeHints(this);
+
+    then = time(NULL);
 }
