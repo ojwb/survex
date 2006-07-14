@@ -177,7 +177,7 @@ Changes in 1.1.7:
   several surveys in the same directory).
 
 * aven: OpenGL 2.0 always includes support for point sprites so rework
-  our for them to include that knowledge.
+  our check for them to include that knowledge.
 
 * aven: Regenerate depth bar if user switches to/from metric units.
 
