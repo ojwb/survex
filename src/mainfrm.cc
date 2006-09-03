@@ -91,13 +91,7 @@ class AvenSplitterWindow : public wxSplitterWindow {
 };
 
 BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
-    // The wx docs say "EVT_SPLITTER_DOUBLECLICKED" but the wx headers say
-    // "EVT_SPLITTER_DCLICK" (wx docs corrected to agree with headers in 2.3)
-#ifdef EVT_SPLITTER_DOUBLECLICKED
-    EVT_SPLITTER_DOUBLECLICKED(-1, AvenSplitterWindow::OnSplitterDClick)
-#else
     EVT_SPLITTER_DCLICK(-1, AvenSplitterWindow::OnSplitterDClick)
-#endif
 END_EVENT_TABLE()
 
 class EditMarkDlg : public wxDialog {
