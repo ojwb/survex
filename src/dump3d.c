@@ -131,6 +131,8 @@ main(int argc, char **argv)
 	  case img_BAD:
 	    img_close(pimg);
 	    fatalerror(img_error(), fnm);
+	  default:
+	    printf("CODE_0x%02x\n", code);
 	 }
       } while (code != img_STOP);
    } while (fRewind);
