@@ -66,7 +66,7 @@ bool fPercent = fFalse;
 #endif
 bool fQuiet = fFalse; /* just show brief summary + errors */
 bool fMute = fFalse; /* just show errors */
-bool fSuppress = fFalse; /* only output 3d(3dx) file */
+bool fSuppress = fFalse; /* only output 3d file */
 static bool fLog = fFalse; /* stdout to .log file */
 static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */
 

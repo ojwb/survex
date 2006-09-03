@@ -19,7 +19,6 @@
 
 #define EXT_SVX_DATA "svx"
 #define EXT_SVX_3D   "3d"
-#define EXT_SVX_3DX  "3dx"
 #define EXT_SVX_ERRS "err"
 #define EXT_SVX_POS  "pos"
 #define EXT_SVX_MSG  "msg"
