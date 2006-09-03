@@ -3592,20 +3592,20 @@ sk:337 @Postrann&yacute; panel
 ro:337 @Cadran lateral
 #ro: still to check
 # show coordinates (N = North or Northing, E = East or Easting)
-en:338 "%d E, %d N"
-fr:338 "%d E, %d N"
-#alternatively de:338 "%d O, %d N", but H/R is consistent with headings in pos files
-de:338 "%d H, %d R"
-pt:338 "%d L, %d N"
-ca:338 "%d E, %d N"
-es:338 "%d E, %d N"
-it:338 "%d E, %d N"
-sk:338 "%d V, %d S"
-ro:338 "%d E, %d N"
+en:338 "%.2f E, %.2f N"
+fr:338 "%.2f E, %.2f N"
+#alternatively de:338 "%.2f O, %.2f N", but H/R is consistent with headings in pos files
+de:338 "%.2f H, %.2f R"
+pt:338 "%.2f L, %.2f N"
+ca:338 "%.2f E, %.2f N"
+es:338 "%.2f E, %.2f N"
+it:338 "%.2f E, %.2f N"
+sk:338 "%.2f V, %.2f S"
+ro:338 "%.2f E, %.2f N"
 # Used in Aven:
 #  From <stationname>
-#  H: 123m V: 234m
-#  Dist: 456m  Brg: 200
+#  H: 123.45m V: 234.56m
+#  Dist: 456.78m  Brg: 200
 en:339 From %s
 fr:339 Depuis %s
 de:339 Von %s aus
@@ -3616,25 +3616,25 @@ it:339 Da %s
 sk:339 Od %s
 ro:339 De la %s
 #
-en:340 "H %d%s, V %d%s"
-fr:340 "H %d%s, V %d%s"
-de:340 "H %d%s, V %d%s"
-pt:340 "H %d%s, V %d%s"
-ca:340 "H %d%s, V %d%s"
-es:340 "H %d%s, V %d%s"
-it:340 "O %d%s, V %d%s"
-sk:340 "V %d%s, &Scaron; %d%s"
-ro:340 "H %d%s, V %d%s"
+en:340 "H %.2f%s, V %.2f%s"
+fr:340 "H %.2f%s, V %.2f%s"
+de:340 "H %.2f%s, V %.2f%s"
+pt:340 "H %.2f%s, V %.2f%s"
+ca:340 "H %.2f%s, V %.2f%s"
+es:340 "H %.2f%s, V %.2f%s"
+it:340 "O %.2f%s, V %.2f%s"
+sk:340 "V %.2f%s, &Scaron; %.2f%s"
+ro:340 "H %.2f%s, V %.2f%s"
 #
-en:341 "%s: %s, Dist %d%s, Brg %03d%s"
-fr:341 "%s: %s, Dist %d%s, Azim %03d%s"
-de:341 "%s: %s, Dist %d%s, Richt. %03d%s"
-pt:341 "%s: %s, Dist %d%s, Azim %03d%s"
-ca:341 "%s: %s, Dist %d%s, Azim %03d%s"
-es:341 "%s: %s, Dist %d%s, Azim %03d%s"
-it:341 "%s: %s, Dist %d%s, Azm. %03d%s"
-sk:341 "%s: %s, Vzd %d%s, Azim %03d%s"
-ro:341 "%s: %s, Dist %d%s, Azim %03d%s"
+en:341 "%s: %s, Dist %.2f%s, Brg %03d%s"
+fr:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
+de:341 "%s: %s, Dist %.2f%s, Richt. %03d%s"
+pt:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
+ca:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
+es:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
+it:341 "%s: %s, Dist %.2f%s, Azm. %03d%s"
+sk:341 "%s: %s, Vzd %.2f%s, Azim %03d%s"
+ro:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
 # tickable menu item in View menu
 en:342 @Metric
 fr:342 @M&eacute;trique
@@ -3942,27 +3942,27 @@ sk:373 Zobrazi&tcaron; bo&ccaron;n&yacute; panel
 ro:373 Afiseaza casuta laterala
 # cf 340, 341
 # TRANSLATE fr de pt it sk ro Check translation adapted from 340,341
-en:374 "%s: H %d%s, Brg %03d%s"
-fr:374 "%s: H %d%s, Azim %03d%s"
-de:374 "%s: H %d%s, Richt. %03d%s"
-pt:374 "%s: H %d%s, Azim %03d%s"
-ca:374 "%s: H %d%s, Azim %03d%s"
-es:374 "%s: H %d%s, Azim %03d%s"
-it:374 "%s: O %d%s, Azm. %03d%s"
-sk:374 "%s: V %d%s, Azim %03d%s"
-ro:374 "%s: H %d%s, Azim %03d%s"
+en:374 "%s: H %.2f%s, Brg %03d%s"
+fr:374 "%s: H %.2f%s, Azim %03d%s"
+de:374 "%s: H %.2f%s, Richt. %03d%s"
+pt:374 "%s: H %.2f%s, Azim %03d%s"
+ca:374 "%s: H %.2f%s, Azim %03d%s"
+es:374 "%s: H %.2f%s, Azim %03d%s"
+it:374 "%s: O %.2f%s, Azm. %03d%s"
+sk:374 "%s: V %.2f%s, Azim %03d%s"
+ro:374 "%s: H %.2f%s, Azim %03d%s"
 #
 # cf 340
 # TRANSLATE fr de pt it sk ro Check translation adapted from 340
-en:375 "%s: V %d%s"
-fr:375 "%s: V %d%s"
-de:375 "%s: V %d%s"
-pt:375 "%s: V %d%s"
-ca:375 "%s: V %d%s"
-es:375 "%s: V %d%s"
-it:375 "%s: V %d%s"
-sk:375 "%s: &Scaron; %d%s"
-ro:375 "%s: V %d%s"
+en:375 "%s: V %.2f%s"
+fr:375 "%s: V %.2f%s"
+de:375 "%s: V %.2f%s"
+pt:375 "%s: V %.2f%s"
+ca:375 "%s: V %.2f%s"
+es:375 "%s: V %.2f%s"
+it:375 "%s: V %.2f%s"
+sk:375 "%s: &Scaron; %.2f%s"
+ro:375 "%s: V %.2f%s"
 #
 # labels for tabbed side panel
 #

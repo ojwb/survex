@@ -1755,15 +1755,13 @@ void MainFrm::SetCoords(const Vector3 &v)
 {
     wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
-	s.Printf(msg(/*%d E, %d N*/338), int(v.GetX()), int(v.GetY()));
-	s += wxString::Format(", %s %.2fm", msg(/*Altitude*/335),
-			      double(v.GetZ()));
+	s.Printf(msg(/*%.2f E, %.2f N*/338), v.GetX(), v.GetY());
+	s += wxString::Format(", %s %.2fm", msg(/*Altitude*/335), v.GetZ());
     } else {
-	s.Printf(msg(/*%d E, %d N*/338),
-		 int(v.GetX() / METRES_PER_FOOT),
-		 int(v.GetY() / METRES_PER_FOOT));
+	s.Printf(msg(/*%.2f E, %.2f N*/338),
+		 v.GetX() / METRES_PER_FOOT, v.GetY() / METRES_PER_FOOT);
 	s += wxString::Format(", %s %.2fft", msg(/*Altitude*/335),
-			      double(v.GetZ() / METRES_PER_FOOT));
+			      v.GetZ() / METRES_PER_FOOT);
     }
     distfree_text = "";
     UpdateStatusBar();
@@ -1783,10 +1781,10 @@ void MainFrm::SetCoords(Double x, Double y)
 {
     wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
-	s.Printf(msg(/*%d E, %d N*/338), int(x), int(y));
+	s.Printf(msg(/*%.2f E, %.2f N*/338), x, y);
     } else {
-	s.Printf(msg(/*%d E, %d N*/338),
-		 int(x / METRES_PER_FOOT), int(y / METRES_PER_FOOT));
+	s.Printf(msg(/*%.2f E, %.2f N*/338),
+		 x / METRES_PER_FOOT, y / METRES_PER_FOOT);
     }
 
     wxString & t = distfree_text;
@@ -1811,11 +1809,11 @@ void MainFrm::SetCoords(Double x, Double y)
 	}
 
 	if (m_Gfx->GetMetric()) {
-	    t.Printf(msg(/*%s: H %d%s, Brg %03d%s*/374),
-		     from_str.c_str(), int(dh), "m", int(brg), brg_unit.c_str());
+	    t.Printf(msg(/*%s: H %.2f%s, Brg %03d%s*/374),
+		     from_str.c_str(), dh, "m", int(brg), brg_unit.c_str());
 	} else {
-	    t.Printf(msg(/*%s: H %d%s, Brg %03d%s*/374),
-		     from_str.c_str(), int(dh / METRES_PER_FOOT), "ft", int(brg),
+	    t.Printf(msg(/*%s: H %.2f%s, Brg %03d%s*/374),
+		     from_str.c_str(), dh / METRES_PER_FOOT, "ft", int(brg),
 		     brg_unit.c_str());
 	}
     }
@@ -1842,11 +1840,11 @@ void MainFrm::SetAltitude(Double z)
 	from_str.Printf(msg(/*From %s*/339), label->GetText().c_str());
 
 	if (m_Gfx->GetMetric()) {
-	    t.Printf(msg(/*%s: V %d%s*/375),
-		     from_str.c_str(), int(dz), "m");
+	    t.Printf(msg(/*%s: V %.2f%s*/375),
+		     from_str.c_str(), dz, "m");
 	} else {
-	    t.Printf(msg(/*%s: V %d%s*/375),
-		     from_str.c_str(), int(dz / METRES_PER_FOOT), "ft");
+	    t.Printf(msg(/*%s: V %.2f%s*/375),
+		     from_str.c_str(), dz / METRES_PER_FOOT, "ft");
 	}
     }
 
@@ -1871,14 +1869,13 @@ void MainFrm::ShowInfo(const LabelInfo *here)
     Vector3 v = *here + m_Offsets;
     wxString & s = here_text;
     if (m_Gfx->GetMetric()) {
-	s.Printf(msg(/*%d E, %d N*/338), int(v.GetX()), int(v.GetY()));
-	s += wxString::Format(", %s %.2fm", msg(/*Altitude*/335),
-			      double(v.GetZ()));
+	s.Printf(msg(/*%.2f E, %.2f N*/338), v.GetX(), v.GetY());
+	s += wxString::Format(", %s %.2fm", msg(/*Altitude*/335), v.GetZ());
     } else {
-	s.Printf(msg(/*%d E, %d N*/338),
-		 int(v.GetX() / METRES_PER_FOOT), int(v.GetY() / METRES_PER_FOOT));
+	s.Printf(msg(/*%.2f E, %.2f N*/338),
+		 v.GetX() / METRES_PER_FOOT, v.GetY() / METRES_PER_FOOT);
 	s += wxString::Format(", %s %.2fft", msg(/*Altitude*/335),
-			      double(v.GetZ() / METRES_PER_FOOT));
+			      v.GetZ() / METRES_PER_FOOT);
     }
     s += ": ";
     s += here->GetText();
@@ -1900,13 +1897,12 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 
 	wxString hv_str;
 	if (m_Gfx->GetMetric()) {
-	    hv_str.Printf(msg(/*H %d%s, V %d%s*/340),
-			  int(d_horiz), "m",
-			  int(delta.GetZ()), "m");
+	    hv_str.Printf(msg(/*H %.2f%s, V %.2f%s*/340),
+			  d_horiz, "m", delta.GetZ(), "m");
 	} else {
-	    hv_str.Printf(msg(/*H %d%s, V %d%s*/340),
-			  int(d_horiz / METRES_PER_FOOT), "ft",
-			  int(delta.GetZ() / METRES_PER_FOOT), "ft");
+	    hv_str.Printf(msg(/*H %.2f%s, V %.2f%s*/340),
+			  d_horiz / METRES_PER_FOOT, "ft",
+			  delta.GetZ() / METRES_PER_FOOT, "ft");
 	}
 	wxString brg_unit;
 	if (m_Gfx->GetDegrees()) {
@@ -1917,13 +1913,13 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	}
 	wxString & d = dist_text;
 	if (m_Gfx->GetMetric()) {
-	    d.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
+	    d.Printf(msg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
 		     from_str.c_str(), hv_str.c_str(),
-		     int(dr), "m", int(brg), brg_unit.c_str());
+		     dr, "m", int(brg), brg_unit.c_str());
 	} else {
-	    d.Printf(msg(/*%s: %s, Dist %d%s, Brg %03d%s*/341),
+	    d.Printf(msg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
 		     from_str.c_str(), hv_str.c_str(),
-		     int(dr / METRES_PER_FOOT), "ft", int(brg),
+		     dr / METRES_PER_FOOT, "ft", int(brg),
 		     brg_unit.c_str());
 	}
 	m_Gfx->SetThere(*label);
