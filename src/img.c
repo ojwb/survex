@@ -1217,6 +1217,8 @@ img_read_item_ascii(img *pimg, img_point *p)
 	    pimg->label = pimg->label_buf;
 	    if (pimg->label[0] == '\\') pimg->label++;
 
+	    pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
+
 	    result = img_LABEL;
 	 } else {
 	    img_errno = IMG_BADFORMAT;
