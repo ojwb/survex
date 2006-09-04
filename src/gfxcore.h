@@ -248,7 +248,7 @@ public:
     GfxCore(MainFrm* parent, wxWindow* parent_window, GUIControl* control);
     ~GfxCore();
 
-    void Initialise();
+    void Initialise(bool same_file);
     void InitialiseTerrain();
 
     void UpdateBlobs();

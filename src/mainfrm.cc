@@ -1586,6 +1586,7 @@ void MainFrm::OnMRUFile(wxCommandEvent& event)
 void MainFrm::OpenFile(const wxString& file, wxString survey)
 {
     wxBusyCursor hourglass;
+    wxString old_file = m_File;
     if (LoadData(file, survey)) {
 	if (wxIsAbsolutePath(m_File)) {
 	    m_history.AddFileToHistory(m_File);
@@ -1610,7 +1611,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 	m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
 	m_SashPosition = x; // Save width of panel.
 
-	m_Gfx->Initialise();
+	m_Gfx->Initialise(old_file == m_File);
 	m_Notebook->Show(true);
 
 	m_Gfx->SetFocus();

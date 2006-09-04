@@ -180,7 +180,7 @@ void GfxCore::TryToFreeArrays()
 //  Initialisation methods
 //
 
-void GfxCore::Initialise()
+void GfxCore::Initialise(bool same_file)
 {
     // Initialise the view from the parent holding the survey data.
 
@@ -192,8 +192,13 @@ void GfxCore::Initialise()
     m_here.Invalidate();
     m_there.Invalidate();
 
-    // Apply default parameters.
-    DefaultParameters();
+    if (!same_file) {
+	// Apply default parameters unless reloading the same file.
+	DefaultParameters();
+
+	// Set the initial scale.
+	SetScale(1.0);
+    }
 
     switch (m_ColourBy) {
 	case COLOUR_BY_DEPTH:
@@ -242,9 +247,6 @@ void GfxCore::FirstShow()
 
     // Update our record of the client area size and centre.
     GetClientSize(&m_XSize, &m_YSize);
-
-    // Set the initial scale.
-    SetScale(1.0);
 
     m_DoneFirstShow = true;
 }
