@@ -30,6 +30,8 @@
 
 #include "img.h"
 
+#define LATEST_IMG_VERSION 6
+
 #ifdef IMG_HOSTED
 # include "debug.h"
 # include "filelist.h"
@@ -151,7 +153,7 @@ int my_strcasecmp(const char *s1, const char *s2) {
 }
 #endif
 
-unsigned int img_output_version = 5;
+unsigned int img_output_version = LATEST_IMG_VERSION;
 
 #ifdef IMG_HOSTED
 static enum {
@@ -554,7 +556,7 @@ xyz_file:
       }
       /* nothing special to do */
    } else if (pimg->version == 0) {
-      if (ch < '2' || ch > '5' || getc(pimg->fh) != '\n') {
+      if (ch < '2' || ch > '0' + LATEST_IMG_VERSION || getc(pimg->fh) != '\n') {
 	 img_errno = IMG_TOONEW;
 	 goto error;
       }
@@ -660,7 +662,7 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
       pimg->version = 1;
       fputs("Bv0.01\n", pimg->fh); /* binary file format version number */
    } else {
-      pimg->version = (img_output_version > 5) ? 5 : img_output_version;
+      pimg->version = (img_output_version > LATEST_IMG_VERSION) ? LATEST_IMG_VERSION : img_output_version;
       fprintf(pimg->fh, "v%d\n", pimg->version); /* file format version no. */
    }
    fputsnl(title_buf, pimg->fh);
@@ -696,6 +698,10 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    pimg->olddate2 = 0;
 
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
+
+   pimg->n_legs = 0;
+   pimg->length = 0.0;
+   pimg->E = pimg->H = pimg->V = 0.0;
 
    /* Don't check for write errors now - let img_close() report them... */
    return pimg;
@@ -879,6 +885,13 @@ img_read_item(img *pimg, img_point *p)
 		     pimg->date1 = get32(pimg->fh);
 		     pimg->date2 = get32(pimg->fh);
 		     break;
+		 case 0x22: /* Error info */
+		     pimg->n_legs = get32(pimg->fh);
+		     pimg->length = get32(pimg->fh) / 100.0;
+		     pimg->E = get32(pimg->fh) / 100.0;
+		     pimg->H = get32(pimg->fh) / 100.0;
+		     pimg->V = get32(pimg->fh) / 100.0;
+		     return img_ERROR_INFO;
 		 case 0x30: case 0x31: /* LRUD */
 		 case 0x32: case 0x33: /* Big LRUD! */
 		     if (read_v3label(pimg) == img_BAD) return img_BAD;
@@ -911,7 +924,7 @@ img_read_item(img *pimg, img_point *p)
 			 pimg->flags &= ~0x01;
 		     }
 		     return img_XSECT;
-		 default: /* 0x24 - 0x2f and 0x34 - 0x3f are currently unallocated. */
+		 default: /* 0x23 - 0x2f and 0x34 - 0x3f are currently unallocated. */
 		     img_errno = IMG_BADFORMAT;
 		     return img_BAD;
 	     }
@@ -1746,6 +1759,25 @@ img_write_item(img *pimg, int code, int flags, const char *s,
       put32((INT32_T)my_round(y * 100.0), pimg->fh);
       put32((INT32_T)my_round(z * 100.0), pimg->fh);
    }
+}
+
+/* Write error information for the current traverse
+ * n_legs is the number of legs in the traverse
+ * length is the traverse length (in m)
+ * E is the ratio of the observed misclosure to the theoretical one
+ * H is the ratio of the observed horizontal misclosure to the theoretical one
+ * V is the ratio of the observed vertical misclosure to the theoretical one
+ */
+void
+img_write_errors(img *pimg, int n_legs, double length,
+		 double E, double H, double V)
+{
+    putc(0x22, pimg->fh);
+    put32(n_legs, pimg->fh);
+    put32((INT32_T)my_round(length * 100.0), pimg->fh);
+    put32((INT32_T)my_round(E * 100.0), pimg->fh);
+    put32((INT32_T)my_round(H * 100.0), pimg->fh);
+    put32((INT32_T)my_round(V * 100.0), pimg->fh);
 }
 
 int

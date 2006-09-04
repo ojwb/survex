@@ -428,8 +428,8 @@ svxPrintDlg::RecalcBounds()
     COST = cos(rad(m_layout.tilt));
 
     if (m_layout.Shots) {
-	list<vector<PointInfo> >::const_iterator trav = mainfrm->traverses_begin();
-	list<vector<PointInfo> >::const_iterator tend = mainfrm->traverses_end();
+	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
+	list<traverse>::const_iterator tend = mainfrm->traverses_end();
 	for ( ; trav != tend; ++trav) {
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();
@@ -447,8 +447,8 @@ svxPrintDlg::RecalcBounds()
 	}
     }
     if (m_layout.Surface) {
-	list<vector<PointInfo> >::const_iterator trav = mainfrm->surface_traverses_begin();
-	list<vector<PointInfo> >::const_iterator tend = mainfrm->surface_traverses_end();
+	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
+	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
 	for ( ; trav != tend; ++trav) {
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();
@@ -952,8 +952,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     if (l->Shots) {
 	SetColour(PR_COLOUR_LEG);
-	list<vector<PointInfo> >::const_iterator trav = mainfrm->traverses_begin();
-	list<vector<PointInfo> >::const_iterator tend = mainfrm->traverses_end();
+	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
+	list<traverse>::const_iterator tend = mainfrm->traverses_end();
 	for ( ; trav != tend; ++trav) {
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();
@@ -985,8 +985,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     if (l->Surface) {
 	SetColour(PR_COLOUR_SURFACE_LEG);
-	list<vector<PointInfo> >::const_iterator trav = mainfrm->surface_traverses_begin();
-	list<vector<PointInfo> >::const_iterator tend = mainfrm->surface_traverses_end();
+	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
+	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
 	for ( ; trav != tend; ++trav) {
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();

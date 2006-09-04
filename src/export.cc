@@ -1018,8 +1018,8 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
    /* Get drawing corners */
    min_x = min_y = min_z = HUGE_VAL;
    max_x = max_y = max_z = -HUGE_VAL;
-   list<vector<PointInfo> >::const_iterator trav = mainfrm->traverses_begin();
-   list<vector<PointInfo> >::const_iterator tend = mainfrm->traverses_end();
+   list<traverse>::const_iterator trav = mainfrm->traverses_begin();
+   list<traverse>::const_iterator tend = mainfrm->traverses_end();
    for ( ; trav != tend; ++trav) {
 	vector<PointInfo>::const_iterator pos = trav->begin();
 	vector<PointInfo>::const_iterator end = trav->end();

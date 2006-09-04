@@ -53,6 +53,9 @@
 #define SOUTH 5
 #define WEST 6
 
+// Any error value higher than this is clamped to this.
+#define MAX_ERROR 12.0
+
 // How many bins per letter height to use when working out non-overlapping
 // labels.
 const unsigned int QUANTISE_FACTOR = 2;
@@ -200,6 +203,11 @@ void GfxCore::Initialise()
 	    break;
 	case COLOUR_BY_DATE:
 	    if (m_Parent->GetDateExtent() == 0) {
+		SetColourBy(COLOUR_BY_NONE);
+	    }
+	    break;
+	case COLOUR_BY_ERROR:
+	    if (!m_Parent->HasErrorInformation()) {
 		SetColourBy(COLOUR_BY_NONE);
 	    }
 	    break;
@@ -835,6 +843,53 @@ void GfxCore::DrawDatebar()
 	// Insert extra "" to avoid trigraphs issues.
 	if (res == 0 || res == sizeof(buf)) strcpy(buf, "?""?""?""?-?""?-?""?");
 	strs[band] = buf;
+
+	int x, dummy;
+	GetTextExtent(strs[band], &x, &dummy);
+	if (x > size) size = x;
+    }
+
+    int left = -DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
+		- DEPTH_BAR_MARGIN - size;
+
+    DrawRectangle(col_BLACK, col_DARK_GREY,
+		  left - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  top - DEPTH_BAR_MARGIN * 2,
+		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN * 3 +
+		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  total_block_height + DEPTH_BAR_MARGIN*4);
+
+    int y = top;
+    for (band = 0; band < GetNumDepthBands() - 1; band++) {
+	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
+			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    y = top - GetFontSize() / 2 - 1;
+    left += DEPTH_BAR_BLOCK_WIDTH + 5;
+
+    SetColour(TEXT_COLOUR);
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	DrawIndicatorText(left, y, strs[band]);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    delete[] strs;
+}
+
+void GfxCore::DrawErrorbar()
+{
+    const int total_block_height =
+	DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
+    int size = 0;
+
+    wxString* strs = new wxString[GetNumDepthBands()];
+    int band;
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	double E = MAX_ERROR * band / (GetNumDepthBands() - 1);
+	strs[band].Printf("%.2f", E);
 
 	int x, dummy;
 	GetTextExtent(strs[band], &x, &dummy);
@@ -1804,6 +1859,11 @@ bool GfxCore::HasRangeOfDates() const
     return m_Parent->GetDateExtent() > 0;
 }
 
+bool GfxCore::HasErrorInformation() const
+{
+    return m_Parent->HasErrorInformation();
+}
+
 bool GfxCore::ShowingPlan() const
 {
     // Determine if the survey is in plan view.
@@ -1890,6 +1950,9 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_DATEBAR:
 	    DrawDatebar();
 	    break;
+	case LIST_ERRORBAR:
+	    DrawErrorbar();
+	    break;
 	case LIST_UNDERGROUND_LEGS:
 	    GenerateDisplayList();
 	    break;
@@ -1942,8 +2005,8 @@ void GfxCore::ToggleSmoothShading()
 void GfxCore::GenerateDisplayList()
 {
     // Generate the display list for the underground legs.
-    list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();
-    list<vector<PointInfo> >::const_iterator tend = m_Parent->traverses_end();
+    list<traverse>::const_iterator trav = m_Parent->traverses_begin();
+    list<traverse>::const_iterator tend = m_Parent->traverses_end();
     while (trav != tend) {
 	(this->*AddPoly)(*trav);
 	++trav;
@@ -1965,10 +2028,14 @@ void GfxCore::GenerateDisplayListSurface()
 {
     // Generate the display list for the surface legs.
     EnableDashedLines();
-    list<vector<PointInfo> >::const_iterator trav = m_Parent->surface_traverses_begin();
-    list<vector<PointInfo> >::const_iterator tend = m_Parent->surface_traverses_end();
+    list<traverse>::const_iterator trav = m_Parent->surface_traverses_begin();
+    list<traverse>::const_iterator tend = m_Parent->surface_traverses_end();
     while (trav != tend) {
-	AddPolyline(*trav);
+	if (m_ColourBy == COLOUR_BY_ERROR) {
+	    AddPolylineError(*trav);
+	} else {
+	    AddPolyline(*trav);
+	}
 	++trav;
     }
     DisableDashedLines();
@@ -1977,8 +2044,8 @@ void GfxCore::GenerateDisplayListSurface()
 void GfxCore::GenerateDisplayListShadow()
 {
     SetColour(col_BLACK);
-    list<vector<PointInfo> >::const_iterator trav = m_Parent->traverses_begin();
-    list<vector<PointInfo> >::const_iterator tend = m_Parent->traverses_end();
+    list<traverse>::const_iterator trav = m_Parent->traverses_begin();
+    list<traverse>::const_iterator tend = m_Parent->traverses_end();
     while (trav != tend) {
 	AddPolylineShadow(*trav);
 	++trav;
@@ -2045,6 +2112,8 @@ void GfxCore::DrawIndicators()
 	   DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
        } else if (m_ColourBy == COLOUR_BY_DATE && m_Parent->GetDateExtent()) {
 	   DrawList2D(LIST_DATEBAR, m_XSize, m_YSize, 0);
+       } else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
+	   DrawList2D(LIST_ERRORBAR, m_XSize, m_YSize, 0);
        }
     }
 
@@ -2150,7 +2219,7 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
     return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2;
 }
 
-void GfxCore::AddPolyline(const vector<PointInfo> & centreline)
+void GfxCore::AddPolyline(const traverse & centreline)
 {
     BeginPolyline();
     SetColour(GetSurfacePen());
@@ -2164,7 +2233,7 @@ void GfxCore::AddPolyline(const vector<PointInfo> & centreline)
     EndPolyline();
 }
 
-void GfxCore::AddPolylineShadow(const vector<PointInfo> & centreline)
+void GfxCore::AddPolylineShadow(const traverse & centreline)
 {
     BeginPolyline();
     vector<PointInfo>::const_iterator i = centreline.begin();
@@ -2177,7 +2246,7 @@ void GfxCore::AddPolylineShadow(const vector<PointInfo> & centreline)
     EndPolyline();
 }
 
-void GfxCore::AddPolylineDepth(const vector<PointInfo> & centreline)
+void GfxCore::AddPolylineDepth(const traverse & centreline)
 {
     BeginPolyline();
     vector<PointInfo>::const_iterator i, prev_i;
@@ -2306,7 +2375,7 @@ void GfxCore::SetColourFromDate(time_t date, Double factor)
     SetColour(pen1, factor);
 }
 
-void GfxCore::AddPolylineDate(const vector<PointInfo> & centreline)
+void GfxCore::AddPolylineDate(const traverse & centreline)
 {
     BeginPolyline();
     vector<PointInfo>::const_iterator i, prev_i;
@@ -2356,6 +2425,78 @@ void GfxCore::AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
     EndPolygon();
 }
 
+static double static_E_hack; // FIXME
+
+void GfxCore::SetColourFromError(double E, Double factor)
+{
+    // Set the drawing colour based on an error value.
+
+    if (E < 0) {
+	SetColour(GetSurfacePen(), factor);
+	return;
+    }
+
+    Double how_far = E / MAX_ERROR;
+    assert(how_far >= 0.0);
+    if (how_far > 1.0) how_far = 1.0;
+
+    int band = int(floor(how_far * (GetNumDepthBands() - 1)));
+    GLAPen pen1 = GetPen(band);
+    if (band < GetNumDepthBands() - 1) {
+	const GLAPen& pen2 = GetPen(band + 1);
+
+	Double interval = MAX_ERROR / (GetNumDepthBands() - 1);
+	Double into_band = E / interval - band;
+
+//	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
+//	       z_offset, interval, band);
+	// FIXME: why do we need to clamp here?  Is it because the walls can
+	// extend further up/down than the centre-line?
+	if (into_band < 0.0) into_band = 0.0;
+	if (into_band > 1.0) into_band = 1.0;
+	assert(into_band >= 0.0);
+	assert(into_band <= 1.0);
+
+	pen1.Interpolate(pen2, into_band);
+    }
+    SetColour(pen1, factor);
+}
+
+void GfxCore::AddQuadrilateralError(const Vector3 &a, const Vector3 &b,
+				    const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    // FIXME: should plot triangles instead to avoid rendering glitches.
+    BeginPolygon();
+////    PlaceNormal(normal);
+    SetColourFromError(static_E_hack, factor);
+    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
+    glTexCoord2i(0, 0);
+    PlaceVertex(a);
+    glTexCoord2i(w, 0);
+    PlaceVertex(b);
+    glTexCoord2i(w, h);
+    PlaceVertex(c);
+    glTexCoord2i(0, h);
+    PlaceVertex(d);
+    EndPolygon();
+}
+
+void GfxCore::AddPolylineError(const traverse & centreline)
+{
+    BeginPolyline();
+    SetColourFromError(centreline.E, 1.0);
+    vector<PointInfo>::const_iterator i;
+    for(i = centreline.begin(); i != centreline.end(); ++i) {
+	PlaceVertex(*i);
+    }
+    EndPolyline();
+}
+
 void
 GfxCore::SkinPassage(const vector<XSect> & centreline)
 {
@@ -2364,6 +2505,8 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
     XSect prev_pt_v;
     Vector3 last_right(1.0, 0.0, 0.0);
 
+//  FIXME: it's not simple to set the colour of a tube based on error...
+//    static_E_hack = something...
     vector<XSect>::const_iterator i = centreline.begin();
     vector<XSect>::size_type segment = 0;
     while (i != centreline.end()) {
@@ -2654,6 +2797,10 @@ void GfxCore::SetColourBy(int colour_by) {
 	    AddQuad = &GfxCore::AddQuadrilateralDate;
 	    AddPoly = &GfxCore::AddPolylineDate;
 	    break;
+	case COLOUR_BY_ERROR:
+	    AddQuad = &GfxCore::AddQuadrilateralError;
+	    AddPoly = &GfxCore::AddPolylineError;
+	    break;
 	default: // case COLOUR_BY_NONE:
 	    AddQuad = &GfxCore::AddQuadrilateral;
 	    AddPoly = &GfxCore::AddPolyline;
@@ -2661,6 +2808,7 @@ void GfxCore::SetColourBy(int colour_by) {
     }
 
     InvalidateList(LIST_UNDERGROUND_LEGS);
+    InvalidateList(LIST_SURFACE_LEGS);
     InvalidateList(LIST_TUBES);
 
     ForceRefresh();

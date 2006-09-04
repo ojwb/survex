@@ -526,6 +526,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNames)
     EVT_MENU(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepth)
     EVT_MENU(menu_VIEW_COLOUR_BY_DATE, MainFrm::OnColourByDate)
+    EVT_MENU(menu_VIEW_COLOUR_BY_ERROR, MainFrm::OnColourByError)
     EVT_MENU(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurface)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
     EVT_MENU(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBox)
@@ -581,6 +582,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNamesUpdate)
     EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepthUpdate)
     EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DATE, MainFrm::OnColourByDateUpdate)
+    EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_ERROR, MainFrm::OnColourByErrorUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBoxUpdate)
     EVT_UPDATE_UI(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspectiveUpdate)
@@ -664,7 +666,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE), // wxNO_FULL_REPAINT_ON_RESIZE is 0 in wx >= 2.6
     m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
     m_NumHighlighted(0), m_HasUndergroundLegs(false), m_HasSurfaceLegs(false),
-    m_IsExtendedElevation(false)
+    m_HasErrorInformation(false), m_IsExtendedElevation(false)
 #ifdef PREFDLG
     , m_PrefsDlg(NULL)
 #endif
@@ -783,6 +785,7 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273));
     viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, GetTabMsg(/*Colour by @Depth*/292));
     viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, GetTabMsg(/*Colour by D@ate*/293));
+    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_ERROR, GetTabMsg(/*Colour by E@rror*/289));
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294));
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295));
@@ -1016,6 +1019,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     m_NumEntrances = 0;
     m_HasUndergroundLegs = false;
     m_HasSurfaceLegs = false;
+    m_HasErrorInformation = false;
 
     // FIXME: discard existing presentation? ask user about saving if we do!
 
@@ -1045,14 +1049,21 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     // Ultimately we probably want different types (subclasses perhaps?) for
     // underground and surface data, so we don't need to store LRUD for surface
     // stuff.
-    vector<PointInfo> * current_traverse = NULL;
-    vector<PointInfo> * current_surface_traverse = NULL;
+    traverse * current_traverse = NULL;
+    traverse * current_surface_traverse = NULL;
     vector<XSect> * current_tube = NULL;
 
     int result;
     img_point prev_pt = {0,0,0};
     bool current_polyline_is_surface = false;
     bool pending_move = false;
+    // When a traverse is split between surface and underground, we split it
+    // into contiguous traverses of each, but we need to track these so we can
+    // assign the error statistics to all of them.  So we keep counts of how
+    // many surface_traverses and traverses we've generated for the current
+    // traverse.
+    size_t n_traverses = 0;
+    size_t n_surface_traverses = 0;
     do {
 #if 0
 	if (++items % 200 == 0) {
@@ -1066,6 +1077,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 	result = img_read_item(survey, &pt);
 	switch (result) {
 	    case img_MOVE:
+		n_traverses = n_surface_traverses = 0;
 		pending_move = true;
 		prev_pt = pt;
 		break;
@@ -1095,12 +1107,14 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		    // Start new traverse (surface or underground).
 		    if (is_surface) {
 			m_HasSurfaceLegs = true;
-			surface_traverses.push_back(vector<PointInfo>());
+			surface_traverses.push_back(traverse());
 			current_surface_traverse = &surface_traverses.back();
+			++n_surface_traverses;
 		    } else {
 			m_HasUndergroundLegs = true;
-			traverses.push_back(vector<PointInfo>());
+			traverses.push_back(traverse());
 			current_traverse = &traverses.back();
+			++n_traverses;
 		    }
 		    if (pending_move) {
 			// Update survey extents.  We only need to do this if
@@ -1192,6 +1206,34 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		    tubes.resize(tubes.size() - 1);
 		current_tube = NULL;
 		break;
+
+	    case img_ERROR_INFO: {
+		m_HasErrorInformation = true;
+		list<traverse>::reverse_iterator t;
+		t = surface_traverses.rbegin();
+		while (n_surface_traverses) {
+		    assert(t != surface_traverses.rend());
+		    t->n_legs = survey->n_legs;
+		    t->length = survey->length;
+		    t->E = survey->E;
+		    t->H = survey->H;
+		    t->V = survey->V;
+		    --n_surface_traverses;
+		    ++t;
+		}
+		t = traverses.rbegin();
+		while (n_traverses) {
+		    assert(t != traverses.rend());
+		    t->n_legs = survey->n_legs;
+		    t->length = survey->length;
+		    t->E = survey->E;
+		    t->H = survey->H;
+		    t->V = survey->V;
+		    --n_traverses;
+		    ++t;
+		}
+		break;
+	    }
 
 	    case img_BAD: {
 		m_Labels.clear();
@@ -1290,7 +1332,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 // Run along a newly read in traverse and make up plausible LRUD where
 // it is missing.
 void
-MainFrm::FixLRUD(vector<PointInfo> & centreline)
+MainFrm::FixLRUD(traverse & centreline)
 {
     assert(centreline.size() > 1);
 
@@ -1493,7 +1535,7 @@ void MainFrm::CentreDataset(const Vector3 & vmin)
 
     m_Offsets = vmin + (m_Ext * 0.5);
 
-    list<vector<PointInfo> >::iterator t = traverses.begin();
+    list<traverse>::iterator t = traverses.begin();
     while (t != traverses.end()) {
 	assert(t->size() > 1);
 	vector<PointInfo>::iterator pos = t->begin();

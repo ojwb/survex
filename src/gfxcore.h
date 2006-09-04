@@ -42,6 +42,7 @@
 using namespace std;
 
 class MainFrm;
+class traverse;
 
 extern const int NUM_DEPTH_COLOURS;
 
@@ -96,6 +97,7 @@ class GfxCore : public GLACanvas {
 	LIST_CLINO_BACK,
 	LIST_DEPTHBAR,
 	LIST_DATEBAR,
+	LIST_ERRORBAR,
 	LIST_UNDERGROUND_LEGS,
 	LIST_TUBES,
 	LIST_SURFACE_LEGS,
@@ -183,6 +185,7 @@ private:
     void PlaceVertexWithDepthColour(const Vector3 & v, Double factor = 1.0);
 
     void SetColourFromDate(time_t date, Double factor);
+    void SetColourFromError(double E, Double factor);
 
     int GetClinoOffset() const;
     void DrawTick(int angle_cw);
@@ -206,6 +209,7 @@ private:
     void DrawScalebar();
     void DrawDepthbar();
     void DrawDatebar();
+    void DrawErrorbar();
     void DrawCompass();
     void DrawClino();
     void DrawClinoBack();
@@ -328,6 +332,7 @@ public:
     bool HasData() const { return m_DoneFirstShow && m_HaveData; }
     bool IsFlat() const;
     bool HasRangeOfDates() const;
+    bool HasErrorInformation() const;
 
     double GetScale() const { return m_Scale; }
     void SetScale(Double scale);
@@ -403,21 +408,24 @@ public:
 			      Double factor = 1.0);
     int GetDepthColour(Double z) const;
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
-    void AddPolyline(const vector<PointInfo> & centreline);
-    void AddPolylineDepth(const vector<PointInfo> & centreline);
-    void AddPolylineDate(const vector<PointInfo> & centreline);
+    void AddPolyline(const traverse & centreline);
+    void AddPolylineDepth(const traverse & centreline);
+    void AddPolylineDate(const traverse & centreline);
+    void AddPolylineError(const traverse & centreline);
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			  const Vector3 &c, const Vector3 &d);
-    void AddPolylineShadow(const vector<PointInfo> & centreline);
+    void AddPolylineShadow(const traverse & centreline);
     void AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 			       const Vector3 &c, const Vector3 &d);
     void AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
 			      const Vector3 &c, const Vector3 &d);
+    void AddQuadrilateralError(const Vector3 &a, const Vector3 &b,
+			       const Vector3 &c, const Vector3 &d);
     void MoveViewer(double forward, double up, double right);
 
     void (GfxCore::* AddQuad)(const Vector3 &a, const Vector3 &b,
                               const Vector3 &c, const Vector3 &d);
-    void (GfxCore::* AddPoly)(const vector<PointInfo> & centreline);
+    void (GfxCore::* AddPoly)(const traverse & centreline);
 
     PresentationMark GetView() const;
     void SetView(const PresentationMark & p);

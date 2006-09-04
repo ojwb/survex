@@ -710,10 +710,12 @@ err_stat(int cLegsTrav, double lenTrav,
 	 double hTot, double hTotTheo,
 	 double vTot, double vTotTheo)
 {
-   double sqrt_eTot;
+   double E = sqrt(eTot / eTotTheo);
+   double H = sqrt(hTot / hTotTheo);
+   double V = sqrt(vTot / vTotTheo);
    if (!fSuppress) {
+      double sqrt_eTot = sqrt(eTot);
       fputnl(fhErrStat);
-      sqrt_eTot = sqrt(eTot);
       fprintf(fhErrStat, msg(/*Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). */145),
 	      lenTrav, cLegsTrav, sqrt_eTot, sqrt_eTot / cLegsTrav);
       if (lenTrav > 0.0)
@@ -721,11 +723,11 @@ err_stat(int cLegsTrav, double lenTrav,
       else
 	 fputs(msg(/*Error    N/A*/147), fhErrStat);
       fputnl(fhErrStat);
-      fprintf(fhErrStat, "%f\n", sqrt(eTot / eTotTheo));
-      fprintf(fhErrStat, "H: %f V: %f\n",
-	      sqrt(hTot / hTotTheo), sqrt(vTot / vTotTheo));
+      fprintf(fhErrStat, "%f\n", E);
+      fprintf(fhErrStat, "H: %f V: %f\n", H, V);
       fputnl(fhErrStat);
    }
+   img_write_errors(pimg, cLegsTrav, lenTrav, E, H, V);
 }
 
 static void

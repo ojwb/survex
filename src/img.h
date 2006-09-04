@@ -41,6 +41,7 @@ extern "C" {
 # define img_LABEL  3
 # define img_XSECT  4
 # define img_XSECT_END 5
+# define img_ERROR_INFO 6
 
 # define img_FLAG_SURFACE   0x01
 # define img_FLAG_DUPLICATE 0x02
@@ -69,7 +70,12 @@ typedef struct {
    char separator; /* character used to separate survey levels ('.' usually) */
    time_t date1, date2;
    double l, r, u, d;
-   char * filename_opened; /* The filename actually opened (e.g. may have ".3d" added). */
+   /* Error information - valid when IMG_ERROR is returned: */
+   int n_legs;
+   double length;
+   double E, H, V;
+   /* The filename actually opened (e.g. may have ".3d" added). */
+   char * filename_opened;
    int is_extended_elevation;
    /* all other members are for internal use only */
    FILE *fh;          /* file handle of image file */
@@ -93,6 +99,7 @@ typedef struct {
     *   3 => prefixes for legs; compressed prefixes
     *   4 => survey date
     *   5 => LRUD info
+    *   6 => error info
     */
    int version;
    char *survey;
@@ -151,6 +158,16 @@ int img_read_item(img *pimg, img_point *p);
  */
 void img_write_item(img *pimg, int code, int flags, const char *s,
 		    double x, double y, double z);
+
+/* Write error information for the current traverse
+ * n_legs is the number of legs in the traverse
+ * length is the traverse length (in m)
+ * E is the ratio of the observed misclosure to the theoretical one
+ * H is the ratio of the observed horizontal misclosure to the theoretical one
+ * V is the ratio of the observed vertical misclosure to the theoretical one
+ */
+void img_write_errors(img *pimg, int n_legs, double length,
+		      double E, double H, double V);
 
 /* rewind a .3d file opened for reading so the data can be read in
  * several passes

@@ -3099,7 +3099,8 @@ it:281 @Cancella la linea di misura##Escape
 sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
 ro:281 @Anulati linia de masura##Escape
 #ro: to find a better way to express that
-# XXX 282 283 284 285 286 287 288 289
+# XXX 282 283 284 285 286 287 288
+en:289 Colour by E@rror
 #
 # The accelerators must be different within this group
 # c.f. 205

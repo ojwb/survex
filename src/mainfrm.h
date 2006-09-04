@@ -116,6 +116,7 @@ enum {
     menu_VIEW_PREFERENCES,
     menu_VIEW_COLOUR_BY_DEPTH,
     menu_VIEW_COLOUR_BY_DATE,
+    menu_VIEW_COLOUR_BY_ERROR,
     menu_IND_COMPASS,
     menu_IND_CLINO,
     menu_IND_DEPTH_BAR,
@@ -194,11 +195,20 @@ public:
     bool IsHighLighted() const { return (flags & LFLAG_HIGHLIGHTED) != 0; }
 };
 
+class traverse : public vector<PointInfo> {
+  public:
+    int n_legs;
+    double length;
+    double E, H, V;
+
+    traverse() : n_legs(0), length(0), E(-1), H(-1), V(-1) { }
+};
+
 class MainFrm : public wxFrame {
     wxFileHistory m_history;
     int m_SashPosition;
-    list<vector<PointInfo> > traverses;
-    list<vector<PointInfo> > surface_traverses;
+    list<traverse> traverses;
+    list<traverse> surface_traverses;
     list<vector<XSect> > tubes;
     list<LabelInfo*> m_Labels;
     Vector3 m_Ext;
@@ -212,6 +222,7 @@ class MainFrm : public wxFrame {
     int m_NumHighlighted;
     bool m_HasUndergroundLegs;
     bool m_HasSurfaceLegs;
+    bool m_HasErrorInformation;
     wxSplitterWindow* m_Splitter;
     AvenTreeCtrl* m_Tree;
     wxTextCtrl* m_FindBox;
@@ -237,7 +248,7 @@ class MainFrm : public wxFrame {
     void FillTree();
     bool ProcessSVXFile(const wxString & file);
     bool LoadData(const wxString& file, wxString prefix = "");
-//    void FixLRUD(vector<PointInfo> & centreline);
+//    void FixLRUD(traverse & centreline);
     void CentreDataset(const Vector3 & vmin);
 
     wxString GetTabMsg(int key) {
@@ -324,6 +335,7 @@ public:
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnDisplayOverlappingNamesUpdate(event); }
     void OnColourByDepthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDepthUpdate(event); }
     void OnColourByDateUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDateUpdate(event); }
+    void OnColourByErrorUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByErrorUpdate(event); }
     void OnShowCrossesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowCrossesUpdate(event); }
     void OnShowEntrancesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowEntrancesUpdate(event); }
     void OnShowFixedPtsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowFixedPtsUpdate(event); }
@@ -371,6 +383,7 @@ public:
     void OnDisplayOverlappingNames(wxCommandEvent&) { if (m_Control) m_Control->OnDisplayOverlappingNames(); }
     void OnColourByDepth(wxCommandEvent&) { if (m_Control) m_Control->OnColourByDepth(); }
     void OnColourByDate(wxCommandEvent&) { if (m_Control) m_Control->OnColourByDate(); }
+    void OnColourByError(wxCommandEvent&) { if (m_Control) m_Control->OnColourByError(); }
     void OnShowCrosses(wxCommandEvent&) { if (m_Control) m_Control->OnShowCrosses(); }
     void OnShowEntrances(wxCommandEvent&) { if (m_Control) m_Control->OnShowEntrances(); }
     void OnShowFixedPts(wxCommandEvent&) { if (m_Control) m_Control->OnShowFixedPts(); }
@@ -448,6 +461,7 @@ public:
     bool HasUndergroundLegs() const { return m_HasUndergroundLegs; }
     bool HasSurfaceLegs() const { return m_HasSurfaceLegs; }
     bool HasTubes() const { return !tubes.empty(); }
+    bool HasErrorInformation() const { return m_HasErrorInformation; }
 
     bool IsExtendedElevation() const { return m_IsExtendedElevation; }
 
@@ -459,19 +473,19 @@ public:
 
     const Vector3 & GetOffset() const { return m_Offsets; }
 
-    list<vector<PointInfo> >::const_iterator traverses_begin() const {
+    list<traverse>::const_iterator traverses_begin() const {
 	return traverses.begin();
     }
 
-    list<vector<PointInfo> >::const_iterator traverses_end() const {
+    list<traverse>::const_iterator traverses_end() const {
 	return traverses.end();
     }
 
-    list<vector<PointInfo> >::const_iterator surface_traverses_begin() const {
+    list<traverse>::const_iterator surface_traverses_begin() const {
 	return surface_traverses.begin();
     }
 
-    list<vector<PointInfo> >::const_iterator surface_traverses_end() const {
+    list<traverse>::const_iterator surface_traverses_end() const {
 	return surface_traverses.end();
     }
 

@@ -460,6 +460,15 @@ void GUIControl::OnColourByDate()
     }
 }
 
+void GUIControl::OnColourByError()
+{
+    if (m_View->ColouringBy() == COLOUR_BY_ERROR) {
+	m_View->SetColourBy(COLOUR_BY_NONE);
+    } else {
+	m_View->SetColourBy(COLOUR_BY_ERROR);
+    }
+}
+
 void GUIControl::OnColourByDepthUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs() && !m_View->IsFlat());
@@ -470,6 +479,12 @@ void GUIControl::OnColourByDateUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs() && m_View->HasRangeOfDates());
     cmd.Check(m_View->ColouringBy() == COLOUR_BY_DATE);
+}
+
+void GUIControl::OnColourByErrorUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs() && m_View->HasErrorInformation());
+    cmd.Check(m_View->ColouringBy() == COLOUR_BY_ERROR);
 }
 
 void GUIControl::OnShowCrosses()

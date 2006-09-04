@@ -68,6 +68,7 @@ public:
     void OnDisplayOverlappingNames();
     void OnColourByDepth();
     void OnColourByDate();
+    void OnColourByError();
     void OnShowCrosses();
     void OnShowStationNames();
     void OnShowSurveyLegs();
@@ -113,6 +114,7 @@ public:
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent&);
     void OnColourByDepthUpdate(wxUpdateUIEvent&);
     void OnColourByDateUpdate(wxUpdateUIEvent&);
+    void OnColourByErrorUpdate(wxUpdateUIEvent&);
     void OnShowCrossesUpdate(wxUpdateUIEvent&);
     void OnShowStationNamesUpdate(wxUpdateUIEvent&);
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent&);
