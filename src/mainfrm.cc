@@ -1041,6 +1041,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 	while ((x>>=1) != 0) m_DateMin |= x;
     }
     time_t datemax = 0;
+    complete_dateinfo = true;
 
     traverses.clear();
     surface_traverses.clear();
@@ -1096,6 +1097,8 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		if (date) {
 		    if (date < m_DateMin) m_DateMin = date;
 		    if (date > datemax) datemax = date;
+		} else {
+		    complete_dateinfo = false;
 		}
 
 		bool is_surface = (survey->flags & img_FLAG_SURFACE);

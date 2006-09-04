@@ -214,6 +214,7 @@ class MainFrm : public wxFrame {
     Vector3 m_Ext;
     Double m_ZMin;
     time_t m_DateMin, m_DateExt;
+    bool complete_dateinfo;
     GfxCore* m_Gfx;
     GUIControl* m_Control;
     int m_NumEntrances;
@@ -447,6 +448,7 @@ public:
     Double GetZMin() const { return m_ZMin; }
     Double GetZMax() const { return m_ZMin + m_Ext.GetZ(); }
 
+    bool HasCompleteDateInfo() const { return complete_dateinfo; }
     time_t GetDateExtent() const { return m_DateExt; }
     time_t GetDateMin() const { return m_DateMin; }
 

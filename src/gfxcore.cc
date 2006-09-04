@@ -827,8 +827,8 @@ void GfxCore::DrawDepthbar()
 
 	strs[band] = FormatLength(z, false);
 
-	int x, dummy;
-	GetTextExtent(strs[band], &x, &dummy);
+	int x;
+	GetTextExtent(strs[band], &x, NULL);
 	if (x > size) size = x;
     }
 
@@ -849,7 +849,7 @@ void GfxCore::DrawDepthbar()
 	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
 
-    y = top - GetFontSize() / 2 - 1;
+    y = top - GetFontSize() / 2;
     left += DEPTH_BAR_BLOCK_WIDTH + 5;
 
     SetColour(TEXT_COLOUR);
@@ -863,10 +863,15 @@ void GfxCore::DrawDepthbar()
 
 void GfxCore::DrawDatebar()
 {
-    const int total_block_height =
-	DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    int total_block_height = DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    if (!m_Parent->HasCompleteDateInfo())
+	total_block_height += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
     const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
+
     int size = 0;
+    if (!m_Parent->HasCompleteDateInfo()) {
+	GetTextExtent("No info", &size, NULL);
+    }
 
     wxString* strs = new wxString[GetNumDepthBands()];
     char buf[128];
@@ -879,8 +884,8 @@ void GfxCore::DrawDatebar()
 	if (res == 0 || res == sizeof(buf)) strcpy(buf, "?""?""?""?-?""?-?""?");
 	strs[band] = buf;
 
-	int x, dummy;
-	GetTextExtent(strs[band], &x, &dummy);
+	int x;
+	GetTextExtent(strs[band], &x, NULL);
 	if (x > size) size = x;
     }
 
@@ -895,16 +900,30 @@ void GfxCore::DrawDatebar()
 		  total_block_height + DEPTH_BAR_MARGIN*4);
 
     int y = top;
+
+    if (!m_Parent->HasCompleteDateInfo()) {
+	DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
+		DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	y += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
+    }
+
     for (band = 0; band < GetNumDepthBands() - 1; band++) {
 	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
 			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
 	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
 
-    y = top - GetFontSize() / 2 - 1;
+    y = top - GetFontSize() / 2;
     left += DEPTH_BAR_BLOCK_WIDTH + 5;
 
     SetColour(TEXT_COLOUR);
+
+    if (!m_Parent->HasCompleteDateInfo()) {
+	y += DEPTH_BAR_MARGIN;
+	DrawIndicatorText(left, y, "No info");
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
     for (band = 0; band < GetNumDepthBands(); band++) {
 	DrawIndicatorText(left, y, strs[band]);
 	y += DEPTH_BAR_BLOCK_HEIGHT;
@@ -915,10 +934,13 @@ void GfxCore::DrawDatebar()
 
 void GfxCore::DrawErrorbar()
 {
-    const int total_block_height =
-	DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    int total_block_height = DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    // Always show the "Not a loop" legend for now (FIXME).
+    total_block_height += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
     const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
+
     int size = 0;
+    GetTextExtent("Not a loop", &size, NULL);
 
     wxString* strs = new wxString[GetNumDepthBands()];
     int band;
@@ -926,8 +948,8 @@ void GfxCore::DrawErrorbar()
 	double E = MAX_ERROR * band / (GetNumDepthBands() - 1);
 	strs[band].Printf("%.2f", E);
 
-	int x, dummy;
-	GetTextExtent(strs[band], &x, &dummy);
+	int x;
+	GetTextExtent(strs[band], &x, NULL);
 	if (x > size) size = x;
     }
 
@@ -942,16 +964,26 @@ void GfxCore::DrawErrorbar()
 		  total_block_height + DEPTH_BAR_MARGIN*4);
 
     int y = top;
+
+    DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
+	    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+    y += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
+
     for (band = 0; band < GetNumDepthBands() - 1; band++) {
 	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
 			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
 	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
 
-    y = top - GetFontSize() / 2 - 1;
+    y = top - GetFontSize() / 2;
     left += DEPTH_BAR_BLOCK_WIDTH + 5;
 
     SetColour(TEXT_COLOUR);
+
+    y += DEPTH_BAR_MARGIN;
+    DrawIndicatorText(left, y, "Not in loop");
+    y += DEPTH_BAR_BLOCK_HEIGHT;
+
     for (band = 0; band < GetNumDepthBands(); band++) {
 	DrawIndicatorText(left, y, strs[band]);
 	y += DEPTH_BAR_BLOCK_HEIGHT;
