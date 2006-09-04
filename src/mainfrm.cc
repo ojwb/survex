@@ -1436,7 +1436,8 @@ void MainFrm::FillTree()
 	    // We have, so start as many new branches as required.
 	    int current_prefix_length = current_prefix.length();
 	    current_prefix = prefix;
-	    size_t next_dot = current_prefix_length - 1;
+	    size_t next_dot = current_prefix_length;
+	    if (!next_dot) --next_dot;
 	    do {
 		size_t prev_dot = next_dot + 1;
 
