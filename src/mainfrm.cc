@@ -1637,9 +1637,9 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		     "*.3d", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 #else
     wxString filetypes;
-    filetypes.Printf("|%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.xyz;"
+    filetypes.Printf("%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.xyz"
 		     CASE("*.3D;*.SVX;*.PLT;*.PLF;*.DAT;*.MAK;*.XYZ")
-		     "%s|*.3d"CASE("*.3D")
+		     "|%s|*.3d"CASE("*.3D")
 		     "|%s|*.svx"CASE("*.SVX")
 		     "|%s|*.plt;*.plf"CASE("*.PLT;*.PLF")
 		     "|%s|*.dat;*.mak"CASE("*.DAT;*.MAK")
