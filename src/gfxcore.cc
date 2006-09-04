@@ -1889,7 +1889,7 @@ void GfxCore::SetViewTo(Double xmin, Double xmax, Double ymin, Double ymax, Doub
 {
 
     SetTranslation(-Vector3((xmin + xmax) / 2, (ymin + ymax) / 2, (zmin + zmax) / 2));
-    Double scale = 1000.0;
+    Double scale = HUGE_VAL;
     const Vector3 ext = m_Parent->GetExtent();
     if (xmax > xmin) {
 	Double s = ext.GetX() / (xmax - xmin);
@@ -1903,7 +1903,7 @@ void GfxCore::SetViewTo(Double xmin, Double xmax, Double ymin, Double ymax, Doub
 	Double s = ext.GetZ() / (zmax - zmin);
 	if (s < scale) scale = s;
     }
-    SetScale(scale);
+    if (scale != HUGE_VAL) SetScale(scale);
     ForceRefresh();
 }
 
