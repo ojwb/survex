@@ -1210,6 +1210,12 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		break;
 
 	    case img_ERROR_INFO: {
+		if (survey->E == 0.0) {
+		    // Currently cavern doesn't spot all articulating traverses
+		    // so we assume that any traverse with no error isn't part
+		    // of a loop.  FIXME: fix cavern!
+		    break;
+		}
 		m_HasErrorInformation = true;
 		list<traverse>::reverse_iterator t;
 		t = surface_traverses.rbegin();
