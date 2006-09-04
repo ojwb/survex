@@ -969,8 +969,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 {
     wxString file(file_);
     // Load survey data from file, centre the dataset around the origin,
-    // chop legs such that no legs cross depth colour boundaries and prepare
-    // the data for drawing.
+    // and prepare the data for drawing.
 
 #if 0
     wxStopWatch timer;
