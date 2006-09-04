@@ -3,7 +3,7 @@
 //
 //  Draw text using texture mapped fonts.
 //
-//  Copyright (C) 2003,2004 Olly Betts
+//  Copyright (C) 2003,2004,2006 Olly Betts
 //
 //     Based on code from PLIB - http://plib.sourceforge.net
 //     Copyright (C) 1998,2002  Steve Baker
@@ -188,6 +188,8 @@ fntTexFont::load(const char *fname)
 	if (w > max_w) max_w = w;
 	unsigned char h = fnt_readByte(fd);
 	int vtx_left = (signed char)fnt_readByte(fd);
+	// We can't handle lbearing and rbearing correctly so ignore them.
+	vtx_left = 0;
 	int vtx_bot = (signed char)fnt_readByte(fd);
 	/* signed char step =*/ fnt_readByte(fd);
 	/* signed char unknown =*/ fnt_readByte(fd);
@@ -214,9 +216,7 @@ fntTexFont::load(const char *fname)
 	    glTexCoord2f(tex_left, tex_top);
 	    glVertex2i(vtx_left, vtx_top);
 	    glEnd();
-	    // FIXME: why do we need to add 2? 1 should do but seems to
-	    // result in some characters touching (but not others...)
-	    widths[ch] = w + 2;
+	    widths[ch] = w + 1;
 	} else {
 	    widths[ch] = fnt_size / 2;
 	}
@@ -229,7 +229,7 @@ fntTexFont::load(const char *fname)
 
     if (widths[(int)' '] == -1) {
 	glNewList(list_base + ' ', GL_COMPILE);
-	widths[(int)' '] = fnt_size / 2;
+	widths[(int)' '] = widths[(int)'n'];
 	glTranslated(widths[(int)' '], 0, 0);
 	glEndList();
     }

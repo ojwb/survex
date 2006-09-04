@@ -3,7 +3,7 @@
 //
 //  Draw text using texture mapped fonts.
 //
-//  Copyright (C) 2003,2004 Olly Betts
+//  Copyright (C) 2003,2004,2006 Olly Betts
 //
 //     Based on code from PLIB - http://plib.sourceforge.net
 //     Copyright (C) 1998,2002  Steve Baker
@@ -69,11 +69,11 @@ class fntTexFont {
     void getTextExtent(const char *s, int *width, int *height) const {
 	if (width) {
 	    int w = -1;
-	    while (*s) w += widths[(unsigned char)*s++] + 1;
+	    while (*s) w += widths[(unsigned char)*s++];
 	    if (w < 0) w = 0;
 	    *width = w;
 	}
-	if (height) *height = fnt_size + 2;
+	if (height) *height = fnt_size + 1;
     }
 
     void puts(int x, int y, const char *s) const {
