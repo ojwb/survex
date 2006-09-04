@@ -632,22 +632,26 @@ void GfxCore::Draw2dIndicators()
 
     SetColour(TEXT_COLOUR);
 
-    int w, h;
-    int width, height;
-    wxString str;
-
-    GetTextExtent(wxString("000"), &width, &h);
-    height = INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE + INDICATOR_GAP + h;
+    static int triple_zero_width = 0;
+    static int height = 0;
+    if (!triple_zero_width) {
+	GetTextExtent(wxString("000"), &triple_zero_width, &height);
+    }
+    const int y_off = INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE + height / 2;
 
     if (m_Compass && !m_Parent->IsExtendedElevation()) {
+	wxString str;
+	int value;
 	if (m_Degrees) {
-	    str = wxString::Format("%03d", int(m_PanAngle));
+	    value = int(m_PanAngle);
 	} else {
-	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / 180.0));
+	    value = int(m_PanAngle * 200.0 / 180.0);
 	}
-	GetTextExtent(str, &w, NULL);
-	DrawIndicatorText(comp_centre_x + width / 2 - w, height, str);
+	str = wxString::Format("%03d", value);
+	DrawIndicatorText(comp_centre_x - triple_zero_width / 2, y_off, str);
+
 	str = wxString(msg(/*Facing*/203));
+	// Force to iso-8859-1 for now.
 	for (size_t i = 0; i < str.size(); ++i) {
 	    unsigned char ch = str[i];
 	    if (i + 1 < str.size() && ch >= 0xc0 && ch < 0xe0) {
@@ -657,21 +661,50 @@ void GfxCore::Draw2dIndicators()
 		str.replace(i, 2, buf);
 	    }
 	}
+
+	int w;
 	GetTextExtent(str, &w, NULL);
-	DrawIndicatorText(comp_centre_x - w / 2, height + h, str);
+	DrawIndicatorText(comp_centre_x - w / 2, y_off + height, str);
     }
 
     if (m_Clino) {
 	int angle;
+	wxString str;
+	int width;
 	if (m_Degrees) {
+	    static int zero_zero_width = 0;
+	    if (!zero_zero_width) {
+		GetTextExtent(wxString("00"), &zero_zero_width, NULL);
+	    }
+	    width = zero_zero_width;
 	    angle = int(-m_TiltAngle);
+	    str = angle ? wxString::Format("%+03d", angle) : wxString("00");
 	} else {
+	    width = triple_zero_width;
 	    angle = int(-m_TiltAngle * 200.0 / 180.0);
+	    str = angle ? wxString::Format("%+04d", angle) : wxString("000");
 	}
-	str = angle ? wxString::Format("%+03d", angle) : wxString("00");
-	GetTextExtent(str, &w, NULL);
-	DrawIndicatorText(elev_centre_x + width / 2 - w, height, str);
+
+	// Adjust horizontal position so the left of the first digit is
+	// always in the same place.
+	int sign_offset = 0;
+	if (angle < 0) {
+	    static int minus_width = 0;
+	    if (!minus_width) {
+		GetTextExtent(wxString("-"), &minus_width, NULL);
+	    }
+	    sign_offset = minus_width + 1;
+	} else if (angle > 0) {
+	    static int plus_width = 0;
+	    if (!plus_width) {
+		GetTextExtent(wxString("+"), &plus_width, NULL);
+	    }
+	    sign_offset = plus_width + 1;
+	}
+	DrawIndicatorText(elev_centre_x - sign_offset - width / 2, y_off, str);
+
 	str = wxString(msg(/*Elevation*/118));
+	// Force to iso-8859-1 for now.
 	for (size_t i = 0; i < str.size(); ++i) {
 	    unsigned char ch = str[i];
 	    if (i + 1 < str.size() && ch >= 0xc0 && ch < 0xe0) {
@@ -681,8 +714,10 @@ void GfxCore::Draw2dIndicators()
 		str.replace(i, 2, buf);
 	    }
 	}
+
+	int w;
 	GetTextExtent(str, &w, NULL);
-	DrawIndicatorText(elev_centre_x - w / 2, height + h, str);
+	DrawIndicatorText(elev_centre_x - w / 2, y_off + height, str);
     }
 }
 
