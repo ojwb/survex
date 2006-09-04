@@ -1189,9 +1189,12 @@ void GfxCore::DefaultParameters()
 void GfxCore::Defaults()
 {
     // Restore default scale, rotation and translation parameters.
-
     DefaultParameters();
     SetScale(1.0);
+
+    // Invalidate all the cached lists.
+    GLACanvas::FirstShow();
+
     ForceRefresh();
 }
 
