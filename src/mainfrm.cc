@@ -2031,6 +2031,7 @@ void MainFrm::OnPresNew(wxCommandEvent&)
 	}
     }
     m_PresList->DeleteAllItems();
+    if (!ShowingSidePanel()) ToggleSidePanel();
     // Select the presentation page in the notebook.
     m_Notebook->SetSelection(1);
 }
