@@ -88,21 +88,21 @@ maintainer-clean-local:
 # version number is bumped
 
 manual: $(manual_sources) custom.dsl survex.ent ../configure.in
-	@sgmltools@ --backend=html --dsssl-spec='custom.dsl#html' manual.sgml
+	$(SGMLTOOLS) --backend=html --dsssl-spec='custom.dsl#html' manual.sgml
 	cp caution.png note.png manual
 
 # this rule is not used by the build system - it's for "manual" use (ho ho)
 manual.html: $(manual_sources) custom.dsl survex.ent ../configure.in
-	@sgmltools@ --backend=onehtml \
+	$(SGMLTOOLS) --backend=onehtml \
 		--dsssl-spec='custom.dsl#onehtml' manual.sgml
 
 manual.rtf: $(manual_sources) survex.ent ../configure.in
-	@sgmltools@ --backend=rtf manual.sgml
+	$(SGMLTOOLS) --backend=rtf manual.sgml
 
 manual.txt: $(manual_sources) survex.ent ../configure.in
-	@sgmltools@ --backend=txt manual.sgml
+	$(SGMLTOOLS) --backend=txt manual.sgml
 
 manual.ps: $(manual_sources) survex.ent ../configure.in
-	@sgmltools@ --backend=ps manual.sgml
+	$(SGMLTOOLS) --backend=ps manual.sgml
 
 CLEANFILES = usr

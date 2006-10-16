@@ -282,18 +282,19 @@ strcasecmp)
 esac
 
 AC_MSG_CHECKING(for sgmltools v2 or v3)
-case `(exec 2>&5 ; sgmltools --version)` in
-*" version 2"*)
-  sgmltools=sgmltools
-  AC_MSG_RESULT(yes) ;;
-*" version 3"*)
-  sgmltools=sgmltools
-  AC_MSG_RESULT(yes) ;;
-*)
-  sgmltools="$MISSING sgmltools"
-  AC_MSG_RESULT(no) ;;
-esac
-AC_SUBST(sgmltools)
+if test : != "$SGMLTOOLS" ; then
+  : ${SGMLTOOLS=sgmltools}
+  case `(exec 2>&5 ; $SGMLTOOLS --version)` in
+  *" version 2"*)
+    AC_MSG_RESULT(yes) ;;
+  *" version 3"*)
+    AC_MSG_RESULT(yes) ;;
+  *)
+    SGMLTOOLS="$MISSING sgmltools"
+    AC_MSG_RESULT(no) ;;
+  esac
+fi
+AC_SUBST(SGMLTOOLS)
 
 dnl extra warning flags for building with GCC
 if test yes = "$GCC"; then
