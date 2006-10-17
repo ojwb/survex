@@ -8,7 +8,8 @@ GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
 SUBDIRS = . lib src doc tests debian
 
-# seem to need this for "make distclean" to recurse?!?
+# We never want to implicitly recurse into the vim subdirectory, but we still
+# want to distribute the files there.
 DIST_SUBDIRS = $(SUBDIRS) vim
 
 EXTRA_DIST = $(GNU_FILES) TODO survex.iss.in OLDNEWS\
