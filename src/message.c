@@ -260,9 +260,6 @@ default_charset(void)
    }
    return CHARSET_USASCII;
 #elif OS_UNIX
-#ifdef AVEN
-   return CHARSET_UTF8;
-#else
    const char *p = getenv("LC_ALL");
    if (p == NULL || p[0] == '\0') {
       p = getenv("LC_CTYPE");
@@ -327,6 +324,10 @@ default_charset(void)
 	 }
       }
    }
+#ifdef AVEN
+   return CHARSET_UTF8;
+   return CHARSET_ISO_8859_1;
+#else
    return CHARSET_USASCII;
 #endif
 #else
@@ -1098,14 +1099,18 @@ macosx_got_msg:
       *p = '_';
    }
 
+   int def_charset = default_charset();
+
 #ifdef LC_MESSAGES
    /* try to setlocale() appropriately too */
    if (!setlocale(LC_MESSAGES, msg_lang)) {
-      if (msg_lang2) setlocale(LC_MESSAGES, msg_lang2);
+      if (!msg_lang2 || !setlocale(LC_MESSAGES, msg_lang2)) {
+	 def_charset = CHARSET_ISO_8859_1;
+      }
    }
 #endif
 
-   select_charset(default_charset());
+   select_charset(def_charset);
 }
 
 /* Message may be overwritten by next call
