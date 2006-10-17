@@ -127,15 +127,24 @@ bool Aven::OnInit()
     }
 #endif
 
+    /* Want --version and a decent --help output, which cmdline does for us.
+     * wxCmdLine is much less good.
+     */
+#if !wxCHECK_VERSION(2,5,1)
+    msg_init(argv);
+    cmdline_set_syntax_message("[3d file]", NULL);
+    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
+#endif
+
     const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
-    if (lang) {
+    {
 	// suppress message box warnings about messages not found
 	wxLogNull logNo;
 	wxLocale *loc = new wxLocale();
 	loc->AddCatalogLookupPathPrefix(msg_cfgpth());
-	if (!loc->Init(lang, lang, lang, TRUE, TRUE)) {
-	    if (strcmp(lang, "sk") == 0) {
-	       // As of 2.2.9, wxWindows has cs but not sk - the two languages
+	if (!loc->Init(msg_lang, lang, msg_lang, TRUE, TRUE)) {
+	    if (lang && strcmp(lang, "sk") == 0) {
+	       // As of 2.6.3, wxWindows has cs but not sk - the two languages
 	       // are close, so this makes sense...
 	       loc->Init("cs", "cs", "cs", TRUE, TRUE);
 	    }
@@ -147,14 +156,6 @@ bool Aven::OnInit()
     wxString survey;
     bool print_and_exit = false;
 
-    /* Want --version and a decent --help output, which cmdline does for us.
-     * wxCmdLine is much less good.
-     */
-#if !wxCHECK_VERSION(2,5,1)
-    msg_init(argv);
-    cmdline_set_syntax_message("[3d file]", NULL);
-    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
-#endif
     while (true) {
 	int opt;
 #if wxCHECK_VERSION(2,5,1)
