@@ -285,16 +285,33 @@ AC_MSG_CHECKING(for sgmltools v2 or v3)
 if test : != "$SGMLTOOLS" ; then
   : ${SGMLTOOLS=sgmltools}
   case `(exec 2>&5 ; $SGMLTOOLS --version)` in
-  *" version 2"*)
-    AC_MSG_RESULT(yes) ;;
-  *" version 3"*)
-    AC_MSG_RESULT(yes) ;;
+  *" version [23]"*)
+    AC_MSG_RESULT([$SGMLTOOLS]) ;;
   *)
     SGMLTOOLS="$MISSING sgmltools"
-    AC_MSG_RESULT(no) ;;
+    AC_MSG_RESULT(not found) ;;
   esac
+else
+  AC_MSG_RESULT([$SGMLTOOLS])
 fi
 AC_SUBST(SGMLTOOLS)
+AC_ARG_VAR(SGMLTOOLS, [sgmltools command])
+
+AC_MSG_CHECKING(for docbook-to-man)
+if test : != "$DOCBOOK_TO_MAN" ; then
+  : ${DOCBOOK_TO_MAN=docbook-to-man}
+  $DOCBOOK_TO_MAN 2> /dev/null
+  if test $? = 1 ; then
+    AC_MSG_RESULT([$DOCBOOK_TO_MAN])
+  else
+    DOCBOOK_TO_MAN="$MISSING docbook-to-man"
+    AC_MSG_RESULT([not found])
+  fi
+else
+  AC_MSG_RESULT([$DOCBOOK_TO_MAN])
+fi
+AC_SUBST(DOCBOOK_TO_MAN)
+AC_ARG_VAR(DOCBOOK_TO_MAN, [docbook-to-man command])
 
 dnl extra warning flags for building with GCC
 if test yes = "$GCC"; then
