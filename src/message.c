@@ -999,7 +999,11 @@ macosx_got_msg:
 
    if (!msg_lang || !*msg_lang) {
       msg_lang = getenv("LC_MESSAGES");
-      if (!msg_lang || !*msg_lang) msg_lang = getenv("LANG");
+      if (!msg_lang || !*msg_lang) {
+	 msg_lang = getenv("LANG");
+	 /* Something (AutoCAD?) on Microsoft Windows sets LANG to a number. */
+	 if (msg_lang && !isalpha(msg_lang[0])) msg_lang = NULL;
+      }
       if (!msg_lang || !*msg_lang) {
 #if OS_WIN32
 	 LCID locid;
