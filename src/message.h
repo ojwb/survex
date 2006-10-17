@@ -46,7 +46,10 @@ extern "C" {
 extern int msg_warnings; /* keep track of how many warnings we've given */
 extern int msg_errors;   /* and how many (non-fatal) errors */
 
+/* The language code - e.g. "en_GB" */
 extern const char *msg_lang;
+/* If the language code has a country specific qualification, then this will
+ * be just the language code.  Otherwise it's NULL.  e.g. "en" */
 extern const char *msg_lang2;
 
 void msg_init(char *const *argv);
