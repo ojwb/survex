@@ -3,7 +3,7 @@
 # Note: this script requires MacOS X 10.2 or greater, and builds diskimages
 # which require MacOS X 10.1 or greater to install.
 #
-# Run from the unpacked survex-1.0.X directory like so:
+# Run from the unpacked survex-1.1.X directory like so:
 #
 #   ./buildmacosx.sh --install-wx
 #
@@ -20,20 +20,31 @@
 # something like this:
 #
 #   env WXCONFIG=/path/to/wx-config ./buildmacosx.sh
+#
+# If using a pre-installed wxWindows, note that it must satisfy the
+# following requirements:
+#   - It must be built with OpenGL support (--with-opengl).
+#   - It must be the Carbon version.
+#   - It must be a "non-unicode" build.
+#
 
 set -e
+
+WXVERSION=2.7.0-1
 
 if test "x$1" = "x--install-wx" ; then
   if test -x WXINSTALL/bin/wx-config ; then
     :
   else
     prefix="`pwd`"/WXINSTALL
-    test -f wxMac-2.4.2.tar.gz || \
-      wget ftp://biolpc22.york.ac.uk/pub/2.4.2/wxMac-2.4.2.tar.gz
-    test -d wxMac-2.4.2 || tar zxvf wxMac-2.4.2.tar.gz
-    test -d wxMac-2.4.2/build || mkdir wxMac-2.4.2/build
-    cd wxMac-2.4.2/build
-    ../configure --disable-shared --prefix="$prefix"
+    test -f wxWidgets-$WXVERSION.tar.bz2 || \
+      wget ftp://ftp.wxwidgets.org/pub/$WXVERSION/wxWidgets-$WXVERSION.tar.bz2
+    test -d wxWidgets-$WXVERSION || tar jxvf wxWidgets-$WXVERSION.tar.bz2
+    test -d wxWidgets-$WXVERSION/build || mkdir wxWidgets-$WXVERSION/build
+    # wx's Carbon glcanvas is unsatisfactory, so for now we use our own.
+    cp src/carbon-glcanvas.cpp wxWidgets-$WXVERSION/src/mac/carbon/
+    cd wxWidgets-$WXVERSION/build
+    ../configure --disable-shared --prefix="$prefix" --with-opengl
     make -s
     make -s install
     cd ../..
@@ -52,10 +63,17 @@ export WXCONFIG
 rm -rf *.dmg Survex macosxtmp
 D="`pwd`/Survex"
 T="`pwd`/macosxtmp"
-./configure --prefix="$D" --bindir="$D" --mandir="$T" CFLAGS=-DMACOSX_BUNDLE
+./configure --prefix="$D" --bindir="$D" --mandir="$T"
 make
 make install
 #mv Survex/survex Survex/Survex
+
+# Construct the Aven application bundle.
+cp -r lib/Aven.app Survex
+cp -r $D/share/survex/* Survex/Aven.app/Contents/Resources/
+mv Survex/aven Survex/Aven.app/Contents/MacOS/
+rm -f Survex/share/survex/aven.txf
+rm -rf Survex/share/survex/icons
 
 size=`du -s Survex|sed 's/[^0-9].*//'`
 # Allow 1000 extra sectors for various overheads (500 wasn't enough).
@@ -68,7 +86,7 @@ echo "Creating new blank image survex-macosx.dmg of $sectors sectors"
 # This creates the diskimage file and initialises it as an HFS+ volume.
 hdiutil create -sectors $sectors survex-macosx -layout NONE -fs HFS+ -volname Survex
 
-echo "Present image to the filesystems for mounting."
+echo "Presenting image to the filesystems for mounting."
 # This will mount the image onto the Desktop.
 # Get the name of the device we mounted it on...
 dev=`hdid survex-macosx.dmg|tail -1|sed 's!/dev/\([!-~]*\).*!\1!;'`

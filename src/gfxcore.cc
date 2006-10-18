@@ -3,7 +3,7 @@
 //
 //  Core drawing code for Aven.
 //
-//  Copyright (C) 2000-2003,2005 Mark R. Shinwell
+//  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
 //  Copyright (C) 2001-2003,2004,2005,2006 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
@@ -219,8 +219,6 @@ void GfxCore::Initialise(bool same_file)
     }
 
     m_HaveData = true;
-
-    ForceRefresh();
 }
 
 void GfxCore::FirstShow()
@@ -305,7 +303,10 @@ void GfxCore::OnLeaveWindow(wxMouseEvent& event) {
 void GfxCore::OnIdle(wxIdleEvent& event)
 {
     // Handle an idle event.
-    if (Animate()) ForceRefresh();
+    if (Animate()) {
+	ForceRefresh();
+	event.RequestMore();
+    }
 }
 
 void GfxCore::OnPaint(wxPaintEvent&)
@@ -1201,6 +1202,9 @@ void GfxCore::OnSize(wxSizeEvent& event)
 	//printf("OnSize(%d,%d)\n", size.GetWidth(), size.GetHeight());
 	return;
     }
+
+    wxGLCanvas::OnSize(event);
+
     m_XSize = size.GetWidth();
     m_YSize = size.GetHeight();
 
@@ -2931,7 +2935,7 @@ static wxCursor
 make_cursor(const unsigned char * bits, const unsigned char * mask,
 	    int hotx, int hoty)
 {
-#ifdef __WXMSW__
+#if defined __WXMSW__ || defined __WXMAC__
     wxBitmap cursor_bitmap(reinterpret_cast<const char *>(bits), 32, 32);
     wxBitmap mask_bitmap(reinterpret_cast<const char *>(mask), 32, 32);
     cursor_bitmap.SetMask(new wxMask(mask_bitmap));

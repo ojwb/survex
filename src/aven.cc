@@ -80,9 +80,10 @@ static int getopt_first_response = 0;
 bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 {
 #ifdef __WXMAC__
-    // Tell wxMac which the About menu item is so it can be put where MacOS
-    // users expect it to be.
+    // Tell wxMac which the About and Quit menu items are so they can be put
+    // where MacOS users expect them to be.
     wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
+    wxApp::s_macExitMenuItemId = menu_FILE_QUIT;
 
     // MacOS passes a magic -psn_XXXX command line argument in argv[1] which
     // wx ignores for us, but in wxApp::Initialize() which hasn't been
@@ -106,10 +107,6 @@ bool Aven::OnInit()
 {
     wxLog::SetActiveTarget(new MyLogWindow());
 #if !wxCHECK_VERSION(2,5,1) && defined __WXMAC__
-    // Tell wxMac which the About menu item is so it can be put where MacOS
-    // users expect it to be.
-    wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
-
     // wxMac is supposed to remove this magic command line option (which
     // Finder passes), but the code in 2.4.2 is bogus.  It just decrements
     // argc rather than copying argv down.  But we get to the command line

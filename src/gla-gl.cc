@@ -35,7 +35,11 @@
 #include "message.h"
 #include "useful.h"
 
+#ifdef __APPLE__
+#include <OpenGL/glext.h>
+#else
 #include <GL/glext.h>
+#endif
 
 #ifndef GL_POINT_SIZE_MAX
 #define GL_POINT_SIZE_MAX 0x8127
@@ -54,7 +58,11 @@
 #define GLUT_DISABLE_ATEXIT_HACK
 // For glutBitmapLength()
 #define GLUT_API_VERSION 4
+#ifdef __APPLE__
+#include <OpenGL/glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #ifdef FREEGLUT
 #include <GL/freeglut_ext.h>
 #endif

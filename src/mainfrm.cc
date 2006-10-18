@@ -3,7 +3,7 @@
 //
 //  Main frame handling for Aven.
 //
-//  Copyright (C) 2000-2002,2005 Mark R. Shinwell
+//  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
 //  Copyright (C) 2001-2003,2004,2005,2006 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
@@ -722,7 +722,11 @@ void MainFrm::CreateMenuBar()
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_SCREENSHOT, GetTabMsg(/*@Screenshot...*/201));
     filemenu->Append(menu_FILE_EXPORT, GetTabMsg(/*@Export as...*/382));
+#ifndef __WXMAC__
+    // On wxMac the "Quit" menu item will be moved elsewhere, so we suppress
+    // this separator.
     filemenu->AppendSeparator();
+#endif
     filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
 
     m_history.UseMenu(filemenu);
@@ -836,7 +840,11 @@ void MainFrm::CreateMenuBar()
     menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
 #endif
     menubar->Append(presmenu, GetTabMsg(/*@Presentation*/216));
+#ifndef __WXMAC__
+    // On wxMac the "About" menu item will be moved elsewhere, so we suppress
+    // this menu since it will then be empty.
     menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
+#endif
     SetMenuBar(menubar);
 }
 
@@ -1621,6 +1629,7 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 	m_Gfx->Initialise(old_file == m_File);
 	m_Notebook->Show(true);
 
+	m_Gfx->Show(true);
 	m_Gfx->SetFocus();
     }
 }
@@ -2422,7 +2431,7 @@ void MainFrm::ViewFullScreen() {
     static bool sidepanel;
     if (IsFullScreen()) sidepanel = ShowingSidePanel();
     if (sidepanel) ToggleSidePanel();
-#ifndef _WIN32
+#ifdef __WXGTK__
     // wxGTK doesn't currently remove the toolbar, statusbar, or menubar.
     // Can't work out how to lose the menubar right now, but this works for
     // the other two.  FIXME: tidy this code up and submit a patch for

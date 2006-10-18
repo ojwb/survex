@@ -22,7 +22,12 @@
 #ifndef aventypes_h
 #define aventypes_h
 
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else
 #include <GL/glu.h>
+#endif
+
 typedef GLdouble Double;
 
 #endif

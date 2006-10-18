@@ -927,7 +927,12 @@ msg_init(char * const *argv)
 #ifdef MACOSX_BUNDLE
       /* If we're being built into a bundle, always look relative to
        * the path to the binary. */
+#ifdef AVEN
+      /* Aven is packaged as an application, so we must look inside there. */
+      pth_cfg_files = use_path(exe_pth, "../Resources");
+#else
       pth_cfg_files = use_path(exe_pth, "share/survex");
+#endif
 #elif OS_UNIX && defined DATADIR && defined PACKAGE
       bool free_pth = fFalse;
       char *pth = getenv("srcdir");

@@ -1,11 +1,30 @@
 Installing Survex on MacOS X
 ============================
 
-Next to the INSTALL file which you are currently reading is the
-Survex Directory.  To install, just drag this directory to your
+Next to the INSTALL file that you are currently reading is the
+Survex directory.  To install, just drag this directory to your
 Applications folder.  You will need to be logged in at an
 Administrator level to do this.
 
 At present, you'll need to use the command line (via Terminal.app)
 to process survey data.  Once it is processed, you can view it from
 the desktop using Aven.
+
+Known shortcomings in the MacOS version of Aven
+===============================================
+
+- About dialog doesn't show.
+- Green colour in the tree view is too light.
+- Not always as responsive as under X Windows.
+- Spurious menu bar items appear whilst application is launching.
+- Spurious Help menu sometimes appears.
+- Spurious "Please wait" dialog appears whilst printing.
+- Full screen mode not supported.
+- GL canvas isn't correct size before a file is opened (should be hidden).
+- Icons need sorting out.
+- The mouse cursor never changes to different shapes.
+- Should be packaged with a proper installer.
+- Run actions for filetypes in Finder are needed (including for .svx etc).
+- Drag-and-drop into Aven window should be supported.
+- Information in "Get Info" for the application needs updating properly.
+

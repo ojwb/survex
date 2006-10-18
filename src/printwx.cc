@@ -244,9 +244,13 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     wxButton * but;
     but = new wxButton(this, wxID_CANCEL, msg(/*&Cancel*/402));
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+#ifndef __WXMAC__
     but = new wxButton(this, svx_PREVIEW, msg(/*Pre&view*/401));
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     but = new wxButton(this, svx_PRINT, msg(/*&Print*/400));
+#else
+    but = new wxButton(this, svx_PRINT, wxString(msg(/*&Print*/400)) + "...");
+#endif
     but->SetDefault();
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     v1->Add(h2, 0, wxALIGN_RIGHT|wxALL, 5);

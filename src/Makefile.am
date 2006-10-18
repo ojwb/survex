@@ -80,35 +80,16 @@ else
 aven_LDADD = $(LIBOBJS) $(MOVIE_LIBS) $(WX_LIBS)
 endif
 
-# If we're building aven on MacOS X, we need to bind resources to aven after
-# we build it.  Use aven-rez as a timestamp file to track whether we've
-# bound resources.
-# The MacOS X install program doesn't copy the resource fork (clever eh?) so
-# we reapply the resources after installing too...
 if MACOSX
-AVEN_REZ = aven-rez
-
-aven-rez: aven
-	`$(WXCONFIG) --rezflags` aven
-	touch aven-rez
-
-install-exec-hook:
-	`$(WXCONFIG) --rezflags` $(bindir)/aven
-else !MACOSX
-AVEN_REZ =
-
-# We need an empty target as automake will try to make it because it's in the
-# other branch.
-install-exec-hook:
-
-endif !MACOSX
-
-noinst_SCRIPTS = $(AVEN_REZ)
-MOSTLYCLEANFILES = $(AVEN_REZ)
-
+# Aven must always be built into an application bundle to work correctly.
+aven_CFLAGS = $(WX_CFLAGS) $(AM_CFLAGS) -DAVEN -DMACOSX_BUNDLE
+aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS) -DMACOSX_BUNDLE
+aven_LDFLAGS = $(WX_LDFLAGS) -framework OpenGL
+else
 aven_CFLAGS = $(WX_CFLAGS) $(AM_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS)
 aven_LDFLAGS = $(WX_LDFLAGS)
+endif
 
 diffpos_SOURCES = diffpos.c namecmp.c img.c useful.c hash.c $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
