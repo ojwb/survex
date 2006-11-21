@@ -1,3 +1,56 @@
+* (MacOS X version): Assorted OS X specific tweaks and fixes.
+
+* aven: Fix the charset we use for aven in certain cases.
+
+* Ignore LANG if it starts with a digit to avoid problems with bogus value for
+  LANG which AutoCAD installation seems to set on MS Windows.
+
+* aven: Call msg_init before using msg_lang or it won't ever be set!
+	
+* aven: Pass wx the full language code to initialise the C library locale.
+
+* (Unix version): configure: Allow SGMLTOOLS and DOCBOOK_TO_MAN to be
+  specified.  Either/both can be set to ":".
+
+* aven: Pick a smaller and clearer font for labels
+
+* aven: Fix bug in generating prefix tree view which could lead to a bogus
+  leading dot on some survey names (bug probably introduced on 2006-07-12).
+
+* aven: Assume zero error in a traverse means it's an articulating traverse
+  which cavern didn't spot.
+
+* aven: "New Presentation" now ensures that the side panel is open
+
+* aven: Use the title from the 3d (or plt, etc) file for the window title
+  rather than the filename.
+
+* aven: When setting the view to a single point, don't change the scale.
+
+* aven: If reloading the same file, don't change the view
+
+* aven: Fix filetypes selector in open dialog.
+
+* aven: Add entry for "white" in date and error keys.
+
+* aven: Tweak display of bearing and elevation angles to look nicer with
+  proportional fonts.
+
+* aven: Fix character spacing
+
+* aven: Fix updating of cached opengl lists when the view is reset to the
+  default.
+
+* aven: Add "Colour by Error".
+
+* dump3d: Report unknown (to dump3d) codes returned by img.
+
+* aven: Show distances to 2 decimal places rather than the nearest integer.
+
+* img library: Flag all stations as underground in the old "ASCII" .3d format.
+
+* Updated Czech, Spanish, and Slovak translations.
+
 Changes in 1.1.10:
 
 * aven: Clicking on a survey name in the survey tree now highlights it in
