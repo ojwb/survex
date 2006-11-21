@@ -285,7 +285,9 @@ AC_MSG_CHECKING(for sgmltools v2 or v3)
 if test : != "$SGMLTOOLS" ; then
   : ${SGMLTOOLS=sgmltools}
   case `(exec 2>&5 ; $SGMLTOOLS --version)` in
-  *" version [[23]]"*)
+  *" version 3"*)
+    AC_MSG_RESULT([$SGMLTOOLS]) ;;
+  *" version 2"*)
     AC_MSG_RESULT([$SGMLTOOLS]) ;;
   *)
     SGMLTOOLS="$MISSING sgmltools"
