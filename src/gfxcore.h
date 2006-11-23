@@ -330,7 +330,7 @@ public:
 
     bool IsRotating() const { return m_Rotating; }
     bool HasData() const { return m_DoneFirstShow && m_HaveData; }
-    bool IsFlat() const;
+    bool HasDepth() const;
     bool HasRangeOfDates() const;
     bool HasErrorInformation() const;
 

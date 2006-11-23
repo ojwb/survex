@@ -212,7 +212,7 @@ class MainFrm : public wxFrame {
     list<vector<XSect> > tubes;
     list<LabelInfo*> m_Labels;
     Vector3 m_Ext;
-    Double m_ZMin;
+    Double m_DepthMin, m_DepthExt;
     time_t m_DateMin, m_DateExt;
     bool complete_dateinfo;
     GfxCore* m_Gfx;
@@ -445,8 +445,9 @@ public:
     Double GetXExtent() const { return m_Ext.GetX(); }
     Double GetYExtent() const { return m_Ext.GetY(); }
     Double GetZExtent() const { return m_Ext.GetZ(); }
-    Double GetZMin() const { return m_ZMin; }
-    Double GetZMax() const { return m_ZMin + m_Ext.GetZ(); }
+
+    Double GetDepthExtent() const { return m_DepthExt; }
+    Double GetDepthMin() const { return m_DepthMin; }
 
     bool HasCompleteDateInfo() const { return complete_dateinfo; }
     time_t GetDateExtent() const { return m_DateExt; }

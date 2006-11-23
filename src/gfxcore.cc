@@ -202,7 +202,7 @@ void GfxCore::Initialise(bool same_file)
 
     switch (m_ColourBy) {
 	case COLOUR_BY_DEPTH:
-	    if (m_Parent->GetZExtent() == 0.0) {
+	    if (m_Parent->GetDepthExtent() == 0.0) {
 		SetColourBy(COLOUR_BY_NONE);
 	    }
 	    break;
@@ -825,9 +825,8 @@ void GfxCore::DrawDepthbar()
     wxString* strs = new wxString[GetNumDepthBands()];
     int band;
     for (band = 0; band < GetNumDepthBands(); band++) {
-	Double z = m_Parent->GetZMin() +
-		   m_Parent->GetZExtent() * band / (GetNumDepthBands() - 1);
-
+	Double z = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ() +
+		   m_Parent->GetDepthExtent() * band / (GetNumDepthBands() - 1);
 	strs[band] = FormatLength(z, false);
 
 	int x;
@@ -1925,9 +1924,9 @@ bool GfxCore::CanLowerViewpoint() const
     return GetPerspective() ? (m_TiltAngle < 90.0) : (m_TiltAngle > -90.0);
 }
 
-bool GfxCore::IsFlat() const
+bool GfxCore::HasDepth() const
 {
-    return m_Parent->GetZExtent() == 0.0;
+    return m_Parent->GetDepthExtent() == 0.0;
 }
 
 bool GfxCore::HasRangeOfDates() const
@@ -2184,7 +2183,7 @@ void GfxCore::DrawIndicators()
 {
     // Draw depthbar.
     if (m_Depthbar) {
-       if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetZExtent() != 0.0) {
+       if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
 	   DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
        } else if (m_ColourBy == COLOUR_BY_DATE && m_Parent->GetDateExtent()) {
 	   DrawList2D(LIST_DATEBAR, m_XSize, m_YSize, 0);
@@ -2213,17 +2212,15 @@ void GfxCore::PlaceVertexWithColour(const Vector3 & v, Double factor)
 void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
 {
     // Set the drawing colour based on the altitude.
-    Double z_ext = m_Parent->GetZExtent();
+    Double z_ext = m_Parent->GetDepthExtent();
     assert(z_ext > 0);
 
-    Double z = v.GetZ();
+    Double z = v.GetZ() - m_Parent->GetDepthMin();
     // points arising from tubes may be slightly outside the limits...
-    if (z < -z_ext * 0.5) z = -z_ext * 0.5;
-    if (z > z_ext * 0.5) z = z_ext * 0.5;
+    if (z < 0) z = 0;
+    if (z > z_ext) z = z_ext;
 
-    Double z_offset = z + z_ext * 0.5;
-
-    Double how_far = z_offset / z_ext;
+    Double how_far = z / z_ext;
     assert(how_far >= 0.0);
     assert(how_far <= 1.0);
 
@@ -2233,7 +2230,7 @@ void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
 	const GLAPen& pen2 = GetPen(band + 1);
 
 	Double interval = z_ext / (GetNumDepthBands() - 1);
-	Double into_band = z_offset / interval - band;
+	Double into_band = z / interval - band;
 
 //	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
 //	       z_offset, interval, band);
@@ -2276,8 +2273,9 @@ void GfxCore::SplitLineAcrossBands(int band, int band2,
 int GfxCore::GetDepthColour(Double z) const
 {
     // Return the (0-based) depth colour band index for a z-coordinate.
-    Double z_ext = m_Parent->GetZExtent();
+    Double z_ext = m_Parent->GetDepthExtent();
     assert(z_ext > 0);
+    z -= m_Parent->GetDepthMin();
     z += z_ext / 2;
     return int(z / z_ext * (GetNumDepthBands() - 1));
 }
@@ -2291,8 +2289,9 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
     if (GetNumDepthBands() == 1) return 0;
 
     int band = (a > b) ? a : b; // boundary N lies on the bottom of band N.
-    Double z_ext = m_Parent->GetZExtent();
-    return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2;
+    Double z_ext = m_Parent->GetDepthExtent();
+    return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2
+	+ m_Parent->GetDepthMin();
 }
 
 void GfxCore::AddPolyline(const traverse & centreline)
@@ -2312,11 +2311,12 @@ void GfxCore::AddPolyline(const traverse & centreline)
 void GfxCore::AddPolylineShadow(const traverse & centreline)
 {
     BeginPolyline();
+    const double z = -0.5 * m_Parent->GetZExtent();
     vector<PointInfo>::const_iterator i = centreline.begin();
-    PlaceVertex(i->GetX(), i->GetY(), -0.5 * m_Parent->GetZExtent());
+    PlaceVertex(i->GetX(), i->GetY(), z);
     ++i;
     while (i != centreline.end()) {
-	PlaceVertex(i->GetX(), i->GetY(), -0.5 * m_Parent->GetZExtent());
+	PlaceVertex(i->GetX(), i->GetY(), z);
 	++i;
     }
     EndPolyline();

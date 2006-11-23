@@ -1,5 +1,8 @@
 * (MacOS X version): Assorted OS X specific tweaks and fixes.
 
+* aven: Only consider underground legs when calculating the depth bands and
+  depth colouring.
+
 * aven: Fix the charset we use for aven in certain cases.
 
 * Ignore LANG if it starts with a digit to avoid problems with bogus value for

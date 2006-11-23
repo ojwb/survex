@@ -1037,8 +1037,12 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     Double xmax = -DBL_MAX;
     Double ymin = DBL_MAX;
     Double ymax = -DBL_MAX;
-    m_ZMin = DBL_MAX;
+    Double zmin = DBL_MAX;
     Double zmax = -DBL_MAX;
+
+    m_DepthMin = DBL_MAX;
+    Double depthmax = -DBL_MAX;
+
     m_DateMin = (time_t)-1;
     if (m_DateMin < 0) {
 	// Hmm, signed time_t!
@@ -1096,7 +1100,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		if (pt.x > xmax) xmax = pt.x;
 		if (pt.y < ymin) ymin = pt.y;
 		if (pt.y > ymax) ymax = pt.y;
-		if (pt.z < m_ZMin) m_ZMin = pt.z;
+		if (pt.z < zmin) zmin = pt.z;
 		if (pt.z > zmax) zmax = pt.z;
 
 		time_t date;
@@ -1109,6 +1113,10 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		}
 
 		bool is_surface = (survey->flags & img_FLAG_SURFACE);
+		if (!is_surface) {
+		    if (pt.z < m_DepthMin) m_DepthMin = pt.z;
+		    if (pt.z > depthmax) depthmax = pt.z;
+		}
 		if (pending_move || current_polyline_is_surface != is_surface) {
 		    if (!current_polyline_is_surface && current_traverse) {
 			//FixLRUD(*current_traverse);
@@ -1125,6 +1133,9 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 			traverses.push_back(traverse());
 			current_traverse = &traverses.back();
 			++n_traverses;
+			// The previous point was at a surface->ug transition.
+			if (prev_pt.z < m_DepthMin) m_DepthMin = prev_pt.z;
+			if (prev_pt.z > depthmax) depthmax = prev_pt.z;
 		    }
 		    if (pending_move) {
 			// Update survey extents.  We only need to do this if
@@ -1135,7 +1146,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 			if (prev_pt.x > xmax) xmax = prev_pt.x;
 			if (prev_pt.y < ymin) ymin = prev_pt.y;
 			if (prev_pt.y > ymax) ymax = prev_pt.y;
-			if (prev_pt.z < m_ZMin) m_ZMin = prev_pt.z;
+			if (prev_pt.z < zmin) zmin = prev_pt.z;
 			if (prev_pt.z > zmax) zmax = prev_pt.z;
 		    }
 
@@ -1261,8 +1272,6 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		m_HasUndergroundLegs = false;
 		m_HasSurfaceLegs = false;
 
-		m_ZMin = DBL_MAX;
-
 		img_close(survey);
 
 		wxString m = wxString::Format(msg(img_error()), file.c_str());
@@ -1307,12 +1316,12 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 	    if ((*i)->GetX() > xmax) xmax = (*i)->GetX();
 	    if ((*i)->GetY() < ymin) ymin = (*i)->GetY();
 	    if ((*i)->GetY() > ymax) ymax = (*i)->GetY();
-	    if ((*i)->GetZ() < m_ZMin) m_ZMin = (*i)->GetZ();
+	    if ((*i)->GetZ() < zmin) zmin = (*i)->GetZ();
 	    if ((*i)->GetZ() > zmax) zmax = (*i)->GetZ();
 	}
     }
 
-    m_Ext.assign(xmax - xmin, ymax - ymin, zmax - m_ZMin);
+    m_Ext.assign(xmax - xmin, ymax - ymin, zmax - zmin);
 
     if (datemax < m_DateMin) m_DateMin = 0;
     m_DateExt = datemax - m_DateMin;
@@ -1332,7 +1341,15 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     m_Labels.sort(LabelPlotCmp(separator));
 
     // Centre the dataset around the origin.
-    CentreDataset(Vector3(xmin, ymin, m_ZMin));
+    CentreDataset(Vector3(xmin, ymin, zmin));
+
+    if (depthmax < m_DepthMin) {
+	m_DepthMin = 0;
+	m_DepthExt = 0;
+    } else {
+	m_DepthExt = depthmax - m_DepthMin;
+	m_DepthMin -= m_Offsets.GetZ();
+    }
 
 #if 0
     printf("time to load = %.3f\n", (double)timer.Time());
