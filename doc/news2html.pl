@@ -27,9 +27,36 @@ my $in_li = 0;
 
 while (<STDIN>) {
     if (s/^\*\s*//) {
+	if ($in_ul == 2) {
+	    if ($in_li) {
+		print "</p></li>\n";
+		$in_li = 0;
+	    }
+	    print "</ul></li>\n";
+	    --$in_ul;
+	}
 	if (!$in_ul) {
 	    print "<ul>";
 	    $in_ul = 1;
+	}
+	if ($in_li) {
+	    print "</p></li>";
+	    $in_li = 0;
+	}
+	print "<li><p>", html($_);
+	$in_li = 1;
+    } elsif (s/^\s+\+\s+//) {
+	if (!$in_ul) {
+	    print "<ul>";
+	    $in_ul = 1;
+	}
+	if ($in_ul != 2) {
+	    if (!$in_li) {
+		print "<li><p>";
+	    }
+	    print "<ul>";
+	    $in_ul = 2;
+	    $in_li = 0;
 	}
 	if ($in_li) {
 	    print "</p></li>";
@@ -46,11 +73,14 @@ while (<STDIN>) {
 	    print "</p></li>";
 	    $in_li = 0;
 	}
-	if ($in_ul) {
+	while ($in_ul) {
 	    print "</ul>";
-	    $in_ul = 0;
+	    --$in_ul;
+	    if ($in_ul) { print "</p></li>"; }
 	}
-	print "<h1>", html($_), "</h1>\n";
+	$_ = html($_);
+	s!(\(.*\))!<small>$1</small>!;
+	print "<h1>$_</h1>\n";
     }
 }	
 
@@ -58,9 +88,10 @@ if ($in_li) {
     print "</p></li>";
     $in_li = 0;
 }
-if ($in_ul) {
+while ($in_ul) {
     print "</ul>";
-    $in_ul = 0;
+    --$in_ul;
+    if ($in_ul) { print "</p></li>"; }
 }
 
 print <<END;

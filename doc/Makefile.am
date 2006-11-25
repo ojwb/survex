@@ -25,10 +25,10 @@ EXTRA_DIST = manual $(HTMLFILES) $(DOCS_OTHER) survex.1.in index.htm.in\
 ChngeLog.htm: ../ChangeLog
 	./cl2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../ChangeLog > ChngeLog.htm
 
-NEWS.htm: ../NEWS
+NEWS.htm: ../NEWS news2html.pl
 	./news2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../NEWS > NEWS.htm
 
-OLDNEWS.htm: ../OLDNEWS
+OLDNEWS.htm: ../OLDNEWS news2html.pl
 	./news2html.pl < ../OLDNEWS > OLDNEWS.htm
 
 MAINTAINERCLEANFILES = @DOCS_OTHER@ $(other_mans)\
