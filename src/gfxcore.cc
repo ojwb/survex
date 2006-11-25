@@ -219,6 +219,8 @@ void GfxCore::Initialise(bool same_file)
     }
 
     m_HaveData = true;
+
+    ForceRefresh();
 }
 
 void GfxCore::FirstShow()
