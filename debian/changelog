@@ -1,3 +1,9 @@
+survex (1.1.11-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Wookey <wookey@survex.com>  Sat, 25 Nov 2006 00:49:37 +0000
+
 survex (1.1.10-1) unstable; urgency=low
 
   * aven: Clicking on a survey name in the survey tree now highlights it in
