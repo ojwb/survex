@@ -3100,7 +3100,10 @@ sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
 ro:281 @Anulati linia de masura##Escape
 #ro: to find a better way to express that
 # XXX 282 283 284 285 286 287 288
+# TRANSLATE fr pt ca es it ro
 en:289 Colour by E@rror
+fr,pt,ca,es,it,ro:289 Colour b@y Error
+sk:289 Colour @by Error
 #
 # The accelerators must be different within this group
 # c.f. 205
