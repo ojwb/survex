@@ -52,6 +52,23 @@ using namespace std;
 #include "mainfrm.h"
 #include "printwx.h"
 
+enum {
+	svx_PRINT = 1200,
+	svx_PREVIEW,
+	svx_SCALE,
+	svx_BEARING,
+	svx_TILT,
+	svx_LEGS,
+	svx_STATIONS,
+	svx_NAMES,
+	svx_BORDERS,
+	svx_BLANKS,
+	svx_INFOBOX,
+	svx_SCALEBAR,
+	svx_PLAN,
+	svx_ELEV
+};
+
 class svxPrintout : public wxPrintout {
     MainFrm *mainfrm;
     layout *m_layout;
