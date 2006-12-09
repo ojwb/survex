@@ -19,7 +19,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 //
 
 #ifdef HAVE_CONFIG_H
@@ -48,26 +48,6 @@
 #include <functional>
 #include <stack>
 #include <vector>
-
-#if !wxCHECK_VERSION(2,4,0)
-# error We support building with wxWidgets 2.4.0 or newer
-#endif
-
-// These were renamed in wx 2.7.
-#if !wxCHECK_VERSION(2,7,0)
-# define wxFD_OPEN wxOPEN
-# define wxFD_OVERWRITE_PROMPT wxOVERWRITE_PROMPT
-# define wxFD_SAVE wxSAVE
-# if wxCHECK_VERSION(2,6,0)
-#  define wxFD_FILE_MUST_EXIST wxFILE_MUST_EXIST
-# else
-// This was a new feature in wx 2.6.
-#  define wxFD_FILE_MUST_EXIST 0
-# endif
-
-# define wxBK_BOTTOM wxNB_BOTTOM
-# define wxBK_LEFT wxNB_LEFT
-#endif
 
 using namespace std;
 
@@ -1747,18 +1727,7 @@ void MainFrm::OnPageSetup(wxCommandEvent&)
 
 void MainFrm::OnExport(wxCommandEvent&)
 {
-    char *baseleaf = baseleaf_from_fnm(m_File.c_str());
-    wxFileDialog dlg(this, wxString("Export as:"), "",
-		     wxString(baseleaf),
-		     "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl",
-		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
-    free(baseleaf);
-    if (dlg.ShowModal() == wxID_OK) {
-	wxString fnm = dlg.GetPath();
-	if (!m_Gfx->OnExport(fnm, m_Title)) {
-	    wxGetApp().ReportError(wxString::Format("Couldn't write file `%s'", fnm.c_str()));
-	}
-    }
+    m_Gfx->OnExport(m_File, m_Title);
 }
 
 void MainFrm::OnQuit(wxCommandEvent&)

@@ -19,7 +19,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 //
 
 #ifdef HAVE_CONFIG_H
@@ -37,7 +37,6 @@
 #include "printwx.h"
 #include "guicontrol.h"
 #include "moviemaker.h"
-#include "export.h"
 
 #include <wx/confbase.h>
 #include <wx/image.h>
@@ -2922,15 +2921,20 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
     svxPrintDlg * p;
     p = new svxPrintDlg(m_Parent, filename, title, datestamp,
 			m_PanAngle, m_TiltAngle,
-			m_Names, m_Crosses, m_Legs, m_Surface);
+			m_Names, m_Crosses, m_Legs, m_Surface,
+			true);
     p->Show(TRUE);
 }
 
-bool
+void
 GfxCore::OnExport(const wxString &filename, const wxString &title)
 {
-    return Export(filename, title, m_Parent,
-	   m_PanAngle, m_TiltAngle, m_Names, m_Crosses, m_Legs, m_Surface);
+    svxPrintDlg * p;
+    p = new svxPrintDlg(m_Parent, filename, title, "",
+			m_PanAngle, m_TiltAngle,
+			m_Names, m_Crosses, m_Legs, m_Surface,
+			false);
+    p->Show(TRUE);
 }
 
 static wxCursor

@@ -1,7 +1,7 @@
 /* printwx.h */
 /* Device dependent part of Survex wxWindows driver */
 /* Copyright (C) 2004 Philip Underwood
- * Copyright (C) 2004,2005 Olly Betts
+ * Copyright (C) 2004,2005,2006 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #include "wx.h"
@@ -30,6 +30,7 @@ class wxSpinCtrl;
 class wxCheckBox;
 class wxSpinEvent;
 
+// This dialog is also use for Export as well as Print.
 class svxPrintDlg : public wxDialog {
 protected:
 	layout m_layout;
@@ -55,14 +56,16 @@ protected:
 	svxPrintDlg(MainFrm* parent, const wxString & filename,
 		    const wxString & title, const wxString & datestamp,
 		    double angle, double tilt_angle,
-		    bool labels, bool crosses, bool legs, bool surf);
+		    bool labels, bool crosses, bool legs, bool surf,
+		    bool printing);
 	~svxPrintDlg();
-	void OnPrint(wxCommandEvent& event); 
+	void OnPrint(wxCommandEvent& event);
+	void OnExport(wxCommandEvent& event);
 	void OnPreview(wxCommandEvent& event);
 	void OnPlan(wxCommandEvent&);
 	void OnElevation(wxCommandEvent&);
-	void OnChangeSpin(wxSpinEvent& event); 
-	void OnChange(wxCommandEvent& event); 
+	void OnChangeSpin(wxSpinEvent& event);
+	void OnChange(wxCommandEvent& event);
 	void SomethingChanged();
  private:
 	DECLARE_EVENT_TABLE()

@@ -41,6 +41,7 @@ using namespace std;
 #include <wx/statbox.h>
 
 #include "debug.h" /* for BUG and SVX_ASSERT */
+#include "export.h"
 #include "filelist.h"
 #include "filename.h"
 #include "ini.h"
@@ -54,6 +55,7 @@ using namespace std;
 
 enum {
 	svx_PRINT = 1200,
+	svx_EXPORT,
 	svx_PREVIEW,
 	svx_SCALE,
 	svx_BEARING,
@@ -129,6 +131,7 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_SPINCTRL(svx_BEARING, svxPrintDlg::OnChangeSpin)
     EVT_SPINCTRL(svx_TILT, svxPrintDlg::OnChangeSpin)
     EVT_BUTTON(svx_PRINT, svxPrintDlg::OnPrint)
+    EVT_BUTTON(svx_EXPORT, svxPrintDlg::OnExport)
     EVT_BUTTON(svx_PREVIEW, svxPrintDlg::OnPreview)
     EVT_BUTTON(svx_PLAN, svxPrintDlg::OnPlan)
     EVT_BUTTON(svx_ELEV, svxPrintDlg::OnElevation)
@@ -155,11 +158,23 @@ static wxString scales[] = {
 svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 const wxString & title, const wxString & datestamp,
 			 double angle, double tilt_angle,
-			 bool labels, bool crosses, bool legs, bool surf)
+			 bool labels, bool crosses, bool legs, bool surf,
+			 bool printing)
 	: wxDialog(mainfrm_, -1, wxString(msg(/*Print*/399))),
 	  m_layout(wxGetApp().GetPageSetupDialogData()),
 	  m_File(filename), mainfrm(mainfrm_)
 {
+    m_scale = NULL;
+    m_printSize = NULL;
+    m_tilttext = NULL;
+    m_bearing = NULL;
+    m_tilt = NULL;
+    m_legs = NULL;
+    m_stations = NULL;
+    m_names = NULL;
+    m_borders = NULL;
+    m_infoBox = NULL;
+    m_surface = NULL;
     m_layout.Labels = labels;
     m_layout.Crosses = crosses;
     m_layout.Shots = legs;
@@ -192,25 +207,25 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, msg(/*Elements*/256)), wxVERTICAL);
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
-    { // this isn't the "too wide" bit...
-    wxStaticText* label;
-    label = new wxStaticText(this, -1, wxString(msg(/*Scale*/154)) + " 1:");
-    if (scales[0].empty()) scales[0].assign(msg(/*One page*/258));
-    m_scale = new wxComboBox(this, svx_SCALE, scales[0], wxDefaultPosition,
-			     wxDefaultSize, sizeof(scales) / sizeof(scales[0]),
-			     scales);
-    wxBoxSizer* scalebox = new wxBoxSizer(wxHORIZONTAL);
-    scalebox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-    scalebox->Add(m_scale, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    if (printing) {
+	wxStaticText* label;
+	label = new wxStaticText(this, -1, wxString(msg(/*Scale*/154)) + " 1:");
+	if (scales[0].empty()) scales[0].assign(msg(/*One page*/258));
+	m_scale = new wxComboBox(this, svx_SCALE, scales[0], wxDefaultPosition,
+				 wxDefaultSize, sizeof(scales) / sizeof(scales[0]),
+				 scales);
+	wxBoxSizer* scalebox = new wxBoxSizer(wxHORIZONTAL);
+	scalebox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	scalebox->Add(m_scale, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    v2->Add(scalebox, 0, wxALIGN_LEFT|wxALL, 0);
+	v2->Add(scalebox, 0, wxALIGN_LEFT|wxALL, 0);
+
+	// Make the dummy string wider than any sane value and use that to
+	// fix the width of the control so the sizers allow space for bigger
+	// page layouts.
+	m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
+	v2->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
     }
-
-    // Make the dummy string wider than any sane value and use that to
-    // fix the width of the control so the sizers allow space for bigger
-    // page layouts.
-    m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
-    v2->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
 
     if (m_layout.view != layout::EXTELEV) {
 	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
@@ -222,7 +237,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
 	tilt_label = new wxStaticText(this, -1, msg(/*Tilt angle*/263));
 	anglebox->Add(tilt_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
-	m_tilt = new wxSpinCtrl(this,svx_TILT);
+	m_tilt = new wxSpinCtrl(this, svx_TILT);
 	m_tilt->SetRange(-90, 90);
 	anglebox->Add(m_tilt, 0, wxALIGN_CENTER|wxALL, 5);
 
@@ -247,12 +262,14 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     v3->Add(m_stations, 0, wxALIGN_LEFT|wxALL, 2);
     m_names = new wxCheckBox(this, svx_NAMES, msg(/*Station Names*/260));
     v3->Add(m_names, 0, wxALIGN_LEFT|wxALL, 2);
-    m_borders = new wxCheckBox(this, svx_BORDERS, msg(/*Page Borders*/264));
-    v3->Add(m_borders, 0, wxALIGN_LEFT|wxALL, 2);
-//    m_blanks = new wxCheckBox(this, svx_BLANKS, msg(/*Blank Pages*/266));
-//    v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
-    m_infoBox = new wxCheckBox(this, svx_INFOBOX, msg(/*Info Box*/265));
-    v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
+    if (printing) {
+	m_borders = new wxCheckBox(this, svx_BORDERS, msg(/*Page Borders*/264));
+	v3->Add(m_borders, 0, wxALIGN_LEFT|wxALL, 2);
+//	m_blanks = new wxCheckBox(this, svx_BLANKS, msg(/*Blank Pages*/266));
+//	v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
+	m_infoBox = new wxCheckBox(this, svx_INFOBOX, msg(/*Info Box*/265));
+	v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
+    }
 
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
 
@@ -261,13 +278,17 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     wxButton * but;
     but = new wxButton(this, wxID_CANCEL, msg(/*&Cancel*/402));
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+    if (printing) {
 #ifndef __WXMAC__
-    but = new wxButton(this, svx_PREVIEW, msg(/*Pre&view*/401));
-    h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
-    but = new wxButton(this, svx_PRINT, msg(/*&Print*/400));
+	but = new wxButton(this, svx_PREVIEW, msg(/*Pre&view*/401));
+	h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+	but = new wxButton(this, svx_PRINT, msg(/*&Print*/400));
 #else
-    but = new wxButton(this, svx_PRINT, wxString(msg(/*&Print*/400)) + "...");
+	but = new wxButton(this, svx_PRINT, wxString(msg(/*&Print*/400)) + "...");
 #endif
+    } else {
+	but = new wxButton(this, svx_EXPORT, wxString(msg(/*&Export...*/230)));
+    }
     but->SetDefault();
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     v1->Add(h2, 0, wxALIGN_RIGHT|wxALL, 5);
@@ -297,6 +318,26 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
 	// Close the print dialog if printing succeeded.
 	Destroy();
     }
+}
+
+void
+svxPrintDlg::OnExport(wxCommandEvent&) {
+    UIToLayout();
+    char *baseleaf = baseleaf_from_fnm(m_File.c_str());
+    wxFileDialog dlg(this, wxString("Export as:"), "",
+		     wxString(baseleaf),
+		     "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl",
+		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+    free(baseleaf);
+    if (dlg.ShowModal() == wxID_OK) {
+	if (!Export(dlg.GetPath(), m_layout.title, mainfrm,
+		    m_layout.rot, m_layout.tilt,
+		    m_layout.Labels, m_layout.Crosses,
+		    m_layout.Shots, m_layout.Surface)) {
+	    wxGetApp().ReportError(wxString::Format("Couldn't write file `%s'", m_File.c_str()));
+	}
+    }
+    Destroy();
 }
 
 void
@@ -368,6 +409,7 @@ svxPrintDlg::OnChange(wxCommandEvent&) {
 void
 svxPrintDlg::SomethingChanged() {
     UIToLayout();
+    if (!m_printSize) return;
     // Update the bounding box.
     RecalcBounds();
     if (m_layout.xMax >= m_layout.xMin) {
@@ -381,9 +423,9 @@ svxPrintDlg::LayoutToUI(){
     m_names->SetValue(m_layout.Labels);
     m_legs->SetValue(m_layout.Shots);
     m_stations->SetValue(m_layout.Crosses);
-    m_borders->SetValue(m_layout.Border);
+    if (m_borders) m_borders->SetValue(m_layout.Border);
 //    m_blanks->SetValue(m_layout.SkipBlank);
-    m_infoBox->SetValue(!m_layout.Raw);
+    if (m_infoBox) m_infoBox->SetValue(!m_layout.Raw);
     m_surface->SetValue(m_layout.Surface);
     if (m_layout.view != layout::EXTELEV) {
 	m_tilt->SetValue(m_layout.tilt);
@@ -398,13 +440,15 @@ svxPrintDlg::LayoutToUI(){
     }
 
     // Do this last as it causes an OnChange message which calls UIToLayout
-    if (m_layout.Scale != 0) {
-	wxString temp;
-	temp << m_layout.Scale;
-	m_scale->SetValue(temp);
-    } else {
-	if (scales[0].empty()) scales[0].assign(msg(/*One page*/258));
-	m_scale->SetValue(scales[0]);
+    if (m_scale) {
+	if (m_layout.Scale != 0) {
+	    wxString temp;
+	    temp << m_layout.Scale;
+	    m_scale->SetValue(temp);
+	} else {
+	    if (scales[0].empty()) scales[0].assign(msg(/*One page*/258));
+	    m_scale->SetValue(scales[0]);
+	}
     }
 }
 
@@ -413,9 +457,9 @@ svxPrintDlg::UIToLayout(){
     m_layout.Labels = m_names->IsChecked();
     m_layout.Shots = m_legs->IsChecked();
     m_layout.Crosses = m_stations->IsChecked();
-    m_layout.Border = m_borders->IsChecked();
+    if (m_borders) m_layout.Border = m_borders->IsChecked();
 //    m_layout.SkipBlank = m_blanks->IsChecked();
-    m_layout.Raw = !m_infoBox->IsChecked();
+    if (m_infoBox) m_layout.Raw = !m_infoBox->IsChecked();
     m_layout.Surface = m_surface->IsChecked();
 
     if (m_layout.view != layout::EXTELEV) {
@@ -430,9 +474,11 @@ svxPrintDlg::UIToLayout(){
 	m_layout.rot = m_bearing->GetValue();
     }
 
-    (m_scale->GetValue()).ToDouble(&(m_layout.Scale));
-    if (m_layout.Scale == 0.0) {
-	m_layout.pick_scale(1, 1);
+    if (m_scale) {
+	(m_scale->GetValue()).ToDouble(&(m_layout.Scale));
+	if (m_layout.Scale == 0.0) {
+	    m_layout.pick_scale(1, 1);
+	}
     }
 }
 
@@ -442,11 +488,10 @@ svxPrintDlg::RecalcBounds()
     m_layout.yMax = m_layout.xMax = -DBL_MAX;
     m_layout.yMin = m_layout.xMin = DBL_MAX;
 
-    double SIN,COS,SINT,COST;
-    SIN = sin(rad(m_layout.rot));
-    COS = cos(rad(m_layout.rot));
-    SINT = sin(rad(m_layout.tilt));
-    COST = cos(rad(m_layout.tilt));
+    double SIN = sin(rad(m_layout.rot));
+    double COS = cos(rad(m_layout.rot));
+    double SINT = sin(rad(m_layout.tilt));
+    double COST = cos(rad(m_layout.tilt));
 
     if (m_layout.Shots) {
 	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
@@ -956,11 +1001,10 @@ svxPrintout::OnPrintPage(int pageNum) {
 	l->PaperDepth = pdepth -= MarginTop + MarginBottom;
     }
 
-    double SIN,COS,SINT,COST;
-    SIN = sin(rad(l->rot));
-    COS = cos(rad(l->rot));
-    SINT = sin(rad(l->tilt));
-    COST = cos(rad(l->tilt));
+    double SIN = sin(rad(l->rot));
+    double COS = cos(rad(l->rot));
+    double SINT = sin(rad(l->tilt));
+    double COST = cos(rad(l->tilt));
 
     NewPage(pageNum, l->pagesX, l->pagesY);
 
@@ -1226,7 +1270,7 @@ svxPrintout::DrawTo(long x, long y)
     x_t = x_offset + x - clip.x_min;
     y_t = y_offset + clip.y_max - y;
     if (cur_pass != -1) {
-	pdc->DrawLine(x_p,y_p,x_t,y_t);
+	pdc->DrawLine(x_p, y_p, x_t, y_t);
     } else {
 	if (check_intersection(x_p, y_p)) fBlankPage = fFalse;
     }

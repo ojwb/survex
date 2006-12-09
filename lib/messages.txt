@@ -2585,8 +2585,9 @@ es:229 Archivos de terreno
 it:229 File di modelli digitali del suolo
 sk:229 S&uacute;bory s povrchom
 ro:229 Model digital al terenului
-#
-# XXX 230 (used in 1.0)
+# Used in the "Export" settings dialog
+# 230 Different in 1.0
+en:230 &amp;Export...
 # "Rotation" menu.  The accelerators must be different within this group.
 # 231 Different in 1.0
 # Tickable menu item which toggles auto rotation

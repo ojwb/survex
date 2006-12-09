@@ -20,6 +20,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
+#ifndef SURVEX_INCLUDED_EXPORT_H
+#define SURVEX_INCLUDED_EXPORT_H
+
+#include "wx.h"
+
+class MainFrm;
+
 bool Export(const wxString &fnm_out, const wxString &title,
 	const MainFrm * mainfrm, double pan, double tilt,
 	bool labels, bool crosses, bool legs, bool surface);
+
+#endif
