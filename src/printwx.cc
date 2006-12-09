@@ -66,7 +66,7 @@ enum {
 	svx_BORDERS,
 	svx_BLANKS,
 	svx_INFOBOX,
-	svx_SCALEBAR,
+	svx_SURFACE,
 	svx_PLAN,
 	svx_ELEV
 };
@@ -256,7 +256,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     m_legs = new wxCheckBox(this, svx_LEGS, msg(/*Underground Survey Legs*/262));
     v3->Add(m_legs, 0, wxALIGN_LEFT|wxALL, 2);
-    m_surface = new wxCheckBox(this, svx_SCALEBAR, msg(/*Sur&amp;face Survey Legs*/403));
+    m_surface = new wxCheckBox(this, svx_SURFACE, msg(/*Sur&amp;face Survey Legs*/403));
     v3->Add(m_surface, 0, wxALIGN_LEFT|wxALL, 2);
     m_stations = new wxCheckBox(this, svx_STATIONS, msg(/*Crosses*/261));
     v3->Add(m_stations, 0, wxALIGN_LEFT|wxALL, 2);
