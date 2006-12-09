@@ -135,6 +135,10 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_BUTTON(svx_PREVIEW, svxPrintDlg::OnPreview)
     EVT_BUTTON(svx_PLAN, svxPrintDlg::OnPlan)
     EVT_BUTTON(svx_ELEV, svxPrintDlg::OnElevation)
+    EVT_CHECKBOX(svx_LEGS, svxPrintDlg::OnChange)
+    EVT_CHECKBOX(svx_STATIONS, svxPrintDlg::OnChange)
+    EVT_CHECKBOX(svx_NAMES, svxPrintDlg::OnChange)
+    EVT_CHECKBOX(svx_SURFACE, svxPrintDlg::OnChange)
 END_EVENT_TABLE()
 
 static wxString scales[] = {

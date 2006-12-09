@@ -3,6 +3,10 @@
 
   + Add options dialog to "Export" similar to the one for "Print".
 
+  + The "number of pages required" in the print dialog now updates when you
+    change what is to be shown (underground legs/surface legs/station
+    names/crosses).
+
 Changes in 1.1.11 (2006-11-25):
 
 * Updated Czech, Spanish, and Slovak translations.
