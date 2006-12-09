@@ -935,7 +935,6 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
    export_format format = FMT_DXF;
    const int *pass;
    bool elevation = (tilt == 0.0);
-   double elev_angle = pan;
 
    /* Defaults */
    grid = 0;
@@ -1011,8 +1010,8 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
    }
 
    if (elevation) {
-      s = sin(rad(elev_angle));
-      c = cos(rad(elev_angle));
+      s = sin(rad(pan));
+      c = cos(rad(pan));
    }
 
    /* Get drawing corners */
