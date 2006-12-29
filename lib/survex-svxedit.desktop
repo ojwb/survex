@@ -6,5 +6,5 @@ GenericName=Cave Survey Data Editor
 Comment=Enter cave survey data for Survex
 Type=Application
 Exec=svxedit
-Icon=svxedit.png
+Icon=svxedit
 Categories=Application;Education;Geology;Science;
