@@ -687,7 +687,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
 MainFrm::~MainFrm()
 {
-    m_Labels.clear();
 }
 
 void MainFrm::CreateMenuBar()
@@ -1741,21 +1740,27 @@ void MainFrm::OnQuit(wxCommandEvent&)
 	    return;
 	}
     }
+    wxConfigBase *b = wxConfigBase::Get();
+    if (IsFullScreen()) {
+	b->Write("width", -2);
+	b->DeleteEntry("height");
+    } else if (IsMaximized()) {
+	b->Write("width", -1);
+	b->DeleteEntry("height");
+    } else {
+	int width, height;
+	GetSize(&width, &height);
+	b->Write("width", width);
+	b->Write("height", height);
+    }
+    b->Flush();
     exit(0);
 }
 
 void MainFrm::OnClose(wxCloseEvent&)
 {
-    if (m_PresList->Modified()) {
-	AvenAllowOnTop ontop(this);
-	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
-	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
-			 msg(/*Modified Presentation*/326),
-			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
-	    return;
-	}
-    }
-    exit(0);
+    wxCommandEvent dummy;
+    OnQuit(dummy);
 }
 
 void MainFrm::OnAbout(wxCommandEvent&)

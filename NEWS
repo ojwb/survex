@@ -1,6 +1,8 @@
 
 * aven:
 
+  + Remember the window size or maximised/fullscreen state between invocations.
+
   + Add options dialog to "Export" similar to the one for "Print".
 
   + The "number of pages required" in the print dialog now updates when you

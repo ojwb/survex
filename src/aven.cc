@@ -189,33 +189,46 @@ bool Aven::OnInit()
     wxImage::AddHandler(new wxPNGHandler);
 
     // Obtain the screen size.
-    int x, y;
+    wxPoint pos(wxDefaultPosition);
     int width, height;
+    wxConfigBase::Get()->Read("width", &width, 0);
+    if (width > 0) wxConfigBase::Get()->Read("height", &height, 0);
+    bool maximized = (width == -1);
+    bool full_screen = (width <= -2);
+    if (width <= 0 || height <= 0) {
 #if wxUSE_DISPLAY // wxDisplay was added in wx 2.5
-    wxRect geom = wxDisplay().GetGeometry();
-    x = geom.x;
-    y = geom.y;
-    width = geom.width;
-    height = geom.height;
+	wxRect geom = wxDisplay().GetGeometry();
+	pos.x = geom.x;
+	pos.y = geom.y;
+	width = geom.width;
+	height = geom.height;
 #else
-    wxClientDisplayRect(&x, &y, &width, &height);
-    // Crude fix to help behaviour on multi-monitor displays.
-    // Fudge factors are a bit specific to my setup...
-    if (width > height * 3 / 2) {
-	x += width;
-	width = height * 3 / 2;
-	x -= width;
-    }
+	wxClientDisplayRect(&pos.x, &pos.y, &width, &height);
+	// Crude fix to help behaviour on multi-monitor displays.
+	// Fudge factors are a bit specific to my setup...
+	if (width > height * 3 / 2) {
+	    pos.x += width;
+	    width = height * 3 / 2;
+	    pos.x -= width;
+	}
 #endif
 
-    // Calculate a reasonable size for our window.
-    x += width / 8;
-    y += height / 8;
-    width = width * 3 / 4;
-    height = height * 3 / 4;
+	// Calculate a reasonable size for our window.
+	pos.x += width / 8;
+	pos.y += height / 8;
+	width = width * 3 / 4;
+	height = height * 3 / 4;
+    }
 
     // Create the main window.
-    m_Frame = new MainFrm(APP_NAME, wxPoint(x, y), wxSize(width, height));
+    m_Frame = new MainFrm(APP_NAME, pos, wxSize(width, height));
+
+    // Select full_screen or maximised if that's the saved state.
+    if (full_screen) {
+	m_Frame->ShowFullScreen(true);
+    } else if (maximized) {
+	m_Frame->Maximize();
+    }
 
     if (argv[optind]) {
 	m_Frame->OpenFile(wxString(argv[optind]), survey);
