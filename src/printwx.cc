@@ -164,7 +164,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf,
 			 bool printing)
-	: wxDialog(mainfrm_, -1, printing ? msg(/*Print*/399) : msg(/*Export*/383)),
+	: wxDialog(mainfrm_, -1, wxString(printing ? msg(/*Print*/399) : msg(/*Export*/383))),
 	  m_layout(wxGetApp().GetPageSetupDialogData()),
 	  m_File(filename), mainfrm(mainfrm_)
 {
