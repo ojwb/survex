@@ -8,14 +8,14 @@ AC_PREREQ(2.59)
 AC_INIT(src/aven.cc)
 
 dnl next line is for make_release
-CHANGELOG_FROM_TAG=v1_1_10
-AM_INIT_AUTOMAKE(survex, 1.1.11)
+CHANGELOG_FROM_TAG=v1_1_11
+AM_INIT_AUTOMAKE(survex, 1.1.12)
 RELEASE=1
 
 AC_SUBST(RELEASE)
 AM_CONFIG_HEADER(config.h)
 
-COPYRIGHT_MSG="Copyright (C) 1990-2006 Olly Betts"
+COPYRIGHT_MSG="Copyright (C) 1990-2007 Olly Betts"
 AVEN_COPYRIGHT_MSG="Copyright (C) 1999-2003,2005,2006 Mark R. Shinwell"
 
 AC_DEFINE_UNQUOTED(COPYRIGHT_MSG, ["$COPYRIGHT_MSG"], [Copyright Message])
