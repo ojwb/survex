@@ -138,7 +138,7 @@ if test -n "$WXCONFIG" ; then
 else
   # Prefer wx2.6 (or wx2.5) since a number of things work better with it.
   if test yes = "$macosx" ; then
-    AC_PATH_PROGS(WXCONFIG, [wxmac-2.6-config wxmac-2.5-config wxmac-2.4-config wxmac-config])
+    AC_PATH_PROGS(WXCONFIG, [wxmac-2.6-config wxmac-2.5-config wxmac-config])
     wxdef=__WXMAC__
   elif test yes = "$mswindows" ; then
     AC_PATH_PROGS(WXCONFIG, [wxmsw-2.6-config wxmsw-2.5-config wxmsw-2.4-config wxmsw-config])

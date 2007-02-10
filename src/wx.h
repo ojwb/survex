@@ -8,8 +8,14 @@
 # include <wx/wx.h>
 #endif
 
-#if !wxCHECK_VERSION(2,4,0)
-# error We support building with wxWidgets 2.4.0 or newer
+#ifndef __WXMAC__
+# if !wxCHECK_VERSION(2,4,0)
+#  error We support building with wxWidgets 2.4.0 or newer
+# endif
+#else
+# if !wxCHECK_VERSION(2,5,1)
+#  error We support building with wxWidgets 2.5.1 or newer on MacOS X
+# endif
 #endif
 
 // These were renamed in wx 2.7.

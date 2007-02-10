@@ -74,6 +74,16 @@ Aven::~Aven()
     if (m_pageSetupData) delete m_pageSetupData;
 }
 
+static void init_msg_and_cmdline(int& my_argc, char **my_argv) {
+    msg_init(my_argv);
+    select_charset(CHARSET_UTF8);
+    /* Want --version and a decent --help output, which cmdline does for us.
+     * wxCmdLine is much less good.
+     */
+    cmdline_set_syntax_message("[3d file]", NULL);
+    cmdline_init(my_argc, my_argv, short_opts, long_opts, NULL, help, 0, 1);
+}
+
 #if wxCHECK_VERSION(2,5,1)
 static int getopt_first_response = 0;
 
@@ -95,9 +105,7 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 #endif
     // Call msg_init() and start processing the command line first so that
     // we can respond to --help and --version even without an X display.
-    msg_init(my_argv);
-    cmdline_set_syntax_message("[3d file]", NULL);
-    cmdline_init(my_argc, my_argv, short_opts, long_opts, NULL, help, 0, 1);
+    init_msg_and_cmdline(my_argc, my_argv);
     getopt_first_response = cmdline_getopt();
     return wxApp::Initialize(my_argc, my_argv);
 }
@@ -106,31 +114,9 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 bool Aven::OnInit()
 {
     wxLog::SetActiveTarget(new MyLogWindow());
-#if !wxCHECK_VERSION(2,5,1) && defined __WXMAC__
-    // wxMac is supposed to remove this magic command line option (which
-    // Finder passes), but the code in 2.4.2 is bogus.  It just decrements
-    // argc rather than copying argv down.  But we get to the command line
-    // before wx does, so we can just remove it and then wx does nothing.
-    // But luckily it also fails to set argv[argc] to NULL so we can just
-    // recalculate argc, then remove the -psn_* switch ourselves.
-    // The code was broken differently in 2.5.0, and fixed in 2.5.1.
-    if (my_argv[my_argc]) {
-	my_argc = 1;
-	while (my_argv[my_argc]) ++my_argc;
-    }
-    if (my_argc > 1 && strncmp(my_argv[1], "-psn_", 5) == 0) {
-	--my_argc;
-	memmove(my_argv + 1, my_argv + 2, my_argc * sizeof(char *));
-    }
-#endif
 
-    /* Want --version and a decent --help output, which cmdline does for us.
-     * wxCmdLine is much less good.
-     */
 #if !wxCHECK_VERSION(2,5,1)
-    msg_init(argv);
-    cmdline_set_syntax_message("[3d file]", NULL);
-    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
+    init_msg_and_cmdline(argc, argv);
 #endif
 
     const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
