@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005,2006 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005,2006,2007 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -957,7 +957,7 @@ msg_init(char * const *argv)
 	  * tree easily. */
 	 p = use_path(pth, "../lib/en.msg");
 	 if (lstat(p, &buf) == 0) {
-#ifdef S_ISDIR
+#ifdef S_ISREG
 	    /* POSIX way */
 	    if (S_ISREG(buf.st_mode)) {
 	       pth_cfg_files = use_path(pth, "../lib");
