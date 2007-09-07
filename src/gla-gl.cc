@@ -44,11 +44,11 @@
 #ifndef GL_POINT_SIZE_MAX
 #define GL_POINT_SIZE_MAX 0x8127
 #endif
-#ifndef GL_POINT_SPRITE_ARB
-#define GL_POINT_SPRITE_ARB 0x8861
+#ifndef GL_POINT_SPRITE
+#define GL_POINT_SPRITE 0x8861
 #endif
-#ifndef GL_COORD_REPLACE_ARB
-#define GL_COORD_REPLACE_ARB 0x8862
+#ifndef GL_COORD_REPLACE
+#define GL_COORD_REPLACE 0x8862
 #endif
 
 #ifndef USE_FNT
@@ -279,12 +279,15 @@ void GLACanvas::FirstShow()
     // Grey fog effect.
     GLfloat fogcolour[4] = { 0.5, 0.5, 0.5, 1.0 };
     glFogfv(GL_FOG_COLOR, fogcolour);
+    CHECK_GL_ERROR("FirstShow", "glFogfv");
 
     // Linear fogging.
     glFogi(GL_FOG_MODE, GL_LINEAR);
+    CHECK_GL_ERROR("FirstShow", "glFogi");
 
     // Optimise for speed (compute fog per vertex).
     glHint(GL_FOG_HINT, GL_FASTEST);
+    CHECK_GL_ERROR("FirstShow", "glHint");
 
     // No padding on pixel packing and unpacking (default is to pad each
     // line to a multiple of 4 bytes).
@@ -351,7 +354,9 @@ void GLACanvas::FirstShow()
 
     if (glpoint_sprite) {
 	glGenTextures(1, &m_CrossTexture);
+	CHECK_GL_ERROR("FirstShow", "glGenTextures");
 	glBindTexture(GL_TEXTURE_2D, m_CrossTexture);
+	CHECK_GL_ERROR("FirstShow", "glBindTexture");
 	const unsigned char crossteximage[128] = {
 	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,
 	      0,  0,255,255,  0,  0,  0,  0,  0,  0,  0,  0,255,255,  0,  0,
@@ -363,12 +368,19 @@ void GLACanvas::FirstShow()
 	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255
 	};
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	CHECK_GL_ERROR("FirstShow", "glPixelStorei");
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	CHECK_GL_ERROR("FirstShow", "glTexEnvi");
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_WRAP_S");
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_WRAP_T");
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, 8, 8, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, (GLvoid *)crossteximage);
+	CHECK_GL_ERROR("FirstShow", "glTexImage2D");
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_MAG_FILTER");
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_MIN_FILTER");
     }
     //if (glpoint_ok) printf("Using GL_POINTS for blobs\n");
     //if (glpoint_sprite) printf("Using GL_POINT_SPRITE* for crosses");
@@ -636,12 +648,17 @@ void GLACanvas::SetIndicatorTransform()
     glDisable(GL_BLEND);
     CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_BLEND");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glTexParameteri GL_TEXTURE_WRAP_S");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glTexParameteri GL_TEXTURE_WRAP_T");
     glAlphaFunc(GL_GREATER, 0.5f);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glAlphaFunc");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glTexParameteri GL_TEXTURE_MAG_FILTER");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    CHECK_GL_ERROR("SetIndicatorTransform", "glTexParameteri GL_TEXTURE_MIN_FILTER");
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-    CHECK_GL_ERROR("SetIndicatorTransform", "various");
+    CHECK_GL_ERROR("SetIndicatorTransform", "glHint");
 }
 
 void GLACanvas::FinishDrawing()
@@ -669,7 +686,7 @@ void GLACanvas::DrawList(unsigned int l)
 	printf("new list #%d: %d... ", l, list);
 	m_Vertices = 0;
 #endif
-	CHECK_GL_ERROR("CreateList", "glGenLists");
+	CHECK_GL_ERROR("DrawList", "glGenLists");
 	if (list == 0) {
 	    // If we can't create a list, fall back to just drawing directly.
 	    GenerateList(l);
@@ -686,16 +703,16 @@ void GLACanvas::DrawList(unsigned int l)
 	// "Stay away from GL_COMPILE_AND_EXECUTE mode. Instead, create the
 	// list using GL_COMPILE mode, then execute it with glCallList()."
 	glNewList(list, GL_COMPILE);
-	CHECK_GL_ERROR("CreateList", "glNewList");
+	CHECK_GL_ERROR("DrawList", "glNewList");
 	// Clear list_flags so that we can note what conditions to invalidate
 	// the cached OpenGL list on.
 	list_flags = 0;
 	GenerateList(l);
 	glEndList();
+	CHECK_GL_ERROR("DrawList", "glEndList");
 #ifdef GLA_DEBUG
 	printf("done (%d vertices)\n", m_Vertices);
 #endif
-	CHECK_GL_ERROR("CreateList", "glEndList");
 	drawing_lists[l] = GLAList(list, list_flags);
     }
 
@@ -834,6 +851,7 @@ void GLACanvas::EndQuadrilaterals()
     // Finish drawing of quadrilaterals.
 
     glEnd();
+    CHECK_GL_ERROR("EndQuadrilaterals", "glEnd GL_QUADS");
 }
 
 void GLACanvas::BeginLines()
@@ -848,6 +866,7 @@ void GLACanvas::EndLines()
     // Finish drawing of a set of lines.
 
     glEnd();
+    CHECK_GL_ERROR("EndLines", "glEnd GL_LINES");
 }
 
 void GLACanvas::BeginTriangles()
@@ -862,6 +881,7 @@ void GLACanvas::EndTriangles()
     // Finish drawing of a set of triangles.
 
     glEnd();
+    CHECK_GL_ERROR("EndTriangles", "glEnd GL_TRIANGLES");
 }
 
 void GLACanvas::BeginTriangleStrip()
@@ -876,6 +896,7 @@ void GLACanvas::EndTriangleStrip()
     // Finish drawing of a triangle strip.
 
     glEnd();
+    CHECK_GL_ERROR("EndTriangleStrip", "glEnd GL_TRIANGLE_STRIP");
 }
 
 void GLACanvas::BeginPolyline()
@@ -890,6 +911,7 @@ void GLACanvas::EndPolyline()
     // Finish drawing of a polyline.
 
     glEnd();
+    CHECK_GL_ERROR("EndPolyline", "glEnd GL_LINE_STRIP");
 }
 
 void GLACanvas::BeginPolygon()
@@ -904,6 +926,7 @@ void GLACanvas::EndPolygon()
     // Finish drawing of a polygon.
 
     glEnd();
+    CHECK_GL_ERROR("EndPolygon", "glEnd GL_POLYGON");
 }
 
 void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
@@ -972,11 +995,11 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 	// Draw an filled circle.
 	assert(m_Quadric);
 	glTranslated(X, Y, Z);
-	CHECK_GL_ERROR("glTranslated 1", "DrawBlob");
+	CHECK_GL_ERROR("DrawBlob", "glTranslated 1");
 	gluDisk(m_Quadric, 0, BLOB_DIAMETER * 0.5, 8, 1);
-	CHECK_GL_ERROR("gluDisk", "DrawBlob");
+	CHECK_GL_ERROR("DrawBlob", "gluDisk");
 	glTranslated(-X, -Y, -Z);
-	CHECK_GL_ERROR("glTranslated 2", "DrawBlob");
+	CHECK_GL_ERROR("DrawBlob", "glTranslated 2");
     }
 #ifdef GLA_DEBUG
     m_Vertices++;
@@ -992,11 +1015,11 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y)
 	// Draw an filled circle.
 	assert(m_Quadric);
 	glTranslated(x, y, 0);
-	CHECK_GL_ERROR("glTranslated 1", "DrawBlob 2");
+	CHECK_GL_ERROR("DrawBlob 2", "glTranslated 1");
 	gluDisk(m_Quadric, 0, BLOB_DIAMETER * 0.5, 8, 1);
-	CHECK_GL_ERROR("gluDisk", "DrawBlob");
+	CHECK_GL_ERROR("DrawBlob 2", "gluDisk");
 	glTranslated(-x, -y, 0);
-	CHECK_GL_ERROR("glTranslated 2", "DrawBlob 2");
+	CHECK_GL_ERROR("DrawBlob 2", "glTranslated 2");
     }
 #ifdef GLA_DEBUG
     m_Vertices++;
@@ -1008,12 +1031,19 @@ void GLACanvas::BeginCrosses()
     // Plot crosses.
     if (glpoint_sprite) {
 	glPushAttrib(GL_ENABLE_BIT|GL_POINT_BIT);
+	CHECK_GL_ERROR("BeginCrosses", "glPushAttrib");
 	glBindTexture(GL_TEXTURE_2D, m_CrossTexture);
+	CHECK_GL_ERROR("BeginCrosses", "glBindTexture");
 	glEnable(GL_ALPHA_TEST);
+	CHECK_GL_ERROR("BeginCrosses", "glEnable GL_ALPHA_TEST");
 	glPointSize(8);
-	glTexEnvf(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);
+	CHECK_GL_ERROR("BeginCrosses", "glPointSize");
+	glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+	CHECK_GL_ERROR("BeginCrosses", "glTexEnvi GL_POINT_SPRITE");
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_POINT_SPRITE_ARB);
+	CHECK_GL_ERROR("BeginCrosses", "glEnable GL_TEXTURE_2D");
+	glEnable(GL_POINT_SPRITE);
+	CHECK_GL_ERROR("BeginCrosses", "glEnable GL_POINT_SPRITE");
 	glBegin(GL_POINTS);
     } else {
 	// To get the crosses to appear at a constant size and orientation on
@@ -1021,10 +1051,10 @@ void GLACanvas::BeginCrosses()
 	// unfortunately means they can't be usefully put in an opengl display
 	// list).
 	glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT|GL_ENABLE_BIT);
-	CHECK_GL_ERROR("BeginCrosses", "glPushAttrib");
+	CHECK_GL_ERROR("BeginCrosses", "glPushAttrib 2");
 	SetIndicatorTransform();
 	glEnable(GL_DEPTH_TEST);
-	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_DEPTH_TEST");
+	CHECK_GL_ERROR("BeginCrosses", "glEnable GL_DEPTH_TEST");
 	glBegin(GL_LINES);
     }
 }
@@ -1032,6 +1062,11 @@ void GLACanvas::BeginCrosses()
 void GLACanvas::EndCrosses()
 {
     glEnd();
+    if (glpoint_sprite) {
+	CHECK_GL_ERROR("EndCrosses", "glEnd GL_POINTS");
+    } else {
+	CHECK_GL_ERROR("EndCrosses", "glEnd GL_LINES");
+    }
     glPopAttrib();
     CHECK_GL_ERROR("EndCrosses", "glPopAttrib");
 }
@@ -1117,6 +1152,7 @@ GLACanvas::DrawShadedRectangle(const GLAPen & fill_bot, const GLAPen & fill_top,
     // size.
 
     glShadeModel(GL_SMOOTH);
+    CHECK_GL_ERROR("DrawShadedRectangle", "glShadeModel GL_SMOOTH");
     BeginQuadrilaterals();
     SetColour(fill_bot);
     PlaceIndicatorVertex(x0, y0);
@@ -1126,6 +1162,7 @@ GLACanvas::DrawShadedRectangle(const GLAPen & fill_bot, const GLAPen & fill_top,
     PlaceIndicatorVertex(x0, y0 + h);
     EndQuadrilaterals();
     glShadeModel(GL_FLAT);
+    CHECK_GL_ERROR("DrawShadedRectangle", "glShadeModel GL_FLAT");
 }
 
 void GLACanvas::DrawCircle(gla_colour edge, gla_colour fill,
@@ -1192,6 +1229,7 @@ GLACanvas::DrawTriangle(gla_colour edge, gla_colour fill,
     PlaceIndicatorVertex(p1.GetX(), p1.GetY());
     PlaceIndicatorVertex(p2.GetX(), p2.GetY());
     glEnd();
+    CHECK_GL_ERROR("DrawTriangle", "glEnd GL_LINE_STRIP");
 }
 
 void GLACanvas::EnableDashedLines()
