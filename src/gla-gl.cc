@@ -126,10 +126,12 @@ wxString GetGLSystemDescription()
 // Important: CHECK_GL_ERROR must not be called within a glBegin()/glEnd() pair
 //            (thus it must not be called from BeginLines(), etc., or within a
 //             BeginLines()/EndLines() block etc.)
-#define CHECK_GL_ERROR(M, F) \
-    if (glGetError() == GL_NO_ERROR) { } else \
+#define CHECK_GL_ERROR(M, F) do { \
+    GLenum error_code_ = glGetError(); \
+    if (error_code_ != GL_NO_ERROR) \
 	wxLogError(__FILE__":"STRING(__LINE__)": OpenGL error: %s " \
-		   "(call "F" in method "M")", gluErrorString(glGetError()))
+		   "(call "F" in method "M")", gluErrorString(error_code_)); \
+} while (0)
 
 //
 //  GLAPen
