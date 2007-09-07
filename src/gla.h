@@ -4,7 +4,7 @@
 //  Header file for the GLA abstraction layer.
 //
 //  Copyright (C) 2002 Mark R. Shinwell.
-//  Copyright (C) 2003,2004,2005,2006 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ using namespace std;
 
 #include "wx.h"
 #include "aventypes.h"
-#include "quaternion.h"
+#include "vector3.h"
 
 #ifdef USE_FNT
 #include "fnt.h"
@@ -108,7 +108,7 @@ class GLACanvas : public wxGLCanvas {
     glaCoord m_VolumeDiameter;
 
     // Parameters for plotting data:
-    Quaternion m_Rotation;
+    Double m_Pan, m_Tilt;
     Double m_Scale;
     Vector3 m_Translation;
 
@@ -208,7 +208,10 @@ public:
     void EnableSmoothPolygons(bool filled);
     void DisableSmoothPolygons();
 
-    void SetRotation(const Quaternion&);
+    void SetRotation(double pan, double tilt) {
+	m_Pan = pan;
+	m_Tilt = tilt;
+    }
     void SetScale(Double);
     void SetTranslation(const Vector3 &v) {
 	m_Translation = v;

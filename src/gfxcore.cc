@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2007 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -1244,7 +1244,7 @@ void GfxCore::DefaultParameters()
 	m_TiltAngle = 90.0;
     }
 
-    UpdateQuaternion();
+    SetRotation(m_PanAngle, m_TiltAngle);
     SetTranslation(Vector3());
 
     m_RotationStep = 30.0;
@@ -1540,19 +1540,6 @@ void GfxCore::CreateHitTestGrid()
     m_HitTestGridValid = true;
 }
 
-void GfxCore::UpdateQuaternion()
-{
-    // Produce the rotation quaternion from the pan and tilt angles.
-    Vector3 v1(0.0, 0.0, 1.0);
-    Vector3 v2(1.0, 0.0, 0.0);
-    Quaternion q1(v1, rad(m_PanAngle));
-    Quaternion q2(v2, rad(m_TiltAngle));
-
-    // care: quaternion multiplication is not commutative!
-    Quaternion rotation = q2 * q1;
-    SetRotation(rotation);
-}
-
 //
 //  Methods for controlling the orientation of the survey
 //
@@ -1571,7 +1558,7 @@ void GfxCore::TurnCave(Double angle)
     m_HitTestGridValid = false;
     if (m_here_is_temporary) SetHere();
 
-    UpdateQuaternion();
+    SetRotation(m_PanAngle, m_TiltAngle);
 }
 
 void GfxCore::TurnCaveTo(Double angle)
@@ -1592,17 +1579,17 @@ void GfxCore::TiltCave(Double tilt_angle)
 {
     // Tilt the cave by a given angle.
     if (m_TiltAngle + tilt_angle > 90.0) {
-	tilt_angle = 90.0 - m_TiltAngle;
+	m_TiltAngle = 90.0;
     } else if (m_TiltAngle + tilt_angle < -90.0) {
-	tilt_angle = -90.0 - m_TiltAngle;
+	m_TiltAngle = -90.0;
+    } else {
+	m_TiltAngle += tilt_angle;
     }
-
-    m_TiltAngle += tilt_angle;
 
     m_HitTestGridValid = false;
     if (m_here_is_temporary) SetHere();
 
-    UpdateQuaternion();
+    SetRotation(m_PanAngle, m_TiltAngle);
 }
 
 void GfxCore::TranslateCave(int dx, int dy)
@@ -2828,7 +2815,7 @@ void GfxCore::SetView(const PresentationMark & p)
     SetTranslation(p - m_Parent->GetOffset());
     m_PanAngle = p.angle;
     m_TiltAngle = p.tilt_angle;
-    UpdateQuaternion();
+    SetRotation(m_PanAngle, m_TiltAngle);
     SetScale(p.scale);
     ForceRefresh();
 }

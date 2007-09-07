@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005,2006 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -225,7 +225,8 @@ GLACanvas::GLACanvas(wxWindow* parent, int id)
     // Constructor.
 
     m_Quadric = NULL;
-    m_Rotation.setFromSphericalPolars(0.0, 0.0, 0.0);
+    m_Pan = 0.0;
+    m_Tilt = 0.0;
     m_Scale = 0.0;
     m_VolumeDiameter = 1.0;
     m_SmoothShading = false;
@@ -381,11 +382,6 @@ void GLACanvas::Clear()
     CHECK_GL_ERROR("Clear", "glClear");
 }
 
-void GLACanvas::SetRotation(const Quaternion& q)
-{
-    m_Rotation = q;
-}
-
 void GLACanvas::SetScale(Double scale)
 {
     if (scale != m_Scale) {
@@ -532,7 +528,9 @@ void GLACanvas::SetDataTransform()
     // Get axes the correct way around (z upwards, y into screen)
     glRotated(-90.0, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
-    m_Rotation.CopyToOpenGL();
+    glRotated(m_Tilt, 1.0, 0.0, 0.0);
+    CHECK_GL_ERROR("SetDataTransform", "glRotated");
+    glRotated(m_Pan, 0.0, 0.0, 1.0);
     CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
     if (m_Perspective) {
 	glTranslated(m_Translation.GetX(),
