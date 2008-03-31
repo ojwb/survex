@@ -132,8 +132,18 @@ first byte of an item is a code identifying what the item is:</P>
     endian unsigned integer counting seconds since 1970) </td>
     <td class="version">&ge;4</td>
 </tr>
+<tr>
+    <td class="code">0x22</td>
+    <td class="type">ERROR</td>
+    <td class="data">&lt;legs&gt;&lt;length&gt;&lt;E&gt;&lt;H&gt;&lt;V&gt;</td>
+    <td colspan="2">
+    Error information for the current traverse.  &lt;legs&gt; is the number of legs. &lt;length&gt; is the total length of the 
+    traverse in cm (0.01m). E, H and V are the error and thehorizontal and vertical components in cm. (All values are 4 byte little
+    endian signed integers) </td>
+    <td class="version">&ge;6</td>
+</tr>
 <tr class="reserved">
-    <td class="code">0x22 - 0x2f</td>
+    <td class="code">0x23 - 0x2f</td>
     <td class="type">&nbsp;</td>
     <td class="data">&nbsp;</td>
     <td colspan="3">Reserved</td>
@@ -303,5 +313,5 @@ number of different &lt;LABEL&gt; items).</li>
 referenced (e.g. in &lt;XSECT&gt; items)</li>
 </ul>
 
-<P>Authors: Olly Betts and Mike McCombe, last updated: 2005-10-17</P>
+<P>Authors: Olly Betts and Mike McCombe, last updated: 2007-06-12</P>
 </BODY></HTML>
