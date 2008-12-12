@@ -3,7 +3,7 @@
  * Also useful as an example of how to use the img code in your own programs
  */
 
-/* Copyright (C) 1994-2004 Olly Betts
+/* Copyright (C) 1994-2004,2008 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -460,8 +460,8 @@ svg_label(const img_point *p, const char *s, bool fSurface)
    fSurface = fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
            p->x * factor, p->y * -factor);
-   fprintf(fh, s);
-   fprintf(fh, "</text>\n");
+   fputs(s, fh);
+   fputs("</text>\n", fh);
    set_name(p, s);
 }
 

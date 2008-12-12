@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Sketch, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006,2008 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -523,8 +523,8 @@ SVG::label(const img_point *p, const char *s, bool fSurface)
    fSurface = fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
 	   p->x * factor, p->y * -factor);
-   fprintf(fh, s);
-   fprintf(fh, "</text>\n");
+   fputs(s, fh);
+   fputs("</text>\n", fh);
    set_name(p, s);
 }
 
