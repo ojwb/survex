@@ -190,11 +190,6 @@ AC_SUBST(MOVIE_LIBS)
 
 AC_LANG_C
 
-dnl caverot libraries...
-AC_SUBST(CRLIB)
-dnl caverot platform specific sources...
-AC_SUBST(CROBJX)
-
 dnl Checks for header files.
 AC_HEADER_STDC
 dnl don't use AC_CHECK_FUNCS for setjmp - mingw #define-s it to _setjmp
