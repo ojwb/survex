@@ -2426,7 +2426,7 @@ void MainFrm::ViewFullScreen() {
     // wxGTK doesn't currently remove the toolbar, statusbar, or menubar.
     // Can't work out how to lose the menubar right now, but this works for
     // the other two.  FIXME: tidy this code up and submit a patch for
-    // wxWindows.
+    // wxWidgets.
     wxToolBar *tb = GetToolBar();
     if (tb) tb->Show(!IsFullScreen());
     wxStatusBar *sb = GetStatusBar();

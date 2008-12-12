@@ -102,7 +102,7 @@ case $host_os in
 esac
 
 case $host in
-powerpc-*-darwin*) macosx=yes ;; # wxWindows uses this to detect MacOS X
+powerpc-*-darwin*) macosx=yes ;; # wxWidgets uses this to detect MacOS X
 *) macosx=no ;;
 esac
 
@@ -122,7 +122,7 @@ if test yes = "$mswindows"; then
 fi
 AC_SUBST(WINPROGS)
 
-AC_ARG_VAR(WXCONFIG, [wxWindows configuration script to use to build Aven])
+AC_ARG_VAR(WXCONFIG, [wxWidgets configuration script to use to build Aven])
 
 AM_CONDITIONAL(WIN32, [test yes = "$mswindows"])
 AM_CONDITIONAL(MACOSX, [test yes = "$macosx"])
@@ -136,19 +136,19 @@ if test -n "$WXCONFIG" ; then
     AC_MSG_ERROR(['$WXCONFIG --libs --cflags --cxxflags' doesn't work, bailing out])
   fi
 else
-  # Prefer wx2.6 (or wx2.5) since a number of things work better with it.
   if test yes = "$macosx" ; then
-    AC_PATH_PROGS(WXCONFIG, [wxmac-2.6-config wxmac-2.5-config wxmac-config])
+    dnl FIXME: Not sure if this is useful for newer wx...
+    AC_PATH_PROGS(WXCONFIG, [wxmac-2.8-config wxmac-2.6-config wxmac-2.7-config wxmac-config])
     wxdef=__WXMAC__
   elif test yes = "$mswindows" ; then
-    AC_PATH_PROGS(WXCONFIG, [wxmsw-2.6-config wxmsw-2.5-config wxmsw-2.4-config wxmsw-config])
+    dnl FIXME: Not sure if this is useful for newer wx...
+    AC_PATH_PROGS(WXCONFIG, [wxmsw-2.8-config wxmac-2.6-config wxmac-2.7-config wxmac-config])
     wxdef=__WXMSW__
   else
-    AC_PATH_PROGS(WXCONFIG, [wxgtk-2.6-config wxgtk-2.5-config wxgtk-2.4-config wxgtk-config])
     wxdef=__WXGTK__
   fi
   if test -z "$WXCONFIG" ; then
-    dnl see if wx-config exists and is for the correct version
+    dnl See if wx-config exists and is for the correct version.
     AC_PATH_PROGS(WXCONFIG, [wx-config])
     if test -n "$WXCONFIG" ; then
       if (exec >&5 2>&5;$WXCONFIG --cflags|grep -e -D"$wxdef";exit $?) then
@@ -159,25 +159,20 @@ else
     fi
   fi
   if test -z "$WXCONFIG" ; then
-    AC_MSG_ERROR([wxWindows not found])
+    AC_MSG_ERROR([wxWidgets not found])
   fi
 fi
 
-dnl wx-config from 2.4 and earlier doesn't understand --unicode, so
-dnl both --unicode=no and --unicode=yes will fail.
-if (exec >&5 2>&5;$WXCONFIG --unicode=no --version;exit $?) ; then
-  dnl wx-config understands --unicode=no and is a non-unicode version.
-  :
-elif (exec >&5 2>&5;$WXCONFIG --unicode=yes --version;exit $?) ; then
-  AC_MSG_ERROR(['$WXCONFIG' is for a unicode build of wxWidgets - Survex requires a non-unicode build])
+if (exec >&5 2>&5;$WXCONFIG --unicode=yes --version;exit $?) ; then
+  AC_MSG_ERROR(['$WXCONFIG' is for a unicode build of wxWidgets - Survex currently requires a non-unicode build])
 fi
 
 WX_LIBS=`$WXCONFIG --libs`" "`$WXCONFIG --gl-libs`
 dnl Needed for nvidia drivers on linux (for some setups anyway).
 AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryVersion, [WX_LIBS="$WX_LIBS -lXxf86vm"], [], [$WX_LIBS])
 AC_SUBST(WX_LIBS)
-dnl Older wx-config didn't support this - error goes to stderr, with
-dnl nothing to stdout, so just ignore stderr
+dnl Older wx-config didn't support --ldflags (2.6.3 doesn't) - error goes to
+dnl stderr, with nothing to stdout, so just ignore stderr.
 WX_LDFLAGS=`$WXCONFIG --ldflags 2> /dev/null`
 AC_SUBST(WX_LDFLAGS)
 WX_CFLAGS=`$WXCONFIG --cflags`
@@ -330,7 +325,7 @@ dnl to disable it for mingw builds.
     AM_CFLAGS="$AM_CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith\
       -Wmissing-prototypes -Wwrite-strings -Wredundant-decls -Wnested-externs\
       -Wcast-align"
-    dnl -W causes problems with wxWindows
+    dnl -W causes problems with wxWidgets
     AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wunused -Wshadow -Wpointer-arith\
       -Wwrite-strings -Wcast-align"
   fi

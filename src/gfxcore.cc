@@ -420,11 +420,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	drawtime = timer.Time();
     } else {
-#if wxCHECK_VERSION(2,6,0)
 	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
-#else
-	dc.SetBackground(wxBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME), wxSOLID));
-#endif
 	dc.Clear();
     }
 }

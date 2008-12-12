@@ -30,8 +30,6 @@
 #include "gla.h"
 #include "message.h"
 
-#include <stdio.h> // for popen
-
 #include <wx/confbase.h>
 #include <wx/image.h>
 
@@ -131,27 +129,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
     vert->Add(new wxStaticText(this, 505, msg(/*System Information:*/390)),
 	      0, wxLEFT | wxRIGHT, 20);
 
-#if defined __UNIX__ && !wxCHECK_VERSION(2,5,4)
-    // On Unix, older wx versions report the OS that we were *built* on, which
-    // may be a different OS or kernel version to what we're running on.
-    // I submitted a patch to fix this which was applied in 2.5.4.
-    wxString info;
-    {
-	char buf[80];
-	FILE *f = popen("uname -s -r", "r");
-	if (f) {
-	    size_t c = fread(buf, 1, sizeof(buf), f);
-	    if (c > 0) {
-		if (buf[c - 1] == '\n') --c;
-		info.assign(buf, c);
-	    }
-	    fclose(f);
-	}
-	if (info.empty()) info = wxGetOsDescription();
-    }
-#else
     wxString info(wxGetOsDescription());
-#endif
     info += '\n';
     info += wxVERSION_STRING;
 #ifdef __WXGTK__

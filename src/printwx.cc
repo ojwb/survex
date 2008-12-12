@@ -1,5 +1,5 @@
 /* printwx.cc */
-/* wxWindows specific parts of Survex wxWindows printing code */
+/* wxWidgets specific parts of Survex wxWidgets printing code */
 /* Copyright (C) 1993-2003,2004,2005,2006 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *

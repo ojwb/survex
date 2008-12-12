@@ -84,7 +84,6 @@ static void init_msg_and_cmdline(int& my_argc, char **my_argv) {
     cmdline_init(my_argc, my_argv, short_opts, long_opts, NULL, help, 0, 1);
 }
 
-#if wxCHECK_VERSION(2,5,1)
 static int getopt_first_response = 0;
 
 bool Aven::Initialize(int& my_argc, wxChar **my_argv)
@@ -109,15 +108,10 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     getopt_first_response = cmdline_getopt();
     return wxApp::Initialize(my_argc, my_argv);
 }
-#endif
 
 bool Aven::OnInit()
 {
     wxLog::SetActiveTarget(new MyLogWindow());
-
-#if !wxCHECK_VERSION(2,5,1)
-    init_msg_and_cmdline(argc, argv);
-#endif
 
     const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
     {
@@ -127,7 +121,7 @@ bool Aven::OnInit()
 	loc->AddCatalogLookupPathPrefix(msg_cfgpth());
 	if (!loc->Init(msg_lang, lang, msg_lang, TRUE, TRUE)) {
 	    if (lang && strcmp(lang, "sk") == 0) {
-	       // As of 2.6.3, wxWindows has cs but not sk - the two languages
+	       // As of 2.6.3, wxWidgets has cs but not sk - the two languages
 	       // are close, so this makes sense...
 	       loc->Init("cs", "cs", "cs", TRUE, TRUE);
 	    }
@@ -141,16 +135,12 @@ bool Aven::OnInit()
 
     while (true) {
 	int opt;
-#if wxCHECK_VERSION(2,5,1)
 	if (getopt_first_response) {
 	    opt = getopt_first_response;
 	    getopt_first_response = 0;
 	} else {
 	    opt = cmdline_getopt();
 	}
-#else
-	opt = cmdline_getopt();
-#endif
 	if (opt == EOF) break;
 	if (opt == 's') {
 	    survey = optarg;
