@@ -1322,11 +1322,21 @@ bool GLACanvas::SaveScreenshot(const wxString & fnm, int type) const
     int width;
     int height;
     GetSize(&width, &height);
-    unsigned char *pixels = (unsigned char *)malloc(width * height * 3);
+    unsigned char *pixels = (unsigned char *)malloc(3 * width * (height + 1));
     if (!pixels) return false;
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
+    unsigned char * tmp_row = pixels + 3 * width * height;
+    // We need to flip the image vertically - this approach should be more
+    // efficient than using wxImage::Mirror(false) as that creates a new
+    // wxImage object.
+    for (int y = height / 2 - 1; y >= 0; --y) {
+	unsigned char * upper = pixels + 3 * width * y;
+	unsigned char * lower = pixels + 3 * width * (height - y - 1);
+	memcpy(tmp_row, upper, 3 * width);
+	memcpy(upper, lower, 3 * width);
+	memcpy(lower, tmp_row, 3 * width);
+    }
+    // NB wxImage constructor calls free(pixels) for us.
     wxImage grab(width, height, pixels);
-    // FIXME: might be slow to create new image, and uses twice the memory.
-    // Perhaps flip image inplace ourselves using memcpy?
-    return grab.Mirror(false).SaveFile(fnm, type);
+    return grab.SaveFile(fnm, type);
 }
