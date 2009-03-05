@@ -26,9 +26,11 @@ allows you to read a sub-set of the data in the file, restricted by
 Survey prefix.</P>
 
 <P>This document only describes the more recent revisions of the 3d format
-(versions 3, 4, and 5).
+(versions 3, 4, 5, and 6).
 Version 3 was produced by Survex versions 0.97 and later,
-version 4 by Survex 1.1.0-1.1.3, and Version 5 by versions from 1.1.4.</P>
+version 4 by Survex 1.1.0-1.1.3,
+version 5 by Survex 1.1.4-1.1.10,
+and version 6 by versions from 1.1.11.</P>
 
 <P>If you try to use this specification and find details which aren't
 spelled out clearly enough (or at all!) or any errors, please let us know.
@@ -137,7 +139,7 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type">ERROR</td>
     <td class="data">&lt;legs&gt;&lt;length&gt;&lt;E&gt;&lt;H&gt;&lt;V&gt;</td>
     <td colspan="2">
-    Error information for the current traverse.  &lt;legs&gt; is the number of legs. &lt;length&gt; is the total length of the 
+    Error information for the current traverse.  &lt;legs&gt; is the number of legs. &lt;length&gt; is the total length of the
     traverse in cm (0.01m). E, H and V are the error and thehorizontal and vertical components in cm. (All values are 4 byte little
     endian signed integers) </td>
     <td class="version">&ge;6</td>
