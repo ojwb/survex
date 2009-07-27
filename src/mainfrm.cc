@@ -2056,7 +2056,7 @@ void MainFrm::OnPresOpen(wxCommandEvent&)
     }
 #ifdef __WXMOTIF__
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      "*.fly", wxFD_SAVE);
+		      "*.fly", wxFD_OPEN);
 #else
     wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
 		      wxString::Format("%s|*.fly|%s|%s",
