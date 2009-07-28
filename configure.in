@@ -169,6 +169,7 @@ if (exec >&5 2>&5;$WXCONFIG --unicode=yes --version;exit $?) ; then
   AC_MSG_ERROR(['$WXCONFIG' is for a unicode build of wxWidgets - Survex currently requires a non-unicode build])
 fi
 
+dnl Call wx-config twice to avoid getting a newline in WX_LIBS.
 WX_LIBS=`$WXCONFIG --libs`" "`$WXCONFIG --gl-libs`
 dnl Needed for nvidia drivers on linux (for some setups anyway).
 AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryVersion, [WX_LIBS="$WX_LIBS -lXxf86vm"], [], [$WX_LIBS])
