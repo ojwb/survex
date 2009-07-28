@@ -177,13 +177,15 @@ class AvenPresList : public wxListCtrl {
     vector<PresentationMark> entries;
     long current_item;
     bool modified;
+    bool force_save_as;
     wxString filename;
 
     public:
 	AvenPresList(MainFrm * mainfrm_, wxWindow * parent, GfxCore * gfx_)
 	    : wxListCtrl(parent, listctrl_PRES, wxDefaultPosition, wxDefaultSize,
 			 wxLC_REPORT|wxLC_VIRTUAL),
-	      mainfrm(mainfrm_), gfx(gfx_), current_item(-1), modified(false)
+	      mainfrm(mainfrm_), gfx(gfx_), current_item(-1), modified(false),
+	      force_save_as(true)
 	    {
 		InsertColumn(0, msg(/*Easting*/378));
 		InsertColumn(1, msg(/*Northing*/379));
@@ -209,6 +211,7 @@ class AvenPresList : public wxListCtrl {
 	    SetItemCount(entries.size());
 	    filename = "";
 	    modified = false;
+	    force_save_as = true;
 	}
 	void OnListKeyDown(wxListEvent& event) {
 	    switch (event.GetKeyCode()) {
@@ -294,7 +297,7 @@ class AvenPresList : public wxListCtrl {
 	}
 	void Save(bool use_default_name) {
 	    wxString fnm = filename;
-	    if (!use_default_name || fnm.empty()) {
+	    if (!use_default_name || force_save_as) {
 		AvenAllowOnTop ontop(mainfrm);
 #ifdef __WXMOTIF__
 		wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", fnm,
@@ -339,6 +342,15 @@ class AvenPresList : public wxListCtrl {
 	    fclose(fh_pres);
 	    filename = fnm;
 	    modified = false;
+	    force_save_as = false;
+	}
+	void New(const wxString &fnm) {
+	    DeleteAllItems();
+	    char *baseleaf = baseleaf_from_fnm(fnm.c_str());
+	    filename = baseleaf;
+	    free(baseleaf);
+	    filename += ".fly";
+	    force_save_as = true;
 	}
 	bool Load(const wxString &fnm) {
 	    FILE * fh_pres = fopen(fnm.c_str(), "r");
@@ -380,6 +392,7 @@ class AvenPresList : public wxListCtrl {
 	    fclose(fh_pres);
 	    filename = fnm;
 	    modified = false;
+	    force_save_as = false;
 	    return true;
 	}
 	bool Modified() const { return modified; }
@@ -2037,7 +2050,7 @@ void MainFrm::OnPresNew(wxCommandEvent&)
 	    return;
 	}
     }
-    m_PresList->DeleteAllItems();
+    m_PresList->New(m_File);
     if (!ShowingSidePanel()) ToggleSidePanel();
     // Select the presentation page in the notebook.
     m_Notebook->SetSelection(1);
