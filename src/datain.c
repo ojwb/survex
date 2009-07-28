@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -103,7 +103,7 @@ error_list_parent_files(void)
       const char *m = msg(/*In file included from*/5);
       size_t len = strlen(m);
 
-      fprintf(STDERR, m);
+      fputs(m, STDERR);
       m = msg(/*from*/3);
 
       /* Suppress reporting of full include tree for further errors
