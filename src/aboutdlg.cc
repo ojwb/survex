@@ -34,27 +34,20 @@
 #include <wx/image.h>
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
-    EVT_IDLE(AboutDlg::OnIdle)
+    EVT_TIMER(about_TIMER, AboutDlg::OnTimer)
 END_EVENT_TABLE()
 
 void
-AboutDlg::OnIdle(wxIdleEvent &e)
+AboutDlg::OnTimer(wxTimerEvent &e)
 {
-    if (!then) return;
-    if (time(NULL) - then > 42) {
-	then = 0;
-	wxImage::AddHandler(new wxJPEGHandler);
-	wxBitmap bmp;
-	bitmap.LoadFile(icon_path + "osterei.jpg", wxBITMAP_TYPE_JPEG);
-	((wxStaticBitmap*)FindWindowById(501, this))->SetBitmap(bitmap);
-	return;
-    }
-    e.RequestMore();
+    wxImage::AddHandler(new wxJPEGHandler);
+    bitmap.LoadFile(icon_path + "osterei.jpg", wxBITMAP_TYPE_JPEG);
+    ((wxStaticBitmap*)FindWindowById(501, this))->SetBitmap(bitmap);
 }
 
 AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
     wxDialog(parent, 500, wxString::Format(msg(/*About %s*/205), APP_NAME)),
-    icon_path(icon_path_)
+    icon_path(icon_path_), timer(this, about_TIMER)
 {
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
@@ -180,5 +173,5 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
     horiz->Fit(this);
     horiz->SetSizeHints(this);
 
-    then = time(NULL);
+    timer.Start(42000);
 }

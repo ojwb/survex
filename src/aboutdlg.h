@@ -4,7 +4,7 @@
 //  About box handling for Aven.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2004,2005 Olly Betts
+//  Copyright (C) 2004,2005,2010 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -26,15 +26,19 @@
 
 #include "wx.h"
 
+enum {
+    about_TIMER = 1000
+};
+
 class AboutDlg : public wxDialog {
 public:
     AboutDlg(wxWindow* parent, const wxString & icon_path);
-    void OnIdle(wxIdleEvent &e);
+    void OnTimer(wxTimerEvent &e);
 
 private:
     wxBitmap bitmap, bitmap_icon;
     wxString icon_path;
-    unsigned long then;
+    wxTimer timer;
 
     DECLARE_EVENT_TABLE()
 };
