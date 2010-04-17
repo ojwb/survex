@@ -123,28 +123,28 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
 	      0, wxLEFT | wxRIGHT, 20);
 
     wxString info(wxGetOsDescription());
-    info += '\n';
-    info += wxVERSION_STRING;
+    info += "\n" wxVERSION_STRING;
 #ifdef __WXGTK__
-#if defined __WXGTK24__
-    info += " (GTK+ >= 2.4)";
-#elif defined __WXGTK20__
-    info += " (GTK+ >= 2.0)";
-#elif defined __WXGTK12__
-    info += " (GTK+ >= 1.2)";
-#else
-    info += " (GTK+ < 1.2)";
-#endif
+# if defined __WXGTK24__
+	" (GTK+ >= 2.4)\n";
+# elif defined __WXGTK20__
+	" (GTK+ >= 2.0)\n";
+# elif defined __WXGTK12__
+	" (GTK+ >= 1.2)\n";
+# else
+	" (GTK+ < 1.2)\n";
+# endif
 #elif defined __WXMOTIF__
-#if defined __WXMOTIF20__
-    info += " (Motif >= 2.0)";
-#else
-    info += " (Motif < 2.0)";
-#endif
+# if defined __WXMOTIF20__
+	" (Motif >= 2.0)\n";
+# else
+	" (Motif < 2.0)\n";
+# endif
 #elif defined __WXX11__
-    info += " (X11)";
+	" (X11)\n";
+#else
+	"\n";
 #endif
-    info += '\n';
     int bpp = wxDisplayDepth();
     info += wxString::Format("Display Depth: %d bpp", bpp);
     if (wxColourDisplay()) info += " (colour)";
