@@ -125,7 +125,9 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
     wxString info(wxGetOsDescription());
     info += "\n" wxVERSION_STRING;
 #ifdef __WXGTK__
-# if defined __WXGTK24__
+# if defined __WXGTK26__
+	" (GTK+ >= 2.6)\n";
+# elif defined __WXGTK24__
 	" (GTK+ >= 2.4)\n";
 # elif defined __WXGTK20__
 	" (GTK+ >= 2.0)\n";
