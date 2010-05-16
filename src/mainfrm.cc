@@ -949,23 +949,10 @@ void MainFrm::CreateSidePanel()
 bool
 MainFrm::ProcessSVXFile(const wxString & file)
 {
+    Show(true);
     m_Splitter->Show(false);
-#if 0
-    wxFrame * frm;
-    frm = new wxFrame(NULL, wxID_ANY, wxT("Processing: ") + file, wxDefaultPosition, wxSize(700, 512));
-#ifdef _WIN32
-    // The peculiar name is so that the icon is the first in the file
-    // (required by Microsoft Windows for this type of icon)
-    frm->SetIcon(wxIcon("aaaaaAven"));
-#else
-    frm->SetIcon(wxIcon(icon_path + APP_IMAGE, wxBITMAP_TYPE_PNG));
-#endif
-#endif
-
-    wxFrame * frm = this;
-    CavernLogWindow * log = new CavernLogWindow(frm);
-    log->SetSize(frm->GetClientSize());
-    frm->Show(true);
+    CavernLogWindow * log = new CavernLogWindow(this);
+    log->SetSize(GetClientSize());
 
     int result = log->process(file);
     if (result == 0) {
